@@ -1,0 +1,23 @@
+[package]
+
+name = "libc"
+version = "0.1.0"
+authors = ["The Rust Project Developers"]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/rust-lang/libc"
+homepage = "https://github.com/rust-lang/libc"
+documentation = "http://doc.rust-lang.org/libc"
+description = """
+A library for types and bindings to native C functions often found in libc or
+other common platform libraries.
+"""
+include = ["Cargo.toml", "rust/src/liblibc/*"]
+
+[features]
+default = ["cargo-build"]
+cargo-build = []
+
+[lib]
+name = "libc"
+path = "rust/src/liblibc/lib.rs"
