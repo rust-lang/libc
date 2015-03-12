@@ -4,7 +4,6 @@ before_install:
   - git submodule update --init --recursive
 script:
   - cargo build --verbose
-  - cargo test --verbose
   - cargo doc --verbose
 after_success: |
   [ $TRAVIS_BRANCH = master ] &&
