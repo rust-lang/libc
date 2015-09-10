@@ -230,11 +230,11 @@ pub mod types {
                     pub gl_pathv: *mut *mut c_char,
                     pub gl_offs:  size_t,
 
-                    pub __unused1: *mut c_void,
-                    pub __unused2: *mut c_void,
-                    pub __unused3: *mut c_void,
-                    pub __unused4: *mut c_void,
-                    pub __unused5: *mut c_void,
+                    __unused1: *mut c_void,
+                    __unused2: *mut c_void,
+                    __unused3: *mut c_void,
+                    __unused4: *mut c_void,
+                    __unused5: *mut c_void,
                 }
 
                 #[repr(C)]
@@ -491,8 +491,8 @@ pub mod types {
                     pub st_mtime_nsec: c_long,
                     pub st_ctime: time_t,
                     pub st_ctime_nsec: c_long,
-                    pub __unused4: c_long,
-                    pub __unused5: c_long,
+                    __unused4: c_long,
+                    __unused5: c_long,
                 }
 
                 #[repr(C)]
@@ -693,7 +693,7 @@ pub mod types {
                     pub st_mtime_nsec: c_long,
                     pub st_ctime: time_t,
                     pub st_ctime_nsec: c_long,
-                    pub __unused: [c_long; 3],
+                    __unused: [c_long; 3],
                 }
 
                 #[repr(C)]
@@ -738,7 +738,7 @@ pub mod types {
                     pub st_mtime_nsec: c_long,
                     pub st_ctime: time_t,
                     pub st_ctime_nsec: c_long,
-                    pub __unused: [c_int; 2],
+                    __unused: [c_int; 2],
                 }
 
                 #[repr(C)]
@@ -787,18 +787,18 @@ pub mod types {
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct glob_t {
                     pub gl_pathc:  size_t,
-                    pub __unused1: size_t,
+                    __unused1: size_t,
                     pub gl_offs:   size_t,
-                    pub __unused2: c_int,
+                    __unused2: c_int,
                     pub gl_pathv:  *mut *mut c_char,
 
-                    pub __unused3: *mut c_void,
+                    __unused3: *mut c_void,
 
-                    pub __unused4: *mut c_void,
-                    pub __unused5: *mut c_void,
-                    pub __unused6: *mut c_void,
-                    pub __unused7: *mut c_void,
-                    pub __unused8: *mut c_void,
+                    __unused4: *mut c_void,
+                    __unused5: *mut c_void,
+                    __unused6: *mut c_void,
+                    __unused7: *mut c_void,
+                    __unused8: *mut c_void,
                 }
 
                 #[repr(C)]
@@ -1021,7 +1021,7 @@ pub mod types {
                     pub st_lspare: int32_t,
                     pub st_birthtime: time_t,
                     pub st_birthtime_nsec: c_long,
-                    pub __unused: [u8; 8],
+                    __unused: [u8; 8],
                 }
 
                 #[repr(C)]
@@ -1149,18 +1149,18 @@ pub mod types {
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct glob_t {
                     pub gl_pathc:  size_t,
-                    pub __unused1: size_t,
+                    __unused1: size_t,
                     pub gl_offs:   size_t,
-                    pub __unused2: c_int,
+                    __unused2: c_int,
                     pub gl_pathv:  *mut *mut c_char,
 
-                    pub __unused3: *mut c_void,
+                    __unused3: *mut c_void,
 
-                    pub __unused4: *mut c_void,
-                    pub __unused5: *mut c_void,
-                    pub __unused6: *mut c_void,
-                    pub __unused7: *mut c_void,
-                    pub __unused8: *mut c_void,
+                    __unused4: *mut c_void,
+                    __unused5: *mut c_void,
+                    __unused6: *mut c_void,
+                    __unused7: *mut c_void,
+                    __unused8: *mut c_void,
                 }
 
                 #[repr(C)]
@@ -1422,32 +1422,32 @@ pub mod types {
                     pub gl_offs:   c_int,
                     pub gl_flags:  c_int,
                     pub gl_pathv:  *mut *mut c_char,
-                    pub __unused1: *mut c_void,
-                    pub __unused2: *mut c_void,
-                    pub __unused3: *mut c_void,
-                    pub __unused4: *mut c_void,
-                    pub __unused5: *mut c_void,
-                    pub __unused6: *mut c_void,
-                    pub __unused7: *mut c_void,
+                    __unused1: *mut c_void,
+                    __unused2: *mut c_void,
+                    __unused3: *mut c_void,
+                    __unused4: *mut c_void,
+                    __unused5: *mut c_void,
+                    __unused6: *mut c_void,
+                    __unused7: *mut c_void,
                 }
 
                 #[cfg(any(target_os = "netbsd", target_os="openbsd"))]
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct glob_t {
                     pub gl_pathc:  c_int,
-                    pub __unused1: c_int,
+                    __unused1: c_int,
                     pub gl_offs:   c_int,
-                    pub __unused2: c_int,
+                    __unused2: c_int,
                     pub gl_pathv:  *mut *mut c_char,
 
-                    pub __unused3: *mut c_void,
+                    __unused3: *mut c_void,
 
-                    pub __unused4: *mut c_void,
-                    pub __unused5: *mut c_void,
-                    pub __unused6: *mut c_void,
-                    pub __unused7: *mut c_void,
-                    pub __unused8: *mut c_void,
-                    pub __unused9: *mut c_void,
+                    __unused4: *mut c_void,
+                    __unused5: *mut c_void,
+                    __unused6: *mut c_void,
+                    __unused7: *mut c_void,
+                    __unused8: *mut c_void,
+                    __unused9: *mut c_void,
                 }
 
                 #[repr(C)]
@@ -2122,18 +2122,18 @@ pub mod types {
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct glob_t {
                     pub gl_pathc:  size_t,
-                    pub __unused1: c_int,
+                    __unused1: c_int,
                     pub gl_offs:   size_t,
-                    pub __unused2: c_int,
+                    __unused2: c_int,
                     pub gl_pathv:  *mut *mut c_char,
 
-                    pub __unused3: *mut c_void,
+                    __unused3: *mut c_void,
 
-                    pub __unused4: *mut c_void,
-                    pub __unused5: *mut c_void,
-                    pub __unused6: *mut c_void,
-                    pub __unused7: *mut c_void,
-                    pub __unused8: *mut c_void,
+                    __unused4: *mut c_void,
+                    __unused5: *mut c_void,
+                    __unused6: *mut c_void,
+                    __unused7: *mut c_void,
+                    __unused8: *mut c_void,
                 }
 
                 #[repr(C)]

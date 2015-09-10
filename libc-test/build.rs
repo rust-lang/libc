@@ -109,13 +109,11 @@ fn build_cfg(cfg: &mut ast::CrateConfig, target: &str) {
 impl<'a> TestGenerator<'a> {
     fn test_type(&mut self, ty: &str) {
         let cty = if ty.starts_with("c_") {
-            let rest = ty[2..].replace("long", " long");
-            if rest.starts_with("u") {
-                format!("unsigned {}", &rest[1..])
-            } else if rest.starts_with("s") && rest != "short" {
-                format!("signed {}", &rest[1..])
-            } else {
-                rest
+            match &ty[2..].replace("long", " long")[..] {
+                s if s.starts_with("u") => format!("unsigned {}", &s[1..]),
+                "short" => format!("short"),
+                s if s.starts_with("s") => format!("signed {}", &s[1..]),
+                s => s.to_string(),
             }
         } else {
             (match ty {
@@ -126,15 +124,61 @@ impl<'a> TestGenerator<'a> {
         self.test_size_align(ty, &cty);
     }
 
-    fn test_struct(&mut self, ty: &str, _s: &ast::StructDef) {
-        let cty = if ty.starts_with("pthread") || ty == "glob_t" {
-            ty.to_string()
-        } else if ty == "ip6_mreq" {
-            "struct ipv6_mreq".to_string()
-        } else {
-            format!("struct {}", ty)
+    fn test_struct(&mut self, ty: &str, s: &ast::StructDef) {
+        let cty = match ty {
+            t if ty.starts_with("pthread") => t.to_string(),
+            "glob_t" => "glob_t".to_string(),
+            "ip6_mreq" => "struct ipv6_mreq".to_string(),
+            s => format!("struct {}", s),
         };
         self.test_size_align(ty, &cty);
+
+        writeln!(self.rust, r#"
+            #[test]
+            fn field_offset_size_{ty}() {{
+        "#, ty = ty);
+        for field in s.fields.iter() {
+            let name = match field.node.kind {
+                ast::NamedField(name, ast::Public) => name,
+                ast::NamedField(_, ast::Inherited) => continue,
+                ast::UnnamedField(..) => panic!("no tuple structs in FFI"),
+            };
+
+            let cname = match &name.to_string()[..] {
+                s if s.ends_with("_nsec") && ty == "stat" => {
+                    s.replace("_nsec", "spec.tv_nsec")
+                }
+                s => s.to_string(),
+            };
+
+            writeln!(self.c, r#"
+                uint64_t __test_offset_{ty}_{rust_field}() {{
+                    return offsetof({cty}, {c_field});
+                }}
+                uint64_t __test_size_{ty}_{rust_field}() {{
+                    {cty}* foo = NULL;
+                    return sizeof(foo->{c_field});
+                }}
+            "#, ty = ty, cty = cty, rust_field = name, c_field = cname);
+            writeln!(self.rust, r#"
+                extern {{
+                    fn __test_offset_{ty}_{field}() -> u64;
+                    fn __test_size_{ty}_{field}() -> u64;
+                }}
+                unsafe {{
+                    let foo = 0 as *const {ty};
+                    same(offset_of!({ty}, {field}),
+                         __test_offset_{ty}_{field}(),
+                         "field offset {field} of {ty}");
+                    same(mem::size_of_val(&(*foo).{field}) as u64,
+                         __test_size_{ty}_{field}(),
+                         "field size {field} of {ty}");
+                }}
+            "#, ty = ty, field = name);
+        }
+        writeln!(self.rust, r#"
+            }}
+        "#);
     }
 
     fn test_size_align(&mut self, rust: &str, c: &str) {
@@ -150,12 +194,10 @@ impl<'a> TestGenerator<'a> {
                     fn __test_align_{ty}() -> u64;
                 }}
                 unsafe {{
-                    let a = mem::size_of::<{ty}>() as u64;
-                    let b = __test_size_{ty}();
-                    assert!(a == b, "bad size: rust {{}} != c {{}}", a, b);
-                    let a = mem::align_of::<{ty}>() as u64;
-                    let b = __test_align_{ty}();
-                    assert!(a == b, "bad align: rust {{}} != c {{}}", a, b);
+                    same(mem::size_of::<{ty}>() as u64,
+                         __test_size_{ty}(), "size");
+                    same(mem::align_of::<{ty}>() as u64,
+                         __test_align_{ty}(), "align");
                 }}
             }}
         "#, ty = rust);
