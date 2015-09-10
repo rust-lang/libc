@@ -24,6 +24,7 @@ addons:
   apt:
     packages:
       - gcc-multilib
+env:
   matrix:
     - ARCH=x86_64
     - ARCH=i686
