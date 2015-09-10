@@ -258,7 +258,7 @@ impl<'a> TestGenerator<'a> {
                 unsafe {{
                     same(mem::size_of::<{ty}>() as u64,
                          __test_size_{ty}(), "size");
-                    same(mem::align_of::<{ty}>() as u64,
+                    same(align::<{ty}>() as u64,
                          __test_align_{ty}(), "align");
                 }}
             }}
