@@ -1,0 +1,17 @@
+[package]
+name = "libc-test"
+version = "0.1.0"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+build = "build.rs"
+
+[dependencies]
+libc = { path = ".." }
+
+[build-dependencies]
+syntex_syntax = "*"
+gcc = "0.3"
+
+[lib]
+name = "libc_test"
+test = false
+doctest = false
