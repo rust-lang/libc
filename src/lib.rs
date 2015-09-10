@@ -3800,8 +3800,8 @@ pub mod consts {
             pub const O_NONBLOCK : c_int = 2048;
             pub const O_SYNC : c_int = 1052672;
 
-            pub const PROT_GROWSDOWN : c_int = 0x010000000;
-            pub const PROT_GROWSUP : c_int = 0x020000000;
+            pub const PROT_GROWSDOWN : c_int = 0x1000000;
+            pub const PROT_GROWSUP : c_int = 0x2000000;
 
             pub const MAP_TYPE : c_int = 0x000f;
             pub const MAP_ANONYMOUS : c_int = 0x0020;
@@ -5780,7 +5780,7 @@ pub mod funcs {
             use types::os::arch::posix88::{gid_t, off_t, pid_t};
             use types::os::arch::posix88::{ssize_t, uid_t};
 
-            pub const _PC_NAME_MAX: c_int = 4;
+            pub const _PC_NAME_MAX: c_int = 3;
 
             #[cfg(not(target_os = "nacl"))]
             extern {
