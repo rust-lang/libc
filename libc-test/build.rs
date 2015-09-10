@@ -21,12 +21,13 @@ struct TestGenerator {
 }
 
 fn main() {
-    let sess = ParseSess::new();
+    let target = env::var("TARGET").unwrap();
 
+    let sess = ParseSess::new();
     let src = Path::new("../src/lib.rs");
     let cfg = Vec::new();
     let mut krate = parse::parse_crate_from_file(src, cfg, &sess);
-    build_cfg(&mut krate.config);
+    build_cfg(&mut krate.config, &target);
 
     let mut gated_cfgs = Vec::new();
     let krate = syntax::config::strip_unconfigured_items(&sess.span_diagnostic,
@@ -41,10 +42,20 @@ fn main() {
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <signal.h>
+#include <stdalign.h>
+#include <stddef.h>
 #include <stdint.h>
+#include <sys/resource.h>
 #include <sys/types.h>
 #include <time.h>
+#include <wchar.h>
 ");
+
+    if target.contains("apple-darwin") {
+        writeln!(c_out, "
+#include <mach/mach_time.h>
+");
+    }
 
     visit::walk_crate(&mut TestGenerator {
         rust: Box::new(rust_out),
@@ -56,9 +67,7 @@ fn main() {
                 .compile("liball.a");
 }
 
-fn build_cfg(cfg: &mut ast::CrateConfig) {
-    let target = env::var("TARGET").unwrap();
-
+fn build_cfg(cfg: &mut ast::CrateConfig, target: &str) {
     let (arch, target_pointer_width) = if target.starts_with("x86_64") {
         ("x86_64", "64")
     } else if target.starts_with("i686") {
@@ -68,6 +77,8 @@ fn build_cfg(cfg: &mut ast::CrateConfig) {
     };
     let (os, family, env) = if target.contains("unknown-linux") {
         ("linux", "unix", "gnu")
+    } else if target.contains("apple-darwin") {
+        ("macos", "unix", "")
     } else {
         panic!("unknown os/family width: {}", target)
     };
@@ -89,25 +100,35 @@ impl TestGenerator {
             let rest = ty[2..].replace("long", " long");
             if rest.starts_with("u") {
                 format!("unsigned {}", &rest[1..])
+            } else if rest.starts_with("s") && rest != "short" {
+                format!("signed {}", &rest[1..])
             } else {
                 rest
             }
         } else {
             (match ty {
+                "sighandler_t" => return,
                 ty => ty,
             }).to_string()
         };
+
         writeln!(self.c, r#"
-            uint64_t ty_{ty}_size() {{
-                return sizeof({cty});
-            }}
+            uint64_t ty_{ty}_size() {{ return sizeof({cty}); }}
+            uint64_t ty_{ty}_align() {{ return alignof({cty}); }}
         "#, ty = ty, cty = cty);
         writeln!(self.rust, r#"
             #[test]
-            fn test_{ty}_size() {{
-                extern {{ fn ty_{ty}_size() -> u64; }}
-                assert_eq!(mem::size_of::<libc::{ty}>() as u64,
-                           unsafe {{ ty_{ty}_size() }});
+            fn sanity_{ty}() {{
+                extern {{
+                    fn ty_{ty}_size() -> u64;
+                    fn ty_{ty}_align() -> u64;
+                }}
+                unsafe {{
+                    assert_eq!(mem::size_of::<libc::{ty}>() as u64,
+                               ty_{ty}_size());
+                    assert_eq!(mem::align_of::<libc::{ty}>() as u64,
+                               ty_{ty}_align());
+                }}
             }}
         "#, ty = ty);
     }
