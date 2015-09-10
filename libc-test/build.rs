@@ -6,6 +6,7 @@ use std::env;
 use std::fs::File;
 use std::io::BufWriter;
 use std::io::prelude::*;
+use std::iter;
 use std::path::{Path, PathBuf};
 
 use syntax::ast;
@@ -35,18 +36,34 @@ struct StructFinder {
 }
 
 impl<'a> TestGenerator<'a> {
+    fn defines(&self) -> Vec<&'static str> {
+        let mut ret = Vec::new();
+        if self.target.contains("unknown-linux") {
+            ret.push("_GNU_SOURCE");
+        }
+        return ret
+    }
+
     fn headers(&self) -> Vec<&'static str> {
         let mut base = vec![
+            "errno.h",
+            "fcntl.h",
             "glob.h",
             "ifaddrs.h",
+            "limits.h",
+            "net/if.h",
             "netdb.h",
             "netinet/in.h",
             "netinet/ip.h",
+            "netinet/tcp.h",
             "pthread.h",
             "signal.h",
             "stdalign.h",
             "stddef.h",
             "stdint.h",
+            "stdio.h",
+            "stdlib.h",
+            "sys/mman.h",
             "sys/resource.h",
             "sys/socket.h",
             "sys/stat.h",
@@ -173,16 +190,24 @@ fn main() {
     visit::walk_crate(&mut structs, &krate);
     tg.structs = structs.structs;
 
-    // Walk the crate, emitting test cases for everything found
+    // Prep the C file by emitting header stuff
+    for define in tg.defines() {
+        t!(writeln!(tg.c, "#define {}", define));
+    }
     for header in tg.headers() {
         t!(writeln!(tg.c, "#include <{}>", header));
     }
+
+    // Walk the crate, emitting test cases for everything found
     visit::walk_crate(&mut tg, &krate);
     drop(tg);
 
     // Compile our C shim to be linked into tests
     gcc::Config::new()
                 .file(out.join("all.c"))
+                .flag("-Wall")
+                .flag("-Wextra")
+                .flag("-Werror")
                 .compile("liball.a");
 }
 
@@ -265,10 +290,48 @@ impl<'a> TestGenerator<'a> {
         "#, ty = rust));
     }
 
+    fn test_const(&mut self, name: &str, rust_ty: &str) {
+        let cty = self.rust2c(&rust_ty.replace("*mut ", "")
+                                      .replace("*const ", ""));
+        let ptrs = rust_ty.matches("*").count();
+        let cty = format!("{}{}", cty,
+                          iter::repeat("*").take(ptrs).collect::<String>());
+        let cast = if name == "SIG_IGN" {"(size_t)"} else {""};
+        t!(writeln!(self.c, r#"
+            {cty} __test_const_{name}() {{ return {cast}({name}); }}
+        "#, name = name, cast = cast, cty = cty));
+        t!(writeln!(self.rust, r#"
+            #[test]
+            fn const_{name}() {{
+                extern {{
+                    fn __test_const_{name}() -> {ty};
+                }}
+                unsafe {{
+                    same({name}, __test_const_{name}(), "value");
+                }}
+            }}
+        "#, ty = rust_ty, name = name));
+    }
+
     fn assert_no_generics(&self, _i: &ast::Item, generics: &ast::Generics) {
          assert!(generics.lifetimes.len() == 0);
          assert!(generics.ty_params.len() == 0);
          assert!(generics.where_clause.predicates.len() == 0);
+    }
+
+    fn ty2name(&self, ty: &ast::Ty) -> String {
+        match ty.node {
+            ast::TyPath(_, ref path) => {
+                path.segments.last().unwrap().identifier.to_string()
+            }
+            ast::TyPtr(ref t) => {
+                format!("*{} {}", match t.mutbl {
+                    ast::MutImmutable => "const",
+                    ast::MutMutable => "mut",
+                }, self.ty2name(&t.ty))
+            }
+            _ => panic!("unknown ty {:?}", ty),
+        }
     }
 }
 
@@ -291,6 +354,11 @@ impl<'a, 'v> Visitor<'v> for TestGenerator<'a> {
                      panic!("{} is not marked #[repr(C)]", i.ident);
                  }
                  self.test_struct(&i.ident.to_string(), s);
+             }
+
+             ast::ItemConst(ref ty, _) => {
+                 let ty = self.ty2name(ty);
+                 self.test_const(&i.ident.to_string(), &ty);
              }
 
              _ => {}

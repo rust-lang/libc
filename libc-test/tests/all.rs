@@ -1,3 +1,5 @@
+#![allow(bad_style)]
+
 extern crate libc;
 extern crate libc_test;
 
@@ -7,9 +9,28 @@ use std::mem;
 use libc::*;
 use libc::types::os::common::bsd43::*;
 
-fn same(rust: u64, c: u64, attr: &str) {
+trait Pretty {
+    fn pretty(&self) -> String;
+}
+
+impl<T> Pretty for *const T {
+    fn pretty(&self) -> String { format!("{:?}", self) }
+}
+impl<T> Pretty for *mut T {
+    fn pretty(&self) -> String { format!("{:?}", self) }
+}
+macro_rules! p {
+    ($($i:ident)*) => ($(
+        impl Pretty for $i {
+            fn pretty(&self) -> String { format!("{} ({:#x})", self, self) }
+        }
+    )*)
+}
+p! { i8 i16 i32 i64 u8 u16 u32 u64 usize isize }
+
+fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
     if rust != c {
-        panic!("bad {}: rust: {} != c {}", attr, rust, c);
+        panic!("bad {}: rust: {} != c {}", attr, rust.pretty(), c.pretty());
     }
 }
 
