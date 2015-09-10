@@ -17,6 +17,11 @@ script:
   - cargo test --target $TARGET
   - cargo test --target $TARGET --manifest-path libc-test/Cargo.toml
   - cargo doc --no-deps
+
+addons:
+  apt:
+    packages:
+      - gcc-multilib
 notifications:
   email:
     on_success: never
