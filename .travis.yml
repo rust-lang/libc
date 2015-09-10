@@ -1,21 +1,33 @@
 language: rust
+rust:
+  - 1.0.0
+  - beta
+  - nightly
 sudo: false
-before_install:
-  - git submodule update --init --recursive
+install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then OS=unknown-linux-gnu; else OS=apple-darwin; fi
+  - export TARGET=$ARCH-$OS
+  - curl -sO https://static.rust-lang.org/dist/rust-$TRAVIS_RUST_VERSION-$TARGET.tar.gz
+  - tar xf rust-$TRAVIS_RUST_VERSION-$TARGET.tar.gz
+  - rm -rf $HOME/rust/lib/rustlib/$TARGET
+  - mv rust-$TRAVIS_RUST_VERSION-$TARGET/rustc/lib/rustlib/$TARGET $HOME/rust/lib/rustlib
+before_script:
+  - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
 script:
-  - cargo build --verbose
-  - cargo doc --verbose
-after_success: |
-  [ $TRAVIS_BRANCH = master ] &&
-  [ $TRAVIS_PULL_REQUEST = false ] &&
-  echo '<meta http-equiv=refresh content=0;url=libc/index.html>' > target/doc/index.html &&
-  pip install ghp-import --user $USER &&
-  $HOME/.local/bin/ghp-import -n target/doc &&
-  git push -fq https://${TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages
-
-env:
-  global:
-    secure: MZGg+symX6/fcY7TsQ1LkJ28V/CUevNZgs3MiilgvnlgTjqn7BU7gbTvwhLdVZq04/EQ1hTeVzrFGpBfcCUVHYKmP2vooEFJJ+bDGEvyD8ChwCB4nV+NmxF5+NwCi3+Y+0pBgKbt2BasJ+MXkGJpRyFozis6loMWbXTzZzL9jjU=
+  - cargo test --target $TARGET
+  - cargo test --target $TARGET --manifest-path libc-test/Cargo.toml
+  - cargo doc --no-deps
 notifications:
   email:
     on_success: never
+addons:
+  apt:
+    packages:
+      - gcc-multilib
+  matrix:
+    - ARCH=x86_64
+    - ARCH=i686
+
+os:
+  - linux
+  - osx
