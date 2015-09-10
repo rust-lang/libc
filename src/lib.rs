@@ -215,8 +215,8 @@ pub mod types {
         pub mod common {
             pub mod posix01 {
                 use types::common::c95::{c_void};
-                use types::os::arch::c95::{c_char, c_ulong, size_t,
-                                                 time_t, suseconds_t, c_long};
+                use types::os::arch::c95::{c_char, c_ulong, size_t, c_int,
+                                           time_t, suseconds_t, c_long};
 
                 #[cfg(not(target_os = "nacl"))]
                 pub type pthread_t = c_ulong;
@@ -229,6 +229,7 @@ pub mod types {
                     pub gl_pathc: size_t,
                     pub gl_pathv: *mut *mut c_char,
                     pub gl_offs:  size_t,
+                    pub gl_flags: c_int,
 
                     __unused1: *mut c_void,
                     __unused2: *mut c_void,
