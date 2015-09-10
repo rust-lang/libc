@@ -5131,11 +5131,10 @@ pub mod consts {
             pub const RLIM_NLIMITS: c_int = 9;
             pub const _RLIMIT_POSIX_FLAG: c_int = 0x1000;
 
-            pub const RLIM_INFINITY: rlim_t = 0xffff_ffff_ffff_ffff;
+            pub const RLIM_INFINITY: rlim_t = 0x7fff_ffff_ffff_ffff;
 
             pub const RUSAGE_SELF: c_int = 0;
             pub const RUSAGE_CHILDREN: c_int = -1;
-            pub const RUSAGE_THREAD: c_int = 1;
         }
         pub mod posix08 {
         }
@@ -5174,8 +5173,8 @@ pub mod consts {
             pub const IP_HDRINCL: c_int = 2;
             pub const IP_ADD_MEMBERSHIP: c_int = 12;
             pub const IP_DROP_MEMBERSHIP: c_int = 13;
-            pub const IPV6_ADD_MEMBERSHIP: c_int = 12;
-            pub const IPV6_DROP_MEMBERSHIP: c_int = 13;
+            pub const IPV6_JOIN_GROUP: c_int = 12;
+            pub const IPV6_LEAVE_GROUP: c_int = 13;
 
             pub const TCP_NODELAY: c_int = 0x01;
             pub const TCP_KEEPALIVE: c_int = 0x10;
@@ -5227,7 +5226,6 @@ pub mod consts {
             pub const MAP_HASSEMAPHORE : c_int = 0x0200;
             pub const MAP_NOCACHE : c_int = 0x0400;
             pub const MAP_JIT : c_int = 0x0800;
-            pub const MAP_STACK : c_int = 0;
 
             pub const IPPROTO_RAW : c_int = 255;
 
@@ -5780,7 +5778,7 @@ pub mod funcs {
             use types::os::arch::posix88::{gid_t, off_t, pid_t};
             use types::os::arch::posix88::{ssize_t, uid_t};
 
-            pub const _PC_NAME_MAX: c_int = 3;
+            pub const _PC_NAME_MAX: c_int = 4;
 
             #[cfg(not(target_os = "nacl"))]
             extern {
