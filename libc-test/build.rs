@@ -10,14 +10,16 @@ use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 
 use syntax::ast;
+use syntax::diagnostic::SpanHandler;
 use syntax::parse::token::InternedString;
-use syntax::attr;
+use syntax::attr::{self, ReprAttr};
 use syntax::parse::{self, ParseSess};
 use syntax::visit::{self, Visitor};
 
-struct TestGenerator {
+struct TestGenerator<'a> {
     rust: Box<Write>,
     c: Box<Write>,
+    sh: &'a SpanHandler,
 }
 
 fn main() {
@@ -39,15 +41,24 @@ fn main() {
     let mut c_out = BufWriter::new(File::create(out.join("all.c")).unwrap());
 
     writeln!(c_out, "
+#include <glob.h>
+#include <ifaddrs.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <pthread.h>
 #include <signal.h>
 #include <stdalign.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/resource.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/types.h>
+#include <sys/un.h>
 #include <time.h>
+#include <utime.h>
 #include <wchar.h>
 ");
 
@@ -60,6 +71,7 @@ fn main() {
     visit::walk_crate(&mut TestGenerator {
         rust: Box::new(rust_out),
         c: Box::new(c_out),
+        sh: &sess.span_diagnostic,
     }, &krate);
 
     gcc::Config::new()
@@ -94,8 +106,8 @@ fn build_cfg(cfg: &mut ast::CrateConfig, target: &str) {
     cfg.push(mk(s("target_env"), s(env)));
 }
 
-impl TestGenerator {
-    fn typedef(&mut self, ty: &str) {
+impl<'a> TestGenerator<'a> {
+    fn test_type(&mut self, ty: &str) {
         let cty = if ty.starts_with("c_") {
             let rest = ty[2..].replace("long", " long");
             if rest.starts_with("u") {
@@ -111,37 +123,70 @@ impl TestGenerator {
                 ty => ty,
             }).to_string()
         };
+        self.test_size_align(ty, &cty);
+    }
 
+    fn test_struct(&mut self, ty: &str, _s: &ast::StructDef) {
+        let cty = if ty.starts_with("pthread") || ty == "glob_t" {
+            ty.to_string()
+        } else if ty == "ip6_mreq" {
+            "struct ipv6_mreq".to_string()
+        } else {
+            format!("struct {}", ty)
+        };
+        self.test_size_align(ty, &cty);
+    }
+
+    fn test_size_align(&mut self, rust: &str, c: &str) {
         writeln!(self.c, r#"
-            uint64_t ty_{ty}_size() {{ return sizeof({cty}); }}
-            uint64_t ty_{ty}_align() {{ return alignof({cty}); }}
-        "#, ty = ty, cty = cty);
+            uint64_t __test_size_{ty}() {{ return sizeof({cty}); }}
+            uint64_t __test_align_{ty}() {{ return alignof({cty}); }}
+        "#, ty = rust, cty = c);
         writeln!(self.rust, r#"
             #[test]
-            fn sanity_{ty}() {{
+            fn size_align_{ty}() {{
                 extern {{
-                    fn ty_{ty}_size() -> u64;
-                    fn ty_{ty}_align() -> u64;
+                    fn __test_size_{ty}() -> u64;
+                    fn __test_align_{ty}() -> u64;
                 }}
                 unsafe {{
-                    assert_eq!(mem::size_of::<libc::{ty}>() as u64,
-                               ty_{ty}_size());
-                    assert_eq!(mem::align_of::<libc::{ty}>() as u64,
-                               ty_{ty}_align());
+                    let a = mem::size_of::<{ty}>() as u64;
+                    let b = __test_size_{ty}();
+                    assert!(a == b, "bad size: rust {{}} != c {{}}", a, b);
+                    let a = mem::align_of::<{ty}>() as u64;
+                    let b = __test_align_{ty}();
+                    assert!(a == b, "bad align: rust {{}} != c {{}}", a, b);
                 }}
             }}
-        "#, ty = ty);
+        "#, ty = rust);
+    }
+
+    fn assert_no_generics(&self, _i: &ast::Item, generics: &ast::Generics) {
+         assert!(generics.lifetimes.len() == 0);
+         assert!(generics.ty_params.len() == 0);
+         assert!(generics.where_clause.predicates.len() == 0);
     }
 }
 
-impl<'v> Visitor<'v> for TestGenerator {
+impl<'a, 'v> Visitor<'v> for TestGenerator<'a> {
      fn visit_item(&mut self, i: &'v ast::Item) {
          match i.node {
              ast::ItemTy(_, ref generics) => {
-                 assert!(generics.lifetimes.len() == 0);
-                 assert!(generics.ty_params.len() == 0);
-                 assert!(generics.where_clause.predicates.len() == 0);
-                 self.typedef(&i.ident.to_string());
+                 self.assert_no_generics(i, generics);
+                 self.test_type(&i.ident.to_string());
+             }
+
+             ast::ItemStruct(ref s, ref generics) => {
+                 self.assert_no_generics(i, generics);
+                 let is_c = i.attrs.iter().any(|a| {
+                    attr::find_repr_attrs(self.sh, a).iter().any(|a| {
+                        *a == ReprAttr::ReprExtern
+                    })
+                 });
+                 if !is_c {
+                     panic!("{} is not marked #[repr(C)]", i.ident);
+                 }
+                 self.test_struct(&i.ident.to_string(), s);
              }
 
              _ => {}

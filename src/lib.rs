@@ -334,7 +334,8 @@ pub mod types {
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct in6_addr {
-                    pub s6_addr: [u16; 8]
+                    pub s6_addr: [u16; 8],
+                    __align: [u32; 0],
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct ip_mreq {
@@ -897,7 +898,8 @@ pub mod types {
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct in6_addr {
-                    pub s6_addr: [u16; 8]
+                    pub s6_addr: [u16; 8],
+                    __align: [u32; 0],
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct ip_mreq {
@@ -1258,7 +1260,8 @@ pub mod types {
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct in6_addr {
-                    pub s6_addr: [u16; 8]
+                    pub s6_addr: [u16; 8],
+                    __align: [u32; 0],
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct ip_mreq {
@@ -1544,7 +1547,8 @@ pub mod types {
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct in6_addr {
-                    pub s6_addr: [u16; 8]
+                    pub s6_addr: [u16; 8],
+                    __align: [u32; 0],
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct ip_mreq {
@@ -1775,7 +1779,8 @@ pub mod types {
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct in6_addr {
-                    pub s6_addr: [u16; 8]
+                    pub s6_addr: [u16; 8],
+                    __align: [u32; 0],
                 }
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct ip_mreq {
@@ -2233,7 +2238,8 @@ pub mod types {
 
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct in6_addr {
-                    pub s6_addr: [u16; 8]
+                    pub s6_addr: [u16; 8],
+                    __align: [u32; 0],
                 }
 
                 #[repr(C)]
