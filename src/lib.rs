@@ -222,7 +222,7 @@ pub mod types {
                 pub type pthread_t = c_ulong;
                 #[cfg(target_os = "nacl")]
                 pub type pthread_t = *mut c_void;
-                pub type rlim_t = u64;
+                pub type rlim_t = c_ulong;
 
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct glob_t {
@@ -3494,7 +3494,7 @@ pub mod consts {
             pub const RLIMIT_RTPRIO: c_int = 14;
             pub const RLIMIT_RTTIME: c_int = 15;
             pub const RLIMIT_NLIMITS: c_int = 16;
-            pub const RLIM_INFINITY: rlim_t = 0xffff_ffff_ffff_ffff;
+            pub const RLIM_INFINITY: rlim_t = !0;
             pub const RLIM_SAVED_MAX: rlim_t = RLIM_INFINITY;
             pub const RLIM_SAVED_CUR: rlim_t = RLIM_INFINITY;
 
