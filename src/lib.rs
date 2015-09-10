@@ -304,11 +304,11 @@ pub mod types {
                 #[repr(C)]
                 #[derive(Copy)] pub struct sockaddr_storage {
                     pub ss_family: sa_family_t,
-                    pub __ss_align: isize,
+                    __ss_align: isize,
                     #[cfg(target_pointer_width = "32")]
-                    pub __ss_pad2: [u8; 128 - 2 * 4],
+                    __ss_pad2: [u8; 128 - 2 * 4],
                     #[cfg(target_pointer_width = "64")]
-                    pub __ss_pad2: [u8; 128 - 2 * 8],
+                    __ss_pad2: [u8; 128 - 2 * 8],
                 }
                 impl Clone for sockaddr_storage {
                     fn clone(&self) -> sockaddr_storage { *self }
@@ -474,14 +474,14 @@ pub mod types {
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct stat {
                     pub st_dev: dev_t,
-                    pub __pad1: c_short,
+                    __pad1: c_short,
                     pub st_ino: ino_t,
                     pub st_mode: mode_t,
                     pub st_nlink: nlink_t,
                     pub st_uid: uid_t,
                     pub st_gid: gid_t,
                     pub st_rdev: dev_t,
-                    pub __pad2: c_short,
+                    __pad2: c_short,
                     pub st_size: off_t,
                     pub st_blksize: blksize_t,
                     pub st_blocks: blkcnt_t,
@@ -503,7 +503,7 @@ pub mod types {
 
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct pthread_attr_t {
-                    pub __size: [u32; 9]
+                    __size: [u32; 9]
                 }
             }
             #[cfg(all(any(target_arch = "arm", target_arch = "x86"),
@@ -520,14 +520,14 @@ pub mod types {
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct stat {
                     pub st_dev: c_ulonglong,
-                    pub __pad0: [c_uchar; 4],
-                    pub __st_ino: ino_t,
+                    __pad0: [c_uchar; 4],
+                    __st_ino: ino_t,
                     pub st_mode: c_uint,
                     pub st_nlink: c_uint,
                     pub st_uid: uid_t,
                     pub st_gid: gid_t,
                     pub st_rdev: c_ulonglong,
-                    pub __pad3: [c_uchar; 4],
+                    __pad3: [c_uchar; 4],
                     pub st_size: c_longlong,
                     pub st_blksize: blksize_t,
                     pub st_blocks: c_ulonglong,
@@ -548,7 +548,7 @@ pub mod types {
 
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct pthread_attr_t {
-                    pub __size: [u32; 9]
+                    __size: [u32; 9]
                 }
             }
             #[cfg(any(target_arch = "mips",
@@ -595,7 +595,7 @@ pub mod types {
 
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct pthread_attr_t {
-                    pub __size: [u32; 9]
+                    __size: [u32; 9]
                 }
             }
             pub mod posix08 {}
@@ -682,7 +682,7 @@ pub mod types {
                     pub st_mode: mode_t,
                     pub st_uid: uid_t,
                     pub st_gid: gid_t,
-                    pub __pad0: c_int,
+                    __pad0: c_int,
                     pub st_rdev: dev_t,
                     pub st_size: off_t,
                     pub st_blksize: blksize_t,
@@ -704,7 +704,7 @@ pub mod types {
 
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct pthread_attr_t {
-                    pub __size: [u64; 7]
+                    __size: [u64; 7]
                 }
             }
             #[cfg(target_arch = "aarch64")]
@@ -727,10 +727,10 @@ pub mod types {
                     pub st_uid: uid_t,
                     pub st_gid: gid_t,
                     pub st_rdev: dev_t,
-                    pub __pad1: dev_t,
+                    __pad1: dev_t,
                     pub st_size: off_t,
                     pub st_blksize: blksize_t,
-                    pub __pad2: c_int,
+                    __pad2: c_int,
                     pub st_blocks: blkcnt_t,
                     pub st_atime: time_t,
                     pub st_atime_nsec: c_long,
@@ -749,7 +749,7 @@ pub mod types {
 
                 #[repr(C)]
                 #[derive(Copy, Clone)] pub struct pthread_attr_t {
-                    pub __size: [u64; 8]
+                    __size: [u64; 8]
                 }
             }
             pub mod posix08 {
@@ -758,6 +758,7 @@ pub mod types {
             }
             pub mod extra {
                 use types::os::arch::c95::{c_ushort, c_int, c_uchar};
+                #[repr(C)]
                 #[derive(Copy, Clone)] pub struct sockaddr_ll {
                     pub sll_family: c_ushort,
                     pub sll_protocol: c_ushort,
@@ -868,9 +869,9 @@ pub mod types {
                 #[derive(Copy)] pub struct sockaddr_storage {
                     pub ss_len: u8,
                     pub ss_family: sa_family_t,
-                    pub __ss_pad1: [u8; 6],
-                    pub __ss_align: i64,
-                    pub __ss_pad2: [u8; 112],
+                    __ss_pad1: [u8; 6],
+                    __ss_align: i64,
+                    __ss_pad2: [u8; 112],
                 }
                 impl Clone for sockaddr_storage {
                     fn clone(&self) -> sockaddr_storage { *self }
@@ -1230,9 +1231,9 @@ pub mod types {
                 #[derive(Copy)] pub struct sockaddr_storage {
                     pub ss_len: u8,
                     pub ss_family: sa_family_t,
-                    pub __ss_pad1: [u8; 6],
-                    pub __ss_align: i64,
-                    pub __ss_pad2: [u8; 112],
+                    __ss_pad1: [u8; 6],
+                    __ss_align: i64,
+                    __ss_pad2: [u8; 112],
                 }
                 impl Clone for sockaddr_storage {
                     fn clone(&self) -> sockaddr_storage { *self }
@@ -1517,9 +1518,9 @@ pub mod types {
                 #[derive(Copy)] pub struct sockaddr_storage {
                     pub ss_len: u8,
                     pub ss_family: sa_family_t,
-                    pub __ss_pad1: [u8; 6],
-                    pub __ss_pad2: i64,
-                    pub __ss_pad3: [u8; 240],
+                    __ss_pad1: [u8; 6],
+                    __ss_pad2: i64,
+                    __ss_pad3: [u8; 240],
                 }
                 impl Clone for sockaddr_storage {
                     fn clone(&self) -> sockaddr_storage { *self }
@@ -1751,9 +1752,9 @@ pub mod types {
                 #[repr(C)]
                 #[derive(Copy)] pub struct sockaddr_storage {
                     pub ss_family: sa_family_t,
-                    pub __ss_pad1: [u8; 6],
-                    pub __ss_align: i64,
-                    pub __ss_pad2: [u8; 112],
+                    __ss_pad1: [u8; 6],
+                    __ss_align: i64,
+                    __ss_pad2: [u8; 112],
                 }
                 impl Clone for sockaddr_storage {
                     fn clone(&self) -> sockaddr_storage { *self }
@@ -2204,9 +2205,9 @@ pub mod types {
                 #[derive(Copy)] pub struct sockaddr_storage {
                     pub ss_len: u8,
                     pub ss_family: sa_family_t,
-                    pub __ss_pad1: [u8; 6],
-                    pub __ss_align: i64,
-                    pub __ss_pad2: [u8; 112],
+                    __ss_pad1: [u8; 6],
+                    __ss_align: i64,
+                    __ss_pad2: [u8; 112],
                 }
                 impl Clone for sockaddr_storage {
                     fn clone(&self) -> sockaddr_storage { *self }
@@ -2375,8 +2376,8 @@ pub mod types {
 
                 #[repr(C)]
                 #[derive(Copy)] pub struct pthread_attr_t {
-                    pub __sig: c_long,
-                    pub __opaque: [c_char; 36]
+                    __sig: c_long,
+                    __opaque: [c_char; 36]
                 }
                 impl Clone for pthread_attr_t {
                     fn clone(&self) -> pthread_attr_t { *self }
@@ -2484,8 +2485,8 @@ pub mod types {
 
                 #[repr(C)]
                 #[derive(Copy)] pub struct pthread_attr_t {
-                    pub __sig: c_long,
-                    pub __opaque: [c_char; 56]
+                    __sig: c_long,
+                    __opaque: [c_char; 56]
                 }
                 impl Clone for pthread_attr_t {
                     fn clone(&self) -> pthread_attr_t { *self }
