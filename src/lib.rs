@@ -137,7 +137,6 @@ extern {
                    size: size_t)
                    -> c_int;
     pub fn setbuf(stream: *mut FILE, buf: *mut c_char);
-    // Omitted: printf and scanf variants.
     pub fn fgetc(stream: *mut FILE) -> c_int;
     pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE)
                  -> *mut c_char;
