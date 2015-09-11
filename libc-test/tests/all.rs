@@ -7,6 +7,7 @@ use std::any::{Any, TypeId};
 use std::mem;
 
 use libc::*;
+#[cfg(not(windows))]
 use libc::types::os::common::bsd43::*;
 
 trait Pretty {

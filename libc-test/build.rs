@@ -50,10 +50,6 @@ impl<'a> TestGenerator<'a> {
     fn headers(&self) -> Vec<&'static str> {
         let mut base = Vec::new();
 
-        if self.target.contains("windows") {
-            base.push("windows.h");
-        }
-
         base.extend(&[
             "errno.h",
             "fcntl.h",
@@ -78,7 +74,10 @@ impl<'a> TestGenerator<'a> {
         }
 
         if self.target.contains("windows") {
-            base.push("winsock.h");
+            base.push("winsock2.h");
+            base.push("ws2ipdef.h");
+            base.push("windows.h");
+            base.push("sys/utime.h");
         } else {
             base.push("glob.h");
             base.push("ifaddrs.h");
@@ -103,6 +102,7 @@ impl<'a> TestGenerator<'a> {
     }
 
     fn rust2c(&self, ty: &str) -> String {
+        let windows = self.target.contains("windows");
         match ty {
             t if t.starts_with("c_") => {
                 match &ty[2..].replace("long", " long")[..] {
@@ -116,8 +116,18 @@ impl<'a> TestGenerator<'a> {
             "glob_t" => "glob_t".to_string(),
             t if t.starts_with("pthread") => t.to_string(),
 
-            t if self.structs.contains(t) => format!("struct {}", t),
+            t if self.structs.contains(t) => {
+                if windows && ty.chars().next().unwrap().is_uppercase() {
+                    t.to_string()
+                } else if windows && t == "stat" {
+                    "struct __stat64".to_string()
+                } else {
+                    format!("struct {}", t)
+                }
+            }
 
+            "time64_t" if windows => "__time64_t".to_string(),
+            "ssize_t" if windows => "SSIZE_T".to_string(),
             t => t.to_string(),
         }
     }
@@ -225,7 +235,9 @@ fn main() {
     cfg.file(out.join("all.c"));
 
     if tg.target.contains("msvc") {
-        cfg.flag("/W3").flag("/Wall").flag("/WX");
+        cfg.flag("/W3").flag("/Wall").flag("/WX")
+           .flag("/wd4820")  // weird warning about adding padding?
+           .flag("/wd4100"); // don't warn about unused parameters
     } else {
         cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
            .flag("-Wno-unused-parameter");
@@ -322,13 +334,9 @@ impl<'a> TestGenerator<'a> {
                           iter::repeat("*").take(ptrs).collect::<String>());
         let cast = if name == "SIG_IGN" {"(size_t)"} else {""};
         t!(writeln!(self.c, r#"
-            int __test_const_{name}({cty} *out) {{
-                int ret = 0;
-                #if defined({name})
-                    *out = {cast}({name});
-                    ret = 1;
-                #endif
-                return ret;
+            int __test_const_{name}({cty} *outptr) {{
+                *outptr = {cast}({name});
+                return 1;
             }}
         "#, name = name, cast = cast, cty = cty));
         t!(writeln!(self.rust, r#"
