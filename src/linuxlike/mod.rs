@@ -147,11 +147,6 @@ s! {
         pub sll_halen: c_uchar,
         pub sll_addr: [c_uchar; 8]
     }
-
-    pub struct utimbuf {
-        pub actime: time_t,
-        pub modtime: time_t,
-    }
 }
 
 pub const EXIT_FAILURE: c_int = 1;

@@ -1,3 +1,10 @@
+s! {
+    pub struct utimbuf {
+        pub actime: ::time_t,
+        pub modtime: ::time_t,
+    }
+}
+
 extern {
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -61,7 +68,7 @@ extern {
     pub fn mkdir(path: *const ::c_char, mode: ::mode_t) -> ::c_int;
     pub fn mkfifo(path: *const ::c_char, mode: ::mode_t) -> ::c_int;
 
-    #[cfg_attr(target_os = "macos", link_name = "::stat$INODE64")]
+    #[cfg_attr(target_os = "macos", link_name = "stat$INODE64")]
     pub fn stat(path: *const ::c_char, buf: *mut ::stat) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -288,17 +295,8 @@ extern {
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
     pub fn getrusage(resource: ::c_int, usage: *mut ::rusage) -> ::c_int;
 
-    pub fn sysctl(name: *mut ::c_int,
-                  namelen: ::c_int,
-                  oldp: *mut ::c_void,
-                  oldlenp: *mut ::size_t,
-                  newp: *mut ::c_void,
-                  newlen: ::size_t)
-                  -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
     pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
-                   -> ::c_int;
-    pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar)
                    -> ::c_int;
     #[cfg_attr(target_os = "macos", link_name = "realpath$DARWIN_EXTSN")]
     pub fn realpath(pathname: *const ::c_char, resolved: *mut ::c_char)
