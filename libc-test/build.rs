@@ -41,47 +41,62 @@ impl<'a> TestGenerator<'a> {
         if self.target.contains("unknown-linux") {
             ret.push("_GNU_SOURCE");
         }
+        if self.target.contains("msvc") {
+            ret.push("alignof __alignof");
+        }
         return ret
     }
 
     fn headers(&self) -> Vec<&'static str> {
-        let mut base = vec![
+        let mut base = Vec::new();
+
+        if self.target.contains("windows") {
+            base.push("windows.h");
+        }
+
+        base.extend(&[
             "errno.h",
             "fcntl.h",
-            "glob.h",
-            "ifaddrs.h",
             "limits.h",
-            "net/if.h",
-            "netdb.h",
-            "netinet/in.h",
-            "netinet/ip.h",
-            "netinet/tcp.h",
-            "pthread.h",
-            "signal.h",
-            "stdalign.h",
             "stddef.h",
             "stdint.h",
             "stdio.h",
             "stdlib.h",
-            "sys/mman.h",
-            "sys/resource.h",
-            "sys/socket.h",
             "sys/stat.h",
-            "sys/time.h",
             "sys/types.h",
-            "sys/un.h",
             "time.h",
-            "unistd.h",
-            "utime.h",
             "wchar.h",
-        ];
+        ]);
 
         if self.target.contains("apple-darwin") {
             base.push("mach/mach_time.h");
         }
+
         if self.target.contains("unknown-linux") {
             base.push("linux/if_packet.h");
             base.push("net/ethernet.h");
+        }
+
+        if self.target.contains("windows") {
+            base.push("ws2tcpip.h");
+        } else {
+            base.push("glob.h");
+            base.push("ifaddrs.h");
+            base.push("net/if.h");
+            base.push("netdb.h");
+            base.push("netinet/in.h");
+            base.push("netinet/ip.h");
+            base.push("netinet/tcp.h");
+            base.push("pthread.h");
+            base.push("signal.h");
+            base.push("stdalign.h");
+            base.push("sys/mman.h");
+            base.push("sys/resource.h");
+            base.push("sys/socket.h");
+            base.push("sys/time.h");
+            base.push("sys/un.h");
+            base.push("utime.h");
+            base.push("unistd.h");
         }
 
         return base
@@ -133,6 +148,10 @@ impl<'a> TestGenerator<'a> {
             ("linux", "unix", "gnu")
         } else if self.target.contains("apple-darwin") {
             ("macos", "unix", "")
+        } else if self.target.contains("windows-msvc") {
+            ("windows", "windows", "msvc")
+        } else if self.target.contains("windows-gnu") {
+            ("windows", "windows", "gnu")
         } else {
             panic!("unknown os/family width: {}", self.target)
         };
@@ -200,15 +219,19 @@ fn main() {
 
     // Walk the crate, emitting test cases for everything found
     visit::walk_crate(&mut tg, &krate);
-    drop(tg);
 
     // Compile our C shim to be linked into tests
-    gcc::Config::new()
-                .file(out.join("all.c"))
-                .flag("-Wall")
-                .flag("-Wextra")
-                .flag("-Werror")
-                .compile("liball.a");
+    let mut cfg = gcc::Config::new();
+    cfg.file(out.join("all.c"));
+
+    if tg.target.contains("msvc") {
+        cfg.flag("/W3").flag("/Wall").flag("/WX");
+    } else {
+        cfg.flag("-Wall").flag("-Wextra").flag("-Werror");
+    }
+
+    drop(tg);
+    cfg.compile("liball.a");
 }
 
 impl<'a> TestGenerator<'a> {
