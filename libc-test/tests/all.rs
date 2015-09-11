@@ -1,4 +1,4 @@
-#![allow(bad_style)]
+#![allow(bad_style, unused_imports)]
 
 extern crate libc;
 extern crate libc_test;
@@ -13,6 +13,7 @@ use libc::*;
 #[cfg(unix)] use libc::funcs::posix01::glob::*;
 #[cfg(unix)] use libc::funcs::posix01::signal::*;
 #[cfg(unix)] use libc::funcs::posix88::signal::*;
+#[cfg(target_os = "macos")] use libc::funcs::extra::*;
 
 trait Pretty {
     fn pretty(&self) -> String;

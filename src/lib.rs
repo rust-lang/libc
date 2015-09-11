@@ -5834,7 +5834,7 @@ pub mod funcs {
         pub mod mman {
             use types::common::c95::{c_void};
             use types::os::arch::c95::{size_t, c_int, c_char};
-            use types::os::arch::posix88::{mode_t, off_t};
+            use types::os::arch::posix88::{off_t};
 
             #[cfg(not(target_os = "nacl"))]
             extern {
@@ -5848,8 +5848,12 @@ pub mod funcs {
 
                 pub fn msync(addr: *mut c_void, len: size_t, flags: c_int)
                              -> c_int;
-                pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t)
+                #[cfg(target_os = "macos")]
+                pub fn shm_open(name: *const c_char, oflag: c_int, ...)
                                 -> c_int;
+                #[cfg(target_os = "linux")]
+                pub fn shm_open(name: *const c_char, oflag: c_int,
+                                mode: ::mode_t) -> c_int;
                 pub fn shm_unlink(name: *const c_char) -> c_int;
             }
 
@@ -6116,7 +6120,7 @@ pub mod funcs {
               target_os = "openbsd"))]
     pub mod bsd44 {
         use types::common::c95::{c_void};
-        use types::os::arch::c95::{c_char, c_uchar, c_int, c_uint, c_ulong, size_t};
+        use types::os::arch::c95::{c_char, c_int, c_uint, c_ulong, size_t};
 
         extern {
             pub fn ioctl(fd: c_int, request: c_ulong, ...) -> c_int;
@@ -6140,7 +6144,7 @@ pub mod funcs {
             pub fn getdtablesize() -> c_int;
             pub fn madvise(addr: *mut c_void, len: size_t, advice: c_int)
                            -> c_int;
-            pub fn mincore(addr: *mut c_void, len: size_t, vec: *mut c_uchar)
+            pub fn mincore(addr: *const c_void, len: size_t, vec: *mut c_char)
                            -> c_int;
             pub fn realpath(pathname: *const c_char, resolved: *mut c_char)
                             -> *mut c_char;
@@ -6190,10 +6194,10 @@ pub mod funcs {
 
     #[cfg(any(target_os = "macos", target_os = "ios"))]
     pub mod extra {
-        use types::os::arch::c95::{c_char, c_int};
+        use {c_char, c_int, uint32_t};
 
         extern {
-            pub fn _NSGetExecutablePath(buf: *mut c_char, bufsize: *mut u32)
+            pub fn _NSGetExecutablePath(buf: *mut c_char, bufsize: *mut uint32_t)
                                         -> c_int;
         }
     }

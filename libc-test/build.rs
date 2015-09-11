@@ -64,6 +64,7 @@ impl<'a> TestGenerator<'a> {
         ]);
 
         if self.target.contains("apple-darwin") {
+            base.push("mach-o/dyld.h");
             base.push("mach/mach_time.h");
         }
 
@@ -90,11 +91,13 @@ impl<'a> TestGenerator<'a> {
             base.push("pthread.h");
             base.push("signal.h");
             base.push("stdalign.h");
+            base.push("string.h");
             base.push("sys/file.h");
             base.push("sys/ioctl.h");
             base.push("sys/mman.h");
             base.push("sys/resource.h");
             base.push("sys/socket.h");
+            base.push("sys/sysctl.h");
             base.push("sys/time.h");
             base.push("sys/un.h");
             base.push("sys/wait.h");
@@ -385,6 +388,7 @@ impl<'a> TestGenerator<'a> {
             "glob" |
             "getrlimit" |
             "setrlimit" |
+            "signal" |
             "getopt" => return,
             _ => {}
         }
