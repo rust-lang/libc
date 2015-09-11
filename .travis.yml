@@ -5,9 +5,6 @@ rust:
   - nightly
 sudo: false
 install:
-  - grep -R TCP_THIN_LINEAR_TIMEOUTS /usr/include
-  - grep -R SO_REUSEPORT /usr/include
-  - exit 1
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then OS=unknown-linux-gnu; else OS=apple-darwin; fi
   - export TARGET=$ARCH-$OS
   - curl -sO https://static.rust-lang.org/dist/rust-$TRAVIS_RUST_VERSION-$TARGET.tar.gz
