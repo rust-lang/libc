@@ -12,7 +12,6 @@
        html_favicon_url = "https://doc.rust-lang.org/favicon.ico",
        html_root_url = "https://doc.rust-lang.org/nightly/",
        html_playground_url = "https://play.rust-lang.org/")]
-#![feature(linked_from)]
 
 //! Bindings for the C standard library and other platform libraries
 //!
@@ -5398,8 +5397,6 @@ pub mod funcs {
             use types::os::arch::c95::{c_long, c_uint, c_ulong};
             use types::os::arch::c95::{size_t};
 
-            #[linked_from = "kernel32"]
-            #[link(name = "kernel32")]
             extern {
                 pub fn abs(i: c_int) -> c_int;
                 pub fn labs(i: c_long) -> c_long;
