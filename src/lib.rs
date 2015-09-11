@@ -201,7 +201,7 @@ pub mod types {
         }
         pub mod posix88 {
             pub enum DIR {}
-            pub enum dirent_t {}
+            pub enum dirent {}
         }
         pub mod posix01 {}
         pub mod posix08 {}
@@ -5306,7 +5306,7 @@ pub mod funcs {
 
     pub mod c95 {
         pub mod ctype {
-            use types::os::arch::c95::{c_char, c_int};
+            use types::os::arch::c95::c_int;
 
             extern {
                 pub fn isalnum(c: c_int) -> c_int;
@@ -5320,8 +5320,8 @@ pub mod funcs {
                 pub fn isspace(c: c_int) -> c_int;
                 pub fn isupper(c: c_int) -> c_int;
                 pub fn isxdigit(c: c_int) -> c_int;
-                pub fn tolower(c: c_char) -> c_char;
-                pub fn toupper(c: c_char) -> c_char;
+                pub fn tolower(c: c_int) -> c_int;
+                pub fn toupper(c: c_int) -> c_int;
             }
         }
 
@@ -5376,7 +5376,7 @@ pub mod funcs {
                 pub fn ftell(stream: *mut FILE) -> c_long;
                 pub fn rewind(stream: *mut FILE);
                 pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
-                pub fn fsetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
+                pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> c_int;
                 pub fn feof(stream: *mut FILE) -> c_int;
                 pub fn ferror(stream: *mut FILE) -> c_int;
                 pub fn perror(s: *const c_char);
@@ -5659,58 +5659,21 @@ pub mod funcs {
             use types::os::arch::c95::{c_char, c_int};
             use types::os::arch::posix88::mode_t;
 
-            mod open_shim {
-                extern {
-                    #[cfg(any(target_os = "macos",
-                              target_os = "ios"))]
-                    pub fn open(path: *const ::c_char, oflag: ::c_int, ...)
-                                -> ::c_int;
-
-                    #[cfg(not(any(target_os = "macos",
-                                  target_os = "ios")))]
-                    pub fn open(path: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
-                                -> ::c_int;
-                }
-            }
-
-            #[cfg(any(target_os = "macos",
-                      target_os = "ios"))]
-            #[inline]
-            pub unsafe extern fn open(path: *const c_char, oflag: c_int, mode: mode_t) -> c_int {
-                use types::os::arch::c95::c_uint;
-                open_shim::open(path, oflag, mode as c_uint)
-            }
-
-            #[cfg(not(any(target_os = "macos",
-                          target_os = "ios")))]
-            #[inline]
-            pub unsafe extern fn open(path: *const c_char, oflag: c_int, mode: mode_t) -> c_int {
-                open_shim::open(path, oflag, mode)
-            }
-
             extern {
+                pub fn open(path: *const c_char, oflag: c_int, ...) -> c_int;
                 pub fn creat(path: *const c_char, mode: mode_t) -> c_int;
                 pub fn fcntl(fd: c_int, cmd: c_int, ...) -> c_int;
             }
         }
 
         pub mod dirent {
-            use types::common::posix88::{DIR, dirent_t};
+            use types::common::posix88::{DIR, dirent};
             use types::os::arch::c95::{c_char, c_int, c_long};
 
-            // NB: On OS X opendir and readdir have two versions,
-            // one for 32-bit kernelspace and one for 64.
-            // We should be linking to the 64-bit ones, called
-            // opendir$INODE64, etc. but for some reason rustc
-            // doesn't link it correctly on i686, so we're going
-            // through a C function that mysteriously does work.
-
             extern {
-                #[link_name="rust_opendir"]
                 pub fn opendir(dirname: *const c_char) -> *mut DIR;
-                #[link_name="rust_readdir_r"]
-                pub fn readdir_r(dirp: *mut DIR, entry: *mut dirent_t,
-                                  result: *mut *mut dirent_t) -> c_int;
+                pub fn readdir_r(dirp: *mut DIR, entry: *mut dirent,
+                                  result: *mut *mut dirent) -> c_int;
             }
 
             extern {
@@ -5774,7 +5737,7 @@ pub mod funcs {
                 pub fn link(src: *const c_char, dst: *const c_char) -> c_int;
                 pub fn lseek(fd: c_int, offset: off_t, whence: c_int)
                              -> off_t;
-                pub fn pathconf(path: *mut c_char, name: c_int) -> c_long;
+                pub fn pathconf(path: *const c_char, name: c_int) -> c_long;
                 pub fn pause() -> c_int;
                 pub fn pipe(fds: *mut c_int) -> c_int;
                 pub fn read(fd: c_int, buf: *mut c_void, count: size_t)
@@ -5792,8 +5755,8 @@ pub mod funcs {
                 pub fn tcgetpgrp(fd: c_int) -> pid_t;
                 pub fn ttyname(fd: c_int) -> *mut c_char;
                 pub fn unlink(c: *const c_char) -> c_int;
-                pub fn wait(status: *const c_int) -> pid_t;
-                pub fn waitpid(pid: pid_t, status: *const c_int, options: c_int)
+                pub fn wait(status: *mut c_int) -> pid_t;
+                pub fn waitpid(pid: pid_t, status: *mut c_int, options: c_int)
                                -> pid_t;
                 pub fn write(fd: c_int, buf: *const c_void, count: size_t)
                              -> ssize_t;

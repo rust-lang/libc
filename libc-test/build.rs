@@ -6,7 +6,6 @@ use std::env;
 use std::fs::File;
 use std::io::BufWriter;
 use std::io::prelude::*;
-use std::iter;
 use std::path::{Path, PathBuf};
 
 use syntax::ast;
@@ -79,6 +78,8 @@ impl<'a> TestGenerator<'a> {
             base.push("windows.h");
             base.push("sys/utime.h");
         } else {
+            base.push("ctype.h");
+            base.push("dirent.h");
             base.push("glob.h");
             base.push("ifaddrs.h");
             base.push("net/if.h");
@@ -89,13 +90,16 @@ impl<'a> TestGenerator<'a> {
             base.push("pthread.h");
             base.push("signal.h");
             base.push("stdalign.h");
+            base.push("sys/file.h");
+            base.push("sys/ioctl.h");
             base.push("sys/mman.h");
             base.push("sys/resource.h");
             base.push("sys/socket.h");
             base.push("sys/time.h");
             base.push("sys/un.h");
-            base.push("utime.h");
+            base.push("sys/wait.h");
             base.push("unistd.h");
+            base.push("utime.h");
         }
 
         return base
@@ -113,7 +117,10 @@ impl<'a> TestGenerator<'a> {
                 }
             }
             "ip6_mreq" => "struct ipv6_mreq".to_string(),
-            "glob_t" => "glob_t".to_string(),
+            "glob_t" |
+            "FILE" |
+            "DIR" |
+            "fpos_t" => ty.to_string(),
             t if t.starts_with("pthread") => t.to_string(),
 
             t if self.structs.contains(t) => {
@@ -253,12 +260,12 @@ impl<'a> TestGenerator<'a> {
             "sighandler_t" => return,
             _ => {}
         }
-        let c = self.rust2c(ty);
+        let c = self.rust_ty_to_c_ty(ty);
         self.test_size_align(ty, &c);
     }
 
     fn test_struct(&mut self, ty: &str, s: &ast::StructDef) {
-        let cty = self.rust2c(ty);
+        let cty = self.rust_ty_to_c_ty(ty);
         self.test_size_align(ty, &cty);
 
         t!(writeln!(self.rust, r#"
@@ -326,12 +333,23 @@ impl<'a> TestGenerator<'a> {
         "#, ty = rust));
     }
 
+    fn rust_ty_to_c_ty(&self, mut rust_ty: &str) -> String {
+        let mut cty = self.rust2c(&rust_ty.replace("*mut ", "")
+                                          .replace("*const ", ""));
+        while rust_ty.starts_with("*") {
+            if rust_ty.starts_with("*const") {
+                cty = format!("const {}*", cty);
+                rust_ty = &rust_ty[7..];
+            } else {
+                cty = format!("{}*", cty);
+                rust_ty = &rust_ty[5..];
+            }
+        }
+        return cty
+    }
+
     fn test_const(&mut self, name: &str, rust_ty: &str) {
-        let cty = self.rust2c(&rust_ty.replace("*mut ", "")
-                                      .replace("*const ", ""));
-        let ptrs = rust_ty.matches("*").count();
-        let cty = format!("{}{}", cty,
-                          iter::repeat("*").take(ptrs).collect::<String>());
+        let cty = self.rust_ty_to_c_ty(rust_ty);
         let cast = if name == "SIG_IGN" {"(size_t)"} else {""};
         t!(writeln!(self.c, r#"
             int __test_const_{name}({cty} *outptr) {{
@@ -357,10 +375,49 @@ impl<'a> TestGenerator<'a> {
         "#, ty = rust_ty, name = name));
     }
 
-    fn assert_no_generics(&self, _i: &ast::Item, generics: &ast::Generics) {
-         assert!(generics.lifetimes.len() == 0);
-         assert!(generics.ty_params.len() == 0);
-         assert!(generics.where_clause.predicates.len() == 0);
+    fn test_extern_fn(&mut self, name: &str, args: &[String], ret: &str,
+                      variadic: bool) {
+        match name {
+            // manually verified
+            "execv" |
+            "execve" |
+            "execvp" |
+            "glob" |
+            "getrlimit" |
+            "setrlimit" |
+            "getopt" => return,
+            _ => {}
+        }
+        let args = if args.len() == 0 && !variadic {
+            "void".to_string()
+        } else {
+            args.iter().map(|a| self.rust_ty_to_c_ty(a)).collect::<Vec<_>>()
+                .connect(", ") + if variadic {", ..."} else {""}
+        };
+        let cret = self.rust_ty_to_c_ty(ret);
+        t!(writeln!(self.c, r#"
+            {ret} (*__test_fn_{name}(void))({args}) {{
+                return {name};
+            }}
+        "#, name = name, args = args, ret = cret));
+        t!(writeln!(self.rust, r#"
+            #[test]
+            fn fn_{name}() {{
+                extern {{
+                    fn __test_fn_{name}() -> size_t;
+                }}
+                unsafe {{
+                    same({name} as usize,
+                         __test_fn_{name}() as usize, "function pointer");
+                }}
+            }}
+        "#, name = name));
+    }
+
+    fn assert_no_generics(&self, _i: ast::Ident, generics: &ast::Generics) {
+        assert!(generics.lifetimes.len() == 0);
+        assert!(generics.ty_params.len() == 0);
+        assert!(generics.where_clause.predicates.len() == 0);
     }
 
     fn ty2name(&self, ty: &ast::Ty) -> String {
@@ -374,52 +431,90 @@ impl<'a> TestGenerator<'a> {
                     ast::MutMutable => "mut",
                 }, self.ty2name(&t.ty))
             }
+            ast::TyBareFn(ref t) => {
+                assert!(t.lifetimes.len() == 0);
+                let (ret, mut args, variadic) = self.decl2rust(&t.decl);
+                assert!(!variadic);
+                if args.len() == 0 {
+                    args.push("void".to_string());
+                }
+                format!("{}(*)({})", ret, args.connect(", "))
+            }
             _ => panic!("unknown ty {:?}", ty),
         }
+    }
+
+    fn decl2rust(&self, decl: &ast::FnDecl) -> (String, Vec<String>, bool) {
+        let args = decl.inputs.iter().map(|arg| {
+            self.ty2name(&arg.ty)
+        }).collect::<Vec<_>>();
+        let ret = match decl.output {
+            ast::NoReturn(..) |
+            ast::DefaultReturn(..) => "void".to_string(),
+            ast::Return(ref t) => self.ty2name(t),
+        };
+        (ret, args, decl.variadic)
     }
 }
 
 impl<'a, 'v> Visitor<'v> for TestGenerator<'a> {
-     fn visit_item(&mut self, i: &'v ast::Item) {
-         match i.node {
-             ast::ItemTy(_, ref generics) => {
-                 self.assert_no_generics(i, generics);
-                 self.test_type(&i.ident.to_string());
-             }
+    fn visit_item(&mut self, i: &'v ast::Item) {
+        match i.node {
+            ast::ItemTy(_, ref generics) => {
+                self.assert_no_generics(i.ident, generics);
+                self.test_type(&i.ident.to_string());
+            }
 
-             ast::ItemStruct(ref s, ref generics) => {
-                 self.assert_no_generics(i, generics);
-                 let is_c = i.attrs.iter().any(|a| {
+            ast::ItemStruct(ref s, ref generics) => {
+                self.assert_no_generics(i.ident, generics);
+                let is_c = i.attrs.iter().any(|a| {
                     attr::find_repr_attrs(self.sh, a).iter().any(|a| {
                         *a == ReprAttr::ReprExtern
                     })
-                 });
-                 if !is_c {
-                     panic!("{} is not marked #[repr(C)]", i.ident);
-                 }
-                 self.test_struct(&i.ident.to_string(), s);
-             }
+                });
+                if !is_c {
+                    panic!("{} is not marked #[repr(C)]", i.ident);
+                }
+                self.test_struct(&i.ident.to_string(), s);
+            }
 
-             ast::ItemConst(ref ty, _) => {
-                 let ty = self.ty2name(ty);
-                 self.test_const(&i.ident.to_string(), &ty);
-             }
+            ast::ItemConst(ref ty, _) => {
+                let ty = self.ty2name(ty);
+                self.test_const(&i.ident.to_string(), &ty);
+            }
 
-             _ => {}
-         }
-         visit::walk_item(self, i)
-     }
+            _ => {}
+        }
+        visit::walk_item(self, i)
+    }
+
+    fn visit_foreign_item(&mut self, i: &'v ast::ForeignItem) {
+        match i.node {
+            ast::ForeignItemFn(ref decl, ref generics) => {
+                self.assert_no_generics(i.ident, generics);
+                let (ret, args, variadic) = self.decl2rust(decl);
+                self.test_extern_fn(&i.ident.to_string(), &args, &ret,
+                                    variadic);
+            }
+            ast::ForeignItemStatic(_, _) => {
+            }
+        }
+        visit::walk_foreign_item(self, i)
+    }
 }
 
 impl<'v> Visitor<'v> for StructFinder {
-     fn visit_item(&mut self, i: &'v ast::Item) {
-         match i.node {
-             ast::ItemStruct(..) => {
-                 self.structs.insert(i.ident.to_string());
-             }
+    fn visit_item(&mut self, i: &'v ast::Item) {
+        match i.node {
+            ast::ItemStruct(..) => {
+                self.structs.insert(i.ident.to_string());
+            }
+            ast::ItemEnum(..) => {
+                self.structs.insert(i.ident.to_string());
+            }
 
-             _ => {}
-         }
-         visit::walk_item(self, i)
-     }
+            _ => {}
+        }
+        visit::walk_item(self, i)
+    }
 }
