@@ -8,7 +8,7 @@ build = "build.rs"
 libc = { path = ".." }
 
 [build-dependencies]
-syntex_syntax = "*"
+syntex_syntax = "0.13.0"
 gcc = "0.3"
 
 [lib]
