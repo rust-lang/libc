@@ -5621,14 +5621,14 @@ pub mod funcs {
                            link_name = "fchmod$UNIX2003")]
                 pub fn fchmod(fd: c_int, mode: mode_t) -> c_int;
 
-                #[cfg_attr(target_os = "macos", link_name = "fstat64")]
+                #[cfg_attr(target_os = "macos", link_name = "fstat$INODE64")]
                 pub fn fstat(fildes: c_int, buf: *mut stat) -> c_int;
 
                 pub fn mkdir(path: *const c_char, mode: mode_t) -> c_int;
                 #[cfg(not(target_os = "nacl"))]
                 pub fn mkfifo(path: *const c_char, mode: mode_t) -> c_int;
 
-                #[cfg_attr(target_os = "macos", link_name = "stat64")]
+                #[cfg_attr(target_os = "macos", link_name = "stat$INODE64")]
                 pub fn stat(path: *const c_char, buf: *mut stat) -> c_int;
             }
         }
@@ -5945,19 +5945,7 @@ pub mod funcs {
             use types::os::arch::posix01::stat;
 
             extern {
-                #[cfg(any(target_os = "linux",
-                          target_os = "freebsd",
-                          target_os = "dragonfly",
-                          target_os = "bitrig",
-                          target_os = "netbsd",
-                          target_os = "openbsd",
-                          target_os = "android",
-                          target_os = "ios",
-                          target_os = "nacl"))]
-                pub fn lstat(path: *const c_char, buf: *mut stat) -> c_int;
-
-                #[cfg(target_os = "macos")]
-                #[link_name = "lstat64"]
+                #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
                 pub fn lstat(path: *const c_char, buf: *mut stat) -> c_int;
             }
         }
