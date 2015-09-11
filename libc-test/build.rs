@@ -227,7 +227,8 @@ fn main() {
     if tg.target.contains("msvc") {
         cfg.flag("/W3").flag("/Wall").flag("/WX");
     } else {
-        cfg.flag("-Wall").flag("-Wextra").flag("-Werror");
+        cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
+           .arg("-Wno-unused-parameter");
     }
 
     drop(tg);
