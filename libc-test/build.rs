@@ -141,8 +141,6 @@ impl<'a> TestGenerator<'a> {
                     s => s.to_string(),
                 }
             }
-            // Perhaps this should be renamed in libc...
-            "ip6_mreq" => "struct ipv6_mreq".to_string(),
 
             // Just pass all these through, no need for a "struct" prefix
             "glob_t" |

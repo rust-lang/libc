@@ -347,7 +347,7 @@ pub mod types {
                     pub imr_interface: in_addr,
                 }
                 #[repr(C)]
-                #[derive(Copy, Clone)] pub struct ip6_mreq {
+                #[derive(Copy, Clone)] pub struct ipv6_mreq {
                     pub ipv6mr_multiaddr: in6_addr,
                     pub ipv6mr_interface: c_uint,
                 }
@@ -912,7 +912,7 @@ pub mod types {
                     pub imr_interface: in_addr,
                 }
                 #[repr(C)]
-                #[derive(Copy, Clone)] pub struct ip6_mreq {
+                #[derive(Copy, Clone)] pub struct ipv6_mreq {
                     pub ipv6mr_multiaddr: in6_addr,
                     pub ipv6mr_interface: c_uint,
                 }
@@ -1274,7 +1274,7 @@ pub mod types {
                     pub imr_interface: in_addr,
                 }
                 #[repr(C)]
-                #[derive(Copy, Clone)] pub struct ip6_mreq {
+                #[derive(Copy, Clone)] pub struct ipv6_mreq {
                     pub ipv6mr_multiaddr: in6_addr,
                     pub ipv6mr_interface: c_uint,
                 }
@@ -1561,7 +1561,7 @@ pub mod types {
                     pub imr_interface: in_addr,
                 }
                 #[repr(C)]
-                #[derive(Copy, Clone)] pub struct ip6_mreq {
+                #[derive(Copy, Clone)] pub struct ipv6_mreq {
                     pub ipv6mr_multiaddr: in6_addr,
                     pub ipv6mr_interface: c_uint,
                 }
@@ -1788,7 +1788,7 @@ pub mod types {
                     pub imr_interface: in_addr,
                 }
                 #[repr(C)]
-                #[derive(Copy, Clone)] pub struct ip6_mreq {
+                #[derive(Copy, Clone)] pub struct ipv6_mreq {
                     pub ipv6mr_multiaddr: in6_addr,
                     pub ipv6mr_interface: c_uint,
                 }
@@ -2233,7 +2233,7 @@ pub mod types {
                 }
 
                 #[repr(C)]
-                #[derive(Copy, Clone)] pub struct ip6_mreq {
+                #[derive(Copy, Clone)] pub struct ipv6_mreq {
                     pub ipv6mr_multiaddr: in6_addr,
                     pub ipv6mr_interface: c_uint,
                 }
