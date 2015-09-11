@@ -86,7 +86,7 @@ cfg_if! {
                                    sizep: *mut size_t)
                                    -> c_int;
         }
-    } else {
+    } else if #[cfg(unix)] {
         extern {
             pub fn sysctl(name: *mut c_int,
                           namelen: c_int,
@@ -98,6 +98,8 @@ cfg_if! {
             pub fn mincore(addr: *mut c_void, len: size_t, vec: *mut c_uchar)
                            -> c_int;
         }
+    } else {
+        // ...
     }
 }
 
@@ -123,23 +125,19 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "freopen$UNIX2003")]
     pub fn freopen(filename: *const c_char, mode: *const c_char,
-                   file: *mut FILE)
-                   -> *mut FILE;
+                   file: *mut FILE) -> *mut FILE;
     pub fn fflush(file: *mut FILE) -> c_int;
     pub fn fclose(file: *mut FILE) -> c_int;
     pub fn remove(filename: *const c_char) -> c_int;
-    pub fn rename(oldname: *const c_char,
-                  newname: *const c_char) -> c_int;
+    pub fn rename(oldname: *const c_char, newname: *const c_char) -> c_int;
     pub fn tmpfile() -> *mut FILE;
     pub fn setvbuf(stream: *mut FILE,
                    buffer: *mut c_char,
                    mode: c_int,
-                   size: size_t)
-                   -> c_int;
+                   size: size_t) -> c_int;
     pub fn setbuf(stream: *mut FILE, buf: *mut c_char);
     pub fn fgetc(stream: *mut FILE) -> c_int;
-    pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE)
-                 -> *mut c_char;
+    pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE) -> *mut c_char;
     pub fn fputc(c: c_int, stream: *mut FILE) -> c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fputs$UNIX2003")]
@@ -158,8 +156,7 @@ extern {
                   nobj: size_t,
                   stream: *mut FILE)
                   -> size_t;
-    pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int)
-                 -> c_int;
+    pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
     pub fn ftell(stream: *mut FILE) -> c_long;
     pub fn rewind(stream: *mut FILE);
     pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
@@ -173,8 +170,7 @@ extern {
     pub fn atoi(s: *const c_char) -> c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "strtod$UNIX2003")]
-    pub fn strtod(s: *const c_char,
-                  endp: *mut *mut c_char) -> c_double;
+    pub fn strtod(s: *const c_char, endp: *mut *mut c_char) -> c_double;
     pub fn strtol(s: *const c_char,
                   endp: *mut *mut c_char, base: c_int) -> c_long;
     pub fn strtoul(s: *const c_char, endp: *mut *mut c_char,
