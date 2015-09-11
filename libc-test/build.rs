@@ -78,7 +78,7 @@ impl<'a> TestGenerator<'a> {
         }
 
         if self.target.contains("windows") {
-            base.push("ws2tcpip.h");
+            base.push("winsock.h");
         } else {
             base.push("glob.h");
             base.push("ifaddrs.h");
@@ -228,7 +228,7 @@ fn main() {
         cfg.flag("/W3").flag("/Wall").flag("/WX");
     } else {
         cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
-           .arg("-Wno-unused-parameter");
+           .flag("-Wno-unused-parameter");
     }
 
     drop(tg);
