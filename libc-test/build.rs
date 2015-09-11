@@ -62,7 +62,7 @@ impl<'a> TestGenerator<'a> {
     fn headers(&self) -> Vec<&'static str> {
         let mut base = Vec::new();
 
-        base.extend(&[
+        base.extend([
             "errno.h",
             "fcntl.h",
             "limits.h",
@@ -74,7 +74,7 @@ impl<'a> TestGenerator<'a> {
             "sys/types.h",
             "time.h",
             "wchar.h",
-        ]);
+        ].iter().cloned());
 
         if self.target.contains("apple-darwin") {
             base.push("mach-o/dyld.h");

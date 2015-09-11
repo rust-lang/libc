@@ -33,6 +33,7 @@ fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
     }
 }
 
+#[allow(deprecated)]
 fn align<T: Any>() -> u64 {
     // TODO: apparently these three types have less alignment in Rust on x86
     //       than they do in C this difference should.. probably be reconciled.
@@ -45,7 +46,7 @@ fn align<T: Any>() -> u64 {
             return 8
         }
     }
-    mem::align_of::<T>() as u64
+    mem::min_align_of::<T>() as u64
 }
 
 macro_rules! offset_of {
