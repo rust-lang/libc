@@ -298,16 +298,28 @@ impl<'a> TestGenerator<'a> {
                           iter::repeat("*").take(ptrs).collect::<String>());
         let cast = if name == "SIG_IGN" {"(size_t)"} else {""};
         t!(writeln!(self.c, r#"
-            {cty} __test_const_{name}() {{ return {cast}({name}); }}
+            int __test_const_{name}({cty} *out) {{
+                int ret = 0;
+                #if defined({name})
+                    *out = {cast}({name});
+                    ret = 1;
+                #endif
+                return ret;
+            }}
         "#, name = name, cast = cast, cty = cty));
         t!(writeln!(self.rust, r#"
             #[test]
             fn const_{name}() {{
                 extern {{
-                    fn __test_const_{name}() -> {ty};
+                    fn __test_const_{name}(out: *mut {ty}) -> c_int;
                 }}
                 unsafe {{
-                    same({name}, __test_const_{name}(), "value");
+                    let mut o = mem::zeroed();
+                    if __test_const_{name}(&mut o) == 0 {{
+                        panic!("not defined");
+                    }} else {{
+                        same({name}, o, "value");
+                    }}
                 }}
             }}
         "#, ty = rust_ty, name = name));
