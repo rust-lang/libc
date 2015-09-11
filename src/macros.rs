@@ -1,12 +1,11 @@
-//! A macro for defining #[cfg] if-else statements.
-//!
-//! This is similar to the `if/elif` C preprocessor macro by allowing definition
-//! of a cascade of `#[cfg]` cases, emitting the implementation which matches
-//! first.
-//!
-//! This allows you to conveniently provide a long list #[cfg]'d blocks of code
-//! without having to rewrite each clause multiple times.
-
+/// A macro for defining #[cfg] if-else statements.
+///
+/// This is similar to the `if/elif` C preprocessor macro by allowing definition
+/// of a cascade of `#[cfg]` cases, emitting the implementation which matches
+/// first.
+///
+/// This allows you to conveniently provide a long list #[cfg]'d blocks of code
+/// without having to rewrite each clause multiple times.
 macro_rules! cfg_if {
     ($(
         if #[cfg($($meta:meta),*)] { $($it:item)* }
@@ -33,6 +32,23 @@ macro_rules! __cfg_if_apply {
     ($m:meta, $($it:item)*) => {
         $(#[$m] $it)*
     }
+}
+
+macro_rules! s {
+    ($(pub struct $i:ident { $($field:tt)* })*) => ($(
+        __item! {
+            #[repr(C)]
+            pub struct $i { $($field)* }
+        }
+        impl Copy for $i {}
+        impl Clone for $i {
+            fn clone(&self) -> $i { *self }
+        }
+    )*)
+}
+
+macro_rules! __item {
+    ($i:item) => ($i)
 }
 
 #[cfg(test)]

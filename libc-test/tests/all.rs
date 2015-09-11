@@ -7,13 +7,6 @@ use std::any::{Any, TypeId};
 use std::mem;
 
 use libc::*;
-#[cfg(unix)] use libc::types::os::common::bsd43::*;
-#[cfg(unix)] use libc::funcs::bsd44::*;
-#[cfg(unix)] use libc::funcs::posix01::mman::*;
-#[cfg(unix)] use libc::funcs::posix01::glob::*;
-#[cfg(unix)] use libc::funcs::posix01::signal::*;
-#[cfg(unix)] use libc::funcs::posix88::signal::*;
-#[cfg(target_os = "macos")] use libc::funcs::extra::*;
 
 trait Pretty {
     fn pretty(&self) -> String;
