@@ -12,6 +12,7 @@
        html_favicon_url = "https://doc.rust-lang.org/favicon.ico",
        html_root_url = "https://doc.rust-lang.org/nightly/",
        html_playground_url = "https://play.rust-lang.org/")]
+#![feature(linked_from)]
 
 //! Bindings for the C standard library and other platform libraries
 //!
@@ -5397,6 +5398,8 @@ pub mod funcs {
             use types::os::arch::c95::{c_long, c_uint, c_ulong};
             use types::os::arch::c95::{size_t};
 
+            #[linked_from = "kernel32"]
+            #[link(name = "kernel32")]
             extern {
                 pub fn abs(i: c_int) -> c_int;
                 pub fn labs(i: c_long) -> c_long;
@@ -5527,11 +5530,9 @@ pub mod funcs {
             use types::os::arch::c95::{c_int, c_char, wchar_t};
             extern {
                 #[link_name = "_open"]
-                pub fn open(path: *const c_char, oflag: c_int, mode: c_int)
-                            -> c_int;
+                pub fn open(path: *const c_char, oflag: c_int, ...) -> c_int;
                 #[link_name = "_wopen"]
-                pub fn wopen(path: *const wchar_t, oflag: c_int, mode: c_int)
-                            -> c_int;
+                pub fn wopen(path: *const wchar_t, oflag: c_int, ...) -> c_int;
                 #[link_name = "_creat"]
                 pub fn creat(path: *const c_char, mode: c_int) -> c_int;
             }
@@ -5543,8 +5544,7 @@ pub mod funcs {
 
         pub mod unistd {
             use types::common::c95::c_void;
-            use types::os::arch::c95::{c_int, c_uint, c_char,
-                                             c_long, size_t};
+            use types::os::arch::c95::{c_int, c_uint, c_char, c_long};
             use types::os::arch::c99::intptr_t;
 
             extern {
@@ -5572,7 +5572,7 @@ pub mod funcs {
                 pub fn execvpe(c: *const c_char, argv: *const *const c_char,
                                envp: *const *const c_char) -> c_int;
                 #[link_name = "_getcwd"]
-                pub fn getcwd(buf: *mut c_char, size: size_t) -> *mut c_char;
+                pub fn getcwd(buf: *mut c_char, size: c_int) -> *mut c_char;
                 #[link_name = "_getpid"]
                 pub fn getpid() -> c_int;
                 #[link_name = "_isatty"]
@@ -6480,7 +6480,7 @@ pub mod funcs {
         }
 
         pub mod msvcrt {
-            use types::os::arch::c95::{c_int, c_long};
+            use types::os::arch::c95::c_int;
             use types::os::arch::c99::intptr_t;
 
             extern {
@@ -6488,7 +6488,7 @@ pub mod funcs {
                 pub fn commit(fd: c_int) -> c_int;
 
                 #[link_name = "_get_osfhandle"]
-                pub fn get_osfhandle(fd: c_int) -> c_long;
+                pub fn get_osfhandle(fd: c_int) -> intptr_t;
 
                 #[link_name = "_open_osfhandle"]
                 pub fn open_osfhandle(osfhandle: intptr_t,

@@ -74,10 +74,14 @@ impl<'a> TestGenerator<'a> {
         }
 
         if self.target.contains("windows") {
-            base.push("winsock2.h");
-            base.push("ws2ipdef.h");
-            base.push("windows.h");
+            base.push("winsock2.h"); // must be before windows.h
+
+            base.push("direct.h");
+            base.push("io.h");
             base.push("sys/utime.h");
+            base.push("windows.h");
+            base.push("process.h");
+            base.push("ws2ipdef.h");
         } else {
             base.push("ctype.h");
             base.push("dirent.h");
@@ -131,6 +135,8 @@ impl<'a> TestGenerator<'a> {
                     t.to_string()
                 } else if windows && t == "stat" {
                     "struct __stat64".to_string()
+                } else if windows && t == "utimbuf" {
+                    "struct __utimbuf64".to_string()
                 } else {
                     format!("struct {}", t)
                 }
@@ -247,7 +253,8 @@ fn main() {
     if tg.target.contains("msvc") {
         cfg.flag("/W3").flag("/Wall").flag("/WX")
            .flag("/wd4820")  // weird warning about adding padding?
-           .flag("/wd4100"); // don't warn about unused parameters
+           .flag("/wd4100")  // don't warn about unused parameters
+           .flag("/wd4996"); // don't warn about deprecated functions
     } else {
         cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
            .flag("-Wno-unused-parameter");
@@ -378,13 +385,15 @@ impl<'a> TestGenerator<'a> {
         "#, ty = rust_ty, name = name));
     }
 
-    fn test_extern_fn(&mut self, name: &str, args: &[String], ret: &str,
+    fn test_extern_fn(&mut self, name: &str, cname: &str,
+                      args: &[String], ret: &str,
                       variadic: bool) {
         match name {
             // manually verified
             "execv" |
             "execve" |
             "execvp" |
+            "execvpe" |
             "glob" |
             "getrlimit" |
             "setrlimit" |
@@ -401,11 +410,12 @@ impl<'a> TestGenerator<'a> {
         let cret = self.rust_ty_to_c_ty(ret);
         t!(writeln!(self.c, r#"
             {ret} (*__test_fn_{name}(void))({args}) {{
-                return {name};
+                return {cname};
             }}
-        "#, name = name, args = args, ret = cret));
+        "#, name = name, cname = cname, args = args, ret = cret));
         t!(writeln!(self.rust, r#"
             #[test]
+            #[cfg_attr(windows, ignore)] // FIXME -- dllimport weirdness?
             fn fn_{name}() {{
                 extern {{
                     fn __test_fn_{name}() -> size_t;
@@ -497,7 +507,14 @@ impl<'a, 'v> Visitor<'v> for TestGenerator<'a> {
             ast::ForeignItemFn(ref decl, ref generics) => {
                 self.assert_no_generics(i.ident, generics);
                 let (ret, args, variadic) = self.decl2rust(decl);
-                self.test_extern_fn(&i.ident.to_string(), &args, &ret,
+                let cname = match attr::first_attr_value_str_by_name(&i.attrs,
+                                                                     "link_name") {
+                    Some(ref i) if !i.to_string().contains("$") => {
+                        i.to_string()
+                    }
+                    _ => i.ident.to_string(),
+                };
+                self.test_extern_fn(&i.ident.to_string(), &cname, &args, &ret,
                                     variadic);
             }
             ast::ForeignItemStatic(_, _) => {
