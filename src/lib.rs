@@ -5730,6 +5730,9 @@ pub mod funcs {
             use types::os::arch::posix88::{gid_t, off_t, pid_t};
             use types::os::arch::posix88::{ssize_t, uid_t};
 
+            #[cfg(target_os = "linux")]
+            pub const _PC_NAME_MAX: c_int = 3;
+            #[cfg(target_os = "macos")]
             pub const _PC_NAME_MAX: c_int = 4;
 
             #[cfg(not(target_os = "nacl"))]
