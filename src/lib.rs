@@ -67,6 +67,9 @@
 
 #![allow(bad_style, raw_pointer_derive)]
 
+#[macro_use]
+mod macros;
+
 // Explicit export lists for the intersection (provided here) mean that
 // you can write more-platform-agnostic code if you stick to just these
 // symbols.
@@ -1829,10 +1832,13 @@ pub mod types {
 
                 pub type clock_t = i32;
 
-                #[cfg(target_arch = "x86")]
-                pub type time_t = i32;
-                #[cfg(target_arch = "x86_64")]
-                pub type time_t = i64;
+                cfg_if! {
+                    if #[cfg(all(target_arch = "x86", target_env = "gnu"))] {
+                        pub type time_t = i32;
+                    } else {
+                        pub type time_t = i64;
+                    }
+                }
 
                 pub type wchar_t = u16;
             }
@@ -2508,8 +2514,6 @@ pub mod consts {
             pub const BUFSIZ : c_uint = 512;
             pub const FOPEN_MAX : c_uint = 20;
             pub const FILENAME_MAX : c_uint = 260;
-            pub const L_tmpnam : c_uint = 260;
-            pub const TMP_MAX : c_uint = 0x7fff_ffff;
 
             pub const WSAEINTR: c_int = 10004;
             pub const WSAEBADF: c_int = 10009;
@@ -2563,6 +2567,16 @@ pub mod consts {
             pub const WSAEINVALIDPROCTABLE: c_int = 10104;
             pub const WSAEINVALIDPROVIDER: c_int = 10105;
             pub const WSAEPROVIDERFAILEDINIT: c_int = 10106;
+
+            cfg_if! {
+                if #[cfg(all(target_env = "gnu"))] {
+                    pub const L_tmpnam : c_uint = 14;
+                    pub const TMP_MAX : c_uint = 0x7fff;
+                } else {
+                    pub const L_tmpnam : c_uint = 260;
+                    pub const TMP_MAX : c_uint = 0x7fff_ffff;
+                }
+            }
         }
         pub mod c99 {
         }
@@ -6141,9 +6155,8 @@ pub mod funcs {
 
     #[cfg(windows)]
     pub mod bsd43 {
-        use types::common::c95::{c_void};
         use types::os::common::bsd44::{sockaddr, SOCKET};
-        use types::os::arch::c95::c_int;
+        use types::os::arch::c95::{c_int, c_char};
 
         extern "system" {
             pub fn socket(domain: c_int, ty: c_int, protocol: c_int) -> SOCKET;
@@ -6159,17 +6172,17 @@ pub mod funcs {
             pub fn getsockname(socket: SOCKET, address: *mut sockaddr,
                                address_len: *mut c_int) -> c_int;
             pub fn setsockopt(socket: SOCKET, level: c_int, name: c_int,
-                              value: *const c_void,
+                              value: *const c_char,
                               option_len: c_int) -> c_int;
             pub fn closesocket(socket: SOCKET) -> c_int;
-            pub fn recv(socket: SOCKET, buf: *mut c_void, len: c_int,
+            pub fn recv(socket: SOCKET, buf: *mut c_char, len: c_int,
                         flags: c_int) -> c_int;
-            pub fn send(socket: SOCKET, buf: *const c_void, len: c_int,
+            pub fn send(socket: SOCKET, buf: *const c_char, len: c_int,
                         flags: c_int) -> c_int;
-            pub fn recvfrom(socket: SOCKET, buf: *mut c_void, len: c_int,
+            pub fn recvfrom(socket: SOCKET, buf: *mut c_char, len: c_int,
                             flags: c_int, addr: *mut sockaddr,
                             addrlen: *mut c_int) -> c_int;
-            pub fn sendto(socket: SOCKET, buf: *const c_void, len: c_int,
+            pub fn sendto(socket: SOCKET, buf: *const c_char, len: c_int,
                           flags: c_int, addr: *const sockaddr,
                           addrlen: c_int) -> c_int;
             pub fn shutdown(socket: SOCKET, how: c_int) -> c_int;
@@ -6414,7 +6427,7 @@ pub mod funcs {
                                 lpNumberOfBytesRead: LPDWORD,
                                 lpOverlapped: LPOVERLAPPED) -> BOOL;
                 pub fn WriteFile(hFile: HANDLE,
-                                 lpBuffer: LPVOID,
+                                 lpBuffer: LPCVOID,
                                  nNumberOfBytesToWrite: DWORD,
                                  lpNumberOfBytesWritten: LPDWORD,
                                  lpOverlapped: LPOVERLAPPED) -> BOOL;

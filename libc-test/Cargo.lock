@@ -2,7 +2,7 @@
 name = "libc-test"
 version = "0.1.0"
 dependencies = [
- "gcc 0.3.13 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.3.13 (git+https://github.com/alexcrichton/gcc-rs)",
  "libc 0.1.10",
  "syntex_syntax 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -24,7 +24,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "gcc"
 version = "0.3.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+source = "git+https://github.com/alexcrichton/gcc-rs#e429c775dcbb03eb049bcb7f7215cf8d9ee3b837"
 dependencies = [
  "advapi32-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",

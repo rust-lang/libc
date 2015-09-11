@@ -9,7 +9,7 @@ libc = { path = ".." }
 
 [build-dependencies]
 syntex_syntax = "0.13.0"
-gcc = "0.3"
+gcc = { git = "https://github.com/alexcrichton/gcc-rs" }
 
 [lib]
 name = "libc_test"

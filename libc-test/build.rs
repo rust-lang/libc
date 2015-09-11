@@ -8,10 +8,13 @@ use std::io::BufWriter;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 
+use syntax::abi::Abi;
 use syntax::ast;
-use syntax::diagnostic::SpanHandler;
-use syntax::parse::token::InternedString;
 use syntax::attr::{self, ReprAttr};
+use syntax::diagnostic::SpanHandler;
+use syntax::ext::base::SyntaxExtension;
+use syntax::ext::expand;
+use syntax::parse::token::{intern, InternedString};
 use syntax::parse::{self, ParseSess};
 use syntax::visit::{self, Visitor};
 
@@ -28,6 +31,7 @@ struct TestGenerator<'a> {
     c: Box<Write>,
     sh: &'a SpanHandler,
     structs: HashSet<String>,
+    abi: Abi,
 }
 
 struct StructFinder {
@@ -37,11 +41,20 @@ struct StructFinder {
 impl<'a> TestGenerator<'a> {
     fn defines(&self) -> Vec<&'static str> {
         let mut ret = Vec::new();
+
+        // Pull in extra goodies on linux
         if self.target.contains("unknown-linux") {
             ret.push("_GNU_SOURCE");
         }
+
+        // MSVC doesn't have stdalign.h so get alignof ourselves
         if self.target.contains("msvc") {
             ret.push("alignof __alignof");
+        }
+
+        // Pull in extra goodies on mingw
+        if self.target.contains("windows") {
+            ret.push("_WIN32_WINNT 0x8000");
         }
         return ret
     }
@@ -82,6 +95,11 @@ impl<'a> TestGenerator<'a> {
             base.push("windows.h");
             base.push("process.h");
             base.push("ws2ipdef.h");
+
+            if self.target.contains("gnu") {
+                base.push("stdalign.h");
+                base.push("ws2tcpip.h");
+            }
         } else {
             base.push("ctype.h");
             base.push("dirent.h");
@@ -123,13 +141,19 @@ impl<'a> TestGenerator<'a> {
                     s => s.to_string(),
                 }
             }
+            // Perhaps this should be renamed in libc...
             "ip6_mreq" => "struct ipv6_mreq".to_string(),
+
+            // Just pass all these through, no need for a "struct" prefix
             "glob_t" |
             "FILE" |
             "DIR" |
             "fpos_t" => ty.to_string(),
             t if t.starts_with("pthread") => t.to_string(),
 
+            // Windows uppercase structs don't have `struct` in front, there's a
+            // few special cases for windows, and then otherwise put `struct` in
+            // front of everything.
             t if self.structs.contains(t) => {
                 if windows && ty.chars().next().unwrap().is_uppercase() {
                     t.to_string()
@@ -142,14 +166,18 @@ impl<'a> TestGenerator<'a> {
                 }
             }
 
+            // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
             "ssize_t" if windows => "SSIZE_T".to_string(),
+
             t => t.to_string(),
         }
     }
 
     fn rust2cfield(&self, struct_: &str, field: &str) -> String {
         match field {
+            // Our stat *_nsec fields normally don't actually exist but are part
+            // of a timeval struct
             s if s.ends_with("_nsec") && struct_ == "stat" => {
                 if self.target.contains("apple-darwin") {
                     s.replace("_nsec", "spec.tv_nsec")
@@ -207,12 +235,21 @@ fn main() {
         c: Box::new(c_out),
         sh: &sess.span_diagnostic,
         structs: HashSet::new(),
+        abi: Abi::C,
     };
 
     // Parse the libc crate
     let src = Path::new("../src/lib.rs");
     let cfg = Vec::new();
-    let mut krate = parse::parse_crate_from_file(src, cfg, &sess);
+    let krate = parse::parse_crate_from_file(src, cfg, &sess);
+
+    // expand macros
+    let ecfg = expand::ExpansionConfig::default("libc".to_string());
+    let exts = vec![
+        (intern("macro_rules"), SyntaxExtension::MacroRulesTT),
+    ];
+    let mut krate = expand::expand_crate(&sess, ecfg, Vec::new(),
+                                         exts, &mut Vec::new(), krate);
 
     // Strip the crate down to just what's configured for our target
     for (k, v) in tg.cfg_list() {
@@ -359,8 +396,22 @@ impl<'a> TestGenerator<'a> {
     }
 
     fn test_const(&mut self, name: &str, rust_ty: &str) {
+        let mingw = self.target.contains("windows-gnu");
+
+        // Apparently these don't exist in mingw headers?
+        match name {
+            "MEM_RESET_UNDO" |
+            "FILE_ATTRIBUTE_NO_SCRUB_DATA" |
+            "FILE_ATTRIBUTE_INTEGRITY_STREAM" |
+            "ERROR_NOTHING_TO_TERMINATE" if mingw => return,
+            _ => {}
+        }
+
         let cty = self.rust_ty_to_c_ty(rust_ty);
+
+        // SIG_IGN has weird types on platforms, just worry about it as a size_t
         let cast = if name == "SIG_IGN" {"(size_t)"} else {""};
+
         t!(writeln!(self.c, r#"
             int __test_const_{name}({cty} *outptr) {{
                 *outptr = {cast}({name});
@@ -387,7 +438,7 @@ impl<'a> TestGenerator<'a> {
 
     fn test_extern_fn(&mut self, name: &str, cname: &str,
                       args: &[String], ret: &str,
-                      variadic: bool) {
+                      variadic: bool, abi: Abi) {
         match name {
             // manually verified
             "execv" |
@@ -408,11 +459,20 @@ impl<'a> TestGenerator<'a> {
                 .connect(", ") + if variadic {", ..."} else {""}
         };
         let cret = self.rust_ty_to_c_ty(ret);
+        let abi = match abi {
+            Abi::C => "",
+            Abi::Stdcall => "__stdcall ",
+            Abi::System if self.target.contains("i686-pc-windows") => {
+                "__stdcall "
+            }
+            Abi::System => "",
+            a => panic!("unknown ABI: {}", a),
+        };
         t!(writeln!(self.c, r#"
-            {ret} (*__test_fn_{name}(void))({args}) {{
+            {ret} ({abi}*__test_fn_{name}(void))({args}) {{
                 return {cname};
             }}
-        "#, name = name, cname = cname, args = args, ret = cret));
+        "#, name = name, cname = cname, args = args, ret = cret, abi = abi));
         t!(writeln!(self.rust, r#"
             #[test]
             #[cfg_attr(windows, ignore)] // FIXME -- dllimport weirdness?
@@ -473,6 +533,7 @@ impl<'a> TestGenerator<'a> {
 
 impl<'a, 'v> Visitor<'v> for TestGenerator<'a> {
     fn visit_item(&mut self, i: &'v ast::Item) {
+        let prev_abi = self.abi;
         match i.node {
             ast::ItemTy(_, ref generics) => {
                 self.assert_no_generics(i.ident, generics);
@@ -497,9 +558,14 @@ impl<'a, 'v> Visitor<'v> for TestGenerator<'a> {
                 self.test_const(&i.ident.to_string(), &ty);
             }
 
+            ast::ItemForeignMod(ref fm) => {
+                self.abi = fm.abi;
+            }
+
             _ => {}
         }
-        visit::walk_item(self, i)
+        visit::walk_item(self, i);
+        self.abi = prev_abi;
     }
 
     fn visit_foreign_item(&mut self, i: &'v ast::ForeignItem) {
@@ -514,8 +580,9 @@ impl<'a, 'v> Visitor<'v> for TestGenerator<'a> {
                     }
                     _ => i.ident.to_string(),
                 };
+                let abi = self.abi;
                 self.test_extern_fn(&i.ident.to_string(), &cname, &args, &ret,
-                                    variadic);
+                                    variadic, abi);
             }
             ast::ForeignItemStatic(_, _) => {
             }
