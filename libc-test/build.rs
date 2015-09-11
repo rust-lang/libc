@@ -263,10 +263,10 @@ impl<'a> TestGenerator<'a> {
             let cfield = self.rust2cfield(ty, &name.to_string());
 
             t!(writeln!(self.c, r#"
-                uint64_t __test_offset_{ty}_{rust_field}() {{
+                uint64_t __test_offset_{ty}_{rust_field}(void) {{
                     return offsetof({cty}, {c_field});
                 }}
-                uint64_t __test_size_{ty}_{rust_field}() {{
+                uint64_t __test_size_{ty}_{rust_field}(void) {{
                     {cty}* foo = NULL;
                     return sizeof(foo->{c_field});
                 }}
@@ -294,8 +294,8 @@ impl<'a> TestGenerator<'a> {
 
     fn test_size_align(&mut self, rust: &str, c: &str) {
         t!(writeln!(self.c, r#"
-            uint64_t __test_size_{ty}() {{ return sizeof({cty}); }}
-            uint64_t __test_align_{ty}() {{ return alignof({cty}); }}
+            uint64_t __test_size_{ty}(void) {{ return sizeof({cty}); }}
+            uint64_t __test_align_{ty}(void) {{ return alignof({cty}); }}
         "#, ty = rust, cty = c));
         t!(writeln!(self.rust, r#"
             #[test]
