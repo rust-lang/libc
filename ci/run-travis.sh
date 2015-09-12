@@ -8,6 +8,9 @@ fi
 
 export HOST=$ARCH-$OS
 
+# clang has better error messages and implements alignof more broadly
+export CC=clang
+
 if [ "$TARGET" = "" ]; then
   # Download and install the relevant target locally, then run tests
   curl -sO https://static.rust-lang.org/dist/rust-$TRAVIS_RUST_VERSION-$HOST.tar.gz
