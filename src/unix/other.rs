@@ -81,37 +81,37 @@ cfg_if! {
                  target_os = "netbsd",
                  target_os = "openbsd"))] {
         extern {
-            pub fn sysctl(name: *mut c_int,
-                          namelen: c_uint,
-                          oldp: *mut c_void,
-                          oldlenp: *mut size_t,
-                          newp: *mut c_void,
-                          newlen: size_t)
-                          -> c_int;
-            pub fn mincore(addr: *const c_void, len: size_t, vec: *mut c_char)
-                           -> c_int;
-            pub fn sysctlbyname(name: *const c_char,
-                                oldp: *mut c_void,
-                                oldlenp: *mut size_t,
-                                newp: *mut c_void,
-                                newlen: size_t)
-                                -> c_int;
-            pub fn sysctlnametomib(name: *const c_char,
-                                   mibp: *mut c_int,
-                                   sizep: *mut size_t)
-                                   -> c_int;
+            pub fn sysctl(name: *mut ::c_int,
+                          namelen: ::c_uint,
+                          oldp: *mut ::c_void,
+                          oldlenp: *mut ::size_t,
+                          newp: *mut ::c_void,
+                          newlen: ::size_t)
+                          -> ::c_int;
+            pub fn mincore(addr: *const ::c_void, len: ::size_t,
+                           vec: *mut ::c_char) -> ::c_int;
+            pub fn sysctlbyname(name: *const ::c_char,
+                                oldp: *mut ::c_void,
+                                oldlenp: *mut ::size_t,
+                                newp: *mut ::c_void,
+                                newlen: ::size_t)
+                                -> ::c_int;
+            pub fn sysctlnametomib(name: *const ::c_char,
+                                   mibp: *mut ::c_int,
+                                   sizep: *mut ::size_t)
+                                   -> ::c_int;
         }
     } else {
         extern {
-            pub fn sysctl(name: *mut c_int,
-                          namelen: c_int,
-                          oldp: *mut c_void,
-                          oldlenp: *mut size_t,
-                          newp: *mut c_void,
-                          newlen: size_t)
-                          -> c_int;
-            pub fn mincore(addr: *mut c_void, len: size_t, vec: *mut c_uchar)
-                           -> c_int;
+            pub fn sysctl(name: *mut ::c_int,
+                          namelen: ::c_int,
+                          oldp: *mut ::c_void,
+                          oldlenp: *mut ::size_t,
+                          newp: *mut ::c_void,
+                          newlen: ::size_t)
+                          -> ::c_int;
+            pub fn mincore(addr: *mut ::c_void, len: ::size_t,
+                           vec: *mut ::c_uchar) -> ::c_int;
         }
     }
 }
