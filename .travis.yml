@@ -17,5 +17,5 @@ script:
 matrix:
   include:
     - os: linux
-      TARGET: arm-linux-androideabi
+      env: TARGET=arm-linux-androideabi
       rust: stable
