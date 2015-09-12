@@ -2,35 +2,10 @@ language: rust
 sudo: required
 services:
   - docker
+android:
+  components:
+    - android-19
 rust:
   - 1.0.0
-  - beta
-  - nightly
-install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then OS=unknown-linux-gnu; else OS=apple-darwin; fi
-  - export TARGET=$ARCH-$OS
-  - curl -sO https://static.rust-lang.org/dist/rust-$TRAVIS_RUST_VERSION-$TARGET.tar.gz
-  - tar xf rust-$TRAVIS_RUST_VERSION-$TARGET.tar.gz
-  - rm -rf $HOME/rust/lib/rustlib/$TARGET
-  - mv rust-$TRAVIS_RUST_VERSION-$TARGET/rustc/lib/rustlib/$TARGET $HOME/rust/lib/rustlib
-before_script:
-  - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
 script:
-  - cargo test --target $TARGET
-  - cargo test --target $TARGET --manifest-path libc-test/Cargo.toml
-  - cargo doc --no-deps
-
-addons:
-  apt:
-    packages:
-      - gcc-multilib
-notifications:
-  email:
-    on_success: never
-env:
-  - ARCH=x86_64 CC=clang
-  - ARCH=i686 CC=clang
-
-os:
-  - linux
-  - osx
+  - arm-linux-androideabi-gcc
