@@ -1,3 +1,5 @@
+//! MIPS specific definitions for 32-bit linux-like values
+
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type dev_t = u64;
@@ -26,5 +28,9 @@ s! {
         pub st_blksize: blksize_t,
         pub st_blocks: blkcnt_t,
         pub st_pad5: [c_long; 14],
+    }
+
+    pub struct pthread_attr_t {
+        __size: [u32; 9]
     }
 }

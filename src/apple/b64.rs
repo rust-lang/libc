@@ -1,3 +1,5 @@
+//! 64-bit specific Apple (ios/darwin) definitions
+
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type size_t = u64;

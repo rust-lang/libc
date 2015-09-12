@@ -1,3 +1,5 @@
+//! Android specific definitions for 32-bit linux-like values
+
 pub type blkcnt_t = u32;
 pub type blksize_t = u32;
 pub type dev_t = u32;
@@ -25,5 +27,14 @@ s! {
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_ulong,
         pub st_ino: ::c_ulonglong,
+    }
+
+    pub struct pthread_attr_t {
+        pub flags: ::uint32_t,
+        pub stack_base: *mut ::c_void,
+        pub stack_size: ::size_t,
+        pub guard_size: ::size_t,
+        pub sched_policy: ::int32_t,
+        pub sched_priority: ::int32_t,
     }
 }

@@ -1,3 +1,5 @@
+//! Windows CRT definitions
+
 pub type c_char = i8;
 pub type c_schar = i8;
 pub type c_uchar = u8;

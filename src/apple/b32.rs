@@ -1,3 +1,5 @@
+//! 32-bit specific Apple (ios/darwin) definitions
+
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type size_t = u32;

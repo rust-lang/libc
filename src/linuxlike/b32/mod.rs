@@ -1,3 +1,5 @@
+//! 32-bit specific definitions for linux-like values
+
 pub type c_char = i8;
 pub type c_schar = i8;
 pub type c_uchar = u8;
@@ -28,12 +30,6 @@ pub type uid_t = u32;
 pub type gid_t = u32;
 pub type useconds_t = u32;
 pub type ssize_t = i32;
-
-s! {
-    pub struct pthread_attr_t {
-        __size: [u32; 9]
-    }
-}
 
 cfg_if! {
     if #[cfg(target_os = "android")] {

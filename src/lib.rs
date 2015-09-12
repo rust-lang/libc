@@ -57,52 +57,6 @@ cfg_if! {
 #[cfg(unix)] mod unix;
 #[cfg(unix)] pub use unix::*;
 
-cfg_if! {
-    if #[cfg(any(target_os = "macos",
-                 target_os = "ios",
-                 target_os = "freebsd",
-                 target_os = "dragonfly",
-                 target_os = "bitrig",
-                 target_os = "netbsd",
-                 target_os = "openbsd"))] {
-        extern {
-            pub fn sysctl(name: *mut c_int,
-                          namelen: c_uint,
-                          oldp: *mut c_void,
-                          oldlenp: *mut size_t,
-                          newp: *mut c_void,
-                          newlen: size_t)
-                          -> c_int;
-            pub fn mincore(addr: *const c_void, len: size_t, vec: *mut c_char)
-                           -> c_int;
-            pub fn sysctlbyname(name: *const c_char,
-                                oldp: *mut c_void,
-                                oldlenp: *mut size_t,
-                                newp: *mut c_void,
-                                newlen: size_t)
-                                -> c_int;
-            pub fn sysctlnametomib(name: *const c_char,
-                                   mibp: *mut c_int,
-                                   sizep: *mut size_t)
-                                   -> c_int;
-        }
-    } else if #[cfg(unix)] {
-        extern {
-            pub fn sysctl(name: *mut c_int,
-                          namelen: c_int,
-                          oldp: *mut c_void,
-                          oldlenp: *mut size_t,
-                          newp: *mut c_void,
-                          newlen: size_t)
-                          -> c_int;
-            pub fn mincore(addr: *mut c_void, len: size_t, vec: *mut c_uchar)
-                           -> c_int;
-        }
-    } else {
-        // ...
-    }
-}
-
 extern {
     pub fn isalnum(c: c_int) -> c_int;
     pub fn isalpha(c: c_int) -> c_int;
@@ -164,9 +118,6 @@ extern {
     pub fn feof(stream: *mut FILE) -> c_int;
     pub fn ferror(stream: *mut FILE) -> c_int;
     pub fn perror(s: *const c_char);
-    pub fn abs(i: c_int) -> c_int;
-    pub fn labs(i: c_long) -> c_long;
-    pub fn atof(s: *const c_char) -> c_double;
     pub fn atoi(s: *const c_char) -> c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "strtod$UNIX2003")]
@@ -186,8 +137,6 @@ extern {
                link_name = "system$UNIX2003")]
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
-    pub fn rand() -> c_int;
-    pub fn srand(seed: c_uint);
 
     pub fn strcpy(dst: *mut c_char, src: *const c_char) -> *mut c_char;
     pub fn strncpy(dst: *mut c_char, src: *const c_char, n: size_t)
@@ -213,4 +162,14 @@ extern {
 
     pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+}
+
+// These are all inline functions on android
+#[cfg(not(target_os = "android"))]
+extern {
+    pub fn abs(i: c_int) -> c_int;
+    pub fn atof(s: *const c_char) -> c_double;
+    pub fn labs(i: c_long) -> c_long;
+    pub fn rand() -> c_int;
+    pub fn srand(seed: c_uint);
 }

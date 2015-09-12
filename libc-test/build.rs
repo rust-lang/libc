@@ -52,6 +52,11 @@ impl<'a> TestGenerator<'a> {
             ret.push("alignof __alignof");
         }
 
+        // android also doesn't have stdalign.h so get alignof ourselves
+        if self.target.contains("android") {
+            ret.push("alignof __alignof__");
+        }
+
         // Pull in extra goodies on mingw
         if self.target.contains("windows") {
             ret.push("_WIN32_WINNT 0x8000");
@@ -81,7 +86,8 @@ impl<'a> TestGenerator<'a> {
             base.push("mach/mach_time.h");
         }
 
-        if self.target.contains("unknown-linux") {
+        if self.target.contains("unknown-linux") ||
+           self.target.contains("android") {
             base.push("linux/if_packet.h");
             base.push("net/ethernet.h");
         }
@@ -103,8 +109,6 @@ impl<'a> TestGenerator<'a> {
         } else {
             base.push("ctype.h");
             base.push("dirent.h");
-            base.push("glob.h");
-            base.push("ifaddrs.h");
             base.push("net/if.h");
             base.push("netdb.h");
             base.push("netinet/in.h");
@@ -112,19 +116,26 @@ impl<'a> TestGenerator<'a> {
             base.push("netinet/tcp.h");
             base.push("pthread.h");
             base.push("signal.h");
-            base.push("stdalign.h");
             base.push("string.h");
             base.push("sys/file.h");
             base.push("sys/ioctl.h");
             base.push("sys/mman.h");
             base.push("sys/resource.h");
             base.push("sys/socket.h");
-            base.push("sys/sysctl.h");
             base.push("sys/time.h");
             base.push("sys/un.h");
             base.push("sys/wait.h");
             base.push("unistd.h");
             base.push("utime.h");
+
+            if self.target.contains("android") {
+                base.push("arpa/inet.h");
+            } else {
+                base.push("glob.h");
+                base.push("ifaddrs.h");
+                base.push("stdalign.h");
+                base.push("sys/sysctl.h");
+            }
         }
 
         return base
@@ -179,6 +190,8 @@ impl<'a> TestGenerator<'a> {
             s if s.ends_with("_nsec") && struct_ == "stat" => {
                 if self.target.contains("apple-darwin") {
                     s.replace("_nsec", "spec.tv_nsec")
+                } else if self.target.contains("android") {
+                    s.to_string()
                 } else {
                     s.replace("e_nsec", ".tv_nsec")
                 }
@@ -193,6 +206,8 @@ impl<'a> TestGenerator<'a> {
             ("x86_64", "64")
         } else if self.target.starts_with("i686") {
             ("x86", "32")
+        } else if self.target.starts_with("arm") {
+            ("arm", "32")
         } else {
             panic!("unknown arch/pointer width: {}", self.target)
         };
@@ -204,6 +219,8 @@ impl<'a> TestGenerator<'a> {
             ("windows", "windows", "msvc")
         } else if self.target.contains("windows-gnu") {
             ("windows", "windows", "gnu")
+        } else if self.target.contains("android") {
+            ("android", "unix", "")
         } else {
             panic!("unknown os/family width: {}", self.target)
         };
@@ -302,7 +319,11 @@ fn main() {
 impl<'a> TestGenerator<'a> {
     fn test_type(&mut self, ty: &str) {
         match ty {
+            // sighandler_t is crazy across platforms
             "sighandler_t" => return,
+
+            // Not actually defined on android, but it's not hurting anyone
+            "in_port_t" if self.target.contains("android") => return,
             _ => {}
         }
         let c = self.rust_ty_to_c_ty(ty);

@@ -1,3 +1,8 @@
+//! Definitions found commonly among almost all Unix derivatives
+//!
+//! More functions and definitions can be found in the more specific modules
+//! according to the platform in question.
+
 s! {
     pub struct utimbuf {
         pub actime: ::time_t,
@@ -34,25 +39,10 @@ extern {
                       value: *const ::c_void,
                       option_len: ::socklen_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "recv$UNIX2003")]
-    pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
-                flags: ::c_int) -> ::ssize_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "send$UNIX2003")]
-    pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t,
-                flags: ::c_int) -> ::ssize_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "recvfrom$UNIX2003")]
-    pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
-                    flags: ::c_int, addr: *mut ::sockaddr,
-                    addrlen: *mut ::socklen_t) -> ::ssize_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sendto$UNIX2003")]
     pub fn sendto(socket: ::c_int, buf: *const ::c_void, len: ::size_t,
                   flags: ::c_int, addr: *const ::sockaddr,
                   addrlen: ::socklen_t) -> ::ssize_t;
-    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
-    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
     pub fn shutdown(socket: ::c_int, how: ::c_int) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -66,7 +56,6 @@ extern {
     pub fn fstat(fildes: ::c_int, buf: *mut ::stat) -> ::c_int;
 
     pub fn mkdir(path: *const ::c_char, mode: ::mode_t) -> ::c_int;
-    pub fn mkfifo(path: *const ::c_char, mode: ::mode_t) -> ::c_int;
 
     #[cfg_attr(target_os = "macos", link_name = "stat$INODE64")]
     pub fn stat(path: *const ::c_char, buf: *mut ::stat) -> ::c_int;
@@ -107,16 +96,6 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "rewinddir$INODE64$UNIX2003")]
     pub fn rewinddir(dirp: *mut ::DIR);
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
-               link_name = "seekdir$INODE64")]
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "seekdir$INODE64$UNIX2003")]
-    pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
-               link_name = "telldir$INODE64")]
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "telldir$INODE64$UNIX2003")]
-    pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
 
     pub fn access(path: *const ::c_char, amode: ::c_int) -> ::c_int;
     pub fn alarm(seconds: ::c_uint) -> ::c_uint;
@@ -152,7 +131,6 @@ extern {
     pub fn getpid() -> ::pid_t;
     pub fn getppid() -> ::pid_t;
     pub fn getuid() -> ::uid_t;
-    pub fn getsid(pid: ::pid_t) -> ::pid_t;
     pub fn isatty(fd: ::c_int) -> ::c_int;
     pub fn link(src: *const ::c_char, dst: *const ::c_char) -> ::c_int;
     pub fn lseek(fd: ::c_int, offset: ::off_t, whence: ::c_int)
@@ -175,13 +153,9 @@ extern {
                link_name = "sleep$UNIX2003")]
     pub fn sleep(secs: ::c_uint) -> ::c_uint;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "usleep$UNIX2003")]
-    pub fn usleep(secs: ::c_uint) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "nanosleep$UNIX2003")]
     pub fn nanosleep(rqtp: *const ::timespec,
                      rmtp: *mut ::timespec) -> ::c_int;
-    pub fn sysconf(name: ::c_int) -> ::c_long;
     pub fn tcgetpgrp(fd: ::c_int) -> ::pid_t;
     pub fn ttyname(fd: ::c_int) -> *mut ::c_char;
     pub fn unlink(c: *const ::c_char) -> ::c_int;
@@ -216,23 +190,6 @@ extern {
     pub fn munlockall() -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "mprotect$UNIX2003")]
-    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
-
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "msync$UNIX2003")]
-    pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int)
-                 -> ::c_int;
-    #[cfg(target_os = "macos")]
-    pub fn shm_open(name: *const ::c_char, oflag: ::c_int, ...)
-                    -> ::c_int;
-    #[cfg(target_os = "linux")]
-    pub fn shm_open(name: *const ::c_char, oflag: ::c_int,
-                    mode: ::mode_t) -> ::c_int;
-    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
-
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "mmap$UNIX2003")]
     pub fn mmap(addr: *mut ::c_void,
                 len: ::size_t,
@@ -250,17 +207,9 @@ extern {
     #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
     pub fn lstat(path: *const ::c_char, buf: *mut ::stat) -> ::c_int;
 
-    pub fn readlink(path: *const ::c_char,
-                    buf: *mut ::c_char,
-                    bufsz: ::size_t)
-                    -> ::ssize_t;
-
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fsync$UNIX2003")]
     pub fn fsync(fd: ::c_int) -> ::c_int;
-
-    #[cfg(any(target_os = "linux", target_os = "android"))]
-    pub fn fdatasync(fd: ::c_int) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "setenv$UNIX2003")]
@@ -269,9 +218,6 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "unsetenv$UNIX2003")]
     pub fn unsetenv(name: *const ::c_char) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "putenv$UNIX2003")]
-    pub fn putenv(string: *mut ::c_char) -> ::c_int;
 
     pub fn symlink(path1: *const ::c_char,
                    path2: *const ::c_char) -> ::c_int;
@@ -281,27 +227,24 @@ extern {
     pub fn signal(signum: ::c_int,
                   handler: ::sighandler_t) -> ::sighandler_t;
 
-    pub fn glob(pattern: *const ::c_char,
-                flags: ::c_int,
-                errfunc: Option<extern "C" fn(epath: *const ::c_char,
-                                                  errno: ::c_int) -> ::c_int>,
-                pglob: *mut ::glob_t);
-    pub fn globfree(pglob: *mut ::glob_t);
-
-    pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
-                         -> ::c_int;
-
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
     pub fn getrusage(resource: ::c_int, usage: *mut ::rusage) -> ::c_int;
 
     pub fn getdtablesize() -> ::c_int;
-    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
-                   -> ::c_int;
     #[cfg_attr(target_os = "macos", link_name = "realpath$DARWIN_EXTSN")]
     pub fn realpath(pathname: *const ::c_char, resolved: *mut ::c_char)
                     -> *mut ::c_char;
 
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(target_os = "android")] {
+        mod android;
+        pub use self::android::*;
+    } else {
+        mod other;
+        pub use self::other::*;
+    }
 }

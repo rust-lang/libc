@@ -1,3 +1,6 @@
+//! 32-bit specific definitions for linux-like values on platforms that aren't
+//! MIPS or android
+
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type dev_t = u64;
@@ -26,5 +29,9 @@ s! {
         pub st_ctime_nsec: c_long,
         __unused4: c_long,
         __unused5: c_long,
+    }
+
+    pub struct pthread_attr_t {
+        __size: [u32; 9]
     }
 }
