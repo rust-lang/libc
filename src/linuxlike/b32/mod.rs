@@ -40,6 +40,6 @@ cfg_if! {
         pub use self::mips::*;
     } else {
         mod other;
-        pub use other::*;
+        pub use self::other::*;
     }
 }
