@@ -1,6 +1,6 @@
 set -ex
 
-if [ "$TRAVIS_OS_NAME" = "linux"]; then
+if [ "$TRAVIS_OS_NAME" = "linux" ]; then
   OS=unknown-linux-gnu
 else
   OS=apple-darwin
