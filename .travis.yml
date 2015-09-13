@@ -19,6 +19,9 @@ matrix:
     - os: linux
       env: TARGET=arm-linux-androideabi
       rust: stable
+    - os: linux
+      env: TARGET=x86_64-unknown-linux-musl
+      rust: nightly-2015-09-08
 addons:
   apt:
     packages:
