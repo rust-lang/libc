@@ -120,6 +120,8 @@ pub const _SC_XOPEN_REALTIME_THREADS: ::c_int = 131;
 pub const RLIMIT_NLIMITS: ::c_int = 16;
 pub const RLIM_SAVED_MAX: ::rlim_t = ::RLIM_INFINITY;
 pub const RLIM_SAVED_CUR: ::rlim_t = ::RLIM_INFINITY;
+
+#[cfg(not(target_env = "musl"))]
 pub const RUSAGE_THREAD: ::c_int = 1;
 
 pub const GLOB_ERR: ::c_int = 1 << 0;

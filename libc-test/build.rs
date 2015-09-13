@@ -43,7 +43,7 @@ impl<'a> TestGenerator<'a> {
         let mut ret = Vec::new();
 
         // Pull in extra goodies on linux
-        if self.target.contains("unknown-linux") {
+        if self.target.contains("unknown-linux-gnu") {
             ret.push("_GNU_SOURCE");
         }
 
@@ -211,8 +211,10 @@ impl<'a> TestGenerator<'a> {
         } else {
             panic!("unknown arch/pointer width: {}", self.target)
         };
-        let (os, family, env) = if self.target.contains("unknown-linux") {
+        let (os, family, env) = if self.target.contains("unknown-linux-gnu") {
             ("linux", "unix", "gnu")
+        } else if self.target.contains("unknown-linux-musl") {
+            ("linux", "unix", "musl")
         } else if self.target.contains("apple-darwin") {
             ("macos", "unix", "")
         } else if self.target.contains("windows-msvc") {
