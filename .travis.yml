@@ -3,7 +3,7 @@ sudo: required
 rust:
   - 1.0.0
   - beta
-  - stable
+  - nightly
 services:
   - docker
 script:
