@@ -18,7 +18,7 @@ matrix:
   include:
     - os: linux
       env: TARGET=arm-linux-androideabi
-      rust: stable
+      rust: nightly-2015-09-08
     - os: linux
       env: TARGET=x86_64-unknown-linux-musl
       rust: nightly-2015-09-08
