@@ -1,5 +1,7 @@
+#![feature(alloc_system)]
 #![allow(bad_style, unused_imports)]
 
+extern crate alloc_system;
 extern crate libc;
 extern crate libc_test;
 
