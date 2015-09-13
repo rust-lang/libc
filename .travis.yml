@@ -23,3 +23,6 @@ addons:
   apt:
     packages:
       - gcc-multilib
+notifications:
+  email:
+    on_success: never
