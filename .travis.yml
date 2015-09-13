@@ -1,19 +1,19 @@
 language: rust
 sudo: required
-# rust:
-#   - 1.0.0
-#   - beta
-#   - stable
+rust:
+  - 1.0.0
+  - beta
+  - stable
 services:
   - docker
 script:
   - sh ci/run-travis.sh
-# os:
-#   - linux
-#   - osx
-# env:
-#   - ARCH=i686
-#   - ARCH=x86_64
+os:
+  - linux
+  - osx
+env:
+  - ARCH=i686
+  - ARCH=x86_64
 matrix:
   include:
     - os: linux
