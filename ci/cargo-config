@@ -3,3 +3,6 @@ linker = "arm-linux-androideabi-gcc"
 
 [target.arm-unknown-linux-gnueabihf]
 linker = "arm-linux-gnueabihf-gcc-4.7"
+
+[target.arm-linux-androideabi]
+linker = "mips-linux-gnu-gcc"
