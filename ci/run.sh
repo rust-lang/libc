@@ -11,7 +11,7 @@ if [ "$TARGET" = "arm-linux-androideabi" ]; then
     adb push /root/target/$TARGET/debug/all-* /data/test
     adb shell /data/test
 elif [ "$TARGET" = "arm-unknown-linux-gnueabihf" ]; then
-    qemu-arm -L /usr/arm-linux-gnueabi /root/target/$TARGET/debug/all-*
+    qemu-arm -L /usr/arm-linux-gnueabi target/$TARGET/debug/all-*
 else
     cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
 fi
