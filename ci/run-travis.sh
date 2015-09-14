@@ -8,7 +8,7 @@ fi
 
 export HOST=$ARCH-$OS
 
-MAIN_TARGETS=https://static.rust-lang.org/dist/
+MAIN_TARGETS=https://static.rust-lang.org/dist
 EXTRA_TARGETS=https://people.mozilla.org/~acrichton/libc-test/2015-09-08
 
 if [ "$TARGET" = "arm-linux-androideabi" ]; then
