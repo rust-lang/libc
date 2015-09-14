@@ -33,7 +33,7 @@ elif [ "$TARGET" = "mips-unknown-linux-gnu" ]; then
     sudo tee -a /etc/apt/sources.list
   sudo apt-get update
   sudo apt-get install emdebian-archive-keyring
-  sudo apt-get install qemu-user gcc-4.4-mips-linux-gnu
+  sudo apt-get install qemu-user gcc-4.4-mips-linux-gnu -y --force-yes
   export CC=mips-linux-gnu-gcc
 else
   # Download and install the relevant target locally, then run tests
