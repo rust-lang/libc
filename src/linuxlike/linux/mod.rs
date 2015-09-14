@@ -117,7 +117,6 @@ pub const _SC_XOPEN_LEGACY: ::c_int = 129;
 pub const _SC_XOPEN_REALTIME: ::c_int = 130;
 pub const _SC_XOPEN_REALTIME_THREADS: ::c_int = 131;
 
-pub const RLIMIT_NLIMITS: ::c_int = 16;
 pub const RLIM_SAVED_MAX: ::rlim_t = ::RLIM_INFINITY;
 pub const RLIM_SAVED_CUR: ::rlim_t = ::RLIM_INFINITY;
 
@@ -151,29 +150,10 @@ pub const F_TEST: ::c_int = 3;
 pub const F_TLOCK: ::c_int = 2;
 pub const F_ULOCK: ::c_int = 0;
 
-pub const ERFKILL: ::c_int = 132;
-pub const EHWPOISON: ::c_int = 133;
-
-pub const O_SYNC: ::c_int = 1052672;
-pub const O_RSYNC: ::c_int = 1052672;
-pub const O_DSYNC: ::c_int = 4096;
-
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub const MAP_32BIT: ::c_int = 0x0040;
 
 pub const TCP_MD5SIG: ::c_int = 14;
-pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
-pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
-pub const TCP_THIN_DUPACK: ::c_int = 17;
-pub const TCP_USER_TIMEOUT: ::c_int = 18;
-pub const TCP_REPAIR: ::c_int = 19;
-pub const TCP_REPAIR_QUEUE: ::c_int = 20;
-pub const TCP_QUEUE_SEQ: ::c_int = 21;
-pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
-pub const TCP_FASTOPEN: ::c_int = 23;
-pub const TCP_TIMESTAMP: ::c_int = 24;
-
-pub const SO_REUSEPORT: ::c_int = 15;
 
 cfg_if! {
     if #[cfg(any(target_arch = "arm", target_arch = "x86",
@@ -181,5 +161,15 @@ cfg_if! {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
     } else {
         pub const PTHREAD_STACK_MIN: ::size_t = 131072;
+    }
+}
+
+cfg_if! {
+    if #[cfg(any(target_arch = "mips", target_arch = "mipsel"))] {
+        mod mips;
+        pub use self::mips::*;
+    } else {
+        mod other;
+        pub use self::other::*;
     }
 }
