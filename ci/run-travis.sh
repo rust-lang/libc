@@ -32,6 +32,7 @@ elif [ "$TARGET" = "mips-unknown-linux-gnu" ]; then
   echo 'deb http://www.emdebian.org/debian/ squeeze main' | \
     sudo tee -a /etc/apt/sources.list
   sudo apt-get update
+  sudo apt-get install emdebian-archive-keyring
   sudo apt-get install qemu-user gcc-4.4-mips-linux-gnu
   export CC=mips-linux-gnu-gcc
 else
