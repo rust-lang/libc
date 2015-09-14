@@ -18,7 +18,7 @@ if [ "$TARGET" = "arm-linux-androideabi" ]; then
   docker run -v `pwd`:/clone -t alexcrichton/rust-libc-test sh ci/run.sh $TARGET
 elif [ "$TARGET" = "x86_64-unknown-linux-musl" ]; then
   curl -sO https://people.mozilla.org/~acrichton/libc-test/2015-09-08/x86_64-unknown-linux-musl.tar.gz | \
-    tar xzf -C $HOME/rust/lib/rustlib
+    tar xzf - -C $HOME/rust/lib/rustlib
   sh ci/run.sh $TARGET
 else
   # Download and install the relevant target locally, then run tests
