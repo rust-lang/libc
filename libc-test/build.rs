@@ -32,6 +32,7 @@ struct TestGenerator<'a> {
     sh: &'a SpanHandler,
     structs: HashSet<String>,
     abi: Abi,
+    tests: Vec<String>,
 }
 
 struct StructFinder {
@@ -253,6 +254,7 @@ fn main() {
         sh: &sess.span_diagnostic,
         structs: HashSet::new(),
         abi: Abi::C,
+        tests: Vec::new(),
     };
 
     // Parse the libc crate
@@ -299,6 +301,7 @@ fn main() {
 
     // Walk the crate, emitting test cases for everything found
     visit::walk_crate(&mut tg, &krate);
+    tg.emit_run_all();
 
     // Compile our C shim to be linked into tests
     let mut cfg = gcc::Config::new();
@@ -336,9 +339,10 @@ impl<'a> TestGenerator<'a> {
         let cty = self.rust_ty_to_c_ty(ty);
         self.test_size_align(ty, &cty);
 
+        self.tests.push(format!("field_offset_size_{}", ty));
         t!(writeln!(self.rust, r#"
-            #[test]
             fn field_offset_size_{ty}() {{
+                println!("verifying struct {ty}");
         "#, ty = ty));
         for field in s.fields.iter() {
             let name = match field.node.kind {
@@ -385,20 +389,21 @@ impl<'a> TestGenerator<'a> {
             uint64_t __test_align_{ty}(void) {{ return alignof({cty}); }}
         "#, ty = rust, cty = c));
         t!(writeln!(self.rust, r#"
-            #[test]
             fn size_align_{ty}() {{
                 extern {{
                     fn __test_size_{ty}() -> u64;
                     fn __test_align_{ty}() -> u64;
                 }}
+                println!("verifying type {ty} align/size");
                 unsafe {{
                     same(mem::size_of::<{ty}>() as u64,
-                         __test_size_{ty}(), "size");
+                         __test_size_{ty}(), "{ty} size");
                     same(align::<{ty}>() as u64,
-                         __test_align_{ty}(), "align");
+                         __test_align_{ty}(), "{ty} align");
                 }}
             }}
         "#, ty = rust));
+        self.tests.push(format!("size_align_{}", rust));
     }
 
     fn rust_ty_to_c_ty(&self, mut rust_ty: &str) -> String {
@@ -440,21 +445,22 @@ impl<'a> TestGenerator<'a> {
             }}
         "#, name = name, cast = cast, cty = cty));
         t!(writeln!(self.rust, r#"
-            #[test]
             fn const_{name}() {{
                 extern {{
                     fn __test_const_{name}(out: *mut {ty}) -> c_int;
                 }}
+                println!("verifying const {name} value");
                 unsafe {{
                     let mut o = mem::zeroed();
                     if __test_const_{name}(&mut o) == 0 {{
-                        panic!("not defined");
+                        panic!("{name} not defined");
                     }} else {{
-                        same({name}, o, "value");
+                        same({name}, o, "{name} value");
                     }}
                 }}
             }}
         "#, ty = rust_ty, name = name));
+        self.tests.push(format!("const_{}", name));
     }
 
     fn test_extern_fn(&mut self, name: &str, cname: &str,
@@ -495,18 +501,19 @@ impl<'a> TestGenerator<'a> {
             }}
         "#, name = name, cname = cname, args = args, ret = cret, abi = abi));
         t!(writeln!(self.rust, r#"
-            #[test]
-            #[cfg_attr(windows, ignore)] // FIXME -- dllimport weirdness?
             fn fn_{name}() {{
                 extern {{
                     fn __test_fn_{name}() -> size_t;
                 }}
+                println!("verifying function {name} pointer");
                 unsafe {{
                     same({name} as usize,
-                         __test_fn_{name}() as usize, "function pointer");
+                         __test_fn_{name}() as usize,
+                         "{name} function pointer");
                 }}
             }}
         "#, name = name));
+        self.tests.push(format!("fn_{}", name));
     }
 
     fn assert_no_generics(&self, _i: ast::Ident, generics: &ast::Generics) {
@@ -549,6 +556,24 @@ impl<'a> TestGenerator<'a> {
             ast::Return(ref t) => self.ty2name(t),
         };
         (ret, args, decl.variadic)
+    }
+
+    fn emit_run_all(&mut self) {
+        t!(writeln!(self.rust, "
+            fn run_all() {{
+        "));
+        for test in self.tests.iter() {
+            if test.starts_with("fn_") {
+                // FIXME: weird dllimport issues with windows?
+                t!(writeln!(self.rust, "if cfg!(not(windows)) {{ {}(); }}",
+                            test));
+            } else {
+                t!(writeln!(self.rust, "{}();", test));
+            }
+        }
+        t!(writeln!(self.rust, "
+            }}
+        "));
     }
 }
 

@@ -55,5 +55,10 @@ macro_rules! offset_of {
     )
 }
 
-#[cfg(test)]
 include!(concat!(env!("OUT_DIR"), "/all.rs"));
+
+fn main() {
+    println!("RUNNING ALL TESTS");
+    run_all();
+    println!("PASSED");
+}

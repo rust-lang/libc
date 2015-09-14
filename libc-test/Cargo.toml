@@ -15,3 +15,7 @@ gcc = { git = "https://github.com/alexcrichton/gcc-rs" }
 name = "libc_test"
 test = false
 doctest = false
+
+[[test]]
+name = "all"
+harness = false
