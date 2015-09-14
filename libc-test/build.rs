@@ -54,7 +54,7 @@ impl<'a> TestGenerator<'a> {
         }
 
         // android also doesn't have stdalign.h so get alignof ourselves
-        if self.target.contains("android") {
+        if self.target.contains("android") || self.target.contains("mips") {
             ret.push("alignof __alignof__");
         }
 
@@ -134,7 +134,9 @@ impl<'a> TestGenerator<'a> {
             } else {
                 base.push("glob.h");
                 base.push("ifaddrs.h");
-                base.push("stdalign.h");
+                if !self.target.contains("mips") {
+                    base.push("stdalign.h");
+                }
                 base.push("sys/sysctl.h");
             }
         }
@@ -209,6 +211,8 @@ impl<'a> TestGenerator<'a> {
             ("x86", "32")
         } else if self.target.starts_with("arm") {
             ("arm", "32")
+        } else if self.target.starts_with("mips") {
+            ("mips", "32")
         } else {
             panic!("unknown arch/pointer width: {}", self.target)
         };

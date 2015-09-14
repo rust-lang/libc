@@ -27,9 +27,12 @@ macro_rules! p {
 }
 p! { i8 i16 i32 i64 u8 u16 u32 u64 usize isize }
 
+static mut FAILED: bool = false;
+
 fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
     if rust != c {
-        panic!("bad {}: rust: {} != c {}", attr, rust.pretty(), c.pretty());
+        println!("bad {}: rust: {} != c {}", attr, rust.pretty(), c.pretty());
+        unsafe { FAILED = true; }
     }
 }
 
@@ -60,5 +63,11 @@ include!(concat!(env!("OUT_DIR"), "/all.rs"));
 fn main() {
     println!("RUNNING ALL TESTS");
     run_all();
-    println!("PASSED");
+    unsafe {
+        if FAILED {
+            panic!("some tests failed");
+        } else {
+            println!("PASSED");
+        }
+    }
 }
