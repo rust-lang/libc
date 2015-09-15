@@ -1,20 +1,3 @@
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_int = i32;
-pub type c_uint = u32;
-pub type c_float = f32;
-pub type c_double = f64;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
-pub type intmax_t = i64;
-pub type uintmax_t = u64;
-pub type dev_t = u64;
-pub type gid_t = u32;
-pub type pid_t = i32;
-pub type uid_t = u32;
-pub type useconds_t = u32;
 
 pub const RLIMIT_RSS: ::c_int = 5;
 pub const RLIMIT_NOFILE: ::c_int = 7;
