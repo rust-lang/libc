@@ -76,7 +76,7 @@ s! {
         pub ai_protocol: c_int,
         pub ai_addrlen: socklen_t,
         pub ai_canonname: *mut c_char,
-        pub ai_addr: *mut sockaddr,
+        pub ai_addr: *mut ::sockaddr,
         pub ai_next: *mut addrinfo,
     }
 
@@ -84,9 +84,9 @@ s! {
         pub ifa_next: *mut ifaddrs,
         pub ifa_name: *mut c_char,
         pub ifa_flags: c_uint,
-        pub ifa_addr: *mut sockaddr,
-        pub ifa_netmask: *mut sockaddr,
-        pub ifa_dstaddr: *mut sockaddr,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifa_dstaddr: *mut ::sockaddr,
         pub ifa_data: *mut ::c_void
     }
 
@@ -603,7 +603,7 @@ pub const _SC_PASS_MAX: c_int = 131;
 
 extern {
     pub fn _NSGetExecutablePath(buf: *mut c_char,
-                                bufsize: *mut uint32_t) -> c_int;
+                                bufsize: *mut ::uint32_t) -> c_int;
 }
 
 cfg_if! {
