@@ -25,88 +25,12 @@ s! {
         __unused8: *mut ::c_void,
     }
 
-    pub struct timeval {
-        pub tv_sec: ::time_t,
-        pub tv_usec: ::suseconds_t,
-    }
-
-    pub struct timespec {
-        pub tv_sec: ::time_t,
-        pub tv_nsec: ::c_long,
-    }
-
-    pub struct rlimit {
-        pub rlim_cur: ::rlim_t,
-        pub rlim_max: ::rlim_t,
-    }
-
-    pub struct rusage {
-        pub ru_utime: timeval,
-        pub ru_stime: timeval,
-        pub ru_maxrss: ::c_long,
-        pub ru_ixrss: ::c_long,
-        pub ru_idrss: ::c_long,
-        pub ru_isrss: ::c_long,
-        pub ru_minflt: ::c_long,
-        pub ru_majflt: ::c_long,
-        pub ru_nswap: ::c_long,
-        pub ru_inblock: ::c_long,
-        pub ru_oublock: ::c_long,
-        pub ru_msgsnd: ::c_long,
-        pub ru_msgrcv: ::c_long,
-        pub ru_nsignals: ::c_long,
-        pub ru_nvcsw: ::c_long,
-        pub ru_nivcsw: ::c_long
-    }
-
-    pub struct sockaddr {
-        pub sa_len: u8,
-        pub sa_family: sa_family_t,
-        pub sa_data: [u8; 14],
-    }
-
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: sa_family_t,
         __ss_pad1: [u8; 6],
         __ss_align: i64,
         __ss_pad2: [u8; 112],
-    }
-
-    pub struct sockaddr_in {
-        pub sin_len: u8,
-        pub sin_family: sa_family_t,
-        pub sin_port: in_port_t,
-        pub sin_addr: in_addr,
-        pub sin_zero: [u8; 8],
-    }
-
-    pub struct in_addr {
-        pub s_addr: in_addr_t,
-    }
-
-    pub struct sockaddr_in6 {
-        pub sin6_len: u8,
-        pub sin6_family: sa_family_t,
-        pub sin6_port: in_port_t,
-        pub sin6_flowinfo: u32,
-        pub sin6_addr: in6_addr,
-        pub sin6_scope_id: u32,
-    }
-
-    pub struct in6_addr {
-        pub s6_addr: [u16; 8],
-        __align: [u32; 0],
-    }
-
-    pub struct ip_mreq {
-        pub imr_multiaddr: in_addr,
-        pub imr_interface: in_addr,
-    }
-
-    pub struct ipv6_mreq {
-        pub ipv6mr_multiaddr: in6_addr,
-        pub ipv6mr_interface: c_uint,
     }
 
     pub struct addrinfo {
@@ -116,23 +40,17 @@ s! {
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
         pub ai_canonname: *mut c_char,
-        pub ai_addr: *mut sockaddr,
+        pub ai_addr: *mut ::sockaddr,
         pub ai_next: *mut addrinfo,
-    }
-
-    pub struct sockaddr_un {
-        pub sun_len: u8,
-        pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 104]
     }
 
     pub struct ifaddrs {
         pub ifa_next: *mut ifaddrs,
         pub ifa_name: *mut c_char,
         pub ifa_flags: c_uint,
-        pub ifa_addr: *mut sockaddr,
-        pub ifa_netmask: *mut sockaddr,
-        pub ifa_dstaddr: *mut sockaddr,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifa_dstaddr: *mut ::sockaddr,
         pub ifa_data: *mut ::c_void
     }
 }

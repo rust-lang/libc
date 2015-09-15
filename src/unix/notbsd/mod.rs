@@ -1,7 +1,3 @@
-//! Linux-like values
-//!
-//! Currenly applies to the Linux and Android platforms
-
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
 pub type pthread_t = c_ulong;
@@ -13,15 +9,29 @@ pub type socklen_t = u32;
 pub enum timezone {}
 
 s! {
-    pub struct timeval {
-        pub tv_sec: time_t,
-        pub tv_usec: suseconds_t,
-    }
-
-
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [u8; 14],
+    }
+
+    pub struct sockaddr_in {
+        pub sin_family: sa_family_t,
+        pub sin_port: ::in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [u8; 8],
+    }
+
+    pub struct sockaddr_in6 {
+        pub sin6_family: sa_family_t,
+        pub sin6_port: ::in_port_t,
+        pub sin6_flowinfo: u32,
+        pub sin6_addr: ::in6_addr,
+        pub sin6_scope_id: u32,
+    }
+
+    pub struct sockaddr_un {
+        pub sun_family: sa_family_t,
+        pub sun_path: [::c_char; 108]
     }
 
     pub struct sockaddr_storage {
@@ -33,40 +43,6 @@ s! {
         __ss_pad2: [u8; 128 - 2 * 8],
     }
 
-    pub struct sockaddr_in {
-        pub sin_family: sa_family_t,
-        pub sin_port: in_port_t,
-        pub sin_addr: in_addr,
-        pub sin_zero: [u8; 8],
-    }
-
-    pub struct in_addr {
-        pub s_addr: in_addr_t,
-    }
-
-    pub struct sockaddr_in6 {
-        pub sin6_family: sa_family_t,
-        pub sin6_port: in_port_t,
-        pub sin6_flowinfo: u32,
-        pub sin6_addr: in6_addr,
-        pub sin6_scope_id: u32,
-    }
-
-    pub struct in6_addr {
-        pub s6_addr: [u16; 8],
-        __align: [u32; 0],
-    }
-
-    pub struct ip_mreq {
-        pub imr_multiaddr: in_addr,
-        pub imr_interface: in_addr,
-    }
-
-    pub struct ipv6_mreq {
-        pub ipv6mr_multiaddr: in6_addr,
-        pub ipv6mr_interface: c_uint,
-    }
-
     pub struct addrinfo {
         pub ai_flags: c_int,
         pub ai_family: c_int,
@@ -75,48 +51,14 @@ s! {
         pub ai_addrlen: socklen_t,
 
         #[cfg(target_os = "linux")]
-        pub ai_addr: *mut sockaddr,
+        pub ai_addr: *mut ::sockaddr,
 
         pub ai_canonname: *mut c_char,
 
         #[cfg(any(target_os = "android", target_os = "nacl"))]
-        pub ai_addr: *mut sockaddr,
+        pub ai_addr: *mut ::sockaddr,
 
         pub ai_next: *mut addrinfo,
-    }
-
-    pub struct sockaddr_un {
-        pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 108]
-    }
-
-    pub struct timespec {
-        pub tv_sec: time_t,
-        pub tv_nsec: c_long,
-    }
-
-    pub struct rlimit {
-        pub rlim_cur: rlim_t,
-        pub rlim_max: rlim_t,
-    }
-
-    pub struct rusage {
-        pub ru_utime: timeval,
-        pub ru_stime: timeval,
-        pub ru_maxrss: c_long,
-        pub ru_ixrss: c_long,
-        pub ru_idrss: c_long,
-        pub ru_isrss: c_long,
-        pub ru_minflt: c_long,
-        pub ru_majflt: c_long,
-        pub ru_nswap: c_long,
-        pub ru_inblock: c_long,
-        pub ru_oublock: c_long,
-        pub ru_msgsnd: c_long,
-        pub ru_msgrcv: c_long,
-        pub ru_nsignals: c_long,
-        pub ru_nvcsw: c_long,
-        pub ru_nivcsw: c_long
     }
 
     pub struct sockaddr_ll {
@@ -350,16 +292,8 @@ pub const LOCK_UN: ::c_int = 8;
 
 extern {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
-}
-
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        mod b32;
-        pub use self::b32::*;
-    } else {
-        mod b64;
-        pub use self::b64::*;
-    }
+    pub fn mincore(addr: *mut ::c_void, len: size_t,
+                   vec: *mut c_uchar) -> c_int;
 }
 
 cfg_if! {

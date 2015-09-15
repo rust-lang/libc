@@ -59,6 +59,6 @@ s! {
         pub st_lspare: ::int32_t,
         pub st_birthtime: ::time_t,
         pub st_birthtime_nsec: ::c_long,
-        __unused: ::[u8; 8],
+        __unused: [u8; 8],
     }
 }

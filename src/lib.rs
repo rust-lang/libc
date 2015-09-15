@@ -32,31 +32,6 @@ pub enum fpos_t {}
 pub enum DIR {}
 pub enum dirent {}
 
-cfg_if! {
-    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
-        mod apple;
-        pub use apple::*;
-    } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd",
-                        target_os = "dragonfly"))] {
-        mod openbsdlike;
-        pub use openbsdlike::*;
-    } else if #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))] {
-        mod freebsdlike;
-        pub use freebsdlike::*;
-    } else if #[cfg(any(target_os = "android", target_os = "linux"))] {
-        mod linuxlike;
-        pub use linuxlike::*;
-    } else if #[cfg(windows)] {
-        mod windows;
-        pub use windows::*;
-    } else {
-        // ...
-    }
-}
-
-#[cfg(unix)] mod unix;
-#[cfg(unix)] pub use unix::*;
-
 extern {
     pub fn isalnum(c: c_int) -> c_int;
     pub fn isalpha(c: c_int) -> c_int;
@@ -172,4 +147,14 @@ extern {
     pub fn labs(i: c_long) -> c_long;
     pub fn rand() -> c_int;
     pub fn srand(seed: c_uint);
+}
+
+cfg_if! {
+    if #[cfg(windows)] {
+        mod windows;
+        pub use windows::*;
+    } else {
+        mod unix;
+        pub use unix::*;
+    }
 }
