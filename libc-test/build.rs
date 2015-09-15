@@ -415,6 +415,7 @@ impl<'a> TestGenerator<'a> {
     fn test_sign(&mut self, rust: &str, c: &str) {
         match c {
             "float" |
+            "mach_timebase_info_data_t" |
             "double" => return,
             _ => {}
         }
