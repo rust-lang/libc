@@ -318,7 +318,8 @@ fn main() {
            .flag("/wd4996"); // don't warn about deprecated functions
     } else {
         cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
-           .flag("-Wno-unused-parameter");
+           .flag("-Wno-unused-parameter")
+           .flag("-Wno-type-limits");
     }
 
     drop(tg);
@@ -337,6 +338,7 @@ impl<'a> TestGenerator<'a> {
         }
         let c = self.rust_ty_to_c_ty(ty);
         self.test_size_align(ty, &c);
+        self.test_sign(ty, &c);
     }
 
     fn test_struct(&mut self, ty: &str, s: &ast::StructDef) {
@@ -408,6 +410,32 @@ impl<'a> TestGenerator<'a> {
             }}
         "#, ty = rust));
         self.tests.push(format!("size_align_{}", rust));
+    }
+
+    fn test_sign(&mut self, rust: &str, c: &str) {
+        match c {
+            "float" |
+            "double" => return,
+            _ => {}
+        }
+        t!(writeln!(self.c, r#"
+            uint32_t __test_signed_{ty}(void) {{
+                return ((({cty}) -1) < 0);
+            }}
+        "#, ty = rust, cty = c));
+        t!(writeln!(self.rust, r#"
+            fn sign_{ty}() {{
+                extern {{
+                    fn __test_signed_{ty}() -> u32;
+                }}
+                println!("verifying type {ty} sign");
+                unsafe {{
+                    same(((!(0 as {ty})) < (0 as {ty})) as u32,
+                         __test_signed_{ty}(), "{ty} signed");
+                }}
+            }}
+        "#, ty = rust));
+        self.tests.push(format!("sign_{}", rust));
     }
 
     fn rust_ty_to_c_ty(&self, mut rust_ty: &str) -> String {
