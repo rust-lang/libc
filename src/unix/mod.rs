@@ -292,6 +292,7 @@ extern {
     pub fn flock(fd: c_int, operation: c_int) -> c_int;
 }
 
+// TODO: get rid of this #[cfg(not(...))]
 #[cfg(not(target_os = "android"))]
 extern {
     pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> c_int;
