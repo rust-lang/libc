@@ -15,6 +15,7 @@ elif [ "$TARGET" = "arm-unknown-linux-gnueabihf" ]; then
 elif [ "$TARGET" = "mips-unknown-linux-gnu" ]; then
     # FIXME: this segfaults on travis, passes locally?
     #qemu-mips -L /usr/mips-linux-gnu libc-test/target/$TARGET/debug/all-*
+    echo skip
 else
     cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
 fi
