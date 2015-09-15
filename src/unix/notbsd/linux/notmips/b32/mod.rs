@@ -1,6 +1,5 @@
 //! 32-bit specific definitions for linux-like values
 
-pub type c_char = i8;
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type size_t = u32;
@@ -8,7 +7,6 @@ pub type ptrdiff_t = i32;
 pub type clock_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
-pub type wchar_t = i32;
 pub type intptr_t = i32;
 pub type uintptr_t = u32;
 pub type ino_t = u32;
@@ -45,5 +43,17 @@ s! {
 
     pub struct pthread_attr_t {
         __size: [u32; 9]
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_arch = "x86")] {
+        mod x86;
+        pub use self::x86::*;
+    } else if #[cfg(target_arch = "arm")] {
+        mod arm;
+        pub use self::arm::*;
+    } else {
+        // ...
     }
 }
