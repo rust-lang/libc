@@ -428,9 +428,10 @@ impl<'a> Generator<'a> {
             };
 
             let cfield = self.rust2cfield(ty, &name.to_string());
-            let cfieldty = self.ty2name(&field.node.ty, false);
             let rust_fieldty = self.ty2name(&field.node.ty, true);
 
+            let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
+            let sig = self.csig_returning_ptr(&field.node.ty, &sig);
             t!(writeln!(self.c, r#"
                 uint64_t __test_offset_{ty}_{rust_field}(void) {{
                     return offsetof({cstructty}, {c_field});
@@ -439,11 +440,11 @@ impl<'a> Generator<'a> {
                     {cstructty}* foo = NULL;
                     return sizeof(foo->{c_field});
                 }}
-                {cfieldty}* __test_field_type_{ty}_{rust_field}({cstructty}* b) {{
+                {sig} {{
                     return &b->{c_field};
                 }}
             "#, ty = ty, cstructty = cty, rust_field = name, c_field = cfield,
-                cfieldty = cfieldty));
+                sig = sig));
             t!(writeln!(self.rust, r#"
                 extern {{
                     fn __test_offset_{ty}_{field}() -> u64;
@@ -636,22 +637,94 @@ impl<'a> Generator<'a> {
                         ast::MutMutable => "mut",
                     }, self.ty2name(&t.ty, rust))
                 } else {
-                    format!("{}{}*", match t.mutbl {
+                    let modifier = match t.mutbl {
                         ast::MutImmutable => "const ",
                         ast::MutMutable => "",
-                    }, self.ty2name(&t.ty, rust))
+                    };
+                    match t.ty.node {
+                        ast::TyBareFn(..) => self.ty2name(&t.ty, rust),
+                        ast::TyPtr(..) => {
+                            format!("{} {}*", self.ty2name(&t.ty, rust),
+                                    modifier)
+                        }
+                        _ => {
+                            format!("{}{}*", modifier, self.ty2name(&t.ty, rust))
+                        }
+                    }
+                }
+            }
+            ast::TyBareFn(ref t) => {
+                if rust {
+                    let args = t.decl.inputs.iter().map(|a| {
+                        self.ty2name(&a.ty, rust)
+                    }).collect::<Vec<_>>().connect(", ");
+                    let ret = match t.decl.output {
+                        ast::NoReturn(..) => "!".to_string(),
+                        ast::DefaultReturn(..) => "()".to_string(),
+                        ast::Return(ref t) => self.ty2name(t, rust),
+                    };
+                    format!("extern fn({}) -> {}", args, ret)
+                } else {
+                    assert!(t.lifetimes.len() == 0);
+                    let (ret, mut args, variadic) = self.decl2rust(&t.decl);
+                    assert!(!variadic);
+                    if args.len() == 0 {
+                        args.push("void".to_string());
+                    }
+                    format!("{}(*)({})", ret, args.connect(", "))
+                }
+            }
+            ast::TyFixedLengthVec(ref t, ref e) => {
+                assert!(rust);
+                format!("[{}; {}]", self.ty2name(t, rust), self.expr2str(e))
+            }
+            _ => panic!("unknown ty {:?}", ty),
+        }
+    }
+
+    fn csig_returning_ptr(&self, ty: &ast::Ty, sig: &str) -> String {
+        match ty.node {
+            ast::TyPath(_, ref path) if path.segments.last().unwrap()
+                                            .identifier.to_string() == "Option"
+            => {
+                let last = path.segments.last().unwrap();
+                match last.parameters {
+                    ast::AngleBracketedParameters(ref p) => {
+                        self.csig_returning_ptr(&p.types[0], sig)
+                    }
+                    _ => panic!(),
                 }
             }
             ast::TyBareFn(ref t) => {
                 assert!(t.lifetimes.len() == 0);
                 let (ret, mut args, variadic) = self.decl2rust(&t.decl);
-                assert!(!variadic);
-                if args.len() == 0 {
+                if variadic {
+                    args.push("...".to_string());
+                } else if args.len() == 0 {
                     args.push("void".to_string());
                 }
-                format!("{}(*)({})", ret, args.connect(", "))
+                format!("{}(**{})({})", ret, sig, args.connect(", "))
             }
-            _ => panic!("unknown ty {:?}", ty),
+            ast::TyFixedLengthVec(ref t, ref e) => {
+                format!("{}(*{})[{}]", self.ty2name(t, false), sig,
+                        self.expr2str(e))
+            }
+            _ => format!("{}* {}", self.ty2name(ty, false), sig)
+        }
+    }
+
+    fn expr2str(&self, e: &ast::Expr) -> String {
+        match e.node {
+            ast::ExprLit(ref l) => {
+                match l.node {
+                    ast::LitInt(a, _) => a.to_string(),
+                    _ => panic!("unknown literal: {:?}", l),
+                }
+            }
+            ast::ExprPath(_, ref path) => {
+                path.segments.last().unwrap().identifier.to_string()
+            }
+            _ => panic!("unknown expr: {:?}", e),
         }
     }
 
