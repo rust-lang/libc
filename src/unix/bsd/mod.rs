@@ -2,7 +2,7 @@ s! {
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,
-        pub sa_data: [u8; 14],
+        pub sa_data: [::c_char; 14],
     }
 
     pub struct sockaddr_in {
@@ -10,7 +10,7 @@ s! {
         pub sin_family: sa_family_t,
         pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
-        pub sin_zero: [u8; 8],
+        pub sin_zero: [::c_char; 8],
     }
 
     pub struct sockaddr_in6 {
