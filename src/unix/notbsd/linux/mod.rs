@@ -30,8 +30,8 @@ s! {
     }
 
     pub struct ipv6_mreq {
-        pub ipv6mr_multiaddr: in6_addr,
-        pub ipv6mr_interface: c_uint,
+        pub ipv6mr_multiaddr: ::in6_addr,
+        pub ipv6mr_interface: ::c_uint,
     }
 }
 
