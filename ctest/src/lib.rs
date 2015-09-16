@@ -428,31 +428,42 @@ impl<'a> Generator<'a> {
             };
 
             let cfield = self.rust2cfield(ty, &name.to_string());
+            let cfieldty = self.ty2name(&field.node.ty, false);
+            let rust_fieldty = self.ty2name(&field.node.ty, true);
 
             t!(writeln!(self.c, r#"
                 uint64_t __test_offset_{ty}_{rust_field}(void) {{
-                    return offsetof({cty}, {c_field});
+                    return offsetof({cstructty}, {c_field});
                 }}
                 uint64_t __test_size_{ty}_{rust_field}(void) {{
-                    {cty}* foo = NULL;
+                    {cstructty}* foo = NULL;
                     return sizeof(foo->{c_field});
                 }}
-            "#, ty = ty, cty = cty, rust_field = name, c_field = cfield));
+                {cfieldty}* __test_field_type_{ty}_{rust_field}({cstructty}* b) {{
+                    return &b->{c_field};
+                }}
+            "#, ty = ty, cstructty = cty, rust_field = name, c_field = cfield,
+                cfieldty = cfieldty));
             t!(writeln!(self.rust, r#"
                 extern {{
                     fn __test_offset_{ty}_{field}() -> u64;
                     fn __test_size_{ty}_{field}() -> u64;
+                    fn __test_field_type_{ty}_{field}(a: *mut {ty})
+                                                      -> *mut {field_ty};
                 }}
                 unsafe {{
-                    let foo = 0 as *const {ty};
+                    let foo = 0 as *mut {ty};
                     same(offset_of!({ty}, {field}),
                          __test_offset_{ty}_{field}(),
                          "field offset {field} of {ty}");
                     same(mem::size_of_val(&(*foo).{field}) as u64,
                          __test_size_{ty}_{field}(),
                          "field size {field} of {ty}");
+                    same(&(*foo).{field} as *const _ as *mut _,
+                         __test_field_type_{ty}_{field}(foo),
+                         "field type {field} of {ty}");
                 }}
-            "#, ty = ty, field = name));
+            "#, ty = ty, field = name, field_ty = rust_fieldty));
         }
         t!(writeln!(self.rust, r#"
             }}

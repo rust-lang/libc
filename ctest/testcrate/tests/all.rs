@@ -26,9 +26,10 @@ fn t2() {
         "bad T2Bar align",
         "bad T2Bar signed",
         "bad T2Baz size",
-        "bad T2Baz align",
-        "bad field size a of T2Baz",
+        "bad field offset a of T2Baz",
+        "bad field type a of T2Baz",
         "bad field offset b of T2Baz",
+        "bad field type b of T2Baz",
         "bad T2a function pointer",
         "bad T2C value",
     ];
