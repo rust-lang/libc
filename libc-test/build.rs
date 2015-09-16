@@ -422,6 +422,11 @@ impl<'a> TestGenerator<'a> {
             "float" |
             "double" => return,
             n if n.starts_with("pthread") => return,
+
+            // windows-isms
+            n if n.starts_with("P") => return,
+            n if n.starts_with("H") => return,
+            n if n.starts_with("LP") => return,
             _ => {}
         }
         t!(writeln!(self.c, r#"
