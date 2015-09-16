@@ -33,6 +33,7 @@ pub struct TestGenerator {
     defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
     skip_fn: Box<Fn(&str) -> bool>,
+    skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
     skip_const: Box<Fn(&str) -> bool>,
     skip_signededness: Box<Fn(&str) -> bool>,
     skip_type: Box<Fn(&str) -> bool>,
@@ -65,6 +66,7 @@ impl TestGenerator {
             defines: Vec::new(),
             cfg: Vec::new(),
             skip_fn: Box::new(|_| false),
+            skip_fn_ptrcheck: Box::new(|_| false),
             skip_const: Box::new(|_| false),
             skip_signededness: Box::new(|_| false),
             skip_type: Box::new(|_| false),
@@ -130,6 +132,13 @@ impl TestGenerator {
         where F: Fn(&str) -> bool + 'static
     {
         self.skip_fn = Box::new(f);
+        self
+    }
+
+    pub fn skip_fn_ptrcheck<F>(&mut self, f: F) -> &mut TestGenerator
+        where F: Fn(&str) -> bool + 'static
+    {
+        self.skip_fn_ptrcheck = Box::new(f);
         self
     }
 
@@ -570,12 +579,14 @@ impl<'a> Generator<'a> {
                     fn __test_fn_{name}() -> size_t;
                 }}
                 unsafe {{
-                    same({name} as usize,
-                         __test_fn_{name}() as usize,
-                         "{name} function pointer");
+                    if !{skip} {{
+                        same({name} as usize,
+                             __test_fn_{name}() as usize,
+                             "{name} function pointer");
+                    }}
                 }}
             }}
-        "#, name = name));
+        "#, name = name, skip = (self.opts.skip_fn_ptrcheck)(name)));
         self.tests.push(format!("fn_{}", name));
     }
 
