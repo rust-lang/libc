@@ -54,11 +54,6 @@ s! {
         pub sched_policy: ::int32_t,
         pub sched_priority: ::int32_t,
     }
-
-    pub struct ipv6_mreq {
-        pub ipv6mr_multiaddr: ::in6_addr,
-        pub ipv6mr_interface: ::c_int,
-    }
 }
 
 pub const BUFSIZ: ::c_uint = 1024;

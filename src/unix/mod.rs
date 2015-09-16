@@ -56,6 +56,14 @@ s! {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
     }
+
+    pub struct ipv6_mreq {
+        pub ipv6mr_multiaddr: in6_addr,
+        #[cfg(target_os = "android")]
+        pub ipv6mr_interface: c_uint,
+        #[cfg(not(target_os = "android"))]
+        pub ipv6mr_interface: c_int,
+    }
 }
 
 cfg_if! {

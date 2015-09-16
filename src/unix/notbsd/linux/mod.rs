@@ -28,11 +28,6 @@ s! {
         pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
         pub ifa_data: *mut ::c_void
     }
-
-    pub struct ipv6_mreq {
-        pub ipv6mr_multiaddr: ::in6_addr,
-        pub ipv6mr_interface: ::c_uint,
-    }
 }
 
 pub const BUFSIZ: ::c_uint = 8192;
