@@ -1,0 +1,8 @@
+[package]
+name = "ctest"
+version = "0.1.0"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+
+[dependencies]
+syntex_syntax = "0.13.0"
+gcc = { git = "https://github.com/alexcrichton/gcc-rs" }
