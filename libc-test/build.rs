@@ -186,5 +186,8 @@ fn main() {
         }
     });
 
+    // Windows dllimport oddness?
+    cfg.skip_fn_ptrcheck(move |_| windows);
+
     cfg.generate("../src/lib.rs", "all.rs");
 }
