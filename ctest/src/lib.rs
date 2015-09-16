@@ -581,7 +581,7 @@ impl<'a> Generator<'a> {
         t!(writeln!(self.rust, r#"
             fn fn_{name}() {{
                 extern {{
-                    fn __test_fn_{name}() -> *mut ();
+                    fn __test_fn_{name}() -> *mut u32;
                 }}
                 unsafe {{
                     if !{skip} {{
