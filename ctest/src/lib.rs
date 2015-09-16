@@ -460,10 +460,15 @@ impl<'a> Generator<'a> {
     }
 
     fn test_size_align(&mut self, rust: &str, c: &str) {
+        let align_of = if self.target.contains("msvc") {
+            "__alignof"
+        } else {
+            "__alignof__"
+        };
         t!(writeln!(self.c, r#"
             uint64_t __test_size_{ty}(void) {{ return sizeof({cty}); }}
-            uint64_t __test_align_{ty}(void) {{ return __alignof__({cty}); }}
-        "#, ty = rust, cty = c));
+            uint64_t __test_align_{ty}(void) {{ return {align_of}({cty}); }}
+        "#, ty = rust, cty = c, align_of = align_of));
         t!(writeln!(self.rust, r#"
             fn size_align_{ty}() {{
                 extern {{
