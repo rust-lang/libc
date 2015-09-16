@@ -1,3 +1,5 @@
+#![allow(deprecated)] // connect => join in 1.3
+
 extern crate gcc;
 extern crate syntex_syntax as syntax;
 
@@ -34,6 +36,7 @@ pub struct TestGenerator {
     cfg: Vec<(String, Option<String>)>,
     skip_fn: Box<Fn(&str) -> bool>,
     skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
+    skip_field_type: Box<Fn(&str, &str) -> bool>,
     skip_const: Box<Fn(&str) -> bool>,
     skip_signededness: Box<Fn(&str) -> bool>,
     skip_type: Box<Fn(&str) -> bool>,
@@ -71,6 +74,7 @@ impl TestGenerator {
             skip_signededness: Box::new(|_| false),
             skip_type: Box::new(|_| false),
             field_name: Box::new(|_, f| f.to_string()),
+            skip_field_type: Box::new(|_, _| false),
             type_name: Box::new(|f, is_struct| {
                 if is_struct {format!("struct {}", f)} else {f.to_string()}
             }),
@@ -118,6 +122,13 @@ impl TestGenerator {
         where F: Fn(&str, &str) -> String + 'static
     {
         self.field_name = Box::new(f);
+        self
+    }
+
+    pub fn skip_field_type<F>(&mut self, f: F) -> &mut TestGenerator
+        where F: Fn(&str, &str) -> bool + 'static
+    {
+        self.skip_field_type = Box::new(f);
         self
     }
 
@@ -430,8 +441,6 @@ impl<'a> Generator<'a> {
             let cfield = self.rust2cfield(ty, &name.to_string());
             let rust_fieldty = self.ty2name(&field.node.ty, true);
 
-            let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
-            let sig = self.csig_returning_ptr(&field.node.ty, &sig);
             t!(writeln!(self.c, r#"
                 uint64_t __test_offset_{ty}_{rust_field}(void) {{
                     return offsetof({cstructty}, {c_field});
@@ -440,17 +449,12 @@ impl<'a> Generator<'a> {
                     {cstructty}* foo = NULL;
                     return sizeof(foo->{c_field});
                 }}
-                {sig} {{
-                    return &b->{c_field};
-                }}
-            "#, ty = ty, cstructty = cty, rust_field = name, c_field = cfield,
-                sig = sig));
+            "#, ty = ty, cstructty = cty, rust_field = name, c_field = cfield));
+
             t!(writeln!(self.rust, r#"
                 extern {{
                     fn __test_offset_{ty}_{field}() -> u64;
                     fn __test_size_{ty}_{field}() -> u64;
-                    fn __test_field_type_{ty}_{field}(a: *mut {ty})
-                                                      -> *mut {field_ty};
                 }}
                 unsafe {{
                     let foo = 0 as *mut {ty};
@@ -460,6 +464,27 @@ impl<'a> Generator<'a> {
                     same(mem::size_of_val(&(*foo).{field}) as u64,
                          __test_size_{ty}_{field}(),
                          "field size {field} of {ty}");
+                }}
+            "#, ty = ty, field = name));
+
+            if (self.opts.skip_field_type)(ty, &name.to_string()) {
+                continue
+            }
+
+            let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
+            let sig = self.csig_returning_ptr(&field.node.ty, &sig);
+            t!(writeln!(self.c, r#"
+                {sig} {{
+                    return &b->{c_field};
+                }}
+            "#, sig = sig, c_field = cfield));
+            t!(writeln!(self.rust, r#"
+                extern {{
+                    fn __test_field_type_{ty}_{field}(a: *mut {ty})
+                                                      -> *mut {field_ty};
+                }}
+                unsafe {{
+                    let foo = 0 as *mut {ty};
                     same(&(*foo).{field} as *const _ as *mut _,
                          __test_field_type_{ty}_{field}(foo),
                          "field type {field} of {ty}");
