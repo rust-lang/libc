@@ -30,18 +30,18 @@ s! {
         __st_ino: ::ino_t,
         pub st_mode: ::c_uint,
         pub st_nlink: ::c_uint,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
+        pub st_uid: ::c_ulong,
+        pub st_gid: ::c_ulong,
         pub st_rdev: ::c_ulonglong,
         __pad3: [::c_uchar; 4],
         pub st_size: ::c_longlong,
         pub st_blksize: blksize_t,
         pub st_blocks: ::c_ulonglong,
-        pub st_atime: ::time_t,
+        pub st_atime: ::c_ulong,
         pub st_atime_nsec: ::c_ulong,
-        pub st_mtime: ::time_t,
+        pub st_mtime: ::c_ulong,
         pub st_mtime_nsec: ::c_ulong,
-        pub st_ctime: ::time_t,
+        pub st_ctime: ::c_ulong,
         pub st_ctime_nsec: ::c_ulong,
         pub st_ino: ::c_ulonglong,
     }
@@ -53,6 +53,11 @@ s! {
         pub guard_size: ::size_t,
         pub sched_policy: ::int32_t,
         pub sched_priority: ::int32_t,
+    }
+
+    pub struct ipv6_mreq {
+        pub ipv6mr_multiaddr: ::in6_addr,
+        pub ipv6mr_interface: ::c_int,
     }
 }
 

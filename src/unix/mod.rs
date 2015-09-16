@@ -56,11 +56,6 @@ s! {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
     }
-
-    pub struct ipv6_mreq {
-        pub ipv6mr_multiaddr: in6_addr,
-        pub ipv6mr_interface: c_uint,
-    }
 }
 
 cfg_if! {

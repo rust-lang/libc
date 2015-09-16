@@ -27,6 +27,11 @@ s! {
         pub sun_family: sa_family_t,
         pub sun_path: [c_char; 104]
     }
+
+    pub struct ipv6_mreq {
+        pub ipv6mr_multiaddr: in6_addr,
+        pub ipv6mr_interface: c_uint,
+    }
 }
 
 extern {

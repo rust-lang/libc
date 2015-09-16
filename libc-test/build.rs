@@ -15,6 +15,12 @@ fn main() {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
     }
 
+    // Android doesn't actually have in_port_t but it's much easier if we
+    // provide one for us to test against
+    if target.contains("android") {
+        cfg.define("in_port_t", Some("uint16_t"));
+    }
+
     cfg.header("errno.h")
        .header("fcntl.h")
        .header("limits.h")
@@ -136,8 +142,6 @@ fn main() {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
 
-            // Not actually defined on android, but it's not hurting anyone
-            "in_port_t" if target2.contains("android") => true,
             _ => false
         }
     });
