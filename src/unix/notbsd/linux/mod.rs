@@ -171,6 +171,8 @@ extern {
                   newp: *mut ::c_void,
                   newlen: size_t)
                   -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
+                    -> ::c_int;
 }
 
 cfg_if! {
