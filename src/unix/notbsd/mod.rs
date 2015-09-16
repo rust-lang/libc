@@ -24,7 +24,7 @@ pub enum timezone {}
 s! {
     pub struct sockaddr {
         pub sa_family: sa_family_t,
-        pub sa_data: [u8; 14],
+        pub sa_data: [::c_char; 14],
     }
 
     pub struct sockaddr_in {
@@ -49,7 +49,7 @@ s! {
 
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
-        __ss_align: isize,
+        __ss_align: ::size_t,
         #[cfg(target_pointer_width = "32")]
         __ss_pad2: [u8; 128 - 2 * 4],
         #[cfg(target_pointer_width = "64")]

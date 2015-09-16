@@ -48,7 +48,7 @@ s! {
     }
 
     pub struct in6_addr {
-        pub s6_addr: [u16; 8],
+        pub s6_addr16: [u16; 8],
         __align: [u32; 0],
     }
 

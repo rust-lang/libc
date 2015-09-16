@@ -189,5 +189,10 @@ fn main() {
     // Windows dllimport oddness?
     cfg.skip_fn_ptrcheck(move |_| windows);
 
+    cfg.skip_field_type(|struct_, field| {
+        // This is a weird union, don't check the type.
+        struct_ == "ifaddrs" && field == "ifa_ifu"
+    });
+
     cfg.generate("../src/lib.rs", "all.rs");
 }
