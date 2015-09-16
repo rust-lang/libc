@@ -63,6 +63,20 @@ s! {
     }
 }
 
+cfg_if! {
+    if #[cfg(feature = "default")] {
+        // cargo build, don't pull in anything extra as the libstd libc dep
+        // already pulls in all libs.
+    } else if #[cfg(target_env = "musl")] {
+        #[link(name = "c", kind = "static")]
+        extern {}
+    } else {
+        #[link(name = "c")]
+        #[link(name = "m")]
+        extern {}
+    }
+}
+
 extern {
     pub fn socket(domain: c_int, ty: c_int, protocol: c_int) -> c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),

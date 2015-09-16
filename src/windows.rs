@@ -667,6 +667,12 @@ pub const IPPROTO_RAW: c_int = 255;
 
 pub const FIONBIO: c_long = -0x7FFB9982;
 
+#[cfg(target_env = "msvc")]
+#[link(name = "kernel32")]
+#[link(name = "shell32")]
+#[link(name = "msvcrt")]
+extern {}
+
 extern {
     #[link_name = "_chmod"]
     pub fn chmod(path: *const c_char, mode: c_int) -> c_int;
