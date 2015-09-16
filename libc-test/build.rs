@@ -317,7 +317,8 @@ fn main() {
         cfg.flag("/W3").flag("/Wall").flag("/WX")
            .flag("/wd4820")  // weird warning about adding padding?
            .flag("/wd4100")  // don't warn about unused parameters
-           .flag("/wd4996"); // don't warn about deprecated functions
+           .flag("/wd4996")  // don't warn about deprecated functions
+           .flag("/wd4296"); // don't warn about '<' being always false
     } else {
         cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
            .flag("-Wno-unused-parameter")
@@ -416,8 +417,9 @@ impl<'a> TestGenerator<'a> {
 
     fn test_sign(&mut self, rust: &str, c: &str) {
         match c {
-            "float" |
+            "LARGE_INTEGER" |
             "mach_timebase_info_data_t" |
+            "float" |
             "double" => return,
             n if n.starts_with("pthread") => return,
             _ => {}
