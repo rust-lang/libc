@@ -3,19 +3,19 @@
 set -ex
 
 TARGET=$1
-cargo test --manifest-path libc-test/Cargo.toml --no-run --target $TARGET
+cargo build --manifest-path libc-test/Cargo.toml --target $TARGET
 
 if [ "$TARGET" = "arm-linux-androideabi" ]; then
     emulator @test -no-window &
     adb wait-for-device
-    adb push /root/target/$TARGET/debug/all-* /data/test
-    adb shell /data/test
+    adb push /root/target/$TARGET/debug/libc-test /data/libc-test
+    adb shell /data/libc-test
 elif [ "$TARGET" = "arm-unknown-linux-gnueabihf" ]; then
-    qemu-arm -L /usr/arm-linux-gnueabihf libc-test/target/$TARGET/debug/all-*
+    qemu-arm -L /usr/arm-linux-gnueabihf libc-test/target/$TARGET/debug/libc-test
 elif [ "$TARGET" = "mips-unknown-linux-gnu" ]; then
     # FIXME: this segfaults on travis, passes locally?
     #qemu-mips -L /usr/mips-linux-gnu libc-test/target/$TARGET/debug/all-*
     echo skip
 else
-    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
+    cargo run --manifest-path libc-test/Cargo.toml --target $TARGET
 fi
