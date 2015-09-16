@@ -336,10 +336,6 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "msync$UNIX2003")]
     pub fn msync(addr: *mut ::c_void, len: size_t, flags: c_int) -> c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "mprotect$UNIX2003")]
-    pub fn mprotect(addr: *mut ::c_void, len: size_t, prot: c_int)
-                    -> c_int;
     pub fn sysconf(name: c_int) -> c_long;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "usleep$UNIX2003")]

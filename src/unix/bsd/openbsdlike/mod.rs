@@ -710,4 +710,22 @@
             pub const _SC_TIMERS : c_int = 94;
         }
     }
-
+extern {
+    pub fn mprotect(addr: *const ::c_void, len: size_t, prot: c_int)
+                    -> c_int;
+    pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
+                    -> ::c_int;
+    pub fn sysctl(name: *mut c_int,
+                  namelen: c_uint,
+                  oldp: *mut ::c_void,
+                  oldlenp: *mut size_t,
+                  newp: *mut ::c_void,
+                  newlen: size_t)
+                  -> c_int;
+    pub fn sysctlbyname(name: *const c_char,
+                        oldp: *mut ::c_void,
+                        oldlenp: *mut size_t,
+                        newp: *mut ::c_void,
+                        newlen: size_t)
+                        -> c_int;
+}

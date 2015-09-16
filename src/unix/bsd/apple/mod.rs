@@ -602,8 +602,26 @@ pub const _SC_TRACE_USER_EVENT_MAX: c_int = 130;
 pub const _SC_PASS_MAX: c_int = 131;
 
 extern {
-    pub fn _NSGetExecutablePath(buf: *mut c_char,
-                                bufsize: *mut ::uint32_t) -> c_int;
+    pub fn _NSGetExecutablePath(buf: *mut ::c_char,
+                                bufsize: *mut ::uint32_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "mprotect$UNIX2003")]
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
+                    -> ::c_int;
+    pub fn shm_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn sysctl(name: *mut ::c_int,
+                  namelen: ::c_uint,
+                  oldp: *mut ::c_void,
+                  oldlenp: *mut ::size_t,
+                  newp: *mut ::c_void,
+                  newlen: ::size_t)
+                  -> ::c_int;
+    pub fn sysctlbyname(name: *const ::c_char,
+                        oldp: *mut ::c_void,
+                        oldlenp: *mut ::size_t,
+                        newp: *mut ::c_void,
+                        newlen: ::size_t)
+                        -> ::c_int;
 }
 
 cfg_if! {

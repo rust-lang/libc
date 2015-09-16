@@ -228,6 +228,8 @@ impl<'a> TestGenerator<'a> {
             ("windows", "windows", "gnu")
         } else if self.target.contains("android") {
             ("android", "unix", "")
+        } else if self.target.contains("unknown-freebsd") {
+            ("freebsd", "unix", "")
         } else {
             panic!("unknown os/family width: {}", self.target)
         };
@@ -417,6 +419,7 @@ impl<'a> TestGenerator<'a> {
             "float" |
             "mach_timebase_info_data_t" |
             "double" => return,
+            n if n.starts_with("pthread") => return,
             _ => {}
         }
         t!(writeln!(self.c, r#"

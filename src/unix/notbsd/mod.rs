@@ -305,8 +305,10 @@ pub const LOCK_UN: ::c_int = 8;
 
 extern {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
-    pub fn mincore(addr: *mut ::c_void, len: size_t,
-                   vec: *mut c_uchar) -> c_int;
+    pub fn mincore(addr: *mut ::c_void, len: ::size_t,
+                   vec: *mut ::c_uchar) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
+                    -> ::c_int;
 }
 
 cfg_if! {

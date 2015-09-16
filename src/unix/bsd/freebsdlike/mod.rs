@@ -57,7 +57,7 @@ s! {
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
-pub const RAND_MAX: ::c_int = 2147483647;
+pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 pub const EOF: ::c_int = -1;
 pub const SEEK_SET: ::c_int = 0;
 pub const SEEK_CUR: ::c_int = 1;
@@ -238,14 +238,7 @@ pub const EBADMSG: ::c_int = 89;
 pub const EMULTIHOP: ::c_int = 90;
 pub const ENOLINK: ::c_int = 91;
 pub const EPROTO: ::c_int = 92;
-pub const ENOMEDIUM: ::c_int = 93;
-pub const EUNUSED94: ::c_int = 94;
-pub const EUNUSED95: ::c_int = 95;
-pub const EUNUSED96: ::c_int = 96;
-pub const EUNUSED97: ::c_int = 97;
-pub const EUNUSED98: ::c_int = 98;
-pub const EASYNC: ::c_int = 99;
-pub const ELAST: ::c_int = 99;
+pub const ELAST: ::c_int = 96;
 
 pub const F_DUPFD: ::c_int = 0;
 pub const F_GETFD: ::c_int = 1;
@@ -323,9 +316,8 @@ pub const RLIMIT_VMEM: ::c_int = 10;
 pub const RLIMIT_AS: ::c_int = RLIMIT_VMEM;
 pub const RLIMIT_NPTS: ::c_int = 11;
 pub const RLIMIT_SWAP: ::c_int = 12;
-pub const RLIMIT_KQUEUES: ::c_int = 13;
 
-pub const RLIM_NLIMITS: rlim_t = 14;
+pub const RLIM_NLIMITS: rlim_t = 13;
 pub const RLIM_INFINITY: rlim_t = 0x7fff_ffff_ffff_ffff;
 
 pub const RUSAGE_SELF: ::c_int = 0;
@@ -366,8 +358,8 @@ pub const IP_TTL: ::c_int = 4;
 pub const IP_HDRINCL: ::c_int = 2;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
-pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
-pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
+pub const IPV6_JOIN_GROUP: ::c_int = 12;
+pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_KEEPIDLE: ::c_int = 256;
@@ -469,6 +461,26 @@ pub const _SC_SEM_NSEMS_MAX: ::c_int = 49;
 pub const _SC_SEM_VALUE_MAX: ::c_int = 50;
 pub const _SC_SIGQUEUE_MAX: ::c_int = 51;
 pub const _SC_TIMER_MAX: ::c_int = 52;
+
+extern {
+    pub fn mprotect(addr: *const ::c_void, len: size_t, prot: c_int)
+                    -> c_int;
+    pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
+                    -> ::c_int;
+    pub fn sysctl(name: *const c_int,
+                  namelen: c_uint,
+                  oldp: *mut ::c_void,
+                  oldlenp: *mut size_t,
+                  newp: *const ::c_void,
+                  newlen: size_t)
+                  -> c_int;
+    pub fn sysctlbyname(name: *const c_char,
+                        oldp: *mut ::c_void,
+                        oldlenp: *mut size_t,
+                        newp: *const ::c_void,
+                        newlen: size_t)
+                        -> c_int;
+}
 
 cfg_if! {
     if #[cfg(target_arch = "x86")] {
