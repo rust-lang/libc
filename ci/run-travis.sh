@@ -11,9 +11,7 @@ export HOST=$ARCH-$OS
 MAIN_TARGETS=https://static.rust-lang.org/dist
 EXTRA_TARGETS=https://people.mozilla.org/~acrichton/libc-test/2015-09-08
 
-if [ "$TARGET" = "DOX" ]; then
-  exec sh ci/dox.sh
-elif [ "$TARGET" = "arm-linux-androideabi" ]; then
+if [ "$TARGET" = "arm-linux-androideabi" ]; then
   # Pull a pre-built docker image for testing android, then run tests entirely
   # within that image.
   docker pull alexcrichton/rust-libc-test
@@ -54,3 +52,9 @@ fi
 mkdir .cargo
 cp ci/cargo-config .cargo/config
 sh ci/run.sh $TARGET
+
+if [ "$TARGET" = "x86_64-unknown-linux-gnu" ] && \
+   [ "$TRAVIS_RUST_VERSION" = "nightly" ] && \
+   [ "$TRAVIS_OS_NAME" = "linux" ]; then
+  sh ci/dox.sh
+fi

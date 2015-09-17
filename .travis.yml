@@ -1,21 +1,24 @@
 language: rust
-sudo: required
-# rust:
+sudo: false
+rust:
 #   - 1.0.0
 #   - beta
-#   - nightly
-services:
-  - docker
+  - nightly
+# services:
+#   - docker
 script:
   - sh ci/run-travis.sh
 # os:
 #   - linux
 #   - osx
 env:
-  # - ARCH=i686
-  # - ARCH=x86_64
-matrix:
-  include:
+  matrix:
+    # - ARCH=i686
+    - ARCH=x86_64
+  global:
+    secure: Zh+dsvtjyhRKki3nA+x9FlUEszs6qswMSg1xnkihLbWjrNQhPRcfZXux2LoRbh4A7RtrlDU0Bzga9G7uuNlouALqeAqSbUVBmctjrOrWnKnhHmYQkYa8XBTR90rSn+37sLyinnGSFRIrOM5sc3dTZGlGmjNWwp+Kf8oj9T2SS7w=
+# matrix:
+#   include:
     # - os: linux
     #   env: TARGET=arm-linux-androideabi
     #   rust: nightly-2015-09-08
@@ -28,15 +31,10 @@ matrix:
     # - os: linux
     #   env: TARGET=mips-unknown-linux-gnu
     #   rust: nightly-2015-09-08
-    - os: linux
-      env:
-        - TARGET=DOX
-        - secure: Zh+dsvtjyhRKki3nA+x9FlUEszs6qswMSg1xnkihLbWjrNQhPRcfZXux2LoRbh4A7RtrlDU0Bzga9G7uuNlouALqeAqSbUVBmctjrOrWnKnhHmYQkYa8XBTR90rSn+37sLyinnGSFRIrOM5sc3dTZGlGmjNWwp+Kf8oj9T2SS7w=
-      rust: nightly
-addons:
-  apt:
-    packages:
-      - gcc-multilib
+# addons:
+#   apt:
+#     packages:
+#       - gcc-multilib
 notifications:
   email:
     on_success: never
