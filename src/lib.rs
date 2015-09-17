@@ -14,7 +14,10 @@
 
 #[repr(u8)]
 pub enum c_void {
+    // Two dummy variants so the #[repr] attribute can be used
+    #[doc(hidden)]
     __variant1,
+    #[doc(hidden)]
     __variant2,
 }
 
