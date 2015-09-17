@@ -5,10 +5,16 @@ set -e
 rm -rf target/doc
 mkdir -p target/doc
 
+cp ci/landing-page-head.html target/doc/index.html
+
 doc() {
   local _target=$1
   echo documenting $_target
-  rustdoc -o target/doc/$_target --target $_target src/lib.rs --cfg dox
+  rustdoc -o target/doc/$_target --target $_target src/lib.rs --cfg dox \
+    --crate-name libc
+
+  echo "<li><a href="$_target/libc/index.html">$_target</a></li>" \
+    >> target/doc/index.html
 }
 
 doc x86_64-unknown-linux-gnu
@@ -25,7 +31,7 @@ doc mips-unknown-linux-gnu
 doc arm-linux-androideabi
 doc x86_64-unknown-linux-musl
 
-cp ci/landing-page.html target/doc/index.html
+cat ci/landing-page-footer.html >> target/doc/index.html
 
 if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "autotest" ]; then
   pip install ghp-import --user $USER
