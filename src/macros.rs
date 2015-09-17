@@ -40,8 +40,8 @@ macro_rules! s {
             #[repr(C)]
             pub struct $i { $($field)* }
         }
-        impl Copy for $i {}
-        impl Clone for $i {
+        impl ::dox::Copy for $i {}
+        impl ::dox::Clone for $i {
             fn clone(&self) -> $i { *self }
         }
     )*)

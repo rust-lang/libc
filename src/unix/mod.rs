@@ -316,8 +316,8 @@ extern {
     pub fn freeifaddrs(ifa: *mut ifaddrs);
     pub fn glob(pattern: *const c_char,
                 flags: c_int,
-                errfunc: Option<extern "C" fn(epath: *const c_char,
-                                                  errno: c_int) -> c_int>,
+                errfunc: ::dox::Option<extern "C" fn(epath: *const c_char,
+                                                     errno: c_int) -> c_int>,
                 pglob: *mut glob_t);
     pub fn globfree(pglob: *mut glob_t);
 

@@ -28,6 +28,9 @@ matrix:
     - os: linux
       env: TARGET=mips-unknown-linux-gnu
       rust: nightly-2015-09-08
+    - os: linux
+      env: TARGET=DOX
+      rust: nightly
 addons:
   apt:
     packages:

@@ -9,8 +9,16 @@
 // except according to those terms.
 
 #![allow(bad_style, raw_pointer_derive)]
+#![cfg_attr(dox, feature(no_core, lang_items))]
+#![cfg_attr(dox, no_core)]
+#![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
+       html_favicon_url = "https://doc.rust-lang.org/favicon.ico")]
+
+#![cfg_attr(all(target_os = "linux", target_arch = "x86_64"),
+            doc(html_root_url = "http://alexcrichton.com/libc/x86_64-unknown-linux-gnu"))]
 
 #[macro_use] mod macros;
+mod dox;
 
 #[repr(u8)]
 pub enum c_void {
