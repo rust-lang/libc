@@ -38,3 +38,6 @@ addons:
 notifications:
   email:
     on_success: never
+branches:
+  only:
+    - autotest
