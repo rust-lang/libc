@@ -14,6 +14,8 @@ os:
 env:
   - ARCH=i686
   - ARCH=x86_64
+  global:
+    secure: Zh+dsvtjyhRKki3nA+x9FlUEszs6qswMSg1xnkihLbWjrNQhPRcfZXux2LoRbh4A7RtrlDU0Bzga9G7uuNlouALqeAqSbUVBmctjrOrWnKnhHmYQkYa8XBTR90rSn+37sLyinnGSFRIrOM5sc3dTZGlGmjNWwp+Kf8oj9T2SS7w=
 matrix:
   include:
     - os: linux

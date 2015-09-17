@@ -30,5 +30,5 @@ cp ci/landing-page.html target/doc/index.html
 if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "autotest" ]; then
   pip install ghp-import --user $USER
   $HOME/.local/bin/ghp-import -n target/doc
-  git push -qf https://${TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages
+  git push -qf https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages
 fi
