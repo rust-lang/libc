@@ -4,22 +4,7 @@ libc
 A Rust library with native bindings to the types and functions commonly found on
 various systems, including libc.
 
-[![Build Status](https://travis-ci.org/rust-lang/libc.svg?branch=master)](https://travis-ci.org/rust-lang/libc)
+[![Build Status](https://travis-ci.org/alexcrichton/libc.svg?branch=master)](https://travis-ci.org/alexcrichton/libc)
+[![Build status](https://ci.appveyor.com/api/projects/status/v0414slj8y8nga0p?svg=true)](https://ci.appveyor.com/project/alexcrichton/libc)
 
-[Documentation](http://doc.rust-lang.org/libc)
-
-## Usage
-
-Add this to your `Cargo.toml`:
-
-```toml
-[dependencies]
-
-libc = "0.1"
-```
-
-and this to your crate root:
-
-```rust
-extern crate libc;
-```
+[Documentation](http://alexcrichton.com/libc)
