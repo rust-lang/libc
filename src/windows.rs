@@ -96,6 +96,15 @@ pub type LPFILETIME = *mut FILETIME;
 pub type LPWSAPROTOCOL_INFO = *mut WSAPROTOCOL_INFO;
 pub type LPWIN32_FIND_DATAW = *mut WIN32_FIND_DATAW;
 pub type LPWSAPROTOCOLCHAIN = *mut WSAPROTOCOLCHAIN;
+pub type UCHAR = c_uchar;
+pub type ULONG = c_ulong;
+cfg_if! {
+    if #[cfg(target_arch = "x86_64")] {
+        pub type ULONG_PTR = u64;
+    } else {
+        pub type ULONG_PTR = c_ulong;
+    }
+}
 
 s! {
     // note this is the struct called stat64 in Windows. Not stat, nor stati64.
@@ -131,7 +140,7 @@ s! {
 
     pub struct sockaddr {
         pub sa_family: u16,
-        pub sa_data: [u8; 14],
+        pub sa_data: [CHAR; 14],
     }
 
     pub struct sockaddr_storage {
@@ -145,23 +154,23 @@ s! {
         pub sin_family: u16,
         pub sin_port: u16,
         pub sin_addr: in_addr,
-        pub sin_zero: [u8; 8],
+        pub sin_zero: [CHAR; 8],
     }
 
     pub struct in_addr {
-        pub s_addr: u32,
+        pub s_addr: ULONG,
     }
 
     pub struct sockaddr_in6 {
         pub sin6_family: u16,
         pub sin6_port: u16,
-        pub sin6_flowinfo: u32,
+        pub sin6_flowinfo: ULONG,
         pub sin6_addr: in6_addr,
-        pub sin6_scope_id: u32,
+        pub sin6_scope_id: ULONG,
     }
 
     pub struct in6_addr {
-        pub s6_addr: [u16; 8],
+        pub s6_addr: [UCHAR; 16],
     }
 
     pub struct ip_mreq {
@@ -171,7 +180,7 @@ s! {
 
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
-        pub ipv6mr_interface: c_uint,
+        pub ipv6mr_interface: ULONG,
     }
 
     pub struct addrinfo {
@@ -244,8 +253,8 @@ s! {
     }
 
     pub struct OVERLAPPED {
-        pub Internal: *mut c_ulong,
-        pub InternalHigh: *mut c_ulong,
+        pub Internal: ULONG_PTR,
+        pub InternalHigh: ULONG_PTR,
         pub Offset: DWORD,
         pub OffsetHigh: DWORD,
         pub hEvent: HANDLE,
@@ -265,7 +274,7 @@ s! {
 
     pub struct WSAPROTOCOLCHAIN {
         pub ChainLen: c_int,
-        pub ChainEntries: [DWORD; MAX_PROTOCOL_CHAIN as usize],
+        pub ChainEntries: [DWORD; 7],
     }
 
     pub struct WSAPROTOCOL_INFO {
@@ -288,7 +297,7 @@ s! {
         pub iSecurityScheme: c_int,
         pub dwMessageSize: DWORD,
         pub dwProviderReserved: DWORD,
-        pub szProtocol: [u8; WSAPROTOCOL_LEN as usize + 1],
+        pub szProtocol: [CHAR; 256],
     }
 
     pub struct WIN32_FIND_DATAW {
