@@ -362,6 +362,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("x86", "32")
     } else if target.starts_with("arm") {
         ("arm", "32")
+    } else if target.starts_with("aarch64") {
+        ("aarch64", "64")
     } else if target.starts_with("mips") {
         ("mips", "32")
     } else {
