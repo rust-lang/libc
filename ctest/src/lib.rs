@@ -317,10 +317,14 @@ impl TestGenerator {
 
         if target.contains("msvc") {
             cfg.flag("/W3").flag("/Wall").flag("/WX")
-               .flag("/wd4820")  // weird warning about adding padding?
-               .flag("/wd4100")  // don't warn about unused parameters
-               .flag("/wd4996")  // don't warn about deprecated functions
-               .flag("/wd4296"); // don't warn about '<' being always false
+                // ignored warnings
+               .flag("/wd4820")  // warning about adding padding?
+               .flag("/wd4100")  // unused parameters
+               .flag("/wd4996")  // deprecated functions
+               .flag("/wd4296")  // '<' being always false
+               .flag("/wd4255")  // converting () to (void)
+               .flag("/wd4668")  // using an undefined thing in preprocessor?
+                ;
         } else {
             cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
                .flag("-Wno-unused-parameter")
