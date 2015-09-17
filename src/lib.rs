@@ -14,8 +14,42 @@
 #![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
        html_favicon_url = "https://doc.rust-lang.org/favicon.ico")]
 
-#![cfg_attr(all(target_os = "linux", target_arch = "x86_64"),
-            doc(html_root_url = "http://alexcrichton.com/libc/x86_64-unknown-linux-gnu"))]
+#![cfg_attr(all(target_os = "linux", target_arch = "x86_64"), doc(
+    html_root_url = "http://alexcrichton.com/libc/x86_64-unknown-linux-gnu"
+))]
+#![cfg_attr(all(target_os = "linux", target_arch = "x86"), doc(
+    html_root_url = "http://alexcrichton.com/libc/i686-unknown-linux-gnu"
+))]
+#![cfg_attr(all(target_os = "linux", target_arch = "arm"), doc(
+    html_root_url = "http://alexcrichton.com/libc/arm-unknown-linux-gnueabihf"
+))]
+#![cfg_attr(all(target_os = "linux", target_arch = "mips"), doc(
+    html_root_url = "http://alexcrichton.com/libc/mips-unknown-linux-gnu"
+))]
+#![cfg_attr(all(target_os = "linux", target_env = "musl"), doc(
+    html_root_url = "http://alexcrichton.com/libc/x86_64-unknown-linux-musl"
+))]
+#![cfg_attr(all(target_os = "macos", target_arch = "x86_64"), doc(
+    html_root_url = "http://alexcrichton.com/libc/x86_64-apple-darwin"
+))]
+#![cfg_attr(all(target_os = "macos", target_arch = "x86"), doc(
+    html_root_url = "http://alexcrichton.com/libc/i686-apple-darwin"
+))]
+#![cfg_attr(all(windows, target_arch = "x86_64", target_env = "gnu"), doc(
+    html_root_url = "http://alexcrichton.com/libc/x86_64-pc-windows-gnu"
+))]
+#![cfg_attr(all(windows, target_arch = "i686", target_env = "gnu"), doc(
+    html_root_url = "http://alexcrichton.com/libc/i686-pc-windows-gnu"
+))]
+#![cfg_attr(all(windows, target_arch = "x86_64", target_env = "msvc"), doc(
+    html_root_url = "http://alexcrichton.com/libc/x86_64-pc-windows-msvc"
+))]
+#![cfg_attr(all(windows, target_arch = "i686", target_env = "msvc"), doc(
+    html_root_url = "http://alexcrichton.com/libc/i686-pc-windows-msvc"
+))]
+#![cfg_attr(all(target_os = "android"), doc(
+    html_root_url = "http://alexcrichton.com/libc/arm-linux-androideabi"
+))]
 
 #[macro_use] mod macros;
 mod dox;

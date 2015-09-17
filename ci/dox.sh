@@ -7,29 +7,17 @@ mkdir -p target/doc
 
 cp ci/landing-page-head.html target/doc/index.html
 
-doc() {
-  local _target=$1
-  echo documenting $_target
-  rustdoc -o target/doc/$_target --target $_target src/lib.rs --cfg dox \
+TARGETS=`grep html_root_url src/lib.rs | sed 's/.*".*\/\(.*\)"/\1/'`
+
+for target in $TARGETS; do
+  echo documenting $target
+
+  rustdoc -o target/doc/$target --target $target src/lib.rs --cfg dox \
     --crate-name libc
 
-  echo "<li><a href="$_target/libc/index.html">$_target</a></li>" \
+  echo "<li><a href="$target/libc/index.html">$target</a></li>" \
     >> target/doc/index.html
-}
-
-doc x86_64-unknown-linux-gnu
-doc i686-unknown-linux-gnu
-doc x86_64-apple-darwin
-doc i686-apple-darwin
-doc x86_64-pc-windows-gnu
-doc x86_64-pc-windows-msvc
-doc i686-pc-windows-gnu
-doc i686-pc-windows-msvc
-
-doc arm-unknown-linux-gnueabihf
-doc mips-unknown-linux-gnu
-doc arm-linux-androideabi
-doc x86_64-unknown-linux-musl
+done
 
 cat ci/landing-page-footer.html >> target/doc/index.html
 
