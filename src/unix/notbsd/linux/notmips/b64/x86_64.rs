@@ -5,6 +5,8 @@ pub type nlink_t = u64;
 pub type blksize_t = i64;
 pub type wchar_t = i32;
 
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
+
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,

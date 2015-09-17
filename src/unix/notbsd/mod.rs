@@ -18,6 +18,7 @@ pub type in_port_t = u16;
 pub type rlim_t = c_ulong;
 pub type sa_family_t = u16;
 pub type sighandler_t = size_t;
+pub type pthread_key_t = c_uint;
 
 pub enum timezone {}
 
@@ -68,7 +69,7 @@ s! {
 
         pub ai_canonname: *mut c_char,
 
-        #[cfg(any(target_os = "android", target_os = "nacl"))]
+        #[cfg(target_os = "android")]
         pub ai_addr: *mut ::sockaddr,
 
         pub ai_next: *mut addrinfo,
@@ -105,7 +106,6 @@ pub const F_SETFL: c_int = 4;
 pub const O_ACCMODE: c_int = 3;
 
 pub const SIGTRAP: c_int = 5;
-pub const SIG_IGN: size_t = 1;
 
 pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: c_int = 1;
@@ -303,10 +303,21 @@ pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
+pub const SIGSTKSZ: ::size_t = 8192;
+
 extern {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;
+    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn prctl(option: ::c_int, ...) -> ::c_int;
+    pub fn pthread_getattr_np(native: ::pthread_t,
+                              attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
+                                     guardsize: *mut ::size_t) -> ::c_int;
+    pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
+                                 stackaddr: *mut *mut ::c_void,
+                                 stacksize: *mut ::size_t) -> ::c_int;
 }
 
 cfg_if! {

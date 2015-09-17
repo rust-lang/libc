@@ -1,3 +1,25 @@
+s! {
+    pub struct sigaction {
+        pub sa_sigaction: ::sighandler_t,
+        pub sa_mask: ::sigset_t,
+        pub sa_flags: ::c_int,
+        _restorer: *mut ::c_void,
+    }
+
+    pub struct sigaltstack {
+        pub ss_sp: *mut ::c_void,
+        pub ss_flags: ::c_int,
+        pub ss_size: ::size_t
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub _pad: [::c_int; 29],
+        _align: [usize; 0],
+    }
+}
 
 pub const RLIMIT_RSS: ::c_int = 5;
 pub const RLIMIT_NOFILE: ::c_int = 7;
@@ -146,6 +168,14 @@ pub const TCP_FASTOPEN: ::c_int = 23;
 pub const TCP_TIMESTAMP: ::c_int = 24;
 
 pub const SO_REUSEPORT: ::c_int = 15;
+
+pub const FIOCLEX: ::c_ulong = 0x5451;
+
+pub const SA_ONSTACK: ::c_ulong = 0x08000000;
+pub const SA_SIGINFO: ::c_ulong = 0x00000004;
+
+pub const SIGBUS: ::c_int = 7;
+pub const SIG_SETMASK: ::c_int = 2;
 
 cfg_if! {
     if #[cfg(any(target_arch = "x86", target_arch = "arm"))] {

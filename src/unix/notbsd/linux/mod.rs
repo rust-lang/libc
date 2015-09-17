@@ -28,6 +28,46 @@ s! {
         pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
         pub ifa_data: *mut ::c_void
     }
+
+    pub struct pthread_mutex_t {
+        #[cfg(any(target_arch = "mips", target_arch = "mipsel",
+                  target_arch = "arm"))]
+        __align: [::c_long; 0],
+        #[cfg(not(any(target_arch = "mips", target_arch = "mipsel",
+                      target_arch = "arm")))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
+    }
+
+    pub struct pthread_rwlock_t {
+        #[cfg(any(target_arch = "mips", target_arch = "mipsel",
+                  target_arch = "arm"))]
+        __align: [::c_long; 0],
+        #[cfg(not(any(target_arch = "mips", target_arch = "mipsel",
+                      target_arch = "arm")))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
+    }
+
+    pub struct pthread_mutexattr_t {
+        __align: [::c_int; 0],
+        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
+    }
+
+    pub struct pthread_cond_t {
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_COND_T],
+    }
+
+    pub struct passwd {
+        pub pw_name: *mut ::c_char,
+        pub pw_passwd: *mut ::c_char,
+        pub pw_uid: ::uid_t,
+        pub pw_gid: ::gid_t,
+        pub pw_gecos: *mut ::c_char,
+        pub pw_dir: *mut ::c_char,
+        pub pw_shell: *mut ::c_char,
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 8192;
@@ -160,6 +200,22 @@ pub const MAP_32BIT: ::c_int = 0x0040;
 
 pub const TCP_MD5SIG: ::c_int = 14;
 
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    __align: [],
+    size: [0; __SIZEOF_PTHREAD_MUTEX_T],
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    __align: [],
+    size: [0; __SIZEOF_PTHREAD_COND_T],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    __align: [],
+    size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
+};
+pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
+pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
+pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+
 extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
@@ -173,6 +229,7 @@ extern {
                   -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
+    pub fn __errno_location() -> *mut ::c_int;
 }
 
 cfg_if! {

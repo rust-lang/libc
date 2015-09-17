@@ -15,6 +15,14 @@ pub type mode_t = u32;
 pub type ssize_t = i64;
 pub type blkcnt_t = i64;
 
+s! {
+    pub struct sigset_t {
+        __val: [::c_ulong; 16],
+    }
+}
+
+pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
         mod aarch64;

@@ -22,6 +22,8 @@ pub type nlink_t = u16;
 pub type useconds_t = i32;
 pub type socklen_t = i32;
 pub type pthread_t = c_long;
+pub type pthread_mutexattr_t = ::c_long;
+pub type sigset_t = c_ulong;
 
 s! {
     pub struct stat {
@@ -53,6 +55,63 @@ s! {
         pub guard_size: ::size_t,
         pub sched_policy: ::int32_t,
         pub sched_priority: ::int32_t,
+    }
+
+    pub struct pthread_mutex_t { value: ::c_int }
+
+    pub struct pthread_cond_t { value: ::c_int }
+
+    pub struct pthread_rwlock_t {
+        lock: pthread_mutex_t,
+        cond: pthread_cond_t,
+        numLocks: ::c_int,
+        writerThreadId: ::c_int,
+        pendingReaders: ::c_int,
+        pendingWriters: ::c_int,
+        reserved: [*mut ::c_void; 4],
+    }
+
+    pub struct passwd {
+        pub pw_name: *mut ::c_char,
+        pub pw_passwd: *mut ::c_char,
+        pub pw_uid: ::uid_t,
+        pub pw_gid: ::gid_t,
+        pub pw_dir: *mut ::c_char,
+        pub pw_shell: *mut ::c_char,
+    }
+
+    pub struct sigaltstack {
+        pub ss_sp: *mut ::c_void,
+        pub ss_flags: ::c_int,
+        pub ss_size: ::size_t
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub _pad: [::c_int; 29],
+        _align: [u64; 0],
+    }
+}
+
+#[cfg(target_pointer_width = "32")]
+s!{
+    pub struct sigaction {
+        pub sa_sigaction: sighandler_t,
+        pub sa_flags: libc::c_ulong,
+        _restorer: *mut libc::c_void,
+        pub sa_mask: sigset_t,
+    }
+}
+
+#[cfg(target_pointer_width = "64")]
+s!{
+    pub struct sigaction {
+        pub sa_flags: libc::c_uint,
+        pub sa_sigaction: sighandler_t,
+        pub sa_mask: sigset_t,
+        _restorer: *mut libc::c_void,
     }
 }
 
@@ -121,8 +180,32 @@ pub const _SC_THREAD_PRIO_PROTECT: ::c_int = 84;
 pub const _SC_THREAD_SAFE_FUNCTIONS: ::c_int = 85;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 8192;
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    value: 0,
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    value: 0,
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    lock: PTHREAD_MUTEX_INITIALIZER,
+    cond: PTHREAD_COND_INITIALIZER,
+    numLocks: 0,
+    writerThreadId: 0,
+    pendingReaders: 0,
+    pendingWriters: 0,
+    reserved: [0 as *mut _; 4],
+};
+pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 
 pub const O_SYNC: ::c_int = 0x1000;
+
+pub const FIOCLEX: ::c_ulong = 0x5451;
+
+pub const SA_ONSTACK: ::c_ulong = 0x08000000;
+pub const SA_SIGINFO: ::c_ulong = 0x00000004;
+
+pub const SIGBUS: ::c_int = 7;
+pub const SIG_SETMASK: ::c_int = 2;
 
 extern {
     pub fn madvise(addr: *const ::c_void, len: ::size_t, advice: ::c_int)

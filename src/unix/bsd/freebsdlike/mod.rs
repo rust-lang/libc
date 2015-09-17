@@ -5,6 +5,11 @@ pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type in_port_t = u16;
 pub type in_addr_t = u32;
+pub type pthread_mutex_t = *mut ::c_void;
+pub type pthread_mutexattr_t = *mut ::c_void;
+pub type pthread_cond_t = *mut ::c_void;
+pub type pthread_rwlock_t = *mut ::c_void;
+pub type pthread_key_t = ::c_int;
 
 pub enum timezone {}
 
@@ -52,6 +57,26 @@ s! {
         pub ifa_netmask: *mut ::sockaddr,
         pub ifa_dstaddr: *mut ::sockaddr,
         pub ifa_data: *mut ::c_void
+    }
+
+    pub struct sigset_t {
+        bits: [u32; 4],
+    }
+
+    pub struct siginfo_t {
+        pub _signo: ::c_int,
+        pub _errno: ::c_int,
+        pub _code: ::c_int,
+        pub _pid: ::pid_t,
+        pub _uid: ::uid_t,
+        pub _status: ::c_int,
+        pub si_addr: *mut ::c_void
+    }
+
+    pub struct sigaction {
+        pub sa_sigaction: sighandler_t,
+        pub sa_flags: ::c_int,
+        pub sa_mask: sigset_t,
     }
 }
 
@@ -247,7 +272,6 @@ pub const F_GETFL: ::c_int = 3;
 pub const F_SETFL: ::c_int = 4;
 
 pub const SIGTRAP: ::c_int = 5;
-pub const SIG_IGN: size_t = 1;
 
 pub const GLOB_APPEND  : ::c_int = 0x0001;
 pub const GLOB_DOOFFS  : ::c_int = 0x0002;
@@ -462,6 +486,11 @@ pub const _SC_SEM_VALUE_MAX: ::c_int = 50;
 pub const _SC_SIGQUEUE_MAX: ::c_int = 51;
 pub const _SC_TIMER_MAX: ::c_int = 52;
 
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0 as *mut _;
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
+pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
+
 extern {
     pub fn mprotect(addr: *const ::c_void, len: size_t, prot: c_int)
                     -> c_int;
@@ -480,6 +509,8 @@ extern {
                         newp: *const ::c_void,
                         newlen: size_t)
                         -> c_int;
+    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
 }
 
 cfg_if! {

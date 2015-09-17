@@ -8,6 +8,7 @@ fn main() {
     let target = env::var("TARGET").unwrap();
     let windows = target.contains("windows");
     let mingw = target.contains("windows-gnu");
+    let linux = target.contains("unknown-linux");
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
@@ -78,6 +79,8 @@ fn main() {
         cfg.header("sys/wait.h");
         cfg.header("unistd.h");
         cfg.header("utime.h");
+        cfg.header("pwd.h");
+        cfg.header("grp.h");
 
         if target.contains("android") {
             cfg.header("arpa/inet.h");
@@ -86,16 +89,23 @@ fn main() {
             cfg.header("ifaddrs.h");
             cfg.header("sys/sysctl.h");
         }
+
+    }
+    if target.contains("linux") {
+        cfg.header("sys/prctl.h");
     }
 
     cfg.type_name(move |ty, is_struct| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "glob_t" |
             "FILE" |
-            "DIR" |
-            "fpos_t" => ty.to_string(),
-            t if t.starts_with("pthread") => t.to_string(),
+            "DIR" => ty.to_string(),
+
+            // Fixup a few types on windows that don't actually exist.
+            "time64_t" if windows => "__time64_t".to_string(),
+            "ssize_t" if windows => "SSIZE_T".to_string(),
+
+            t if t.ends_with("_t") => t.to_string(),
 
             // Windows uppercase structs don't have `struct` in front, there's a
             // few special cases for windows, and then otherwise put `struct` in
@@ -111,10 +121,6 @@ fn main() {
                     format!("struct {}", t)
                 }
             }
-
-            // Fixup a few types on windows that don't actually exist.
-            "time64_t" if windows => "__time64_t".to_string(),
-            "ssize_t" if windows => "SSIZE_T".to_string(),
 
             t => t.to_string(),
         }
@@ -163,30 +169,33 @@ fn main() {
         }
     });
 
-    // Apparently these don't exist in mingw headers?
     cfg.skip_const(move |name| {
         match name {
+            // Apparently these don't exist in mingw headers?
             "MEM_RESET_UNDO" |
             "FILE_ATTRIBUTE_NO_SCRUB_DATA" |
             "FILE_ATTRIBUTE_INTEGRITY_STREAM" |
             "ERROR_NOTHING_TO_TERMINATE" if mingw => true,
+
             "SIG_IGN" => true, // sighandler_t weirdness
+
             _ => false,
         }
     });
 
-    cfg.skip_fn(|name| {
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verifiedmanually verified
         match name {
-            // manually verified
-            "execv" |
+            "execv" |       // crazy stuff with const/mut
             "execve" |
             "execvp" |
-            "execvpe" |
-            "glob" |
-            "getrlimit" |
-            "setrlimit" |
-            "signal" |
-            "getopt" => true,
+            "execvpe" => true,
+
+            "getrlimit" |                    // non-int in 1st arg
+            "setrlimit" |                    // non-int in 1st arg
+            "gettimeofday" |                 // typed 2nd arg on linux
+            "strerror_r" if linux => true,   // actually xpg-something-or-other
+
             _ => false,
         }
     });
@@ -196,7 +205,15 @@ fn main() {
 
     cfg.skip_field_type(|struct_, field| {
         // This is a weird union, don't check the type.
-        struct_ == "ifaddrs" && field == "ifa_ifu"
+        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        // sighandler_t type is super weird
+        (struct_ == "sigaction" && field == "sa_sigaction")
+    });
+
+    cfg.skip_field(|struct_, field| {
+        // this is actually a union on linux, so we can't represent it well and
+        // just insert some padding.
+        (struct_ == "siginfo_t" && field == "_pad")
     });
 
     cfg.generate("../src/lib.rs", "all.rs");
