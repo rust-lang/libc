@@ -1,40 +1,40 @@
 language: rust
-sudo: false
+sudo: required
 rust:
-#   - 1.0.0
-#   - beta
+  - 1.0.0
+  - beta
   - nightly
-# services:
-#   - docker
+services:
+  - docker
 script:
   - sh ci/run-travis.sh
-# os:
-#   - linux
-#   - osx
+os:
+  - linux
+  - osx
 env:
   matrix:
-    # - ARCH=i686
+    - ARCH=i686
     - ARCH=x86_64
   global:
     secure: Zh+dsvtjyhRKki3nA+x9FlUEszs6qswMSg1xnkihLbWjrNQhPRcfZXux2LoRbh4A7RtrlDU0Bzga9G7uuNlouALqeAqSbUVBmctjrOrWnKnhHmYQkYa8XBTR90rSn+37sLyinnGSFRIrOM5sc3dTZGlGmjNWwp+Kf8oj9T2SS7w=
-# matrix:
-#   include:
-    # - os: linux
-    #   env: TARGET=arm-linux-androideabi
-    #   rust: nightly-2015-09-08
-    # - os: linux
-    #   env: TARGET=x86_64-unknown-linux-musl
-    #   rust: nightly-2015-09-08
-    # - os: linux
-    #   env: TARGET=arm-unknown-linux-gnueabihf
-    #   rust: nightly-2015-09-08
-    # - os: linux
-    #   env: TARGET=mips-unknown-linux-gnu
-    #   rust: nightly-2015-09-08
-# addons:
-#   apt:
-#     packages:
-#       - gcc-multilib
+matrix:
+  include:
+    - os: linux
+      env: TARGET=arm-linux-androideabi
+      rust: nightly-2015-09-08
+    - os: linux
+      env: TARGET=x86_64-unknown-linux-musl
+      rust: nightly-2015-09-08
+    - os: linux
+      env: TARGET=arm-unknown-linux-gnueabihf
+      rust: nightly-2015-09-08
+    - os: linux
+      env: TARGET=mips-unknown-linux-gnu
+      rust: nightly-2015-09-08
+addons:
+  apt:
+    packages:
+      - gcc-multilib
 notifications:
   email:
     on_success: never
