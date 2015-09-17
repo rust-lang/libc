@@ -171,6 +171,7 @@ s! {
 
     pub struct in6_addr {
         pub s6_addr: [UCHAR; 16],
+        _align: [u16; 0],
     }
 
     pub struct ip_mreq {
