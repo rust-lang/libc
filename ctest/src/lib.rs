@@ -36,6 +36,7 @@ pub struct TestGenerator {
     cfg: Vec<(String, Option<String>)>,
     skip_fn: Box<Fn(&str) -> bool>,
     skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
+    skip_field: Box<Fn(&str, &str) -> bool>,
     skip_field_type: Box<Fn(&str, &str) -> bool>,
     skip_const: Box<Fn(&str) -> bool>,
     skip_signededness: Box<Fn(&str) -> bool>,
@@ -74,6 +75,7 @@ impl TestGenerator {
             skip_signededness: Box::new(|_| false),
             skip_type: Box::new(|_| false),
             field_name: Box::new(|_, f| f.to_string()),
+            skip_field: Box::new(|_, _| false),
             skip_field_type: Box::new(|_, _| false),
             type_name: Box::new(|f, is_struct| {
                 if is_struct {format!("struct {}", f)} else {f.to_string()}
@@ -122,6 +124,13 @@ impl TestGenerator {
         where F: Fn(&str, &str) -> String + 'static
     {
         self.field_name = Box::new(f);
+        self
+    }
+
+    pub fn skip_field<F>(&mut self, f: F) -> &mut TestGenerator
+        where F: Fn(&str, &str) -> bool + 'static
+    {
+        self.skip_field = Box::new(f);
         self
     }
 
@@ -441,8 +450,13 @@ impl<'a> Generator<'a> {
                 ast::NamedField(_, ast::Inherited) => continue,
                 ast::UnnamedField(..) => panic!("no tuple structs in FFI"),
             };
+            let name = name.to_string();
 
-            let cfield = self.rust2cfield(ty, &name.to_string());
+            if (self.opts.skip_field)(ty, &name) {
+                continue
+            }
+
+            let cfield = self.rust2cfield(ty, &name);
             let rust_fieldty = self.ty2name(&field.node.ty, true);
 
             t!(writeln!(self.c, r#"
