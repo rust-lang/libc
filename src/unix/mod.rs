@@ -338,7 +338,7 @@ extern {
     pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
     pub fn sched_yield() -> ::c_int;
     pub fn pthread_key_create(key: *mut pthread_key_t,
-                              dtor: Option<unsafe extern fn(*mut ::c_void)>)
+                              dtor: ::dox::Option<unsafe extern fn(*mut ::c_void)>)
                               -> c_int;
     pub fn pthread_key_delete(key: pthread_key_t) -> c_int;
     pub fn pthread_getspecific(key: pthread_key_t) -> *mut ::c_void;
