@@ -60,9 +60,9 @@ s! {
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
         #[cfg(target_os = "android")]
-        pub ipv6mr_interface: c_uint,
-        #[cfg(not(target_os = "android"))]
         pub ipv6mr_interface: c_int,
+        #[cfg(not(target_os = "android"))]
+        pub ipv6mr_interface: c_uint,
     }
 }
 
