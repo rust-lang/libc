@@ -59,6 +59,7 @@ pub type BOOLEAN = BYTE;
 pub type CCHAR = c_char;
 pub type CHAR = c_char;
 pub type DWORD = c_ulong;
+pub type DWORD_PTR = ULONG_PTR;
 pub type DWORDLONG = c_ulonglong;
 pub type HANDLE = LPVOID;
 pub type HINSTANCE = HANDLE;
@@ -247,7 +248,7 @@ s! {
         pub dwPageSize: DWORD,
         pub lpMinimumApplicationAddress: LPVOID,
         pub lpMaximumApplicationAddress: LPVOID,
-        pub dwActiveProcessorMask: uintptr_t,
+        pub dwActiveProcessorMask: DWORD_PTR,
         pub dwNumberOfProcessors: DWORD,
         pub dwProcessorType: DWORD,
         pub dwAllocationGranularity: DWORD,
