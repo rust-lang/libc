@@ -8,6 +8,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! Crate docs
+
 #![allow(bad_style, raw_pointer_derive)]
 #![cfg_attr(dox, feature(no_core, lang_items))]
 #![cfg_attr(dox, no_core)]
