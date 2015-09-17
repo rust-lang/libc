@@ -38,13 +38,13 @@
 #![cfg_attr(all(windows, target_arch = "x86_64", target_env = "gnu"), doc(
     html_root_url = "http://alexcrichton.com/libc/x86_64-pc-windows-gnu"
 ))]
-#![cfg_attr(all(windows, target_arch = "i686", target_env = "gnu"), doc(
+#![cfg_attr(all(windows, target_arch = "x86", target_env = "gnu"), doc(
     html_root_url = "http://alexcrichton.com/libc/i686-pc-windows-gnu"
 ))]
 #![cfg_attr(all(windows, target_arch = "x86_64", target_env = "msvc"), doc(
     html_root_url = "http://alexcrichton.com/libc/x86_64-pc-windows-msvc"
 ))]
-#![cfg_attr(all(windows, target_arch = "i686", target_env = "msvc"), doc(
+#![cfg_attr(all(windows, target_arch = "x86", target_env = "msvc"), doc(
     html_root_url = "http://alexcrichton.com/libc/i686-pc-windows-msvc"
 ))]
 #![cfg_attr(all(target_os = "android"), doc(
