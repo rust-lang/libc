@@ -144,14 +144,20 @@ s! {
     }
 
     pub struct sockaddr_storage {
-        pub ss_family: u16,
+        #[cfg(target_env = "msvc")]
+        pub ss_family: c_ushort,
+        #[cfg(not(target_env = "msvc"))]
+        pub ss_family: c_short,
         __ss_pad1: [u8; 6],
         __ss_align: i64,
         __ss_pad2: [u8; 112],
     }
 
     pub struct sockaddr_in {
-        pub sin_family: u16,
+        #[cfg(target_env = "msvc")]
+        pub sin_family: c_ushort,
+        #[cfg(not(target_env = "msvc"))]
+        pub sin_family: c_short,
         pub sin_port: u16,
         pub sin_addr: in_addr,
         pub sin_zero: [CHAR; 8],
@@ -162,7 +168,10 @@ s! {
     }
 
     pub struct sockaddr_in6 {
-        pub sin6_family: u16,
+        #[cfg(target_env = "msvc")]
+        pub sin6_family: c_ushort,
+        #[cfg(not(target_env = "msvc"))]
+        pub sin6_family: c_short,
         pub sin6_port: u16,
         pub sin6_flowinfo: ULONG,
         pub sin6_addr: in6_addr,
@@ -181,7 +190,10 @@ s! {
 
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
+        #[cfg(target_env = "msvc")]
         pub ipv6mr_interface: ULONG,
+        #[cfg(not(target_env = "msvc"))]
+        pub ipv6mr_interface: c_uint,
     }
 
     pub struct addrinfo {
