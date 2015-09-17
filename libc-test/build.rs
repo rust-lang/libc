@@ -1,3 +1,5 @@
+#![deny(warnings)]
+
 extern crate ctest;
 
 use std::env;
@@ -136,7 +138,6 @@ fn main() {
         }
     });
 
-    let target2 = target.clone();
     cfg.skip_type(move |ty| {
         match ty {
             // sighandler_t is crazy across platforms
