@@ -577,15 +577,25 @@ impl<'a> Generator<'a> {
         let cty = self.rust_ty_to_c_ty(rust_ty);
 
         t!(writeln!(self.c, r#"
-            {cty} __test_const_{name}(void) {{ return {name}; }}
+            static {cty} __test_const_{name}_val = {name};
+            {cty}* __test_const_{name}(void) {{
+                return &__test_const_{name}_val;
+            }}
         "#, name = name, cty = cty));
         t!(writeln!(self.rust, r#"
             fn const_{name}() {{
                 extern {{
-                    fn __test_const_{name}() -> {ty};
+                    fn __test_const_{name}() -> *const {ty};
                 }}
+                let val = {name};
                 unsafe {{
-                    same({name}, __test_const_{name}(), "{name} value");
+                    let ptr1 = &val as *const _ as *const u8;
+                    let ptr2 = __test_const_{name}() as *const u8;
+                    for i in 0..mem::size_of::<{ty}>() {{
+                        let i = i as isize;
+                        same(*ptr1.offset(i), *ptr2.offset(i),
+                             &format!("{name} value at byte {{}}", i));
+                    }}
                 }}
             }}
         "#, ty = rust_ty, name = name));
