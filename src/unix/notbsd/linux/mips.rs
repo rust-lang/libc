@@ -53,7 +53,7 @@ s! {
         _resv: [::c_int; 1],
     }
 
-    pub struct sigaltstack {
+    pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,

@@ -198,6 +198,8 @@ extern {
     pub fn getgroups(ngroups_max: c_int, groups: *mut gid_t)
                      -> c_int;
     pub fn getlogin() -> *mut c_char;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "getopt$UNIX2003")]
     pub fn getopt(argc: c_int, argv: *const *mut c_char,
                   optstr: *const c_char) -> c_int;
     pub fn getpgrp() -> pid_t;
@@ -300,7 +302,11 @@ extern {
     #[cfg_attr(target_os = "android", link_name = "bsd_signal")]
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
 
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "getrlimit$UNIX2003")]
     pub fn getrlimit(resource: c_int, rlim: *mut rlimit) -> c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "setrlimit$UNIX2003")]
     pub fn setrlimit(resource: c_int, rlim: *const rlimit) -> c_int;
     pub fn getrusage(resource: c_int, usage: *mut rusage) -> c_int;
 
@@ -319,6 +325,8 @@ extern {
                           attr: *const ::pthread_attr_t,
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_join$UNIX2003")]
     pub fn pthread_join(native: ::pthread_t,
                         value: *mut *mut ::c_void) -> ::c_int;
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
@@ -344,24 +352,44 @@ extern {
     pub fn pthread_mutex_unlock(lock: *mut pthread_mutex_t) -> ::c_int;
 
     pub fn pthread_mutexattr_init(attr: *mut pthread_mutexattr_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_mutexattr_destroy$UNIX2003")]
     pub fn pthread_mutexattr_destroy(attr: *mut pthread_mutexattr_t) -> ::c_int;
     pub fn pthread_mutexattr_settype(attr: *mut pthread_mutexattr_t,
                                      _type: ::c_int) -> ::c_int;
 
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_cond_wait$UNIX2003")]
     pub fn pthread_cond_wait(cond: *mut pthread_cond_t,
                              lock: *mut pthread_mutex_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_cond_timedwait$UNIX2003")]
     pub fn pthread_cond_timedwait(cond: *mut pthread_cond_t,
                               lock: *mut pthread_mutex_t,
                               abstime: *const ::timespec) -> ::c_int;
     pub fn pthread_cond_signal(cond: *mut pthread_cond_t) -> ::c_int;
     pub fn pthread_cond_broadcast(cond: *mut pthread_cond_t) -> ::c_int;
     pub fn pthread_cond_destroy(cond: *mut pthread_cond_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_destroy$UNIX2003")]
     pub fn pthread_rwlock_destroy(lock: *mut pthread_rwlock_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_rdlock$UNIX2003")]
     pub fn pthread_rwlock_rdlock(lock: *mut pthread_rwlock_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_tryrdlock$UNIX2003")]
     pub fn pthread_rwlock_tryrdlock(lock: *mut pthread_rwlock_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_wrlock$UNIX2003")]
     pub fn pthread_rwlock_wrlock(lock: *mut pthread_rwlock_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_trywrlock$UNIX2003")]
     pub fn pthread_rwlock_trywrlock(lock: *mut pthread_rwlock_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_unlock$UNIX2003")]
     pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_sigmask$UNIX2003")]
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t,
                            oldset: *mut sigset_t) -> ::c_int;
 
@@ -378,14 +406,14 @@ extern {
     pub fn sigaction(signum: ::c_int,
                      act: *const sigaction,
                      oldact: *mut sigaction) -> ::c_int;
-    pub fn sigaltstack(ss: *const sigaltstack,
-                       oss: *mut sigaltstack) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "sigaltstack$UNIX2003")]
+    pub fn sigaltstack(ss: *const stack_t,
+                       oss: *mut stack_t) -> ::c_int;
 
     pub fn utimes(filename: *const ::c_char,
                   times: *const ::timeval) -> ::c_int;
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
-    pub fn setgroups(ngroups: ::size_t,
-                     ptr: *const ::gid_t) -> ::c_int;
     pub fn dlopen(filename: *const ::c_char,
                   flag: ::c_int) -> *mut ::c_void;
     pub fn dlerror() -> *mut ::c_char;
@@ -399,6 +427,7 @@ extern {
 extern {
     pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> c_int;
     pub fn freeifaddrs(ifa: *mut ifaddrs);
+    #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
     pub fn glob(pattern: *const c_char,
                 flags: c_int,
                 errfunc: ::dox::Option<extern "C" fn(epath: *const c_char,

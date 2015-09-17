@@ -318,6 +318,9 @@ extern {
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
                                  stackaddr: *mut *mut ::c_void,
                                  stacksize: *mut ::size_t) -> ::c_int;
+    pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
+    pub fn setgroups(ngroups: ::size_t,
+                     ptr: *const ::gid_t) -> ::c_int;
 }
 
 cfg_if! {

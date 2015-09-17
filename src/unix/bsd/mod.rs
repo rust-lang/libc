@@ -41,7 +41,7 @@ s! {
         pub pw_expire: ::time_t,
     }
 
-    pub struct sigaltstack {
+    pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
@@ -64,6 +64,8 @@ extern {
                            mibp: *mut c_int,
                            sizep: *mut size_t)
                            -> c_int;
+    pub fn setgroups(ngroups: ::c_int,
+                     ptr: *const ::gid_t) -> ::c_int;
 }
 
 cfg_if! {

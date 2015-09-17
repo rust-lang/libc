@@ -80,7 +80,7 @@ s! {
         pub pw_shell: *mut ::c_char,
     }
 
-    pub struct sigaltstack {
+    pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
         pub ss_size: ::size_t

@@ -124,32 +124,33 @@ s! {
 
 
     pub struct pthread_mutex_t {
-        __sig: libc::c_long,
+        __sig: ::c_long,
         __opaque: [u8; __PTHREAD_MUTEX_SIZE__],
     }
     pub struct pthread_mutexattr_t {
-        __sig: libc::c_long,
-        __opaque: [u8; 16],
+        __sig: ::c_long,
+        __opaque: [u8; 8],
     }
 
     pub struct pthread_cond_t {
-        __sig: libc::c_long,
+        __sig: ::c_long,
         __opaque: [u8; __PTHREAD_COND_SIZE__],
     }
 
     pub struct pthread_rwlock_t {
-        __sig: libc::c_long,
+        __sig: ::c_long,
         __opaque: [u8; __PTHREAD_RWLOCK_SIZE__],
     }
 
     pub struct siginfo_t {
-        pub _signo: ::c_int,
-        pub _errno: ::c_int,
-        pub _code: ::c_int,
-        pub _pid: ::pid_t,
-        pub _uid: ::uid_t,
-        pub _status: ::c_int,
-        pub si_addr: *mut ::c_void
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub si_pid: ::pid_t,
+        pub si_uid: ::uid_t,
+        pub si_status: ::c_int,
+        pub si_addr: *mut ::c_void,
+        _pad: [usize; 9],
     }
 
     pub struct sigaction {
@@ -639,19 +640,19 @@ pub const _SC_PASS_MAX: c_int = 131;
 
 
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
-pub const _PTHREAD_MUTEX_SIG_INIT: ::c_long = 0x32AAABA7;
-pub const _PTHREAD_COND_SIG_INIT: ::c_long = 0x3CB0B1BB;
-pub const _PTHREAD_RWLOCK_SIG_INIT: ::c_long = 0x2DA8B3B4;
+pub const _PTHREAD_MUTEX_SIG_init: ::c_long = 0x32AAABA7;
+pub const _PTHREAD_COND_SIG_init: ::c_long = 0x3CB0B1BB;
+pub const _PTHREAD_RWLOCK_SIG_init: ::c_long = 0x2DA8B3B4;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    __sig: _PTHREAD_MUTEX_SIG_INIT,
+    __sig: _PTHREAD_MUTEX_SIG_init,
     __opaque: [0; __PTHREAD_MUTEX_SIZE__],
 };
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    __sig: _PTHREAD_COND_SIG_INIT,
+    __sig: _PTHREAD_COND_SIG_init,
     __opaque: [0; __PTHREAD_COND_SIZE__],
 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-    __sig: _PTHREAD_RWLOCK_SIG_INIT,
+    __sig: _PTHREAD_RWLOCK_SIG_init,
     __opaque: [0; __PTHREAD_RWLOCK_SIZE__],
 };
 
@@ -660,7 +661,7 @@ extern {
                                 bufsize: *mut ::uint32_t) -> ::c_int;
     pub fn _NSGetArgc() -> *mut c_int;
     pub fn _NSGetArgv() -> *mut *mut *mut c_char;
-    pub fn _NSGetEnviron() -> *mut *const *const c_char;
+    pub fn _NSGetEnviron() -> *mut *mut *mut c_char;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "mprotect$UNIX2003")]
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
@@ -679,14 +680,12 @@ extern {
                         newp: *mut ::c_void,
                         newlen: ::size_t)
                         -> ::c_int;
-    pub fn _tlv_atexit(dtor: unsafe extern fn(*mut u8),
-                       arg: *mut u8);
     pub fn mach_absolute_time() -> u64;
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
     pub fn pthread_get_stackaddr_np(thread: pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: pthread_t) -> ::size_t;
-    pub fn __error() -> *const ::c_int;
+    pub fn __error() -> *mut ::c_int;
 }
 
 cfg_if! {

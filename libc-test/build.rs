@@ -10,6 +10,7 @@ fn main() {
     let mingw = target.contains("windows-gnu");
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
+    let darwin = target.contains("apple-darwin");
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
@@ -37,7 +38,7 @@ fn main() {
        .header("time.h")
        .header("wchar.h");
 
-    if target.contains("apple-darwin") {
+    if darwin {
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
     } else if linux || android {
@@ -82,7 +83,6 @@ fn main() {
         cfg.header("utime.h");
         cfg.header("pwd.h");
         cfg.header("grp.h");
-        cfg.header("malloc.h");
 
         if android {
             cfg.header("arpa/inet.h");
@@ -91,6 +91,13 @@ fn main() {
             cfg.header("ifaddrs.h");
             cfg.header("sys/sysctl.h");
             cfg.header("execinfo.h");
+        }
+
+        if darwin {
+            cfg.header("malloc/malloc.h");
+            cfg.header("crt_externs.h");
+        } else {
+            cfg.header("malloc.h");
         }
 
     }
@@ -107,6 +114,9 @@ fn main() {
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
             "ssize_t" if windows => "SSIZE_T".to_string(),
+
+            // OSX calls this something else
+            "sighandler_t" if darwin => "sig_t".to_string(),
 
             t if t.ends_with("_t") => t.to_string(),
 

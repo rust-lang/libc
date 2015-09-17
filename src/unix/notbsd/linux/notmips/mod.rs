@@ -6,7 +6,7 @@ s! {
         _restorer: *mut ::c_void,
     }
 
-    pub struct sigaltstack {
+    pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
         pub ss_size: ::size_t
