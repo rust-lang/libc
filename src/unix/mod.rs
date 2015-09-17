@@ -297,8 +297,8 @@ extern {
 
     pub fn ftruncate(fd: c_int, length: off_t) -> c_int;
 
-    pub fn signal(signum: c_int,
-                  handler: sighandler_t) -> sighandler_t;
+    #[cfg_attr(target_os = "android", link_name = "bsd_signal")]
+    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
 
     pub fn getrlimit(resource: c_int, rlim: *mut rlimit) -> c_int;
     pub fn setrlimit(resource: c_int, rlim: *const rlimit) -> c_int;
@@ -310,70 +310,7 @@ extern {
                     -> *mut ::c_char;
 
     pub fn flock(fd: c_int, operation: c_int) -> c_int;
-}
 
-// TODO: get rid of this #[cfg(not(...))]
-#[cfg(not(target_os = "android"))]
-extern {
-    pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> c_int;
-    pub fn freeifaddrs(ifa: *mut ifaddrs);
-    pub fn glob(pattern: *const c_char,
-                flags: c_int,
-                errfunc: ::dox::Option<extern "C" fn(epath: *const c_char,
-                                                     errno: c_int) -> c_int>,
-                pglob: *mut glob_t) -> c_int;
-    pub fn globfree(pglob: *mut glob_t);
-
-    pub fn posix_madvise(addr: *mut ::c_void, len: size_t, advice: c_int)
-                         -> c_int;
-
-    pub fn shm_unlink(name: *const c_char) -> c_int;
-
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
-               link_name = "seekdir$INODE64")]
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "seekdir$INODE64$UNIX2003")]
-    pub fn seekdir(dirp: *mut ::DIR, loc: c_long);
-
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
-               link_name = "telldir$INODE64")]
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "telldir$INODE64$UNIX2003")]
-    pub fn telldir(dirp: *mut ::DIR) -> c_long;
-
-    pub fn getsid(pid: pid_t) -> pid_t;
-    pub fn madvise(addr: *mut ::c_void, len: size_t, advice: c_int)
-                   -> c_int;
-    pub fn ioctl(fd: c_int, request: c_ulong, ...) -> c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "putenv$UNIX2003")]
-    pub fn putenv(string: *mut c_char) -> c_int;
-    pub fn readlink(path: *const c_char,
-                    buf: *mut c_char,
-                    bufsz: size_t)
-                    -> ssize_t;
-
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "msync$UNIX2003")]
-    pub fn msync(addr: *mut ::c_void, len: size_t, flags: c_int) -> c_int;
-    pub fn sysconf(name: c_int) -> c_long;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "usleep$UNIX2003")]
-    pub fn usleep(secs: c_uint) -> c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "recvfrom$UNIX2003")]
-    pub fn recvfrom(socket: c_int, buf: *mut ::c_void, len: size_t,
-                    flags: c_int, addr: *mut sockaddr,
-                    addrlen: *mut socklen_t) -> ssize_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "send$UNIX2003")]
-    pub fn send(socket: c_int, buf: *const ::c_void, len: size_t,
-                flags: c_int) -> ssize_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "recv$UNIX2003")]
-    pub fn recv(socket: c_int, buf: *mut ::c_void, len: size_t,
-                flags: c_int) -> ssize_t;
-    pub fn mkfifo(path: *const c_char, mode: mode_t) -> c_int;
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
 
@@ -443,19 +380,94 @@ extern {
                      oldact: *mut sigaction) -> ::c_int;
     pub fn sigaltstack(ss: *const sigaltstack,
                        oss: *mut sigaltstack) -> ::c_int;
-    pub fn sigemptyset(set: *mut sigset_t) -> ::c_int;
-
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
 
     pub fn utimes(filename: *const ::c_char,
                   times: *const ::timeval) -> ::c_int;
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
     pub fn setgroups(ngroups: ::size_t,
                      ptr: *const ::gid_t) -> ::c_int;
+    pub fn dlopen(filename: *const ::c_char,
+                  flag: ::c_int) -> *mut ::c_void;
+    pub fn dlerror() -> *mut ::c_char;
+    pub fn dlsym(handle: *mut ::c_void,
+                 symbol: *const ::c_char) -> *mut ::c_void;
+    pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
+}
+
+// TODO: get rid of this #[cfg(not(...))]
+#[cfg(not(target_os = "android"))]
+extern {
+    pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> c_int;
+    pub fn freeifaddrs(ifa: *mut ifaddrs);
+    pub fn glob(pattern: *const c_char,
+                flags: c_int,
+                errfunc: ::dox::Option<extern "C" fn(epath: *const c_char,
+                                                     errno: c_int) -> c_int>,
+                pglob: *mut glob_t) -> c_int;
+    pub fn globfree(pglob: *mut glob_t);
+
+    pub fn posix_madvise(addr: *mut ::c_void, len: size_t, advice: c_int)
+                         -> c_int;
+
+    pub fn shm_unlink(name: *const c_char) -> c_int;
+
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
+               link_name = "seekdir$INODE64")]
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "seekdir$INODE64$UNIX2003")]
+    pub fn seekdir(dirp: *mut ::DIR, loc: c_long);
+
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
+               link_name = "telldir$INODE64")]
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "telldir$INODE64$UNIX2003")]
+    pub fn telldir(dirp: *mut ::DIR) -> c_long;
+
+    pub fn getsid(pid: pid_t) -> pid_t;
+    pub fn madvise(addr: *mut ::c_void, len: size_t, advice: c_int)
+                   -> c_int;
+    pub fn ioctl(fd: c_int, request: c_ulong, ...) -> c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "putenv$UNIX2003")]
+    pub fn putenv(string: *mut c_char) -> c_int;
+    pub fn readlink(path: *const c_char,
+                    buf: *mut c_char,
+                    bufsz: size_t)
+                    -> ssize_t;
+
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "msync$UNIX2003")]
+    pub fn msync(addr: *mut ::c_void, len: size_t, flags: c_int) -> c_int;
+    pub fn sysconf(name: c_int) -> c_long;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "usleep$UNIX2003")]
+    pub fn usleep(secs: c_uint) -> c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "recvfrom$UNIX2003")]
+    pub fn recvfrom(socket: c_int, buf: *mut ::c_void, len: size_t,
+                    flags: c_int, addr: *mut sockaddr,
+                    addrlen: *mut socklen_t) -> ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "send$UNIX2003")]
+    pub fn send(socket: c_int, buf: *const ::c_void, len: size_t,
+                flags: c_int) -> ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "recv$UNIX2003")]
+    pub fn recv(socket: c_int, buf: *mut ::c_void, len: size_t,
+                flags: c_int) -> ssize_t;
+    pub fn mkfifo(path: *const c_char, mode: mode_t) -> c_int;
+
+    pub fn getpwuid_r(uid: ::uid_t,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
+    pub fn backtrace(buf: *mut *mut ::c_void,
+                     sz: ::c_int) -> ::c_int;
+    pub fn posix_memalign(memptr: *mut *mut ::c_void,
+                          align: ::size_t,
+                          size: ::size_t) -> ::c_int;
+    pub fn sigemptyset(set: *mut sigset_t) -> ::c_int;
 }
 
 cfg_if! {

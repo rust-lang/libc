@@ -91,27 +91,6 @@ s! {
         pub si_errno: ::c_int,
         pub si_code: ::c_int,
         pub _pad: [::c_int; 29],
-        _align: [u64; 0],
-    }
-}
-
-#[cfg(target_pointer_width = "32")]
-s!{
-    pub struct sigaction {
-        pub sa_sigaction: sighandler_t,
-        pub sa_flags: libc::c_ulong,
-        _restorer: *mut libc::c_void,
-        pub sa_mask: sigset_t,
-    }
-}
-
-#[cfg(target_pointer_width = "64")]
-s!{
-    pub struct sigaction {
-        pub sa_flags: libc::c_uint,
-        pub sa_sigaction: sighandler_t,
-        pub sa_mask: sigset_t,
-        _restorer: *mut libc::c_void,
     }
 }
 
@@ -230,3 +209,17 @@ extern {
     pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                 flags: ::c_uint) -> ::ssize_t;
 }
+
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        mod b32;
+        pub use self::b32::*;
+    } else if #[cfg(target_pointer_width = "64")] {
+        mod b64;
+        pub use self::b64::*;
+    } else {
+        // ...
+    }
+}
+
+

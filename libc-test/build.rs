@@ -9,18 +9,19 @@ fn main() {
     let windows = target.contains("windows");
     let mingw = target.contains("windows-gnu");
     let linux = target.contains("unknown-linux");
+    let android = target.contains("android");
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
     if target.contains("unknown-linux-gnu") {
         cfg.define("_GNU_SOURCE", None);
-    } else if target.contains("windows") {
+    } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
     }
 
     // Android doesn't actually have in_port_t but it's much easier if we
     // provide one for us to test against
-    if target.contains("android") {
+    if android {
         cfg.define("in_port_t", Some("uint16_t"));
     }
 
@@ -39,13 +40,12 @@ fn main() {
     if target.contains("apple-darwin") {
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
-    } else if target.contains("unknown-linux") ||
-              target.contains("android") {
+    } else if linux || android {
         cfg.header("linux/if_packet.h");
         cfg.header("net/ethernet.h");
     }
 
-    if target.contains("windows") {
+    if windows {
         cfg.header("winsock2.h"); // must be before windows.h
 
         cfg.header("direct.h");
@@ -67,6 +67,7 @@ fn main() {
         cfg.header("netinet/ip.h");
         cfg.header("netinet/tcp.h");
         cfg.header("pthread.h");
+        cfg.header("dlfcn.h");
         cfg.header("signal.h");
         cfg.header("string.h");
         cfg.header("sys/file.h");
@@ -81,13 +82,15 @@ fn main() {
         cfg.header("utime.h");
         cfg.header("pwd.h");
         cfg.header("grp.h");
+        cfg.header("malloc.h");
 
-        if target.contains("android") {
+        if android {
             cfg.header("arpa/inet.h");
         } else {
             cfg.header("glob.h");
             cfg.header("ifaddrs.h");
             cfg.header("sys/sysctl.h");
+            cfg.header("execinfo.h");
         }
 
     }
@@ -193,8 +196,12 @@ fn main() {
 
             "getrlimit" |                    // non-int in 1st arg
             "setrlimit" |                    // non-int in 1st arg
-            "gettimeofday" |                 // typed 2nd arg on linux
             "strerror_r" if linux => true,   // actually xpg-something-or-other
+
+            // typed 2nd arg on linux and android
+            "gettimeofday" if linux || android => true,
+
+            "dlerror" if android => true, // const-ness is added
 
             _ => false,
         }
