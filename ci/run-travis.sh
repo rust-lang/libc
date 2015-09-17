@@ -23,6 +23,10 @@ elif [ "$TARGET" = "arm-unknown-linux-gnueabihf" ]; then
   curl -s $EXTRA_TARGETS/$TARGET.tar.gz | tar xzf - -C $HOME/rust/lib/rustlib
   sudo apt-get install gcc-4.7-arm-linux-gnueabihf qemu-user
   export CC=arm-linux-gnueabihf-gcc-4.7
+elif [ "$TARGET" = "aarch64-unknown-linux-gnu" ]; then
+  curl -s $EXTRA_TARGETS/$TARGET.tar.gz | tar xzf - -C $HOME/rust/lib/rustlib
+  sudo apt-get install gcc-aarch64-linux-gnu qemu-user
+  export CC=aarch64-linux-gnu-gcc
 elif [ "$TARGET" = "mips-unknown-linux-gnu" ]; then
   # Download pre-built and custom MIPS libs and then also instsall the MIPS
   # compiler according to this post:

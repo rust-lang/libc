@@ -205,6 +205,7 @@ pub const SO_ACCEPTCONN: ::c_int = 4105;
 
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
+pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 
 pub const FIOCLEX: ::c_ulong = 0x6601;
 

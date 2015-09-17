@@ -6,6 +6,7 @@ pub type blksize_t = i32;
 pub type wchar_t = u32;
 
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 48;
+pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 8;
 
 s! {
     pub struct stat {

@@ -50,7 +50,7 @@ s! {
     }
 
     pub struct pthread_mutexattr_t {
-        __align: [::c_int; 0],
+        __align: [::c_long; 0],
         size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
@@ -214,7 +214,6 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 };
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
-pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 
 extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
