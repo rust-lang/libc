@@ -188,7 +188,7 @@ pub const SIG_SETMASK: ::c_int = 2;
 
 pub const O_ACCMODE: ::c_int = 3;
 
-pub const RUSAGE_CHILDREN: c_int = -1;
+pub const RUSAGE_CHILDREN: ::c_int = -1;
 
 extern {
     pub fn madvise(addr: *const ::c_void, len: ::size_t, advice: ::c_int)
