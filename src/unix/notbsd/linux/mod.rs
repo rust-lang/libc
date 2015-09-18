@@ -28,13 +28,53 @@ s! {
         pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
         pub ifa_data: *mut ::c_void
     }
+
+    pub struct pthread_mutex_t {
+        #[cfg(any(target_arch = "mips", target_arch = "mipsel",
+                  target_arch = "arm"))]
+        __align: [::c_long; 0],
+        #[cfg(not(any(target_arch = "mips", target_arch = "mipsel",
+                      target_arch = "arm")))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
+    }
+
+    pub struct pthread_rwlock_t {
+        #[cfg(any(target_arch = "mips", target_arch = "mipsel",
+                  target_arch = "arm"))]
+        __align: [::c_long; 0],
+        #[cfg(not(any(target_arch = "mips", target_arch = "mipsel",
+                      target_arch = "arm")))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
+    }
+
+    pub struct pthread_mutexattr_t {
+        #[cfg(target_arch = "x86_64")]
+        __align: [::c_int; 0],
+        #[cfg(not(target_arch = "x86_64"))]
+        __align: [::c_long; 0],
+        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
+    }
+
+    pub struct pthread_cond_t {
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_COND_T],
+    }
+
+    pub struct passwd {
+        pub pw_name: *mut ::c_char,
+        pub pw_passwd: *mut ::c_char,
+        pub pw_uid: ::uid_t,
+        pub pw_gid: ::gid_t,
+        pub pw_gecos: *mut ::c_char,
+        pub pw_dir: *mut ::c_char,
+        pub pw_shell: *mut ::c_char,
+    }
 }
 
-pub const BUFSIZ: ::c_uint = 8192;
 pub const FILENAME_MAX: ::c_uint = 4096;
-pub const FOPEN_MAX: ::c_uint = 16;
 pub const L_tmpnam: ::c_uint = 20;
-pub const TMP_MAX: ::c_uint = 238328;
 pub const _PC_NAME_MAX: ::c_int = 3;
 
 pub const _SC_ARG_MAX: ::c_int = 0;
@@ -113,7 +153,6 @@ pub const _SC_XOPEN_CRYPT: ::c_int = 92;
 pub const _SC_XOPEN_ENH_I18N: ::c_int = 93;
 pub const _SC_XOPEN_SHM: ::c_int = 94;
 pub const _SC_2_CHAR_TERM: ::c_int = 95;
-pub const _SC_2_C_VERSION: ::c_int = 96;
 pub const _SC_2_UPE: ::c_int = 97;
 pub const _SC_XBS5_ILP32_OFF32: ::c_int = 125;
 pub const _SC_XBS5_ILP32_OFFBIG: ::c_int = 126;
@@ -124,9 +163,6 @@ pub const _SC_XOPEN_REALTIME_THREADS: ::c_int = 131;
 
 pub const RLIM_SAVED_MAX: ::rlim_t = RLIM_INFINITY;
 pub const RLIM_SAVED_CUR: ::rlim_t = RLIM_INFINITY;
-
-#[cfg(not(target_env = "musl"))]
-pub const RUSAGE_THREAD: ::c_int = 1;
 
 pub const GLOB_ERR: ::c_int = 1 << 0;
 pub const GLOB_MARK: ::c_int = 1 << 1;
@@ -144,7 +180,6 @@ pub const POSIX_MADV_NORMAL: ::c_int = 0;
 pub const POSIX_MADV_RANDOM: ::c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
-pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const S_IEXEC: mode_t = 64;
 pub const S_IWRITE: mode_t = 128;
@@ -160,19 +195,28 @@ pub const MAP_32BIT: ::c_int = 0x0040;
 
 pub const TCP_MD5SIG: ::c_int = 14;
 
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    __align: [],
+    size: [0; __SIZEOF_PTHREAD_MUTEX_T],
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    __align: [],
+    size: [0; __SIZEOF_PTHREAD_COND_T],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    __align: [],
+    size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
+};
+pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
+pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
+
 extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
-    #[cfg(not(target_env = "musl"))]
-    pub fn sysctl(name: *mut ::c_int,
-                  namelen: ::c_int,
-                  oldp: *mut ::c_void,
-                  oldlenp: *mut size_t,
-                  newp: *mut ::c_void,
-                  newlen: size_t)
-                  -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
+    pub fn __errno_location() -> *mut ::c_int;
+
 }
 
 cfg_if! {
@@ -181,6 +225,41 @@ cfg_if! {
         pub const PTHREAD_STACK_MIN: size_t = 16384;
     } else {
         pub const PTHREAD_STACK_MIN: size_t = 131072;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_env = "musl")] {
+        pub const BUFSIZ: ::c_uint = 1024;
+        pub const TMP_MAX: ::c_uint = 10000;
+        pub const FOPEN_MAX: ::c_uint = 1000;
+        pub const POSIX_MADV_DONTNEED: ::c_int = 0;
+        pub const O_ACCMODE: ::c_int = 0o10000003;
+        pub const RUSAGE_CHILDREN: ::c_int = 1;
+
+        extern {
+            pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
+        }
+    } else {
+        pub const BUFSIZ: ::c_uint = 8192;
+        pub const TMP_MAX: ::c_uint = 238328;
+        pub const FOPEN_MAX: ::c_uint = 16;
+        pub const POSIX_MADV_DONTNEED: ::c_int = 4;
+        pub const _SC_2_C_VERSION: ::c_int = 96;
+        pub const RUSAGE_THREAD: ::c_int = 1;
+        pub const O_ACCMODE: ::c_int = 3;
+        pub const RUSAGE_CHILDREN: ::c_int = -1;
+
+        extern {
+            pub fn sysctl(name: *mut ::c_int,
+                          namelen: ::c_int,
+                          oldp: *mut ::c_void,
+                          oldlenp: *mut size_t,
+                          newp: *mut ::c_void,
+                          newlen: size_t)
+                          -> ::c_int;
+            pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+        }
     }
 }
 

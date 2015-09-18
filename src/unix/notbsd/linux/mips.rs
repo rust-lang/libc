@@ -44,6 +44,31 @@ s! {
     pub struct pthread_attr_t {
         __size: [u32; 9]
     }
+
+    pub struct sigaction {
+        pub sa_flags: ::c_uint,
+        pub sa_sigaction: ::sighandler_t,
+        pub sa_mask: sigset_t,
+        _restorer: *mut ::c_void,
+        _resv: [::c_int; 1],
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
+
+    pub struct sigset_t {
+        __val: [::c_ulong; 32],
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_code: ::c_int,
+        pub si_errno: ::c_int,
+        pub _pad: [::c_int; 29],
+    }
 }
 
 pub const RLIMIT_NOFILE: ::c_int = 5;
@@ -177,3 +202,16 @@ pub const SO_SNDLOWAT: ::c_int = 4099;
 pub const SO_RCVTIMEO: ::c_int = 4102;
 pub const SO_SNDTIMEO: ::c_int = 4101;
 pub const SO_ACCEPTCONN: ::c_int = 4105;
+
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
+pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
+pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+
+pub const FIOCLEX: ::c_ulong = 0x6601;
+
+pub const SA_ONSTACK: ::c_ulong = 0x08000000;
+pub const SA_SIGINFO: ::c_ulong = 0x00000008;
+
+pub const SIGBUS: ::c_int = 10;
+
+pub const SIG_SETMASK: ::c_int = 3;

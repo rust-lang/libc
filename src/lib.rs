@@ -28,6 +28,9 @@
 #![cfg_attr(all(target_os = "linux", target_arch = "mips"), doc(
     html_root_url = "http://alexcrichton.com/libc/mips-unknown-linux-gnu"
 ))]
+#![cfg_attr(all(target_os = "linux", target_arch = "aarch64"), doc(
+    html_root_url = "http://alexcrichton.com/libc/aarch64-unknown-linux-gnu"
+))]
 #![cfg_attr(all(target_os = "linux", target_env = "musl"), doc(
     html_root_url = "http://alexcrichton.com/libc/x86_64-unknown-linux-musl"
 ))]

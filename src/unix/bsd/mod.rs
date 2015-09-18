@@ -27,7 +27,35 @@ s! {
         pub sun_family: sa_family_t,
         pub sun_path: [c_char; 104]
     }
+
+    pub struct passwd {
+        pub pw_name: *mut ::c_char,
+        pub pw_passwd: *mut ::c_char,
+        pub pw_uid: ::uid_t,
+        pub pw_gid: ::gid_t,
+        pub pw_change: ::time_t,
+        pub pw_class: *mut ::c_char,
+        pub pw_gecos: *mut ::c_char,
+        pub pw_dir: *mut ::c_char,
+        pub pw_shell: *mut ::c_char,
+        pub pw_expire: ::time_t,
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
 }
+
+pub const FIOCLEX: c_ulong = 0x20006601;
+
+pub const SA_ONSTACK: ::c_int = 0x0001;
+pub const SA_SIGINFO: ::c_int = 0x0040;
+
+pub const SIGSTKSZ: ::size_t = 131072;
+pub const SIGBUS: ::c_int = 10;
+pub const SIG_SETMASK: ::c_int = 3;
 
 extern {
     pub fn mincore(addr: *const ::c_void, len: size_t,
@@ -36,6 +64,9 @@ extern {
                            mibp: *mut c_int,
                            sizep: *mut size_t)
                            -> c_int;
+    pub fn setgroups(ngroups: ::c_int,
+                     ptr: *const ::gid_t) -> ::c_int;
+    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
 }
 
 cfg_if! {

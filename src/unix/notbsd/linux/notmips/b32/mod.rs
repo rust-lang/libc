@@ -17,6 +17,10 @@ pub type blksize_t = i32;
 pub type mode_t = u32;
 pub type nlink_t = u32;
 
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
+pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
+pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,
@@ -43,6 +47,10 @@ s! {
 
     pub struct pthread_attr_t {
         __size: [u32; 9]
+    }
+
+    pub struct sigset_t {
+        __val: [::c_ulong; 32],
     }
 }
 

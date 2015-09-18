@@ -8,18 +8,22 @@ fn main() {
     let target = env::var("TARGET").unwrap();
     let windows = target.contains("windows");
     let mingw = target.contains("windows-gnu");
+    let linux = target.contains("unknown-linux");
+    let android = target.contains("android");
+    let darwin = target.contains("apple-darwin");
+    let musl = target.contains("musl");
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
-    if target.contains("unknown-linux-gnu") {
+    if target.contains("unknown-linux") {
         cfg.define("_GNU_SOURCE", None);
-    } else if target.contains("windows") {
+    } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
     }
 
     // Android doesn't actually have in_port_t but it's much easier if we
     // provide one for us to test against
-    if target.contains("android") {
+    if android {
         cfg.define("in_port_t", Some("uint16_t"));
     }
 
@@ -35,16 +39,15 @@ fn main() {
        .header("time.h")
        .header("wchar.h");
 
-    if target.contains("apple-darwin") {
+    if darwin {
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
-    } else if target.contains("unknown-linux") ||
-              target.contains("android") {
-        cfg.header("linux/if_packet.h");
+    } else if linux || android {
+        cfg.header("netpacket/packet.h");
         cfg.header("net/ethernet.h");
     }
 
-    if target.contains("windows") {
+    if windows {
         cfg.header("winsock2.h"); // must be before windows.h
 
         cfg.header("direct.h");
@@ -66,6 +69,7 @@ fn main() {
         cfg.header("netinet/ip.h");
         cfg.header("netinet/tcp.h");
         cfg.header("pthread.h");
+        cfg.header("dlfcn.h");
         cfg.header("signal.h");
         cfg.header("string.h");
         cfg.header("sys/file.h");
@@ -78,24 +82,47 @@ fn main() {
         cfg.header("sys/wait.h");
         cfg.header("unistd.h");
         cfg.header("utime.h");
+        cfg.header("pwd.h");
+        cfg.header("grp.h");
 
-        if target.contains("android") {
+        if android {
             cfg.header("arpa/inet.h");
         } else {
             cfg.header("glob.h");
             cfg.header("ifaddrs.h");
-            cfg.header("sys/sysctl.h");
+
+            if !musl {
+                cfg.header("execinfo.h");
+                cfg.header("sys/sysctl.h");
+            }
         }
+
+        if darwin {
+            cfg.header("malloc/malloc.h");
+            cfg.header("crt_externs.h");
+        } else {
+            cfg.header("malloc.h");
+        }
+
+    }
+    if target.contains("linux") {
+        cfg.header("sys/prctl.h");
     }
 
     cfg.type_name(move |ty, is_struct| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "glob_t" |
             "FILE" |
-            "DIR" |
-            "fpos_t" => ty.to_string(),
-            t if t.starts_with("pthread") => t.to_string(),
+            "DIR" => ty.to_string(),
+
+            // Fixup a few types on windows that don't actually exist.
+            "time64_t" if windows => "__time64_t".to_string(),
+            "ssize_t" if windows => "SSIZE_T".to_string(),
+
+            // OSX calls this something else
+            "sighandler_t" if darwin => "sig_t".to_string(),
+
+            t if t.ends_with("_t") => t.to_string(),
 
             // Windows uppercase structs don't have `struct` in front, there's a
             // few special cases for windows, and then otherwise put `struct` in
@@ -111,10 +138,6 @@ fn main() {
                     format!("struct {}", t)
                 }
             }
-
-            // Fixup a few types on windows that don't actually exist.
-            "time64_t" if windows => "__time64_t".to_string(),
-            "ssize_t" if windows => "SSIZE_T".to_string(),
 
             t => t.to_string(),
         }
@@ -163,30 +186,40 @@ fn main() {
         }
     });
 
-    // Apparently these don't exist in mingw headers?
     cfg.skip_const(move |name| {
         match name {
+            // Apparently these don't exist in mingw headers?
             "MEM_RESET_UNDO" |
             "FILE_ATTRIBUTE_NO_SCRUB_DATA" |
             "FILE_ATTRIBUTE_INTEGRITY_STREAM" |
             "ERROR_NOTHING_TO_TERMINATE" if mingw => true,
+
             "SIG_IGN" => true, // sighandler_t weirdness
+
+            // types on musl are defined a little differently
+            n if musl && n.contains("PTHREAD") => true,
+
             _ => false,
         }
     });
 
-    cfg.skip_fn(|name| {
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verifiedmanually verified
         match name {
-            // manually verified
-            "execv" |
+            "execv" |       // crazy stuff with const/mut
             "execve" |
             "execvp" |
-            "execvpe" |
-            "glob" |
-            "getrlimit" |
-            "setrlimit" |
-            "signal" |
-            "getopt" => true,
+            "execvpe" => true,
+
+            "getrlimit" |                    // non-int in 1st arg
+            "setrlimit" |                    // non-int in 1st arg
+            "strerror_r" if linux => true,   // actually xpg-something-or-other
+
+            // typed 2nd arg on linux and android
+            "gettimeofday" if linux || android => true,
+
+            "dlerror" if android => true, // const-ness is added
+
             _ => false,
         }
     });
@@ -194,9 +227,19 @@ fn main() {
     // Windows dllimport oddness?
     cfg.skip_fn_ptrcheck(move |_| windows);
 
-    cfg.skip_field_type(|struct_, field| {
+    cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
-        struct_ == "ifaddrs" && field == "ifa_ifu"
+        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        // sighandler_t type is super weird
+        (struct_ == "sigaction" && field == "sa_sigaction")
+    });
+
+    cfg.skip_field(move |struct_, field| {
+        // this is actually a union on linux, so we can't represent it well and
+        // just insert some padding.
+        (struct_ == "siginfo_t" && field == "_pad") ||
+        // musl names this __dummy1 but it's still there
+        (musl && struct_ == "glob_t" && field == "gl_flags")
     });
 
     cfg.generate("../src/lib.rs", "all.rs");

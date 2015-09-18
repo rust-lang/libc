@@ -1,3 +1,21 @@
+    pub type sigset_t = libc::c_uint;
+pub type pthread_key_t = ::c_int;
+        struct stack_t {
+            ss_sp: *mut libc::c_void,
+            ss_size: libc::size_t,
+            ss_flags: libc::c_int,
+        }
+    pub struct siginfo_t {
+        pub si_signo: libc::c_int,
+        pub si_code: libc::c_int,
+        pub si_errno: libc::c_int,
+        pub si_addr: *mut libc::c_void
+    }
+    pub struct sigaction {
+        pub sa_sigaction: sighandler_t,
+        pub sa_mask: sigset_t,
+        pub sa_flags: libc::c_int,
+    }
 
     #[cfg(any(target_os = "bitrig", target_os = "netbsd", target_os ="openbsd"))]
     pub mod os {
@@ -497,7 +515,6 @@
             pub const F_DUPFD_CLOEXEC : c_int = 10;
 
             pub const SIGTRAP : c_int = 5;
-            pub const SIG_IGN: size_t = 1;
 
             pub const GLOB_APPEND   : c_int = 0x0001;
             pub const GLOB_DOOFFS   : c_int = 0x0002;
@@ -710,6 +727,15 @@
             pub const _SC_TIMERS : c_int = 94;
         }
     }
+    pub type pthread_mutex_t = *mut libc::c_void;
+    pub type pthread_mutexattr_t = *mut libc::c_void;
+    pub type pthread_cond_t = *mut libc::c_void;
+    pub type pthread_rwlock_t = *mut libc::c_void;
+
+    pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = ptr::null_mut();
+    pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = ptr::null_mut();
+    pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = ptr::null_mut();
+    pub const PTHREAD_MUTEX_RECURSIVE: libc::c_int = 2;
 extern {
     pub fn mprotect(addr: *const ::c_void, len: size_t, prot: c_int)
                     -> c_int;
@@ -728,4 +754,10 @@ extern {
                         newp: *mut ::c_void,
                         newlen: size_t)
                         -> c_int;
+    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
+    pub fn pthread_main_np() -> ::c_uint;
+    pub fn pthread_stackseg_np(thread: pthread_t,
+                               sinfo: *mut stack_t) -> ::c_uint;
+    pub fn __errno() -> *const ::c_int;
 }
