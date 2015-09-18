@@ -3,6 +3,25 @@
 //! More functions and definitions can be found in the more specific modules
 //! according to the platform in question.
 
+pub type c_schar = i8;
+pub type c_uchar = u8;
+pub type c_short = i16;
+pub type c_ushort = u16;
+pub type c_int = i32;
+pub type c_uint = u32;
+pub type c_float = f32;
+pub type c_double = f64;
+pub type c_longlong = i64;
+pub type c_ulonglong = u64;
+pub type intmax_t = i64;
+pub type uintmax_t = u64;
+pub type pid_t = i32;
+pub type uid_t = u32;
+pub type gid_t = u32;
+pub type in_addr_t = u32;
+pub type in_port_t = u16;
+pub type sighandler_t = size_t;
+
 s! {
     pub struct utimbuf {
         pub actime: time_t,

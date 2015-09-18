@@ -1,29 +1,11 @@
 pub type c_char = i8;
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_int = i32;
-pub type c_uint = u32;
-pub type c_float = f32;
-pub type c_double = f64;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
 pub type wchar_t = i32;
-pub type intmax_t = i64;
-pub type uintmax_t = u64;
 pub type off_t = i64;
-pub type pid_t = i32;
-pub type uid_t = u32;
-pub type gid_t = u32;
 pub type useconds_t = u32;
 pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
-pub type in_port_t = u16;
-pub type in_addr_t = u32;
 pub type pthread_t = uintptr_t;
-pub type sighandler_t = size_t;
 
 s! {
     pub struct sockaddr {
@@ -82,11 +64,11 @@ pub const SIG_SETMASK: ::c_int = 3;
 
 extern {
     pub fn mincore(addr: *const ::c_void, len: size_t,
-                   vec: *mut c_char) -> c_int;
+                   vec: *mut c_char) -> ::c_int;
     pub fn sysctlnametomib(name: *const c_char,
-                           mibp: *mut c_int,
+                           mibp: *mut ::c_int,
                            sizep: *mut size_t)
-                           -> c_int;
+                           -> ::c_int;
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
