@@ -17,6 +17,12 @@ pub type pthread_key_t = ::c_int;
         pub sa_flags: libc::c_int,
     }
 
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
     #[cfg(any(target_os = "bitrig", target_os = "netbsd", target_os ="openbsd"))]
     pub mod os {
         pub mod common {
@@ -736,6 +742,7 @@ pub type pthread_key_t = ::c_int;
     pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = ptr::null_mut();
     pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = ptr::null_mut();
     pub const PTHREAD_MUTEX_RECURSIVE: libc::c_int = 2;
+pub const SIGSTKSZ: ::size_t = 131072;
 extern {
     pub fn mprotect(addr: *const ::c_void, len: size_t, prot: c_int)
                     -> c_int;
@@ -760,4 +767,6 @@ extern {
     pub fn pthread_stackseg_np(thread: pthread_t,
                                sinfo: *mut stack_t) -> ::c_uint;
     pub fn __errno() -> *const ::c_int;
+    pub fn backtrace(buf: *mut *mut ::c_void,
+                     sz: ::size_t) -> ::size_t;
 }

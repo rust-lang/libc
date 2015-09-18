@@ -39,12 +39,9 @@ s! {
         pub pw_dir: *mut ::c_char,
         pub pw_shell: *mut ::c_char,
         pub pw_expire: ::time_t,
-    }
 
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
+        #[cfg(not(target_os = "macos"))]
+        pub pw_fields: ::c_int,
     }
 }
 
@@ -53,7 +50,6 @@ pub const FIOCLEX: c_ulong = 0x20006601;
 pub const SA_ONSTACK: ::c_int = 0x0001;
 pub const SA_SIGINFO: ::c_int = 0x0040;
 
-pub const SIGSTKSZ: ::size_t = 131072;
 pub const SIGBUS: ::c_int = 10;
 pub const SIG_SETMASK: ::c_int = 3;
 

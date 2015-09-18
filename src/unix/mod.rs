@@ -493,9 +493,6 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
-    #[cfg(not(target_env = "musl"))]
-    pub fn backtrace(buf: *mut *mut ::c_void,
-                     sz: ::c_int) -> ::c_int;
     pub fn posix_memalign(memptr: *mut *mut ::c_void,
                           align: ::size_t,
                           size: ::size_t) -> ::c_int;

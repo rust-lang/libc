@@ -158,6 +158,12 @@ s! {
         pub sa_mask: sigset_t,
         pub sa_flags: ::c_int,
     }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
 }
 
 pub const EXIT_FAILURE: c_int = 1;
@@ -638,7 +644,6 @@ pub const _SC_TRACE_SYS_MAX: c_int = 129;
 pub const _SC_TRACE_USER_EVENT_MAX: c_int = 130;
 pub const _SC_PASS_MAX: c_int = 131;
 
-
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 pub const _PTHREAD_MUTEX_SIG_init: ::c_long = 0x32AAABA7;
 pub const _PTHREAD_COND_SIG_init: ::c_long = 0x3CB0B1BB;
@@ -655,6 +660,8 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __sig: _PTHREAD_RWLOCK_SIG_init,
     __opaque: [0; __PTHREAD_RWLOCK_SIZE__],
 };
+
+pub const SIGSTKSZ: ::size_t = 131072;
 
 extern {
     pub fn _NSGetExecutablePath(buf: *mut ::c_char,
@@ -686,6 +693,8 @@ extern {
     pub fn pthread_get_stackaddr_np(thread: pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: pthread_t) -> ::size_t;
     pub fn __error() -> *mut ::c_int;
+    pub fn backtrace(buf: *mut *mut ::c_void,
+                     sz: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

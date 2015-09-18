@@ -20,6 +20,23 @@ install() {
   sudo apt-get install $@
 }
 
+# NOTE: this is not actually run on travis right now, this was added to in
+# theory run FreeBSD vagrant images on Travis, but it ended up not working, so
+# this may not be working when you read this.
+install_vagrant() {
+  echo 'deb http://download.virtualbox.org/virtualbox/debian trusty contrib' | \
+    sudo tee -a /etc/apt/sources.list
+  vbox=virtualbox-5.0_5.0.4-102546~Ubuntu~trusty_amd64.deb
+  curl https://www.virtualbox.org/download/oracle_vbox.asc | sudo apt-key add -
+  install virtualbox-5.0 linux-headers-3.16.0-31-generic nfs-kernel-server
+
+  # After we've got virtualbox, install vagrant itself. Note that the version in
+  # the default ubuntu repos is too old to run the images we have, so install
+  # the one from the vagrant website's download link
+  curl -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.4_x86_64.deb
+  sudo dpkg -i vagrant_1.7.4_x86_64.deb
+}
+
 if [ "$TARGET" = "arm-linux-androideabi" ]; then
   # Pull a pre-built docker image for testing android, then run tests entirely
   # within that image.
@@ -51,6 +68,12 @@ elif [ "$TARGET" = "mips-unknown-linux-gnu" ]; then
   install emdebian-archive-keyring
   install qemu-user gcc-4.4-mips-linux-gnu -y --force-yes
   export CC=mips-linux-gnu-gcc
+elif [ "$TARGET" = "x86_64-unknown-freebsd" ]; then
+  install_vagrant
+  cd ci
+  vagrant up freebsd
+  exec vagrant ssh freebsd -c \
+    'cd /vagrant && CARGO_TARGET_DIR=/tmp sh ci/run.sh x86_64-unknown-freebsd'
 else
   # Download the rustlib folder from the relevant portion of main distribution's
   # tarballs.

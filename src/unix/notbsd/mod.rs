@@ -318,6 +318,9 @@ extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::size_t,
                      ptr: *const ::gid_t) -> ::c_int;
+    #[cfg(not(target_env = "musl"))]
+    pub fn backtrace(buf: *mut *mut ::c_void,
+                     sz: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

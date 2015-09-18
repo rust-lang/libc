@@ -64,19 +64,26 @@ s! {
     }
 
     pub struct siginfo_t {
-        pub _signo: ::c_int,
-        pub _errno: ::c_int,
-        pub _code: ::c_int,
-        pub _pid: ::pid_t,
-        pub _uid: ::uid_t,
-        pub _status: ::c_int,
-        pub si_addr: *mut ::c_void
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub si_pid: ::pid_t,
+        pub si_uid: ::uid_t,
+        pub si_status: ::c_int,
+        pub si_addr: *mut ::c_void,
+        _pad: [c_int; 12],
     }
 
     pub struct sigaction {
         pub sa_sigaction: sighandler_t,
         pub sa_flags: ::c_int,
         pub sa_mask: sigset_t,
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_char,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
     }
 }
 
@@ -491,6 +498,8 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 
+pub const SIGSTKSZ: ::size_t = 34816;
+
 extern {
     pub fn mprotect(addr: *const ::c_void, len: size_t, prot: c_int)
                     -> c_int;
@@ -511,6 +520,8 @@ extern {
                         -> c_int;
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
+    pub fn backtrace(buf: *mut *mut ::c_void,
+                     sz: ::size_t) -> ::size_t;
 }
 
 cfg_if! {
