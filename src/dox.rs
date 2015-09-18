@@ -13,7 +13,7 @@ mod imp {
         Some(T),
         None,
     }
-    impl<T: Copy> for Option<T> {}
+    impl<T: Copy> Copy for Option<T> {}
     impl<T: Clone> Clone for Option<T> {
         fn clone(&self) -> Option<T> { loop {} }
     }
