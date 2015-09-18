@@ -103,8 +103,6 @@ pub const F_SETFD: c_int = 2;
 pub const F_GETFL: c_int = 3;
 pub const F_SETFL: c_int = 4;
 
-pub const O_ACCMODE: c_int = 3;
-
 pub const SIGTRAP: c_int = 5;
 
 pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
@@ -125,7 +123,6 @@ pub const RLIMIT_NICE: c_int = 13;
 pub const RLIMIT_RTPRIO: c_int = 14;
 
 pub const RUSAGE_SELF: c_int = 0;
-pub const RUSAGE_CHILDREN: c_int = -1;
 
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;

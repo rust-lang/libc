@@ -19,6 +19,8 @@ if [ "$TARGET" = "arm-linux-androideabi" ]; then
     sh ci/run.sh $TARGET
 elif [ "$TARGET" = "x86_64-unknown-linux-musl" ]; then
   curl -s $EXTRA_TARGETS/$TARGET.tar.gz | tar xzf - -C $HOME/rust/lib/rustlib
+  sudo apt-get install musl-tools
+  export CC=musl-gcc
 elif [ "$TARGET" = "arm-unknown-linux-gnueabihf" ]; then
   curl -s $EXTRA_TARGETS/$TARGET.tar.gz | tar xzf - -C $HOME/rust/lib/rustlib
   sudo apt-get install gcc-4.7-arm-linux-gnueabihf qemu-user

@@ -26,8 +26,6 @@ pub const RLIMIT_NOFILE: ::c_int = 7;
 pub const RLIMIT_AS: ::c_int = 9;
 pub const RLIMIT_NPROC: ::c_int = 6;
 pub const RLIMIT_MEMLOCK: ::c_int = 8;
-pub const RLIMIT_RTTIME: ::c_int = 15;
-pub const RLIMIT_NLIMITS: ::c_int = 16;
 pub const RLIM_INFINITY: ::rlim_t = !0;
 
 pub const O_APPEND: ::c_int = 1024;
@@ -156,7 +154,6 @@ pub const SO_RCVTIMEO: ::c_int = 20;
 pub const SO_SNDTIMEO: ::c_int = 21;
 pub const SO_ACCEPTCONN: ::c_int = 30;
 
-pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
 pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
 pub const TCP_THIN_DUPACK: ::c_int = 17;
 pub const TCP_USER_TIMEOUT: ::c_int = 18;
@@ -176,6 +173,16 @@ pub const SA_SIGINFO: ::c_ulong = 0x00000004;
 
 pub const SIGBUS: ::c_int = 7;
 pub const SIG_SETMASK: ::c_int = 2;
+
+cfg_if! {
+    if #[cfg(target_env = "musl")] {
+        pub const RLIMIT_NLIMITS: ::c_int = 15;
+    } else {
+        pub const RLIMIT_NLIMITS: ::c_int = 16;
+        pub const RLIMIT_RTTIME: ::c_int = 15;
+        pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
+    }
+}
 
 cfg_if! {
     if #[cfg(any(target_arch = "x86", target_arch = "arm"))] {

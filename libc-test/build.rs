@@ -11,10 +11,11 @@ fn main() {
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
     let darwin = target.contains("apple-darwin");
+    let musl = target.contains("musl");
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
-    if target.contains("unknown-linux-gnu") {
+    if target.contains("unknown-linux") {
         cfg.define("_GNU_SOURCE", None);
     } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
@@ -42,7 +43,7 @@ fn main() {
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
     } else if linux || android {
-        cfg.header("linux/if_packet.h");
+        cfg.header("netpacket/packet.h");
         cfg.header("net/ethernet.h");
     }
 
@@ -89,8 +90,11 @@ fn main() {
         } else {
             cfg.header("glob.h");
             cfg.header("ifaddrs.h");
-            cfg.header("sys/sysctl.h");
-            cfg.header("execinfo.h");
+
+            if !musl {
+                cfg.header("execinfo.h");
+                cfg.header("sys/sysctl.h");
+            }
         }
 
         if darwin {
@@ -192,6 +196,9 @@ fn main() {
 
             "SIG_IGN" => true, // sighandler_t weirdness
 
+            // types on musl are defined a little differently
+            n if musl && n.contains("PTHREAD") => true,
+
             _ => false,
         }
     });
@@ -220,17 +227,19 @@ fn main() {
     // Windows dllimport oddness?
     cfg.skip_fn_ptrcheck(move |_| windows);
 
-    cfg.skip_field_type(|struct_, field| {
+    cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
         (struct_ == "sigaction" && field == "sa_sigaction")
     });
 
-    cfg.skip_field(|struct_, field| {
+    cfg.skip_field(move |struct_, field| {
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
-        (struct_ == "siginfo_t" && field == "_pad")
+        (struct_ == "siginfo_t" && field == "_pad") ||
+        // musl names this __dummy1 but it's still there
+        (musl && struct_ == "glob_t" && field == "gl_flags")
     });
 
     cfg.generate("../src/lib.rs", "all.rs");

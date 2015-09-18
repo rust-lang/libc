@@ -40,7 +40,10 @@ s! {
         pub ru_msgrcv: c_long,
         pub ru_nsignals: c_long,
         pub ru_nvcsw: c_long,
-        pub ru_nivcsw: c_long
+        pub ru_nivcsw: c_long,
+
+        #[cfg(target_env = "musl")]
+        __reserved: [c_long; 16],
     }
 
     pub struct in_addr {
@@ -455,7 +458,6 @@ extern {
     pub fn getsid(pid: pid_t) -> pid_t;
     pub fn madvise(addr: *mut ::c_void, len: size_t, advice: c_int)
                    -> c_int;
-    pub fn ioctl(fd: c_int, request: c_ulong, ...) -> c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "putenv$UNIX2003")]
     pub fn putenv(string: *mut c_char) -> c_int;
@@ -491,6 +493,7 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
+    #[cfg(not(target_env = "musl"))]
     pub fn backtrace(buf: *mut *mut ::c_void,
                      sz: ::c_int) -> ::c_int;
     pub fn posix_memalign(memptr: *mut *mut ::c_void,
