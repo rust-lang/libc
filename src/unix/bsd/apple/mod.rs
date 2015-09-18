@@ -2,44 +2,16 @@
 //!
 //! This covers *-apple-* triples currently
 
-pub type c_char = i8;
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_int = i32;
-pub type c_uint = u32;
-pub type c_float = f32;
-pub type c_double = f64;
 pub type clock_t = c_ulong;
 pub type time_t = c_long;
 pub type suseconds_t = i32;
-pub type wchar_t = i32;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
-pub type intmax_t = i64;
-pub type uintmax_t = u64;
-
-pub type off_t = i64;
 pub type dev_t = i32;
 pub type ino_t = u64;
-pub type pid_t = i32;
-pub type uid_t = u32;
-pub type gid_t = u32;
-pub type useconds_t = u32;
 pub type mode_t = u16;
 pub type ssize_t = c_long;
-
 pub type nlink_t = u16;
 pub type blksize_t = i32;
-pub type blkcnt_t = i64;
-pub type socklen_t = u32;
-pub type sa_family_t = u8;
-pub type in_port_t = u16;
-pub type in_addr_t = u32;
-pub type pthread_t = uintptr_t;
 pub type rlim_t = u64;
-pub type sighandler_t = size_t;
 pub type mach_timebase_info_data_t = mach_timebase_info;
 pub type pthread_key_t = c_ulong;
 pub type sigset_t = u32;

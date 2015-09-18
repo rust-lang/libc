@@ -1,45 +1,18 @@
-pub type c_char = i8;
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_int = i32;
-pub type c_uint = u32;
 pub type c_long = i64;
 pub type c_ulong = u64;
-pub type c_float = f32;
-pub type c_double = f64;
 pub type size_t = u64;
 pub type ptrdiff_t = i64;
 pub type clock_t = i64;
 pub type time_t = i64;
 pub type suseconds_t = i64;
-pub type wchar_t = i32;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
 pub type intptr_t = i64;
 pub type uintptr_t = u64;
-pub type intmax_t = i64;
-pub type uintmax_t = u64;
-pub type off_t = i64;
 pub type dev_t = i32;
-pub type pid_t = i32;
-pub type uid_t = u32;
-pub type gid_t = u32;
-pub type useconds_t = u32;
 pub type mode_t = u32;
 pub type ssize_t = c_long;
-
-pub type sighandler_t = size_t;
-pub type socklen_t = u32;
-pub type sa_family_t = u8;
-pub type in_port_t = u16;
-pub type in_addr_t = u32;
-
 pub type nlink_t = uint32_t;
 pub type blksize_t = uint32_t;
 pub type ino_t = uint64_t;
-pub type blkcnt_t = i64;
 pub type fflags_t = u32;
 pub type pthread_attr_t = *mut c_void;
 pub type sigset_t = ::c_uint;
@@ -48,19 +21,12 @@ pub type pthread_mutex_t = *mut ::c_void;
 pub type pthread_mutexattr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
-pub type pthread_t = uintptr_t;
 pub type rlim_t = u64;
 
 
 pub enum timezone {}
 
 s! {
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
-    }
-
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
@@ -130,6 +96,12 @@ s! {
         pub st_gen: uint32_t,
         pub st_birthtime: time_t,
         pub st_birthtime_nsec: c_long,
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
     }
 }
 
