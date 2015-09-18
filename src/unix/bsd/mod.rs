@@ -52,6 +52,16 @@ s! {
         #[cfg(not(target_os = "macos"))]
         pub pw_fields: ::c_int,
     }
+
+    pub struct ifaddrs {
+        pub ifa_next: *mut ifaddrs,
+        pub ifa_name: *mut ::c_char,
+        pub ifa_flags: ::c_uint,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifa_dstaddr: *mut ::sockaddr,
+        pub ifa_data: *mut ::c_void
+    }
 }
 
 pub const FIOCLEX: c_ulong = 0x20006601;

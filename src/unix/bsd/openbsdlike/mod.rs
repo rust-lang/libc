@@ -65,16 +65,6 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
-    pub struct ifaddrs {
-        pub ifa_next: *mut ifaddrs,
-        pub ifa_name: *mut c_char,
-        pub ifa_flags: c_uint,
-        pub ifa_addr: *mut sockaddr,
-        pub ifa_netmask: *mut sockaddr,
-        pub ifa_dstaddr: *mut sockaddr,
-        pub ifa_data: *mut c_void
-    }
-
     pub struct stat {
         pub st_mode: mode_t,
         pub st_dev: dev_t,
