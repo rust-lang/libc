@@ -4,6 +4,8 @@ result the CI is pretty complicated and also pretty large! Hopefully this can
 serve as a guide through the sea of scripts in this directory and elsewhere in
 this project.
 
+# Files
+
 First up, let's talk about the files in this directory:
 
 * `Dockerfile-android`, `android-accept-licenses.sh` -- these two files are
@@ -42,4 +44,37 @@ First up, let's talk about the files in this directory:
 
 * `landing-page-*.html` - used by `dox.sh` to generate a landing page for all
   architectures' documentation.
+
+# CI Systems
+
+Currently this repository leverages a combination of Travis CI and AppVeyor for
+running tests. The triples tested are:
+
+* AppVeyor
+  * `{i686,x86_64}-pc-windows-{msvc,gnu}`
+* Travis
+  *  `{i686,x86_64,mips,aarch64}-unknown-linux-gnu`
+  *  `x86_64-unknown-linux-musl`
+  *  `arm-unknown-linux-gnueabihf`
+  *  `arm-linux-androideabi`
+  *  `{i686,x86_64}-apple-darwin`
+
+The Windows triples are all pretty standard, they just set up their environment
+then run tests, no need for downloading any extra target libs (we just download
+the right installer). The Intel Linux/OSX builds are similar in that we just
+download the right target libs and run tests. Note that the Intel Linux/OSX
+builds are run on stable/beta/nightly, but are the only ones that do so.
+
+The remaining architectures look like:
+
+* Android runs in a docker image with an emulator, the NDK, and the SDK already
+  set up (see `Dockerfile-android`). The entire build happens within the docker
+  image.
+* The MIPS, ARM, and AArch64 builds all use QEMU to run the generated binary to
+  actually verify the tests pass.
+* The MUSL build just has to download a MUSL compiler and target libraries and
+  then otherwise runs tests normally.
+
+Hopefully that's at least somewhat of an introduction to everything going on
+here, and feel free to ping @alexcrichton with questions!
 
