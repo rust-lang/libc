@@ -11,7 +11,6 @@ pub type intptr_t = i64;
 pub type uintptr_t = u64;
 pub type ino_t = u64;
 pub type off_t = i64;
-pub type mode_t = u32;
 pub type ssize_t = i64;
 pub type blkcnt_t = i64;
 
