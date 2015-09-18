@@ -1,6 +1,6 @@
 pub type rlim_t = c_ulong;
 pub type sa_family_t = u16;
-pub type pthread_key_t = c_uint;
+pub type pthread_key_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -40,10 +40,10 @@ s! {
     }
 
     pub struct addrinfo {
-        pub ai_flags: c_int,
-        pub ai_family: c_int,
-        pub ai_socktype: c_int,
-        pub ai_protocol: c_int,
+        pub ai_flags: ::c_int,
+        pub ai_family: ::c_int,
+        pub ai_socktype: ::c_int,
+        pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
 
         #[cfg(target_os = "linux")]
@@ -58,53 +58,53 @@ s! {
     }
 
     pub struct sockaddr_ll {
-        pub sll_family: c_ushort,
-        pub sll_protocol: c_ushort,
-        pub sll_ifindex: c_int,
-        pub sll_hatype: c_ushort,
-        pub sll_pkttype: c_uchar,
-        pub sll_halen: c_uchar,
-        pub sll_addr: [c_uchar; 8]
+        pub sll_family: ::c_ushort,
+        pub sll_protocol: ::c_ushort,
+        pub sll_ifindex: ::c_int,
+        pub sll_hatype: ::c_ushort,
+        pub sll_pkttype: ::c_uchar,
+        pub sll_halen: ::c_uchar,
+        pub sll_addr: [::c_uchar; 8]
     }
 }
 
-pub const EXIT_FAILURE: c_int = 1;
-pub const EXIT_SUCCESS: c_int = 0;
-pub const RAND_MAX: c_int = 2147483647;
-pub const EOF: c_int = -1;
-pub const SEEK_SET: c_int = 0;
-pub const SEEK_CUR: c_int = 1;
-pub const SEEK_END: c_int = 2;
-pub const _IOFBF: c_int = 0;
-pub const _IONBF: c_int = 2;
-pub const _IOLBF: c_int = 1;
+pub const EXIT_FAILURE: ::c_int = 1;
+pub const EXIT_SUCCESS: ::c_int = 0;
+pub const RAND_MAX: ::c_int = 2147483647;
+pub const EOF: ::c_int = -1;
+pub const SEEK_SET: ::c_int = 0;
+pub const SEEK_CUR: ::c_int = 1;
+pub const SEEK_END: ::c_int = 2;
+pub const _IOFBF: ::c_int = 0;
+pub const _IONBF: ::c_int = 2;
+pub const _IOLBF: ::c_int = 1;
 
-pub const F_DUPFD: c_int = 0;
-pub const F_GETFD: c_int = 1;
-pub const F_SETFD: c_int = 2;
-pub const F_GETFL: c_int = 3;
-pub const F_SETFL: c_int = 4;
+pub const F_DUPFD: ::c_int = 0;
+pub const F_GETFD: ::c_int = 1;
+pub const F_SETFD: ::c_int = 2;
+pub const F_GETFL: ::c_int = 3;
+pub const F_SETFL: ::c_int = 4;
 
-pub const SIGTRAP: c_int = 5;
+pub const SIGTRAP: ::c_int = 5;
 
-pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
-pub const PTHREAD_CREATE_DETACHED: c_int = 1;
+pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
+pub const PTHREAD_CREATE_DETACHED: ::c_int = 1;
 
-pub const CLOCK_REALTIME: c_int = 0;
-pub const CLOCK_MONOTONIC: c_int = 1;
+pub const CLOCK_REALTIME: ::c_int = 0;
+pub const CLOCK_MONOTONIC: ::c_int = 1;
 
-pub const RLIMIT_CPU: c_int = 0;
-pub const RLIMIT_FSIZE: c_int = 1;
-pub const RLIMIT_DATA: c_int = 2;
-pub const RLIMIT_STACK: c_int = 3;
-pub const RLIMIT_CORE: c_int = 4;
-pub const RLIMIT_LOCKS: c_int = 10;
-pub const RLIMIT_SIGPENDING: c_int = 11;
-pub const RLIMIT_MSGQUEUE: c_int = 12;
-pub const RLIMIT_NICE: c_int = 13;
-pub const RLIMIT_RTPRIO: c_int = 14;
+pub const RLIMIT_CPU: ::c_int = 0;
+pub const RLIMIT_FSIZE: ::c_int = 1;
+pub const RLIMIT_DATA: ::c_int = 2;
+pub const RLIMIT_STACK: ::c_int = 3;
+pub const RLIMIT_CORE: ::c_int = 4;
+pub const RLIMIT_LOCKS: ::c_int = 10;
+pub const RLIMIT_SIGPENDING: ::c_int = 11;
+pub const RLIMIT_MSGQUEUE: ::c_int = 12;
+pub const RLIMIT_NICE: ::c_int = 13;
+pub const RLIMIT_RTPRIO: ::c_int = 14;
 
-pub const RUSAGE_SELF: c_int = 0;
+pub const RUSAGE_SELF: ::c_int = 0;
 
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
