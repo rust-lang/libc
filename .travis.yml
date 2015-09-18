@@ -34,10 +34,6 @@ matrix:
     - os: linux
       env: TARGET=aarch64-unknown-linux-gnu
       rust: nightly-2015-09-08
-addons:
-  apt:
-    packages:
-      - gcc-multilib
 notifications:
   email:
     on_success: never

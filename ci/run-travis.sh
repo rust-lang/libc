@@ -57,6 +57,10 @@ else
 
   # clang has better error messages and implements alignof more broadly
   export CC=clang
+
+  if [ "$TARGET" = "i686-unknown-linux-gnu" ]; then
+    sudo apt-get install gcc-multilib
+  fi
 fi
 
 mkdir .cargo
