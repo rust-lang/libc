@@ -259,6 +259,8 @@ cfg_if! {
                           newlen: size_t)
                           -> ::c_int;
             pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+            pub fn backtrace(buf: *mut *mut ::c_void,
+                             sz: ::c_int) -> ::c_int;
         }
     }
 }
