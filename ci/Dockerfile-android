@@ -1,3 +1,7 @@
+# This is a Dockerfile for building the image that is used to build Android
+# binaries and run tests within. This will install the NDK, SDK, and set up an
+# emulator to run tests in.
+
 FROM ubuntu:latest
 
 RUN mkdir /build

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Builds and runs tests for a particular target passed as an argument to this
+# script.
+
 set -ex
 
 TARGET=$1

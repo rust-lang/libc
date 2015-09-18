@@ -1,3 +1,5 @@
+# Installs MSYS2 on AppVeyor builders
+
 If (!${env:MSYS2_ARCH}) {
   Exit 0
 }

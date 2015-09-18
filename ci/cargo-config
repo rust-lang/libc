@@ -1,3 +1,5 @@
+# Configuration of which linkers to call on Travis for various architectures
+
 [target.arm-linux-androideabi]
 linker = "arm-linux-androideabi-gcc"
 

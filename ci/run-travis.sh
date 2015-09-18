@@ -1,3 +1,7 @@
+# Entry point for all travis builds, this will set up the Travis environment by
+# downloading any dependencies. It will then execute the `run.sh` script to
+# build and execute all tests.
+
 set -ex
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
