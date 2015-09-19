@@ -19,6 +19,8 @@ Vagrant.configure(2) do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
+  config.vm.synced_folder "..", "/vagrant"
+
   config.vm.define :freebsd do |bsd|
     bsd.vm.box = "arkadi/freebsd-10.1-amd64"
     bsd.vm.provision :shell, inline: 'yes | sudo pkg install rust cargo'
@@ -26,5 +28,11 @@ Vagrant.configure(2) do |config|
       vb.memory = "2048"
     end
   end
-  config.vm.synced_folder "..", "/vagrant"
+
+  config.vm.define :openbsd do |bsd|
+    bsd.vm.box = "bodgit/openbsd-5.7-amd64"
+    bsd.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+  end
 end
