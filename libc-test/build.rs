@@ -12,6 +12,8 @@ fn main() {
     let android = target.contains("android");
     let darwin = target.contains("apple-darwin");
     let musl = target.contains("musl");
+    let freebsd = target.contains("freebsd");
+    let bsdlike = freebsd || darwin;
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
@@ -38,14 +40,6 @@ fn main() {
        .header("sys/types.h")
        .header("time.h")
        .header("wchar.h");
-
-    if darwin {
-        cfg.header("mach-o/dyld.h");
-        cfg.header("mach/mach_time.h");
-    } else if linux || android {
-        cfg.header("netpacket/packet.h");
-        cfg.header("net/ethernet.h");
-    }
 
     if windows {
         cfg.header("winsock2.h"); // must be before windows.h
@@ -84,29 +78,36 @@ fn main() {
         cfg.header("utime.h");
         cfg.header("pwd.h");
         cfg.header("grp.h");
-
-        if android {
-            cfg.header("arpa/inet.h");
-        } else {
-            cfg.header("glob.h");
-            cfg.header("ifaddrs.h");
-
-            if !musl {
-                cfg.header("execinfo.h");
-                cfg.header("sys/sysctl.h");
-            }
-        }
-
-        if darwin {
-            cfg.header("malloc/malloc.h");
-            cfg.header("crt_externs.h");
-        } else {
-            cfg.header("malloc.h");
-        }
-
     }
-    if target.contains("linux") {
+
+    if android {
+        cfg.header("arpa/inet.h");
+    } else if !windows {
+        cfg.header("glob.h");
+        cfg.header("ifaddrs.h");
+
+        if !musl {
+            cfg.header("execinfo.h");
+            cfg.header("sys/sysctl.h");
+        }
+    }
+
+    if darwin {
+        cfg.header("mach-o/dyld.h");
+        cfg.header("mach/mach_time.h");
+        cfg.header("malloc/malloc.h");
+        cfg.header("crt_externs.h");
+    }
+
+    if linux || android {
+        cfg.header("netpacket/packet.h");
+        cfg.header("net/ethernet.h");
+        cfg.header("malloc.h");
         cfg.header("sys/prctl.h");
+    }
+
+    if freebsd {
+        cfg.header("pthread_np.h");
     }
 
     cfg.type_name(move |ty, is_struct| {
@@ -120,7 +121,7 @@ fn main() {
             "ssize_t" if windows => "SSIZE_T".to_string(),
 
             // OSX calls this something else
-            "sighandler_t" if darwin => "sig_t".to_string(),
+            "sighandler_t" if bsdlike => "sig_t".to_string(),
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -216,7 +217,7 @@ fn main() {
             "strerror_r" if linux => true,   // actually xpg-something-or-other
 
             // typed 2nd arg on linux and android
-            "gettimeofday" if linux || android => true,
+            "gettimeofday" if linux || android || freebsd => true,
 
             "dlerror" if android => true, // const-ness is added
 

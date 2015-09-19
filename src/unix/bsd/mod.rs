@@ -1,3 +1,12 @@
+pub type c_char = i8;
+pub type wchar_t = i32;
+pub type off_t = i64;
+pub type useconds_t = u32;
+pub type blkcnt_t = i64;
+pub type socklen_t = u32;
+pub type sa_family_t = u8;
+pub type pthread_t = uintptr_t;
+
 s! {
     pub struct sockaddr {
         pub sa_len: u8,
@@ -39,12 +48,19 @@ s! {
         pub pw_dir: *mut ::c_char,
         pub pw_shell: *mut ::c_char,
         pub pw_expire: ::time_t,
+
+        #[cfg(not(target_os = "macos"))]
+        pub pw_fields: ::c_int,
     }
 
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
+    pub struct ifaddrs {
+        pub ifa_next: *mut ifaddrs,
+        pub ifa_name: *mut ::c_char,
+        pub ifa_flags: ::c_uint,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifa_dstaddr: *mut ::sockaddr,
+        pub ifa_data: *mut ::c_void
     }
 }
 
@@ -53,17 +69,19 @@ pub const FIOCLEX: c_ulong = 0x20006601;
 pub const SA_ONSTACK: ::c_int = 0x0001;
 pub const SA_SIGINFO: ::c_int = 0x0040;
 
-pub const SIGSTKSZ: ::size_t = 131072;
 pub const SIGBUS: ::c_int = 10;
 pub const SIG_SETMASK: ::c_int = 3;
 
+pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
+pub const IPV6_V6ONLY: ::c_int = 27;
+
 extern {
     pub fn mincore(addr: *const ::c_void, len: size_t,
-                   vec: *mut c_char) -> c_int;
+                   vec: *mut c_char) -> ::c_int;
     pub fn sysctlnametomib(name: *const c_char,
-                           mibp: *mut c_int,
+                           mibp: *mut ::c_int,
                            sizep: *mut size_t)
-                           -> c_int;
+                           -> ::c_int;
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;

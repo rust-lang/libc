@@ -1,10 +1,12 @@
-pub type pthread_t = uintptr_t;
+pub type clock_t = i32;
+pub type dev_t = u32;
+pub type ino_t = u32;
+pub type mode_t = u16;
+pub type nlink_t = u16;
+pub type blksize_t = u32;
+pub type fflags_t = u32;
+pub type pthread_attr_t = *mut ::c_void;
 pub type rlim_t = i64;
-pub type sighandler_t = size_t;
-pub type socklen_t = u32;
-pub type sa_family_t = u8;
-pub type in_port_t = u16;
-pub type in_addr_t = u32;
 pub type pthread_mutex_t = *mut ::c_void;
 pub type pthread_mutexattr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
@@ -32,7 +34,7 @@ s! {
 
     pub struct sockaddr_storage {
         pub ss_len: u8,
-        pub ss_family: sa_family_t,
+        pub ss_family: ::sa_family_t,
         __ss_pad1: [u8; 6],
         __ss_align: i64,
         __ss_pad2: [u8; 112],
@@ -43,20 +45,10 @@ s! {
         pub ai_family: ::c_int,
         pub ai_socktype: ::c_int,
         pub ai_protocol: ::c_int,
-        pub ai_addrlen: socklen_t,
-        pub ai_canonname: *mut c_char,
+        pub ai_addrlen: ::socklen_t,
+        pub ai_canonname: *mut ::c_char,
         pub ai_addr: *mut ::sockaddr,
         pub ai_next: *mut addrinfo,
-    }
-
-    pub struct ifaddrs {
-        pub ifa_next: *mut ifaddrs,
-        pub ifa_name: *mut c_char,
-        pub ifa_flags: c_uint,
-        pub ifa_addr: *mut ::sockaddr,
-        pub ifa_netmask: *mut ::sockaddr,
-        pub ifa_dstaddr: *mut ::sockaddr,
-        pub ifa_data: *mut ::c_void
     }
 
     pub struct sigset_t {
@@ -64,19 +56,26 @@ s! {
     }
 
     pub struct siginfo_t {
-        pub _signo: ::c_int,
-        pub _errno: ::c_int,
-        pub _code: ::c_int,
-        pub _pid: ::pid_t,
-        pub _uid: ::uid_t,
-        pub _status: ::c_int,
-        pub si_addr: *mut ::c_void
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub si_pid: ::pid_t,
+        pub si_uid: ::uid_t,
+        pub si_status: ::c_int,
+        pub si_addr: *mut ::c_void,
+        _pad: [::c_int; 12],
     }
 
     pub struct sigaction {
-        pub sa_sigaction: sighandler_t,
+        pub sa_sigaction: ::sighandler_t,
         pub sa_flags: ::c_int,
         pub sa_mask: sigset_t,
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_char,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
     }
 }
 
@@ -90,11 +89,11 @@ pub const SEEK_END: ::c_int = 2;
 pub const _IOFBF: ::c_int = 0;
 pub const _IONBF: ::c_int = 2;
 pub const _IOLBF: ::c_int = 1;
-pub const BUFSIZ: c_uint = 1024;
-pub const FOPEN_MAX: c_uint = 20;
-pub const FILENAME_MAX: c_uint = 1024;
-pub const L_tmpnam: c_uint = 1024;
-pub const TMP_MAX: c_uint = 308915776;
+pub const BUFSIZ: ::c_uint = 1024;
+pub const FOPEN_MAX: ::c_uint = 20;
+pub const FILENAME_MAX: ::c_uint = 1024;
+pub const L_tmpnam: ::c_uint = 1024;
+pub const TMP_MAX: ::c_uint = 308915776;
 
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
@@ -492,23 +491,23 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 
 extern {
-    pub fn mprotect(addr: *const ::c_void, len: size_t, prot: c_int)
-                    -> c_int;
+    pub fn mprotect(addr: *const ::c_void, len: size_t, prot: ::c_int)
+                    -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
-    pub fn sysctl(name: *const c_int,
-                  namelen: c_uint,
+    pub fn sysctl(name: *const ::c_int,
+                  namelen: ::c_uint,
                   oldp: *mut ::c_void,
                   oldlenp: *mut size_t,
                   newp: *const ::c_void,
                   newlen: size_t)
-                  -> c_int;
-    pub fn sysctlbyname(name: *const c_char,
+                  -> ::c_int;
+    pub fn sysctlbyname(name: *const ::c_char,
                         oldp: *mut ::c_void,
                         oldlenp: *mut size_t,
                         newp: *const ::c_void,
                         newlen: size_t)
-                        -> c_int;
+                        -> ::c_int;
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
 }

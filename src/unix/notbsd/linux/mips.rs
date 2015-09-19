@@ -14,7 +14,6 @@ pub type ino_t = u32;
 pub type ssize_t = i32;
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
-pub type mode_t = u32;
 pub type nlink_t = u32;
 
 s! {

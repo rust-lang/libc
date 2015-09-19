@@ -26,3 +26,7 @@ build: false
 test_script:
   - cargo test
   - cargo run --manifest-path libc-test/Cargo.toml
+
+branches:
+  only:
+    - autotest
