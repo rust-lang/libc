@@ -16,9 +16,7 @@ if [ "$TARGET" = "arm-linux-androideabi" ]; then
 elif [ "$TARGET" = "arm-unknown-linux-gnueabihf" ]; then
     qemu-arm -L /usr/arm-linux-gnueabihf libc-test/target/$TARGET/debug/libc-test
 elif [ "$TARGET" = "mips-unknown-linux-gnu" ]; then
-    # FIXME: this segfaults on travis, passes locally?
     qemu-mips -L /usr/mips-linux-gnu libc-test/target/$TARGET/debug/libc-test
-    echo skip
 elif [ "$TARGET" = "aarch64-unknown-linux-gnu" ]; then
     qemu-aarch64 -L /usr/aarch64-linux-gnu/ libc-test/target/$TARGET/debug/libc-test
 else
