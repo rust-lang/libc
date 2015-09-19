@@ -72,6 +72,9 @@ pub const SA_SIGINFO: ::c_int = 0x0040;
 pub const SIGBUS: ::c_int = 10;
 pub const SIG_SETMASK: ::c_int = 3;
 
+pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
+pub const IPV6_V6ONLY: ::c_int = 27;
+
 extern {
     pub fn mincore(addr: *const ::c_void, len: size_t,
                    vec: *mut c_char) -> ::c_int;

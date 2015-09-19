@@ -271,6 +271,9 @@ pub const TCP_INFO: ::c_int = 11;
 pub const TCP_QUICKACK: ::c_int = 12;
 pub const TCP_CONGESTION: ::c_int = 13;
 
+pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
+pub const IPV6_V6ONLY: ::c_int = 26;
+
 pub const SO_DEBUG: ::c_int = 1;
 
 pub const SHUT_RD: ::c_int = 0;
