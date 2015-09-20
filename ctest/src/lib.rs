@@ -375,6 +375,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("linux", "unix", "musl")
     } else if target.contains("apple-darwin") {
         ("macos", "unix", "")
+    } else if target.contains("apple-ios") {
+        ("ios", "unix", "")
     } else if target.contains("windows-msvc") {
         ("windows", "windows", "msvc")
     } else if target.contains("windows-gnu") {
