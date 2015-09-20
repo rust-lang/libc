@@ -358,7 +358,7 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     let mut ret = Vec::new();
     let (arch, width) = if target.starts_with("x86_64") {
         ("x86_64", "64")
-    } else if target.starts_with("i686") {
+    } else if target.starts_with("i686") || target.starts_with("i386") {
         ("x86", "32")
     } else if target.starts_with("arm") {
         ("arm", "32")
