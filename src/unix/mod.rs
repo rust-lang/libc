@@ -333,7 +333,8 @@ extern {
     pub fn getrusage(resource: c_int, usage: *mut rusage) -> c_int;
 
     pub fn getdtablesize() -> c_int;
-    #[cfg_attr(target_os = "macos", link_name = "realpath$DARWIN_EXTSN")]
+    #[cfg_attr(any(target_os = "macos", target_os = "ios"),
+               link_name = "realpath$DARWIN_EXTSN")]
     pub fn realpath(pathname: *const ::c_char, resolved: *mut ::c_char)
                     -> *mut ::c_char;
 
@@ -523,6 +524,7 @@ cfg_if! {
         mod notbsd;
         pub use self::notbsd::*;
     } else if #[cfg(any(target_os = "macos",
+                        target_os = "ios",
                         target_os = "freebsd",
                         target_os = "dragonfly",
                         target_os = "openbsd",

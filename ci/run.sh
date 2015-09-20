@@ -6,7 +6,16 @@
 set -ex
 
 TARGET=$1
-cargo build --manifest-path libc-test/Cargo.toml --target $TARGET
+case "$TARGET" in
+  *-apple-ios)
+    cargo rustc --manifest-path libc-test/Cargo.toml --target $TARGET -- \
+        -C link-args=-mios-simulator-version-min=7.0
+    ;;
+
+  *)
+    cargo build --manifest-path libc-test/Cargo.toml --target $TARGET
+    ;;
+esac
 
 case "$TARGET" in
   arm-linux-androideabi)
@@ -27,6 +36,10 @@ case "$TARGET" in
   aarch64-unknown-linux-gnu)
     qemu-aarch64 -L /usr/aarch64-linux-gnu/ \
       libc-test/target/$TARGET/debug/libc-test
+    ;;
+
+  *-apple-ios)
+    libc-test/target/$TARGET/debug/libc-test
     ;;
 
   *)

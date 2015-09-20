@@ -626,11 +626,6 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 pub const SIGSTKSZ: ::size_t = 131072;
 
 extern {
-    pub fn _NSGetExecutablePath(buf: *mut ::c_char,
-                                bufsize: *mut ::uint32_t) -> ::c_int;
-    pub fn _NSGetArgc() -> *mut ::c_int;
-    pub fn _NSGetArgv() -> *mut *mut *mut ::c_char;
-    pub fn _NSGetEnviron() -> *mut *mut *mut ::c_char;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "mprotect$UNIX2003")]
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)

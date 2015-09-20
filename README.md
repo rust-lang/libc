@@ -17,7 +17,7 @@ Tested:
   *  `x86_64-unknown-linux-musl`
   *  `arm-unknown-linux-gnueabihf`
   *  `arm-linux-androideabi`
-  *  `{i686,x86_64}-apple-darwin`
+  *  `{i686,x86_64}-apple-{darwin,ios}`
 
 Untested:
   * `{i686,x86_64}-unknown-freebsd`

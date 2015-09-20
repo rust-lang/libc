@@ -34,6 +34,12 @@ matrix:
     - os: linux
       env: TARGET=aarch64-unknown-linux-gnu
       rust: nightly-2015-09-08
+    - os: osx
+      env: TARGET=i386-apple-ios
+      rust: nightly-2015-09-08
+    - os: osx
+      env: TARGET=x86_64-apple-ios
+      rust: nightly-2015-09-08
 notifications:
   email:
     on_success: never

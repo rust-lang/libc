@@ -47,6 +47,10 @@ case "$TARGET" in
     export CC=aarch64-linux-gnu-gcc
     ;;
 
+  *-apple-ios)
+    curl -s $EXTRA_TARGETS/$TARGET.tar.gz | tar xzf - -C $HOME/rust/lib/rustlib
+    ;;
+
   mips-unknown-linux-gnu)
     # Download pre-built and custom MIPS libs and then also instsall the MIPS
     # compiler according to this post:

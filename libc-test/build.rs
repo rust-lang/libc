@@ -10,10 +10,10 @@ fn main() {
     let mingw = target.contains("windows-gnu");
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
-    let darwin = target.contains("apple-darwin");
+    let apple = target.contains("apple");
     let musl = target.contains("musl");
     let freebsd = target.contains("freebsd");
-    let bsdlike = freebsd || darwin;
+    let bsdlike = freebsd || apple;
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
@@ -92,11 +92,13 @@ fn main() {
         }
     }
 
-    if darwin {
+    if apple {
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
         cfg.header("malloc/malloc.h");
-        cfg.header("crt_externs.h");
+        if target.starts_with("x86") {
+            cfg.header("crt_externs.h");
+        }
     }
 
     if linux || android {
@@ -150,7 +152,7 @@ fn main() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_ == "stat" => {
-                if target2.contains("apple-darwin") {
+                if target2.contains("apple") {
                     s.replace("_nsec", "spec.tv_nsec")
                 } else if target2.contains("android") {
                     s.to_string()

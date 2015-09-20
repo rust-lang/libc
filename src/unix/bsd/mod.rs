@@ -49,7 +49,7 @@ s! {
         pub pw_shell: *mut ::c_char,
         pub pw_expire: ::time_t,
 
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(not(any(target_os = "macos", target_os = "ios")))]
         pub pw_fields: ::c_int,
     }
 

@@ -57,7 +57,7 @@ running tests. The triples tested are:
   *  `x86_64-unknown-linux-musl`
   *  `arm-unknown-linux-gnueabihf`
   *  `arm-linux-androideabi`
-  *  `{i686,x86_64}-apple-darwin`
+  *  `{i686,x86_64}-apple-{darwin,ios}`
 
 The Windows triples are all pretty standard, they just set up their environment
 then run tests, no need for downloading any extra target libs (we just download
@@ -74,6 +74,8 @@ The remaining architectures look like:
   actually verify the tests pass.
 * The MUSL build just has to download a MUSL compiler and target libraries and
   then otherwise runs tests normally.
+* iOS builds need an extra linker flag currently, but beyond that they're built
+  as standard as everything else.
 
 Hopefully that's at least somewhat of an introduction to everything going on
 here, and feel free to ping @alexcrichton with questions!
