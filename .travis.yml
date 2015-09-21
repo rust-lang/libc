@@ -39,4 +39,4 @@ notifications:
     on_success: never
 branches:
   only:
-    - autotest
+    - master

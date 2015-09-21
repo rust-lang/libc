@@ -4,7 +4,7 @@
 # Travis, but it didn't work out. Regardless this has stuck around! You can run
 # tests in FreeBSD via:
 #
-#     git clone https://github.com/alexcrichton/libc --branch autotest
+#     git clone https://github.com/alexcrichton/libc
 #     cd libc/ci
 #     vagrant up freebsd
 #     vagrant ssh freebsd
