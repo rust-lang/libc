@@ -65,6 +65,7 @@ s! {
 }
 
 pub const FIOCLEX: c_ulong = 0x20006601;
+pub const FIONBIO: ::c_int = 0x8004667e;
 
 pub const SA_ONSTACK: ::c_int = 0x0001;
 pub const SA_SIGINFO: ::c_int = 0x0040;

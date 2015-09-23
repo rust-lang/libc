@@ -202,6 +202,7 @@ pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 
 pub const FIOCLEX: ::c_ulong = 0x6601;
+pub const FIONBIO: ::c_int = 0x667e;
 
 pub const SA_ONSTACK: ::c_ulong = 0x08000000;
 pub const SA_SIGINFO: ::c_ulong = 0x00000008;

@@ -96,6 +96,8 @@ pub const L_tmpnam: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 308915776;
 pub const _PC_NAME_MAX: ::c_int = 4;
 
+pub const FIONBIO: ::c_int = 0x5421;
+
 pub const _SC_ARG_MAX: ::c_int = 0;
 pub const _SC_BC_BASE_MAX: ::c_int = 1;
 pub const _SC_BC_DIM_MAX: ::c_int = 2;
