@@ -5,7 +5,7 @@ pub type useconds_t = u32;
 pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
-pub type pthread_t = uintptr_t;
+pub type pthread_t = ::uintptr_t;
 
 s! {
     pub struct sockaddr {
@@ -76,11 +76,11 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
 
 extern {
-    pub fn mincore(addr: *const ::c_void, len: size_t,
+    pub fn mincore(addr: *const ::c_void, len: ::size_t,
                    vec: *mut c_char) -> ::c_int;
     pub fn sysctlnametomib(name: *const c_char,
                            mibp: *mut ::c_int,
-                           sizep: *mut size_t)
+                           sizep: *mut ::size_t)
                            -> ::c_int;
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;

@@ -19,9 +19,9 @@ pub enum timezone {}
 
 s! {
     pub struct glob_t {
-        pub gl_pathc:  size_t,
+        pub gl_pathc:  ::size_t,
         __unused1: ::c_int,
-        pub gl_offs:   size_t,
+        pub gl_offs:   ::size_t,
         __unused2: ::c_int,
         pub gl_pathv:  *mut *mut ::c_char,
 
@@ -389,7 +389,7 @@ pub const _SC_XOPEN_XCU_VERSION: ::c_int = 121;
 
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 1;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 2;
-pub const PTHREAD_STACK_MIN: size_t = 8192;
+pub const PTHREAD_STACK_MIN: ::size_t = 8192;
 
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
