@@ -8,7 +8,6 @@ pub type suseconds_t = i32;
 pub type dev_t = i32;
 pub type ino_t = u64;
 pub type mode_t = u16;
-pub type ssize_t = c_long;
 pub type nlink_t = u16;
 pub type blksize_t = i32;
 pub type rlim_t = u64;

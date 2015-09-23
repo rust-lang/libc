@@ -2,16 +2,11 @@
 
 pub type c_long = i64;
 pub type c_ulong = u64;
-pub type size_t = u64;
-pub type ptrdiff_t = i64;
 pub type clock_t = i64;
 pub type time_t = i64;
 pub type suseconds_t = i64;
-pub type intptr_t = i64;
-pub type uintptr_t = u64;
 pub type ino_t = u64;
 pub type off_t = i64;
-pub type ssize_t = i64;
 pub type blkcnt_t = i64;
 
 s! {

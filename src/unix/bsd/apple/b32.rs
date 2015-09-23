@@ -2,10 +2,6 @@
 
 pub type c_long = i32;
 pub type c_ulong = u32;
-pub type size_t = u32;
-pub type ptrdiff_t = i32;
-pub type intptr_t = i32;
-pub type uintptr_t = u32;
 
 pub const __PTHREAD_MUTEX_SIZE__: usize = 40;
 pub const __PTHREAD_COND_SIZE__: usize = 24;
