@@ -8,9 +8,9 @@ pub type mode_t = u32;
 
 s! {
     pub struct glob_t {
-        pub gl_pathc: size_t,
+        pub gl_pathc: ::size_t,
         pub gl_pathv: *mut *mut c_char,
-        pub gl_offs:  size_t,
+        pub gl_offs: ::size_t,
         pub gl_flags: ::c_int,
 
         __unused1: *mut ::c_void,
@@ -223,9 +223,9 @@ extern {
 cfg_if! {
     if #[cfg(any(target_arch = "arm", target_arch = "x86",
                  target_arch = "x86_64"))] {
-        pub const PTHREAD_STACK_MIN: size_t = 16384;
+        pub const PTHREAD_STACK_MIN: ::size_t = 16384;
     } else {
-        pub const PTHREAD_STACK_MIN: size_t = 131072;
+        pub const PTHREAD_STACK_MIN: ::size_t = 131072;
     }
 }
 
@@ -255,9 +255,9 @@ cfg_if! {
             pub fn sysctl(name: *mut ::c_int,
                           namelen: ::c_int,
                           oldp: *mut ::c_void,
-                          oldlenp: *mut size_t,
+                          oldlenp: *mut ::size_t,
                           newp: *mut ::c_void,
-                          newlen: size_t)
+                          newlen: ::size_t)
                           -> ::c_int;
             pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
             pub fn backtrace(buf: *mut *mut ::c_void,
