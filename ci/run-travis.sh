@@ -17,7 +17,7 @@ EXTRA_TARGETS=https://people.mozilla.org/~acrichton/libc-test/2015-09-08
 
 install() {
   sudo apt-get update
-  sudo apt-get install $@
+  sudo apt-get install -y $@
 }
 
 case "$TARGET" in
