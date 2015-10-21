@@ -69,9 +69,13 @@ case "$TARGET" in
   *)
     # Download the rustlib folder from the relevant portion of main distribution's
     # tarballs.
+    pkg=rustc
+    if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then
+      pkg=rust-std
+    fi
     curl -s $MAIN_TARGETS/rust-$TRAVIS_RUST_VERSION-$HOST.tar.gz | \
       tar xzf - -C $HOME/rust/lib/rustlib --strip-components=4 \
-        rust-$TRAVIS_RUST_VERSION-$HOST/rustc/lib/rustlib/$HOST
+        rust-$TRAVIS_RUST_VERSION-$HOST/$pkg/lib/rustlib/$HOST
     TARGET=$HOST
 
     # clang has better error messages and implements alignof more broadly
