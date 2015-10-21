@@ -71,7 +71,7 @@ case "$TARGET" in
     # tarballs.
     pkg=rustc
     if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then
-      pkg=rust-std
+      pkg=rust-std-$HOST
     fi
     curl -s $MAIN_TARGETS/rust-$TRAVIS_RUST_VERSION-$HOST.tar.gz | \
       tar xzf - -C $HOME/rust/lib/rustlib --strip-components=4 \
