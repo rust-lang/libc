@@ -70,7 +70,7 @@ case "$TARGET" in
     # Download the rustlib folder from the relevant portion of main distribution's
     # tarballs.
     pkg=rust-std-$HOST
-    if [ "$TRAVIS_RUST_VERSION" == "1.0.0" ]; then
+    if [ "$TRAVIS_RUST_VERSION" = "1.0.0" ]; then
       pkg=rustc
     fi
     curl -s $MAIN_TARGETS/rust-$TRAVIS_RUST_VERSION-$HOST.tar.gz | \
