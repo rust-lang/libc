@@ -41,6 +41,11 @@ This crate exports all underlying platform types, functions, and constants under
 the crate root, so all items are accessible as `libc::foo`. The types and values
 of all the exported APIs match the platform that libc is compiled for.
 
+More detailed information about the design of this library can be found in its
+[associated RFC][rfc].
+
+[rfc]: https://github.com/rust-lang/rfcs/blob/master/text/1291-promote-libc.md
+
 ## Adding an API
 
 Want to use an API which currently isn't bound in `libc`? It's quite easy to add
