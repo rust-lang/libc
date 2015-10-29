@@ -17,43 +17,43 @@
        html_favicon_url = "https://doc.rust-lang.org/favicon.ico")]
 
 #![cfg_attr(all(target_os = "linux", target_arch = "x86_64"), doc(
-    html_root_url = "http://alexcrichton.com/libc/x86_64-unknown-linux-gnu"
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-linux-gnu"
 ))]
 #![cfg_attr(all(target_os = "linux", target_arch = "x86"), doc(
-    html_root_url = "http://alexcrichton.com/libc/i686-unknown-linux-gnu"
+    html_root_url = "https://doc.rust-lang.org/libc/i686-unknown-linux-gnu"
 ))]
 #![cfg_attr(all(target_os = "linux", target_arch = "arm"), doc(
-    html_root_url = "http://alexcrichton.com/libc/arm-unknown-linux-gnueabihf"
+    html_root_url = "https://doc.rust-lang.org/libc/arm-unknown-linux-gnueabihf"
 ))]
 #![cfg_attr(all(target_os = "linux", target_arch = "mips"), doc(
-    html_root_url = "http://alexcrichton.com/libc/mips-unknown-linux-gnu"
+    html_root_url = "https://doc.rust-lang.org/libc/mips-unknown-linux-gnu"
 ))]
 #![cfg_attr(all(target_os = "linux", target_arch = "aarch64"), doc(
-    html_root_url = "http://alexcrichton.com/libc/aarch64-unknown-linux-gnu"
+    html_root_url = "https://doc.rust-lang.org/libc/aarch64-unknown-linux-gnu"
 ))]
 #![cfg_attr(all(target_os = "linux", target_env = "musl"), doc(
-    html_root_url = "http://alexcrichton.com/libc/x86_64-unknown-linux-musl"
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-linux-musl"
 ))]
 #![cfg_attr(all(target_os = "macos", target_arch = "x86_64"), doc(
-    html_root_url = "http://alexcrichton.com/libc/x86_64-apple-darwin"
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-apple-darwin"
 ))]
 #![cfg_attr(all(target_os = "macos", target_arch = "x86"), doc(
-    html_root_url = "http://alexcrichton.com/libc/i686-apple-darwin"
+    html_root_url = "https://doc.rust-lang.org/libc/i686-apple-darwin"
 ))]
 #![cfg_attr(all(windows, target_arch = "x86_64", target_env = "gnu"), doc(
-    html_root_url = "http://alexcrichton.com/libc/x86_64-pc-windows-gnu"
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-pc-windows-gnu"
 ))]
 #![cfg_attr(all(windows, target_arch = "x86", target_env = "gnu"), doc(
-    html_root_url = "http://alexcrichton.com/libc/i686-pc-windows-gnu"
+    html_root_url = "https://doc.rust-lang.org/libc/i686-pc-windows-gnu"
 ))]
 #![cfg_attr(all(windows, target_arch = "x86_64", target_env = "msvc"), doc(
-    html_root_url = "http://alexcrichton.com/libc/x86_64-pc-windows-msvc"
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-pc-windows-msvc"
 ))]
 #![cfg_attr(all(windows, target_arch = "x86", target_env = "msvc"), doc(
-    html_root_url = "http://alexcrichton.com/libc/i686-pc-windows-msvc"
+    html_root_url = "https://doc.rust-lang.org/libc/i686-pc-windows-msvc"
 ))]
 #![cfg_attr(all(target_os = "android"), doc(
-    html_root_url = "http://alexcrichton.com/libc/arm-linux-androideabi"
+    html_root_url = "https://doc.rust-lang.org/libc/arm-linux-androideabi"
 ))]
 
 #[macro_use] mod macros;
