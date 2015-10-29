@@ -200,7 +200,7 @@ fn main() {
             "SIG_IGN" => true, // sighandler_t weirdness
 
             // types on musl are defined a little differently
-            n if musl && n.contains("PTHREAD") => true,
+            n if musl && n.contains("__SIZEOF_PTHREAD") => true,
 
             _ => false,
         }
