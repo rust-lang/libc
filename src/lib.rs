@@ -59,9 +59,12 @@
 #[macro_use] mod macros;
 mod dox;
 
+// Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help enable
+// more optimization opportunities around it recognizing things like
+// malloc/free.
 #[repr(u8)]
 pub enum c_void {
-    // Two dummy variants so the #[repr] attribute can be used
+    // Two dummy variants so the #[repr] attribute can be used.
     #[doc(hidden)]
     __variant1,
     #[doc(hidden)]
@@ -208,7 +211,8 @@ extern {
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
 }
 
-// These are all inline functions on android
+// These are all inline functions on android, so they end up just being entirely
+// missing on that platform.
 #[cfg(not(target_os = "android"))]
 extern {
     pub fn abs(i: c_int) -> c_int;
