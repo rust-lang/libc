@@ -66,6 +66,14 @@ at, fear not! This crate has CI support which tests any binding against all
 platforms supported, so you'll see failures if an API is added at the wrong
 level or has different signatures across platforms.
 
+With that in mind, the steps for adding a new API are:
+
+1. Determine where in the module hierarchy your API should be added.
+2. Add the API.
+3. Send a PR to this repo.
+4. Wait for CI to pass, fixing errors.
+5. Wait for a merge!
+
 ## Platforms and Documentation
 
 The following platforms are currently tested and have documentation available:
