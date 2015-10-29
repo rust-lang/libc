@@ -8,21 +8,6 @@ this project.
 
 First up, let's talk about the files in this directory:
 
-* `Dockerfile-android`, `android-accept-licenses.sh` -- these two files are
-  used to build the Docker image that the android CI builder uses. The
-  `Dockerfile` just installs the Android SDK, NDK, a Rust nightly, Rust target
-  libraries for Android, and sets up an emulator to run tests in. You can build
-  a new image with this command (from the root of the project):
-
-      docker build -t alexcrichton/rust-libc-test -f ci/Dockerfile-android .
-
-  When building a new image contact @alexcrichton to push it to the docker hub
-  and have libc start using it. This hasn't needed to happen yet, so the process
-  may be a little involved.
-
-  The script here, `android-accept-licenses.sh` is just a helper used to accept
-  the licenses of the SDK of Android while the docker image is being created.
-
 * `msys2.ps1` - a PowerShell script which is used to install MSYS2 on the
   AppVeyor bots. As of this writing MSYS2 isn't installed by default, and this
   script will install the right version/arch of msys2 in preparation of using
@@ -67,15 +52,16 @@ builds are run on stable/beta/nightly, but are the only ones that do so.
 
 The remaining architectures look like:
 
-* Android runs in a docker image with an emulator, the NDK, and the SDK already
-  set up (see `Dockerfile-android`). The entire build happens within the docker
-  image.
+* Android runs in a [docker image][android-docker] with an emulator, the NDK,
+  and the SDK already set up. The entire build happens within the docker image.
 * The MIPS, ARM, and AArch64 builds all use QEMU to run the generated binary to
   actually verify the tests pass.
 * The MUSL build just has to download a MUSL compiler and target libraries and
   then otherwise runs tests normally.
 * iOS builds need an extra linker flag currently, but beyond that they're built
   as standard as everything else.
+
+[android-docker]: https://github.com/rust-lang/rust-buildbot/blob/master/slaves/android/Dockerfile
 
 Hopefully that's at least somewhat of an introduction to everything going on
 here, and feel free to ping @alexcrichton with questions!

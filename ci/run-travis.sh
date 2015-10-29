@@ -46,11 +46,23 @@ esac
 
 case "$TARGET" in
   # Pull a pre-built docker image for testing android, then run tests entirely
-  #d within that image.
+  # within that image. Note that this is using the same rustc installation that
+  # travis has (sharing it via `-v`) and otherwise the tests run entirely within
+  # the container.
   arm-linux-androideabi)
-    docker pull alexcrichton/rust-libc-test
-    exec docker run -v `pwd`:/clone -t alexcrichton/rust-libc-test \
-      sh ci/run.sh $TARGET
+    script="
+cp -r /checkout/* .
+mkdir .cargo
+cp ci/cargo-config .cargo/config
+sh ci/run.sh $TARGET
+"
+    exec docker run \
+      --entrypoint bash \
+      -v $HOME/rust:/usr/local:ro \
+      -v `pwd`:/checkout:ro \
+      -e LD_LIBRARY_PATH=/usr/local/lib \
+      -it alexcrichton/rust-slave-android:2015-10-21 \
+      -c "$script"
     ;;
 
   x86_64-unknown-linux-musl)

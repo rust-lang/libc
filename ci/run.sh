@@ -19,9 +19,9 @@ esac
 
 case "$TARGET" in
   arm-linux-androideabi)
-    emulator @test -no-window &
+    emulator @arm-18 -no-window &
     adb wait-for-device
-    adb push /root/target/$TARGET/debug/libc-test /data/libc-test
+    adb push libc-test/target/$TARGET/debug/libc-test /data/libc-test
     adb shell /data/libc-test
     ;;
 

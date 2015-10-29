@@ -200,7 +200,7 @@ extern {
                  flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
-    pub fn sysconf(name: ::c_int) -> ::c_int;
+    pub fn sysconf(name: ::c_int) -> ::c_long;
     pub fn usleep(secs: ::c_ulong) -> ::c_int;
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                     flags: ::c_uint, addr: *const ::sockaddr,
