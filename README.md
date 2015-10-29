@@ -73,19 +73,25 @@ The following platforms are currently tested and have documentation available:
 Tested:
   * [`i686-pc-windows-msvc`](https://doc.rust-lang.org/libc/i686-pc-windows-msvc/libc)
   * [`x86_64-pc-windows-msvc`](https://doc.rust-lang.org/libc/x86_64-pc-windows-msvc/libc)
+    (Windows)
   * [`i686-pc-windows-gnu`](https://doc.rust-lang.org/libc/i686-pc-windows-gnu/libc)
   * [`x86_64-pc-windows-gnu`](https://doc.rust-lang.org/libc/x86_64-pc-windows-gnu/libc)
   * [`i686-apple-darwin`](https://doc.rust-lang.org/libc/i686-apple-darwin/libc)
   * [`x86_64-apple-darwin`](https://doc.rust-lang.org/libc/x86_64-apple-darwin/libc)
+    (OSX)
   * [`i686-apple-ios`](https://doc.rust-lang.org/libc/i686-apple-ios/libc)
   * [`x86_64-apple-ios`](https://doc.rust-lang.org/libc/x86_64-apple-ios/libc)
+    (iOS)
   * [`i686-unknown-linux-gnu`](https://doc.rust-lang.org/libc/i686-unknown-linux-gnu/libc)
   * [`x86_64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-gnu/libc)
+    (Linux)
   * [`x86_64-unknown-linux-musl`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-musl/libc)
+    (Linux MUSL)
   * [`aarch64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/aarch64-unknown-linux-gnu/libc)
   * [`mips-unknown-linux-gnu`](https://doc.rust-lang.org/libc/mips-unknown-linux-gnu/libc)
   * [`arm-unknown-linux-gnueabihf`](https://doc.rust-lang.org/libc/arm-unknown-linux-gnueabihf/libc)
   * [`arm-linux-androideabi`](https://doc.rust-lang.org/libc/arm-linux-androideabi/libc)
+    (Android)
 
 The following may be supported, but are not guaranteed to always work:
 
