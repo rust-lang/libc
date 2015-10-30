@@ -152,7 +152,7 @@ fn main() {
         match field {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_ == "stat" => {
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 if target2.contains("apple") {
                     s.replace("_nsec", "spec.tv_nsec")
                 } else if target2.contains("android") {
@@ -203,6 +203,12 @@ fn main() {
             // types on musl are defined a little differently
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
 
+            // Skip constants not defined in MUSL but just passed down to the
+            // kernel regardless
+            "RLIMIT_NLIMITS" |
+            "TCP_COOKIE_TRANSACTIONS" |
+            "RLIMIT_RTTIME" if musl => true,
+
             _ => false,
         }
     });
@@ -215,8 +221,8 @@ fn main() {
             "execvp" |
             "execvpe" => true,
 
-            "getrlimit" |                    // non-int in 1st arg
-            "setrlimit" |                    // non-int in 1st arg
+            "getrlimit" | "getrlimit64" |    // non-int in 1st arg
+            "setrlimit" | "setrlimit64" |    // non-int in 1st arg
             "strerror_r" if linux => true,   // actually xpg-something-or-other
 
             // typed 2nd arg on linux and android
