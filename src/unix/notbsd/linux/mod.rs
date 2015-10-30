@@ -7,6 +7,14 @@ pub type pthread_t = c_ulong;
 pub type mode_t = u32;
 
 s! {
+    pub struct dirent {
+        pub d_ino: ::ino_t,
+        pub d_off: ::off_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         pub gl_pathv: *mut *mut c_char,

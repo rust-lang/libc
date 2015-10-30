@@ -83,11 +83,20 @@ s! {
         pub st_qspare: [::int64_t; 2],
     }
 
+    pub struct dirent {
+        pub d_ino: u64,
+        pub d_seekoff: u64,
+        pub d_reclen: u16,
+        pub d_namlen: u16,
+        pub d_type: u8,
+        pub d_name: [::c_char; 1024],
+    }
 
     pub struct pthread_mutex_t {
         __sig: ::c_long,
         __opaque: [u8; __PTHREAD_MUTEX_SIZE__],
     }
+
     pub struct pthread_mutexattr_t {
         __sig: ::c_long,
         __opaque: [u8; 8],

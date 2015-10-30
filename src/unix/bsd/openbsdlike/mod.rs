@@ -22,6 +22,16 @@ pub type rlim_t = u64;
 pub enum timezone {}
 
 s! {
+    pub struct dirent {
+        pub d_fileno: ::ino_t,
+        pub d_off: ::off_t,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_namelen: u8,
+        __d_padding: [u8; 4],
+        pub d_name: [::c_char; 256],
+    }
+
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,

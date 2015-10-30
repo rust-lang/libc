@@ -101,8 +101,6 @@ pub type ssize_t = isize;
 
 pub enum FILE {}
 pub enum fpos_t {}
-pub enum DIR {}
-pub enum dirent {}
 
 extern {
     pub fn isalnum(c: c_int) -> c_int;

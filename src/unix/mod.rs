@@ -10,6 +10,8 @@ pub type in_addr_t = u32;
 pub type in_port_t = u16;
 pub type sighandler_t = ::size_t;
 
+pub enum DIR {}
+
 s! {
     pub struct utimbuf {
         pub actime: time_t,
