@@ -62,19 +62,68 @@ s! {
         pub ifa_dstaddr: *mut ::sockaddr,
         pub ifa_data: *mut ::c_void
     }
+
+    pub struct fd_set {
+        fds_bits: [i32; FD_SETSIZE / 32],
+    }
 }
 
-pub const FIOCLEX: c_ulong = 0x20006601;
-pub const FIONBIO: ::c_int = 0x8004667e;
+pub const FIOCLEX: ::c_ulong = 0x20006601;
+pub const FIONBIO: ::c_ulong = 0x8004667e;
 
 pub const SA_ONSTACK: ::c_int = 0x0001;
 pub const SA_SIGINFO: ::c_int = 0x0040;
+pub const SA_RESTART: ::c_int = 0x0002;
+pub const SA_RESETHAND: ::c_int = 0x0004;
+pub const SA_NOCLDSTOP: ::c_int = 0x0008;
+pub const SA_NODEFER: ::c_int = 0x0010;
+pub const SA_NOCLDWAIT: ::c_int = 0x0020;
 
+pub const SIGCHLD: ::c_int = 20;
 pub const SIGBUS: ::c_int = 10;
 pub const SIG_SETMASK: ::c_int = 3;
 
 pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
+
+pub const FD_SETSIZE: usize = 1024;
+
+f! {
+    pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        (*set).fds_bits[fd / 32] &= !(1 << (fd % 32));
+        return
+    }
+
+    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+        let fd = fd as usize;
+        return ((*set).fds_bits[fd / 32] & (1 << (fd % 32))) != 0
+    }
+
+    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        (*set).fds_bits[fd / 32] |= 1 << (fd % 32);
+        return
+    }
+
+    pub fn FD_ZERO(set: *mut fd_set) -> () {
+        for slot in (*set).fds_bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn WIFEXITED(status: ::c_int) -> bool {
+        (status & 0x7f) == 0
+    }
+
+    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+        status >> 8
+    }
+
+    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+        status & 0o177
+    }
+}
 
 extern {
     pub fn mincore(addr: *const ::c_void, len: ::size_t,

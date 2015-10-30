@@ -47,6 +47,24 @@ macro_rules! s {
     )*)
 }
 
+macro_rules! f {
+    ($(pub fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
+        $($body:stmt);*
+    })*) => ($(
+        #[inline]
+        #[cfg(not(dox))]
+        pub unsafe extern fn $i($($arg: $argty),*) -> $ret {
+            $($body);*
+        }
+
+        #[cfg(dox)]
+        #[allow(dead_code)]
+        pub unsafe extern fn $i($($arg: $argty),*) -> $ret {
+            loop {}
+        }
+    )*)
+}
+
 macro_rules! __item {
     ($i:item) => ($i)
 }

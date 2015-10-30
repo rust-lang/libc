@@ -187,7 +187,9 @@ pub const FIOCLEX: ::c_ulong = 0x5451;
 
 pub const SA_ONSTACK: ::c_ulong = 0x08000000;
 pub const SA_SIGINFO: ::c_ulong = 0x00000004;
+pub const SA_NOCLDWAIT: ::c_int = 0x00000002;
 
+pub const SIGCHLD: ::c_int = 17;
 pub const SIGBUS: ::c_int = 7;
 pub const SIG_SETMASK: ::c_int = 2;
 
