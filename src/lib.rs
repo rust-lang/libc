@@ -40,6 +40,12 @@
 #![cfg_attr(all(target_os = "macos", target_arch = "x86"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/i686-apple-darwin"
 ))]
+#![cfg_attr(all(target_os = "ios", target_arch = "x86_64"), doc(
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-apple-ios"
+))]
+#![cfg_attr(all(target_os = "ios", target_arch = "x86"), doc(
+    html_root_url = "https://doc.rust-lang.org/libc/i686-apple-ios"
+))]
 #![cfg_attr(all(windows, target_arch = "x86_64", target_env = "gnu"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/x86_64-pc-windows-gnu"
 ))]
