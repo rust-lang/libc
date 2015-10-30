@@ -12,12 +12,6 @@ description = """
 A library for types and bindings to native C functions often found in libc or
 other common platform libraries.
 """
-include = ["Cargo.toml", "rust/src/liblibc/*"]
 
 [features]
-default = ["cargo-build"]
-cargo-build = []
-
-[lib]
-name = "libc"
-path = "rust/src/liblibc/lib.rs"
+default = []

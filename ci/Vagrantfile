@@ -1,0 +1,38 @@
+# A vagrant configuration file for running tests on BSD-like machines
+#
+# Note that this was originally intended to later be used to run tests on
+# Travis, but it didn't work out. Regardless this has stuck around! You can run
+# tests in FreeBSD via:
+#
+#     git clone https://github.com/alexcrichton/libc
+#     cd libc/ci
+#     vagrant up freebsd
+#     vagrant ssh freebsd
+#     ...
+#     cd /vagrant/libc-test
+#     cargo run
+#
+# And "that's it"! You look up instructions on Vagrant's website for how to
+# install vagrant.
+
+Vagrant.configure(2) do |config|
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  config.vm.synced_folder "..", "/vagrant"
+
+  config.vm.define :freebsd do |bsd|
+    bsd.vm.box = "arkadi/freebsd-10.1-amd64"
+    bsd.vm.provision :shell, inline: 'yes | sudo pkg install rust cargo'
+    bsd.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+  end
+
+  config.vm.define :openbsd do |bsd|
+    bsd.vm.box = "bodgit/openbsd-5.7-amd64"
+    bsd.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+  end
+end
