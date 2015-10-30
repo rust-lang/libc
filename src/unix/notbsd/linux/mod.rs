@@ -221,7 +221,9 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "arm", target_arch = "x86",
+    if #[cfg(any(target_env = "musl"))] {
+        pub const PTHREAD_STACK_MIN: ::size_t = 2048;
+    } else if #[cfg(any(target_arch = "arm", target_arch = "x86",
                  target_arch = "x86_64"))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
     } else {
