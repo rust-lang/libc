@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use libc::*;
 
 pub type T1Foo = i32;
@@ -17,6 +19,8 @@ pub struct T1Baz {
 }
 
 pub const T1C: u32 = 4;
+
+const NOT_PRESENT: u32 = 5;
 
 extern {
     pub fn T1a();

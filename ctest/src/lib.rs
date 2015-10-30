@@ -813,13 +813,14 @@ impl<'a> Generator<'a> {
 impl<'a, 'v> Visitor<'v> for Generator<'a> {
     fn visit_item(&mut self, i: &'v ast::Item) {
         let prev_abi = self.abi;
+        let public = i.vis == ast::Public;
         match i.node {
-            ast::ItemTy(_, ref generics) => {
+            ast::ItemTy(_, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
                 self.test_type(&i.ident.to_string());
             }
 
-            ast::ItemStruct(ref s, ref generics) => {
+            ast::ItemStruct(ref s, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
                 let is_c = i.attrs.iter().any(|a| {
                     attr::find_repr_attrs(self.sh, a).iter().any(|a| {
@@ -832,12 +833,12 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 self.test_struct(&i.ident.to_string(), s);
             }
 
-            ast::ItemConst(ref ty, _) => {
+            ast::ItemConst(ref ty, _) if public => {
                 let ty = self.ty2name(ty, true);
                 self.test_const(&i.ident.to_string(), &ty);
             }
 
-            ast::ItemForeignMod(ref fm) => {
+            ast::ItemForeignMod(ref fm) if public => {
                 self.abi = fm.abi;
             }
 
