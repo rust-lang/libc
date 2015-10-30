@@ -43,6 +43,14 @@ s! {
         pub st_ino: ::c_ulonglong,
     }
 
+    pub struct dirent {
+        pub d_ino: u64,
+        pub d_off: i64,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
     pub struct pthread_attr_t {
         pub flags: ::uint32_t,
         pub stack_base: *mut ::c_void,

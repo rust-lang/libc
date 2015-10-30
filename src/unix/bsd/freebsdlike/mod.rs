@@ -16,6 +16,14 @@ pub type pthread_key_t = ::c_int;
 pub enum timezone {}
 
 s! {
+    pub struct dirent {
+        pub d_fileno: u32,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_namelen: u8,
+        pub d_name: [::c_char; 256],
+    }
+
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         __unused1: ::size_t,
