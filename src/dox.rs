@@ -5,6 +5,7 @@ mod imp {
     pub use std::option::Option;
     pub use std::clone::Clone;
     pub use std::marker::Copy;
+    pub use std::mem;
 }
 
 #[cfg(dox)]
@@ -42,6 +43,22 @@ mod imp {
             $mac!(isize);
         )
     }
+
+    #[lang = "div"]
+    pub trait Div<RHS> {
+        type Output;
+        fn div(self, rhs: RHS) -> Self::Output;
+    }
+
+    macro_rules! impl_div {
+        ($($i:ident)*) => ($(
+            impl Div<$i> for $i {
+                type Output = $i;
+                fn div(self, rhs: $i) -> $i { self / rhs }
+            }
+        )*)
+    }
+    each_int!(impl_div);
 
     #[lang = "shl"]
     pub trait Shl<RHS> {
@@ -106,4 +123,8 @@ mod imp {
         )*)
     }
     each_int!(impl_bitor);
+
+    pub mod mem {
+        pub fn size_of_val<T>(_: &T) -> usize { 4 }
+    }
 }

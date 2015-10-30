@@ -10,7 +10,7 @@
 
 //! Crate docs
 
-#![allow(bad_style, raw_pointer_derive, improper_ctypes)]
+#![allow(bad_style, raw_pointer_derive, overflowing_literals, improper_ctypes)]
 #![cfg_attr(dox, feature(no_core, lang_items))]
 #![cfg_attr(dox, no_core)]
 #![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",

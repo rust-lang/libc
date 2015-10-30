@@ -116,6 +116,7 @@ fn main() {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" |
+            "fd_set" |
             "DIR" => ty.to_string(),
 
             // Fixup a few types on windows that don't actually exist.

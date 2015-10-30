@@ -505,6 +505,25 @@ extern {
                           align: ::size_t,
                           size: ::size_t) -> ::c_int;
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
+               link_name = "select$1050")]
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "select$UNIX2003")]
+    pub fn select(nfds: ::c_int,
+                  readfs: *mut fd_set,
+                  writefds: *mut fd_set,
+                  errorfds: *mut fd_set,
+                  timeout: *mut timeval) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
+               link_name = "pselect$1050")]
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pselect$UNIX2003")]
+    pub fn pselect(nfds: ::c_int,
+                   readfs: *mut fd_set,
+                   writefds: *mut fd_set,
+                   errorfds: *mut fd_set,
+                   timeout: *const timespec,
+                   sigmask: *const sigset_t) -> ::c_int;
 }
 
 cfg_if! {

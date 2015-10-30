@@ -1,3 +1,5 @@
+use dox::mem;
+
 pub type rlim_t = c_ulong;
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
@@ -66,7 +68,17 @@ s! {
         pub sll_halen: ::c_uchar,
         pub sll_addr: [::c_uchar; 8]
     }
+
+    pub struct fd_set {
+        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+    }
 }
+
+// intentionally not public, only used for fd_set
+#[cfg(target_pointer_width = "32")]
+const ULONG_SIZE: usize = 32;
+#[cfg(target_pointer_width = "64")]
+const ULONG_SIZE: usize = 64;
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
@@ -286,6 +298,53 @@ pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
 pub const SIGSTKSZ: ::size_t = 8192;
+
+pub const SA_NODEFER: ::c_int = 0x40000000;
+pub const SA_RESETHAND: ::c_int = 0x80000000;
+pub const SA_RESTART: ::c_int = 0x10000000;
+pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
+
+pub const FD_SETSIZE: usize = 1024;
+
+f! {
+    pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]);
+        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
+        return
+    }
+
+    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]);
+        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+    }
+
+    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]);
+        (*set).fds_bits[fd / size] |= 1 << (fd % size);
+        return
+    }
+
+    pub fn FD_ZERO(set: *mut fd_set) -> () {
+        for slot in (*set).fds_bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn WIFEXITED(status: ::c_int) -> bool {
+        (status & 0xff) == 0
+    }
+
+    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+        status & 0x7f
+    }
+}
 
 extern {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
