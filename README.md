@@ -15,7 +15,7 @@ First, add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-libc = "1.0"
+libc = "0.1"
 ```
 
 Next, add this to your crate root:
