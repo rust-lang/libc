@@ -76,6 +76,19 @@ s! {
         #[cfg(not(target_os = "android"))]
         pub ipv6mr_interface: ::c_uint,
     }
+
+    pub struct sigaltstack {
+        pub ss_sp: *mut ::c_void,
+        pub ss_flags: ::c_int,
+        pub ss_size: ::size_t
+    }
+
+    pub struct siginfo {
+        _signo: ::c_int,
+        _errno: ::c_int,
+        _code: ::c_int,
+        pub si_addr: *mut ::c_void
+    }
 }
 
 pub const WNOHANG: ::c_int = 1;
