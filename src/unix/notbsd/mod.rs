@@ -122,6 +122,7 @@ pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
 pub const O_TRUNC: ::c_int = 512;
+pub const O_CLOEXEC: ::c_int = 0x80000;
 pub const S_IFIFO: ::mode_t = 4096;
 pub const S_IFCHR: ::mode_t = 8192;
 pub const S_IFBLK: ::mode_t = 24576;
