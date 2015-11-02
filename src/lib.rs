@@ -100,7 +100,7 @@ pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
 pub enum FILE {}
-pub enum fpos_t {}
+pub enum fpos_t {} // TODO: fill this out with a struct
 
 extern {
     pub fn isalnum(c: c_int) -> c_int;

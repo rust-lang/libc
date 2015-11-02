@@ -174,7 +174,7 @@ extern {
     pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
     #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
     pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
-                      result: *mut *mut ::dirent) -> ::c_int;
+                     result: *mut *mut ::dirent) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "closedir$UNIX2003")]
     pub fn closedir(dirp: *mut ::DIR) -> ::c_int;
@@ -220,8 +220,7 @@ extern {
     pub fn getuid() -> uid_t;
     pub fn isatty(fd: ::c_int) -> ::c_int;
     pub fn link(src: *const c_char, dst: *const c_char) -> ::c_int;
-    pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int)
-                 -> off_t;
+    pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int) -> off_t;
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pause$UNIX2003")]
@@ -526,6 +525,10 @@ extern {
                    errorfds: *mut fd_set,
                    timeout: *const timespec,
                    sigmask: *const sigset_t) -> ::c_int;
+    pub fn fseeko(stream: *mut ::FILE,
+                  offset: ::off_t,
+                  whence: ::c_int) -> ::c_int;
+    pub fn ftello(stream: *mut ::FILE) -> ::off_t;
 }
 
 cfg_if! {

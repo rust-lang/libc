@@ -5,6 +5,12 @@ pub type dev_t = u64;
 pub type socklen_t = u32;
 pub type pthread_t = c_ulong;
 pub type mode_t = u32;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
+pub type rlim64_t = u64;
+
+pub enum fpos64_t {} // TODO: fill this out with a struct
 
 s! {
     pub struct dirent {
@@ -13,6 +19,19 @@ s! {
         pub d_reclen: ::c_ushort,
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
+    }
+
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct rlimit64 {
+        pub rlim_cur: rlim64_t,
+        pub rlim_max: rlim64_t,
     }
 
     pub struct glob_t {
@@ -226,13 +245,47 @@ extern {
                     -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;
 
+    pub fn fopen64(filename: *const c_char,
+                   mode: *const c_char) -> *mut ::FILE;
+    pub fn freopen64(filename: *const c_char, mode: *const c_char,
+                     file: *mut ::FILE) -> *mut ::FILE;
+    pub fn tmpfile64() -> *mut ::FILE;
+    pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
+    pub fn fsetpos64(stream: *mut ::FILE, ptr: *const fpos64_t) -> ::c_int;
+    pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
+    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
+    pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
+                   offset: off64_t) -> ::ssize_t;
+    pub fn pwrite64(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
+                    offset: off64_t) -> ::ssize_t;
+    pub fn mmap64(addr: *mut ::c_void,
+                  len: ::size_t,
+                  prot: ::c_int,
+                  flags: ::c_int,
+                  fd: ::c_int,
+                  offset: off64_t)
+                  -> *mut ::c_void;
+    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
+    pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
+                       result: *mut *mut ::dirent64) -> ::c_int;
+
+    pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
+    pub fn fseeko64(stream: *mut ::FILE,
+                    offset: ::off64_t,
+                    whence: ::c_int) -> ::c_int;
+    pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
 }
 
 cfg_if! {
     if #[cfg(any(target_env = "musl"))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 2048;
     } else if #[cfg(any(target_arch = "arm", target_arch = "x86",
-                 target_arch = "x86_64"))] {
+                        target_arch = "x86_64"))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
     } else {
         pub const PTHREAD_STACK_MIN: ::size_t = 131072;
@@ -241,38 +294,11 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(target_env = "musl")] {
-        pub const BUFSIZ: ::c_uint = 1024;
-        pub const TMP_MAX: ::c_uint = 10000;
-        pub const FOPEN_MAX: ::c_uint = 1000;
-        pub const POSIX_MADV_DONTNEED: ::c_int = 0;
-        pub const O_ACCMODE: ::c_int = 0o10000003;
-        pub const RUSAGE_CHILDREN: ::c_int = 1;
-
-        extern {
-            pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
-        }
+        mod musl;
+        pub use self::musl::*;
     } else {
-        pub const BUFSIZ: ::c_uint = 8192;
-        pub const TMP_MAX: ::c_uint = 238328;
-        pub const FOPEN_MAX: ::c_uint = 16;
-        pub const POSIX_MADV_DONTNEED: ::c_int = 4;
-        pub const _SC_2_C_VERSION: ::c_int = 96;
-        pub const RUSAGE_THREAD: ::c_int = 1;
-        pub const O_ACCMODE: ::c_int = 3;
-        pub const RUSAGE_CHILDREN: ::c_int = -1;
-
-        extern {
-            pub fn sysctl(name: *mut ::c_int,
-                          namelen: ::c_int,
-                          oldp: *mut ::c_void,
-                          oldlenp: *mut ::size_t,
-                          newp: *mut ::c_void,
-                          newlen: ::size_t)
-                          -> ::c_int;
-            pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-            pub fn backtrace(buf: *mut *mut ::c_void,
-                             sz: ::c_int) -> ::c_int;
-        }
+        mod notmusl;
+        pub use self::notmusl::*;
     }
 }
 
