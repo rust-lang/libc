@@ -18,6 +18,9 @@ run() {
         cp ci/cargo-config .cargo/config
     fi
     sh ci/run.sh $_target
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
 }
 
 OS=`uname`
