@@ -171,8 +171,8 @@ pub const TCP_TIMESTAMP: ::c_int = 24;
 pub const FIOCLEX: ::c_ulong = 0x5451;
 pub const FIONBIO: ::c_ulong = 0x5421;
 
-pub const SA_ONSTACK: ::c_ulong = 0x08000000;
-pub const SA_SIGINFO: ::c_ulong = 0x00000004;
+pub const SA_ONSTACK: ::c_int = 0x08000000;
+pub const SA_SIGINFO: ::c_int = 0x00000004;
 pub const SA_NOCLDWAIT: ::c_int = 0x00000002;
 
 pub const SIGCHLD: ::c_int = 17;
