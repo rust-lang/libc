@@ -11,6 +11,8 @@
 //! Crate docs
 
 #![allow(bad_style, raw_pointer_derive, overflowing_literals, improper_ctypes)]
+#![crate_type = "rlib"]
+#![crate_name = "libc"]
 #![cfg_attr(dox, feature(no_core, lang_items))]
 #![cfg_attr(dox, no_core)]
 #![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
@@ -55,6 +57,17 @@
 #![cfg_attr(all(target_os = "android"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/arm-linux-androideabi"
 ))]
+
+// Attributes needed when building as part of the standard library
+#![cfg_attr(stdbuild, feature(no_std, core, core_slice_ext, staged_api))]
+#![cfg_attr(stdbuild, no_std)]
+#![cfg_attr(stdbuild, staged_api)]
+#![cfg_attr(stdbuild, unstable(feature = "libc",
+                               reason = "use `libc` from crates.io",
+                               issue = "27783"))]
+
+#[cfg(all(not(stdbuild), not(dox)))]
+extern crate std as core;
 
 #[macro_use] mod macros;
 mod dox;

@@ -2,10 +2,10 @@ pub use self::imp::*;
 
 #[cfg(not(dox))]
 mod imp {
-    pub use std::option::Option;
-    pub use std::clone::Clone;
-    pub use std::marker::Copy;
-    pub use std::mem;
+    pub use core::option::Option;
+    pub use core::clone::Clone;
+    pub use core::marker::Copy;
+    pub use core::mem;
 }
 
 #[cfg(dox)]
