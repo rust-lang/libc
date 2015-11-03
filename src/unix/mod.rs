@@ -76,6 +76,13 @@ s! {
         #[cfg(not(target_os = "android"))]
         pub ipv6mr_interface: ::c_uint,
     }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *mut ::c_void,
+    }
 }
 
 pub const WNOHANG: ::c_int = 1;
@@ -432,6 +439,7 @@ extern {
     pub fn dlsym(handle: *mut ::c_void,
                  symbol: *const ::c_char) -> *mut ::c_void;
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
+    pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 }
 
 // TODO: get rid of this #[cfg(not(...))]

@@ -117,6 +117,7 @@ fn main() {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" |
             "fd_set" |
+            "Dl_info" |
             "DIR" => ty.to_string(),
 
             // Fixup a few types on windows that don't actually exist.
@@ -229,6 +230,7 @@ fn main() {
             "gettimeofday" if linux || android || freebsd => true,
 
             "dlerror" if android => true, // const-ness is added
+            "dladdr" if musl => true, // const-ness only added recently
 
             _ => false,
         }
