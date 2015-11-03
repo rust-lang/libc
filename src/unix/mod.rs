@@ -506,6 +506,10 @@ extern {
                           align: ::size_t,
                           size: ::size_t) -> ::c_int;
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int;
+    pub fn sigaddset(set: *mut sigset_t, signum: ::c_int) -> ::c_int;
+    pub fn sigfillset(set: *mut sigset_t) -> ::c_int;
+    pub fn sigdelset(set: *mut sigset_t, signum: ::c_int) -> ::c_int;
+    pub fn sigismember(set: *const sigset_t, signum: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
                link_name = "select$1050")]
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
