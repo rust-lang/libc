@@ -440,7 +440,7 @@ impl<'a> Generator<'a> {
         self.test_sign(ty, &c);
     }
 
-    fn test_struct(&mut self, ty: &str, s: &ast::StructDef) {
+    fn test_struct(&mut self, ty: &str, s: &ast::VariantData) {
         let cty = self.rust_ty_to_c_ty(ty);
         self.test_size_align(ty, &cty);
 
@@ -448,7 +448,7 @@ impl<'a> Generator<'a> {
         t!(writeln!(self.rust, r#"
             fn field_offset_size_{ty}() {{
         "#, ty = ty));
-        for field in s.fields.iter() {
+        for field in s.fields() {
             let name = match field.node.kind {
                 ast::NamedField(name, ast::Public) => name,
                 ast::NamedField(_, ast::Inherited) => continue,
