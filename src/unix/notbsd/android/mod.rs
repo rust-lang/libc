@@ -19,6 +19,7 @@ pub type socklen_t = i32;
 pub type pthread_t = c_long;
 pub type pthread_mutexattr_t = ::c_long;
 pub type sigset_t = c_ulong;
+pub type time64_t = i64;
 
 s! {
     pub struct stat {
@@ -225,6 +226,7 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
+    pub fn timegm64(tm: *const ::tm) -> time64_t;
 }
 
 cfg_if! {
