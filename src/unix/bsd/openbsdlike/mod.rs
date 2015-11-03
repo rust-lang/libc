@@ -123,6 +123,7 @@ pub const O_CREAT : c_int = 512;
 pub const O_EXCL : c_int = 2048;
 pub const O_NOCTTY : c_int = 32768;
 pub const O_TRUNC : c_int = 1024;
+pub const O_CLOEXEC: ::c_int = 0x10000;
 pub const S_IFIFO : mode_t = 4096;
 pub const S_IFCHR : mode_t = 8192;
 pub const S_IFBLK : mode_t = 24576;
