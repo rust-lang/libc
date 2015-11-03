@@ -179,6 +179,16 @@ pub const SIGCHLD: ::c_int = 17;
 pub const SIGBUS: ::c_int = 7;
 pub const SIG_SETMASK: ::c_int = 2;
 
+extern {
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::socklen_t,
+                       serv: *mut ::c_char,
+                       sevlen: ::socklen_t,
+                       flags: ::c_int) -> ::c_int;
+}
+
 cfg_if! {
     if #[cfg(any(target_arch = "x86", target_arch = "arm"))] {
         mod b32;

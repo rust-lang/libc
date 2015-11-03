@@ -135,6 +135,13 @@ extern {
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::socklen_t,
+                       serv: *mut ::c_char,
+                       sevlen: ::socklen_t,
+                       flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

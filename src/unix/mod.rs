@@ -432,7 +432,6 @@ extern {
 
     pub fn utimes(filename: *const ::c_char,
                   times: *const ::timeval) -> ::c_int;
-    pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
     pub fn dlopen(filename: *const ::c_char,
                   flag: ::c_int) -> *mut ::c_void;
     pub fn dlerror() -> *mut ::c_char;
@@ -440,6 +439,13 @@ extern {
                  symbol: *const ::c_char) -> *mut ::c_void;
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
     pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
+
+    pub fn getaddrinfo(node: *const c_char,
+                       service: *const c_char,
+                       hints: *const addrinfo,
+                       res: *mut *mut addrinfo) -> ::c_int;
+    pub fn freeaddrinfo(res: *mut addrinfo);
+    pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
 }
 
 // TODO: get rid of this #[cfg(not(...))]
