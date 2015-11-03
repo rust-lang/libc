@@ -218,6 +218,13 @@ extern {
                 flags: ::c_uint) -> ::ssize_t;
     pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                 flags: ::c_uint) -> ::ssize_t;
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::size_t,
+                       serv: *mut ::c_char,
+                       sevlen: ::size_t,
+                       flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

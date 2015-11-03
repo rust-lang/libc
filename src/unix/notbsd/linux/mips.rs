@@ -235,3 +235,13 @@ pub const SIGCHLD: ::c_int = 18;
 pub const SIGBUS: ::c_int = 10;
 
 pub const SIG_SETMASK: ::c_int = 3;
+
+extern {
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::socklen_t,
+                       serv: *mut ::c_char,
+                       sevlen: ::socklen_t,
+                       flags: ::c_uint) -> ::c_int;
+}
