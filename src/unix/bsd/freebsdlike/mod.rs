@@ -501,22 +501,22 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 
 extern {
-    pub fn mprotect(addr: *const ::c_void, len: size_t, prot: ::c_int)
+    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
     pub fn sysctl(name: *const ::c_int,
                   namelen: ::c_uint,
                   oldp: *mut ::c_void,
-                  oldlenp: *mut size_t,
+                  oldlenp: *mut ::size_t,
                   newp: *const ::c_void,
-                  newlen: size_t)
+                  newlen: ::size_t)
                   -> ::c_int;
     pub fn sysctlbyname(name: *const ::c_char,
                         oldp: *mut ::c_void,
-                        oldlenp: *mut size_t,
+                        oldlenp: *mut ::size_t,
                         newp: *const ::c_void,
-                        newlen: size_t)
+                        newlen: ::size_t)
                         -> ::c_int;
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
