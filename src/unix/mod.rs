@@ -133,6 +133,10 @@ extern {
                       value: *const ::c_void,
                       option_len: socklen_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "socketpair$UNIX2003")]
+    pub fn socketpair(domain: ::c_int, type_: ::c_int, protocol: ::c_int,
+                      socket_vector: *mut ::c_int) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sendto$UNIX2003")]
     pub fn sendto(socket: ::c_int, buf: *const ::c_void, len: ::size_t,
                   flags: ::c_int, addr: *const sockaddr,
