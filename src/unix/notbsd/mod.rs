@@ -70,7 +70,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+        pub fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
     }
 }
 
