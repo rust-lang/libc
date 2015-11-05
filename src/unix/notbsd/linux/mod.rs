@@ -316,6 +316,8 @@ extern {
                      offset: ::off_t, len: ::off_t) -> ::c_int;
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;
+    pub fn readahead(fd: ::c_int, offset: ::off64_t,
+                     count: ::size_t) -> ::ssize_t;
 }
 
 cfg_if! {
