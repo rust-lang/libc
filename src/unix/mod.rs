@@ -450,6 +450,12 @@ extern {
                        res: *mut *mut addrinfo) -> ::c_int;
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
+
+    pub fn gmtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
+    pub fn localtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "mktime$UNIX2003")]
+    pub fn mktime(tm: *mut tm) -> time_t;
 }
 
 // TODO: get rid of this #[cfg(not(...))]
@@ -551,6 +557,7 @@ extern {
                   offset: ::off_t,
                   whence: ::c_int) -> ::c_int;
     pub fn ftello(stream: *mut ::FILE) -> ::off_t;
+    pub fn timegm(tm: *mut ::tm) -> time_t;
 }
 
 cfg_if! {

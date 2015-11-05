@@ -66,6 +66,20 @@ s! {
     pub struct fd_set {
         fds_bits: [i32; FD_SETSIZE / 32],
     }
+
+    pub struct tm {
+        pub tm_sec: ::c_int,
+        pub tm_min: ::c_int,
+        pub tm_hour: ::c_int,
+        pub tm_mday: ::c_int,
+        pub tm_mon: ::c_int,
+        pub tm_year: ::c_int,
+        pub tm_wday: ::c_int,
+        pub tm_yday: ::c_int,
+        pub tm_isdst: ::c_int,
+        pub tm_gmtoff: ::c_long,
+        pub tm_zone: *mut ::c_char,
+    }
 }
 
 pub const FIOCLEX: ::c_ulong = 0x20006601;

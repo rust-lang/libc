@@ -82,6 +82,7 @@ fn main() {
 
     if android {
         cfg.header("arpa/inet.h");
+        cfg.header("time64.h");
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
@@ -231,6 +232,10 @@ fn main() {
 
             "dlerror" if android => true, // const-ness is added
             "dladdr" if musl => true, // const-ness only added recently
+
+            // OSX has 'struct tm *const' which we can't actually represent in
+            // Rust, but is close enough to *mut
+            "timegm" if apple => true,
 
             _ => false,
         }
