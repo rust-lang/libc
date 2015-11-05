@@ -134,6 +134,33 @@ s! {
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
     }
+
+    pub struct fstore_t {
+        pub fst_flags: ::c_uint,
+        pub fst_posmode: ::c_int,
+        pub fst_offset: ::off_t,
+        pub fst_length: ::off_t,
+        pub fst_bytesalloc: ::off_t,
+    }
+
+    pub struct radvisory {
+        pub ra_offset: ::off_t,
+        pub ra_count: ::c_int,
+    }
+
+    pub struct statvfs {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_favail: ::fsfilcnt_t,
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
@@ -196,7 +223,6 @@ pub const F_LOCK: ::c_int = 1;
 pub const F_TEST: ::c_int = 3;
 pub const F_TLOCK: ::c_int = 2;
 pub const F_ULOCK: ::c_int = 0;
-pub const F_DUPFD_CLOEXEC: ::c_int = 67;
 pub const SIGHUP: ::c_int = 1;
 pub const SIGINT: ::c_int = 2;
 pub const SIGQUIT: ::c_int = 3;
@@ -342,10 +368,27 @@ pub const EQFULL: ::c_int = 106;
 pub const ELAST: ::c_int = 106;
 
 pub const F_DUPFD: ::c_int = 0;
+pub const F_DUPFD_CLOEXEC: ::c_int = 67;
 pub const F_GETFD: ::c_int = 1;
 pub const F_SETFD: ::c_int = 2;
 pub const F_GETFL: ::c_int = 3;
 pub const F_SETFL: ::c_int = 4;
+pub const F_PREALLOCATE: ::c_int = 42;
+pub const F_RDADVISE: ::c_int = 44;
+pub const F_RDAHEAD: ::c_int = 45;
+pub const F_NOCACHE: ::c_int = 48;
+pub const F_GETPATH: ::c_int = 50;
+pub const F_FULLFSYNC: ::c_int = 51;
+pub const F_FREEZE_FS: ::c_int = 53;
+pub const F_THAW_FS: ::c_int = 54;
+pub const F_GLOBAL_NOCACHE: ::c_int = 55;
+pub const F_NODIRECT: ::c_int = 62;
+
+pub const F_ALLOCATECONTIG: ::c_uint = 0x02;
+pub const F_ALLOCATEALL: ::c_uint = 0x04;
+
+pub const F_PEOFPOSMODE: ::c_int = 3;
+pub const F_VOLPOSMODE: ::c_int = 4;
 
 pub const O_ACCMODE: ::c_int = 3;
 
@@ -491,8 +534,6 @@ pub const LOCK_UN: ::c_int = 8;
 pub const O_DSYNC: ::c_int = 4194304;
 pub const O_SYNC: ::c_int = 128;
 pub const O_NONBLOCK: ::c_int = 4;
-pub const F_GETPATH: ::c_int = 50;
-pub const F_FULLFSYNC: ::c_int = 51;
 
 pub const MAP_COPY: ::c_int = 0x0002;
 pub const MAP_RENAME: ::c_int = 0x0020;

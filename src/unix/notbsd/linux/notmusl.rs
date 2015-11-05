@@ -21,6 +21,7 @@ pub const _SC_2_C_VERSION: ::c_int = 96;
 pub const RUSAGE_THREAD: ::c_int = 1;
 pub const O_ACCMODE: ::c_int = 3;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
+pub const ST_RELATIME: ::c_ulong = 4096;
 
 extern {
     pub fn sysctl(name: *mut ::c_int,

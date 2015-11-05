@@ -86,6 +86,7 @@ fn main() {
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
+        cfg.header("sys/statvfs.h");
 
         if !musl {
             cfg.header("execinfo.h");

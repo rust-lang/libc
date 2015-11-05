@@ -6,6 +6,8 @@ pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type pthread_t = ::uintptr_t;
+pub type fsblkcnt_t = ::c_uint;
+pub type fsfilcnt_t = ::c_uint;
 
 s! {
     pub struct sockaddr {
@@ -101,6 +103,9 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
 
 pub const FD_SETSIZE: usize = 1024;
+
+pub const ST_RDONLY: ::c_ulong = 1;
+pub const ST_NOSUID: ::c_ulong = 2;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {

@@ -179,6 +179,9 @@ pub const SIGCHLD: ::c_int = 17;
 pub const SIGBUS: ::c_int = 7;
 pub const SIG_SETMASK: ::c_int = 2;
 
+pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
+pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,

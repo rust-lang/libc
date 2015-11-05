@@ -9,6 +9,8 @@ pub type ino64_t = u64;
 pub type off64_t = i64;
 pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
+pub type fsblkcnt_t = ::c_ulong;
+pub type fsfilcnt_t = ::c_ulong;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
@@ -98,6 +100,23 @@ s! {
         pub pw_gecos: *mut ::c_char,
         pub pw_dir: *mut ::c_char,
         pub pw_shell: *mut ::c_char,
+    }
+
+    pub struct statvfs {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_favail: ::fsfilcnt_t,
+        pub f_fsid: ::c_ulong,
+        #[cfg(target_pointer_width = "32")]
+        pub __f_unused: ::c_int,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        __f_spare: [::c_int; 6],
     }
 }
 
@@ -218,6 +237,18 @@ pub const F_TEST: ::c_int = 3;
 pub const F_TLOCK: ::c_int = 2;
 pub const F_ULOCK: ::c_int = 0;
 
+pub const ST_RDONLY: ::c_ulong = 1;
+pub const ST_NOSUID: ::c_ulong = 2;
+pub const ST_NODEV: ::c_ulong = 4;
+pub const ST_NOEXEC: ::c_ulong = 8;
+pub const ST_SYNCHRONOUS: ::c_ulong = 16;
+pub const ST_MANDLOCK: ::c_ulong = 64;
+pub const ST_WRITE: ::c_ulong = 128;
+pub const ST_APPEND: ::c_ulong = 256;
+pub const ST_IMMUTABLE: ::c_ulong = 512;
+pub const ST_NOATIME: ::c_ulong = 1024;
+pub const ST_NODIRATIME: ::c_ulong = 2048;
+
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub const MAP_32BIT: ::c_int = 0x0040;
 
@@ -281,6 +312,12 @@ extern {
                     offset: ::off64_t,
                     whence: ::c_int) -> ::c_int;
     pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
+    pub fn fallocate(fd: ::c_int, mode: ::c_int,
+                     offset: ::off_t, len: ::off_t) -> ::c_int;
+    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
+                           len: ::off_t) -> ::c_int;
+    pub fn readahead(fd: ::c_int, offset: ::off64_t,
+                     count: ::size_t) -> ::ssize_t;
 }
 
 cfg_if! {

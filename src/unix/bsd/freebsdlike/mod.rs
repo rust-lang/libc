@@ -85,6 +85,20 @@ s! {
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
     }
+
+    pub struct statvfs {
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_favail: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_bsize: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_fsid: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
@@ -520,6 +534,8 @@ extern {
                         -> ::c_int;
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
+    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
+                           len: ::off_t) -> ::c_int;
 }
 
 cfg_if! {
