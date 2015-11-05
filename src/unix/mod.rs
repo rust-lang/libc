@@ -558,6 +558,8 @@ extern {
                   whence: ::c_int) -> ::c_int;
     pub fn ftello(stream: *mut ::FILE) -> ::off_t;
     pub fn timegm(tm: *mut ::tm) -> time_t;
+    pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
+    pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
 }
 
 cfg_if! {
