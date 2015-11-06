@@ -182,7 +182,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 };
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 
-pub const FIOCLEX: ::c_ulong = 0x5451;
+pub const FIOCLEX: ::c_int = 0x5451;
 
 pub const SA_ONSTACK: ::c_ulong = 0x08000000;
 pub const SA_SIGINFO: ::c_ulong = 0x00000004;
