@@ -54,7 +54,7 @@ case "$TARGET" in
 cp -r /checkout/* .
 mkdir .cargo
 cp ci/cargo-config .cargo/config
-sh ci/run.sh $TARGET
+exec sh ci/run.sh $TARGET
 "
     exec docker run \
       --entrypoint bash \
