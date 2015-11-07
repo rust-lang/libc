@@ -317,6 +317,7 @@ pub const O_NOCTTY: ::c_int = 256;
 pub const O_NONBLOCK: ::c_int = 2048;
 pub const O_SYNC: ::c_int = 0x1000;
 
+pub const NI_MAXHOST: ::size_t = 1025;
 
 f! {
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {

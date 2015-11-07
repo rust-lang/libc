@@ -22,7 +22,8 @@ case "$TARGET" in
     emulator @arm-18 -no-window &
     adb wait-for-device
     adb push libc-test/target/$TARGET/debug/libc-test /data/libc-test
-    adb shell /data/libc-test
+    adb shell /data/libc-test 2>&1 | tee out
+    grep "^PASSED .* tests" out
     ;;
 
   arm-unknown-linux-gnueabihf)

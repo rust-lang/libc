@@ -22,6 +22,16 @@ pub const RUSAGE_THREAD: ::c_int = 1;
 pub const O_ACCMODE: ::c_int = 3;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 pub const ST_RELATIME: ::c_ulong = 4096;
+pub const NI_MAXHOST: ::socklen_t = 1025;
+
+cfg_if! {
+    if #[cfg(any(target_arch = "arm", target_arch = "x86",
+                        target_arch = "x86_64"))] {
+        pub const PTHREAD_STACK_MIN: ::size_t = 16384;
+    } else {
+        pub const PTHREAD_STACK_MIN: ::size_t = 131072;
+    }
+}
 
 extern {
     pub fn sysctl(name: *mut ::c_int,

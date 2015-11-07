@@ -107,6 +107,8 @@ pub const FD_SETSIZE: usize = 1024;
 pub const ST_RDONLY: ::c_ulong = 1;
 pub const ST_NOSUID: ::c_ulong = 2;
 
+pub const NI_MAXHOST: ::socklen_t = 1025;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
