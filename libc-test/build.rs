@@ -108,6 +108,7 @@ fn main() {
         cfg.header("net/ethernet.h");
         cfg.header("malloc.h");
         cfg.header("sys/prctl.h");
+        cfg.header("linux/netlink.h");
     }
 
     if freebsd {
