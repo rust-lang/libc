@@ -324,18 +324,11 @@ cfg_if! {
     if #[cfg(target_env = "musl")] {
         mod musl;
         pub use self::musl::*;
-    } else {
-        mod notmusl;
-        pub use self::notmusl::*;
-    }
-}
-
-cfg_if! {
-    if #[cfg(any(target_arch = "mips", target_arch = "mipsel"))] {
+    } else if #[cfg(any(target_arch = "mips", target_arch = "mipsel"))] {
         mod mips;
         pub use self::mips::*;
     } else {
-        mod notmips;
-        pub use self::notmips::*;
+        mod other;
+        pub use self::other::*;
     }
 }
