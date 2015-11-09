@@ -7,6 +7,9 @@ pub const RUSAGE_CHILDREN: ::c_int = 1;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 
+pub const FIOCLEX: ::c_int = 0x5451;
+pub const FIONBIO: ::c_int = 0x5421;
+
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 }

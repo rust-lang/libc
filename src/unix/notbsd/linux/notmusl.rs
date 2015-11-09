@@ -24,6 +24,9 @@ pub const RUSAGE_CHILDREN: ::c_int = -1;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
 
+pub const FIOCLEX: ::c_ulong = 0x5451;
+pub const FIONBIO: ::c_ulong = 0x5421;
+
 cfg_if! {
     if #[cfg(any(target_arch = "arm", target_arch = "x86",
                         target_arch = "x86_64"))] {
