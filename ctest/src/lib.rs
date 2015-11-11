@@ -41,6 +41,7 @@ pub struct TestGenerator {
     skip_const: Box<Fn(&str) -> bool>,
     skip_signededness: Box<Fn(&str) -> bool>,
     skip_type: Box<Fn(&str) -> bool>,
+    skip_struct: Box<Fn(&str) -> bool>,
     field_name: Box<Fn(&str, &str) -> String>,
     type_name: Box<Fn(&str, bool) -> String>,
 }
@@ -74,6 +75,7 @@ impl TestGenerator {
             skip_const: Box::new(|_| false),
             skip_signededness: Box::new(|_| false),
             skip_type: Box::new(|_| false),
+            skip_struct: Box::new(|_| false),
             field_name: Box::new(|_, f| f.to_string()),
             skip_field: Box::new(|_, _| false),
             skip_field_type: Box::new(|_, _| false),
@@ -173,6 +175,13 @@ impl TestGenerator {
         where F: Fn(&str) -> bool + 'static
     {
         self.skip_type = Box::new(f);
+        self
+    }
+
+    pub fn skip_struct<F>(&mut self, f: F) -> &mut TestGenerator
+        where F: Fn(&str) -> bool + 'static
+    {
+        self.skip_struct = Box::new(f);
         self
     }
 
@@ -441,6 +450,10 @@ impl<'a> Generator<'a> {
     }
 
     fn test_struct(&mut self, ty: &str, s: &ast::VariantData) {
+        if (self.opts.skip_struct)(ty) {
+            return
+        }
+
         let cty = self.rust_ty_to_c_ty(ty);
         self.test_size_align(ty, &cty);
 
