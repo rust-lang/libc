@@ -108,6 +108,10 @@ fn main() {
         cfg.header("net/ethernet.h");
         cfg.header("malloc.h");
         cfg.header("sys/prctl.h");
+        /* linux kernel header */
+        if !musl {
+            cfg.header("linux/netlink.h");
+        }
     }
 
     if freebsd {
@@ -173,6 +177,13 @@ fn main() {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
 
+            _ => false
+        }
+    });
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            "sockaddr_nl" => musl,
             _ => false
         }
     });
