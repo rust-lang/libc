@@ -513,6 +513,8 @@ pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0 as *mut _;
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
+#[cfg(target_os = "dragonfly")]
+pub const SIGSTKSZ: ::size_t = 8192 /* MINSIGSTKSZ */ + 32768;
 
 extern {
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
