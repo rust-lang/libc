@@ -83,6 +83,14 @@ s! {
         pub dli_sname: *const ::c_char,
         pub dli_saddr: *mut ::c_void,
     }
+
+    pub struct hostent {
+        pub h_name: *mut ::c_char,
+        pub h_aliases: *mut *mut ::c_char,
+        pub h_addrtype: ::c_int,
+        pub h_length: ::c_int,
+        pub h_addr_list: *mut *mut ::c_char,
+    }
 }
 
 pub const WNOHANG: ::c_int = 1;
