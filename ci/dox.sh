@@ -19,7 +19,7 @@ for target in $TARGETS; do
   rustdoc -o target/doc/$target --target $target src/lib.rs --cfg dox \
     --crate-name libc
 
-  echo "<li><a href="$target/libc/index.html">$target</a></li>" \
+  echo "<li><a href="/libc/$target/libc/index.html">$target</a></li>" \
     >> target/doc/index.html
 done
 
