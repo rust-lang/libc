@@ -10,7 +10,7 @@
 
 //! Crate docs
 
-#![allow(bad_style, raw_pointer_derive, overflowing_literals, improper_ctypes)]
+#![allow(bad_style, overflowing_literals, improper_ctypes)]
 #![crate_type = "rlib"]
 #![crate_name = "libc"]
 #![cfg_attr(dox, feature(no_core, lang_items))]
