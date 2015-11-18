@@ -66,7 +66,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [i32; FD_SETSIZE / 32],
+        pub fds_bits: [i32; FD_SETSIZE / 32],
     }
 
     pub struct tm {
