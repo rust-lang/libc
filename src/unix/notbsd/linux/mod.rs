@@ -339,3 +339,5 @@ cfg_if! {
         pub use self::other::*;
     }
 }
+
+pub const AF_NETLINK: ::c_int = 16;
