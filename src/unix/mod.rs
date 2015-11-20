@@ -105,9 +105,14 @@ cfg_if! {
     } else if #[cfg(target_env = "musl")] {
         #[link(name = "c", kind = "static")]
         extern {}
+    } else if #[cfg(any(target_os = "macos", target_os = "ios"))] {
+        #[link(name = "c")]
+        #[link(name = "m")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
+        #[link(name = "rt")]
         extern {}
     }
 }
