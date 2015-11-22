@@ -61,7 +61,7 @@ exec sh ci/run.sh $TARGET
       -v $HOME/rust:/usr/local:ro \
       -v `pwd`:/checkout:ro \
       -e LD_LIBRARY_PATH=/usr/local/lib \
-      -it alexcrichton/rust-slave-android:2015-10-21 \
+      -it alexcrichton/rust-slave-android:2015-11-22 \
       -c "$script"
     ;;
 
