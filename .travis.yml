@@ -9,7 +9,7 @@ services:
   - docker
 script:
   - if [[ $TRAVIS_RUST_VERSION = nightly* ]]; then
-      sh ci/run-travis.sh;
+      travis_wait sh ci/run-travis.sh;
     else
       cargo build;
     fi
