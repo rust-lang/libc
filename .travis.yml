@@ -7,6 +7,11 @@ rust:
   - nightly
 services:
   - docker
+before_script:
+  - if [ "$TARGET" = "arm-linux-androideabi" ]; then
+      docker pull alexcrichton/rust-slave-android:2015-11-22;
+    fi
+
 script:
   - if [[ $TRAVIS_RUST_VERSION = nightly* ]]; then
       sh ci/run-travis.sh;
