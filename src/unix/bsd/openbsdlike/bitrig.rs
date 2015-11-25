@@ -14,3 +14,7 @@ s! {
         __unused7: *mut ::c_void,
     }
 }
+
+extern {
+    pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
+}
