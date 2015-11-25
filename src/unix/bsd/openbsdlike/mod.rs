@@ -530,7 +530,6 @@ extern {
                         newlen: ::size_t)
                         -> ::c_int;
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
-    pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn pthread_main_np() -> ::c_uint;
     pub fn pthread_stackseg_np(thread: ::pthread_t,
                                sinfo: *mut ::stack_t) -> ::c_uint;
@@ -543,6 +542,9 @@ cfg_if! {
     if #[cfg(target_os = "bitrig")] {
         mod bitrig;
         pub use self::bitrig::*;
+    } else if #[cfg(target_os = "netbsd")] {
+        mod netbsd;
+        pub use self::netbsd::*;
     } else {
         mod openbsd;
         pub use self::openbsd::*;
