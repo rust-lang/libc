@@ -99,6 +99,10 @@ s! {
         pub f_fsid: ::c_ulong,
         pub f_namemax: ::c_ulong,
     }
+
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
@@ -536,6 +540,8 @@ extern {
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;
+    pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
+    pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
 }
 
 cfg_if! {
