@@ -50,7 +50,7 @@ s! {
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
 
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "emscripten"))]
         pub ai_addr: *mut ::sockaddr,
 
         pub ai_canonname: *mut c_char,
@@ -610,7 +610,8 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(target_os = "linux")] {
+    if #[cfg(any(target_os = "linux",
+                 target_os = "emscripten"))] {
         mod linux;
         pub use self::linux::*;
     } else if #[cfg(target_os = "android")] {
