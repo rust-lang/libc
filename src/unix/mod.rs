@@ -107,7 +107,9 @@ cfg_if! {
         extern {}
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
-                        target_os = "android"))] {
+                        target_os = "android",
+                        target_os = "openbsd",
+                        target_os = "bitrig"))] {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
