@@ -1,44 +1,15 @@
 pub type c_long = i64;
 pub type c_ulong = u64;
-pub type clock_t = i64;
 pub type time_t = i64;
-pub type suseconds_t = i64;
-pub type dev_t = i32;
 pub type mode_t = u32;
 pub type nlink_t = ::uint32_t;
-pub type blksize_t = ::uint32_t;
 pub type ino_t = ::uint64_t;
-pub type fflags_t = u32;
-pub type pthread_attr_t = *mut ::c_void;
-pub type sigset_t = ::c_uint;
 pub type pthread_key_t = ::c_int;
-pub type pthread_mutex_t = *mut ::c_void;
-pub type pthread_mutexattr_t = *mut ::c_void;
-pub type pthread_cond_t = *mut ::c_void;
-pub type pthread_rwlock_t = *mut ::c_void;
 pub type rlim_t = u64;
-
 
 pub enum timezone {}
 
 s! {
-    pub struct dirent {
-        pub d_fileno: ::ino_t,
-        pub d_off: ::off_t,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_namelen: u8,
-        __d_padding: [u8; 4],
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_code: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_addr: *mut ::c_void
-    }
-
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
@@ -51,60 +22,19 @@ s! {
         pub ss_flags: ::c_int,
     }
 
-    pub struct sockaddr_storage {
-        pub ss_len: u8,
-        pub ss_family: ::sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_pad2: i64,
-        __ss_pad3: [u8; 240],
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *const ::c_void,
     }
 
-    pub struct addrinfo {
-        pub ai_flags: ::c_int,
-        pub ai_family: ::c_int,
-        pub ai_socktype: ::c_int,
-        pub ai_protocol: ::c_int,
-        pub ai_addrlen: ::socklen_t,
-        pub ai_addr: *mut ::sockaddr,
-        pub ai_canonname: *mut ::c_char,
-        pub ai_next: *mut ::addrinfo,
-    }
-
-    pub struct stat {
-        pub st_mode: ::mode_t,
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        pub st_size: ::off_t,
-        pub st_blocks: ::blkcnt_t,
-        pub st_blksize: ::blksize_t,
-        pub st_flags: ::fflags_t,
-        pub st_gen: ::uint32_t,
-        pub st_birthtime: ::time_t,
-        pub st_birthtime_nsec: ::c_long,
-    }
-
-    pub struct statvfs {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_favail: ::fsfilcnt_t,
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
+    pub struct sockaddr_in {
+        pub sin_len: u8,
+        pub sin_family: ::sa_family_t,
+        pub sin_port: ::in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [::int8_t; 8],
     }
 }
 
@@ -131,7 +61,7 @@ pub const O_CREAT : ::c_int = 512;
 pub const O_EXCL : ::c_int = 2048;
 pub const O_NOCTTY : ::c_int = 32768;
 pub const O_TRUNC : ::c_int = 1024;
-pub const O_CLOEXEC: ::c_int = 0x10000;
+pub const O_SYNC : ::c_int = 128;
 pub const S_IFIFO : mode_t = 4096;
 pub const S_IFCHR : mode_t = 8192;
 pub const S_IFBLK : mode_t = 24576;
@@ -195,8 +125,6 @@ pub const MCL_CURRENT : ::c_int = 0x0001;
 pub const MCL_FUTURE : ::c_int = 0x0002;
 
 pub const MS_ASYNC : ::c_int = 0x0001;
-pub const MS_SYNC : ::c_int = 0x0002;
-pub const MS_INVALIDATE : ::c_int = 0x0004;
 
 pub const EPERM : ::c_int = 1;
 pub const ENOENT : ::c_int = 2;
@@ -280,17 +208,6 @@ pub const ENOSYS : ::c_int = 78;
 pub const EFTYPE : ::c_int = 79;
 pub const EAUTH : ::c_int = 80;
 pub const ENEEDAUTH : ::c_int = 81;
-pub const EIPSEC : ::c_int = 82;
-pub const ENOATTR : ::c_int = 83;
-pub const EILSEQ : ::c_int = 84;
-pub const ENOMEDIUM : ::c_int = 85;
-pub const EMEDIUMTYPE : ::c_int = 86;
-pub const EOVERFLOW : ::c_int = 87;
-pub const ECANCELED : ::c_int = 88;
-pub const EIDRM : ::c_int = 89;
-pub const ENOMSG : ::c_int = 90;
-pub const ENOTSUP : ::c_int = 91;
-pub const ELAST : ::c_int = 91; // must be equal to largest errno
 
 pub const F_DUPFD : ::c_int = 0;
 pub const F_GETFD : ::c_int = 1;
@@ -302,7 +219,6 @@ pub const F_SETOWN : ::c_int = 6;
 pub const F_GETLK : ::c_int = 7;
 pub const F_SETLK : ::c_int = 8;
 pub const F_SETLKW : ::c_int = 9;
-pub const F_DUPFD_CLOEXEC : ::c_int = 10;
 
 pub const SIGTRAP : ::c_int = 5;
 
@@ -325,37 +241,10 @@ pub const POSIX_MADV_SEQUENTIAL : ::c_int = 2;
 pub const POSIX_MADV_WILLNEED : ::c_int = 3;
 pub const POSIX_MADV_DONTNEED : ::c_int = 4;
 
-pub const _SC_IOV_MAX : ::c_int = 51;
-pub const _SC_GETGR_R_SIZE_MAX : ::c_int = 100;
-pub const _SC_GETPW_R_SIZE_MAX : ::c_int = 101;
-pub const _SC_LOGIN_NAME_MAX : ::c_int = 102;
-pub const _SC_MQ_PRIO_MAX : ::c_int = 59;
-pub const _SC_THREAD_ATTR_STACKADDR : ::c_int = 77;
-pub const _SC_THREAD_ATTR_STACKSIZE : ::c_int = 78;
-pub const _SC_THREAD_DESTRUCTOR_ITERATIONS : ::c_int = 80;
-pub const _SC_THREAD_KEYS_MAX : ::c_int = 81;
-pub const _SC_THREAD_PRIO_INHERIT : ::c_int = 82;
-pub const _SC_THREAD_PRIO_PROTECT : ::c_int = 83;
-pub const _SC_THREAD_PRIORITY_SCHEDULING : ::c_int = 84;
-pub const _SC_THREAD_PROCESS_SHARED : ::c_int = 85;
-pub const _SC_THREAD_SAFE_FUNCTIONS : ::c_int = 103;
-pub const _SC_THREAD_STACK_MIN : ::c_int = 89;
-pub const _SC_THREAD_THREADS_MAX : ::c_int = 90;
-pub const _SC_THREADS : ::c_int = 91;
-pub const _SC_TTY_NAME_MAX : ::c_int = 107;
-pub const _SC_ATEXIT_MAX : ::c_int = 46;
-pub const _SC_XOPEN_CRYPT : ::c_int = 117;
-pub const _SC_XOPEN_ENH_I18N : ::c_int = 118;
-pub const _SC_XOPEN_LEGACY : ::c_int = 119;
-pub const _SC_XOPEN_REALTIME : ::c_int = 120;
-pub const _SC_XOPEN_REALTIME_THREADS : ::c_int = 121;
 pub const _SC_XOPEN_SHM : ::c_int = 30;
-pub const _SC_XOPEN_UNIX : ::c_int = 123;
-pub const _SC_XOPEN_VERSION : ::c_int = 125;
 
 pub const PTHREAD_CREATE_JOINABLE : ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED : ::c_int = 1;
-pub const PTHREAD_STACK_MIN : ::size_t = 2048;
 
 pub const CLOCK_REALTIME : ::c_int = 0;
 pub const CLOCK_MONOTONIC : ::c_int = 3;
@@ -369,7 +258,6 @@ pub const RLIMIT_RSS: ::c_int = 5;
 pub const RLIMIT_MEMLOCK: ::c_int = 6;
 pub const RLIMIT_NPROC: ::c_int = 7;
 pub const RLIMIT_NOFILE: ::c_int = 8;
-pub const RLIM_NLIMITS: ::c_int = 9;
 
 pub const RLIM_INFINITY: rlim_t = 0x7fff_ffff_ffff_ffff;
 pub const RLIM_SAVED_MAX: rlim_t = RLIM_INFINITY;
@@ -377,7 +265,6 @@ pub const RLIM_SAVED_CUR: rlim_t = RLIM_INFINITY;
 
 pub const RUSAGE_SELF: ::c_int = 0;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
-pub const RUSAGE_THREAD: ::c_int = 1;
 
 pub const MADV_NORMAL : ::c_int = 0;
 pub const MADV_RANDOM : ::c_int = 1;
@@ -401,8 +288,6 @@ pub const IP_TTL: ::c_int = 4;
 pub const IP_HDRINCL: ::c_int = 2;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
-pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12; // don't exist
-pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13; // don't exist
 
 pub const TCP_NODELAY: ::c_int = 0x01;
 pub const SOL_SOCKET: ::c_int = 0xffff;
@@ -420,8 +305,6 @@ pub const SO_SNDBUF: ::c_int = 0x1001;
 pub const SO_RCVBUF: ::c_int = 0x1002;
 pub const SO_SNDLOWAT: ::c_int = 0x1003;
 pub const SO_RCVLOWAT: ::c_int = 0x1004;
-pub const SO_SNDTIMEO: ::c_int = 0x1005;
-pub const SO_RCVTIMEO: ::c_int = 0x1006;
 pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
 
@@ -436,17 +319,8 @@ pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
-pub const O_DSYNC : ::c_int = 128; // same as SYNC
-pub const O_SYNC : ::c_int = 128;
 pub const O_NONBLOCK : ::c_int = 4;
 pub const CTL_KERN : ::c_int = 1;
-pub const KERN_PROC : ::c_int = 66;
-
-pub const MAP_COPY : ::c_int = 0x0002;
-pub const MAP_RENAME : ::c_int = 0x0000;
-pub const MAP_NORESERVE : ::c_int = 0x0000;
-pub const MAP_NOEXTEND : ::c_int = 0x0000;
-pub const MAP_HASSEMAPHORE : ::c_int = 0x0000;
 
 pub const IPPROTO_RAW : ::c_int = 255;
 
@@ -454,7 +328,6 @@ pub const PATH_MAX: ::c_int = 1024;
 
 pub const _SC_ARG_MAX : ::c_int = 1;
 pub const _SC_CHILD_MAX : ::c_int = 2;
-pub const _SC_CLK_TCK : ::c_int = 3;
 pub const _SC_NGROUPS_MAX : ::c_int = 4;
 pub const _SC_OPEN_MAX : ::c_int = 5;
 pub const _SC_JOB_CONTROL : ::c_int = 6;
@@ -481,61 +354,19 @@ pub const _SC_STREAM_MAX : ::c_int = 26;
 pub const _SC_TZNAME_MAX : ::c_int = 27;
 pub const _SC_PAGESIZE : ::c_int = 28;
 pub const _SC_FSYNC : ::c_int = 29;
-pub const _SC_SEM_NSEMS_MAX : ::c_int = 31;
-pub const _SC_SEM_VALUE_MAX : ::c_int = 32;
-pub const _SC_AIO_LISTIO_MAX : ::c_int = 42;
-pub const _SC_AIO_MAX : ::c_int = 43;
-pub const _SC_AIO_PRIO_DELTA_MAX : ::c_int = 44;
-pub const _SC_ASYNCHRONOUS_IO : ::c_int = 45;
-pub const _SC_DELAYTIMER_MAX : ::c_int = 50;
-pub const _SC_MAPPED_FILES : ::c_int = 53;
-pub const _SC_MEMLOCK : ::c_int = 54;
-pub const _SC_MEMLOCK_RANGE : ::c_int = 55;
-pub const _SC_MEMORY_PROTECTION : ::c_int = 56;
-pub const _SC_MESSAGE_PASSING : ::c_int = 57;
-pub const _SC_MQ_OPEN_MAX : ::c_int = 58;
-pub const _SC_PRIORITIZED_IO : ::c_int = 60;
-pub const _SC_PRIORITY_SCHEDULING : ::c_int = 61;
-pub const _SC_REALTIME_SIGNALS : ::c_int = 64;
-pub const _SC_RTSIG_MAX : ::c_int = 66;
-pub const _SC_SEMAPHORES : ::c_int = 67;
-pub const _SC_SHARED_MEMORY_OBJECTS : ::c_int = 68;
-pub const _SC_SIGQUEUE_MAX : ::c_int = 70;
-pub const _SC_SYNCHRONIZED_IO : ::c_int = 75;
-pub const _SC_TIMER_MAX : ::c_int = 93;
-pub const _SC_TIMERS : ::c_int = 94;
-
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0 as *mut _;
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
-pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
-pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
-pub const SIGSTKSZ: ::size_t = 131072;
 
 extern {
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
+    pub fn mincore(addr: *mut ::c_void, len: ::size_t,
+                   vec: *mut ::c_char) -> ::c_int;
+    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn __errno() -> *mut ::c_int;
+    pub fn backtrace(buf: *mut *mut ::c_void, sz: ::size_t) -> ::size_t;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
-    pub fn sysctl(name: *mut ::c_int,
-                  namelen: ::c_uint,
-                  oldp: *mut ::c_void,
-                  oldlenp: *mut ::size_t,
-                  newp: *mut ::c_void,
-                  newlen: ::size_t)
-                  -> ::c_int;
-    pub fn sysctlbyname(name: *const ::c_char,
-                        oldp: *mut ::c_void,
-                        oldlenp: *mut ::size_t,
-                        newp: *mut ::c_void,
-                        newlen: ::size_t)
-                        -> ::c_int;
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn pthread_main_np() -> ::c_uint;
+    pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn pthread_stackseg_np(thread: ::pthread_t,
                                sinfo: *mut ::stack_t) -> ::c_uint;
-    pub fn __errno() -> *const ::c_int;
-    pub fn backtrace(buf: *mut *mut ::c_void,
-                     sz: ::size_t) -> ::size_t;
 }
 
 cfg_if! {

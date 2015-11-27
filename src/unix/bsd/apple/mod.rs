@@ -14,6 +14,8 @@ pub type rlim_t = u64;
 pub type mach_timebase_info_data_t = mach_timebase_info;
 pub type pthread_key_t = c_ulong;
 pub type sigset_t = u32;
+pub type fsblkcnt_t = ::c_uint;
+pub type fsfilcnt_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -160,6 +162,21 @@ s! {
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
+    }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *mut ::c_void,
+    }
+
+    pub struct sockaddr_in {
+        pub sin_len: u8,
+        pub sin_family: ::sa_family_t,
+        pub sin_port: ::in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [::c_char; 8],
     }
 }
 
@@ -676,7 +693,17 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 
 pub const SIGSTKSZ: ::size_t = 131072;
 
+pub const FD_SETSIZE: usize = 1024;
+
+pub const ST_NOSUID: ::c_ulong = 2;
+
 extern {
+    pub fn mincore(addr: *const ::c_void, len: ::size_t,
+                   vec: *mut ::c_char) -> ::c_int;
+    pub fn sysctlnametomib(name: *const ::c_char,
+                           mibp: *mut ::c_int,
+                           sizep: *mut ::size_t)
+                           -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "mprotect$UNIX2003")]
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)

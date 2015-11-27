@@ -6,22 +6,12 @@ pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type pthread_t = ::uintptr_t;
-pub type fsblkcnt_t = ::c_uint;
-pub type fsfilcnt_t = ::c_uint;
 
 s! {
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
-    }
-
-    pub struct sockaddr_in {
-        pub sin_len: u8,
-        pub sin_family: sa_family_t,
-        pub sin_port: ::in_port_t,
-        pub sin_addr: ::in_addr,
-        pub sin_zero: [::c_char; 8],
     }
 
     pub struct sockaddr_in6 {
@@ -51,7 +41,9 @@ s! {
         pub pw_shell: *mut ::c_char,
         pub pw_expire: ::time_t,
 
-        #[cfg(not(any(target_os = "macos", target_os = "ios")))]
+        #[cfg(not(any(target_os = "macos",
+                      target_os = "ios",
+                      target_os = "netbsd")))]
         pub pw_fields: ::c_int,
     }
 
@@ -102,10 +94,7 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
 
-pub const FD_SETSIZE: usize = 1024;
-
 pub const ST_RDONLY: ::c_ulong = 1;
-pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const NI_MAXHOST: ::socklen_t = 1025;
 
@@ -147,12 +136,6 @@ f! {
 }
 
 extern {
-    pub fn mincore(addr: *const ::c_void, len: ::size_t,
-                   vec: *mut c_char) -> ::c_int;
-    pub fn sysctlnametomib(name: *const c_char,
-                           mibp: *mut ::c_int,
-                           sizep: *mut ::size_t)
-                           -> ::c_int;
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;

@@ -16,16 +16,21 @@ if [ "$TARGET" = "" ]; then
 fi
 
 MAIN_TARGETS=https://static.rust-lang.org/dist
-EXTRA_TARGETS=https://people.mozilla.org/~acrichton/libc-test/2015-09-08
+DATE=$(echo $TRAVIS_RUST_VERSION | sed s/nightly-//)
+EXTRA_TARGETS=https://people.mozilla.org/~acrichton/libc-test/$DATE
 
 install() {
   sudo apt-get update
   sudo apt-get install -y $@
 }
 
+mkdir -p .cargo
+cp ci/cargo-config .cargo/config
+
 case "$TARGET" in
-  *-apple-ios)
-    curl -s $EXTRA_TARGETS/$TARGET.tar.gz | tar xzf - -C $HOME/rust/lib/rustlib
+  *-apple-ios | *-rumprun-*)
+    curl -s $EXTRA_TARGETS/$TARGET.tar.gz | \
+     tar xzf - -C `rustc --print sysroot`/lib/rustlib
     ;;
 
   *)
@@ -44,27 +49,23 @@ case "$TARGET" in
 
 esac
 
-case "$TARGET" in
-  # Pull a pre-built docker image for testing android, then run tests entirely
-  # within that image. Note that this is using the same rustc installation that
-  # travis has (sharing it via `-v`) and otherwise the tests run entirely within
-  # the container.
-  arm-linux-androideabi)
-    script="
-cp -r /checkout/* .
-mkdir .cargo
-cp ci/cargo-config .cargo/config
-exec sh ci/run.sh $TARGET
-"
-    exec docker run \
-      --entrypoint bash \
-      -v $HOME/rust:/usr/local:ro \
-      -v `pwd`:/checkout:ro \
-      -e LD_LIBRARY_PATH=/usr/local/lib \
-      -it alexcrichton/rust-slave-android:2015-10-21 \
-      -c "$script"
-    ;;
+# Pull a pre-built docker image for testing android, then run tests entirely
+# within that image. Note that this is using the same rustc installation that
+# travis has (sharing it via `-v`) and otherwise the tests run entirely within
+# the container.
+if [ "$DOCKER" != "" ]; then
+  exec docker run \
+    --entrypoint bash \
+    -v `rustc --print sysroot`:/usr/local:ro \
+    -v `pwd`:/checkout \
+    -e LD_LIBRARY_PATH=/usr/local/lib \
+    -e CARGO_TARGET_DIR=/tmp \
+    -w /checkout \
+    -it $DOCKER \
+    ci/run.sh $TARGET
+fi
 
+case "$TARGET" in
   x86_64-unknown-linux-musl)
     install musl-tools
     export CC=musl-gcc
@@ -107,8 +108,6 @@ exec sh ci/run.sh $TARGET
 
 esac
 
-mkdir .cargo
-cp ci/cargo-config .cargo/config
 sh ci/run.sh $TARGET
 
 if [ "$TARGET" = "x86_64-unknown-linux-gnu" ] && \

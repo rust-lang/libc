@@ -21,9 +21,9 @@ case "$TARGET" in
   arm-linux-androideabi)
     emulator @arm-18 -no-window &
     adb wait-for-device
-    adb push libc-test/target/$TARGET/debug/libc-test /data/libc-test
-    adb shell /data/libc-test 2>&1 | tee out
-    grep "^PASSED .* tests" out
+    adb push /tmp/$TARGET/debug/libc-test /data/libc-test
+    adb shell /data/libc-test 2>&1 | tee /tmp/out
+    grep "^PASSED .* tests" /tmp/out
     ;;
 
   arm-unknown-linux-gnueabihf)
@@ -37,6 +37,14 @@ case "$TARGET" in
   aarch64-unknown-linux-gnu)
     qemu-aarch64 -L /usr/aarch64-linux-gnu/ \
       libc-test/target/$TARGET/debug/libc-test
+    ;;
+
+  *-rumprun-netbsd)
+    rumprun-bake hw_virtio /tmp/libc-test.img /tmp/$TARGET/debug/libc-test
+    qemu-system-x86_64 -nographic -vga none -m 64 \
+        -kernel /tmp/libc-test.img 2>&1 | tee /tmp/out &
+    sleep 5
+    grep "^PASSED .* tests" /tmp/out
     ;;
 
   *-apple-ios)

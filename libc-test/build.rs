@@ -14,7 +14,9 @@ fn main() {
     let musl = target.contains("musl");
     let freebsd = target.contains("freebsd");
     let mips = target.contains("mips");
-    let bsdlike = freebsd || apple;
+    let netbsd = target.contains("netbsd");
+    let rumprun = target.contains("rumprun");
+    let bsdlike = freebsd || apple || netbsd;
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
@@ -90,8 +92,11 @@ fn main() {
         cfg.header("sys/statvfs.h");
 
         if !musl {
-            cfg.header("execinfo.h");
             cfg.header("sys/sysctl.h");
+
+            if !netbsd {
+                cfg.header("execinfo.h");
+            }
         }
     }
 
@@ -254,6 +259,18 @@ fn main() {
             // Rust, but is close enough to *mut
             "timegm" if apple => true,
 
+            // These functions presumably exist on netbsd but don't look like
+            // they're implemented on rumprun yet, just let them slide for now.
+            // Some of them look like they have headers but then don't have
+            // corresponding actual definitions either...
+            "backtrace" |
+            "pthread_main_np" |
+            "pthread_set_name_np" |
+            "pthread_stackseg_np" |
+            "shm_open" |
+            "shm_unlink" |
+            "sigaltstack" if rumprun => true,
+
             _ => false,
         }
     });
@@ -276,11 +293,11 @@ fn main() {
         (musl && struct_ == "glob_t" && field == "gl_flags")
     });
 
-    cfg.fn_cname(move |a, b| {
+    cfg.fn_cname(move |name, cname| {
         if windows || android {
-            b.unwrap_or(a).to_string()
+            cname.unwrap_or(name).to_string()
         } else {
-            a.to_string()
+            name.to_string()
         }
     });
 
