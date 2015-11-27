@@ -281,6 +281,12 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
+pub const SCHED_OTHER: ::c_int = 0;
+pub const SCHED_FIFO: ::c_int = 1;
+pub const SCHED_RR: ::c_int = 2;
+pub const SCHED_BATCH: ::c_int = 3;
+pub const SCHED_IDLE: ::c_int = 5;
+
 extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;

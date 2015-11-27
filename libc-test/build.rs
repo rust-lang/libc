@@ -13,6 +13,7 @@ fn main() {
     let apple = target.contains("apple");
     let musl = target.contains("musl");
     let freebsd = target.contains("freebsd");
+    let mips = target.contains("mips");
     let bsdlike = freebsd || apple;
     let mut cfg = ctest::TestGenerator::new();
 
@@ -112,10 +113,12 @@ fn main() {
         if !musl {
             cfg.header("linux/netlink.h");
         }
+        cfg.header("sched.h");
     }
 
     if freebsd {
         cfg.header("pthread_np.h");
+        cfg.header("sched.h");
     }
 
     cfg.type_name(move |ty, is_struct| {
@@ -222,6 +225,8 @@ fn main() {
             "RLIMIT_NLIMITS" |
             "TCP_COOKIE_TRANSACTIONS" |
             "RLIMIT_RTTIME" if musl => true,
+            // work around super old mips toolchain
+            "SCHED_IDLE" => mips,
 
             _ => false,
         }
