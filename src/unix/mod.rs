@@ -292,6 +292,7 @@ extern {
                link_name = "pwrite$UNIX2003")]
     pub fn pwrite(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
                   offset: off_t) -> ::ssize_t;
+    pub fn umask(mask: mode_t) -> mode_t;
     pub fn utime(file: *const c_char, buf: *const utimbuf) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
