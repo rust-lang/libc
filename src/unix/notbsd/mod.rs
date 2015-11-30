@@ -86,6 +86,18 @@ s! {
         pub tm_gmtoff: ::c_long,
         pub tm_zone: *const ::c_char,
     }
+
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+        #[cfg(target_env = "musl")]
+        pub sched_ss_low_priority: ::c_int,
+        #[cfg(target_env = "musl")]
+        pub sched_ss_repl_period: ::timespec,
+        #[cfg(target_env = "musl")]
+        pub sched_ss_init_budget: ::timespec,
+        #[cfg(target_env = "musl")]
+        pub sched_ss_max_repl: ::c_int,
+    }
 }
 
 // intentionally not public, only used for fd_set
@@ -377,6 +389,10 @@ extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::size_t,
                      ptr: *const ::gid_t) -> ::c_int;
+    pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
+    pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
+    pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
+    pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

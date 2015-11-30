@@ -99,6 +99,10 @@ s! {
         pub f_fsid: ::c_ulong,
         pub f_namemax: ::c_ulong,
     }
+
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
@@ -514,6 +518,10 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 
+pub const SCHED_FIFO: ::c_int = 1;
+pub const SCHED_OTHER: ::c_int = 2;
+pub const SCHED_RR: ::c_int = 3;
+
 extern {
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
@@ -536,6 +544,8 @@ extern {
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;
+    pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
+    pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
 }
 
 cfg_if! {
