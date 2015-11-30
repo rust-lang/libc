@@ -12,6 +12,7 @@ fn main() {
     ctest::TestGenerator::new()
                          .header("t1.h")
                          .include("src")
+                         .fn_cname(|a, b| b.unwrap_or(a).to_string())
                          .generate("src/t1.rs", "t1gen.rs");
     ctest::TestGenerator::new()
                          .header("t2.h")
