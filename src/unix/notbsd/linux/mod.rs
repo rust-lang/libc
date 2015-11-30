@@ -256,6 +256,9 @@ pub const ST_IMMUTABLE: ::c_ulong = 512;
 pub const ST_NOATIME: ::c_ulong = 1024;
 pub const ST_NODIRATIME: ::c_ulong = 2048;
 
+pub const RTLD_NEXT: ::c_long = -1;
+pub const RTLD_DEFAULT: ::c_long = 0;
+
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub const MAP_32BIT: ::c_int = 0x0040;
 
