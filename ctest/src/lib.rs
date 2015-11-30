@@ -44,6 +44,7 @@ pub struct TestGenerator {
     skip_struct: Box<Fn(&str) -> bool>,
     field_name: Box<Fn(&str, &str) -> String>,
     type_name: Box<Fn(&str, bool) -> String>,
+    fn_cname: Box<Fn(&str, Option<&str>) -> String>,
 }
 
 struct StructFinder {
@@ -79,6 +80,7 @@ impl TestGenerator {
             field_name: Box::new(|_, f| f.to_string()),
             skip_field: Box::new(|_, _| false),
             skip_field_type: Box::new(|_, _| false),
+            fn_cname: Box::new(|a, _| a.to_string()),
             type_name: Box::new(|f, is_struct| {
                 if is_struct {format!("struct {}", f)} else {f.to_string()}
             }),
@@ -182,6 +184,13 @@ impl TestGenerator {
         where F: Fn(&str) -> bool + 'static
     {
         self.skip_struct = Box::new(f);
+        self
+    }
+
+    pub fn fn_cname<F>(&mut self, f: F) -> &mut TestGenerator
+        where F: Fn(&str, Option<&str>) -> String + 'static
+    {
+        self.fn_cname = Box::new(f);
         self
     }
 
@@ -635,12 +644,13 @@ impl<'a> Generator<'a> {
         self.tests.push(format!("const_{}", name));
     }
 
-    fn test_extern_fn(&mut self, name: &str, cname: &str,
+    fn test_extern_fn(&mut self, name: &str, cname: Option<String>,
                       args: &[String], ret: &str,
                       variadic: bool, abi: Abi) {
         if (self.opts.skip_fn)(name) {
             return
         }
+        let cname = (self.opts.fn_cname)(name, cname.as_ref().map(|s| &**s));
         let args = if args.len() == 0 && !variadic {
             "void".to_string()
         } else {
@@ -868,15 +878,10 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
             ast::ForeignItemFn(ref decl, ref generics) => {
                 self.assert_no_generics(i.ident, generics);
                 let (ret, args, variadic) = self.decl2rust(decl);
-                let cname = match attr::first_attr_value_str_by_name(&i.attrs,
-                                                                     "link_name") {
-                    Some(ref i) if !i.to_string().contains("$") => {
-                        i.to_string()
-                    }
-                    _ => i.ident.to_string(),
-                };
+                let cname = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
+                                 .map(|i| i.to_string());
                 let abi = self.abi;
-                self.test_extern_fn(&i.ident.to_string(), &cname, &args, &ret,
+                self.test_extern_fn(&i.ident.to_string(), cname, &args, &ret,
                                     variadic, abi);
             }
             ast::ForeignItemStatic(_, _) => {
