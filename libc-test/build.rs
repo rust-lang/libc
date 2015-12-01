@@ -276,5 +276,13 @@ fn main() {
         (musl && struct_ == "glob_t" && field == "gl_flags")
     });
 
+    cfg.fn_cname(move |a, b| {
+        if windows || android {
+            b.unwrap_or(a).to_string()
+        } else {
+            a.to_string()
+        }
+    });
+
     cfg.generate("../src/lib.rs", "all.rs");
 }
