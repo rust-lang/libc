@@ -138,6 +138,7 @@ fn main() {
         cfg.header("sys/eventfd.h");
         cfg.header("sys/prctl.h");
         cfg.header("sys/vfs.h");
+        cfg.header("sys/syscall.h");
         if !musl {
             cfg.header("linux/netlink.h");
             cfg.header("linux/magic.h");
@@ -304,6 +305,9 @@ fn main() {
             // typed 2nd arg on linux and android
             "gettimeofday" if linux || android || freebsd => true,
 
+            // not declared in newer android toolchains
+            "getdtablesize" if android => true,
+
             "dlerror" if android => true, // const-ness is added
             "dladdr" if musl => true, // const-ness only added recently
 
@@ -333,8 +337,20 @@ fn main() {
         }
     });
 
-    // Windows dllimport oddness?
-    cfg.skip_fn_ptrcheck(move |_| windows);
+    cfg.skip_fn_ptrcheck(move |name| {
+        match name {
+            // This used to be called bsd_signal in rev 18 of the android
+            // platform and is now just called signal, the old `bsd_signal`
+            // symbol, however, still remains, just gives a different function
+            // pointer.
+            "signal" if android => true,
+
+            // dllimport weirdness?
+            _ if windows => true,
+
+            _ => false,
+        }
+    });
 
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
@@ -352,7 +368,7 @@ fn main() {
     });
 
     cfg.fn_cname(move |name, cname| {
-        if windows || android {
+        if windows {
             cname.unwrap_or(name).to_string()
         } else {
             name.to_string()

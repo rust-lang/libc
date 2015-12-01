@@ -25,7 +25,7 @@ env:
 matrix:
   include:
     - os: linux
-      env: TARGET=arm-linux-androideabi DOCKER=alexcrichton/rust-slave-android:2015-10-21
+      env: TARGET=arm-linux-androideabi DOCKER=alexcrichton/rust-slave-android:2015-11-22
       rust: nightly
     - os: linux
       env: TARGET=x86_64-unknown-linux-musl

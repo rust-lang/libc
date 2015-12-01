@@ -3,7 +3,6 @@ use dox::mem;
 pub type rlim_t = c_ulong;
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
-pub type mqd_t = ::c_int;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 
@@ -607,6 +606,7 @@ extern {
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    pub fn syscall(num: ::c_long, ...) -> ::c_long;
 }
 
 cfg_if! {

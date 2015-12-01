@@ -13,6 +13,7 @@ pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type key_t = ::c_int;
 pub type shmatt_t = ::c_ulong;
+pub type mqd_t = ::c_int;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
@@ -506,7 +507,6 @@ extern {
                        sigmask: *const ::sigset_t) -> ::c_int;
     pub fn dup3(oldfd: ::c_int, newfd: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn unshare(flags: ::c_int) -> ::c_int;
-    pub fn syscall(num: ::c_long, ...) -> ::c_long;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
 }
 
