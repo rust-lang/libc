@@ -109,6 +109,10 @@ fn main() {
         }
     }
 
+    if linux {
+        cfg.header("sys/xattr.h");
+    }
+
     if linux || android {
         cfg.header("netpacket/packet.h");
         cfg.header("net/ethernet.h");
