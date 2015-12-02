@@ -35,9 +35,10 @@ macro_rules! __cfg_if_apply {
 }
 
 macro_rules! s {
-    ($(pub struct $i:ident { $($field:tt)* })*) => ($(
+    ($($(#[$attr:meta])* pub struct $i:ident { $($field:tt)* })*) => ($(
         __item! {
             #[repr(C)]
+            $(#[$attr])*
             pub struct $i { $($field)* }
         }
         impl ::dox::Copy for $i {}

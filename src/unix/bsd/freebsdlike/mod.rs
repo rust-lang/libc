@@ -12,6 +12,8 @@ pub type pthread_mutexattr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
 pub type pthread_key_t = ::c_int;
+pub type fsblkcnt_t = ::c_uint;
+pub type fsfilcnt_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -102,6 +104,21 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
+    }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *mut ::c_void,
+    }
+
+    pub struct sockaddr_in {
+        pub sin_len: u8,
+        pub sin_family: ::sa_family_t,
+        pub sin_port: ::in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [::c_char; 8],
     }
 }
 
@@ -522,7 +539,17 @@ pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_OTHER: ::c_int = 2;
 pub const SCHED_RR: ::c_int = 3;
 
+pub const FD_SETSIZE: usize = 1024;
+
+pub const ST_NOSUID: ::c_ulong = 2;
+
 extern {
+    pub fn mincore(addr: *const ::c_void, len: ::size_t,
+                   vec: *mut c_char) -> ::c_int;
+    pub fn sysctlnametomib(name: *const c_char,
+                           mibp: *mut ::c_int,
+                           sizep: *mut ::size_t)
+                           -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)

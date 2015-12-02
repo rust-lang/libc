@@ -25,7 +25,7 @@ env:
 matrix:
   include:
     - os: linux
-      env: TARGET=arm-linux-androideabi
+      env: TARGET=arm-linux-androideabi DOCKER=alexcrichton/rust-slave-android:2015-10-21
       rust: nightly
     - os: linux
       env: TARGET=x86_64-unknown-linux-musl
@@ -45,6 +45,9 @@ matrix:
     - os: osx
       env: TARGET=x86_64-apple-ios
       rust: nightly-2015-09-08
+    - os: linux
+      env: TARGET=x86_64-rumprun-netbsd DOCKER=alexcrichton/rust-libc-rumprun:2015-11-27
+      rust: nightly-2015-09-27
 notifications:
   email:
     on_success: never

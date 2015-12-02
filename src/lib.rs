@@ -172,7 +172,9 @@ extern {
     pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
     pub fn ftell(stream: *mut FILE) -> c_long;
     pub fn rewind(stream: *mut FILE);
+    #[cfg_attr(target_os = "netbsd", link_name = "__fgetpos50")]
     pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__fsetpos50")]
     pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> c_int;
     pub fn feof(stream: *mut FILE) -> c_int;
     pub fn ferror(stream: *mut FILE) -> c_int;
