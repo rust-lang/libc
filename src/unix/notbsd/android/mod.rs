@@ -163,6 +163,7 @@ pub const _SC_THREAD_PRIORITY_SCHEDULING: ::c_int = 82;
 pub const _SC_THREAD_PRIO_INHERIT: ::c_int = 83;
 pub const _SC_THREAD_PRIO_PROTECT: ::c_int = 84;
 pub const _SC_THREAD_SAFE_FUNCTIONS: ::c_int = 85;
+pub const _SC_NPROCESSORS_ONLN: ::c_int = 97;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 8192;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
