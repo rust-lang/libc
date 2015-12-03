@@ -206,6 +206,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 
 pub const HW_AVAILCPU: ::c_int = 25;
+pub const KERN_PROC_ARGS: ::c_int = 55;
 
 extern {
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
