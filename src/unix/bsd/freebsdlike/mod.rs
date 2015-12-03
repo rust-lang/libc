@@ -543,6 +543,8 @@ pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
+pub const HW_AVAILCPU: ::c_int = 25;
+
 extern {
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
                    vec: *mut c_char) -> ::c_int;
