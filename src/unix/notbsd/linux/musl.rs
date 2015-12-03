@@ -107,6 +107,52 @@ s! {
         __pad1: ::c_ulong,
         __pad2: ::c_ulong,
     }
+
+    pub struct statfs {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
+    }
+
+    pub struct msghdr {
+        pub msg_name: *mut ::c_void,
+        pub msg_namelen: ::socklen_t,
+        pub msg_iov: *mut ::iovec,
+        pub msg_iovlen: ::c_int,
+        __pad1: ::c_int,
+        pub msg_control: *mut ::c_void,
+        pub msg_controllen: ::socklen_t,
+        __pad2: ::socklen_t,
+        pub msg_flags: ::c_int,
+    }
+
+    pub struct termios {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_line: ::cc_t,
+        pub c_cc: [::cc_t; ::NCCS],
+        pub __c_ispeed: ::speed_t,
+        pub __c_ospeed: ::speed_t,
+    }
+
+    pub struct flock {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off_t,
+        pub l_len: ::off_t,
+        pub l_pid: ::pid_t,
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 1024;
@@ -114,6 +160,11 @@ pub const TMP_MAX: ::c_uint = 10000;
 pub const FOPEN_MAX: ::c_uint = 1000;
 pub const POSIX_MADV_DONTNEED: ::c_int = 0;
 pub const O_ACCMODE: ::c_int = 0o10000003;
+pub const O_DIRECT: ::c_int = 0x4000;
+pub const O_DIRECTORY: ::c_int = 0x10000;
+pub const O_NOFOLLOW: ::c_int = 0x20000;
+pub const O_ASYNC: ::c_int = 0x2000;
+pub const O_NDELAY: ::c_int = 0x800;
 pub const RUSAGE_CHILDREN: ::c_int = 1;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
@@ -274,7 +325,28 @@ pub const SA_NOCLDWAIT: ::c_int = 0x00000002;
 
 pub const SIGCHLD: ::c_int = 17;
 pub const SIGBUS: ::c_int = 7;
+pub const SIGTTIN: ::c_int = 21;
+pub const SIGTTOU: ::c_int = 22;
+pub const SIGXCPU: ::c_int = 24;
+pub const SIGXFSZ: ::c_int = 25;
+pub const SIGVTALRM: ::c_int = 26;
+pub const SIGPROF: ::c_int = 27;
+pub const SIGWINCH: ::c_int = 28;
+pub const SIGUSR1: ::c_int = 10;
+pub const SIGUSR2: ::c_int = 12;
+pub const SIGCONT: ::c_int = 18;
+pub const SIGSTOP: ::c_int = 19;
+pub const SIGTSTP: ::c_int = 20;
+pub const SIGURG: ::c_int = 23;
+pub const SIGIO: ::c_int = 29;
+pub const SIGSYS: ::c_int = 31;
+pub const SIGSTKFLT: ::c_int = 16;
+pub const SIGUNUSED: ::c_int = 31;
+pub const SIGPOLL: ::c_int = 29;
+pub const SIGPWR: ::c_int = 30;
 pub const SIG_SETMASK: ::c_int = 2;
+pub const SIG_BLOCK: ::c_int = 0x000000;
+pub const SIG_UNBLOCK: ::c_int = 0x01;
 
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
@@ -285,6 +357,75 @@ pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 
+pub const CPU_SETSIZE: ::c_int = 128;
+
+pub const EXTPROC: ::tcflag_t = 0x00010000;
+
+pub const QFMT_VFS_V1: ::c_int = 4;
+
+pub const PTRACE_TRACEME: ::c_int = 0;
+pub const PTRACE_PEEKTEXT: ::c_int = 1;
+pub const PTRACE_PEEKDATA: ::c_int = 2;
+pub const PTRACE_PEEKUSER: ::c_int = 3;
+pub const PTRACE_POKETEXT: ::c_int = 4;
+pub const PTRACE_POKEDATA: ::c_int = 5;
+pub const PTRACE_POKEUSER: ::c_int = 6;
+pub const PTRACE_CONT: ::c_int = 7;
+pub const PTRACE_KILL: ::c_int = 8;
+pub const PTRACE_SINGLESTEP: ::c_int = 9;
+pub const PTRACE_ATTACH: ::c_int = 16;
+pub const PTRACE_DETACH: ::c_int = 17;
+pub const PTRACE_SYSCALL: ::c_int = 24;
+pub const PTRACE_SETOPTIONS: ::c_int = 0x4200;
+pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
+pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
+pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
+pub const PTRACE_GETREGSET: ::c_int = 0x4204;
+pub const PTRACE_SETREGSET: ::c_int = 0x4205;
+pub const PTRACE_SEIZE: ::c_int = 0x4206;
+pub const PTRACE_INTERRUPT: ::c_int = 0x4207;
+pub const PTRACE_LISTEN: ::c_int = 0x4208;
+pub const PTRACE_PEEKSIGINFO: ::c_int = 0x4209;
+
+pub const MADV_DODUMP: ::c_int = 17;
+pub const MADV_DONTDUMP: ::c_int = 16;
+
+pub const EPOLLWAKEUP: ::c_int = 0x20000000;
+
+pub const MS_NOSEC: ::c_ulong = 0x10000000;
+pub const MS_BORN: ::c_ulong = 0x20000000;
+
+pub const MADV_HUGEPAGE: ::c_int = 14;
+pub const MADV_NOHUGEPAGE: ::c_int = 15;
+pub const MAP_HUGETLB: ::c_int = 0x040000;
+
+pub const PTRACE_GETFPREGS: ::c_uint = 14;
+pub const PTRACE_SETFPREGS: ::c_uint = 15;
+pub const PTRACE_GETFPXREGS: ::c_uint = 18;
+pub const PTRACE_SETFPXREGS: ::c_uint = 19;
+pub const PTRACE_GETREGS: ::c_uint = 12;
+pub const PTRACE_SETREGS: ::c_uint = 13;
+
+pub const EFD_NONBLOCK: ::c_int = 0x800;
+
+pub const F_GETLK: ::c_int = 5;
+pub const F_GETOWN: ::c_int = 9;
+pub const F_SETOWN: ::c_int = 8;
+
+pub const VEOF: usize = 4;
+pub const VEOL: usize = 11;
+pub const VEOL2: usize = 16;
+pub const VMIN: usize = 6;
+pub const IEXTEN: ::tcflag_t = 0x00008000;
+pub const TOSTOP: ::tcflag_t = 0x00000100;
+pub const FLUSHO: ::tcflag_t = 0x00001000;
+
+pub const SFD_NONBLOCK: ::c_int = 0x0800;
+
+pub const TCSANOW: ::c_int = 0;
+pub const TCSADRAIN: ::c_int = 1;
+pub const TCSAFLUSH: ::c_int = 2;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
@@ -294,4 +435,6 @@ extern {
                        sevlen: ::socklen_t,
                        flags: ::c_int) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn ptrace(request: ::c_int, ...) -> ::c_long;
 }

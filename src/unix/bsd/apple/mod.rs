@@ -16,6 +16,8 @@ pub type pthread_key_t = c_ulong;
 pub type sigset_t = u32;
 pub type fsblkcnt_t = ::c_uint;
 pub type fsfilcnt_t = ::c_uint;
+pub type speed_t = ::c_ulong;
+pub type tcflag_t = ::c_ulong;
 
 pub enum timezone {}
 
@@ -178,6 +180,68 @@ s! {
         pub sin_addr: ::in_addr,
         pub sin_zero: [::c_char; 8],
     }
+
+    pub struct statfs {
+        pub f_bsize: ::uint32_t,
+        pub f_iosize: ::int32_t,
+        pub f_blocks: ::uint64_t,
+        pub f_bfree: ::uint64_t,
+        pub f_bavail: ::uint64_t,
+        pub f_files: ::uint64_t,
+        pub f_ffree: ::uint64_t,
+        pub f_fsid: ::fsid_t,
+        pub f_owner: ::uid_t,
+        pub f_type: ::uint32_t,
+        pub f_flags: ::uint32_t,
+        pub f_fssubtype: ::uint32_t,
+        pub f_fstypename: [::c_char; 16],
+        pub f_mntonname: [::c_char; 1024],
+        pub f_mntfromname: [::c_char; 1024],
+        pub f_reserved: [::uint32_t; 8],
+    }
+
+    // FIXME: this should have align 4 but it's got align 8 on 64-bit
+    pub struct kevent {
+        pub ident: ::uintptr_t,
+        pub filter: ::int16_t,
+        pub flags: ::uint16_t,
+        pub fflags: ::uint32_t,
+        pub data: ::intptr_t,
+        pub udata: *mut ::c_void,
+    }
+
+    pub struct kevent64_s {
+        pub ident: ::uint64_t,
+        pub filter: ::int16_t,
+        pub flags: ::uint16_t,
+        pub fflags: ::uint32_t,
+        pub data: ::int64_t,
+        pub udata: ::uint64_t,
+        pub ext: [::uint64_t; 2],
+    }
+
+    pub struct dqblk {
+        pub dqb_bhardlimit: ::uint64_t,
+        pub dqb_bsoftlimit: ::uint64_t,
+        pub dqb_curbytes: ::uint64_t,
+        pub dqb_ihardlimit: ::uint32_t,
+        pub dqb_isoftlimit: ::uint32_t,
+        pub dqb_curinodes: ::uint32_t,
+        pub dqb_btime: ::uint32_t,
+        pub dqb_itime: ::uint32_t,
+        pub dqb_id: ::uint32_t,
+        pub dqb_spare: [::uint32_t; 4],
+    }
+
+    pub struct termios {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_cc: [::cc_t; ::NCCS],
+        pub c_ispeed: ::speed_t,
+        pub c_ospeed: ::speed_t,
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
@@ -206,6 +270,7 @@ pub const O_EXCL: ::c_int = 2048;
 pub const O_NOCTTY: ::c_int = 131072;
 pub const O_TRUNC: ::c_int = 1024;
 pub const O_CLOEXEC: ::c_int = 0x1000000;
+pub const O_DIRECTORY: ::c_int = 0x100000;
 pub const S_IFIFO: mode_t = 4096;
 pub const S_IFCHR: mode_t = 8192;
 pub const S_IFBLK: mode_t = 24576;
@@ -697,6 +762,53 @@ pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const HW_AVAILCPU: ::c_int = 25;
 
+pub const EVFILT_AIO: ::int16_t = 0xfffd;
+pub const EVFILT_PROC: ::int16_t = 0xfffb;
+pub const EVFILT_READ: ::int16_t = 0xffff;
+pub const EVFILT_SIGNAL: ::int16_t = 0xfffa;
+pub const EVFILT_SYSCOUNT: ::int16_t = 0xe;
+pub const EVFILT_TIMER: ::int16_t = 0xfff9;
+pub const EVFILT_VNODE: ::int16_t = 0xfffc;
+pub const EVFILT_WRITE: ::int16_t = 0xfffe;
+pub const EVFILT_FS: ::int16_t = 0xfff7;
+pub const EVFILT_MACHPORT: ::int16_t = 0xfff8;
+pub const EVFILT_USER: ::int16_t = 0xfff6;
+pub const EVFILT_VM: ::int16_t = 0xfff4;
+
+pub const EV_DISPATCH: ::uint16_t = 0x80;
+pub const EV_FLAG0: ::uint16_t = 0x1000;
+pub const EV_OOBAND: ::uint16_t = 0x2000;
+pub const EV_POLL: ::uint16_t = 0x1000;
+pub const EV_RECEIPT: ::uint16_t = 0x40;
+
+pub const NOTE_ABSOLUTE: ::uint32_t = 0x8;
+pub const NOTE_EXITSTATUS: ::uint32_t = 0x04000000;
+pub const NOTE_EXIT_REPARENTED: ::uint32_t = 0x00080000;
+pub const NOTE_FFAND: ::uint32_t = 0x40000000;
+pub const NOTE_FFCOPY: ::uint32_t = 0xc0000000;
+pub const NOTE_FFCTRLMASK: ::uint32_t = 0xc0000000;
+pub const NOTE_FFLAGSMASK: ::uint32_t = 0x00ffffff;
+pub const NOTE_FFNOP: ::uint32_t = 0x0;
+pub const NOTE_FFOR: ::uint32_t = 0x80000000;
+pub const NOTE_NONE: ::uint32_t = 0x80;
+pub const NOTE_NSECONDS: ::uint32_t = 0x4;
+pub const NOTE_REAP: ::uint32_t = 0x10000000;
+pub const NOTE_SECONDS: ::uint32_t = 0x1;
+pub const NOTE_SIGNAL: ::uint32_t = 0x8000000;
+pub const NOTE_TRIGGER: ::uint32_t = 0x01000000;
+pub const NOTE_USECONDS: ::uint32_t = 0x2;
+pub const NOTE_VM_ERROR: ::uint32_t = 0x10000000;
+pub const NOTE_VM_PRESSURE: ::uint32_t = 0x80000000;
+pub const NOTE_VM_PRESSURE_SUDDEN_TERMINATE: ::uint32_t = 0x20000000;
+pub const NOTE_VM_PRESSURE_TERMINATE: ::uint32_t = 0x40000000;
+pub const NOTE_PCTRLMASK: ::uint32_t = 0xfff00000;
+
+pub const TAB3: ::c_int = 0x00000004;
+pub const VT0: ::c_int  = 0x00000000;
+pub const VT1: ::c_int  = 0x00010000;
+pub const IUTF8: ::tcflag_t = 0x00004000;
+pub const CRTSCTS: ::tcflag_t = 0x00030000;
+
 extern {
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
@@ -730,6 +842,36 @@ extern {
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void,
                      sz: ::c_int) -> ::c_int;
+    #[cfg_attr(target_os = "macos", link_name = "statfs$INODE64")]
+    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    #[cfg_attr(target_os = "macos", link_name = "fstatfs$INODE64")]
+    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
+    pub fn kevent(kq: ::c_int,
+                  changelist: *const ::kevent,
+                  nchanges: ::c_int,
+                  eventlist: *mut ::kevent,
+                  nevents: ::c_int,
+                  timeout: *const ::timespec) -> ::c_int;
+    pub fn kevent64(kq: ::c_int,
+                    changelist: *const ::kevent64_s,
+                    nchanges: ::c_int,
+                    eventlist: *mut ::kevent64_s,
+                    nevents: ::c_int,
+                    flags: ::c_uint,
+                    timeout: *const ::timespec) -> ::c_int;
+    pub fn mount(src: *const ::c_char,
+                 target: *const ::c_char,
+                 flags: ::c_int,
+                 data: *mut ::c_void) -> ::c_int;
+    pub fn ptrace(requeset: ::c_int,
+                  pid: ::pid_t,
+                  addr: *mut ::c_char,
+                  data: ::c_int) -> ::c_int;
+    pub fn quotactl(special: *const ::c_char,
+                    cmd: ::c_int,
+                    id: ::c_int,
+                    data: *mut ::c_char) -> ::c_int;
+    pub fn sethostname(name: *const ::c_char, len: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

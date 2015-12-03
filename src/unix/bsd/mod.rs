@@ -74,6 +74,36 @@ s! {
         pub tm_gmtoff: ::c_long,
         pub tm_zone: *mut ::c_char,
     }
+
+    pub struct utsname {
+        pub sysname: [::c_char; 256],
+        pub nodename: [::c_char; 256],
+        pub release: [::c_char; 256],
+        pub version: [::c_char; 256],
+        pub machine: [::c_char; 256],
+    }
+
+    pub struct msghdr {
+        pub msg_name: *mut ::c_void,
+        pub msg_namelen: ::socklen_t,
+        pub msg_iov: *mut ::iovec,
+        pub msg_iovlen: ::c_int,
+        pub msg_control: *mut ::c_void,
+        pub msg_controllen: ::socklen_t,
+        pub msg_flags: ::c_int,
+    }
+
+    pub struct flock {
+        pub l_start: ::off_t,
+        pub l_len: ::off_t,
+        pub l_pid: ::pid_t,
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+    }
+
+    pub struct fsid_t {
+        __fsid_val: [::int32_t; 2],
+    }
 }
 
 pub const FIOCLEX: ::c_ulong = 0x20006601;
@@ -91,7 +121,25 @@ pub const SA_NOCLDWAIT: ::c_int = 0x0020;
 
 pub const SIGCHLD: ::c_int = 20;
 pub const SIGBUS: ::c_int = 10;
+pub const SIGUSR1: ::c_int = 30;
+pub const SIGUSR2: ::c_int = 31;
+pub const SIGCONT: ::c_int = 19;
+pub const SIGSTOP: ::c_int = 17;
+pub const SIGTSTP: ::c_int = 18;
+pub const SIGURG: ::c_int = 16;
+pub const SIGIO: ::c_int = 23;
+pub const SIGSYS: ::c_int = 12;
+pub const SIGTTIN: ::c_int = 21;
+pub const SIGTTOU: ::c_int = 22;
+pub const SIGXCPU: ::c_int = 24;
+pub const SIGXFSZ: ::c_int = 25;
+pub const SIGVTALRM: ::c_int = 26;
+pub const SIGPROF: ::c_int = 27;
+pub const SIGWINCH: ::c_int = 28;
+
 pub const SIG_SETMASK: ::c_int = 3;
+pub const SIG_BLOCK: ::c_int = 0x1;
+pub const SIG_UNBLOCK: ::c_int = 0x2;
 
 pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
@@ -102,6 +150,135 @@ pub const NI_MAXHOST: ::socklen_t = 1025;
 
 pub const CTL_HW: ::c_int = 6;
 pub const HW_NCPU: ::c_int = 3;
+
+pub const EV_ADD: ::uint16_t = 0x1;
+pub const EV_CLEAR: ::uint16_t = 0x20;
+pub const EV_DELETE: ::uint16_t = 0x2;
+pub const EV_DISABLE: ::uint16_t = 0x8;
+pub const EV_ENABLE: ::uint16_t = 0x4;
+pub const EV_EOF: ::uint16_t = 0x8000;
+pub const EV_ERROR: ::uint16_t = 0x4000;
+pub const EV_FLAG1: ::uint16_t = 0x2000;
+pub const EV_ONESHOT: ::uint16_t = 0x10;
+pub const EV_SYSFLAGS: ::uint16_t = 0xf000;
+
+pub const NOTE_ATTRIB: ::uint32_t = 0x8;
+pub const NOTE_CHILD: ::uint32_t = 0x4;
+pub const NOTE_DELETE: ::uint32_t = 0x1;
+pub const NOTE_EXEC: ::uint32_t = 0x20000000;
+pub const NOTE_EXIT: ::uint32_t = 0x80000000;
+pub const NOTE_EXTEND: ::uint32_t = 0x4;
+pub const NOTE_FORK: ::uint32_t = 0x40000000;
+pub const NOTE_LINK: ::uint32_t = 0x10;
+pub const NOTE_LOWAT: ::uint32_t = 0x1;
+pub const NOTE_PDATAMASK: ::uint32_t = 0x000fffff;
+pub const NOTE_RENAME: ::uint32_t = 0x20;
+pub const NOTE_REVOKE: ::uint32_t = 0x40;
+pub const NOTE_TRACK: ::uint32_t = 0x1;
+pub const NOTE_TRACKERR: ::uint32_t = 0x2;
+pub const NOTE_WRITE: ::uint32_t = 0x2;
+
+pub const NCCS: usize = 20;
+
+pub const O_ASYNC: ::c_int = 0x40;
+pub const O_FSYNC: ::c_int = 0x80;
+pub const O_NDELAY: ::c_int = 0x4;
+pub const O_NOFOLLOW: ::c_int = 0x100;
+
+pub const F_GETLK: ::c_int = 7;
+pub const F_GETOWN: ::c_int = 5;
+pub const F_SETLK: ::c_int = 8;
+pub const F_SETLKW: ::c_int = 9;
+pub const F_SETOWN: ::c_int = 6;
+
+pub const MNT_FORCE: ::c_int = 0x80000;
+
+pub const Q_SYNC: ::c_int = 0x600;
+pub const Q_QUOTAON: ::c_int = 0x100;
+pub const Q_QUOTAOFF: ::c_int = 0x200;
+pub const Q_GETQUOTA: ::c_int = 0x300;
+pub const Q_SETQUOTA: ::c_int = 0x400;
+
+pub const TCIOFF: ::c_int = 3;
+pub const TCION: ::c_int = 4;
+pub const TCOOFF: ::c_int = 1;
+pub const TCOON: ::c_int = 2;
+pub const TCIFLUSH: ::c_int = 1;
+pub const TCOFLUSH: ::c_int = 2;
+pub const TCIOFLUSH: ::c_int = 3;
+pub const TCSANOW: ::c_int = 0;
+pub const TCSADRAIN: ::c_int = 1;
+pub const TCSAFLUSH: ::c_int = 2;
+pub const NL0: ::c_int  = 0x00000000;
+pub const NL1: ::c_int  = 0x00000100;
+pub const TAB0: ::c_int = 0x00000000;
+pub const TAB1: ::c_int = 0x00000400;
+pub const TAB2: ::c_int = 0x00000800;
+pub const CR0: ::c_int  = 0x00000000;
+pub const CR1: ::c_int  = 0x00001000;
+pub const CR2: ::c_int  = 0x00002000;
+pub const CR3: ::c_int  = 0x00003000;
+pub const FF0: ::c_int  = 0x00000000;
+pub const FF1: ::c_int  = 0x00004000;
+pub const BS0: ::c_int  = 0x00000000;
+pub const BS1: ::c_int  = 0x00008000;
+pub const VEOF: usize = 0;
+pub const VEOL: usize = 1;
+pub const VEOL2: usize = 2;
+pub const VERASE: usize = 3;
+pub const VWERASE: usize = 4;
+pub const VKILL: usize = 5;
+pub const VREPRINT: usize = 6;
+pub const VINTR: usize = 8;
+pub const VQUIT: usize = 9;
+pub const VSUSP: usize = 10;
+pub const VSTART: usize = 12;
+pub const VSTOP: usize = 13;
+pub const VLNEXT: usize = 14;
+pub const VDISCARD: usize = 15;
+pub const VMIN: usize = 16;
+pub const VTIME: usize = 17;
+pub const IGNBRK: ::tcflag_t = 0x00000001;
+pub const BRKINT: ::tcflag_t = 0x00000002;
+pub const IGNPAR: ::tcflag_t = 0x00000004;
+pub const PARMRK: ::tcflag_t = 0x00000008;
+pub const INPCK: ::tcflag_t = 0x00000010;
+pub const ISTRIP: ::tcflag_t = 0x00000020;
+pub const INLCR: ::tcflag_t = 0x00000040;
+pub const IGNCR: ::tcflag_t = 0x00000080;
+pub const ICRNL: ::tcflag_t = 0x00000100;
+pub const IXON: ::tcflag_t = 0x00000200;
+pub const IXOFF: ::tcflag_t = 0x00000400;
+pub const IXANY: ::tcflag_t = 0x00000800;
+pub const IMAXBEL: ::tcflag_t = 0x00002000;
+pub const OPOST: ::tcflag_t = 0x1;
+pub const ONLCR: ::tcflag_t = 0x2;
+pub const CSIZE: ::tcflag_t = 0x00000300;
+pub const CS5: ::tcflag_t = 0x00000000;
+pub const CS6: ::tcflag_t = 0x00000100;
+pub const CS7: ::tcflag_t = 0x00000200;
+pub const CS8: ::tcflag_t = 0x00000300;
+pub const CSTOPB: ::tcflag_t = 0x00000400;
+pub const CREAD: ::tcflag_t = 0x00000800;
+pub const PARENB: ::tcflag_t = 0x00001000;
+pub const PARODD: ::tcflag_t = 0x00002000;
+pub const HUPCL: ::tcflag_t = 0x00004000;
+pub const CLOCAL: ::tcflag_t = 0x00008000;
+pub const ECHOKE: ::tcflag_t = 0x00000001;
+pub const ECHOE: ::tcflag_t = 0x00000002;
+pub const ECHOK: ::tcflag_t = 0x00000004;
+pub const ECHO: ::tcflag_t = 0x00000008;
+pub const ECHONL: ::tcflag_t = 0x00000010;
+pub const ECHOPRT: ::tcflag_t = 0x00000020;
+pub const ECHOCTL: ::tcflag_t = 0x00000040;
+pub const ISIG: ::tcflag_t = 0x00000080;
+pub const ICANON: ::tcflag_t = 0x00000100;
+pub const IEXTEN: ::tcflag_t = 0x00000400;
+pub const EXTPROC: ::tcflag_t = 0x00000800;
+pub const TOSTOP: ::tcflag_t = 0x00400000;
+pub const FLUSHO: ::tcflag_t = 0x00800000;
+pub const PENDIN: ::tcflag_t = 0x20000000;
+pub const NOFLSH: ::tcflag_t = 0x80000000;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
@@ -151,6 +328,9 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::socklen_t,
                        flags: ::c_int) -> ::c_int;
+    pub fn kqueue() -> ::c_int;
+    pub fn unmount(target: *const ::c_char, arg: ::c_int) -> ::c_int;
+    pub fn syscall(num: ::c_int, ...) -> ::c_int;
 }
 
 cfg_if! {

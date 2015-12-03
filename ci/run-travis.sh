@@ -20,34 +20,38 @@ DATE=$(echo $TRAVIS_RUST_VERSION | sed s/nightly-//)
 EXTRA_TARGETS=https://people.mozilla.org/~acrichton/libc-test/$DATE
 
 install() {
-  sudo apt-get update
-  sudo apt-get install -y $@
+  if [ "$TRAVIS" = "true" ]; then
+    sudo apt-get update
+    sudo apt-get install -y $@
+  fi
 }
 
 mkdir -p .cargo
 cp ci/cargo-config .cargo/config
 
-case "$TARGET" in
-  *-apple-ios | *-rumprun-*)
-    curl -s $EXTRA_TARGETS/$TARGET.tar.gz | \
-     tar xzf - -C `rustc --print sysroot`/lib/rustlib
-    ;;
+if [ "$TRAVIS" = "true" ]; then
+  case "$TARGET" in
+    *-apple-ios | *-rumprun-*)
+      curl -s $EXTRA_TARGETS/$TARGET.tar.gz | \
+       tar xzf - -C `rustc --print sysroot`/lib/rustlib
+      ;;
 
-  *)
-    # Download the rustlib folder from the relevant portion of main distribution's
-    # tarballs.
-    dir=rust-std-$TARGET
-    pkg=rust-std
-    if [ "$TRAVIS_RUST_VERSION" = "1.0.0" ]; then
-      pkg=rust
-      dir=rustc
-    fi
-    curl -s $MAIN_TARGETS/$pkg-$TRAVIS_RUST_VERSION-$TARGET.tar.gz | \
-      tar xzf - -C $HOME/rust/lib/rustlib --strip-components=4 \
-        $pkg-$TRAVIS_RUST_VERSION-$TARGET/$dir/lib/rustlib/$TARGET
-    ;;
+    *)
+      # Download the rustlib folder from the relevant portion of main distribution's
+      # tarballs.
+      dir=rust-std-$TARGET
+      pkg=rust-std
+      if [ "$TRAVIS_RUST_VERSION" = "1.0.0" ]; then
+        pkg=rust
+        dir=rustc
+      fi
+      curl -s $MAIN_TARGETS/$pkg-$TRAVIS_RUST_VERSION-$TARGET.tar.gz | \
+        tar xzf - -C $HOME/rust/lib/rustlib --strip-components=4 \
+          $pkg-$TRAVIS_RUST_VERSION-$TARGET/$dir/lib/rustlib/$TARGET
+      ;;
 
-esac
+  esac
+fi
 
 # Pull a pre-built docker image for testing android, then run tests entirely
 # within that image. Note that this is using the same rustc installation that

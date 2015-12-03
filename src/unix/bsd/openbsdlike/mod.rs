@@ -214,11 +214,6 @@ pub const F_GETFD : ::c_int = 1;
 pub const F_SETFD : ::c_int = 2;
 pub const F_GETFL : ::c_int = 3;
 pub const F_SETFL : ::c_int = 4;
-pub const F_GETOWN : ::c_int = 5;
-pub const F_SETOWN : ::c_int = 6;
-pub const F_GETLK : ::c_int = 7;
-pub const F_SETLK : ::c_int = 8;
-pub const F_SETLKW : ::c_int = 9;
 
 pub const SIGTRAP : ::c_int = 5;
 
@@ -358,6 +353,7 @@ pub const KERN_PROC_ARGV: ::c_int = 1;
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__clock_gettime50")]
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::size_t) -> ::size_t;
