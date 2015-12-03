@@ -355,6 +355,8 @@ pub const _SC_TZNAME_MAX : ::c_int = 27;
 pub const _SC_PAGESIZE : ::c_int = 28;
 pub const _SC_FSYNC : ::c_int = 29;
 
+pub const KERN_PROC_ARGV: ::c_int = 1;
+
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
