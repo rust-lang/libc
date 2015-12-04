@@ -129,6 +129,11 @@ pub const F_GETFD: ::c_int = 1;
 pub const F_SETFD: ::c_int = 2;
 pub const F_GETFL: ::c_int = 3;
 pub const F_SETFL: ::c_int = 4;
+pub const F_GETLK : ::c_int = 5;
+pub const F_SETLK : ::c_int = 6;
+pub const F_SETLKW : ::c_int = 7;
+pub const F_SETOWN : ::c_int = 8;
+pub const F_GETOWN : ::c_int = 9;
 
 pub const SIGTRAP: ::c_int = 5;
 
