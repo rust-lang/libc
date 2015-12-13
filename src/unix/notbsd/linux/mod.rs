@@ -11,6 +11,8 @@ pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
+pub type key_t = ::c_int;
+pub type shmatt_t = ::c_ulong;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
@@ -287,9 +289,36 @@ pub const SCHED_RR: ::c_int = 2;
 pub const SCHED_BATCH: ::c_int = 3;
 pub const SCHED_IDLE: ::c_int = 5;
 
+pub const IPC_CREAT: ::c_int = 0o1000;
+pub const IPC_EXCL: ::c_int = 0o2000;
+pub const IPC_NOWAIT: ::c_int = 0o4000;
+
+pub const IPC_RMID: ::c_int = 0;
+pub const IPC_SET: ::c_int = 1;
+pub const IPC_STAT: ::c_int = 2;
+pub const IPC_INFO: ::c_int = 3;
+
+pub const SHM_R: ::c_int = 0o400;
+pub const SHM_W: ::c_int = 0o200;
+
+pub const SHM_RDONLY: ::c_int = 0o10000;
+pub const SHM_RND: ::c_int = 0o20000;
+pub const SHM_REMAP: ::c_int = 0o40000;
+pub const SHM_EXEC: ::c_int = 0o100000;
+
+pub const SHM_LOCK: ::c_int = 11;
+pub const SHM_UNLOCK: ::c_int = 12;
+
+pub const SHM_HUGETLB: ::c_int = 0o4000;
+pub const SHM_NORESERVE: ::c_int = 0o10000;
+
 extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
+    pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
+    pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
+    pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
+    pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;

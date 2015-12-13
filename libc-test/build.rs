@@ -111,6 +111,8 @@ fn main() {
 
     if linux {
         cfg.header("sys/xattr.h");
+        cfg.header("sys/ipc.h");
+        cfg.header("sys/shm.h");
     }
 
     if linux || android {
@@ -235,7 +237,7 @@ fn main() {
             "TCP_COOKIE_TRANSACTIONS" |
             "RLIMIT_RTTIME" if musl => true,
             // work around super old mips toolchain
-            "SCHED_IDLE" => mips,
+            "SCHED_IDLE" | "SHM_NORESERVE" => mips,
 
             _ => false,
         }

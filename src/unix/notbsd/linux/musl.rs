@@ -82,6 +82,31 @@ s! {
         pub _pad: [::c_int; 29],
         _align: [usize; 0],
     }
+
+    pub struct ipc_perm {
+        pub __ipc_perm_key: ::key_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub mode: ::mode_t,
+        pub __seq: ::c_int,
+        __unused1: ::c_long,
+        __unused2: ::c_long
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_nattch: ::c_ulong,
+        __pad1: ::c_ulong,
+        __pad2: ::c_ulong,
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 1024;
