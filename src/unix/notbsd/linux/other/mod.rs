@@ -1,5 +1,3 @@
-use std::mem::size_of;
-
 pub type cc_t = ::c_uchar;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
