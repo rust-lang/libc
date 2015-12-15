@@ -634,12 +634,6 @@ macro_rules! _IOC {
     }}
 }
 
-macro_rules! _IOC_TYPECHECK {
-    ($t:ty) => {{
-        size_of::<$t>() as ::c_uint
-    }}
-}
-
 // used to create numbers
 macro_rules! _IO {
     ($t:expr, $nr:expr) => {{
@@ -647,33 +641,33 @@ macro_rules! _IO {
     }}
 }
 macro_rules! _IOR {
-    ($t:expr, $nr:expr, $size:ty) => {{
-        _IOC!(_IOC_READ, $t, $nr, _IOC_TYPECHECK!($size))
+    ($t:expr, $nr:expr, $size:expr) => {{
+        _IOC!(_IOC_READ, $t, $nr, $size)
     }}
 }
 macro_rules! _IOW {
-    ($t:expr, $nr:expr, $size:ty) => {{
-        _IOC!(_IOC_WRITE, $t, $nr, _IOC_TYPECHECK!($size))
+    ($t:expr, $nr:expr, $size:expr) => {{
+        _IOC!(_IOC_WRITE, $t, $nr, $size)
     }}
 }
 macro_rules! _IORW {
-    ($t:expr, $nr:expr, $size:ty) => {{
-        _IOC!(_IOC_READ | _IOC_WRITE, $t, $nr, _IOC_TYPECHECK!($size))
+    ($t:expr, $nr:expr, $size:expr) => {{
+        _IOC!(_IOC_READ | _IOC_WRITE, $t, $nr, $size)
     }}
 }
 macro_rules! _IOR_BAD {
     ($t:expr, $nr:expr, $size:ty) => {{
-        _IOC!(_IOC_READ, $t, $nr, _IOC_TYPECHECK!($size))
+        _IOC!(_IOC_READ, $t, $nr, $size)
     }}
 }
 macro_rules! _IOW_BAD {
     ($t:expr, $nr:expr, $size:ty) => {{
-        _IOC!(_IOC_WRITE, $t, $nr, _IOC_TYPECHECK!($size))
+        _IOC!(_IOC_WRITE, $t, $nr, $size)
     }}
 }
 macro_rules! _IORW_BAD {
     ($t:expr, $nr:expr, $size:ty) => {{
-        _IOC!(_IOC_READ | _IOC_WRITE, $t, $nr, _IOC_TYPECHECK!($size))
+        _IOC!(_IOC_READ | _IOC_WRITE, $t, $nr, $size)
     }}
 }
 
@@ -749,32 +743,33 @@ pub const TIOCSBRK: ::c_int = 0x5427; // BSD compatibility
 pub const TIOCCBRK: ::c_int = 0x5428; // BSD compatibility
 /// Return the session ID of FD
 pub const TIOCGSID: ::c_int = 0x5429;
-pub const TCGETS2: ::c_uint = _IOR!(84, 0x2A, termios2); // 84 = 'T'
-pub const TCSETS2: ::c_uint = _IOW!(84, 0x2B, termios2);
-pub const TCSETSW2: ::c_uint = _IOW!(84, 0x2C, termios2);
-pub const TCSETSF2: ::c_uint = _IOW!(84, 0x2D, termios2);
+// TODO please check size_ofs
+pub const TCGETS2: ::c_uint = _IOR!(84, 0x2A, 44); // 84 = 'T', 44 = size_of::<termios2>()
+pub const TCSETS2: ::c_uint = _IOW!(84, 0x2B, 44); // 44 = size_of::<termios2>()
+pub const TCSETSW2: ::c_uint = _IOW!(84, 0x2C, 44); // 44 = size_of::<termios2>()
+pub const TCSETSF2: ::c_uint = _IOW!(84, 0x2D, 44); // 44 = size_of::<termios2>()
 pub const TIOCGRS485: ::c_int = 0x542E;
 pub const TIOCSRS485: ::c_int = 0x542F;
 /// Get Pty Number (of pty-mux device)
-pub const TIOCGPTN: ::c_uint = _IOR!(84, 0x30, ::c_uint);
+pub const TIOCGPTN: ::c_uint = _IOR!(84, 0x30, 4); // 4 = size_of::<c_uint>()
 /// Lock/unlock Pty
-pub const TIOCSPTLCK: ::c_uint = _IOW!(84, 0x31, ::c_int);
+pub const TIOCSPTLCK: ::c_uint = _IOW!(84, 0x31, 4); // 4 =size_of::<c_int>()
 /// Get primary device node of /dev/console
-pub const TIOCGDEV: ::c_uint = _IOR!(84, 0x32, ::c_uint);
+pub const TIOCGDEV: ::c_uint = _IOR!(84, 0x32, 4); // 4 = size_of::<c_uint>()
 /// SYS5 TCGETX compatibility
 pub const TCGETX: ::c_int = 0x5432;
 pub const TCSETX: ::c_int = 0x5433;
 pub const TCSETXF: ::c_int = 0x5434;
 pub const TCSETXW: ::c_int = 0x5435;
 /// pty: generate signal
-pub const TIOCSIG: ::c_uint = _IOW!(84, 0x36, ::c_int);
+pub const TIOCSIG: ::c_uint = _IOW!(84, 0x36, 4); // 4 = size_of::<c_int>()
 pub const TIOCVHANGUP: ::c_int = 0x5437;
 /// Get packet mode state
-pub const TIOCGPKT: ::c_uint = _IOR!(84, 0x38, ::c_int);
+pub const TIOCGPKT: ::c_uint = _IOR!(84, 0x38, 4); // 4 = size_of::<c_int>()
 /// Get Pty lock state
-pub const TIOCGPTLCK: ::c_uint = _IOR!(84, 0x39, ::c_int);
+pub const TIOCGPTLCK: ::c_uint = _IOR!(84, 0x39, 4); // 4 = size_of::<c_int>()
 /// Get exclusive mode state
-pub const TIOCGEXCL: ::c_uint = _IOR!(84, 0x40, ::c_int);
+pub const TIOCGEXCL: ::c_uint = _IOR!(84, 0x40, 4); // 4 = size_of::<c_int>()
 
 pub const FIONCLEX: ::c_int = 0x5450;
 pub const FIOASYNC: ::c_int = 0x5452;
