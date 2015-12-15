@@ -79,6 +79,8 @@ s! {
 pub const FIOCLEX: ::c_ulong = 0x20006601;
 pub const FIONBIO: ::c_ulong = 0x8004667e;
 
+pub const PATH_MAX: ::c_int = 1024;
+
 pub const SA_ONSTACK: ::c_int = 0x0001;
 pub const SA_SIGINFO: ::c_int = 0x0040;
 pub const SA_RESTART: ::c_int = 0x0002;

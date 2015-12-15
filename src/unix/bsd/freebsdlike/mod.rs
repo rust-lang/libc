@@ -477,8 +477,6 @@ pub const MAP_NOCORE: ::c_int = 0x020000;
 
 pub const IPPROTO_RAW: ::c_int = 255;
 
-pub const PATH_MAX: ::c_int = 1024;
-
 pub const _SC_ARG_MAX: ::c_int = 1;
 pub const _SC_CHILD_MAX: ::c_int = 2;
 pub const _SC_CLK_TCK: ::c_int = 3;
