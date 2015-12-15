@@ -252,3 +252,38 @@ cfg_if! {
         // ...
     }
 }
+
+s! {
+    pub struct ipc_perm {
+        pub __key: ::key_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub mode: ::c_ushort,
+        __pad1: ::c_ushort,
+        pub __seq: ::c_ushort,
+        __pad2: ::c_ushort,
+        __unused1: ::c_ulong,
+        __unused2: ::c_ulong
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_atime: ::time_t,
+        #[cfg(target_pointer_width = "32")]
+        __unused1: ::c_ulong,
+        pub shm_dtime: ::time_t,
+        #[cfg(target_pointer_width = "32")]
+        __unused2: ::c_ulong,
+        pub shm_ctime: ::time_t,
+        #[cfg(target_pointer_width = "32")]
+        __unused3: ::c_ulong,
+        pub shm_cpid: ::pid_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        __unused4: ::c_ulong,
+        __unused5: ::c_ulong
+    }
+}

@@ -99,6 +99,32 @@ s! {
         __unused4: *mut ::c_void,
         __unused5: *mut ::c_void,
     }
+
+    pub struct ipc_perm {
+        pub __key: ::key_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub mode: ::c_uint,
+        pub __seq: ::c_ushort,
+        __pad1: ::c_ushort,
+        __unused1: ::c_ulong,
+        __unused2: ::c_ulong
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        __unused4: ::c_ulong,
+        __unused5: ::c_ulong
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 8192;
