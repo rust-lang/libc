@@ -3,6 +3,9 @@ use dox::mem;
 pub type rlim_t = c_ulong;
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
+pub type mqd_t = ::c_int;
+pub type speed_t = ::c_uint;
+pub type tcflag_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -104,6 +107,22 @@ s! {
         pub dli_fbase: *mut ::c_void,
         pub dli_sname: *const ::c_char,
         pub dli_saddr: *mut ::c_void,
+    }
+
+    #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"),
+               repr(packed))]
+    pub struct epoll_event {
+        pub events: ::uint32_t,
+        pub u64: ::uint64_t,
+    }
+
+    pub struct utsname {
+        pub sysname: [::c_char; 65],
+        pub nodename: [::c_char; 65],
+        pub release: [::c_char; 65],
+        pub version: [::c_char; 65],
+        pub machine: [::c_char; 65],
+        pub domainname: [::c_char; 65]
     }
 }
 
@@ -213,6 +232,29 @@ pub const MCL_FUTURE: ::c_int = 0x0002;
 pub const MS_ASYNC: ::c_int = 0x0001;
 pub const MS_INVALIDATE: ::c_int = 0x0002;
 pub const MS_SYNC: ::c_int = 0x0004;
+pub const MS_RDONLY: ::c_ulong = 0x01;
+pub const MS_NOSUID: ::c_ulong = 0x02;
+pub const MS_NODEV: ::c_ulong = 0x04;
+pub const MS_NOEXEC: ::c_ulong = 0x08;
+pub const MS_SYNCHRONOUS: ::c_ulong = 0x10;
+pub const MS_REMOUNT: ::c_ulong = 0x20;
+pub const MS_MANDLOCK: ::c_ulong = 0x40;
+pub const MS_DIRSYNC: ::c_ulong = 0x80;
+pub const MS_NOATIME: ::c_ulong = 0x0400;
+pub const MS_NODIRATIME: ::c_ulong = 0x0800;
+pub const MS_BIND: ::c_ulong = 0x1000;
+pub const MS_MOVE: ::c_ulong = 0x2000;
+pub const MS_REC: ::c_ulong = 0x4000;
+pub const MS_SILENT: ::c_ulong = 0x8000;
+pub const MS_POSIXACL: ::c_ulong = 0x010000;
+pub const MS_UNBINDABLE: ::c_ulong = 0x020000;
+pub const MS_PRIVATE: ::c_ulong = 0x040000;
+pub const MS_SLAVE: ::c_ulong = 0x080000;
+pub const MS_SHARED: ::c_ulong = 0x100000;
+pub const MS_ACTIVE: ::c_ulong = 0x40000000;
+pub const MS_NOUSER: ::c_ulong = 0x80000000;
+pub const MS_MGC_VAL: ::c_ulong = 0xc0ed0000;
+pub const MS_MGC_MSK: ::c_ulong = 0xffff0000;
 
 pub const EPERM: ::c_int = 1;
 pub const ENOENT: ::c_int = 2;
@@ -342,6 +384,145 @@ pub const PATH_MAX: ::c_int = 4096;
 
 pub const FD_SETSIZE: usize = 1024;
 
+pub const EPOLLIN: ::c_int = 0x1;
+pub const EPOLLPRI: ::c_int = 0x2;
+pub const EPOLLOUT: ::c_int = 0x4;
+pub const EPOLLRDNORM: ::c_int = 0x40;
+pub const EPOLLRDBAND: ::c_int = 0x80;
+pub const EPOLLWRNORM: ::c_int = 0x100;
+pub const EPOLLWRBAND: ::c_int = 0x200;
+pub const EPOLLMSG: ::c_int = 0x400;
+pub const EPOLLERR: ::c_int = 0x8;
+pub const EPOLLHUP: ::c_int = 0x10;
+pub const EPOLLET: ::c_int = 0x80000000;
+
+pub const EPOLL_CTL_ADD: ::c_int = 1;
+pub const EPOLL_CTL_MOD: ::c_int = 3;
+pub const EPOLL_CTL_DEL: ::c_int = 2;
+
+pub const MNT_DETACH: ::c_int = 0x2;
+pub const MNT_EXPIRE: ::c_int = 0x4;
+
+pub const Q_GETFMT: ::c_int = 0x800004;
+pub const Q_GETINFO: ::c_int = 0x800005;
+pub const Q_SETINFO: ::c_int = 0x800006;
+pub const QIF_BLIMITS: ::uint32_t = 1;
+pub const QIF_SPACE: ::uint32_t = 2;
+pub const QIF_ILIMITS: ::uint32_t = 4;
+pub const QIF_INODES: ::uint32_t = 8;
+pub const QIF_BTIME: ::uint32_t = 16;
+pub const QIF_ITIME: ::uint32_t = 32;
+pub const QIF_LIMITS: ::uint32_t = 5;
+pub const QIF_USAGE: ::uint32_t = 10;
+pub const QIF_TIMES: ::uint32_t = 48;
+pub const QIF_ALL: ::uint32_t = 63;
+
+pub const CBAUD: ::tcflag_t = 0o0010017;
+
+pub const EFD_CLOEXEC: ::c_int = 0x80000;
+
+pub const F_SETLK: ::c_int = 6;
+pub const F_SETLKW: ::c_int = 7;
+
+pub const MNT_FORCE: ::c_int = 0x1;
+
+pub const Q_SYNC: ::c_int = 0x800001;
+pub const Q_QUOTAON: ::c_int = 0x800002;
+pub const Q_QUOTAOFF: ::c_int = 0x800003;
+pub const Q_GETQUOTA: ::c_int = 0x800007;
+pub const Q_SETQUOTA: ::c_int = 0x800008;
+
+pub const TCIOFF: ::c_int = 2;
+pub const TCION: ::c_int = 3;
+pub const TCOOFF: ::c_int = 0;
+pub const TCOON: ::c_int = 1;
+pub const TCIFLUSH: ::c_int = 0;
+pub const TCOFLUSH: ::c_int = 1;
+pub const TCIOFLUSH: ::c_int = 2;
+pub const NL0: ::c_int  = 0x00000000;
+pub const NL1: ::c_int  = 0x00000100;
+pub const TAB0: ::c_int = 0x00000000;
+pub const TAB1: ::c_int = 0x00000800;
+pub const TAB2: ::c_int = 0x00001000;
+pub const TAB3: ::c_int = 0x00001800;
+pub const CR0: ::c_int  = 0x00000000;
+pub const CR1: ::c_int  = 0x00000200;
+pub const CR2: ::c_int  = 0x00000400;
+pub const CR3: ::c_int  = 0x00000600;
+pub const FF0: ::c_int  = 0x00000000;
+pub const FF1: ::c_int  = 0x00008000;
+pub const BS0: ::c_int  = 0x00000000;
+pub const BS1: ::c_int  = 0x00002000;
+pub const VT0: ::c_int  = 0x00000000;
+pub const VT1: ::c_int  = 0x00004000;
+pub const VERASE: usize = 2;
+pub const VWERASE: usize = 14;
+pub const VKILL: usize = 3;
+pub const VREPRINT: usize = 12;
+pub const VINTR: usize = 0;
+pub const VQUIT: usize = 1;
+pub const VSUSP: usize = 10;
+pub const VSTART: usize = 8;
+pub const VSTOP: usize = 9;
+pub const VLNEXT: usize = 15;
+pub const VDISCARD: usize = 13;
+pub const VTIME: usize = 5;
+pub const IGNBRK: ::tcflag_t = 0x00000001;
+pub const BRKINT: ::tcflag_t = 0x00000002;
+pub const IGNPAR: ::tcflag_t = 0x00000004;
+pub const PARMRK: ::tcflag_t = 0x00000008;
+pub const INPCK: ::tcflag_t = 0x00000010;
+pub const ISTRIP: ::tcflag_t = 0x00000020;
+pub const INLCR: ::tcflag_t = 0x00000040;
+pub const IGNCR: ::tcflag_t = 0x00000080;
+pub const ICRNL: ::tcflag_t = 0x00000100;
+pub const IXON: ::tcflag_t = 0x00000400;
+pub const IXOFF: ::tcflag_t = 0x00001000;
+pub const IXANY: ::tcflag_t = 0x00000800;
+pub const IMAXBEL: ::tcflag_t = 0x00002000;
+pub const OPOST: ::tcflag_t = 0x1;
+pub const ONLCR: ::tcflag_t = 0x4;
+pub const CSIZE: ::tcflag_t = 0x00000030;
+pub const CS5: ::tcflag_t = 0x00000000;
+pub const CS6: ::tcflag_t = 0x00000010;
+pub const CS7: ::tcflag_t = 0x00000020;
+pub const CS8: ::tcflag_t = 0x00000030;
+pub const CSTOPB: ::tcflag_t = 0x00000040;
+pub const CREAD: ::tcflag_t = 0x00000080;
+pub const PARENB: ::tcflag_t = 0x00000100;
+pub const PARODD: ::tcflag_t = 0x00000200;
+pub const HUPCL: ::tcflag_t = 0x00000400;
+pub const CLOCAL: ::tcflag_t = 0x00000800;
+pub const CRTSCTS: ::tcflag_t = 0x80000000;
+pub const ECHOKE: ::tcflag_t = 0x00000800;
+pub const ECHOE: ::tcflag_t = 0x00000010;
+pub const ECHOK: ::tcflag_t = 0x00000020;
+pub const ECHO: ::tcflag_t = 0x00000008;
+pub const ECHONL: ::tcflag_t = 0x00000040;
+pub const ECHOPRT: ::tcflag_t = 0x00000400;
+pub const ECHOCTL: ::tcflag_t = 0x00000200;
+pub const ISIG: ::tcflag_t = 0x00000001;
+pub const ICANON: ::tcflag_t = 0x00000002;
+pub const PENDIN: ::tcflag_t = 0x00004000;
+pub const NOFLSH: ::tcflag_t = 0x00000080;
+
+pub const CLONE_VM: ::c_int = 0x100;
+pub const CLONE_FS: ::c_int = 0x200;
+pub const CLONE_FILES: ::c_int = 0x400;
+pub const CLONE_SIGHAND: ::c_int = 0x800;
+pub const CLONE_PTRACE: ::c_int = 0x2000;
+pub const CLONE_VFORK: ::c_int = 0x4000;
+pub const CLONE_PARENT: ::c_int = 0x8000;
+pub const CLONE_THREAD: ::c_int = 0x10000;
+pub const CLONE_NEWNS: ::c_int = 0x20000;
+pub const CLONE_SYSVSEM: ::c_int = 0x40000;
+pub const CLONE_SETTLS: ::c_int = 0x80000;
+pub const CLONE_PARENT_SETTID: ::c_int = 0x100000;
+pub const CLONE_CHILD_CLEARTID: ::c_int = 0x200000;
+pub const CLONE_DETACHED: ::c_int = 0x400000;
+pub const CLONE_UNTRACED: ::c_int = 0x800000;
+pub const CLONE_CHILD_SETTID: ::c_int = 0x01000000;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -402,6 +583,29 @@ extern {
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
     pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
+    pub fn epoll_create(size: ::c_int) -> ::c_int;
+    pub fn epoll_ctl(epfd: ::c_int,
+                     op: ::c_int,
+                     fd: ::c_int,
+                     event: *mut epoll_event) -> ::c_int;
+    pub fn epoll_wait(epfd: ::c_int,
+                      events: *mut epoll_event,
+                      maxevents: ::c_int,
+                      timeout: ::c_int) -> ::c_int;
+    pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn mount(src: *const ::c_char,
+                 target: *const ::c_char,
+                 fstype: *const ::c_char,
+                 flags: ::c_ulong,
+                 data: *const ::c_void) -> ::c_int;
+    pub fn umount(target: *const ::c_char) -> ::c_int;
+    pub fn umount2(target: *const ::c_char, flags: ::c_int) -> ::c_int;
+    pub fn clone(cb: extern fn(*mut ::c_void) -> ::c_int,
+                 child_stack: *mut ::c_void,
+                 flags: ::c_int,
+                 arg: *mut ::c_void, ...) -> ::c_int;
+    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 }
 
 cfg_if! {

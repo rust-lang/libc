@@ -9,6 +9,7 @@ pub type gid_t = u32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
 pub type sighandler_t = ::size_t;
+pub type cc_t = ::c_uchar;
 
 pub enum DIR {}
 
@@ -85,6 +86,11 @@ s! {
         pub h_length: ::c_int,
         pub h_addr_list: *mut *mut ::c_char,
     }
+
+    pub struct iovec {
+        pub iov_base: *mut ::c_void,
+        pub iov_len: ::size_t,
+    }
 }
 
 pub const WNOHANG: ::c_int = 1;
@@ -99,6 +105,17 @@ pub const DT_BLK: u8 = 6;
 pub const DT_REG: u8 = 8;
 pub const DT_LNK: u8 = 10;
 pub const DT_SOCK: u8 = 12;
+
+pub const FD_CLOEXEC: ::c_int = 0x1;
+
+pub const USRQUOTA: ::c_int = 0;
+pub const GRPQUOTA: ::c_int = 1;
+
+pub const SIGIOT: ::c_int = 6;
+
+pub const S_ISUID: ::c_int = 0x800;
+pub const S_ISGID: ::c_int = 0x400;
+pub const S_ISVTX: ::c_int = 0x200;
 
 cfg_if! {
     if #[cfg(feature = "default")] {
@@ -371,6 +388,7 @@ extern {
 
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
+    #[cfg_attr(arget_os = "netbsd", link_name = "__gettimeofday50")]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
 
@@ -492,6 +510,20 @@ extern {
                link_name = "mktime$UNIX2003")]
     #[cfg_attr(target_os = "netbsd", link_name = "__mktime50")]
     pub fn mktime(tm: *mut tm) -> time_t;
+
+    #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
+    pub fn mknod(pathname: *const ::c_char, mode: ::mode_t,
+                 dev: ::dev_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "writev$UNIX2003")]
+    pub fn writev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "readv$UNIX2003")]
+    pub fn readv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
+    pub fn uname(buf: *mut ::utsname) -> ::c_int;
+    pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
+    pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn chroot(name: *const ::c_char) -> ::c_int;
 }
 
 // TODO: get rid of this #[cfg(not(...))]
@@ -609,6 +641,26 @@ extern {
     pub fn timegm(tm: *mut ::tm) -> time_t;
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
     pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "sendmsg$UNIX2003")]
+    pub fn sendmsg(fd: ::c_int, msg: *const msghdr, flags: ::c_int) -> ::ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "recvmsg$UNIX2003")]
+    pub fn recvmsg(fd: ::c_int, msg: *mut msghdr, flags: ::c_int) -> ::ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "tcdrain$UNIX2003")]
+    pub fn tcdrain(fd: ::c_int) -> ::c_int;
+    pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t;
+    pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t;
+    pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
+    pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
+    pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int;
+    pub fn tcsetattr(fd: ::c_int,
+                     optional_actions: ::c_int,
+                     termios: *const ::termios) -> ::c_int;
+    pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int;
+    pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int;
+    pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

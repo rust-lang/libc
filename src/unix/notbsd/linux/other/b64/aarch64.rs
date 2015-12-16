@@ -8,6 +8,10 @@ pub type blksize_t = i32;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 48;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 8;
 
+pub const O_DIRECT: ::c_int = 0x10000;
+pub const O_DIRECTORY: ::c_int = 0x4000;
+pub const O_NOFOLLOW: ::c_int = 0x8000;
+
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,

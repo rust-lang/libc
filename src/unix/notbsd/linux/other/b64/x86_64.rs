@@ -8,6 +8,17 @@ pub type blksize_t = i64;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 
+pub const O_DIRECT: ::c_int = 0x4000;
+pub const O_DIRECTORY: ::c_int = 0x10000;
+pub const O_NOFOLLOW: ::c_int = 0x20000;
+
+pub const PTRACE_GETFPREGS: ::c_uint = 14;
+pub const PTRACE_SETFPREGS: ::c_uint = 15;
+pub const PTRACE_GETFPXREGS: ::c_uint = 18;
+pub const PTRACE_SETFPXREGS: ::c_uint = 19;
+pub const PTRACE_GETREGS: ::c_uint = 12;
+pub const PTRACE_SETREGS: ::c_uint = 13;
+
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,

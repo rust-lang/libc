@@ -4,6 +4,8 @@ pub type dev_t = u64;
 pub type blksize_t = ::int32_t;
 pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
+pub type speed_t = ::c_uint;
+pub type tcflag_t = ::c_uint;
 
 s! {
     pub struct dirent {
@@ -92,10 +94,6 @@ s! {
         pub f_mntfromname: [::c_char; 1024],
     }
 
-    pub struct fsid_t {
-        __fsid_val: [::int32_t; 2],
-    }
-
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -166,9 +164,45 @@ s! {
         ptr_owner: ::pthread_t,
         ptr_private: *mut ::c_void,
     }
+
+    pub struct kevent {
+        pub ident: ::uintptr_t,
+        pub filter: ::uint32_t,
+        pub flags: ::uint32_t,
+        pub fflags: ::uint32_t,
+        pub data: ::int64_t,
+        pub udata: ::intptr_t,
+    }
+
+    pub struct dqblk {
+        pub dqb_bhardlimit: ::uint32_t,
+        pub dqb_bsoftlimit: ::uint32_t,
+        pub dqb_curblocks: ::uint32_t,
+        pub dqb_ihardlimit: ::uint32_t,
+        pub dqb_isoftlimit: ::uint32_t,
+        pub dqb_curinodes: ::uint32_t,
+        pub dqb_btime: ::int32_t,
+        pub dqb_itime: ::int32_t,
+    }
+
+    pub struct termios {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_cc: [::cc_t; ::NCCS],
+        pub c_ispeed: ::c_int,
+        pub c_ospeed: ::c_int,
+    }
 }
 
 pub const O_CLOEXEC: ::c_int = 0x400000;
+pub const O_ALT_IO: ::c_int = 0x40000;
+pub const O_NOSIGPIPE: ::c_int = 0x1000000;
+pub const O_SEARCH: ::c_int = 0x800000;
+pub const O_EXLOCK: ::c_int = 0x20;
+pub const O_SHLOCK: ::c_int = 0x10;
+pub const O_DIRECTORY: ::c_int = 0x200000;
 
 pub const MS_SYNC : ::c_int = 0x4;
 pub const MS_INVALIDATE : ::c_int = 0x2;
@@ -185,6 +219,10 @@ pub const ENOTSUP : ::c_int = 86;
 pub const ELAST : ::c_int = 96;
 
 pub const F_DUPFD_CLOEXEC : ::c_int = 12;
+pub const F_CLOSEM: ::c_int = 10;
+pub const F_GETNOSIGPIPE: ::c_int = 13;
+pub const F_SETNOSIGPIPE: ::c_int = 14;
+pub const F_MAXFD: ::c_int = 11;
 
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
@@ -198,6 +236,7 @@ pub const O_DSYNC : ::c_int = 0x10000;
 pub const MAP_RENAME : ::c_int = 0x20;
 pub const MAP_NORESERVE : ::c_int = 0x40;
 pub const MAP_HASSEMAPHORE : ::c_int = 0x200;
+pub const MAP_WIRED: ::c_int = 0x800;
 
 pub const _SC_IOV_MAX : ::c_int = 32;
 pub const _SC_GETGR_R_SIZE_MAX : ::c_int = 47;
@@ -273,6 +312,19 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 pub const KERN_PROC_ARGS: ::c_int = 48;
 
+pub const EVFILT_AIO: ::int16_t = 2;
+pub const EVFILT_PROC: ::int16_t = 4;
+pub const EVFILT_READ: ::int16_t = 0;
+pub const EVFILT_SIGNAL: ::int16_t = 5;
+pub const EVFILT_SYSCOUNT: ::int16_t = 7;
+pub const EVFILT_TIMER: ::int16_t = 6;
+pub const EVFILT_VNODE: ::int16_t = 3;
+pub const EVFILT_WRITE: ::int16_t = 1;
+
+pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
+
+pub const CRTSCTS: ::tcflag_t = 0x00010000;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
@@ -289,4 +341,22 @@ extern {
                         newp: *const ::c_void,
                         newlen: ::size_t)
                         -> ::c_int;
+    #[link_name = "__kevent50"]
+    pub fn kevent(kq: ::c_int,
+                  changelist: *const ::kevent,
+                  nchanges: ::size_t,
+                  eventlist: *mut ::kevent,
+                  nevents: ::size_t,
+                  timeout: *const ::timespec) -> ::c_int;
+    #[link_name = "__mount50"]
+    pub fn mount(src: *const ::c_char,
+                 target: *const ::c_char,
+                 flags: ::c_int,
+                 data: *mut ::c_void,
+                 size: ::size_t) -> ::c_int;
+    pub fn ptrace(requeset: ::c_int,
+                  pid: ::pid_t,
+                  addr: *mut ::c_void,
+                  data: ::c_int) -> ::c_int;
+    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
 }
