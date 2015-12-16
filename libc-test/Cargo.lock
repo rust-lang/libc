@@ -3,7 +3,7 @@ name = "libc-test"
 version = "0.1.0"
 dependencies = [
  "ctest 0.1.0 (git+https://github.com/alexcrichton/ctest)",
- "libc 0.2.2",
+ "libc 0.2.3",
 ]
 
 [[package]]
@@ -23,7 +23,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "ctest"
 version = "0.1.0"
-source = "git+https://github.com/alexcrichton/ctest#4b29e7d8cf64370a3e38c9a2f31fc577a953689b"
+source = "git+https://github.com/alexcrichton/ctest#4e3a8027b540b79769fcd3945a6de9f1e5edf8e0"
 dependencies = [
  "gcc 0.3.20 (registry+https://github.com/rust-lang/crates.io-index)",
  "syntex_syntax 0.19.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -55,11 +55,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "libc"
 version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libc"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+version = "0.2.3"
 
 [[package]]
 name = "log"
