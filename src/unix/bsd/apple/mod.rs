@@ -571,8 +571,6 @@ pub const SO_DONTTRUNC: ::c_int = 0x2000;
 pub const SO_WANTMORE: ::c_int = 0x4000;
 pub const SO_WANTOOBFLAG: ::c_int = 0x8000;
 
-pub const PATH_MAX: ::c_int = 1024;
-
 pub const _SC_ARG_MAX: ::c_int = 1;
 pub const _SC_CHILD_MAX: ::c_int = 2;
 pub const _SC_CLK_TCK: ::c_int = 3;
