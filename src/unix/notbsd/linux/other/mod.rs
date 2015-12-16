@@ -32,6 +32,12 @@ s! {
         __unused4: *mut ::c_void,
         __unused5: *mut ::c_void,
     }
+
+    pub struct ucred {
+        pub pid: ::pid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+    }
 }
 
 pub const RLIMIT_RSS: ::c_int = 5;
@@ -164,6 +170,7 @@ pub const SO_KEEPALIVE: ::c_int = 9;
 pub const SO_OOBINLINE: ::c_int = 10;
 pub const SO_LINGER: ::c_int = 13;
 pub const SO_REUSEPORT: ::c_int = 15;
+pub const SO_PEERCRED: ::c_int = 17;
 pub const SO_RCVLOWAT: ::c_int = 18;
 pub const SO_SNDLOWAT: ::c_int = 19;
 pub const SO_RCVTIMEO: ::c_int = 20;
