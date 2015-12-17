@@ -54,8 +54,23 @@
 #![cfg_attr(all(windows, target_arch = "x86", target_env = "msvc"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/i686-pc-windows-msvc"
 ))]
-#![cfg_attr(all(target_os = "android"), doc(
+#![cfg_attr(target_os = "android", doc(
     html_root_url = "https://doc.rust-lang.org/libc/arm-linux-androideabi"
+))]
+#![cfg_attr(target_os = "freebsd", doc(
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-freebsd"
+))]
+#![cfg_attr(target_os = "openbsd", doc(
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-openbsd"
+))]
+#![cfg_attr(target_os = "bitrig", doc(
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-bitrig"
+))]
+#![cfg_attr(target_os = "netbsd", doc(
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-netbsd"
+))]
+#![cfg_attr(target_os = "dragonfly", doc(
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-dragonfly"
 ))]
 
 // Attributes needed when building as part of the standard library

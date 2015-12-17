@@ -6,6 +6,8 @@ pub type nlink_t = ::uint32_t;
 pub type ino_t = ::uint64_t;
 pub type pthread_key_t = ::c_int;
 pub type rlim_t = u64;
+pub type speed_t = ::c_uint;
+pub type tcflag_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -35,6 +37,16 @@ s! {
         pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
         pub sin_zero: [::int8_t; 8],
+    }
+
+    pub struct termios {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_cc: [::cc_t; ::NCCS],
+        pub c_ispeed: ::c_int,
+        pub c_ospeed: ::c_int,
     }
 }
 
