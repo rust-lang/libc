@@ -4,8 +4,6 @@ pub type dev_t = u64;
 pub type blksize_t = ::int32_t;
 pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
-pub type speed_t = ::c_uint;
-pub type tcflag_t = ::c_uint;
 
 s! {
     pub struct dirent {
@@ -183,16 +181,6 @@ s! {
         pub dqb_curinodes: ::uint32_t,
         pub dqb_btime: ::int32_t,
         pub dqb_itime: ::int32_t,
-    }
-
-    pub struct termios {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_cc: [::cc_t; ::NCCS],
-        pub c_ispeed: ::c_int,
-        pub c_ospeed: ::c_int,
     }
 }
 

@@ -14,6 +14,8 @@ pub type pthread_rwlock_t = *mut ::c_void;
 pub type pthread_key_t = ::c_int;
 pub type fsblkcnt_t = ::c_uint;
 pub type fsfilcnt_t = ::c_uint;
+pub type tcflag_t = ::c_uint;
+pub type speed_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -119,6 +121,16 @@ s! {
         pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
         pub sin_zero: [::c_char; 8],
+    }
+
+    pub struct termios {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_cc: [::cc_t; ::NCCS],
+        pub c_ispeed: ::speed_t,
+        pub c_ospeed: ::speed_t,
     }
 }
 
@@ -547,8 +559,8 @@ pub const HW_AVAILCPU: ::c_int = 25;
 
 extern {
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
-                   vec: *mut c_char) -> ::c_int;
-    pub fn sysctlnametomib(name: *const c_char,
+                   vec: *mut ::c_char) -> ::c_int;
+    pub fn sysctlnametomib(name: *const ::c_char,
                            mibp: *mut ::c_int,
                            sizep: *mut ::size_t)
                            -> ::c_int;
