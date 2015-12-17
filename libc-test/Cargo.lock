@@ -3,7 +3,7 @@ name = "libc-test"
 version = "0.1.0"
 dependencies = [
  "ctest 0.1.0 (git+https://github.com/alexcrichton/ctest)",
- "libc 0.2.3",
+ "libc 0.2.4",
 ]
 
 [[package]]
@@ -25,13 +25,13 @@ name = "ctest"
 version = "0.1.0"
 source = "git+https://github.com/alexcrichton/ctest#4e3a8027b540b79769fcd3945a6de9f1e5edf8e0"
 dependencies = [
- "gcc 0.3.20 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.3.21 (registry+https://github.com/rust-lang/crates.io-index)",
  "syntex_syntax 0.19.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "gcc"
-version = "0.3.20"
+version = "0.3.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "advapi32-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -54,19 +54,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libc"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libc"
-version = "0.2.3"
+version = "0.2.4"
 
 [[package]]
 name = "log"
 version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "libc 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
