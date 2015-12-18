@@ -13,8 +13,8 @@ pub type blkcnt_t = u32;
 pub type blksize_t = u32;
 pub type dev_t = u32;
 pub type mode_t = u16;
-pub type nlink_t = u16;
-pub type useconds_t = i32;
+pub type nlink_t = u32;
+pub type useconds_t = u32;
 pub type socklen_t = i32;
 pub type pthread_t = c_long;
 pub type pthread_mutexattr_t = ::c_long;
@@ -30,8 +30,8 @@ s! {
         __st_ino: ::ino_t,
         pub st_mode: ::c_uint,
         pub st_nlink: ::c_uint,
-        pub st_uid: ::c_ulong,
-        pub st_gid: ::c_ulong,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
         pub st_rdev: ::c_ulonglong,
         __pad3: [::c_uchar; 4],
         pub st_size: ::c_longlong,
@@ -125,7 +125,7 @@ s! {
         pub msg_iovlen: ::size_t,
         pub msg_control: *mut ::c_void,
         pub msg_controllen: ::size_t,
-        pub msg_flags: ::c_uint,
+        pub msg_flags: ::c_int,
     }
 
     pub struct termios {
@@ -385,7 +385,7 @@ pub const O_CREAT: ::c_int = 64;
 pub const O_EXCL: ::c_int = 128;
 pub const O_NOCTTY: ::c_int = 256;
 pub const O_NONBLOCK: ::c_int = 2048;
-pub const O_SYNC: ::c_int = 0x1000;
+pub const O_SYNC: ::c_int = 0x101000;
 pub const O_DIRECT: ::c_int = 0x10000;
 pub const O_DIRECTORY: ::c_int = 0x4000;
 pub const O_NOFOLLOW: ::c_int = 0x8000;
@@ -399,9 +399,9 @@ pub const TCXONC: ::c_int = 0x540A;
 pub const TCFLSH: ::c_int = 0x540B;
 pub const TCSBRKP: ::c_int = 0x5425;
 pub const TCGETS: ::c_int = 0x5401;
-pub const TCSANOW: ::c_int = 0x5402;
-pub const TCSADRAIN: ::c_int = 0x5403;
-pub const TCSAFLUSH: ::c_int = 0x5404;
+pub const TCSANOW: ::c_int = 0;
+pub const TCSADRAIN: ::c_int = 0x1;
+pub const TCSAFLUSH: ::c_int = 0x2;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const VEOF: usize = 4;
 pub const VEOL: usize = 11;
@@ -411,7 +411,7 @@ pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
 
-pub const MS_RMT_MASK: ::c_ulong = 0x51;
+pub const MS_RMT_MASK: ::c_ulong = 0x800051;
 pub const MS_VERBOSE: ::c_ulong = 0x8000;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
@@ -530,7 +530,6 @@ extern {
     pub fn madvise(addr: *const ::c_void, len: ::size_t, advice: ::c_int)
                    -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn putenv(string: *const ::c_char) -> ::c_int;
     pub fn readlink(path: *const ::c_char,
                     buf: *mut ::c_char,
                     bufsz: ::size_t)
@@ -540,14 +539,9 @@ extern {
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn sysconf(name: ::c_int) -> ::c_long;
-    pub fn usleep(secs: ::c_ulong) -> ::c_int;
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
-                    flags: ::c_uint, addr: *const ::sockaddr,
+                    flags: ::c_int, addr: *const ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
-    pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t,
-                flags: ::c_uint) -> ::ssize_t;
-    pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
-                flags: ::c_uint) -> ::ssize_t;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
                        host: *mut ::c_char,
@@ -556,11 +550,8 @@ extern {
                        sevlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
     pub fn timegm64(tm: *const ::tm) -> time64_t;
-    pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_uint) -> ::c_int;
-    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_uint) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
-    pub fn syscall(num: ::c_int, ...) -> ::c_int;
 }
 
 cfg_if! {

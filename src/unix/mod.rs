@@ -524,6 +524,27 @@ extern {
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn chroot(name: *const ::c_char) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "usleep$UNIX2003")]
+    pub fn usleep(secs: ::c_uint) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "send$UNIX2003")]
+    pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t,
+                flags: ::c_int) -> ::ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "recv$UNIX2003")]
+    pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
+                flags: ::c_int) -> ::ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "putenv$UNIX2003")]
+    #[cfg_attr(target_os = "netbsd", link_name = "__putenv50")]
+    pub fn putenv(string: *mut c_char) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "sendmsg$UNIX2003")]
+    pub fn sendmsg(fd: ::c_int, msg: *const msghdr, flags: ::c_int) -> ::ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "recvmsg$UNIX2003")]
+    pub fn recvmsg(fd: ::c_int, msg: *mut msghdr, flags: ::c_int) -> ::ssize_t;
 }
 
 // TODO: get rid of this #[cfg(not(...))]
@@ -561,10 +582,6 @@ extern {
     pub fn getsid(pid: pid_t) -> pid_t;
     pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
                    -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "putenv$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__putenv50")]
-    pub fn putenv(string: *mut c_char) -> ::c_int;
     pub fn readlink(path: *const c_char,
                     buf: *mut c_char,
                     bufsz: ::size_t)
@@ -576,21 +593,10 @@ extern {
     pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
     pub fn sysconf(name: ::c_int) -> c_long;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "usleep$UNIX2003")]
-    pub fn usleep(secs: ::c_uint) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "recvfrom$UNIX2003")]
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                     flags: ::c_int, addr: *mut sockaddr,
                     addrlen: *mut socklen_t) -> ::ssize_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "send$UNIX2003")]
-    pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t,
-                flags: ::c_int) -> ::ssize_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "recv$UNIX2003")]
-    pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
-                flags: ::c_int) -> ::ssize_t;
     pub fn mkfifo(path: *const c_char, mode: mode_t) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid_r50")]
@@ -641,12 +647,6 @@ extern {
     pub fn timegm(tm: *mut ::tm) -> time_t;
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
     pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "sendmsg$UNIX2003")]
-    pub fn sendmsg(fd: ::c_int, msg: *const msghdr, flags: ::c_int) -> ::ssize_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "recvmsg$UNIX2003")]
-    pub fn recvmsg(fd: ::c_int, msg: *mut msghdr, flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "tcdrain$UNIX2003")]
     pub fn tcdrain(fd: ::c_int) -> ::c_int;
