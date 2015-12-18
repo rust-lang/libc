@@ -212,7 +212,7 @@ pub const HW_AVAILCPU: ::c_int = 25;
 pub const KERN_PROC_ARGS: ::c_int = 55;
 
 // syscall numbers
-pub const NR_GETENTROPY: c_int = 7;
+pub const NR_GETENTROPY: ::c_int = 7;
 
 extern {
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
