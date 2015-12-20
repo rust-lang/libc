@@ -99,8 +99,8 @@ s! {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
-        __pad1: ::c_int,
-        __pad2: [u8; 240],
+        pub si_addr: *mut ::c_void,
+        __pad: [u8; 116],
     }
 }
 
