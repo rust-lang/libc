@@ -99,6 +99,13 @@ s! {
         pub si_errno: ::c_int,
         pub si_addr: *mut ::c_void
     }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *mut ::c_void,
+    }
 }
 
 pub const O_CLOEXEC: ::c_int = 0x10000;

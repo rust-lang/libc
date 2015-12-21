@@ -24,13 +24,6 @@ s! {
         pub ss_flags: ::c_int,
     }
 
-    pub struct Dl_info {
-        pub dli_fname: *const ::c_char,
-        pub dli_fbase: *mut ::c_void,
-        pub dli_sname: *const ::c_char,
-        pub dli_saddr: *const ::c_void,
-    }
-
     pub struct sockaddr_in {
         pub sin_len: u8,
         pub sin_family: ::sa_family_t,

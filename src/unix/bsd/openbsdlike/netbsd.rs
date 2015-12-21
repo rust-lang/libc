@@ -182,6 +182,13 @@ s! {
         pub dqb_btime: ::int32_t,
         pub dqb_itime: ::int32_t,
     }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *const ::c_void,
+    }
 }
 
 pub const O_CLOEXEC: ::c_int = 0x400000;

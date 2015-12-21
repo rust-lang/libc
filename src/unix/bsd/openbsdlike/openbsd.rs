@@ -102,6 +102,13 @@ s! {
         pub si_addr: *mut ::c_void,
         __pad: [u8; 116],
     }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *mut ::c_void,
+    }
 }
 
 pub const O_CLOEXEC: ::c_int = 0x10000;
