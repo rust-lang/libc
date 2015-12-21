@@ -99,8 +99,8 @@ s! {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
-        pub si_addr: *mut ::c_void,
-        __pad: [u8; 116],
+        pub si_addr: *mut ::c_char,
+        __pad: [u8; 108],
     }
 
     pub struct Dl_info {
