@@ -57,7 +57,6 @@ pub const BUFSIZ : ::c_uint = 1024;
 pub const FOPEN_MAX : ::c_uint = 20;
 pub const FILENAME_MAX : ::c_uint = 1024;
 pub const L_tmpnam : ::c_uint = 1024;
-pub const TMP_MAX : ::c_uint = 308915776;
 pub const O_RDONLY : ::c_int = 0;
 pub const O_WRONLY : ::c_int = 1;
 pub const O_RDWR : ::c_int = 2;

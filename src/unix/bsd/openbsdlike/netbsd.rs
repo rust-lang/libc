@@ -320,6 +320,8 @@ pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
 
 pub const CRTSCTS: ::tcflag_t = 0x00010000;
 
+pub const TMP_MAX : ::c_uint = 308915776;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
