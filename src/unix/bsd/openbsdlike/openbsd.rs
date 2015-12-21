@@ -218,19 +218,13 @@ pub const KERN_PROC_ARGS: ::c_int = 55;
 pub const SYS_getentropy: ::c_int = 7;
 
 extern {
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
-    pub fn sysctl(name: *mut ::c_int,
+    pub fn sysctl(name: *const ::c_int,
                   namelen: ::c_uint,
                   oldp: *mut ::c_void,
                   oldlenp: *mut ::size_t,
                   newp: *mut ::c_void,
                   newlen: ::size_t)
                   -> ::c_int;
-    pub fn sysctlbyname(name: *const ::c_char,
-                        oldp: *mut ::c_void,
-                        oldlenp: *mut ::size_t,
-                        newp: *mut ::c_void,
-                        newlen: ::size_t)
-                        -> ::c_int;
 }
