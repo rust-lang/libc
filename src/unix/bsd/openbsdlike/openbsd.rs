@@ -216,6 +216,8 @@ pub const KERN_PROC_ARGS: ::c_int = 55;
 
 pub const TMP_MAX : ::c_uint = 0x7fffffff;
 
+pub const NI_MAXHOST: ::size_t = 256;
+
 // syscall numbers
 pub const SYS_getentropy: ::c_int = 7;
 

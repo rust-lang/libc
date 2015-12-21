@@ -322,6 +322,8 @@ pub const CRTSCTS: ::tcflag_t = 0x00010000;
 
 pub const TMP_MAX : ::c_uint = 308915776;
 
+pub const NI_MAXHOST: ::socklen_t = 1025;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,

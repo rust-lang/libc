@@ -147,8 +147,6 @@ pub const IPV6_V6ONLY: ::c_int = 27;
 
 pub const ST_RDONLY: ::c_ulong = 1;
 
-pub const NI_MAXHOST: ::socklen_t = 1025;
-
 pub const CTL_HW: ::c_int = 6;
 pub const HW_NCPU: ::c_int = 3;
 

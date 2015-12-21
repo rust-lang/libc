@@ -217,6 +217,8 @@ pub const KERN_PROC_ARGS: ::c_int = 55;
 
 pub const TMP_MAX : ::c_uint = 0x7fffffff;
 
+pub const NI_MAXHOST: ::size_t = 256;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,

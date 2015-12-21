@@ -809,6 +809,8 @@ pub const VT1: ::c_int  = 0x00010000;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const CRTSCTS: ::tcflag_t = 0x00030000;
 
+pub const NI_MAXHOST: ::socklen_t = 1025;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,

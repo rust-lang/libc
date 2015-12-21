@@ -557,6 +557,8 @@ pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const HW_AVAILCPU: ::c_int = 25;
 
+pub const NI_MAXHOST: ::size_t = 1025;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
