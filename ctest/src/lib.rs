@@ -405,6 +405,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("freebsd", "unix", "")
     } else if target.contains("netbsd") {
         ("netbsd", "unix", "")
+    } else if target.contains("openbsd") {
+        ("openbsd", "unix", "")
     } else {
         panic!("unknown os/family width: {}", target)
     };
