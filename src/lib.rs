@@ -72,9 +72,6 @@
 #![cfg_attr(target_os = "dragonfly", doc(
     html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-dragonfly"
 ))]
-#![cfg_attr(all(target_os = "emscripten", target_arch = "asmjs"), doc(
-    html_root_url = "https://doc.rust-lang.org/libc/asmjs-unknown-emscripten"
-))]
 
 // Attributes needed when building as part of the standard library
 #![cfg_attr(stdbuild, feature(no_std, core, core_slice_ext, staged_api, custom_attribute))]
