@@ -218,6 +218,13 @@ pub const KERN_PROC_ARGS: ::c_int = 55;
 pub const SYS_getentropy: ::c_int = 7;
 
 extern {
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::size_t,
+                       serv: *mut ::c_char,
+                       servlen: ::size_t,
+                       flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn sysctl(name: *const ::c_int,
