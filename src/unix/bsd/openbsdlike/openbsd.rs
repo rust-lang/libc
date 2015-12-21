@@ -147,9 +147,6 @@ pub const EMEDIUMTYPE : ::c_int = 86;
 
 pub const RUSAGE_THREAD: ::c_int = 1;
 
-pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
-pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
-
 pub const MAP_COPY : ::c_int = 0x0002;
 pub const MAP_NOEXTEND : ::c_int = 0x0000;
 
@@ -215,7 +212,6 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 
-pub const HW_AVAILCPU: ::c_int = 25;
 pub const KERN_PROC_ARGS: ::c_int = 55;
 
 // syscall numbers
