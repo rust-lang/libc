@@ -511,7 +511,8 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(target_env = "musl")] {
+    if #[cfg(any(target_env = "musl",
+                 target_os = "emscripten"))] {
         mod musl;
         pub use self::musl::*;
     } else if #[cfg(any(target_arch = "mips", target_arch = "mipsel"))] {
