@@ -218,9 +218,6 @@ pub const TMP_MAX : ::c_uint = 0x7fffffff;
 
 pub const NI_MAXHOST: ::size_t = 256;
 
-// syscall numbers
-pub const SYS_getentropy: ::c_int = 7;
-
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
@@ -238,4 +235,5 @@ extern {
                   newp: *mut ::c_void,
                   newlen: ::size_t)
                   -> ::c_int;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }
