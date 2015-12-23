@@ -1,3 +1,7 @@
+pub type cc_t = ::c_uchar;
+pub type speed_t = ::c_uint;
+pub type tcflag_t = ::c_uint;
+
 s! {
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
@@ -33,7 +37,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-
     pub struct ucred {
         pub pid: ::pid_t,
         pub uid: ::uid_t,
@@ -66,25 +69,252 @@ s! {
         pub msg_flags: ::c_int,
     }
 
-    pub struct termios {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_line: ::cc_t,
-        pub c_cc: [::cc_t; ::NCCS],
-        pub c_ispeed: ::speed_t,
-        pub c_ospeed: ::speed_t,
-    }
-
     pub struct flock {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
         pub l_start: ::off_t,
         pub l_len: ::off_t,
         pub l_pid: ::pid_t,
+
+    // (bits/ioctl-types.h)
+    pub struct winsize {
+        pub ws_row: ::c_ushort,
+        pub ws_col: ::c_ushort,
+        pub ws_xpixel: ::c_ushort,
+        pub ws_ypixel: ::c_ushort
+    }
+
+    // (bits/ioctl-types.h)
+    pub struct termio {
+        /// input mode flags
+        pub c_iflag: ::c_ushort,
+        /// output mode flags
+        pub c_oflag: ::c_ushort,
+        /// control mode flags
+        pub c_cflag: ::c_ushort,
+        /// local mode flags
+        pub c_lflag: ::c_ushort,
+        /// line discipline
+        pub c_line: ::c_uchar,
+        /// control characters
+        pub c_cc: [::c_uchar; 8] // 8 = number of control characters
+    }
+
+    // (asm-generic/termbits.h)
+    pub struct termios {
+        /// input mode flags
+        pub c_iflag: tcflag_t,
+        /// output mode flags
+        pub c_oflag: tcflag_t,
+        /// control mode flags
+        pub c_cflag: tcflag_t,
+        /// local mode flags
+        pub c_lflag: tcflag_t,
+        /// line discipline
+        pub c_line: cc_t,
+        /// control characters
+        pub c_cc: [cc_t; 19], // 19 = number of control characters
+    }
+
+    pub struct termios2 {
+        /// input mode flags
+        pub c_iflag: tcflag_t,
+        /// output mode flags
+        pub c_oflag: tcflag_t,
+        /// control mode flags
+        pub c_cflag: tcflag_t,
+        /// local mode flags
+        pub c_lflag: tcflag_t,
+        /// line discipline
+        pub c_line: cc_t,
+        /// control characters
+        pub c_cc: [cc_t; 19], // 19 = number of control characters
+        /// input speed
+        pub c_ispeed: speed_t,
+        /// output speed
+        pub c_ospeed: speed_t
+    }
+
+    pub struct ktermios {
+        /// input mode flags
+        pub c_iflag: tcflag_t,
+        /// output mode flags
+        pub c_oflag: tcflag_t,
+        /// control mode flags
+        pub c_cflag: tcflag_t,
+        /// local mode flags
+        pub c_lflag: tcflag_t,
+        /// line discipline
+        pub c_line: cc_t,
+        /// control characters
+        pub c_cc: [cc_t; 19], // 19 = number of control characters
+        /// input speed
+        pub c_ispeed: speed_t,
+        /// output speed
+        pub c_ospeed: speed_t
     }
 }
+
+// c_cc characters
+pub const VINTR: cc_t = 0;
+pub const VQUIT: cc_t = 1;
+pub const VERASE: cc_t = 2;
+pub const VKILL: cc_t = 3;
+pub const VEOF: cc_t = 4;
+pub const VTIME: cc_t = 5;
+pub const VMIN: cc_t = 6;
+pub const VSWTC: cc_t = 7;
+pub const VSTART: cc_t = 8;
+pub const VSTOP: cc_t = 9;
+pub const VSUSP: cc_t = 10;
+pub const VEOL: cc_t = 11;
+pub const VREPRINT: cc_t = 12;
+pub const VDISCARD: cc_t = 13;
+pub const VWERASE: cc_t = 14;
+pub const VLNEXT: cc_t = 15;
+pub const VEOL2: cc_t = 16;
+
+// c_iflag bits
+pub const IGNBRK: tcflag_t = 0o000001;
+pub const BRKINT: tcflag_t = 0o000002;
+pub const IGNPAR: tcflag_t = 0o000004;
+pub const PARMRK: tcflag_t = 0o000010;
+pub const INPCK: tcflag_t = 0o000020;
+pub const ISTRIP: tcflag_t = 0o000040;
+pub const INLCR: tcflag_t = 0o000100;
+pub const IGNCR: tcflag_t = 0o000200;
+pub const ICRNL: tcflag_t = 0o000400;
+pub const IUCLC: tcflag_t = 0o001000;
+pub const IXON: tcflag_t = 0o002000;
+pub const IXANY: tcflag_t = 0o004000;
+pub const IXOFF: tcflag_t = 0o010000;
+pub const IMAXBEL: tcflag_t = 0o020000;
+pub const IUTF8: tcflag_t = 0o040000;
+
+// c_oflag bits
+pub const OPOST: tcflag_t = 0o000001;
+pub const OLCUC: tcflag_t = 0o000002;
+pub const ONLCR: tcflag_t = 0o000004;
+pub const OCRNL: tcflag_t = 0o000010;
+pub const ONOCR: tcflag_t = 0o000020;
+pub const ONLRET: tcflag_t = 0o000040;
+pub const OFILL: tcflag_t = 0o000100;
+pub const OFDEL: tcflag_t = 0o000200;
+pub const NLDLY: tcflag_t = 0o000400;
+pub const NL0: tcflag_t = 0o000000;
+pub const NL1: tcflag_t = 0o000400;
+pub const CRDLY: tcflag_t = 0o003000;
+pub const CR0: tcflag_t = 0o000000;
+pub const CR1: tcflag_t = 0o001000;
+pub const CR2: tcflag_t = 0o002000;
+pub const CR3: tcflag_t = 0o003000;
+pub const TABDLY: tcflag_t = 0o014000;
+pub const TAB0: tcflag_t = 0o000000;
+pub const TAB1: tcflag_t = 0o004000;
+pub const TAB2: tcflag_t = 0o010000;
+pub const TAB3: tcflag_t = 0o014000;
+pub const XTABS: tcflag_t = 0o014000;
+pub const BSDLY: tcflag_t = 0o020000;
+pub const BS0: tcflag_t = 0o000000;
+pub const BS1: tcflag_t = 0o020000;
+pub const VTDLY: tcflag_t = 0o040000;
+pub const VT0: tcflag_t = 0o000000;
+pub const VT1: tcflag_t = 0o040000;
+pub const FFDLY: tcflag_t = 0o100000;
+pub const FF0: tcflag_t = 0o000000;
+pub const FF1: tcflag_t = 0o100000;
+
+// c_cflag bit meaning
+pub const CBAUD: tcflag_t = 0o010017;
+/// hang up
+pub const B0: tcflag_t = 0o000000;
+pub const B50: tcflag_t = 0o000001;
+pub const B75: tcflag_t = 0o000002;
+pub const B110: tcflag_t = 0o000003;
+pub const B134: tcflag_t = 0o000004;
+pub const B150: tcflag_t = 0o000005;
+pub const B200: tcflag_t = 0o000006;
+pub const B300: tcflag_t = 0o000007;
+pub const B600: tcflag_t = 0o000010;
+pub const B1200: tcflag_t = 0o000011;
+pub const B1800: tcflag_t = 0o000012;
+pub const B2400: tcflag_t = 0o000013;
+pub const B4800: tcflag_t = 0o000014;
+pub const B9600: tcflag_t = 0o000015;
+pub const B19200: tcflag_t = 0o000016;
+pub const B38400: tcflag_t = 0o000017;
+pub const EXTA: tcflag_t = B19200;
+pub const EXTB: tcflag_t = B38400;
+pub const CSIZE: tcflag_t = 0o000060;
+pub const CS5: tcflag_t = 0o000000;
+pub const CS6: tcflag_t = 0o000020;
+pub const CS7: tcflag_t = 0o000040;
+pub const CS8: tcflag_t = 0o000060;
+pub const CSTOPB: tcflag_t = 0o000100;
+pub const CREAD: tcflag_t = 0o000200;
+pub const PARENB: tcflag_t = 0o000400;
+pub const PARODD: tcflag_t = 0o001000;
+pub const HUPCL: tcflag_t = 0o002000;
+pub const CLOCAL: tcflag_t = 0o004000;
+pub const CBAUDEX: tcflag_t = 0o010000;
+pub const BOTHER: tcflag_t = 0o010000;
+pub const B57600: tcflag_t = 0o010001;
+pub const B115200: tcflag_t = 0o010002;
+pub const B230400: tcflag_t = 0o010003;
+pub const B460800: tcflag_t = 0o010004;
+pub const B500000: tcflag_t = 0o010005;
+pub const B576000: tcflag_t = 0o010006;
+pub const B921600: tcflag_t = 0o010007;
+pub const B1000000: tcflag_t = 0o010010;
+pub const B1152000: tcflag_t = 0o010011;
+pub const B1500000: tcflag_t = 0o010012;
+pub const B2000000: tcflag_t = 0o010013;
+pub const B2500000: tcflag_t = 0o010014;
+pub const B3000000: tcflag_t = 0o010015;
+pub const B3500000: tcflag_t = 0o010016;
+pub const B4000000: tcflag_t = 0o010017;
+/// input baud rate
+pub const CIBAUD: tcflag_t = 0o02003600000;
+/// mark or space (stick) parity
+pub const CMSPAR: tcflag_t = 0o10000000000;
+/// flow control
+pub const CRTSCTS: tcflag_t = 0o20000000000;
+/// Shift from CBAUD to CIBAUD
+pub const IBSHIFT: ::c_int = 16;
+
+/* c_lflag bits */
+pub const ISIG: tcflag_t = 0o000001;
+pub const ICANON: tcflag_t = 0o000002;
+pub const XCASE: tcflag_t = 0o000004;
+pub const ECHO: tcflag_t = 0o000010;
+pub const ECHOE: tcflag_t = 0o000020;
+pub const ECHOK: tcflag_t = 0o000040;
+pub const ECHONL: tcflag_t = 0o000100;
+pub const NOFLSH: tcflag_t = 0o000200;
+pub const TOSTOP: tcflag_t = 0o000400;
+pub const ECHOCTL: tcflag_t = 0o001000;
+pub const ECHOPRT: tcflag_t = 0o002000;
+pub const ECHOKE: tcflag_t = 0o004000;
+pub const FLUSHO: tcflag_t = 0o010000;
+pub const PENDIN: tcflag_t = 0o040000;
+pub const IEXTEN: tcflag_t = 0o100000;
+pub const EXTPROC: tcflag_t = 0o200000;
+
+// tcflow() and TCXONC use these
+pub const TCOOFF: tcflag_t = 0;
+pub const TCOON: tcflag_t = 1;
+pub const TCIOFF: tcflag_t = 2;
+pub const TCION: tcflag_t = 3;
+
+// tcflush() and TCFLSH use these
+pub const TCIFLUSH: tcflag_t = 0;
+pub const TCOFLUSH: tcflag_t = 1;
+pub const TCIOFLUSH: tcflag_t = 2;
+
+// tcsetattr uses these
+pub const TCSANOW: tcflag_t = 0;
+pub const TCSADRAIN: tcflag_t = 1;
+pub const TCSAFLUSH: tcflag_t = 2;
 
 pub const RLIMIT_RSS: ::c_int = 5;
 pub const RLIMIT_NOFILE: ::c_int = 7;
@@ -374,6 +604,378 @@ pub const SFD_NONBLOCK: ::c_int = 0x0800;
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
 pub const TCSAFLUSH: ::c_int = 2;
+
+// (asm-generic/ioctl.h)
+pub const _IOC_NRBITS: u8 = 8;
+pub const _IOC_TYPEBITS: u8 = 8;
+pub const _IOC_SIZEBITS: u8 = 14;
+pub const _IOC_DIRBITS: u8 = 2;
+pub const _IOC_NRMASK: ::c_uint = (1 << _IOC_NRBITS) - 1;
+pub const _IOC_TYPEMASK: ::c_uint = (1 << _IOC_TYPEBITS) - 1;
+pub const _IOC_SIZEMASK: ::c_uint = (1 << _IOC_SIZEBITS) - 1;
+pub const _IOC_DIRMASK: ::c_uint = (1 << _IOC_DIRBITS) - 1;
+pub const _IOC_NRSHIFT: u8 = 0;
+pub const _IOC_TYPESHIFT: u8 = _IOC_NRSHIFT + _IOC_NRBITS;
+pub const _IOC_SIZESHIFT: u8 = _IOC_TYPESHIFT + _IOC_TYPEBITS;
+pub const _IOC_DIRSHIFT: u8 = _IOC_SIZESHIFT + _IOC_SIZEBITS;
+
+pub const _IOC_NONE: ::c_uint = 0;
+pub const _IOC_WRITE: ::c_uint = 1;
+pub const _IOC_READ: ::c_uint = 2;
+
+macro_rules! _IOC {
+    ($dir:expr, $t:expr, $nr:expr, $size:expr) => {{
+        $dir << _IOC_DIRSHIFT |
+        $t << _IOC_TYPESHIFT |
+        $nr << _IOC_NRSHIFT |
+        $size << _IOC_SIZESHIFT
+    }}
+}
+
+// used to create numbers
+macro_rules! _IO {
+    ($t:expr, $nr:expr) => {{
+        _IOC!(_IOC_NONE, $t, $nr, 0)
+    }}
+}
+macro_rules! _IOR {
+    ($t:expr, $nr:expr, $size:expr) => {{
+        _IOC!(_IOC_READ, $t, $nr, $size)
+    }}
+}
+macro_rules! _IOW {
+    ($t:expr, $nr:expr, $size:expr) => {{
+        _IOC!(_IOC_WRITE, $t, $nr, $size)
+    }}
+}
+macro_rules! _IORW {
+    ($t:expr, $nr:expr, $size:expr) => {{
+        _IOC!(_IOC_READ | _IOC_WRITE, $t, $nr, $size)
+    }}
+}
+macro_rules! _IOR_BAD {
+    ($t:expr, $nr:expr, $size:ty) => {{
+        _IOC!(_IOC_READ, $t, $nr, $size)
+    }}
+}
+macro_rules! _IOW_BAD {
+    ($t:expr, $nr:expr, $size:ty) => {{
+        _IOC!(_IOC_WRITE, $t, $nr, $size)
+    }}
+}
+macro_rules! _IORW_BAD {
+    ($t:expr, $nr:expr, $size:ty) => {{
+        _IOC!(_IOC_READ | _IOC_WRITE, $t, $nr, $size)
+    }}
+}
+
+// used to decode ioctl numbers..
+macro_rules! _IOC_DIR {
+    ($nr:expr) => {{
+        (($nr) >> _IOC_DIRSHIFT) & _IOC_DIRMASK
+    }}
+}
+macro_rules! _IOC_TYPE {
+    ($nr:expr) => {{
+        ((nr) >> _IOC_TYPESHIFT) & _IOC_TYPEMASK
+    }}
+}
+macro_rules! _IOC_NR {
+    ($nr:expr) => {{
+        ((nr) >> _IOC_NRSHIFT) & _IOC_NRMASK
+    }}
+}
+macro_rules! _IOC_SIZE {
+    ($nr:expr) => {{
+        ((nr) >> _IOC_SIZESHIFT) & _IOC_SIZEMASK
+    }}
+}
+
+// ...and for the drivers/sound files...
+pub const IOC_IN: ::c_uint = _IOC_WRITE << _IOC_DIRSHIFT;
+pub const IOC_OUT: ::c_uint = _IOC_READ << _IOC_DIRSHIFT;
+pub const IOC_INOUT: ::c_uint = (_IOC_WRITE | _IOC_READ) << _IOC_DIRSHIFT;
+pub const IOCSIZE_MASK: ::c_uint = _IOC_SIZEMASK << _IOC_SIZESHIFT;
+pub const IOCSIZE_SHIFT: u8 = _IOC_SIZESHIFT;
+
+// (asm-generic/ioctls.h)
+// 0x54 is just a magic number to make these relatively unique ('T')
+pub const TCGETS: ::c_int = 0x5401;
+pub const TCSETS: ::c_int = 0x5402;
+pub const TCSETSW: ::c_int = 0x5403;
+pub const TCSETSF: ::c_int = 0x5404;
+pub const TCGETA: ::c_int = 0x5405;
+pub const TCSETA: ::c_int = 0x5406;
+pub const TCSETAW: ::c_int = 0x5407;
+pub const TCSETAF: ::c_int = 0x5408;
+pub const TCSBRK: ::c_int = 0x5409;
+pub const TCXONC: ::c_int = 0x540A;
+pub const TCFLSH: ::c_int = 0x540B;
+pub const TIOCEXCL: ::c_int = 0x540C;
+pub const TIOCNXCL: ::c_int = 0x540D;
+pub const TIOCSCTTY: ::c_int = 0x540E;
+pub const TIOCGPGRP: ::c_int = 0x540F;
+pub const TIOCSPGRP: ::c_int = 0x5410;
+pub const TIOCOUTQ: ::c_int = 0x5411;
+pub const TIOCSTI: ::c_int = 0x5412;
+pub const TIOCGWINSZ: ::c_int = 0x5413;
+pub const TIOCSWINSZ: ::c_int = 0x5414;
+pub const TIOCMGET: ::c_int = 0x5415;
+pub const TIOCMBIS: ::c_int = 0x5416;
+pub const TIOCMBIC: ::c_int = 0x5417;
+pub const TIOCMSET: ::c_int = 0x5418;
+pub const TIOCGSOFTCAR: ::c_int = 0x5419;
+pub const TIOCSSOFTCAR: ::c_int = 0x541A;
+pub const FIONREAD: ::c_int = 0x541B;
+pub const TIOCINQ: ::c_int = FIONREAD;
+pub const TIOCLINUX: ::c_int = 0x541C;
+pub const TIOCCONS: ::c_int = 0x541D;
+pub const TIOCGSERIAL: ::c_int = 0x541E;
+pub const TIOCSSERIAL: ::c_int = 0x541F;
+pub const TIOCPKT: ::c_int = 0x5420;
+pub const TIOCNOTTY: ::c_int = 0x5422;
+pub const TIOCSETD: ::c_int = 0x5423;
+pub const TIOCGETD: ::c_int = 0x5424;
+pub const TCSBRKP: ::c_int = 0x5425; // Needed for POSIX tcsendbreak()
+pub const TIOCSBRK: ::c_int = 0x5427; // BSD compatibility
+pub const TIOCCBRK: ::c_int = 0x5428; // BSD compatibility
+/// Return the session ID of FD
+pub const TIOCGSID: ::c_int = 0x5429;
+// TODO please check size_ofs
+pub const TCGETS2: ::c_uint = _IOR!(84, 0x2A, 44); // 84 = 'T', 44 = size_of::<termios2>()
+pub const TCSETS2: ::c_uint = _IOW!(84, 0x2B, 44); // 44 = size_of::<termios2>()
+pub const TCSETSW2: ::c_uint = _IOW!(84, 0x2C, 44); // 44 = size_of::<termios2>()
+pub const TCSETSF2: ::c_uint = _IOW!(84, 0x2D, 44); // 44 = size_of::<termios2>()
+pub const TIOCGRS485: ::c_int = 0x542E;
+pub const TIOCSRS485: ::c_int = 0x542F;
+/// Get Pty Number (of pty-mux device)
+pub const TIOCGPTN: ::c_uint = _IOR!(84, 0x30, 4); // 4 = size_of::<c_uint>()
+/// Lock/unlock Pty
+pub const TIOCSPTLCK: ::c_uint = _IOW!(84, 0x31, 4); // 4 =size_of::<c_int>()
+/// Get primary device node of /dev/console
+pub const TIOCGDEV: ::c_uint = _IOR!(84, 0x32, 4); // 4 = size_of::<c_uint>()
+/// SYS5 TCGETX compatibility
+pub const TCGETX: ::c_int = 0x5432;
+pub const TCSETX: ::c_int = 0x5433;
+pub const TCSETXF: ::c_int = 0x5434;
+pub const TCSETXW: ::c_int = 0x5435;
+/// pty: generate signal
+pub const TIOCSIG: ::c_uint = _IOW!(84, 0x36, 4); // 4 = size_of::<c_int>()
+pub const TIOCVHANGUP: ::c_int = 0x5437;
+/// Get packet mode state
+pub const TIOCGPKT: ::c_uint = _IOR!(84, 0x38, 4); // 4 = size_of::<c_int>()
+/// Get Pty lock state
+pub const TIOCGPTLCK: ::c_uint = _IOR!(84, 0x39, 4); // 4 = size_of::<c_int>()
+/// Get exclusive mode state
+pub const TIOCGEXCL: ::c_uint = _IOR!(84, 0x40, 4); // 4 = size_of::<c_int>()
+
+pub const FIONCLEX: ::c_int = 0x5450;
+pub const FIOASYNC: ::c_int = 0x5452;
+pub const TIOCSERCONFIG: ::c_int = 0x5453;
+pub const TIOCSERGWILD: ::c_int = 0x5454;
+pub const TIOCSERSWILD: ::c_int = 0x5455;
+pub const TIOCGLCKTRMIOS: ::c_int = 0x5456;
+pub const TIOCSLCKTRMIOS: ::c_int = 0x5457;
+/// For debugging only
+pub const TIOCSERGSTRUCT: ::c_int = 0x5458;
+/// Get line status register
+pub const TIOCSERGETLSR: ::c_int = 0x5459;
+/// Get multiport config
+pub const TIOCSERGETMULTI: ::c_int = 0x545A;
+/// Set multiport config
+pub const TIOCSERSETMULTI: ::c_int = 0x545B;
+/// wait for a change on serial input line(s)
+pub const TIOCMIWAIT: ::c_int = 0x545C;
+/// read serial port __inline__ interrupt counts
+pub const TIOCGICOUNT: ::c_int = 0x545D;
+
+// Some arches already define FIOQSIZE due to a historical
+// conflict with a Hayes modem-specific ioctl value.
+pub const FIOQSIZE: ::c_int = 0x5460;
+
+/* Used for packet mode */
+pub const TIOCPKT_DATA: ::c_int = 0;
+pub const TIOCPKT_FLUSHREAD: ::c_int = 1;
+pub const TIOCPKT_FLUSHWRITE: ::c_int = 2;
+pub const TIOCPKT_STOP: ::c_int = 4;
+pub const TIOCPKT_START: ::c_int = 8;
+pub const TIOCPKT_NOSTOP: ::c_int = 16;
+pub const TIOCPKT_DOSTOP: ::c_int = 32;
+pub const TIOCPKT_IOCTL: ::c_int = 64;
+
+/// Transmitter physically empty
+pub const TIOCSER_TEMT: ::c_int = 0x01;
+
+// (bits/ioctls.h)
+// Routing table calls
+/// add routing table entry
+pub const SIOCADDRT: ::c_int = 0x890B;
+/// delete routing table entry
+pub const SIOCDELRT: ::c_int = 0x890C;
+/// call to routing system
+pub const SIOCRTMSG: ::c_int = 0x890D;
+
+// Socket configuration controls
+/// get iface name
+pub const SIOCGIFNAME: ::c_int = 0x8910;
+/// set iface channel
+pub const SIOCSIFLINK: ::c_int = 0x8911;
+/// get iface list
+pub const SIOCGIFCONF: ::c_int = 0x8912;
+/// get flags
+pub const SIOCGIFFLAGS: ::c_int = 0x8913;
+/// set flags
+pub const SIOCSIFFLAGS: ::c_int = 0x8914;
+/// get PA address
+pub const SIOCGIFADDR: ::c_int = 0x8915;
+/// set PA address
+pub const SIOCSIFADDR: ::c_int = 0x8916;
+/// get remote PA address
+pub const SIOCGIFDSTADDR: ::c_int = 0x8917;
+/// set remote PA address
+pub const SIOCSIFDSTADDR: ::c_int = 0x8918;
+/// get broadcast PA address
+pub const SIOCGIFBRDADDR: ::c_int = 0x8919;
+/// set broadcast PA address
+pub const SIOCSIFBRDADDR: ::c_int = 0x891a;
+/// get network PA mask
+pub const SIOCGIFNETMASK: ::c_int = 0x891b;
+/// set network PA mask
+pub const SIOCSIFNETMASK: ::c_int = 0x891c;
+/// get metric
+pub const SIOCGIFMETRIC: ::c_int = 0x891d;
+/// set metric
+pub const SIOCSIFMETRIC: ::c_int = 0x891e;
+/// get memory address (BSD)
+pub const SIOCGIFMEM: ::c_int = 0x891f;
+/// set memory address (BSD)
+pub const SIOCSIFMEM: ::c_int = 0x8920;
+/// get MTU size
+pub const SIOCGIFMTU: ::c_int = 0x8921;
+/// set MTU size
+pub const SIOCSIFMTU: ::c_int = 0x8922;
+/// set interface name
+pub const SIOCSIFNAME: ::c_int = 0x8923;
+/// set hardware address
+pub const SIOCSIFHWADDR: ::c_int = 0x8924;
+/// get/set encapsulations
+pub const SIOCGIFENCAP: ::c_int = 0x8925;
+pub const SIOCSIFENCAP: ::c_int = 0x8926;
+/// Get hardware address
+pub const SIOCGIFHWADDR: ::c_int = 0x8927;
+/// Driver slaving support
+pub const SIOCGIFSLAVE: ::c_int = 0x8929;
+pub const SIOCSIFSLAVE: ::c_int = 0x8930;
+/// Multicast address lists
+pub const SIOCADDMULTI: ::c_int = 0x8931;
+pub const SIOCDELMULTI: ::c_int = 0x8932;
+/// name -> if_index mapping
+pub const SIOCGIFINDEX: ::c_int = 0x8933;
+/// misprint compatibility :-)
+pub const SIOGIFINDEX: ::c_int = SIOCGIFINDEX;
+/// set/get extended flags set
+pub const SIOCSIFPFLAGS: ::c_int = 0x8934;
+pub const SIOCGIFPFLAGS: ::c_int = 0x8935;
+/// delete PA address
+pub const SIOCDIFADDR: ::c_int = 0x8936;
+/// set hardware broadcast addr
+pub const SIOCSIFHWBROADCAST: ::c_int = 0x8937;
+/// get number of devices */
+pub const SIOCGIFCOUNT: ::c_int = 0x8938;
+
+/// Bridging support
+pub const SIOCGIFBR: ::c_int = 0x8940;
+/// Set bridging options
+pub const SIOCSIFBR: ::c_int = 0x8941;
+
+/// Get the tx queue length
+pub const SIOCGIFTXQLEN: ::c_int = 0x8942;
+/// Set the tx queue length
+pub const SIOCSIFTXQLEN: ::c_int = 0x8943;
+
+
+// ARP cache control calls
+// 0x8950 - 0x8952  * obsolete calls, don't re-use
+/// delete ARP table entry
+pub const SIOCDARP: ::c_int = 0x8953;
+/// get ARP table entry
+pub const SIOCGARP: ::c_int = 0x8954;
+/// set ARP table entry
+pub const SIOCSARP: ::c_int = 0x8955;
+
+// RARP cache control calls
+/// delete RARP table entry
+pub const SIOCDRARP: ::c_int = 0x8960;
+/// get RARP table entry
+pub const SIOCGRARP: ::c_int = 0x8961;
+/// set RARP table entry
+pub const SIOCSRARP: ::c_int = 0x8962;
+
+// Driver configuration calls
+/// Get device parameters
+pub const SIOCGIFMAP: ::c_int = 0x8970;
+/// Set device parameters
+pub const SIOCSIFMAP: ::c_int = 0x8971;
+
+/* DLCI configuration calls */
+/// Create new DLCI device
+pub const SIOCADDDLCI: ::c_int = 0x8980;
+/// Delete DLCI device
+pub const SIOCDELDLCI: ::c_int = 0x8981;
+
+/// Device private ioctl calls
+///
+/// These 16 ioctls are available to devices via the do_ioctl() device
+/// vector.  Each device should include this file and redefine these
+/// names as their own. Because these are device dependent it is a good
+/// idea _NOT_ to issue them to random objects and hope
+pub const SIOCDEVPRIVATE: ::c_int = 0x89F0; // to 89FF
+
+/// These 16 ioctl calls are protocol private
+pub const SIOCPROTOPRIVATE: ::c_int = 0x89E0; // to 89EF
+
+
+// (bits/ioctl-types.h)
+// modem lines
+pub const TIOCM_LE: ::c_int = 0x001;
+pub const TIOCM_DTR: ::c_int = 0x002;
+pub const TIOCM_RTS: ::c_int = 0x004;
+pub const TIOCM_ST: ::c_int = 0x008;
+pub const TIOCM_SR: ::c_int = 0x010;
+pub const TIOCM_CTS: ::c_int = 0x020;
+pub const TIOCM_CAR: ::c_int = 0x040;
+pub const TIOCM_RNG: ::c_int = 0x080;
+pub const TIOCM_DSR: ::c_int = 0x100;
+pub const TIOCM_CD: ::c_int = TIOCM_CAR;
+pub const TIOCM_RI: ::c_int = TIOCM_RNG;
+
+// ioctl (fd, TIOCSERGETLSR, &result) where result may be as below
+// line disciplines
+pub const N_TTY: ::c_int = 0;
+pub const N_SLIP: ::c_int = 1;
+pub const N_MOUSE: ::c_int = 2;
+pub const N_PPP: ::c_int = 3;
+pub const N_STRIP: ::c_int = 4;
+pub const N_AX25: ::c_int = 5;
+/// X.25 async
+pub const N_X25: ::c_int = 6;
+pub const N_6PACK: ::c_int = 7;
+/// Mobitex module
+pub const N_MASC: ::c_int = 8;
+/// Simatic R3964 module
+pub const N_R3964: ::c_int = 9;
+/// Profibus
+pub const N_PROFIBUS_FDL: ::c_int = 10;
+/// Linux IR
+pub const N_IRDA: ::c_int = 11;
+/// SMS block mode
+pub const N_SMSBLOCK: ::c_int = 12;
+/// synchronous HDLC
+pub const N_HDLC: ::c_int = 13;
+/// synchronous PPP
+pub const N_SYNC_PPP: ::c_int = 14;
+/// Bluetooth HCI UART
+pub const N_HCI: ::c_int = 15;
 
 cfg_if! {
     if #[cfg(any(target_arch = "arm", target_arch = "x86",

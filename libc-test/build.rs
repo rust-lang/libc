@@ -82,6 +82,7 @@ fn main() {
         cfg.header("utime.h");
         cfg.header("pwd.h");
         cfg.header("grp.h");
+        cfg.header("sys/ioctl.h");
         cfg.header("sys/utsname.h");
         cfg.header("sys/ptrace.h");
         cfg.header("sys/mount.h");
