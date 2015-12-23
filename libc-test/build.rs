@@ -213,8 +213,7 @@ fn main() {
     let target2 = target.clone();
     cfg.field_name(move |struct_, field| {
         match field {
-            "d_namelen" if openbsd && struct_ == "dirent" => "d_namlen".to_string(),
-            "st_birthtime" if openbsd && struct_ == "stat" => "__st_birthtime".to_string(),
+            "st_birthtime"      if openbsd && struct_ == "stat" => "__st_birthtime".to_string(),
             "st_birthtime_nsec" if openbsd && struct_ == "stat" => "__st_birthtimensec".to_string(),
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
