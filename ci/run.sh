@@ -31,7 +31,7 @@ case "$TARGET" in
     ;;
 
   mips-unknown-linux-gnu)
-    qemu-mips -L /usr/mips-linux-gnu libc-test/target/$TARGET/debug/libc-test
+    qemu-mips -L /usr/mips-linux-gnu /tmp/$TARGET/debug/libc-test
     ;;
 
   aarch64-unknown-linux-gnu)
