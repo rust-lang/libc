@@ -22,6 +22,7 @@ pub type sigset_t = c_ulong;
 pub type time64_t = i64;
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
+pub type nfds_t = ::c_uint;
 
 s! {
     pub struct stat {

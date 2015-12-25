@@ -14,6 +14,7 @@ pub type fsfilcnt_t = ::c_ulong;
 pub type key_t = ::c_int;
 pub type shmatt_t = ::c_ulong;
 pub type mqd_t = ::c_int;
+pub type nfds_t = ::c_ulong;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 

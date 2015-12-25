@@ -88,6 +88,7 @@ fn main() {
         cfg.header("sys/uio.h");
         cfg.header("sched.h");
         cfg.header("termios.h");
+        cfg.header("poll.h");
     }
 
     if android {
