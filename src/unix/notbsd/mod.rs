@@ -99,13 +99,21 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
-        #[cfg(target_env = "musl")]
+        #[cfg(any(target_env = "musl",
+                  target_env = "musleabi",
+                  target_env = "musleabihf"))]
         pub sched_ss_low_priority: ::c_int,
-        #[cfg(target_env = "musl")]
+        #[cfg(any(target_env = "musl",
+                  target_env = "musleabi",
+                  target_env = "musleabihf"))]
         pub sched_ss_repl_period: ::timespec,
-        #[cfg(target_env = "musl")]
+        #[cfg(any(target_env = "musl",
+                  target_env = "musleabi",
+                  target_env = "musleabihf"))]
         pub sched_ss_init_budget: ::timespec,
-        #[cfg(target_env = "musl")]
+        #[cfg(any(target_env = "musl",
+                  target_env = "musleabi",
+                  target_env = "musleabihf"))]
         pub sched_ss_max_repl: ::c_int,
     }
 
