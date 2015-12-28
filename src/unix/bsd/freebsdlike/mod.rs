@@ -1,9 +1,5 @@
-pub type clock_t = i32;
 pub type dev_t = u32;
-pub type ino_t = u32;
 pub type mode_t = u16;
-pub type nlink_t = u16;
-pub type blksize_t = u32;
 pub type fflags_t = u32;
 pub type pthread_attr_t = *mut ::c_void;
 pub type rlim_t = i64;
@@ -20,14 +16,6 @@ pub type speed_t = ::c_uint;
 pub enum timezone {}
 
 s! {
-    pub struct dirent {
-        pub d_fileno: u32,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_namelen: u8,
-        pub d_name: [::c_char; 256],
-    }
-
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         __unused1: ::size_t,
@@ -597,6 +585,18 @@ cfg_if! {
     } else if #[cfg(target_arch = "x86_64")] {
         mod x86_64;
         pub use self::x86_64::*;
+    } else {
+        // ...
+    }
+}
+
+cfg_if! {
+    if #[cfg(all(target_arch = "x86", target_os = "freebsd"))] {
+        mod freebsd_x86;
+        pub use self::freebsd_x86::*;
+    } else if #[cfg(all(target_arch = "x86_64", target_os = "freebsd"))] {
+        mod freebsd_x86_64;
+        pub use self::freebsd_x86_64::*;
     } else {
         // ...
     }
