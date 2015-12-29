@@ -1,9 +1,5 @@
-pub type clock_t = i32;
 pub type dev_t = u32;
-pub type ino_t = u32;
 pub type mode_t = u16;
-pub type nlink_t = u16;
-pub type blksize_t = u32;
 pub type fflags_t = u32;
 pub type pthread_attr_t = *mut ::c_void;
 pub type rlim_t = i64;
@@ -20,14 +16,6 @@ pub type speed_t = ::c_uint;
 pub enum timezone {}
 
 s! {
-    pub struct dirent {
-        pub d_fileno: u32,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_namelen: u8,
-        pub d_name: [::c_char; 256],
-    }
-
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         __unused1: ::size_t,
@@ -82,12 +70,6 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_flags: ::c_int,
         pub sa_mask: sigset_t,
-    }
-
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
     }
 
     pub struct statvfs {
@@ -555,7 +537,6 @@ pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
-pub const HW_AVAILCPU: ::c_int = 25;
 
 extern {
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
@@ -564,8 +545,6 @@ extern {
                            mibp: *mut ::c_int,
                            sizep: *mut ::size_t)
                            -> ::c_int;
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
     pub fn sysctl(name: *const ::c_int,
@@ -581,10 +560,7 @@ extern {
                         newp: *const ::c_void,
                         newlen: ::size_t)
                         -> ::c_int;
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
-    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
-                           len: ::off_t) -> ::c_int;
     pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
@@ -597,6 +573,18 @@ cfg_if! {
     } else if #[cfg(target_arch = "x86_64")] {
         mod x86_64;
         pub use self::x86_64::*;
+    } else {
+        // ...
+    }
+}
+
+cfg_if! {
+    if #[cfg(all(target_arch = "x86", target_os = "freebsd"))] {
+        mod freebsd_x86;
+        pub use self::freebsd_x86::*;
+    } else if #[cfg(all(target_arch = "x86_64", target_os = "freebsd"))] {
+        mod freebsd_x86_64;
+        pub use self::freebsd_x86_64::*;
     } else {
         // ...
     }
