@@ -14,10 +14,11 @@ fn main() {
     let apple = target.contains("apple");
     let musl = target.contains("musl");
     let freebsd = target.contains("freebsd");
+    let dragonfly = target.contains("dragonfly");
     let mips = target.contains("mips");
     let netbsd = target.contains("netbsd");
     let rumprun = target.contains("rumprun");
-    let bsdlike = freebsd || apple || netbsd;
+    let bsdlike = freebsd || apple || netbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
@@ -96,7 +97,9 @@ fn main() {
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
-        cfg.header("sys/quota.h");
+        if !dragonfly {
+            cfg.header("sys/quota.h");
+        }
         cfg.header("sys/statvfs.h");
 
         if !musl {
@@ -161,6 +164,11 @@ fn main() {
         cfg.header("sys/ioctl_compat.h");
     }
 
+    if dragonfly {
+        cfg.header("pthread_np.h");
+        cfg.header("sys/ioctl_compat.h");
+    }
+
     cfg.type_name(move |ty, is_struct| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
@@ -220,6 +228,9 @@ fn main() {
         match ty {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
+
+            // does not exists on DragonFly
+            "fflags_t" if dragonfly => true,
 
             _ => false
         }
@@ -286,6 +297,18 @@ fn main() {
             "QFMT_VFS_OLD" |
             "QFMT_VFS_V0" if mips && linux => true,
 
+            "USRQUOTA" |
+            "GRPQUOTA" |
+            "Q_SYNC" |
+            "Q_QUOTAON" |
+            "Q_QUOTAOFF" |
+            "Q_GETQUOTA" |
+            "Q_SETQUOTA" |
+            "RLIMIT_NPTS" |
+            "RLIMIT_SWAP" |
+            "RUSAGE_THREAD" |
+            "MADV_PROTECT"  if dragonfly => true,
+
             _ => false,
         }
     });
@@ -303,7 +326,7 @@ fn main() {
             "strerror_r" if linux => true,   // actually xpg-something-or-other
 
             // typed 2nd arg on linux and android
-            "gettimeofday" if linux || android || freebsd => true,
+            "gettimeofday" if linux || android || freebsd | dragonfly => true,
 
             // not declared in newer android toolchains
             "getdtablesize" if android => true,
@@ -332,6 +355,12 @@ fn main() {
             "syscall" |
             "ptrace" |
             "sigaltstack" if rumprun => true,
+
+            // uses size_t instead of socklen_t
+            "getnameinfo" if dragonfly => true,
+
+            // is defined elsewhere
+            "__dfly_error" if dragonfly => true,
 
             _ => false,
         }

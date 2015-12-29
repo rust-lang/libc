@@ -72,12 +72,6 @@ s! {
         pub sa_mask: sigset_t,
     }
 
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
-    }
-
     pub struct statvfs {
         pub f_bavail: ::fsblkcnt_t,
         pub f_bfree: ::fsblkcnt_t,
@@ -543,7 +537,6 @@ pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
-pub const HW_AVAILCPU: ::c_int = 25;
 
 extern {
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
@@ -552,8 +545,6 @@ extern {
                            mibp: *mut ::c_int,
                            sizep: *mut ::size_t)
                            -> ::c_int;
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
     pub fn sysctl(name: *const ::c_int,
@@ -569,10 +560,7 @@ extern {
                         newp: *const ::c_void,
                         newlen: ::size_t)
                         -> ::c_int;
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
-    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
-                           len: ::off_t) -> ::c_int;
     pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;

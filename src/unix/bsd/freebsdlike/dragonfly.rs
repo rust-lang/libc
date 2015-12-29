@@ -36,14 +36,33 @@ s!{
 
     pub struct dirent {
         pub d_fileno: ::ino_t,
-        pub d_namelen: u16,
+        pub d_namlen: u16,
         pub d_type: u8,
         __unused1: u8,
         __unused2: u32,
         pub d_name: [::c_char; 256],
     }
+
+    pub struct utsname {
+        pub sysname: [::c_char; 32],
+        pub nodename: [::c_char; 32],
+        pub release: [::c_char; 32],
+        pub version: [::c_char; 32],
+        pub machine: [::c_char; 32],
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_char,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
+
 }
 
 extern {
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
+                    -> ::c_int;
+    pub fn clock_gettime(clk_id: ::uint64_t, tp: *mut ::timespec) -> ::c_int;
+
     pub fn __dfly_error() -> *const ::c_int;
 }
