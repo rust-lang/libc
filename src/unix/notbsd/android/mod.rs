@@ -13,7 +13,6 @@ pub type blkcnt_t = u32;
 pub type blksize_t = u32;
 pub type dev_t = u32;
 pub type mode_t = u16;
-pub type nlink_t = u32;
 pub type useconds_t = u32;
 pub type socklen_t = i32;
 pub type pthread_t = c_long;
@@ -558,9 +557,11 @@ cfg_if! {
     if #[cfg(target_pointer_width = "32")] {
         mod b32;
         pub use self::b32::*;
+        pub type nlink_t = u16;
     } else if #[cfg(target_pointer_width = "64")] {
         mod b64;
         pub use self::b64::*;
+        pub type nlink_t = u32;
     } else {
         // ...
     }
