@@ -1,3 +1,7 @@
+pub type fsblkcnt_t = ::c_ulong;
+pub type fsfilcnt_t = ::c_ulong;
+pub type rlim_t = c_ulong;
+
 s! {
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
@@ -354,6 +358,8 @@ pub const EFD_NONBLOCK: ::c_int = 0x800;
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
+pub const F_SETLK: ::c_int = 6;
+pub const F_SETLKW: ::c_int = 7;
 
 pub const SFD_NONBLOCK: ::c_int = 0x0800;
 

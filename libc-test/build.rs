@@ -402,7 +402,9 @@ fn main() {
         // just insert some padding.
         (struct_ == "siginfo_t" && field == "_pad") ||
         // musl names this __dummy1 but it's still there
-        (musl && struct_ == "glob_t" && field == "gl_flags")
+        (musl && struct_ == "glob_t" && field == "gl_flags") ||
+        // musl seems to define this as an *anonymous* bitfield
+        (musl && struct_ == "statvfs" && field == "__f_unused")
     });
 
     cfg.fn_cname(move |name, cname| {

@@ -10,6 +10,9 @@ pub type ino_t = u32;
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
+pub type fsblkcnt_t = ::c_ulong;
+pub type fsfilcnt_t = ::c_ulong;
+pub type rlim_t = c_ulong;
 
 s! {
     pub struct stat {
@@ -428,6 +431,8 @@ pub const EFD_NONBLOCK: ::c_int = 0x80;
 pub const F_GETLK: ::c_int = 14;
 pub const F_GETOWN: ::c_int = 23;
 pub const F_SETOWN: ::c_int = 24;
+pub const F_SETLK: ::c_int = 6;
+pub const F_SETLKW: ::c_int = 7;
 
 pub const SFD_NONBLOCK: ::c_int = 0x80;
 
