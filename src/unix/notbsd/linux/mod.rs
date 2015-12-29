@@ -391,13 +391,13 @@ pub const CLONE_IO: ::c_uint = 0x80000000;
 
 // syscall numbers
 #[cfg(target_arch = "x86_64")]
-pub const NR_GETRANDOM: ::c_long = 318;
+pub const SYS_getrandom: ::c_long = 318;
 #[cfg(target_arch = "x86")]
-pub const NR_GETRANDOM: ::c_long = 355;
+pub const SYS_getrandom: ::c_long = 355;
 #[cfg(any(target_arch = "arm", target_arch = "powerpc"))]
-pub const NR_GETRANDOM: ::c_long = 384;
+pub const SYS_getrandom: ::c_long = 384;
 #[cfg(target_arch = "aarch64")]
-pub const NR_GETRANDOM: ::c_long = 278;
+pub const SYS_getrandom: ::c_long = 278;
 
 extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
