@@ -84,9 +84,11 @@ s! {
     }
 
     pub struct pthread_mutexattr_t {
-        #[cfg(target_arch = "x86_64")]
+        #[cfg(any(target_arch = "x86_64", target_arch = "powerpc64",
+                  target_arch = "powerpc64le"))]
         __align: [::c_int; 0],
-        #[cfg(not(target_arch = "x86_64"))]
+        #[cfg(not(any(target_arch = "x86_64", target_arch = "powerpc64",
+                      target_arch = "powerpc64le")))]
         __align: [::c_long; 0],
         size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
     }
