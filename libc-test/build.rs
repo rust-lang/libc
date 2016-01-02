@@ -149,7 +149,6 @@ fn main() {
         if !musl {
             cfg.header("linux/netlink.h");
             cfg.header("linux/magic.h");
-            cfg.header("linux/fs.h");
 
             if !mips {
                 cfg.header("linux/quota.h");
