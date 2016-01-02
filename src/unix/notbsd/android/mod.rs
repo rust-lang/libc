@@ -411,7 +411,6 @@ pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
 
 pub const MS_RMT_MASK: ::c_ulong = 0x800051;
-pub const MS_VERBOSE: ::c_ulong = 0x8000;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
