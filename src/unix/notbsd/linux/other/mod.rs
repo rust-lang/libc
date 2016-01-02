@@ -356,9 +356,6 @@ pub const MADV_DONTDUMP: ::c_int = 16;
 
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
-pub const MS_NOSEC: ::c_ulong = 0x10000000;
-pub const MS_BORN: ::c_ulong = 0x20000000;
-
 pub const MADV_HUGEPAGE: ::c_int = 14;
 pub const MADV_NOHUGEPAGE: ::c_int = 15;
 pub const MAP_HUGETLB: ::c_int = 0x040000;
