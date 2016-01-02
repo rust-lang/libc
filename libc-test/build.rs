@@ -36,6 +36,7 @@ fn main() {
     cfg.header("errno.h")
        .header("fcntl.h")
        .header("limits.h")
+       .header("stdbool.h")
        .header("stddef.h")
        .header("stdint.h")
        .header("stdio.h")
@@ -241,7 +242,8 @@ fn main() {
             "LARGE_INTEGER" |
             "mach_timebase_info_data_t" |
             "float" |
-            "double" => true,
+            "double" |
+            "c_bool" => true,
             n if n.starts_with("pthread") => true,
 
             // windows-isms
