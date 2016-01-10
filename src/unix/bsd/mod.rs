@@ -75,14 +75,6 @@ s! {
         pub tm_zone: *mut ::c_char,
     }
 
-    pub struct utsname {
-        pub sysname: [::c_char; 256],
-        pub nodename: [::c_char; 256],
-        pub release: [::c_char; 256],
-        pub version: [::c_char; 256],
-        pub machine: [::c_char; 256],
-    }
-
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,

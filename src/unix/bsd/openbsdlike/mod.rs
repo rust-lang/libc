@@ -48,6 +48,14 @@ s! {
         pub c_ispeed: ::c_int,
         pub c_ospeed: ::c_int,
     }
+
+    pub struct utsname {
+        pub sysname: [::c_char; 256],
+        pub nodename: [::c_char; 256],
+        pub release: [::c_char; 256],
+        pub version: [::c_char; 256],
+        pub machine: [::c_char; 256],
+    }
 }
 
 pub const EXIT_FAILURE : ::c_int = 1;
