@@ -2,9 +2,9 @@ pub type clock_t = i64;
 pub type suseconds_t = i64;
 pub type dev_t = i32;
 pub type sigset_t = ::c_uint;
-pub type blksize_t = ::uint32_t;
-pub type fsblkcnt_t = ::c_uint;
-pub type fsfilcnt_t = ::c_uint;
+pub type blksize_t = ::int32_t;
+pub type fsblkcnt_t = ::uint64_t;
+pub type fsfilcnt_t = ::uint64_t;
 pub type pthread_attr_t = *mut ::c_void;
 pub type pthread_mutex_t = *mut ::c_void;
 pub type pthread_mutexattr_t = *mut ::c_void;
@@ -17,7 +17,7 @@ s! {
         pub d_off: ::off_t,
         pub d_reclen: u16,
         pub d_type: u8,
-        pub d_namelen: u8,
+        pub d_namlen: u8,
         __d_padding: [u8; 4],
         pub d_name: [::c_char; 256],
     }
@@ -99,8 +99,15 @@ s! {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
-        pub si_addr: *mut ::c_void,
-        __pad: [u8; 116],
+        pub si_addr: *mut ::c_char,
+        __pad: [u8; 108],
+    }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *mut ::c_void,
     }
 }
 
@@ -139,9 +146,6 @@ pub const ENOMEDIUM : ::c_int = 85;
 pub const EMEDIUMTYPE : ::c_int = 86;
 
 pub const RUSAGE_THREAD: ::c_int = 1;
-
-pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
-pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
 
 pub const MAP_COPY : ::c_int = 0x0002;
 pub const MAP_NOEXTEND : ::c_int = 0x0000;
@@ -197,7 +201,7 @@ pub const _SC_RTSIG_MAX : ::c_int = 66;
 pub const _SC_SIGQUEUE_MAX : ::c_int = 70;
 pub const _SC_TIMER_MAX : ::c_int = 93;
 
-pub const SIGSTKSZ: ::size_t = 131072;
+pub const SIGSTKSZ: ::size_t = 40960;
 
 pub const FD_SETSIZE: usize = 1024;
 
@@ -208,26 +212,28 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 
-pub const HW_AVAILCPU: ::c_int = 25;
 pub const KERN_PROC_ARGS: ::c_int = 55;
 
-// syscall numbers
-pub const NR_GETENTROPY: ::c_int = 7;
+pub const TMP_MAX : ::c_uint = 0x7fffffff;
+
+pub const NI_MAXHOST: ::size_t = 256;
 
 extern {
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::size_t,
+                       serv: *mut ::c_char,
+                       servlen: ::size_t,
+                       flags: ::c_int) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
-    pub fn sysctl(name: *mut ::c_int,
+    pub fn sysctl(name: *const ::c_int,
                   namelen: ::c_uint,
                   oldp: *mut ::c_void,
                   oldlenp: *mut ::size_t,
                   newp: *mut ::c_void,
                   newlen: ::size_t)
                   -> ::c_int;
-    pub fn sysctlbyname(name: *const ::c_char,
-                        oldp: *mut ::c_void,
-                        oldlenp: *mut ::size_t,
-                        newp: *mut ::c_void,
-                        newlen: ::size_t)
-                        -> ::c_int;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }

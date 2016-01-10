@@ -24,13 +24,6 @@ s! {
         pub ss_flags: ::c_int,
     }
 
-    pub struct Dl_info {
-        pub dli_fname: *const ::c_char,
-        pub dli_fbase: *mut ::c_void,
-        pub dli_sname: *const ::c_char,
-        pub dli_saddr: *const ::c_void,
-    }
-
     pub struct sockaddr_in {
         pub sin_len: u8,
         pub sin_family: ::sa_family_t,
@@ -64,7 +57,6 @@ pub const BUFSIZ : ::c_uint = 1024;
 pub const FOPEN_MAX : ::c_uint = 20;
 pub const FILENAME_MAX : ::c_uint = 1024;
 pub const L_tmpnam : ::c_uint = 1024;
-pub const TMP_MAX : ::c_uint = 308915776;
 pub const O_RDONLY : ::c_int = 0;
 pub const O_WRONLY : ::c_int = 1;
 pub const O_RDWR : ::c_int = 2;
@@ -368,13 +360,12 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_gettime50")]
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
-    pub fn backtrace(buf: *mut *mut ::c_void, sz: ::size_t) -> ::size_t;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
-    pub fn pthread_main_np() -> ::c_uint;
+    pub fn pthread_main_np() -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn pthread_stackseg_np(thread: ::pthread_t,
-                               sinfo: *mut ::stack_t) -> ::c_uint;
+                               sinfo: *mut ::stack_t) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
 }
 
