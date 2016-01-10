@@ -91,6 +91,12 @@ s! {
         pub iov_base: *mut ::c_void,
         pub iov_len: ::size_t,
     }
+
+    pub struct pollfd {
+        pub fd: ::c_int,
+        pub events: ::c_short,
+        pub revents: ::c_short,
+    }
 }
 
 pub const WNOHANG: ::c_int = 1;
@@ -116,6 +122,13 @@ pub const SIGIOT: ::c_int = 6;
 pub const S_ISUID: ::c_int = 0x800;
 pub const S_ISGID: ::c_int = 0x400;
 pub const S_ISVTX: ::c_int = 0x200;
+
+pub const POLLIN: ::c_short = 0x1;
+pub const POLLPRI: ::c_short = 0x2;
+pub const POLLOUT: ::c_short = 0x4;
+pub const POLLERR: ::c_short = 0x8;
+pub const POLLHUP: ::c_short = 0x10;
+pub const POLLNVAL: ::c_short = 0x20;
 
 cfg_if! {
     if #[cfg(feature = "default")] {
@@ -548,6 +561,9 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "recvmsg$UNIX2003")]
     pub fn recvmsg(fd: ::c_int, msg: *mut msghdr, flags: ::c_int) -> ::ssize_t;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "poll$UNIX2003")]
+    pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
 }
 
 // TODO: get rid of this #[cfg(not(...))]
