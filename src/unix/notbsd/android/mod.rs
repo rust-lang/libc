@@ -397,10 +397,7 @@ pub const O_NDELAY: ::c_int = 0x800;
 pub const NI_MAXHOST: ::size_t = 1025;
 
 pub const NCCS: usize = 19;
-pub const TCXONC: ::c_int = 0x540A;
-pub const TCFLSH: ::c_int = 0x540B;
 pub const TCSBRKP: ::c_int = 0x5425;
-pub const TCGETS: ::c_int = 0x5401;
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 0x1;
 pub const TCSAFLUSH: ::c_int = 0x2;
@@ -475,6 +472,38 @@ pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
 
+pub const TCGETS: ::c_int = 0x5401;
+pub const TCSETS: ::c_int = 0x5402;
+pub const TCSETSW: ::c_int = 0x5403;
+pub const TCSETSF: ::c_int = 0x5404;
+pub const TCGETA: ::c_int = 0x5405;
+pub const TCSETA: ::c_int = 0x5406;
+pub const TCSETAW: ::c_int = 0x5407;
+pub const TCSETAF: ::c_int = 0x5408;
+pub const TCSBRK: ::c_int = 0x5409;
+pub const TCXONC: ::c_int = 0x540A;
+pub const TCFLSH: ::c_int = 0x540B;
+pub const TIOCGSOFTCAR: ::c_int = 0x5419;
+pub const TIOCSSOFTCAR: ::c_int = 0x541A;
+pub const TIOCINQ: ::c_int = 0x541B;
+pub const TIOCLINUX: ::c_int = 0x541C;
+pub const TIOCGSERIAL: ::c_int = 0x541E;
+pub const TIOCEXCL: ::c_int = 0x540C;
+pub const TIOCNXCL: ::c_int = 0x540D;
+pub const TIOCSCTTY: ::c_int = 0x540E;
+pub const TIOCGPGRP: ::c_int = 0x540F;
+pub const TIOCSPGRP: ::c_int = 0x5410;
+pub const TIOCOUTQ: ::c_int = 0x5411;
+pub const TIOCSTI: ::c_int = 0x5412;
+pub const TIOCGWINSZ: ::c_int = 0x5413;
+pub const TIOCSWINSZ: ::c_int = 0x5414;
+pub const TIOCMGET: ::c_int = 0x5415;
+pub const TIOCMBIS: ::c_int = 0x5416;
+pub const TIOCMBIC: ::c_int = 0x5417;
+pub const TIOCMSET: ::c_int = 0x5418;
+pub const FIONREAD: ::c_int = 0x541B;
+pub const TIOCCONS: ::c_int = 0x541D;
+
 f! {
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {
         *set = 0;
@@ -510,7 +539,7 @@ f! {
         return 0
     }
     pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int {
-        ioctl(fd, TCGETS, termios)
+        ioctl(fd, ::TCGETS, termios)
     }
     pub fn tcsetattr(fd: ::c_int,
                      optional_actions: ::c_int,
@@ -518,10 +547,10 @@ f! {
         ioctl(fd, optional_actions, termios)
     }
     pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int {
-        ioctl(fd, TCXONC, action as *mut ::c_void)
+        ioctl(fd, ::TCXONC, action as *mut ::c_void)
     }
     pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int {
-        ioctl(fd, TCFLSH, action as *mut ::c_void)
+        ioctl(fd, ::TCFLSH, action as *mut ::c_void)
     }
     pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int {
         ioctl(fd, TCSBRKP, duration as *mut ::c_void)
