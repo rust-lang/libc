@@ -394,6 +394,7 @@ pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
 pub const MS_NOSEC: ::c_ulong = 0x10000000;
 pub const MS_BORN: ::c_ulong = 0x20000000;
+pub const MS_RMT_MASK: ::c_ulong = 0x800051;
 
 pub const MADV_HUGEPAGE: ::c_int = 14;
 pub const MADV_NOHUGEPAGE: ::c_int = 15;

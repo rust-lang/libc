@@ -284,6 +284,7 @@ pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
 
 pub const MS_VERBOSE: ::c_ulong = 0x8000;
+pub const MS_RMT_MASK: ::c_ulong = 0x800051;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
