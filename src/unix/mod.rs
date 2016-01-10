@@ -294,6 +294,9 @@ extern {
                link_name = "pause$UNIX2003")]
     pub fn pause() -> ::c_int;
     pub fn pipe(fds: *mut ::c_int) -> ::c_int;
+    pub fn posix_memalign(memptr: *mut *mut ::c_void,
+                      align: ::size_t,
+                      size: ::size_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "read$UNIX2003")]
     pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
@@ -624,9 +627,6 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
-    pub fn posix_memalign(memptr: *mut *mut ::c_void,
-                          align: ::size_t,
-                          size: ::size_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigemptyset14")]
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaddset14")]
