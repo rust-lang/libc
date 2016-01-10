@@ -567,30 +567,6 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(target_arch = "x86")] {
-        mod x86;
-        pub use self::x86::*;
-    } else if #[cfg(target_arch = "x86_64")] {
-        mod x86_64;
-        pub use self::x86_64::*;
-    } else {
-        // ...
-    }
-}
-
-cfg_if! {
-    if #[cfg(all(target_arch = "x86", target_os = "freebsd"))] {
-        mod freebsd_x86;
-        pub use self::freebsd_x86::*;
-    } else if #[cfg(all(target_arch = "x86_64", target_os = "freebsd"))] {
-        mod freebsd_x86_64;
-        pub use self::freebsd_x86_64::*;
-    } else {
-        // ...
-    }
-}
-
-cfg_if! {
     if #[cfg(target_os = "freebsd")] {
         mod freebsd;
         pub use self::freebsd::*;

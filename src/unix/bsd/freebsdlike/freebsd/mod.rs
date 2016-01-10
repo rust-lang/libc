@@ -40,3 +40,15 @@ extern {
                            len: ::off_t) -> ::c_int;
     pub fn __error() -> *mut ::c_int;
 }
+
+cfg_if! {
+    if #[cfg(target_arch = "x86")] {
+        mod x86;
+        pub use self::x86::*;
+    } else if #[cfg(target_arch = "x86_64")] {
+        mod x86_64;
+        pub use self::x86_64::*;
+    } else {
+        // ...
+    }
+}
