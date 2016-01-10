@@ -37,8 +37,8 @@ if [ "$TRAVIS" = "true" ]; then
       ;;
 
     *)
-      # Download the rustlib folder from the relevant portion of main distribution's
-      # tarballs.
+      # Download the rustlib folder from the relevant portion of main
+      # distribution's tarballs.
       dir=rust-std-$TARGET
       pkg=rust-std
       if [ "$TRAVIS_RUST_VERSION" = "1.0.0" ]; then
@@ -58,12 +58,24 @@ fi
 # travis has (sharing it via `-v`) and otherwise the tests run entirely within
 # the container.
 if [ "$DOCKER" != "" ]; then
+  args=""
+
+  case "$TARGET" in
+    mips-unknown-linux-gnu)
+      args="$args -e CC=mips-linux-gnu-gcc-5"
+      ;;
+
+    *)
+      ;;
+  esac
+
   exec docker run \
     --entrypoint bash \
     -v `rustc --print sysroot`:/usr/local:ro \
     -v `pwd`:/checkout \
     -e LD_LIBRARY_PATH=/usr/local/lib \
     -e CARGO_TARGET_DIR=/tmp \
+    $args \
     -w /checkout \
     -it $DOCKER \
     ci/run.sh $TARGET
@@ -86,19 +98,6 @@ case "$TARGET" in
     ;;
 
   *-apple-ios)
-    ;;
-
-  mips-unknown-linux-gnu)
-    # Download pre-built and custom MIPS libs and then also instsall the MIPS
-    # compiler according to this post:
-    # http://sathisharada.blogspot.com/2014_10_01_archive.html
-    echo 'deb http://ftp.de.debian.org/debian squeeze main' | \
-      sudo tee -a /etc/apt/sources.list
-    echo 'deb http://www.emdebian.org/debian/ squeeze main' | \
-      sudo tee -a /etc/apt/sources.list
-    install emdebian-archive-keyring
-    install qemu-user gcc-4.4-mips-linux-gnu -y --force-yes
-    export CC=mips-linux-gnu-gcc
     ;;
 
   *)
