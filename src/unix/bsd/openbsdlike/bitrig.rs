@@ -99,6 +99,13 @@ s! {
         pub si_errno: ::c_int,
         pub si_addr: *mut ::c_void
     }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *mut ::c_void,
+    }
 }
 
 pub const O_CLOEXEC: ::c_int = 0x10000;
@@ -208,7 +215,18 @@ pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 pub const HW_AVAILCPU: ::c_int = 25;
 pub const KERN_PROC_ARGS: ::c_int = 55;
 
+pub const TMP_MAX : ::c_uint = 0x7fffffff;
+
+pub const NI_MAXHOST: ::size_t = 256;
+
 extern {
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::size_t,
+                       serv: *mut ::c_char,
+                       servlen: ::size_t,
+                       flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn sysctl(name: *mut ::c_int,

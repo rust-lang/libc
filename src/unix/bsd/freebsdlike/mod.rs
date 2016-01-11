@@ -557,7 +557,16 @@ pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const HW_AVAILCPU: ::c_int = 25;
 
+pub const NI_MAXHOST: ::size_t = 1025;
+
 extern {
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::size_t,
+                       serv: *mut ::c_char,
+                       servlen: ::size_t,
+                       flags: ::c_int) -> ::c_int;
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
     pub fn sysctlnametomib(name: *const ::c_char,

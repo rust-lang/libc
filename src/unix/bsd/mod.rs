@@ -6,6 +6,7 @@ pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type pthread_t = ::uintptr_t;
+pub type nfds_t = ::c_uint;
 
 s! {
     pub struct sockaddr {
@@ -43,7 +44,8 @@ s! {
 
         #[cfg(not(any(target_os = "macos",
                       target_os = "ios",
-                      target_os = "netbsd")))]
+                      target_os = "netbsd",
+                      target_os = "openbsd")))]
         pub pw_fields: ::c_int,
     }
 
@@ -145,8 +147,6 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
 
 pub const ST_RDONLY: ::c_ulong = 1;
-
-pub const NI_MAXHOST: ::socklen_t = 1025;
 
 pub const CTL_HW: ::c_int = 6;
 pub const HW_NCPU: ::c_int = 3;
@@ -321,13 +321,6 @@ extern {
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-    pub fn getnameinfo(sa: *const ::sockaddr,
-                       salen: ::socklen_t,
-                       host: *mut ::c_char,
-                       hostlen: ::socklen_t,
-                       serv: *mut ::c_char,
-                       sevlen: ::socklen_t,
-                       flags: ::c_int) -> ::c_int;
     pub fn kqueue() -> ::c_int;
     pub fn unmount(target: *const ::c_char, arg: ::c_int) -> ::c_int;
     pub fn syscall(num: ::c_int, ...) -> ::c_int;

@@ -14,6 +14,7 @@ pub type fsfilcnt_t = ::c_ulong;
 pub type key_t = ::c_int;
 pub type shmatt_t = ::c_ulong;
 pub type mqd_t = ::c_int;
+pub type nfds_t = ::c_ulong;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
@@ -368,7 +369,6 @@ pub const MS_RELATIME: ::c_ulong = 0x200000;
 pub const MS_KERNMOUNT: ::c_ulong = 0x400000;
 pub const MS_I_VERSION: ::c_ulong = 0x800000;
 pub const MS_STRICTATIME: ::c_ulong = 0x01000000;
-pub const MS_RMT_MASK: ::c_ulong = 0x800051;
 
 pub const EPOLLRDHUP: ::c_int = 0x2000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;

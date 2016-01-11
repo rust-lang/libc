@@ -63,7 +63,7 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_flags: ::c_uint,
+        pub sa_flags: ::c_int,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: sigset_t,
         _restorer: *mut ::c_void,
@@ -190,7 +190,7 @@ pub const RLIMIT_AS: ::c_int = 6;
 pub const RLIMIT_RSS: ::c_int = 7;
 pub const RLIMIT_NPROC: ::c_int = 8;
 pub const RLIMIT_MEMLOCK: ::c_int = 9;
-pub const RLIMIT_NLIMITS: ::c_int = 15;
+pub const RLIMIT_NLIMITS: ::c_int = 16;
 pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
 
 pub const O_APPEND: ::c_int = 8;
@@ -198,10 +198,10 @@ pub const O_CREAT: ::c_int = 256;
 pub const O_EXCL: ::c_int = 1024;
 pub const O_NOCTTY: ::c_int = 2048;
 pub const O_NONBLOCK: ::c_int = 128;
-pub const O_SYNC: ::c_int = 0x10;
-pub const O_RSYNC: ::c_int = 0x10;
+pub const O_SYNC: ::c_int = 0x4010;
+pub const O_RSYNC: ::c_int = 0x4010;
 pub const O_DSYNC: ::c_int = 0x10;
-pub const O_FSYNC: ::c_int = 0x10;
+pub const O_FSYNC: ::c_int = 0x4010;
 pub const O_ASYNC: ::c_int = 0x1000;
 pub const O_NDELAY: ::c_int = 0x80;
 
@@ -357,6 +357,7 @@ pub const SIG_UNBLOCK: ::c_int = 0x2;
 pub const PTHREAD_STACK_MIN: ::size_t = 131072;
 
 pub const MS_VERBOSE: ::c_ulong = 0x8000;
+pub const MS_RMT_MASK: ::c_ulong = 0x2800051;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
@@ -431,6 +432,38 @@ pub const F_SETOWN: ::c_int = 24;
 
 pub const SFD_NONBLOCK: ::c_int = 0x80;
 
+pub const TCGETS: ::c_ulong = 0x540d;
+pub const TCSETS: ::c_ulong = 0x540e;
+pub const TCSETSW: ::c_ulong = 0x540f;
+pub const TCSETSF: ::c_ulong = 0x5410;
+pub const TCGETA: ::c_ulong = 0x5401;
+pub const TCSETA: ::c_ulong = 0x5402;
+pub const TCSETAW: ::c_ulong = 0x5403;
+pub const TCSETAF: ::c_ulong = 0x5404;
+pub const TCSBRK: ::c_ulong = 0x5405;
+pub const TCXONC: ::c_ulong = 0x5406;
+pub const TCFLSH: ::c_ulong = 0x5407;
+pub const TIOCGSOFTCAR: ::c_ulong = 0x5481;
+pub const TIOCSSOFTCAR: ::c_ulong = 0x5482;
+pub const TIOCINQ: ::c_ulong = 0x467f;
+pub const TIOCLINUX: ::c_ulong = 0x5483;
+pub const TIOCGSERIAL: ::c_ulong = 0x5484;
+pub const TIOCEXCL: ::c_ulong = 0x740d;
+pub const TIOCNXCL: ::c_ulong = 0x740e;
+pub const TIOCSCTTY: ::c_ulong = 0x5480;
+pub const TIOCGPGRP: ::c_ulong = 0x40047477;
+pub const TIOCSPGRP: ::c_ulong = 0x80047476;
+pub const TIOCOUTQ: ::c_ulong = 0x7472;
+pub const TIOCSTI: ::c_ulong = 0x5472;
+pub const TIOCGWINSZ: ::c_ulong = 0x40087468;
+pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
+pub const TIOCMGET: ::c_ulong = 0x741d;
+pub const TIOCMBIS: ::c_ulong = 0x741b;
+pub const TIOCMBIC: ::c_ulong = 0x741c;
+pub const TIOCMSET: ::c_ulong = 0x741a;
+pub const FIONREAD: ::c_ulong = 0x467f;
+pub const TIOCCONS: ::c_ulong = 0x80047478;
+
 extern {
     pub fn sysctl(name: *mut ::c_int,
                   namelen: ::c_int,
@@ -454,7 +487,7 @@ extern {
                        hostlen: ::socklen_t,
                        serv: *mut ::c_char,
                        sevlen: ::socklen_t,
-                       flags: ::c_uint) -> ::c_int;
-    pub fn eventfd(init: ::c_int, flags: ::c_int) -> ::c_int;
+                       flags: ::c_int) -> ::c_int;
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_uint, ...) -> ::c_long;
 }

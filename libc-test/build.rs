@@ -16,8 +16,9 @@ fn main() {
     let freebsd = target.contains("freebsd");
     let mips = target.contains("mips");
     let netbsd = target.contains("netbsd");
+    let openbsd = target.contains("openbsd");
     let rumprun = target.contains("rumprun");
-    let bsdlike = freebsd || apple || netbsd;
+    let bsdlike = freebsd || apple || netbsd || openbsd;
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
@@ -61,6 +62,9 @@ fn main() {
     } else {
         cfg.header("ctype.h");
         cfg.header("dirent.h");
+        if openbsd {
+            cfg.header("sys/socket.h");
+        }
         cfg.header("net/if.h");
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
@@ -88,6 +92,7 @@ fn main() {
         cfg.header("sys/uio.h");
         cfg.header("sched.h");
         cfg.header("termios.h");
+        cfg.header("poll.h");
     }
 
     if android {
@@ -96,13 +101,15 @@ fn main() {
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
-        cfg.header("sys/quota.h");
+        if !openbsd {
+            cfg.header("sys/quota.h");
+        }
         cfg.header("sys/statvfs.h");
 
         if !musl {
             cfg.header("sys/sysctl.h");
 
-            if !netbsd {
+            if !netbsd && !openbsd {
                 cfg.header("execinfo.h");
             }
         }
@@ -161,6 +168,13 @@ fn main() {
         cfg.header("sys/ioctl_compat.h");
     }
 
+    if openbsd {
+        cfg.header("ufs/ufs/quota.h");
+        cfg.header("rpcsvc/rex.h");
+        cfg.header("pthread_np.h");
+        cfg.header("sys/syscall.h");
+    }
+
     cfg.type_name(move |ty, is_struct| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
@@ -200,6 +214,8 @@ fn main() {
     let target2 = target.clone();
     cfg.field_name(move |struct_, field| {
         match field {
+            "st_birthtime"      if openbsd && struct_ == "stat" => "__st_birthtime".to_string(),
+            "st_birthtime_nsec" if openbsd && struct_ == "stat" => "__st_birthtimensec".to_string(),
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
@@ -303,7 +319,7 @@ fn main() {
             "strerror_r" if linux => true,   // actually xpg-something-or-other
 
             // typed 2nd arg on linux and android
-            "gettimeofday" if linux || android || freebsd => true,
+            "gettimeofday" if linux || android || freebsd || openbsd => true,
 
             // not declared in newer android toolchains
             "getdtablesize" if android => true,

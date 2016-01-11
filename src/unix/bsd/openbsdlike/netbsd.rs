@@ -182,6 +182,13 @@ s! {
         pub dqb_btime: ::int32_t,
         pub dqb_itime: ::int32_t,
     }
+
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *const ::c_void,
+    }
 }
 
 pub const O_CLOEXEC: ::c_int = 0x400000;
@@ -313,7 +320,18 @@ pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
 
 pub const CRTSCTS: ::tcflag_t = 0x00010000;
 
+pub const TMP_MAX : ::c_uint = 308915776;
+
+pub const NI_MAXHOST: ::socklen_t = 1025;
+
 extern {
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::socklen_t,
+                       serv: *mut ::c_char,
+                       sevlen: ::socklen_t,
+                       flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn sysctl(name: *const ::c_int,
