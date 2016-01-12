@@ -254,6 +254,7 @@ pub const MS_ACTIVE: ::c_ulong = 0x40000000;
 pub const MS_NOUSER: ::c_ulong = 0x80000000;
 pub const MS_MGC_VAL: ::c_ulong = 0xc0ed0000;
 pub const MS_MGC_MSK: ::c_ulong = 0xffff0000;
+pub const MS_RMT_MASK: ::c_ulong = 0x800051;
 
 pub const EPERM: ::c_int = 1;
 pub const ENOENT: ::c_int = 2;
