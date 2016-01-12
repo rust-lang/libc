@@ -327,9 +327,9 @@ pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const FIOCLEX: ::c_ulong = 0x6601;
 pub const FIONBIO: ::c_ulong = 0x667e;
 
-pub const SA_ONSTACK: ::c_uint = 0x08000000;
-pub const SA_SIGINFO: ::c_uint = 0x00000008;
-pub const SA_NOCLDWAIT: ::c_uint = 0x00010000;
+pub const SA_ONSTACK: ::c_int = 0x08000000;
+pub const SA_SIGINFO: ::c_int = 0x00000008;
+pub const SA_NOCLDWAIT: ::c_int = 0x00010000;
 
 pub const SIGCHLD: ::c_int = 18;
 pub const SIGBUS: ::c_int = 10;
