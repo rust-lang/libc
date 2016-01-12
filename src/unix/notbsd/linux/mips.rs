@@ -356,8 +356,6 @@ pub const SIG_UNBLOCK: ::c_int = 0x2;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 131072;
 
-pub const MS_RMT_MASK: ::c_ulong = 0x800051;
-
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
 pub const CODA_SUPER_MAGIC: ::c_long = 0x73757245;
