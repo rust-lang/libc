@@ -306,7 +306,7 @@ fn main() {
     });
 
     cfg.skip_fn(move |name| {
-        // skip those that are manually verifiedmanually verified
+        // skip those that are manually verified
         match name {
             "execv" |       // crazy stuff with const/mut
             "execve" |
@@ -347,6 +347,22 @@ fn main() {
             "syscall" |
             "ptrace" |
             "sigaltstack" if rumprun => true,
+
+            // There seems to be a small error in EGLIBC's eventfd.h header. The
+            // [underlying system call][1] always takes its first `count`
+            // argument as an `unsigned int`, but [EGLIBC's <sys/eventfd.h>
+            // header][2] declares it to take an `int`. [GLIBC's header][3]
+            // matches the kernel.
+            //
+            // EGLIBC is no longer actively developed, and Debian, the largest
+            // distribution that had been using it, switched back to GLIBC in
+            // April 2015. So effectively all Linux <sys/eventfd.h> headers will
+            // be using `unsigned int` soon.
+            //
+            // [1]: https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/fs/eventfd.c?id=refs/tags/v3.12.51#n397
+            // [2]: http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/trusty/eglibc/trusty/view/head:/sysdeps/unix/sysv/linux/sys/eventfd.h
+            // [3]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/sys/eventfd.h;h=6295f32e937e779e74318eb9d3bdbe76aef8a8f3;hb=4e42b5b8f89f0e288e68be7ad70f9525aebc2cff#l34
+            "eventfd" if linux => true,
 
             _ => false,
         }
