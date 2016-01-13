@@ -110,8 +110,6 @@ pub const MAP_ANONYMOUS: ::c_int = 0x0020;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
 pub const MAP_DENYWRITE: ::c_int = 0x0800;
 pub const MAP_EXECUTABLE: ::c_int = 0x01000;
-pub const MAP_LOCKED: ::c_int = 0x02000;
-pub const MAP_NORESERVE: ::c_int = 0x04000;
 pub const MAP_POPULATE: ::c_int = 0x08000;
 pub const MAP_NONBLOCK: ::c_int = 0x010000;
 pub const MAP_STACK: ::c_int = 0x020000;
@@ -138,7 +136,6 @@ pub const EXFULL: ::c_int = 54;
 pub const ENOANO: ::c_int = 55;
 pub const EBADRQC: ::c_int = 56;
 pub const EBADSLT: ::c_int = 57;
-pub const EDEADLOCK: ::c_int = EDEADLK;
 pub const EMULTIHOP: ::c_int = 72;
 pub const EOVERFLOW: ::c_int = 75;
 pub const ENOTUNIQ: ::c_int = 76;
@@ -217,11 +214,6 @@ pub const SO_KEEPALIVE: ::c_int = 9;
 pub const SO_OOBINLINE: ::c_int = 10;
 pub const SO_LINGER: ::c_int = 13;
 pub const SO_REUSEPORT: ::c_int = 15;
-pub const SO_PEERCRED: ::c_int = 17;
-pub const SO_RCVLOWAT: ::c_int = 18;
-pub const SO_SNDLOWAT: ::c_int = 19;
-pub const SO_RCVTIMEO: ::c_int = 20;
-pub const SO_SNDTIMEO: ::c_int = 21;
 pub const SO_ACCEPTCONN: ::c_int = 30;
 
 pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
@@ -266,9 +258,6 @@ pub const SIG_UNBLOCK: ::c_int = 0x01;
 
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
-
-pub const FIOCLEX: ::c_ulong = 0x5451;
-pub const FIONBIO: ::c_ulong = 0x5421;
 
 pub const BUFSIZ: ::c_uint = 8192;
 pub const TMP_MAX: ::c_uint = 238328;
@@ -443,7 +432,10 @@ cfg_if! {
     if #[cfg(any(target_arch = "x86", target_arch = "arm"))] {
         mod b32;
         pub use self::b32::*;
-    } else if #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
+    } else if #[cfg(any(target_arch = "x86_64",
+                        target_arch = "aarch64",
+                        target_arch = "powerpc64",
+                        target_arch = "powerpc64le"))] {
         mod b64;
         pub use self::b64::*;
     } else {
