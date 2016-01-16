@@ -510,6 +510,7 @@ extern {
     pub fn dup3(oldfd: ::c_int, newfd: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn unshare(flags: ::c_int) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
