@@ -199,6 +199,51 @@ impl TestGenerator {
     }
 
     fn _generate(&mut self, krate: &Path, out_file: &str) {
+        let out = self.generate_files(krate, out_file);
+
+        let target = self.target.clone().unwrap_or_else(|| {
+            env::var("TARGET").unwrap()
+        });
+
+        // Compile our C shim to be linked into tests
+        let mut cfg = gcc::Config::new();
+        cfg.file(&out.with_extension("c"));
+
+        if target.contains("msvc") {
+            cfg.flag("/W3").flag("/Wall").flag("/WX")
+                // ignored warnings
+               .flag("/wd4820")  // warning about adding padding?
+               .flag("/wd4100")  // unused parameters
+               .flag("/wd4996")  // deprecated functions
+               .flag("/wd4296")  // '<' being always false
+               .flag("/wd4255")  // converting () to (void)
+               .flag("/wd4668")  // using an undefined thing in preprocessor?
+                ;
+        } else {
+            cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
+               .flag("-Wno-unused-parameter")
+               .flag("-Wno-type-limits");
+        }
+        for &(ref a, ref b) in self.defines.iter() {
+            cfg.define(a, b.as_ref().map(|s| &s[..]));
+        }
+        for p in self.includes.iter() {
+            cfg.include(p);
+        }
+
+        let stem = out.file_stem().unwrap().to_str().unwrap();
+        cfg.target(&target)
+           .out_dir(out.parent().unwrap())
+           .compile(&format!("lib{}.a", stem));
+    }
+
+    pub fn generate_files<P: AsRef<Path>>(&mut self, krate: P, out_file: &str)
+                                          -> PathBuf {
+        self._generate_files(krate.as_ref(), out_file)
+    }
+
+    fn _generate_files(&mut self, krate: &Path, out_file: &str)
+                       -> PathBuf {
         // Prep the test generator
         let out_dir = self.out_dir.clone().unwrap_or_else(|| {
             PathBuf::from(env::var_os("OUT_DIR").unwrap())
@@ -336,39 +381,8 @@ impl TestGenerator {
         // Walk the crate, emitting test cases for everything found
         visit::walk_crate(&mut gen, &krate);
         gen.emit_run_all();
-        drop(gen);
 
-        // Compile our C shim to be linked into tests
-        let mut cfg = gcc::Config::new();
-        cfg.file(&c_file);
-
-        if target.contains("msvc") {
-            cfg.flag("/W3").flag("/Wall").flag("/WX")
-                // ignored warnings
-               .flag("/wd4820")  // warning about adding padding?
-               .flag("/wd4100")  // unused parameters
-               .flag("/wd4996")  // deprecated functions
-               .flag("/wd4296")  // '<' being always false
-               .flag("/wd4255")  // converting () to (void)
-               .flag("/wd4668")  // using an undefined thing in preprocessor?
-                ;
-        } else {
-            cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
-               .flag("-Wno-unused-parameter")
-               .flag("-Wno-type-limits");
-        }
-        for &(ref a, ref b) in self.defines.iter() {
-            cfg.define(a, b.as_ref().map(|s| &s[..]));
-        }
-        for p in self.includes.iter() {
-            cfg.include(p);
-        }
-
-        let stem = c_file.file_stem().unwrap().to_str().unwrap();
-        cfg.target(&target)
-           .out_dir(&out_dir)
-           .compile(&format!("lib{}.a", stem));
-
+        return out_file
     }
 }
 
