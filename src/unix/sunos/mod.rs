@@ -27,6 +27,11 @@ pub type useconds_t = ::c_uint;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type pthread_t = ::uintptr_t;
+pub type pthread_key_t = ::c_uint;
+pub type blksize_t = u32;
+pub type fflags_t = u32;
+
+pub enum timezone {}
 
 s! {
     pub struct sockaddr {
@@ -110,135 +115,41 @@ s! {
     pub struct fd_set {
         fds_bits: [i32; FD_SETSIZE / 32],
     }
-}
 
-pub const SA_ONSTACK: ::c_int = 0x00000001;
-pub const SA_RESETHAND: ::c_int = 0x00000002;
-pub const SA_RESTART: ::c_int = 0x00000004;
-pub const SA_SIGINFO: ::c_int = 0x00000008;
-pub const SA_NODEFER: ::c_int = 0x00000010;
-pub const SA_NOCLDWAIT: ::c_int = 0x00010000;
-pub const SA_NOCLDSTOP: ::c_int = 0x00020000;
-
-pub const FIONBIO: ::c_int = 0x8004667e;
-
-pub const SIGCHLD: ::c_int = 18;
-pub const SIGBUS: ::c_int = 10;
-pub const SIG_SETMASK: ::c_int = 3;
-
-pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
-pub const IPV6_V6ONLY: ::c_int = 0x27;
-
-pub const FD_SETSIZE: usize = 1024;
-
-pub const ST_RDONLY: ::c_ulong = 1;
-pub const ST_NOSUID: ::c_ulong = 2;
-
-pub const NI_MAXHOST: ::socklen_t = 1025;
-
-f! {
-    pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
-        let fd = fd as usize;
-        (*set).fds_bits[fd / 32] &= !(1 << (fd % 32));
-        return
+    pub struct pthread_attr_t {
+        __pthread_attrp: *mut ::c_void
     }
 
-    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
-        let fd = fd as usize;
-        return ((*set).fds_bits[fd / 32] & (1 << (fd % 32))) != 0
+    pub struct pthread_mutex_t {
+        __pthread_mutex_flag1: u16,
+        __pthread_mutex_flag2: u8,
+        __pthread_mutex_ceiling: u8,
+        __pthread_mutex_type: u16,
+        __pthread_mutex_magic: u16,
+        __pthread_mutex_lock: u64,
+        __pthread_mutex_data: u64
     }
 
-    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
-        let fd = fd as usize;
-        (*set).fds_bits[fd / 32] |= 1 << (fd % 32);
-        return
+    pub struct pthread_mutexattr_t {
+        __pthread_mutexattrp: *mut ::c_void
     }
 
-    pub fn FD_ZERO(set: *mut fd_set) -> () {
-        for slot in (*set).fds_bits.iter_mut() {
-            *slot = 0;
-        }
+    pub struct pthread_cond_t {
+        __pthread_cond_flag: [u8; 4],
+        __pthread_cond_type: u16,
+        __pthread_cond_magic: u16,
+        __pthread_cond_data: u64
     }
 
-    pub fn WIFEXITED(status: ::c_int) -> bool {
-        (status & 0xFF) == 0
+    pub struct pthread_rwlock_t {
+        __pthread_rwlock_readers: i32,
+        __pthread_rwlock_type: u16,
+        __pthread_rwlock_magic: u16,
+        __pthread_rwlock_mutex: ::pthread_mutex_t,
+        __pthread_rwlock_readercv: ::pthread_cond_t,
+        __pthread_rwlock_writercv: ::pthread_cond_t
     }
 
-    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
-        (status >> 8) & 0xFF
-    }
-
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
-        status & 0x7F
-    }
-}
-
-extern {
-    pub fn stack_getbounds(sp: *mut ::stack_t) -> ::c_int;
-    pub fn mincore(addr: *const ::c_void, len: ::size_t,
-                   vec: *mut c_char) -> ::c_int;
-    pub fn setgroups(ngroups: ::c_int,
-                     ptr: *const ::gid_t) -> ::c_int;
-    pub fn ioctl(fildes: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
-    pub fn getnameinfo(sa: *const ::sockaddr,
-                       salen: ::socklen_t,
-                       host: *mut ::c_char,
-                       hostlen: ::socklen_t,
-                       serv: *mut ::c_char,
-                       sevlen: ::socklen_t,
-                       flags: ::c_int) -> ::c_int;
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t) -> *const passwd;
-    pub fn readdir(dirp: *mut ::DIR) -> *const ::dirent;
-}
-
-pub type blksize_t = u32;
-pub type fflags_t = u32;
-
-pub struct pthread_attr_t {
-    __pthread_attrp: *mut ::c_void
-}
-
-pub struct pthread_mutex_t {
-    __pthread_mutex_flag1: u16,
-    __pthread_mutex_flag2: u8,
-    __pthread_mutex_ceiling: u8,
-    __pthread_mutex_type: u16,
-    __pthread_mutex_magic: u16,
-    __pthread_mutex_lock: u64,
-    __pthread_mutex_data: u64
-}
-
-pub struct pthread_mutexattr_t {
-    __pthread_mutexattrp: *mut ::c_void
-}
-
-pub struct pthread_cond_t {
-    __pthread_cond_flag: [u8; 4],
-    __pthread_cond_type: u16,
-    __pthread_cond_magic: u16,
-    __pthread_cond_data: u64
-}
-
-pub struct pthread_rwlock_t {
-    __pthread_rwlock_readers: i32,
-    __pthread_rwlock_type: u16,
-    __pthread_rwlock_magic: u16,
-    __pthread_rwlock_mutex: ::pthread_mutex_t,
-    __pthread_rwlock_readercv: ::pthread_cond_t,
-    __pthread_rwlock_writercv: ::pthread_cond_t
-}
-
-pub type pthread_key_t = ::c_uint;
-
-pub enum timezone {}
-
-s! {
     pub struct dirent {
         pub d_ino: ::ino_t,
         pub d_off: ::off_t,
@@ -332,7 +243,59 @@ s! {
         pub dli_sname: *const ::c_char,
         pub dli_saddr: *mut ::c_void,
     }
+
+    pub struct stat {
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_atime: ::time_t,
+        pub st_atime_nsec: ::c_long,
+        pub st_mtime: ::time_t,
+        pub st_mtime_nsec: ::c_long,
+        pub st_ctime: ::time_t,
+        pub st_ctime_nsec: ::c_long,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt_t,
+        __unused: [::c_char; 16]
+    }
+
+    pub struct termios {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_cc: [::cc_t; ::NCCS]
+    }
 }
+
+pub const SA_ONSTACK: ::c_int = 0x00000001;
+pub const SA_RESETHAND: ::c_int = 0x00000002;
+pub const SA_RESTART: ::c_int = 0x00000004;
+pub const SA_SIGINFO: ::c_int = 0x00000008;
+pub const SA_NODEFER: ::c_int = 0x00000010;
+pub const SA_NOCLDWAIT: ::c_int = 0x00010000;
+pub const SA_NOCLDSTOP: ::c_int = 0x00020000;
+
+pub const FIONBIO: ::c_int = 0x8004667e;
+
+pub const SIGCHLD: ::c_int = 18;
+pub const SIGBUS: ::c_int = 10;
+pub const SIG_SETMASK: ::c_int = 3;
+
+pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
+pub const IPV6_V6ONLY: ::c_int = 0x27;
+
+pub const FD_SETSIZE: usize = 1024;
+
+pub const ST_RDONLY: ::c_ulong = 1;
+pub const ST_NOSUID: ::c_ulong = 2;
+
+pub const NI_MAXHOST: ::socklen_t = 1025;
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
@@ -738,32 +701,64 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 };
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 4;
 
-s! {
-    pub struct stat {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        pub st_size: ::off_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt_t,
-        __unused: [::c_char; 16]
+f! {
+    pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        (*set).fds_bits[fd / 32] &= !(1 << (fd % 32));
+        return
     }
 
-    pub struct termios {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_cc: [::cc_t; ::NCCS]
+    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+        let fd = fd as usize;
+        return ((*set).fds_bits[fd / 32] & (1 << (fd % 32))) != 0
+    }
+
+    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        (*set).fds_bits[fd / 32] |= 1 << (fd % 32);
+        return
+    }
+
+    pub fn FD_ZERO(set: *mut fd_set) -> () {
+        for slot in (*set).fds_bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn WIFEXITED(status: ::c_int) -> bool {
+        (status & 0xFF) == 0
+    }
+
+    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xFF
+    }
+
+    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+        status & 0x7F
     }
 }
+
+extern {
+    pub fn stack_getbounds(sp: *mut ::stack_t) -> ::c_int;
+    pub fn mincore(addr: *const ::c_void, len: ::size_t,
+                   vec: *mut c_char) -> ::c_int;
+    pub fn setgroups(ngroups: ::c_int,
+                     ptr: *const ::gid_t) -> ::c_int;
+    pub fn ioctl(fildes: ::c_int, request: ::c_int, ...) -> ::c_int;
+    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
+                    -> ::c_int;
+    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::socklen_t,
+                       serv: *mut ::c_char,
+                       sevlen: ::socklen_t,
+                       flags: ::c_int) -> ::c_int;
+    pub fn getpwuid_r(uid: ::uid_t,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t) -> *const passwd;
+    pub fn readdir(dirp: *mut ::DIR) -> *const ::dirent;
+}
+
