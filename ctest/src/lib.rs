@@ -541,7 +541,7 @@ impl<'a> Generator<'a> {
                 continue
             }
 
-            let sig = format!("__test_field_offset_{}_{}({}* b)", ty, name, cty);
+            let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
             let sig = self.csig_returning_ptr(&field.node.ty, &sig);
             t!(writeln!(self.c, r#"
                 {sig} {{
@@ -550,14 +550,14 @@ impl<'a> Generator<'a> {
             "#, sig = sig, c_field = cfield));
             t!(writeln!(self.rust, r#"
                 extern {{
-                    fn __test_field_offset_{ty}_{field}(a: *mut {ty})
+                    fn __test_field_type_{ty}_{field}(a: *mut {ty})
                                                       -> *mut {field_ty};
                 }}
                 unsafe {{
                     let foo = 0 as *mut {ty};
                     same(&(*foo).{field} as *const _ as *mut _,
-                         __test_field_offset_{ty}_{field}(foo),
-                         "field offset {field} of {ty}");
+                         __test_field_type_{ty}_{field}(foo),
+                         "field type {field} of {ty}");
                 }}
             "#, ty = ty, field = name, field_ty = rust_fieldty));
         }
