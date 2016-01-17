@@ -523,6 +523,8 @@ pub const CLONE_DETACHED: ::c_int = 0x400000;
 pub const CLONE_UNTRACED: ::c_int = 0x800000;
 pub const CLONE_CHILD_SETTID: ::c_int = 0x01000000;
 
+pub const WNOHANG: ::c_int = 1;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -564,6 +566,11 @@ f! {
 }
 
 extern {
+    pub fn getpwuid_r(uid: ::uid_t,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;
