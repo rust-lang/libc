@@ -566,6 +566,11 @@ f! {
 }
 
 extern {
+    pub fn getpwuid_r(uid: ::uid_t,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;

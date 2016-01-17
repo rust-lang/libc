@@ -620,13 +620,6 @@ extern {
                     addrlen: *mut socklen_t) -> ::ssize_t;
     pub fn mkfifo(path: *const c_char, mode: mode_t) -> ::c_int;
 
-    #[cfg(not(target_os = "sunos"))]
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid_r50")]
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigemptyset14")]
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaddset14")]
