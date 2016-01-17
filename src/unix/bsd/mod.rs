@@ -280,6 +280,8 @@ pub const FLUSHO: ::tcflag_t = 0x00800000;
 pub const PENDIN: ::tcflag_t = 0x20000000;
 pub const NOFLSH: ::tcflag_t = 0x80000000;
 
+pub const WNOHANG: ::c_int = 1;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;

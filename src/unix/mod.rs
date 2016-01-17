@@ -99,7 +99,6 @@ s! {
     }
 }
 
-pub const WNOHANG: ::c_int = 1;
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
 pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
@@ -621,6 +620,7 @@ extern {
                     addrlen: *mut socklen_t) -> ::ssize_t;
     pub fn mkfifo(path: *const c_char, mode: mode_t) -> ::c_int;
 
+    #[cfg(not(target_os = "sunos"))]
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid_r50")]
     pub fn getpwuid_r(uid: ::uid_t,
                       pwd: *mut passwd,
@@ -697,6 +697,9 @@ cfg_if! {
                         target_os = "bitrig"))] {
         mod bsd;
         pub use self::bsd::*;
+    } else if #[cfg(target_os = "sunos")] {
+        mod sunos;
+        pub use self::sunos::*;
     } else {
         // ...
     }
