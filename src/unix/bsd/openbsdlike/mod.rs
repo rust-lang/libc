@@ -41,6 +41,14 @@ s! {
         pub c_ispeed: ::c_int,
         pub c_ospeed: ::c_int,
     }
+
+    pub struct flock {
+        pub l_start: ::off_t,
+        pub l_len: ::off_t,
+        pub l_pid: ::pid_t,
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+    }
 }
 
 pub const EXIT_FAILURE : ::c_int = 1;
@@ -100,6 +108,9 @@ pub const F_LOCK : ::c_int = 1;
 pub const F_TEST : ::c_int = 3;
 pub const F_TLOCK : ::c_int = 2;
 pub const F_ULOCK : ::c_int = 0;
+pub const F_GETLK: ::c_int = 7;
+pub const F_SETLK: ::c_int = 8;
+pub const F_SETLKW: ::c_int = 9;
 pub const SIGHUP : ::c_int = 1;
 pub const SIGINT : ::c_int = 2;
 pub const SIGQUIT : ::c_int = 3;
@@ -353,6 +364,9 @@ pub const _SC_PAGESIZE : ::c_int = 28;
 pub const _SC_FSYNC : ::c_int = 29;
 
 pub const KERN_PROC_ARGV: ::c_int = 1;
+
+pub const Q_GETQUOTA: ::c_int = 0x300;
+pub const Q_SETQUOTA: ::c_int = 0x400;
 
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,

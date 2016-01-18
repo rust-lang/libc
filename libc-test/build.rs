@@ -101,10 +101,11 @@ fn main() {
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
-        if !openbsd {
+        cfg.header("sys/statvfs.h");
+
+        if !openbsd && !freebsd {
             cfg.header("sys/quota.h");
         }
-        cfg.header("sys/statvfs.h");
 
         if !musl {
             cfg.header("sys/sysctl.h");
@@ -159,6 +160,7 @@ fn main() {
     if freebsd {
         cfg.header("pthread_np.h");
         cfg.header("sched.h");
+        cfg.header("ufs/ufs/quota.h");
     }
 
     if netbsd {
@@ -363,6 +365,11 @@ fn main() {
             // [2]: http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/trusty/eglibc/trusty/view/head:/sysdeps/unix/sysv/linux/sys/eventfd.h
             // [3]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/sys/eventfd.h;h=6295f32e937e779e74318eb9d3bdbe76aef8a8f3;hb=4e42b5b8f89f0e288e68be7ad70f9525aebc2cff#l34
             "eventfd" if linux => true,
+
+            // The `uname` funcion in freebsd is now an inline wrapper that
+            // delegates to another, but the symbol still exists, so don't check
+            // the symbol.
+            "uname" if freebsd => true,
 
             _ => false,
         }

@@ -1,3 +1,6 @@
+pub type fsblkcnt_t = ::uint64_t;
+pub type fsfilcnt_t = ::uint64_t;
+
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 pub const KERN_PROC_PATHNAME: ::c_int = 12;
 pub const SIGSTKSZ: ::size_t = 34816;
