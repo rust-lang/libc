@@ -429,7 +429,9 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "x86", target_arch = "arm"))] {
+    if #[cfg(any(target_arch = "x86",
+                 target_arch = "arm",
+                 target_arch = "powerpc"))] {
         mod b32;
         pub use self::b32::*;
     } else if #[cfg(any(target_arch = "x86_64",
