@@ -12,8 +12,6 @@ pub type pthread_mutexattr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
 pub type pthread_key_t = ::c_int;
-pub type fsblkcnt_t = ::c_uint;
-pub type fsfilcnt_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
 
@@ -24,7 +22,7 @@ s! {
         pub d_fileno: u32,
         pub d_reclen: u16,
         pub d_type: u8,
-        pub d_namelen: u8,
+        pub d_namlen: u8,
         pub d_name: [::c_char; 256],
     }
 
@@ -85,7 +83,7 @@ s! {
     }
 
     pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
+        pub ss_sp: *mut ::c_char,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
     }
@@ -131,6 +129,15 @@ s! {
         pub c_cc: [::cc_t; ::NCCS],
         pub c_ispeed: ::speed_t,
         pub c_ospeed: ::speed_t,
+    }
+
+    pub struct flock {
+        pub l_start: ::off_t,
+        pub l_len: ::off_t,
+        pub l_pid: ::pid_t,
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_sysid: ::c_int,
     }
 }
 
@@ -194,6 +201,9 @@ pub const F_TEST: ::c_int = 3;
 pub const F_TLOCK: ::c_int = 2;
 pub const F_ULOCK: ::c_int = 0;
 pub const F_DUPFD_CLOEXEC: ::c_int = 17;
+pub const F_GETLK: ::c_int = 11;
+pub const F_SETLK: ::c_int = 12;
+pub const F_SETLKW: ::c_int = 13;
 pub const SIGHUP: ::c_int = 1;
 pub const SIGINT: ::c_int = 2;
 pub const SIGQUIT: ::c_int = 3;
@@ -555,9 +565,10 @@ pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
-pub const HW_AVAILCPU: ::c_int = 25;
-
 pub const NI_MAXHOST: ::size_t = 1025;
+
+pub const Q_GETQUOTA: ::c_int = 0x700;
+pub const Q_SETQUOTA: ::c_int = 0x800;
 
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
