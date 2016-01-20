@@ -101,10 +101,11 @@ fn main() {
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
-        if !openbsd {
+        cfg.header("sys/statvfs.h");
+
+        if !openbsd && !freebsd {
             cfg.header("sys/quota.h");
         }
-        cfg.header("sys/statvfs.h");
 
         if !musl {
             cfg.header("sys/sysctl.h");
@@ -159,6 +160,7 @@ fn main() {
     if freebsd {
         cfg.header("pthread_np.h");
         cfg.header("sched.h");
+        cfg.header("ufs/ufs/quota.h");
     }
 
     if netbsd {
@@ -364,6 +366,11 @@ fn main() {
             // [3]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/sys/eventfd.h;h=6295f32e937e779e74318eb9d3bdbe76aef8a8f3;hb=4e42b5b8f89f0e288e68be7ad70f9525aebc2cff#l34
             "eventfd" if linux => true,
 
+            // The `uname` funcion in freebsd is now an inline wrapper that
+            // delegates to another, but the symbol still exists, so don't check
+            // the symbol.
+            "uname" if freebsd => true,
+
             _ => false,
         }
     });
@@ -406,5 +413,9 @@ fn main() {
         }
     });
 
-    cfg.generate("../src/lib.rs", "all.rs");
+    if env::var("SKIP_COMPILE").is_ok() {
+        cfg.generate_files("../src/lib.rs", "all.rs");
+    } else {
+        cfg.generate("../src/lib.rs", "all.rs");
+    }
 }

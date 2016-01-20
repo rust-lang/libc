@@ -47,11 +47,7 @@ case "$TARGET" in
     grep "^PASSED .* tests" /tmp/out
     ;;
 
-  *-apple-ios)
-    libc-test/target/$TARGET/debug/libc-test
-    ;;
-
   *)
-    cargo run --manifest-path libc-test/Cargo.toml --target $TARGET
+    libc-test/target/$TARGET/debug/libc-test
     ;;
 esac

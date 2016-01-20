@@ -48,6 +48,12 @@ matrix:
     - os: linux
       env: TARGET=x86_64-rumprun-netbsd DOCKER=alexcrichton/rust-libc-rumprun:2015-11-27
       rust: nightly-2015-09-27
+    - os: linux
+      env: TARGET=x86_64-unknown-freebsd QEMU=freebsd.qcow2
+      rust: nightly
+    - os: linux
+      env: TARGET=x86_64-unknown-openbsd QEMU=openbsd.qcow2
+      rust: nightly
 notifications:
   email:
     on_success: never
