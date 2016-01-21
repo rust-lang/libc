@@ -1,7 +1,7 @@
 //! PowerPC64-specific definitions for 64-bit linux-like values
 
 pub type c_char = u8;
-pub type wchar_t = u32;
+pub type wchar_t = i32;
 pub type nlink_t = u64;
 pub type blksize_t = i64;
 
