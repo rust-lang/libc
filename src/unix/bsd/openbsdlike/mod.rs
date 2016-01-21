@@ -68,6 +68,7 @@ pub const L_tmpnam : ::c_uint = 1024;
 pub const O_RDONLY : ::c_int = 0;
 pub const O_WRONLY : ::c_int = 1;
 pub const O_RDWR : ::c_int = 2;
+pub const O_ACCMODE : ::c_int = 3;
 pub const O_APPEND : ::c_int = 8;
 pub const O_CREAT : ::c_int = 512;
 pub const O_EXCL : ::c_int = 2048;
