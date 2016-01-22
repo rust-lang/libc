@@ -105,12 +105,13 @@ Tested:
   * [`arm-unknown-linux-gnueabihf`](https://doc.rust-lang.org/libc/arm-unknown-linux-gnueabihf/libc)
   * [`arm-linux-androideabi`](https://doc.rust-lang.org/libc/arm-linux-androideabi/libc)
     (Android)
+  * [`x86_64-unknown-freebsd`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-freebsd/libc)
+  * [`x86_64-unknown-openbsd`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-openbsd/libc)
+  * [`x86_64-rumprun-netbsd`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-netbsd/libc)
 
 The following may be supported, but are not guaranteed to always work:
 
-  * `x86_64-unknown-freebsd`
   * `i686-unknown-freebsd`
-  * `x86_64-unknown-bitrig`
-  * `x86_64-unknown-dragonfly`
-  * `x86_64-unknown-openbsd`
-  * `x86_64-unknown-netbsd`
+  * [`x86_64-unknown-bitrig`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-bitrig/libc)
+  * [`x86_64-unknown-dragonfly`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-dragonfly/libc)
+  * [`x86_64-unknown-netbsd`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-netbsd/libc)
