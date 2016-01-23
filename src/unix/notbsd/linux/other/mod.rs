@@ -424,7 +424,7 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::socklen_t,
                        flags: ::c_int) -> ::c_int;
-    pub fn eventfd(init: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_uint, ...) -> ::c_long;
 }
 
