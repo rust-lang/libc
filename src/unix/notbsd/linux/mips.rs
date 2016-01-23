@@ -205,6 +205,8 @@ pub const O_FSYNC: ::c_int = 0x4010;
 pub const O_ASYNC: ::c_int = 0x1000;
 pub const O_NDELAY: ::c_int = 0x80;
 
+pub const SOCK_NONBLOCK: ::c_int = 128;
+
 pub const EDEADLK: ::c_int = 45;
 pub const ENAMETOOLONG: ::c_int = 78;
 pub const ENOLCK: ::c_int = 46;
