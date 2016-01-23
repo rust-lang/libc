@@ -384,12 +384,12 @@ pub const EFD_SEMAPHORE: ::c_int = 0x1;
 
 pub const NCCS: usize = 32;
 
-pub const CLONE_NEWUTS: ::c_uint = 0x04000000;
-pub const CLONE_NEWIPC: ::c_uint = 0x08000000;
-pub const CLONE_NEWUSER: ::c_uint = 0x10000000;
-pub const CLONE_NEWPID: ::c_uint = 0x20000000;
-pub const CLONE_NEWNET: ::c_uint = 0x40000000;
-pub const CLONE_IO: ::c_uint = 0x80000000;
+pub const CLONE_NEWUTS: ::c_int = 0x04000000;
+pub const CLONE_NEWIPC: ::c_int = 0x08000000;
+pub const CLONE_NEWUSER: ::c_int = 0x10000000;
+pub const CLONE_NEWPID: ::c_int = 0x20000000;
+pub const CLONE_NEWNET: ::c_int = 0x40000000;
+pub const CLONE_IO: ::c_int = 0x80000000;
 
 extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
