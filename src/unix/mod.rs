@@ -129,6 +129,8 @@ pub const POLLERR: ::c_short = 0x8;
 pub const POLLHUP: ::c_short = 0x10;
 pub const POLLNVAL: ::c_short = 0x20;
 
+pub const IF_NAMESIZE: ::size_t = 16;
+
 cfg_if! {
     if #[cfg(feature = "default")] {
         // cargo build, don't pull in anything extra as the libstd  dep
@@ -363,6 +365,7 @@ extern {
     pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
+    pub fn if_indextoname(ifindex: ::c_uint, ifname: *mut ::c_char) -> *mut ::c_char;
 
     #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
