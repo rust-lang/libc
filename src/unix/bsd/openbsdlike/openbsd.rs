@@ -134,6 +134,9 @@ pub const RLIM_NLIMITS: ::c_int = 9;
 pub const SO_SNDTIMEO: ::c_int = 0x1005;
 pub const SO_RCVTIMEO: ::c_int = 0x1006;
 
+pub const IPV6_JOIN_GROUP: ::c_int = 12;
+pub const IPV6_LEAVE_GROUP: ::c_int = 13;
+
 pub const KERN_PROC : ::c_int = 66;
 pub const O_DSYNC : ::c_int = 128;
 
