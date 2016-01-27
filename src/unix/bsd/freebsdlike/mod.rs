@@ -363,6 +363,7 @@ pub const _SC_GETGR_R_SIZE_MAX: ::c_int = 70;
 pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 71;
 pub const _SC_LOGIN_NAME_MAX: ::c_int = 73;
 pub const _SC_MQ_PRIO_MAX: ::c_int = 75;
+pub const _SC_NPROCESSORS_ONLN: ::c_int = 58;
 pub const _SC_THREAD_ATTR_STACKADDR: ::c_int = 82;
 pub const _SC_THREAD_ATTR_STACKSIZE: ::c_int = 83;
 pub const _SC_THREAD_DESTRUCTOR_ITERATIONS: ::c_int = 85;
