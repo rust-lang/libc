@@ -57,10 +57,12 @@ s! {
     }
 
     #[cfg_attr(target_os = "netbsd", repr(packed))]
+    #[derive(Eq, Hash, PartialEq)]
     pub struct in_addr {
         pub s_addr: in_addr_t,
     }
 
+    #[derive(Eq, Hash, PartialEq)]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
         __align: [u32; 0],
