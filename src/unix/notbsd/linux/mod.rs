@@ -125,6 +125,7 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr_nl {
         pub nl_family: ::sa_family_t,
         nl_pad: ::c_ushort,

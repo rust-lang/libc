@@ -6,6 +6,7 @@ mod imp {
     pub use core::clone::Clone;
     pub use core::marker::Copy;
     pub use core::mem;
+    pub use core::hash::{Hash, Hasher};
 }
 
 #[cfg(dox)]

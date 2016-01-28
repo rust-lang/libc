@@ -1,3 +1,4 @@
+use dox::{Hash, Hasher};
 use dox::mem;
 
 pub type c_char = i8;
@@ -11,12 +12,14 @@ pub type pthread_t = ::uintptr_t;
 pub type nfds_t = ::c_uint;
 
 s! {
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
     }
 
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr_in6 {
         pub sin6_len: u8,
         pub sin6_family: sa_family_t,
@@ -104,6 +107,21 @@ s! {
 
     pub struct fsid_t {
         __fsid_val: [::int32_t; 2],
+    }
+}
+
+impl PartialEq for sockaddr_un {
+    fn eq(&self, other: &sockaddr_un) -> bool {
+        self.sun_family == other.sun_family && &self.sun_path[..] == &other.sun_path[..]
+    }
+}
+
+impl Eq for sockaddr_un { }
+
+impl Hash for sockaddr_un {
+    fn hash<H>(&self, state: &mut H) where H: Hasher {
+        self.sun_family.hash(state);
+        &self.sun_path[..].hash(state);
     }
 }
 
