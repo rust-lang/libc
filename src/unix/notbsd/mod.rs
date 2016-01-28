@@ -1,3 +1,4 @@
+use dox::{Hash, Hasher};
 use dox::mem;
 
 pub type rlim_t = c_ulong;
@@ -9,11 +10,13 @@ pub type tcflag_t = ::c_uint;
 pub enum timezone {}
 
 s! {
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
     }
 
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr_in {
         pub sin_family: sa_family_t,
         pub sin_port: ::in_port_t,
@@ -21,6 +24,7 @@ s! {
         pub sin_zero: [u8; 8],
     }
 
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr_in6 {
         pub sin6_family: sa_family_t,
         pub sin6_port: ::in_port_t,
@@ -61,6 +65,7 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr_ll {
         pub sll_family: ::c_ushort,
         pub sll_protocol: ::c_ushort,
@@ -122,6 +127,21 @@ s! {
         pub version: [::c_char; 65],
         pub machine: [::c_char; 65],
         pub domainname: [::c_char; 65]
+    }
+}
+
+impl PartialEq for sockaddr_un {
+    fn eq(&self, other: &sockaddr_un) -> bool {
+        self.sun_family == other.sun_family && &self.sun_path[..] == &other.sun_path[..]
+    }
+}
+
+impl Eq for sockaddr_un { }
+
+impl Hash for sockaddr_un {
+    fn hash<H>(&self, state: &mut H) where H: Hasher {
+        self.sun_family.hash(state);
+        &self.sun_path[..].hash(state);
     }
 }
 

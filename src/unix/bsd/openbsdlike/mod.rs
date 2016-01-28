@@ -24,6 +24,7 @@ s! {
         pub ss_flags: ::c_int,
     }
 
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr_in {
         pub sin_len: u8,
         pub sin_family: ::sa_family_t,

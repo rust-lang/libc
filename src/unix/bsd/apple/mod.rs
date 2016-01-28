@@ -173,6 +173,7 @@ s! {
         pub dli_saddr: *mut ::c_void,
     }
 
+    #[derive(Eq, Hash, PartialEq)]
     pub struct sockaddr_in {
         pub sin_len: u8,
         pub sin_family: ::sa_family_t,
