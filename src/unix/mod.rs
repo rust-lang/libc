@@ -693,9 +693,9 @@ cfg_if! {
                         target_os = "bitrig"))] {
         mod bsd;
         pub use self::bsd::*;
-    } else if #[cfg(target_os = "sunos")] {
-        mod sunos;
-        pub use self::sunos::*;
+    } else if #[cfg(target_os = "solaris")] {
+        mod solaris;
+        pub use self::solaris::*;
     } else {
         // ...
     }
