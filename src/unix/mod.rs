@@ -132,7 +132,7 @@ pub const POLLNVAL: ::c_short = 0x20;
 pub const IF_NAMESIZE: ::size_t = 16;
 
 cfg_if! {
-    if #[cfg(feature = "default")] {
+    if #[cfg(not(stdbuild))] {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
     } else if #[cfg(target_env = "musl")] {
