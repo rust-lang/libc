@@ -366,4 +366,7 @@ extern {
                   addr: *mut ::c_void,
                   data: ::c_int) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn pthread_setname_np(t: ::pthread_t,
+                              name: *const ::c_char,
+                              arg: *mut ::c_void) -> ::c_int;
 }
