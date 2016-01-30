@@ -1,67 +1,17 @@
-pub type c_long = i64;
-pub type c_ulong = u64;
-pub type clock_t = i64;
-pub type time_t = i64;
-pub type suseconds_t = i64;
+pub type clock_t = c_long;
+pub type time_t = c_long;
+pub type suseconds_t = c_long;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
-pub type c_char = i8;
-pub type wchar_t = i32;
-pub type nlink_t = u64;
-pub type blksize_t = i64;
+
+pub type nlink_t = usize;
+pub type blksize_t = c_long;
+pub type fsblkcnt_t = ::c_ulonglong;
+pub type fsfilcnt_t = ::c_ulonglong;
+pub type rlim_t = ::c_ulonglong;
 
 s! {
-    pub struct stat {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_nlink: ::nlink_t,
-        pub st_mode: ::mode_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        __pad0: ::c_int,
-        pub st_rdev: ::dev_t,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __unused: [::c_long; 3],
-    }
-
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino64_t,
-        pub st_nlink: ::nlink_t,
-        pub st_mode: ::mode_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        __pad0: ::c_int,
-        pub st_rdev: ::dev_t,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __reserved: [::c_long; 3],
-    }
-
-    pub struct pthread_attr_t {
-        __size: [u64; 7]
-    }
-
-    pub struct sigset_t {
-        __val: [::c_ulong; 16],
-    }
-
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
@@ -95,19 +45,6 @@ s! {
         __unused2: ::c_long
     }
 
-    pub struct shmid_ds {
-        pub shm_perm: ::ipc_perm,
-        pub shm_segsz: ::size_t,
-        pub shm_atime: ::time_t,
-        pub shm_dtime: ::time_t,
-        pub shm_ctime: ::time_t,
-        pub shm_cpid: ::pid_t,
-        pub shm_lpid: ::pid_t,
-        pub shm_nattch: ::c_ulong,
-        __pad1: ::c_ulong,
-        __pad2: ::c_ulong,
-    }
-
     pub struct statfs {
         pub f_type: ::c_ulong,
         pub f_bsize: ::c_ulong,
@@ -121,18 +58,6 @@ s! {
         pub f_frsize: ::c_ulong,
         pub f_flags: ::c_ulong,
         pub f_spare: [::c_ulong; 4],
-    }
-
-    pub struct msghdr {
-        pub msg_name: *mut ::c_void,
-        pub msg_namelen: ::socklen_t,
-        pub msg_iov: *mut ::iovec,
-        pub msg_iovlen: ::c_int,
-        __pad1: ::c_int,
-        pub msg_control: *mut ::c_void,
-        pub msg_controllen: ::socklen_t,
-        __pad2: ::socklen_t,
-        pub msg_flags: ::c_int,
     }
 
     pub struct termios {
@@ -353,10 +278,6 @@ pub const SIG_UNBLOCK: ::c_int = 0x01;
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
 
-pub const _SC_2_C_VERSION: ::c_int = 96;
-
-pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 
 pub const CPU_SETSIZE: ::c_int = 128;
@@ -407,7 +328,6 @@ pub const PTRACE_SETREGS: ::c_uint = 13;
 
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 
-pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
 
@@ -468,4 +388,16 @@ extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
+}
+
+cfg_if! {
+    if #[cfg(any(target_arch = "x86_64"))] {
+        mod b64;
+        pub use self::b64::*;
+    } else if #[cfg(any(target_arch = "x86",
+                        target_arch = "arm",
+                        target_arch = "asmjs"))] {
+        mod b32;
+        pub use self::b32::*;
+    } else { }
 }

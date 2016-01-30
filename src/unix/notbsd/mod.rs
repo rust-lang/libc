@@ -1,6 +1,5 @@
 use dox::mem;
 
-pub type rlim_t = c_ulong;
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
@@ -108,7 +107,8 @@ s! {
         pub dli_saddr: *mut ::c_void,
     }
 
-    #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"),
+    #[cfg_attr(any(all(target_arch = "x86", not(target_env = "musl")),
+                   target_arch = "x86_64"),
                repr(packed))]
     pub struct epoll_event {
         pub events: ::uint32_t,
@@ -424,9 +424,6 @@ pub const QIF_ALL: ::uint32_t = 63;
 pub const CBAUD: ::tcflag_t = 0o0010017;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
-
-pub const F_SETLK: ::c_int = 6;
-pub const F_SETLKW: ::c_int = 7;
 
 pub const MNT_FORCE: ::c_int = 0x1;
 

@@ -23,6 +23,7 @@ pub type time64_t = i64;
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type nfds_t = ::c_uint;
+pub type rlim_t = c_ulong;
 
 s! {
     pub struct stat {
@@ -468,6 +469,8 @@ pub const EFD_NONBLOCK: ::c_int = 0x800;
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
+pub const F_SETLK: ::c_int = 6;
+pub const F_SETLKW: ::c_int = 7;
 
 pub const TCGETS: ::c_int = 0x5401;
 pub const TCSETS: ::c_int = 0x5402;
