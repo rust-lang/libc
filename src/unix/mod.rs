@@ -135,7 +135,7 @@ cfg_if! {
     if #[cfg(not(stdbuild))] {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
-    } else if #[cfg(target_env = "musl")] {
+    } else if #[cfg(target_env = "musl", not(target_arch = "mips"))] {
         #[link(name = "c", kind = "static")]
         extern {}
     } else if #[cfg(target_os = "emscripten")] {
