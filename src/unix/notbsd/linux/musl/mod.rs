@@ -5,7 +5,6 @@ pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
 
-pub type nlink_t = usize;
 pub type blksize_t = c_long;
 pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
