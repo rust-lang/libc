@@ -2,6 +2,7 @@ pub type c_char = i8;
 pub type wchar_t = i32;
 pub type c_long = i64;
 pub type c_ulong = u64;
+pub type nlink_t = u64;
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
