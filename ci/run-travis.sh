@@ -108,7 +108,7 @@ cp ci/cargo-config .cargo/config
 # all others from the official distribution.
 if [ "$TRAVIS" = "true" ]; then
   case "$TARGET" in
-    *-apple-ios | *-rumprun-*)
+    *-rumprun-*)
       curl -s $EXTRA_TARGETS/$TARGET.tar.gz | \
        tar xzf - -C `rustc --print sysroot`/lib/rustlib
       ;;
