@@ -196,6 +196,7 @@ pub const _SC_XOPEN_LEGACY: ::c_int = 36;
 pub const _SC_ATEXIT_MAX: ::c_int = 37;
 pub const _SC_IOV_MAX: ::c_int = 38;
 pub const _SC_PAGESIZE: ::c_int = 39;
+pub const _SC_PAGE_SIZE: ::c_int = 40;
 pub const _SC_XOPEN_UNIX: ::c_int = 41;
 pub const _SC_MQ_PRIO_MAX: ::c_int = 51;
 pub const _SC_GETGR_R_SIZE_MAX: ::c_int = 71;

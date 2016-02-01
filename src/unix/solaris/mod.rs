@@ -626,6 +626,7 @@ pub const _SC_JOB_CONTROL: ::c_int = 6;
 pub const _SC_SAVED_IDS: ::c_int = 7;
 pub const _SC_VERSION: ::c_int = 8;
 pub const _SC_PAGESIZE: ::c_int = 11;
+pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_NPROCESSORS_ONLN: ::c_int = 15;
 pub const _SC_STREAM_MAX: ::c_int = 16;
 pub const _SC_TZNAME_MAX: ::c_int = 17;

@@ -220,6 +220,7 @@ pub const _SC_MQ_OPEN_MAX: ::c_int = 27;
 pub const _SC_MQ_PRIO_MAX: ::c_int = 28;
 pub const _SC_VERSION: ::c_int = 29;
 pub const _SC_PAGESIZE: ::c_int = 30;
+pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_RTSIG_MAX: ::c_int = 31;
 pub const _SC_SEM_NSEMS_MAX: ::c_int = 32;
 pub const _SC_SEM_VALUE_MAX: ::c_int = 33;

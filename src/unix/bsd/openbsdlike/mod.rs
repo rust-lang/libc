@@ -362,6 +362,7 @@ pub const _SC_2_UPE : ::c_int = 25;
 pub const _SC_STREAM_MAX : ::c_int = 26;
 pub const _SC_TZNAME_MAX : ::c_int = 27;
 pub const _SC_PAGESIZE : ::c_int = 28;
+pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_FSYNC : ::c_int = 29;
 
 pub const KERN_PROC_ARGV: ::c_int = 1;

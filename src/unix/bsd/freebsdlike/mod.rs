@@ -548,6 +548,7 @@ pub const _SC_AIO_PRIO_DELTA_MAX: ::c_int = 44;
 pub const _SC_DELAYTIMER_MAX: ::c_int = 45;
 pub const _SC_MQ_OPEN_MAX: ::c_int = 46;
 pub const _SC_PAGESIZE: ::c_int = 47;
+pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_RTSIG_MAX: ::c_int = 48;
 pub const _SC_SEM_NSEMS_MAX: ::c_int = 49;
 pub const _SC_SEM_VALUE_MAX: ::c_int = 50;
