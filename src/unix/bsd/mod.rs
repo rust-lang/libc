@@ -321,6 +321,8 @@ f! {
 }
 
 extern {
+    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
+    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
