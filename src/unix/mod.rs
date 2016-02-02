@@ -224,6 +224,10 @@ cfg_if! {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
+    } else if #[cfg(target_os = "haiku")] {
+        #[link(name = "root")]
+        #[link(name = "network")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -726,7 +730,9 @@ extern {
 // TODO: get rid of this cfg(not(...))
 #[cfg(not(target_os = "android"))] // " if " -- appease style checker
 extern {
+    #[cfg(not(target_os = "haiku"))]
     pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> ::c_int;
+    #[cfg(not(target_os = "haiku"))]
     pub fn freeifaddrs(ifa: *mut ifaddrs);
     #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
@@ -851,6 +857,9 @@ cfg_if! {
     } else if #[cfg(target_os = "solaris")] {
         mod solaris;
         pub use self::solaris::*;
+    } else if #[cfg(target_os = "haiku")] {
+        mod haiku;
+        pub use self::haiku::*;
     } else {
         // Unknown target_os
     }
