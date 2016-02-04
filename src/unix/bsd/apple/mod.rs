@@ -838,6 +838,12 @@ pub const NI_MAXHOST: ::socklen_t = 1025;
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
 
+pub const RTLD_LOCAL: ::c_int = 0x4;
+pub const RTLD_FIRST: ::c_int = 0x100;
+pub const RTLD_NODELETE: ::c_int = 0x80;
+pub const RTLD_NOLOAD: ::c_int = 0x10;
+pub const RTLD_GLOBAL: ::c_int = 0x8;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,

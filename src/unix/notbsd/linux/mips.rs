@@ -468,6 +468,10 @@ pub const TIOCMSET: ::c_ulong = 0x741a;
 pub const FIONREAD: ::c_ulong = 0x467f;
 pub const TIOCCONS: ::c_ulong = 0x80047478;
 
+pub const RTLD_DEEPBIND: ::c_int = 0x10;
+pub const RTLD_GLOBAL: ::c_int = 0x4;
+pub const RTLD_NOLOAD: ::c_int = 0x8;
+
 extern {
     pub fn sysctl(name: *mut ::c_int,
                   namelen: ::c_int,

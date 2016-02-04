@@ -325,6 +325,9 @@ pub const TMP_MAX : ::c_uint = 308915776;
 
 pub const NI_MAXHOST: ::socklen_t = 1025;
 
+pub const RTLD_NOLOAD: ::c_int = 0x2000;
+pub const RTLD_LOCAL: ::c_int = 0x200;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,

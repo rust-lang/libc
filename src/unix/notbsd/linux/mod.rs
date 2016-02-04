@@ -317,6 +317,8 @@ pub const ST_NODIRATIME: ::c_ulong = 2048;
 
 pub const RTLD_NEXT: *mut ::c_void = -1i64 as *mut ::c_void;
 pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
+pub const RTLD_NODELETE: ::c_int = 0x1000;
+pub const RTLD_NOW: ::c_int = 0x2;
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub const MAP_32BIT: ::c_int = 0x0040;

@@ -145,6 +145,9 @@ pub const TCSAFLUSH: ::c_int = 2;
 
 pub const TIOCINQ: ::c_ulong = ::FIONREAD;
 
+pub const RTLD_GLOBAL: ::c_int = 0x100;
+pub const RTLD_NOLOAD: ::c_int = 0x4;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,

@@ -532,6 +532,8 @@ pub const SPLICE_F_NONBLOCK: ::c_uint = 0x02;
 pub const SPLICE_F_MORE: ::c_uint = 0x04;
 pub const SPLICE_F_GIFT: ::c_uint = 0x08;
 
+pub const RTLD_LOCAL: ::c_int = 0;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
