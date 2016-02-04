@@ -4,6 +4,7 @@ pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
+pub type loff_t = ::c_longlong;
 
 pub enum timezone {}
 
@@ -526,6 +527,11 @@ pub const CLONE_CHILD_SETTID: ::c_int = 0x01000000;
 
 pub const WNOHANG: ::c_int = 1;
 
+pub const SPLICE_F_MOVE: ::c_uint = 0x01;
+pub const SPLICE_F_NONBLOCK: ::c_uint = 0x02;
+pub const SPLICE_F_MORE: ::c_uint = 0x04;
+pub const SPLICE_F_GIFT: ::c_uint = 0x08;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -616,6 +622,21 @@ extern {
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
+    pub fn splice(fd_in: ::c_int,
+                  off_in: *mut ::loff_t,
+                  fd_out: ::c_int,
+                  off_out: *mut ::loff_t,
+                  len: ::size_t,
+                  flags: ::c_uint) -> ::ssize_t;
+    pub fn tee(fd_in: ::c_int,
+               fd_out: ::c_int,
+               len: ::size_t,
+               flags: ::c_uint) -> ::ssize_t;
+    pub fn vmsplice(fd: ::c_int,
+                    iov: *const ::iovec,
+                    nr_segs: ::size_t,
+                    flags: ::c_uint) -> ::ssize_t;
+
 }
 
 cfg_if! {
