@@ -145,6 +145,7 @@ fn main() {
         cfg.header("sys/epoll.h");
         cfg.header("sys/eventfd.h");
         cfg.header("sys/prctl.h");
+        cfg.header("sys/sendfile.h");
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
         if !musl {
