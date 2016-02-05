@@ -366,6 +366,9 @@ pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_FSYNC : ::c_int = 29;
 
 pub const KERN_PROC_ARGV: ::c_int = 1;
+pub const KERN_PROC_NARGV: ::c_int = 2;
+pub const KERN_PROC_ENV: ::c_int = 3;
+pub const KERN_PROC_NENV: ::c_int = 4;
 
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
