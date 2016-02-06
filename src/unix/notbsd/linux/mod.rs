@@ -1,5 +1,7 @@
 //! Linux-specific definitions for linux-like values
 
+use dox::mem;
+
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
@@ -182,6 +184,31 @@ s! {
         bits: [u32; 32],
         #[cfg(target_pointer_width = "64")]
         bits: [u64; 16],
+    }
+}
+
+f! {
+    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
+        for slot in cpuset.bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let size = mem::size_of_val(&cpuset.bits[0]);
+        let (idx, offset) = (cpu / size, cpu % size);
+        cpuset.bits[idx] |= 1 << offset;
+        ()
+    }
+
+    pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
+        let size = mem::size_of_val(&cpuset.bits[0]);
+        let (idx, offset) = (cpu / size, cpu % size);
+        0 != (cpuset.bits[idx] & (1 << offset))
+    }
+
+    pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
+        set1.bits == set2.bits
     }
 }
 
