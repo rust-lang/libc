@@ -399,6 +399,10 @@ pub const TIOCMSET: ::c_ulong = 0x5418;
 pub const FIONREAD: ::c_ulong = 0x541B;
 pub const TIOCCONS: ::c_ulong = 0x541D;
 
+pub const RTLD_DEEPBIND: ::c_int = 0x8;
+pub const RTLD_GLOBAL: ::c_int = 0x100;
+pub const RTLD_NOLOAD: ::c_int = 0x4;
+
 cfg_if! {
     if #[cfg(any(target_arch = "arm", target_arch = "x86",
                  target_arch = "x86_64"))] {

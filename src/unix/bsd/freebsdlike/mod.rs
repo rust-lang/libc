@@ -573,6 +573,11 @@ pub const NI_MAXHOST: ::size_t = 1025;
 pub const Q_GETQUOTA: ::c_int = 0x700;
 pub const Q_SETQUOTA: ::c_int = 0x800;
 
+pub const RTLD_LOCAL: ::c_int = 0;
+pub const RTLD_NODELETE: ::c_int = 0x1000;
+pub const RTLD_NOLOAD: ::c_int = 0x2000;
+pub const RTLD_GLOBAL: ::c_int = 0x100;
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,

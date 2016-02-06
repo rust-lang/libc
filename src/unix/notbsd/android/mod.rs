@@ -505,6 +505,10 @@ pub const TIOCMSET: ::c_int = 0x5418;
 pub const FIONREAD: ::c_int = 0x541B;
 pub const TIOCCONS: ::c_int = 0x541D;
 
+pub const RTLD_GLOBAL: ::c_int = 0x2;
+pub const RTLD_NOLOAD: ::c_int = 0x4;
+pub const RTLD_NOW: ::c_int = 0;
+
 f! {
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {
         *set = 0;

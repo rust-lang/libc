@@ -263,6 +263,8 @@ pub const NOFLSH: ::tcflag_t = 0x80000000;
 
 pub const WNOHANG: ::c_int = 1;
 
+pub const RTLD_NOW: ::c_int = 0x2;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;

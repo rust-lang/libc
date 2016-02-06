@@ -131,6 +131,8 @@ pub const POLLNVAL: ::c_short = 0x20;
 
 pub const IF_NAMESIZE: ::size_t = 16;
 
+pub const RTLD_LAZY: ::c_int = 0x1;
+
 cfg_if! {
     if #[cfg(not(stdbuild))] {
         // cargo build, don't pull in anything extra as the libstd  dep

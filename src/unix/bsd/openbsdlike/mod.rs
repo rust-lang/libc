@@ -370,6 +370,8 @@ pub const KERN_PROC_ARGV: ::c_int = 1;
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
 
+pub const RTLD_GLOBAL: ::c_int = 0x100;
+
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
