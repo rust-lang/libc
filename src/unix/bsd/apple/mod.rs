@@ -250,6 +250,13 @@ s! {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
     }
+
+    pub struct sf_hdtr {
+        pub headers: *mut ::iovec,
+        pub hdr_cnt: ::c_int,
+        pub trailers: *mut ::iovec,
+        pub trl_cnt: ::c_int,
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
@@ -914,6 +921,12 @@ extern {
                     id: ::c_int,
                     data: *mut ::c_char) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::c_int) -> ::c_int;
+    pub fn sendfile(fd: ::c_int,
+                    s: ::c_int,
+                    offset: ::off_t,
+                    len: *mut ::off_t,
+                    hdtr: *mut ::sf_hdtr,
+                    flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

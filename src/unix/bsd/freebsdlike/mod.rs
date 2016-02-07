@@ -139,6 +139,13 @@ s! {
         pub l_whence: ::c_short,
         pub l_sysid: ::c_int,
     }
+
+    pub struct sf_hdtr {
+        pub headers: *mut ::iovec,
+        pub hdr_cnt: ::c_int,
+        pub trailers: *mut ::iovec,
+        pub trl_cnt: ::c_int,
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
@@ -616,6 +623,13 @@ extern {
     pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    pub fn sendfile(fd: ::c_int,
+                    s: ::c_int,
+                    offset: ::off_t,
+                    nbytes: ::size_t,
+                    hdtr: *mut ::sf_hdtr,
+                    sbytes: *mut ::off_t,
+                    flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
