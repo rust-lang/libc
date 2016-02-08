@@ -205,8 +205,6 @@ pub const _SC_RTSIG_MAX : ::c_int = 66;
 pub const _SC_SIGQUEUE_MAX : ::c_int = 70;
 pub const _SC_TIMER_MAX : ::c_int = 93;
 
-pub const SIGSTKSZ: ::size_t = 40960;
-
 pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
