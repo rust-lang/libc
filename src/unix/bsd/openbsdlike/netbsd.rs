@@ -269,8 +269,6 @@ pub const _SC_SHARED_MEMORY_OBJECTS : ::c_int = 87;
 pub const _SC_SYNCHRONIZED_IO : ::c_int = 31;
 pub const _SC_TIMERS : ::c_int = 44;
 
-pub const SIGSTKSZ: ::size_t = 0xa000;
-
 pub const FD_SETSIZE: usize = 0x100;
 
 pub const ST_NOSUID: ::c_ulong = 8;
