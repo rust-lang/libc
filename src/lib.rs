@@ -82,7 +82,9 @@
                                reason = "use `libc` from crates.io",
                                issue = "27783"))]
 
-#[cfg(all(not(stdbuild), not(dox)))]
+#![cfg_attr(not(feature = "use_std"), no_std)]
+
+#[cfg(all(not(stdbuild), not(dox), feature = "use_std"))]
 extern crate std as core;
 
 #[macro_use] mod macros;

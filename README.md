@@ -24,6 +24,15 @@ Next, add this to your crate root:
 extern crate libc;
 ```
 
+Currently libc by default links to the standard library, but if you would
+instead like to use libc in a `#![no_std]` situation or crate you can request
+this via:
+
+```toml
+[dependencies]
+libc = { version = "0.2", default-features = false }
+```
+
 ## What is libc?
 
 The primary purpose of this crate is to provide all of the definitions necessary
