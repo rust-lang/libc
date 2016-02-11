@@ -4,7 +4,7 @@ libc
 A Rust library with native bindings to the types and functions commonly found on
 various systems, including libc.
 
-[![Build Status](https://travis-ci.org/rust-lang-nursery/libc.svg?branch=master)](https://travis-ci.org/rust-lang-nursery/libc)
+[![Build Status](https://travis-ci.org/rust-lang/libc.svg?branch=master)](https://travis-ci.org/rust-lang/libc)
 [![Build status](https://ci.appveyor.com/api/projects/status/34csq3uurnw7c0rl?svg=true)](https://ci.appveyor.com/project/alexcrichton/libc)
 
 [Documentation](#platforms-and-documentation)
@@ -93,34 +93,34 @@ With that in mind, the steps for adding a new API are:
 The following platforms are currently tested and have documentation available:
 
 Tested:
-  * [`i686-pc-windows-msvc`](https://doc.rust-lang.org/libc/i686-pc-windows-msvc/libc)
-  * [`x86_64-pc-windows-msvc`](https://doc.rust-lang.org/libc/x86_64-pc-windows-msvc/libc)
+  * [`i686-pc-windows-msvc`](https://doc.rust-lang.org/libc/i686-pc-windows-msvc/libc/)
+  * [`x86_64-pc-windows-msvc`](https://doc.rust-lang.org/libc/x86_64-pc-windows-msvc/libc/)
     (Windows)
-  * [`i686-pc-windows-gnu`](https://doc.rust-lang.org/libc/i686-pc-windows-gnu/libc)
-  * [`x86_64-pc-windows-gnu`](https://doc.rust-lang.org/libc/x86_64-pc-windows-gnu/libc)
-  * [`i686-apple-darwin`](https://doc.rust-lang.org/libc/i686-apple-darwin/libc)
-  * [`x86_64-apple-darwin`](https://doc.rust-lang.org/libc/x86_64-apple-darwin/libc)
+  * [`i686-pc-windows-gnu`](https://doc.rust-lang.org/libc/i686-pc-windows-gnu/libc/)
+  * [`x86_64-pc-windows-gnu`](https://doc.rust-lang.org/libc/x86_64-pc-windows-gnu/libc/)
+  * [`i686-apple-darwin`](https://doc.rust-lang.org/libc/i686-apple-darwin/libc/)
+  * [`x86_64-apple-darwin`](https://doc.rust-lang.org/libc/x86_64-apple-darwin/libc/)
     (OSX)
-  * [`i686-apple-ios`](https://doc.rust-lang.org/libc/i686-apple-ios/libc)
-  * [`x86_64-apple-ios`](https://doc.rust-lang.org/libc/x86_64-apple-ios/libc)
+  * [`i686-apple-ios`](https://doc.rust-lang.org/libc/i686-apple-ios/libc/)
+  * [`x86_64-apple-ios`](https://doc.rust-lang.org/libc/x86_64-apple-ios/libc/)
     (iOS)
-  * [`i686-unknown-linux-gnu`](https://doc.rust-lang.org/libc/i686-unknown-linux-gnu/libc)
-  * [`x86_64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-gnu/libc)
+  * [`i686-unknown-linux-gnu`](https://doc.rust-lang.org/libc/i686-unknown-linux-gnu/libc/)
+  * [`x86_64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-gnu/libc/)
     (Linux)
-  * [`x86_64-unknown-linux-musl`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-musl/libc)
+  * [`x86_64-unknown-linux-musl`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-musl/libc/)
     (Linux MUSL)
-  * [`aarch64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/aarch64-unknown-linux-gnu/libc)
-  * [`mips-unknown-linux-gnu`](https://doc.rust-lang.org/libc/mips-unknown-linux-gnu/libc)
-  * [`arm-unknown-linux-gnueabihf`](https://doc.rust-lang.org/libc/arm-unknown-linux-gnueabihf/libc)
-  * [`arm-linux-androideabi`](https://doc.rust-lang.org/libc/arm-linux-androideabi/libc)
+  * [`aarch64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/aarch64-unknown-linux-gnu/libc/)
+  * [`mips-unknown-linux-gnu`](https://doc.rust-lang.org/libc/mips-unknown-linux-gnu/libc/)
+  * [`arm-unknown-linux-gnueabihf`](https://doc.rust-lang.org/libc/arm-unknown-linux-gnueabihf/libc/)
+  * [`arm-linux-androideabi`](https://doc.rust-lang.org/libc/arm-linux-androideabi/libc/)
     (Android)
-  * [`x86_64-unknown-freebsd`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-freebsd/libc)
-  * [`x86_64-unknown-openbsd`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-openbsd/libc)
-  * [`x86_64-rumprun-netbsd`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-netbsd/libc)
+  * [`x86_64-unknown-freebsd`](https://doc.rust-lang.org/libc/x86_64-unknown-freebsd/libc/)
+  * [`x86_64-unknown-openbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-openbsd/libc/)
+  * [`x86_64-rumprun-netbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-netbsd/libc/)
 
 The following may be supported, but are not guaranteed to always work:
 
   * `i686-unknown-freebsd`
-  * [`x86_64-unknown-bitrig`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-bitrig/libc)
-  * [`x86_64-unknown-dragonfly`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-dragonfly/libc)
-  * [`x86_64-unknown-netbsd`](http://rust-lang-nursery.github.io/libc/x86_64-unknown-netbsd/libc)
+  * [`x86_64-unknown-bitrig`](https://doc.rust-lang.org/libc/x86_64-unknown-bitrig/libc/)
+  * [`x86_64-unknown-dragonfly`](https://doc.rust-lang.org/libc/x86_64-unknown-dragonfly/libc/)
+  * [`x86_64-unknown-netbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-netbsd/libc/)
