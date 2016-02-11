@@ -116,7 +116,8 @@ s! {
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
         __pad1: ::c_int,
-        __pad2: [u64; 14],
+        pub si_addr: *mut ::c_void,
+        __pad2: [u64; 13],
     }
 
     pub struct pthread_attr_t {
@@ -370,4 +371,11 @@ extern {
     pub fn pthread_setname_np(t: ::pthread_t,
                               name: *const ::c_char,
                               arg: *mut ::c_void) -> ::c_int;
+    pub fn pthread_getattr_np(native: ::pthread_t,
+                              attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
+                                     guardsize: *mut ::size_t) -> ::c_int;
+    pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
+                                 stackaddr: *mut *mut ::c_void,
+                                 stacksize: *mut ::size_t) -> ::c_int;
 }
