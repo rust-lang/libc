@@ -14,4 +14,5 @@ other common platform libraries.
 """
 
 [features]
-default = []
+default = ["use_std"]
+use_std = []

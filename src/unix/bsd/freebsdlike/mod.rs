@@ -365,6 +365,13 @@ pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
+pub const POSIX_FADV_NORMAL: ::c_int = 0;
+pub const POSIX_FADV_RANDOM: ::c_int = 1;
+pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
+pub const POSIX_FADV_WILLNEED: ::c_int = 3;
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+
 pub const _SC_IOV_MAX: ::c_int = 56;
 pub const _SC_GETGR_R_SIZE_MAX: ::c_int = 70;
 pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 71;
@@ -630,6 +637,10 @@ extern {
                     hdtr: *mut ::sf_hdtr,
                     sbytes: *mut ::off_t,
                     flags: ::c_int) -> ::c_int;
+
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, 
+                         advise: ::c_int) -> ::c_int;
+
 }
 
 cfg_if! {

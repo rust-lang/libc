@@ -534,6 +534,13 @@ pub const SPLICE_F_GIFT: ::c_uint = 0x08;
 
 pub const RTLD_LOCAL: ::c_int = 0;
 
+pub const POSIX_FADV_NORMAL: ::c_int = 0;
+pub const POSIX_FADV_RANDOM: ::c_int = 1;
+pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
+pub const POSIX_FADV_WILLNEED: ::c_int = 3;
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -642,6 +649,9 @@ extern {
                     iov: *const ::iovec,
                     nr_segs: ::size_t,
                     flags: ::c_uint) -> ::ssize_t;
+
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, 
+                         advise: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
