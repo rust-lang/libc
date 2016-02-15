@@ -120,6 +120,9 @@ pub const SA_NOCLDSTOP: ::c_int = 0x0008;
 pub const SA_NODEFER: ::c_int = 0x0010;
 pub const SA_NOCLDWAIT: ::c_int = 0x0020;
 
+pub const SS_ONSTACK: ::c_int = 1;
+pub const SS_DISABLE: ::c_int = 4;
+
 pub const SIGCHLD: ::c_int = 20;
 pub const SIGBUS: ::c_int = 10;
 pub const SIGUSR1: ::c_int = 30;
