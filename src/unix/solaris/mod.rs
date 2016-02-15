@@ -281,6 +281,9 @@ pub const SA_NODEFER: ::c_int = 0x00000010;
 pub const SA_NOCLDWAIT: ::c_int = 0x00010000;
 pub const SA_NOCLDSTOP: ::c_int = 0x00020000;
 
+pub const SS_ONSTACK: ::c_int = 1;
+pub const SS_DISABLE: ::c_int = 2;
+
 pub const FIONBIO: ::c_int = 0x8004667e;
 
 pub const SIGCHLD: ::c_int = 18;
