@@ -488,6 +488,7 @@ extern {
                link_name = "pthread_sigmask$UNIX2003")]
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t,
                            oldset: *mut sigset_t) -> ::c_int;
+    pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
 
     // #[cfg_attr(target_os = "linux", link_name = "__xpg_strerror_r")]
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
