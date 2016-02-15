@@ -385,6 +385,9 @@ pub const SA_RESETHAND: ::c_int = 0x80000000;
 pub const SA_RESTART: ::c_int = 0x10000000;
 pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
 
+pub const SS_ONSTACK: ::c_int = 1;
+pub const SS_DISABLE: ::c_int = 2;
+
 pub const PATH_MAX: ::c_int = 4096;
 
 pub const FD_SETSIZE: usize = 1024;
