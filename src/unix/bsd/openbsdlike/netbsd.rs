@@ -43,19 +43,20 @@ s! {
         pub st_gid: ::gid_t,
         pub st_rdev: ::dev_t,
         pub st_atime: ::time_t,
-        pub st_atimensec: ::c_long,
+        pub st_atime_nsec: ::c_long,
         pub st_mtime: ::time_t,
-        pub st_mtimensec: ::c_long,
+        pub st_mtime_nsec: ::c_long,
         pub st_ctime: ::time_t,
-        pub st_ctimensec: ::c_long,
+        pub st_ctime_nsec: ::c_long,
         pub st_birthtime: ::time_t,
-        pub st_birthtimensec: ::c_long,
+        pub st_birthtime_nsec: ::c_long,
         pub st_size: ::off_t,
         pub st_blocks: ::blkcnt_t,
         pub st_blksize: ::blksize_t,
         pub st_flags: ::uint32_t,
         pub st_gen: ::uint32_t,
-        pub st_spare: [::uint32_t; 2],
+        pub st_spare: ::uint32_t,
+        __unused1: ::uint32_t
     }
 
     pub struct statvfs {

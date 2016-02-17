@@ -500,6 +500,7 @@ extern {
                       optval: *mut ::c_void,
                       optlen: *mut ::socklen_t) -> ::c_int;
     pub fn raise(signum: ::c_int) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
     pub fn sigaction(signum: ::c_int,
                      act: *const sigaction,
                      oldact: *mut sigaction) -> ::c_int;
