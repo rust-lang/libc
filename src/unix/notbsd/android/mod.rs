@@ -8,6 +8,7 @@ pub type time_t = i32;
 pub type suseconds_t = i32;
 pub type wchar_t = u32;
 pub type off_t = i32;
+pub type off64_t = i64;
 pub type ino_t = u32;
 pub type blkcnt_t = u32;
 pub type blksize_t = u32;
@@ -48,12 +49,47 @@ s! {
         pub st_ino: ::c_ulonglong,
     }
 
+    pub struct stat64 {
+        pub st_dev: ::c_ulonglong,
+        __pad0: [::c_uchar; 4],
+        __st_ino: ::ino_t,
+        pub st_mode: ::c_uint,
+        pub st_nlink: ::c_uint,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::c_ulonglong,
+        __pad3: [::c_uchar; 4],
+        pub st_size: ::c_longlong,
+        pub st_blksize: blksize_t,
+        pub st_blocks: ::c_ulonglong,
+        pub st_atime: ::c_ulong,
+        pub st_atime_nsec: ::c_ulong,
+        pub st_mtime: ::c_ulong,
+        pub st_mtime_nsec: ::c_ulong,
+        pub st_ctime: ::c_ulong,
+        pub st_ctime_nsec: ::c_ulong,
+        pub st_ino: ::c_ulonglong,
+    }
+
     pub struct dirent {
         pub d_ino: u64,
         pub d_off: i64,
         pub d_reclen: ::c_ushort,
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
+    }
+
+    pub struct dirent64 {
+        pub d_ino: u64,
+        pub d_off: i64,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct rlimit64 {
+        pub rlim_cur: u64,
+        pub rlim_max: u64,
     }
 
     pub struct pthread_attr_t {
@@ -588,6 +624,30 @@ extern {
     pub fn timegm64(tm: *const ::tm) -> time64_t;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
+    pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
+    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
+    pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
+                   offset: off64_t) -> ::ssize_t;
+    pub fn pwrite64(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
+                    offset: off64_t) -> ::ssize_t;
+    pub fn mmap64(addr: *mut ::c_void,
+                  len: ::size_t,
+                  prot: ::c_int,
+                  flags: ::c_int,
+                  fd: ::c_int,
+                  offset: off64_t)
+                  -> *mut ::c_void;
+    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
+    pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
+                       result: *mut *mut ::dirent64) -> ::c_int;
+    pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
+    pub fn readahead(fd: ::c_int, offset: ::off64_t,
+                     count: ::size_t) -> ::ssize_t;
 }
 
 cfg_if! {
