@@ -1,3 +1,5 @@
+pub type mode_t = u32;
+
 s! {
     pub struct sigaction {
         pub sa_flags: ::c_uint,

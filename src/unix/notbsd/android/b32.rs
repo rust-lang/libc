@@ -1,3 +1,5 @@
+pub type mode_t = u16;
+
 s! {
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
