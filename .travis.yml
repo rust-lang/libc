@@ -45,10 +45,10 @@ matrix:
       rust: nightly
     - os: osx
       env: TARGET=i386-apple-ios
-      rust: nightly
+      rust: nightly-2016-02-12
     - os: osx
       env: TARGET=x86_64-apple-ios
-      rust: nightly
+      rust: nightly-2016-02-12
     - os: linux
       env: TARGET=x86_64-rumprun-netbsd DOCKER=alexcrichton/rust-libc-rumprun:2015-11-27
       rust: nightly-2015-09-27

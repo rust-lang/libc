@@ -20,6 +20,10 @@ fi
 MAIN_TARGETS=https://static.rust-lang.org/dist
 DATE=$(echo $TRAVIS_RUST_VERSION | sed s/nightly-//)
 EXTRA_TARGETS=https://people.mozilla.org/~acrichton/libc-test/$DATE
+if [ "$DATE" != "nightly" ]; then
+    MAIN_TARGETS=$MAIN_TARGETS/$DATE
+    TRAVIS_RUST_VERSION=nightly
+fi
 
 install() {
   if [ "$TRAVIS" = "true" ]; then
