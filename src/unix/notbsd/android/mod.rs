@@ -13,7 +13,6 @@ pub type ino_t = u32;
 pub type blkcnt_t = u32;
 pub type blksize_t = u32;
 pub type dev_t = u32;
-pub type mode_t = u16;
 pub type nlink_t = u32;
 pub type useconds_t = u32;
 pub type socklen_t = i32;
