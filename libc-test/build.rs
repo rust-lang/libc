@@ -14,11 +14,12 @@ fn main() {
     let apple = target.contains("apple");
     let musl = target.contains("musl");
     let freebsd = target.contains("freebsd");
+    let dragonfly = target.contains("dragonfly");
     let mips = target.contains("mips");
     let netbsd = target.contains("netbsd");
     let openbsd = target.contains("openbsd");
     let rumprun = target.contains("rumprun");
-    let bsdlike = freebsd || apple || netbsd || openbsd;
+    let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies on linux/mingw
@@ -103,7 +104,7 @@ fn main() {
         cfg.header("ifaddrs.h");
         cfg.header("sys/statvfs.h");
 
-        if !openbsd && !freebsd {
+        if !openbsd && !freebsd && !dragonfly {
             cfg.header("sys/quota.h");
         }
 
@@ -177,6 +178,12 @@ fn main() {
         cfg.header("sys/syscall.h");
     }
 
+    if dragonfly {
+        cfg.header("ufs/ufs/quota.h");
+        cfg.header("pthread_np.h");
+        cfg.header("sys/ioctl_compat.h");
+    }
+
     cfg.type_name(move |ty, is_struct| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
@@ -191,6 +198,9 @@ fn main() {
 
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
+
+            // does not exist on DragonFly
+            "fflags_t" if dragonfly => "uint32_t".to_string(),
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -254,12 +264,13 @@ fn main() {
         }
     });
 
-    cfg.skip_signededness(|c| {
+    cfg.skip_signededness(move |c| {
         match c {
             "LARGE_INTEGER" |
             "mach_timebase_info_data_t" |
             "float" |
             "double" => true,
+            "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
 
             // windows-isms
@@ -321,7 +332,7 @@ fn main() {
             "strerror_r" if linux => true,   // actually xpg-something-or-other
 
             // typed 2nd arg on linux and android
-            "gettimeofday" if linux || android || freebsd || openbsd => true,
+            "gettimeofday" if linux || android || freebsd || openbsd || dragonfly => true,
 
             // not declared in newer android toolchains
             "getdtablesize" if android => true,

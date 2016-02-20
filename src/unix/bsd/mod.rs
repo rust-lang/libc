@@ -10,6 +10,11 @@ pub type sa_family_t = u8;
 pub type pthread_t = ::uintptr_t;
 pub type nfds_t = ::c_uint;
 
+#[cfg(not(target_os = "dragonfly"))]
+macro_rules! utsname_len { () => (256) }
+#[cfg(target_os = "dragonfly")]
+macro_rules! utsname_len { () => (32) }
+
 s! {
     pub struct sockaddr {
         pub sa_len: u8,
@@ -63,10 +68,10 @@ s! {
 
     pub struct fd_set {
         #[cfg(all(target_pointer_width = "64",
-                  target_os = "freebsd"))]
+                  any(target_os = "freebsd", target_os = "dragonfly")))]
         fds_bits: [i64; FD_SETSIZE / 64],
         #[cfg(not(all(target_pointer_width = "64",
-                      target_os = "freebsd")))]
+                      any(target_os = "freebsd", target_os = "dragonfly"))))]
         fds_bits: [i32; FD_SETSIZE / 32],
     }
 
@@ -85,11 +90,11 @@ s! {
     }
 
     pub struct utsname {
-        pub sysname: [::c_char; 256],
-        pub nodename: [::c_char; 256],
-        pub release: [::c_char; 256],
-        pub version: [::c_char; 256],
-        pub machine: [::c_char; 256],
+        pub sysname: [::c_char; utsname_len!()],
+        pub nodename: [::c_char; utsname_len!()],
+        pub release: [::c_char; utsname_len!()],
+        pub version: [::c_char; utsname_len!()],
+        pub machine: [::c_char; utsname_len!()],
     }
 
     pub struct msghdr {
