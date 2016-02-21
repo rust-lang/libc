@@ -63,10 +63,10 @@ s! {
 
     pub struct fd_set {
         #[cfg(all(target_pointer_width = "64",
-                  target_os = "freebsd"))]
+                  any(target_os = "freebsd", target_os = "dragonfly")))]
         fds_bits: [i64; FD_SETSIZE / 64],
         #[cfg(not(all(target_pointer_width = "64",
-                      target_os = "freebsd")))]
+                      any(target_os = "freebsd", target_os = "dragonfly"))))]
         fds_bits: [i32; FD_SETSIZE / 32],
     }
 
@@ -85,11 +85,26 @@ s! {
     }
 
     pub struct utsname {
+        #[cfg(not(target_os = "dragonfly"))]
         pub sysname: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub sysname: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
         pub nodename: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub nodename: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
         pub release: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub release: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
         pub version: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub version: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
         pub machine: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub machine: [::c_char; 32],
     }
 
     pub struct msghdr {
