@@ -1,15 +1,4 @@
-cfg_if! {
-    if #[cfg(target_arch = "x86")] {
-        mod x86;
-        pub use self::x86::*;
-    } else if #[cfg(target_arch = "x86_64")] {
-        mod x86_64;
-        pub use self::x86_64::*;
-    } else {
-        // ...
-    }
-}
-
+pub type fflags_t = u32;
 pub type clock_t = i32;
 pub type ino_t = u32;
 pub type nlink_t = u16;
@@ -71,10 +60,27 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 extern {
     pub fn __error() -> *mut ::c_int;
 
+    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
+                    -> ::c_int;
+
+    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;
     pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
                          advise: ::c_int) -> ::c_int;
     pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
     pub fn mkostemps(template: *mut ::c_char, suffixlen: ::c_int, flags: ::c_int) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(target_arch = "x86")] {
+        mod x86;
+        pub use self::x86::*;
+    } else if #[cfg(target_arch = "x86_64")] {
+        mod x86_64;
+        pub use self::x86_64::*;
+    } else {
+        // ...
+    }
 }

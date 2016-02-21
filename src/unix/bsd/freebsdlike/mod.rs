@@ -1,6 +1,5 @@
 pub type dev_t = u32;
 pub type mode_t = u16;
-pub type fflags_t = u32;
 pub type pthread_attr_t = *mut ::c_void;
 pub type rlim_t = i64;
 pub type pthread_mutex_t = *mut ::c_void;
@@ -563,12 +562,6 @@ extern {
                            mibp: *mut ::c_int,
                            sizep: *mut ::size_t)
                            -> ::c_int;
-    #[cfg(not(target_os = "dragonfly"))]
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
-    #[cfg(target_os = "dragonfly")]
-    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
     pub fn sysctl(name: *const ::c_int,
@@ -584,11 +577,6 @@ extern {
                         newp: *const ::c_void,
                         newlen: ::size_t)
                         -> ::c_int;
-    #[cfg(not(target_os = "dragonfly"))]
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
-    #[cfg(target_os = "dragonfly")]
-    pub fn clock_gettime(clk_id: ::uint64_t, tp: *mut ::timespec) -> ::c_int;
-
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;

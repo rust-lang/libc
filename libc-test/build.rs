@@ -199,9 +199,6 @@ fn main() {
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
 
-            // does not exist on DragonFly
-            "fflags_t" if dragonfly => "uint32_t".to_string(),
-
             t if t.ends_with("_t") => t.to_string(),
 
             // Windows uppercase structs don't have `struct` in front, there's a
@@ -270,6 +267,7 @@ fn main() {
             "mach_timebase_info_data_t" |
             "float" |
             "double" => true,
+            // uuid_t is a struct, not an integer.
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
 

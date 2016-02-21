@@ -1,16 +1,12 @@
-cfg_if! {
-    if #[cfg(target_arch = "x86_64")] {
-        mod x86_64;
-        pub use self::x86_64::*;
-    } else {
-        // ...
-    }
-}
-
 pub type clock_t = u64;
 pub type ino_t = u64;
 pub type nlink_t = u32;
 pub type blksize_t = i64;
+
+pub type c_long = i64;
+pub type c_ulong = u64;
+pub type time_t = i64;
+pub type suseconds_t = i64;
 
 s! {
     pub struct dirent {
@@ -23,12 +19,12 @@ s! {
     }
 
     pub struct uuid {
-        time_low: u32,
-        time_mid: u16,
-        time_hi_and_version: u16,
-        clock_seq_hi_and_reserved: u8,
-        clock_seq_low: u8,
-        node: [u8; 6],
+        pub time_low: u32,
+        pub time_mid: u16,
+        pub time_hi_and_version: u16,
+        pub clock_seq_hi_and_reserved: u8,
+        pub clock_seq_low: u8,
+        pub node: [u8; 6],
     }
 
     pub struct statvfs {
@@ -52,6 +48,31 @@ s! {
         pub f_fsid_uuid: ::uuid_t,
         pub f_uid_uuid: ::uuid_t,
     }
+
+    pub struct stat {
+        pub st_ino: ::ino_t,
+        pub st_nlink: ::nlink_t,
+        pub st_dev: ::dev_t,
+        pub st_mode: ::mode_t,
+        pub st_padding1: ::uint16_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub st_atime: ::time_t,
+        pub st_atime_nsec: ::c_long,
+        pub st_mtime: ::time_t,
+        pub st_mtime_nsec: ::c_long,
+        pub st_ctime: ::time_t,
+        pub st_ctime_nsec: ::c_long,
+        pub st_size: ::off_t,
+        pub st_blocks: ::int64_t,
+        pub st_blksize: ::uint32_t,
+        pub st_flags: ::uint32_t,
+        pub st_gen: ::uint32_t,
+        pub st_lspare: ::int32_t,
+        pub st_qspare1: ::int64_t,
+        pub st_qspare2: ::int64_t,
+    }
 }
 
 pub type uuid_t = ::uuid;
@@ -74,3 +95,9 @@ pub const RLIM_NLIMITS: ::rlim_t = 12;
 
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
+
+extern {
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
+                    -> ::c_int;
+    pub fn clock_gettime(clk_id: ::c_ulong, tp: *mut ::timespec) -> ::c_int;
+}

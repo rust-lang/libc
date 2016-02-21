@@ -10,11 +10,6 @@ pub type sa_family_t = u8;
 pub type pthread_t = ::uintptr_t;
 pub type nfds_t = ::c_uint;
 
-#[cfg(not(target_os = "dragonfly"))]
-macro_rules! utsname_len { () => (256) }
-#[cfg(target_os = "dragonfly")]
-macro_rules! utsname_len { () => (32) }
-
 s! {
     pub struct sockaddr {
         pub sa_len: u8,
@@ -90,11 +85,26 @@ s! {
     }
 
     pub struct utsname {
-        pub sysname: [::c_char; utsname_len!()],
-        pub nodename: [::c_char; utsname_len!()],
-        pub release: [::c_char; utsname_len!()],
-        pub version: [::c_char; utsname_len!()],
-        pub machine: [::c_char; utsname_len!()],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub sysname: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub sysname: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub nodename: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub nodename: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub release: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub release: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub version: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub version: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub machine: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub machine: [::c_char; 32],
     }
 
     pub struct msghdr {
