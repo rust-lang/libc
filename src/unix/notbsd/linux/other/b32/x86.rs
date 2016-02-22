@@ -18,3 +18,27 @@ pub const SO_SNDTIMEO: ::c_int = 21;
 
 pub const FIOCLEX: ::c_ulong = 0x5451;
 pub const FIONBIO: ::c_ulong = 0x5421;
+
+s! {
+
+    pub struct mcontext_t {
+        __private: [u32; 22]
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        __private: [u8; 112],
+    }
+
+}
+
+extern {
+    pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
+    pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
+    pub fn makecontext(ucp: *mut ucontext_t, func:  extern fn (), argc: ::c_int, ...);
+    pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> ::c_int;
+}
