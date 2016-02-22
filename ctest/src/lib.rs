@@ -11,11 +11,10 @@ use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 
 use syntax::abi::Abi;
-use syntax::ast::{self, ItemKind, ForeignItemKind, Visibility, FunctionRetTy};
-use syntax::ast::{ExprKind, LitKind, TyKind, PathParameters, Mutability};
+use syntax::ast;
 use syntax::attr::{self, ReprAttr};
-use syntax::errors::Handler;
-use syntax::ext::base::{SyntaxExtension, ExtCtxt};
+use syntax::diagnostic::SpanHandler;
+use syntax::ext::base::SyntaxExtension;
 use syntax::ext::expand;
 use syntax::parse::token::{intern, InternedString};
 use syntax::parse::{self, ParseSess};
@@ -56,7 +55,7 @@ struct Generator<'a> {
     target: &'a str,
     rust: Box<Write>,
     c: Box<Write>,
-    sh: &'a Handler,
+    sh: &'a SpanHandler,
     structs: HashSet<String>,
     abi: Abi,
     tests: Vec<String>,
@@ -263,9 +262,8 @@ impl TestGenerator {
         let exts = vec![
             (intern("macro_rules"), SyntaxExtension::MacroRulesTT),
         ];
-        let mut gated = Vec::new();
-        let cx = ExtCtxt::new(&sess, Vec::new(), ecfg, &mut gated);
-        let mut krate = expand::expand_crate(cx, Vec::new(), exts, krate).0;
+        let mut krate = expand::expand_crate(&sess, ecfg, Vec::new(),
+                                             exts, &mut Vec::new(), krate);
 
         // Strip the crate down to just what's configured for our target
         let target = self.target.clone().unwrap_or_else(|| {
@@ -500,8 +498,8 @@ impl<'a> Generator<'a> {
         "#, ty = ty));
         for field in s.fields() {
             let name = match field.node.kind {
-                ast::NamedField(name, Visibility::Public) => name,
-                ast::NamedField(_, Visibility::Inherited) => continue,
+                ast::NamedField(name, ast::Public) => name,
+                ast::NamedField(_, ast::Inherited) => continue,
                 ast::UnnamedField(..) => panic!("no tuple structs in FFI"),
             };
             let name = name.to_string();
@@ -723,11 +721,11 @@ impl<'a> Generator<'a> {
 
     fn ty2name(&self, ty: &ast::Ty, rust: bool) -> String {
         match ty.node {
-            TyKind::Path(_, ref path) => {
+            ast::TyPath(_, ref path) => {
                 let last = path.segments.last().unwrap();
                 if last.identifier.to_string() == "Option" {
                     match last.parameters {
-                        PathParameters::AngleBracketed(ref p) => {
+                        ast::AngleBracketedParameters(ref p) => {
                             self.ty2name(&p.types[0], rust)
                         }
                         _ => panic!(),
@@ -738,20 +736,20 @@ impl<'a> Generator<'a> {
                     self.rust2c(&last.identifier.to_string())
                 }
             }
-            TyKind::Ptr(ref t) => {
+            ast::TyPtr(ref t) => {
                 if rust {
                     format!("*{} {}", match t.mutbl {
-                        Mutability::Immutable => "const",
-                        Mutability::Mutable => "mut",
+                        ast::MutImmutable => "const",
+                        ast::MutMutable => "mut",
                     }, self.ty2name(&t.ty, rust))
                 } else {
                     let modifier = match t.mutbl {
-                        Mutability::Immutable => "const ",
-                        Mutability::Mutable => "",
+                        ast::MutImmutable => "const ",
+                        ast::MutMutable => "",
                     };
                     match t.ty.node {
-                        TyKind::BareFn(..) => self.ty2name(&t.ty, rust),
-                        TyKind::Ptr(..) => {
+                        ast::TyBareFn(..) => self.ty2name(&t.ty, rust),
+                        ast::TyPtr(..) => {
                             format!("{} {}*", self.ty2name(&t.ty, rust),
                                     modifier)
                         }
@@ -761,15 +759,15 @@ impl<'a> Generator<'a> {
                     }
                 }
             }
-            TyKind::BareFn(ref t) => {
+            ast::TyBareFn(ref t) => {
                 if rust {
                     let args = t.decl.inputs.iter().map(|a| {
                         self.ty2name(&a.ty, rust)
                     }).collect::<Vec<_>>().connect(", ");
                     let ret = match t.decl.output {
-                        FunctionRetTy::None(..) => "!".to_string(),
-                        FunctionRetTy::Default(..) => "()".to_string(),
-                        FunctionRetTy::Ty(ref t) => self.ty2name(t, rust),
+                        ast::NoReturn(..) => "!".to_string(),
+                        ast::DefaultReturn(..) => "()".to_string(),
+                        ast::Return(ref t) => self.ty2name(t, rust),
                     };
                     format!("extern fn({}) -> {}", args, ret)
                 } else {
@@ -782,7 +780,7 @@ impl<'a> Generator<'a> {
                     format!("{}(*)({})", ret, args.connect(", "))
                 }
             }
-            TyKind::FixedLengthVec(ref t, ref e) => {
+            ast::TyFixedLengthVec(ref t, ref e) => {
                 assert!(rust);
                 format!("[{}; {}]", self.ty2name(t, rust), self.expr2str(e))
             }
@@ -792,18 +790,18 @@ impl<'a> Generator<'a> {
 
     fn csig_returning_ptr(&self, ty: &ast::Ty, sig: &str) -> String {
         match ty.node {
-            TyKind::Path(_, ref path) if path.segments.last().unwrap()
-                                             .identifier.to_string() == "Option"
+            ast::TyPath(_, ref path) if path.segments.last().unwrap()
+                                            .identifier.to_string() == "Option"
             => {
                 let last = path.segments.last().unwrap();
                 match last.parameters {
-                    PathParameters::AngleBracketed(ref p) => {
+                    ast::AngleBracketedParameters(ref p) => {
                         self.csig_returning_ptr(&p.types[0], sig)
                     }
                     _ => panic!(),
                 }
             }
-            TyKind::BareFn(ref t) => {
+            ast::TyBareFn(ref t) => {
                 assert!(t.lifetimes.len() == 0);
                 let (ret, mut args, variadic) = self.decl2rust(&t.decl);
                 if variadic {
@@ -813,7 +811,7 @@ impl<'a> Generator<'a> {
                 }
                 format!("{}(**{})({})", ret, sig, args.connect(", "))
             }
-            TyKind::FixedLengthVec(ref t, ref e) => {
+            ast::TyFixedLengthVec(ref t, ref e) => {
                 format!("{}(*{})[{}]", self.ty2name(t, false), sig,
                         self.expr2str(e))
             }
@@ -823,13 +821,13 @@ impl<'a> Generator<'a> {
 
     fn expr2str(&self, e: &ast::Expr) -> String {
         match e.node {
-            ExprKind::Lit(ref l) => {
+            ast::ExprLit(ref l) => {
                 match l.node {
-                    LitKind::Int(a, _) => a.to_string(),
+                    ast::LitInt(a, _) => a.to_string(),
                     _ => panic!("unknown literal: {:?}", l),
                 }
             }
-            ExprKind::Path(_, ref path) => {
+            ast::ExprPath(_, ref path) => {
                 path.segments.last().unwrap().identifier.to_string()
             }
             _ => panic!("unknown expr: {:?}", e),
@@ -841,9 +839,9 @@ impl<'a> Generator<'a> {
             self.ty2name(&arg.ty, false)
         }).collect::<Vec<_>>();
         let ret = match decl.output {
-            FunctionRetTy::None(..) |
-            FunctionRetTy::Default(..) => "void".to_string(),
-            FunctionRetTy::Ty(ref t) => self.ty2name(t, false),
+            ast::NoReturn(..) |
+            ast::DefaultReturn(..) => "void".to_string(),
+            ast::Return(ref t) => self.ty2name(t, false),
         };
         (ret, args, decl.variadic)
     }
@@ -864,14 +862,14 @@ impl<'a> Generator<'a> {
 impl<'a, 'v> Visitor<'v> for Generator<'a> {
     fn visit_item(&mut self, i: &'v ast::Item) {
         let prev_abi = self.abi;
-        let public = i.vis == Visibility::Public;
+        let public = i.vis == ast::Public;
         match i.node {
-            ItemKind::Ty(_, ref generics) if public => {
+            ast::ItemTy(_, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
                 self.test_type(&i.ident.to_string());
             }
 
-            ItemKind::Struct(ref s, ref generics) if public => {
+            ast::ItemStruct(ref s, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
                 let is_c = i.attrs.iter().any(|a| {
                     attr::find_repr_attrs(self.sh, a).iter().any(|a| {
@@ -884,12 +882,12 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 self.test_struct(&i.ident.to_string(), s);
             }
 
-            ItemKind::Const(ref ty, _) if public => {
+            ast::ItemConst(ref ty, _) if public => {
                 let ty = self.ty2name(ty, true);
                 self.test_const(&i.ident.to_string(), &ty);
             }
 
-            ItemKind::ForeignMod(ref fm) if public => {
+            ast::ItemForeignMod(ref fm) if public => {
                 self.abi = fm.abi;
             }
 
@@ -901,7 +899,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
 
     fn visit_foreign_item(&mut self, i: &'v ast::ForeignItem) {
         match i.node {
-            ForeignItemKind::Fn(ref decl, ref generics) => {
+            ast::ForeignItemFn(ref decl, ref generics) => {
                 self.assert_no_generics(i.ident, generics);
                 let (ret, args, variadic) = self.decl2rust(decl);
                 let cname = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
@@ -910,7 +908,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 self.test_extern_fn(&i.ident.to_string(), cname, &args, &ret,
                                     variadic, abi);
             }
-            ForeignItemKind::Static(_, _) => {
+            ast::ForeignItemStatic(_, _) => {
             }
         }
         visit::walk_foreign_item(self, i)
@@ -922,10 +920,10 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
 impl<'v> Visitor<'v> for StructFinder {
     fn visit_item(&mut self, i: &'v ast::Item) {
         match i.node {
-            ItemKind::Struct(..) => {
+            ast::ItemStruct(..) => {
                 self.structs.insert(i.ident.to_string());
             }
-            ItemKind::Enum(..) => {
+            ast::ItemEnum(..) => {
                 self.structs.insert(i.ident.to_string());
             }
 
