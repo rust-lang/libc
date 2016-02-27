@@ -18,3 +18,20 @@ pub const SO_SNDTIMEO: ::c_int = 21;
 
 pub const FIOCLEX: ::c_ulong = 0x5451;
 pub const FIONBIO: ::c_ulong = 0x5421;
+
+s! {
+    pub struct mcontext_t {
+        __gregs: [usize; 5],
+        __fpregs: *mut u8,
+        __reserved: [::c_ulonglong; 8],
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        __rest: [usize; 28],
+    }
+}

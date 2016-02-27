@@ -83,6 +83,7 @@ fn main() {
         cfg.header("sys/time.h");
         cfg.header("sys/un.h");
         cfg.header("sys/wait.h");
+        cfg.header("ucontext.h");
         cfg.header("unistd.h");
         cfg.header("utime.h");
         cfg.header("pwd.h");
