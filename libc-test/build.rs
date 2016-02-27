@@ -121,6 +121,7 @@ fn main() {
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
         cfg.header("malloc/malloc.h");
+        cfg.header("util.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
