@@ -568,6 +568,7 @@ pub const RTLD_NODELETE: ::c_int = 0x1000;
 pub const RTLD_NOLOAD: ::c_int = 0x2000;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 
+#[link(name = "util")]
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
@@ -617,6 +618,15 @@ extern {
                         timeout: *const ::timespec) -> ::c_int;
     pub fn sigwaitinfo(set: *const sigset_t,
                        info: *mut siginfo_t) -> ::c_int;
+    pub fn openpty(amaster: *mut ::c_int,
+                   aslave: *mut ::c_int,
+                   name: *mut ::c_char,
+                   termp: *mut termios,
+                   winp: *mut ::winsize) -> ::c_int;
+    pub fn forkpty(amaster: *mut ::c_int,
+                   name: *mut ::c_char,
+                   termp: *mut termios,
+                   winp: *mut ::winsize) -> ::pid_t;
 }
 
 cfg_if! {

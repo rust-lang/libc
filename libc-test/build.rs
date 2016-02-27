@@ -130,6 +130,12 @@ fn main() {
 
     if bsdlike {
         cfg.header("sys/event.h");
+
+        if freebsd {
+            cfg.header("libutil.h");
+        } else {
+            cfg.header("util.h");
+        }
     }
 
     if linux {
@@ -139,6 +145,7 @@ fn main() {
         cfg.header("sys/xattr.h");
         cfg.header("sys/ipc.h");
         cfg.header("sys/shm.h");
+        cfg.header("pty.h");
     }
 
     if linux || android {
