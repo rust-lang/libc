@@ -181,6 +181,21 @@ s! {
         pub l_len: ::off_t,
         pub l_pid: ::pid_t,
     }
+
+    pub struct mcontext_t {
+        __gregs: [usize; 5],
+        __fpregs: *mut u8,
+        __reserved: [::c_ulonglong; 8],
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        __rest: [usize; 28],
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 1024;
@@ -645,6 +660,14 @@ extern {
                        result: *mut *mut ::dirent64) -> ::c_int;
     pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
+
+    pub fn getcontext(ucp: *mut ::ucontext_t) -> ::c_int;
+    pub fn setcontext(ucp: *const ::ucontext_t) -> ::c_int;
+    pub fn makecontext(ucp: *mut ::ucontext_t,
+                       func:  extern fn (),
+                       argc: ::c_int, ...);
+    pub fn swapcontext(uocp: *mut ::ucontext_t,
+                       ucp: *const ::ucontext_t) -> ::c_int;
 }
 
 cfg_if! {

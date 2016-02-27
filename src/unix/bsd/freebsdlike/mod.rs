@@ -120,6 +120,21 @@ s! {
         pub trailers: *mut ::iovec,
         pub trl_cnt: ::c_int,
     }
+
+    pub struct mcontext_t {
+        __gregs: [usize; 23],
+        __fpregs: *mut u8,
+        __reserved: [::c_ulonglong; 8],
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        __rest: [usize; 64],
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;

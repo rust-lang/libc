@@ -444,6 +444,14 @@ extern {
     pub fn pthread_attr_setaffinity_np(attr: *mut ::pthread_attr_t,
                                        cpusetsize: ::size_t,
                                        cpuset: *const ::cpu_set_t) -> ::c_int;
+
+    pub fn getcontext(ucp: *mut ::ucontext_t) -> ::c_int;
+    pub fn setcontext(ucp: *const ::ucontext_t) -> ::c_int;
+    pub fn makecontext(ucp: *mut ::ucontext_t,
+                       func:  extern fn (),
+                       argc: ::c_int, ...);
+    pub fn swapcontext(uocp: *mut ::ucontext_t,
+                       ucp: *const ::ucontext_t) -> ::c_int;
 }
 
 cfg_if! {

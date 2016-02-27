@@ -83,6 +83,7 @@ fn main() {
         cfg.header("sys/time.h");
         cfg.header("sys/un.h");
         cfg.header("sys/wait.h");
+        cfg.header("ucontext.h");
         cfg.header("unistd.h");
         cfg.header("utime.h");
         cfg.header("pwd.h");
@@ -132,7 +133,6 @@ fn main() {
 
     if linux {
         cfg.header("mqueue.h");
-        cfg.header("ucontext.h");
         cfg.header("sys/signalfd.h");
         cfg.header("sys/xattr.h");
         cfg.header("sys/ipc.h");

@@ -80,43 +80,9 @@ s! {
         __size: [u64; 7]
     }
 
-}
-
-type greg_t = ::c_longlong;
-
-const NREG : usize = 23;
-
-type gregset_t = [greg_t; NREG];
-
-s! {
-
-    pub struct _libc_fpxreg {
-        significand: [::c_ushort; 4],
-        exponent: ::c_ushort,
-        padding: [::c_ushort; 3],
-    }
-
-    pub struct _libc_xmmreg {
-        element: [u32; 4],
-    }
-
-    pub struct _libc_fpstate {
-        cwd: u16,
-        swd: u16,
-        ftw: u16,
-        fop: u16,
-        rip: u64,
-        rdp: u64,
-        mxcsr: u32,
-        mxcr_mask: u32,
-        _st: [_libc_fpxreg; 8],
-        _xmm: [_libc_xmmreg; 16],
-        padding: [u32; 24],
-    }
-
     pub struct mcontext_t {
-        __gregs: gregset_t,
-        __fpregs: *mut _libc_fpstate,
+        __gregs: [usize; 23],
+        __fpregs: *mut u8,
         __reserved: [::c_ulonglong; 8],
     }
 
@@ -126,14 +92,6 @@ s! {
         pub uc_stack: ::stack_t,
         pub uc_mcontext: mcontext_t,
         pub uc_sigmask: ::sigset_t,
-        __fpregs_mem: _libc_fpstate,
+        __rest: [usize; 64],
     }
-
-}
-
-extern {
-    pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
-    pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
-    pub fn makecontext(ucp: *mut ucontext_t, func:  extern fn (), argc: ::c_int, ...);
-    pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> ::c_int;
 }

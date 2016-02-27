@@ -336,6 +336,14 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
+
+    pub fn getcontext(ucp: *mut ::ucontext_t) -> ::c_int;
+    pub fn setcontext(ucp: *const ::ucontext_t) -> ::c_int;
+    pub fn makecontext(ucp: *mut ::ucontext_t,
+                       func:  extern fn (),
+                       argc: ::c_int, ...);
+    pub fn swapcontext(uocp: *mut ::ucontext_t,
+                       ucp: *const ::ucontext_t) -> ::c_int;
 }
 
 cfg_if! {
