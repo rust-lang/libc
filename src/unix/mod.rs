@@ -411,7 +411,7 @@ extern {
 
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
-    #[cfg_attr(arget_os = "netbsd", link_name = "__gettimeofday50")]
+    #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
 
@@ -488,6 +488,7 @@ extern {
                link_name = "pthread_sigmask$UNIX2003")]
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t,
                            oldset: *mut sigset_t) -> ::c_int;
+    pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
 
     // #[cfg_attr(target_os = "linux", link_name = "__xpg_strerror_r")]
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
@@ -499,11 +500,13 @@ extern {
                       optval: *mut ::c_void,
                       optlen: *mut ::socklen_t) -> ::c_int;
     pub fn raise(signum: ::c_int) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
     pub fn sigaction(signum: ::c_int,
                      act: *const sigaction,
                      oldact: *mut sigaction) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sigaltstack$UNIX2003")]
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
     pub fn sigaltstack(ss: *const stack_t,
                        oss: *mut stack_t) -> ::c_int;
 
@@ -678,6 +681,9 @@ extern {
     pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int;
+    pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
+    pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
+    pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {

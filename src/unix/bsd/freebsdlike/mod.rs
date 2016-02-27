@@ -1,10 +1,5 @@
-pub type clock_t = i32;
 pub type dev_t = u32;
-pub type ino_t = u32;
 pub type mode_t = u16;
-pub type nlink_t = u16;
-pub type blksize_t = u32;
-pub type fflags_t = u32;
 pub type pthread_attr_t = *mut ::c_void;
 pub type rlim_t = i64;
 pub type pthread_mutex_t = *mut ::c_void;
@@ -18,14 +13,6 @@ pub type speed_t = ::c_uint;
 pub enum timezone {}
 
 s! {
-    pub struct dirent {
-        pub d_fileno: u32,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_namlen: u8,
-        pub d_name: [::c_char; 256],
-    }
-
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         __unused1: ::size_t,
@@ -88,20 +75,6 @@ s! {
         pub ss_flags: ::c_int,
     }
 
-    pub struct statvfs {
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_favail: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_bsize: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_fsid: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-    }
-
     pub struct sched_param {
         pub sched_priority: ::c_int,
     }
@@ -137,6 +110,7 @@ s! {
         pub l_pid: ::pid_t,
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
+        #[cfg(not(target_os = "dragonfly"))]
         pub l_sysid: ::c_int,
     }
 
@@ -150,7 +124,6 @@ s! {
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
-pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 pub const EOF: ::c_int = -1;
 pub const SEEK_SET: ::c_int = 0;
 pub const SEEK_CUR: ::c_int = 1;
@@ -173,7 +146,6 @@ pub const O_CREAT: ::c_int = 512;
 pub const O_EXCL: ::c_int = 2048;
 pub const O_NOCTTY: ::c_int = 32768;
 pub const O_TRUNC: ::c_int = 1024;
-pub const O_CLOEXEC: ::c_int = 0x00100000;
 pub const S_IFIFO: mode_t = 4096;
 pub const S_IFCHR: mode_t = 8192;
 pub const S_IFBLK: mode_t = 24576;
@@ -209,9 +181,6 @@ pub const F_TEST: ::c_int = 3;
 pub const F_TLOCK: ::c_int = 2;
 pub const F_ULOCK: ::c_int = 0;
 pub const F_DUPFD_CLOEXEC: ::c_int = 17;
-pub const F_GETLK: ::c_int = 11;
-pub const F_SETLK: ::c_int = 12;
-pub const F_SETLKW: ::c_int = 13;
 pub const SIGHUP: ::c_int = 1;
 pub const SIGINT: ::c_int = 2;
 pub const SIGQUIT: ::c_int = 3;
@@ -337,7 +306,6 @@ pub const EBADMSG: ::c_int = 89;
 pub const EMULTIHOP: ::c_int = 90;
 pub const ENOLINK: ::c_int = 91;
 pub const EPROTO: ::c_int = 92;
-pub const ELAST: ::c_int = 96;
 
 pub const F_DUPFD: ::c_int = 0;
 pub const F_GETFD: ::c_int = 1;
@@ -364,13 +332,6 @@ pub const POSIX_MADV_RANDOM: ::c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
-
-pub const POSIX_FADV_NORMAL: ::c_int = 0;
-pub const POSIX_FADV_RANDOM: ::c_int = 1;
-pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
-pub const POSIX_FADV_WILLNEED: ::c_int = 3;
-pub const POSIX_FADV_DONTNEED: ::c_int = 4;
-pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
 pub const _SC_IOV_MAX: ::c_int = 56;
 pub const _SC_GETGR_R_SIZE_MAX: ::c_int = 70;
@@ -420,14 +381,11 @@ pub const RLIMIT_NOFILE: ::c_int = 8;
 pub const RLIMIT_SBSIZE: ::c_int = 9;
 pub const RLIMIT_VMEM: ::c_int = 10;
 pub const RLIMIT_AS: ::c_int = RLIMIT_VMEM;
-pub const RLIMIT_NPTS: ::c_int = 11;
-pub const RLIMIT_SWAP: ::c_int = 12;
-
-pub const RLIM_NLIMITS: rlim_t = 13;
 pub const RLIM_INFINITY: rlim_t = 0x7fff_ffff_ffff_ffff;
 
 pub const RUSAGE_SELF: ::c_int = 0;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
+#[cfg(not(target_os = "dragonfly"))]
 pub const RUSAGE_THREAD: ::c_int = 1;
 
 pub const MADV_NORMAL: ::c_int = 0;
@@ -440,6 +398,7 @@ pub const MADV_NOSYNC: ::c_int = 6;
 pub const MADV_AUTOSYNC: ::c_int = 7;
 pub const MADV_NOCORE: ::c_int = 8;
 pub const MADV_CORE: ::c_int = 9;
+#[cfg(not(target_os = "dragonfly"))]
 pub const MADV_PROTECT: ::c_int = 10;
 
 pub const MINCORE_INCORE: ::c_int =  0x1;
@@ -584,9 +543,6 @@ pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const NI_MAXHOST: ::size_t = 1025;
 
-pub const Q_GETQUOTA: ::c_int = 0x700;
-pub const Q_SETQUOTA: ::c_int = 0x800;
-
 pub const RTLD_LOCAL: ::c_int = 0;
 pub const RTLD_NODELETE: ::c_int = 0x1000;
 pub const RTLD_NOLOAD: ::c_int = 0x2000;
@@ -606,8 +562,6 @@ extern {
                            mibp: *mut ::c_int,
                            sizep: *mut ::size_t)
                            -> ::c_int;
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
     pub fn sysctl(name: *const ::c_int,
@@ -623,10 +577,7 @@ extern {
                         newp: *const ::c_void,
                         newlen: ::size_t)
                         -> ::c_int;
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
-    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
-                           len: ::off_t) -> ::c_int;
     pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
@@ -637,22 +588,6 @@ extern {
                     hdtr: *mut ::sf_hdtr,
                     sbytes: *mut ::off_t,
                     flags: ::c_int) -> ::c_int;
-
-    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, 
-                         advise: ::c_int) -> ::c_int;
-
-}
-
-cfg_if! {
-    if #[cfg(target_arch = "x86")] {
-        mod x86;
-        pub use self::x86::*;
-    } else if #[cfg(target_arch = "x86_64")] {
-        mod x86_64;
-        pub use self::x86_64::*;
-    } else {
-        // ...
-    }
 }
 
 cfg_if! {
