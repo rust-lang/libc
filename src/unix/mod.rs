@@ -509,6 +509,10 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
     pub fn sigaltstack(ss: *const stack_t,
                        oss: *mut stack_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch ="x86"),
+               link_name = "sigwait$UNIX2003")]
+    pub fn sigwait(set: *const sigset_t,
+                   sig: *mut ::c_int) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utimes50")]
     pub fn utimes(filename: *const ::c_char,

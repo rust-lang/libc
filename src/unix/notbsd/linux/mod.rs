@@ -542,6 +542,11 @@ extern {
     pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
     pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
     pub fn mkostemps(template: *mut ::c_char, suffixlen: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn sigtimedwait(set: *const sigset_t,
+                        info: *mut siginfo_t,
+                        timeout: *const ::timespec) -> ::c_int;
+    pub fn sigwaitinfo(set: *const sigset_t,
+                       info: *mut siginfo_t) -> ::c_int;
 }
 
 cfg_if! {
