@@ -588,6 +588,11 @@ extern {
                     hdtr: *mut ::sf_hdtr,
                     sbytes: *mut ::off_t,
                     flags: ::c_int) -> ::c_int;
+    pub fn sigtimedwait(set: *const sigset_t,
+                        info: *mut siginfo_t,
+                        timeout: *const ::timespec) -> ::c_int;
+    pub fn sigwaitinfo(set: *const sigset_t,
+                       info: *mut siginfo_t) -> ::c_int;
 }
 
 cfg_if! {

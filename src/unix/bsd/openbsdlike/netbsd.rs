@@ -378,4 +378,10 @@ extern {
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
                                  stackaddr: *mut *mut ::c_void,
                                  stacksize: *mut ::size_t) -> ::c_int;
+    #[link_name = "__sigtimedwait50"]
+    pub fn sigtimedwait(set: *const sigset_t,
+                        info: *mut siginfo_t,
+                        timeout: *const ::timespec) -> ::c_int;
+    pub fn sigwaitinfo(set: *const sigset_t,
+                       info: *mut siginfo_t) -> ::c_int;
 }
