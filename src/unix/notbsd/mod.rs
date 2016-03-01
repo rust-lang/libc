@@ -653,8 +653,9 @@ extern {
                     nr_segs: ::size_t,
                     flags: ::c_uint) -> ::ssize_t;
 
-    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, 
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
                          advise: ::c_int) -> ::c_int;
+    pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
 }
 
 cfg_if! {
