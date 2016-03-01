@@ -4,6 +4,9 @@ pub type ino_t = u32;
 pub type nlink_t = u16;
 pub type blksize_t = u32;
 
+pub type fsblkcnt_t = ::uint64_t;
+pub type fsfilcnt_t = ::uint64_t;
+
 s! {
     pub struct dirent {
         pub d_fileno: u32,
@@ -27,9 +30,6 @@ s! {
         pub f_namemax: ::c_ulong,
     }
 }
-
-pub type fsblkcnt_t = ::uint64_t;
-pub type fsfilcnt_t = ::uint64_t;
 
 pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
@@ -57,6 +57,9 @@ pub const POSIX_FADV_WILLNEED: ::c_int = 3;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
+pub const MADV_PROTECT: ::c_int = 10;
+pub const RUSAGE_THREAD: ::c_int = 1;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
@@ -70,7 +73,9 @@ extern {
     pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
                          advise: ::c_int) -> ::c_int;
     pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
-    pub fn mkostemps(template: *mut ::c_char, suffixlen: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn mkostemps(template: *mut ::c_char,
+                     suffixlen: ::c_int,
+                     flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

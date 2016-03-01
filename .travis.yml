@@ -16,6 +16,7 @@ script:
     else
       cargo build;
       cargo build --no-default-features;
+      rustc ci/style.rs && ./style src;
     fi
 os:
   - linux

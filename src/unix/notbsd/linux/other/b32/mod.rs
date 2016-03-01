@@ -13,17 +13,6 @@ pub type __fsword_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
 
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
-pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
-pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
-
-pub const PTRACE_GETFPREGS: ::c_uint = 14;
-pub const PTRACE_SETFPREGS: ::c_uint = 15;
-pub const PTRACE_GETFPXREGS: ::c_uint = 18;
-pub const PTRACE_SETFPXREGS: ::c_uint = 19;
-pub const PTRACE_GETREGS: ::c_uint = 12;
-pub const PTRACE_SETREGS: ::c_uint = 13;
-
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,
@@ -78,6 +67,17 @@ s! {
         __val: [::c_ulong; 32],
     }
 }
+
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
+pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
+pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+
+pub const PTRACE_GETFPREGS: ::c_uint = 14;
+pub const PTRACE_SETFPREGS: ::c_uint = 15;
+pub const PTRACE_GETFPXREGS: ::c_uint = 18;
+pub const PTRACE_SETFPXREGS: ::c_uint = 19;
+pub const PTRACE_GETREGS: ::c_uint = 12;
+pub const PTRACE_SETREGS: ::c_uint = 13;
 
 cfg_if! {
     if #[cfg(target_arch = "x86")] {
