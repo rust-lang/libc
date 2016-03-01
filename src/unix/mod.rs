@@ -143,6 +143,12 @@ cfg_if! {
     } else if #[cfg(target_os = "emscripten")] {
         #[link(name = "c")]
         extern {}
+    } else if #[cfg(all(target_vendor = "rumprun", target_os = "netbsd"))] {
+        // Since we don't use -nodefaultlibs on Rumprun, libc is always pulled in
+        // automatically by the linker. We avoid passing it explicitly, as it
+        // causes some versions of binutils to crash with an assertion failure.
+        #[link(name = "m")]
+        extern {}
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
                         target_os = "android",
@@ -688,6 +694,7 @@ extern {
     pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
     pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
+    pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
 }
 
 cfg_if! {

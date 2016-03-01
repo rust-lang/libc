@@ -132,6 +132,7 @@ fn main() {
 
     if linux {
         cfg.header("mqueue.h");
+        cfg.header("ucontext.h");
         cfg.header("sys/signalfd.h");
         cfg.header("sys/xattr.h");
         cfg.header("sys/ipc.h");
@@ -350,10 +351,6 @@ fn main() {
             // they're implemented on rumprun yet, just let them slide for now.
             // Some of them look like they have headers but then don't have
             // corresponding actual definitions either...
-            "backtrace" |
-            "pthread_main_np" |
-            "pthread_set_name_np" |
-            "pthread_stackseg_np" |
             "shm_open" |
             "shm_unlink" |
             "syscall" |
