@@ -23,7 +23,7 @@ macro_rules! cfg_if {
 macro_rules! __cfg_if_items {
     (($($not:meta,)*) ; ) => {};
     (($($not:meta,)*) ; ( ($($m:meta),*) ($($it:item)*) ), $($rest:tt)*) => {
-        __cfg_if_apply! { cfg(all($($m,)* not(any($($not),*)))), $($it)* }
+        __cfg_if_apply! { cfg(all(not(any($($not),*)), $($m,)*)), $($it)* }
         __cfg_if_items! { ($($not,)* $($m,)*) ; $($rest)* }
     }
 }

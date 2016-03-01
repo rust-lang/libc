@@ -232,6 +232,10 @@ extern {
                        flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
+    pub fn pthread_main_np() -> ::c_int;
+    pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
+    pub fn pthread_stackseg_np(thread: ::pthread_t,
+                               sinfo: *mut ::stack_t) -> ::c_int;
     pub fn sysctl(name: *const ::c_int,
                   namelen: ::c_uint,
                   oldp: *mut ::c_void,
