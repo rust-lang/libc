@@ -523,7 +523,6 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__utimes50")]
     pub fn utimes(filename: *const ::c_char,
                   times: *const ::timeval) -> ::c_int;
-    pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
     pub fn dlopen(filename: *const ::c_char,
                   flag: ::c_int) -> *mut ::c_void;
     pub fn dlerror() -> *mut ::c_char;
@@ -695,6 +694,7 @@ extern {
     pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
     pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
+    pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
 }
 
 cfg_if! {
