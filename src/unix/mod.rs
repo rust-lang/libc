@@ -584,6 +584,16 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "poll$UNIX2003")]
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
+               link_name = "select$1050")]
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "select$UNIX2003")]
+    #[cfg_attr(target_os = "netbsd", link_name = "__select50")]
+    pub fn select(nfds: ::c_int,
+                  readfs: *mut fd_set,
+                  writefds: *mut fd_set,
+                  errorfds: *mut fd_set,
+                  timeout: *mut timeval) -> ::c_int;
 }
 
 // TODO: get rid of this #[cfg(not(...))]
@@ -648,16 +658,6 @@ extern {
     pub fn sigdelset(set: *mut sigset_t, signum: ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigismember14")]
     pub fn sigismember(set: *const sigset_t, signum: ::c_int) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
-               link_name = "select$1050")]
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "select$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__select50")]
-    pub fn select(nfds: ::c_int,
-                  readfs: *mut fd_set,
-                  writefds: *mut fd_set,
-                  errorfds: *mut fd_set,
-                  timeout: *mut timeval) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
                link_name = "pselect$1050")]
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
