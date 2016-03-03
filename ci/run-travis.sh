@@ -19,7 +19,6 @@ fi
 
 MAIN_TARGETS=https://static.rust-lang.org/dist
 DATE=$(echo $TRAVIS_RUST_VERSION | sed s/nightly-//)
-EXTRA_TARGETS=https://people.mozilla.org/~acrichton/libc-test/$DATE
 if [ "$DATE" != "nightly" ]; then
     MAIN_TARGETS=$MAIN_TARGETS/$DATE
     TRAVIS_RUST_VERSION=nightly
@@ -108,30 +107,11 @@ mkdir -p .cargo
 cp ci/cargo-config .cargo/config
 
 # Next up we need to install the standard library for the version of Rust that
-# we're testing. Get fancy targets from the EXTRA_TARGETS URL and otherwise get
-# all others from the official distribution.
+# we're testing.
 if [ "$TRAVIS" = "true" ]; then
-  case "$TARGET" in
-    *-rumprun-*)
-      curl -s $EXTRA_TARGETS/$TARGET.tar.gz | \
-       tar xzf - -C `rustc --print sysroot`/lib/rustlib
-      ;;
-
-    *)
-      # Download the rustlib folder from the relevant portion of main
-      # distribution's tarballs.
-      dir=rust-std-$TARGET
-      pkg=rust-std
-      if [ "$TRAVIS_RUST_VERSION" = "1.0.0" ]; then
-        pkg=rust
-        dir=rustc
-      fi
-      curl -s $MAIN_TARGETS/$pkg-$TRAVIS_RUST_VERSION-$TARGET.tar.gz | \
-        tar xzf - -C $HOME/rust/lib/rustlib --strip-components=4 \
-          $pkg-$TRAVIS_RUST_VERSION-$TARGET/$dir/lib/rustlib/$TARGET
-      ;;
-
-  esac
+  curl -s $MAIN_TARGETS/rust-std-$TRAVIS_RUST_VERSION-$TARGET.tar.gz | \
+    tar xzf - -C $HOME/rust/lib/rustlib --strip-components=4 \
+      rust-std-$TRAVIS_RUST_VERSION-$TARGET/rust-std-$TARGET/lib/rustlib/$TARGET
 fi
 
 # If we're testing with a docker image, then run tests entirely within that
