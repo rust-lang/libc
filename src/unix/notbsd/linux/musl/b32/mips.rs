@@ -301,3 +301,5 @@ pub const TIOCMBIC: ::c_ulong = 0x741C;
 pub const TIOCMSET: ::c_ulong = 0x741D;
 pub const FIONREAD: ::c_ulong = 0x467F;
 pub const TIOCCONS: ::c_ulong = 0x80047478;
+
+pub const SYS_gettid: ::c_int = 4222;   // Valid for O32

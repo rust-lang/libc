@@ -26,6 +26,8 @@ pub const SO_SNDTIMEO: ::c_int = 19;
 pub const FIOCLEX: ::c_ulong = 0x20006601;
 pub const FIONBIO: ::c_ulong = 0x8004667e;
 
+pub const SYS_gettid: ::c_int = 207;
+
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,

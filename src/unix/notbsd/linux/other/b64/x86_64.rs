@@ -33,6 +33,8 @@ pub const PTRACE_SETFPXREGS: ::c_uint = 19;
 pub const PTRACE_GETREGS: ::c_uint = 12;
 pub const PTRACE_SETREGS: ::c_uint = 13;
 
+pub const SYS_gettid: ::c_int = 186;
+
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,
