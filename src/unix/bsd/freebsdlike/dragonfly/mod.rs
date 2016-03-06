@@ -8,6 +8,11 @@ pub type c_ulong = u64;
 pub type time_t = i64;
 pub type suseconds_t = i64;
 
+pub type uuid_t = ::uuid;
+
+pub type fsblkcnt_t = u64;
+pub type fsfilcnt_t = u64;
+
 s! {
     pub struct dirent {
         pub d_fileno: ::ino_t,
@@ -74,11 +79,6 @@ s! {
         pub st_qspare2: ::int64_t,
     }
 }
-
-pub type uuid_t = ::uuid;
-
-pub type fsblkcnt_t = u64;
-pub type fsfilcnt_t = u64;
 
 pub const RAND_MAX: ::c_int = 0x7fff_ffff;
 pub const PTHREAD_STACK_MIN: ::size_t = 1024;

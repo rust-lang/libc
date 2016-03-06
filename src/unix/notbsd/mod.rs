@@ -127,10 +127,14 @@ s! {
 }
 
 // intentionally not public, only used for fd_set
-#[cfg(target_pointer_width = "32")]
-const ULONG_SIZE: usize = 32;
-#[cfg(target_pointer_width = "64")]
-const ULONG_SIZE: usize = 64;
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        const ULONG_SIZE: usize = 32;
+    } else if #[cfg(target_pointer_width = "64")] {
+        const ULONG_SIZE: usize = 64;
+    } else {
+    }
+}
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
@@ -605,7 +609,9 @@ extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::size_t,
                      ptr: *const ::gid_t) -> ::c_int;
-    pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
+    pub fn sched_setscheduler(pid: ::pid_t,
+                              policy: ::c_int,
+                              param: *const sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
     pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
@@ -632,7 +638,9 @@ extern {
                  arg: *mut ::c_void, ...) -> ::c_int;
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
-    pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    pub fn memrchr(cx: *const ::c_void,
+                   c: ::c_int,
+                   n: ::size_t) -> *mut ::c_void;
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
     pub fn sendfile(out_fd: ::c_int,
                     in_fd: ::c_int,

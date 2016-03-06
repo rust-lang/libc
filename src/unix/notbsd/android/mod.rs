@@ -571,11 +571,13 @@ f! {
         (*termios).c_cflag & ::CBAUD
     }
     pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
-        (*termios).c_cflag = ((*termios).c_cflag & !::CBAUD) | (speed & ::CBAUD);
+        let cbaud = ::CBAUD;
+        (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
         return 0
     }
     pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
-        (*termios).c_cflag = ((*termios).c_cflag & !::CBAUD) | (speed & ::CBAUD);
+        let cbaud = ::CBAUD;
+        (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
         return 0
     }
     pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int {
@@ -658,5 +660,3 @@ cfg_if! {
         // ...
     }
 }
-
-

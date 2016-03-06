@@ -3,6 +3,8 @@
 //! More functions and definitions can be found in the more specific modules
 //! according to the platform in question.
 
+use dox::Option;
+
 pub type pid_t = i32;
 pub type uid_t = u32;
 pub type gid_t = u32;
@@ -144,8 +146,8 @@ cfg_if! {
         #[link(name = "c")]
         extern {}
     } else if #[cfg(all(target_vendor = "rumprun", target_os = "netbsd"))] {
-        // Since we don't use -nodefaultlibs on Rumprun, libc is always pulled in
-        // automatically by the linker. We avoid passing it explicitly, as it
+        // Since we don't use -nodefaultlibs on Rumprun, libc is always pulled
+        // in automatically by the linker. We avoid passing it explicitly, as it
         // causes some versions of binutils to crash with an assertion failure.
         #[link(name = "m")]
         extern {}
@@ -373,7 +375,8 @@ extern {
     pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
-    pub fn if_indextoname(ifindex: ::c_uint, ifname: *mut ::c_char) -> *mut ::c_char;
+    pub fn if_indextoname(ifindex: ::c_uint,
+                          ifname: *mut ::c_char) -> *mut ::c_char;
 
     #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
@@ -440,7 +443,7 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__libc_thr_yield")]
     pub fn sched_yield() -> ::c_int;
     pub fn pthread_key_create(key: *mut pthread_key_t,
-                              dtor: ::dox::Option<unsafe extern fn(*mut ::c_void)>)
+                              dtor: Option<unsafe extern fn(*mut ::c_void)>)
                               -> ::c_int;
     pub fn pthread_key_delete(key: pthread_key_t) -> ::c_int;
     pub fn pthread_getspecific(key: pthread_key_t) -> *mut ::c_void;
@@ -552,10 +555,14 @@ extern {
                  dev: ::dev_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "writev$UNIX2003")]
-    pub fn writev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
+    pub fn writev(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int) -> ::ssize_t;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "readv$UNIX2003")]
-    pub fn readv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
+    pub fn readv(fd: ::c_int,
+                 iov: *const ::iovec,
+                 iovcnt: ::c_int) -> ::ssize_t;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
@@ -577,7 +584,9 @@ extern {
     pub fn putenv(string: *mut c_char) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sendmsg$UNIX2003")]
-    pub fn sendmsg(fd: ::c_int, msg: *const msghdr, flags: ::c_int) -> ::ssize_t;
+    pub fn sendmsg(fd: ::c_int,
+                   msg: *const msghdr,
+                   flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "recvmsg$UNIX2003")]
     pub fn recvmsg(fd: ::c_int, msg: *mut msghdr, flags: ::c_int) -> ::ssize_t;
@@ -596,8 +605,8 @@ extern {
                   timeout: *mut timeval) -> ::c_int;
 }
 
-// TODO: get rid of this #[cfg(not(...))]
-#[cfg(not(target_os = "android"))]
+// TODO: get rid of this cfg(not(...))
+#[cfg(not(target_os = "android"))] // " if " -- appease style checker
 extern {
     pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ifaddrs);
@@ -605,8 +614,8 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
     pub fn glob(pattern: *const c_char,
                 flags: ::c_int,
-                errfunc: ::dox::Option<extern "C" fn(epath: *const c_char,
-                                                     errno: ::c_int) -> ::c_int>,
+                errfunc: Option<extern fn(epath: *const c_char,
+                                          errno: ::c_int) -> ::c_int>,
                 pglob: *mut glob_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__globfree30")]
     pub fn globfree(pglob: *mut glob_t);

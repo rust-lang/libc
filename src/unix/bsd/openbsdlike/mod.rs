@@ -384,9 +384,13 @@ extern {
     pub fn __errno() -> *mut ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
-    pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    pub fn memrchr(cx: *const ::c_void,
+                   c: ::c_int,
+                   n: ::size_t) -> *mut ::c_void;
     pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
-    pub fn mkostemps(template: *mut ::c_char, suffixlen: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn mkostemps(template: *mut ::c_char,
+                     suffixlen: ::c_int,
+                     flags: ::c_int) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
 }
