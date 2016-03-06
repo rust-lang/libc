@@ -234,9 +234,12 @@ s! {
         pub st_size: ::off_t,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
-        pub st_atim: ::timespec,
-        pub st_mtim: ::timespec,
-        pub st_ctim: ::timespec,
+        pub st_atime: ::time_t,
+        pub st_atime_nsec: ::c_long,
+        pub st_mtime: ::time_t,
+        pub st_mtime_nsec: ::c_long,
+        pub st_ctime: ::time_t,
+        pub st_ctime_nsec: ::c_long,
         pub st_ino: ::ino_t,
     }
 
@@ -253,9 +256,12 @@ s! {
         pub st_size: ::off_t,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
-        pub st_atim: ::timespec,
-        pub st_mtim: ::timespec,
-        pub st_ctim: ::timespec,
+        pub st_atime: ::time_t,
+        pub st_atime_nsec: ::c_long,
+        pub st_mtime: ::time_t,
+        pub st_mtime_nsec: ::c_long,
+        pub st_ctime: ::time_t,
+        pub st_ctime_nsec: ::c_long,
         pub st_ino: ::ino_t,
     }
 
