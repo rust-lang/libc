@@ -9,4 +9,4 @@ s! {
     }
 }
 
-pub const SYS_gettid: ::c_int = 224;
+pub const SYS_gettid: ::c_long = 224;

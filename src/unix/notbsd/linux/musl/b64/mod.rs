@@ -325,4 +325,4 @@ pub const TIOCMSET: ::c_ulong = 0x5418;
 pub const FIONREAD: ::c_ulong = 0x541B;
 pub const TIOCCONS: ::c_ulong = 0x541D;
 
-pub const SYS_gettid: ::c_int = 186;    // Valid for x86_64
+pub const SYS_gettid: ::c_long = 186;    // Valid for x86_64
