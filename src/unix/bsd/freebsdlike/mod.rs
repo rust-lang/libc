@@ -385,8 +385,6 @@ pub const RLIM_INFINITY: rlim_t = 0x7fff_ffff_ffff_ffff;
 
 pub const RUSAGE_SELF: ::c_int = 0;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
-#[cfg(not(target_os = "dragonfly"))]
-pub const RUSAGE_THREAD: ::c_int = 1;
 
 pub const MADV_NORMAL: ::c_int = 0;
 pub const MADV_RANDOM: ::c_int = 1;
@@ -398,8 +396,6 @@ pub const MADV_NOSYNC: ::c_int = 6;
 pub const MADV_AUTOSYNC: ::c_int = 7;
 pub const MADV_NOCORE: ::c_int = 8;
 pub const MADV_CORE: ::c_int = 9;
-#[cfg(not(target_os = "dragonfly"))]
-pub const MADV_PROTECT: ::c_int = 10;
 
 pub const MINCORE_INCORE: ::c_int =  0x1;
 pub const MINCORE_REFERENCED: ::c_int = 0x2;
@@ -578,9 +574,13 @@ extern {
                         newlen: ::size_t)
                         -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
-    pub fn sched_setscheduler(pid: ::pid_t, policy: ::c_int, param: *const sched_param) -> ::c_int;
+    pub fn sched_setscheduler(pid: ::pid_t,
+                              policy: ::c_int,
+                              param: *const sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
-    pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    pub fn memrchr(cx: *const ::c_void,
+                   c: ::c_int,
+                   n: ::size_t) -> *mut ::c_void;
     pub fn sendfile(fd: ::c_int,
                     s: ::c_int,
                     offset: ::off_t,

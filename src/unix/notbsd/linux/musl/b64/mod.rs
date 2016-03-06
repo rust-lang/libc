@@ -4,6 +4,104 @@ pub type c_long = i64;
 pub type c_ulong = u64;
 pub type nlink_t = u64;
 
+s! {
+    pub struct stat {
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_nlink: ::nlink_t,
+        pub st_mode: ::mode_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        __pad0: ::c_int,
+        pub st_rdev: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_atime: ::time_t,
+        pub st_atime_nsec: ::c_long,
+        pub st_mtime: ::time_t,
+        pub st_mtime_nsec: ::c_long,
+        pub st_ctime: ::time_t,
+        pub st_ctime_nsec: ::c_long,
+        __unused: [::c_long; 3],
+    }
+
+    pub struct stat64 {
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino64_t,
+        pub st_nlink: ::nlink_t,
+        pub st_mode: ::mode_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        __pad0: ::c_int,
+        pub st_rdev: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt64_t,
+        pub st_atime: ::time_t,
+        pub st_atime_nsec: ::c_long,
+        pub st_mtime: ::time_t,
+        pub st_mtime_nsec: ::c_long,
+        pub st_ctime: ::time_t,
+        pub st_ctime_nsec: ::c_long,
+        __reserved: [::c_long; 3],
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_flags: ::c_int,
+        pub ss_size: ::size_t
+    }
+
+    pub struct pthread_attr_t {
+        __size: [u64; 7]
+    }
+
+    pub struct sigset_t {
+        __val: [::c_ulong; 16],
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_nattch: ::c_ulong,
+        __pad1: ::c_ulong,
+        __pad2: ::c_ulong,
+    }
+
+    pub struct statfs {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
+    }
+
+    pub struct msghdr {
+        pub msg_name: *mut ::c_void,
+        pub msg_namelen: ::socklen_t,
+        pub msg_iov: *mut ::iovec,
+        pub msg_iovlen: ::c_int,
+        __pad1: ::c_int,
+        pub msg_control: *mut ::c_void,
+        pub msg_controllen: ::socklen_t,
+        __pad2: ::socklen_t,
+        pub msg_flags: ::c_int,
+    }
+}
+
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 
@@ -41,6 +139,7 @@ pub const MAP_NORESERVE: ::c_int = 0x04000;
 pub const MAP_POPULATE: ::c_int = 0x08000;
 pub const MAP_NONBLOCK: ::c_int = 0x010000;
 pub const MAP_STACK: ::c_int = 0x020000;
+pub const MAP_32BIT: ::c_int = 0x0040;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
@@ -227,101 +326,3 @@ pub const FIONREAD: ::c_ulong = 0x541B;
 pub const TIOCCONS: ::c_ulong = 0x541D;
 
 pub const SYS_gettid: ::c_int = 186;    // Valid for x86_64
-
-s! {
-    pub struct stat {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_nlink: ::nlink_t,
-        pub st_mode: ::mode_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        __pad0: ::c_int,
-        pub st_rdev: ::dev_t,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __unused: [::c_long; 3],
-    }
-
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino64_t,
-        pub st_nlink: ::nlink_t,
-        pub st_mode: ::mode_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        __pad0: ::c_int,
-        pub st_rdev: ::dev_t,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __reserved: [::c_long; 3],
-    }
-
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
-    }
-
-    pub struct pthread_attr_t {
-        __size: [u64; 7]
-    }
-
-    pub struct sigset_t {
-        __val: [::c_ulong; 16],
-    }
-
-    pub struct shmid_ds {
-        pub shm_perm: ::ipc_perm,
-        pub shm_segsz: ::size_t,
-        pub shm_atime: ::time_t,
-        pub shm_dtime: ::time_t,
-        pub shm_ctime: ::time_t,
-        pub shm_cpid: ::pid_t,
-        pub shm_lpid: ::pid_t,
-        pub shm_nattch: ::c_ulong,
-        __pad1: ::c_ulong,
-        __pad2: ::c_ulong,
-    }
-
-    pub struct statfs {
-        pub f_type: ::c_ulong,
-        pub f_bsize: ::c_ulong,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_flags: ::c_ulong,
-        pub f_spare: [::c_ulong; 4],
-    }
-
-    pub struct msghdr {
-        pub msg_name: *mut ::c_void,
-        pub msg_namelen: ::socklen_t,
-        pub msg_iov: *mut ::iovec,
-        pub msg_iovlen: ::c_int,
-        __pad1: ::c_int,
-        pub msg_control: *mut ::c_void,
-        pub msg_controllen: ::socklen_t,
-        __pad2: ::socklen_t,
-        pub msg_flags: ::c_int,
-    }
-}

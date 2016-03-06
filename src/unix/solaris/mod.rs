@@ -765,5 +765,6 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t) -> *const passwd;
     pub fn readdir(dirp: *mut ::DIR) -> *const ::dirent;
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
 }
 

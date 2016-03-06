@@ -37,7 +37,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-
     pub struct ucred {
         pub pid: ::pid_t,
         pub uid: ::uid_t,
@@ -87,6 +86,39 @@ s! {
         pub l_start: ::off_t,
         pub l_len: ::off_t,
         pub l_pid: ::pid_t,
+    }
+
+    pub struct ipc_perm {
+        pub __key: ::key_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub mode: ::c_ushort,
+        __pad1: ::c_ushort,
+        pub __seq: ::c_ushort,
+        __pad2: ::c_ushort,
+        __unused1: ::c_ulong,
+        __unused2: ::c_ulong
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_atime: ::time_t,
+        #[cfg(target_pointer_width = "32")]
+        __unused1: ::c_ulong,
+        pub shm_dtime: ::time_t,
+        #[cfg(target_pointer_width = "32")]
+        __unused2: ::c_ulong,
+        pub shm_ctime: ::time_t,
+        #[cfg(target_pointer_width = "32")]
+        __unused3: ::c_ulong,
+        pub shm_cpid: ::pid_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        __unused4: ::c_ulong,
+        __unused5: ::c_ulong
     }
 }
 
@@ -425,8 +457,9 @@ extern {
                      sz: ::c_int) -> ::c_int;
     pub fn glob64(pattern: *const ::c_char,
                   flags: ::c_int,
-                  errfunc: ::dox::Option<extern "C" fn(epath: *const ::c_char,
-                                                       errno: ::c_int) -> ::c_int>,
+                  errfunc: ::dox::Option<extern fn(epath: *const ::c_char,
+                                                   errno: ::c_int)
+                                                   -> ::c_int>,
                   pglob: *mut glob64_t) -> ::c_int;
     pub fn globfree64(pglob: *mut glob64_t);
     pub fn getnameinfo(sa: *const ::sockaddr,
@@ -459,40 +492,5 @@ cfg_if! {
         pub use self::b64::*;
     } else {
         // ...
-    }
-}
-
-s! {
-    pub struct ipc_perm {
-        pub __key: ::key_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-        pub cuid: ::uid_t,
-        pub cgid: ::gid_t,
-        pub mode: ::c_ushort,
-        __pad1: ::c_ushort,
-        pub __seq: ::c_ushort,
-        __pad2: ::c_ushort,
-        __unused1: ::c_ulong,
-        __unused2: ::c_ulong
-    }
-
-    pub struct shmid_ds {
-        pub shm_perm: ::ipc_perm,
-        pub shm_segsz: ::size_t,
-        pub shm_atime: ::time_t,
-        #[cfg(target_pointer_width = "32")]
-        __unused1: ::c_ulong,
-        pub shm_dtime: ::time_t,
-        #[cfg(target_pointer_width = "32")]
-        __unused2: ::c_ulong,
-        pub shm_ctime: ::time_t,
-        #[cfg(target_pointer_width = "32")]
-        __unused3: ::c_ulong,
-        pub shm_cpid: ::pid_t,
-        pub shm_lpid: ::pid_t,
-        pub shm_nattch: ::shmatt_t,
-        __unused4: ::c_ulong,
-        __unused5: ::c_ulong
     }
 }

@@ -1,7 +1,5 @@
 pub type mode_t = u16;
 
-pub const SYS_gettid: ::c_int = 224;
-
 s! {
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
@@ -10,3 +8,5 @@ s! {
         pub sa_restorer: ::dox::Option<extern fn()>,
     }
 }
+
+pub const SYS_gettid: ::c_int = 224;
