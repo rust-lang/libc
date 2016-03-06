@@ -388,6 +388,7 @@ extern {
     pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
     pub fn mkostemps(template: *mut ::c_char, suffixlen: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
