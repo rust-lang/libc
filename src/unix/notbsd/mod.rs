@@ -548,6 +548,9 @@ pub const POSIX_FADV_WILLNEED: ::c_int = 3;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
+pub const AT_FDCWD: ::c_int = -100;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -664,6 +667,8 @@ extern {
     pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
                          advise: ::c_int) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
+    pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
+                     times: *const ::timespec, flag: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
