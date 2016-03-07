@@ -303,6 +303,7 @@ pub const MAP_EXECUTABLE: ::c_int = 0x4000;
 pub const MAP_LOCKED: ::c_int = 0x8000;
 pub const MAP_POPULATE: ::c_int = 0x10000;
 pub const MAP_NONBLOCK: ::c_int = 0x20000;
+pub const MAP_STACK: ::c_int = 0x40000;
 
 pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_DGRAM: ::c_int = 1;
@@ -425,6 +426,8 @@ pub const PTRACE_GETFPXREGS: ::c_uint = 18;
 pub const PTRACE_SETFPXREGS: ::c_uint = 19;
 pub const PTRACE_GETREGS: ::c_uint = 12;
 pub const PTRACE_SETREGS: ::c_uint = 13;
+
+pub const MAP_HUGETLB: ::c_int = 0x080000;
 
 pub const EFD_NONBLOCK: ::c_int = 0x80;
 
