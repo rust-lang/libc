@@ -472,7 +472,7 @@ pub const RTLD_DEEPBIND: ::c_int = 0x10;
 pub const RTLD_GLOBAL: ::c_int = 0x4;
 pub const RTLD_NOLOAD: ::c_int = 0x8;
 
-pub const SYS_gettid: ::c_int = 4222;   // Valid for O32
+pub const SYS_gettid: ::c_long = 4222;   // Valid for O32
 
 extern {
     pub fn sysctl(name: *mut ::c_int,

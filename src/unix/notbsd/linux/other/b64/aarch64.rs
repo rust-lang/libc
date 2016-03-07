@@ -76,4 +76,4 @@ pub const SO_SNDTIMEO: ::c_int = 21;
 pub const FIOCLEX: ::c_ulong = 0x5451;
 pub const FIONBIO: ::c_ulong = 0x5421;
 
-pub const SYS_gettid: ::c_int = 178;
+pub const SYS_gettid: ::c_long = 178;
