@@ -99,6 +99,13 @@ s! {
         pub events: ::c_short,
         pub revents: ::c_short,
     }
+
+    pub struct winsize {
+        pub ws_row: ::c_ushort,
+        pub ws_col: ::c_ushort,
+        pub ws_xpixel: ::c_ushort,
+        pub ws_ypixel: ::c_ushort,
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;

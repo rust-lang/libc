@@ -927,6 +927,15 @@ extern {
                     len: *mut ::off_t,
                     hdtr: *mut ::sf_hdtr,
                     flags: ::c_int) -> ::c_int;
+    pub fn openpty(amaster: *mut ::c_int,
+                   aslave: *mut ::c_int,
+                   name: *mut ::c_char,
+                   termp: *mut termios,
+                   winp: *mut ::winsize) -> ::c_int;
+    pub fn forkpty(amaster: *mut ::c_int,
+                   name: *mut ::c_char,
+                   termp: *mut termios,
+                   winp: *mut ::winsize) -> ::pid_t;
 }
 
 cfg_if! {
