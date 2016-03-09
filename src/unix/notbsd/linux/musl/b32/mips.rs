@@ -303,3 +303,4 @@ pub const FIONREAD: ::c_ulong = 0x467F;
 pub const TIOCCONS: ::c_ulong = 0x80047478;
 
 pub const SYS_gettid: ::c_long = 4222;   // Valid for O32
+pub const SYS_perf_event_open: ::c_long = 4333;  // Valid for O32
