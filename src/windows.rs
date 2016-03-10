@@ -72,9 +72,11 @@ cfg_if! {
     if #[cfg(all(target_env = "gnu"))] {
         pub const L_tmpnam: ::c_uint = 14;
         pub const TMP_MAX: ::c_uint = 0x7fff;
-    } else {
+    } else if #[cfg(all(target_env = "msvc"))] {
         pub const L_tmpnam: ::c_uint = 260;
         pub const TMP_MAX: ::c_uint = 0x7fff_ffff;
+    } else {
+        // Unknown target_env
     }
 }
 

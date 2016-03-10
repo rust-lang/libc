@@ -657,6 +657,6 @@ cfg_if! {
         mod b64;
         pub use self::b64::*;
     } else {
-        // ...
+        // Unknown target_pointer_width
     }
 }

@@ -133,6 +133,7 @@ cfg_if! {
     } else if #[cfg(target_pointer_width = "64")] {
         const ULONG_SIZE: usize = 64;
     } else {
+        // Unknown target_pointer_width
     }
 }
 
@@ -680,6 +681,6 @@ cfg_if! {
         mod android;
         pub use self::android::*;
     } else {
-        // ...
+        // Unknown target_os
     }
 }
