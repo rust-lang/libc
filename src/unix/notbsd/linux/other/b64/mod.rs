@@ -25,8 +25,10 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "powerpc64"))] {
         mod powerpc64;
         pub use self::powerpc64::*;
-    } else {
+    } else if #[cfg(any(target_arch = "x86_64"))] {
         mod x86_64;
         pub use self::x86_64::*;
+    } else {
+        // Unknown target_arch
     }
 }

@@ -402,8 +402,10 @@ cfg_if! {
     } else if #[cfg(target_os = "netbsd")] {
         mod netbsd;
         pub use self::netbsd::*;
-    } else {
+    } else if #[cfg(target_os = "openbsd")] {
         mod openbsd;
         pub use self::openbsd::*;
+    } else {
+        // Unknown target_os
     }
 }

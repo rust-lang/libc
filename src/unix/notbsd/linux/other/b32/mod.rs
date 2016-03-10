@@ -90,6 +90,6 @@ cfg_if! {
         mod powerpc;
         pub use self::powerpc::*;
     } else {
-        // ...
+        // Unknown target_arch
     }
 }

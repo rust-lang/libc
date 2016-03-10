@@ -38,5 +38,7 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "asmjs"))] {
         mod asmjs;
         pub use self::asmjs::*;
-    } else { }
+    } else {
+        // Unknown target_arch
+    }
 }
