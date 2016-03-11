@@ -22,4 +22,4 @@ test_script:
 
 branches:
   only:
-    - master
+    - auto-libc
