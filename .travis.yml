@@ -62,6 +62,7 @@ matrix:
 notifications:
   email:
     on_success: never
+  webhooks: http://buildbot.rust-lang.org/homu/travis
 branches:
   only:
-    - master
+    - auto-libc
