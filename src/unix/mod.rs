@@ -733,6 +733,6 @@ cfg_if! {
         mod solaris;
         pub use self::solaris::*;
     } else {
-        // ...
+        // Unknown target_os
     }
 }

@@ -350,6 +350,6 @@ cfg_if! {
         mod freebsdlike;
         pub use self::freebsdlike::*;
     } else {
-        // ...
+        // Unknown target_os
     }
 }
