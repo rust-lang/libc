@@ -96,6 +96,21 @@ pub const RLIM_NLIMITS: ::rlim_t = 12;
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
 
+pub const CLOCK_REALTIME: ::c_ulong = 0;
+pub const CLOCK_VIRTUAL: ::c_ulong = 1;
+pub const CLOCK_PROF: ::c_ulong = 2;
+pub const CLOCK_MONOTONIC: ::c_ulong = 4;
+pub const CLOCK_UPTIME: ::c_ulong = 5;
+pub const CLOCK_UPTIME_PRECISE: ::c_ulong = 7;
+pub const CLOCK_UPTIME_FAST: ::c_ulong = 8;
+pub const CLOCK_REALTIME_PRECISE: ::c_ulong = 9;
+pub const CLOCK_REALTIME_FAST: ::c_ulong = 10;
+pub const CLOCK_MONOTONIC_PRECISE: ::c_ulong = 11;
+pub const CLOCK_MONOTONIC_FAST: ::c_ulong = 12;
+pub const CLOCK_SECOND: ::c_ulong = 13;
+pub const CLOCK_THREAD_CPUTIME_ID: ::c_ulong = 14;
+pub const CLOCK_PROCESS_CPUTIME_ID: ::c_ulong = 15;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
