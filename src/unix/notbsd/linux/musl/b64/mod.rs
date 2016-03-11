@@ -325,4 +325,17 @@ pub const TIOCMSET: ::c_ulong = 0x5418;
 pub const FIONREAD: ::c_ulong = 0x541B;
 pub const TIOCCONS: ::c_ulong = 0x541D;
 
-pub const SYS_gettid: ::c_long = 186;    // Valid for x86_64
+cfg_if! {
+    if #[cfg(target_arch = "aarch64")] {
+        mod aarch64;
+        pub use self::aarch64::*;
+    } else if #[cfg(any(target_arch = "powerpc64"))] {
+        mod powerpc64;
+        pub use self::powerpc64::*;
+    } else if #[cfg(any(target_arch = "x86_64"))] {
+        mod x86_64;
+        pub use self::x86_64::*;
+    } else {
+        // Unknown target_arch
+    }
+}

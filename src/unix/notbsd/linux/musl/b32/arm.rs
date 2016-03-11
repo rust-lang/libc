@@ -304,3 +304,4 @@ pub const FIONREAD: ::c_ulong = 0x541B;
 pub const TIOCCONS: ::c_ulong = 0x541D;
 
 pub const SYS_gettid: ::c_long = 224;
+pub const SYS_perf_event_open: ::c_long = 364;

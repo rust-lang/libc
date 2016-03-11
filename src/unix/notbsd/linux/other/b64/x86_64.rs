@@ -96,6 +96,7 @@ pub const PTRACE_GETREGS: ::c_uint = 12;
 pub const PTRACE_SETREGS: ::c_uint = 13;
 
 pub const SYS_gettid: ::c_long = 186;
+pub const SYS_perf_event_open: ::c_long = 298;
 
 extern {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
