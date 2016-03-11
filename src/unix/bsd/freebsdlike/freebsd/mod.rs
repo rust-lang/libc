@@ -60,6 +60,9 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const MADV_PROTECT: ::c_int = 10;
 pub const RUSAGE_THREAD: ::c_int = 1;
 
+pub const CLOCK_REALTIME: ::c_int = 0;
+pub const CLOCK_MONOTONIC: ::c_int = 4;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
