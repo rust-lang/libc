@@ -126,13 +126,6 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
-    pub struct sockaddr_nl {
-        pub nl_family: ::sa_family_t,
-        nl_pad: ::c_ushort,
-        pub nl_pid: u32,
-        pub nl_groups: u32
-    }
-
     pub struct dqblk {
         pub dqb_bhardlimit: ::uint64_t,
         pub dqb_bsoftlimit: ::uint64_t,

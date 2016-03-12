@@ -61,6 +61,13 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
+    pub struct sockaddr_nl {
+        pub nl_family: ::sa_family_t,
+        nl_pad: ::c_ushort,
+        pub nl_pid: u32,
+        pub nl_groups: u32
+    }
+
     pub struct sockaddr_ll {
         pub sll_family: ::c_ushort,
         pub sll_protocol: ::c_ushort,
