@@ -539,6 +539,12 @@ pub const CLONE_CHILD_CLEARTID: ::c_int = 0x200000;
 pub const CLONE_DETACHED: ::c_int = 0x400000;
 pub const CLONE_UNTRACED: ::c_int = 0x800000;
 pub const CLONE_CHILD_SETTID: ::c_int = 0x01000000;
+pub const CLONE_NEWUTS: ::c_int = 0x04000000;
+pub const CLONE_NEWIPC: ::c_int = 0x08000000;
+pub const CLONE_NEWUSER: ::c_int = 0x10000000;
+pub const CLONE_NEWPID: ::c_int = 0x20000000;
+pub const CLONE_NEWNET: ::c_int = 0x40000000;
+pub const CLONE_IO: ::c_int = 0x80000000;
 
 pub const WNOHANG: ::c_int = 1;
 
