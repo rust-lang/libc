@@ -88,6 +88,13 @@ and returns information about the C side of things (which is validated in Rust).
 A large amount of configuration can be applied to how the C file is generated,
 you can browse [the documentation][dox].
 
+### Projects using ctest
+
+* [libc](https://github.com/rust-lang/libc)
+* [git2-rs](https://github.com/alexcrichton/git2-rs)
+* [ssh2-rs](https://github.com/alexcrichton/ssh2-rs)
+* [libz-sys](https://github.com/alexcrichton/libz-sys)
+
 ### License
 
 `ctest` is primarily distributed under the terms of both the MIT license and

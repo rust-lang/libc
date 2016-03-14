@@ -1,4 +1,16 @@
+//! # ctest - an FFI binding validator
+//!
+//! This library is intended to be used as a build dependency in a separate
+//! project from the main repo to generate tests which can be used to validate
+//! FFI bindings in Rust against the headers from which they come from.
+//!
+//! For example usage, see the [main `README.md`][project] for how to set it
+//! up.
+//!
+//! [project]: https://github.com/alexcrichton/ctest
+
 #![allow(deprecated)] // connect => join in 1.3
+#![deny(missing_docs)]
 
 extern crate gcc;
 extern crate syntex_syntax as syntax;
@@ -27,6 +39,11 @@ macro_rules! t {
     })
 }
 
+/// A builder used to generate a test suite.
+///
+/// This builder has a number of configuration options which modify how the
+/// generated tests are emitted, and it is also the main entry point for parsing
+/// an FFI header crate for definitions.
 pub struct TestGenerator {
     headers: Vec<String>,
     includes: Vec<PathBuf>,
@@ -63,6 +80,10 @@ struct Generator<'a> {
 }
 
 impl TestGenerator {
+    /// Creates a new blank test generator.
+    ///
+    /// This won't actually be that useful until functions like `header` are
+    /// called, but the main "finalization method" is the `generate` method.
     pub fn new() -> TestGenerator {
         TestGenerator {
             headers: Vec::new(),
@@ -87,36 +108,149 @@ impl TestGenerator {
         }
     }
 
+    /// Add a header to be included as part of the generated C file.
+    ///
+    /// The generate C test will be compiled by a C compiler, and this can be
+    /// used to ensure that all the necessary header files are included to test
+    /// all FFI definitions.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use std::env;
+    /// use std::path::PathBuf;
+    ///
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.header("foo.h")
+    ///    .header("bar.h");
+    /// ```
     pub fn header(&mut self, header: &str) -> &mut TestGenerator {
         self.headers.push(header.to_string());
         self
     }
 
+    /// Add a path to the C compiler header lookup path.
+    ///
+    /// This is useful for if the C library is installed to a nonstandard
+    /// location to ensure that compiling the C file succeeds.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use std::env;
+    /// use std::path::PathBuf;
+    ///
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+    /// cfg.include(out_dir.join("include"));
+    /// ```
     pub fn include<P: AsRef<Path>>(&mut self, p: P) -> &mut TestGenerator {
         self.includes.push(p.as_ref().to_owned());
         self
     }
 
+    /// Configures the output directory of the generated Rust and C code.
+    ///
+    /// Note that for Cargo builds this defaults to `$OUT_DIR` and it's not
+    /// necessary to call.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.out_dir("path/to/output");
+    /// ```
     pub fn out_dir<P: AsRef<Path>>(&mut self, p: P) -> &mut TestGenerator {
         self.out_dir = Some(p.as_ref().to_owned());
         self
     }
 
+    /// Configures the target to compile C code for.
+    ///
+    /// Note that for Cargo builds this defaults to `$TARGET` and it's not
+    /// necessary to call.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.target("x86_64-unknown-linux-gnu");
+    /// ```
     pub fn target(&mut self, target: &str) -> &mut TestGenerator {
         self.target = Some(target.to_string());
         self
     }
 
+    /// Set a `-D` flag for the C compiler being called.
+    ///
+    /// This can be used to define various variables to configure how header
+    /// files are included or what APIs are exposed from header files.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.define("_GNU_SOURCE", None)
+    ///    .define("_WIN32_WINNT", Some("0x8000"));
+    /// ```
     pub fn define(&mut self, k: &str, v: Option<&str>) -> &mut TestGenerator {
         self.defines.push((k.to_string(), v.map(|s| s.to_string())));
         self
     }
 
+    /// Set a `--cfg` option with which to expand the Rust FFI crate.
+    ///
+    /// By default the Rust code is run through expansion to determine what C
+    /// APIs are exposed (to allow differences across platforms). The `k`
+    /// argument is the `#[cfg]` value to define, and `v` is an optional value
+    /// for differentiating between `#[cfg(foo)]` and `#[cfg(foo = "bar")]`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.cfg("foo", None)
+    ///    .cfg("bar", Some("baz"));
     pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut TestGenerator {
         self.cfg.push((k.to_string(), v.map(|s| s.to_string())));
         self
     }
 
+    /// Configures how a Rust type name is translated to a C type name.
+    ///
+    /// The closure is given a Rust type name as well as a boolean indicating
+    /// wehther it's a struct or not.
+    ///
+    /// The default behavior is that `struct foo` in Rust is translated to
+    /// `struct foo` in C, and `type foo` in Rust is translated to `foo` in C.
+    /// Some header files, however, have the convention that `struct foo_t` in
+    /// Rust should be `foo_t` in C, for example.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.type_name(|ty, is_struct| {
+    ///     if is_struct {
+    ///         format!("{}_t", ty)
+    ///     } else {
+    ///         ty.to_string()
+    ///     }
+    /// });
     pub fn type_name<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str, bool) -> String + 'static
     {
@@ -124,6 +258,24 @@ impl TestGenerator {
         self
     }
 
+    /// Configures how a Rust struct field is translated to a C struct field.
+    ///
+    /// The closure is given a Rust struct name as well as a field within that
+    /// struct. The name of the corresponding field in C is then returned.
+    ///
+    /// By default the field name in C just matches the field name in Rust, but
+    /// this is useful for fields which otherwise are named after keywords in
+    /// Rust (such as a field name of `type`).
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.field_name(|_s, field| {
+    ///     field.replace("foo", "bar")
+    /// });
     pub fn field_name<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str, &str) -> String + 'static
     {
@@ -131,6 +283,23 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether all tests for a field are skipped or not.
+    ///
+    /// The closure is given a Rust struct name as well as a field within that
+    /// struct. A flag indicating whether the field should be tested for type,
+    /// size, offset, and alignment should be skipped or not.
+    ///
+    /// By default all field properties are tested.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_field(|s, field| {
+    ///     s == "foo_t" || (s == "bar_t" && field == "bar")
+    /// });
     pub fn skip_field<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str, &str) -> bool + 'static
     {
@@ -138,6 +307,24 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether tests for the type of a field is skipped or not.
+    ///
+    /// The closure is given a Rust struct name as well as a field within that
+    /// struct. A flag indicating whether the field's type should be tested is
+    /// returned.
+    ///
+    /// By default all field properties are tested.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_field_type(|s, field| {
+    ///     s == "foo_t" || (s == "bar_t" && field == "bar")
+    /// });
+    /// ```
     pub fn skip_field_type<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str, &str) -> bool + 'static
     {
@@ -145,6 +332,23 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether a types signededness is tested or not.
+    ///
+    /// The closure is given the name of a Rust type, and returns whether the
+    /// type should be tested as having the right sign (positive or negative).
+    ///
+    /// By default all signededness checks are performed.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_signededness(|s| {
+    ///     s.starts_with("foo_")
+    /// });
+    /// ```
     pub fn skip_signededness<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str) -> bool + 'static
     {
@@ -152,6 +356,24 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether tests for a function definition are generated.
+    ///
+    /// The closure is given the name of a Rust FFI function and returns whether
+    /// test will be generated.
+    ///
+    /// By default a functions signature is checked along with the function
+    /// pointer pointing to the same location as well.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_fn(|s| {
+    ///     s.starts_with("foo_")
+    /// });
+    /// ```
     pub fn skip_fn<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str) -> bool + 'static
     {
@@ -159,6 +381,16 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether tests for a function pointer's value are generated.
+    ///
+    /// The closure is given the name of a Rust FFI function and returns whether
+    /// the test will be generated.
+    ///
+    /// By default generated tests will ensure that the function pointer in C
+    /// corresponds to the same function pointer in Rust. This can often
+    /// unconver subtle symbol naming issues where a header file is referenced
+    /// through the C identifier `foo` but the underlying symbol is mapped to
+    /// something like `__foo_compat`.
     pub fn skip_fn_ptrcheck<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str) -> bool + 'static
     {
@@ -166,6 +398,23 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether the tests for a constant's value are generated.
+    ///
+    /// The closure is given the name of a Rust constant and returns whether the
+    /// test will be generated.
+    ///
+    /// By default all constant values are verified.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_const(|s| {
+    ///     s.starts_with("FOO_")
+    /// });
+    /// ```
     pub fn skip_const<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str) -> bool + 'static
     {
@@ -173,6 +422,23 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether the tests for a typedef are emitted.
+    ///
+    /// The closure is passed the name of a Rust typedef and returns whether the
+    /// tests are generated.
+    ///
+    /// By default existence of a typedef is checked.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_type(|s| {
+    ///     s.starts_with("foo_")
+    /// });
+    /// ```
     pub fn skip_type<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str) -> bool + 'static
     {
@@ -180,6 +446,24 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether the tests for a struct are emitted.
+    ///
+    /// The closure is passed the name of a Rust struct and returns whether the
+    /// tests are generated.
+    ///
+    /// By default structs undergo tests such as size, alignment, existence,
+    /// field offset, etc.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_struct(|s| {
+    ///     s.starts_with("foo_")
+    /// });
+    /// ```
     pub fn skip_struct<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str) -> bool + 'static
     {
@@ -187,6 +471,23 @@ impl TestGenerator {
         self
     }
 
+    /// Configures the name of a function in the generate C code.
+    ///
+    /// The closure is passed the Rust name of a function as well as any
+    /// optional `#[link_name]` specified.
+    ///
+    /// By default the name of the generated C reference is the same as the Rust
+    /// function. This is useful, however, if different naming conventions are
+    /// used in Rust than are present in C (which is discouraged, however).
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.fn_cname(|rust, link_name| link_name.unwrap_or(rust).to_string());
+    /// ```
     pub fn fn_cname<F>(&mut self, f: F) -> &mut TestGenerator
         where F: Fn(&str, Option<&str>) -> String + 'static
     {
@@ -194,6 +495,26 @@ impl TestGenerator {
         self
     }
 
+    /// Generate all tests.
+    ///
+    /// This function is first given the path to the `*-sys` crate which is
+    /// being tested along with an output file from where to generate the Rust
+    /// side of the tests.
+    ///
+    /// This function does not consume the builder, but it is expected that all
+    /// configuration has happened prior to calling this function.
+    ///
+    /// This will also generate the corresponding C side of the tests and
+    /// compile it.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.generate("../path/to/libfoo-sys/lib.rs", "all.rs");
+    /// ```
     pub fn generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) {
         self._generate(krate.as_ref(), out_file)
     }
@@ -237,6 +558,7 @@ impl TestGenerator {
            .compile(&format!("lib{}.a", stem));
     }
 
+    /// TODO
     pub fn generate_files<P: AsRef<Path>>(&mut self, krate: P, out_file: &str)
                                           -> PathBuf {
         self._generate_files(krate.as_ref(), out_file)
