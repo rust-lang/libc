@@ -361,11 +361,6 @@ pub const SHM_UNLOCK: ::c_int = 12;
 pub const SHM_HUGETLB: ::c_int = 0o4000;
 pub const SHM_NORESERVE: ::c_int = 0o10000;
 
-pub const MS_RELATIME: ::c_ulong = 0x200000;
-pub const MS_KERNMOUNT: ::c_ulong = 0x400000;
-pub const MS_I_VERSION: ::c_ulong = 0x800000;
-pub const MS_STRICTATIME: ::c_ulong = 0x01000000;
-
 pub const EPOLLRDHUP: ::c_int = 0x2000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
 
