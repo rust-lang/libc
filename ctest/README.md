@@ -1,8 +1,97 @@
 # ctest
 
-[Documentation][dox]
+[![Build Status](https://travis-ci.org/alexcrichton/ctest.svg?branch=master)](https://travis-ci.org/alexcrichton/ctest)
+[![Build status](https://ci.appveyor.com/api/projects/status/akjf8gn5pem05iyw?svg=true)](https://ci.appveyor.com/project/alexcrichton/ctest)
 
+[Documentation][dox]
 [dox]: http://alexcrichton.com/ctest
 
-Automated testing of FFI bindings in Rust, see [the documentation][dox] for
-example usage.
+Automated testing of FFI bindings in Rust. This repository is intended to
+validate the `*-sys` crates that can be found on crates.io to ensure that the
+APIs in Rust match the APIs defined in C.
+
+### Example
+
+Unfortunately the usage today is a little wonky, but to use this library, first,
+create a new Cargo project in your repo:
+
+```
+$ cargo new --bin systest
+```
+
+Then, edit `systest/Cargo.toml` to add these dependencies:
+
+```toml
+[package]
+# ...
+build = "build.rs"
+
+[dependencies]
+my-sys-library = { path = "../my-sys-library" }
+libc = "..."
+
+[build-dependencies]
+ctest = { git = "https://github.com/alexcrichton/ctest" }
+```
+
+Next, add a build script to `systest/build.rs`:
+
+```rust
+extern crate ctest;
+
+fn main() {
+    let mut cfg = ctest::TestGenerator::new();
+
+    // Include the header files where the C APIs are defined
+    cfg.header("foo.h")
+       .header("bar.h");
+
+    // Include the directory where the header files are defined
+    cfg.include("path/to/include");
+
+    // Generate the tests, passing the path to the `*-sys` library as well as
+    // the module to generate.
+    cfg.generate("../my-sys-library/lib.rs", "all.rs");
+}
+
+```
+
+Next, add this to `src/main.rs`
+
+```rust
+#![allow(bad_style)]
+
+extern crate my_sys_library;
+extern crate libc;
+
+use libc::*;
+use my_sys_library::*;
+
+include!(concat!(env!("OUT_DIR"), "/all.rs"));
+```
+
+And you're good to go! To run the tests execute `cargo run` in the `systest`
+directory, and everything should be kicked into action!
+
+### How it works
+
+This library will parse the `*-sys` crate to learn about all extern fn
+definitions within. It will then generate a test suite to ensure that all
+function function signatures, constant values, struct layout/alignment, type
+size/alignment, etc, all match their C equivalent.
+
+The generated tests come in two forms. One is a Rust file which contains the
+`main` function (hence the `include!` above), and another is a C file which is
+compiled as part of the build script. The C file is what includes all headers
+and returns information about the C side of things (which is validated in Rust).
+
+A large amount of configuration can be applied to how the C file is generated,
+you can browse [the documentation][dox].
+
+### License
+
+`ctest` is primarily distributed under the terms of both the MIT license and
+the Apache License (Version 2.0), with portions covered by various BSD-like
+licenses.
+
+See LICENSE-APACHE, and LICENSE-MIT for details.
