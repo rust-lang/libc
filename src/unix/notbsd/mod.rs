@@ -244,9 +244,12 @@ pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
+// MS_ flags for msync(2)
 pub const MS_ASYNC: ::c_int = 0x0001;
 pub const MS_INVALIDATE: ::c_int = 0x0002;
 pub const MS_SYNC: ::c_int = 0x0004;
+
+// MS_ flags for mount(2)
 pub const MS_RDONLY: ::c_ulong = 0x01;
 pub const MS_NOSUID: ::c_ulong = 0x02;
 pub const MS_NODEV: ::c_ulong = 0x04;
