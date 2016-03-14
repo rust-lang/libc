@@ -558,7 +558,7 @@ impl TestGenerator {
            .compile(&format!("lib{}.a", stem));
     }
 
-    /// TODO
+    #[doc(hidden)] // TODO: needs docs
     pub fn generate_files<P: AsRef<Path>>(&mut self, krate: P, out_file: &str)
                                           -> PathBuf {
         self._generate_files(krate.as_ref(), out_file)
