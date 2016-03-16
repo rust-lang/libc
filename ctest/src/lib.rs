@@ -74,8 +74,10 @@ struct Generator<'a> {
     c: Box<Write>,
     sh: &'a SpanHandler,
     structs: HashSet<String>,
+    files: HashSet<String>,
     abi: Abi,
     tests: Vec<String>,
+    sess: &'a ParseSess,
     opts: &'a TestGenerator,
 }
 
@@ -617,6 +619,8 @@ impl TestGenerator {
             structs: structs.structs,
             abi: Abi::C,
             tests: Vec::new(),
+            files: HashSet::new(),
+            sess: &sess,
             opts: self,
         };
         t!(writeln!(gen.c, "#include <stdint.h>"));
@@ -1214,6 +1218,10 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
             }
 
             _ => {}
+        }
+        let file = self.sess.codemap().span_to_filename(i.span);
+        if self.files.insert(file.clone()) {
+            println!("cargo:rerun-if-changed={}", file);
         }
         visit::walk_item(self, i);
         self.abi = prev_abi;
