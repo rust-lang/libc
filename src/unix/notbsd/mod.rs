@@ -161,6 +161,16 @@ pub const F_SETFD: ::c_int = 2;
 pub const F_GETFL: ::c_int = 3;
 pub const F_SETFL: ::c_int = 4;
 
+// Linux-specific fcntls
+pub const F_SETLEASE: ::c_int = 1024;
+pub const F_GETLEASE: ::c_int = 1025;
+pub const F_NOTIFY: ::c_int = 1026;
+pub const F_DUPFD_CLOEXEC: ::c_int = 1030;
+pub const F_SETPIPE_SZ: ::c_int = 1031;
+pub const F_GETPIPE_SZ: ::c_int = 1032;
+
+// TODO(#235): Include file sealing fcntls once we have a way to verify them.
+
 pub const SIGTRAP: ::c_int = 5;
 
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;

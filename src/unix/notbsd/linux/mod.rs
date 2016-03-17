@@ -315,8 +315,6 @@ pub const RTLD_NOW: ::c_int = 0x2;
 
 pub const TCP_MD5SIG: ::c_int = 14;
 
-pub const F_DUPFD_CLOEXEC: ::c_int = 1030;
-
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __align: [],
     size: [0; __SIZEOF_PTHREAD_MUTEX_T],
