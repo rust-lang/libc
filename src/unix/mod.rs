@@ -408,7 +408,6 @@ extern {
 
     pub fn ftruncate(fd: ::c_int, length: off_t) -> ::c_int;
 
-    #[cfg_attr(target_os = "android", link_name = "bsd_signal")]
     pub fn signal(signum: ::c_int, handler: sighandler_t) -> sighandler_t;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
