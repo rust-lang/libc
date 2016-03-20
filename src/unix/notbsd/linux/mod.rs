@@ -530,7 +530,8 @@ extern {
                          flags: ::c_uint) -> ::c_int;
     pub fn sched_getattr(pid: ::pid_t,
                          attr: *mut ::sched_attr,
-                         flags: ::c_int) -> ::c_int;
+                         size: ::c_uint,
+                         flags: ::c_uint) -> ::c_int;
     pub fn epoll_pwait(epfd: ::c_int,
                        events: *mut ::epoll_event,
                        maxevents: ::c_int,
