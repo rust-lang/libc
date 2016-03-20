@@ -170,6 +170,17 @@ s! {
         pad: [::c_long; 4]
     }
 
+    pub struct sched_attr {
+        pub size: ::uint32_t,
+        pub sched_policy: ::uint32_t,
+        pub sched_flags: ::uint64_t,
+        pub sched_nice: ::int32_t,
+        pub sched_priority: ::uint32_t,
+        pub sched_runtime: ::uint64_t,
+        pub sched_deadline: ::uint64_t,
+        pub sched_period: ::uint64_t
+    }
+
     pub struct cpu_set_t {
         #[cfg(target_pointer_width = "32")]
         bits: [u32; 32],
@@ -335,6 +346,7 @@ pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_RR: ::c_int = 2;
 pub const SCHED_BATCH: ::c_int = 3;
 pub const SCHED_IDLE: ::c_int = 5;
+pub const SCHED_DEADLINE: ::c_int = 6;
 
 pub const IPC_CREAT: ::c_int = 0o1000;
 pub const IPC_EXCL: ::c_int = 0o2000;
@@ -513,6 +525,12 @@ extern {
     pub fn sched_setaffinity(pid: ::pid_t,
                              cpusetsize: ::size_t,
                              cpuset: *const cpu_set_t) -> ::c_int;
+    pub fn sched_setattr(pid: ::pid_t,
+                         attr: *mut ::sched_attr,
+                         flags: ::c_uint) -> ::c_int;
+    pub fn sched_getattr(pid: ::pid_t,
+                         attr: *mut ::sched_attr,
+                         flags: ::c_int) -> ::c_int;
     pub fn epoll_pwait(epfd: ::c_int,
                        events: *mut ::epoll_event,
                        maxevents: ::c_int,
