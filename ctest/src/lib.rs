@@ -47,6 +47,7 @@ macro_rules! t {
 pub struct TestGenerator {
     headers: Vec<String>,
     includes: Vec<PathBuf>,
+    flags: Vec<String>,
     target: Option<String>,
     out_dir: Option<PathBuf>,
     defines: Vec<(String, Option<String>)>,
@@ -90,6 +91,7 @@ impl TestGenerator {
         TestGenerator {
             headers: Vec::new(),
             includes: Vec::new(),
+            flags: Vec::new(),
             target: None,
             out_dir: None,
             defines: Vec::new(),
@@ -152,6 +154,32 @@ impl TestGenerator {
     /// ```
     pub fn include<P: AsRef<Path>>(&mut self, p: P) -> &mut TestGenerator {
         self.includes.push(p.as_ref().to_owned());
+        self
+    }
+
+    /// Add a flag to the C compiler invocation.
+    ///
+    /// This can be useful for tweaking the warning settings of the underlying
+    /// compiler.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use std::env;
+    /// use std::path::PathBuf;
+    ///
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    ///
+    /// // if msvc
+    /// cfg.flag("/wd4820");
+    ///
+    /// // if gnu
+    /// cfg.flag("-Wno-type-limits");
+    /// ```
+    pub fn flag(&mut self, flag: &str) -> &mut TestGenerator {
+        self.flags.push(flag.to_string());
         self
     }
 
@@ -531,6 +559,9 @@ impl TestGenerator {
         // Compile our C shim to be linked into tests
         let mut cfg = gcc::Config::new();
         cfg.file(&out.with_extension("c"));
+        for flag in self.flags.iter() {
+            cfg.flag(flag);
+        }
 
         if target.contains("msvc") {
             cfg.flag("/W3").flag("/Wall").flag("/WX")
