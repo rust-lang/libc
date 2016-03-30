@@ -638,7 +638,8 @@ extern {
                   writefds: *mut fd_set,
                   errorfds: *mut fd_set,
                   timeout: *mut timeval) -> ::c_int;
-    pub fn setlocale(category: ::c_int, locale: *const ::c_char) -> *mut ::c_char;
+    pub fn setlocale(category: ::c_int,
+                     locale: *const ::c_char) -> *mut ::c_char;
     pub fn localeconv() -> *mut lconv;
 }
 
