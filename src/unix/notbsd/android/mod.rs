@@ -302,6 +302,13 @@ pub const SIG_UNBLOCK: ::c_int = 0x01;
 
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 
+pub const LC_PAPER: ::c_int = 7;
+pub const LC_NAME: ::c_int = 8;
+pub const LC_ADDRESS: ::c_int = 9;
+pub const LC_TELEPHONE: ::c_int = 10;
+pub const LC_MEASUREMENT: ::c_int = 11;
+pub const LC_IDENTIFICATION: ::c_int = 12;
+
 pub const MAP_ANON: ::c_int = 0x0020;
 pub const MAP_ANONYMOUS: ::c_int = 0x0020;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;

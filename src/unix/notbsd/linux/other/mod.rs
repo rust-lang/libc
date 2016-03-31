@@ -143,6 +143,13 @@ pub const O_FSYNC: ::c_int = 0x101000;
 
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 
+pub const LC_PAPER: ::c_int = 7;
+pub const LC_NAME: ::c_int = 8;
+pub const LC_ADDRESS: ::c_int = 9;
+pub const LC_TELEPHONE: ::c_int = 10;
+pub const LC_MEASUREMENT: ::c_int = 11;
+pub const LC_IDENTIFICATION: ::c_int = 12;
+
 pub const MAP_ANON: ::c_int = 0x0020;
 pub const MAP_ANONYMOUS: ::c_int = 0x0020;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
