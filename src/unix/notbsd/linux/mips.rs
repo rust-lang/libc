@@ -294,6 +294,13 @@ pub const EOWNERDEAD: ::c_int = 165;
 pub const ENOTRECOVERABLE: ::c_int = 166;
 pub const ERFKILL: ::c_int = 167;
 
+pub const LC_PAPER: ::c_int = 7;
+pub const LC_NAME: ::c_int = 8;
+pub const LC_ADDRESS: ::c_int = 9;
+pub const LC_TELEPHONE: ::c_int = 10;
+pub const LC_MEASUREMENT: ::c_int = 11;
+pub const LC_IDENTIFICATION: ::c_int = 12;
+
 pub const MAP_NORESERVE: ::c_int = 0x400;
 pub const MAP_ANON: ::c_int = 0x800;
 pub const MAP_ANONYMOUS: ::c_int = 0x800;

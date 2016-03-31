@@ -131,6 +131,33 @@ s! {
         pub machine: [::c_char; 65],
         pub domainname: [::c_char; 65]
     }
+
+    pub struct lconv {
+        pub decimal_point: *mut ::c_char,
+        pub thousands_sep: *mut ::c_char,
+        pub grouping: *mut ::c_char,
+        pub int_curr_symbol: *mut ::c_char,
+        pub currency_symbol: *mut ::c_char,
+        pub mon_decimal_point: *mut ::c_char,
+        pub mon_thousands_sep: *mut ::c_char,
+        pub mon_grouping: *mut ::c_char,
+        pub positive_sign: *mut ::c_char,
+        pub negative_sign: *mut ::c_char,
+        pub int_frac_digits: ::c_char,
+        pub frac_digits: ::c_char,
+        pub p_cs_precedes: ::c_char,
+        pub p_sep_by_space: ::c_char,
+        pub n_cs_precedes: ::c_char,
+        pub n_sep_by_space: ::c_char,
+        pub p_sign_posn: ::c_char,
+        pub n_sign_posn: ::c_char,
+        pub int_p_cs_precedes: ::c_char,
+        pub int_p_sep_by_space: ::c_char,
+        pub int_n_cs_precedes: ::c_char,
+        pub int_n_sep_by_space: ::c_char,
+        pub int_p_sign_posn: ::c_char,
+        pub int_n_sign_posn: ::c_char,
+    }
 }
 
 // intentionally not public, only used for fd_set
@@ -243,6 +270,14 @@ pub const PROT_NONE: ::c_int = 0;
 pub const PROT_READ: ::c_int = 1;
 pub const PROT_WRITE: ::c_int = 2;
 pub const PROT_EXEC: ::c_int = 4;
+
+pub const LC_CTYPE: ::c_int = 0;
+pub const LC_NUMERIC: ::c_int = 1;
+pub const LC_TIME: ::c_int = 2;
+pub const LC_COLLATE: ::c_int = 3;
+pub const LC_MONETARY: ::c_int = 4;
+pub const LC_MESSAGES: ::c_int = 5;
+pub const LC_ALL: ::c_int = 6;
 
 pub const MAP_FILE: ::c_int = 0x0000;
 pub const MAP_SHARED: ::c_int = 0x0001;

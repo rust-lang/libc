@@ -38,6 +38,7 @@ fn main() {
     cfg.header("errno.h")
        .header("fcntl.h")
        .header("limits.h")
+       .header("locale.h")
        .header("stddef.h")
        .header("stdint.h")
        .header("stdio.h")
