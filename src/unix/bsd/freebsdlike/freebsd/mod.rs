@@ -3,6 +3,7 @@ pub type clock_t = i32;
 pub type ino_t = u32;
 pub type nlink_t = u16;
 pub type blksize_t = u32;
+pub type clockid_t = ::c_int;
 
 pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
@@ -60,8 +61,20 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const MADV_PROTECT: ::c_int = 10;
 pub const RUSAGE_THREAD: ::c_int = 1;
 
-pub const CLOCK_REALTIME: ::c_int = 0;
-pub const CLOCK_MONOTONIC: ::c_int = 4;
+pub const CLOCK_REALTIME: clockid_t = 0;
+pub const CLOCK_VIRTUAL: clockid_t = 1;
+pub const CLOCK_PROF: clockid_t = 2;
+pub const CLOCK_MONOTONIC: clockid_t = 4;
+pub const CLOCK_UPTIME: clockid_t = 5;
+pub const CLOCK_UPTIME_PRECISE: clockid_t = 7;
+pub const CLOCK_UPTIME_FAST: clockid_t = 8;
+pub const CLOCK_REALTIME_PRECISE: clockid_t = 9;
+pub const CLOCK_REALTIME_FAST: clockid_t = 10;
+pub const CLOCK_MONOTONIC_PRECISE: clockid_t = 11;
+pub const CLOCK_MONOTONIC_FAST: clockid_t = 12;
+pub const CLOCK_SECOND: clockid_t = 13;
+pub const CLOCK_THREAD_CPUTIME_ID: clockid_t = 14;
+pub const CLOCK_PROCESS_CPUTIME_ID: clockid_t = 15;
 
 extern {
     pub fn __error() -> *mut ::c_int;
@@ -69,7 +82,8 @@ extern {
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
 
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
 
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;

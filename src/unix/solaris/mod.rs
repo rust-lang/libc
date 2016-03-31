@@ -1,6 +1,7 @@
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
+pub type clockid_t = ::c_int;
 
 pub type blkcnt_t = i64;
 pub type clock_t = i64;
@@ -540,8 +541,18 @@ pub const PTHREAD_STACK_MIN: ::size_t = 4096;
 
 pub const SIGSTKSZ: ::size_t = 8192;
 
-pub const CLOCK_REALTIME: ::c_int = 3;
-pub const CLOCK_MONOTONIC: ::c_int = 4;
+// https://illumos.org/man/3c/clock_gettime
+// https://github.com/illumos/illumos-gate/
+//   blob/HEAD/usr/src/lib/libc/amd64/sys/__clock_gettime.s
+// clock_gettime(3c) doesn't seem to accept anything other than CLOCK_REALTIME
+// or __CLOCK_REALTIME0
+//
+// https://github.com/illumos/illumos-gate/
+//   blob/HEAD/usr/src/uts/common/sys/time_impl.h
+// Confusing! CLOCK_HIGHRES==CLOCK_MONOTONIC==4
+// __CLOCK_REALTIME0==0 is an obsoleted version of CLOCK_REALTIME==3
+pub const CLOCK_REALTIME: clockid_t = 3;
+pub const CLOCK_MONOTONIC: clockid_t = 4;
 
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
@@ -752,7 +763,8 @@ extern {
     pub fn ioctl(fildes: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
                        host: *mut ::c_char,
