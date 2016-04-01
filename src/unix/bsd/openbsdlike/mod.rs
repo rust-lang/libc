@@ -8,6 +8,7 @@ pub type pthread_key_t = ::c_int;
 pub type rlim_t = u64;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
+pub type nl_item = c_long;
 pub type clockid_t = ::c_int;
 
 pub enum timezone {}
@@ -51,6 +52,65 @@ s! {
         pub l_whence: ::c_short,
     }
 }
+
+pub const D_T_FMT: ::nl_item = 0;
+pub const D_FMT: ::nl_item = 1;
+pub const T_FMT: ::nl_item = 2;
+pub const T_FMT_AMPM: ::nl_item = 3;
+pub const AM_STR: ::nl_item = 4;
+pub const PM_STR: ::nl_item = 5;
+
+pub const DAY_1: ::nl_item = 6;
+pub const DAY_2: ::nl_item = 7;
+pub const DAY_3: ::nl_item = 8;
+pub const DAY_4: ::nl_item = 9;
+pub const DAY_5: ::nl_item = 10;
+pub const DAY_6: ::nl_item = 11;
+pub const DAY_7: ::nl_item = 12;
+
+pub const ABDAY_1: ::nl_item = 13;
+pub const ABDAY_2: ::nl_item = 14;
+pub const ABDAY_3: ::nl_item = 15;
+pub const ABDAY_4: ::nl_item = 16;
+pub const ABDAY_5: ::nl_item = 17;
+pub const ABDAY_6: ::nl_item = 18;
+pub const ABDAY_7: ::nl_item = 19;
+
+pub const MON_1: ::nl_item = 20;
+pub const MON_2: ::nl_item = 21;
+pub const MON_3: ::nl_item = 22;
+pub const MON_4: ::nl_item = 23;
+pub const MON_5: ::nl_item = 24;
+pub const MON_6: ::nl_item = 25;
+pub const MON_7: ::nl_item = 26;
+pub const MON_8: ::nl_item = 27;
+pub const MON_9: ::nl_item = 28;
+pub const MON_10: ::nl_item = 29;
+pub const MON_11: ::nl_item = 30;
+pub const MON_12: ::nl_item = 31;
+
+pub const ABMON_1: ::nl_item = 32;
+pub const ABMON_2: ::nl_item = 33;
+pub const ABMON_3: ::nl_item = 34;
+pub const ABMON_4: ::nl_item = 35;
+pub const ABMON_5: ::nl_item = 36;
+pub const ABMON_6: ::nl_item = 37;
+pub const ABMON_7: ::nl_item = 38;
+pub const ABMON_8: ::nl_item = 39;
+pub const ABMON_9: ::nl_item = 40;
+pub const ABMON_10: ::nl_item = 41;
+pub const ABMON_11: ::nl_item = 42;
+pub const ABMON_12: ::nl_item = 43;
+
+pub const RADIXCHAR: ::nl_item = 44;
+pub const THOUSEP: ::nl_item = 45;
+pub const YESSTR: ::nl_item = 46;
+pub const YESEXPR: ::nl_item = 47;
+pub const NOSTR: ::nl_item = 48;
+pub const NOEXPR: ::nl_item = 49;
+pub const CRNCYSTR: ::nl_item = 50;
+
+pub const CODESET: ::nl_item = 51;
 
 pub const EXIT_FAILURE : ::c_int = 1;
 pub const EXIT_SUCCESS : ::c_int = 0;

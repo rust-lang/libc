@@ -100,10 +100,12 @@ fn main() {
     if android {
         cfg.header("arpa/inet.h");
         cfg.header("time64.h");
+        cfg.header("xlocale.h");
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
         cfg.header("sys/statvfs.h");
+        cfg.header("langinfo.h");
 
         if !openbsd && !freebsd && !dragonfly {
             cfg.header("sys/quota.h");
@@ -114,6 +116,7 @@ fn main() {
 
             if !netbsd && !openbsd {
                 cfg.header("execinfo.h");
+                cfg.header("xlocale.h");
             }
         }
     }

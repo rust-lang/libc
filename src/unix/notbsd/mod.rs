@@ -291,6 +291,13 @@ pub const LC_COLLATE: ::c_int = 3;
 pub const LC_MONETARY: ::c_int = 4;
 pub const LC_MESSAGES: ::c_int = 5;
 pub const LC_ALL: ::c_int = 6;
+pub const LC_CTYPE_MASK: ::c_int = (1 << LC_CTYPE);
+pub const LC_NUMERIC_MASK: ::c_int = (1 << LC_NUMERIC);
+pub const LC_TIME_MASK: ::c_int = (1 << LC_TIME);
+pub const LC_COLLATE_MASK: ::c_int = (1 << LC_COLLATE);
+pub const LC_MONETARY_MASK: ::c_int = (1 << LC_MONETARY);
+pub const LC_MESSAGES_MASK: ::c_int = (1 << LC_MESSAGES);
+// LC_ALL_MASK defined per platform
 
 pub const MAP_FILE: ::c_int = 0x0000;
 pub const MAP_SHARED: ::c_int = 0x0001;
@@ -749,6 +756,12 @@ extern {
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
                      times: *const ::timespec, flag: ::c_int) -> ::c_int;
+    pub fn duplocale(base: ::locale_t) -> ::locale_t;
+    pub fn freelocale(loc: ::locale_t);
+    pub fn newlocale(mask: ::c_int,
+                     locale: *const ::c_char,
+                     base: ::locale_t) -> ::locale_t;
+    pub fn uselocale(loc: ::locale_t) -> ::locale_t;
 }
 
 cfg_if! {
