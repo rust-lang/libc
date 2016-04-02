@@ -376,6 +376,7 @@ pub const Q_SETQUOTA: ::c_int = 0x400;
 
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 
+#[link(name = "util")]
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
@@ -393,6 +394,15 @@ extern {
                      flags: ::c_int) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
+    pub fn openpty(amaster: *mut ::c_int,
+                   aslave: *mut ::c_int,
+                   name: *mut ::c_char,
+                   termp: *mut termios,
+                   winp: *mut ::winsize) -> ::c_int;
+    pub fn forkpty(amaster: *mut ::c_int,
+                   name: *mut ::c_char,
+                   termp: *mut termios,
+                   winp: *mut ::winsize) -> ::pid_t;
 }
 
 cfg_if! {
