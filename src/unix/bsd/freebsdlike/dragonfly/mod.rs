@@ -115,4 +115,12 @@ extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn clock_gettime(clk_id: ::c_ulong, tp: *mut ::timespec) -> ::c_int;
+
+    pub fn pthread_attr_get_np(tid: ::pthread_t,
+                               attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
+                                     guardsize: *mut ::size_t) -> ::c_int;
+    pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
+                                 stackaddr: *mut *mut ::c_void,
+                                 stacksize: *mut ::size_t) -> ::c_int;
 }
