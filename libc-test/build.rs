@@ -312,6 +312,7 @@ fn main() {
 
             // weird signed extension or something like that?
             "MS_NOUSER" => true,
+            "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
 
             // These OSX constants are flagged as deprecated
             "NOTE_EXIT_REPARENTED" |
