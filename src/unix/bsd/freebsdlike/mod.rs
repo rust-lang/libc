@@ -598,7 +598,6 @@ extern {
                         newp: *const ::c_void,
                         newlen: ::size_t)
                         -> ::c_int;
-    pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn sched_setscheduler(pid: ::pid_t,
                               policy: ::c_int,
                               param: *const sched_param) -> ::c_int;
@@ -627,6 +626,15 @@ extern {
                    name: *mut ::c_char,
                    termp: *mut termios,
                    winp: *mut ::winsize) -> ::pid_t;
+
+    pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
+    pub fn pthread_attr_get_np(tid: ::pthread_t,
+                               attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
+                                     guardsize: *mut ::size_t) -> ::c_int;
+    pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
+                                 stackaddr: *mut *mut ::c_void,
+                                 stacksize: *mut ::size_t) -> ::c_int;
 }
 
 cfg_if! {
