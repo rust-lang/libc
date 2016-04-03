@@ -5,6 +5,7 @@ pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type loff_t = ::c_longlong;
+pub type clockid_t = ::c_int;
 
 pub enum timezone {}
 
@@ -203,8 +204,20 @@ pub const SIGTRAP: ::c_int = 5;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 1;
 
-pub const CLOCK_REALTIME: ::c_int = 0;
-pub const CLOCK_MONOTONIC: ::c_int = 1;
+pub const CLOCK_REALTIME: clockid_t = 0;
+pub const CLOCK_MONOTONIC: clockid_t = 1;
+pub const CLOCK_PROCESS_CPUTIME_ID: clockid_t = 2;
+pub const CLOCK_THREAD_CPUTIME_ID: clockid_t = 3;
+pub const CLOCK_MONOTONIC_RAW: clockid_t = 4;
+pub const CLOCK_REALTIME_COARSE: clockid_t = 5;
+pub const CLOCK_MONOTONIC_COARSE: clockid_t = 6;
+pub const CLOCK_BOOTTIME: clockid_t = 7;
+pub const CLOCK_REALTIME_ALARM: clockid_t = 8;
+pub const CLOCK_BOOTTIME_ALARM: clockid_t = 9;
+// TODO(#247) Someday our Travis shall have glibc 2.21 (released in Sep
+// 2014.) See also musl/mod.rs
+// pub const CLOCK_SGI_CYCLE: clockid_t = 10;
+// pub const CLOCK_TAI: clockid_t = 11;
 
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
@@ -666,7 +679,8 @@ extern {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn prctl(option: ::c_int, ...) -> ::c_int;
     pub fn pthread_getattr_np(native: ::pthread_t,
                               attr: *mut ::pthread_attr_t) -> ::c_int;

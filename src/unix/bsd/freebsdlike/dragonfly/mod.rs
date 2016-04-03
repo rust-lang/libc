@@ -2,6 +2,7 @@ pub type clock_t = u64;
 pub type ino_t = u64;
 pub type nlink_t = u32;
 pub type blksize_t = i64;
+pub type clockid_t = ::c_ulong;
 
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -96,23 +97,24 @@ pub const RLIM_NLIMITS: ::rlim_t = 12;
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
 
-pub const CLOCK_REALTIME: ::c_ulong = 0;
-pub const CLOCK_VIRTUAL: ::c_ulong = 1;
-pub const CLOCK_PROF: ::c_ulong = 2;
-pub const CLOCK_MONOTONIC: ::c_ulong = 4;
-pub const CLOCK_UPTIME: ::c_ulong = 5;
-pub const CLOCK_UPTIME_PRECISE: ::c_ulong = 7;
-pub const CLOCK_UPTIME_FAST: ::c_ulong = 8;
-pub const CLOCK_REALTIME_PRECISE: ::c_ulong = 9;
-pub const CLOCK_REALTIME_FAST: ::c_ulong = 10;
-pub const CLOCK_MONOTONIC_PRECISE: ::c_ulong = 11;
-pub const CLOCK_MONOTONIC_FAST: ::c_ulong = 12;
-pub const CLOCK_SECOND: ::c_ulong = 13;
-pub const CLOCK_THREAD_CPUTIME_ID: ::c_ulong = 14;
-pub const CLOCK_PROCESS_CPUTIME_ID: ::c_ulong = 15;
+pub const CLOCK_REALTIME: clockid_t = 0;
+pub const CLOCK_VIRTUAL: clockid_t = 1;
+pub const CLOCK_PROF: clockid_t = 2;
+pub const CLOCK_MONOTONIC: clockid_t = 4;
+pub const CLOCK_UPTIME: clockid_t = 5;
+pub const CLOCK_UPTIME_PRECISE: clockid_t = 7;
+pub const CLOCK_UPTIME_FAST: clockid_t = 8;
+pub const CLOCK_REALTIME_PRECISE: clockid_t = 9;
+pub const CLOCK_REALTIME_FAST: clockid_t = 10;
+pub const CLOCK_MONOTONIC_PRECISE: clockid_t = 11;
+pub const CLOCK_MONOTONIC_FAST: clockid_t = 12;
+pub const CLOCK_SECOND: clockid_t = 13;
+pub const CLOCK_THREAD_CPUTIME_ID: clockid_t = 14;
+pub const CLOCK_PROCESS_CPUTIME_ID: clockid_t = 15;
 
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
-    pub fn clock_gettime(clk_id: ::c_ulong, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
 }

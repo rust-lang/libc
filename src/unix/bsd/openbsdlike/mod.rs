@@ -8,6 +8,7 @@ pub type pthread_key_t = ::c_int;
 pub type rlim_t = u64;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
+pub type clockid_t = ::c_int;
 
 pub enum timezone {}
 
@@ -258,8 +259,16 @@ pub const _SC_XOPEN_SHM : ::c_int = 30;
 pub const PTHREAD_CREATE_JOINABLE : ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED : ::c_int = 1;
 
-pub const CLOCK_REALTIME : ::c_int = 0;
-pub const CLOCK_MONOTONIC : ::c_int = 3;
+// http://man.openbsd.org/OpenBSD-current/man2/clock_getres.2
+// The man page says clock_gettime(3) can accept various values as clockid_t but
+// http://fxr.watson.org/fxr/source/kern/kern_time.c?v=OPENBSD;im=excerpts#L161
+// the implementation rejects anything other than the below two
+//
+// http://netbsd.gw.com/cgi-bin/man-cgi?clock_gettime
+// https://github.com/jsonn/src/blob/HEAD/sys/kern/subr_time.c#L222
+// Basically the same goes for NetBSD
+pub const CLOCK_REALTIME: clockid_t = 0;
+pub const CLOCK_MONOTONIC: clockid_t = 3;
 
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
@@ -380,8 +389,10 @@ pub const RTLD_GLOBAL: ::c_int = 0x100;
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__clock_getres50")]
+    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_gettime50")]
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
