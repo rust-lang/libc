@@ -290,6 +290,7 @@ pub const NOFLSH: ::tcflag_t = 0x80000000;
 pub const WNOHANG: ::c_int = 1;
 
 pub const RTLD_NOW: ::c_int = 0x2;
+pub const RTLD_DEFAULT: *mut ::c_void = -2isize as *mut ::c_void;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
