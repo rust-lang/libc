@@ -143,7 +143,9 @@ pub const IF_NAMESIZE: ::size_t = 16;
 pub const RTLD_LAZY: ::c_int = 0x1;
 
 cfg_if! {
-    if #[cfg(not(stdbuild))] {
+    if #[cfg(dox)] {
+        // on dox builds don't pull in anything
+    } else if #[cfg(all(not(stdbuild), feature = "use_std"))] {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
     } else if #[cfg(all(target_env = "musl", not(any(target_arch = "mips",
