@@ -101,9 +101,8 @@ Tested:
   * [`i686-apple-darwin`](https://doc.rust-lang.org/libc/i686-apple-darwin/libc/)
   * [`x86_64-apple-darwin`](https://doc.rust-lang.org/libc/x86_64-apple-darwin/libc/)
     (OSX)
-  * [`i686-apple-ios`](https://doc.rust-lang.org/libc/i686-apple-ios/libc/)
-  * [`x86_64-apple-ios`](https://doc.rust-lang.org/libc/x86_64-apple-ios/libc/)
-    (iOS)
+  * `i686-apple-ios`
+  * `x86_64-apple-ios`
   * [`i686-unknown-linux-gnu`](https://doc.rust-lang.org/libc/i686-unknown-linux-gnu/libc/)
   * [`x86_64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-gnu/libc/)
     (Linux)
