@@ -31,6 +31,7 @@ pub type pthread_t = ::uintptr_t;
 pub type pthread_key_t = ::c_uint;
 pub type blksize_t = u32;
 pub type fflags_t = u32;
+pub type nl_item = ::c_int;
 
 pub enum timezone {}
 
@@ -272,7 +273,120 @@ s! {
         pub c_lflag: ::tcflag_t,
         pub c_cc: [::cc_t; ::NCCS]
     }
+
+    pub struct lconv {
+        pub decimal_point: *mut ::c_char,
+        pub thousands_sep: *mut ::c_char,
+        pub grouping: *mut ::c_char,
+        pub int_curr_symbol: *mut ::c_char,
+        pub currency_symbol: *mut ::c_char,
+        pub mon_decimal_point: *mut ::c_char,
+        pub mon_thousands_sep: *mut ::c_char,
+        pub mon_grouping: *mut ::c_char,
+        pub positive_sign: *mut ::c_char,
+        pub negative_sign: *mut ::c_char,
+        pub int_frac_digits: ::c_char,
+        pub frac_digits: ::c_char,
+        pub p_cs_precedes: ::c_char,
+        pub p_sep_by_space: ::c_char,
+        pub n_cs_precedes: ::c_char,
+        pub n_sep_by_space: ::c_char,
+        pub p_sign_posn: ::c_char,
+        pub n_sign_posn: ::c_char,
+        pub int_p_cs_precedes: ::c_char,
+        pub int_p_sep_by_space: ::c_char,
+        pub int_n_cs_precedes: ::c_char,
+        pub int_n_sep_by_space: ::c_char,
+        pub int_p_sign_posn: ::c_char,
+        pub int_n_sign_posn: ::c_char,
+    }
 }
+
+pub const LC_CTYPE: ::c_int = 0;
+pub const LC_NUMERIC: ::c_int = 1;
+pub const LC_TIME: ::c_int = 2;
+pub const LC_COLLATE: ::c_int = 3;
+pub const LC_MONETARY: ::c_int = 4;
+pub const LC_MESSAGES: ::c_int = 5;
+pub const LC_ALL: ::c_int = 6;
+pub const LC_CTYPE_MASK: ::c_int = (1 << LC_CTYPE);
+pub const LC_NUMERIC_MASK: ::c_int = (1 << LC_NUMERIC);
+pub const LC_TIME_MASK: ::c_int = (1 << LC_TIME);
+pub const LC_COLLATE_MASK: ::c_int = (1 << LC_COLLATE);
+pub const LC_MONETARY_MASK: ::c_int = (1 << LC_MONETARY);
+pub const LC_MESSAGES_MASK: ::c_int = (1 << LC_MESSAGES);
+pub const LC_ALL_MASK: ::c_int = LC_CTYPE_MASK
+                               | LC_NUMERIC_MASK
+                               | LC_TIME_MASK
+                               | LC_COLLATE_MASK
+                               | LC_MONETARY_MASK
+                               | LC_MESSAGES_MASK;
+
+pub const DAY_1: ::nl_item = 1;
+pub const DAY_2: ::nl_item = 2;
+pub const DAY_3: ::nl_item = 3;
+pub const DAY_4: ::nl_item = 4;
+pub const DAY_5: ::nl_item = 5;
+pub const DAY_6: ::nl_item = 6;
+pub const DAY_7: ::nl_item = 7;
+
+pub const ABDAY_1: ::nl_item = 8;
+pub const ABDAY_2: ::nl_item = 9;
+pub const ABDAY_3: ::nl_item = 10;
+pub const ABDAY_4: ::nl_item = 11;
+pub const ABDAY_5: ::nl_item = 12;
+pub const ABDAY_6: ::nl_item = 13;
+pub const ABDAY_7: ::nl_item = 14;
+
+pub const MON_1: ::nl_item = 15;
+pub const MON_2: ::nl_item = 16;
+pub const MON_3: ::nl_item = 17;
+pub const MON_4: ::nl_item = 18;
+pub const MON_5: ::nl_item = 19;
+pub const MON_6: ::nl_item = 20;
+pub const MON_7: ::nl_item = 21;
+pub const MON_8: ::nl_item = 22;
+pub const MON_9: ::nl_item = 23;
+pub const MON_10: ::nl_item = 24;
+pub const MON_11: ::nl_item = 25;
+pub const MON_12: ::nl_item = 26;
+
+pub const ABMON_1: ::nl_item = 27;
+pub const ABMON_2: ::nl_item = 28;
+pub const ABMON_3: ::nl_item = 29;
+pub const ABMON_4: ::nl_item = 30;
+pub const ABMON_5: ::nl_item = 31;
+pub const ABMON_6: ::nl_item = 32;
+pub const ABMON_7: ::nl_item = 33;
+pub const ABMON_8: ::nl_item = 34;
+pub const ABMON_9: ::nl_item = 35;
+pub const ABMON_10: ::nl_item = 36;
+pub const ABMON_11: ::nl_item = 37;
+pub const ABMON_12: ::nl_item = 38;
+
+pub const RADIXCHAR: ::nl_item = 39;
+pub const THOUSEP: ::nl_item = 40;
+pub const YESSTR: ::nl_item = 41;
+pub const NOSTR: ::nl_item = 42;
+pub const CRNCYSTR: ::nl_item = 43;
+
+pub const D_T_FMT: ::nl_item = 44;
+pub const D_FMT: ::nl_item = 45;
+pub const T_FMT: ::nl_item = 46;
+pub const AM_STR: ::nl_item = 47;
+pub const PM_STR: ::nl_item = 48;
+
+pub const CODESET: ::nl_item = 49;
+pub const T_FMT_AMPM: ::nl_item = 50;
+pub const ERA: ::nl_item = 51;
+pub const ERA_D_FMT: ::nl_item = 52;
+pub const ERA_D_T_FMT: ::nl_item = 53;
+pub const ERA_T_FMT: ::nl_item = 54;
+pub const ALT_DIGITS: ::nl_item = 55;
+pub const YESEXPR: ::nl_item = 56;
+pub const NOEXPR: ::nl_item = 57;
+pub const _DATE_FMT: ::nl_item = 58;
+pub const MAXSTRMSG: ::nl_item = 58;
 
 pub const SA_ONSTACK: ::c_int = 0x00000001;
 pub const SA_RESETHAND: ::c_int = 0x00000002;
@@ -778,5 +892,12 @@ extern {
                       buflen: ::size_t) -> *const passwd;
     pub fn readdir(dirp: *mut ::DIR) -> *const ::dirent;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
+    pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
+    pub fn duplocale(base: ::locale_t) -> ::locale_t;
+    pub fn freelocale(loc: ::locale_t);
+    pub fn newlocale(mask: ::c_int,
+                     locale: *const ::c_char,
+                     base: ::locale_t) -> ::locale_t;
+    pub fn uselocale(loc: ::locale_t) -> ::locale_t;
 }
 

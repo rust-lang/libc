@@ -9,6 +9,7 @@ pub type pthread_rwlock_t = *mut ::c_void;
 pub type pthread_key_t = ::c_int;
 pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
+pub type nl_item = ::c_int;
 
 pub enum timezone {}
 
@@ -148,6 +149,101 @@ s! {
         pub int_n_sign_posn: ::c_char,
     }
 }
+
+pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
+pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
+pub const LC_MESSAGES_MASK: ::c_int = (1 << 2);
+pub const LC_MONETARY_MASK: ::c_int = (1 << 3);
+pub const LC_NUMERIC_MASK: ::c_int = (1 << 4);
+pub const LC_TIME_MASK: ::c_int = (1 << 5);
+pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
+                               | LC_CTYPE_MASK
+                               | LC_MESSAGES_MASK
+                               | LC_MONETARY_MASK
+                               | LC_NUMERIC_MASK
+                               | LC_TIME_MASK;
+
+pub const CODESET: ::nl_item = 0;
+pub const D_T_FMT: ::nl_item = 1;
+pub const D_FMT: ::nl_item = 2;
+pub const T_FMT: ::nl_item = 3;
+pub const T_FMT_AMPM: ::nl_item = 4;
+pub const AM_STR: ::nl_item = 5;
+pub const PM_STR: ::nl_item = 6;
+
+pub const DAY_1: ::nl_item = 7;
+pub const DAY_2: ::nl_item = 8;
+pub const DAY_3: ::nl_item = 9;
+pub const DAY_4: ::nl_item = 10;
+pub const DAY_5: ::nl_item = 11;
+pub const DAY_6: ::nl_item = 12;
+pub const DAY_7: ::nl_item = 13;
+
+pub const ABDAY_1: ::nl_item = 14;
+pub const ABDAY_2: ::nl_item = 15;
+pub const ABDAY_3: ::nl_item = 16;
+pub const ABDAY_4: ::nl_item = 17;
+pub const ABDAY_5: ::nl_item = 18;
+pub const ABDAY_6: ::nl_item = 19;
+pub const ABDAY_7: ::nl_item = 20;
+
+pub const MON_1: ::nl_item = 21;
+pub const MON_2: ::nl_item = 22;
+pub const MON_3: ::nl_item = 23;
+pub const MON_4: ::nl_item = 24;
+pub const MON_5: ::nl_item = 25;
+pub const MON_6: ::nl_item = 26;
+pub const MON_7: ::nl_item = 27;
+pub const MON_8: ::nl_item = 28;
+pub const MON_9: ::nl_item = 29;
+pub const MON_10: ::nl_item = 30;
+pub const MON_11: ::nl_item = 31;
+pub const MON_12: ::nl_item = 32;
+
+pub const ABMON_1: ::nl_item = 33;
+pub const ABMON_2: ::nl_item = 34;
+pub const ABMON_3: ::nl_item = 35;
+pub const ABMON_4: ::nl_item = 36;
+pub const ABMON_5: ::nl_item = 37;
+pub const ABMON_6: ::nl_item = 38;
+pub const ABMON_7: ::nl_item = 39;
+pub const ABMON_8: ::nl_item = 40;
+pub const ABMON_9: ::nl_item = 41;
+pub const ABMON_10: ::nl_item = 42;
+pub const ABMON_11: ::nl_item = 43;
+pub const ABMON_12: ::nl_item = 44;
+
+pub const ERA: ::nl_item = 45;
+pub const ERA_D_FMT: ::nl_item = 46;
+pub const ERA_D_T_FMT: ::nl_item = 47;
+pub const ERA_T_FMT: ::nl_item = 48;
+pub const ALT_DIGITS: ::nl_item = 49;
+
+pub const RADIXCHAR: ::nl_item = 50;
+pub const THOUSEP: ::nl_item = 51;
+
+pub const YESEXPR: ::nl_item = 52;
+pub const NOEXPR: ::nl_item = 53;
+
+pub const YESSTR: ::nl_item = 54;
+pub const NOSTR: ::nl_item = 55;
+
+pub const CRNCYSTR: ::nl_item = 56;
+
+pub const D_MD_ORDER: ::nl_item = 57;
+
+pub const ALTMON_1: ::nl_item = 58;
+pub const ALTMON_2: ::nl_item = 59;
+pub const ALTMON_3: ::nl_item = 60;
+pub const ALTMON_4: ::nl_item = 61;
+pub const ALTMON_5: ::nl_item = 62;
+pub const ALTMON_6: ::nl_item = 63;
+pub const ALTMON_7: ::nl_item = 64;
+pub const ALTMON_8: ::nl_item = 65;
+pub const ALTMON_9: ::nl_item = 66;
+pub const ALTMON_10: ::nl_item = 67;
+pub const ALTMON_11: ::nl_item = 68;
+pub const ALTMON_12: ::nl_item = 69;
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
@@ -626,7 +722,14 @@ extern {
                    name: *mut ::c_char,
                    termp: *mut termios,
                    winp: *mut ::winsize) -> ::pid_t;
-
+    pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
+    pub fn duplocale(base: ::locale_t) -> ::locale_t;
+    pub fn freelocale(loc: ::locale_t) -> ::c_int;
+    pub fn newlocale(mask: ::c_int,
+                     locale: *const ::c_char,
+                     base: ::locale_t) -> ::locale_t;
+    pub fn uselocale(loc: ::locale_t) -> ::locale_t;
+    pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn pthread_attr_get_np(tid: ::pthread_t,
                                attr: *mut ::pthread_attr_t) -> ::c_int;

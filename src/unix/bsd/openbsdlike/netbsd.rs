@@ -219,6 +219,20 @@ s! {
     }
 }
 
+pub const LC_COLLATE_MASK: ::c_int = (1 << ::LC_COLLATE);
+pub const LC_CTYPE_MASK: ::c_int = (1 << ::LC_CTYPE);
+pub const LC_MONETARY_MASK: ::c_int = (1 << ::LC_MONETARY);
+pub const LC_NUMERIC_MASK: ::c_int = (1 << ::LC_NUMERIC);
+pub const LC_TIME_MASK: ::c_int = (1 << ::LC_TIME);
+pub const LC_MESSAGES_MASK: ::c_int = (1 << ::LC_MESSAGES);
+pub const LC_ALL_MASK: ::c_int = !0;
+
+pub const ERA: ::nl_item = 52;
+pub const ERA_D_FMT: ::nl_item = 53;
+pub const ERA_D_T_FMT: ::nl_item = 54;
+pub const ERA_T_FMT: ::nl_item = 55;
+pub const ALT_DIGITS: ::nl_item = 56;
+
 pub const O_CLOEXEC: ::c_int = 0x400000;
 pub const O_ALT_IO: ::c_int = 0x40000;
 pub const O_NOSIGPIPE: ::c_int = 0x1000000;
@@ -411,4 +425,10 @@ extern {
                         timeout: *const ::timespec) -> ::c_int;
     pub fn sigwaitinfo(set: *const sigset_t,
                        info: *mut siginfo_t) -> ::c_int;
+    pub fn duplocale(base: ::locale_t) -> ::locale_t;
+    pub fn freelocale(loc: ::locale_t);
+    pub fn localeconv_l(loc: ::locale_t) -> *mut lconv;
+    pub fn newlocale(mask: ::c_int,
+                     locale: *const ::c_char,
+                     base: ::locale_t) -> ::locale_t;
 }
