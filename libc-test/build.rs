@@ -385,12 +385,6 @@ fn main() {
 
     cfg.skip_fn_ptrcheck(move |name| {
         match name {
-            // This used to be called bsd_signal in rev 18 of the android
-            // platform and is now just called signal, the old `bsd_signal`
-            // symbol, however, still remains, just gives a different function
-            // pointer.
-            "signal" if android => true,
-
             // dllimport weirdness?
             _ if windows => true,
 
