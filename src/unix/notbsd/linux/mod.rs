@@ -181,6 +181,11 @@ s! {
         #[cfg(target_pointer_width = "64")]
         bits: [u64; 16],
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -615,6 +620,13 @@ extern {
                    termp: *const termios,
                    winp: *const ::winsize) -> ::pid_t;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
+}
+
+extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
 }
 
 cfg_if! {

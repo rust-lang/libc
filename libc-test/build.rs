@@ -343,6 +343,11 @@ fn main() {
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
             "strerror_r" if linux => true,   // actually xpg-something-or-other
 
+            // int vs uint. Sorry musl, your prototype declarations are "correct" in the sense that
+            // they match the interface defined by Linux verbatim, but they conflict with other
+            // send*/recv* syscalls
+            "sendmmsg" | "recvmmsg" if musl => true,
+
             // typed 2nd arg on linux and android
             "gettimeofday" if linux || android || freebsd || openbsd || dragonfly => true,
 
