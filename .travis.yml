@@ -14,8 +14,8 @@ script:
     elif [[ $TRAVIS_RUST_VERSION = "1.0.0" ]]; then
       cargo build;
     else
-      cargo build;
-      cargo build --no-default-features;
+      cargo build &&
+      cargo build --no-default-features &&
       rustc ci/style.rs && ./style src;
     fi
 os:
