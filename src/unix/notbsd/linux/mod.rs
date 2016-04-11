@@ -450,15 +450,15 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size = mem::size_of_val(&cpuset.bits[0]);
-        let (idx, offset) = (cpu / size, cpu % size);
+        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size = mem::size_of_val(&cpuset.bits[0]);
-        let (idx, offset) = (cpu / size, cpu % size);
+        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]);
+        let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.bits[idx] & (1 << offset))
     }
 
