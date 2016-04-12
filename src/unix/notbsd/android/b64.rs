@@ -10,3 +10,7 @@ s! {
 }
 
 pub const SYS_gettid: ::c_long = 178;
+
+extern {
+    pub fn timegm(tm: *const ::tm) -> ::time64_t;
+}
