@@ -648,7 +648,6 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
-    pub fn timegm64(tm: *const ::tm) -> time64_t;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
