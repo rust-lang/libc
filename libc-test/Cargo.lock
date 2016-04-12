@@ -3,7 +3,7 @@ name = "libc-test"
 version = "0.1.0"
 dependencies = [
  "ctest 0.1.0 (git+https://github.com/alexcrichton/ctest)",
- "libc 0.2.9",
+ "libc 0.2.10",
 ]
 
 [[package]]
@@ -46,7 +46,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libc"
-version = "0.2.9"
+version = "0.2.10"
 
 [[package]]
 name = "log"
