@@ -179,7 +179,8 @@ cfg_if! {
 }
 
 extern {
-    pub fn fprintf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
+    pub fn fprintf(stream: *mut ::FILE,
+                   format: *const ::c_char, ...) -> ::c_int;
     pub fn printf(format: *const ::c_char, ...) -> ::c_int;
     pub fn snprintf(s: *mut ::c_char, n: ::size_t,
                     format: *const ::c_char, ...) -> ::c_int;
