@@ -179,6 +179,15 @@ cfg_if! {
 }
 
 extern {
+    pub fn fprintf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
+    pub fn printf(format: *const ::c_char, ...) -> ::c_int;
+    pub fn snprintf(s: *mut ::c_char, n: ::size_t,
+                    format: *const ::c_char, ...) -> ::c_int;
+    pub fn sprintf(s: *mut ::c_char, format: *const ::c_char, ...) -> ::c_int;
+    pub fn fscanf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
+    pub fn scanf(format: *const ::c_char, ...) -> ::c_int;
+    pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...) -> ::c_int;
+
     #[cfg_attr(target_os = "netbsd", link_name = "__socket30")]
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),

@@ -166,16 +166,6 @@ extern {
                    mode: c_int,
                    size: size_t) -> c_int;
     pub fn setbuf(stream: *mut FILE, buf: *mut c_char);
-
-    pub fn fprintf(stream: *mut FILE, format: *const c_char, ...) -> c_int;
-    pub fn printf(format: *const c_char, ...) -> c_int;
-    pub fn snprintf(s: *mut c_char, n: size_t,
-                    format: *const c_char, ...) -> c_int;
-    pub fn sprintf(s: *mut c_char, format: *const c_char, ...) -> c_int;
-    pub fn fscanf(stream: *mut FILE, format: *const c_char, ...) -> c_int;
-    pub fn scanf(format: *const c_char, ...) -> c_int;
-    pub fn sscanf(s: *const c_char, format: *const c_char, ...) -> c_int;
-
     pub fn fgetc(stream: *mut FILE) -> c_int;
     pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE) -> *mut c_char;
     pub fn fputc(c: c_int, stream: *mut FILE) -> c_int;
