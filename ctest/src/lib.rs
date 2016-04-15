@@ -559,10 +559,6 @@ impl TestGenerator {
         // Compile our C shim to be linked into tests
         let mut cfg = gcc::Config::new();
         cfg.file(&out.with_extension("c"));
-        for flag in self.flags.iter() {
-            cfg.flag(flag);
-        }
-
         if target.contains("msvc") {
             cfg.flag("/W3").flag("/Wall").flag("/WX")
                 // ignored warnings
@@ -578,6 +574,11 @@ impl TestGenerator {
                .flag("-Wno-unused-parameter")
                .flag("-Wno-type-limits");
         }
+
+        for flag in self.flags.iter() {
+            cfg.flag(flag);
+        }
+
         for &(ref a, ref b) in self.defines.iter() {
             cfg.define(a, b.as_ref().map(|s| &s[..]));
         }
