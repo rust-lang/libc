@@ -109,9 +109,9 @@ cp ci/cargo-config .cargo/config
 # Next up we need to install the standard library for the version of Rust that
 # we're testing.
 if [ "$TRAVIS" = "true" ]; then
-  curl -s $MAIN_TARGETS/rust-std-$TRAVIS_RUST_VERSION-$TARGET.tar.gz | \
-    tar xzf - -C $HOME/rust/lib/rustlib --strip-components=4 \
-      rust-std-$TRAVIS_RUST_VERSION-$TARGET/rust-std-$TARGET/lib/rustlib/$TARGET
+  curl https://static.rust-lang.org/rustup.sh | \
+    sh -s -- --add-target=$TARGET --disable-sudo -y \
+      --prefix=`rustc --print sysroot`
 fi
 
 # If we're testing with a docker image, then run tests entirely within that
