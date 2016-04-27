@@ -487,14 +487,6 @@ extern {
                                                    -> ::c_int>,
                   pglob: *mut glob64_t) -> ::c_int;
     pub fn globfree64(pglob: *mut glob64_t);
-    pub fn getnameinfo(sa: *const ::sockaddr,
-                       salen: ::socklen_t,
-                       host: *mut ::c_char,
-                       hostlen: ::socklen_t,
-                       serv: *mut ::c_char,
-                       sevlen: ::socklen_t,
-                       flags: ::c_int) -> ::c_int;
-    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_uint, ...) -> ::c_long;
     pub fn pthread_attr_getaffinity_np(attr: *const ::pthread_attr_t,
                                        cpusetsize: ::size_t,
