@@ -163,6 +163,7 @@ pub const SIGXFSZ: ::c_int = 25;
 pub const SIGVTALRM: ::c_int = 26;
 pub const SIGPROF: ::c_int = 27;
 pub const SIGWINCH: ::c_int = 28;
+pub const SIGINFO: ::c_int = 29;
 
 pub const SIG_SETMASK: ::c_int = 3;
 pub const SIG_BLOCK: ::c_int = 0x1;
