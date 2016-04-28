@@ -1025,6 +1025,30 @@ pub const RTLD_NODELETE: ::c_int = 0x80;
 pub const RTLD_NOLOAD: ::c_int = 0x10;
 pub const RTLD_GLOBAL: ::c_int = 0x8;
 
+pub const _WSTOPPED: ::c_int = 0o177;
+
+f! {
+    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        status >> 8
+    }
+
+    pub fn WSTATUS(status: ::c_int) -> ::c_int {
+        status & 0x7f
+    }
+
+    pub fn WIFCONTINUED(status: ::c_int) -> bool {
+        WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) == 0x13
+    }
+
+    pub fn WIFSIGNALED(status: ::c_int) -> bool {
+        WSTATUS(status) != _WSTOPPED && WSTATUS(status) != 0
+    }
+
+    pub fn WIFSTOPPED(status: ::c_int) -> bool {
+        WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) != 0x13
+    }
+}
+
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
