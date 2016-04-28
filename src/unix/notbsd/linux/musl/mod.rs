@@ -154,15 +154,7 @@ pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
 pub const CLOCK_TAI: ::clockid_t = 11;
 
 extern {
-    pub fn getnameinfo(sa: *const ::sockaddr,
-                       salen: ::socklen_t,
-                       host: *mut ::c_char,
-                       hostlen: ::socklen_t,
-                       serv: *mut ::c_char,
-                       sevlen: ::socklen_t,
-                       flags: ::c_int) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
 }
 

@@ -494,29 +494,6 @@ extern {
     pub fn tmpfile64() -> *mut ::FILE;
     pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
     pub fn fsetpos64(stream: *mut ::FILE, ptr: *const fpos64_t) -> ::c_int;
-    pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
-    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
-    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
-    pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
-    pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
-                   offset: off64_t) -> ::ssize_t;
-    pub fn pwrite64(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
-                    offset: off64_t) -> ::ssize_t;
-    pub fn mmap64(addr: *mut ::c_void,
-                  len: ::size_t,
-                  prot: ::c_int,
-                  flags: ::c_int,
-                  fd: ::c_int,
-                  offset: off64_t)
-                  -> *mut ::c_void;
-    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-    pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
-    pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
-                       result: *mut *mut ::dirent64) -> ::c_int;
-
-    pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
-    pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
     pub fn fseeko64(stream: *mut ::FILE,
                     offset: ::off64_t,
                     whence: ::c_int) -> ::c_int;
@@ -615,6 +592,13 @@ extern {
                    termp: *const termios,
                    winp: *const ::winsize) -> ::pid_t;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::socklen_t,
+                       serv: *mut ::c_char,
+                       sevlen: ::socklen_t,
+                       flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
