@@ -331,6 +331,11 @@ f! {
     pub fn WTERMSIG(status: ::c_int) -> ::c_int {
         status & 0o177
     }
+
+    pub fn WCOREDUMP(status: ::c_int) -> bool {
+        (status & 0o200) != 0
+    }
+
 }
 
 extern {
