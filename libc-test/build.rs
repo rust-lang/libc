@@ -341,6 +341,7 @@ fn main() {
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
+            "prlimit" | "prlimit64" |        // non-int in 2nd arg
             "strerror_r" if linux => true,   // actually xpg-something-or-other
 
             // typed 2nd arg on linux and android
