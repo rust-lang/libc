@@ -1032,20 +1032,20 @@ f! {
         status >> 8
     }
 
-    pub fn WSTATUS(status: ::c_int) -> ::c_int {
+    pub fn _WSTATUS(status: ::c_int) -> ::c_int {
         status & 0x7f
     }
 
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
-        WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) == 0x13
+        _WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) == 0x13
     }
 
     pub fn WIFSIGNALED(status: ::c_int) -> bool {
-        WSTATUS(status) != _WSTOPPED && WSTATUS(status) != 0
+        _WSTATUS(status) != _WSTOPPED && _WSTATUS(status) != 0
     }
 
     pub fn WIFSTOPPED(status: ::c_int) -> bool {
-        WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) != 0x13
+        _WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) != 0x13
     }
 }
 
