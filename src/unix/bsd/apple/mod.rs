@@ -726,6 +726,7 @@ pub const RLIMIT_DATA: ::c_int = 2;
 pub const RLIMIT_STACK: ::c_int = 3;
 pub const RLIMIT_CORE: ::c_int = 4;
 pub const RLIMIT_AS: ::c_int = 5;
+pub const RLIMIT_RSS: ::c_int = RLIMIT_AS;
 pub const RLIMIT_MEMLOCK: ::c_int = 6;
 pub const RLIMIT_NPROC: ::c_int = 7;
 pub const RLIMIT_NOFILE: ::c_int = 8;
