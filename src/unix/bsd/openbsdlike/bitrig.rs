@@ -262,6 +262,7 @@ pub const _SC_REALTIME_SIGNALS : ::c_int = 64;
 pub const _SC_RTSIG_MAX : ::c_int = 66;
 pub const _SC_SIGQUEUE_MAX : ::c_int = 70;
 pub const _SC_TIMER_MAX : ::c_int = 93;
+pub const _SC_HOST_NAME_MAX: ::c_int = 33;
 
 pub const FD_SETSIZE: usize = 1024;
 
