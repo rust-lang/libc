@@ -648,7 +648,6 @@ pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100;
 pub const LOG_CRON: ::c_int = 9 << 3;
 pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
 pub const LOG_FTP: ::c_int = 11 << 3;
-pub const LOG_NFACILITIES: ::c_int = 24;
 pub const LOG_PERROR: ::c_int = 0x20;
 
 f! {
