@@ -109,11 +109,6 @@ s! {
         pub ws_xpixel: ::c_ushort,
         pub ws_ypixel: ::c_ushort,
     }
-
-    pub struct CODE {
-        pub c_name: *mut ::c_char,
-        pub c_val: *mut ::c_int,
-    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
@@ -168,9 +163,6 @@ pub const LOG_SYSLOG: ::c_int = 5 << 3;
 pub const LOG_LPR: ::c_int = 6 << 3;
 pub const LOG_NEWS: ::c_int = 7 << 3;
 pub const LOG_UUCP: ::c_int = 8 << 3;
-pub const LOG_CRON: ::c_int = 9 << 3;
-pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
-pub const LOG_FTP: ::c_int = 11 << 3;
 pub const LOG_LOCAL0: ::c_int = 16 << 3;
 pub const LOG_LOCAL1: ::c_int = 17 << 3;
 pub const LOG_LOCAL2: ::c_int = 18 << 3;
@@ -185,10 +177,8 @@ pub const LOG_CONS: ::c_int = 0x02;
 pub const LOG_ODELAY: ::c_int = 0x04;
 pub const LOG_NDELAY: ::c_int = 0x08;
 pub const LOG_NOWAIT: ::c_int = 0x10;
-pub const LOG_PERROR: ::c_int = 0x20;
 
 pub const LOG_PRIMASK: ::c_int = 7;
-pub const LOG_NFACILITIES: ::c_int = 24;
 pub const LOG_FACMASK: ::c_int = 0x3f8;
 
 cfg_if! {

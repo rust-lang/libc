@@ -112,6 +112,10 @@ pub const CLOCK_SECOND: clockid_t = 13;
 pub const CLOCK_THREAD_CPUTIME_ID: clockid_t = 14;
 pub const CLOCK_PROCESS_CPUTIME_ID: clockid_t = 15;
 
+pub const LOG_NTP: ::c_int = 12 << 3;
+pub const LOG_SECURITY: ::c_int = 13 << 3;
+pub const LOG_CONSOLE: ::c_int = 14 << 3;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
