@@ -298,6 +298,8 @@ pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
 pub const LOG_FTP: ::c_int = 11 << 3;
 pub const LOG_PERROR: ::c_int = 0x20;
 
+pub const PIPE_BUF: usize = 512;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
