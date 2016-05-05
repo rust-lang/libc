@@ -310,6 +310,7 @@ pub const _SC_SEMAPHORES : ::c_int = 42;
 pub const _SC_SHARED_MEMORY_OBJECTS : ::c_int = 87;
 pub const _SC_SYNCHRONIZED_IO : ::c_int = 31;
 pub const _SC_TIMERS : ::c_int = 44;
+pub const _SC_HOST_NAME_MAX : ::c_int = 69;
 
 pub const FD_SETSIZE: usize = 0x100;
 

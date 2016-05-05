@@ -643,6 +643,7 @@ pub const _SC_SEM_NSEMS_MAX: ::c_int = 49;
 pub const _SC_SEM_VALUE_MAX: ::c_int = 50;
 pub const _SC_SIGQUEUE_MAX: ::c_int = 51;
 pub const _SC_TIMER_MAX: ::c_int = 52;
+pub const _SC_HOST_NAME_MAX: ::c_int = 72;
 
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0 as *mut _;
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;

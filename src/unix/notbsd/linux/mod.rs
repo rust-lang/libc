@@ -339,6 +339,7 @@ pub const _SC_XBS5_LPBIG_OFFBIG: ::c_int = 128;
 pub const _SC_XOPEN_LEGACY: ::c_int = 129;
 pub const _SC_XOPEN_REALTIME: ::c_int = 130;
 pub const _SC_XOPEN_REALTIME_THREADS: ::c_int = 131;
+pub const _SC_HOST_NAME_MAX: ::c_int = 180;
 
 pub const RLIM_SAVED_MAX: ::rlim_t = RLIM_INFINITY;
 pub const RLIM_SAVED_CUR: ::rlim_t = RLIM_INFINITY;

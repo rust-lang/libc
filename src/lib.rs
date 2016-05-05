@@ -232,6 +232,7 @@ extern {
     pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strlen(cs: *const c_char) -> size_t;
+    pub fn strnlen(cs: *const c_char, maxlen: size_t) -> size_t;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "strerror$UNIX2003")]
     pub fn strerror(n: c_int) -> *mut c_char;
