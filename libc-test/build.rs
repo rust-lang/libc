@@ -95,6 +95,7 @@ fn main() {
         cfg.header("sched.h");
         cfg.header("termios.h");
         cfg.header("poll.h");
+        cfg.header("syslog.h");
     }
 
     if android {

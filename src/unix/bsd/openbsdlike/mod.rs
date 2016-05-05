@@ -445,6 +445,8 @@ pub const Q_SETQUOTA: ::c_int = 0x400;
 
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 
+pub const LOG_NFACILITIES: ::c_int = 24;
+
 #[link(name = "util")]
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,

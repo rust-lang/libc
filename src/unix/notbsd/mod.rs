@@ -645,6 +645,11 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const AT_FDCWD: ::c_int = -100;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100;
 
+pub const LOG_CRON: ::c_int = 9 << 3;
+pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
+pub const LOG_FTP: ::c_int = 11 << 3;
+pub const LOG_PERROR: ::c_int = 0x20;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;

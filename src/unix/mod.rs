@@ -145,6 +145,42 @@ pub const IF_NAMESIZE: ::size_t = 16;
 
 pub const RTLD_LAZY: ::c_int = 0x1;
 
+pub const LOG_EMERG: ::c_int = 0;
+pub const LOG_ALERT: ::c_int = 1;
+pub const LOG_CRIT: ::c_int = 2;
+pub const LOG_ERR: ::c_int = 3;
+pub const LOG_WARNING: ::c_int = 4;
+pub const LOG_NOTICE: ::c_int = 5;
+pub const LOG_INFO: ::c_int = 6;
+pub const LOG_DEBUG: ::c_int = 7;
+
+pub const LOG_KERN: ::c_int = 0;
+pub const LOG_USER: ::c_int = 1 << 3;
+pub const LOG_MAIL: ::c_int = 2 << 3;
+pub const LOG_DAEMON: ::c_int = 3 << 3;
+pub const LOG_AUTH: ::c_int = 4 << 3;
+pub const LOG_SYSLOG: ::c_int = 5 << 3;
+pub const LOG_LPR: ::c_int = 6 << 3;
+pub const LOG_NEWS: ::c_int = 7 << 3;
+pub const LOG_UUCP: ::c_int = 8 << 3;
+pub const LOG_LOCAL0: ::c_int = 16 << 3;
+pub const LOG_LOCAL1: ::c_int = 17 << 3;
+pub const LOG_LOCAL2: ::c_int = 18 << 3;
+pub const LOG_LOCAL3: ::c_int = 19 << 3;
+pub const LOG_LOCAL4: ::c_int = 20 << 3;
+pub const LOG_LOCAL5: ::c_int = 21 << 3;
+pub const LOG_LOCAL6: ::c_int = 22 << 3;
+pub const LOG_LOCAL7: ::c_int = 23 << 3;
+
+pub const LOG_PID: ::c_int = 0x01;
+pub const LOG_CONS: ::c_int = 0x02;
+pub const LOG_ODELAY: ::c_int = 0x04;
+pub const LOG_NDELAY: ::c_int = 0x08;
+pub const LOG_NOWAIT: ::c_int = 0x10;
+
+pub const LOG_PRIMASK: ::c_int = 7;
+pub const LOG_FACMASK: ::c_int = 0x3f8;
+
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
@@ -732,6 +768,11 @@ extern {
     pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
     pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
+
+    pub fn openlog(ident: *const ::c_char, logopt: ::c_int, facility: ::c_int);
+    pub fn closelog();
+    pub fn setlogmask(maskpri: ::c_int) -> ::c_int;
+    pub fn syslog(priority: ::c_int, message: *const ::c_char, ...);
 }
 
 cfg_if! {

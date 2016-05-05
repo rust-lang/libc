@@ -1029,6 +1029,13 @@ pub const RTLD_GLOBAL: ::c_int = 0x8;
 
 pub const _WSTOPPED: ::c_int = 0o177;
 
+pub const LOG_NETINFO: ::c_int = 12 << 3;
+pub const LOG_REMOTEAUTH: ::c_int = 13 << 3;
+pub const LOG_INSTALL: ::c_int = 14 << 3;
+pub const LOG_RAS: ::c_int = 15 << 3;
+pub const LOG_LAUNCHD: ::c_int = 24 << 3;
+pub const LOG_NFACILITIES: ::c_int = 25;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8

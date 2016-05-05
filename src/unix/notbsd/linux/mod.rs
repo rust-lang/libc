@@ -447,6 +447,8 @@ pub const NCCS: usize = 32;
 
 pub const AF_NETLINK: ::c_int = 16;
 
+pub const LOG_NFACILITIES: ::c_int = 24;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {

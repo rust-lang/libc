@@ -665,6 +665,11 @@ pub const RTLD_NODELETE: ::c_int = 0x1000;
 pub const RTLD_NOLOAD: ::c_int = 0x2000;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 
+pub const LOG_NTP: ::c_int = 12 << 3;
+pub const LOG_SECURITY: ::c_int = 13 << 3;
+pub const LOG_CONSOLE: ::c_int = 14 << 3;
+pub const LOG_NFACILITIES: ::c_int = 24;
+
 #[link(name = "util")]
 extern {
     pub fn getnameinfo(sa: *const ::sockaddr,

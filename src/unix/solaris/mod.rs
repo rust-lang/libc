@@ -806,6 +806,8 @@ pub const _RWL_MAGIC: u16 = 0x5257;   // RW
 
 pub const NCCS: usize = 19;
 
+pub const LOG_CRON: ::c_int = 15 << 3;
+
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __pthread_mutex_flag1: 0,
     __pthread_mutex_flag2: 0,
