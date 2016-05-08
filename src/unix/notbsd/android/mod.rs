@@ -1,75 +1,28 @@
 //! Android-specific definitions for linux-like values
 
 pub type c_char = u8;
-pub type c_long = i32;
-pub type c_ulong = u32;
-pub type clock_t = i32;
-pub type time_t = i32;
-pub type suseconds_t = i32;
+pub type clock_t = ::c_long;
+pub type time_t = ::c_long;
+pub type suseconds_t = ::c_long;
 pub type wchar_t = u32;
-pub type off_t = i32;
-pub type off64_t = i64;
-pub type ino_t = u32;
-pub type blkcnt_t = u32;
-pub type blksize_t = u32;
-pub type dev_t = u32;
+pub type off_t = ::c_long;
+pub type blkcnt_t = ::c_ulong;
+pub type blksize_t = ::c_ulong;
 pub type nlink_t = u32;
 pub type useconds_t = u32;
 pub type socklen_t = i32;
-pub type pthread_t = c_long;
+pub type pthread_t = ::c_long;
 pub type pthread_mutexattr_t = ::c_long;
-pub type sigset_t = c_ulong;
-pub type time64_t = i64;
+pub type sigset_t = ::c_ulong;
+pub type time64_t = i64; // N/A on android
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type nfds_t = ::c_uint;
-pub type rlim_t = c_ulong;
+pub type rlim_t = ::c_ulong;
+pub type dev_t = ::c_ulong;
+pub type ino_t = ::c_ulong;
 
 s! {
-    pub struct stat {
-        pub st_dev: ::c_ulonglong,
-        __pad0: [::c_uchar; 4],
-        __st_ino: ::ino_t,
-        pub st_mode: ::c_uint,
-        pub st_nlink: ::c_uint,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::c_ulonglong,
-        __pad3: [::c_uchar; 4],
-        pub st_size: ::c_longlong,
-        pub st_blksize: blksize_t,
-        pub st_blocks: ::c_ulonglong,
-        pub st_atime: ::c_ulong,
-        pub st_atime_nsec: ::c_ulong,
-        pub st_mtime: ::c_ulong,
-        pub st_mtime_nsec: ::c_ulong,
-        pub st_ctime: ::c_ulong,
-        pub st_ctime_nsec: ::c_ulong,
-        pub st_ino: ::c_ulonglong,
-    }
-
-    pub struct stat64 {
-        pub st_dev: ::c_ulonglong,
-        __pad0: [::c_uchar; 4],
-        __st_ino: ::ino_t,
-        pub st_mode: ::c_uint,
-        pub st_nlink: ::c_uint,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::c_ulonglong,
-        __pad3: [::c_uchar; 4],
-        pub st_size: ::c_longlong,
-        pub st_blksize: blksize_t,
-        pub st_blocks: ::c_ulonglong,
-        pub st_atime: ::c_ulong,
-        pub st_atime_nsec: ::c_ulong,
-        pub st_mtime: ::c_ulong,
-        pub st_mtime_nsec: ::c_ulong,
-        pub st_ctime: ::c_ulong,
-        pub st_ctime_nsec: ::c_ulong,
-        pub st_ino: ::c_ulonglong,
-    }
-
     pub struct dirent {
         pub d_ino: u64,
         pub d_off: i64,
@@ -91,38 +44,6 @@ s! {
         pub rlim_max: u64,
     }
 
-    pub struct pthread_attr_t {
-        pub flags: ::uint32_t,
-        pub stack_base: *mut ::c_void,
-        pub stack_size: ::size_t,
-        pub guard_size: ::size_t,
-        pub sched_policy: ::int32_t,
-        pub sched_priority: ::int32_t,
-    }
-
-    pub struct pthread_mutex_t { value: ::c_int }
-
-    pub struct pthread_cond_t { value: ::c_int }
-
-    pub struct pthread_rwlock_t {
-        lock: pthread_mutex_t,
-        cond: pthread_cond_t,
-        numLocks: ::c_int,
-        writerThreadId: ::c_int,
-        pendingReaders: ::c_int,
-        pendingWriters: ::c_int,
-        reserved: [*mut ::c_void; 4],
-    }
-
-    pub struct passwd {
-        pub pw_name: *mut ::c_char,
-        pub pw_passwd: *mut ::c_char,
-        pub pw_uid: ::uid_t,
-        pub pw_gid: ::gid_t,
-        pub pw_dir: *mut ::c_char,
-        pub pw_shell: *mut ::c_char,
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
@@ -134,21 +55,6 @@ s! {
         pub si_errno: ::c_int,
         pub si_code: ::c_int,
         pub _pad: [::c_int; 29],
-    }
-
-    pub struct statfs {
-        pub f_type: ::uint32_t,
-        pub f_bsize: ::uint32_t,
-        pub f_blocks: ::uint64_t,
-        pub f_bfree: ::uint64_t,
-        pub f_bavail: ::uint64_t,
-        pub f_files: ::uint64_t,
-        pub f_ffree: ::uint64_t,
-        pub f_fsid: ::__fsid_t,
-        pub f_namelen: ::uint32_t,
-        pub f_frsize: ::uint32_t,
-        pub f_flags: ::uint32_t,
-        pub f_spare: [::uint32_t; 4],
     }
 
     pub struct __fsid_t {
@@ -251,22 +157,6 @@ pub const _SC_THREAD_PRIO_PROTECT: ::c_int = 84;
 pub const _SC_THREAD_SAFE_FUNCTIONS: ::c_int = 85;
 pub const _SC_NPROCESSORS_ONLN: ::c_int = 97;
 
-pub const PTHREAD_STACK_MIN: ::size_t = 8192;
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    value: 0,
-};
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    value: 0,
-};
-pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-    lock: PTHREAD_MUTEX_INITIALIZER,
-    cond: PTHREAD_COND_INITIALIZER,
-    numLocks: 0,
-    writerThreadId: 0,
-    pendingReaders: 0,
-    pendingWriters: 0,
-    reserved: [0 as *mut _; 4],
-};
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 
 pub const FIOCLEX: ::c_int = 0x5451;
