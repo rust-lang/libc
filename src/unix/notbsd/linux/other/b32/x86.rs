@@ -1,9 +1,30 @@
 pub type c_char = i8;
 pub type wchar_t = i32;
+pub type greg_t = i32;
 
 s! {
+    pub struct _libc_fpreg {
+        pub significand: [u16; 4],
+        pub exponent: u16,
+    }
+
+    pub struct _libc_fpstate {
+        pub cw: ::c_ulong,
+        pub sw: ::c_ulong,
+        pub tag: ::c_ulong,
+        pub ipoff: ::c_ulong,
+        pub cssel: ::c_ulong,
+        pub dataoff: ::c_ulong,
+        pub datasel: ::c_ulong,
+        pub _st: [_libc_fpreg; 8],
+        pub status: ::c_ulong,
+    }
+
     pub struct mcontext_t {
-        __private: [u32; 22]
+        pub gregs: [greg_t; 19],
+        pub fpregs: *mut _libc_fpstate,
+        pub oldmask: ::c_ulong,
+        pub cr2: ::c_ulong,
     }
 
     pub struct ucontext_t {

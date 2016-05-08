@@ -4,6 +4,7 @@ pub type c_char = i8;
 pub type wchar_t = i32;
 pub type nlink_t = u64;
 pub type blksize_t = i64;
+pub type greg_t = i64;
 
 s! {
     pub struct stat {
@@ -52,8 +53,34 @@ s! {
         __size: [u64; 7]
     }
 
+    pub struct _libc_fpxreg {
+        pub significand: [u16; 4],
+        pub exponent: u16,
+        __private: [u16; 3],
+    }
+
+    pub struct _libc_xmmreg {
+        pub element: [u32; 4],
+    }
+
+    pub struct _libc_fpstate {
+        pub cwd: u16,
+        pub swd: u16,
+        pub ftw: u16,
+        pub fop: u16,
+        pub rip: u64,
+        pub rdp: u64,
+        pub mxcsr: u32,
+        pub mxcr_mask: u32,
+        pub _st: [_libc_fpxreg; 8],
+        pub _xmm: [_libc_xmmreg; 16],
+        __private: [u64; 12],
+    }
+
     pub struct mcontext_t {
-        __private: [u64; 32],
+        pub gregs: [greg_t; 23],
+        pub fpregs: *mut _libc_fpstate,
+        __private: [u64; 8],
     }
 
     pub struct ucontext_t {
