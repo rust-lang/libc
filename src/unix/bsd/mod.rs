@@ -358,6 +358,8 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
+    pub fn getprogname() -> *const ::c_char;
+    pub fn setprogname(name: *const ::c_char);
 }
 
 cfg_if! {
