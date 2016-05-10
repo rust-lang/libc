@@ -901,5 +901,7 @@ extern {
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
+    pub fn getprogname() -> *const ::c_char;
+    pub fn setprogname(name: *const ::c_char);
 }
 
