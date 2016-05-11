@@ -342,7 +342,6 @@ f! {
     pub fn WCOREDUMP(status: ::c_int) -> bool {
         (status & 0o200) != 0
     }
-
 }
 
 extern {
@@ -360,6 +359,7 @@ extern {
                       result: *mut *mut passwd) -> ::c_int;
     pub fn getprogname() -> *const ::c_char;
     pub fn setprogname(name: *const ::c_char);
+    pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

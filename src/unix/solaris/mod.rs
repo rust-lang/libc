@@ -903,5 +903,6 @@ extern {
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn getprogname() -> *const ::c_char;
     pub fn setprogname(name: *const ::c_char);
+    pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
 }
 

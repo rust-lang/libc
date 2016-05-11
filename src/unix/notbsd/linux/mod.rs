@@ -612,6 +612,7 @@ extern {
                      resource: ::c_int,
                      new_limit: *const ::rlimit64,
                      old_limit: *mut ::rlimit64) -> ::c_int;
+    pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
