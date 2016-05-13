@@ -612,6 +612,19 @@ extern {
                      resource: ::c_int,
                      new_limit: *const ::rlimit64,
                      old_limit: *mut ::rlimit64) -> ::c_int;
+    pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
+    pub fn process_vm_readv(pid: ::pid_t,
+                            local_iov: *const ::iovec,
+                            liovcnt: ::c_ulong,
+                            remote_iov: *const ::iovec,
+                            riovcnt: ::c_ulong,
+                            flags: ::c_ulong) -> isize;
+    pub fn process_vm_writev(pid: ::pid_t,
+                             local_iov: *const ::iovec,
+                             liovcnt: ::c_ulong,
+                             remote_iov: *const ::iovec,
+                             riovcnt: ::c_ulong,
+                             flags: ::c_ulong) -> isize;
 }
 
 cfg_if! {
