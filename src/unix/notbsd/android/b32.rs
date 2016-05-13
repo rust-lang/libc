@@ -102,6 +102,23 @@ s! {
         pub f_flags: ::uint32_t,
         pub f_spare: [::uint32_t; 4],
     }
+
+    pub struct sysinfo {
+        pub uptime: ::c_long,
+        pub loads: [::c_ulong; 3],
+        pub totalram: ::c_ulong,
+        pub freeram: ::c_ulong,
+        pub sharedram: ::c_ulong,
+        pub bufferram: ::c_ulong,
+        pub totalswap: ::c_ulong,
+        pub freeswap: ::c_ulong,
+        pub procs: ::c_ushort,
+        pub pad: ::c_ushort,
+        pub totalhigh: ::c_ulong,
+        pub freehigh: ::c_ulong,
+        pub mem_unit: ::c_uint,
+        pub _f: [::c_char; 8],
+    }
 }
 
 pub const SYS_gettid: ::c_long = 224;

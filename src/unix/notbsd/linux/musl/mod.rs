@@ -56,6 +56,23 @@ s! {
         pub l_len: ::off_t,
         pub l_pid: ::pid_t,
     }
+
+    pub struct sysinfo {
+        pub uptime: ::c_ulong,
+        pub loads: [::c_ulong; 3],
+        pub totalram: ::c_ulong,
+        pub freeram: ::c_ulong,
+        pub sharedram: ::c_ulong,
+        pub bufferram: ::c_ulong,
+        pub totalswap: ::c_ulong,
+        pub freeswap: ::c_ulong,
+        pub procs: ::c_ushort,
+        pub pad: ::c_ushort,
+        pub totalhigh: ::c_ulong,
+        pub freehigh: ::c_ulong,
+        pub mem_unit: ::c_uint,
+        pub __reserved: [::c_char; 256],
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 1024;
