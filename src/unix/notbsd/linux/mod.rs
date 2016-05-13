@@ -478,7 +478,6 @@ extern {
     static mut program_invocation_short_name: *mut ::c_char;
 }
 
-#[link(name = "util")]
 extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
