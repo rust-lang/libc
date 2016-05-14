@@ -174,9 +174,6 @@ pub const IPV6_V6ONLY: ::c_int = 27;
 
 pub const ST_RDONLY: ::c_ulong = 1;
 
-pub const CTL_HW: ::c_int = 6;
-pub const HW_NCPU: ::c_int = 3;
-
 pub const EV_ADD: ::uint16_t = 0x1;
 pub const EV_CLEAR: ::uint16_t = 0x20;
 pub const EV_DELETE: ::uint16_t = 0x2;
