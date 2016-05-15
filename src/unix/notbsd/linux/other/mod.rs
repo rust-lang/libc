@@ -469,6 +469,7 @@ cfg_if! {
     }
 }
 
+#[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,
                   namelen: ::c_int,
