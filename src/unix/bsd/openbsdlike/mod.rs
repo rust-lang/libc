@@ -441,6 +441,8 @@ pub const RTLD_GLOBAL: ::c_int = 0x100;
 
 pub const LOG_NFACILITIES: ::c_int = 24;
 
+pub const HW_NCPU: ::c_int = 3;
+
 #[link(name = "util")]
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
