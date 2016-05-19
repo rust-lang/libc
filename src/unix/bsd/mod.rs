@@ -9,6 +9,7 @@ pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type pthread_t = ::uintptr_t;
 pub type nfds_t = ::c_uint;
+pub type id_t = ::c_uint;
 
 s! {
     pub struct sockaddr {
@@ -357,6 +358,8 @@ extern {
     pub fn getprogname() -> *const ::c_char;
     pub fn setprogname(name: *const ::c_char);
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

@@ -1238,6 +1238,11 @@ pub const CTL_DEBUG_NAME: ::c_int = 0;
 pub const CTL_DEBUG_VALUE: ::c_int = 1;
 pub const CTL_DEBUG_MAXID: ::c_int = 20;
 
+pub const PRIO_DARWIN_THREAD: ::c_int = 3;
+pub const PRIO_DARWIN_PROCESS: ::c_int = 4;
+pub const PRIO_DARWIN_BG: ::c_int = 0x1000;
+pub const PRIO_DARWIN_NONUI: ::c_int = 0x1001;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8

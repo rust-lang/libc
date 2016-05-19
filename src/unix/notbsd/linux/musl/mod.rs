@@ -156,6 +156,8 @@ pub const CLOCK_TAI: ::clockid_t = 11;
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

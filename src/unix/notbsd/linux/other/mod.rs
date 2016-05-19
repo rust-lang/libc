@@ -1,6 +1,7 @@
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type rlim_t = c_ulong;
+pub type __priority_which_t = ::c_int;
 
 s! {
     pub struct sigaction {
@@ -495,6 +496,9 @@ extern {
     pub fn pthread_attr_setaffinity_np(attr: *mut ::pthread_attr_t,
                                        cpusetsize: ::size_t,
                                        cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn getpriority(which: ::__priority_which_t, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::__priority_which_t, who: ::id_t,
+                                       prio: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
