@@ -1,7 +1,7 @@
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type rlim_t = c_ulong;
-pub type __priority_which_t = ::c_int;
+pub type __priority_which_t = ::c_uint;
 
 s! {
     pub struct sigaction {
