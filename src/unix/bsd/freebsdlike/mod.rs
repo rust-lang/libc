@@ -10,6 +10,7 @@ pub type pthread_key_t = ::c_int;
 pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type nl_item = ::c_int;
+pub type id_t = i64;
 
 pub enum timezone {}
 
@@ -742,6 +743,8 @@ extern {
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
                                  stackaddr: *mut *mut ::c_void,
                                  stacksize: *mut ::size_t) -> ::c_int;
+    pub fn getpriority(which: ::c_int, who: ::c_int) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

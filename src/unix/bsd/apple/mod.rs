@@ -19,6 +19,7 @@ pub type fsfilcnt_t = ::c_uint;
 pub type speed_t = ::c_ulong;
 pub type tcflag_t = ::c_ulong;
 pub type nl_item = ::c_int;
+pub type id_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -1358,6 +1359,8 @@ extern {
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
