@@ -125,6 +125,9 @@ fn main() {
     if apple {
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
+        cfg.header("mach/thread_policy.h");
+        cfg.header("mach/thread_act.h");
+        cfg.header("mach/task_info.h");
         cfg.header("malloc/malloc.h");
         cfg.header("util.h");
         if target.starts_with("x86") {

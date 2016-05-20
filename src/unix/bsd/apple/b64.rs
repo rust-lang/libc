@@ -2,6 +2,7 @@
 
 pub type c_long = i64;
 pub type c_ulong = u64;
+pub type boolean_t = ::c_uint;
 
 s! {
     pub struct pthread_attr_t {
