@@ -577,8 +577,6 @@ pub const LOCK_UN: ::c_int = 8;
 
 pub const O_SYNC: ::c_int = 128;
 pub const O_NONBLOCK: ::c_int = 4;
-pub const CTL_KERN: ::c_int = 1;
-pub const KERN_PROC: ::c_int = 14;
 
 pub const MAP_COPY: ::c_int = 0x0002;
 pub const MAP_RENAME: ::c_int = 0x0020;
@@ -669,6 +667,9 @@ pub const LOG_NTP: ::c_int = 12 << 3;
 pub const LOG_SECURITY: ::c_int = 13 << 3;
 pub const LOG_CONSOLE: ::c_int = 14 << 3;
 pub const LOG_NFACILITIES: ::c_int = 24;
+
+pub const TIOCGWINSZ: ::c_ulong = 0x40087468;
+pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
 
 #[link(name = "util")]
 extern {
