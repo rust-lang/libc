@@ -21,6 +21,7 @@ pub type nfds_t = ::c_uint;
 pub type rlim_t = ::c_ulong;
 pub type dev_t = ::c_ulong;
 pub type ino_t = ::c_ulong;
+pub type __CPU_BITTYPE = ::c_ulong;
 
 s! {
     pub struct dirent {
@@ -86,6 +87,13 @@ s! {
         pub l_start: ::off_t,
         pub l_len: ::off_t,
         pub l_pid: ::pid_t,
+    }
+
+    pub struct cpu_set_t {
+        #[cfg(target_pointer_width = "64")]
+        __bits: [__CPU_BITTYPE; 16],
+        #[cfg(target_pointer_width = "32")]
+        __bits: [__CPU_BITTYPE; 1],
     }
 }
 
@@ -460,6 +468,11 @@ pub const RTLD_NOLOAD: ::c_int = 0x4;
 pub const RTLD_NOW: ::c_int = 0;
 pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
 
+#[cfg(target_pointer_width = "64")] pub const CPU_SETSIZE: ::size_t = 1024;
+#[cfg(target_pointer_width = "32")] pub const CPU_SETSIZE: ::size_t = 32;
+#[cfg(target_pointer_width = "64")] pub const __CPU_BITS: ::size_t = 64;
+#[cfg(target_pointer_width = "32")] pub const __CPU_BITS: ::size_t = 32;
+
 f! {
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {
         *set = 0;
@@ -543,8 +556,11 @@ extern {
                        sevlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
-    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
-    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
+    pub fn getpriority(which: ::c_int, who: ::c_int) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
+    pub fn __sched_cpualloc(count: ::size_t) -> *mut ::cpu_set_t;
+    pub fn __sched_cpufree(set: *mut ::cpu_set_t);
+    pub fn __sched_cpucount(setsize: ::size_t, set: *mut cpu_set_t) -> ::c_int;
 }
 
 cfg_if! {
