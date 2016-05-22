@@ -157,7 +157,10 @@ pub const _SC_THREAD_PRIO_PROTECT: ::c_int = 84;
 pub const _SC_THREAD_SAFE_FUNCTIONS: ::c_int = 85;
 pub const _SC_NPROCESSORS_ONLN: ::c_int = 97;
 
+pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
+pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
 pub const FIOCLEX: ::c_int = 0x5451;
 

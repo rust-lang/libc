@@ -646,7 +646,11 @@ pub const _SC_HOST_NAME_MAX: ::c_int = 72;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0 as *mut _;
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
+pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
+pub const PTHREAD_MUTEX_NORMAL: ::c_int = 3;
+pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 4;
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_ERRORCHECK;
 
 pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_OTHER: ::c_int = 2;
