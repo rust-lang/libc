@@ -163,6 +163,7 @@ fn main() {
         cfg.header("sys/sendfile.h");
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
+        cfg.header("sys/sysinfo.h");
         if !musl {
             cfg.header("linux/netlink.h");
             cfg.header("linux/magic.h");
