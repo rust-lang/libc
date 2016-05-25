@@ -19,6 +19,7 @@ pub type fsfilcnt_t = ::c_uint;
 pub type speed_t = ::c_ulong;
 pub type tcflag_t = ::c_ulong;
 pub type nl_item = ::c_int;
+pub type id_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -1241,6 +1242,11 @@ pub const CTL_DEBUG_NAME: ::c_int = 0;
 pub const CTL_DEBUG_VALUE: ::c_int = 1;
 pub const CTL_DEBUG_MAXID: ::c_int = 20;
 
+pub const PRIO_DARWIN_THREAD: ::c_int = 3;
+pub const PRIO_DARWIN_PROCESS: ::c_int = 4;
+pub const PRIO_DARWIN_BG: ::c_int = 0x1000;
+pub const PRIO_DARWIN_NONUI: ::c_int = 0x1001;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
@@ -1356,6 +1362,8 @@ extern {
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
