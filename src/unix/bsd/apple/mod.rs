@@ -29,25 +29,28 @@ pub type kern_return_t = ::c_int;
 pub type thread_latency_qos_t = ::integer_t;
 pub type thread_throughput_qos_t = ::integer_t;
 // libc-test does not like structs
-//pub type thread_policy_t = *mut integer_t;
-//pub type thread_standard_policy_data_t = thread_standard_policy;
-//pub type thread_extended_policy_data_t = thread_extended_policy;
-//pub type thread_time_constraint_policy_data_t = thread_time_constraint_policy;
-//pub type thread_precedence_policy_data_t = thread_precedence_policy;
-//pub type thread_affinity_policy_data_t = thread_affinity_policy;
-//pub type thread_background_policy_data_t = thread_background_policy;
-//pub type thread_latency_qos_policy_data_t = thread_latency_qos_policy;
-//pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
+// pub type thread_standard_policy_data_t = thread_standard_policy;
+// pub type thread_extended_policy_data_t = thread_extended_policy;
+// pub type thread_time_constraint_policy_data_t =
+// thread_time_constraint_policy;
+// pub type thread_precedence_policy_data_t = thread_precedence_policy;
+// pub type thread_affinity_policy_data_t = thread_affinity_policy;
+// pub type thread_background_policy_data_t = thread_background_policy;
+// pub type thread_latency_qos_policy_data_t = thread_latency_qos_policy;
+// pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
 // libc-test does not like mutable pointers
-//pub type thread_standard_policy_t = * mut thread_standard_policy_data_t;
-//pub type thread_extended_policy_t = * mut thread_extended_policy_data_t;
-//pub type thread_time_constraint_policy_t =
-//* mut thread_time_constraint_policy_data_t;
-//pub type thread_precedence_policy_t = * mut thread_precedence_policy_data_t;
-//pub type thread_affinity_policy_t = * mut thread_affinity_policy_data_t;
-//pub type thread_background_policy_t = * mut thread_background_policy_data_t;
-//pub type thread_latency_qos_policy_t = * mut thread_latency_qos_policy_data_t;
-//pub type thread_throughput_qos_policy_t = * mut thread_throughput_qos_policy_data_t;
+// pub type thread_policy_t = *mut integer_t;
+// pub type thread_standard_policy_t = * mut thread_standard_policy_data_t;
+// pub type thread_extended_policy_t = * mut thread_extended_policy_data_t;
+// pub type thread_time_constraint_policy_t =
+// * mut thread_time_constraint_policy_data_t;
+// pub type thread_precedence_policy_t = * mut thread_precedence_policy_data_t;
+// pub type thread_affinity_policy_t = * mut thread_affinity_policy_data_t;
+// pub type thread_background_policy_t =* mut thread_background_policy_data_t;
+// pub type thread_latency_qos_policy_t =
+// * mut thread_latency_qos_policy_data_t;
+// pub type thread_throughput_qos_policy_t =
+// * mut thread_throughput_qos_policy_data_t;
 
 pub enum timezone {}
 
