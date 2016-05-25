@@ -471,11 +471,6 @@ pub const RTLD_NOLOAD: ::c_int = 0x4;
 pub const RTLD_NOW: ::c_int = 0;
 pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
 
-#[cfg(target_pointer_width = "64")] pub const CPU_SETSIZE: ::size_t = 1024;
-#[cfg(target_pointer_width = "32")] pub const CPU_SETSIZE: ::size_t = 32;
-#[cfg(target_pointer_width = "64")] pub const __CPU_BITS: ::size_t = 64;
-#[cfg(target_pointer_width = "32")] pub const __CPU_BITS: ::size_t = 32;
-
 f! {
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {
         *set = 0;

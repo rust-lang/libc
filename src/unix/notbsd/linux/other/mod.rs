@@ -495,12 +495,6 @@ extern {
     pub fn pthread_attr_setaffinity_np(attr: *mut ::pthread_attr_t,
                                        cpusetsize: ::size_t,
                                        cpuset: *const ::cpu_set_t) -> ::c_int;
-    pub fn pthread_getaffinity_np(thread: ::pthread_t,
-                                  cpusetsize: ::size_t,
-                                  cpuset: *mut ::cpu_set_t) -> ::c_int;
-    pub fn pthread_setaffinity_np(thread: ::pthread_t,
-                                  cpusetsize: ::size_t,
-                                  cpuset: *const ::cpu_set_t) -> ::c_int;
 }
 
 cfg_if! {
