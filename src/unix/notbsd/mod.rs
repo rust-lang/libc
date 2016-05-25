@@ -652,6 +652,8 @@ pub const LOG_PERROR: ::c_int = 0x20;
 
 pub const PIPE_BUF: usize = 4096;
 
+pub const SI_LOAD_SHIFT: ::c_uint = 16;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -800,6 +802,7 @@ extern {
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn sysinfo (info: *mut ::sysinfo) -> ::c_int;
     pub fn sched_getaffinity(pid: ::pid_t,
                              cpusetsize: ::size_t,
                              cpuset: *mut cpu_set_t) -> ::c_int;

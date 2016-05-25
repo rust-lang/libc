@@ -66,6 +66,23 @@ s! {
     pub struct sigset_t {
         __val: [::c_ulong; 32],
     }
+
+    pub struct sysinfo {
+        pub uptime: ::c_long,
+        pub loads: [::c_ulong; 3],
+        pub totalram: ::c_ulong,
+        pub freeram: ::c_ulong,
+        pub sharedram: ::c_ulong,
+        pub bufferram: ::c_ulong,
+        pub totalswap: ::c_ulong,
+        pub freeswap: ::c_ulong,
+        pub procs: ::c_ushort,
+        pub pad: ::c_ushort,
+        pub totalhigh: ::c_ulong,
+        pub freehigh: ::c_ulong,
+        pub mem_unit: ::c_uint,
+        pub _f: [::c_char; 8],
+    }
 }
 
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
