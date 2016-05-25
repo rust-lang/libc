@@ -831,7 +831,10 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __pthread_rwlock_readercv: PTHREAD_COND_INITIALIZER,
     __pthread_rwlock_writercv: PTHREAD_COND_INITIALIZER
 };
+pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
+pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 4;
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {

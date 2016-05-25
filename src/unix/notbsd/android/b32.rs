@@ -122,6 +122,8 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __reserved: [0; 12],
 };
 pub const PTHREAD_STACK_MIN: ::size_t = 4096 * 2;
+pub const CPU_SETSIZE: ::size_t = 32;
+pub const __CPU_BITS: ::size_t = 32;
 
 extern {
     pub fn timegm64(tm: *const ::tm) -> ::time64_t;

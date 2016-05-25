@@ -499,6 +499,12 @@ extern {
     pub fn getpriority(which: ::__priority_which_t, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::__priority_which_t, who: ::id_t,
                                        prio: ::c_int) -> ::c_int;
+    pub fn pthread_getaffinity_np(thread: ::pthread_t,
+                                  cpusetsize: ::size_t,
+                                  cpuset: *mut ::cpu_set_t) -> ::c_int;
+    pub fn pthread_setaffinity_np(thread: ::pthread_t,
+                                  cpusetsize: ::size_t,
+                                  cpuset: *const ::cpu_set_t) -> ::c_int;
 }
 
 cfg_if! {

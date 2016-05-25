@@ -345,7 +345,10 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     ptr_owner: 0,
     ptr_private: 0 as *mut _,
 };
+pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
+pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
 pub const EVFILT_AIO: ::int16_t = 2;
 pub const EVFILT_PROC: ::int16_t = 4;

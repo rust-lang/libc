@@ -932,7 +932,10 @@ pub const _SC_TRACE_SYS_MAX: ::c_int = 129;
 pub const _SC_TRACE_USER_EVENT_MAX: ::c_int = 130;
 pub const _SC_PASS_MAX: ::c_int = 131;
 
+pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
+pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 pub const _PTHREAD_MUTEX_SIG_init: ::c_long = 0x32AAABA7;
 pub const _PTHREAD_COND_SIG_init: ::c_long = 0x3CB0B1BB;
 pub const _PTHREAD_RWLOCK_SIG_init: ::c_long = 0x2DA8B3B4;
