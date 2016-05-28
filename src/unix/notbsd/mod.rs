@@ -6,6 +6,7 @@ pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type loff_t = ::c_longlong;
 pub type clockid_t = ::c_int;
+pub type id_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -652,6 +653,8 @@ pub const LOG_PERROR: ::c_int = 0x20;
 
 pub const PIPE_BUF: usize = 4096;
 
+pub const SI_LOAD_SHIFT: ::c_uint = 16;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -800,6 +803,7 @@ extern {
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn sysinfo (info: *mut ::sysinfo) -> ::c_int;
 }
 
 cfg_if! {

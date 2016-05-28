@@ -19,6 +19,7 @@ pub type fsfilcnt_t = ::c_uint;
 pub type speed_t = ::c_ulong;
 pub type tcflag_t = ::c_ulong;
 pub type nl_item = ::c_int;
+pub type id_t = ::c_uint;
 pub type natural_t = ::c_uint;
 pub type integer_t = ::c_int;
 pub type mach_port_t = ::natural_t;
@@ -828,6 +829,7 @@ pub const AF_INET6: ::c_int = 30;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
+pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const IPPROTO_TCP: ::c_int = 6;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -1308,6 +1310,7 @@ pub const CTL_DEBUG_NAME: ::c_int = 0;
 pub const CTL_DEBUG_VALUE: ::c_int = 1;
 pub const CTL_DEBUG_MAXID: ::c_int = 20;
 
+<<<<<<< HEAD
 pub const SCHED_OTHER: ::c_int = 1;
 pub const SCHED_FIFO: ::c_int = 4;
 pub const SCHED_RR: ::c_int = 2;
@@ -1331,6 +1334,12 @@ pub const THREAD_BACKGROUND_POLICY_COUNT: ::mach_msg_type_number_t = 1;
 pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: ::mach_msg_type_number_t = 1;
 
 pub const THREAD_AFFINITY_TAG_NULL: ::integer_t = 0;
+=======
+pub const PRIO_DARWIN_THREAD: ::c_int = 3;
+pub const PRIO_DARWIN_PROCESS: ::c_int = 4;
+pub const PRIO_DARWIN_BG: ::c_int = 0x1000;
+pub const PRIO_DARWIN_NONUI: ::c_int = 0x1001;
+>>>>>>> upstream/master
 
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
@@ -1447,6 +1456,7 @@ extern {
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
+<<<<<<< HEAD
     pub fn pthread_is_threaded_np() -> ::c_int;
     pub fn pthread_threadid_np(thread: ::pthread_t,
                      thread_id: *mut ::uint64_t) -> ::c_int;
@@ -1466,6 +1476,10 @@ extern {
                      policy_info: *mut integer_t /*thread_policy_t*/,
                      count: *mut ::mach_msg_type_number_t,
                      get_default: *mut ::boolean_t) -> ::kern_return_t;
+=======
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
+>>>>>>> upstream/master
 }
 
 cfg_if! {

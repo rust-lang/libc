@@ -172,6 +172,23 @@ s! {
         pub l_pid: ::pid_t,
         pad: [::c_long; 4],
     }
+
+    pub struct sysinfo {
+        pub uptime: ::c_long,
+        pub loads: [::c_ulong; 3],
+        pub totalram: ::c_ulong,
+        pub freeram: ::c_ulong,
+        pub sharedram: ::c_ulong,
+        pub bufferram: ::c_ulong,
+        pub totalswap: ::c_ulong,
+        pub freeswap: ::c_ulong,
+        pub procs: ::c_ushort,
+        pub pad: ::c_ushort,
+        pub totalhigh: ::c_ulong,
+        pub freehigh: ::c_ulong,
+        pub mem_unit: ::c_uint,
+        pub _f: [::c_char; 8],
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 8192;
@@ -332,6 +349,7 @@ pub const MAP_STACK: ::c_int = 0x40000;
 
 pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_DGRAM: ::c_int = 1;
+pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
