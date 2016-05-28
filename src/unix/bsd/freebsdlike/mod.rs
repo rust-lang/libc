@@ -10,6 +10,7 @@ pub type pthread_key_t = ::c_int;
 pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type nl_item = ::c_int;
+pub type id_t = i64;
 
 pub enum timezone {}
 
@@ -530,6 +531,7 @@ pub const AF_UNIX: ::c_int = 1;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
+pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const IPPROTO_TCP: ::c_int = 6;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -749,6 +751,8 @@ extern {
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
                                  stackaddr: *mut *mut ::c_void,
                                  stacksize: *mut ::size_t) -> ::c_int;
+    pub fn getpriority(which: ::c_int, who: ::c_int) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

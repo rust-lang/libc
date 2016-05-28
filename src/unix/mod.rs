@@ -181,6 +181,13 @@ pub const LOG_NOWAIT: ::c_int = 0x10;
 pub const LOG_PRIMASK: ::c_int = 7;
 pub const LOG_FACMASK: ::c_int = 0x3f8;
 
+pub const PRIO_PROCESS: ::c_int = 0;
+pub const PRIO_PGRP: ::c_int = 1;
+pub const PRIO_USER: ::c_int = 2;
+
+pub const PRIO_MIN: ::c_int = -20;
+pub const PRIO_MAX: ::c_int = 20;
+
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
@@ -773,6 +780,9 @@ extern {
     pub fn closelog();
     pub fn setlogmask(maskpri: ::c_int) -> ::c_int;
     pub fn syslog(priority: ::c_int, message: *const ::c_char, ...);
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "nice$UNIX2003")]
+    pub fn nice(incr: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
