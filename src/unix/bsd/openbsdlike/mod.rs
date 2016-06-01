@@ -10,6 +10,7 @@ pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type nl_item = c_long;
 pub type clockid_t = ::c_int;
+pub type id_t = ::uint32_t;
 
 pub enum timezone {}
 
@@ -360,6 +361,7 @@ pub const AF_INET6: ::c_int = 24;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
+pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const IPPROTO_TCP: ::c_int = 6;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -472,6 +474,8 @@ extern {
                    name: *mut ::c_char,
                    termp: *mut termios,
                    winp: *mut ::winsize) -> ::pid_t;
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
