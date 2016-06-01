@@ -845,7 +845,7 @@ f! {
         return
     }
 
-    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+    pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         return ((*set).fds_bits[fd / 32] & (1 << (fd % 32))) != 0
     }
