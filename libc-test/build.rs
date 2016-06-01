@@ -288,6 +288,9 @@ fn main() {
             // uuid_t is a struct, not an integer.
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
+			
+			// Mac OS X
+			n if n.starts_with("thread_") => true,
 
             // windows-isms
             n if n.starts_with("P") => true,

@@ -29,29 +29,27 @@ pub type thread_policy_flavor_t = ::natural_t;
 pub type kern_return_t = ::c_int;
 pub type thread_latency_qos_t = ::integer_t;
 pub type thread_throughput_qos_t = ::integer_t;
-// libc-test does not like structs
-// pub type thread_standard_policy_data_t = thread_standard_policy;
-// pub type thread_extended_policy_data_t = thread_extended_policy;
-// pub type thread_time_constraint_policy_data_t =
-// thread_time_constraint_policy;
-// pub type thread_precedence_policy_data_t = thread_precedence_policy;
-// pub type thread_affinity_policy_data_t = thread_affinity_policy;
-// pub type thread_background_policy_data_t = thread_background_policy;
-// pub type thread_latency_qos_policy_data_t = thread_latency_qos_policy;
-// pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
-// libc-test does not like mutable pointers
-// pub type thread_policy_t = *mut integer_t;
-// pub type thread_standard_policy_t = * mut thread_standard_policy_data_t;
-// pub type thread_extended_policy_t = * mut thread_extended_policy_data_t;
-// pub type thread_time_constraint_policy_t =
-// * mut thread_time_constraint_policy_data_t;
-// pub type thread_precedence_policy_t = * mut thread_precedence_policy_data_t;
-// pub type thread_affinity_policy_t = * mut thread_affinity_policy_data_t;
-// pub type thread_background_policy_t =* mut thread_background_policy_data_t;
-// pub type thread_latency_qos_policy_t =
-// * mut thread_latency_qos_policy_data_t;
-// pub type thread_throughput_qos_policy_t =
-// * mut thread_throughput_qos_policy_data_t;
+pub type thread_standard_policy_data_t = thread_standard_policy;
+pub type thread_extended_policy_data_t = thread_extended_policy;
+pub type thread_time_constraint_policy_data_t =
+thread_time_constraint_policy;
+pub type thread_precedence_policy_data_t = thread_precedence_policy;
+pub type thread_affinity_policy_data_t = thread_affinity_policy;
+pub type thread_background_policy_data_t = thread_background_policy;
+pub type thread_latency_qos_policy_data_t = thread_latency_qos_policy;
+pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
+pub type thread_policy_t = *mut integer_t;
+pub type thread_standard_policy_t = * mut thread_standard_policy_data_t;
+pub type thread_extended_policy_t = * mut thread_extended_policy_data_t;
+pub type thread_time_constraint_policy_t =
+* mut thread_time_constraint_policy_data_t;
+pub type thread_precedence_policy_t = * mut thread_precedence_policy_data_t;
+pub type thread_affinity_policy_t = * mut thread_affinity_policy_data_t;
+pub type thread_background_policy_t = * mut thread_background_policy_data_t;
+pub type thread_latency_qos_policy_t =
+* mut thread_latency_qos_policy_data_t;
+pub type thread_throughput_qos_policy_t =
+* mut thread_throughput_qos_policy_data_t;
 
 pub enum timezone {}
 
@@ -1465,13 +1463,15 @@ extern {
     pub fn pthread_from_mach_thread_np(mach_thread: ::mach_port_t)
                      -> ::pthread_t;
     pub fn pthread_yield_np() -> ::c_void;
+    pub fn pthread_cond_signal_thread_np(cond: * mut pthread_cond_t,
+                     pthread: ::pthread_t) -> ::c_int;
     pub fn thread_policy_set(thread: ::thread_t,
                      flavor: ::thread_policy_flavor_t,
-                     policy_info: *mut integer_t /*thread_policy_t*/,
+                     policy_info: thread_policy_t,
                      count: ::mach_msg_type_number_t) -> ::kern_return_t;
     pub fn thread_policy_get(thread: ::thread_t,
                      flavor: ::thread_policy_flavor_t,
-                     policy_info: *mut integer_t /*thread_policy_t*/,
+                     policy_info: thread_policy_t,
                      count: *mut ::mach_msg_type_number_t,
                      get_default: *mut ::boolean_t) -> ::kern_return_t;
 }
