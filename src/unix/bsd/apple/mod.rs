@@ -20,6 +20,36 @@ pub type speed_t = ::c_ulong;
 pub type tcflag_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type id_t = ::c_uint;
+pub type natural_t = ::c_uint;
+pub type integer_t = ::c_int;
+pub type mach_port_t = ::natural_t;
+pub type thread_t = ::mach_port_t;
+pub type mach_msg_type_number_t = ::natural_t;
+pub type thread_policy_flavor_t = ::natural_t;
+pub type kern_return_t = ::c_int;
+pub type thread_latency_qos_t = ::integer_t;
+pub type thread_throughput_qos_t = ::integer_t;
+pub type thread_standard_policy_data_t = thread_standard_policy;
+pub type thread_extended_policy_data_t = thread_extended_policy;
+pub type thread_time_constraint_policy_data_t =
+thread_time_constraint_policy;
+pub type thread_precedence_policy_data_t = thread_precedence_policy;
+pub type thread_affinity_policy_data_t = thread_affinity_policy;
+pub type thread_background_policy_data_t = thread_background_policy;
+pub type thread_latency_qos_policy_data_t = thread_latency_qos_policy;
+pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
+pub type thread_policy_t = *mut integer_t;
+pub type thread_standard_policy_t = * mut thread_standard_policy_data_t;
+pub type thread_extended_policy_t = * mut thread_extended_policy_data_t;
+pub type thread_time_constraint_policy_t =
+* mut thread_time_constraint_policy_data_t;
+pub type thread_precedence_policy_t = * mut thread_precedence_policy_data_t;
+pub type thread_affinity_policy_t = * mut thread_affinity_policy_data_t;
+pub type thread_background_policy_t = * mut thread_background_policy_data_t;
+pub type thread_latency_qos_policy_t =
+* mut thread_latency_qos_policy_data_t;
+pub type thread_throughput_qos_policy_t =
+* mut thread_throughput_qos_policy_data_t;
 
 pub enum timezone {}
 
@@ -285,6 +315,41 @@ s! {
         pub int_n_sep_by_space: ::c_char,
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
+    }
+
+    pub struct thread_standard_policy {
+        pub no_data: ::natural_t,
+    }
+
+    pub struct thread_extended_policy {
+        pub timeshare: ::boolean_t,
+    }
+
+    pub struct thread_time_constraint_policy {
+        pub period: ::uint32_t,
+        pub computation: ::uint32_t,
+        pub constraint: ::uint32_t,
+        pub preemptible: ::boolean_t,
+    }
+
+    pub struct thread_precedence_policy {
+        pub importance: ::integer_t,
+    }
+
+    pub struct thread_affinity_policy {
+        pub affinity_tag: integer_t,
+    }
+
+    pub struct thread_background_policy {
+        pub priority: integer_t,
+    }
+
+    pub struct thread_latency_qos_policy {
+        pub thread_latency_qos_tier: thread_latency_qos_t,
+    }
+
+    pub struct thread_throughput_qos_policy {
+        pub thread_throughput_qos_tier: thread_throughput_qos_t,
     }
 }
 
@@ -1242,11 +1307,34 @@ pub const USER_MAXID: ::c_int = 21;
 pub const CTL_DEBUG_NAME: ::c_int = 0;
 pub const CTL_DEBUG_VALUE: ::c_int = 1;
 pub const CTL_DEBUG_MAXID: ::c_int = 20;
-
 pub const PRIO_DARWIN_THREAD: ::c_int = 3;
 pub const PRIO_DARWIN_PROCESS: ::c_int = 4;
 pub const PRIO_DARWIN_BG: ::c_int = 0x1000;
 pub const PRIO_DARWIN_NONUI: ::c_int = 0x1001;
+
+pub const SCHED_OTHER: ::c_int = 1;
+pub const SCHED_FIFO: ::c_int = 4;
+pub const SCHED_RR: ::c_int = 2;
+
+pub const THREAD_STANDARD_POLICY: ::thread_policy_flavor_t = 1;
+pub const THREAD_EXTENDED_POLICY: ::thread_policy_flavor_t = 1;
+pub const THREAD_TIME_CONSTRAINT_POLICY: ::thread_policy_flavor_t = 2;
+pub const THREAD_PRECEDENCE_POLICY: ::thread_policy_flavor_t = 3;
+pub const THREAD_AFFINITY_POLICY: ::thread_policy_flavor_t = 4;
+pub const THREAD_BACKGROUND_POLICY: ::thread_policy_flavor_t = 5;
+pub const THREAD_LATENCY_QOS_POLICY: ::thread_policy_flavor_t = 7;
+pub const THREAD_THROUGHPUT_QOS_POLICY: ::thread_policy_flavor_t = 8;
+
+pub const THREAD_STANDARD_POLICY_COUNT: ::mach_msg_type_number_t = 0;
+pub const THREAD_EXTENDED_POLICY_COUNT: ::mach_msg_type_number_t = 1;
+pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: ::mach_msg_type_number_t = 4;
+pub const THREAD_PRECEDENCE_POLICY_COUNT: ::mach_msg_type_number_t = 1;
+pub const THREAD_AFFINITY_POLICY_COUNT: ::mach_msg_type_number_t = 1;
+pub const THREAD_LATENCY_QOS_POLICY_COUNT: ::mach_msg_type_number_t = 1;
+pub const THREAD_BACKGROUND_POLICY_COUNT: ::mach_msg_type_number_t = 1;
+pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: ::mach_msg_type_number_t = 1;
+
+pub const THREAD_AFFINITY_TAG_NULL: ::integer_t = 0;
 
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
@@ -1365,6 +1453,27 @@ extern {
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
+    pub fn pthread_is_threaded_np() -> ::c_int;
+    pub fn pthread_threadid_np(thread: ::pthread_t,
+                     thread_id: *mut ::uint64_t) -> ::c_int;
+    pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char,
+                     size: ::size_t) -> ::c_int;
+    pub fn pthread_main_np() -> ::c_int;
+    pub fn pthread_mach_thread_np(pthread: ::pthread_t) -> ::mach_port_t;
+    pub fn pthread_from_mach_thread_np(mach_thread: ::mach_port_t)
+                     -> ::pthread_t;
+    pub fn pthread_yield_np() -> ::c_void;
+    pub fn pthread_cond_signal_thread_np(cond: * mut pthread_cond_t,
+                     pthread: ::pthread_t) -> ::c_int;
+    pub fn thread_policy_set(thread: ::thread_t,
+                     flavor: ::thread_policy_flavor_t,
+                     policy_info: thread_policy_t,
+                     count: ::mach_msg_type_number_t) -> ::kern_return_t;
+    pub fn thread_policy_get(thread: ::thread_t,
+                     flavor: ::thread_policy_flavor_t,
+                     policy_info: thread_policy_t,
+                     count: *mut ::mach_msg_type_number_t,
+                     get_default: *mut ::boolean_t) -> ::kern_return_t;
 }
 
 cfg_if! {

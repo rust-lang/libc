@@ -21,6 +21,7 @@ script:
 os:
   - linux
   - osx
+osx_image: xcode6.4
 env:
   matrix:
     - ARCH=x86_64

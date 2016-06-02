@@ -125,6 +125,9 @@ fn main() {
     if apple {
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
+        cfg.header("mach/thread_policy.h");
+        cfg.header("mach/thread_act.h");
+        cfg.header("mach/task_info.h");
         cfg.header("malloc/malloc.h");
         cfg.header("util.h");
         if target.starts_with("x86") {
@@ -285,6 +288,9 @@ fn main() {
             // uuid_t is a struct, not an integer.
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
+			
+			// Mac OS X
+			n if n.starts_with("thread_") => true,
 
             // windows-isms
             n if n.starts_with("P") => true,
