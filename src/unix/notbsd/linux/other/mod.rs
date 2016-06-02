@@ -506,6 +506,7 @@ extern {
     pub fn pthread_setaffinity_np(thread: ::pthread_t,
                                   cpusetsize: ::size_t,
                                   cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn sched_getcpu() -> ::c_int;
 }
 
 cfg_if! {

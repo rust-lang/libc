@@ -560,6 +560,7 @@ extern {
     pub fn __sched_cpualloc(count: ::size_t) -> *mut ::cpu_set_t;
     pub fn __sched_cpufree(set: *mut ::cpu_set_t);
     pub fn __sched_cpucount(setsize: ::size_t, set: *mut cpu_set_t) -> ::c_int;
+    pub fn sched_getcpu() -> ::c_int;
 }
 
 cfg_if! {
