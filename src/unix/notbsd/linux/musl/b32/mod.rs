@@ -20,6 +20,10 @@ s! {
         pub msg_controllen: ::socklen_t,
         pub msg_flags: ::c_int,
     }
+
+    pub struct sem_t {
+        __val: [::c_int; 4],
+    }
 }
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;

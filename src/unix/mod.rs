@@ -673,6 +673,20 @@ extern {
     pub fn setlocale(category: ::c_int,
                      locale: *const ::c_char) -> *mut ::c_char;
     pub fn localeconv() -> *mut lconv;
+
+    pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
+    pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
+    pub fn sem_close(sem: *mut sem_t) -> ::c_int;
+    pub fn sem_unlink(name: *const ::c_char) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "sem_wait$UNIX2003")]
+    pub fn sem_wait(sem: *mut sem_t) -> ::c_int;
+    pub fn sem_trywait(sem: *mut sem_t) -> ::c_int;
+    pub fn sem_post(sem: *mut sem_t) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t,
+                    pshared: ::c_int,
+                    value: ::c_uint)
+                    -> ::c_int;
 }
 
 // TODO: get rid of this cfg(not(...))

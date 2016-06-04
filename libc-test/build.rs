@@ -96,6 +96,7 @@ fn main() {
         cfg.header("termios.h");
         cfg.header("poll.h");
         cfg.header("syslog.h");
+        cfg.header("semaphore.h");
     }
 
     if android {
@@ -285,6 +286,8 @@ fn main() {
             // uuid_t is a struct, not an integer.
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
+            // sem_t is a struct or pointer
+            "sem_t" if openbsd || freebsd || rumprun => true,
 
             // windows-isms
             n if n.starts_with("P") => true,
@@ -362,6 +365,10 @@ fn main() {
             // OSX's daemon is deprecated in 10.5 so we'll get a warning (which
             // we turn into an error) so just ignore it.
             "daemon" if apple => true,
+
+            // Deprecated on OSX
+            "sem_destroy" if apple => true,
+            "sem_init" if apple => true,
 
             // These functions presumably exist on netbsd but don't look like
             // they're implemented on rumprun yet, just let them slide for now.

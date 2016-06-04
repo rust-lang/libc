@@ -121,6 +121,15 @@ s! {
         __unused4: ::c_ulong,
         __unused5: ::c_ulong
     }
+
+    // FIXME this is actually a union
+    pub struct sem_t {
+        #[cfg(target_pointer_width = "32")]
+        __size: [::c_char; 16],
+        #[cfg(target_pointer_width = "64")]
+        __size: [::c_char; 32],
+        __align: [::c_long; 0],
+    }
 }
 
 pub const RLIMIT_RSS: ::c_int = 5;
