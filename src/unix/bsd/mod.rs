@@ -324,16 +324,16 @@ f! {
         }
     }
 
+    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+        status & 0o177
+    }
+
     pub fn WIFEXITED(status: ::c_int) -> bool {
-        (status & 0x7f) == 0
+        (status & 0o177) == 0
     }
 
     pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
         status >> 8
-    }
-
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
-        status & 0o177
     }
 
     pub fn WCOREDUMP(status: ::c_int) -> bool {

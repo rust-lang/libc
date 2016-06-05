@@ -449,6 +449,20 @@ pub const HW_NCPU: ::c_int = 3;
 
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
+f! {
+    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        status >> 8
+    }
+
+    pub fn WIFSIGNALED(status: ::c_int) -> bool {
+        (status & 0o177) != 0o177 && (status & 0o177) != 0
+    }
+
+    pub fn WIFSTOPPED(status: ::c_int) -> bool {
+        (status & 0o177) == 0o177
+    }
+}
+
 #[link(name = "util")]
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
