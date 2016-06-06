@@ -100,6 +100,10 @@ s! {
         __pad2: ::socklen_t,
         pub msg_flags: ::c_int,
     }
+
+    pub struct sem_t {
+        __val: [::c_int; 8],
+    }
 }
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;

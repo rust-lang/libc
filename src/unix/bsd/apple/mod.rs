@@ -20,6 +20,7 @@ pub type speed_t = ::c_ulong;
 pub type tcflag_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type id_t = ::c_uint;
+pub type sem_t = ::c_int;
 
 pub enum timezone {}
 
@@ -1247,6 +1248,8 @@ pub const PRIO_DARWIN_THREAD: ::c_int = 3;
 pub const PRIO_DARWIN_PROCESS: ::c_int = 4;
 pub const PRIO_DARWIN_BG: ::c_int = 0x1000;
 pub const PRIO_DARWIN_NONUI: ::c_int = 0x1001;
+
+pub const SEM_FAILED: *mut sem_t = -1isize as *mut ::sem_t;
 
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {

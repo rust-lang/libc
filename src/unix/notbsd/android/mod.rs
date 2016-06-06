@@ -95,6 +95,10 @@ s! {
         #[cfg(target_pointer_width = "32")]
         __bits: [__CPU_BITTYPE; 1],
     }
+
+    pub struct sem_t {
+        count: ::c_uint,
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 1024;
@@ -471,6 +475,8 @@ pub const RTLD_GLOBAL: ::c_int = 0x2;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
 pub const RTLD_NOW: ::c_int = 0;
 pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
+
+pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
 f! {
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {

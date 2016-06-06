@@ -452,6 +452,8 @@ pub const AF_NETLINK: ::c_int = 16;
 
 pub const LOG_NFACILITIES: ::c_int = 24;
 
+pub const SEM_FAILED: *mut ::sem_t = 0 as *mut sem_t;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {

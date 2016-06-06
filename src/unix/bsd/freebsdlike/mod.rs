@@ -11,6 +11,7 @@ pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type nl_item = ::c_int;
 pub type id_t = i64;
+pub type sem_t = _sem;
 
 pub enum timezone {}
 
@@ -148,6 +149,11 @@ s! {
         pub int_n_sep_by_space: ::c_char,
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
+    }
+
+    // internal structure has changed over time
+    pub struct _sem {
+        data: [u32; 4],
     }
 }
 
@@ -676,6 +682,8 @@ pub const LOG_NFACILITIES: ::c_int = 24;
 
 pub const TIOCGWINSZ: ::c_ulong = 0x40087468;
 pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
+
+pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
 #[link(name = "util")]
 extern {

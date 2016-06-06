@@ -11,8 +11,10 @@ pub type tcflag_t = ::c_uint;
 pub type nl_item = c_long;
 pub type clockid_t = ::c_int;
 pub type id_t = ::uint32_t;
+pub type sem_t = *mut sem;
 
 pub enum timezone {}
+pub enum sem {}
 
 s! {
     pub struct sigaction {
@@ -444,6 +446,8 @@ pub const RTLD_GLOBAL: ::c_int = 0x100;
 pub const LOG_NFACILITIES: ::c_int = 24;
 
 pub const HW_NCPU: ::c_int = 3;
+
+pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
 #[link(name = "util")]
 extern {
