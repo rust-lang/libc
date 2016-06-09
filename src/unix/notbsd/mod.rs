@@ -682,16 +682,32 @@ f! {
         }
     }
 
+    pub fn WIFSTOPPED(status: ::c_int) -> bool {
+        (status & 0xff) == 0x7f
+    }
+
+    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub fn WIFSIGNALED(status: ::c_int) -> bool {
+        (status & 0x7f) + 1 >= 2
+    }
+
+    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+        status & 0x7f
+    }
+
     pub fn WIFEXITED(status: ::c_int) -> bool {
-        (status & 0xff) == 0
+        (status & 0x7f) == 0
     }
 
     pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
         (status >> 8) & 0xff
     }
 
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
-        status & 0x7f
+    pub fn WCOREDUMP(status: ::c_int) -> bool {
+        (status & 0x80) != 0
     }
 }
 
