@@ -300,6 +300,14 @@ s! {
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
     }
+
+    pub struct sem_t {
+        pub sem_count: u32,
+        pub sem_type: u16,
+        pub sem_magic: u16,
+        pub sem_pad1: [u64; 3],
+        pub sem_pad2: [u64; 2]
+    }
 }
 
 pub const LC_CTYPE: ::c_int = 0;
