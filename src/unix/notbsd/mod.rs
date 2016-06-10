@@ -804,6 +804,34 @@ extern {
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn sysinfo (info: *mut ::sysinfo) -> ::c_int;
+
+    pub fn openat(dirfd: ::c_int, pathname: *const ::c_char,
+                  flags: ::c_int, ...) -> ::c_int;
+    pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
+                     mode: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn fchmodat(dirfd: ::c_int, pathname: *const ::c_char,
+                    mode: ::mode_t, flags: ::c_int) -> ::c_int;
+    pub fn fchownat(dirfd: ::c_int, pathname: *const ::c_char,
+                    owner: ::uid_t, group: ::gid_t,
+                    flags: ::c_int) -> ::c_int;
+    pub fn fstatat(dirfd: ::c_int, pathname: *const ::c_char,
+                   buf: *mut stat, flags: ::c_int) -> ::c_int;
+    pub fn linkat(olddirfd: ::c_int, oldpath: *const ::c_char,
+                  newdirfd: ::c_int, newpath: *const ::c_char,
+                  flags: ::c_int) -> ::c_int;
+   pub fn mkdirat(dirfd: ::c_int, pathname: *const ::c_char,
+                  mode: ::mode_t) -> ::c_int;
+   pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
+                 mode: ::mode_t, dev: dev_t) -> ::c_int;
+   pub fn readlinkat(dirfd: ::c_int, pathname: *const ::c_char,
+                     buf: *mut ::c_char, bufsiz: ::size_t) -> ::ssize_t;
+   pub fn renameat(olddirfd: ::c_int, oldpath: *const ::c_char,
+                   newdirfd: ::c_int, newpath: *const ::c_char)
+                   -> ::c_int;
+   pub fn symlinkat(target: *const ::c_char, newdirfd: ::c_int,
+                    linkpath: *const ::c_char) -> ::c_int;
+   pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
+                   flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

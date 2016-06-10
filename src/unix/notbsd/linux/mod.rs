@@ -627,6 +627,10 @@ extern {
                              remote_iov: *const ::iovec,
                              riovcnt: ::c_ulong,
                              flags: ::c_ulong) -> isize;
+
+    // Not available now on Android
+    pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
+                    mode: ::mode_t) -> ::c_int;
 }
 
 cfg_if! {
