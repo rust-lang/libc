@@ -15,12 +15,9 @@ cp -r $ROOT/libc /tmp/libc
 cd /tmp/libc
 
 TARGET=$(cat $ROOT/TARGET)
+export CARGO_TARGET_DIR=/tmp
 
 case $TARGET in
-  *-freebsd)
-    sudo pkg install -y rust cargo
-    ;;
-
   *-openbsd)
     pkg_add rust curl gcc-4.8.4p4
     curl https://static.rust-lang.org/cargo-dist/2015-04-02/cargo-nightly-x86_64-unknown-openbsd.tar.gz | \
