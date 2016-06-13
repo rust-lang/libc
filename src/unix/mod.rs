@@ -110,6 +110,7 @@ s! {
         pub ws_ypixel: ::c_ushort,
     }
 
+    #[cfg(not(target_os = "android"))]
     pub struct if_nameindex {
         pub if_index: ::c_uint,
         pub if_name: *mut ::c_char,
@@ -449,8 +450,6 @@ extern {
     pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
     pub fn if_indextoname(ifindex: ::c_uint,
                           ifname: *mut ::c_char) -> *mut ::c_char;
-    pub fn if_nameindex() -> *mut if_nameindex;
-    pub fn if_freenameindex(ptr: *mut if_nameindex);
 
     #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
@@ -701,6 +700,8 @@ extern {
 extern {
     pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ifaddrs);
+    pub fn if_nameindex() -> *mut if_nameindex;
+    pub fn if_freenameindex(ptr: *mut if_nameindex);
     #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
     pub fn glob(pattern: *const c_char,
