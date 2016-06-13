@@ -109,6 +109,12 @@ s! {
         pub ws_xpixel: ::c_ushort,
         pub ws_ypixel: ::c_ushort,
     }
+
+    #[link(name = "if_nameindex")]
+    pub struct if_nameindex {
+        pub if_index: ::c_uint,
+        pub if_name: *mut ::c_char,
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
@@ -444,6 +450,8 @@ extern {
     pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
     pub fn if_indextoname(ifindex: ::c_uint,
                           ifname: *mut ::c_char) -> *mut ::c_char;
+    pub fn if_nameindex() -> *mut if_nameindex;
+    pub fn if_freenameindex(ptr: *mut if_nameindex);
 
     #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
