@@ -110,7 +110,6 @@ s! {
         pub ws_ypixel: ::c_ushort,
     }
 
-    #[link(name = "if_nameindex")]
     pub struct if_nameindex {
         pub if_index: ::c_uint,
         pub if_name: *mut ::c_char,
