@@ -628,6 +628,15 @@ pub const CLONE_NEWNET: ::c_int = 0x40000000;
 pub const CLONE_IO: ::c_int = 0x80000000;
 
 pub const WNOHANG: ::c_int = 1;
+pub const WUNTRACED: ::c_int = 0x00000002;
+pub const WSTOPPED: ::c_int = WUNTRACED;
+pub const WEXITED: ::c_int = 	0x00000004;
+pub const WCONTINUED: ::c_int = 0x00000008;
+pub const WNOWAIT: ::c_int = 	0x01000000;
+
+pub const __WNOTHREAD: ::c_int = 0x20000000;
+pub const __WALL: ::c_int = 	0x40000000;
+pub const __WCLONE: ::c_int = 0x80000000;
 
 pub const SPLICE_F_MOVE: ::c_uint = 0x01;
 pub const SPLICE_F_NONBLOCK: ::c_uint = 0x02;
