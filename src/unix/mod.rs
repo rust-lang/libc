@@ -110,6 +110,7 @@ s! {
         pub ws_ypixel: ::c_ushort,
     }
 
+    #[cfg(not(target_os = "android"))]
     pub struct if_nameindex {
         pub if_index: ::c_uint,
         pub if_name: *mut ::c_char,
