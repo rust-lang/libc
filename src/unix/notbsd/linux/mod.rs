@@ -480,10 +480,6 @@ f! {
 }
 
 extern {
-    static mut program_invocation_short_name: *mut ::c_char;
-}
-
-extern {
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
     pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;

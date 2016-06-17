@@ -285,7 +285,8 @@ pub const FLUSHO: ::tcflag_t = 0x00800000;
 pub const PENDIN: ::tcflag_t = 0x20000000;
 pub const NOFLSH: ::tcflag_t = 0x80000000;
 
-pub const WNOHANG: ::c_int = 1;
+pub const WNOHANG: ::c_int = 0x00000001;
+pub const WUNTRACED: ::c_int = 0x00000002;
 
 pub const RTLD_NOW: ::c_int = 0x2;
 pub const RTLD_DEFAULT: *mut ::c_void = -2isize as *mut ::c_void;
