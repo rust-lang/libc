@@ -163,6 +163,20 @@ s! {
         _pad: [::uint8_t; 48],
     }
 
+
+    pub struct sigevent {
+        pub sigev_value: sigval_t,
+        pub sigev_signo: ::c_int,
+        pub sigev_notify: ::c_int,
+        pub sigev_notify_function: ::dox::Option<extern fn(sigev_value: sigval_t)>,
+        pub sigev_notify_attributes: *mut pthread_attr_t,
+        _pad: [u64; 4usize],
+    }
+
+    pub struct sigval_t {
+        _data: [u64; 1usize],
+    }
+
     pub struct fsid_t {
         __val: [::c_int; 2],
     }
@@ -565,6 +579,9 @@ extern {
     pub fn mq_setattr(mqd: ::mqd_t,
                       newattr: *const ::mq_attr,
                       oldattr: *mut ::mq_attr) -> ::c_int;
+    pub fn mq_notify(mqd: mqd_t, sigevent: *const ::sigevent) -> ::c_int;
+
+
     pub fn sched_getaffinity(pid: ::pid_t,
                              cpusetsize: ::size_t,
                              cpuset: *mut cpu_set_t) -> ::c_int;
