@@ -429,6 +429,9 @@ pub const F_SETOWN: ::c_int = 8;
 pub const F_SETLK: ::c_int = 6;
 pub const F_SETLKW: ::c_int = 7;
 
+pub const SEEK_DATA: ::c_int = 3;
+pub const SEEK_HOLE: ::c_int = 4;
+
 pub const SFD_NONBLOCK: ::c_int = 0x0800;
 
 pub const TCSANOW: ::c_int = 0;
