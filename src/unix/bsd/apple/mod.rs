@@ -386,8 +386,15 @@ pub const FOPEN_MAX: ::c_uint = 20;
 pub const FILENAME_MAX: ::c_uint = 1024;
 pub const L_tmpnam: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 308915776;
+pub const _PC_LINK_MAX: ::c_int = 1;
+pub const _PC_MAX_CANON: ::c_int = 2;
+pub const _PC_MAX_INPUT: ::c_int = 3;
 pub const _PC_NAME_MAX: ::c_int = 4;
-
+pub const _PC_PATH_MAX: ::c_int = 5;
+pub const _PC_PIPE_BUF: ::c_int = 6;
+pub const _PC_CHOWN_RESTRICTED: ::c_int = 7;
+pub const _PC_NO_TRUNC: ::c_int = 8;
+pub const _PC_VDISABLE: ::c_int = 9;
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
