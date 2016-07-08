@@ -229,6 +229,7 @@ extern {
     pub fn strrchr(cs: *const c_char, c: c_int) -> *mut c_char;
     pub fn strspn(cs: *const c_char, ct: *const c_char) -> size_t;
     pub fn strcspn(cs: *const c_char, ct: *const c_char) -> size_t;
+    pub fn strdup(cs: *const c_char) -> *mut c_char;
     pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strlen(cs: *const c_char) -> size_t;
