@@ -381,11 +381,11 @@ extern {
     ///         buf.set_len(len);
     ///         CString::new(buf)
     ///     };
-    ///     let s = buf.expect("Not a C string").into_string().expect("Not UTF-8");
-    ///     println!("path length: {}, max path: {}", s, path_max);
+    ///     let s = buf.expect("Not a C string").into_string();
+    ///     println!("getcwd: {}", s.expect("Not UTF-8"));
     /// }
     /// ```
-    /// 
+    ///
     pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
     pub fn getegid() -> gid_t;
     pub fn geteuid() -> uid_t;
