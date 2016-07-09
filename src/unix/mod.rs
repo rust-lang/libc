@@ -355,12 +355,12 @@ extern {
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
 
     /// Retrieves current working directory
-    /// 
+    ///
     /// The result is saved it in `buf`, `size` denotes the buffer size.
     ///
     /// The buffer must be large enough to store the absolute pathname plus
     /// a terminating null byte, or else null is returned.
-    /// To safely handle this either find out PATH_MAX via 
+    /// To safely handle this either find out PATH_MAX via
     /// `libc::pathconf(a_file, libc::_PC_PATH_MAX)` or start with a reasonably
     /// size (e.g. 512) and double the buffer size upon every error
     ///
@@ -369,7 +369,7 @@ extern {
     /// ```
     /// use std::io;
     /// use std::ffi::{CStr,CString};
-    /// 
+    ///
     /// fn main() {
     ///     let buf = unsafe {
     ///         let mut buf = Vec::with_capacity(512);
@@ -382,7 +382,7 @@ extern {
     ///         CString::new(buf)
     ///     };
     ///     let s = buf.expect("Not a C string").into_string().expect("Not UTF-8");
-    ///     println!("getcwd: {}", s);
+    ///     println!("path length: {}, max path: {}", s, path_max);
     /// }
     /// ```
     /// 
