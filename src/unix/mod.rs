@@ -342,6 +342,10 @@ extern {
     pub fn chown(path: *const c_char, uid: uid_t,
                  gid: gid_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "lchown$UNIX2003")]
+    pub fn lchown(path: *const c_char, uid: uid_t,
+                  gid: gid_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "close$UNIX2003")]
     pub fn close(fd: ::c_int) -> ::c_int;
     pub fn dup(fd: ::c_int) -> ::c_int;

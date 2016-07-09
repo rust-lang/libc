@@ -308,6 +308,16 @@ s! {
         pub sem_pad1: [u64; 3],
         pub sem_pad2: [u64; 2]
     }
+
+    pub struct flock {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off_t,
+        pub l_len: ::off_t,
+        pub l_sysid: ::c_int,
+        pub l_pid: ::pid_t,
+        pub l_pad: [::c_long; 4]
+    }
 }
 
 pub const LC_CTYPE: ::c_int = 0;
@@ -396,6 +406,8 @@ pub const NOEXPR: ::nl_item = 57;
 pub const _DATE_FMT: ::nl_item = 58;
 pub const MAXSTRMSG: ::nl_item = 58;
 
+pub const PATH_MAX: ::c_int = 1024;
+
 pub const SA_ONSTACK: ::c_int = 0x00000001;
 pub const SA_RESETHAND: ::c_int = 0x00000002;
 pub const SA_RESTART: ::c_int = 0x00000004;
@@ -411,6 +423,8 @@ pub const FIONBIO: ::c_int = 0x8004667e;
 
 pub const SIGCHLD: ::c_int = 18;
 pub const SIGBUS: ::c_int = 10;
+pub const SIG_BLOCK: ::c_int = 1;
+pub const SIG_UNBLOCK: ::c_int = 2;
 pub const SIG_SETMASK: ::c_int = 3;
 
 pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
@@ -484,6 +498,9 @@ pub const F_TEST: ::c_int = 3;
 pub const F_TLOCK: ::c_int = 2;
 pub const F_ULOCK: ::c_int = 0;
 pub const F_DUPFD_CLOEXEC: ::c_int = 37;
+pub const F_SETLK: ::c_int = 6;
+pub const F_SETLKW: ::c_int = 7;
+pub const F_GETLK: ::c_int = 14;
 pub const SIGHUP: ::c_int = 1;
 pub const SIGINT: ::c_int = 2;
 pub const SIGQUIT: ::c_int = 3;
@@ -492,9 +509,26 @@ pub const SIGABRT: ::c_int = 6;
 pub const SIGFPE: ::c_int = 8;
 pub const SIGKILL: ::c_int = 9;
 pub const SIGSEGV: ::c_int = 11;
+pub const SIGSYS: ::c_int = 12;
 pub const SIGPIPE: ::c_int = 13;
 pub const SIGALRM: ::c_int = 14;
 pub const SIGTERM: ::c_int = 15;
+pub const SIGUSR1: ::c_int = 16;
+pub const SIGUSR2: ::c_int = 17;
+pub const SIGPWR: ::c_int = 19;
+pub const SIGWINCH: ::c_int = 20;
+pub const SIGURG: ::c_int = 21;
+pub const SIGPOLL: ::c_int = 22;
+pub const SIGIO: ::c_int = SIGPOLL;
+pub const SIGSTOP: ::c_int = 23;
+pub const SIGTSTP: ::c_int = 24;
+pub const SIGCONT: ::c_int = 25;
+pub const SIGTTIN: ::c_int = 26;
+pub const SIGTTOU: ::c_int = 27;
+pub const SIGVTALRM: ::c_int = 28;
+pub const SIGPROF: ::c_int = 29;
+pub const SIGXCPU: ::c_int = 30;
+pub const SIGXFSZ: ::c_int = 31;
 
 pub const WNOHANG: ::c_int = 0x40;
 
@@ -506,8 +540,12 @@ pub const PROT_EXEC: ::c_int = 4;
 pub const MAP_SHARED: ::c_int = 0x0001;
 pub const MAP_PRIVATE: ::c_int = 0x0002;
 pub const MAP_FIXED: ::c_int = 0x0010;
+pub const MAP_NORESERVE: ::c_int = 0x40;
 pub const MAP_ANON: ::c_int = 0x0100;
-
+pub const MAP_RENAME: ::c_int = 0x20;
+pub const MAP_ALIGN: ::c_int = 0x200;
+pub const MAP_TEXT: ::c_int = 0x400;
+pub const MAP_INITDATA: ::c_int = 0x800;
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
@@ -516,6 +554,7 @@ pub const MCL_FUTURE: ::c_int = 0x0002;
 pub const MS_SYNC: ::c_int = 0x0004;
 pub const MS_ASYNC: ::c_int = 0x0001;
 pub const MS_INVALIDATE: ::c_int = 0x0002;
+pub const MS_INVALCURPROC: ::c_int = 0x0008;
 
 pub const EPERM: ::c_int = 1;
 pub const ENOENT: ::c_int = 2;
@@ -949,5 +988,6 @@ extern {
                    flags: ::c_int) -> ::c_int;
    pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t) -> ::c_int;
+   pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
 }
 
