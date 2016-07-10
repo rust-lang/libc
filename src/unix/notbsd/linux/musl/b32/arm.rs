@@ -82,6 +82,11 @@ s! {
         pub f_flags: ::c_ulong,
         pub f_spare: [::c_ulong; 4],
     }
+
+    pub struct linger {
+        pub l_onoff: ::c_int,
+        pub l_linger: ::c_int,
+    }
 }
 
 pub const O_DIRECT: ::c_int = 0x4000;

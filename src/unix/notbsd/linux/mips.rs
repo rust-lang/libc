@@ -198,6 +198,11 @@ s! {
         __size: [::c_char; 32],
         __align: [::c_long; 0],
     }
+
+    pub struct linger {
+        pub l_onoff: ::c_int,
+        pub l_linger: ::c_int,
+    }
 }
 
 pub const BUFSIZ: ::c_uint = 8192;

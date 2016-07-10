@@ -155,6 +155,11 @@ s! {
     pub struct _sem {
         data: [u32; 4],
     }
+
+    pub struct linger {
+        pub l_onoff: ::c_int,
+        pub l_linger: ::c_int,
+    }
 }
 
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
