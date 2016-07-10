@@ -316,6 +316,7 @@ pub const SIGINT: ::c_int = 2;
 pub const SIGQUIT: ::c_int = 3;
 pub const SIGILL: ::c_int = 4;
 pub const SIGABRT: ::c_int = 6;
+pub const SIGEMT: ::c_int = 7;
 pub const SIGFPE: ::c_int = 8;
 pub const SIGKILL: ::c_int = 9;
 pub const SIGSEGV: ::c_int = 11;
