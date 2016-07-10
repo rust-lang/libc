@@ -501,6 +501,8 @@ pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
 pub const EPOLL_CTL_DEL: ::c_int = 2;
 
+pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
+
 pub const MNT_DETACH: ::c_int = 0x2;
 pub const MNT_EXPIRE: ::c_int = 0x4;
 
@@ -749,6 +751,7 @@ extern {
     pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
     pub fn epoll_create(size: ::c_int) -> ::c_int;
+    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
     pub fn epoll_ctl(epfd: ::c_int,
                      op: ::c_int,
                      fd: ::c_int,
