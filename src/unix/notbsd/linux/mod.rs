@@ -181,6 +181,11 @@ s! {
         #[cfg(target_pointer_width = "64")]
         bits: [u64; 16],
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -637,6 +642,13 @@ extern {
     // Not available now on Android
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t) -> ::c_int;
+}
+
+extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
 }
 
 cfg_if! {
