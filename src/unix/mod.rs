@@ -109,6 +109,11 @@ s! {
         pub ws_xpixel: ::c_ushort,
         pub ws_ypixel: ::c_ushort,
     }
+
+    pub struct linger {
+        pub l_onoff: ::c_int,
+        pub l_linger: ::c_int,
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
