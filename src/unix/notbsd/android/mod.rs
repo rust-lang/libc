@@ -99,11 +99,6 @@ s! {
     pub struct sem_t {
         count: ::c_uint,
     }
-
-    pub struct linger {
-        pub l_onoff: ::c_int,
-        pub l_linger: ::c_int,
-    }
 }
 
 pub const BUFSIZ: ::c_uint = 1024;

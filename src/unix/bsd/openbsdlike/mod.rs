@@ -54,11 +54,6 @@ s! {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
     }
-
-    pub struct linger {
-        pub l_onoff: ::c_int,
-        pub l_linger: ::c_int,
-    }
 }
 
 pub const D_T_FMT: ::nl_item = 0;

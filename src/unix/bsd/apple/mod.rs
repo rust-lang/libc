@@ -287,11 +287,6 @@ s! {
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
     }
-
-    pub struct linger {
-        pub l_onoff: ::c_int,
-        pub l_linger: ::c_int,
-    }
 }
 
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);

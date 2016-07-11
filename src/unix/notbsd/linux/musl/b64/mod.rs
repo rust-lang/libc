@@ -104,11 +104,6 @@ s! {
     pub struct sem_t {
         __val: [::c_int; 8],
     }
-
-    pub struct linger {
-        pub l_onoff: ::c_int,
-        pub l_linger: ::c_int,
-    }
 }
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
