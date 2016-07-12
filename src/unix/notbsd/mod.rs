@@ -666,14 +666,6 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: ::c_uint = 16;
 
-pub const RB_AUTOBOOT: ::c_int = 0x01234567;
-pub const RB_HALT_SYSTEM: ::c_int = 0xcdef0123;
-pub const RB_ENABLE_CAD: ::c_int = 0x89abcdef;
-pub const RB_DISABLE_CAD: ::c_int = 0;
-pub const RB_POWER_OFF: ::c_int = 0x4321fedc;
-pub const RB_SW_SUSPEND: ::c_int = 0xd000fce2;
-pub const RB_KEXEC: ::c_int = 0x45584543;
-
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -868,7 +860,6 @@ extern {
                      linkpath: *const ::c_char) -> ::c_int;
     pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
                     flags: ::c_int) -> ::c_int;
-    pub fn reboot(how_to: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
