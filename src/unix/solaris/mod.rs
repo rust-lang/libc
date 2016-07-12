@@ -886,6 +886,22 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 4;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
+pub const RTLD_NEXT: *mut ::c_void = -1isize as *mut ::c_void;
+pub const RTLD_DEFAULT: *mut ::c_void = -2isize as *mut ::c_void;
+pub const RTLD_SELF: *mut ::c_void = -3isize as *mut ::c_void;
+pub const RTLD_PROBE: *mut ::c_void = -4isize as *mut ::c_void;
+
+pub const RTLD_NOW: ::c_int = 0x2;
+pub const RTLD_NOLOAD: ::c_int = 0x4;
+pub const RTLD_GLOBAL: ::c_int = 0x100;
+pub const RTLD_LOCAL: ::c_int = 0x0;
+pub const RTLD_PARENT: ::c_int = 0x200;
+pub const RTLD_GROUP: ::c_int = 0x400;
+pub const RTLD_WORLD: ::c_int = 0x800;
+pub const RTLD_NODELETE: ::c_int = 0x1000;
+pub const RTLD_FIRST: ::c_int = 0x2000;
+pub const RTLD_CONFGEN: ::c_int = 0x10000;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
