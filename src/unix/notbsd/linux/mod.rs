@@ -462,21 +462,6 @@ pub const LOG_NFACILITIES: ::c_int = 24;
 
 pub const SEM_FAILED: *mut ::sem_t = 0 as *mut sem_t;
 
-pub const LINUX_REBOOT_MAGIC1: ::c_int = 0xfee1dead;
-pub const LINUX_REBOOT_MAGIC2: ::c_int = 672274793;
-pub const LINUX_REBOOT_MAGIC2A: ::c_int = 85072278;
-pub const LINUX_REBOOT_MAGIC2B: ::c_int = 369367448;
-pub const LINUX_REBOOT_MAGIC2C: ::c_int = 537993216;
-
-pub const LINUX_REBOOT_CMD_RESTART: ::c_int = 0x01234567;
-pub const LINUX_REBOOT_CMD_HALT: ::c_int = 0xCDEF0123;
-pub const LINUX_REBOOT_CMD_CAD_ON: ::c_int = 0x89ABCDEF;
-pub const LINUX_REBOOT_CMD_CAD_OFF: ::c_int = 0x00000000;
-pub const LINUX_REBOOT_CMD_POWER_OFF: ::c_int = 0x4321FEDC;
-pub const LINUX_REBOOT_CMD_RESTART2: ::c_int = 0xA1B2C3D4;
-pub const LINUX_REBOOT_CMD_SW_SUSPEND: ::c_int = 0xD000FCE2;
-pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
-
 pub const RB_AUTOBOOT: ::c_int = 0x01234567;
 pub const RB_HALT_SYSTEM: ::c_int = 0xcdef0123;
 pub const RB_ENABLE_CAD: ::c_int = 0x89abcdef;
