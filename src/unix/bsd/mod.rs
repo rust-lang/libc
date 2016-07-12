@@ -120,6 +120,11 @@ s! {
     pub struct fsid_t {
         __fsid_val: [::int32_t; 2],
     }
+
+    pub struct if_nameindex {
+        pub if_index: ::c_uint,
+        pub if_name: *mut ::c_char,
+    }
 }
 
 pub const LC_ALL: ::c_int = 0;
@@ -358,6 +363,8 @@ extern {
     pub fn getprogname() -> *const ::c_char;
     pub fn setprogname(name: *const ::c_char);
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
+    pub fn if_nameindex() -> *mut if_nameindex;
+    pub fn if_freenameindex(ptr: *mut if_nameindex);
 }
 
 cfg_if! {

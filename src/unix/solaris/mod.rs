@@ -318,6 +318,11 @@ s! {
         pub l_pid: ::pid_t,
         pub l_pad: [::c_long; 4]
     }
+
+    pub struct if_nameindex {
+        pub if_index: ::c_uint,
+        pub if_name: *mut ::c_char,
+    }
 }
 
 pub const LC_CTYPE: ::c_int = 0;
@@ -990,21 +995,23 @@ extern {
     pub fn linkat(olddirfd: ::c_int, oldpath: *const ::c_char,
                   newdirfd: ::c_int, newpath: *const ::c_char,
                   flags: ::c_int) -> ::c_int;
-   pub fn mkdirat(dirfd: ::c_int, pathname: *const ::c_char,
-                  mode: ::mode_t) -> ::c_int;
-   pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
-                 mode: ::mode_t, dev: dev_t) -> ::c_int;
-   pub fn readlinkat(dirfd: ::c_int, pathname: *const ::c_char,
-                     buf: *mut ::c_char, bufsiz: ::size_t) -> ::ssize_t;
-   pub fn renameat(olddirfd: ::c_int, oldpath: *const ::c_char,
-                   newdirfd: ::c_int, newpath: *const ::c_char)
-                   -> ::c_int;
-   pub fn symlinkat(target: *const ::c_char, newdirfd: ::c_int,
-                    linkpath: *const ::c_char) -> ::c_int;
-   pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
-                   flags: ::c_int) -> ::c_int;
-   pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
+    pub fn mkdirat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t) -> ::c_int;
-   pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
+                   mode: ::mode_t, dev: dev_t) -> ::c_int;
+    pub fn readlinkat(dirfd: ::c_int, pathname: *const ::c_char,
+                      buf: *mut ::c_char, bufsiz: ::size_t) -> ::ssize_t;
+    pub fn renameat(olddirfd: ::c_int, oldpath: *const ::c_char,
+                    newdirfd: ::c_int, newpath: *const ::c_char)
+                    -> ::c_int;
+    pub fn symlinkat(target: *const ::c_char, newdirfd: ::c_int,
+                     linkpath: *const ::c_char) -> ::c_int;
+    pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
+                    flags: ::c_int) -> ::c_int;
+    pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
+                    mode: ::mode_t) -> ::c_int;
+    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn if_nameindex() -> *mut if_nameindex;
+    pub fn if_freenameindex(ptr: *mut if_nameindex);
 }
 
