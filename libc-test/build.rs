@@ -165,9 +165,11 @@ fn main() {
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
         cfg.header("sys/sysinfo.h");
+        cfg.header("sys/reboot.h");
         if !musl {
             cfg.header("linux/netlink.h");
             cfg.header("linux/magic.h");
+            cfg.header("linux/reboot.h");
 
             if !mips {
                 cfg.header("linux/quota.h");
