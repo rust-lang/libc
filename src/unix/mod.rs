@@ -114,12 +114,6 @@ s! {
         pub l_onoff: ::c_int,
         pub l_linger: ::c_int,
     }
-
-   #[cfg(not(target_os = "android"))]
-    pub struct if_nameindex {
-        pub if_index: ::c_uint,
-        pub if_name: *mut ::c_char,
-    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;

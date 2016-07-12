@@ -181,6 +181,12 @@ s! {
         #[cfg(target_pointer_width = "64")]
         bits: [u64; 16],
     }
+
+    pub struct if_nameindex {
+        pub if_index: ::c_uint,
+        pub if_name: *mut ::c_char,
+    }
+
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -637,6 +643,8 @@ extern {
     // Not available now on Android
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t) -> ::c_int;
+    pub fn if_nameindex() -> *mut if_nameindex;
+    pub fn if_freenameindex(ptr: *mut if_nameindex);
 }
 
 cfg_if! {
