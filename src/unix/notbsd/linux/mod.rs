@@ -468,13 +468,13 @@ pub const LOG_NFACILITIES: ::c_int = 24;
 
 pub const SEM_FAILED: *mut ::sem_t = 0 as *mut sem_t;
 
-pub const RB_AUTOBOOT: ::c_int = 0x01234567;
-pub const RB_HALT_SYSTEM: ::c_int = 0xcdef0123;
-pub const RB_ENABLE_CAD: ::c_int = 0x89abcdef;
-pub const RB_DISABLE_CAD: ::c_int = 0;
-pub const RB_POWER_OFF: ::c_int = 0x4321fedc;
-pub const RB_SW_SUSPEND: ::c_int = 0xd000fce2;
-pub const RB_KEXEC: ::c_int = 0x45584543;
+pub const RB_AUTOBOOT: ::c_int = 0x01234567u32 as i32;
+pub const RB_HALT_SYSTEM: ::c_int = 0xcdef0123u32 as i32;
+pub const RB_ENABLE_CAD: ::c_int = 0x89abcdefu32 as i32;
+pub const RB_DISABLE_CAD: ::c_int = 0x00000000u32 as i32;
+pub const RB_POWER_OFF: ::c_int = 0x4321fedcu32 as i32;
+pub const RB_SW_SUSPEND: ::c_int = 0xd000fce2u32 as i32;
+pub const RB_KEXEC: ::c_int = 0x45584543u32 as i32;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
