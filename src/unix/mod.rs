@@ -539,6 +539,10 @@ extern {
                                      _type: ::c_int) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_cond_init$UNIX2003")]
+    pub fn pthread_cond_init(cond: *mut pthread_cond_t,
+                             attr: *const pthread_condattr_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_cond_wait$UNIX2003")]
     pub fn pthread_cond_wait(cond: *mut pthread_cond_t,
                              lock: *mut pthread_mutex_t) -> ::c_int;
@@ -550,6 +554,8 @@ extern {
     pub fn pthread_cond_signal(cond: *mut pthread_cond_t) -> ::c_int;
     pub fn pthread_cond_broadcast(cond: *mut pthread_cond_t) -> ::c_int;
     pub fn pthread_cond_destroy(cond: *mut pthread_cond_t) -> ::c_int;
+    pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> ::c_int;
+    pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_destroy$UNIX2003")]
     pub fn pthread_rwlock_destroy(lock: *mut pthread_rwlock_t) -> ::c_int;

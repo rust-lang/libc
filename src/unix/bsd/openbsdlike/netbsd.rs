@@ -152,6 +152,11 @@ s! {
         ptc_private: *mut ::c_void,
     }
 
+    pub struct pthread_condattr_t {
+        ptca_magic: ::c_uint,
+        ptca_private: *mut ::c_void,
+    }
+
     pub struct pthread_rwlock_t {
         ptr_magic: ::c_uint,
         ptr_interlock: ::c_uchar,

@@ -143,6 +143,10 @@ s! {
         __pthread_cond_data: u64
     }
 
+    pub struct pthread_condattr_t {
+        __pthread_condattrp: *mut ::c_void,
+    }
+
     pub struct pthread_rwlock_t {
         __pthread_rwlock_readers: i32,
         __pthread_rwlock_type: u16,
@@ -1013,5 +1017,9 @@ extern {
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
+    pub fn pthread_condattr_getclock(attr: *const pthread_condattr_t,
+                                     clock_id: *mut clockid_t) -> ::c_int;
+    pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
+                                     clock_id: clockid_t) -> ::c_int;
 }
 

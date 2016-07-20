@@ -378,6 +378,7 @@ pub const SO_RCVTIMEO: ::c_int = 4102;
 pub const SO_SNDTIMEO: ::c_int = 4101;
 pub const SO_ACCEPTCONN: ::c_int = 4105;
 
+pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;

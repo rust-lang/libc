@@ -104,6 +104,11 @@ s! {
         size: [u8; __SIZEOF_PTHREAD_COND_T],
     }
 
+    pub struct pthread_condattr_t {
+        __align: [::c_int; 0],
+        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
+    }
+
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,
