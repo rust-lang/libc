@@ -107,6 +107,7 @@ pub const SIGUNUSED: ::c_int = ::SIGSYS;
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
 
+pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 
 pub const CPU_SETSIZE: ::c_int = 128;

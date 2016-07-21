@@ -13,6 +13,7 @@ pub type useconds_t = u32;
 pub type socklen_t = i32;
 pub type pthread_t = ::c_long;
 pub type pthread_mutexattr_t = ::c_long;
+pub type pthread_condattr_t = ::c_long;
 pub type sigset_t = ::c_ulong;
 pub type time64_t = i64; // N/A on android
 pub type fsfilcnt_t = ::c_ulong;

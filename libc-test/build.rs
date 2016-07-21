@@ -22,9 +22,11 @@ fn main() {
     let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
-    // Pull in extra goodies on linux/mingw
+    // Pull in extra goodies
     if linux || android {
         cfg.define("_GNU_SOURCE", None);
+    } else if netbsd {
+        cfg.define("_NETBSD_SOURCE", Some("1"));
     } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
     }

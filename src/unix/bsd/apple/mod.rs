@@ -114,6 +114,11 @@ s! {
         __opaque: [u8; __PTHREAD_COND_SIZE__],
     }
 
+    pub struct pthread_condattr_t {
+        __sig: ::c_long,
+        __opaque: [u8; __PTHREAD_CONDATTR_SIZE__],
+    }
+
     pub struct pthread_rwlock_t {
         __sig: ::c_long,
         __opaque: [u8; __PTHREAD_RWLOCK_SIZE__],
