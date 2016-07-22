@@ -98,6 +98,13 @@ pub const S_IEXEC: ::c_int = 64;
 pub const S_IWRITE: ::c_int = 128;
 pub const S_IREAD: ::c_int = 256;
 
+pub const LC_ALL: ::c_int = 0;
+pub const LC_COLLATE: ::c_int = 1;
+pub const LC_CTYPE: ::c_int = 2;
+pub const LC_MONETARY: ::c_int = 3;
+pub const LC_NUMERIC: ::c_int = 4;
+pub const LC_TIME: ::c_int = 5;
+
 #[cfg(target_env = "msvc")] // " if " -- appease style checker
 #[link(name = "msvcrt")]
 extern {}
@@ -179,4 +186,8 @@ extern {
     pub fn get_osfhandle(fd: ::c_int) -> ::intptr_t;
     #[link_name = "_open_osfhandle"]
     pub fn open_osfhandle(osfhandle: ::intptr_t, flags: ::c_int) -> ::c_int;
+    pub fn setlocale(category: ::c_int, locale: *const c_char) -> *mut c_char;
+    #[link_name = "_wsetlocale"]
+    pub fn wsetlocale(category: ::c_int,
+                      locale: *const wchar_t) -> *mut wchar_t;
 }
