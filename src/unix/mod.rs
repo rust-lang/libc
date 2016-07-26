@@ -55,9 +55,7 @@ s! {
         pub ru_nvcsw: c_long,
         pub ru_nivcsw: c_long,
 
-        #[cfg(any(target_env = "musl",
-                  target_env = "musleabi",
-                  target_env = "musleabihf"))]
+        #[cfg(any(target_env = "musl"))]
         __reserved: [c_long; 16],
     }
 
@@ -199,9 +197,7 @@ cfg_if! {
     } else if #[cfg(all(not(stdbuild), feature = "use_std"))] {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
-    } else if #[cfg(any(all(target_env = "musl", not(target_arch = "mips")),
-                        target_env = "musleabi",
-                        target_env = "musleabihf"))] {
+    } else if #[cfg(any(all(target_env = "musl", not(target_arch = "mips"))))] {
         #[link(name = "c", kind = "static")]
         extern {}
     } else if #[cfg(target_os = "emscripten")] {
