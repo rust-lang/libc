@@ -93,13 +93,9 @@ s! {
     }
 
     pub struct pthread_cond_t {
-        #[cfg(any(target_env = "musl",
-                  target_env = "musleabi",
-                  target_env = "musleabihf"))]
+        #[cfg(any(target_env = "musl"))]
         __align: [*const ::c_void; 0],
-        #[cfg(not(any(target_env = "musl",
-                      target_env = "musleabi",
-                      target_env = "musleabihf")))]
+        #[cfg(not(any(target_env = "musl")))]
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_COND_T],
     }
@@ -663,8 +659,6 @@ extern {
 
 cfg_if! {
     if #[cfg(any(target_env = "musl",
-                 target_env = "musleabi",
-                 target_env = "musleabihf",
                  target_os = "emscripten"))] {
         mod musl;
         pub use self::musl::*;
