@@ -105,6 +105,7 @@ fn main() {
         cfg.header("arpa/inet.h");
         cfg.header("time64.h");
         cfg.header("xlocale.h");
+        cfg.header("utmp.h");
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
@@ -121,6 +122,12 @@ fn main() {
             if !netbsd && !openbsd {
                 cfg.header("execinfo.h");
                 cfg.header("xlocale.h");
+            }
+
+            if openbsd {
+                cfg.header("utmp.h");
+            } else {
+                cfg.header("utmpx.h");
             }
         }
     }

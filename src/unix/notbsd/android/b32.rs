@@ -142,6 +142,10 @@ pub const PTHREAD_STACK_MIN: ::size_t = 4096 * 2;
 pub const CPU_SETSIZE: ::size_t = 32;
 pub const __CPU_BITS: ::size_t = 32;
 
+pub const UT_LINESIZE: usize = 8;
+pub const UT_NAMESIZE: usize = 8;
+pub const UT_HOSTSIZE: usize = 16;
+
 extern {
     pub fn timegm64(tm: *const ::tm) -> ::time64_t;
 }

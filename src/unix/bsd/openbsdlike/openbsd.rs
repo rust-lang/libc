@@ -137,7 +137,24 @@ s! {
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
     }
+
+    pub struct lastlog {
+        ll_time: ::time_t,
+        ll_line: [::c_char; UT_LINESIZE],
+        ll_host: [::c_char; UT_HOSTSIZE],
+    }
+
+    pub struct utmp {
+        pub ut_line: [::c_char; UT_LINESIZE],
+        pub ut_name: [::c_char; UT_NAMESIZE],
+        pub ut_host: [::c_char; UT_HOSTSIZE],
+        pub ut_time: ::time_t,
+    }
 }
+
+pub const UT_NAMESIZE: usize = 32;
+pub const UT_LINESIZE: usize = 8;
+pub const UT_HOSTSIZE: usize = 256;
 
 pub const O_CLOEXEC: ::c_int = 0x10000;
 

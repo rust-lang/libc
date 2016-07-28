@@ -83,6 +83,27 @@ s! {
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 8],
     }
+
+    pub struct __exit_status {
+        pub e_termination: ::c_short,
+        pub e_exit: ::c_short,
+    }
+
+    pub struct utmpx {
+        pub ut_type: ::c_short,
+        pub ut_pid: ::pid_t,
+        pub ut_line: [::c_char; __UT_LINESIZE],
+        pub ut_id: [::c_char; 4],
+
+        pub ut_user: [::c_char; __UT_NAMESIZE],
+        pub ut_host: [::c_char; __UT_HOSTSIZE],
+        pub ut_exit: __exit_status,
+        pub ut_session: ::c_long,
+        pub ut_tv: ::timeval,
+
+        pub ut_addr_v6: [::int32_t; 4],
+        __glibc_reserved: [::c_char; 20],
+    }
 }
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -96,6 +117,29 @@ pub const PTRACE_GETFPXREGS: ::c_uint = 18;
 pub const PTRACE_SETFPXREGS: ::c_uint = 19;
 pub const PTRACE_GETREGS: ::c_uint = 12;
 pub const PTRACE_SETREGS: ::c_uint = 13;
+
+pub const __UT_LINESIZE: usize = 32;
+pub const __UT_NAMESIZE: usize = 32;
+pub const __UT_HOSTSIZE: usize = 256;
+pub const EMPTY: ::c_short = 0;
+pub const RUN_LVL: ::c_short = 1;
+pub const BOOT_TIME: ::c_short = 2;
+pub const NEW_TIME: ::c_short = 3;
+pub const OLD_TIME: ::c_short = 4;
+pub const INIT_PROCESS: ::c_short = 5;
+pub const LOGIN_PROCESS: ::c_short = 6;
+pub const USER_PROCESS: ::c_short = 7;
+pub const DEAD_PROCESS: ::c_short = 8;
+pub const ACCOUNTING: ::c_short = 9;
+
+extern {
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn endutxent();
+}
 
 cfg_if! {
     if #[cfg(target_arch = "x86")] {

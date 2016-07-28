@@ -100,7 +100,36 @@ s! {
     pub struct sem_t {
         count: ::c_uint,
     }
+
+    pub struct lastlog {
+        ll_time: ::time_t,
+        ll_line: [::c_char; UT_LINESIZE],
+        ll_host: [::c_char; UT_HOSTSIZE],
+    }
+
+    pub struct exit_status {
+        pub e_termination: ::c_short,
+        pub e_exit: ::c_short,
+    }
+
+    pub struct utmp {
+        pub ut_type: ::c_short,
+        pub ut_pid: ::pid_t,
+        pub ut_line: [::c_char; UT_LINESIZE],
+        pub ut_id: [::c_char; 4],
+
+        pub ut_user: [::c_char; UT_NAMESIZE],
+        pub ut_host: [::c_char; UT_HOSTSIZE],
+        pub ut_exit: exit_status,
+        pub ut_session: ::c_long,
+        pub ut_tv: ::timeval,
+
+        pub ut_addr_v6: [::int32_t; 4],
+        unused: [::c_char; 20],
+    }
 }
+
+pub const USER_PROCESS: ::c_short = 7;
 
 pub const BUFSIZ: ::c_uint = 1024;
 pub const FILENAME_MAX: ::c_uint = 1024;
@@ -591,6 +620,10 @@ extern {
     pub fn __sched_cpufree(set: *mut ::cpu_set_t);
     pub fn __sched_cpucount(setsize: ::size_t, set: *mut cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
+
+    pub fn utmpname(name: *const ::c_char) -> ::c_int;
+    pub fn setutent();
+    pub fn getutent() -> *mut utmp;
 }
 
 cfg_if! {
