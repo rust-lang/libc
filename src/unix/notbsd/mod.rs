@@ -715,6 +715,11 @@ f! {
 }
 
 extern {
+    pub fn getpwnam_r(name: *const ::c_char,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
     pub fn getpwuid_r(uid: ::uid_t,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,
