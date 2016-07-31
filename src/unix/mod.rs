@@ -17,6 +17,13 @@ pub enum DIR {}
 pub enum locale_t {}
 
 s! {
+    pub struct group {
+        pub gr_name: *mut ::c_char,
+        pub gr_passwd: *mut ::c_char,
+        pub gr_gid: ::gid_t,
+        pub gr_mem: *mut *mut ::c_char,
+    }
+
     pub struct utimbuf {
         pub actime: time_t,
         pub modtime: time_t,
@@ -226,6 +233,9 @@ cfg_if! {
 }
 
 extern {
+    pub fn getgrnam(name: *const ::c_char) -> *mut group;
+    pub fn getgrgid(gid: ::gid_t) -> *mut group;
+
     pub fn fprintf(stream: *mut ::FILE,
                    format: *const ::c_char, ...) -> ::c_int;
     pub fn printf(format: *const ::c_char, ...) -> ::c_int;
