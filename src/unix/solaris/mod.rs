@@ -966,10 +966,16 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::socklen_t,
                        flags: ::c_int) -> ::c_int;
+    pub fn getpwnam_r(name: *const ::c_char,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::c_int) -> *const passwd;
     pub fn getpwuid_r(uid: ::uid_t,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,
-                      buflen: ::size_t) -> *const passwd;
+                      buflen: ::c_int) -> *const passwd;
+    pub fn setpwent();
+    pub fn getpwent() -> *mut passwd;
     pub fn readdir(dirp: *mut ::DIR) -> *const ::dirent;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
