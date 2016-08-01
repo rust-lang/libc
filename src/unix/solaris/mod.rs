@@ -724,6 +724,8 @@ pub const SIGSTKSZ: ::size_t = 8192;
 // __CLOCK_REALTIME0==0 is an obsoleted version of CLOCK_REALTIME==3
 pub const CLOCK_REALTIME: clockid_t = 3;
 pub const CLOCK_MONOTONIC: clockid_t = 4;
+pub const TIMER_RELTIME: ::c_int = 0;
+pub const TIMER_ABSTIME: ::c_int = 1;
 
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
@@ -959,6 +961,10 @@ extern {
                     -> ::c_int;
     pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_nanosleep(clk_id: clockid_t,
+                           flags: ::c_int,
+                           rqtp: *const ::timespec,
+                           rmtp:  *mut ::timespec) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
                        host: *mut ::c_char,
@@ -1028,4 +1034,3 @@ extern {
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
                                      clock_id: clockid_t) -> ::c_int;
 }
-
