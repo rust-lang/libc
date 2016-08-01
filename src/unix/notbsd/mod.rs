@@ -219,6 +219,7 @@ pub const CLOCK_BOOTTIME_ALARM: clockid_t = 9;
 // 2014.) See also musl/mod.rs
 // pub const CLOCK_SGI_CYCLE: clockid_t = 10;
 // pub const CLOCK_TAI: clockid_t = 11;
+pub const TIMER_ABSTIME: ::c_int = 1;
 
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
@@ -730,6 +731,10 @@ extern {
                    vec: *mut ::c_uchar) -> ::c_int;
     pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_nanosleep(clk_id: clockid_t,
+                           flags: ::c_int,
+                           rqtp: *const ::timespec,
+                           rmtp:  *mut ::timespec) -> ::c_int;
     pub fn prctl(option: ::c_int, ...) -> ::c_int;
     pub fn pthread_getattr_np(native: ::pthread_t,
                               attr: *mut ::pthread_attr_t) -> ::c_int;
