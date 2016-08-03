@@ -381,6 +381,7 @@ extern {
                link_name = "getopt$UNIX2003")]
     pub fn getopt(argc: ::c_int, argv: *const *mut c_char,
                   optstr: *const c_char) -> ::c_int;
+    pub fn getpgid(pid: pid_t) -> pid_t;
     pub fn getpgrp() -> pid_t;
     pub fn getpid() -> pid_t;
     pub fn getppid() -> pid_t;
