@@ -241,8 +241,10 @@ extern {
     pub fn strxfrm(s: *mut c_char, ct: *const c_char, n: size_t) -> size_t;
     pub fn wcslen(buf: *const wchar_t) -> size_t;
 
-    pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
+    pub fn memcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
+    pub fn memmove(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
 }
 
 // These are all inline functions on android, so they end up just being entirely
