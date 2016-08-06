@@ -122,7 +122,7 @@ s! {
                repr(packed))]
     pub struct epoll_event {
         pub events: ::uint32_t,
-        pub u64: ::uint64_t,
+        pub data: ::uint64_t,
     }
 
     pub struct utsname {
