@@ -242,13 +242,13 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid50")]
     pub fn getpwuid(uid: ::uid_t) -> *mut passwd;
 
-    pub fn fprintf(stream: *mut ::FILE,
+    pub fn fprintf(stream: isize,
                    format: *const ::c_char, ...) -> ::c_int;
     pub fn printf(format: *const ::c_char, ...) -> ::c_int;
     pub fn snprintf(s: *mut ::c_char, n: ::size_t,
                     format: *const ::c_char, ...) -> ::c_int;
     pub fn sprintf(s: *mut ::c_char, format: *const ::c_char, ...) -> ::c_int;
-    pub fn fscanf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
+    pub fn fscanf(stream: isize, format: *const ::c_char, ...) -> ::c_int;
     pub fn scanf(format: *const ::c_char, ...) -> ::c_int;
     pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...) -> ::c_int;
 
@@ -311,12 +311,12 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
     pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
-    pub fn pclose(stream: *mut ::FILE) -> ::c_int;
+                 mode: *const c_char) -> isize;
+    pub fn pclose(stream: isize) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fdopen$UNIX2003")]
-    pub fn fdopen(fd: ::c_int, mode: *const c_char) -> *mut ::FILE;
-    pub fn fileno(stream: *mut ::FILE) -> ::c_int;
+    pub fn fdopen(fd: ::c_int, mode: *const c_char) -> isize;
+    pub fn fileno(stream: isize) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "open$UNIX2003")]
@@ -790,10 +790,10 @@ extern {
                    errorfds: *mut fd_set,
                    timeout: *const timespec,
                    sigmask: *const sigset_t) -> ::c_int;
-    pub fn fseeko(stream: *mut ::FILE,
+    pub fn fseeko(stream: isize,
                   offset: ::off_t,
                   whence: ::c_int) -> ::c_int;
-    pub fn ftello(stream: *mut ::FILE) -> ::off_t;
+    pub fn ftello(stream: isize) -> ::off_t;
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
