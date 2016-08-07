@@ -151,50 +151,50 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fopen$UNIX2003")]
     pub fn fopen(filename: *const c_char,
-                 mode: *const c_char) -> *mut FILE;
+                 mode: *const c_char) -> isize;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "freopen$UNIX2003")]
     pub fn freopen(filename: *const c_char, mode: *const c_char,
-                   file: *mut FILE) -> *mut FILE;
-    pub fn fflush(file: *mut FILE) -> c_int;
-    pub fn fclose(file: *mut FILE) -> c_int;
+                   file: isize) -> isize;
+    pub fn fflush(file: isize) -> c_int;
+    pub fn fclose(file: isize) -> c_int;
     pub fn remove(filename: *const c_char) -> c_int;
     pub fn rename(oldname: *const c_char, newname: *const c_char) -> c_int;
-    pub fn tmpfile() -> *mut FILE;
-    pub fn setvbuf(stream: *mut FILE,
+    pub fn tmpfile() -> isize;
+    pub fn setvbuf(stream: isize,
                    buffer: *mut c_char,
                    mode: c_int,
                    size: size_t) -> c_int;
-    pub fn setbuf(stream: *mut FILE, buf: *mut c_char);
-    pub fn fgetc(stream: *mut FILE) -> c_int;
-    pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE) -> *mut c_char;
-    pub fn fputc(c: c_int, stream: *mut FILE) -> c_int;
+    pub fn setbuf(stream: isize, buf: *mut c_char);
+    pub fn fgetc(stream: isize) -> c_int;
+    pub fn fgets(buf: *mut c_char, n: c_int, stream: isize) -> *mut c_char;
+    pub fn fputc(c: c_int, stream: isize) -> c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fputs$UNIX2003")]
-    pub fn fputs(s: *const c_char, stream: *mut FILE)-> c_int;
+    pub fn fputs(s: *const c_char, stream: isize)-> c_int;
     pub fn puts(s: *const c_char) -> c_int;
-    pub fn ungetc(c: c_int, stream: *mut FILE) -> c_int;
+    pub fn ungetc(c: c_int, stream: isize) -> c_int;
     pub fn fread(ptr: *mut c_void,
                  size: size_t,
                  nobj: size_t,
-                 stream: *mut FILE)
+                 stream: isize)
                  -> size_t;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fwrite$UNIX2003")]
     pub fn fwrite(ptr: *const c_void,
                   size: size_t,
                   nobj: size_t,
-                  stream: *mut FILE)
+                  stream: isize)
                   -> size_t;
-    pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
-    pub fn ftell(stream: *mut FILE) -> c_long;
-    pub fn rewind(stream: *mut FILE);
+    pub fn fseek(stream: isize, offset: c_long, whence: c_int) -> c_int;
+    pub fn ftell(stream: isize) -> c_long;
+    pub fn rewind(stream: isize);
     #[cfg_attr(target_os = "netbsd", link_name = "__fgetpos50")]
-    pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
+    pub fn fgetpos(stream: isize, ptr: *mut fpos_t) -> c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__fsetpos50")]
-    pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> c_int;
-    pub fn feof(stream: *mut FILE) -> c_int;
-    pub fn ferror(stream: *mut FILE) -> c_int;
+    pub fn fsetpos(stream: isize, ptr: *const fpos_t) -> c_int;
+    pub fn feof(stream: isize) -> c_int;
+    pub fn ferror(stream: isize) -> c_int;
     pub fn perror(s: *const c_char);
     pub fn atoi(s: *const c_char) -> c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
