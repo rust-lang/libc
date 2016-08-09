@@ -64,6 +64,8 @@ fn main() {
             cfg.header("ws2tcpip.h");
         }
     } else {
+        cfg.flag("-Wno-deprecated-declarations");
+
         cfg.header("ctype.h");
         cfg.header("dirent.h");
         if openbsd {
@@ -281,6 +283,11 @@ fn main() {
         match ty {
             "sockaddr_nl" => musl,
 
+            // On Linux, the type of `ut_tv` field of `struct utmpx`
+            // can be an anonymous struct, so an extra struct,
+            // which is absent in glibc, has to be defined.
+            "__timeval" if linux => true,
+
             // The alignment of this is 4 on 64-bit OSX...
             "kevent" if apple && x86_64 => true,
 
@@ -429,7 +436,9 @@ fn main() {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
-        (struct_ == "sigaction" && field == "sa_sigaction")
+        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        // __timeval type is a patch which doesn't exist in glibc
+        (linux && struct_ == "utmpx" && field == "ut_tv")
     });
 
     cfg.skip_field(move |struct_, field| {

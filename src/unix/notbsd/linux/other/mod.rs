@@ -4,6 +4,40 @@ pub type rlim_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
 
 s! {
+    pub struct __exit_status {
+        pub e_termination: ::c_short,
+        pub e_exit: ::c_short,
+    }
+
+    pub struct __timeval {
+        pub tv_sec: ::int32_t,
+        pub tv_usec: ::int32_t,
+    }
+
+    pub struct utmpx {
+        pub ut_type: ::c_short,
+        pub ut_pid: ::pid_t,
+        pub ut_line: [::c_char; __UT_LINESIZE],
+        pub ut_id: [::c_char; 4],
+
+        pub ut_user: [::c_char; __UT_NAMESIZE],
+        pub ut_host: [::c_char; __UT_HOSTSIZE],
+        pub ut_exit: __exit_status,
+
+        #[cfg(any(target_arch = "aarch64", target_pointer_width = "32"))]
+        pub ut_session: ::c_long,
+        #[cfg(any(target_arch = "aarch64", target_pointer_width = "32"))]
+        pub ut_tv: ::timeval,
+
+        #[cfg(not(any(target_arch = "aarch64", target_pointer_width = "32")))]
+        pub ut_session: ::int32_t,
+        #[cfg(not(any(target_arch = "aarch64", target_pointer_width = "32")))]
+        pub ut_tv: __timeval,
+
+        pub ut_addr_v6: [::int32_t; 4],
+        __glibc_reserved: [::c_char; 20],
+    }
+
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
@@ -131,6 +165,20 @@ s! {
         __align: [::c_long; 0],
     }
 }
+
+pub const __UT_LINESIZE: usize = 32;
+pub const __UT_NAMESIZE: usize = 32;
+pub const __UT_HOSTSIZE: usize = 256;
+pub const EMPTY: ::c_short = 0;
+pub const RUN_LVL: ::c_short = 1;
+pub const BOOT_TIME: ::c_short = 2;
+pub const NEW_TIME: ::c_short = 3;
+pub const OLD_TIME: ::c_short = 4;
+pub const INIT_PROCESS: ::c_short = 5;
+pub const LOGIN_PROCESS: ::c_short = 6;
+pub const USER_PROCESS: ::c_short = 7;
+pub const DEAD_PROCESS: ::c_short = 8;
+pub const ACCOUNTING: ::c_short = 9;
 
 pub const RLIMIT_RSS: ::c_int = 5;
 pub const RLIMIT_NOFILE: ::c_int = 7;
@@ -496,6 +544,16 @@ cfg_if! {
     } else {
         pub const PTHREAD_STACK_MIN: ::size_t = 131072;
     }
+}
+
+extern {
+    pub fn utmpxname(file: *const ::c_char) -> ::c_int;
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn endutxent();
 }
 
 #[link(name = "util")]

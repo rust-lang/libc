@@ -25,6 +25,17 @@ pub type sem_t = ::c_int;
 pub enum timezone {}
 
 s! {
+    pub struct utmpx {
+        pub ut_user: [::c_char; _UTX_USERSIZE],
+        pub ut_id: [::c_char; _UTX_IDSIZE],
+        pub ut_line: [::c_char; _UTX_LINESIZE],
+        pub ut_pid: ::pid_t,
+        pub ut_type: ::c_short,
+        pub ut_tv: ::timeval,
+        pub ut_host: [::c_char; _UTX_HOSTSIZE],
+        ut_pad: [::uint32_t; 16],
+    }
+
     pub struct glob_t {
         pub gl_pathc:  ::size_t,
         __unused1: ::c_int,
@@ -293,6 +304,24 @@ s! {
         pub int_n_sign_posn: ::c_char,
     }
 }
+
+pub const _UTX_USERSIZE: usize = 256;
+pub const _UTX_LINESIZE: usize = 32;
+pub const _UTX_IDSIZE: usize = 4;
+pub const _UTX_HOSTSIZE: usize = 256;
+
+pub const EMPTY: ::c_short = 0;
+pub const RUN_LVL: ::c_short = 1;
+pub const BOOT_TIME: ::c_short = 2;
+pub const OLD_TIME: ::c_short = 3;
+pub const NEW_TIME: ::c_short = 4;
+pub const INIT_PROCESS: ::c_short = 5;
+pub const LOGIN_PROCESS: ::c_short = 6;
+pub const USER_PROCESS: ::c_short = 7;
+pub const DEAD_PROCESS: ::c_short = 8;
+pub const ACCOUNTING: ::c_short = 9;
+pub const SIGNATURE: ::c_short = 10;
+pub const SHUTDOWN_TIME: ::c_short = 11;
 
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
 pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
@@ -1286,6 +1315,14 @@ f! {
 }
 
 extern {
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn endutxent();
+    pub fn utmpxname(file: *const ::c_char) -> ::c_int;
+
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
                        host: *mut ::c_char,
