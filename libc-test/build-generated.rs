@@ -10,6 +10,7 @@ fn main() {
         .flag("-Wall")
         .flag("-Wextra")
         .flag("-Werror")
+        .flag("-Wno-deprecated-declarations")
         .flag("-Wno-type-limits")
         .compile("liball.a");
 }

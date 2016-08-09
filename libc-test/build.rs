@@ -64,6 +64,8 @@ fn main() {
             cfg.header("ws2tcpip.h");
         }
     } else {
+        cfg.flag("-Wno-deprecated-declarations");
+
         cfg.header("ctype.h");
         cfg.header("dirent.h");
         if openbsd {
