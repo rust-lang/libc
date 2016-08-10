@@ -413,6 +413,11 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const SIG_BLOCK: ::c_int = 0x1;
 pub const SIG_UNBLOCK: ::c_int = 0x2;
 
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLWRNORM: ::c_short = 0x004;
+pub const POLLRDBAND: ::c_short = 0x080;
+pub const POLLWRBAND: ::c_short = 0x100;
+
 pub const PTHREAD_STACK_MIN: ::size_t = 131072;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;

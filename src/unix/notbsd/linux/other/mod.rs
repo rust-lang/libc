@@ -378,6 +378,11 @@ pub const SIG_SETMASK: ::c_int = 2;
 pub const SIG_BLOCK: ::c_int = 0x000000;
 pub const SIG_UNBLOCK: ::c_int = 0x01;
 
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLWRNORM: ::c_short = 0x100;
+pub const POLLRDBAND: ::c_short = 0x080;
+pub const POLLWRBAND: ::c_short = 0x200;
+
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
 
