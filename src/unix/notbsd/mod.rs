@@ -866,6 +866,14 @@ extern {
                                      clock_id: *mut clockid_t) -> ::c_int;
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
                                      clock_id: clockid_t) -> ::c_int;
+    pub fn sched_getaffinity(pid: ::pid_t,
+                             cpusetsize: ::size_t,
+                             cpuset: *mut cpu_set_t) -> ::c_int;
+    pub fn sched_setaffinity(pid: ::pid_t,
+                             cpusetsize: ::size_t,
+                             cpuset: *const cpu_set_t) -> ::c_int;
+    pub fn unshare(flags: ::c_int) -> ::c_int;
+    pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

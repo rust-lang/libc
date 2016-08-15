@@ -590,21 +590,13 @@ extern {
     pub fn mq_setattr(mqd: ::mqd_t,
                       newattr: *const ::mq_attr,
                       oldattr: *mut ::mq_attr) -> ::c_int;
-    pub fn sched_getaffinity(pid: ::pid_t,
-                             cpusetsize: ::size_t,
-                             cpuset: *mut cpu_set_t) -> ::c_int;
-    pub fn sched_setaffinity(pid: ::pid_t,
-                             cpusetsize: ::size_t,
-                             cpuset: *const cpu_set_t) -> ::c_int;
     pub fn epoll_pwait(epfd: ::c_int,
                        events: *mut ::epoll_event,
                        maxevents: ::c_int,
                        timeout: ::c_int,
                        sigmask: *const ::sigset_t) -> ::c_int;
     pub fn dup3(oldfd: ::c_int, newfd: ::c_int, flags: ::c_int) -> ::c_int;
-    pub fn unshare(flags: ::c_int) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
-    pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
     pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
     pub fn mkostemps(template: *mut ::c_char,
                      suffixlen: ::c_int,
