@@ -1,5 +1,7 @@
 //! Android-specific definitions for linux-like values
 
+use dox::mem;
+
 pub type c_char = u8;
 pub type clock_t = ::c_long;
 pub type time_t = ::c_long;
@@ -583,6 +585,36 @@ f! {
     }
     pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int {
         ioctl(fd, TCSBRKP, duration as *mut ::c_void)
+    }
+
+    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
+        for slot in cpuset.__bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let size_in___bits = 8 * mem::size_of_val(&cpuset.__bits[0]);
+        let (idx, offset) = (cpu / size_in___bits, cpu % size_in___bits);
+        cpuset.__bits[idx] |= 1 << offset;
+        ()
+    }
+
+    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let size_in___bits = 8 * mem::size_of_val(&cpuset.__bits[0]);
+        let (idx, offset) = (cpu / size_in___bits, cpu % size_in___bits);
+        cpuset.__bits[idx] &= !(1 << offset);
+        ()
+    }
+
+    pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
+        let size_in___bits = 8 * mem::size_of_val(&cpuset.__bits[0]);
+        let (idx, offset) = (cpu / size_in___bits, cpu % size_in___bits);
+        0 != (cpuset.__bits[idx] & (1 << offset))
+    }
+
+    pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
+        set1.__bits == set2.__bits
     }
 }
 
