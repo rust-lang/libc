@@ -889,6 +889,8 @@ extern {
                              cpuset: *const cpu_set_t) -> ::c_int;
     pub fn unshare(flags: ::c_int) -> ::c_int;
     pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
+    pub fn sem_timedwait(sem: *mut sem_t,
+                         abstime: *const ::timespec) -> ::c_int;
 }
 
 cfg_if! {

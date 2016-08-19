@@ -525,8 +525,10 @@ extern {
                    flags: ::c_int) -> ::c_int;
    pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t) -> ::c_int;
-    pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
-                                     clock_id: clockid_t) -> ::c_int;
+   pub fn sem_timedwait(sem: *mut sem_t,
+                        abstime: *const ::timespec) -> ::c_int;
+   pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
+                                    clock_id: clockid_t) -> ::c_int;
 }
 
 cfg_if! {
