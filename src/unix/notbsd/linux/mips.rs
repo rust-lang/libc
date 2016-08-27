@@ -550,6 +550,51 @@ pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 
 pub const SYS_gettid: ::c_long = 4222;   // Valid for O32
 
+pub const MCL_CURRENT: ::c_int = 0x0001;
+pub const MCL_FUTURE: ::c_int = 0x0002;
+
+pub const SIGSTKSZ: ::size_t = 8192;
+pub const CBAUD: ::tcflag_t = 0o0010017;
+pub const TAB1: ::c_int = 0x00000800;
+pub const TAB2: ::c_int = 0x00001000;
+pub const TAB3: ::c_int = 0x00001800;
+pub const CR1: ::c_int  = 0x00000200;
+pub const CR2: ::c_int  = 0x00000400;
+pub const CR3: ::c_int  = 0x00000600;
+pub const FF1: ::c_int  = 0x00008000;
+pub const BS1: ::c_int  = 0x00002000;
+pub const VT1: ::c_int  = 0x00004000;
+pub const VWERASE: usize = 14;
+pub const VREPRINT: usize = 12;
+pub const VSUSP: usize = 10;
+pub const VSTART: usize = 8;
+pub const VSTOP: usize = 9;
+pub const VDISCARD: usize = 13;
+pub const VTIME: usize = 5;
+pub const IXON: ::tcflag_t = 0x00000400;
+pub const IXOFF: ::tcflag_t = 0x00001000;
+pub const ONLCR: ::tcflag_t = 0x4;
+pub const CSIZE: ::tcflag_t = 0x00000030;
+pub const CS6: ::tcflag_t = 0x00000010;
+pub const CS7: ::tcflag_t = 0x00000020;
+pub const CS8: ::tcflag_t = 0x00000030;
+pub const CSTOPB: ::tcflag_t = 0x00000040;
+pub const CREAD: ::tcflag_t = 0x00000080;
+pub const PARENB: ::tcflag_t = 0x00000100;
+pub const PARODD: ::tcflag_t = 0x00000200;
+pub const HUPCL: ::tcflag_t = 0x00000400;
+pub const CLOCAL: ::tcflag_t = 0x00000800;
+pub const ECHOKE: ::tcflag_t = 0x00000800;
+pub const ECHOE: ::tcflag_t = 0x00000010;
+pub const ECHOK: ::tcflag_t = 0x00000020;
+pub const ECHONL: ::tcflag_t = 0x00000040;
+pub const ECHOPRT: ::tcflag_t = 0x00000400;
+pub const ECHOCTL: ::tcflag_t = 0x00000200;
+pub const ISIG: ::tcflag_t = 0x00000001;
+pub const ICANON: ::tcflag_t = 0x00000002;
+pub const PENDIN: ::tcflag_t = 0x00004000;
+pub const NOFLSH: ::tcflag_t = 0x00000080;
+
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,

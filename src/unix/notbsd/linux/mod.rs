@@ -66,20 +66,20 @@ s! {
 
     pub struct pthread_mutex_t {
         #[cfg(any(target_arch = "mips", target_arch = "mipsel",
-                  target_arch = "arm"))]
+                  target_arch = "arm", target_arch = "powerpc"))]
         __align: [::c_long; 0],
         #[cfg(not(any(target_arch = "mips", target_arch = "mipsel",
-                      target_arch = "arm")))]
+                      target_arch = "arm", target_arch = "powerpc")))]
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
     }
 
     pub struct pthread_rwlock_t {
         #[cfg(any(target_arch = "mips", target_arch = "mipsel",
-                  target_arch = "arm"))]
+                  target_arch = "arm", target_arch = "powerpc"))]
         __align: [::c_long; 0],
         #[cfg(not(any(target_arch = "mips", target_arch = "mipsel",
-                      target_arch = "arm")))]
+                      target_arch = "arm", target_arch = "powerpc")))]
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
     }

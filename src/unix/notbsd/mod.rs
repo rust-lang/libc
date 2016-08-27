@@ -308,9 +308,6 @@ pub const MAP_FIXED: ::c_int = 0x0010;
 
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
-pub const MCL_CURRENT: ::c_int = 0x0001;
-pub const MCL_FUTURE: ::c_int = 0x0002;
-
 // MS_ flags for msync(2)
 pub const MS_ASYNC: ::c_int = 0x0001;
 pub const MS_INVALIDATE: ::c_int = 0x0002;
@@ -479,8 +476,6 @@ pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
-pub const SIGSTKSZ: ::size_t = 8192;
-
 pub const SA_NODEFER: ::c_int = 0x40000000;
 pub const SA_RESETHAND: ::c_int = 0x80000000;
 pub const SA_RESTART: ::c_int = 0x10000000;
@@ -528,8 +523,6 @@ pub const QIF_USAGE: ::uint32_t = 10;
 pub const QIF_TIMES: ::uint32_t = 48;
 pub const QIF_ALL: ::uint32_t = 63;
 
-pub const CBAUD: ::tcflag_t = 0o0010017;
-
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
 pub const MNT_FORCE: ::c_int = 0x1;
@@ -550,31 +543,15 @@ pub const TCIOFLUSH: ::c_int = 2;
 pub const NL0: ::c_int  = 0x00000000;
 pub const NL1: ::c_int  = 0x00000100;
 pub const TAB0: ::c_int = 0x00000000;
-pub const TAB1: ::c_int = 0x00000800;
-pub const TAB2: ::c_int = 0x00001000;
-pub const TAB3: ::c_int = 0x00001800;
 pub const CR0: ::c_int  = 0x00000000;
-pub const CR1: ::c_int  = 0x00000200;
-pub const CR2: ::c_int  = 0x00000400;
-pub const CR3: ::c_int  = 0x00000600;
 pub const FF0: ::c_int  = 0x00000000;
-pub const FF1: ::c_int  = 0x00008000;
 pub const BS0: ::c_int  = 0x00000000;
-pub const BS1: ::c_int  = 0x00002000;
 pub const VT0: ::c_int  = 0x00000000;
-pub const VT1: ::c_int  = 0x00004000;
 pub const VERASE: usize = 2;
-pub const VWERASE: usize = 14;
 pub const VKILL: usize = 3;
-pub const VREPRINT: usize = 12;
 pub const VINTR: usize = 0;
 pub const VQUIT: usize = 1;
-pub const VSUSP: usize = 10;
-pub const VSTART: usize = 8;
-pub const VSTOP: usize = 9;
 pub const VLNEXT: usize = 15;
-pub const VDISCARD: usize = 13;
-pub const VTIME: usize = 5;
 pub const IGNBRK: ::tcflag_t = 0x00000001;
 pub const BRKINT: ::tcflag_t = 0x00000002;
 pub const IGNPAR: ::tcflag_t = 0x00000004;
@@ -584,35 +561,12 @@ pub const ISTRIP: ::tcflag_t = 0x00000020;
 pub const INLCR: ::tcflag_t = 0x00000040;
 pub const IGNCR: ::tcflag_t = 0x00000080;
 pub const ICRNL: ::tcflag_t = 0x00000100;
-pub const IXON: ::tcflag_t = 0x00000400;
-pub const IXOFF: ::tcflag_t = 0x00001000;
 pub const IXANY: ::tcflag_t = 0x00000800;
 pub const IMAXBEL: ::tcflag_t = 0x00002000;
 pub const OPOST: ::tcflag_t = 0x1;
-pub const ONLCR: ::tcflag_t = 0x4;
-pub const CSIZE: ::tcflag_t = 0x00000030;
 pub const CS5: ::tcflag_t = 0x00000000;
-pub const CS6: ::tcflag_t = 0x00000010;
-pub const CS7: ::tcflag_t = 0x00000020;
-pub const CS8: ::tcflag_t = 0x00000030;
-pub const CSTOPB: ::tcflag_t = 0x00000040;
-pub const CREAD: ::tcflag_t = 0x00000080;
-pub const PARENB: ::tcflag_t = 0x00000100;
-pub const PARODD: ::tcflag_t = 0x00000200;
-pub const HUPCL: ::tcflag_t = 0x00000400;
-pub const CLOCAL: ::tcflag_t = 0x00000800;
 pub const CRTSCTS: ::tcflag_t = 0x80000000;
-pub const ECHOKE: ::tcflag_t = 0x00000800;
-pub const ECHOE: ::tcflag_t = 0x00000010;
-pub const ECHOK: ::tcflag_t = 0x00000020;
 pub const ECHO: ::tcflag_t = 0x00000008;
-pub const ECHONL: ::tcflag_t = 0x00000040;
-pub const ECHOPRT: ::tcflag_t = 0x00000400;
-pub const ECHOCTL: ::tcflag_t = 0x00000200;
-pub const ISIG: ::tcflag_t = 0x00000001;
-pub const ICANON: ::tcflag_t = 0x00000002;
-pub const PENDIN: ::tcflag_t = 0x00004000;
-pub const NOFLSH: ::tcflag_t = 0x00000080;
 
 pub const CLONE_VM: ::c_int = 0x100;
 pub const CLONE_FS: ::c_int = 0x200;

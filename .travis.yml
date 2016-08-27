@@ -56,6 +56,9 @@ matrix:
       env: TARGET=x86_64-unknown-linux-musl
       rust: stable
     - os: linux
+      env: TARGET=i686-unknown-linux-musl
+      rust: stable
+    - os: linux
       env: TARGET=arm-unknown-linux-gnueabihf
       rust: stable
     - os: linux
@@ -69,6 +72,12 @@ matrix:
       rust: stable
     - os: linux
       env: TARGET=x86_64-rumprun-netbsd
+      rust: stable
+    - os: linux
+      env: TARGET=powerpc-unknown-linux-gnu
+      rust: stable
+    - os: linux
+      env: TARGET=powerpc64-unknown-linux-gnu
       rust: stable
 
     # beta
@@ -104,4 +113,4 @@ matrix:
 notifications:
   email:
     on_success: never
-  webhooks: http://buildbot.rust-lang.org/homu/travis
+  webhooks: https://buildbot.rust-lang.org/homu/travis

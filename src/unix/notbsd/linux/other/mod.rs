@@ -123,39 +123,6 @@ s! {
         pub l_pid: ::pid_t,
     }
 
-    pub struct ipc_perm {
-        pub __key: ::key_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-        pub cuid: ::uid_t,
-        pub cgid: ::gid_t,
-        pub mode: ::c_ushort,
-        __pad1: ::c_ushort,
-        pub __seq: ::c_ushort,
-        __pad2: ::c_ushort,
-        __unused1: ::c_ulong,
-        __unused2: ::c_ulong
-    }
-
-    pub struct shmid_ds {
-        pub shm_perm: ::ipc_perm,
-        pub shm_segsz: ::size_t,
-        pub shm_atime: ::time_t,
-        #[cfg(target_pointer_width = "32")]
-        __unused1: ::c_ulong,
-        pub shm_dtime: ::time_t,
-        #[cfg(target_pointer_width = "32")]
-        __unused2: ::c_ulong,
-        pub shm_ctime: ::time_t,
-        #[cfg(target_pointer_width = "32")]
-        __unused3: ::c_ulong,
-        pub shm_cpid: ::pid_t,
-        pub shm_lpid: ::pid_t,
-        pub shm_nattch: ::shmatt_t,
-        __unused4: ::c_ulong,
-        __unused5: ::c_ulong
-    }
-
     // FIXME this is actually a union
     pub struct sem_t {
         #[cfg(target_pointer_width = "32")]
@@ -427,17 +394,9 @@ pub const TMPFS_MAGIC: ::c_long = 0x01021994;
 pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
 
 pub const VEOF: usize = 4;
-pub const VEOL: usize = 11;
-pub const VEOL2: usize = 16;
-pub const VMIN: usize = 6;
-pub const IEXTEN: ::tcflag_t = 0x00008000;
-pub const TOSTOP: ::tcflag_t = 0x00000100;
-pub const FLUSHO: ::tcflag_t = 0x00001000;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 
 pub const CPU_SETSIZE: ::c_int = 0x400;
-
-pub const EXTPROC: ::tcflag_t = 0x00010000;
 
 pub const QFMT_VFS_V1: ::c_int = 4;
 
@@ -491,36 +450,18 @@ pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
 pub const TCSAFLUSH: ::c_int = 2;
 
-pub const TCGETS: ::c_ulong = 0x5401;
-pub const TCSETS: ::c_ulong = 0x5402;
-pub const TCSETSW: ::c_ulong = 0x5403;
-pub const TCSETSF: ::c_ulong = 0x5404;
-pub const TCGETA: ::c_ulong = 0x5405;
-pub const TCSETA: ::c_ulong = 0x5406;
-pub const TCSETAW: ::c_ulong = 0x5407;
-pub const TCSETAF: ::c_ulong = 0x5408;
-pub const TCSBRK: ::c_ulong = 0x5409;
-pub const TCXONC: ::c_ulong = 0x540A;
-pub const TCFLSH: ::c_ulong = 0x540B;
 pub const TIOCGSOFTCAR: ::c_ulong = 0x5419;
 pub const TIOCSSOFTCAR: ::c_ulong = 0x541A;
-pub const TIOCINQ: ::c_ulong = 0x541B;
 pub const TIOCLINUX: ::c_ulong = 0x541C;
 pub const TIOCGSERIAL: ::c_ulong = 0x541E;
 pub const TIOCEXCL: ::c_ulong = 0x540C;
 pub const TIOCNXCL: ::c_ulong = 0x540D;
 pub const TIOCSCTTY: ::c_ulong = 0x540E;
-pub const TIOCGPGRP: ::c_ulong = 0x540F;
-pub const TIOCSPGRP: ::c_ulong = 0x5410;
-pub const TIOCOUTQ: ::c_ulong = 0x5411;
 pub const TIOCSTI: ::c_ulong = 0x5412;
-pub const TIOCGWINSZ: ::c_ulong = 0x5413;
-pub const TIOCSWINSZ: ::c_ulong = 0x5414;
 pub const TIOCMGET: ::c_ulong = 0x5415;
 pub const TIOCMBIS: ::c_ulong = 0x5416;
 pub const TIOCMBIC: ::c_ulong = 0x5417;
 pub const TIOCMSET: ::c_ulong = 0x5418;
-pub const FIONREAD: ::c_ulong = 0x541B;
 pub const TIOCCONS: ::c_ulong = 0x541D;
 
 pub const RTLD_DEEPBIND: ::c_int = 0x8;

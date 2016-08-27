@@ -37,28 +37,6 @@ s! {
         __unused5: ::c_long,
     }
 
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        __pad1: ::c_uint,
-        __st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __pad2: ::c_uint,
-        pub st_size: ::off64_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        pub st_ino: ::ino64_t,
-    }
-
     pub struct pthread_attr_t {
         __size: [u32; 9]
     }
@@ -92,8 +70,6 @@ pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 
 pub const PTRACE_GETFPREGS: ::c_uint = 14;
 pub const PTRACE_SETFPREGS: ::c_uint = 15;
-pub const PTRACE_GETFPXREGS: ::c_uint = 18;
-pub const PTRACE_SETFPXREGS: ::c_uint = 19;
 pub const PTRACE_GETREGS: ::c_uint = 12;
 pub const PTRACE_SETREGS: ::c_uint = 13;
 
