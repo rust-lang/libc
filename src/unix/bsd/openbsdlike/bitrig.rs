@@ -398,6 +398,8 @@ pub const KI_MAXLOGNAME: ::c_int = 32;
 pub const KI_EMULNAMELEN: ::c_int = 8;
 
 extern {
+    pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
+
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
                        host: *mut ::c_char,
