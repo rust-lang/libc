@@ -73,6 +73,9 @@ matrix:
     - os: linux
       env: TARGET=x86_64-rumprun-netbsd
       rust: stable
+    - os: linux
+      env: TARGET=powerpc-unknown-linux-gnu
+      rust: stable
 
     # beta
     - os: linux
