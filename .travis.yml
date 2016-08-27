@@ -76,6 +76,9 @@ matrix:
     - os: linux
       env: TARGET=powerpc-unknown-linux-gnu
       rust: stable
+    - os: linux
+      env: TARGET=powerpc64-unknown-linux-gnu
+      rust: stable
 
     # beta
     - os: linux

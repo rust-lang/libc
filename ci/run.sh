@@ -121,6 +121,10 @@ case "$TARGET" in
     qemu-ppc -L /usr/powerpc-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     ;;
 
+  powerpc64-unknown-linux-gnu)
+    qemu-ppc64 -L /usr/powerpc64-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    ;;
+
   aarch64-unknown-linux-gnu)
     qemu-aarch64 -L /usr/aarch64-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     ;;
