@@ -9,3 +9,6 @@ libc = { path = ".." }
 
 [build-dependencies]
 ctest = { git = "https://github.com/alexcrichton/ctest" }
+
+[replace]
+"gcc:0.3.35" = { git = "https://github.com/alexcrichton/gcc-rs" }

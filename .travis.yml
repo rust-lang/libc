@@ -56,6 +56,9 @@ matrix:
       env: TARGET=x86_64-unknown-linux-musl
       rust: stable
     - os: linux
+      env: TARGET=i686-unknown-linux-musl
+      rust: stable
+    - os: linux
       env: TARGET=arm-unknown-linux-gnueabihf
       rust: stable
     - os: linux
