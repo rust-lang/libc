@@ -85,9 +85,11 @@ s! {
     }
 
     pub struct pthread_mutexattr_t {
-        #[cfg(any(target_arch = "x86_64", target_arch = "powerpc64"))]
+        #[cfg(any(target_arch = "x86_64", target_arch = "powerpc64",
+                  target_arch = "mips64"))]
         __align: [::c_int; 0],
-        #[cfg(not(any(target_arch = "x86_64", target_arch = "powerpc64")))]
+        #[cfg(not(any(target_arch = "x86_64", target_arch = "powerpc64",
+                      target_arch = "mips64")))]
         __align: [::c_long; 0],
         size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
     }
@@ -668,6 +670,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "mips", target_arch = "mipsel"))] {
         mod mips;
         pub use self::mips::*;
+    } else if #[cfg(any(target_arch = "mips64"))] {
+        mod mips64;
+        pub use self::mips64::*;
     } else {
         mod other;
         pub use self::other::*;
