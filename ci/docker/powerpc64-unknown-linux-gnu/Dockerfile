@@ -7,4 +7,5 @@ RUN apt-get install -y --no-install-recommends \
         qemu-system-ppc
 
 ENV CARGO_TARGET_POWERPC64_UNKNOWN_LINUX_GNU_LINKER=powerpc64-linux-gnu-gcc \
+    CC=powerpc64-linux-gnu-gcc \
     PATH=$PATH:/rust/bin
