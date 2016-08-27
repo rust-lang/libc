@@ -110,4 +110,4 @@ matrix:
 notifications:
   email:
     on_success: never
-  webhooks: http://buildbot.rust-lang.org/homu/travis
+  webhooks: https://buildbot.rust-lang.org/homu/travis
