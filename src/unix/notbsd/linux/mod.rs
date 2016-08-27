@@ -510,6 +510,8 @@ f! {
 }
 
 extern {
+    pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
+
     pub fn setpwent();
     pub fn getpwent() -> *mut passwd;
     pub fn shm_open(name: *const c_char, oflag: ::c_int,

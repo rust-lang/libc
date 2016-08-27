@@ -1320,6 +1320,8 @@ f! {
 }
 
 extern {
+    pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
+
     pub fn getutxent() -> *mut utmpx;
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
     pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
