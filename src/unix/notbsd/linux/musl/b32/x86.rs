@@ -95,6 +95,14 @@ s! {
         pub uc_sigmask: ::sigset_t,
         __private: [u8; 112],
     }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub _pad: [::c_int; 29],
+        _align: [usize; 0],
+    }
 }
 
 pub const O_DIRECT: ::c_int = 0x4000;
@@ -320,3 +328,8 @@ pub const TIOCCONS: ::c_int = 0x541D;
 
 pub const SYS_gettid: ::c_long = 224;
 pub const SYS_perf_event_open: ::c_long = 336;
+
+pub const POSIX_MADV_DONTNEED: ::c_int = 0;
+pub const RUSAGE_CHILDREN: ::c_int = 1;
+pub const POLLWRNORM: ::c_short = 0x100;
+pub const POLLWRBAND: ::c_short = 0x200;

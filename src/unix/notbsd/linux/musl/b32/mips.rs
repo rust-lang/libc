@@ -81,6 +81,14 @@ s! {
         pub f_flags: ::c_ulong,
         pub f_spare: [::c_ulong; 5],
     }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_code: ::c_int,
+        pub si_errno: ::c_int,
+        pub _pad: [::c_int; 29],
+        _align: [usize; 0],
+    }
 }
 
 pub const O_DIRECT: ::c_int = 0o100000;
@@ -299,9 +307,14 @@ pub const TIOCSWINSZ: ::c_int = 0x80087467;
 pub const TIOCMGET: ::c_int = 0x741D;
 pub const TIOCMBIS: ::c_int = 0x741B;
 pub const TIOCMBIC: ::c_int = 0x741C;
-pub const TIOCMSET: ::c_int = 0x741D;
+pub const TIOCMSET: ::c_int = 0x741A;
 pub const FIONREAD: ::c_int = 0x467F;
 pub const TIOCCONS: ::c_int = 0x80047478;
 
 pub const SYS_gettid: ::c_long = 4222;   // Valid for O32
 pub const SYS_perf_event_open: ::c_long = 4333;  // Valid for O32
+
+pub const POSIX_MADV_DONTNEED: ::c_int = 4;
+pub const RUSAGE_CHILDREN: ::c_int = !0;
+pub const POLLWRNORM: ::c_short = 0x4;
+pub const POLLWRBAND: ::c_short = 0x100;
