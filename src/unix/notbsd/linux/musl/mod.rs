@@ -18,14 +18,6 @@ s! {
         _restorer: *mut ::c_void,
     }
 
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_code: ::c_int,
-        pub _pad: [::c_int; 29],
-        _align: [usize; 0],
-    }
-
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,
@@ -78,10 +70,8 @@ s! {
 pub const BUFSIZ: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 10000;
 pub const FOPEN_MAX: ::c_uint = 1000;
-pub const POSIX_MADV_DONTNEED: ::c_int = 0;
 pub const O_ACCMODE: ::c_int = 0o10000003;
 pub const O_NDELAY: ::c_int = O_NONBLOCK;
-pub const RUSAGE_CHILDREN: ::c_int = 1;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 
@@ -154,9 +144,7 @@ pub const MADV_DONTDUMP: ::c_int = 16;
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
 pub const POLLRDNORM: ::c_short = 0x040;
-pub const POLLWRNORM: ::c_short = 0x100;
 pub const POLLRDBAND: ::c_short = 0x080;
-pub const POLLWRBAND: ::c_short = 0x200;
 
 pub const MADV_HUGEPAGE: ::c_int = 14;
 pub const MADV_NOHUGEPAGE: ::c_int = 15;

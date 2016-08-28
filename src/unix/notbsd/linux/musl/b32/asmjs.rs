@@ -82,6 +82,14 @@ s! {
         pub f_flags: ::c_ulong,
         pub f_spare: [::c_ulong; 4],
     }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub _pad: [::c_int; 29],
+        _align: [usize; 0],
+    }
 }
 
 pub const O_DIRECT: ::c_int = 0x4000;
@@ -305,3 +313,8 @@ pub const FIONREAD: ::c_int = 0x541B;
 pub const TIOCCONS: ::c_int = 0x541D;
 
 pub const SYS_gettid: ::c_long = 224; // Valid for arm (32-bit) and x86 (32-bit)
+
+pub const POSIX_MADV_DONTNEED: ::c_int = 0;
+pub const RUSAGE_CHILDREN: ::c_int = 1;
+pub const POLLWRNORM: ::c_short = 0x100;
+pub const POLLWRBAND: ::c_short = 0x200;
