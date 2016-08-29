@@ -1,3 +1,7 @@
+// Native C types
+pub type c_long = i64;
+pub type c_ulong = u64;
+
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
         mod aarch64;

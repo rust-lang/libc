@@ -1,5 +1,3 @@
-pub type c_char = i8;
-
 s! {
     pub struct mcontext_t {
         __private: [u64; 32],

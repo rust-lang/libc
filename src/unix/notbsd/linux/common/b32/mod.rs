@@ -1,3 +1,7 @@
+// Native C types
+pub type c_long = i32;
+pub type c_ulong = u32;
+
 cfg_if! {
     if #[cfg(target_arch = "x86")] {
         mod x86;
