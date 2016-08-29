@@ -115,14 +115,6 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_pid: ::pid_t,
-    }
-
     // FIXME this is actually a union
     pub struct sem_t {
         #[cfg(target_pointer_width = "32")]
@@ -555,3 +547,16 @@ cfg_if! {
         // Unknown target_arch
     }
 }
+
+cfg_if! {
+    if #[cfg(target_env = "gnu")] {
+        mod gnu;
+        pub use self::gnu::*;
+    } else if #[cfg(target_env = "uclibc")] {
+        mod uclibc;
+        pub use self::uclibc::*;
+    } else {
+        // Unknown target_env
+    }
+}
+

@@ -2,7 +2,6 @@ pub type clock_t = c_long;
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
 pub type ino_t = u64;
-pub type off_t = i64;
 pub type blkcnt_t = i64;
 
 pub type blksize_t = c_long;
@@ -39,14 +38,6 @@ s! {
         pub c_cc: [::cc_t; ::NCCS],
         pub __c_ispeed: ::speed_t,
         pub __c_ospeed: ::speed_t,
-    }
-
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_pid: ::pid_t,
     }
 
     pub struct sysinfo {

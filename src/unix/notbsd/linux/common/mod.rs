@@ -1,3 +1,24 @@
+/* Header <sys/type.h> */
+cfg_if! {
+    if #[cfg(feature = "file_offset64")] {
+        pub type off_t = ::off64_t;
+    } else {
+        pub type off_t = ::c_long;
+    }
+}
+pub type off64_t = ::int64_t;
+
+s! {
+    /* Header <fcntl.h> */
+    pub struct flock64 {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off64_t,
+        pub l_len: ::off64_t,
+        pub l_pid: ::pid_t,
+    }
+}
+
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
                  target_arch = "arm",

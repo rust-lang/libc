@@ -6,9 +6,7 @@ pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
 pub type pthread_t = c_ulong;
-pub type mode_t = u32;
 pub type ino64_t = u64;
-pub type off64_t = i64;
 pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
 pub type key_t = ::c_int;
@@ -18,6 +16,9 @@ pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
+
+/* Header <sys/type.h> */
+pub type mode_t = ::uint32_t;
 
 s! {
     pub struct dirent {
