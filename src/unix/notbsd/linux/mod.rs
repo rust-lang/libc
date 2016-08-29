@@ -667,14 +667,22 @@ cfg_if! {
                  target_os = "emscripten"))] {
         mod musl;
         pub use self::musl::*;
+        mod common;
+        pub use self::common::*;
     } else if #[cfg(any(target_arch = "mips", target_arch = "mipsel"))] {
         mod mips;
         pub use self::mips::*;
+        mod common;
+        pub use self::common::*;
     } else if #[cfg(any(target_arch = "mips64"))] {
         mod mips64;
         pub use self::mips64::*;
+        mod common;
+        pub use self::common::*;
     } else {
         mod other;
         pub use self::other::*;
+        mod common;
+        pub use self::common::*;
     }
 }
