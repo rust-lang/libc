@@ -201,6 +201,7 @@ pub const RLIM_INFINITY: ::rlim_t = 0xffffffffffffffff;
 pub const SA_ONSTACK: ::c_int = 0x08000000;
 pub const SA_SIGINFO: ::c_int = 0x00000008;
 pub const SIGBUS: ::c_int = 10;
+pub const SIGSTKSZ: ::size_t = 0x2000;
 pub const SIG_SETMASK: ::c_int = 3;
 pub const SOCK_DGRAM: ::c_int = 1;
 pub const SOCK_STREAM: ::c_int = 2;
