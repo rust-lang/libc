@@ -542,10 +542,6 @@ extern {
                     offset: ::off64_t,
                     whence: ::c_int) -> ::c_int;
     pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
-    pub fn fallocate(fd: ::c_int, mode: ::c_int,
-                     offset: ::off_t, len: ::off_t) -> ::c_int;
-    pub fn readahead(fd: ::c_int, offset: ::off64_t,
-                     count: ::size_t) -> ::ssize_t;
     pub fn getxattr(path: *const c_char, name: *const c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
     pub fn lgetxattr(path: *const c_char, name: *const c_char,
@@ -659,6 +655,17 @@ extern {
                     mode: ::mode_t) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
+
+    /* Header <fcntl.h> */
+    // Here start non POSIX definitions.
+    pub fn fallocate(fd: ::c_int, mode: ::c_int,
+                     offset: ::off_t, len: ::off_t) -> ::c_int;
+    pub fn fallocate64(fd: ::c_int, mode: ::c_int,
+                       offset: ::off_t, len: ::off_t) -> ::c_int;
+    pub fn readahead(fd: ::c_int, offset: ::off64_t,
+                     count: ::size_t) -> ::ssize_t;
+    pub fn sync_file_range(fd: ::c_int, from: ::off64_t, to: ::off64_t,
+			               flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {

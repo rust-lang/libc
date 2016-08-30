@@ -578,6 +578,11 @@ pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
 
+pub const LOCK_SH: ::c_int = 0x1;
+pub const LOCK_EX: ::c_int = 0x2;
+pub const LOCK_NB: ::c_int = 0x4;
+pub const LOCK_UN: ::c_int = 0x8;
+
 f! {
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {
         *set = 0;

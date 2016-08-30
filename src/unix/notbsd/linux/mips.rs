@@ -192,8 +192,6 @@ pub const FOPEN_MAX: ::c_uint = 16;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const _SC_2_C_VERSION: ::c_int = 96;
 pub const RUSAGE_THREAD: ::c_int = 1;
-pub const O_ACCMODE: ::c_int = 3;
-pub const O_DIRECT: ::c_int = 0x8000;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
@@ -205,10 +203,6 @@ pub const RLIMIT_NPROC: ::c_int = 8;
 pub const RLIMIT_MEMLOCK: ::c_int = 9;
 pub const RLIMIT_NLIMITS: ::c_int = 16;
 pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
-
-pub const O_FSYNC: ::c_int = 0x4010;
-pub const O_ASYNC: ::c_int = 0x1000;
-pub const O_NDELAY: ::c_int = 0x80;
 
 pub const SOCK_NONBLOCK: ::c_int = 128;
 

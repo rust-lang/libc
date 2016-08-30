@@ -47,3 +47,11 @@ pub const O_NONBLOCK: ::c_int = 0x80;
 pub const O_RSYNC: ::c_int = 0x4010;
 pub const O_SYNC: ::c_int = 0x4010;
 
+pub const O_ASYNC: ::c_int = 0x1000;
+pub const O_DIRECT: ::c_int = 0x8000;
+pub const O_LARGEFILE: ::c_int = 0x2000;
+pub const O_NOATIME: ::c_int = 0x40000;
+pub const O_PATH: ::c_int = 0x200000;
+pub const O_TMPFILE: ::c_int = 0x410000;
+pub const O_NDELAY: ::c_int = ::O_NONBLOCK;
+

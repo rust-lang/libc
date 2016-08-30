@@ -187,7 +187,6 @@ pub const ETIMEDOUT: ::c_int = 145;
 pub const FIOCLEX: ::c_ulong = 0x6601;
 pub const FIONBIO: ::c_ulong = 0x667e;
 pub const MAP_ANON: ::c_int = 0x800;
-pub const O_ACCMODE: ::c_int = 3;
 pub const PTHREAD_STACK_MIN: ::size_t = 131072;
 pub const RLIM_INFINITY: ::rlim_t = 0xffffffffffffffff;
 pub const SA_ONSTACK: ::c_int = 0x08000000;

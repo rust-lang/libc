@@ -91,9 +91,6 @@ s! {
     }
 }
 
-pub const O_DIRECT: ::c_int = 0x4000;
-pub const O_ASYNC: ::c_int = 0x2000;
-
 pub const FIOCLEX: ::c_int = 0x5451;
 pub const FIONBIO: ::c_int = 0x5421;
 

@@ -1,6 +1,6 @@
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
-pub type rlim_t = c_ulong;
+pub type rlim_t = ::c_ulong;
 pub type __priority_which_t = ::c_uint;
 
 s! {
@@ -148,9 +148,7 @@ pub const RLIM_INFINITY: ::rlim_t = !0;
 pub const RLIMIT_RTTIME: ::c_int = 15;
 pub const RLIMIT_NLIMITS: ::c_int = 16;
 
-pub const O_FSYNC: ::c_int = 0x101000;
-
-pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
+pub const SOCK_NONBLOCK: ::c_int = ::O_NONBLOCK;
 
 pub const LC_PAPER: ::c_int = 7;
 pub const LC_NAME: ::c_int = 8;
@@ -334,17 +332,12 @@ pub const POLLWRNORM: ::c_short = 0x100;
 pub const POLLRDBAND: ::c_short = 0x080;
 pub const POLLWRBAND: ::c_short = 0x200;
 
-pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
-pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
-
 pub const BUFSIZ: ::c_uint = 8192;
 pub const TMP_MAX: ::c_uint = 238328;
 pub const FOPEN_MAX: ::c_uint = 16;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const _SC_2_C_VERSION: ::c_int = 96;
 pub const RUSAGE_THREAD: ::c_int = 1;
-pub const O_ASYNC: ::c_int = 0x2000;
-pub const O_NDELAY: ::c_int = 0x800;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
@@ -469,8 +462,24 @@ cfg_if! {
     }
 }
 
+pub const LOCK_SH: ::c_int = 0x1;
+pub const LOCK_EX: ::c_int = 0x2;
+pub const LOCK_NB: ::c_int = 0x4;
+pub const LOCK_UN: ::c_int = 0x8;
+
 /* Header <fcntl.h> */
 pub const O_ACCMODE: ::c_int = 3;
+
+// Here start non POSIX definitions.
+pub const F_EXLCK: ::c_short = 0x4;
+pub const F_SHLCK: ::c_short = 0x8;
+
+pub const LOCK_MAND: ::c_int = 0x20;
+pub const LOCK_READ: ::c_int = 0x40;
+pub const LOCK_WRITE: ::c_int = 0x80;
+pub const LOCK_RW: ::c_int = 0xc0;
+
+pub const O_FSYNC: ::c_int = ::O_SYNC;
 
 extern {
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;

@@ -184,13 +184,6 @@ pub const _IOFBF: ::c_int = 0;
 pub const _IONBF: ::c_int = 2;
 pub const _IOLBF: ::c_int = 1;
 
-// Linux-specific fcntls
-pub const F_SETLEASE: ::c_int = 1024;
-pub const F_GETLEASE: ::c_int = 1025;
-pub const F_NOTIFY: ::c_int = 1026;
-pub const F_SETPIPE_SZ: ::c_int = 1031;
-pub const F_GETPIPE_SZ: ::c_int = 1032;
-
 // TODO(#235): Include file sealing fcntls once we have a way to verify them.
 
 pub const SIGTRAP: ::c_int = 5;
@@ -458,11 +451,6 @@ pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
 
-pub const LOCK_SH: ::c_int = 1;
-pub const LOCK_EX: ::c_int = 2;
-pub const LOCK_NB: ::c_int = 4;
-pub const LOCK_UN: ::c_int = 8;
-
 pub const SA_NODEFER: ::c_int = 0x40000000;
 pub const SA_RESETHAND: ::c_int = 0x80000000;
 pub const SA_RESTART: ::c_int = 0x10000000;
@@ -589,11 +577,6 @@ pub const __WNOTHREAD: ::c_int = 0x20000000;
 pub const __WALL: ::c_int = 0x40000000;
 pub const __WCLONE: ::c_int = 0x80000000;
 
-pub const SPLICE_F_MOVE: ::c_uint = 0x01;
-pub const SPLICE_F_NONBLOCK: ::c_uint = 0x02;
-pub const SPLICE_F_MORE: ::c_uint = 0x04;
-pub const SPLICE_F_GIFT: ::c_uint = 0x08;
-
 pub const RTLD_LOCAL: ::c_int = 0;
 
 pub const LOG_CRON: ::c_int = 9 << 3;
@@ -632,6 +615,18 @@ pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_FADV_WILLNEED: ::c_int = 3;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+
+// Here start non POSIX definitions.
+pub const F_SETLEASE: ::c_int = 1024;
+pub const F_GETLEASE: ::c_int = 1025;
+pub const F_NOTIFY: ::c_int = 1026;
+pub const F_SETPIPE_SZ: ::c_int = 1031;
+pub const F_GETPIPE_SZ: ::c_int = 1032;
+
+pub const SPLICE_F_MOVE: ::c_uint = 0x01;
+pub const SPLICE_F_NONBLOCK: ::c_uint = 0x02;
+pub const SPLICE_F_MORE: ::c_uint = 0x04;
+pub const SPLICE_F_GIFT: ::c_uint = 0x08;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
@@ -758,20 +753,6 @@ extern {
                     in_fd: ::c_int,
                     offset: *mut off_t,
                     count: ::size_t) -> ::ssize_t;
-    pub fn splice(fd_in: ::c_int,
-                  off_in: *mut ::loff_t,
-                  fd_out: ::c_int,
-                  off_out: *mut ::loff_t,
-                  len: ::size_t,
-                  flags: ::c_uint) -> ::ssize_t;
-    pub fn tee(fd_in: ::c_int,
-               fd_out: ::c_int,
-               len: ::size_t,
-               flags: ::c_uint) -> ::ssize_t;
-    pub fn vmsplice(fd: ::c_int,
-                    iov: *const ::iovec,
-                    nr_segs: ::size_t,
-                    flags: ::c_uint) -> ::ssize_t;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
                      times: *const ::timespec, flag: ::c_int) -> ::c_int;
@@ -861,6 +842,21 @@ extern {
                            advise: ::c_int) -> ::c_int;
     pub fn posix_fallocate64(fd: ::c_int, offset: ::off64_t,
                              len: ::off64_t) -> ::c_int;
+
+    pub fn vmsplice(fd: ::c_int,
+                    iov: *const ::iovec,
+                    nr_segs: ::size_t,
+                    flags: ::c_uint) -> ::ssize_t;
+    pub fn splice(fd_in: ::c_int,
+                  off_in: *mut ::loff_t,
+                  fd_out: ::c_int,
+                  off_out: *mut ::loff_t,
+                  len: ::size_t,
+                  flags: ::c_uint) -> ::ssize_t;
+    pub fn tee(fd_in: ::c_int,
+               fd_out: ::c_int,
+               len: ::size_t,
+               flags: ::c_uint) -> ::ssize_t;
 }
 
 cfg_if! {
