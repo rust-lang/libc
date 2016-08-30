@@ -22,7 +22,7 @@ cfg_if! {
 
 /* Header <fcntl.h> */
 cfg_if! {
-    if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
+    if #[cfg(not(any(feature = "file_offset64", target_env = "musl")))] {
         pub const F_GETLK: ::c_int = 14;
         pub const F_SETLK: ::c_int = 6;
         pub const F_SETLKW: ::c_int = 7;

@@ -8,7 +8,7 @@ pub type blksize_t = i32;
 pub type nlink_t = u32;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
-pub type rlim_t = c_ulong;
+pub type rlim_t = ::c_ulong;
 
 s! {
     pub struct stat {
@@ -558,6 +558,10 @@ pub const ISIG: ::tcflag_t = 0x00000001;
 pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
+
+// Dirty hack to make tests pass, but it is actually already defined
+// in the `other` module.
+pub const O_FSYNC: ::c_int = ::O_SYNC;
 
 #[link(name = "util")]
 extern {

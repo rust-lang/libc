@@ -665,7 +665,7 @@ extern {
     pub fn readahead(fd: ::c_int, offset: ::off64_t,
                      count: ::size_t) -> ::ssize_t;
     pub fn sync_file_range(fd: ::c_int, from: ::off64_t, to: ::off64_t,
-			               flags: ::c_uint) -> ::c_int;
+                           flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {

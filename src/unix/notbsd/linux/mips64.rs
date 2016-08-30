@@ -203,6 +203,10 @@ pub const SO_RCVTIMEO: ::c_int = 4102;
 pub const SO_REUSEADDR: ::c_int = 4;
 pub const SO_SNDTIMEO: ::c_int = 4101;
 
+// Dirty hack to make tests pass, but it is actually already defined
+// in the `other` module.
+pub const O_FSYNC: ::c_int = ::O_SYNC;
+
 #[link(name = "util")]
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
