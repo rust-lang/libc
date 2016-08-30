@@ -33,8 +33,13 @@ pub const FAPPEND: ::c_int = ::O_APPEND;
 // The macro O_FSYNC is NOT defined in Musl, but the macro
 // FFSYNC is defined as being equal to O_FSYNC. This is
 // a bug in Musl itself, but has to be solved here for the tests to work.
-#[cfg(not(target_env = "musl"))]
-pub const FFSYNC: ::c_int = ::O_FSYNC;
+cfg_if! {
+    if #[cfg(not(target_env = "musl"))] {
+        pub const FFSYNC: ::c_int = ::O_FSYNC;
+    } else {
+
+    }
+}
 pub const FASYNC: ::c_int = ::O_ASYNC;
 pub const FNONBLOCK: ::c_int = ::O_NONBLOCK;
 pub const FNDELAY: ::c_int = ::O_NDELAY;

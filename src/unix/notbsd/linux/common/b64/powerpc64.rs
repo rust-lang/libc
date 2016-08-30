@@ -25,7 +25,7 @@ pub const O_SYNC: ::c_int = 0x101000;
 // Here start non POSIX definitions.
 pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_DIRECT: ::c_int = 0x20000;
-pub const O_LARGEFILE: ::c_int = 0x10000;
+pub const O_LARGEFILE: ::c_int = 0;
 pub const O_NOATIME: ::c_int = 0x40000;
 pub const O_PATH: ::c_int = 0x200000;
 pub const O_TMPFILE: ::c_int = 0x404000;
