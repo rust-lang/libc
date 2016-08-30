@@ -604,7 +604,7 @@ pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
 
 pub const AT_FDCWD: ::c_int = -100;
-pub const AT_EACCESS: ::c_int = 0x200;
+// AT_EACCESS doesn’t exist in Bionic (for Android).
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
 pub const AT_REMOVEDIR: ::c_int = 0x200;

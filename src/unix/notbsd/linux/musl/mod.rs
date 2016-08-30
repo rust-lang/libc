@@ -235,11 +235,6 @@ pub const F_SETOWN_EX: ::c_int = 15;
 pub const F_GETOWN_EX: ::c_int = 16;
 pub const F_GETOWNER_UIDS: ::c_int = 17;
 
-// This macro is NOT defined in Musl, but the macro
-// FFSYNC is defined as being equal to O_FSYNC. This is
-// a bug in Musl itself, but has to be solved here for the tests to work.
-pub const O_FSYNC: ::c_int = ::O_SYNC;
-
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;

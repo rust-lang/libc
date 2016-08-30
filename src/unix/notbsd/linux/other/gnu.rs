@@ -13,7 +13,9 @@ pub const F_OFD_SETLK: ::c_int = 37;
 pub const F_OFD_SETLKW: ::c_int = 38;
 
 // Here start non POSIX definitions.
-pub const FSYNC: ::c_int = ::O_SYNC;
+/* Defined in glibc but doesn’t seem to exist for Linux.
+pub const FSYNC: ::c_int = ::O_SYNC;)
+*/
 
 pub const F_OWNER_TID: ::c_int = 0;
 pub const F_OWNER_PID: ::c_int = 1;
@@ -25,11 +27,13 @@ pub const FALLOC_FL_ZERO_RANGE: ::c_int = 0x10;
 
 pub const MAX_HANDLE_SZ: ::size_t = 128;
 
+/* Defined in glibc but don’t seem to exist for Linux.
 pub const O_SHLOCK: ::c_int = 0x0010;
 pub const O_EXLOCK: ::c_int = 0x0020;
 
 pub const FREAD: ::c_int = 1;
 pub const FWRITE: ::c_int = 2;
+*/
 
 pub const F_SETOWN_EX: ::c_int = 15;
 pub const F_GETOWN_EX: ::c_int = 16;
