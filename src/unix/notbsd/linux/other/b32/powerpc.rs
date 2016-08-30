@@ -1,4 +1,3 @@
-pub type c_char = u8;
 pub type wchar_t = i32;
 
 s! {
@@ -54,10 +53,6 @@ s! {
         __glibc_reserved6: ::c_ulong,
     }
 }
-
-pub const O_DIRECT: ::c_int = 0x20000;
-pub const O_DIRECTORY: ::c_int = 0x4000;
-pub const O_NOFOLLOW: ::c_int = 0x8000;
 
 pub const MAP_LOCKED: ::c_int = 0x00080;
 pub const MAP_NORESERVE: ::c_int = 0x00040;

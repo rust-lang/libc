@@ -1,18 +1,14 @@
-pub type c_char = i8;
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type clock_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
 pub type wchar_t = i32;
-pub type off_t = i32;
 pub type ino_t = u32;
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
-pub type rlim_t = c_ulong;
+pub type rlim_t = ::c_ulong;
 
 s! {
     pub struct stat {
@@ -163,16 +159,6 @@ s! {
         pub c_cc: [::cc_t; ::NCCS],
     }
 
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_sysid: ::c_long,
-        pub l_pid: ::pid_t,
-        pad: [::c_long; 4],
-    }
-
     pub struct sysinfo {
         pub uptime: ::c_long,
         pub loads: [::c_ulong; 3],
@@ -206,10 +192,6 @@ pub const FOPEN_MAX: ::c_uint = 16;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const _SC_2_C_VERSION: ::c_int = 96;
 pub const RUSAGE_THREAD: ::c_int = 1;
-pub const O_ACCMODE: ::c_int = 3;
-pub const O_DIRECT: ::c_int = 0x8000;
-pub const O_DIRECTORY: ::c_int = 0x10000;
-pub const O_NOFOLLOW: ::c_int = 0x20000;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
@@ -221,18 +203,6 @@ pub const RLIMIT_NPROC: ::c_int = 8;
 pub const RLIMIT_MEMLOCK: ::c_int = 9;
 pub const RLIMIT_NLIMITS: ::c_int = 16;
 pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
-
-pub const O_APPEND: ::c_int = 8;
-pub const O_CREAT: ::c_int = 256;
-pub const O_EXCL: ::c_int = 1024;
-pub const O_NOCTTY: ::c_int = 2048;
-pub const O_NONBLOCK: ::c_int = 128;
-pub const O_SYNC: ::c_int = 0x4010;
-pub const O_RSYNC: ::c_int = 0x4010;
-pub const O_DSYNC: ::c_int = 0x10;
-pub const O_FSYNC: ::c_int = 0x4010;
-pub const O_ASYNC: ::c_int = 0x1000;
-pub const O_NDELAY: ::c_int = 0x80;
 
 pub const SOCK_NONBLOCK: ::c_int = 128;
 
@@ -489,12 +459,6 @@ pub const MAP_HUGETLB: ::c_int = 0x080000;
 
 pub const EFD_NONBLOCK: ::c_int = 0x80;
 
-pub const F_GETLK: ::c_int = 14;
-pub const F_GETOWN: ::c_int = 23;
-pub const F_SETOWN: ::c_int = 24;
-pub const F_SETLK: ::c_int = 6;
-pub const F_SETLKW: ::c_int = 7;
-
 pub const SFD_NONBLOCK: ::c_int = 0x80;
 
 pub const TCGETS: ::c_ulong = 0x540d;
@@ -594,6 +558,10 @@ pub const ISIG: ::tcflag_t = 0x00000001;
 pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
+
+// Dirty hack to make tests pass, but it is actually already defined
+// in the `other` module.
+pub const O_FSYNC: ::c_int = ::O_SYNC;
 
 #[link(name = "util")]
 extern {

@@ -6,9 +6,7 @@ pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
 pub type pthread_t = c_ulong;
-pub type mode_t = u32;
 pub type ino64_t = u64;
-pub type off64_t = i64;
 pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
 pub type key_t = ::c_int;
@@ -18,6 +16,9 @@ pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
+
+/* Header <sys/type.h> */
+pub type mode_t = ::uint32_t;
 
 s! {
     pub struct dirent {
@@ -541,12 +542,6 @@ extern {
                     offset: ::off64_t,
                     whence: ::c_int) -> ::c_int;
     pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
-    pub fn fallocate(fd: ::c_int, mode: ::c_int,
-                     offset: ::off_t, len: ::off_t) -> ::c_int;
-    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
-                           len: ::off_t) -> ::c_int;
-    pub fn readahead(fd: ::c_int, offset: ::off64_t,
-                     count: ::size_t) -> ::ssize_t;
     pub fn getxattr(path: *const c_char, name: *const c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
     pub fn lgetxattr(path: *const c_char, name: *const c_char,
@@ -660,6 +655,17 @@ extern {
                     mode: ::mode_t) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
+
+    /* Header <fcntl.h> */
+    // Here start non POSIX definitions.
+    pub fn fallocate(fd: ::c_int, mode: ::c_int,
+                     offset: ::off_t, len: ::off_t) -> ::c_int;
+    pub fn fallocate64(fd: ::c_int, mode: ::c_int,
+                       offset: ::off64_t, len: ::off64_t) -> ::c_int;
+    pub fn readahead(fd: ::c_int, offset: ::off64_t,
+                     count: ::size_t) -> ::ssize_t;
+    pub fn sync_file_range(fd: ::c_int, from: ::off64_t, to: ::off64_t,
+                           flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {
@@ -667,14 +673,22 @@ cfg_if! {
                  target_os = "emscripten"))] {
         mod musl;
         pub use self::musl::*;
+        mod common;
+        pub use self::common::*;
     } else if #[cfg(any(target_arch = "mips", target_arch = "mipsel"))] {
         mod mips;
         pub use self::mips::*;
+        mod common;
+        pub use self::common::*;
     } else if #[cfg(any(target_arch = "mips64"))] {
         mod mips64;
         pub use self::mips64::*;
+        mod common;
+        pub use self::common::*;
     } else {
         mod other;
         pub use self::other::*;
+        mod common;
+        pub use self::common::*;
     }
 }

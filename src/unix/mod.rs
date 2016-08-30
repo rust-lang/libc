@@ -133,8 +133,6 @@ pub const DT_REG: u8 = 8;
 pub const DT_LNK: u8 = 10;
 pub const DT_SOCK: u8 = 12;
 
-pub const FD_CLOEXEC: ::c_int = 0x1;
-
 pub const USRQUOTA: ::c_int = 0;
 pub const GRPQUOTA: ::c_int = 1;
 
@@ -197,6 +195,9 @@ pub const PRIO_USER: ::c_int = 2;
 
 pub const PRIO_MIN: ::c_int = -20;
 pub const PRIO_MAX: ::c_int = 20;
+
+/* Header <fcntl.h> */
+pub const FD_CLOEXEC: ::c_int = 0x1;
 
 cfg_if! {
     if #[cfg(dox)] {
@@ -317,16 +318,6 @@ extern {
                link_name = "fdopen$UNIX2003")]
     pub fn fdopen(fd: ::c_int, mode: *const c_char) -> *mut ::FILE;
     pub fn fileno(stream: *mut ::FILE) -> ::c_int;
-
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "open$UNIX2003")]
-    pub fn open(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "creat$UNIX2003")]
-    pub fn creat(path: *const c_char, mode: mode_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "fcntl$UNIX2003")]
-    pub fn fcntl(fd: ::c_int, cmd: ::c_int, ...) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
                link_name = "opendir$INODE64")]
@@ -715,6 +706,17 @@ extern {
                     pshared: ::c_int,
                     value: ::c_uint)
                     -> ::c_int;
+
+    /* Header <fcntl.h> */
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "creat$UNIX2003")]
+    pub fn creat(path: *const c_char, mode: mode_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "fcntl$UNIX2003")]
+    pub fn fcntl(fd: ::c_int, cmd: ::c_int, ...) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "open$UNIX2003")]
+    pub fn open(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
 }
 
 // TODO: get rid of this cfg(not(...))

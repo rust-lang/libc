@@ -1,13 +1,9 @@
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
-pub type c_char = i8;
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type ino_t = u64;
 pub type nlink_t = u64;
-pub type off_t = i64;
 pub type rlim_t = ::c_ulong;
 pub type suseconds_t = i64;
 pub type time_t = i64;
@@ -191,11 +187,6 @@ pub const ETIMEDOUT: ::c_int = 145;
 pub const FIOCLEX: ::c_ulong = 0x6601;
 pub const FIONBIO: ::c_ulong = 0x667e;
 pub const MAP_ANON: ::c_int = 0x800;
-pub const O_ACCMODE: ::c_int = 3;
-pub const O_APPEND: ::c_int = 8;
-pub const O_CREAT: ::c_int = 256;
-pub const O_EXCL: ::c_int = 1024;
-pub const O_NONBLOCK: ::c_int = 128;
 pub const PTHREAD_STACK_MIN: ::size_t = 131072;
 pub const RLIM_INFINITY: ::rlim_t = 0xffffffffffffffff;
 pub const SA_ONSTACK: ::c_int = 0x08000000;
@@ -211,6 +202,10 @@ pub const SO_ERROR: ::c_int = 4103;
 pub const SO_RCVTIMEO: ::c_int = 4102;
 pub const SO_REUSEADDR: ::c_int = 4;
 pub const SO_SNDTIMEO: ::c_int = 4101;
+
+// Dirty hack to make tests pass, but it is actually already defined
+// in the `other` module.
+pub const O_FSYNC: ::c_int = ::O_SYNC;
 
 #[link(name = "util")]
 extern {

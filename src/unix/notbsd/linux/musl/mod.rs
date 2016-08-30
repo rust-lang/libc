@@ -1,11 +1,10 @@
-pub type clock_t = c_long;
-pub type time_t = c_long;
-pub type suseconds_t = c_long;
+pub type clock_t = ::c_long;
+pub type time_t = ::c_long;
+pub type suseconds_t = ::c_long;
 pub type ino_t = u64;
-pub type off_t = i64;
 pub type blkcnt_t = i64;
 
-pub type blksize_t = c_long;
+pub type blksize_t = ::c_long;
 pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
@@ -41,14 +40,6 @@ s! {
         pub __c_ospeed: ::speed_t,
     }
 
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_pid: ::pid_t,
-    }
-
     pub struct sysinfo {
         pub uptime: ::c_ulong,
         pub loads: [::c_ulong; 3],
@@ -70,8 +61,6 @@ s! {
 pub const BUFSIZ: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 10000;
 pub const FOPEN_MAX: ::c_uint = 1000;
-pub const O_ACCMODE: ::c_int = 0o10000003;
-pub const O_NDELAY: ::c_int = O_NONBLOCK;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 
@@ -93,9 +82,6 @@ pub const TCP_FASTOPEN: ::c_int = 23;
 pub const TCP_TIMESTAMP: ::c_int = 24;
 
 pub const SIGUNUSED: ::c_int = ::SIGSYS;
-
-pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
-pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
@@ -218,6 +204,36 @@ pub const ISIG: ::tcflag_t = 0x00000001;
 pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
+
+/* Header <fcntl.h> */
+pub const O_ACCMODE: ::c_int = 0x3 | ::O_SEARCH;
+
+// Both are defined in POSIX standard, but absent from other libc.
+pub const O_SEARCH: ::c_int = ::O_PATH;
+pub const O_EXEC: ::c_int = ::O_PATH;
+
+// Here start non POSIX definitions.
+pub const F_OFD_GETLK: ::c_int = 36;
+pub const F_OFD_SETLK: ::c_int = 37;
+pub const F_OFD_SETLKW: ::c_int = 38;
+
+pub const F_CANCELLK: ::c_int = 1029;
+pub const F_ADD_SEALS: ::c_int = 1033;
+pub const F_GET_SEALS: ::c_int = 1034;
+
+pub const F_SEAL_SEAL: ::c_int = 0x0001;
+pub const F_SEAL_SHRINK: ::c_int = 0x0002;
+pub const F_SEAL_GROW: ::c_int = 0x0004;
+pub const F_SEAL_WRITE: ::c_int = 0x0008;
+
+pub const F_OWNER_TID: ::c_int = 0;
+pub const F_OWNER_PID: ::c_int = 1;
+pub const F_OWNER_PGRP: ::c_int = 2;
+pub const F_OWNER_GID: ::c_int = ::F_OWNER_PGRP;
+
+pub const F_SETOWN_EX: ::c_int = 15;
+pub const F_GETOWN_EX: ::c_int = 16;
+pub const F_GETOWNER_UIDS: ::c_int = 17;
 
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;

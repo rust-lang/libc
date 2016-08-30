@@ -1,6 +1,5 @@
 //! PowerPC64-specific definitions for 64-bit linux-like values
 
-pub type c_char = u8;
 pub type wchar_t = i32;
 pub type nlink_t = u64;
 pub type blksize_t = i64;
@@ -82,10 +81,6 @@ s! {
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
-
-pub const O_DIRECTORY: ::c_int = 0x4000;
-pub const O_NOFOLLOW: ::c_int = 0x8000;
-pub const O_DIRECT: ::c_int = 0x20000;
 
 pub const MAP_LOCKED: ::c_int = 0x00080;
 pub const MAP_NORESERVE: ::c_int = 0x00040;
