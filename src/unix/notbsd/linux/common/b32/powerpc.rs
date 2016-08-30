@@ -1,12 +1,12 @@
 // Native C types
 pub type c_char = u8;
 
-s! {
-    /* Header <fcntl.h> */
-    cfg_if! {
-        if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
-            type flock = ::flock64;
-        } else {
+/* Header <fcntl.h> */
+cfg_if! {
+    if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
+        type flock = ::flock64;
+    } else {
+        s! {
             pub struct flock {
                 pub l_type: ::c_short,
                 pub l_whence: ::c_short,
