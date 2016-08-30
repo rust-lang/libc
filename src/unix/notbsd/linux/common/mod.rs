@@ -1,6 +1,6 @@
 /* Header <sys/type.h> */
 cfg_if! {
-    if #[cfg(feature = "file_offset64")] {
+    if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
         pub type off_t = ::off64_t;
     } else {
         pub type off_t = ::c_long;

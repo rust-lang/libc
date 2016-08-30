@@ -4,7 +4,7 @@ pub type c_ulong = u32;
 
 /* Header <fcntl.h> */
 cfg_if! {
-    if #[cfg(feature = "file_offset64")] {
+    if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
         pub const F_GETLK: ::c_int = ::F_GETLK64;
         pub const F_SETLK: ::c_int = ::F_SETLK64;
         pub const F_SETLKW: ::c_int = ::F_SETLKW64;

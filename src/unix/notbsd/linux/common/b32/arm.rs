@@ -4,7 +4,7 @@ pub type c_char = u8;
 s! {
     /* Header <fcntl.h> */
     cfg_if! {
-        if #[cfg(feature = "file_offset64")] {
+        if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
             type flock = ::flock64;
         } else {
             pub struct flock {
@@ -19,7 +19,7 @@ s! {
 }
 
 /* Header <fcntl.h> */
-if #[cfg(feature = "file_offset64")] {
+if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
     pub const F_GETLK: ::c_int = 5;
     pub const F_SETLK: ::c_int = 6;
     pub const F_SETLKW: ::c_int = 7;
