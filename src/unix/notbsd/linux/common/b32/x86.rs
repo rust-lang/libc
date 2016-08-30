@@ -19,10 +19,14 @@ cfg_if! {
 }
 
 /* Header <fcntl.h> */
-if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
-    pub const F_GETLK: ::c_int = 5;
-    pub const F_SETLK: ::c_int = 6;
-    pub const F_SETLKW: ::c_int = 7;
+cfg_if! {
+    if #[cfg(any(feature = "file_offset64", target_env = "musl"))] {
+        pub const F_GETLK: ::c_int = 5;
+        pub const F_SETLK: ::c_int = 6;
+        pub const F_SETLKW: ::c_int = 7;
+    } else {
+
+    }
 }
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;

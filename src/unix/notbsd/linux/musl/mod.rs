@@ -1,10 +1,10 @@
-pub type clock_t = c_long;
-pub type time_t = c_long;
-pub type suseconds_t = c_long;
+pub type clock_t = ::c_long;
+pub type time_t = ::c_long;
+pub type suseconds_t = ::c_long;
 pub type ino_t = u64;
 pub type blkcnt_t = i64;
 
-pub type blksize_t = c_long;
+pub type blksize_t = ::c_long;
 pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
@@ -234,6 +234,11 @@ pub const F_OWNER_GID: ::c_int = ::F_OWNER_PGRP;
 pub const F_SETOWN_EX: ::c_int = 15;
 pub const F_GETOWN_EX: ::c_int = 16;
 pub const F_GETOWNER_UIDS: ::c_int = 17;
+
+// This macro is NOT defined in Musl, but the macro
+// FFSYNC is defined as being equal to O_FSYNC. This is
+// a bug in Musl itself, but has to be solved here for the tests to work.
+pub const O_FSYNC: ::c_int = ::O_SYNC;
 
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
