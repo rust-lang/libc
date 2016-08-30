@@ -36,3 +36,8 @@ cfg_if! {
         // Unknown target_arch
     }
 }
+
+/* Header <fcntl.h> */
+pub const F_RDLCK: ::c_short = 0;
+pub const F_WRLCK: ::c_short = 1;
+pub const F_UNLCK: ::c_short = 2;

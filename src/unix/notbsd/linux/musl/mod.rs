@@ -61,7 +61,6 @@ s! {
 pub const BUFSIZ: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 10000;
 pub const FOPEN_MAX: ::c_uint = 1000;
-pub const O_ACCMODE: ::c_int = 0o10000003;
 pub const O_NDELAY: ::c_int = O_NONBLOCK;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
@@ -209,6 +208,13 @@ pub const ISIG: ::tcflag_t = 0x00000001;
 pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
+
+/* Header <fcntl.h> */
+pub const O_ACCMODE: ::c_int = 0x3 | ::O_SEARCH;
+
+// Both are defined in POSIX standard, but absent from other libc.
+pub const O_SEARCH: ::c_int = ::O_PATH;
+pub const O_EXEC: ::c_int = ::O_PATH;
 
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;

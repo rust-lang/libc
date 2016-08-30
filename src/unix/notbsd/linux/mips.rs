@@ -194,8 +194,6 @@ pub const _SC_2_C_VERSION: ::c_int = 96;
 pub const RUSAGE_THREAD: ::c_int = 1;
 pub const O_ACCMODE: ::c_int = 3;
 pub const O_DIRECT: ::c_int = 0x8000;
-pub const O_DIRECTORY: ::c_int = 0x10000;
-pub const O_NOFOLLOW: ::c_int = 0x20000;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
@@ -208,14 +206,6 @@ pub const RLIMIT_MEMLOCK: ::c_int = 9;
 pub const RLIMIT_NLIMITS: ::c_int = 16;
 pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
 
-pub const O_APPEND: ::c_int = 8;
-pub const O_CREAT: ::c_int = 256;
-pub const O_EXCL: ::c_int = 1024;
-pub const O_NOCTTY: ::c_int = 2048;
-pub const O_NONBLOCK: ::c_int = 128;
-pub const O_SYNC: ::c_int = 0x4010;
-pub const O_RSYNC: ::c_int = 0x4010;
-pub const O_DSYNC: ::c_int = 0x10;
 pub const O_FSYNC: ::c_int = 0x4010;
 pub const O_ASYNC: ::c_int = 0x1000;
 pub const O_NDELAY: ::c_int = 0x80;
@@ -474,12 +464,6 @@ pub const PTRACE_SETREGS: ::c_uint = 13;
 pub const MAP_HUGETLB: ::c_int = 0x080000;
 
 pub const EFD_NONBLOCK: ::c_int = 0x80;
-
-pub const F_GETLK: ::c_int = 14;
-pub const F_GETOWN: ::c_int = 23;
-pub const F_SETOWN: ::c_int = 24;
-pub const F_SETLK: ::c_int = 6;
-pub const F_SETLKW: ::c_int = 7;
 
 pub const SFD_NONBLOCK: ::c_int = 0x80;
 

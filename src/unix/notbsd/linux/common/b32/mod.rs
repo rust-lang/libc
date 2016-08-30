@@ -19,3 +19,10 @@ cfg_if! {
         // Unknown target_arch
     }
 }
+
+/* Header <fcntl.h> */
+if #[cfg(feature = "file_offset64")] {
+    pub const F_GETLK: ::c_int = ::F_GETLK64;
+    pub const F_SETLK: ::c_int = ::F_SETLK64;
+    pub const F_SETLKW: ::c_int = ::F_SETLKW64;
+}

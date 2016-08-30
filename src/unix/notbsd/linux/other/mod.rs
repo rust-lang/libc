@@ -148,14 +148,6 @@ pub const RLIM_INFINITY: ::rlim_t = !0;
 pub const RLIMIT_RTTIME: ::c_int = 15;
 pub const RLIMIT_NLIMITS: ::c_int = 16;
 
-pub const O_APPEND: ::c_int = 1024;
-pub const O_CREAT: ::c_int = 64;
-pub const O_EXCL: ::c_int = 128;
-pub const O_NOCTTY: ::c_int = 256;
-pub const O_NONBLOCK: ::c_int = 2048;
-pub const O_SYNC: ::c_int = 1052672;
-pub const O_RSYNC: ::c_int = 1052672;
-pub const O_DSYNC: ::c_int = 4096;
 pub const O_FSYNC: ::c_int = 0x101000;
 
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
@@ -351,7 +343,6 @@ pub const FOPEN_MAX: ::c_uint = 16;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const _SC_2_C_VERSION: ::c_int = 96;
 pub const RUSAGE_THREAD: ::c_int = 1;
-pub const O_ACCMODE: ::c_int = 3;
 pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_NDELAY: ::c_int = 0x800;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
@@ -427,12 +418,6 @@ pub const MAP_HUGETLB: ::c_int = 0x040000;
 
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 
-pub const F_GETLK: ::c_int = 5;
-pub const F_GETOWN: ::c_int = 9;
-pub const F_SETOWN: ::c_int = 8;
-pub const F_SETLK: ::c_int = 6;
-pub const F_SETLKW: ::c_int = 7;
-
 pub const SEEK_DATA: ::c_int = 3;
 pub const SEEK_HOLE: ::c_int = 4;
 
@@ -483,6 +468,9 @@ cfg_if! {
         pub const PTHREAD_STACK_MIN: ::size_t = 131072;
     }
 }
+
+/* Header <fcntl.h> */
+pub const O_ACCMODE: ::c_int = 3;
 
 extern {
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;

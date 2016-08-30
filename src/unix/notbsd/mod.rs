@@ -184,17 +184,10 @@ pub const _IOFBF: ::c_int = 0;
 pub const _IONBF: ::c_int = 2;
 pub const _IOLBF: ::c_int = 1;
 
-pub const F_DUPFD: ::c_int = 0;
-pub const F_GETFD: ::c_int = 1;
-pub const F_SETFD: ::c_int = 2;
-pub const F_GETFL: ::c_int = 3;
-pub const F_SETFL: ::c_int = 4;
-
 // Linux-specific fcntls
 pub const F_SETLEASE: ::c_int = 1024;
 pub const F_GETLEASE: ::c_int = 1025;
 pub const F_NOTIFY: ::c_int = 1026;
-pub const F_DUPFD_CLOEXEC: ::c_int = 1030;
 pub const F_SETPIPE_SZ: ::c_int = 1031;
 pub const F_GETPIPE_SZ: ::c_int = 1032;
 
@@ -233,12 +226,6 @@ pub const RLIMIT_NICE: ::c_int = 13;
 pub const RLIMIT_RTPRIO: ::c_int = 14;
 
 pub const RUSAGE_SELF: ::c_int = 0;
-
-pub const O_RDONLY: ::c_int = 0;
-pub const O_WRONLY: ::c_int = 1;
-pub const O_RDWR: ::c_int = 2;
-pub const O_TRUNC: ::c_int = 512;
-pub const O_CLOEXEC: ::c_int = 0x80000;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 
@@ -609,16 +596,6 @@ pub const SPLICE_F_GIFT: ::c_uint = 0x08;
 
 pub const RTLD_LOCAL: ::c_int = 0;
 
-pub const POSIX_FADV_NORMAL: ::c_int = 0;
-pub const POSIX_FADV_RANDOM: ::c_int = 1;
-pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
-pub const POSIX_FADV_WILLNEED: ::c_int = 3;
-pub const POSIX_FADV_DONTNEED: ::c_int = 4;
-pub const POSIX_FADV_NOREUSE: ::c_int = 5;
-
-pub const AT_FDCWD: ::c_int = -100;
-pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100;
-
 pub const LOG_CRON: ::c_int = 9 << 3;
 pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
 pub const LOG_FTP: ::c_int = 11 << 3;
@@ -627,6 +604,34 @@ pub const LOG_PERROR: ::c_int = 0x20;
 pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: ::c_uint = 16;
+
+/* Header <fcntl.h> */
+pub const F_DUPFD: ::c_int = 0;
+pub const F_DUPFD_CLOEXEC: ::c_int = 1030;
+pub const F_GETFD: ::c_int = 1;
+pub const F_SETFD: ::c_int = 2;
+pub const F_GETFL: ::c_int = 3;
+pub const F_SETFL: ::c_int = 4;
+
+pub const O_CLOEXEC: ::c_int = 0x80000;
+pub const O_TRUNC: ::c_int = 0x200;
+
+pub const O_RDONLY: ::c_int = 0;
+pub const O_WRONLY: ::c_int = 1;
+pub const O_RDWR: ::c_int = 2;
+
+pub const AT_FDCWD: ::c_int = -100;
+pub const AT_EACCESS: ::c_int = 0x200;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
+pub const AT_REMOVEDIR: ::c_int = 0x200;
+
+pub const POSIX_FADV_NORMAL: ::c_int = 0;
+pub const POSIX_FADV_RANDOM: ::c_int = 1;
+pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
+pub const POSIX_FADV_WILLNEED: ::c_int = 3;
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
@@ -767,9 +772,6 @@ extern {
                     iov: *const ::iovec,
                     nr_segs: ::size_t,
                     flags: ::c_uint) -> ::ssize_t;
-
-    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
-                         advise: ::c_int) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
                      times: *const ::timespec, flag: ::c_int) -> ::c_int;
@@ -779,7 +781,6 @@ extern {
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
-    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
     pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
     pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
     pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
@@ -792,7 +793,6 @@ extern {
                   fd: ::c_int,
                   offset: off64_t)
                   -> *mut ::c_void;
-    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
     pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
                    offset: off64_t) -> ::ssize_t;
     pub fn pwrite64(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
@@ -804,8 +804,6 @@ extern {
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn sysinfo (info: *mut ::sysinfo) -> ::c_int;
 
-    pub fn openat(dirfd: ::c_int, pathname: *const ::c_char,
-                  flags: ::c_int, ...) -> ::c_int;
     pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
                      mode: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn fchmodat(dirfd: ::c_int, pathname: *const ::c_char,
@@ -845,6 +843,24 @@ extern {
     pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
     pub fn sem_timedwait(sem: *mut sem_t,
                          abstime: *const ::timespec) -> ::c_int;
+
+    /* Header <fcntl.h> */
+    pub fn openat(dirfd: ::c_int, pathname: *const ::c_char,
+                  flags: ::c_int, ...) -> ::c_int;
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
+                         advise: ::c_int) -> ::c_int;
+    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
+                           len: ::off_t) -> ::c_int;
+
+    // Here start non POSIX definitions.
+    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn openat64(dirfd: ::c_int, pathname: *const ::c_char,
+                    flags: ::c_int, ...) -> ::c_int;
+    pub fn posix_fadvise64(fd: ::c_int, offset: ::off64_t, len: ::off64_t,
+                           advise: ::c_int) -> ::c_int;
+    pub fn posix_fallocate64(fd: ::c_int, offset: ::off64_t,
+                             len: ::off64_t) -> ::c_int;
 }
 
 cfg_if! {

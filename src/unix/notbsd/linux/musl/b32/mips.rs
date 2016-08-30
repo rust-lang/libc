@@ -91,8 +91,6 @@ s! {
 }
 
 pub const O_DIRECT: ::c_int = 0o100000;
-pub const O_DIRECTORY: ::c_int = 0o200000;
-pub const O_NOFOLLOW: ::c_int = 0o400000;
 pub const O_ASYNC: ::c_int = 0o10000;
 
 pub const FIOCLEX: ::c_int = 0x6601;
@@ -103,15 +101,6 @@ pub const RLIMIT_NOFILE: ::c_int = 5;
 pub const RLIMIT_AS: ::c_int = 6;
 pub const RLIMIT_NPROC: ::c_int = 8;
 pub const RLIMIT_MEMLOCK: ::c_int = 9;
-
-pub const O_APPEND: ::c_int = 0o010;
-pub const O_CREAT: ::c_int = 0o400;
-pub const O_EXCL: ::c_int = 0o2000;
-pub const O_NOCTTY: ::c_int = 0o4000;
-pub const O_NONBLOCK: ::c_int = 0o200;
-pub const O_SYNC: ::c_int = 0o40020;
-pub const O_RSYNC: ::c_int = 0o40020;
-pub const O_DSYNC: ::c_int = 0o020;
 
 pub const SOCK_NONBLOCK: ::c_int = 0o200;
 
@@ -264,12 +253,6 @@ pub const SIG_UNBLOCK: ::c_int = 2;
 pub const EXTPROC: ::tcflag_t = 0o200000;
 
 pub const MAP_HUGETLB: ::c_int = 0x80000;
-
-pub const F_GETLK: ::c_int = 33;
-pub const F_GETOWN: ::c_int = 23;
-pub const F_SETLK: ::c_int = 34;
-pub const F_SETLKW: ::c_int = 35;
-pub const F_SETOWN: ::c_int = 24;
 
 pub const VEOF: usize = 16;
 pub const VEOL: usize = 17;
