@@ -455,9 +455,9 @@ extern {
                        flags: ::c_int) -> ::c_int;
     pub fn kevent(kq: ::c_int,
                   changelist: *const ::kevent,
-                  nchanges: ::size_t,
+                  nchanges: ::c_int,
                   eventlist: *mut ::kevent,
-                  nevents: ::size_t,
+                  nevents: ::c_int,
                   timeout: *const ::timespec) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
