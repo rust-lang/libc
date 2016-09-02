@@ -394,8 +394,6 @@ pub const NOTE_TRACK: ::uint32_t = 0x00000001;
 pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
 pub const NOTE_CHILD: ::uint32_t = 0x00000004;
 
-pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
-
 pub const CRTSCTS: ::tcflag_t = 0x00010000;
 
 pub const TMP_MAX : ::c_uint = 308915776;
