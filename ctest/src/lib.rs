@@ -764,6 +764,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("powerpc64", "64")
     } else if target.starts_with("powerpc") {
         ("powerpc", "32")
+    } else if target.starts_with("s390x") {
+        ("s390x", "64")
     } else {
         panic!("unknown arch/pointer width: {}", target)
     };
