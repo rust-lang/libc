@@ -171,8 +171,8 @@ s! {
     }
 }
 
-// FIXME POSIX_FADV_DONTNEED = 6
-// FIXME POSIX_FADV_NOREUSE = 7
+pub const POSIX_FADV_DONTNEED: ::c_int = 6;
+pub const POSIX_FADV_NOREUSE: ::c_int = 7;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;

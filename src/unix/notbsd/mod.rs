@@ -613,7 +613,10 @@ pub const POSIX_FADV_NORMAL: ::c_int = 0;
 pub const POSIX_FADV_RANDOM: ::c_int = 1;
 pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_FADV_WILLNEED: ::c_int = 3;
+// TODO modularize better
+#[cfg(targe_arch = "s390x")]
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+#[cfg(targe_arch = "s390x")]
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
 pub const AT_FDCWD: ::c_int = -100;
