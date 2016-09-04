@@ -365,6 +365,7 @@ pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
 pub const SO_REUSEADDR: ::c_int = 4;
+pub const SO_REUSEPORT: ::c_int = 0x200;
 pub const SO_TYPE: ::c_int = 4104;
 pub const SO_ERROR: ::c_int = 4103;
 pub const SO_DONTROUTE: ::c_int = 16;
