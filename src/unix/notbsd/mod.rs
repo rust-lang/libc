@@ -626,10 +626,6 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: ::c_uint = 16;
 
-pub const SYNC_FILE_RANGE_WAIT_BEFORE: ::c_int = 1;
-pub const SYNC_FILE_RANGE_WRITE: ::c_int = 2;
-pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_int = 4;
-
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -847,8 +843,6 @@ extern {
     pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
     pub fn sem_timedwait(sem: *mut sem_t,
                          abstime: *const ::timespec) -> ::c_int;
-    pub fn sync_file_range(fd: ::c_int, offset: ::off64_t,
-                           nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {

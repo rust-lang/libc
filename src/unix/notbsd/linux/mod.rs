@@ -479,6 +479,10 @@ pub const RB_POWER_OFF: ::c_int = 0x4321fedcu32 as i32;
 pub const RB_SW_SUSPEND: ::c_int = 0xd000fce2u32 as i32;
 pub const RB_KEXEC: ::c_int = 0x45584543u32 as i32;
 
+pub const SYNC_FILE_RANGE_WAIT_BEFORE: ::c_int = 1;
+pub const SYNC_FILE_RANGE_WRITE: ::c_int = 2;
+pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_int = 4;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
@@ -660,6 +664,8 @@ extern {
                     mode: ::mode_t) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
+    pub fn sync_file_range(fd: ::c_int, offset: ::off64_t,
+                           nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {
