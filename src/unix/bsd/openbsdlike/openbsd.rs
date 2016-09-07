@@ -277,7 +277,6 @@ pub const EVFILT_AIO: ::int16_t = -3;
 pub const EVFILT_PROC: ::int16_t = -5;
 pub const EVFILT_READ: ::int16_t = -1;
 pub const EVFILT_SIGNAL: ::int16_t = -6;
-pub const EVFILT_SYSCOUNT: ::int16_t = 7;
 pub const EVFILT_TIMER: ::int16_t = -7;
 pub const EVFILT_VNODE: ::int16_t = -4;
 pub const EVFILT_WRITE: ::int16_t = -2;

@@ -253,7 +253,6 @@ pub const EVFILT_TIMER: ::int16_t = -7;
 pub const EVFILT_PROCDESC: ::int16_t = -8;
 pub const EVFILT_USER: ::int16_t = -9;
 pub const EVFILT_FS: ::int16_t = -10;
-pub const EVFILT_SYSCOUNT: ::int16_t = 10;
 
 pub const EV_ADD: ::uint16_t = 0x1;
 pub const EV_DELETE: ::uint16_t = 0x2;

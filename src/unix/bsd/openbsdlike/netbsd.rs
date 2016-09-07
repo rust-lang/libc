@@ -359,7 +359,6 @@ pub const EVFILT_AIO: ::int32_t = 2;
 pub const EVFILT_PROC: ::int32_t = 4;
 pub const EVFILT_READ: ::int32_t = 0;
 pub const EVFILT_SIGNAL: ::int32_t = 5;
-pub const EVFILT_SYSCOUNT: ::int32_t = 7;
 pub const EVFILT_TIMER: ::int32_t = 6;
 pub const EVFILT_VNODE: ::int32_t = 3;
 pub const EVFILT_WRITE: ::int32_t = 1;
