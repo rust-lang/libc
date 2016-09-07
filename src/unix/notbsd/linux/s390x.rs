@@ -621,7 +621,6 @@ pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 pub const SYS_gettid: ::c_long = 236;
 pub const SYS_perf_event_open: ::c_long = 331;
 
-
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,
