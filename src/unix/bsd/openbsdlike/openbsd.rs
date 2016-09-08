@@ -360,7 +360,6 @@ pub const KERN_OSVERSION: ::c_int = 27;
 pub const KERN_SOMAXCONN: ::c_int = 28;
 pub const KERN_SOMINCONN: ::c_int = 29;
 pub const KERN_USERMOUNT: ::c_int = 30;
-pub const KERN_RND: ::c_int = 31;
 pub const KERN_NOSUIDCOREDUMP: ::c_int = 32;
 pub const KERN_FSYNC: ::c_int = 33;
 pub const KERN_SYSVMSG: ::c_int = 34;
