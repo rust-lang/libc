@@ -16,9 +16,21 @@ TARGET=$1
 if [ "$QEMU" != "" ]; then
   tmpdir=/tmp/qemu-img-creation
   mkdir -p $tmpdir
-  if [ ! -f $tmpdir/$QEMU ]; then
-    curl https://people.mozilla.org/~acrichton/libc-test/qemu/$QEMU.gz | \
-      gunzip -d > $tmpdir/$QEMU
+
+  if [ -z "${QEMU#*.gz}" ]; then
+    # image is .gz : download and uncompress it
+    qemufile=$(echo ${QEMU%.gz} | sed 's/\//__/g')
+    if [ ! -f $tmpdir/$qemufile ]; then
+      curl https://people.mozilla.org/~acrichton/libc-test/qemu/$QEMU | \
+        gunzip -d > $tmpdir/$qemufile
+    fi
+  else
+    # plain qcow2 image: just download it
+    qemufile=$(echo ${QEMU} | sed 's/\//__/g')
+    if [ ! -f $tmpdir/$qemufile ]; then
+      curl https://people.mozilla.org/~acrichton/libc-test/qemu/$QEMU \
+        > $tmpdir/$qemufile
+    fi
   fi
 
   # Create a mount a fresh new filesystem image that we'll later pass to QEMU.
@@ -80,7 +92,7 @@ if [ "$QEMU" != "" ]; then
   $program \
     -m 1024 \
     -snapshot \
-    -drive if=virtio,file=$tmpdir/$QEMU \
+    -drive if=virtio,file=$tmpdir/$qemufile \
     -drive if=virtio,file=$tmpdir/libc-test.img \
     -net nic,model=virtio \
     -net user \
