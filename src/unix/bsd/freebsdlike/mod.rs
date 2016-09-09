@@ -29,14 +29,12 @@ s! {
     }
 
     pub struct glob_t {
-        pub gl_pathc: ::size_t,
-        __unused1: ::size_t,
-        pub gl_offs: ::size_t,
-        __unused2: ::c_int,
+        pub gl_pathc:  ::size_t,
+        pub gl_matchc: ::size_t,
+        pub gl_offs:   ::size_t,
+        pub gl_flags:  ::c_int,
         pub gl_pathv:  *mut *mut ::c_char,
-
         __unused3: *mut ::c_void,
-
         __unused4: *mut ::c_void,
         __unused5: *mut ::c_void,
         __unused6: *mut ::c_void,
