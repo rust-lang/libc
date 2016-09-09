@@ -2,9 +2,9 @@ pub type clock_t = i64;
 pub type suseconds_t = i64;
 pub type dev_t = i32;
 pub type sigset_t = ::c_uint;
-pub type blksize_t = ::uint32_t;
-pub type fsblkcnt_t = ::c_uint;
-pub type fsfilcnt_t = ::c_uint;
+pub type blksize_t = ::int32_t;
+pub type fsblkcnt_t = ::uint64_t;
+pub type fsfilcnt_t = ::uint64_t;
 pub type pthread_attr_t = *mut ::c_void;
 pub type pthread_mutex_t = *mut ::c_void;
 pub type pthread_mutexattr_t = *mut ::c_void;
@@ -24,11 +24,11 @@ s! {
     }
 
     pub struct glob_t {
-        pub gl_pathc:  ::c_int,
-        pub gl_matchc: ::c_int,
-        pub gl_offs:   ::c_int,
-        pub gl_flags:  ::c_int,
-        pub gl_pathv:  *mut *mut ::c_char,
+        pub gl_pathc:   ::c_int,
+        pub gl_matchc:  ::c_int,
+        pub gl_offs:    ::c_int,
+        pub gl_flags:   ::c_int,
+        pub gl_pathv:   *mut *mut ::c_char,
         __unused1: *mut ::c_void,
         __unused2: *mut ::c_void,
         __unused3: *mut ::c_void,
@@ -107,7 +107,8 @@ s! {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
-        pub si_addr: *mut ::c_void
+        pub si_addr: *mut ::c_char,
+        __pad: [u8; 108],
     }
 
     pub struct Dl_info {
@@ -143,7 +144,24 @@ s! {
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
     }
+
+    pub struct lastlog {
+        ll_time: ::time_t,
+        ll_line: [::c_char; UT_LINESIZE],
+        ll_host: [::c_char; UT_HOSTSIZE],
+    }
+
+    pub struct utmp {
+        pub ut_line: [::c_char; UT_LINESIZE],
+        pub ut_name: [::c_char; UT_NAMESIZE],
+        pub ut_host: [::c_char; UT_HOSTSIZE],
+        pub ut_time: ::time_t,
+    }
 }
+
+pub const UT_NAMESIZE: usize = 32;
+pub const UT_LINESIZE: usize = 8;
+pub const UT_HOSTSIZE: usize = 256;
 
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
 pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
@@ -202,6 +220,9 @@ pub const RLIM_NLIMITS: ::c_int = 9;
 pub const SO_SNDTIMEO: ::c_int = 0x1005;
 pub const SO_RCVTIMEO: ::c_int = 0x1006;
 
+pub const IPV6_JOIN_GROUP: ::c_int = 12;
+pub const IPV6_LEAVE_GROUP: ::c_int = 13;
+
 pub const O_DSYNC : ::c_int = 128;
 
 pub const MAP_RENAME : ::c_int = 0x0000;
@@ -214,12 +235,10 @@ pub const EMEDIUMTYPE : ::c_int = 86;
 
 pub const RUSAGE_THREAD: ::c_int = 1;
 
-pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
-pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
-
 pub const MAP_COPY : ::c_int = 0x0002;
 pub const MAP_NOEXTEND : ::c_int = 0x0000;
 
+pub const _SC_CLK_TCK : ::c_int = 3;
 pub const _SC_IOV_MAX : ::c_int = 51;
 pub const _SC_GETGR_R_SIZE_MAX : ::c_int = 100;
 pub const _SC_GETPW_R_SIZE_MAX : ::c_int = 101;
@@ -240,7 +259,6 @@ pub const _SC_THREAD_STACK_MIN : ::c_int = 89;
 pub const _SC_THREAD_THREADS_MAX : ::c_int = 90;
 pub const _SC_TTY_NAME_MAX : ::c_int = 107;
 pub const _SC_ATEXIT_MAX : ::c_int = 46;
-pub const _SC_CLK_TCK : ::c_int = 3;
 pub const _SC_AIO_LISTIO_MAX : ::c_int = 42;
 pub const _SC_AIO_MAX : ::c_int = 43;
 pub const _SC_ASYNCHRONOUS_IO : ::c_int = 45;
@@ -271,7 +289,7 @@ pub const _SC_REALTIME_SIGNALS : ::c_int = 64;
 pub const _SC_RTSIG_MAX : ::c_int = 66;
 pub const _SC_SIGQUEUE_MAX : ::c_int = 70;
 pub const _SC_TIMER_MAX : ::c_int = 93;
-pub const _SC_HOST_NAME_MAX: ::c_int = 33;
+pub const _SC_HOST_NAME_MAX : ::c_int = 33;
 
 pub const FD_SETSIZE: usize = 1024;
 
@@ -329,6 +347,7 @@ pub const TMP_MAX : ::c_uint = 0x7fffffff;
 
 pub const NI_MAXHOST: ::size_t = 256;
 
+pub const RTLD_LOCAL: ::c_int = 0;
 pub const CTL_MAXNAME: ::c_int = 12;
 pub const CTLTYPE_NODE: ::c_int = 1;
 pub const CTLTYPE_INT: ::c_int = 2;
@@ -445,8 +464,6 @@ pub const KI_MAXLOGNAME: ::c_int = 32;
 pub const KI_EMULNAMELEN: ::c_int = 8;
 
 extern {
-    pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
-
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
                        host: *mut ::c_char,
@@ -460,25 +477,20 @@ extern {
                   eventlist: *mut ::kevent,
                   nevents: ::c_int,
                   timeout: *const ::timespec) -> ::c_int;
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn pthread_main_np() -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn pthread_stackseg_np(thread: ::pthread_t,
                                sinfo: *mut ::stack_t) -> ::c_int;
-    pub fn sysctl(name: *mut ::c_int,
+    pub fn sysctl(name: *const ::c_int,
                   namelen: ::c_uint,
                   oldp: *mut ::c_void,
                   oldlenp: *mut ::size_t,
                   newp: *mut ::c_void,
                   newlen: ::size_t)
                   -> ::c_int;
-    pub fn sysctlbyname(name: *const ::c_char,
-                        oldp: *mut ::c_void,
-                        oldlenp: *mut ::size_t,
-                        newp: *mut ::c_void,
-                        newlen: ::size_t)
-                        -> ::c_int;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn freelocale(loc: ::locale_t) -> ::c_int;
