@@ -44,6 +44,15 @@ s! {
         __unused8: *mut ::c_void,
     }
 
+    pub struct kevent {
+        pub ident: ::uintptr_t,
+        pub filter: ::c_short,
+        pub flags: ::c_ushort,
+        pub fflags: ::c_uint,
+        pub data: ::intptr_t,
+        pub udata: *mut ::c_void,
+    }
+
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: ::sa_family_t,
@@ -743,6 +752,12 @@ extern {
                        serv: *mut ::c_char,
                        servlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
+    pub fn kevent(kq: ::c_int,
+                  changelist: *const ::kevent,
+                  nchanges: ::c_int,
+                  eventlist: *mut ::kevent,
+                  nevents: ::c_int,
+                  timeout: *const ::timespec) -> ::c_int;
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
     pub fn sysctlnametomib(name: *const ::c_char,

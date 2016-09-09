@@ -40,6 +40,15 @@ s! {
         __unused9: *mut ::c_void,
     }
 
+    pub struct kevent {
+        pub ident: ::uintptr_t,
+        pub filter: ::c_short,
+        pub flags: ::c_ushort,
+        pub fflags: ::c_uint,
+        pub data: ::int64_t,
+        pub udata: *mut ::c_void,
+    }
+
     pub struct stat {
         pub st_mode: ::mode_t,
         pub st_dev: ::dev_t,
@@ -264,6 +273,44 @@ pub const PTHREAD_MUTEX_NORMAL: ::c_int = 3;
 pub const PTHREAD_MUTEX_STRICT_NP: ::c_int = 4;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_STRICT_NP;
 
+pub const EVFILT_AIO: ::int16_t = -3;
+pub const EVFILT_PROC: ::int16_t = -5;
+pub const EVFILT_READ: ::int16_t = -1;
+pub const EVFILT_SIGNAL: ::int16_t = -6;
+pub const EVFILT_TIMER: ::int16_t = -7;
+pub const EVFILT_VNODE: ::int16_t = -4;
+pub const EVFILT_WRITE: ::int16_t = -2;
+
+pub const EV_ADD: ::uint16_t = 0x1;
+pub const EV_DELETE: ::uint16_t = 0x2;
+pub const EV_ENABLE: ::uint16_t = 0x4;
+pub const EV_DISABLE: ::uint16_t = 0x8;
+pub const EV_ONESHOT: ::uint16_t = 0x10;
+pub const EV_CLEAR: ::uint16_t = 0x20;
+pub const EV_FLAG1: ::uint16_t = 0x2000;
+pub const EV_ERROR: ::uint16_t = 0x4000;
+pub const EV_EOF: ::uint16_t = 0x8000;
+pub const EV_SYSFLAGS: ::uint16_t = 0xf000;
+
+pub const NOTE_LOWAT: ::uint32_t = 0x00000001;
+pub const NOTE_EOF: ::uint32_t = 0x00000002;
+pub const NOTE_DELETE: ::uint32_t = 0x00000001;
+pub const NOTE_WRITE: ::uint32_t = 0x00000002;
+pub const NOTE_EXTEND: ::uint32_t = 0x00000004;
+pub const NOTE_ATTRIB: ::uint32_t = 0x00000008;
+pub const NOTE_LINK: ::uint32_t = 0x00000010;
+pub const NOTE_RENAME: ::uint32_t = 0x00000020;
+pub const NOTE_REVOKE: ::uint32_t = 0x00000040;
+pub const NOTE_TRUNCATE: ::uint32_t = 0x00000080;
+pub const NOTE_EXIT: ::uint32_t = 0x80000000;
+pub const NOTE_FORK: ::uint32_t = 0x40000000;
+pub const NOTE_EXEC: ::uint32_t = 0x20000000;
+pub const NOTE_PDATAMASK: ::uint32_t = 0x000fffff;
+pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
+pub const NOTE_TRACK: ::uint32_t = 0x00000001;
+pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
+pub const NOTE_CHILD: ::uint32_t = 0x00000004;
+
 pub const TMP_MAX : ::c_uint = 0x7fffffff;
 
 pub const NI_MAXHOST: ::size_t = 256;
@@ -392,6 +439,12 @@ extern {
                        serv: *mut ::c_char,
                        servlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
+    pub fn kevent(kq: ::c_int,
+                  changelist: *const ::kevent,
+                  nchanges: ::c_int,
+                  eventlist: *mut ::kevent,
+                  nevents: ::c_int,
+                  timeout: *const ::timespec) -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn pthread_main_np() -> ::c_int;

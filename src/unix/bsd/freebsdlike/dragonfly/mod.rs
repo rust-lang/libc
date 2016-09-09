@@ -243,6 +243,56 @@ pub const CTL_P1003_1B_SIGQUEUE_MAX: ::c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: ::c_int = 25;
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
+pub const EVFILT_READ: ::int16_t = -1;
+pub const EVFILT_WRITE: ::int16_t = -2;
+pub const EVFILT_AIO: ::int16_t = -3;
+pub const EVFILT_VNODE: ::int16_t = -4;
+pub const EVFILT_PROC: ::int16_t = -5;
+pub const EVFILT_SIGNAL: ::int16_t = -6;
+pub const EVFILT_TIMER: ::int16_t = -7;
+pub const EVFILT_PROCDESC: ::int16_t = -8;
+pub const EVFILT_USER: ::int16_t = -9;
+pub const EVFILT_FS: ::int16_t = -10;
+
+pub const EV_ADD: ::uint16_t = 0x1;
+pub const EV_DELETE: ::uint16_t = 0x2;
+pub const EV_ENABLE: ::uint16_t = 0x4;
+pub const EV_DISABLE: ::uint16_t = 0x8;
+pub const EV_ONESHOT: ::uint16_t = 0x10;
+pub const EV_CLEAR: ::uint16_t = 0x20;
+pub const EV_RECEIPT: ::uint16_t = 0x40;
+pub const EV_DISPATCH: ::uint16_t = 0x80;
+pub const EV_NODATA: ::uint16_t = 0x1000;
+pub const EV_FLAG1: ::uint16_t = 0x2000;
+pub const EV_ERROR: ::uint16_t = 0x4000;
+pub const EV_EOF: ::uint16_t = 0x8000;
+pub const EV_SYSFLAGS: ::uint16_t = 0xf000;
+
+pub const NOTE_TRIGGER: ::uint32_t = 0x01000000;
+pub const NOTE_FFNOP: ::uint32_t = 0x00000000;
+pub const NOTE_FFAND: ::uint32_t = 0x40000000;
+pub const NOTE_FFOR: ::uint32_t = 0x80000000;
+pub const NOTE_FFCOPY: ::uint32_t = 0xc0000000;
+pub const NOTE_FFCTRLMASK: ::uint32_t = 0xc0000000;
+pub const NOTE_FFLAGSMASK: ::uint32_t = 0x00ffffff;
+pub const NOTE_LOWAT: ::uint32_t = 0x00000001;
+pub const NOTE_OOB: ::uint32_t = 0x00000002;
+pub const NOTE_DELETE: ::uint32_t = 0x00000001;
+pub const NOTE_WRITE: ::uint32_t = 0x00000002;
+pub const NOTE_EXTEND: ::uint32_t = 0x00000004;
+pub const NOTE_ATTRIB: ::uint32_t = 0x00000008;
+pub const NOTE_LINK: ::uint32_t = 0x00000010;
+pub const NOTE_RENAME: ::uint32_t = 0x00000020;
+pub const NOTE_REVOKE: ::uint32_t = 0x00000040;
+pub const NOTE_EXIT: ::uint32_t = 0x80000000;
+pub const NOTE_FORK: ::uint32_t = 0x40000000;
+pub const NOTE_EXEC: ::uint32_t = 0x20000000;
+pub const NOTE_PDATAMASK: ::uint32_t = 0x000fffff;
+pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
+pub const NOTE_TRACK: ::uint32_t = 0x00000001;
+pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
+pub const NOTE_CHILD: ::uint32_t = 0x00000004;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
