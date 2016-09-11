@@ -532,15 +532,12 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(target_os = "bitrig")] {
-        mod bitrig;
-        pub use self::bitrig::*;
-    } else if #[cfg(target_os = "netbsd")] {
+    if #[cfg(target_os = "netbsd")] {
         mod netbsd;
         pub use self::netbsd::*;
-    } else if #[cfg(target_os = "openbsd")] {
-        mod openbsd;
-        pub use self::openbsd::*;
+    } else if #[cfg(any(target_os = "openbsd", target_os = "bitrig"))] {
+        mod openbsdlike;
+        pub use self::openbsdlike::*;
     } else {
         // Unknown target_os
     }
