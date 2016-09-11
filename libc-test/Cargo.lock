@@ -14,7 +14,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "ctest"
 version = "0.1.0"
-source = "git+https://github.com/alexcrichton/ctest#a6becb6d7fd23d9863cba86eac31d1ffc4082734"
+source = "git+https://github.com/alexcrichton/ctest#2839e49847a6adca6e96cc81c46a1f03f8562ac0"
 dependencies = [
  "gcc 0.3.35 (registry+https://github.com/rust-lang/crates.io-index)",
  "syntex_syntax 0.19.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -23,7 +23,7 @@ dependencies = [
 [[package]]
 name = "gcc"
 version = "0.3.35"
-source = "git+https://github.com/alexcrichton/gcc-rs#03e22a4425c011fa8c96681591432456fa70d60c"
+source = "git+https://github.com/alexcrichton/gcc-rs#fbb4ef58f028ee5e61307b479b53c8d8070db52c"
 
 [[package]]
 name = "gcc"
@@ -95,4 +95,3 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "winapi-build"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
