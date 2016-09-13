@@ -129,7 +129,7 @@ s! {
         #[cfg(target_endian = "little")]
         pub f_fsid: ::c_ulong,
         #[cfg(target_pointer_width = "32")]
-        pub __f_unused: ::c_int,
+        __f_unused: ::c_int,
         #[cfg(target_endian = "big")]
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
