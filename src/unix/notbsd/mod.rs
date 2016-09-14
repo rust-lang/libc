@@ -804,6 +804,8 @@ extern {
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn sysinfo (info: *mut ::sysinfo) -> ::c_int;
+    pub fn accept4(fd: ::c_int, addr: *mut ::sockaddr, len: *mut ::socklen_t,
+                   flg: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
