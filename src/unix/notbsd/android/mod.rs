@@ -580,6 +580,8 @@ pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
 
+pub const EAI_SYSTEM: ::c_int = 11;
+
 pub const NETLINK_ROUTE: ::c_int = 0;
 pub const NETLINK_UNUSED: ::c_int = 1;
 pub const NETLINK_USERSOCK: ::c_int = 2;
