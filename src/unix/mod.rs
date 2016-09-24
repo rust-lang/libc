@@ -652,7 +652,6 @@ extern {
                 timeptr: *const tm)
                 -> ::size_t;
 
-
     #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
     pub fn mknod(pathname: *const ::c_char, mode: ::mode_t,
                  dev: ::dev_t) -> ::c_int;
