@@ -647,9 +647,6 @@ extern {
     pub fn time(time: *mut time_t) -> time_t;
     #[cfg_attr(target_os = "netbsd", link_name = "__locatime50")]
     pub fn localtime(time: *const time_t) -> *mut tm;
-    pub fn strftime(s: *mut ::c_char, maxsize: ::size_t,
-                    format: *const ::c_char,
-                    timeptr: *const tm) -> ::size_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
     pub fn mknod(pathname: *const ::c_char, mode: ::mode_t,
