@@ -529,6 +529,7 @@ extern {
                         abstime: *const ::timespec) -> ::c_int;
    pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
                                     clock_id: clockid_t) -> ::c_int;
+    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
 }
 
 cfg_if! {
