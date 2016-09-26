@@ -467,6 +467,8 @@ pub const EMULTIHOP: ::c_int = 90;
 pub const ENOLINK: ::c_int = 91;
 pub const EPROTO: ::c_int = 92;
 
+pub const EAI_SYSTEM: ::c_int = 11;
+
 pub const F_DUPFD: ::c_int = 0;
 pub const F_GETFD: ::c_int = 1;
 pub const F_SETFD: ::c_int = 2;

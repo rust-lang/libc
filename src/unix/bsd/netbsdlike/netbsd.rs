@@ -547,6 +547,8 @@ pub const KERN_PROC_RUID: ::c_int = 6;
 pub const KERN_PROC_GID: ::c_int = 7;
 pub const KERN_PROC_RGID: ::c_int = 8;
 
+pub const EAI_SYSTEM: ::c_int = 11;
+
 extern {
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
