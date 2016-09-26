@@ -6,6 +6,7 @@ pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type loff_t = ::c_longlong;
 pub type clockid_t = ::c_int;
+pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
 pub enum timezone {}

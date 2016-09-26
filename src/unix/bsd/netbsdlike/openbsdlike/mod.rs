@@ -172,6 +172,8 @@ pub const EIPSEC : ::c_int = 82;
 pub const ENOMEDIUM : ::c_int = 85;
 pub const EMEDIUMTYPE : ::c_int = 86;
 
+pub const EAI_SYSTEM: ::c_int = -11;
+
 pub const RUSAGE_THREAD: ::c_int = 1;
 
 pub const MAP_COPY : ::c_int = 0x0002;

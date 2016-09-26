@@ -251,6 +251,8 @@ extern {
     pub fn fscanf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
     pub fn scanf(format: *const ::c_char, ...) -> ::c_int;
     pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...) -> ::c_int;
+    pub fn getchar_unlocked() -> ::c_int;
+    pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__socket30")]
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;

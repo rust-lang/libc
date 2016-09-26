@@ -547,6 +547,8 @@ pub const KERN_PROC_RUID: ::c_int = 6;
 pub const KERN_PROC_GID: ::c_int = 7;
 pub const KERN_PROC_RGID: ::c_int = 8;
 
+pub const EAI_SYSTEM: ::c_int = 11;
+
 extern {
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
@@ -588,7 +590,6 @@ extern {
                   pid: ::pid_t,
                   addr: *mut ::c_void,
                   data: ::c_int) -> ::c_int;
-    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn pthread_setname_np(t: ::pthread_t,
                               name: *const ::c_char,
                               arg: *mut ::c_void) -> ::c_int;

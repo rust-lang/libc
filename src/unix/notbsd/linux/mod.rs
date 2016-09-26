@@ -11,9 +11,10 @@ pub type ino64_t = u64;
 pub type off64_t = i64;
 pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
-pub type key_t = ::c_int;
 pub type shmatt_t = ::c_ulong;
 pub type mqd_t = ::c_int;
+pub type msgqnum_t = ::c_ulong;
+pub type msglen_t = ::c_ulong;
 pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 
@@ -202,6 +203,17 @@ s! {
         pub if_name: *mut ::c_char,
     }
 
+    // System V IPC
+    pub struct msginfo {
+        pub msgpool: ::c_int,
+        pub msgmap: ::c_int,
+        pub msgmax: ::c_int,
+        pub msgmnb: ::c_int,
+        pub msgmni: ::c_int,
+        pub msgssz: ::c_int,
+        pub msgtql: ::c_int,
+        pub msgseg: ::c_ushort,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -442,6 +454,9 @@ pub const SCHED_RR: ::c_int = 2;
 pub const SCHED_BATCH: ::c_int = 3;
 pub const SCHED_IDLE: ::c_int = 5;
 
+// System V IPC
+pub const IPC_PRIVATE: ::key_t = 0;
+
 pub const IPC_CREAT: ::c_int = 0o1000;
 pub const IPC_EXCL: ::c_int = 0o2000;
 pub const IPC_NOWAIT: ::c_int = 0o4000;
@@ -450,6 +465,12 @@ pub const IPC_RMID: ::c_int = 0;
 pub const IPC_SET: ::c_int = 1;
 pub const IPC_STAT: ::c_int = 2;
 pub const IPC_INFO: ::c_int = 3;
+pub const MSG_STAT: ::c_int = 11;
+pub const MSG_INFO: ::c_int = 12;
+
+pub const MSG_NOERROR: ::c_int = 0o10000;
+pub const MSG_EXCEPT: ::c_int = 0o20000;
+pub const MSG_COPY: ::c_int = 0o40000;
 
 pub const SHM_R: ::c_int = 0o400;
 pub const SHM_W: ::c_int = 0o200;
@@ -495,6 +516,8 @@ pub const SYNC_FILE_RANGE_WAIT_BEFORE: ::c_uint = 1;
 pub const SYNC_FILE_RANGE_WRITE: ::c_uint = 2;
 pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_uint = 4;
 
+pub const EAI_SYSTEM: ::c_int = -11;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
@@ -539,6 +562,8 @@ extern {
 
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
+
+    // System V IPC
     pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
     pub fn shmat(shmid: ::c_int,
                  shmaddr: *const ::c_void,
@@ -547,6 +572,14 @@ extern {
     pub fn shmctl(shmid: ::c_int,
                   cmd: ::c_int,
                   buf: *mut ::shmid_ds) -> ::c_int;
+    pub fn ftok(pathname: *const ::c_char, proj_id: ::c_int) -> ::key_t;
+    pub fn msgctl(msqid: ::c_int, cmd: ::c_int, buf: *mut msqid_ds) -> ::c_int;
+    pub fn msgget(key: ::key_t, msgflg: ::c_int) -> ::c_int;
+    pub fn msgrcv(msqid: ::c_int, msgp: *mut ::c_void, msgsz: ::size_t,
+                  msgtyp: ::c_long, msgflg: ::c_int) -> ::ssize_t;
+    pub fn msgsnd(msqid: ::c_int, msgp: *const ::c_void, msgsz: ::size_t,
+                  msgflg: ::c_int) -> ::c_int;
+
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;
