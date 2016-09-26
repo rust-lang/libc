@@ -160,6 +160,7 @@ fn main() {
         cfg.header("sys/signalfd.h");
         cfg.header("sys/xattr.h");
         cfg.header("sys/ipc.h");
+        cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
         cfg.header("pty.h");
     }
@@ -332,7 +333,8 @@ fn main() {
             // kernel regardless
             "RLIMIT_NLIMITS" |
             "TCP_COOKIE_TRANSACTIONS" |
-            "RLIMIT_RTTIME" if musl => true,
+            "RLIMIT_RTTIME" |
+            "MSG_COPY" if musl => true,
             // work around super old mips toolchain
             "SCHED_IDLE" | "SHM_NORESERVE" => mips,
 
