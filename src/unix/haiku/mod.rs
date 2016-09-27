@@ -1,11 +1,13 @@
 use dox::mem;
 
-if #[cfg(target_pointer_width = "64")] {
-    pub type c_ulong = u64;
-    pub type c_long = i64;
-} else {
-    pub type c_long = i32;
-    pub type c_ulong = u32;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub type c_ulong = u64;
+        pub type c_long = i64;
+    } else {
+        pub type c_long = i32;
+        pub type c_ulong = u32;
+    }
 }
 
 pub type rlim_t = ::uintptr_t;
@@ -289,11 +291,13 @@ s! {
     }
 }
 
-// intentionally not public, only used for fd_set
-if #[cfg(target_pointer_width = "64")] {
-    const ULONG_SIZE: usize = 64;
-} else {
-    const ULONG_SIZE: usize = 32;
+cfg_if! {
+    // intentionally not public, only used for fd_set
+    if #[cfg(target_pointer_width = "64")] {
+        const ULONG_SIZE: usize = 64;
+    } else {
+        const ULONG_SIZE: usize = 32;
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
