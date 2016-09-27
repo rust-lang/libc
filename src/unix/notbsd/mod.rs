@@ -468,6 +468,8 @@ pub const IPV6_V6ONLY: ::c_int = 26;
 
 pub const SO_DEBUG: ::c_int = 1;
 
+pub const MSG_NOSIGNAL: ::c_int = 0x4000;
+
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
