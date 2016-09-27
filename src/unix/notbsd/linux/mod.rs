@@ -118,6 +118,18 @@ s! {
         pub pw_shell: *mut ::c_char,
     }
 
+    pub struct spwd {
+        pub sp_namp: *mut ::c_char,
+        pub sp_pwdp: *mut ::c_char,
+        pub sp_lstchg: ::c_long,
+        pub sp_min: ::c_long,
+        pub sp_max: ::c_long,
+        pub sp_warn: ::c_long,
+        pub sp_inact: ::c_long,
+        pub sp_expire: ::c_long,
+        pub sp_flag: ::c_ulong,
+    }
+
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -543,6 +555,11 @@ extern {
 
     pub fn setpwent();
     pub fn getpwent() -> *mut passwd;
+    pub fn setspent();
+    pub fn endspent();
+    pub fn getspent() -> *mut spwd;
+    pub fn getspnam(__name: *const ::c_char) -> *mut spwd;
+
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
 
