@@ -9,7 +9,6 @@ pub type c_ulong = u32;
 #[cfg(target_pointer_width = "64")]
 pub type c_ulong = u64;
 
-
 pub type rlim_t = ::uintptr_t;
 pub type sa_family_t = u8;
 pub type pthread_key_t = ::c_int;
@@ -21,13 +20,13 @@ pub enum timezone {}
 
 s! {
     pub struct sockaddr {
-    	pub sa_len: u8,
+        pub sa_len: u8,
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 30],
     }
 
     pub struct sockaddr_in {
-    	pub sin_len: u8,
+        pub sin_len: u8,
         pub sin_family: sa_family_t,
         pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
@@ -35,7 +34,7 @@ s! {
     }
 
     pub struct sockaddr_in6 {
-    	pub sin6_len: u8,
+        pub sin6_len: u8,
         pub sin6_family: sa_family_t,
         pub sin6_port: ::in_port_t,
         pub sin6_flowinfo: u32,
@@ -44,13 +43,13 @@ s! {
     }
 
     pub struct sockaddr_un {
-    	pub sun_len: u8,
+        pub sun_len: u8,
         pub sun_family: sa_family_t,
         pub sun_path: [::c_char; 126]
     }
 
     pub struct sockaddr_storage {
-    	pub ss_len: u8,
+        pub ss_len: u8,
         pub ss_family: sa_family_t,
         __ss_pad1: [u8; 6],
         __ss_pad2: u64,
@@ -85,7 +84,7 @@ s! {
         pub tm_gmtoff: ::c_long,
         pub tm_zone: *const ::c_char,
     }
-    
+
     pub struct utsname {
         pub sysname: [::c_char; 32],
         pub nodename: [::c_char; 32],
@@ -93,7 +92,7 @@ s! {
         pub version: [::c_char; 32],
         pub machine: [::c_char; 32],
     }
-    
+
     pub struct lconv {
         pub decimal_point: *mut ::c_char,
         pub thousands_sep: *mut ::c_char,
@@ -121,7 +120,6 @@ s! {
         pub int_n_sign_posn: ::c_char,
     }
 
-    
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,
@@ -132,14 +130,13 @@ s! {
         pub msg_flags: ::c_int,
     }
 
-
     pub struct Dl_info {
         pub dli_fname: *const ::c_char,
         pub dli_fbase: *mut ::c_void,
         pub dli_sname: *const ::c_char,
         pub dli_saddr: *mut ::c_void,
     }
-    
+
     pub struct termios {
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,
@@ -151,7 +148,6 @@ s! {
         pub c_cc: [::cc_t; ::NCCS],
     }
 }
-
 
 // intentionally not public, only used for fd_set
 #[cfg(target_pointer_width = "32")]
@@ -504,7 +500,7 @@ pub type fsfilcnt_t = i64;
 pub type pthread_attr_t = *mut ::c_void;
 
 s! {
-	pub struct stat {
+    pub struct stat {
         pub st_dev: dev_t,
         pub st_ino: ino_t,
         pub st_mode: mode_t,
@@ -527,14 +523,14 @@ s! {
     }
 
     pub struct dirent {
-    	pub d_dev: dev_t,
-    	pub d_pdev: dev_t,
+        pub d_dev: dev_t,
+        pub d_pdev: dev_t,
         pub d_ino: ino_t,
         pub d_pino: i64,
         pub d_reclen: ::c_ushort,
         pub d_name: [::c_char; 1024], // Max length is _POSIX_PATH_MAX
     }
-    
+
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         __unused1: ::size_t,
@@ -557,7 +553,7 @@ s! {
         owner: i32,
         owner_count: i32,
     }
-    
+
     pub struct pthread_cond_t {
         flags: u32,
         unused: i32,
@@ -565,7 +561,7 @@ s! {
         waiter_count: i32,
         lock: i32,
     }
-    
+
     pub struct pthread_rwlock_t {
         flags: u32,
         owner: i32,
@@ -575,17 +571,17 @@ s! {
         writer_count: i32,
         waiters: [*mut ::c_void; 2],
     }
-    
+
     pub struct passwd {
-	    pub pw_name: *mut ::c_char,
-	    pub pw_passwd: *mut ::c_char,
-	    pub pw_uid: ::uid_t,
-	    pub pw_gid: ::gid_t,
-	    pub pw_dir: *mut ::c_char,
-	    pub pw_shell: *mut ::c_char,
-	    pub pw_gecos: *mut ::c_char,
+        pub pw_name: *mut ::c_char,
+        pub pw_passwd: *mut ::c_char,
+        pub pw_uid: ::uid_t,
+        pub pw_gid: ::gid_t,
+        pub pw_dir: *mut ::c_char,
+        pub pw_shell: *mut ::c_char,
+        pub pw_gecos: *mut ::c_char,
     }
-    
+
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -599,18 +595,17 @@ s! {
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
     }
-    
+
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
     }
 
-	pub struct siginfo_t {
+    pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
-        
         pub si_pid: ::pid_t,
         pub si_uid: ::uid_t,
         pub si_addr: *mut ::c_void,
@@ -618,7 +613,7 @@ s! {
         pub si_band: c_long,
         pub sigval: *mut ::c_void,
     }
-    
+
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
