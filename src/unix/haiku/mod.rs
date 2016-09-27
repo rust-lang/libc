@@ -1,13 +1,12 @@
 use dox::mem;
 
-#[cfg(target_pointer_width = "32")]
-pub type c_long = i32;
-#[cfg(target_pointer_width = "64")]
-pub type c_long = i64;
-#[cfg(target_pointer_width = "32")]
-pub type c_ulong = u32;
-#[cfg(target_pointer_width = "64")]
-pub type c_ulong = u64;
+if #[cfg(target_pointer_width = "64")] {
+    pub type c_ulong = u64;
+    pub type c_long = i64;
+} else {
+    pub type c_long = i32;
+    pub type c_ulong = u32;
+}
 
 pub type rlim_t = ::uintptr_t;
 pub type sa_family_t = u8;
@@ -15,6 +14,26 @@ pub type pthread_key_t = ::c_int;
 pub type nfds_t = ::c_long;
 pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
+pub type c_char = i8;
+pub type clock_t = i32;
+pub type time_t = i32;
+pub type suseconds_t = i32;
+pub type wchar_t = i32;
+pub type off_t = i64;
+pub type ino_t = i64;
+pub type blkcnt_t = i64;
+pub type blksize_t = i32;
+pub type dev_t = i32;
+pub type mode_t = u32;
+pub type nlink_t = i32;
+pub type useconds_t = u32;
+pub type socklen_t = u32;
+pub type pthread_t = ::uintptr_t;
+pub type pthread_mutexattr_t = ::uintptr_t;
+pub type sigset_t = u64;
+pub type fsblkcnt_t = i64;
+pub type fsfilcnt_t = i64;
+pub type pthread_attr_t = *mut ::c_void;
 
 pub enum timezone {}
 
@@ -147,13 +166,135 @@ s! {
         pub c_ospeed: ::speed_t,
         pub c_cc: [::cc_t; ::NCCS],
     }
+
+    pub struct stat {
+        pub st_dev: dev_t,
+        pub st_ino: ino_t,
+        pub st_mode: mode_t,
+        pub st_nlink: nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_size: off_t,
+        pub st_rdev: dev_t,
+        pub st_blksize: blksize_t,
+        pub st_atime: time_t,
+        pub st_atime_nsec: c_long,
+        pub st_mtime: time_t,
+        pub st_mtime_nsec: c_long,
+        pub st_ctime: time_t,
+        pub st_ctime_nsec: c_long,
+        pub st_crtime: time_t,
+        pub st_crtime_nsec: c_long,
+        pub st_type: u32,
+        pub st_blocks: blkcnt_t,
+    }
+
+    pub struct dirent {
+        pub d_dev: dev_t,
+        pub d_pdev: dev_t,
+        pub d_ino: ino_t,
+        pub d_pino: i64,
+        pub d_reclen: ::c_ushort,
+        pub d_name: [::c_char; 1024], // Max length is _POSIX_PATH_MAX
+    }
+
+    pub struct glob_t {
+        pub gl_pathc: ::size_t,
+        __unused1: ::size_t,
+        pub gl_offs: ::size_t,
+        __unused2: ::size_t,
+        pub gl_pathv: *mut *mut c_char,
+
+        __unused3: *mut ::c_void,
+        __unused4: *mut ::c_void,
+        __unused5: *mut ::c_void,
+        __unused6: *mut ::c_void,
+        __unused7: *mut ::c_void,
+        __unused8: *mut ::c_void,
+    }
+
+    pub struct pthread_mutex_t {
+        flags: u32,
+        lock: i32,
+        unused: i32,
+        owner: i32,
+        owner_count: i32,
+    }
+
+    pub struct pthread_cond_t {
+        flags: u32,
+        unused: i32,
+        mutex: *mut ::c_void,
+        waiter_count: i32,
+        lock: i32,
+    }
+
+    pub struct pthread_rwlock_t {
+        flags: u32,
+        owner: i32,
+        lock_sem: i32,      // this is actually a union
+        lock_count: i32,
+        reader_count: i32,
+        writer_count: i32,
+        waiters: [*mut ::c_void; 2],
+    }
+
+    pub struct passwd {
+        pub pw_name: *mut ::c_char,
+        pub pw_passwd: *mut ::c_char,
+        pub pw_uid: ::uid_t,
+        pub pw_gid: ::gid_t,
+        pub pw_dir: *mut ::c_char,
+        pub pw_shell: *mut ::c_char,
+        pub pw_gecos: *mut ::c_char,
+    }
+
+    pub struct statvfs {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_favail: ::fsfilcnt_t,
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_code: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_pid: ::pid_t,
+        pub si_uid: ::uid_t,
+        pub si_addr: *mut ::c_void,
+        pub si_status: ::c_int,
+        pub si_band: c_long,
+        pub sigval: *mut ::c_void,
+    }
+
+    pub struct sigaction {
+        pub sa_sigaction: ::sighandler_t,
+        pub sa_mask: ::sigset_t,
+        pub sa_flags: ::c_int,
+        sa_userdata: *mut ::c_void,
+    }
 }
 
 // intentionally not public, only used for fd_set
-#[cfg(target_pointer_width = "32")]
-const ULONG_SIZE: usize = 32;
-#[cfg(target_pointer_width = "64")]
-const ULONG_SIZE: usize = 64;
+if #[cfg(target_pointer_width = "64")] {
+    const ULONG_SIZE: usize = 64;
+} else {
+    const ULONG_SIZE: usize = 32;
+}
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
@@ -418,210 +559,6 @@ pub const FD_SETSIZE: usize = 1024;
 pub const RTLD_NOW: ::c_int = 0x1;
 pub const RTLD_DEFAULT: *mut ::c_void = 0isize as *mut ::c_void;
 
-f! {
-    pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
-        let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return
-    }
-
-    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
-        let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
-    }
-
-    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
-        let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return
-    }
-
-    pub fn FD_ZERO(set: *mut fd_set) -> () {
-        for slot in (*set).fds_bits.iter_mut() {
-            *slot = 0;
-        }
-    }
-
-    pub fn WIFEXITED(status: ::c_int) -> bool {
-        (status >> 8) == 0
-    }
-
-    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
-        (status & 0xff)
-    }
-
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
-        (status >> 8) & 0xff
-    }
-}
-
-extern {
-    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
-    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
-                                     guardsize: *mut ::size_t) -> ::c_int;
-    pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
-                                 stackaddr: *mut *mut ::c_void,
-                                 stacksize: *mut ::size_t) -> ::c_int;
-    pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
-    pub fn setgroups(ngroups: ::size_t,
-                     ptr: *const ::gid_t) -> ::c_int;
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buffer: *mut ::c_char,
-                      bufferSize: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
-
-}
-
-// More values
-pub type c_char = i8;
-
-pub type clock_t = i32;
-pub type time_t = i32;
-pub type suseconds_t = i32;
-pub type wchar_t = i32;
-pub type off_t = i64;
-pub type ino_t = i64;
-pub type blkcnt_t = i64;
-pub type blksize_t = i32;
-pub type dev_t = i32;
-pub type mode_t = u32;
-pub type nlink_t = i32;
-pub type useconds_t = u32;
-pub type socklen_t = u32;
-pub type pthread_t = ::uintptr_t;
-pub type pthread_mutexattr_t = ::uintptr_t;
-pub type sigset_t = u64;
-pub type fsblkcnt_t = i64;
-pub type fsfilcnt_t = i64;
-pub type pthread_attr_t = *mut ::c_void;
-
-s! {
-    pub struct stat {
-        pub st_dev: dev_t,
-        pub st_ino: ino_t,
-        pub st_mode: mode_t,
-        pub st_nlink: nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_size: off_t,
-        pub st_rdev: dev_t,
-        pub st_blksize: blksize_t,
-        pub st_atime: time_t,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: time_t,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: time_t,
-        pub st_ctime_nsec: c_long,
-        pub st_crtime: time_t,
-        pub st_crtime_nsec: c_long,
-        pub st_type: u32,
-        pub st_blocks: blkcnt_t,
-    }
-
-    pub struct dirent {
-        pub d_dev: dev_t,
-        pub d_pdev: dev_t,
-        pub d_ino: ino_t,
-        pub d_pino: i64,
-        pub d_reclen: ::c_ushort,
-        pub d_name: [::c_char; 1024], // Max length is _POSIX_PATH_MAX
-    }
-
-    pub struct glob_t {
-        pub gl_pathc: ::size_t,
-        __unused1: ::size_t,
-        pub gl_offs: ::size_t,
-        __unused2: ::size_t,
-        pub gl_pathv: *mut *mut c_char,
-
-        __unused3: *mut ::c_void,
-        __unused4: *mut ::c_void,
-        __unused5: *mut ::c_void,
-        __unused6: *mut ::c_void,
-        __unused7: *mut ::c_void,
-        __unused8: *mut ::c_void,
-    }
-
-    pub struct pthread_mutex_t {
-        flags: u32,
-        lock: i32,
-        unused: i32,
-        owner: i32,
-        owner_count: i32,
-    }
-
-    pub struct pthread_cond_t {
-        flags: u32,
-        unused: i32,
-        mutex: *mut ::c_void,
-        waiter_count: i32,
-        lock: i32,
-    }
-
-    pub struct pthread_rwlock_t {
-        flags: u32,
-        owner: i32,
-        lock_sem: i32,      // this is actually a union
-        lock_count: i32,
-        reader_count: i32,
-        writer_count: i32,
-        waiters: [*mut ::c_void; 2],
-    }
-
-    pub struct passwd {
-        pub pw_name: *mut ::c_char,
-        pub pw_passwd: *mut ::c_char,
-        pub pw_uid: ::uid_t,
-        pub pw_gid: ::gid_t,
-        pub pw_dir: *mut ::c_char,
-        pub pw_shell: *mut ::c_char,
-        pub pw_gecos: *mut ::c_char,
-    }
-
-    pub struct statvfs {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_favail: ::fsfilcnt_t,
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-    }
-
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_code: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_pid: ::pid_t,
-        pub si_uid: ::uid_t,
-        pub si_addr: *mut ::c_void,
-        pub si_status: ::c_int,
-        pub si_band: c_long,
-        pub sigval: *mut ::c_void,
-    }
-
-    pub struct sigaction {
-        pub sa_sigaction: ::sighandler_t,
-        pub sa_mask: ::sigset_t,
-        pub sa_flags: ::c_int,
-        sa_userdata: *mut ::c_void,
-    }
-}
-
 pub const BUFSIZ: ::c_uint = 8192;
 pub const FILENAME_MAX: ::c_uint = 256;
 pub const FOPEN_MAX: ::c_uint = 128;
@@ -710,7 +647,61 @@ pub const SO_PEERCRED: ::c_int = 0x4000000b;
 
 pub const NI_MAXHOST: ::size_t = 1025;
 
+f! {
+    pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
+        return
+    }
+
+    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+    }
+
+    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        (*set).fds_bits[fd / size] |= 1 << (fd % size);
+        return
+    }
+
+    pub fn FD_ZERO(set: *mut fd_set) -> () {
+        for slot in (*set).fds_bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn WIFEXITED(status: ::c_int) -> bool {
+        (status >> 8) == 0
+    }
+
+    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+        (status & 0xff)
+    }
+
+    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xff
+    }
+}
+
 extern {
+    pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
+    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
+                                     guardsize: *mut ::size_t) -> ::c_int;
+    pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
+                                 stackaddr: *mut *mut ::c_void,
+                                 stacksize: *mut ::size_t) -> ::c_int;
+    pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
+    pub fn setgroups(ngroups: ::size_t,
+                     ptr: *const ::gid_t) -> ::c_int;
+    pub fn getpwuid_r(uid: ::uid_t,
+                      pwd: *mut passwd,
+                      buffer: *mut ::c_char,
+                      bufferSize: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
