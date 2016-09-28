@@ -1,15 +1,5 @@
 use dox::mem;
 
-cfg_if! {
-    if #[cfg(target_pointer_width = "64")] {
-        pub type c_ulong = u64;
-        pub type c_long = i64;
-    } else {
-        pub type c_long = i32;
-        pub type c_ulong = u32;
-    }
-}
-
 pub type rlim_t = ::uintptr_t;
 pub type sa_family_t = u8;
 pub type pthread_key_t = ::c_int;
@@ -288,15 +278,6 @@ s! {
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
         sa_userdata: *mut ::c_void,
-    }
-}
-
-cfg_if! {
-    // intentionally not public, only used for fd_set
-    if #[cfg(target_pointer_width = "64")] {
-        const ULONG_SIZE: usize = 64;
-    } else {
-        const ULONG_SIZE: usize = 32;
     }
 }
 
@@ -716,4 +697,12 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        mod b64;
+    } else {
+        mod b32;
+    }
 }
