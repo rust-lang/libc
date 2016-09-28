@@ -730,10 +730,6 @@ extern {
 // TODO: get rid of this cfg(not(...))
 #[cfg(not(target_os = "android"))] // " if " -- appease style checker
 extern {
-    #[cfg(not(target_os = "haiku"))]
-    pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> ::c_int;
-    #[cfg(not(target_os = "haiku"))]
-    pub fn freeifaddrs(ifa: *mut ifaddrs);
     #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
     pub fn glob(pattern: *const c_char,
