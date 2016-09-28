@@ -684,8 +684,8 @@ f! {
 }
 
 extern {
-    pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> ::c_int;
-    pub fn freeifaddrs(ifa: *mut ifaddrs);
+    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
+    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
     pub fn getpwnam_r(name: *const ::c_char,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,

@@ -955,8 +955,8 @@ f! {
 }
 
 extern {
-    pub fn getifaddrs(ifap: *mut *mut ifaddrs) -> ::c_int;
-    pub fn freeifaddrs(ifa: *mut ifaddrs);
+    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
+    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
 
     pub fn stack_getbounds(sp: *mut ::stack_t) -> ::c_int;
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
