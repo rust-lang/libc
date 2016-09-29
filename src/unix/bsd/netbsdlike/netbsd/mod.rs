@@ -1,3 +1,5 @@
+pub type c_long = i64;
+pub type c_ulong = u64;
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
 pub type dev_t = u64;
