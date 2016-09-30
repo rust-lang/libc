@@ -129,9 +129,14 @@ case "$TARGET" in
     qemu-mips -L /usr/mips-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     ;;
 
-  mipsel-unknown-linux-musl)
-    qemu-mipsel -L /toolchain $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+  mips-unknown-linux-musl)
+    qemu-mips -L /toolchain/staging_dir/toolchain-mips_34kc_gcc-5.3.0_musl-1.1.15 \
+              $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     ;;
+
+  mipsel-unknown-linux-musl)
+      qemu-mipsel -L /toolchain $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+      ;;
 
   powerpc-unknown-linux-gnu)
     qemu-ppc -L /usr/powerpc-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/libc-test
