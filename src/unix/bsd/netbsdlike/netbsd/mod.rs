@@ -613,3 +613,6 @@ extern {
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
 }
+
+mod other;
+pub use self::other::*;
