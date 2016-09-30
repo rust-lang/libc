@@ -719,6 +719,8 @@ extern {
     pub fn if_freenameindex(ptr: *mut if_nameindex);
     pub fn sync_file_range(fd: ::c_int, offset: ::off64_t,
                            nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
+    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
+    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
 }
 
 cfg_if! {
