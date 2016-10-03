@@ -848,6 +848,8 @@ extern {
                          abstime: *const ::timespec) -> ::c_int;
     pub fn accept4(fd: ::c_int, addr: *mut ::sockaddr, len: *mut ::socklen_t,
                    flg: ::c_int) -> ::c_int;
+    pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
+                                   abstime: *const ::timespec) -> ::c_int;
 }
 
 cfg_if! {

@@ -697,6 +697,8 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
+    pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
+                                   abstime: *const ::timespec) -> ::c_int;
 }
 
 cfg_if! {
