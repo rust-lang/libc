@@ -26,6 +26,7 @@ pub type sigset_t = u64;
 pub type fsblkcnt_t = i64;
 pub type fsfilcnt_t = i64;
 pub type pthread_attr_t = *mut ::c_void;
+pub type nl_item = ::c_int;
 
 pub enum timezone {}
 
