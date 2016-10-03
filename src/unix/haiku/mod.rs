@@ -702,7 +702,9 @@ extern {
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         mod b64;
+        pub use self::b64::*;
     } else {
         mod b32;
+        pub use self::b32::*;
     }
 }
