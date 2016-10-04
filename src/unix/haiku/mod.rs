@@ -8,6 +8,7 @@ pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type c_char = i8;
 pub type clock_t = i32;
+pub type clockid_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
 pub type wchar_t = i32;
@@ -279,6 +280,29 @@ s! {
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
         sa_userdata: *mut ::c_void,
+    }
+
+    pub struct sem_t {
+        pub se_type: i32,
+        pub se_named_id: i32, // this is actually a union
+        pub se_unnamed: i32,
+        pub se_padding: [i32; 4],
+    }
+
+    pub struct pthread_condattr_t {
+        pub process_shared: bool,
+        pub clock_id: i32,
+    }
+}
+
+// intentionally not public, only used for fd_set
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        const ULONG_SIZE: usize = 32;
+    } else if #[cfg(target_pointer_width = "64")] {
+        const ULONG_SIZE: usize = 64;
+    } else {
+        // Unknown target_pointer_width
     }
 }
 
@@ -592,6 +616,9 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     waiters: [0 as *mut _; 2],
 };
 
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = 0;
+pub const PTHREAD_MUTEX_NORMAL: ::c_int = 1;
+pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 3;
 
 pub const FIOCLEX: c_ulong = 0; // TODO: does not exist on Haiku!
@@ -680,6 +707,10 @@ extern {
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
                                  stackaddr: *mut *mut ::c_void,
                                  stacksize: *mut ::size_t) -> ::c_int;
+    pub fn pthread_condattr_getclock(attr: *const pthread_condattr_t,
+                                     clock_id: *mut clockid_t) -> ::c_int;
+    pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
+                                     clock_id: clockid_t) -> ::c_int;
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::size_t,
                      ptr: *const ::gid_t) -> ::c_int;
