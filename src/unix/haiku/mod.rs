@@ -280,6 +280,29 @@ s! {
         pub sa_flags: ::c_int,
         sa_userdata: *mut ::c_void,
     }
+
+    pub struct sem_t {
+        pub se_type: i32,
+        pub se_named_id: i32, // this is actually a union
+        pub se_unnamed: i32,
+        pub se_padding: [i32; 4],
+    }
+
+    pub struct pthread_condattr_t {
+        pub process_shared: bool,
+        pub clock_id: i32,
+    }
+}
+
+// intentionally not public, only used for fd_set
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        const ULONG_SIZE: usize = 32;
+    } else if #[cfg(target_pointer_width = "64")] {
+        const ULONG_SIZE: usize = 64;
+    } else {
+        // Unknown target_pointer_width
+    }
 }
 
 pub const EXIT_FAILURE: ::c_int = 1;
