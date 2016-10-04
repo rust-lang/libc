@@ -281,6 +281,9 @@ pub const CODESET: ::nl_item = 14;
 
 pub const CRNCYSTR: ::nl_item = 0x4000F;
 
+pub const RUSAGE_THREAD: ::c_int = 1;
+pub const RUSAGE_CHILDREN: ::c_int = -1;
+
 pub const RADIXCHAR: ::nl_item = 0x10000;
 pub const THOUSEP: ::nl_item = 0x10001;
 

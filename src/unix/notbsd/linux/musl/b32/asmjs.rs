@@ -331,7 +331,5 @@ pub const TIOCCONS: ::c_int = 0x541D;
 
 pub const SYS_gettid: ::c_long = 224; // Valid for arm (32-bit) and x86 (32-bit)
 
-pub const POSIX_MADV_DONTNEED: ::c_int = 0;
-pub const RUSAGE_CHILDREN: ::c_int = 1;
 pub const POLLWRNORM: ::c_short = 0x100;
 pub const POLLWRBAND: ::c_short = 0x200;

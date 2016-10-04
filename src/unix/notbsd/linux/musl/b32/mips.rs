@@ -340,7 +340,5 @@ pub const TIOCCONS: ::c_int = 0x80047478;
 pub const SYS_gettid: ::c_long = 4222;   // Valid for O32
 pub const SYS_perf_event_open: ::c_long = 4333;  // Valid for O32
 
-pub const POSIX_MADV_DONTNEED: ::c_int = 4;
-pub const RUSAGE_CHILDREN: ::c_int = !0;
 pub const POLLWRNORM: ::c_short = 0x4;
 pub const POLLWRBAND: ::c_short = 0x100;
