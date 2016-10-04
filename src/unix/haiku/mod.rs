@@ -26,6 +26,7 @@ pub type sigset_t = u64;
 pub type fsblkcnt_t = i64;
 pub type fsfilcnt_t = i64;
 pub type pthread_attr_t = *mut ::c_void;
+pub type nl_item = ::c_int;
 
 pub enum timezone {}
 
@@ -704,7 +705,9 @@ extern {
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         mod b64;
+        pub use self::b64::*;
     } else {
         mod b32;
+        pub use self::b32::*;
     }
 }
