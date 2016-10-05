@@ -233,12 +233,10 @@ pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const _SC_2_C_VERSION: ::c_int = 96;
-pub const RUSAGE_THREAD: ::c_int = 1;
 pub const O_ACCMODE: ::c_int = 3;
 pub const O_DIRECT: ::c_int = 0x8000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
-pub const RUSAGE_CHILDREN: ::c_int = -1;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
 

@@ -248,6 +248,8 @@ pub const ABMON_10: ::nl_item = 0x20017;
 pub const ABMON_11: ::nl_item = 0x20018;
 pub const ABMON_12: ::nl_item = 0x20019;
 
+pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
+
 pub const MON_1: ::nl_item = 0x2001A;
 pub const MON_2: ::nl_item = 0x2001B;
 pub const MON_3: ::nl_item = 0x2001C;
@@ -278,6 +280,9 @@ pub const ERA_T_FMT: ::nl_item = 0x20031;
 pub const CODESET: ::nl_item = 14;
 
 pub const CRNCYSTR: ::nl_item = 0x4000F;
+
+pub const RUSAGE_THREAD: ::c_int = 1;
+pub const RUSAGE_CHILDREN: ::c_int = -1;
 
 pub const RADIXCHAR: ::nl_item = 0x10000;
 pub const THOUSEP: ::nl_item = 0x10001;
