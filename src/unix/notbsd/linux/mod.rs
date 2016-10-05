@@ -20,9 +20,9 @@ pub type nl_item = ::c_int;
 pub type idtype_t = ::c_int;
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
-pub const P_PID: ::id_t = 1;
-pub const P_PGID: ::id_t = 2;
-pub const P_ALL: ::id_t = 3;
+pub const P_PID: ::idtype_t = 1;
+pub const P_PGID: ::idtype_t = 2;
+pub const P_ALL: ::idtype_t = 3;
 
 
 s! {
