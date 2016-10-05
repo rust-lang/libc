@@ -548,13 +548,6 @@ pub const NLA_F_NESTED: ::c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: ::c_int = 1 << 14;
 pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 
-#[repr(C)]
-pub enum idtype_t {
-    P_ALL,
-    P_PID,
-    P_PGID
-}
-
 cfg_if! {
     if #[cfg(any(target_arch = "arm", target_arch = "x86",
                  target_arch = "x86_64"))] {
@@ -611,7 +604,7 @@ extern {
                                   cpuset: *const ::cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
 
-    pub fn waitid(idtype: idtype_t, id: ::id_t, infop: *mut ::siginfo_t,
+    pub fn waitid(idtype: ::idtype_t, id: ::id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
 }
 
