@@ -23,13 +23,14 @@ dependencies = [
 [[package]]
 name = "gcc"
 version = "0.3.35"
-source = "git+https://github.com/alexcrichton/gcc-rs#fbb4ef58f028ee5e61307b479b53c8d8070db52c"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "gcc"
-version = "0.3.35"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-replace = "gcc 0.3.35 (git+https://github.com/alexcrichton/gcc-rs)"
+name = "generate-files"
+version = "0.1.0"
+dependencies = [
+ "ctest 0.1.0 (git+https://github.com/alexcrichton/ctest)",
+]
 
 [[package]]
 name = "kernel32-sys"
@@ -99,7 +100,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [metadata]
 "checksum bitflags 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "32866f4d103c4e438b1db1158aa1b1a80ee078e5d77a59a2f906fd62a577389c"
 "checksum ctest 0.1.0 (git+https://github.com/alexcrichton/ctest)" = "<none>"
-"checksum gcc 0.3.35 (git+https://github.com/alexcrichton/gcc-rs)" = "<none>"
 "checksum gcc 0.3.35 (registry+https://github.com/rust-lang/crates.io-index)" = "91ecd03771effb0c968fd6950b37e89476a578aaf1c70297d8e92b6516ec3312"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
 "checksum libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)" = "e32a70cf75e5846d53a673923498228bbec6a8624708a9ea5645f075d6276122"

@@ -37,11 +37,7 @@ if [ "$QEMU" != "" ]; then
   # This will have a `run.sh` script will which use the artifacts inside to run
   # on the host.
   rm -f $tmpdir/libc-test.img
-  dd if=/dev/null of=$tmpdir/libc-test.img bs=1M seek=50
-  mkfs.ext2 -F $tmpdir/libc-test.img
-  rm -rf $tmpdir/mount
   mkdir $tmpdir/mount
-  mount -t ext2 -o loop $tmpdir/libc-test.img $tmpdir/mount
 
   # If we have a cross compiler, then we just do the standard rigamarole of
   # cross-compiling an executable and then the script to run just executes the
@@ -74,22 +70,18 @@ if [ "$QEMU" != "" ]; then
     cp libc-test/run-generated-Cargo.toml $tmpdir/mount/libc/libc-test/Cargo.toml
   fi
 
-  umount $tmpdir/mount
-
-  # If we can use kvm, prefer that, otherwise just fall back to user-space
-  # emulation.
-  if kvm-ok; then
-    program=kvm
-  else
-    program=qemu-system-x86_64
-  fi
+  du -sh $tmpdir/mount
+  genext2fs \
+      --root $tmpdir/mount \
+      --size-in-blocks 100000 \
+      $tmpdir/libc-test.img
 
   # Pass -snapshot to prevent tampering with the disk images, this helps when
   # running this script in development. The two drives are then passed next,
   # first is the OS and second is the one we just made. Next the network is
   # configured to work (I'm not entirely sure how), and then finally we turn off
   # graphics and redirect the serial console output to out.log.
-  $program \
+  qemu-system-x86_64 \
     -m 1024 \
     -snapshot \
     -drive if=virtio,file=$tmpdir/$qemufile \
