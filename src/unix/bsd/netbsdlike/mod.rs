@@ -392,6 +392,8 @@ pub const SO_RCVLOWAT: ::c_int = 0x1004;
 pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
 
+pub const MSG_NOSIGNAL: ::c_int = 0x400;
+
 pub const IFF_LOOPBACK: ::c_int = 0x8;
 
 pub const SHUT_RD: ::c_int = 0;
