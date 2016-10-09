@@ -18,4 +18,5 @@ RUN curl https://www.musl-libc.org/releases/musl-1.1.15.tar.gz | \
     make CROSS_COMPILE= install -j4 && \
     cd .. && \
     rm -rf musl-1.1.15
-ENV PATH=$PATH:/musl-i686/bin:/rust/bin
+ENV PATH=$PATH:/musl-i686/bin:/rust/bin \
+    CC_i686_unknown_linux_musl=musl-gcc
