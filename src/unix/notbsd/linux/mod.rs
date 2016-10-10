@@ -506,8 +506,6 @@ pub const EFD_SEMAPHORE: ::c_int = 0x1;
 
 pub const NCCS: usize = 32;
 
-pub const AF_NETLINK: ::c_int = 16;
-
 pub const LOG_NFACILITIES: ::c_int = 24;
 
 pub const SEM_FAILED: *mut ::sem_t = 0 as *mut sem_t;
