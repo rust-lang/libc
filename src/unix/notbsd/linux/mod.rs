@@ -728,6 +728,7 @@ extern {
 
 cfg_if! {
     if #[cfg(any(target_env = "musl",
+                 target_os = "fuchsia",
                  target_os = "emscripten"))] {
         mod musl;
         pub use self::musl::*;
