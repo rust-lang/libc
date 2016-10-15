@@ -213,10 +213,12 @@ pub const O_NONBLOCK: ::c_int = 128;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const PTHREAD_STACK_MIN: ::size_t = 131072;
+pub const NFS_SUPER_MAGIC: ::c_long = 0x00006969;
 pub const RLIM_INFINITY: ::rlim_t = 0xffffffffffffffff;
 pub const SA_ONSTACK: ::c_int = 0x08000000;
 pub const SA_SIGINFO: ::c_int = 0x00000008;
 pub const SIGBUS: ::c_int = 10;
+pub const SIGSYS: ::c_int = 12;
 pub const SIGSTKSZ: ::size_t = 0x2000;
 pub const SIG_SETMASK: ::c_int = 3;
 pub const SOCK_DGRAM: ::c_int = 1;
@@ -227,6 +229,10 @@ pub const SO_ERROR: ::c_int = 4103;
 pub const SO_RCVTIMEO: ::c_int = 4102;
 pub const SO_REUSEADDR: ::c_int = 4;
 pub const SO_SNDTIMEO: ::c_int = 4101;
+pub const SO_REUSEPORT: ::c_int = 0x200;
+pub const SO_SNDBUF: ::c_int = 4097;
+pub const SO_RCVBUF: ::c_int = 4098;
+pub const SO_KEEPALIVE: ::c_int = 8;
 
 #[link(name = "util")]
 extern {
