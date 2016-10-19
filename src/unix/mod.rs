@@ -833,6 +833,15 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "nice$UNIX2003")]
     pub fn nice(incr: ::c_int) -> ::c_int;
+
+    pub fn getpt() -> ::c_int;
+    pub fn grantpt(fd: ::c_int) -> ::c_int;
+    pub fn posix_openpt(flags: ::c_int) -> ::c_int;
+    pub fn ptsname(fd: ::c_int) -> *mut ::c_char;
+    pub fn ptsname_r(fd: ::c_int,
+                     buf: *mut ::c_char,
+                     buflen: ::size_t) -> ::c_int;
+    pub fn unlockpt(fd: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
