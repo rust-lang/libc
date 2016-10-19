@@ -563,6 +563,7 @@ extern {
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
     pub fn setutxent();
     pub fn endutxent();
+    pub fn getpt() -> ::c_int;
 }
 
 #[link(name = "util")]
