@@ -231,7 +231,6 @@ cfg_if! {
     } else if #[cfg(target_os = "fuchsia")] {
         #[link(name = "c")]
         #[link(name = "mxio")]
-        #[link(name = "unwind")]
         extern {}
     } else {
         #[link(name = "c")]

@@ -53,7 +53,9 @@ s! {
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
 
-        #[cfg(any(target_os = "linux", target_os = "emscripten", target_os = "fuchsia"))]
+        #[cfg(any(target_os = "linux",
+                  target_os = "emscripten",
+                  target_os = "fuchsia"))]
         pub ai_addr: *mut ::sockaddr,
 
         pub ai_canonname: *mut c_char,
