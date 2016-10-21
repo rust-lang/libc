@@ -228,6 +228,10 @@ cfg_if! {
         #[link(name = "root")]
         #[link(name = "network")]
         extern {}
+    } else if #[cfg(target_os = "fuchsia")] {
+        #[link(name = "c")]
+        #[link(name = "mxio")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -843,7 +847,8 @@ extern {
 cfg_if! {
     if #[cfg(any(target_os = "linux",
                  target_os = "android",
-                 target_os = "emscripten"))] {
+                 target_os = "emscripten",
+                 target_os = "fuchsia"))] {
         mod notbsd;
         pub use self::notbsd::*;
     } else if #[cfg(any(target_os = "macos",
