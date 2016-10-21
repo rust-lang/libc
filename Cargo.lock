@@ -2,7 +2,7 @@
 name = "libc-test"
 version = "0.1.0"
 dependencies = [
- "ctest 0.1.0 (git+https://github.com/alexcrichton/ctest)",
+ "ctest 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.17",
 ]
 
@@ -14,7 +14,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "ctest"
 version = "0.1.0"
-source = "git+https://github.com/alexcrichton/ctest#2839e49847a6adca6e96cc81c46a1f03f8562ac0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "gcc 0.3.35 (registry+https://github.com/rust-lang/crates.io-index)",
  "syntex_syntax 0.19.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -29,7 +29,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "generate-files"
 version = "0.1.0"
 dependencies = [
- "ctest 0.1.0 (git+https://github.com/alexcrichton/ctest)",
+ "ctest 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -99,7 +99,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
 "checksum bitflags 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "32866f4d103c4e438b1db1158aa1b1a80ee078e5d77a59a2f906fd62a577389c"
-"checksum ctest 0.1.0 (git+https://github.com/alexcrichton/ctest)" = "<none>"
+"checksum ctest 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "0d8e8e44b9fb51a835b9193863b4b873dea29756cf4ba5151c0a6cc0f15fbdeb"
 "checksum gcc 0.3.35 (registry+https://github.com/rust-lang/crates.io-index)" = "91ecd03771effb0c968fd6950b37e89476a578aaf1c70297d8e92b6516ec3312"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
 "checksum libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)" = "e32a70cf75e5846d53a673923498228bbec6a8624708a9ea5645f075d6276122"
