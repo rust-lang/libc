@@ -231,7 +231,7 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "x86_64"))] {
+    if #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
         mod b64;
         pub use self::b64::*;
     } else if #[cfg(any(target_arch = "x86",
