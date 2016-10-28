@@ -33,7 +33,7 @@ matrix:
     # build documentation
     - os: linux
       env: TARGET=x86_64-unknown-linux-gnu
-      rust: stable
+      rust: 1.10.0
       script: sh ci/dox.sh
 
     # stable compat
