@@ -425,6 +425,7 @@ extern {
     pub fn nanosleep(rqtp: *const timespec,
                      rmtp: *mut timespec) -> ::c_int;
     pub fn tcgetpgrp(fd: ::c_int) -> pid_t;
+    pub fn tcsetpgrp(fd: ::c_int, pgrp: ::pid_t) -> ::c_int;
     pub fn ttyname(fd: ::c_int) -> *mut c_char;
     pub fn unlink(c: *const c_char) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
