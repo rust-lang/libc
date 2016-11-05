@@ -162,6 +162,7 @@ fn main() {
         cfg.header("sys/ipc.h");
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
+        cfg.header("sys/fsuid.h");
         cfg.header("pty.h");
         cfg.header("shadow.h");
     }
