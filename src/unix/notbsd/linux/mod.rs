@@ -742,7 +742,7 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "s390x"))] {
         mod s390x;
         pub use self::s390x::*;
-    } else if #[cfg(any(target_arch = "mips64"))] {
+    } else if #[cfg(any(target_arch = "mips64", target_arch = "mips64el"))] {
         mod mips64;
         pub use self::mips64::*;
     } else {
