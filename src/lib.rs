@@ -265,7 +265,7 @@ cfg_if! {
     if #[cfg(windows)] {
         mod windows;
         pub use windows::*;
-    } else if #[cfg(redox)] {
+    } else if #[cfg(target_os = "redox")] {
         mod redox;
         pub use redox::*;
     } else if #[cfg(unix)] {
