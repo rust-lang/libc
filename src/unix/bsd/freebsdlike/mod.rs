@@ -419,6 +419,7 @@ pub const ENOPROTOOPT: ::c_int = 42;
 pub const EPROTONOSUPPORT: ::c_int = 43;
 pub const ESOCKTNOSUPPORT: ::c_int = 44;
 pub const EOPNOTSUPP: ::c_int = 45;
+pub const ENOTSUP: ::c_int = EOPNOTSUPP;
 pub const EPFNOSUPPORT: ::c_int = 46;
 pub const EAFNOSUPPORT: ::c_int = 47;
 pub const EADDRINUSE: ::c_int = 48;
