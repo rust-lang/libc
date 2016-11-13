@@ -216,6 +216,10 @@ fn main() {
         cfg.header("sys/ioctl_compat.h");
     }
 
+    if linux || freebsd || netbsd || apple {
+        cfg.header("aio.h");
+    }
+
     cfg.type_name(move |ty, is_struct| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
