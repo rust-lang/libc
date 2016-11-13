@@ -345,6 +345,8 @@ pub const SIG_SETMASK: ::c_int = 2;
 pub const SIG_BLOCK: ::c_int = 0x000000;
 pub const SIG_UNBLOCK: ::c_int = 0x01;
 
+pub const SIGEV_THREAD_ID: ::c_int = 4;
+
 pub const POLLRDNORM: ::c_short = 0x040;
 pub const POLLWRNORM: ::c_short = 0x100;
 pub const POLLRDBAND: ::c_short = 0x080;

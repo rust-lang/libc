@@ -648,17 +648,6 @@ pub const SI_LOAD_SHIFT: ::c_uint = 16;
 pub const SIGEV_SIGNAL: ::c_int = 0;
 pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
-#[cfg(not(any(target_env = "musl")))]
-pub const SIGEV_THREAD_ID: ::c_int = 4;
-
-pub const AIO_CANCELED: ::c_int = 0;
-pub const AIO_NOTCANCELED: ::c_int = 1;
-pub const AIO_ALLDONE: ::c_int = 2;
-pub const LIO_READ: ::c_int = 0;
-pub const LIO_WRITE: ::c_int = 1;
-pub const LIO_NOP: ::c_int = 2;
-pub const LIO_WAIT: ::c_int = 0;
-pub const LIO_NOWAIT: ::c_int = 1;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
