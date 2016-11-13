@@ -50,7 +50,7 @@ s! {
         pub sigev_signo: ::c_int,       //actually a union
         #[cfg(target_pointer_width = "64")]
         __unused1: ::c_int,
-        pub sigev_value: ::intptr_t,    //actually a union of int and void*
+        pub sigev_value: ::sigval,
         __unused2: *mut ::c_void        //actually a function pointer
     }
 

@@ -37,7 +37,7 @@ s! {
     pub struct sigevent {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
-        pub sigev_value: ::intptr_t,    //actually a union of int and void*
+        pub sigev_value: ::sigval,
         //The rest of the structure is actually a union.  We expose only
         //sigev_notify_thread_id because it's the most useful union member.
         pub sigev_notify_thread_id: ::lwpid_t,

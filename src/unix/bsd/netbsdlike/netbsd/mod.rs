@@ -46,7 +46,7 @@ s! {
     pub struct sigevent {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
-        pub sigev_value: ::intptr_t,    //actually a union of int and void*
+        pub sigev_value: ::sigval,
         __unused1: *mut ::c_void,       //actually a function pointer
         pub sigev_notify_attributes: *mut ::c_void
     }

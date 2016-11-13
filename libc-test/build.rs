@@ -298,6 +298,9 @@ fn main() {
             // The alignment of this is 4 on 64-bit OSX...
             "kevent" if apple && x86_64 => true,
 
+            // This is actually a union, not a struct
+            "sigval" => true,
+
             _ => false
         }
     });
@@ -427,6 +430,10 @@ fn main() {
             // the symbol.
             "uname" if freebsd => true,
 
+            // lio_listio confuses the checker, probably because one of its
+            // arguments is an array
+            "lio_listio" if freebsd => true,
+
             _ => false,
         }
     });
@@ -446,7 +453,11 @@ fn main() {
         // sighandler_t type is super weird
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // __timeval type is a patch which doesn't exist in glibc
-        (linux && struct_ == "utmpx" && field == "ut_tv")
+        (linux && struct_ == "utmpx" && field == "ut_tv") ||
+        // sigval is actually a union, but we pretend it's a struct
+        (struct_ == "sigevent" && field == "sigev_value") ||
+        // aio_buf is "volatile void*" and Rust doesn't understand volatile
+        (struct_ == "aiocb" && field == "aio_buf")
     });
 
     cfg.skip_field(move |struct_, field| {
@@ -456,7 +467,9 @@ fn main() {
         // musl names this __dummy1 but it's still there
         (musl && struct_ == "glob_t" && field == "gl_flags") ||
         // musl seems to define this as an *anonymous* bitfield
-        (musl && struct_ == "statvfs" && field == "__f_unused")
+        (musl && struct_ == "statvfs" && field == "__f_unused") ||
+        // sigev_notify_thread_id is actually part of a sigev_un union
+        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
     });
 
     cfg.fn_cname(move |name, cname| {

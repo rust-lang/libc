@@ -165,12 +165,12 @@ s! {
     }
 
     pub struct sigevent {
-        pub sigev_value: ::intptr_t,    //actually a union of int and void*
+        pub sigev_value: ::sigval,
         pub sigev_signo: ::c_int,
         pub sigev_notify: ::c_int,
-        // Actually a union.  We only expose _tid because it's the most useful
-        // member
-        pub _tid: ::c_int,
+        // Actually a union.  We only expose sigev_notify_thread_id because it's
+        // the most useful member
+        pub sigev_notify_thread_id: ::c_int,
         #[cfg(target_pointer_width = "64")]
         __unused1: [::c_int; 11],
         #[cfg(target_pointer_width = "32")]

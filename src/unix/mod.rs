@@ -119,6 +119,11 @@ s! {
         pub l_onoff: ::c_int,
         pub l_linger: ::c_int,
     }
+
+    pub struct sigval {
+        // Actually a union of an int and a void*
+        pub sival_ptr: *mut ::c_void
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
