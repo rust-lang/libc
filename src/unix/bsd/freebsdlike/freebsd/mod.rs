@@ -169,7 +169,6 @@ pub const CTL_HW: ::c_int = 6;
 pub const CTL_MACHDEP: ::c_int = 7;
 pub const CTL_USER: ::c_int = 8;
 pub const CTL_P1003_1B: ::c_int = 9;
-pub const CTL_MAXID: ::c_int = 10;
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
 pub const KERN_OSREV: ::c_int = 3;
@@ -207,7 +206,6 @@ pub const KERN_LOGSIGEXIT: ::c_int = 34;
 pub const KERN_IOV_MAX: ::c_int = 35;
 pub const KERN_HOSTUUID: ::c_int = 36;
 pub const KERN_ARND: ::c_int = 37;
-pub const KERN_MAXID: ::c_int = 38;
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
 pub const KERN_PROC_PGRP: ::c_int = 2;
@@ -254,7 +252,6 @@ pub const HW_DISKSTATS: ::c_int = 9;
 pub const HW_FLOATINGPT: ::c_int = 10;
 pub const HW_MACHINE_ARCH: ::c_int = 11;
 pub const HW_REALMEM: ::c_int = 12;
-pub const HW_MAXID: ::c_int = 13;
 pub const USER_CS_PATH: ::c_int = 1;
 pub const USER_BC_BASE_MAX: ::c_int = 2;
 pub const USER_BC_DIM_MAX: ::c_int = 3;
@@ -275,7 +272,6 @@ pub const USER_POSIX2_SW_DEV: ::c_int = 17;
 pub const USER_POSIX2_UPE: ::c_int = 18;
 pub const USER_STREAM_MAX: ::c_int = 19;
 pub const USER_TZNAME_MAX: ::c_int = 20;
-pub const USER_MAXID: ::c_int = 21;
 pub const CTL_P1003_1B_ASYNCHRONOUS_IO: ::c_int = 1;
 pub const CTL_P1003_1B_MAPPED_FILES: ::c_int = 2;
 pub const CTL_P1003_1B_MEMLOCK: ::c_int = 3;
@@ -301,6 +297,20 @@ pub const CTL_P1003_1B_SEM_NSEMS_MAX: ::c_int = 22;
 pub const CTL_P1003_1B_SEM_VALUE_MAX: ::c_int = 23;
 pub const CTL_P1003_1B_SIGQUEUE_MAX: ::c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: ::c_int = 25;
+
+// The *_MAXID constants never should've been used outside of the
+// FreeBSD base system.  And with the exception of CTL_P1003_1B_MAXID,
+// they were all removed in svn r262489.  They remain here for backwards
+// compatibility only, and are scheduled to be removed in libc 1.0.0.
+#[doc(hidden)]
+pub const CTL_MAXID: ::c_int = 10;
+#[doc(hidden)]
+pub const KERN_MAXID: ::c_int = 38;
+#[doc(hidden)]
+pub const HW_MAXID: ::c_int = 13;
+#[doc(hidden)]
+pub const USER_MAXID: ::c_int = 21;
+#[doc(hidden)]
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
 pub const MSG_NOSIGNAL: ::c_int = 0x20000;
