@@ -430,9 +430,13 @@ fn main() {
             // the symbol.
             "uname" if freebsd => true,
 
+            // aio_waitcomplete's return type changed between FreeBSD 10 and 11.
+            "aio_waitcomplete" if freebsd => true,
+
             // lio_listio confuses the checker, probably because one of its
             // arguments is an array
             "lio_listio" if freebsd => true,
+            "lio_listio" if musl => true,
 
             _ => false,
         }

@@ -29,7 +29,7 @@ s! {
         pub aio_fildes: ::c_int,
         pub aio_offset: ::off_t,
         pub aio_buf: *mut ::c_void,
-        pub aio_nybtes: ::size_t,
+        pub aio_nbytes: ::size_t,
         pub aio_reqprio: ::c_int,
         pub aio_sigevent: sigevent,
         pub aio_lio_opcode: ::c_int

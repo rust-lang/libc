@@ -176,22 +176,6 @@ s! {
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12]
     }
-
-    pub struct aiocb {
-        pub aio_fildes: ::c_int,
-        pub aio_lio_opcode: ::c_int,
-        pub aio_reqprio: ::c_int,
-        pub aio_buf: *mut ::c_void,
-        pub aio_nbytes: ::size_t,
-        pub aio_sigevent: sigevent,
-        __next_prio: *mut aiocb,
-        __abs_prio: ::c_int,
-        __policy: ::c_int,
-        __error_code: ::c_int,
-        __return_value: ::ssize_t,
-        pub aio_offset: off_t,
-        __glibc_reserved: [::c_char; 32]
-    }
 }
 
 // intentionally not public, only used for fd_set
@@ -664,6 +648,7 @@ pub const SI_LOAD_SHIFT: ::c_uint = 16;
 pub const SIGEV_SIGNAL: ::c_int = 0;
 pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
+#[cfg(not(any(target_env = "musl")))]
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 pub const AIO_CANCELED: ::c_int = 0;
@@ -732,17 +717,6 @@ f! {
 }
 
 extern {
-    pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
-    pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
-    pub fn aio_suspend(aiocb_list: *const *const aiocb, nitems: ::c_int,
-                       timeout: *const ::timespec) -> ::c_int;
-    pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
-    pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
-                      nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
-
     pub fn getpwnam_r(name: *const ::c_char,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,

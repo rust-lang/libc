@@ -21,6 +21,24 @@ pub type nl_item = ::c_int;
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
 s! {
+    pub struct aiocb {
+        pub aio_fildes: ::c_int,
+        pub aio_lio_opcode: ::c_int,
+        pub aio_reqprio: ::c_int,
+        pub aio_buf: *mut ::c_void,
+        pub aio_nbytes: ::size_t,
+        pub aio_sigevent: ::sigevent,
+        __next_prio: *mut aiocb,
+        __abs_prio: ::c_int,
+        __policy: ::c_int,
+        __error_code: ::c_int,
+        __return_value: ::ssize_t,
+        pub aio_offset: off_t,
+        #[cfg(target_pointer_width = "32")]
+        __unused1: [::c_char; 4],
+        __glibc_reserved: [::c_char; 32]
+    }
+
     pub struct dirent {
         pub d_ino: ::ino_t,
         pub d_off: ::off_t,
@@ -557,6 +575,17 @@ f! {
 }
 
 extern {
+    pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
+    pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
+    pub fn aio_suspend(aiocb_list: *const *const aiocb, nitems: ::c_int,
+                       timeout: *const ::timespec) -> ::c_int;
+    pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
+                      nitems: ::c_int, sevp: *mut ::sigevent) -> ::c_int;
+
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
 
     pub fn setpwent();

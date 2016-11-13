@@ -570,7 +570,6 @@ pub const KERN_PROC_RGID: ::c_int = 8;
 
 pub const EAI_SYSTEM: ::c_int = 11;
 
-pub const AIO_LISTIO_MAX: ::c_int = 512;
 pub const AIO_CANCELED: ::c_int = 1;
 pub const AIO_NOTCANCELED: ::c_int = 2;
 pub const AIO_ALLDONE: ::c_int = 3;
