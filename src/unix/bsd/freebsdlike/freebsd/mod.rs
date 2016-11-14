@@ -1,7 +1,7 @@
 pub type fflags_t = u32;
 pub type clock_t = i32;
 pub type ino_t = u32;
-pub type lwpid_t = u32;
+pub type lwpid_t = i32;
 pub type nlink_t = u16;
 pub type blksize_t = u32;
 pub type clockid_t = ::c_int;
