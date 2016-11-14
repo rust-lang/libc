@@ -1,6 +1,7 @@
 pub type fflags_t = u32;
 pub type clock_t = i32;
 pub type ino_t = u32;
+pub type lwpid_t = i32;
 pub type nlink_t = u16;
 pub type blksize_t = u32;
 pub type clockid_t = ::c_int;
@@ -9,12 +10,40 @@ pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
 
 s! {
+    pub struct aiocb {
+        pub aio_fildes: ::c_int,
+        pub aio_offset: ::off_t,
+        pub aio_buf: *mut ::c_void,
+        pub aio_nbytes: ::size_t,
+        __unused1: [::c_int; 2],
+        __unused2: *mut ::c_void,
+        pub aio_lio_opcode: ::c_int,
+        pub aio_reqprio: ::c_int,
+        // unused 3 through 5 are the __aiocb_private structure
+        __unused3: ::c_long,
+        __unused4: ::c_long,
+        __unused5: *mut ::c_void,
+        pub aio_sigevent: sigevent
+    }
+
     pub struct dirent {
         pub d_fileno: u32,
         pub d_reclen: u16,
         pub d_type: u8,
         pub d_namlen: u8,
         pub d_name: [::c_char; 256],
+    }
+
+    pub struct sigevent {
+        pub sigev_notify: ::c_int,
+        pub sigev_signo: ::c_int,
+        pub sigev_value: ::sigval,
+        //The rest of the structure is actually a union.  We expose only
+        //sigev_notify_thread_id because it's the most useful union member.
+        pub sigev_notify_thread_id: ::lwpid_t,
+        #[cfg(target_pointer_width = "64")]
+        __unused1: ::c_int,
+        __unused2: [::c_long; 7]
     }
 
     pub struct statvfs {
@@ -31,6 +60,8 @@ s! {
         pub f_namemax: ::c_ulong,
     }
 }
+
+pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;

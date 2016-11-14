@@ -524,6 +524,15 @@ pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_uint = 4;
 
 pub const EAI_SYSTEM: ::c_int = -11;
 
+pub const AIO_CANCELED: ::c_int = 0;
+pub const AIO_NOTCANCELED: ::c_int = 1;
+pub const AIO_ALLDONE: ::c_int = 2;
+pub const LIO_READ: ::c_int = 0;
+pub const LIO_WRITE: ::c_int = 1;
+pub const LIO_NOP: ::c_int = 2;
+pub const LIO_WAIT: ::c_int = 0;
+pub const LIO_NOWAIT: ::c_int = 1;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
@@ -557,6 +566,17 @@ f! {
 }
 
 extern {
+    pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
+    pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
+    pub fn aio_suspend(aiocb_list: *const *const aiocb, nitems: ::c_int,
+                       timeout: *const ::timespec) -> ::c_int;
+    pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
+                      nitems: ::c_int, sevp: *mut ::sigevent) -> ::c_int;
+
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
 
     pub fn setpwent();

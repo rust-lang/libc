@@ -163,6 +163,19 @@ s! {
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
     }
+
+    pub struct sigevent {
+        pub sigev_value: ::sigval,
+        pub sigev_signo: ::c_int,
+        pub sigev_notify: ::c_int,
+        // Actually a union.  We only expose sigev_notify_thread_id because it's
+        // the most useful member
+        pub sigev_notify_thread_id: ::c_int,
+        #[cfg(target_pointer_width = "64")]
+        __unused1: [::c_int; 11],
+        #[cfg(target_pointer_width = "32")]
+        __unused1: [::c_int; 12]
+    }
 }
 
 // intentionally not public, only used for fd_set
@@ -631,6 +644,10 @@ pub const LOG_PERROR: ::c_int = 0x20;
 pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: ::c_uint = 16;
+
+pub const SIGEV_SIGNAL: ::c_int = 0;
+pub const SIGEV_NONE: ::c_int = 1;
+pub const SIGEV_THREAD: ::c_int = 2;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
