@@ -92,6 +92,7 @@ s! {
     }
 
     pub struct stack_t {
+        // In FreeBSD 11 and later, ss_sp is a void*
         pub ss_sp: *mut ::c_char,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,

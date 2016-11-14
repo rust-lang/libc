@@ -442,7 +442,9 @@ fn main() {
         // sighandler_t type is super weird
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // __timeval type is a patch which doesn't exist in glibc
-        (linux && struct_ == "utmpx" && field == "ut_tv")
+        (linux && struct_ == "utmpx" && field == "ut_tv") ||
+        // stack_t.ss_sp changed from FreeBSD 10 to 11 in svn r294930
+        (freebsd && struct_ == "stack_t" && field == "ss_sp")
     });
 
     cfg.skip_field(move |struct_, field| {
