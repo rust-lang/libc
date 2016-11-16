@@ -760,8 +760,6 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("mips64", "64")
     } else if target.starts_with("mips") {
         ("mips", "32")
-    } else if target.starts_with("powerpc64le") {
-        ("powerpc64le", "64")
     } else if target.starts_with("powerpc64") {
         ("powerpc64", "64")
     } else if target.starts_with("powerpc") {
