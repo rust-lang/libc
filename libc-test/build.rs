@@ -438,6 +438,10 @@ fn main() {
             "lio_listio" if freebsd => true,
             "lio_listio" if musl => true,
 
+            // Apparently the NDK doesn't have this defined on android, but
+            // it's in a header file?
+            "endpwent" if android => true,
+
             _ => false,
         }
     });
