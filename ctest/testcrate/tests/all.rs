@@ -5,6 +5,9 @@ use std::env;
 fn cmd(name: &str) -> Command {
     let mut p = env::current_exe().unwrap();
     p.pop();
+    if p.file_name().unwrap().to_str() == Some("deps") {
+        p.pop();
+    }
     p.push(name);
     Command::new(p)
 }
