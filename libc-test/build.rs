@@ -361,6 +361,19 @@ fn main() {
             "QFMT_VFS_OLD" |
             "QFMT_VFS_V0" if mips && linux => true,
 
+            // These constants were removed in FreeBSD 11 (svn r273250) but will
+            // still be accepted and ignored at runtime.
+            "MAP_RENAME" |
+            "MAP_NORESERVE" if freebsd => true,
+
+            // These constants were removed in FreeBSD 11 (svn r262489),
+            // and they've never had any legitimate use outside of the
+            // base system anyway.
+            "CTL_MAXID" |
+            "KERN_MAXID" |
+            "HW_MAXID" |
+            "USER_MAXID" if freebsd => true,
+
             _ => false,
         }
     });
@@ -461,7 +474,9 @@ fn main() {
         // sigval is actually a union, but we pretend it's a struct
         (struct_ == "sigevent" && field == "sigev_value") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_ == "aiocb" && field == "aio_buf")
+        (struct_ == "aiocb" && field == "aio_buf") ||
+        // stack_t.ss_sp's type changed from FreeBSD 10 to 11 in svn r294930
+        (freebsd && struct_ == "stack_t" && field == "ss_sp")
     });
 
     cfg.skip_field(move |struct_, field| {
