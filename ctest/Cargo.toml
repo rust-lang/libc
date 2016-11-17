@@ -14,3 +14,6 @@ Automated tests of FFI bindings.
 [dependencies]
 syntex_syntax = "0.19.1"
 gcc = "0.3.14"
+
+[workspace]
+members = ["testcrate"]
