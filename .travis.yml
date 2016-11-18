@@ -119,6 +119,8 @@ matrix:
       script: sh ci/run-docker.sh $TARGET
       install:
 
+cache: cargo
+
 notifications:
   email:
     on_success: never
