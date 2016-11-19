@@ -20,7 +20,7 @@ script:
 osx_image: xcode7.3
 env:
   global:
-    secure: eIDEoQdTyglcsTD13zSGotAX2HDhRSXIaaTnVZTThqLSrySOc3/6KY3qmOc2Msf7XaBqfFy9QA+alk7OwfePp253eiy1Kced67ffjjFOytEcRT7FlQiYpcYQD6WNHZEj62/bJBO4LTM9sGtWNCTJVEDKW0WM8mUK7qNuC+honPM=
+    secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="
 matrix:
   include:
     # 1.0.0 compat
