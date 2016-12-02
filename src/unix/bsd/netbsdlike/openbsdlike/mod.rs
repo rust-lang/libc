@@ -108,6 +108,9 @@ s! {
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
         pub si_addr: *mut ::c_char,
+        #[cfg(target_pointer_width = "32")]
+        __pad: [u8; 112],
+        #[cfg(target_pointer_width = "64")]
         __pad: [u8; 108],
     }
 
