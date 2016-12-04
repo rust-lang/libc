@@ -741,8 +741,6 @@ extern {
     pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
     pub fn setutxent();
-    pub fn getutxuser(user: *const ::c_char) -> *mut utmpx;
-    pub fn setutxdb(_type: ::c_int, file: *const ::c_char) -> ::c_int;
 }
 
 #[link(name = "util")]

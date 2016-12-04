@@ -349,6 +349,9 @@ extern {
     pub fn mkostemps(template: *mut ::c_char,
                      suffixlen: ::c_int,
                      flags: ::c_int) -> ::c_int;
+
+    pub fn getutxuser(user: *const ::c_char) -> *mut utmpx;
+    pub fn setutxdb(_type: ::c_int, file: *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {
