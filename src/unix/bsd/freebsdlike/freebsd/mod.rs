@@ -5,6 +5,7 @@ pub type lwpid_t = i32;
 pub type nlink_t = u16;
 pub type blksize_t = u32;
 pub type clockid_t = ::c_int;
+pub type sem_t = _sem;
 
 pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
@@ -58,6 +59,11 @@ s! {
         pub f_frsize: ::c_ulong,
         pub f_fsid: ::c_ulong,
         pub f_namemax: ::c_ulong,
+    }
+
+    // internal structure has changed over time
+    pub struct _sem {
+        data: [u32; 4],
     }
 }
 

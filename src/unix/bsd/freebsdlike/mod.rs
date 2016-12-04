@@ -12,7 +12,6 @@ pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type nl_item = ::c_int;
 pub type id_t = i64;
-pub type sem_t = _sem;
 
 pub enum timezone {}
 
@@ -169,11 +168,6 @@ s! {
         pub int_n_sep_by_space: ::c_char,
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
-    }
-
-    // internal structure has changed over time
-    pub struct _sem {
-        data: [u32; 4],
     }
 }
 

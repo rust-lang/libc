@@ -14,6 +14,10 @@ pub type uuid_t = ::uuid;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 
+pub type sem_t = *mut sem;
+
+pub enum sem {}
+
 s! {
     pub struct aiocb {
         pub aio_fildes: ::c_int,
