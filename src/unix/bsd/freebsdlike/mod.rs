@@ -819,7 +819,6 @@ extern {
                    winp: *mut ::winsize) -> ::pid_t;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
-    pub fn freelocale(loc: ::locale_t) -> ::c_int;
     pub fn newlocale(mask: ::c_int,
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;

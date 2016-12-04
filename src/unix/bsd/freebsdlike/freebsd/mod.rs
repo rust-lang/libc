@@ -355,6 +355,8 @@ extern {
 
     pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
                             timeout: *mut ::timespec) -> ::ssize_t;
+
+    pub fn freelocale(loc: ::locale_t) -> ::c_int;
 }
 
 cfg_if! {
