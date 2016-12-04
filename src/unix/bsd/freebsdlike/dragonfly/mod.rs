@@ -19,6 +19,29 @@ pub type sem_t = *mut sem;
 pub enum sem {}
 
 s! {
+
+    pub struct exit_status {
+        pub e_termination: u16,
+        pub e_exit: u16
+    }
+
+    pub struct utmpx {
+        pub ut_name: [::c_char; 32],
+        pub ut_id: [::c_char; 4],
+
+        pub ut_line: [::c_char; 32],
+        pub ut_host: [::c_char; 256],
+
+        pub ut_unused: [u8; 16],
+        pub ut_session: u16,
+        pub ut_type: u16,
+        pub ut_pid: ::pid_t,
+        ut_exit: exit_status,
+        ut_ss: ::sockaddr_storage,
+        pub ut_tv: ::timeval,
+        pub ut_unused2: [u8; 16],
+    }
+
     pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_offset: ::off_t,

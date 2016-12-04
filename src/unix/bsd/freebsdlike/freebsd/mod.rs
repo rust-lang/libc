@@ -11,6 +11,17 @@ pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
 
 s! {
+    pub struct utmpx {
+        pub ut_type: ::c_short,
+        pub ut_tv: ::timeval,
+        pub ut_id: [::c_char; 8],
+        pub ut_pid: ::pid_t,
+        pub ut_user: [::c_char; 32],
+        pub ut_line: [::c_char; 16],
+        pub ut_host: [::c_char; 128],
+        pub __ut_spare: [::c_char; 64],
+    }
+
     pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_offset: ::off_t,

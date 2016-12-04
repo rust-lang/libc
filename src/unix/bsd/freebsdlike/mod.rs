@@ -16,17 +16,6 @@ pub type id_t = i64;
 pub enum timezone {}
 
 s! {
-    pub struct utmpx {
-        pub ut_type: ::c_short,
-        pub ut_tv: ::timeval,
-        pub ut_id: [::c_char; 8],
-        pub ut_pid: ::pid_t,
-        pub ut_user: [::c_char; 32],
-        pub ut_line: [::c_char; 16],
-        pub ut_host: [::c_char; 128],
-        pub __ut_spare: [::c_char; 64],
-    }
-
     pub struct glob_t {
         pub gl_pathc:  ::size_t,
         pub gl_matchc: ::size_t,
