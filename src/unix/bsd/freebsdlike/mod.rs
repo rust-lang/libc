@@ -175,19 +175,6 @@ pub const SIGEV_SIGNAL: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
 pub const SIGEV_KEVENT: ::c_int = 3;
 
-pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
-pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << 2);
-pub const LC_MONETARY_MASK: ::c_int = (1 << 3);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << 4);
-pub const LC_TIME_MASK: ::c_int = (1 << 5);
-pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
-                               | LC_CTYPE_MASK
-                               | LC_MESSAGES_MASK
-                               | LC_MONETARY_MASK
-                               | LC_NUMERIC_MASK
-                               | LC_TIME_MASK;
-
 pub const CODESET: ::nl_item = 0;
 pub const D_T_FMT: ::nl_item = 1;
 pub const D_FMT: ::nl_item = 2;

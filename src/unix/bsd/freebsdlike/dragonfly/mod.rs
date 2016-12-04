@@ -352,6 +352,20 @@ pub const LOGIN_PROCESS: ::c_short = 6;
 pub const USER_PROCESS: ::c_short = 7;
 pub const DEAD_PROCESS: ::c_short = 8;
 
+pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
+pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
+pub const LC_MONETARY_MASK: ::c_int = (1 << 2);
+pub const LC_NUMERIC_MASK: ::c_int = (1 << 3);
+pub const LC_TIME_MASK: ::c_int = (1 << 4);
+pub const LC_MESSAGES_MASK: ::c_int = (1 << 5);
+pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
+                               | LC_CTYPE_MASK
+                               | LC_MESSAGES_MASK
+                               | LC_MONETARY_MASK
+                               | LC_NUMERIC_MASK
+                               | LC_TIME_MASK;
+
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
