@@ -342,6 +342,16 @@ pub const NOTE_CHILD: ::uint32_t = 0x00000004;
 
 pub const MSG_NOSIGNAL: ::c_int = 0x400;
 
+pub const EMPTY: ::c_short = 0;
+pub const RUN_LVL: ::c_short = 1;
+pub const BOOT_TIME: ::c_short = 2;
+pub const OLD_TIME: ::c_short = 3;
+pub const NEW_TIME: ::c_short = 4;
+pub const INIT_PROCESS: ::c_short = 5;
+pub const LOGIN_PROCESS: ::c_short = 6;
+pub const USER_PROCESS: ::c_short = 7;
+pub const DEAD_PROCESS: ::c_short = 8;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;

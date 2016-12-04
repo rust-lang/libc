@@ -175,17 +175,6 @@ pub const SIGEV_SIGNAL: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
 pub const SIGEV_KEVENT: ::c_int = 3;
 
-pub const EMPTY: ::c_short = 0;
-pub const BOOT_TIME: ::c_short = 1;
-pub const OLD_TIME: ::c_short = 2;
-pub const NEW_TIME: ::c_short = 3;
-pub const USER_PROCESS: ::c_short = 4;
-pub const INIT_PROCESS: ::c_short = 5;
-pub const LOGIN_PROCESS: ::c_short = 6;
-pub const DEAD_PROCESS: ::c_short = 7;
-#[cfg(target_os = "freebsd")]
-pub const SHUTDOWN_TIME: ::c_short = 8;
-
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
 pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
 pub const LC_MESSAGES_MASK: ::c_int = (1 << 2);

@@ -332,6 +332,16 @@ pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
 pub const MSG_NOSIGNAL: ::c_int = 0x20000;
 
+pub const EMPTY: ::c_short = 0;
+pub const BOOT_TIME: ::c_short = 1;
+pub const OLD_TIME: ::c_short = 2;
+pub const NEW_TIME: ::c_short = 3;
+pub const USER_PROCESS: ::c_short = 4;
+pub const INIT_PROCESS: ::c_short = 5;
+pub const LOGIN_PROCESS: ::c_short = 6;
+pub const DEAD_PROCESS: ::c_short = 7;
+pub const SHUTDOWN_TIME: ::c_short = 8;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
