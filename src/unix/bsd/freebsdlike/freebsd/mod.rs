@@ -352,6 +352,9 @@ extern {
 
     pub fn getutxuser(user: *const ::c_char) -> *mut utmpx;
     pub fn setutxdb(_type: ::c_int, file: *const ::c_char) -> ::c_int;
+
+    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
+                            timeout: *mut ::timespec) -> ::ssize_t;
 }
 
 cfg_if! {
