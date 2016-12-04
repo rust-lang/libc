@@ -183,6 +183,7 @@ pub const USER_PROCESS: ::c_short = 4;
 pub const INIT_PROCESS: ::c_short = 5;
 pub const LOGIN_PROCESS: ::c_short = 6;
 pub const DEAD_PROCESS: ::c_short = 7;
+#[cfg(target_os = "freebsd")]
 pub const SHUTDOWN_TIME: ::c_short = 8;
 
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
@@ -689,6 +690,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 3;
+#[cfg(target_os = "freebsd")]
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 4;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_ERRORCHECK;
 
