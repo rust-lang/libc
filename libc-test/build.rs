@@ -216,7 +216,7 @@ fn main() {
         cfg.header("sys/ioctl_compat.h");
     }
 
-    if linux || freebsd || netbsd || apple {
+    if linux || freebsd || dragonfly || netbsd || apple {
         cfg.header("aio.h");
     }
 
