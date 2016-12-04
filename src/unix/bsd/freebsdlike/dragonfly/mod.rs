@@ -74,11 +74,15 @@ s! {
 
     pub struct sigevent {
         pub sigev_notify: ::c_int,
-        pub sigev_signo: ::c_int,       //actually a union
+        // The union is 8-byte in size, so it is aligned at a 8-byte offset.
         #[cfg(target_pointer_width = "64")]
         __unused1: ::c_int,
+        pub sigev_signo: ::c_int,       //actually a union
+        // pad the union
+        #[cfg(target_pointer_width = "64")]
+        __unused2: ::c_int,
         pub sigev_value: ::sigval,
-        __unused2: *mut ::c_void        //actually a function pointer
+        __unused3: *mut ::c_void        //actually a function pointer
     }
 
     pub struct statvfs {
