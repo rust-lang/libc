@@ -114,6 +114,12 @@ s! {
         pub msg_flags: ::c_int,
     }
 
+    pub struct cmsghdr {
+        pub cmsg_len: ::size_t,
+        pub cmsg_level: ::c_int,
+        pub cmsg_type: ::c_int,
+    }
+
     pub struct fd_set {
         fds_bits: [i32; FD_SETSIZE / 32],
     }
