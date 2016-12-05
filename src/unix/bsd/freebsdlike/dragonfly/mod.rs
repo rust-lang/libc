@@ -369,7 +369,6 @@ pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
                                | LC_NUMERIC_MASK
                                | LC_TIME_MASK;
 
-
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;

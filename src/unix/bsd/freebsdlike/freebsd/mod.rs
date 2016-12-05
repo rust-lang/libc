@@ -82,6 +82,7 @@ pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
+pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 4;
 pub const SIGSTKSZ: ::size_t = 34816;
 pub const SF_NODISKIO: ::c_int = 0x00000001;
 pub const SF_MNOWAIT: ::c_int = 0x00000002;
@@ -354,7 +355,6 @@ pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
                                | LC_MONETARY_MASK
                                | LC_NUMERIC_MASK
                                | LC_TIME_MASK;
-
 
 extern {
     pub fn __error() -> *mut ::c_int;
