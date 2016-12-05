@@ -12,7 +12,7 @@ Automated tests of FFI bindings.
 """
 
 [dependencies]
-syntex_syntax = "0.20.0"
+syntex_syntax = "0.21.0"
 gcc = "0.3.14"
 
 [workspace]
