@@ -216,7 +216,7 @@ fn main() {
         cfg.header("sys/ioctl_compat.h");
     }
 
-    if linux || freebsd || netbsd || apple {
+    if linux || freebsd || dragonfly || netbsd || apple {
         cfg.header("aio.h");
     }
 
@@ -315,7 +315,7 @@ fn main() {
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
             // sem_t is a struct or pointer
-            "sem_t" if openbsd || freebsd || rumprun => true,
+            "sem_t" if openbsd || freebsd || dragonfly || rumprun => true,
 
             // windows-isms
             n if n.starts_with("P") => true,
