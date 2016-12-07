@@ -94,6 +94,7 @@ you can browse [the documentation][dox].
 * [git2-rs](https://github.com/alexcrichton/git2-rs)
 * [ssh2-rs](https://github.com/alexcrichton/ssh2-rs)
 * [libz-sys](https://github.com/alexcrichton/libz-sys)
+* [openssl-sys](https://github.com/sfackler/rust-openssl)
 
 ### License
 
