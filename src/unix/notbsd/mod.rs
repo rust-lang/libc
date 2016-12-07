@@ -873,6 +873,7 @@ extern {
     pub fn ptsname_r(fd: ::c_int,
                      buf: *mut ::c_char,
                      buflen: ::size_t) -> ::c_int;
+    pub fn clearenv() -> ::c_int;
 }
 
 cfg_if! {
