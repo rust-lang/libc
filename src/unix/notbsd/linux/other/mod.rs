@@ -629,6 +629,9 @@ extern {
                                   cpusetsize: ::size_t,
                                   cpuset: *const ::cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
+
+    pub fn waitid(idtype: ::idtype_t, id: ::id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
