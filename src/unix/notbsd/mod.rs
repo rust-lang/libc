@@ -685,7 +685,7 @@ f! {
     }
 
     pub fn WIFSIGNALED(status: ::c_int) -> bool {
-        (status & 0x7f) + 1 >= 2
+        ((status & 0x7f) + 1) as i8 >= 2
     }
 
     pub fn WTERMSIG(status: ::c_int) -> ::c_int {
