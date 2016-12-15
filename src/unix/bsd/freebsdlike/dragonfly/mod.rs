@@ -374,6 +374,7 @@ extern {
                     -> ::c_int;
     pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
 
     pub fn setutxdb(_type: ::c_uint, file: *mut ::c_char) -> ::c_int;
 
