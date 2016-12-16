@@ -28,10 +28,10 @@ build = "build.rs"
 
 [dependencies]
 my-sys-library = { path = "../my-sys-library" }
-libc = "..."
+libc = "0.2"
 
 [build-dependencies]
-ctest = { git = "https://github.com/alexcrichton/ctest" }
+ctest = "0.1"
 ```
 
 Next, add a build script to `systest/build.rs`:
