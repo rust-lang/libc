@@ -435,7 +435,6 @@ pub const NI_NOFQDN: ::c_int = 4;
 pub const NI_NAMEREQD: ::c_int = 8;
 pub const NI_DGRAM: ::c_int = 16;
 
-
 pub const AF_PACKET: ::c_int = 17;
 pub const IPPROTO_RAW: ::c_int = 255;
 
