@@ -427,7 +427,6 @@ pub const EAI_FAMILY: ::c_int = -6;
 pub const EAI_SOCKTYPE: ::c_int = -7;
 pub const EAI_SERVICE: ::c_int = -8;
 pub const EAI_MEMORY: ::c_int = -10;
-pub const EAI_SYSTEM: ::c_int = -11;
 pub const EAI_OVERFLOW: ::c_int = -12;
 
 pub const NI_NUMERICHOST: ::c_int = 1;
