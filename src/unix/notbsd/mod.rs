@@ -450,6 +450,7 @@ pub const IFF_DYNAMIC: ::c_int = 0x8000;
 pub const AF_UNIX: ::c_int = 1;
 pub const AF_INET: ::c_int = 2;
 pub const AF_INET6: ::c_int = 10;
+pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_NETLINK: ::c_int = 16;
 pub const SOCK_RAW: ::c_int = 3;
 pub const IPPROTO_TCP: ::c_int = 6;
