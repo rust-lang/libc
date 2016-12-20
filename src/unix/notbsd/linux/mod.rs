@@ -518,6 +518,31 @@ pub const RB_POWER_OFF: ::c_int = 0x4321fedcu32 as i32;
 pub const RB_SW_SUSPEND: ::c_int = 0xd000fce2u32 as i32;
 pub const RB_KEXEC: ::c_int = 0x45584543u32 as i32;
 
+pub const AI_PASSIVE: ::c_int = 0x0001;
+pub const AI_CANONNAME: ::c_int = 0x0002;
+pub const AI_NUMERICHOST: ::c_int = 0x0004;
+pub const AI_V4MAPPED: ::c_int = 0x0008;
+pub const AI_ALL: ::c_int = 0x0010;
+pub const AI_ADDRCONFIG: ::c_int = 0x0020;
+
+pub const AI_NUMERICSERV: ::c_int = 0x0400;
+
+pub const EAI_BADFLAGS: ::c_int = -1;
+pub const EAI_NONAME: ::c_int = -2;
+pub const EAI_AGAIN: ::c_int = -3;
+pub const EAI_FAIL: ::c_int = -4;
+pub const EAI_FAMILY: ::c_int = -6;
+pub const EAI_SOCKTYPE: ::c_int = -7;
+pub const EAI_SERVICE: ::c_int = -8;
+pub const EAI_MEMORY: ::c_int = -10;
+pub const EAI_OVERFLOW: ::c_int = -12;
+
+pub const NI_NUMERICHOST: ::c_int = 1;
+pub const NI_NUMERICSERV: ::c_int = 2;
+pub const NI_NOFQDN: ::c_int = 4;
+pub const NI_NAMEREQD: ::c_int = 8;
+pub const NI_DGRAM: ::c_int = 16;
+
 pub const SYNC_FILE_RANGE_WAIT_BEFORE: ::c_uint = 1;
 pub const SYNC_FILE_RANGE_WRITE: ::c_uint = 2;
 pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_uint = 4;
