@@ -650,6 +650,175 @@ pub const SIGEV_SIGNAL: ::c_int = 0;
 pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
 
+pub const PR_SET_PDEATHSIG: ::c_int = 1;  /* Second arg is a signal */
+pub const PR_GET_PDEATHSIG: ::c_int = 2;
+
+/* Get/set current->mm->dumpable */
+pub const PR_GET_DUMPABLE: ::c_int = 3;
+pub const PR_SET_DUMPABLE: ::c_int = 4;
+
+/* Get/set unaligned access control bits (if meaningful) */
+pub const PR_GET_UNALIGN: ::c_int = 5;
+pub const PR_SET_UNALIGN: ::c_int = 6;
+pub const PR_UNALIGN_NOPRINT: ::c_int = 1;	/* silently fix up unaligned user accesses */
+pub const PR_UNALIGN_SIGBUS: ::c_int = 2;	/* generate SIGBUS on unaligned user access */
+
+/* Get/set whether or not to drop capabilities on setuid() away from
+ * uid 0 (as per security/commoncap.c) */
+pub const PR_GET_KEEPCAPS: ::c_int = 7;
+pub const PR_SET_KEEPCAPS: ::c_int = 8;
+
+/* Get/set floating-point emulation control bits (if meaningful) */
+pub const PR_GET_FPEMU: ::c_int = 9;
+pub const PR_SET_FPEMU: ::c_int = 10;
+pub const PR_FPEMU_NOPRINT: ::c_int = 1;	/* silently emulate fp operations accesses */
+pub const PR_FPEMU_SIGFPE: ::c_int = 2;	/* don't emulate fp operations, send SIGFPE instead */
+
+/* Get/set floating-point exception mode (if meaningful) */
+pub const PR_GET_FPEXC: ::c_int = 11;
+pub const PR_SET_FPEXC: ::c_int = 12;
+pub const PR_FP_EXC_SW_ENABLE: ::c_int = 0x80;	/* Use FPEXC for FP exception enables */
+pub const PR_FP_EXC_DIV: ::c_int = 0x010000;	/* floating point divide by zero */
+pub const PR_FP_EXC_OVF: ::c_int = 0x020000;	/* floating point overflow */
+pub const PR_FP_EXC_UND: ::c_int = 0x040000;	/* floating point underflow */
+pub const PR_FP_EXC_RES: ::c_int = 0x080000;	/* floating point inexact result */
+pub const PR_FP_EXC_INV: ::c_int = 0x100000;	/* floating point invalid operation */
+pub const PR_FP_EXC_DISABLED: ::c_int = 0;	/* FP exceptions disabled */
+pub const PR_FP_EXC_NONRECOV: ::c_int = 1;	/* async non-recoverable exc. mode */
+pub const PR_FP_EXC_ASYNC: ::c_int = 2;	/* async recoverable exception mode */
+pub const PR_FP_EXC_PRECISE: ::c_int = 3;	/* precise exception mode */
+
+/* Get/set whether we use statistical process timing or accurate timestamp
+ * based process timing */
+pub const PR_GET_TIMING: ::c_int = 13;
+pub const PR_SET_TIMING: ::c_int = 14;
+pub const PR_TIMING_STATISTICAL: ::c_int = 0;       /* Normal, traditional,
+                                                   statistical process timing */
+pub const PR_TIMING_TIMESTAMP: ::c_int = 1;       /* Accurate timestamp based
+                                                   process timing */
+
+pub const PR_SET_NAME: ::c_int = 15;		/* Set process name */
+pub const PR_GET_NAME: ::c_int = 16;		/* Get process name */
+
+/* Get/set process endian */
+pub const PR_GET_ENDIAN: ::c_int = 19;
+pub const PR_SET_ENDIAN: ::c_int = 20;
+pub const PR_ENDIAN_BIG: ::c_int = 0;
+pub const PR_ENDIAN_LITTLE: ::c_int = 1;	/* True little endian mode */
+pub const PR_ENDIAN_PPC_LITTLE: ::c_int = 2;	/* "PowerPC" pseudo little endian */
+
+/* Get/set process seccomp mode */
+pub const PR_GET_SECCOMP: ::c_int = 21;
+pub const PR_SET_SECCOMP: ::c_int = 22;
+
+/* Get/set the capability bounding set (as per security/commoncap.c) */
+pub const PR_CAPBSET_READ: ::c_int = 23;
+pub const PR_CAPBSET_DROP: ::c_int = 24;
+
+/* Get/set the process' ability to use the timestamp counter instruction */
+pub const PR_GET_TSC: ::c_int = 25;
+pub const PR_SET_TSC: ::c_int = 26;
+pub const PR_TSC_ENABLE: ::c_int = 1;
+pub const PR_TSC_SIGSEGV: ::c_int = 2;
+
+/* Get/set securebits (as per security/commoncap.c) */
+pub const PR_GET_SECUREBITS: ::c_int = 27;
+pub const PR_SET_SECUREBITS: ::c_int = 28;
+
+/*
+ * Get/set the timerslack as used by poll/select/nanosleep
+ * A value of 0 means "use default"
+ */
+pub const PR_SET_TIMERSLACK: ::c_int = 29;
+pub const PR_GET_TIMERSLACK: ::c_int = 30;
+
+pub const PR_TASK_PERF_EVENTS_DISABLE: ::c_int = 31;
+pub const PR_TASK_PERF_EVENTS_ENABLE: ::c_int = 32;
+
+/*
+ * Set early/late kill mode for hwpoison memory corruption.
+ * This influences when the process gets killed on a memory corruption.
+ */
+pub const PR_MCE_KILL: ::c_int = 33;
+pub const PR_MCE_KILL_CLEAR: ::c_int = 0;
+pub const PR_MCE_KILL_SET: ::c_int = 1;
+
+pub const PR_MCE_KILL_LATE: ::c_int = 0;
+pub const PR_MCE_KILL_EARLY: ::c_int = 1;
+pub const PR_MCE_KILL_DEFAULT: ::c_int = 2;
+
+pub const PR_MCE_KILL_GET: ::c_int = 34;
+
+/*
+ * Tune up process memory map specifics.
+ */
+pub const PR_SET_MM: ::c_int = 35;
+pub const PR_SET_MM_START_CODE: ::c_int = 1;
+pub const PR_SET_MM_END_CODE: ::c_int = 2;
+pub const PR_SET_MM_START_DATA: ::c_int = 3;
+pub const PR_SET_MM_END_DATA: ::c_int = 4;
+pub const PR_SET_MM_START_STACK: ::c_int = 5;
+pub const PR_SET_MM_START_BRK: ::c_int = 6;
+pub const PR_SET_MM_BRK: ::c_int = 7;
+pub const PR_SET_MM_ARG_START: ::c_int = 8;
+pub const PR_SET_MM_ARG_END: ::c_int = 9;
+pub const PR_SET_MM_ENV_START: ::c_int = 10;
+pub const PR_SET_MM_ENV_END: ::c_int = 11;
+pub const PR_SET_MM_AUXV: ::c_int = 12;
+pub const PR_SET_MM_EXE_FILE: ::c_int = 13;
+pub const PR_SET_MM_MAP: ::c_int = 14;
+pub const PR_SET_MM_MAP_SIZE: ::c_int = 15;
+
+/*
+ * Set specific pid that is allowed to ptrace the current task.
+ * A value of 0 mean "no process".
+ */
+pub const PR_SET_PTRACER: ::c_int = 0x59616d61;
+pub const PR_SET_PTRACER_ANY: ::uint32_t = -1;
+
+pub const PR_SET_CHILD_SUBREAPER: ::c_int = 36;
+pub const PR_GET_CHILD_SUBREAPER: ::c_int = 37;
+
+/*
+ * If no_new_privs is set, then operations that grant new privileges (i.e.
+ * execve) will either fail or not grant them.  This affects suid/sgid,
+ * file capabilities, and LSMs.
+ *
+ * Operations that merely manipulate or drop existing privileges (setresuid,
+ * capset, etc.) will still work.  Drop those privileges if you want them gone.
+ *
+ * Changing LSM security domain is considered a new privilege.  So, for example,
+ * asking selinux for a specific new context (e.g. with runcon) will result
+ * in execve returning -EPERM.
+ *
+ * See Documentation/prctl/no_new_privs.txt for more details.
+ */
+pub const PR_SET_NO_NEW_PRIVS: ::c_int = 38;
+pub const PR_GET_NO_NEW_PRIVS: ::c_int = 39;
+
+pub const PR_GET_TID_ADDRESS: ::c_int = 40;
+
+pub const PR_SET_THP_DISABLE: ::c_int = 41;
+pub const PR_GET_THP_DISABLE: ::c_int = 42;
+
+/*
+ * Tell the kernel to start/stop helping userspace manage bounds tables.
+ */
+pub const PR_MPX_ENABLE_MANAGEMENT: ::c_int = 43;
+pub const PR_MPX_DISABLE_MANAGEMENT: ::c_int = 44;
+
+pub const PR_SET_FP_MODE: ::c_int = 45;
+pub const PR_GET_FP_MODE: ::c_int = 46;
+pub const PR_FP_MODE_FR: ::c_int = 1 << 0;
+pub const PR_FP_MODE_FRE: ::c_int = 1 << 1;
+
+/* Control the ambient capability set */
+pub const PR_CAP_AMBIENT: ::c_int = 47;
+pub const PR_CAP_AMBIENT_IS_SET: ::c_int = 1;
+pub const PR_CAP_AMBIENT_RAISE: ::c_int = 2;
+pub const PR_CAP_AMBIENT_LOWER: ::c_int = 3;
+pub const PR_CAP_AMBIENT_CLEAR_ALL: ::c_int = 4;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
