@@ -558,6 +558,9 @@ pub const LIO_NOP: ::c_int = 2;
 pub const LIO_WAIT: ::c_int = 0;
 pub const LIO_NOWAIT: ::c_int = 1;
 
+pub const MREMAP_MAYMOVE: ::c_int = 1;
+pub const MREMAP_FIXED: ::c_int = 2;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
@@ -773,6 +776,12 @@ extern {
                            nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
+
+    pub fn mremap(addr: *mut ::c_void,
+                  len: ::size_t,
+                  new_len: ::size_t,
+                  flags: ::c_int,
+                  ...) -> *mut ::c_void;
 }
 
 cfg_if! {
