@@ -653,10 +653,8 @@ pub const SIGEV_THREAD: ::c_int = 2;
 pub const PR_SET_PDEATHSIG: ::c_int = 1;
 pub const PR_GET_PDEATHSIG: ::c_int = 2;
 
-
 pub const PR_GET_DUMPABLE: ::c_int = 3;
 pub const PR_SET_DUMPABLE: ::c_int = 4;
-
 
 pub const PR_GET_UNALIGN: ::c_int = 5;
 pub const PR_SET_UNALIGN: ::c_int = 6;
@@ -666,12 +664,10 @@ pub const PR_UNALIGN_SIGBUS: ::c_int = 2;
 pub const PR_GET_KEEPCAPS: ::c_int = 7;
 pub const PR_SET_KEEPCAPS: ::c_int = 8;
 
-
 pub const PR_GET_FPEMU: ::c_int = 9;
 pub const PR_SET_FPEMU: ::c_int = 10;
 pub const PR_FPEMU_NOPRINT: ::c_int = 1;
 pub const PR_FPEMU_SIGFPE: ::c_int = 2;
-
 
 pub const PR_GET_FPEXC: ::c_int = 11;
 pub const PR_SET_FPEXC: ::c_int = 12;
@@ -693,7 +689,6 @@ pub const PR_TIMING_TIMESTAMP: ::c_int = 1;
 
 pub const PR_SET_NAME: ::c_int = 15;
 pub const PR_GET_NAME: ::c_int = 16;
-
 
 pub const PR_GET_ENDIAN: ::c_int = 19;
 pub const PR_SET_ENDIAN: ::c_int = 20;
