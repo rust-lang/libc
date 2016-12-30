@@ -4,7 +4,10 @@ pub type c_long = i64;
 pub type c_ulong = u64;
 pub type clock_t = i64;
 pub type time_t = i64;
+#[cfg(not(target_arch = "sparc64"))]
 pub type suseconds_t = i64;
+#[cfg(target_arch = "sparc64")]
+pub type suseconds_t = i32;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
@@ -56,6 +59,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "powerpc64"))] {
         mod powerpc64;
         pub use self::powerpc64::*;
+    } else if #[cfg(any(target_arch = "sparc64"))] {
+        mod sparc64;
+        pub use self::sparc64::*;
     } else if #[cfg(any(target_arch = "x86_64"))] {
         mod x86_64;
         pub use self::x86_64::*;

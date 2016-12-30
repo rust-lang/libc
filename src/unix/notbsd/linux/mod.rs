@@ -87,10 +87,12 @@ s! {
 
     pub struct pthread_mutexattr_t {
         #[cfg(any(target_arch = "x86_64", target_arch = "powerpc64",
-                  target_arch = "mips64", target_arch = "s390x"))]
+                  target_arch = "mips64", target_arch = "s390x",
+                  target_arch = "sparc64"))]
         __align: [::c_int; 0],
         #[cfg(not(any(target_arch = "x86_64", target_arch = "powerpc64",
-                      target_arch = "mips64", target_arch = "s390x")))]
+                      target_arch = "mips64", target_arch = "s390x",
+                      target_arch = "sparc64")))]
         __align: [::c_long; 0],
         size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
     }
@@ -248,6 +250,7 @@ pub const ABMON_10: ::nl_item = 0x20017;
 pub const ABMON_11: ::nl_item = 0x20018;
 pub const ABMON_12: ::nl_item = 0x20019;
 
+#[cfg(not(target_arch = "sparc64"))]
 pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 
 pub const MON_1: ::nl_item = 0x2001A;
@@ -500,11 +503,17 @@ pub const EPOLLONESHOT: ::c_int = 0x40000000;
 pub const QFMT_VFS_OLD: ::c_int = 1;
 pub const QFMT_VFS_V0: ::c_int = 2;
 
+#[cfg(not(target_arch = "sparc64"))]
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
+#[cfg(target_arch = "sparc64")]
+pub const SFD_CLOEXEC: ::c_int = 0x400000;
 
 pub const EFD_SEMAPHORE: ::c_int = 0x1;
 
+#[cfg(not(target_arch = "sparc64"))]
 pub const NCCS: usize = 32;
+#[cfg(target_arch = "sparc64")]
+pub const NCCS: usize = 17;
 
 pub const LOG_NFACILITIES: ::c_int = 24;
 
