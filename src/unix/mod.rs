@@ -843,6 +843,7 @@ extern {
     pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
     pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
+    pub fn tmpnam(ptr: *mut ::c_char) -> *mut ::c_char;
     pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 
