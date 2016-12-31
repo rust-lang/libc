@@ -253,14 +253,6 @@ pub const RUSAGE_SELF: ::c_int = 0;
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const O_TRUNC: ::c_int = 512;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const O_TRUNC: ::c_int = 0x400;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const O_CLOEXEC: ::c_int = 0x80000;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const O_CLOEXEC: ::c_int = 0x400000;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 
@@ -401,63 +393,6 @@ pub const EDOM: ::c_int = 33;
 pub const ERANGE: ::c_int = 34;
 pub const EWOULDBLOCK: ::c_int = EAGAIN;
 
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const EBFONT: ::c_int = 59;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const EBFONT: ::c_int = 109;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ENOSTR: ::c_int = 60;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ENOSTR: ::c_int = 72;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ENODATA: ::c_int = 61;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ENODATA: ::c_int = 111;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ETIME: ::c_int = 62;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ETIME: ::c_int = 73;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ENOSR: ::c_int = 63;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ENOSR: ::c_int = 74;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ENONET: ::c_int = 64;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ENONET: ::c_int = 80;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ENOPKG: ::c_int = 65;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ENOPKG: ::c_int = 113;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const EREMOTE: ::c_int = 66;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const EREMOTE: ::c_int = 71;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ENOLINK: ::c_int = 67;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ENOLINK: ::c_int = 82;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const EADV: ::c_int = 68;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const EADV: ::c_int = 83;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ESRMNT: ::c_int = 69;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ESRMNT: ::c_int = 84;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const ECOMM: ::c_int = 70;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const ECOMM: ::c_int = 85;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const EPROTO: ::c_int = 71;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const EPROTO: ::c_int = 86;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const EDOTDOT: ::c_int = 73;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const EDOTDOT: ::c_int = 88;
-
 pub const AF_PACKET: ::c_int = 17;
 pub const IPPROTO_RAW: ::c_int = 255;
 
@@ -544,23 +479,6 @@ pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const SA_NODEFER: ::c_int = 0x40000000;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const SA_NODEFER: ::c_int = 0x20;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const SA_RESETHAND: ::c_int = 0x80000000;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const SA_RESETHAND: ::c_int = 0x4;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const SA_RESTART: ::c_int = 0x10000000;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const SA_RESTART: ::c_int = 0x2;
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const SA_NOCLDSTOP: ::c_int = 0x00000008;
-
 pub const SS_ONSTACK: ::c_int = 1;
 pub const SS_DISABLE: ::c_int = 2;
 
@@ -584,11 +502,6 @@ pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
 pub const EPOLL_CTL_DEL: ::c_int = 2;
 
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const EPOLL_CLOEXEC: ::c_int = 0x400000;
-
 pub const MNT_DETACH: ::c_int = 0x2;
 pub const MNT_EXPIRE: ::c_int = 0x4;
 
@@ -605,11 +518,6 @@ pub const QIF_LIMITS: ::uint32_t = 5;
 pub const QIF_USAGE: ::uint32_t = 10;
 pub const QIF_TIMES: ::uint32_t = 48;
 pub const QIF_ALL: ::uint32_t = 63;
-
-#[cfg(not(all(target_arch = "sparc64", target_os = "linux")))]
-pub const EFD_CLOEXEC: ::c_int = 0x80000;
-#[cfg(all(target_arch = "sparc64", target_os = "linux"))]
-pub const EFD_CLOEXEC: ::c_int = 0x400000;
 
 pub const MNT_FORCE: ::c_int = 0x1;
 
