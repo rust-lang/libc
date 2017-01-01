@@ -253,8 +253,6 @@ pub const RUSAGE_SELF: ::c_int = 0;
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
-pub const O_TRUNC: ::c_int = 512;
-pub const O_CLOEXEC: ::c_int = 0x80000;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 
@@ -395,21 +393,6 @@ pub const EDOM: ::c_int = 33;
 pub const ERANGE: ::c_int = 34;
 pub const EWOULDBLOCK: ::c_int = EAGAIN;
 
-pub const EBFONT: ::c_int = 59;
-pub const ENOSTR: ::c_int = 60;
-pub const ENODATA: ::c_int = 61;
-pub const ETIME: ::c_int = 62;
-pub const ENOSR: ::c_int = 63;
-pub const ENONET: ::c_int = 64;
-pub const ENOPKG: ::c_int = 65;
-pub const EREMOTE: ::c_int = 66;
-pub const ENOLINK: ::c_int = 67;
-pub const EADV: ::c_int = 68;
-pub const ESRMNT: ::c_int = 69;
-pub const ECOMM: ::c_int = 70;
-pub const EPROTO: ::c_int = 71;
-pub const EDOTDOT: ::c_int = 73;
-
 pub const AF_PACKET: ::c_int = 17;
 pub const IPPROTO_RAW: ::c_int = 255;
 
@@ -496,11 +479,6 @@ pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
-pub const SA_NODEFER: ::c_int = 0x40000000;
-pub const SA_RESETHAND: ::c_int = 0x80000000;
-pub const SA_RESTART: ::c_int = 0x10000000;
-pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
-
 pub const SS_ONSTACK: ::c_int = 1;
 pub const SS_DISABLE: ::c_int = 2;
 
@@ -524,8 +502,6 @@ pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
 pub const EPOLL_CTL_DEL: ::c_int = 2;
 
-pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
-
 pub const MNT_DETACH: ::c_int = 0x2;
 pub const MNT_EXPIRE: ::c_int = 0x4;
 
@@ -542,8 +518,6 @@ pub const QIF_LIMITS: ::uint32_t = 5;
 pub const QIF_USAGE: ::uint32_t = 10;
 pub const QIF_TIMES: ::uint32_t = 48;
 pub const QIF_ALL: ::uint32_t = 63;
-
-pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
 pub const MNT_FORCE: ::c_int = 0x1;
 
