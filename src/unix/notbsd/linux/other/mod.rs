@@ -42,14 +42,22 @@ s! {
         pub ut_host: [::c_char; __UT_HOSTSIZE],
         pub ut_exit: __exit_status,
 
-        #[cfg(any(target_arch = "aarch64", target_arch = "sparc64", target_pointer_width = "32"))]
+        #[cfg(any(target_arch = "aarch64",
+                  target_arch = "sparc64",
+                  target_pointer_width = "32"))]
         pub ut_session: ::c_long,
-        #[cfg(any(target_arch = "aarch64", target_arch = "sparc64", target_pointer_width = "32"))]
+        #[cfg(any(target_arch = "aarch64",
+                  target_arch = "sparc64",
+                  target_pointer_width = "32"))]
         pub ut_tv: ::timeval,
 
-        #[cfg(not(any(target_arch = "aarch64", target_arch = "sparc64", target_pointer_width = "32")))]
+        #[cfg(not(any(target_arch = "aarch64",
+                      target_arch = "sparc64",
+                      target_pointer_width = "32")))]
         pub ut_session: ::int32_t,
-        #[cfg(not(any(target_arch = "aarch64", target_arch = "sparc64", target_pointer_width = "32")))]
+        #[cfg(not(any(target_arch = "aarch64",
+                      target_arch = "sparc64",
+                      target_pointer_width = "32")))]
         pub ut_tv: __timeval,
 
         pub ut_addr_v6: [::int32_t; 4],
@@ -339,8 +347,6 @@ pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
 pub const TCSAFLUSH: ::c_int = 2;
 
-pub const TIOCGSOFTCAR: ::c_ulong = 0x40047464;
-pub const TIOCSSOFTCAR: ::c_ulong = 0x80047465;
 pub const TIOCLINUX: ::c_ulong = 0x541C;
 pub const TIOCGSERIAL: ::c_ulong = 0x541E;
 

@@ -82,6 +82,9 @@ s! {
     }
 }
 
+pub const TIOCGSOFTCAR: ::c_ulong = 0x40047464;
+pub const TIOCSSOFTCAR: ::c_ulong = 0x80047465;
+
 pub const RLIMIT_NOFILE: ::c_int = 6;
 pub const RLIMIT_NPROC: ::c_int = 7;
 
