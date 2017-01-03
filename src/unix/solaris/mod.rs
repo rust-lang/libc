@@ -812,6 +812,10 @@ pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
+pub const F_RDLCK: ::c_int = 1;
+pub const F_WRLCK: ::c_int = 2;
+pub const F_UNLCK: ::c_int = 3;
+
 pub const O_SYNC: ::c_int = 16;
 pub const O_NONBLOCK: ::c_int = 128;
 
