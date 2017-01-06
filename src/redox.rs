@@ -51,3 +51,7 @@ s! {
 extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
+
+#[link(name = "c", kind = "static")]
+#[link(name = "m", kind = "static")]
+extern {}
