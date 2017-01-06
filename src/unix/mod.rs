@@ -16,6 +16,13 @@ pub type cc_t = ::c_uchar;
 pub enum DIR {}
 pub enum locale_t {}
 
+#[repr(C)]
+pub enum idtype_t {
+    P_ALL = 0,
+    P_PID = 1,
+    P_PGID = 2,
+}
+
 s! {
     pub struct group {
         pub gr_name: *mut ::c_char,
@@ -447,6 +454,8 @@ extern {
                link_name = "waitpid$UNIX2003")]
     pub fn waitpid(pid: pid_t, status: *mut ::c_int, options: ::c_int)
                    -> pid_t;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "write$UNIX2003")]
     pub fn write(fd: ::c_int, buf: *const ::c_void, count: ::size_t)

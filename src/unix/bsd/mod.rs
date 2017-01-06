@@ -271,6 +271,10 @@ pub const NOFLSH: ::tcflag_t = 0x80000000;
 
 pub const WNOHANG: ::c_int = 0x00000001;
 pub const WUNTRACED: ::c_int = 0x00000002;
+pub const WEXITED: ::c_int = 0x00000004;
+pub const WSTOPPED: ::c_int = 0x00000008;
+pub const WCONTINUED: ::c_int = 0x00000010;
+pub const WNOWAIT: ::c_int = 0x00000020;
 
 pub const RTLD_NOW: ::c_int = 0x2;
 pub const RTLD_DEFAULT: *mut ::c_void = -2isize as *mut ::c_void;
