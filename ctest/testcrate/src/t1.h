@@ -2,11 +2,14 @@
 
 typedef int32_t T1Foo;
 
+#define T1N 5
+
 struct T1Bar {
   int32_t a;
   uint32_t b;
   T1Foo c;
   uint8_t d;
+  int64_t e[T1N];
 };
 
 struct T1Baz {
@@ -22,3 +25,4 @@ void T1e(unsigned, const struct T1Bar*);
 void T1f(void);
 
 #define T1C 4
+

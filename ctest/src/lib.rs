@@ -873,7 +873,6 @@ impl<'a> Generator<'a> {
             }
 
             let cfield = self.rust2cfield(ty, &name);
-            let rust_fieldty = self.ty2name(&field.node.ty, true);
 
             t!(writeln!(self.c, r#"
                 uint64_t __test_offset_{ty}_{rust_field}(void) {{
@@ -915,7 +914,7 @@ impl<'a> Generator<'a> {
             t!(writeln!(self.rust, r#"
                 extern {{
                     fn __test_field_type_{ty}_{field}(a: *mut {ty})
-                                                      -> *mut {field_ty};
+                                                      -> *mut u8;
                 }}
                 unsafe {{
                     let foo = 0 as *mut {ty};
@@ -923,7 +922,7 @@ impl<'a> Generator<'a> {
                          __test_field_type_{ty}_{field}(foo),
                          "field type {field} of {ty}");
                 }}
-            "#, ty = ty, field = name, field_ty = rust_fieldty));
+            "#, ty = ty, field = name));
         }
         t!(writeln!(self.rust, r#"
             }}
@@ -1194,6 +1193,7 @@ impl<'a> Generator<'a> {
             ast::ExprPath(_, ref path) => {
                 path.segments.last().unwrap().identifier.to_string()
             }
+            ast::ExprCast(ref e, _) => self.expr2str(e),
             _ => panic!("unknown expr: {:?}", e),
         }
     }
