@@ -16,12 +16,12 @@ pub type cc_t = ::c_uchar;
 pub enum DIR {}
 pub enum locale_t {}
 
-#[repr(C)]
-pub enum idtype_t {
-    P_ALL = 0,
-    P_PID = 1,
-    P_PGID = 2,
-}
+// FIXME: This is technically wrong; idtype_t is specified as a C enum.
+// [ http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html ]
+// However, FFI doesn't currently know how to ABI-match a C enum
+// (rust#28925, rust#34641) and *probably* the underlying type will be
+// c_uint everywhere since all of the enumerators are representable by c_uint.
+pub type idtype_t = ::c_uint;
 
 s! {
     pub struct group {
@@ -209,6 +209,10 @@ pub const PRIO_USER: ::c_int = 2;
 
 pub const PRIO_MIN: ::c_int = -20;
 pub const PRIO_MAX: ::c_int = 20;
+
+pub const P_ALL: idtype_t = 0;
+pub const P_PID: idtype_t = 1;
+pub const P_PGID: idtype_t = 2;
 
 cfg_if! {
     if #[cfg(dox)] {
@@ -454,6 +458,9 @@ extern {
                link_name = "waitpid$UNIX2003")]
     pub fn waitpid(pid: pid_t, status: *mut ::c_int, options: ::c_int)
                    -> pid_t;
+    #[cfg(not(target_os = "openbsd"))] // " if " -- appease style checker
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "waitid$UNIX2003")]
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),

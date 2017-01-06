@@ -1363,6 +1363,11 @@ pub const LIO_READ: ::c_int = 1;
 pub const LIO_WAIT: ::c_int = 2;
 pub const LIO_NOWAIT: ::c_int = 1;
 
+pub const WEXITED: ::c_int = 0x00000004;
+pub const WSTOPPED: ::c_int = 0x00000008;
+pub const WCONTINUED: ::c_int = 0x00000010;
+pub const WNOWAIT: ::c_int = 0x00000020;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8

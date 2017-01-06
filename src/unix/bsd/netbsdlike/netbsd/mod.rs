@@ -583,6 +583,11 @@ pub const SIGEV_NONE: ::c_int = 0;
 pub const SIGEV_SIGNAL: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
 
+pub const WSTOPPED: ::c_int = 0x00000002; // same as WUNTRACED
+pub const WCONTINUED: ::c_int = 0x00000010;
+pub const WEXITED: ::c_int = 0x000000020;
+pub const WNOWAIT: ::c_int = 0x00010000;
+
 extern {
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;

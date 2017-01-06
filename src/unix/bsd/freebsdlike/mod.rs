@@ -693,6 +693,12 @@ pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
 
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
+pub const WSTOPPED: ::c_int = 2; // same as WUNTRACED
+pub const WCONTINUED: ::c_int = 4;
+pub const WNOWAIT: ::c_int = 8;
+pub const WEXITED: ::c_int = 16;
+pub const WTRAPPED: ::c_int = 32;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
