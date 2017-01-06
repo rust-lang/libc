@@ -4,12 +4,15 @@ use libc::*;
 
 pub type T1Foo = i32;
 
+pub const T1N: i32 = 5;
+
 #[repr(C)]
 pub struct T1Bar {
     pub a: i32,
     pub b: u32,
     pub c: T1Foo,
     pub d: u8,
+    pub e: [i64; T1N as usize],
 }
 
 #[repr(C)]
