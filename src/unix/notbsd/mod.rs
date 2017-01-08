@@ -9,6 +9,18 @@ pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
+// idtype_t is specified as a C enum:
+// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html
+// However, FFI doesn't currently know how to ABI-match a C enum
+// (rust#28925, rust#34641).
+cfg_if! {
+    if #[cfg(target_os = "android")] {
+        pub type idtype_t = ::c_int;
+    } else {
+        pub type idtype_t = ::c_uint;
+    }
+}
+
 pub enum timezone {}
 
 s! {
@@ -624,6 +636,10 @@ pub const SIGEV_SIGNAL: ::c_int = 0;
 pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
 
+pub const P_ALL: idtype_t = 0;
+pub const P_PID: idtype_t = 1;
+pub const P_PGID: idtype_t = 2;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -851,6 +867,8 @@ extern {
                      buf: *mut ::c_char,
                      buflen: ::size_t) -> ::c_int;
     pub fn clearenv() -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

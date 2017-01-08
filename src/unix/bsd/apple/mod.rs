@@ -22,6 +22,12 @@ pub type nl_item = ::c_int;
 pub type id_t = ::c_uint;
 pub type sem_t = ::c_int;
 
+// idtype_t is specified as a C enum:
+// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html
+// However, FFI doesn't currently know how to ABI-match a C enum
+// (rust#28925, rust#34641).
+pub type idtype_t = ::c_uint;
+
 pub enum timezone {}
 
 s! {
@@ -1368,6 +1374,10 @@ pub const WSTOPPED: ::c_int = 0x00000008;
 pub const WCONTINUED: ::c_int = 0x00000010;
 pub const WNOWAIT: ::c_int = 0x00000020;
 
+pub const P_ALL: idtype_t = 0;
+pub const P_PID: idtype_t = 1;
+pub const P_PGID: idtype_t = 2;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
@@ -1537,6 +1547,12 @@ extern {
                    flags: ::c_int) -> ::c_int;
 
     pub fn initgroups(user: *const ::c_char, basegroup: ::c_int) -> ::c_int;
+
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "waitid$UNIX2003")]
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
+
 }
 
 cfg_if! {

@@ -16,20 +16,6 @@ pub type cc_t = ::c_uchar;
 pub enum DIR {}
 pub enum locale_t {}
 
-// idtype_t is specified as a C enum:
-// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html
-// However, FFI doesn't currently know how to ABI-match a C enum
-// (rust#28925, rust#34641).
-cfg_if! {
-    if #[cfg(target_os = "openbsd")] {
-        // idtype_t is not available
-    } else if #[cfg(target_os = "android")] {
-        pub type idtype_t = ::c_int;
-    } else {
-        pub type idtype_t = ::c_uint;
-    }
-}
-
 s! {
     pub struct group {
         pub gr_name: *mut ::c_char,
@@ -216,22 +202,6 @@ pub const PRIO_USER: ::c_int = 2;
 
 pub const PRIO_MIN: ::c_int = -20;
 pub const PRIO_MAX: ::c_int = 20;
-
-cfg_if! {
-    if #[cfg(target_os = "openbsd")] {
-        // P_* constants are not available
-    } else if #[cfg(target_os = "freebsd")] {
-        // FreeBSD defines a great many more of these, and gives the
-        // standardized constants different values from everyone else.
-        pub const P_PID: idtype_t = 0;
-        pub const P_PGID: idtype_t = 2;
-        pub const P_ALL: idtype_t = 7;
-    } else {
-        pub const P_ALL: idtype_t = 0;
-        pub const P_PID: idtype_t = 1;
-        pub const P_PGID: idtype_t = 2;
-    }
-}
 
 cfg_if! {
     if #[cfg(dox)] {
@@ -477,11 +447,6 @@ extern {
                link_name = "waitpid$UNIX2003")]
     pub fn waitpid(pid: pid_t, status: *mut ::c_int, options: ::c_int)
                    -> pid_t;
-    #[cfg(not(any(target_os = "openbsd", target_os = "netbsd")))] // " if "
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "waitid$UNIX2003")]
-    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
-                  options: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "write$UNIX2003")]
     pub fn write(fd: ::c_int, buf: *const ::c_void, count: ::size_t)

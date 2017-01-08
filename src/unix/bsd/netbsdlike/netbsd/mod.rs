@@ -5,6 +5,12 @@ pub type blksize_t = ::int32_t;
 pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
 
+// idtype_t is specified as a C enum:
+// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html
+// However, FFI doesn't currently know how to ABI-match a C enum
+// (rust#28925, rust#34641).
+pub type idtype_t = ::c_int;
+
 s! {
     pub struct aiocb {
         pub aio_offset: ::off_t,
@@ -588,6 +594,10 @@ pub const WCONTINUED: ::c_int = 0x00000010;
 pub const WEXITED: ::c_int = 0x000000020;
 pub const WNOWAIT: ::c_int = 0x00010000;
 
+pub const P_ALL: idtype_t = 0;
+pub const P_PID: idtype_t = 1;
+pub const P_PGID: idtype_t = 4;
+
 extern {
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
@@ -663,6 +673,11 @@ extern {
     pub fn newlocale(mask: ::c_int,
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
+
+    // This should work, but it causes the netbsd CI build to fail with an
+    // intra-libc.a undefined reference to `wait6`.
+    //pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+    //              options: ::c_int) -> ::c_int;
 }
 
 mod other;
