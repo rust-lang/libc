@@ -28,6 +28,7 @@ pub type fsblkcnt_t = i64;
 pub type fsfilcnt_t = i64;
 pub type pthread_attr_t = *mut ::c_void;
 pub type nl_item = ::c_int;
+pub type id_t = i32;
 
 // idtype_t is specified as a C enum:
 // http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html

@@ -32,6 +32,7 @@ pub type pthread_key_t = ::c_uint;
 pub type blksize_t = u32;
 pub type fflags_t = u32;
 pub type nl_item = ::c_int;
+pub type id_t = ::c_int;
 
 // idtype_t is specified as a C enum:
 // http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html

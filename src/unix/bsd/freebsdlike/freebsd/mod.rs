@@ -400,7 +400,7 @@ extern {
                             timeout: *mut ::timespec) -> ::ssize_t;
 
     pub fn freelocale(loc: ::locale_t) -> ::c_int;
-    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+    pub fn waitid(idtype: idtype_t, id: ::id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
 }
 
