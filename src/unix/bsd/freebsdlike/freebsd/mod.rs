@@ -331,6 +331,7 @@ pub const USER_MAXID: ::c_int = 21;
 #[doc(hidden)]
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
+pub const MSG_PEEK: ::c_int = 0x2;
 pub const MSG_NOSIGNAL: ::c_int = 0x20000;
 
 pub const EMPTY: ::c_short = 0;

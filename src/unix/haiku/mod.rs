@@ -556,6 +556,7 @@ pub const IPV6_V6ONLY: ::c_int = 30;
 
 pub const SO_DEBUG: ::c_int = 0x00000004;
 
+pub const MSG_PEEK: ::c_int = 0x2;
 pub const MSG_NOSIGNAL: ::c_int = 0x0800;
 
 pub const SHUT_RD: ::c_int = 0;

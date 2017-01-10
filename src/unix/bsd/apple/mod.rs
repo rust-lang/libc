@@ -860,6 +860,8 @@ pub const SO_RCVTIMEO: ::c_int = 0x1006;
 pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
 
+pub const MSG_PEEK: ::c_int = 0x2;
+
 pub const IFF_LOOPBACK: ::c_int = 0x8;
 
 pub const SHUT_RD: ::c_int = 0;
