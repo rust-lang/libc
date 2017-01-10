@@ -21,11 +21,6 @@ pub type tcflag_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type id_t = ::c_uint;
 pub type sem_t = ::c_int;
-
-// idtype_t is specified as a C enum:
-// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html
-// However, FFI doesn't currently know how to ABI-match a C enum
-// (rust#28925, rust#34641).
 pub type idtype_t = ::c_uint;
 
 pub enum timezone {}
