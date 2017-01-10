@@ -9,18 +9,6 @@ pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
-// idtype_t is specified as a C enum:
-// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html
-// However, FFI doesn't currently know how to ABI-match a C enum
-// (rust#28925, rust#34641).
-cfg_if! {
-    if #[cfg(target_os = "android")] {
-        pub type idtype_t = ::c_int;
-    } else {
-        pub type idtype_t = ::c_uint;
-    }
-}
-
 pub enum timezone {}
 
 s! {

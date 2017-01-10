@@ -9,11 +9,6 @@ pub type sem_t = _sem;
 
 pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
-
-// idtype_t is specified as a C enum:
-// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_wait.h.html
-// However, FFI doesn't currently know how to ABI-match a C enum
-// (rust#28925, rust#34641).
 pub type idtype_t = ::c_uint;
 
 s! {
