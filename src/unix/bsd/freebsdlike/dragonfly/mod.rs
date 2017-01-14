@@ -371,7 +371,6 @@ pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
                                | LC_TIME_MASK;
 
 pub const TIOCSIG: ::c_uint = 0x2000745f;
-pub const TIOCSIG: ::c_uint = 0x2000745f;
 pub const BTUARTDISC: ::c_int = 0x7;
 pub const TIOCDCDTIMESTAMP: ::c_uint = 0x40107458;
 pub const TIOCISPTMASTER: ::c_uint = 0x20007455;
