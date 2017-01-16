@@ -84,7 +84,8 @@ def run_app_on_simulator():
 		for line in test_run.stdout:
 			sys.stdout.write(line)
 			if test_run_failed == False:
-				test_run_failed = 'test result: FAILED.' in line
+				# Based on all.rs test output
+				test_run_failed = 'some tests failed' in line
 		
 		sys.stdout.flush()
 		if test_run_failed == True:
