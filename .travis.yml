@@ -17,7 +17,6 @@ script:
       sh ci/run.sh $TARGET;
     fi
   - rustc ci/style.rs && ./style src
-osx_image: xcode8.2
 env:
   global:
     secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="
@@ -65,9 +64,11 @@ matrix:
       env: TARGET=aarch64-unknown-linux-gnu
       rust: stable
     - os: osx
+      osx_image: xcode8.2
       env: TARGET=i386-apple-ios
       rust: stable
     - os: osx
+      osx_image: xcode8.2
       env: TARGET=x86_64-apple-ios
       rust: stable
     - os: linux
