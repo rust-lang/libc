@@ -113,8 +113,12 @@ case "$TARGET" in
     grep "^PASSED .* tests" /tmp/out
     ;;
 
+  i386-apple-ios)
+    python ./ci/ios/deploy_and_run_ios_binary_on_ios_simulator.py $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    ;;
+
   x86_64-apple-ios)
-    python ./ci/ios/deploy_and_run_x86_64_binary_on_ios_simulator.py $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    python ./ci/ios/deploy_and_run_ios_binary_on_ios_simulator.py $CARGO_TARGET_DIR/$TARGET/debug/libc-test 
     ;;
 
   arm-unknown-linux-gnueabihf)
