@@ -80,15 +80,15 @@ def run_app_on_simulator():
 	print 'Running app'
 	try:
 		test_run = subprocess.Popen(['xcrun', 'simctl', 'launch', '--console', 'booted', 'com.rust.unittests'], stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
-		test_run_failed = False
+		test_run_passed = False
 		for line in test_run.stdout:
 			sys.stdout.write(line)
-			if test_run_failed == False:
+			if test_run_passed == False:
 				# Based on all.rs test output
-				test_run_failed = 'some tests failed' in line
+				test_run_passed = 'PASSED' in line and 'tests' in line
 		
 		sys.stdout.flush()
-		if test_run_failed == True:
+		if test_run_passed == False:
 			raise Exception('Some tests failed')
 	finally:
 		print 'Shutting down simulator'
