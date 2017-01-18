@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 //
-// This is a script to deploy and execute a binary on an x86-64 iOS simulator.
+// This is a script to deploy and execute a binary on an iOS simulator.
 // The primary use of this is to be able to run unit tests on the simulator and retrieve the results.
 //
 // To do this through Cargo instead, use Dinghy (https://github.com/snipsco/dinghy): 
@@ -36,11 +36,7 @@ fn package_as_simulator_app(crate_name: &str, test_binary_path: &Path) {
         "        <key>CFBundleExecutable</key>",
       &["        <string>", crate_name, "</string>"].join(""),
         "        <key>CFBundleIdentifier</key>",
-        "        <string>com.rust.unittests</string>",
-        "        <key>UIRequiredDeviceCapabilities</key>",
-        "        <array>",
-        "            <string>x86_64</string>",
-        "        </array>",
+        "        <string>com.rust.unittests</string>",        
         "    </dict>",
         "</plist>"].join("\n").into_bytes()).unwrap();
 }
