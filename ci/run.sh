@@ -113,6 +113,16 @@ case "$TARGET" in
     grep "^PASSED .* tests" /tmp/out
     ;;
 
+  i386-apple-ios)
+    rustc -O ./ci/ios/deploy_and_run_on_ios_simulator.rs
+    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    ;;
+
+  x86_64-apple-ios)
+    rustc -O ./ci/ios/deploy_and_run_on_ios_simulator.rs
+    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    ;;
+
   arm-unknown-linux-gnueabihf)
     qemu-arm -L /usr/arm-linux-gnueabihf $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     ;;
