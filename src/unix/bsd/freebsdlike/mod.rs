@@ -907,6 +907,7 @@ extern {
                          abstime: *const ::timespec) -> ::c_int;
     pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
                                    abstime: *const ::timespec) -> ::c_int;
+    pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
