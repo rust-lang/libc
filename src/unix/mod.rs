@@ -417,6 +417,7 @@ extern {
                link_name = "pause$UNIX2003")]
     pub fn pause() -> ::c_int;
     pub fn pipe(fds: *mut ::c_int) -> ::c_int;
+    pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
     pub fn posix_memalign(memptr: *mut *mut ::c_void,
                       align: ::size_t,
                       size: ::size_t) -> ::c_int;

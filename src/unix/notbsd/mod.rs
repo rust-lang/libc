@@ -734,7 +734,6 @@ extern {
                       events: *mut epoll_event,
                       maxevents: ::c_int,
                       timeout: ::c_int) -> ::c_int;
-    pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
     pub fn mount(src: *const ::c_char,
                  target: *const ::c_char,
                  fstype: *const ::c_char,
