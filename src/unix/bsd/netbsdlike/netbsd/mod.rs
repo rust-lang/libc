@@ -377,13 +377,13 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
-pub const EVFILT_AIO: ::int32_t = 2;
-pub const EVFILT_PROC: ::int32_t = 4;
-pub const EVFILT_READ: ::int32_t = 0;
-pub const EVFILT_SIGNAL: ::int32_t = 5;
-pub const EVFILT_TIMER: ::int32_t = 6;
-pub const EVFILT_VNODE: ::int32_t = 3;
-pub const EVFILT_WRITE: ::int32_t = 1;
+pub const EVFILT_AIO: ::uint32_t = 2;
+pub const EVFILT_PROC: ::uint32_t = 4;
+pub const EVFILT_READ: ::uint32_t = 0;
+pub const EVFILT_SIGNAL: ::uint32_t = 5;
+pub const EVFILT_TIMER: ::uint32_t = 6;
+pub const EVFILT_VNODE: ::uint32_t = 3;
+pub const EVFILT_WRITE: ::uint32_t = 1;
 
 pub const EV_ADD: ::uint32_t = 0x1;
 pub const EV_DELETE: ::uint32_t = 0x2;
