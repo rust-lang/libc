@@ -754,6 +754,10 @@ pub const NETGRAPHDISC: ::c_int = 0x6;
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
 f! {
+    pub fn WIFCONTINUED(status: ::c_int) -> ::c_int {
+        status & 0o23
+    }
+
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
     }
