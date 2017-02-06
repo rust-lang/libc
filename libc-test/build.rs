@@ -374,6 +374,11 @@ fn main() {
             "HW_MAXID" |
             "USER_MAXID" if freebsd => true,
 
+            // These OSX constants are removed in Sierra.
+            // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
+            "KERN_KDENABLE_BG_TRACE" if apple => true,
+            "KERN_KDDISABLE_BG_TRACE" if apple => true,
+
             _ => false,
         }
     });

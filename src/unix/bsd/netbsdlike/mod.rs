@@ -363,6 +363,8 @@ pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
 pub const SOCK_SEQPACKET: ::c_int = 5;
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
 pub const IPPROTO_TCP: ::c_int = 6;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -392,6 +394,7 @@ pub const SO_RCVLOWAT: ::c_int = 0x1004;
 pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
 
+pub const MSG_PEEK: ::c_int = 0x2;
 pub const MSG_NOSIGNAL: ::c_int = 0x400;
 
 pub const IFF_LOOPBACK: ::c_int = 0x8;
@@ -534,6 +537,7 @@ extern {
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
                                    abstime: *const ::timespec) -> ::c_int;
+    pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

@@ -21,6 +21,7 @@ pub type tcflag_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type id_t = ::c_uint;
 pub type sem_t = ::c_int;
+pub type idtype_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -825,6 +826,8 @@ pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
 pub const SOCK_SEQPACKET: ::c_int = 5;
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
 pub const IPPROTO_TCP: ::c_int = 6;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -859,6 +862,8 @@ pub const SO_SNDTIMEO: ::c_int = 0x1005;
 pub const SO_RCVTIMEO: ::c_int = 0x1006;
 pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
+
+pub const MSG_PEEK: ::c_int = 0x2;
 
 pub const IFF_LOOPBACK: ::c_int = 0x8;
 
@@ -1363,6 +1368,15 @@ pub const LIO_READ: ::c_int = 1;
 pub const LIO_WAIT: ::c_int = 2;
 pub const LIO_NOWAIT: ::c_int = 1;
 
+pub const WEXITED: ::c_int = 0x00000004;
+pub const WSTOPPED: ::c_int = 0x00000008;
+pub const WCONTINUED: ::c_int = 0x00000010;
+pub const WNOWAIT: ::c_int = 0x00000020;
+
+pub const P_ALL: idtype_t = 0;
+pub const P_PID: idtype_t = 1;
+pub const P_PGID: idtype_t = 2;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
@@ -1532,6 +1546,12 @@ extern {
                    flags: ::c_int) -> ::c_int;
 
     pub fn initgroups(user: *const ::c_char, basegroup: ::c_int) -> ::c_int;
+
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "waitid$UNIX2003")]
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
+
 }
 
 cfg_if! {

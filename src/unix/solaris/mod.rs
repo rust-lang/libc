@@ -32,6 +32,8 @@ pub type pthread_key_t = ::c_uint;
 pub type blksize_t = u32;
 pub type fflags_t = u32;
 pub type nl_item = ::c_int;
+pub type id_t = ::c_int;
+pub type idtype_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -550,6 +552,18 @@ pub const SIGXFSZ: ::c_int = 31;
 pub const WNOHANG: ::c_int = 0x40;
 pub const WUNTRACED: ::c_int = 0x04;
 
+pub const WEXITED: ::c_int = 0x01;
+pub const WTRAPPED: ::c_int = 0x02;
+pub const WSTOPPED: ::c_int = WUNTRACED;
+pub const WCONTINUED: ::c_int = 0x08;
+pub const WNOWAIT: ::c_int = 0x80;
+
+// Solaris defines a great many more of these; we only expose the
+// standardized ones.
+pub const P_PID: idtype_t = 0;
+pub const P_PGID: idtype_t = 2;
+pub const P_ALL: idtype_t = 7;
+
 pub const PROT_NONE: ::c_int = 0;
 pub const PROT_READ: ::c_int = 1;
 pub const PROT_WRITE: ::c_int = 2;
@@ -768,6 +782,8 @@ pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 4;
 pub const SOCK_RDM: ::c_int = 5;
 pub const SOCK_SEQPACKET: ::c_int = 6;
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
 pub const IPPROTO_TCP: ::c_int = 6;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -811,6 +827,10 @@ pub const LOCK_SH: ::c_int = 1;
 pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
+
+pub const F_RDLCK: ::c_short = 1;
+pub const F_WRLCK: ::c_short = 2;
+pub const F_UNLCK: ::c_short = 3;
 
 pub const O_SYNC: ::c_int = 16;
 pub const O_NONBLOCK: ::c_int = 128;
@@ -1051,4 +1071,6 @@ extern {
                          abstime: *const ::timespec) -> ::c_int;
     pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
                                    abstime: *const ::timespec) -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
 }
