@@ -1,3 +1,5 @@
+use dox::mem;
+
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -27,7 +29,7 @@ pub type off_t = i64;
 pub type useconds_t = ::c_uint;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
-pub type pthread_t = ::uintptr_t;
+pub type pthread_t = ::c_uint;
 pub type pthread_key_t = ::c_uint;
 pub type blksize_t = u32;
 pub type fflags_t = u32;
@@ -123,6 +125,9 @@ s! {
     }
 
     pub struct fd_set {
+        #[cfg(target_pointer_width = "64")]
+        fds_bits: [i64; FD_SETSIZE / 64],
+        #[cfg(target_pointer_width = "32")]
         fds_bits: [i32; FD_SETSIZE / 32],
     }
 
@@ -448,6 +453,9 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
 pub const IPV6_V6ONLY: ::c_int = 0x27;
 
+#[cfg(target_pointer_width = "64")]
+pub const FD_SETSIZE: usize = 65536;
+#[cfg(target_pointer_width = "32")]
 pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_RDONLY: ::c_ulong = 1;
@@ -946,19 +954,22 @@ pub const RTLD_CONFGEN: ::c_int = 0x10000;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        (*set).fds_bits[fd / 32] &= !(1 << (fd % 32));
+        (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
         return
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        return ((*set).fds_bits[fd / 32] & (1 << (fd % 32))) != 0
+        return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        (*set).fds_bits[fd / 32] |= 1 << (fd % 32);
+        (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
         return
     }
 
