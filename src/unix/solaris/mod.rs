@@ -453,10 +453,13 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
 pub const IPV6_V6ONLY: ::c_int = 0x27;
 
-#[cfg(target_pointer_width = "64")]
-pub const FD_SETSIZE: usize = 65536;
-#[cfg(target_pointer_width = "32")]
-pub const FD_SETSIZE: usize = 1024;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const FD_SETSIZE: usize = 65536;
+    } else {
+        pub const FD_SETSIZE: usize = 1024;
+    }
+}
 
 pub const ST_RDONLY: ::c_ulong = 1;
 pub const ST_NOSUID: ::c_ulong = 2;
