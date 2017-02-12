@@ -244,6 +244,11 @@ s! {
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
     }
+
+    pub struct wrusage {
+        pub wru_self: ::rusage,
+        pub wru_children: ::rusage,
+    }
 }
 
 pub const AT_FDCWD: ::c_int = -100;
@@ -716,6 +721,11 @@ extern {
     pub fn newlocale(mask: ::c_int,
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
+    pub fn wait6(idtype: ::idtype_t, id: ::id_t, status: *mut ::c_int,
+                 options: ::c_int, wrusage: *mut wrusage,
+                 infop: *mut ::siginfo_t) -> ::pid_t;
+    pub fn waitid(idtype: ::idtype_t, id: ::id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
 }
 
 mod other;
