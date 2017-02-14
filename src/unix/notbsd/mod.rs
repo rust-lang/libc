@@ -667,6 +667,10 @@ f! {
         (status >> 8) & 0xff
     }
 
+    pub fn WIFCONTINUED(status: ::c_int) -> bool {
+        status == 0xffff
+    }
+
     pub fn WIFSIGNALED(status: ::c_int) -> bool {
         ((status & 0x7f) + 1) as i8 >= 2
     }
