@@ -500,6 +500,7 @@ pub const EPOLLWRBAND: ::c_int = 0x200;
 pub const EPOLLMSG: ::c_int = 0x400;
 pub const EPOLLERR: ::c_int = 0x8;
 pub const EPOLLHUP: ::c_int = 0x10;
+pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
 pub const EPOLLET: ::c_int = 0x80000000;
 
 pub const EPOLL_CTL_ADD: ::c_int = 1;
