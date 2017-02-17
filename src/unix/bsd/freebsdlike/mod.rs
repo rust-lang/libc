@@ -872,6 +872,14 @@ extern {
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
                                  stackaddr: *mut *mut ::c_void,
                                  stacksize: *mut ::size_t) -> ::c_int;
+    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t,
+                                       pshared: ::c_int) -> ::c_int;
+    pub fn pthread_condattr_getpshared(attr: *const pthread_condattr_t,
+                                       pshared: *mut ::c_int) -> ::c_int;
+    pub fn pthread_mutexattr_setpshared(attr: *mut pthread_mutexattr_t,
+                                        pshared: ::c_int) -> ::c_int;
+    pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
+                                        pshared: *mut ::c_int) -> ::c_int;
     pub fn getpriority(which: ::c_int, who: ::c_int) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
 

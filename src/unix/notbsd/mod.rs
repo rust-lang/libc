@@ -845,6 +845,10 @@ extern {
                                      clock_id: *mut clockid_t) -> ::c_int;
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
                                      clock_id: clockid_t) -> ::c_int;
+    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t,
+                                       pshared: ::c_int) -> ::c_int;
+    pub fn pthread_condattr_getpshared(attr: *const pthread_condattr_t,
+                                       pshared: *mut ::c_int) -> ::c_int;
     pub fn sched_getaffinity(pid: ::pid_t,
                              cpusetsize: ::size_t,
                              cpuset: *mut cpu_set_t) -> ::c_int;
@@ -859,6 +863,10 @@ extern {
                    flg: ::c_int) -> ::c_int;
     pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
                                    abstime: *const ::timespec) -> ::c_int;
+    pub fn pthread_mutexattr_setpshared(attr: *mut pthread_mutexattr_t,
+                                        pshared: ::c_int) -> ::c_int;
+    pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
+                                        pshared: *mut ::c_int) -> ::c_int;
     pub fn ptsname_r(fd: ::c_int,
                      buf: *mut ::c_char,
                      buflen: ::size_t) -> ::c_int;
