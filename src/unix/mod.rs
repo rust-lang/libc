@@ -352,6 +352,7 @@ extern {
     pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
     #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_readdir_r")]
     pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
                      result: *mut *mut ::dirent) -> ::c_int;
     #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
@@ -641,6 +642,7 @@ extern {
                        oss: *mut stack_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch ="x86"),
                link_name = "sigwait$UNIX2003")]
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
 
