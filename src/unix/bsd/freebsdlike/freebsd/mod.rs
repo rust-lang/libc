@@ -47,6 +47,17 @@ s! {
         pub d_name: [::c_char; 256],
     }
 
+    pub struct jail {
+        pub version: u32,
+        pub path: *mut ::c_char,
+        pub hostname: *mut ::c_char,
+        pub jailname: *mut ::c_char,
+        pub ip4s: ::c_uint,
+        pub ip6s: ::c_uint,
+        pub ip4: *mut ::in_addr,
+        pub ip6: *mut ::in6_addr,
+    }
+
     pub struct sigevent {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
@@ -322,6 +333,17 @@ pub const TIOCSIG: ::c_uint = 0x2004745f;
 pub const TIOCM_DCD: ::c_int = 0x40;
 pub const H4DISC: ::c_int = 0x7;
 
+pub const JAIL_API_VERSION: u32 = 2;
+pub const JAIL_CREATE: ::c_int = 0x01;
+pub const JAIL_UPDATE: ::c_int = 0x02;
+pub const JAIL_ATTACH: ::c_int = 0x04;
+pub const JAIL_DYING: ::c_int = 0x08;
+pub const JAIL_SET_MASK: ::c_int = 0x0f;
+pub const JAIL_GET_MASK: ::c_int = 0x08;
+pub const JAIL_SYS_DISABLE: ::c_int = 0;
+pub const JAIL_SYS_NEW: ::c_int = 1;
+pub const JAIL_SYS_INHERIT: ::c_int = 2;
+
 // The *_MAXID constants never should've been used outside of the
 // FreeBSD base system.  And with the exception of CTL_P1003_1B_MAXID,
 // they were all removed in svn r262489.  They remain here for backwards
@@ -384,6 +406,14 @@ extern {
     pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
+
+    pub fn jail(jail: *mut ::jail) -> ::c_int;
+    pub fn jail_attach(jid: ::c_int) -> ::c_int;
+    pub fn jail_remove(jid: ::c_int) -> ::c_int;
+    pub fn jail_get(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int)
+                    -> ::c_int;
+    pub fn jail_set(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int)
+                    -> ::c_int;
 
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;

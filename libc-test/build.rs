@@ -195,6 +195,7 @@ fn main() {
         cfg.header("pthread_np.h");
         cfg.header("sched.h");
         cfg.header("ufs/ufs/quota.h");
+        cfg.header("sys/jail.h");
     }
 
     if netbsd {
