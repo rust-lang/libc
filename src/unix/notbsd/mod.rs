@@ -490,17 +490,17 @@ pub const PATH_MAX: ::c_int = 4096;
 
 pub const FD_SETSIZE: usize = 1024;
 
-pub const EPOLLIN: ::c_int = 0x1;
-pub const EPOLLPRI: ::c_int = 0x2;
-pub const EPOLLOUT: ::c_int = 0x4;
-pub const EPOLLRDNORM: ::c_int = 0x40;
-pub const EPOLLRDBAND: ::c_int = 0x80;
-pub const EPOLLWRNORM: ::c_int = 0x100;
-pub const EPOLLWRBAND: ::c_int = 0x200;
-pub const EPOLLMSG: ::c_int = 0x400;
-pub const EPOLLERR: ::c_int = 0x8;
-pub const EPOLLHUP: ::c_int = 0x10;
-pub const EPOLLET: ::c_int = 0x80000000;
+pub const EPOLLIN: ::uint32_t = 0x1;
+pub const EPOLLPRI: ::uint32_t = 0x2;
+pub const EPOLLOUT: ::uint32_t = 0x4;
+pub const EPOLLRDNORM: ::uint32_t = 0x40;
+pub const EPOLLRDBAND: ::uint32_t = 0x80;
+pub const EPOLLWRNORM: ::uint32_t = 0x100;
+pub const EPOLLWRBAND: ::uint32_t = 0x200;
+pub const EPOLLMSG: ::uint32_t = 0x400;
+pub const EPOLLERR: ::uint32_t = 0x8;
+pub const EPOLLHUP: ::uint32_t = 0x10;
+pub const EPOLLET: ::uint32_t = 0x80000000;
 
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
