@@ -1038,7 +1038,6 @@ extern {
                       result: *mut *mut passwd) -> ::c_int;
     pub fn setpwent();
     pub fn getpwent() -> *mut passwd;
-    pub fn readdir(dirp: *mut ::DIR) -> *const ::dirent;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
