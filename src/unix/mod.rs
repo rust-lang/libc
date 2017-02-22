@@ -352,7 +352,7 @@ extern {
     pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
     #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
-    pub fn readdir(dirp: *mut ::DIR) -> *const ::dirent;
+    pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
     #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
     pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
