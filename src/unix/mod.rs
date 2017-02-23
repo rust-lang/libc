@@ -358,9 +358,6 @@ extern {
     #[cfg_attr(target_os = "solaris", link_name = "__posix_readdir_r")]
     pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
                      result: *mut *mut ::dirent) -> ::c_int;
-    #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
-    pub fn readdir(arg1: *mut ::DIR) -> *mut ::dirent;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "closedir$UNIX2003")]
     pub fn closedir(dirp: *mut ::DIR) -> ::c_int;
