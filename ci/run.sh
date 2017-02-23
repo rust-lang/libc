@@ -105,11 +105,16 @@ case "$TARGET" in
 esac
 
 case "$TARGET" in
-  arm-linux-androideabi)
-    emulator @arm-21 -no-window &
+  arm-linux-androideabi | aarch64-linux-android | i686-linux-android)
+    # set SHELL so android can detect a 64bits system, see
+    # http://stackoverflow.com/a/41789144
+    # https://issues.jenkins-ci.org/browse/JENKINS-26930?focusedCommentId=230791&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-230791
+    export SHELL=/bin/dash
+    arch=$(echo $TARGET | cut -d- -f1)
+    emulator @$arch -no-window -no-accel &
     adb wait-for-device
-    adb push $CARGO_TARGET_DIR/$TARGET/debug/libc-test /data/libc-test
-    adb shell /data/libc-test 2>&1 | tee /tmp/out
+    adb push $CARGO_TARGET_DIR/$TARGET/debug/libc-test /data/local/tmp/libc-test
+    adb shell /data/local/tmp/libc-test 2>&1 | tee /tmp/out
     grep "^PASSED .* tests" /tmp/out
     ;;
 
