@@ -725,7 +725,7 @@ extern {
                link_name = "ppoll$UNIX2003")]
     pub fn ppoll(fds: *mut pollfd,
                  nfds: nfds_t,
-                 timeout: ::c_int,
+                 timeout: *const timespec,
                  sigmask: *const sigset_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
                link_name = "select$1050")]
