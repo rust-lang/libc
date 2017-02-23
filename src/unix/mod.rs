@@ -350,6 +350,9 @@ extern {
                link_name = "opendir$INODE64$UNIX2003")]
     #[cfg_attr(target_os = "netbsd", link_name = "__opendir30")]
     pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
+    #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
+    #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
+    pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
     #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_readdir_r")]
@@ -749,6 +752,8 @@ extern {
                     pshared: ::c_int,
                     value: ::c_uint)
                     -> ::c_int;
+    pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
+    pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
 }
 
 // TODO: get rid of this cfg(not(...))
@@ -828,8 +833,6 @@ extern {
     pub fn ftello(stream: *mut ::FILE) -> ::off_t;
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
-    pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
-    pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "tcdrain$UNIX2003")]
     pub fn tcdrain(fd: ::c_int) -> ::c_int;

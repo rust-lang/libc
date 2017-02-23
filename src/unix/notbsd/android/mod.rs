@@ -136,6 +136,20 @@ s! {
         pub ut_addr_v6: [::int32_t; 4],
         unused: [::c_char; 20],
     }
+
+    pub struct statvfs {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_favail: ::fsfilcnt_t,
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+    }
 }
 
 pub const O_TRUNC: ::c_int = 512;
@@ -801,6 +815,9 @@ extern {
     pub fn utmpname(name: *const ::c_char) -> ::c_int;
     pub fn setutent();
     pub fn getutent() -> *mut utmp;
+
+    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
+                           len: ::off_t) -> ::c_int;
 }
 
 cfg_if! {

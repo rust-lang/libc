@@ -101,6 +101,7 @@ fn main() {
         cfg.header("poll.h");
         cfg.header("syslog.h");
         cfg.header("semaphore.h");
+        cfg.header("sys/statvfs.h");
     }
 
     if android {
@@ -111,7 +112,6 @@ fn main() {
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
-        cfg.header("sys/statvfs.h");
         cfg.header("langinfo.h");
 
         if !openbsd && !freebsd && !dragonfly {
@@ -195,6 +195,7 @@ fn main() {
         cfg.header("pthread_np.h");
         cfg.header("sched.h");
         cfg.header("ufs/ufs/quota.h");
+        cfg.header("sys/jail.h");
     }
 
     if netbsd {
