@@ -120,7 +120,9 @@ s! {
         pub dli_saddr: *mut ::c_void,
     }
 
-    #[cfg_attr(any(all(target_arch = "x86", not(target_env = "musl")),
+    #[cfg_attr(any(all(target_arch = "x86",
+                       not(target_env = "musl"),
+                       not(target_os = "android")),
                    target_arch = "x86_64"),
                repr(packed))]
     pub struct epoll_event {

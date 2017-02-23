@@ -2,11 +2,19 @@
 
 use dox::mem;
 
-pub type c_char = u8;
+cfg_if! {
+    if #[cfg(target_arch = "x86")] {
+        pub type c_char = i8;
+        pub type wchar_t = i32;
+    } else {
+        pub type c_char = u8;
+        pub type wchar_t = u32;
+    }
+}
+
 pub type clock_t = ::c_long;
 pub type time_t = ::c_long;
 pub type suseconds_t = ::c_long;
-pub type wchar_t = u32;
 pub type off_t = ::c_long;
 pub type blkcnt_t = ::c_ulong;
 pub type blksize_t = ::c_ulong;
@@ -447,11 +455,20 @@ pub const O_EXCL: ::c_int = 128;
 pub const O_NOCTTY: ::c_int = 256;
 pub const O_NONBLOCK: ::c_int = 2048;
 pub const O_SYNC: ::c_int = 0x101000;
-pub const O_DIRECT: ::c_int = 0x10000;
-pub const O_DIRECTORY: ::c_int = 0x4000;
-pub const O_NOFOLLOW: ::c_int = 0x8000;
 pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_NDELAY: ::c_int = 0x800;
+
+cfg_if! {
+    if #[cfg(target_arch = "x86")] {
+        pub const O_DIRECT: ::c_int = 0x4000;
+        pub const O_DIRECTORY: ::c_int = 0x10000;
+        pub const O_NOFOLLOW: ::c_int = 0x20000;
+    } else {
+        pub const O_DIRECT: ::c_int = 0x10000;
+        pub const O_DIRECTORY: ::c_int = 0x4000;
+        pub const O_NOFOLLOW: ::c_int = 0x8000;
+    }
+}
 
 pub const NI_MAXHOST: ::size_t = 1025;
 
