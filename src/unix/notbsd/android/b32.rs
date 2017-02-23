@@ -2,6 +2,8 @@ pub type c_long = i32;
 pub type c_ulong = u32;
 pub type mode_t = u16;
 pub type off64_t = ::c_longlong;
+pub type sigset_t = ::c_ulong;
+pub type time64_t = i64;
 
 s! {
     pub struct sigaction {
@@ -9,6 +11,11 @@ s! {
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_ulong,
         pub sa_restorer: ::dox::Option<extern fn()>,
+    }
+
+    pub struct rlimit64 {
+        pub rlim_cur: u64,
+        pub rlim_max: u64,
     }
 
     pub struct stat {

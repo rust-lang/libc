@@ -6,11 +6,20 @@ pub type mode_t = u32;
 pub type off64_t = i64;
 
 s! {
+    pub struct sigset_t {
+        __val: [::c_ulong; 1],
+    }
+
     pub struct sigaction {
         pub sa_flags: ::c_uint,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         _restorer: *mut ::c_void,
+    }
+
+    pub struct rlimit64 {
+        pub rlim_cur: ::c_ulonglong,
+        pub rlim_max: ::c_ulonglong,
     }
 
     pub struct stat {
@@ -155,7 +164,3 @@ pub const __CPU_BITS: ::size_t = 64;
 pub const UT_LINESIZE: usize = 32;
 pub const UT_NAMESIZE: usize = 32;
 pub const UT_HOSTSIZE: usize = 256;
-
-extern {
-    pub fn timegm(tm: *const ::tm) -> ::time64_t;
-}

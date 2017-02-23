@@ -24,8 +24,6 @@ pub type socklen_t = i32;
 pub type pthread_t = ::c_long;
 pub type pthread_mutexattr_t = ::c_long;
 pub type pthread_condattr_t = ::c_long;
-pub type sigset_t = ::c_ulong;
-pub type time64_t = i64; // N/A on android
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type nfds_t = ::c_uint;
@@ -52,11 +50,6 @@ s! {
         pub d_name: [::c_char; 256],
     }
 
-    pub struct rlimit64 {
-        pub rlim_cur: u64,
-        pub rlim_max: u64,
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
@@ -76,7 +69,7 @@ s! {
 
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
-        pub msg_namelen: ::c_int,
+        pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
         pub msg_iovlen: ::size_t,
         pub msg_control: *mut ::c_void,
@@ -534,10 +527,15 @@ pub const PTRACE_SETOPTIONS: ::c_int = 0x4200;
 pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
 pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
 pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
-pub const PTRACE_GETFPREGS: ::c_int = 14;
-pub const PTRACE_SETFPREGS: ::c_int = 15;
-pub const PTRACE_GETREGS: ::c_int = 12;
-pub const PTRACE_SETREGS: ::c_int = 13;
+
+cfg_if! {
+    if #[cfg(not(target_arch = "aarch64"))] {
+        pub const PTRACE_GETFPREGS: ::c_int = 14;
+        pub const PTRACE_SETFPREGS: ::c_int = 15;
+        pub const PTRACE_GETREGS: ::c_int = 12;
+        pub const PTRACE_SETREGS: ::c_int = 13;
+    } else {}
+}
 
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 
@@ -710,25 +708,6 @@ pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 f! {
-    pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {
-        *set = 0;
-        return 0
-    }
-    pub fn sigaddset(set: *mut sigset_t, signum: ::c_int) -> ::c_int {
-        *set |= signum as sigset_t;
-        return 0
-    }
-    pub fn sigfillset(set: *mut sigset_t) -> ::c_int {
-        *set = !0;
-        return 0
-    }
-    pub fn sigdelset(set: *mut sigset_t, signum: ::c_int) -> ::c_int {
-        *set &= !(signum as sigset_t);
-        return 0
-    }
-    pub fn sigismember(set: *const sigset_t, signum: ::c_int) -> ::c_int {
-        (*set & (signum as sigset_t)) as ::c_int
-    }
     pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t {
         (*termios).c_cflag & ::CBAUD
     }
@@ -798,14 +777,36 @@ extern {
     static mut __progname: *mut ::c_char;
 }
 
+// Some weirdness in Android
+#[cfg(target_arch = "aarch64")] // " if " -- appease style checker
+extern {
+    // address_len should be socklen_t, but it is c_int!
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
+                address_len: ::c_int) -> ::c_int;
+
+    // the return type should be ::ssize_t, but it is c_int!
+    pub fn writev(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int) -> ::c_int;
+
+    // the return type should be ::ssize_t, but it is c_int!
+    pub fn readv(fd: ::c_int,
+                 iov: *const ::iovec,
+                 iovcnt: ::c_int) -> ::c_int;
+
+    // the return type should be ::ssize_t, but it is c_int!
+    pub fn sendmsg(fd: ::c_int,
+                   msg: *const msghdr,
+                   flags: ::c_int) -> ::c_int;
+
+    // the return type should be ::ssize_t, but it is c_int!
+    pub fn recvmsg(fd: ::c_int, msg: *mut msghdr, flags: ::c_int) -> ::c_int;
+}
+
 extern {
     pub fn madvise(addr: *const ::c_void, len: ::size_t, advice: ::c_int)
                    -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn readlink(path: *const ::c_char,
-                    buf: *mut ::c_char,
-                    bufsz: ::size_t)
-                    -> ::c_int;
     pub fn msync(addr: *const ::c_void, len: ::size_t,
                  flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
