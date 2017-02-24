@@ -206,7 +206,6 @@ fn main() {
     if openbsd {
         cfg.header("ufs/ufs/quota.h");
         cfg.header("rpcsvc/rex.h");
-        cfg.header("termios.h");
         cfg.header("pthread_np.h");
         cfg.header("sys/syscall.h");
     }
