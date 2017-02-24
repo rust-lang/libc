@@ -1,4 +1,5 @@
 use dox::mem;
+use ::{pollfd, timespec};
 
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
@@ -841,6 +842,10 @@ extern {
                      linkpath: *const ::c_char) -> ::c_int;
     pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
                     flags: ::c_int) -> ::c_int;
+    pub fn ppoll(fds: *mut pollfd,
+                 nfds: nfds_t,
+                 timeout: *const timespec,
+                 sigmask: *const sigset_t) -> ::c_int;
     pub fn pthread_condattr_getclock(attr: *const pthread_condattr_t,
                                      clock_id: *mut clockid_t) -> ::c_int;
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
