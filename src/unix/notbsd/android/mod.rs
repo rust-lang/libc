@@ -20,7 +20,6 @@ pub type blkcnt_t = ::c_ulong;
 pub type blksize_t = ::c_ulong;
 pub type nlink_t = u32;
 pub type useconds_t = u32;
-pub type socklen_t = i32;
 pub type pthread_t = ::c_long;
 pub type pthread_mutexattr_t = ::c_long;
 pub type pthread_condattr_t = ::c_long;
@@ -61,6 +60,7 @@ s! {
         pub si_errno: ::c_int,
         pub si_code: ::c_int,
         pub _pad: [::c_int; 29],
+        _align: [usize; 0],
     }
 
     pub struct __fsid_t {
@@ -109,6 +109,8 @@ s! {
 
     pub struct sem_t {
         count: ::c_uint,
+        #[cfg(target_pointer_width = "64")]
+        __reserved: [::c_int; 3],
     }
 
     pub struct lastlog {
@@ -150,6 +152,8 @@ s! {
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
+        #[cfg(target_pointer_width = "64")]
+        __f_reserved: [u32; 6],
     }
 }
 
@@ -577,10 +581,19 @@ pub const TIOCMSET: ::c_int = 0x5418;
 pub const FIONREAD: ::c_int = 0x541B;
 pub const TIOCCONS: ::c_int = 0x541D;
 
-pub const RTLD_GLOBAL: ::c_int = 0x2;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
-pub const RTLD_NOW: ::c_int = 0;
-pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
+
+cfg_if! {
+    if #[cfg(target_arch = "aarch64")] {
+        pub const RTLD_GLOBAL: ::c_int = 0x00100;
+        pub const RTLD_NOW: ::c_int = 2;
+        pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
+    } else {
+        pub const RTLD_GLOBAL: ::c_int = 2;
+        pub const RTLD_NOW: ::c_int = 0;
+        pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
+    }
+}
 
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
