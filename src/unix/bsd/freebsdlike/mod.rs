@@ -923,7 +923,7 @@ extern {
                                    abstime: *const ::timespec) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
     pub fn ppoll(fds: *mut ::pollfd,
-                 nfds: nfds_t,
+                 nfds: ::nfds_t,
                  timeout: *const ::timespec,
                  sigmask: *const sigset_t) -> ::c_int;
 }
