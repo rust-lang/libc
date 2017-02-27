@@ -752,12 +752,27 @@ f! {
     pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t {
         (*termios).c_cflag & ::CBAUD
     }
+    pub fn cfmakeraw(termios: *mut ::termios) -> () {
+        (*termios).c_iflag &= !(::IGNBRK | ::BRKINT | ::PARMRK | ::ISTRIP |
+                              ::INLCR | ::IGNCR | ::ICRNL | ::IXON);
+        (*termios).c_oflag &= !::OPOST;
+        (*termios).c_lflag &= !(::ECHO | ::ECHONL | ::ICANON | ::ISIG |
+                              ::IEXTEN);
+        (*termios).c_cflag &= !(::CSIZE | ::PARENB);
+        (*termios).c_cflag |= ::CS8;
+        ()
+    }
     pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
         let cbaud = ::CBAUD;
         (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
         return 0
     }
     pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
+        let cbaud = ::CBAUD;
+        (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
+        return 0
+    }
+    pub fn cfsetspeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
         let cbaud = ::CBAUD;
         (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
         return 0
