@@ -164,6 +164,21 @@ pub const UT_NAMESIZE: usize = 8;
 pub const UT_HOSTSIZE: usize = 16;
 
 extern {
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
+                address_len: socklen_t) -> ::c_int;
+
+    pub fn writev(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int) -> ::ssize_t;
+    pub fn readv(fd: ::c_int,
+                 iov: *const ::iovec,
+                 iovcnt: ::c_int) -> ::ssize_t;
+
+    pub fn sendmsg(fd: ::c_int,
+                   msg: *const ::msghdr,
+                   flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
+
     pub fn timegm64(tm: *const ::tm) -> ::time64_t;
 }
 

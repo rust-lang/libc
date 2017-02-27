@@ -678,40 +678,6 @@ pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 f! {
-    pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t {
-        (*termios).c_cflag & ::CBAUD
-    }
-    pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t {
-        (*termios).c_cflag & ::CBAUD
-    }
-    pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
-        let cbaud = ::CBAUD;
-        (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
-        return 0
-    }
-    pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
-        let cbaud = ::CBAUD;
-        (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
-        return 0
-    }
-    pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int {
-        ioctl(fd, ::TCGETS, termios)
-    }
-    pub fn tcsetattr(fd: ::c_int,
-                     optional_actions: ::c_int,
-                     termios: *const ::termios) -> ::c_int {
-        ioctl(fd, optional_actions, termios)
-    }
-    pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int {
-        ioctl(fd, ::TCXONC, action as *mut ::c_void)
-    }
-    pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int {
-        ioctl(fd, ::TCFLSH, action as *mut ::c_void)
-    }
-    pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int {
-        ioctl(fd, TCSBRKP, duration as *mut ::c_void)
-    }
-
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.__bits.iter_mut() {
             *slot = 0;
@@ -755,7 +721,6 @@ extern {
                  flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
-    pub fn sysconf(name: ::c_int) -> ::c_long;
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                     flags: ::c_int, addr: *const ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;

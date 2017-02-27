@@ -200,4 +200,3 @@ extern {
     // the return type should be ::ssize_t, but it is c_int!
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::c_int;
 }
-
