@@ -129,6 +129,15 @@ s! {
     }
 }
 
+pub const RTLD_GLOBAL: ::c_int = 2;
+pub const RTLD_NOW: ::c_int = 0;
+pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
+
+pub const PTRACE_GETFPREGS: ::c_int = 14;
+pub const PTRACE_SETFPREGS: ::c_int = 15;
+pub const PTRACE_GETREGS: ::c_int = 12;
+pub const PTRACE_SETREGS: ::c_int = 13;
+
 pub const SYS_gettid: ::c_long = 224;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     value: 0,
@@ -156,4 +165,16 @@ pub const UT_HOSTSIZE: usize = 16;
 
 extern {
     pub fn timegm64(tm: *const ::tm) -> ::time64_t;
+}
+
+cfg_if! {
+    if #[cfg(target_arch = "x86")] {
+        mod x86;
+        pub use self::x86::*;
+    } else if #[cfg(target_arch = "arm")] {
+        mod arm;
+        pub use self::arm::*;
+    } else {
+        // Unknown target_arch
+    }
 }

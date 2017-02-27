@@ -2,16 +2,6 @@
 
 use dox::mem;
 
-cfg_if! {
-    if #[cfg(target_arch = "x86")] {
-        pub type c_char = i8;
-        pub type wchar_t = i32;
-    } else {
-        pub type c_char = u8;
-        pub type wchar_t = u32;
-    }
-}
-
 pub type clock_t = ::c_long;
 pub type time_t = ::c_long;
 pub type suseconds_t = ::c_long;
@@ -455,18 +445,6 @@ pub const O_SYNC: ::c_int = 0x101000;
 pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_NDELAY: ::c_int = 0x800;
 
-cfg_if! {
-    if #[cfg(target_arch = "x86")] {
-        pub const O_DIRECT: ::c_int = 0x4000;
-        pub const O_DIRECTORY: ::c_int = 0x10000;
-        pub const O_NOFOLLOW: ::c_int = 0x20000;
-    } else {
-        pub const O_DIRECT: ::c_int = 0x10000;
-        pub const O_DIRECTORY: ::c_int = 0x4000;
-        pub const O_NOFOLLOW: ::c_int = 0x8000;
-    }
-}
-
 pub const NI_MAXHOST: ::size_t = 1025;
 
 pub const NCCS: usize = 19;
@@ -532,15 +510,6 @@ pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
 pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
 pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
 
-cfg_if! {
-    if #[cfg(not(target_arch = "aarch64"))] {
-        pub const PTRACE_GETFPREGS: ::c_int = 14;
-        pub const PTRACE_SETFPREGS: ::c_int = 15;
-        pub const PTRACE_GETREGS: ::c_int = 12;
-        pub const PTRACE_SETREGS: ::c_int = 13;
-    } else {}
-}
-
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 
 pub const F_GETLK: ::c_int = 5;
@@ -582,18 +551,6 @@ pub const FIONREAD: ::c_int = 0x541B;
 pub const TIOCCONS: ::c_int = 0x541D;
 
 pub const RTLD_NOLOAD: ::c_int = 0x4;
-
-cfg_if! {
-    if #[cfg(target_arch = "aarch64")] {
-        pub const RTLD_GLOBAL: ::c_int = 0x00100;
-        pub const RTLD_NOW: ::c_int = 2;
-        pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
-    } else {
-        pub const RTLD_GLOBAL: ::c_int = 2;
-        pub const RTLD_NOW: ::c_int = 0;
-        pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
-    }
-}
 
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
@@ -788,32 +745,6 @@ f! {
 
 extern {
     static mut __progname: *mut ::c_char;
-}
-
-// Some weirdness in Android
-#[cfg(target_arch = "aarch64")] // " if " -- appease style checker
-extern {
-    // address_len should be socklen_t, but it is c_int!
-    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
-                address_len: ::c_int) -> ::c_int;
-
-    // the return type should be ::ssize_t, but it is c_int!
-    pub fn writev(fd: ::c_int,
-                  iov: *const ::iovec,
-                  iovcnt: ::c_int) -> ::c_int;
-
-    // the return type should be ::ssize_t, but it is c_int!
-    pub fn readv(fd: ::c_int,
-                 iov: *const ::iovec,
-                 iovcnt: ::c_int) -> ::c_int;
-
-    // the return type should be ::ssize_t, but it is c_int!
-    pub fn sendmsg(fd: ::c_int,
-                   msg: *const msghdr,
-                   flags: ::c_int) -> ::c_int;
-
-    // the return type should be ::ssize_t, but it is c_int!
-    pub fn recvmsg(fd: ::c_int, msg: *mut msghdr, flags: ::c_int) -> ::c_int;
 }
 
 extern {
