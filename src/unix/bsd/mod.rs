@@ -426,7 +426,8 @@ extern {
                    flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "recvmsg$UNIX2003")]
-    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
+                   -> ::ssize_t;
 }
 
 cfg_if! {

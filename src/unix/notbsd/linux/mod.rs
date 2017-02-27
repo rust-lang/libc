@@ -941,7 +941,8 @@ extern {
     pub fn sendmsg(fd: ::c_int,
                    msg: *const ::msghdr,
                    flags: ::c_int) -> ::ssize_t;
-    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
+                   -> ::ssize_t;
 }
 
 cfg_if! {
