@@ -545,6 +545,7 @@ extern {
                link_name = "pthread_join$UNIX2003")]
     pub fn pthread_join(native: ::pthread_t,
                         value: *mut *mut ::c_void) -> ::c_int;
+    pub fn pthread_exit(value: *mut ::c_void);
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_setstacksize(attr: *mut ::pthread_attr_t,
@@ -785,6 +786,8 @@ extern {
     pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int;
     pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
     pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
+
+    pub fn tmpnam(ptr: *mut ::c_char) -> *mut ::c_char;
 
     pub fn openlog(ident: *const ::c_char, logopt: ::c_int, facility: ::c_int);
     pub fn closelog();

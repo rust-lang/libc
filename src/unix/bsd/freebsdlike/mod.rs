@@ -753,6 +753,34 @@ pub const SLIPDISC: ::c_int = 0x4;
 pub const PPPDISC: ::c_int = 0x5;
 pub const NETGRAPHDISC: ::c_int = 0x6;
 
+pub const B0: speed_t = 0;
+pub const B50: speed_t = 50;
+pub const B75: speed_t = 75;
+pub const B110: speed_t = 110;
+pub const B134: speed_t = 134;
+pub const B150: speed_t = 150;
+pub const B200: speed_t = 200;
+pub const B300: speed_t = 300;
+pub const B600: speed_t = 600;
+pub const B1200: speed_t = 1200;
+pub const B1800: speed_t = 1800;
+pub const B2400: speed_t = 2400;
+pub const B4800: speed_t = 4800;
+pub const B9600: speed_t = 9600;
+pub const B19200: speed_t = 19200;
+pub const B38400: speed_t = 38400;
+pub const B7200: speed_t = 7200;
+pub const B14400: speed_t = 14400;
+pub const B28800: speed_t = 28800;
+pub const B57600: speed_t = 57600;
+pub const B76800: speed_t = 76800;
+pub const B115200: speed_t = 115200;
+pub const B230400: speed_t = 230400;
+pub const B460800: speed_t = 460800;
+pub const B921600: speed_t = 921600;
+pub const EXTA: speed_t = 19200;
+pub const EXTB: speed_t = 38400;
+
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
 f! {
@@ -922,6 +950,10 @@ extern {
     pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
                                    abstime: *const ::timespec) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn ppoll(fds: *mut ::pollfd,
+                 nfds: ::nfds_t,
+                 timeout: *const ::timespec,
+                 sigmask: *const sigset_t) -> ::c_int;
 }
 
 cfg_if! {
