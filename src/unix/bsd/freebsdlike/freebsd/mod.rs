@@ -356,14 +356,6 @@ pub const SO_SETFIB: ::c_int = 0x1014;
 pub const SO_USER_COOKIE: ::c_int = 0x1015;
 pub const SO_PROTOCOL: ::c_int = 0x1016;
 pub const SO_PROTOTYPE: ::c_int = SO_PROTOCOL;
-// pub const SO_TS_CLOCK: ::c_int = 0x1017;
-// pub const SO_MAX_PACING_RATE: ::c_int = 0x1018;
-// pub const SO_TS_REALTIME_MICRO: ::c_int = 0;
-// pub const SO_TS_BINTIME: ::c_int = 1;
-// pub const SO_TS_REALTIME: ::c_int = 2;
-// pub const SO_TS_MONOTONIC: ::c_int = 3;
-// pub const SO_TS_DEFAULT: ::c_int = SO_TS_REALTIME_MICRO;
-// pub const SO_TS_CLOCK_MAX: ::c_int = SO_TS_MONOTONIC;
 pub const SO_VENDOR: ::c_int = 0x80000000;
 
 pub const AF_SLOW: ::c_int = 33;
@@ -411,7 +403,6 @@ pub const MSG_NOTIFICATION: ::c_int = 0x00002000;
 pub const MSG_NBIO: ::c_int = 0x00004000;
 pub const MSG_COMPAT: ::c_int = 0x00008000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x00040000;
-// pub const MSG_WAITFORONE: ::c_int = 0x00080000;
 pub const MSG_NOSIGNAL: ::c_int = 0x20000;
 
 pub const EMPTY: ::c_short = 0;
