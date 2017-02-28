@@ -81,11 +81,17 @@ pub const MAP_NORESERVE: ::c_int = 0x00040;
 
 pub const EDEADLOCK: ::c_int = 58;
 
-pub const SO_PEERCRED: ::c_int = 21;
+pub const SO_SNDBUFFORCE: ::c_int = 32;
+pub const SO_RCVBUFFORCE: ::c_int = 33;
+pub const SO_NO_CHECK: ::c_int = 11;
+pub const SO_PRIORITY: ::c_int = 12;
+pub const SO_BSDCOMPAT: ::c_int = 14;
 pub const SO_RCVLOWAT: ::c_int = 16;
 pub const SO_SNDLOWAT: ::c_int = 17;
 pub const SO_RCVTIMEO: ::c_int = 18;
 pub const SO_SNDTIMEO: ::c_int = 19;
+pub const SO_PASSCRED: ::c_int = 20;
+pub const SO_PEERCRED: ::c_int = 21;
 
 pub const FIOCLEX: ::c_ulong = 0x20006601;
 pub const FIONBIO: ::c_ulong = 0x8004667e;

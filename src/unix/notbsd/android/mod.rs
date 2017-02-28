@@ -422,6 +422,16 @@ pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const SOL_SOCKET: ::c_int = 1;
+pub const SOL_UDP: ::c_int = 17;
+pub const SOL_SCTP: ::c_int = 132;
+pub const SOL_IPX: ::c_int = 256;
+pub const SOL_AX25: ::c_int = 257;
+pub const SOL_ATALK: ::c_int = 258;
+pub const SOL_NETROM: ::c_int = 259;
+pub const SOL_ROSE: ::c_int = 260;
+
+pub const AF_MAX: ::c_int = 39;
+pub const PF_MAX: ::c_int = AF_MAX;
 
 pub const SO_REUSEADDR: ::c_int = 2;
 pub const SO_TYPE: ::c_int = 3;

@@ -116,6 +116,12 @@ pub const MAP_32BIT: ::c_int = 0x0040;
 
 pub const EDEADLOCK: ::c_int = 35;
 
+pub const SO_SNDBUFFORCE: ::c_int = 32;
+pub const SO_RCVBUFFORCE: ::c_int = 33;
+pub const SO_NO_CHECK: ::c_int = 11;
+pub const SO_PRIORITY: ::c_int = 12;
+pub const SO_BSDCOMPAT: ::c_int = 14;
+pub const SO_PASSCRED: ::c_int = 16;
 pub const SO_PEERCRED: ::c_int = 17;
 pub const SO_RCVLOWAT: ::c_int = 18;
 pub const SO_SNDLOWAT: ::c_int = 19;
