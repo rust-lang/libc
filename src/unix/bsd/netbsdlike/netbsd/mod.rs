@@ -291,8 +291,50 @@ pub const F_MAXFD: ::c_int = 11;
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 
+pub const SOCK_CONN_DGRAM: ::c_int = 6;
+pub const SOCK_DCCP: ::c_int = SOCK_CONN_DGRAM;
+pub const SOCK_NOSIGPIPE: ::c_int = 0x40000000;
+pub const SOCK_FLAGS_MASK: ::c_int = 0xf0000000;
+
 pub const SO_SNDTIMEO: ::c_int = 0x100b;
 pub const SO_RCVTIMEO: ::c_int = 0x100c;
+pub const SO_ACCEPTFILTER: ::c_int = 0x1000;
+pub const SO_TIMESTAMP: ::c_int = 0x2000;
+pub const SO_OVERFLOWED: ::c_int = 0x1009;
+pub const SO_NOHEADER: ::c_int = 0x100a;
+
+pub const AF_OROUTE: ::c_int = 17;
+pub const AF_ARP: ::c_int = 28;
+pub const pseudo_AF_KEY: ::c_int = 29;
+pub const pseudo_AF_HDRCMPLT: ::c_int = 30;
+pub const AF_BLUETOOTH: ::c_int = 31;
+pub const AF_IEEE80211: ::c_int = 32;
+pub const AF_MPLS: ::c_int = 33;
+pub const AF_ROUTE: ::c_int = 34;
+pub const AF_MAX: ::c_int = 35;
+
+pub const NET_MAXID: ::c_int = AF_MAX;
+pub const NET_RT_DUMP: ::c_int = 1;
+pub const NET_RT_FLAGS: ::c_int = 2;
+pub const NET_RT_OOIFLIST: ::c_int = 3;
+pub const NET_RT_OIFLIST: ::c_int = 4;
+pub const NET_RT_IFLIST: ::c_int = 5;
+pub const NET_RT_MAXID: ::c_int = 6;
+
+pub const PF_OROUTE: ::c_int = AF_OROUTE;
+pub const PF_ARP: ::c_int = AF_ARP;
+pub const PF_KEY: ::c_int = pseudo_AF_KEY;
+pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
+pub const PF_MPLS: ::c_int = AF_MPLS;
+pub const PF_ROUTE: ::c_int = AF_ROUTE;
+pub const PF_MAX: ::c_int = AF_MAX;
+
+pub const MSG_NBIO: ::c_int = 0x1000;
+pub const MSG_WAITFORONE: ::c_int = 0x2000;
+pub const MSG_NOTIFICATION: ::c_int = 0x4000;
+
+pub const SCM_TIMESTAMP: ::c_int = 0x08;
+pub const SCM_CREDS: ::c_int = 0x10;
 
 pub const O_DSYNC : ::c_int = 0x10000;
 

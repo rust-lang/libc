@@ -344,10 +344,58 @@ pub const JAIL_SYS_DISABLE: ::c_int = 0;
 pub const JAIL_SYS_NEW: ::c_int = 1;
 pub const JAIL_SYS_INHERIT: ::c_int = 2;
 
+pub const SO_BINTIME: ::c_int = 0x2000;
+pub const SO_NO_OFFLOAD: ::c_int = 0x4000;
+pub const SO_NO_DDP: ::c_int = 0x8000;
+pub const SO_LABEL: ::c_int = 0x1009;
+pub const SO_PEERLABEL: ::c_int = 0x1010;
+pub const SO_LISTENQLIMIT: ::c_int = 0x1011;
+pub const SO_LISTENQLEN: ::c_int = 0x1012;
+pub const SO_LISTENINCQLEN: ::c_int = 0x1013;
+pub const SO_SETFIB: ::c_int = 0x1014;
+pub const SO_USER_COOKIE: ::c_int = 0x1015;
+pub const SO_PROTOCOL: ::c_int = 0x1016;
+pub const SO_PROTOTYPE: ::c_int = SO_PROTOCOL;
+// pub const SO_TS_CLOCK: ::c_int = 0x1017;
+// pub const SO_MAX_PACING_RATE: ::c_int = 0x1018;
+// pub const SO_TS_REALTIME_MICRO: ::c_int = 0;
+// pub const SO_TS_BINTIME: ::c_int = 1;
+// pub const SO_TS_REALTIME: ::c_int = 2;
+// pub const SO_TS_MONOTONIC: ::c_int = 3;
+// pub const SO_TS_DEFAULT: ::c_int = SO_TS_REALTIME_MICRO;
+// pub const SO_TS_CLOCK_MAX: ::c_int = SO_TS_MONOTONIC;
+pub const SO_VENDOR: ::c_int = 0x80000000;
+
+pub const AF_SLOW: ::c_int = 33;
+pub const AF_SCLUSTER: ::c_int = 34;
+pub const AF_ARP: ::c_int = 35;
+pub const AF_BLUETOOTH: ::c_int = 36;
+pub const AF_IEEE80211: ::c_int = 37;
+pub const AF_INET_SDP: ::c_int = 40;
+pub const AF_INET6_SDP: ::c_int = 42;
+pub const AF_MAX: ::c_int = 42;
+
+pub const PF_SLOW: ::c_int = AF_SLOW;
+pub const PF_SCLUSTER: ::c_int = AF_SCLUSTER;
+pub const PF_ARP: ::c_int = AF_ARP;
+pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
+pub const PF_IEEE80211: ::c_int = AF_IEEE80211;
+pub const PF_INET_SDP: ::c_int = AF_INET_SDP;
+pub const PF_INET6_SDP: ::c_int = AF_INET6_SDP;
+pub const PF_MAX: ::c_int = AF_MAX;
+
+pub const NET_RT_DUMP: ::c_int = 1;
+pub const NET_RT_FLAGS: ::c_int = 2;
+pub const NET_RT_IFLIST: ::c_int = 3;
+pub const NET_RT_IFMALIST: ::c_int = 4;
+pub const NET_RT_IFLISTL: ::c_int = 5;
+
 // The *_MAXID constants never should've been used outside of the
 // FreeBSD base system.  And with the exception of CTL_P1003_1B_MAXID,
 // they were all removed in svn r262489.  They remain here for backwards
 // compatibility only, and are scheduled to be removed in libc 1.0.0.
+#[doc(hidden)]
+pub const NET_MAXID: ::c_int = AF_MAX;
 #[doc(hidden)]
 pub const CTL_MAXID: ::c_int = 10;
 #[doc(hidden)]
@@ -359,7 +407,11 @@ pub const USER_MAXID: ::c_int = 21;
 #[doc(hidden)]
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
-pub const MSG_PEEK: ::c_int = 0x2;
+pub const MSG_NOTIFICATION: ::c_int = 0x00002000;
+pub const MSG_NBIO: ::c_int = 0x00004000;
+pub const MSG_COMPAT: ::c_int = 0x00008000;
+pub const MSG_CMSG_CLOEXEC: ::c_int = 0x00040000;
+// pub const MSG_WAITFORONE: ::c_int = 0x00080000;
 pub const MSG_NOSIGNAL: ::c_int = 0x20000;
 
 pub const EMPTY: ::c_short = 0;
