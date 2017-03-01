@@ -177,8 +177,10 @@ pub const AF_BLUETOOTH: ::c_int = 32;
 pub const AF_MPLS: ::c_int = 33;
 pub const pseudo_AF_PFLOW: ::c_int = 34;
 pub const pseudo_AF_PIPEX: ::c_int = 35;
+#[doc(hidden)]
 pub const AF_MAX: ::c_int = 36;
 
+#[doc(hidden)]
 pub const NET_MAXID: ::c_int = AF_MAX;
 pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
@@ -186,6 +188,7 @@ pub const NET_RT_IFLIST: ::c_int = 3;
 pub const NET_RT_STATS: ::c_int = 4;
 pub const NET_RT_TABLE: ::c_int = 5;
 pub const NET_RT_IFNAMES: ::c_int = 6;
+#[doc(hidden)]
 pub const NET_RT_MAXID: ::c_int = 7;
 
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
@@ -201,6 +204,7 @@ pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
 pub const PF_MPLS: ::c_int = AF_MPLS;
 pub const PF_PFLOW: ::c_int = pseudo_AF_PFLOW;
 pub const PF_PIPEX: ::c_int = pseudo_AF_PIPEX;
+#[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
 pub const SCM_TIMESTAMP: ::c_int = 0x04;

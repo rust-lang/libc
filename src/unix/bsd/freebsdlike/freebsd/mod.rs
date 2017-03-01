@@ -365,6 +365,7 @@ pub const AF_BLUETOOTH: ::c_int = 36;
 pub const AF_IEEE80211: ::c_int = 37;
 pub const AF_INET_SDP: ::c_int = 40;
 pub const AF_INET6_SDP: ::c_int = 42;
+#[doc(hidden)]
 pub const AF_MAX: ::c_int = 42;
 
 pub const PF_SLOW: ::c_int = AF_SLOW;
@@ -374,6 +375,7 @@ pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
 pub const PF_IEEE80211: ::c_int = AF_IEEE80211;
 pub const PF_INET_SDP: ::c_int = AF_INET_SDP;
 pub const PF_INET6_SDP: ::c_int = AF_INET6_SDP;
+#[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
 pub const NET_RT_DUMP: ::c_int = 1;

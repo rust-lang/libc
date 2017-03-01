@@ -430,7 +430,9 @@ pub const SOL_ATALK: ::c_int = 258;
 pub const SOL_NETROM: ::c_int = 259;
 pub const SOL_ROSE: ::c_int = 260;
 
+#[doc(hidden)]
 pub const AF_MAX: ::c_int = 39;
+#[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
 pub const SO_REUSEADDR: ::c_int = 2;
