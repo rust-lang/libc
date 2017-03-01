@@ -2,22 +2,17 @@
 
 use dox::mem;
 
-pub type c_char = u8;
 pub type clock_t = ::c_long;
 pub type time_t = ::c_long;
 pub type suseconds_t = ::c_long;
-pub type wchar_t = u32;
 pub type off_t = ::c_long;
 pub type blkcnt_t = ::c_ulong;
 pub type blksize_t = ::c_ulong;
 pub type nlink_t = u32;
 pub type useconds_t = u32;
-pub type socklen_t = i32;
 pub type pthread_t = ::c_long;
 pub type pthread_mutexattr_t = ::c_long;
 pub type pthread_condattr_t = ::c_long;
-pub type sigset_t = ::c_ulong;
-pub type time64_t = i64; // N/A on android
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type nfds_t = ::c_uint;
@@ -44,11 +39,6 @@ s! {
         pub d_name: [::c_char; 256],
     }
 
-    pub struct rlimit64 {
-        pub rlim_cur: u64,
-        pub rlim_max: u64,
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
@@ -60,6 +50,7 @@ s! {
         pub si_errno: ::c_int,
         pub si_code: ::c_int,
         pub _pad: [::c_int; 29],
+        _align: [usize; 0],
     }
 
     pub struct __fsid_t {
@@ -68,7 +59,7 @@ s! {
 
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
-        pub msg_namelen: ::c_int,
+        pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
         pub msg_iovlen: ::size_t,
         pub msg_control: *mut ::c_void,
@@ -108,6 +99,8 @@ s! {
 
     pub struct sem_t {
         count: ::c_uint,
+        #[cfg(target_pointer_width = "64")]
+        __reserved: [::c_int; 3],
     }
 
     pub struct lastlog {
@@ -149,6 +142,8 @@ s! {
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
+        #[cfg(target_pointer_width = "64")]
+        __f_reserved: [u32; 6],
     }
 }
 
@@ -447,9 +442,6 @@ pub const O_EXCL: ::c_int = 128;
 pub const O_NOCTTY: ::c_int = 256;
 pub const O_NONBLOCK: ::c_int = 2048;
 pub const O_SYNC: ::c_int = 0x101000;
-pub const O_DIRECT: ::c_int = 0x10000;
-pub const O_DIRECTORY: ::c_int = 0x4000;
-pub const O_NOFOLLOW: ::c_int = 0x8000;
 pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_NDELAY: ::c_int = 0x800;
 
@@ -517,10 +509,6 @@ pub const PTRACE_SETOPTIONS: ::c_int = 0x4200;
 pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
 pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
 pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
-pub const PTRACE_GETFPREGS: ::c_int = 14;
-pub const PTRACE_SETFPREGS: ::c_int = 15;
-pub const PTRACE_GETREGS: ::c_int = 12;
-pub const PTRACE_SETREGS: ::c_int = 13;
 
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 
@@ -562,10 +550,7 @@ pub const TIOCMSET: ::c_int = 0x5418;
 pub const FIONREAD: ::c_int = 0x541B;
 pub const TIOCCONS: ::c_int = 0x541D;
 
-pub const RTLD_GLOBAL: ::c_int = 0x2;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
-pub const RTLD_NOW: ::c_int = 0;
-pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
 
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
@@ -727,74 +712,6 @@ pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 f! {
-    pub fn sigemptyset(set: *mut sigset_t) -> ::c_int {
-        *set = 0;
-        return 0
-    }
-    pub fn sigaddset(set: *mut sigset_t, signum: ::c_int) -> ::c_int {
-        *set |= signum as sigset_t;
-        return 0
-    }
-    pub fn sigfillset(set: *mut sigset_t) -> ::c_int {
-        *set = !0;
-        return 0
-    }
-    pub fn sigdelset(set: *mut sigset_t, signum: ::c_int) -> ::c_int {
-        *set &= !(signum as sigset_t);
-        return 0
-    }
-    pub fn sigismember(set: *const sigset_t, signum: ::c_int) -> ::c_int {
-        (*set & (signum as sigset_t)) as ::c_int
-    }
-    pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t {
-        (*termios).c_cflag & ::CBAUD
-    }
-    pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t {
-        (*termios).c_cflag & ::CBAUD
-    }
-    pub fn cfmakeraw(termios: *mut ::termios) -> () {
-        (*termios).c_iflag &= !(::IGNBRK | ::BRKINT | ::PARMRK | ::ISTRIP |
-                              ::INLCR | ::IGNCR | ::ICRNL | ::IXON);
-        (*termios).c_oflag &= !::OPOST;
-        (*termios).c_lflag &= !(::ECHO | ::ECHONL | ::ICANON | ::ISIG |
-                              ::IEXTEN);
-        (*termios).c_cflag &= !(::CSIZE | ::PARENB);
-        (*termios).c_cflag |= ::CS8;
-        ()
-    }
-    pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
-        let cbaud = ::CBAUD;
-        (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
-        return 0
-    }
-    pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
-        let cbaud = ::CBAUD;
-        (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
-        return 0
-    }
-    pub fn cfsetspeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
-        let cbaud = ::CBAUD;
-        (*termios).c_cflag = ((*termios).c_cflag & !cbaud) | (speed & cbaud);
-        return 0
-    }
-    pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int {
-        ioctl(fd, ::TCGETS, termios)
-    }
-    pub fn tcsetattr(fd: ::c_int,
-                     optional_actions: ::c_int,
-                     termios: *const ::termios) -> ::c_int {
-        ioctl(fd, optional_actions, termios)
-    }
-    pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int {
-        ioctl(fd, ::TCXONC, action as *mut ::c_void)
-    }
-    pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int {
-        ioctl(fd, ::TCFLSH, action as *mut ::c_void)
-    }
-    pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int {
-        ioctl(fd, TCSBRKP, duration as *mut ::c_void)
-    }
-
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.__bits.iter_mut() {
             *slot = 0;
@@ -834,15 +751,10 @@ extern {
     pub fn madvise(addr: *const ::c_void, len: ::size_t, advice: ::c_int)
                    -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn readlink(path: *const ::c_char,
-                    buf: *mut ::c_char,
-                    bufsz: ::size_t)
-                    -> ::c_int;
     pub fn msync(addr: *const ::c_void, len: ::size_t,
                  flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
-    pub fn sysconf(name: ::c_int) -> ::c_long;
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                     flags: ::c_int, addr: *const ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
