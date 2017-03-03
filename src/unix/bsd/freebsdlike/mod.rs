@@ -980,6 +980,8 @@ extern {
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
+    pub fn accept4(s: ::c_int, addr: *mut ::sockaddr,
+                   addrlen: *mut ::socklen_t, flags: ::c_int) -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn pthread_attr_get_np(tid: ::pthread_t,
                                attr: *mut ::pthread_attr_t) -> ::c_int;
