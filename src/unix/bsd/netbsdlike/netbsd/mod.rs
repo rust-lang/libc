@@ -246,6 +246,12 @@ s! {
     }
 }
 
+pub const AT_FDCWD: ::c_int = -100;
+pub const AT_EACCESS: ::c_int = 0x100;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
+pub const AT_REMOVEDIR: ::c_int = 0x800;
+
 pub const LC_COLLATE_MASK: ::c_int = (1 << ::LC_COLLATE);
 pub const LC_CTYPE_MASK: ::c_int = (1 << ::LC_CTYPE);
 pub const LC_MONETARY_MASK: ::c_int = (1 << ::LC_MONETARY);

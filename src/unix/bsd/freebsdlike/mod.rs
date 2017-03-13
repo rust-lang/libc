@@ -452,6 +452,11 @@ pub const F_SETFD: ::c_int = 2;
 pub const F_GETFL: ::c_int = 3;
 pub const F_SETFL: ::c_int = 4;
 
+pub const AT_EACCESS: ::c_int = 0x100;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
+pub const AT_REMOVEDIR: ::c_int = 0x800;
+
 pub const SIGTRAP: ::c_int = 5;
 
 pub const GLOB_APPEND  : ::c_int = 0x0001;

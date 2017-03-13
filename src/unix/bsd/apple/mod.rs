@@ -665,6 +665,12 @@ pub const F_ALLOCATEALL: ::c_uint = 0x04;
 pub const F_PEOFPOSMODE: ::c_int = 3;
 pub const F_VOLPOSMODE: ::c_int = 4;
 
+pub const AT_FDCWD: ::c_int = -2;
+pub const AT_EACCESS: ::c_int = 0x0010;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x0020;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x0040;
+pub const AT_REMOVEDIR: ::c_int = 0x0080;
+
 pub const O_ACCMODE: ::c_int = 3;
 
 pub const TIOCMODG: ::c_ulong = 0x40047403;
