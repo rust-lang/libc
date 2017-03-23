@@ -441,7 +441,13 @@ pub const SA_NOCLDSTOP: ::c_int = 0x00020000;
 pub const SS_ONSTACK: ::c_int = 1;
 pub const SS_DISABLE: ::c_int = 2;
 
+pub const FIOCLEX: ::c_int = 0x20006601;
+pub const FIONCLEX: ::c_int = 0x20006602;
+pub const FIONREAD: ::c_int = 0x4004667f;
 pub const FIONBIO: ::c_int = 0x8004667e;
+pub const FIOASYNC: ::c_int = 0x8004667d;
+pub const FIOSETOWN: ::c_int = 0x8004667c;
+pub const FIOGETOWN: ::c_int = 0x4004667b;
 
 pub const SIGCHLD: ::c_int = 18;
 pub const SIGBUS: ::c_int = 10;
