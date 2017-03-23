@@ -4,8 +4,7 @@ dist: trusty
 services:
   - docker
 install:
-  - curl https://static.rust-lang.org/rustup.sh |
-    sh -s -- --add-target=$TARGET --disable-sudo -y --prefix=`rustc --print sysroot`
+  - if [ -z "$NO_ADD" ]; then rustup target add $TARGET; fi
 script:
   - cargo build
   - cargo build --no-default-features
@@ -24,26 +23,26 @@ matrix:
   include:
     # 1.0.0 compat
     - os: linux
-      env: TARGET=x86_64-unknown-linux-gnu
+      env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
       rust: 1.0.0
       script: cargo build
       install:
 
     # build documentation
     - os: linux
-      env: TARGET=x86_64-unknown-linux-gnu
+      env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
       rust: nightly
       script: sh ci/dox.sh
 
     # stable compat
     - os: linux
-      env: TARGET=x86_64-unknown-linux-gnu
+      env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
       rust: stable
     - os: linux
       env: TARGET=i686-unknown-linux-gnu
       rust: stable
     - os: osx
-      env: TARGET=x86_64-apple-darwin
+      env: TARGET=x86_64-apple-darwin NO_ADD=1
       rust: stable
     - os: osx
       env: TARGET=i686-apple-darwin
@@ -101,18 +100,18 @@ matrix:
 
     # beta
     - os: linux
-      env: TARGET=x86_64-unknown-linux-gnu
+      env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
       rust: beta
     - os: osx
-      env: TARGET=x86_64-apple-darwin
+      env: TARGET=x86_64-apple-darwin NO_ADD=1
       rust: beta
 
     # nightly
     - os: linux
-      env: TARGET=x86_64-unknown-linux-gnu
+      env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
       rust: nightly
     - os: osx
-      env: TARGET=x86_64-apple-darwin
+      env: TARGET=x86_64-apple-darwin NO_ADD=1
       rust: nightly
 
     # QEMU based targets that compile in an emulator
