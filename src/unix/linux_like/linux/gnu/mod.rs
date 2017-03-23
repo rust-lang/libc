@@ -978,6 +978,9 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+    pub fn renameat2(olddirfd: ::c_int, oldpath: *const ::c_char,
+                     newdirfd: ::c_int, newpath: *const ::c_char,
+                     flags: ::c_uint) -> ::c_int;
 }
 
 #[link(name = "util")]
