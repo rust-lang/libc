@@ -921,14 +921,19 @@ extern {
                   offset: off64_t)
                   -> *mut ::c_void;
     pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn openat64(fd: ::c_int,
+                    path: *const c_char,
+                    oflag: ::c_int, ...) -> ::c_int;
     pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
                    offset: off64_t) -> ::ssize_t;
     pub fn pwrite64(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
                     offset: off64_t) -> ::ssize_t;
+    pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
     pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
                        result: *mut *mut ::dirent64) -> ::c_int;
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn sysinfo (info: *mut ::sysinfo) -> ::c_int;
 
