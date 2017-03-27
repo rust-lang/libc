@@ -157,6 +157,12 @@ pub const ELAST : ::c_int = 91;
 
 pub const F_DUPFD_CLOEXEC : ::c_int = 10;
 
+pub const AT_FDCWD: ::c_int = -100;
+pub const AT_EACCESS: ::c_int = 0x01;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x02;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x04;
+pub const AT_REMOVEDIR: ::c_int = 0x08;
+
 pub const RLIM_NLIMITS: ::c_int = 9;
 
 pub const SO_SNDTIMEO: ::c_int = 0x1005;
