@@ -201,6 +201,9 @@ fn main() {
         cfg.header("sched.h");
         cfg.header("ufs/ufs/quota.h");
         cfg.header("sys/jail.h");
+        cfg.header("sys/ipc.h");
+        cfg.header("sys/msg.h");
+        cfg.header("sys/shm.h");
     }
 
     if netbsd {
