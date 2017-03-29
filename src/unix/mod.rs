@@ -369,6 +369,9 @@ extern {
                      mode: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn fchmodat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t, flags: ::c_int) -> ::c_int;
+    pub fn fchown(fd: ::c_int,
+                  owner: ::uid_t,
+                  group: ::gid_t) -> ::c_int;
     pub fn fchownat(dirfd: ::c_int, pathname: *const ::c_char,
                     owner: ::uid_t, group: ::gid_t,
                     flags: ::c_int) -> ::c_int;
