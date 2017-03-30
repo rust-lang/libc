@@ -750,6 +750,9 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
+pub const UTIME_OMIT: c_long = 1073741822;
+pub const UTIME_NOW: c_long = 1073741823;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
