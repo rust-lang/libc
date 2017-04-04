@@ -3,6 +3,8 @@ pub type c_long = i64;
 pub type c_ulong = u64;
 pub type nlink_t = u64;
 
+pub const _NSIG: ::size_t = 64;
+
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,
@@ -57,7 +59,7 @@ s! {
     }
 
     pub struct sigset_t {
-        __val: [::c_ulong; 16],
+        sig: [u32; _NSIG / 32],
     }
 
     pub struct shmid_ds {

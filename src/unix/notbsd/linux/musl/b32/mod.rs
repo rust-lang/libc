@@ -2,13 +2,15 @@ pub type c_long = i32;
 pub type c_ulong = u32;
 pub type nlink_t = u32;
 
+pub const _NSIG: ::size_t = 64;
+
 s! {
     pub struct pthread_attr_t {
         __size: [u32; 9]
     }
 
     pub struct sigset_t {
-        __val: [::c_ulong; 32],
+        sig: [u32; _NSIG / 32],
     }
 
     pub struct msghdr {

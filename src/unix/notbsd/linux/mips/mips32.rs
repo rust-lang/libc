@@ -14,6 +14,8 @@ pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type rlim_t = c_ulong;
 
+pub const _NSIG: ::size_t = 128;
+
 s! {
     pub struct aiocb {
         pub aio_fildes: ::c_int,
@@ -97,7 +99,7 @@ s! {
     }
 
     pub struct sigset_t {
-        __val: [::c_ulong; 32],
+        sig: [u32; _NSIG / 32],
     }
 
     pub struct siginfo_t {

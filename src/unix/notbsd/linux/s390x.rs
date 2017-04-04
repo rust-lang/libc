@@ -17,6 +17,8 @@ pub type clock_t = i64;
 pub type __fsword_t = ::c_long;
 pub type __priority_which_t = ::c_uint;
 
+pub const _NSIG: ::size_t = 64;
+
 s! {
     pub struct aiocb {
         pub aio_fildes: ::c_int,
@@ -97,7 +99,7 @@ s! {
     }
 
     pub struct sigset_t {
-        __size: [::c_ulong; 16],
+        sig: [u32; _NSIG / 32],
     }
 
     pub struct siginfo_t {
