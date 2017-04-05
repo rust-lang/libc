@@ -242,6 +242,7 @@ cfg_if! {
         #[link(name = "c")]
         #[link(name = "m")]
         #[link(name = "rt")]
+        #[link(name = "pthread")]
         extern {}
     }
 }
