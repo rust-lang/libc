@@ -407,6 +407,8 @@ pub const AF_INET6_SDP: ::c_int = 42;
 #[doc(hidden)]
 pub const AF_MAX: ::c_int = 42;
 
+pub const IPPROTO_DIVERT: ::c_int = 258;
+
 pub const PF_SLOW: ::c_int = AF_SLOW;
 pub const PF_SCLUSTER: ::c_int = AF_SCLUSTER;
 pub const PF_ARP: ::c_int = AF_ARP;
