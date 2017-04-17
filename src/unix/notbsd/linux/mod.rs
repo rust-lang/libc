@@ -724,6 +724,16 @@ f! {
     }
 }
 
+// syscall numbers
+#[cfg(target_arch = "x86_64")]
+pub const SYS_getrandom: ::c_long = 318;
+#[cfg(target_arch = "x86")]
+pub const SYS_getrandom: ::c_long = 355;
+#[cfg(any(target_arch = "arm", target_arch = "powerpc"))]
+pub const SYS_getrandom: ::c_long = 384;
+#[cfg(target_arch = "aarch64")]
+pub const SYS_getrandom: ::c_long = 278;
+
 extern {
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
