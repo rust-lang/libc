@@ -91,17 +91,7 @@ extern crate std as core;
 #[macro_use] mod macros;
 mod dox;
 
-// Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help enable
-// more optimization opportunities around it recognizing things like
-// malloc/free.
-#[repr(u8)]
-pub enum c_void {
-    // Two dummy variants so the #[repr] attribute can be used.
-    #[doc(hidden)]
-    __variant1,
-    #[doc(hidden)]
-    __variant2,
-}
+pub use core::os::raw::c_void;
 
 pub type int8_t = i8;
 pub type int16_t = i16;
