@@ -105,7 +105,7 @@ case "$TARGET" in
 esac
 
 case "$TARGET" in
-  arm-linux-androideabi | aarch64-linux-android | i686-linux-android)
+  arm-linux-androideabi | aarch64-linux-android | i686-linux-android | x86_64-linux-android)
     # set SHELL so android can detect a 64bits system, see
     # http://stackoverflow.com/a/41789144
     # https://issues.jenkins-ci.org/browse/JENKINS-26930?focusedCommentId=230791&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-230791
