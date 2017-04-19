@@ -505,6 +505,9 @@ pub const P_PID: idtype_t = 0;
 pub const P_PGID: idtype_t = 2;
 pub const P_ALL: idtype_t = 7;
 
+pub const B460800: ::speed_t = 460800;
+pub const B921600: ::speed_t = 921600;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
