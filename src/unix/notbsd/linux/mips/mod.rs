@@ -322,6 +322,7 @@ pub const VMIN: usize = 4;
 pub const IEXTEN: ::tcflag_t = 0x00000100;
 pub const TOSTOP: ::tcflag_t = 0x00008000;
 pub const FLUSHO: ::tcflag_t = 0x00002000;
+pub const EXTPROC: ::tcflag_t = 0o200000;
 pub const TCSANOW: ::c_int = 0x540e;
 pub const TCSADRAIN: ::c_int = 0x540f;
 pub const TCSAFLUSH: ::c_int = 0x5410;
