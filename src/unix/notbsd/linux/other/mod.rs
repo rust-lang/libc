@@ -314,7 +314,6 @@ pub const TMPFS_MAGIC: ::c_long = 0x01021994;
 pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
 
 pub const VEOF: usize = 4;
-pub const IUTF8: ::tcflag_t = 0x00004000;
 
 pub const CPU_SETSIZE: ::c_int = 0x400;
 
