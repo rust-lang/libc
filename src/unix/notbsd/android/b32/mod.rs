@@ -1,3 +1,6 @@
+// The following definitions are correct for arm and i686,
+// but may be wrong for mips
+
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type mode_t = u16;
