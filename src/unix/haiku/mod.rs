@@ -670,6 +670,13 @@ pub const SO_PEERCRED: ::c_int = 0x4000000b;
 
 pub const NI_MAXHOST: ::size_t = 1025;
 
+pub const WNOHANG: ::c_int = 0x01;
+pub const WUNTRACED: ::c_int = 0x02;
+pub const WCONTINUED: ::c_int = 0x04;
+pub const WEXITED: ::c_int = 0x08;
+pub const WSTOPPED: ::c_int = 0x10;
+pub const WNOWAIT: ::c_int = 0x20;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -698,7 +705,7 @@ f! {
     }
 
     pub fn WIFEXITED(status: ::c_int) -> bool {
-        (status >> 8) == 0
+        (status & !0xff) == 0
     }
 
     pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
