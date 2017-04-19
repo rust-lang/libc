@@ -1,16 +1,28 @@
 // The following definitions are correct for aarch64 and may be wrong for x86_64
 
+pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type mode_t = u32;
 pub type off64_t = i64;
+pub type socklen_t = u32;
+pub type wchar_t = u32;
 
 s! {
+    pub struct sigset_t {
+        __val: [::c_ulong; 1],
+    }
+
     pub struct sigaction {
         pub sa_flags: ::c_uint,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         _restorer: *mut ::c_void,
+    }
+
+    pub struct rlimit64 {
+        pub rlim_cur: ::c_ulonglong,
+        pub rlim_max: ::c_ulonglong,
     }
 
     pub struct stat {
@@ -131,6 +143,14 @@ s! {
     }
 }
 
+pub const O_DIRECT: ::c_int = 0x10000;
+pub const O_DIRECTORY: ::c_int = 0x4000;
+pub const O_NOFOLLOW: ::c_int = 0x8000;
+
+pub const RTLD_GLOBAL: ::c_int = 0x00100;
+pub const RTLD_NOW: ::c_int = 2;
+pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
+
 pub const SYS_gettid: ::c_long = 178;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     value: 0,
@@ -156,6 +176,27 @@ pub const UT_LINESIZE: usize = 32;
 pub const UT_NAMESIZE: usize = 32;
 pub const UT_HOSTSIZE: usize = 256;
 
+// Some weirdness in Android
 extern {
-    pub fn timegm(tm: *const ::tm) -> ::time64_t;
+    // address_len should be socklen_t, but it is c_int!
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
+                address_len: ::c_int) -> ::c_int;
+
+    // the return type should be ::ssize_t, but it is c_int!
+    pub fn writev(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int) -> ::c_int;
+
+    // the return type should be ::ssize_t, but it is c_int!
+    pub fn readv(fd: ::c_int,
+                 iov: *const ::iovec,
+                 iovcnt: ::c_int) -> ::c_int;
+
+    // the return type should be ::ssize_t, but it is c_int!
+    pub fn sendmsg(fd: ::c_int,
+                   msg: *const ::msghdr,
+                   flags: ::c_int) -> ::c_int;
+
+    // the return type should be ::ssize_t, but it is c_int!
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::c_int;
 }

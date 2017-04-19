@@ -5,7 +5,8 @@ set -ex
 
 run() {
     echo $1
-    docker build -t libc ci/docker/$1
+    # use -f so we can use ci/ as build context
+    docker build -t libc -f ci/docker/$1/Dockerfile ci/
     mkdir -p target
     docker run \
       --user `id -u`:`id -g` \

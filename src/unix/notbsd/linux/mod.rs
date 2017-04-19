@@ -1,6 +1,6 @@
 //! Linux-specific definitions for linux-like values
 
-use dox::mem;
+use dox::{mem, Option};
 
 pub type useconds_t = u32;
 pub type dev_t = u64;
@@ -17,6 +17,7 @@ pub type msgqnum_t = ::c_ulong;
 pub type msglen_t = ::c_ulong;
 pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
+pub type idtype_t = ::c_uint;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
@@ -462,6 +463,19 @@ pub const SCHED_RR: ::c_int = 2;
 pub const SCHED_BATCH: ::c_int = 3;
 pub const SCHED_IDLE: ::c_int = 5;
 
+pub const AF_IB: ::c_int = 27;
+pub const AF_MPLS: ::c_int = 28;
+pub const AF_NFC: ::c_int = 39;
+pub const AF_VSOCK: ::c_int = 40;
+#[doc(hidden)]
+pub const AF_MAX: ::c_int = 42;
+pub const PF_IB: ::c_int = AF_IB;
+pub const PF_MPLS: ::c_int = AF_MPLS;
+pub const PF_NFC: ::c_int = AF_NFC;
+pub const PF_VSOCK: ::c_int = AF_VSOCK;
+#[doc(hidden)]
+pub const PF_MAX: ::c_int = AF_MAX;
+
 // System V IPC
 pub const IPC_PRIVATE: ::key_t = 0;
 
@@ -495,6 +509,7 @@ pub const SHM_HUGETLB: ::c_int = 0o4000;
 pub const SHM_NORESERVE: ::c_int = 0o10000;
 
 pub const EPOLLRDHUP: ::c_int = 0x2000;
+pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
 
 pub const QFMT_VFS_OLD: ::c_int = 1;
@@ -898,6 +913,49 @@ extern {
                   new_len: ::size_t,
                   flags: ::c_int,
                   ...) -> *mut ::c_void;
+
+    pub fn glob(pattern: *const c_char,
+                flags: ::c_int,
+                errfunc: Option<extern fn(epath: *const c_char,
+                                          errno: ::c_int) -> ::c_int>,
+                pglob: *mut ::glob_t) -> ::c_int;
+    pub fn globfree(pglob: *mut ::glob_t);
+
+    pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
+                         -> ::c_int;
+
+    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
+
+    pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
+
+    pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
+    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
+                  -> ::c_int;
+
+    pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
+
+    pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
+                    flags: ::c_int, addr: *mut ::sockaddr,
+                    addrlen: *mut ::socklen_t) -> ::ssize_t;
+    pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
+    pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
+    pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
+
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
+                address_len: ::socklen_t) -> ::c_int;
+
+    pub fn writev(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int) -> ::ssize_t;
+    pub fn readv(fd: ::c_int,
+                 iov: *const ::iovec,
+                 iovcnt: ::c_int) -> ::ssize_t;
+
+    pub fn sendmsg(fd: ::c_int,
+                   msg: *const ::msghdr,
+                   flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
+                   -> ::ssize_t;
 }
 
 cfg_if! {

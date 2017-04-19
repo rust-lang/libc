@@ -344,7 +344,34 @@ pub const NOTE_TRACK: ::uint32_t = 0x00000001;
 pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
 pub const NOTE_CHILD: ::uint32_t = 0x00000004;
 
-pub const MSG_NOSIGNAL: ::c_int = 0x400;
+pub const SO_SNDSPACE: ::c_int = 0x100a;
+pub const SO_CPUHINT: ::c_int = 0x1030;
+
+pub const AF_BLUETOOTH: ::c_int = 33;
+pub const AF_MPLS: ::c_int = 34;
+pub const AF_IEEE80211: ::c_int = 35;
+pub const AF_MAX: ::c_int = 36;
+
+pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
+pub const PF_MAX: ::c_int = AF_MAX;
+
+pub const NET_RT_DUMP: ::c_int = 1;
+pub const NET_RT_FLAGS: ::c_int = 2;
+pub const NET_RT_IFLIST: ::c_int = 3;
+pub const NET_RT_MAXID: ::c_int = 4;
+
+pub const SOMAXOPT_SIZE: ::c_int = 65536;
+
+#[doc(hidden)]
+pub const NET_MAXID: ::c_int = AF_MAX;
+
+pub const MSG_UNUSED09: ::c_int = 0x00000200;
+pub const MSG_NOSIGNAL: ::c_int = 0x00000400;
+pub const MSG_SYNC: ::c_int = 0x00000800;
+pub const MSG_CMSG_CLOEXEC: ::c_int = 0x00001000;
+pub const MSG_FBLOCKING: ::c_int = 0x00010000;
+pub const MSG_FNONBLOCKING: ::c_int = 0x00020000;
+pub const MSG_FMASK: ::c_int = 0xFFFF0000;
 
 pub const EMPTY: ::c_short = 0;
 pub const RUN_LVL: ::c_short = 1;
@@ -368,6 +395,14 @@ pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
                                | LC_MONETARY_MASK
                                | LC_NUMERIC_MASK
                                | LC_TIME_MASK;
+
+pub const TIOCSIG: ::c_uint = 0x2000745f;
+pub const BTUARTDISC: ::c_int = 0x7;
+pub const TIOCDCDTIMESTAMP: ::c_uint = 0x40107458;
+pub const TIOCISPTMASTER: ::c_uint = 0x20007455;
+pub const TIOCMODG: ::c_uint = 0x40047403;
+pub const TIOCMODS: ::c_ulong = 0x80047404;
+pub const TIOCREMOTE: ::c_ulong = 0x80047469;
 
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)

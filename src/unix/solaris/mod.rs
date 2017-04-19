@@ -1,3 +1,5 @@
+use dox::{mem, Option};
+
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -26,12 +28,14 @@ pub type suseconds_t = ::c_long;
 pub type off_t = i64;
 pub type useconds_t = ::c_uint;
 pub type socklen_t = u32;
-pub type sa_family_t = u8;
-pub type pthread_t = ::uintptr_t;
+pub type sa_family_t = u16;
+pub type pthread_t = ::c_uint;
 pub type pthread_key_t = ::c_uint;
 pub type blksize_t = u32;
 pub type fflags_t = u32;
 pub type nl_item = ::c_int;
+pub type id_t = ::c_int;
+pub type idtype_t = ::c_uint;
 
 pub enum timezone {}
 
@@ -121,6 +125,9 @@ s! {
     }
 
     pub struct fd_set {
+        #[cfg(target_pointer_width = "64")]
+        fds_bits: [i64; FD_SETSIZE / 64],
+        #[cfg(target_pointer_width = "32")]
         fds_bits: [i32; FD_SETSIZE / 32],
     }
 
@@ -434,7 +441,13 @@ pub const SA_NOCLDSTOP: ::c_int = 0x00020000;
 pub const SS_ONSTACK: ::c_int = 1;
 pub const SS_DISABLE: ::c_int = 2;
 
+pub const FIOCLEX: ::c_int = 0x20006601;
+pub const FIONCLEX: ::c_int = 0x20006602;
+pub const FIONREAD: ::c_int = 0x4004667f;
 pub const FIONBIO: ::c_int = 0x8004667e;
+pub const FIOASYNC: ::c_int = 0x8004667d;
+pub const FIOSETOWN: ::c_int = 0x8004667c;
+pub const FIOGETOWN: ::c_int = 0x4004667b;
 
 pub const SIGCHLD: ::c_int = 18;
 pub const SIGBUS: ::c_int = 10;
@@ -446,7 +459,13 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
 pub const IPV6_V6ONLY: ::c_int = 0x27;
 
-pub const FD_SETSIZE: usize = 1024;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const FD_SETSIZE: usize = 65536;
+    } else {
+        pub const FD_SETSIZE: usize = 1024;
+    }
+}
 
 pub const ST_RDONLY: ::c_ulong = 1;
 pub const ST_NOSUID: ::c_ulong = 2;
@@ -472,6 +491,8 @@ pub const TMP_MAX: ::c_uint = 17576;
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
+pub const O_SEARCH: ::c_int = 0x200000;
+pub const O_EXEC: ::c_int = 0x400000;
 pub const O_APPEND: ::c_int = 8;
 pub const O_CREAT: ::c_int = 256;
 pub const O_EXCL: ::c_int = 1024;
@@ -549,6 +570,18 @@ pub const SIGXFSZ: ::c_int = 31;
 
 pub const WNOHANG: ::c_int = 0x40;
 pub const WUNTRACED: ::c_int = 0x04;
+
+pub const WEXITED: ::c_int = 0x01;
+pub const WTRAPPED: ::c_int = 0x02;
+pub const WSTOPPED: ::c_int = WUNTRACED;
+pub const WCONTINUED: ::c_int = 0x08;
+pub const WNOWAIT: ::c_int = 0x80;
+
+// Solaris defines a great many more of these; we only expose the
+// standardized ones.
+pub const P_PID: idtype_t = 0;
+pub const P_PGID: idtype_t = 2;
+pub const P_ALL: idtype_t = 7;
 
 pub const PROT_NONE: ::c_int = 0;
 pub const PROT_READ: ::c_int = 1;
@@ -768,6 +801,8 @@ pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 4;
 pub const SOCK_RDM: ::c_int = 5;
 pub const SOCK_SEQPACKET: ::c_int = 6;
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
 pub const IPPROTO_TCP: ::c_int = 6;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -801,6 +836,8 @@ pub const SO_RCVTIMEO: ::c_int = 0x1006;
 pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
 
+pub const MSG_PEEK: ::c_int = 0x2;
+
 pub const IFF_LOOPBACK: ::c_int = 0x8;
 
 pub const SHUT_RD: ::c_int = 0;
@@ -811,6 +848,10 @@ pub const LOCK_SH: ::c_int = 1;
 pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
+
+pub const F_RDLCK: ::c_short = 1;
+pub const F_WRLCK: ::c_short = 2;
+pub const F_UNLCK: ::c_short = 3;
 
 pub const O_SYNC: ::c_int = 16;
 pub const O_NONBLOCK: ::c_int = 128;
@@ -926,19 +967,22 @@ pub const RTLD_CONFGEN: ::c_int = 0x10000;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        (*set).fds_bits[fd / 32] &= !(1 << (fd % 32));
+        (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
         return
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        return ((*set).fds_bits[fd / 32] & (1 << (fd % 32))) != 0
+        return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        (*set).fds_bits[fd / 32] |= 1 << (fd % 32);
+        (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
         return
     }
 
@@ -987,17 +1031,21 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::socklen_t,
                        flags: ::c_int) -> ::c_int;
+    #[link_name = "__posix_getpwnam_r"]
     pub fn getpwnam_r(name: *const ::c_char,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,
-                      buflen: ::c_int) -> *const passwd;
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
+
+    #[link_name = "__posix_getpwuid_r"]
     pub fn getpwuid_r(uid: ::uid_t,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,
-                      buflen: ::c_int) -> *const passwd;
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
     pub fn setpwent();
     pub fn getpwent() -> *mut passwd;
-    pub fn readdir(dirp: *mut ::DIR) -> *const ::dirent;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
@@ -1012,33 +1060,10 @@ extern {
     pub fn getpriority(which: ::c_int, who: ::c_int) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
 
-    pub fn openat(dirfd: ::c_int, pathname: *const ::c_char,
-                  flags: ::c_int, ...) -> ::c_int;
-    pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
-                     mode: ::c_int, flags: ::c_int) -> ::c_int;
-    pub fn fchmodat(dirfd: ::c_int, pathname: *const ::c_char,
-                    mode: ::mode_t, flags: ::c_int) -> ::c_int;
-    pub fn fchownat(dirfd: ::c_int, pathname: *const ::c_char,
-                    owner: ::uid_t, group: ::gid_t,
-                    flags: ::c_int) -> ::c_int;
-    pub fn fstatat(dirfd: ::c_int, pathname: *const ::c_char,
-                   buf: *mut stat, flags: ::c_int) -> ::c_int;
-    pub fn linkat(olddirfd: ::c_int, oldpath: *const ::c_char,
-                  newdirfd: ::c_int, newpath: *const ::c_char,
-                  flags: ::c_int) -> ::c_int;
-    pub fn mkdirat(dirfd: ::c_int, pathname: *const ::c_char,
-                   mode: ::mode_t) -> ::c_int;
+    pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
+
     pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t, dev: dev_t) -> ::c_int;
-    pub fn readlinkat(dirfd: ::c_int, pathname: *const ::c_char,
-                      buf: *mut ::c_char, bufsiz: ::size_t) -> ::ssize_t;
-    pub fn renameat(olddirfd: ::c_int, oldpath: *const ::c_char,
-                    newdirfd: ::c_int, newpath: *const ::c_char)
-                    -> ::c_int;
-    pub fn symlinkat(target: *const ::c_char, newdirfd: ::c_int,
-                     linkpath: *const ::c_char) -> ::c_int;
-    pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
-                    flags: ::c_int) -> ::c_int;
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
@@ -1052,4 +1077,50 @@ extern {
                          abstime: *const ::timespec) -> ::c_int;
     pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
                                    abstime: *const ::timespec) -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
+
+    pub fn glob(pattern: *const ::c_char,
+                flags: ::c_int,
+                errfunc: Option<extern fn(epath: *const ::c_char,
+                                          errno: ::c_int) -> ::c_int>,
+                pglob: *mut ::glob_t) -> ::c_int;
+
+    pub fn globfree(pglob: *mut ::glob_t);
+
+    pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
+                         -> ::c_int;
+
+    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
+
+    pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
+
+    pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
+    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
+                  -> ::c_int;
+
+    pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
+
+    pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
+                    flags: ::c_int, addr: *mut ::sockaddr,
+                    addrlen: *mut ::socklen_t) -> ::ssize_t;
+    pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
+    pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
+    pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
+
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
+                address_len: ::socklen_t) -> ::c_int;
+
+    pub fn writev(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int) -> ::ssize_t;
+    pub fn readv(fd: ::c_int,
+                 iov: *const ::iovec,
+                 iovcnt: ::c_int) -> ::ssize_t;
+
+    pub fn sendmsg(fd: ::c_int,
+                   msg: *const ::msghdr,
+                   flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
+                   -> ::ssize_t;
 }
