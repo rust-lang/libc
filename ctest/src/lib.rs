@@ -775,6 +775,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("linux", "unix", "gnu")
     } else if target.contains("unknown-linux-musl") {
         ("linux", "unix", "musl")
+    } else if target.contains("unknown-linux-uclibc") {
+        ("linux", "unix", "uclibc")
     } else if target.contains("apple-darwin") {
         ("macos", "unix", "")
     } else if target.contains("apple-ios") {
