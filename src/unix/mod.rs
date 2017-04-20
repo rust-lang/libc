@@ -576,6 +576,9 @@ extern {
                link_name = "pthread_join$UNIX2003")]
     pub fn pthread_join(native: ::pthread_t,
                         value: *mut *mut ::c_void) -> ::c_int;
+    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
+                          parent: Option<unsafe extern fn()>,
+                          child: Option<unsafe extern fn()>) -> ::c_int;
     pub fn pthread_exit(value: *mut ::c_void);
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
