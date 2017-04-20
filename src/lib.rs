@@ -134,6 +134,8 @@ pub type ssize_t = isize;
 pub enum FILE {}
 pub enum fpos_t {} // TODO: fill this out with a struct
 
+pub const SSIZE_MAX: ssize_t = std::isize::MAX as ::ssize_t;
+
 extern {
     pub fn isalnum(c: c_int) -> c_int;
     pub fn isalpha(c: c_int) -> c_int;
