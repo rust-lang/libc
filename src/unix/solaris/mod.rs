@@ -340,6 +340,14 @@ s! {
         pub if_index: ::c_uint,
         pub if_name: *mut ::c_char,
     }
+
+    pub struct port_event {
+        pub portev_events: ::c_int,
+        pub portev_source: ::c_ushort,
+        pub portev_pad: ::c_ushort,
+        pub portev_object: ::uintptr_t,
+        pub portev_user: ::uintptr_t,
+    }
 }
 
 pub const LC_CTYPE: ::c_int = 0;
@@ -1004,6 +1012,16 @@ pub const RTLD_NODELETE: ::c_int = 0x1000;
 pub const RTLD_FIRST: ::c_int = 0x2000;
 pub const RTLD_CONFGEN: ::c_int = 0x10000;
 
+pub const PORT_SOURCE_AIO: ::c_int = 1;
+pub const PORT_SOURCE_TIMER: ::c_int = 2;
+pub const PORT_SOURCE_USER: ::c_int = 3;
+pub const PORT_SOURCE_FD: ::c_int = 4;
+pub const PORT_SOURCE_ALERT: ::c_int = 5;
+pub const PORT_SOURCE_MQ: ::c_int = 6;
+pub const PORT_SOURCE_FILE: ::c_int = 7;
+pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
+pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
@@ -1162,4 +1180,15 @@ extern {
                    flags: ::c_int) -> ::ssize_t;
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
+
+    pub fn port_create() -> ::c_int;
+    pub fn port_associate(port: ::c_int, source: ::c_int, object: ::uintptr_t,
+                          events: ::c_int, user: ::uintptr_t) -> ::c_int;
+    pub fn port_dissociate(port: ::c_int, source: ::c_int, object: ::uintptr_t)
+                           -> ::c_int;
+    pub fn port_get(port: ::c_int, pe: *mut port_event,
+                    timeout: *const ::timespec) -> ::c_int;
+    pub fn port_getn(port: ::c_int, pe_list: *mut port_event, max: ::c_uint,
+                     nget: *mut ::c_uint, timeout: *const ::timespec)
+                     -> ::c_int;
 }
