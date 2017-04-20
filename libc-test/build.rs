@@ -14,6 +14,7 @@ fn main() {
     let android = target.contains("android");
     let apple = target.contains("apple");
     let musl = target.contains("musl");
+    let uclibc = target.contains("uclibc");
     let freebsd = target.contains("freebsd");
     let dragonfly = target.contains("dragonfly");
     let mips = target.contains("mips");
@@ -126,7 +127,7 @@ fn main() {
         if !musl {
             cfg.header("sys/sysctl.h");
 
-            if !netbsd && !openbsd {
+            if !netbsd && !openbsd && !uclibc {
                 cfg.header("execinfo.h");
                 cfg.header("xlocale.h");
             }
@@ -183,7 +184,9 @@ fn main() {
         cfg.header("sys/sendfile.h");
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
-        cfg.header("sys/sysinfo.h");
+        if !uclibc {
+            cfg.header("sys/sysinfo.h");
+        }
         cfg.header("sys/reboot.h");
         if !musl {
             cfg.header("linux/netlink.h");
@@ -225,7 +228,9 @@ fn main() {
     }
 
     if linux || freebsd || dragonfly || netbsd || apple {
-        cfg.header("aio.h");
+        if !uclibc {
+            cfg.header("aio.h");
+        }
     }
 
     cfg.type_name(move |ty, is_struct| {
@@ -290,6 +295,8 @@ fn main() {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
 
+            "locale_t" if uclibc => true,
+
             _ => false
         }
     });
@@ -308,6 +315,9 @@ fn main() {
 
             // This is actually a union, not a struct
             "sigval" => true,
+
+            // These structs have changed sinced uClibc was developed
+            "stat" | "stat64" | "dqblk" if uclibc => true,
 
             _ => false
         }
@@ -387,6 +397,20 @@ fn main() {
             "KERN_KDENABLE_BG_TRACE" if apple => true,
             "KERN_KDDISABLE_BG_TRACE" if apple => true,
 
+            // uClibc doesn't support a LOT of constants, because its latest release
+            // was before any of them existed
+            "F_GETPIPE_SZ" | "F_SETPIPE_SZ" |
+            "CLOCK_MONOTONIC_RAW" | "CLOCK_REALTIME_COARSE" | "CLOCK_MONOTONIC_COARSE" | "CLOCK_BOOTTIME" | "CLOCK_REALTIME_ALARM" | "CLOCK_BOOTTIME_ALARM" |
+            // or they weren't implemented yet
+            "LC_PAPER" | "LC_NAME" | "LC_ADDRESS" | "LC_TELEPHONE" | "LC_MEASUREMENT" | "LC_IDENTIFICATION" |
+            "LC_PAPER_MASK" | "LC_NAME_MASK" | "LC_ADDRESS_MASK" | "LC_TELEPHONE_MASK" | "LC_MEASUREMENT_MASK" | "LC_IDENTIFICATION_MASK" | "LC_ALL_MASK" |
+            "MS_DIRSYNC" | "MS_MOVE" | "MS_REC" | "MS_SILENT" | "MS_POSIXACL" | "MS_UNBINDABLE" | "MS_PRIVATE" | "MS_SLAVE" | "MS_SHARED" | "MS_RELATIME" | "MS_KERNMOUNT" | "MS_I_VERSION" | "MS_STRICTATIME" | "MS_ACTIVE" |
+            "QIF_BLIMITS" | "QIF_SPACE" | "QIF_ILIMITS" | "QIF_INODES" | "QIF_BTIME" | "QIF_ITIME" | "QIF_LIMITS" | "QIF_USAGE" | "QIF_TIMES" | "QIF_ALL" | "IP_TRANSPARENT" |
+            "Q_GETFMT" | "Q_GETINFO" | "Q_SETINFO" | "SHM_EXEC" | "RB_SW_SUSPEND" | "RB_KEXEC" | "RUSAGE_THREAD" |
+            // not entirely sure why these don't work...
+            "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
+            "MADV_MERGEABLE" | "MADV_UNMERGEABLE" | "MADV_HWPOISON" | "IPV6_ADD_MEMBERSHIP" | "IPV6_DROP_MEMBERSHIP" | "IPV6_MULTICAST_LOOP" | "IPV6_V6ONLY" |
+            "MAP_STACK" | "MAP_HUGETLB" | "RTLD_DEEPBIND" if uclibc => true,
             _ => false,
         }
     });
@@ -468,6 +492,13 @@ fn main() {
             // it's in a header file?
             "endpwent" if android => true,
 
+            // These are either unimplemented or optionally built into uClibc
+            // or "sysinfo", where it's defined but the structs in linux/sysinfo.h and sys/sysinfo.h
+            // clash so it can't be tested, or they're tainted with an old struct definition, as in g"getnameinfo"
+            "mkostemp" | "mkostemps" | "mkstemps" | "futimes" | "setns" | "sysinfo" | "fallocate" | "posix_fallocate" | "preadv" | "pwritev" | "dup3" | "openpty" | "forkpty" |
+            "getloadavg" | "process_vm_readv" | "process_vm_writev" | "backtrace" | "posix_madvise" |
+            "newlocale" | "duplocale" | "freelocale" | "uselocale" | "nl_langinfo_l" | "wcslen" | "getnameinfo" if uclibc && linux => true,
+
             _ => false,
         }
     });
@@ -505,7 +536,12 @@ fn main() {
         // musl seems to define this as an *anonymous* bitfield
         (musl && struct_ == "statvfs" && field == "__f_unused") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
+        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+
+        // uClibc differs in signedness
+        (uclibc && struct_ == "sigaction" && field == "sa_flags") ||
+        // same here
+        (uclibc && struct_ == "msghdr" && field == "msg_iovlen")
     });
 
     cfg.fn_cname(move |name, cname| {
