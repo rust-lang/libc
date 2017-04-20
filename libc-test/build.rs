@@ -316,8 +316,10 @@ fn main() {
             // This is actually a union, not a struct
             "sigval" => true,
 
-            // These structs have changed sinced uClibc was developed
+            // These structs have changed since uClibc was developed
             "stat" | "stat64" | "dqblk" if uclibc => true,
+            // These structs didn't exist when uClibc was developed
+            "aiocb" if uclibc => true,
 
             _ => false
         }
@@ -401,6 +403,14 @@ fn main() {
             // was before any of them existed
             "F_GETPIPE_SZ" | "F_SETPIPE_SZ" |
             "CLOCK_MONOTONIC_RAW" | "CLOCK_REALTIME_COARSE" | "CLOCK_MONOTONIC_COARSE" | "CLOCK_BOOTTIME" | "CLOCK_REALTIME_ALARM" | "CLOCK_BOOTTIME_ALARM" |
+            "SOL_NETBEUI" | "SOL_LLC" | "SOL_DCCP" | "SOL_NETLINK" | "SOL_TICP" | "AF_RDS" | "PF_RDS" |
+            "MSG_FASTOPEN" | "AT_NO_AUTOMOUNT" | "AT_EMPTY_PATH" | "AF_IB" | "AF_MPLS" | "AF_NFC" | "AF_VSOCK" |
+            "PF_IB" | "PF_MPLS" | "PF_NFC" | "PF_VSOCK" |
+            "MSG_COPY" | "EPOLLEXCLUSIVE" |
+            "AIO_CANCELED" | "AIO_NOTCANCELED" | "AIO_ALLDONE" | 
+            "LIO_READ" | "LIO_WRITE" | "LIO_NOP" | "LIO_WAIT" | "LIO_NOWAIT" |
+            "PR_MPX_ENABLE_MANAGEMENT" | "PR_MPX_DISABLE_MANAGEMENT" | "PR_SET_FP_MODE" | "PR_GET_FP_MODE" |
+            "PR_FP_MODE_FR" | "PR_FP_MODE_FRE" | "PR_CAP_AMBIENT" | "PR_CAP_AMBIENT_IS_SET" | "PR_CAP_AMBIENT_RAISE" | "PR_CAP_AMBIENT_LOWER" | "PR_CAP_AMBIENT_CLEAR_ALL" | "O_TMPFILE" | "SOL_TIPC" | "CLONE_NEWCGROUP" | "SO_INCOMING_CPU" | "SO_ATTACH_BPF" | "SO_DETACH_BPF" |
             // or they weren't implemented yet
             "LC_PAPER" | "LC_NAME" | "LC_ADDRESS" | "LC_TELEPHONE" | "LC_MEASUREMENT" | "LC_IDENTIFICATION" |
             "LC_PAPER_MASK" | "LC_NAME_MASK" | "LC_ADDRESS_MASK" | "LC_TELEPHONE_MASK" | "LC_MEASUREMENT_MASK" | "LC_IDENTIFICATION_MASK" | "LC_ALL_MASK" |
@@ -410,7 +420,8 @@ fn main() {
             // not entirely sure why these don't work...
             "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
             "MADV_MERGEABLE" | "MADV_UNMERGEABLE" | "MADV_HWPOISON" | "IPV6_ADD_MEMBERSHIP" | "IPV6_DROP_MEMBERSHIP" | "IPV6_MULTICAST_LOOP" | "IPV6_V6ONLY" |
-            "MAP_STACK" | "MAP_HUGETLB" | "RTLD_DEEPBIND" if uclibc => true,
+            "MAP_STACK" | "MAP_HUGETLB" | "RTLD_DEEPBIND" |
+            "SOL_IPV6" | "SOL_ICMPV6" | "SOL_TIPC"  if uclibc => true,
             _ => false,
         }
     });
@@ -497,7 +508,8 @@ fn main() {
             // clash so it can't be tested, or they're tainted with an old struct definition, as in g"getnameinfo"
             "mkostemp" | "mkostemps" | "mkstemps" | "futimes" | "setns" | "sysinfo" | "fallocate" | "posix_fallocate" | "preadv" | "pwritev" | "dup3" | "openpty" | "forkpty" |
             "getloadavg" | "process_vm_readv" | "process_vm_writev" | "backtrace" | "posix_madvise" |
-            "newlocale" | "duplocale" | "freelocale" | "uselocale" | "nl_langinfo_l" | "wcslen" | "getnameinfo" if uclibc && linux => true,
+            "aio_read" | "aio_write" | "aio_fsync" | "aio_error" | "aio_return" | "aio_suspend" | "aio_cancel" | "lio_listio" |
+            "newlocale" | "duplocale" | "freelocale" | "uselocale" | "nl_langinfo_l" | "wcslen" | "getnameinfo" | "wcstombs" if uclibc && linux => true,
 
             _ => false,
         }

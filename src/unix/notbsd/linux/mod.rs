@@ -539,7 +539,10 @@ pub const AF_MPLS: ::c_int = 28;
 pub const AF_NFC: ::c_int = 39;
 pub const AF_VSOCK: ::c_int = 40;
 #[doc(hidden)]
+#[cfg(not(target_env = "uclibc"))]
 pub const AF_MAX: ::c_int = 42;
+#[cfg(target_env = "uclibc")]
+pub const AF_MAX: ::c_int = 39;
 pub const PF_IB: ::c_int = AF_IB;
 pub const PF_MPLS: ::c_int = AF_MPLS;
 pub const PF_NFC: ::c_int = AF_NFC;
