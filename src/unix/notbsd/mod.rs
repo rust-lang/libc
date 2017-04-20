@@ -675,6 +675,7 @@ pub const IGNCR: ::tcflag_t = 0x00000080;
 pub const ICRNL: ::tcflag_t = 0x00000100;
 pub const IXANY: ::tcflag_t = 0x00000800;
 pub const IMAXBEL: ::tcflag_t = 0x00002000;
+pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const OPOST: ::tcflag_t = 0x1;
 pub const CS5: ::tcflag_t = 0x00000000;
 pub const CRTSCTS: ::tcflag_t = 0x80000000;

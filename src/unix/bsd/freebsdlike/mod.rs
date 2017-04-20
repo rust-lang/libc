@@ -869,12 +869,12 @@ pub const B57600: speed_t = 57600;
 pub const B76800: speed_t = 76800;
 pub const B115200: speed_t = 115200;
 pub const B230400: speed_t = 230400;
-pub const B460800: speed_t = 460800;
-pub const B921600: speed_t = 921600;
 pub const EXTA: speed_t = 19200;
 pub const EXTB: speed_t = 38400;
 
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
+
+pub const CRTSCTS: ::tcflag_t = 0x00030000;
 
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {

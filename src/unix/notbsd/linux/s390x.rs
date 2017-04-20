@@ -576,7 +576,6 @@ pub const VMIN: usize = 6;
 pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
-pub const IUTF8: ::tcflag_t = 0x00004000;
 
 pub const CPU_SETSIZE: ::c_int = 0x400;
 
