@@ -37,6 +37,10 @@ case "$1" in
     abi=x86
     ;;
 
+  x86_64)
+    abi=x86_64
+    ;;
+
   *)
     echo "invalid arch: $1"
     exit 1

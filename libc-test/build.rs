@@ -106,8 +106,8 @@ fn main() {
     }
 
     if android {
-        if !aarch64 {
-            // time64_t is not define for aarch64
+        if !aarch64 && !x86_64 {
+            // time64_t is not define for aarch64 and x86_64
             // If included it will generate the error 'Your time_t is already 64-bit'
             cfg.header("time64.h");
         }
