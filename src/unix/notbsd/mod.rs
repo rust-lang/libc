@@ -305,8 +305,11 @@ pub const PROT_EXEC: ::c_int = 4;
 
 pub const LC_CTYPE: ::c_int = 0;
 pub const LC_NUMERIC: ::c_int = 1;
+#[cfg(not(target_env = "uclibc"))]
 pub const LC_TIME: ::c_int = 2;
+#[cfg(not(target_env = "uclibc"))]
 pub const LC_COLLATE: ::c_int = 3;
+#[cfg(not(target_env = "uclibc"))]
 pub const LC_MONETARY: ::c_int = 4;
 pub const LC_MESSAGES: ::c_int = 5;
 pub const LC_ALL: ::c_int = 6;
@@ -317,6 +320,13 @@ pub const LC_COLLATE_MASK: ::c_int = (1 << LC_COLLATE);
 pub const LC_MONETARY_MASK: ::c_int = (1 << LC_MONETARY);
 pub const LC_MESSAGES_MASK: ::c_int = (1 << LC_MESSAGES);
 // LC_ALL_MASK defined per platform
+#[cfg(target_env = "uclibc")]
+pub const LC_TIME: ::c_int = 3;
+#[cfg(target_env = "uclibc")]
+pub const LC_COLLATE: ::c_int = 4;
+#[cfg(target_env = "uclibc")]
+pub const LC_MONETARY: ::c_int = 2;
+
 
 pub const MAP_FILE: ::c_int = 0x0000;
 pub const MAP_SHARED: ::c_int = 0x0001;
@@ -639,11 +649,21 @@ pub const QIF_ALL: ::uint32_t = 63;
 
 pub const MNT_FORCE: ::c_int = 0x1;
 
-pub const Q_SYNC: ::c_int = 0x800001;
-pub const Q_QUOTAON: ::c_int = 0x800002;
-pub const Q_QUOTAOFF: ::c_int = 0x800003;
-pub const Q_GETQUOTA: ::c_int = 0x800007;
-pub const Q_SETQUOTA: ::c_int = 0x800008;
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        pub const Q_SYNC: ::c_int = 0x800001;
+        pub const Q_QUOTAON: ::c_int = 0x800002;
+        pub const Q_QUOTAOFF: ::c_int = 0x800003;
+        pub const Q_GETQUOTA: ::c_int = 0x800007;
+        pub const Q_SETQUOTA: ::c_int = 0x800008;
+    } else {
+        pub const Q_SYNC: ::c_int = 0x600;
+        pub const Q_QUOTAON: ::c_int = 0x100;
+        pub const Q_QUOTAOFF: ::c_int = 0x200;
+        pub const Q_GETQUOTA: ::c_int = 0x300;
+        pub const Q_SETQUOTA: ::c_int = 0x400;
+    }
+}
 
 pub const TCIOFF: ::c_int = 2;
 pub const TCION: ::c_int = 3;

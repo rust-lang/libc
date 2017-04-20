@@ -87,6 +87,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: sigset_t,
         _restorer: *mut ::c_void,
+        #[cfg(not(target_env = "uclibc"))]
         _resv: [::c_int; 1],
     }
 
@@ -97,7 +98,10 @@ s! {
     }
 
     pub struct sigset_t {
+        #[cfg(not(target_env = "uclibc"))]
         __val: [::c_ulong; 32],
+        #[cfg(target_env = "uclibc")]
+        __val: [::c_ulong; 4],
     }
 
     pub struct siginfo_t {

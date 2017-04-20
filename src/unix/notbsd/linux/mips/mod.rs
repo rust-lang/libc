@@ -32,7 +32,10 @@ pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
+#[cfg(not(target_env = "uclibc"))]
 pub const BUFSIZ: ::c_uint = 8192;
+#[cfg(target_env = "uclibc")]
+pub const BUFSIZ: ::c_uint = 4096;
 pub const TMP_MAX: ::c_uint = 238328;
 pub const FOPEN_MAX: ::c_uint = 16;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
@@ -51,17 +54,29 @@ pub const RLIMIT_AS: ::c_int = 6;
 pub const RLIMIT_RSS: ::c_int = 7;
 pub const RLIMIT_NPROC: ::c_int = 8;
 pub const RLIMIT_MEMLOCK: ::c_int = 9;
+#[cfg(not(target_env = "uclibc"))]
 pub const RLIMIT_NLIMITS: ::c_int = 16;
+#[cfg(target_env = "uclibc")]
+pub const RLIMIT_NLIMITS: ::c_int = 15;
 
 pub const O_APPEND: ::c_int = 8;
 pub const O_CREAT: ::c_int = 256;
 pub const O_EXCL: ::c_int = 1024;
 pub const O_NOCTTY: ::c_int = 2048;
 pub const O_NONBLOCK: ::c_int = 128;
+#[cfg(not(target_env = "uclibc"))]
 pub const O_SYNC: ::c_int = 0x4010;
+#[cfg(target_env = "uclibc")]
+pub const O_SYNC: ::c_int = 0x10;
+#[cfg(not(target_env = "uclibc"))]
 pub const O_RSYNC: ::c_int = 0x4010;
+#[cfg(target_env = "uclibc")]
+pub const O_RSYNC: ::c_int = 0x10;
 pub const O_DSYNC: ::c_int = 0x10;
+#[cfg(not(target_env = "uclibc"))]
 pub const O_FSYNC: ::c_int = 0x4010;
+#[cfg(target_env = "uclibc")]
+pub const O_FSYNC: ::c_int = 0x10;
 pub const O_ASYNC: ::c_int = 0x1000;
 pub const O_NDELAY: ::c_int = 0x80;
 
@@ -286,7 +301,10 @@ pub const POLLWRNORM: ::c_short = 0x004;
 pub const POLLRDBAND: ::c_short = 0x080;
 pub const POLLWRBAND: ::c_short = 0x100;
 
+#[cfg(not(target_env = "uclibc"))]
 pub const PTHREAD_STACK_MIN: ::size_t = 131072;
+#[cfg(target_env = "uclibc")]
+pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
@@ -355,7 +373,10 @@ pub const PTRACE_SETREGS: ::c_uint = 13;
 
 pub const MAP_HUGETLB: ::c_int = 0x080000;
 
+#[cfg(not(target_env = "uclibc"))]
 pub const EFD_NONBLOCK: ::c_int = 0x80;
+#[cfg(target_env = "uclibc")]
+pub const EFD_NONBLOCK: ::c_int = 0x800;
 
 pub const F_GETLK: ::c_int = 14;
 pub const F_GETOWN: ::c_int = 23;
