@@ -37,7 +37,10 @@ s! {
         pub st_dev: ::c_ulong,
         #[cfg(target_env = "uclibc")]
         pub st_dev: ::dev_t,
+        #[cfg(not(target_env = "uclibc"))]
         st_pad1: [::c_long; 3],
+        #[cfg(target_env = "uclibc")]
+        st_pad1: [::c_long; 2],
         pub st_ino: ::ino_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
@@ -69,7 +72,10 @@ s! {
         pub st_dev: ::c_ulong,
         #[cfg(target_env = "uclibc")]
         pub st_dev: ::dev_t,
+        #[cfg(not(target_env = "uclibc"))]
         st_pad1: [::c_long; 3],
+        #[cfg(target_env = "uclibc")]
+        st_pad1: [::c_long; 2],
         pub st_ino: ::ino64_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
@@ -100,7 +106,7 @@ s! {
     pub struct sigaction {
         #[cfg(not(target_env = "uclibc"))]
         pub sa_flags: ::c_int,
-        #[cfg(not(target_env = "uclibc"))]
+        #[cfg(target_env = "uclibc")]
         pub sa_flags: ::c_uint,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: sigset_t,
@@ -213,9 +219,9 @@ s! {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
-        #[cfg(target_env = "uclib")]
+        #[cfg(not(target_env = "uclibc"))]
         pub msg_iovlen: ::size_t,
-        #[cfg(target_env = "uclib")]
+        #[cfg(target_env = "uclibc")]
         pub msg_iovlen: ::c_int,
         pub msg_control: *mut ::c_void,
         pub msg_controllen: ::size_t,

@@ -164,6 +164,8 @@ s! {
         pub dqb_bsoftlimit: ::uint32_t,
         #[cfg(not(target_env = "uclibc"))]
         pub dqb_curspace: ::uint64_t,
+        #[cfg(target_env = "uclibc")]
+        pub dqb_curblocks: ::uint32_t,
         #[cfg(not(target_env = "uclibc"))]
         pub dqb_ihardlimit: ::uint64_t,
         #[cfg(target_env = "uclibc")]
