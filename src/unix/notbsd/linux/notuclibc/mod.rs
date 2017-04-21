@@ -111,6 +111,9 @@ pub const SHM_EXEC: ::c_int = 0o100000;
 pub const RB_SW_SUSPEND: ::c_int = 0xd000fce2u32 as i32;
 pub const RB_KEXEC: ::c_int = 0x45584543u32 as i32;
 
+pub const PR_SET_FP_MODE: ::c_int = 45;
+pub const PR_GET_FP_MODE: ::c_int = 46;
+
 use super::aiocb;
 use super::termios;
 extern {
@@ -125,6 +128,13 @@ extern {
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut ::sigevent) -> ::c_int;
 
+    pub fn getnameinfo(sa: *const ::sockaddr,
+                       salen: ::socklen_t,
+                       host: *mut ::c_char,
+                       hostlen: ::socklen_t,
+                       serv: *mut ::c_char,
+                       sevlen: ::socklen_t,
+                       flags: ::c_int) -> ::c_int;
     pub fn fallocate(fd: ::c_int, mode: ::c_int,
                      offset: ::off_t, len: ::off_t) -> ::c_int;
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,

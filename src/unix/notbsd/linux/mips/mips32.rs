@@ -33,15 +33,24 @@ s! {
     }
 
     pub struct stat {
+        #[cfg(not(target_env = "uclibc"))]
         pub st_dev: ::c_ulong,
+        #[cfg(target_env = "uclibc")]
+        pub st_dev: ::dev_t,
         st_pad1: [::c_long; 3],
         pub st_ino: ::ino_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub st_rdev: ::c_ulong,
+        #[cfg(target_env = "uclibc")]
+        pub st_rdev: ::dev_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub st_pad2: [::c_long; 2],
+        #[cfg(target_env = "uclibc")]
+        pub st_pad2: [::c_long; 1],
         pub st_size: ::off_t,
         st_pad3: ::c_long,
         pub st_atime: ::time_t,
@@ -56,14 +65,20 @@ s! {
     }
 
     pub struct stat64 {
+        #[cfg(not(target_env = "uclibc"))]
         pub st_dev: ::c_ulong,
+        #[cfg(target_env = "uclibc")]
+        pub st_dev: ::dev_t,
         st_pad1: [::c_long; 3],
         pub st_ino: ::ino64_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub st_rdev: ::c_ulong,
+        #[cfg(target_env = "uclibc")]
+        pub st_rdev: ::dev_t,
         st_pad2: [::c_long; 2],
         pub st_size: ::off64_t,
         pub st_atime: ::time_t,
@@ -198,7 +213,10 @@ s! {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
+        #[cfg(target_env = "uclib")]
         pub msg_iovlen: ::size_t,
+        #[cfg(target_env = "uclib")]
+        pub msg_iovlen: ::c_int,
         pub msg_control: *mut ::c_void,
         pub msg_controllen: ::size_t,
         pub msg_flags: ::c_int,

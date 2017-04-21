@@ -154,14 +154,37 @@ s! {
     }
 
     pub struct dqblk {
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_bhardlimit: ::uint64_t,
+        #[cfg(target_env = "uclibc")]
+        pub dqb_bhardlimit: ::uint32_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_bsoftlimit: ::uint64_t,
+        #[cfg(target_env = "uclibc")]
+        pub dqb_bsoftlimit: ::uint32_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_curspace: ::uint64_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_ihardlimit: ::uint64_t,
+        #[cfg(target_env = "uclibc")]
+        pub dqb_ihardlimit: ::uint32_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_isoftlimit: ::uint64_t,
+        #[cfg(target_env = "uclibc")]
+        pub dqb_isoftlimit: ::uint32_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_curinodes: ::uint64_t,
+        #[cfg(target_env = "uclibc")]
+        pub dqb_curinodes: ::uint32_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_btime: ::uint64_t,
+        #[cfg(target_env = "uclibc")]
+        pub dqb_btime: ::time_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_itime: ::uint64_t,
+        #[cfg(target_env = "uclibc")]
+        pub dqb_itime: ::time_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dqb_valid: ::uint32_t,
     }
 
@@ -589,8 +612,6 @@ pub const PR_GET_TID_ADDRESS: ::c_int = 40;
 pub const PR_SET_THP_DISABLE: ::c_int = 41;
 pub const PR_GET_THP_DISABLE: ::c_int = 42;
 
-pub const PR_SET_FP_MODE: ::c_int = 45;
-pub const PR_GET_FP_MODE: ::c_int = 46;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
@@ -729,13 +750,6 @@ extern {
     pub fn sigwaitinfo(set: *const sigset_t,
                        info: *mut siginfo_t) -> ::c_int;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
-    pub fn getnameinfo(sa: *const ::sockaddr,
-                       salen: ::socklen_t,
-                       host: *mut ::c_char,
-                       hostlen: ::socklen_t,
-                       serv: *mut ::c_char,
-                       sevlen: ::socklen_t,
-                       flags: ::c_int) -> ::c_int;
     pub fn prlimit(pid: ::pid_t, resource: ::c_int, new_limit: *const ::rlimit,
                    old_limit: *mut ::rlimit) -> ::c_int;
     pub fn prlimit64(pid: ::pid_t,

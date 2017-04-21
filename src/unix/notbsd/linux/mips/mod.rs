@@ -1,3 +1,4 @@
+#[cfg(not(target_env = "uclibc"))]
 pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
