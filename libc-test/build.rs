@@ -300,9 +300,6 @@ fn main() {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
 
-            // locale_t is compiled in optionally
-            // "locale_t" if uclibc => true,
-
             _ => false
         }
     });
