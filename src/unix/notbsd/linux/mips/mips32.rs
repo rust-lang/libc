@@ -83,7 +83,10 @@ s! {
     }
 
     pub struct sigaction {
+        #[cfg(not(target_env = "uclibc"))]
         pub sa_flags: ::c_int,
+        #[cfg(not(target_env = "uclibc"))]
+        pub sa_flags: ::c_uint,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: sigset_t,
         _restorer: *mut ::c_void,

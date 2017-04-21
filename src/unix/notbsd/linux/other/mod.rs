@@ -476,6 +476,7 @@ extern {
                   newlen: ::size_t)
                   -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+    #[cfg(not(target_env = "uclibc"))]
     pub fn backtrace(buf: *mut *mut ::c_void,
                      sz: ::c_int) -> ::c_int;
     pub fn glob64(pattern: *const ::c_char,

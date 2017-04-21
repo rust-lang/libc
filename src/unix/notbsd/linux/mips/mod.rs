@@ -262,8 +262,11 @@ pub const SO_SELECT_ERR_QUEUE: ::c_int = 45;
 pub const SO_BUSY_POLL: ::c_int = 46;
 pub const SO_MAX_PACING_RATE: ::c_int = 47;
 pub const SO_BPF_EXTENSIONS: ::c_int = 48;
+#[cfg(not(target_env = "uclibc"))]
 pub const SO_INCOMING_CPU: ::c_int = 49;
+#[cfg(not(target_env = "uclibc"))]
 pub const SO_ATTACH_BPF: ::c_int = 50;
+#[cfg(not(target_env = "uclibc"))]
 pub const SO_DETACH_BPF: ::c_int = SO_DETACH_FILTER;
 
 pub const FIOCLEX: ::c_ulong = 0x6601;
