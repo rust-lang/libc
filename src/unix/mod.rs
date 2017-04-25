@@ -780,6 +780,12 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__sigismember14")]
     pub fn sigismember(set: *const sigset_t, signum: ::c_int) -> ::c_int;
 
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigprocmask14")]
+    pub fn sigprocmask(how: ::c_int,
+                       set: *const sigset_t,
+                       oldset: *mut sigset_t)
+                       -> ::c_int;
+
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
 
