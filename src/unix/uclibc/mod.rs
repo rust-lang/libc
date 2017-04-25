@@ -27,7 +27,6 @@ pub type idtype_t = ::c_uint;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
-
 pub enum timezone {}
 
 s! {
@@ -901,173 +900,6 @@ pub const P_PGID: idtype_t = 2;
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
 
-extern {
-    pub fn getpwnam_r(name: *const ::c_char,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
-    pub fn fdatasync(fd: ::c_int) -> ::c_int;
-    pub fn mincore(addr: *mut ::c_void, len: ::size_t,
-                   vec: *mut ::c_uchar) -> ::c_int;
-    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_nanosleep(clk_id: clockid_t,
-                           flags: ::c_int,
-                           rqtp: *const ::timespec,
-                           rmtp:  *mut ::timespec) -> ::c_int;
-    pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
-    pub fn prctl(option: ::c_int, ...) -> ::c_int;
-    pub fn pthread_getattr_np(native: ::pthread_t,
-                              attr: *mut ::pthread_attr_t) -> ::c_int;
-    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
-                                     guardsize: *mut ::size_t) -> ::c_int;
-    pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
-                                 stackaddr: *mut *mut ::c_void,
-                                 stacksize: *mut ::size_t) -> ::c_int;
-    pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
-    pub fn setgroups(ngroups: ::size_t,
-                     ptr: *const ::gid_t) -> ::c_int;
-    pub fn initgroups(user: *const ::c_char, group: ::gid_t) -> ::c_int;
-    pub fn sched_setscheduler(pid: ::pid_t,
-                              policy: ::c_int,
-                              param: *const sched_param) -> ::c_int;
-    pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
-    pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
-    pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
-    pub fn epoll_create(size: ::c_int) -> ::c_int;
-    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
-    pub fn epoll_ctl(epfd: ::c_int,
-                     op: ::c_int,
-                     fd: ::c_int,
-                     event: *mut epoll_event) -> ::c_int;
-    pub fn epoll_wait(epfd: ::c_int,
-                      events: *mut epoll_event,
-                      maxevents: ::c_int,
-                      timeout: ::c_int) -> ::c_int;
-    pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
-    pub fn mount(src: *const ::c_char,
-                 target: *const ::c_char,
-                 fstype: *const ::c_char,
-                 flags: ::c_ulong,
-                 data: *const ::c_void) -> ::c_int;
-    pub fn umount(target: *const ::c_char) -> ::c_int;
-    pub fn umount2(target: *const ::c_char, flags: ::c_int) -> ::c_int;
-    pub fn clone(cb: extern fn(*mut ::c_void) -> ::c_int,
-                 child_stack: *mut ::c_void,
-                 flags: ::c_int,
-                 arg: *mut ::c_void, ...) -> ::c_int;
-    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
-    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
-    pub fn memrchr(cx: *const ::c_void,
-                   c: ::c_int,
-                   n: ::size_t) -> *mut ::c_void;
-    pub fn syscall(num: ::c_long, ...) -> ::c_long;
-    pub fn sendfile(out_fd: ::c_int,
-                    in_fd: ::c_int,
-                    offset: *mut off_t,
-                    count: ::size_t) -> ::ssize_t;
-    pub fn splice(fd_in: ::c_int,
-                  off_in: *mut ::loff_t,
-                  fd_out: ::c_int,
-                  off_out: *mut ::loff_t,
-                  len: ::size_t,
-                  flags: ::c_uint) -> ::ssize_t;
-    pub fn tee(fd_in: ::c_int,
-               fd_out: ::c_int,
-               len: ::size_t,
-               flags: ::c_uint) -> ::ssize_t;
-    pub fn vmsplice(fd: ::c_int,
-                    iov: *const ::iovec,
-                    nr_segs: ::size_t,
-                    flags: ::c_uint) -> ::ssize_t;
-
-    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
-                         advise: ::c_int) -> ::c_int;
-    pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
-    pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
-                     times: *const ::timespec, flag: ::c_int) -> ::c_int;
-    pub fn duplocale(base: ::locale_t) -> ::locale_t;
-    pub fn freelocale(loc: ::locale_t);
-    pub fn newlocale(mask: ::c_int,
-                     locale: *const ::c_char,
-                     base: ::locale_t) -> ::locale_t;
-    pub fn uselocale(loc: ::locale_t) -> ::locale_t;
-    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
-    pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
-    pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
-    pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
-    pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
-    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-    pub fn mmap64(addr: *mut ::c_void,
-                  len: ::size_t,
-                  prot: ::c_int,
-                  flags: ::c_int,
-                  fd: ::c_int,
-                  offset: off64_t)
-                  -> *mut ::c_void;
-    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
-    pub fn openat64(fd: ::c_int,
-                    path: *const c_char,
-                    oflag: ::c_int, ...) -> ::c_int;
-    pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
-                   offset: off64_t) -> ::ssize_t;
-    pub fn pwrite64(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
-                    offset: off64_t) -> ::ssize_t;
-    pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
-    pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
-                       result: *mut *mut ::dirent64) -> ::c_int;
-    pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
-    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-    pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
-    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
-
-    pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
-
-    pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
-                   mode: ::mode_t, dev: dev_t) -> ::c_int;
-    pub fn ppoll(fds: *mut ::pollfd,
-                 nfds: nfds_t,
-                 timeout: *const ::timespec,
-                 sigmask: *const sigset_t) -> ::c_int;
-    pub fn pthread_condattr_getclock(attr: *const pthread_condattr_t,
-                                     clock_id: *mut clockid_t) -> ::c_int;
-    pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
-                                     clock_id: clockid_t) -> ::c_int;
-    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t,
-                                       pshared: ::c_int) -> ::c_int;
-    pub fn pthread_condattr_getpshared(attr: *const pthread_condattr_t,
-                                       pshared: *mut ::c_int) -> ::c_int;
-    pub fn sched_getaffinity(pid: ::pid_t,
-                             cpusetsize: ::size_t,
-                             cpuset: *mut cpu_set_t) -> ::c_int;
-    pub fn sched_setaffinity(pid: ::pid_t,
-                             cpusetsize: ::size_t,
-                             cpuset: *const cpu_set_t) -> ::c_int;
-    pub fn unshare(flags: ::c_int) -> ::c_int;
-    pub fn sem_timedwait(sem: *mut sem_t,
-                         abstime: *const ::timespec) -> ::c_int;
-    pub fn accept4(fd: ::c_int, addr: *mut ::sockaddr, len: *mut ::socklen_t,
-                   flg: ::c_int) -> ::c_int;
-    pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
-                                   abstime: *const ::timespec) -> ::c_int;
-    pub fn pthread_mutexattr_setpshared(attr: *mut pthread_mutexattr_t,
-                                        pshared: ::c_int) -> ::c_int;
-    pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
-                                        pshared: *mut ::c_int) -> ::c_int;
-    pub fn ptsname_r(fd: ::c_int,
-                     buf: *mut ::c_char,
-                     buflen: ::size_t) -> ::c_int;
-    pub fn clearenv() -> ::c_int;
-    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
-                  options: ::c_int) -> ::c_int;
-}
-
 pub const L_tmpnam: ::c_uint = 20;
 pub const _PC_LINK_MAX: ::c_int = 0;
 pub const _PC_MAX_CANON: ::c_int = 1;
@@ -1425,6 +1257,77 @@ pub const PR_GET_TID_ADDRESS: ::c_int = 40;
 pub const PR_SET_THP_DISABLE: ::c_int = 41;
 pub const PR_GET_THP_DISABLE: ::c_int = 42;
 
+pub const ABDAY_1: ::nl_item = 0x300;
+pub const ABDAY_2: ::nl_item = 0x301;
+pub const ABDAY_3: ::nl_item = 0x302;
+pub const ABDAY_4: ::nl_item = 0x303;
+pub const ABDAY_5: ::nl_item = 0x304;
+pub const ABDAY_6: ::nl_item = 0x305;
+pub const ABDAY_7: ::nl_item = 0x306;
+
+pub const DAY_1: ::nl_item = 0x307;
+pub const DAY_2: ::nl_item = 0x308;
+pub const DAY_3: ::nl_item = 0x309;
+pub const DAY_4: ::nl_item = 0x30A;
+pub const DAY_5: ::nl_item = 0x30B;
+pub const DAY_6: ::nl_item = 0x30C;
+pub const DAY_7: ::nl_item = 0x30D;
+
+pub const ABMON_1: ::nl_item = 0x30E;
+pub const ABMON_2: ::nl_item = 0x30F;
+pub const ABMON_3: ::nl_item = 0x310;
+pub const ABMON_4: ::nl_item = 0x311;
+pub const ABMON_5: ::nl_item = 0x312;
+pub const ABMON_6: ::nl_item = 0x313;
+pub const ABMON_7: ::nl_item = 0x314;
+pub const ABMON_8: ::nl_item = 0x315;
+pub const ABMON_9: ::nl_item = 0x316;
+pub const ABMON_10: ::nl_item = 0x317;
+pub const ABMON_11: ::nl_item = 0x318;
+pub const ABMON_12: ::nl_item = 0x319;
+
+pub const MON_1: ::nl_item = 0x31A;
+pub const MON_2: ::nl_item = 0x31B;
+pub const MON_3: ::nl_item = 0x31C;
+pub const MON_4: ::nl_item = 0x31D;
+pub const MON_5: ::nl_item = 0x31E;
+pub const MON_6: ::nl_item = 0x31F;
+pub const MON_7: ::nl_item = 0x320;
+pub const MON_8: ::nl_item = 0x321;
+pub const MON_9: ::nl_item = 0x322;
+pub const MON_10: ::nl_item = 0x323;
+pub const MON_11: ::nl_item = 0x324;
+pub const MON_12: ::nl_item = 0x325;
+
+pub const AM_STR: ::nl_item = 0x326;
+pub const PM_STR: ::nl_item = 0x327;
+
+pub const D_T_FMT: ::nl_item = 0x328;
+pub const D_FMT: ::nl_item = 0x329;
+pub const T_FMT: ::nl_item = 0x32A;
+pub const T_FMT_AMPM: ::nl_item = 0x32B;
+
+pub const ERA: ::nl_item = 0x32C;
+pub const ERA_D_FMT: ::nl_item = 0x32E;
+pub const ALT_DIGITS: ::nl_item = 0x32F;
+pub const ERA_D_T_FMT: ::nl_item = 0x330;
+pub const ERA_T_FMT: ::nl_item = 0x331;
+
+pub const CODESET: ::nl_item = 10;
+
+pub const CRNCYSTR: ::nl_item = 0x215;
+
+pub const RADIXCHAR: ::nl_item = 0x100;
+pub const THOUSEP: ::nl_item = 0x101;
+
+pub const NOEXPR: ::nl_item = 0x501;
+pub const YESSTR: ::nl_item = 0x502;
+pub const NOSTR: ::nl_item = 0x503;
+
+pub const FILENAME_MAX: ::c_uint = 4095;
+
+pub const AF_MAX: ::c_int = 39;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -1516,6 +1419,171 @@ f! {
 }
 
 extern {
+    pub fn getpwnam_r(name: *const ::c_char,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
+    pub fn getpwuid_r(uid: ::uid_t,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
+    pub fn mincore(addr: *mut ::c_void, len: ::size_t,
+                   vec: *mut ::c_uchar) -> ::c_int;
+    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_nanosleep(clk_id: clockid_t,
+                           flags: ::c_int,
+                           rqtp: *const ::timespec,
+                           rmtp:  *mut ::timespec) -> ::c_int;
+    pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn prctl(option: ::c_int, ...) -> ::c_int;
+    pub fn pthread_getattr_np(native: ::pthread_t,
+                              attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
+                                     guardsize: *mut ::size_t) -> ::c_int;
+    pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
+                                 stackaddr: *mut *mut ::c_void,
+                                 stacksize: *mut ::size_t) -> ::c_int;
+    pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
+    pub fn setgroups(ngroups: ::size_t,
+                     ptr: *const ::gid_t) -> ::c_int;
+    pub fn initgroups(user: *const ::c_char, group: ::gid_t) -> ::c_int;
+    pub fn sched_setscheduler(pid: ::pid_t,
+                              policy: ::c_int,
+                              param: *const sched_param) -> ::c_int;
+    pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
+    pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
+    pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
+    pub fn epoll_create(size: ::c_int) -> ::c_int;
+    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
+    pub fn epoll_ctl(epfd: ::c_int,
+                     op: ::c_int,
+                     fd: ::c_int,
+                     event: *mut epoll_event) -> ::c_int;
+    pub fn epoll_wait(epfd: ::c_int,
+                      events: *mut epoll_event,
+                      maxevents: ::c_int,
+                      timeout: ::c_int) -> ::c_int;
+    pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn mount(src: *const ::c_char,
+                 target: *const ::c_char,
+                 fstype: *const ::c_char,
+                 flags: ::c_ulong,
+                 data: *const ::c_void) -> ::c_int;
+    pub fn umount(target: *const ::c_char) -> ::c_int;
+    pub fn umount2(target: *const ::c_char, flags: ::c_int) -> ::c_int;
+    pub fn clone(cb: extern fn(*mut ::c_void) -> ::c_int,
+                 child_stack: *mut ::c_void,
+                 flags: ::c_int,
+                 arg: *mut ::c_void, ...) -> ::c_int;
+    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
+    pub fn memrchr(cx: *const ::c_void,
+                   c: ::c_int,
+                   n: ::size_t) -> *mut ::c_void;
+    pub fn syscall(num: ::c_long, ...) -> ::c_long;
+    pub fn sendfile(out_fd: ::c_int,
+                    in_fd: ::c_int,
+                    offset: *mut off_t,
+                    count: ::size_t) -> ::ssize_t;
+    pub fn splice(fd_in: ::c_int,
+                  off_in: *mut ::loff_t,
+                  fd_out: ::c_int,
+                  off_out: *mut ::loff_t,
+                  len: ::size_t,
+                  flags: ::c_uint) -> ::ssize_t;
+    pub fn tee(fd_in: ::c_int,
+               fd_out: ::c_int,
+               len: ::size_t,
+               flags: ::c_uint) -> ::ssize_t;
+    pub fn vmsplice(fd: ::c_int,
+                    iov: *const ::iovec,
+                    nr_segs: ::size_t,
+                    flags: ::c_uint) -> ::ssize_t;
+
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
+                         advise: ::c_int) -> ::c_int;
+    pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
+    pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
+                     times: *const ::timespec, flag: ::c_int) -> ::c_int;
+    pub fn duplocale(base: ::locale_t) -> ::locale_t;
+    pub fn freelocale(loc: ::locale_t);
+    pub fn newlocale(mask: ::c_int,
+                     locale: *const ::c_char,
+                     base: ::locale_t) -> ::locale_t;
+    pub fn uselocale(loc: ::locale_t) -> ::locale_t;
+    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
+    pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
+    pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
+    pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
+    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn mmap64(addr: *mut ::c_void,
+                  len: ::size_t,
+                  prot: ::c_int,
+                  flags: ::c_int,
+                  fd: ::c_int,
+                  offset: off64_t)
+                  -> *mut ::c_void;
+    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn openat64(fd: ::c_int,
+                    path: *const c_char,
+                    oflag: ::c_int, ...) -> ::c_int;
+    pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
+                   offset: off64_t) -> ::ssize_t;
+    pub fn pwrite64(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
+                    offset: off64_t) -> ::ssize_t;
+    pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
+    pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
+                       result: *mut *mut ::dirent64) -> ::c_int;
+    pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
+    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
+
+    pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
+                   mode: ::mode_t, dev: dev_t) -> ::c_int;
+    pub fn ppoll(fds: *mut ::pollfd,
+                 nfds: nfds_t,
+                 timeout: *const ::timespec,
+                 sigmask: *const sigset_t) -> ::c_int;
+    pub fn pthread_condattr_getclock(attr: *const pthread_condattr_t,
+                                     clock_id: *mut clockid_t) -> ::c_int;
+    pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
+                                     clock_id: clockid_t) -> ::c_int;
+    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t,
+                                       pshared: ::c_int) -> ::c_int;
+    pub fn pthread_condattr_getpshared(attr: *const pthread_condattr_t,
+                                       pshared: *mut ::c_int) -> ::c_int;
+    pub fn sched_getaffinity(pid: ::pid_t,
+                             cpusetsize: ::size_t,
+                             cpuset: *mut cpu_set_t) -> ::c_int;
+    pub fn sched_setaffinity(pid: ::pid_t,
+                             cpusetsize: ::size_t,
+                             cpuset: *const cpu_set_t) -> ::c_int;
+    pub fn unshare(flags: ::c_int) -> ::c_int;
+    pub fn sem_timedwait(sem: *mut sem_t,
+                         abstime: *const ::timespec) -> ::c_int;
+    pub fn accept4(fd: ::c_int, addr: *mut ::sockaddr, len: *mut ::socklen_t,
+                   flg: ::c_int) -> ::c_int;
+    pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
+                                   abstime: *const ::timespec) -> ::c_int;
+    pub fn pthread_mutexattr_setpshared(attr: *mut pthread_mutexattr_t,
+                                        pshared: ::c_int) -> ::c_int;
+    pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
+                                        pshared: *mut ::c_int) -> ::c_int;
+    pub fn ptsname_r(fd: ::c_int,
+                     buf: *mut ::c_char,
+                     buflen: ::size_t) -> ::c_int;
+    pub fn clearenv() -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
+                  options: ::c_int) -> ::c_int;
+
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
 
     pub fn setpwent();
@@ -1700,74 +1768,4 @@ cfg_if! {
         pub use self::other::*;
     }
 }
-pub const ABDAY_1: ::nl_item = 0x300;
-pub const ABDAY_2: ::nl_item = 0x301;
-pub const ABDAY_3: ::nl_item = 0x302;
-pub const ABDAY_4: ::nl_item = 0x303;
-pub const ABDAY_5: ::nl_item = 0x304;
-pub const ABDAY_6: ::nl_item = 0x305;
-pub const ABDAY_7: ::nl_item = 0x306;
-
-pub const DAY_1: ::nl_item = 0x307;
-pub const DAY_2: ::nl_item = 0x308;
-pub const DAY_3: ::nl_item = 0x309;
-pub const DAY_4: ::nl_item = 0x30A;
-pub const DAY_5: ::nl_item = 0x30B;
-pub const DAY_6: ::nl_item = 0x30C;
-pub const DAY_7: ::nl_item = 0x30D;
-
-pub const ABMON_1: ::nl_item = 0x30E;
-pub const ABMON_2: ::nl_item = 0x30F;
-pub const ABMON_3: ::nl_item = 0x310;
-pub const ABMON_4: ::nl_item = 0x311;
-pub const ABMON_5: ::nl_item = 0x312;
-pub const ABMON_6: ::nl_item = 0x313;
-pub const ABMON_7: ::nl_item = 0x314;
-pub const ABMON_8: ::nl_item = 0x315;
-pub const ABMON_9: ::nl_item = 0x316;
-pub const ABMON_10: ::nl_item = 0x317;
-pub const ABMON_11: ::nl_item = 0x318;
-pub const ABMON_12: ::nl_item = 0x319;
-
-pub const MON_1: ::nl_item = 0x31A;
-pub const MON_2: ::nl_item = 0x31B;
-pub const MON_3: ::nl_item = 0x31C;
-pub const MON_4: ::nl_item = 0x31D;
-pub const MON_5: ::nl_item = 0x31E;
-pub const MON_6: ::nl_item = 0x31F;
-pub const MON_7: ::nl_item = 0x320;
-pub const MON_8: ::nl_item = 0x321;
-pub const MON_9: ::nl_item = 0x322;
-pub const MON_10: ::nl_item = 0x323;
-pub const MON_11: ::nl_item = 0x324;
-pub const MON_12: ::nl_item = 0x325;
-
-pub const AM_STR: ::nl_item = 0x326;
-pub const PM_STR: ::nl_item = 0x327;
-
-pub const D_T_FMT: ::nl_item = 0x328;
-pub const D_FMT: ::nl_item = 0x329;
-pub const T_FMT: ::nl_item = 0x32A;
-pub const T_FMT_AMPM: ::nl_item = 0x32B;
-
-pub const ERA: ::nl_item = 0x32C;
-pub const ERA_D_FMT: ::nl_item = 0x32E;
-pub const ALT_DIGITS: ::nl_item = 0x32F;
-pub const ERA_D_T_FMT: ::nl_item = 0x330;
-pub const ERA_T_FMT: ::nl_item = 0x331;
-
-pub const CODESET: ::nl_item = 10;
-
-pub const CRNCYSTR: ::nl_item = 0x215;
-
-pub const RADIXCHAR: ::nl_item = 0x100;
-pub const THOUSEP: ::nl_item = 0x101;
-
-pub const NOEXPR: ::nl_item = 0x501;
-pub const YESSTR: ::nl_item = 0x502;
-pub const NOSTR: ::nl_item = 0x503;
-
-pub const FILENAME_MAX: ::c_uint = 4095;
-
-pub const AF_MAX: ::c_int = 39;
 
