@@ -8,6 +8,25 @@ pub type loff_t = ::c_longlong;
 pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
+pub type useconds_t = u32;
+pub type dev_t = u64;
+pub type socklen_t = u32;
+pub type pthread_t = c_ulong;
+pub type mode_t = u32;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
+pub type rlim64_t = u64;
+pub type shmatt_t = ::c_ulong;
+pub type mqd_t = ::c_int;
+pub type msgqnum_t = ::c_ulong;
+pub type msglen_t = ::c_ulong;
+pub type nfds_t = ::c_ulong;
+pub type nl_item = ::c_int;
+pub type idtype_t = ::c_uint;
+
+pub enum fpos64_t {} // TODO: fill this out with a struct
+
 
 pub enum timezone {}
 
@@ -162,6 +181,201 @@ s! {
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12]
     }
+
+    pub struct dirent {
+        pub d_ino: ::ino_t,
+        pub d_off: ::off_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct rlimit64 {
+        pub rlim_cur: rlim64_t,
+        pub rlim_max: rlim64_t,
+    }
+
+    pub struct glob_t {
+        pub gl_pathc: ::size_t,
+        pub gl_pathv: *mut *mut c_char,
+        pub gl_offs: ::size_t,
+        pub gl_flags: ::c_int,
+
+        __unused1: *mut ::c_void,
+        __unused2: *mut ::c_void,
+        __unused3: *mut ::c_void,
+        __unused4: *mut ::c_void,
+        __unused5: *mut ::c_void,
+    }
+
+    pub struct ifaddrs {
+        pub ifa_next: *mut ifaddrs,
+        pub ifa_name: *mut c_char,
+        pub ifa_flags: ::c_uint,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
+        pub ifa_data: *mut ::c_void
+    }
+
+    pub struct pthread_mutex_t {
+        #[cfg(any(target_arch = "mips", target_arch = "arm",
+                  target_arch = "powerpc"))]
+        __align: [::c_long; 0],
+        #[cfg(not(any(target_arch = "mips", target_arch = "arm",
+                      target_arch = "powerpc")))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
+    }
+
+    pub struct pthread_rwlock_t {
+        #[cfg(any(target_arch = "mips", target_arch = "arm",
+                  target_arch = "powerpc"))]
+        __align: [::c_long; 0],
+        #[cfg(not(any(target_arch = "mips", target_arch = "arm",
+                      target_arch = "powerpc")))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
+    }
+
+    pub struct pthread_mutexattr_t {
+        #[cfg(any(target_arch = "x86_64", target_arch = "powerpc64",
+                  target_arch = "mips64", target_arch = "s390x",
+                  target_arch = "sparc64"))]
+        __align: [::c_int; 0],
+        #[cfg(not(any(target_arch = "x86_64", target_arch = "powerpc64",
+                      target_arch = "mips64", target_arch = "s390x",
+                      target_arch = "sparc64")))]
+        __align: [::c_long; 0],
+        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
+    }
+
+    pub struct pthread_cond_t {
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_COND_T],
+    }
+
+    pub struct pthread_condattr_t {
+        __align: [::c_int; 0],
+        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
+    }
+
+    pub struct passwd {
+        pub pw_name: *mut ::c_char,
+        pub pw_passwd: *mut ::c_char,
+        pub pw_uid: ::uid_t,
+        pub pw_gid: ::gid_t,
+        pub pw_gecos: *mut ::c_char,
+        pub pw_dir: *mut ::c_char,
+        pub pw_shell: *mut ::c_char,
+    }
+
+    pub struct spwd {
+        pub sp_namp: *mut ::c_char,
+        pub sp_pwdp: *mut ::c_char,
+        pub sp_lstchg: ::c_long,
+        pub sp_min: ::c_long,
+        pub sp_max: ::c_long,
+        pub sp_warn: ::c_long,
+        pub sp_inact: ::c_long,
+        pub sp_expire: ::c_long,
+        pub sp_flag: ::c_ulong,
+    }
+
+    pub struct statvfs {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_favail: ::fsfilcnt_t,
+        #[cfg(target_endian = "little")]
+        pub f_fsid: ::c_ulong,
+        #[cfg(target_pointer_width = "32")]
+        __f_unused: ::c_int,
+        #[cfg(target_endian = "big")]
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        __f_spare: [::c_int; 6],
+    }
+
+    pub struct dqblk {
+        pub dqb_bhardlimit: ::uint32_t,
+        pub dqb_bsoftlimit: ::uint32_t,
+        pub dqb_curblocks: ::uint32_t,
+        pub dqb_ihardlimit: ::uint32_t,
+        pub dqb_isoftlimit: ::uint32_t,
+        pub dqb_curinodes: ::uint32_t,
+        pub dqb_btime: ::time_t,
+        pub dqb_itime: ::time_t,
+    }
+
+    pub struct signalfd_siginfo {
+        pub ssi_signo: ::uint32_t,
+        pub ssi_errno: ::int32_t,
+        pub ssi_code: ::int32_t,
+        pub ssi_pid: ::uint32_t,
+        pub ssi_uid: ::uint32_t,
+        pub ssi_fd: ::int32_t,
+        pub ssi_tid: ::uint32_t,
+        pub ssi_band: ::uint32_t,
+        pub ssi_overrun: ::uint32_t,
+        pub ssi_trapno: ::uint32_t,
+        pub ssi_status: ::int32_t,
+        pub ssi_int: ::int32_t,
+        pub ssi_ptr: ::uint64_t,
+        pub ssi_utime: ::uint64_t,
+        pub ssi_stime: ::uint64_t,
+        pub ssi_addr: ::uint64_t,
+        _pad: [::uint8_t; 48],
+    }
+
+    pub struct fsid_t {
+        __val: [::c_int; 2],
+    }
+
+    pub struct mq_attr {
+        pub mq_flags: ::c_long,
+        pub mq_maxmsg: ::c_long,
+        pub mq_msgsize: ::c_long,
+        pub mq_curmsgs: ::c_long,
+        pad: [::c_long; 4]
+    }
+
+    pub struct cpu_set_t {
+        #[cfg(target_pointer_width = "32")]
+        bits: [u32; 32],
+        #[cfg(target_pointer_width = "64")]
+        bits: [u64; 16],
+    }
+
+    pub struct if_nameindex {
+        pub if_index: ::c_uint,
+        pub if_name: *mut ::c_char,
+    }
+
+    // System V IPC
+    pub struct msginfo {
+        pub msgpool: ::c_int,
+        pub msgmap: ::c_int,
+        pub msgmax: ::c_int,
+        pub msgmnb: ::c_int,
+        pub msgmni: ::c_int,
+        pub msgssz: ::c_int,
+        pub msgtql: ::c_int,
+        pub msgseg: ::c_ushort,
+    }
 }
 
 // intentionally not public, only used for fd_set
@@ -292,7 +506,6 @@ pub const LC_COLLATE_MASK: ::c_int = (1 << LC_COLLATE);
 pub const LC_MONETARY_MASK: ::c_int = (1 << LC_MONETARY);
 pub const LC_MESSAGES_MASK: ::c_int = (1 << LC_MESSAGES);
 // LC_ALL_MASK defined per platform
-
 
 pub const MAP_FILE: ::c_int = 0x0000;
 pub const MAP_SHARED: ::c_int = 0x0001;
@@ -688,66 +901,6 @@ pub const P_PGID: idtype_t = 2;
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
 
-f! {
-    pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
-        let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return
-    }
-
-    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
-        let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
-    }
-
-    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
-        let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return
-    }
-
-    pub fn FD_ZERO(set: *mut fd_set) -> () {
-        for slot in (*set).fds_bits.iter_mut() {
-            *slot = 0;
-        }
-    }
-
-    pub fn WIFSTOPPED(status: ::c_int) -> bool {
-        (status & 0xff) == 0x7f
-    }
-
-    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
-        (status >> 8) & 0xff
-    }
-
-    pub fn WIFCONTINUED(status: ::c_int) -> bool {
-        status == 0xffff
-    }
-
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
-        ((status & 0x7f) + 1) as i8 >= 2
-    }
-
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
-        status & 0x7f
-    }
-
-    pub fn WIFEXITED(status: ::c_int) -> bool {
-        (status & 0x7f) == 0
-    }
-
-    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
-        (status >> 8) & 0xff
-    }
-
-    pub fn WCOREDUMP(status: ::c_int) -> bool {
-        (status & 0x80) != 0
-    }
-}
-
 extern {
     pub fn getpwnam_r(name: *const ::c_char,
                       pwd: *mut passwd,
@@ -913,223 +1066,6 @@ extern {
     pub fn clearenv() -> ::c_int;
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
-}
-
-
-pub type useconds_t = u32;
-pub type dev_t = u64;
-pub type socklen_t = u32;
-pub type pthread_t = c_ulong;
-pub type mode_t = u32;
-pub type ino64_t = u64;
-pub type off64_t = i64;
-pub type blkcnt64_t = i64;
-pub type rlim64_t = u64;
-pub type shmatt_t = ::c_ulong;
-pub type mqd_t = ::c_int;
-pub type msgqnum_t = ::c_ulong;
-pub type msglen_t = ::c_ulong;
-pub type nfds_t = ::c_ulong;
-pub type nl_item = ::c_int;
-pub type idtype_t = ::c_uint;
-
-pub enum fpos64_t {} // TODO: fill this out with a struct
-
-s! {
-    pub struct dirent {
-        pub d_ino: ::ino_t,
-        pub d_off: ::off_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct rlimit64 {
-        pub rlim_cur: rlim64_t,
-        pub rlim_max: rlim64_t,
-    }
-
-    pub struct glob_t {
-        pub gl_pathc: ::size_t,
-        pub gl_pathv: *mut *mut c_char,
-        pub gl_offs: ::size_t,
-        pub gl_flags: ::c_int,
-
-        __unused1: *mut ::c_void,
-        __unused2: *mut ::c_void,
-        __unused3: *mut ::c_void,
-        __unused4: *mut ::c_void,
-        __unused5: *mut ::c_void,
-    }
-
-    pub struct ifaddrs {
-        pub ifa_next: *mut ifaddrs,
-        pub ifa_name: *mut c_char,
-        pub ifa_flags: ::c_uint,
-        pub ifa_addr: *mut ::sockaddr,
-        pub ifa_netmask: *mut ::sockaddr,
-        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
-        pub ifa_data: *mut ::c_void
-    }
-
-    pub struct pthread_mutex_t {
-        #[cfg(any(target_arch = "mips", target_arch = "arm",
-                  target_arch = "powerpc"))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(target_arch = "mips", target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    pub struct pthread_rwlock_t {
-        #[cfg(any(target_arch = "mips", target_arch = "arm",
-                  target_arch = "powerpc"))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(target_arch = "mips", target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
-    }
-
-    pub struct pthread_mutexattr_t {
-        #[cfg(any(target_arch = "x86_64", target_arch = "powerpc64",
-                  target_arch = "mips64", target_arch = "s390x",
-                  target_arch = "sparc64"))]
-        __align: [::c_int; 0],
-        #[cfg(not(any(target_arch = "x86_64", target_arch = "powerpc64",
-                      target_arch = "mips64", target_arch = "s390x",
-                      target_arch = "sparc64")))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    pub struct pthread_cond_t {
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
-    }
-
-    pub struct pthread_condattr_t {
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
-    }
-
-    pub struct passwd {
-        pub pw_name: *mut ::c_char,
-        pub pw_passwd: *mut ::c_char,
-        pub pw_uid: ::uid_t,
-        pub pw_gid: ::gid_t,
-        pub pw_gecos: *mut ::c_char,
-        pub pw_dir: *mut ::c_char,
-        pub pw_shell: *mut ::c_char,
-    }
-
-    pub struct spwd {
-        pub sp_namp: *mut ::c_char,
-        pub sp_pwdp: *mut ::c_char,
-        pub sp_lstchg: ::c_long,
-        pub sp_min: ::c_long,
-        pub sp_max: ::c_long,
-        pub sp_warn: ::c_long,
-        pub sp_inact: ::c_long,
-        pub sp_expire: ::c_long,
-        pub sp_flag: ::c_ulong,
-    }
-
-    pub struct statvfs {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_favail: ::fsfilcnt_t,
-        #[cfg(target_endian = "little")]
-        pub f_fsid: ::c_ulong,
-        #[cfg(target_pointer_width = "32")]
-        __f_unused: ::c_int,
-        #[cfg(target_endian = "big")]
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
-    }
-
-    pub struct dqblk {
-        pub dqb_bhardlimit: ::uint32_t,
-        pub dqb_bsoftlimit: ::uint32_t,
-        pub dqb_curblocks: ::uint32_t,
-        pub dqb_ihardlimit: ::uint32_t,
-        pub dqb_isoftlimit: ::uint32_t,
-        pub dqb_curinodes: ::uint32_t,
-        pub dqb_btime: ::time_t,
-        pub dqb_itime: ::time_t,
-    }
-
-    pub struct signalfd_siginfo {
-        pub ssi_signo: ::uint32_t,
-        pub ssi_errno: ::int32_t,
-        pub ssi_code: ::int32_t,
-        pub ssi_pid: ::uint32_t,
-        pub ssi_uid: ::uint32_t,
-        pub ssi_fd: ::int32_t,
-        pub ssi_tid: ::uint32_t,
-        pub ssi_band: ::uint32_t,
-        pub ssi_overrun: ::uint32_t,
-        pub ssi_trapno: ::uint32_t,
-        pub ssi_status: ::int32_t,
-        pub ssi_int: ::int32_t,
-        pub ssi_ptr: ::uint64_t,
-        pub ssi_utime: ::uint64_t,
-        pub ssi_stime: ::uint64_t,
-        pub ssi_addr: ::uint64_t,
-        _pad: [::uint8_t; 48],
-    }
-
-    pub struct fsid_t {
-        __val: [::c_int; 2],
-    }
-
-    pub struct mq_attr {
-        pub mq_flags: ::c_long,
-        pub mq_maxmsg: ::c_long,
-        pub mq_msgsize: ::c_long,
-        pub mq_curmsgs: ::c_long,
-        pad: [::c_long; 4]
-    }
-
-    pub struct cpu_set_t {
-        #[cfg(target_pointer_width = "32")]
-        bits: [u32; 32],
-        #[cfg(target_pointer_width = "64")]
-        bits: [u64; 16],
-    }
-
-    pub struct if_nameindex {
-        pub if_index: ::c_uint,
-        pub if_name: *mut ::c_char,
-    }
-
-    // System V IPC
-    pub struct msginfo {
-        pub msgpool: ::c_int,
-        pub msgmap: ::c_int,
-        pub msgmax: ::c_int,
-        pub msgmnb: ::c_int,
-        pub msgmni: ::c_int,
-        pub msgssz: ::c_int,
-        pub msgtql: ::c_int,
-        pub msgseg: ::c_ushort,
-    }
 }
 
 pub const L_tmpnam: ::c_uint = 20;
@@ -1489,8 +1425,65 @@ pub const PR_GET_TID_ADDRESS: ::c_int = 40;
 pub const PR_SET_THP_DISABLE: ::c_int = 41;
 pub const PR_GET_THP_DISABLE: ::c_int = 42;
 
-
 f! {
+    pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
+        return
+    }
+
+    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+    }
+
+    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        (*set).fds_bits[fd / size] |= 1 << (fd % size);
+        return
+    }
+
+    pub fn FD_ZERO(set: *mut fd_set) -> () {
+        for slot in (*set).fds_bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn WIFSTOPPED(status: ::c_int) -> bool {
+        (status & 0xff) == 0x7f
+    }
+
+    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub fn WIFCONTINUED(status: ::c_int) -> bool {
+        status == 0xffff
+    }
+
+    pub fn WIFSIGNALED(status: ::c_int) -> bool {
+        ((status & 0x7f) + 1) as i8 >= 2
+    }
+
+    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+        status & 0x7f
+    }
+
+    pub fn WIFEXITED(status: ::c_int) -> bool {
+        (status & 0x7f) == 0
+    }
+
+    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub fn WCOREDUMP(status: ::c_int) -> bool {
+        (status & 0x80) != 0
+    }
+
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
             *slot = 0;
