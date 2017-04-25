@@ -213,9 +213,7 @@ pub const F_SETLEASE: ::c_int = 1024;
 pub const F_GETLEASE: ::c_int = 1025;
 pub const F_NOTIFY: ::c_int = 1026;
 pub const F_DUPFD_CLOEXEC: ::c_int = 1030;
-#[cfg(not(target_env = "uclibc"))]
 pub const F_SETPIPE_SZ: ::c_int = 1031;
-#[cfg(not(target_env = "uclibc"))]
 pub const F_GETPIPE_SZ: ::c_int = 1032;
 
 // TODO(#235): Include file sealing fcntls once we have a way to verify them.
@@ -229,17 +227,11 @@ pub const CLOCK_REALTIME: clockid_t = 0;
 pub const CLOCK_MONOTONIC: clockid_t = 1;
 pub const CLOCK_PROCESS_CPUTIME_ID: clockid_t = 2;
 pub const CLOCK_THREAD_CPUTIME_ID: clockid_t = 3;
-#[cfg(not(target_env = "uclibc"))]
 pub const CLOCK_MONOTONIC_RAW: clockid_t = 4;
-#[cfg(not(target_env = "uclibc"))]
 pub const CLOCK_REALTIME_COARSE: clockid_t = 5;
-#[cfg(not(target_env = "uclibc"))]
 pub const CLOCK_MONOTONIC_COARSE: clockid_t = 6;
-#[cfg(not(target_env = "uclibc"))]
 pub const CLOCK_BOOTTIME: clockid_t = 7;
-#[cfg(not(target_env = "uclibc"))]
 pub const CLOCK_REALTIME_ALARM: clockid_t = 8;
-#[cfg(not(target_env = "uclibc"))]
 pub const CLOCK_BOOTTIME_ALARM: clockid_t = 9;
 // TODO(#247) Someday our Travis shall have glibc 2.21 (released in Sep
 // 2014.) See also musl/mod.rs
@@ -263,7 +255,6 @@ pub const RUSAGE_SELF: ::c_int = 0;
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
-#[cfg(not(target_env = "uclibc"))]
 pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
@@ -314,11 +305,8 @@ pub const PROT_EXEC: ::c_int = 4;
 
 pub const LC_CTYPE: ::c_int = 0;
 pub const LC_NUMERIC: ::c_int = 1;
-#[cfg(not(target_env = "uclibc"))]
 pub const LC_TIME: ::c_int = 2;
-#[cfg(not(target_env = "uclibc"))]
 pub const LC_COLLATE: ::c_int = 3;
-#[cfg(not(target_env = "uclibc"))]
 pub const LC_MONETARY: ::c_int = 4;
 pub const LC_MESSAGES: ::c_int = 5;
 pub const LC_ALL: ::c_int = 6;
@@ -329,13 +317,6 @@ pub const LC_COLLATE_MASK: ::c_int = (1 << LC_COLLATE);
 pub const LC_MONETARY_MASK: ::c_int = (1 << LC_MONETARY);
 pub const LC_MESSAGES_MASK: ::c_int = (1 << LC_MESSAGES);
 // LC_ALL_MASK defined per platform
-#[cfg(target_env = "uclibc")]
-pub const LC_TIME: ::c_int = 3;
-#[cfg(target_env = "uclibc")]
-pub const LC_COLLATE: ::c_int = 4;
-#[cfg(target_env = "uclibc")]
-pub const LC_MONETARY: ::c_int = 2;
-
 
 pub const MAP_FILE: ::c_int = 0x0000;
 pub const MAP_SHARED: ::c_int = 0x0001;
@@ -357,36 +338,22 @@ pub const MS_NOEXEC: ::c_ulong = 0x08;
 pub const MS_SYNCHRONOUS: ::c_ulong = 0x10;
 pub const MS_REMOUNT: ::c_ulong = 0x20;
 pub const MS_MANDLOCK: ::c_ulong = 0x40;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_DIRSYNC: ::c_ulong = 0x80;
 pub const MS_NOATIME: ::c_ulong = 0x0400;
 pub const MS_NODIRATIME: ::c_ulong = 0x0800;
 pub const MS_BIND: ::c_ulong = 0x1000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_MOVE: ::c_ulong = 0x2000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_REC: ::c_ulong = 0x4000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_SILENT: ::c_ulong = 0x8000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_POSIXACL: ::c_ulong = 0x010000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_UNBINDABLE: ::c_ulong = 0x020000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_PRIVATE: ::c_ulong = 0x040000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_SLAVE: ::c_ulong = 0x080000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_SHARED: ::c_ulong = 0x100000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_RELATIME: ::c_ulong = 0x200000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_KERNMOUNT: ::c_ulong = 0x400000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_I_VERSION: ::c_ulong = 0x800000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_STRICTATIME: ::c_ulong = 0x1000000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MS_ACTIVE: ::c_ulong = 0x40000000;
 pub const MS_NOUSER: ::c_ulong = 0x80000000;
 pub const MS_MGC_VAL: ::c_ulong = 0xc0ed0000;
@@ -479,15 +446,10 @@ pub const SOL_PACKET: ::c_int = 263;
 pub const SOL_ATM: ::c_int = 264;
 pub const SOL_AAL: ::c_int = 265;
 pub const SOL_IRDA: ::c_int = 266;
-#[cfg(not(target_env = "uclibc"))]
 pub const SOL_NETBEUI: ::c_int = 267;
-#[cfg(not(target_env = "uclibc"))]
 pub const SOL_LLC: ::c_int = 268;
-#[cfg(not(target_env = "uclibc"))]
 pub const SOL_DCCP: ::c_int = 269;
-#[cfg(not(target_env = "uclibc"))]
 pub const SOL_NETLINK: ::c_int = 270;
-#[cfg(not(target_env = "uclibc"))]
 pub const SOL_TIPC: ::c_int = 271;
 
 pub const AF_UNSPEC: ::c_int = 0;
@@ -513,7 +475,6 @@ pub const AF_PACKET: ::c_int = 17;
 pub const AF_ASH: ::c_int = 18;
 pub const AF_ECONET: ::c_int = 19;
 pub const AF_ATMSVC: ::c_int = 20;
-#[cfg(not(target_env = "uclibc"))]
 pub const AF_RDS: ::c_int = 21;
 pub const AF_SNA: ::c_int = 22;
 pub const AF_IRDA: ::c_int = 23;
@@ -554,7 +515,6 @@ pub const PF_PACKET: ::c_int = AF_PACKET;
 pub const PF_ASH: ::c_int = AF_ASH;
 pub const PF_ECONET: ::c_int = AF_ECONET;
 pub const PF_ATMSVC: ::c_int = AF_ATMSVC;
-#[cfg(not(target_env = "uclibc"))]
 pub const PF_RDS: ::c_int = AF_RDS;
 pub const PF_SNA: ::c_int = AF_SNA;
 pub const PF_IRDA: ::c_int = AF_IRDA;
@@ -590,7 +550,6 @@ pub const MSG_ERRQUEUE: ::c_int = 0x2000;
 pub const MSG_NOSIGNAL: ::c_int = 0x4000;
 pub const MSG_MORE: ::c_int = 0x8000;
 pub const MSG_WAITFORONE: ::c_int = 0x10000;
-#[cfg(not(target_env = "uclibc"))]
 pub const MSG_FASTOPEN: ::c_int = 0x20000000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
 
@@ -606,11 +565,8 @@ pub const IP_TTL: ::c_int = 2;
 pub const IP_HDRINCL: ::c_int = 3;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
-#[cfg(not(target_env = "uclibc"))]
 pub const IP_TRANSPARENT: ::c_int = 19;
-#[cfg(not(target_env = "uclibc"))]
 pub const IPV6_ADD_MEMBERSHIP: ::c_int = 20;
-#[cfg(not(target_env = "uclibc"))]
 pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
 
 pub const TCP_NODELAY: ::c_int = 1;
@@ -667,50 +623,27 @@ pub const EPOLL_CTL_DEL: ::c_int = 2;
 pub const MNT_DETACH: ::c_int = 0x2;
 pub const MNT_EXPIRE: ::c_int = 0x4;
 
-#[cfg(not(target_env = "uclibc"))]
 pub const Q_GETFMT: ::c_int = 0x800004;
-#[cfg(not(target_env = "uclibc"))]
 pub const Q_GETINFO: ::c_int = 0x800005;
-#[cfg(not(target_env = "uclibc"))]
 pub const Q_SETINFO: ::c_int = 0x800006;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_BLIMITS: ::uint32_t = 1;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_SPACE: ::uint32_t = 2;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_ILIMITS: ::uint32_t = 4;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_INODES: ::uint32_t = 8;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_BTIME: ::uint32_t = 16;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_ITIME: ::uint32_t = 32;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_LIMITS: ::uint32_t = 5;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_USAGE: ::uint32_t = 10;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_TIMES: ::uint32_t = 48;
-#[cfg(not(target_env = "uclibc"))]
 pub const QIF_ALL: ::uint32_t = 63;
 
 pub const MNT_FORCE: ::c_int = 0x1;
 
-cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
-        pub const Q_SYNC: ::c_int = 0x800001;
-        pub const Q_QUOTAON: ::c_int = 0x800002;
-        pub const Q_QUOTAOFF: ::c_int = 0x800003;
-        pub const Q_GETQUOTA: ::c_int = 0x800007;
-        pub const Q_SETQUOTA: ::c_int = 0x800008;
-    } else {
-        pub const Q_SYNC: ::c_int = 0x600;
-        pub const Q_QUOTAON: ::c_int = 0x100;
-        pub const Q_QUOTAOFF: ::c_int = 0x200;
-        pub const Q_GETQUOTA: ::c_int = 0x300;
-        pub const Q_SETQUOTA: ::c_int = 0x400;
-    }
-}
+pub const Q_SYNC: ::c_int = 0x800001;
+pub const Q_QUOTAON: ::c_int = 0x800002;
+pub const Q_QUOTAOFF: ::c_int = 0x800003;
+pub const Q_GETQUOTA: ::c_int = 0x800007;
+pub const Q_SETQUOTA: ::c_int = 0x800008;
 
 pub const TCIOFF: ::c_int = 2;
 pub const TCION: ::c_int = 3;
@@ -797,9 +730,7 @@ pub const AT_FDCWD: ::c_int = -100;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100;
 pub const AT_REMOVEDIR: ::c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
-#[cfg(not(target_env = "uclibc"))]
 pub const AT_NO_AUTOMOUNT: ::c_int = 0x800;
-#[cfg(not(target_env = "uclibc"))]
 pub const AT_EMPTY_PATH: ::c_int = 0x1000;
 
 pub const LOG_CRON: ::c_int = 9 << 3;
@@ -1007,7 +938,6 @@ extern {
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
     pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
-    #[cfg(not(target_env = "uclibc"))]
     pub fn sysinfo (info: *mut ::sysinfo) -> ::c_int;
 
     pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
@@ -1033,7 +963,6 @@ extern {
                              cpusetsize: ::size_t,
                              cpuset: *const cpu_set_t) -> ::c_int;
     pub fn unshare(flags: ::c_int) -> ::c_int;
-    #[cfg(not(target_env = "uclibc"))]
     pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
     pub fn sem_timedwait(sem: *mut sem_t,
                          abstime: *const ::timespec) -> ::c_int;
