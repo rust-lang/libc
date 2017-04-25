@@ -33,15 +33,15 @@ s! {
     }
 
     pub struct stat {
-        pub st_dev: ::c_ulong,
-        st_pad1: [::c_long; 3],
+        pub st_dev: ::dev_t,
+        st_pad1: [::c_long; 2],
         pub st_ino: ::ino_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
-        pub st_rdev: ::c_ulong,
-        pub st_pad2: [::c_long; 2],
+        pub st_rdev: ::dev_t,
+        pub st_pad2: [::c_long; 1],
         pub st_size: ::off_t,
         st_pad3: ::c_long,
         pub st_atime: ::time_t,
@@ -56,14 +56,14 @@ s! {
     }
 
     pub struct stat64 {
-        pub st_dev: ::c_ulong,
-        st_pad1: [::c_long; 3],
+        pub st_dev: ::dev_t,
+        st_pad1: [::c_long; 2],
         pub st_ino: ::ino64_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
-        pub st_rdev: ::c_ulong,
+        pub st_rdev: ::dev_t,
         st_pad2: [::c_long; 2],
         pub st_size: ::off64_t,
         pub st_atime: ::time_t,
@@ -83,11 +83,10 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_flags: ::c_int,
+        pub sa_flags: ::c_uint,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: sigset_t,
         _restorer: *mut ::c_void,
-        _resv: [::c_int; 1],
     }
 
     pub struct stack_t {
@@ -97,7 +96,7 @@ s! {
     }
 
     pub struct sigset_t {
-        __val: [::c_ulong; 32],
+        __val: [::c_ulong; 4],
     }
 
     pub struct siginfo_t {
@@ -191,7 +190,7 @@ s! {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
-        pub msg_iovlen: ::size_t,
+        pub msg_iovlen: ::c_int,
         pub msg_control: *mut ::c_void,
         pub msg_controllen: ::size_t,
         pub msg_flags: ::c_int,
