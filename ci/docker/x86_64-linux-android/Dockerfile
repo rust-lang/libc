@@ -1,32 +1,26 @@
 FROM ubuntu:16.04
 
-RUN dpkg --add-architecture i386 && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-  file \
-  curl \
   ca-certificates \
-  python \
-  unzip \
-  expect \
-  openjdk-9-jre \
-  libstdc++6:i386 \
-  libpulse0 \
+  curl \
   gcc \
-  libc6-dev
+  libc-dev \
+  python \
+  unzip
 
 WORKDIR /android/
-COPY android* /android/
-
 ENV ANDROID_ARCH=x86_64
-ENV PATH=$PATH:/android/ndk-$ANDROID_ARCH/bin:/android/sdk/tools:/android/sdk/platform-tools
-
+COPY android-install-ndk.sh /android/
 RUN sh /android/android-install-ndk.sh $ANDROID_ARCH
-RUN sh /android/android-install-sdk.sh $ANDROID_ARCH
-RUN mv /root/.android /tmp
-RUN chmod 777 -R /tmp/.android
-RUN chmod 755 /android/sdk/tools/* /android/sdk/tools/qemu/linux-x86_64/*
 
-ENV PATH=$PATH:/rust/bin \
+# We do not run x86_64-linux-android tests on an android emulator.
+# See ci/android-sysimage.sh for informations about how tests are run.
+COPY android-sysimage.sh /android/
+RUN bash /android/android-sysimage.sh x86_64 x86_64-21_r04.zip
+
+ENV PATH=$PATH:/rust/bin:/android/ndk-$ANDROID_ARCH/bin \
     CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=x86_64-linux-android-gcc \
+    CC_x86_64_linux_android=x86_64-linux-android-gcc \
+    CXX_x86_64_linux_android=x86_64-linux-android-g++ \
     HOME=/tmp

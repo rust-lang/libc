@@ -56,6 +56,10 @@ matrix:
     - os: linux
       env: TARGET=i686-linux-android
       rust: stable
+    # as of 2017/05/03 x86_64-linux-android are not on stable
+    - os: linux
+      env: TARGET=x86_64-linux-android
+      rust: beta
     - os: linux
       env: TARGET=x86_64-unknown-linux-musl
       rust: stable

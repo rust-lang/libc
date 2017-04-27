@@ -105,7 +105,10 @@ case "$TARGET" in
 esac
 
 case "$TARGET" in
-  arm-linux-androideabi | aarch64-linux-android | i686-linux-android | x86_64-linux-android)
+  # Android emulator for x86_64 does not work on travis (missing hardware
+  # acceleration). Tests are run on case *). See ci/android-sysimage.sh for
+  # informations about how tests are run.
+  arm-linux-androideabi | aarch64-linux-android | i686-linux-android)
     # set SHELL so android can detect a 64bits system, see
     # http://stackoverflow.com/a/41789144
     # https://issues.jenkins-ci.org/browse/JENKINS-26930?focusedCommentId=230791&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-230791
