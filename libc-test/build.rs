@@ -77,6 +77,7 @@ fn main() {
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
         cfg.header("netinet/tcp.h");
+        cfg.header("resolv.h");
         cfg.header("pthread.h");
         cfg.header("dlfcn.h");
         cfg.header("signal.h");

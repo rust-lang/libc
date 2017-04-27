@@ -206,9 +206,22 @@ pub const PRIO_MAX: ::c_int = 20;
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
-    } else if #[cfg(all(not(stdbuild), feature = "use_std"))] {
+    } else if #[cfg(all(not(stdbuild),
+                        feature = "use_std",
+                        not(any(target_os = "macos",
+                                target_os = "ios",
+                                target_os = "android",
+                                target_os = "openbsd",
+                                target_os = "bitrig")
+                        )))] {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
+    } else if #[cfg(all(not(stdbuild), feature = "use_std"))] {
+        // except on macOS and iOS, where we must link with lib resolv
+        // for res_init, despite libsystem_info including it:
+        // http://blog.achernya.com/2013/03/os-x-has-silly-libsystem.html
+        #[link(name = "resolv")]
+        extern {}
     } else if #[cfg(any(all(target_env = "musl", not(target_arch = "mips"))))] {
         #[link(name = "c", kind = "static", cfg(target_feature = "crt-static"))]
         #[link(name = "c", cfg(not(target_feature = "crt-static")))]
@@ -229,6 +242,7 @@ cfg_if! {
                         target_os = "bitrig"))] {
         #[link(name = "c")]
         #[link(name = "m")]
+        #[link(name = "resolv")]
         extern {}
     } else if #[cfg(target_os = "haiku")] {
         #[link(name = "root")]
@@ -694,6 +708,17 @@ extern {
                        res: *mut *mut addrinfo) -> ::c_int;
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
+    #[cfg_attr(all(unix,
+                   not(target_os = "macos"),
+                   not(target_os = "ios"),
+                   not(target_os = "netbsd"),
+                   not(target_os = "solaris"),
+                   not(target_env = "musl")
+                   ),
+               link_name = "__res_init")]
+    #[cfg_attr(any(target_os = "macos", target_os = "ios"),
+               link_name = "res_9_init")]
+    pub fn res_init() -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
     pub fn gmtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
