@@ -18,24 +18,6 @@ pub type __fsword_t = ::c_long;
 pub type __priority_which_t = ::c_uint;
 
 s! {
-    pub struct aiocb {
-        pub aio_fildes: ::c_int,
-        pub aio_lio_opcode: ::c_int,
-        pub aio_reqprio: ::c_int,
-        pub aio_buf: *mut ::c_void,
-        pub aio_nbytes: ::size_t,
-        pub aio_sigevent: ::sigevent,
-        __next_prio: *mut aiocb,
-        __abs_prio: ::c_int,
-        __policy: ::c_int,
-        __error_code: ::c_int,
-        __return_value: ::ssize_t,
-        pub aio_offset: off_t,
-        #[cfg(target_pointer_width = "32")]
-        __unused1: [::c_char; 4],
-        __glibc_reserved: [::c_char; 32]
-    }
-
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -367,31 +349,6 @@ pub const O_DIRECTORY: ::c_int = 0x10000;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
 
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
-
-pub const LC_PAPER: ::c_int = 7;
-pub const LC_NAME: ::c_int = 8;
-pub const LC_ADDRESS: ::c_int = 9;
-pub const LC_TELEPHONE: ::c_int = 10;
-pub const LC_MEASUREMENT: ::c_int = 11;
-pub const LC_IDENTIFICATION: ::c_int = 12;
-pub const LC_PAPER_MASK: ::c_int = (1 << LC_PAPER);
-pub const LC_NAME_MASK: ::c_int = (1 << LC_NAME);
-pub const LC_ADDRESS_MASK: ::c_int = (1 << LC_ADDRESS);
-pub const LC_TELEPHONE_MASK: ::c_int = (1 << LC_TELEPHONE);
-pub const LC_MEASUREMENT_MASK: ::c_int = (1 << LC_MEASUREMENT);
-pub const LC_IDENTIFICATION_MASK: ::c_int = (1 << LC_IDENTIFICATION);
-pub const LC_ALL_MASK: ::c_int = ::LC_CTYPE_MASK
-                               | ::LC_NUMERIC_MASK
-                               | ::LC_TIME_MASK
-                               | ::LC_COLLATE_MASK
-                               | ::LC_MONETARY_MASK
-                               | ::LC_MESSAGES_MASK
-                               | LC_PAPER_MASK
-                               | LC_NAME_MASK
-                               | LC_ADDRESS_MASK
-                               | LC_TELEPHONE_MASK
-                               | LC_MEASUREMENT_MASK
-                               | LC_IDENTIFICATION_MASK;
 
 pub const MAP_ANONYMOUS: ::c_int = 0x0020;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;

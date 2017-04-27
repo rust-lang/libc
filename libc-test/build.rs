@@ -319,9 +319,6 @@ fn main() {
             // This is actually a union, not a struct
             "sigval" => true,
 
-            // These structs didn't exist when uClibc was developed
-            "aiocb" if uclibc => true,
-
             _ => false
         }
     });
@@ -400,10 +397,6 @@ fn main() {
             "KERN_KDENABLE_BG_TRACE" if apple => true,
             "KERN_KDDISABLE_BG_TRACE" if apple => true,
 
-            // uClibc doesn't support a LOT of constants, because its latest release
-            // was before they coud be implemented yet
-            "LC_PAPER" | "LC_NAME" | "LC_ADDRESS" | "LC_TELEPHONE" | "LC_MEASUREMENT" | "LC_IDENTIFICATION" |
-            "LC_PAPER_MASK" | "LC_NAME_MASK" | "LC_ADDRESS_MASK" | "LC_TELEPHONE_MASK" | "LC_MEASUREMENT_MASK" | "LC_IDENTIFICATION_MASK" | "LC_ALL_MASK" |
             // not entirely sure why these don't work...
             "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
             "MADV_MERGEABLE" | "MADV_UNMERGEABLE" | "MADV_HWPOISON" | "IPV6_ADD_MEMBERSHIP" | "IPV6_DROP_MEMBERSHIP" | "IPV6_MULTICAST_LOOP" | "IPV6_V6ONLY" |
@@ -498,7 +491,7 @@ fn main() {
             "fremovexattr" |
             "backtrace" |
             "sysinfo" | "newlocale" | "duplocale" | "freelocale" | "uselocale" |
-            "nl_langinfo_l" | "wcslen" | "wcstombs" if uclibc && linux => true,
+            "nl_langinfo_l" | "wcslen" | "wcstombs" if uclibc => true,
 
             _ => false,
         }

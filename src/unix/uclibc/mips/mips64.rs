@@ -14,22 +14,6 @@ pub type time_t = i64;
 pub type wchar_t = i32;
 
 s! {
-    pub struct aiocb {
-        pub aio_fildes: ::c_int,
-        pub aio_lio_opcode: ::c_int,
-        pub aio_reqprio: ::c_int,
-        pub aio_buf: *mut ::c_void,
-        pub aio_nbytes: ::size_t,
-        pub aio_sigevent: ::sigevent,
-        __next_prio: *mut aiocb,
-        __abs_prio: ::c_int,
-        __policy: ::c_int,
-        __error_code: ::c_int,
-        __return_value: ::ssize_t,
-        pub aio_offset: off_t,
-        __glibc_reserved: [::c_char; 32]
-    }
-
     pub struct stat {
         pub st_dev: ::c_ulong,
         st_pad1: [::c_long; 2],
