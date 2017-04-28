@@ -210,8 +210,6 @@ cfg_if! {
                         feature = "use_std",
                         not(any(target_os = "macos",
                                 target_os = "ios",
-                                target_os = "android",
-                                target_os = "openbsd",
                                 target_os = "bitrig")
                         )))] {
         // cargo build, don't pull in anything extra as the libstd  dep
@@ -237,12 +235,15 @@ cfg_if! {
         extern {}
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
-                        target_os = "android",
-                        target_os = "openbsd",
                         target_os = "bitrig"))] {
         #[link(name = "c")]
         #[link(name = "m")]
         #[link(name = "resolv")]
+        extern {}
+    } else if #[cfg(any(target_os = "android",
+                        target_os = "openbsd"))] {
+        #[link(name = "c")]
+        #[link(name = "m")]
         extern {}
     } else if #[cfg(target_os = "haiku")] {
         #[link(name = "root")]
