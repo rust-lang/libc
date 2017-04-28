@@ -190,6 +190,15 @@ fn main() {
             cfg.header("linux/magic.h");
             cfg.header("linux/reboot.h");
 
+            if !android {
+                cfg.header("netinet/udp.h");
+                cfg.header("netipx/ipx.h");
+                cfg.header("netax25/ax25.h");
+                cfg.header("netatalk/at.h");
+                cfg.header("netrose/rose.h");
+                cfg.header("netrom/netrom.h");
+            }
+
             if !mips {
                 cfg.header("linux/quota.h");
             }
@@ -340,6 +349,24 @@ fn main() {
             "FILE_ATTRIBUTE_NO_SCRUB_DATA" |
             "FILE_ATTRIBUTE_INTEGRITY_STREAM" |
             "ERROR_NOTHING_TO_TERMINATE" if mingw => true,
+
+            // these are not in musl
+            "SOL_NETLINK" |
+            "SOL_UDP" |
+            "SOL_AX25" |
+            "SOL_ATALK" |
+            "SOL_NETROM" |
+            "SOL_IPX" |
+            "SOL_ROSE" if musl => true,
+
+            // these are not in glibc or musl yet (but they are in android)
+            "SOL_SCTP" |
+            "SOL_UDPLITE" |
+            "SOL_NETBEUI" |
+            "SOL_LLC" |
+            "SOL_DCCP" |
+            "SOL_NETLINK" |
+            "SOL_TIPC" if linux => true,
 
             "SIG_IGN" => true, // sighandler_t weirdness
 
