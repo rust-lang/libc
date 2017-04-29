@@ -713,6 +713,7 @@ extern {
                    not(target_os = "macos"),
                    not(target_os = "ios"),
                    not(target_os = "netbsd"),
+                   not(target_os = "openbsd"),
                    not(target_os = "solaris"),
                    not(target_env = "musl")
                    ),
