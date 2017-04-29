@@ -469,6 +469,10 @@ fn main() {
             // it's in a header file?
             "endpwent" if android => true,
 
+            // Apparently it exists, but isn't defined in a header:
+            // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
+            "res_init" if android => true,
+
             _ => false,
         }
     });
