@@ -209,8 +209,7 @@ cfg_if! {
     } else if #[cfg(all(not(stdbuild),
                         feature = "use_std",
                         not(any(target_os = "macos",
-                                target_os = "ios",
-                                target_os = "bitrig")
+                                target_os = "ios")
                         )))] {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
@@ -234,14 +233,14 @@ cfg_if! {
         #[link(name = "m")]
         extern {}
     } else if #[cfg(any(target_os = "macos",
-                        target_os = "ios",
-                        target_os = "bitrig"))] {
+                        target_os = "ios"))] {
         #[link(name = "c")]
         #[link(name = "m")]
         #[link(name = "resolv")]
         extern {}
     } else if #[cfg(any(target_os = "android",
-                        target_os = "openbsd"))] {
+                        target_os = "openbsd",
+                        target_os = "bitrig"))] {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
@@ -714,6 +713,7 @@ extern {
                    not(target_os = "ios"),
                    not(target_os = "netbsd"),
                    not(target_os = "openbsd"),
+                   not(target_os = "bitrig"),
                    not(target_os = "solaris"),
                    not(target_env = "musl")
                    ),
