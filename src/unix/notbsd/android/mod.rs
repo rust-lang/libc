@@ -753,6 +753,17 @@ f! {
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.__bits == set2.__bits
     }
+    pub fn major(dev: ::dev_t) -> ::c_int {
+        ((dev >> 8) & 0xfff) as ::c_int
+    }
+    pub fn minor(dev: ::dev_t) -> ::c_int {
+        ((dev & 0xff) | ((dev >> 12) & 0xfff00)) as ::c_int
+    }
+    pub fn makedev(ma: ::c_int, mi: ::c_int) -> ::dev_t {
+        let ma = ma as ::dev_t;
+        let mi = mi as ::dev_t;
+        ((ma & 0xfff) << 8) | (mi & 0xff) | ((mi & 0xfff00) << 12)
+    }
 }
 
 extern {
