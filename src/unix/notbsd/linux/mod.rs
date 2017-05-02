@@ -220,6 +220,11 @@ s! {
         pub msgtql: ::c_int,
         pub msgseg: ::c_ushort,
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -981,6 +986,13 @@ extern {
                    flags: ::c_int) -> ::ssize_t;
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
+}
+
+extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
 }
 
 cfg_if! {
