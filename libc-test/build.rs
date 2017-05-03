@@ -77,6 +77,7 @@ fn main() {
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
         cfg.header("netinet/tcp.h");
+        cfg.header("resolv.h");
         cfg.header("pthread.h");
         cfg.header("dlfcn.h");
         cfg.header("signal.h");
@@ -472,6 +473,16 @@ fn main() {
             // Apparently the NDK doesn't have this defined on android, but
             // it's in a header file?
             "endpwent" if android => true,
+
+            // Apparently res_init exists on Android, but isn't defined in a header:
+            // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
+            "res_init" if android => true,
+
+            // On macOS and iOS, res_init is available, but requires linking with libresolv:
+            // http://blog.achernya.com/2013/03/os-x-has-silly-libsystem.html
+            // See discussion for skipping here:
+            // https://github.com/rust-lang/libc/pull/585#discussion_r114561460
+            "res_init" if apple => true,
 
             _ => false,
         }
