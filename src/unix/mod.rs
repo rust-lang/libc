@@ -206,19 +206,9 @@ pub const PRIO_MAX: ::c_int = 20;
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
-    } else if #[cfg(all(not(stdbuild),
-                        feature = "use_std",
-                        not(any(target_os = "macos",
-                                target_os = "ios")
-                        )))] {
+    } else if #[cfg(all(not(stdbuild), feature = "use_std"))] {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
-    } else if #[cfg(all(not(stdbuild), feature = "use_std"))] {
-        // except on macOS and iOS, where we must link with lib resolv
-        // for res_init, despite libsystem_info including it:
-        // http://blog.achernya.com/2013/03/os-x-has-silly-libsystem.html
-        #[link(name = "resolv")]
-        extern {}
     } else if #[cfg(any(all(target_env = "musl", not(target_arch = "mips"))))] {
         #[link(name = "c", kind = "static", cfg(target_feature = "crt-static"))]
         #[link(name = "c", cfg(not(target_feature = "crt-static")))]
@@ -233,12 +223,8 @@ cfg_if! {
         #[link(name = "m")]
         extern {}
     } else if #[cfg(any(target_os = "macos",
-                        target_os = "ios"))] {
-        #[link(name = "c")]
-        #[link(name = "m")]
-        #[link(name = "resolv")]
-        extern {}
-    } else if #[cfg(any(target_os = "android",
+                        target_os = "ios",
+                        target_os = "android",
                         target_os = "openbsd",
                         target_os = "bitrig"))] {
         #[link(name = "c")]
