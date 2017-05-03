@@ -708,15 +708,10 @@ extern {
                        res: *mut *mut addrinfo) -> ::c_int;
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
-    #[cfg_attr(all(unix,
-                   not(target_os = "macos"),
-                   not(target_os = "ios"),
-                   not(target_os = "netbsd"),
-                   not(target_os = "openbsd"),
-                   not(target_os = "bitrig"),
-                   not(target_os = "solaris"),
-                   not(target_env = "musl")
-                   ),
+    #[cfg_attr(any(
+                   all(target_os = "linux", not(target_env = "musl")),
+                   target_os = "freebsd",
+                   target_os = "dragonfly"),
                link_name = "__res_init")]
     #[cfg_attr(any(target_os = "macos", target_os = "ios"),
                link_name = "res_9_init")]
