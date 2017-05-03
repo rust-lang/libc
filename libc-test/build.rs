@@ -469,9 +469,15 @@ fn main() {
             // it's in a header file?
             "endpwent" if android => true,
 
-            // Apparently it exists, but isn't defined in a header:
+            // Apparently res_init exists on Android, but isn't defined in a header:
             // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
             "res_init" if android => true,
+
+            // On macOS and iOS, res_init is available, but requires linking with libresolv:
+            // http://blog.achernya.com/2013/03/os-x-has-silly-libsystem.html
+            // See discussion for skipping here:
+            // https://github.com/rust-lang/libc/pull/585#discussion_r114561460
+            "res_init" if apple => true,
 
             _ => false,
         }
