@@ -576,6 +576,9 @@ extern {
                link_name = "pthread_join$UNIX2003")]
     pub fn pthread_join(native: ::pthread_t,
                         value: *mut *mut ::c_void) -> ::c_int;
+    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
+                          parent: Option<unsafe extern fn()>,
+                          child: Option<unsafe extern fn()>) -> ::c_int;
     pub fn pthread_exit(value: *mut ::c_void);
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
@@ -691,6 +694,14 @@ extern {
                        res: *mut *mut addrinfo) -> ::c_int;
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
+    #[cfg_attr(any(
+                   all(target_os = "linux", not(target_env = "musl")),
+                   target_os = "freebsd",
+                   target_os = "dragonfly"),
+               link_name = "__res_init")]
+    #[cfg_attr(any(target_os = "macos", target_os = "ios"),
+               link_name = "res_9_init")]
+    pub fn res_init() -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
     pub fn gmtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
@@ -776,6 +787,12 @@ extern {
     pub fn sigdelset(set: *mut sigset_t, signum: ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigismember14")]
     pub fn sigismember(set: *const sigset_t, signum: ::c_int) -> ::c_int;
+
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigprocmask14")]
+    pub fn sigprocmask(how: ::c_int,
+                       set: *const sigset_t,
+                       oldset: *mut sigset_t)
+                       -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;

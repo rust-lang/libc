@@ -70,7 +70,7 @@ s! {
         #[cfg(target_arch = "sparc64")]
         __reserved0: ::c_int,
         pub sa_flags: ::c_int,
-        _restorer: *mut ::c_void,
+        pub sa_restorer: ::dox::Option<extern fn()>,
     }
 
     pub struct stack_t {
@@ -314,7 +314,6 @@ pub const TMPFS_MAGIC: ::c_long = 0x01021994;
 pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
 
 pub const VEOF: usize = 4;
-pub const IUTF8: ::tcflag_t = 0x00004000;
 
 pub const CPU_SETSIZE: ::c_int = 0x400;
 

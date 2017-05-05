@@ -1,12 +1,11 @@
-// The following definitions are correct for aarch64 and may be wrong for x86_64
+// The following definitions are correct for aarch64 and x86_64,
+// but may be wrong for mips64
 
-pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type mode_t = u32;
 pub type off64_t = i64;
 pub type socklen_t = u32;
-pub type wchar_t = u32;
 
 s! {
     pub struct sigset_t {
@@ -17,58 +16,12 @@ s! {
         pub sa_flags: ::c_uint,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
-        _restorer: *mut ::c_void,
+        pub sa_restorer: ::dox::Option<extern fn()>,
     }
 
     pub struct rlimit64 {
         pub rlim_cur: ::c_ulonglong,
         pub rlim_max: ::c_ulonglong,
-    }
-
-    pub struct stat {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_mode: ::c_uint,
-        pub st_nlink: ::c_uint,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __pad1: ::c_ulong,
-        pub st_size: ::off64_t,
-        pub st_blksize: ::c_int,
-        __pad2: ::c_int,
-        pub st_blocks: ::c_long,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_ulong,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_ulong,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_ulong,
-        __unused4: ::c_uint,
-        __unused5: ::c_uint,
-    }
-
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_mode: ::c_uint,
-        pub st_nlink: ::c_uint,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __pad1: ::c_ulong,
-        pub st_size: ::off64_t,
-        pub st_blksize: ::c_int,
-        __pad2: ::c_int,
-        pub st_blocks: ::c_long,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_ulong,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_ulong,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_ulong,
-        __unused4: ::c_uint,
-        __unused5: ::c_uint,
     }
 
     pub struct pthread_attr_t {
@@ -143,15 +96,10 @@ s! {
     }
 }
 
-pub const O_DIRECT: ::c_int = 0x10000;
-pub const O_DIRECTORY: ::c_int = 0x4000;
-pub const O_NOFOLLOW: ::c_int = 0x8000;
-
 pub const RTLD_GLOBAL: ::c_int = 0x00100;
 pub const RTLD_NOW: ::c_int = 2;
 pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
 
-pub const SYS_gettid: ::c_long = 178;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     value: 0,
     __reserved: [0; 36],
@@ -199,4 +147,16 @@ extern {
 
     // the return type should be ::ssize_t, but it is c_int!
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(target_arch = "x86_64")] {
+        mod x86_64;
+        pub use self::x86_64::*;
+    } else if #[cfg(target_arch = "aarch64")] {
+        mod aarch64;
+        pub use self::aarch64::*;
+    } else {
+        // Unknown target_arch
+    }
 }

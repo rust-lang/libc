@@ -322,7 +322,7 @@ pub const VMIN: usize = 4;
 pub const IEXTEN: ::tcflag_t = 0x00000100;
 pub const TOSTOP: ::tcflag_t = 0x00008000;
 pub const FLUSHO: ::tcflag_t = 0x00002000;
-pub const IUTF8: ::tcflag_t = 0x00004000;
+pub const EXTPROC: ::tcflag_t = 0o200000;
 pub const TCSANOW: ::c_int = 0x540e;
 pub const TCSADRAIN: ::c_int = 0x540f;
 pub const TCSAFLUSH: ::c_int = 0x5410;
@@ -420,6 +420,7 @@ pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
 pub const SIGSTKSZ: ::size_t = 8192;
+pub const MINSIGSTKSZ: ::size_t = 2048;
 pub const CBAUD: ::tcflag_t = 0o0010017;
 pub const TAB1: ::c_int = 0x00000800;
 pub const TAB2: ::c_int = 0x00001000;

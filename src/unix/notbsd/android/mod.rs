@@ -464,7 +464,6 @@ pub const TCSBRKP: ::c_int = 0x5425;
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 0x1;
 pub const TCSAFLUSH: ::c_int = 0x2;
-pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const VEOF: usize = 4;
 pub const VEOL: usize = 11;
 pub const VEOL2: usize = 16;
@@ -585,6 +584,7 @@ pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
 pub const SIGSTKSZ: ::size_t = 8192;
+pub const MINSIGSTKSZ: ::size_t = 2048;
 pub const CBAUD: ::tcflag_t = 0o0010017;
 pub const TAB1: ::c_int = 0x00000800;
 pub const TAB2: ::c_int = 0x00001000;
@@ -752,6 +752,17 @@ f! {
 
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.__bits == set2.__bits
+    }
+    pub fn major(dev: ::dev_t) -> ::c_int {
+        ((dev >> 8) & 0xfff) as ::c_int
+    }
+    pub fn minor(dev: ::dev_t) -> ::c_int {
+        ((dev & 0xff) | ((dev >> 12) & 0xfff00)) as ::c_int
+    }
+    pub fn makedev(ma: ::c_int, mi: ::c_int) -> ::dev_t {
+        let ma = ma as ::dev_t;
+        let mi = mi as ::dev_t;
+        ((ma & 0xfff) << 8) | (mi & 0xff) | ((mi & 0xfff00) << 12)
     }
 }
 
