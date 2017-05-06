@@ -323,8 +323,6 @@ pub const PTRACE_SETFPXREGS: ::c_uint = 19;
 pub const PTRACE_GETREGS: ::c_uint = 12;
 pub const PTRACE_SETREGS: ::c_uint = 13;
 
-pub const MAP_HUGETLB: ::c_int = 0x080000;
-
 pub const EFD_NONBLOCK: ::c_int = 0x80;
 
 pub const F_GETLK: ::c_int = 14;

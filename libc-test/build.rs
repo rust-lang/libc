@@ -398,11 +398,11 @@ fn main() {
             "KERN_KDENABLE_BG_TRACE" if apple => true,
             "KERN_KDDISABLE_BG_TRACE" if apple => true,
 
-            // not entirely sure why these don't work...
+            // These are either unimplemented or optionally built into uClibc
             "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
             "MADV_MERGEABLE" | "MADV_UNMERGEABLE" | "MADV_HWPOISON" | "IPV6_ADD_MEMBERSHIP" | "IPV6_DROP_MEMBERSHIP" | "IPV6_MULTICAST_LOOP" | "IPV6_V6ONLY" |
-            "MAP_STACK" | "RTLD_DEEPBIND" | "MAP_HUGETLB" |
-            "SOL_IPV6" | "SOL_ICMPV6" if uclibc => true,
+            "MAP_STACK" | "RTLD_DEEPBIND" | "SOL_IPV6" | "SOL_ICMPV6" if uclibc => true,
+
             _ => false,
         }
     });
