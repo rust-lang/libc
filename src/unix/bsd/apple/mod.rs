@@ -1516,6 +1516,13 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
+pub const XATTR_NOFOLLOW: ::c_int = 0x0001;
+pub const XATTR_CREATE: ::c_int = 0x0002;
+pub const XATTR_REPLACE: ::c_int = 0x0004;
+pub const XATTR_NOSECURITY: ::c_int = 0x0008;
+pub const XATTR_NODEFAULT: ::c_int = 0x0010;
+pub const XATTR_SHOWCOMPRESSION: ::c_int = 0x0020;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
