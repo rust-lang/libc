@@ -1665,6 +1665,27 @@ extern {
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
 
+    pub fn getxattr(path: *const ::c_char, name: *const ::c_char,
+                    value: *mut ::c_void, size: ::size_t, position: u32,
+                    flags: ::c_int) -> ::ssize_t;
+    pub fn fgetxattr(filedes: ::c_int, name: *const ::c_char,
+                     value: *mut ::c_void, size: ::size_t, position: u32,
+                     flags: ::c_int) -> ::ssize_t;
+    pub fn setxattr(path: *const ::c_char, name: *const ::c_char,
+                    value: *const ::c_void, size: ::size_t, position: u32,
+                    flags: ::c_int) -> ::c_int;
+    pub fn fsetxattr(filedes: ::c_int, name: *const ::c_char,
+                     value: *const ::c_void, size: ::size_t, position: u32,
+                     flags: ::c_int) -> ::c_int;
+    pub fn listxattr(path: *const ::c_char, list: *mut ::c_char,
+                     size: ::size_t, flags: ::c_int) -> ::ssize_t;
+    pub fn flistxattr(filedes: ::c_int, list: *mut ::c_char,
+                      size: ::size_t, flags: ::c_int) -> ::ssize_t;
+    pub fn removexattr(path: *const ::c_char, name: *const ::c_char,
+                       flags: ::c_int) -> ::c_int;
+    pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char,
+                        flags: ::c_int) -> ::c_int;
+
     pub fn initgroups(user: *const ::c_char, basegroup: ::c_int) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),

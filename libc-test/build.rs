@@ -145,6 +145,7 @@ fn main() {
         cfg.header("mach/mach_time.h");
         cfg.header("malloc/malloc.h");
         cfg.header("util.h");
+        cfg.header("sys/xattr.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
