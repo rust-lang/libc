@@ -14,6 +14,7 @@ fn main() {
     let android = target.contains("android");
     let apple = target.contains("apple");
     let musl = target.contains("musl");
+    let uclibc = target.contains("uclibc");
     let freebsd = target.contains("freebsd");
     let dragonfly = target.contains("dragonfly");
     let mips = target.contains("mips");
@@ -126,8 +127,10 @@ fn main() {
 
         if !musl {
             cfg.header("sys/sysctl.h");
+        }
+        if !musl && !uclibc {
 
-            if !netbsd && !openbsd {
+            if !netbsd && !openbsd && !uclibc {
                 cfg.header("execinfo.h");
                 cfg.header("xlocale.h");
             }
@@ -165,7 +168,10 @@ fn main() {
         cfg.header("mqueue.h");
         cfg.header("ucontext.h");
         cfg.header("sys/signalfd.h");
-        cfg.header("sys/xattr.h");
+        if !uclibc {
+            // optionally included in uclibc
+            cfg.header("sys/xattr.h");
+        }
         cfg.header("sys/ipc.h");
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
@@ -185,7 +191,9 @@ fn main() {
         cfg.header("sys/sendfile.h");
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
-        cfg.header("sys/sysinfo.h");
+        if !uclibc {
+            cfg.header("sys/sysinfo.h");
+        }
         cfg.header("sys/reboot.h");
         if !musl {
             cfg.header("linux/netlink.h");
@@ -227,7 +235,9 @@ fn main() {
     }
 
     if linux || freebsd || dragonfly || netbsd || apple {
-        cfg.header("aio.h");
+        if !uclibc {
+            cfg.header("aio.h");
+        }
     }
 
     cfg.type_name(move |ty, is_struct| {
@@ -389,6 +399,11 @@ fn main() {
             "KERN_KDENABLE_BG_TRACE" if apple => true,
             "KERN_KDDISABLE_BG_TRACE" if apple => true,
 
+            // These are either unimplemented or optionally built into uClibc
+            "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
+            "MADV_MERGEABLE" | "MADV_UNMERGEABLE" | "MADV_HWPOISON" | "IPV6_ADD_MEMBERSHIP" | "IPV6_DROP_MEMBERSHIP" | "IPV6_MULTICAST_LOOP" | "IPV6_V6ONLY" |
+            "MAP_STACK" | "RTLD_DEEPBIND" | "SOL_IPV6" | "SOL_ICMPV6" if uclibc => true,
+
             _ => false,
         }
     });
@@ -475,6 +490,17 @@ fn main() {
             // it's in a header file?
             "endpwent" if android => true,
 
+
+            // These are either unimplemented or optionally built into uClibc
+            // or "sysinfo", where it's defined but the structs in linux/sysinfo.h and sys/sysinfo.h
+            // clash so it can't be tested
+            "getxattr" | "lgetxattr" | "fgetxattr" | "setxattr" | "lsetxattr" | "fsetxattr" |
+            "listxattr" | "llistxattr" | "flistxattr" | "removexattr" | "lremovexattr" |
+            "fremovexattr" |
+            "backtrace" |
+            "sysinfo" | "newlocale" | "duplocale" | "freelocale" | "uselocale" |
+            "nl_langinfo_l" | "wcslen" | "wcstombs" if uclibc => true,
+          
             // Apparently res_init exists on Android, but isn't defined in a header:
             // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
             "res_init" if android => true,
