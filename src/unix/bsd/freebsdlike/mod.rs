@@ -876,6 +876,8 @@ pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
 pub const CRTSCTS: ::tcflag_t = 0x00030000;
 
+pub const AT_FDCWD: ::c_int = -100;
+
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
