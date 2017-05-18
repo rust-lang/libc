@@ -700,6 +700,11 @@ pub const PR_CAP_AMBIENT_CLEAR_ALL: ::c_int = 4;
 pub const XATTR_CREATE: ::c_int = 0x1;
 pub const XATTR_REPLACE: ::c_int = 0x2;
 
+// On Linux, libc doesn't define this constant, libattr does instead.
+// We still define it for Linux as it's defined by libc on other platforms,
+// and it's mentioned in the man pages for getxattr and setxattr.
+pub const ENOATTR: ::c_int = ::ENODATA;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
