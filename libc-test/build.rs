@@ -500,7 +500,7 @@ fn main() {
             "backtrace" |
             "sysinfo" | "newlocale" | "duplocale" | "freelocale" | "uselocale" |
             "nl_langinfo_l" | "wcslen" | "wcstombs" if uclibc => true,
-          
+
             // Apparently res_init exists on Android, but isn't defined in a header:
             // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
             "res_init" if android => true,
@@ -510,6 +510,9 @@ fn main() {
             // See discussion for skipping here:
             // https://github.com/rust-lang/libc/pull/585#discussion_r114561460
             "res_init" if apple => true,
+
+            // On Mac we don't use the default `close()`, instead using their $NOCANCEL variants.
+            "close" if apple => true,
 
             _ => false,
         }
