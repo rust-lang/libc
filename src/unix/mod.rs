@@ -405,7 +405,9 @@ extern {
     pub fn lchown(path: *const c_char, uid: uid_t,
                   gid: gid_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "close$UNIX2003")]
+               link_name = "close$NOCANCEL$UNIX2003")]
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
+               link_name = "close$NOCANCEL")]
     pub fn close(fd: ::c_int) -> ::c_int;
     pub fn dup(fd: ::c_int) -> ::c_int;
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
