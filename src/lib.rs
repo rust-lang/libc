@@ -103,6 +103,12 @@ pub enum c_void {
     __variant2,
 }
 
+#[repr(u8)]
+pub enum c_bool {
+    falsitas = 0,
+    veritas = 1  // in vino veritas
+}
+
 pub type int8_t = i8;
 pub type int16_t = i16;
 pub type int32_t = i32;
