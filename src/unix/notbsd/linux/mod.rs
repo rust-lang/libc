@@ -18,6 +18,7 @@ pub type msglen_t = ::c_ulong;
 pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
+pub type __cpu_mask = ::c_ulong;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
@@ -730,6 +731,16 @@ f! {
         let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.bits[idx] & (1 << offset))
+    }
+
+    pub fn CPU_COUNT(cpuset: &cpu_set_t) -> ::c_int {
+        let mut s: u32 = 0;
+        let setsize = mem::size_of::<cpu_set_t>();
+        let cpu_mask_size = mem::size_of::<__cpu_mask>();
+        for i in cpuset.bits[..(setsize / cpu_mask_size)].iter() {
+            s += i.count_ones()
+        };
+        s as ::c_int
     }
 
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
