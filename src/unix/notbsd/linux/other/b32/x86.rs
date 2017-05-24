@@ -19,7 +19,7 @@ s! {
         pub _st: [_libc_fpreg; 8],
         pub status: ::c_ulong,
     }
-    
+
     pub struct _libc_state {
         pub ebx: ::c_long,
         pub ecx: ::c_long,
