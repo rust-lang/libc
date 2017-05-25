@@ -9,12 +9,19 @@ pub use ad::*;
 // PWD = Pointer Width Dependent
 pub use pwd::*;
 
-#[cfg(target_arch = "arm", )]
+#[cfg(any(target_arch = "aarch64",
+          target_arch = "arm",
+          target_arch = "asmjs",
+          target_arch = "powerpc",
+          target_arch = "powerpc64",
+          target_arch = "s390x"))]
 mod ad {
     pub type c_char = ::c_uchar;
 }
 
 #[cfg(any(target_arch = "mips",
+          target_arch = "mips64",
+          target_arch = "sparc64",
           target_arch = "x86",
           target_arch = "x86_64"))]
 mod ad {
