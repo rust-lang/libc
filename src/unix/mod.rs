@@ -853,6 +853,8 @@ extern {
     pub fn posix_openpt(flags: ::c_int) -> ::c_int;
     pub fn ptsname(fd: ::c_int) -> *mut ::c_char;
     pub fn unlockpt(fd: ::c_int) -> ::c_int;
+
+    pub fn sync();
 }
 
 cfg_if! {
