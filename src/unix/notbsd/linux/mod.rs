@@ -225,6 +225,20 @@ s! {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
     }
+
+    pub struct sembuf {
+        pub semval: ::c_ushort,
+        pub semzcnt: ::c_ushort,
+        pub semncnt: ::c_ushort,
+        pub sempid:  ::pid_t,
+    }
+
+    pub struct semid_ds {
+        pub sem_perm: ::ipc_perm,
+        pub sem_otime: ::time_t,
+        pub sem_ctime: ::time_t,
+        pub sem_nsems: ::c_ulong,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -796,6 +810,9 @@ extern {
                   cmd: ::c_int,
                   buf: *mut ::shmid_ds) -> ::c_int;
     pub fn ftok(pathname: *const ::c_char, proj_id: ::c_int) -> ::key_t;
+    pub fn semget(key: ::key_t, nsems: ::c_int, semflag: ::c_int) -> ::c_int;
+    pub fn semop(semid: ::c_int, sops: *mut ::sembuf, nsops: ::size_t) -> ::c_int;
+    pub fn semctl(semid: ::c_int, semnum: ::c_int, cmd: ::c_int, ...) -> ::c_int;
     pub fn msgctl(msqid: ::c_int, cmd: ::c_int, buf: *mut msqid_ds) -> ::c_int;
     pub fn msgget(key: ::key_t, msgflg: ::c_int) -> ::c_int;
     pub fn msgrcv(msqid: ::c_int, msgp: *mut ::c_void, msgsz: ::size_t,
