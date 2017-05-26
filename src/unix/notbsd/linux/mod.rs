@@ -231,14 +231,6 @@ s! {
         pub sem_op: ::c_short,
         pub sem_flg: ::c_short,
     }
-
-    // FIXME
-    pub struct semid_ds {
-        // pub sem_perm: ::ipc_perm,
-        // pub sem_otime: ::time_t,
-        // pub sem_ctime: ::time_t,
-        // pub sem_nsems: ::c_ulong,
-    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
