@@ -432,6 +432,8 @@ extern {
                link_name = "recvmsg$UNIX2003")]
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
+
+    pub fn sync();
 }
 
 cfg_if! {
