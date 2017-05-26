@@ -853,6 +853,9 @@ extern {
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
     pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
+    pub fn sched_setparam(pid: ::pid_t, param: *const sched_param) -> ::c_int;
+    pub fn sched_getparam(pid: ::pid_t, param: *mut sched_param) -> ::c_int;
+    pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn epoll_create(size: ::c_int) -> ::c_int;
     pub fn epoll_create1(flags: ::c_int) -> ::c_int;
     pub fn epoll_ctl(epfd: ::c_int,
