@@ -570,12 +570,6 @@ extern {
 
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__getitimer50")]
-    pub fn getitimer(which: ::c_int, curr_value: *mut ::itimerval) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__setitimer50")]
-    pub fn setitimer(which: ::c_int,
-                     new_value: *::itimerval,
-                     old_value: *::itimerval) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
