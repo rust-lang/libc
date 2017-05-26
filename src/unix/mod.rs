@@ -125,9 +125,18 @@ s! {
         pub sival_ptr: *mut ::c_void
     }
 
+    // <sys/time.h>
     pub struct itimerval {
         pub it_interval: ::timeval,
         pub it_value: ::timeval,
+    }
+
+    // <sys/times.h>
+    pub struct tms {
+        pub tms_utime: ::clock_t,
+        pub tms_stime: ::clock_t,
+        pub tms_cutime: ::clock_t,
+        pub tms_cstime: ::clock_t,
     }
 }
 
@@ -467,6 +476,8 @@ extern {
     pub fn setpgid(pid: pid_t, pgid: pid_t) -> ::c_int;
     pub fn setsid() -> pid_t;
     pub fn setuid(uid: uid_t) -> ::c_int;
+    pub fn setreuid(ruid: uid_t, euid: uid_t) -> ::c_int;
+    pub fn setregid(rgid: gid_t, egid: gid_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sleep$UNIX2003")]
     pub fn sleep(secs: ::c_uint) -> ::c_uint;
@@ -573,6 +584,8 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
+    pub fn times(buf: *mut ::tms) -> ::clock_t;
 
     pub fn pthread_self() -> ::pthread_t;
     pub fn pthread_create(native: *mut ::pthread_t,
@@ -802,6 +815,8 @@ extern {
                        set: *const sigset_t,
                        oldset: *mut sigset_t)
                        -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigpending14")]
+    pub fn sigpending(set: *mut sigset_t) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
