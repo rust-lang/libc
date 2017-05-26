@@ -124,6 +124,11 @@ s! {
         // Actually a union of an int and a void*
         pub sival_ptr: *mut ::c_void
     }
+
+    pub struct itimerval {
+        pub it_interval: ::timeval,
+        pub it_value: ::timeval,
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
@@ -565,6 +570,12 @@ extern {
 
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
+    #[cfg_attr(target_os = "netbsd", link_name = "__getitimer50")]
+    pub fn getitimer(which: ::c_int, curr_value: *mut ::itimerval) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__setitimer50")]
+    pub fn setitimer(which: ::c_int,
+                     new_value: *::itimerval,
+                     old_value: *::itimerval) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
