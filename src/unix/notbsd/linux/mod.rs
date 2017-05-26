@@ -229,7 +229,7 @@ s! {
     pub struct sembuf {
         pub sem_num: ::c_ushort,
         pub sem_op: ::c_short,
-        pub semn_flg: ::c_short,
+        pub sem_flg: ::c_short,
     }
 
     pub struct semid_ds {
