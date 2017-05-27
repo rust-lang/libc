@@ -124,6 +124,11 @@ s! {
         // Actually a union of an int and a void*
         pub sival_ptr: *mut ::c_void
     }
+
+    pub struct itimerval {
+        pub it_interval: ::timeval,
+        pub it_value: ::timeval,
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
