@@ -720,7 +720,7 @@ extern {
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
     #[link_name = "__settimeofday50"]
-    pub fn settimeofday(tv: *const timeval, tz: *const ::c_void) -> ::c_int;
+    pub fn settimeofday(tv: *const ::timeval, tz: *const ::c_void) -> ::c_int;
 }
 
 mod other;
