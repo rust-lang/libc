@@ -518,9 +518,6 @@ extern {
                    link_name = "kill$UNIX2003")]
     pub fn kill(pid: pid_t, sig: ::c_int) -> ::c_int;
 
-    pub fn brk(addr: *mut ::c_void) -> ::c_int;
-    pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
-
     pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
     pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
     pub fn mlockall(flags: ::c_int) -> ::c_int;
@@ -587,8 +584,6 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__settimeofday50")]
-    pub fn settimeofday(tv: *const timeval, tz: *const ::timezone) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
     pub fn times(buf: *mut ::tms) -> ::clock_t;
 

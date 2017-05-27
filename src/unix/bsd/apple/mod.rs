@@ -1699,7 +1699,9 @@ extern {
                link_name = "waitid$UNIX2003")]
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
-
+    pub fn brk(addr: *const ::c_void) -> *mut ::c_void;
+    pub fn sbrk(increment: ::c_int) -> *mut ::c_void;
+    pub fn settimeofday(tv: *const timeval, tz: *const ::timezone) -> ::c_int;
 }
 
 cfg_if! {
