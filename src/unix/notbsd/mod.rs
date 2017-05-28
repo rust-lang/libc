@@ -986,6 +986,10 @@ extern {
     pub fn clearenv() -> ::c_int;
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
+    pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
+    pub fn setreuid(ruid: ::uid_t, euid: ::uid_t) -> ::c_int;
+    pub fn setregid(rgid: ::gid_t, egid: ::gid_t) -> ::c_int;
+    pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
 }

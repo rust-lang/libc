@@ -476,8 +476,6 @@ extern {
     pub fn setpgid(pid: pid_t, pgid: pid_t) -> ::c_int;
     pub fn setsid() -> pid_t;
     pub fn setuid(uid: uid_t) -> ::c_int;
-    pub fn setreuid(ruid: uid_t, euid: uid_t) -> ::c_int;
-    pub fn setregid(rgid: gid_t, egid: gid_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sleep$UNIX2003")]
     pub fn sleep(secs: ::c_uint) -> ::c_uint;
@@ -745,7 +743,6 @@ extern {
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn chroot(name: *const ::c_char) -> ::c_int;
-    pub fn acct(filename: *const ::c_char) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "usleep$UNIX2003")]
     pub fn usleep(secs: ::c_uint) -> ::c_int;
@@ -818,8 +815,6 @@ extern {
                        -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigpending14")]
     pub fn sigpending(set: *mut sigset_t) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigsuspend14")]
-    pub fn sigsuspend(mask: *const sigset_t) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
