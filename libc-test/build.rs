@@ -105,6 +105,7 @@ fn main() {
         cfg.header("syslog.h");
         cfg.header("semaphore.h");
         cfg.header("sys/statvfs.h");
+        cfg.header("sys/times.h");
     }
 
     if android {
