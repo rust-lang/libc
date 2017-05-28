@@ -384,6 +384,7 @@ pub const _SC_THREAD_ATTR_STACKSIZE: ::c_int = 78;
 pub const _SC_THREAD_PRIORITY_SCHEDULING: ::c_int = 79;
 pub const _SC_THREAD_PRIO_INHERIT: ::c_int = 80;
 pub const _SC_THREAD_PRIO_PROTECT: ::c_int = 81;
+pub const _SC_NPROCESSORS_CONF: ::c_int = 83;
 pub const _SC_NPROCESSORS_ONLN: ::c_int = 84;
 pub const _SC_ATEXIT_MAX: ::c_int = 87;
 pub const _SC_XOPEN_VERSION: ::c_int = 89;
