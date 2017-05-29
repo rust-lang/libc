@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.1.2] - 2017-05-29
+
+### Fixed
+
+- Type definitions of `c_int` and `c_uint`.
+
 ## [v0.1.1] - 2017-05-29
 
 ### Fixed
@@ -15,5 +21,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Initial release
 
-[Unreleased]: https://github.com/japaric/cty/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/japaric/cty/compare/v0.1.2...HEAD
+[v0.1.2]: https://github.com/japaric/cty/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/japaric/cty/compare/v0.1.0...v0.1.1
