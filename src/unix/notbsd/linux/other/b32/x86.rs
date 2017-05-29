@@ -20,7 +20,34 @@ s! {
         pub status: ::c_ulong,
     }
 
-    pub struct _libc_state {
+    pub struct user_fpregs_struct {
+        pub cwd: ::c_long,
+        pub swd: ::c_long,
+        pub twd: ::c_long,
+        pub fip: ::c_long,
+        pub fcs: ::c_long,
+        pub foo: ::c_long,
+        pub fos: ::c_long,
+        pub st_space: [::c_long; 20],
+    }
+
+    pub struct user_fpxregs_struct {
+        pub cwd: ::c_ushort,
+        pub swd: ::c_ushort,
+        pub twd: ::c_ushort,
+        pub fop: ::c_ushort,
+        pub fip: ::c_long,
+        pub fcs: ::c_long,
+        pub foo: ::c_long,
+        pub fos: ::c_long,
+        pub mxcsr: ::c_long,
+        __reserved: ::c_long,
+        pub st_space: [::c_long; 32],
+        pub xmm_space: [::c_long; 32],
+        padding: [::c_long; 56],
+    }
+
+    pub struct user_regs_struct {
         pub ebx: ::c_long,
         pub ecx: ::c_long,
         pub edx: ::c_long,
@@ -35,27 +62,27 @@ s! {
         pub orig_eax: ::c_long,
         pub eip: ::c_long,
         pub xcs: ::c_long,
-        pub eflags: u32,
+        pub eflags: ::c_long,
         pub esp: ::c_long,
         pub xss: ::c_long,
     }
 
-    pub struct _libc_user {
-        pub regs: _libc_state,
-        pub u_fpvalid: i32,
-        pub i387: _libc_fpstate,
-        pub u_tsize: u32,
-        pub u_dsize: u32,
-        pub u_ssize: u32,
-        pub start_code: u32,
-        pub start_stack: u32,
-        pub signal: i32,
-        __reserved: i32,
-        pub u_ar0: *mut _libc_state,
-        pub u_fpstate: *mut _libc_fpstate,
-        pub magic: u32,
+    pub struct user {
+        pub regs: user_regs_struct,
+        pub u_fpvalid: ::c_int,
+        pub i387: user_fpregs_struct,
+        pub u_tsize: ::c_ulong,
+        pub u_dsize: ::c_ulong,
+        pub u_ssize: ::c_ulong,
+        pub start_code: ::c_ulong,
+        pub start_stack: ::c_ulong,
+        pub signal: ::c_long,
+        __reserved: ::c_int,
+        pub u_ar0: *mut user_regs_struct,
+        pub u_fpstate: *mut user_fpregs_struct,
+        pub magic: ::c_ulong,
         pub u_comm: [c_char; 32],
-        pub u_debugreg: [i32; 8],
+        pub u_debugreg: [::c_int; 8],
     }
 
     pub struct mcontext_t {
