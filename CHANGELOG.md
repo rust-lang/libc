@@ -5,29 +5,41 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [v0.1.3] - 2017-05-29
+## [v0.1.4] - 2017-05-29
+
+### Added
+
+- Support for the `msp430` architecture.
+
+### Fixed
+
+- [breaking-change] The type definitions of `c_long` and `c_ulong`.
+
+## [v0.1.3] - 2017-05-29 - YANKED
 
 ### Added
 
 - Support for the `nvptx` and `nvptx64` architectures.
 
-## [v0.1.2] - 2017-05-29
+## [v0.1.2] - 2017-05-29 - YANKED
 
 ### Fixed
 
-- Type definitions of `c_int` and `c_uint`.
+- [breaking-change] The type definitions of `c_int` and `c_uint`.
 
 ## [v0.1.1] - 2017-05-29 - YANKED
 
 ### Fixed
 
-- Type definitions of `c_long`, `c_ulong` and `c_longlong`.
+- [breaking-change] The type definitions of `c_long`, `c_ulong` and
+  `c_longlong`.
 
 ## v0.1.0 - 2017-05-24 - YANKED
 
 - Initial release
 
-[Unreleased]: https://github.com/japaric/cty/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/japaric/cty/compare/v0.1.4...HEAD
+[v0.1.4]: https://github.com/japaric/cty/compare/v0.1.3...v0.1.4
 [v0.1.3]: https://github.com/japaric/cty/compare/v0.1.2...v0.1.3
 [v0.1.2]: https://github.com/japaric/cty/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/japaric/cty/compare/v0.1.0...v0.1.1
