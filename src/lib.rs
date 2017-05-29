@@ -6,6 +6,8 @@
 
 // AD = Architecture dependent
 pub use ad::*;
+// OD = OS dependent
+pub use od::*;
 // PWD = Pointer Width Dependent
 pub use pwd::*;
 
@@ -30,6 +32,35 @@ mod ad {
     pub type c_char = ::c_schar;
 }
 
+// NOTE c_{,u}long definitions come from libc v0.2.3
+#[cfg(not(any(windows,
+              target_os = "redox",
+              target_os = "solaris")))]
+mod od {
+    #[cfg(target_pointer_width = "32")]
+    pub type c_long = i32;
+    #[cfg(target_pointer_width = "32")]
+    pub type c_ulong = u32;
+
+    #[cfg(target_pointer_width = "64")]
+    pub type c_long = i64;
+    #[cfg(target_pointer_width = "64")]
+    pub type c_ulong = u64;
+}
+
+#[cfg(windows)]
+mod od {
+    pub type c_long = i32;
+    pub type c_ulong = u32;
+}
+
+#[cfg(any(target_os = "redox",
+          target_os = "solaris"))]
+mod od {
+    pub type c_long = i64;
+    pub type c_ulong = u64;
+}
+
 #[cfg(target_pointer_width = "32")]
 mod pwd {}
 
@@ -37,13 +68,11 @@ mod pwd {}
 mod pwd {}
 
 pub type c_int = i32;
-pub type c_long = i32;
 pub type c_longlong = i64;
 pub type c_schar = i8;
 pub type c_short = i16;
 pub type c_uchar = u8;
 pub type c_uint = u32;
-pub type c_ulong = u32;
 pub type c_ulonglong = u64;
 pub type c_ushort = u16;
 
