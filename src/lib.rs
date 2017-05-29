@@ -19,6 +19,9 @@ pub use pwd::*;
           target_arch = "s390x"))]
 mod ad {
     pub type c_char = ::c_uchar;
+
+    pub type c_int = i32;
+    pub type c_uint = u32;
 }
 
 #[cfg(any(target_arch = "mips",
@@ -30,6 +33,17 @@ mod ad {
           target_arch = "nvptx64"))]
 mod ad {
     pub type c_char = ::c_schar;
+
+    pub type c_int = i32;
+    pub type c_uint = u32;
+}
+
+#[cfg(target_arch = "msp430")]
+mod ad {
+    pub type c_char = ::c_uchar;
+
+    pub type c_int = i16;
+    pub type c_uint = u16;
 }
 
 // NOTE c_{,u}long definitions come from libc v0.2.3
@@ -37,9 +51,11 @@ mod ad {
               target_os = "redox",
               target_os = "solaris")))]
 mod od {
-    #[cfg(target_pointer_width = "32")]
+    #[cfg(any(target_pointer_width = "16",
+              target_pointer_width = "32"))]
     pub type c_long = i32;
-    #[cfg(target_pointer_width = "32")]
+    #[cfg(any(target_pointer_width = "16",
+              target_pointer_width = "32"))]
     pub type c_ulong = u32;
 
     #[cfg(target_pointer_width = "64")]
@@ -67,12 +83,10 @@ mod pwd {}
 #[cfg(target_pointer_width = "64")]
 mod pwd {}
 
-pub type c_int = i32;
 pub type c_longlong = i64;
 pub type c_schar = i8;
 pub type c_short = i16;
 pub type c_uchar = u8;
-pub type c_uint = u32;
 pub type c_ulonglong = u64;
 pub type c_ushort = u16;
 
