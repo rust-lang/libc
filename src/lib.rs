@@ -23,7 +23,9 @@ mod ad {
           target_arch = "mips64",
           target_arch = "sparc64",
           target_arch = "x86",
-          target_arch = "x86_64"))]
+          target_arch = "x86_64",
+          target_arch = "nvptx",
+          target_arch = "nvptx64"))]
 mod ad {
     pub type c_char = ::c_schar;
 }
