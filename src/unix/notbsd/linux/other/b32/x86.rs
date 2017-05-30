@@ -20,6 +20,71 @@ s! {
         pub status: ::c_ulong,
     }
 
+    pub struct user_fpregs_struct {
+        pub cwd: ::c_long,
+        pub swd: ::c_long,
+        pub twd: ::c_long,
+        pub fip: ::c_long,
+        pub fcs: ::c_long,
+        pub foo: ::c_long,
+        pub fos: ::c_long,
+        pub st_space: [::c_long; 20],
+    }
+
+    pub struct user_fpxregs_struct {
+        pub cwd: ::c_ushort,
+        pub swd: ::c_ushort,
+        pub twd: ::c_ushort,
+        pub fop: ::c_ushort,
+        pub fip: ::c_long,
+        pub fcs: ::c_long,
+        pub foo: ::c_long,
+        pub fos: ::c_long,
+        pub mxcsr: ::c_long,
+        __reserved: ::c_long,
+        pub st_space: [::c_long; 32],
+        pub xmm_space: [::c_long; 32],
+        padding: [::c_long; 56],
+    }
+
+    pub struct user_regs_struct {
+        pub ebx: ::c_long,
+        pub ecx: ::c_long,
+        pub edx: ::c_long,
+        pub esi: ::c_long,
+        pub edi: ::c_long,
+        pub ebp: ::c_long,
+        pub eax: ::c_long,
+        pub xds: ::c_long,
+        pub xes: ::c_long,
+        pub xfs: ::c_long,
+        pub xgs: ::c_long,
+        pub orig_eax: ::c_long,
+        pub eip: ::c_long,
+        pub xcs: ::c_long,
+        pub eflags: ::c_long,
+        pub esp: ::c_long,
+        pub xss: ::c_long,
+    }
+
+    pub struct user {
+        pub regs: user_regs_struct,
+        pub u_fpvalid: ::c_int,
+        pub i387: user_fpregs_struct,
+        pub u_tsize: ::c_ulong,
+        pub u_dsize: ::c_ulong,
+        pub u_ssize: ::c_ulong,
+        pub start_code: ::c_ulong,
+        pub start_stack: ::c_ulong,
+        pub signal: ::c_long,
+        __reserved: ::c_int,
+        pub u_ar0: *mut user_regs_struct,
+        pub u_fpstate: *mut user_fpregs_struct,
+        pub magic: ::c_ulong,
+        pub u_comm: [c_char; 32],
+        pub u_debugreg: [::c_int; 8],
+    }
+
     pub struct mcontext_t {
         pub gregs: [greg_t; 19],
         pub fpregs: *mut _libc_fpstate,
