@@ -474,6 +474,7 @@ extern {
     pub fn rmdir(path: *const c_char) -> ::c_int;
     pub fn setgid(gid: gid_t) -> ::c_int;
     pub fn setpgid(pid: pid_t, pgid: pid_t) -> ::c_int;
+    pub fn setpgrp() -> pid_t;
     pub fn setsid() -> pid_t;
     pub fn setuid(uid: uid_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
