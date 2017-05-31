@@ -714,7 +714,7 @@ f! {
     }
 
     pub fn WIFEXITED(status: ::c_int) -> bool {
-        (status >> 8) == 0
+        (status & !0xff) == 0
     }
 
     pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
