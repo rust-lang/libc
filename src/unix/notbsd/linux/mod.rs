@@ -469,6 +469,10 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
+pub const RENAME_EXCHANGE: ::c_int = 1;
+pub const RENAME_NOREPLACE: ::c_int = 2;
+pub const RENAME_WHITEOUT: ::c_int = 4;
+
 pub const SCHED_OTHER: ::c_int = 0;
 pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_RR: ::c_int = 2;
@@ -943,6 +947,9 @@ extern {
                              riovcnt: ::c_ulong,
                              flags: ::c_ulong) -> isize;
     pub fn reboot(how_to: ::c_int) -> ::c_int;
+    pub fn renameat2(olddirfd: ::c_int, oldpath: *const ::c_char,
+                     newdirfd: ::c_int, newpath: *const ::c_char,
+                     flags: ::c_int) -> ::c_int;
     pub fn setfsgid(gid: ::gid_t) -> ::c_int;
     pub fn setfsuid(uid: ::uid_t) -> ::c_int;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
