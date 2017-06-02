@@ -1,3 +1,6 @@
+[![crates.io](https://img.shields.io/crates/v/cty.svg)](https://crates.io/crates/cty)
+[![crates.io](https://img.shields.io/crates/d/cty.svg)](https://crates.io/crates/cty)
+
 # `cty`
 
 > Type aliases to C types like c_int for use with bindgen
