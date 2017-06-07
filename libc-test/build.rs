@@ -193,6 +193,9 @@ fn main() {
         cfg.header("sys/sendfile.h");
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
+        cfg.header("sys/personality.h");
+        cfg.header("sys/swap.h");
+        cfg.header("sys/io.h");
         if !uclibc {
             cfg.header("sys/sysinfo.h");
         }
