@@ -769,6 +769,10 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("s390x", "64")
     } else if target.starts_with("sparc64") {
         ("sparc64", "64")
+    } else if target.starts_with("asmjs") {
+        ("asmjs", "32")
+    } else if target.starts_with("wasm32") {
+        ("wasm32", "32")
     } else {
         panic!("unknown arch/pointer width: {}", target)
     };
@@ -796,6 +800,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("openbsd", "unix", "")
     } else if target.contains("dragonfly") {
         ("dragonfly", "unix", "")
+    } else if target.contains("emscripten") {
+        ("emscripten", "unix", "")
     } else {
         panic!("unknown os/family width: {}", target)
     };
