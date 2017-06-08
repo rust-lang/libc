@@ -512,4 +512,7 @@ extern {
                        argc: ::c_int, ...);
     pub fn swapcontext(uocp: *mut ucontext_t,
                        ucp: *const ucontext_t) -> ::c_int;
+    pub fn iopl(level: ::c_int) -> ::c_int;
+    pub fn ioperm(from: ::c_ulong, num: ::c_ulong,
+                  turn_on: ::c_int) -> ::c_int;
 }

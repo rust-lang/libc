@@ -999,9 +999,6 @@ extern {
     pub fn swapoff(puath: *const ::c_char) -> ::c_int;
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
-    pub fn iopl(level: ::c_int) -> ::c_int;
-    pub fn ioperm(from: ::c_ulong, num: ::c_ulong,
-                  turn_on: ::c_int) -> ::c_int;
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
