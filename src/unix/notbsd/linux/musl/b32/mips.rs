@@ -4,7 +4,7 @@ pub type loff_t = ::c_longlong;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
-pub type blksize_t = c_long;
+pub type blksize_t = ::c_long;
 pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
 pub type dev_t = u64;
@@ -250,6 +250,8 @@ pub const EOWNERDEAD: ::c_int = 165;
 pub const ENOTRECOVERABLE: ::c_int = 166;
 pub const EHWPOISON: ::c_int = 168;
 pub const ERFKILL: ::c_int = 167;
+
+pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_DGRAM: ::c_int = 1;

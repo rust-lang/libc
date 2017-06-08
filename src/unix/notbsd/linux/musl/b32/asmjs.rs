@@ -249,6 +249,8 @@ pub const ENOTRECOVERABLE: ::c_int = 131;
 pub const ERFKILL: ::c_int = 132;
 pub const EHWPOISON: ::c_int = 133;
 
+pub const POSIX_MADV_DONTNEED: ::c_int = 0;
+
 pub const SO_REUSEADDR: ::c_int = 2;
 pub const SO_TYPE: ::c_int = 3;
 pub const SO_ERROR: ::c_int = 4;
