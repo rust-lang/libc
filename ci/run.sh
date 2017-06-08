@@ -168,6 +168,10 @@ case "$TARGET" in
     qemu-aarch64 -L /usr/aarch64-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     ;;
 
+  *-emscripten)
+    cd $CARGO_TARGET_DIR/$TARGET/debug/deps/ && node ../libc-test.js
+  ;;
+
   *-rumprun-netbsd)
     rumprun-bake hw_virtio /tmp/libc-test.img $CARGO_TARGET_DIR/$TARGET/debug/libc-test
     qemu-system-x86_64 -nographic -vga none -m 64 \
