@@ -2,6 +2,13 @@ pub type wchar_t = i32;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type nlink_t = u64;
+pub type loff_t = ::c_longlong;
+pub type ino_t = u64;
+pub type off_t = i64;
+pub type blkcnt_t = i64;
+pub type blksize_t = c_long;
+pub type fsblkcnt_t = ::c_ulonglong;
+pub type fsfilcnt_t = ::c_ulonglong;
 
 s! {
     pub struct stat {

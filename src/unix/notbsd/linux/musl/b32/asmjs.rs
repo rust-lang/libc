@@ -1,5 +1,12 @@
 pub type c_char = i8;
 pub type wchar_t = i32;
+pub type loff_t = i32;
+pub type ino_t = u32;
+pub type off_t = i32;
+pub type blkcnt_t = i32;
+pub type blksize_t = i32;
+pub type fsblkcnt_t = u32;
+pub type fsfilcnt_t = u32;
 
 s! {
     pub struct stat {

@@ -1,13 +1,6 @@
 pub type clock_t = c_long;
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
-pub type ino_t = u64;
-pub type off_t = i64;
-pub type blkcnt_t = i64;
-
-pub type blksize_t = c_long;
-pub type fsblkcnt_t = ::c_ulonglong;
-pub type fsfilcnt_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
 
 s! {

@@ -6,6 +6,7 @@ pub type clock_t = ::c_long;
 pub type time_t = ::c_long;
 pub type suseconds_t = ::c_long;
 pub type off_t = ::c_long;
+pub type loff_t = ::c_longlong;
 pub type blkcnt_t = ::c_ulong;
 pub type blksize_t = ::c_ulong;
 pub type nlink_t = u32;
