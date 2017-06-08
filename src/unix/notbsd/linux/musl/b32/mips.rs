@@ -117,6 +117,8 @@ s! {
     }
 }
 
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 28;
+
 pub const O_DIRECT: ::c_int = 0o100000;
 pub const O_DIRECTORY: ::c_int = 0o200000;
 pub const O_NOFOLLOW: ::c_int = 0o400000;

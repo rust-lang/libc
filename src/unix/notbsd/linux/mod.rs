@@ -68,20 +68,20 @@ s! {
 
     pub struct pthread_mutex_t {
         #[cfg(any(target_arch = "mips", target_arch = "arm",
-                  target_arch = "powerpc"))]
+                  target_arch = "powerpc", target_os = "emscripten"))]
         __align: [::c_long; 0],
         #[cfg(not(any(target_arch = "mips", target_arch = "arm",
-                      target_arch = "powerpc")))]
+                      target_arch = "powerpc", target_os = "emscripten")))]
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
     }
 
     pub struct pthread_rwlock_t {
         #[cfg(any(target_arch = "mips", target_arch = "arm",
-                  target_arch = "powerpc"))]
+                  target_arch = "powerpc", target_os = "emscripten"))]
         __align: [::c_long; 0],
         #[cfg(not(any(target_arch = "mips", target_arch = "arm",
-                      target_arch = "powerpc")))]
+                      target_arch = "powerpc", target_os = "emscripten")))]
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
     }
@@ -99,9 +99,9 @@ s! {
     }
 
     pub struct pthread_cond_t {
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         __align: [*const ::c_void; 0],
-        #[cfg(not(any(target_env = "musl")))]
+        #[cfg(not(any(target_env = "musl", target_os = "emscripten")))]
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_COND_T],
     }

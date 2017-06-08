@@ -4,7 +4,10 @@ pub type nlink_t = u32;
 
 s! {
     pub struct pthread_attr_t {
-        __size: [u32; 9]
+        #[cfg(target_os = "emscripten")]
+        __size: [u32; 11],
+        #[cfg(not(target_os = "emscripten"))]
+        __size: [u32; 9],
     }
 
     pub struct sigset_t {
@@ -33,7 +36,6 @@ s! {
 }
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
 
 cfg_if! {
     if #[cfg(any(target_arch = "x86"))] {
