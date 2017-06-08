@@ -1009,6 +1009,9 @@ extern {
                    flags: ::c_int) -> ::ssize_t;
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
+    pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn vhangup() -> ::c_int;
 }
 
 extern {

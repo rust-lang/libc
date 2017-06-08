@@ -994,11 +994,8 @@ extern {
     pub fn getresgid(rgid: *mut ::gid_t, egid: *mut ::gid_t,
                      sgid: *mut ::gid_t) -> ::c_int;
     pub fn personality(persona: ::c_ulong) -> ::c_int;
-    pub fn vhangup() -> ::c_int;
     pub fn swapon(path: *const ::c_char, swapflags: ::c_int) -> ::c_int;
     pub fn swapoff(puath: *const ::c_char) -> ::c_int;
-    pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
-    pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
