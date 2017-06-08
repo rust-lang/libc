@@ -13,6 +13,8 @@ pub type __fsword_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
 
+pub const _NSIG: ::size_t = 64;
+
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,
@@ -42,7 +44,7 @@ s! {
     }
 
     pub struct sigset_t {
-        __val: [::c_ulong; 32],
+        sig: [u32; _NSIG / 32],
     }
 
     pub struct sysinfo {

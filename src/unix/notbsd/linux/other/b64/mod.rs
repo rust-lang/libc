@@ -9,9 +9,11 @@ pub type off_t = i64;
 pub type blkcnt_t = i64;
 pub type __fsword_t = ::c_long;
 
+pub const _NSIG: ::size_t = 64;
+
 s! {
     pub struct sigset_t {
-        __val: [::c_ulong; 16],
+        sig: [u32; _NSIG / 32],
     }
 
     pub struct sysinfo {

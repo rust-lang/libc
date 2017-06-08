@@ -14,6 +14,8 @@ pub type time_t = i64;
 pub type wchar_t = i32;
 pub type clock_t = i64;
 
+pub const _NSIG: ::size_t = 128;
+
 s! {
     pub struct aiocb {
         pub aio_fildes: ::c_int,
@@ -96,7 +98,7 @@ s! {
     }
 
     pub struct sigset_t {
-        __size: [::c_ulong; 16],
+        sig: [u32; _NSIG / 32],
     }
 
     pub struct siginfo_t {

@@ -7,9 +7,11 @@ pub type mode_t = u32;
 pub type off64_t = i64;
 pub type socklen_t = u32;
 
+pub const _NSIG: ::size_t = 64;
+
 s! {
     pub struct sigset_t {
-        __val: [::c_ulong; 1],
+        sig: [u32; _NSIG / 32],
     }
 
     pub struct sigaction {
