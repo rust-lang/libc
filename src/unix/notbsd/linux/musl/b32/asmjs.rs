@@ -7,6 +7,10 @@ pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type fsblkcnt_t = u32;
 pub type fsfilcnt_t = u32;
+pub type dev_t = u32;
+pub type ino64_t = u32;
+pub type off64_t = i32;
+pub type blkcnt64_t = i32;
 
 s! {
     pub struct stat {

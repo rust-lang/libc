@@ -17,6 +17,10 @@ pub type greg_t = u64;
 pub type clock_t = i64;
 pub type __fsword_t = ::c_long;
 pub type __priority_which_t = ::c_uint;
+pub type dev_t = u64;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
 
 s! {
     pub struct aiocb {

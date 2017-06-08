@@ -3,13 +3,9 @@
 use dox::{mem, Option};
 
 pub type useconds_t = u32;
-pub type dev_t = u64;
 pub type socklen_t = u32;
 pub type pthread_t = c_ulong;
 pub type mode_t = u32;
-pub type ino64_t = u64;
-pub type off64_t = i64;
-pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
 pub type shmatt_t = ::c_ulong;
 pub type mqd_t = ::c_int;
@@ -743,29 +739,51 @@ f! {
         set1.bits == set2.bits
     }
 
-    pub fn major(dev: ::dev_t) -> ::c_uint {
-        let mut major = 0;
-        major |= (dev & 0x00000000000fff00) >> 8;
-        major |= (dev & 0xfffff00000000000) >> 32;
-        major as ::c_uint
-    }
-
-    pub fn minor(dev: ::dev_t) -> ::c_uint {
-        let mut minor = 0;
-        minor |= (dev & 0xfffff00000000000) >> 0;
-        minor |= (dev & 0x00000ffffff00000) >> 12;
-        minor as ::c_uint
-    }
-
     pub fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
         let major = major as ::dev_t;
         let minor = minor as ::dev_t;
         let mut dev = 0;
         dev |= (major & 0x00000fff) << 8;
-        dev |= (major & 0xfffff000) << 32;
+        dev |= (major & 0xfffff000) << 31 << 1; // avoid exceeding_bitshifts
         dev |= (minor & 0x000000ff) << 0;
         dev |= (minor & 0xffffff00) << 12;
         dev
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_os = "emscripten")] {
+        f! {
+            pub fn major(dev: ::dev_t) -> ::c_uint {
+                let mut major = 0;
+                major |= (dev & 0x00000fff) >> 8;
+                major |= (dev & 0xfffff000) >> 31 >> 1; // avoid exceeding_bitshifts
+                major as ::c_uint
+            }
+
+            pub fn minor(dev: ::dev_t) -> ::c_uint {
+                let mut minor = 0;
+                minor |= (dev & 0x000000ff) >> 0;
+                minor |= (dev & 0xffffff00) >> 12;
+                minor as ::c_uint
+            }
+        }
+    } else {
+        f! {
+            pub fn major(dev: ::dev_t) -> ::c_uint {
+                let mut major = 0;
+                major |= (dev & 0x00000000000fff00) >> 8;
+                major |= (dev & 0xfffff00000000000) >> 32;
+                major as ::c_uint
+            }
+
+            pub fn minor(dev: ::dev_t) -> ::c_uint {
+                let mut minor = 0;
+                minor |= (dev & 0xfffff00000000000) >> 0;
+                minor |= (dev & 0x00000ffffff00000) >> 12;
+                minor as ::c_uint
+            }
+        }
     }
 }
 

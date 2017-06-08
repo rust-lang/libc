@@ -9,6 +9,10 @@ pub type blkcnt_t = i64;
 pub type blksize_t = c_long;
 pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
+pub type dev_t = u64;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
 
 s! {
     pub struct stat {

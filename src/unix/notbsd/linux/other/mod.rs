@@ -3,6 +3,10 @@ pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type rlim_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
+pub type dev_t = u64;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
 
 s! {
     pub struct aiocb {

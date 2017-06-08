@@ -1,4 +1,8 @@
 pub type loff_t = ::c_longlong;
+pub type dev_t = u64;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
 
 pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 
