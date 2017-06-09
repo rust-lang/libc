@@ -103,10 +103,10 @@ matrix:
       rust: beta
     - os: linux
       env: TARGET=asmjs-unknown-emscripten
-      rust: stable
+      rust: beta
     - os: linux
       env: TARGET=wasm32-unknown-emscripten
-      rust: stable
+      rust: beta
 
     # beta
     - os: linux
