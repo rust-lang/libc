@@ -255,11 +255,6 @@ pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
 
-#[cfg(target_os = "emscripten")]
-pub const O_TMPFILE: ::c_int = 0o20000000;
-#[cfg(not(target_os = "emscripten"))]
-pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
-
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 
 pub const S_IFIFO: ::mode_t = 4096;

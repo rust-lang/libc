@@ -132,6 +132,7 @@ pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 28;
 
 pub const O_DIRECT: ::c_int = 0o100000;
 pub const O_DIRECTORY: ::c_int = 0o200000;
+pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 pub const O_NOFOLLOW: ::c_int = 0o400000;
 pub const O_ASYNC: ::c_int = 0o10000;
 

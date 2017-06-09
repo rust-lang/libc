@@ -174,6 +174,8 @@ s! {
     }
 }
 
+pub const O_TMPFILE: ::c_int = 0o20000000 | ::O_DIRECTORY;
+
 pub const __UT_LINESIZE: usize = 32;
 pub const __UT_NAMESIZE: usize = 32;
 pub const __UT_HOSTSIZE: usize = 256;
