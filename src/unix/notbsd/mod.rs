@@ -987,9 +987,19 @@ extern {
     pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     pub fn setreuid(ruid: ::uid_t, euid: ::uid_t) -> ::c_int;
     pub fn setregid(rgid: ::gid_t, egid: ::gid_t) -> ::c_int;
+    pub fn getresuid(ruid: *mut ::uid_t, euid: *mut ::uid_t,
+                     suid: *mut ::uid_t) -> ::c_int;
+    pub fn getresgid(rgid: *mut ::gid_t, egid: *mut ::gid_t,
+                     sgid: *mut ::gid_t) -> ::c_int;
+    pub fn personality(persona: ::c_ulong) -> ::c_int;
+    pub fn swapon(path: *const ::c_char, swapflags: ::c_int) -> ::c_int;
+    pub fn swapoff(puath: *const ::c_char) -> ::c_int;
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
+    pub fn vfork() -> ::pid_t;
+    pub fn wait4(pid: ::pid_t, status: *mut ::c_int, options: ::c_int,
+                 rusage: *mut ::rusage) -> ::pid_t;
 }
 
 cfg_if! {

@@ -182,6 +182,9 @@ fn main() {
         cfg.header("sys/fsuid.h");
         cfg.header("pty.h");
         cfg.header("shadow.h");
+        if x86_64 {
+            cfg.header("sys/io.h");
+        }
     }
 
     if linux || android || emscripten {
@@ -195,6 +198,8 @@ fn main() {
         cfg.header("sys/sendfile.h");
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
+        cfg.header("sys/personality.h");
+        cfg.header("sys/swap.h");
         if !uclibc {
             cfg.header("sys/sysinfo.h");
         }
