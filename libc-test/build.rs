@@ -460,7 +460,8 @@ fn main() {
             "setpgid" | "setpgrp" | "setspent" | "settimeofday" | "setxattr" | "shmat" |
             "shmctl" | "shmdt" | "shmget" | "sigaltstack" | "signalfd" | "sigsuspend" |
             "sigtimedwait" | "sigwait" | "sigwaitinfo" | "splice" | "sync_file_range" |
-            "syscall" | "sysinfo" | "tee" | "umount" | "umount2" | "unshare" | "vmsplice"
+            "syscall" | "sysinfo" | "tee" | "umount" | "umount2" | "unshare" | "vmsplice" |
+            "swapoff" | "vhangup" | "swapon" | "personality"
                 if emscripten => true,
 
             // n if n.starts_with("epoll") && emscripten => true,
