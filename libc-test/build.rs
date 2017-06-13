@@ -438,17 +438,16 @@ fn main() {
             "strerror_r" if linux => true,   // actually xpg-something-or-other
 
             // not defined or fails to link
-            "aio_cancel" | "aio_error" | "aio_fsync" | "aio_read" | "aio_read_write" | "aio_return"|
-            "aio_suspend" | "aio_write" | "clock_nanosleep" | "clone" | "daemon" | "endspent" |
-            "epoll_create" | "epoll_create1" | "epoll_ctl" | "epoll_pwait" | "epoll_wait" |
-            "eventfd" | "faccessat" | "fallocate" | "fgetxattr" | "flistxattr" | "fork" |
-            "forkpty" | "fremovexattr" | "fsetxattr" | "ftok" | "futimes" | "getdtablesize" |
-            "getgrgid" | "getgrnam" | "getgroups" | "getpgid" | "getpgrp" | "getpwnam_r" |
-            "getpwuid_r" | "getspent" | "getspnam" | "getxattr" | "initgroups" | "lgetxattr" |
-            "listxattr" | "llistxattr" | "lremovexattr" | "lsetxattr" | "lutimes" | "mount" |
-            "mq_close" | "mq_getattr" | "mq_open" | "mq_receive" | "mq_send" | "mq_setattr" |
-            "mq_unlink" | "msgctl" | "msgget" | "msgrcv" | "msgsnd" | "pclose" | "popen" |
-            "ppoll" | "prctl" | "prlimit" | "prlimit64" | "process_vm_readv" |
+            "aio_cancel" | "aio_error" | "aio_fsync" | "aio_read" | "aio_return"| "aio_suspend" |
+            "aio_write" | "clock_nanosleep" | "clone" | "daemon" | "endspent" | "epoll_create" |
+            "epoll_create1" | "epoll_ctl" | "epoll_pwait" | "epoll_wait" | "eventfd" |
+            "faccessat" | "fallocate" | "fgetxattr" | "flistxattr" | "forkpty" | "fremovexattr" |
+            "fsetxattr" | "ftok" | "futimes" | "getdtablesize" | "getgrgid" | "getgrnam" |
+            "getpwnam_r" | "getpwuid_r" | "getspent" | "getspnam" | "getxattr" | "initgroups" |
+            "lgetxattr" | "listxattr" | "llistxattr" | "lremovexattr" | "lsetxattr" | "lutimes" |
+            "mount" | "mq_close" | "mq_getattr" | "mq_open" | "mq_receive" | "mq_send" |
+            "mq_setattr" | "mq_unlink" | "msgctl" | "msgget" | "msgrcv" | "msgsnd" | "pclose" |
+            "popen" | "ppoll" | "prctl" | "prlimit" | "prlimit64" | "process_vm_readv" |
             "process_vm_writev" | "pthread_atfork" | "pthread_attr_getguardsize" |
             "pthread_kill" | "pthread_mutexattr_getpshared" | "pthread_mutex_timedlock" |
             "pthread_sigmask" | "ptrace" | "quotactl" | "readahead" | "reboot" | "removexattr" |
@@ -456,15 +455,19 @@ fn main() {
             "sched_get_priority_min" | "sched_getscheduler" | "sched_rr_get_interval" |
             "sched_setaffinity" | "sched_setparam" | "sched_setscheduler" | "sem_close" |
             "semctl" | "semget" | "semop" | "sem_open" | "sem_timedwait" | "sem_unlink" |
-            "sendfile" | "setfsgid" | "setfsuid" | "setgroups" | "sethostname" | "setns" |
-            "setpgid" | "setpgrp" | "setspent" | "settimeofday" | "setxattr" | "shmat" |
-            "shmctl" | "shmdt" | "shmget" | "sigaltstack" | "signalfd" | "sigsuspend" |
-            "sigtimedwait" | "sigwait" | "sigwaitinfo" | "splice" | "sync_file_range" |
-            "syscall" | "sysinfo" | "tee" | "umount" | "umount2" | "unshare" | "vmsplice" |
-            "swapoff" | "vhangup" | "swapon" | "personality"
-                if emscripten => true,
+            "sendfile" | "setfsgid" | "setfsuid" | "sethostname" | "setns" | "setspent" |
+            "settimeofday" | "setxattr" | "shmat" | "shmctl" | "shmdt" | "shmget" |
+            "sigaltstack" | "signalfd" | "sigsuspend" | "sigtimedwait" | "sigwait" |
+            "sigwaitinfo" | "splice" | "sync_file_range" | "sysinfo" | "tee" | "umount" |
+            "umount2" | "unshare" | "vmsplice" | "swapoff" | "vhangup" | "swapon" |
+            "personality" | "syscall" if emscripten => true,
 
-            // n if n.starts_with("epoll") && emscripten => true,
+            // fails on travis but works locally. why?
+            "getgroups" | "setgroups" if emscripten => true,
+            "setpgid" | "getpgid" if emscripten => true,
+            "setpgrp" | "getpgrp" if emscripten => true,
+            "fork" if emscripten => true,
+
 
             // int vs uint. Sorry musl, your prototype declarations are "correct" in the sense that
             // they match the interface defined by Linux verbatim, but they conflict with other
