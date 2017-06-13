@@ -13,6 +13,7 @@ pub type nlink_t = u32;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type rlim_t = c_ulong;
+pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct aiocb {

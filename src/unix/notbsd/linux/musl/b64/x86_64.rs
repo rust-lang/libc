@@ -1,4 +1,5 @@
 pub type c_char = i8;
+pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct mcontext_t {

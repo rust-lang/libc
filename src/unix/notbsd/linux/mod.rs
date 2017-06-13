@@ -19,6 +19,12 @@ pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
 
+pub type __u8 = ::c_uchar;
+pub type __u16 = ::c_ushort;
+pub type __s16 = ::c_short;
+pub type __u32 = ::c_uint;
+pub type __s32 = ::c_int;
+
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
 s! {
@@ -230,6 +236,113 @@ s! {
         pub sem_num: ::c_ushort,
         pub sem_op: ::c_short,
         pub sem_flg: ::c_short,
+    }
+
+    pub struct input_event {
+        pub time: ::timeval,
+        pub type_: ::__u16,
+        pub code: ::__u16,
+        pub value: ::__s32,
+    }
+
+    pub struct input_id {
+        pub bustype: ::__u16,
+        pub vendor: ::__u16,
+        pub product: ::__u16,
+        pub version: ::__u16,
+    }
+
+    pub struct input_absinfo {
+        pub value: ::__s32,
+        pub minimum: ::__s32,
+        pub maximum: ::__s32,
+        pub fuzz: ::__s32,
+        pub flat: ::__s32,
+        pub resolution: ::__s32,
+    }
+
+    pub struct input_keymap_entry {
+        pub flags: ::__u8,
+        pub len: ::__u8,
+        pub index: ::__u16,
+        pub keycode: ::__u32,
+        pub scancode: [::__u8; 32],
+    }
+
+    pub struct input_mask {
+        pub type_: ::__u32,
+        pub codes_size: ::__u32,
+        pub codes_ptr: ::__u64,
+    }
+
+    pub struct ff_replay {
+        pub length: ::__u16,
+        pub delay: ::__u16,
+    }
+
+    pub struct ff_trigger {
+        pub button: ::__u16,
+        pub interval: ::__u16,
+    }
+
+    pub struct ff_envelope {
+        pub attack_length: ::__u16,
+        pub attack_level: ::__u16,
+        pub fade_length: ::__u16,
+        pub fade_level: ::__u16,
+    }
+
+    pub struct ff_constant_effect {
+        pub level: ::__s16,
+        pub envelope: ff_envelope,
+    }
+
+    pub struct ff_ramp_effect {
+        pub start_level: ::__s16,
+        pub end_level: ::__s16,
+        pub envelope: ff_envelope,
+    }
+
+    pub struct ff_condition_effect {
+        pub right_saturation: ::__u16,
+        pub left_saturation: ::__u16,
+
+        pub right_coeff: ::__s16,
+        pub left_coeff: ::__s16,
+
+        pub deadband: ::__u16,
+        pub center: ::__s16,
+    }
+
+    pub struct ff_periodic_effect {
+        pub waveform: ::__u16,
+        pub period: ::__u16,
+        pub magnitude: ::__s16,
+        pub offset: ::__s16,
+        pub phase: ::__u16,
+
+        pub envelope: ff_envelope,
+
+        pub custom_len: ::__u32,
+        pub custom_data: *mut ::__s16,
+    }
+
+    pub struct ff_rumble_effect {
+        pub strong_magnitude: ::__u16,
+        pub weak_magnitude: ::__u16,
+    }
+
+    pub struct ff_effect {
+        pub type_: ::__u16,
+        pub id: ::__s16,
+        pub direction: ::__u16,
+        pub trigger: ff_trigger,
+        pub replay: ff_replay,
+        // FIXME this is actually a union
+        #[cfg(target_pointer_width = "64")]
+        pub u: [u64; 4],
+        #[cfg(target_pointer_width = "32")]
+        pub u: [u32; 7],
     }
 }
 

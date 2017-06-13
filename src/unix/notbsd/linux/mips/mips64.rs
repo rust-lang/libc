@@ -13,6 +13,7 @@ pub type suseconds_t = i64;
 pub type time_t = i64;
 pub type wchar_t = i32;
 pub type clock_t = i64;
+pub type __u64 = ::c_ulong;
 
 s! {
     pub struct aiocb {

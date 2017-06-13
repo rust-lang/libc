@@ -181,6 +181,7 @@ fn main() {
         cfg.header("sys/fsuid.h");
         cfg.header("pty.h");
         cfg.header("shadow.h");
+        cfg.header("linux/input.h");
         if x86_64 {
             cfg.header("sys/io.h");
         }
@@ -301,6 +302,9 @@ fn main() {
                 }
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
+            "type_" if linux &&
+                (struct_ == "input_event" || struct_ == "input_mask" ||
+                 struct_ == "ff_effect") => "type".to_string(),
             s => s.to_string(),
         }
     });
@@ -328,6 +332,10 @@ fn main() {
 
             // This is actually a union, not a struct
             "sigval" => true,
+
+            // Linux kernel headers used on musl are too old to have this
+            // definition. Because it's tested on other Linux targets, skip it.
+            "input_mask" if musl => true,
 
             _ => false
         }
@@ -551,7 +559,9 @@ fn main() {
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
         (struct_ == "aiocb" && field == "aio_buf") ||
         // stack_t.ss_sp's type changed from FreeBSD 10 to 11 in svn r294930
-        (freebsd && struct_ == "stack_t" && field == "ss_sp")
+        (freebsd && struct_ == "stack_t" && field == "ss_sp") ||
+        // this one is an anonymous union
+        (linux && struct_ == "ff_effect" && field == "u")
     });
 
     cfg.skip_field(move |struct_, field| {
