@@ -927,6 +927,8 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::socklen_t,
                        flags: ::c_int) -> ::c_int;
+    pub fn pthread_setschedprio(native: ::pthread_t,
+                                priority: ::c_int) -> ::c_int;
     pub fn prlimit(pid: ::pid_t, resource: ::c_int, new_limit: *const ::rlimit,
                    old_limit: *mut ::rlimit) -> ::c_int;
     pub fn prlimit64(pid: ::pid_t,
