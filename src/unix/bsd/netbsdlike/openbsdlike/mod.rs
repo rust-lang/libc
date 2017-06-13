@@ -457,6 +457,7 @@ pub const KI_MAXLOGNAME: ::c_int = 32;
 pub const KI_EMULNAMELEN: ::c_int = 8;
 
 extern {
+    pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
                        host: *mut ::c_char,

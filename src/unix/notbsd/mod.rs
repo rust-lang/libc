@@ -835,6 +835,7 @@ extern {
                            rqtp: *const ::timespec,
                            rmtp:  *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
 
     pub fn prctl(option: ::c_int, ...) -> ::c_int;
