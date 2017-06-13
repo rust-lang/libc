@@ -184,6 +184,14 @@ s! {
         pub c_cc: [::cc_t; ::NCCS],
     }
 
+    pub struct flock {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off_t,
+        pub l_len: ::off_t,
+        pub l_pid: ::pid_t,
+    }
+
     pub struct sysinfo {
         pub uptime: ::c_long,
         pub loads: [::c_ulong; 3],
