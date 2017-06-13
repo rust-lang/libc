@@ -833,6 +833,7 @@ extern {
                            rqtp: *const ::timespec,
                            rmtp:  *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
 
     pub fn prctl(option: ::c_int, ...) -> ::c_int;
@@ -960,6 +961,12 @@ extern {
                                        pshared: ::c_int) -> ::c_int;
     pub fn pthread_condattr_getpshared(attr: *const pthread_condattr_t,
                                        pshared: *mut ::c_int) -> ::c_int;
+    pub fn pthread_getschedparam(native: ::pthread_t,
+                                 policy: *mut ::c_int,
+                                 param: *mut ::sched_param) -> ::c_int;
+    pub fn pthread_setschedparam(native: ::pthread_t,
+                                 policy: ::c_int,
+                                 param: *const ::sched_param) -> ::c_int;
     pub fn sched_getaffinity(pid: ::pid_t,
                              cpusetsize: ::size_t,
                              cpuset: *mut cpu_set_t) -> ::c_int;
