@@ -598,12 +598,6 @@ extern {
                           parent: Option<unsafe extern fn()>,
                           child: Option<unsafe extern fn()>) -> ::c_int;
     pub fn pthread_exit(value: *mut ::c_void);
-    pub fn pthread_getschedparam(native: ::pthread_t,
-                                 policy: *mut ::c_int,
-                                 param: *mut ::sched_param) -> ::c_int;
-    pub fn pthread_setschedparam(native: ::pthread_t,
-                                 policy: ::c_int,
-                                 param: *const ::sched_param) -> ::c_int;
     pub fn pthread_setschedprio(native: ::pthread_t,
                                 priority: ::c_int) -> ::c_int;
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
