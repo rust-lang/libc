@@ -450,6 +450,7 @@ fn main() {
             "popen" | "ppoll" | "prctl" | "prlimit" | "prlimit64" | "process_vm_readv" |
             "process_vm_writev" | "pthread_atfork" | "pthread_attr_getguardsize" |
             "pthread_kill" | "pthread_mutexattr_getpshared" | "pthread_mutex_timedlock" |
+            "pthread_getschedparam" | "pthread_setschedparam" | "pthread_setschedprio" |
             "pthread_sigmask" | "ptrace" | "quotactl" | "readahead" | "reboot" | "removexattr" |
             "sched_getaffinity" | "sched_getparam" | "sched_get_priority_max" |
             "sched_get_priority_min" | "sched_getscheduler" | "sched_rr_get_interval" |
@@ -461,13 +462,6 @@ fn main() {
             "sigwaitinfo" | "splice" | "sync_file_range" | "sysinfo" | "tee" | "umount" |
             "umount2" | "unshare" | "vmsplice" | "swapoff" | "vhangup" | "swapon" |
             "personality" | "syscall" if emscripten => true,
-
-            // fails on travis but works locally. why?
-            "getgroups" | "setgroups" if emscripten => true,
-            "setpgid" | "getpgid" if emscripten => true,
-            "setpgrp" | "getpgrp" if emscripten => true,
-            "fork" if emscripten => true,
-
 
             // int vs uint. Sorry musl, your prototype declarations are "correct" in the sense that
             // they match the interface defined by Linux verbatim, but they conflict with other
