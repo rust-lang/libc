@@ -1,6 +1,7 @@
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type rlim_t = c_ulong;
+pub type __priority_which_t = ::c_uint;
 
 s! {
     pub struct glob64_t {
@@ -523,6 +524,44 @@ pub const B2500000: ::speed_t = 0o010014;
 pub const B3000000: ::speed_t = 0o010015;
 pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
+
+#[link(name = "util")]
+extern {
+    pub fn sysctl(name: *mut ::c_int,
+                  namelen: ::c_int,
+                  oldp: *mut ::c_void,
+                  oldlenp: *mut ::size_t,
+                  newp: *mut ::c_void,
+                  newlen: ::size_t)
+                  -> ::c_int;
+    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+    pub fn backtrace(buf: *mut *mut ::c_void,
+                     sz: ::c_int) -> ::c_int;
+    pub fn glob64(pattern: *const ::c_char,
+                  flags: ::c_int,
+                  errfunc: ::dox::Option<extern fn(epath: *const ::c_char,
+                                                   errno: ::c_int)
+                                                   -> ::c_int>,
+                  pglob: *mut glob64_t) -> ::c_int;
+    pub fn globfree64(pglob: *mut glob64_t);
+    pub fn ptrace(request: ::c_uint, ...) -> ::c_long;
+    pub fn pthread_attr_getaffinity_np(attr: *const ::pthread_attr_t,
+                                       cpusetsize: ::size_t,
+                                       cpuset: *mut ::cpu_set_t) -> ::c_int;
+    pub fn pthread_attr_setaffinity_np(attr: *mut ::pthread_attr_t,
+                                       cpusetsize: ::size_t,
+                                       cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn getpriority(which: ::__priority_which_t, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::__priority_which_t, who: ::id_t,
+                                       prio: ::c_int) -> ::c_int;
+    pub fn pthread_getaffinity_np(thread: ::pthread_t,
+                                  cpusetsize: ::size_t,
+                                  cpuset: *mut ::cpu_set_t) -> ::c_int;
+    pub fn pthread_setaffinity_np(thread: ::pthread_t,
+                                  cpusetsize: ::size_t,
+                                  cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn sched_getcpu() -> ::c_int;
+}
 
 cfg_if! {
     if #[cfg(target_arch = "mips")] {

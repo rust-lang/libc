@@ -232,31 +232,3 @@ pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
 
 pub const SYS_gettid: ::c_long = 4222;   // Valid for O32
-
-#[link(name = "util")]
-extern {
-    pub fn sysctl(name: *mut ::c_int,
-                  namelen: ::c_int,
-                  oldp: *mut ::c_void,
-                  oldlenp: *mut ::size_t,
-                  newp: *mut ::c_void,
-                  newlen: ::size_t)
-                  -> ::c_int;
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-    pub fn backtrace(buf: *mut *mut ::c_void,
-                     sz: ::c_int) -> ::c_int;
-    pub fn glob64(pattern: *const ::c_char,
-                  flags: ::c_int,
-                  errfunc: ::dox::Option<extern fn(epath: *const ::c_char,
-                                                   errno: ::c_int)
-                                                   -> ::c_int>,
-                  pglob: *mut glob64_t) -> ::c_int;
-    pub fn globfree64(pglob: *mut glob64_t);
-    pub fn ptrace(request: ::c_uint, ...) -> ::c_long;
-    pub fn pthread_attr_getaffinity_np(attr: *const ::pthread_attr_t,
-                                       cpusetsize: ::size_t,
-                                       cpuset: *mut ::cpu_set_t) -> ::c_int;
-    pub fn pthread_attr_setaffinity_np(attr: *mut ::pthread_attr_t,
-                                       cpusetsize: ::size_t,
-                                       cpuset: *const ::cpu_set_t) -> ::c_int;
-}
