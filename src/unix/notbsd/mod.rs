@@ -962,6 +962,8 @@ extern {
                                        pshared: ::c_int) -> ::c_int;
     pub fn pthread_condattr_getpshared(attr: *const pthread_condattr_t,
                                        pshared: *mut ::c_int) -> ::c_int;
+    pub fn pthread_setschedprio(native: ::pthread_t,
+                                priority: ::c_int) -> ::c_int;
     pub fn pthread_getschedparam(native: ::pthread_t,
                                  policy: *mut ::c_int,
                                  param: *mut ::sched_param) -> ::c_int;
