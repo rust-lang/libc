@@ -1,3 +1,31 @@
+pub type fsblkcnt_t = ::c_ulong;
+pub type fsfilcnt_t = ::c_ulong;
+pub type rlim_t = c_ulong;
+
+s! {
+    pub struct glob64_t {
+        pub gl_pathc: ::size_t,
+        pub gl_pathv: *mut *mut ::c_char,
+        pub gl_offs: ::size_t,
+        pub gl_flags: ::c_int,
+
+        __unused1: *mut ::c_void,
+        __unused2: *mut ::c_void,
+        __unused3: *mut ::c_void,
+        __unused4: *mut ::c_void,
+        __unused5: *mut ::c_void,
+    }
+
+    // FIXME this is actually a union
+    pub struct sem_t {
+        #[cfg(target_pointer_width = "32")]
+        __size: [::c_char; 16],
+        #[cfg(target_pointer_width = "64")]
+        __size: [::c_char; 32],
+        __align: [::c_long; 0],
+    }
+}
+
 pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;

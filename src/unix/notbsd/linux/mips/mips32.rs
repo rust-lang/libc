@@ -10,9 +10,6 @@ pub type ino_t = u32;
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
-pub type fsblkcnt_t = ::c_ulong;
-pub type fsfilcnt_t = ::c_ulong;
-pub type rlim_t = c_ulong;
 
 s! {
     pub struct aiocb {
@@ -105,19 +102,6 @@ s! {
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
         pub _pad: [::c_int; 29],
-    }
-
-    pub struct glob64_t {
-        pub gl_pathc: ::size_t,
-        pub gl_pathv: *mut *mut ::c_char,
-        pub gl_offs: ::size_t,
-        pub gl_flags: ::c_int,
-
-        __unused1: *mut ::c_void,
-        __unused2: *mut ::c_void,
-        __unused3: *mut ::c_void,
-        __unused4: *mut ::c_void,
-        __unused5: *mut ::c_void,
     }
 
     pub struct ipc_perm {
@@ -237,15 +221,6 @@ s! {
         pub freehigh: ::c_ulong,
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 8],
-    }
-
-    // FIXME this is actually a union
-    pub struct sem_t {
-        #[cfg(target_pointer_width = "32")]
-        __size: [::c_char; 16],
-        #[cfg(target_pointer_width = "64")]
-        __size: [::c_char; 32],
-        __align: [::c_long; 0],
     }
 }
 
