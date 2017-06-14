@@ -644,6 +644,15 @@ pub const P_PGID: idtype_t = 4;
 pub const B460800: ::speed_t = 460800;
 pub const B921600: ::speed_t = 921600;
 
+// dirfd() is a macro on netbsd to access
+// the first field of the struct where dirp points to:
+// http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36
+f! {
+    pub fn dirfd(dirp: *mut ::DIR) -> ::c_int {
+        unsafe { *(dirp as *const ::c_int) }
+    }
+}
+
 extern {
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
