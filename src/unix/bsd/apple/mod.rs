@@ -1559,6 +1559,8 @@ extern {
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
 
+    pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
+
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
 
     pub fn getutxent() -> *mut utmpx;
