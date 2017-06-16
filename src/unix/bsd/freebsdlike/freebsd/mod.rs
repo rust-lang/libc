@@ -508,6 +508,12 @@ pub const P_ALL: idtype_t = 7;
 pub const B460800: ::speed_t = 460800;
 pub const B921600: ::speed_t = 921600;
 
+pub const AT_FDCWD: ::c_int = -100;
+pub const AT_EACCESS: ::c_int = 0x100;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
+pub const AT_REMOVEDIR: ::c_int = 0x800;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
