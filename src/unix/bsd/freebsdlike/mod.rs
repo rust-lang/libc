@@ -682,9 +682,6 @@ pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
-pub const O_SYNC: ::c_int = 128;
-pub const O_NONBLOCK: ::c_int = 4;
-
 pub const MAP_COPY: ::c_int = 0x0002;
 pub const MAP_RENAME: ::c_int = 0x0020;
 pub const MAP_NORESERVE: ::c_int = 0x0040;
