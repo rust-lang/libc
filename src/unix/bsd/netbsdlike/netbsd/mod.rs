@@ -270,8 +270,6 @@ pub const O_CLOEXEC: ::c_int = 0x400000;
 pub const O_ALT_IO: ::c_int = 0x40000;
 pub const O_NOSIGPIPE: ::c_int = 0x1000000;
 pub const O_SEARCH: ::c_int = 0x800000;
-pub const O_EXLOCK: ::c_int = 0x20;
-pub const O_SHLOCK: ::c_int = 0x10;
 pub const O_DIRECTORY: ::c_int = 0x200000;
 
 pub const MS_SYNC : ::c_int = 0x4;

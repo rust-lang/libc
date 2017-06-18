@@ -187,10 +187,22 @@ pub const ST_RDONLY: ::c_ulong = 1;
 
 pub const NCCS: usize = 20;
 
+pub const O_ACCMODE: ::c_int = 0x3;
+pub const O_RDONLY: ::c_int = 0;
+pub const O_WRONLY: ::c_int = 1;
+pub const O_RDWR: ::c_int = 2;
+pub const O_APPEND: ::c_int = 8;
+pub const O_CREAT: ::c_int = 512;
+pub const O_TRUNC: ::c_int = 1024;
+pub const O_EXCL: ::c_int = 2048;
 pub const O_ASYNC: ::c_int = 0x40;
-pub const O_FSYNC: ::c_int = 0x80;
-pub const O_NDELAY: ::c_int = 0x4;
+pub const O_SYNC: ::c_int = 0x80;
+pub const O_NONBLOCK: ::c_int = 0x4;
 pub const O_NOFOLLOW: ::c_int = 0x100;
+pub const O_SHLOCK: ::c_int = 0x10;
+pub const O_EXLOCK: ::c_int = 0x20;
+pub const O_FSYNC: ::c_int = O_SYNC;
+pub const O_NDELAY: ::c_int = O_NONBLOCK;
 
 pub const F_GETOWN: ::c_int = 5;
 pub const F_SETOWN: ::c_int = 6;
