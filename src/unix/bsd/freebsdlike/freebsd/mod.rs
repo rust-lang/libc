@@ -140,6 +140,7 @@ pub const SF_MNOWAIT: ::c_int = 0x00000002;
 pub const SF_SYNC: ::c_int = 0x00000004;
 pub const O_CLOEXEC: ::c_int = 0x00100000;
 pub const O_DIRECTORY: ::c_int = 0x00020000;
+pub const O_EXEC: ::c_int = 0x00040000;
 pub const F_GETLK: ::c_int = 11;
 pub const F_SETLK: ::c_int = 12;
 pub const F_SETLKW: ::c_int = 13;
