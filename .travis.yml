@@ -104,10 +104,9 @@ matrix:
     - os: linux
       env: TARGET=asmjs-unknown-emscripten
       rust: stable
-    # https://github.com/rust-lang/libc/pull/610#issuecomment-307264794
-    #- os: linux
-    #  env: TARGET=wasm32-unknown-emscripten
-    #  rust: stable
+    - os: linux
+      env: TARGET=wasm32-unknown-emscripten
+      rust: stable
 
     # beta
     - os: linux
