@@ -273,6 +273,8 @@ pub const L_tmpnam: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 308915776;
 
 pub const O_NOCTTY: ::c_int = 32768;
+pub const O_DIRECT: ::c_int = 0x00010000;
+
 pub const S_IFIFO: mode_t = 4096;
 pub const S_IFCHR: mode_t = 8192;
 pub const S_IFBLK: mode_t = 24576;
