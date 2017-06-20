@@ -272,15 +272,9 @@ pub const FILENAME_MAX: ::c_uint = 1024;
 pub const L_tmpnam: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 308915776;
 
-pub const O_RDONLY: ::c_int = 0;
-pub const O_WRONLY: ::c_int = 1;
-pub const O_RDWR: ::c_int = 2;
-pub const O_ACCMODE: ::c_int = 3;
-pub const O_APPEND: ::c_int = 8;
-pub const O_CREAT: ::c_int = 512;
-pub const O_EXCL: ::c_int = 2048;
 pub const O_NOCTTY: ::c_int = 32768;
-pub const O_TRUNC: ::c_int = 1024;
+pub const O_DIRECT: ::c_int = 0x00010000;
+
 pub const S_IFIFO: mode_t = 4096;
 pub const S_IFCHR: mode_t = 8192;
 pub const S_IFBLK: mode_t = 24576;
@@ -451,11 +445,6 @@ pub const F_GETFD: ::c_int = 1;
 pub const F_SETFD: ::c_int = 2;
 pub const F_GETFL: ::c_int = 3;
 pub const F_SETFL: ::c_int = 4;
-
-pub const AT_EACCESS: ::c_int = 0x100;
-pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
-pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
-pub const AT_REMOVEDIR: ::c_int = 0x800;
 
 pub const SIGTRAP: ::c_int = 5;
 
@@ -687,9 +676,6 @@ pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
-pub const O_SYNC: ::c_int = 128;
-pub const O_NONBLOCK: ::c_int = 4;
-
 pub const MAP_COPY: ::c_int = 0x0002;
 pub const MAP_RENAME: ::c_int = 0x0020;
 pub const MAP_NORESERVE: ::c_int = 0x0040;
@@ -875,8 +861,6 @@ pub const EXTB: speed_t = 38400;
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
 pub const CRTSCTS: ::tcflag_t = 0x00030000;
-
-pub const AT_FDCWD: ::c_int = -100;
 
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {

@@ -174,6 +174,7 @@ pub const SA_RESTART: ::c_int = 0x10000000;
 pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
 
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
+pub const EPOLLONESHOT: ::c_int = 0x40000000;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 

@@ -448,14 +448,8 @@ pub const _PC_PIPE_BUF: ::c_int = 6;
 pub const _PC_CHOWN_RESTRICTED: ::c_int = 7;
 pub const _PC_NO_TRUNC: ::c_int = 8;
 pub const _PC_VDISABLE: ::c_int = 9;
-pub const O_RDONLY: ::c_int = 0;
-pub const O_WRONLY: ::c_int = 1;
-pub const O_RDWR: ::c_int = 2;
-pub const O_APPEND: ::c_int = 8;
-pub const O_CREAT: ::c_int = 512;
-pub const O_EXCL: ::c_int = 2048;
-pub const O_NOCTTY: ::c_int = 131072;
-pub const O_TRUNC: ::c_int = 1024;
+pub const O_DSYNC: ::c_int = 0x400000;
+pub const O_NOCTTY: ::c_int = 0x20000;
 pub const O_CLOEXEC: ::c_int = 0x1000000;
 pub const O_DIRECTORY: ::c_int = 0x100000;
 pub const S_IFIFO: mode_t = 4096;
@@ -670,8 +664,6 @@ pub const AT_EACCESS: ::c_int = 0x0010;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x0020;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x0040;
 pub const AT_REMOVEDIR: ::c_int = 0x0080;
-
-pub const O_ACCMODE: ::c_int = 3;
 
 pub const TIOCMODG: ::c_ulong = 0x40047403;
 pub const TIOCMODS: ::c_ulong = 0x80047404;
@@ -1023,10 +1015,6 @@ pub const LOCK_SH: ::c_int = 1;
 pub const LOCK_EX: ::c_int = 2;
 pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
-
-pub const O_DSYNC: ::c_int = 4194304;
-pub const O_SYNC: ::c_int = 128;
-pub const O_NONBLOCK: ::c_int = 4;
 
 pub const MAP_COPY: ::c_int = 0x0002;
 pub const MAP_RENAME: ::c_int = 0x0020;

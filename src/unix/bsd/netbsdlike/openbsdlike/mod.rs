@@ -1,3 +1,5 @@
+use unix::bsd::O_SYNC;
+
 pub type clock_t = i64;
 pub type suseconds_t = ::c_long;
 pub type dev_t = i32;
@@ -140,6 +142,8 @@ pub const UT_LINESIZE: usize = 8;
 pub const UT_HOSTSIZE: usize = 256;
 
 pub const O_CLOEXEC: ::c_int = 0x10000;
+pub const O_DIRECTORY: ::c_int = 0x20000;
+pub const O_RSYNC: ::c_int = O_SYNC;
 
 pub const MS_SYNC : ::c_int = 0x0002;
 pub const MS_INVALIDATE : ::c_int = 0x0004;

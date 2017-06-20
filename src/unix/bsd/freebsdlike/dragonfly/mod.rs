@@ -138,6 +138,7 @@ pub const PTHREAD_STACK_MIN: ::size_t = 1024;
 pub const SIGSTKSZ: ::size_t = 40960;
 pub const MADV_INVAL: ::c_int = 10;
 pub const O_CLOEXEC: ::c_int = 0x00020000;
+pub const O_DIRECTORY: ::c_int = 0x08000000;
 pub const F_GETLK: ::c_int = 7;
 pub const F_SETLK: ::c_int = 8;
 pub const F_SETLKW: ::c_int = 9;
@@ -403,6 +404,13 @@ pub const TIOCISPTMASTER: ::c_uint = 0x20007455;
 pub const TIOCMODG: ::c_uint = 0x40047403;
 pub const TIOCMODS: ::c_ulong = 0x80047404;
 pub const TIOCREMOTE: ::c_ulong = 0x80047469;
+
+// Constants used by "at" family of system calls.
+pub const AT_FDCWD:            ::c_int = 0xFFFAFDCD; // invalid file descriptor
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 1;
+pub const AT_REMOVEDIR:        ::c_int = 2;
+pub const AT_EACCESS:          ::c_int = 4;
+pub const AT_SYMLINK_FOLLOW:   ::c_int = 8;
 
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
