@@ -1,3 +1,5 @@
+use unix::bsd::O_SYNC;
+
 pub type clock_t = i64;
 pub type suseconds_t = ::c_long;
 pub type dev_t = i32;
