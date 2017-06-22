@@ -259,6 +259,7 @@ pub const OPOST: ::tcflag_t = 0x1;
 pub const ONLCR: ::tcflag_t = 0x2;
 pub const OXTABS: ::tcflag_t = 0x4;
 pub const ONOEOT: ::tcflag_t = 0x8;
+pub const CIGNORE: ::tcflag_t = 0x00000001;
 pub const CSIZE: ::tcflag_t = 0x00000300;
 pub const CS5: ::tcflag_t = 0x00000000;
 pub const CS6: ::tcflag_t = 0x00000100;
@@ -285,6 +286,7 @@ pub const TOSTOP: ::tcflag_t = 0x00400000;
 pub const FLUSHO: ::tcflag_t = 0x00800000;
 pub const PENDIN: ::tcflag_t = 0x20000000;
 pub const NOFLSH: ::tcflag_t = 0x80000000;
+pub const MDMBUF: ::tcflag_t = 0x00100000;
 
 pub const WNOHANG: ::c_int = 0x00000001;
 pub const WUNTRACED: ::c_int = 0x00000002;
