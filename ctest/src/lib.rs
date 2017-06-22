@@ -1054,15 +1054,7 @@ impl<'a> Generator<'a> {
                 .connect(", ") + if variadic {", ..."} else {""}
         };
         let cret = self.rust_ty_to_c_ty(ret);
-        let abi = match abi {
-            Abi::C => "",
-            Abi::Stdcall => "__stdcall ",
-            Abi::System if self.target.contains("i686-pc-windows") => {
-                "__stdcall "
-            }
-            Abi::System => "",
-            a => panic!("unknown ABI: {}", a),
-        };
+        let abi = self.abi2str(abi);
         t!(writeln!(self.c, r#"
             {ret} ({abi}*__test_fn_{name}(void))({args}) {{
                 return {cname};
@@ -1176,12 +1168,13 @@ impl<'a> Generator<'a> {
             ast::TyKind::BareFn(ref t) => {
                 assert!(t.lifetimes.len() == 0);
                 let (ret, mut args, variadic) = self.decl2rust(&t.decl);
+                let abi = self.abi2str(t.abi);
                 if variadic {
                     args.push("...".to_string());
                 } else if args.len() == 0 {
                     args.push("void".to_string());
                 }
-                format!("{}(**{})({})", ret, sig, args.connect(", "))
+                format!("{}({}**{})({})", ret, abi, sig, args.connect(", "))
             }
             ast::TyKind::FixedLengthVec(ref t, ref e) => {
                 format!("{}(*{})[{}]", self.ty2name(t, false), sig,
@@ -1204,6 +1197,18 @@ impl<'a> Generator<'a> {
             }
             ast::ExprKind::Cast(ref e, _) => self.expr2str(e),
             _ => panic!("unknown expr: {:?}", e),
+        }
+    }
+
+    fn abi2str(&self, abi: Abi) -> &'static str {
+        match abi {
+            Abi::C => "",
+            Abi::Stdcall => "__stdcall ",
+            Abi::System if self.target.contains("i686-pc-windows") => {
+                "__stdcall "
+            }
+            Abi::System => "",
+            a => panic!("unknown ABI: {}", a),
         }
     }
 
