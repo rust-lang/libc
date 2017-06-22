@@ -1265,7 +1265,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 self.test_const(&i.ident.to_string(), &ty);
             }
 
-            ast::ItemKind::ForeignMod(ref fm) if public => {
+            ast::ItemKind::ForeignMod(ref fm) => {
                 self.abi = fm.abi;
             }
 
