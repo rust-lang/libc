@@ -626,6 +626,7 @@ pub const ISIG: ::tcflag_t = 0x00000001;
 pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
+pub const VSWTC: usize = 7;
 pub const OLCUC:  ::tcflag_t = 0o000002;
 pub const NLDLY:  ::tcflag_t = 0o000400;
 pub const CRDLY:  ::tcflag_t = 0o003000;

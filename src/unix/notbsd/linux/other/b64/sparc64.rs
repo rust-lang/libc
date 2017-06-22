@@ -344,6 +344,7 @@ pub const PENDIN: ::tcflag_t = 0x4000;
 pub const NOFLSH: ::tcflag_t = 0x80;
 pub const CIBAUD: ::tcflag_t = 0o02003600000;
 pub const CBAUDEX: ::tcflag_t = 0x00001000;
+pub const VSWTC: usize = 7;
 pub const OLCUC:  ::tcflag_t = 0o000002;
 pub const NLDLY:  ::tcflag_t = 0o000400;
 pub const CRDLY:  ::tcflag_t = 0o003000;

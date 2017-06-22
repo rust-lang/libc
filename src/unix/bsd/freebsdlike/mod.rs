@@ -861,6 +861,7 @@ pub const EXTB: speed_t = 38400;
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
 pub const CRTSCTS: ::tcflag_t = 0x00030000;
+pub const VERASE2: usize = 7;
 pub const OCRNL: ::tcflag_t = 0x10;
 pub const ONOCR: ::tcflag_t = 0x20;
 pub const ONLRET: ::tcflag_t = 0x40;
