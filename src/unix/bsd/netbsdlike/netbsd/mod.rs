@@ -644,6 +644,9 @@ pub const P_PGID: idtype_t = 4;
 pub const B460800: ::speed_t = 460800;
 pub const B921600: ::speed_t = 921600;
 
+pub const ONOCR: ::tcflag_t = 0x20;
+pub const ONLRET: ::tcflag_t = 0x40;
+
 // dirfd() is a macro on netbsd to access
 // the first field of the struct where dirp points to:
 // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36

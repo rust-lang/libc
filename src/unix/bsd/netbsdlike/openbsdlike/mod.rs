@@ -460,6 +460,10 @@ pub const KI_WMESGLEN: ::c_int = 8;
 pub const KI_MAXLOGNAME: ::c_int = 32;
 pub const KI_EMULNAMELEN: ::c_int = 8;
 
+pub const OLCUC: ::tcflag_t = 0x20;
+pub const ONOCR: ::tcflag_t = 0x40;
+pub const ONLRET: ::tcflag_t = 0x80;
+
 extern {
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,

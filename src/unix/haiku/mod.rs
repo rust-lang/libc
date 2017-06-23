@@ -686,6 +686,35 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
+pub const OLCUC:  ::tcflag_t = 0o000002;
+pub const OCRNL:  ::tcflag_t = 0o000010;
+pub const ONOCR:  ::tcflag_t = 0o000020;
+pub const ONLRET: ::tcflag_t = 0o000040;
+pub const OFILL:  ::tcflag_t = 0o000100;
+pub const OFDEL:  ::tcflag_t = 0o000200;
+pub const NLDLY:  ::tcflag_t = 0o000400;
+pub const NL0:    ::tcflag_t = 0o000000;
+pub const NL1:    ::tcflag_t = 0o000400;
+pub const CRDLY:  ::tcflag_t = 0o003000;
+pub const CR0:    ::tcflag_t = 0o000000;
+pub const CR1:    ::tcflag_t = 0o001000;
+pub const CR2:    ::tcflag_t = 0o002000;
+pub const CR3:    ::tcflag_t = 0o003000;
+pub const TABDLY: ::tcflag_t = 0o014000;
+pub const TAB0:   ::tcflag_t = 0o000000;
+pub const TAB1:   ::tcflag_t = 0o004000;
+pub const TAB2:   ::tcflag_t = 0o010000;
+pub const TAB3:   ::tcflag_t = 0o014000;
+pub const BSDLY:  ::tcflag_t = 0o020000;
+pub const BS0:    ::tcflag_t = 0o000000;
+pub const BS1:    ::tcflag_t = 0o020000;
+pub const FFDLY:  ::tcflag_t = 0o100000;
+pub const FF0:    ::tcflag_t = 0o000000;
+pub const FF1:    ::tcflag_t = 0o100000;
+pub const VTDLY:  ::tcflag_t = 0o040000;
+pub const VT0:    ::tcflag_t = 0o000000;
+pub const VT1:    ::tcflag_t = 0o040000;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
