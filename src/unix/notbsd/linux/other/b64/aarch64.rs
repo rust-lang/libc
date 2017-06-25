@@ -5,6 +5,7 @@ pub type wchar_t = u32;
 pub type nlink_t = u32;
 pub type blksize_t = i32;
 pub type suseconds_t = i64;
+pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct stat {

@@ -10,6 +10,7 @@ pub type ino_t = u32;
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
+pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct aiocb {

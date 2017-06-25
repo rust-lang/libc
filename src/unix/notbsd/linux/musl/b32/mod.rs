@@ -1,6 +1,7 @@
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type nlink_t = u32;
+pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct pthread_attr_t {
