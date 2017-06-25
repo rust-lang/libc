@@ -307,8 +307,6 @@ pub const POSIX_MADV_SEQUENTIAL : ::c_int = 2;
 pub const POSIX_MADV_WILLNEED : ::c_int = 3;
 pub const POSIX_MADV_DONTNEED : ::c_int = 4;
 
-pub const _SC_XOPEN_SHM : ::c_int = 30;
-
 pub const PTHREAD_CREATE_JOINABLE : ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED : ::c_int = 1;
 
@@ -500,6 +498,7 @@ pub const _SC_TZNAME_MAX : ::c_int = 27;
 pub const _SC_PAGESIZE : ::c_int = 28;
 pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_FSYNC : ::c_int = 29;
+pub const _SC_XOPEN_SHM : ::c_int = 30;
 
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
