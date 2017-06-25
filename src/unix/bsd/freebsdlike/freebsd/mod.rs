@@ -521,6 +521,8 @@ pub const TABDLY: ::tcflag_t = 0x00000004;
 pub const TAB0: ::tcflag_t = 0x00000000;
 pub const TAB3: ::tcflag_t = 0x00000004;
 
+pub const _SC_CPUSET_SIZE: ::c_int = 122;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 

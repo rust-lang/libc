@@ -414,6 +414,13 @@ pub const AT_SYMLINK_FOLLOW:   ::c_int = 8;
 
 pub const VCHECKPT: usize = 19;
 
+pub const _SC_V7_ILP32_OFF32: ::c_int = 122;
+pub const _SC_V7_ILP32_OFFBIG: ::c_int = 123;
+pub const _SC_V7_LP64_OFF64: ::c_int = 124;
+pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 125;
+pub const _SC_THREAD_ROBUST_PRIO_INHERIT: ::c_int = 126;
+pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 127;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
