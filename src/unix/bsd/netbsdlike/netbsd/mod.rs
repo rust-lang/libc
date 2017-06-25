@@ -349,6 +349,22 @@ pub const MAP_NORESERVE : ::c_int = 0x40;
 pub const MAP_HASSEMAPHORE : ::c_int = 0x200;
 pub const MAP_WIRED: ::c_int = 0x800;
 
+pub const _PC_LINK_MAX : ::c_int = 1;
+pub const _PC_MAX_CANON : ::c_int = 2;
+pub const _PC_MAX_INPUT : ::c_int = 3;
+pub const _PC_NAME_MAX : ::c_int = 4;
+pub const _PC_PATH_MAX : ::c_int = 5;
+pub const _PC_PIPE_BUF : ::c_int = 6;
+pub const _PC_CHOWN_RESTRICTED : ::c_int = 7;
+pub const _PC_NO_TRUNC : ::c_int = 8;
+pub const _PC_VDISABLE : ::c_int = 9;
+pub const _PC_SYNC_IO : ::c_int = 10;
+pub const _PC_FILESIZEBITS : ::c_int = 11;
+pub const _PC_SYMLINK_MAX : ::c_int = 12;
+pub const _PC_2_SYMLINKS : ::c_int = 13;
+pub const _PC_ACL_EXTENDED : ::c_int = 14;
+pub const _PC_MIN_HOLE_SIZE : ::c_int = 15;
+
 pub const _SC_SYNCHRONIZED_IO : ::c_int = 31;
 pub const _SC_IOV_MAX : ::c_int = 32;
 pub const _SC_MAPPED_FILES : ::c_int = 33;
