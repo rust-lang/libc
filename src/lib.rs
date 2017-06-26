@@ -14,6 +14,8 @@ pub use pwd::*;
 #[cfg(any(target_arch = "aarch64",
           target_arch = "arm",
           target_arch = "asmjs",
+          target_arch = "wasm32",
+          target_arch = "wasm64",
           target_arch = "powerpc",
           target_arch = "powerpc64",
           target_arch = "s390x"))]
