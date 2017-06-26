@@ -2,6 +2,7 @@
 
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
+pub type clock_t = i64;
 pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -22,32 +23,70 @@ pub type wchar_t = ::c_int;
 pub type nfds_t = ::c_ulong;
 
 s! {
-    // ------------------------------------------------------------
-    // networking
-    pub struct in_addr {
-        pub s_addr: in_addr_t,
+    pub struct ipc_perm {
+        pub __key: ::key_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub mode: ::c_ushort, // read / write
+        __pad1: ::c_ushort,
+        pub __seq: ::c_ushort,
+        __pad2: ::c_ushort,
+        __unused1: ::c_ulong,
+        __unused2: ::c_ulong
     }
 
-    pub struct in6_addr {
-        pub s6_addr: [u8; 16],
-        __align: [u32; 0],
+    pub struct siginfo_t {
+        si_signo: ::c_int, // signal number
+        si_errno: ::c_int, // if not zero: error value of signal, see errno.h
+        si_code: ::c_int,  // signal code
+        pub _pad: [::c_int; 28], // unported union
+        _align: [usize; 0],
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t, // segment size in bytes
+        pub shm_atime: ::time_t, // time of last shmat()
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        __unused1: ::c_ulong,
+        __unused2: ::c_ulong
+    }
+
+    pub struct msqid_ds {
+        pub msg_perm: ::ipc_perm,
+        pub msg_stime: ::time_t,
+        pub msg_rtime: ::time_t,
+        pub msg_ctime: ::time_t,
+        __msg_cbytes: ::c_ulong,
+        pub msg_qnum: ::msgqnum_t,
+        pub msg_qbytes: ::msglen_t,
+        pub msg_lspid: ::pid_t,
+        pub msg_lrpid: ::pid_t,
+        __ignored1: ::c_ulong,
+        __ignored2: ::c_ulong,
     }
 
     pub struct sockaddr {
-        pub sa_family: sa_family_t,
+        pub sa_family: ::sa_family_t,
         pub sa_data: [::c_char; 14],
     }
 
     pub struct sockaddr_in {
-        pub sin_family: sa_family_t,
+        pub sin_family: ::sa_family_t,
         pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
         pub sin_zero: [u8; 8],
     }
 
     pub struct sockaddr_in6 {
-        pub sin6_family: sa_family_t,
-        pub sin6_port: in_port_t,
+        pub sin6_family: ::sa_family_t,
+        pub sin6_port: ::in_port_t,
         pub sin6_flowinfo: u32,
         pub sin6_addr: ::in6_addr,
         pub sin6_scope_id: u32,
@@ -55,6 +94,15 @@ s! {
 
     // ------------------------------------------------------------
     // definitions below are *unverified* and might **break** the software
+//    pub struct in_addr {
+//        pub s_addr: in_addr_t,
+//    }
+//
+//    pub struct in6_addr {
+//        pub s6_addr: [u8; 16],
+//        __align: [u32; 0],
+//    }
+
     pub struct stat { // ToDo
         pub st_dev: ::c_ulong,
         st_pad1: [::c_long; 2],
@@ -100,16 +148,16 @@ s! {
     }
 
     pub struct dirent { // Todo
-        pub d_ino: ino_64_t,
-        pub d_off: off64_t,
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
         d_reclen: u16,
         pub d_type: u8,
         pub d_name: [i8; 256],
     }
 
     pub struct dirent64 { //
-        pub d_ino: ino64_t,
-        pub d_off: off64_t,
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
         pub d_reclen: u16,
         pub d_type: u8,
         pub d_name: [i8; 256],
@@ -303,6 +351,7 @@ pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
+pub const RLIM_INFINITY: u64 = 0xffffffffffffffff;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
