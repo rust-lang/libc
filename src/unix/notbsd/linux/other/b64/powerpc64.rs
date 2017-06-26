@@ -384,6 +384,15 @@ pub const ISIG: ::tcflag_t = 0x80;
 pub const ICANON: ::tcflag_t = 0x100;
 pub const PENDIN: ::tcflag_t = 0x20000000;
 pub const NOFLSH: ::tcflag_t = 0x80000000;
+pub const VSWTC: usize = 9;
+pub const OLCUC:  ::tcflag_t = 0o000004;
+pub const NLDLY:  ::tcflag_t = 0o001400;
+pub const CRDLY:  ::tcflag_t = 0o030000;
+pub const TABDLY: ::tcflag_t = 0o006000;
+pub const BSDLY:  ::tcflag_t = 0o100000;
+pub const FFDLY:  ::tcflag_t = 0o040000;
+pub const VTDLY:  ::tcflag_t = 0o200000;
+pub const XTABS:  ::tcflag_t = 0o006000;
 
 pub const B0: ::speed_t = 0o000000;
 pub const B50: ::speed_t = 0o000001;

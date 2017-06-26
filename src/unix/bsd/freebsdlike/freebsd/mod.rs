@@ -517,6 +517,10 @@ pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
 pub const AT_REMOVEDIR: ::c_int = 0x800;
 
+pub const TABDLY: ::tcflag_t = 0x00000004;
+pub const TAB0: ::tcflag_t = 0x00000000;
+pub const TAB3: ::tcflag_t = 0x00000004;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 

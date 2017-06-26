@@ -463,8 +463,6 @@ pub const NOTE_TRACK: ::uint32_t = 0x00000001;
 pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
 pub const NOTE_CHILD: ::uint32_t = 0x00000004;
 
-pub const CRTSCTS: ::tcflag_t = 0x00010000;
-
 pub const TMP_MAX : ::c_uint = 308915776;
 
 pub const NI_MAXHOST: ::socklen_t = 1025;
@@ -643,6 +641,11 @@ pub const P_PGID: idtype_t = 4;
 
 pub const B460800: ::speed_t = 460800;
 pub const B921600: ::speed_t = 921600;
+
+pub const ONOCR: ::tcflag_t = 0x20;
+pub const ONLRET: ::tcflag_t = 0x40;
+pub const CDTRCTS: ::tcflag_t = 0x00020000;
+pub const CHWFLOW: ::tcflag_t = ::MDMBUF | ::CRTSCTS | ::CDTRCTS;
 
 // dirfd() is a macro on netbsd to access
 // the first field of the struct where dirp points to:

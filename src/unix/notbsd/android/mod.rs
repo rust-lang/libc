@@ -627,6 +627,15 @@ pub const ISIG: ::tcflag_t = 0x00000001;
 pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
+pub const VSWTC: usize = 7;
+pub const OLCUC:  ::tcflag_t = 0o000002;
+pub const NLDLY:  ::tcflag_t = 0o000400;
+pub const CRDLY:  ::tcflag_t = 0o003000;
+pub const TABDLY: ::tcflag_t = 0o014000;
+pub const BSDLY:  ::tcflag_t = 0o020000;
+pub const FFDLY:  ::tcflag_t = 0o100000;
+pub const VTDLY:  ::tcflag_t = 0o040000;
+pub const XTABS:  ::tcflag_t = 0o014000;
 
 pub const B0: ::speed_t = 0o000000;
 pub const B50: ::speed_t = 0o000001;
@@ -724,6 +733,10 @@ pub const NLA_F_NET_BYTEORDER: ::c_int = 1 << 14;
 pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
+
+pub const CMSPAR: ::tcflag_t = 0o10000000000;
+pub const CIBAUD: ::tcflag_t = 0o02003600000;
+pub const CBAUDEX: ::tcflag_t = 0o010000;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {

@@ -692,6 +692,27 @@ pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 pub const SYS_gettid: ::c_long = 236;
 pub const SYS_perf_event_open: ::c_long = 331;
 
+pub const CMSPAR: ::tcflag_t = 0o10000000000;
+pub const VSWTC: usize = 7;
+pub const OLCUC:  ::tcflag_t = 0o000002;
+pub const NLDLY:  ::tcflag_t = 0o000400;
+pub const NL1: ::tcflag_t  = 0x00000100;
+pub const CRDLY:  ::tcflag_t = 0o003000;
+pub const CR1: ::tcflag_t  = 0x00000200;
+pub const CR2: ::tcflag_t  = 0x00000400;
+pub const CR3: ::tcflag_t  = 0x00000600;
+pub const TABDLY: ::tcflag_t = 0o014000;
+pub const TAB1: ::tcflag_t = 0x00000800;
+pub const TAB2: ::tcflag_t = 0x00001000;
+pub const TAB3: ::tcflag_t = 0x00001800;
+pub const BSDLY:  ::tcflag_t = 0o020000;
+pub const BS1: ::tcflag_t  = 0x00002000;
+pub const FFDLY:  ::tcflag_t = 0o100000;
+pub const FF1: ::tcflag_t  = 0x00008000;
+pub const VTDLY:  ::tcflag_t = 0o040000;
+pub const VT1: ::tcflag_t  = 0x00004000;
+pub const XTABS:  ::tcflag_t = 0o014000;
+
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,

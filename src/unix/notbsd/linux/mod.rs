@@ -824,6 +824,8 @@ pub const ITIMER_PROF: ::c_int = 2;
 pub const XATTR_CREATE: ::c_int = 0x1;
 pub const XATTR_REPLACE: ::c_int = 0x2;
 
+pub const _POSIX_VDISABLE: ::cc_t = 0;
+
 // On Linux, libc doesn't define this constant, libattr does instead.
 // We still define it for Linux as it's defined by libc on other platforms,
 // and it's mentioned in the man pages for getxattr and setxattr.

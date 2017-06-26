@@ -412,6 +412,8 @@ pub const AT_REMOVEDIR:        ::c_int = 2;
 pub const AT_EACCESS:          ::c_int = 4;
 pub const AT_SYMLINK_FOLLOW:   ::c_int = 8;
 
+pub const VCHECKPT: usize = 19;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;

@@ -680,6 +680,11 @@ pub const OPOST: ::tcflag_t = 0x1;
 pub const CS5: ::tcflag_t = 0x00000000;
 pub const CRTSCTS: ::tcflag_t = 0x80000000;
 pub const ECHO: ::tcflag_t = 0x00000008;
+pub const OCRNL:  ::tcflag_t = 0o000010;
+pub const ONOCR:  ::tcflag_t = 0o000020;
+pub const ONLRET: ::tcflag_t = 0o000040;
+pub const OFILL:  ::tcflag_t = 0o000100;
+pub const OFDEL:  ::tcflag_t = 0o000200;
 
 pub const CLONE_VM: ::c_int = 0x100;
 pub const CLONE_FS: ::c_int = 0x200;
