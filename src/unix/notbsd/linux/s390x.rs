@@ -314,6 +314,7 @@ pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
 pub const EADDRINUSE: ::c_int = 98;
 pub const EADDRNOTAVAIL: ::c_int = 99;

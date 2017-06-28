@@ -992,6 +992,10 @@ extern {
                                         pshared: ::c_int) -> ::c_int;
     pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
                                         pshared: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_getpshared(attr: *const pthread_rwlockattr_t,
+                                         val: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t,
+                                         val: ::c_int) -> ::c_int;
     pub fn ptsname_r(fd: ::c_int,
                      buf: *mut ::c_char,
                      buflen: ::size_t) -> ::c_int;

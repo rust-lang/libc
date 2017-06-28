@@ -104,6 +104,14 @@ s! {
         size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
+    pub struct pthread_rwlockattr_t {
+        #[cfg(any(target_env = "musl"))]
+        __align: [::c_int; 0],
+        #[cfg(not(any(target_env = "musl")))]
+        __align: [::c_long; 0],
+        size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
+    }
+
     pub struct pthread_cond_t {
         #[cfg(any(target_env = "musl"))]
         __align: [*const ::c_void; 0],
@@ -647,6 +655,8 @@ pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
+pub const PTHREAD_PROCESS_PRIVATE: usize = 0;
+pub const PTHREAD_PROCESS_SHARED: usize = 1;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
 pub const SCHED_OTHER: ::c_int = 0;

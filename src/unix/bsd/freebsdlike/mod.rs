@@ -7,6 +7,7 @@ pub type pthread_mutexattr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_condattr_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
+pub type pthread_rwlockattr_t = *mut ::c_void;
 pub type pthread_key_t = ::c_int;
 pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
@@ -466,6 +467,8 @@ pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
+pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 0;
+pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 1;
 
@@ -1059,6 +1062,10 @@ extern {
                                         pshared: ::c_int) -> ::c_int;
     pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
                                         pshared: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_getpshared(attr: *const pthread_rwlockattr_t,
+                                         val: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t,
+                                         val: ::c_int) -> ::c_int;
     pub fn getpriority(which: ::c_int, who: ::c_int) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
 

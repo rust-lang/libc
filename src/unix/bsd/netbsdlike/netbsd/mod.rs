@@ -165,6 +165,11 @@ s! {
         ptma_private: *mut ::c_void,
     }
 
+    pub struct pthread_rwlockattr_t {
+        ptra_magic: ::c_uint,
+        ptra_private: *mut ::c_void,
+    }
+
     pub struct pthread_cond_t {
         ptc_magic: ::c_uint,
         ptc_lock: ::c_uchar,

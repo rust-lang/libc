@@ -648,6 +648,10 @@ extern {
     pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> ::c_int;
     pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_init$UNIX2003")]
+    pub fn pthread_rwlock_init(lock: *mut pthread_rwlock_t,
+                               attr: *const pthread_rwlockattr_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_destroy$UNIX2003")]
     pub fn pthread_rwlock_destroy(lock: *mut pthread_rwlock_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -665,6 +669,9 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_unlock$UNIX2003")]
     pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> ::c_int;
+    pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
+    pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t)
+                                      -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_sigmask$UNIX2003")]
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t,

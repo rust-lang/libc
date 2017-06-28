@@ -47,6 +47,7 @@ s! {
 }
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
