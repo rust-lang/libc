@@ -576,6 +576,10 @@ extern {
     pub fn pthread_setaffinity_np(thread: ::pthread_t,
                                   cpusetsize: ::size_t,
                                   cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn pthread_rwlockattr_getkind_np(attr: *const ::pthread_rwlockattr_t,
+                                         val: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_setkind_np(attr: *mut ::pthread_rwlockattr_t,
+                                         val: ::c_int) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
 }
 

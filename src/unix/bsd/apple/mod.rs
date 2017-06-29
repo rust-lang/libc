@@ -146,6 +146,11 @@ s! {
         __opaque: [u8; __PTHREAD_RWLOCK_SIZE__],
     }
 
+    pub struct pthread_rwlockattr_t {
+        __sig: ::c_long,
+        __opaque: [u8; __PTHREAD_RWLOCKATTR_SIZE__],
+    }
+
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
@@ -804,6 +809,8 @@ pub const _SC_XOPEN_UNIX: ::c_int = 115;
 pub const _SC_XOPEN_VERSION: ::c_int = 116;
 pub const _SC_XOPEN_XCU_VERSION: ::c_int = 121;
 
+pub const PTHREAD_PROCESS_PRIVATE: usize = 2;
+pub const PTHREAD_PROCESS_SHARED: usize = 1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 1;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 2;
 pub const PTHREAD_STACK_MIN: ::size_t = 8192;
@@ -1603,6 +1610,10 @@ extern {
                                         pshared: ::c_int) -> ::c_int;
     pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
                                         pshared: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_getpshared(attr: *const pthread_rwlockattr_t,
+                                         val: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t,
+                                         val: ::c_int) -> ::c_int;
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void,
                      sz: ::c_int) -> ::c_int;

@@ -23,6 +23,7 @@ pub type useconds_t = u32;
 pub type socklen_t = u32;
 pub type pthread_t = ::uintptr_t;
 pub type pthread_mutexattr_t = ::uintptr_t;
+pub type pthread_rwlockattr_t = ::uintptr_t;
 pub type sigset_t = u64;
 pub type fsblkcnt_t = i64;
 pub type fsfilcnt_t = i64;

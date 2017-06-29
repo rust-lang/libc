@@ -13,6 +13,7 @@ pub type pthread_mutexattr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_condattr_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
+pub type pthread_rwlockattr_t = *mut ::c_void;
 
 s! {
     pub struct dirent {

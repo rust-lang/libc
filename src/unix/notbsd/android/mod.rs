@@ -12,6 +12,7 @@ pub type nlink_t = u32;
 pub type useconds_t = u32;
 pub type pthread_t = ::c_long;
 pub type pthread_mutexattr_t = ::c_long;
+pub type pthread_rwlockattr_t = ::c_long;
 pub type pthread_condattr_t = ::c_long;
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;

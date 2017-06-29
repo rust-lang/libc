@@ -160,6 +160,7 @@ pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
 pub const CPU_SETSIZE: ::c_int = 128;
 
