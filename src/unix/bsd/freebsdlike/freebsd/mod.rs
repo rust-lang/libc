@@ -576,6 +576,7 @@ extern {
         msgtyp: ::c_long, msgflg: ::c_int) -> ::c_int;
     pub fn msgsnd(msqid: ::c_int, msgp: *const ::c_void, msgsz: ::size_t,
         msgflg: ::c_int) -> ::c_int;
+    pub fn cfmakesane(termios: *mut ::termios);
 }
 
 cfg_if! {
