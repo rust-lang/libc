@@ -729,6 +729,18 @@ pub const VTDLY:  ::tcflag_t = 0o040000;
 pub const VT0:    ::tcflag_t = 0o000000;
 pub const VT1:    ::tcflag_t = 0o040000;
 
+pub const TCGB_CTS: ::c_int = 0x01;
+pub const TCGB_DSR: ::c_int = 0x02;
+pub const TCGB_RI: ::c_int = 0x04;
+pub const TCGB_DCD: ::c_int = 0x08;
+pub const TIOCM_CTS: ::c_int = TCGB_CTS;
+pub const TIOCM_CD: ::c_int = TCGB_DCD;
+pub const TIOCM_CAR: ::c_int = TIOCM_CD;
+pub const TIOCM_RI: ::c_int = TCGB_RI;
+pub const TIOCM_DSR: ::c_int = TCGB_dsR;
+pub const TIOCM_DTR: ::c_int = 0x10;
+pub const TIOCM_RTS: ::c_int = 0x20;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;

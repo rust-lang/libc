@@ -788,6 +788,18 @@ pub const VTDLY:  ::tcflag_t = 0o040000;
 pub const VT1: ::tcflag_t  = 0x00004000;
 pub const XTABS:  ::tcflag_t = 0o014000;
 
+pub const TIOCM_LE: ::c_int = 0x001;
+pub const TIOCM_DTR: ::c_int = 0x002;
+pub const TIOCM_RTS: ::c_int = 0x004;
+pub const TIOCM_ST: ::c_int = 0x008;
+pub const TIOCM_SR: ::c_int = 0x010;
+pub const TIOCM_CTS: ::c_int = 0x020;
+pub const TIOCM_CAR: ::c_int = 0x040;
+pub const TIOCM_RNG: ::c_int = 0x080;
+pub const TIOCM_DSR: ::c_int = 0x100;
+pub const TIOCM_CD: ::c_int = TIOCM_CAR;
+pub const TIOCM_RI: ::c_int = TIOCM_RNG;
+
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,
