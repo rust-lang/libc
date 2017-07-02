@@ -542,6 +542,18 @@ pub const CRTS_IFLOW: ::tcflag_t = CRTSCTS;
 pub const CCTS_OFLOW: ::tcflag_t = CRTSCTS;
 pub const OCRNL: ::tcflag_t = 0x10;
 
+pub const TIOCM_LE: ::c_int = 0o0001;
+pub const TIOCM_DTR: ::c_int = 0o0002;
+pub const TIOCM_RTS: ::c_int = 0o0004;
+pub const TIOCM_ST: ::c_int = 0o0010;
+pub const TIOCM_SR: ::c_int = 0o0020;
+pub const TIOCM_CTS: ::c_int = 0o0040;
+pub const TIOCM_CAR: ::c_int = 0o0100;
+pub const TIOCM_RNG: ::c_int = 0o0200;
+pub const TIOCM_DSR: ::c_int = 0o0400;
+pub const TIOCM_CD: ::c_int = TIOCM_CAR;
+pub const TIOCM_RI: ::c_int = TIOCM_RNG;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
