@@ -486,11 +486,14 @@ pub const SO_KEEPALIVE: ::c_int = 9;
 pub const SO_OOBINLINE: ::c_int = 10;
 pub const SO_LINGER: ::c_int = 13;
 pub const SO_REUSEPORT: ::c_int = 15;
+pub const SO_PASSCRED: ::c_int = 16;
+pub const SO_PEERCRED: ::c_int = 17;
 pub const SO_RCVLOWAT: ::c_int = 18;
 pub const SO_SNDLOWAT: ::c_int = 19;
 pub const SO_RCVTIMEO: ::c_int = 20;
 pub const SO_SNDTIMEO: ::c_int = 21;
 pub const SO_ACCEPTCONN: ::c_int = 30;
+pub const SO_SNDBUFFORCE: ::c_int = 32;
 
 pub const O_ACCMODE: ::c_int = 3;
 pub const O_APPEND: ::c_int = 1024;

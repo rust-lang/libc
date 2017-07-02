@@ -407,6 +407,7 @@ pub const PF_NATM: ::c_int = AF_NATM;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
+pub const SOCK_RDM: ::c_int = 4;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const IPPROTO_ICMP: ::c_int = 1;
 pub const IPPROTO_ICMPV6: ::c_int = 58;
