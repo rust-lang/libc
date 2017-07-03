@@ -1233,6 +1233,18 @@ pub const NOTE_TRACK: ::uint32_t = 0x00000001;
 pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
 pub const NOTE_CHILD: ::uint32_t = 0x00000004;
 
+pub const OCRNL: ::c_int = 0x00000010;
+pub const ONOCR: ::c_int = 0x00000020;
+pub const ONLRET: ::c_int = 0x00000040;
+pub const OFILL: ::c_int = 0x00000080;
+pub const NLDLY: ::c_int = 0x00000300;
+pub const TABDLY: ::c_int = 0x00000c04;
+pub const CRDLY: ::c_int = 0x00003000;
+pub const FFDLY: ::c_int = 0x00004000;
+pub const BSDLY: ::c_int = 0x00008000;
+pub const VTDLY: ::c_int = 0x00010000;
+pub const OFDEL: ::c_int = 0x00020000;
+
 pub const NL0: ::c_int  = 0x00000000;
 pub const NL1: ::c_int  = 0x00000100;
 pub const TAB0: ::c_int = 0x00000000;
