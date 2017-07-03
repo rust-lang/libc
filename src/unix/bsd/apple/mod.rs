@@ -809,8 +809,8 @@ pub const _SC_XOPEN_UNIX: ::c_int = 115;
 pub const _SC_XOPEN_VERSION: ::c_int = 116;
 pub const _SC_XOPEN_XCU_VERSION: ::c_int = 121;
 
-pub const PTHREAD_PROCESS_PRIVATE: usize = 2;
-pub const PTHREAD_PROCESS_SHARED: usize = 1;
+pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 2;
+pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 1;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 2;
 pub const PTHREAD_STACK_MIN: ::size_t = 8192;
