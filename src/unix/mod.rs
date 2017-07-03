@@ -252,6 +252,10 @@ cfg_if! {
         #[link(name = "c")]
         #[link(name = "mxio")]
         extern {}
+    } else if #[cfg(target_env = "newlib")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -888,6 +892,9 @@ cfg_if! {
     if #[cfg(target_env = "uclibc")] {
         mod uclibc;
         pub use self::uclibc::*;
+    } else if #[cfg(target_env = "newlib")] {
+        mod newlib;
+        pub use self::newlib::*;
     } else if #[cfg(any(target_os = "linux",
                         target_os = "android",
                         target_os = "emscripten",
