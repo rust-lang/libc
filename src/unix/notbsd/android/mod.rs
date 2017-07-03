@@ -174,6 +174,8 @@ pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
 
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
+pub const EPOLLRDHUP: ::c_int = 0x00002000;
+pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
@@ -471,7 +473,7 @@ pub const SOL_NETROM: ::c_int = 259;
 pub const SOL_ROSE: ::c_int = 260;
 
 #[doc(hidden)]
-pub const AF_MAX: ::c_int = 39;
+pub const AF_MAX: ::c_int = 43;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
@@ -504,6 +506,7 @@ pub const O_NONBLOCK: ::c_int = 2048;
 pub const O_SYNC: ::c_int = 0x101000;
 pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_NDELAY: ::c_int = 0x800;
+pub const O_DSYNC: ::c_int = 4096;
 
 pub const NI_MAXHOST: ::size_t = 1025;
 
@@ -631,8 +634,6 @@ pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
-pub const SIGSTKSZ: ::size_t = 8192;
-pub const MINSIGSTKSZ: ::size_t = 2048;
 pub const CBAUD: ::tcflag_t = 0o0010017;
 pub const TAB1: ::c_int = 0x00000800;
 pub const TAB2: ::c_int = 0x00001000;

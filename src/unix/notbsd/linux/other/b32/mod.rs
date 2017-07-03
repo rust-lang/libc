@@ -235,7 +235,6 @@ pub const TIOCMBIS: ::c_ulong = 0x5416;
 pub const TIOCMBIC: ::c_ulong = 0x5417;
 pub const TIOCMSET: ::c_ulong = 0x5418;
 pub const TIOCCONS: ::c_ulong = 0x541D;
-pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
