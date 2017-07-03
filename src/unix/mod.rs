@@ -885,10 +885,7 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(target_env = "uclibc")] {
-        mod uclibc;
-        pub use self::uclibc::*;
-    } else if #[cfg(any(target_os = "linux",
+    if #[cfg(any(target_os = "linux",
                         target_os = "android",
                         target_os = "emscripten",
                         target_os = "fuchsia"))] {
