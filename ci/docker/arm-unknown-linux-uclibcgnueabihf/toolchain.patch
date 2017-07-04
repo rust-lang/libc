@@ -1,0 +1,14 @@
+--- mod.rs      2017-07-01 22:30:03.000000000 +0000
++++ mod-new.rs  2017-07-01 23:24:44.516487566 +0000
+@@ -877,10 +877,7 @@
+ }
+
+ cfg_if! {
+-    if #[cfg(target_env = "uclibc")] {
+-        mod uclibc;
+-        pub use self::uclibc::*;
+-    } else if #[cfg(any(target_os = "linux",
++    if #[cfg(any(target_os = "linux",
+                         target_os = "android",
+                         target_os = "emscripten",
+                         target_os = "fuchsia"))] {
