@@ -51,3 +51,5 @@ pub const SYS_gettid: ::c_long = 186;
 
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
+
+pub const MAP_32BIT: ::c_int = 0x40;
