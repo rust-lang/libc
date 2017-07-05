@@ -1263,7 +1263,14 @@ impl<'a> Generator<'a> {
         let ret = match decl.output {
             ast::FunctionRetTy::None(..) |
             ast::FunctionRetTy::Default(..) => "void".to_string(),
-            ast::FunctionRetTy::Ty(ref t) => self.ty2name(t, false),
+            ast::FunctionRetTy::Ty(ref t) => {
+                match t.node {
+                    ast::TyKind::Tup(ref t) if t.len() == 0 => {
+                        "void".to_string()
+                    }
+                    _ => self.ty2name(t, false),
+                }
+            }
         };
         (ret, args, decl.variadic)
     }
