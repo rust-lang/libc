@@ -35,6 +35,7 @@ fn t2() {
         "bad field type b of T2Baz",
         "bad T2a function pointer",
         "bad T2C value at byte 0",
+        "bad T2S string",
     ];
     let mut errors = errors.iter().cloned().collect::<HashSet<_>>();
 

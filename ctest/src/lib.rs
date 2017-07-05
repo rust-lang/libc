@@ -683,6 +683,9 @@ impl TestGenerator {
                 fn pretty(&self) -> String;
             }
 
+            impl<'a> Pretty for &'a str {
+                fn pretty(&self) -> String { format!("{:?}", self) }
+            }
             impl<T> Pretty for *const T {
                 fn pretty(&self) -> String { format!("{:?}", self) }
             }
@@ -994,6 +997,9 @@ impl<'a> Generator<'a> {
     }
 
     fn rust_ty_to_c_ty(&self, mut rust_ty: &str) -> String {
+        if rust_ty == "&str" {
+            return "char*".to_string();
+        }
         let mut cty = self.rust2c(&rust_ty.replace("*mut ", "")
                                           .replace("*const ", ""));
         while rust_ty.starts_with("*") {
@@ -1014,30 +1020,47 @@ impl<'a> Generator<'a> {
         }
 
         let cty = self.rust_ty_to_c_ty(rust_ty);
-
         t!(writeln!(self.c, r#"
             static {cty} __test_const_{name}_val = {name};
             {cty}* __test_const_{name}(void) {{
                 return &__test_const_{name}_val;
             }}
         "#, name = name, cty = cty));
-        t!(writeln!(self.rust, r#"
-            fn const_{name}() {{
-                extern {{
-                    fn __test_const_{name}() -> *const {ty};
-                }}
-                let val = {name};
-                unsafe {{
-                    let ptr1 = &val as *const _ as *const u8;
-                    let ptr2 = __test_const_{name}() as *const u8;
-                    for i in 0..mem::size_of::<{ty}>() {{
-                        let i = i as isize;
-                        same(*ptr1.offset(i), *ptr2.offset(i),
-                             &format!("{name} value at byte {{}}", i));
+
+        if rust_ty == "&str" {
+            t!(writeln!(self.rust, r#"
+                fn const_{name}() {{
+                    extern {{
+                        fn __test_const_{name}() -> *const *const u8;
+                    }}
+                    let val = {name};
+                    unsafe {{
+                        let ptr = *__test_const_{name}();
+                        let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
+                        let c = c.to_str().expect("const {name} not utf8");
+                        same(val, c, "{name} string");
                     }}
                 }}
-            }}
-        "#, ty = rust_ty, name = name));
+            "#, name = name));
+        } else {
+            t!(writeln!(self.rust, r#"
+                fn const_{name}() {{
+                    extern {{
+                        fn __test_const_{name}() -> *const {ty};
+                    }}
+                    let val = {name};
+                    unsafe {{
+                        let ptr1 = &val as *const _ as *const u8;
+                        let ptr2 = __test_const_{name}() as *const u8;
+                        for i in 0..mem::size_of::<{ty}>() {{
+                            let i = i as isize;
+                            same(*ptr1.offset(i), *ptr2.offset(i),
+                                 &format!("{name} value at byte {{}}", i));
+                        }}
+                    }}
+                }}
+            "#, ty = rust_ty, name = name));
+        }
         self.tests.push(format!("const_{}", name));
     }
 
@@ -1148,6 +1171,26 @@ impl<'a> Generator<'a> {
             ast::TyKind::FixedLengthVec(ref t, ref e) => {
                 assert!(rust);
                 format!("[{}; {}]", self.ty2name(t, rust), self.expr2str(e))
+            }
+            ast::TyKind::Rptr(_, ast::MutTy {
+                ref ty,
+                mutbl: ast::Mutability::Immutable,
+            }) => {
+                let path = match ty.node {
+                    ast::TyKind::Path(_, ref p) => p,
+                    _ => panic!("unknown ty {:?}", ty),
+                };
+                if path.segments.len() != 1 {
+                    panic!("unknown ty {:?}", ty)
+                }
+                if &*path.segments[0].identifier.name.as_str() != "str" {
+                    panic!("unknown ty {:?}", ty)
+                }
+                if rust {
+                    format!("&str")
+                } else {
+                    format!("char*")
+                }
             }
             _ => panic!("unknown ty {:?}", ty),
         }

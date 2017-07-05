@@ -3,6 +3,7 @@
 use libc::*;
 
 pub type T1Foo = i32;
+pub const T1S: &'static str = "foo";
 
 pub const T1N: i32 = 5;
 
