@@ -12,3 +12,4 @@ struct T2Baz {
 static void T2a(void) {}
 
 #define T2C 4
+#define T2S "a"

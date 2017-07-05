@@ -8,6 +8,7 @@ pub struct T2Baz {
 }
 
 pub const T2C: i32 = 5;
+pub const T2S: &'static str = "b";
 
 extern {
     pub fn T2a();
