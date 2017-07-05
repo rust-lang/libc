@@ -14,6 +14,7 @@ pub struct T1Bar {
     pub c: T1Foo,
     pub d: u8,
     pub e: [i64; T1N as usize],
+    pub f: [[i64; 2]; T1N as usize],
 }
 
 #[repr(C)]

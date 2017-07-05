@@ -11,6 +11,7 @@ struct T1Bar {
   T1Foo c;
   uint8_t d;
   int64_t e[T1N];
+  int64_t f[T1N][2];
 };
 
 struct T1Baz {

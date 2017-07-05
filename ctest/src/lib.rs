@@ -1221,8 +1221,19 @@ impl<'a> Generator<'a> {
                 format!("{}({}**{})({})", ret, abi, sig, args.connect(", "))
             }
             ast::TyKind::FixedLengthVec(ref t, ref e) => {
-                format!("{}(*{})[{}]", self.ty2name(t, false), sig,
-                        self.expr2str(e))
+                match t.node {
+                    ast::TyKind::FixedLengthVec(ref t2, ref e2) => {
+                        format!("{}(*{})[{}][{}]",
+                                self.ty2name(t2, false),
+                                sig,
+                                self.expr2str(e),
+                                self.expr2str(e2))
+                    }
+                    _ => {
+                        format!("{}(*{})[{}]", self.ty2name(t, false), sig,
+                                self.expr2str(e))
+                    }
+                }
             }
             _ => format!("{}* {}", self.ty2name(ty, false), sig)
         }
