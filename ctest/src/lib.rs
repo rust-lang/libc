@@ -614,7 +614,8 @@ impl TestGenerator {
         let krate = parse::parse_crate_from_file(krate, Vec::new(), &sess);
 
         // expand macros
-        let ecfg = expand::ExpansionConfig::default("crate_name".to_string());
+        let mut ecfg = expand::ExpansionConfig::default("crate_name".to_string());
+        ecfg.recursion_limit = 128;
         let exts = vec![
             (intern("macro_rules"), SyntaxExtension::MacroRulesTT),
         ];
