@@ -532,6 +532,7 @@ pub const VMIN: usize = 6;
 pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
+pub const EXTPROC: ::tcflag_t = 0o200000;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
