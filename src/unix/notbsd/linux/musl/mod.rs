@@ -201,7 +201,7 @@ pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 2097152;
 pub const MADV_DODUMP: ::c_int = 17;
 pub const MADV_DONTDUMP: ::c_int = 16;
 
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
+pub const EPOLLWAKEUP: ::uint32_t = 0x20000000;
 
 pub const POLLRDNORM: ::c_short = 0x040;
 pub const POLLRDBAND: ::c_short = 0x080;

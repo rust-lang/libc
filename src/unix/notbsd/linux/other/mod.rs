@@ -419,7 +419,7 @@ pub const PTRACE_PEEKSIGINFO: ::c_uint = 0x4209;
 pub const MADV_DODUMP: ::c_int = 17;
 pub const MADV_DONTDUMP: ::c_int = 16;
 
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
+pub const EPOLLWAKEUP: ::uint32_t = 0x20000000;
 
 pub const MADV_HUGEPAGE: ::c_int = 14;
 pub const MADV_NOHUGEPAGE: ::c_int = 15;
