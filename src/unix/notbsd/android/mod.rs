@@ -464,7 +464,6 @@ pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const SOL_SOCKET: ::c_int = 1;
-pub const SOL_UDP: ::c_int = 17;
 pub const SOL_SCTP: ::c_int = 132;
 pub const SOL_IPX: ::c_int = 256;
 pub const SOL_AX25: ::c_int = 257;
@@ -500,6 +499,7 @@ pub const SO_BINDTODEVICE: ::c_int = 25;
 pub const SO_TIMESTAMP: ::c_int = 29;
 pub const SO_ACCEPTCONN: ::c_int = 30;
 pub const SO_SNDBUFFORCE: ::c_int = 32;
+pub const SO_RCVBUFFORCE: ::c_int = 33;
 pub const SO_MARK: ::c_int = 36;
 pub const SO_PROTOCOL: ::c_int = 38;
 pub const SO_DOMAIN: ::c_int = 39;

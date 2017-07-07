@@ -328,7 +328,6 @@ pub const SO_DETACH_FILTER: ::c_int = 27;
 pub const SO_GET_FILTER: ::c_int = SO_ATTACH_FILTER;
 pub const SO_PEERNAME: ::c_int = 28;
 pub const SO_TIMESTAMP: ::c_int = 29;
-pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
 pub const SO_PEERSEC: ::c_int = 30;
 pub const SO_SNDBUFFORCE: ::c_int = 31;
 pub const SO_RCVBUFFORCE: ::c_int = 33;

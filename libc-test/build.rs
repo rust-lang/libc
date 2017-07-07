@@ -78,6 +78,7 @@ fn main() {
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
         cfg.header("netinet/tcp.h");
+        cfg.header("netinet/udp.h");
         cfg.header("resolv.h");
         cfg.header("pthread.h");
         cfg.header("dlfcn.h");
@@ -150,6 +151,7 @@ fn main() {
         cfg.header("malloc/malloc.h");
         cfg.header("util.h");
         cfg.header("sys/xattr.h");
+        cfg.header("sys/sys_domain.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
@@ -200,6 +202,7 @@ fn main() {
         cfg.header("sys/personality.h");
         cfg.header("sys/swap.h");
         cfg.header("pty.h");
+        cfg.header("linux/netfilter_ipv4.h");
         if !uclibc {
             cfg.header("sys/sysinfo.h");
         }
