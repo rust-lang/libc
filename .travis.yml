@@ -101,6 +101,12 @@ matrix:
     - os: linux
       env: TARGET=mips-unknown-linux-gnu
       rust: beta
+    - os: linux
+      env: TARGET=asmjs-unknown-emscripten
+      rust: stable
+    - os: linux
+      env: TARGET=wasm32-unknown-emscripten
+      rust: stable
 
     # beta
     - os: linux

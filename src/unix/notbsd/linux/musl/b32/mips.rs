@@ -1,5 +1,16 @@
 pub type c_char = i8;
 pub type wchar_t = ::c_int;
+pub type loff_t = ::c_longlong;
+pub type ino_t = u64;
+pub type off_t = i64;
+pub type blkcnt_t = i64;
+pub type blksize_t = ::c_long;
+pub type fsblkcnt_t = ::c_ulonglong;
+pub type fsfilcnt_t = ::c_ulonglong;
+pub type dev_t = u64;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
 
 s! {
     pub struct stat {
@@ -117,8 +128,11 @@ s! {
     }
 }
 
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
+
 pub const O_DIRECT: ::c_int = 0o100000;
 pub const O_DIRECTORY: ::c_int = 0o200000;
+pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 pub const O_NOFOLLOW: ::c_int = 0o400000;
 pub const O_ASYNC: ::c_int = 0o10000;
 
@@ -237,6 +251,8 @@ pub const EOWNERDEAD: ::c_int = 165;
 pub const ENOTRECOVERABLE: ::c_int = 166;
 pub const EHWPOISON: ::c_int = 168;
 pub const ERFKILL: ::c_int = 167;
+
+pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_DGRAM: ::c_int = 1;

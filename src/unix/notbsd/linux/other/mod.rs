@@ -1,7 +1,12 @@
+pub type loff_t = ::c_longlong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type rlim_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
+pub type dev_t = u64;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
 
 s! {
     pub struct aiocb {
@@ -168,6 +173,8 @@ s! {
         __align: [::c_long; 0],
     }
 }
+
+pub const O_TMPFILE: ::c_int = 0o20000000 | ::O_DIRECTORY;
 
 pub const __UT_LINESIZE: usize = 32;
 pub const __UT_NAMESIZE: usize = 32;

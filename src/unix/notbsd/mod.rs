@@ -4,7 +4,6 @@ pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
-pub type loff_t = ::c_longlong;
 pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
@@ -103,13 +102,13 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         pub sched_ss_low_priority: ::c_int,
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         pub sched_ss_repl_period: ::timespec,
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         pub sched_ss_init_budget: ::timespec,
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         pub sched_ss_max_repl: ::c_int,
     }
 
@@ -255,7 +254,6 @@ pub const RUSAGE_SELF: ::c_int = 0;
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
-pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 

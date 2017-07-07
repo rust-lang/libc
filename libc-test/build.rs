@@ -13,7 +13,8 @@ fn main() {
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
     let apple = target.contains("apple");
-    let musl = target.contains("musl");
+    let emscripten = target.contains("asm");
+    let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
     let freebsd = target.contains("freebsd");
     let dragonfly = target.contains("dragonfly");
@@ -25,7 +26,7 @@ fn main() {
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies
-    if linux || android {
+    if linux || android || emscripten {
         cfg.define("_GNU_SOURCE", None);
     } else if netbsd {
         cfg.define("_NETBSD_SOURCE", Some("1"));
@@ -165,7 +166,7 @@ fn main() {
         }
     }
 
-    if linux {
+    if linux || emscripten {
         cfg.header("mqueue.h");
         cfg.header("ucontext.h");
         cfg.header("sys/signalfd.h");
@@ -186,7 +187,7 @@ fn main() {
         }
     }
 
-    if linux || android {
+    if linux || android || emscripten {
         cfg.header("malloc.h");
         cfg.header("net/ethernet.h");
         cfg.header("netpacket/packet.h");
@@ -243,7 +244,7 @@ fn main() {
         cfg.header("sys/ioctl_compat.h");
     }
 
-    if linux || freebsd || dragonfly || netbsd || apple {
+    if linux || emscripten || freebsd || dragonfly || netbsd || apple {
         if !uclibc {
             cfg.header("aio.h");
         }
@@ -374,6 +375,9 @@ fn main() {
             "FILE_ATTRIBUTE_INTEGRITY_STREAM" |
             "ERROR_NOTHING_TO_TERMINATE" if mingw => true,
 
+            // not defined
+            "IUTF8" | "ENOATTR" | "EXTA" | "EXTB" if emscripten => true,
+
             "SIG_IGN" => true, // sighandler_t weirdness
 
             // types on musl are defined a little differently
@@ -445,6 +449,32 @@ fn main() {
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
             "prlimit" | "prlimit64" |        // non-int in 2nd arg
             "strerror_r" if linux => true,   // actually xpg-something-or-other
+
+            // not defined or fails to link
+            "aio_cancel" | "aio_error" | "aio_fsync" | "aio_read" | "aio_return"| "aio_suspend" |
+            "aio_write" | "clock_nanosleep" | "clone" | "daemon" | "endspent" | "epoll_create" |
+            "epoll_create1" | "epoll_ctl" | "epoll_pwait" | "epoll_wait" | "eventfd" |
+            "faccessat" | "fallocate" | "fgetxattr" | "flistxattr" | "forkpty" | "fremovexattr" |
+            "fsetxattr" | "ftok" | "futimes" | "getdtablesize" | "getgrgid" | "getgrnam" |
+            "getpwnam_r" | "getpwuid_r" | "getspent" | "getspnam" | "getxattr" | "initgroups" |
+            "lgetxattr" | "listxattr" | "llistxattr" | "lremovexattr" | "lsetxattr" | "lutimes" |
+            "mount" | "mq_close" | "mq_getattr" | "mq_open" | "mq_receive" | "mq_send" |
+            "mq_setattr" | "mq_unlink" | "msgctl" | "msgget" | "msgrcv" | "msgsnd" | "pclose" |
+            "popen" | "ppoll" | "prctl" | "prlimit" | "prlimit64" | "process_vm_readv" |
+            "process_vm_writev" | "pthread_atfork" | "pthread_attr_getguardsize" |
+            "pthread_kill" | "pthread_mutexattr_getpshared" | "pthread_mutex_timedlock" |
+            "pthread_getschedparam" | "pthread_setschedparam" | "pthread_setschedprio" |
+            "pthread_sigmask" | "ptrace" | "quotactl" | "readahead" | "reboot" | "removexattr" |
+            "sched_getaffinity" | "sched_getparam" | "sched_get_priority_max" |
+            "sched_get_priority_min" | "sched_getscheduler" | "sched_rr_get_interval" |
+            "sched_setaffinity" | "sched_setparam" | "sched_setscheduler" | "sem_close" |
+            "semctl" | "semget" | "semop" | "sem_open" | "sem_timedwait" | "sem_unlink" |
+            "sendfile" | "setfsgid" | "setfsuid" | "sethostname" | "setns" | "setspent" |
+            "settimeofday" | "setxattr" | "shmat" | "shmctl" | "shmdt" | "shmget" |
+            "sigaltstack" | "signalfd" | "sigsuspend" | "sigtimedwait" | "sigwait" |
+            "sigwaitinfo" | "splice" | "sync_file_range" | "sysinfo" | "tee" | "umount" |
+            "umount2" | "unshare" | "vmsplice" | "swapoff" | "vhangup" | "swapon" |
+            "personality" | "syscall" if emscripten => true,
 
             // int vs uint. Sorry musl, your prototype declarations are "correct" in the sense that
             // they match the interface defined by Linux verbatim, but they conflict with other

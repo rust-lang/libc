@@ -6,6 +6,7 @@ pub type clock_t = ::c_long;
 pub type time_t = ::c_long;
 pub type suseconds_t = ::c_long;
 pub type off_t = ::c_long;
+pub type loff_t = ::c_longlong;
 pub type blkcnt_t = ::c_ulong;
 pub type blksize_t = ::c_ulong;
 pub type nlink_t = u32;
@@ -149,6 +150,7 @@ s! {
 }
 
 pub const O_TRUNC: ::c_int = 512;
+pub const O_TMPFILE: ::c_int = 0o20000000 | ::O_DIRECTORY;
 
 pub const O_CLOEXEC: ::c_int = 0x80000;
 

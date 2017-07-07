@@ -8,6 +8,7 @@ pub type fsfilcnt_t = u64;
 pub type ino_t = u64;
 pub type nlink_t = u64;
 pub type off_t = i64;
+pub type loff_t = ::c_longlong;
 pub type rlim_t = u64;
 pub type suseconds_t = i64;
 pub type time_t = i64;
@@ -16,6 +17,10 @@ pub type greg_t = u64;
 pub type clock_t = i64;
 pub type __fsword_t = ::c_long;
 pub type __priority_which_t = ::c_uint;
+pub type dev_t = u64;
+pub type ino64_t = u64;
+pub type off64_t = i64;
+pub type blkcnt64_t = i64;
 
 s! {
     pub struct aiocb {
@@ -373,6 +378,7 @@ pub const O_FSYNC: ::c_int = 0x101000;
 pub const O_DIRECT: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
+pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 

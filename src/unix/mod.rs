@@ -62,7 +62,7 @@ s! {
         pub ru_nvcsw: c_long,
         pub ru_nivcsw: c_long,
 
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         __reserved: [c_long; 16],
     }
 
