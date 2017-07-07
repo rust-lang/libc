@@ -44,7 +44,7 @@ s! {
     }
 
     pub struct dirent {
-        pub d_fileno: u32,
+        pub d_ino: ::ino_t,
         pub d_reclen: u16,
         pub d_type: u8,
         pub d_namlen: u8,

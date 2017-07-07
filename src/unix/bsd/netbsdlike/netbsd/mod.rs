@@ -21,7 +21,7 @@ s! {
     }
 
     pub struct dirent {
-        pub d_fileno: ::ino_t,
+        pub d_ino: ::ino_t,
         pub d_reclen: u16,
         pub d_namlen: u16,
         pub d_type: u8,

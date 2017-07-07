@@ -113,7 +113,7 @@ s! {
     }
 
     pub struct dirent {
-        pub d_ino: u64,
+        pub d_ino: ino_t,
         pub d_seekoff: u64,
         pub d_reclen: u16,
         pub d_namlen: u16,
