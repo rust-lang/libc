@@ -16,6 +16,7 @@ pub type greg_t = u64;
 pub type clock_t = i64;
 pub type __fsword_t = ::c_long;
 pub type __priority_which_t = ::c_uint;
+pub type __u64 = u64;
 
 s! {
     pub struct aiocb {
@@ -777,7 +778,6 @@ pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const VSWTC: usize = 7;
 pub const OLCUC:  ::tcflag_t = 0o000002;
 pub const NLDLY:  ::tcflag_t = 0o000400;
-pub const NL1: ::tcflag_t  = 0x00000100;
 pub const CRDLY:  ::tcflag_t = 0o003000;
 pub const CR1: ::tcflag_t  = 0x00000200;
 pub const CR2: ::tcflag_t  = 0x00000400;
