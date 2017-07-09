@@ -1141,6 +1141,9 @@ impl<'a> Generator<'a> {
                             format!("{} {}*", self.ty2name(&t.ty, rust),
                                     modifier)
                         }
+                        ast::TyKind::FixedLengthVec(ref t, _) => {
+                            format!("{}{}*", modifier, self.ty2name(t, rust))
+                        }
                         _ => {
                             format!("{}{}*", modifier, self.ty2name(&t.ty, rust))
                         }
@@ -1174,16 +1177,28 @@ impl<'a> Generator<'a> {
             }
             ast::TyKind::Rptr(_, ast::MutTy {
                 ref ty,
-                mutbl: ast::Mutability::Immutable,
+                mutbl,
             }) => {
                 let path = match ty.node {
                     ast::TyKind::Path(_, ref p) => p,
+                    ast::TyKind::FixedLengthVec(ref t, _) => {
+                        assert!(!rust);
+                        return format!("{}{}*",
+                                       match mutbl {
+                                           ast::Mutability::Immutable => "const ",
+                                           ast::Mutability::Mutable => "",
+                                       },
+                                       self.ty2name(t, rust))
+                    }
                     _ => panic!("unknown ty {:?}", ty),
                 };
                 if path.segments.len() != 1 {
                     panic!("unknown ty {:?}", ty)
                 }
                 if &*path.segments[0].identifier.name.as_str() != "str" {
+                    panic!("unknown ty {:?}", ty)
+                }
+                if mutbl != ast::Mutability::Immutable {
                     panic!("unknown ty {:?}", ty)
                 }
                 if rust {
@@ -1251,6 +1266,14 @@ impl<'a> Generator<'a> {
                 path.segments.last().unwrap().identifier.to_string()
             }
             ast::ExprKind::Cast(ref e, _) => self.expr2str(e),
+            ast::ExprKind::Binary(ref op, ref e1, ref e2) => {
+                let e1 = self.expr2str(e1);
+                let e2 = self.expr2str(e2);
+                match op.node {
+                    ast::BinOpKind::Add => format!("{} + {}", e1, e2),
+                    _ => panic!("unknown op: {:?}", op),
+                }
+            }
             _ => panic!("unknown expr: {:?}", e),
         }
     }

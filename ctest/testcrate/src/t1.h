@@ -25,6 +25,10 @@ void* T1c(void*);
 int32_t T1d(unsigned);
 void T1e(unsigned, const struct T1Bar*);
 void T1f(void);
+void T1g(const int32_t a[4]);
+void T1h(const int32_t a[4]);
+void T1i(int32_t a[4]);
+void T1j(int32_t a[4]);
 
 #define T1C 4
 
