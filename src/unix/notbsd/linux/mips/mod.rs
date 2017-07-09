@@ -620,6 +620,10 @@ pub const TIOCM_RNG: ::c_int = 0x200;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 pub const TIOCM_DSR: ::c_int = 0x400;
 
+pub const EHWPOISON: ::c_int = 168;
+pub const SIGEV_THREAD_ID: ::c_int = 4;
+pub const EPOLLWAKEUP: ::c_int = 0x20000000;
+
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,
