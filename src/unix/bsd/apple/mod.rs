@@ -889,6 +889,10 @@ pub const AF_PPP: ::c_int = 34;
 pub const pseudo_AF_HDRCMPLT: ::c_int = 35;
 #[doc(hidden)]
 pub const AF_MAX: ::c_int = 40;
+pub const AF_SYS_CONTROL: ::c_int = 2;
+
+pub const SYSPROTO_EVENT: ::c_int = 1;
+pub const SYSPROTO_CONTROL: ::c_int = 2;
 
 pub const PF_UNSPEC: ::c_int = AF_UNSPEC;
 pub const PF_LOCAL: ::c_int = AF_LOCAL;
@@ -946,13 +950,6 @@ pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
 pub const SOCK_RDM: ::c_int = 4;
 pub const SOCK_SEQPACKET: ::c_int = 5;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
-pub const IP_MULTICAST_TTL: ::c_int = 10;
-pub const IP_MULTICAST_LOOP: ::c_int = 11;
 pub const IP_TTL: ::c_int = 4;
 pub const IP_HDRINCL: ::c_int = 2;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
@@ -975,6 +972,7 @@ pub const SO_LINGER: ::c_int = 0x0080;
 pub const SO_OOBINLINE: ::c_int = 0x0100;
 pub const SO_REUSEPORT: ::c_int = 0x0200;
 pub const SO_TIMESTAMP: ::c_int = 0x0400;
+pub const SO_TIMESTAMP_MONOTONIC: ::c_int = 0x0800;
 pub const SO_DONTTRUNC: ::c_int = 0x2000;
 pub const SO_WANTMORE: ::c_int = 0x4000;
 pub const SO_WANTOOBFLAG: ::c_int = 0x8000;
@@ -986,11 +984,17 @@ pub const SO_SNDTIMEO: ::c_int = 0x1005;
 pub const SO_RCVTIMEO: ::c_int = 0x1006;
 pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
+pub const SO_LABEL: ::c_int = 0x1010;
+pub const SO_PEERLABEL: ::c_int = 0x1011;
 pub const SO_NREAD: ::c_int = 0x1020;
 pub const SO_NKE: ::c_int = 0x1021;
 pub const SO_NOSIGPIPE: ::c_int = 0x1022;
 pub const SO_NOADDRERR: ::c_int = 0x1023;
 pub const SO_NWRITE: ::c_int = 0x1024;
+pub const SO_REUSESHAREUID: ::c_int = 0x1025;
+pub const SO_NOTIFYCONFLICT: ::c_int = 0x1026;
+pub const SO_RANDOMPORT: ::c_int = 0x1082;
+pub const SO_NP_EXTENSIONS: ::c_int = 0x1083;
 
 pub const MSG_OOB: ::c_int =  0x1;
 pub const MSG_PEEK: ::c_int = 0x2;
@@ -1008,7 +1012,6 @@ pub const MSG_HAVEMORE: ::c_int = 0x2000;
 pub const MSG_RCVMORE: ::c_int = 0x4000;
 // pub const MSG_COMPAT: ::c_int = 0x8000;
 
-pub const SCM_RIGHTS: ::c_int = 0x01;
 pub const SCM_TIMESTAMP: ::c_int = 0x02;
 pub const SCM_CREDS: ::c_int = 0x03;
 

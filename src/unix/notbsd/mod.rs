@@ -437,6 +437,7 @@ pub const IFF_DYNAMIC: ::c_int = 0x8000;
 
 pub const SOL_IP: ::c_int = 0;
 pub const SOL_TCP: ::c_int = 6;
+pub const SOL_UDP: ::c_int = 17;
 pub const SOL_IPV6: ::c_int = 41;
 pub const SOL_ICMPV6: ::c_int = 58;
 pub const SOL_RAW: ::c_int = 255;
@@ -553,12 +554,11 @@ pub const MSG_WAITFORONE: ::c_int = 0x10000;
 pub const MSG_FASTOPEN: ::c_int = 0x20000000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
 
+pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
+
 pub const SOCK_RAW: ::c_int = 3;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
+pub const SOCK_RDM: ::c_int = 4;
+pub const IP_MULTICAST_IF: ::c_int = 32;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_TTL: ::c_int = 2;
@@ -587,6 +587,7 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_V6ONLY: ::c_int = 26;
 
 pub const SO_DEBUG: ::c_int = 1;
+pub const SO_ORIGINAL_DST: ::c_int = 80;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;

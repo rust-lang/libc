@@ -725,11 +725,6 @@ pub const MSG_WAITFORONE: ::c_int = 0x10000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
 
 pub const SOCK_RAW: ::c_int = 3;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_TTL: ::c_int = 2;
@@ -1779,4 +1774,3 @@ cfg_if! {
         pub use unsupported_target;
     }
 }
-

@@ -217,6 +217,13 @@ pub const PRIO_USER: ::c_int = 2;
 pub const PRIO_MIN: ::c_int = -20;
 pub const PRIO_MAX: ::c_int = 20;
 
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
+pub const IPPROTO_TCP: ::c_int = 6;
+pub const IPPROTO_UDP: ::c_int = 17;
+pub const IPPROTO_IP: ::c_int = 0;
+pub const IPPROTO_IPV6: ::c_int = 41;
+
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
