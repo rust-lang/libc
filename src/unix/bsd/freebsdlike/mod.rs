@@ -602,6 +602,7 @@ pub const SOCK_MAXADDRLEN: ::c_int = 255;
 pub const IPPROTO_ICMP: ::c_int = 1;
 pub const IPPROTO_ICMPV6: ::c_int = 58;
 pub const IPPROTO_TCP: ::c_int = 6;
+pub const IPPROTO_UDP: ::c_int = 17;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
@@ -614,6 +615,7 @@ pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 
 pub const TCP_NODELAY: ::c_int = 1;
+pub const TCP_MAXSEG: ::c_int = 2;
 pub const TCP_KEEPIDLE: ::c_int = 256;
 pub const SOL_SOCKET: ::c_int = 0xffff;
 pub const SO_DEBUG: ::c_int = 0x01;
@@ -639,6 +641,8 @@ pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
 
 pub const IFF_LOOPBACK: ::c_int = 0x8;
+
+pub const SCM_RIGHTS: ::c_int = 0x01;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
