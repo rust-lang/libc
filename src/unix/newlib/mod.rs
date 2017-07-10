@@ -590,6 +590,7 @@ extern {
                        host: *mut ::c_char, hostlen: socklen_t,
                        serv: *mut ::c_char, servlen: socklen_t,
                        flags: ::c_int) -> ::c_int;
+    pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
 
 cfg_if! {
