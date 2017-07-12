@@ -929,6 +929,11 @@ pub const OCRNL: ::tcflag_t = 0x10;
 pub const ONOCR: ::tcflag_t = 0x20;
 pub const ONLRET: ::tcflag_t = 0x40;
 
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLWRNORM: ::c_short = 0x004;
+pub const POLLRDBAND: ::c_short = 0x080;
+pub const POLLWRBAND: ::c_short = 0x100;
+
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
