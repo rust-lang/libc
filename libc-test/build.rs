@@ -432,6 +432,13 @@ fn main() {
             // See constant definition for more details.
             "ENOATTR" if linux => true,
 
+            // On mips*-unknown-linux-gnu* CMSPAR cannot be included with the set of headers we
+            // want to use here for testing. It's originally defined in asm/termbits.h, which is
+            // also included by asm/termios.h, but not the standard termios.h. There's no way to
+            // include both asm/termbits.h and termios.h and there's no way to include both
+            // asm/termios.h and ioctl.h (+ some other headers) because of redeclared types.
+            "CMSPAR" if mips && linux && !musl => true,
+
             _ => false,
         }
     });

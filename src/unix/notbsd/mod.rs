@@ -679,6 +679,7 @@ pub const IMAXBEL: ::tcflag_t = 0x00002000;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const OPOST: ::tcflag_t = 0x1;
 pub const CS5: ::tcflag_t = 0x00000000;
+pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const CRTSCTS: ::tcflag_t = 0x80000000;
 pub const ECHO: ::tcflag_t = 0x00000008;
 pub const OCRNL:  ::tcflag_t = 0o000010;

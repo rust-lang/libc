@@ -778,7 +778,6 @@ pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 pub const SYS_gettid: ::c_long = 236;
 pub const SYS_perf_event_open: ::c_long = 331;
 
-pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const VSWTC: usize = 7;
 pub const OLCUC:  ::tcflag_t = 0o000002;
 pub const NLDLY:  ::tcflag_t = 0o000400;
