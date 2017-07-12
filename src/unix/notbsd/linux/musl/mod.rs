@@ -203,9 +203,6 @@ pub const MADV_DONTDUMP: ::c_int = 16;
 
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
-pub const POLLRDNORM: ::c_short = 0x040;
-pub const POLLRDBAND: ::c_short = 0x080;
-
 pub const MADV_HUGEPAGE: ::c_int = 14;
 pub const MADV_NOHUGEPAGE: ::c_int = 15;
 

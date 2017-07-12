@@ -846,9 +846,7 @@ pub const B3000000: ::speed_t = 0o010015;
 pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
 
-pub const POLLRDNORM: ::c_short = 0x040;
 pub const POLLWRNORM: ::c_short = 0x004;
-pub const POLLRDBAND: ::c_short = 0x080;
 pub const POLLWRBAND: ::c_short = 0x100;
 
 #[link(name = "util")]

@@ -761,6 +761,9 @@ pub const P_PGID: idtype_t = 2;
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
 
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLRDBAND: ::c_short = 0x080;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
