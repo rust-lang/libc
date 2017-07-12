@@ -269,9 +269,6 @@ pub const SIGWINCH: ::c_int = 28;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
-pub const POLLRDNORM: ::c_short = 0x040;
-pub const POLLRDBAND: ::c_short = 0x080;
-
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
 
