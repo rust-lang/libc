@@ -778,10 +778,18 @@ pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 pub const SYS_gettid: ::c_long = 236;
 pub const SYS_perf_event_open: ::c_long = 331;
 
+pub const VTIME: usize = 5;
 pub const VSWTC: usize = 7;
-pub const OLCUC:  ::tcflag_t = 0o000002;
-pub const NLDLY:  ::tcflag_t = 0o000400;
-pub const CRDLY:  ::tcflag_t = 0o003000;
+pub const VSTART: usize = 8;
+pub const VSTOP: usize = 9;
+pub const VSUSP: usize = 10;
+pub const VREPRINT: usize = 12;
+pub const VDISCARD: usize = 13;
+pub const VWERASE: usize = 14;
+pub const OLCUC: ::tcflag_t = 0o000002;
+pub const ONLCR: ::tcflag_t = 0o000004;
+pub const NLDLY: ::tcflag_t = 0o000400;
+pub const CRDLY: ::tcflag_t = 0o003000;
 pub const CR1: ::tcflag_t  = 0x00000200;
 pub const CR2: ::tcflag_t  = 0x00000400;
 pub const CR3: ::tcflag_t  = 0x00000600;
@@ -811,6 +819,7 @@ pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
+pub const CBAUD: ::speed_t = 0o010017;
 pub const B0: ::speed_t = 0o000000;
 pub const B50: ::speed_t = 0o000001;
 pub const B75: ::speed_t = 0o000002;
@@ -829,6 +838,17 @@ pub const B19200: ::speed_t = 0o000016;
 pub const B38400: ::speed_t = 0o000017;
 pub const EXTA: ::speed_t = B19200;
 pub const EXTB: ::speed_t = B38400;
+pub const CSIZE: ::tcflag_t = 0o000060;
+pub const CS6: ::tcflag_t = 0o000020;
+pub const CS7: ::tcflag_t = 0o000040;
+pub const CS8: ::tcflag_t = 0o000060;
+pub const CSTOPB: ::tcflag_t = 0o000100;
+pub const CREAD: ::tcflag_t = 0o000200;
+pub const PARENB: ::tcflag_t = 0o000400;
+pub const PARODD: ::tcflag_t = 0o001000;
+pub const HUPCL: ::tcflag_t = 0o002000;
+pub const CLOCAL: ::tcflag_t = 0o004000;
+pub const CBAUDEX: ::tcflag_t = 0o010000;
 pub const B57600: ::speed_t = 0o010001;
 pub const B115200: ::speed_t = 0o010002;
 pub const B230400: ::speed_t = 0o010003;
@@ -844,9 +864,25 @@ pub const B2500000: ::speed_t = 0o010014;
 pub const B3000000: ::speed_t = 0o010015;
 pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
+pub const CIBAUD: ::tcflag_t = 0o02003600000;
+
+pub const ISIG: ::tcflag_t = 0o000001;
+pub const ICANON: ::tcflag_t = 0o000002;
+pub const XCASE: ::tcflag_t = 0o000004;
+pub const ECHOE: ::tcflag_t = 0o000020;
+pub const ECHOK: ::tcflag_t = 0o000040;
+pub const ECHONL: ::tcflag_t = 0o000100;
+pub const NOFLSH: ::tcflag_t = 0o000200;
+pub const ECHOCTL: ::tcflag_t = 0o001000;
+pub const ECHOPRT: ::tcflag_t = 0o002000;
+pub const ECHOKE: ::tcflag_t = 0o004000;
+pub const PENDIN: ::tcflag_t = 0o040000;
 
 pub const POLLWRNORM: ::c_short = 0x004;
 pub const POLLWRBAND: ::c_short = 0x100;
+
+pub const IXON: ::tcflag_t = 0o002000;
+pub const IXOFF: ::tcflag_t = 0o010000;
 
 #[link(name = "util")]
 extern {
