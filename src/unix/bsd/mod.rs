@@ -313,6 +313,11 @@ pub const TCP_MAXSEG: ::c_int = 2;
 
 pub const PIPE_BUF: usize = 512;
 
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLWRNORM: ::c_short = 0x004;
+pub const POLLRDBAND: ::c_short = 0x080;
+pub const POLLWRBAND: ::c_short = 0x100;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;

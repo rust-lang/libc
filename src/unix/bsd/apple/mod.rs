@@ -1491,11 +1491,6 @@ pub const CTL_DEBUG_NAME: ::c_int = 0;
 pub const CTL_DEBUG_VALUE: ::c_int = 1;
 pub const CTL_DEBUG_MAXID: ::c_int = 20;
 
-pub const POLLRDNORM: ::c_short = 0x040;
-pub const POLLWRNORM: ::c_short = 0x004;
-pub const POLLRDBAND: ::c_short = 0x080;
-pub const POLLWRBAND: ::c_short = 0x100;
-
 pub const PRIO_DARWIN_THREAD: ::c_int = 3;
 pub const PRIO_DARWIN_PROCESS: ::c_int = 4;
 pub const PRIO_DARWIN_BG: ::c_int = 0x1000;
