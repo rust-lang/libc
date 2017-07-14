@@ -131,6 +131,43 @@ s! {
         pub st_qspare1: ::int64_t,
         pub st_qspare2: ::int64_t,
     }
+
+    pub struct if_data {
+        pub ifi_type: ::c_uchar,
+        pub ifi_physical: ::c_uchar,
+        pub ifi_addrlen: ::c_uchar,
+        pub ifi_hdrlen: ::c_uchar,
+        pub ifi_recvquota: ::c_uchar,
+        pub ifi_xmitquota: ::c_uchar,
+        pub ifi_mtu: ::c_ulong,
+        pub ifi_metric: ::c_ulong,
+        pub ifi_link_state: ::c_ulong,
+        pub ifi_baudrate: u64,
+        pub ifi_ipackets: ::c_ulong,
+        pub ifi_ierrors: ::c_ulong,
+        pub ifi_opackets: ::c_ulong,
+        pub ifi_oerrors: ::c_ulong,
+        pub ifi_collisions: ::c_ulong,
+        pub ifi_ibytes: ::c_ulong,
+        pub ifi_obytes: ::c_ulong,
+        pub ifi_imcasts: ::c_ulong,
+        pub ifi_omcasts: ::c_ulong,
+        pub ifi_iqdrops: ::c_ulong,
+        pub ifi_noproto: ::c_ulong,
+        pub ifi_hwassist: ::c_ulong,
+        pub ifi_oqdrops: ::c_ulong,
+        pub ifi_lastchange: ::timeval,
+    }
+
+    pub struct if_msghdr {
+        pub ifm_msglen: ::c_ushort,
+        pub ifm_version: ::c_uchar,
+        pub ifm_type: ::c_uchar,
+        pub ifm_addrs: ::c_int,
+        pub ifm_flags: ::c_int,
+        pub ifm_index: ::c_ushort,
+        pub ifm_data: if_data,
+    }
 }
 
 pub const RAND_MAX: ::c_int = 0x7fff_ffff;
