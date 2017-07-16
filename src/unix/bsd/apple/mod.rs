@@ -1538,6 +1538,9 @@ pub const XATTR_NOSECURITY: ::c_int = 0x0008;
 pub const XATTR_NODEFAULT: ::c_int = 0x0010;
 pub const XATTR_SHOWCOMPRESSION: ::c_int = 0x0020;
 
+pub const NET_RT_IFLIST2: ::c_int = 0x0006;
+pub const RTM_IFINFO2: ::c_int = 0x0012;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
