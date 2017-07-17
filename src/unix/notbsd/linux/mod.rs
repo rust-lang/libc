@@ -903,6 +903,13 @@ pub const XATTR_REPLACE: ::c_int = 0x2;
 
 pub const _POSIX_VDISABLE: ::cc_t = 0;
 
+pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
+pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
+pub const FALLOC_FL_COLLAPSE_RANGE: ::c_int = 0x08;
+pub const FALLOC_FL_ZERO_RANGE: ::c_int = 0x10;
+pub const FALLOC_FL_INSERT_RANGE: ::c_int = 0x20;
+pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
+
 // On Linux, libc doesn't define this constant, libattr does instead.
 // We still define it for Linux as it's defined by libc on other platforms,
 // and it's mentioned in the man pages for getxattr and setxattr.

@@ -269,9 +269,6 @@ pub const SIGWINCH: ::c_int = 28;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
-pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
-pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
-
 pub const BUFSIZ: ::c_uint = 8192;
 pub const TMP_MAX: ::c_uint = 238328;
 pub const FOPEN_MAX: ::c_uint = 16;
