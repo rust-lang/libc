@@ -855,6 +855,8 @@ extern {
                    flags: ::c_int) -> ::ssize_t;
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
+    pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
+                   environment: *const *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {
