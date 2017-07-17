@@ -173,7 +173,6 @@ fn main() {
     if linux {
         cfg.header("mqueue.h");
         cfg.header("ucontext.h");
-        cfg.header("sys/signalfd.h");
         if !uclibc {
             // optionally included in uclibc
             cfg.header("sys/xattr.h");
@@ -200,6 +199,7 @@ fn main() {
         cfg.header("sys/eventfd.h");
         cfg.header("sys/prctl.h");
         cfg.header("sys/sendfile.h");
+        cfg.header("sys/signalfd.h");
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
         cfg.header("sys/personality.h");

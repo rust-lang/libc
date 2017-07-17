@@ -146,6 +146,27 @@ s! {
         #[cfg(target_pointer_width = "64")]
         __f_reserved: [u32; 6],
     }
+
+    pub struct signalfd_siginfo {
+        pub ssi_signo: ::uint32_t,
+        pub ssi_errno: ::int32_t,
+        pub ssi_code: ::int32_t,
+        pub ssi_pid: ::uint32_t,
+        pub ssi_uid: ::uint32_t,
+        pub ssi_fd: ::int32_t,
+        pub ssi_tid: ::uint32_t,
+        pub ssi_band: ::uint32_t,
+        pub ssi_overrun: ::uint32_t,
+        pub ssi_trapno: ::uint32_t,
+        pub ssi_status: ::int32_t,
+        pub ssi_int: ::int32_t,
+        pub ssi_ptr: ::c_ulonglong,
+        pub ssi_utime: ::c_ulonglong,
+        pub ssi_stime: ::c_ulonglong,
+        pub ssi_addr: ::c_ulonglong,
+        pub ssi_addr_lsb: ::uint16_t,
+        _pad: [::uint8_t; 46],
+    }
 }
 
 pub const O_TRUNC: ::c_int = 512;
@@ -810,6 +831,9 @@ pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 pub const POLLWRNORM: ::c_short = 0x100;
 pub const POLLWRBAND: ::c_short = 0x200;
 
+pub const SFD_CLOEXEC: ::c_int = O_CLOEXEC;
+pub const SFD_NONBLOCK: ::c_int = O_NONBLOCK;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.__bits.iter_mut() {
@@ -889,6 +913,8 @@ extern {
 
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;
+    pub fn signalfd(fd: ::c_int, mask: *const ::sigset_t, flags: ::c_int)
+                    -> ::c_int;
 }
 
 cfg_if! {
