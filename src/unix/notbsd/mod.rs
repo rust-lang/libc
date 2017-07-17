@@ -1036,6 +1036,8 @@ extern {
                 name: *mut ::c_char,
                 termp: *const termios,
                 winp: *const ::winsize) -> ::pid_t;
+    pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
+                   envp: *const *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {
