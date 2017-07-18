@@ -455,9 +455,6 @@ pub const PTRACE_O_TRACESECCOMP: ::c_uint = 128;
 pub const PTRACE_O_SUSPEND_SECCOMP: ::c_uint = 2097152;
 pub const PTRACE_PEEKSIGINFO_SHARED: ::c_uint = 1;
 
-pub const SYS_gettid: ::c_long = 186;
-pub const SYS_perf_event_open: ::c_long = 298;
-
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
