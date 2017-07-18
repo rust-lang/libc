@@ -155,7 +155,9 @@ fn main() {
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
-	cfg.header("net/route.h");
+        cfg.header("net/route.h");
+        cfg.header("net/route.h");
+        cfg.header("sys/proc_info.h");
     }
 
     if bsdlike {
