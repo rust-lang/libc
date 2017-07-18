@@ -40,6 +40,34 @@ s! {
         pub ifi_reserved1: u32,
         pub ifi_reserved2: u32,
     }
+
+    pub struct if_data64 {
+        pub ifi_type: ::c_uchar,
+        pub ifi_typelen: ::c_uchar,
+        pub ifi_physical: ::c_uchar,
+        pub ifi_addrlen: ::c_uchar,
+        pub ifi_hdrlen: ::c_uchar,
+        pub ifi_recvquota: ::c_uchar,
+        pub ifi_xmitquota: ::c_uchar,
+        pub ifi_unused1: ::c_uchar,
+        pub ifi_mtu: u32,
+        pub ifi_metric: u32,
+        pub ifi_baudrate: u64,
+        pub ifi_ipackets: u64,
+        pub ifi_ierrors: u64,
+        pub ifi_opackets: u64,
+        pub ifi_oerrors: u64,
+        pub ifi_collisions: u64,
+        pub ifi_ibytes: u64,
+        pub ifi_obytes: u64,
+        pub ifi_imcasts: u64,
+        pub ifi_omcasts: u64,
+        pub ifi_iqdrops: u64,
+        pub ifi_noproto: u64,
+        pub ifi_recvtiming: u32,
+        pub ifi_xmittiming: u32,
+        pub ifi_lastchange: ::timeval,
+    }
 }
 
 pub const __PTHREAD_MUTEX_SIZE__: usize = 40;
