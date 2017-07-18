@@ -184,6 +184,7 @@ fn main() {
         cfg.header("sys/fsuid.h");
         cfg.header("shadow.h");
         cfg.header("linux/input.h");
+        cfg.header("linux/falloc.h");
         if x86_64 {
             cfg.header("sys/io.h");
         }
