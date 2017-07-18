@@ -1,6 +1,11 @@
 FROM ubuntu:17.04
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends software-properties-common
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/ppa
+RUN add-apt-repository 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/ppa/ubuntu artful main'
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends \
         gcc libc6-dev qemu-user ca-certificates \
         gcc-s390x-linux-gnu libc6-dev-s390x-cross
 
