@@ -430,6 +430,10 @@ fn main() {
             "MADV_MERGEABLE" | "MADV_UNMERGEABLE" | "MADV_HWPOISON" | "IPV6_ADD_MEMBERSHIP" | "IPV6_DROP_MEMBERSHIP" | "IPV6_MULTICAST_LOOP" | "IPV6_V6ONLY" |
             "MAP_STACK" | "RTLD_DEEPBIND" | "SOL_IPV6" | "SOL_ICMPV6" if uclibc => true,
 
+            // Musl uses old, patched kernel headers
+            "FALLOC_FL_COLLAPSE_RANGE" | "FALLOC_FL_ZERO_RANGE" |
+            "FALLOC_FL_INSERT_RANGE" | "FALLOC_FL_UNSHARE_RANGE" if musl => true,
+
             // Defined by libattr not libc on linux (hard to test).
             // See constant definition for more details.
             "ENOATTR" if linux => true,
