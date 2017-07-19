@@ -337,6 +337,30 @@ s! {
         __unused1: *mut ::c_void,       //actually a function pointer
         pub sigev_notify_attributes: *mut ::pthread_attr_t
     }
+
+    pub struct if_msghdr2 {
+        pub ifm_msglen: ::c_ushort,
+        pub ifm_version: ::c_uchar,
+        pub ifm_type: ::c_uchar,
+        pub ifm_addrs: ::c_int,
+        pub ifm_flags: ::c_int,
+        pub ifm_index: ::c_ushort,
+        pub ifm_snd_len: ::c_int,
+        pub ifm_snd_maxlen: ::c_int,
+        pub ifm_snd_drops: ::c_int,
+        pub ifm_timer: ::c_int,
+        pub ifm_data: ::if_data64,
+    }
+
+    pub struct ifma_msghdr2 {
+        pub ifmam_msglen: ::c_ushort,
+        pub ifmam_version: ::c_uchar,
+        pub ifmam_type: ::c_uchar,
+        pub ifmam_addrs: ::c_int,
+        pub ifmam_flags: ::c_int,
+        pub ifmam_index: ::c_ushort,
+        pub ifmam_refcount: i32,
+    }
 }
 
 pub const _UTX_USERSIZE: usize = 256;
