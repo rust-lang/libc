@@ -337,6 +337,79 @@ s! {
         __unused1: *mut ::c_void,       //actually a function pointer
         pub sigev_notify_attributes: *mut ::pthread_attr_t
     }
+
+    pub struct proc_taskinfo {
+        pub pti_virtual_size: u64,
+        pub pti_resident_size: u64,
+        pub pti_total_user: u64,
+        pub pti_total_system: u64,
+        pub pti_threads_user: u64,
+        pub pti_threads_system: u64,
+        pub pti_policy: i32,
+        pub pti_faults: i32,
+        pub pti_pageins: i32,
+        pub pti_cow_faults: i32,
+        pub pti_messages_sent: i32,
+        pub pti_messages_received: i32,
+        pub pti_syscalls_mach: i32,
+        pub pti_syscalls_unix: i32,
+        pub pti_csw: i32,
+        pub pti_threadnum: i32,
+        pub pti_numrunning: i32,
+        pub pti_priority: i32,
+    }
+
+    pub struct proc_bsdinfo {
+        pub pbi_flags: u32,
+        pub pbi_status: u32,
+        pub pbi_xstatus: u32,
+        pub pbi_pid: u32,
+        pub pbi_ppid: u32,
+        pub pbi_uid: ::uid_t,
+        pub pbi_gid: ::gid_t,
+        pub pbi_ruid: ::uid_t,
+        pub pbi_rgid: ::gid_t,
+        pub pbi_svuid: ::uid_t,
+        pub pbi_svgid: ::gid_t,
+        pub rfu_1: u32,
+        pub pbi_comm: [::c_char; MAXCOMLEN],
+        pub pbi_name: [::c_char; 32], // MAXCOMLEN * 2, but macro isn't happy...
+        pub pbi_nfiles: u32,
+        pub pbi_pgid: u32,
+        pub pbi_pjobc: u32,
+        pub e_tdev: u32,
+        pub e_tpgid: u32,
+        pub pbi_nice: i32,
+        pub pbi_start_tvsec: u64,
+        pub pbi_start_tvusec: u64,
+    }
+
+    pub struct proc_taskallinfo {
+        pub pbsd: proc_bsdinfo,
+        pub ptinfo: proc_taskinfo,
+    }
+
+    pub struct proc_threadinfo {
+        pub pth_user_time: u64,
+        pub pth_system_time: u64,
+        pub pth_cpu_usage: i32,
+        pub pth_policy: i32,
+        pub pth_run_state: i32,
+        pub pth_flags: i32,
+        pub pth_sleep_time: i32,
+        pub pth_curpri: i32,
+        pub pth_priority: i32,
+        pub pth_maxpriority: i32,
+        pub pth_name: [::c_char; MAXTHREADNAMESIZE],
+    }
+
+    pub struct xsw_usage {
+        pub xsu_total: u64,
+        pub xsu_avail: u64,
+        pub xsu_used: u64,
+        pub xsu_pagesize: u32,
+        pub xsu_encrypted: ::boolean_t,
+    }
 }
 
 pub const _UTX_USERSIZE: usize = 256;
@@ -1540,6 +1613,14 @@ pub const XATTR_SHOWCOMPRESSION: ::c_int = 0x0020;
 
 pub const NET_RT_IFLIST2: ::c_int = 0x0006;
 pub const RTM_IFINFO2: ::c_int = 0x0012;
+
+pub const KERN_PROCARGS2: ::c_int = 49;
+
+pub const PROC_PIDTASKALLINFO: ::c_int = 2;
+pub const PROC_PIDTASKINFO: ::c_int = 4;
+pub const PROC_PIDTHREADINFO: ::c_int = 5;
+pub const MAXCOMLEN: usize = 16;
+pub const MAXTHREADNAMESIZE: usize = 64;
 
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
