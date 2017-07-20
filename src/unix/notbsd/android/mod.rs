@@ -149,7 +149,6 @@ s! {
 }
 
 pub const O_TRUNC: ::c_int = 512;
-
 pub const O_CLOEXEC: ::c_int = 0x80000;
 
 pub const EBFONT: ::c_int = 59;

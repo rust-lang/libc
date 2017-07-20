@@ -92,7 +92,7 @@ pub const SFD_CLOEXEC: ::c_int = 0x080000;
 pub const NCCS: usize = 32;
 
 pub const O_TRUNC: ::c_int = 512;
-
+pub const O_NOATIME: ::c_int = 0o1000000;
 pub const O_CLOEXEC: ::c_int = 0x80000;
 
 pub const EBFONT: ::c_int = 59;

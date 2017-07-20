@@ -121,6 +121,7 @@ pub const O_DIRECT: ::c_int = 0o100000;
 pub const O_DIRECTORY: ::c_int = 0o200000;
 pub const O_NOFOLLOW: ::c_int = 0o400000;
 pub const O_ASYNC: ::c_int = 0o10000;
+pub const O_LARGEFILE: ::c_int = 0x2000;
 
 pub const FIOCLEX: ::c_int = 0x6601;
 pub const FIONBIO: ::c_int = 0x667E;
