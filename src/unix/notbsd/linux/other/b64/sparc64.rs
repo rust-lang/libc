@@ -98,6 +98,8 @@ pub const O_SYNC: ::c_int = 0x802000;
 pub const O_RSYNC: ::c_int = 0x802000;
 pub const O_DSYNC: ::c_int = 0x2000;
 pub const O_FSYNC: ::c_int = 0x802000;
+pub const O_NOATIME: ::c_int = 0x200000;
+pub const O_PATH: ::c_int = 0x1000000;
 
 pub const MAP_GROWSDOWN: ::c_int = 0x0200;
 

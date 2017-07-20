@@ -217,6 +217,8 @@ pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
+pub const O_LARGEFILE: ::c_int = 0;
+
 pub const RLIM_INFINITY: ::rlim_t = 0xffff_ffff_ffff_ffff;
 
 pub const SYS_gettid: ::c_long = 5178;   // Valid for n64
