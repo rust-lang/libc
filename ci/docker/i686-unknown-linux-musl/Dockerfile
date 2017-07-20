@@ -2,6 +2,10 @@ FROM ubuntu:17.10
 
 RUN dpkg --add-architecture i386
 RUN apt-get update
+RUN apt-get install -y --no-install-recommends software-properties-common
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/ppa
+RUN add-apt-repository 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/ppa/ubuntu artful main'
+RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
   gcc-multilib make libc6-dev git curl ca-certificates libc6:i386
 # Below we're cross-compiling musl for i686 using the system compiler on an

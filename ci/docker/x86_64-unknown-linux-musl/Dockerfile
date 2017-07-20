@@ -1,6 +1,10 @@
 FROM ubuntu:17.10
 
 RUN apt-get update
+RUN apt-get install -y --no-install-recommends software-properties-common
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/ppa
+RUN add-apt-repository 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/ppa/ubuntu artful main'
+RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
   gcc make libc6-dev git curl ca-certificates
 RUN curl https://www.musl-libc.org/releases/musl-1.1.15.tar.gz | \
