@@ -7,8 +7,8 @@ services:
 install:
   - if [ -z "$NO_ADD" ]; then rustup target add $TARGET; fi
 script:
-  - cargo build
-  - cargo build --no-default-features
+  - cargo build --target=$TARGET
+  - cargo build --no-default-features --target=$TARGET
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       sh ci/run-docker.sh $TARGET;
