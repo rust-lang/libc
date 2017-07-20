@@ -537,11 +537,6 @@ pub const AF_UNIX: ::c_int = 9;
 pub const AF_INET: ::c_int = 1;
 pub const AF_INET6: ::c_int = 6;
 pub const SOCK_RAW: ::c_int = 3;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
 pub const IP_TTL: ::c_int = 4;
@@ -860,6 +855,8 @@ extern {
                    flags: ::c_int) -> ::ssize_t;
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
+    pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
+                   environment: *const *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {

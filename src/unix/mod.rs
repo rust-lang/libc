@@ -217,6 +217,13 @@ pub const PRIO_USER: ::c_int = 2;
 pub const PRIO_MIN: ::c_int = -20;
 pub const PRIO_MAX: ::c_int = 20;
 
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
+pub const IPPROTO_TCP: ::c_int = 6;
+pub const IPPROTO_UDP: ::c_int = 17;
+pub const IPPROTO_IP: ::c_int = 0;
+pub const IPPROTO_IPV6: ::c_int = 41;
+
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
@@ -251,6 +258,10 @@ cfg_if! {
     } else if #[cfg(target_os = "fuchsia")] {
         #[link(name = "c")]
         #[link(name = "mxio")]
+        extern {}
+    } else if #[cfg(target_env = "newlib")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
         extern {}
     } else {
         #[link(name = "c")]
@@ -885,7 +896,10 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "linux",
+    if #[cfg(target_env = "newlib")] {
+        mod newlib;
+        pub use self::newlib::*;
+    } else if #[cfg(any(target_os = "linux",
                         target_os = "android",
                         target_os = "emscripten",
                         target_os = "fuchsia"))] {

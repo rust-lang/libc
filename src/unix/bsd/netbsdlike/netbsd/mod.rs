@@ -249,6 +249,38 @@ s! {
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
     }
+
+    pub struct if_data {
+        pub ifi_type: ::c_uchar,
+        pub ifi_addrlen: ::c_uchar,
+        pub ifi_hdrlen: ::c_uchar,
+        pub ifi_link_state: ::c_int,
+        pub ifi_mtu: u64,
+        pub ifi_metric: u64,
+        pub ifi_baudrate: u64,
+        pub ifi_ipackets: u64,
+        pub ifi_ierrors: u64,
+        pub ifi_opackets: u64,
+        pub ifi_oerrors: u64,
+        pub ifi_collisions: u64,
+        pub ifi_ibytes: u64,
+        pub ifi_obytes: u64,
+        pub ifi_imcasts: u64,
+        pub ifi_omcasts: u64,
+        pub ifi_iqdrops: u64,
+        pub ifi_noproto: u64,
+        pub ifi_lastchange: ::timespec,
+    }
+
+    pub struct if_msghdr {
+        pub ifm_msglen: ::c_ushort,
+        pub ifm_version: ::c_uchar,
+        pub ifm_type: ::c_uchar,
+        pub ifm_addrs: ::c_int,
+        pub ifm_flags: ::c_int,
+        pub ifm_index: ::c_ushort,
+        pub ifm_data: if_data,
+    }
 }
 
 pub const AT_FDCWD: ::c_int = -100;

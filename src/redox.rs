@@ -4,7 +4,7 @@ pub type c_ulong = u64;
 
 pub type wchar_t = i16;
 
-pub type off_t = usize;
+pub type off_t = c_long;
 pub type mode_t = u16;
 pub type time_t = i64;
 pub type pid_t = usize;
@@ -48,8 +48,16 @@ s! {
     }
 }
 
+pub const STDIN_FILENO: ::c_int = 0;
+pub const STDOUT_FILENO: ::c_int = 1;
+pub const STDERR_FILENO: ::c_int = 2;
+
 extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
+    pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
+                -> ::ssize_t;
+    pub fn write(fd: ::c_int, buf: *const ::c_void, count: ::size_t)
+                 -> ::ssize_t;
 }
 
 #[link(name = "c")]

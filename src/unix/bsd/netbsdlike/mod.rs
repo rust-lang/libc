@@ -409,13 +409,6 @@ pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
 pub const SOCK_RDM: ::c_int = 4;
 pub const SOCK_SEQPACKET: ::c_int = 5;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
-pub const IP_MULTICAST_TTL: ::c_int = 10;
-pub const IP_MULTICAST_LOOP: ::c_int = 11;
 pub const IP_TTL: ::c_int = 4;
 pub const IP_HDRINCL: ::c_int = 2;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
@@ -454,8 +447,6 @@ pub const MSG_BCAST: ::c_int = 0x100;
 pub const MSG_MCAST: ::c_int = 0x200;
 pub const MSG_NOSIGNAL: ::c_int = 0x400;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x800;
-
-pub const SCM_RIGHTS: ::c_int = 0x01;
 
 pub const IFF_LOOPBACK: ::c_int = 0x8;
 
@@ -589,6 +580,14 @@ extern {
     pub fn mkostemps(template: *mut ::c_char,
                      suffixlen: ::c_int,
                      flags: ::c_int) -> ::c_int;
+    pub fn pwritev(fd: ::c_int,
+                   iov: *const ::iovec,
+                   iovcnt: ::c_int,
+                   offset: ::off_t) -> ::ssize_t;
+    pub fn preadv(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int,
+                  offset: ::off_t) -> ::ssize_t;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn openpty(amaster: *mut ::c_int,

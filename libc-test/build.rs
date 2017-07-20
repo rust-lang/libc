@@ -78,6 +78,7 @@ fn main() {
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
         cfg.header("netinet/tcp.h");
+        cfg.header("netinet/udp.h");
         cfg.header("resolv.h");
         cfg.header("pthread.h");
         cfg.header("dlfcn.h");
@@ -150,9 +151,13 @@ fn main() {
         cfg.header("malloc/malloc.h");
         cfg.header("util.h");
         cfg.header("sys/xattr.h");
+        cfg.header("sys/sys_domain.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
+        cfg.header("net/route.h");
+        cfg.header("net/route.h");
+        cfg.header("sys/proc_info.h");
     }
 
     if bsdlike {
@@ -179,7 +184,6 @@ fn main() {
         cfg.header("sys/shm.h");
         cfg.header("sys/user.h");
         cfg.header("sys/fsuid.h");
-        cfg.header("pty.h");
         cfg.header("shadow.h");
         cfg.header("linux/input.h");
         if x86_64 {
@@ -200,6 +204,8 @@ fn main() {
         cfg.header("sys/syscall.h");
         cfg.header("sys/personality.h");
         cfg.header("sys/swap.h");
+        cfg.header("pty.h");
+        cfg.header("linux/netfilter_ipv4.h");
         if !uclibc {
             cfg.header("sys/sysinfo.h");
         }
@@ -337,6 +343,11 @@ fn main() {
             // definition. Because it's tested on other Linux targets, skip it.
             "input_mask" if musl => true,
 
+            // These structs have changed since unified headers in NDK r14b.
+            // `st_atime` and `st_atime_nsec` have changed sign.
+            // FIXME: unskip it for next major release
+            "stat" | "stat64" if android => true,
+
             _ => false
         }
     });
@@ -423,6 +434,13 @@ fn main() {
             // Defined by libattr not libc on linux (hard to test).
             // See constant definition for more details.
             "ENOATTR" if linux => true,
+
+            // On mips*-unknown-linux-gnu* CMSPAR cannot be included with the set of headers we
+            // want to use here for testing. It's originally defined in asm/termbits.h, which is
+            // also included by asm/termios.h, but not the standard termios.h. There's no way to
+            // include both asm/termbits.h and termios.h and there's no way to include both
+            // asm/termios.h and ioctl.h (+ some other headers) because of redeclared types.
+            "CMSPAR" if mips && linux && !musl => true,
 
             _ => false,
         }
@@ -533,6 +551,16 @@ fn main() {
 
             // On Mac we don't use the default `close()`, instead using their $NOCANCEL variants.
             "close" if apple => true,
+
+            // Definition of those functions as changed since unified headers from NDK r14b
+            // These changes imply some API breaking changes but are still ABI compatible.
+            // We can wait for the next major release to be compliant with the new API.
+            // FIXME: unskip these for next major release
+            "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
+            "setpriority" | "personality" if android => true,
+            // In Android 64 bits, these functions have been fixed since unified headers.
+            // Ignore these until next major version.
+            "bind" | "writev" | "readv" | "sendmsg" | "recvmsg" if android && (aarch64 || x86_64) => true,
 
             _ => false,
         }

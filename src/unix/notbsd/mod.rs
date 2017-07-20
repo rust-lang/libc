@@ -437,6 +437,7 @@ pub const IFF_DYNAMIC: ::c_int = 0x8000;
 
 pub const SOL_IP: ::c_int = 0;
 pub const SOL_TCP: ::c_int = 6;
+pub const SOL_UDP: ::c_int = 17;
 pub const SOL_IPV6: ::c_int = 41;
 pub const SOL_ICMPV6: ::c_int = 58;
 pub const SOL_RAW: ::c_int = 255;
@@ -553,12 +554,11 @@ pub const MSG_WAITFORONE: ::c_int = 0x10000;
 pub const MSG_FASTOPEN: ::c_int = 0x20000000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
 
+pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
+
 pub const SOCK_RAW: ::c_int = 3;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
+pub const SOCK_RDM: ::c_int = 4;
+pub const IP_MULTICAST_IF: ::c_int = 32;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_TTL: ::c_int = 2;
@@ -587,6 +587,7 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_V6ONLY: ::c_int = 26;
 
 pub const SO_DEBUG: ::c_int = 1;
+pub const SO_ORIGINAL_DST: ::c_int = 80;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -678,6 +679,7 @@ pub const IMAXBEL: ::tcflag_t = 0x00002000;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const OPOST: ::tcflag_t = 0x1;
 pub const CS5: ::tcflag_t = 0x00000000;
+pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const CRTSCTS: ::tcflag_t = 0x80000000;
 pub const ECHO: ::tcflag_t = 0x00000008;
 pub const OCRNL:  ::tcflag_t = 0o000010;
@@ -708,6 +710,7 @@ pub const CLONE_NEWUSER: ::c_int = 0x10000000;
 pub const CLONE_NEWPID: ::c_int = 0x20000000;
 pub const CLONE_NEWNET: ::c_int = 0x40000000;
 pub const CLONE_IO: ::c_int = 0x80000000;
+pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 
 pub const WNOHANG: ::c_int = 0x00000001;
 pub const WUNTRACED: ::c_int = 0x00000002;
@@ -758,6 +761,9 @@ pub const P_PGID: idtype_t = 2;
 
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
+
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLRDBAND: ::c_short = 0x080;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
@@ -1016,8 +1022,22 @@ extern {
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
     pub fn vfork() -> ::pid_t;
+    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
+    pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
     pub fn wait4(pid: ::pid_t, status: *mut ::c_int, options: ::c_int,
                  rusage: *mut ::rusage) -> ::pid_t;
+    pub fn openpty(amaster: *mut ::c_int,
+                aslave: *mut ::c_int,
+                name: *mut ::c_char,
+                termp: *const termios,
+                winp: *const ::winsize) -> ::c_int;
+    pub fn forkpty(amaster: *mut ::c_int,
+                name: *mut ::c_char,
+                termp: *const termios,
+                winp: *const ::winsize) -> ::pid_t;
+    pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
+                   envp: *const *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {

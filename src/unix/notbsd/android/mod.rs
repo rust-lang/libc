@@ -174,6 +174,8 @@ pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
 
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
+pub const EPOLLRDHUP: ::c_int = 0x00002000;
+pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
@@ -462,7 +464,6 @@ pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const SOL_SOCKET: ::c_int = 1;
-pub const SOL_UDP: ::c_int = 17;
 pub const SOL_SCTP: ::c_int = 132;
 pub const SOL_IPX: ::c_int = 256;
 pub const SOL_AX25: ::c_int = 257;
@@ -471,7 +472,7 @@ pub const SOL_NETROM: ::c_int = 259;
 pub const SOL_ROSE: ::c_int = 260;
 
 #[doc(hidden)]
-pub const AF_MAX: ::c_int = 39;
+pub const AF_MAX: ::c_int = 43;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
@@ -484,7 +485,9 @@ pub const SO_SNDBUF: ::c_int = 7;
 pub const SO_RCVBUF: ::c_int = 8;
 pub const SO_KEEPALIVE: ::c_int = 9;
 pub const SO_OOBINLINE: ::c_int = 10;
+pub const SO_PRIORITY: ::c_int = 12;
 pub const SO_LINGER: ::c_int = 13;
+pub const SO_BSDCOMPAT: ::c_int = 14;
 pub const SO_REUSEPORT: ::c_int = 15;
 pub const SO_PASSCRED: ::c_int = 16;
 pub const SO_PEERCRED: ::c_int = 17;
@@ -492,8 +495,17 @@ pub const SO_RCVLOWAT: ::c_int = 18;
 pub const SO_SNDLOWAT: ::c_int = 19;
 pub const SO_RCVTIMEO: ::c_int = 20;
 pub const SO_SNDTIMEO: ::c_int = 21;
+pub const SO_BINDTODEVICE: ::c_int = 25;
+pub const SO_TIMESTAMP: ::c_int = 29;
 pub const SO_ACCEPTCONN: ::c_int = 30;
 pub const SO_SNDBUFFORCE: ::c_int = 32;
+pub const SO_RCVBUFFORCE: ::c_int = 33;
+pub const SO_MARK: ::c_int = 36;
+pub const SO_PROTOCOL: ::c_int = 38;
+pub const SO_DOMAIN: ::c_int = 39;
+pub const SO_RXQ_OVFL: ::c_int = 40;
+pub const SO_PEEK_OFF: ::c_int = 42;
+pub const SO_BUSY_POLL: ::c_int = 46;
 
 pub const O_ACCMODE: ::c_int = 3;
 pub const O_APPEND: ::c_int = 1024;
@@ -504,6 +516,7 @@ pub const O_NONBLOCK: ::c_int = 2048;
 pub const O_SYNC: ::c_int = 0x101000;
 pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_NDELAY: ::c_int = 0x800;
+pub const O_DSYNC: ::c_int = 4096;
 
 pub const NI_MAXHOST: ::size_t = 1025;
 
@@ -519,6 +532,7 @@ pub const VMIN: usize = 6;
 pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
+pub const EXTPROC: ::tcflag_t = 0o200000;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
@@ -631,8 +645,6 @@ pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
-pub const SIGSTKSZ: ::size_t = 8192;
-pub const MINSIGSTKSZ: ::size_t = 2048;
 pub const CBAUD: ::tcflag_t = 0o0010017;
 pub const TAB1: ::c_int = 0x00000800;
 pub const TAB2: ::c_int = 0x00001000;
@@ -780,7 +792,6 @@ pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
-pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const CIBAUD: ::tcflag_t = 0o02003600000;
 pub const CBAUDEX: ::tcflag_t = 0o010000;
 
@@ -795,6 +806,9 @@ pub const TIOCM_RNG: ::c_int = 0x080;
 pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
+
+pub const POLLWRNORM: ::c_short = 0x100;
+pub const POLLWRBAND: ::c_short = 0x200;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {

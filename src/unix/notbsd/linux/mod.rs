@@ -655,8 +655,8 @@ pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
-pub const PTHREAD_PROCESS_PRIVATE: usize = 0;
-pub const PTHREAD_PROCESS_SHARED: usize = 1;
+pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 0;
+pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
 pub const SCHED_OTHER: ::c_int = 0;
@@ -1092,7 +1092,6 @@ extern {
                        timeout: ::c_int,
                        sigmask: *const ::sigset_t) -> ::c_int;
     pub fn dup3(oldfd: ::c_int, newfd: ::c_int, flags: ::c_int) -> ::c_int;
-    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
     pub fn mkostemps(template: *mut ::c_char,
                      suffixlen: ::c_int,
@@ -1102,15 +1101,6 @@ extern {
                         timeout: *const ::timespec) -> ::c_int;
     pub fn sigwaitinfo(set: *const sigset_t,
                        info: *mut siginfo_t) -> ::c_int;
-    pub fn openpty(amaster: *mut ::c_int,
-                   aslave: *mut ::c_int,
-                   name: *mut ::c_char,
-                   termp: *const termios,
-                   winp: *const ::winsize) -> ::c_int;
-    pub fn forkpty(amaster: *mut ::c_int,
-                   name: *mut ::c_char,
-                   termp: *const termios,
-                   winp: *const ::winsize) -> ::pid_t;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
@@ -1143,8 +1133,6 @@ extern {
     pub fn reboot(how_to: ::c_int) -> ::c_int;
     pub fn setfsgid(gid: ::gid_t) -> ::c_int;
     pub fn setfsuid(uid: ::uid_t) -> ::c_int;
-    pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
-    pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
 
     // Not available now on Android
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,

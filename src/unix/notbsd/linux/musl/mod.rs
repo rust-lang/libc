@@ -87,8 +87,6 @@ s! {
     }
 }
 
-pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
-
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
@@ -205,9 +203,6 @@ pub const MADV_DONTDUMP: ::c_int = 16;
 
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
-pub const POLLRDNORM: ::c_short = 0x040;
-pub const POLLRDBAND: ::c_short = 0x080;
-
 pub const MADV_HUGEPAGE: ::c_int = 14;
 pub const MADV_NOHUGEPAGE: ::c_int = 15;
 
@@ -281,7 +276,6 @@ pub const ISIG: ::tcflag_t = 0x00000001;
 pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
-pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const CIBAUD: ::tcflag_t = 0o02003600000;
 pub const CBAUDEX: ::tcflag_t = 0o010000;
 pub const VSWTC: usize = 7;

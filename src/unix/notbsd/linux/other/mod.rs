@@ -269,9 +269,6 @@ pub const SIGWINCH: ::c_int = 28;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
-pub const POLLRDNORM: ::c_short = 0x040;
-pub const POLLRDBAND: ::c_short = 0x080;
-
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
 
@@ -516,8 +513,6 @@ pub const NETLINK_CAP_ACK: ::c_int = 10;
 pub const NLA_F_NESTED: ::c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: ::c_int = 1 << 14;
 pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
-
-pub const CMSPAR: ::tcflag_t = 0o10000000000;
 
 pub const TIOCM_LE: ::c_int = 0x001;
 pub const TIOCM_DTR: ::c_int = 0x002;

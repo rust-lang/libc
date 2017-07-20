@@ -180,10 +180,16 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const SIG_BLOCK: ::c_int = 0x1;
 pub const SIG_UNBLOCK: ::c_int = 0x2;
 
+pub const IP_MULTICAST_IF: ::c_int = 9;
+pub const IP_MULTICAST_TTL: ::c_int = 10;
+pub const IP_MULTICAST_LOOP: ::c_int = 11;
+
 pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
 
 pub const ST_RDONLY: ::c_ulong = 1;
+
+pub const SCM_RIGHTS: ::c_int = 0x01;
 
 pub const NCCS: usize = 20;
 
@@ -303,7 +309,14 @@ pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
 pub const LOG_FTP: ::c_int = 11 << 3;
 pub const LOG_PERROR: ::c_int = 0x20;
 
+pub const TCP_MAXSEG: ::c_int = 2;
+
 pub const PIPE_BUF: usize = 512;
+
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLWRNORM: ::c_short = 0x004;
+pub const POLLRDBAND: ::c_short = 0x080;
+pub const POLLWRBAND: ::c_short = 0x100;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {

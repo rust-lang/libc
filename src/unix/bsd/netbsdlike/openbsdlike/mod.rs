@@ -136,6 +136,46 @@ s! {
         pub ut_host: [::c_char; UT_HOSTSIZE],
         pub ut_time: ::time_t,
     }
+
+    pub struct if_data {
+        pub ifi_type: ::c_uchar,
+        pub ifi_addrlen: ::c_uchar,
+        pub ifi_hdrlen: ::c_uchar,
+        pub ifi_link_state: ::c_uchar,
+        pub ifi_mtu: u32,
+        pub ifi_metric: u32,
+        pub ifi_rdomain: u32,
+        pub ifi_baudrate: u64,
+        pub ifi_ipackets: u64,
+        pub ifi_ierrors: u64,
+        pub ifi_opackets: u64,
+        pub ifi_oerrors: u64,
+        pub ifi_collisions: u64,
+        pub ifi_ibytes: u64,
+        pub ifi_obytes: u64,
+        pub ifi_imcasts: u64,
+        pub ifi_omcasts: u64,
+        pub ifi_iqdrops: u64,
+        pub ifi_oqdrops: u64,
+        pub ifi_noproto: u64,
+        pub ifi_capabilities: u32,
+        pub ifi_lastchange: ::timeval,
+    }
+
+    pub struct if_msghdr {
+        pub ifm_msglen: ::c_ushort,
+        pub ifm_version: ::c_uchar,
+        pub ifm_type: ::c_uchar,
+        pub ifm_hdrlen: ::c_ushort,
+        pub ifm_index: ::c_ushort,
+        pub ifm_tableid: ::c_ushort,
+        pub ifm_pad1: ::c_uchar,
+        pub ifm_pad2: ::c_uchar,
+        pub ifm_addrs: ::c_int,
+        pub ifm_flags: ::c_int,
+        pub ifm_xflags: ::c_int,
+        pub ifm_data: if_data,
+    }
 }
 
 pub const UT_NAMESIZE: usize = 32;

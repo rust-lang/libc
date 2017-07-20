@@ -591,6 +591,8 @@ pub const MSG_WAITALL: ::c_int = 0x00000040;
 pub const MSG_DONTWAIT: ::c_int = 0x00000080;
 pub const MSG_EOF: ::c_int = 0x00000100;
 
+pub const SCM_TIMESTAMP: ::c_int = 0x02;
+
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
@@ -599,13 +601,6 @@ pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOCK_CLOEXEC: ::c_int = 0x10000000;
 pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
 pub const SOCK_MAXADDRLEN: ::c_int = 255;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
-pub const IP_MULTICAST_TTL: ::c_int = 10;
-pub const IP_MULTICAST_LOOP: ::c_int = 11;
 pub const IP_TTL: ::c_int = 4;
 pub const IP_HDRINCL: ::c_int = 2;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
@@ -990,6 +985,14 @@ extern {
                   timeout: *const ::timespec) -> ::c_int;
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
+    pub fn pwritev(fd: ::c_int,
+                   iov: *const ::iovec,
+                   iovcnt: ::c_int,
+                   offset: ::off_t) -> ::ssize_t;
+    pub fn preadv(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int,
+                  offset: ::off_t) -> ::ssize_t;
     pub fn sysctlnametomib(name: *const ::c_char,
                            mibp: *mut ::c_int,
                            sizep: *mut ::size_t)
