@@ -181,12 +181,14 @@ fn main() {
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
         cfg.header("sys/user.h");
-        cfg.header("sys/reg.h"); 
         cfg.header("sys/fsuid.h");
         cfg.header("shadow.h");
         cfg.header("linux/input.h");
         if x86_64 {
             cfg.header("sys/io.h");
+        }
+        if x86 || x86_64 {
+            cfg.header("sys/reg.h");
         }
     }
 
