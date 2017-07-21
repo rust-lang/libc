@@ -449,6 +449,9 @@ extern {
                   -> ::c_int;
     pub fn execvp(c: *const c_char,
                   argv: *const *const c_char) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *const c_char,
+                   envp: *const *const c_char)
+                   -> ::c_int;
     pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
     pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
