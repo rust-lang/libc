@@ -7,6 +7,10 @@ pub const T1S: &'static str = "foo";
 
 pub const T1N: i32 = 5;
 
+macro_rules! i {
+    ($i:item) => ($i)
+}
+
 #[repr(C)]
 pub struct T1Bar {
     pub a: i32,
@@ -23,7 +27,9 @@ pub struct T1Baz {
     pub b: T1Bar,
 }
 
-pub const T1C: u32 = 4;
+i! {
+    pub const T1C: u32 = 4;
+}
 
 const NOT_PRESENT: u32 = 5;
 
@@ -40,5 +46,5 @@ extern {
     pub fn T1g(a: *const [i32; 4]);
     pub fn T1h(a: &[i32; 4]);
     pub fn T1i(a: *mut [i32; 4]);
-    pub fn T1j(a: &mut [i32; 4]);
+    pub fn T1j(a: &mut [i32; 4]) -> !;
 }
