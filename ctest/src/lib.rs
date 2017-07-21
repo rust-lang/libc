@@ -9,27 +9,36 @@
 //!
 //! [project]: https://github.com/alexcrichton/ctest
 
-#![allow(deprecated)] // connect => join in 1.3
 #![deny(missing_docs)]
 
 extern crate gcc;
 extern crate syntex_syntax as syntax;
 
-use std::collections::HashSet;
+use std::cell::RefCell;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::BufWriter;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
+use std::rc::Rc;
 
 use syntax::abi::Abi;
+use syntax::ast::Attribute;
+use syntax::ast::Name;
 use syntax::ast;
 use syntax::attr::{self, ReprAttr};
+use syntax::codemap::FilePathMapping;
+use syntax::config::StripUnconfigured;
 use syntax::errors::Handler as SpanHandler;
-use syntax::ext::base::{ExtCtxt, SyntaxExtension};
-use syntax::ext::expand;
-use syntax::parse::token::{intern, InternedString};
+use syntax::ext::base::{Determinacy, ExtCtxt, MacroKind, Resolver, SyntaxExtension};
+use syntax::ext::expand::{Expansion, Invocation, InvocationKind, ExpansionConfig};
+use syntax::ext::tt::macro_rules;
+use syntax::ext::hygiene::Mark;
+use syntax::feature_gate::Features;
+use syntax::fold::Folder;
 use syntax::parse::{self, ParseSess};
+use syntax::ptr::P;
 use syntax::visit::{self, Visitor};
 
 macro_rules! t {
@@ -608,35 +617,43 @@ impl TestGenerator {
         let c_file = out_file.with_extension("c");
         let rust_out = BufWriter::new(t!(File::create(&out_file)));
         let c_out = BufWriter::new(t!(File::create(&c_file)));
-        let sess = ParseSess::new();
-
-        // Parse the libc crate
-        let krate = parse::parse_crate_from_file(krate, Vec::new(), &sess);
-
-        // expand macros
-        let mut ecfg = expand::ExpansionConfig::default("crate_name".to_string());
-        ecfg.recursion_limit = 128;
-        let exts = vec![
-            (intern("macro_rules"), SyntaxExtension::MacroRulesTT),
-        ];
-        let mut feature_gated_cfgs = Vec::new();
-        let ecx = ExtCtxt::new(&sess, Vec::new(), ecfg, &mut feature_gated_cfgs);
-        let mut krate = expand::expand_crate(ecx, Vec::new(), exts, krate);
-
-        // Strip the crate down to just what's configured for our target
+        let mut sess = ParseSess::new(FilePathMapping::empty());
         let target = self.target.clone().unwrap_or_else(|| {
             env::var("TARGET").unwrap()
         });
         for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
-            let s = |s: &str| InternedString::new_from_name(intern(s));
-            krate.0.config.push(match v {
-                Some(v) => attr::mk_name_value_item_str(s(&k), s(&v)),
-                None => attr::mk_word_item(s(&k)),
-            });
+            let s = |s: &str| ast::Name::intern(s);
+            sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
         }
-        let krate = syntax::config::strip_unconfigured_items(&sess.span_diagnostic,
-                                                             krate.0,
-                                                             &mut Vec::new());
+
+        // Parse the libc crate
+        let krate = parse::parse_crate_from_file(krate, &sess).ok().unwrap();
+
+        // expand macros
+        let features = Features::new();
+        let mut ecfg = ExpansionConfig {
+            features: Some(&features),
+            ..ExpansionConfig::default("crate_name".to_string())
+        };
+        ecfg.recursion_limit = 128;
+        // let exts = vec![
+        //     (Interner::intern("macro_rules"), SyntaxExtension::MacroRulesTT),
+        // ];
+        println!("-----------------------------------------");
+        let mut resolver = MyResolver {
+            parse_sess: &sess,
+            map: HashMap::new(),
+            id: 1_000_000_000,
+        };
+        let mut ecx = ExtCtxt::new(&sess, ecfg, &mut resolver);
+        let krate = ecx.monotonic_expander().expand_crate(krate);
+
+        // Strip the crate down to just what's configured for our target
+        let krate = StripUnconfigured {
+            should_test: false,
+            sess: &sess,
+            features: None,
+        }.fold_crate(krate);
 
         // Probe the crate to find all structs (used to convert type names to
         // names in C).
@@ -874,10 +891,13 @@ impl<'a> Generator<'a> {
             fn field_offset_size_{ty}() {{
         "#, ty = ty));
         for field in s.fields() {
-            let name = match field.node.kind {
-                ast::NamedField(name, ast::Visibility::Public) => name,
-                ast::NamedField(_, ast::Visibility::Inherited) => continue,
-                ast::UnnamedField(..) => panic!("no tuple structs in FFI"),
+            match field.vis {
+                ast::Visibility::Public => {}
+                _ => continue,
+            }
+            let name = match field.ident {
+                Some(name) => name,
+                None => panic!("no tuple structs in FFI"),
             };
             let name = name.to_string();
 
@@ -918,7 +938,7 @@ impl<'a> Generator<'a> {
             }
 
             let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
-            let sig = self.csig_returning_ptr(&field.node.ty, &sig);
+            let sig = self.csig_returning_ptr(&field.ty, &sig);
             t!(writeln!(self.c, r#"
                 {sig} {{
                     return &b->{c_field};
@@ -1075,7 +1095,7 @@ impl<'a> Generator<'a> {
             "void".to_string()
         } else {
             args.iter().map(|a| self.rust_ty_to_c_ty(a)).collect::<Vec<_>>()
-                .connect(", ") + if variadic {", ..."} else {""}
+                .join(", ") + if variadic {", ..."} else {""}
         };
         let cret = self.rust_ty_to_c_ty(ret);
         let abi = self.abi2str(abi);
@@ -1112,8 +1132,8 @@ impl<'a> Generator<'a> {
             ast::TyKind::Path(_, ref path) => {
                 let last = path.segments.last().unwrap();
                 if last.identifier.to_string() == "Option" {
-                    match last.parameters {
-                        ast::PathParameters::AngleBracketed(ref p) => {
+                    match last.parameters.as_ref().map(|p| &**p) {
+                        Some(&ast::PathParameters::AngleBracketed(ref p)) => {
                             self.ty2name(&p.types[0], rust)
                         }
                         _ => panic!(),
@@ -1141,7 +1161,7 @@ impl<'a> Generator<'a> {
                             format!("{} {}*", self.ty2name(&t.ty, rust),
                                     modifier)
                         }
-                        ast::TyKind::FixedLengthVec(ref t, _) => {
+                        ast::TyKind::Array(ref t, _) => {
                             format!("{}{}*", modifier, self.ty2name(t, rust))
                         }
                         _ => {
@@ -1154,9 +1174,8 @@ impl<'a> Generator<'a> {
                 if rust {
                     let args = t.decl.inputs.iter().map(|a| {
                         self.ty2name(&a.ty, rust)
-                    }).collect::<Vec<_>>().connect(", ");
+                    }).collect::<Vec<_>>().join(", ");
                     let ret = match t.decl.output {
-                        ast::FunctionRetTy::None(..) => "!".to_string(),
                         ast::FunctionRetTy::Default(..) => "()".to_string(),
                         ast::FunctionRetTy::Ty(ref t) => self.ty2name(t, rust),
                     };
@@ -1168,10 +1187,10 @@ impl<'a> Generator<'a> {
                     if args.len() == 0 {
                         args.push("void".to_string());
                     }
-                    format!("{}(*)({})", ret, args.connect(", "))
+                    format!("{}(*)({})", ret, args.join(", "))
                 }
             }
-            ast::TyKind::FixedLengthVec(ref t, ref e) => {
+            ast::TyKind::Array(ref t, ref e) => {
                 assert!(rust);
                 format!("[{}; {}]", self.ty2name(t, rust), self.expr2str(e))
             }
@@ -1181,7 +1200,7 @@ impl<'a> Generator<'a> {
             }) => {
                 let path = match ty.node {
                     ast::TyKind::Path(_, ref p) => p,
-                    ast::TyKind::FixedLengthVec(ref t, _) => {
+                    ast::TyKind::Array(ref t, _) => {
                         assert!(!rust);
                         return format!("{}{}*",
                                        match mutbl {
@@ -1217,8 +1236,8 @@ impl<'a> Generator<'a> {
                                             .identifier.to_string() == "Option"
             => {
                 let last = path.segments.last().unwrap();
-                match last.parameters {
-                    ast::PathParameters::AngleBracketed(ref p) => {
+                match last.parameters.as_ref().map(|s| &**s) {
+                    Some(&ast::PathParameters::AngleBracketed(ref p)) => {
                         self.csig_returning_ptr(&p.types[0], sig)
                     }
                     _ => panic!(),
@@ -1233,11 +1252,11 @@ impl<'a> Generator<'a> {
                 } else if args.len() == 0 {
                     args.push("void".to_string());
                 }
-                format!("{}({}**{})({})", ret, abi, sig, args.connect(", "))
+                format!("{}({}**{})({})", ret, abi, sig, args.join(", "))
             }
-            ast::TyKind::FixedLengthVec(ref t, ref e) => {
+            ast::TyKind::Array(ref t, ref e) => {
                 match t.node {
-                    ast::TyKind::FixedLengthVec(ref t2, ref e2) => {
+                    ast::TyKind::Array(ref t2, ref e2) => {
                         format!("{}(*{})[{}][{}]",
                                 self.ty2name(t2, false),
                                 sig,
@@ -1295,10 +1314,12 @@ impl<'a> Generator<'a> {
             self.ty2name(&arg.ty, false)
         }).collect::<Vec<_>>();
         let ret = match decl.output {
-            ast::FunctionRetTy::None(..) |
             ast::FunctionRetTy::Default(..) => "void".to_string(),
             ast::FunctionRetTy::Ty(ref t) => {
                 match t.node {
+                    ast::TyKind::Never => {
+                        "void".to_string()
+                    }
                     ast::TyKind::Tup(ref t) if t.len() == 0 => {
                         "void".to_string()
                     }
@@ -1399,4 +1420,118 @@ impl<'v> Visitor<'v> for StructFinder {
         visit::walk_item(self, i)
     }
     fn visit_mac(&mut self, _mac: &'v ast::Mac) { }
+}
+
+struct MyResolver<'a> {
+    parse_sess: &'a ParseSess,
+    id: usize,
+    map: HashMap<Name, Rc<SyntaxExtension>>,
+}
+
+impl<'a> Resolver for MyResolver<'a> {
+    fn next_node_id(&mut self) -> ast::NodeId {
+        self.id += 1;
+        ast::NodeId::new(self.id)
+    }
+
+    fn get_module_scope(&mut self, _id: ast::NodeId) -> Mark {
+        Mark::root()
+    }
+
+    fn eliminate_crate_var(&mut self, item: P<ast::Item>) -> P<ast::Item> {
+        item
+    }
+
+    fn is_whitelisted_legacy_custom_derive(&self, _name: Name) -> bool {
+        false
+    }
+
+    fn visit_expansion(&mut self,
+                       _invoc: Mark,
+                       expansion: &Expansion,
+                       _derives: &[Mark])
+    {
+        match *expansion {
+            Expansion::Items(ref items) => {
+                let features = RefCell::new(Features::new());
+                for item in items.iter() {
+                    MyVisitor {
+                        parse_sess: self.parse_sess,
+                        features: &features,
+                        map: &mut self.map,
+                    }.visit_item(item);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    fn add_builtin(&mut self, _ident: ast::Ident, _ext: Rc<SyntaxExtension>) {
+    }
+
+    fn resolve_imports(&mut self) {
+    }
+
+    fn find_legacy_attr_invoc(&mut self, _attrs: &mut Vec<Attribute>)
+        -> Option<Attribute>
+    {
+        None
+    }
+
+    fn resolve_invoc(&mut self,
+                     invoc: &mut Invocation,
+                     _scope: Mark,
+                     _force: bool)
+                     -> Result<Option<Rc<SyntaxExtension>>, Determinacy> {
+        match invoc.kind {
+            InvocationKind::Bang { ref mac, .. } => {
+                if mac.node.path.segments.len() != 1 {
+                    return Ok(None)
+                }
+                let seg = &mac.node.path.segments[0];
+                if seg.parameters.is_some() {
+                    return Ok(None)
+                }
+                return Ok(self.map.get(&seg.identifier.name).cloned())
+            }
+            _ => {}
+        }
+        Err(Determinacy::Determined)
+    }
+
+    fn resolve_macro(&mut self,
+                     _scope: Mark,
+                     _path: &ast::Path,
+                     _kind: MacroKind,
+                     _force: bool) -> Result<Rc<SyntaxExtension>, Determinacy> {
+        Err(Determinacy::Determined)
+    }
+
+    fn check_unused_macros(&self) {
+	}
+}
+
+struct MyVisitor<'b> {
+    parse_sess: &'b ParseSess,
+    features: &'b RefCell<Features>,
+    map: &'b mut HashMap<Name, Rc<SyntaxExtension>>,
+}
+
+impl<'a, 'b> Visitor<'a> for MyVisitor<'b> {
+    fn visit_item(&mut self, item: &'a ast::Item) {
+        match item.node {
+            ast::ItemKind::MacroDef(..) => {
+                self.map.insert(item.ident.name,
+                                Rc::new(macro_rules::compile(self.parse_sess,
+                                                             self.features,
+                                                             item)));
+            }
+            _ => {}
+        }
+        visit::walk_item(self, item);
+    }
+
+    fn visit_mac(&mut self, mac: &'a ast::Mac) {
+        drop(mac);
+    }
 }
