@@ -695,6 +695,25 @@ pub const SYS_pkey_mprotect: ::c_int = 380;
 pub const SYS_pkey_alloc: ::c_int = 381;
 pub const SYS_pkey_free: ::c_int = 382;
 
+// offsets in user_regs_structs, from sys/reg.h
+pub const EBX: ::c_int = 0;
+pub const ECX: ::c_int = 1;
+pub const EDX: ::c_int = 2;
+pub const ESI: ::c_int = 3;
+pub const EDI: ::c_int = 4;
+pub const EBP: ::c_int = 5;
+pub const EAX: ::c_int = 6;
+pub const DS: ::c_int = 7;
+pub const ES: ::c_int = 8;
+pub const FS: ::c_int = 9;
+pub const GS: ::c_int = 10;
+pub const ORIG_EAX: ::c_int = 11;
+pub const EIP: ::c_int = 12;
+pub const CS: ::c_int = 13;
+pub const EFL: ::c_int = 14;
+pub const UESP: ::c_int = 15;
+pub const SS: ::c_int = 16;
+
 extern {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
