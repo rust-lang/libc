@@ -909,6 +909,35 @@ pub const SYS_pkey_mprotect: ::c_long = 329;
 pub const SYS_pkey_alloc: ::c_long = 330;
 pub const SYS_pkey_free: ::c_long = 331;
 
+// offsets in user_regs_structs, from sys/reg.h
+pub const R15: ::c_int = 0;
+pub const R14: ::c_int = 1;
+pub const R13: ::c_int = 2;
+pub const R12: ::c_int = 3;
+pub const RBP: ::c_int = 4;
+pub const RBX: ::c_int = 5;
+pub const R11: ::c_int = 6;
+pub const R10: ::c_int = 7;
+pub const R9: ::c_int = 8;
+pub const R8: ::c_int = 9;
+pub const RAX: ::c_int = 10;
+pub const RCX: ::c_int = 11;
+pub const RDX: ::c_int = 12;
+pub const RSI: ::c_int = 13;
+pub const RDI: ::c_int = 14;
+pub const ORIG_RAX: ::c_int = 15;
+pub const RIP: ::c_int = 16;
+pub const CS: ::c_int = 17;
+pub const EFLAGS: ::c_int = 18;
+pub const RSP: ::c_int = 19;
+pub const SS: ::c_int = 20;
+pub const FS_BASE: ::c_int = 21;
+pub const GS_BASE: ::c_int = 22;
+pub const DS: ::c_int = 23;
+pub const ES: ::c_int = 24;
+pub const FS: ::c_int = 25;
+pub const GS: ::c_int = 26;
+
 extern {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
