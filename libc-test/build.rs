@@ -7,6 +7,7 @@ use std::env;
 fn main() {
     let target = env::var("TARGET").unwrap();
     let aarch64 = target.contains("aarch64");
+    let i686 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
     let windows = target.contains("windows");
     let mingw = target.contains("windows-gnu");
@@ -187,7 +188,7 @@ fn main() {
         if x86_64 {
             cfg.header("sys/io.h");
         }
-        if x86 || x86_64 {
+        if i686 || x86_64 {
             cfg.header("sys/reg.h");
         }
     }
