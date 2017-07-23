@@ -461,7 +461,8 @@ fn main() {
             "execv" |       // crazy stuff with const/mut
             "execve" |
             "execvp" |
-            "execvpe" => true,
+            "execvpe" |
+            "fexecve" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
