@@ -13,6 +13,10 @@ A library for types and bindings to native C functions often found in libc or
 other common platform libraries.
 """
 
+[badges]
+travis-ci = { repository = "rust-lang/libc" }
+appveyor = { repository = "rust-lang-libs/libc" }
+
 [features]
 default = ["use_std"]
 use_std = []
