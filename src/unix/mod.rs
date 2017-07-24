@@ -224,6 +224,11 @@ pub const IPPROTO_UDP: ::c_int = 17;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
 
+pub const INADDR_LOOPBACK: ::c_int = 2130706433;
+pub const INADDR_ANY: ::c_int = 0;
+pub const INADDR_BROADCAST: ::c_int = 4294967295;
+pub const INADDR_NONE: ::c_int = 4294967295;
+
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything

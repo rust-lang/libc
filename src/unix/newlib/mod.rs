@@ -506,11 +506,6 @@ pub const SO_ERROR: ::c_int = 4105;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 
-pub const INADDR_LOOPBACK: ::c_int = 2130706433;
-pub const INADDR_ANY: ::c_int = 0;
-pub const INADDR_BROADCAST: ::c_int = 4294967295;
-pub const INADDR_NONE: ::c_int = 4294967295;
-
 pub const INET_ADDRSTRLEN: ::c_int = 16;
 
 pub const IPPROTO_IP: ::c_int = 0;
