@@ -773,7 +773,7 @@ pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 0x40;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
-pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 0;
+pub const PTHREAD_PROCESS_PRIVATE: ::c_ushort = 0;
 pub const PTHREAD_STACK_MIN: ::size_t = 4096;
 
 pub const SIGSTKSZ: ::size_t = 8192;
