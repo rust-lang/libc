@@ -210,6 +210,7 @@ pub const AT_REMOVEDIR: ::c_int = 0x08;
 
 pub const RLIM_NLIMITS: ::c_int = 9;
 
+pub const SO_TIMESTAMP: ::c_int = 0x0800;
 pub const SO_SNDTIMEO: ::c_int = 0x1005;
 pub const SO_RCVTIMEO: ::c_int = 0x1006;
 pub const SO_BINDANY: ::c_int = 0x1000;
