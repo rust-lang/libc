@@ -16,10 +16,6 @@ s! {
     }
 }
 
-pub const SYS_gettid: ::c_long = 186;
-
-pub const SYS_perf_event_open: ::c_long = 298;
-
 // Syscall table
 
 pub const SYS_read: ::c_long = 0;
