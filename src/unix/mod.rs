@@ -224,10 +224,10 @@ pub const IPPROTO_UDP: ::c_int = 17;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
 
-pub const INADDR_LOOPBACK: ::c_int = 2130706433;
-pub const INADDR_ANY: ::c_int = 0;
-pub const INADDR_BROADCAST: ::c_int = 4294967295;
-pub const INADDR_NONE: ::c_int = 4294967295;
+pub const INADDR_LOOPBACK: in_addr_t = 2130706433;
+pub const INADDR_ANY: in_addr_t = 0;
+pub const INADDR_BROADCAST: in_addr_t = 4294967295;
+pub const INADDR_NONE: in_addr_t = 4294967295;
 
 cfg_if! {
     if #[cfg(dox)] {
