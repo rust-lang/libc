@@ -236,8 +236,12 @@ cfg_if! {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
     } else if #[cfg(any(all(target_env = "musl", not(target_arch = "mips"))))] {
-        #[cfg_attr(stdbuild, link(name = "c", kind = "static", cfg(target_feature = "crt-static")))]
-        #[cfg_attr(stdbuild, link(name = "c", cfg(not(target_feature = "crt-static"))))]
+        #[cfg_attr(stdbuild,
+                   link(name = "c",
+                        kind = "static", cfg(target_feature = "crt-static")))]
+        #[cfg_attr(stdbuild,
+                   link(name = "c",
+                        cfg(not(target_feature = "crt-static"))))]
         extern {}
     } else if #[cfg(target_os = "emscripten")] {
         #[link(name = "c")]
