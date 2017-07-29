@@ -439,6 +439,8 @@ pub const EMULTIHOP: ::c_int = 90;
 pub const ENOLINK: ::c_int = 91;
 pub const EPROTO: ::c_int = 92;
 
+pub const POLLSTANDARD: ::c_short = ::POLLIN | ::POLLPRI | ::POLLOUT | ::POLLRDNORM | ::POLLRDBAND | ::POLLWRBAND | ::POLLERR | ::POLLHUP | ::POLLNVAL;
+
 pub const EAI_SYSTEM: ::c_int = 11;
 
 pub const F_DUPFD: ::c_int = 0;
