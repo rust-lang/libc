@@ -1353,7 +1353,8 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 self.test_type(&i.ident.to_string());
             }
 
-            ast::ItemKind::Struct(ref s, ref generics) if public => {
+            ast::ItemKind::Struct(ref s, ref generics) |
+            ast::ItemKind::Union(ref s, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
                 let is_c = i.attrs.iter().any(|a| {
                     attr::find_repr_attrs(self.sh, a).iter().any(|a| {

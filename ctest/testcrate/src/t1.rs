@@ -27,6 +27,12 @@ pub struct T1Baz {
     pub b: T1Bar,
 }
 
+#[repr(C)]
+pub union T1Union {
+    pub a: u64,
+    pub b: u32,
+}
+
 i! {
     pub const T1C: u32 = 4;
 }

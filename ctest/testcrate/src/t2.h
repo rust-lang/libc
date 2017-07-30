@@ -9,6 +9,11 @@ struct T2Baz {
   uint32_t b;
 };
 
+typedef struct {
+  uint32_t a;
+  int64_t b;
+} T2Union;
+
 static void T2a(void) {}
 
 #define T2C 4
