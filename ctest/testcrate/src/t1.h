@@ -19,6 +19,11 @@ struct T1Baz {
   struct T1Bar b;
 };
 
+typedef union {
+  uint64_t a;
+  uint32_t b;
+} T1Union;
+
 void T1a(void);
 void* T1b(void);
 void* T1c(void*);

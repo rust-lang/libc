@@ -11,6 +11,12 @@ pub struct T2Baz {
     pub b: u32,
 }
 
+#[repr(C)]
+pub union T2Union {
+    pub a: u32,
+    pub b: i64,
+}
+
 pub const T2C: i32 = 5;
 
 i! {
