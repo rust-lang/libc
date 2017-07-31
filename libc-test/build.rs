@@ -7,6 +7,7 @@ use std::env;
 fn main() {
     let target = env::var("TARGET").unwrap();
     let aarch64 = target.contains("aarch64");
+    let i686 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
     let windows = target.contains("windows");
     let mingw = target.contains("windows-gnu");
@@ -78,6 +79,7 @@ fn main() {
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
         cfg.header("netinet/tcp.h");
+        cfg.header("netinet/udp.h");
         cfg.header("resolv.h");
         cfg.header("pthread.h");
         cfg.header("dlfcn.h");
@@ -105,6 +107,7 @@ fn main() {
         cfg.header("syslog.h");
         cfg.header("semaphore.h");
         cfg.header("sys/statvfs.h");
+        cfg.header("sys/times.h");
     }
 
     if android {
@@ -148,9 +151,14 @@ fn main() {
         cfg.header("mach/mach_time.h");
         cfg.header("malloc/malloc.h");
         cfg.header("util.h");
+        cfg.header("sys/xattr.h");
+        cfg.header("sys/sys_domain.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
+        cfg.header("net/route.h");
+        cfg.header("net/route.h");
+        cfg.header("sys/proc_info.h");
     }
 
     if bsdlike {
@@ -166,17 +174,25 @@ fn main() {
     if linux {
         cfg.header("mqueue.h");
         cfg.header("ucontext.h");
-        cfg.header("sys/signalfd.h");
         if !uclibc {
             // optionally included in uclibc
             cfg.header("sys/xattr.h");
         }
         cfg.header("sys/ipc.h");
+        cfg.header("sys/sem.h");
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
+        cfg.header("sys/user.h");
         cfg.header("sys/fsuid.h");
-        cfg.header("pty.h");
         cfg.header("shadow.h");
+        cfg.header("linux/input.h");
+        cfg.header("linux/falloc.h");
+        if x86_64 {
+            cfg.header("sys/io.h");
+        }
+        if i686 || x86_64 {
+            cfg.header("sys/reg.h");
+        }
     }
 
     if linux || android {
@@ -188,8 +204,13 @@ fn main() {
         cfg.header("sys/eventfd.h");
         cfg.header("sys/prctl.h");
         cfg.header("sys/sendfile.h");
+        cfg.header("sys/signalfd.h");
         cfg.header("sys/vfs.h");
         cfg.header("sys/syscall.h");
+        cfg.header("sys/personality.h");
+        cfg.header("sys/swap.h");
+        cfg.header("pty.h");
+        cfg.header("linux/netfilter_ipv4.h");
         if !uclibc {
             cfg.header("sys/sysinfo.h");
         }
@@ -292,6 +313,9 @@ fn main() {
                 }
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
+            "type_" if linux &&
+                (struct_ == "input_event" || struct_ == "input_mask" ||
+                 struct_ == "ff_effect") => "type".to_string(),
             s => s.to_string(),
         }
     });
@@ -319,6 +343,15 @@ fn main() {
 
             // This is actually a union, not a struct
             "sigval" => true,
+
+            // Linux kernel headers used on musl are too old to have this
+            // definition. Because it's tested on other Linux targets, skip it.
+            "input_mask" if musl => true,
+
+            // These structs have changed since unified headers in NDK r14b.
+            // `st_atime` and `st_atime_nsec` have changed sign.
+            // FIXME: unskip it for next major release
+            "stat" | "stat64" if android => true,
 
             _ => false
         }
@@ -403,6 +436,21 @@ fn main() {
             "MADV_MERGEABLE" | "MADV_UNMERGEABLE" | "MADV_HWPOISON" | "IPV6_ADD_MEMBERSHIP" | "IPV6_DROP_MEMBERSHIP" | "IPV6_MULTICAST_LOOP" | "IPV6_V6ONLY" |
             "MAP_STACK" | "RTLD_DEEPBIND" | "SOL_IPV6" | "SOL_ICMPV6" if uclibc => true,
 
+            // Musl uses old, patched kernel headers
+            "FALLOC_FL_COLLAPSE_RANGE" | "FALLOC_FL_ZERO_RANGE" |
+            "FALLOC_FL_INSERT_RANGE" | "FALLOC_FL_UNSHARE_RANGE" if musl => true,
+
+            // Defined by libattr not libc on linux (hard to test).
+            // See constant definition for more details.
+            "ENOATTR" if linux => true,
+
+            // On mips*-unknown-linux-gnu* CMSPAR cannot be included with the set of headers we
+            // want to use here for testing. It's originally defined in asm/termbits.h, which is
+            // also included by asm/termios.h, but not the standard termios.h. There's no way to
+            // include both asm/termbits.h and termios.h and there's no way to include both
+            // asm/termios.h and ioctl.h (+ some other headers) because of redeclared types.
+            "CMSPAR" if mips && linux && !musl => true,
+
             _ => false,
         }
     });
@@ -413,7 +461,8 @@ fn main() {
             "execv" |       // crazy stuff with const/mut
             "execve" |
             "execvp" |
-            "execvpe" => true,
+            "execvpe" |
+            "fexecve" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
@@ -499,7 +548,7 @@ fn main() {
             "backtrace" |
             "sysinfo" | "newlocale" | "duplocale" | "freelocale" | "uselocale" |
             "nl_langinfo_l" | "wcslen" | "wcstombs" if uclibc => true,
-          
+
             // Apparently res_init exists on Android, but isn't defined in a header:
             // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
             "res_init" if android => true,
@@ -509,6 +558,19 @@ fn main() {
             // See discussion for skipping here:
             // https://github.com/rust-lang/libc/pull/585#discussion_r114561460
             "res_init" if apple => true,
+
+            // On Mac we don't use the default `close()`, instead using their $NOCANCEL variants.
+            "close" if apple => true,
+
+            // Definition of those functions as changed since unified headers from NDK r14b
+            // These changes imply some API breaking changes but are still ABI compatible.
+            // We can wait for the next major release to be compliant with the new API.
+            // FIXME: unskip these for next major release
+            "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
+            "setpriority" | "personality" if android => true,
+            // In Android 64 bits, these functions have been fixed since unified headers.
+            // Ignore these until next major version.
+            "bind" | "writev" | "readv" | "sendmsg" | "recvmsg" if android && (aarch64 || x86_64) => true,
 
             _ => false,
         }
@@ -535,7 +597,9 @@ fn main() {
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
         (struct_ == "aiocb" && field == "aio_buf") ||
         // stack_t.ss_sp's type changed from FreeBSD 10 to 11 in svn r294930
-        (freebsd && struct_ == "stack_t" && field == "ss_sp")
+        (freebsd && struct_ == "stack_t" && field == "ss_sp") ||
+        // this one is an anonymous union
+        (linux && struct_ == "ff_effect" && field == "u")
     });
 
     cfg.skip_field(move |struct_, field| {

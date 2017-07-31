@@ -46,5 +46,11 @@ s! {
 pub const O_DIRECT: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
+pub const O_LARGEFILE: ::c_int = 0o0100000;
 
 pub const SYS_gettid: ::c_long = 186;
+
+pub const SIGSTKSZ: ::size_t = 8192;
+pub const MINSIGSTKSZ: ::size_t = 2048;
+
+pub const MAP_32BIT: ::c_int = 0x40;

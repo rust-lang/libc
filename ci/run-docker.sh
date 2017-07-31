@@ -22,7 +22,6 @@ run() {
       --volume `pwd`/target:/checkout/target \
       --env CARGO_TARGET_DIR=/checkout/target \
       --workdir /checkout \
-      --privileged \
       libc \
       ci/run.sh $1
 }

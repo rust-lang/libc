@@ -139,6 +139,9 @@ pub const SF_NODISKIO: ::c_int = 0x00000001;
 pub const SF_MNOWAIT: ::c_int = 0x00000002;
 pub const SF_SYNC: ::c_int = 0x00000004;
 pub const O_CLOEXEC: ::c_int = 0x00100000;
+pub const O_DIRECTORY: ::c_int = 0x00020000;
+pub const O_EXEC: ::c_int = 0x00040000;
+pub const O_TTY_INIT: ::c_int = 0x00080000;
 pub const F_GETLK: ::c_int = 11;
 pub const F_SETLK: ::c_int = 12;
 pub const F_SETLKW: ::c_int = 13;
@@ -508,6 +511,20 @@ pub const P_ALL: idtype_t = 7;
 pub const B460800: ::speed_t = 460800;
 pub const B921600: ::speed_t = 921600;
 
+pub const AT_FDCWD: ::c_int = -100;
+pub const AT_EACCESS: ::c_int = 0x100;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
+pub const AT_REMOVEDIR: ::c_int = 0x800;
+
+pub const TABDLY: ::tcflag_t = 0x00000004;
+pub const TAB0: ::tcflag_t = 0x00000000;
+pub const TAB3: ::tcflag_t = 0x00000004;
+
+pub const _PC_ACL_NFS4: ::c_int = 64;
+
+pub const _SC_CPUSET_SIZE: ::c_int = 122;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
@@ -559,6 +576,7 @@ extern {
         msgtyp: ::c_long, msgflg: ::c_int) -> ::c_int;
     pub fn msgsnd(msqid: ::c_int, msgp: *const ::c_void, msgsz: ::size_t,
         msgflg: ::c_int) -> ::c_int;
+    pub fn cfmakesane(termios: *mut ::termios);
 }
 
 cfg_if! {

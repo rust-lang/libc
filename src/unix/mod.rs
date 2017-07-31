@@ -124,6 +124,20 @@ s! {
         // Actually a union of an int and a void*
         pub sival_ptr: *mut ::c_void
     }
+
+    // <sys/time.h>
+    pub struct itimerval {
+        pub it_interval: ::timeval,
+        pub it_value: ::timeval,
+    }
+
+    // <sys/times.h>
+    pub struct tms {
+        pub tms_utime: ::clock_t,
+        pub tms_stime: ::clock_t,
+        pub tms_cutime: ::clock_t,
+        pub tms_cstime: ::clock_t,
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
@@ -203,6 +217,18 @@ pub const PRIO_USER: ::c_int = 2;
 pub const PRIO_MIN: ::c_int = -20;
 pub const PRIO_MAX: ::c_int = 20;
 
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
+pub const IPPROTO_TCP: ::c_int = 6;
+pub const IPPROTO_UDP: ::c_int = 17;
+pub const IPPROTO_IP: ::c_int = 0;
+pub const IPPROTO_IPV6: ::c_int = 41;
+
+pub const INADDR_LOOPBACK: in_addr_t = 2130706433;
+pub const INADDR_ANY: in_addr_t = 0;
+pub const INADDR_BROADCAST: in_addr_t = 4294967295;
+pub const INADDR_NONE: in_addr_t = 4294967295;
+
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
@@ -237,6 +263,10 @@ cfg_if! {
     } else if #[cfg(target_os = "fuchsia")] {
         #[link(name = "c")]
         #[link(name = "mxio")]
+        extern {}
+    } else if #[cfg(target_env = "newlib")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
         extern {}
     } else {
         #[link(name = "c")]
@@ -405,7 +435,9 @@ extern {
     pub fn lchown(path: *const c_char, uid: uid_t,
                   gid: gid_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "close$UNIX2003")]
+               link_name = "close$NOCANCEL$UNIX2003")]
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
+               link_name = "close$NOCANCEL")]
     pub fn close(fd: ::c_int) -> ::c_int;
     pub fn dup(fd: ::c_int) -> ::c_int;
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
@@ -422,6 +454,9 @@ extern {
                   -> ::c_int;
     pub fn execvp(c: *const c_char,
                   argv: *const *const c_char) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *const c_char,
+                   envp: *const *const c_char)
+                   -> ::c_int;
     pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
     pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
@@ -456,6 +491,7 @@ extern {
     pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
                 -> ::ssize_t;
     pub fn rmdir(path: *const c_char) -> ::c_int;
+    pub fn seteuid(uid: uid_t) -> ::c_int;
     pub fn setgid(gid: gid_t) -> ::c_int;
     pub fn setpgid(pid: pid_t, pgid: pid_t) -> ::c_int;
     pub fn setsid() -> pid_t;
@@ -566,6 +602,8 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
+    pub fn times(buf: *mut ::tms) -> ::clock_t;
 
     pub fn pthread_self() -> ::pthread_t;
     pub fn pthread_create(native: *mut ::pthread_t,
@@ -629,6 +667,10 @@ extern {
     pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> ::c_int;
     pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "pthread_rwlock_init$UNIX2003")]
+    pub fn pthread_rwlock_init(lock: *mut pthread_rwlock_t,
+                               attr: *const pthread_rwlockattr_t) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_destroy$UNIX2003")]
     pub fn pthread_rwlock_destroy(lock: *mut pthread_rwlock_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -646,6 +688,9 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_unlock$UNIX2003")]
     pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> ::c_int;
+    pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
+    pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t)
+                                      -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_sigmask$UNIX2003")]
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t,
@@ -713,8 +758,10 @@ extern {
     pub fn mktime(tm: *mut tm) -> time_t;
     #[cfg_attr(target_os = "netbsd", link_name = "__time50")]
     pub fn time(time: *mut time_t) -> time_t;
+    #[cfg_attr(target_os = "netbsd", link_name = "__gmtime50")]
+    pub fn gmtime(time_p: *const time_t) -> *mut tm;
     #[cfg_attr(target_os = "netbsd", link_name = "__locatime50")]
-    pub fn localtime(time: *const time_t) -> *mut tm;
+    pub fn localtime(time_p: *const time_t) -> *mut tm;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
     pub fn mknod(pathname: *const ::c_char, mode: ::mode_t,
@@ -793,6 +840,8 @@ extern {
                        set: *const sigset_t,
                        oldset: *mut sigset_t)
                        -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigpending14")]
+    pub fn sigpending(set: *mut sigset_t) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
@@ -833,6 +882,7 @@ extern {
                      termios: *const ::termios) -> ::c_int;
     pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int;
+    pub fn tcgetsid(fd: ::c_int) -> ::pid_t;
     pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int;
     pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
     pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
@@ -857,6 +907,9 @@ cfg_if! {
     if #[cfg(target_env = "uclibc")] {
         mod uclibc;
         pub use self::uclibc::*;
+    } else if #[cfg(target_env = "newlib")] {
+        mod newlib;
+        pub use self::newlib::*;
     } else if #[cfg(any(target_os = "linux",
                         target_os = "android",
                         target_os = "emscripten",

@@ -180,17 +180,35 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const SIG_BLOCK: ::c_int = 0x1;
 pub const SIG_UNBLOCK: ::c_int = 0x2;
 
+pub const IP_MULTICAST_IF: ::c_int = 9;
+pub const IP_MULTICAST_TTL: ::c_int = 10;
+pub const IP_MULTICAST_LOOP: ::c_int = 11;
+
 pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
 
 pub const ST_RDONLY: ::c_ulong = 1;
 
+pub const SCM_RIGHTS: ::c_int = 0x01;
+
 pub const NCCS: usize = 20;
 
+pub const O_ACCMODE: ::c_int = 0x3;
+pub const O_RDONLY: ::c_int = 0;
+pub const O_WRONLY: ::c_int = 1;
+pub const O_RDWR: ::c_int = 2;
+pub const O_APPEND: ::c_int = 8;
+pub const O_CREAT: ::c_int = 512;
+pub const O_TRUNC: ::c_int = 1024;
+pub const O_EXCL: ::c_int = 2048;
 pub const O_ASYNC: ::c_int = 0x40;
-pub const O_FSYNC: ::c_int = 0x80;
-pub const O_NDELAY: ::c_int = 0x4;
+pub const O_SYNC: ::c_int = 0x80;
+pub const O_NONBLOCK: ::c_int = 0x4;
 pub const O_NOFOLLOW: ::c_int = 0x100;
+pub const O_SHLOCK: ::c_int = 0x10;
+pub const O_EXLOCK: ::c_int = 0x20;
+pub const O_FSYNC: ::c_int = O_SYNC;
+pub const O_NDELAY: ::c_int = O_NONBLOCK;
 
 pub const F_GETOWN: ::c_int = 5;
 pub const F_SETOWN: ::c_int = 6;
@@ -221,12 +239,15 @@ pub const VREPRINT: usize = 6;
 pub const VINTR: usize = 8;
 pub const VQUIT: usize = 9;
 pub const VSUSP: usize = 10;
+pub const VDSUSP: usize = 11;
 pub const VSTART: usize = 12;
 pub const VSTOP: usize = 13;
 pub const VLNEXT: usize = 14;
 pub const VDISCARD: usize = 15;
 pub const VMIN: usize = 16;
 pub const VTIME: usize = 17;
+pub const VSTATUS: usize = 18;
+pub const _POSIX_VDISABLE: ::cc_t = 0xff;
 pub const IGNBRK: ::tcflag_t = 0x00000001;
 pub const BRKINT: ::tcflag_t = 0x00000002;
 pub const IGNPAR: ::tcflag_t = 0x00000004;
@@ -244,6 +265,7 @@ pub const OPOST: ::tcflag_t = 0x1;
 pub const ONLCR: ::tcflag_t = 0x2;
 pub const OXTABS: ::tcflag_t = 0x4;
 pub const ONOEOT: ::tcflag_t = 0x8;
+pub const CIGNORE: ::tcflag_t = 0x00000001;
 pub const CSIZE: ::tcflag_t = 0x00000300;
 pub const CS5: ::tcflag_t = 0x00000000;
 pub const CS6: ::tcflag_t = 0x00000100;
@@ -264,12 +286,15 @@ pub const ECHOPRT: ::tcflag_t = 0x00000020;
 pub const ECHOCTL: ::tcflag_t = 0x00000040;
 pub const ISIG: ::tcflag_t = 0x00000080;
 pub const ICANON: ::tcflag_t = 0x00000100;
+pub const ALTWERASE: ::tcflag_t = 0x00000200;
 pub const IEXTEN: ::tcflag_t = 0x00000400;
 pub const EXTPROC: ::tcflag_t = 0x00000800;
 pub const TOSTOP: ::tcflag_t = 0x00400000;
 pub const FLUSHO: ::tcflag_t = 0x00800000;
+pub const NOKERNINFO: ::tcflag_t = 0x02000000;
 pub const PENDIN: ::tcflag_t = 0x20000000;
 pub const NOFLSH: ::tcflag_t = 0x80000000;
+pub const MDMBUF: ::tcflag_t = 0x00100000;
 
 pub const WNOHANG: ::c_int = 0x00000001;
 pub const WUNTRACED: ::c_int = 0x00000002;
@@ -284,7 +309,14 @@ pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
 pub const LOG_FTP: ::c_int = 11 << 3;
 pub const LOG_PERROR: ::c_int = 0x20;
 
+pub const TCP_MAXSEG: ::c_int = 2;
+
 pub const PIPE_BUF: usize = 512;
+
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLWRNORM: ::c_short = 0x004;
+pub const POLLRDBAND: ::c_short = 0x080;
+pub const POLLWRBAND: ::c_short = 0x100;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
@@ -432,6 +464,8 @@ extern {
                link_name = "recvmsg$UNIX2003")]
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
+
+    pub fn sync();
 }
 
 cfg_if! {

@@ -23,6 +23,7 @@ pub type useconds_t = u32;
 pub type socklen_t = u32;
 pub type pthread_t = ::uintptr_t;
 pub type pthread_mutexattr_t = ::uintptr_t;
+pub type pthread_rwlockattr_t = ::uintptr_t;
 pub type sigset_t = u64;
 pub type fsblkcnt_t = i64;
 pub type fsfilcnt_t = i64;
@@ -536,11 +537,6 @@ pub const AF_UNIX: ::c_int = 9;
 pub const AF_INET: ::c_int = 1;
 pub const AF_INET6: ::c_int = 6;
 pub const SOCK_RAW: ::c_int = 3;
-pub const IPPROTO_ICMP: ::c_int = 1;
-pub const IPPROTO_ICMPV6: ::c_int = 58;
-pub const IPPROTO_TCP: ::c_int = 6;
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_IPV6: ::c_int = 41;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
 pub const IP_TTL: ::c_int = 4;
@@ -686,6 +682,60 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
+pub const VINTR: usize = 0;
+pub const VQUIT: usize = 1;
+pub const VERASE: usize = 2;
+pub const VKILL: usize = 3;
+pub const VEOF: usize = 4;
+pub const VEOL: usize = 5;
+pub const VMIN: usize = 4;
+pub const VTIME: usize = 5;
+pub const VEOL2: usize = 6;
+pub const VSWTCH: usize = 7;
+pub const VSTART: usize = 8;
+pub const VSTOP: usize = 9;
+pub const VSUSP: usize = 10;
+pub const OLCUC:  ::tcflag_t = 0o000002;
+pub const OCRNL:  ::tcflag_t = 0o000010;
+pub const ONOCR:  ::tcflag_t = 0o000020;
+pub const ONLRET: ::tcflag_t = 0o000040;
+pub const OFILL:  ::tcflag_t = 0o000100;
+pub const OFDEL:  ::tcflag_t = 0o000200;
+pub const NLDLY:  ::tcflag_t = 0o000400;
+pub const NL0:    ::tcflag_t = 0o000000;
+pub const NL1:    ::tcflag_t = 0o000400;
+pub const CRDLY:  ::tcflag_t = 0o003000;
+pub const CR0:    ::tcflag_t = 0o000000;
+pub const CR1:    ::tcflag_t = 0o001000;
+pub const CR2:    ::tcflag_t = 0o002000;
+pub const CR3:    ::tcflag_t = 0o003000;
+pub const TABDLY: ::tcflag_t = 0o014000;
+pub const TAB0:   ::tcflag_t = 0o000000;
+pub const TAB1:   ::tcflag_t = 0o004000;
+pub const TAB2:   ::tcflag_t = 0o010000;
+pub const TAB3:   ::tcflag_t = 0o014000;
+pub const BSDLY:  ::tcflag_t = 0o020000;
+pub const BS0:    ::tcflag_t = 0o000000;
+pub const BS1:    ::tcflag_t = 0o020000;
+pub const FFDLY:  ::tcflag_t = 0o100000;
+pub const FF0:    ::tcflag_t = 0o000000;
+pub const FF1:    ::tcflag_t = 0o100000;
+pub const VTDLY:  ::tcflag_t = 0o040000;
+pub const VT0:    ::tcflag_t = 0o000000;
+pub const VT1:    ::tcflag_t = 0o040000;
+
+pub const TCGB_CTS: ::c_int = 0x01;
+pub const TCGB_DSR: ::c_int = 0x02;
+pub const TCGB_RI: ::c_int = 0x04;
+pub const TCGB_DCD: ::c_int = 0x08;
+pub const TIOCM_CTS: ::c_int = TCGB_CTS;
+pub const TIOCM_CD: ::c_int = TCGB_DCD;
+pub const TIOCM_CAR: ::c_int = TIOCM_CD;
+pub const TIOCM_RI: ::c_int = TCGB_RI;
+pub const TIOCM_DSR: ::c_int = TCGB_dsR;
+pub const TIOCM_DTR: ::c_int = 0x10;
+pub const TIOCM_RTS: ::c_int = 0x20;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -749,6 +799,7 @@ extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
+    pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
                        host: *mut ::c_char,
@@ -804,6 +855,8 @@ extern {
                    flags: ::c_int) -> ::ssize_t;
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
+    pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
+                   environment: *const *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {
