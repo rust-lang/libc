@@ -732,6 +732,9 @@ pub const IP_HDRINCL: ::c_int = 3;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 
+pub const IPV6_JOIN_GROUP: ::c_int = 20;
+pub const IPV6_LEAVE_GROUP: ::c_int = 21;
+
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
 pub const TCP_CORK: ::c_int = 3;
