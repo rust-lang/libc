@@ -347,9 +347,8 @@ pub const SYS_mlock2: ::c_long = 325;
 pub const SYS_copy_file_range: ::c_long = 326;
 pub const SYS_preadv2: ::c_long = 327;
 pub const SYS_pwritev2: ::c_long = 328;
-pub const SYS_pkey_mprotect: ::c_long = 329;
-pub const SYS_pkey_alloc: ::c_long = 330;
-pub const SYS_pkey_free: ::c_long = 331;
+// FIXME syscalls 329-331 are not available in musl 1.15
+// See discussion https://github.com/nix-rust/nix/pull/709
 
 // offsets in user_regs_structs, from sys/reg.h
 pub const R15: ::c_int = 0;
