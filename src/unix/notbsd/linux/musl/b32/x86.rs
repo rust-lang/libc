@@ -749,7 +749,6 @@ pub const SYS_pwritev2: ::c_long = 379;
 // FIXME syscalls 380-382 have been added in musl 1.16
 // See discussion https://github.com/rust-lang/libc/pull/699
 
-
 // offsets in user_regs_structs, from sys/reg.h
 pub const EBX: ::c_int = 0;
 pub const ECX: ::c_int = 1;
