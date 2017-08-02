@@ -608,6 +608,8 @@ extern {
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn pledge(promises: *const ::c_char,
                   paths: *mut *const ::c_char) -> ::c_int;
+    pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
+    pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
 }
 
 cfg_if! {

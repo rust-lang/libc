@@ -955,6 +955,8 @@ extern {
     pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
     pub fn setutxent();
+    pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
+    pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
 }
 
 #[link(name = "util")]
