@@ -141,7 +141,6 @@ pub const PTRACE_SETFPREGS: ::c_int = 15;
 pub const PTRACE_GETREGS: ::c_int = 12;
 pub const PTRACE_SETREGS: ::c_int = 13;
 
-pub const SYS_gettid: ::c_long = 224;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     value: 0,
 };
