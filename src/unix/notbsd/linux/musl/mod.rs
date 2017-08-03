@@ -185,16 +185,6 @@ pub const PTRACE_INTERRUPT: ::c_int = 0x4207;
 pub const PTRACE_LISTEN: ::c_int = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_int = 0x4209;
 
-pub const PTRACE_O_EXITKILL: ::c_int = 1048576;
-pub const PTRACE_O_TRACECLONE: ::c_int = 8;
-pub const PTRACE_O_TRACEEXEC: ::c_int = 16;
-pub const PTRACE_O_TRACEEXIT: ::c_int = 64;
-pub const PTRACE_O_TRACEFORK: ::c_int = 2;
-pub const PTRACE_O_TRACESYSGOOD: ::c_int = 1;
-pub const PTRACE_O_TRACEVFORK: ::c_int = 4;
-pub const PTRACE_O_TRACEVFORKDONE: ::c_int = 32;
-pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 2097152;
-
 pub const MADV_DODUMP: ::c_int = 17;
 pub const MADV_DONTDUMP: ::c_int = 16;
 
