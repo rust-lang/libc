@@ -211,7 +211,9 @@ pub const SYS_munlockall: ::c_long = 152;
 pub const SYS_vhangup: ::c_long = 153;
 pub const SYS_modify_ldt: ::c_long = 154;
 pub const SYS_pivot_root: ::c_long = 155;
-pub const SYS__sysctl: ::c_long = 156;
+// FIXME: SYS__sysctl is in the NDK sources but for some reason is
+//        not available in the tests
+// pub const SYS__sysctl: ::c_long = 156;
 pub const SYS_prctl: ::c_long = 157;
 pub const SYS_arch_prctl: ::c_long = 158;
 pub const SYS_adjtimex: ::c_long = 159;

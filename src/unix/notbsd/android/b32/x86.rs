@@ -149,16 +149,22 @@ pub const SYS_personality: ::c_long = 136;
 pub const SYS_afs_syscall: ::c_long = 137;
 pub const SYS_setfsuid: ::c_long = 138;
 pub const SYS_setfsgid: ::c_long = 139;
-pub const SYS__llseek: ::c_long = 140;
+// FIXME: SYS__llseek is in the NDK sources but for some reason is
+//        not available in the tests
+// pub const SYS__llseek: ::c_long = 140;
 pub const SYS_getdents: ::c_long = 141;
-pub const SYS__newselect: ::c_long = 142;
+// FIXME: SYS__newselect is in the NDK sources but for some reason is
+//        not available in the tests
+// pub const SYS__newselect: ::c_long = 142;
 pub const SYS_flock: ::c_long = 143;
 pub const SYS_msync: ::c_long = 144;
 pub const SYS_readv: ::c_long = 145;
 pub const SYS_writev: ::c_long = 146;
 pub const SYS_getsid: ::c_long = 147;
 pub const SYS_fdatasync: ::c_long = 148;
-pub const SYS__sysctl: ::c_long = 149;
+// FIXME: SYS__llseek is in the NDK sources but for some reason is
+//        not available in the tests
+// pub const SYS__sysctl: ::c_long = 149;
 pub const SYS_mlock: ::c_long = 150;
 pub const SYS_munlock: ::c_long = 151;
 pub const SYS_mlockall: ::c_long = 152;
