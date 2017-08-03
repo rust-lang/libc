@@ -719,6 +719,29 @@ pub const WEXITED: ::c_int = 0x00000004;
 pub const WCONTINUED: ::c_int = 0x00000008;
 pub const WNOWAIT: ::c_int = 0x01000000;
 
+// Options set using PTRACE_SETOPTIONS.
+pub const PTRACE_O_TRACESYSGOOD: ::c_int = 0x00000001;
+pub const PTRACE_O_TRACEFORK: ::c_int = 0x00000002;
+pub const PTRACE_O_TRACEVFORK: ::c_int = 0x00000004;
+pub const PTRACE_O_TRACECLONE: ::c_int = 0x00000008;
+pub const PTRACE_O_TRACEEXEC: ::c_int = 0x00000010;
+pub const PTRACE_O_TRACEVFORKDONE: ::c_int = 0x00000020;
+pub const PTRACE_O_TRACEEXIT: ::c_int = 0x00000040;
+pub const PTRACE_O_TRACESECCOMP: ::c_int = 0x00000080;
+pub const PTRACE_O_EXITKILL: ::c_int = 0x00100000;
+pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 0x00200000;
+pub const PTRACE_O_MASK: ::c_int = 0x003000ff;
+
+// Wait extended result codes for the above trace options.
+pub const PTRACE_EVENT_FORK: ::c_int = 1;
+pub const PTRACE_EVENT_VFORK: ::c_int = 2;
+pub const PTRACE_EVENT_CLONE: ::c_int = 3;
+pub const PTRACE_EVENT_EXEC: ::c_int = 4;
+pub const PTRACE_EVENT_VFORK_DONE: ::c_int = 5;
+pub const PTRACE_EVENT_EXIT: ::c_int = 6;
+pub const PTRACE_EVENT_SECCOMP: ::c_int = 7;
+pub const PTRACE_EVENT_STOP: ::c_int = 128;
+
 pub const __WNOTHREAD: ::c_int = 0x20000000;
 pub const __WALL: ::c_int = 0x40000000;
 pub const __WCLONE: ::c_int = 0x80000000;
