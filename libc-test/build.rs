@@ -119,6 +119,9 @@ fn main() {
         cfg.header("arpa/inet.h");
         cfg.header("xlocale.h");
         cfg.header("utmp.h");
+        if i686 || x86_64 {
+            cfg.header("sys/reg.h");
+        }
     } else if !windows {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
