@@ -191,6 +191,8 @@ pub const MS_INVALIDATE : ::c_int = 0x0004;
 
 pub const PTHREAD_STACK_MIN : ::size_t = 2048;
 
+pub const POLLNORM: ::c_short = ::POLLRDNORM;
+
 pub const ENOATTR : ::c_int = 83;
 pub const EILSEQ : ::c_int = 84;
 pub const EOVERFLOW : ::c_int = 87;

@@ -160,6 +160,8 @@ pub const POSIX_FADV_WILLNEED: ::c_int = 3;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
+pub const POLLINIGNEOF: ::c_short = 0x2000;
+
 pub const EVFILT_READ: ::int16_t = -1;
 pub const EVFILT_WRITE: ::int16_t = -2;
 pub const EVFILT_AIO: ::int16_t = -3;
