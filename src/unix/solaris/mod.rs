@@ -208,6 +208,8 @@ s! {
         pub ai_family: ::c_int,
         pub ai_socktype: ::c_int,
         pub ai_protocol: ::c_int,
+        #[cfg(target_arch = "sparc64")]
+        __sparcv9_pad: ::c_int,
         pub ai_addrlen: ::socklen_t,
         pub ai_canonname: *mut ::c_char,
         pub ai_addr: *mut ::sockaddr,
