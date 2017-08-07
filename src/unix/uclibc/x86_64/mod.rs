@@ -22,7 +22,29 @@ pub type wchar_t = ::c_int;
 //pub type d_ino = ::c_ulong;
 pub type nfds_t = ::c_ulong;
 
+// L4Re specifics
+// Some of these aren't actually part of the libc, but of l4sys, but since libc
+// depends on l4sys on this platform, we should dump the few important
+// definitions here.
+pub type l4_umword_t = ::c_ulong; // Unsigned machine word.
+
 s! {
+    pub struct dirent {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_name: [::c_char; 256],
+    }
+
     pub struct ipc_perm {
         pub __key: ::key_t,
         pub uid: ::uid_t,
@@ -35,6 +57,43 @@ s! {
         __pad2: ::c_ushort,
         __unused1: ::c_ulong,
         __unused2: ::c_ulong
+    }
+
+    /// CPU sets.
+    pub struct l4_sched_cpu_set_t {
+        // from the L4Re docs
+        /// Combination of granularity and offset.
+        ///
+        /// The granularity defines how many CPUs each bit in map describes.
+        /// The offset is the numer of the first CPU described by the first
+        /// bit in the bitmap.
+        /// offset must be a multiple of 2^graularity.
+        ///
+        /// | MSB              |                 LSB |
+        /// | ---------------- | ------------------- |
+        /// | 8bit granularity | 24bit offset ..     |
+        gran_offset: l4_umword_t ,
+        /// Bitmap of CPUs.
+        map: l4_umword_t ,
+    }
+
+    pub struct pthread_attr_t {
+        __detachstate: ::c_int,
+        __schedpolicy: ::c_int,
+        __schedparam: __sched_param,
+        __inheritsched: ::c_int,
+        __scope: ::c_int,
+        __guardsize: ::size_t,
+        __stackaddr_set: ::c_int,
+        __stackaddr: *mut ::c_void, // better don't use it
+        __stacksize: ::size_t,
+        // L4Re specifics
+        affinity: l4_sched_cpu_set_t,
+        create_flags: ::c_uint,
+    }
+
+    pub struct __sched_param {
+        __sched_priority: ::c_int,
     }
 
     pub struct siginfo_t {
@@ -145,26 +204,6 @@ s! {
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
         __f_spare: [::c_int; 6],
-    }
-
-    pub struct dirent { // Todo
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        d_reclen: u16,
-        pub d_type: u8,
-        pub d_name: [i8; 256],
-    }
-
-    pub struct dirent64 { //
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_name: [i8; 256],
-    }
-
-    pub struct pthread_attr_t { // ToDo
-        __size: [u64; 7]
     }
 
     pub struct sigaction { // TODO!!
