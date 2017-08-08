@@ -1,5 +1,5 @@
-//! Definitions for l4re-uclibc on 64bit systems
-
+//! Definitions for uclibc on 64bit systems
+//!
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
 pub type clock_t = i64;
@@ -21,12 +21,6 @@ pub type wchar_t = ::c_int;
 // ToDo, used?
 //pub type d_ino = ::c_ulong;
 pub type nfds_t = ::c_ulong;
-
-// L4Re specifics
-// Some of these aren't actually part of the libc, but of l4sys, but since libc
-// depends on l4sys on this platform, we should dump the few important
-// definitions here.
-pub type l4_umword_t = ::c_ulong; // Unsigned machine word.
 
 s! {
     pub struct dirent {
@@ -59,24 +53,7 @@ s! {
         __unused2: ::c_ulong
     }
 
-    /// CPU sets.
-    pub struct l4_sched_cpu_set_t {
-        // from the L4Re docs
-        /// Combination of granularity and offset.
-        ///
-        /// The granularity defines how many CPUs each bit in map describes.
-        /// The offset is the numer of the first CPU described by the first
-        /// bit in the bitmap.
-        /// offset must be a multiple of 2^graularity.
-        ///
-        /// | MSB              |                 LSB |
-        /// | ---------------- | ------------------- |
-        /// | 8bit granularity | 24bit offset ..     |
-        gran_offset: l4_umword_t ,
-        /// Bitmap of CPUs.
-        map: l4_umword_t ,
-    }
-
+    #[cfg(not(target_os = "l4re"))]
     pub struct pthread_attr_t {
         __detachstate: ::c_int,
         __schedpolicy: ::c_int,
@@ -87,9 +64,6 @@ s! {
         __stackaddr_set: ::c_int,
         __stackaddr: *mut ::c_void, // better don't use it
         __stacksize: ::size_t,
-        // L4Re specifics
-        affinity: l4_sched_cpu_set_t,
-        create_flags: ::c_uint,
     }
 
     pub struct __sched_param {
@@ -399,7 +373,7 @@ pub const O_EXCL: ::c_int = 0200;
 pub const O_NONBLOCK: ::c_int = 04000;
 pub const O_TRUNC: ::c_int = 01000;
 pub const NCCS: usize = 32;
-pub const PTHREAD_STACK_MIN: ::c_int = 16384;
+pub const PTHREAD_STACK_MIN: usize = 16384;
 pub const SIG_SETMASK: ::c_int = 2; // Set the set of blocked signals
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
@@ -415,3 +389,11 @@ pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
+
+cfg_if! {
+    if #[cfg(target_os = "l4re")] {
+        mod l4re;
+        pub use self::l4re::*;
+    } else { }
+}
+
