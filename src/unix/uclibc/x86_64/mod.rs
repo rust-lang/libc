@@ -381,9 +381,26 @@ s! {
 }
 
 // constants
+pub const EADDRINUSE: ::c_int = 98; // Address already in use
+pub const EADDRNOTAVAIL: ::c_int = 99; // Cannot assign requested address
+pub const ECONNABORTED: ::c_int = 103; // Software caused connection abort
+pub const ECONNREFUSED: ::c_int = 111; // Connection refused
+pub const ECONNRESET: ::c_int = 104; // Connection reset by peer
+pub const EDEADLK: ::c_int = 35; // Resource deadlock would occur
+pub const ENOSYS: ::c_int = 38; // Function not implemented
+pub const ENOTCONN: ::c_int = 107; // Transport endpoint is not connected
+pub const ETIMEDOUT: ::c_int = 110; // connection timed out
+pub const O_APPEND: ::c_int = 02000;
+pub const O_ACCMODE: ::c_int = 0003;
 pub const O_CLOEXEC: ::c_int = 0x80000;
+pub const O_CREAT: ::c_int = 0100;
 pub const O_DIRECTORY: ::c_int = 0200000;
+pub const O_EXCL: ::c_int = 0200;
+pub const O_NONBLOCK: ::c_int = 04000;
+pub const O_TRUNC: ::c_int = 01000;
 pub const NCCS: usize = 32;
+pub const PTHREAD_STACK_MIN: ::c_int = 16384;
+pub const SIG_SETMASK: ::c_int = 2; // Set the set of blocked signals
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
