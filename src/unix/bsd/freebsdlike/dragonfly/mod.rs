@@ -1,4 +1,5 @@
 pub type clock_t = u64;
+pub type dev_t = u32;
 pub type ino_t = u64;
 pub type nlink_t = u32;
 pub type blksize_t = i64;
@@ -167,6 +168,15 @@ s! {
         pub ifm_flags: ::c_int,
         pub ifm_index: ::c_ushort,
         pub ifm_data: if_data,
+    }
+
+    pub struct kevent {
+        pub ident: ::uintptr_t,
+        pub filter: ::c_short,
+        pub flags: ::c_ushort,
+        pub fflags: ::c_uint,
+        pub data: ::intptr_t,
+        pub udata: *mut ::c_void,
     }
 }
 
