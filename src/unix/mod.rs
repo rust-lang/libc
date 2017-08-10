@@ -280,6 +280,18 @@ cfg_if! {
 extern {
     pub fn getgrnam(name: *const ::c_char) -> *mut group;
     pub fn getgrgid(gid: ::gid_t) -> *mut group;
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrnam_r")]
+    pub fn getgrnam_r(name: *const ::c_char,
+                      grp: *mut group,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut group) -> ::c_int;
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrgid_r")]
+    pub fn getgrgid_r(uid: ::uid_t,
+                      grp: *mut group,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut group) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam50")]
     pub fn getpwnam(name: *const ::c_char) -> *mut passwd;
