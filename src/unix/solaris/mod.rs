@@ -1188,6 +1188,7 @@ extern {
                        sevlen: ::socklen_t,
                        flags: ::c_int) -> ::c_int;
     pub fn setpwent();
+    pub fn endpwent();
     pub fn getpwent() -> *mut passwd;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;

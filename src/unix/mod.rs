@@ -281,7 +281,6 @@ extern {
     pub fn getgrnam(name: *const ::c_char) -> *mut group;
     pub fn getgrgid(gid: ::gid_t) -> *mut group;
 
-    pub fn endpwent();
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam50")]
     pub fn getpwnam(name: *const ::c_char) -> *mut passwd;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid50")]

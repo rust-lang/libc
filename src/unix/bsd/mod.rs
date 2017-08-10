@@ -374,6 +374,7 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent50")]
     pub fn getpwent() -> *mut passwd;
     pub fn setpwent();
+    pub fn endpwent();
     pub fn getprogname() -> *const ::c_char;
     pub fn setprogname(name: *const ::c_char);
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
