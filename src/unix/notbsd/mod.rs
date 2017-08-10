@@ -212,9 +212,17 @@ pub const F_SETFL: ::c_int = 4;
 pub const F_SETLEASE: ::c_int = 1024;
 pub const F_GETLEASE: ::c_int = 1025;
 pub const F_NOTIFY: ::c_int = 1026;
+pub const F_CANCELLK: ::c_int = 1029;
 pub const F_DUPFD_CLOEXEC: ::c_int = 1030;
 pub const F_SETPIPE_SZ: ::c_int = 1031;
 pub const F_GETPIPE_SZ: ::c_int = 1032;
+pub const F_ADD_SEALS: ::c_int = 1033;
+pub const F_GET_SEALS: ::c_int = 1034;
+
+pub const F_SEAL_SEAL: ::c_int = 0x0001;
+pub const F_SEAL_SHRINK: ::c_int = 0x0002;
+pub const F_SEAL_GROW: ::c_int = 0x0004;
+pub const F_SEAL_WRITE: ::c_int = 0x0008;
 
 // TODO(#235): Include file sealing fcntls once we have a way to verify them.
 

@@ -70,12 +70,14 @@ fi
 
 case "$TARGET" in
   *-apple-ios)
-    cargo rustc --manifest-path libc-test/Cargo.toml --target $TARGET -- \
-        -C link-args=-mios-simulator-version-min=7.0
+    cargo rustc --manifest-path libc-test/Cargo.toml --target $TARGET \
+        --test main -- -C link-args=-mios-simulator-version-min=7.0
+    cargo rustc --manifest-path libc-test/Cargo.toml --target $TARGET \
+        --test linux-fcntl -- -C link-args=-mios-simulator-version-min=7.0
     ;;
 
   *)
-    cargo build --manifest-path libc-test/Cargo.toml --target $TARGET
+    cargo build --manifest-path libc-test/Cargo.toml --target $TARGET --tests
     ;;
 esac
 
@@ -95,61 +97,81 @@ case "$TARGET" in
     fi
     emulator @$arch -no-window $accel &
     adb wait-for-device
-    adb push $CARGO_TARGET_DIR/$TARGET/debug/libc-test /data/local/tmp/libc-test
-    adb shell /data/local/tmp/libc-test 2>&1 | tee /tmp/out
+    adb push $CARGO_TARGET_DIR/$TARGET/debug/main-* /data/local/tmp/main
+    adb shell /data/local/tmp/main 2>&1 | tee /tmp/out
+    grep "^PASSED .* tests" /tmp/out
+    adb push $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-* /data/local/tmp/linux_fcntl
+    adb shell /data/local/tmp/linux_fcntl 2>&1 | tee /tmp/out
     grep "^PASSED .* tests" /tmp/out
     ;;
 
   i386-apple-ios)
     rustc -O ./ci/ios/deploy_and_run_on_ios_simulator.rs
-    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   x86_64-apple-ios)
     rustc -O ./ci/ios/deploy_and_run_on_ios_simulator.rs
-    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   arm-unknown-linux-gnueabihf)
-    qemu-arm -L /usr/arm-linux-gnueabihf $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    qemu-arm -L /usr/arm-linux-gnueabihf $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    qemu-arm -L /usr/arm-linux-gnueabihf $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   mips-unknown-linux-gnu)
-    qemu-mips -L /usr/mips-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    qemu-mips -L /usr/mips-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    qemu-mips -L /usr/mips-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   mips64-unknown-linux-gnuabi64)
-    qemu-mips64 -L /usr/mips64-linux-gnuabi64 $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    qemu-mips64 -L /usr/mips64-linux-gnuabi64 $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    qemu-mips64 -L /usr/mips64-linux-gnuabi64 $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   mips-unknown-linux-musl)
     qemu-mips -L /toolchain/staging_dir/toolchain-mips_34kc_gcc-5.3.0_musl-1.1.15 \
-              $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+              $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    qemu-mips -L /toolchain/staging_dir/toolchain-mips_34kc_gcc-5.3.0_musl-1.1.15 \
+              $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   mipsel-unknown-linux-musl)
-      qemu-mipsel -L /toolchain $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+      qemu-mipsel -L /toolchain $CARGO_TARGET_DIR/$TARGET/debug/main-*
+      qemu-mipsel -L /toolchain $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
       ;;
 
   powerpc-unknown-linux-gnu)
-    qemu-ppc -L /usr/powerpc-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    qemu-ppc -L /usr/powerpc-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    qemu-ppc -L /usr/powerpc-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   powerpc64-unknown-linux-gnu)
-    qemu-ppc64 -L /usr/powerpc64-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    qemu-ppc64 -L /usr/powerpc64-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    qemu-ppc64 -L /usr/powerpc64-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   aarch64-unknown-linux-gnu)
-    qemu-aarch64 -L /usr/aarch64-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    qemu-aarch64 -L /usr/aarch64-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    qemu-aarch64 -L /usr/aarch64-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   s390x-unknown-linux-gnu)
     # TODO: in theory we should execute this, but qemu segfaults immediately :(
-    # qemu-s390x -L /usr/s390x-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    # qemu-s390x -L /usr/s390x-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    # qemu-s390x -L /usr/s390x-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 
   *-rumprun-netbsd)
-    rumprun-bake hw_virtio /tmp/libc-test.img $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    rumprun-bake hw_virtio /tmp/libc-test.img $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    qemu-system-x86_64 -nographic -vga none -m 64 \
+        -kernel /tmp/libc-test.img 2>&1 | tee /tmp/out &
+    sleep 5
+    grep "^PASSED .* tests" /tmp/out
+    rumprun-bake hw_virtio /tmp/libc-test.img $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     qemu-system-x86_64 -nographic -vga none -m 64 \
         -kernel /tmp/libc-test.img 2>&1 | tee /tmp/out &
     sleep 5
@@ -157,6 +179,7 @@ case "$TARGET" in
     ;;
 
   *)
-    $CARGO_TARGET_DIR/$TARGET/debug/libc-test
+    $CARGO_TARGET_DIR/$TARGET/debug/main-*
+    $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
     ;;
 esac
