@@ -316,6 +316,18 @@ pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
 
+pub const ST_RDONLY: ::c_ulong = 1;
+pub const ST_NOSUID: ::c_ulong = 2;
+pub const ST_NODEV: ::c_ulong = 4;
+pub const ST_NOEXEC: ::c_ulong = 8;
+pub const ST_SYNCHRONOUS: ::c_ulong = 16;
+pub const ST_MANDLOCK: ::c_ulong = 64;
+pub const ST_WRITE: ::c_ulong = 128;
+pub const ST_APPEND: ::c_ulong = 256;
+pub const ST_IMMUTABLE: ::c_ulong = 512;
+pub const ST_NOATIME: ::c_ulong = 1024;
+pub const ST_NODIRATIME: ::c_ulong = 2048;
+
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
