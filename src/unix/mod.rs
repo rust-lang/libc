@@ -286,6 +286,20 @@ extern {
     pub fn getpwnam(name: *const ::c_char) -> *mut passwd;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid50")]
     pub fn getpwuid(uid: ::uid_t) -> *mut passwd;
+    #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam_r50")]
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwnam_r")]
+    pub fn getpwnam_r(name: *const ::c_char,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid_r50")]
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwuid_r")]
+    pub fn getpwuid_r(uid: ::uid_t,
+                      pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
 
     pub fn fprintf(stream: *mut ::FILE,
                    format: *const ::c_char, ...) -> ::c_int;

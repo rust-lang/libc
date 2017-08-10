@@ -1187,19 +1187,6 @@ extern {
                        serv: *mut ::c_char,
                        sevlen: ::socklen_t,
                        flags: ::c_int) -> ::c_int;
-    #[link_name = "__posix_getpwnam_r"]
-    pub fn getpwnam_r(name: *const ::c_char,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
-
-    #[link_name = "__posix_getpwuid_r"]
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
     pub fn setpwent();
     pub fn getpwent() -> *mut passwd;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;

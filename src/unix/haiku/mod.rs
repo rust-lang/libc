@@ -791,11 +791,6 @@ extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::size_t,
                      ptr: *const ::gid_t) -> ::c_int;
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buffer: *mut ::c_char,
-                      bufferSize: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
