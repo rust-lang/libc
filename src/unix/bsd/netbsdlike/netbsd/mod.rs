@@ -733,6 +733,9 @@ pub const ONLRET: ::tcflag_t = 0x40;
 pub const CDTRCTS: ::tcflag_t = 0x00020000;
 pub const CHWFLOW: ::tcflag_t = ::MDMBUF | ::CRTSCTS | ::CDTRCTS;
 
+pub const SOCK_CLOEXEC: ::c_int = 0x10000000;
+pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
+
 // dirfd() is a macro on netbsd to access
 // the first field of the struct where dirp points to:
 // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36
