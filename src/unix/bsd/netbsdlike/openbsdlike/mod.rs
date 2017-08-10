@@ -579,6 +579,10 @@ pub const OLCUC: ::tcflag_t = 0x20;
 pub const ONOCR: ::tcflag_t = 0x40;
 pub const ONLRET: ::tcflag_t = 0x80;
 
+pub const SOCK_CLOEXEC: ::c_int = 0x8000;
+pub const SOCK_NONBLOCK: ::c_int = 0x4000;
+pub const SOCK_DNS: ::c_int = 0x1000;
+
 extern {
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,

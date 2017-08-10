@@ -833,6 +833,8 @@ pub const POLLWRBAND: ::c_short = 0x200;
 pub const SFD_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const SFD_NONBLOCK: ::c_int = O_NONBLOCK;
 
+pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.__bits.iter_mut() {
