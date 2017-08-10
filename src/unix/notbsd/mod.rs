@@ -411,12 +411,14 @@ pub const MADV_RANDOM: ::c_int = 1;
 pub const MADV_SEQUENTIAL: ::c_int = 2;
 pub const MADV_WILLNEED: ::c_int = 3;
 pub const MADV_DONTNEED: ::c_int = 4;
+pub const MADV_FREE: ::c_int = 8;
 pub const MADV_REMOVE: ::c_int = 9;
 pub const MADV_DONTFORK: ::c_int = 10;
 pub const MADV_DOFORK: ::c_int = 11;
 pub const MADV_MERGEABLE: ::c_int = 12;
 pub const MADV_UNMERGEABLE: ::c_int = 13;
 pub const MADV_HWPOISON: ::c_int = 100;
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 
 pub const IFF_UP: ::c_int = 0x1;
 pub const IFF_BROADCAST: ::c_int = 0x2;

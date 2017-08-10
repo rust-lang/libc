@@ -199,6 +199,7 @@ fn main() {
     }
 
     if linux || android {
+        cfg.header("asm/mman.h");
         cfg.header("malloc.h");
         cfg.header("net/ethernet.h");
         cfg.header("netpacket/packet.h");
@@ -458,6 +459,11 @@ fn main() {
             // include both asm/termbits.h and termios.h and there's no way to include both
             // asm/termios.h and ioctl.h (+ some other headers) because of redeclared types.
             "CMSPAR" if mips && linux && !musl => true,
+
+            // On mips Linux targets, MADV_SOFT_OFFLINE is currently missing, though it's been added but CI has too old
+            // of a Linux version. Since it exists on all other Linux targets, just ignore this for now and remove once
+            // it's been fixed in CI.
+            "MADV_SOFT_OFFLINE" if mips && linux => true,
 
             _ => false,
         }
