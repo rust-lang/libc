@@ -583,6 +583,12 @@ pub const SOCK_CLOEXEC: ::c_int = 0x8000;
 pub const SOCK_NONBLOCK: ::c_int = 0x4000;
 pub const SOCK_DNS: ::c_int = 0x1000;
 
+f! {
+    pub fn WIFCONTINUED(status: ::c_int) -> bool {
+        status & 0o177777 == 0o177777
+    }
+}
+
 extern {
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
