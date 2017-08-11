@@ -581,8 +581,6 @@ pub const SMB_SUPER_MAGIC: ::c_long = 0x0000517b;
 pub const TMPFS_MAGIC: ::c_long = 0x01021994;
 pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
 
-pub const MADV_HUGEPAGE: ::c_int = 14;
-pub const MADV_NOHUGEPAGE: ::c_int = 15;
 pub const MAP_HUGETLB: ::c_int = 0x040000;
 
 pub const PTRACE_TRACEME: ::c_int = 0;

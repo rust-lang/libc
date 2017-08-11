@@ -410,13 +410,8 @@ pub const PTRACE_INTERRUPT: ::c_uint = 0x4207;
 pub const PTRACE_LISTEN: ::c_uint = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_uint = 0x4209;
 
-pub const MADV_DODUMP: ::c_int = 17;
-pub const MADV_DONTDUMP: ::c_int = 16;
-
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
-pub const MADV_HUGEPAGE: ::c_int = 14;
-pub const MADV_NOHUGEPAGE: ::c_int = 15;
 pub const MAP_HUGETLB: ::c_int = 0x040000;
 
 pub const SEEK_DATA: ::c_int = 3;

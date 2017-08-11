@@ -417,6 +417,10 @@ pub const MADV_DONTFORK: ::c_int = 10;
 pub const MADV_DOFORK: ::c_int = 11;
 pub const MADV_MERGEABLE: ::c_int = 12;
 pub const MADV_UNMERGEABLE: ::c_int = 13;
+pub const MADV_HUGEPAGE: ::c_int = 14;
+pub const MADV_NOHUGEPAGE: ::c_int = 15;
+pub const MADV_DONTDUMP: ::c_int = 16;
+pub const MADV_DODUMP: ::c_int = 17;
 pub const MADV_HWPOISON: ::c_int = 100;
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 
