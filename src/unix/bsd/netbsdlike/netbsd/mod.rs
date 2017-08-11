@@ -743,6 +743,10 @@ f! {
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int {
         unsafe { *(dirp as *const ::c_int) }
     }
+
+    pub fn WIFCONTINUED(status: ::c_int) -> bool {
+        status == 0xffff
+    }
 }
 
 extern {
