@@ -964,6 +964,7 @@ extern {
     pub fn setutxent();
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
+    pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
 }
 
 #[link(name = "util")]
