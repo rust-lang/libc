@@ -1798,6 +1798,10 @@ extern {
     pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char,
                         flags: ::c_int) -> ::c_int;
 
+    pub fn getgrouplist(name: *const ::c_char,
+                        basegid: ::c_int,
+                        groups: *mut ::c_int,
+                        ngroups: *mut ::c_int) -> ::c_int;
     pub fn initgroups(user: *const ::c_char, basegroup: ::c_int) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),

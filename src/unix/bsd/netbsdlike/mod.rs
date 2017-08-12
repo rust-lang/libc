@@ -616,6 +616,12 @@ extern {
     pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
                                    abstime: *const ::timespec) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
+
+    pub fn getgrouplist(name: *const ::c_char,
+                        basegid: ::gid_t,
+                        groups: *mut ::gid_t,
+                        ngroups: *mut ::c_int) -> ::c_int;
+    pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
 }
 
 cfg_if! {
