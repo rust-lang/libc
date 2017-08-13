@@ -612,6 +612,8 @@ fn main() {
         (struct_ == "aiocb" && field == "aio_buf") ||
         // stack_t.ss_sp's type changed from FreeBSD 10 to 11 in svn r294930
         (freebsd && struct_ == "stack_t" && field == "ss_sp") ||
+        // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
+        (openbsd && struct_ == "siginfo_t" && field == "si_addr") ||
         // this one is an anonymous union
         (linux && struct_ == "ff_effect" && field == "u")
     });
