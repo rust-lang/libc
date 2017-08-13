@@ -798,7 +798,7 @@ extern {
                  flags: ::c_int,
                  data: *mut ::c_void,
                  size: ::size_t) -> ::c_int;
-    pub fn ptrace(requeset: ::c_int,
+    pub fn ptrace(request: ::c_int,
                   pid: ::pid_t,
                   addr: *mut ::c_void,
                   data: ::c_int) -> ::c_int;
