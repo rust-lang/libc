@@ -14,12 +14,12 @@ pub type nlink_t = ::c_uint;
 pub type off_t = ::c_long;
 pub type rlim_t = c_ulong;
 pub type rlim64_t = u64;
+// [uClibc docs] Note stat64 has the same shape as stat for x86-64.
+pub type stat64 = stat;
 pub type suseconds_t = ::c_long;
 pub type time_t = ::c_int;
 pub type wchar_t = ::c_int;
 
-// ToDo, used?
-//pub type d_ino = ::c_ulong;
 pub type nfds_t = ::c_ulong;
 
 s! {
@@ -136,57 +136,33 @@ s! {
 //        __align: [u32; 0],
 //    }
 
-    pub struct stat { // ToDo
+    pub struct stat {
         pub st_dev: ::c_ulong,
-        st_pad1: [::c_long; 2],
         pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
+        // According to uclibc/libc/sysdeps/linux/x86_64/bits/stat.h, order of nlink and mode are
+        // swapped on 64 bit systems.
         pub st_nlink: ::nlink_t,
+        pub st_mode: ::mode_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
-        pub st_rdev: u64,
-        pub st_pad2: [u64; 1],
-        pub st_size: off_t,
-        st_pad3: ::c_long,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
+        pub st_rdev: ::c_ulong, // dev_t
+        pub st_size: off_t, // file size
         pub st_blksize: ::blksize_t,
-        st_pad4: ::c_long,
         pub st_blocks: ::blkcnt_t,
-        st_pad5: [::c_long; 7],
+        pub st_atime: ::time_t,
+        pub st_atime_nsec: ::c_ulong,
+        pub st_mtime: ::time_t,
+        pub st_mtime_nsec: ::c_ulong,
+        pub st_ctime: ::time_t,
+        pub st_ctime_nsec: ::c_ulong,
+        st_pad4: [::c_long; 3]
     }
 
-    pub struct statvfs { // ToDo: broken
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_favail: ::fsfilcnt_t,
-        #[cfg(target_endian = "little")]
-        pub f_fsid: ::c_ulong,
-        #[cfg(target_pointer_width = "32")]
-        __f_unused: ::c_int,
-        #[cfg(target_endian = "big")]
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
-    }
-
-    pub struct sigaction { // TODO!!
-        pub sa_sigaction: ::sighandler_t,
+    pub struct sigaction {
+        pub sa_handler: ::sighandler_t,
+        pub sa_flags: ::c_ulong,
+        pub sa_restorer: *mut ::c_void,
         pub sa_mask: ::sigset_t,
-        #[cfg(target_arch = "sparc64")]
-        __reserved0: ::c_int,
-        pub sa_flags: ::c_int,
-        _restorer: *mut ::c_void,
     }
 
     pub struct stack_t { // ToDo
@@ -311,27 +287,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-    pub struct stat64 { // ToDo
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino64_t,
-        pub st_nlink: ::nlink_t,
-        pub st_mode: ::mode_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        __pad0: ::c_int,
-        pub st_rdev: ::dev_t,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __reserved: [::c_long; 3],
-    }
-
     pub struct rlimit64 { // ToDo
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -342,11 +297,6 @@ s! {
         bits: [u32; 32],
         #[cfg(target_pointer_width = "64")]
         bits: [u64; 16],
-    }
-
-    pub struct timespec { // ToDo
-        tv_sec: time_t, // seconds
-        tv_nsec: ::c_ulong, // nanoseconds
     }
 
     pub struct fsid_t { // ToDo
