@@ -1278,4 +1278,7 @@ extern {
     pub fn port_getn(port: ::c_int, pe_list: *mut port_event, max: ::c_uint,
                      nget: *mut ::c_uint, timeout: *const ::timespec)
                      -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
+                   envp: *const *const ::c_char)
+                   -> ::c_int;
 }
