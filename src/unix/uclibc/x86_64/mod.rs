@@ -139,8 +139,8 @@ s! {
     pub struct stat {
         pub st_dev: ::c_ulong,
         pub st_ino: ::ino_t,
-        // According to uclibc/libc/sysdeps/linux/x86_64/bits/stat.h, order of nlink and mode are
-        // swapped on 64 bit systems.
+        // According to uclibc/libc/sysdeps/linux/x86_64/bits/stat.h, order of
+        // nlink and mode are swapped on 64 bit systems.
         pub st_nlink: ::nlink_t,
         pub st_mode: ::mode_t,
         pub st_uid: ::uid_t,
@@ -323,8 +323,8 @@ pub const O_EXCL: ::c_int = 0200;
 pub const O_NONBLOCK: ::c_int = 04000;
 pub const O_TRUNC: ::c_int = 01000;
 pub const NCCS: usize = 32;
-pub const PTHREAD_STACK_MIN: usize = 16384;
 pub const SIG_SETMASK: ::c_int = 2; // Set the set of blocked signals
+pub const PTHREAD_STACK_MIN: usize = 16384;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;

@@ -1,7 +1,7 @@
 /// L4Re specifics
 /// This module contains definitions required by various L4Re libc backends.
-/// Some of them are formally not part of the libc, but are a dependency of the libc and hence we
-/// should provide them here.
+/// Some of them are formally not part of the libc, but are a dependency of the
+/// libc and hence we should provide them here.
 
 pub type l4_umword_t = ::c_ulong; // Unsigned machine word.
 
@@ -41,3 +41,6 @@ pub struct pthread_attr_t {
     pub create_flags: ::c_uint,
 }
 
+// L4Re requires a min stack size of 64k; that isn't defined in uClibc, but
+// somewhere in the core libraries. uClibc wants 16k, but that's not enough.
+pub const PTHREAD_STACK_MIN: usize = 65536;
