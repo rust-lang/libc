@@ -1,7 +1,7 @@
 /// L4Re specifics
 /// This module contains definitions required by various L4Re libc backends.
-/// These are formally not part of the libc, but are a dependency of the libc
-/// and hence we should provide them here.
+/// Some of them are formally not part of the libc, but are a dependency of the libc and hence we
+/// should provide them here.
 
 pub type l4_umword_t = ::c_ulong; // Unsigned machine word.
 
