@@ -1107,6 +1107,9 @@ extern {
                  timeout: *const ::timespec,
                  sigmask: *const sigset_t) -> ::c_int;
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
+                   envp: *const *const ::c_char)
+                   -> ::c_int;
 }
 
 cfg_if! {

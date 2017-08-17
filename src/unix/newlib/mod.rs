@@ -586,6 +586,9 @@ extern {
                        serv: *mut ::c_char, servlen: socklen_t,
                        flags: ::c_int) -> ::c_int;
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
+    pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
+                   envp: *const *const ::c_char)
+                   -> ::c_int;
 }
 
 cfg_if! {

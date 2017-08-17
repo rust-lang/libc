@@ -622,6 +622,9 @@ extern {
                         groups: *mut ::gid_t,
                         ngroups: *mut ::c_int) -> ::c_int;
     pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
+                   envp: *const *const ::c_char)
+                   -> ::c_int;
 }
 
 cfg_if! {
