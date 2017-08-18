@@ -79,9 +79,6 @@ matrix:
 
     # QEMU based targets that compile in an emulator
     - env: TARGET=x86_64-unknown-freebsd
-    - env: TARGET=x86_64-unknown-openbsd QEMU=openbsd.qcow2
-      script: sh ci/run-docker.sh $TARGET
-      install:
 
 cache: cargo
 
