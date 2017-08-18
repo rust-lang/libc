@@ -641,9 +641,5 @@ fn main() {
         }
     });
 
-    if env::var("SKIP_COMPILE").is_ok() {
-        cfg.generate_files("../src/lib.rs", "all.rs");
-    } else {
-        cfg.generate("../src/lib.rs", "all.rs");
-    }
+    cfg.generate("../src/lib.rs", "all.rs");
 }

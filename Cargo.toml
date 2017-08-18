@@ -22,4 +22,4 @@ default = ["use_std"]
 use_std = []
 
 [workspace]
-members = ["libc-test", "libc-test/generate-files"]
+members = ["libc-test"]

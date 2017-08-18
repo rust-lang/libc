@@ -39,36 +39,11 @@ if [ "$QEMU" != "" ]; then
   rm -f $tmpdir/libc-test.img
   mkdir $tmpdir/mount
 
-  # If we have a cross compiler, then we just do the standard rigamarole of
-  # cross-compiling an executable and then the script to run just executes the
-  # binary.
-  #
-  # If we don't have a cross-compiler, however, then we need to do some crazy
-  # acrobatics to get this to work.  Generate all.{c,rs} on the host which will
-  # be compiled inside QEMU. Do this here because compiling syntex_syntax in
-  # QEMU would time out basically everywhere.
-  if [ "$CAN_CROSS" = "1" ]; then
-    cargo build --manifest-path libc-test/Cargo.toml --target $TARGET
-    cp $CARGO_TARGET_DIR/$TARGET/debug/libc-test $tmpdir/mount/
-    echo 'exec $1/libc-test' > $tmpdir/mount/run.sh
-  else
-    rm -rf $tmpdir/generated
-    mkdir -p $tmpdir/generated
-    cargo build --manifest-path libc-test/generate-files/Cargo.toml
-    (cd libc-test && TARGET=$TARGET OUT_DIR=$tmpdir/generated SKIP_COMPILE=1 \
-      $CARGO_TARGET_DIR/debug/generate-files)
-
-    # Copy this folder into the mounted image, the `run.sh` entry point, and
-    # overwrite the standard libc-test Cargo.toml with the overlay one which will
-    # assume the all.{c,rs} test files have already been generated
-    mkdir $tmpdir/mount/libc
-    cp -r Cargo.* libc-test src ci $tmpdir/mount/libc/
-    ln -s libc-test/target $tmpdir/mount/libc/target
-    cp ci/run-qemu.sh $tmpdir/mount/run.sh
-    echo $TARGET | tee -a $tmpdir/mount/TARGET
-    cp $tmpdir/generated/* $tmpdir/mount/libc/libc-test
-    cp libc-test/run-generated-Cargo.toml $tmpdir/mount/libc/libc-test/Cargo.toml
-  fi
+  # Do the standard rigamarole of cross-compiling an executable and then the
+  # script to run just executes the binary.
+  cargo build --manifest-path libc-test/Cargo.toml --target $TARGET
+  cp $CARGO_TARGET_DIR/$TARGET/debug/libc-test $tmpdir/mount/
+  echo 'exec $1/libc-test' > $tmpdir/mount/run.sh
 
   du -sh $tmpdir/mount
   genext2fs \
