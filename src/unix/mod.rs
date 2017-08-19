@@ -232,6 +232,8 @@ pub const INADDR_NONE: in_addr_t = 4294967295;
 cfg_if! {
     if #[cfg(dox)] {
         // on dox builds don't pull in anything
+    } else if #[cfg(target_os = "l4re")] {
+        // required libraries for L4Re are linked externally, ATM
     } else if #[cfg(all(not(stdbuild), feature = "use_std"))] {
         // cargo build, don't pull in anything extra as the libstd  dep
         // already pulls in all libs.
