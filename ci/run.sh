@@ -68,18 +68,11 @@ if [ "$QEMU" != "" ]; then
   exec grep "^PASSED .* tests" $CARGO_TARGET_DIR/out.log
 fi
 
-case "$TARGET" in
-  *-apple-ios)
-    cargo rustc --manifest-path libc-test/Cargo.toml --target $TARGET \
-        --test main -- -C link-args=-mios-simulator-version-min=7.0
-    cargo rustc --manifest-path libc-test/Cargo.toml --target $TARGET \
-        --test linux-fcntl -- -C link-args=-mios-simulator-version-min=7.0
-    ;;
-
-  *)
-    cargo build --manifest-path libc-test/Cargo.toml --target $TARGET --tests
-    ;;
-esac
+# Build all tests making sure that the iOS builds are handled properly.
+if [[ "$TARGET" == *-apple-ios ]]; then
+    export RUSTFLAGS="-C link-args=-mios-simulator-version-min=7.0"
+fi
+cargo build --manifest-path libc-test/Cargo.toml --target $TARGET --tests
 
 case "$TARGET" in
   # Android emulator for x86_64 does not work on travis (missing hardware
