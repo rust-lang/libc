@@ -1,4 +1,5 @@
-#![allow(bad_style, improper_ctypes)]
+#![allow(bad_style, improper_ctypes, unused)]
+
 extern crate libc;
 
 use libc::*;
