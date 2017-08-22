@@ -90,6 +90,7 @@ case "$TARGET" in
     fi
     emulator @$arch -no-window $accel &
     adb wait-for-device
+    # TODO: replace these steps with a single program so that it can be used as a runner for cargo test
     adb push $CARGO_TARGET_DIR/$TARGET/debug/main-* /data/local/tmp/main
     adb shell /data/local/tmp/main 2>&1 | tee /tmp/out
     grep "^PASSED .* tests" /tmp/out
@@ -100,65 +101,64 @@ case "$TARGET" in
 
   i386-apple-ios)
     rustc -O ./ci/ios/deploy_and_run_on_ios_simulator.rs
-    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_I386_APPLE_IOS_RUNNER="./deploy_and_run_on_ios_simulator"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   x86_64-apple-ios)
     rustc -O ./ci/ios/deploy_and_run_on_ios_simulator.rs
-    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    ./deploy_and_run_on_ios_simulator $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_X86_64_APPLE_IOS_RUNNER="./deploy_and_run_on_ios_simulator"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   arm-unknown-linux-gnueabihf)
-    qemu-arm -L /usr/arm-linux-gnueabihf $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    qemu-arm -L /usr/arm-linux-gnueabihf $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_ARM_UNKNOWN_LINUX_GNUEABIHF_RUNNER="qemu-arm -L /usr/arm-linux-gnueabihf"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   mips-unknown-linux-gnu)
-    qemu-mips -L /usr/mips-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    qemu-mips -L /usr/mips-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_MIPS_UNKNOWN_LINUX_GNU_RUNNER="qemu-mips -L /usr/mips-linux-gnu"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   mips64-unknown-linux-gnuabi64)
-    qemu-mips64 -L /usr/mips64-linux-gnuabi64 $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    qemu-mips64 -L /usr/mips64-linux-gnuabi64 $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_MIPS64_UNKNOWN_LINUX_GNUABI64_RUNNER="qemu-mips64 -L /usr/mips64-linux-gnuabi64"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   mips-unknown-linux-musl)
-    qemu-mips -L /toolchain/staging_dir/toolchain-mips_34kc_gcc-5.3.0_musl-1.1.15 \
-              $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    qemu-mips -L /toolchain/staging_dir/toolchain-mips_34kc_gcc-5.3.0_musl-1.1.15 \
-              $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_MIPS_UNKNOWN_LINUX_MUSL_RUNNER="qemu-mips -L /toolchain/staging_dir/toolchain-mips_34kc_gcc-5.3.0_musl-1.1.15"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   mipsel-unknown-linux-musl)
-      qemu-mipsel -L /toolchain $CARGO_TARGET_DIR/$TARGET/debug/main-*
-      qemu-mipsel -L /toolchain $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
-      ;;
+    export CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_RUNNER="qemu-mipsel -L /toolchain"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
+    ;;
 
   powerpc-unknown-linux-gnu)
-    qemu-ppc -L /usr/powerpc-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    qemu-ppc -L /usr/powerpc-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_POWERPC_UNKNOWN_LINUX_GNU_RUNNER="qemu-ppc -L /usr/powerpc-linux-gnu"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   powerpc64-unknown-linux-gnu)
-    qemu-ppc64 -L /usr/powerpc64-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    qemu-ppc64 -L /usr/powerpc64-linux-gnu $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_POWERPC64_UNKNOWN_LINUX_GNU_RUNNER="qemu-ppc64 -L /usr/powerpc64-linux-gnu"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   aarch64-unknown-linux-gnu)
-    qemu-aarch64 -L /usr/aarch64-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    qemu-aarch64 -L /usr/aarch64-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUNNER="qemu-aarch64 -L /usr/aarch64-linux-gnu"
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   s390x-unknown-linux-gnu)
     # TODO: in theory we should execute this, but qemu segfaults immediately :(
-    # qemu-s390x -L /usr/s390x-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    # qemu-s390x -L /usr/s390x-linux-gnu/ $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    #export CARGO_TARGET_S390X_UNKNOWN_LINUX_GNU_RUNNER="qemu-s390x -L /usr/s390x-linux-gnu"
+    #cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 
   *-rumprun-netbsd)
+    # TODO: replace these steps with a single program so that it can be used as a runner for cargo test
     rumprun-bake hw_virtio /tmp/libc-test.img $CARGO_TARGET_DIR/$TARGET/debug/main-*
     qemu-system-x86_64 -nographic -vga none -m 64 \
         -kernel /tmp/libc-test.img 2>&1 | tee /tmp/out &
@@ -172,7 +172,6 @@ case "$TARGET" in
     ;;
 
   *)
-    $CARGO_TARGET_DIR/$TARGET/debug/main-*
-    $CARGO_TARGET_DIR/$TARGET/debug/linux_fcntl-*
+    cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
     ;;
 esac
