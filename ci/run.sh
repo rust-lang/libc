@@ -68,4 +68,4 @@ if [ "$QEMU" != "" ]; then
   exec grep "^PASSED .* tests" $CARGO_TARGET_DIR/out.log
 fi
 
-cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
+exec cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
