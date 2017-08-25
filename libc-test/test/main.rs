@@ -3,4 +3,4 @@ extern crate libc;
 
 use libc::*;
 
-include!(concat!(env!("OUT_DIR"), "/all.rs"));
+include!(concat!(env!("OUT_DIR"), "/main.rs"));

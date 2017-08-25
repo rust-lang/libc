@@ -9,3 +9,13 @@ libc = { path = ".." }
 
 [build-dependencies]
 ctest = "0.1"
+
+[[test]]
+name = "main"
+path = "test/main.rs"
+harness = false
+
+[[test]]
+name = "linux-fcntl"
+path = "test/linux_fcntl.rs"
+harness = false

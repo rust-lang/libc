@@ -51,9 +51,17 @@ matrix:
     - os: osx
       osx_image: xcode8.2
       env: TARGET=i386-apple-ios
+           CARGO_TARGET_I386_APPLE_IOS_RUNNER=$HOME/runtest
+           RUSTFLAGS=-Clink-arg=-mios-simulator-version-min=7.0
+      before_install:
+        rustc ./ci/ios/deploy_and_run_on_ios_simulator.rs -o $HOME/runtest
     - os: osx
       osx_image: xcode8.2
       env: TARGET=x86_64-apple-ios
+           CARGO_TARGET_X86_64_APPLE_IOS_RUNNER=$HOME/runtest
+           RUSTFLAGS=-Clink-arg=-mios-simulator-version-min=7.0
+      before_install:
+        rustc ./ci/ios/deploy_and_run_on_ios_simulator.rs -o $HOME/runtest
     - env: TARGET=x86_64-rumprun-netbsd
     - env: TARGET=powerpc-unknown-linux-gnu
     - env: TARGET=powerpc64-unknown-linux-gnu

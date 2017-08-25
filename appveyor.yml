@@ -24,7 +24,7 @@ build: false
 
 test_script:
   - cargo test --target %TARGET%
-  - cargo run --manifest-path libc-test/Cargo.toml --target %TARGET%
+  - cargo test --manifest-path libc-test/Cargo.toml --target %TARGET%
 
 cache:
   - target

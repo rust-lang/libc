@@ -468,6 +468,11 @@ fn main() {
             // it's been fixed in CI.
             "MADV_SOFT_OFFLINE" if mips && linux => true,
 
+            // These constants are tested in a separate test program generated below because there
+            // are header conflicts if we try to include the headers that define them here.
+            "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => true,
+            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => true,
+
             _ => false,
         }
     });
@@ -641,5 +646,31 @@ fn main() {
         }
     });
 
-    cfg.generate("../src/lib.rs", "all.rs");
+    cfg.generate("../src/lib.rs", "main.rs");
+
+    // On Linux or Android also generate another script for testing linux/fcntl declarations.
+    // These cannot be tested normally because including both `linux/fcntl.h` and `fcntl.h`
+    // fails on a lot of platforms.
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.skip_type(|_| true)
+        .skip_struct(|_| true)
+        .skip_fn(|_| true);
+    if android || linux {
+        // musl defines these directly in `fcntl.h`
+        if musl {
+            cfg.header("fcntl.h");
+        } else {
+            cfg.header("linux/fcntl.h");
+        }
+        cfg.skip_const(move |name| {
+            match name {
+                "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
+                "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
+                _ => true,
+            }
+        });
+    } else {
+        cfg.skip_const(|_| true);
+    }
+    cfg.generate("../src/lib.rs", "linux_fcntl.rs");
 }

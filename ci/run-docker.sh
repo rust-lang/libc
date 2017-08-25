@@ -14,6 +14,7 @@ run() {
     docker run \
       --user `id -u`:`id -g` \
       --rm \
+      --init \
       --volume $HOME/.cargo:/cargo \
       $kvm \
       --env CARGO_HOME=/cargo \
