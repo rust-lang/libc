@@ -732,7 +732,7 @@ pub const TIOCM_CTS: ::c_int = TCGB_CTS;
 pub const TIOCM_CD: ::c_int = TCGB_DCD;
 pub const TIOCM_CAR: ::c_int = TIOCM_CD;
 pub const TIOCM_RI: ::c_int = TCGB_RI;
-pub const TIOCM_DSR: ::c_int = TCGB_dsR;
+pub const TIOCM_DSR: ::c_int = TCGB_DSR;
 pub const TIOCM_DTR: ::c_int = 0x10;
 pub const TIOCM_RTS: ::c_int = 0x20;
 
