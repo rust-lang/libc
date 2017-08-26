@@ -76,6 +76,40 @@ s! {
         st_pad5: [::c_long; 14],
     }
 
+    pub struct statfs64 {
+        pub f_type: ::c_long,
+        pub f_bsize: ::c_long,
+        pub f_frsize: ::c_long,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_bavail: u64,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_long,
+        pub f_flags: ::c_long,
+        pub f_spare: [::c_long; 5],
+    }
+
+    pub struct statvfs64 {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_favail: u64,
+        #[cfg(target_endian = "little")]
+        pub f_fsid: ::c_ulong,
+        __f_unused: ::c_int,
+        #[cfg(target_endian = "big")]
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        __f_spare: [::c_int; 6],
+    }
+
     pub struct pthread_attr_t {
         __size: [u32; 9]
     }

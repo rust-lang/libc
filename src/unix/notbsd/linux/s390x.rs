@@ -272,6 +272,36 @@ s! {
         __glibc_reserved4: ::c_ulong,
         __glibc_reserved5: ::c_ulong,
     }
+
+    pub struct statfs64 {
+        pub f_type: ::c_uint,
+        pub f_bsize: ::c_uint,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_uint,
+        pub f_frsize: ::c_uint,
+        pub f_flags: ::c_uint,
+        pub f_spare: [::c_uint; 4],
+    }
+
+    pub struct statvfs64 {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_favail: u64,
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        __f_spare: [::c_int; 6],
+    }
 }
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
