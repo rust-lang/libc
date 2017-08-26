@@ -925,7 +925,11 @@ extern {
                  flags: ::c_int,
                  arg: *mut ::c_void, ...) -> ::c_int;
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    pub fn statfs64(path: *const ::c_char, buf: *mut statfs64) -> ::c_int;
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
+    pub fn fstatfs64(fd: ::c_int, buf: *mut statfs64) -> ::c_int;
+    pub fn statvfs64(path: *const ::c_char, buf: *mut statvfs64) -> ::c_int;
+    pub fn fstatvfs64(fd: ::c_int, buf: *mut statvfs64) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void,
                    c: ::c_int,
                    n: ::size_t) -> *mut ::c_void;

@@ -66,6 +66,35 @@ s! {
         pub st_ino: ::c_ulonglong,
     }
 
+    pub struct statfs64 {
+        pub f_type: u32,
+        pub f_bsize: u32,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        f_fsid: [u32; 2],
+        pub f_namelen: u32,
+        pub f_frsize: u32,
+        pub f_flags: u32,
+        pub f_spare: [u32; 4],
+    }
+
+    pub struct statvfs64 {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::c_ulong,
+        pub f_bfree: ::c_ulong,
+        pub f_bavail: ::c_ulong,
+        pub f_files: ::c_ulong,
+        pub f_ffree: ::c_ulong,
+        pub f_favail: ::c_ulong,
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+    }
+
     pub struct pthread_attr_t {
         pub flags: ::uint32_t,
         pub stack_base: *mut ::c_void,
