@@ -367,8 +367,10 @@ pub const EDEADLOCK: ::c_int = 35;
 pub const FIOCLEX: ::c_ulong = 0x5451;
 pub const FIONBIO: ::c_ulong = 0x5421;
 
+pub const SYS_pivot_root: ::c_long = 41;
 pub const SYS_gettid: ::c_long = 178;
 pub const SYS_perf_event_open: ::c_long = 241;
+pub const SYS_memfd_create: ::c_long = 279;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;

@@ -269,4 +269,8 @@ pub const O_LARGEFILE: ::c_int = 0x2000;
 
 pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
 
-pub const SYS_gettid: ::c_long = 4222;   // Valid for O32
+// Valid for O32
+pub const SYS_pivot_root: ::c_long = 4216;
+pub const SYS_gettid: ::c_long = 4222;
+pub const SYS_perf_event_open: ::c_long = 4333;
+pub const SYS_memfd_create: ::c_long = 4354;

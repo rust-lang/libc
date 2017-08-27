@@ -251,4 +251,7 @@ pub const O_LARGEFILE: ::c_int = 0;
 
 pub const RLIM_INFINITY: ::rlim_t = 0xffff_ffff_ffff_ffff;
 
-pub const SYS_gettid: ::c_long = 5178;   // Valid for n64
+// Valid for n64
+pub const SYS_pivot_root: ::c_long = 5151;
+pub const SYS_gettid: ::c_long = 5178;
+pub const SYS_memfd_create: ::c_long = 5314;
