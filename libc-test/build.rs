@@ -14,7 +14,8 @@ fn main() {
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
     let apple = target.contains("apple");
-    let musl = target.contains("musl");
+    let emscripten = target.contains("asm");
+    let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
     let freebsd = target.contains("freebsd");
     let dragonfly = target.contains("dragonfly");
@@ -26,7 +27,7 @@ fn main() {
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies
-    if linux || android {
+    if linux || android || emscripten {
         cfg.define("_GNU_SOURCE", None);
     } else if netbsd {
         cfg.define("_NETBSD_SOURCE", Some("1"));
@@ -174,7 +175,7 @@ fn main() {
         }
     }
 
-    if linux {
+    if linux || emscripten {
         cfg.header("mqueue.h");
         cfg.header("ucontext.h");
         if !uclibc {
@@ -188,8 +189,10 @@ fn main() {
         cfg.header("sys/user.h");
         cfg.header("sys/fsuid.h");
         cfg.header("shadow.h");
-        cfg.header("linux/input.h");
-        cfg.header("linux/falloc.h");
+        if !emscripten {
+            cfg.header("linux/input.h");
+            cfg.header("linux/falloc.h");
+        }
         if x86_64 {
             cfg.header("sys/io.h");
         }
@@ -198,8 +201,7 @@ fn main() {
         }
     }
 
-    if linux || android {
-        cfg.header("asm/mman.h");
+    if linux || android || emscripten {
         cfg.header("malloc.h");
         cfg.header("net/ethernet.h");
         cfg.header("netpacket/packet.h");
@@ -214,12 +216,15 @@ fn main() {
         cfg.header("sys/personality.h");
         cfg.header("sys/swap.h");
         cfg.header("pty.h");
-        cfg.header("linux/netfilter_ipv4.h");
         if !uclibc {
             cfg.header("sys/sysinfo.h");
         }
         cfg.header("sys/reboot.h");
+        if !emscripten {
+            cfg.header("linux/netfilter_ipv4.h");
+        }
         if !musl {
+            cfg.header("asm/mman.h");
             cfg.header("linux/netlink.h");
             cfg.header("linux/magic.h");
             cfg.header("linux/reboot.h");
@@ -258,7 +263,7 @@ fn main() {
         cfg.header("sys/ioctl_compat.h");
     }
 
-    if linux || freebsd || dragonfly || netbsd || apple {
+    if linux || freebsd || dragonfly || netbsd || apple || emscripten {
         if !uclibc {
             cfg.header("aio.h");
         }

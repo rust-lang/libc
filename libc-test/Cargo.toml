@@ -8,7 +8,7 @@ build = "build.rs"
 libc = { path = ".." }
 
 [build-dependencies]
-ctest = "0.1"
+ctest = { git = 'https://github.com/alexcrichton/ctest', branch = 'long' }
 
 [[test]]
 name = "main"
