@@ -888,6 +888,7 @@ impl<'a> Generator<'a> {
 
         self.tests.push(format!("field_offset_size_{}", ty));
         t!(writeln!(self.rust, r#"
+            #[inline(never)]
             fn field_offset_size_{ty}() {{
         "#, ty = ty));
         for field in s.fields() {
@@ -973,6 +974,7 @@ impl<'a> Generator<'a> {
             uint64_t __test_align_{ty}(void) {{ return {align_of}({cty}); }}
         "#, ty = rust, cty = c, align_of = align_of));
         t!(writeln!(self.rust, r#"
+            #[inline(never)]
             fn size_align_{ty}() {{
                 extern {{
                     fn __test_size_{ty}() -> u64;
@@ -1003,6 +1005,7 @@ impl<'a> Generator<'a> {
             }}
         "#, ty = rust, cty = c));
         t!(writeln!(self.rust, r#"
+            #[inline(never)]
             fn sign_{ty}() {{
                 extern {{
                     fn __test_signed_{ty}() -> u32;
@@ -1049,6 +1052,7 @@ impl<'a> Generator<'a> {
 
         if rust_ty == "&str" {
             t!(writeln!(self.rust, r#"
+                #[inline(never)]
                 fn const_{name}() {{
                     extern {{
                         fn __test_const_{name}() -> *const *const u8;
@@ -1105,6 +1109,7 @@ impl<'a> Generator<'a> {
             }}
         "#, name = name, cname = cname, args = args, ret = cret, abi = abi));
         t!(writeln!(self.rust, r#"
+            #[inline(never)]
             fn fn_{name}() {{
                 extern {{
                     fn __test_fn_{name}() -> *mut u32;
@@ -1331,10 +1336,27 @@ impl<'a> Generator<'a> {
     }
 
     fn emit_run_all(&mut self) {
+        const N: usize = 1000;
+        let mut n = 0;
+        let mut tests = self.tests.clone();
+        while tests.len() > N {
+            let name = format!("run_group{}", n);
+            n += 1;
+            t!(writeln!(self.rust, "
+                #[inline(never)]
+                fn {}() {{
+            ", name));
+            for test in tests.drain(..1000) {
+                t!(writeln!(self.rust, "{}();", test));
+            }
+            t!(writeln!(self.rust, "}}"));
+            tests.push(name);
+        }
         t!(writeln!(self.rust, "
+            #[inline(never)]
             fn run_all() {{
         "));
-        for test in self.tests.iter() {
+        for test in tests.iter() {
             t!(writeln!(self.rust, "{}();", test));
         }
         t!(writeln!(self.rust, "
