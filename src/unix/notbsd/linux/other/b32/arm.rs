@@ -125,8 +125,10 @@ pub const SO_RCVBUFFORCE: ::c_int = 33;
 pub const FIOCLEX: ::c_ulong = 0x5451;
 pub const FIONBIO: ::c_ulong = 0x5421;
 
+pub const SYS_pivot_root: ::c_long = 218;
 pub const SYS_gettid: ::c_long = 224;
 pub const SYS_perf_event_open: ::c_long = 364;
+pub const SYS_memfd_create: ::c_long = 385;
 
 pub const PTRACE_GETFPXREGS: ::c_uint = 18;
 pub const PTRACE_SETFPXREGS: ::c_uint = 19;

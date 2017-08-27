@@ -800,8 +800,10 @@ pub const LINUX_REBOOT_CMD_RESTART2: ::c_int = 0xA1B2C3D4;
 pub const LINUX_REBOOT_CMD_SW_SUSPEND: ::c_int = 0xD000FCE2;
 pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 
+pub const SYS_pivot_root: ::c_long = 217;
 pub const SYS_gettid: ::c_long = 236;
 pub const SYS_perf_event_open: ::c_long = 331;
+pub const SYS_memfd_create: ::c_long = 350;
 
 pub const VTIME: usize = 5;
 pub const VSWTC: usize = 7;
