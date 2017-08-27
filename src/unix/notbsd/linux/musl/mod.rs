@@ -171,8 +171,14 @@ pub const PTRACE_POKEUSER: ::c_int = 6;
 pub const PTRACE_CONT: ::c_int = 7;
 pub const PTRACE_KILL: ::c_int = 8;
 pub const PTRACE_SINGLESTEP: ::c_int = 9;
+pub const PTRACE_GETREGS: ::c_int = 12;
+pub const PTRACE_SETREGS: ::c_int = 13;
+pub const PTRACE_GETFPREGS: ::c_int = 14;
+pub const PTRACE_SETFPREGS: ::c_int = 15;
 pub const PTRACE_ATTACH: ::c_int = 16;
 pub const PTRACE_DETACH: ::c_int = 17;
+pub const PTRACE_GETFPXREGS: ::c_int = 18;
+pub const PTRACE_SETFPXREGS: ::c_int = 19;
 pub const PTRACE_SYSCALL: ::c_int = 24;
 pub const PTRACE_SETOPTIONS: ::c_int = 0x4200;
 pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
@@ -186,13 +192,6 @@ pub const PTRACE_LISTEN: ::c_int = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_int = 0x4209;
 
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
-
-pub const PTRACE_GETFPREGS: ::c_uint = 14;
-pub const PTRACE_SETFPREGS: ::c_uint = 15;
-pub const PTRACE_GETFPXREGS: ::c_uint = 18;
-pub const PTRACE_SETFPXREGS: ::c_uint = 19;
-pub const PTRACE_GETREGS: ::c_uint = 12;
-pub const PTRACE_SETREGS: ::c_uint = 13;
 
 pub const EFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
 
