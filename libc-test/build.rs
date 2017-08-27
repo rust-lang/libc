@@ -220,12 +220,14 @@ fn main() {
             cfg.header("sys/sysinfo.h");
         }
         cfg.header("sys/reboot.h");
+        if !emscripten {
+            cfg.header("linux/netfilter_ipv4.h");
+        }
         if !musl {
             cfg.header("asm/mman.h");
             cfg.header("linux/netlink.h");
             cfg.header("linux/magic.h");
             cfg.header("linux/reboot.h");
-            cfg.header("linux/netfilter_ipv4.h");
 
             if !mips {
                 cfg.header("linux/quota.h");
