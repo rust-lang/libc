@@ -4,7 +4,6 @@ pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
-pub type loff_t = ::c_longlong;
 pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
@@ -103,13 +102,13 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         pub sched_ss_low_priority: ::c_int,
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         pub sched_ss_repl_period: ::timespec,
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         pub sched_ss_init_budget: ::timespec,
-        #[cfg(any(target_env = "musl"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
         pub sched_ss_max_repl: ::c_int,
     }
 
@@ -231,20 +230,20 @@ pub const SIGTRAP: ::c_int = 5;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 1;
 
-pub const CLOCK_REALTIME: clockid_t = 0;
-pub const CLOCK_MONOTONIC: clockid_t = 1;
-pub const CLOCK_PROCESS_CPUTIME_ID: clockid_t = 2;
-pub const CLOCK_THREAD_CPUTIME_ID: clockid_t = 3;
-pub const CLOCK_MONOTONIC_RAW: clockid_t = 4;
-pub const CLOCK_REALTIME_COARSE: clockid_t = 5;
-pub const CLOCK_MONOTONIC_COARSE: clockid_t = 6;
-pub const CLOCK_BOOTTIME: clockid_t = 7;
-pub const CLOCK_REALTIME_ALARM: clockid_t = 8;
-pub const CLOCK_BOOTTIME_ALARM: clockid_t = 9;
+pub const CLOCK_REALTIME: ::clockid_t = 0;
+pub const CLOCK_MONOTONIC: ::clockid_t = 1;
+pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 2;
+pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 3;
+pub const CLOCK_MONOTONIC_RAW: ::clockid_t = 4;
+pub const CLOCK_REALTIME_COARSE: ::clockid_t = 5;
+pub const CLOCK_MONOTONIC_COARSE: ::clockid_t = 6;
+pub const CLOCK_BOOTTIME: ::clockid_t = 7;
+pub const CLOCK_REALTIME_ALARM: ::clockid_t = 8;
+pub const CLOCK_BOOTTIME_ALARM: ::clockid_t = 9;
 // TODO(#247) Someday our Travis shall have glibc 2.21 (released in Sep
 // 2014.) See also musl/mod.rs
-// pub const CLOCK_SGI_CYCLE: clockid_t = 10;
-// pub const CLOCK_TAI: clockid_t = 11;
+// pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
+// pub const CLOCK_TAI: ::clockid_t = 11;
 pub const TIMER_ABSTIME: ::c_int = 1;
 
 pub const RLIMIT_CPU: ::c_int = 0;
@@ -263,7 +262,6 @@ pub const RUSAGE_SELF: ::c_int = 0;
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
-pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 
@@ -601,7 +599,6 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_V6ONLY: ::c_int = 26;
 
 pub const SO_DEBUG: ::c_int = 1;
-pub const SO_ORIGINAL_DST: ::c_int = 80;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -690,10 +687,8 @@ pub const IGNCR: ::tcflag_t = 0x00000080;
 pub const ICRNL: ::tcflag_t = 0x00000100;
 pub const IXANY: ::tcflag_t = 0x00000800;
 pub const IMAXBEL: ::tcflag_t = 0x00002000;
-pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const OPOST: ::tcflag_t = 0x1;
 pub const CS5: ::tcflag_t = 0x00000000;
-pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const CRTSCTS: ::tcflag_t = 0x80000000;
 pub const ECHO: ::tcflag_t = 0x00000008;
 pub const OCRNL:  ::tcflag_t = 0o000010;
@@ -867,63 +862,20 @@ extern {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;
-    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_nanosleep(clk_id: clockid_t,
-                           flags: ::c_int,
-                           rqtp: *const ::timespec,
-                           rmtp:  *mut ::timespec) -> ::c_int;
-    pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
-    pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
 
-    pub fn prctl(option: ::c_int, ...) -> ::c_int;
     pub fn pthread_getattr_np(native: ::pthread_t,
                               attr: *mut ::pthread_attr_t) -> ::c_int;
-    pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
-                                     guardsize: *mut ::size_t) -> ::c_int;
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
                                  stackaddr: *mut *mut ::c_void,
                                  stacksize: *mut ::size_t) -> ::c_int;
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::size_t,
                      ptr: *const ::gid_t) -> ::c_int;
-    pub fn getgrouplist(user: *const ::c_char,
-                        group: ::gid_t,
-                        groups: *mut ::gid_t,
-                        ngroups: *mut ::c_int) -> ::c_int;
-    pub fn initgroups(user: *const ::c_char, group: ::gid_t) -> ::c_int;
-    pub fn sched_setscheduler(pid: ::pid_t,
-                              policy: ::c_int,
-                              param: *const sched_param) -> ::c_int;
-    pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
-    pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
-    pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
-    pub fn sched_setparam(pid: ::pid_t, param: *const sched_param) -> ::c_int;
-    pub fn sched_getparam(pid: ::pid_t, param: *mut sched_param) -> ::c_int;
-    pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn epoll_create(size: ::c_int) -> ::c_int;
-    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
-    pub fn epoll_ctl(epfd: ::c_int,
-                     op: ::c_int,
-                     fd: ::c_int,
-                     event: *mut epoll_event) -> ::c_int;
-    pub fn epoll_wait(epfd: ::c_int,
-                      events: *mut epoll_event,
-                      maxevents: ::c_int,
-                      timeout: ::c_int) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
-    pub fn mount(src: *const ::c_char,
-                 target: *const ::c_char,
-                 fstype: *const ::c_char,
-                 flags: ::c_ulong,
-                 data: *const ::c_void) -> ::c_int;
-    pub fn umount(target: *const ::c_char) -> ::c_int;
-    pub fn umount2(target: *const ::c_char, flags: ::c_int) -> ::c_int;
-    pub fn clone(cb: extern fn(*mut ::c_void) -> ::c_int,
-                 child_stack: *mut ::c_void,
-                 flags: ::c_int,
-                 arg: *mut ::c_void, ...) -> ::c_int;
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
     pub fn statfs64(path: *const ::c_char, buf: *mut statfs64) -> ::c_int;
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
@@ -933,25 +885,6 @@ extern {
     pub fn memrchr(cx: *const ::c_void,
                    c: ::c_int,
                    n: ::size_t) -> *mut ::c_void;
-    pub fn syscall(num: ::c_long, ...) -> ::c_long;
-    pub fn sendfile(out_fd: ::c_int,
-                    in_fd: ::c_int,
-                    offset: *mut off_t,
-                    count: ::size_t) -> ::ssize_t;
-    pub fn splice(fd_in: ::c_int,
-                  off_in: *mut ::loff_t,
-                  fd_out: ::c_int,
-                  off_out: *mut ::loff_t,
-                  len: ::size_t,
-                  flags: ::c_uint) -> ::ssize_t;
-    pub fn tee(fd_in: ::c_int,
-               fd_out: ::c_int,
-               len: ::size_t,
-               flags: ::c_uint) -> ::ssize_t;
-    pub fn vmsplice(fd: ::c_int,
-                    iov: *const ::iovec,
-                    nr_segs: ::size_t,
-                    flags: ::c_uint) -> ::ssize_t;
 
     pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
                          advise: ::c_int) -> ::c_int;
@@ -991,49 +924,21 @@ extern {
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
     pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
-    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
-    pub fn sysinfo (info: *mut ::sysinfo) -> ::c_int;
 
     pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
 
     pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t, dev: dev_t) -> ::c_int;
-    pub fn ppoll(fds: *mut ::pollfd,
-                 nfds: nfds_t,
-                 timeout: *const ::timespec,
-                 sigmask: *const sigset_t) -> ::c_int;
     pub fn pthread_condattr_getclock(attr: *const pthread_condattr_t,
                                      clock_id: *mut clockid_t) -> ::c_int;
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
-                                     clock_id: clockid_t) -> ::c_int;
+                                     clock_id: ::clockid_t) -> ::c_int;
     pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t,
                                        pshared: ::c_int) -> ::c_int;
-    pub fn pthread_condattr_getpshared(attr: *const pthread_condattr_t,
-                                       pshared: *mut ::c_int) -> ::c_int;
-    pub fn pthread_getschedparam(native: ::pthread_t,
-                                 policy: *mut ::c_int,
-                                 param: *mut ::sched_param) -> ::c_int;
-    pub fn pthread_setschedparam(native: ::pthread_t,
-                                 policy: ::c_int,
-                                 param: *const ::sched_param) -> ::c_int;
-    pub fn sched_getaffinity(pid: ::pid_t,
-                             cpusetsize: ::size_t,
-                             cpuset: *mut cpu_set_t) -> ::c_int;
-    pub fn sched_setaffinity(pid: ::pid_t,
-                             cpusetsize: ::size_t,
-                             cpuset: *const cpu_set_t) -> ::c_int;
-    pub fn unshare(flags: ::c_int) -> ::c_int;
-    pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
-    pub fn sem_timedwait(sem: *mut sem_t,
-                         abstime: *const ::timespec) -> ::c_int;
     pub fn accept4(fd: ::c_int, addr: *mut ::sockaddr, len: *mut ::socklen_t,
                    flg: ::c_int) -> ::c_int;
-    pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
-                                   abstime: *const ::timespec) -> ::c_int;
     pub fn pthread_mutexattr_setpshared(attr: *mut pthread_mutexattr_t,
                                         pshared: ::c_int) -> ::c_int;
-    pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
-                                        pshared: *mut ::c_int) -> ::c_int;
     pub fn pthread_rwlockattr_getpshared(attr: *const pthread_rwlockattr_t,
                                          val: *mut ::c_int) -> ::c_int;
     pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t,
@@ -1044,21 +949,16 @@ extern {
     pub fn clearenv() -> ::c_int;
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
-    pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     pub fn setreuid(ruid: ::uid_t, euid: ::uid_t) -> ::c_int;
     pub fn setregid(rgid: ::gid_t, egid: ::gid_t) -> ::c_int;
     pub fn getresuid(ruid: *mut ::uid_t, euid: *mut ::uid_t,
                      suid: *mut ::uid_t) -> ::c_int;
     pub fn getresgid(rgid: *mut ::gid_t, egid: *mut ::gid_t,
                      sgid: *mut ::gid_t) -> ::c_int;
-    pub fn personality(persona: ::c_ulong) -> ::c_int;
-    pub fn swapon(path: *const ::c_char, swapflags: ::c_int) -> ::c_int;
-    pub fn swapoff(puath: *const ::c_char) -> ::c_int;
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
     pub fn vfork() -> ::pid_t;
-    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
     pub fn wait4(pid: ::pid_t, status: *mut ::c_int, options: ::c_int,
@@ -1068,10 +968,6 @@ extern {
                 name: *mut ::c_char,
                 termp: *const termios,
                 winp: *const ::winsize) -> ::c_int;
-    pub fn forkpty(amaster: *mut ::c_int,
-                name: *mut ::c_char,
-                termp: *const termios,
-                winp: *const ::winsize) -> ::pid_t;
     pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
                    envp: *const *const ::c_char) -> ::c_int;
     pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
@@ -1080,9 +976,10 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "linux",
-                 target_os = "emscripten",
-                 target_os = "fuchsia"))] {
+    if #[cfg(target_os = "emscripten")] {
+        mod emscripten;
+        pub use self::emscripten::*;
+    } else if #[cfg(any(target_os = "linux", target_os = "fuchsia"))] {
         mod linux;
         pub use self::linux::*;
     } else if #[cfg(target_os = "android")] {
@@ -1092,3 +989,8 @@ cfg_if! {
         // Unknown target_os
     }
 }
+    // pub fn forkpty(amaster: *mut ::c_int,
+    //             name: *mut ::c_char,
+    //             termp: *const termios,
+    //             winp: *const ::winsize) -> ::pid_t;
+    // pub fn initgroups(user: *const ::c_char, group: ::gid_t) -> ::c_int;

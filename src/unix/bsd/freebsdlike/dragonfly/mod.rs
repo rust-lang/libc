@@ -186,20 +186,20 @@ pub const RLIM_NLIMITS: ::rlim_t = 12;
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
 
-pub const CLOCK_REALTIME: clockid_t = 0;
-pub const CLOCK_VIRTUAL: clockid_t = 1;
-pub const CLOCK_PROF: clockid_t = 2;
-pub const CLOCK_MONOTONIC: clockid_t = 4;
-pub const CLOCK_UPTIME: clockid_t = 5;
-pub const CLOCK_UPTIME_PRECISE: clockid_t = 7;
-pub const CLOCK_UPTIME_FAST: clockid_t = 8;
-pub const CLOCK_REALTIME_PRECISE: clockid_t = 9;
-pub const CLOCK_REALTIME_FAST: clockid_t = 10;
-pub const CLOCK_MONOTONIC_PRECISE: clockid_t = 11;
-pub const CLOCK_MONOTONIC_FAST: clockid_t = 12;
-pub const CLOCK_SECOND: clockid_t = 13;
-pub const CLOCK_THREAD_CPUTIME_ID: clockid_t = 14;
-pub const CLOCK_PROCESS_CPUTIME_ID: clockid_t = 15;
+pub const CLOCK_REALTIME: ::clockid_t = 0;
+pub const CLOCK_VIRTUAL: ::clockid_t = 1;
+pub const CLOCK_PROF: ::clockid_t = 2;
+pub const CLOCK_MONOTONIC: ::clockid_t = 4;
+pub const CLOCK_UPTIME: ::clockid_t = 5;
+pub const CLOCK_UPTIME_PRECISE: ::clockid_t = 7;
+pub const CLOCK_UPTIME_FAST: ::clockid_t = 8;
+pub const CLOCK_REALTIME_PRECISE: ::clockid_t = 9;
+pub const CLOCK_REALTIME_FAST: ::clockid_t = 10;
+pub const CLOCK_MONOTONIC_PRECISE: ::clockid_t = 11;
+pub const CLOCK_MONOTONIC_FAST: ::clockid_t = 12;
+pub const CLOCK_SECOND: ::clockid_t = 13;
+pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 14;
+pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 15;
 
 pub const CTL_UNSPEC: ::c_int = 0;
 pub const CTL_KERN: ::c_int = 1;
@@ -465,9 +465,9 @@ pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 127;
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
-    pub fn clock_getres(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
 
     pub fn setutxdb(_type: ::c_uint, file: *mut ::c_char) -> ::c_int;
 
