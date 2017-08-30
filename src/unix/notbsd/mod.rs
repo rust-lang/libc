@@ -856,6 +856,10 @@ f! {
     pub fn WCOREDUMP(status: ::c_int) -> bool {
         (status & 0x80) != 0
     }
+
+    pub fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
+        (cmd << 8) | (type_ & 0x00ff)
+    }
 }
 
 extern {
