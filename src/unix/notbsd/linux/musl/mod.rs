@@ -159,8 +159,6 @@ pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
 pub const CPU_SETSIZE: ::c_int = 128;
 
-pub const QFMT_VFS_V1: ::c_int = 4;
-
 pub const PTRACE_TRACEME: ::c_int = 0;
 pub const PTRACE_PEEKTEXT: ::c_int = 1;
 pub const PTRACE_PEEKDATA: ::c_int = 2;

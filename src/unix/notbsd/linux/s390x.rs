@@ -698,8 +698,6 @@ pub const CPU_SETSIZE: ::c_int = 0x400;
 
 pub const EXTPROC: ::tcflag_t = 0x00010000;
 
-pub const QFMT_VFS_V1: ::c_int = 4;
-
 pub const PTRACE_TRACEME: ::c_uint = 0;
 pub const PTRACE_PEEKTEXT: ::c_uint = 1;
 pub const PTRACE_PEEKDATA: ::c_uint = 2;
