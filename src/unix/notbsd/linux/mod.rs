@@ -962,7 +962,7 @@ f! {
 
     pub fn minor(dev: ::dev_t) -> ::c_uint {
         let mut minor = 0;
-        minor |= (dev & 0xfffff00000000000) >> 0;
+        minor |= (dev & 0x00000000000000ff) >> 0;
         minor |= (dev & 0x00000ffffff00000) >> 12;
         minor as ::c_uint
     }
