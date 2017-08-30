@@ -416,12 +416,6 @@ fn main() {
             "NOTE_EXIT_REPARENTED" |
             "NOTE_REAP" if apple => true,
 
-            // The linux/quota.h header file which defines these can't be
-            // included with sys/quota.h currently on MIPS, so we don't include
-            // it and just ignore these constants
-            "QFMT_VFS_OLD" |
-            "QFMT_VFS_V0" if mips && linux => true,
-
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
             "MAP_RENAME" |
@@ -477,6 +471,7 @@ fn main() {
             // are header conflicts if we try to include the headers that define them here.
             "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => true,
             "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => true,
+            "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => true, // Only on MIPS
 
             _ => false,
         }
@@ -667,10 +662,12 @@ fn main() {
         } else {
             cfg.header("linux/fcntl.h");
         }
+        cfg.header("linux/quota.h");
         cfg.skip_const(move |name| {
             match name {
                 "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
                 "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
+                "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => false,
                 _ => true,
             }
         });
