@@ -38,8 +38,10 @@ matrix:
     - env: TARGET=i686-unknown-linux-gnu
     - os: osx
       env: TARGET=x86_64-apple-darwin NO_ADD=1
+      osx_image: xcode8.3
     - os: osx
       env: TARGET=i686-apple-darwin
+      osx_image: xcode8.3
     - env: TARGET=arm-linux-androideabi
     - env: TARGET=aarch64-linux-android
     - env: TARGET=i686-linux-android
@@ -78,6 +80,7 @@ matrix:
       rust: beta
     - os: osx
       env: TARGET=x86_64-apple-darwin NO_ADD=1
+      osx_image: xcode8.3
       rust: beta
 
     # nightly
@@ -85,6 +88,7 @@ matrix:
       rust: nightly
     - os: osx
       env: TARGET=x86_64-apple-darwin NO_ADD=1
+      osx_image: xcode8.3
       rust: nightly
 
     # QEMU based targets that compile in an emulator
