@@ -636,7 +636,7 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     flags: 0,
-    owner: 0,
+    owner: -1,
     lock_sem: 0,
     lock_count: 0,
     reader_count: 0,
@@ -794,6 +794,10 @@ f! {
 extern {
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: ::c_int, tp: *const ::timespec) -> ::c_int;
+    pub fn pthread_create(thread: *mut ::pthread_t,
+                          attr: *const ::pthread_attr_t,
+                          f: extern fn(*mut ::c_void) -> *mut ::c_void,
+                          value: *mut ::c_void) -> ::c_int;
     pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
                                      guardsize: *mut ::size_t) -> ::c_int;
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
