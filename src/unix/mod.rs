@@ -708,7 +708,8 @@ extern {
     #[cfg_attr(any(
                    all(target_os = "linux", not(target_env = "musl")),
                    target_os = "freebsd",
-                   target_os = "dragonfly"),
+                   target_os = "dragonfly",
+                   target_os = "haiku"),
                link_name = "__res_init")]
     #[cfg_attr(any(target_os = "macos", target_os = "ios"),
                link_name = "res_9_init")]
