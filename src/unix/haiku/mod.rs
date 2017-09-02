@@ -553,7 +553,6 @@ pub const IFF_LOOPBACK: ::c_int = 0x0008;
 pub const AF_UNIX: ::c_int = 9;
 pub const AF_INET: ::c_int = 1;
 pub const AF_INET6: ::c_int = 6;
-pub const SOCK_RAW: ::c_int = 3;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
 pub const IP_TTL: ::c_int = 4;
@@ -661,6 +660,8 @@ pub const RUSAGE_CHILDREN: ::c_int = -1;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
+pub const SOCK_RAW: ::c_int = 3;
+pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const SOL_SOCKET: ::c_int = -1;
 pub const SO_ACCEPTCONN: ::c_int = 0x00000001;
