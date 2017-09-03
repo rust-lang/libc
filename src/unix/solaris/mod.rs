@@ -1245,6 +1245,8 @@ extern {
 
     pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
 
+    pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
+
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                     flags: ::c_int, addr: *mut ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
