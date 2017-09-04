@@ -1213,6 +1213,10 @@ extern {
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
+    pub fn pthread_create(native: *mut ::pthread_t,
+                          attr: *const ::pthread_attr_t,
+                          f: extern fn(*mut ::c_void) -> *mut ::c_void,
+                          value: *mut ::c_void) -> ::c_int;
     pub fn pthread_condattr_getclock(attr: *const pthread_condattr_t,
                                      clock_id: *mut clockid_t) -> ::c_int;
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
