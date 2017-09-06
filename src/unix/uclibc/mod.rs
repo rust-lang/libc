@@ -1809,6 +1809,10 @@ extern {
     pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
                           parent: Option<unsafe extern fn()>,
                           child: Option<unsafe extern fn()>) -> ::c_int;
+    pub fn pthread_create(native: *mut ::pthread_t,
+                          attr: *const ::pthread_attr_t,
+                          f: extern fn(*mut ::c_void) -> *mut ::c_void,
+                          value: *mut ::c_void) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
@@ -1827,3 +1831,4 @@ cfg_if! {
         pub use unsupported_target;
     }
 }
+
