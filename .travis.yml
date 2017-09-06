@@ -94,8 +94,6 @@ matrix:
     # QEMU based targets that compile in an emulator
     - env: TARGET=x86_64-unknown-freebsd
 
-cache: cargo
-
 notifications:
   email:
     on_success: never
