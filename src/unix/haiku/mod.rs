@@ -9,7 +9,6 @@ pub type speed_t = ::c_uint;
 pub type c_char = i8;
 pub type clock_t = i32;
 pub type clockid_t = i32;
-pub type time_t = i32;
 pub type suseconds_t = i32;
 pub type wchar_t = i32;
 pub type off_t = i64;
@@ -459,86 +458,95 @@ pub const MS_ASYNC: ::c_int = 0x01;
 pub const MS_INVALIDATE: ::c_int = 0x04;
 pub const MS_SYNC: ::c_int = 0x02;
 
-pub const EPERM : ::c_int = -2147483633;
-pub const ENOENT : ::c_int = -2147459069;
-pub const ESRCH : ::c_int = -2147454963;
-pub const EINTR : ::c_int = -2147483638;
-pub const EIO : ::c_int = -2147483647;
-pub const ENXIO : ::c_int = -2147454965;
 pub const E2BIG : ::c_int = -2147454975;
-pub const ENOEXEC : ::c_int = -2147478782;
-pub const EBADF : ::c_int = -2147459072;
 pub const ECHILD : ::c_int = -2147454974;
 pub const EDEADLK : ::c_int = -2147454973;
-pub const ENOMEM : ::c_int = -2147454976;
-pub const EACCES : ::c_int = -2147483646;
-pub const EFAULT : ::c_int = -2147478783;
-// pub const ENOTBLK : ::c_int = 15;
-pub const EBUSY : ::c_int = -2147483634;
-pub const EEXIST : ::c_int = -2147459070;
-pub const EXDEV : ::c_int = -2147459061;
-pub const ENODEV : ::c_int = -2147454969;
-pub const ENOTDIR : ::c_int = -2147459067;
-pub const EISDIR : ::c_int = -2147459063;
-pub const EINVAL : ::c_int = -2147483643;
-pub const ENFILE : ::c_int = -2147454970;
-pub const EMFILE : ::c_int = -2147459062;
-pub const ENOTTY : ::c_int = -2147454966;
-pub const ETXTBSY : ::c_int = -2147454917;
 pub const EFBIG : ::c_int = -2147454972;
-pub const ENOSPC : ::c_int = -2147459065;
-pub const ESPIPE : ::c_int = -2147454964;
-pub const EROFS : ::c_int = -2147459064;
 pub const EMLINK : ::c_int = -2147454971;
-pub const EPIPE : ::c_int = -2147459059;
+pub const ENFILE : ::c_int = -2147454970;
+pub const ENODEV : ::c_int = -2147454969;
+pub const ENOLCK : ::c_int = -2147454968;
+pub const ENOSYS : ::c_int = -2147454967;
+pub const ENOTTY : ::c_int = -2147454966;
+pub const ENXIO : ::c_int = -2147454965;
+pub const ESPIPE : ::c_int = -2147454964;
+pub const ESRCH : ::c_int = -2147454963;
+pub const EFPOS : ::c_int = -2147457962;
+pub const ESIGPARM : ::c_int = -2147457961;
 pub const EDOM : ::c_int = -2147454960;
 pub const ERANGE : ::c_int = -2147454959;
-pub const EAGAIN : ::c_int = -2147483637;
-pub const EWOULDBLOCK : ::c_int = -2147483637;
-
-pub const EINPROGRESS : ::c_int = -2147454940;
-pub const EALREADY : ::c_int = -2147454939;
-pub const ENOTSOCK : ::c_int = -2147454932;
-pub const EDESTADDRREQ : ::c_int = -2147454928;
-pub const EMSGSIZE : ::c_int = -2147454934;
 pub const EPROTOTYPE : ::c_int = -2147454958;
-pub const ENOPROTOOPT : ::c_int = -2147454942;
 pub const EPROTONOSUPPORT : ::c_int = -2147454957;
-pub const EOPNOTSUPP : ::c_int = -2147454933;
 pub const EPFNOSUPPORT : ::c_int = -2147454956;
 pub const EAFNOSUPPORT : ::c_int = -2147454955;
 pub const EADDRINUSE : ::c_int = -2147454954;
 pub const EADDRNOTAVAIL : ::c_int = -2147454953;
-pub const ENETDOWN : ::c_int = -2147454953;
+pub const ENETDOWN : ::c_int = -2147454952;
 pub const ENETUNREACH : ::c_int = -2147454951;
 pub const ENETRESET : ::c_int = -2147454950;
 pub const ECONNABORTED : ::c_int = -2147454949;
 pub const ECONNRESET : ::c_int = -2147454948;
-pub const ENOBUFS : ::c_int = -2147454941;
 pub const EISCONN : ::c_int = -2147454947;
 pub const ENOTCONN : ::c_int = -2147454946;
 pub const ESHUTDOWN : ::c_int = -2147454945;
-pub const ETIMEDOUT : ::c_int = -2147483639;
 pub const ECONNREFUSED : ::c_int = -2147454944;
-pub const ELOOP : ::c_int = -2147459060;
-pub const ENAMETOOLONG : ::c_int = -2147459068;
-pub const EHOSTDOWN : ::c_int = -2147454931;
 pub const EHOSTUNREACH : ::c_int = -2147454943;
-pub const ENOTEMPTY : ::c_int = -2147459066;
-pub const EDQUOT : ::c_int = -2147454927;
-pub const ESTALE : ::c_int = -2147454936;
-pub const ENOLCK : ::c_int = -2147454968;
-pub const ENOSYS : ::c_int = -2147454967;
-pub const EIDRM : ::c_int = -2147454926;
-pub const ENOMSG : ::c_int = -2147454937;
-pub const EOVERFLOW : ::c_int = -2147454935;
-pub const ECANCELED : ::c_int = -2147454929;
+pub const ENOPROTOOPT : ::c_int = -2147454942;
+pub const ENOBUFS : ::c_int = -2147454941;
+pub const EINPROGRESS : ::c_int = -2147454940;
+pub const EALREADY : ::c_int = -2147454939;
 pub const EILSEQ : ::c_int = -2147454938;
-pub const ENOATTR : ::c_int = -2147454916;
+pub const ENOMSG : ::c_int = -2147454937;
+pub const ESTALE : ::c_int = -2147454936;
+pub const EOVERFLOW : ::c_int = -2147454935;
+pub const EMSGSIZE : ::c_int = -2147454934;
+pub const EOPNOTSUPP : ::c_int = -2147454933;
+pub const ENOTSOCK : ::c_int = -2147454932;
+pub const EHOSTDOWN : ::c_int = -2147454931;
 pub const EBADMSG : ::c_int = -2147454930;
+pub const ECANCELED : ::c_int = -2147454929;
+pub const EDESTADDRREQ : ::c_int = -2147454928;
+pub const EDQUOT : ::c_int = -2147454927;
+pub const EIDRM : ::c_int = -2147454926;
 pub const EMULTIHOP : ::c_int = -2147454925;
+pub const ENODATA : ::c_int = -2147454924;
 pub const ENOLINK : ::c_int = -2147454923;
+pub const ENOSR : ::c_int = -2147454922;
+pub const ENOSTR : ::c_int = -2147454921;
+pub const ENOTSUP : ::c_int = -2147454920;
 pub const EPROTO : ::c_int = -2147454919;
+pub const ETIME : ::c_int = -2147454918;
+pub const ETXTBSY : ::c_int = -2147454917;
+pub const ENOATTR : ::c_int = -2147454916;
+
+// INT_MIN
+pub const ENOMEM : ::c_int = -2147454976;
+
+// POSIX errors that can be mapped to BeOS error codes
+pub const EACCES : ::c_int = -2147483646;
+pub const EINTR : ::c_int = -2147483638;
+pub const EIO : ::c_int = -2147483647;
+pub const EBUSY : ::c_int = -2147483634;
+pub const EFAULT : ::c_int = -2147478783;
+pub const ETIMEDOUT : ::c_int = -2147483639;
+pub const EAGAIN : ::c_int = -2147483637;
+pub const EWOULDBLOCK : ::c_int = -2147483637;
+pub const EBADF : ::c_int = -2147459072;
+pub const EEXIST : ::c_int = -2147459070;
+pub const EINVAL : ::c_int = -2147483643;
+pub const ENAMETOOLONG : ::c_int = -2147459068;
+pub const ENOENT : ::c_int = -2147459069;
+pub const EPERM : ::c_int = -2147483633;
+pub const ENOTDIR : ::c_int = -2147459067;
+pub const EISDIR : ::c_int = -2147459063;
+pub const ENOTEMPTY : ::c_int = -2147459066;
+pub const ENOSPC : ::c_int = -2147459065;
+pub const EROFS : ::c_int = -2147459064;
+pub const EMFILE : ::c_int = -214745962;
+pub const EXDEV : ::c_int = -2147459061;
+pub const ELOOP : ::c_int = -2147459060;
+pub const ENOEXEC : ::c_int = -2147478782;
+pub const EPIPE : ::c_int = -2147459059;
 
 pub const IPPROTO_RAW: ::c_int = 255;
 
@@ -554,7 +562,6 @@ pub const IFF_LOOPBACK: ::c_int = 0x0008;
 pub const AF_UNIX: ::c_int = 9;
 pub const AF_INET: ::c_int = 1;
 pub const AF_INET6: ::c_int = 6;
-pub const SOCK_RAW: ::c_int = 3;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
 pub const IP_TTL: ::c_int = 4;
@@ -637,7 +644,7 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     flags: 0,
-    owner: 0,
+    owner: -1,
     lock_sem: 0,
     lock_count: 0,
     reader_count: 0,
@@ -662,6 +669,8 @@ pub const RUSAGE_CHILDREN: ::c_int = -1;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
+pub const SOCK_RAW: ::c_int = 3;
+pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const SOL_SOCKET: ::c_int = -1;
 pub const SO_ACCEPTCONN: ::c_int = 0x00000001;
@@ -795,6 +804,10 @@ f! {
 extern {
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: ::c_int, tp: *const ::timespec) -> ::c_int;
+    pub fn pthread_create(thread: *mut ::pthread_t,
+                          attr: *const ::pthread_attr_t,
+                          f: extern fn(*mut ::c_void) -> *mut ::c_void,
+                          value: *mut ::c_void) -> ::c_int;
     pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
                                      guardsize: *mut ::size_t) -> ::c_int;
     pub fn pthread_attr_getstack(attr: *const ::pthread_attr_t,
