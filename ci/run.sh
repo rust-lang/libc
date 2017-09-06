@@ -41,8 +41,8 @@ if [ "$QEMU" != "" ]; then
 
   # Do the standard rigamarole of cross-compiling an executable and then the
   # script to run just executes the binary.
-  cargo build --manifest-path libc-test/Cargo.toml --target $TARGET
-  cp $CARGO_TARGET_DIR/$TARGET/debug/libc-test $tmpdir/mount/
+  cargo build --manifest-path libc-test/Cargo.toml --target $TARGET --tests
+  cp $CARGO_TARGET_DIR/$TARGET/debug/main-* $tmpdir/mount/libc-test
   echo 'exec $1/libc-test' > $tmpdir/mount/run.sh
 
   du -sh $tmpdir/mount
