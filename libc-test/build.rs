@@ -188,6 +188,7 @@ fn main() {
         cfg.header("sys/shm.h");
         cfg.header("sys/user.h");
         cfg.header("sys/fsuid.h");
+        cfg.header("sys/timerfd.h");
         cfg.header("shadow.h");
         if !emscripten {
             cfg.header("linux/input.h");
