@@ -200,6 +200,11 @@ s! {
         _pad: [::uint8_t; 48],
     }
 
+    pub struct itimerspec {
+        pub it_interval: ::timespec,
+        pub it_value: ::timespec,
+    }
+
     pub struct fsid_t {
         __val: [::c_int; 2],
     }
@@ -900,6 +905,10 @@ pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
 pub const ITIMER_PROF: ::c_int = 2;
 
+pub const TFD_CLOEXEC: ::c_int = 0o2000000;
+pub const TFD_NONBLOCK: ::c_int = 0o4000;
+pub const TFD_TIMER_ABSTIME: ::c_int = 1;
+
 pub const XATTR_CREATE: ::c_int = 0x1;
 pub const XATTR_REPLACE: ::c_int = 0x2;
 
@@ -1074,6 +1083,13 @@ extern {
     pub fn signalfd(fd: ::c_int,
                     mask: *const ::sigset_t,
                     flags: ::c_int) -> ::c_int;
+    pub fn timerfd_create(clockid: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn timerfd_gettime(fd: ::c_int,
+                           curr_value: *mut itimerspec) -> ::c_int;
+    pub fn timerfd_settime(fd: ::c_int,
+                           flags: ::c_int,
+                           new_value: *const itimerspec,
+                           old_value: *mut itimerspec) -> ::c_int;
     pub fn pwritev(fd: ::c_int,
                    iov: *const ::iovec,
                    iovcnt: ::c_int,
