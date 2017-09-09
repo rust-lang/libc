@@ -997,4 +997,3 @@ cfg_if! {
     //             name: *mut ::c_char,
     //             termp: *const termios,
     //             winp: *const ::winsize) -> ::pid_t;
-    // pub fn initgroups(user: *const ::c_char, group: ::gid_t) -> ::c_int;
