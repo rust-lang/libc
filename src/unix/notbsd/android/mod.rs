@@ -1065,6 +1065,7 @@ extern {
                         group: ::gid_t,
                         groups: *mut ::gid_t,
                         ngroups: *mut ::c_int) -> ::c_int;
+    pub fn initgroups(user: *const ::c_char, group: ::gid_t) -> ::c_int;
     pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
                                         pshared: *mut ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
