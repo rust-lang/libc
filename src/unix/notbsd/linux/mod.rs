@@ -621,8 +621,11 @@ pub const F_TEST: ::c_int = 3;
 pub const F_TLOCK: ::c_int = 2;
 pub const F_ULOCK: ::c_int = 0;
 
+#[cfg(any(target_arch="x86_64", target_arch="x86"))]
 pub const IFF_LOWER_UP: ::c_int = 0x10000;
+#[cfg(any(target_arch="x86_64", target_arch="x86"))]
 pub const IFF_DORMANT: ::c_int = 0x20000;
+#[cfg(any(target_arch="x86_64", target_arch="x86"))]
 pub const IFF_ECHO: ::c_int = 0x40000;
 
 pub const ST_RDONLY: ::c_ulong = 1;
