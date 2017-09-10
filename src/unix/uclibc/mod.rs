@@ -613,10 +613,6 @@ pub const IFF_MULTICAST: ::c_int = 0x1000;
 pub const IFF_PORTSEL: ::c_int = 0x2000;
 pub const IFF_AUTOMEDIA: ::c_int = 0x4000;
 pub const IFF_DYNAMIC: ::c_int = 0x8000;
-pub const IFF_LOWER_UP: ::c_int = 0x10000;
-pub const IFF_DORMANT: ::c_int = 0x20000;
-pub const IFF_ECHO: ::c_int = 0x40000;
-
 
 pub const SOL_IP: ::c_int = 0;
 pub const SOL_TCP: ::c_int = 6;
