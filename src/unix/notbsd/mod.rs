@@ -405,8 +405,6 @@ pub const EWOULDBLOCK: ::c_int = EAGAIN;
 pub const SCM_RIGHTS: ::c_int = 0x01;
 pub const SCM_CREDENTIALS: ::c_int = 0x02;
 
-pub const IPPROTO_RAW: ::c_int = 255;
-
 pub const PROT_GROWSDOWN: ::c_int = 0x1000000;
 pub const PROT_GROWSUP: ::c_int = 0x2000000;
 
