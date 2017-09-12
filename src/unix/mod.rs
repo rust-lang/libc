@@ -235,7 +235,7 @@ cfg_if! {
     } else if #[cfg(target_os = "l4re")] {
         // required libraries for L4Re are linked externally, ATM
     } else if #[cfg(all(not(stdbuild), feature = "use_std"))] {
-        // cargo build, don't pull in anything extra as the libstd  dep
+        // cargo build, don't pull in anything extra as the libstd dep
         // already pulls in all libs.
     } else if #[cfg(any(all(target_env = "musl", not(target_arch = "mips"))))] {
         #[link(name = "c", kind = "static", cfg(target_feature = "crt-static"))]
