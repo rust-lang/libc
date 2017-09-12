@@ -91,7 +91,7 @@ fn main() {
         cfg.header("sys/mman.h");
         cfg.header("sys/resource.h");
         cfg.header("sys/socket.h");
-        if linux {
+        if linux && !musl {
             cfg.header("linux/if.h");
         }
         cfg.header("sys/time.h");
@@ -665,8 +665,10 @@ fn main() {
         } else {
             cfg.header("linux/fcntl.h");
         }
-        cfg.header("net/if.h");
-        cfg.header("linux/if.h");
+        if !musl {
+            cfg.header("net/if.h");
+            cfg.header("linux/if.h");
+        }
         cfg.header("linux/quota.h");
         cfg.skip_const(move |name| {
             match name {
