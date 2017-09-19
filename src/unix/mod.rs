@@ -264,7 +264,7 @@ cfg_if! {
         extern {}
     } else if #[cfg(target_os = "fuchsia")] {
         #[link(name = "c")]
-        #[link(name = "mxio")]
+        #[link(name = "fdio")]
         extern {}
     } else if #[cfg(target_env = "newlib")] {
         #[link(name = "c")]
