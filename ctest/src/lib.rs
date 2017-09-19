@@ -11,7 +11,7 @@
 
 #![deny(missing_docs)]
 
-extern crate gcc;
+extern crate cc;
 extern crate syntex_syntax as syntax;
 
 use std::cell::RefCell;
@@ -566,7 +566,7 @@ impl TestGenerator {
         });
 
         // Compile our C shim to be linked into tests
-        let mut cfg = gcc::Config::new();
+        let mut cfg = cc::Build::new();
         cfg.file(&out.with_extension("c"));
         if target.contains("msvc") {
             cfg.flag("/W3").flag("/Wall").flag("/WX")
