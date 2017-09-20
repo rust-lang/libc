@@ -4,7 +4,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/akjf8gn5pem05iyw?svg=true)](https://ci.appveyor.com/project/alexcrichton/ctest)
 
 [Documentation][dox]
-[dox]: http://alexcrichton.com/ctest
+
+[dox]: https://docs.rs/ctest
 
 Automated testing of FFI bindings in Rust. This repository is intended to
 validate the `*-sys` crates that can be found on crates.io to ensure that the
