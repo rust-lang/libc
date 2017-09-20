@@ -1,7 +1,3 @@
-pub use self::net::*;
-
-mod net;
-
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -16,6 +12,18 @@ pub type gid_t = usize;
 pub type uid_t = usize;
 
 pub type suseconds_t = i64;
+
+s! {
+    pub struct timeval {
+        pub tv_sec: time_t,
+        pub tv_usec: suseconds_t,
+    }
+
+    pub struct timespec {
+        pub tv_sec: time_t,
+        pub tv_nsec: c_long,
+    }
+}
 
 pub const STDIN_FILENO: ::c_int = 0;
 pub const STDOUT_FILENO: ::c_int = 1;
@@ -77,18 +85,6 @@ pub const O_SYMLINK: ::c_int =    0x4000_0000;
 pub const O_NOFOLLOW: ::c_int =   0x8000_0000;
 pub const O_ACCMODE: ::c_int =    O_RDONLY | O_WRONLY | O_RDWR;
 
-s! {
-    pub struct timeval {
-        pub tv_sec: time_t,
-        pub tv_usec: suseconds_t,
-    }
-
-    pub struct timespec {
-        pub tv_sec: time_t,
-        pub tv_nsec: c_long,
-    }
-}
-
 extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
@@ -102,3 +98,7 @@ extern {
 #[link(name = "c")]
 #[link(name = "m")]
 extern {}
+
+pub use self::net::*;
+
+mod net;
