@@ -36,9 +36,10 @@ use syntax::ext::expand::{Expansion, Invocation, InvocationKind, ExpansionConfig
 use syntax::ext::tt::macro_rules;
 use syntax::ext::hygiene::Mark;
 use syntax::feature_gate::Features;
-use syntax::fold::Folder;
+use syntax::fold::{self, Folder};
 use syntax::parse::{self, ParseSess};
 use syntax::ptr::P;
+use syntax::util::small_vector::SmallVector;
 use syntax::visit::{self, Visitor};
 
 macro_rules! t {
@@ -628,6 +629,10 @@ impl TestGenerator {
 
         // Parse the libc crate
         let krate = parse::parse_crate_from_file(krate, &sess).ok().unwrap();
+
+        // Remove things like functions, impls, traits, etc, that we're not
+        // looking at
+        let krate = StripUnchecked.fold_crate(krate);
 
         // expand macros
         let features = Features::new();
@@ -1532,6 +1537,37 @@ impl<'a> Resolver for MyResolver<'a> {
 
     fn check_unused_macros(&self) {
 	}
+}
+
+struct StripUnchecked;
+
+impl Folder for StripUnchecked {
+    fn fold_item(&mut self, item: P<ast::Item>) -> SmallVector<P<ast::Item>> {
+        match item.node {
+            ast::ItemKind::Mod(..) |
+            ast::ItemKind::ForeignMod(..) |
+            ast::ItemKind::Ty(..) |
+            ast::ItemKind::Enum(..) |
+            ast::ItemKind::Struct(..) |
+            ast::ItemKind::Union(..) |
+            ast::ItemKind::Mac(..) |
+            ast::ItemKind::MacroDef(..) |
+            ast::ItemKind::Use(..) |
+            ast::ItemKind::ExternCrate(..) |
+            ast::ItemKind::Const(..) => return fold::noop_fold_item(item, self),
+
+            ast::ItemKind::Static(..) |
+            ast::ItemKind::Fn(..) |
+            ast::ItemKind::GlobalAsm(..) |
+            ast::ItemKind::Trait(..) |
+            ast::ItemKind::DefaultImpl(..) |
+            ast::ItemKind::Impl(..) => return Default::default(),
+        }
+    }
+
+    fn fold_mac(&mut self, mac: ast::Mac) -> ast::Mac {
+        fold::noop_fold_mac(mac, self)
+    }
 }
 
 struct MyVisitor<'b> {
