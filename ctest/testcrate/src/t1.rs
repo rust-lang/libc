@@ -54,3 +54,7 @@ extern {
     pub fn T1i(a: *mut [i32; 4]);
     pub fn T1j(a: &mut [i32; 4]) -> !;
 }
+
+pub fn foo() {
+    assert_eq!(1, 1);
+}
