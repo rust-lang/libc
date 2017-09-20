@@ -1,14 +1,16 @@
 extern crate ctest;
-extern crate gcc;
+extern crate cc;
 
 fn main() {
-    gcc::Config::new()
-                .include("src")
-                .file("src/t1.c")
-                .compile("libt1.a");
-    gcc::Config::new()
-                .file("src/t2.c")
-                .compile("libt2.a");
+    cc::Build::new()
+        .include("src")
+        .warnings(false)
+        .file("src/t1.c")
+        .compile("libt1.a");
+    cc::Build::new()
+        .warnings(false)
+        .file("src/t2.c")
+        .compile("libt2.a");
     ctest::TestGenerator::new()
                          .header("t1.h")
                          .include("src")
