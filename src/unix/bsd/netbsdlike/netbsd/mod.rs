@@ -465,6 +465,65 @@ pub const MAP_NORESERVE : ::c_int = 0x40;
 pub const MAP_HASSEMAPHORE : ::c_int = 0x200;
 pub const MAP_WIRED: ::c_int = 0x800;
 
+pub const DCCP_TYPE_REQUEST: ::c_int = 0;
+pub const DCCP_TYPE_RESPONSE: ::c_int = 1;
+pub const DCCP_TYPE_DATA: ::c_int = 2;
+pub const DCCP_TYPE_ACK: ::c_int = 3;
+pub const DCCP_TYPE_DATAACK: ::c_int =  4;
+pub const DCCP_TYPE_CLOSEREQ: ::c_int = 5;
+pub const DCCP_TYPE_CLOSE: ::c_int = 6;
+pub const DCCP_TYPE_RESET: ::c_int = 7;
+pub const DCCP_TYPE_MOVE: ::c_int = 8;
+
+pub const DCCP_FEATURE_CC: ::c_int = 1;
+pub const DCCP_FEATURE_ECN: ::c_int = 2;
+pub const DCCP_FEATURE_ACKRATIO: ::c_int =  3;
+pub const DCCP_FEATURE_ACKVECTOR: ::c_int = 4;
+pub const DCCP_FEATURE_MOBILITY: ::c_int =  5;
+pub const DCCP_FEATURE_LOSSWINDOW: ::c_int = 6;
+pub const DCCP_FEATURE_CONN_NONCE: ::c_int = 8;
+pub const DCCP_FEATURE_IDENTREG: ::c_int =  7;
+
+pub const DCCP_OPT_PADDING: ::c_int = 0;
+pub const DCCP_OPT_DATA_DISCARD: ::c_int = 1;
+pub const DCCP_OPT_SLOW_RECV: ::c_int = 2;
+pub const DCCP_OPT_BUF_CLOSED: ::c_int = 3;
+pub const DCCP_OPT_CHANGE_L: ::c_int = 32;
+pub const DCCP_OPT_CONFIRM_L: ::c_int = 33;
+pub const DCCP_OPT_CHANGE_R: ::c_int = 34;
+pub const DCCP_OPT_CONFIRM_R: ::c_int = 35;
+pub const DCCP_OPT_INIT_COOKIE: ::c_int = 36;
+pub const DCCP_OPT_NDP_COUNT: ::c_int = 37;
+pub const DCCP_OPT_ACK_VECTOR0: ::c_int = 38;
+pub const DCCP_OPT_ACK_VECTOR1: ::c_int = 39;
+pub const DCCP_OPT_RECV_BUF_DROPS: ::c_int = 40;
+pub const DCCP_OPT_TIMESTAMP: ::c_int = 41;
+pub const DCCP_OPT_TIMESTAMP_ECHO: ::c_int = 42;
+pub const DCCP_OPT_ELAPSEDTIME: ::c_int = 43;
+pub const DCCP_OPT_DATACHECKSUM: ::c_int = 44;
+
+pub const DCCP_REASON_UNSPEC: ::c_int = 0;
+pub const DCCP_REASON_CLOSED: ::c_int = 1;
+pub const DCCP_REASON_INVALID: ::c_int = 2;
+pub const DCCP_REASON_OPTION_ERR: ::c_int = 3;
+pub const DCCP_REASON_FEA_ERR: ::c_int = 4;
+pub const DCCP_REASON_CONN_REF: ::c_int = 5;
+pub const DCCP_REASON_BAD_SNAME: ::c_int = 6;
+pub const DCCP_REASON_BAD_COOKIE: ::c_int = 7;
+pub const DCCP_REASON_INV_MOVE: ::c_int = 8;
+pub const DCCP_REASON_UNANSW_CH: ::c_int = 10;
+pub const DCCP_REASON_FRUITLESS_NEG: ::c_int = 11;
+
+pub const DCCP_CCID: ::c_int = 1;
+pub const DCCP_CSLEN: ::c_int = 2;
+pub const DCCP_MAXSEG: ::c_int = 4;
+pub const DCCP_SERVICE: ::c_int = 8;
+
+pub const DCCP_NDP_LIMIT: ::c_int = 16;
+pub const DCCP_SEQ_NUM_LIMIT: ::c_int = 16777216;
+pub const DCCP_MAX_OPTIONS: ::c_int = 32;
+pub const DCCP_MAX_PKTS: ::c_int = 100;
+
 pub const _PC_LINK_MAX : ::c_int = 1;
 pub const _PC_MAX_CANON : ::c_int = 2;
 pub const _PC_MAX_INPUT : ::c_int = 3;

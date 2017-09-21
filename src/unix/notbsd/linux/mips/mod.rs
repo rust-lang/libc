@@ -294,6 +294,8 @@ pub const MAP_STACK: ::c_int = 0x40000;
 pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_DGRAM: ::c_int = 1;
 pub const SOCK_SEQPACKET: ::c_int = 5;
+pub const SOCK_DCCP: ::c_int = 6;
+pub const SOCK_PACKET: ::c_int = 10;
 
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
@@ -352,6 +354,27 @@ pub const SO_BPF_EXTENSIONS: ::c_int = 48;
 pub const SO_INCOMING_CPU: ::c_int = 49;
 pub const SO_ATTACH_BPF: ::c_int = 50;
 pub const SO_DETACH_BPF: ::c_int = SO_DETACH_FILTER;
+
+/* DCCP socket options */
+pub const DCCP_SOCKOPT_PACKET_SIZE: ::c_int = 1;
+pub const DCCP_SOCKOPT_SERVICE: ::c_int = 2;
+pub const DCCP_SOCKOPT_CHANGE_L: ::c_int = 3;
+pub const DCCP_SOCKOPT_CHANGE_R: ::c_int = 4;
+pub const DCCP_SOCKOPT_GET_CUR_MPS: ::c_int = 5;
+pub const DCCP_SOCKOPT_SERVER_TIMEWAIT: ::c_int = 6;
+pub const DCCP_SOCKOPT_SEND_CSCOV: ::c_int = 10;
+pub const DCCP_SOCKOPT_RECV_CSCOV: ::c_int = 11;
+pub const DCCP_SOCKOPT_AVAILABLE_CCIDS: ::c_int = 12;
+pub const DCCP_SOCKOPT_CCID: ::c_int = 13;
+pub const DCCP_SOCKOPT_TX_CCID: ::c_int = 14;
+pub const DCCP_SOCKOPT_RX_CCID: ::c_int = 15;
+pub const DCCP_SOCKOPT_QPOLICY_ID: ::c_int = 16;
+pub const DCCP_SOCKOPT_QPOLICY_TXQLEN: ::c_int = 17;
+pub const DCCP_SOCKOPT_CCID_RX_INFO: ::c_int = 128;
+pub const DCCP_SOCKOPT_CCID_TX_INFO: ::c_int = 192;
+
+/// maximum number of services provided on the same listening port
+pub const DCCP_SERVICE_LIST_MAX_LEN: ::c_int = 32;
 
 pub const FIOCLEX: ::c_ulong = 0x6601;
 pub const FIONBIO: ::c_ulong = 0x667e;

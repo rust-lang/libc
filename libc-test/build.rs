@@ -239,6 +239,13 @@ fn main() {
         }
     }
 
+    if linux || android {
+        // DCCP support
+        if !uclibc && !musl && !emscripten {
+            cfg.header("linux/dccp.h");
+        }
+    }
+
     if freebsd {
         cfg.header("pthread_np.h");
         cfg.header("sched.h");
@@ -253,6 +260,9 @@ fn main() {
         cfg.header("ufs/ufs/quota.h");
         cfg.header("ufs/ufs/quota1.h");
         cfg.header("sys/ioctl_compat.h");
+
+        // DCCP support
+        cfg.header("netinet/dccp.h");
     }
 
     if openbsd {
