@@ -14,6 +14,7 @@ pub type rlim_t = u64;
 pub type mach_timebase_info_data_t = mach_timebase_info;
 pub type pthread_key_t = c_ulong;
 pub type sigset_t = u32;
+pub type clockid_t = ::c_uint;
 pub type fsblkcnt_t = ::c_uint;
 pub type fsfilcnt_t = ::c_uint;
 pub type speed_t = ::c_ulong;
@@ -492,6 +493,11 @@ pub const ABMON_9: ::nl_item = 41;
 pub const ABMON_10: ::nl_item = 42;
 pub const ABMON_11: ::nl_item = 43;
 pub const ABMON_12: ::nl_item = 44;
+
+pub const CLOCK_REALTIME: ::clockid_t = 0;
+pub const CLOCK_MONOTONIC: ::clockid_t = 6;
+pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 12;
+pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 16;
 
 pub const ERA: ::nl_item = 45;
 pub const ERA_D_FMT: ::nl_item = 46;
@@ -1976,6 +1982,9 @@ extern {
     pub fn aio_suspend(aiocb_list: *const *const aiocb, nitems: ::c_int,
                        timeout: *const ::timespec) -> ::c_int;
     pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
 
