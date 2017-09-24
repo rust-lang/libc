@@ -591,6 +591,9 @@ pub const WSTOPPED: ::c_int = WUNTRACED;
 pub const WCONTINUED: ::c_int = 0x08;
 pub const WNOWAIT: ::c_int = 0x80;
 
+pub const AT_FDCWD: ::c_int = 0xffd19553;
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x1000;
+
 // Solaris defines a great many more of these; we only expose the
 // standardized ones.
 pub const P_PID: idtype_t = 0;
@@ -1256,6 +1259,8 @@ extern {
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
     pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
+    pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
+                     times: *const ::timespec, flag: ::c_int) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 
     pub fn bind(socket: ::c_int, address: *const ::sockaddr,
