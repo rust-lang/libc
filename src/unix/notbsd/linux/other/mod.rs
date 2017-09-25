@@ -539,6 +539,11 @@ pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
+#[doc(hidden)]
+pub const AF_MAX: ::c_int = 42;
+#[doc(hidden)]
+pub const PF_MAX: ::c_int = AF_MAX;
+
 cfg_if! {
     if #[cfg(any(target_arch = "arm", target_arch = "x86",
                  target_arch = "x86_64"))] {
