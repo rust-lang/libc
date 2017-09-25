@@ -30,8 +30,11 @@
 #![cfg_attr(all(target_os = "linux", target_arch = "mips"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/mips-unknown-linux-gnu"
 ))]
-#![cfg_attr(all(target_os = "linux", target_arch = "aarch64"), doc(
+#![cfg_attr(all(target_os = "linux", target_arch = "aarch64", target_env = "gnu"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/aarch64-unknown-linux-gnu"
+))]
+#![cfg_attr(all(target_os = "linux", target_arch = "aarch64", target_env = "musl"), doc(
+    html_root_url = "https://doc.rust-lang.org/libc/aarch64-unknown-linux-musl"
 ))]
 #![cfg_attr(all(target_os = "linux", target_env = "musl"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-linux-musl"
