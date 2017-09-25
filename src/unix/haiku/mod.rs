@@ -610,7 +610,30 @@ pub const FILENAME_MAX: ::c_uint = 256;
 pub const FOPEN_MAX: ::c_uint = 128;
 pub const L_tmpnam: ::c_uint = 512;
 pub const TMP_MAX: ::c_uint = 32768;
+
+pub const _PC_CHOWN_RESTRICTED: ::c_int = 1;
+pub const _PC_MAX_CANON: ::c_int = 2;
+pub const _PC_MAX_INPUT: ::c_int = 3;
 pub const _PC_NAME_MAX: ::c_int = 4;
+pub const _PC_NO_TRUNC: ::c_int = 5;
+pub const _PC_PATH_MAX: ::c_int = 6;
+pub const _PC_PIPE_BUF: ::c_int = 7;
+pub const _PC_VDISABLE: ::c_int = 8;
+pub const _PC_LINK_MAX: ::c_int = 25;
+pub const _PC_SYNC_IO: ::c_int = 26;
+pub const _PC_ASYNC_IO: ::c_int = 27;
+pub const _PC_PRIO_IO: ::c_int = 28;
+pub const _PC_SOCK_MAXBUF: ::c_int = 29;
+pub const _PC_FILESIZEBITS: ::c_int = 30;
+pub const _PC_REC_INCR_XFER_SIZE: ::c_int = 31;
+pub const _PC_REC_MAX_XFER_SIZE: ::c_int = 32;
+pub const _PC_REC_MIN_XFER_SIZE: ::c_int = 33;
+pub const _PC_REC_XFER_ALIGN: ::c_int = 34;
+pub const _PC_ALLOC_SIZE_MIN: ::c_int = 35;
+pub const _PC_SYMLINK_MAX: ::c_int = 36;
+pub const _PC_2_SYMLINKS: ::c_int = 37;
+pub const _PC_XATTR_EXISTS: ::c_int = 38;
+pub const _PC_XATTR_ENABLED: ::c_int = 39;
 
 pub const FIONBIO: ::c_int = 0xbe000000;
 
