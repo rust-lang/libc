@@ -595,6 +595,8 @@ pub const LOCK_UN: ::c_int = 0x08;
 
 pub const SIGSTKSZ: ::size_t = 16384;
 
+pub const PATH_MAX: ::c_int = 1024;
+
 pub const SA_NODEFER: ::c_int = 0x08;
 pub const SA_RESETHAND: ::c_int = 0x04;
 pub const SA_RESTART: ::c_int = 0x10;
