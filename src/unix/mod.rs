@@ -163,16 +163,7 @@ pub const S_ISUID: ::c_int = 0x800;
 pub const S_ISGID: ::c_int = 0x400;
 pub const S_ISVTX: ::c_int = 0x200;
 
-pub const POLLIN: ::c_short = 0x1;
-pub const POLLPRI: ::c_short = 0x2;
-pub const POLLOUT: ::c_short = 0x4;
-pub const POLLERR: ::c_short = 0x8;
-pub const POLLHUP: ::c_short = 0x10;
-pub const POLLNVAL: ::c_short = 0x20;
-
 pub const IF_NAMESIZE: ::size_t = 16;
-
-pub const RTLD_LAZY: ::c_int = 0x1;
 
 pub const LOG_EMERG: ::c_int = 0;
 pub const LOG_ALERT: ::c_int = 1;
