@@ -760,6 +760,7 @@ pub const SPLICE_F_MORE: ::c_uint = 0x04;
 pub const SPLICE_F_GIFT: ::c_uint = 0x08;
 
 pub const RTLD_LOCAL: ::c_int = 0;
+pub const RTLD_LAZY: ::c_int = 1;
 
 pub const POSIX_FADV_NORMAL: ::c_int = 0;
 pub const POSIX_FADV_RANDOM: ::c_int = 1;
@@ -793,6 +794,12 @@ pub const P_PGID: idtype_t = 2;
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
 
+pub const POLLIN: ::c_short = 0x1;
+pub const POLLPRI: ::c_short = 0x2;
+pub const POLLOUT: ::c_short = 0x4;
+pub const POLLERR: ::c_short = 0x8;
+pub const POLLHUP: ::c_short = 0x10;
+pub const POLLNVAL: ::c_short = 0x20;
 pub const POLLRDNORM: ::c_short = 0x040;
 pub const POLLRDBAND: ::c_short = 0x080;
 

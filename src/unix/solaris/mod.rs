@@ -766,6 +766,13 @@ pub const GLOB_NOSPACE : ::c_int = -2;
 pub const GLOB_ABORTED : ::c_int = -1;
 pub const GLOB_NOMATCH : ::c_int = -3;
 
+pub const POLLIN: ::c_short = 0x1;
+pub const POLLPRI: ::c_short = 0x2;
+pub const POLLOUT: ::c_short = 0x4;
+pub const POLLERR: ::c_short = 0x8;
+pub const POLLHUP: ::c_short = 0x10;
+pub const POLLNVAL: ::c_short = 0x20;
+
 pub const POSIX_MADV_NORMAL: ::c_int = 0;
 pub const POSIX_MADV_RANDOM: ::c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
@@ -1100,6 +1107,7 @@ pub const RTLD_DEFAULT: *mut ::c_void = -2isize as *mut ::c_void;
 pub const RTLD_SELF: *mut ::c_void = -3isize as *mut ::c_void;
 pub const RTLD_PROBE: *mut ::c_void = -4isize as *mut ::c_void;
 
+pub const RTLD_LAZY: ::c_int = 0x1;
 pub const RTLD_NOW: ::c_int = 0x2;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
