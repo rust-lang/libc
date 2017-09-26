@@ -860,6 +860,7 @@ f! {
     }
 }
 
+#[link(name = "bsd")]
 extern {
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: ::c_int, tp: *const ::timespec) -> ::c_int;
@@ -995,6 +996,15 @@ extern {
                link_name = "popen$UNIX2003")]
     pub fn popen(command: *const c_char,
                  mode: *const c_char) -> *mut ::FILE;
+    pub fn openpty(amaster: *mut ::c_int,
+                   aslave: *mut ::c_int,
+                   name: *mut ::c_char,
+                   termp: *mut termios,
+                   winp: *mut ::winsize) -> ::c_int;
+    pub fn forkpty(amaster: *mut ::c_int,
+                   name: *mut ::c_char,
+                   termp: *mut termios,
+                   winp: *mut ::winsize) -> ::pid_t;
 }
 
 cfg_if! {
