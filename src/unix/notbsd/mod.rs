@@ -908,6 +908,8 @@ extern {
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
     pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
+    pub fn fstatat64(dirfd: ::c_int, pathname: *const c_char,
+                     buf: *mut stat64, flags: ::c_int) -> ::c_int;
     pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
     pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
     pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
