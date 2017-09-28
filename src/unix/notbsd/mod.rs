@@ -927,8 +927,16 @@ extern {
                     oflag: ::c_int, ...) -> ::c_int;
     pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
                    offset: off64_t) -> ::ssize_t;
+    pub fn preadv64(fd: ::c_int,
+                    iov: *const ::iovec,
+                    iovcnt: ::c_int,
+                    offset: ::off64_t) -> ::ssize_t;
     pub fn pwrite64(fd: ::c_int, buf: *const ::c_void, count: ::size_t,
                     offset: off64_t) -> ::ssize_t;
+    pub fn pwritev64(fd: ::c_int,
+                     iov: *const ::iovec,
+                     iovcnt: ::c_int,
+                     offset: ::off64_t) -> ::ssize_t;
     pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
     pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
                        result: *mut *mut ::dirent64) -> ::c_int;
