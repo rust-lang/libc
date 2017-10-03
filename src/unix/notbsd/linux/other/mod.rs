@@ -544,7 +544,7 @@ pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
 #[doc(hidden)]
-pub const AF_MAX: ::c_int = 42;
+pub const AF_MAX: ::c_int = 44;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
