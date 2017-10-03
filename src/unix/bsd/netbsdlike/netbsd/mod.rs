@@ -963,6 +963,9 @@ extern {
                   pid: ::pid_t,
                   addr: *mut ::c_void,
                   data: ::c_int) -> ::c_int;
+    pub fn pthread_getname_np(t: ::pthread_t,
+                              name_buf: *mut ::c_char,
+                              buf_len: ::c_int) -> ::c_int;
     pub fn pthread_setname_np(t: ::pthread_t,
                               name: *const ::c_char,
                               arg: *mut ::c_void) -> ::c_int;
