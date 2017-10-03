@@ -151,6 +151,7 @@ fn main() {
 
             if !netbsd && !openbsd && !uclibc {
                 cfg.header("execinfo.h");
+                cfg.header("locale.h");
             }
 
             if openbsd {
