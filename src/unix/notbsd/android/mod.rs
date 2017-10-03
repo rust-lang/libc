@@ -1037,6 +1037,11 @@ extern {
                            flags: ::c_int,
                            rqtp: *const ::timespec,
                            rmtp:  *mut ::timespec) -> ::c_int;
+    pub fn pthread_getname_np(t: ::pthread_t,
+                              name_buf: *mut ::c_char,
+                              buf_len: ::c_int) -> ::c_int;
+    pub fn pthread_setname_np(t: ::pthread_t,
+                              name: *const ::c_char) -> ::c_int;
     pub fn pthread_attr_getguardsize(attr: *const ::pthread_attr_t,
                                      guardsize: *mut ::size_t) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
