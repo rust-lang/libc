@@ -49,7 +49,7 @@ esac;
 
 filter="$filter,sys-img-$abi-android-24"
 
-./android-accept-licenses.sh "android - update sdk -a --no-ui --filter $filter"
+./android-accept-licenses.sh "android - update sdk -a --no-ui --filter $filter --no-https"
 
 echo "no" | android create avd \
                 --name $1 \
