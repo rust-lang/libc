@@ -651,6 +651,8 @@ pub const IPPROTO_DIVERT: ::c_int = 258;
 /// SeND pseudo-protocol
 pub const IPPROTO_SEND: ::c_int = 259;
 
+pub const IP_BINDANY: ::c_int = 24;
+
 pub const PF_SLOW: ::c_int = AF_SLOW;
 pub const PF_SCLUSTER: ::c_int = AF_SCLUSTER;
 pub const PF_ARP: ::c_int = AF_ARP;
