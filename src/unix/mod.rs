@@ -138,6 +138,19 @@ s! {
         pub tms_cutime: ::clock_t,
         pub tms_cstime: ::clock_t,
     }
+
+    pub struct servent {
+        pub s_name: *mut ::c_char,
+        pub s_aliases: *mut *mut ::c_char,
+        pub s_port: ::c_int,
+        pub s_proto: *mut ::c_char,
+    }
+
+    pub struct protoent {
+        pub p_name: *mut ::c_char,
+        pub p_aliases: *mut *mut ::c_char,
+        pub p_proto: ::c_int,
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
@@ -726,6 +739,9 @@ extern {
                  dev: ::dev_t) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn getservbyname(name: *const ::c_char,
+                         proto: *const ::c_char) -> *mut servent;
+    pub fn getprotobyname(name: *const ::c_char) -> *mut protoent;
     pub fn chroot(name: *const ::c_char) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "usleep$UNIX2003")]
