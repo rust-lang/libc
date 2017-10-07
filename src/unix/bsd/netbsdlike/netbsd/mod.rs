@@ -838,6 +838,11 @@ pub const KERN_PROC_UID: ::c_int = 5;
 pub const KERN_PROC_RUID: ::c_int = 6;
 pub const KERN_PROC_GID: ::c_int = 7;
 pub const KERN_PROC_RGID: ::c_int = 8;
+pub const KERN_PROC_ARGV: ::c_int = 1;
+pub const KERN_PROC_NARGV: ::c_int = 2;
+pub const KERN_PROC_ENV: ::c_int = 3;
+pub const KERN_PROC_NENV: ::c_int = 4;
+pub const KERN_PROC_PATHNAME: ::c_int = 5;
 
 pub const EAI_SYSTEM: ::c_int = 11;
 
