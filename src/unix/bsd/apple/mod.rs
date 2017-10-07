@@ -1282,6 +1282,7 @@ pub const AF_LAT: ::c_int = 14;
 pub const AF_HYLINK: ::c_int = 15;
 pub const AF_APPLETALK: ::c_int = 16;
 pub const AF_ROUTE: ::c_int = 17;
+pub const AF_PACKET: ::c_int = 17;
 pub const AF_LINK: ::c_int = 18;
 pub const pseudo_AF_XTP: ::c_int = 19;
 pub const AF_COIP: ::c_int = 20;
