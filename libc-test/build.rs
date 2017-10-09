@@ -142,7 +142,6 @@ fn main() {
 
             if !netbsd && !openbsd && !uclibc {
                 cfg.header("execinfo.h");
-                cfg.header("xlocale.h");
             }
 
             if openbsd {
@@ -158,6 +157,7 @@ fn main() {
         cfg.header("mach/mach_time.h");
         cfg.header("malloc/malloc.h");
         cfg.header("util.h");
+        cfg.header("xlocale.h");
         cfg.header("sys/xattr.h");
         cfg.header("sys/sys_domain.h");
         if target.starts_with("x86") {
@@ -409,6 +409,7 @@ fn main() {
             "ERROR_NOTHING_TO_TERMINATE" if mingw => true,
 
             "SIG_IGN" => true, // sighandler_t weirdness
+            "SIGUNUSED" => true, // removed in glibc 2.26
 
             // types on musl are defined a little differently
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
