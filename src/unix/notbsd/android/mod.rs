@@ -168,6 +168,12 @@ s! {
         pub ssi_addr_lsb: ::uint16_t,
         _pad: [::uint8_t; 46],
     }
+
+    pub struct ucred {
+        pub pid: ::pid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+    }
 }
 
 pub const O_TRUNC: ::c_int = 512;
