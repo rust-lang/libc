@@ -72,7 +72,7 @@ s! {
         pub mem_unit: ::c_uint,
         pub __reserved: [::c_char; 256],
     }
-    
+
     pub struct ucred {
         pub pid: ::pid_t,
         pub uid: ::uid_t,
