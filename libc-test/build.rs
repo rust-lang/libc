@@ -190,7 +190,6 @@ fn main() {
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
         cfg.header("sys/user.h");
-        cfg.header("sys/fsuid.h");
         cfg.header("sys/timerfd.h");
         cfg.header("shadow.h");
         if !emscripten {
@@ -240,6 +239,8 @@ fn main() {
     }
 
     if linux || android {
+        cfg.header("sys/fsuid.h");
+
         // DCCP support
         if !uclibc && !musl && !emscripten {
             cfg.header("linux/dccp.h");

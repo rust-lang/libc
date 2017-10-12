@@ -1038,6 +1038,8 @@ extern {
                     in_fd: ::c_int,
                     offset: *mut off_t,
                     count: ::size_t) -> ::ssize_t;
+    pub fn setfsgid(gid: ::gid_t) -> ::c_int;
+    pub fn setfsuid(uid: ::uid_t) -> ::c_int;
     pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrgid_r")]
     pub fn getgrgid_r(uid: ::uid_t,
