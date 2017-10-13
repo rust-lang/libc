@@ -15,7 +15,7 @@ other common platform libraries.
 
 [badges]
 travis-ci = { repository = "rust-lang/libc" }
-appveyor = { repository = "rust-lang-libs/libc" }
+appveyor = { repository = "rust-lang/libc", project_name = "rust-lang-libs/libc" }
 
 [features]
 default = ["use_std"]
