@@ -742,6 +742,7 @@ extern {
     pub fn getservbyname(name: *const ::c_char,
                          proto: *const ::c_char) -> *mut servent;
     pub fn getprotobyname(name: *const ::c_char) -> *mut protoent;
+    pub fn getprotobynumber(proto: ::c_int) -> *mut protoent;
     pub fn chroot(name: *const ::c_char) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "usleep$UNIX2003")]
