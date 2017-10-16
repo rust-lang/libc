@@ -78,3 +78,6 @@ pub const MINSIGSTKSZ: ::size_t = 2048;
 pub const AF_MAX: ::c_int = 42;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
+
+// Syscall table
+pub const SYS_renameat2: ::c_long = 357;

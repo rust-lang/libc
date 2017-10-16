@@ -79,3 +79,6 @@ pub const SIGSTKSZ: ::size_t = 12288;
 pub const PF_MAX: ::c_int = 43;
 #[doc(hidden)]
 pub const AF_MAX: ::c_int = PF_MAX;
+
+// Syscall table
+pub const SYS_renameat2: ::c_long = 276;
