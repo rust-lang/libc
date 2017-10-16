@@ -411,6 +411,13 @@ s! {
         pub xsu_pagesize: u32,
         pub xsu_encrypted: ::boolean_t,
     }
+
+    pub struct xucred {
+        pub cr_version: ::c_uint,
+        pub cr_uid: ::uid_t,
+        pub cr_ngroups: ::c_short,
+        pub cr_groups: [::gid_t;16]
+    }
 }
 
 pub const _UTX_USERSIZE: usize = 256;
@@ -1371,6 +1378,15 @@ pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 
 pub const TCP_NODELAY: ::c_int = 0x01;
 pub const TCP_KEEPALIVE: ::c_int = 0x10;
+
+pub const SOL_LOCAL: ::c_int = 0;
+
+pub const LOCAL_PEERCRED: ::c_int = 0x001;
+pub const LOCAL_PEERPID: ::c_int = 0x002;
+pub const LOCAL_PEEREPID: ::c_int = 0x003;
+pub const LOCAL_PEERUUID: ::c_int = 0x004;
+pub const LOCAL_PEEREUUID: ::c_int = 0x005;
+
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
 pub const SO_DEBUG: ::c_int = 0x01;
@@ -1948,6 +1964,8 @@ pub const PROC_PIDTASKINFO: ::c_int = 4;
 pub const PROC_PIDTHREADINFO: ::c_int = 5;
 pub const MAXCOMLEN: usize = 16;
 pub const MAXTHREADNAMESIZE: usize = 64;
+
+pub const XUCRED_VERSION: ::c_uint = 0;
 
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
