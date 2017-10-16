@@ -390,3 +390,6 @@ pub const TIOCM_RNG: ::c_int = 0x080;
 pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
+
+// Syscall table
+pub const SYS_renameat2: ::c_long = 382;

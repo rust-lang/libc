@@ -226,6 +226,7 @@ fn main() {
         cfg.header("sys/reboot.h");
         if !emscripten {
             cfg.header("linux/netfilter_ipv4.h");
+            cfg.header("linux/fs.h");
         }
         if !musl {
             cfg.header("asm/mman.h");
@@ -464,7 +465,8 @@ fn main() {
 
             // Musl uses old, patched kernel headers
             "FALLOC_FL_COLLAPSE_RANGE" | "FALLOC_FL_ZERO_RANGE" |
-            "FALLOC_FL_INSERT_RANGE" | "FALLOC_FL_UNSHARE_RANGE" if musl => true,
+            "FALLOC_FL_INSERT_RANGE" | "FALLOC_FL_UNSHARE_RANGE" |
+            "RENAME_NOREPLACE" | "RENAME_EXCHANGE" | "RENAME_WHITEOUT" if musl => true,
 
             // Defined by libattr not libc on linux (hard to test).
             // See constant definition for more details.

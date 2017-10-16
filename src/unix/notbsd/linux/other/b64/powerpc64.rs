@@ -485,3 +485,6 @@ pub const TIOCOUTQ: ::c_ulong = 0x40047473;
 pub const TIOCGWINSZ: ::c_ulong = 0x40087468;
 pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
 pub const FIONREAD: ::c_ulong = 0x4004667f;
+
+// Syscall table
+pub const SYS_renameat2: ::c_long = 357;
