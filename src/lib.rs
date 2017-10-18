@@ -198,8 +198,7 @@ extern {
                   nobj: size_t,
                   stream: *mut FILE)
                   -> size_t;
-    pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
-    pub fn ftell(stream: *mut FILE) -> c_long;
+
     pub fn rewind(stream: *mut FILE);
     #[cfg_attr(target_os = "netbsd", link_name = "__fgetpos50")]
     pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
@@ -212,10 +211,6 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "strtod$UNIX2003")]
     pub fn strtod(s: *const c_char, endp: *mut *mut c_char) -> c_double;
-    pub fn strtol(s: *const c_char,
-                  endp: *mut *mut c_char, base: c_int) -> c_long;
-    pub fn strtoul(s: *const c_char, endp: *mut *mut c_char,
-                   base: c_int) -> c_ulong;
     pub fn calloc(nobj: size_t, size: size_t) -> *mut c_void;
     pub fn malloc(size: size_t) -> *mut c_void;
     pub fn realloc(p: *mut c_void, size: size_t) -> *mut c_void;
@@ -251,8 +246,6 @@ extern {
     pub fn strerror(n: c_int) -> *mut c_char;
     pub fn strtok(s: *mut c_char, t: *const c_char) -> *mut c_char;
     pub fn strxfrm(s: *mut c_char, ct: *const c_char, n: size_t) -> size_t;
-    pub fn wcslen(buf: *const wchar_t) -> size_t;
-    pub fn wcstombs(dest: *mut c_char, src: *const wchar_t, n: size_t) -> ::size_t;
 
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
     pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
@@ -267,9 +260,23 @@ extern {
 extern {
     pub fn abs(i: c_int) -> c_int;
     pub fn atof(s: *const c_char) -> c_double;
+    #[cfg(any(windows, unix, target_os = "redox"))]
     pub fn labs(i: c_long) -> c_long;
     pub fn rand() -> c_int;
     pub fn srand(seed: c_uint);
+}
+
+// If we are not on a known platform, we don't know what types "long" and "wchar_t" are.
+#[cfg(any(windows, unix, target_os = "redox"))]
+extern {
+    pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
+    pub fn ftell(stream: *mut FILE) -> c_long;
+    pub fn strtol(s: *const c_char,
+                  endp: *mut *mut c_char, base: c_int) -> c_long;
+    pub fn strtoul(s: *const c_char, endp: *mut *mut c_char,
+                   base: c_int) -> c_ulong;
+    pub fn wcslen(buf: *const wchar_t) -> size_t;
+    pub fn wcstombs(dest: *mut c_char, src: *const wchar_t, n: size_t) -> ::size_t;
 }
 
 cfg_if! {
@@ -284,5 +291,8 @@ cfg_if! {
         pub use unix::*;
     } else {
         // Unknown target_family
+
+        // Both variants have the same size, so it doesn't matter which one is used.
+        pub type c_char = c_schar;
     }
 }
