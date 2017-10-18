@@ -50,6 +50,7 @@ matrix:
     - env: TARGET=i686-unknown-linux-musl
     - env: TARGET=arm-unknown-linux-gnueabihf
     - env: TARGET=aarch64-unknown-linux-gnu
+    - env: TARGET=aarch64-unknown-linux-musl
     - os: osx
       osx_image: xcode8.2
       env: TARGET=i386-apple-ios
