@@ -798,3 +798,8 @@ pub const CS: ::c_int = 13;
 pub const EFL: ::c_int = 14;
 pub const UESP: ::c_int = 15;
 pub const SS: ::c_int = 16;
+
+#[doc(hidden)]
+pub const AF_MAX: ::c_int = 42;
+#[doc(hidden)]
+pub const PF_MAX: ::c_int = AF_MAX;

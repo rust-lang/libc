@@ -18,7 +18,10 @@ RUN curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | \
     make ARCH=arm64 prefix=/musl-aarch64 install -j4 && \
     cd .. && \
     rm -rf kernel-headers-3.12.6-5
+
+# FIXME: shouldn't need the `-lgcc` here, shouldn't that be in libstd?
 ENV PATH=$PATH:/musl-aarch64/bin:/rust/bin \
     CC_aarch64_unknown_linux_musl=musl-gcc \
+    RUSTFLAGS='-Clink-args=-lgcc' \
     CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=musl-gcc \
     CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_RUNNER="qemu-aarch64 -L /musl-aarch64"

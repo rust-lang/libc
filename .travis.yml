@@ -25,7 +25,7 @@ matrix:
     # 1.0.0 compat
     - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
       rust: 1.0.0
-      script: cargo build
+      script: rm -f Cargo.lock && cargo build
       install:
 
     # build documentation
@@ -49,7 +49,10 @@ matrix:
     - env: TARGET=x86_64-unknown-linux-musl
     - env: TARGET=i686-unknown-linux-musl
     - env: TARGET=arm-unknown-linux-gnueabihf
+    - env: TARGET=arm-unknown-linux-musleabihf
     - env: TARGET=aarch64-unknown-linux-gnu
+    - env: TARGET=aarch64-unknown-linux-musl
+      rust: beta
     - os: osx
       osx_image: xcode8.2
       env: TARGET=i386-apple-ios
