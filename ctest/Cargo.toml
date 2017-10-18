@@ -13,7 +13,7 @@ Automated tests of FFI bindings.
 
 [dependencies]
 syntex_syntax = "0.59.1"
-cc = "1.0"
+cc = "1.0.1"
 
 [workspace]
 members = ["testcrate"]
