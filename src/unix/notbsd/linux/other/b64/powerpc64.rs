@@ -484,7 +484,6 @@ pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
 pub const FIONREAD: ::c_ulong = 0x4004667f;
 
 // Syscall table
-<<<<<<< HEAD
 pub const SYS_restart_syscall: ::c_ulong = 0;
 pub const SYS_exit: ::c_ulong = 1;
 pub const SYS_fork: ::c_ulong = 2;
