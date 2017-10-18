@@ -1,15 +1,5 @@
 //! 64-bit specific definitions for linux-like values
 
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        pub type c_long = i32;
-        pub type c_ulong = u32;
-    } else {
-        pub type c_long = i64;
-        pub type c_ulong = u64;
-    }
-}
-
 pub type clock_t = i64;
 pub type time_t = i64;
 pub type ino_t = u64;
@@ -74,7 +64,8 @@ cfg_if! {
         pub use self::x86_64::*;
         cfg_if! {
             if #[cfg(target_pointer_width = "32")] {
-                // x32
+                mod x32;
+                pub use self::x32::*;
             } else {
                 mod not_x32;
                 pub use self::not_x32::*;

@@ -1,3 +1,6 @@
+pub type c_long = i64;
+pub type c_ulong = u64;
+
 pub const SYS_uselib: ::c_long = 134;
 pub const SYS__sysctl: ::c_long = 156;
 pub const SYS_create_module: ::c_long = 174;
