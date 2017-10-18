@@ -482,6 +482,7 @@ pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
 pub const FIONREAD: ::c_ulong = 0x4004667f;
 
 // Syscall table
+<<<<<<< HEAD
 pub const SYS_restart_syscall: ::c_ulong = 0;
 pub const SYS_exit: ::c_ulong = 1;
 pub const SYS_fork: ::c_ulong = 2;
@@ -841,3 +842,14 @@ pub const SYS_copy_file_range: ::c_ulong = 379;
 pub const SYS_preadv2: ::c_ulong = 380;
 pub const SYS_pwritev2: ::c_ulong = 381;
 pub const SYS_kexec_file_load: ::c_ulong = 382;
+
+#[link(name = "util")]
+extern {
+    pub fn sysctl(name: *mut ::c_int,
+                  namelen: ::c_int,
+                  oldp: *mut ::c_void,
+                  oldlenp: *mut ::size_t,
+                  newp: *mut ::c_void,
+                  newlen: ::size_t)
+                  -> ::c_int;
+}

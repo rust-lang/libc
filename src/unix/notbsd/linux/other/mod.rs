@@ -568,13 +568,6 @@ extern {
 
 #[link(name = "util")]
 extern {
-    pub fn sysctl(name: *mut ::c_int,
-                  namelen: ::c_int,
-                  oldp: *mut ::c_void,
-                  oldlenp: *mut ::size_t,
-                  newp: *mut ::c_void,
-                  newlen: ::size_t)
-                  -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void,
                      sz: ::c_int) -> ::c_int;
