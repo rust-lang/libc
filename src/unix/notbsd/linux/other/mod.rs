@@ -44,7 +44,7 @@ s! {
 
         #[cfg(any(target_arch = "aarch64",
                   target_arch = "sparc64",
-                  target_pointer_width = "32"))]
+                  all(target_pointer_width = "32", not(target_arch = "x86_64"))))]
         pub ut_session: ::c_long,
         #[cfg(any(target_arch = "aarch64",
                   target_arch = "sparc64",
@@ -53,7 +53,7 @@ s! {
 
         #[cfg(not(any(target_arch = "aarch64",
                       target_arch = "sparc64",
-                      target_pointer_width = "32")))]
+                      all(target_pointer_width = "32", not(target_arch = "x86_64")))))]
         pub ut_session: ::int32_t,
         #[cfg(not(any(target_arch = "aarch64",
                       target_arch = "sparc64",
