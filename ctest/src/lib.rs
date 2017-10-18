@@ -774,7 +774,11 @@ impl TestGenerator {
 fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     let mut ret = Vec::new();
     let (arch, width) = if target.starts_with("x86_64") {
-        ("x86_64", "64")
+        if target.ends_with("x32") {
+            ("x86_64", "32")
+        } else {
+            ("x86_64", "64")
+        }
     } else if target.starts_with("i386") ||
         target.starts_with("i586") ||
         target.starts_with("i686") {
