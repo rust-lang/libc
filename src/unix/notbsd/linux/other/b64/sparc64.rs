@@ -1,5 +1,7 @@
 //! SPARC64-specific definitions for 64-bit linux-like values
 
+pub type c_long = i64;
+pub type c_ulong = u64;
 pub type c_char = i8;
 pub type wchar_t = i32;
 pub type nlink_t = u32;
@@ -430,3 +432,14 @@ pub const TIOCOUTQ: ::c_ulong = 0x40047473;
 pub const TIOCGWINSZ: ::c_ulong = 0x40087468;
 pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
 pub const FIONREAD: ::c_ulong = 0x4004667f;
+
+#[link(name = "util")]
+extern {
+    pub fn sysctl(name: *mut ::c_int,
+                  namelen: ::c_int,
+                  oldp: *mut ::c_void,
+                  oldlenp: *mut ::size_t,
+                  newp: *mut ::c_void,
+                  newlen: ::size_t)
+                  -> ::c_int;
+}

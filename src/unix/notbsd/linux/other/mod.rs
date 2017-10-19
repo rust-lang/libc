@@ -44,7 +44,8 @@ s! {
 
         #[cfg(any(target_arch = "aarch64",
                   target_arch = "sparc64",
-                  target_pointer_width = "32"))]
+                  all(target_pointer_width = "32",
+                      not(target_arch = "x86_64"))))]
         pub ut_session: ::c_long,
         #[cfg(any(target_arch = "aarch64",
                   target_arch = "sparc64",
@@ -53,7 +54,8 @@ s! {
 
         #[cfg(not(any(target_arch = "aarch64",
                       target_arch = "sparc64",
-                      target_pointer_width = "32")))]
+                      all(target_pointer_width = "32",
+                          not(target_arch = "x86_64")))))]
         pub ut_session: ::int32_t,
         #[cfg(not(any(target_arch = "aarch64",
                       target_arch = "sparc64",
@@ -568,13 +570,6 @@ extern {
 
 #[link(name = "util")]
 extern {
-    pub fn sysctl(name: *mut ::c_int,
-                  namelen: ::c_int,
-                  oldp: *mut ::c_void,
-                  oldlenp: *mut ::size_t,
-                  newp: *mut ::c_void,
-                  newlen: ::size_t)
-                  -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void,
                      sz: ::c_int) -> ::c_int;

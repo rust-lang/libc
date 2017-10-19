@@ -9,6 +9,7 @@ fn main() {
     let aarch64 = target.contains("aarch64");
     let i686 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
+    let x32 = target.ends_with("gnux32");
     let windows = target.contains("windows");
     let mingw = target.contains("windows-gnu");
     let linux = target.contains("unknown-linux");
@@ -135,9 +136,10 @@ fn main() {
             cfg.header("sys/quota.h");
         }
 
-        if !musl {
+        if !musl && !x32 {
             cfg.header("sys/sysctl.h");
         }
+
         if !musl && !uclibc {
 
             if !netbsd && !openbsd && !uclibc {

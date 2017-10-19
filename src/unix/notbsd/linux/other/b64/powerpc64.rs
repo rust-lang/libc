@@ -1,5 +1,7 @@
 //! PowerPC64-specific definitions for 64-bit linux-like values
 
+pub type c_long = i64;
+pub type c_ulong = u64;
 pub type c_char = u8;
 pub type wchar_t = i32;
 pub type nlink_t = u64;
@@ -842,3 +844,14 @@ pub const SYS_copy_file_range: ::c_ulong = 379;
 pub const SYS_preadv2: ::c_ulong = 380;
 pub const SYS_pwritev2: ::c_ulong = 381;
 pub const SYS_kexec_file_load: ::c_ulong = 382;
+
+#[link(name = "util")]
+extern {
+    pub fn sysctl(name: *mut ::c_int,
+                  namelen: ::c_int,
+                  oldp: *mut ::c_void,
+                  oldlenp: *mut ::size_t,
+                  newp: *mut ::c_void,
+                  newlen: ::size_t)
+                  -> ::c_int;
+}

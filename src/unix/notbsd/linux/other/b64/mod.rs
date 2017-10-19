@@ -1,7 +1,5 @@
 //! 64-bit specific definitions for linux-like values
 
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type clock_t = i64;
 pub type time_t = i64;
 pub type ino_t = u64;
@@ -15,18 +13,18 @@ s! {
     }
 
     pub struct sysinfo {
-        pub uptime: ::c_long,
-        pub loads: [::c_ulong; 3],
-        pub totalram: ::c_ulong,
-        pub freeram: ::c_ulong,
-        pub sharedram: ::c_ulong,
-        pub bufferram: ::c_ulong,
-        pub totalswap: ::c_ulong,
-        pub freeswap: ::c_ulong,
+        pub uptime: i64,
+        pub loads: [u64; 3],
+        pub totalram: u64,
+        pub freeram: u64,
+        pub sharedram: u64,
+        pub bufferram: u64,
+        pub totalswap: u64,
+        pub freeswap: u64,
         pub procs: ::c_ushort,
         pub pad: ::c_ushort,
-        pub totalhigh: ::c_ulong,
-        pub freehigh: ::c_ulong,
+        pub totalhigh: u64,
+        pub freehigh: u64,
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 0],
     }
@@ -64,6 +62,15 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "x86_64"))] {
         mod x86_64;
         pub use self::x86_64::*;
+        cfg_if! {
+            if #[cfg(target_pointer_width = "32")] {
+                mod x32;
+                pub use self::x32::*;
+            } else {
+                mod not_x32;
+                pub use self::not_x32::*;
+            }
+        }
     } else {
         // Unknown target_arch
     }

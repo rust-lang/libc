@@ -1,5 +1,7 @@
 //! AArch64-specific definitions for 64-bit linux-like values
 
+pub type c_long = i64;
+pub type c_ulong = u64;
 pub type c_char = u8;
 pub type wchar_t = u32;
 pub type nlink_t = u32;
@@ -763,3 +765,14 @@ pub const SYS_pkey_mprotect: ::c_ulong = 288;
 pub const SYS_pkey_alloc: ::c_ulong = 289;
 pub const SYS_pkey_free: ::c_ulong = 290;
 pub const SYS_syscalls: ::c_ulong = 291;
+
+#[link(name = "util")]
+extern {
+    pub fn sysctl(name: *mut ::c_int,
+                  namelen: ::c_int,
+                  oldp: *mut ::c_void,
+                  oldlenp: *mut ::size_t,
+                  newp: *mut ::c_void,
+                  newlen: ::size_t)
+                  -> ::c_int;
+}
