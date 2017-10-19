@@ -177,6 +177,17 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 
+    pub struct termios2 {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_line: ::cc_t,
+        pub c_cc: [::cc_t; 19],
+        pub c_ispeed: ::speed_t,
+        pub c_ospeed: ::speed_t,
+    }
+
     pub struct sysinfo {
         pub uptime: ::c_long,
         pub loads: [::c_ulong; 3],
@@ -869,6 +880,7 @@ pub const PARODD: ::tcflag_t = 0o001000;
 pub const HUPCL: ::tcflag_t = 0o002000;
 pub const CLOCAL: ::tcflag_t = 0o004000;
 pub const CBAUDEX: ::tcflag_t = 0o010000;
+pub const BOTHER: ::speed_t = 0o010000;
 pub const B57600: ::speed_t = 0o010001;
 pub const B115200: ::speed_t = 0o010002;
 pub const B230400: ::speed_t = 0o010003;

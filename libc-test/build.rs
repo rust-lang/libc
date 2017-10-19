@@ -377,6 +377,10 @@ fn main() {
             // FIXME: unskip it for next major release
             "stat" | "stat64" if android => true,
 
+            // These are tested as part of the linux_fcntl tests since there are
+            // header conflicts when including them with all the other structs.
+            "termios2" => true,
+
             _ => false
         }
     });
@@ -489,6 +493,7 @@ fn main() {
             "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => true,
             "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => true,
             "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => true, // Only on MIPS
+            "BOTHER" => true,
 
             _ => false,
         }
@@ -670,8 +675,7 @@ fn main() {
     // fails on a lot of platforms.
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_type(|_| true)
-        .skip_struct(|_| true)
-        .skip_fn(|_| true);
+       .skip_fn(|_| true);
     if android || linux {
         // musl defines these directly in `fcntl.h`
         if musl {
@@ -684,16 +688,28 @@ fn main() {
             cfg.header("linux/if.h");
         }
         cfg.header("linux/quota.h");
+        cfg.header("asm/termbits.h");
         cfg.skip_const(move |name| {
             match name {
                 "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
                 "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
                 "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => false,
+                "BOTHER" => false,
                 _ => true,
+            }
+        });
+        cfg.skip_struct(|s| {
+            s != "termios2"
+        });
+        cfg.type_name(move |ty, is_struct| {
+            match ty {
+                t if is_struct => format!("struct {}", t),
+                t => t.to_string(),
             }
         });
     } else {
         cfg.skip_const(|_| true);
+        cfg.skip_struct(|_| true);
     }
     cfg.generate("../src/lib.rs", "linux_fcntl.rs");
 }
