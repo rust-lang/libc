@@ -377,6 +377,10 @@ fn main() {
             // FIXME: unskip it for next major release
             "stat" | "stat64" if android => true,
 
+            // These are tested as part of the linux_fcntl tests since there are
+            // header conflicts when including them with all the other structs.
+            "termios2" => true,
+
             _ => false
         }
     });
@@ -671,8 +675,7 @@ fn main() {
     // fails on a lot of platforms.
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_type(|_| true)
-        .skip_struct(|_| true)
-        .skip_fn(|_| true);
+       .skip_fn(|_| true);
     if android || linux {
         // musl defines these directly in `fcntl.h`
         if musl {
@@ -695,8 +698,18 @@ fn main() {
                 _ => true,
             }
         });
+        cfg.skip_struct(|s| {
+            s != "termios2"
+        });
+        cfg.type_name(move |ty, is_struct| {
+            match ty {
+                t if is_struct => format!("struct {}", t),
+                t => t.to_string(),
+            }
+        });
     } else {
         cfg.skip_const(|_| true);
+        cfg.skip_struct(|_| true);
     }
     cfg.generate("../src/lib.rs", "linux_fcntl.rs");
 }
