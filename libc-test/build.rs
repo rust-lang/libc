@@ -489,6 +489,7 @@ fn main() {
             "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => true,
             "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => true,
             "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => true, // Only on MIPS
+            "BOTHER" => true,
 
             _ => false,
         }
@@ -684,11 +685,13 @@ fn main() {
             cfg.header("linux/if.h");
         }
         cfg.header("linux/quota.h");
+        cfg.header("asm/termbits.h");
         cfg.skip_const(move |name| {
             match name {
                 "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
                 "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
                 "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => false,
+                "BOTHER" => false,
                 _ => true,
             }
         });
