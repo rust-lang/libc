@@ -70,6 +70,7 @@ matrix:
     - env: TARGET=x86_64-rumprun-netbsd
     - env: TARGET=powerpc-unknown-linux-gnu
     - env: TARGET=powerpc64-unknown-linux-gnu
+    - env: TARGET=powerpc64le-unknown-linux-gnu
     - env: TARGET=mips-unknown-linux-musl
     - env: TARGET=mipsel-unknown-linux-musl
     - env: TARGET=mips64-unknown-linux-gnuabi64
