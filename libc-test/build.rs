@@ -213,6 +213,7 @@ fn main() {
         cfg.header("sched.h");
         cfg.header("sys/epoll.h");
         cfg.header("sys/eventfd.h");
+        cfg.header("sys/memfd.h");
         cfg.header("sys/prctl.h");
         cfg.header("sys/sendfile.h");
         cfg.header("sys/signalfd.h");
@@ -239,6 +240,7 @@ fn main() {
                 cfg.header("linux/quota.h");
             }
         }
+
     }
 
     if linux || android {

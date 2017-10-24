@@ -794,6 +794,9 @@ pub const P_PGID: idtype_t = 2;
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
 
+pub const MFD_CLOEXEC: ::c_uint = 0x0001;
+pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
+
 pub const POLLIN: ::c_short = 0x1;
 pub const POLLPRI: ::c_short = 0x2;
 pub const POLLOUT: ::c_short = 0x4;
