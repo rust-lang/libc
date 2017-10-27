@@ -5,6 +5,9 @@ pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
 
+pub type shmatt_t = ::c_ulong;
+pub type msgqnum_t = ::c_ulong;
+pub type msglen_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
