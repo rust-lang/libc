@@ -68,4 +68,10 @@ if [ "$QEMU" != "" ]; then
   exec grep "^PASSED .* tests" $CARGO_TARGET_DIR/out.log
 fi
 
-exec cargo test --manifest-path libc-test/Cargo.toml --target $TARGET
+# FIXME: x86_64-unknown-linux-gnux32 fail to compile wihout --release
+opt=
+if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
+  opt="--release"
+fi
+
+exec cargo test $opt --manifest-path libc-test/Cargo.toml --target $TARGET
