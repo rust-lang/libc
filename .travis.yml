@@ -94,6 +94,8 @@ matrix:
       osx_image: xcode8.3
       rust: nightly
     # not available on stable
+    # without --release the build fails
+    # see https://github.com/rust-lang/rust/issues/45417
     - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
       rust: nightly
 
