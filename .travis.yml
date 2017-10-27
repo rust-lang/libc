@@ -7,8 +7,8 @@ services:
 install:
   - if [ -z "$NO_ADD" ]; then rustup target add $TARGET; fi
 script:
-  - cargo build
-  - cargo build --no-default-features
+  - cargo build $OPT
+  - cargo build $OPT --no-default-features
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       sh ci/run-docker.sh $TARGET;
@@ -92,6 +92,9 @@ matrix:
     - os: osx
       env: TARGET=x86_64-apple-darwin NO_ADD=1
       osx_image: xcode8.3
+      rust: nightly
+    # not available on stable
+    - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
       rust: nightly
 
     # QEMU based targets that compile in an emulator
