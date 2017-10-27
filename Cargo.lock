@@ -16,7 +16,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "ctest"
 version = "0.1.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+source = "git+https://github.com/alexcrichton/ctest#621f64e78e25e71aca65f023591508dec188ae92"
 dependencies = [
  "cc 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "syntex_syntax 0.59.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -81,7 +81,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "libc-test"
 version = "0.1.0"
 dependencies = [
- "ctest 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ctest 0.1.6 (git+https://github.com/alexcrichton/ctest)",
  "libc 0.2.32",
 ]
 
@@ -257,7 +257,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum bitflags 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "aad18937a628ec6abcd26d1489012cc0e18c21798210f491af69ded9b881106d"
 "checksum bitflags 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)" = "4efd02e230a02e18f92fc2735f44597385ed02ad8f831e7c1c1156ee5e1ab3a5"
 "checksum cc 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "2c674f0870e3dbd4105184ea035acb1c32c8ae69939c9e228d2b11bbfe29efad"
-"checksum ctest 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)" = "ad61261e69ce438673b458447dd0a7974cc2824a24f866df3f10ffd6cbf28365"
+"checksum ctest 0.1.6 (git+https://github.com/alexcrichton/ctest)" = "<none>"
 "checksum dtoa 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "09c3753c3db574d215cba4ea76018483895d7bff25a31b49ba45db21c48e50ab"
 "checksum extprim 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "1de79797db68eb235c616cc3ad1a2793fa94a2245594cb6f81d602e62ed951c5"
 "checksum fuchsia-zircon 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "f6c0581a4e363262e52b87f59ee2afe3415361c6ec35e665924eb08afe8ff159"
