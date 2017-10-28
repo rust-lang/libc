@@ -75,6 +75,7 @@ matrix:
     - env: TARGET=mips-unknown-linux-musl
     - env: TARGET=mipsel-unknown-linux-musl
     - env: TARGET=mips64-unknown-linux-gnuabi64
+    - env: TARGET=mips64el-unknown-linux-gnuabi64
     - env: TARGET=mips-unknown-linux-gnu
     - env: TARGET=s390x-unknown-linux-gnu
     - env: TARGET=asmjs-unknown-emscripten
