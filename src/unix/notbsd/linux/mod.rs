@@ -11,10 +11,7 @@ pub type ino64_t = u64;
 pub type off64_t = i64;
 pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
-pub type shmatt_t = ::c_ulong;
 pub type mqd_t = ::c_int;
-pub type msgqnum_t = ::c_ulong;
-pub type msglen_t = ::c_ulong;
 pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
@@ -74,21 +71,33 @@ s! {
     }
 
     pub struct pthread_mutex_t {
-        #[cfg(any(target_arch = "mips", target_arch = "arm",
-                  target_arch = "powerpc"))]
+        #[cfg(any(target_arch = "mips",
+                  target_arch = "arm",
+                  target_arch = "powerpc",
+                  all(target_arch = "x86_64",
+                      target_pointer_width = "32")))]
         __align: [::c_long; 0],
-        #[cfg(not(any(target_arch = "mips", target_arch = "arm",
-                      target_arch = "powerpc")))]
+        #[cfg(not(any(target_arch = "mips",
+                      target_arch = "arm",
+                      target_arch = "powerpc",
+                      all(target_arch = "x86_64",
+                          target_pointer_width = "32"))))]
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
     }
 
     pub struct pthread_rwlock_t {
-        #[cfg(any(target_arch = "mips", target_arch = "arm",
-                  target_arch = "powerpc"))]
+        #[cfg(any(target_arch = "mips",
+                  target_arch = "arm",
+                  target_arch = "powerpc",
+                  all(target_arch = "x86_64",
+                      target_pointer_width = "32")))]
         __align: [::c_long; 0],
-        #[cfg(not(any(target_arch = "mips", target_arch = "arm",
-                      target_arch = "powerpc")))]
+        #[cfg(not(any(target_arch = "mips",
+                      target_arch = "arm",
+                      target_arch = "powerpc",
+                      all(target_arch = "x86_64",
+                          target_pointer_width = "32"))))]
         __align: [::c_longlong; 0],
         size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
     }
@@ -163,7 +172,7 @@ s! {
         pub f_favail: ::fsfilcnt_t,
         #[cfg(target_endian = "little")]
         pub f_fsid: ::c_ulong,
-        #[cfg(target_pointer_width = "32")]
+        #[cfg(all(target_pointer_width = "32", not(target_arch = "x86_64")))]
         __f_unused: ::c_int,
         #[cfg(target_endian = "big")]
         pub f_fsid: ::c_ulong,
@@ -240,9 +249,11 @@ s! {
     }
 
     pub struct cpu_set_t {
-        #[cfg(target_pointer_width = "32")]
+        #[cfg(all(target_pointer_width = "32",
+                  not(target_arch = "x86_64")))]
         bits: [u32; 32],
-        #[cfg(target_pointer_width = "64")]
+        #[cfg(not(all(target_pointer_width = "32",
+                      not(target_arch = "x86_64"))))]
         bits: [u64; 16],
     }
 

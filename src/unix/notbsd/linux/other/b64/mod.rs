@@ -5,11 +5,20 @@ pub type time_t = i64;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
-pub type __fsword_t = ::c_long;
+pub type __fsword_t = i64;
+pub type shmatt_t = u64;
+pub type msgqnum_t = u64;
+pub type msglen_t = u64;
+pub type fsblkcnt_t = u64;
+pub type fsfilcnt_t = u64;
+pub type rlim_t = u64;
 
 s! {
     pub struct sigset_t {
-        __val: [::c_ulong; 16],
+        #[cfg(target_pointer_width = "32")]
+        __val: [u32; 32],
+        #[cfg(target_pointer_width = "64")]
+        __val: [u64; 16],
     }
 
     pub struct sysinfo {
@@ -34,17 +43,16 @@ s! {
         pub msg_stime: ::time_t,
         pub msg_rtime: ::time_t,
         pub msg_ctime: ::time_t,
-        __msg_cbytes: ::c_ulong,
+        __msg_cbytes: u64,
         pub msg_qnum: ::msgqnum_t,
         pub msg_qbytes: ::msglen_t,
         pub msg_lspid: ::pid_t,
         pub msg_lrpid: ::pid_t,
-        __glibc_reserved4: ::c_ulong,
-        __glibc_reserved5: ::c_ulong,
+        __glibc_reserved4: u64,
+        __glibc_reserved5: u64,
     }
 }
 
-pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
 pub const O_LARGEFILE: ::c_int = 0;

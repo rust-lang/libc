@@ -10,6 +10,12 @@ pub type off_t = i32;
 pub type blkcnt_t = i32;
 pub type __fsword_t = i32;
 
+pub type fsblkcnt_t = ::c_ulong;
+pub type fsfilcnt_t = ::c_ulong;
+pub type rlim_t = c_ulong;
+pub type shmatt_t = ::c_ulong;
+pub type msgqnum_t = ::c_ulong;
+pub type msglen_t = ::c_ulong;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
 pub type __u64 = ::c_ulonglong;

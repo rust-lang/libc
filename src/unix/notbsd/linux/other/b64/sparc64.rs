@@ -126,6 +126,8 @@ s! {
     }
 }
 
+pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+
 pub const TIOCGSOFTCAR: ::c_ulong = 0x40047464;
 pub const TIOCSSOFTCAR: ::c_ulong = 0x80047465;
 
