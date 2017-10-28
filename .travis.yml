@@ -44,7 +44,8 @@ matrix:
       osx_image: xcode8.3
     - env: TARGET=arm-linux-androideabi
     - env: TARGET=aarch64-linux-android
-    - env: TARGET=i686-linux-android
+    # FIXME(#826) should reenable
+    #- env: TARGET=i686-linux-android
     - env: TARGET=x86_64-linux-android
     - env: TARGET=x86_64-unknown-linux-musl
     - env: TARGET=i686-unknown-linux-musl
