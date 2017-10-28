@@ -160,8 +160,10 @@ pub const STRUNCATE: ::c_int = 80;
 
 // inline comment below appeases style checker
 #[cfg(all(target_env = "msvc", feature = "stdbuild"))] // " if "
-#[link(name = "msvcrt", cfg(not(target_feature = "crt-static")))]
-#[link(name = "libcmt", cfg(target_feature = "crt-static"))]
+#[cfg_attr(stdbuild,
+           link(name = "msvcrt", cfg(not(target_feature = "crt-static"))))]
+#[cfg_attr(stdbuild,
+           link(name = "libcmt", cfg(target_feature = "crt-static")))]
 extern {}
 
 extern {
