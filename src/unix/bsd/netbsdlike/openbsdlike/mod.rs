@@ -651,6 +651,8 @@ pub const SOCK_CLOEXEC: ::c_int = 0x8000;
 pub const SOCK_NONBLOCK: ::c_int = 0x4000;
 pub const SOCK_DNS: ::c_int = 0x1000;
 
+pub const WCONTINUED: ::c_int = 8;
+
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
         status & 0o177777 == 0o177777
