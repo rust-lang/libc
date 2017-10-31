@@ -1024,7 +1024,6 @@ pub const ENOATTR: ::c_int = ::ENODATA;
 pub const SO_ORIGINAL_DST: ::c_int = 80;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const CMSPAR: ::tcflag_t = 0o10000000000;
-pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
