@@ -250,6 +250,10 @@ fn main() {
         }
     }
 
+    if linux {
+        cfg.header("linux/random.h");
+    }
+
     if freebsd {
         cfg.header("pthread_np.h");
         cfg.header("sched.h");
@@ -474,6 +478,10 @@ fn main() {
             "FALLOC_FL_COLLAPSE_RANGE" | "FALLOC_FL_ZERO_RANGE" |
             "FALLOC_FL_INSERT_RANGE" | "FALLOC_FL_UNSHARE_RANGE" |
             "RENAME_NOREPLACE" | "RENAME_EXCHANGE" | "RENAME_WHITEOUT" if musl => true,
+
+            // Both android and musl use old kernel headers
+            // These are constants used in getrandom syscall
+            "GRND_NONBLOCK" | "GRND_RANDOM" if musl || android => true,
 
             // Defined by libattr not libc on linux (hard to test).
             // See constant definition for more details.
