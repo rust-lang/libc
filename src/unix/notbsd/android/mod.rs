@@ -848,6 +848,9 @@ pub const NETLINK_NO_ENOBUFS: ::c_int = 5;
 pub const NETLINK_RX_RING: ::c_int = 6;
 pub const NETLINK_TX_RING: ::c_int = 7;
 
+pub const GRND_NONBLOCK: ::c_uint = 0x0001;
+pub const GRND_RANDOM: ::c_uint = 0x0002;
+
 pub const NLA_F_NESTED: ::c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: ::c_int = 1 << 14;
 pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
