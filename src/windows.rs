@@ -20,6 +20,7 @@ pub type dev_t = u32;
 pub type ino_t = u16;
 pub enum timezone {}
 pub type time64_t = i64;
+pub type pid_t = c_int;
 
 s! {
     // note this is the struct called stat64 in Windows. Not stat, nor stati64.
