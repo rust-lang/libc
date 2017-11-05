@@ -1063,7 +1063,7 @@ pub const IPPROTO_HOPOPTS: ::c_int = 0;
 // IPPROTO_ICMP defined in src/unix/mod.rs
 /// group mgmt protocol
 pub const IPPROTO_IGMP: ::c_int = 2;
-/// gateway^2 (deprecated)
+/// gateway<sup>2</sup> (deprecated)
 pub const IPPROTO_GGP: ::c_int = 3;
 /// for compatibility
 pub const IPPROTO_IPIP: ::c_int = 4;
