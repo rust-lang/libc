@@ -248,6 +248,10 @@ fn main() {
         if !uclibc && !musl && !emscripten {
             cfg.header("linux/dccp.h");
         }
+
+        if !musl || mips {
+            cfg.header("linux/memfd.h");
+        }
     }
 
     if linux {
