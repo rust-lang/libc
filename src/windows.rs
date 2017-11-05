@@ -219,7 +219,7 @@ extern {
     #[link_name = "_getcwd"]
     pub fn getcwd(buf: *mut c_char, size: ::c_int) -> *mut c_char;
     #[link_name = "_getpid"]
-    pub fn getpid() -> ::c_int;
+    pub fn getpid() -> pid_t;
     #[link_name = "_isatty"]
     pub fn isatty(fd: ::c_int) -> ::c_int;
     #[link_name = "_lseek"]
