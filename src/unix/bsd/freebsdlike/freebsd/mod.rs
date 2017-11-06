@@ -703,6 +703,7 @@ pub const SHM_LOCK: ::c_int = 11;
 pub const SHM_UNLOCK: ::c_int = 12;
 pub const SHM_STAT: ::c_int = 13;
 pub const SHM_INFO: ::c_int = 14;
+pub const SHM_ANON: *mut ::c_char = 1 as *mut ::c_char;
 
 // The *_MAXID constants never should've been used outside of the
 // FreeBSD base system.  And with the exception of CTL_P1003_1B_MAXID,
