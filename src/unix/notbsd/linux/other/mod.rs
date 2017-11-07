@@ -548,9 +548,6 @@ pub const AF_MAX: ::c_int = 42;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
-pub const MFD_CLOEXEC: ::c_uint = 0x0001;
-pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
-
 cfg_if! {
     if #[cfg(any(target_arch = "arm", target_arch = "x86",
                  target_arch = "x86_64"))] {

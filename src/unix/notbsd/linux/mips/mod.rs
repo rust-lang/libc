@@ -667,9 +667,6 @@ pub const AF_MAX: ::c_int = 42;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
-pub const MFD_CLOEXEC: ::c_uint = 0x0001;
-pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
-
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,

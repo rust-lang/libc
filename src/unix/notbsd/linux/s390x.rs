@@ -1243,9 +1243,6 @@ pub const SYS_setfsuid: ::c_long = 215;
 pub const SYS_setfsgid: ::c_long = 216;
 pub const SYS_newfstatat: ::c_long = 293;
 
-pub const MFD_CLOEXEC: ::c_uint = 0x0001;
-pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
-
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,
