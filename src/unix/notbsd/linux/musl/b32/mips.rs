@@ -771,6 +771,3 @@ pub const SYS_pwritev2: ::c_long = 4000 + 362;
 pub const AF_MAX: ::c_int = 42;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
-
-pub const MFD_CLOEXEC: ::c_uint = 0x0001;
-pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;

@@ -510,6 +510,7 @@ fn main() {
             "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => true, // Only on MIPS
             "BOTHER" => true,
 
+            "MFD_CLOEXEC" | "MFD_ALLOW_SEALING" if !mips && musl => true,
             _ => false,
         }
     });

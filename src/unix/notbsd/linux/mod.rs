@@ -1028,6 +1028,9 @@ pub const SO_ORIGINAL_DST: ::c_int = 80;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const CMSPAR: ::tcflag_t = 0o10000000000;
 
+pub const MFD_CLOEXEC: ::c_uint = 0x0001;
+pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
