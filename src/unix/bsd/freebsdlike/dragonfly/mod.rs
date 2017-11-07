@@ -386,7 +386,31 @@ pub const NOTE_CHILD: ::uint32_t = 0x00000004;
 pub const SO_SNDSPACE: ::c_int = 0x100a;
 pub const SO_CPUHINT: ::c_int = 0x1030;
 
-//
+// https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/sys/net/if.h#L101
+pub const IFF_UP: ::c_int = 0x1; // interface is up
+pub const IFF_BROADCAST: ::c_int = 0x2; // broadcast address valid
+pub const IFF_DEBUG: ::c_int = 0x4; // turn on debugging
+pub const IFF_LOOPBACK: ::c_int = 0x8; // is a loopback net
+pub const IFF_POINTOPOINT: ::c_int = 0x10; // interface is point-to-point link
+pub const IFF_SMART: ::c_int = 0x20; // interface manages own routes
+pub const IFF_RUNNING: ::c_int = 0x40; // resources allocated
+pub const IFF_NOARP: ::c_int = 0x80; // no address resolution protocol
+pub const IFF_PROMISC: ::c_int = 0x100; // receive all packets
+pub const IFF_ALLMULTI: ::c_int = 0x200; // receive all multicast packets
+pub const IFF_OACTIVE_COMPAT: ::c_int = 0x400; // was transmission in progress
+pub const IFF_SIMPLEX: ::c_int = 0x800; // can't hear own transmissions
+pub const IFF_LINK0: ::c_int = 0x1000; // per link layer defined bit
+pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
+pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
+pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
+pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
+pub const IFF_POLLING_COMPAT: ::c_int = 0x10000; // was interface is in polling mode
+pub const IFF_PPROMISC: ::c_int = 0x20000; // user-requested promisc mode
+pub const IFF_MONITOR: ::c_int = 0x40000; // user-requested monitor mode
+pub const IFF_STATICARP: ::c_int = 0x80000; // static ARP
+pub const IFF_NPOLLING: ::c_int = 0x100000; // interface is in polling mode
+pub const IFF_IDIRECT: ::c_int = 0x200000; // direct input
+
 // sys/netinet/in.h
 // Protocols (RFC 1700)
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
@@ -590,7 +614,7 @@ pub const IPPROTO_GMTP: ::c_int = 100;
 /// payload compression (IPComp)
 pub const IPPROTO_IPCOMP: ::c_int = 108;
 
-/* 101-254: Partly Unassigned */
+// 101-254: Partly Unassigned
 /// Protocol Independent Mcast
 pub const IPPROTO_PIM: ::c_int = 103;
 /// CARP
@@ -600,8 +624,8 @@ pub const IPPROTO_PGM: ::c_int = 113;
 /// PFSYNC
 pub const IPPROTO_PFSYNC: ::c_int = 240;
 
-/* 255: Reserved */
-/* BSD Private, local use, namespace incursion, no longer used */
+// 255: Reserved
+// BSD Private, local use, namespace incursion, no longer used
 /// divert pseudo-protocol
 pub const IPPROTO_DIVERT: ::c_int = 254;
 pub const IPPROTO_MAX: ::c_int = 256;
@@ -653,12 +677,8 @@ pub const LC_MONETARY_MASK: ::c_int = (1 << 2);
 pub const LC_NUMERIC_MASK: ::c_int = (1 << 3);
 pub const LC_TIME_MASK: ::c_int = (1 << 4);
 pub const LC_MESSAGES_MASK: ::c_int = (1 << 5);
-pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
-                               | LC_CTYPE_MASK
-                               | LC_MESSAGES_MASK
-                               | LC_MONETARY_MASK
-                               | LC_NUMERIC_MASK
-                               | LC_TIME_MASK;
+pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK | LC_CTYPE_MASK | LC_MESSAGES_MASK | LC_MONETARY_MASK |
+    LC_NUMERIC_MASK | LC_TIME_MASK;
 
 pub const TIOCSIG: ::c_uint = 0x2000745f;
 pub const BTUARTDISC: ::c_int = 0x7;
@@ -669,11 +689,11 @@ pub const TIOCMODS: ::c_ulong = 0x80047404;
 pub const TIOCREMOTE: ::c_ulong = 0x80047469;
 
 // Constants used by "at" family of system calls.
-pub const AT_FDCWD:            ::c_int = 0xFFFAFDCD; // invalid file descriptor
+pub const AT_FDCWD: ::c_int = 0xFFFAFDCD; // invalid file descriptor
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 1;
-pub const AT_REMOVEDIR:        ::c_int = 2;
-pub const AT_EACCESS:          ::c_int = 4;
-pub const AT_SYMLINK_FOLLOW:   ::c_int = 8;
+pub const AT_REMOVEDIR: ::c_int = 2;
+pub const AT_EACCESS: ::c_int = 4;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 8;
 
 pub const VCHECKPT: usize = 19;
 
@@ -687,17 +707,15 @@ pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 125;
 pub const _SC_THREAD_ROBUST_PRIO_INHERIT: ::c_int = 126;
 pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 127;
 
-extern {
-    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
+extern "C" {
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
 
     pub fn setutxdb(_type: ::c_uint, file: *mut ::c_char) -> ::c_int;
 
-    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
-                            timeout: *mut ::timespec) -> ::c_int;
+    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb, timeout: *mut ::timespec) -> ::c_int;
 
     pub fn freelocale(loc: ::locale_t);
 }
