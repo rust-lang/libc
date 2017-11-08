@@ -904,7 +904,6 @@ pub const IFF_INACTIVE: ::c_int = 0x0040000000; // Functioning but not used
 pub const IFF_OFFLINE: ::c_int = 0x0080000000; // Interface is offline
 pub const IFF_COS_ENABLED: ::c_int = 0x0200000000; // If CoS marking is supported
 
-pub const IFF_COS_ENABLED: ::c_int = 0x0200000000; // If CoS marking is supported
 pub const IFF_PREFERRED: ::c_int = 0x0400000000; // Prefer as source address
 pub const IFF_TEMPORARY: ::c_int = 0x0800000000; // RFC3041
 pub const IFF_FIXEDMTU: ::c_int = 0x1000000000; // MTU set with SIOCSLIFMTU
