@@ -880,12 +880,14 @@ pub const IFF_PROMISC: ::c_int = 0x0000000100; // Receive all packets
 pub const IFF_ALLMULTI: ::c_int = 0x0000000200; // Receive all multicast pkts
 pub const IFF_INTELLIGENT: ::c_int = 0x0000000400; // Protocol code on board
 pub const IFF_MULTICAST: ::c_int = 0x0000000800; // Supports multicast
-pub const IFF_MULTI_BCAST: ::c_int = 0x0000001000; // Multicast using broadcst. add.
+// Multicast using broadcst. add.
+pub const IFF_MULTI_BCAST: ::c_int = 0x0000001000;
 pub const IFF_UNNUMBERED: ::c_int = 0x0000002000; // Non-unique address
 pub const IFF_DHCPRUNNING: ::c_int = 0x0000004000; // DHCP controls interface
 pub const IFF_PRIVATE: ::c_int = 0x0000008000; // Do not advertise
 pub const IFF_NOXMIT: ::c_int = 0x0000010000; // Do not transmit pkts
-pub const IFF_NOLOCAL: ::c_int = 0x0000020000; // No address - just on-link subnet
+// No address - just on-link subnet
+pub const IFF_NOLOCAL: ::c_int = 0x0000020000;
 pub const IFF_DEPRECATED: ::c_int = 0x0000040000; // Address is deprecated
 pub const IFF_ADDRCONF: ::c_int = 0x0000080000; // Addr. from stateless addrconf
 pub const IFF_ROUTER: ::c_int = 0x0000100000; // Router on interface
@@ -899,7 +901,8 @@ pub const IFF_FAILED: ::c_int = 0x0010000000; // Interface has failed
 pub const IFF_STANDBY: ::c_int = 0x0020000000; // Interface is a hot-spare
 pub const IFF_INACTIVE: ::c_int = 0x0040000000; // Functioning but not used
 pub const IFF_OFFLINE: ::c_int = 0x0080000000; // Interface is offline
-pub const IFF_COS_ENABLED: ::c_int = 0x0200000000; // If CoS marking is supported
+// If CoS marking is supported
+pub const IFF_COS_ENABLED: ::c_int = 0x0200000000;
 pub const IFF_PREFERRED: ::c_int = 0x0400000000; // Prefer as source address
 pub const IFF_TEMPORARY: ::c_int = 0x0800000000; // RFC3041
 pub const IFF_FIXEDMTU: ::c_int = 0x1000000000; // MTU set with SIOCSLIFMTU

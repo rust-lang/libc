@@ -404,7 +404,8 @@ pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
 pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
-pub const IFF_POLLING_COMPAT: ::c_int = 0x10000; // was interface is in polling mode
+// was interface is in polling mode
+pub const IFF_POLLING_COMPAT: ::c_int = 0x10000;
 pub const IFF_PPROMISC: ::c_int = 0x20000; // user-requested promisc mode
 pub const IFF_MONITOR: ::c_int = 0x40000; // user-requested monitor mode
 pub const IFF_STATICARP: ::c_int = 0x80000; // static ARP

@@ -443,7 +443,8 @@ pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
 pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // (i) supports multicast
-pub const IFF_CANTCONFIG: ::c_int = 0x10000; // (i) unconfigurable using ioctl(2)
+// (i) unconfigurable using ioctl(2)
+pub const IFF_CANTCONFIG: ::c_int = 0x10000;
 pub const IFF_PPROMISC: ::c_int = 0x20000; // (n) user-requested promisc mode
 pub const IFF_MONITOR: ::c_int = 0x40000; // (n) user-requested monitor mode
 pub const IFF_STATICARP: ::c_int = 0x80000; // (n) static ARP
