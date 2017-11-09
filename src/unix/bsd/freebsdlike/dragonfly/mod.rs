@@ -386,6 +386,31 @@ pub const NOTE_CHILD: ::uint32_t = 0x00000004;
 pub const SO_SNDSPACE: ::c_int = 0x100a;
 pub const SO_CPUHINT: ::c_int = 0x1030;
 
+// https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/sys/net/if.h#L101
+pub const IFF_UP: ::c_int = 0x1; // interface is up
+pub const IFF_BROADCAST: ::c_int = 0x2; // broadcast address valid
+pub const IFF_DEBUG: ::c_int = 0x4; // turn on debugging
+pub const IFF_LOOPBACK: ::c_int = 0x8; // is a loopback net
+pub const IFF_POINTOPOINT: ::c_int = 0x10; // interface is point-to-point link
+pub const IFF_SMART: ::c_int = 0x20; // interface manages own routes
+pub const IFF_RUNNING: ::c_int = 0x40; // resources allocated
+pub const IFF_NOARP: ::c_int = 0x80; // no address resolution protocol
+pub const IFF_PROMISC: ::c_int = 0x100; // receive all packets
+pub const IFF_ALLMULTI: ::c_int = 0x200; // receive all multicast packets
+pub const IFF_OACTIVE_COMPAT: ::c_int = 0x400; // was transmission in progress
+pub const IFF_SIMPLEX: ::c_int = 0x800; // can't hear own transmissions
+pub const IFF_LINK0: ::c_int = 0x1000; // per link layer defined bit
+pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
+pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
+pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
+pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
+pub const IFF_POLLING_COMPAT: ::c_int = 0x10000; // was interface is in polling mode
+pub const IFF_PPROMISC: ::c_int = 0x20000; // user-requested promisc mode
+pub const IFF_MONITOR: ::c_int = 0x40000; // user-requested monitor mode
+pub const IFF_STATICARP: ::c_int = 0x80000; // static ARP
+pub const IFF_NPOLLING: ::c_int = 0x100000; // interface is in polling mode
+pub const IFF_IDIRECT: ::c_int = 0x200000; // direct input
+
 //
 // sys/netinet/in.h
 // Protocols (RFC 1700)

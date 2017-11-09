@@ -448,8 +448,6 @@ pub const MSG_MCAST: ::c_int = 0x200;
 pub const MSG_NOSIGNAL: ::c_int = 0x400;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x800;
 
-pub const IFF_LOOPBACK: ::c_int = 0x8;
-
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
