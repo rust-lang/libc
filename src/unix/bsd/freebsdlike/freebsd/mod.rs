@@ -425,6 +425,32 @@ pub const AF_INET6_SDP: ::c_int = 42;
 #[doc(hidden)]
 pub const AF_MAX: ::c_int = 42;
 
+// https://github.com/freebsd/freebsd/blob/master/sys/net/if.h#L140
+pub const IFF_UP: ::c_int = 0x1; // (n) interface is up
+pub const IFF_BROADCAST: ::c_int = 0x2; // (i) broadcast address valid
+pub const IFF_DEBUG: ::c_int = 0x4; // (n) turn on debugging
+pub const IFF_LOOPBACK: ::c_int = 0x8; // (i) is a loopback net
+pub const IFF_POINTOPOINT: ::c_int = 0x10; // (i) is a point-to-point link
+// 0x20           was IFF_SMART
+pub const IFF_DRV_RUNNING: ::c_int = 0x40; // (d) resources allocated
+pub const IFF_NOARP: ::c_int = 0x80; // (n) no address resolution protocol
+pub const IFF_PROMISC: ::c_int = 0x100; // (n) receive all packets
+pub const IFF_ALLMULTI: ::c_int = 0x200; // (n) receive all multicast packets
+pub const IFF_DRV_OACTIVE: ::c_int = 0x400; // (d) tx hardware queue is full
+pub const IFF_SIMPLEX: ::c_int = 0x800; // (i) can't hear own transmissions
+pub const IFF_LINK0: ::c_int = 0x1000; // per link layer defined bit
+pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
+pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
+pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
+pub const IFF_MULTICAST: ::c_int = 0x8000; // (i) supports multicast
+// (i) unconfigurable using ioctl(2)
+pub const IFF_CANTCONFIG: ::c_int = 0x10000;
+pub const IFF_PPROMISC: ::c_int = 0x20000; // (n) user-requested promisc mode
+pub const IFF_MONITOR: ::c_int = 0x40000; // (n) user-requested monitor mode
+pub const IFF_STATICARP: ::c_int = 0x80000; // (n) static ARP
+pub const IFF_DYING: ::c_int = 0x200000; // (n) interface is winding down
+pub const IFF_RENAMING: ::c_int = 0x400000; // (n) interface is being renamed
+
 // sys/netinet/in.h
 // Protocols (RFC 1700)
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs

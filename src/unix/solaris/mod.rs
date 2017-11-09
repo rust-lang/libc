@@ -867,7 +867,48 @@ pub const SO_TYPE: ::c_int = 0x1008;
 
 pub const MSG_PEEK: ::c_int = 0x2;
 
-pub const IFF_LOOPBACK: ::c_int = 0x8;
+// https://docs.oracle.com/cd/E23824_01/html/821-1475/if-7p.html
+pub const IFF_UP: ::c_int = 0x0000000001; // Address is up
+pub const IFF_BROADCAST: ::c_int = 0x0000000002; // Broadcast address valid
+pub const IFF_DEBUG: ::c_int = 0x0000000004; // Turn on debugging
+pub const IFF_LOOPBACK: ::c_int = 0x0000000008; // Loopback net
+pub const IFF_POINTOPOINT: ::c_int = 0x0000000010; // Interface is p-to-p
+pub const IFF_NOTRAILERS: ::c_int = 0x0000000020; // Avoid use of trailers
+pub const IFF_RUNNING: ::c_int = 0x0000000040; // Resources allocated
+pub const IFF_NOARP: ::c_int = 0x0000000080; // No address res. protocol
+pub const IFF_PROMISC: ::c_int = 0x0000000100; // Receive all packets
+pub const IFF_ALLMULTI: ::c_int = 0x0000000200; // Receive all multicast pkts
+pub const IFF_INTELLIGENT: ::c_int = 0x0000000400; // Protocol code on board
+pub const IFF_MULTICAST: ::c_int = 0x0000000800; // Supports multicast
+// Multicast using broadcst. add.
+pub const IFF_MULTI_BCAST: ::c_int = 0x0000001000;
+pub const IFF_UNNUMBERED: ::c_int = 0x0000002000; // Non-unique address
+pub const IFF_DHCPRUNNING: ::c_int = 0x0000004000; // DHCP controls interface
+pub const IFF_PRIVATE: ::c_int = 0x0000008000; // Do not advertise
+pub const IFF_NOXMIT: ::c_int = 0x0000010000; // Do not transmit pkts
+// No address - just on-link subnet
+pub const IFF_NOLOCAL: ::c_int = 0x0000020000;
+pub const IFF_DEPRECATED: ::c_int = 0x0000040000; // Address is deprecated
+pub const IFF_ADDRCONF: ::c_int = 0x0000080000; // Addr. from stateless addrconf
+pub const IFF_ROUTER: ::c_int = 0x0000100000; // Router on interface
+pub const IFF_NONUD: ::c_int = 0x0000200000; // No NUD on interface
+pub const IFF_ANYCAST: ::c_int = 0x0000400000; // Anycast address
+pub const IFF_NORTEXCH: ::c_int = 0x0000800000; // Don't xchange rout. info
+pub const IFF_IPV4: ::c_int = 0x0001000000; // IPv4 interface
+pub const IFF_IPV6: ::c_int = 0x0002000000; // IPv6 interface
+pub const IFF_NOFAILOVER: ::c_int = 0x0008000000; // in.mpathd test address
+pub const IFF_FAILED: ::c_int = 0x0010000000; // Interface has failed
+pub const IFF_STANDBY: ::c_int = 0x0020000000; // Interface is a hot-spare
+pub const IFF_INACTIVE: ::c_int = 0x0040000000; // Functioning but not used
+pub const IFF_OFFLINE: ::c_int = 0x0080000000; // Interface is offline
+// If CoS marking is supported
+pub const IFF_COS_ENABLED: ::c_int = 0x0200000000;
+pub const IFF_PREFERRED: ::c_int = 0x0400000000; // Prefer as source address
+pub const IFF_TEMPORARY: ::c_int = 0x0800000000; // RFC3041
+pub const IFF_FIXEDMTU: ::c_int = 0x1000000000; // MTU set with SIOCSLIFMTU
+pub const IFF_VIRTUAL: ::c_int = 0x2000000000; // Cannot send/receive pkts
+pub const IFF_DUPLICATE: ::c_int = 0x4000000000; // Local address in use
+pub const IFF_IPMP: ::c_int = 0x8000000000; // IPMP IP interface
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;

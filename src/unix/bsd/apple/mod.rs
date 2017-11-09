@@ -1443,7 +1443,24 @@ pub const MSG_RCVMORE: ::c_int = 0x4000;
 pub const SCM_TIMESTAMP: ::c_int = 0x02;
 pub const SCM_CREDS: ::c_int = 0x03;
 
-pub const IFF_LOOPBACK: ::c_int = 0x8;
+/// https://github.com/aosm/xnu/blob/master/bsd/net/if.h#L140-L156
+pub const IFF_UP: ::c_int          = 0x1;  // interface is up
+pub const IFF_BROADCAST: ::c_int   = 0x2;  // broadcast address valid
+pub const IFF_DEBUG: ::c_int       = 0x4;  // turn on debugging
+pub const IFF_LOOPBACK: ::c_int    = 0x8;  // is a loopback net
+pub const IFF_POINTOPOINT: ::c_int = 0x10; // interface is point-to-point link
+pub const IFF_NOTRAILERS: ::c_int  = 0x20; // obsolete: avoid use of trailers
+pub const IFF_RUNNING: ::c_int     = 0x40; // resources allocated
+pub const IFF_NOARP: ::c_int       = 0x80; // no address resolution protocol
+pub const IFF_PROMISC: ::c_int     = 0x100;// receive all packets
+pub const IFF_ALLMULTI: ::c_int    = 0x200;// receive all multicast packets
+pub const IFF_OACTIVE: ::c_int     = 0x400;// transmission in progress
+pub const IFF_SIMPLEX: ::c_int     = 0x800;// can't hear own transmissions
+pub const IFF_LINK0: ::c_int       = 0x1000;// per link layer defined bit
+pub const IFF_LINK1: ::c_int   = 0x2000;// per link layer defined bit
+pub const IFF_LINK2: ::c_int   = 0x4000;// per link layer defined bit
+pub const IFF_ALTPHYS: ::c_int = IFF_LINK2;// use alternate physical connection
+pub const IFF_MULTICAST: ::c_int = 0x8000;// supports multicast
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;

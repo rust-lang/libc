@@ -346,6 +346,24 @@ pub const SO_TIMESTAMP: ::c_int = 0x2000;
 pub const SO_OVERFLOWED: ::c_int = 0x1009;
 pub const SO_NOHEADER: ::c_int = 0x100a;
 
+// https://github.com/NetBSD/src/blob/trunk/sys/net/if.h#L373
+pub const IFF_UP: ::c_int = 0x0001; // interface is up
+pub const IFF_BROADCAST: ::c_int = 0x0002; // broadcast address valid
+pub const IFF_DEBUG: ::c_int = 0x0004; // turn on debugging
+pub const IFF_LOOPBACK: ::c_int = 0x0008; // is a loopback net
+pub const IFF_POINTOPOINT: ::c_int = 0x0010; // interface is point-to-point link
+pub const IFF_NOTRAILERS: ::c_int = 0x0020; // avoid use of trailers
+pub const IFF_RUNNING: ::c_int = 0x0040; // resources allocated
+pub const IFF_NOARP: ::c_int = 0x0080; // no address resolution protocol
+pub const IFF_PROMISC: ::c_int = 0x0100; // receive all packets
+pub const IFF_ALLMULTI: ::c_int = 0x0200; // receive all multicast packets
+pub const IFF_OACTIVE: ::c_int = 0x0400; // transmission in progress
+pub const IFF_SIMPLEX: ::c_int = 0x0800; // can't hear own transmissions
+pub const IFF_LINK0: ::c_int = 0x1000; // per link layer defined bit
+pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
+pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
+pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
+
 // sys/netinet/in.h
 // Protocols (RFC 1700)
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
