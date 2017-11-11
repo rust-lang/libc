@@ -23,6 +23,10 @@ pub type nl_item = ::c_int;
 pub type id_t = ::c_uint;
 pub type sem_t = ::c_int;
 pub type idtype_t = ::c_uint;
+pub type integer_t = ::c_int;
+pub type cpu_type_t = integer_t;
+pub type cpu_subtype_t = integer_t;
+pub type vm_prot_t = ::c_int;
 
 pub enum timezone {}
 
@@ -417,6 +421,60 @@ s! {
         pub cr_uid: ::uid_t,
         pub cr_ngroups: ::c_short,
         pub cr_groups: [::gid_t;16]
+    }
+
+    pub struct mach_header {
+        pub magic: u32,
+        pub cputype: cpu_type_t,
+        pub cpusubtype: cpu_subtype_t,
+        pub filetype: u32,
+        pub ncmds: u32,
+        pub sizeofcmds: u32,
+        pub flags: u32,
+    }
+
+    pub struct mach_header_64 {
+        pub magic: u32,
+        pub cputype: cpu_type_t,
+        pub cpusubtype: cpu_subtype_t,
+        pub filetype: u32,
+        pub ncmds: u32,
+        pub sizeofcmds: u32,
+        pub flags: u32,
+        pub reserved: u32,
+    }
+
+    pub struct segment_command {
+        pub cmd: u32,
+        pub cmdsize: u32,
+        pub segname: [::c_char; 16],
+        pub vmaddr: u32,
+        pub vmsize: u32,
+        pub fileoff: u32,
+        pub filesize: u32,
+        pub maxprot: vm_prot_t,
+        pub initprot: vm_prot_t,
+        pub nsects: u32,
+        pub flags: u32,
+    }
+
+    pub struct segment_command_64 {
+        pub cmd: u32,
+        pub cmdsize: u32,
+        pub segname: [::c_char; 16],
+        pub vmaddr: u64,
+        pub vmsize: u64,
+        pub fileoff: u64,
+        pub filesize: u64,
+        pub maxprot: vm_prot_t,
+        pub initprot: vm_prot_t,
+        pub nsects: u32,
+        pub flags: u32,
+    }
+
+    pub struct load_command {
+        pub cmd: u32,
+        pub cmdsize: u32,
     }
 }
 
@@ -1984,6 +2042,12 @@ pub const MAXTHREADNAMESIZE: usize = 64;
 
 pub const XUCRED_VERSION: ::c_uint = 0;
 
+pub const LC_SEGMENT: u32 = 0x1;
+pub const LC_SEGMENT_64: u32 = 0x19;
+
+pub const MH_MAGIC: u32 = 0xfeedface;
+pub const MH_MAGIC_64: u32 = 0xfeedfacf;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
@@ -2175,6 +2239,10 @@ extern {
     pub fn brk(addr: *const ::c_void) -> *mut ::c_void;
     pub fn sbrk(increment: ::c_int) -> *mut ::c_void;
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
+    pub fn _dyld_image_count() -> u32;
+    pub fn _dyld_get_image_header(image_index: u32) -> *const mach_header;
+    pub fn _dyld_get_image_vmaddr_slide(image_index: u32) -> ::intptr_t;
+    pub fn _dyld_get_image_name(image_index: u32) -> *const ::c_char;
 }
 
 cfg_if! {
