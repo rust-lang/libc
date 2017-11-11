@@ -256,6 +256,8 @@ fn main() {
 
     if linux {
         cfg.header("linux/random.h");
+        cfg.header("elf.h");
+        cfg.header("link.h");
     }
 
     if freebsd {
@@ -301,7 +303,9 @@ fn main() {
             "FILE" |
             "fd_set" |
             "Dl_info" |
-            "DIR" => ty.to_string(),
+            "DIR" |
+            "Elf32_Phdr" |
+            "Elf64_Phdr" => ty.to_string(),
 
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
