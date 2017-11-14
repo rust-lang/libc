@@ -679,6 +679,9 @@ cfg_if! {
     if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
+    } else if #[cfg(target_arch = "aarch64")] {
+        mod aarch64;
+        pub use self::aarch64::*;
     } else {
         // Only tested on ARM so far. Other platforms might have different
         // definitions for types and constants.
