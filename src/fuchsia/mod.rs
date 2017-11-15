@@ -3311,10 +3311,10 @@ pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
 
-pub const O_TRUNC: ::c_int = 512;
-pub const O_NOATIME: ::c_int = 0o1000000;
-pub const O_CLOEXEC: ::c_int = 0x80000;
-pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
+pub const O_TRUNC:   ::c_int = 0x00040000;
+pub const O_NOATIME: ::c_int = 0x00002000;
+pub const O_CLOEXEC: ::c_int = 0x00000100;
+pub const O_TMPFILE: ::c_int = 0x00004000;
 
 pub const EBFONT: ::c_int = 59;
 pub const ENOSTR: ::c_int = 60;
@@ -3343,10 +3343,10 @@ pub const EFD_CLOEXEC: ::c_int = 0x80000;
 pub const BUFSIZ: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 10000;
 pub const FOPEN_MAX: ::c_uint = 1000;
-pub const O_PATH: ::c_int = 0o10000000;
-pub const O_EXEC: ::c_int = 0o10000000;
-pub const O_SEARCH: ::c_int = 0o10000000;
-pub const O_ACCMODE: ::c_int = 0o10000003;
+pub const O_PATH: ::c_int = 0x00400000;
+pub const O_EXEC: ::c_int = O_PATH;
+pub const O_SEARCH: ::c_int = O_PATH;
+pub const O_ACCMODE: ::c_int = (03 | O_SEARCH);
 pub const O_NDELAY: ::c_int = O_NONBLOCK;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
@@ -3674,7 +3674,7 @@ s! {
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 
-pub const O_ASYNC: ::c_int = 0x2000;
+pub const O_ASYNC: ::c_int = 0x00000400;
 
 pub const FIOCLEX: ::c_int = 0x5451;
 pub const FIONBIO: ::c_int = 0x5421;
@@ -3685,14 +3685,14 @@ pub const RLIMIT_AS: ::c_int = 9;
 pub const RLIMIT_NPROC: ::c_int = 6;
 pub const RLIMIT_MEMLOCK: ::c_int = 8;
 
-pub const O_APPEND: ::c_int = 1024;
-pub const O_CREAT: ::c_int = 64;
-pub const O_EXCL: ::c_int = 128;
-pub const O_NOCTTY: ::c_int = 256;
-pub const O_NONBLOCK: ::c_int = 2048;
-pub const O_SYNC: ::c_int = 1052672;
-pub const O_RSYNC: ::c_int = 1052672;
-pub const O_DSYNC: ::c_int = 4096;
+pub const O_APPEND: ::c_int = 0x00100000;
+pub const O_CREAT:  ::c_int = 0x00010000;
+pub const O_EXCL:   ::c_int = 0x00020000;
+pub const O_NOCTTY: ::c_int = 0x00000200;
+pub const O_NONBLOCK: ::c_int = 0x00000010;
+pub const O_SYNC:   ::c_int = (0x00000040 | O_DSYNC);
+pub const O_RSYNC:  ::c_int = O_SYNC;
+pub const O_DSYNC:  ::c_int = 0x00000020;
 
 pub const SOCK_NONBLOCK: ::c_int = 2048;
 
@@ -3930,3 +3930,8 @@ cfg_if! {
         // Unknown target_arch
     }
 }
+
+pub const O_DIRECTORY: ::c_int = 0x00080000;
+pub const O_DIRECT:    ::c_int = 0x00000800;
+pub const O_LARGEFILE: ::c_int = 0x00001000;
+pub const O_NOFOLLOW:  ::c_int = 0x00000080;

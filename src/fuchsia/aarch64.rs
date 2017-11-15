@@ -62,11 +62,6 @@ s! {
     }
 }
 
-pub const O_DIRECT: ::c_int = 0x10000;
-pub const O_DIRECTORY: ::c_int = 0x4000;
-pub const O_LARGEFILE: ::c_int = 0x20000;
-pub const O_NOFOLLOW: ::c_int = 0x8000;
-
 pub const MINSIGSTKSZ: ::size_t = 6144;
 pub const SIGSTKSZ: ::size_t = 12288;
 
