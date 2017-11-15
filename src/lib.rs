@@ -286,6 +286,9 @@ cfg_if! {
     } else if #[cfg(target_os = "redox")] {
         mod redox;
         pub use redox::*;
+    } else if #[cfg(target_os = "fuchisa")] {
+        mod fuchsia;
+        pub use fuchsia::*;
     } else if #[cfg(unix)] {
         mod unix;
         pub use unix::*;
