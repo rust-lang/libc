@@ -87,10 +87,42 @@ pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
 
-pub const O_TRUNC: ::c_int = 512;
-pub const O_NOATIME: ::c_int = 0o1000000;
-pub const O_CLOEXEC: ::c_int = 0x80000;
-pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
+cfg_if! {
+    if #[cfg(target_os = "fuchsia")] {
+        pub const O_TRUNC: ::c_int = 0x00040000;
+        pub const O_NOATIME: ::c_int = 0x00002000;
+        pub const O_CLOEXEC: ::c_int = 0x00000100;
+        pub const O_TMPFILE: ::c_int = 0x00004000;
+        pub const O_PATH: ::c_int = 0x00400000;
+        pub const O_EXEC: ::c_int = O_PATH;
+        pub const O_SEARCH: ::c_int = O_PATH;
+        pub const O_ACCMODE: ::c_int = (03 | O_SEARCH);
+        pub const O_NDELAY: ::c_int = O_NONBLOCK;
+
+        // These constants are typically defined per-architecture, but they're
+        // the same across all fuchsia architectures.
+        pub const O_DIRECTORY: ::c_int = 0x00080000;
+        pub const O_DIRECT:    ::c_int = 0x00000800;
+        pub const O_LARGEFILE: ::c_int = 0x00001000;
+        pub const O_NOFOLLOW:  ::c_int = 0x00000080;
+
+        // These constants are fuchsia-specific.
+        // They don't appear in libc on other platforms.
+        pub const O_NOREMOTE: ::c_int = 0x00200000;
+        pub const O_ADMIN:    ::c_int = 0x00000004;
+        pub const O_PIPELINE: ::c_int = 0x80000000;
+    } else {
+        pub const O_TRUNC: ::c_int = 512;
+        pub const O_NOATIME: ::c_int = 0o1000000;
+        pub const O_CLOEXEC: ::c_int = 0x80000;
+        pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
+        pub const O_PATH: ::c_int = 0o10000000;
+        pub const O_EXEC: ::c_int = 0o10000000;
+        pub const O_SEARCH: ::c_int = 0o10000000;
+        pub const O_ACCMODE: ::c_int = 0o10000003;
+        pub const O_NDELAY: ::c_int = O_NONBLOCK;
+    }
+}
 
 pub const EBFONT: ::c_int = 59;
 pub const ENOSTR: ::c_int = 60;
@@ -119,11 +151,6 @@ pub const EFD_CLOEXEC: ::c_int = 0x80000;
 pub const BUFSIZ: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 10000;
 pub const FOPEN_MAX: ::c_uint = 1000;
-pub const O_PATH: ::c_int = 0o10000000;
-pub const O_EXEC: ::c_int = 0o10000000;
-pub const O_SEARCH: ::c_int = 0o10000000;
-pub const O_ACCMODE: ::c_int = 0o10000003;
-pub const O_NDELAY: ::c_int = O_NONBLOCK;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;

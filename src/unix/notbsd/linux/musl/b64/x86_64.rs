@@ -437,10 +437,16 @@ pub const FS: ::c_int = 25;
 pub const GS: ::c_int = 26;
 
 pub const MAP_32BIT: ::c_int = 0x0040;
-pub const O_DIRECT: ::c_int = 0x4000;
-pub const O_DIRECTORY: ::c_int = 0x10000;
-pub const O_LARGEFILE: ::c_int = 0;
-pub const O_NOFOLLOW: ::c_int = 0x20000;
+
+cfg_if! {
+    if #[cfg(not(target_os = "fuchsia"))] {
+        pub const O_DIRECT: ::c_int = 0x4000;
+        pub const O_DIRECTORY: ::c_int = 0x10000;
+        pub const O_LARGEFILE: ::c_int = 0;
+        pub const O_NOFOLLOW: ::c_int = 0x20000;
+    } else {
+    }
+}
 
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;

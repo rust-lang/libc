@@ -134,8 +134,6 @@ s! {
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 
-pub const O_ASYNC: ::c_int = 0x2000;
-
 pub const FIOCLEX: ::c_int = 0x5451;
 pub const FIONBIO: ::c_int = 0x5421;
 
@@ -145,14 +143,29 @@ pub const RLIMIT_AS: ::c_int = 9;
 pub const RLIMIT_NPROC: ::c_int = 6;
 pub const RLIMIT_MEMLOCK: ::c_int = 8;
 
-pub const O_APPEND: ::c_int = 1024;
-pub const O_CREAT: ::c_int = 64;
-pub const O_EXCL: ::c_int = 128;
-pub const O_NOCTTY: ::c_int = 256;
-pub const O_NONBLOCK: ::c_int = 2048;
-pub const O_SYNC: ::c_int = 1052672;
-pub const O_RSYNC: ::c_int = 1052672;
-pub const O_DSYNC: ::c_int = 4096;
+cfg_if! {
+    if #[cfg(target_os = "fuchsia")] {
+        pub const O_ASYNC:  ::c_int = 0x00000400;
+        pub const O_APPEND: ::c_int = 0x00100000;
+        pub const O_CREAT:  ::c_int = 0x00010000;
+        pub const O_EXCL:   ::c_int = 0x00020000;
+        pub const O_NOCTTY: ::c_int = 0x00000200;
+        pub const O_NONBLOCK: ::c_int = 0x00000010;
+        pub const O_SYNC:   ::c_int = (0x00000040 | O_DSYNC);
+        pub const O_RSYNC:  ::c_int = O_SYNC;
+        pub const O_DSYNC:  ::c_int = 0x00000020;
+    } else {
+        pub const O_ASYNC: ::c_int = 0x2000;
+        pub const O_APPEND: ::c_int = 1024;
+        pub const O_CREAT: ::c_int = 64;
+        pub const O_EXCL: ::c_int = 128;
+        pub const O_NOCTTY: ::c_int = 256;
+        pub const O_NONBLOCK: ::c_int = 2048;
+        pub const O_SYNC: ::c_int = 1052672;
+        pub const O_RSYNC: ::c_int = 1052672;
+        pub const O_DSYNC: ::c_int = 4096;
+    }
+}
 
 pub const SOCK_NONBLOCK: ::c_int = 2048;
 
