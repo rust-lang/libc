@@ -714,6 +714,9 @@ pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 125;
 pub const _SC_THREAD_ROBUST_PRIO_INHERIT: ::c_int = 126;
 pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 127;
 
+pub const WCONTINUED: ::c_int = 4;
+pub const WSTOPPED: ::c_int = 0o177;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
