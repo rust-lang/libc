@@ -174,6 +174,7 @@ pub const RAND_MAX: ::c_int = 0x7fff_ffff;
 pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 pub const SIGSTKSZ: ::size_t = 40960;
 pub const MADV_INVAL: ::c_int = 10;
+pub const MADV_SETMAP: ::c_int = 11;
 pub const O_CLOEXEC: ::c_int = 0x00020000;
 pub const O_DIRECTORY: ::c_int = 0x08000000;
 pub const F_GETLK: ::c_int = 7;
