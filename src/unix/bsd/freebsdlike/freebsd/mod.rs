@@ -861,6 +861,9 @@ extern {
     pub fn msgsnd(msqid: ::c_int, msgp: *const ::c_void, msgsz: ::size_t,
         msgflg: ::c_int) -> ::c_int;
     pub fn cfmakesane(termios: *mut ::termios);
+    pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
+                   envp: *const *const ::c_char)
+                   -> ::c_int;
 }
 
 cfg_if! {
