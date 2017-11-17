@@ -1127,6 +1127,7 @@ extern {
                           attr: *const ::pthread_attr_t,
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
+    pub fn __errno() -> *mut ::c_int;
 }
 
 cfg_if! {
