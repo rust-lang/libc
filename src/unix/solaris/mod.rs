@@ -176,7 +176,7 @@ s! {
         pub d_ino: ::ino_t,
         pub d_off: ::off_t,
         pub d_reclen: u16,
-        pub d_name: [::c_char; 1]
+        pub d_name: [::c_char; 3]
     }
 
     pub struct glob_t {
@@ -351,7 +351,7 @@ s! {
         pub portev_source: ::c_ushort,
         pub portev_pad: ::c_ushort,
         pub portev_object: ::uintptr_t,
-        pub portev_user: ::uintptr_t,
+        pub portev_user: *mut ::c_void,
     }
 }
 
@@ -1329,13 +1329,13 @@ extern {
 
     pub fn port_create() -> ::c_int;
     pub fn port_associate(port: ::c_int, source: ::c_int, object: ::uintptr_t,
-                          events: ::c_int, user: ::uintptr_t) -> ::c_int;
+                          events: ::c_int, user: *mut ::c_void) -> ::c_int;
     pub fn port_dissociate(port: ::c_int, source: ::c_int, object: ::uintptr_t)
                            -> ::c_int;
     pub fn port_get(port: ::c_int, pe: *mut port_event,
-                    timeout: *const ::timespec) -> ::c_int;
+                    timeout: *mut ::timespec) -> ::c_int;
     pub fn port_getn(port: ::c_int, pe_list: *mut port_event, max: ::c_uint,
-                     nget: *mut ::c_uint, timeout: *const ::timespec)
+                     nget: *mut ::c_uint, timeout: *mut ::timespec)
                      -> ::c_int;
     pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
                    envp: *const *const ::c_char)
