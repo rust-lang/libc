@@ -901,13 +901,13 @@ pub const IFF_STANDBY: ::c_int = 0x0020000000; // Interface is a hot-spare
 pub const IFF_INACTIVE: ::c_int = 0x0040000000; // Functioning but not used
 pub const IFF_OFFLINE: ::c_int = 0x0080000000; // Interface is offline
 // If CoS marking is supported
-pub const IFF_COS_ENABLED: ::c_int = 0x0200000000;
-pub const IFF_PREFERRED: ::c_int = 0x0400000000; // Prefer as source address
-pub const IFF_TEMPORARY: ::c_int = 0x0800000000; // RFC3041
-pub const IFF_FIXEDMTU: ::c_int = 0x1000000000; // MTU set with SIOCSLIFMTU
-pub const IFF_VIRTUAL: ::c_int = 0x2000000000; // Cannot send/receive pkts
-pub const IFF_DUPLICATE: ::c_int = 0x4000000000; // Local address in use
-pub const IFF_IPMP: ::c_int = 0x8000000000; // IPMP IP interface
+pub const IFF_COS_ENABLED: ::c_longlong = 0x0200000000;
+pub const IFF_PREFERRED: ::c_longlong = 0x0400000000; // Prefer as source address
+pub const IFF_TEMPORARY: ::c_longlong = 0x0800000000; // RFC3041
+pub const IFF_FIXEDMTU: ::c_longlong = 0x1000000000; // MTU set with SIOCSLIFMTU
+pub const IFF_VIRTUAL: ::c_longlong = 0x2000000000; // Cannot send/receive pkts
+pub const IFF_DUPLICATE: ::c_longlong = 0x4000000000; // Local address in use
+pub const IFF_IPMP: ::c_longlong = 0x8000000000; // IPMP IP interface
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
