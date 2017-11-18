@@ -118,7 +118,7 @@ s! {
     }
 
     pub struct cmsghdr {
-        pub cmsg_len: ::size_t,
+        pub cmsg_len: ::socklen_t,
         pub cmsg_level: ::c_int,
         pub cmsg_type: ::c_int,
     }
@@ -1261,7 +1261,7 @@ extern {
                    mode: ::mode_t, dev: dev_t) -> ::c_int;
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t) -> ::c_int;
-    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn sethostname(name: *mut ::c_char, len: ::c_int) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
     pub fn pthread_create(native: *mut ::pthread_t,
