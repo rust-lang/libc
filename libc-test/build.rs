@@ -36,7 +36,9 @@ fn main() {
     } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
     } else if solaris {
-        cfg.define("_REENTRANT", None);
+        cfg.define("_XOPEN_SOURCE", Some("700"));
+        cfg.define("__EXTENSIONS__", None);
+        cfg.define("_LCONV_C99", None);
     }
 
     // Android doesn't actually have in_port_t but it's much easier if we
@@ -567,7 +569,7 @@ fn main() {
             "getdtablesize" if android => true,
 
             "dlerror" if android => true, // const-ness is added
-            "dladdr" if musl => true, // const-ness only added recently
+            "dladdr" if musl || solaris => true, // const-ness only added recently
 
             // OSX has 'struct tm *const' which we can't actually represent in
             // Rust, but is close enough to *mut
@@ -653,7 +655,7 @@ fn main() {
             // We can wait for the next major release to be compliant with the new API.
             // FIXME: unskip these for next major release
             "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
-            "setpriority" | "personality" if android => true,
+            "setpriority" | "personality" if android || solaris => true,
             // In Android 64 bits, these functions have been fixed since unified headers.
             // Ignore these until next major version.
             "bind" | "writev" | "readv" | "sendmsg" | "recvmsg" if android && (aarch64 || x86_64) => true,
@@ -662,6 +664,9 @@ fn main() {
             "signal" if solaris => true,
 
             "cfmakeraw" | "cfsetspeed" if solaris => true,
+
+            // FIXME: mincore is defined with caddr_t on Solaris.
+            "mincore" if solaris => true,
 
             _ => false,
         }
