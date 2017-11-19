@@ -24,6 +24,7 @@ fn main() {
     let netbsd = target.contains("netbsd");
     let openbsd = target.contains("openbsd");
     let rumprun = target.contains("rumprun");
+    let solaris = target.contains("solaris");
     let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
@@ -34,6 +35,10 @@ fn main() {
         cfg.define("_NETBSD_SOURCE", Some("1"));
     } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
+    } else if solaris {
+        cfg.define("_XOPEN_SOURCE", Some("700"));
+        cfg.define("__EXTENSIONS__", None);
+        cfg.define("_LCONV_C99", None);
     }
 
     // Android doesn't actually have in_port_t but it's much easier if we
@@ -103,7 +108,9 @@ fn main() {
         cfg.header("pwd.h");
         cfg.header("grp.h");
         cfg.header("sys/utsname.h");
-        cfg.header("sys/ptrace.h");
+        if !solaris {
+            cfg.header("sys/ptrace.h");
+        }
         cfg.header("sys/mount.h");
         cfg.header("sys/uio.h");
         cfg.header("sched.h");
@@ -132,11 +139,11 @@ fn main() {
         cfg.header("ifaddrs.h");
         cfg.header("langinfo.h");
 
-        if !openbsd && !freebsd && !dragonfly {
+        if !openbsd && !freebsd && !dragonfly && !solaris {
             cfg.header("sys/quota.h");
         }
 
-        if !musl && !x32 {
+        if !musl && !x32 && !solaris {
             cfg.header("sys/sysctl.h");
         }
 
@@ -291,6 +298,13 @@ fn main() {
         cfg.header("sys/ioctl_compat.h");
     }
 
+    if solaris {
+        cfg.header("port.h");
+        cfg.header("ucontext.h");
+        cfg.header("sys/filio.h");
+        cfg.header("sys/loadavg.h");
+    }
+
     if linux || freebsd || dragonfly || netbsd || apple || emscripten {
         if !uclibc {
             cfg.header("aio.h");
@@ -428,6 +442,8 @@ fn main() {
             "FILE_ATTRIBUTE_INTEGRITY_STREAM" |
             "ERROR_NOTHING_TO_TERMINATE" if mingw => true,
 
+            "SIG_DFL" |
+            "SIG_ERR" |
             "SIG_IGN" => true, // sighandler_t weirdness
             "SIGUNUSED" => true, // removed in glibc 2.26
 
@@ -515,6 +531,14 @@ fn main() {
             "BOTHER" => true,
 
             "MFD_CLOEXEC" | "MFD_ALLOW_SEALING" if !mips && musl => true,
+
+            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" | "DT_SOCK" if solaris => true,
+            "USRQUOTA" | "GRPQUOTA" if solaris => true,
+            "PRIO_MIN" | "PRIO_MAX" if solaris => true,
+
+            // These are defined for Solaris 11, but the crate is tested on illumos, where they are currently not defined
+            "EADI" | "PORT_SOURCE_POSTWAIT" | "PORT_SOURCE_SIGNAL" | "PTHREAD_STACK_MIN" => true,
+
             _ => false,
         }
     });
@@ -545,7 +569,7 @@ fn main() {
             "getdtablesize" if android => true,
 
             "dlerror" if android => true, // const-ness is added
-            "dladdr" if musl => true, // const-ness only added recently
+            "dladdr" if musl || solaris => true, // const-ness only added recently
 
             // OSX has 'struct tm *const' which we can't actually represent in
             // Rust, but is close enough to *mut
@@ -631,10 +655,18 @@ fn main() {
             // We can wait for the next major release to be compliant with the new API.
             // FIXME: unskip these for next major release
             "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
-            "setpriority" | "personality" if android => true,
+            "setpriority" | "personality" if android || solaris => true,
             // In Android 64 bits, these functions have been fixed since unified headers.
             // Ignore these until next major version.
             "bind" | "writev" | "readv" | "sendmsg" | "recvmsg" if android && (aarch64 || x86_64) => true,
+
+            // signal is defined with sighandler_t, so ignore
+            "signal" if solaris => true,
+
+            "cfmakeraw" | "cfsetspeed" if solaris => true,
+
+            // FIXME: mincore is defined with caddr_t on Solaris.
+            "mincore" if solaris => true,
 
             _ => false,
         }

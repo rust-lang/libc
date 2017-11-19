@@ -32,7 +32,6 @@ pub type sa_family_t = u16;
 pub type pthread_t = ::c_uint;
 pub type pthread_key_t = ::c_uint;
 pub type blksize_t = ::c_int;
-pub type fflags_t = ::c_int;
 pub type nl_item = ::c_int;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
@@ -119,7 +118,7 @@ s! {
     }
 
     pub struct cmsghdr {
-        pub cmsg_len: ::size_t,
+        pub cmsg_len: ::socklen_t,
         pub cmsg_level: ::c_int,
         pub cmsg_type: ::c_int,
     }
@@ -177,7 +176,7 @@ s! {
         pub d_ino: ::ino_t,
         pub d_off: ::off_t,
         pub d_reclen: u16,
-        pub d_name: [::c_char; 1]
+        pub d_name: [::c_char; 3]
     }
 
     pub struct glob_t {
@@ -352,7 +351,7 @@ s! {
         pub portev_source: ::c_ushort,
         pub portev_pad: ::c_ushort,
         pub portev_object: ::uintptr_t,
-        pub portev_user: ::uintptr_t,
+        pub portev_user: *mut ::c_void,
     }
 }
 
@@ -902,13 +901,13 @@ pub const IFF_STANDBY: ::c_int = 0x0020000000; // Interface is a hot-spare
 pub const IFF_INACTIVE: ::c_int = 0x0040000000; // Functioning but not used
 pub const IFF_OFFLINE: ::c_int = 0x0080000000; // Interface is offline
 // If CoS marking is supported
-pub const IFF_COS_ENABLED: ::c_int = 0x0200000000;
-pub const IFF_PREFERRED: ::c_int = 0x0400000000; // Prefer as source address
-pub const IFF_TEMPORARY: ::c_int = 0x0800000000; // RFC3041
-pub const IFF_FIXEDMTU: ::c_int = 0x1000000000; // MTU set with SIOCSLIFMTU
-pub const IFF_VIRTUAL: ::c_int = 0x2000000000; // Cannot send/receive pkts
-pub const IFF_DUPLICATE: ::c_int = 0x4000000000; // Local address in use
-pub const IFF_IPMP: ::c_int = 0x8000000000; // IPMP IP interface
+pub const IFF_COS_ENABLED: ::c_longlong = 0x0200000000;
+pub const IFF_PREFERRED: ::c_longlong = 0x0400000000; // Prefer as source addr.
+pub const IFF_TEMPORARY: ::c_longlong = 0x0800000000; // RFC3041
+pub const IFF_FIXEDMTU: ::c_longlong = 0x1000000000; // MTU set with SIOCSLIFMTU
+pub const IFF_VIRTUAL: ::c_longlong = 0x2000000000; // Cannot send/receive pkts
+pub const IFF_DUPLICATE: ::c_longlong = 0x4000000000; // Local address in use
+pub const IFF_IPMP: ::c_longlong = 0x8000000000; // IPMP IP interface
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -1262,7 +1261,7 @@ extern {
                    mode: ::mode_t, dev: dev_t) -> ::c_int;
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t) -> ::c_int;
-    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn sethostname(name: *mut ::c_char, len: ::c_int) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
     pub fn pthread_create(native: *mut ::pthread_t,
@@ -1307,7 +1306,8 @@ extern {
                     flags: ::c_int, addr: *mut ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
-    pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
+    pub fn futimesat(fd: ::c_int, path: *const ::c_char,
+                     times: *const ::timeval) -> ::c_int;
     pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
                      times: *const ::timespec, flag: ::c_int) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
@@ -1330,13 +1330,13 @@ extern {
 
     pub fn port_create() -> ::c_int;
     pub fn port_associate(port: ::c_int, source: ::c_int, object: ::uintptr_t,
-                          events: ::c_int, user: ::uintptr_t) -> ::c_int;
+                          events: ::c_int, user: *mut ::c_void) -> ::c_int;
     pub fn port_dissociate(port: ::c_int, source: ::c_int, object: ::uintptr_t)
                            -> ::c_int;
     pub fn port_get(port: ::c_int, pe: *mut port_event,
-                    timeout: *const ::timespec) -> ::c_int;
+                    timeout: *mut ::timespec) -> ::c_int;
     pub fn port_getn(port: ::c_int, pe_list: *mut port_event, max: ::c_uint,
-                     nget: *mut ::c_uint, timeout: *const ::timespec)
+                     nget: *mut ::c_uint, timeout: *mut ::timespec)
                      -> ::c_int;
     pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
                    envp: *const *const ::c_char)
@@ -1347,9 +1347,6 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut ::group) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "sigaltstack$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
     pub fn sigaltstack(ss: *const stack_t,
                        oss: *mut stack_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
@@ -1360,8 +1357,6 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut ::group) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_sigmask$UNIX2003")]
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t,
                            oldset: *mut sigset_t) -> ::c_int;
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
@@ -1369,22 +1364,18 @@ extern {
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
     pub fn sem_unlink(name: *const ::c_char) -> ::c_int;
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwnam_r")]
     pub fn getpwnam_r(name: *const ::c_char,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwuid_r")]
     pub fn getpwuid_r(uid: ::uid_t,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch ="x86"),
-               link_name = "sigwait$UNIX2003")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
@@ -1392,8 +1383,6 @@ extern {
                           parent: Option<unsafe extern fn()>,
                           child: Option<unsafe extern fn()>) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "popen$UNIX2003")]
     pub fn popen(command: *const c_char,
                  mode: *const c_char) -> *mut ::FILE;
 }
