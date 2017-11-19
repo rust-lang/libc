@@ -902,7 +902,7 @@ pub const IFF_INACTIVE: ::c_int = 0x0040000000; // Functioning but not used
 pub const IFF_OFFLINE: ::c_int = 0x0080000000; // Interface is offline
 // If CoS marking is supported
 pub const IFF_COS_ENABLED: ::c_longlong = 0x0200000000;
-pub const IFF_PREFERRED: ::c_longlong = 0x0400000000; // Prefer as source address
+pub const IFF_PREFERRED: ::c_longlong = 0x0400000000; // Prefer as source addr.
 pub const IFF_TEMPORARY: ::c_longlong = 0x0800000000; // RFC3041
 pub const IFF_FIXEDMTU: ::c_longlong = 0x1000000000; // MTU set with SIOCSLIFMTU
 pub const IFF_VIRTUAL: ::c_longlong = 0x2000000000; // Cannot send/receive pkts
@@ -1306,7 +1306,8 @@ extern {
                     flags: ::c_int, addr: *mut ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
-    pub fn futimesat(fd: ::c_int, path: *const ::c_char, times: *const ::timeval) -> ::c_int;
+    pub fn futimesat(fd: ::c_int, path: *const ::c_char,
+                     times: *const ::timeval) -> ::c_int;
     pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
                      times: *const ::timespec, flag: ::c_int) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
