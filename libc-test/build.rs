@@ -451,7 +451,8 @@ fn main() {
             "SIGUNUSED" => true, // removed in glibc 2.26
 
             // removed by glibc 2.26-4 at 2017-10-03
-            "SIGUNUSED" => true,
+            // reintroduced by glibc 2.26-6 at 2017-11-23
+            // "SIGUNUSED" => true,
 
             // types on musl are defined a little differently
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
