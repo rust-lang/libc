@@ -449,10 +449,8 @@ fn main() {
             "SIG_ERR" |
             "SIG_IGN" => true, // sighandler_t weirdness
             "SIGUNUSED" => true, // removed in glibc 2.26
-
-            // removed by glibc 2.26-4 at 2017-10-03
-            // reintroduced by glibc 2.26-6 at 2017-11-23
-            // "SIGUNUSED" => true,
+            "AF_MAX" => true,
+            "PF_MAX" => true,
 
             // types on musl are defined a little differently
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
