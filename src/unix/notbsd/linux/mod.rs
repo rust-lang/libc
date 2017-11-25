@@ -1339,7 +1339,7 @@ extern {
     pub fn setfsgid(gid: ::gid_t) -> ::c_int;
     pub fn setfsuid(uid: ::uid_t) -> ::c_int;
 
-    // Not available now on Android
+    /// Not available now on Android
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
@@ -1473,6 +1473,8 @@ extern {
                            flags: ::c_int,
                            rqtp: *const ::timespec,
                            rmtp:  *mut ::timespec) -> ::c_int;
+    /// musl and Android are incompete 2017-11-25
+    #[cfg(not(target_env = "musl"))]
     pub fn pthread_getname_np(t: ::pthread_t,
                               name_buf: *mut ::c_char,
                               buf_len: ::size_t) -> ::c_int;
