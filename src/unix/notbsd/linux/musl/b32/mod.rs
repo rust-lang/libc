@@ -52,6 +52,11 @@ pub const MINSIGSTKSZ: ::size_t = 2048;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
 
+#[doc(hidden)]
+pub const AF_MAX: ::c_int = 44;
+#[doc(hidden)]
+pub const PF_MAX: ::c_int = AF_MAX;
+
 cfg_if! {
     if #[cfg(any(target_arch = "x86"))] {
         mod x86;

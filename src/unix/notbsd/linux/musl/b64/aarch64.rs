@@ -71,7 +71,7 @@ pub const MINSIGSTKSZ: ::size_t = 6144;
 pub const SIGSTKSZ: ::size_t = 12288;
 
 #[doc(hidden)]
-pub const PF_MAX: ::c_int = 43;
+pub const PF_MAX: ::c_int = 44;
 #[doc(hidden)]
 pub const AF_MAX: ::c_int = PF_MAX;
 

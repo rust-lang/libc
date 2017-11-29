@@ -663,7 +663,7 @@ pub const SIGEV_THREAD_ID: ::c_int = 4;
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
 #[doc(hidden)]
-pub const AF_MAX: ::c_int = 42;
+pub const AF_MAX: ::c_int = 44;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 

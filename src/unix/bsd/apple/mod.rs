@@ -2131,6 +2131,9 @@ extern {
                         -> ::c_int;
     pub fn mach_absolute_time() -> u64;
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
+    pub fn pthread_getname_np(t: ::pthread_t,
+                              name_buf: *mut ::c_char,
+                              buf_len: ::size_t) -> ::c_int;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
     pub fn pthread_get_stackaddr_np(thread: ::pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: ::pthread_t) -> ::size_t;

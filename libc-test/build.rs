@@ -151,6 +151,9 @@ fn main() {
 
             if !netbsd && !openbsd && !uclibc {
                 cfg.header("execinfo.h");
+                // latest Arch Linux renamed from xlocale.h
+                // TODO add a switch for the older platforms
+                cfg.header("locale.h");
             }
 
             if openbsd {
@@ -446,6 +449,8 @@ fn main() {
             "SIG_ERR" |
             "SIG_IGN" => true, // sighandler_t weirdness
             "SIGUNUSED" => true, // removed in glibc 2.26
+            "AF_MAX" => true,
+            "PF_MAX" => true,
 
             // types on musl are defined a little differently
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
