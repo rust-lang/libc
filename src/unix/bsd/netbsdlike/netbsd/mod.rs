@@ -316,14 +316,22 @@ pub const MS_INVALIDATE : ::c_int = 0x2;
 
 pub const RLIM_NLIMITS: ::c_int = 12;
 
-pub const ENOATTR : ::c_int = 93;
-pub const EILSEQ : ::c_int = 85;
-pub const EOVERFLOW : ::c_int = 84;
-pub const ECANCELED : ::c_int = 87;
-pub const EIDRM : ::c_int = 82;
-pub const ENOMSG : ::c_int = 83;
-pub const ENOTSUP : ::c_int = 86;
-pub const ELAST : ::c_int = 96;
+pub const EIDRM: ::c_int = 82;
+pub const ENOMSG: ::c_int = 83;
+pub const EOVERFLOW: ::c_int = 84;
+pub const EILSEQ: ::c_int = 85;
+pub const ENOTSUP: ::c_int = 86;
+pub const ECANCELED: ::c_int = 87;
+pub const EBADMSG: ::c_int = 88;
+pub const ENODATA: ::c_int = 89;
+pub const ENOSR: ::c_int = 90;
+pub const ENOSTR: ::c_int = 91;
+pub const ETIME: ::c_int = 92;
+pub const ENOATTR: ::c_int = 93;
+pub const EMULTIHOP: ::c_int = 94;
+pub const ENOLINK: ::c_int = 95;
+pub const EPROTO: ::c_int = 96;
+pub const ELAST: ::c_int = 96;
 
 pub const F_DUPFD_CLOEXEC : ::c_int = 12;
 pub const F_CLOSEM: ::c_int = 10;
