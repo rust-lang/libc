@@ -251,9 +251,12 @@ fn main() {
     if linux || android {
         cfg.header("sys/fsuid.h");
 
-        // DCCP support
         if !uclibc && !musl && !emscripten {
+            // DCCP support
             cfg.header("linux/dccp.h");
+
+            // SCTP support
+            //cfg.header("netinet/sctp.h");
         }
 
         if !musl || mips {
@@ -275,6 +278,9 @@ fn main() {
         cfg.header("sys/ipc.h");
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
+
+        // SCTP support
+        cfg.header("netinet/sctp.h");
     }
 
     if netbsd {
@@ -284,6 +290,9 @@ fn main() {
 
         // DCCP support
         cfg.header("netinet/dccp.h");
+
+        // SCTP support
+        cfg.header("netinet/sctp.h");
     }
 
     if openbsd {
@@ -369,6 +378,8 @@ fn main() {
             "type_" if linux &&
                 (struct_ == "input_event" || struct_ == "input_mask" ||
                  struct_ == "ff_effect") => "type".to_string(),
+            "type_" if freebsd &&
+                (struct_ == "sctp_error_missing_param") => "type".to_string(),
             s => s.to_string(),
         }
     });
@@ -377,6 +388,12 @@ fn main() {
         match ty {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
+
+            // Temporarily skip the 'sctp_nets' type for FreeBSD,
+            // it's currently just an alias for c_void since the true
+            // type layout is very complex and it's only ever used
+            // through a pointer (e.g. sctp_nets*).
+            "sctp_nets" if freebsd => true,
 
             _ => false
         }
@@ -409,6 +426,9 @@ fn main() {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
+
+            // This was added in FreeBSD 11
+            "sctp_error_auth_invalid_hmac" if freebsd => true,
 
             _ => false
         }
@@ -479,6 +499,14 @@ fn main() {
             "KERN_MAXID" |
             "HW_MAXID" |
             "USER_MAXID" if freebsd => true,
+
+            // These constants were added in FreeBSD 11.
+            "SCTP_INTERLEAVING_SUPPORTED" |
+            "SCTP_IDATA" |
+            "SCTP_IFORWARD_CUM_TSN" |
+            "SCTP_PR_SCTP_PRIO" |
+            "SCTP_ASSOC_SUPPORTS_INTERLEAVING" |
+            "SCTP_NOHEARTBEAT" if freebsd => true,
 
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
@@ -709,7 +737,9 @@ fn main() {
         // musl seems to define this as an *anonymous* bitfield
         (musl && struct_ == "statvfs" && field == "__f_unused") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
+        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+        // Added in FreeBSD 11, which isn't yet supported by the libc CI
+        (freebsd && struct_ == "sctp_error_missing_param" && field == "type")
     });
 
     cfg.fn_cname(move |name, cname| {

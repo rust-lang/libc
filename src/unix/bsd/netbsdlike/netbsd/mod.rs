@@ -6,6 +6,14 @@ pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
 pub type idtype_t = ::c_int;
 
+pub type sctp_assoc_t = ::uint32_t;
+
+// Defined in netinet/sctp_structs.h
+// TODO: Define this struct properly, but we'll need to figure out
+//       how to properly represent the `TAILQ_ENTRY(sctp_nets)` field
+//       in the struct (which is some kind of linked-list pointer).
+pub type sctp_nets = ::c_void;
+
 s! {
     pub struct aiocb {
         pub aio_offset: ::off_t,
@@ -281,6 +289,480 @@ s! {
         pub ifm_index: ::c_ushort,
         pub ifm_data: if_data,
     }
+
+    // SCTP support
+    // netinet/sctp.h
+    // netinet/sctp_uio.h
+
+    #[repr(packed)]
+    pub struct sctphdr {
+        /// source port
+        pub src_port: ::uint16_t,
+        /// destination port
+        pub dest_port: ::uint16_t,
+        /// verification tag of packet
+        pub v_tag: ::uint32_t,
+        /// Adler32 checksum
+        pub checksum: ::uint32_t,
+    }
+
+    /// SCTP chunk header
+    #[repr(packed)]
+    pub struct sctp_chunkhdr {
+        /// chunk type
+        pub chunk_type: ::uint8_t,
+        /// chunk flags
+        pub chunk_flags: ::uint8_t,
+        /// chunk length
+        pub chunk_length: ::uint16_t,
+    }
+
+    /// SCTP chunk parameters
+    #[repr(packed)]
+    pub struct sctp_paramhdr {
+        /// parameter type
+        pub param_type: ::uint16_t,
+        /// parameter length
+        pub param_length: ::uint16_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_cause {
+        pub code: ::uint16_t,
+        pub length: ::uint16_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_invalid_stream {
+        /// code=SCTP_ERROR_INVALID_STREAM
+        pub cause: sctp_error_cause,
+        /// stream id of the DATA in error
+        pub stream_id: ::uint16_t,
+        pub reserved: ::uint16_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_missing_param {
+        /// code=SCTP_ERROR_MISSING_PARAM
+        pub cause: sctp_error_cause,
+        /// number of missing parameters
+        pub num_missing_params: ::uint32_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_stale_cookie {
+        /// code=SCTP_ERROR_STALE_COOKIE
+        pub cause: sctp_error_cause,
+        /// time in usec of staleness
+        pub stale_time: ::uint32_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_out_of_resource {
+        /// code=SCTP_ERROR_OUT_OF_RESOURCES
+        pub cause: sctp_error_cause,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_unresolv_addr {
+        /// code=SCTP_ERROR_UNRESOLVABLE_ADDR
+        pub cause: sctp_error_cause,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_unrecognized_chunk {
+        /// code=SCTP_ERROR_UNRECOG_CHUNK
+        pub cause: sctp_error_cause,
+        /// header from chunk in error
+        pub ch: sctp_chunkhdr,
+    }
+
+    /// On/Off setup for subscription to events
+    #[repr(packed)]
+    pub struct sctp_event_subscribe {
+        pub sctp_data_io_event: ::uint8_t,
+        pub sctp_association_event: ::uint8_t,
+        pub sctp_address_event: ::uint8_t,
+        pub sctp_send_failure_event: ::uint8_t,
+        pub sctp_peer_error_event: ::uint8_t,
+        pub sctp_shutdown_event: ::uint8_t,
+        pub sctp_partial_delivery_event: ::uint8_t,
+        pub sctp_adaption_layer_event: ::uint8_t,
+        pub sctp_stream_reset_events: ::uint8_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_initmsg {
+        pub sinit_num_ostreams: ::uint32_t,
+        pub sinit_max_instreams: ::uint32_t,
+        pub sinit_max_attempts: ::uint16_t,
+        pub sinit_max_init_timeo: ::uint16_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_sndrcvinfo {
+        pub sinfo_stream: ::uint16_t,
+        pub sinfo_ssn: ::uint16_t,
+        pub sinfo_flags: ::uint16_t,
+        pub sinfo_ppid: ::uint32_t,
+        pub sinfo_context: ::uint32_t,
+        pub sinfo_timetolive: ::uint32_t,
+        pub sinfo_tsn: ::uint32_t,
+        pub sinfo_cumtsn: ::uint32_t,
+        pub sinfo_assoc_id: sctp_assoc_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_snd_all_completes {
+        pub sall_stream: ::uint16_t,
+        pub sall_flags: ::uint16_t,
+        pub sall_ppid: ::uint32_t,
+        pub sall_context: ::uint32_t,
+        pub sall_num_sent: ::uint32_t,
+        pub sall_num_failed: ::uint32_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_pcbinfo {
+        pub ep_count: ::uint32_t,
+        pub asoc_count: ::uint32_t,
+        pub laddr_count: ::uint32_t,
+        pub raddr_count: ::uint32_t,
+        pub chk_count: ::uint32_t,
+        pub sockq_count: ::uint32_t,
+        pub mbuf_track: ::uint32_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_sockstat {
+        pub ss_assoc_id: sctp_assoc_t,
+        pub ss_total_sndbuf: ::uint32_t,
+        pub ss_total_mbuf_sndbuf: ::uint32_t,
+        pub ss_total_recv_buf: ::uint32_t,
+    }
+
+    /// association change events
+    #[repr(packed)]
+    pub struct sctp_assoc_change {
+        pub sac_type: ::uint16_t,
+        pub sac_flags: ::uint16_t,
+        pub sac_length: ::uint32_t,
+        pub sac_state: ::uint16_t,
+        pub sac_error: ::uint16_t,
+        pub sac_outbound_streams: ::uint16_t,
+        pub sac_inbound_streams: ::uint16_t,
+        pub sac_assoc_id: sctp_assoc_t,
+    }
+
+    /// Address events
+    #[repr(packed)]
+    pub struct sctp_paddr_change {
+        pub spc_type: ::uint16_t,
+        pub spc_flags: ::uint16_t,
+        pub spc_length: ::uint32_t,
+        pub spc_aaddr: sockaddr_storage,
+        pub spc_state: ::uint32_t,
+        pub spc_error: ::uint32_t,
+        pub spc_assoc_id: sctp_assoc_t,
+    }
+
+    /// remote error events
+    #[repr(packed)]
+    pub struct sctp_remote_error {
+        pub sre_type: ::uint16_t,
+        pub sre_flags: ::uint16_t,
+        pub sre_length: ::uint32_t,
+        pub sre_error: ::uint16_t,
+        pub sre_assoc_id: sctp_assoc_t,
+        pub sre_data: [::uint8_t; 4],
+    }
+
+    /// data send failure event
+    #[repr(packed)]
+    pub struct sctp_send_failed {
+        pub ssf_type: ::uint16_t,
+        pub ssf_flags: ::uint16_t,
+        pub ssf_length: ::uint32_t,
+        pub ssf_error: ::uint32_t,
+        pub ssf_info: sctp_sndrcvinfo,
+        pub ssf_assoc_id: sctp_assoc_t,
+        pub ssf_data: [::uint8_t; 4],
+    }
+
+    /// shutdown event
+    #[repr(packed)]
+    pub struct sctp_shutdown_event {
+        pub sse_type: ::uint16_t,
+        pub sse_flags: ::uint16_t,
+        pub sse_length: ::uint32_t,
+        pub sse_assoc_id: sctp_assoc_t,
+    }
+
+    /// Adaption layer indication stuff
+    #[repr(packed)]
+    pub struct sctp_adaption_event {
+        pub sai_type: ::uint16_t,
+        pub sai_flags: ::uint16_t,
+        pub sai_length: ::uint32_t,
+        pub sai_adaption_ind: ::uint32_t,
+        pub sai_assoc_id: sctp_assoc_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_setadaption {
+        pub ssb_adaption_ind: ::uint32_t,
+    }
+
+    /// Partial Delivery API event
+    #[repr(packed)]
+    pub struct sctp_pdapi_event {
+        pub pdapi_type: ::uint16_t,
+        pub pdapi_flags: ::uint16_t,
+        pub pdapi_length: ::uint32_t,
+        pub pdapi_indication: ::uint32_t,
+        pub pdapi_assoc_id: sctp_assoc_t,
+    }
+
+    /// stream reset stuff
+    #[repr(packed)]
+    pub struct sctp_stream_reset_event {
+        pub strreset_type: ::uint16_t,
+        pub strreset_flags: ::uint16_t,
+        pub strreset_length: ::uint32_t,
+        pub strreset_assoc_id: sctp_assoc_t,
+        pub strreset_list: [::uint16_t; 0]
+    }
+
+    #[repr(packed)]
+    pub struct sctp_assoc_ids {
+        // array of index's start at 0
+        pub asls_assoc_start: ::uint16_t,
+        pub asls_numb_present: ::uint8_t,
+        pub asls_more_to_get: ::uint8_t,
+        pub asls_assoc_id: [sctp_assoc_t; MAX_ASOC_IDS_RET as usize],
+    }
+
+    #[repr(packed)]
+    pub struct sctp_tlv {
+        pub sn_type: ::uint16_t,
+        pub sn_flags: ::uint16_t,
+        pub sn_length: ::uint32_t,
+    }
+
+    // TODO: Change this to use `union` when libc targets an appropriate
+    //       minimum version of the Rust language spec, then uncomment
+    //       the other fields in the union below and remove the private
+    //       padding bytes.
+    /// notification event
+    #[repr(packed)]
+    pub struct sctp_notification {
+    //pub union sctp_notification {
+        pub sn_header: sctp_tlv,
+        // TEMP: padding bytes; sctp_paddr_change is the largest field
+        //       in this union due to holding a sockaddr_storage. The
+        //       padding bytes here should make this struct the same
+        //       size as the union would be.
+        __notification_data: [u8; 140]
+        // pub sn_assoc_change: sctp_assoc_change,
+        // pub sn_paddr_change: sctp_paddr_change,
+        // pub sn_remote_error: sctp_remote_error,
+        // pub sn_send_failed: sctp_send_failed,
+        // pub sn_shutdown_event: sctp_shutdown_event,
+        // pub sn_adaption_event: sctp_adaption_event,
+        // pub sn_pdapi_event: sctp_pdapi_event,
+        // pub sn_strreset_event: sctp_strreset_event,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_paddrparams {
+        pub spp_assoc_id: sctp_assoc_t,
+        pub spp_address: sockaddr_storage,
+        pub spp_hbinterval: ::uint32_t,
+        pub spp_pathmaxrxt: ::uint16_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_paddrinfo {
+        pub spinfo_assoc_id: sctp_assoc_t,
+        pub spinfo_address: sockaddr_storage,
+        pub spinfo_state: ::int32_t,
+        pub spinfo_cwnd: ::uint32_t,
+        pub spinfo_srtt: ::uint32_t,
+        pub spinfo_rto: ::uint32_t,
+        pub spinfo_mtu: ::uint32_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_rtoinfo {
+        pub srto_assoc_id: sctp_assoc_t,
+        pub srto_initial: ::uint32_t,
+        pub srto_max: ::uint32_t,
+        pub srto_min: ::uint32_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_assocparams {
+        pub sasoc_assoc_id: sctp_assoc_t,
+        pub sasoc_asocmaxrxt: ::uint16_t,
+        pub sasoc_number_peer_destinations: ::uint16_t,
+        pub sasoc_peer_rwnd: ::uint32_t,
+        pub sasoc_local_rwnd: ::uint32_t,
+        pub sasoc_cookie_life: ::uint32_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_setprim {
+        pub ssp_assoc_id: sctp_assoc_t,
+        pub ssp_addr: sockaddr_storage,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_setpeerprim {
+        pub sspp_assoc_id: sctp_assoc_t,
+        pub sspp_addr: sockaddr_storage,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_getaddresses {
+        pub sget_assoc_id: sctp_assoc_t,
+        // addr is filled in for N * sockaddr_storage
+        pub addr: [::sockaddr; 1],
+    }
+
+    #[repr(packed)]
+    pub struct sctp_setstrm_timeout {
+        pub ssto_assoc_id: sctp_assoc_t,
+        pub ssto_timeout: ::uint32_t,
+        pub ssto_streamid_start: ::uint32_t,
+        pub ssto_streamid_end: ::uint32_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_status {
+        pub sstat_assoc_id: sctp_assoc_t,
+        pub sstat_state: ::int32_t,
+        pub sstat_rwnd: ::uint32_t,
+        pub sstat_unackdata: ::uint16_t,
+        pub sstat_penddata: ::uint16_t,
+        pub sstat_instrms: ::uint16_t,
+        pub sstat_outstrms: ::uint16_t,
+        pub sstat_fragmentation_point: ::uint32_t,
+        pub sstat_primary: sctp_paddrinfo,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_cwnd_args {
+        /// network to
+        pub net: *mut sctp_nets,
+        /// cwnd in k
+        pub cwnd_new_value: ::uint32_t,
+        /// flightsize in k
+        pub inflight: ::uint32_t,
+        /// increment to it
+        pub cwnd_augment: ::c_int,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_blk_args {
+        /// in 1k bytes
+        pub onmb: ::uint32_t,
+        /// in 1k bytes
+        pub onsb: ::uint32_t,
+        /// in 1k bytes
+        pub maxmb: ::uint16_t,
+        /// in 1k bytes
+        pub maxsb: ::uint16_t,
+        /// chnk cnt
+        pub send_sent_qcnt: ::uint16_t,
+        /// chnk cnt
+        pub stream_qcnt: ::uint16_t,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_stream_reset {
+        pub strrst_assoc_id: sctp_assoc_t,
+        pub strrst_flags: ::uint16_t,
+        /// 0 == ALL
+        pub strrst_num_streams: ::uint16_t,
+        /// list if strrst_num_streams is not 0
+        pub strrst_list: [::uint16_t; 0]
+    }
+
+    #[repr(packed)]
+    pub struct sctp_get_nonce_values {
+        pub gn_assoc_id: sctp_assoc_t,
+        pub gn_peers_tag: ::uint32_t,
+        pub gn_local_tag: ::uint32_t,
+    }
+
+    // TODO: Uncomment the structs and union below once libc targets
+    //       a version of Rust which includes `union` support.
+
+    // #[repr(packed)]
+    // pub struct sctp_str_log {
+    //     pub n_tsn: ::uint32_t,
+    //     pub e_tsn: ::uint32_t,
+    //     pub n_sseq: ::uint16_t,
+    //     pub e_sseq: ::uint16_t,
+    // }
+
+    // #[repr(packed)]
+    // pub struct sctp_fr_log {
+    //     pub largest_tsn: ::uint32_t,
+    //     pub largest_new_tsn: ::uint32_t,
+    //     pub tsn: ::uint32_t,
+    // }
+
+    // #[repr(packed)]
+    // pub struct sctp_fr_map {
+    //     pub base: ::uint32_t,
+    //     pub cum: ::uint32_t,
+    //     pub high: ::uint32_t,
+    // }
+
+    // #[repr(packed)]
+    // pub struct sctp_rwnd_log {
+    //     pub rwnd: ::uint32_t,
+    //     pub send_size: ::uint32_t,
+    //     pub overhead: ::uint32_t,
+    //     pub new_rwnd: ::uint32_t,
+    // }
+
+    // #[repr(packed)]
+    // pub struct sctp_mbcnt_log {
+    //     pub total_queue_size: ::uint32_t,
+    //     pub size_change: ::uint32_t,
+    //     pub total_queue_mb_size: ::uint32_t,
+    //     pub mbcnt_change: ::uint32_t,
+    // }
+
+    // #[repr(packed)]
+    // pub struct sctp_cwnd_log {
+    //     pub x: union {
+    //         pub blk: sctp_blk_args,
+    //         pub cwnd: sctp_cwnd_args,
+    //         pub strlog: sctp_str_log,
+    //         pub fr: sctp_fr_log,
+    //         pub map: sctp_fr_map,
+    //         pub rwnd: sctp_rwnd_log,
+    //         pub mbcnt: sctp_mbcnt_log,
+    //     }
+    //     pub from: ::uint8_t,
+    //     pub event_type: ::uint8_t,
+    // }
+
+    // #[repr(packed)]
+    // pub struct sctp_cwnd_log_req {
+    //     /// Number in log
+    //     pub num_in_log: ::c_int,
+    //     /// Number returned
+    //     pub num_ret: ::c_int,
+    //     /// start at this one
+    //     pub start_at: ::c_int,
+    //     /// end at this one
+    //     pub end_at: ::c_int,
+    //     pub log: [sctp_cwnd_log; 0]
+    // }
 }
 
 pub const AT_FDCWD: ::c_int = -100;
@@ -373,6 +855,7 @@ pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
 // sys/netinet/in.h
+// netinet/in.h
 // Protocols (RFC 1700)
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
 
@@ -549,6 +1032,153 @@ pub const DCCP_NDP_LIMIT: ::c_int = 16;
 pub const DCCP_SEQ_NUM_LIMIT: ::c_int = 16777216;
 pub const DCCP_MAX_OPTIONS: ::c_int = 32;
 pub const DCCP_MAX_PKTS: ::c_int = 100;
+
+pub const MAX_ASOC_IDS_RET: ::c_uint = 255;
+
+pub const SCTP_NODELAY: ::c_int = 0x01;
+pub const SCTP_MAXSEG: ::c_int = 0x02;
+pub const SCTP_ASSOCINFO: ::c_int = 0x03;
+pub const SCTP_INITMSG: ::c_int = 0x04;
+pub const SCTP_AUTOCLOSE: ::c_int = 0x05;
+pub const SCTP_SET_PEER_PRIMARY_ADDR: ::c_int = 0x06;
+pub const SCTP_PRIMARY_ADDR: ::c_int = 0x07;
+pub const SCTP_STATUS: ::c_int = 0x08;
+pub const SCTP_PCB_STATUS: ::c_int = 0x09;
+pub const SCTP_EVENTS: ::c_int = 0x0a;
+pub const SCTP_PEER_ADDR_PARAMS: ::c_int = 0x0b;
+pub const SCTP_GET_PEER_ADDR_INFO: ::c_int = 0x0c;
+pub const SCTP_GET_PEER_ADDRESSES: ::c_int = 0x0d;
+pub const SCTP_GET_LOCAL_ADDRESSES: ::c_int = 0x0e;
+pub const SCTP_GET_SNDBUF_USE: ::c_int = 0x0f;
+pub const SCTP_ADAPTION_LAYER: ::c_int = 0x10;
+pub const SCTP_DISABLE_FRAGMENTS: ::c_int = 0x11;
+pub const SCTP_BINDX_ADD_ADDR: ::c_int = 0x12;
+pub const SCTP_BINDX_REM_ADDR: ::c_int = 0x13;
+pub const SCTP_GET_LOCAL_ADDR_SIZE: ::c_int = 0x14;
+pub const SCTP_I_WANT_MAPPED_V4_ADDR: ::c_int = 0x15;
+pub const SCTP_GET_REMOTE_ADDR_SIZE: ::c_int = 0x16;
+pub const SCTP_GET_PEGS: ::c_int = 0x17;
+pub const SCTP_DEFAULT_SEND_PARAM: ::c_int = 0x18;
+pub const SCTP_SET_DEBUG_LEVEL: ::c_int = 0x19;
+pub const SCTP_RTOINFO: ::c_int = 0x1a;
+pub const SCTP_AUTO_ASCONF: ::c_int = 0x1b;
+pub const SCTP_MAXBURST: ::c_int = 0x1c;
+pub const SCTP_GET_STAT_LOG: ::c_int = 0x1d;
+pub const SCTP_CONNECT_X: ::c_int = 0x1e;
+pub const SCTP_RESET_STREAMS: ::c_int = 0x1f;
+pub const SCTP_CONNECT_X_DELAYED: ::c_int = 0x20;
+pub const SCTP_CONNECT_X_COMPLETE: ::c_int = 0x21;
+pub const SCTP_GET_ASOC_ID_LIST: ::c_int = 0x22;
+pub const SCTP_GET_NONCE_VALUES: ::c_int = 0x23;
+pub const SCTP_DELAYED_ACK_TIME: ::c_int = 0x24;
+pub const SCTP_PEER_PUBLIC_KEY: ::c_int = 0x100;
+pub const SCTP_MY_PUBLIC_KEY: ::c_int = 0x101;
+pub const SCTP_SET_AUTH_SECRET: ::c_int = 0x102;
+pub const SCTP_SET_AUTH_CHUNKS: ::c_int = 0x103;
+
+pub const SCTP_CLOSED: ::c_int = 0x0000;
+pub const SCTP_BOUND: ::c_int = 0x1000;
+pub const SCTP_LISTEN: ::c_int = 0x2000;
+pub const SCTP_COOKIE_WAIT: ::c_int = 0x0002;
+pub const SCTP_COOKIE_ECHOED: ::c_int = 0x0004;
+pub const SCTP_ESTABLISHED: ::c_int = 0x0008;
+pub const SCTP_SHUTDOWN_SENT: ::c_int = 0x0010;
+pub const SCTP_SHUTDOWN_RECEIVED: ::c_int = 0x0020;
+pub const SCTP_SHUTDOWN_ACK_SENT: ::c_int = 0x0040;
+pub const SCTP_SHUTDOWN_PENDING: ::c_int = 0x0080;
+
+pub const SCTP_ERROR_NO_ERROR: ::c_int = 0x0000;
+pub const SCTP_ERROR_INVALID_STREAM: ::c_int = 0x0001;
+pub const SCTP_ERROR_MISSING_PARAM: ::c_int = 0x0002;
+pub const SCTP_ERROR_STALE_COOKIE: ::c_int = 0x0003;
+pub const SCTP_ERROR_OUT_OF_RESOURCES: ::c_int = 0x0004;
+pub const SCTP_ERROR_UNRESOLVABLE_ADDR: ::c_int = 0x0005;
+pub const SCTP_ERROR_UNRECOG_CHUNK: ::c_int = 0x0006;
+pub const SCTP_ERROR_INVALID_PARAM: ::c_int = 0x0007;
+pub const SCTP_ERROR_UNRECOG_PARAM: ::c_int = 0x0008;
+pub const SCTP_ERROR_NO_USER_DATA: ::c_int = 0x0009;
+pub const SCTP_ERROR_COOKIE_IN_SHUTDOWN: ::c_int = 0x000a;
+
+pub const SCTP_DATA: ::c_int = 0x00;
+pub const SCTP_INITIATION: ::c_int = 0x01;
+pub const SCTP_INITIATION_ACK: ::c_int = 0x02;
+pub const SCTP_SELECTIVE_ACK: ::c_int = 0x03;
+pub const SCTP_HEARTBEAT_REQUEST: ::c_int = 0x04;
+pub const SCTP_HEARTBEAT_ACK: ::c_int = 0x05;
+pub const SCTP_ABORT_ASSOCIATION: ::c_int = 0x06;
+pub const SCTP_SHUTDOWN: ::c_int = 0x07;
+pub const SCTP_SHUTDOWN_ACK: ::c_int = 0x08;
+pub const SCTP_OPERATION_ERROR: ::c_int = 0x09;
+pub const SCTP_COOKIE_ECHO: ::c_int = 0x0a;
+pub const SCTP_COOKIE_ACK: ::c_int = 0x0b;
+pub const SCTP_ECN_ECHO: ::c_int = 0x0c;
+pub const SCTP_ECN_CWR: ::c_int = 0x0d;
+pub const SCTP_SHUTDOWN_COMPLETE: ::c_int = 0x0e;
+
+pub const SCTP_HAD_NO_TCB: ::c_int = 0x01;
+pub const SCTP_FROM_MIDDLE_BOX: ::c_int = SCTP_HAD_NO_TCB;
+pub const SCTP_BADCRC: ::c_int = 0x02;
+pub const SCTP_PACKET_TRUNCATED: ::c_int = 0x04;
+
+pub const SCTP_DATA_FRAG_MASK: ::c_int = 0x03;
+pub const SCTP_DATA_MIDDLE_FRAG: ::c_int = 0x00;
+pub const SCTP_DATA_LAST_FRAG: ::c_int = 0x01;
+pub const SCTP_DATA_FIRST_FRAG: ::c_int = 0x02;
+pub const SCTP_DATA_NOT_FRAG: ::c_int = 0x03;
+pub const SCTP_DATA_UNORDERED: ::c_int = 0x04;
+
+pub const SCTP_SACK_NONCE_SUM: ::c_int = 0x01;
+
+pub const SCTP_INIT: ::c_int = 0x0001;
+pub const SCTP_SNDRCV: ::c_int = 0x0002;
+
+pub const MSG_SENDALL: ::c_int = 0x0200;
+pub const MSG_PR_SCTP_TTL: ::c_int = 0x0400;
+pub const MSG_PR_SCTP_BUF: ::c_int = 0x0800;
+pub const MSG_EOF: ::c_int = 0x1000;
+pub const MSG_UNORDERED: ::c_int = 0x2000;
+pub const MSG_ADDR_OVER: ::c_int = 0x4000;
+pub const MSG_ABORT: ::c_int = 0x8000;
+
+pub const SCTP_COMM_UP: ::c_int = 0x0001;
+pub const SCTP_COMM_LOST: ::c_int = 0x0002;
+pub const SCTP_RESTART: ::c_int = 0x0003;
+pub const SCTP_SHUTDOWN_COMP: ::c_int = 0x0004;
+pub const SCTP_CANT_STR_ASSOC: ::c_int = 0x0005;
+
+pub const SCTP_ADDR_AVAILABLE: ::c_int = 0x0001;
+pub const SCTP_ADDR_UNREACHABLE: ::c_int = 0x0002;
+pub const SCTP_ADDR_REMOVED: ::c_int = 0x0003;
+pub const SCTP_ADDR_ADDED: ::c_int = 0x0004;
+pub const SCTP_ADDR_MADE_PRIM: ::c_int = 0x0005;
+pub const SCTP_ADDR_CONFIRMED: ::c_int = 0x0006;
+
+pub const SCTP_ACTIVE: ::c_int = 0x0001;
+pub const SCTP_INACTIVE: ::c_int = 0x0002;
+pub const SCTP_UNCONFIRMED: ::c_int = 0x0200;
+pub const SCTP_NOHEARTBEAT: ::c_int = 0x0040;
+pub const SCTP_DATA_UNSENT: ::c_int = 0x0001;
+pub const SCTP_DATA_SENT: ::c_int = 0x0002;
+pub const SCTP_PARTIAL_DELIVERY_ABORTED: ::c_int = 0x0001;
+pub const SCTP_STRRESET_INBOUND_STR: ::c_int = 0x0001;
+pub const SCTP_STRRESET_OUTBOUND_STR: ::c_int = 0x0002;
+pub const SCTP_STRRESET_ALL_STREAMS: ::c_int = 0x0004;
+pub const SCTP_STRRESET_STREAM_LIST: ::c_int = 0x0008;
+
+pub const SCTP_ASSOC_CHANGE: ::c_int = 0x0001;
+pub const SCTP_PEER_ADDR_CHANGE: ::c_int = 0x0002;
+pub const SCTP_REMOTE_ERROR: ::c_int = 0x0003;
+pub const SCTP_SEND_FAILED: ::c_int = 0x0004;
+pub const SCTP_SHUTDOWN_EVENT: ::c_int = 0x0005;
+pub const SCTP_ADAPTION_INDICATION: ::c_int = 0x0006;
+pub const SCTP_PARTIAL_DELIVERY_EVENT: ::c_int = 0x0007;
+pub const SCTP_STREAM_RESET_EVENT: ::c_int = 0x0008;
+pub const SCTP_ISSUE_HB: ::c_int = 0xffffffff;
+pub const SCTP_NO_HB: ::c_int = 0x0;
+pub const SCTP_MAX_EXPLICT_STR_RESET: ::c_int = 1000;
+pub const SCTP_RESET_LOCAL_RECV: ::c_int = 0x0001;
+pub const SCTP_RESET_LOCAL_SEND: ::c_int = 0x0002;
+pub const SCTP_RESET_BOTH: ::c_int = 0x0003;
 
 pub const _PC_LINK_MAX : ::c_int = 1;
 pub const _PC_MAX_CANON : ::c_int = 2;
@@ -995,6 +1625,72 @@ extern {
                      base: ::locale_t) -> ::locale_t;
     #[link_name = "__settimeofday50"]
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::c_void) -> ::c_int;
+
+    // SCTP support
+    pub fn sctp_peeloff(sd: ::c_int,
+                        assoc_id: sctp_assoc_t) -> ::c_int;
+    pub fn sctp_bindx(sd: ::c_int,
+                      addrs: *const ::sockaddr,
+                      addrcnt: ::c_int,
+                      flags: ::c_int) -> ::c_int;
+    pub fn sctp_connectx(sd: ::c_int,
+                         addrs: *const ::sockaddr,
+                         addrcnt: ::c_int,
+                         id: *mut sctp_assoc_t) -> ::c_int;
+    pub fn sctp_getpaddrs(sd: ::c_int,
+                          id: sctp_assoc_t,
+                          raddrs: *mut *mut ::sockaddr) -> ::c_int;
+    pub fn sctp_freepaddrs(addrs: *const ::sockaddr) -> ::c_void;
+    pub fn sctp_getladdrs(sd: ::c_int,
+                          id: sctp_assoc_t,
+                          raddrs: *mut *mut ::sockaddr) -> ::c_int;
+    pub fn sctp_freeladdrs(addrs: *const ::sockaddr) -> ::c_void;
+    pub fn sctp_opt_info(sd: ::c_int,
+                         id: sctp_assoc_t,
+                         opt: ::c_int,
+                         arg: *mut ::c_void,
+                         size: *mut ::socklen_t) -> ::c_int;
+    pub fn sctp_sendmsg(s: ::c_int,
+                        data: *const ::c_void,
+                        len: ::size_t,
+                        to: *const ::sockaddr,
+                        tolen: ::socklen_t,
+                        ppid: ::uint32_t,
+                        flags: ::uint32_t,
+                        stream_no: ::uint16_t,
+                        timetolive: ::uint32_t,
+                        context: ::uint32_t) -> ::ssize_t;
+    pub fn sctp_send(sd: ::c_int,
+                     data: *const ::c_void,
+                     len: ::size_t,
+                     sinfo: *const sctp_sndrcvinfo,
+                     flags: ::c_int) -> ::ssize_t;
+    pub fn sctp_sendx(sd: ::c_int,
+                      msg: *const ::c_void,
+                      msg_len: ::size_t,
+                      addrs: *mut ::sockaddr,
+                      addrcnt: ::c_int,
+                      sinfo: *mut sctp_sndrcvinfo,
+                      flags: ::c_int) -> ::ssize_t;
+    pub fn sctp_sendmsgx(sd: ::c_int,
+                         msg: *const ::c_void,
+                         len: ::size_t,
+                         addrs: *mut ::sockaddr,
+                         addrcnt: ::c_int,
+                         ppid: ::uint32_t,
+                         flags: ::uint32_t,
+                         stream_no: ::uint16_t,
+                         timetolive: ::uint32_t,
+                         context: ::uint32_t) -> ::ssize_t;
+    pub fn sctp_getassocid(sd: ::c_int,
+                           sa: *mut ::sockaddr) -> sctp_assoc_t;
+    pub fn sctp_recvmsg(s: ::c_int,
+                        dbuf: *mut ::c_void,
+                        len: ::size_t,
+                        from: *mut ::sockaddr,
+                        fromlen: *mut ::socklen_t,
+                        sinfo: *mut sctp_sndrcvinfo,
+                        msg_flags: *mut ::c_int) -> ::ssize_t;
 }
 
 mod other;
