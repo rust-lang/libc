@@ -61,22 +61,6 @@ s! {
         pub ifa_data: *mut ::c_void
     }
     
-    // See /usr/include/net/if_dl.h
-    // sdl_data does not match if_dl.h on OS X, since the size of 12 is a minimum.
-    // Will be unsafe
-    // when sdl_nlen > 40.
-    #[cfg(any(target_os = "freebsd", target_os = "macos"))]
-    pub struct sockaddr_dl {
-        pub sdl_len: ::c_uchar,
-        pub sdl_family: ::c_uchar,
-        pub sdl_index: ::c_ushort,
-        pub sdl_type: ::c_uchar,
-        pub sdl_nlen: ::c_uchar,
-        pub sdl_alen: ::c_uchar,
-        pub sdl_slen: ::c_uchar,
-        pub sdl_data: [::c_char; 46],
-    }
-    
     pub struct fd_set {
         #[cfg(all(target_pointer_width = "64",
                   any(target_os = "freebsd", target_os = "dragonfly")))]

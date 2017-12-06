@@ -159,6 +159,22 @@ s! {
         pub int_p_sign_posn: ::c_char,
         pub int_n_sign_posn: ::c_char,
     }
+
+    // See /usr/include/net/if_dl.h
+    // sdl_data does not match if_dl.h on OS X,
+    // since the size of 12 is a minimum.
+    // Will be unsafe
+    // when sdl_nlen > 40.
+    pub struct sockaddr_dl {
+        pub sdl_len: ::c_uchar,
+        pub sdl_family: ::c_uchar,
+        pub sdl_index: ::c_ushort,
+        pub sdl_type: ::c_uchar,
+        pub sdl_nlen: ::c_uchar,
+        pub sdl_alen: ::c_uchar,
+        pub sdl_slen: ::c_uchar,
+        pub sdl_data: [::c_char; 46]
+    }
 }
 
 pub const AIO_LISTIO_MAX: ::c_int = 16;
