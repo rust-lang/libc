@@ -60,7 +60,7 @@ s! {
         pub ifa_dstaddr: *mut ::sockaddr,
         pub ifa_data: *mut ::c_void
     }
-    
+
     pub struct fd_set {
         #[cfg(all(target_pointer_width = "64",
                   any(target_os = "freebsd", target_os = "dragonfly")))]
