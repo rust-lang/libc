@@ -910,7 +910,7 @@ pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
 // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36
 f! {
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int {
-        unsafe { *(dirp as *const ::c_int) }
+        *(dirp as *const ::c_int)
     }
 
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
