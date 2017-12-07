@@ -1,3 +1,5 @@
+use dox::mem;
+
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
 pub type dev_t = u64;
@@ -280,6 +282,16 @@ s! {
         pub ifm_flags: ::c_int,
         pub ifm_index: ::c_ushort,
         pub ifm_data: if_data,
+    }
+
+    pub struct sockcred {
+        pub sc_pid: ::pid_t,
+        pub sc_uid: ::uid_t,
+        pub sc_euid: ::uid_t,
+        pub sc_gid: ::gid_t,
+        pub sc_egid: ::gid_t,
+        pub sc_ngroups: ::c_int,
+        pub sc_groups: [::gid_t; 1],
     }
 }
 
@@ -915,6 +927,15 @@ f! {
 
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0xffff
+    }
+
+    pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
+        let ngrps = if ngrps > 0 {
+            ngrps - 1
+        } else {
+            0
+        };
+        mem::size_of::<sockcred>() + mem::size_of::<::gid_t>() * ngrps
     }
 }
 
