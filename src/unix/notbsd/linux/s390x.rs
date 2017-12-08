@@ -221,12 +221,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-    pub struct ucred {
-        pub pid: ::pid_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-    }
-
     pub struct flock {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,

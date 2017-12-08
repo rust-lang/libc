@@ -104,12 +104,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-    pub struct ucred {
-        pub pid: ::pid_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-    }
-
     pub struct statfs {
         pub f_type: __fsword_t,
         pub f_bsize: __fsword_t,
