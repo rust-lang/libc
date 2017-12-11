@@ -448,6 +448,12 @@ s! {
         pub p_memsz: Elf64_Xword,
         pub p_align: Elf64_Xword,
     }
+
+    pub struct ucred {
+        pub pid: ::pid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;

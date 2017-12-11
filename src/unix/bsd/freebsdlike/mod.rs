@@ -175,6 +175,15 @@ s! {
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 46]
     }
+
+    pub struct cmsgcred {
+        pub cmcred_pid: ::pid_t,
+        pub cmcred_uid: ::uid_t,
+        pub cmcred_euid: ::uid_t,
+        pub cmcred_gid: ::gid_t,
+        pub cmcred_ngroups: ::c_short,
+        pub cmcred_groups: [::gid_t; CMGROUP_MAX]
+    }
 }
 
 pub const AIO_LISTIO_MAX: ::c_int = 16;
@@ -949,6 +958,8 @@ pub const VERASE2: usize = 7;
 pub const OCRNL: ::tcflag_t = 0x10;
 pub const ONOCR: ::tcflag_t = 0x20;
 pub const ONLRET: ::tcflag_t = 0x40;
+
+pub const CMGROUP_MAX: usize = 16;
 
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
