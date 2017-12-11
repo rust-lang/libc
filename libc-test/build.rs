@@ -179,9 +179,12 @@ fn main() {
 
     if bsdlike {
         cfg.header("sys/event.h");
-
+        if apple {
+            cfg.header("sys/net/if_dl.h");
+        }
         if freebsd {
             cfg.header("libutil.h");
+            cfg.header("sys/net/if_dl.h");
         } else {
             cfg.header("util.h");
         }
