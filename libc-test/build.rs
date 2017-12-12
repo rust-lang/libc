@@ -173,8 +173,6 @@ fn main() {
             cfg.header("crt_externs.h");
         }
         cfg.header("net/route.h");
-        cfg.header("net/route.h");
-        cfg.header("net/if_dl.h");
         cfg.header("sys/proc_info.h");
     }
 
