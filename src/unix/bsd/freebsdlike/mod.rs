@@ -173,7 +173,7 @@ s! {
         pub sdl_nlen: ::c_uchar,
         pub sdl_alen: ::c_uchar,
         pub sdl_slen: ::c_uchar,
-        pub sdl_data: [::c_char; 46]
+        pub sdl_data: [::c_char; 46],
     }
 
     pub struct cmsgcred {
@@ -182,7 +182,7 @@ s! {
         pub cmcred_euid: ::uid_t,
         pub cmcred_gid: ::gid_t,
         pub cmcred_ngroups: ::c_short,
-        pub cmcred_groups: [::gid_t; CMGROUP_MAX]
+        pub cmcred_groups: [::gid_t; CMGROUP_MAX],
     }
 }
 
