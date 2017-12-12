@@ -182,7 +182,7 @@ fn main() {
         cfg.header("sys/event.h");
         if freebsd {
             cfg.header("libutil.h");
-            cfg.header("sys/net/if_dl.h");
+            cfg.header("net/if_dl.h");
         } else {
             cfg.header("util.h");
         }
