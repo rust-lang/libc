@@ -135,6 +135,17 @@ s! {
         pub cr_groups: [::gid_t;16],
         __cr_unused1: *mut ::c_void,
     }
+
+    pub struct sockaddr_dl {
+        pub sdl_len: ::c_uchar,
+        pub sdl_family: ::c_uchar,
+        pub sdl_index: ::c_ushort,
+        pub sdl_type: ::c_uchar,
+        pub sdl_nlen: ::c_uchar,
+        pub sdl_alen: ::c_uchar,
+        pub sdl_slen: ::c_uchar,
+        pub sdl_data: [::c_char; 46],
+    }
 }
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;

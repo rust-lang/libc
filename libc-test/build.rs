@@ -180,9 +180,9 @@ fn main() {
 
     if bsdlike {
         cfg.header("sys/event.h");
+        cfg.header("net/if_dl.h");
         if freebsd {
             cfg.header("libutil.h");
-            cfg.header("net/if_dl.h");
         } else {
             cfg.header("util.h");
         }

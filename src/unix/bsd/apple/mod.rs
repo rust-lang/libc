@@ -221,21 +221,6 @@ s! {
         pub sin_zero: [::c_char; 8],
     }
 
-    // https://github.com/apple/darwin-xnu
-    // /blob/master/bsd/net/if_dl.h#L95
-    pub struct sockaddr_dl {
-        pub sdl_len: ::c_uchar,
-        pub sdl_family: ::c_uchar,
-        pub sdl_index: ::c_ushort,
-        pub sdl_type: ::c_uchar,
-        pub sdl_nlen: ::c_uchar,
-        pub sdl_alen: ::c_uchar,
-        pub sdl_slen: ::c_uchar,
-        pub sdl_data: [::c_char; 12],
-        pub sdl_rcf: ::c_ushort,
-        pub sdl_route: [::c_ushort; 16],
-    }
-
     pub struct statfs {
         pub f_bsize: ::uint32_t,
         pub f_iosize: ::int32_t,
@@ -490,6 +475,19 @@ s! {
     pub struct load_command {
         pub cmd: u32,
         pub cmdsize: u32,
+    }
+
+    pub struct sockaddr_dl {
+        pub sdl_len: ::c_uchar,
+        pub sdl_family: ::c_uchar,
+        pub sdl_index: ::c_ushort,
+        pub sdl_type: ::c_uchar,
+        pub sdl_nlen: ::c_uchar,
+        pub sdl_alen: ::c_uchar,
+        pub sdl_slen: ::c_uchar,
+        pub sdl_data: [::c_char; 12],
+        pub sdl_rcf: ::c_ushort,
+        pub sdl_route: [::c_ushort; 16],
     }
 }
 
