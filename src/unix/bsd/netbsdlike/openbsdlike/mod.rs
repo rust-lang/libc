@@ -176,6 +176,17 @@ s! {
         pub ifm_xflags: ::c_int,
         pub ifm_data: if_data,
     }
+
+    pub struct sockaddr_dl {
+        pub sdl_len: ::c_uchar,
+        pub sdl_family: ::c_uchar,
+        pub sdl_index: ::c_ushort,
+        pub sdl_type: ::c_uchar,
+        pub sdl_nlen: ::c_uchar,
+        pub sdl_alen: ::c_uchar,
+        pub sdl_slen: ::c_uchar,
+        pub sdl_data: [::c_char; 24],
+    }
 }
 
 pub const UT_NAMESIZE: usize = 32;

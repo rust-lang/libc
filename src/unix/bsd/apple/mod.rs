@@ -476,6 +476,17 @@ s! {
         pub cmd: u32,
         pub cmdsize: u32,
     }
+
+    pub struct sockaddr_dl {
+        pub sdl_len: ::c_uchar,
+        pub sdl_family: ::c_uchar,
+        pub sdl_index: ::c_ushort,
+        pub sdl_type: ::c_uchar,
+        pub sdl_nlen: ::c_uchar,
+        pub sdl_alen: ::c_uchar,
+        pub sdl_slen: ::c_uchar,
+        pub sdl_data: [::c_char; 12],
+    }
 }
 
 pub const _UTX_USERSIZE: usize = 256;

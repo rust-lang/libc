@@ -293,6 +293,17 @@ s! {
         pub sc_ngroups: ::c_int,
         pub sc_groups: [::gid_t; 1],
     }
+
+    pub struct sockaddr_dl {
+        pub sdl_len: ::c_uchar,
+        pub sdl_family: ::c_uchar,
+        pub sdl_index: ::c_ushort,
+        pub sdl_type: ::uint8_t,
+        pub sdl_nlen: ::uint8_t,
+        pub sdl_alen: ::uint8_t,
+        pub sdl_slen: ::uint8_t,
+        pub sdl_data: [::c_char; 12],
+    }
 }
 
 pub const AT_FDCWD: ::c_int = -100;
