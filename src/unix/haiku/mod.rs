@@ -478,7 +478,17 @@ pub const SIGEV_NONE: ::c_int = 0;
 pub const SIGEV_SIGNAL: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
 
+pub const EAI_AGAIN: ::c_int = 2;
+pub const EAI_BADFLAGS: ::c_int = 3;
+pub const EAI_FAIL: ::c_int = 4;
+pub const EAI_FAMILY: ::c_int = 5;
+pub const EAI_MEMORY: ::c_int = 6;
+pub const EAI_NODATA: ::c_int = 7;
+pub const EAI_NONAME: ::c_int = 8;
+pub const EAI_SERVICE: ::c_int = 9;
+pub const EAI_SOCKTYPE: ::c_int = 10;
 pub const EAI_SYSTEM: ::c_int = 11;
+pub const EAI_OVERFLOW: ::c_int = 14;
 
 pub const PROT_NONE: ::c_int = 0;
 pub const PROT_READ: ::c_int = 1;
