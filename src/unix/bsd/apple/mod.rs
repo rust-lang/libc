@@ -486,8 +486,6 @@ s! {
         pub sdl_alen: ::c_uchar,
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 12],
-        pub sdl_rcf: ::c_ushort,
-        pub sdl_route: [::c_ushort; 16],
     }
 }
 
