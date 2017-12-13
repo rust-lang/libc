@@ -211,7 +211,11 @@ pub const ECANCELED : ::c_int = 88;
 pub const EIDRM : ::c_int = 89;
 pub const ENOMSG : ::c_int = 90;
 pub const ENOTSUP : ::c_int = 91;
-pub const ELAST : ::c_int = 91;
+pub const EBADMSG : ::c_int = 92;
+pub const ENOTRECOVERABLE : ::c_int = 93;
+pub const EOWNERDEAD : ::c_int = 94;
+pub const EPROTO : ::c_int = 95;
+pub const ELAST : ::c_int = 95;
 
 pub const F_DUPFD_CLOEXEC : ::c_int = 10;
 
@@ -744,6 +748,3 @@ cfg_if! {
         // Unknown target_os
     }
 }
-
-mod other;
-pub use self::other::*;

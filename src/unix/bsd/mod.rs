@@ -1,6 +1,5 @@
 use dox::{mem, Option};
 
-pub type c_char = i8;
 pub type wchar_t = i32;
 pub type off_t = i64;
 pub type useconds_t = u32;
