@@ -1,5 +1,6 @@
 use dox::mem;
 
+pub type c_char = i8;
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
 pub type dev_t = u64;
