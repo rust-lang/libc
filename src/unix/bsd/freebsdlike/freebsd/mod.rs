@@ -62,6 +62,14 @@ s! {
         pub ip6: *mut ::in6_addr,
     }
 
+    pub struct mq_attr {
+        pub mq_flags: ::c_long,
+        pub mq_maxmsg: ::c_long,
+        pub mq_msgsize: ::c_long,
+        pub mq_curmsgs: ::c_long,
+        __reserved: [::c_long; 4]
+    }
+
     pub struct sigevent {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
