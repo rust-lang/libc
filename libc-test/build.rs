@@ -264,6 +264,7 @@ fn main() {
         cfg.header("linux/random.h");
         cfg.header("elf.h");
         cfg.header("link.h");
+        cfg.header("linux/if_tun.h");
     }
 
     if freebsd {

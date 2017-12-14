@@ -726,6 +726,56 @@ pub const IFF_LOWER_UP: ::c_int = 0x10000;
 pub const IFF_DORMANT: ::c_int = 0x20000;
 pub const IFF_ECHO: ::c_int = 0x40000;
 
+// linux/if_tun.h
+// Read queue size
+pub const TUN_READQ_SIZE: ::c_int = 500;
+// TUN device type flags: deprecated. Use IFF_TUN/IFF_TAP instead.
+pub const TUN_TUN_DEV: ::c_int   = IFF_TUN;
+pub const TUN_TAP_DEV: ::c_int   = IFF_TAP;
+pub const TUN_TYPE_MASK: ::c_int = 0x000f;
+// TUNSETIFF ifr flags
+pub const IFF_TUN: ::c_int        = 0x0001;
+pub const IFF_TAP: ::c_int        = 0x0002;
+
+// https://github.com/torvalds/linux/commit
+// /943170998b200190f99d3fe7e771437e2c51f319
+// #diff-f63b94ffcbfbf3fefe0541f85e6d0ba4
+// pub const IFF_NAPI: ::c_int       = 0x0010;
+
+// https://github.com/torvalds/linux/commit
+// /90e33d45940793def6f773b2d528e9f3c84ffdc7
+// #diff-f63b94ffcbfbf3fefe0541f85e6d0ba4
+// pub const IFF_NAPI_FRAGS: ::c_int = 0x0020;
+
+pub const IFF_NO_PI: ::c_int      = 0x1000;
+// This flag has no real effect
+pub const IFF_ONE_QUEUE: ::c_int    = 0x2000;
+pub const IFF_VNET_HDR: ::c_int     = 0x4000;
+pub const IFF_TUN_EXCL: ::c_int     = 0x8000;
+pub const IFF_MULTI_QUEUE: ::c_int  = 0x0100;
+pub const IFF_ATTACH_QUEUE: ::c_int = 0x0200;
+pub const IFF_DETACH_QUEUE: ::c_int = 0x0400;
+// read-only flag
+pub const IFF_PERSIST: ::c_int  = 0x0800;
+pub const IFF_NOFILTER: ::c_int = 0x1000;
+// Socket options
+pub const TUN_TX_TIMESTAMP: ::c_int = 1;
+// Features for GSO (TUNSETOFFLOAD)
+/// You can hand me unchecksummed packets
+pub const TUN_F_CSUM: ::c_int    = 0x01;
+/// I can handle TSO for IPv4 packets
+pub const TUN_F_TSO4: ::c_int    = 0x02;
+/// I can handle TSO for IPv6 packets
+pub const TUN_F_TSO6: ::c_int    = 0x04;
+/// I can handle TSO with ECN bits.
+pub const TUN_F_TSO_ECN: ::c_int = 0x08;
+/// I can handle UFO packets
+pub const TUN_F_UFO: ::c_int     = 0x10;
+// Protocol info prepended to the packets (when IFF_NO_PI is not set)
+pub const TUN_PKT_STRIP: ::c_int = 0x0001;
+// Accept all multicast packets
+pub const TUN_FLT_ALLMULTI: ::c_int = 0x0001;
+
 pub const ST_RDONLY: ::c_ulong = 1;
 pub const ST_NOSUID: ::c_ulong = 2;
 pub const ST_NODEV: ::c_ulong = 4;
