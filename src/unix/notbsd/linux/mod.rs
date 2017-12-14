@@ -726,6 +726,56 @@ pub const IFF_LOWER_UP: ::c_int = 0x10000;
 pub const IFF_DORMANT: ::c_int = 0x20000;
 pub const IFF_ECHO: ::c_int = 0x40000;
 
+// linux/if_tun.h
+// Read queue size
+pub const TUN_READQ_SIZE: ::size_t = 500;
+// TUN device type flags: deprecated. Use IFF_TUN/IFF_TAP instead.
+pub const TUN_TUN_DEV: ::size_t   = IFF_TUN;
+pub const TUN_TAP_DEV: ::size_t   = IFF_TAP;
+pub const TUN_TYPE_MASK: ::size_t = 0x000f;
+// TUNSETIFF ifr flags
+pub const IFF_TUN: ::size_t        = 0x0001;
+pub const IFF_TAP: ::size_t        = 0x0002;
+
+// https://github.com/torvalds/linux/commit
+// /943170998b200190f99d3fe7e771437e2c51f319
+// #diff-f63b94ffcbfbf3fefe0541f85e6d0ba4
+// pub const IFF_NAPI: ::size_t       = 0x0010;
+
+// https://github.com/torvalds/linux/commit
+// /90e33d45940793def6f773b2d528e9f3c84ffdc7
+// #diff-f63b94ffcbfbf3fefe0541f85e6d0ba4
+// pub const IFF_NAPI_FRAGS: ::size_t = 0x0020;
+
+pub const IFF_NO_PI: ::size_t      = 0x1000;
+// This flag has no real effect
+pub const IFF_ONE_QUEUE: ::size_t    = 0x2000;
+pub const IFF_VNET_HDR: ::size_t     = 0x4000;
+pub const IFF_TUN_EXCL: ::size_t     = 0x8000;
+pub const IFF_MULTI_QUEUE: ::size_t  = 0x0100;
+pub const IFF_ATTACH_QUEUE: ::size_t = 0x0200;
+pub const IFF_DETACH_QUEUE: ::size_t = 0x0400;
+// read-only flag
+pub const IFF_PERSIST: ::size_t  = 0x0800;
+pub const IFF_NOFILTER: ::size_t = 0x1000;
+// Socket options
+pub const TUN_TX_TIMESTAMP: ::size_t = 1;
+// Features for GSO (TUNSETOFFLOAD)
+/// You can hand me unchecksummed packets
+pub const TUN_F_CSUM: ::size_t    = 0x01;
+/// I can handle TSO for IPv4 packets
+pub const TUN_F_TSO4: ::size_t    = 0x02;
+/// I can handle TSO for IPv6 packets
+pub const TUN_F_TSO6: ::size_t    = 0x04;
+/// I can handle TSO with ECN bits.
+pub const TUN_F_TSO_ECN: ::size_t = 0x08;
+/// I can handle UFO packets
+pub const TUN_F_UFO: ::size_t     = 0x10;
+// Protocol info prepended to the packets (when IFF_NO_PI is not set)
+pub const TUN_PKT_STRIP: ::size_t = 0x0001;
+// Accept all multicast packets
+pub const TUN_FLT_ALLMULTI: ::size_t = 0x0001;
+
 pub const ST_RDONLY: ::c_ulong = 1;
 pub const ST_NOSUID: ::c_ulong = 2;
 pub const ST_NODEV: ::c_ulong = 4;
