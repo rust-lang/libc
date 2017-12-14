@@ -2071,7 +2071,6 @@ pub const MH_MAGIC: u32 = 0xfeedface;
 pub const MH_MAGIC_64: u32 = 0xfeedfacf;
 
 // net/if_utun.h
-pub const UTUN_CONTROL_NAME: &'static str = "com.apple.net.utun_control";
 pub const UTUN_OPT_FLAGS: ::c_int = 1;
 pub const UTUN_OPT_IFNAME: ::c_int = 2;
 
