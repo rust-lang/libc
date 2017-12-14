@@ -1523,7 +1523,7 @@ pub const MSG_RCVMORE: ::c_int = 0x4000;
 pub const SCM_TIMESTAMP: ::c_int = 0x02;
 pub const SCM_CREDS: ::c_int = 0x03;
 
-/// https://github.com/aosm/xnu/blob/master/bsd/net/if.h#L140-L156
+// https://github.com/aosm/xnu/blob/master/bsd/net/if.h#L140-L156
 pub const IFF_UP: ::c_int          = 0x1;  // interface is up
 pub const IFF_BROADCAST: ::c_int   = 0x2;  // broadcast address valid
 pub const IFF_DEBUG: ::c_int       = 0x4;  // turn on debugging
@@ -2069,6 +2069,10 @@ pub const LC_SEGMENT_64: u32 = 0x19;
 
 pub const MH_MAGIC: u32 = 0xfeedface;
 pub const MH_MAGIC_64: u32 = 0xfeedfacf;
+
+// net/if_utun.h
+pub const UTUN_OPT_FLAGS: ::c_int = 1;
+pub const UTUN_OPT_IFNAME: ::c_int = 2;
 
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {

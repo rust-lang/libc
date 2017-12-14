@@ -169,6 +169,7 @@ fn main() {
         cfg.header("xlocale.h");
         cfg.header("sys/xattr.h");
         cfg.header("sys/sys_domain.h");
+        cfg.header("net/if_utun.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
@@ -264,6 +265,7 @@ fn main() {
         cfg.header("linux/random.h");
         cfg.header("elf.h");
         cfg.header("link.h");
+        cfg.header("linux/if_tun.h");
     }
 
     if freebsd {
