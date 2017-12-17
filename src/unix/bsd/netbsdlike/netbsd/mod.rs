@@ -8,6 +8,7 @@ pub type blksize_t = ::int32_t;
 pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
 pub type idtype_t = ::c_int;
+pub type mqd_t = ::c_int;
 
 s! {
     pub struct aiocb {
@@ -45,6 +46,13 @@ s! {
         __unused6: *mut ::c_void,
         __unused7: *mut ::c_void,
         __unused8: *mut ::c_void,
+    }
+
+    pub struct mq_attr {
+        pub mq_flags: ::c_long,
+        pub mq_maxmsg: ::c_long,
+        pub mq_msgsize: ::c_long,
+        pub mq_curmsgs: ::c_long,
     }
 
     pub struct sigevent {
@@ -1010,6 +1018,32 @@ extern {
                  flags: ::c_int,
                  data: *mut ::c_void,
                  size: ::size_t) -> ::c_int;
+    pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
+    pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
+    pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
+    pub fn mq_notify(mqd: ::mqd_t, notification: *const ::sigevent) -> ::c_int;
+    pub fn mq_receive(mqd: ::mqd_t,
+                      msg_ptr: *mut ::c_char,
+                      msg_len: ::size_t,
+                      msq_prio: *mut ::c_uint) -> ::ssize_t;
+    pub fn mq_send(mqd: ::mqd_t,
+                   msg_ptr: *const ::c_char,
+                   msg_len: ::size_t,
+                   msq_prio: ::c_uint) -> ::c_int;
+    pub fn mq_setattr(mqd: ::mqd_t,
+                      newattr: *const ::mq_attr,
+                      oldattr: *mut ::mq_attr) -> ::c_int;
+    pub fn mq_timedreceive(mqd: ::mqd_t,
+                           msg_ptr: *mut ::c_char,
+                           msg_len: ::size_t,
+                           msq_prio: *mut ::c_uint,
+                           abs_timeout: *const ::timespec) -> ::ssize_t;
+    pub fn mq_timedsend(mqd: ::mqd_t,
+                        msg_ptr: *const ::c_char,
+                        msg_len: ::size_t,
+                        msq_prio: ::c_uint,
+                        abs_timeout: *const ::timespec) -> ::c_int;
+    pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
     pub fn ptrace(request: ::c_int,
                   pid: ::pid_t,
                   addr: *mut ::c_void,

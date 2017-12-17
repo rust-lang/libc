@@ -269,6 +269,7 @@ fn main() {
     }
 
     if freebsd {
+        cfg.header("mqueue.h");
         cfg.header("pthread_np.h");
         cfg.header("sched.h");
         cfg.header("ufs/ufs/quota.h");
@@ -279,6 +280,7 @@ fn main() {
     }
 
     if netbsd {
+        cfg.header("mqueue.h");
         cfg.header("ufs/ufs/quota.h");
         cfg.header("ufs/ufs/quota1.h");
         cfg.header("sys/ioctl_compat.h");
@@ -294,6 +296,7 @@ fn main() {
     }
 
     if dragonfly {
+        cfg.header("mqueue.h");
         cfg.header("ufs/ufs/quota.h");
         cfg.header("pthread_np.h");
         cfg.header("sys/ioctl_compat.h");
@@ -425,7 +428,9 @@ fn main() {
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
             // sem_t is a struct or pointer
-            "sem_t" if openbsd || freebsd || dragonfly || rumprun => true,
+            "sem_t" if openbsd || freebsd || dragonfly || netbsd => true,
+            // mqd_t is a pointer on FreeBSD and DragonFly
+            "mqd_t" if freebsd || dragonfly => true,
 
             // windows-isms
             n if n.starts_with("P") => true,
@@ -591,6 +596,16 @@ fn main() {
             "shm_open" |
             "shm_unlink" |
             "syscall" |
+            "mq_open" |
+            "mq_close" |
+            "mq_getattr" |
+            "mq_notify" |
+            "mq_receive" |
+            "mq_send" |
+            "mq_setattr" |
+            "mq_timedreceive" |
+            "mq_timedsend" |
+            "mq_unlink" |
             "ptrace" |
             "sigaltstack" if rumprun => true,
 
