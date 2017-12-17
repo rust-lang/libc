@@ -773,12 +773,6 @@ pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
 pub const SYS_syscalls: ::c_long = 291;
-pub const SYS_open: ::c_long = 1024;
-pub const SYS_stat: ::c_long = 1038;
-pub const SYS_lstat: ::c_long = 1039;
-pub const SYS_pipe: ::c_long = 1040;
-pub const SYS_getdents: ::c_long = 1065;
-pub const SYS_poll: ::c_long = 1068;
 
 #[link(name = "util")]
 extern {
