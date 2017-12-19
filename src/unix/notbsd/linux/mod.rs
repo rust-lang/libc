@@ -1084,6 +1084,10 @@ pub const PR_CAP_AMBIENT_CLEAR_ALL: ::c_int = 4;
 pub const GRND_NONBLOCK: ::c_uint = 0x0001;
 pub const GRND_RANDOM: ::c_uint = 0x0002;
 
+pub const SECCOMP_MODE_DISABLED: ::c_uint = 0;
+pub const SECCOMP_MODE_STRICT: ::c_uint = 1;
+pub const SECCOMP_MODE_FILTER: ::c_uint = 2;
+
 pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
 pub const ITIMER_PROF: ::c_int = 2;
