@@ -250,6 +250,7 @@ fn main() {
 
     if linux || android {
         cfg.header("sys/fsuid.h");
+        cfg.header("linux/seccomp.h");
 
         // DCCP support
         if !uclibc && !musl && !emscripten {
