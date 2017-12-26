@@ -956,6 +956,10 @@ pub const ONLRET: ::tcflag_t = 0x40;
 
 pub const CMGROUP_MAX: usize = 16;
 
+// https://github.com/freebsd/freebsd/blob/master/sys/net/bpf.h
+// sizeof(long)
+pub const BPF_ALIGNMENT: ::c_int = 8;
+
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
