@@ -174,6 +174,7 @@ fn main() {
             cfg.header("crt_externs.h");
         }
         cfg.header("net/route.h");
+        cfg.header("netinet/if_ether.h");
         cfg.header("sys/proc_info.h");
     }
 
@@ -251,7 +252,8 @@ fn main() {
     if linux || android {
         cfg.header("sys/fsuid.h");
         cfg.header("linux/seccomp.h");
-
+        cfg.header("linux/if_ether.h");
+        
         // DCCP support
         if !uclibc && !musl && !emscripten {
             cfg.header("linux/dccp.h");
