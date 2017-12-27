@@ -55,45 +55,6 @@ s! {
     }
 }
 
-extern "C" {
-    pub fn freeaddrinfo(res: *mut addrinfo);
-    pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
-    pub fn getaddrinfo(
-        node: *const c_char,
-        service: *const c_char,
-        hints: *const addrinfo,
-        res: *mut *mut addrinfo,
-    ) -> ::c_int;
-    pub fn getsockopt(
-        sockfd: ::c_int,
-        level: ::c_int,
-        optname: ::c_int,
-        optval: *mut ::c_void,
-        optlen: *mut ::socklen_t,
-    ) -> ::c_int;
-    pub fn posix_memalign(memptr: *mut *mut ::c_void, align: ::size_t, size: ::size_t) -> ::c_int;
-    pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
-    pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
-    pub fn pthread_attr_setstacksize(attr: *mut ::pthread_attr_t, stack_size: ::size_t) -> ::c_int;
-    pub fn pthread_create(
-        native: *mut ::pthread_t,
-        attr: *const ::pthread_attr_t,
-        f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
-        value: *mut ::c_void,
-    ) -> ::c_int;
-    pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
-    pub fn pthread_getspecific(key: pthread_key_t) -> *mut ::c_void;
-    pub fn pthread_join(native: ::pthread_t, value: *mut *mut ::c_void) -> ::c_int;
-    pub fn pthread_key_create(
-        key: *mut pthread_key_t,
-        dtor: Option<unsafe extern "C" fn(*mut ::c_void)>,
-    ) -> ::c_int;
-    pub fn pthread_key_delete(key: pthread_key_t) -> ::c_int;
-    pub fn pthread_setspecific(key: pthread_key_t, value: *const ::c_void) -> ::c_int;
-    pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
-    pub fn sysconf(name: ::c_int) -> ::c_long;
-}
-
 pub const _SC_PAGESIZE: ::c_int = 54;
 
 pub const AF_INET: ::c_int = 1;
@@ -122,6 +83,63 @@ pub const PTHREAD_STACK_MIN: ::size_t = 1024;
 
 pub const SOCK_DGRAM: ::c_int = 128;
 pub const SOCK_STREAM: ::c_int = 130;
+
+extern {
+    pub fn freeaddrinfo(res: *mut addrinfo);
+    pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
+    pub fn getaddrinfo(
+        node: *const c_char,
+        service: *const c_char,
+        hints: *const addrinfo,
+        res: *mut *mut addrinfo,
+    ) -> ::c_int;
+    pub fn getsockopt(
+        sockfd: ::c_int,
+        level: ::c_int,
+        optname: ::c_int,
+        optval: *mut ::c_void,
+        optlen: *mut ::socklen_t,
+    ) -> ::c_int;
+    pub fn posix_memalign(
+        memptr: *mut *mut ::c_void,
+        align: ::size_t,
+        size: ::size_t,
+    ) -> ::c_int;
+    pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_setstacksize(
+        attr: *mut ::pthread_attr_t,
+        stack_size: ::size_t,
+    ) -> ::c_int;
+    pub fn pthread_create(
+        native: *mut ::pthread_t,
+        attr: *const ::pthread_attr_t,
+        f: extern fn(*mut ::c_void) -> *mut ::c_void,
+        value: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
+    pub fn pthread_getspecific(key: pthread_key_t) -> *mut ::c_void;
+    pub fn pthread_join(
+        native: ::pthread_t,
+        value: *mut *mut ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_key_create(
+        key: *mut pthread_key_t,
+        dtor: Option<unsafe extern fn(*mut ::c_void)>,
+    ) -> ::c_int;
+    pub fn pthread_key_delete(key: pthread_key_t) -> ::c_int;
+    pub fn pthread_setspecific(
+        key: pthread_key_t,
+        value: *const ::c_void,
+    ) -> ::c_int;
+    pub fn send(
+        socket: ::c_int,
+        buf: *const ::c_void,
+        len: ::size_t,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    pub fn sysconf(name: ::c_int) -> ::c_long;
+}
 
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
