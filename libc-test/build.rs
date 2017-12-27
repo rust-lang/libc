@@ -170,6 +170,7 @@ fn main() {
         cfg.header("sys/xattr.h");
         cfg.header("sys/sys_domain.h");
         cfg.header("net/if_utun.h");
+        cfg.header("net/bpf.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
@@ -182,6 +183,7 @@ fn main() {
         cfg.header("sys/event.h");
         cfg.header("net/if_dl.h");
         if freebsd {
+            cfg.header("net/bpf.h");
             cfg.header("libutil.h");
         } else {
             cfg.header("util.h");
