@@ -1,5 +1,3 @@
-extern crate cloudabi;
-
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
 pub type pthread_key_t = usize;
@@ -101,29 +99,29 @@ pub const _SC_PAGESIZE: ::c_int = 54;
 pub const AF_INET: ::c_int = 1;
 pub const AF_INET6: ::c_int = 2;
 
-pub const EACCES: ::c_int = cloudabi::errno::ACCES as ::c_int;
-pub const EADDRINUSE: ::c_int = cloudabi::errno::ADDRINUSE as ::c_int;
-pub const EADDRNOTAVAIL: ::c_int = cloudabi::errno::ADDRNOTAVAIL as ::c_int;
-pub const EAGAIN: ::c_int = cloudabi::errno::AGAIN as ::c_int;
-pub const ECONNABORTED: ::c_int = cloudabi::errno::CONNABORTED as ::c_int;
-pub const ECONNREFUSED: ::c_int = cloudabi::errno::CONNREFUSED as ::c_int;
-pub const ECONNRESET: ::c_int = cloudabi::errno::CONNRESET as ::c_int;
-pub const EEXIST: ::c_int = cloudabi::errno::EXIST as ::c_int;
-pub const EINTR: ::c_int = cloudabi::errno::INTR as ::c_int;
-pub const EINVAL: ::c_int = cloudabi::errno::INVAL as ::c_int;
-pub const ENOENT: ::c_int = cloudabi::errno::NOENT as ::c_int;
-pub const ENOTCONN: ::c_int = cloudabi::errno::NOTCONN as ::c_int;
-pub const EPERM: ::c_int = cloudabi::errno::PERM as ::c_int;
-pub const EPIPE: ::c_int = cloudabi::errno::PIPE as ::c_int;
-pub const ETIMEDOUT: ::c_int = cloudabi::errno::TIMEDOUT as ::c_int;
-pub const EWOULDBLOCK: ::c_int = cloudabi::errno::AGAIN as ::c_int;
+pub const EACCES: ::c_int = 2;
+pub const EADDRINUSE: ::c_int = 3;
+pub const EADDRNOTAVAIL: ::c_int = 4;
+pub const EAGAIN: ::c_int = 6;
+pub const ECONNABORTED: ::c_int = 13;
+pub const ECONNREFUSED: ::c_int = 14;
+pub const ECONNRESET: ::c_int = 15;
+pub const EEXIST: ::c_int = 20;
+pub const EINTR: ::c_int = 27;
+pub const EINVAL: ::c_int = 28;
+pub const ENOENT: ::c_int = 44;
+pub const ENOTCONN: ::c_int = 53;
+pub const EPERM: ::c_int = 63;
+pub const EPIPE: ::c_int = 64;
+pub const ETIMEDOUT: ::c_int = 73;
+pub const EWOULDBLOCK: ::c_int = EAGAIN;
 
 pub const EAI_SYSTEM: ::c_int = 9;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 1024;
 
-pub const SOCK_DGRAM: ::c_int = cloudabi::filetype::SOCKET_DGRAM as ::c_int;
-pub const SOCK_STREAM: ::c_int = cloudabi::filetype::SOCKET_STREAM as ::c_int;
+pub const SOCK_DGRAM: ::c_int = 128;
+pub const SOCK_STREAM: ::c_int = 130;
 
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
