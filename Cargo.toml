@@ -17,6 +17,9 @@ other common platform libraries.
 travis-ci = { repository = "rust-lang/libc" }
 appveyor = { repository = "rust-lang/libc", project_name = "rust-lang-libs/libc" }
 
+[target.'cfg(target_os = "cloudabi")'.dependencies]
+cloudabi = "0.0.1"
+
 [features]
 default = ["use_std"]
 use_std = []
