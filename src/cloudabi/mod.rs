@@ -85,6 +85,7 @@ pub const SOCK_DGRAM: ::c_int = 128;
 pub const SOCK_STREAM: ::c_int = 130;
 
 extern {
+    pub fn arc4random_buf(buf: *const ::c_void, len: ::size_t);
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
     pub fn getaddrinfo(
