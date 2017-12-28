@@ -79,6 +79,9 @@ pub const EWOULDBLOCK: ::c_int = EAGAIN;
 
 pub const EAI_SYSTEM: ::c_int = 9;
 
+pub const EXIT_FAILURE: ::c_int = 1;
+pub const EXIT_SUCCESS: ::c_int = 0;
+
 pub const PTHREAD_STACK_MIN: ::size_t = 1024;
 
 pub const SOCK_DGRAM: ::c_int = 128;
