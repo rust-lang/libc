@@ -28,6 +28,7 @@ pub type integer_t = ::c_int;
 pub type cpu_type_t = integer_t;
 pub type cpu_subtype_t = integer_t;
 pub type vm_prot_t = ::c_int;
+pub type copyfile_flags_t = ::uint32_t;
 
 pub enum timezone {}
 
@@ -487,6 +488,30 @@ s! {
         pub sdl_alen: ::c_uchar,
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 12],
+    }
+
+    pub struct filesec_t {}
+
+    pub struct copyfile_state_t {
+        pub src: *const ::c_char,
+        pub dst: *const ::c_char,
+        pub src_fd: i32,
+        pub dst_fd: i32,
+        pub sb: stat,
+        pub fsec: filesec_t,
+        pub flags: copyfile_flags_t,
+        pub stats: *mut ::c_void,
+        pub debug: ::uint32_t,
+    }
+
+    pub struct sockaddr_inarp {
+        pub sin_len: ::c_uchar,
+        pub sin_family: ::c_uchar,
+        pub sin_port: ::c_ushort,
+        pub sin_addr: ::in_addr,
+        pub sin_srcaddr: ::in_addr,
+        pub sin_tos: ::c_ushort,
+        pub sin_other: ::c_ushort,
     }
 }
 
@@ -1131,6 +1156,15 @@ pub const MINCORE_REFERENCED: ::c_int = 0x2;
 pub const MINCORE_MODIFIED: ::c_int = 0x4;
 pub const MINCORE_REFERENCED_OTHER: ::c_int = 0x8;
 pub const MINCORE_MODIFIED_OTHER: ::c_int = 0x10;
+
+pub const COPYFILE_ACL: ::c_int = (1 << 0);
+pub const COPYFILE_STAT: ::c_int = (1 << 1);
+pub const COPYFILE_XATTR: ::c_int = (1 << 2);
+pub const COPYFILE_DATA : ::c_int = (1 << 3);
+
+pub const COPYFILE_SECURITY: ::c_int = COPYFILE_STAT | COPYFILE_ACL;
+pub const COPYFILE_METADATA: ::c_int = COPYFILE_SECURITY | COPYFILE_XATTR;
+pub const COPYFILE_ALL: ::c_int = COPYFILE_METADATA | COPYFILE_DATA;
 
 //
 // sys/netinet/in.h
@@ -2052,7 +2086,90 @@ pub const XATTR_NODEFAULT: ::c_int = 0x0010;
 pub const XATTR_SHOWCOMPRESSION: ::c_int = 0x0020;
 
 pub const NET_RT_IFLIST2: ::c_int = 0x0006;
-pub const RTM_IFINFO2: ::c_int = 0x0012;
+
+// net/route.h
+pub const RTF_UP: ::c_int = 0x1;
+pub const RTF_GATEWAY: ::c_int = 0x2;
+pub const RTF_HOST: ::c_int = 0x4;
+pub const RTF_REJECT: ::c_int = 0x8;
+pub const RTF_DYNAMIC: ::c_int = 0x10;
+pub const RTF_MODIFIED: ::c_int = 0x20;
+pub const RTF_DONE: ::c_int = 0x40;
+pub const RTF_DELCLONE: ::c_int = 0x80;
+pub const RTF_CLONING: ::c_int = 0x100;
+pub const RTF_XRESOLVE: ::c_int = 0x200;
+pub const RTF_LLINFO: ::c_int = 0x400;
+pub const RTF_STATIC: ::c_int = 0x800;
+pub const RTF_BLACKHOLE: ::c_int = 0x1000;
+pub const RTF_NOIFREF: ::c_int = 0x2000;
+pub const RTF_PROTO2: ::c_int = 0x4000;
+pub const RTF_PROTO1: ::c_int = 0x8000;
+pub const RTF_PRCLONING: ::c_int = 0x10000;
+pub const RTF_WASCLONED: ::c_int = 0x20000;
+pub const RTF_PROTO3: ::c_int = 0x40000;
+pub const RTF_PINNED: ::c_int = 0x100000;
+pub const RTF_LOCAL: ::c_int = 0x200000;
+pub const RTF_BROADCAST: ::c_int = 0x400000;
+pub const RTF_MULTICAST: ::c_int = 0x800000;
+pub const RTF_IFSCOPE: ::c_int = 0x1000000;
+pub const RTF_CONDEMNED: ::c_int = 0x2000000;
+pub const RTF_IFREF: ::c_int = 0x4000000;
+pub const RTF_PROXY: ::c_int = 0x8000000;
+pub const RTF_ROUTER: ::c_int = 0x10000000;
+
+pub const RTM_VERSION: ::c_int = 5;
+
+// Message types
+pub const RTM_ADD: ::c_int = 0x1;
+pub const RTM_DELETE: ::c_int = 0x2;
+pub const RTM_CHANGE: ::c_int = 0x3;
+pub const RTM_GET: ::c_int = 0x4;
+pub const RTM_LOSING: ::c_int = 0x5;
+pub const RTM_REDIRECT: ::c_int = 0x6;
+pub const RTM_MISS: ::c_int = 0x7;
+pub const RTM_LOCK: ::c_int = 0x8;
+pub const RTM_OLDADD: ::c_int = 0x9;
+pub const RTM_OLDDEL: ::c_int = 0xa;
+pub const RTM_RESOLVE: ::c_int = 0xb;
+pub const RTM_NEWADDR: ::c_int = 0xc;
+pub const RTM_DELADDR: ::c_int = 0xd;
+pub const RTM_IFINFO: ::c_int = 0xe;
+pub const RTM_NEWMADDR: ::c_int = 0xf;
+pub const RTM_DELMADDR: ::c_int = 0x10;
+pub const RTM_IFINFO2: ::c_int = 0x12;
+pub const RTM_NEWMADDR2: ::c_int = 0x13;
+pub const RTM_GET2: ::c_int = 0x14;
+
+// Bitmask values for rtm_inits and rmx_locks.
+pub const RTV_MTU: ::c_int = 0x1;
+pub const RTV_HOPCOUNT: ::c_int = 0x2;
+pub const RTV_EXPIRE: ::c_int = 0x4;
+pub const RTV_RPIPE: ::c_int = 0x8;
+pub const RTV_SPIPE: ::c_int = 0x10;
+pub const RTV_SSTHRESH: ::c_int = 0x20;
+pub const RTV_RTT: ::c_int = 0x40;
+pub const RTV_RTTVAR: ::c_int = 0x80;
+
+// Bitmask values for rtm_addrs.
+pub const RTA_DST: ::c_int = 0x1;
+pub const RTA_GATEWAY: ::c_int = 0x2;
+pub const RTA_NETMASK: ::c_int = 0x4;
+pub const RTA_GENMASK: ::c_int = 0x8;
+pub const RTA_IFP: ::c_int = 0x10;
+pub const RTA_IFA: ::c_int = 0x20;
+pub const RTA_AUTHOR: ::c_int = 0x40;
+pub const RTA_BRD: ::c_int = 0x80;
+
+// Index offsets for sockaddr array for alternate internal encoding.
+pub const RTAX_DST: ::c_int = 0;
+pub const RTAX_GATEWAY: ::c_int = 1;
+pub const RTAX_NETMASK: ::c_int = 2;
+pub const RTAX_GENMASK: ::c_int = 3;
+pub const RTAX_IFP: ::c_int = 4;
+pub const RTAX_IFA: ::c_int = 5;
+pub const RTAX_AUTHOR: ::c_int = 6;
+pub const RTAX_BRD: ::c_int = 7;
+pub const RTAX_MAX: ::c_int = 8;
 
 pub const KERN_PROCARGS2: ::c_int = 49;
 
@@ -2073,6 +2190,26 @@ pub const MH_MAGIC_64: u32 = 0xfeedfacf;
 // net/if_utun.h
 pub const UTUN_OPT_FLAGS: ::c_int = 1;
 pub const UTUN_OPT_IFNAME: ::c_int = 2;
+
+// net/bpf.h
+pub const DLT_NULL: ::c_uint = 0;         // no link-layer encapsulation
+pub const DLT_EN10MB: ::c_uint = 1;       // Ethernet (10Mb)
+pub const DLT_EN3MB: ::c_uint = 2;        // Experimental Ethernet (3Mb)
+pub const DLT_AX25: ::c_uint = 3;         // Amateur Radio AX.25
+pub const DLT_PRONET: ::c_uint = 4;       // Proteon ProNET Token Ring
+pub const DLT_CHAOS: ::c_uint = 5;        // Chaos
+pub const DLT_IEEE802: ::c_uint = 6;      // IEEE 802 Networks
+pub const DLT_ARCNET: ::c_uint = 7;       // ARCNET
+pub const DLT_SLIP: ::c_uint = 8;         // Serial Line IP
+pub const DLT_PPP: ::c_uint = 9;          // Point-to-point Protocol
+pub const DLT_FDDI: ::c_uint = 10;        // FDDI
+pub const DLT_ATM_RFC1483: ::c_uint = 11; // LLC/SNAP encapsulated atm
+pub const DLT_RAW: ::c_uint = 12;         // raw IP
+pub const DLT_LOOP: ::c_uint = 108;
+
+// https://github.com/apple/darwin-xnu/blob/master/bsd/net/bpf.h#L100
+// sizeof(int32_t)
+pub const BPF_ALIGNMENT: ::c_int = 4;
 
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
@@ -2111,6 +2248,11 @@ extern {
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
+
+    pub fn copyfile(from: *const ::c_char,
+                    to: *const ::c_char,
+                    state: *mut copyfile_state_t,
+                    flags: copyfile_flags_t) -> ::c_int;
 
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
 

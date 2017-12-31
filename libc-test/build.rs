@@ -170,17 +170,21 @@ fn main() {
         cfg.header("sys/xattr.h");
         cfg.header("sys/sys_domain.h");
         cfg.header("net/if_utun.h");
+        cfg.header("net/bpf.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
         cfg.header("net/route.h");
+        cfg.header("netinet/if_ether.h");
         cfg.header("sys/proc_info.h");
+        cfg.header("copyfile.h");
     }
 
     if bsdlike {
         cfg.header("sys/event.h");
         cfg.header("net/if_dl.h");
         if freebsd {
+            cfg.header("net/bpf.h");
             cfg.header("libutil.h");
         } else {
             cfg.header("util.h");
@@ -251,7 +255,8 @@ fn main() {
     if linux || android {
         cfg.header("sys/fsuid.h");
         cfg.header("linux/seccomp.h");
-
+        cfg.header("linux/if_ether.h");
+        
         // DCCP support
         if !uclibc && !musl && !emscripten {
             cfg.header("linux/dccp.h");
