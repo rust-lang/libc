@@ -55,6 +55,7 @@ s! {
     }
 }
 
+pub const _SC_NPROCESSORS_ONLN: ::c_int = 52;
 pub const _SC_PAGESIZE: ::c_int = 54;
 
 pub const AF_INET: ::c_int = 1;
