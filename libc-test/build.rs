@@ -287,6 +287,7 @@ fn main() {
         cfg.header("sys/ipc.h");
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
+        cfg.header("sys/procdesc.h");
     }
 
     if netbsd {

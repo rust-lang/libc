@@ -841,6 +841,11 @@ pub const _SC_CPUSET_SIZE: ::c_int = 122;
 pub const XU_NGROUPS: ::c_int = 16;
 pub const XUCRED_VERSION: ::c_uint = 0;
 
+// Flags which can be passed to pdfork(2)
+pub const PD_DAEMON: ::c_int = 0x00000001;
+pub const PD_CLOEXEC: ::c_int = 0x00000002;
+pub const PD_ALLOWED_AT_FORK: ::c_int = PD_DAEMON | PD_CLOEXEC;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
@@ -896,6 +901,10 @@ extern {
     pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
                    envp: *const *const ::c_char)
                    -> ::c_int;
+
+    pub fn pdfork(fdp: *mut ::c_int, flags: ::c_int) -> ::pid_t;
+    pub fn pdgetpid(fd: ::c_int, pidp: *mut ::pid_t) -> ::c_int;
+    pub fn pdkill(fd: ::c_int, signum: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
