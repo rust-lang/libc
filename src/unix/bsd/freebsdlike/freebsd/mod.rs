@@ -200,9 +200,12 @@ pub const EVFILT_VNODE: ::int16_t = -4;
 pub const EVFILT_PROC: ::int16_t = -5;
 pub const EVFILT_SIGNAL: ::int16_t = -6;
 pub const EVFILT_TIMER: ::int16_t = -7;
+pub const EVFILT_PROCDESC: ::int16_t = -8;
 pub const EVFILT_FS: ::int16_t = -9;
 pub const EVFILT_LIO: ::int16_t = -10;
 pub const EVFILT_USER: ::int16_t = -11;
+pub const EVFILT_SENDFILE: ::int16_t = -12;
+pub const EVFILT_EMPTY: ::int16_t = -13;
 
 pub const EV_ADD: ::uint16_t = 0x1;
 pub const EV_DELETE: ::uint16_t = 0x2;
