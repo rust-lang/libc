@@ -29,6 +29,7 @@ pub type cpu_type_t = integer_t;
 pub type cpu_subtype_t = integer_t;
 pub type vm_prot_t = ::c_int;
 pub type copyfile_flags_t = ::uint32_t;
+pub type copyfile_state_t = *mut _copyfile_state_t;
 
 pub enum timezone {}
 
@@ -492,7 +493,7 @@ s! {
 
     pub struct filesec_t {}
 
-    pub struct copyfile_state_t {
+    pub struct _copyfile_state_t {
         pub src: *const ::c_char,
         pub dst: *const ::c_char,
         pub src_fd: i32,
@@ -2249,10 +2250,12 @@ extern {
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
 
-    pub fn copyfile(from: *const ::c_char,
-                    to: *const ::c_char,
-                    state: *mut copyfile_state_t,
-                    flags: copyfile_flags_t) -> ::c_int;
+    pub fn copyfile(
+        from: *const ::c_char,
+        to: *const ::c_char,
+        state: copyfile_state_t,
+        flags: copyfile_flags_t,
+    ) -> ::c_int;
 
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
 
