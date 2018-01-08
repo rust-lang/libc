@@ -295,6 +295,11 @@ cfg_if! {
     } else if #[cfg(unix)] {
         mod unix;
         pub use unix::*;
+    } else if #[cfg(target_family = "none")] {
+        pub type c_char = c_uchar;
+        pub type c_long = c_int;
+        pub type c_ulong = c_uint;
+        pub type wchar_t = c_int;
     } else {
         // Unknown target_family
     }
