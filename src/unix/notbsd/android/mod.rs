@@ -684,6 +684,16 @@ pub const TIOCMSET: ::c_int = 0x5418;
 pub const FIONREAD: ::c_int = 0x541B;
 pub const TIOCCONS: ::c_int = 0x541D;
 
+pub const ST_RDONLY: ::c_ulong = 1;
+pub const ST_NOSUID: ::c_ulong = 2;
+pub const ST_NODEV: ::c_ulong = 4;
+pub const ST_NOEXEC: ::c_ulong = 8;
+pub const ST_SYNCHRONOUS: ::c_ulong = 16;
+pub const ST_MANDLOCK: ::c_ulong = 64;
+pub const ST_NOATIME: ::c_ulong = 1024;
+pub const ST_NODIRATIME: ::c_ulong = 2048;
+pub const ST_RELATIME: ::c_ulong = 4096;
+
 pub const RTLD_NOLOAD: ::c_int = 0x4;
 
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
