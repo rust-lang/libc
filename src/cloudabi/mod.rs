@@ -4,6 +4,7 @@ pub type pthread_key_t = usize;
 pub type pthread_t = usize;
 pub type sa_family_t = u8;
 pub type socklen_t = usize;
+pub type time_t = i64;
 
 s! {
     pub struct addrinfo {
