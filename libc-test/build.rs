@@ -177,6 +177,7 @@ fn main() {
         cfg.header("net/route.h");
         cfg.header("netinet/if_ether.h");
         cfg.header("sys/proc_info.h");
+        cfg.header("copyfile.h");
     }
 
     if bsdlike {

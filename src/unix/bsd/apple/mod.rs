@@ -28,6 +28,8 @@ pub type integer_t = ::c_int;
 pub type cpu_type_t = integer_t;
 pub type cpu_subtype_t = integer_t;
 pub type vm_prot_t = ::c_int;
+pub type copyfile_flags_t = ::uint32_t;
+pub type copyfile_state_t = *mut _copyfile_state_t;
 
 pub enum timezone {}
 
@@ -487,6 +489,20 @@ s! {
         pub sdl_alen: ::c_uchar,
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 12],
+    }
+
+    pub struct filesec_t {}
+
+    pub struct _copyfile_state_t {
+        pub src: *const ::c_char,
+        pub dst: *const ::c_char,
+        pub src_fd: i32,
+        pub dst_fd: i32,
+        pub sb: stat,
+        pub fsec: filesec_t,
+        pub flags: copyfile_flags_t,
+        pub stats: *mut ::c_void,
+        pub debug: ::uint32_t,
     }
 
     pub struct sockaddr_inarp {
@@ -1141,6 +1157,15 @@ pub const MINCORE_REFERENCED: ::c_int = 0x2;
 pub const MINCORE_MODIFIED: ::c_int = 0x4;
 pub const MINCORE_REFERENCED_OTHER: ::c_int = 0x8;
 pub const MINCORE_MODIFIED_OTHER: ::c_int = 0x10;
+
+pub const COPYFILE_ACL: ::c_int = (1 << 0);
+pub const COPYFILE_STAT: ::c_int = (1 << 1);
+pub const COPYFILE_XATTR: ::c_int = (1 << 2);
+pub const COPYFILE_DATA : ::c_int = (1 << 3);
+
+pub const COPYFILE_SECURITY: ::c_int = COPYFILE_STAT | COPYFILE_ACL;
+pub const COPYFILE_METADATA: ::c_int = COPYFILE_SECURITY | COPYFILE_XATTR;
+pub const COPYFILE_ALL: ::c_int = COPYFILE_METADATA | COPYFILE_DATA;
 
 //
 // sys/netinet/in.h
@@ -2224,6 +2249,13 @@ extern {
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
+
+    pub fn copyfile(
+        from: *const ::c_char,
+        to: *const ::c_char,
+        state: copyfile_state_t,
+        flags: copyfile_flags_t,
+    ) -> ::c_int;
 
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
 
