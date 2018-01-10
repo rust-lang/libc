@@ -497,6 +497,10 @@ fn main() {
             "HW_MAXID" |
             "USER_MAXID" if freebsd => true,
 
+            // These constants were added in FreeBSD 11
+            "EVFILT_PROCDESC" | "EVFILT_SENDFILE" | "EVFILT_EMPTY" |
+            "PD_CLOEXEC" | "PD_ALLOWED_AT_FORK" if freebsd => true,
+
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" if apple => true,
