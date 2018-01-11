@@ -146,7 +146,6 @@ cfg_if! {
         pub type ssize_t = isize;
         pub enum FILE {}
         pub enum fpos_t {} // TODO: fill this out with a struct
-        pub const EPOLLRDHUP: c_int = 8192;
         extern {
             pub fn isalnum(c: c_int) -> c_int;
             pub fn isalpha(c: c_int) -> c_int;
@@ -279,7 +278,10 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(windows)] {
+     if#[cfg(target_os = "solaris")] {
+        mod unix;
+        pub use unix::*;
+    } else if #[cfg(windows)] {
         mod windows;
         pub use windows::*;
     } else if #[cfg(target_os = "redox")] {
@@ -296,5 +298,7 @@ cfg_if! {
         pub use unix::*;
     } else {
         // Unknown target_family
+        mod unix;
+        pub use unix::*;
     }
 }
