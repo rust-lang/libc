@@ -767,6 +767,8 @@ extern {
     pub fn gmtime(time_p: *const time_t) -> *mut tm;
     #[cfg_attr(target_os = "netbsd", link_name = "__locatime50")]
     pub fn localtime(time_p: *const time_t) -> *mut tm;
+    #[cfg_attr(target_os = "netbsd", link_name = "__difftime50")]
+    pub fn difftime(time1: time_t, time0: time_t) -> ::c_double;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
     pub fn mknod(pathname: *const ::c_char, mode: ::mode_t,
