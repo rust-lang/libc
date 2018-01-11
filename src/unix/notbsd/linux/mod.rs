@@ -454,6 +454,15 @@ s! {
         pub uid: ::uid_t,
         pub gid: ::gid_t,
     }
+
+    pub struct mntent {
+        pub mnt_fsname: *mut ::c_char,
+        pub mnt_dir: *mut ::c_char,
+        pub mnt_type: *mut ::c_char,
+        pub mnt_opts: *mut ::c_char,
+        pub mnt_freq: ::c_int,
+        pub mnt_passno: ::c_int,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -1694,6 +1703,14 @@ extern {
         ) -> ::c_int>,
         data: *mut ::c_void
     ) -> ::c_int;
+
+    pub fn setmntent(filename: *const ::c_char,
+                     ty: *const ::c_char) -> *mut ::FILE;
+    pub fn getmntent(stream: *mut ::FILE) -> *mut ::mntent;
+    pub fn addmntent(stream: *mut ::FILE, mnt: *const ::mntent) -> ::c_int;
+    pub fn endmntent(streamp: *mut ::FILE) -> ::c_int;
+    pub fn hasmntopt(mnt: *const ::mntent,
+                     opt: *const ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {

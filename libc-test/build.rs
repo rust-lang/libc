@@ -191,6 +191,7 @@ fn main() {
     }
 
     if linux || emscripten {
+        cfg.header("mntent.h");
         cfg.header("mqueue.h");
         cfg.header("ucontext.h");
         if !uclibc {
@@ -255,7 +256,7 @@ fn main() {
         cfg.header("sys/fsuid.h");
         cfg.header("linux/seccomp.h");
         cfg.header("linux/if_ether.h");
-        
+
         // DCCP support
         if !uclibc && !musl && !emscripten {
             cfg.header("linux/dccp.h");
