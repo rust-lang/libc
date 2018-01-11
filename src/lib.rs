@@ -278,10 +278,7 @@ cfg_if! {
 }
 
 cfg_if! {
-     if#[cfg(target_os = "solaris")] {
-        mod unix;
-        pub use unix::*;
-    } else if #[cfg(windows)] {
+    if #[cfg(windows)] {
         mod windows;
         pub use windows::*;
     } else if #[cfg(target_os = "redox")] {
@@ -298,7 +295,5 @@ cfg_if! {
         pub use unix::*;
     } else {
         // Unknown target_family
-        mod unix;
-        pub use unix::*;
     }
 }
