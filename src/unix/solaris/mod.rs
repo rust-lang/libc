@@ -353,6 +353,13 @@ s! {
         pub portev_object: ::uintptr_t,
         pub portev_user: *mut ::c_void,
     }
+
+    pub struct epoll_event {
+        pub events: ::uint32_t,
+        pub u64: ::uint64_t,
+    }
+
+
 }
 
 pub const LC_CTYPE: ::c_int = 0;
@@ -1361,6 +1368,26 @@ extern {
                        oss: *mut stack_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
+
+    pub fn epoll_pwait(epfd: ::c_int,
+                       events: *mut ::epoll_event,
+                       maxevents: ::c_int,
+                       timeout: ::c_int,
+                       sigmask: *const ::sigset_t) -> ::c_int;
+ 
+    pub fn epoll_create(size: ::c_int) -> ::c_int;
+    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
+    pub fn epoll_wait(epfd: ::c_int,
+                      events: *mut ::epoll_event,
+                      maxevents: ::c_int,
+                      timeout: ::c_int) -> ::c_int;
+    pub fn epoll_ctl(epfd: ::c_int,
+                     op: ::c_int,
+                     fd: ::c_int,
+                     event: *mut ::epoll_event) -> ::c_int;
+ 
+
+
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrnam_r")]
     pub fn getgrnam_r(name: *const ::c_char,
                       grp: *mut ::group,
