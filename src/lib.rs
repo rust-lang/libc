@@ -293,9 +293,6 @@ cfg_if! {
     } else if #[cfg(unix)] {
         mod unix;
         pub use unix::*;
-    }  else if #[cfg(target_os = "solaris")] {
-        mod unix;
-        pub use unix::solaris;
     } else {
         // Unknown target_family
     }
