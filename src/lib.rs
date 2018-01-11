@@ -291,7 +291,7 @@ cfg_if! {
         mod fuchsia;
         pub use fuchsia::*;
     } else if #[cfg(unix)] {
-        mod unix;
+        pub mod unix;
         pub use unix::*;
     } else {
         // Unknown target_family
