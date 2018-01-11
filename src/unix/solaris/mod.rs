@@ -36,6 +36,25 @@ pub type nl_item = ::c_int;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 
+pub const EPOLLIN: ::c_int = 0x1;
+pub const EPOLLPRI: ::c_int = 0x2;
+pub const EPOLLOUT: ::c_int = 0x4;
+pub const EPOLLRDNORM: ::c_int = 0x40;
+pub const EPOLLRDBAND: ::c_int = 0x80;
+pub const EPOLLWRNORM: ::c_int = 0x100;
+pub const EPOLLWRBAND: ::c_int = 0x200;
+pub const EPOLLMSG: ::c_int = 0x400;
+pub const EPOLLERR: ::c_int = 0x8;
+pub const EPOLLHUP: ::c_int = 0x10;
+pub const EPOLLET: ::c_int = 0x80000000;
+
+pub const EPOLL_CTL_ADD: ::c_int = 1;
+pub const EPOLL_CTL_MOD: ::c_int = 3;
+pub const EPOLL_CTL_DEL: ::c_int = 2;
+
+
+
+
 pub enum timezone {}
 
 s! {
