@@ -36,9 +36,6 @@ pub type nl_item = ::c_int;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 
-
-
-
 pub enum timezone {}
 
 s! {
@@ -361,8 +358,6 @@ s! {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,
     }
-
-
 }
 
 pub const LC_CTYPE: ::c_int = 0;
@@ -1140,8 +1135,6 @@ pub const LOG_CRON: ::c_int = 15 << 3;
 pub const SYS_epoll_create: ::c_long = 213;
 pub const SYS_epoll_create1: ::c_long = 291;
 
-
-
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __pthread_mutex_flag1: 0,
     __pthread_mutex_flag2: 0,
@@ -1215,8 +1208,6 @@ pub const EPOLL_CLOEXEC: ::c_int = 0x02000000;
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
 pub const EPOLL_CTL_DEL: ::c_int = 2;
-
-
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
@@ -1403,7 +1394,6 @@ extern {
                        maxevents: ::c_int,
                        timeout: ::c_int,
                        sigmask: *const ::sigset_t) -> ::c_int;
- 
     pub fn epoll_create(size: ::c_int) -> ::c_int;
     pub fn epoll_create1(flags: ::c_int) -> ::c_int;
     pub fn epoll_wait(epfd: ::c_int,
@@ -1414,8 +1404,6 @@ extern {
                      op: ::c_int,
                      fd: ::c_int,
                      event: *mut ::epoll_event) -> ::c_int;
- 
-
 
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrnam_r")]
     pub fn getgrnam_r(name: *const ::c_char,
