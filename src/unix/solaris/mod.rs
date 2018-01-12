@@ -353,6 +353,11 @@ s! {
         pub portev_object: ::uintptr_t,
         pub portev_user: *mut ::c_void,
     }
+
+    pub struct epoll_event {
+        pub events: ::uint32_t,
+        pub u64: ::uint64_t,
+    }
 }
 
 pub const LC_CTYPE: ::c_int = 0;
@@ -1127,6 +1132,9 @@ pub const NCCS: usize = 19;
 
 pub const LOG_CRON: ::c_int = 15 << 3;
 
+pub const SYS_epoll_create: ::c_long = 213;
+pub const SYS_epoll_create1: ::c_long = 291;
+
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __pthread_mutex_flag1: 0,
     __pthread_mutex_flag2: 0,
@@ -1181,6 +1189,25 @@ pub const PORT_SOURCE_MQ: ::c_int = 6;
 pub const PORT_SOURCE_FILE: ::c_int = 7;
 pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
 pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
+
+pub const EPOLLIN: ::c_int = 0x1;
+pub const EPOLLPRI: ::c_int = 0x2;
+pub const EPOLLOUT: ::c_int = 0x4;
+pub const EPOLLRDNORM: ::c_int = 0x40;
+pub const EPOLLRDBAND: ::c_int = 0x80;
+pub const EPOLLWRNORM: ::c_int = 0x100;
+pub const EPOLLWRBAND: ::c_int = 0x200;
+pub const EPOLLMSG: ::c_int = 0x400;
+pub const EPOLLERR: ::c_int = 0x8;
+pub const EPOLLHUP: ::c_int = 0x10;
+pub const EPOLLET: ::c_int = 0x80000000;
+pub const EPOLLRDHUP: ::c_int = 0x2000;
+pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
+pub const EPOLLONESHOT: ::c_int = 0x40000000;
+pub const EPOLL_CLOEXEC: ::c_int = 0x02000000;
+pub const EPOLL_CTL_ADD: ::c_int = 1;
+pub const EPOLL_CTL_MOD: ::c_int = 3;
+pub const EPOLL_CTL_DEL: ::c_int = 2;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
@@ -1361,6 +1388,23 @@ extern {
                        oss: *mut stack_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
+
+    pub fn epoll_pwait(epfd: ::c_int,
+                       events: *mut ::epoll_event,
+                       maxevents: ::c_int,
+                       timeout: ::c_int,
+                       sigmask: *const ::sigset_t) -> ::c_int;
+    pub fn epoll_create(size: ::c_int) -> ::c_int;
+    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
+    pub fn epoll_wait(epfd: ::c_int,
+                      events: *mut ::epoll_event,
+                      maxevents: ::c_int,
+                      timeout: ::c_int) -> ::c_int;
+    pub fn epoll_ctl(epfd: ::c_int,
+                     op: ::c_int,
+                     fd: ::c_int,
+                     event: *mut ::epoll_event) -> ::c_int;
+
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrnam_r")]
     pub fn getgrnam_r(name: *const ::c_char,
                       grp: *mut ::group,

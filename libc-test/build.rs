@@ -216,7 +216,7 @@ fn main() {
             cfg.header("sys/reg.h");
         }
     }
-
+ 
     if linux || android || emscripten {
         cfg.header("malloc.h");
         cfg.header("net/ethernet.h");
@@ -251,6 +251,9 @@ fn main() {
             }
         }
     }
+    if solaris {
+        cfg.header("sys/epoll.h");
+   }
 
     if linux || android {
         cfg.header("sys/fsuid.h");
