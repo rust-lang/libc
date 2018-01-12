@@ -1137,6 +1137,11 @@ pub const NCCS: usize = 19;
 
 pub const LOG_CRON: ::c_int = 15 << 3;
 
+pub const SYS_epoll_create: ::c_long = 213;
+pub const SYS_epoll_create1: ::c_long = 291;
+
+
+
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __pthread_mutex_flag1: 0,
     __pthread_mutex_flag2: 0,
