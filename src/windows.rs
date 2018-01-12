@@ -20,6 +20,7 @@ pub type dev_t = u32;
 pub type ino_t = u16;
 pub enum timezone {}
 pub type time64_t = i64;
+pub type pid_t = ::c_int;
 
 s! {
     // note this is the struct called stat64 in Windows. Not stat, nor stati64.
@@ -218,7 +219,7 @@ extern {
     #[link_name = "_getcwd"]
     pub fn getcwd(buf: *mut c_char, size: ::c_int) -> *mut c_char;
     #[link_name = "_getpid"]
-    pub fn getpid() -> ::c_int;
+    pub fn getpid() -> pid_t;
     #[link_name = "_isatty"]
     pub fn isatty(fd: ::c_int) -> ::c_int;
     #[link_name = "_lseek"]
