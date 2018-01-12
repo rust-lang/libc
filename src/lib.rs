@@ -144,8 +144,10 @@ cfg_if! {
         pub type intptr_t = isize;
         pub type uintptr_t = usize;
         pub type ssize_t = isize;
+
         pub enum FILE {}
         pub enum fpos_t {} // TODO: fill this out with a struct
+
         extern {
             pub fn isalnum(c: c_int) -> c_int;
             pub fn isalpha(c: c_int) -> c_int;
@@ -291,7 +293,7 @@ cfg_if! {
         mod fuchsia;
         pub use fuchsia::*;
     } else if #[cfg(unix)] {
-        pub mod unix;
+        mod unix;
         pub use unix::*;
     } else {
         // Unknown target_family
