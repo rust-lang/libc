@@ -562,6 +562,9 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                    link_name = "kill$UNIX2003")]
     pub fn kill(pid: pid_t, sig: ::c_int) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "killpg$UNIX2003")]
+    pub fn killpg(pgrp: pid_t, sig: ::c_int) -> ::c_int;
 
     pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
     pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
