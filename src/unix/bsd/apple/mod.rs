@@ -498,6 +498,15 @@ s! {
         pub sin_tos: ::c_ushort,
         pub sin_other: ::c_ushort,
     }
+
+    pub struct sockaddr_ctl {
+        pub sc_len: ::c_uchar,
+        pub sc_family: ::c_uchar,
+        pub ss_sysaddr: ::uint16_t,
+        pub sc_id: ::uint32_t,
+        pub sc_unit: ::uint32_t,
+        pub sc_reserved: [::uint32_t; 5],
+    }
 }
 
 pub const _UTX_USERSIZE: usize = 256;
