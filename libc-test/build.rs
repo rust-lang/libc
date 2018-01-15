@@ -177,6 +177,7 @@ fn main() {
         cfg.header("net/route.h");
         cfg.header("netinet/if_ether.h");
         cfg.header("sys/proc_info.h");
+        cfg.header("sys/kern_control.h");
     }
 
     if bsdlike {
@@ -216,7 +217,7 @@ fn main() {
             cfg.header("sys/reg.h");
         }
     }
- 
+
     if linux || android || emscripten {
         cfg.header("malloc.h");
         cfg.header("net/ethernet.h");
