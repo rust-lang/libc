@@ -1363,6 +1363,7 @@ extern {
                            len: ::off_t) -> ::c_int;
     pub fn readahead(fd: ::c_int, offset: ::off64_t,
                      count: ::size_t) -> ::ssize_t;
+    pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
     pub fn getxattr(path: *const c_char, name: *const c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
     pub fn lgetxattr(path: *const c_char, name: *const c_char,
