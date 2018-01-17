@@ -463,6 +463,19 @@ s! {
         pub mnt_freq: ::c_int,
         pub mnt_passno: ::c_int,
     }
+
+    pub struct mallinfo {
+        pub arena: ::c_int,
+        pub ordblks: ::c_int,
+        pub smblks: ::c_int,
+        pub hblks: ::c_int,
+        pub hblkhd: ::c_int,
+        pub usmblks: ::c_int,
+        pub fsmblks: ::c_int,
+        pub uordblks: ::c_int,
+        pub fordblks: ::c_int,
+        pub keepcost: ::c_int,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -1482,6 +1495,7 @@ extern {
                            nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
+    pub fn mallinfo() -> ::mallinfo;
     pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
     pub fn mremap(addr: *mut ::c_void,
                   len: ::size_t,
