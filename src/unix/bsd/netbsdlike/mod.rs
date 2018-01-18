@@ -625,6 +625,8 @@ extern {
     pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
                    envp: *const *const ::c_char)
                    -> ::c_int;
+    pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
 }
 
 cfg_if! {

@@ -2352,7 +2352,8 @@ extern {
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
-
+    pub fn getdomainname(name: *mut ::c_char, len: ::c_int) -> ::c_int;
+    pub fn setdomainname(name: *const ::c_char, len: ::c_int) -> ::c_int;
     pub fn getxattr(path: *const ::c_char, name: *const ::c_char,
                     value: *mut ::c_void, size: ::size_t, position: u32,
                     flags: ::c_int) -> ::ssize_t;
