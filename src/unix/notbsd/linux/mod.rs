@@ -463,7 +463,10 @@ s! {
         pub mnt_freq: ::c_int,
         pub mnt_passno: ::c_int,
     }
+}
 
+#[cfg(not(target_env = "musl"))]
+s! {
     pub struct mallinfo {
         pub arena: ::c_int,
         pub ordblks: ::c_int,
@@ -1495,6 +1498,7 @@ extern {
                            nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
+    #[cfg(not(target_env = "musl"))]
     pub fn mallinfo() -> ::mallinfo;
     pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
     pub fn mremap(addr: *mut ::c_void,
