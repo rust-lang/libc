@@ -1379,6 +1379,7 @@ extern {
                            len: ::off_t) -> ::c_int;
     pub fn readahead(fd: ::c_int, offset: ::off64_t,
                      count: ::size_t) -> ::ssize_t;
+    #[cfg(not(target_env = "musl"))]
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
     pub fn getxattr(path: *const c_char, name: *const c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
@@ -1500,6 +1501,7 @@ extern {
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
     #[cfg(not(target_env = "musl"))]
     pub fn mallinfo() -> ::mallinfo;
+    #[cfg(not(target_env = "musl"))]
     pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
     pub fn mremap(addr: *mut ::c_void,
                   len: ::size_t,
