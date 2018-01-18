@@ -1,5 +1,4 @@
-# link fails on 17.10
-FROM ubuntu:17.04
+FROM debian:stretch
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
