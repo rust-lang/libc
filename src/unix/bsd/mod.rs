@@ -392,6 +392,7 @@ extern {
     pub fn if_freenameindex(ptr: *mut if_nameindex);
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn getpeereid(socket: ::c_int,
                       euid: *mut ::uid_t,
                       egid: *mut ::gid_t) -> ::c_int;
