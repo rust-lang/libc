@@ -555,6 +555,11 @@ fn main() {
             // These are defined for Solaris 11, but the crate is tested on illumos, where they are currently not defined
             "EADI" | "PORT_SOURCE_POSTWAIT" | "PORT_SOURCE_SIGNAL" | "PTHREAD_STACK_MIN" => true,
 
+            // These change all the time from release to release of linux
+            // distros, let's just not bother trying to verify them. They
+            // shouldn't be used in code anyway...
+            "AF_MAX" | "PF_MAX" => true,
+
             _ => false,
         }
     });
