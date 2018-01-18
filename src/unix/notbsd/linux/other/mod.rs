@@ -165,6 +165,19 @@ s! {
         __size: [::c_char; 32],
         __align: [::c_long; 0],
     }
+
+    pub struct mallinfo {
+        pub arena: ::c_int,
+        pub ordblks: ::c_int,
+        pub smblks: ::c_int,
+        pub hblks: ::c_int,
+        pub hblkhd: ::c_int,
+        pub usmblks: ::c_int,
+        pub fsmblks: ::c_int,
+        pub uordblks: ::c_int,
+        pub fordblks: ::c_int,
+        pub keepcost: ::c_int,
+    }
 }
 
 pub const __UT_LINESIZE: usize = 32;
@@ -597,6 +610,10 @@ extern {
     pub fn pthread_rwlockattr_setkind_np(attr: *mut ::pthread_rwlockattr_t,
                                          val: ::c_int) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
+    pub fn mallinfo() -> ::mallinfo;
+    pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
+    pub fn memfd_create(name: *const c_char, flags: ::c_uint) -> ::c_int;
+    pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 }
 
 cfg_if! {

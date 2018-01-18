@@ -465,22 +465,6 @@ s! {
     }
 }
 
-#[cfg(not(target_env = "musl"))]
-s! {
-    pub struct mallinfo {
-        pub arena: ::c_int,
-        pub ordblks: ::c_int,
-        pub smblks: ::c_int,
-        pub hblks: ::c_int,
-        pub hblkhd: ::c_int,
-        pub usmblks: ::c_int,
-        pub fsmblks: ::c_int,
-        pub uordblks: ::c_int,
-        pub fordblks: ::c_int,
-        pub keepcost: ::c_int,
-    }
-}
-
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;
 pub const ABDAY_3: ::nl_item = 0x20002;
@@ -1379,10 +1363,6 @@ extern {
                            len: ::off_t) -> ::c_int;
     pub fn readahead(fd: ::c_int, offset: ::off64_t,
                      count: ::size_t) -> ::ssize_t;
-    #[cfg(not(target_env = "musl"))]
-    pub fn memfd_create(name: *const c_char, flags: ::c_uint) -> ::c_int;
-    #[cfg(not(target_env = "musl"))]
-    pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
     pub fn getxattr(path: *const c_char, name: *const c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
     pub fn lgetxattr(path: *const c_char, name: *const c_char,
@@ -1501,10 +1481,6 @@ extern {
                            nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
-    #[cfg(not(target_env = "musl"))]
-    pub fn mallinfo() -> ::mallinfo;
-    #[cfg(not(target_env = "musl"))]
-    pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
     pub fn mremap(addr: *mut ::c_void,
                   len: ::size_t,
                   new_len: ::size_t,
