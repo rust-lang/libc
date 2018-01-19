@@ -99,6 +99,7 @@ fn main() {
         cfg.header("sys/socket.h");
         if linux && !musl {
             cfg.header("linux/if.h");
+            cfg.header("sys/auxv.h");
         }
         cfg.header("sys/time.h");
         cfg.header("sys/un.h");
