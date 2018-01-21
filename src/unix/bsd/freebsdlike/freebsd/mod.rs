@@ -15,6 +15,9 @@ pub type key_t = ::c_long;
 pub type msglen_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 
+pub type cpusetid_t = ::c_int;
+pub type vm_ooffset_t = ::int64_t;
+
 s! {
     pub struct utmpx {
         pub ut_type: ::c_short,
@@ -154,7 +157,128 @@ s! {
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 46],
     }
+
+    pub struct pargs {
+        pub ar_ref: ::c_uint,
+        pub ar_length: ::c_uint,
+        pub ar_args: [::c_uchar; 1],
+    }
+
+    pub struct list_entry_uidinfo {
+        pub le_next: *mut uidinfo,
+        pub le_prev: *mut *mut uidinfo,
+    }
+
+    pub struct list_entry_rctl_rule_link {
+        pub le_next: *mut ::c_void, // struct rctl_rule_link,
+        pub le_prev: *mut *mut ::c_void, // struct rctl_rule_link,
+    }
+
+    pub struct list_entry_osd {
+        pub le_next: *mut osd,
+        pub le_prev: *mut *mut osd,
+    }
+
+    pub struct stailq_entry_task {
+        pub stqe_next: *mut task,
+    }
+
+    pub struct lock_object {
+        pub lo_name: *const ::c_char,
+        pub lo_flags: ::c_uint,
+        pub lo_data: ::c_uint,
+        pub lo_witness: *mut ::c_void, // it's "struct witness" normally
+    }
+
+    pub struct mtx {
+        pub lock_object: lock_object,
+        pub mtx_lock: ::uintptr_t,
+    }
+
+    pub struct racct {
+        pub r_resources: [::int64_t; RACCT_MAX + 1],
+        pub r_rule_links: list_entry_rctl_rule_link,
+    }
+
+    pub struct uidinfo {
+        pub uid_hash: list_entry_uidinfo,
+        pub ui_vmsize_mtx: mtx,
+        pub ui_vmsize: vm_ooffset_t,
+        pub ui_sbsize: ::c_long,
+        pub ui_proccnt: ::c_long,
+        pub ui_ptscnt: ::c_long,
+        pub ui_kqcnt: ::c_long,
+        pub ui_uid: ::uid_t,
+        pub ui_ref: ::c_uint,
+        // #ifdef   RACCT
+        pub ui_racct: *mut racct,
+    }
+
+    pub struct task {
+        pub ta_link: stailq_entry_task,
+        pub ta_pending: ::c_ushort,
+        pub ta_priority: ::c_ushort,
+        pub ta_func: extern fn(*mut ::c_void, ::c_int),
+        pub ta_context: *mut ::c_void,
+    }
+
+    pub struct osd {
+        pub osd_nslots: ::c_uint,
+        pub osd_slots: *mut *mut ::c_void,
+        pub osd_next: list_entry_osd,
+    }
+
+    pub struct priority {
+        pub pri_class: ::c_uchar,
+        pub pri_level: ::c_uchar,
+        pub pri_native: ::c_uchar,
+        pub pri_user: ::c_uchar,
+    }
 }
+
+pub const RACCT_UNDEFINED: isize = -1;
+pub const RACCT_CPU: usize = 0;
+pub const RACCT_DATA: usize = 1;
+pub const RACCT_STACK: usize = 2;
+pub const RACCT_CORE: usize = 3;
+pub const RACCT_RSS: usize = 4;
+pub const RACCT_MEMLOCK: usize = 5;
+pub const RACCT_NPROC: usize = 6;
+pub const RACCT_NOFILE: usize = 7;
+pub const RACCT_VMEM: usize = 8;
+pub const RACCT_NPTS: usize = 9;
+pub const RACCT_SWAP: usize = 10;
+pub const RACCT_NTHR: usize = 11;
+pub const RACCT_MSGQQUEUED: usize = 12;
+pub const RACCT_MSGQSIZE: usize = 13;
+pub const RACCT_NMSGQ: usize = 14;
+pub const RACCT_NSEM: usize = 15;
+pub const RACCT_NSEMOP: usize = 16;
+pub const RACCT_NSHM: usize = 17;
+pub const RACCT_SHMSIZE: usize = 18;
+pub const RACCT_WALLCLOCK: usize = 19;
+pub const RACCT_PCTCPU: usize = 20;
+pub const RACCT_MAX: usize = RACCT_PCTCPU;
+
+pub const RACCT_IN_MILLIONS: usize = 0x01;
+pub const RACCT_RECLAIMABLE: usize = 0x02;
+pub const RACCT_INHERITABLE: usize = 0x04;
+pub const RACCT_DENIABLE: usize = 0x08;
+pub const RACCT_SLOPPY: usize = 0x10;
+pub const RACCT_DECAYING: usize = 0x20;
+
+pub const KI_NSPARE_INT: usize = 4;
+pub const KI_NSPARE_LONG: usize = 12;
+pub const KI_NSPARE_PTR: usize = 6;
+
+pub const WMESGLEN: usize = 8;
+pub const LOCKNAMELEN: usize = 8;
+pub const TDNAMLEN: usize = 16;
+pub const COMMLEN: usize = 19;
+pub const KI_EMULNAMELEN: usize = 16;
+pub const KI_NGROUPS: usize = 16;
+pub const LOGNAMELEN: usize = 17;
+pub const LOGINCLASSLEN: usize = 17;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
