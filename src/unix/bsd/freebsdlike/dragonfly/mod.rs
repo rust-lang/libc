@@ -1,5 +1,6 @@
 pub type clock_t = u64;
 pub type ino_t = u64;
+pub type lwpid_t = i32;
 pub type nlink_t = u32;
 pub type blksize_t = i64;
 pub type clockid_t = ::c_ulong;
@@ -737,6 +738,12 @@ pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 127;
 pub const WCONTINUED: ::c_int = 4;
 pub const WSTOPPED: ::c_int = 0o177;
 
+// Values for struct rtprio (type_ field)
+pub const RTP_PRIO_REALTIME: ::c_ushort = 0;
+pub const RTP_PRIO_NORMAL: ::c_ushort = 1;
+pub const RTP_PRIO_IDLE: ::c_ushort = 2;
+pub const RTP_PRIO_THREAD: ::c_ushort = 3;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
@@ -750,4 +757,7 @@ extern {
                             timeout: *mut ::timespec) -> ::c_int;
 
     pub fn freelocale(loc: ::locale_t);
+
+    pub fn lwp_rtprio(function: ::c_int, pid: ::pid_t, lwpid: lwpid_t,
+                      rtp: *mut super::rtprio) -> ::c_int;
 }

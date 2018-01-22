@@ -288,6 +288,7 @@ fn main() {
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
         cfg.header("sys/procdesc.h");
+        cfg.header("sys/rtprio.h");
     }
 
     if netbsd {
@@ -311,6 +312,7 @@ fn main() {
         cfg.header("ufs/ufs/quota.h");
         cfg.header("pthread_np.h");
         cfg.header("sys/ioctl_compat.h");
+        cfg.header("sys/rtprio.h");
     }
 
     if solaris {
@@ -381,9 +383,9 @@ fn main() {
                 }
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
-            "type_" if linux &&
+            "type_" if (linux || freebsd || dragonfly) &&
                 (struct_ == "input_event" || struct_ == "input_mask" ||
-                 struct_ == "ff_effect") => "type".to_string(),
+                 struct_ == "ff_effect" || struct_ == "rtprio") => "type".to_string(),
             s => s.to_string(),
         }
     });

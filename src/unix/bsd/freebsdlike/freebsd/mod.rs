@@ -846,6 +846,11 @@ pub const PD_DAEMON: ::c_int = 0x00000001;
 pub const PD_CLOEXEC: ::c_int = 0x00000002;
 pub const PD_ALLOWED_AT_FORK: ::c_int = PD_DAEMON | PD_CLOEXEC;
 
+// Values for struct rtprio (type_ field)
+pub const RTP_PRIO_REALTIME: ::c_ushort = 2;
+pub const RTP_PRIO_NORMAL: ::c_ushort = 3;
+pub const RTP_PRIO_IDLE: ::c_ushort = 4;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
@@ -905,6 +910,9 @@ extern {
     pub fn pdfork(fdp: *mut ::c_int, flags: ::c_int) -> ::pid_t;
     pub fn pdgetpid(fd: ::c_int, pidp: *mut ::pid_t) -> ::c_int;
     pub fn pdkill(fd: ::c_int, signum: ::c_int) -> ::c_int;
+
+    pub fn rtprio_thread(function: ::c_int, lwpid: ::lwpid_t,
+                         rtp: *mut super::rtprio) -> ::c_int;
 }
 
 cfg_if! {
