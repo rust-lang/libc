@@ -276,7 +276,7 @@ cfg_if! {
     } else if #[cfg(feature = "use_std")] {
         // cargo build, don't pull in anything extra as the libstd dep
         // already pulls in all libs.
-    } else if #[cfg(any(all(target_env = "musl", not(target_arch = "mips"))))] {
+    } else if #[cfg(target_env = "musl")] {
         #[link(name = "c", kind = "static", cfg(target_feature = "crt-static"))]
         #[link(name = "c", cfg(not(target_feature = "crt-static")))]
         extern {}
