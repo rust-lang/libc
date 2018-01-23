@@ -287,6 +287,8 @@ fn main() {
         cfg.header("sys/ipc.h");
         cfg.header("sys/msg.h");
         cfg.header("sys/shm.h");
+        cfg.header("sys/procdesc.h");
+        cfg.header("sys/rtprio.h");
     }
 
     if netbsd {
@@ -310,6 +312,7 @@ fn main() {
         cfg.header("ufs/ufs/quota.h");
         cfg.header("pthread_np.h");
         cfg.header("sys/ioctl_compat.h");
+        cfg.header("sys/rtprio.h");
     }
 
     if solaris {
@@ -380,9 +383,9 @@ fn main() {
                 }
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
-            "type_" if linux &&
+            "type_" if (linux || freebsd || dragonfly) &&
                 (struct_ == "input_event" || struct_ == "input_mask" ||
-                 struct_ == "ff_effect") => "type".to_string(),
+                 struct_ == "ff_effect" || struct_ == "rtprio") => "type".to_string(),
             s => s.to_string(),
         }
     });
@@ -495,6 +498,10 @@ fn main() {
             "KERN_MAXID" |
             "HW_MAXID" |
             "USER_MAXID" if freebsd => true,
+
+            // These constants were added in FreeBSD 11
+            "EVFILT_PROCDESC" | "EVFILT_SENDFILE" | "EVFILT_EMPTY" |
+            "PD_CLOEXEC" | "PD_ALLOWED_AT_FORK" if freebsd => true,
 
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html

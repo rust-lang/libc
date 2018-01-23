@@ -170,6 +170,11 @@ s! {
         pub cmcred_ngroups: ::c_short,
         pub cmcred_groups: [::gid_t; CMGROUP_MAX],
     }
+
+    pub struct rtprio {
+        pub type_: ::c_ushort,
+        pub prio: ::c_ushort,
+    }
 }
 
 pub const AIO_LISTIO_MAX: ::c_int = 16;
@@ -960,6 +965,12 @@ pub const CMGROUP_MAX: usize = 16;
 // sizeof(long)
 pub const BPF_ALIGNMENT: ::c_int = 8;
 
+// Values for rtprio struct (prio field) and syscall (function argument)
+pub const RTP_PRIO_MIN: ::c_ushort = 0;
+pub const RTP_PRIO_MAX: ::c_ushort = 31;
+pub const RTP_LOOKUP: ::c_int = 0;
+pub const RTP_SET: ::c_int = 1;
+
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
@@ -1135,6 +1146,7 @@ extern {
                                          val: ::c_int) -> ::c_int;
     pub fn getpriority(which: ::c_int, who: ::c_int) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
+    pub fn rtprio(function: ::c_int, pid: ::pid_t, rtp: *mut rtprio) -> ::c_int;
 
     pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
 

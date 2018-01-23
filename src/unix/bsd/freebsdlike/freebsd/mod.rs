@@ -200,9 +200,12 @@ pub const EVFILT_VNODE: ::int16_t = -4;
 pub const EVFILT_PROC: ::int16_t = -5;
 pub const EVFILT_SIGNAL: ::int16_t = -6;
 pub const EVFILT_TIMER: ::int16_t = -7;
+pub const EVFILT_PROCDESC: ::int16_t = -8;
 pub const EVFILT_FS: ::int16_t = -9;
 pub const EVFILT_LIO: ::int16_t = -10;
 pub const EVFILT_USER: ::int16_t = -11;
+pub const EVFILT_SENDFILE: ::int16_t = -12;
+pub const EVFILT_EMPTY: ::int16_t = -13;
 
 pub const EV_ADD: ::uint16_t = 0x1;
 pub const EV_DELETE: ::uint16_t = 0x2;
@@ -838,6 +841,16 @@ pub const _SC_CPUSET_SIZE: ::c_int = 122;
 pub const XU_NGROUPS: ::c_int = 16;
 pub const XUCRED_VERSION: ::c_uint = 0;
 
+// Flags which can be passed to pdfork(2)
+pub const PD_DAEMON: ::c_int = 0x00000001;
+pub const PD_CLOEXEC: ::c_int = 0x00000002;
+pub const PD_ALLOWED_AT_FORK: ::c_int = PD_DAEMON | PD_CLOEXEC;
+
+// Values for struct rtprio (type_ field)
+pub const RTP_PRIO_REALTIME: ::c_ushort = 2;
+pub const RTP_PRIO_NORMAL: ::c_ushort = 3;
+pub const RTP_PRIO_IDLE: ::c_ushort = 4;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
@@ -893,6 +906,13 @@ extern {
     pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
                    envp: *const *const ::c_char)
                    -> ::c_int;
+
+    pub fn pdfork(fdp: *mut ::c_int, flags: ::c_int) -> ::pid_t;
+    pub fn pdgetpid(fd: ::c_int, pidp: *mut ::pid_t) -> ::c_int;
+    pub fn pdkill(fd: ::c_int, signum: ::c_int) -> ::c_int;
+
+    pub fn rtprio_thread(function: ::c_int, lwpid: ::lwpid_t,
+                         rtp: *mut super::rtprio) -> ::c_int;
 }
 
 cfg_if! {
