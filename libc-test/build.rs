@@ -179,6 +179,8 @@ fn main() {
         cfg.header("netinet/if_ether.h");
         cfg.header("sys/proc_info.h");
         cfg.header("sys/kern_control.h");
+        cfg.header("mach/thread_policy.h");
+        cfg.header("mach/mach_init.h");
     }
 
     if bsdlike {
@@ -616,6 +618,10 @@ fn main() {
             // Deprecated on OSX
             "sem_destroy" if apple => true,
             "sem_init" if apple => true,
+
+            // Commented out in header but still callable?
+            "thread_policy_set" if apple => true,
+            "thread_policy_get" if apple => true,
 
             // These functions presumably exist on netbsd but don't look like
             // they're implemented on rumprun yet, just let them slide for now.

@@ -34,7 +34,6 @@ pub type posix_spawn_file_actions_t = *mut ::c_void;
 pub type thread_t = ::uintptr_t;
 pub type thread_policy_flavor_t = ::natural_t;
 pub type mach_msg_type_number_t = ::natural_t;
-pub type thread_affinity_policy_t = *mut ::thread_affinity_policy_data_t;
 
 pub enum timezone {}
 
@@ -134,7 +133,7 @@ s! {
         pub d_name: [::c_char; 1024],
     }
 
-    pub struct thread_affinity_policy_data_t {
+    pub struct thread_affinity_policy_t {
         pub affinity_tag: ::integer_t,
     }
 
@@ -1121,7 +1120,6 @@ pub const _SC_XOPEN_UNIX: ::c_int = 115;
 pub const _SC_XOPEN_VERSION: ::c_int = 116;
 pub const _SC_XOPEN_XCU_VERSION: ::c_int = 121;
 
-pub const THREAD_AFFINITY_TAG_NULL: ::size_t = 0;
 pub const THREAD_AFFINITY_POLICY: ::thread_policy_flavor_t = 4;
 
 pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 2;
@@ -2301,13 +2299,13 @@ extern {
     pub fn thread_policy_set(
         thread: ::thread_t,
         flavor: ::thread_policy_flavor_t,
-        policy_info: ::thread_affinity_policy_t,
+        policy_info: *mut ::thread_affinity_policy_t,
         count: ::mach_msg_type_number_t,
     ) -> ::c_int;
     pub fn thread_policy_get(
         thread: ::thread_t,
         flavor: ::thread_policy_flavor_t,
-        policy_info: ::thread_affinity_policy_t,
+        policy_info: *mut ::thread_affinity_policy_t,
         count: *mut ::mach_msg_type_number_t,
         get_default: *mut ::c_int,
     ) -> ::c_int;
