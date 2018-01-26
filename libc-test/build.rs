@@ -162,6 +162,7 @@ fn main() {
     }
 
     if apple {
+        cfg.header("spawn.h");
         cfg.header("mach-o/dyld.h");
         cfg.header("mach/mach_time.h");
         cfg.header("malloc/malloc.h");
@@ -276,6 +277,7 @@ fn main() {
         cfg.header("elf.h");
         cfg.header("link.h");
         cfg.header("linux/if_tun.h");
+        cfg.header("spawn.h");
     }
 
     if freebsd {
@@ -444,6 +446,10 @@ fn main() {
             "sem_t" if openbsd || freebsd || dragonfly || netbsd => true,
             // mqd_t is a pointer on FreeBSD and DragonFly
             "mqd_t" if freebsd || dragonfly => true,
+
+            // Just some typedefs on osx, no need to check their sign
+            "posix_spawnattr_t" |
+            "posix_spawn_file_actions_t" => true,
 
             // windows-isms
             n if n.starts_with("P") => true,
