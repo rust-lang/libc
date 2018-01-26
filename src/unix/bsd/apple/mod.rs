@@ -31,7 +31,7 @@ pub type cpu_subtype_t = integer_t;
 pub type vm_prot_t = ::c_int;
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
-pub type thread_t = ::uintptr_t;
+pub type thread_t = ::c_uint;
 pub type thread_policy_flavor_t = ::natural_t;
 pub type mach_msg_type_number_t = ::natural_t;
 
@@ -133,7 +133,7 @@ s! {
         pub d_name: [::c_char; 1024],
     }
 
-    pub struct thread_affinity_policy_t {
+    pub struct thread_affinity_policy {
         pub affinity_tag: ::integer_t,
     }
 
@@ -2299,13 +2299,13 @@ extern {
     pub fn thread_policy_set(
         thread: ::thread_t,
         flavor: ::thread_policy_flavor_t,
-        policy_info: *mut ::thread_affinity_policy_t,
+        policy_info: *mut ::thread_affinity_policy,
         count: ::mach_msg_type_number_t,
     ) -> ::c_int;
     pub fn thread_policy_get(
         thread: ::thread_t,
         flavor: ::thread_policy_flavor_t,
-        policy_info: *mut ::thread_affinity_policy_t,
+        policy_info: *mut ::thread_affinity_policy,
         count: *mut ::mach_msg_type_number_t,
         get_default: *mut ::c_int,
     ) -> ::c_int;
