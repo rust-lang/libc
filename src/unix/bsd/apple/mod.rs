@@ -25,11 +25,16 @@ pub type id_t = ::c_uint;
 pub type sem_t = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type integer_t = ::c_int;
+pub type natural_t = ::c_uint;
 pub type cpu_type_t = integer_t;
 pub type cpu_subtype_t = integer_t;
 pub type vm_prot_t = ::c_int;
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
+pub type thread_t = ::uintptr_t;
+pub type thread_policy_flavor_t = ::natural_t;
+pub type mach_msg_type_number_t = ::natural_t;
+pub type thread_affinity_policy_t = *mut ::thread_affinity_policy_data_t;
 
 pub enum timezone {}
 
@@ -127,6 +132,10 @@ s! {
         pub d_namlen: u16,
         pub d_type: u8,
         pub d_name: [::c_char; 1024],
+    }
+
+    pub struct thread_affinity_policy_data_t {
+        pub affinity_tag: ::integer_t,
     }
 
     pub struct pthread_mutex_t {
@@ -1111,6 +1120,9 @@ pub const _SC_XOPEN_SHM: ::c_int = 113;
 pub const _SC_XOPEN_UNIX: ::c_int = 115;
 pub const _SC_XOPEN_VERSION: ::c_int = 116;
 pub const _SC_XOPEN_XCU_VERSION: ::c_int = 121;
+
+pub const THREAD_AFFINITY_TAG_NULL: ::size_t = 0;
+pub const THREAD_AFFINITY_POLICY: ::thread_policy_flavor_t = 4;
 
 pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 2;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
@@ -2286,6 +2298,20 @@ extern {
                         -> ::c_int;
     pub fn mach_absolute_time() -> u64;
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
+    pub fn thread_policy_set(
+        thread: ::thread_t,
+        flavor: ::thread_policy_flavor_t,
+        policy_info: ::thread_affinity_policy_t,
+        count: ::mach_msg_type_number_t,
+    ) -> ::c_int;
+    pub fn thread_policy_get(
+        thread: ::thread_t,
+        flavor: ::thread_policy_flavor_t,
+        policy_info: ::thread_affinity_policy_t,
+        count: *mut ::mach_msg_type_number_t,
+        get_default: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_mach_thread_np(thread: ::pthread_t) -> ::thread_t;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
     pub fn pthread_get_stackaddr_np(thread: ::pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: ::pthread_t) -> ::size_t;
