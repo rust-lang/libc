@@ -291,6 +291,13 @@ fn main() {
         cfg.header("sys/shm.h");
         cfg.header("sys/procdesc.h");
         cfg.header("sys/rtprio.h");
+        cfg.header("sys/racct.h");
+        cfg.header("sys/param.h");
+        cfg.header("sys/resourcevar.h");
+        cfg.header("sys/_task.h");
+        cfg.header("sys/proc.h");
+        cfg.header("sys/rctl.h");
+        cfg.header("sys/user.h");
     }
 
     if netbsd {
@@ -428,6 +435,11 @@ fn main() {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
+
+            // They should be anonymous structs but it doesn't exist (yet?) in rust so we just
+            // ignore them.
+            "list_entry_uidinfo" | "list_entry_rctl_rule_link" | "list_entry_osd"
+                | "stailq_entry_task" | "lock_object" | "uidinfo" if freebsd => true,
 
             _ => false
         }
@@ -741,7 +753,14 @@ fn main() {
         // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
         (openbsd && struct_ == "siginfo_t" && field == "si_addr") ||
         // this one is an anonymous union
-        (linux && struct_ == "ff_effect" && field == "u")
+        (linux && struct_ == "ff_effect" && field == "u") ||
+        // mtx_lock is volatile and Rust doesn't understand volatile
+        (freebsd && struct_ == "mtx" && field == "mtx_lock") ||
+        // For the following fields, they are anonymous structs
+        (freebsd && struct_ == "osd" && field == "osd_next") ||
+        (freebsd && struct_ == "racct" && field == "r_rule_links") ||
+        (freebsd && struct_ == "uidinfo" && field == "uid_hash") ||
+        (freebsd && struct_ == "task" && field == "ta_link")
     });
 
     cfg.skip_field(move |struct_, field| {

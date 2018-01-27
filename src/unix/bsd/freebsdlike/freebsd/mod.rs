@@ -170,8 +170,7 @@ s! {
     }
 
     pub struct list_entry_rctl_rule_link {
-        pub le_next: *mut ::c_void, // struct rctl_rule_link,
-        pub le_prev: *mut *mut ::c_void, // struct rctl_rule_link,
+        pub lh_first: *mut ::c_void, // struct rctl_rule_link,
     }
 
     pub struct list_entry_osd {
@@ -267,7 +266,7 @@ pub const RACCT_DENIABLE: usize = 0x08;
 pub const RACCT_SLOPPY: usize = 0x10;
 pub const RACCT_DECAYING: usize = 0x20;
 
-pub const KI_NSPARE_INT: usize = 4;
+pub const KI_NSPARE_INT: usize = 2;
 pub const KI_NSPARE_LONG: usize = 12;
 pub const KI_NSPARE_PTR: usize = 6;
 
