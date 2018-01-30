@@ -662,6 +662,36 @@ pub const EHWPOISON: ::c_int = 168;
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
+pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
+pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
+pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
+pub const NFT_OBJ_MAXNAMELEN: ::c_int = 32;
+pub const NFT_USERDATA_MAXLEN: ::c_int = 256;
+
+pub const NFT_MSG_NEWTABLE: ::c_int = 0;
+pub const NFT_MSG_GETTABLE: ::c_int = 1;
+pub const NFT_MSG_DELTABLE: ::c_int = 2;
+pub const NFT_MSG_NEWCHAIN: ::c_int = 3;
+pub const NFT_MSG_GETCHAIN: ::c_int = 4;
+pub const NFT_MSG_DELCHAIN: ::c_int = 5;
+pub const NFT_MSG_NEWRULE: ::c_int = 6;
+pub const NFT_MSG_GETRULE: ::c_int = 7;
+pub const NFT_MSG_DELRULE: ::c_int = 8;
+pub const NFT_MSG_NEWSET: ::c_int = 9;
+pub const NFT_MSG_GETSET: ::c_int = 10;
+pub const NFT_MSG_DELSET: ::c_int = 11;
+pub const NFT_MSG_NEWSETELEM: ::c_int = 12;
+pub const NFT_MSG_GETSETELEM: ::c_int = 13;
+pub const NFT_MSG_DELSETELEM: ::c_int = 14;
+pub const NFT_MSG_NEWGEN: ::c_int = 15;
+pub const NFT_MSG_GETGEN: ::c_int = 16;
+pub const NFT_MSG_TRACE: ::c_int = 17;
+pub const NFT_MSG_NEWOBJ: ::c_int = 18;
+pub const NFT_MSG_GETOBJ: ::c_int = 19;
+pub const NFT_MSG_DELOBJ: ::c_int = 20;
+pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
+pub const NFT_MSG_MAX: ::c_int = 22;
+
 #[doc(hidden)]
 pub const AF_MAX: ::c_int = 42;
 #[doc(hidden)]

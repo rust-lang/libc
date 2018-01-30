@@ -912,6 +912,72 @@ pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 pub const MFD_CLOEXEC: ::c_uint = 0x0001;
 pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
 
+pub const NF_DROP: ::c_int = 0;
+pub const NF_ACCEPT: ::c_int =  1;
+pub const NF_STOLEN: ::c_int =  2;
+pub const NF_QUEUE: ::c_int =  3;
+pub const NF_REPEAT: ::c_int =  4;
+pub const NF_STOP: ::c_int =  5;
+pub const NF_MAX_VERDICT: ::c_int = NF_STOP;
+
+pub const NF_VERDICT_MASK: ::c_int = 0x000000ff;
+pub const NF_VERDICT_FLAG_QUEUE_BYPASS: ::c_int = 0x00008000;
+
+pub const NF_VERDICT_QMASK: ::c_int = 0xffff0000;
+pub const NF_VERDICT_QBITS: ::c_int = 16;
+
+pub const NF_VERDICT_BITS: ::c_int = 16;
+
+pub const NF_INET_PRE_ROUTING: ::c_int = 0;
+pub const NF_INET_LOCAL_IN: ::c_int = 1;
+pub const NF_INET_FORWARD: ::c_int = 2;
+pub const NF_INET_LOCAL_OUT: ::c_int = 3;
+pub const NF_INET_POST_ROUTING: ::c_int = 4;
+pub const NF_INET_NUMHOOKS: ::c_int = 5;
+
+pub const NF_NETDEV_INGRESS: ::c_int = 0;
+pub const NF_NETDEV_NUMHOOKS: ::c_int = 1;
+
+pub const NFPROTO_UNSPEC: ::c_int = 0;
+pub const NFPROTO_INET: ::c_int = 1;
+pub const NFPROTO_IPV4: ::c_int = 2;
+pub const NFPROTO_ARP: ::c_int = 3;
+pub const NFPROTO_NETDEV: ::c_int = 5;
+pub const NFPROTO_BRIDGE: ::c_int = 7;
+pub const NFPROTO_IPV6: ::c_int = 10;
+pub const NFPROTO_DECNET: ::c_int = 12;
+pub const NFPROTO_NUMPROTO: ::c_int = 13;
+
+pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
+pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
+pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
+pub const NFT_OBJ_MAXNAMELEN: ::c_int = 32;
+pub const NFT_USERDATA_MAXLEN: ::c_int = 256;
+
+pub const NFT_MSG_NEWTABLE: ::c_int = 0;
+pub const NFT_MSG_GETTABLE: ::c_int = 1;
+pub const NFT_MSG_DELTABLE: ::c_int = 2;
+pub const NFT_MSG_NEWCHAIN: ::c_int = 3;
+pub const NFT_MSG_GETCHAIN: ::c_int = 4;
+pub const NFT_MSG_DELCHAIN: ::c_int = 5;
+pub const NFT_MSG_NEWRULE: ::c_int = 6;
+pub const NFT_MSG_GETRULE: ::c_int = 7;
+pub const NFT_MSG_DELRULE: ::c_int = 8;
+pub const NFT_MSG_NEWSET: ::c_int = 9;
+pub const NFT_MSG_GETSET: ::c_int = 10;
+pub const NFT_MSG_DELSET: ::c_int = 11;
+pub const NFT_MSG_NEWSETELEM: ::c_int = 12;
+pub const NFT_MSG_GETSETELEM: ::c_int = 13;
+pub const NFT_MSG_DELSETELEM: ::c_int = 14;
+pub const NFT_MSG_NEWGEN: ::c_int = 15;
+pub const NFT_MSG_GETGEN: ::c_int = 16;
+pub const NFT_MSG_TRACE: ::c_int = 17;
+pub const NFT_MSG_NEWOBJ: ::c_int = 18;
+pub const NFT_MSG_GETOBJ: ::c_int = 19;
+pub const NFT_MSG_DELOBJ: ::c_int = 20;
+pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
+pub const NFT_MSG_MAX: ::c_int = 22;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.__bits.iter_mut() {

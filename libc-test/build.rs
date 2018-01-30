@@ -247,6 +247,7 @@ fn main() {
             cfg.header("linux/netlink.h");
             cfg.header("linux/magic.h");
             cfg.header("linux/reboot.h");
+            cfg.header("linux/netfilter/nf_tables.h");
 
             if !mips {
                 cfg.header("linux/quota.h");
@@ -255,7 +256,7 @@ fn main() {
     }
     if solaris {
         cfg.header("sys/epoll.h");
-   }
+    }
 
     if linux || android {
         cfg.header("sys/fsuid.h");
