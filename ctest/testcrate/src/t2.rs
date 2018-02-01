@@ -6,6 +6,7 @@ macro_rules! i {
 }
 
 #[repr(C)]
+#[derive(Debug)]
 pub struct T2Baz {
     pub a: i64,
     pub b: u32,
