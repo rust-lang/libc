@@ -1508,7 +1508,6 @@ extern {
                            nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
-
     pub fn mremap(addr: *mut ::c_void,
                   len: ::size_t,
                   new_len: ::size_t,
@@ -1534,7 +1533,8 @@ extern {
                   -> ::c_int;
 
     pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
-
+    pub fn remap_file_pages(addr: *mut ::c_void, size: ::size_t, prot: ::c_int,
+                            pgoff: ::size_t, flags: ::c_int) -> ::c_int;
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                     flags: ::c_int, addr: *mut ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
