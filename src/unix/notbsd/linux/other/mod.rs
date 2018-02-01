@@ -612,7 +612,6 @@ extern {
     pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
-    pub fn memfd_create(name: *const c_char, flags: ::c_uint) -> ::c_int;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 }
 
