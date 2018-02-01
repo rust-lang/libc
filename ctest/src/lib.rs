@@ -1506,9 +1506,12 @@ impl<'a> Resolver for MyResolver<'a> {
     fn resolve_imports(&mut self) {
     }
 
-    fn find_legacy_attr_invoc(&mut self, _attrs: &mut Vec<Attribute>)
+    fn find_legacy_attr_invoc(&mut self, attrs: &mut Vec<Attribute>)
         -> Option<Attribute>
     {
+        attrs.retain(|a| {
+            !a.check_name("derive")
+        });
         None
     }
 
