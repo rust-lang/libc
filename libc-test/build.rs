@@ -180,6 +180,8 @@ fn main() {
         cfg.header("netinet/if_ether.h");
         cfg.header("sys/proc_info.h");
         cfg.header("sys/kern_control.h");
+        cfg.header("sys/ipc.h");
+        cfg.header("sys/shm.h");
     }
 
     if bsdlike {
@@ -413,7 +415,7 @@ fn main() {
             "__timeval" if linux => true,
 
             // The alignment of this is 4 on 64-bit OSX...
-            "kevent" if apple && x86_64 => true,
+            "kevent" | "shmid_ds" if apple && x86_64 => true,
 
             // This is actually a union, not a struct
             "sigval" => true,
