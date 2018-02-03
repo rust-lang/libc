@@ -1394,7 +1394,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                         *a == ReprAttr::ReprExtern
                     })
                 });
-                if !is_c {
+                if !is_c && !(self.opts.skip_struct)(&i.ident.to_string()) {
                     panic!("{} is not marked #[repr(C)]", i.ident);
                 }
                 self.test_struct(&i.ident.to_string(), s);
