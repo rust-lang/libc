@@ -30,6 +30,8 @@ pub type cpu_subtype_t = integer_t;
 pub type vm_prot_t = ::c_int;
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
+pub type key_t = ::c_int;
+pub type shmatt_t = ::c_ushort;
 
 pub enum timezone {}
 
@@ -508,6 +510,33 @@ s! {
         pub sc_id: ::uint32_t,
         pub sc_unit: ::uint32_t,
         pub sc_reserved: [::uint32_t; 5],
+    }
+
+    // sys/ipc.h:
+
+    pub struct ipc_perm {
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub mode: ::mode_t,
+        pub _seq: ::c_ushort,
+        pub _key: ::key_t,
+    }
+
+    // FIXME: this should have align 4 but it's got align 8 on 64-bit
+    pub struct shmid_ds {
+        pub shm_perm: ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        pub shm_atime: ::time_t,  // FIXME: 64-bit wrong align => wrong offset
+        pub shm_dtime: ::time_t,  // FIXME: 64-bit wrong align => wrong offset
+        pub shm_ctime: ::time_t,  // FIXME: 64-bit wrong align => wrong offset
+        // FIXME: 64-bit wrong align => wrong offset:
+        pub shm_internal: *mut ::c_void,
+
     }
 }
 
@@ -2203,6 +2232,27 @@ pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
 pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x04;
 pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x08;
 
+// sys/ipc.h:
+pub const IPC_CREAT: ::c_int = 0x200;
+pub const IPC_EXCL: ::c_int = 0x400;
+pub const IPC_NOWAIT: ::c_int = 0x800;
+pub const IPC_PRIVATE: key_t = 0;
+
+pub const IPC_RMID: ::c_int = 0;
+pub const IPC_SET: ::c_int = 1;
+pub const IPC_STAT: ::c_int = 2;
+
+pub const IPC_R: ::c_int = 0x100;
+pub const IPC_W: ::c_int = 0x80;
+pub const IPC_M: ::c_int = 0x1000;
+
+// sys/shm.h
+pub const SHM_RDONLY: ::c_int = 0x1000;
+pub const SHM_RND: ::c_int = 0x2000;
+pub const SHMLBA: ::c_int = 4096;
+pub const SHM_R: ::c_int = IPC_R;
+pub const SHM_W: ::c_int = IPC_W;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
@@ -2271,6 +2321,14 @@ extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void,
+                 shmflg: ::c_int) -> *mut ::c_void;
+    pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "shmctl$UNIX2003")]
+    pub fn shmctl(shmid: ::c_int, cmd: ::c_int,
+                  buf: *mut ::shmid_ds) -> ::c_int;
+    pub fn shmget(key: key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
     pub fn sysctl(name: *mut ::c_int,
                   namelen: ::c_uint,
                   oldp: *mut ::c_void,
