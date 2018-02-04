@@ -978,6 +978,10 @@ pub const NFT_MSG_DELOBJ: ::c_int = 20;
 pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
 pub const NFT_MSG_MAX: ::c_int = 22;
 
+pub const IFF_TUN: ::c_int = 0x0001;
+pub const IFF_TAP: ::c_int = 0x0002;
+pub const IFF_NO_PI: ::c_int = 0x1000;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.__bits.iter_mut() {

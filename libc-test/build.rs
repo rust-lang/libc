@@ -265,7 +265,7 @@ fn main() {
         cfg.header("sys/fsuid.h");
         cfg.header("linux/seccomp.h");
         cfg.header("linux/if_ether.h");
-
+        cfg.header("linux/if_tun.h");
         // DCCP support
         if !uclibc && !musl && !emscripten {
             cfg.header("linux/dccp.h");
@@ -280,7 +280,6 @@ fn main() {
         cfg.header("linux/random.h");
         cfg.header("elf.h");
         cfg.header("link.h");
-        cfg.header("linux/if_tun.h");
         cfg.header("spawn.h");
     }
 

@@ -1351,6 +1351,9 @@ pub const IFF_MULTICAST: ::c_int = 0x1000;
 pub const IFF_PORTSEL: ::c_int = 0x2000;
 pub const IFF_AUTOMEDIA: ::c_int = 0x4000;
 pub const IFF_DYNAMIC: ::c_int = 0x8000;
+pub const IFF_TUN: ::c_int = 0x0001;
+pub const IFF_TAP: ::c_int = 0x0002;
+pub const IFF_NO_PI: ::c_int = 0x1000;
 
 pub const SOL_IP: ::c_int = 0;
 pub const SOL_TCP: ::c_int = 6;
