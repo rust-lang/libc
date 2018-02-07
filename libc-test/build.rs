@@ -176,8 +176,8 @@ fn main() {
         if !ios {
             cfg.header("sys/sys_domain.h");
             cfg.header("net/if_utun.h");
+            cfg.header("net/bpf.h");
         }
-        cfg.header("net/bpf.h");
         if target.starts_with("x86") {
             cfg.header("crt_externs.h");
         }
