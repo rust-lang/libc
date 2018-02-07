@@ -756,16 +756,15 @@ pub const IFF_DORMANT: ::c_int = 0x20000;
 pub const IFF_ECHO: ::c_int = 0x40000;
 
 // linux/if_tun.h
+pub const IFF_TUN: ::c_short = 0x0001;
+pub const IFF_TAP: ::c_short = 0x0002;
+pub const IFF_NO_PI: ::c_short = 0x1000;
 // Read queue size
 pub const TUN_READQ_SIZE: ::c_short = 500;
 // TUN device type flags: deprecated. Use IFF_TUN/IFF_TAP instead.
-pub const TUN_TUN_DEV: ::c_short   = IFF_TUN;
-pub const TUN_TAP_DEV: ::c_short   = IFF_TAP;
+pub const TUN_TUN_DEV: ::c_short   = ::IFF_TUN;
+pub const TUN_TAP_DEV: ::c_short   = ::IFF_TAP;
 pub const TUN_TYPE_MASK: ::c_short = 0x000f;
-// TUNSETIFF ifr flags
-pub const IFF_TUN: ::c_short        = 0x0001;
-pub const IFF_TAP: ::c_short        = 0x0002;
-pub const IFF_NO_PI: ::c_short      = 0x1000;
 // This flag has no real effect
 pub const IFF_ONE_QUEUE: ::c_short    = 0x2000;
 pub const IFF_VNET_HDR: ::c_short     = 0x4000;
