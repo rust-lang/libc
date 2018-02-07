@@ -15,6 +15,7 @@ fn main() {
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
     let apple = target.contains("apple");
+    let ios = target.contains("ios");
     let emscripten = target.contains("asm");
     let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
@@ -109,7 +110,7 @@ fn main() {
         cfg.header("pwd.h");
         cfg.header("grp.h");
         cfg.header("sys/utsname.h");
-        if !solaris {
+        if !solaris && !ios {
             cfg.header("sys/ptrace.h");
         }
         cfg.header("sys/mount.h");
