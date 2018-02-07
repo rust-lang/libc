@@ -82,7 +82,9 @@ fn main() {
         if openbsd {
             cfg.header("sys/socket.h");
         }
-        cfg.header("net/if.h");
+        if !ios {
+            cfg.header("net/if.h");
+        }
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
