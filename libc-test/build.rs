@@ -178,11 +178,11 @@ fn main() {
             cfg.header("net/if_utun.h");
             cfg.header("net/bpf.h");
             cfg.header("net/route.h");
+            cfg.header("netinet/if_ether.h");
         }
         if target.starts_with("x86") && !ios {
             cfg.header("crt_externs.h");
         }
-        cfg.header("netinet/if_ether.h");
         cfg.header("sys/proc_info.h");
         cfg.header("sys/kern_control.h");
     }
