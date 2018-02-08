@@ -15,6 +15,7 @@ fn main() {
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
     let apple = target.contains("apple");
+    let ios = target.contains("ios");
     let emscripten = target.contains("asm");
     let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
@@ -81,7 +82,9 @@ fn main() {
         if openbsd {
             cfg.header("sys/socket.h");
         }
-        cfg.header("net/if.h");
+        if !ios {
+            cfg.header("net/if.h");
+        }
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
@@ -109,7 +112,7 @@ fn main() {
         cfg.header("pwd.h");
         cfg.header("grp.h");
         cfg.header("sys/utsname.h");
-        if !solaris {
+        if !solaris && !ios {
             cfg.header("sys/ptrace.h");
         }
         cfg.header("sys/mount.h");
@@ -170,15 +173,17 @@ fn main() {
         cfg.header("util.h");
         cfg.header("xlocale.h");
         cfg.header("sys/xattr.h");
-        cfg.header("sys/sys_domain.h");
-        cfg.header("net/if_utun.h");
-        cfg.header("net/bpf.h");
-        if target.starts_with("x86") {
+        if !ios {
+            cfg.header("sys/sys_domain.h");
+            cfg.header("net/if_utun.h");
+            cfg.header("net/bpf.h");
+            cfg.header("net/route.h");
+            cfg.header("netinet/if_ether.h");
+            cfg.header("sys/proc_info.h");
+        }
+        if target.starts_with("x86") && !ios {
             cfg.header("crt_externs.h");
         }
-        cfg.header("net/route.h");
-        cfg.header("netinet/if_ether.h");
-        cfg.header("sys/proc_info.h");
         cfg.header("sys/kern_control.h");
         cfg.header("sys/ipc.h");
         cfg.header("sys/shm.h");
