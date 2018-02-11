@@ -403,7 +403,6 @@ fn main() {
         match ty {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
-
             _ => false
         }
     });
@@ -419,6 +418,12 @@ fn main() {
 
             // The alignment of this is 4 on 64-bit OSX...
             "kevent" if apple && x86_64 => true,
+
+            // These are not available on iOS in Xcode 9.2:
+            "if_nameindex"| "proc_bsdinfo" | "proc_taskallinfo" |
+            "proc_threadinfo" | "if_msghdr" | "proc_taskinfo" |
+            "sockaddr_inarp" | "sockaddr_ctl" | "if_data" | "bpf_hdr" |
+            "timeval32" if ios => true,
 
             // This is actually a union, not a struct
             "sigval" => true,
@@ -498,6 +503,82 @@ fn main() {
             // These OSX constants are flagged as deprecated
             "NOTE_EXIT_REPARENTED" |
             "NOTE_REAP" if apple => true,
+
+            // These OSX constants are not available in Xcode 9.2:
+            "AF_SYS_CONTROL" | "SYSPROTO_EVENT" | "SYSPROTO_CONTROL" |
+            "IFF_UP" | "IFF_BROADCAST" | "IFF_DEBUG" | "IFF_LOOPBACK" |
+            "IFF_POINTOPOINT" | "IFF_NOTRAILERS" | "IFF_RUNNING" |
+            "IFF_NOARP" | "IFF_PROMISC" | "IFF_ALLMULTI" | "IFF_OACTIVE" |
+            "IFF_SIMPLEX" | "IFF_LINK0" | "IFF_LINK1" | "IFF_LINK2" |
+            "IFF_ALTPHYS" | "IFF_MULTICAST" |
+            "RTF_UP" | "RTF_GATEWAY" | "RTF_HOST" | "RTF_REJECT" |
+            "RTF_DYNAMIC" | "RTF_MODIFIED" | "RTF_DONE" | "RTF_DELCLONE" |
+            "RTF_CLONING" | "RTF_XRESOLVE" | "RTF_LLINFO" | "RTF_STATIC" |
+            "RTF_BLACKHOLE" | "RTF_PROTO2" | "RTF_PROTO1" | "RTF_PRCLONING" |
+            "RTF_WASCLONED" | "RTF_NOIFREF" | "RTF_PROTO3" | "RTF_PINNED" |
+            "RTF_LOCAL" | "RTF_BROADCAST" | "RTF_MULTICAST" | "RTF_IFSCOPE" |
+            "RTF_CONDEMNED" | "RTF_IFREF" | "RTF_PROXY" | "RTF_ROUTER" |
+            "RTM_VERSION" | "RTM_ADD" | "RTM_DELETE" | "RTM_CHANGE" |
+            "RTM_GET" | "RTM_LOSING" | "RTM_REDIRECT" | "RTM_MISS" |
+            "IF_NAMESIZE" | "IFNAMSIZ" |
+            "RTM_LOCK" |
+            "RTM_OLDADD" |
+            "RTM_OLDDEL" |
+            "RTM_RESOLVE" |
+            "RTM_NEWADDR" |
+            "RTM_DELADDR" |
+            "RTM_IFINFO" |
+            "RTM_NEWMADDR" |
+            "RTM_DELMADDR" |
+            "RTM_IFINFO2" |
+            "RTM_NEWMADDR2" |
+            "RTM_GET2" |
+            "RTV_MTU" |
+            "RTV_HOPCOUNT" |
+            "RTV_EXPIRE" |
+            "RTV_RPIPE" |
+            "RTV_SPIPE" |
+            "RTV_SSTHRESH" |
+            "RTV_RTT" |
+            "RTV_RTTVAR" |
+            "RTA_DST" |
+            "RTA_GATEWAY" |
+            "RTA_NETMASK" |
+            "RTA_GENMASK" |
+            "RTA_IFP" |
+            "RTA_IFA" |
+            "RTA_AUTHOR" |
+            "RTA_BRD" |
+            "RTAX_DST" |
+            "RTAX_GATEWAY" |
+            "RTAX_NETMASK" |
+            "RTAX_GENMASK" |
+            "RTAX_IFP" |
+            "RTAX_IFA" |
+            "RTAX_AUTHOR" |
+            "RTAX_BRD" |
+            "RTAX_MAX" |
+            "PROC_PIDTASKALLINFO" |
+            "PROC_PIDTASKINFO" |
+            "PROC_PIDTHREADINFO" |
+            "UTUN_OPT_FLAGS" |
+            "UTUN_OPT_IFNAME" |
+            "DLT_NULL" |
+            "DLT_EN10MB" |
+            "DLT_EN3MB" |
+            "DLT_AX25" |
+            "DLT_PRONET" |
+            "DLT_CHAOS" |
+            "DLT_IEEE802" |
+            "DLT_ARCNET" |
+            "DLT_SLIP" |
+            "DLT_PPP" |
+            "DLT_FDDI" |
+            "DLT_ATM_RFC1483" |
+            "DLT_RAW" |
+            "DLT_LOOP" |
+            "BPF_ALIGNMENT"
+            if ios => true,
 
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
@@ -623,6 +704,11 @@ fn main() {
             // Deprecated on OSX
             "sem_destroy" if apple => true,
             "sem_init" if apple => true,
+
+            // Removes on iOS
+            "system" if ios => true,
+            "if_nameindex" | "if_nametoindex" | "if_indextoname" | "if_freenameindex" | "ptrace"
+            if ios => true,
 
             // These functions presumably exist on netbsd but don't look like
             // they're implemented on rumprun yet, just let them slide for now.
