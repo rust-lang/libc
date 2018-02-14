@@ -79,4 +79,4 @@ if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
   opt="--release"
 fi
 
-exec cargo test $opt --manifest-path libc-test/Cargo.toml --target $TARGET
+exec cargo test $opt --manifest-path libc-test/Cargo.toml --target $TARGET --verbose -- --nocapture
