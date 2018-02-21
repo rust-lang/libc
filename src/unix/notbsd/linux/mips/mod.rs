@@ -700,6 +700,8 @@ pub const EHWPOISON: ::c_int = 168;
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
+pub const NLA_ALIGNTO: ::c_int = 4;
+
 pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
 pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
 pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
@@ -734,6 +736,12 @@ pub const NFT_MSG_MAX: ::c_int = 22;
 pub const AF_MAX: ::c_int = 42;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
+
+f! {
+    pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
+        return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
+    }
+}
 
 #[link(name = "util")]
 extern {

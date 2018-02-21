@@ -923,6 +923,8 @@ pub const NLA_F_NESTED: ::c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: ::c_int = 1 << 14;
 pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 
+pub const NLA_ALIGNTO: ::c_int = 4;
+
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 pub const CIBAUD: ::tcflag_t = 0o02003600000;
@@ -1066,6 +1068,10 @@ f! {
         let ma = ma as ::dev_t;
         let mi = mi as ::dev_t;
         ((ma & 0xfff) << 8) | (mi & 0xff) | ((mi & 0xfff00) << 12)
+    }
+
+    pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
+        return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
     }
 }
 
