@@ -39,6 +39,44 @@ s! {
         pub c_ispeed: ::speed_t,
         pub c_ospeed: ::speed_t,
     }
+
+    pub struct nlmsghdr {
+        nlmsg_len: u32,
+        nlmsg_type: u16,
+        nlmsg_flags: u16,
+        nlmsg_seq: u32,
+        nlmsg_pid: u32,
+    }
+
+    pub struct nlmsgerr {
+        error: ::c_int,
+        msg: nlmsghdr,
+    }
+
+    pub struct nl_pktinfo {
+        group: u32,
+    }
+
+    pub struct nl_mmap_req {
+        nm_block_size: ::c_uint,
+        nm_block_nr: ::c_uint,
+        nm_frame_size: ::c_uint,
+        nm_frame_nr: ::c_uint,
+    }
+
+    pub struct nl_mmap_hdr {
+        nm_status: ::c_uint,
+        nm_len: ::c_uint,
+        nm_group: u32,
+        nm_pid: u32,
+        nm_uid: u32,
+        nm_gid: u32,
+    }
+
+    pub struct nlattr {
+        nla_len: u16,
+        nla_type: u16,
+    }
 }
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;

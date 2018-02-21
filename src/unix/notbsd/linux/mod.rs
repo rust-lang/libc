@@ -483,6 +483,12 @@ s! {
         __policy: ::c_int,
         __pad: [::c_int; 16],
     }
+
+    pub struct genlmsghdr {
+        cmd: u8,
+        version: u8,
+        reserved: u16,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
