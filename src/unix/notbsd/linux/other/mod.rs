@@ -555,12 +555,6 @@ pub const NLM_F_EXCL: ::c_int = 0x200;
 pub const NLM_F_CREATE: ::c_int = 0x400;
 pub const NLM_F_APPEND: ::c_int = 0x800;
 
-pub const NLMSG_NOOP: ::c_int = 0x1;
-pub const NLMSG_ERROR: ::c_int = 0x2;
-pub const NLMSG_DONE: ::c_int = 0x3;
-pub const NLMSG_OVERRUN: ::c_int = 0x4;
-pub const NLMSG_MIN_TYPE: ::c_int = 0x10;
-
 pub const NETLINK_ADD_MEMBERSHIP: ::c_int = 1;
 pub const NETLINK_DROP_MEMBERSHIP: ::c_int = 2;
 pub const NETLINK_PKTINFO: ::c_int = 3;

@@ -1270,6 +1270,65 @@ pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x08;
 pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x10;
 pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x20;
 
+pub const NLMSG_NOOP: ::c_int = 0x1;
+pub const NLMSG_ERROR: ::c_int = 0x2;
+pub const NLMSG_DONE: ::c_int = 0x3;
+pub const NLMSG_OVERRUN: ::c_int = 0x4;
+pub const NLMSG_MIN_TYPE: ::c_int = 0x10;
+
+pub const GENL_NAMSIZ: ::c_int = 16;
+
+pub const GENL_MIN_ID: ::c_int = NLMSG_MIN_TYPE;
+pub const GENL_MAX_ID: ::c_int = 1023;
+
+pub const GENL_ADMIN_PERM: ::c_int = 0x01;
+pub const GENL_CMD_CAP_DO: ::c_int = 0x02;
+pub const GENL_CMD_CAP_DUMP: ::c_int = 0x04;
+pub const GENL_CMD_CAP_HASPOL: ::c_int = 0x08;
+cfg_if! {
+    if #[cfg(not(target_env = "musl"))] {
+        pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
+    } else {
+    }
+}
+
+pub const GENL_ID_CTRL: ::c_int = NLMSG_MIN_TYPE;
+cfg_if! {
+    if #[cfg(not(target_env = "musl"))] {
+        pub const GENL_ID_VFS_DQUOT: ::c_int = NLMSG_MIN_TYPE + 1;
+        pub const GENL_ID_PMCRAID: ::c_int = NLMSG_MIN_TYPE + 2;
+    } else {
+    }
+}
+
+pub const CTRL_CMD_UNSPEC: ::c_int = 0;
+pub const CTRL_CMD_NEWFAMILY: ::c_int = 1;
+pub const CTRL_CMD_DELFAMILY: ::c_int = 2;
+pub const CTRL_CMD_GETFAMILY: ::c_int = 3;
+pub const CTRL_CMD_NEWOPS: ::c_int = 4;
+pub const CTRL_CMD_DELOPS: ::c_int = 5;
+pub const CTRL_CMD_GETOPS: ::c_int = 6;
+pub const CTRL_CMD_NEWMCAST_GRP: ::c_int = 7;
+pub const CTRL_CMD_DELMCAST_GRP: ::c_int = 8;
+pub const CTRL_CMD_GETMCAST_GRP: ::c_int = 9;
+
+pub const CTRL_ATTR_UNSPEC: ::c_int = 0;
+pub const CTRL_ATTR_FAMILY_ID: ::c_int = 1;
+pub const CTRL_ATTR_FAMILY_NAME: ::c_int = 2;
+pub const CTRL_ATTR_VERSION: ::c_int = 3;
+pub const CTRL_ATTR_HDRSIZE: ::c_int = 4;
+pub const CTRL_ATTR_MAXATTR: ::c_int = 5;
+pub const CTRL_ATTR_OPS: ::c_int = 6;
+pub const CTRL_ATTR_MCAST_GROUPS: ::c_int = 7;
+
+pub const CTRL_ATTR_OP_UNSPEC: ::c_int = 0;
+pub const CTRL_ATTR_OP_ID: ::c_int = 1;
+pub const CTRL_ATTR_OP_FLAGS: ::c_int = 2;
+
+pub const CTRL_ATTR_MCAST_GRP_UNSPEC: ::c_int = 0;
+pub const CTRL_ATTR_MCAST_GRP_NAME: ::c_int = 1;
+pub const CTRL_ATTR_MCAST_GRP_ID: ::c_int = 2;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
