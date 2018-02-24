@@ -625,13 +625,22 @@ pub const NFPROTO_IPV6: ::c_int = 10;
 pub const NFPROTO_DECNET: ::c_int = 12;
 pub const NFPROTO_NUMPROTO: ::c_int = 13;
 
-pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
-pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
-pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
-cfg_if! {
-    if #[cfg(not(target_arch = "sparc64"))] {
+cfg_if!{
+    if #[cfg(any(target_arch = "arm", target_arch = "powerpc",
+                 target_arch = "powerpc64", target_arch = "aarch64"))] {
+        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
+        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
+        pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
         pub const NFT_OBJ_MAXNAMELEN: ::c_int = 32;
+    } else if #[cfg(target_arch = "sparc64")] {
+        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
+        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
+        pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
     } else {
+        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
+        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
+        pub const NFT_SET_MAXNAMELEN: ::c_int = 256;
+        pub const NFT_OBJ_MAXNAMELEN: ::c_int = 256;
     }
 }
 pub const NFT_USERDATA_MAXLEN: ::c_int = 256;
