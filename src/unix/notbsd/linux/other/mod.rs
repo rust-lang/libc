@@ -572,6 +572,11 @@ pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 
 pub const NLA_ALIGNTO: ::c_int = 4;
 
+pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
+
+pub const GENL_ID_VFS_DQUOT: ::c_int = ::NLMSG_MIN_TYPE + 1;
+pub const GENL_ID_PMCRAID: ::c_int = ::NLMSG_MIN_TYPE + 2;
+
 pub const TIOCM_LE: ::c_int = 0x001;
 pub const TIOCM_DTR: ::c_int = 0x002;
 pub const TIOCM_RTS: ::c_int = 0x004;

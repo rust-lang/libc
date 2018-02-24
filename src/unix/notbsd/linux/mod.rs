@@ -1285,21 +1285,8 @@ pub const GENL_ADMIN_PERM: ::c_int = 0x01;
 pub const GENL_CMD_CAP_DO: ::c_int = 0x02;
 pub const GENL_CMD_CAP_DUMP: ::c_int = 0x04;
 pub const GENL_CMD_CAP_HASPOL: ::c_int = 0x08;
-cfg_if! {
-    if #[cfg(not(target_env = "musl"))] {
-        pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
-    } else {
-    }
-}
 
 pub const GENL_ID_CTRL: ::c_int = NLMSG_MIN_TYPE;
-cfg_if! {
-    if #[cfg(not(target_env = "musl"))] {
-        pub const GENL_ID_VFS_DQUOT: ::c_int = NLMSG_MIN_TYPE + 1;
-        pub const GENL_ID_PMCRAID: ::c_int = NLMSG_MIN_TYPE + 2;
-    } else {
-    }
-}
 
 pub const CTRL_CMD_UNSPEC: ::c_int = 0;
 pub const CTRL_CMD_NEWFAMILY: ::c_int = 1;

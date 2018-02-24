@@ -702,6 +702,11 @@ pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
 pub const NLA_ALIGNTO: ::c_int = 4;
 
+pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
+
+pub const GENL_ID_VFS_DQUOT: ::c_int = ::NLMSG_MIN_TYPE + 1;
+pub const GENL_ID_PMCRAID: ::c_int = ::NLMSG_MIN_TYPE + 2;
+
 pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
 pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
 pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
