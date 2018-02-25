@@ -242,12 +242,13 @@ fn main() {
         }
         cfg.header("sys/reboot.h");
         if !emscripten {
+            cfg.header("linux/netlink.h");
+            cfg.header("linux/genetlink.h");
             cfg.header("linux/netfilter_ipv4.h");
             cfg.header("linux/fs.h");
         }
         if !musl {
             cfg.header("asm/mman.h");
-            cfg.header("linux/netlink.h");
             cfg.header("linux/magic.h");
             cfg.header("linux/reboot.h");
             cfg.header("linux/netfilter/nf_tables.h");

@@ -185,6 +185,50 @@ s! {
         pub uid: ::uid_t,
         pub gid: ::gid_t,
     }
+
+    pub struct genlmsghdr {
+        cmd: u8,
+        version: u8,
+        reserved: u16,
+    }
+
+    pub struct nlmsghdr {
+        nlmsg_len: u32,
+        nlmsg_type: u16,
+        nlmsg_flags: u16,
+        nlmsg_seq: u32,
+        nlmsg_pid: u32,
+    }
+
+    pub struct nlmsgerr {
+        error: ::c_int,
+        msg: nlmsghdr,
+    }
+
+    pub struct nl_pktinfo {
+        group: u32,
+    }
+
+    pub struct nl_mmap_req {
+        nm_block_size: ::c_uint,
+        nm_block_nr: ::c_uint,
+        nm_frame_size: ::c_uint,
+        nm_frame_nr: ::c_uint,
+    }
+
+    pub struct nl_mmap_hdr {
+        nm_status: ::c_uint,
+        nm_len: ::c_uint,
+        nm_group: u32,
+        nm_pid: u32,
+        nm_uid: u32,
+        nm_gid: u32,
+    }
+
+    pub struct nlattr {
+        nla_len: u16,
+        nla_type: u16,
+    }
 }
 
 pub const O_TRUNC: ::c_int = 512;
@@ -860,6 +904,49 @@ pub const NLMSG_DONE: ::c_int = 0x3;
 pub const NLMSG_OVERRUN: ::c_int = 0x4;
 pub const NLMSG_MIN_TYPE: ::c_int = 0x10;
 
+pub const GENL_NAMSIZ: ::c_int = 16;
+
+pub const GENL_MIN_ID: ::c_int = NLMSG_MIN_TYPE;
+pub const GENL_MAX_ID: ::c_int = 1023;
+
+pub const GENL_ADMIN_PERM: ::c_int = 0x01;
+pub const GENL_CMD_CAP_DO: ::c_int = 0x02;
+pub const GENL_CMD_CAP_DUMP: ::c_int = 0x04;
+pub const GENL_CMD_CAP_HASPOL: ::c_int = 0x08;
+pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
+
+pub const GENL_ID_CTRL: ::c_int = NLMSG_MIN_TYPE;
+pub const GENL_ID_VFS_DQUOT: ::c_int = NLMSG_MIN_TYPE + 1;
+pub const GENL_ID_PMCRAID: ::c_int = NLMSG_MIN_TYPE + 2;
+
+pub const CTRL_CMD_UNSPEC: ::c_int = 0;
+pub const CTRL_CMD_NEWFAMILY: ::c_int = 1;
+pub const CTRL_CMD_DELFAMILY: ::c_int = 2;
+pub const CTRL_CMD_GETFAMILY: ::c_int = 3;
+pub const CTRL_CMD_NEWOPS: ::c_int = 4;
+pub const CTRL_CMD_DELOPS: ::c_int = 5;
+pub const CTRL_CMD_GETOPS: ::c_int = 6;
+pub const CTRL_CMD_NEWMCAST_GRP: ::c_int = 7;
+pub const CTRL_CMD_DELMCAST_GRP: ::c_int = 8;
+pub const CTRL_CMD_GETMCAST_GRP: ::c_int = 9;
+
+pub const CTRL_ATTR_UNSPEC: ::c_int = 0;
+pub const CTRL_ATTR_FAMILY_ID: ::c_int = 1;
+pub const CTRL_ATTR_FAMILY_NAME: ::c_int = 2;
+pub const CTRL_ATTR_VERSION: ::c_int = 3;
+pub const CTRL_ATTR_HDRSIZE: ::c_int = 4;
+pub const CTRL_ATTR_MAXATTR: ::c_int = 5;
+pub const CTRL_ATTR_OPS: ::c_int = 6;
+pub const CTRL_ATTR_MCAST_GROUPS: ::c_int = 7;
+
+pub const CTRL_ATTR_OP_UNSPEC: ::c_int = 0;
+pub const CTRL_ATTR_OP_ID: ::c_int = 1;
+pub const CTRL_ATTR_OP_FLAGS: ::c_int = 2;
+
+pub const CTRL_ATTR_MCAST_GRP_UNSPEC: ::c_int = 0;
+pub const CTRL_ATTR_MCAST_GRP_NAME: ::c_int = 1;
+pub const CTRL_ATTR_MCAST_GRP_ID: ::c_int = 2;
+
 pub const NETLINK_ADD_MEMBERSHIP: ::c_int = 1;
 pub const NETLINK_DROP_MEMBERSHIP: ::c_int = 2;
 pub const NETLINK_PKTINFO: ::c_int = 3;
@@ -878,6 +965,8 @@ pub const SECCOMP_MODE_FILTER: ::c_uint = 2;
 pub const NLA_F_NESTED: ::c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: ::c_int = 1 << 14;
 pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
+
+pub const NLA_ALIGNTO: ::c_int = 4;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
@@ -1022,6 +1111,10 @@ f! {
         let ma = ma as ::dev_t;
         let mi = mi as ::dev_t;
         ((ma & 0xfff) << 8) | (mi & 0xff) | ((mi & 0xfff00) << 12)
+    }
+
+    pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
+        return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
     }
 }
 

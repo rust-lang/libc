@@ -39,6 +39,44 @@ s! {
         pub c_ispeed: ::speed_t,
         pub c_ospeed: ::speed_t,
     }
+
+    pub struct nlmsghdr {
+        nlmsg_len: u32,
+        nlmsg_type: u16,
+        nlmsg_flags: u16,
+        nlmsg_seq: u32,
+        nlmsg_pid: u32,
+    }
+
+    pub struct nlmsgerr {
+        error: ::c_int,
+        msg: nlmsghdr,
+    }
+
+    pub struct nl_pktinfo {
+        group: u32,
+    }
+
+    pub struct nl_mmap_req {
+        nm_block_size: ::c_uint,
+        nm_block_nr: ::c_uint,
+        nm_frame_size: ::c_uint,
+        nm_frame_nr: ::c_uint,
+    }
+
+    pub struct nl_mmap_hdr {
+        nm_status: ::c_uint,
+        nm_len: ::c_uint,
+        nm_group: u32,
+        nm_pid: u32,
+        nm_uid: u32,
+        nm_gid: u32,
+    }
+
+    pub struct nlattr {
+        nla_len: u16,
+        nla_type: u16,
+    }
 }
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
@@ -662,6 +700,13 @@ pub const EHWPOISON: ::c_int = 168;
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
+pub const NLA_ALIGNTO: ::c_int = 4;
+
+pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
+
+pub const GENL_ID_VFS_DQUOT: ::c_int = ::NLMSG_MIN_TYPE + 1;
+pub const GENL_ID_PMCRAID: ::c_int = ::NLMSG_MIN_TYPE + 2;
+
 pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
 pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
 pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
@@ -696,6 +741,12 @@ pub const NFT_MSG_MAX: ::c_int = 22;
 pub const AF_MAX: ::c_int = 42;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
+
+f! {
+    pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
+        return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
+    }
+}
 
 #[link(name = "util")]
 extern {

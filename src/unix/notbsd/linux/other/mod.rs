@@ -178,6 +178,44 @@ s! {
         pub fordblks: ::c_int,
         pub keepcost: ::c_int,
     }
+
+    pub struct nlmsghdr {
+        nlmsg_len: u32,
+        nlmsg_type: u16,
+        nlmsg_flags: u16,
+        nlmsg_seq: u32,
+        nlmsg_pid: u32,
+    }
+
+    pub struct nlmsgerr {
+        error: ::c_int,
+        msg: nlmsghdr,
+    }
+
+    pub struct nl_pktinfo {
+        group: u32,
+    }
+
+    pub struct nl_mmap_req {
+        nm_block_size: ::c_uint,
+        nm_block_nr: ::c_uint,
+        nm_frame_size: ::c_uint,
+        nm_frame_nr: ::c_uint,
+    }
+
+    pub struct nl_mmap_hdr {
+        nm_status: ::c_uint,
+        nm_len: ::c_uint,
+        nm_group: u32,
+        nm_pid: u32,
+        nm_uid: u32,
+        nm_gid: u32,
+    }
+
+    pub struct nlattr {
+        nla_len: u16,
+        nla_type: u16,
+    }
 }
 
 pub const __UT_LINESIZE: usize = 32;
@@ -517,12 +555,6 @@ pub const NLM_F_EXCL: ::c_int = 0x200;
 pub const NLM_F_CREATE: ::c_int = 0x400;
 pub const NLM_F_APPEND: ::c_int = 0x800;
 
-pub const NLMSG_NOOP: ::c_int = 0x1;
-pub const NLMSG_ERROR: ::c_int = 0x2;
-pub const NLMSG_DONE: ::c_int = 0x3;
-pub const NLMSG_OVERRUN: ::c_int = 0x4;
-pub const NLMSG_MIN_TYPE: ::c_int = 0x10;
-
 pub const NETLINK_ADD_MEMBERSHIP: ::c_int = 1;
 pub const NETLINK_DROP_MEMBERSHIP: ::c_int = 2;
 pub const NETLINK_PKTINFO: ::c_int = 3;
@@ -537,6 +569,13 @@ pub const NETLINK_CAP_ACK: ::c_int = 10;
 pub const NLA_F_NESTED: ::c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: ::c_int = 1 << 14;
 pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
+
+pub const NLA_ALIGNTO: ::c_int = 4;
+
+pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
+
+pub const GENL_ID_VFS_DQUOT: ::c_int = ::NLMSG_MIN_TYPE + 1;
+pub const GENL_ID_PMCRAID: ::c_int = ::NLMSG_MIN_TYPE + 2;
 
 pub const TIOCM_LE: ::c_int = 0x001;
 pub const TIOCM_DTR: ::c_int = 0x002;
@@ -586,13 +625,22 @@ pub const NFPROTO_IPV6: ::c_int = 10;
 pub const NFPROTO_DECNET: ::c_int = 12;
 pub const NFPROTO_NUMPROTO: ::c_int = 13;
 
-pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
-pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
-pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
-cfg_if! {
-    if #[cfg(not(target_arch = "sparc64"))] {
+cfg_if!{
+    if #[cfg(any(target_arch = "arm", target_arch = "powerpc",
+                 target_arch = "powerpc64", target_arch = "aarch64"))] {
+        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
+        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
+        pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
         pub const NFT_OBJ_MAXNAMELEN: ::c_int = 32;
+    } else if #[cfg(target_arch = "sparc64")] {
+        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
+        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
+        pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
     } else {
+        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
+        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
+        pub const NFT_SET_MAXNAMELEN: ::c_int = 256;
+        pub const NFT_OBJ_MAXNAMELEN: ::c_int = 256;
     }
 }
 pub const NFT_USERDATA_MAXLEN: ::c_int = 256;
@@ -640,6 +688,12 @@ cfg_if! {
         pub const PTHREAD_STACK_MIN: ::size_t = 0x6000;
     } else {
         pub const PTHREAD_STACK_MIN: ::size_t = 131072;
+    }
+}
+
+f! {
+    pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
+        return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
     }
 }
 
