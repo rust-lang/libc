@@ -700,6 +700,12 @@ pub const EHWPOISON: ::c_int = 168;
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
+pub const NF_NETDEV_INGRESS: ::c_int = 0;
+pub const NF_NETDEV_NUMHOOKS: ::c_int = 1;
+
+pub const NFPROTO_INET: ::c_int = 1;
+pub const NFPROTO_NETDEV: ::c_int = 5;
+
 pub const NLA_ALIGNTO: ::c_int = 4;
 
 pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;

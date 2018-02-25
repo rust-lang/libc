@@ -1001,6 +1001,7 @@ pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 pub const MFD_CLOEXEC: ::c_uint = 0x0001;
 pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
 
+// linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;
 pub const NF_ACCEPT: ::c_int =  1;
 pub const NF_STOLEN: ::c_int =  2;
@@ -1037,6 +1038,52 @@ pub const NFPROTO_IPV6: ::c_int = 10;
 pub const NFPROTO_DECNET: ::c_int = 12;
 pub const NFPROTO_NUMPROTO: ::c_int = 13;
 
+// linux/netfilter_ipv4.h
+pub const NF_IP_PRE_ROUTING: ::c_int = 0;
+pub const NF_IP_LOCAL_IN: ::c_int = 1;
+pub const NF_IP_FORWARD: ::c_int = 2;
+pub const NF_IP_LOCAL_OUT: ::c_int = 3;
+pub const NF_IP_POST_ROUTING: ::c_int = 4;
+pub const NF_IP_NUMHOOKS: ::c_int = 5;
+
+pub const NF_IP_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
+pub const NF_IP_PRI_RAW: ::c_int = -300;
+pub const NF_IP_PRI_SELINUX_FIRST: ::c_int = -225;
+pub const NF_IP_PRI_CONNTRACK: ::c_int = -200;
+pub const NF_IP_PRI_MANGLE: ::c_int = -150;
+pub const NF_IP_PRI_NAT_DST: ::c_int = -100;
+pub const NF_IP_PRI_FILTER: ::c_int = 0;
+pub const NF_IP_PRI_SECURITY: ::c_int = 50;
+pub const NF_IP_PRI_NAT_SRC: ::c_int = 100;
+pub const NF_IP_PRI_SELINUX_LAST: ::c_int = 225;
+pub const NF_IP_PRI_CONNTRACK_HELPER: ::c_int = 300;
+pub const NF_IP_PRI_CONNTRACK_CONFIRM: ::c_int = ::INT_MAX;
+pub const NF_IP_PRI_LAST: ::c_int = ::INT_MAX;
+
+// linux/netfilter_ipv6.h
+pub const NF_IP6_PRE_ROUTING: ::c_int = 0;
+pub const NF_IP6_LOCAL_IN: ::c_int = 1;
+pub const NF_IP6_FORWARD: ::c_int = 2;
+pub const NF_IP6_LOCAL_OUT: ::c_int = 3;
+pub const NF_IP6_POST_ROUTING: ::c_int = 4;
+pub const NF_IP6_NUMHOOKS: ::c_int = 5;
+
+pub const NF_IP6_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP6_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
+pub const NF_IP6_PRI_RAW: ::c_int = -300;
+pub const NF_IP6_PRI_SELINUX_FIRST: ::c_int = -225;
+pub const NF_IP6_PRI_CONNTRACK: ::c_int = -200;
+pub const NF_IP6_PRI_MANGLE: ::c_int = -150;
+pub const NF_IP6_PRI_NAT_DST: ::c_int = -100;
+pub const NF_IP6_PRI_FILTER: ::c_int = 0;
+pub const NF_IP6_PRI_SECURITY: ::c_int = 50;
+pub const NF_IP6_PRI_NAT_SRC: ::c_int = 100;
+pub const NF_IP6_PRI_SELINUX_LAST: ::c_int = 225;
+pub const NF_IP6_PRI_CONNTRACK_HELPER: ::c_int = 300;
+pub const NF_IP6_PRI_LAST: ::c_int = ::INT_MAX;
+
+// linux/netfilter/nf_tables.h
 pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
 pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
 pub const NFT_SET_MAXNAMELEN: ::c_int = 32;

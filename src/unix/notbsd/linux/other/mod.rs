@@ -589,42 +589,13 @@ pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
-pub const NF_DROP: ::c_int = 0;
-pub const NF_ACCEPT: ::c_int =  1;
-pub const NF_STOLEN: ::c_int =  2;
-pub const NF_QUEUE: ::c_int =  3;
-pub const NF_REPEAT: ::c_int =  4;
-pub const NF_STOP: ::c_int =  5;
-pub const NF_MAX_VERDICT: ::c_int = NF_STOP;
-
-pub const NF_VERDICT_MASK: ::c_int = 0x000000ff;
-pub const NF_VERDICT_FLAG_QUEUE_BYPASS: ::c_int = 0x00008000;
-
-pub const NF_VERDICT_QMASK: ::c_int = 0xffff0000;
-pub const NF_VERDICT_QBITS: ::c_int = 16;
-
-pub const NF_VERDICT_BITS: ::c_int = 16;
-
-pub const NF_INET_PRE_ROUTING: ::c_int = 0;
-pub const NF_INET_LOCAL_IN: ::c_int = 1;
-pub const NF_INET_FORWARD: ::c_int = 2;
-pub const NF_INET_LOCAL_OUT: ::c_int = 3;
-pub const NF_INET_POST_ROUTING: ::c_int = 4;
-pub const NF_INET_NUMHOOKS: ::c_int = 5;
-
 pub const NF_NETDEV_INGRESS: ::c_int = 0;
 pub const NF_NETDEV_NUMHOOKS: ::c_int = 1;
 
-pub const NFPROTO_UNSPEC: ::c_int = 0;
 pub const NFPROTO_INET: ::c_int = 1;
-pub const NFPROTO_IPV4: ::c_int = 2;
-pub const NFPROTO_ARP: ::c_int = 3;
 pub const NFPROTO_NETDEV: ::c_int = 5;
-pub const NFPROTO_BRIDGE: ::c_int = 7;
-pub const NFPROTO_IPV6: ::c_int = 10;
-pub const NFPROTO_DECNET: ::c_int = 12;
-pub const NFPROTO_NUMPROTO: ::c_int = 13;
 
+// linux/netfilter/nf_tables.h
 cfg_if!{
     if #[cfg(any(target_arch = "arm", target_arch = "powerpc",
                  target_arch = "powerpc64", target_arch = "aarch64"))] {

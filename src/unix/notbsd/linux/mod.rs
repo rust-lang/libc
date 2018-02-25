@@ -1316,6 +1316,84 @@ pub const CTRL_ATTR_MCAST_GRP_UNSPEC: ::c_int = 0;
 pub const CTRL_ATTR_MCAST_GRP_NAME: ::c_int = 1;
 pub const CTRL_ATTR_MCAST_GRP_ID: ::c_int = 2;
 
+// linux/netfilter.h
+pub const NF_DROP: ::c_int = 0;
+pub const NF_ACCEPT: ::c_int =  1;
+pub const NF_STOLEN: ::c_int =  2;
+pub const NF_QUEUE: ::c_int =  3;
+pub const NF_REPEAT: ::c_int =  4;
+pub const NF_STOP: ::c_int =  5;
+pub const NF_MAX_VERDICT: ::c_int = NF_STOP;
+
+pub const NF_VERDICT_MASK: ::c_int = 0x000000ff;
+pub const NF_VERDICT_FLAG_QUEUE_BYPASS: ::c_int = 0x00008000;
+
+pub const NF_VERDICT_QMASK: ::c_int = 0xffff0000;
+pub const NF_VERDICT_QBITS: ::c_int = 16;
+
+pub const NF_VERDICT_BITS: ::c_int = 16;
+
+pub const NF_INET_PRE_ROUTING: ::c_int = 0;
+pub const NF_INET_LOCAL_IN: ::c_int = 1;
+pub const NF_INET_FORWARD: ::c_int = 2;
+pub const NF_INET_LOCAL_OUT: ::c_int = 3;
+pub const NF_INET_POST_ROUTING: ::c_int = 4;
+pub const NF_INET_NUMHOOKS: ::c_int = 5;
+
+// Some NFPROTO are not compatible with musl and are defined in submodules.
+pub const NFPROTO_UNSPEC: ::c_int = 0;
+pub const NFPROTO_IPV4: ::c_int = 2;
+pub const NFPROTO_ARP: ::c_int = 3;
+pub const NFPROTO_BRIDGE: ::c_int = 7;
+pub const NFPROTO_IPV6: ::c_int = 10;
+pub const NFPROTO_DECNET: ::c_int = 12;
+pub const NFPROTO_NUMPROTO: ::c_int = 13;
+
+// linux/netfilter_ipv4.h
+pub const NF_IP_PRE_ROUTING: ::c_int = 0;
+pub const NF_IP_LOCAL_IN: ::c_int = 1;
+pub const NF_IP_FORWARD: ::c_int = 2;
+pub const NF_IP_LOCAL_OUT: ::c_int = 3;
+pub const NF_IP_POST_ROUTING: ::c_int = 4;
+pub const NF_IP_NUMHOOKS: ::c_int = 5;
+
+pub const NF_IP_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
+pub const NF_IP_PRI_RAW: ::c_int = -300;
+pub const NF_IP_PRI_SELINUX_FIRST: ::c_int = -225;
+pub const NF_IP_PRI_CONNTRACK: ::c_int = -200;
+pub const NF_IP_PRI_MANGLE: ::c_int = -150;
+pub const NF_IP_PRI_NAT_DST: ::c_int = -100;
+pub const NF_IP_PRI_FILTER: ::c_int = 0;
+pub const NF_IP_PRI_SECURITY: ::c_int = 50;
+pub const NF_IP_PRI_NAT_SRC: ::c_int = 100;
+pub const NF_IP_PRI_SELINUX_LAST: ::c_int = 225;
+pub const NF_IP_PRI_CONNTRACK_HELPER: ::c_int = 300;
+pub const NF_IP_PRI_CONNTRACK_CONFIRM: ::c_int = ::INT_MAX;
+pub const NF_IP_PRI_LAST: ::c_int = ::INT_MAX;
+
+// linux/netfilter_ipv6.h
+pub const NF_IP6_PRE_ROUTING: ::c_int = 0;
+pub const NF_IP6_LOCAL_IN: ::c_int = 1;
+pub const NF_IP6_FORWARD: ::c_int = 2;
+pub const NF_IP6_LOCAL_OUT: ::c_int = 3;
+pub const NF_IP6_POST_ROUTING: ::c_int = 4;
+pub const NF_IP6_NUMHOOKS: ::c_int = 5;
+
+pub const NF_IP6_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP6_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
+pub const NF_IP6_PRI_RAW: ::c_int = -300;
+pub const NF_IP6_PRI_SELINUX_FIRST: ::c_int = -225;
+pub const NF_IP6_PRI_CONNTRACK: ::c_int = -200;
+pub const NF_IP6_PRI_MANGLE: ::c_int = -150;
+pub const NF_IP6_PRI_NAT_DST: ::c_int = -100;
+pub const NF_IP6_PRI_FILTER: ::c_int = 0;
+pub const NF_IP6_PRI_SECURITY: ::c_int = 50;
+pub const NF_IP6_PRI_NAT_SRC: ::c_int = 100;
+pub const NF_IP6_PRI_SELINUX_LAST: ::c_int = 225;
+pub const NF_IP6_PRI_CONNTRACK_HELPER: ::c_int = 300;
+pub const NF_IP6_PRI_LAST: ::c_int = ::INT_MAX;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
