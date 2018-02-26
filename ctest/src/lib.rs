@@ -582,7 +582,8 @@ impl TestGenerator {
         } else {
             cfg.flag("-Wall").flag("-Wextra").flag("-Werror")
                .flag("-Wno-unused-parameter")
-               .flag("-Wno-type-limits");
+               .flag("-Wno-type-limits")
+               .flag("-Wno-deprecated-declarations"); // allow deprecated items
         }
 
         for flag in self.flags.iter() {
