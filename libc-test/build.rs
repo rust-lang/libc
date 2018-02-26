@@ -245,6 +245,7 @@ fn main() {
             cfg.header("linux/netlink.h");
             cfg.header("linux/genetlink.h");
             cfg.header("linux/netfilter_ipv4.h");
+            cfg.header("linux/netfilter_ipv6.h");
             cfg.header("linux/fs.h");
         }
         if !musl {
