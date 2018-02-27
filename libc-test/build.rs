@@ -294,6 +294,7 @@ fn main() {
         cfg.header("sys/shm.h");
         cfg.header("sys/procdesc.h");
         cfg.header("sys/rtprio.h");
+        cfg.header("spawn.h");
     }
 
     if netbsd {
