@@ -4,11 +4,16 @@ version = "0.1.0"
 authors = ["Alex Crichton <alex@alexcrichton.com>"]
 build = "build.rs"
 
-[dependencies]
-libc = { path = ".." }
+[dependencies.libc]
+path = ".."
+default-features = false
 
 [build-dependencies]
 ctest = { git = "https://github.com/alexcrichton/ctest" }
+
+[features]
+default = [ "use_std" ]
+use_std = [ "libc/use_std" ]
 
 [[test]]
 name = "main"
@@ -19,3 +24,4 @@ harness = false
 name = "linux-fcntl"
 path = "test/linux_fcntl.rs"
 harness = false
+
