@@ -286,7 +286,9 @@ cfg_if! {
     } else if #[cfg(target_os = "emscripten")] {
         #[link(name = "c")]
         extern {}
-    } else if #[cfg(all(target_os = "netbsd", cfg_attr(feature = "stdbuild", target_vendor = "rumprun")))] {
+    } else if #[cfg(all(target_os = "netbsd",
+                        cfg_attr(feature = "stdbuild",
+                                 target_vendor = "rumprun")))] {
         // Since we don't use -nodefaultlibs on Rumprun, libc is always pulled
         // in automatically by the linker. We avoid passing it explicitly, as it
         // causes some versions of binutils to crash with an assertion failure.
