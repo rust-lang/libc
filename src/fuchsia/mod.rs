@@ -1486,6 +1486,7 @@ pub const IP_HDRINCL: ::c_int = 3;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 pub const IP_TRANSPARENT: ::c_int = 19;
+pub const IPV6_UNICAST_HOPS: ::c_int = 16;
 pub const IPV6_MULTICAST_IF: ::c_int = 17;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
