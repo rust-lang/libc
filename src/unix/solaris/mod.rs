@@ -474,6 +474,9 @@ pub const SIG_BLOCK: ::c_int = 1;
 pub const SIG_UNBLOCK: ::c_int = 2;
 pub const SIG_SETMASK: ::c_int = 3;
 
+pub const IPV6_UNICAST_HOPS: ::c_int = 0x5;
+pub const IPV6_MULTICAST_IF: ::c_int = 0x6;
+pub const IPV6_MULTICAST_HOPS: ::c_int = 0x7;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
 pub const IPV6_V6ONLY: ::c_int = 0x27;
 
@@ -849,6 +852,7 @@ pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 4;
 pub const SOCK_RDM: ::c_int = 5;
 pub const SOCK_SEQPACKET: ::c_int = 6;
+pub const IP_MULTICAST_IF: ::c_int = 16;
 pub const IP_MULTICAST_TTL: ::c_int = 17;
 pub const IP_MULTICAST_LOOP: ::c_int = 18;
 pub const IP_TTL: ::c_int = 4;
