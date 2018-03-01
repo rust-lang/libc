@@ -1052,6 +1052,7 @@ extern {
                        serv: *mut ::c_char,
                        servlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
+    #[cfg_attr(target_os = "freebsd", link_name = "kevent@FBSD_1.0")]
     pub fn kevent(kq: ::c_int,
                   changelist: *const ::kevent,
                   nchanges: ::c_int,
