@@ -1,6 +1,7 @@
 //! Linux-specific definitions for linux-like values
 
 use dox::{mem, Option};
+use unix::group;
 
 pub type useconds_t = u32;
 pub type dev_t = u64;
@@ -158,13 +159,6 @@ s! {
         pub pw_gecos: *mut ::c_char,
         pub pw_dir: *mut ::c_char,
         pub pw_shell: *mut ::c_char,
-    }
-
-    pub struct group {
-        pub gr_name: *mut ::c_char,
-        pub gr_passwd: *mut ::c_char,
-        pub gr_gid: ::gid_t,
-        pub gr_mem: *mut *mut ::c_char
     }
 
     pub struct spwd {

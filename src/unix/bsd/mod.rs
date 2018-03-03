@@ -1,4 +1,5 @@
 use dox::{mem, Option};
+use unix::group;
 
 pub type wchar_t = i32;
 pub type off_t = i64;
@@ -48,13 +49,6 @@ s! {
                       target_os = "netbsd",
                       target_os = "openbsd")))]
         pub pw_fields: ::c_int,
-    }
-
-    pub struct group {
-        pub gr_name: *mut ::c_char,
-        pub gr_passwd: *mut ::c_char,
-        pub gr_gid: ::gid_t,
-        pub gr_mem: *mut *mut ::c_char
     }
 
     pub struct ifaddrs {
