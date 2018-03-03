@@ -160,6 +160,13 @@ s! {
         pub pw_shell: *mut ::c_char,
     }
 
+    pub struct group {
+        pub gr_name: *mut ::c_char,
+        pub gr_passwd: *mut ::c_char,
+        pub gr_gid: ::gid_t,
+        pub gr_mem: *mut *mut ::c_char
+    }
+
     pub struct spwd {
         pub sp_namp: *mut ::c_char,
         pub sp_pwdp: *mut ::c_char,
@@ -1468,9 +1475,14 @@ extern {
     pub fn setpwent();
     pub fn endpwent();
     pub fn getpwent() -> *mut passwd;
+    pub fn setgrent();
+    pub fn endgrent();
+    pub fn getgrent() -> *mut group;
     pub fn setspent();
     pub fn endspent();
     pub fn getspent() -> *mut spwd;
+
+
     pub fn getspnam(__name: *const ::c_char) -> *mut spwd;
 
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
@@ -1826,6 +1838,18 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwent_r")]
+    pub fn getpwent_r(pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__getgrent_r50")]
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrent_r")]
+    pub fn getgrent_r(grp: *mut group,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut group) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch ="x86"),
                link_name = "sigwait$UNIX2003")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
