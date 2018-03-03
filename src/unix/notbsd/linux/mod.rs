@@ -1476,7 +1476,6 @@ extern {
     pub fn endspent();
     pub fn getspent() -> *mut spwd;
 
-
     pub fn getspnam(__name: *const ::c_char) -> *mut spwd;
 
     pub fn shm_open(name: *const c_char, oflag: ::c_int,
