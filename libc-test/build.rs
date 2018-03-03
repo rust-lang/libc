@@ -664,6 +664,9 @@ fn main() {
             // the symbol.
             "uname" if freebsd => true,
 
+            // FIXME: need to upgrade FreeBSD version; see https://github.com/rust-lang/libc/issues/938
+            "setgrent" if freebsd => true,
+
             // aio_waitcomplete's return type changed between FreeBSD 10 and 11.
             "aio_waitcomplete" if freebsd => true,
 

@@ -1434,6 +1434,16 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwent_r")]
+    pub fn getpwent_r(pwd: *mut passwd,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut passwd) -> ::c_int;
+    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrent_r")]
+    pub fn getgrent_r(grp: *mut ::group,
+                      buf: *mut ::c_char,
+                      buflen: ::size_t,
+                      result: *mut *mut ::group) -> ::c_int;
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;

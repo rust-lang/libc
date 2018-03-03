@@ -1468,9 +1468,13 @@ extern {
     pub fn setpwent();
     pub fn endpwent();
     pub fn getpwent() -> *mut passwd;
+    pub fn setgrent();
+    pub fn endgrent();
+    pub fn getgrent() -> *mut ::group;
     pub fn setspent();
     pub fn endspent();
     pub fn getspent() -> *mut spwd;
+
     pub fn getspnam(__name: *const ::c_char) -> *mut spwd;
 
     pub fn shm_open(name: *const c_char, oflag: ::c_int,

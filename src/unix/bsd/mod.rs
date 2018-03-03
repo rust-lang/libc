@@ -388,6 +388,10 @@ extern {
     pub fn getpwent() -> *mut passwd;
     pub fn setpwent();
     pub fn endpwent();
+    pub fn setgrent();
+    pub fn endgrent();
+    pub fn getgrent() -> *mut ::group;
+
     pub fn getprogname() -> *const ::c_char;
     pub fn setprogname(name: *const ::c_char);
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
