@@ -1,7 +1,6 @@
 //! Linux-specific definitions for linux-like values
 
 use dox::{mem, Option};
-use unix::group;
 
 pub type useconds_t = u32;
 pub type dev_t = u64;
@@ -1471,7 +1470,7 @@ extern {
     pub fn getpwent() -> *mut passwd;
     pub fn setgrent();
     pub fn endgrent();
-    pub fn getgrent() -> *mut group;
+    pub fn getgrent() -> *mut ::group;
     pub fn setspent();
     pub fn endspent();
     pub fn getspent() -> *mut spwd;
@@ -1831,18 +1830,6 @@ extern {
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwent_r")]
-    pub fn getpwent_r(pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getgrent_r50")]
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrent_r")]
-    pub fn getgrent_r(grp: *mut group,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut group) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch ="x86"),
                link_name = "sigwait$UNIX2003")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
