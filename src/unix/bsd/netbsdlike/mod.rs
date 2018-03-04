@@ -638,10 +638,10 @@ extern {
                         ngroups: *mut ::c_int) -> ::c_int;
     pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
-    pub fn getpwent_r(pwd: *mut passwd,
+    pub fn getpwent_r(pwd: *mut ::passwd,
                       buf: *mut ::c_char,
                       buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
+                      result: *mut *mut ::passwd) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getgrent_r50")]
     pub fn getgrent_r(grp: *mut ::group,
                       buf: *mut ::c_char,
