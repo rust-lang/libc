@@ -14,6 +14,7 @@ pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_condattr_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
 pub type pthread_rwlockattr_t = *mut ::c_void;
+pub type ucred = ::sockpeercred;
 
 s! {
     pub struct dirent {
@@ -186,6 +187,12 @@ s! {
         pub sdl_alen: ::c_uchar,
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 24],
+    }
+
+    pub struct sockpeercred {
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub pid: ::pid_t,
     }
 }
 
