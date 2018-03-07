@@ -91,6 +91,8 @@ extern {
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
+    pub fn pledge(promises: *const ::c_char,
+                  paths: *mut *const ::c_char) -> ::c_int;
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
 }
 
