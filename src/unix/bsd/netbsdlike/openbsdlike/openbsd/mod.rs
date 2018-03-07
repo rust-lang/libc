@@ -32,6 +32,8 @@ extern {
                    addrlen: *mut ::socklen_t, flags: ::c_int) -> ::c_int;
     pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
                    envp: *const *const ::c_char) -> ::c_int;
+    pub fn pledge(promises: *const ::c_char,
+                  execpromises: *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {
