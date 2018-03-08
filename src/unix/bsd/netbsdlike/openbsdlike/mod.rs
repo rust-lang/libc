@@ -14,7 +14,6 @@ pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_condattr_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
 pub type pthread_rwlockattr_t = *mut ::c_void;
-pub type ucred = ::sockpeercred;
 
 s! {
     pub struct dirent {
