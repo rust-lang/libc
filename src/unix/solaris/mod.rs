@@ -1265,6 +1265,7 @@ extern {
     pub fn ioctl(fildes: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
+    pub fn ___errno() -> *mut ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_nanosleep(clk_id: ::clockid_t,
