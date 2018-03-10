@@ -139,8 +139,10 @@ Tested:
     (Linux MUSL)
   * [`aarch64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/aarch64-unknown-linux-gnu/libc/)
     (Linux)
-  * [`aarch64-unknown-linux-musl`](https://doc.rust-lang.org/libc/aarch64-unknown-linux-musl/libc/)
+  * `aarch64-unknown-linux-musl`
     (Linux MUSL)
+  * [`sparc64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/sparc64-unknown-linux-gnu/libc/)
+    (Linux)
   * [`mips-unknown-linux-gnu`](https://doc.rust-lang.org/libc/mips-unknown-linux-gnu/libc/)
   * [`arm-unknown-linux-gnueabihf`](https://doc.rust-lang.org/libc/arm-unknown-linux-gnueabihf/libc/)
   * [`arm-linux-androideabi`](https://doc.rust-lang.org/libc/arm-linux-androideabi/libc/)
@@ -157,3 +159,4 @@ The following may be supported, but are not guaranteed to always work:
   * `i686-unknown-haiku`
   * `x86_64-unknown-haiku`
   * [`x86_64-unknown-netbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-netbsd/libc/)
+  * [`x86_64-sun-solaris`](https://doc.rust-lang.org/libc/x86_64-sun-solaris/libc/)
