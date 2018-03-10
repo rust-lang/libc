@@ -72,13 +72,16 @@
 #![cfg_attr(target_os = "dragonfly", doc(
     html_root_url = "https://doc.rust-lang.org/libc/x86_64-unknown-dragonfly"
 ))]
+#![cfg_attr(target_os = "solaris", doc(
+    html_root_url = "https://doc.rust-lang.org/libc/x86_64-sun-solaris"
+))]
 #![cfg_attr(all(target_os = "emscripten", target_arch = "asmjs"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/asmjs-unknown-emscripten"
 ))]
 #![cfg_attr(all(target_os = "emscripten", target_arch = "wasm32"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/wasm32-unknown-emscripten"
 ))]
-#![cfg_attr(all(target_os = "linux", target_arch = "xparc64"), doc(
+#![cfg_attr(all(target_os = "linux", target_arch = "sparc64"), doc(
     html_root_url = "https://doc.rust-lang.org/libc/sparc64-unknown-linux-gnu"
 ))]
 
