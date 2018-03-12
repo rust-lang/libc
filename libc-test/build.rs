@@ -509,6 +509,7 @@ fn main() {
             "CTL_MAXID" |
             "KERN_MAXID" |
             "HW_MAXID" |
+            "NET_MAXID" |
             "USER_MAXID" if freebsd => true,
 
             // These constants were added in FreeBSD 11

@@ -3,7 +3,7 @@ pub type clock_t = i32;
 pub type ino_t = u32;
 pub type lwpid_t = i32;
 pub type nlink_t = u16;
-pub type blksize_t = u32;
+pub type blksize_t = i32;
 pub type clockid_t = ::c_int;
 pub type sem_t = _sem;
 
@@ -182,7 +182,9 @@ pub const EOWNERDEAD: ::c_int = 96;
 pub const ELAST: ::c_int = 96;
 pub const RLIMIT_NPTS: ::c_int = 11;
 pub const RLIMIT_SWAP: ::c_int = 12;
-pub const RLIM_NLIMITS: ::rlim_t = 13;
+pub const RLIMIT_KQUEUES: ::c_int = 13;
+pub const RLIMIT_UMTXP: ::c_int = 14;
+pub const RLIM_NLIMITS: ::rlim_t = 15;
 
 pub const Q_GETQUOTA: ::c_int = 0x700;
 pub const Q_SETQUOTA: ::c_int = 0x800;
@@ -801,10 +803,10 @@ pub const SHUTDOWN_TIME: ::c_short = 8;
 
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
 pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << 2);
-pub const LC_MONETARY_MASK: ::c_int = (1 << 3);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << 4);
-pub const LC_TIME_MASK: ::c_int = (1 << 5);
+pub const LC_MONETARY_MASK: ::c_int =(1 << 2);
+pub const LC_NUMERIC_MASK: ::c_int = (1 << 3);
+pub const LC_TIME_MASK: ::c_int = (1 << 4);
+pub const LC_MESSAGES_MASK: ::c_int = (1 << 5);
 pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
                                | LC_CTYPE_MASK
                                | LC_MESSAGES_MASK
