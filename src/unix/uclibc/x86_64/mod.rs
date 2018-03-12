@@ -352,6 +352,9 @@ cfg_if! {
     if #[cfg(target_os = "l4re")] {
         mod l4re;
         pub use self::l4re::*;
-    } else { }
+    } else {
+        mod other;
+        pub use other::*;
+    }
 }
 
