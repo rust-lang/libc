@@ -485,9 +485,9 @@ s! {
     }
 
     pub struct genlmsghdr {
-        cmd: u8,
-        version: u8,
-        reserved: u16,
+        pub cmd: u8,
+        pub version: u8,
+        pub reserved: u16,
     }
 }
 
