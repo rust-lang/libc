@@ -881,6 +881,7 @@ extern {
     pub fn jail_set(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int)
                     -> ::c_int;
 
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;
     pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
