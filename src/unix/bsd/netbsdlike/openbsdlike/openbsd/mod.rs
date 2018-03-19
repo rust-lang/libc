@@ -27,6 +27,8 @@ s! {
     }
 }
 
+pub const MAP_STACK : ::c_int = 0x4000;
+
 // https://github.com/openbsd/src/blob/master/sys/net/if.h#L187
 pub const IFF_UP: ::c_int = 0x1; // interface is up
 pub const IFF_BROADCAST: ::c_int = 0x2; // broadcast address valid

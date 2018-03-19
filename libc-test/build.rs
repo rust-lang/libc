@@ -526,8 +526,11 @@ fn main() {
             "KERN_USERMOUNT" |
             "KERN_ARND" if openbsd => true,
 
-            // These constats were added in OpenBSD 6.2
+            // These constants were added in OpenBSD 6.2
             "EV_RECEIPT" | "EV_DISPATCH" if openbsd => true,
+
+            // These constants were added in OpenBSD 6.3
+            "MAP_STACK" if openbsd => true,
 
             // These are either unimplemented or optionally built into uClibc
             "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
