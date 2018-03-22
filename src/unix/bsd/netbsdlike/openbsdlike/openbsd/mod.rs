@@ -52,6 +52,9 @@ extern {
                    envp: *const *const ::c_char) -> ::c_int;
     pub fn pledge(promises: *const ::c_char,
                   execpromises: *const ::c_char) -> ::c_int;
+    pub fn strtonum(nptr: *const ::c_char, minval: ::c_longlong,
+                    maxval: ::c_longlong,
+                    errstr: *mut *const ::c_char) -> ::c_longlong;
 }
 
 cfg_if! {
