@@ -13,8 +13,8 @@
 #![allow(bad_style, overflowing_literals, improper_ctypes)]
 #![crate_type = "rlib"]
 #![crate_name = "libc"]
-#![cfg_attr(dox, feature(no_core, lang_items))]
-#![cfg_attr(dox, no_core)]
+#![cfg_attr(cross_platform_docs, feature(no_core, lang_items))]
+#![cfg_attr(cross_platform_docs, no_core)]
 #![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
        html_favicon_url = "https://doc.rust-lang.org/favicon.ico")]
 
@@ -97,7 +97,7 @@
 
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
-#[cfg(all(not(dox), feature = "use_std"))]
+#[cfg(all(not(cross_platform_docs), feature = "use_std"))]
 extern crate std as core;
 
 #[macro_use] mod macros;

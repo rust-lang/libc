@@ -269,7 +269,7 @@ pub const INADDR_BROADCAST: in_addr_t = 4294967295;
 pub const INADDR_NONE: in_addr_t = 4294967295;
 
 cfg_if! {
-    if #[cfg(dox)] {
+    if #[cfg(cross_platform_docs)] {
         // on dox builds don't pull in anything
     } else if #[cfg(target_os = "l4re")] {
         // required libraries for L4Re are linked externally, ATM
