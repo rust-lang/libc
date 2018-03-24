@@ -735,6 +735,9 @@ pub const PTRACE_INTERRUPT: ::c_uint = 0x4207;
 pub const PTRACE_LISTEN: ::c_uint = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_uint = 0x4209;
 
+pub const MCL_CURRENT: ::c_int = 0x0001;
+pub const MCL_FUTURE: ::c_int = 0x0002;
+
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
 pub const MAP_HUGETLB: ::c_int = 0x040000;
