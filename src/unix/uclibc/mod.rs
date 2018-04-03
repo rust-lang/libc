@@ -1328,6 +1328,9 @@ pub const PR_GET_TID_ADDRESS: ::c_int = 40;
 pub const PR_SET_THP_DISABLE: ::c_int = 41;
 pub const PR_GET_THP_DISABLE: ::c_int = 42;
 
+pub const GRND_NONBLOCK: ::c_uint = 0x0001;
+pub const GRND_RANDOM: ::c_uint = 0x0002;
+
 pub const ABDAY_1: ::nl_item = 0x300;
 pub const ABDAY_2: ::nl_item = 0x301;
 pub const ABDAY_3: ::nl_item = 0x302;
