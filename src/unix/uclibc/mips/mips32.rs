@@ -605,7 +605,6 @@ pub const SYS_pkey_mprotect: ::c_long = 4000 + 363;
 pub const SYS_pkey_alloc: ::c_long = 4000 + 364;
 pub const SYS_pkey_free: ::c_long = 4000 + 365;
 
-
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,
