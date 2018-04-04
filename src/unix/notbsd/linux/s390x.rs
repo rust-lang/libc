@@ -374,6 +374,7 @@ pub const O_CREAT: ::c_int = 64;
 pub const O_EXCL: ::c_int = 128;
 pub const O_NONBLOCK: ::c_int = 2048;
 pub const PTHREAD_STACK_MIN: ::size_t = 16384;
+pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 3;
 pub const RLIM_INFINITY: ::rlim_t = 0xffffffffffffffff;
 pub const SA_NOCLDWAIT: ::c_int = 2;
 pub const SA_ONSTACK: ::c_int = 0x08000000;

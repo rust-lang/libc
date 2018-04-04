@@ -463,6 +463,7 @@ pub const POLLWRNORM: ::c_short = 0x004;
 pub const POLLWRBAND: ::c_short = 0x100;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 131072;
+pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 3;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
