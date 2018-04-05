@@ -166,9 +166,9 @@ s! {
         pub s_addr: in_addr_t,
     }
 
+    #[repr(align(4))]
     pub struct in6_addr {
-        pub s6_addr: [u8; 16],
-        __align: [u32; 0],
+        pub s6_addr: [u8; 16]
     }
 
     pub struct ip_mreq {
