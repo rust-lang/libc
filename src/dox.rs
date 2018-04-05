@@ -19,6 +19,16 @@ mod imp {
         fn clone(&self) -> Option<T> { loop {} }
     }
 
+    impl<T> Copy for *mut T {}
+    impl<T> Clone for *mut T {
+        fn clone(&self) -> *mut T { loop {} }
+    }
+
+    impl<T> Copy for *const T {}
+    impl<T> Clone for *const T {
+        fn clone(&self) -> *const T { loop {} }
+    }
+
     pub trait Clone {
         fn clone(&self) -> Self;
     }
@@ -139,6 +149,10 @@ mod imp {
             impl Add<$i> for $i {
                 type Output = $i;
                 fn add(self, other: $i) -> $i { self + other }
+            }
+            impl Copy for $i {}
+            impl Clone for $i {
+                fn clone(&self) -> $i { loop {} }
             }
         )*)
     }
