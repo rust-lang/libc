@@ -68,13 +68,13 @@ mod imp {
     }
 
     #[lang = "div"]
-    pub trait Div<RHS> {
+    pub trait Div<RHS=Self> {
         type Output;
         fn div(self, rhs: RHS) -> Self::Output;
     }
 
     #[lang = "shl"]
-    pub trait Shl<RHS> {
+    pub trait Shl<RHS=Self> {
         type Output;
         fn shl(self, rhs: RHS) -> Self::Output;
     }
