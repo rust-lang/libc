@@ -465,6 +465,9 @@ pub const B3000000: ::speed_t = 0o010015;
 pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
 
+pub const GRND_NONBLOCK: ::c_uint = 0x0001;
+pub const GRND_RANDOM: ::c_uint = 0x0002;
+
 cfg_if! {
     if #[cfg(target_arch = "mips")] {
         mod mips32;
