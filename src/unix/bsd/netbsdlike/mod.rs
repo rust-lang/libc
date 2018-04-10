@@ -177,7 +177,6 @@ pub const SIGSEGV : ::c_int = 11;
 pub const SIGPIPE : ::c_int = 13;
 pub const SIGALRM : ::c_int = 14;
 pub const SIGTERM : ::c_int = 15;
-pub const SIGSTKSZ : ::size_t = 40960;
 
 pub const PROT_NONE : ::c_int = 0;
 pub const PROT_READ : ::c_int = 1;
