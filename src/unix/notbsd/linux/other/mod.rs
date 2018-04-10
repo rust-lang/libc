@@ -813,6 +813,7 @@ cfg_if! {
         pub const PTHREAD_STACK_MIN: ::size_t = 131072;
     }
 }
+pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 3;
 
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
