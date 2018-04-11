@@ -44,6 +44,22 @@ s! {
         __unused5: ::c_long,
     }
 
+    pub struct statvfs {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_favail: ::fsfilcnt_t,
+        pub f_fsid: ::c_ulong,
+        __f_unused: ::c_int,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        __f_spare: [::c_int; 6],
+    }
+
     pub struct pthread_attr_t {
         __size: [u32; 9]
     }
