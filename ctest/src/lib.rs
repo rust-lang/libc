@@ -774,36 +774,42 @@ impl TestGenerator {
 
 fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     let mut ret = Vec::new();
-    let (arch, width) = if target.starts_with("x86_64") {
+    let (arch, width, endian) = if target.starts_with("x86_64") {
         if target.ends_with("x32") {
-            ("x86_64", "32")
+            ("x86_64", "32", "little")
         } else {
-            ("x86_64", "64")
+            ("x86_64", "64", "little")
         }
     } else if target.starts_with("i386") ||
         target.starts_with("i586") ||
         target.starts_with("i686") {
-        ("x86", "32")
+        ("x86", "32", "little")
     } else if target.starts_with("arm") {
-        ("arm", "32")
+        ("arm", "32", "little")
     } else if target.starts_with("aarch64") {
-        ("aarch64", "64")
+        ("aarch64", "64", "little")
+    } else if target.starts_with("mipsel") {
+        ("mips", "32", "little")
+    } else if target.starts_with("mips64el") {
+        ("mips64", "64", "little")
     } else if target.starts_with("mips64") {
-        ("mips64", "64")
+        ("mips64", "64", "big")
     } else if target.starts_with("mips") {
-        ("mips", "32")
+        ("mips", "32", "big")
+    } else if target.starts_with("powerpc64le") {
+        ("powerpc64", "64", "little")
     } else if target.starts_with("powerpc64") {
-        ("powerpc64", "64")
+        ("powerpc64", "64", "big")
     } else if target.starts_with("powerpc") {
-        ("powerpc", "32")
+        ("powerpc", "32", "big")
     } else if target.starts_with("s390x") {
-        ("s390x", "64")
+        ("s390x", "64", "big")
     } else if target.starts_with("sparc64") {
-        ("sparc64", "64")
+        ("sparc64", "64", "big")
     } else if target.starts_with("asmjs") {
-        ("asmjs", "32")
+        ("asmjs", "32", "little")
     } else if target.starts_with("wasm32") {
-        ("wasm32", "32")
+        ("wasm32", "32", "little")
     } else {
         panic!("unknown arch/pointer width: {}", target)
     };
@@ -839,12 +845,12 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         panic!("unknown os/family width: {}", target)
     };
 
-    // TODO: endianness
     ret.push((family.to_string(), None));
     ret.push(("target_os".to_string(), Some(os.to_string())));
     ret.push(("target_family".to_string(), Some(family.to_string())));
     ret.push(("target_arch".to_string(), Some(arch.to_string())));
     ret.push(("target_pointer_width".to_string(), Some(width.to_string())));
+    ret.push(("target_endian".to_string(), Some(endian.to_string())));
     ret.push(("target_env".to_string(), Some(env.to_string())));
 
     return ret
