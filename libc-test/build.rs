@@ -416,9 +416,6 @@ fn main() {
             // which is absent in glibc, has to be defined.
             "__timeval" if linux => true,
 
-            // The alignment of this is 4 on 64-bit OSX...
-            "kevent" | "shmid_ds" if apple && x86_64 => true,
-
             // This is actually a union, not a struct
             "sigval" => true,
 
