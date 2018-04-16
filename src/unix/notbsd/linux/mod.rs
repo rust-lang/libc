@@ -1917,6 +1917,11 @@ extern {
         fd: ::c_int,
         newfd: ::c_int,
     ) -> ::c_int;
+    pub fn fread_unlocked(ptr: *mut ::c_void,
+        size: ::size_t,
+        nobj: ::size_t,
+        stream: *mut ::FILE
+    ) -> ::size_t;
 }
 
 cfg_if! {
