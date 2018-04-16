@@ -202,6 +202,12 @@ cfg_if! {
                          nobj: size_t,
                          stream: *mut FILE)
                          -> size_t;
+            #[cfg_attr(target_os = "linux")]
+            pub fn fread_unlock(ptr: *mut c_void,
+                         size: size_t,
+                         nobj: size_t,
+                         stream: *mut FILE)
+                         -> size_t;
             #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                        link_name = "fwrite$UNIX2003")]
             pub fn fwrite(ptr: *const c_void,
