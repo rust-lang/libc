@@ -245,7 +245,7 @@ s! {
         pub f_reserved: [::uint32_t; 8],
     }
 
-    // FIXME: this should have align 4 but it's got align 8 on 64-bit
+    #[cfg_attr(feature = "stdbuild", repr(packed(4)))]
     pub struct kevent {
         pub ident: ::uintptr_t,
         pub filter: ::int16_t,
@@ -524,7 +524,7 @@ s! {
         pub _key: ::key_t,
     }
 
-    // FIXME: this should have align 4 but it's got align 8 on 64-bit
+    #[cfg_attr(feature = "stdbuild", repr(packed(4)))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
         pub shm_segsz: ::size_t,

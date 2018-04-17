@@ -22,9 +22,9 @@ env:
     secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="
 matrix:
   include:
-    # 1.0.0 compat
+    # 1.13.0 compat
     - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
-      rust: 1.0.0
+      rust: 1.13.0
       script: rm -f Cargo.lock && cargo build
       install:
 
