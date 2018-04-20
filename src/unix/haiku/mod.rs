@@ -379,6 +379,7 @@ pub const RLIMIT_CPU: ::c_int = 1;
 pub const RLIMIT_DATA: ::c_int = 2;
 pub const RLIMIT_FSIZE: ::c_int = 3;
 pub const RLIMIT_NOFILE: ::c_int = 4;
+pub const RLIMIT_STACK: ::c_int = 5;
 pub const RLIMIT_AS: ::c_int = 6;
 // Haiku specific
 pub const RLIMIT_NOVMON: ::c_int = 7;
@@ -386,7 +387,7 @@ pub const RLIMIT_NLIMITS: ::c_int = 8;
 
 pub const RUSAGE_SELF: ::c_int = 0;
 
-pub const RTLD_LAXY: ::c_int = 0;
+pub const RTLD_LAZY: ::c_int = 0;
 
 pub const NCCS: usize = 11;
 
@@ -701,7 +702,9 @@ pub const SA_ONESHOT: ::c_int = SA_RESETHAND;
 
 pub const FD_SETSIZE: usize = 1024;
 
+pub const RTLD_LOCAL: ::c_int = 0x0;
 pub const RTLD_NOW: ::c_int = 0x1;
+pub const RTLD_GLOBAL: ::c_int = 0x2;
 pub const RTLD_DEFAULT: *mut ::c_void = 0isize as *mut ::c_void;
 
 pub const BUFSIZ: ::c_uint = 8192;
