@@ -122,41 +122,41 @@ it. If you'd like to get a release out ASAP you can follow these steps:
 The following platforms are currently tested and have documentation available:
 
 Tested:
-  * [`i686-pc-windows-msvc`](https://doc.rust-lang.org/libc/i686-pc-windows-msvc/libc/)
-  * [`x86_64-pc-windows-msvc`](https://doc.rust-lang.org/libc/x86_64-pc-windows-msvc/libc/)
+  * [`i686-pc-windows-msvc`](https://rust-lang.github.io/libc/i686-pc-windows-msvc/libc/)
+  * [`x86_64-pc-windows-msvc`](https://rust-lang.github.io/libc/x86_64-pc-windows-msvc/libc/)
     (Windows)
-  * [`i686-pc-windows-gnu`](https://doc.rust-lang.org/libc/i686-pc-windows-gnu/libc/)
-  * [`x86_64-pc-windows-gnu`](https://doc.rust-lang.org/libc/x86_64-pc-windows-gnu/libc/)
-  * [`i686-apple-darwin`](https://doc.rust-lang.org/libc/i686-apple-darwin/libc/)
-  * [`x86_64-apple-darwin`](https://doc.rust-lang.org/libc/x86_64-apple-darwin/libc/)
+  * [`i686-pc-windows-gnu`](https://rust-lang.github.io/libc/i686-pc-windows-gnu/libc/)
+  * [`x86_64-pc-windows-gnu`](https://rust-lang.github.io/libc/x86_64-pc-windows-gnu/libc/)
+  * [`i686-apple-darwin`](https://rust-lang.github.io/libc/i686-apple-darwin/libc/)
+  * [`x86_64-apple-darwin`](https://rust-lang.github.io/libc/x86_64-apple-darwin/libc/)
     (OSX)
   * `i386-apple-ios`
   * `x86_64-apple-ios`
-  * [`i686-unknown-linux-gnu`](https://doc.rust-lang.org/libc/i686-unknown-linux-gnu/libc/)
-  * [`x86_64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-gnu/libc/)
+  * [`i686-unknown-linux-gnu`](https://rust-lang.github.io/libc/i686-unknown-linux-gnu/libc/)
+  * [`x86_64-unknown-linux-gnu`](https://rust-lang.github.io/libc/x86_64-unknown-linux-gnu/libc/)
     (Linux)
-  * [`x86_64-unknown-linux-musl`](https://doc.rust-lang.org/libc/x86_64-unknown-linux-musl/libc/)
+  * [`x86_64-unknown-linux-musl`](https://rust-lang.github.io/libc/x86_64-unknown-linux-musl/libc/)
     (Linux MUSL)
-  * [`aarch64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/aarch64-unknown-linux-gnu/libc/)
+  * [`aarch64-unknown-linux-gnu`](https://rust-lang.github.io/libc/aarch64-unknown-linux-gnu/libc/)
     (Linux)
   * `aarch64-unknown-linux-musl`
     (Linux MUSL)
-  * [`sparc64-unknown-linux-gnu`](https://doc.rust-lang.org/libc/sparc64-unknown-linux-gnu/libc/)
+  * [`sparc64-unknown-linux-gnu`](https://rust-lang.github.io/libc/sparc64-unknown-linux-gnu/libc/)
     (Linux)
-  * [`mips-unknown-linux-gnu`](https://doc.rust-lang.org/libc/mips-unknown-linux-gnu/libc/)
-  * [`arm-unknown-linux-gnueabihf`](https://doc.rust-lang.org/libc/arm-unknown-linux-gnueabihf/libc/)
-  * [`arm-linux-androideabi`](https://doc.rust-lang.org/libc/arm-linux-androideabi/libc/)
+  * [`mips-unknown-linux-gnu`](https://rust-lang.github.io/libc/mips-unknown-linux-gnu/libc/)
+  * [`arm-unknown-linux-gnueabihf`](https://rust-lang.github.io/libc/arm-unknown-linux-gnueabihf/libc/)
+  * [`arm-linux-androideabi`](https://rust-lang.github.io/libc/arm-linux-androideabi/libc/)
     (Android)
-  * [`x86_64-unknown-freebsd`](https://doc.rust-lang.org/libc/x86_64-unknown-freebsd/libc/)
-  * [`x86_64-unknown-openbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-openbsd/libc/)
-  * [`x86_64-rumprun-netbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-netbsd/libc/)
+  * [`x86_64-unknown-freebsd`](https://rust-lang.github.io/libc/x86_64-unknown-freebsd/libc/)
+  * [`x86_64-unknown-openbsd`](https://rust-lang.github.io/libc/x86_64-unknown-openbsd/libc/)
+  * [`x86_64-rumprun-netbsd`](https://rust-lang.github.io/libc/x86_64-unknown-netbsd/libc/)
 
 The following may be supported, but are not guaranteed to always work:
 
   * `i686-unknown-freebsd`
-  * [`x86_64-unknown-bitrig`](https://doc.rust-lang.org/libc/x86_64-unknown-bitrig/libc/)
-  * [`x86_64-unknown-dragonfly`](https://doc.rust-lang.org/libc/x86_64-unknown-dragonfly/libc/)
+  * [`x86_64-unknown-bitrig`](https://rust-lang.github.io/libc/x86_64-unknown-bitrig/libc/)
+  * [`x86_64-unknown-dragonfly`](https://rust-lang.github.io/libc/x86_64-unknown-dragonfly/libc/)
   * `i686-unknown-haiku`
   * `x86_64-unknown-haiku`
-  * [`x86_64-unknown-netbsd`](https://doc.rust-lang.org/libc/x86_64-unknown-netbsd/libc/)
-  * [`x86_64-sun-solaris`](https://doc.rust-lang.org/libc/x86_64-sun-solaris/libc/)
+  * [`x86_64-unknown-netbsd`](https://rust-lang.github.io/libc/x86_64-unknown-netbsd/libc/)
+  * [`x86_64-sun-solaris`](https://rust-lang.github.io/libc/x86_64-sun-solaris/libc/)
