@@ -229,6 +229,11 @@ s! {
         pub nla_len: u16,
         pub nla_type: u16,
     }
+
+    pub struct in6_pktinfo {
+        pub ipi6_addr: ::in6_addr,
+        pub ipi6_ifindex: ::c_int,
+    }
 }
 
 pub const O_TRUNC: ::c_int = 512;

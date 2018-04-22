@@ -33,6 +33,8 @@ fn main() {
         cfg.define("_GNU_SOURCE", None);
     } else if netbsd {
         cfg.define("_NETBSD_SOURCE", Some("1"));
+    } else if apple {
+        cfg.define("__APPLE_USE_RFC_3542", None);
     } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
     } else if solaris {
@@ -178,6 +180,7 @@ fn main() {
         }
         cfg.header("net/route.h");
         cfg.header("netinet/if_ether.h");
+        cfg.header("netinet/in.h");
         cfg.header("sys/proc_info.h");
         cfg.header("sys/kern_control.h");
         cfg.header("sys/ipc.h");
