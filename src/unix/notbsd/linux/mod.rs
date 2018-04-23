@@ -469,6 +469,11 @@ s! {
         pub version: u8,
         pub reserved: u16,
     }
+
+    pub struct in6_pktinfo {
+        pub ipi6_addr: ::in6_addr,
+        pub ipi6_ifindex: ::c_uint,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
