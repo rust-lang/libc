@@ -640,8 +640,11 @@ pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 
-pub const TCP_NODELAY: ::c_int = 1;
-pub const TCP_KEEPIDLE: ::c_int = 256;
+pub const TCP_NODELAY:   ::c_int = 1;
+pub const TCP_KEEPIDLE:  ::c_int = 256;
+pub const TCP_KEEPINTVL: ::c_int = 512;
+pub const TCP_KEEPCNT:   ::c_int = 1024;
+
 pub const SOL_SOCKET: ::c_int = 0xffff;
 pub const SO_DEBUG: ::c_int = 0x01;
 pub const SO_ACCEPTCONN: ::c_int = 0x0002;
