@@ -308,6 +308,9 @@ pub const IPPROTO_MAX: ::c_int = 256;
 /// Divert sockets
 pub const IPPROTO_DIVERT: ::c_int = 258;
 
+pub const IP_RECVDSTADDR: ::c_int = 7;
+pub const IP_SENDSRCADDR: ::c_int = IP_RECVDSTADDR;
+
 pub const AF_ECMA: ::c_int = 8;
 pub const AF_ROUTE: ::c_int = 17;
 pub const AF_ENCAP: ::c_int = 28;
