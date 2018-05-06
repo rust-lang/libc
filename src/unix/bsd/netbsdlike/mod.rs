@@ -559,6 +559,7 @@ pub const TIOCMSET: ::c_ulong = 0x8004746d;
 pub const TIOCSTART: ::c_ulong = 0x2000746e;
 pub const TIOCSTOP: ::c_ulong = 0x2000746f;
 pub const TIOCSCTTY: ::c_ulong = 0x20007461;
+pub const TIOCGWINSZ: ::c_ulong = 0x40087468;
 pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
 pub const TIOCM_LE: ::c_int = 0o0001;
 pub const TIOCM_DTR: ::c_int = 0o0002;
