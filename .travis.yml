@@ -21,6 +21,9 @@ env:
   global:
     secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="
 matrix:
+  allow_failures:
+    # FIXME(#987) move back to include once 404 is fixed
+    - env: TARGET=sparc64-unknown-linux-gnu
   include:
     # 1.13.0 compat
     - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
@@ -79,7 +82,6 @@ matrix:
     - env: TARGET=mips64el-unknown-linux-gnuabi64
     - env: TARGET=mips-unknown-linux-gnu
     - env: TARGET=s390x-unknown-linux-gnu
-    - env: TARGET=sparc64-unknown-linux-gnu
     - env: TARGET=asmjs-unknown-emscripten
     - env: TARGET=wasm32-unknown-emscripten
 
