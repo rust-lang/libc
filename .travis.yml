@@ -23,6 +23,7 @@ env:
 matrix:
   allow_failures:
     # FIXME(#987) move back to include once 404 is fixed
+    - env: TARGET=s390x-unknown-linux-gnu
     - env: TARGET=sparc64-unknown-linux-gnu
   include:
     # 1.13.0 compat
@@ -82,6 +83,7 @@ matrix:
     - env: TARGET=mips64el-unknown-linux-gnuabi64
     - env: TARGET=mips-unknown-linux-gnu
     - env: TARGET=s390x-unknown-linux-gnu
+    - env: TARGET=sparc64-unknown-linux-gnu
     - env: TARGET=asmjs-unknown-emscripten
     - env: TARGET=wasm32-unknown-emscripten
 
