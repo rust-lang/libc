@@ -71,16 +71,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-    pub struct ifaddrs {
-        pub ifa_next: *mut ifaddrs,
-        pub ifa_name: *mut c_char,
-        pub ifa_flags: ::c_uint,
-        pub ifa_addr: *mut ::sockaddr,
-        pub ifa_netmask: *mut ::sockaddr,
-        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
-        pub ifa_data: *mut ::c_void
-    }
-
     pub struct pthread_mutex_t {
         #[cfg(any(target_arch = "mips",
                   target_arch = "arm",
@@ -1624,8 +1614,6 @@ extern {
     pub fn if_freenameindex(ptr: *mut if_nameindex);
     pub fn sync_file_range(fd: ::c_int, offset: ::off64_t,
                            nbytes: ::off64_t, flags: ::c_uint) -> ::c_int;
-    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
-    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
     pub fn mremap(addr: *mut ::c_void,
                   len: ::size_t,
                   new_len: ::size_t,
@@ -1660,21 +1648,6 @@ extern {
     pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 
-    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
-                address_len: ::socklen_t) -> ::c_int;
-
-    pub fn writev(fd: ::c_int,
-                  iov: *const ::iovec,
-                  iovcnt: ::c_int) -> ::ssize_t;
-    pub fn readv(fd: ::c_int,
-                 iov: *const ::iovec,
-                 iovcnt: ::c_int) -> ::ssize_t;
-
-    pub fn sendmsg(fd: ::c_int,
-                   msg: *const ::msghdr,
-                   flags: ::c_int) -> ::ssize_t;
-    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
-                   -> ::ssize_t;
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn vhangup() -> ::c_int;

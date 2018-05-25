@@ -183,6 +183,17 @@ s! {
         pub ipi_spec_dst: ::in_addr,
         pub ipi_addr: ::in_addr,
     }
+
+    pub struct ifaddrs {
+        pub ifa_next: *mut ifaddrs,
+        pub ifa_name: *mut c_char,
+        pub ifa_flags: ::c_uint,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
+        pub ifa_data: *mut ::c_void
+    }
+
 }
 
 // intentionally not public, only used for fd_set
@@ -1003,6 +1014,23 @@ extern {
     pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
                    envp: *const *const ::c_char)
                    -> ::c_int;
+    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
+    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
+                address_len: ::socklen_t) -> ::c_int;
+
+    pub fn writev(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int) -> ::ssize_t;
+    pub fn readv(fd: ::c_int,
+                 iov: *const ::iovec,
+                 iovcnt: ::c_int) -> ::ssize_t;
+
+    pub fn sendmsg(fd: ::c_int,
+                   msg: *const ::msghdr,
+                   flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
+                   -> ::ssize_t;
 }
 
 cfg_if! {
