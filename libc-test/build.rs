@@ -134,6 +134,7 @@ fn main() {
         cfg.header("arpa/inet.h");
         cfg.header("xlocale.h");
         cfg.header("utmp.h");
+        cfg.header("ifaddrs.h");
         if i686 || x86_64 {
             cfg.header("sys/reg.h");
         }
