@@ -451,6 +451,15 @@ s! {
         pub f_namemax: ::c_ulong,
         __f_spare: [::c_int; 6],
     }
+
+    pub struct arpd_request {
+        pub req: ::c_ushort,
+        pub ip: u32,
+        pub dev: ::c_ulong,
+        pub stamp: ::c_ulong,
+        pub updated: ::c_ulong,
+        pub ha: [::c_uchar; ::MAX_ADDR_LEN],
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -1473,6 +1482,12 @@ pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 pub const O_TMPFILE: ::c_int = 0x400000;
+
+pub const MAX_ADDR_LEN: usize = 7;
+pub const ARPD_UPDATE: ::c_ushort = 0x01;
+pub const ARPD_LOOKUP: ::c_ushort = 0x02;
+pub const ARPD_FLUSH: ::c_ushort = 0x03;
+pub const ATF_MAGIC: ::c_int = 0x80;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {

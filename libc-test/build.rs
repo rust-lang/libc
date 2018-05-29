@@ -85,6 +85,7 @@ fn main() {
         }
         cfg.header("net/if.h");
         cfg.header("net/route.h");
+        cfg.header("net/if_arp.h");
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");

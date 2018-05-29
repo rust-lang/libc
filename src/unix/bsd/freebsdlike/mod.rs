@@ -180,6 +180,14 @@ s! {
         pub ipi6_addr: ::in6_addr,
         pub ipi6_ifindex: ::c_uint,
     }
+
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
 }
 
 pub const AIO_LISTIO_MAX: ::c_int = 16;

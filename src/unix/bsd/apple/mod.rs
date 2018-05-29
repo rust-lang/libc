@@ -549,6 +549,14 @@ s! {
         pub shm_internal: *mut ::c_void,
 
     }
+
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
 }
 
 pub const _UTX_USERSIZE: usize = 256;
