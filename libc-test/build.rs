@@ -241,6 +241,7 @@ fn main() {
         cfg.header("sys/personality.h");
         cfg.header("sys/swap.h");
         cfg.header("pty.h");
+        cfg.header("linux/sockios.h");
         if !uclibc {
             cfg.header("sys/sysinfo.h");
         }
