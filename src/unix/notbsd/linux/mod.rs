@@ -1369,6 +1369,44 @@ pub const NF_IP6_PRI_SELINUX_LAST: ::c_int = 225;
 pub const NF_IP6_PRI_CONNTRACK_HELPER: ::c_int = 300;
 pub const NF_IP6_PRI_LAST: ::c_int = ::INT_MAX;
 
+pub const SIOCADDRT: ::c_ulong = 0x0000890B;
+pub const SIOCDELRT: ::c_ulong = 0x0000890C;
+pub const SIOCGIFNAME: ::c_ulong = 0x00008910;
+pub const SIOCSIFLINK: ::c_ulong = 0x00008911;
+pub const SIOCGIFCONF: ::c_ulong = 0x00008912;
+pub const SIOCGIFFLAGS: ::c_ulong = 0x00008913;
+pub const SIOCSIFFLAGS: ::c_ulong = 0x00008914;
+pub const SIOCGIFADDR: ::c_ulong = 0x00008915;
+pub const SIOCSIFADDR: ::c_ulong = 0x00008916;
+pub const SIOCGIFDSTADDR: ::c_ulong = 0x00008917;
+pub const SIOCSIFDSTADDR: ::c_ulong = 0x00008918;
+pub const SIOCGIFBRDADDR: ::c_ulong = 0x00008919;
+pub const SIOCSIFBRDADDR: ::c_ulong = 0x0000891A;
+pub const SIOCGIFNETMASK: ::c_ulong = 0x0000891B;
+pub const SIOCSIFNETMASK: ::c_ulong = 0x0000891C;
+pub const SIOCGIFMETRIC: ::c_ulong = 0x0000891D;
+pub const SIOCSIFMETRIC: ::c_ulong = 0x0000891E;
+pub const SIOCGIFMEM: ::c_ulong = 0x0000891F;
+pub const SIOCSIFMEM: ::c_ulong = 0x00008920;
+pub const SIOCGIFMTU: ::c_ulong = 0x00008921;
+pub const SIOCSIFMTU: ::c_ulong = 0x00008922;
+pub const SIOCSIFHWADDR: ::c_ulong = 0x00008924;
+pub const SIOCGIFENCAP: ::c_ulong = 0x00008925;
+pub const SIOCSIFENCAP: ::c_ulong = 0x00008926;
+pub const SIOCGIFHWADDR: ::c_ulong = 0x00008927;
+pub const SIOCGIFSLAVE: ::c_ulong = 0x00008929;
+pub const SIOCSIFSLAVE: ::c_ulong = 0x00008930;
+pub const SIOCADDMULTI: ::c_ulong = 0x00008931;
+pub const SIOCDELMULTI: ::c_ulong = 0x00008932;
+pub const SIOCDARP: ::c_ulong = 0x00008953;
+pub const SIOCGARP: ::c_ulong = 0x00008954;
+pub const SIOCSARP: ::c_ulong = 0x00008955;
+pub const SIOCDRARP: ::c_ulong = 0x00008960;
+pub const SIOCGRARP: ::c_ulong = 0x00008961;
+pub const SIOCSRARP: ::c_ulong = 0x00008962;
+pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
+pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
