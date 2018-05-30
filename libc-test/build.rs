@@ -246,6 +246,7 @@ fn main() {
         }
         cfg.header("sys/reboot.h");
         if !emscripten {
+            cfg.header("linux/sockios.h");
             cfg.header("linux/netlink.h");
             cfg.header("linux/genetlink.h");
             cfg.header("linux/netfilter_ipv4.h");
