@@ -824,13 +824,10 @@ pub const POLLNVAL: ::c_short = 0x20;
 pub const POLLRDNORM: ::c_short = 0x040;
 pub const POLLRDBAND: ::c_short = 0x080;
 
-pub const IPTOS_TOS_MASK: u8 = 0x1E;
 pub const IPTOS_LOWDELAY: u8 = 0x10;
 pub const IPTOS_THROUGHPUT: u8 = 0x08;
 pub const IPTOS_RELIABILITY: u8 = 0x04;
 pub const IPTOS_MINCOST: u8 = 0x02;
-
-pub const IPTOS_PREC_MASK: u8 = 0xE0;
 
 pub const IPTOS_PREC_NETCONTROL: u8 = 0xe0;
 pub const IPTOS_PREC_INTERNETCONTROL: u8 = 0xc0;
@@ -934,14 +931,6 @@ f! {
 
     pub fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
-    }
-
-    pub fn IPTOS_TOS(tos: u8) -> u8 {
-        tos & IPTOS_TOS_MASK
-    }
-
-    pub fn IPTOS_PREC(tos: u8) -> u8 {
-        tos & IPTOS_PREC_MASK
     }
 
     pub fn IPOPT_COPIED(o: u8) -> u8 {
