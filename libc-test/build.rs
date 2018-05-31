@@ -229,6 +229,7 @@ fn main() {
     if linux || android || emscripten {
         cfg.header("malloc.h");
         cfg.header("net/ethernet.h");
+        cfg.header("net/ip.h");
         cfg.header("netpacket/packet.h");
         cfg.header("sched.h");
         cfg.header("sys/epoll.h");

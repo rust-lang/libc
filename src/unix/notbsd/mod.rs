@@ -193,7 +193,6 @@ s! {
         pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
         pub ifa_data: *mut ::c_void
     }
-
 }
 
 // intentionally not public, only used for fd_set
@@ -825,6 +824,90 @@ pub const POLLNVAL: ::c_short = 0x20;
 pub const POLLRDNORM: ::c_short = 0x040;
 pub const POLLRDBAND: ::c_short = 0x080;
 
+pub const IPTOS_TOS_MASK: u8 = 0x1E;
+pub const IPTOS_LOWDELAY: u8 = 0x10;
+pub const IPTOS_THROUGHPUT: u8 = 0x08;
+pub const IPTOS_RELIABILITY: u8 = 0x04;
+pub const IPTOS_MINCOST: u8 = 0x02;
+
+pub const IPTOS_PREC_MASK: u8 = 0xE0;
+
+pub const IPTOS_PREC_NETCONTROL: u8 = 0xe0;
+pub const IPTOS_PREC_INTERNETCONTROL: u8 = 0xc0;
+pub const IPTOS_PREC_CRITIC_ECP: u8 = 0xa0;
+pub const IPTOS_PREC_FLASHOVERRIDE: u8 = 0x80;
+pub const IPTOS_PREC_FLASH: u8 = 0x60;
+pub const IPTOS_PREC_IMMEDIATE: u8 = 0x40;
+pub const IPTOS_PREC_PRIORITY: u8 = 0x20;
+pub const IPTOS_PREC_ROUTINE: u8 = 0x00;
+
+pub const IPOPT_COPY: u8 = 0x80;
+pub const IPOPT_CLASS_MASK: u8 = 0x60;
+pub const IPOPT_NUMBER_MASK: u8 = 0x1f;
+
+pub const IPOPT_CONTROL: u8 = 0x00;
+pub const IPOPT_RESERVED1: u8 = 0x20;
+pub const IPOPT_MEASUREMENT: u8 = 0x40;
+pub const IPOPT_RESERVED2: u8 = 0x60;
+pub const IPOPT_END: u8 = (0 |IPOPT_CONTROL);
+pub const IPOPT_NOOP: u8 = (1 |IPOPT_CONTROL);
+pub const IPOPT_SEC: u8 = (2 |IPOPT_CONTROL|IPOPT_COPY);
+pub const IPOPT_LSRR: u8 = (3 |IPOPT_CONTROL|IPOPT_COPY);
+pub const IPOPT_TIMESTAMP: u8 = (4 |IPOPT_MEASUREMENT);
+pub const IPOPT_CIPSO: u8 = (6 |IPOPT_CONTROL|IPOPT_COPY);
+pub const IPOPT_RR: u8 = (7 |IPOPT_CONTROL);
+pub const IPOPT_SID: u8 = (8 |IPOPT_CONTROL|IPOPT_COPY);
+pub const IPOPT_SSRR: u8 = (9 |IPOPT_CONTROL|IPOPT_COPY);
+pub const IPOPT_RA: u8 = (20|IPOPT_CONTROL|IPOPT_COPY);
+pub const IPVERSION: u8 = 4;
+pub const MAXTTL: u8 = 255;
+pub const IPDEFTTL: u8 = 64;
+pub const IPOPT_OPTVAL: u8 = 0;
+pub const IPOPT_OLEN: u8 = 1;
+pub const IPOPT_OFFSET: u8 = 2;
+pub const IPOPT_MINOFF: u8 = 4;
+pub const MAX_IPOPTLEN: u8 = 40;
+pub const IPOPT_NOP: u8 = IPOPT_NOOP;
+pub const IPOPT_EOL: u8 = IPOPT_END;
+pub const IPOPT_TS: u8 = IPOPT_TIMESTAMP;
+pub const IPOPT_TS_TSONLY: u8 = 0;
+pub const IPOPT_TS_TSANDADDR: u8 = 1;
+pub const IPOPT_TS_PRESPEC: u8 = 3;
+pub const IPV4_BEET_PHMAXLEN: u8 = 8;
+
+pub const IPV4_DEVCONF_FORWARDING: ::c_int = 1;
+pub const IPV4_DEVCONF_MC_FORWARDING: ::c_int = 2;
+pub const IPV4_DEVCONF_PROXY_ARP: ::c_int = 3;
+pub const IPV4_DEVCONF_ACCEPT_REDIRECTS: ::c_int = 4;
+pub const IPV4_DEVCONF_SECURE_REDIRECTS: ::c_int = 5;
+pub const IPV4_DEVCONF_SEND_REDIRECTS: ::c_int = 6;
+pub const IPV4_DEVCONF_SHARED_MEDIA: ::c_int = 7;
+pub const IPV4_DEVCONF_RP_FILTER: ::c_int = 8;
+pub const IPV4_DEVCONF_ACCEPT_SOURCE_ROUTE: ::c_int = 9;
+pub const IPV4_DEVCONF_BOOTP_RELAY: ::c_int = 10;
+pub const IPV4_DEVCONF_LOG_MARTIANS: ::c_int = 11;
+pub const IPV4_DEVCONF_TAG: ::c_int = 12;
+pub const IPV4_DEVCONF_ARPFILTER: ::c_int = 13;
+pub const IPV4_DEVCONF_MEDIUM_ID: ::c_int = 14;
+pub const IPV4_DEVCONF_NOXFRM: ::c_int = 15;
+pub const IPV4_DEVCONF_NOPOLICY: ::c_int = 16;
+pub const IPV4_DEVCONF_FORCE_IGMP_VERSION: ::c_int = 17;
+pub const IPV4_DEVCONF_ARP_ANNOUNCE: ::c_int = 18;
+pub const IPV4_DEVCONF_ARP_IGNORE: ::c_int = 19;
+pub const IPV4_DEVCONF_PROMOTE_SECONDARIES: ::c_int = 20;
+pub const IPV4_DEVCONF_ARP_ACCEPT: ::c_int = 21;
+pub const IPV4_DEVCONF_ARP_NOTIFY: ::c_int = 22;
+pub const IPV4_DEVCONF_ACCEPT_LOCAL: ::c_int = 23;
+pub const IPV4_DEVCONF_SRC_VMARK: ::c_int = 24;
+pub const IPV4_DEVCONF_PROXY_ARP_PVLAN: ::c_int = 25;
+pub const IPV4_DEVCONF_ROUTE_LOCALNET: ::c_int = 26;
+pub const IPV4_DEVCONF_IGMPV2_UNSOLICITED_REPORT_INTERVAL: ::c_int = 27;
+pub const IPV4_DEVCONF_IGMPV3_UNSOLICITED_REPORT_INTERVAL: ::c_int = 28;
+pub const IPV4_DEVCONF_IGNORE_ROUTES_WITH_LINKDOWN: ::c_int = 29;
+pub const IPV4_DEVCONF_DROP_UNICAST_IN_L2_MULTICAST: ::c_int = 30;
+pub const IPV4_DEVCONF_DROP_GRATUITOUS_ARP: ::c_int = 31;
+pub const __IPV4_DEVCONF_MAX: ::c_int = 32;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -886,6 +969,26 @@ f! {
 
     pub fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
+    }
+
+    pub fn IPTOS_TOS(tos: u8) -> u8 {
+        tos & IPTOS_TOS_MASK
+    }
+
+    pub fn IPTOS_PREC(tos: u8) -> u8 {
+        tos & IPTOS_PREC_MASK
+    }
+
+    pub fn IPOPT_COPIED(o: u8) -> u8 {
+        o & IPOPT_COPY
+    }
+
+    pub fn IPOPT_CLASS(o: u8) -> u8 {
+        o & IPOPT_CLASS_MASK
+    }
+
+    pub fn IPOPT_NUMBER(o: u8) -> u8 {
+        o & IPOPT_NUMBER_MASK
     }
 }
 
