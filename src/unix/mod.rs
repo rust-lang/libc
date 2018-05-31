@@ -184,6 +184,15 @@ s! {
         pub p_aliases: *mut *mut ::c_char,
         pub p_proto: ::c_int,
     }
+
+    pub struct ifmap {
+        mem_start: ::c_ulong,
+        mem_end: ::c_ulong,
+        base_addr: ::c_ushort,
+        irq: ::c_uchar,
+        dma: ::c_uchar,
+        port: ::c_uchar,
+    }
 }
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
