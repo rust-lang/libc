@@ -84,6 +84,7 @@ fn main() {
             cfg.header("sys/socket.h");
         }
         cfg.header("net/if.h");
+        cfg.header("net/route.h");
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
