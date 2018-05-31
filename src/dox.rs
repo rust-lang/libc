@@ -160,6 +160,6 @@ mod imp {
 
     pub mod mem {
         pub fn size_of_val<T>(_: &T) -> usize { 4 }
-        pub fn size_of<T>(_: &T) -> usize { 4 }
+        pub fn size_of<T>() -> usize { 4 }
     }
 }
