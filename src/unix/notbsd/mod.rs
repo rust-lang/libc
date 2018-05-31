@@ -7,6 +7,7 @@ pub type tcflag_t = ::c_uint;
 pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
+pub type __caddr_t = *mut ::c_char;
 
 pub enum timezone {}
 
