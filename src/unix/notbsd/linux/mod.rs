@@ -1407,6 +1407,9 @@ pub const SIOCSRARP: ::c_ulong = 0x00008962;
 pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
 pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 
+pub const IPTOS_TOS_MASK: u8 = 0x1E;
+pub const IPTOS_PREC_MASK: u8 = 0xE0;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
@@ -1461,6 +1464,14 @@ f! {
         dev |= (minor & 0x000000ff) << 0;
         dev |= (minor & 0xffffff00) << 12;
         dev
+    }
+
+    pub fn IPTOS_TOS(tos: u8) -> u8 {
+        tos & IPTOS_TOS_MASK
+    }
+
+    pub fn IPTOS_PREC(tos: u8) -> u8 {
+        tos & IPTOS_PREC_MASK
     }
 }
 
