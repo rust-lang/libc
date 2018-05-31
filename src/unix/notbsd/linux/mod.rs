@@ -1663,7 +1663,7 @@ pub const RTNH_F_LINKDOWN: ::c_uchar = 16;
 pub const RTNH_F_UNRESOLVED: ::c_uchar = 32;
 pub const RTNH_COMPARE_MASK: ::c_uchar = (RTNH_F_DEAD | RTNH_F_LINKDOWN | RTNH_F_OFFLOAD);
 pub const RTNH_ALIGNTO: usize = 4;
-pub const RTNETLINK_HAVE_PEERINFO: bool = true;
+pub const RTNETLINK_HAVE_PEERINFO: ::c_int = 1;
 
 pub const RTAX_UNSPEC: ::c_ushort = 0;
 pub const RTAX_LOCK: ::c_ushort = 1;
