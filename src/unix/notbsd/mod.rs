@@ -206,6 +206,15 @@ s! {
         rtmsg_flags: u32,
         rtmsg_ifindex: ::c_int,
     }
+
+    pub struct ifmap {
+        pub mem_start: ::c_ulong,
+        pub mem_end: ::c_ulong,
+        pub base_addr: ::c_ushort,
+        pub irq: ::c_uchar,
+        pub dma: ::c_uchar,
+        pub port: ::c_uchar,
+    }
 }
 
 // intentionally not public, only used for fd_set
