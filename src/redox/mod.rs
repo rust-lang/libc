@@ -128,6 +128,10 @@ extern {
     pub fn close(fd: ::c_int) -> ::c_int;
 }
 
+// Currently Unimplemented on redox
+pub fn mlock(_addr: *const ::c_void, _len: ::size_t) -> ::c_int { 0 }
+pub fn munlock(_addr: *const ::c_void, _len: ::size_t) -> ::c_int { 0 }
+
 #[link(name = "c")]
 #[link(name = "m")]
 extern {}
