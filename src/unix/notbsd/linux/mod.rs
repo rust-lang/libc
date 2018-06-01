@@ -1409,6 +1409,7 @@ pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
 pub const IPTOS_PREC_MASK: u8 = 0xE0;
+pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
@@ -1472,6 +1473,10 @@ f! {
 
     pub fn IPTOS_PREC(tos: u8) -> u8 {
         tos & IPTOS_PREC_MASK
+    }
+
+    pub fn RT_TOS(tos: u8) -> u8 {
+        tos & ::IPTOS_TOS_MASK
     }
 }
 

@@ -951,7 +951,6 @@ pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
 pub const RT_CLASS_MAX: u8 = 255;
 
-pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 pub const RTMSG_NEWDEVICE: u32 = 0x11;
 pub const RTMSG_DELDEVICE: u32 = 0x12;
 pub const RTMSG_NEWROUTE: u32 = 0x21;
@@ -1038,10 +1037,6 @@ f! {
 
     pub fn RT_ADDRCLASS(flags: u32) -> u32 {
         flags >> 23
-    }
-
-    pub fn RT_TOS(tos: u8) -> u8 {
-        tos & ::IPTOS_TOS_MASK
     }
 
     pub fn RT_LOCALADDR(flags: u32) -> bool {
