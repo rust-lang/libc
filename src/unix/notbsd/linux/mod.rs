@@ -464,6 +464,27 @@ s! {
         pub ipi6_addr: ::in6_addr,
         pub ipi6_ifindex: ::c_uint,
     }
+
+    pub struct rtentry {
+        pub rt_pad1: ::c_ulong,
+        pub rt_dst: ::sockaddr,
+        pub rt_gateway: ::sockaddr,
+        pub rt_genmask: ::sockaddr,
+        pub rt_flags: ::c_ushort,
+        pub rt_pad2: ::c_short,
+        pub rt_pad3: ::c_ulong,
+        pub rt_tos: ::c_uchar,
+        pub rt_class: ::c_uchar,
+        #[cfg(target_pointer_width = "64")]
+        pub rt_pad4: [::c_short; 3usize],
+        #[cfg(not(target_pointer_width = "64"))]
+        pub rt_pad4: ::c_short,
+        pub rt_metric: ::c_short,
+        pub rt_dev: *mut ::c_char,
+        pub rt_mtu: ::c_ulong,
+        pub rt_window: ::c_ulong,
+        pub rt_irtt: ::c_ushort,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -1409,7 +1430,63 @@ pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
 pub const IPTOS_PREC_MASK: u8 = 0xE0;
+
+pub const RTF_UP: ::c_ushort = 0x0001;
+pub const RTF_GATEWAY: ::c_ushort = 0x0002;
+
+pub const RTF_HOST: ::c_ushort = 0x0004;
+pub const RTF_REINSTATE: ::c_ushort = 0x0008;
+pub const RTF_DYNAMIC: ::c_ushort = 0x0010;
+pub const RTF_MODIFIED: ::c_ushort = 0x0020;
+pub const RTF_MTU: ::c_ushort = 0x0040;
+pub const RTF_MSS: ::c_ushort = RTF_MTU;
+pub const RTF_WINDOW: ::c_ushort = 0x0080;
+pub const RTF_IRTT: ::c_ushort = 0x0100;
+pub const RTF_REJECT: ::c_ushort = 0x0200;
+pub const RTF_STATIC: ::c_ushort = 0x0400;
+pub const RTF_XRESOLVE: ::c_ushort = 0x0800;
+pub const RTF_NOFORWARD: ::c_ushort = 0x1000;
+pub const RTF_THROW: ::c_ushort = 0x2000;
+pub const RTF_NOPMTUDISC: ::c_ushort = 0x4000;
+
+pub const RTF_DEFAULT: u32 = 0x00010000;
+pub const RTF_ALLONLINK: u32 = 0x00020000;
+pub const RTF_ADDRCONF: u32 = 0x00040000;
+pub const RTF_LINKRT: u32 = 0x00100000;
+pub const RTF_NONEXTHOP: u32 = 0x00200000;
+pub const RTF_CACHE: u32 = 0x01000000;
+pub const RTF_FLOW: u32 = 0x02000000;
+pub const RTF_POLICY: u32 = 0x04000000;
+
+pub const RTCF_VALVE: u32 = 0x00200000;
+pub const RTCF_MASQ: u32 = 0x00400000;
+pub const RTCF_NAT: u32 = 0x00800000;
+pub const RTCF_DOREDIRECT: u32 = 0x01000000;
+pub const RTCF_LOG: u32 = 0x02000000;
+pub const RTCF_DIRECTSRC: u32 = 0x04000000;
+
+pub const RTF_LOCAL: u32 = 0x80000000;
+pub const RTF_INTERFACE: u32 = 0x40000000;
+pub const RTF_MULTICAST: u32 = 0x20000000;
+pub const RTF_BROADCAST: u32 = 0x10000000;
+pub const RTF_NAT: u32 = 0x08000000;
+pub const RTF_ADDRCLASSMASK: u32 = 0xF8000000;
+
+pub const RT_CLASS_UNSPEC: u8 = 0;
+pub const RT_CLASS_DEFAULT: u8 = 253;
+pub const RT_CLASS_MAIN: u8 = 254;
+pub const RT_CLASS_LOCAL: u8 = 255;
+pub const RT_CLASS_MAX: u8 = 255;
+
 pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
+pub const RTMSG_NEWDEVICE: u32 = 0x11;
+pub const RTMSG_DELDEVICE: u32 = 0x12;
+pub const RTMSG_NEWROUTE: u32 = 0x21;
+pub const RTMSG_DELROUTE: u32 = 0x22;
+pub const RTMSG_NEWRULE: u32 = 0x31;
+pub const RTMSG_DELRULE: u32 = 0x32;
+pub const RTMSG_CONTROL: u32 = 0x40;
+pub const RTMSG_AR_FAILED: u32 = 0x51;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
@@ -1477,6 +1554,14 @@ f! {
 
     pub fn RT_TOS(tos: u8) -> u8 {
         tos & ::IPTOS_TOS_MASK
+    }
+
+    pub fn RT_ADDRCLASS(flags: u32) -> u32 {
+        flags >> 23
+    }
+
+    pub fn RT_LOCALADDR(flags: u32) -> bool {
+        (flags & RTF_ADDRCLASSMASK) == (RTF_LOCAL | RTF_INTERFACE)
     }
 }
 
