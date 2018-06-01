@@ -1547,14 +1547,6 @@ f! {
     pub fn NLMSG_ALIGN(len: usize) -> usize {
         (len + NLMSG_ALIGNTO - 1) & !(NLMSG_ALIGNTO - 1)
     }
-
-    pub fn NLMSG_LENGTH(len: usize) -> usize {
-        len + NLMSG_HDRLEN
-    }
-
-    pub fn NLMSG_SPACE(len: usize) -> usize {
-        NLMSG_ALIGN(NLMSG_LENGTH(len))
-    }
 }
 
 extern {

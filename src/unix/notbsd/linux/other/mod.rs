@@ -827,7 +827,7 @@ pub const AF_MAX: ::c_int = 42;
 pub const PF_MAX: ::c_int = AF_MAX;
 
 // FIXME: uncomment when const fn is stable
-//pub const NLMSG_HDRLEN: usize = NLMSG_ALIGN(mem::size_of::<nlmsghdr>());
+//pub const NLMSG_HDRLEN: usize = ::NLMSG_ALIGN(mem::size_of::<nlmsghdr>());
 pub const NLMSG_HDRLEN: usize =
     (mem::size_of::<nlmsghdr>() + ::NLMSG_ALIGNTO - 1) & !(::NLMSG_ALIGNTO - 1);
 
@@ -846,6 +846,14 @@ pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 3;
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
+    }
+
+    pub fn NLMSG_LENGTH(len: usize) -> usize {
+        len + NLMSG_HDRLEN
+    }
+
+    pub fn NLMSG_SPACE(len: usize) -> usize {
+        ::NLMSG_ALIGN(NLMSG_LENGTH(len))
     }
 
     pub fn NLMSG_DATA(nlh: *const nlmsghdr) -> *const ::c_void {
