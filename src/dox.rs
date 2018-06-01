@@ -91,10 +91,37 @@ mod imp {
         fn sub(self, rhs: RHS) -> Self::Output;
     }
 
+    #[lang = "bitand"]
+    pub trait BitAnd<RHS=Self> {
+        type Output;
+        fn bitand(self, rhs: RHS) -> Self::Output;
+    }
+
+    #[lang = "bitand_assign"]
+    pub trait BitAndAssign<RHS = Self> {
+        fn bitand_assign(&mut self, rhs: RHS);
+    }
+
     #[lang = "bitor"]
-    pub trait Bitor<RHS=Self> {
+    pub trait BitOr<RHS=Self> {
         type Output;
         fn bitor(self, rhs: RHS) -> Self::Output;
+    }
+
+    #[lang = "bitor_assign"]
+    pub trait BitOrAssign<RHS = Self> {
+        fn bitor_assign(&mut self, rhs: RHS);
+    }
+
+    #[lang = "bitxor"]
+    pub trait BitXor<RHS=Self> {
+        type Output;
+        fn bitxor(self, rhs: RHS) -> Self::Output;
+    }
+
+    #[lang = "bitxor_assign"]
+    pub trait BitXorAssign<RHS = Self> {
+        fn bitxor_assign(&mut self, rhs: RHS);
     }
 
     #[lang = "neg"]
@@ -134,9 +161,26 @@ mod imp {
                 type Output = $i;
                 fn sub(self, rhs: $i) -> $i { self - rhs }
             }
-            impl Bitor for $i {
+            impl BitAnd for $i {
+                type Output = $i;
+                fn bitand(self, rhs: $i) -> $i { self & rhs }
+            }
+            impl BitAndAssign for $i {
+                fn bitand_assign(&mut self, rhs: $i) { *self &= rhs; }
+            }
+            impl BitOr for $i {
                 type Output = $i;
                 fn bitor(self, rhs: $i) -> $i { self | rhs }
+            }
+            impl BitOrAssign for $i {
+                fn bitor_assign(&mut self, rhs: $i) { *self |= rhs; }
+            }
+            impl BitXor for $i {
+                type Output = $i;
+                fn bitxor(self, rhs: $i) -> $i { self ^ rhs }
+            }
+            impl BitXorAssign for $i {
+                fn bitxor_assign(&mut self, rhs: $i) { *self ^= rhs; }
             }
             impl Neg for $i {
                 type Output = $i;

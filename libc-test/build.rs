@@ -248,6 +248,7 @@ fn main() {
         if !emscripten {
             cfg.header("linux/sockios.h");
             cfg.header("linux/netlink.h");
+            cfg.header("linux/rtnetlink.h");
             cfg.header("linux/genetlink.h");
             cfg.header("linux/netfilter_ipv4.h");
             cfg.header("linux/netfilter_ipv6.h");

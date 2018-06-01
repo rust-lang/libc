@@ -464,6 +464,103 @@ s! {
         pub ipi6_addr: ::in6_addr,
         pub ipi6_ifindex: ::c_uint,
     }
+
+    pub struct rtattr {
+        rta_len: ::c_ushort,
+        rta_type: ::c_ushort,
+    }
+
+    pub struct rtmsg {
+        rtm_family: ::c_uchar,
+        rtm_dst_len: ::c_uchar,
+        rtm_src_len: ::c_uchar,
+        rtm_tos: ::c_uchar,
+        rtm_table: ::c_uchar,
+        rtm_protocol: ::c_uchar,
+        rtm_scope: ::c_uchar,
+        rtm_type: ::c_uchar,
+        rtm_flags: ::c_uint,
+    }
+    
+    pub struct rtnexthop {
+        rtnh_len: ::c_ushort,
+        rtnh_flags: ::c_uchar,
+        rtnh_hops: ::c_uchar,
+        rtnh_ifindex: ::c_int,
+    }
+
+    pub struct rta_cacheinfo {
+        rta_clntref: u32,
+        rta_lastuse: u32,
+        rta_expires: u32,
+        rta_error: u32,
+        rta_used: u32,
+        rta_id: u32,
+        rta_ts: u32,
+        rta_tsage: u32,
+    }
+
+    pub struct rta_mfc_stats {
+        mfcs_packets: u64,
+        mfcs_bytes: u64,
+        mfcs_wrong_if: u64,
+    }
+
+    pub struct rtgenmsg {
+        rtgen_family: ::c_uchar,
+    }
+
+    pub struct ifinfomsg {
+        ifi_family: ::c_uchar,
+        __ifi_pad: ::c_uchar,
+        ifi_type: ::c_ushort,
+        ifi_index: ::c_int,
+        ifi_flags: ::c_uint,
+        ifi_change: ::c_uint,
+    }
+
+    pub struct prefixmsg {
+        prefix_family: ::c_uchar,
+        prefix_pad1: ::c_uchar,
+        prefix_pad2: ::c_ushort,
+        prefix_ifindex: ::c_int,
+        prefix_type: ::c_uchar,
+        prefix_len: ::c_uchar,
+        prefix_flags: ::c_uchar,
+        prefix_pad3: ::c_uchar,
+    }
+
+    pub struct prefix_cacheinfo {
+        preferred_time: u32,
+        valid_time: u32,
+    }
+
+    pub struct tcmsg {
+        tcm_family: ::c_uchar,
+        tcm__pad1: ::c_uchar,
+        tcm__pad2: ::c_ushort,
+        tcm_ifindex: ::c_int,
+        tcm_handle: u32,
+        tcm_parent: u32,
+        tcm_info: u32,
+    }
+
+    pub struct nduseroptmsg {
+        nduseropt_family: ::c_uchar,
+        nduseropt_pad1: ::c_uchar,
+        nduseropt_opts_len: ::c_ushort,
+        nduseropt_ifindex: ::c_int,
+        nduseropt_icmp_type: u8,
+        nduseropt_icmp_code: u8,
+        nduseropt_pad2: ::c_ushort,
+        nduseropt_pad3: ::c_uint,
+    }
+
+    pub struct tcamsg {
+        tca_family: ::c_uchar,
+        tca_pad1: ::c_uchar,
+        tca_pad2: ::c_ushort,
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -1245,6 +1342,12 @@ pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x08;
 pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x10;
 pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x20;
 
+pub const NLMSG_ALIGNTO: usize = 4;
+// FIXME: uncomment when const fn is stable
+//pub const NLMSG_HDRLEN: usize = NLMSG_ALIGN(mem::size_of::<nlmsghdr>());
+pub const NLMSG_HDRLEN: usize =
+    (mem::size_of::<nlmsghdr>() + NLMSG_ALIGNTO - 1) & !(NLMSG_ALIGNTO - 1);
+
 pub const NLMSG_NOOP: ::c_int = 0x1;
 pub const NLMSG_ERROR: ::c_int = 0x2;
 pub const NLMSG_DONE: ::c_int = 0x3;
@@ -1410,6 +1513,281 @@ pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
 pub const IPTOS_PREC_MASK: u8 = 0xE0;
 
+pub const RTNL_FAMILY_IPMR: u8 = 128;
+pub const RTNL_FAMILY_IP6MR: u8 = 129;
+pub const RTNL_FAMILY_MAX: u8 = 129;
+
+pub const RTM_BASE: u16 = 16;
+pub const RTM_DELLINK: u16 = 17;
+pub const RTM_GETLINK: u16 = 18;
+pub const RTM_SETLINK: u16 = 19;
+pub const RTM_NEWADDR: u16 = 20;
+pub const RTM_DELADDR: u16 = 21;
+pub const RTM_GETADDR: u16 = 22;
+pub const RTM_NEWROUTE: u16 = 24;
+pub const RTM_DELROUTE: u16 = 25;
+pub const RTM_GETROUTE: u16 = 26;
+pub const RTM_NEWNEIGH: u16 = 28;
+pub const RTM_DELNEIGH: u16 = 29;
+pub const RTM_GETNEIGH: u16 = 30;
+pub const RTM_NEWRULE: u16 = 32;
+pub const RTM_DELRULE: u16 = 33;
+pub const RTM_GETRULE: u16 = 34;
+pub const RTM_NEWQDISC: u16 = 36;
+pub const RTM_DELQDISC: u16 = 37;
+pub const RTM_GETQDISC: u16 = 38;
+pub const RTM_NEWTCLASS: u16 = 40;
+pub const RTM_DELTCLASS: u16 = 41;
+pub const RTM_GETTCLASS: u16 = 42;
+pub const RTM_NEWTFILTER: u16 = 44;
+pub const RTM_DELTFILTER: u16 = 45;
+pub const RTM_GETTFILTER: u16 = 46;
+pub const RTM_NEWACTION: u16 = 48;
+pub const RTM_DELACTION: u16 = 49;
+pub const RTM_GETACTION: u16 = 50;
+pub const RTM_NEWPREFIX: u16 = 52;
+pub const RTM_GETMULTICAST: u16 = 58;
+pub const RTM_GETANYCAST: u16 = 62;
+pub const RTM_NEWNEIGHTBL: u16 = 64;
+pub const RTM_GETNEIGHTBL: u16 = 66;
+pub const RTM_SETNEIGHTBL: u16 = 67;
+pub const RTM_NEWNDUSEROPT: u16 = 68;
+pub const RTM_NEWADDRLABEL: u16 = 72;
+pub const RTM_DELADDRLABEL: u16 = 73;
+pub const RTM_GETADDRLABEL: u16 = 74;
+pub const RTM_GETDCB: u16 = 78;
+pub const RTM_SETDCB: u16 = 79;
+pub const RTM_NEWNETCONF: u16 = 80;
+pub const RTM_GETNETCONF: u16 = 82;
+pub const RTM_NEWMDB: u16 = 84;
+pub const RTM_DELMDB: u16 = 85;
+pub const RTM_GETMDB: u16 = 86;
+pub const RTM_NEWNSID: u16 = 88;
+pub const RTM_DELNSID: u16 = 89;
+pub const RTM_GETNSID: u16 = 90;
+pub const __RTM_MAX: u16 = 91;
+pub const RTM_MAX: u16 = (((__RTM_MAX + 3) & !3) - 1);
+
+pub const RTM_NR_MSGTYPES: u16 = RTM_MAX + 1 - RTM_BASE;
+pub const RTM_NR_FAMILIES: u16 = RTM_NR_MSGTYPES >> 2;
+
+pub const RTA_ALIGNTO: usize = 4;
+
+pub const RTN_UNSPEC: u8 = 0;
+pub const RTN_UNICAST: u8 = 1;
+pub const RTN_LOCAL: u8 = 2;
+pub const RTN_BROADCAST: u8 = 3;
+pub const RTN_ANYCAST: u8 = 4;
+pub const RTN_MULTICAST: u8 = 5;
+pub const RTN_BLACKHOLE: u8 = 6;
+pub const RTN_UNREACHABLE: u8 = 7;
+pub const RTN_PROHIBIT: u8 = 8;
+pub const RTN_THROW: u8 = 9;
+pub const RTN_NAT: u8 = 10;
+pub const RTN_XRESOLVE: u8 = 11;
+pub const __RTN_MAX: u8 = 12;
+pub const RTN_MAX: u8 = __RTN_MAX - 1;
+
+pub const RTPROT_UNSPEC: u8 = 0;
+pub const RTPROT_REDIRECT: u8 = 1;
+pub const RTPROT_KERNEL: u8 = 2;
+pub const RTPROT_BOOT: u8 = 3;
+pub const RTPROT_STATIC: u8 = 4;
+pub const RTPROT_GATED: u8 = 8;
+pub const RTPROT_RA: u8 = 9;
+pub const RTPROT_MRT: u8 = 10;
+pub const RTPROT_ZEBRA: u8 = 11;
+pub const RTPROT_BIRD: u8 = 12;
+pub const RTPROT_DNROUTED: u8 = 13;
+pub const RTPROT_XORP: u8 = 14;
+pub const RTPROT_NTK: u8 = 15;
+pub const RTPROT_DHCP: u8 = 16;
+pub const RTPROT_MROUTED: u8 = 17;
+pub const RTPROT_BABEL: u8 = 42;
+
+pub const RT_SCOPE_UNIVERSE: u8 = 0;
+pub const RT_SCOPE_SITE: u8 = 200;
+pub const RT_SCOPE_LINK: u8 = 253;
+pub const RT_SCOPE_HOST: u8 = 254;
+pub const RT_SCOPE_NOWHERE: u8 = 25;
+
+pub const RTM_F_NOTIFY: ::c_uint = 0x100;
+pub const RTM_F_CLONED: ::c_uint = 0x200;
+pub const RTM_F_EQUALIZE: ::c_uint = 0x400;
+pub const RTM_F_PREFIX: ::c_uint = 0x800;
+pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
+pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
+
+pub const RT_TABLE_UNSPEC: u32 = 0;
+pub const RT_TABLE_COMPAT: u32 = 252;
+pub const RT_TABLE_DEFAULT: u32 = 253;
+pub const RT_TABLE_MAIN: u32 = 254;
+pub const RT_TABLE_LOCAL: u32 = 255;
+pub const RT_TABLE_MAX: u32 = 0xFFFFFFF;
+
+pub const RTA_UNSPEC: ::c_ushort = 0;
+pub const RTA_DST: ::c_ushort = 1;
+pub const RTA_SRC: ::c_ushort = 2;
+pub const RTA_IIF: ::c_ushort = 3;
+pub const RTA_OIF: ::c_ushort = 4;
+pub const RTA_GATEWAY: ::c_ushort = 5;
+pub const RTA_PRIORITY: ::c_ushort = 6;
+pub const RTA_PREFSRC: ::c_ushort = 7;
+pub const RTA_METRICS: ::c_ushort = 8;
+pub const RTA_MULTIPATH: ::c_ushort = 9;
+pub const RTA_PROTOINFO: ::c_ushort = 10;
+pub const RTA_FLOW: ::c_ushort = 11;
+pub const RTA_CACHEINFO: ::c_ushort = 12;
+pub const RTA_SESSION: ::c_ushort = 13;
+pub const RTA_MP_ALGO: ::c_ushort = 14;
+pub const RTA_TABLE: ::c_ushort = 15;
+pub const RTA_MARK: ::c_ushort = 16;
+pub const RTA_MFC_STATS: ::c_ushort = 17;
+pub const RTA_VIA: ::c_ushort = 18;
+pub const RTA_NEWDST: ::c_ushort = 19;
+pub const RTA_PREF: ::c_ushort = 20;
+pub const RTA_ENCAP_TYPE: ::c_ushort = 21;
+pub const RTA_ENCAP: ::c_ushort = 22;
+pub const RTA_EXPIRES: ::c_ushort = 23;
+pub const RTA_PAD: ::c_ushort = 24;
+pub const RTA_UID: ::c_ushort = 25;
+pub const RTA_TTL_PROPAGATE: ::c_ushort = 26;
+pub const __RTA_MAX: ::c_ushort = 27;
+pub const RTA_MAX: ::c_ushort = __RTA_MAX - 1;
+
+pub const RTNH_F_DEAD: ::c_uchar = 1;
+pub const RTNH_F_PERVASIVE: ::c_uchar = 2;
+pub const RTNH_F_ONLINK: ::c_uchar = 4;
+pub const RTNH_F_OFFLOAD: ::c_uchar = 8;
+pub const RTNH_F_LINKDOWN: ::c_uchar = 16;
+pub const RTNH_F_UNRESOLVED: ::c_uchar = 32;
+pub const RTNH_COMPARE_MASK: ::c_uchar = (RTNH_F_DEAD | RTNH_F_LINKDOWN | RTNH_F_OFFLOAD);
+pub const RTNH_ALIGNTO: usize = 4;
+pub const RTNETLINK_HAVE_PEERINFO: ::c_int = 1;
+
+pub const RTAX_UNSPEC: ::c_ushort = 0;
+pub const RTAX_LOCK: ::c_ushort = 1;
+pub const RTAX_MTU: ::c_ushort = 2;
+pub const RTAX_WINDOW: ::c_ushort = 3;
+pub const RTAX_RTT: ::c_ushort = 4;
+pub const RTAX_RTTVAR: ::c_ushort = 5;
+pub const RTAX_SSTHRESH: ::c_ushort = 6;
+pub const RTAX_CWND: ::c_ushort = 7;
+pub const RTAX_ADVMSS: ::c_ushort = 8;
+pub const RTAX_REORDERING: ::c_ushort = 9;
+pub const RTAX_HOPLIMIT: ::c_ushort = 10;
+pub const RTAX_INITCWND: ::c_ushort = 11;
+pub const RTAX_FEATURES: ::c_ushort = 12;
+pub const RTAX_RTO_MIN: ::c_ushort = 13;
+pub const RTAX_INITRWND: ::c_ushort = 14;
+pub const RTAX_QUICKACK: ::c_ushort = 15;
+pub const RTAX_CC_ALGO: ::c_ushort = 16;
+pub const RTAX_FASTOPEN_NO_COOKIE: ::c_ushort = 17;
+pub const __RTAX_MAX: ::c_ushort = 18;
+pub const RTAX_MAX: ::c_ushort = __RTAX_MAX - 1;
+
+pub const RTAX_FEATURE_ECN: u32 = 1 << 0;
+pub const RTAX_FEATURE_SACK: u32 = 1 << 1;
+pub const RTAX_FEATURE_TIMESTAMP: u32 = 1 << 2;
+pub const RTAX_FEATURE_ALLFRAG: u32 = 1 << 3;
+pub const RTAX_FEATURE_MASK: u32 =
+    RTAX_FEATURE_ECN | RTAX_FEATURE_SACK | RTAX_FEATURE_TIMESTAMP | RTAX_FEATURE_ALLFRAG;
+
+pub const PREFIX_UNSPEC: ::c_uchar = 0;
+pub const PREFIX_ADDRESS: ::c_uchar = 1;
+pub const PREFIX_CACHEINFO: ::c_uchar = 2;
+pub const __PREFIX_MAX: ::c_uchar = 3;
+pub const PREFIX_MAX: ::c_uchar = __PREFIX_MAX - 1;
+
+pub const TCA_UNSPEC: ::c_uchar = 0;
+pub const TCA_KIND: ::c_uchar = 1;
+pub const TCA_OPTIONS: ::c_uchar = 2;
+pub const TCA_STATS: ::c_uchar = 3;
+pub const TCA_XSTATS: ::c_uchar = 4;
+pub const TCA_RATE: ::c_uchar = 5;
+pub const TCA_FCNT: ::c_uchar = 6;
+pub const TCA_STATS2: ::c_uchar = 7;
+pub const TCA_STAB: ::c_uchar = 8;
+pub const TCA_PAD: ::c_uchar = 9;
+pub const TCA_DUMP_INVISIBLE: ::c_uchar = 10;
+pub const TCA_CHAIN: ::c_uchar = 11;
+pub const TCA_HW_OFFLOAD: ::c_uchar = 12;
+pub const __TCA_MAX: ::c_uchar = 13;
+pub const TCA_MAX: ::c_uchar = __TCA_MAX - 1;
+
+pub const NDUSEROPT_UNSPEC: ::c_uchar = 0;
+pub const NDUSEROPT_SRCADDR: ::c_uchar = 1;
+pub const __NDUSEROPT_MAX: ::c_uchar = 2;
+pub const NDUSEROPT_MAX: ::c_uchar = __NDUSEROPT_MAX - 1;
+
+pub const RTMGRP_LINK: u32 = 1;
+pub const RTMGRP_NOTIFY: u32 = 2;
+pub const RTMGRP_NEIGH: u32 = 4;
+pub const RTMGRP_TC: u32 = 8;
+pub const RTMGRP_IPV4_IFADDR: u32 = 0x10;
+pub const RTMGRP_IPV4_MROUTE: u32 = 0x20;
+pub const RTMGRP_IPV4_ROUTE: u32 = 0x40;
+pub const RTMGRP_IPV4_RULE: u32 = 0x80;
+pub const RTMGRP_IPV6_IFADDR: u32 = 0x100;
+pub const RTMGRP_IPV6_MROUTE: u32 = 0x200;
+pub const RTMGRP_IPV6_ROUTE: u32 = 0x400;
+pub const RTMGRP_IPV6_IFINFO: u32 = 0x800;
+pub const RTMGRP_DECnet_IFADDR: u32 = 0x1000;
+pub const RTMGRP_DECnet_ROUTE: u32 = 0x4000;
+pub const RTMGRP_IPV6_PREFIX: u32 = 0x20000;
+
+pub const RTNLGRP_NONE: ::c_int = 0;
+pub const RTNLGRP_LINK: ::c_int = 1;
+pub const RTNLGRP_NOTIFY: ::c_int = 2;
+pub const RTNLGRP_NEIGH: ::c_int = 3;
+pub const RTNLGRP_TC: ::c_int = 4;
+pub const RTNLGRP_IPV4_IFADDR: ::c_int = 5;
+pub const RTNLGRP_IPV4_MROUTE: ::c_int = 6;
+pub const RTNLGRP_IPV4_ROUTE: ::c_int = 7;
+pub const RTNLGRP_IPV4_RULE: ::c_int = 8;
+pub const RTNLGRP_IPV6_IFADDR: ::c_int = 9;
+pub const RTNLGRP_IPV6_MROUTE: ::c_int = 10;
+pub const RTNLGRP_IPV6_ROUTE: ::c_int = 11;
+pub const RTNLGRP_IPV6_IFINFO: ::c_int = 12;
+pub const RTNLGRP_DECnet_IFADDR: ::c_int = 13;
+pub const RTNLGRP_NOP2: ::c_int = 14;
+pub const RTNLGRP_DECnet_ROUTE: ::c_int = 15;
+pub const RTNLGRP_DECnet_RULE: ::c_int = 16;
+pub const RTNLGRP_NOP4: ::c_int = 17;
+pub const RTNLGRP_IPV6_PREFIX: ::c_int = 18;
+pub const RTNLGRP_IPV6_RULE: ::c_int = 19;
+pub const RTNLGRP_ND_USEROPT: ::c_int = 20;
+pub const RTNLGRP_PHONET_IFADDR: ::c_int = 21;
+pub const RTNLGRP_PHONET_ROUTE: ::c_int = 22;
+pub const RTNLGRP_DCB: ::c_int = 23;
+pub const RTNLGRP_IPV4_NETCONF: ::c_int = 24;
+pub const RTNLGRP_IPV6_NETCONF: ::c_int = 25;
+pub const RTNLGRP_MDB: ::c_int = 26;
+pub const RTNLGRP_MPLS_ROUTE: ::c_int = 27;
+pub const RTNLGRP_NSID: ::c_int = 28;
+pub const RTNLGRP_MPLS_NETCONF: ::c_int = 29;
+pub const RTNLGRP_IPV4_MROUTE_R: ::c_int = 30;
+pub const RTNLGRP_IPV6_MROUTE_R: ::c_int = 31;
+pub const __RTNLGRP_MAX: ::c_int = 32;
+pub const RTNLGRP_MAX: ::c_int = __RTNLGRP_MAX - 1;
+
+pub const TCA_ROOT_UNSPEC: ::c_int = 0;
+pub const TCA_ROOT_TAB: ::c_int = 1;
+pub const TCA_ROOT_FLAGS: ::c_int = 2;
+pub const TCA_ROOT_COUNT: ::c_int = 3;
+pub const TCA_ROOT_TIME_DELTA: ::c_int = 4;
+pub const __TCA_ROOT_MAX: ::c_int = 5;
+pub const TCA_ROOT_MAX: ::c_int = __TCA_ROOT_MAX - 1;
+pub const TCA_ACT_TAB: ::c_int = TCA_ROOT_TAB;
+pub const TCAA_MAX: ::c_int = TCA_ROOT_TAB;
+
+pub const TCA_FLAG_LARGE_DUMP_ON: u32 = 1 << 0;
+
+pub const RTEXT_FILTER_VF: u32 = 1 << 0;
+pub const RTEXT_FILTER_BRVLAN: u32 = 1 << 1;
+pub const RTEXT_FILTER_BRVLAN_COMPRESSED: u32 = 1 << 2;
+pub const RTEXT_FILTER_SKIP_STATS: u32 = 1 << 3;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
@@ -1472,6 +1850,138 @@ f! {
 
     pub fn IPTOS_PREC(tos: u8) -> u8 {
         tos & IPTOS_PREC_MASK
+    }
+
+    pub fn NLMSG_ALIGN(len: usize) -> usize {
+        (len + NLMSG_ALIGNTO - 1) & !(NLMSG_ALIGNTO - 1)
+    }
+
+    pub fn NLMSG_LENGTH(len: usize) -> usize {
+        len + NLMSG_HDRLEN
+    }
+
+    pub fn NLMSG_SPACE(len: usize) -> usize {
+        NLMSG_ALIGN(NLMSG_LENGTH(len))
+    }
+
+    pub fn NLMSG_DATA(nlh: *const nlmsghdr) -> *const ::c_void {
+        let nlh_ptr = nlh as *const u8;
+        let nlh_ptr = nlh_ptr.offset(NLMSG_LENGTH(0) as isize);
+        nlh_ptr as *const ::c_void
+    }
+
+    pub fn NLMSG_NEXT(nlh: &nlmsghdr, len: &mut usize) -> *const nlmsghdr {
+        *len -= NLMSG_ALIGN(nlh.nlmsg_len as usize);
+        let nlh_ptr = nlh as *const nlmsghdr as *const u8;
+        let offset = NLMSG_ALIGN(nlh.nlmsg_len as usize);
+        let nlh_ptr = nlh_ptr.offset(offset as isize);
+        nlh_ptr as *const nlmsghdr
+    }
+
+    pub fn NLMSG_OK(nlh: &nlmsghdr, len: usize) -> bool {
+        len >= mem::size_of::<nlmsghdr>() &&
+        nlh.nlmsg_len as usize >= mem::size_of::<nlmsghdr>() &&
+        nlh.nlmsg_len as usize <= len
+    }
+
+    pub fn NLMSG_PAYLOAD(nlh: &nlmsghdr, len: usize) -> usize {
+        nlh.nlmsg_len as usize - NLMSG_SPACE(len)
+    }
+
+    pub fn RTM_FAM(cmd: u16) -> u16 {
+        (cmd - RTM_BASE) >> 2
+    }
+
+    pub fn RTA_ALIGN(len: usize) -> usize {
+        (len + RTA_ALIGNTO - 1) & !(RTA_ALIGNTO - 1)
+    }
+
+    pub fn RTA_OK(rta: &rtattr, len: usize) -> bool {
+        len >= mem::size_of::<rtattr>() &&
+        (rta.rta_len as usize) >= mem::size_of::<rtattr>() &&
+        (rta.rta_len as usize) <= len
+    }
+
+    pub fn RTA_NEXT(rta: &rtattr, attrlen: &mut usize) -> *const rtattr {
+        *attrlen -= RTA_ALIGN(rta.rta_len as usize);
+        let rta_ptr = rta as *const rtattr as *const u8;
+        let rta_ptr = rta_ptr.offset(RTA_ALIGN(rta.rta_len as usize) as isize);
+        rta_ptr as *const rtattr
+    }
+
+    pub fn RTA_LENGTH(len: usize) -> usize {
+        RTA_ALIGN(mem::size_of::<rtattr>()) + len
+    }
+
+    pub fn RTA_SPACE(len: usize) -> usize {
+        RTA_ALIGN(RTA_LENGTH(len))
+    }
+
+    pub fn RTA_DATA(rta: *const rtattr) -> *const ::c_void {
+        (rta as *const u8).offset(RTA_LENGTH(0) as isize) as *const ::c_void
+    }
+
+    pub fn RTA_PAYLOAD(rta: &rtattr) -> usize {
+        rta.rta_len as usize - RTA_LENGTH(0)
+    }
+
+    pub fn RTM_RTA(r: *const rtmsg) -> *const rtattr {
+        let r_ptr = r as *const u8;
+        let r_ptr = r_ptr.offset(NLMSG_ALIGN(mem::size_of::<rtmsg>()) as isize);
+        r_ptr as *const rtattr
+    }
+
+    pub fn RTM_PAYLOAD(n: &nlmsghdr) -> usize {
+        NLMSG_PAYLOAD(n, mem::size_of::<rtmsg>())
+    }
+
+    pub fn RTNH_ALIGN(len: usize) -> usize {
+        (len + RTNH_ALIGNTO - 1) & !(RTNH_ALIGNTO - 1)
+    }
+
+    pub fn RTNH_OK(rtnh: &rtnexthop, len: usize) -> bool {
+        rtnh.rtnh_len as usize >= mem::size_of::<rtnexthop>() &&
+        rtnh.rtnh_len as usize <= len
+    }
+
+    pub fn RTNH_NEXT(rtnh: &rtnexthop) -> *const rtnexthop {
+        let rtnh_ptr = rtnh as *const rtnexthop as *const u8;
+        let rtnh_ptr = rtnh_ptr.offset(RTNH_ALIGN(rtnh.rtnh_len as usize) as isize);
+        rtnh_ptr as *const rtnexthop
+    }
+
+    pub fn RTNH_LENGTH(len: usize) -> usize {
+        RTNH_ALIGN(mem::size_of::<rtnexthop>()) + len
+    }
+
+    pub fn RTNH_SPACE(len: usize) -> usize {
+        RTNH_ALIGN(RTNH_LENGTH(len))
+    }
+
+    pub fn RTNH_DATA(rtnh: *const rtnexthop) -> *const rtattr {
+        let rtnh_ptr = rtnh as *const u8;
+        let rtnh_ptr = rtnh_ptr.offset(RTNH_LENGTH(0) as isize);
+        rtnh_ptr as *const rtattr
+    }
+
+    pub fn TCA_RTA(r: *const tcmsg) -> *const rtattr {
+        let r_ptr = r as *const u8;
+        let r_ptr = r_ptr.offset(NLMSG_ALIGN(mem::size_of::<tcmsg>()) as isize);
+        r_ptr as *const rtattr
+    }
+
+    pub fn TCA_PAYLOAD(n: &nlmsghdr) -> usize {
+        NLMSG_PAYLOAD(n, mem::size_of::<tcmsg>())
+    }
+
+    pub fn TA_RTA(r: *const tcamsg) -> *const rtattr {
+        let r_ptr = r as *const u8;
+        let r_ptr = r_ptr.offset(NLMSG_ALIGN(mem::size_of::<tcamsg>()) as isize);
+        r_ptr as *const rtattr
+    }
+
+    pub fn TA_PAYLOAD(n: &nlmsghdr) -> usize {
+        NLMSG_PAYLOAD(n, mem::size_of::<tcamsg>())
     }
 }
 
