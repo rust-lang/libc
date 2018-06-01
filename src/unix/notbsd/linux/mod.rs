@@ -1246,11 +1246,6 @@ pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x10;
 pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x20;
 
 pub const NLMSG_ALIGNTO: usize = 4;
-// FIXME: uncomment when const fn is stable
-//pub const NLMSG_HDRLEN: usize = NLMSG_ALIGN(mem::size_of::<nlmsghdr>());
-pub const NLMSG_HDRLEN: usize =
-    (mem::size_of::<nlmsghdr>() + NLMSG_ALIGNTO - 1) & !(NLMSG_ALIGNTO - 1);
-
 pub const NLMSG_NOOP: ::c_int = 0x1;
 pub const NLMSG_ERROR: ::c_int = 0x2;
 pub const NLMSG_DONE: ::c_int = 0x3;
@@ -1559,30 +1554,6 @@ f! {
 
     pub fn NLMSG_SPACE(len: usize) -> usize {
         NLMSG_ALIGN(NLMSG_LENGTH(len))
-    }
-
-    pub fn NLMSG_DATA(nlh: *const nlmsghdr) -> *const ::c_void {
-        let nlh_ptr = nlh as *const u8;
-        let nlh_ptr = nlh_ptr.offset(NLMSG_LENGTH(0) as isize);
-        nlh_ptr as *const ::c_void
-    }
-
-    pub fn NLMSG_NEXT(nlh: &nlmsghdr, len: &mut usize) -> *const nlmsghdr {
-        *len -= NLMSG_ALIGN(nlh.nlmsg_len as usize);
-        let nlh_ptr = nlh as *const nlmsghdr as *const u8;
-        let offset = NLMSG_ALIGN(nlh.nlmsg_len as usize);
-        let nlh_ptr = nlh_ptr.offset(offset as isize);
-        nlh_ptr as *const nlmsghdr
-    }
-
-    pub fn NLMSG_OK(nlh: &nlmsghdr, len: usize) -> bool {
-        len >= mem::size_of::<nlmsghdr>() &&
-        nlh.nlmsg_len as usize >= mem::size_of::<nlmsghdr>() &&
-        nlh.nlmsg_len as usize <= len
-    }
-
-    pub fn NLMSG_PAYLOAD(nlh: &nlmsghdr, len: usize) -> usize {
-        nlh.nlmsg_len as usize - NLMSG_SPACE(len)
     }
 }
 
