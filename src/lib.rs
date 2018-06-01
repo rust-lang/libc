@@ -13,7 +13,7 @@
 #![allow(bad_style, overflowing_literals, improper_ctypes)]
 #![crate_type = "rlib"]
 #![crate_name = "libc"]
-#![cfg_attr(cross_platform_docs, feature(no_core, lang_items))]
+#![cfg_attr(cross_platform_docs, feature(no_core, lang_items, const_fn))]
 #![cfg_attr(cross_platform_docs, no_core)]
 #![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
        html_favicon_url = "https://doc.rust-lang.org/favicon.ico")]
