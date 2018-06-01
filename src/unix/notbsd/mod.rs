@@ -193,6 +193,19 @@ s! {
         pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
         pub ifa_data: *mut ::c_void
     }
+
+    pub struct in6_rtmsg {
+        rtmsg_dst: ::in6_addr,
+        rtmsg_src: ::in6_addr,
+        rtmsg_gateway: ::in6_addr,
+        rtmsg_type: u32,
+        rtmsg_dst_len: u16,
+        rtmsg_src_len: u16,
+        rtmsg_metric: u32,
+        rtmsg_info: ::c_ulong,
+        rtmsg_flags: u32,
+        rtmsg_ifindex: ::c_int,
+    }
 }
 
 // intentionally not public, only used for fd_set
