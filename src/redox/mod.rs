@@ -118,6 +118,7 @@ pub const SIGPWR:    ::c_int = 30;
 pub const SIGSYS:    ::c_int = 31;
 
 extern {
+    pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
                 -> ::ssize_t;
