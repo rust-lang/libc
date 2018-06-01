@@ -951,7 +951,7 @@ pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
 pub const RT_CLASS_MAX: u8 = 255;
 
-pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN;
+pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 pub const RTMSG_NEWDEVICE: u32 = 0x11;
 pub const RTMSG_DELDEVICE: u32 = 0x12;
 pub const RTMSG_NEWROUTE: u32 = 0x21;
