@@ -1616,9 +1616,6 @@ extern {
                            len: ::off_t) -> ::c_int;
     pub fn readahead(fd: ::c_int, offset: ::off64_t,
                      count: ::size_t) -> ::ssize_t;
-    pub fn renameat2(olddirfd: ::c_int, oldpath: *const ::c_char,
-                     newdirfd: ::c_int, newpath: *const ::c_char,
-                     flags: ::c_int) -> ::c_int;
     pub fn getxattr(path: *const c_char, name: *const c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
     pub fn lgetxattr(path: *const c_char, name: *const c_char,
