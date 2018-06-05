@@ -1612,8 +1612,6 @@ extern {
     pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
 
-    pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
-
     pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t, dev: dev_t) -> ::c_int;
     pub fn ppoll(fds: *mut ::pollfd,
