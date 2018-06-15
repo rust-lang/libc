@@ -1151,6 +1151,7 @@ pub const _SC_XOPEN_SHM: ::c_int = 113;
 pub const _SC_XOPEN_UNIX: ::c_int = 115;
 pub const _SC_XOPEN_VERSION: ::c_int = 116;
 pub const _SC_XOPEN_XCU_VERSION: ::c_int = 121;
+pub const _SC_PHYS_PAGES: ::c_int = 200;
 
 pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 2;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
