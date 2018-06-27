@@ -1867,6 +1867,9 @@ pub const NI_MAXHOST: ::socklen_t = 1025;
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
 
+pub const RENAME_SWAP: ::c_uint = 0x00000002;
+pub const RENAME_EXCL: ::c_uint = 0x00000004;
+
 pub const RTLD_LOCAL: ::c_int = 0x4;
 pub const RTLD_FIRST: ::c_int = 0x100;
 pub const RTLD_NODELETE: ::c_int = 0x80;
@@ -2459,6 +2462,11 @@ extern {
                       size: ::size_t, flags: ::c_int) -> ::ssize_t;
     pub fn removexattr(path: *const ::c_char, name: *const ::c_char,
                        flags: ::c_int) -> ::c_int;
+    pub fn renamex_np(from: *const ::c_char, to: *const ::c_char,
+                      flags: ::c_uint) -> ::c_int;
+    pub fn renameatx_np(fromfd: ::c_int, from: *const ::c_char,
+                        tofd: ::c_int, to: *const ::c_char,
+                        flags: ::c_uint) -> ::c_int;
     pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char,
                         flags: ::c_int) -> ::c_int;
 
