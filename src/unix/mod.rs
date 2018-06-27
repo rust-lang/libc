@@ -268,6 +268,14 @@ pub const INADDR_ANY: in_addr_t = 0;
 pub const INADDR_BROADCAST: in_addr_t = 4294967295;
 pub const INADDR_NONE: in_addr_t = 4294967295;
 
+pub const ARPOP_REQUEST: u16 = 1;
+pub const ARPOP_REPLY: u16 = 2;
+
+pub const ATF_COM: ::c_int = 0x02;
+pub const ATF_PERM: ::c_int = 0x04;
+pub const ATF_PUBL: ::c_int = 0x08;
+pub const ATF_USETRAILERS: ::c_int = 0x10;
+
 cfg_if! {
     if #[cfg(cross_platform_docs)] {
         // on dox builds don't pull in anything

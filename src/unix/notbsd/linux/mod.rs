@@ -464,6 +464,15 @@ s! {
         pub ipi6_addr: ::in6_addr,
         pub ipi6_ifindex: ::c_uint,
     }
+
+    pub struct arpd_request {
+        pub req: ::c_ushort,
+        pub ip: u32,
+        pub dev: ::c_ulong,
+        pub stamp: ::c_ulong,
+        pub updated: ::c_ulong,
+        pub ha: [::c_uchar; ::MAX_ADDR_LEN],
+    }
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
@@ -1466,6 +1475,12 @@ pub const RTMSG_NEWRULE: u32 = 0x31;
 pub const RTMSG_DELRULE: u32 = 0x32;
 pub const RTMSG_CONTROL: u32 = 0x40;
 pub const RTMSG_AR_FAILED: u32 = 0x51;
+
+pub const MAX_ADDR_LEN: usize = 7;
+pub const ARPD_UPDATE: ::c_ushort = 0x01;
+pub const ARPD_LOOKUP: ::c_ushort = 0x02;
+pub const ARPD_FLUSH: ::c_ushort = 0x03;
+pub const ATF_MAGIC: ::c_int = 0x80;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {

@@ -57,6 +57,15 @@ s! {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
     }
+
+    #[repr(packed)]
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
 }
 
 pub const D_T_FMT: ::nl_item = 0;
