@@ -646,22 +646,43 @@ pub const AF_UNIX: ::c_int = AF_LOCAL;
 pub const AF_BLUETOOTH: ::c_int = 10;
 pub const AF_MAX: ::c_int = 11;
 
+pub const IP_OPTIONS: ::c_int = 1;
+pub const IP_HDRINCL: ::c_int = 2;
+pub const IP_TOS: ::c_int = 3;
+pub const IP_TTL: ::c_int = 4;
+pub const IP_RECVOPTS: ::c_int = 5;
+pub const IP_RECVRETOPTS: ::c_int = 6;
+pub const IP_RECVDSTADDR: ::c_int = 7;
+pub const IP_RETOPTS: ::c_int = 8;
+pub const IP_MULTICAST_IF: ::c_int = 9;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
-pub const IP_TTL: ::c_int = 4;
-pub const IP_HDRINCL: ::c_int = 2;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
+pub const IP_BLOCK_SOURCE: ::c_int = 14;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 15;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 16;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 17;
 
 pub const TCP_NODELAY: ::c_int = 0x01;
 pub const TCP_MAXSEG: ::c_int = 0x02;
 pub const TCP_NOPUSH: ::c_int = 0x04;
 pub const TCP_NOOPT: ::c_int = 0x08;
 
+pub const IPV6_MULTICAST_IF: ::c_int = 24;
+pub const IPV6_MULTICAST_HOPS: ::c_int = 25;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 26;
+pub const IPV6_UNICAST_HOPS: ::c_int = 27;
 pub const IPV6_JOIN_GROUP: ::c_int = 28;
 pub const IPV6_LEAVE_GROUP: ::c_int = 29;
 pub const IPV6_V6ONLY: ::c_int = 30;
+pub const IPV6_PKTINFO: ::c_int = 31;
+pub const IPV6_RECVPKTINFO: ::c_int = 32;
+pub const IPV6_HOPLIMIT: ::c_int = 33;
+pub const IPV6_REVCHOPLIMIT: ::c_int = 34;
+pub const IPV6_HOPOPTS: ::c_int = 35;
+pub const IPV6_DSTOPTS: ::c_int = 36;
+pub const IPV6_RTHDR: ::c_int = 37;
 
 pub const MSG_OOB: ::c_int = 0x0001;
 pub const MSG_PEEK: ::c_int = 0x0002;
