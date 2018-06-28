@@ -1097,7 +1097,6 @@ extern {
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
 
-    pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
     pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
                 errfunc: Option<extern fn(epath: *const ::c_char,
