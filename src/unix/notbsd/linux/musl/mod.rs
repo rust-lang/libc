@@ -321,9 +321,29 @@ pub const SO_BUSY_POLL: ::c_int = 46;
 
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
+    pub fn backtrace(buf: *mut *mut ::c_void,
+                     sz: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
+
+    pub fn pthread_attr_getaffinity_np(attr: *const ::pthread_attr_t,
+                                       cpusetsize: ::size_t,
+                                       cpuset: *mut ::cpu_set_t) -> ::c_int;
+    pub fn pthread_attr_setaffinity_np(attr: *mut ::pthread_attr_t,
+                                       cpusetsize: ::size_t,
+                                       cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn pthread_getaffinity_np(thread: ::pthread_t,
+                                  cpusetsize: ::size_t,
+                                  cpuset: *mut ::cpu_set_t) -> ::c_int;
+    pub fn pthread_setaffinity_np(thread: ::pthread_t,
+                                  cpusetsize: ::size_t,
+                                  cpuset: *const ::cpu_set_t) -> ::c_int;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_getkind_np(attr: *const ::pthread_rwlockattr_t,
+                                         val: *mut ::c_int) -> ::c_int;
+    pub fn pthread_rwlockattr_setkind_np(attr: *mut ::pthread_rwlockattr_t,
+                                         val: ::c_int) -> ::c_int;
+    pub fn sched_getcpu() -> ::c_int;
 }
 
 cfg_if! {
