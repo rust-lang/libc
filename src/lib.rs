@@ -86,7 +86,7 @@
 ))]
 
 // Attributes needed when building as part of the standard library
-#![cfg_attr(feature = "stdbuild", feature(staged_api, custom_attribute, cfg_target_vendor))]
+#![cfg_attr(feature = "stdbuild", feature(staged_api, cfg_target_vendor))]
 #![cfg_attr(feature = "stdbuild", feature(link_cfg, repr_packed))]
 #![cfg_attr(feature = "stdbuild", allow(warnings))]
 #![cfg_attr(feature = "stdbuild", unstable(feature = "libc",
