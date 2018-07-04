@@ -560,7 +560,7 @@ fn main() {
 
             // Defined by libattr not libc on linux (hard to test).
             // See constant definition for more details.
-            "ENOATTR" if linux => true,
+            "ENOATTR" if android || linux => true,
 
             // On mips*-unknown-linux-gnu* CMSPAR cannot be included with the set of headers we
             // want to use here for testing. It's originally defined in asm/termbits.h, which is
