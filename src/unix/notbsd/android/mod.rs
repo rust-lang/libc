@@ -1458,6 +1458,9 @@ pub const SIOCSRARP: ::c_ulong = 0x00008962;
 pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
 pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 
+// Similarity to Linux it's not used but defined for compatibility.
+pub const ENOATTR: ::c_int = ::ENODATA;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.__bits.iter_mut() {
