@@ -9,7 +9,7 @@ ctest = { path = ".." }
 cc = "1.0"
 
 [dependencies]
-libc = "0.1"
+libc = "0.2"
 
 [lib]
 name = "testcrate"
