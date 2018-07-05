@@ -260,7 +260,8 @@ cfg_if! {
         pub use self::b64::*;
     } else if #[cfg(any(target_arch = "x86",
                         target_arch = "mips",
-                        target_arch = "arm"))] {
+                        target_arch = "arm",
+                        target_arch = "powerpc"))] {
         mod b32;
         pub use self::b32::*;
     } else { }
