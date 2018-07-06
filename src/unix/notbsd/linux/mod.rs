@@ -233,7 +233,7 @@ s! {
         pub mr_ifindex: ::c_int,
         pub mr_type: ::c_ushort,
         pub mr_alen: ::c_ushort,
-        pub mr_address: [::c_char; 8],
+        pub mr_address: [::c_uchar; 8],
     }
 
     pub struct cpu_set_t {
@@ -1307,7 +1307,6 @@ pub const CTRL_ATTR_MCAST_GRP_UNSPEC: ::c_int = 0;
 pub const CTRL_ATTR_MCAST_GRP_NAME: ::c_int = 1;
 pub const CTRL_ATTR_MCAST_GRP_ID: ::c_int = 2;
 
-
 // linux/if_packet.h
 pub const PACKET_ADD_MEMBERSHIP: ::c_int = 1;
 pub const PACKET_DROP_MEMBERSHIP: ::c_int = 2;
@@ -1316,7 +1315,6 @@ pub const PACKET_MR_MULTICAST: ::c_int = 0;
 pub const PACKET_MR_PROMISC: ::c_int = 1;
 pub const PACKET_MR_ALLMULTI: ::c_int = 2;
 pub const PACKET_MR_UNICAST: ::c_int = 3;
-
 
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;
