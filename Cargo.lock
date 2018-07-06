@@ -21,7 +21,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "ctest"
 version = "0.1.7"
-source = "git+https://github.com/alexcrichton/ctest#482c7f0643942174a802d89ad7d460e89b576ed3"
+source = "git+https://github.com/alexcrichton/ctest#5c537236d150da311d67b8ccf4c3c49987b92c8d"
 dependencies = [
  "cc 1.0.17 (registry+https://github.com/rust-lang/crates.io-index)",
  "syntex_syntax 0.59.1 (registry+https://github.com/rust-lang/crates.io-index)",
