@@ -86,5 +86,9 @@ if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
   opt="--release"
 fi
 
-cargo test $opt --no-default-features --manifest-path libc-test/Cargo.toml --target $TARGET
+# Building with --no-default-features is currently broken on rumprun because we
+# need cfg(target_vendor), which is currently unstable.
+if [ "$TARGET" != "x86_64-rumprun-netbsd" ]; then
+  cargo test $opt --no-default-features --manifest-path libc-test/Cargo.toml --target $TARGET
+fi
 exec cargo test $opt --manifest-path libc-test/Cargo.toml --target $TARGET
