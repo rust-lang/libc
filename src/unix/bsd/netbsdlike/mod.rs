@@ -430,10 +430,6 @@ pub const IPV6_RECVPKTINFO: ::c_int = 36;
 pub const IPV6_PKTINFO: ::c_int = 46;
 
 pub const TCP_NODELAY:    ::c_int = 0x01;
-pub const TCP_KEEPIDLE:   ::c_int = 3;
-pub const TCP_KEEPINTVL:  ::c_int = 5;
-pub const TCP_KEEPCNT:    ::c_int = 6;
-pub const TCP_KEEPINIT:   ::c_int = 7;
 
 pub const SOL_SOCKET: ::c_int = 0xffff;
 pub const SO_DEBUG: ::c_int = 0x01;
