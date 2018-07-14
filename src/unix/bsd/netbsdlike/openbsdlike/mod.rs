@@ -579,6 +579,7 @@ pub const CTL_MACHDEP: ::c_int = 7;
 pub const CTL_DDB: ::c_int = 9;
 pub const CTL_VFS: ::c_int = 10;
 pub const CTL_MAXID: ::c_int = 11;
+pub const HW_NCPUONLINE: ::c_int = 25;
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
 pub const KERN_OSREV: ::c_int = 3;
