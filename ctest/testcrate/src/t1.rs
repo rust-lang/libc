@@ -33,6 +33,17 @@ pub union T1Union {
     pub b: u32,
 }
 
+#[repr(C)]
+pub union T1NoTypedefUnion {
+    pub a: u64,
+    pub b: u32,
+}
+
+#[repr(C)]
+pub struct T1StructWithUnion {
+    pub u: T1NoTypedefUnion,
+}
+
 i! {
     pub const T1C: u32 = 4;
 }
