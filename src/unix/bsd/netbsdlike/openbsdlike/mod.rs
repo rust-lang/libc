@@ -193,6 +193,14 @@ s! {
         pub gid: ::gid_t,
         pub pid: ::pid_t,
     }
+
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
 }
 
 pub const UT_NAMESIZE: usize = 32;

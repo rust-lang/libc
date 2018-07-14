@@ -318,6 +318,15 @@ s! {
         pub ipi_addr: ::in_addr,
         pub ipi_ifindex: ::c_uint,
     }
+
+    #[repr(packed)]
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
 }
 
 pub const AT_FDCWD: ::c_int = -100;
