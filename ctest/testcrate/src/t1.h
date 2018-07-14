@@ -24,6 +24,15 @@ typedef union {
   uint32_t b;
 } T1Union;
 
+union T1NoTypedefUnion {
+    uint64_t a;
+    uint32_t b;
+};
+
+struct T1StructWithUnion {
+    union T1NoTypedefUnion u;
+};
+
 void T1a(void);
 void* T1b(void);
 void* T1c(void*);

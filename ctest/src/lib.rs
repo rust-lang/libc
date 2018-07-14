@@ -71,12 +71,16 @@ pub struct TestGenerator {
     skip_type: Box<Fn(&str) -> bool>,
     skip_struct: Box<Fn(&str) -> bool>,
     field_name: Box<Fn(&str, &str) -> String>,
-    type_name: Box<Fn(&str, bool) -> String>,
+    type_name: Box<Fn(&str, bool, bool) -> String>,
     fn_cname: Box<Fn(&str, Option<&str>) -> String>,
 }
 
 struct StructFinder {
     structs: HashSet<String>,
+}
+
+struct UnionFinder {
+    unions: HashSet<String>,
 }
 
 struct Generator<'a> {
@@ -85,6 +89,7 @@ struct Generator<'a> {
     c: Box<Write>,
     sh: &'a SpanHandler,
     structs: HashSet<String>,
+    unions: HashSet<String>,
     files: HashSet<String>,
     abi: Abi,
     tests: Vec<String>,
@@ -116,8 +121,14 @@ impl TestGenerator {
             skip_field: Box::new(|_, _| false),
             skip_field_type: Box::new(|_, _| false),
             fn_cname: Box::new(|a, _| a.to_string()),
-            type_name: Box::new(|f, is_struct| {
-                if is_struct {format!("struct {}", f)} else {f.to_string()}
+            type_name: Box::new(|f, is_struct, is_union| {
+                if is_struct {
+                    format!("struct {}", f)
+                } else if is_union {
+                    format!("union {}", f)
+                } else {
+                    f.to_string()
+                }
             }),
         }
     }
@@ -284,7 +295,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.type_name(|ty, is_struct| {
+    /// cfg.type_name(|ty, is_struct, is_union| {
     ///     if is_struct {
     ///         format!("{}_t", ty)
     ///     } else {
@@ -292,7 +303,7 @@ impl TestGenerator {
     ///     }
     /// });
     pub fn type_name<F>(&mut self, f: F) -> &mut TestGenerator
-        where F: Fn(&str, bool) -> String + 'static
+        where F: Fn(&str, bool, bool) -> String + 'static
     {
         self.type_name = Box::new(f);
         self
@@ -668,12 +679,20 @@ impl TestGenerator {
         };
         visit::walk_crate(&mut structs, &krate);
 
+        // Probe the crate to find all unions (used to convert type names to
+        // names in C).
+        let mut unions = UnionFinder {
+            unions: HashSet::new(),
+        };
+        visit::walk_crate(&mut unions, &krate);
+
         let mut gen = Generator {
             target: &target,
             rust: Box::new(rust_out),
             c: Box::new(c_out),
             sh: &sess.span_diagnostic,
             structs: structs.structs,
+            unions: unions.unions,
             abi: Abi::C,
             tests: Vec::new(),
             files: HashSet::new(),
@@ -879,7 +898,7 @@ impl<'a> Generator<'a> {
             "i32" => "int32_t".to_string(),
             "i64" => "int64_t".to_string(),
 
-            s => (self.opts.type_name)(s, self.structs.contains(s)),
+            s => (self.opts.type_name)(s, self.structs.contains(s), self.unions.contains(s)),
         }
     }
 
@@ -1454,6 +1473,20 @@ impl<'v> Visitor<'v> for StructFinder {
             }
             ast::ItemKind::Enum(..) => {
                 self.structs.insert(i.ident.to_string());
+            }
+
+            _ => {}
+        }
+        visit::walk_item(self, i)
+    }
+    fn visit_mac(&mut self, _mac: &'v ast::Mac) { }
+}
+
+impl<'v> Visitor<'v> for UnionFinder {
+    fn visit_item(&mut self, i: &'v ast::Item) {
+        match i.node {
+            ast::ItemKind::Union(..) => {
+                self.unions.insert(i.ident.to_string());
             }
 
             _ => {}
