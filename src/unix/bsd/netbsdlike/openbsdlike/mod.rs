@@ -193,6 +193,14 @@ s! {
         pub gid: ::gid_t,
         pub pid: ::pid_t,
     }
+
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
 }
 
 pub const UT_NAMESIZE: usize = 32;
@@ -579,6 +587,7 @@ pub const CTL_MACHDEP: ::c_int = 7;
 pub const CTL_DDB: ::c_int = 9;
 pub const CTL_VFS: ::c_int = 10;
 pub const CTL_MAXID: ::c_int = 11;
+pub const HW_NCPUONLINE: ::c_int = 25;
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
 pub const KERN_OSREV: ::c_int = 3;
@@ -653,7 +662,8 @@ pub const KERN_PROC_VMMAP: ::c_int = 80;
 pub const KERN_GLOBAL_PTRACE: ::c_int = 81;
 pub const KERN_CONSBUFSIZE: ::c_int = 82;
 pub const KERN_CONSBUF: ::c_int = 83;
-pub const KERN_MAXID: ::c_int = 84;
+pub const KERN_AUDIO: ::c_int = 84;
+pub const KERN_MAXID: ::c_int = 85;
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
 pub const KERN_PROC_PGRP: ::c_int = 2;
