@@ -4,8 +4,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc make libc6-dev git curl ca-certificates \
   gcc-arm-linux-gnueabihf qemu-user
 
-RUN curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
-WORKDIR /musl-1.1.16
+RUN curl https://www.musl-libc.org/releases/musl-1.1.19.tar.gz | tar xzf -
+WORKDIR /musl-1.1.19
 RUN CC=arm-linux-gnueabihf-gcc \
     CFLAGS="-march=armv6 -marm" \
     ./configure --prefix=/musl-arm --enable-wrapper=yes

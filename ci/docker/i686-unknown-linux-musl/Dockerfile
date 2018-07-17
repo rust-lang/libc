@@ -12,13 +12,13 @@ RUN apt-get install -y --no-install-recommends \
 #   since otherwise the script will fail to find a compiler.
 # * We manually unset CROSS_COMPILE when running make; otherwise the makefile
 #   will call the non-existent binary 'i686-ar'.
-RUN curl https://www.musl-libc.org/releases/musl-1.1.15.tar.gz | \
+RUN curl https://www.musl-libc.org/releases/musl-1.1.19.tar.gz | \
     tar xzf - && \
-    cd musl-1.1.15 && \
+    cd musl-1.1.19 && \
     CC=gcc CFLAGS=-m32 ./configure --prefix=/musl-i686 --disable-shared --target=i686 && \
     make CROSS_COMPILE= install -j4 && \
     cd .. && \
-    rm -rf musl-1.1.15 && \
+    rm -rf musl-1.1.19 && \
 # Install linux kernel headers sanitized for use with musl
     curl -L  https://github.com/sabotage-linux/kernel-headers/archive/v3.12.6-5.tar.gz | \
     tar xzf - && \
