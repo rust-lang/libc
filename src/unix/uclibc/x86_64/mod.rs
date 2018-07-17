@@ -133,6 +133,7 @@ s! {
 //
 //    pub struct in6_addr {
 //        pub s6_addr: [u8; 16],
+//        #[cfg(not(feature = "align"))]
 //        __align: [u32; 0],
 //    }
 
