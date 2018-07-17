@@ -12,13 +12,13 @@ RUN CC=arm-linux-gnueabihf-gcc \
 RUN make install -j4
 
 # Install linux kernel headers sanitized for use with musl
-RUN \
-    curl -L  https://github.com/sabotage-linux/kernel-headers/archive/v3.12.6-5.tar.gz | \
+RUN curl -L  https://github.com/sabotage-linux/kernel-headers/archive/v3.12.6-6.tar.gz | \
     tar xzf - && \
-    cd kernel-headers-3.12.6-5 && \
+    cd kernel-headers-3.12.6-6 && \
     make ARCH=arm prefix=/musl-arm install -j4 && \
     cd .. && \
-    rm -rf kernel-headers-3.12.6-5
+    rm -rf kernel-headers-3.12.6-6
+
 ENV PATH=$PATH:/musl-arm/bin:/rust/bin \
     CC_arm_unknown_linux_musleabihf=musl-gcc \
     CARGO_TARGET_ARM_UNKNOWN_LINUX_MUSLEABIHF_LINKER=musl-gcc \
