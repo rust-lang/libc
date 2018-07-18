@@ -1498,6 +1498,10 @@ pub const ARPD_LOOKUP: ::c_ushort = 0x02;
 pub const ARPD_FLUSH: ::c_ushort = 0x03;
 pub const ATF_MAGIC: ::c_int = 0x80;
 
+// linux/module.h
+pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
+pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {

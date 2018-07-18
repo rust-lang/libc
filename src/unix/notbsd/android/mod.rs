@@ -1458,6 +1458,10 @@ pub const SIOCSRARP: ::c_ulong = 0x00008962;
 pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
 pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 
+// linux/module.h
+pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
+pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
+
 // Similarity to Linux it's not used but defined for compatibility.
 pub const ENOATTR: ::c_int = ::ENODATA;
 

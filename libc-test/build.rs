@@ -272,6 +272,7 @@ fn main() {
 
     if linux || android {
         cfg.header("sys/fsuid.h");
+        cfg.header("linux/module.h");
         cfg.header("linux/seccomp.h");
         cfg.header("linux/if_ether.h");
         cfg.header("linux/if_tun.h");
