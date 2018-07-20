@@ -14,6 +14,7 @@ ctest = { git = "https://github.com/alexcrichton/ctest" }
 [features]
 default = [ "use_std" ]
 use_std = [ "libc/use_std" ]
+align = [ "libc/align" ]
 
 [[test]]
 name = "main"
