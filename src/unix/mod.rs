@@ -285,18 +285,6 @@ cfg_if! {
         // cargo build, don't pull in anything extra as the libstd dep
         // already pulls in all libs.
     } else if #[cfg(target_env = "musl")] {
-        // On some architectures (e.g. aarch64) musl depends on some libgcc
-        // functions (__addtf3, __multf3, __subtf3) for long double arithmetic
-        // that it uses internally. Unfortunately we don't provide these
-        // functions in compiler-builtins, so we instead need to get them from
-        // libgcc.
-        //
-        // This is not a problem if we are linking to libc dynamically since the
-        // libgcc dependency will automatically get picked up by the linker
-        // then.
-        #[cfg_attr(feature = "stdbuild",
-                   link(name = "gcc", kind = "static",
-                        cfg(target_feature = "crt-static")))]
         #[cfg_attr(feature = "stdbuild",
                    link(name = "c", kind = "static",
                         cfg(target_feature = "crt-static")))]
