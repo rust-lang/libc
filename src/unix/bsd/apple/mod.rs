@@ -2253,10 +2253,14 @@ pub const DLT_LOOP: ::c_uint = 108;
 // sizeof(int32_t)
 pub const BPF_ALIGNMENT: ::c_int = 4;
 
+// sys/spawn.h:
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
 pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x04;
 pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x08;
+pub const POSIX_SPAWN_SETEXEC: ::c_int = 0x40;
+pub const POSIX_SPAWN_START_SUSPENDED: ::c_int = 0x80;
+pub const POSIX_SPAWN_CLOEXEC_DEFAULT: ::c_int = 0x4000;
 
 // sys/ipc.h:
 pub const IPC_CREAT: ::c_int = 0x200;
