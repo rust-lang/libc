@@ -1085,6 +1085,15 @@ pub const TIOCPTYGRANT: ::c_uint = 0x20007454;
 pub const TIOCPTYGNAME: ::c_uint = 0x40807453;
 pub const TIOCPTYUNLK: ::c_uint = 0x20007452;
 
+pub const FIOCLEX: ::c_uint = 0x20006601;
+pub const FIONCLEX: ::c_uint = 0x20006602;
+pub const FIONREAD: ::c_ulong = 0x4004667f;
+pub const FIONBIO: ::c_ulong = 0x8004667e;
+pub const FIOASYNC: ::c_ulong = 0x8004667d;
+pub const FIOSETOWN: ::c_ulong = 0x8004667c;
+pub const FIOGETOWN: ::c_ulong = 0x4004667b;
+pub const FIODTYPE: ::c_ulong = 0x4004667a;
+
 pub const B0: speed_t = 0;
 pub const B50: speed_t = 50;
 pub const B75: speed_t = 75;
