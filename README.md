@@ -35,6 +35,16 @@ this via:
 libc = { version = "0.2", default-features = false }
 ```
 
+By default libc uses private fields in structs in order to enforce a certain
+memory alignment on them. These structs can be hard to instantiate outside of
+libc. To make libc use `#[repr(align(x))]`, instead of the private fields,
+activate the *align* feature. This requires Rust 1.25 or newer:
+
+```toml
+[dependencies]
+libc = { version = "0.2", features = ["align"] }
+```
+
 ## What is libc?
 
 The primary purpose of this crate is to provide all of the definitions necessary
