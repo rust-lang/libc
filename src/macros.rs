@@ -69,3 +69,20 @@ macro_rules! f {
 macro_rules! __item {
     ($i:item) => ($i)
 }
+
+#[allow(unused_macros)]
+macro_rules! align_const {
+    ($($(#[$attr:meta])* pub const $name:ident : $t1:ty = $t2:ident { $($field:tt)* };)*) => ($(
+        #[cfg(feature = "align")]
+        $(#[$attr])*
+        pub const $name : $t1 = $t2 {
+            $($field)*
+        };
+        #[cfg(not(feature = "align"))]
+        $(#[$attr])*
+        pub const $name : $t1 = $t2 {
+            $($field)*
+            __align: [],
+        };
+    )*)
+}

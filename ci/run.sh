@@ -79,7 +79,7 @@ if [ "$QEMU" != "" ]; then
   exec grep "^PASSED .* tests" $CARGO_TARGET_DIR/out.log
 fi
 
-# FIXME: x86_64-unknown-linux-gnux32 fail to compile wihout --release
+# FIXME: x86_64-unknown-linux-gnux32 fail to compile without --release
 # See https://github.com/rust-lang/rust/issues/45417
 opt=
 if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
@@ -90,5 +90,9 @@ fi
 # need cfg(target_vendor), which is currently unstable.
 if [ "$TARGET" != "x86_64-rumprun-netbsd" ]; then
   cargo test $opt --no-default-features --manifest-path libc-test/Cargo.toml --target $TARGET
+fi
+# Test the #[repr(align(x))] feature if this is building on Rust >= 1.25
+if [ $(rustc --version | sed -E 's/^rustc 1\.([0-9]*)\..*/\1/') -ge 25 ]; then
+  cargo test $opt --features align --manifest-path libc-test/Cargo.toml --target $TARGET
 fi
 exec cargo test $opt --manifest-path libc-test/Cargo.toml --target $TARGET
