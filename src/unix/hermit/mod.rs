@@ -696,22 +696,29 @@ f! {
 }
 
 extern {
-    pub fn bind(s: ::c_int, name: *const ::sockaddr, namelen: ::socklen_t) -> ::c_int;
+    pub fn bind(s: ::c_int, name: *const ::sockaddr, namelen: ::socklen_t)
+        -> ::c_int;
 
     pub fn clock_gettime(clock_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
 
-    pub fn getpwuid_r(uid: ::uid_t, pwd: *mut passwd, buf: *mut ::c_char, buflen: ::size_t, result: *mut *mut passwd) -> ::c_int;
+    pub fn getpwuid_r(uid: ::uid_t, pwd: *mut passwd, buf: *mut ::c_char,
+        buflen: ::size_t, result: *mut *mut passwd) -> ::c_int;
 
     // Dummy
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 
     pub fn memalign(align: ::size_t, nbytes: ::size_t) -> *mut ::c_void;
 
-    pub fn pthread_create(tid: *mut ::pthread_t, attr: *const ::pthread_attr_t, start: extern fn(*mut ::c_void) -> *mut ::c_void, arg: *mut ::c_void) -> ::c_int;
+    pub fn pthread_create(tid: *mut ::pthread_t, attr: *const ::pthread_attr_t,
+        start: extern fn(*mut ::c_void) -> *mut ::c_void, arg: *mut ::c_void)
+        -> ::c_int;
 
-    pub fn pthread_sigmask(how: ::c_int, set: *const ::sigset_t, oset: *mut ::sigset_t) -> ::c_int;
+    pub fn pthread_sigmask(how: ::c_int, set: *const ::sigset_t,
+        oset: *mut ::sigset_t) -> ::c_int;
 
-    pub fn recvfrom(s: ::c_int, mem: *mut ::c_void, len: ::size_t, flags: ::c_int, from: *mut ::sockaddr, fromlen: *mut ::socklen_t) -> ::c_int;
+    pub fn recvfrom(s: ::c_int, mem: *mut ::c_void, len: ::size_t,
+        flags: ::c_int, from: *mut ::sockaddr, fromlen: *mut ::socklen_t)
+        -> ::c_int;
 
     pub fn setgroups(ngroups: ::c_int, grouplist: *const ::gid_t) -> ::c_int;
 }

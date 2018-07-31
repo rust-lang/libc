@@ -973,7 +973,7 @@ cfg_if! {
     } else if #[cfg(target_os = "haiku")] {
         mod haiku;
         pub use self::haiku::*;
-	} else if #[cfg(target_os = "hermit")] {
+    } else if #[cfg(target_os = "hermit")] {
         mod hermit;
         pub use self::hermit::*;
     } else {
