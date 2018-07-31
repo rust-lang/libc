@@ -15,6 +15,7 @@ fn main() {
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
     let apple = target.contains("apple");
+    let ios = target.contains("apple-ios");
     let emscripten = target.contains("asm");
     let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
@@ -84,8 +85,10 @@ fn main() {
             cfg.header("sys/socket.h");
         }
         cfg.header("net/if.h");
-        cfg.header("net/route.h");
-        cfg.header("net/if_arp.h");
+        if !ios {
+            cfg.header("net/route.h");
+            cfg.header("net/if_arp.h");
+        }
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
@@ -113,7 +116,7 @@ fn main() {
         cfg.header("pwd.h");
         cfg.header("grp.h");
         cfg.header("sys/utsname.h");
-        if !solaris {
+        if !solaris && !ios {
             cfg.header("sys/ptrace.h");
         }
         cfg.header("sys/mount.h");
@@ -175,19 +178,22 @@ fn main() {
         cfg.header("util.h");
         cfg.header("xlocale.h");
         cfg.header("sys/xattr.h");
-        cfg.header("sys/sys_domain.h");
-        cfg.header("net/if_utun.h");
-        cfg.header("net/bpf.h");
-        if target.starts_with("x86") {
+        if target.starts_with("x86") && !ios {
             cfg.header("crt_externs.h");
         }
-        cfg.header("net/route.h");
-        cfg.header("netinet/if_ether.h");
         cfg.header("netinet/in.h");
-        cfg.header("sys/proc_info.h");
-        cfg.header("sys/kern_control.h");
         cfg.header("sys/ipc.h");
         cfg.header("sys/shm.h");
+
+        if !ios {
+            cfg.header("sys/sys_domain.h");
+            cfg.header("net/if_utun.h");
+            cfg.header("net/bpf.h");
+            cfg.header("net/route.h");
+            cfg.header("netinet/if_ether.h");
+            cfg.header("sys/proc_info.h");
+            cfg.header("sys/kern_control.h");
+        }
     }
 
     if bsdlike {
@@ -449,6 +455,17 @@ fn main() {
             // header conflicts when including them with all the other structs.
             "termios2" => true,
 
+            // Present on historical versions of iOS but missing in more recent
+            // SDKs
+            "bpf_hdr" |
+            "proc_taskinfo" |
+            "proc_taskallinfo" |
+            "proc_bsdinfo" |
+            "proc_threadinfo" |
+            "sockaddr_inarp" |
+            "sockaddr_ctl" |
+            "arphdr" if ios => true,
+
             _ => false
         }
     });
@@ -594,6 +611,30 @@ fn main() {
             // shouldn't be used in code anyway...
             "AF_MAX" | "PF_MAX" => true,
 
+            // Present on historical versions of iOS, but now removed in more
+            // recent SDKs
+            "ARPOP_REQUEST" |
+            "ARPOP_REPLY" |
+            "ATF_COM" |
+            "ATF_PERM" |
+            "ATF_PUBL" |
+            "ATF_USETRAILERS" |
+            "AF_SYS_CONTROL" |
+            "SYSPROTO_EVENT" |
+            "PROC_PIDTASKALLINFO" |
+            "PROC_PIDTASKINFO" |
+            "PROC_PIDTHREADINFO" |
+            "UTUN_OPT_FLAGS" |
+            "UTUN_OPT_IFNAME" |
+            "BPF_ALIGNMENT" |
+            "SYSPROTO_CONTROL" if ios => true,
+            s if ios && s.starts_with("RTF_") => true,
+            s if ios && s.starts_with("RTM_") => true,
+            s if ios && s.starts_with("RTA_") => true,
+            s if ios && s.starts_with("RTAX_") => true,
+            s if ios && s.starts_with("RTV_") => true,
+            s if ios && s.starts_with("DLT_") => true,
+
             _ => false,
         }
     });
@@ -735,6 +776,10 @@ fn main() {
 
             // FIXME: mincore is defined with caddr_t on Solaris.
             "mincore" if solaris => true,
+
+            // These were all included in historical versions of iOS but appear
+            // to be removed now
+            "system" | "ptrace" if ios => true,
 
             _ => false,
         }
