@@ -109,6 +109,13 @@ matrix:
 
     # QEMU based targets that compile in an emulator
     - env: TARGET=x86_64-unknown-freebsd
+  allow_failures:
+    - env: TARGET=i386-apple-ios
+           CARGO_TARGET_I386_APPLE_IOS_RUNNER=$HOME/runtest
+           RUSTFLAGS=-Clink-arg=-mios-simulator-version-min=7.0
+    - env: TARGET=x86_64-apple-ios
+           CARGO_TARGET_X86_64_APPLE_IOS_RUNNER=$HOME/runtest
+           RUSTFLAGS=-Clink-arg=-mios-simulator-version-min=7.0
 
 notifications:
   email:
