@@ -401,9 +401,6 @@ extern {
     pub fn getpeereid(socket: ::c_int,
                       euid: *mut ::uid_t,
                       egid: *mut ::gid_t) -> ::c_int;
-    pub fn exchangedata(path1: *const ::c_char,
-                        path2: *const ::c_char,
-                        options: ::c_uint) -> ::c_int;
 
     #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]

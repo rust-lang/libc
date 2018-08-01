@@ -2479,6 +2479,9 @@ extern {
     pub fn renameatx_np(fromfd: ::c_int, from: *const ::c_char,
                         tofd: ::c_int, to: *const ::c_char,
                         flags: ::c_uint) -> ::c_int;
+    pub fn exchangedata(path1: *const ::c_char,
+                        path2: *const ::c_char,
+                        options: ::c_long) -> ::c_int;
     pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char,
                         flags: ::c_int) -> ::c_int;
 
