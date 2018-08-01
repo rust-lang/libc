@@ -318,6 +318,15 @@ s! {
         pub ipi_addr: ::in_addr,
         pub ipi_ifindex: ::c_uint,
     }
+
+    #[repr(packed)]
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
 }
 
 pub const AT_FDCWD: ::c_int = -100;
@@ -380,6 +389,11 @@ pub const IP_PKTINFO: ::c_int = 25;
 pub const IP_RECVPKTINFO: ::c_int = 26;
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
+
+pub const TCP_KEEPIDLE:  ::c_int = 3;
+pub const TCP_KEEPINTVL: ::c_int = 5;
+pub const TCP_KEEPCNT:   ::c_int = 6;
+pub const TCP_KEEPINIT:  ::c_int = 7;
 
 pub const SOCK_CONN_DGRAM: ::c_int = 6;
 pub const SOCK_DCCP: ::c_int = SOCK_CONN_DGRAM;

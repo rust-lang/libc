@@ -104,8 +104,10 @@ s! {
         pub s_addr: in_addr_t,
     }
 
+    #[cfg_attr(feature = "align", repr(align(4)))]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
+        #[cfg(not(feature = "align"))]
         __align: [u32; 0],
     }
 
@@ -294,11 +296,11 @@ cfg_if! {
     } else if #[cfg(target_os = "emscripten")] {
         #[link(name = "c")]
         extern {}
-    } else if #[cfg(all(target_os = "netbsd"))] {
+    } else if #[cfg(all(target_os = "netbsd",
+                        feature = "stdbuild", target_vendor = "rumprun"))] {
         // Since we don't use -nodefaultlibs on Rumprun, libc is always pulled
         // in automatically by the linker. We avoid passing it explicitly, as it
         // causes some versions of binutils to crash with an assertion failure.
-        #[cfg_attr(feature = "stdbuild", target_vendor = "rumprun")]
         #[link(name = "m")]
         extern {}
     } else if #[cfg(any(target_os = "macos",

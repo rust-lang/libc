@@ -272,6 +272,7 @@ fn main() {
 
     if linux || android {
         cfg.header("sys/fsuid.h");
+        cfg.header("linux/module.h");
         cfg.header("linux/seccomp.h");
         cfg.header("linux/if_ether.h");
         cfg.header("linux/if_tun.h");
@@ -343,7 +344,7 @@ fn main() {
         }
     }
 
-    cfg.type_name(move |ty, is_struct| {
+    cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" |
@@ -359,6 +360,10 @@ fn main() {
 
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
+
+            t if is_union => {
+                format!("union {}", t)
+            }
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -537,12 +542,6 @@ fn main() {
             // https://git.io/v7gBq)
             "KERN_USERMOUNT" |
             "KERN_ARND" if openbsd => true,
-
-            // These constants were added in OpenBSD 6.2
-            "EV_RECEIPT" | "EV_DISPATCH" if openbsd => true,
-
-            // These constants were added in OpenBSD 6.3
-            "MAP_STACK" if openbsd => true,
 
             // These are either unimplemented or optionally built into uClibc
             "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
@@ -822,9 +821,10 @@ fn main() {
         cfg.skip_struct(|s| {
             s != "termios2"
         });
-        cfg.type_name(move |ty, is_struct| {
+        cfg.type_name(move |ty, is_struct, is_union| {
             match ty {
                 t if is_struct => format!("struct {}", t),
+                t if is_union => format!("union {}", t),
                 t => t.to_string(),
             }
         });

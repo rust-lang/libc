@@ -99,6 +99,31 @@ s! {
         pub f_namemax: ::c_ulong,
     }
 
+    pub struct statfs {
+        pub f_version: ::uint32_t,
+        pub f_type: ::uint32_t,
+        pub f_flags: ::uint64_t,
+        pub f_bsize: ::uint64_t,
+        pub f_iosize: ::uint64_t,
+        pub f_blocks: ::uint64_t,
+        pub f_bfree: ::uint64_t,
+        pub f_bavail: ::int64_t,
+        pub f_files: ::uint64_t,
+        pub f_ffree: ::int64_t,
+        pub f_syncwrites: ::uint64_t,
+        pub f_asyncwrites: ::uint64_t,
+        pub f_syncreads: ::uint64_t,
+        pub f_asyncreads: ::uint64_t,
+        f_spare: [::uint64_t; 10],
+        pub f_namemax: ::uint32_t,
+        pub f_owner: ::uid_t,
+        pub f_fsid: ::fsid_t,
+        f_charspare: [::c_char; 80],
+        pub f_fstypename: [::c_char; 16],
+        pub f_mntfromname: [::c_char; 88],
+        pub f_mntonname: [::c_char; 88],
+    }
+
     // internal structure has changed over time
     pub struct _sem {
         data: [u32; 4],
@@ -994,6 +1019,9 @@ extern {
         fd: ::c_int,
         newfd: ::c_int,
     ) -> ::c_int;
+
+    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 }
 
 cfg_if! {
