@@ -1335,6 +1335,7 @@ pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x08;
 pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x10;
 pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x20;
 
+pub const NLMSG_ALIGNTO: usize = 4;
 pub const NLMSG_NOOP: ::c_int = 0x1;
 pub const NLMSG_ERROR: ::c_int = 0x2;
 pub const NLMSG_DONE: ::c_int = 0x3;
@@ -1650,6 +1651,10 @@ f! {
 
     pub fn RT_LOCALADDR(flags: u32) -> bool {
         (flags & RTF_ADDRCLASSMASK) == (RTF_LOCAL | RTF_INTERFACE)
+    }
+
+    pub fn NLMSG_ALIGN(len: usize) -> usize {
+        (len + NLMSG_ALIGNTO - 1) & !(NLMSG_ALIGNTO - 1)
     }
 }
 
