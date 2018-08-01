@@ -890,6 +890,9 @@ extern {
                                          val: *mut ::c_int) -> ::c_int;
     pub fn pthread_rwlockattr_setkind_np(attr: *mut ::pthread_rwlockattr_t,
                                          val: ::c_int) -> ::c_int;
+    pub fn pthread_sigqueue(thread: ::pthread_t,
+                            sig: ::c_int,
+                            value: ::sigval) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
