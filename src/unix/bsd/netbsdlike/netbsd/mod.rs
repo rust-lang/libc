@@ -1,6 +1,5 @@
 use dox::mem;
 
-pub type c_char = i8;
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
 pub type dev_t = u64;
@@ -1110,5 +1109,23 @@ extern {
                       result: *mut *mut ::group) -> ::c_int;
 }
 
-mod other;
-pub use self::other::*;
+cfg_if! {
+    if #[cfg(target_arch = "arm")]
+        mod arm;
+        pub use self::arm::*;
+    } else if #[cfg(target_arch = "powerpc")] {
+        mod powerpc;
+        pub use self::powerpc::*;
+    } else if #[cfg(target_arch = "sparc64")] {
+        mod sparc64;
+        pub use self::sparc64::*;
+    } else if #[cfg(target_arch = "x86_64")] {
+        mod x86_64;
+        pub use self::x86_64::*;
+    } else if #[cfg(target_arch = "x86")] {
+        mod x86;
+        pub use self::x86::*;
+    } else {
+        // Unknown target_arch
+    }
+}
