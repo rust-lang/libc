@@ -1110,7 +1110,7 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(target_arch = "arm")]
+    if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
     } else if #[cfg(target_arch = "powerpc")] {
