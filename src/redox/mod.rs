@@ -93,6 +93,9 @@ extern {
                  -> ::ssize_t;
     pub fn fcntl(fd: ::c_int, cmd: ::c_int, ...) -> ::c_int;
     pub fn close(fd: ::c_int) -> ::c_int;
+    pub fn setenv(name: *const c_char, val: *const c_char,
+                  overwrite: ::c_int) -> ::c_int;
+    pub fn unsetenv(name: *const c_char) -> ::c_int;
 }
 
 #[link(name = "c")]
