@@ -262,9 +262,16 @@ impl TestGenerator {
     /// Set a `--cfg` option with which to expand the Rust FFI crate.
     ///
     /// By default the Rust code is run through expansion to determine what C
-    /// APIs are exposed (to allow differences across platforms). The `k`
-    /// argument is the `#[cfg]` value to define, and `v` is an optional value
-    /// for differentiating between `#[cfg(foo)]` and `#[cfg(foo = "bar")]`.
+    /// APIs are exposed (to allow differences across platforms).
+    ///
+    /// The `k` argument is the `#[cfg]` value to define, while `v` is the
+    /// optional value of `v`:
+    ///
+    /// * `k == "foo"` and `v == None` makes `#[cfg(foo)]` expand. That is,
+    /// `cfg!(foo)` expands to `true`.
+    ///
+    /// * `k == "bar"` and `v == Some("baz")` makes `#[cfg(bar = "baz")]`
+    /// expand. That is, `cfg!(bar = "baz")` expands to `true`.
     ///
     /// # Examples
     ///
@@ -272,8 +279,9 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.cfg("foo", None)
-    ///    .cfg("bar", Some("baz"));
+    /// cfg.cfg("foo", None) // cfg!(foo)
+    ///    .cfg("bar", Some("baz")); // cfg!(bar = "baz")
+    /// ```
     pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut TestGenerator {
         self.cfg.push((k.to_string(), v.map(|s| s.to_string())));
         self
