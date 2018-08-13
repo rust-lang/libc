@@ -9,7 +9,7 @@ path = ".."
 default-features = false
 
 [build-dependencies]
-ctest = { git = "https://github.com/alexcrichton/ctest" }
+ctest = "0.2"
 
 [features]
 default = [ "use_std" ]
