@@ -2471,9 +2471,14 @@ extern {
     pub fn renameatx_np(fromfd: ::c_int, from: *const ::c_char,
                         tofd: ::c_int, to: *const ::c_char,
                         flags: ::c_uint) -> ::c_int;
+    #[cfg(target_arch = "x86")]
     pub fn exchangedata(path1: *const ::c_char,
                         path2: *const ::c_char,
-                        options: u32) -> ::c_int;
+                        options: ::c_ulong) -> ::c_int;
+    #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+    pub fn exchangedata(path1: *const ::c_char,
+                        path2: *const ::c_char,
+                        options: ::c_uint) -> ::c_int;
     pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char,
                         flags: ::c_int) -> ::c_int;
 
