@@ -323,6 +323,11 @@ cfg_if! {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
+    } else if #[cfg(target_os = "hermit")] {
+        // no_default_libraries is set to false for HermitCore, so only a link
+        // to "pthread" needs to be added.
+        #[link(name = "pthread")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -931,6 +936,7 @@ extern {
     pub fn openlog(ident: *const ::c_char, logopt: ::c_int, facility: ::c_int);
     pub fn closelog();
     pub fn setlogmask(maskpri: ::c_int) -> ::c_int;
+    #[cfg_attr(target_os = "macos", link_name = "syslog$DARWIN_EXTSN")]
     pub fn syslog(priority: ::c_int, message: *const ::c_char, ...);
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "nice$UNIX2003")]
@@ -970,6 +976,9 @@ cfg_if! {
     } else if #[cfg(target_os = "haiku")] {
         mod haiku;
         pub use self::haiku::*;
+    } else if #[cfg(target_os = "hermit")] {
+        mod hermit;
+        pub use self::hermit::*;
     } else {
         // Unknown target_os
     }
