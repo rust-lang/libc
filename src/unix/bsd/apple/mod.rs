@@ -2481,7 +2481,7 @@ extern {
                         flags: ::c_uint) -> ::c_int;
     pub fn exchangedata(path1: *const ::c_char,
                         path2: *const ::c_char,
-                        options: ::c_ulong) -> ::c_int;
+                        options: u32) -> ::c_int;
     pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char,
                         flags: ::c_int) -> ::c_int;
 
