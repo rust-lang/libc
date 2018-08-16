@@ -1004,6 +1004,7 @@ extern {
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
 
+    #[link_name = "__lutimes50"]
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
@@ -1055,11 +1056,13 @@ extern {
     pub fn mq_setattr(mqd: ::mqd_t,
                       newattr: *const ::mq_attr,
                       oldattr: *mut ::mq_attr) -> ::c_int;
+    #[link_name = "__mq_timedreceive50"]
     pub fn mq_timedreceive(mqd: ::mqd_t,
                            msg_ptr: *mut ::c_char,
                            msg_len: ::size_t,
                            msq_prio: *mut ::c_uint,
                            abs_timeout: *const ::timespec) -> ::ssize_t;
+    #[link_name = "__mq_timedsend50"]
     pub fn mq_timedsend(mqd: ::mqd_t,
                         msg_ptr: *const ::c_char,
                         msg_len: ::size_t,

@@ -444,6 +444,7 @@ extern {
                     flags: ::c_int, addr: *mut ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__futimes50")]
     pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 
