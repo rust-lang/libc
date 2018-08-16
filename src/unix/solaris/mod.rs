@@ -1195,6 +1195,9 @@ pub const PORT_SOURCE_FILE: ::c_int = 7;
 pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
 pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
 
+pub const TIOCGWINSZ: ::c_int = 0x5468;
+pub const TIOCSWINSZ: ::c_int = 0x5467;
+
 pub const EPOLLIN: ::c_int = 0x1;
 pub const EPOLLPRI: ::c_int = 0x2;
 pub const EPOLLOUT: ::c_int = 0x4;
