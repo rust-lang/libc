@@ -58,3 +58,9 @@ pub const __PTHREAD_RWLOCKATTR_SIZE__: usize = 12;
 
 pub const TIOCTIMESTAMP: ::c_ulong = 0x40087459;
 pub const TIOCDCDTIMESTAMP: ::c_ulong = 0x40087458;
+
+extern {
+    pub fn exchangedata(path1: *const ::c_char,
+                        path2: *const ::c_char,
+                        options: ::c_ulong) -> ::c_int;
+}
