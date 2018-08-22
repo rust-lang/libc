@@ -97,16 +97,13 @@ s! {
         pub tv_usec: suseconds_t,
     }
 
-    // linux x32 compatibility
-    // See https://sourceware.org/bugzilla/show_bug.cgi?id=16437
     pub struct timespec {
         pub tv_sec: time_t,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub tv_nsec: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
         pub tv_nsec: ::c_long,
     }
 
+    // FIXME: the rlimit and rusage related functions and types don't exist
+    // within zircon. Are there reasons for keeping them around?
     pub struct rlimit {
         pub rlim_cur: rlim_t,
         pub rlim_max: rlim_t,
@@ -166,11 +163,14 @@ s! {
         pub s_addr: in_addr_t,
     }
 
-    #[cfg_attr(feature = "align", repr(align(4)))]
     pub struct in6_addr {
-        pub s6_addr: [u8; 16],
-        #[cfg(not(feature = "align"))]
-        __align: [u32; 0],
+        pub __in6_union: in6_union,
+    }
+
+    pub union in6_union {
+        pub __s6_addr: [u8; 16],
+        pub __s6_addr16: [u16; 8],
+        pub __s6_addr32: [u32; 4],
     }
 
     pub struct ip_mreq {
@@ -180,9 +180,6 @@ s! {
 
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
-        #[cfg(target_os = "android")]
-        pub ipv6mr_interface: ::c_int,
-        #[cfg(not(target_os = "android"))]
         pub ipv6mr_interface: ::c_uint,
     }
 
@@ -400,13 +397,9 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
-        #[cfg(target_env = "musl")]
         pub sched_ss_low_priority: ::c_int,
-        #[cfg(target_env = "musl")]
         pub sched_ss_repl_period: ::timespec,
-        #[cfg(target_env = "musl")]
         pub sched_ss_init_budget: ::timespec,
-        #[cfg(target_env = "musl")]
         pub sched_ss_max_repl: ::c_int,
     }
 
@@ -417,11 +410,6 @@ s! {
         pub dli_saddr: *mut ::c_void,
     }
 
-    #[cfg_attr(any(all(target_arch = "x86",
-                       not(target_env = "musl"),
-                       not(target_os = "android")),
-                   target_arch = "x86_64"),
-               repr(packed))]
     pub struct epoll_event {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,
@@ -467,13 +455,9 @@ s! {
         pub sigev_value: ::sigval,
         pub sigev_signo: ::c_int,
         pub sigev_notify: ::c_int,
-        // Actually a union.  We only expose sigev_notify_thread_id because it's
-        // the most useful member
-        pub sigev_notify_thread_id: ::c_int,
-        #[cfg(target_pointer_width = "64")]
-        __unused1: [::c_int; 11],
-        #[cfg(target_pointer_width = "32")]
-        __unused1: [::c_int; 12]
+        pub sigev_notify_function: fn(::sigval),
+        pub sigev_notify_attributes: *mut pthread_attr_t,
+        pub __pad: [::c_char; 56 - 3 * 8 /* 8 == sizeof(long) */],
     }
 
     pub struct dirent {
@@ -522,30 +506,22 @@ s! {
 
     #[cfg_attr(all(feature = "align",
                    target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc",
+                   any(target_arch = "arm",
                        target_arch = "x86_64")),
                repr(align(4)))]
     #[cfg_attr(all(feature = "align",
                    any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc",
+                       not(any(target_arch = "arm",
                                target_arch = "x86_64")))),
                repr(align(8)))]
     pub struct pthread_mutex_t {
         #[cfg(all(not(feature = "align"),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
+                  any(target_arch = "arm",
                       all(target_arch = "x86_64",
                           target_pointer_width = "32"))))]
         __align: [::c_long; 0],
         #[cfg(not(any(feature = "align",
-                      target_arch = "mips",
                       target_arch = "arm",
-                      target_arch = "powerpc",
                       all(target_arch = "x86_64",
                           target_pointer_width = "32"))))]
         __align: [::c_longlong; 0],
@@ -554,30 +530,22 @@ s! {
 
     #[cfg_attr(all(feature = "align",
                    target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc",
+                   any(target_arch = "arm",
                        target_arch = "x86_64")),
                repr(align(4)))]
     #[cfg_attr(all(feature = "align",
                    any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc",
+                       not(any(target_arch = "arm",
                                target_arch = "x86_64")))),
                repr(align(8)))]
     pub struct pthread_rwlock_t {
         #[cfg(all(not(feature = "align"),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
+                  any(target_arch = "arm",
                       all(target_arch = "x86_64",
                           target_pointer_width = "32"))))]
         __align: [::c_long; 0],
         #[cfg(not(any(feature = "align",
-                      target_arch = "mips",
                       target_arch = "arm",
-                      target_arch = "powerpc",
                       all(target_arch = "x86_64",
                           target_pointer_width = "32"))))]
         __align: [::c_longlong; 0],
@@ -586,29 +554,21 @@ s! {
 
     #[cfg_attr(all(feature = "align",
                    any(target_pointer_width = "32",
-                       target_arch = "x86_64", target_arch = "powerpc64",
-                       target_arch = "mips64", target_arch = "s390x",
-                       target_arch = "sparc64",
+                       target_arch = "x86_64",
                        all(target_arch = "aarch64", target_env = "musl"))),
                repr(align(4)))]
     #[cfg_attr(all(feature = "align",
                    not(any(target_pointer_width = "32",
-                           target_arch = "x86_64", target_arch = "powerpc64",
-                           target_arch = "mips64", target_arch = "s390x",
-                           target_arch = "sparc64",
+                           target_arch = "x86_64",
                            all(target_arch = "aarch64", target_env = "musl")))),
                repr(align(8)))]
     pub struct pthread_mutexattr_t {
         #[cfg(all(not(features = "align"),
-                  any(target_arch = "x86_64", target_arch = "powerpc64",
-                      target_arch = "mips64", target_arch = "s390x",
-                      target_arch = "sparc64",
+                  any(target_arch = "x86_64",
                       all(target_arch = "aarch64", target_env = "musl"))))]
         __align: [::c_int; 0],
         #[cfg(all(not(features = "align"),
-                  not(any(target_arch = "x86_64", target_arch = "powerpc64",
-                          target_arch = "mips64", target_arch = "s390x",
-                          target_arch = "sparc64",
+                  not(any(target_arch = "x86_64",
                           all(target_arch = "aarch64", target_env = "musl")))))]
         __align: [::c_long; 0],
         size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
@@ -3987,9 +3947,6 @@ cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
         mod aarch64;
         pub use self::aarch64::*;
-    } else if #[cfg(any(target_arch = "powerpc64"))] {
-        mod powerpc64;
-        pub use self::powerpc64::*;
     } else if #[cfg(any(target_arch = "x86_64"))] {
         mod x86_64;
         pub use self::x86_64::*;
