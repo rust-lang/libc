@@ -164,13 +164,7 @@ s! {
     }
 
     pub struct in6_addr {
-        pub __in6_union: in6_union,
-    }
-
-    pub union in6_union {
-        pub __s6_addr: [u8; 16],
-        pub __s6_addr16: [u16; 8],
-        pub __s6_addr32: [u32; 4],
+        pub s6_addr: [u8; 16],
     }
 
     pub struct ip_mreq {
