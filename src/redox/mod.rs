@@ -118,15 +118,19 @@ pub const SIGPWR:    ::c_int = 30;
 pub const SIGSYS:    ::c_int = 31;
 
 extern {
+    pub fn chown(path: *const c_char, uid: uid_t, gid: gid_t) -> ::c_int;
+    pub fn close(fd: ::c_int) -> ::c_int;
+    pub fn fchown(fd: ::c_int, uid: ::uid_t, gid: ::gid_t) -> ::c_int;
+    pub fn fcntl(fd: ::c_int, cmd: ::c_int, ...) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn getpid() -> pid_t;
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
-    pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
-                -> ::ssize_t;
+    pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t) -> ::ssize_t;
+    pub fn setenv(name: *const c_char, val: *const c_char, overwrite: ::c_int)
+                  -> ::c_int;
+    pub fn unsetenv(name: *const c_char) -> ::c_int;
     pub fn write(fd: ::c_int, buf: *const ::c_void, count: ::size_t)
                  -> ::ssize_t;
-    pub fn fcntl(fd: ::c_int, cmd: ::c_int, ...) -> ::c_int;
-    pub fn close(fd: ::c_int) -> ::c_int;
 }
 
 #[link(name = "c")]
