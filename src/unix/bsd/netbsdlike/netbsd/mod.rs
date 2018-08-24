@@ -1,6 +1,5 @@
 use dox::mem;
 
-pub type c_char = i8;
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
 pub type dev_t = u64;
@@ -313,6 +312,20 @@ s! {
         pub sdl_slen: ::uint8_t,
         pub sdl_data: [::c_char; 12],
     }
+
+    pub struct in_pktinfo {
+        pub ipi_addr: ::in_addr,
+        pub ipi_ifindex: ::c_uint,
+    }
+
+    #[repr(packed)]
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
 }
 
 pub const AT_FDCWD: ::c_int = -100;
@@ -371,8 +384,15 @@ pub const F_GETNOSIGPIPE: ::c_int = 13;
 pub const F_SETNOSIGPIPE: ::c_int = 14;
 pub const F_MAXFD: ::c_int = 11;
 
+pub const IP_PKTINFO: ::c_int = 25;
+pub const IP_RECVPKTINFO: ::c_int = 26;
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
+
+pub const TCP_KEEPIDLE:  ::c_int = 3;
+pub const TCP_KEEPINTVL: ::c_int = 5;
+pub const TCP_KEEPCNT:   ::c_int = 6;
+pub const TCP_KEEPINIT:  ::c_int = 7;
 
 pub const SOCK_CONN_DGRAM: ::c_int = 6;
 pub const SOCK_DCCP: ::c_int = SOCK_CONN_DGRAM;
@@ -947,6 +967,8 @@ pub const CHWFLOW: ::tcflag_t = ::MDMBUF | ::CRTSCTS | ::CDTRCTS;
 pub const SOCK_CLOEXEC: ::c_int = 0x10000000;
 pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
 
+pub const SIGSTKSZ : ::size_t = 40960;
+
 // dirfd() is a macro on netbsd to access
 // the first field of the struct where dirp points to:
 // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36
@@ -982,6 +1004,7 @@ extern {
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
 
+    #[link_name = "__lutimes50"]
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
@@ -1033,11 +1056,13 @@ extern {
     pub fn mq_setattr(mqd: ::mqd_t,
                       newattr: *const ::mq_attr,
                       oldattr: *mut ::mq_attr) -> ::c_int;
+    #[link_name = "__mq_timedreceive50"]
     pub fn mq_timedreceive(mqd: ::mqd_t,
                            msg_ptr: *mut ::c_char,
                            msg_len: ::size_t,
                            msq_prio: *mut ::c_uint,
                            abs_timeout: *const ::timespec) -> ::ssize_t;
+    #[link_name = "__mq_timedsend50"]
     pub fn mq_timedsend(mqd: ::mqd_t,
                         msg_ptr: *const ::c_char,
                         msg_len: ::size_t,
@@ -1087,5 +1112,26 @@ extern {
                       result: *mut *mut ::group) -> ::c_int;
 }
 
-mod other;
-pub use self::other::*;
+cfg_if! {
+    if #[cfg(target_arch = "aarch64")] {
+        mod aarch64;
+        pub use self::aarch64::*;
+    } else if #[cfg(target_arch = "arm")] {
+        mod arm;
+        pub use self::arm::*;
+    } else if #[cfg(target_arch = "powerpc")] {
+        mod powerpc;
+        pub use self::powerpc::*;
+    } else if #[cfg(target_arch = "sparc64")] {
+        mod sparc64;
+        pub use self::sparc64::*;
+    } else if #[cfg(target_arch = "x86_64")] {
+        mod x86_64;
+        pub use self::x86_64::*;
+    } else if #[cfg(target_arch = "x86")] {
+        mod x86;
+        pub use self::x86::*;
+    } else {
+        // Unknown target_arch
+    }
+}

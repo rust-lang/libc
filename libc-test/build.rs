@@ -15,6 +15,7 @@ fn main() {
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
     let apple = target.contains("apple");
+    let ios = target.contains("apple-ios");
     let emscripten = target.contains("asm");
     let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
@@ -33,6 +34,8 @@ fn main() {
         cfg.define("_GNU_SOURCE", None);
     } else if netbsd {
         cfg.define("_NETBSD_SOURCE", Some("1"));
+    } else if apple {
+        cfg.define("__APPLE_USE_RFC_3542", None);
     } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
     } else if solaris {
@@ -82,6 +85,10 @@ fn main() {
             cfg.header("sys/socket.h");
         }
         cfg.header("net/if.h");
+        if !ios {
+            cfg.header("net/route.h");
+            cfg.header("net/if_arp.h");
+        }
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
@@ -109,7 +116,7 @@ fn main() {
         cfg.header("pwd.h");
         cfg.header("grp.h");
         cfg.header("sys/utsname.h");
-        if !solaris {
+        if !solaris && !ios {
             cfg.header("sys/ptrace.h");
         }
         cfg.header("sys/mount.h");
@@ -132,6 +139,7 @@ fn main() {
         cfg.header("arpa/inet.h");
         cfg.header("xlocale.h");
         cfg.header("utmp.h");
+        cfg.header("ifaddrs.h");
         if i686 || x86_64 {
             cfg.header("sys/reg.h");
         }
@@ -170,18 +178,22 @@ fn main() {
         cfg.header("util.h");
         cfg.header("xlocale.h");
         cfg.header("sys/xattr.h");
-        cfg.header("sys/sys_domain.h");
-        cfg.header("net/if_utun.h");
-        cfg.header("net/bpf.h");
-        if target.starts_with("x86") {
+        if target.starts_with("x86") && !ios {
             cfg.header("crt_externs.h");
         }
-        cfg.header("net/route.h");
-        cfg.header("netinet/if_ether.h");
-        cfg.header("sys/proc_info.h");
-        cfg.header("sys/kern_control.h");
+        cfg.header("netinet/in.h");
         cfg.header("sys/ipc.h");
         cfg.header("sys/shm.h");
+
+        if !ios {
+            cfg.header("sys/sys_domain.h");
+            cfg.header("net/if_utun.h");
+            cfg.header("net/bpf.h");
+            cfg.header("net/route.h");
+            cfg.header("netinet/if_ether.h");
+            cfg.header("sys/proc_info.h");
+            cfg.header("sys/kern_control.h");
+        }
     }
 
     if bsdlike {
@@ -242,6 +254,7 @@ fn main() {
         }
         cfg.header("sys/reboot.h");
         if !emscripten {
+            cfg.header("linux/sockios.h");
             cfg.header("linux/netlink.h");
             cfg.header("linux/genetlink.h");
             cfg.header("linux/netfilter_ipv4.h");
@@ -265,6 +278,7 @@ fn main() {
 
     if linux || android {
         cfg.header("sys/fsuid.h");
+        cfg.header("linux/module.h");
         cfg.header("linux/seccomp.h");
         cfg.header("linux/if_ether.h");
         cfg.header("linux/if_tun.h");
@@ -336,7 +350,7 @@ fn main() {
         }
     }
 
-    cfg.type_name(move |ty, is_struct| {
+    cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" |
@@ -352,6 +366,10 @@ fn main() {
 
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
+
+            t if is_union => {
+                format!("union {}", t)
+            }
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -416,7 +434,9 @@ fn main() {
             // which is absent in glibc, has to be defined.
             "__timeval" if linux => true,
 
-            // The alignment of this is 4 on 64-bit OSX...
+            // Fixed on stdbuild with repr(packed(4))
+            // Once repr_packed stabilizes we can fix this unconditionally
+            // and remove this check.
             "kevent" | "shmid_ds" if apple && x86_64 => true,
 
             // This is actually a union, not a struct
@@ -434,6 +454,17 @@ fn main() {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
+
+            // Present on historical versions of iOS but missing in more recent
+            // SDKs
+            "bpf_hdr" |
+            "proc_taskinfo" |
+            "proc_taskallinfo" |
+            "proc_bsdinfo" |
+            "proc_threadinfo" |
+            "sockaddr_inarp" |
+            "sockaddr_ctl" |
+            "arphdr" if ios => true,
 
             _ => false
         }
@@ -516,6 +547,9 @@ fn main() {
             "EVFILT_PROCDESC" | "EVFILT_SENDFILE" | "EVFILT_EMPTY" |
             "PD_CLOEXEC" | "PD_ALLOWED_AT_FORK" if freebsd => true,
 
+            // These constants were added in FreeBSD 12
+            "SF_USER_READAHEAD" if freebsd => true,
+
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" if apple => true,
@@ -525,9 +559,6 @@ fn main() {
             // https://git.io/v7gBq)
             "KERN_USERMOUNT" |
             "KERN_ARND" if openbsd => true,
-
-            // These constats were added in OpenBSD 6.2
-            "EV_RECEIPT" | "EV_DISPATCH" if openbsd => true,
 
             // These are either unimplemented or optionally built into uClibc
             "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
@@ -545,7 +576,7 @@ fn main() {
 
             // Defined by libattr not libc on linux (hard to test).
             // See constant definition for more details.
-            "ENOATTR" if linux => true,
+            "ENOATTR" if android || linux => true,
 
             // On mips*-unknown-linux-gnu* CMSPAR cannot be included with the set of headers we
             // want to use here for testing. It's originally defined in asm/termbits.h, which is
@@ -579,6 +610,30 @@ fn main() {
             // distros, let's just not bother trying to verify them. They
             // shouldn't be used in code anyway...
             "AF_MAX" | "PF_MAX" => true,
+
+            // Present on historical versions of iOS, but now removed in more
+            // recent SDKs
+            "ARPOP_REQUEST" |
+            "ARPOP_REPLY" |
+            "ATF_COM" |
+            "ATF_PERM" |
+            "ATF_PUBL" |
+            "ATF_USETRAILERS" |
+            "AF_SYS_CONTROL" |
+            "SYSPROTO_EVENT" |
+            "PROC_PIDTASKALLINFO" |
+            "PROC_PIDTASKINFO" |
+            "PROC_PIDTHREADINFO" |
+            "UTUN_OPT_FLAGS" |
+            "UTUN_OPT_IFNAME" |
+            "BPF_ALIGNMENT" |
+            "SYSPROTO_CONTROL" if ios => true,
+            s if ios && s.starts_with("RTF_") => true,
+            s if ios && s.starts_with("RTM_") => true,
+            s if ios && s.starts_with("RTA_") => true,
+            s if ios && s.starts_with("RTAX_") => true,
+            s if ios && s.starts_with("RTV_") => true,
+            s if ios && s.starts_with("DLT_") => true,
 
             _ => false,
         }
@@ -722,6 +777,10 @@ fn main() {
             // FIXME: mincore is defined with caddr_t on Solaris.
             "mincore" if solaris => true,
 
+            // These were all included in historical versions of iOS but appear
+            // to be removed now
+            "system" | "ptrace" if ios => true,
+
             _ => false,
         }
     });
@@ -807,9 +866,10 @@ fn main() {
         cfg.skip_struct(|s| {
             s != "termios2"
         });
-        cfg.type_name(move |ty, is_struct| {
+        cfg.type_name(move |ty, is_struct, is_union| {
             match ty {
                 t if is_struct => format!("struct {}", t),
+                t if is_union => format!("union {}", t),
                 t => t.to_string(),
             }
         });
