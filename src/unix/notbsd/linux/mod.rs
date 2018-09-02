@@ -1576,20 +1576,6 @@ pub const ATF_MAGIC: ::c_int = 0x80;
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
 
-// malloc.h
-pub const M_MXFAST: ::c_int = 1;
-pub const M_NLBLKS: ::c_int = 2;
-pub const M_GRAIN: ::c_int = 3;
-pub const M_KEEP: ::c_int = 4;
-pub const M_TRIM_THRESHOLD: ::c_int = -1;
-pub const M_TOP_PAD: ::c_int = -2;
-pub const M_MMAP_THRESHOLD: ::c_int = -3;
-pub const M_MMAP_MAX: ::c_int = -4;
-pub const M_CHECK_ACTION: ::c_int = -5;
-pub const M_PERTURB: ::c_int = -6;
-pub const M_ARENA_TEST: ::c_int = -7;
-pub const M_ARENA_MAX: ::c_int = -8;
-
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
@@ -2143,7 +2129,6 @@ extern {
         nobj: ::size_t,
         stream: *mut ::FILE
     ) -> ::size_t;
-    pub fn mallopt(param: ::c_int, value: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
