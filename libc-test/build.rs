@@ -358,7 +358,11 @@ fn main() {
             "Dl_info" |
             "DIR" |
             "Elf32_Phdr" |
-            "Elf64_Phdr" => ty.to_string(),
+            "Elf64_Phdr" |
+            "Elf32_Shdr" |
+            "Elf64_Shdr" |
+            "Elf32_Sym" |
+            "Elf64_Sym" => ty.to_string(),
 
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
