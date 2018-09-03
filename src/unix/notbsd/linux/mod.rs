@@ -33,6 +33,10 @@ pub type Elf64_Word = u32;
 pub type Elf64_Off = u64;
 pub type Elf64_Addr = u64;
 pub type Elf64_Xword = u64;
+pub type Elf64_Sxword = i64;
+
+pub type Elf32_Section = u16;
+pub type Elf64_Section = u16;
 
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
@@ -479,6 +483,24 @@ s! {
         pub dlpi_tls_data: *mut ::c_void,
     }
 
+    pub struct Elf32_Sym {
+        pub st_name: Elf32_Word,
+        pub st_value: Elf32_Addr,
+        pub st_size: Elf32_Word,
+        pub st_info: ::c_uchar,
+        pub st_other: ::c_uchar,
+        pub st_shndx: Elf32_Section,
+    }
+
+    pub struct Elf64_Sym {
+        pub st_name: Elf64_Word,
+        pub st_info: ::c_uchar,
+        pub st_other: ::c_uchar,
+        pub st_shndx: Elf64_Section,
+        pub st_value: Elf64_Addr,
+        pub st_size: Elf64_Xword,
+    }
+
     pub struct Elf32_Phdr {
         pub p_type: Elf32_Word,
         pub p_offset: Elf32_Off,
@@ -499,6 +521,32 @@ s! {
         pub p_filesz: Elf64_Xword,
         pub p_memsz: Elf64_Xword,
         pub p_align: Elf64_Xword,
+    }
+
+    pub struct Elf32_Shdr {
+        pub sh_name: Elf32_Word,
+        pub sh_type: Elf32_Word,
+        pub sh_flags: Elf32_Word,
+        pub sh_addr: Elf32_Addr,
+        pub sh_offset: Elf32_Off,
+        pub sh_size: Elf32_Word,
+        pub sh_link: Elf32_Word,
+        pub sh_info: Elf32_Word,
+        pub sh_addralign: Elf32_Word,
+        pub sh_entsize: Elf32_Word,
+    }
+
+    pub struct Elf64_Shdr {
+        pub sh_name: Elf64_Word,
+        pub sh_type: Elf64_Word,
+        pub sh_flags: Elf64_Xword,
+        pub sh_addr: Elf64_Addr,
+        pub sh_offset: Elf64_Off,
+        pub sh_size: Elf64_Xword,
+        pub sh_link: Elf64_Word,
+        pub sh_info: Elf64_Word,
+        pub sh_addralign: Elf64_Xword,
+        pub sh_entsize: Elf64_Xword,
     }
 
     pub struct ucred {
