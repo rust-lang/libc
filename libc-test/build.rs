@@ -362,7 +362,11 @@ fn main() {
             "Elf32_Shdr" |
             "Elf64_Shdr" |
             "Elf32_Sym" |
-            "Elf64_Sym" => ty.to_string(),
+            "Elf64_Sym" |
+            "Elf32_Ehdr" |
+            "Elf64_Ehdr" |
+            "Elf32_Chdr" |
+            "Elf64_Chdr" => ty.to_string(),
 
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
