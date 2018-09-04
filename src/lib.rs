@@ -152,6 +152,12 @@ cfg_if! {
         pub enum FILE {}
         pub enum fpos_t {} // TODO: fill this out with a struct
 
+        extern {
+            pub static mut stdin: *mut FILE;
+            pub static mut stdout: *mut FILE;
+            pub static mut stderr: *mut FILE;
+        }
+
         pub const INT_MIN: c_int = -2147483648;
         pub const INT_MAX: c_int = 2147483647;
 
