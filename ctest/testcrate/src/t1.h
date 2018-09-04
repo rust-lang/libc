@@ -46,3 +46,5 @@ void T1j(int32_t a[4]);
 
 #define T1C 4
 
+extern uint32_t T1static;
+
