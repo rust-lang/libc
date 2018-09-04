@@ -840,7 +840,8 @@ fn main() {
     // fails on a lot of platforms.
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_type(|_| true)
-       .skip_fn(|_| true);
+       .skip_fn(|_| true)
+       .skip_static(|_| true);
     if android || linux {
         // musl defines these directly in `fcntl.h`
         if musl {
