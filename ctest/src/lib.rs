@@ -64,6 +64,7 @@ pub struct TestGenerator {
     cfg: Vec<(String, Option<String>)>,
     skip_fn: Box<Fn(&str) -> bool>,
     skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
+    skip_static: Box<Fn(&str) -> bool>,
     skip_field: Box<Fn(&str, &str) -> bool>,
     skip_field_type: Box<Fn(&str, &str) -> bool>,
     skip_const: Box<Fn(&str) -> bool>,
@@ -113,6 +114,7 @@ impl TestGenerator {
             cfg: Vec::new(),
             skip_fn: Box::new(|_| false),
             skip_fn_ptrcheck: Box::new(|_| false),
+            skip_static: Box::new(|_| false),
             skip_const: Box::new(|_| false),
             skip_signededness: Box::new(|_| false),
             skip_type: Box::new(|_| false),
@@ -420,8 +422,8 @@ impl TestGenerator {
     /// The closure is given the name of a Rust FFI function and returns whether
     /// test will be generated.
     ///
-    /// By default a functions signature is checked along with the function
-    /// pointer pointing to the same location as well.
+    /// By default, a function's signature is checked along with its address in
+    /// memory.
     ///
     /// # Examples
     ///
@@ -437,6 +439,31 @@ impl TestGenerator {
         where F: Fn(&str) -> bool + 'static
     {
         self.skip_fn = Box::new(f);
+        self
+    }
+
+    /// Configures whether tests for a static definition are generated.
+    ///
+    /// The closure is given the name of a Rust extern static definition and
+    /// returns whether test will be generated.
+    ///
+    /// By default, a static's type is checked along with its address in
+    /// memory.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_static(|s| {
+    ///     s.starts_with("foo_")
+    /// });
+    /// ```
+    pub fn skip_static<F>(&mut self, f: F) -> &mut TestGenerator
+        where F: Fn(&str) -> bool + 'static
+    {
+        self.skip_static = Box::new(f);
         self
     }
 
@@ -716,8 +743,7 @@ impl TestGenerator {
         t!(gen.rust.write_all(br#"
             use std::any::{Any, TypeId};
             use std::mem;
-            use std::sync::atomic::{AtomicBool, ATOMIC_BOOL_INIT, Ordering};
-            use std::sync::atomic::{AtomicUsize, ATOMIC_USIZE_INIT};
+            use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
             fn main() {
                 println!("RUNNING ALL TESTS");
@@ -753,8 +779,8 @@ impl TestGenerator {
             }
             p! { i8 i16 i32 i64 u8 u16 u32 u64 usize isize }
 
-            static FAILED: AtomicBool = ATOMIC_BOOL_INIT;
-            static NTESTS: AtomicUsize = ATOMIC_USIZE_INIT;
+            static FAILED: AtomicBool = AtomicBool::new(false);
+            static NTESTS: AtomicUsize = AtomicUsize::new(0);
 
             fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
                 if rust != c {
@@ -1171,6 +1197,32 @@ impl<'a> Generator<'a> {
         self.tests.push(format!("fn_{}", name));
     }
 
+    fn test_extern_static(&mut self, name: &str, rust_ty: &str, mutbl: bool) {
+        if (self.opts.skip_static)(name) {
+            return
+        }
+        let c_ty = self.rust_ty_to_c_ty(rust_ty);
+        t!(writeln!(self.c, r#"
+            {mutbl}{ty}* __test_static_{name}(void) {{
+                return &{name};
+            }}
+        "#, mutbl = if mutbl { "" } else { "const " }, ty = c_ty, name = name));
+        t!(writeln!(self.rust, r#"
+            #[inline(never)]
+            fn static_{name}() {{
+                extern {{
+                    fn __test_static_{name}() -> *{mutbl} {ty};
+                }}
+                unsafe {{
+                    same(&{name} as *const _ as usize,
+                         __test_static_{name}() as usize,
+                         "{name} static");
+                }}
+            }}
+        "#, name = name, mutbl = if mutbl { "mut" } else { "const" }, ty = rust_ty));
+        self.tests.push(format!("static_{}", name));
+    }
+
     fn assert_no_generics(&self, _i: ast::Ident, generics: &ast::Generics) {
         assert!(generics.lifetimes.len() == 0);
         assert!(generics.ty_params.len() == 0);
@@ -1464,7 +1516,9 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 self.test_extern_fn(&i.ident.to_string(), cname, &args, &ret,
                                     variadic, abi);
             }
-            ast::ForeignItemKind::Static(_, _) => {
+            ast::ForeignItemKind::Static(ref ty, mutbl) => {
+                let ty = self.ty2name(&ty, true);
+                self.test_extern_static(&i.ident.to_string(), &ty, mutbl);
             }
         }
         visit::walk_foreign_item(self, i)
