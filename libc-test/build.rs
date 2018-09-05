@@ -432,6 +432,7 @@ fn main() {
     cfg.skip_struct(move |ty| {
         match ty {
             "sockaddr_nl" => musl,
+            "ucontext_t" => true,
 
             // On Linux, the type of `ut_tv` field of `struct utmpx`
             // can be an anonymous struct, so an extra struct,
@@ -639,6 +640,7 @@ fn main() {
             s if ios && s.starts_with("RTV_") => true,
             s if ios && s.starts_with("DLT_") => true,
 
+            "NFT_MSG_MAX" => true,
             _ => false,
         }
     });
@@ -789,6 +791,14 @@ fn main() {
         }
     });
 
+    cfg.skip_static(move |name| {
+        match name {
+            // Internal constant, not declared in any headers.
+            "__progname" if android => true,
+            _ => false,
+        }
+    });
+
     cfg.skip_fn_ptrcheck(move |name| {
         match name {
             // dllimport weirdness?
@@ -844,7 +854,8 @@ fn main() {
     // fails on a lot of platforms.
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_type(|_| true)
-       .skip_fn(|_| true);
+       .skip_fn(|_| true)
+       .skip_static(|_| true);
     if android || linux {
         // musl defines these directly in `fcntl.h`
         if musl {
