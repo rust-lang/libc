@@ -457,6 +457,7 @@ pub const JAIL_SYS_INHERIT: ::c_int = 2;
 pub const SO_BINTIME: ::c_int = 0x2000;
 pub const SO_NO_OFFLOAD: ::c_int = 0x4000;
 pub const SO_NO_DDP: ::c_int = 0x8000;
+pub const SO_REUSEPORT_LB: ::c_int = 0x10000;
 pub const SO_LABEL: ::c_int = 0x1009;
 pub const SO_PEERLABEL: ::c_int = 0x1010;
 pub const SO_LISTENQLIMIT: ::c_int = 0x1011;
