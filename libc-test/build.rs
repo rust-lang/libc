@@ -556,7 +556,8 @@ fn main() {
             "PD_CLOEXEC" | "PD_ALLOWED_AT_FORK" if freebsd => true,
 
             // These constants were added in FreeBSD 12
-            "SF_USER_READAHEAD" if freebsd => true,
+            "SF_USER_READAHEAD" |
+            "SO_REUSEPORT_LB" if freebsd => true,
 
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
