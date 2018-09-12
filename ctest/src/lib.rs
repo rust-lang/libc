@@ -743,6 +743,7 @@ impl TestGenerator {
         t!(gen.rust.write_all(br#"
             use std::any::{Any, TypeId};
             use std::mem;
+            use std::sync::atomic::{ATOMIC_BOOL_INIT, ATOMIC_USIZE_INIT};
             use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
             fn main() {
@@ -779,8 +780,8 @@ impl TestGenerator {
             }
             p! { i8 i16 i32 i64 u8 u16 u32 u64 usize isize }
 
-            static FAILED: AtomicBool = AtomicBool::new(false);
-            static NTESTS: AtomicUsize = AtomicUsize::new(0);
+            static FAILED: AtomicBool = ATOMIC_BOOL_INIT;
+            static NTESTS: AtomicUsize = ATOMIC_USIZE_INIT;
 
             fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
                 if rust != c {
