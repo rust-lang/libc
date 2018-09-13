@@ -432,7 +432,6 @@ fn main() {
     cfg.skip_struct(move |ty| {
         match ty {
             "sockaddr_nl" => musl,
-            "ucontext_t" => true,
 
             // On Linux, the type of `ut_tv` field of `struct utmpx`
             // can be an anonymous struct, so an extra struct,
@@ -640,7 +639,6 @@ fn main() {
             s if ios && s.starts_with("RTV_") => true,
             s if ios && s.starts_with("DLT_") => true,
 
-            "NFT_MSG_MAX" => true,
             _ => false,
         }
     });
