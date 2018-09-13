@@ -794,6 +794,14 @@ fn main() {
         }
     });
 
+    cfg.skip_static(move |name| {
+        match name {
+            // Internal constant, not declared in any headers.
+            "__progname" if android => true,
+            _ => false,
+        }
+    });
+
     cfg.skip_fn_ptrcheck(move |name| {
         match name {
             // dllimport weirdness?
@@ -849,7 +857,8 @@ fn main() {
     // fails on a lot of platforms.
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_type(|_| true)
-       .skip_fn(|_| true);
+       .skip_fn(|_| true)
+       .skip_static(|_| true);
     if android || linux {
         // musl defines these directly in `fcntl.h`
         if musl {
