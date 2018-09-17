@@ -12,6 +12,7 @@ description = """
 A library for types and bindings to native C functions often found in libc or
 other common platform libraries.
 """
+build = "build.rs"
 
 [badges]
 travis-ci = { repository = "rust-lang/libc" }
