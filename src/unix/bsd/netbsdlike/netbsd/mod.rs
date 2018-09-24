@@ -9,6 +9,21 @@ pub type fsfilcnt_t = ::uint64_t;
 pub type idtype_t = ::c_int;
 pub type mqd_t = ::c_int;
 
+cfg_if! {
+    if #[cfg(any(target_arch = "aarch64",
+                 target_arch = "sparc", target_arch = "sparc64",
+                 target_arch = "x86", target_arch = "x86_64"))] {
+        type __cpu_simple_lock_t = ::c_uchar;
+    } else if #[cfg(any(target_arch = "arm", target_arch = "powerpc",
+                        target_arch = "powerpc64"))] {
+        type __cpu_simple_lock_t = ::c_int;
+    } else if #[cfg(any(target_arch = "mips", target_arch = "mips64"))] {
+        type __cpu_simple_lock_t = ::c_uint;
+    } else {
+        // Unknown target_arch
+    }
+}
+
 s! {
     pub struct aiocb {
         pub aio_offset: ::off_t,
@@ -160,9 +175,13 @@ s! {
 
     pub struct pthread_mutex_t {
         ptm_magic: ::c_uint,
-        ptm_errorcheck: ::c_uchar,
+        ptm_errorcheck: __cpu_simple_lock_t,
+        #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
+                 target_arch = "x86", target_arch = "x86_64"))]
         ptm_pad1: [u8; 3],
-        ptm_interlock: ::c_uchar,
+        ptm_interlock: __cpu_simple_lock_t,
+        #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
+                 target_arch = "x86", target_arch = "x86_64"))]
         ptm_pad2: [u8; 3],
         ptm_owner: ::pthread_t,
         ptm_waiters: *mut u8,
@@ -182,7 +201,7 @@ s! {
 
     pub struct pthread_cond_t {
         ptc_magic: ::c_uint,
-        ptc_lock: ::c_uchar,
+        ptc_lock: __cpu_simple_lock_t,
         ptc_waiters_first: *mut u8,
         ptc_waiters_last: *mut u8,
         ptc_mutex: *mut ::pthread_mutex_t,
@@ -196,7 +215,7 @@ s! {
 
     pub struct pthread_rwlock_t {
         ptr_magic: ::c_uint,
-        ptr_interlock: ::c_uchar,
+        ptr_interlock: __cpu_simple_lock_t,
         ptr_rblocked_first: *mut u8,
         ptr_rblocked_last: *mut u8,
         ptr_wblocked_first: *mut u8,
@@ -692,17 +711,33 @@ pub const FD_SETSIZE: usize = 0x100;
 
 pub const ST_NOSUID: ::c_ulong = 8;
 
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    ptm_magic: 0x33330003,
-    ptm_errorcheck: 0,
-    ptm_interlock: 0,
-    ptm_waiters: 0 as *mut _,
-    ptm_owner: 0,
-    ptm_pad1: [0; 3],
-    ptm_pad2: [0; 3],
-    ptm_recursed: 0,
-    ptm_spare2: 0 as *mut _,
-};
+cfg_if! {
+    if #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
+                 target_arch = "x86", target_arch = "x86_64"))] {
+        pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+            ptm_magic: 0x33330003,
+            ptm_errorcheck: 0,
+            ptm_interlock: 0,
+            ptm_waiters: 0 as *mut _,
+            ptm_owner: 0,
+            ptm_pad1: [0; 3],
+            ptm_pad2: [0; 3],
+            ptm_recursed: 0,
+            ptm_spare2: 0 as *mut _,
+        };
+    } else {
+        pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+            ptm_magic: 0x33330003,
+            ptm_errorcheck: 0,
+            ptm_interlock: 0,
+            ptm_waiters: 0 as *mut _,
+            ptm_owner: 0,
+            ptm_recursed: 0,
+            ptm_spare2: 0 as *mut _,
+        };
+    }
+}
+
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     ptc_magic: 0x55550005,
     ptc_lock: 0,
