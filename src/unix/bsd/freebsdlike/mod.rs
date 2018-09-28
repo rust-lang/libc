@@ -1136,6 +1136,9 @@ extern {
                         timeout: *const ::timespec) -> ::c_int;
     pub fn sigwaitinfo(set: *const sigset_t,
                        info: *mut siginfo_t) -> ::c_int;
+    pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
+    pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
+                     times: *const ::timespec, flag: ::c_int) -> ::c_int;
     pub fn openpty(amaster: *mut ::c_int,
                    aslave: *mut ::c_int,
                    name: *mut ::c_char,
