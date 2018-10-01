@@ -101,6 +101,28 @@ extern crate std as core;
 #[macro_use] mod macros;
 mod dox;
 
+/*
+ * `c_void` should be defined for all targets except wasm.
+ */
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+cfg_if! {
+    if #[cfg(core_cvoid)] {
+        pub use core::ffi::c_void;
+    } else {
+        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help enable
+        // more optimization opportunities around it recognizing things like
+        // malloc/free.
+        #[repr(u8)]
+        pub enum c_void {
+            // Two dummy variants so the #[repr] attribute can be used.
+            #[doc(hidden)]
+            __variant1,
+            #[doc(hidden)]
+            __variant2,
+        }
+    }
+}
+
 cfg_if! {
     if #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))] {
         // empty ...
@@ -108,24 +130,6 @@ cfg_if! {
         // On the Switch, we only define some useful universal types for
         // convenience. Those can be found in the switch.rs file.
     } else {
-        cfg_if! {
-            if #[cfg(core_cvoid)] {
-                pub use core::ffi::c_void;
-            } else {
-                // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help enable
-                // more optimization opportunities around it recognizing things like
-                // malloc/free.
-                #[repr(u8)]
-                pub enum c_void {
-                    // Two dummy variants so the #[repr] attribute can be used.
-                    #[doc(hidden)]
-                    __variant1,
-                    #[doc(hidden)]
-                    __variant2,
-                }
-            }
-        }
-
         pub type int8_t = i8;
         pub type int16_t = i16;
         pub type int32_t = i32;
