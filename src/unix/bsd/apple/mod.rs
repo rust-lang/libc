@@ -2350,6 +2350,7 @@ extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn ftok(pathname : *const c_char, proj_id : ::c_int) -> key_t;
     pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void,
                  shmflg: ::c_int) -> *mut ::c_void;
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
