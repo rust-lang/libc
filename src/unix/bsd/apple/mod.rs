@@ -747,7 +747,7 @@ pub const PROT_READ: ::c_int = 1;
 pub const PROT_WRITE: ::c_int = 2;
 pub const PROT_EXEC: ::c_int = 4;
 
-pub const PT_TRACEME: ::c_int = 0;
+pub const PT_TRACE_ME: ::c_int = 0;
 pub const PT_READ_I: ::c_int = 1;
 pub const PT_READ_D: ::c_int = 2;
 pub const PT_READ_U: ::c_int = 3;
