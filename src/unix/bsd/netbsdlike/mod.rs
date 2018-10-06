@@ -314,6 +314,17 @@ pub const POSIX_MADV_DONTNEED : ::c_int = 4;
 pub const PTHREAD_CREATE_JOINABLE : ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED : ::c_int = 1;
 
+pub const PT_TRACE_ME: ::c_int = 0;
+pub const PT_READ_I: ::c_int = 1;
+pub const PT_READ_D: ::c_int = 2;
+pub const PT_WRITE_I: ::c_int = 4;
+pub const PT_WRITE_D: ::c_int = 5;
+pub const PT_CONTINUE: ::c_int = 7;
+pub const PT_KILL: ::c_int = 8;
+pub const PT_ATTACH: ::c_int = 9;
+pub const PT_DETACH: ::c_int = 10;
+pub const PT_IO: ::c_int = 11;
+
 // http://man.openbsd.org/OpenBSD-current/man2/clock_getres.2
 // The man page says clock_gettime(3) can accept various values as clockid_t but
 // http://fxr.watson.org/fxr/source/kern/kern_time.c?v=OPENBSD;im=excerpts#L161

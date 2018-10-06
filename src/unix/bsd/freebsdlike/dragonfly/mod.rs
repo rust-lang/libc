@@ -429,6 +429,8 @@ pub const NOTE_CHILD: ::uint32_t = 0x00000004;
 pub const SO_SNDSPACE: ::c_int = 0x100a;
 pub const SO_CPUHINT: ::c_int = 0x1030;
 
+pub const PT_FIRSTMACH: ::c_int = 32;
+
 // https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/sys/net/if.h#L101
 pub const IFF_UP: ::c_int = 0x1; // interface is up
 pub const IFF_BROADCAST: ::c_int = 0x2; // broadcast address valid
