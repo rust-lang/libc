@@ -969,6 +969,15 @@ pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
 
 pub const SIGSTKSZ : ::size_t = 40960;
 
+pub const PT_DUMPCORE: ::c_int = 12;
+pub const PT_LWPINFO: ::c_int = 13;
+pub const PT_SYSCALL: ::c_int = 14;
+pub const PT_SYSCALLEMU: ::c_int = 15;
+pub const PT_SET_EVENT_MASK: ::c_int = 16;
+pub const PT_GET_EVENT_MASK: ::c_int = 17;
+pub const PT_GET_PROCESS_STATE: ::c_int = 18;
+pub const PT_FIRSTMACH: ::c_int = 32;
+
 // dirfd() is a macro on netbsd to access
 // the first field of the struct where dirp points to:
 // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36

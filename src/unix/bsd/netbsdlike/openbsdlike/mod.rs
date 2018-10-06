@@ -14,6 +14,7 @@ pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_condattr_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
 pub type pthread_rwlockattr_t = *mut ::c_void;
+pub type caddr_t = *mut ::c_char;
 
 s! {
     pub struct dirent {
@@ -695,6 +696,8 @@ pub const SOCK_CLOEXEC: ::c_int = 0x8000;
 pub const SOCK_NONBLOCK: ::c_int = 0x4000;
 pub const SOCK_DNS: ::c_int = 0x1000;
 
+pub const PTRACE_FORK: ::c_int = 0x0002;
+
 pub const WCONTINUED: ::c_int = 8;
 
 f! {
@@ -734,6 +737,10 @@ extern {
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
+    pub fn ptrace(request: ::c_int,
+                  pid: ::pid_t,
+                  addr: caddr_t,
+                  data: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
