@@ -1,4 +1,4 @@
-use self::*;
+use PT_FIRSTMACH;
 
 pub type c_long = i64;
 pub type c_ulong = u64;
