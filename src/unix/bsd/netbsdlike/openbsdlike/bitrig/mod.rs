@@ -85,6 +85,8 @@ pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
 pub const SIGSTKSZ : ::size_t = 40960;
 
+pub const PT_FIRSTMACH: ::c_int = 32;
+
 extern {
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t) -> *mut ::c_char;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
