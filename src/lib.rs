@@ -102,9 +102,8 @@ extern crate std as core;
 mod dox;
 
 /*
- * `c_void` should be defined for all targets except wasm.
+ * `c_void` should be defined for all targets
  */
-#[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
 cfg_if! {
     if #[cfg(core_cvoid)] {
         pub use core::ffi::c_void;
@@ -125,7 +124,10 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))] {
-        // empty ...
+        // wasm32-unknown-unknown does not have a real C library.
+        // Some useful definitions are in the wasm32.rs file.
+        mod wasm32;
+        pub use wasm32::*;
     } else if #[cfg(target_os = "switch")] {
         // On the Switch, we only define some useful universal types for
         // convenience. Those can be found in the switch.rs file.
