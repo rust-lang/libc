@@ -543,6 +543,8 @@ extern {
                           attr: *const ::pthread_attr_t,
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
+    #[cfg(not(target_vendor = "rumprun"))]
+    pub fn acct(filename: *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {
