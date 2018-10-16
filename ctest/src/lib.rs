@@ -932,7 +932,7 @@ impl<'a> Generator<'a> {
             "i16" => "int16_t".to_string(),
             "i32" => "int32_t".to_string(),
             "i64" => "int64_t".to_string(),
-
+            "( )" => "void".to_string(),
             s => (self.opts.type_name)(s, self.structs.contains(s), self.unions.contains(s)),
         }
     }
@@ -1198,17 +1198,43 @@ impl<'a> Generator<'a> {
         self.tests.push(format!("fn_{}", name));
     }
 
-    fn test_extern_static(&mut self, name: &str, rust_ty: &str, mutbl: bool) {
+    fn test_extern_static(&mut self, name: &str, cname: Option<String>,
+                          rust_ty: &str, c_ty: &str, mutbl: bool) {
         if (self.opts.skip_static)(name) {
             return
         }
-        let c_ty = self.rust_ty_to_c_ty(rust_ty);
+
+        let cname = cname.unwrap_or_else(|| name.to_string());
+
+        if rust_ty.contains("extern fn") {
+            let c_ty = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
+            t!(writeln!(self.c, r#"
+            {ty} {{
+                return {cname};
+            }}
+        "#, ty = c_ty, cname = cname));
+            t!(writeln!(self.rust, r#"
+            #[inline(never)]
+            fn static_{name}() {{
+                extern {{
+                    fn __test_static_{name}() -> {ty};
+                }}
+                unsafe {{
+                    same({name} as usize,
+                         __test_static_{name}() as usize,
+                         "{name} static");
+                }}
+            }}
+        "#, name = name, ty = rust_ty));
+        } else {
+            let c_ty = self.rust_ty_to_c_ty(rust_ty);
         t!(writeln!(self.c, r#"
             {mutbl}{ty}* __test_static_{name}(void) {{
-                return &{name};
+                return &{cname};
             }}
-        "#, mutbl = if mutbl { "" } else { "const " }, ty = c_ty, name = name));
-        t!(writeln!(self.rust, r#"
+        "#, mutbl = if mutbl { "" } else { "const " }, ty = c_ty,
+                    name = name, cname = cname));
+            t!(writeln!(self.rust, r#"
             #[inline(never)]
             fn static_{name}() {{
                 extern {{
@@ -1221,6 +1247,7 @@ impl<'a> Generator<'a> {
                 }}
             }}
         "#, name = name, mutbl = if mutbl { "mut" } else { "const" }, ty = rust_ty));
+        };
         self.tests.push(format!("static_{}", name));
     }
 
@@ -1290,7 +1317,13 @@ impl<'a> Generator<'a> {
                     if args.len() == 0 {
                         args.push("void".to_string());
                     }
-                    format!("{}(*)({})", ret, args.join(", "))
+
+                    let s = if ret.contains("(*)") {
+                        ret.replace("(*)", &format!("(*(*)({}))", args.join(", ")))
+                    } else {
+                        format!("{}(*)({})", ret, args.join(", "))
+                    };
+                    s
                 }
             }
             ast::TyKind::Array(ref t, ref e) => {
@@ -1329,6 +1362,7 @@ impl<'a> Generator<'a> {
                     format!("char*")
                 }
             }
+            ast::TyKind::Tup(ref v) if v.is_empty() => if rust { "()".to_string() } else { "void".to_string() },
             _ => panic!("unknown ty {:?}", ty),
         }
     }
@@ -1518,8 +1552,11 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                                     variadic, abi);
             }
             ast::ForeignItemKind::Static(ref ty, mutbl) => {
-                let ty = self.ty2name(&ty, true);
-                self.test_extern_static(&i.ident.to_string(), &ty, mutbl);
+                let rust_ty = self.ty2name(&ty, true);
+                let c_ty = self.ty2name(&ty, false);
+                let cname = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
+                    .map(|i| i.to_string());
+                self.test_extern_static(&i.ident.to_string(), cname, &rust_ty, &c_ty, mutbl);
             }
         }
         visit::walk_foreign_item(self, i)
