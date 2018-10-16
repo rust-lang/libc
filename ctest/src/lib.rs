@@ -1226,6 +1226,37 @@ impl<'a> Generator<'a> {
                 }}
             }}
         "#, name = name, ty = rust_ty));
+        } else if rust_ty.starts_with("[") && rust_ty.ends_with("]") {
+            let c_ptr_ty = c_ty.split(" ").nth(0).unwrap();
+            let mut lens = Vec::new();
+            for i in c_ty.split(" ").skip(1) {
+                lens.push(i);
+            }
+            lens.reverse();
+            let array_test_name = format!("{mutbl} {elem} (*__test_static_{name}(void)){lens}",
+                                          mutbl = if mutbl { "" } else { "const" },
+                                          elem = c_ptr_ty,
+                                          name = name,
+                                          lens = lens.join("")
+            );
+            t!(writeln!(self.c, r#"
+            {array_test_name} {{
+                return &{cname};
+            }}
+        "#, array_test_name = array_test_name, cname = cname));
+            t!(writeln!(self.rust, r#"
+            #[inline(never)]
+            fn static_{name}() {{
+                extern {{
+                    fn __test_static_{name}() -> *{mutbl} {ty};
+                }}
+                unsafe {{
+                    same(&{name} as *const _ as usize,
+                         __test_static_{name}() as usize,
+                         "{name} static");
+                }}
+            }}
+        "#, name = name, mutbl = if mutbl { "mut" } else { "const" }, ty = rust_ty));
         } else {
             let c_ty = self.rust_ty_to_c_ty(rust_ty);
         t!(writeln!(self.c, r#"
@@ -1327,8 +1358,13 @@ impl<'a> Generator<'a> {
                 }
             }
             ast::TyKind::Array(ref t, ref e) => {
-                assert!(rust);
-                format!("[{}; {}]", self.ty2name(t, rust), self.expr2str(e))
+                if rust {
+                    format!("[{}; {}]", self.ty2name(t, rust), self.expr2str(e))
+                } else {
+                    let len = self.expr2str(e);
+                    let ty =  self.ty2name(t, rust);
+                    format!("{} [{}]", ty, len)
+                }
             }
             ast::TyKind::Rptr(_, ast::MutTy {
                 ref ty,
@@ -1362,7 +1398,11 @@ impl<'a> Generator<'a> {
                     format!("char*")
                 }
             }
-            ast::TyKind::Tup(ref v) if v.is_empty() => if rust { "()".to_string() } else { "void".to_string() },
+            ast::TyKind::Tup(ref v) if v.is_empty() => if rust {
+                "()".to_string()
+            } else {
+                "void".to_string()
+            },
             _ => panic!("unknown ty {:?}", ty),
         }
     }
