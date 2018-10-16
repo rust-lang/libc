@@ -21,6 +21,13 @@ uint8_t foo(uint8_t a, uint8_t b) { return a + b; }
 void bar(uint8_t a) { return; }
 void baz(void) { return; }
 
+uint32_t (*nested(uint8_t arg))(uint16_t) {
+  return NULL;
+}
+
+uint32_t (*nested2(uint8_t(*arg0)(uint8_t), uint16_t(*arg1)(uint16_t)))(uint16_t) {
+  return NULL;
+}
 
 uint8_t (*T1_static_mut_fn_ptr)(uint8_t, uint8_t) = foo;
 uint8_t (*const T1_static_const_fn_ptr_unsafe)(uint8_t, uint8_t) = foo;
@@ -29,3 +36,6 @@ void (*const T1_static_const_fn_ptr_unsafe3)(void) = baz;
 
 const uint8_t T1_static_right = 7;
 uint8_t (*T1_static_right2)(uint8_t, uint8_t) = foo;
+
+uint32_t (*(*T1_fn_ptr_s)(uint8_t))(uint16_t) = nested;
+uint32_t (*(*T1_fn_ptr_s2)(uint8_t(*arg0)(uint8_t), uint16_t(*arg1)(uint16_t)))(uint16_t) = nested2;

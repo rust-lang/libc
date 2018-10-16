@@ -56,3 +56,13 @@ void (*const T1_static_const_fn_ptr_unsafe3)(void);
 
 const uint8_t T1_static_right;
 uint8_t (*T1_static_right2)(uint8_t, uint8_t);
+
+// T1_fn_ptr_nested: function pointer to a function, taking a uint8_t, and
+// returning a function pointer to a function taking a uint16_t and returning a
+// uint32_t
+uint32_t (*(*T1_fn_ptr_s)(uint8_t))(uint16_t);
+
+// T1_fn_ptr_nested: function pointer to a function, taking a function pointer
+// uint8_t -> uint8_t, and returning a function pointer to a function taking a
+// uint16_t and returning a uint32_t
+uint32_t (*(*T1_fn_ptr_s2)(uint8_t(*)(uint8_t), uint16_t(*)(uint16_t)))(uint16_t);

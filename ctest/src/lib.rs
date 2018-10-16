@@ -13,7 +13,6 @@
 
 extern crate cc;
 extern crate syntex_syntax as syntax;
-extern crate syn;
 
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -1208,7 +1207,7 @@ impl<'a> Generator<'a> {
         let cname = cname.unwrap_or_else(|| name.to_string());
 
         if rust_ty.contains("extern fn") {
-            let c_ty = c_ty.replace("(*)", &format!("(* __test_static_{}(void))", name));
+            let c_ty = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
             t!(writeln!(self.c, r#"
             {ty} {{
                 return {cname};
@@ -1318,7 +1317,13 @@ impl<'a> Generator<'a> {
                     if args.len() == 0 {
                         args.push("void".to_string());
                     }
-                    format!("{}(*)({})", ret, args.join(", "))
+
+                    let s = if ret.contains("(*)") {
+                        ret.replace("(*)", &format!("(*(*)({}))", args.join(", ")))
+                    } else {
+                        format!("{}(*)({})", ret, args.join(", "))
+                    };
+                    s
                 }
             }
             ast::TyKind::Array(ref t, ref e) => {
