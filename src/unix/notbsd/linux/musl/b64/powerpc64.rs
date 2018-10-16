@@ -493,6 +493,9 @@ pub const TIOCM_DSR: ::c_ulong = 0x100;
 pub const TIOCM_CD: ::c_ulong = TIOCM_CAR;
 pub const TIOCM_RI: ::c_ulong = TIOCM_RNG;
 
+pub const TIOCGRS485: ::c_ulong = 0x542E;
+pub const TIOCSRS485: ::c_ulong = 0x542F;
+
 pub const RLIMIT_NLIMITS: ::c_int = 15;
 pub const TIOCINQ: ::c_ulong = ::FIONREAD;
 pub const MCL_CURRENT: ::c_int = 0x2000;
@@ -569,4 +572,4 @@ pub const B4000000: ::speed_t = 0o00036;
 
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-}
+#endif}
