@@ -1,17 +1,37 @@
-language: rust
-rust:
-  - stable
-  - beta
-  - nightly
+dist: trusty
 sudo: false
+language: rust
+
+matrix:
+  fast_finish: true
+  include:
+    - name: "stable"
+      rust: stable
+    - name: "beta"
+      rust: beta
+    - name: "nightly"
+      rust: nightly
+      after_success:
+        - travis-cargo --only nightly doc-upload
+    - name: "libc-test"
+      rust: nightly
+      os: osx
+      osx_image: xcode9.4
+      after_script:
+        - git clone https://github.com/rust-lang/libc
+        - sed -i '' 's@ctest = "0.2.2"@ctest = { path = "../.." }@g' libc/libc-test/Cargo.toml
+        - cd libc
+        - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
+        - |
+          export TARGET=x86_64-apple-darwin
+          sh ci/run.sh $TARGET
 before_script:
   - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
 script:
   - cargo test
   - cargo test --manifest-path testcrate/Cargo.toml
   - cargo doc --no-deps
-after_success:
-  - travis-cargo --only nightly doc-upload
+
 notifications:
   email:
     on_success: never

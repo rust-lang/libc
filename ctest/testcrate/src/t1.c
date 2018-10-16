@@ -40,8 +40,12 @@ uint8_t (*T1_static_right2)(uint8_t, uint8_t) = foo;
 uint32_t (*(*T1_fn_ptr_s)(uint8_t))(uint16_t) = nested;
 uint32_t (*(*T1_fn_ptr_s2)(uint8_t(*arg0)(uint8_t), uint16_t(*arg1)(uint16_t)))(uint16_t) = nested2;
 
-int32_t T1_arr3[2] = {0};
-int32_t T1_arr4[2][3] = {0};
-int32_t T1_arr5[1][2][3] = {0};
+const int32_t T1_arr0[2] = {0, 0};
+const int32_t T1_arr1[2][3] = {{0, 0, 0}, {0, 0, 0}};
+const int32_t T1_arr2[1][2][3] = {{{0, 0, 0}, {0, 0, 0}}};
 
-int32_t T1_arr42[1][2][3] = {0};
+int32_t T1_arr3[2] = {0, 0};
+int32_t T1_arr4[2][3] = {{0, 0, 0}, {0, 0, 0}};
+int32_t T1_arr5[1][2][3] = {{{0, 0, 0}, {0, 0, 0}}};
+
+int32_t T1_arr42[1][2][3] = {{{0, 0, 0}, {0, 0, 0}}};
