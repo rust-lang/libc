@@ -14,6 +14,7 @@ Automated tests of FFI bindings.
 [dependencies]
 syntex_syntax = "0.59.1"
 cc = "1.0.1"
+syn = { version = "0.15", features = ["full"] }
 
 [workspace]
 members = ["testcrate"]

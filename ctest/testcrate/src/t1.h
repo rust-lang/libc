@@ -47,4 +47,12 @@ void T1j(int32_t a[4]);
 #define T1C 4
 
 extern uint32_t T1static;
+const uint8_t T1_static_u8;
+uint8_t T1_static_mut_u8;
+uint8_t (*T1_static_mut_fn_ptr)(uint8_t, uint8_t);
+uint8_t (*const T1_static_const_fn_ptr_unsafe)(uint8_t, uint8_t);
+void (*const T1_static_const_fn_ptr_unsafe2)(uint8_t);
+void (*const T1_static_const_fn_ptr_unsafe3)(void);
 
+const uint8_t T1_static_right;
+uint8_t (*T1_static_right2)(uint8_t, uint8_t);
