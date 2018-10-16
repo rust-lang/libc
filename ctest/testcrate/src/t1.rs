@@ -101,3 +101,10 @@ extern "C" {
     #[link_name = "T1_arr42"]
     pub static mut T1_arr6: [[[i32; 3]; 2]; 1];
 }
+
+#[repr(C)]
+pub struct Q {
+    pub q0: *mut u8,
+    pub q1: *mut *mut u8,
+    pub q2: u8,
+}
