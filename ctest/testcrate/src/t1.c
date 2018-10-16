@@ -12,3 +12,20 @@ void T1h(const int32_t a[4]) {}
 void T1i(int32_t a[4]) {}
 void T1j(int32_t a[4]) {}
 unsigned T1static = 3;
+
+const uint8_t T1_static_u8 = 42;
+uint8_t T1_static_mut_u8 = 37;
+
+
+uint8_t foo(uint8_t a, uint8_t b) { return a + b; }
+void bar(uint8_t a) { return; }
+void baz(void) { return; }
+
+
+uint8_t (*T1_static_mut_fn_ptr)(uint8_t, uint8_t) = foo;
+uint8_t (*const T1_static_const_fn_ptr_unsafe)(uint8_t, uint8_t) = foo;
+void (*const T1_static_const_fn_ptr_unsafe2)(uint8_t) = bar;
+void (*const T1_static_const_fn_ptr_unsafe3)(void) = baz;
+
+const uint8_t T1_static_right = 7;
+uint8_t (*T1_static_right2)(uint8_t, uint8_t) = foo;
