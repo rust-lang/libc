@@ -84,4 +84,8 @@ extern "C" {
     pub static T1_static_wrong: u8;
     #[link_name = "T1_static_right2"]
     pub static mut T1_static_wrong2: extern "C" fn(u8, u8) -> u8;
+
+    pub static T1_fn_ptr_s: unsafe extern "C" fn(u8) -> extern fn(u16)->u32;
+    pub static T1_fn_ptr_s2: unsafe extern "C" fn(extern fn(u8)->u8,
+                                                  extern fn(u16)->u16) -> extern fn(u16)->u32;
 }
