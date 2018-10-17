@@ -572,4 +572,4 @@ pub const B4000000: ::speed_t = 0o00036;
 
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-#endif}
+}
