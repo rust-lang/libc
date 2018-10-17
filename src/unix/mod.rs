@@ -641,6 +641,7 @@ extern {
     pub fn symlink(path1: *const c_char,
                    path2: *const c_char) -> ::c_int;
 
+    pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
     pub fn ftruncate(fd: ::c_int, length: off_t) -> ::c_int;
 
     pub fn signal(signum: ::c_int, handler: sighandler_t) -> sighandler_t;
