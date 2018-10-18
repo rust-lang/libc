@@ -568,5 +568,5 @@ pub const B3500000: ::speed_t = 0o00035;
 pub const B4000000: ::speed_t = 0o00036;
 
 extern {
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 }
