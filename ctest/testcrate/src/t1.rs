@@ -44,6 +44,10 @@ pub struct T1StructWithUnion {
     pub u: T1NoTypedefUnion,
 }
 
+pub type T1TypedefDouble = c_double;
+pub type T1TypedefPtr = *mut c_int;
+pub type T1TypedefStruct = T1Bar;
+
 i! {
     pub const T1C: u32 = 4;
 }

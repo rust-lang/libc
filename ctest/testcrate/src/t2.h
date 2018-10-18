@@ -3,6 +3,9 @@
 typedef int32_t T2Foo;
 typedef int8_t T2Bar;
 
+typedef T2Foo T2TypedefFoo;
+typedef unsigned T2TypedefInt;
+
 struct T2Baz {
   int8_t _a;
   int64_t a;

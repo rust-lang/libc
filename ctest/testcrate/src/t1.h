@@ -33,6 +33,10 @@ struct T1StructWithUnion {
     union T1NoTypedefUnion u;
 };
 
+typedef double T1TypedefDouble;
+typedef int* T1TypedefPtr;
+typedef struct T1Bar T1TypedefStruct;
+
 void T1a(void);
 void* T1b(void);
 void* T1c(void*);
