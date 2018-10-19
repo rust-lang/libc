@@ -25,8 +25,6 @@ matrix:
         - |
           export TARGET=x86_64-apple-darwin
           sh ci/run.sh $TARGET
-before_script:
-  - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
 script:
   - cargo test
   - cargo test --manifest-path testcrate/Cargo.toml
