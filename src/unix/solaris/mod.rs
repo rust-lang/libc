@@ -1458,4 +1458,6 @@ extern {
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn popen(command: *const c_char,
                  mode: *const c_char) -> *mut ::FILE;
+
+    pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
 }
