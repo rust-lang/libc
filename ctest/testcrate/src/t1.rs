@@ -87,5 +87,24 @@ extern "C" {
 
     pub static T1_fn_ptr_s: unsafe extern "C" fn(u8) -> extern fn(u16)->u32;
     pub static T1_fn_ptr_s2: unsafe extern "C" fn(extern fn(u8)->u8,
-                                                  extern fn(u16)->u16) -> extern fn(u16)->u32;
+                                                  extern fn(u16)->u16)
+                                                  -> extern fn(u16)->u32;
+
+    pub static T1_arr0: [i32; 2];
+    pub static T1_arr1: [[i32; 3]; 2];
+    pub static T1_arr2: [[[i32; 3]; 2]; 1];
+
+    pub static mut T1_arr3: [i32; 2];
+    pub static mut T1_arr4: [[i32; 3]; 2];
+    pub static mut T1_arr5: [[[i32; 3]; 2]; 1];
+
+    #[link_name = "T1_arr42"]
+    pub static mut T1_arr6: [[[i32; 3]; 2]; 1];
+}
+
+#[repr(C)]
+pub struct Q {
+    pub q0: *mut u8,
+    pub q1: *mut *mut u8,
+    pub q2: u8,
 }

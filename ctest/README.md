@@ -32,7 +32,7 @@ my-sys-library = { path = "../my-sys-library" }
 libc = "0.2"
 
 [build-dependencies]
-ctest = "0.1"
+ctest = "0.2"
 ```
 
 Next, add a build script to `systest/build.rs`:
