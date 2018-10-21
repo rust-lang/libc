@@ -25,6 +25,8 @@ fn t2() {
     assert!(!status.success(), o);
     let errors = [
         "bad T2Foo signed",
+        "bad T2TypedefFoo signed",
+        "bad T2TypedefInt signed",
         "bad T2Bar size",
         "bad T2Bar align",
         "bad T2Bar signed",

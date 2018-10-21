@@ -76,12 +76,10 @@ pub struct TestGenerator {
     fn_cname: Box<Fn(&str, Option<&str>) -> String>,
 }
 
-struct StructFinder {
+struct TyFinder {
     structs: HashSet<String>,
-}
-
-struct UnionFinder {
     unions: HashSet<String>,
+    aliases: HashMap<String, P<ast::Ty>>,
 }
 
 struct Generator<'a> {
@@ -91,6 +89,7 @@ struct Generator<'a> {
     sh: &'a SpanHandler,
     structs: HashSet<String>,
     unions: HashSet<String>,
+    aliases: HashMap<String, P<ast::Ty>>,
     files: HashSet<String>,
     abi: Abi,
     tests: Vec<String>,
@@ -707,27 +706,23 @@ impl TestGenerator {
             features: None,
         }.fold_crate(krate);
 
-        // Probe the crate to find all structs (used to convert type names to
-        // names in C).
-        let mut structs = StructFinder {
+        // Probe the crate to find all structs, unions and type aliases (used to convert type names
+        // to names in C).
+        let mut types = TyFinder {
             structs: HashSet::new(),
-        };
-        visit::walk_crate(&mut structs, &krate);
-
-        // Probe the crate to find all unions (used to convert type names to
-        // names in C).
-        let mut unions = UnionFinder {
             unions: HashSet::new(),
+            aliases: HashMap::new(),
         };
-        visit::walk_crate(&mut unions, &krate);
+        visit::walk_crate(&mut types, &krate);
 
         let mut gen = Generator {
             target: &target,
             rust: Box::new(rust_out),
             c: Box::new(c_out),
             sh: &sess.span_diagnostic,
-            structs: structs.structs,
-            unions: unions.unions,
+            structs: types.structs,
+            unions: types.unions,
+            aliases: types.aliases,
             abi: Abi::C,
             tests: Vec::new(),
             files: HashSet::new(),
@@ -941,13 +936,13 @@ impl<'a> Generator<'a> {
         (self.opts.field_name)(struct_, field)
     }
 
-    fn test_type(&mut self, ty: &str) {
-        if (self.opts.skip_type)(ty) {
+    fn test_type(&mut self, name: &str, ty: &ast::Ty) {
+        if (self.opts.skip_type)(name) {
             return
         }
-        let c = self.rust_ty_to_c_ty(ty);
-        self.test_size_align(ty, &c);
-        self.test_sign(ty, &c);
+        let c = self.rust_ty_to_c_ty(name);
+        self.test_size_align(name, &c);
+        self.test_sign(name, &c, ty);
     }
 
     fn test_struct(&mut self, ty: &str, s: &ast::VariantData) {
@@ -1063,12 +1058,29 @@ impl<'a> Generator<'a> {
         self.tests.push(format!("size_align_{}", rust));
     }
 
-    fn test_sign(&mut self, rust: &str, c: &str) {
-        match c {
-            "float" | "double" => return, // nope, never has a sign
-            _ => {}
+    fn has_sign(&self, ty: &ast::Ty) -> bool {
+        match ty.node {
+            ast::TyKind::Path(_, ref path) => {
+                let last = path.segments.last().unwrap().identifier.to_string();
+                if let Some(aliased) = self.aliases.get(&last) {
+                    return self.has_sign(aliased);
+                }
+                match self.rust2c(&last).as_str() {
+                    "char" | "short" | "int" | "long" | "long long" | "int8_t" | "int16_t"
+                        | "int32_t" | "int64_t" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t"
+                        | "size_t" | "ssize_t" => true,
+                    s => s.starts_with("signed ") || s.starts_with("unsigned "),
+                }
+            }
+            _ => false,
         }
+    }
+
+    fn test_sign(&mut self, rust: &str, c: &str, ty: &ast::Ty) {
         if (self.opts.skip_signededness)(rust) {
+            return
+        }
+        if !self.has_sign(ty) {
             return
         }
         t!(writeln!(self.c, r#"
@@ -1542,9 +1554,9 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
         let prev_abi = self.abi;
         let public = i.vis == ast::Visibility::Public;
         match i.node {
-            ast::ItemKind::Ty(_, ref generics) if public => {
+            ast::ItemKind::Ty(ref ty, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
-                self.test_type(&i.ident.to_string());
+                self.test_type(&i.ident.to_string(), ty);
             }
 
             ast::ItemKind::Struct(ref s, ref generics) |
@@ -1605,7 +1617,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
     fn visit_mac(&mut self, _mac: &'v ast::Mac) { }
 }
 
-impl<'v> Visitor<'v> for StructFinder {
+impl<'v> Visitor<'v> for TyFinder {
     fn visit_item(&mut self, i: &'v ast::Item) {
         match i.node {
             ast::ItemKind::Struct(..) => {
@@ -1614,19 +1626,11 @@ impl<'v> Visitor<'v> for StructFinder {
             ast::ItemKind::Enum(..) => {
                 self.structs.insert(i.ident.to_string());
             }
-
-            _ => {}
-        }
-        visit::walk_item(self, i)
-    }
-    fn visit_mac(&mut self, _mac: &'v ast::Mac) { }
-}
-
-impl<'v> Visitor<'v> for UnionFinder {
-    fn visit_item(&mut self, i: &'v ast::Item) {
-        match i.node {
             ast::ItemKind::Union(..) => {
                 self.unions.insert(i.ident.to_string());
+            }
+            ast::ItemKind::Ty(ref ty, ..) => {
+                self.aliases.insert(i.ident.to_string(), ty.clone());
             }
 
             _ => {}

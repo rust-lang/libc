@@ -1,5 +1,10 @@
+use libc::*;
+
 pub type T2Foo = u32;
 pub type T2Bar = u32;
+
+pub type T2TypedefFoo = T2Foo;
+pub type T2TypedefInt = c_int;
 
 macro_rules! i {
     ($i:item) => ($i)
