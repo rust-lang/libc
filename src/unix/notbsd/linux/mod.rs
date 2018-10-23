@@ -1679,6 +1679,25 @@ pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
 
+// linux/net_tstamp.h
+pub const SOF_TIMESTAMPING_TX_HARDWARE: ::c_uint = 1 << 0;
+pub const SOF_TIMESTAMPING_TX_SOFTWARE: ::c_uint = 1 << 1;
+pub const SOF_TIMESTAMPING_RX_HARDWARE: ::c_uint = 1 << 2;
+pub const SOF_TIMESTAMPING_RX_SOFTWARE: ::c_uint = 1 << 3;
+pub const SOF_TIMESTAMPING_SOFTWARE: ::c_uint = 1 << 4;
+pub const SOF_TIMESTAMPING_SYS_HARDWARE: ::c_uint = 1 << 5;
+pub const SOF_TIMESTAMPING_RAW_HARDWARE: ::c_uint = 1 << 6;
+pub const SOF_TIMESTAMPING_OPT_ID: ::c_uint = 1 << 7;
+pub const SOF_TIMESTAMPING_TX_SCHED: ::c_uint = 1 << 8;
+pub const SOF_TIMESTAMPING_TX_ACK: ::c_uint = 1 << 9;
+pub const SOF_TIMESTAMPING_OPT_CMSG: ::c_uint = 1 << 10;
+pub const SOF_TIMESTAMPING_OPT_TSONLY: ::c_uint = 1 << 11;
+pub const SOF_TIMESTAMPING_OPT_STATS: ::c_uint = 1 << 12;
+pub const SOF_TIMESTAMPING_OPT_PKTINFO: ::c_uint = 1 << 13;
+pub const SOF_TIMESTAMPING_OPT_TX_SWHW: ::c_uint = 1 << 14;
+pub const SOF_TIMESTAMPING_LAST: ::c_uint = SOF_TIMESTAMPING_OPT_TX_SWHW;
+pub const SOF_TIMESTAMPING_MASK: ::c_uint = (SOF_TIMESTAMPING_LAST - 1) | SOF_TIMESTAMPING_LAST;
+
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
