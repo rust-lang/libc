@@ -1696,7 +1696,8 @@ pub const SOF_TIMESTAMPING_OPT_STATS: ::c_uint = 1 << 12;
 pub const SOF_TIMESTAMPING_OPT_PKTINFO: ::c_uint = 1 << 13;
 pub const SOF_TIMESTAMPING_OPT_TX_SWHW: ::c_uint = 1 << 14;
 pub const SOF_TIMESTAMPING_LAST: ::c_uint = SOF_TIMESTAMPING_OPT_TX_SWHW;
-pub const SOF_TIMESTAMPING_MASK: ::c_uint = (SOF_TIMESTAMPING_LAST - 1) | SOF_TIMESTAMPING_LAST;
+pub const SOF_TIMESTAMPING_MASK: ::c_uint = (SOF_TIMESTAMPING_LAST - 1)
+                                            | SOF_TIMESTAMPING_LAST;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
