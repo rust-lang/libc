@@ -8,7 +8,9 @@ pub const T1S: &'static str = "foo";
 pub const T1N: i32 = 5;
 
 macro_rules! i {
-    ($i:item) => ($i)
+    ($i:item) => {
+        $i
+    };
 }
 
 #[repr(C)]
@@ -54,7 +56,7 @@ i! {
 
 const NOT_PRESENT: u32 = 5;
 
-extern {
+extern "C" {
     pub fn T1a();
     pub fn T1b() -> *mut c_void;
     pub fn T1c(a: *mut c_void) -> *mut c_void;
@@ -89,10 +91,10 @@ extern "C" {
     #[link_name = "T1_static_right2"]
     pub static mut T1_static_wrong2: extern "C" fn(u8, u8) -> u8;
 
-    pub static T1_fn_ptr_s: unsafe extern "C" fn(u8) -> extern fn(u16)->u32;
-    pub static T1_fn_ptr_s2: unsafe extern "C" fn(extern fn(u8)->u8,
-                                                  extern fn(u16)->u16)
-                                                  -> extern fn(u16)->u32;
+    pub static T1_fn_ptr_s: unsafe extern "C" fn(u8) -> extern "C" fn(u16) -> u32;
+    pub static T1_fn_ptr_s2:
+        unsafe extern "C" fn(extern "C" fn(u8) -> u8, extern "C" fn(u16) -> u16)
+            -> extern "C" fn(u16) -> u32;
 
     pub static T1_arr0: [i32; 2];
     pub static T1_arr1: [[i32; 3]; 2];
