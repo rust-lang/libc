@@ -906,8 +906,30 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
 }
 
 impl<'a> Generator<'a> {
+    fn rust2c_test(&self, ty: &str) -> bool {
+        let rustc_types = [
+            "usize", "u8", "u16", "u32", "u64",
+            "isize", "i8", "i16", "i32", "i64",
+        ];
+        ty.starts_with("c_") || rustc_types.contains(&ty)
+    }
+
+    fn rustmut2c(&self, mutbl: ast::Mutability) -> String {
+        match mutbl {
+            ast::Mutability::Immutable => "const ".to_string(),
+            ast::Mutability::Mutable => "".to_string(),
+        }
+    }
+
+    fn rustmut2str(&self, mutbl: ast::Mutability) -> String {
+        match mutbl {
+            ast::Mutability::Immutable => "".to_string(),
+            ast::Mutability::Mutable => "mut ".to_string(),
+        }
+    }
+
     fn rust2c(&self, ty: &str) -> String {
-        match ty {
+        let r = match ty {
             t if t.starts_with("c_") => {
                 match &ty[2..].replace("long", " long")[..] {
                     s if s.starts_with("u") => format!("unsigned {}", &s[1..]),
@@ -929,7 +951,8 @@ impl<'a> Generator<'a> {
             "i64" => "int64_t".to_string(),
             "( )" => "void".to_string(),
             s => (self.opts.type_name)(s, self.structs.contains(s), self.unions.contains(s)),
-        }
+        };
+        r
     }
 
     fn rust2cfield(&self, struct_: &str, field: &str) -> String {
@@ -1107,6 +1130,7 @@ impl<'a> Generator<'a> {
         if rust_ty == "&str" {
             return "char*".to_string();
         }
+
         let mut cty = self.rust2c(&rust_ty.replace("*mut ", "")
                                           .replace("*const ", ""));
         while rust_ty.starts_with("*") {
@@ -1219,7 +1243,9 @@ impl<'a> Generator<'a> {
         let cname = cname.unwrap_or_else(|| name.to_string());
 
         if rust_ty.contains("extern fn") {
-            let c_ty = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
+            let c_ty = c_ty.replacen(
+                "(*)",
+                &format!("(* __test_static_{}(void))", name), 1);
             t!(writeln!(self.c, r#"
             {ty} {{
                 return {cname};
@@ -1270,8 +1296,7 @@ impl<'a> Generator<'a> {
             }}
         "#, name = name, mutbl = if mutbl { "mut" } else { "const" }, ty = rust_ty));
         } else {
-            let c_ty = self.rust_ty_to_c_ty(rust_ty);
-        t!(writeln!(self.c, r#"
+         t!(writeln!(self.c, r#"
             {mutbl}{ty}* __test_static_{name}(void) {{
                 return &{cname};
             }}
@@ -1301,7 +1326,7 @@ impl<'a> Generator<'a> {
     }
 
     fn ty2name(&self, ty: &ast::Ty, rust: bool) -> String {
-        match ty.node {
+        let r = match ty.node {
             ast::TyKind::Path(_, ref path) => {
                 let last = path.segments.last().unwrap();
                 if last.identifier.to_string() == "Option" {
@@ -1378,7 +1403,7 @@ impl<'a> Generator<'a> {
                     format!("{} [{}]", ty, len)
                 }
             }
-            ast::TyKind::Rptr(_, ast::MutTy {
+            ast::TyKind::Rptr(l, ast::MutTy {
                 ref ty,
                 mutbl,
             }) => {
@@ -1386,11 +1411,7 @@ impl<'a> Generator<'a> {
                     ast::TyKind::Path(_, ref p) => p,
                     ast::TyKind::Array(ref t, _) => {
                         assert!(!rust);
-                        return format!("{}{}*",
-                                       match mutbl {
-                                           ast::Mutability::Immutable => "const ",
-                                           ast::Mutability::Mutable => "",
-                                       },
+                        return format!("{}{}*", self.rustmut2c(mutbl),
                                        self.ty2name(t, rust))
                     }
                     _ => panic!("unknown ty {:?}", ty),
@@ -1398,16 +1419,35 @@ impl<'a> Generator<'a> {
                 if path.segments.len() != 1 {
                     panic!("unknown ty {:?}", ty)
                 }
-                if &*path.segments[0].identifier.name.as_str() != "str" {
-                    panic!("unknown ty {:?}", ty)
-                }
-                if mutbl != ast::Mutability::Immutable {
-                    panic!("unknown ty {:?}", ty)
-                }
-                if rust {
-                    format!("&str")
-                } else {
-                    format!("char*")
+                match &*path.segments[0].identifier.name.as_str() {
+                    "str" => {
+                        if mutbl != ast::Mutability::Immutable {
+                            panic!("unknown ty {:?}", ty)
+                        }
+                        if rust {
+                            format!("&str")
+                        } else {
+                            format!("char*")
+                        }
+                    },
+                    c if self.rust2c_test(c) => {
+                        if rust {
+                            match l {
+                                Some(l) => format!("&{} {} {}",
+                                                   l.ident.name.as_str(),
+                                                   self.rustmut2str(mutbl),
+                                                   self.ty2name(ty, rust)),
+                                None => format!("&{:?} {}",
+                                                self.rustmut2str(mutbl),
+                                                self.ty2name(ty, rust)),
+                            }
+                        } else {
+                            format!("{}{}*", self.rustmut2c(mutbl),
+                                    self.rust2c(c))
+                        }
+                    },
+                    v => panic!("ref of unknown ty {:?} {:?} {:?} => {:?}",
+                                l, mutbl, ty, v),
                 }
             }
             ast::TyKind::Tup(ref v) if v.is_empty() => if rust {
@@ -1416,7 +1456,8 @@ impl<'a> Generator<'a> {
                 "void".to_string()
             },
             _ => panic!("unknown ty {:?}", ty),
-        }
+        };
+        r
     }
 
     fn csig_returning_ptr(&self, ty: &ast::Ty, sig: &str) -> String {
