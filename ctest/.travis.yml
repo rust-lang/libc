@@ -13,7 +13,7 @@ matrix:
       rust: nightly
       after_success:
         - travis-cargo --only nightly doc-upload
-    - name: "libc-test"
+    - name: "libc-test (osx)"
       rust: nightly
       os: osx
       osx_image: xcode9.4
@@ -25,6 +25,10 @@ matrix:
         - |
           export TARGET=x86_64-apple-darwin
           sh ci/run.sh $TARGET
+    - name: "libc-test (linux)"
+      rust: nightly
+      script: ci/run-docker.sh x86_64-unknown-linux-gnu
+
 script:
   - cargo test
   - cargo test --manifest-path testcrate/Cargo.toml
