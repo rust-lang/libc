@@ -104,8 +104,8 @@ impl TestGenerator {
     ///
     /// This won't actually be that useful until functions like `header` are
     /// called, but the main "finalization method" is the `generate` method.
-    pub fn new() -> TestGenerator {
-        TestGenerator {
+    pub fn new() -> Self {
+        Self {
             headers: Vec::new(),
             includes: Vec::new(),
             flags: Vec::new(),
@@ -154,7 +154,7 @@ impl TestGenerator {
     /// cfg.header("foo.h")
     ///    .header("bar.h");
     /// ```
-    pub fn header(&mut self, header: &str) -> &mut TestGenerator {
+    pub fn header(&mut self, header: &str) -> &mut Self {
         self.headers.push(header.to_string());
         self
     }
@@ -176,7 +176,7 @@ impl TestGenerator {
     /// let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
     /// cfg.include(out_dir.join("include"));
     /// ```
-    pub fn include<P: AsRef<Path>>(&mut self, p: P) -> &mut TestGenerator {
+    pub fn include<P: AsRef<Path>>(&mut self, p: P) -> &mut Self {
         self.includes.push(p.as_ref().to_owned());
         self
     }
@@ -202,7 +202,7 @@ impl TestGenerator {
     /// // if gnu
     /// cfg.flag("-Wno-type-limits");
     /// ```
-    pub fn flag(&mut self, flag: &str) -> &mut TestGenerator {
+    pub fn flag(&mut self, flag: &str) -> &mut Self {
         self.flags.push(flag.to_string());
         self
     }
@@ -220,7 +220,7 @@ impl TestGenerator {
     /// let mut cfg = TestGenerator::new();
     /// cfg.out_dir("path/to/output");
     /// ```
-    pub fn out_dir<P: AsRef<Path>>(&mut self, p: P) -> &mut TestGenerator {
+    pub fn out_dir<P: AsRef<Path>>(&mut self, p: P) -> &mut Self {
         self.out_dir = Some(p.as_ref().to_owned());
         self
     }
@@ -238,7 +238,7 @@ impl TestGenerator {
     /// let mut cfg = TestGenerator::new();
     /// cfg.target("x86_64-unknown-linux-gnu");
     /// ```
-    pub fn target(&mut self, target: &str) -> &mut TestGenerator {
+    pub fn target(&mut self, target: &str) -> &mut Self {
         self.target = Some(target.to_string());
         self
     }
@@ -257,7 +257,7 @@ impl TestGenerator {
     /// cfg.define("_GNU_SOURCE", None)
     ///    .define("_WIN32_WINNT", Some("0x8000"));
     /// ```
-    pub fn define(&mut self, k: &str, v: Option<&str>) -> &mut TestGenerator {
+    pub fn define(&mut self, k: &str, v: Option<&str>) -> &mut Self {
         self.defines.push((k.to_string(), v.map(|s| s.to_string())));
         self
     }
@@ -285,7 +285,7 @@ impl TestGenerator {
     /// cfg.cfg("foo", None) // cfg!(foo)
     ///    .cfg("bar", Some("baz")); // cfg!(bar = "baz")
     /// ```
-    pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut TestGenerator {
+    pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut Self {
         self.cfg.push((k.to_string(), v.map(|s| s.to_string())));
         self
     }
@@ -313,7 +313,7 @@ impl TestGenerator {
     ///         ty.to_string()
     ///     }
     /// });
-    pub fn type_name<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn type_name<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str, bool, bool) -> String + 'static,
     {
@@ -339,7 +339,7 @@ impl TestGenerator {
     /// cfg.field_name(|_s, field| {
     ///     field.replace("foo", "bar")
     /// });
-    pub fn field_name<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn field_name<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str, &str) -> String + 'static,
     {
@@ -364,7 +364,7 @@ impl TestGenerator {
     /// cfg.skip_field(|s, field| {
     ///     s == "foo_t" || (s == "bar_t" && field == "bar")
     /// });
-    pub fn skip_field<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_field<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str, &str) -> bool + 'static,
     {
@@ -390,7 +390,7 @@ impl TestGenerator {
     ///     s == "foo_t" || (s == "bar_t" && field == "bar")
     /// });
     /// ```
-    pub fn skip_field_type<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_field_type<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str, &str) -> bool + 'static,
     {
@@ -415,7 +415,7 @@ impl TestGenerator {
     ///     s.starts_with("foo_")
     /// });
     /// ```
-    pub fn skip_signededness<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_signededness<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str) -> bool + 'static,
     {
@@ -441,7 +441,7 @@ impl TestGenerator {
     ///     s.starts_with("foo_")
     /// });
     /// ```
-    pub fn skip_fn<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_fn<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str) -> bool + 'static,
     {
@@ -467,7 +467,7 @@ impl TestGenerator {
     ///     s.starts_with("foo_")
     /// });
     /// ```
-    pub fn skip_static<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_static<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str) -> bool + 'static,
     {
@@ -485,7 +485,7 @@ impl TestGenerator {
     /// unconver subtle symbol naming issues where a header file is referenced
     /// through the C identifier `foo` but the underlying symbol is mapped to
     /// something like `__foo_compat`.
-    pub fn skip_fn_ptrcheck<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_fn_ptrcheck<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str) -> bool + 'static,
     {
@@ -510,7 +510,7 @@ impl TestGenerator {
     ///     s.starts_with("FOO_")
     /// });
     /// ```
-    pub fn skip_const<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_const<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str) -> bool + 'static,
     {
@@ -535,7 +535,7 @@ impl TestGenerator {
     ///     s.starts_with("foo_")
     /// });
     /// ```
-    pub fn skip_type<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_type<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str) -> bool + 'static,
     {
@@ -561,7 +561,7 @@ impl TestGenerator {
     ///     s.starts_with("foo_")
     /// });
     /// ```
-    pub fn skip_struct<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn skip_struct<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str) -> bool + 'static,
     {
@@ -586,7 +586,7 @@ impl TestGenerator {
     /// let mut cfg = TestGenerator::new();
     /// cfg.fn_cname(|rust, link_name| link_name.unwrap_or(rust).to_string());
     /// ```
-    pub fn fn_cname<F>(&mut self, f: F) -> &mut TestGenerator
+    pub fn fn_cname<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str, Option<&str>) -> String + 'static,
     {
@@ -648,14 +648,14 @@ impl TestGenerator {
                 .flag("-Wno-deprecated-declarations"); // allow deprecated items
         }
 
-        for flag in self.flags.iter() {
+        for flag in &self.flags {
             cfg.flag(flag);
         }
 
-        for &(ref a, ref b) in self.defines.iter() {
+        for &(ref a, ref b) in &self.defines {
             cfg.define(a, b.as_ref().map(|s| &s[..]));
         }
-        for p in self.includes.iter() {
+        for p in &self.includes {
             cfg.include(p);
         }
 
@@ -749,7 +749,7 @@ impl TestGenerator {
         };
         t!(writeln!(gen.c, "#include <stdint.h>"));
         t!(writeln!(gen.c, "#include <stddef.h>"));
-        for header in self.headers.iter() {
+        for header in &self.headers {
             t!(writeln!(gen.c, "#include <{}>", header));
         }
 
@@ -837,10 +837,11 @@ impl TestGenerator {
         visit::walk_crate(&mut gen, &krate);
         gen.emit_run_all();
 
-        return out_file;
+        out_file
     }
 }
 
+#[cfg_attr(feature = "cargo-clippy", allow(clippy::cyclomatic_complexity))]
 fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     let mut ret = Vec::new();
     let (arch, width, endian) = if target.starts_with("x86_64") {
@@ -921,14 +922,13 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     ret.push(("target_endian".to_string(), Some(endian.to_string())));
     ret.push(("target_env".to_string(), Some(env.to_string())));
 
-    return ret;
+    ret
 }
 
 impl<'a> Generator<'a> {
     fn rust2c_test(&self, ty: &str) -> bool {
         let rustc_types = [
-            "usize", "u8", "u16", "u32", "u64",
-            "isize", "i8", "i16", "i32", "i64",
+            "usize", "u8", "u16", "u32", "u64", "isize", "i8", "i16", "i32", "i64",
         ];
         ty.starts_with("c_") || rustc_types.contains(&ty)
     }
@@ -948,15 +948,13 @@ impl<'a> Generator<'a> {
     }
 
     fn rust2c(&self, ty: &str) -> String {
-        let r = match ty {
-            t if t.starts_with("c_") => {
-                match &ty[2..].replace("long", " long")[..] {
-                    s if s.starts_with("u") => format!("unsigned {}", &s[1..]),
-                    "short" => format!("short"),
-                    s if s.starts_with("s") => format!("signed {}", &s[1..]),
-                    s => s.to_string(),
-                }
-            }
+        match ty {
+            t if t.starts_with("c_") => match &ty[2..].replace("long", " long")[..] {
+                s if s.starts_with('u') => format!("unsigned {}", &s[1..]),
+                "short" => "short".to_string(),
+                s if s.starts_with('s') => format!("signed {}", &s[1..]),
+                s => s.to_string(),
+            },
 
             "usize" => "size_t".to_string(),
             "isize" => "ssize_t".to_string(),
@@ -970,8 +968,7 @@ impl<'a> Generator<'a> {
             "i64" => "int64_t".to_string(),
             "( )" => "void".to_string(),
             s => (self.opts.type_name)(s, self.structs.contains(s), self.unions.contains(s)),
-        };
-        r
+        }
     }
 
     fn rust2cfield(&self, struct_: &str, field: &str) -> String {
@@ -1198,7 +1195,7 @@ impl<'a> Generator<'a> {
             return "char*".to_string();
         }
         let mut cty = self.rust2c(&rust_ty.replace("*mut ", "").replace("*const ", ""));
-        while rust_ty.starts_with("*") {
+        while rust_ty.starts_with('*') {
             if rust_ty.starts_with("*const") {
                 cty = format!("const {}*", cty);
                 rust_ty = &rust_ty[7..];
@@ -1207,7 +1204,7 @@ impl<'a> Generator<'a> {
                 rust_ty = &rust_ty[5..];
             }
         }
-        return cty;
+        cty
     }
 
     fn test_const(&mut self, name: &str, rust_ty: &str) {
@@ -1278,7 +1275,7 @@ impl<'a> Generator<'a> {
     fn test_extern_fn(
         &mut self,
         name: &str,
-        cname: Option<String>,
+        c_name: &Option<String>,
         args: &[String],
         ret: &str,
         variadic: bool,
@@ -1287,8 +1284,8 @@ impl<'a> Generator<'a> {
         if (self.opts.skip_fn)(name) {
             return;
         }
-        let cname = (self.opts.fn_cname)(name, cname.as_ref().map(|s| &**s));
-        let args = if args.len() == 0 && !variadic {
+        let c_name = (self.opts.fn_cname)(name, c_name.as_ref().map(|s| &**s));
+        let args = if args.is_empty() && !variadic {
             "void".to_string()
         } else {
             args.iter()
@@ -1297,19 +1294,19 @@ impl<'a> Generator<'a> {
                 .join(", ")
                 + if variadic { ", ..." } else { "" }
         };
-        let cret = self.rust_ty_to_c_ty(ret);
+        let c_ret = self.rust_ty_to_c_ty(ret);
         let abi = self.abi2str(abi);
         t!(writeln!(
             self.c,
             r#"
             {ret} ({abi}*__test_fn_{name}(void))({args}) {{
-                return {cname};
+                return {c_name};
             }}
         "#,
             name = name,
-            cname = cname,
+            c_name = c_name,
             args = args,
-            ret = cret,
+            ret = c_ret,
             abi = abi
         ));
         t!(writeln!(
@@ -1338,7 +1335,7 @@ impl<'a> Generator<'a> {
     fn test_extern_static(
         &mut self,
         name: &str,
-        cname: Option<String>,
+        c_name: Option<String>,
         rust_ty: &str,
         c_ty: &str,
         mutbl: bool,
@@ -1347,19 +1344,19 @@ impl<'a> Generator<'a> {
             return;
         }
 
-        let cname = cname.unwrap_or_else(|| name.to_string());
+        let c_name = c_name.unwrap_or_else(|| name.to_string());
 
         if rust_ty.contains("extern fn") {
-            let c_ty = c_ty.replacen(
-                "(*)",
-                &format!("(* __test_static_{}(void))", name), 1);
-            t!(writeln!(self.c, r#"
+            let c_ty = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
+            t!(writeln!(
+                self.c,
+                r#"
             {ty} {{
-                return {cname};
+                return {c_name};
             }}
         "#,
                 ty = c_ty,
-                cname = cname
+                c_name = c_name
             ));
             t!(writeln!(
                 self.rust,
@@ -1379,10 +1376,10 @@ impl<'a> Generator<'a> {
                 name = name,
                 ty = rust_ty
             ));
-        } else if rust_ty.starts_with("[") && rust_ty.ends_with("]") {
-            let c_ptr_ty = c_ty.split(" ").nth(0).unwrap();
+        } else if rust_ty.starts_with('[') && rust_ty.ends_with(']') {
+            let c_ptr_ty = c_ty.split(' ').nth(0).unwrap();
             let mut lens = Vec::new();
-            for i in c_ty.split(" ").skip(1) {
+            for i in c_ty.split(' ').skip(1) {
                 lens.push(i);
             }
             lens.reverse();
@@ -1397,11 +1394,11 @@ impl<'a> Generator<'a> {
                 self.c,
                 r#"
             {array_test_name} {{
-                return &{cname};
+                return &{c_name};
             }}
         "#,
                 array_test_name = array_test_name,
-                cname = cname
+                c_name = c_name
             ));
             t!(writeln!(
                 self.rust,
@@ -1423,15 +1420,17 @@ impl<'a> Generator<'a> {
                 ty = rust_ty
             ));
         } else {
-         t!(writeln!(self.c, r#"
+            t!(writeln!(
+                self.c,
+                r#"
             {mutbl}{ty}* __test_static_{name}(void) {{
-                return &{cname};
+                return &{c_name};
             }}
         "#,
                 mutbl = if mutbl { "" } else { "const " },
                 ty = c_ty,
                 name = name,
-                cname = cname
+                c_name = c_name
             ));
             t!(writeln!(
                 self.rust,
@@ -1457,13 +1456,13 @@ impl<'a> Generator<'a> {
     }
 
     fn assert_no_generics(&self, _i: ast::Ident, generics: &ast::Generics) {
-        assert!(generics.lifetimes.len() == 0);
-        assert!(generics.ty_params.len() == 0);
-        assert!(generics.where_clause.predicates.len() == 0);
+        assert!(generics.lifetimes.is_empty());
+        assert!(generics.ty_params.is_empty());
+        assert!(generics.where_clause.predicates.is_empty());
     }
 
     fn ty2name(&self, ty: &ast::Ty, rust: bool) -> String {
-        let r = match ty.node {
+        match ty.node {
             ast::TyKind::Path(_, ref path) => {
                 let last = path.segments.last().unwrap();
                 if last.identifier.to_string() == "Option" {
@@ -1521,19 +1520,18 @@ impl<'a> Generator<'a> {
                     };
                     format!("extern fn({}) -> {}", args, ret)
                 } else {
-                    assert!(t.lifetimes.len() == 0);
+                    assert!(t.lifetimes.is_empty());
                     let (ret, mut args, variadic) = self.decl2rust(&t.decl);
                     assert!(!variadic);
-                    if args.len() == 0 {
+                    if args.is_empty() {
                         args.push("void".to_string());
                     }
 
-                    let s = if ret.contains("(*)") {
+                    if ret.contains("(*)") {
                         ret.replace("(*)", &format!("(*(*)({}))", args.join(", ")))
                     } else {
                         format!("{}(*)({})", ret, args.join(", "))
-                    };
-                    s
+                    }
                 }
             }
             ast::TyKind::Array(ref t, ref e) => {
@@ -1545,16 +1543,12 @@ impl<'a> Generator<'a> {
                     format!("{} [{}]", ty, len)
                 }
             }
-            ast::TyKind::Rptr(l, ast::MutTy {
-                ref ty,
-                mutbl,
-            }) => {
+            ast::TyKind::Rptr(l, ast::MutTy { ref ty, mutbl }) => {
                 let path = match ty.node {
                     ast::TyKind::Path(_, ref p) => p,
                     ast::TyKind::Array(ref t, _) => {
                         assert!(!rust);
-                        return format!("{}{}*", self.rustmut2c(mutbl),
-                                       self.ty2name(t, rust))
+                        return format!("{}{}*", self.rustmut2c(mutbl), self.ty2name(t, rust));
                     }
                     _ => panic!("unknown ty {:?}", ty),
                 };
@@ -1567,29 +1561,31 @@ impl<'a> Generator<'a> {
                             panic!("unknown ty {:?}", ty)
                         }
                         if rust {
-                            format!("&str")
+                            "&str".to_string()
                         } else {
-                            format!("char*")
+                            "char*".to_string()
                         }
-                    },
+                    }
                     c if self.rust2c_test(c) => {
                         if rust {
                             match l {
-                                Some(l) => format!("&{} {} {}",
-                                                   l.ident.name.as_str(),
-                                                   self.rustmut2str(mutbl),
-                                                   self.ty2name(ty, rust)),
-                                None => format!("&{:?} {}",
-                                                self.rustmut2str(mutbl),
-                                                self.ty2name(ty, rust)),
+                                Some(l) => format!(
+                                    "&{} {} {}",
+                                    l.ident.name.as_str(),
+                                    self.rustmut2str(mutbl),
+                                    self.ty2name(ty, rust)
+                                ),
+                                None => format!(
+                                    "&{:?} {}",
+                                    self.rustmut2str(mutbl),
+                                    self.ty2name(ty, rust)
+                                ),
                             }
                         } else {
-                            format!("{}{}*", self.rustmut2c(mutbl),
-                                    self.rust2c(c))
+                            format!("{}{}*", self.rustmut2c(mutbl), self.rust2c(c))
                         }
-                    },
-                    v => panic!("ref of unknown ty {:?} {:?} {:?} => {:?}",
-                                l, mutbl, ty, v),
+                    }
+                    v => panic!("ref of unknown ty {:?} {:?} {:?} => {:?}", l, mutbl, ty, v),
                 }
             }
             ast::TyKind::Tup(ref v) if v.is_empty() => {
@@ -1600,8 +1596,7 @@ impl<'a> Generator<'a> {
                 }
             }
             _ => panic!("unknown ty {:?}", ty),
-        };
-        r
+        }
     }
 
     fn csig_returning_ptr(&self, ty: &ast::Ty, sig: &str) -> String {
@@ -1618,12 +1613,12 @@ impl<'a> Generator<'a> {
                 }
             }
             ast::TyKind::BareFn(ref t) => {
-                assert!(t.lifetimes.len() == 0);
+                assert!(t.lifetimes.is_empty());
                 let (ret, mut args, variadic) = self.decl2rust(&t.decl);
                 let abi = self.abi2str(t.abi);
                 if variadic {
                     args.push("...".to_string());
-                } else if args.len() == 0 {
+                } else if args.is_empty() {
                     args.push("void".to_string());
                 }
                 format!("{}({}**{})({})", ret, abi, sig, args.join(", "))
@@ -1684,7 +1679,7 @@ impl<'a> Generator<'a> {
             ast::FunctionRetTy::Default(..) => "void".to_string(),
             ast::FunctionRetTy::Ty(ref t) => match t.node {
                 ast::TyKind::Never => "void".to_string(),
-                ast::TyKind::Tup(ref t) if t.len() == 0 => "void".to_string(),
+                ast::TyKind::Tup(ref t) if t.is_empty() => "void".to_string(),
                 _ => self.ty2name(t, false),
             },
         };
@@ -1719,7 +1714,7 @@ impl<'a> Generator<'a> {
             fn run_all() {{
         "
         ));
-        for test in tests.iter() {
+        for test in &tests {
             t!(writeln!(self.rust, "{}();", test));
         }
         t!(writeln!(
@@ -1781,17 +1776,17 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
             ast::ForeignItemKind::Fn(ref decl, ref generics) => {
                 self.assert_no_generics(i.ident, generics);
                 let (ret, args, variadic) = self.decl2rust(decl);
-                let cname = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
+                let c_name = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
                     .map(|i| i.to_string());
                 let abi = self.abi;
-                self.test_extern_fn(&i.ident.to_string(), cname, &args, &ret, variadic, abi);
+                self.test_extern_fn(&i.ident.to_string(), &c_name, &args, &ret, variadic, abi);
             }
             ast::ForeignItemKind::Static(ref ty, mutbl) => {
                 let rust_ty = self.ty2name(&ty, true);
                 let c_ty = self.ty2name(&ty, false);
-                let cname = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
+                let c_name = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
                     .map(|i| i.to_string());
-                self.test_extern_static(&i.ident.to_string(), cname, &rust_ty, &c_ty, mutbl);
+                self.test_extern_static(&i.ident.to_string(), c_name, &rust_ty, &c_ty, mutbl);
             }
         }
         visit::walk_foreign_item(self, i)
@@ -1803,10 +1798,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
 impl<'v> Visitor<'v> for TyFinder {
     fn visit_item(&mut self, i: &'v ast::Item) {
         match i.node {
-            ast::ItemKind::Struct(..) => {
-                self.structs.insert(i.ident.to_string());
-            }
-            ast::ItemKind::Enum(..) => {
+            ast::ItemKind::Struct(..) | ast::ItemKind::Enum(..) => {
                 self.structs.insert(i.ident.to_string());
             }
             ast::ItemKind::Union(..) => {
@@ -1848,19 +1840,16 @@ impl<'a> Resolver for MyResolver<'a> {
     }
 
     fn visit_expansion(&mut self, _invoc: Mark, expansion: &Expansion, _derives: &[Mark]) {
-        match *expansion {
-            Expansion::Items(ref items) => {
-                let features = RefCell::new(Features::new());
-                for item in items.iter() {
-                    MyVisitor {
-                        parse_sess: self.parse_sess,
-                        features: &features,
-                        map: &mut self.map,
-                    }
-                    .visit_item(item);
+        if let Expansion::Items(ref items) = expansion {
+            let features = RefCell::new(Features::new());
+            for item in items.iter() {
+                MyVisitor {
+                    parse_sess: self.parse_sess,
+                    features: &features,
+                    map: &mut self.map,
                 }
+                .visit_item(item);
             }
-            _ => {}
         }
     }
 
@@ -1879,18 +1868,15 @@ impl<'a> Resolver for MyResolver<'a> {
         _scope: Mark,
         _force: bool,
     ) -> Result<Option<Rc<SyntaxExtension>>, Determinacy> {
-        match invoc.kind {
-            InvocationKind::Bang { ref mac, .. } => {
-                if mac.node.path.segments.len() != 1 {
-                    return Ok(None);
-                }
-                let seg = &mac.node.path.segments[0];
-                if seg.parameters.is_some() {
-                    return Ok(None);
-                }
-                return Ok(self.map.get(&seg.identifier.name).cloned());
+        if let InvocationKind::Bang { ref mac, .. } = invoc.kind {
+            if mac.node.path.segments.len() != 1 {
+                return Ok(None);
             }
-            _ => {}
+            let seg = &mac.node.path.segments[0];
+            if seg.parameters.is_some() {
+                return Ok(None);
+            }
+            return Ok(self.map.get(&seg.identifier.name).cloned());
         }
         Err(Determinacy::Determined)
     }
@@ -1923,14 +1909,14 @@ impl Folder for StripUnchecked {
             | ast::ItemKind::MacroDef(..)
             | ast::ItemKind::Use(..)
             | ast::ItemKind::ExternCrate(..)
-            | ast::ItemKind::Const(..) => return fold::noop_fold_item(item, self),
+            | ast::ItemKind::Const(..) => fold::noop_fold_item(item, self),
 
             ast::ItemKind::Static(..)
             | ast::ItemKind::Fn(..)
             | ast::ItemKind::GlobalAsm(..)
             | ast::ItemKind::Trait(..)
             | ast::ItemKind::DefaultImpl(..)
-            | ast::ItemKind::Impl(..) => return Default::default(),
+            | ast::ItemKind::Impl(..) => SmallVector::default(),
         }
     }
 
@@ -1947,19 +1933,22 @@ struct MyVisitor<'b> {
 
 impl<'a, 'b> Visitor<'a> for MyVisitor<'b> {
     fn visit_item(&mut self, item: &'a ast::Item) {
-        match item.node {
-            ast::ItemKind::MacroDef(..) => {
-                self.map.insert(
-                    item.ident.name,
-                    Rc::new(macro_rules::compile(self.parse_sess, self.features, item)),
-                );
-            }
-            _ => {}
+        if let ast::ItemKind::MacroDef(..) = item.node {
+            self.map.insert(
+                item.ident.name,
+                Rc::new(macro_rules::compile(self.parse_sess, self.features, item)),
+            );
         }
         visit::walk_item(self, item);
     }
 
-    fn visit_mac(&mut self, mac: &'a ast::Mac) {
-        drop(mac);
+    fn visit_mac(&mut self, _: &'a ast::Mac) {
+        /* ignore macros */
+    }
+}
+
+impl Default for TestGenerator {
+    fn default() -> Self {
+        Self::new()
     }
 }
