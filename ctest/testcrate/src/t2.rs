@@ -7,7 +7,9 @@ pub type T2TypedefFoo = T2Foo;
 pub type T2TypedefInt = c_int;
 
 macro_rules! i {
-    ($i:item) => ($i)
+    ($i:item) => {
+        $i
+    };
 }
 
 #[repr(C)]
@@ -29,6 +31,6 @@ i! {
     pub const T2S: &'static str = "b";
 }
 
-extern {
+extern "C" {
     pub fn T2a();
 }

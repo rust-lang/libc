@@ -28,6 +28,11 @@ matrix:
     - name: "libc-test (linux)"
       rust: nightly
       script: ci/run-docker.sh x86_64-unknown-linux-gnu
+    - name: "rustfmt"
+      install: true
+      rust: nightly
+      before_script: rustup component add rustfmt-preview
+      script: cargo fmt --all -- --check
 
 script:
   - cargo test

@@ -1,6 +1,6 @@
-use std::process::{Command, ExitStatus};
 use std::collections::HashSet;
 use std::env;
+use std::process::{Command, ExitStatus};
 
 fn cmd(name: &str) -> Command {
     let mut p = env::current_exe().unwrap();
