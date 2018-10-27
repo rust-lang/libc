@@ -13,6 +13,7 @@ A library for types and bindings to native C functions often found in libc or
 other common platform libraries.
 """
 build = "build.rs"
+exclude = ["/ci/*", "/.travis.yml", "/appveyor.yml"]
 
 [badges]
 travis-ci = { repository = "rust-lang/libc" }
