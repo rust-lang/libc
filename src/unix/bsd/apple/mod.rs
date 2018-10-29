@@ -785,8 +785,8 @@ pub const VM_FLAGS_SUPERPAGE_MASK: ::c_int = 0x70000;
 pub const VM_FLAGS_RETURN_DATA_ADDR: ::c_int = 0x100000;
 pub const VM_FLAGS_RETURN_4K_DATA_ADDR: ::c_int = 0x800000;
 pub const VM_FLAGS_ALIAS_MASK: ::c_int = 0xFF000000;
-pub const VM_FLAGS_USER_ALLOCATE: ::c_int = 0xff07401b;
-pub const VM_FLAGS_USER_MAP: ::c_int = 0xff97401b;
+pub const VM_FLAGS_USER_ALLOCATE: ::c_int = 0xff07401f;
+pub const VM_FLAGS_USER_MAP: ::c_int = 0xff97401f;
 pub const VM_FLAGS_USER_REMAP: ::c_int = VM_FLAGS_FIXED | VM_FLAGS_ANYWHERE |
                                         VM_FLAGS_RANDOM_ADDR |
                                         VM_FLAGS_OVERWRITE |
