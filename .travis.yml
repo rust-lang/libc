@@ -63,7 +63,7 @@ matrix:
       before_install:
         rustc ./ci/ios/deploy_and_run_on_ios_simulator.rs -o $HOME/runtest
     - os: osx
-      osx_image: xcode9.4
+      osx_image: xcode10
       env: TARGET=x86_64-apple-ios
            CARGO_TARGET_X86_64_APPLE_IOS_RUNNER=$HOME/runtest
            RUSTFLAGS=-Clink-arg=-mios-simulator-version-min=7.0
