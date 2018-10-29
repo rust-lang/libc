@@ -56,7 +56,7 @@ matrix:
       # FIXME(#856)
       rust: 1.22.1
     - os: osx
-      osx_image: xcode9.4
+      osx_image: xcode9.2
       env: TARGET=i386-apple-ios
            CARGO_TARGET_I386_APPLE_IOS_RUNNER=$HOME/runtest
            RUSTFLAGS=-Clink-arg=-mios-simulator-version-min=7.0
