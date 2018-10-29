@@ -81,6 +81,9 @@ extern int32_t T1_arr5[1][2][3];
 
 extern int32_t T1_arr42[1][2][3];
 
+extern const int32_t* T1_opt_ref;
+extern const int16_t* T1_sref;
+
 struct Q {
   uint8_t* q0;
   uint8_t** q1;
