@@ -304,6 +304,7 @@ fn main() {
         cfg.header("pthread_np.h");
         cfg.header("sched.h");
         cfg.header("ufs/ufs/quota.h");
+        cfg.header("sys/extattr.h"
         cfg.header("sys/jail.h");
         cfg.header("sys/ipc.h");
         cfg.header("sys/msg.h");
@@ -317,6 +318,7 @@ fn main() {
         cfg.header("mqueue.h");
         cfg.header("ufs/ufs/quota.h");
         cfg.header("ufs/ufs/quota1.h");
+        cfg.header("sys/extattr.h"
         cfg.header("sys/ioctl_compat.h");
 
         // DCCP support
