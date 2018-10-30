@@ -107,8 +107,11 @@ extern "C" {
     #[link_name = "T1_arr42"]
     pub static mut T1_arr6: [[[i32; 3]; 2]; 1];
 
-    pub static mut T1_opt_ref: Option<&'static i32>;
     pub static mut T1_sref: &'static i16;
+
+    pub static mut T1_mut_opt_ref: Option<&'static i32>;
+    pub static mut T1_mut_opt_mut_ref: Option<&'static mut i32>;
+    pub static T1_const_opt_const_ref: Option<&'static i32>;
 }
 
 #[repr(C)]
