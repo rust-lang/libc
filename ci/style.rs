@@ -128,7 +128,8 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
             err.error(path, i, "use `extern` instead of `extern \"C\"");
         }
         if line.contains("#[cfg(") && !line.contains(" if ")
-            && !line.contains("target_endian")
+            && !(line.contains("target_endian") ||
+                 line.contains("target_arch"))
         {
             if state != State::Structs {
                 err.error(path, i, "use cfg_if! and submodules \
