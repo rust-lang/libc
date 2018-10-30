@@ -1427,7 +1427,11 @@ impl<'a> Generator<'a> {
                 return &{c_name};
             }}
         "#,
-                mutbl = if mutbl { "" } else { "const " },
+                mutbl = if mutbl || c_ty.contains("const") {
+                    ""
+                } else {
+                    "const "
+                },
                 ty = c_ty,
                 name = name,
                 c_name = c_name

@@ -49,5 +49,8 @@ int32_t T1_arr4[2][3] = {{0, 0, 0}, {0, 0, 0}};
 int32_t T1_arr5[1][2][3] = {{{0, 0, 0}, {0, 0, 0}}};
 
 int32_t T1_arr42[1][2][3] = {{{0, 0, 0}, {0, 0, 0}}};
-const int32_t* T1_opt_ref = NULL;
 const int16_t* T1_sref = (void*)(1337);
+
+const int32_t* T1_mut_opt_ref = NULL;
+int32_t* T1_mut_opt_mut_ref = NULL;
+const int32_t* T1_const_opt_const_ref = NULL;
