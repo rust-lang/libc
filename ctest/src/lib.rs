@@ -1367,7 +1367,7 @@ impl<'a> Generator<'a> {
                     fn __test_static_{name}() -> {ty};
                 }}
                 unsafe {{
-                    same({name} as usize,
+                    same(*(&{name} as *const _ as *const {ty}) as usize,
                          __test_static_{name}() as usize,
                          "{name} static");
                 }}
