@@ -334,6 +334,9 @@ pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
 pub const AT_REMOVEDIR: ::c_int = 0x800;
 
+pub const EXTATTR_NAMESPACE_USER: ::c_int = 1;
+pub const EXTATTR_NAMESPACE_SYSTEM: ::c_int = 2;
+
 pub const LC_COLLATE_MASK: ::c_int = (1 << ::LC_COLLATE);
 pub const LC_CTYPE_MASK: ::c_int = (1 << ::LC_CTYPE);
 pub const LC_MONETARY_MASK: ::c_int = (1 << ::LC_MONETARY);
@@ -1013,6 +1016,46 @@ extern {
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
 
+    pub fn extattr_delete_fd(fd: ::c_int,
+                             attrnamespace: ::c_int,
+                             attrname: *const ::c_char) -> ::c_int;
+    pub fn extattr_delete_file(path: *const ::c_char,
+                               attrnamespace: ::c_int,
+                               attrname: *const ::c_char) -> ::c_int;
+    pub fn extattr_delete_link(path: *const ::c_char,
+                               attrnamespace: ::c_int,
+                               attrname: *const ::c_char) -> ::c_int;
+    pub fn extattr_get_fd(fd: ::c_int,
+                          attrnamespace: ::c_int,
+                          attrname: *const ::c_char,
+                          data: *mut ::c_void,
+                          nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_get_file(path: *const ::c_char,
+                            attrnamespace: ::c_int,
+                            attrname: *const ::c_char,
+                            data: *mut ::c_void,
+                            nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_get_link(path: *const ::c_char,
+                            attrnamespace: ::c_int,
+                            attrname: *const ::c_char,
+                            data: *mut ::c_void,
+                            nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_set_fd(fd: ::c_int,
+                          attrnamespace: ::c_int,
+                          attrname: *const ::c_char,
+                          data: *const ::c_void,
+                          nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_set_file(path: *const ::c_char,
+                            attrnamespace: ::c_int,
+                            attrname: *const ::c_char,
+                            data: *const ::c_void,
+                            nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_set_link(path: *const ::c_char,
+                            attrnamespace: ::c_int,
+                            attrname: *const ::c_char,
+                            data: *const ::c_void,
+                            nbytes: ::size_t) -> ::ssize_t;
+
     #[link_name = "__lutimes50"]
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,
@@ -1112,6 +1155,10 @@ extern {
 
 #[link(name = "util")]
 extern {
+    pub fn extattr_namespace_to_string(attrnamespace: ::c_int,
+                                       string: *mut *mut ::c_char) -> ::c_int;
+    pub fn extattr_string_to_namespace(string: *const ::c_char,
+                                       attrnamespace: *mut ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
     pub fn getpwent_r(pwd: *mut ::passwd,
                       buf: *mut ::c_char,
