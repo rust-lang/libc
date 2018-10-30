@@ -3,7 +3,7 @@ use PT_FIRSTMACH;
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type c_char = u8;
-type __cpu_simple_lock_nv_t = ::c_int;
+pub type __cpu_simple_lock_nv_t = ::c_int;
 
 pub const PT_STEP: ::c_int = PT_FIRSTMACH + 0;
 pub const PT_GETREGS: ::c_int = PT_FIRSTMACH + 1;
