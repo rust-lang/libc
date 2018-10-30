@@ -186,6 +186,10 @@ s! {
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
+pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
+pub const EXTATTR_NAMESPACE_USER: ::c_int = 1;
+pub const EXTATTR_NAMESPACE_SYSTEM: ::c_int = 2;
+
 pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 4;
@@ -934,6 +938,58 @@ extern {
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
 
+    pub fn extattr_delete_fd(fd: ::c_int,
+                             attrnamespace: ::c_int,
+                             attrname: *const ::c_char) -> ::c_int;
+    pub fn extattr_delete_file(path: *const ::c_char,
+                               attrnamespace: ::c_int,
+                               attrname: *const ::c_char) -> ::c_int;
+    pub fn extattr_delete_link(path: *const ::c_char,
+                               attrnamespace: ::c_int,
+                               attrname: *const ::c_char) -> ::c_int;
+    pub fn extattr_get_fd(fd: ::c_int,
+                          attrnamespace: ::c_int,
+                          attrname: *const ::c_char,
+                          data: *mut ::c_void,
+                          nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_get_file(path: *const ::c_char,
+                            attrnamespace: ::c_int,
+                            attrname: *const ::c_char,
+                            data: *mut ::c_void,
+                            nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_get_link(path: *const ::c_char,
+                            attrnamespace: ::c_int,
+                            attrname: *const ::c_char,
+                            data: *mut ::c_void,
+                            nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_list_fd(fd: ::c_int,
+                           attrnamespace: ::c_int,
+                           data: *mut ::c_void,
+                           nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_list_file(path: *const ::c_char,
+                             attrnamespace: ::c_int,
+                             data: *mut ::c_void,
+                             nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_list_link(path: *const ::c_char,
+                             attrnamespace: ::c_int,
+                             data: *mut ::c_void,
+                             nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_set_fd(fd: ::c_int,
+                          attrnamespace: ::c_int,
+                          attrname: *const ::c_char,
+                          data: *const ::c_void,
+                          nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_set_file(path: *const ::c_char,
+                            attrnamespace: ::c_int,
+                            attrname: *const ::c_char,
+                            data: *const ::c_void,
+                            nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_set_link(path: *const ::c_char,
+                            attrnamespace: ::c_int,
+                            attrname: *const ::c_char,
+                            data: *const ::c_void,
+                            nbytes: ::size_t) -> ::ssize_t;
+
     pub fn jail(jail: *mut ::jail) -> ::c_int;
     pub fn jail_attach(jid: ::c_int) -> ::c_int;
     pub fn jail_remove(jid: ::c_int) -> ::c_int;
@@ -1058,6 +1114,14 @@ extern {
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
+}
+
+#[link(name = "util")]
+extern {
+    pub fn extattr_namespace_to_string(attrnamespace: ::c_int,
+                                       string: *mut *mut ::c_char) -> ::c_int;
+    pub fn extattr_string_to_namespace(string: *const ::c_char,
+                                       attrnamespace: *mut ::c_int) -> ::c_int;
 }
 
 cfg_if! {
