@@ -53,8 +53,6 @@ matrix:
     - env: TARGET=arm-unknown-linux-musleabihf
     - env: TARGET=aarch64-unknown-linux-gnu
     - env: TARGET=aarch64-unknown-linux-musl
-      # FIXME(#856)
-      rust: 1.22.1
     - env: TARGET=powerpc-unknown-linux-gnu
     - env: TARGET=powerpc64-unknown-linux-gnu
     - env: TARGET=powerpc64le-unknown-linux-gnu
