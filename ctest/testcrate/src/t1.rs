@@ -112,6 +112,13 @@ extern "C" {
     pub static mut T1_mut_opt_ref: Option<&'static i32>;
     pub static mut T1_mut_opt_mut_ref: Option<&'static mut i32>;
     pub static T1_const_opt_const_ref: Option<&'static i32>;
+
+    pub static T1_opt_fn1: Option<unsafe extern "C" fn() -> ()>;
+    pub static T1_opt_fn2: Option<unsafe extern "C" fn(u8) -> extern "C" fn(u16) -> u32>;
+    pub static T1_opt_fn3: Option<
+        unsafe extern "C" fn(extern "C" fn(u8) -> u8, extern "C" fn(u16) -> u16)
+            -> extern "C" fn(u16) -> u32,
+    >;
 }
 
 #[repr(C)]

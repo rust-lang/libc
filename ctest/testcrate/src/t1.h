@@ -87,6 +87,11 @@ extern const int32_t* T1_mut_opt_ref;
 extern int32_t* T1_mut_opt_mut_ref;
 extern const int32_t* T1_const_opt_const_ref;
 
+extern void (*const T1_opt_fn1)(void);
+uint32_t (*(*T1_opt_fn2)(uint8_t))(uint16_t);
+uint32_t (*(*T1_opt_fn3)(uint8_t(*)(uint8_t), uint16_t(*)(uint16_t)))(uint16_t);
+
+
 struct Q {
   uint8_t* q0;
   uint8_t** q1;

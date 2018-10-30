@@ -54,3 +54,7 @@ const int16_t* T1_sref = (void*)(1337);
 const int32_t* T1_mut_opt_ref = NULL;
 int32_t* T1_mut_opt_mut_ref = NULL;
 const int32_t* T1_const_opt_const_ref = NULL;
+
+void (*const T1_opt_fn1)(void) = baz;
+uint32_t (*(*T1_opt_fn2)(uint8_t))(uint16_t) = nested;
+uint32_t (*(*T1_opt_fn3)(uint8_t(*arg0)(uint8_t), uint16_t(*arg1)(uint16_t)))(uint16_t) = nested2;
