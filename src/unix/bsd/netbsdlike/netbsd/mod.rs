@@ -177,11 +177,11 @@ s! {
         ptm_magic: ::c_uint,
         ptm_errorcheck: __cpu_simple_lock_t,
         #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
-                 target_arch = "x86", target_arch = "x86_64"))]
+                  target_arch = "x86", target_arch = "x86_64"))]
         ptm_pad1: [u8; 3],
         ptm_interlock: __cpu_simple_lock_t,
         #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
-                 target_arch = "x86", target_arch = "x86_64"))]
+                  target_arch = "x86", target_arch = "x86_64"))]
         ptm_pad2: [u8; 3],
         ptm_owner: ::pthread_t,
         ptm_waiters: *mut u8,
