@@ -165,7 +165,8 @@ s! {
         #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
                   target_arch = "x86", target_arch = "x86_64"))]
         ptm_pad1: [u8; 3],
-        ptm_unused: __pthread_spin_t, // actually a union with a non-unused, 0-initialized field
+        // actually a union with a non-unused, 0-initialized field
+        ptm_unused: __pthread_spin_t,
         #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
                   target_arch = "x86", target_arch = "x86_64"))]
         ptm_pad2: [u8; 3],
