@@ -1044,17 +1044,17 @@ extern {
                           attrnamespace: ::c_int,
                           attrname: *const ::c_char,
                           data: *const ::c_void,
-                          nbytes: ::size_t) -> ::ssize_t;
+                          nbytes: ::size_t) -> ::c_int;
     pub fn extattr_set_file(path: *const ::c_char,
                             attrnamespace: ::c_int,
                             attrname: *const ::c_char,
                             data: *const ::c_void,
-                            nbytes: ::size_t) -> ::ssize_t;
+                            nbytes: ::size_t) -> ::c_int;
     pub fn extattr_set_link(path: *const ::c_char,
                             attrnamespace: ::c_int,
                             attrname: *const ::c_char,
                             data: *const ::c_void,
-                            nbytes: ::size_t) -> ::ssize_t;
+                            nbytes: ::size_t) -> ::c_int;
 
     #[link_name = "__lutimes50"]
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
