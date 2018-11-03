@@ -1051,6 +1051,8 @@ extern {
                             attrname: *const ::c_char,
                             data: *mut ::c_void,
                             nbytes: ::size_t) -> ::ssize_t;
+    pub fn extattr_namespace_to_string(attrnamespace: ::c_int,
+                                       string: *mut *mut ::c_char) -> ::c_int;
     pub fn extattr_set_fd(fd: ::c_int,
                           attrnamespace: ::c_int,
                           attrname: *const ::c_char,
@@ -1066,6 +1068,8 @@ extern {
                             attrname: *const ::c_char,
                             data: *const ::c_void,
                             nbytes: ::size_t) -> ::c_int;
+    pub fn extattr_string_to_namespace(string: *const ::c_char,
+                                       attrnamespace: *mut ::c_int) -> ::c_int;
 
     #[link_name = "__lutimes50"]
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
@@ -1166,10 +1170,6 @@ extern {
 
 #[link(name = "util")]
 extern {
-    pub fn extattr_namespace_to_string(attrnamespace: ::c_int,
-                                       string: *mut *mut ::c_char) -> ::c_int;
-    pub fn extattr_string_to_namespace(string: *const ::c_char,
-                                       attrnamespace: *mut ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
     pub fn getpwent_r(pwd: *mut ::passwd,
                       buf: *mut ::c_char,
