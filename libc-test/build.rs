@@ -841,7 +841,13 @@ fn main() {
         // musl seems to define this as an *anonymous* bitfield
         (musl && struct_ == "statvfs" && field == "__f_unused") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
+        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+        // signalfd had SIGSYS fields added in Linux 4.18, but no libc release has them yet.
+        (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
+                                           field == "_pad2" ||
+                                           field == "ssi_syscall" ||
+                                           field == "ssi_call_addr" ||
+                                           field == "ssi_arch"))
     });
 
     cfg.fn_cname(move |name, cname| {
