@@ -270,7 +270,12 @@ s! {
         pub ssi_utime: ::uint64_t,
         pub ssi_stime: ::uint64_t,
         pub ssi_addr: ::uint64_t,
-        _pad: [::uint8_t; 48],
+        pub ssi_addr_lsb: ::uint16_t,
+        _pad2: ::uint16_t,
+        pub ssi_syscall: ::int32_t,
+        pub ssi_call_addr: ::uint64_t,
+        pub ssi_arch: ::uint32_t,
+        _pad: [::uint8_t; 28],
     }
 
     pub struct itimerspec {

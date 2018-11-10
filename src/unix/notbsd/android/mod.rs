@@ -177,7 +177,11 @@ s! {
         pub ssi_stime: ::c_ulonglong,
         pub ssi_addr: ::c_ulonglong,
         pub ssi_addr_lsb: ::uint16_t,
-        _pad: [::uint8_t; 46],
+        _pad2: ::uint16_t,
+        pub ssi_syscall: ::int32_t,
+        pub ssi_call_addr: ::uint64_t,
+        pub ssi_arch: ::uint32_t,
+        _pad: [::uint8_t; 28],
     }
 
     pub struct ucred {
