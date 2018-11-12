@@ -48,6 +48,7 @@ macro_rules! s {
     )*)
 }
 
+#[allow(unused_macros)]
 macro_rules! f {
     ($(pub fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
         $($body:stmt);*
