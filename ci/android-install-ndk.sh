@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # Copyright 2016 The Rust Project Developers. See the COPYRIGHT
 # file at the top-level directory of this distribution and at
 # http://rust-lang.org/COPYRIGHT.
@@ -30,8 +30,8 @@ esac;
 
 android-ndk-r15b/build/tools/make_standalone_toolchain.py \
         --unified-headers \
-        --install-dir /android/ndk-$1 \
-        --arch $arch \
+        --install-dir "/android/ndk-${1}" \
+        --arch "${arch}" \
         --api 24
 
 rm -rf ./android-ndk-r15b-linux-x86_64.zip ./android-ndk-r15b
