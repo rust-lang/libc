@@ -90,6 +90,15 @@ matrix:
     # QEMU based targets that compile in an emulator
     - env: TARGET=x86_64-unknown-freebsd
 
+    - name: "rustfmt"
+      install: rustup component add rustfmt-preview
+      script: cargo fmt --all -- --check
+    - name: "Shellcheck"
+      install: true
+      script:
+        - shellcheck --version
+        - shellcheck ci/*.sh
+
 notifications:
   email:
     on_success: never

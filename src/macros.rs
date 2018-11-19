@@ -68,7 +68,9 @@ macro_rules! f {
 }
 
 macro_rules! __item {
-    ($i:item) => ($i)
+    ($i:item) => {
+        $i
+    };
 }
 
 #[allow(unused_macros)]

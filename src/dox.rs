@@ -2,10 +2,10 @@ pub use self::imp::*;
 
 #[cfg(not(cross_platform_docs))]
 mod imp {
-    pub use core::option::Option;
     pub use core::clone::Clone;
     pub use core::marker::Copy;
     pub use core::mem;
+    pub use core::option::Option;
 }
 
 #[cfg(cross_platform_docs)]
@@ -16,17 +16,23 @@ mod imp {
     }
     impl<T: Copy> Copy for Option<T> {}
     impl<T: Clone> Clone for Option<T> {
-        fn clone(&self) -> Option<T> { loop {} }
+        fn clone(&self) -> Option<T> {
+            loop {}
+        }
     }
 
     impl<T> Copy for *mut T {}
     impl<T> Clone for *mut T {
-        fn clone(&self) -> *mut T { loop {} }
+        fn clone(&self) -> *mut T {
+            loop {}
+        }
     }
 
     impl<T> Copy for *const T {}
     impl<T> Clone for *const T {
-        fn clone(&self) -> *const T { loop {} }
+        fn clone(&self) -> *const T {
+            loop {}
+        }
     }
 
     pub trait Clone {
@@ -47,52 +53,52 @@ mod imp {
     pub trait Sized {}
 
     macro_rules! each_int {
-        ($mac:ident) => (
+        ($mac:ident) => {
             $mac!(u8);
             $mac!(u16);
             $mac!(u32);
             $mac!(u64);
             $mac!(usize);
             each_signed_int!($mac);
-        )
+        };
     }
 
     macro_rules! each_signed_int {
-        ($mac:ident) => (
+        ($mac:ident) => {
             $mac!(i8);
             $mac!(i16);
             $mac!(i32);
             $mac!(i64);
             $mac!(isize);
-        )
+        };
     }
 
     #[lang = "div"]
-    pub trait Div<RHS=Self> {
+    pub trait Div<RHS = Self> {
         type Output;
         fn div(self, rhs: RHS) -> Self::Output;
     }
 
     #[lang = "shl"]
-    pub trait Shl<RHS=Self> {
+    pub trait Shl<RHS = Self> {
         type Output;
         fn shl(self, rhs: RHS) -> Self::Output;
     }
 
     #[lang = "mul"]
-    pub trait Mul<RHS=Self> {
+    pub trait Mul<RHS = Self> {
         type Output;
         fn mul(self, rhs: RHS) -> Self::Output;
     }
 
     #[lang = "sub"]
-    pub trait Sub<RHS=Self> {
+    pub trait Sub<RHS = Self> {
         type Output;
         fn sub(self, rhs: RHS) -> Self::Output;
     }
 
     #[lang = "bitand"]
-    pub trait BitAnd<RHS=Self> {
+    pub trait BitAnd<RHS = Self> {
         type Output;
         fn bitand(self, rhs: RHS) -> Self::Output;
     }
@@ -103,7 +109,7 @@ mod imp {
     }
 
     #[lang = "bitor"]
-    pub trait BitOr<RHS=Self> {
+    pub trait BitOr<RHS = Self> {
         type Output;
         fn bitor(self, rhs: RHS) -> Self::Output;
     }
@@ -114,7 +120,7 @@ mod imp {
     }
 
     #[lang = "bitxor"]
-    pub trait BitXor<RHS=Self> {
+    pub trait BitXor<RHS = Self> {
         type Output;
         fn bitxor(self, rhs: RHS) -> Self::Output;
     }
@@ -203,7 +209,11 @@ mod imp {
     each_int!(impl_traits);
 
     pub mod mem {
-        pub fn size_of_val<T>(_: &T) -> usize { 4 }
-        pub const fn size_of<T>() -> usize { 4 }
+        pub fn size_of_val<T>(_: &T) -> usize {
+            4
+        }
+        pub const fn size_of<T>() -> usize {
+            4
+        }
     }
 }

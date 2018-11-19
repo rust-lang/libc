@@ -51,17 +51,17 @@ fn main() {
     }
 
     cfg.header("errno.h")
-       .header("fcntl.h")
-       .header("limits.h")
-       .header("locale.h")
-       .header("stddef.h")
-       .header("stdint.h")
-       .header("stdio.h")
-       .header("stdlib.h")
-       .header("sys/stat.h")
-       .header("sys/types.h")
-       .header("time.h")
-       .header("wchar.h");
+        .header("fcntl.h")
+        .header("limits.h")
+        .header("locale.h")
+        .header("stddef.h")
+        .header("stdint.h")
+        .header("stdio.h")
+        .header("stdlib.h")
+        .header("sys/stat.h")
+        .header("sys/types.h")
+        .header("time.h")
+        .header("wchar.h");
 
     if windows {
         cfg.header("winsock2.h"); // must be before windows.h
@@ -157,7 +157,6 @@ fn main() {
         }
 
         if !musl && !uclibc {
-
             if !netbsd && !openbsd && !uclibc {
                 cfg.header("execinfo.h");
             }
@@ -355,20 +354,9 @@ fn main() {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" |
-            "fd_set" |
-            "Dl_info" |
-            "DIR" |
-            "Elf32_Phdr" |
-            "Elf64_Phdr" |
-            "Elf32_Shdr" |
-            "Elf64_Shdr" |
-            "Elf32_Sym" |
-            "Elf64_Sym" |
-            "Elf32_Ehdr" |
-            "Elf64_Ehdr" |
-            "Elf32_Chdr" |
-            "Elf64_Chdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
+            | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
+            | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
 
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
@@ -377,9 +365,7 @@ fn main() {
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
 
-            t if is_union => {
-                format!("union {}", t)
-            }
+            t if is_union => format!("union {}", t),
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -405,7 +391,7 @@ fn main() {
     let target2 = target.clone();
     cfg.field_name(move |struct_, field| {
         match field {
-            "st_birthtime"      if openbsd && struct_ == "stat" => "__st_birthtime".to_string(),
+            "st_birthtime" if openbsd && struct_ == "stat" => "__st_birthtime".to_string(),
             "st_birthtime_nsec" if openbsd && struct_ == "stat" => "__st_birthtimensec".to_string(),
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
@@ -419,9 +405,15 @@ fn main() {
                 }
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
-            "type_" if (linux || freebsd || dragonfly) &&
-                (struct_ == "input_event" || struct_ == "input_mask" ||
-                 struct_ == "ff_effect" || struct_ == "rtprio") => "type".to_string(),
+            "type_"
+                if (linux || freebsd || dragonfly)
+                    && (struct_ == "input_event"
+                        || struct_ == "input_mask"
+                        || struct_ == "ff_effect"
+                        || struct_ == "rtprio") =>
+            {
+                "type".to_string()
+            }
             s => s.to_string(),
         }
     });
@@ -431,7 +423,7 @@ fn main() {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
 
-            _ => false
+            _ => false,
         }
     });
 
@@ -467,25 +459,20 @@ fn main() {
 
             // Present on historical versions of iOS but missing in more recent
             // SDKs
-            "bpf_hdr" |
-            "proc_taskinfo" |
-            "proc_taskallinfo" |
-            "proc_bsdinfo" |
-            "proc_threadinfo" |
-            "sockaddr_inarp" |
-            "sockaddr_ctl" |
-            "arphdr" if ios => true,
+            "bpf_hdr" | "proc_taskinfo" | "proc_taskallinfo" | "proc_bsdinfo"
+            | "proc_threadinfo" | "sockaddr_inarp" | "sockaddr_ctl" | "arphdr"
+                if ios =>
+            {
+                true
+            }
 
-            _ => false
+            _ => false,
         }
     });
 
     cfg.skip_signededness(move |c| {
         match c {
-            "LARGE_INTEGER" |
-            "mach_timebase_info_data_t" |
-            "float" |
-            "double" => true,
+            "LARGE_INTEGER" | "mach_timebase_info_data_t" | "float" | "double" => true,
             // uuid_t is a struct, not an integer.
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
@@ -495,8 +482,7 @@ fn main() {
             "mqd_t" if freebsd || dragonfly => true,
 
             // Just some typedefs on osx, no need to check their sign
-            "posix_spawnattr_t" |
-            "posix_spawn_file_actions_t" => true,
+            "posix_spawnattr_t" | "posix_spawn_file_actions_t" => true,
 
             // windows-isms
             n if n.starts_with("P") => true,
@@ -509,25 +495,26 @@ fn main() {
     cfg.skip_const(move |name| {
         match name {
             // Apparently these don't exist in mingw headers?
-            "MEM_RESET_UNDO" |
-            "FILE_ATTRIBUTE_NO_SCRUB_DATA" |
-            "FILE_ATTRIBUTE_INTEGRITY_STREAM" |
-            "ERROR_NOTHING_TO_TERMINATE" if mingw => true,
+            "MEM_RESET_UNDO"
+            | "FILE_ATTRIBUTE_NO_SCRUB_DATA"
+            | "FILE_ATTRIBUTE_INTEGRITY_STREAM"
+            | "ERROR_NOTHING_TO_TERMINATE"
+                if mingw =>
+            {
+                true
+            }
 
-            "SIG_DFL" |
-            "SIG_ERR" |
-            "SIG_IGN" => true, // sighandler_t weirdness
-            "SIGUNUSED" => true, // removed in glibc 2.26
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
+            "SIGUNUSED" => true,                       // removed in glibc 2.26
 
             // types on musl are defined a little differently
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
 
             // Skip constants not defined in MUSL but just passed down to the
             // kernel regardless
-            "RLIMIT_NLIMITS" |
-            "TCP_COOKIE_TRANSACTIONS" |
-            "RLIMIT_RTTIME" |
-            "MSG_COPY" if musl => true,
+            "RLIMIT_NLIMITS" | "TCP_COOKIE_TRANSACTIONS" | "RLIMIT_RTTIME" | "MSG_COPY" if musl => {
+                true
+            }
             // work around super old mips toolchain
             "SCHED_IDLE" | "SHM_NORESERVE" => mips,
 
@@ -536,30 +523,27 @@ fn main() {
             "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
 
             // These OSX constants are flagged as deprecated
-            "NOTE_EXIT_REPARENTED" |
-            "NOTE_REAP" if apple => true,
+            "NOTE_EXIT_REPARENTED" | "NOTE_REAP" if apple => true,
 
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
-            "MAP_RENAME" |
-            "MAP_NORESERVE" if freebsd => true,
+            "MAP_RENAME" | "MAP_NORESERVE" if freebsd => true,
 
             // These constants were removed in FreeBSD 11 (svn r262489),
             // and they've never had any legitimate use outside of the
             // base system anyway.
-            "CTL_MAXID" |
-            "KERN_MAXID" |
-            "HW_MAXID" |
-            "NET_MAXID" |
-            "USER_MAXID" if freebsd => true,
+            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "NET_MAXID" | "USER_MAXID" if freebsd => true,
 
             // These constants were added in FreeBSD 11
-            "EVFILT_PROCDESC" | "EVFILT_SENDFILE" | "EVFILT_EMPTY" |
-            "PD_CLOEXEC" | "PD_ALLOWED_AT_FORK" if freebsd => true,
+            "EVFILT_PROCDESC" | "EVFILT_SENDFILE" | "EVFILT_EMPTY" | "PD_CLOEXEC"
+            | "PD_ALLOWED_AT_FORK"
+                if freebsd =>
+            {
+                true
+            }
 
             // These constants were added in FreeBSD 12
-            "SF_USER_READAHEAD" |
-            "SO_REUSEPORT_LB" if freebsd => true,
+            "SF_USER_READAHEAD" | "SO_REUSEPORT_LB" if freebsd => true,
 
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
@@ -568,18 +552,43 @@ fn main() {
 
             // These constants were removed in OpenBSD 6 (https://git.io/v7gBO
             // https://git.io/v7gBq)
-            "KERN_USERMOUNT" |
-            "KERN_ARND" if openbsd => true,
+            "KERN_USERMOUNT" | "KERN_ARND" if openbsd => true,
 
             // These are either unimplemented or optionally built into uClibc
-            "LC_CTYPE_MASK" | "LC_NUMERIC_MASK" | "LC_TIME_MASK" | "LC_COLLATE_MASK" | "LC_MONETARY_MASK" | "LC_MESSAGES_MASK" |
-            "MADV_MERGEABLE" | "MADV_UNMERGEABLE" | "MADV_HWPOISON" | "IPV6_ADD_MEMBERSHIP" | "IPV6_DROP_MEMBERSHIP" | "IPV6_MULTICAST_LOOP" | "IPV6_V6ONLY" |
-            "MAP_STACK" | "RTLD_DEEPBIND" | "SOL_IPV6" | "SOL_ICMPV6" if uclibc => true,
+            "LC_CTYPE_MASK"
+            | "LC_NUMERIC_MASK"
+            | "LC_TIME_MASK"
+            | "LC_COLLATE_MASK"
+            | "LC_MONETARY_MASK"
+            | "LC_MESSAGES_MASK"
+            | "MADV_MERGEABLE"
+            | "MADV_UNMERGEABLE"
+            | "MADV_HWPOISON"
+            | "IPV6_ADD_MEMBERSHIP"
+            | "IPV6_DROP_MEMBERSHIP"
+            | "IPV6_MULTICAST_LOOP"
+            | "IPV6_V6ONLY"
+            | "MAP_STACK"
+            | "RTLD_DEEPBIND"
+            | "SOL_IPV6"
+            | "SOL_ICMPV6"
+                if uclibc =>
+            {
+                true
+            }
 
             // Musl uses old, patched kernel headers
-            "FALLOC_FL_COLLAPSE_RANGE" | "FALLOC_FL_ZERO_RANGE" |
-            "FALLOC_FL_INSERT_RANGE" | "FALLOC_FL_UNSHARE_RANGE" |
-            "RENAME_NOREPLACE" | "RENAME_EXCHANGE" | "RENAME_WHITEOUT" if musl => true,
+            "FALLOC_FL_COLLAPSE_RANGE"
+            | "FALLOC_FL_ZERO_RANGE"
+            | "FALLOC_FL_INSERT_RANGE"
+            | "FALLOC_FL_UNSHARE_RANGE"
+            | "RENAME_NOREPLACE"
+            | "RENAME_EXCHANGE"
+            | "RENAME_WHITEOUT"
+                if musl =>
+            {
+                true
+            }
 
             // Both android and musl use old kernel headers
             // These are constants used in getrandom syscall
@@ -610,7 +619,11 @@ fn main() {
 
             "MFD_CLOEXEC" | "MFD_ALLOW_SEALING" if !mips && musl => true,
 
-            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" | "DT_SOCK" if solaris => true,
+            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" | "DT_SOCK"
+                if solaris =>
+            {
+                true
+            }
             "USRQUOTA" | "GRPQUOTA" if solaris => true,
             "PRIO_MIN" | "PRIO_MAX" if solaris => true,
 
@@ -624,21 +637,25 @@ fn main() {
 
             // Present on historical versions of iOS, but now removed in more
             // recent SDKs
-            "ARPOP_REQUEST" |
-            "ARPOP_REPLY" |
-            "ATF_COM" |
-            "ATF_PERM" |
-            "ATF_PUBL" |
-            "ATF_USETRAILERS" |
-            "AF_SYS_CONTROL" |
-            "SYSPROTO_EVENT" |
-            "PROC_PIDTASKALLINFO" |
-            "PROC_PIDTASKINFO" |
-            "PROC_PIDTHREADINFO" |
-            "UTUN_OPT_FLAGS" |
-            "UTUN_OPT_IFNAME" |
-            "BPF_ALIGNMENT" |
-            "SYSPROTO_CONTROL" if ios => true,
+            "ARPOP_REQUEST"
+            | "ARPOP_REPLY"
+            | "ATF_COM"
+            | "ATF_PERM"
+            | "ATF_PUBL"
+            | "ATF_USETRAILERS"
+            | "AF_SYS_CONTROL"
+            | "SYSPROTO_EVENT"
+            | "PROC_PIDTASKALLINFO"
+            | "PROC_PIDTASKINFO"
+            | "PROC_PIDTHREADINFO"
+            | "UTUN_OPT_FLAGS"
+            | "UTUN_OPT_IFNAME"
+            | "BPF_ALIGNMENT"
+            | "SYSPROTO_CONTROL"
+                if ios =>
+            {
+                true
+            }
             s if ios && s.starts_with("RTF_") => true,
             s if ios && s.starts_with("RTM_") => true,
             s if ios && s.starts_with("RTA_") => true,
@@ -865,8 +882,8 @@ fn main() {
     // fails on a lot of platforms.
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_type(|_| true)
-       .skip_fn(|_| true)
-       .skip_static(|_| true);
+        .skip_fn(|_| true)
+        .skip_static(|_| true);
     if android || linux {
         // musl defines these directly in `fcntl.h`
         if musl {
@@ -880,24 +897,18 @@ fn main() {
         }
         cfg.header("linux/quota.h");
         cfg.header("asm/termbits.h");
-        cfg.skip_const(move |name| {
-            match name {
-                "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
-                "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
-                "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => false,
-                "BOTHER" => false,
-                _ => true,
-            }
+        cfg.skip_const(move |name| match name {
+            "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
+            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
+            "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => false,
+            "BOTHER" => false,
+            _ => true,
         });
-        cfg.skip_struct(|s| {
-            s != "termios2"
-        });
-        cfg.type_name(move |ty, is_struct, is_union| {
-            match ty {
-                t if is_struct => format!("struct {}", t),
-                t if is_union => format!("union {}", t),
-                t => t.to_string(),
-            }
+        cfg.skip_struct(|s| s != "termios2");
+        cfg.type_name(move |ty, is_struct, is_union| match ty {
+            t if is_struct => format!("struct {}", t),
+            t if is_union => format!("union {}", t),
+            t => t.to_string(),
         });
     } else {
         cfg.skip_const(|_| true);
