@@ -947,6 +947,8 @@ extern {
     pub fn posix_openpt(flags: ::c_int) -> ::c_int;
     pub fn ptsname(fd: ::c_int) -> *mut ::c_char;
     pub fn unlockpt(fd: ::c_int) -> ::c_int;
+
+    pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
 }
 
 cfg_if! {
