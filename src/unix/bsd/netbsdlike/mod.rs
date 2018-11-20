@@ -580,6 +580,17 @@ pub const TIOCM_DSR: ::c_int = 0o0400;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
+// Flags for chflags(2)
+pub const UF_SETTABLE:      ::c_ulong = 0x0000ffff;
+pub const UF_NODUMP:        ::c_ulong = 0x00000001;
+pub const UF_IMMUTABLE:     ::c_ulong = 0x00000002;
+pub const UF_APPEND:        ::c_ulong = 0x00000004;
+pub const UF_OPAQUE:        ::c_ulong = 0x00000008;
+pub const SF_SETTABLE:      ::c_ulong = 0xffff0000;
+pub const SF_ARCHIVED:      ::c_ulong = 0x00010000;
+pub const SF_IMMUTABLE:     ::c_ulong = 0x00020000;
+pub const SF_APPEND:        ::c_ulong = 0x00040000;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
@@ -592,6 +603,11 @@ f! {
     pub fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0o177) == 0o177
     }
+}
+
+extern {
+    pub fn chflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
+    pub fn fchflags(fd: ::c_int, flags: ::c_ulong) -> ::c_int;
 }
 
 #[link(name = "util")]

@@ -767,6 +767,14 @@ pub const RTP_PRIO_NORMAL: ::c_ushort = 1;
 pub const RTP_PRIO_IDLE: ::c_ushort = 2;
 pub const RTP_PRIO_THREAD: ::c_ushort = 3;
 
+// Flags for chflags(2)
+pub const UF_NOHISTORY: ::c_ulong = 0x00000040;
+pub const UF_CACHE:     ::c_ulong = 0x00000080;
+pub const UF_XLINK:     ::c_ulong = 0x00000100;
+pub const SF_NOHISTORY: ::c_ulong = 0x00400000;
+pub const SF_CACHE:     ::c_ulong = 0x00800000;
+pub const SF_XLINK:     ::c_ulong = 0x01000000;
+
 extern {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;

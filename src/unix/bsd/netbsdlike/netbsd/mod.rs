@@ -992,6 +992,11 @@ pub const PT_GET_EVENT_MASK: ::c_int = 17;
 pub const PT_GET_PROCESS_STATE: ::c_int = 18;
 pub const PT_FIRSTMACH: ::c_int = 32;
 
+// Flags for chflags(2)
+pub const SF_SNAPSHOT:  ::c_ulong = 0x00200000;
+pub const SF_LOG:       ::c_ulong = 0x00400000;
+pub const SF_SNAPINVAL: ::c_ulong = 0x00800000;
+
 // dirfd() is a macro on netbsd to access
 // the first field of the struct where dirp points to:
 // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36
@@ -1026,6 +1031,8 @@ extern {
     pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
+
+    pub fn lchflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
 
     pub fn extattr_delete_fd(fd: ::c_int,
                              attrnamespace: ::c_int,

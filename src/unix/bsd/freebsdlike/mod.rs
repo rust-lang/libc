@@ -1003,6 +1003,19 @@ pub const RTP_PRIO_MAX: ::c_ushort = 31;
 pub const RTP_LOOKUP: ::c_int = 0;
 pub const RTP_SET: ::c_int = 1;
 
+// Flags for chflags(2)
+pub const UF_SETTABLE:      ::c_ulong = 0x0000ffff;
+pub const UF_NODUMP:        ::c_ulong = 0x00000001;
+pub const UF_IMMUTABLE:     ::c_ulong = 0x00000002;
+pub const UF_APPEND:        ::c_ulong = 0x00000004;
+pub const UF_OPAQUE:        ::c_ulong = 0x00000008;
+pub const UF_NOUNLINK:      ::c_ulong = 0x00000010;
+pub const SF_SETTABLE:      ::c_ulong = 0xffff0000;
+pub const SF_ARCHIVED:      ::c_ulong = 0x00010000;
+pub const SF_IMMUTABLE:     ::c_ulong = 0x00020000;
+pub const SF_APPEND:        ::c_ulong = 0x00040000;
+pub const SF_NOUNLINK:      ::c_ulong = 0x00100000;
+
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
@@ -1032,9 +1045,13 @@ extern {
     pub fn aio_suspend(aiocb_list: *const *const aiocb, nitems: ::c_int,
                        timeout: *const ::timespec) -> ::c_int;
     pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn chflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
+    pub fn chflagsat(fd: ::c_int, path: *const ::c_char, flags: ::c_ulong,
+                     atflag: ::c_int) -> ::c_int;
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn endutxent();
+    pub fn fchflags(fd: ::c_int, flags: ::c_ulong) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn getdomainname(name: *mut ::c_char, len: ::c_int) -> ::c_int;
     pub fn getgrent_r(grp: *mut ::group,
@@ -1069,6 +1086,7 @@ extern {
                   eventlist: *mut ::kevent,
                   nevents: ::c_int,
                   timeout: *const ::timespec) -> ::c_int;
+    pub fn lchflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
