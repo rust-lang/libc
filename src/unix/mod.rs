@@ -318,17 +318,18 @@ cfg_if! {
         // cargo build, don't pull in anything extra as the libstd dep
         // already pulls in all libs.
     } else if #[cfg(target_env = "musl")] {
-        #[cfg_attr(feature = "stdbuild",
+        #[cfg_attr(feature = "rustc-dep-of-std",
                    link(name = "c", kind = "static",
                         cfg(target_feature = "crt-static")))]
-        #[cfg_attr(feature = "stdbuild",
+        #[cfg_attr(feature = "rustc-dep-of-std",
                    link(name = "c", cfg(not(target_feature = "crt-static"))))]
         extern {}
     } else if #[cfg(target_os = "emscripten")] {
         #[link(name = "c")]
         extern {}
     } else if #[cfg(all(target_os = "netbsd",
-                        feature = "stdbuild", target_vendor = "rumprun"))] {
+                        feature = "rustc-dep-of-std",
+                        target_vendor = "rumprun"))] {
         // Since we don't use -nodefaultlibs on Rumprun, libc is always pulled
         // in automatically by the linker. We avoid passing it explicitly, as it
         // causes some versions of binutils to crash with an assertion failure.
