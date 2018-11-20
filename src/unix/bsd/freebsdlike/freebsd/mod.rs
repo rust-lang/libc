@@ -928,6 +928,16 @@ pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x08;
 pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x10;
 pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
 
+// Flags for chflags(2)
+pub const UF_SYSTEM:    ::c_ulong = 0x00000080;
+pub const UF_SPARSE:    ::c_ulong = 0x00000100;
+pub const UF_OFFLINE:   ::c_ulong = 0x00000200;
+pub const UF_REPARSE:   ::c_ulong = 0x00000400;
+pub const UF_ARCHIVE:   ::c_ulong = 0x00000800;
+pub const UF_READONLY:  ::c_ulong = 0x00001000;
+pub const UF_HIDDEN:    ::c_ulong = 0x00008000;
+pub const SF_SNAPSHOT:  ::c_ulong = 0x00200000;
+
 extern {
     pub fn __error() -> *mut ::c_int;
 

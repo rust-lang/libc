@@ -2302,6 +2302,20 @@ pub const SHMLBA: ::c_int = 4096;
 pub const SHM_R: ::c_int = IPC_R;
 pub const SHM_W: ::c_int = IPC_W;
 
+// Flags for chflags(2)
+pub const UF_SETTABLE:      ::c_uint = 0x0000ffff;
+pub const UF_NODUMP:        ::c_uint = 0x00000001;
+pub const UF_IMMUTABLE:     ::c_uint = 0x00000002;
+pub const UF_APPEND:        ::c_uint = 0x00000004;
+pub const UF_OPAQUE:        ::c_uint = 0x00000008;
+pub const UF_COMPRESSED:    ::c_uint = 0x00000020;
+pub const UF_TRACKED:       ::c_uint = 0x00000040;
+pub const SF_SETTABLE:      ::c_uint = 0xffff0000;
+pub const SF_ARCHIVED:      ::c_uint = 0x00010000;
+pub const SF_IMMUTABLE:     ::c_uint = 0x00020000;
+pub const SF_APPEND:        ::c_uint = 0x00040000;
+pub const UF_HIDDEN:        ::c_uint = 0x00008000;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
@@ -2335,6 +2349,8 @@ extern {
     pub fn aio_suspend(aiocb_list: *const *const aiocb, nitems: ::c_int,
                        timeout: *const ::timespec) -> ::c_int;
     pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn chflags(path: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn fchflags(fd: ::c_int, flags: ::c_uint) -> ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
