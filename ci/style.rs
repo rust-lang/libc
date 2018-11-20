@@ -72,6 +72,8 @@ fn walk(path: &Path, err: &mut Errors) {
 
             "dox.rs" |
             "lib.rs" |
+            "ctypes.rs" |
+            "libc.rs" |
             "macros.rs" => continue,
 
             _ => {}
