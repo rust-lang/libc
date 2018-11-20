@@ -1,8 +1,7 @@
 libc
 ====
 
-A Rust library with native bindings to the types and functions commonly found on
-various systems, including libc.
+Rust wrapper over the system's `libc`.
 
 [![Build Status](https://travis-ci.org/rust-lang/libc.svg?branch=master)](https://travis-ci.org/rust-lang/libc)
 [![Build status](https://ci.appveyor.com/api/projects/status/github/rust-lang/libc?svg=true)](https://ci.appveyor.com/project/rust-lang-libs/libc)
