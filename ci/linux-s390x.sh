@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 set -ex
 
 mkdir -m 777 /qemu

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Copyright 2017 The Rust Project Developers. See the COPYRIGHT
 # file at the top-level directory of this distribution and at
 # http://rust-lang.org/COPYRIGHT.
@@ -17,10 +18,10 @@ echo ERROR: An error was encountered with the build.
 cat /tmp/build.log
 exit 1
 "
-  trap "$on_err" ERR
+  trap '$on_err' ERR
   bash -c "while true; do sleep 30; echo \$(date) - building ...; done" &
   PING_LOOP_PID=$!
-  $@ &> /tmp/build.log
+  "${@}" &> /tmp/build.log
   trap - ERR
   kill $PING_LOOP_PID
   rm -f /tmp/build.log
@@ -37,6 +38,7 @@ hide_output ./emsdk install sdk-1.37.20-64bit
 ./emsdk activate sdk-1.37.20-64bit
 
 # Compile and cache libc
+# shellcheck disable=SC1091
 source ./emsdk_env.sh
 echo "main(){}" > a.c
 HOME=/emsdk-portable/ emcc a.c

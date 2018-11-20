@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 # Initial script which is run inside of all qemu images. The first argument to
 # this script (as arranged by the qemu image itself) is the path to where the
 # libc crate is mounted.
@@ -10,11 +12,11 @@
 
 set -ex
 
-ROOT=$1
-cp -r $ROOT/libc /tmp/libc
+ROOT="${1}"
+cp -r "${ROOT}/libc" /tmp/libc
 cd /tmp/libc
 
-TARGET=$(cat $ROOT/TARGET)
+TARGET="$(cat "${ROOT}/TARGET")"
 export CARGO_TARGET_DIR=/tmp
 
 case $TARGET in
@@ -24,9 +26,9 @@ case $TARGET in
     ;;
 
   *)
-    echo "Unknown target: $TARGET"
+    echo "Unknown target: ${TARGET}"
     exit 1
     ;;
 esac
 
-exec sh ci/run.sh $TARGET
+exec sh ci/run.sh "${TARGET}"

@@ -2,43 +2,30 @@ language: rust
 rust: stable
 sudo: required
 dist: trusty
-services:
-  - docker
-install:
-  - if [ -z "$NO_ADD" ]; then rustup target add $TARGET; fi
-script:
-  - cargo build $OPT
-  - cargo build $OPT --no-default-features
-  - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
-  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
-      sh ci/run-docker.sh $TARGET;
-    else
-      export CARGO_TARGET_DIR=`pwd`/target;
-      sh ci/run.sh $TARGET;
-    fi
-  - rustc ci/style.rs && ./style src
-env:
-  global:
-    secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="
+services: docker
+
 matrix:
   include:
     # 1.13.0 compat
-    - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
+    - env: TARGET=x86_64-unknown-linux-gnu
       rust: 1.13.0
       script: rm -f Cargo.lock && cargo build
-      install:
+      install: true
 
     # build documentation
-    - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
+    - env: TARGET=x86_64-unknown-linux-gnu
       rust: nightly
       script: sh ci/dox.sh
+      install: true
 
     # stable compat
-    - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
+    - env: TARGET=x86_64-unknown-linux-gnu
+      install: true
     - env: TARGET=i686-unknown-linux-gnu
     - os: osx
-      env: TARGET=x86_64-apple-darwin NO_ADD=1
+      env: TARGET=x86_64-apple-darwin
       osx_image: xcode10
+      install: true
     - os: osx
       env: TARGET=i686-apple-darwin
       osx_image: xcode10
@@ -67,20 +54,24 @@ matrix:
     - env: TARGET=wasm32-unknown-emscripten
 
     # beta
-    - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
+    - env: TARGET=x86_64-unknown-linux-gnu
       rust: beta
+      install: true
     - os: osx
-      env: TARGET=x86_64-apple-darwin NO_ADD=1
+      env: TARGET=x86_64-apple-darwin
       osx_image: xcode10
       rust: beta
+      install: true
 
     # nightly
-    - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
+    - env: TARGET=x86_64-unknown-linux-gnu
       rust: nightly
+      install: true
     - os: osx
-      env: TARGET=x86_64-apple-darwin NO_ADD=1
+      env: TARGET=x86_64-apple-darwin
       osx_image: xcode10
       rust: nightly
+      install: true
     # not available on stable
     # without --release the build fails
     # see https://github.com/rust-lang/rust/issues/45417
@@ -89,6 +80,26 @@ matrix:
 
     # QEMU based targets that compile in an emulator
     - env: TARGET=x86_64-unknown-freebsd
+
+    - name: "Shellcheck"
+      install: true
+      script:
+        - shellcheck --version
+        - shellcheck ci/*.sh
+
+install: rustup target add $TARGET
+script:
+  - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
+  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
+      sh ci/run-docker.sh $TARGET;
+    else
+      export CARGO_TARGET_DIR=`pwd`/target;
+      sh ci/run.sh $TARGET;
+    fi
+  - rustc ci/style.rs && ./style src
+env:
+  global:
+    secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="
 
 notifications:
   email:
