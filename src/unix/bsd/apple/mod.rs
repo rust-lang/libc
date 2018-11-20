@@ -2585,8 +2585,6 @@ extern {
         fd: ::c_int,
         newfd: ::c_int,
     ) -> ::c_int;
-
-    pub fn getline (lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
 }
 
 cfg_if! {

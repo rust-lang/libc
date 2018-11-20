@@ -42,6 +42,8 @@ fn main() {
         cfg.define("_XOPEN_SOURCE", Some("700"));
         cfg.define("__EXTENSIONS__", None);
         cfg.define("_LCONV_C99", None);
+    } else if freebsd {
+        cfg.define("_WITH_GETLINE", None);
     }
 
     // Android doesn't actually have in_port_t but it's much easier if we

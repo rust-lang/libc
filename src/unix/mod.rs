@@ -949,6 +949,7 @@ extern {
     pub fn unlockpt(fd: ::c_int) -> ::c_int;
 
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
+    pub fn getline (lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
 }
 
 cfg_if! {
