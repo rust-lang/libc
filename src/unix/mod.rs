@@ -4,6 +4,7 @@
 //! according to the platform in question.
 
 use dox::Option;
+use {FILE, ssize_t, size_t}; // from libc parent
 
 pub type pid_t = i32;
 pub type uid_t = u32;
