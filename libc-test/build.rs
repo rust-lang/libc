@@ -441,7 +441,7 @@ fn main() {
             // which is absent in glibc, has to be defined.
             "__timeval" if linux => true,
 
-            // Fixed on stdbuild with repr(packed(4))
+            // Fixed on feature=align with repr(packed(4))
             // Once repr_packed stabilizes we can fix this unconditionally
             // and remove this check.
             "kevent" | "shmid_ds" if apple && x86_64 => true,
