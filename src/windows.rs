@@ -379,6 +379,22 @@ extern {
     #[link_name = "_wsetlocale"]
     pub fn wsetlocale(category: ::c_int,
                       locale: *const wchar_t) -> *mut wchar_t;
+
+    cfg_if! {
+        if #[cfg(all(target_env = "gnu"))] {
+            pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
+            pub fn strncasecmp(s1: *const c_char, s2: *const c_char,
+                            n: size_t) -> c_int;
+        } else if #[cfg(all(target_env = "msvc"))] {
+            #[link_name = "_stricmp"]
+            pub fn stricmp(s1: *const c_char, s2: *const c_char) -> c_int;
+            #[link_name = "_strnicmp"]
+            pub fn strnicmp(s1: *const c_char, s2: *const c_char,
+                            n: size_t) -> c_int;
+        } else {
+            // Unknown target_env
+        }
+    }
 }
 
 cfg_if! {
