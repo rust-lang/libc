@@ -354,9 +354,10 @@ fn main() {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
-            | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
-            | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
+            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
+            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
+            | "Elf64_Chdr" => ty.to_string(),
 
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
@@ -391,8 +392,12 @@ fn main() {
     let target2 = target.clone();
     cfg.field_name(move |struct_, field| {
         match field {
-            "st_birthtime" if openbsd && struct_ == "stat" => "__st_birthtime".to_string(),
-            "st_birthtime_nsec" if openbsd && struct_ == "stat" => "__st_birthtimensec".to_string(),
+            "st_birthtime" if openbsd && struct_ == "stat" => {
+                "__st_birthtime".to_string()
+            }
+            "st_birthtime_nsec" if openbsd && struct_ == "stat" => {
+                "__st_birthtimensec".to_string()
+            }
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
@@ -459,8 +464,9 @@ fn main() {
 
             // Present on historical versions of iOS but missing in more recent
             // SDKs
-            "bpf_hdr" | "proc_taskinfo" | "proc_taskallinfo" | "proc_bsdinfo"
-            | "proc_threadinfo" | "sockaddr_inarp" | "sockaddr_ctl" | "arphdr"
+            "bpf_hdr" | "proc_taskinfo" | "proc_taskallinfo"
+            | "proc_bsdinfo" | "proc_threadinfo" | "sockaddr_inarp"
+            | "sockaddr_ctl" | "arphdr"
                 if ios =>
             {
                 true
@@ -472,7 +478,10 @@ fn main() {
 
     cfg.skip_signededness(move |c| {
         match c {
-            "LARGE_INTEGER" | "mach_timebase_info_data_t" | "float" | "double" => true,
+            "LARGE_INTEGER"
+            | "mach_timebase_info_data_t"
+            | "float"
+            | "double" => true,
             // uuid_t is a struct, not an integer.
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
@@ -512,7 +521,12 @@ fn main() {
 
             // Skip constants not defined in MUSL but just passed down to the
             // kernel regardless
-            "RLIMIT_NLIMITS" | "TCP_COOKIE_TRANSACTIONS" | "RLIMIT_RTTIME" | "MSG_COPY" if musl => {
+            "RLIMIT_NLIMITS"
+            | "TCP_COOKIE_TRANSACTIONS"
+            | "RLIMIT_RTTIME"
+            | "MSG_COPY"
+                if musl =>
+            {
                 true
             }
             // work around super old mips toolchain
@@ -532,11 +546,16 @@ fn main() {
             // These constants were removed in FreeBSD 11 (svn r262489),
             // and they've never had any legitimate use outside of the
             // base system anyway.
-            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "NET_MAXID" | "USER_MAXID" if freebsd => true,
+            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "NET_MAXID"
+            | "USER_MAXID"
+                if freebsd =>
+            {
+                true
+            }
 
             // These constants were added in FreeBSD 11
-            "EVFILT_PROCDESC" | "EVFILT_SENDFILE" | "EVFILT_EMPTY" | "PD_CLOEXEC"
-            | "PD_ALLOWED_AT_FORK"
+            "EVFILT_PROCDESC" | "EVFILT_SENDFILE" | "EVFILT_EMPTY"
+            | "PD_CLOEXEC" | "PD_ALLOWED_AT_FORK"
                 if freebsd =>
             {
                 true
@@ -613,13 +632,19 @@ fn main() {
             // These constants are tested in a separate test program generated below because there
             // are header conflicts if we try to include the headers that define them here.
             "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => true,
-            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => true,
-            "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => true, // Only on MIPS
+            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
+            | "F_SEAL_WRITE" => true,
+            "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1"
+                if mips && linux =>
+            {
+                true
+            } // Only on MIPS
             "BOTHER" => true,
 
             "MFD_CLOEXEC" | "MFD_ALLOW_SEALING" if !mips && musl => true,
 
-            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" | "DT_SOCK"
+            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG"
+            | "DT_LNK" | "DT_SOCK"
                 if solaris =>
             {
                 true
@@ -628,7 +653,10 @@ fn main() {
             "PRIO_MIN" | "PRIO_MAX" if solaris => true,
 
             // These are defined for Solaris 11, but the crate is tested on illumos, where they are currently not defined
-            "EADI" | "PORT_SOURCE_POSTWAIT" | "PORT_SOURCE_SIGNAL" | "PTHREAD_STACK_MIN" => true,
+            "EADI"
+            | "PORT_SOURCE_POSTWAIT"
+            | "PORT_SOURCE_SIGNAL"
+            | "PTHREAD_STACK_MIN" => true,
 
             // These change all the time from release to release of linux
             // distros, let's just not bother trying to verify them. They
@@ -899,8 +927,13 @@ fn main() {
         cfg.header("asm/termbits.h");
         cfg.skip_const(move |name| match name {
             "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
-            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
-            "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips && linux => false,
+            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
+            | "F_SEAL_WRITE" => false,
+            "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1"
+                if mips && linux =>
+            {
+                false
+            }
             "BOTHER" => false,
             _ => true,
         });
