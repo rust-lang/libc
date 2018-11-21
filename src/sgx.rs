@@ -1,4 +1,4 @@
-//! Switch C type definitions
+//! SGX C types definition
 
 pub type int8_t = i8;
 pub type int16_t = i16;
@@ -28,11 +28,9 @@ pub type intptr_t = isize;
 pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
-pub type off_t = i64;
-pub type c_char = u8;
+pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
-pub type wchar_t = u32;
 
 pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
@@ -54,4 +52,3 @@ cfg_if! {
         }
     }
 }
-
