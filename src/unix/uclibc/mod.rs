@@ -1950,7 +1950,7 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(target_arch = "mips")] {
+    if #[cfg(any(target_arch = "mips", target_arch = "mips64"))] {
         mod mips;
         pub use self::mips::*;
     } else if #[cfg(target_arch = "x86_64")] {
