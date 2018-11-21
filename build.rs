@@ -7,7 +7,7 @@ fn main() {
      * If `core::ffi::c_void` exists, libc can just re-export it. Otherwise, it
      * must define an incompatible type to retain backwards-compatibility.
      */
-    if rustc_minor_version().expect("Failed to get rustc version") >= 31 {
+    if rustc_minor_version().expect("Failed to get rustc version") >= 30 {
         println!("cargo:rustc-cfg=core_cvoid");
     }
 }
