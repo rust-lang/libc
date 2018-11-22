@@ -7,12 +7,13 @@ readme = "README.md"
 repository = "https://github.com/rust-lang/libc"
 homepage = "https://github.com/rust-lang/libc"
 documentation = "http://doc.rust-lang.org/libc"
-description = """
-A library for types and bindings to native C functions often found in libc or
-other common platform libraries.
-"""
+keywords = ["libc", "ffi", "bindings", "operating", "system" ]
+categories = ["external-ffi-bindings", "no-std", "os"]
 build = "build.rs"
 exclude = ["/ci/*", "/.travis.yml", "/appveyor.yml"]
+description = """
+Raw FFI bindings to platform libraries like libc.
+"""
 
 [badges]
 travis-ci = { repository = "rust-lang/libc" }

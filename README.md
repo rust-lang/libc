@@ -1,7 +1,7 @@
 libc
 ====
 
-Rust wrapper over the system's `libc`.
+Raw FFI bindings to platform libraries like `libc`.
 
 [![Build Status](https://travis-ci.org/rust-lang/libc.svg?branch=master)](https://travis-ci.org/rust-lang/libc)
 [![Build status](https://ci.appveyor.com/api/projects/status/github/rust-lang/libc?svg=true)](https://ci.appveyor.com/project/rust-lang-libs/libc)
