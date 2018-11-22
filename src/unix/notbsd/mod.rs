@@ -67,7 +67,7 @@ s! {
 
     pub struct sockaddr_nl {
         pub nl_family: ::sa_family_t,
-        nl_pad: ::c_ushort,
+        pub nl_pad: ::c_ushort,
         pub nl_pid: u32,
         pub nl_groups: u32
     }
