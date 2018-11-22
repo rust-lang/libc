@@ -12,6 +12,12 @@ matrix:
       script: rm -f Cargo.lock && cargo build
       install: true
 
+    # 1.30.0 compat
+    - env: TARGET=x86_64-unknown-linux-gnu
+      rust: 1.30.0
+      script: rm -f Cargo.lock && cargo build
+      install: true
+
     # build documentation
     - env: TARGET=x86_64-unknown-linux-gnu
       rust: nightly
