@@ -140,3 +140,9 @@ pub struct T1_conflict_foo {
 pub struct T1_conflict {
     pub foo: i32,
 }
+
+#[repr(C, packed)]
+pub struct Pack {
+    pub a: u8,
+    pub b: u16,
+}

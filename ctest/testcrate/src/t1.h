@@ -98,6 +98,7 @@ struct Q {
   uint8_t q2;
 };
 
+
 struct T1_conflict_foo {
   int a;
 };
@@ -105,3 +106,29 @@ struct T1_conflict_foo {
 struct T1_conflict{
   int foo;
 };
+
+// test packed structs
+//
+// on msvc there is only pragma pack
+// on clang and gcc there is a packed attribute
+
+#ifdef _MSC_VER
+#pragma pack(push,1)
+#endif
+
+#ifndef _MSC_VER
+#define PACK __attribute__((packed))
+#else
+#define PACK
+#endif
+
+struct Pack {
+  uint8_t a;
+  uint16_t b;
+} PACK;
+
+#undef PACK
+
+#ifdef _MSC_VER
+#pragma pack(pop)
+#endif
