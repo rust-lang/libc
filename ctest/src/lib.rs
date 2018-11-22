@@ -645,6 +645,8 @@ impl TestGenerator {
                 .flag("-Werror")
                 .flag("-Wno-unused-parameter")
                 .flag("-Wno-type-limits")
+                // allow taking address of packed struct members:
+                .flag("-Wno-address-of-packed-member")
                 .flag("-Wno-deprecated-declarations"); // allow deprecated items
         }
 
