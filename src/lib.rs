@@ -150,19 +150,11 @@
     )
 )]
 // Attributes needed when building as part of the standard library
-#![cfg_attr(feature = "rustc-dep-of-std", feature(staged_api, cfg_target_vendor))]
+#![cfg_attr(feature = "rustc-dep-of-std", feature(cfg_target_vendor))]
 #![cfg_attr(feature = "rustc-dep-of-std", feature(link_cfg, repr_packed))]
 #![cfg_attr(feature = "rustc-dep-of-std", feature(no_core))]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 #![cfg_attr(feature = "rustc-dep-of-std", allow(warnings))]
-#![cfg_attr(
-    feature = "rustc-dep-of-std",
-    unstable(
-        feature = "libc",
-        reason = "use `libc` from crates.io",
-        issue = "27783"
-    )
-)]
 #![cfg_attr(not(any(feature = "use_std", feature = "rustc-dep-of-std")), no_std)]
 
 #[cfg(all(not(cross_platform_docs), feature = "use_std"))]
