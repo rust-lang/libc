@@ -111,18 +111,6 @@ pub const BUFSIZ: ::c_uint = 512;
 pub const FOPEN_MAX: ::c_uint = 20;
 pub const FILENAME_MAX: ::c_uint = 260;
 
-cfg_if! {
-    if #[cfg(all(target_env = "gnu"))] {
-        pub const L_tmpnam: ::c_uint = 14;
-        pub const TMP_MAX: ::c_uint = 0x7fff;
-    } else if #[cfg(all(target_env = "msvc"))] {
-        pub const L_tmpnam: ::c_uint = 260;
-        pub const TMP_MAX: ::c_uint = 0x7fff_ffff;
-    } else {
-        // Unknown target_env
-    }
-}
-
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
@@ -382,24 +370,6 @@ extern {
 }
 
 cfg_if! {
-    extern {
-        if #[cfg(all(target_env = "gnu"))] {
-            pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
-            pub fn strncasecmp(s1: *const c_char, s2: *const c_char,
-                            n: size_t) -> c_int;
-        } else if #[cfg(all(target_env = "msvc"))] {
-            #[link_name = "_stricmp"]
-            pub fn stricmp(s1: *const c_char, s2: *const c_char) -> c_int;
-            #[link_name = "_strnicmp"]
-            pub fn strnicmp(s1: *const c_char, s2: *const c_char,
-                            n: size_t) -> c_int;
-        } else {
-            // Unknown target_env
-        }
-    }
-}
-
-cfg_if! {
     if #[cfg(core_cvoid)] {
         pub use core::ffi::c_void;
     } else {
@@ -414,5 +384,17 @@ cfg_if! {
             #[doc(hidden)]
             __variant2,
         }
+    }
+}
+
+cfg_if! {
+    if #[cfg(all(target_env = "gnu"))] {
+        mod gnu;
+        pub use self::gnu::*;
+    } else if #[cfg(all(target_env = "msvc"))] {
+        mod msvc;
+        pub use self::msvc::*;
+    } else {
+        // Unknown target_env
     }
 }
