@@ -26,6 +26,7 @@ fn main() {
     let openbsd = target.contains("openbsd");
     let rumprun = target.contains("rumprun");
     let solaris = target.contains("solaris");
+    let cloudabi = target.contains("cloudabi");
     let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
@@ -351,6 +352,10 @@ fn main() {
         if !uclibc {
             cfg.header("aio.h");
         }
+    }
+
+    if cloudabi {
+        cfg.header("strings.h");
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
