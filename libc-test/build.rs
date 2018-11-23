@@ -27,6 +27,7 @@ fn main() {
     let rumprun = target.contains("rumprun");
     let solaris = target.contains("solaris");
     let cloudabi = target.contains("cloudabi");
+    let redox = target.contains("redox");
     let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
@@ -354,7 +355,7 @@ fn main() {
         }
     }
 
-    if cloudabi {
+    if cloudabi || redox {
         cfg.header("strings.h");
     }
 
