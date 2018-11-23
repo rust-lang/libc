@@ -2257,3 +2257,12 @@ cfg_if! {
         pub use self::other::*;
     }
 }
+
+cfg_if! {
+    if #[cfg(target_os = "fuchsia")] {
+        mod fuchsia;
+        pub use self::fuchsia::*;
+    } else {
+        // nothing
+    }
+}

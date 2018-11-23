@@ -184,9 +184,6 @@ cfg_if! {
     } else if #[cfg(target_os = "cloudabi")] {
         mod cloudabi;
         pub use cloudabi::*;
-    } else if #[cfg(target_os = "fuchsia")] {
-        mod fuchsia;
-        pub use fuchsia::*;
     } else if #[cfg(target_os = "switch")] {
         mod switch;
         pub use switch::*;
