@@ -376,6 +376,14 @@ pub const CTL_P1003_1B_SIGQUEUE_MAX: ::c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: ::c_int = 25;
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
+pub const ENOMEDIUM: ::c_int = 93;
+pub const EUNUSED94: ::c_int = 94;
+pub const EUNUSED95: ::c_int = 95;
+pub const EUNUSED96: ::c_int = 96;
+pub const EUNUSED97: ::c_int = 97;
+pub const EUNUSED98: ::c_int = 98;
+pub const EASYNC: ::c_int = 99;
+
 pub const EVFILT_READ: ::int16_t = -1;
 pub const EVFILT_WRITE: ::int16_t = -2;
 pub const EVFILT_AIO: ::int16_t = -3;
