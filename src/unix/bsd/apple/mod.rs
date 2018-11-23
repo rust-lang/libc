@@ -245,7 +245,7 @@ s! {
         pub f_reserved: [::uint32_t; 8],
     }
 
-    #[cfg_attr(feature = "stdbuild", repr(packed(4)))]
+    #[cfg_attr(feature = "rustc-dep-of-std", repr(packed(4)))]
     pub struct kevent {
         pub ident: ::uintptr_t,
         pub filter: ::int16_t,
@@ -535,7 +535,7 @@ s! {
         pub _key: ::key_t,
     }
 
-    #[cfg_attr(feature = "stdbuild", repr(packed(4)))]
+    #[cfg_attr(feature = "rustc-dep-of-std", repr(packed(4)))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
         pub shm_segsz: ::size_t,
@@ -772,6 +772,7 @@ pub const MAP_SHARED: ::c_int = 0x0001;
 pub const MAP_PRIVATE: ::c_int = 0x0002;
 pub const MAP_FIXED: ::c_int = 0x0010;
 pub const MAP_ANON: ::c_int = 0x1000;
+pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
 pub const VM_FLAGS_FIXED: ::c_int = 0x0000;
 pub const VM_FLAGS_ANYWHERE: ::c_int = 0x0001;
