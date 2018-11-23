@@ -1528,8 +1528,13 @@ pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
 pub const NET_RT_IFLIST: ::c_int = 3;
 #[doc(hidden)]
-pub const NET_RT_MAXID: ::c_int = 10;
-
+cfg_if! {
+    if #[cfg(any(osx_major = "10", osx_minor = "14"))] {
+        pub const NET_RT_MAXID: ::c_int = 11;
+    } else {
+        pub const NET_RT_MAXID: ::c_int = 10;
+    }
+}
 pub const SOMAXCONN: ::c_int = 128;
 
 pub const SOCK_MAXADDRLEN: ::c_int = 255;
