@@ -379,8 +379,10 @@ extern {
     #[link_name = "_wsetlocale"]
     pub fn wsetlocale(category: ::c_int,
                       locale: *const wchar_t) -> *mut wchar_t;
+}
 
-    cfg_if! {
+cfg_if! {
+    extern {
         if #[cfg(all(target_env = "gnu"))] {
             pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
             pub fn strncasecmp(s1: *const c_char, s2: *const c_char,
