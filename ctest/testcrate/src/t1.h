@@ -97,3 +97,11 @@ struct Q {
   uint8_t** q1;
   uint8_t q2;
 };
+
+struct T1_conflict_foo {
+  int a;
+};
+
+struct T1_conflict{
+  int foo;
+};

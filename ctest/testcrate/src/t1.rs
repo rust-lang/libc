@@ -127,3 +127,13 @@ pub struct Q {
     pub q1: *mut *mut u8,
     pub q2: u8,
 }
+
+#[repr(C)]
+pub struct T1_conflict_foo {
+    a: i32,
+}
+
+#[repr(C)]
+pub struct T1_conflict {
+    pub foo: i32,
+}
