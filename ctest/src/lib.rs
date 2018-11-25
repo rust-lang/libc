@@ -1024,7 +1024,7 @@ impl<'a> Generator<'a> {
                 uint64_t __test_offset_{ty}_{rust_field}(void) {{
                     return offsetof({cstructty}, {c_field});
                 }}
-                uint64_t __test_size_{ty}_{rust_field}(void) {{
+                uint64_t __test_fsize_{ty}_{rust_field}(void) {{
                     {cstructty}* foo = NULL;
                     return sizeof(foo->{c_field});
                 }}
@@ -1040,7 +1040,7 @@ impl<'a> Generator<'a> {
                 r#"
                 extern {{
                     fn __test_offset_{ty}_{field}() -> u64;
-                    fn __test_size_{ty}_{field}() -> u64;
+                    fn __test_fsize_{ty}_{field}() -> u64;
                 }}
                 unsafe {{
                     let foo = 0 as *mut {ty};
@@ -1048,7 +1048,7 @@ impl<'a> Generator<'a> {
                          __test_offset_{ty}_{field}(),
                          "field offset {field} of {ty}");
                     same(mem::size_of_val(&(*foo).{field}) as u64,
-                         __test_size_{ty}_{field}(),
+                         __test_fsize_{ty}_{field}(),
                          "field size {field} of {ty}");
                 }}
             "#,
