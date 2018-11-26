@@ -8,12 +8,6 @@ set -ex
 run() {
     echo "Building docker container for target ${1}"
 
-    # FIXME: Hacky workaround. Docker build seems to work better if we pull the base images first
-    # Not using arrays/loops because it's not POSIX sh compatible
-    docker pull ubuntu:16.04
-    docker pull ubuntu:17.10
-    docker pull ubuntu:18.04
-
     # use -f so we can use ci/ as build context
     docker build -t libc -f "ci/docker/${1}/Dockerfile" ci/
     mkdir -p target
