@@ -92,9 +92,10 @@ extern "C" {
     pub static mut T1_static_wrong2: extern "C" fn(u8, u8) -> u8;
 
     pub static T1_fn_ptr_s: unsafe extern "C" fn(u8) -> extern "C" fn(u16) -> u32;
-    pub static T1_fn_ptr_s2:
-        unsafe extern "C" fn(extern "C" fn(u8) -> u8, extern "C" fn(u16) -> u16)
-            -> extern "C" fn(u16) -> u32;
+    pub static T1_fn_ptr_s2: unsafe extern "C" fn(
+        extern "C" fn(u8) -> u8,
+        extern "C" fn(u16) -> u16,
+    ) -> extern "C" fn(u16) -> u32;
 
     pub static T1_arr0: [i32; 2];
     pub static T1_arr1: [[i32; 3]; 2];
@@ -116,8 +117,10 @@ extern "C" {
     pub static T1_opt_fn1: Option<unsafe extern "C" fn() -> ()>;
     pub static T1_opt_fn2: Option<unsafe extern "C" fn(u8) -> extern "C" fn(u16) -> u32>;
     pub static T1_opt_fn3: Option<
-        unsafe extern "C" fn(extern "C" fn(u8) -> u8, extern "C" fn(u16) -> u16)
-            -> extern "C" fn(u16) -> u32,
+        unsafe extern "C" fn(
+            extern "C" fn(u8) -> u8,
+            extern "C" fn(u16) -> u16,
+        ) -> extern "C" fn(u16) -> u32,
     >;
 }
 
