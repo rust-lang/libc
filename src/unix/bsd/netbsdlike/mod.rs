@@ -431,14 +431,6 @@ pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
 pub const IPV6_RECVPKTINFO: ::c_int = 36;
 pub const IPV6_PKTINFO: ::c_int = 46;
 
-pub const TCP_KEEPIDLE: ::c_int = 3;
-pub const TCP_KEEPINTVL: ::c_int = 5;
-pub const TCP_KEEPCNT: ::c_int = 6;
-pub const TCP_KEEPINIT: ::c_int = 7;
-pub const TCP_INFO: ::c_int = 9;
-pub const TCP_MD5SIG: ::c_int = 0x10;
-pub const TCP_CONGCTL: ::c_int = 0x20;
-
 pub const SOL_SOCKET: ::c_int = 0xffff;
 pub const SO_DEBUG: ::c_int = 0x01;
 pub const SO_ACCEPTCONN: ::c_int = 0x0002;

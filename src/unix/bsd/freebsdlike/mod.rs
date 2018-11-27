@@ -669,6 +669,8 @@ pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 pub const IPV6_RECVPKTINFO: ::c_int = 36;
 pub const IPV6_PKTINFO: ::c_int = 46;
 
+pub const TCP_NOPUSH:    ::c_int = 4;
+pub const TCP_NOOPT:     ::c_int = 8;
 pub const TCP_KEEPIDLE:  ::c_int = 256;
 pub const TCP_KEEPINTVL: ::c_int = 512;
 pub const TCP_KEEPCNT:   ::c_int = 1024;

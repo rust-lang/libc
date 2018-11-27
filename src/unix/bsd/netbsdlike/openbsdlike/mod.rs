@@ -321,6 +321,7 @@ pub const IP_RECVDSTADDR: ::c_int = 7;
 pub const IP_SENDSRCADDR: ::c_int = IP_RECVDSTADDR;
 
 // sys/netinet/in.h
+pub const TCP_MD5SIG: ::c_int = 0x04;
 pub const TCP_NOPUSH: ::c_int = 0x10;
 
 pub const AF_ECMA: ::c_int = 8;
