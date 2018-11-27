@@ -792,6 +792,16 @@ pub const IPPROTO_DIVERT: ::c_int = 258;
 /// SeND pseudo-protocol
 pub const IPPROTO_SEND: ::c_int = 259;
 
+// sys/netinet/TCP.h
+pub const TCP_MD5SIG: ::c_int = 16;
+pub const TCP_INFO: ::c_int = 32;
+pub const TCP_CONGESTION: ::c_int = 64;
+pub const TCP_CCALGOOPT: ::c_int = 65;
+pub const TCP_KEEPINIT: ::c_int = 128;
+pub const TCP_FASTOPEN: ::c_int = 1025;
+pub const TCP_PCAP_OUT: ::c_int = 2048;
+pub const TCP_PCAP_IN: ::c_int = 4096;
+
 pub const IP_BINDANY: ::c_int = 24;
 
 pub const PF_SLOW: ::c_int = AF_SLOW;

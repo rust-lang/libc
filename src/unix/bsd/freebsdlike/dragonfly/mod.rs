@@ -682,6 +682,11 @@ pub const IPPROTO_DONE: ::c_int = 257;
 /// Used by RSS: the layer3 protocol is unknown
 pub const IPPROTO_UNKNOWN: ::c_int = 258;
 
+// sys/netinet/tcp.h
+pub const TCP_SIGNATURE_ENABLE:   ::c_int = 16;
+pub const TCP_KEEPINIT:   ::c_int = 32;
+pub const TCP_FASTKEEP:   ::c_int = 128;
+
 pub const AF_BLUETOOTH: ::c_int = 33;
 pub const AF_MPLS: ::c_int = 34;
 pub const AF_IEEE80211: ::c_int = 35;
