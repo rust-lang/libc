@@ -53,8 +53,7 @@ s! {
         pub ai_addrlen: socklen_t,
 
         #[cfg(any(target_os = "linux",
-                  target_os = "emscripten",
-                  target_os = "fuchsia"))]
+                  target_os = "emscripten"))]
         pub ai_addr: *mut ::sockaddr,
 
         pub ai_canonname: *mut c_char,
@@ -1235,7 +1234,7 @@ cfg_if! {
     if #[cfg(target_os = "emscripten")] {
         mod emscripten;
         pub use self::emscripten::*;
-    } else if #[cfg(any(target_os = "linux", target_os = "fuchsia"))] {
+    } else if #[cfg(target_os = "linux")] {
         mod linux;
         pub use self::linux::*;
     } else if #[cfg(target_os = "android")] {
