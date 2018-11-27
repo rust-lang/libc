@@ -710,7 +710,9 @@ f! {
 }
 
 extern {
-    pub fn chflagsat(fd: ::c_int, path: *const ::c_char, flags: ::c_ulong,
+    pub fn chflags(path: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn fchflags(fd: ::c_int, flags: ::c_uint) -> ::c_int;
+    pub fn chflagsat(fd: ::c_int, path: *const ::c_char, flags: ::c_uint,
                      atflag: ::c_int) -> ::c_int;
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,

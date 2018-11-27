@@ -611,11 +611,6 @@ f! {
     }
 }
 
-extern {
-    pub fn chflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
-    pub fn fchflags(fd: ::c_int, flags: ::c_ulong) -> ::c_int;
-}
-
 #[link(name = "util")]
 extern {
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
