@@ -1672,7 +1672,10 @@ pub const ARPD_LOOKUP: ::c_ushort = 0x02;
 pub const ARPD_FLUSH: ::c_ushort = 0x03;
 pub const ATF_MAGIC: ::c_int = 0x80;
 
+#[cfg(not(target_arch = "sparc64"))]
 pub const SO_TIMESTAMPING: ::c_int = 37;
+#[cfg(target_arch = "sparc64")]
+pub const SO_TIMESTAMPING: ::c_int = 35;
 pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
 
 // linux/module.h
