@@ -254,6 +254,13 @@ extern {
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
+    pub fn pthread_getaffinity_np(thread: ::pthread_t,
+                                  cpusetsize: ::size_t,
+                                  cpuset: *mut ::cpu_set_t) -> ::c_int;
+    pub fn pthread_setaffinity_np(thread: ::pthread_t,
+                                  cpusetsize: ::size_t,
+                                  cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn sched_getcpu() -> ::c_int;
 }
 
 cfg_if! {
