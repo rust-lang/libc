@@ -347,10 +347,6 @@ cfg_if! {
         #[link(name = "root")]
         #[link(name = "network")]
         extern {}
-    } else if #[cfg(target_os = "fuchsia")] {
-        #[link(name = "c")]
-        #[link(name = "fdio")]
-        extern {}
     } else if #[cfg(target_env = "newlib")] {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -1126,8 +1122,7 @@ cfg_if! {
         pub use self::newlib::*;
     } else if #[cfg(any(target_os = "linux",
                         target_os = "android",
-                        target_os = "emscripten",
-                        target_os = "fuchsia"))] {
+                        target_os = "emscripten"))] {
         mod notbsd;
         pub use self::notbsd::*;
     } else if #[cfg(any(target_os = "macos",

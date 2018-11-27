@@ -2257,7 +2257,7 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(any(target_env = "musl", target_os = "fuchsia"))] {
+    if #[cfg(target_env = "musl")] {
         mod musl;
         pub use self::musl::*;
     } else if #[cfg(any(target_arch = "mips",
