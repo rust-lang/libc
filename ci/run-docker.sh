@@ -7,6 +7,7 @@ set -ex
 
 run() {
     echo "Building docker container for target ${1}"
+
     # use -f so we can use ci/ as build context
     docker build -t libc -f "ci/docker/${1}/Dockerfile" ci/
     mkdir -p target

@@ -26,6 +26,8 @@ fn main() {
     let openbsd = target.contains("openbsd");
     let rumprun = target.contains("rumprun");
     let solaris = target.contains("solaris");
+    let cloudabi = target.contains("cloudabi");
+    let redox = target.contains("redox");
     let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
@@ -42,6 +44,8 @@ fn main() {
         cfg.define("_XOPEN_SOURCE", Some("700"));
         cfg.define("__EXTENSIONS__", None);
         cfg.define("_LCONV_C99", None);
+    } else if freebsd {
+        cfg.define("_WITH_GETLINE", None);
     }
 
     // Android doesn't actually have in_port_t but it's much easier if we
@@ -349,6 +353,10 @@ fn main() {
         if !uclibc {
             cfg.header("aio.h");
         }
+    }
+
+    if cloudabi || redox {
+        cfg.header("strings.h");
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {

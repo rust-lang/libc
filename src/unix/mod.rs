@@ -476,6 +476,9 @@ extern {
     pub fn strdup(cs: *const c_char) -> *mut c_char;
     pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
+    pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
+    pub fn strncasecmp(s1: *const c_char, s2: *const c_char,
+                       n: size_t) -> c_int;
     pub fn strlen(cs: *const c_char) -> size_t;
     pub fn strnlen(cs: *const c_char, maxlen: size_t) -> size_t;
     #[cfg_attr(
@@ -1108,6 +1111,10 @@ extern {
     pub fn posix_openpt(flags: ::c_int) -> ::c_int;
     pub fn ptsname(fd: ::c_int) -> *mut ::c_char;
     pub fn unlockpt(fd: ::c_int) -> ::c_int;
+
+    pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
+    pub fn getline (lineptr: *mut *mut c_char, n: *mut size_t,
+        stream: *mut FILE) -> ssize_t;
 }
 
 cfg_if! {

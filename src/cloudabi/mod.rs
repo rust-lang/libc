@@ -185,6 +185,8 @@ extern {
     pub fn atexit(cb: extern fn()) -> c_int;
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
+    pub fn getline (lineptr: *mut *mut c_char, n: *mut size_t,
+        stream: *mut FILE) -> ssize_t;
 
     pub fn strcpy(dst: *mut c_char, src: *const c_char) -> *mut c_char;
     pub fn strncpy(dst: *mut c_char, src: *const c_char,
@@ -201,6 +203,9 @@ extern {
     pub fn strdup(cs: *const c_char) -> *mut c_char;
     pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
+    pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
+    pub fn strncasecmp(s1: *const c_char, s2: *const c_char,
+                       n: size_t) -> c_int;
     pub fn strlen(cs: *const c_char) -> size_t;
     pub fn strnlen(cs: *const c_char, maxlen: size_t) -> size_t;
     pub fn strerror(n: c_int) -> *mut c_char;
