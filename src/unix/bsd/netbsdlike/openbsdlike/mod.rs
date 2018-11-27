@@ -321,6 +321,7 @@ pub const IP_RECVDSTADDR: ::c_int = 7;
 pub const IP_SENDSRCADDR: ::c_int = IP_RECVDSTADDR;
 
 // sys/netinet/in.h
+pub const TCP_MD5SIG: ::c_int = 0x04;
 pub const TCP_NOPUSH: ::c_int = 0x10;
 
 pub const AF_ECMA: ::c_int = 8;
@@ -667,7 +668,8 @@ pub const KERN_GLOBAL_PTRACE: ::c_int = 81;
 pub const KERN_CONSBUFSIZE: ::c_int = 82;
 pub const KERN_CONSBUF: ::c_int = 83;
 pub const KERN_AUDIO: ::c_int = 84;
-pub const KERN_MAXID: ::c_int = 85;
+pub const KERN_CPUSTATS: ::c_int = 85;
+pub const KERN_MAXID: ::c_int = 86;
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
 pub const KERN_PROC_PGRP: ::c_int = 2;
@@ -710,7 +712,9 @@ f! {
 }
 
 extern {
-    pub fn chflagsat(fd: ::c_int, path: *const ::c_char, flags: ::c_ulong,
+    pub fn chflags(path: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn fchflags(fd: ::c_int, flags: ::c_uint) -> ::c_int;
+    pub fn chflagsat(fd: ::c_int, path: *const ::c_char, flags: ::c_uint,
                      atflag: ::c_int) -> ::c_int;
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn getnameinfo(sa: *const ::sockaddr,

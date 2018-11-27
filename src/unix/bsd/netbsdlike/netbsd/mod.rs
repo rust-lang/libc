@@ -399,9 +399,14 @@ pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 
 pub const TCP_KEEPIDLE:  ::c_int = 3;
+pub const TCP_NOPUSH:    ::c_int = 4;
 pub const TCP_KEEPINTVL: ::c_int = 5;
 pub const TCP_KEEPCNT:   ::c_int = 6;
 pub const TCP_KEEPINIT:  ::c_int = 7;
+pub const TCP_NOOPT:     ::c_int = 8;
+pub const TCP_INFO:      ::c_int = 9;
+pub const TCP_MD5SIG:    ::c_int = 0x10;
+pub const TCP_CONGCTL:   ::c_int = 0x20;
 
 pub const SOCK_CONN_DGRAM: ::c_int = 6;
 pub const SOCK_DCCP: ::c_int = SOCK_CONN_DGRAM;
@@ -1032,6 +1037,8 @@ extern {
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
 
+    pub fn chflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
+    pub fn fchflags(fd: ::c_int, flags: ::c_ulong) -> ::c_int;
     pub fn lchflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
 
     pub fn extattr_delete_fd(fd: ::c_int,
