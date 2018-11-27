@@ -1672,9 +1672,24 @@ pub const ARPD_LOOKUP: ::c_ushort = 0x02;
 pub const ARPD_FLUSH: ::c_ushort = 0x03;
 pub const ATF_MAGIC: ::c_int = 0x80;
 
+#[cfg(not(target_arch = "sparc64"))]
+pub const SO_TIMESTAMPING: ::c_int = 37;
+#[cfg(target_arch = "sparc64")]
+pub const SO_TIMESTAMPING: ::c_int = 35;
+pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
+
 // linux/module.h
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
+
+// linux/net_tstamp.h
+pub const SOF_TIMESTAMPING_TX_HARDWARE: ::c_uint = 1 << 0;
+pub const SOF_TIMESTAMPING_TX_SOFTWARE: ::c_uint = 1 << 1;
+pub const SOF_TIMESTAMPING_RX_HARDWARE: ::c_uint = 1 << 2;
+pub const SOF_TIMESTAMPING_RX_SOFTWARE: ::c_uint = 1 << 3;
+pub const SOF_TIMESTAMPING_SOFTWARE: ::c_uint = 1 << 4;
+pub const SOF_TIMESTAMPING_SYS_HARDWARE: ::c_uint = 1 << 5;
+pub const SOF_TIMESTAMPING_RAW_HARDWARE: ::c_uint = 1 << 6;
 
 f! {
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
