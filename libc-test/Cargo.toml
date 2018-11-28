@@ -9,7 +9,7 @@ path = ".."
 default-features = false
 
 [build-dependencies]
-ctest = "0.2.7"
+ctest = "0.2.8"
 
 [features]
 default = [ "use_std" ]
