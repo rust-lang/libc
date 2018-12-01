@@ -247,6 +247,7 @@ pub const ERFKILL: ::c_int = 134;
 
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
+pub const SO_PASSCRED: ::c_int = 2;
 pub const SO_REUSEADDR: ::c_int = 4;
 pub const SO_BINDTODEVICE: ::c_int = 0x000d;
 pub const SO_TIMESTAMP: ::c_int = 0x001d;
