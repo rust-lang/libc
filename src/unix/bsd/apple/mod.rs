@@ -535,6 +535,35 @@ s! {
         pub _key: ::key_t,
     }
 
+    // sys/sem.h
+
+    pub struct sembuf {
+        pub sem_num: ::c_ushort,
+        pub sem_op: ::c_short,
+        pub sem_flg: ::c_short,
+    }
+
+    #[cfg_attr(feature = "rustc-dep-of-std", repr(packed(4)))]
+    pub struct semid_ds {
+        // Note the manpage shows different types than the system header.
+        pub sem_perm: ipc_perm,
+        pub sem_base: ::int32_t,
+        pub sem_nsems: ::c_ushort,
+        pub sem_otime: ::time_t,
+        pub sem_pad1: ::int32_t,
+        pub sem_ctime: ::time_t,
+        pub sem_pad2: ::int32_t,
+        pub sem_pad3: [::int32_t; 4],
+    }
+
+    pub union semun {
+        pub val: ::c_int,
+        pub buf: *mut semid_ds,
+        pub array: *mut ::c_ushort,
+    }
+
+    // sys/shm.h
+
     #[cfg_attr(feature = "rustc-dep-of-std", repr(packed(4)))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
@@ -2297,6 +2326,17 @@ pub const IPC_R: ::c_int = 0x100;
 pub const IPC_W: ::c_int = 0x80;
 pub const IPC_M: ::c_int = 0x1000;
 
+// sys/sem.h
+pub const SEM_UNDO: ::c_int = 0o10000;
+
+pub const GETNCNT: ::c_int = 3;
+pub const GETPID: ::c_int = 4;
+pub const GETVAL: ::c_int = 5;
+pub const GETALL: ::c_int = 6;
+pub const GETZCNT: ::c_int = 7;
+pub const SETVAL: ::c_int = 8;
+pub const SETALL: ::c_int = 9;
+
 // sys/shm.h
 pub const SHM_RDONLY: ::c_int = 0x1000;
 pub const SHM_RND: ::c_int = 0x2000;
@@ -2387,6 +2427,13 @@ extern {
                link_name = "mprotect$UNIX2003")]
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
+    pub fn semget(key: key_t, nsems: ::c_int, semflg: ::c_int) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "semctl$UNIX2003")]
+    pub fn semctl(semid: ::c_int,
+                  semnum: ::c_int,
+                  cmd: ::c_int, ...) -> ::c_int;
+    pub fn semop(semid: ::c_int, sops: *mut sembuf, nsops: ::size_t) -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
     pub fn ftok(pathname : *const c_char, proj_id : ::c_int) -> key_t;
     pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void,
