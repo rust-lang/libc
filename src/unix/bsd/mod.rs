@@ -332,6 +332,8 @@ pub const POLLWRNORM: ::c_short = 0x004;
 pub const POLLRDBAND: ::c_short = 0x080;
 pub const POLLWRBAND: ::c_short = 0x100;
 
+pub const TIMER_ABSTIME: ::c_int = 1;
+
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
         if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
