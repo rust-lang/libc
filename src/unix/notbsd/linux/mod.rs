@@ -1058,10 +1058,12 @@ pub const AF_IB: ::c_int = 27;
 pub const AF_MPLS: ::c_int = 28;
 pub const AF_NFC: ::c_int = 39;
 pub const AF_VSOCK: ::c_int = 40;
+pub const AF_XDP: ::c_int = 44;
 pub const PF_IB: ::c_int = AF_IB;
 pub const PF_MPLS: ::c_int = AF_MPLS;
 pub const PF_NFC: ::c_int = AF_NFC;
 pub const PF_VSOCK: ::c_int = AF_VSOCK;
+pub const PF_XDP: ::c_int = AF_XDP;
 
 // System V IPC
 pub const IPC_PRIVATE: ::key_t = 0;

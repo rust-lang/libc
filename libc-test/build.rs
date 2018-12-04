@@ -672,6 +672,9 @@ fn main() {
             // shouldn't be used in code anyway...
             "AF_MAX" | "PF_MAX" => true,
 
+            // These are not in a glibc release yet, only in kernel headers.
+            "AF_XDP" | "PF_XDP" | "SOL_XDP" if linux => true,
+
             // Present on historical versions of iOS, but now removed in more
             // recent SDKs
             "ARPOP_REQUEST"
