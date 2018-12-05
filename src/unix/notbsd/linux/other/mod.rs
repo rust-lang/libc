@@ -276,6 +276,7 @@ pub const SOL_IUCV: ::c_int = 277;
 pub const SOL_CAIF: ::c_int = 278;
 pub const SOL_ALG: ::c_int = 279;
 pub const SOL_NFC: ::c_int = 280;
+pub const SOL_XDP: ::c_int = 283;
 
 pub const MSG_TRYHARD: ::c_int = 4;
 
