@@ -589,6 +589,8 @@ pub const SF_ARCHIVED:      ::c_ulong = 0x00010000;
 pub const SF_IMMUTABLE:     ::c_ulong = 0x00020000;
 pub const SF_APPEND:        ::c_ulong = 0x00040000;
 
+pub const TIMER_ABSTIME: ::c_int = 1;
+
 f! {
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8

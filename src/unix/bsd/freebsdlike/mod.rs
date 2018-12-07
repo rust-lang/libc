@@ -1017,6 +1017,8 @@ pub const SF_IMMUTABLE:     ::c_ulong = 0x00020000;
 pub const SF_APPEND:        ::c_ulong = 0x00040000;
 pub const SF_NOUNLINK:      ::c_ulong = 0x00100000;
 
+pub const TIMER_ABSTIME: ::c_int = 1;
+
 f! {
     pub fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
