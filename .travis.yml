@@ -78,9 +78,6 @@ matrix:
     - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
       rust: nightly
 
-    # QEMU based targets that compile in an emulator
-    - env: TARGET=x86_64-unknown-freebsd
-
     - env: TARGET=wasm32-unknown-unknown
       install: rustup target add $TARGET
       script: cargo build --no-default-features --target $TARGET --release

@@ -1,0 +1,4 @@
+# Gate on both Travis CI and Cirrus-ci
+status = ["continuous-integration/appveyor/branch",
+	  "continuous-integration/travis-ci/push",
+	  "stable x86_64-unknown-freebsd"]
