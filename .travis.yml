@@ -108,4 +108,3 @@ env:
 notifications:
   email:
     on_success: never
-  webhooks: https://buildbot.rust-lang.org/homu/travis
