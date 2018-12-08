@@ -269,7 +269,6 @@ pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 
 pub const SOL_RXRPC: ::c_int = 272;
 pub const SOL_PPPOL2TP: ::c_int = 273;
-pub const SOL_BLUETOOTH: ::c_int = 274;
 pub const SOL_PNPIPE: ::c_int = 275;
 pub const SOL_RDS: ::c_int = 276;
 pub const SOL_IUCV: ::c_int = 277;
