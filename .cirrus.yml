@@ -1,0 +1,14 @@
+freebsd_instance:
+  image: freebsd-11-1-release-amd64
+
+task:
+  # This name gets reported as a build status in GitHub
+  name: stable x86_64-unknown-freebsd
+  setup_script:
+    - pkg install -y curl
+    - curl https://sh.rustup.rs -sSf --output rustup.sh
+    - sh rustup.sh -y
+  test_script:
+    - . $HOME/.cargo/env
+    - cd libc-test
+    - cargo test
