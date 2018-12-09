@@ -91,6 +91,10 @@ matrix:
         - shellcheck --version
         - shellcheck ci/*.sh
 
+  allow_failures:
+    - env: TARGET=aarch64-linux-android
+    - env: TARGET=x86_64-linux-android
+
 install: rustup target add $TARGET
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
