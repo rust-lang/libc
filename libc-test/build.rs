@@ -186,6 +186,7 @@ fn main() {
         }
         cfg.header("netinet/in.h");
         cfg.header("sys/ipc.h");
+        cfg.header("sys/sem.h");
         cfg.header("sys/shm.h");
 
         if !ios {
@@ -453,7 +454,7 @@ fn main() {
             // Fixed on feature=align with repr(packed(4))
             // Once repr_packed stabilizes we can fix this unconditionally
             // and remove this check.
-            "kevent" | "shmid_ds" if apple && x86_64 => true,
+            "kevent" | "shmid_ds" | "semid_ds" if apple && x86_64 => true,
 
             // This is actually a union, not a struct
             "sigval" => true,
