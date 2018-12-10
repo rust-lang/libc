@@ -1,3 +1,4 @@
+use dox::Option;
 
 pub type int8_t = i8;
 pub type int16_t = i16;
