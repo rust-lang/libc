@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 5 https://www.musl-libc.org/releases/musl-1.1.19.tar.gz | tar xzf -
 WORKDIR /musl-1.1.19
 RUN CC=arm-linux-gnueabihf-gcc \
-    CFLAGS="-march=armv6 -marm" \
+    CFLAGS="-march=armv6 -marm -mfpu=vfp" \
     ./configure --prefix=/musl-arm --enable-wrapper=yes
 RUN make install -j4
 
