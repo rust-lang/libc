@@ -652,6 +652,10 @@ fn main() {
             "BOTHER" => true,
 
             "MFD_CLOEXEC" | "MFD_ALLOW_SEALING" if !mips && musl => true,
+            // MFD_HUGETLB is not available in some older libc versions on the CI builders. On the
+            // x86_64 and i686 builders it seems to be available for all targets, so at least test
+            // it there.
+            "MFD_HUGETLB" if !(x86_64 || i686) || musl => true,
 
             "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG"
             | "DT_LNK" | "DT_SOCK"

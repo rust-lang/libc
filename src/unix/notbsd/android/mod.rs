@@ -1056,6 +1056,7 @@ pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 
 pub const MFD_CLOEXEC: ::c_uint = 0x0001;
 pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
+pub const MFD_HUGETLB: ::c_uint = 0x0004;
 
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;

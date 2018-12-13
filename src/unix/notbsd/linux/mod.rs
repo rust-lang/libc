@@ -1320,6 +1320,7 @@ pub const CMSPAR: ::tcflag_t = 0o10000000000;
 
 pub const MFD_CLOEXEC: ::c_uint = 0x0001;
 pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
+pub const MFD_HUGETLB: ::c_uint = 0x0004;
 
 // these are used in the p_type field of Elf32_Phdr and Elf64_Phdr, which has
 // the type Elf32Word and Elf64Word respectively. Luckily, both of those are u32
