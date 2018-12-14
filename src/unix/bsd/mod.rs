@@ -183,6 +183,8 @@ pub const IP_MULTICAST_IF: ::c_int = 9;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
 
+pub const IP_TOS: ::c_int = 1;
+
 pub const IPV6_UNICAST_HOPS: ::c_int = 4;
 pub const IPV6_MULTICAST_IF: ::c_int = 9;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 10;

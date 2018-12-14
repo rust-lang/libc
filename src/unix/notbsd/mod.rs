@@ -623,9 +623,11 @@ pub const SOCK_RDM: ::c_int = 4;
 pub const IP_MULTICAST_IF: ::c_int = 32;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
+pub const IP_TOS: ::c_int = 1;
 pub const IP_TTL: ::c_int = 2;
 pub const IP_HDRINCL: ::c_int = 3;
 pub const IP_PKTINFO: ::c_int = 8;
+pub const IP_RECVTOS: ::c_int = 13;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 pub const IP_TRANSPARENT: ::c_int = 19;
@@ -1086,6 +1088,10 @@ f! {
 
     pub fn IPOPT_NUMBER(o: u8) -> u8 {
         o & IPOPT_NUMBER_MASK
+    }
+
+    pub fn IPTOS_ECN(x: u8) -> u8 {
+        x & super::IPTOS_ECN_MASK
     }
 }
 
