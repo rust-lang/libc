@@ -1091,7 +1091,7 @@ f! {
     }
 
     pub fn IPTOS_ECN(x: u8) -> u8 {
-        x & super::IPTOS_ECN_MASK
+        x & ::IPTOS_ECN_MASK
     }
 }
 
