@@ -191,6 +191,10 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
 
 pub const IPTOS_ECN_NOTECT: u8 = 0x00;
+pub const IPTOS_ECN_MASK: u8 = 0x03;
+pub const IPTOS_ECN_ECT1: u8 = 0x01;
+pub const IPTOS_ECN_ECT0: u8 = 0x02;
+pub const IPTOS_ECN_CE: u8 = 0x03;
 
 pub const ST_RDONLY: ::c_ulong = 1;
 

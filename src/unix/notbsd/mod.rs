@@ -878,6 +878,11 @@ pub const IPTOS_PREC_IMMEDIATE: u8 = 0x40;
 pub const IPTOS_PREC_PRIORITY: u8 = 0x20;
 pub const IPTOS_PREC_ROUTINE: u8 = 0x00;
 
+pub const IPTOS_ECN_MASK: u8 = 0x03;
+pub const IPTOS_ECN_ECT1: u8 = 0x01;
+pub const IPTOS_ECN_ECT0: u8 = 0x02;
+pub const IPTOS_ECN_CE: u8 = 0x03;
+
 pub const IPOPT_COPY: u8 = 0x80;
 pub const IPOPT_CLASS_MASK: u8 = 0x60;
 pub const IPOPT_NUMBER_MASK: u8 = 0x1f;

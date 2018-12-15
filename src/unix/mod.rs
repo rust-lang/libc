@@ -296,11 +296,6 @@ pub const IPPROTO_UDP: ::c_int = 17;
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
 
-pub const IPTOS_ECN_MASK: u8 = 0x03;
-pub const IPTOS_ECN_ECT1: u8 = 0x01;
-pub const IPTOS_ECN_ECT0: u8 = 0x02;
-pub const IPTOS_ECN_CE: u8 = 0x03;
-
 pub const INADDR_LOOPBACK: in_addr_t = 2130706433;
 pub const INADDR_ANY: in_addr_t = 0;
 pub const INADDR_BROADCAST: in_addr_t = 4294967295;
