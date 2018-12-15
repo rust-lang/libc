@@ -179,11 +179,10 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const SIG_BLOCK: ::c_int = 0x1;
 pub const SIG_UNBLOCK: ::c_int = 0x2;
 
+pub const IP_TOS: ::c_int = 3;
 pub const IP_MULTICAST_IF: ::c_int = 9;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
-
-pub const IP_TOS: ::c_int = 1;
 
 pub const IPV6_UNICAST_HOPS: ::c_int = 4;
 pub const IPV6_MULTICAST_IF: ::c_int = 9;
