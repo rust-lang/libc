@@ -1612,6 +1612,8 @@ pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
 pub const IPTOS_PREC_MASK: u8 = 0xE0;
 
+pub const IPTOS_ECN_NOT_ECT: u8 = 0x00;
+
 pub const RTF_UP: ::c_ushort = 0x0001;
 pub const RTF_GATEWAY: ::c_ushort = 0x0002;
 

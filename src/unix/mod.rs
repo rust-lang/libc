@@ -297,7 +297,6 @@ pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
 
 pub const IPTOS_ECN_MASK: u8 = 0x03;
-pub const IPTOS_ECN_NOT_ECT: u8 = 0x00;
 pub const IPTOS_ECN_ECT1: u8 = 0x01;
 pub const IPTOS_ECN_ECT0: u8 = 0x02;
 pub const IPTOS_ECN_CE: u8 = 0x03;
