@@ -2147,6 +2147,19 @@ pub const PRIO_DARWIN_NONUI: ::c_int = 0x1001;
 
 pub const SEM_FAILED: *mut sem_t = -1isize as *mut ::sem_t;
 
+pub const AI_PASSIVE: ::c_int = 0x00000001;
+pub const AI_CANONNAME: ::c_int = 0x00000002;
+pub const AI_NUMERICHOST: ::c_int = 0x00000004;
+pub const AI_NUMERICSERV: ::c_int = 0x00001000;
+pub const AI_MASK: ::c_int = AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST |
+                             AI_NUMERICSERV | AI_ADDRCONFIG;
+pub const AI_ALL: ::c_int = 0x00000100;
+pub const AI_V4MAPPED_CFG: ::c_int = 0x00000200;
+pub const AI_ADDRCONFIG: ::c_int = 0x00000400;
+pub const AI_V4MAPPED: ::c_int = 0x00000800;
+pub const AI_DEFAULT: ::c_int = AI_V4MAPPED_CFG | AI_ADDRCONFIG;
+pub const AI_UNUSABLE: ::c_int = 0x10000000;
+
 pub const SIGEV_NONE: ::c_int = 0;
 pub const SIGEV_SIGNAL: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 3;
