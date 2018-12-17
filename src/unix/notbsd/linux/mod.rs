@@ -942,7 +942,6 @@ pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
 pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
 pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
 
-
 // linux/if_tun.h
 pub const IFF_TUN: ::c_short = 0x0001;
 pub const IFF_TAP: ::c_short = 0x0002;
