@@ -1674,6 +1674,13 @@ pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
 pub const RT_CLASS_MAX: u8 = 255;
 
+pub const RTM_F_NOTIFY: ::c_uint = 0x100;
+pub const RTM_F_CLONED: ::c_uint = 0x200;
+pub const RTM_F_EQUALIZE: ::c_uint = 0x400;
+pub const RTM_F_PREFIX: ::c_uint = 0x800;
+pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
+pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
+
 pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 pub const RTMSG_NEWDEVICE: u32 = 0x11;
 pub const RTMSG_DELDEVICE: u32 = 0x12;
