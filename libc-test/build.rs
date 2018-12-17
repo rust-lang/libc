@@ -110,6 +110,7 @@ fn main() {
         cfg.header("sys/socket.h");
         if linux && !musl {
             cfg.header("linux/if.h");
+            cfg.header("linux/if_addr.h");
             cfg.header("sys/auxv.h");
         }
         cfg.header("sys/time.h");

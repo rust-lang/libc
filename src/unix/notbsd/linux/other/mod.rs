@@ -621,6 +621,21 @@ pub const NF_NETDEV_NUMHOOKS: ::c_int = 1;
 pub const NFPROTO_INET: ::c_int = 1;
 pub const NFPROTO_NETDEV: ::c_int = 5;
 
+// linux/if_addr.h
+pub const IFA_F_SECONDARY: u32 = 0x01;
+pub const IFA_F_TEMPORARY: u32 = 0x01;
+pub const IFA_F_NODAD: u32 = 0x02;
+pub const IFA_F_OPTIMISTIC: u32 = 0x04;
+pub const IFA_F_DADFAILED: u32 = 0x08;
+pub const IFA_F_HOMEADDRESS: u32 = 0x10;
+pub const IFA_F_DEPRECATED: u32 = 0x20;
+pub const IFA_F_TENTATIVE: u32 = 0x40;
+pub const IFA_F_PERMANENT: u32 = 0x80;
+pub const IFA_F_MANAGETEMPADDR: u32 = 0x100;
+pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
+pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
+pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
+
 // linux/netfilter/nf_tables.h
 cfg_if!{
     if #[cfg(any(target_arch = "arm", target_arch = "powerpc",
