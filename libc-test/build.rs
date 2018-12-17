@@ -76,6 +76,7 @@ fn main() {
         cfg.header("windows.h");
         cfg.header("process.h");
         cfg.header("ws2ipdef.h");
+        cfg.header("signal.h");
 
         if target.contains("gnu") {
             cfg.header("ws2tcpip.h");
