@@ -508,6 +508,7 @@ fn main() {
             n if n.starts_with("P") => true,
             n if n.starts_with("H") => true,
             n if n.starts_with("LP") => true,
+            "__p_sig_fn_t" if mingw => true,
             _ => false,
         }
     });
