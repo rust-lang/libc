@@ -937,10 +937,6 @@ pub const IFA_F_HOMEADDRESS: u32 = 0x10;
 pub const IFA_F_DEPRECATED: u32 = 0x20;
 pub const IFA_F_TENTATIVE: u32 = 0x40;
 pub const IFA_F_PERMANENT: u32 = 0x80;
-pub const IFA_F_MANAGETEMPADDR: u32 = 0x100;
-pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
-pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
-pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
 
 // linux/if_tun.h
 pub const IFF_TUN: ::c_short = 0x0001;
@@ -1677,9 +1673,6 @@ pub const RT_CLASS_MAX: u8 = 255;
 pub const RTM_F_NOTIFY: ::c_uint = 0x100;
 pub const RTM_F_CLONED: ::c_uint = 0x200;
 pub const RTM_F_EQUALIZE: ::c_uint = 0x400;
-pub const RTM_F_PREFIX: ::c_uint = 0x800;
-pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
-pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
 
 pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 pub const RTMSG_NEWDEVICE: u32 = 0x11;
