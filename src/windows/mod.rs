@@ -27,6 +27,7 @@ pub type ptrdiff_t = isize;
 pub type intptr_t = isize;
 pub type uintptr_t = usize;
 pub type ssize_t = isize;
+pub type sighandler_t = usize;
 
 pub type c_char = i8;
 pub type c_long = i32;
@@ -177,6 +178,16 @@ pub const ENOTEMPTY: ::c_int = 41;
 pub const EILSEQ: ::c_int = 42;
 pub const STRUNCATE: ::c_int = 80;
 
+// signal codes
+pub const SIGINT: ::c_int = 2;
+pub const SIGILL: ::c_int = 4;
+pub const SIGFPE: ::c_int = 8;
+pub const SIGSEGV: ::c_int = 11;
+pub const SIGTERM: ::c_int = 15;
+pub const SIGABRT: ::c_int = 22;
+pub const NSIG: ::c_int = 23;
+pub const SIG_ERR: ::c_int = -1;
+
 // inline comment below appeases style checker
 #[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))] // " if "
 #[link(name = "msvcrt", cfg(not(target_feature = "crt-static")))]
@@ -286,6 +297,9 @@ extern {
     pub fn labs(i: c_long) -> c_long;
     pub fn rand() -> c_int;
     pub fn srand(seed: c_uint);
+
+    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
+    pub fn raise(signum: c_int) -> c_int;
 
     #[link_name = "_chmod"]
     pub fn chmod(path: *const c_char, mode: ::c_int) -> ::c_int;

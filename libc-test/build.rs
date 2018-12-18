@@ -76,6 +76,7 @@ fn main() {
         cfg.header("windows.h");
         cfg.header("process.h");
         cfg.header("ws2ipdef.h");
+        cfg.header("signal.h");
 
         if target.contains("gnu") {
             cfg.header("ws2tcpip.h");
@@ -372,7 +373,9 @@ fn main() {
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
             "ssize_t" if windows => "SSIZE_T".to_string(),
-
+            // windows 
+            "sighandler_t" if windows && !mingw => "_crt_signal_t".to_string(),
+            "sighandler_t" if windows && mingw => "__p_sig_fn_t".to_string(),
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
 
@@ -507,6 +510,7 @@ fn main() {
             n if n.starts_with("P") => true,
             n if n.starts_with("H") => true,
             n if n.starts_with("LP") => true,
+            "__p_sig_fn_t" if mingw => true,
             _ => false,
         }
     });
