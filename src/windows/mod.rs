@@ -27,7 +27,7 @@ pub type ptrdiff_t = isize;
 pub type intptr_t = isize;
 pub type uintptr_t = usize;
 pub type ssize_t = isize;
-pub type __p_sig_fn_t = usize;
+pub type sighandler_t = usize;
 
 pub type c_char = i8;
 pub type c_long = i32;
@@ -298,7 +298,7 @@ extern {
     pub fn rand() -> c_int;
     pub fn srand(seed: c_uint);
 
-    pub fn signal(signum: c_int, handler: __p_sig_fn_t) -> __p_sig_fn_t;
+    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
     pub fn raise(signum: c_int) -> c_int;
 
     #[link_name = "_chmod"]
