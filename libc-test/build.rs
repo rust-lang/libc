@@ -373,6 +373,7 @@ fn main() {
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
             "ssize_t" if windows => "SSIZE_T".to_string(),
+            "_crt_signal_t" if windows => "__p_sig_fn_t".to_string(),
 
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
