@@ -114,6 +114,9 @@ cfg_if! {
 
         mod switch;
         pub use switch::*;
+    } else if #[cfg(target_os = "vxworks")] {
+	    mod vxworks;
+	    pub use vxworks::*;
     } else if #[cfg(unix)] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
