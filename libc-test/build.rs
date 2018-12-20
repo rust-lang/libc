@@ -55,6 +55,13 @@ fn main() {
         cfg.define("in_port_t", Some("uint16_t"));
     }
 
+    // these constants do not exist in msvc, but they are still useful
+    if msvc {
+        cfg.define("STDIN_FILENO", Some("0"));
+        cfg.define("STDOUT_FILENO", Some("1"));
+        cfg.define("STDERR_FILENO", Some("2"));
+    }
+
     cfg.header("errno.h")
         .header("fcntl.h")
         .header("limits.h")
@@ -712,9 +719,6 @@ fn main() {
             s if ios && s.starts_with("RTAX_") => true,
             s if ios && s.starts_with("RTV_") => true,
             s if ios && s.starts_with("DLT_") => true,
-
-            // these constants do not exist in msvc, but they are still useful
-            "STDIN_FILENO" | "STDOUT_FILENO" | "STDERR_FILENO" if msvc => true,
 
             _ => false,
         }
