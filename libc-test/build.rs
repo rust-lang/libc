@@ -11,6 +11,7 @@ fn main() {
     let x86_64 = target.contains("x86_64");
     let x32 = target.ends_with("gnux32");
     let windows = target.contains("windows");
+    let msvc = target.contains("windows-msvc");
     let mingw = target.contains("windows-gnu");
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
@@ -711,6 +712,9 @@ fn main() {
             s if ios && s.starts_with("RTAX_") => true,
             s if ios && s.starts_with("RTV_") => true,
             s if ios && s.starts_with("DLT_") => true,
+
+            // these constants do not exist in msvc, but they are still useful
+            "STDIN_FILENO" | "STDOUT_FILENO" | "STDERR_FILENO" if msvc => true,
 
             _ => false,
         }
