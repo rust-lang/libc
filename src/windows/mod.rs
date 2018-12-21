@@ -188,11 +188,6 @@ pub const SIGABRT: ::c_int = 22;
 pub const NSIG: ::c_int = 23;
 pub const SIG_ERR: ::c_int = -1;
 
-// stdio file descriptor numbers
-pub const STDIN_FILENO: ::c_int = 0;
-pub const STDOUT_FILENO: ::c_int = 1;
-pub const STDERR_FILENO: ::c_int = 2;
-
 // inline comment below appeases style checker
 #[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))] // " if "
 #[link(name = "msvcrt", cfg(not(target_feature = "crt-static")))]
