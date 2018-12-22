@@ -945,7 +945,7 @@ pub const IFLA_BROADCAST: ::c_ushort = 2;
 pub const IFLA_IFNAME: ::c_ushort = 3;
 pub const IFLA_MTU: ::c_ushort = 4;
 pub const IFLA_LINK: ::c_ushort = 5;
-pub const IFLA_QDISK: ::c_ushort = 6;
+pub const IFLA_QDISC: ::c_ushort = 6;
 pub const IFLA_STATS: ::c_ushort = 7;
 
 // linux/if_tun.h
