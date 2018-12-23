@@ -855,6 +855,7 @@ pub const SYS_mlock2: ::c_long = 356;
 pub const SYS_copy_file_range: ::c_long = 357;
 pub const SYS_preadv2: ::c_long = 358;
 pub const SYS_pwritev2: ::c_long = 359;
+pub const SYS_statx: ::c_long = 360;
 
 #[link(name = "util")]
 extern {
