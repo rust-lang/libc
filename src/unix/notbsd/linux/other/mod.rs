@@ -251,6 +251,7 @@ s! {
         pub stx_uid: ::uint32_t,
         pub stx_gid: ::uint32_t,
         pub stx_mode: ::uint16_t,
+        pub __statx_pad1: [::uint16_t; 1],
         pub stx_ino: ::uint64_t,
         pub stx_size: ::uint64_t,
         pub stx_blocks: ::uint64_t,
@@ -263,11 +264,13 @@ s! {
         pub stx_rdev_minor: ::uint32_t,
         pub stx_dev_major: ::uint32_t,
         pub stx_dev_minor: ::uint32_t,
+        pub __statx_pad2: [::uint64_t; 14],
     }
 
     pub struct statx_timestamp {
         pub tv_sec: ::int64_t,
-        pub tv_nsec: ::__u32,
+        pub tv_nsec: ::uint32_t,
+        pub __statx_timestamp_pad1: [::int32_t; 1],
     }
 }
 
