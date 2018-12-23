@@ -928,6 +928,16 @@ pub const IFF_DORMANT: ::c_int = 0x20000;
 pub const IFF_ECHO: ::c_int = 0x40000;
 
 // linux/if_addr.h
+pub const IFA_UNSPEC: ::c_ushort = 0;
+pub const IFA_ADDRESS: ::c_ushort = 1;
+pub const IFA_LOCAL: ::c_ushort = 2;
+pub const IFA_LABEL: ::c_ushort = 3;
+pub const IFA_BROADCAST: ::c_ushort = 4;
+pub const IFA_ANYCAST: ::c_ushort = 5;
+pub const IFA_CACHEINFO: ::c_ushort = 6;
+pub const IFA_MULTICAST: ::c_ushort = 7;
+pub const IFA_FLAGS: ::c_ushort = 8;
+
 pub const IFA_F_SECONDARY: u32 = 0x01;
 pub const IFA_F_TEMPORARY: u32 = 0x01;
 pub const IFA_F_NODAD: u32 = 0x02;

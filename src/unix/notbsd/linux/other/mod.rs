@@ -539,6 +539,12 @@ pub const LINUX_REBOOT_CMD_RESTART2: ::c_int = 0xA1B2C3D4;
 pub const LINUX_REBOOT_CMD_SW_SUSPEND: ::c_int = 0xD000FCE2;
 pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 
+// linux/if_addr.h
+pub const IFA_F_MANAGETEMPADDR: u32 = 0x100;
+pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
+pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
+pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
+
 pub const NETLINK_ROUTE: ::c_int = 0;
 pub const NETLINK_UNUSED: ::c_int = 1;
 pub const NETLINK_USERSOCK: ::c_int = 2;
