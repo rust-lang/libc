@@ -1797,12 +1797,41 @@ pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
 pub const RT_CLASS_MAX: u8 = 255;
 
+// linux/rtnetlink.h
 pub const RTM_F_NOTIFY: ::c_uint = 0x100;
 pub const RTM_F_CLONED: ::c_uint = 0x200;
 pub const RTM_F_EQUALIZE: ::c_uint = 0x400;
 pub const RTM_F_PREFIX: ::c_uint = 0x800;
 pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
 pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
+
+pub const RTA_UNSPEC: ::c_ushort = 0;
+pub const RTA_DST: ::c_ushort = 1;
+pub const RTA_SRC: ::c_ushort = 2;
+pub const RTA_IIF: ::c_ushort = 3;
+pub const RTA_OIF: ::c_ushort = 4;
+pub const RTA_GATEWAY: ::c_ushort = 5;
+pub const RTA_PRIORITY: ::c_ushort = 6;
+pub const RTA_PREFSRC: ::c_ushort = 7;
+pub const RTA_METRICS: ::c_ushort = 8;
+pub const RTA_MULTIPATH: ::c_ushort = 9;
+pub const RTA_PROTOINFO: ::c_ushort = 10; // No longer used
+pub const RTA_FLOW: ::c_ushort = 11;
+pub const RTA_CACHEINFO: ::c_ushort = 12;
+pub const RTA_SESSION: ::c_ushort = 13; // No longer used
+pub const RTA_MP_ALGO: ::c_ushort = 14; // No longer used
+pub const RTA_TABLE: ::c_ushort = 15;
+pub const RTA_MARK: ::c_ushort = 16;
+pub const RTA_MFC_STATS: ::c_ushort = 17;
+pub const RTA_VIA: ::c_ushort = 18;
+pub const RTA_NEWDST: ::c_ushort = 19;
+pub const RTA_PREF: ::c_ushort = 20;
+pub const RTA_ENCAP_TYPE: ::c_ushort = 21;
+pub const RTA_ENCAP: ::c_ushort = 22;
+pub const RTA_EXPIRES: ::c_ushort = 23;
+pub const RTA_PAD: ::c_ushort = 24;
+pub const RTA_UID: ::c_ushort = 25;
+pub const RTA_TTL_PROPAGATE: ::c_ushort = 26;
 
 pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 pub const RTMSG_NEWDEVICE: u32 = 0x11;
