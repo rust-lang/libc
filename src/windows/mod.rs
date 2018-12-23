@@ -50,6 +50,8 @@ pub type ino_t = u16;
 pub enum timezone {}
 pub type time64_t = i64;
 
+pub type SOCKET = uintptr_t;
+
 s! {
     // note this is the struct called stat64 in Windows. Not stat, nor stati64.
     pub struct stat {
@@ -92,6 +94,11 @@ s! {
     pub struct timespec {
         pub tv_sec: time_t,
         pub tv_nsec: c_long,
+    }
+
+    pub struct sockaddr {
+        pub sa_family: c_ushort,
+        pub sa_data: [c_char; 14],
     }
 }
 
@@ -300,6 +307,19 @@ extern {
 
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
     pub fn raise(signum: c_int) -> c_int;
+
+    // winsock functions
+    pub fn listen(s: SOCKET, backlog: c_int) -> c_int;
+    pub fn accept(s: SOCKET, addr: *mut sockaddr, addrlen: *mut c_int) -> SOCKET;
+    pub fn bind(s: SOCKET, name: *mut sockaddr, namelen: c_int) -> c_int;
+    pub fn connect(s: SOCKET, name: *mut sockaddr, namelen: c_int) -> c_int;
+    pub fn getpeername(s: SOCKET, name: *mut sockaddr, nameln: *mut c_int) -> c_int;
+    pub fn getsockname(s: SOCKET, name: *mut sockaddr, nameln: *mut c_int) -> c_int;
+    pub fn getsockopt(s: SOCKET, level: c_int, optname: c_int, optval: *mut c_char, optlen: *mut c_int) -> c_int;
+    pub fn recvfrom(s: SOCKET, buf: *mut c_char, len: c_int, flags: c_int, from: *mut sockaddr, fromlen: *mut c_int) -> c_int;
+    pub fn sendto(s: SOCKET, buf: *mut c_char, len: c_int, flags: c_int, to: *mut sockaddr, tolen: c_int) -> c_int;
+    pub fn setsockopt(s: SOCKET, level: c_int, optname: c_int, optval: *mut c_char, optlen: c_int) -> c_int;
+    pub fn socket(af: c_int, socket_type: c_int, protocol: c_int) -> SOCKET;
 
     #[link_name = "_chmod"]
     pub fn chmod(path: *const c_char, mode: ::c_int) -> ::c_int;
