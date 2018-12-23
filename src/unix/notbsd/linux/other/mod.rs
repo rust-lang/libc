@@ -540,6 +540,8 @@ pub const LINUX_REBOOT_CMD_SW_SUSPEND: ::c_int = 0xD000FCE2;
 pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 
 // linux/if_addr.h
+pub const IFA_FLAGS: ::c_ushort = 8;
+
 pub const IFA_F_MANAGETEMPADDR: u32 = 0x100;
 pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
 pub const IFA_F_MCAUTOJOIN: u32 = 0x400;

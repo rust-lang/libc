@@ -936,7 +936,6 @@ pub const IFA_BROADCAST: ::c_ushort = 4;
 pub const IFA_ANYCAST: ::c_ushort = 5;
 pub const IFA_CACHEINFO: ::c_ushort = 6;
 pub const IFA_MULTICAST: ::c_ushort = 7;
-pub const IFA_FLAGS: ::c_ushort = 8;
 
 pub const IFA_F_SECONDARY: u32 = 0x01;
 pub const IFA_F_TEMPORARY: u32 = 0x01;
