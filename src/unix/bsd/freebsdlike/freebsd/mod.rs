@@ -803,6 +803,7 @@ pub const TCP_PCAP_OUT: ::c_int = 2048;
 pub const TCP_PCAP_IN: ::c_int = 4096;
 
 pub const IP_BINDANY: ::c_int = 24;
+pub const IP_RECVTOS: ::c_int = 68;
 
 pub const PF_SLOW: ::c_int = AF_SLOW;
 pub const PF_SCLUSTER: ::c_int = AF_SCLUSTER;

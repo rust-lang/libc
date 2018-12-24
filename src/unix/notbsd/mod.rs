@@ -623,9 +623,11 @@ pub const SOCK_RDM: ::c_int = 4;
 pub const IP_MULTICAST_IF: ::c_int = 32;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
+pub const IP_TOS: ::c_int = 1;
 pub const IP_TTL: ::c_int = 2;
 pub const IP_HDRINCL: ::c_int = 3;
 pub const IP_PKTINFO: ::c_int = 8;
+pub const IP_RECVTOS: ::c_int = 13;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 pub const IP_TRANSPARENT: ::c_int = 19;
@@ -638,6 +640,8 @@ pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
 pub const IPV6_V6ONLY: ::c_int = 26;
 pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
+pub const IPV6_RECVTCLASS: ::c_int = 66;
+pub const IPV6_TCLASS: ::c_int = 67;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
@@ -874,6 +878,11 @@ pub const IPTOS_PREC_IMMEDIATE: u8 = 0x40;
 pub const IPTOS_PREC_PRIORITY: u8 = 0x20;
 pub const IPTOS_PREC_ROUTINE: u8 = 0x00;
 
+pub const IPTOS_ECN_MASK: u8 = 0x03;
+pub const IPTOS_ECN_ECT1: u8 = 0x01;
+pub const IPTOS_ECN_ECT0: u8 = 0x02;
+pub const IPTOS_ECN_CE: u8 = 0x03;
+
 pub const IPOPT_COPY: u8 = 0x80;
 pub const IPOPT_CLASS_MASK: u8 = 0x60;
 pub const IPOPT_NUMBER_MASK: u8 = 0x1f;
@@ -1086,6 +1095,10 @@ f! {
 
     pub fn IPOPT_NUMBER(o: u8) -> u8 {
         o & IPOPT_NUMBER_MASK
+    }
+
+    pub fn IPTOS_ECN(x: u8) -> u8 {
+        x & ::IPTOS_ECN_MASK
     }
 }
 
