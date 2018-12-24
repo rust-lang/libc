@@ -52,6 +52,11 @@ mod imp {
     #[lang = "sized"]
     pub trait Sized {}
 
+    #[lang = "receiver"]
+    pub trait Receiver {}
+    impl<T: ?Sized> Receiver for &T {}
+    impl<T: ?Sized> Receiver for &mut T {}
+
     macro_rules! each_int {
         ($mac:ident) => {
             $mac!(u8);
