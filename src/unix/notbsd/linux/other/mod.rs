@@ -40,23 +40,19 @@ s! {
         pub ut_exit: __exit_status,
 
         #[cfg(any(target_arch = "aarch64",
-                  target_arch = "sparc64",
                   all(target_pointer_width = "32",
                       not(target_arch = "x86_64"))))]
         pub ut_session: ::c_long,
         #[cfg(any(target_arch = "aarch64",
-                  target_arch = "sparc64",
                   all(target_pointer_width = "32",
                       not(target_arch = "x86_64"))))]
         pub ut_tv: ::timeval,
 
         #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "sparc64",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_session: ::int32_t,
         #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "sparc64",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_tv: __timeval,
@@ -629,10 +625,6 @@ cfg_if!{
         pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
         pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
         pub const NFT_OBJ_MAXNAMELEN: ::c_int = 32;
-    } else if #[cfg(target_arch = "sparc64")] {
-        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
     } else {
         pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
         pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
@@ -692,17 +684,11 @@ pub const NFT_MSG_DELSETELEM: ::c_int = 14;
 pub const NFT_MSG_NEWGEN: ::c_int = 15;
 pub const NFT_MSG_GETGEN: ::c_int = 16;
 pub const NFT_MSG_TRACE: ::c_int = 17;
-cfg_if! {
-    if #[cfg(not(target_arch = "sparc64"))] {
-        pub const NFT_MSG_NEWOBJ: ::c_int = 18;
-        pub const NFT_MSG_GETOBJ: ::c_int = 19;
-        pub const NFT_MSG_DELOBJ: ::c_int = 20;
-        pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
-        pub const NFT_MSG_MAX: ::c_int = 22;
-    } else {
-        pub const NFT_MSG_MAX: ::c_int = 18;
-    }
-}
+pub const NFT_MSG_NEWOBJ: ::c_int = 18;
+pub const NFT_MSG_GETOBJ: ::c_int = 19;
+pub const NFT_MSG_DELOBJ: ::c_int = 20;
+pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
+pub const NFT_MSG_MAX: ::c_int = 22;
 
 pub const NFT_SET_ANONYMOUS: ::c_int = 0x1;
 pub const NFT_SET_CONSTANT: ::c_int = 0x2;
