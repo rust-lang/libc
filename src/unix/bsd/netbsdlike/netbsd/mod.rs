@@ -393,6 +393,7 @@ pub const F_GETNOSIGPIPE: ::c_int = 13;
 pub const F_SETNOSIGPIPE: ::c_int = 14;
 pub const F_MAXFD: ::c_int = 11;
 
+pub const IP_RECVIF: ::c_int = 20;
 pub const IP_PKTINFO: ::c_int = 25;
 pub const IP_RECVPKTINFO: ::c_int = 26;
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
