@@ -1852,6 +1852,12 @@ pub const RTPROT_KERNEL: ::c_uchar = 2;
 pub const RTPROT_BOOT: ::c_uchar = 3;
 pub const RTPROT_STATIC: ::c_uchar = 4;
 
+pub const RT_SCOPE_UNIVERSE: ::c_uchar = 0;
+pub const RT_SCOPE_SITE: ::c_uchar = 200;
+pub const RT_SCOPE_LINK: ::c_uchar = 253;
+pub const RT_SCOPE_HOST: ::c_uchar = 254;
+pub const RT_SCOPE_NOWHERE: ::c_uchar = 255;
+
 pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 pub const RTMSG_NEWDEVICE: u32 = 0x11;
 pub const RTMSG_DELDEVICE: u32 = 0x12;
