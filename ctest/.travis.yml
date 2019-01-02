@@ -1,5 +1,3 @@
-dist: trusty
-sudo: false
 language: rust
 
 matrix:
@@ -11,8 +9,17 @@ matrix:
       rust: beta
     - name: "nightly"
       rust: nightly
-      after_success:
-        - travis-cargo --only nightly doc-upload
+    - name: "master doc to gh-pages"
+      rust: nightly
+      script:
+        - cargo doc --no-deps
+      deploy:
+        provider: script
+        script: curl -LsSf https://git.io/fhJ8n | rustc - && (cd target/doc && ../../rust_out)
+        skip_cleanup: true
+        on:
+          branch: master
+
     - name: "libc-test (osx)"
       rust: nightly
       os: osx
@@ -42,11 +49,7 @@ matrix:
 script:
   - cargo test
   - cargo test --manifest-path testcrate/Cargo.toml
-  - cargo doc --no-deps
 
 notifications:
   email:
     on_success: never
-env:
-  global:
-    secure: "pi/iZrNlMDZdk/wNhxGKwrAe6qqBT4eTYZfTRWl+t+rEIehcVWgIFwpr4jdcVytPqCgNEo7g7bKatXAZQH1jQsqPocis46BfDyTUkIPvQFIqOXmweHqZA1XMXHlU/Dj3GhZyH4IgRfVV+LxPAvM8D/CZcNEEAQmkD1R1o029c3UuweRCD6jFpnSIUpQ0kH5v/vpjLieL9E7RgFasUhB2YwDMmvJF5m6vBlq5/wBVa+/kAgyHaP/i/7hc2RMF1FCmwTB0LpRlAEj5XdFFbyIQPOosk2oCJ+dPDb5oAZyZDmXM6yfxHhgeX1Y2g13rP3J1NCRpQOESlOSwjTEch9HnJZiDsWnM0by2+gOdy4oZyN1P43aRFWOz+tm+oxXEhhpFrx2qPX75zwsqbv5TTA+1458vLkLgJmAuFgWwCxqzIHvb6i0+RzgPmD7cAm39Pajt332sEWbJY59cLOLIFfkO6btsU2iEBqT+EhDq9NQHlp/qHqG0xTo1T9GTK5Lla8wUESlzl8Hxen6IuSGAzuWEFWQtYyrIbfEVQPdLkNTiqJueQeG/CEs31AU2Yxjv59HSvQ+S+soBqRVYmvtQZMtUMAE412Gv0/xkd1oGQCI7VIUNjTBCi+89mZuqVbBxjTIKpUUhX90dyl+Vn97nGH7sh2gOayHGXP/Dts5UZlG/5vE="
