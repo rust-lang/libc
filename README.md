@@ -10,7 +10,6 @@ Raw FFI bindings to platform libraries like `libc`.
 [![Documentation](https://docs.rs/libc/badge.svg)](https://docs.rs/libc)
 ![License](https://img.shields.io/crates/l/libc.svg)
 
-
 ## Usage
 
 First, add the following to your `Cargo.toml`:
