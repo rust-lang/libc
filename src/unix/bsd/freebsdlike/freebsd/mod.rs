@@ -1135,6 +1135,8 @@ extern {
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
+
+    pub fn idontexist();
 }
 
 #[link(name = "util")]
