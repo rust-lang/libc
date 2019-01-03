@@ -50,6 +50,8 @@ pub type ino_t = u16;
 pub enum timezone {}
 pub type time64_t = i64;
 
+pub type SOCKET = ::uintptr_t;
+
 s! {
     // note this is the struct called stat64 in Windows. Not stat, nor stati64.
     pub struct stat {
@@ -73,15 +75,15 @@ s! {
     }
 
     pub struct tm {
-        tm_sec: ::c_int,
-        tm_min: ::c_int,
-        tm_hour: ::c_int,
-        tm_mday: ::c_int,
-        tm_mon: ::c_int,
-        tm_year: ::c_int,
-        tm_wday: ::c_int,
-        tm_yday: ::c_int,
-        tm_isdst: ::c_int,
+        pub tm_sec: ::c_int,
+        pub tm_min: ::c_int,
+        pub tm_hour: ::c_int,
+        pub tm_mday: ::c_int,
+        pub tm_mon: ::c_int,
+        pub tm_year: ::c_int,
+        pub tm_wday: ::c_int,
+        pub tm_yday: ::c_int,
+        pub tm_isdst: ::c_int,
     }
 
     pub struct timeval {
@@ -92,6 +94,11 @@ s! {
     pub struct timespec {
         pub tv_sec: time_t,
         pub tv_nsec: c_long,
+    }
+
+    pub struct sockaddr {
+        pub sa_family: c_ushort,
+        pub sa_data: [c_char; 14],
     }
 }
 
@@ -381,6 +388,34 @@ extern {
     #[link_name = "_wsetlocale"]
     pub fn wsetlocale(category: ::c_int,
                       locale: *const wchar_t) -> *mut wchar_t;
+}
+
+extern "system" {
+    pub fn listen(s: SOCKET, backlog: ::c_int) -> ::c_int;
+    pub fn accept(s: SOCKET, addr: *mut ::sockaddr,
+                  addrlen: *mut ::c_int) -> SOCKET;
+    pub fn bind(s: SOCKET, name: *const ::sockaddr,
+                namelen: ::c_int) -> ::c_int;
+    pub fn connect(s: SOCKET, name: *const ::sockaddr,
+                   namelen: ::c_int) -> ::c_int;
+    pub fn getpeername(s: SOCKET, name: *mut ::sockaddr,
+                       nameln: *mut ::c_int) -> ::c_int;
+    pub fn getsockname(s: SOCKET, name: *mut ::sockaddr,
+                       nameln: *mut ::c_int) -> ::c_int;
+    pub fn getsockopt(s: SOCKET, level: ::c_int, optname: ::c_int,
+                      optval: *mut ::c_char,
+                      optlen: *mut ::c_int) -> ::c_int;
+    pub fn recvfrom(s: SOCKET, buf: *mut  ::c_char, len: ::c_int,
+                    flags: ::c_int, from: *mut ::sockaddr,
+                    fromlen: *mut ::c_int) -> ::c_int;
+    pub fn sendto(s: SOCKET, buf: *const  ::c_char, len: ::c_int,
+                  flags: ::c_int, to: *const ::sockaddr,
+                  tolen: ::c_int) -> ::c_int;
+    pub fn setsockopt(s: SOCKET, level: ::c_int, optname: ::c_int,
+                      optval: *const  ::c_char,
+                      optlen: ::c_int) -> ::c_int;
+    pub fn socket(af: ::c_int, socket_type: ::c_int,
+                  protocol: ::c_int) -> SOCKET;
 }
 
 cfg_if! {

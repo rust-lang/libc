@@ -5,10 +5,10 @@ Raw FFI bindings to platform libraries like `libc`.
 
 [![Build Status](https://travis-ci.org/rust-lang/libc.svg?branch=master)](https://travis-ci.org/rust-lang/libc)
 [![Build status](https://ci.appveyor.com/api/projects/status/github/rust-lang/libc?svg=true)](https://ci.appveyor.com/project/rust-lang-libs/libc)
+[![Build Status](https://api.cirrus-ci.com/github/rust-lang/libc.svg)](https://cirrus-ci.com/github/rust-lang/libc)
 [![Latest version](https://img.shields.io/crates/v/libc.svg)](https://crates.io/crates/libc)
 [![Documentation](https://docs.rs/libc/badge.svg)](https://docs.rs/libc)
 ![License](https://img.shields.io/crates/l/libc.svg)
-
 
 ## Usage
 
