@@ -727,6 +727,7 @@ extern {
         -> ::c_int;
 
     pub fn setgroups(ngroups: ::c_int, grouplist: *const ::gid_t) -> ::c_int;
+    pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
 
 cfg_if! {

@@ -728,6 +728,7 @@ extern {
                link_name = "popen$UNIX2003")]
     pub fn popen(command: *const c_char,
                  mode: *const c_char) -> *mut ::FILE;
+    pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
 
 cfg_if! {

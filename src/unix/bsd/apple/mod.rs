@@ -2659,6 +2659,7 @@ extern {
         fd: ::c_int,
         newfd: ::c_int,
     ) -> ::c_int;
+    pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
 
 cfg_if! {

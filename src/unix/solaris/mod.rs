@@ -1466,4 +1466,5 @@ extern {
                  mode: *const c_char) -> *mut ::FILE;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
