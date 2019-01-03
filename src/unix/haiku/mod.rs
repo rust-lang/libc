@@ -1242,6 +1242,7 @@ extern {
                    termp: *mut termios,
                    winp: *mut ::winsize) -> ::pid_t;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
 
 cfg_if! {

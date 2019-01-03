@@ -949,6 +949,12 @@ pub const UF_READONLY:  ::c_ulong = 0x00001000;
 pub const UF_HIDDEN:    ::c_ulong = 0x00008000;
 pub const SF_SNAPSHOT:  ::c_ulong = 0x00200000;
 
+f! {
+    pub fn uname(buf: *mut ::utsname) -> ::c_int {
+        __xuname(256, buf as *mut ::c_void)
+    }
+}
+
 extern {
     pub fn __error() -> *mut ::c_int;
 
@@ -1135,6 +1141,7 @@ extern {
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn __xuname(nmln: ::c_int, buf: *mut ::c_void) -> ::c_int;
 }
 
 #[link(name = "util")]

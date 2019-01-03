@@ -972,7 +972,6 @@ extern {
     #[cfg_attr(target_os = "freebsd", link_name = "mknod@FBSD_1.0")]
     pub fn mknod(pathname: *const ::c_char, mode: ::mode_t,
                  dev: ::dev_t) -> ::c_int;
-    pub fn uname(buf: *mut ::utsname) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn getservbyname(name: *const ::c_char,
                          proto: *const ::c_char) -> *mut servent;
