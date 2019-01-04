@@ -341,7 +341,6 @@ fn main() {
         cfg.header("mqueue.h");
         cfg.header("ufs/ufs/quota.h");
         cfg.header("pthread_np.h");
-        cfg.header("sys/ioctl_compat.h");
         cfg.header("sys/rtprio.h");
     }
 
