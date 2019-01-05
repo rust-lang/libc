@@ -1797,6 +1797,17 @@ pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
 pub const RT_CLASS_MAX: u8 = 255;
 
+// linux/neighbor.h
+pub const NUD_NONE: u16 = 0x00;
+pub const NUD_INCOMPLETE: u16 = 0x01;
+pub const NUD_REACHABLE: u16 = 0x02;
+pub const NUD_STALE: u16 = 0x04;
+pub const NUD_DELAY: u16 = 0x08;
+pub const NUD_PROBE: u16 = 0x10;
+pub const NUD_FAILED: u16 = 0x20;
+pub const NUD_NOARP: u16 = 0x40;
+pub const NUD_PERMANENT: u16 = 0x80;
+
 // linux/rtnetlink.h
 pub const RTM_F_NOTIFY: ::c_uint = 0x100;
 pub const RTM_F_CLONED: ::c_uint = 0x200;
