@@ -1808,6 +1808,14 @@ pub const NUD_FAILED: u16 = 0x20;
 pub const NUD_NOARP: u16 = 0x40;
 pub const NUD_PERMANENT: u16 = 0x80;
 
+pub const NTF_USE: u8 = 0x01;
+pub const NTF_SELF: u8 = 0x02;
+pub const NTF_MASTER: u8 = 0x04;
+pub const NTF_PROXY: u8 = 0x08;
+pub const NTF_EXT_LEARNED: u8 = 0x10;
+pub const NTF_OFFLOADED: u8 = 0x20;
+pub const NTF_ROUTER: u8 = 0x80;
+
 // linux/rtnetlink.h
 pub const RTM_F_NOTIFY: ::c_uint = 0x100;
 pub const RTM_F_CLONED: ::c_uint = 0x200;
