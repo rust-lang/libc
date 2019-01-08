@@ -987,6 +987,19 @@ pub const CHWFLOW: ::tcflag_t = ::MDMBUF | ::CRTSCTS | ::CDTRCTS;
 pub const SOCK_CLOEXEC: ::c_int = 0x10000000;
 pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
 
+pub const FIONCLEX: ::c_ulong = 0x20006602;
+pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;
+pub const FIOSEEKHOLE: ::c_ulong = 0xc0086662;
+pub const FIONREAD: ::c_ulong = 0x4004667f;
+pub const FIOASYNC: ::c_ulong = 0x8004667d;
+pub const FIOSETOWN: ::c_ulong = 0x8004667c;
+pub const FIOGETOWN: ::c_ulong = 0x4004667b;
+pub const OFIOGETBMAP: ::c_ulong = 0xc004667a;
+pub const FIOGETBMAP: ::c_ulong = 0xc008667a;
+pub const FIONWRITE: ::c_ulong = 0x40046679;
+pub const FIONSPACE: ::c_ulong = 0x40046678;
+pub const FIBMAP: ::c_ulong = 0xc008667a;
+
 pub const SIGSTKSZ : ::size_t = 40960;
 
 pub const PT_DUMPCORE: ::c_int = 12;
