@@ -777,7 +777,7 @@ pub const REG_EIP: ::c_int = 14;
 pub const REG_CS: ::c_int = 15;
 pub const REG_EFL: ::c_int = 16;
 pub const REG_UESP: ::c_int = 17;
-pub const REG_S: ::c_int = 18;
+pub const REG_SS: ::c_int = 18;
 
 extern {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
