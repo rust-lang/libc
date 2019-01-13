@@ -1,4 +1,3 @@
-
 pub type int8_t = i8;
 pub type int16_t = i16;
 pub type int32_t = i32;
@@ -182,7 +181,6 @@ pub const SIGSYS:    ::c_int = 31;
 
 pub enum FILE {}
 pub enum fpos_t {} // TODO: fill this out with a struct
-
 
 // intentionally not public, only used for fd_set
 cfg_if! {
