@@ -988,7 +988,7 @@ pub const SOCK_CLOEXEC: ::c_int = 0x10000000;
 pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
 
 pub const FIONCLEX: ::c_ulong = 0x20006602;
-// Uncomment on next NetBSD release https://github.com/rust-lang/libc/pull/1200#issuecomment-453712616
+// Uncomment on next NetBSD release
 // pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;
 // pub const FIOSEEKHOLE: ::c_ulong = 0xc0086662;
 pub const FIONREAD: ::c_ulong = 0x4004667f;
