@@ -857,6 +857,10 @@ fn main() {
             // to be removed now
             "system" | "ptrace" if ios => true,
 
+            // Removed in OpenBSD 6.5
+            // https://marc.info/?l=openbsd-cvs&m=154723400730318
+            "mincore" if openbsd => true,
+
             _ => false,
         }
     });
