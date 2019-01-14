@@ -1,4 +1,3 @@
-
 pub type int8_t = i8;
 pub type int16_t = i16;
 pub type int32_t = i32;
@@ -31,18 +30,66 @@ pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 
-pub type wchar_t = i16;
+pub type wchar_t = i32;
+pub type wint_t = u32;
+pub type wctype_t = i64;
 
+pub type regoff_t = size_t;
 pub type off_t = c_long;
-pub type mode_t = u16;
-pub type time_t = i64;
-pub type pid_t = usize;
-pub type gid_t = usize;
-pub type uid_t = usize;
+pub type mode_t = c_int;
+pub type time_t = c_long;
+pub type pid_t = c_int;
+pub type id_t = c_uint;
+pub type gid_t = c_int;
+pub type uid_t = c_int;
+pub type dev_t = c_long;
+pub type ino_t = c_ulong;
+pub type nlink_t = c_ulong;
+pub type blksize_t = c_long;
+pub type blkcnt_t = c_ulong;
 
-pub type suseconds_t = i64;
+pub type fsblkcnt_t = c_ulong;
+pub type fsfilcnt_t = c_ulong;
+
+pub type useconds_t = c_uint;
+pub type suseconds_t = c_int;
+
+pub type clock_t = c_long;
+pub type clockid_t = c_int;
+pub type timer_t = *mut c_void;
+
+pub type nfds_t = c_ulong;
 
 s! {
+    pub struct fd_set {
+        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+    }
+
+    pub struct pollfd {
+        pub fd: ::c_int,
+        pub events: ::c_short,
+        pub revents: ::c_short,
+    }
+
+    pub struct stat {
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_nlink: ::nlink_t,
+        pub st_mode: ::mode_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt_t,
+
+        pub st_atime: ::timespec,
+        pub st_mtime: ::timespec,
+        pub st_ctime: ::timespec,
+
+        _pad: [c_char; 24],
+    }
+
     pub struct timeval {
         pub tv_sec: time_t,
         pub tv_usec: suseconds_t,
@@ -63,6 +110,27 @@ pub const STDERR_FILENO: ::c_int = 2;
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
+
+pub const FD_SETSIZE: usize = 1024;
+
+pub const MAP_SHARED: ::c_int = 1;
+pub const MAP_PRIVATE: ::c_int = 2;
+pub const MAP_ANONYMOUS: ::c_int = 4;
+pub const MAP_ANON: ::c_int = MAP_ANONYMOUS;
+
+pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
+
+pub const POLLIN: ::c_short = 0x001;
+pub const POLLPRI: ::c_short = 0x002;
+pub const POLLOUT: ::c_short = 0x004;
+pub const POLLERR: ::c_short = 0x008;
+pub const POLLHUP: ::c_short = 0x010;
+pub const POLLNVAL: ::c_short = 0x020;
+
+pub const PROT_NONE: ::c_int = 0;
+pub const PROT_EXEC: ::c_int = 1;
+pub const PROT_WRITE: ::c_int = 2;
+pub const PROT_READ: ::c_int = 4;
 
 pub const S_ISUID: ::c_int = 0x800;
 pub const S_ISGID: ::c_int = 0x400;
@@ -97,6 +165,8 @@ pub const F_GETFD: ::c_int = 1;
 pub const F_SETFD: ::c_int = 2;
 pub const F_GETFL: ::c_int = 3;
 pub const F_SETFL: ::c_int = 4;
+
+pub const FD_CLOEXEC: ::c_int =   0x0100_0000;
 
 pub const O_RDONLY: ::c_int =     0x0001_0000;
 pub const O_WRONLY: ::c_int =     0x0002_0000;
@@ -151,6 +221,17 @@ pub const SIGSYS:    ::c_int = 31;
 
 pub enum FILE {}
 pub enum fpos_t {} // TODO: fill this out with a struct
+
+// intentionally not public, only used for fd_set
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        const ULONG_SIZE: usize = 32;
+    } else if #[cfg(target_pointer_width = "64")] {
+        const ULONG_SIZE: usize = 64;
+    } else {
+        // Unknown target_pointer_width
+    }
+}
 
 extern {
     pub fn isalnum(c: c_int) -> c_int;
@@ -262,9 +343,22 @@ extern {
     pub fn close(fd: ::c_int) -> ::c_int;
     pub fn fchown(fd: ::c_int, uid: ::uid_t, gid: ::gid_t) -> ::c_int;
     pub fn fcntl(fd: ::c_int, cmd: ::c_int, ...) -> ::c_int;
+    pub fn fstat(fd: ::c_int, buf: *mut stat) -> ::c_int;
+    pub fn fsync(fd: ::c_int) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn getpid() -> pid_t;
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
+    pub fn mmap(addr: *mut ::c_void,
+         len: ::size_t,
+         prot: ::c_int,
+         flags: ::c_int,
+         fd: ::c_int,
+         offset: off_t)
+         -> *mut ::c_void;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
+                    -> ::c_int;
+    pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
+    pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
     pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t) -> ::ssize_t;
     pub fn setenv(name: *const c_char, val: *const c_char, overwrite: ::c_int)
                   -> ::c_int;
