@@ -526,15 +526,16 @@ pub const AF_BLUETOOTH: ::c_int = 31;
 pub const AF_IEEE80211: ::c_int = 32;
 pub const AF_MPLS: ::c_int = 33;
 pub const AF_ROUTE: ::c_int = 34;
-pub const AF_MAX: ::c_int = 35;
+pub const AF_MAX: ::c_int = 36;
 
 pub const NET_MAXID: ::c_int = AF_MAX;
 pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
-pub const NET_RT_OOIFLIST: ::c_int = 3;
-pub const NET_RT_OIFLIST: ::c_int = 4;
-pub const NET_RT_IFLIST: ::c_int = 5;
-pub const NET_RT_MAXID: ::c_int = 6;
+pub const NET_RT_OOOIFLIST: ::c_int = 3;
+pub const NET_RT_OOIFLIST: ::c_int = 4;
+pub const NET_RT_OIFLIST: ::c_int = 5;
+pub const NET_RT_IFLIST: ::c_int = 6;
+pub const NET_RT_MAXID: ::c_int = 7;
 
 pub const PF_OROUTE: ::c_int = AF_OROUTE;
 pub const PF_ARP: ::c_int = AF_ARP;
