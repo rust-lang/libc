@@ -1,3 +1,5 @@
+use dox::mem;
+
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type time_t = i32;
@@ -29,3 +31,7 @@ s! {
         __unused: [u8; 8],
     }
 }
+
+// should be pub(crate), but that requires Rust 1.18.0
+#[doc(hidden)]
+pub const _ALIGNBYTES: usize = mem::size_of::<::c_long>() - 1;
