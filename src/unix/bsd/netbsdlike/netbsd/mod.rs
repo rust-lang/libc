@@ -1039,6 +1039,7 @@ f! {
     }
 }
 
+#[link(name = "rt")]
 extern {
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
@@ -1051,7 +1052,9 @@ extern {
     pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
     pub fn lio_listio(mode: ::c_int, aiocb_list: *const *mut aiocb,
                       nitems: ::c_int, sevp: *mut sigevent) -> ::c_int;
+}
 
+extern {
     pub fn chflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
     pub fn fchflags(fd: ::c_int, flags: ::c_ulong) -> ::c_int;
     pub fn lchflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
