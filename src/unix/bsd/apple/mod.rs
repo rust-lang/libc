@@ -1,6 +1,7 @@
 //! Apple (ios/darwin)-specific definitions
 //!
 //! This covers *-apple-* triples currently
+use dox::mem;
 
 pub type c_char = i8;
 pub type clock_t = c_ulong;
@@ -2383,7 +2384,45 @@ pub const SF_IMMUTABLE:     ::c_uint = 0x00020000;
 pub const SF_APPEND:        ::c_uint = 0x00040000;
 pub const UF_HIDDEN:        ::c_uint = 0x00008000;
 
+fn __DARWIN_ALIGN32(p: usize) -> usize {
+    const __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
+    p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+}
+
 f! {
+    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
+                       cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
+        if cmsg.is_null() {
+            return ::CMSG_FIRSTHDR(mhdr);
+        };
+        let cmsg_len = (*cmsg).cmsg_len as usize;
+        let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize)
+            + __DARWIN_ALIGN32(mem::size_of::<::cmsghdr>());
+        let max = (*mhdr).msg_control as usize
+                   + (*mhdr).msg_controllen as usize;
+        if next > max {
+            0 as *mut ::cmsghdr
+        } else {
+            next as *mut ::cmsghdr
+        }
+    }
+
+    pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
+        (cmsg as *mut ::c_uchar)
+            .offset(__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) as isize)
+    }
+
+    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+        (__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>())
+            + __DARWIN_ALIGN32(length as usize))
+            as ::c_uint
+    }
+
+    pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
+        __DARWIN_ALIGN32(mem::size_of::<::cmsghdr>() + length as usize)
+            as ::c_uint
+    }
+
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
     }

@@ -1,3 +1,5 @@
+use dox::mem;
+
 pub type time_t = i64;
 pub type mode_t = u32;
 pub type nlink_t = ::uint32_t;
@@ -593,7 +595,43 @@ pub const SF_APPEND:        ::c_ulong = 0x00040000;
 
 pub const TIMER_ABSTIME: ::c_int = 1;
 
+fn _ALIGN(p: usize) -> usize {
+    (p + _ALIGNBYTES) & !_ALIGNBYTES
+}
+
 f! {
+    pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
+        (cmsg as *mut ::c_uchar)
+            .offset(_ALIGN(mem::size_of::<::cmsghdr>()) as isize)
+    }
+
+    pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
+        _ALIGN(mem::size_of::<::cmsghdr>()) as ::c_uint + length
+    }
+
+    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
+        -> *mut ::cmsghdr
+    {
+        if cmsg.is_null() {
+            return ::CMSG_FIRSTHDR(mhdr);
+        };
+        let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)
+            + _ALIGN(mem::size_of::<::cmsghdr>());
+        let max = (*mhdr).msg_control as usize
+            + (*mhdr).msg_controllen as usize;
+        if next > max {
+            0 as *mut ::cmsghdr
+        } else {
+            (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize))
+                as *mut ::cmsghdr
+        }
+    }
+
+    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+        (_ALIGN(mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
+            as ::c_uint
+    }
+
     pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
     }
