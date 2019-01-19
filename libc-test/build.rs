@@ -920,8 +920,24 @@ fn main() {
                                            field == "ssi_arch"))
     });
 
-    cfg.fn_cname(move |name, cname| {
-        cname.unwrap_or(name).to_string()
+    cfg.fn_cname(move |name, link_name_opt| {
+        match link_name_opt {
+            Some(link_name) => {
+                let mut use_link_name = true;
+                for c in link_name.chars() {
+                    if !c.is_ascii_alphanumeric() && c != '_' {
+                        use_link_name = false;
+                        break;
+                    }
+                }
+                if use_link_name {
+                    link_name.to_string()
+                } else {
+                    name.to_string()
+                }
+            },
+            None => name.to_string(),
+        }
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
