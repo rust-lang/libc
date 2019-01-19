@@ -38,6 +38,9 @@ pub type Elf64_Sxword = i64;
 pub type Elf32_Section = u16;
 pub type Elf64_Section = u16;
 
+pub type jmp_buf = [__jmp_buf_tag; 1];
+pub type sigjmp_buf = [__jmp_buf_tag; 1];
+
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
 s! {
@@ -664,9 +667,6 @@ s! {
     }
 
 }
-
-pub type jmp_buf = [__jmp_buf_tag; 1];
-pub type sigjmp_buf = [__jmp_buf_tag; 1];
 
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;
