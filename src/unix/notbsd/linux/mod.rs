@@ -2280,8 +2280,6 @@ extern {
     pub fn setjmp(env: ::jmp_buf) -> ::c_int;
     #[cfg_attr(target_env="gnu", link_name="__sigsetjmp")]
     pub fn sigsetjmp(env: ::sigjmp_buf, savesigs: ::c_int) -> ::c_int;
-    pub fn longjmp(env: ::jmp_buf, val: ::c_int);
-    pub fn siglongjmp(env: ::sigjmp_buf, val: ::c_int);
 }
 
 cfg_if! {
