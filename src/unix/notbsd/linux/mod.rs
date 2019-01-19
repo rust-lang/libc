@@ -38,6 +38,14 @@ pub type Elf64_Sxword = i64;
 pub type Elf32_Section = u16;
 pub type Elf64_Section = u16;
 
+cfg_if ! {
+    if #[cfg(target_arch = "x86_64")] {
+        pub type __jmp_buf = [i64; 8];
+    } else {
+        pub type __jmp_buf = [i32; 6];
+    }
+}
+
 pub type jmp_buf = [__jmp_buf_tag; 1];
 pub type sigjmp_buf = [__jmp_buf_tag; 1];
 
@@ -659,13 +667,11 @@ s! {
         pub ha: [::c_uchar; ::MAX_ADDR_LEN],
     }
 
-    #[repr(C)]
     pub struct __jmp_buf_tag {
-        __jmpbuf: [i64; 8],
+        __jmpbuf: __jmp_buf,
         __mask_was_saved: ::c_int,
         __saved_mask: ::sigset_t,
     }
-
 }
 
 pub const ABDAY_1: ::nl_item = 0x20000;
