@@ -58,6 +58,7 @@ fn main() {
         .header("fcntl.h")
         .header("limits.h")
         .header("locale.h")
+        .header("setjmp.h")
         .header("stddef.h")
         .header("stdint.h")
         .header("stdio.h")
@@ -920,11 +921,7 @@ fn main() {
     });
 
     cfg.fn_cname(move |name, cname| {
-        if windows {
-            cname.unwrap_or(name).to_string()
-        } else {
-            name.to_string()
-        }
+        cname.unwrap_or(name).to_string()
     });
 
     cfg.generate("../src/lib.rs", "main.rs");

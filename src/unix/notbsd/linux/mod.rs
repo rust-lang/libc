@@ -657,19 +657,16 @@ s! {
     }
 
     #[repr(C)]
-    pub struct jmp_buf {
+    pub struct __jmp_buf_tag {
         __jmpbuf: [i64; 8],
         __mask_was_saved: ::c_int,
         __saved_mask: ::sigset_t,
     }
 
-    #[repr(C)]
-    pub struct sigjmp_buf {
-        __jmpbuf: [i64; 8],
-        __mask_was_saved: ::c_int,
-        __saved_mask: ::sigset_t,
-    }
 }
+
+pub type jmp_buf = [__jmp_buf_tag; 1];
+pub type sigjmp_buf = [__jmp_buf_tag; 1];
 
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;
@@ -2274,11 +2271,11 @@ extern {
         stream: *mut ::FILE
     ) -> ::size_t;
 
-    pub fn setjmp(env: *mut ::jmp_buf) -> ::c_int;
+    pub fn setjmp(env: ::jmp_buf) -> ::c_int;
     #[link_name="__sigsetjmp"]
-    pub fn sigsetjmp(env: *mut ::sigjmp_buf, savesigs: ::c_int) -> ::c_int;
-    pub fn longjmp(env: *mut ::jmp_buf, val: ::c_int);
-    pub fn siglongjmp(env: *mut ::sigjmp_buf, val: ::c_int);
+    pub fn sigsetjmp(env: ::sigjmp_buf, savesigs: ::c_int) -> ::c_int;
+    pub fn longjmp(env: ::jmp_buf, val: ::c_int);
+    pub fn siglongjmp(env: ::sigjmp_buf, val: ::c_int);
 }
 
 cfg_if! {
