@@ -82,13 +82,6 @@ s! {
         pub sa_mask: sigset_t,
     }
 
-    pub struct stack_t {
-        // In FreeBSD 11 and later, ss_sp is actually a void*
-        pub ss_sp: *mut ::c_char,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
-    }
-
     pub struct sched_param {
         pub sched_priority: ::c_int,
     }

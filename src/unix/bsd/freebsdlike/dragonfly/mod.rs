@@ -210,6 +210,12 @@ s! {
         pub sdl_rcf: ::c_ushort,
         pub sdl_route: [::c_ushort; 16],
     }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_char,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
 }
 
 pub const RAND_MAX: ::c_int = 0x7fff_ffff;
