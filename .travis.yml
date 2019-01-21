@@ -88,7 +88,7 @@ matrix:
         - shellcheck --version
         - shellcheck ci/*.sh
 
-    allow_failures:
+  allow_failures:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
       - env: TARGET=asmjs-unknown-emscripten
       - env: TARGET=wasm32-unknown-emscripten
