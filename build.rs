@@ -10,6 +10,18 @@ fn main() {
     if rustc_minor_version().expect("Failed to get rustc version") >= 30 {
         println!("cargo:rustc-cfg=core_cvoid");
     }
+
+    if cfg!(target_env = "msvc") {
+        if cfg!(target_feature = "crt-static") {
+            //weirdly enough, this doesn't work
+            // println!("cargo:rustc-link-lib=static=libcmt");
+
+            //but this does. maybe I'm misunderstanding something with static vs dynamic linking.
+            println!("cargo:rustc-link-lib=dylib=libcmt");
+        } else {
+            println!("cargo:rustc-link-lib=dylib=msvcrt");
+        }
+    }
 }
 
 fn rustc_minor_version() -> Option<u32> {
