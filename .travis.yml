@@ -89,8 +89,9 @@ matrix:
         - shellcheck ci/*.sh
 
   allow_failures:
-    - env: TARGET=aarch64-linux-android
-    - env: TARGET=x86_64-linux-android
+      # FIXME: https://github.com/rust-lang/libc/issues/1226
+      - env: TARGET=asmjs-unknown-emscripten
+      - env: TARGET=wasm32-unknown-emscripten
 
 install: rustup target add $TARGET
 script:

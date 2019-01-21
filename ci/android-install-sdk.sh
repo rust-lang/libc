@@ -46,9 +46,9 @@ case "$1" in
 esac;
 
 # --no_https avoids
-# javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: No trusted certificate found
-echo "yes" | \
-    ./sdk/tools/bin/sdkmanager --no_https \
+     # javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: No trusted certificate found
+yes | ./sdk/tools/bin/sdkmanager --licenses --no_https
+yes | ./sdk/tools/bin/sdkmanager --no_https \
         "emulator" \
         "platform-tools" \
         "platforms;android-24" \
