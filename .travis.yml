@@ -88,6 +88,11 @@ matrix:
         - shellcheck --version
         - shellcheck ci/*.sh
 
+    allow_failures:
+      # FIXME: https://github.com/rust-lang/libc/issues/1226
+      - env: TARGET=asmjs-unknown-emscripten
+      - env: TARGET=wasm32-unknown-emscripten
+
 install: rustup target add $TARGET
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
