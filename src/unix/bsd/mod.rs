@@ -152,6 +152,16 @@ impl PartialEq for sockaddr_un {
 #[cfg(feature = "extra_traits")]
 impl Eq for sockaddr_un {}
 #[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for sockaddr_un {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("sockaddr_un")
+            .field("sun_len", &self.sun_len)
+            .field("sun_family", &self.sun_family)
+            // FIXME: .field("sun_path", &self.sun_path)
+            .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for utsname {
     fn eq(&self, other: &utsname) -> bool {
         self.sysname
@@ -182,6 +192,18 @@ impl PartialEq for utsname {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for utsname {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for utsname {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("utsname")
+            // FIXME: .field("sysname", &self.sysname)
+            // FIXME: .field("nodename", &self.nodename)
+            // FIXME: .field("release", &self.release)
+            // FIXME: .field("version", &self.version)
+            // FIXME: .field("machine", &self.machine)
+            .finish()
+    }
+}
 
 pub const LC_ALL: ::c_int = 0;
 pub const LC_COLLATE: ::c_int = 1;

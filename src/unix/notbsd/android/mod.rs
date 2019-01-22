@@ -257,6 +257,18 @@ impl PartialEq for dirent {
 #[cfg(feature = "extra_traits")]
 impl Eq for dirent {}
 #[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for dirent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("dirent")
+            .field("d_ino", &self.d_ino)
+            .field("d_off", &self.d_off)
+            .field("d_reclen", &self.d_reclen)
+            .field("d_type", &self.d_type)
+            .field("d_name", &self.d_name)
+            .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for dirent64 {
     fn eq(&self, other: &dirent64) -> bool {
         self.d_ino == other.d_ino
@@ -273,6 +285,18 @@ impl PartialEq for dirent64 {
 #[cfg(feature = "extra_traits")]
 impl Eq for dirent64 {}
 #[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for dirent64 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("dirent64")
+            .field("d_ino", &self.d_ino)
+            .field("d_off", &self.d_off)
+            .field("d_reclen", &self.d_reclen)
+            .field("d_type", &self.d_type)
+            .field("d_name", &self.d_name)
+            .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for siginfo_t {
     fn eq(&self, other: &siginfo_t) -> bool {
         self.si_signo == other.si_signo
@@ -284,6 +308,18 @@ impl PartialEq for siginfo_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for siginfo_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for siginfo_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("siginfo_t")
+            .field("si_signo", &self.si_signo)
+            .field("si_errno", &self.si_errno)
+            .field("si_code", &self.si_code)
+            // Ignore _pad
+            // Ignore _align
+            .finish()
+    }
+}
 #[cfg(feature = "extra_traits")]
 impl PartialEq for lastlog {
     fn eq(&self, other: &lastlog) -> bool {
@@ -302,6 +338,16 @@ impl PartialEq for lastlog {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for lastlog {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for lastlog {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("lastlog")
+            .field("ll_time", &self.ll_time)
+            .field("ll_line", &self.ll_line)
+            .field("ll_host", &self.ll_host)
+            .finish()
+    }
+}
 #[cfg(feature = "extra_traits")]
 impl PartialEq for utmp {
     fn eq(&self, other: &utmp) -> bool {
@@ -332,6 +378,24 @@ impl PartialEq for utmp {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for utmp {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for utmp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("utmp")
+            .field("ut_type", &self.ut_type)
+            .field("ut_pid", &self.ut_pid)
+            .field("ut_line", &self.ut_line)
+            .field("ut_id", &self.ut_id)
+            .field("ut_user", &self.ut_user)
+            .field("ut_host", &self.ut_host)
+            .field("ut_exit", &self.ut_exit)
+            .field("ut_session", &self.ut_session)
+            .field("ut_tv", &self.ut_tv)
+            .field("ut_addr_v6", &self.ut_addr_v6)
+            .field("unused", &self.unused)
+            .finish()
+    }
+}
 
 pub const O_TRUNC: ::c_int = 512;
 pub const O_CLOEXEC: ::c_int = 0x80000;

@@ -45,8 +45,8 @@ libc = { version = "0.2", features = ["align"] }
 ```
 
 All structs implemented by the libc crate have the `Copy` and `Clone` traits
-implemented for them. The additional traits of `PartialEq` and `Eq` can be
-enabled with the *extra_traits* feature (requires Rust 1.25 or newer):
+implemented for them. The additional traits of `Debug, `Eq`, and `PartialEq`
+can be enabled with the *extra_traits* feature (requires Rust 1.25 or newer):
 
 ```toml
 [dependencies]

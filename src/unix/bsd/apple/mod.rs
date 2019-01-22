@@ -608,12 +608,6 @@ impl std::fmt::Debug for semun {
     }
 }
 #[cfg(feature = "extra_traits")]
-impl std::hash::Hash for semun {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        unsafe { self.val.hash(state) };
-    }
-}
-#[cfg(feature = "extra_traits")]
 impl PartialEq for proc_threadinfo {
     fn eq(&self, other: &proc_threadinfo) -> bool {
         self.pth_user_time == other.pth_user_time
@@ -635,6 +629,24 @@ impl PartialEq for proc_threadinfo {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for proc_threadinfo {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for proc_threadinfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("proc_threadinfo")
+            .field("pth_user_time", &self.pth_user_time)
+            .field("pth_system_time", &self.pth_system_time)
+            .field("pth_cpu_usage", &self.pth_cpu_usage)
+            .field("pth_policy", &self.pth_policy)
+            .field("pth_run_state", &self.pth_run_state)
+            .field("pth_flags", &self.pth_flags)
+            .field("pth_sleep_time", &self.pth_sleep_time)
+            .field("pth_curpri", &self.pth_curpri)
+            .field("pth_priority", &self.pth_priority)
+            .field("pth_maxpriority", &self.pth_maxpriority)
+            // FIXME: .field("pth_name", &self.pth_name)
+            .finish()
+    }
+}
 #[cfg(feature = "extra_traits")]
 impl PartialEq for statfs {
     fn eq(&self, other: &statfs) -> bool {
@@ -667,6 +679,29 @@ impl PartialEq for statfs {
 #[cfg(feature = "extra_traits")]
 impl Eq for statfs {}
 #[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for statfs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("statfs")
+            .field("f_bsize", &self.f_bsize)
+            .field("f_iosize", &self.f_iosize)
+            .field("f_blocks", &self.f_blocks)
+            .field("f_bfree", &self.f_bfree)
+            .field("f_bavail", &self.f_bavail)
+            .field("f_files", &self.f_files)
+            .field("f_ffree", &self.f_ffree)
+            .field("f_fsid", &self.f_fsid)
+            .field("f_owner", &self.f_owner)
+            .field("f_flags", &self.f_flags)
+            .field("f_fssubtype", &self.f_fssubtype)
+            .field("f_fstypename", &self.f_fstypename)
+            .field("f_type", &self.f_type)
+            // FIXME: .field("f_mntonname", &self.f_mntonname)
+            // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+            .field("f_reserved", &self.f_reserved)
+            .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for dirent {
     fn eq(&self, other: &dirent) -> bool {
         self.d_ino == other.d_ino
@@ -684,6 +719,19 @@ impl PartialEq for dirent {
 #[cfg(feature = "extra_traits")]
 impl Eq for dirent {}
 #[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for dirent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("dirent")
+            .field("d_ino", &self.d_ino)
+            .field("d_seekoff", &self.d_seekoff)
+            .field("d_reclen", &self.d_reclen)
+            .field("d_namlen", &self.d_namlen)
+            .field("d_type", &self.d_type)
+            // FIXME: .field("d_name", &self.d_name)
+            .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_rwlock_t {
     fn eq(&self, other: &pthread_rwlock_t) -> bool {
         self.__sig == other.__sig
@@ -696,6 +744,15 @@ impl PartialEq for pthread_rwlock_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_rwlock_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_rwlock_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_rwlock_t")
+            .field("__sig", &self.__sig)
+            // FIXME: .field("__opaque", &self.__opaque)
+            .finish()
+    }
+}
 #[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_mutex_t {
     fn eq(&self, other: &pthread_mutex_t) -> bool {
@@ -710,6 +767,15 @@ impl PartialEq for pthread_mutex_t {
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_mutex_t {}
 #[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_mutex_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_mutex_t")
+            .field("__sig", &self.__sig)
+            // FIXME: .field("__opaque", &self.__opaque)
+            .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_cond_t {
     fn eq(&self, other: &pthread_cond_t) -> bool {
         self.__sig == other.__sig
@@ -722,6 +788,15 @@ impl PartialEq for pthread_cond_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_cond_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_cond_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_cond_t")
+            .field("__sig", &self.__sig)
+            // FIXME: .field("__opaque", &self.__opaque)
+            .finish()
+    }
+}
 #[cfg(feature = "extra_traits")]
 impl PartialEq for sockaddr_storage {
     fn eq(&self, other: &sockaddr_storage) -> bool {
@@ -742,6 +817,18 @@ impl PartialEq for sockaddr_storage {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for sockaddr_storage {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for sockaddr_storage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("sockaddr_storage")
+            .field("ss_len", &self.ss_len)
+            .field("ss_family", &self.ss_family)
+            .field("__ss_pad1", &self.__ss_pad1)
+            .field("__ss_align", &self.__ss_align)
+            // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+            .finish()
+    }
+}
 #[cfg(feature = "extra_traits")]
 impl PartialEq for utmpx {
     fn eq(&self, other: &utmpx) -> bool {
@@ -764,6 +851,21 @@ impl PartialEq for utmpx {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for utmpx {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for utmpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("utmpx")
+            // FIXME: .field("ut_user", &self.ut_user)
+            .field("ut_id", &self.ut_id)
+            .field("ut_line", &self.ut_line)
+            .field("ut_pid", &self.ut_pid)
+            .field("ut_type", &self.ut_type)
+            .field("ut_tv", &self.ut_tv)
+            // FIXME: .field("ut_host", &self.ut_host)
+            .field("ut_pad", &self.ut_pad)
+            .finish()
+    }
+}
 
 pub const _UTX_USERSIZE: usize = 256;
 pub const _UTX_LINESIZE: usize = 32;

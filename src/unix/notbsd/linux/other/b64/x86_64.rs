@@ -256,6 +256,23 @@ impl PartialEq for user_fpregs_struct {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for user_fpregs_struct {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for user_fpregs_struct {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("user_fpregs_struct")
+            .field("cwd", &self.cwd)
+            .field("ftw", &self.ftw)
+            .field("fop", &self.fop)
+            .field("rip", &self.rip)
+            .field("rdp", &self.rdp)
+            .field("mxcsr", &self.mxcsr)
+            .field("mxcr_mask", &self.mxcr_mask)
+            .field("st_space", &self.st_space)
+            // FIXME: .field("xmm_space", &self.xmm_space)
+            // Ignore padding field
+            .finish()
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for ucontext_t {
@@ -270,6 +287,19 @@ impl PartialEq for ucontext_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for ucontext_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for ucontext_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ucontext_t")
+            .field("uc_flags", &self.uc_flags)
+            .field("uc_link", &self.uc_link)
+            .field("uc_stack", &self.uc_stack)
+            .field("uc_mcontext", &self.uc_mcontext)
+            .field("uc_sigmask", &self.uc_sigmask)
+            // Ignore __private field
+            .finish()
+    }
+}
 
 pub const TIOCGSOFTCAR: ::c_ulong = 0x5419;
 pub const TIOCSSOFTCAR: ::c_ulong = 0x541A;

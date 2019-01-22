@@ -92,6 +92,19 @@ impl PartialEq for ucontext_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for ucontext_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for ucontext_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ucontext_t")
+            .field("uc_flags", &self.uc_flags)
+            .field("uc_link", &self.uc_link)
+            .field("uc_stack", &self.uc_stack)
+            .field("uc_mcontext", &self.uc_mcontext)
+            .field("uc_sigmask", &self.uc_sigmask)
+            // Ignore __private field
+            .finish()
+    }
+}
 
 // Syscall table
 

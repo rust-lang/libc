@@ -69,6 +69,15 @@ impl PartialEq for pthread_attr_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_attr_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_attr_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_attr_t")
+            .field("__sig", &self.__sig)
+            // FIXME: .field("__opaque", &self.__opaque)
+            .finish()
+    }
+}
 
 pub const __PTHREAD_MUTEX_SIZE__: usize = 56;
 pub const __PTHREAD_COND_SIZE__: usize = 40;

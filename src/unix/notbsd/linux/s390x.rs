@@ -344,6 +344,14 @@ impl PartialEq for fpreg_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for fpreg_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for fpreg_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("fpreg_t")
+            .field("d", &self.d)
+            .finish()
+    }
+}
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 

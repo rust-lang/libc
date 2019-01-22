@@ -141,6 +141,15 @@ impl PartialEq for pthread_mutex_t {
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_mutex_t {}
 #[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_mutex_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_mutex_t")
+            .field("value", &self.value)
+            // FIXME: .field("__reserved", &self.__reserved)
+            .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_cond_t {
     fn eq(&self, other: &pthread_cond_t) -> bool {
         self.value == other.value
@@ -153,6 +162,15 @@ impl PartialEq for pthread_cond_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_cond_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_cond_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_cond_t")
+            .field("value", &self.value)
+            // FIXME: .field("__reserved", &self.__reserved)
+            .finish()
+    }
+}
 #[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_rwlock_t {
     fn eq(&self, other: &pthread_rwlock_t) -> bool {
@@ -170,6 +188,19 @@ impl PartialEq for pthread_rwlock_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_rwlock_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_rwlock_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_rwlock_t")
+            .field("numLocks", &self.numLocks)
+            .field("writerThreadId", &self.writerThreadId)
+            .field("pendingReaders", &self.pendingReaders)
+            .field("pendingWriters", &self.pendingWriters)
+            .field("attr", &self.attr)
+            // FIXME: .field("__reserved", &self.__reserved)
+            .finish()
+    }
+}
 
 pub const RTLD_GLOBAL: ::c_int = 0x00100;
 pub const RTLD_NOW: ::c_int = 2;

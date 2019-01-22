@@ -675,6 +675,18 @@ impl PartialEq for dirent {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for dirent {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for dirent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("dirent")
+            .field("d_ino", &self.d_ino)
+            .field("d_off", &self.d_off)
+            .field("d_reclen", &self.d_reclen)
+            .field("d_type", &self.d_type)
+            // FIXME: .field("d_name", &self.d_name)
+            .finish()
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for dirent64 {
@@ -692,6 +704,18 @@ impl PartialEq for dirent64 {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for dirent64 {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for dirent64 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("dirent64")
+            .field("d_ino", &self.d_ino)
+            .field("d_off", &self.d_off)
+            .field("d_reclen", &self.d_reclen)
+            .field("d_type", &self.d_type)
+            // FIXME: .field("d_name", &self.d_name)
+            .finish()
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_cond_t {
@@ -701,6 +725,14 @@ impl PartialEq for pthread_cond_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_cond_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_cond_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_cond_t")
+            // FIXME: .field("size", &self.size)
+            .finish()
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_mutex_t {
@@ -710,6 +742,14 @@ impl PartialEq for pthread_mutex_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_mutex_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_mutex_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_mutex_t")
+            // FIXME: .field("size", &self.size)
+            .finish()
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_rwlock_t {
@@ -719,6 +759,14 @@ impl PartialEq for pthread_rwlock_t {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for pthread_rwlock_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for pthread_rwlock_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("pthread_rwlock_t")
+            // FIXME: .field("size", &self.size)
+            .finish()
+    }
+}
 
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;

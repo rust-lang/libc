@@ -120,6 +120,27 @@ impl PartialEq for sysinfo {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for sysinfo {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for sysinfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("sysinfo")
+            .field("uptime", &self.uptime)
+            .field("loads", &self.loads)
+            .field("totalram", &self.totalram)
+            .field("freeram", &self.freeram)
+            .field("sharedram", &self.sharedram)
+            .field("bufferram", &self.bufferram)
+            .field("totalswap", &self.totalswap)
+            .field("freeswap", &self.freeswap)
+            .field("procs", &self.procs)
+            .field("pad", &self.pad)
+            .field("totalhigh", &self.totalhigh)
+            .field("freehigh", &self.freehigh)
+            .field("mem_unit", &self.mem_unit)
+            // FIXME: .field("__reserved", &self.__reserved)
+            .finish()
+    }
+}
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 

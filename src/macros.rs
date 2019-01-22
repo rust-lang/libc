@@ -39,7 +39,7 @@ macro_rules! s {
         __item! {
             #[repr(C)]
             $(#[$attr])*
-            #[cfg_attr(feature = "extra_traits", derive(Eq, PartialEq))]
+            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq))]
             pub $t $i { $($field)* }
         }
         impl ::dox::Copy for $i {}

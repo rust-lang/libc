@@ -245,6 +245,15 @@ impl PartialEq for sockaddr_un {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for sockaddr_un {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for sockaddr_un {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("sockaddr_un")
+            .field("sun_family", &self.sun_family)
+            // FIXME: .field("sun_path", &self.sun_path)
+            .finish()
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for sockaddr_storage {
@@ -259,6 +268,16 @@ impl PartialEq for sockaddr_storage {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for sockaddr_storage {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for sockaddr_storage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("sockaddr_storage")
+            .field("ss_family", &self.ss_family)
+            .field("__ss_align", &self.__ss_align)
+            // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+            .finish()
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for utsname {
@@ -296,6 +315,20 @@ impl PartialEq for utsname {
 }
 #[cfg(feature = "extra_traits")]
 impl Eq for utsname {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for utsname {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("utsname")
+            // FIXME: .field("sysname", &self.sysname)
+            // FIXME: .field("nodename", &self.nodename)
+            // FIXME: .field("release", &self.release)
+            // FIXME: .field("version", &self.version)
+            // FIXME: .field("machine", &self.machine)
+            // FIXME: .field("domainname", &self.domainname)
+            .finish()
+    }
+}
+
 // intentionally not public, only used for fd_set
 cfg_if! {
     if #[cfg(target_pointer_width = "32")] {
