@@ -141,6 +141,25 @@ impl std::fmt::Debug for sysinfo {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for sysinfo {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.uptime.hash(state);
+        self.loads.hash(state);
+        self.totalram.hash(state);
+        self.freeram.hash(state);
+        self.sharedram.hash(state);
+        self.bufferram.hash(state);
+        self.totalswap.hash(state);
+        self.freeswap.hash(state);
+        self.procs.hash(state);
+        self.pad.hash(state);
+        self.totalhigh.hash(state);
+        self.freehigh.hash(state);
+        self.mem_unit.hash(state);
+        self.__reserved.hash(state);
+    }
+}
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 

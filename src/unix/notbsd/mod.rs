@@ -254,6 +254,13 @@ impl std::fmt::Debug for sockaddr_un {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for sockaddr_un {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.sun_family.hash(state);
+        self.sun_path.hash(state);
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for sockaddr_storage {
@@ -276,6 +283,13 @@ impl std::fmt::Debug for sockaddr_storage {
             .field("__ss_align", &self.__ss_align)
             // FIXME: .field("__ss_pad2", &self.__ss_pad2)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for sockaddr_storage {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.ss_family.hash(state);
+        self.__ss_pad2.hash(state);
     }
 }
 
@@ -326,6 +340,17 @@ impl std::fmt::Debug for utsname {
             // FIXME: .field("machine", &self.machine)
             // FIXME: .field("domainname", &self.domainname)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for utsname {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.sysname.hash(state);
+        self.nodename.hash(state);
+        self.release.hash(state);
+        self.version.hash(state);
+        self.machine.hash(state);
+        self.domainname.hash(state);
     }
 }
 

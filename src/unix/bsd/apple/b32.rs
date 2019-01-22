@@ -73,6 +73,13 @@ impl std::fmt::Debug for pthread_attr_t {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_attr_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.__sig.hash(state);
+        self.__opaque.hash(state);
+    }
+}
 
 pub const __PTHREAD_MUTEX_SIZE__: usize = 40;
 pub const __PTHREAD_COND_SIZE__: usize = 24;

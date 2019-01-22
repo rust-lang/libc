@@ -207,6 +207,17 @@ impl std::fmt::Debug for ucontext_t {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for ucontext_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.uc_flags.hash(state);
+        self.uc_link.hash(state);
+        self.uc_stack.hash(state);
+        self.uc_mcontext.hash(state);
+        self.uc_sigmask.hash(state);
+        self.__private.hash(state);
+    }
+}
 
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;

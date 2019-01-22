@@ -269,6 +269,16 @@ impl std::fmt::Debug for dirent {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for dirent {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.d_ino.hash(state);
+        self.d_off.hash(state);
+        self.d_reclen.hash(state);
+        self.d_type.hash(state);
+        self.d_name.hash(state);
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for dirent64 {
     fn eq(&self, other: &dirent64) -> bool {
         self.d_ino == other.d_ino
@@ -297,6 +307,16 @@ impl std::fmt::Debug for dirent64 {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for dirent64 {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.d_ino.hash(state);
+        self.d_off.hash(state);
+        self.d_reclen.hash(state);
+        self.d_type.hash(state);
+        self.d_name.hash(state);
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for siginfo_t {
     fn eq(&self, other: &siginfo_t) -> bool {
         self.si_signo == other.si_signo
@@ -318,6 +338,16 @@ impl std::fmt::Debug for siginfo_t {
             // Ignore _pad
             // Ignore _align
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for siginfo_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.si_signo.hash(state);
+        self.si_errno.hash(state);
+        self.si_code.hash(state);
+            // Ignore _pad
+            // Ignore _align
     }
 }
 #[cfg(feature = "extra_traits")]
@@ -346,6 +376,14 @@ impl std::fmt::Debug for lastlog {
             .field("ll_line", &self.ll_line)
             .field("ll_host", &self.ll_host)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for lastlog {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.ll_time.hash(state);
+        self.ll_line.hash(state);
+        self.ll_host.hash(state);
     }
 }
 #[cfg(feature = "extra_traits")]
@@ -394,6 +432,22 @@ impl std::fmt::Debug for utmp {
             .field("ut_addr_v6", &self.ut_addr_v6)
             .field("unused", &self.unused)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for utmp {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.ut_type.hash(state);
+        self.ut_pid.hash(state);
+        self.ut_line.hash(state);
+        self.ut_id.hash(state);
+        self.ut_user.hash(state);
+        self.ut_host.hash(state);
+        self.ut_exit.hash(state);
+        self.ut_session.hash(state);
+        self.ut_tv.hash(state);
+        self.ut_addr_v6.hash(state);
+        self.unused.hash(state);
     }
 }
 

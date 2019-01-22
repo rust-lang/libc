@@ -286,6 +286,22 @@ impl std::fmt::Debug for utmpx {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for utmpx {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.ut_type.hash(state);
+        self.ut_pid.hash(state);
+        self.ut_line.hash(state);
+        self.ut_id.hash(state);
+        self.ut_user.hash(state);
+        self.ut_host.hash(state);
+        self.ut_exit.hash(state);
+        self.ut_session.hash(state);
+        self.ut_tv.hash(state);
+        self.ut_addr_v6.hash(state);
+        self.__glibc_reserved.hash(state);
+    }
+}
 
 pub const __UT_LINESIZE: usize = 32;
 pub const __UT_NAMESIZE: usize = 32;

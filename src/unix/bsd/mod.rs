@@ -162,6 +162,14 @@ impl std::fmt::Debug for sockaddr_un {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for sockaddr_un {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.sun_len.hash(state);
+        self.sun_family.hash(state);
+        self.sun_path.hash(state);
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for utsname {
     fn eq(&self, other: &utsname) -> bool {
         self.sysname
@@ -202,6 +210,16 @@ impl std::fmt::Debug for utsname {
             // FIXME: .field("version", &self.version)
             // FIXME: .field("machine", &self.machine)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for utsname {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.sysname.hash(state);
+        self.nodename.hash(state);
+        self.release.hash(state);
+        self.version.hash(state);
+        self.machine.hash(state);
     }
 }
 

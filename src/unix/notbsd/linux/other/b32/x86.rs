@@ -256,6 +256,24 @@ impl std::fmt::Debug for user_fpxregs_struct {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for user_fpxregs_struct {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.cwd.hash(state);
+        self.swd.hash(state);
+        self.twd.hash(state);
+        self.fop.hash(state);
+        self.fip.hash(state);
+        self.fcs.hash(state);
+        self.foo.hash(state);
+        self.fos.hash(state);
+        self.mxcsr.hash(state);
+        // Ignore __reserved field
+        self.st_space.hash(state);
+        self.xmm_space.hash(state);
+        // Ignore padding field
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for ucontext_t {
     fn eq(&self, other: &ucontext_t) -> bool {
         self.uc_flags == other.uc_flags
@@ -279,6 +297,17 @@ impl std::fmt::Debug for ucontext_t {
             .field("uc_sigmask", &self.uc_sigmask)
             // Ignore __private field
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for ucontext_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.uc_flags.hash(state);
+        self.uc_link.hash(state);
+        self.uc_stack.hash(state);
+        self.uc_mcontext.hash(state);
+        self.uc_sigmask.hash(state);
+        // Ignore __private field
     }
 }
 

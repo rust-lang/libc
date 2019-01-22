@@ -608,6 +608,12 @@ impl std::fmt::Debug for semun {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for semun {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        unsafe { self.val.hash(state) };
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for proc_threadinfo {
     fn eq(&self, other: &proc_threadinfo) -> bool {
         self.pth_user_time == other.pth_user_time
@@ -645,6 +651,22 @@ impl std::fmt::Debug for proc_threadinfo {
             .field("pth_maxpriority", &self.pth_maxpriority)
             // FIXME: .field("pth_name", &self.pth_name)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for proc_threadinfo {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.pth_user_time.hash(state);
+        self.pth_system_time.hash(state);
+        self.pth_cpu_usage.hash(state);
+        self.pth_policy.hash(state);
+        self.pth_run_state.hash(state);
+        self.pth_flags.hash(state);
+        self.pth_sleep_time.hash(state);
+        self.pth_curpri.hash(state);
+        self.pth_priority.hash(state);
+        self.pth_maxpriority.hash(state);
+        self.pth_name.hash(state);
     }
 }
 #[cfg(feature = "extra_traits")]
@@ -702,6 +724,27 @@ impl std::fmt::Debug for statfs {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for statfs {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.f_bsize.hash(state);
+        self.f_iosize.hash(state);
+        self.f_blocks.hash(state);
+        self.f_bfree.hash(state);
+        self.f_bavail.hash(state);
+        self.f_files.hash(state);
+        self.f_ffree.hash(state);
+        self.f_fsid.hash(state);
+        self.f_owner.hash(state);
+        self.f_flags.hash(state);
+        self.f_fssubtype.hash(state);
+        self.f_fstypename.hash(state);
+        self.f_type.hash(state);
+        self.f_mntonname.hash(state);
+        self.f_mntfromname.hash(state);
+        self.f_reserved.hash(state);
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for dirent {
     fn eq(&self, other: &dirent) -> bool {
         self.d_ino == other.d_ino
@@ -732,6 +775,17 @@ impl std::fmt::Debug for dirent {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for dirent {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.d_ino.hash(state);
+        self.d_seekoff.hash(state);
+        self.d_reclen.hash(state);
+        self.d_namlen.hash(state);
+        self.d_type.hash(state);
+        self.d_name.hash(state);
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_rwlock_t {
     fn eq(&self, other: &pthread_rwlock_t) -> bool {
         self.__sig == other.__sig
@@ -751,6 +805,13 @@ impl std::fmt::Debug for pthread_rwlock_t {
             .field("__sig", &self.__sig)
             // FIXME: .field("__opaque", &self.__opaque)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_rwlock_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.__sig.hash(state);
+        self.__opaque.hash(state);
     }
 }
 #[cfg(feature = "extra_traits")]
@@ -776,6 +837,13 @@ impl std::fmt::Debug for pthread_mutex_t {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_mutex_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.__sig.hash(state);
+        self.__opaque.hash(state);
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_cond_t {
     fn eq(&self, other: &pthread_cond_t) -> bool {
         self.__sig == other.__sig
@@ -795,6 +863,13 @@ impl std::fmt::Debug for pthread_cond_t {
             .field("__sig", &self.__sig)
             // FIXME: .field("__opaque", &self.__opaque)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_cond_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.__sig.hash(state);
+        self.__opaque.hash(state);
     }
 }
 #[cfg(feature = "extra_traits")]
@@ -827,6 +902,16 @@ impl std::fmt::Debug for sockaddr_storage {
             .field("__ss_align", &self.__ss_align)
             // FIXME: .field("__ss_pad2", &self.__ss_pad2)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for sockaddr_storage {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.ss_len.hash(state);
+        self.ss_family.hash(state);
+        self.__ss_pad1.hash(state);
+        self.__ss_align.hash(state);
+        self.__ss_pad2.hash(state);
     }
 }
 #[cfg(feature = "extra_traits")]
@@ -864,6 +949,19 @@ impl std::fmt::Debug for utmpx {
             // FIXME: .field("ut_host", &self.ut_host)
             .field("ut_pad", &self.ut_pad)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for utmpx {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.ut_user.hash(state);
+        self.ut_id.hash(state);
+        self.ut_line.hash(state);
+        self.ut_pid.hash(state);
+        self.ut_type.hash(state);
+        self.ut_tv.hash(state);
+        self.ut_host.hash(state);
+        self.ut_pad.hash(state);
     }
 }
 

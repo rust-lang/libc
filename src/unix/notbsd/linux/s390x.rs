@@ -352,6 +352,12 @@ impl std::fmt::Debug for fpreg_t {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for fpreg_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.d.to_bits().hash(state);
+    }
+}
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 

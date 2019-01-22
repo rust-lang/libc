@@ -150,6 +150,13 @@ impl std::fmt::Debug for pthread_mutex_t {
     }
 }
 #[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_mutex_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.value.hash(state);
+        self.__reserved.hash(state);
+    }
+}
+#[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_cond_t {
     fn eq(&self, other: &pthread_cond_t) -> bool {
         self.value == other.value
@@ -169,6 +176,13 @@ impl std::fmt::Debug for pthread_cond_t {
             .field("value", &self.value)
             // FIXME: .field("__reserved", &self.__reserved)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_cond_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.value.hash(state);
+        self.__reserved.hash(state);
     }
 }
 #[cfg(feature = "extra_traits")]
@@ -199,6 +213,17 @@ impl std::fmt::Debug for pthread_rwlock_t {
             .field("attr", &self.attr)
             // FIXME: .field("__reserved", &self.__reserved)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_rwlock_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.numLocks.hash(state);
+        self.writerThreadId.hash(state);
+        self.pendingReaders.hash(state);
+        self.pendingWriters.hash(state);
+        self.attr.hash(state);
+        self.__reserved.hash(state);
     }
 }
 

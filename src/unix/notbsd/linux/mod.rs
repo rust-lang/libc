@@ -687,6 +687,16 @@ impl std::fmt::Debug for dirent {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for dirent {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.d_ino.hash(state);
+        self.d_off.hash(state);
+        self.d_reclen.hash(state);
+        self.d_type.hash(state);
+        self.d_name.hash(state);
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for dirent64 {
@@ -716,6 +726,16 @@ impl std::fmt::Debug for dirent64 {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for dirent64 {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.d_ino.hash(state);
+        self.d_off.hash(state);
+        self.d_reclen.hash(state);
+        self.d_type.hash(state);
+        self.d_name.hash(state);
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_cond_t {
@@ -731,6 +751,12 @@ impl std::fmt::Debug for pthread_cond_t {
         f.debug_struct("pthread_cond_t")
             // FIXME: .field("size", &self.size)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_cond_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.size.hash(state);
     }
 }
 
@@ -750,6 +776,12 @@ impl std::fmt::Debug for pthread_mutex_t {
             .finish()
     }
 }
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_mutex_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.size.hash(state);
+    }
+}
 
 #[cfg(feature = "extra_traits")]
 impl PartialEq for pthread_rwlock_t {
@@ -765,6 +797,12 @@ impl std::fmt::Debug for pthread_rwlock_t {
         f.debug_struct("pthread_rwlock_t")
             // FIXME: .field("size", &self.size)
             .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for pthread_rwlock_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.size.hash(state);
     }
 }
 
