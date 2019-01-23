@@ -26,9 +26,17 @@ pub type idtype_t = ::c_uint;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
+impl ::dox::Copy for fpos64_t {}
+impl ::dox::Clone for fpos64_t {
+    fn clone(&self) -> fpos64_t { *self }
+}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
+impl ::dox::Copy for timezone {}
+impl ::dox::Clone for timezone {
+    fn clone(&self) -> timezone { *self }
+}
 
 s! {
     pub struct sockaddr {

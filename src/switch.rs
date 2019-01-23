@@ -45,6 +45,7 @@ cfg_if! {
         // enable more optimization opportunities around it recognizing things
         // like malloc/free.
         #[repr(u8)]
+        #[allow(missing_copy_implementations)]
         pub enum c_void {
             // Two dummy variants so the #[repr] attribute can be used.
             #[doc(hidden)]

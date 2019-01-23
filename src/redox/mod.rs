@@ -221,8 +221,16 @@ pub const SIGSYS:    ::c_int = 31;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
+impl ::dox::Copy for FILE {}
+impl ::dox::Clone for FILE {
+    fn clone(&self) -> FILE { *self }
+}
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
+impl ::dox::Copy for fpos_t {}
+impl ::dox::Clone for fpos_t {
+    fn clone(&self) -> fpos_t { *self }
+}
 
 // intentionally not public, only used for fd_set
 cfg_if! {
@@ -385,6 +393,7 @@ cfg_if! {
         // enable more optimization opportunities around it recognizing things
         // like malloc/free.
         #[repr(u8)]
+        #[allow(missing_copy_implementations)]
         pub enum c_void {
             // Two dummy variants so the #[repr] attribute can be used.
             #[doc(hidden)]
