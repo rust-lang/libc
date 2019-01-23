@@ -38,6 +38,7 @@ pub type Elf64_Sxword = i64;
 pub type Elf32_Section = u16;
 pub type Elf64_Section = u16;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
 s! {

@@ -122,7 +122,9 @@ pub const PTHREAD_STACK_MIN: ::size_t = 1024;
 pub const SOCK_DGRAM: ::c_int = 128;
 pub const SOCK_STREAM: ::c_int = 130;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
 
 extern {

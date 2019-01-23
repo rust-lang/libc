@@ -219,7 +219,9 @@ pub const SIGIO:     ::c_int = 29;
 pub const SIGPWR:    ::c_int = 30;
 pub const SIGSYS:    ::c_int = 31;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
 
 // intentionally not public, only used for fd_set

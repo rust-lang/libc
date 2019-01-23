@@ -24,8 +24,10 @@ pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 
 s! {

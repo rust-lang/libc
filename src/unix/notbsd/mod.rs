@@ -8,6 +8,7 @@ pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 
 s! {

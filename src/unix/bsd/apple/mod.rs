@@ -34,6 +34,7 @@ pub type posix_spawn_file_actions_t = *mut ::c_void;
 pub type key_t = ::c_int;
 pub type shmatt_t = ::c_ushort;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 
 s! {

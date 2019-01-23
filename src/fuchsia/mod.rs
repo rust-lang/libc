@@ -100,9 +100,13 @@ pub type c_ulong = u64;
 
 // FIXME: why are these uninhabited types? that seems... wrong?
 // Presumably these should be `()` or an `extern type` (when that stabilizes).
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum locale_t {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
 // PUB_STRUCT
@@ -3042,7 +3046,9 @@ f! {
 #[link(name = "fdio")]
 extern {}
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
 
 extern {

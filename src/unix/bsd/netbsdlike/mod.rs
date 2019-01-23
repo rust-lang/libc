@@ -13,7 +13,9 @@ pub type clockid_t = ::c_int;
 pub type id_t = ::uint32_t;
 pub type sem_t = *mut sem;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
 
 s! {

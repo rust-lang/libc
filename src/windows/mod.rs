@@ -47,6 +47,7 @@ cfg_if! {
 pub type off_t = i32;
 pub type dev_t = u32;
 pub type ino_t = u16;
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 pub type time64_t = i64;
 
@@ -201,7 +202,9 @@ pub const SIG_ERR: ::c_int = -1;
 #[link(name = "libcmt", cfg(target_feature = "crt-static"))]
 extern {}
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
 
 extern {

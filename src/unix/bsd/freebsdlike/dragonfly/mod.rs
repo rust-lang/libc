@@ -17,6 +17,7 @@ pub type fsfilcnt_t = u64;
 
 pub type sem_t = *mut sem;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
 
 s! {

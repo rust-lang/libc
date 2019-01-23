@@ -31,6 +31,7 @@ pub type nl_item = ::c_int;
 pub type id_t = i32;
 pub type idtype_t = ::c_uint;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 
 s! {

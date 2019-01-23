@@ -41,7 +41,9 @@ pub type in_port_t = u16;
 pub type sighandler_t = ::size_t;
 pub type cc_t = ::c_uchar;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum locale_t {}
 
 s! {
@@ -365,7 +367,9 @@ cfg_if! {
     }
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
 
 extern {

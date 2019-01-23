@@ -264,7 +264,7 @@ impl std::fmt::Debug for dirent {
             .field("d_off", &self.d_off)
             .field("d_reclen", &self.d_reclen)
             .field("d_type", &self.d_type)
-            .field("d_name", &self.d_name)
+            // FIXME: .field("d_name", &self.d_name)
             .finish()
     }
 }
@@ -302,7 +302,7 @@ impl std::fmt::Debug for dirent64 {
             .field("d_off", &self.d_off)
             .field("d_reclen", &self.d_reclen)
             .field("d_type", &self.d_type)
-            .field("d_name", &self.d_name)
+            // FIXME: .field("d_name", &self.d_name)
             .finish()
     }
 }
@@ -374,7 +374,7 @@ impl std::fmt::Debug for lastlog {
         f.debug_struct("lastlog")
             .field("ll_time", &self.ll_time)
             .field("ll_line", &self.ll_line)
-            .field("ll_host", &self.ll_host)
+            // FIXME: .field("ll_host", &self.ll_host)
             .finish()
     }
 }
@@ -425,7 +425,7 @@ impl std::fmt::Debug for utmp {
             .field("ut_line", &self.ut_line)
             .field("ut_id", &self.ut_id)
             .field("ut_user", &self.ut_user)
-            .field("ut_host", &self.ut_host)
+            // FIXME: .field("ut_host", &self.ut_host)
             .field("ut_exit", &self.ut_exit)
             .field("ut_session", &self.ut_session)
             .field("ut_tv", &self.ut_tv)
