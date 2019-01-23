@@ -184,6 +184,12 @@ s! {
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 46],
     }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
 }
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
