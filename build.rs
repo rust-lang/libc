@@ -11,12 +11,11 @@ fn main() {
         println!("cargo:rustc-cfg=core_cvoid");
     }
 
-    if cfg!(target_env = "msvc") {
-        if cfg!(target_feature = "crt-static") {
-            //weirdly enough, this doesn't work
-            // println!("cargo:rustc-link-lib=static=libcmt");
+    let target = env::var("TARGET").unwrap();
+    let linkage = env::var("CARGO_CFG_TARGET_FEATURE").unwrap();
 
-            //but this does. maybe I'm misunderstanding something with static vs dynamic linking.
+    if target.contains("msvc") {
+        if linkage.contains("crt-static") {
             println!("cargo:rustc-link-lib=dylib=libcmt");
         } else {
             println!("cargo:rustc-link-lib=dylib=msvcrt");
