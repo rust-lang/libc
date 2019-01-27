@@ -1955,6 +1955,8 @@ extern {
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *const ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
