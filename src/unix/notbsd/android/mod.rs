@@ -1957,6 +1957,8 @@ extern {
     pub fn __errno() -> *mut ::c_int;
     pub fn sendmmsg(sockfd: ::c_int, msgvec: *const ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *const ::timespec) -> ::c_int;
 }
 
 cfg_if! {
