@@ -186,11 +186,6 @@ s! {
         pub ar_pln: u8,
         pub ar_op: u16,
     }
-
-    pub struct mmsghdr {
-        pub msg_hdr: ::msghdr,
-        pub msg_len: ::ssize_t,
-    }
 }
 
 s_no_extra_traits! {
@@ -1245,10 +1240,6 @@ extern {
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
                      times: *const ::timespec, flag: ::c_int) -> ::c_int;
-    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::size_t,
-                    flags: ::c_int) -> ::ssize_t;
-    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::size_t,
-                    flags: ::c_int, timeout: *const ::timespec) -> ::ssize_t;
 }
 
 #[link(name = "util")]
