@@ -268,6 +268,11 @@ s! {
         pub sdl_slen: ::uint8_t,
         pub sdl_data: [::c_char; 12],
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 s_no_extra_traits! {
