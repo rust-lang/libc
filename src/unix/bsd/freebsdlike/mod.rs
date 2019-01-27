@@ -189,7 +189,7 @@ s! {
 
     pub struct mmsghdr {
         pub msg_hdr: ::msghdr,
-        pub msg_len: ::c_ssize_t,
+        pub msg_len: ::ssize_t,
     }
 }
 
