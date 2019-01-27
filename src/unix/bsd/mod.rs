@@ -594,8 +594,10 @@ extern {
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
 
+    #[cfg(not(target_os = "macos"))]
     pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
                     flags: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "macos"))]
     pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
                     flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
 
