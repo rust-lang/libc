@@ -169,11 +169,6 @@ s! {
         pub msgseg: ::c_ushort,
     }
 
-    pub struct mmsghdr {
-        pub msg_hdr: ::msghdr,
-        pub msg_len: ::c_uint,
-    }
-
     pub struct sembuf {
         pub sem_num: ::c_ushort,
         pub sem_op: ::c_short,
