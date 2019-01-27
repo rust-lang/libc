@@ -61,6 +61,11 @@ s! {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 pub const D_T_FMT: ::nl_item = 0;

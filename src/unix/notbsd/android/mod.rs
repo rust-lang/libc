@@ -51,6 +51,11 @@ s! {
         pub cmsg_type: ::c_int,
     }
 
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
+
     pub struct termios {
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,

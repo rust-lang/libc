@@ -594,6 +594,11 @@ extern {
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
 
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
+
     pub fn sync();
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrgid_r")]
     pub fn getgrgid_r(uid: ::uid_t,
