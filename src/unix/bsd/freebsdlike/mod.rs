@@ -1248,7 +1248,7 @@ extern {
     pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::size_t,
                     flags: ::c_int) -> ::ssize_t;
     pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::size_t,
-                    flags: ::c_int, timeout: *mut ::timespec) -> ::ssize_t;
+                    flags: ::c_int, timeout: *const ::timespec) -> ::ssize_t;
 }
 
 #[link(name = "util")]
