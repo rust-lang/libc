@@ -1,31 +1,28 @@
 language: rust
-rust: stable
+rust: nightly
 sudo: required
 dist: xenial
 services: docker
 
 matrix:
   include:
-    # 1.13.0 compat
-    - env: TARGET=x86_64-unknown-linux-gnu
-      rust: 1.13.0
-      script: rm -f Cargo.lock && cargo build
-      install: true
-
-    # build documentation
-    - env: TARGET=x86_64-unknown-linux-gnu
+    - name: "Documentation"
+      env: TARGET=x86_64-unknown-linux-gnu
       rust: nightly
       script: sh ci/dox.sh
       install: true
-
-    # stable compat
-    - env: TARGET=x86_64-unknown-linux-gnu
+    - name: "Shellcheck"
       install: true
+      script:
+        - shellcheck --version
+        - shellcheck ci/*.sh
+
+    - env: TARGET=x86_64-unknown-linux-gnu
     - env: TARGET=i686-unknown-linux-gnu
+    - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
     - os: osx
       env: TARGET=x86_64-apple-darwin
       osx_image: xcode10
-      install: true
     - os: osx
       env: TARGET=i686-apple-darwin
       osx_image: xcode10
@@ -52,48 +49,24 @@ matrix:
     - env: TARGET=sparc64-unknown-linux-gnu
     - env: TARGET=asmjs-unknown-emscripten
     - env: TARGET=wasm32-unknown-emscripten
-
-    # beta
-    - env: TARGET=x86_64-unknown-linux-gnu
-      rust: beta
-      install: true
-    - os: osx
-      env: TARGET=x86_64-apple-darwin
-      osx_image: xcode10
-      rust: beta
-      install: true
-
-    # nightly
-    - env: TARGET=x86_64-unknown-linux-gnu
-      rust: nightly
-      install: true
-    - os: osx
-      env: TARGET=x86_64-apple-darwin
-      osx_image: xcode10
-      rust: nightly
-      install: true
-    # not available on stable
-    # without --release the build fails
-    # see https://github.com/rust-lang/rust/issues/45417
-    - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
-      rust: nightly
-
     - env: TARGET=wasm32-unknown-unknown
       install: rustup target add $TARGET
       script: cargo build --no-default-features --target $TARGET --release
-
-    - name: "Shellcheck"
-      install: true
-      script:
-        - shellcheck --version
-        - shellcheck ci/*.sh
 
   allow_failures:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
       - env: TARGET=asmjs-unknown-emscripten
       - env: TARGET=wasm32-unknown-emscripten
 
-install: rustup target add $TARGET
+install:
+  - rustup install beta
+  - rustup install stable
+  - rustup install 1.13.0
+  - rustup target add $TARGET || true
+  - rustup target add $TARGET --toolchain beta || true
+  - rustup target add $TARGET --toolchain stable || true
+  - rustup target add $TARGET --toolchain 1.13.0 || true
+
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then

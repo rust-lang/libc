@@ -80,24 +80,37 @@ if [ "$QEMU" != "" ]; then
   exec egrep "^(PASSED)|(test result: ok)" "${CARGO_TARGET_DIR}/out.log"
 fi
 
-# FIXME: x86_64-unknown-linux-gnux32 fail to compile without --release
-# See https://github.com/rust-lang/rust/issues/45417
-opt=
-if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
-  opt="--release"
-fi
+build_types="+nightly +beta +stable +1.13.0"
+for build_type in $build_types;
+do
 
-# Building with --no-default-features is currently broken on rumprun because we
-# need cfg(target_vendor), which is currently unstable.
-if [ "$TARGET" != "x86_64-rumprun-netbsd" ]; then
-  cargo test $opt --no-default-features --manifest-path libc-test/Cargo.toml --target "${TARGET}"
-fi
-# Test the #[repr(align(x))] feature if this is building on Rust >= 1.25
-if [ "$(rustc --version | sed -E 's/^rustc 1\.([0-9]*)\..*/\1/')" -ge 25 ]; then
-  cargo test $opt --features align --manifest-path libc-test/Cargo.toml --target "${TARGET}"
-fi
-# Test the `extra_traits` feature if this is building on Rust >= 1.25
-if [ "$(rustc --version | sed -E 's/^rustc 1\.([0-9]*)\..*/\1/')" -ge 25 ]; then
-  cargo test $opt --features extra_traits --manifest-path libc-test/Cargo.toml --target "${TARGET}"
-fi
-exec cargo test $opt --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+    opt=
+    if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
+        # FIXME: x86_64-unknown-linux-gnux32 fail to compile without --release
+        # See https://github.com/rust-lang/rust/issues/45417
+        opt="--release"
+
+        # x86_64-unknown-linux-gnux32 is only available on nightly:
+        if [ "$build_type" != "nightly" ]; then
+            continue
+        fi
+    fi
+
+    # Building with --no-default-features is currently broken on rumprun because we
+    # need cfg(target_vendor), which is currently unstable.
+    if [ "$TARGET" != "x86_64-rumprun-netbsd" ]; then
+        cargo "$build_type" test $opt --no-default-features --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+    fi
+
+    # Test the #[repr(align(x))] feature; requires Rust >= 1.25.0
+    if [ "$build_type" != "+1.13.0" ]; then
+        cargo "$build_type" test $opt --features align --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+    fi
+
+    # Test the `extra_traits` feature; requires Rust >= 1.25.0
+    if [ "$build_type" != "+1.13.0" ]; then
+        cargo "$build_type" test $opt --features extra_traits --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+    fi
+
+    exec cargo "$build_type" test $opt --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+done
