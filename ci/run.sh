@@ -80,6 +80,8 @@ if [ "$QEMU" != "" ]; then
   exec egrep "^(PASSED)|(test result: ok)" "${CARGO_TARGET_DIR}/out.log"
 fi
 
+command -v cargo
+
 build_types="+nightly +beta +stable +1.13.0 +1.19.0 +1.24.0 +1.30.0"
 for build_type in $build_types;
 do
