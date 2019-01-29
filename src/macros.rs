@@ -36,31 +36,70 @@ macro_rules! __cfg_if_apply {
 
 macro_rules! s {
     ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
+        s!(it: $(#[$attr])* pub $t $i { $($field)* });
+    )*);
+    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
+        cfg_if! {
+            if #[cfg(libc_union)] {
+                __item! {
+                    #[repr(C)]
+                    #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+                    $(#[$attr])*
+                    pub union $i { $($field)* }
+                }
+
+                impl ::dox::Copy for $i {}
+                impl ::dox::Clone for $i {
+                    fn clone(&self) -> $i { *self }
+                }
+            }
+        }
+    );
+    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
-            $(#[$attr])*
             #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            pub $t $i { $($field)* }
+            $(#[$attr])*
+            pub struct $i { $($field)* }
         }
         impl ::dox::Copy for $i {}
         impl ::dox::Clone for $i {
             fn clone(&self) -> $i { *self }
         }
-    )*)
+    );
 }
 
 macro_rules! s_no_extra_traits {
     ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
+        s!(it: $(#[$attr])* pub $t $i { $($field)* });
+    )*);
+    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
+        cfg_if! {
+            if #[cfg(libc_union)] {
+                __item! {
+                    #[repr(C)]
+                    $(#[$attr])*
+                    pub union $i { $($field)* }
+                }
+
+                impl ::dox::Copy for $i {}
+                impl ::dox::Clone for $i {
+                    fn clone(&self) -> $i { *self }
+                }
+            }
+        }
+    );
+    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
             $(#[$attr])*
-            pub $t $i { $($field)* }
+            pub struct $i { $($field)* }
         }
         impl ::dox::Copy for $i {}
         impl ::dox::Clone for $i {
             fn clone(&self) -> $i { *self }
         }
-    )*)
+    );
 }
 
 #[allow(unused_macros)]

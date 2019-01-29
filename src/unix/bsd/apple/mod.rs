@@ -486,6 +486,12 @@ s! {
         pub sem_pad3: [::int32_t; 4],
     }
 
+    pub union semun {
+        pub val: ::c_int,
+        pub buf: *mut semid_ds,
+        pub array: *mut ::c_ushort,
+    }
+
     // sys/shm.h
 
     #[cfg_attr(feature = "rustc-dep-of-std", repr(packed(4)))]
