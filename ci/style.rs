@@ -117,7 +117,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         } else {
             prev_blank = false;
         }
-        if line != line.trim_right() {
+        if line != line.trim_end() {
             err.error(path, i, "trailing whitespace");
         }
         if line.contains("\t") {
@@ -139,7 +139,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
             }
         }
 
-        let line = line.trim_left();
+        let line = line.trim_start();
         let is_pub = line.starts_with("pub ");
         let line = if is_pub {&line[4..]} else {line};
 
