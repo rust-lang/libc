@@ -50,6 +50,12 @@ matrix:
     - env: TARGET=asmjs-unknown-emscripten
     - env: TARGET=wasm32-unknown-emscripten
     - env: TARGET=wasm32-unknown-unknown BUILD_ONLY=1
+    - env: TARGET=x86_64-unknown-freebsd BUILD_ONLY=1
+    - env: TARGET=x86_64-unknown-openbsd BUILD_ONLY=1
+    - env: TARGET=x86_64-unknown-bitrig BUILD_ONLY=1
+    - env: TARGET=x86_64-unknown-netbsd BUILD_ONLY=1
+    - env: TARGET=x86_64-unknown-dragonfly BUILD_ONLY=1
+    - env: TARGET=x86_64-unknown-solaris BUILD_ONLY=1
 
   allow_failures:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
@@ -74,7 +80,11 @@ install:
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
-      sh ci/run-docker.sh $TARGET;
+      if [[ $BUILD_ONLY = "1" ]]; then
+          sh ci/run.sh $TARGET;
+      else 
+          sh ci/run-docker.sh $TARGET;
+      fi
     else
       export CARGO_TARGET_DIR=`pwd`/target;
       sh ci/run.sh $TARGET;
