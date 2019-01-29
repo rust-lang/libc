@@ -26,32 +26,6 @@ s! {
         pub int_n_sign_posn: ::c_char,
     }
 
-    pub struct statfs {
-        pub f_flags: ::uint32_t,
-        pub f_bsize: ::uint32_t,
-        pub f_iosize: ::uint32_t,
-        pub f_blocks: ::uint64_t,
-        pub f_bfree: ::uint64_t,
-        pub f_bavail: ::int64_t,
-        pub f_files: ::uint64_t,
-        pub f_ffree: ::uint64_t,
-        pub f_favail: ::int64_t,
-        pub f_syncwrites: ::uint64_t,
-        pub f_syncreads: ::uint64_t,
-        pub f_asyncwrites: ::uint64_t,
-        pub f_asyncreads: ::uint64_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namemax: ::uint32_t,
-        pub f_owner: ::uid_t,
-        pub f_ctime: ::uint64_t,
-        pub f_fstypename: [::c_char; 16],
-        pub f_mntonname: [::c_char; 90],
-        pub f_mntfromname: [::c_char; 90],
-        pub f_mntfromspec: [::c_char; 90],
-        pub mount_info: mount_info,
-    }
-
-    #[cfg(libc_union)]
     pub union mount_info {
         pub ufs_args: ufs_args,
         pub mfs_args: mfs_args,
@@ -166,6 +140,35 @@ s! {
     }
 }
 
+// This type uses the union mount_info:
+#[cfg(libc_union)]
+s! {
+    pub struct statfs {
+        pub f_flags: ::uint32_t,
+        pub f_bsize: ::uint32_t,
+        pub f_iosize: ::uint32_t,
+        pub f_blocks: ::uint64_t,
+        pub f_bfree: ::uint64_t,
+        pub f_bavail: ::int64_t,
+        pub f_files: ::uint64_t,
+        pub f_ffree: ::uint64_t,
+        pub f_favail: ::int64_t,
+        pub f_syncwrites: ::uint64_t,
+        pub f_syncreads: ::uint64_t,
+        pub f_asyncwrites: ::uint64_t,
+        pub f_asyncreads: ::uint64_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namemax: ::uint32_t,
+        pub f_owner: ::uid_t,
+        pub f_ctime: ::uint64_t,
+        pub f_fstypename: [::c_char; 16],
+        pub f_mntonname: [::c_char; 90],
+        pub f_mntfromname: [::c_char; 90],
+        pub f_mntfromspec: [::c_char; 90],
+        pub mount_info: mount_info,
+    }
+}
+
 //https://github.com/openbsd/src/blob/master/sys/sys/mount.h
 pub const ISOFSMNT_NORRIP: ::c_int = 0x1; // disable Rock Ridge Ext
 pub const ISOFSMNT_GENS: ::c_int = 0x2; // enable generation numbers
@@ -262,7 +265,10 @@ extern {
                     maxval: ::c_longlong,
                     errstr: *mut *const ::c_char) -> ::c_longlong;
 
+    // these functions use statfs which uses the union mount_info:
+    #[cfg(libc_union)]
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    #[cfg(libc_union)]
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
