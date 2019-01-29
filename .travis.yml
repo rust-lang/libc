@@ -8,7 +8,6 @@ matrix:
   include:
     - name: "Documentation"
       env: TARGET=x86_64-unknown-linux-gnu
-      rust: nightly
       script: sh ci/dox.sh
       install: true
     - name: "Shellcheck"
