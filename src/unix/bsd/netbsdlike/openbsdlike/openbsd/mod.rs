@@ -138,11 +138,9 @@ s! {
         pub ex_mask: *mut ::sockaddr,
         pub ex_masklen: ::c_int,
     }
-}
 
-// This type uses the union mount_info:
-#[cfg(libc_union)]
-s! {
+    // This type uses the union mount_info:
+    #[cfg(libc_union)]
     pub struct statfs {
         pub f_flags: ::uint32_t,
         pub f_bsize: ::uint32_t,
@@ -264,14 +262,17 @@ extern {
     pub fn strtonum(nptr: *const ::c_char, minval: ::c_longlong,
                     maxval: ::c_longlong,
                     errstr: *mut *const ::c_char) -> ::c_longlong;
-
-    // these functions use statfs which uses the union mount_info:
-    #[cfg(libc_union)]
-    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
-    #[cfg(libc_union)]
-    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
-
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(libc_union)] {
+        extern {
+            // these functions use statfs which uses the union mount_info:
+            pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+            pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
+        }
+    }
 }
 
 cfg_if! {

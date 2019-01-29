@@ -27,8 +27,7 @@ RUN mv /root/.android /tmp
 RUN chmod 777 -R /tmp/.android
 RUN chmod 755 /android/sdk/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
 
-ENV PATH=$PATH:/rust/bin \
-    CARGO_TARGET_I686_LINUX_ANDROID_LINKER=i686-linux-android-gcc \
+ENV CARGO_TARGET_I686_LINUX_ANDROID_LINKER=i686-linux-android-gcc \
     CARGO_TARGET_I686_LINUX_ANDROID_RUNNER=/tmp/runtest \
     HOME=/tmp
 

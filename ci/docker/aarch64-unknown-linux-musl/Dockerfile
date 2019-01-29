@@ -20,7 +20,7 @@ RUN curl --retry 5 -L https://github.com/sabotage-linux/kernel-headers/archive/v
     rm -rf kernel-headers-3.12.6-6
 
 # FIXME: shouldn't need the `-lgcc` here, shouldn't that be in libstd?
-ENV PATH=$PATH:/musl-aarch64/bin:/rust/bin \
+ENV PATH=$PATH:/musl-aarch64/bin \
     CC_aarch64_unknown_linux_musl=musl-gcc \
     RUSTFLAGS='-Clink-args=-lgcc' \
     CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=musl-gcc \

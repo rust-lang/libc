@@ -19,7 +19,7 @@ RUN sh /android/android-install-ndk.sh $ANDROID_ARCH
 COPY android-sysimage.sh /android/
 RUN bash /android/android-sysimage.sh x86_64 x86_64-24_r07.zip
 
-ENV PATH=$PATH:/rust/bin:/android/ndk-$ANDROID_ARCH/bin \
+ENV PATH=$PATH:/android/ndk-$ANDROID_ARCH/bin \
     CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=x86_64-linux-android-gcc \
     CC_x86_64_linux_android=x86_64-linux-android-gcc \
     CXX_x86_64_linux_android=x86_64-linux-android-g++ \

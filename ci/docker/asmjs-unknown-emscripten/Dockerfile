@@ -13,8 +13,7 @@ RUN apt-get update && \
 COPY emscripten.sh /
 RUN bash /emscripten.sh
 
-ENV PATH=$PATH:/rust/bin \
-    CARGO_TARGET_ASMJS_UNKNOWN_EMSCRIPTEN_RUNNER=node
+ENV CARGO_TARGET_ASMJS_UNKNOWN_EMSCRIPTEN_RUNNER=node
 
 COPY emscripten-entry.sh /
 ENTRYPOINT ["/emscripten-entry.sh"]

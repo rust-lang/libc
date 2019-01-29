@@ -17,5 +17,4 @@ COPY test-runner-linux /
 
 ENV CARGO_TARGET_SPARC64_UNKNOWN_LINUX_GNU_LINKER=sparc64-linux-gnu-gcc \
     CARGO_TARGET_SPARC64_UNKNOWN_LINUX_GNU_RUNNER="/test-runner-linux sparc64" \
-    CC_sparc64_unknown_linux_gnu=sparc64-linux-gnu-gcc \
-    PATH=$PATH:/rust/bin
+    CC_sparc64_unknown_linux_gnu=sparc64-linux-gnu-gcc

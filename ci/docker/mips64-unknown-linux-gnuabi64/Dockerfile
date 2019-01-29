@@ -7,5 +7,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 ENV CARGO_TARGET_MIPS64_UNKNOWN_LINUX_GNUABI64_LINKER=mips64-linux-gnuabi64-gcc \
     CARGO_TARGET_MIPS64_UNKNOWN_LINUX_GNUABI64_RUNNER="qemu-mips64 -L /usr/mips64-linux-gnuabi64" \
-    CC_mips64_unknown_linux_gnuabi64=mips64-linux-gnuabi64-gcc \
-    PATH=$PATH:/rust/bin
+    CC_mips64_unknown_linux_gnuabi64=mips64-linux-gnuabi64-gcc

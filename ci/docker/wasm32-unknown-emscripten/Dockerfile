@@ -13,8 +13,7 @@ RUN apt-get update && \
 COPY emscripten.sh /
 RUN bash /emscripten.sh
 
-ENV PATH=$PATH:/rust/bin \
-    CARGO_TARGET_WASM32_UNKNOWN_EMSCRIPTEN_RUNNER=node-wrapper.sh
+ENV CARGO_TARGET_WASM32_UNKNOWN_EMSCRIPTEN_RUNNER=node-wrapper.sh
 
 COPY emscripten-entry.sh /
 COPY docker/wasm32-unknown-emscripten/node-wrapper.sh /usr/local/bin/node-wrapper.sh

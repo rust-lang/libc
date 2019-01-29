@@ -17,4 +17,4 @@ RUN curl --retry 5 -L https://github.com/sabotage-linux/kernel-headers/archive/v
     make ARCH=x86_64 prefix=/musl-x86_64 install -j4 && \
     cd .. && \
     rm -rf kernel-headers-3.12.6-6
-ENV PATH=$PATH:/musl-x86_64/bin:/rust/bin
+ENV PATH=$PATH:/musl-x86_64/bin

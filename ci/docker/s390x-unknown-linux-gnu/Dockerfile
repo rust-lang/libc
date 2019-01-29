@@ -14,5 +14,4 @@ COPY test-runner-linux /
 
 ENV CARGO_TARGET_S390X_UNKNOWN_LINUX_GNU_LINKER=s390x-linux-gnu-gcc \
     CARGO_TARGET_S390X_UNKNOWN_LINUX_GNU_RUNNER="/test-runner-linux s390x" \
-    CC_s390x_unknown_linux_gnu=s390x-linux-gnu-gcc \
-    PATH=$PATH:/rust/bin
+    CC_s390x_unknown_linux_gnu=s390x-linux-gnu-gcc

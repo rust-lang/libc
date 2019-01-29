@@ -25,10 +25,13 @@ run() {
       $kvm \
       --env CARGO_HOME=/cargo \
       --volume "$(rustc --print sysroot)":/rust:ro \
+      --volume "${HOME}"/.rustup:/.rustup:ro \
+      --env RUSTUP_HOME=/.rustup \
       --volume "$(pwd)":/checkout:ro \
       --volume "$(pwd)"/target:/checkout/target \
       --env CARGO_TARGET_DIR=/checkout/target \
       --workdir /checkout \
+      -c 'export PATH=$PATH:/cargo/bin; bash' \
       libc \
       ci/run.sh "${1}"
 }

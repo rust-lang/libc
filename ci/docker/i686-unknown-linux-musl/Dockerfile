@@ -27,5 +27,5 @@ RUN curl --retry 5 -L https://github.com/sabotage-linux/kernel-headers/archive/v
     cd .. && \
     rm -rf kernel-headers-3.12.6-6
 
-ENV PATH=$PATH:/musl-i686/bin:/rust/bin \
+ENV PATH=$PATH:/musl-i686/bin \
     CC_i686_unknown_linux_musl=musl-gcc

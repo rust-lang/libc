@@ -11,7 +11,7 @@ RUN mkdir /toolchain
 RUN curl --retry 5 -L https://s3-us-west-1.amazonaws.com/rust-lang-ci2/libc/OpenWrt-Toolchain-malta-le_gcc-5.3.0_musl-1.1.15.Linux-x86_64.tar.bz2 | \
       tar xjf - -C /toolchain --strip-components=2
 
-ENV PATH=$PATH:/rust/bin:/toolchain/bin \
+ENV PATH=$PATH:/toolchain/bin \
     CC_mipsel_unknown_linux_musl=mipsel-openwrt-linux-gcc \
     CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_LINKER=mipsel-openwrt-linux-gcc \
     CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_RUNNER="qemu-mipsel -L /toolchain"
