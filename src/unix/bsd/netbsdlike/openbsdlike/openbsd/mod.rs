@@ -51,6 +51,7 @@ s! {
         pub mount_info: mount_info,
     }
 
+    #[cfg(libc_union)]
     pub union mount_info {
         pub ufs_args: ufs_args,
         pub mfs_args: mfs_args,

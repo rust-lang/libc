@@ -513,12 +513,6 @@ s! {
 }
 
 s_no_extra_traits!{
-    pub union semun {
-        pub val: ::c_int,
-        pub buf: *mut semid_ds,
-        pub array: *mut ::c_ushort,
-    }
-
     pub struct proc_threadinfo {
         pub pth_user_time: u64,
         pub pth_system_time: u64,
@@ -596,28 +590,41 @@ s_no_extra_traits!{
     }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for semun {
-    fn eq(&self, other: &semun) -> bool {
-        unsafe { self.val == other.val }
+cfg_if! {
+    if #[cfg(libc_union)] {
+        s_no_extra_traits! {
+            pub union semun {
+                pub val: ::c_int,
+                pub buf: *mut semid_ds,
+                pub array: *mut ::c_ushort,
+            }
+        }
+
+        cfg_if! {
+            if #[cfg(feature = "extra_traits")] {
+                impl PartialEq for semun {
+                    fn eq(&self, other: &semun) -> bool {
+                        unsafe { self.val == other.val }
+                    }
+                }
+                impl Eq for semun {}
+                impl std::fmt::Debug for semun {
+                    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                        f.debug_struct("semun")
+                            .field("val", unsafe { &self.val })
+                            .finish()
+                    }
+                }
+                impl std::hash::Hash for semun {
+                    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                        unsafe { self.val.hash(state) };
+                    }
+                }
+            }
+        }
     }
 }
-#[cfg(feature = "extra_traits")]
-impl Eq for semun {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for semun {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("semun")
-            .field("val", unsafe { &self.val })
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for semun {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        unsafe { self.val.hash(state) };
-    }
-}
+
 #[cfg(feature = "extra_traits")]
 impl PartialEq for proc_threadinfo {
     fn eq(&self, other: &proc_threadinfo) -> bool {
@@ -2765,8 +2772,15 @@ pub const SF_IMMUTABLE:     ::c_uint = 0x00020000;
 pub const SF_APPEND:        ::c_uint = 0x00040000;
 pub const UF_HIDDEN:        ::c_uint = 0x00008000;
 
+#[cfg(libc_const_size_of)]
 fn __DARWIN_ALIGN32(p: usize) -> usize {
     const __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
+    p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+}
+
+#[cfg(not(libc_const_size_of))]
+fn __DARWIN_ALIGN32(p: usize) -> usize {
+    let __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
     p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
 }
 

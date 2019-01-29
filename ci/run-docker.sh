@@ -28,6 +28,7 @@ run() {
       --volume "$(pwd)":/checkout:ro \
       --volume "$(pwd)"/target:/checkout/target \
       --env CARGO_TARGET_DIR=/checkout/target \
+      --env BUILD_ONLY="$BUILD_ONLY" \
       --workdir /checkout \
       libc \
       ci/run.sh "${1}"

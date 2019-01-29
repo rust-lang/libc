@@ -49,9 +49,7 @@ matrix:
     - env: TARGET=sparc64-unknown-linux-gnu
     - env: TARGET=asmjs-unknown-emscripten
     - env: TARGET=wasm32-unknown-emscripten
-    - env: TARGET=wasm32-unknown-unknown
-      install: rustup target add $TARGET
-      script: cargo build --no-default-features --target $TARGET --release
+    - env: TARGET=wasm32-unknown-unknown BUILD_ONLY=1
 
   allow_failures:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
@@ -62,10 +60,16 @@ install:
   - rustup install beta
   - rustup install stable
   - rustup install 1.13.0
+  - rustup install 1.19.0
+  - rustup install 1.24.0
+  - rustup install 1.30.0
   - rustup target add $TARGET || true
   - rustup target add $TARGET --toolchain beta || true
   - rustup target add $TARGET --toolchain stable || true
   - rustup target add $TARGET --toolchain 1.13.0 || true
+  - rustup target add $TARGET --toolchain 1.19.0 || true
+  - rustup target add $TARGET --toolchain 1.24.0 || true
+  - rustup target add $TARGET --toolchain 1.30.0 || true
 
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
