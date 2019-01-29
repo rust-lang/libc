@@ -2778,16 +2778,18 @@ pub const SF_IMMUTABLE:     ::c_uint = 0x00020000;
 pub const SF_APPEND:        ::c_uint = 0x00040000;
 pub const UF_HIDDEN:        ::c_uint = 0x00008000;
 
-#[cfg(libc_const_size_of)]
-fn __DARWIN_ALIGN32(p: usize) -> usize {
-    const __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
-    p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-}
-
-#[cfg(not(libc_const_size_of))]
-fn __DARWIN_ALIGN32(p: usize) -> usize {
-    let __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
-    p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+cfg_if! {
+    if #[cfg(libc_const_size_of)] {
+        fn __DARWIN_ALIGN32(p: usize) -> usize {
+            const __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
+            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+        }
+    } else {
+        fn __DARWIN_ALIGN32(p: usize) -> usize {
+            let __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
+            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+        }
+    }
 }
 
 f! {
