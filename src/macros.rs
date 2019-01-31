@@ -39,6 +39,21 @@ macro_rules! s {
         __item! {
             #[repr(C)]
             $(#[$attr])*
+            #[cfg_attr(feature = "extra_traits", derive(Eq, PartialEq))]
+            pub $t $i { $($field)* }
+        }
+        impl ::dox::Copy for $i {}
+        impl ::dox::Clone for $i {
+            fn clone(&self) -> $i { *self }
+        }
+    )*)
+}
+
+macro_rules! s_no_extra_traits {
+    ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
+        __item! {
+            #[repr(C)]
+            $(#[$attr])*
             pub $t $i { $($field)* }
         }
         impl ::dox::Copy for $i {}

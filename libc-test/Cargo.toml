@@ -15,6 +15,7 @@ ctest = "0.2.8"
 default = [ "use_std" ]
 use_std = [ "libc/use_std" ]
 align = [ "libc/align" ]
+extra_traits = [ "libc/extra_traits" ]
 
 [[test]]
 name = "main"

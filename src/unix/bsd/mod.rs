@@ -25,12 +25,6 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    pub struct sockaddr_un {
-        pub sun_len: u8,
-        pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 104]
-    }
-
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,
@@ -85,29 +79,6 @@ s! {
         pub tm_zone: *mut ::c_char,
     }
 
-    pub struct utsname {
-        #[cfg(not(target_os = "dragonfly"))]
-        pub sysname: [::c_char; 256],
-        #[cfg(target_os = "dragonfly")]
-        pub sysname: [::c_char; 32],
-        #[cfg(not(target_os = "dragonfly"))]
-        pub nodename: [::c_char; 256],
-        #[cfg(target_os = "dragonfly")]
-        pub nodename: [::c_char; 32],
-        #[cfg(not(target_os = "dragonfly"))]
-        pub release: [::c_char; 256],
-        #[cfg(target_os = "dragonfly")]
-        pub release: [::c_char; 32],
-        #[cfg(not(target_os = "dragonfly"))]
-        pub version: [::c_char; 256],
-        #[cfg(target_os = "dragonfly")]
-        pub version: [::c_char; 32],
-        #[cfg(not(target_os = "dragonfly"))]
-        pub machine: [::c_char; 256],
-        #[cfg(target_os = "dragonfly")]
-        pub machine: [::c_char; 32],
-    }
-
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,
@@ -133,6 +104,84 @@ s! {
         pub if_name: *mut ::c_char,
     }
 }
+
+s_no_extra_traits!{
+    pub struct sockaddr_un {
+        pub sun_len: u8,
+        pub sun_family: sa_family_t,
+        pub sun_path: [c_char; 104]
+    }
+
+    pub struct utsname {
+        #[cfg(not(target_os = "dragonfly"))]
+        pub sysname: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub sysname: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub nodename: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub nodename: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub release: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub release: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub version: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub version: [::c_char; 32],
+        #[cfg(not(target_os = "dragonfly"))]
+        pub machine: [::c_char; 256],
+        #[cfg(target_os = "dragonfly")]
+        pub machine: [::c_char; 32],
+    }
+
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for sockaddr_un {
+    fn eq(&self, other: &sockaddr_un) -> bool {
+        self.sun_len == other.sun_len
+            && self.sun_family == other.sun_family
+            && self
+                .sun_path
+                .iter()
+                .zip(other.sun_path.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for sockaddr_un {}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for utsname {
+    fn eq(&self, other: &utsname) -> bool {
+        self.sysname
+            .iter()
+            .zip(other.sysname.iter())
+            .all(|(a,b)| a == b)
+            && self
+                .nodename
+                .iter()
+                .zip(other.nodename.iter())
+                .all(|(a,b)| a == b)
+            && self
+                .release
+                .iter()
+                .zip(other.release.iter())
+                .all(|(a,b)| a == b)
+            && self
+                .version
+                .iter()
+                .zip(other.version.iter())
+                .all(|(a,b)| a == b)
+            && self
+                .machine
+                .iter()
+                .zip(other.machine.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for utsname {}
 
 pub const LC_ALL: ::c_int = 0;
 pub const LC_COLLATE: ::c_int = 1;

@@ -5,11 +5,6 @@ pub type c_ulong = u32;
 pub type boolean_t = ::c_int;
 
 s! {
-    pub struct pthread_attr_t {
-        __sig: c_long,
-        __opaque: [::c_char; 36]
-    }
-
     pub struct if_data {
         pub ifi_type: ::c_uchar,
         pub ifi_typelen: ::c_uchar,
@@ -49,6 +44,26 @@ s! {
         pub bh_hdrlen: ::c_ushort,
     }
 }
+
+s_no_extra_traits!{
+    pub struct pthread_attr_t {
+        __sig: c_long,
+        __opaque: [::c_char; 36]
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for pthread_attr_t {
+    fn eq(&self, other: &pthread_attr_t) -> bool {
+        self.__sig == other.__sig
+            && self.__opaque
+                .iter()
+                .zip(other.__opaque.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for pthread_attr_t {}
 
 pub const __PTHREAD_MUTEX_SIZE__: usize = 40;
 pub const __PTHREAD_COND_SIZE__: usize = 24;

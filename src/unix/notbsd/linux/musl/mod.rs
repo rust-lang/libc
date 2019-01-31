@@ -78,7 +78,9 @@ s! {
         pub l_len: ::off_t,
         pub l_pid: ::pid_t,
     }
+}
 
+s_no_extra_traits!{
     pub struct sysinfo {
         pub uptime: ::c_ulong,
         pub loads: [::c_ulong; 3],
@@ -96,6 +98,28 @@ s! {
         pub __reserved: [::c_char; 256],
     }
 }
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for sysinfo {
+    fn eq(&self, other: &sysinfo) -> bool {
+        self.uptime == other.uptime
+            && self.loads == other.loads
+            && self.totalram == other.totalram
+            && self.freeram == other.freeram
+            && self.sharedram == other.sharedram
+            && self.bufferram == other.bufferram
+            && self.totalswap == other.totalswap
+            && self.freeswap == other.freeswap
+            && self.procs == other.procs
+            && self.pad == other.pad
+            && self.totalhigh == other.totalhigh
+            && self.freehigh == other.freehigh
+            && self.mem_unit == other.mem_unit
+            // Ignore __reserved field
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for sysinfo {}
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 

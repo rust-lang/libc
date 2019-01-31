@@ -31,22 +31,6 @@ s! {
         pub st_space: [::c_long; 20],
     }
 
-    pub struct user_fpxregs_struct {
-        pub cwd: ::c_ushort,
-        pub swd: ::c_ushort,
-        pub twd: ::c_ushort,
-        pub fop: ::c_ushort,
-        pub fip: ::c_long,
-        pub fcs: ::c_long,
-        pub foo: ::c_long,
-        pub fos: ::c_long,
-        pub mxcsr: ::c_long,
-        __reserved: ::c_long,
-        pub st_space: [::c_long; 32],
-        pub xmm_space: [::c_long; 32],
-        padding: [::c_long; 56],
-    }
-
     pub struct user_regs_struct {
         pub ebx: ::c_long,
         pub ecx: ::c_long,
@@ -90,15 +74,6 @@ s! {
         pub fpregs: *mut _libc_fpstate,
         pub oldmask: ::c_ulong,
         pub cr2: ::c_ulong,
-    }
-
-    pub struct ucontext_t {
-        pub uc_flags: ::c_ulong,
-        pub uc_link: *mut ucontext_t,
-        pub uc_stack: ::stack_t,
-        pub uc_mcontext: mcontext_t,
-        pub uc_sigmask: ::sigset_t,
-        __private: [u8; 112],
     }
 
     pub struct ipc_perm {
@@ -212,6 +187,67 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 }
+
+s_no_extra_traits!{
+    pub struct user_fpxregs_struct {
+        pub cwd: ::c_ushort,
+        pub swd: ::c_ushort,
+        pub twd: ::c_ushort,
+        pub fop: ::c_ushort,
+        pub fip: ::c_long,
+        pub fcs: ::c_long,
+        pub foo: ::c_long,
+        pub fos: ::c_long,
+        pub mxcsr: ::c_long,
+        __reserved: ::c_long,
+        pub st_space: [::c_long; 32],
+        pub xmm_space: [::c_long; 32],
+        padding: [::c_long; 56],
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        __private: [u8; 112],
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for user_fpxregs_struct {
+    fn eq(&self, other: &user_fpxregs_struct) -> bool {
+        self.cwd == other.cwd
+            && self.swd == other.swd
+            && self.twd == other.twd
+            && self.fop == other.fop
+            && self.fip == other.fip
+            && self.fcs == other.fcs
+            && self.foo == other.foo
+            && self.fos == other.fos
+            && self.mxcsr == other.mxcsr
+            // Ignore __reserved field
+            && self.st_space == other.st_space
+            && self.xmm_space == other.xmm_space
+            // Ignore padding field
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for user_fpxregs_struct {}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for ucontext_t {
+    fn eq(&self, other: &ucontext_t) -> bool {
+        self.uc_flags == other.uc_flags
+            && self.uc_link == other.uc_link
+            && self.uc_stack == other.uc_stack
+            && self.uc_mcontext == other.uc_mcontext
+            && self.uc_sigmask == other.uc_sigmask
+            // Ignore __private field
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for ucontext_t {}
 
 pub const O_DIRECT: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x10000;

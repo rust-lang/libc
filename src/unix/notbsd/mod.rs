@@ -31,20 +31,6 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    pub struct sockaddr_un {
-        pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 108]
-    }
-
-    pub struct sockaddr_storage {
-        pub ss_family: sa_family_t,
-        __ss_align: ::size_t,
-        #[cfg(target_pointer_width = "32")]
-        __ss_pad2: [u8; 128 - 2 * 4],
-        #[cfg(target_pointer_width = "64")]
-        __ss_pad2: [u8; 128 - 2 * 8],
-    }
-
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -126,15 +112,6 @@ s! {
     pub struct epoll_event {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,
-    }
-
-    pub struct utsname {
-        pub sysname: [::c_char; 65],
-        pub nodename: [::c_char; 65],
-        pub release: [::c_char; 65],
-        pub version: [::c_char; 65],
-        pub machine: [::c_char; 65],
-        pub domainname: [::c_char; 65]
     }
 
     pub struct lconv {
@@ -230,6 +207,95 @@ s! {
     }
 }
 
+s_no_extra_traits!{
+    pub struct sockaddr_un {
+        pub sun_family: sa_family_t,
+        pub sun_path: [::c_char; 108]
+    }
+
+    pub struct sockaddr_storage {
+        pub ss_family: sa_family_t,
+        __ss_align: ::size_t,
+        #[cfg(target_pointer_width = "32")]
+        __ss_pad2: [u8; 128 - 2 * 4],
+        #[cfg(target_pointer_width = "64")]
+        __ss_pad2: [u8; 128 - 2 * 8],
+    }
+
+    pub struct utsname {
+        pub sysname: [::c_char; 65],
+        pub nodename: [::c_char; 65],
+        pub release: [::c_char; 65],
+        pub version: [::c_char; 65],
+        pub machine: [::c_char; 65],
+        pub domainname: [::c_char; 65]
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for sockaddr_un {
+    fn eq(&self, other: &sockaddr_un) -> bool {
+        self.sun_family == other.sun_family
+            && self
+                .sun_path
+                .iter()
+                .zip(other.sun_path.iter())
+                .all(|(a, b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for sockaddr_un {}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for sockaddr_storage {
+    fn eq(&self, other: &sockaddr_storage) -> bool {
+        self.ss_family == other.ss_family
+            && self
+                .__ss_pad2
+                .iter()
+                .zip(other.__ss_pad2.iter())
+                .all(|(a, b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for sockaddr_storage {}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for utsname {
+    fn eq(&self, other: &utsname) -> bool {
+        self.sysname
+            .iter()
+            .zip(other.sysname.iter())
+            .all(|(a, b)| a == b)
+            && self
+                .nodename
+                .iter()
+                .zip(other.nodename.iter())
+                .all(|(a, b)| a == b)
+            && self
+                .release
+                .iter()
+                .zip(other.release.iter())
+                .all(|(a, b)| a == b)
+            && self
+                .version
+                .iter()
+                .zip(other.version.iter())
+                .all(|(a, b)| a == b)
+            && self
+                .machine
+                .iter()
+                .zip(other.machine.iter())
+                .all(|(a, b)| a == b)
+            && self
+                .domainname
+                .iter()
+                .zip(other.domainname.iter())
+                .all(|(a, b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for utsname {}
 // intentionally not public, only used for fd_set
 cfg_if! {
     if #[cfg(target_pointer_width = "32")] {

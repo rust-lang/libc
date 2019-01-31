@@ -29,42 +29,6 @@ s! {
         pub tv_usec: ::int32_t,
     }
 
-    pub struct utmpx {
-        pub ut_type: ::c_short,
-        pub ut_pid: ::pid_t,
-        pub ut_line: [::c_char; __UT_LINESIZE],
-        pub ut_id: [::c_char; 4],
-
-        pub ut_user: [::c_char; __UT_NAMESIZE],
-        pub ut_host: [::c_char; __UT_HOSTSIZE],
-        pub ut_exit: __exit_status,
-
-        #[cfg(any(target_arch = "aarch64",
-                  target_arch = "sparc64",
-                  all(target_pointer_width = "32",
-                      not(target_arch = "x86_64"))))]
-        pub ut_session: ::c_long,
-        #[cfg(any(target_arch = "aarch64",
-                  target_arch = "sparc64",
-                  all(target_pointer_width = "32",
-                      not(target_arch = "x86_64"))))]
-        pub ut_tv: ::timeval,
-
-        #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "sparc64",
-                      all(target_pointer_width = "32",
-                          not(target_arch = "x86_64")))))]
-        pub ut_session: ::int32_t,
-        #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "sparc64",
-                      all(target_pointer_width = "32",
-                          not(target_arch = "x86_64")))))]
-        pub ut_tv: __timeval,
-
-        pub ut_addr_v6: [::int32_t; 4],
-        __glibc_reserved: [::c_char; 20],
-    }
-
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
@@ -243,6 +207,67 @@ s! {
         pub rt_irtt: ::c_ushort,
     }
 }
+
+s_no_extra_traits! {
+    pub struct utmpx {
+        pub ut_type: ::c_short,
+        pub ut_pid: ::pid_t,
+        pub ut_line: [::c_char; __UT_LINESIZE],
+        pub ut_id: [::c_char; 4],
+
+        pub ut_user: [::c_char; __UT_NAMESIZE],
+        pub ut_host: [::c_char; __UT_HOSTSIZE],
+        pub ut_exit: __exit_status,
+
+        #[cfg(any(target_arch = "aarch64",
+                  target_arch = "sparc64",
+                  all(target_pointer_width = "32",
+                      not(target_arch = "x86_64"))))]
+        pub ut_session: ::c_long,
+        #[cfg(any(target_arch = "aarch64",
+                  target_arch = "sparc64",
+                  all(target_pointer_width = "32",
+                      not(target_arch = "x86_64"))))]
+        pub ut_tv: ::timeval,
+
+        #[cfg(not(any(target_arch = "aarch64",
+                      target_arch = "sparc64",
+                      all(target_pointer_width = "32",
+                          not(target_arch = "x86_64")))))]
+        pub ut_session: ::int32_t,
+        #[cfg(not(any(target_arch = "aarch64",
+                      target_arch = "sparc64",
+                      all(target_pointer_width = "32",
+                          not(target_arch = "x86_64")))))]
+        pub ut_tv: __timeval,
+
+        pub ut_addr_v6: [::int32_t; 4],
+        __glibc_reserved: [::c_char; 20],
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for utmpx {
+    fn eq(&self, other: &utmpx) -> bool {
+        self.ut_type == other.ut_type
+            && self.ut_pid == other.ut_pid
+            && self.ut_line == other.ut_line
+            && self.ut_id == other.ut_id
+            && self.ut_user == other.ut_user
+            && self
+                .ut_host
+                .iter()
+                .zip(other.ut_host.iter())
+                .all(|(a,b)| a == b)
+            && self.ut_exit == other.ut_exit
+            && self.ut_session == other.ut_session
+            && self.ut_tv == other.ut_tv
+            && self.ut_addr_v6 == other.ut_addr_v6
+            && self.__glibc_reserved == other.__glibc_reserved
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for utmpx {}
 
 pub const __UT_LINESIZE: usize = 32;
 pub const __UT_NAMESIZE: usize = 32;

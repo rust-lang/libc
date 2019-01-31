@@ -25,34 +25,10 @@ pub type idtype_t = ::c_int;
 pub type loff_t = ::c_longlong;
 
 s! {
-    pub struct dirent {
-        pub d_ino: u64,
-        pub d_off: i64,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: u64,
-        pub d_off: i64,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
         pub ss_size: ::size_t
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_code: ::c_int,
-        pub _pad: [::c_int; 29],
-        _align: [usize; 0],
     }
 
     pub struct __fsid_t {
@@ -116,31 +92,9 @@ s! {
         __reserved: [::c_int; 3],
     }
 
-    pub struct lastlog {
-        ll_time: ::time_t,
-        ll_line: [::c_char; UT_LINESIZE],
-        ll_host: [::c_char; UT_HOSTSIZE],
-    }
-
     pub struct exit_status {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
-    }
-
-    pub struct utmp {
-        pub ut_type: ::c_short,
-        pub ut_pid: ::pid_t,
-        pub ut_line: [::c_char; UT_LINESIZE],
-        pub ut_id: [::c_char; 4],
-
-        pub ut_user: [::c_char; UT_NAMESIZE],
-        pub ut_host: [::c_char; UT_HOSTSIZE],
-        pub ut_exit: exit_status,
-        pub ut_session: ::c_long,
-        pub ut_tv: ::timeval,
-
-        pub ut_addr_v6: [::int32_t; 4],
-        unused: [::c_char; 20],
     }
 
     pub struct statvfs {
@@ -239,6 +193,145 @@ s! {
         pub ipi6_ifindex: ::c_int,
     }
 }
+
+s_no_extra_traits!{
+    pub struct dirent {
+        pub d_ino: u64,
+        pub d_off: i64,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct dirent64 {
+        pub d_ino: u64,
+        pub d_off: i64,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub _pad: [::c_int; 29],
+        _align: [usize; 0],
+    }
+
+    pub struct lastlog {
+        ll_time: ::time_t,
+        ll_line: [::c_char; UT_LINESIZE],
+        ll_host: [::c_char; UT_HOSTSIZE],
+    }
+
+    pub struct utmp {
+        pub ut_type: ::c_short,
+        pub ut_pid: ::pid_t,
+        pub ut_line: [::c_char; UT_LINESIZE],
+        pub ut_id: [::c_char; 4],
+        pub ut_user: [::c_char; UT_NAMESIZE],
+        pub ut_host: [::c_char; UT_HOSTSIZE],
+        pub ut_exit: exit_status,
+        pub ut_session: ::c_long,
+        pub ut_tv: ::timeval,
+        pub ut_addr_v6: [::int32_t; 4],
+        unused: [::c_char; 20],
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for dirent {
+    fn eq(&self, other: &dirent) -> bool {
+        self.d_ino == other.d_ino
+            && self.d_off == other.d_off
+            && self.d_reclen == other.d_reclen
+            && self.d_type == other.d_type
+            && self
+                .d_name
+                .iter()
+                .zip(other.d_name.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for dirent {}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for dirent64 {
+    fn eq(&self, other: &dirent64) -> bool {
+        self.d_ino == other.d_ino
+            && self.d_off == other.d_off
+            && self.d_reclen == other.d_reclen
+            && self.d_type == other.d_type
+            && self
+                .d_name
+                .iter()
+                .zip(other.d_name.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for dirent64 {}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for siginfo_t {
+    fn eq(&self, other: &siginfo_t) -> bool {
+        self.si_signo == other.si_signo
+            && self.si_errno == other.si_errno
+            && self.si_code == other.si_code
+            // Ignore _pad
+            // Ignore _align
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for siginfo_t {}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for lastlog {
+    fn eq(&self, other: &lastlog) -> bool {
+        self.ll_time == other.ll_time
+            && self
+                .ll_line
+                .iter()
+                .zip(other.ll_line.iter())
+                .all(|(a,b)| a == b)
+            && self
+                .ll_host
+                .iter()
+                .zip(other.ll_host.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for lastlog {}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for utmp {
+    fn eq(&self, other: &utmp) -> bool {
+        self.ut_type == other.ut_type
+            && self.ut_pid == other.ut_pid
+            && self
+                .ut_line
+                .iter()
+                .zip(other.ut_line.iter())
+                .all(|(a,b)| a == b)
+            && self.ut_id == other.ut_id
+            && self
+                .ut_user
+                .iter()
+                .zip(other.ut_user.iter())
+                .all(|(a,b)| a == b)
+            && self
+                .ut_host
+                .iter()
+                .zip(other.ut_host.iter())
+                .all(|(a,b)| a == b)
+            && self.ut_exit == other.ut_exit
+            && self.ut_session == other.ut_session
+            && self.ut_tv == other.ut_tv
+            && self.ut_addr_v6 == other.ut_addr_v6
+            && self.unused == other.unused
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for utmp {}
 
 pub const O_TRUNC: ::c_int = 512;
 pub const O_CLOEXEC: ::c_int = 0x80000;

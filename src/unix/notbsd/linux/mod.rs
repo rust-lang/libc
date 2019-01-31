@@ -41,22 +41,6 @@ pub type Elf64_Section = u16;
 pub enum fpos64_t {} // TODO: fill this out with a struct
 
 s! {
-    pub struct dirent {
-        pub d_ino: ::ino_t,
-        pub d_off: ::off_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -73,74 +57,6 @@ s! {
         __unused3: *mut ::c_void,
         __unused4: *mut ::c_void,
         __unused5: *mut ::c_void,
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc",
-                       target_arch = "x86_64",
-                       target_arch = "x86")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc",
-                               target_arch = "x86_64",
-                               target_arch = "x86")))),
-               repr(align(8)))]
-    pub struct pthread_mutex_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(feature = "align",
-                      target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc",
-                       target_arch = "x86_64",
-                       target_arch = "x86")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc",
-                               target_arch = "x86_64",
-                               target_arch = "x86")))),
-               repr(align(8)))]
-    pub struct pthread_rwlock_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(feature = "align",
-                      target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
     }
 
     #[cfg_attr(all(feature = "align",
@@ -186,30 +102,6 @@ s! {
         #[cfg(all(not(feature = "align"), not(target_env = "musl")))]
         __align: [::c_long; 0],
         size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_env = "musl",
-                   target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   target_env = "musl",
-                   target_pointer_width = "64"),
-               repr(align(8)))]
-    #[cfg_attr(all(feature = "align",
-                   not(target_env = "musl"),
-                   target_arch = "x86"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   not(target_env = "musl"),
-                   not(target_arch = "x86")),
-               repr(align(8)))]
-    pub struct pthread_cond_t {
-        #[cfg(all(not(feature = "align"), target_env = "musl"))]
-        __align: [*const ::c_void; 0],
-        #[cfg(not(any(feature = "align", target_env = "musl")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
     }
 
     #[cfg_attr(feature = "align", repr(align(4)))]
@@ -656,6 +548,177 @@ s! {
         pub ha: [::c_uchar; ::MAX_ADDR_LEN],
     }
 }
+
+s_no_extra_traits!{
+    pub struct dirent {
+        pub d_ino: ::ino_t,
+        pub d_off: ::off_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    #[cfg_attr(all(feature = "align",
+                   target_env = "musl",
+                   target_pointer_width = "32"),
+               repr(align(4)))]
+    #[cfg_attr(all(feature = "align",
+                   target_env = "musl",
+                   target_pointer_width = "64"),
+               repr(align(8)))]
+    #[cfg_attr(all(feature = "align",
+                   not(target_env = "musl"),
+                   target_arch = "x86"),
+               repr(align(4)))]
+    #[cfg_attr(all(feature = "align",
+                   not(target_env = "musl"),
+                   not(target_arch = "x86")),
+               repr(align(8)))]
+    pub struct pthread_cond_t {
+        #[cfg(all(not(feature = "align"), target_env = "musl"))]
+        __align: [*const ::c_void; 0],
+        #[cfg(not(any(feature = "align", target_env = "musl")))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_COND_T],
+    }
+
+    #[cfg_attr(all(feature = "align",
+                   target_pointer_width = "32",
+                   any(target_arch = "mips",
+                       target_arch = "arm",
+                       target_arch = "powerpc",
+                       target_arch = "x86_64",
+                       target_arch = "x86")),
+               repr(align(4)))]
+    #[cfg_attr(all(feature = "align",
+                   any(target_pointer_width = "64",
+                       not(any(target_arch = "mips",
+                               target_arch = "arm",
+                               target_arch = "powerpc",
+                               target_arch = "x86_64",
+                               target_arch = "x86")))),
+               repr(align(8)))]
+    pub struct pthread_mutex_t {
+        #[cfg(all(not(feature = "align"),
+                  any(target_arch = "mips",
+                      target_arch = "arm",
+                      target_arch = "powerpc",
+                      all(target_arch = "x86_64",
+                          target_pointer_width = "32"))))]
+        __align: [::c_long; 0],
+        #[cfg(not(any(feature = "align",
+                      target_arch = "mips",
+                      target_arch = "arm",
+                      target_arch = "powerpc",
+                      all(target_arch = "x86_64",
+                          target_pointer_width = "32"))))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
+    }
+
+    #[cfg_attr(all(feature = "align",
+                   target_pointer_width = "32",
+                   any(target_arch = "mips",
+                       target_arch = "arm",
+                       target_arch = "powerpc",
+                       target_arch = "x86_64",
+                       target_arch = "x86")),
+               repr(align(4)))]
+    #[cfg_attr(all(feature = "align",
+                   any(target_pointer_width = "64",
+                       not(any(target_arch = "mips",
+                               target_arch = "arm",
+                               target_arch = "powerpc",
+                               target_arch = "x86_64",
+                               target_arch = "x86")))),
+               repr(align(8)))]
+    pub struct pthread_rwlock_t {
+        #[cfg(all(not(feature = "align"),
+                  any(target_arch = "mips",
+                      target_arch = "arm",
+                      target_arch = "powerpc",
+                      all(target_arch = "x86_64",
+                          target_pointer_width = "32"))))]
+        __align: [::c_long; 0],
+        #[cfg(not(any(feature = "align",
+                      target_arch = "mips",
+                      target_arch = "arm",
+                      target_arch = "powerpc",
+                      all(target_arch = "x86_64",
+                          target_pointer_width = "32"))))]
+        __align: [::c_longlong; 0],
+        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for dirent {
+    fn eq(&self, other: &dirent) -> bool {
+        self.d_ino == other.d_ino
+            && self.d_off == other.d_off
+            && self.d_reclen == other.d_reclen
+            && self.d_type == other.d_type
+            && self
+                .d_name
+                .iter()
+                .zip(other.d_name.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for dirent {}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for dirent64 {
+    fn eq(&self, other: &dirent64) -> bool {
+        self.d_ino == other.d_ino
+            && self.d_off == other.d_off
+            && self.d_reclen == other.d_reclen
+            && self.d_type == other.d_type
+            && self
+                .d_name
+                .iter()
+                .zip(other.d_name.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for dirent64 {}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for pthread_cond_t {
+    fn eq(&self, other: &pthread_cond_t) -> bool {
+        self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for pthread_cond_t {}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for pthread_mutex_t {
+    fn eq(&self, other: &pthread_mutex_t) -> bool {
+        self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for pthread_mutex_t {}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for pthread_rwlock_t {
+    fn eq(&self, other: &pthread_rwlock_t) -> bool {
+        self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for pthread_rwlock_t {}
 
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;

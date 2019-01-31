@@ -112,20 +112,6 @@ s! {
         __private: [u64; 12],
     }
 
-    pub struct user_fpregs_struct {
-        pub cwd: ::c_ushort,
-        pub swd: ::c_ushort,
-        pub ftw: ::c_ushort,
-        pub fop: ::c_ushort,
-        pub rip: ::c_ulonglong,
-        pub rdp: ::c_ulonglong,
-        pub mxcsr: ::c_uint,
-        pub mxcr_mask: ::c_uint,
-        pub st_space: [::c_uint; 32],
-        pub xmm_space: [::c_uint; 64],
-        padding: [::c_uint; 24],
-    }
-
     pub struct user_regs_struct {
         pub r15: ::c_ulonglong,
         pub r14: ::c_ulonglong,
@@ -184,15 +170,6 @@ s! {
         __private: [u64; 8],
     }
 
-    pub struct ucontext_t {
-        pub uc_flags: ::c_ulong,
-        pub uc_link: *mut ucontext_t,
-        pub uc_stack: ::stack_t,
-        pub uc_mcontext: mcontext_t,
-        pub uc_sigmask: ::sigset_t,
-        __private: [u8; 512],
-    }
-
     pub struct ipc_perm {
         pub __key: ::key_t,
         pub uid: ::uid_t,
@@ -231,6 +208,68 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 }
+
+s_no_extra_traits! {
+    pub struct user_fpregs_struct {
+        pub cwd: ::c_ushort,
+        pub swd: ::c_ushort,
+        pub ftw: ::c_ushort,
+        pub fop: ::c_ushort,
+        pub rip: ::c_ulonglong,
+        pub rdp: ::c_ulonglong,
+        pub mxcsr: ::c_uint,
+        pub mxcr_mask: ::c_uint,
+        pub st_space: [::c_uint; 32],
+        pub xmm_space: [::c_uint; 64],
+        padding: [::c_uint; 24],
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        __private: [u8; 512],
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for user_fpregs_struct {
+    fn eq(&self, other: &user_fpregs_struct) -> bool {
+        self.cwd == other.cwd
+            && self.swd == other.swd
+            && self.ftw == other.ftw
+            && self.fop == other.fop
+            && self.rip == other.rip
+            && self.rdp == other.rdp
+            && self.mxcsr == other.mxcsr
+            && self.mxcr_mask == other.mxcr_mask
+            && self.st_space == other.st_space
+            && self
+                .xmm_space
+                .iter()
+                .zip(other.xmm_space.iter())
+                .all(|(a,b)| a == b)
+                // Ignore padding field
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for user_fpregs_struct {}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for ucontext_t {
+    fn eq(&self, other: &ucontext_t) -> bool {
+        self.uc_flags == other.uc_flags
+            && self.uc_link == other.uc_link
+            && self.uc_stack == other.uc_stack
+            && self.uc_mcontext == other.uc_mcontext
+            && self.uc_sigmask == other.uc_sigmask
+            // Ignore __private field
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for ucontext_t {}
 
 pub const TIOCGSOFTCAR: ::c_ulong = 0x5419;
 pub const TIOCSSOFTCAR: ::c_ulong = 0x541A;

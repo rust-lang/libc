@@ -262,12 +262,6 @@ s! {
         pub addr: u64,
     }
 
-    // FIXME: This is actually a union.
-    pub struct fpreg_t {
-        pub d: ::c_double,
-        // f: ::c_float,
-    }
-
     pub struct fpregset_t {
         pub fpc: u32,
         __pad: u32,
@@ -333,6 +327,23 @@ s! {
         __f_spare: [::c_int; 6],
     }
 }
+
+s_no_extra_traits!{
+    // FIXME: This is actually a union.
+    pub struct fpreg_t {
+        pub d: ::c_double,
+        // f: ::c_float,
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for fpreg_t {
+    fn eq(&self, other: &fpreg_t) -> bool {
+        self.d == other.d
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for fpreg_t {}
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 

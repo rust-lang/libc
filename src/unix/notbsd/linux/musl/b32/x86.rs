@@ -116,15 +116,6 @@ s! {
         __private: [u32; 22]
     }
 
-    pub struct ucontext_t {
-        pub uc_flags: ::c_ulong,
-        pub uc_link: *mut ucontext_t,
-        pub uc_stack: ::stack_t,
-        pub uc_mcontext: mcontext_t,
-        pub uc_sigmask: ::sigset_t,
-        __private: [u8; 112],
-    }
-
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
@@ -175,6 +166,34 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 }
+
+s_no_extra_traits!{
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        __private: [u8; 112],
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for ucontext_t {
+    fn eq(&self, other: &ucontext_t) -> bool {
+        self.uc_flags == other.uc_flags
+            && self.uc_link == other.uc_link
+            && self.uc_stack == other.uc_stack
+            && self.uc_mcontext == other.uc_mcontext
+            && self.uc_sigmask == other.uc_sigmask
+            && self
+                .__private
+                .iter()
+                .zip(other.__private.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for ucontext_t {}
 
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;

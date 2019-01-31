@@ -34,25 +34,6 @@ s! {
         __reserved: [::c_char; 16],
     }
 
-    pub struct pthread_mutex_t {
-        value: ::c_int,
-        __reserved: [::c_char; 36],
-    }
-
-    pub struct pthread_cond_t {
-        value: ::c_int,
-        __reserved: [::c_char; 44],
-    }
-
-    pub struct pthread_rwlock_t {
-        numLocks: ::c_int,
-        writerThreadId: ::c_int,
-        pendingReaders: ::c_int,
-        pendingWriters: ::c_int,
-        attr: i32,
-        __reserved: [::c_char; 36],
-    }
-
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,
@@ -125,6 +106,70 @@ s! {
         __f_spare: [::c_int; 6],
     }
 }
+
+s_no_extra_traits!{
+    pub struct pthread_mutex_t {
+        value: ::c_int,
+        __reserved: [::c_char; 36],
+    }
+
+    pub struct pthread_cond_t {
+        value: ::c_int,
+        __reserved: [::c_char; 44],
+    }
+
+    pub struct pthread_rwlock_t {
+        numLocks: ::c_int,
+        writerThreadId: ::c_int,
+        pendingReaders: ::c_int,
+        pendingWriters: ::c_int,
+        attr: i32,
+        __reserved: [::c_char; 36],
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for pthread_mutex_t {
+    fn eq(&self, other: &pthread_mutex_t) -> bool {
+        self.value == other.value
+            && self
+                .__reserved
+                .iter()
+                .zip(other.__reserved.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for pthread_mutex_t {}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for pthread_cond_t {
+    fn eq(&self, other: &pthread_cond_t) -> bool {
+        self.value == other.value
+            && self
+                .__reserved
+                .iter()
+                .zip(other.__reserved.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for pthread_cond_t {}
+#[cfg(feature = "extra_traits")]
+impl PartialEq for pthread_rwlock_t {
+    fn eq(&self, other: &pthread_rwlock_t) -> bool {
+        self.numLocks == other.numLocks
+            && self.writerThreadId == other.writerThreadId
+            && self.pendingReaders == other.pendingReaders
+            && self.pendingWriters == other.pendingWriters
+            && self.attr == other.attr
+            && self
+                .__reserved
+                .iter()
+                .zip(other.__reserved.iter())
+                .all(|(a,b)| a == b)
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for pthread_rwlock_t {}
 
 pub const RTLD_GLOBAL: ::c_int = 0x00100;
 pub const RTLD_NOW: ::c_int = 2;
