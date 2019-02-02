@@ -804,26 +804,28 @@ f! {
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        _CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) + length as usize
+        (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) + length as usize) as u32
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
         -> *mut ::cmsghdr
     {
-        let next = cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len)
-            + _CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
+        let next = cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len as usize)
+           + _CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
         let max = (*mhdr).msg_control as usize
             + (*mhdr).msg_controllen as usize;
         if next <= max {
-            (cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len)) as *mut ::cmsghdr
+            (
+                cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len as usize)
+            ) as *mut ::cmsghdr
         } else {
             0 as *mut ::cmsghdr
         }
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        _CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
-            _CMSG_ALIGN(length as usize)
+        (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
+           _CMSG_ALIGN(length as usize)) as u32
     }
 }
 
