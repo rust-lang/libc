@@ -349,6 +349,10 @@ cfg_if! {
         // to "pthread" needs to be added.
         #[link(name = "pthread")]
         extern {}
+    } else if #[cfg(target_env = "illumos")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -519,13 +523,16 @@ extern {
     pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__socket30")]
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_socket")]
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "connect$UNIX2003")]
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_connect")]
     pub fn connect(socket: ::c_int, address: *const sockaddr,
                    len: socklen_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "listen$UNIX2003")]
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_listen")]
     pub fn listen(socket: ::c_int, backlog: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "accept$UNIX2003")]
@@ -544,10 +551,12 @@ extern {
                       option_len: socklen_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "socketpair$UNIX2003")]
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_socketpair")]
     pub fn socketpair(domain: ::c_int, type_: ::c_int, protocol: ::c_int,
                       socket_vector: *mut ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sendto$UNIX2003")]
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_sendto")]
     pub fn sendto(socket: ::c_int, buf: *const ::c_void, len: ::size_t,
                   flags: ::c_int, addr: *const sockaddr,
                   addrlen: socklen_t) -> ::ssize_t;
@@ -607,7 +616,8 @@ extern {
     pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
     #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_readdir_r")]
+    #[cfg_attr(any(target_os = "solaris", target_os = "illumos"),
+               link_name = "__posix_readdir_r")]
     #[cfg_attr(target_os = "freebsd", link_name = "readdir_r@FBSD_1.0")]
     pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
                      result: *mut *mut ::dirent) -> ::c_int;
@@ -916,6 +926,7 @@ extern {
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
                       buflen: ::size_t) -> ::c_int;
 
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_getsockopt")]
     pub fn getsockopt(sockfd: ::c_int,
                       level: ::c_int,
                       optname: ::c_int,
@@ -1080,9 +1091,11 @@ extern {
     pub fn tcdrain(fd: ::c_int) -> ::c_int;
     pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t;
     pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t;
+    #[cfg(not(any(target_os = "solaris", target_os = "illumos")))]
     pub fn cfmakeraw(termios: *mut ::termios);
     pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
     pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
+    #[cfg(not(any(target_os = "solaris", target_os = "illumos")))]
     pub fn cfsetspeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
     pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int;
     pub fn tcsetattr(fd: ::c_int,
@@ -1137,9 +1150,10 @@ cfg_if! {
                         target_os = "bitrig"))] {
         mod bsd;
         pub use self::bsd::*;
-    } else if #[cfg(target_os = "solaris")] {
-        mod solaris;
-        pub use self::solaris::*;
+    } else if #[cfg(any(target_os = "solaris",
+                        target_os = "illumos"))] {
+        mod solarish;
+        pub use self::solarish::*;
     } else if #[cfg(target_os = "haiku")] {
         mod haiku;
         pub use self::haiku::*;
