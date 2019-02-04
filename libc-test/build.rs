@@ -288,7 +288,7 @@ fn main() {
         cfg.header("linux/if_ether.h");
         cfg.header("linux/if_tun.h");
         cfg.header("linux/net_tstamp.h");
-        cfg.header("linux/inotify.h");
+        cfg.header("sys/inotify.h");
 
         // DCCP support
         if !uclibc && !musl && !emscripten {

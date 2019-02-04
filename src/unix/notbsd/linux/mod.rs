@@ -1690,9 +1690,11 @@ pub const IN_MODIFY:        ::uint32_t = 0x0000_0002;
 pub const IN_ATTRIB:        ::uint32_t = 0x0000_0004;
 pub const IN_CLOSE_WRITE:   ::uint32_t = 0x0000_0008;
 pub const IN_CLOSE_NOWRITE: ::uint32_t = 0x0000_0010;
+pub const IN_CLOSE:         ::uint32_t = (IN_CLOSE_WRITE | IN_CLOSE_NOWRITE);
 pub const IN_OPEN:          ::uint32_t = 0x0000_0020;
 pub const IN_MOVED_FROM:    ::uint32_t = 0x0000_0040;
 pub const IN_MOVED_TO:      ::uint32_t = 0x0000_0080;
+pub const IN_MOVE:          ::uint32_t = (IN_MOVED_FROM | IN_MOVED_TO);
 pub const IN_CREATE:        ::uint32_t = 0x0000_0100;
 pub const IN_DELETE:        ::uint32_t = 0x0000_0200;
 pub const IN_DELETE_SELF:   ::uint32_t = 0x0000_0400;
@@ -1702,15 +1704,12 @@ pub const IN_UNMOUNT:       ::uint32_t = 0x0000_2000;
 pub const IN_Q_OVERFLOW:    ::uint32_t = 0x0000_4000;
 pub const IN_IGNORED:       ::uint32_t = 0x0000_8000;
 
-pub const IN_CLOSE:         ::uint32_t = (IN_CLOSE_WRITE | IN_CLOSE_NOWRITE);
-pub const IN_MOVE:          ::uint32_t = (IN_MOVED_FROM | IN_MOVED_TO);
-
 pub const IN_ONLYDIR:       ::uint32_t = 0x0100_0000;
 pub const IN_DONT_FOLLOW:   ::uint32_t = 0x0200_0000;
-pub const IN_EXCL_UNLINK:   ::uint32_t = 0x0400_0000;
+// pub const IN_EXCL_UNLINK:   ::uint32_t = 0x0400_0000;
 
-pub const IN_MASK_CREATE:   ::uint32_t = 0x1000_0000;
-pub const IN_MASK_ADD:      ::uint32_t = 0x2000_0000;
+// pub const IN_MASK_CREATE:   ::uint32_t = 0x1000_0000;
+// pub const IN_MASK_ADD:      ::uint32_t = 0x2000_0000;
 pub const IN_ISDIR:         ::uint32_t = 0x4000_0000;
 pub const IN_ONESHOT:       ::uint32_t = 0x8000_0000;
 
