@@ -41,8 +41,18 @@ pub type in_port_t = u16;
 pub type sighandler_t = ::size_t;
 pub type cc_t = ::c_uchar;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
+impl ::dox::Copy for DIR {}
+impl ::dox::Clone for DIR {
+    fn clone(&self) -> DIR { *self }
+}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum locale_t {}
+impl ::dox::Copy for locale_t {}
+impl ::dox::Clone for locale_t {
+    fn clone(&self) -> locale_t { *self }
+}
 
 s! {
     pub struct group {
@@ -365,8 +375,18 @@ cfg_if! {
     }
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
+impl ::dox::Copy for FILE {}
+impl ::dox::Clone for FILE {
+    fn clone(&self) -> FILE { *self }
+}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
+impl ::dox::Copy for fpos_t {}
+impl ::dox::Clone for fpos_t {
+    fn clone(&self) -> fpos_t { *self }
+}
 
 extern {
     pub fn isalnum(c: c_int) -> c_int;
@@ -1156,6 +1176,7 @@ cfg_if! {
         // enable more optimization opportunities around it recognizing things
         // like malloc/free.
         #[repr(u8)]
+        #[allow(missing_copy_implementations)]
         pub enum c_void {
             // Two dummy variants so the #[repr] attribute can be used.
             #[doc(hidden)]

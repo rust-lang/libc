@@ -36,7 +36,12 @@ pub type nl_item = ::c_int;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
+impl ::dox::Copy for timezone {}
+impl ::dox::Clone for timezone {
+    fn clone(&self) -> timezone { *self }
+}
 
 s! {
     pub struct sockaddr {

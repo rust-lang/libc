@@ -13,8 +13,18 @@ pub type clockid_t = ::c_int;
 pub type id_t = ::uint32_t;
 pub type sem_t = *mut sem;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
+impl ::dox::Copy for timezone {}
+impl ::dox::Clone for timezone {
+    fn clone(&self) -> timezone { *self }
+}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
+impl ::dox::Copy for sem {}
+impl ::dox::Clone for sem {
+    fn clone(&self) -> sem { *self }
+}
 
 s! {
     pub struct sigaction {

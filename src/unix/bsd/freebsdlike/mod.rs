@@ -15,7 +15,12 @@ pub type speed_t = ::c_uint;
 pub type nl_item = ::c_int;
 pub type id_t = i64;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
+impl ::dox::Copy for timezone {}
+impl ::dox::Clone for timezone {
+    fn clone(&self) -> timezone { *self }
+}
 
 s! {
     pub struct glob_t {

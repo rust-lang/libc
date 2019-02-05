@@ -100,10 +100,30 @@ pub type c_ulong = u64;
 
 // FIXME: why are these uninhabited types? that seems... wrong?
 // Presumably these should be `()` or an `extern type` (when that stabilizes).
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
+impl ::dox::Copy for timezone {}
+impl ::dox::Clone for timezone {
+    fn clone(&self) -> timezone { *self }
+}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
+impl ::dox::Copy for DIR {}
+impl ::dox::Clone for DIR {
+    fn clone(&self) -> DIR { *self }
+}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum locale_t {}
+impl ::dox::Copy for locale_t {}
+impl ::dox::Clone for locale_t {
+    fn clone(&self) -> locale_t { *self }
+}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
+impl ::dox::Copy for fpos64_t {}
+impl ::dox::Clone for fpos64_t {
+    fn clone(&self) -> fpos64_t { *self }
+}
 
 // PUB_STRUCT
 
@@ -3042,8 +3062,18 @@ f! {
 #[link(name = "fdio")]
 extern {}
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
+impl ::dox::Copy for FILE {}
+impl ::dox::Clone for FILE {
+    fn clone(&self) -> FILE { *self }
+}
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
+impl ::dox::Copy for fpos_t {}
+impl ::dox::Clone for fpos_t {
+    fn clone(&self) -> fpos_t { *self }
+}
 
 extern {
     pub fn isalnum(c: c_int) -> c_int;
@@ -4097,6 +4127,7 @@ cfg_if! {
         // enable more optimization opportunities around it recognizing things
         // like malloc/free.
         #[repr(u8)]
+        #[allow(missing_copy_implementations)]
         pub enum c_void {
             // Two dummy variants so the #[repr] attribute can be used.
             #[doc(hidden)]

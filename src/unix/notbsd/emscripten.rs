@@ -35,7 +35,12 @@ pub type c_long = i32;
 pub type c_ulong = u32;
 pub type nlink_t = u32;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
+impl ::dox::Copy for fpos64_t {}
+impl ::dox::Clone for fpos64_t {
+    fn clone(&self) -> fpos64_t { *self }
+}
 
 s! {
     pub struct dirent {

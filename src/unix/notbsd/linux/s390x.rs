@@ -262,12 +262,6 @@ s! {
         pub addr: u64,
     }
 
-    // FIXME: This is actually a union.
-    pub struct fpreg_t {
-        pub d: ::c_double,
-        // f: ::c_float,
-    }
-
     pub struct fpregset_t {
         pub fpc: u32,
         __pad: u32,
@@ -331,6 +325,37 @@ s! {
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
         __f_spare: [::c_int; 6],
+    }
+}
+
+s_no_extra_traits!{
+    // FIXME: This is actually a union.
+    pub struct fpreg_t {
+        pub d: ::c_double,
+        // f: ::c_float,
+    }
+}
+
+#[cfg(feature = "extra_traits")]
+impl PartialEq for fpreg_t {
+    fn eq(&self, other: &fpreg_t) -> bool {
+        self.d == other.d
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for fpreg_t {}
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for fpreg_t {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("fpreg_t")
+            .field("d", &self.d)
+            .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for fpreg_t {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.d.to_bits().hash(state);
     }
 }
 

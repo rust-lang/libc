@@ -44,6 +44,16 @@ activate the *align* feature. This requires Rust 1.25 or newer:
 libc = { version = "0.2", features = ["align"] }
 ```
 
+All structs implemented by the libc crate have the `Copy` and `Clone` traits
+implemented for them. The additional traits of `Debug, `Eq`, `Hash`, and
+`PartialEq` can be enabled with the *extra_traits* feature (requires Rust 1.25
+or newer):
+
+```toml
+[dependencies]
+libc = { version = "0.2", features = ["extra_traits"] }
+```
+
 ## What is libc?
 
 The primary purpose of this crate is to provide all of the definitions necessary
