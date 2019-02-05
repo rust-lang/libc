@@ -19,9 +19,9 @@ cache: cargo
 
 branches:
   only:
-    - auto
     - master
-    - try
+    - staging
+    - trying
 
 notifications:
   email:
