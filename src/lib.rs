@@ -115,15 +115,4 @@ pub type intptr_t = isize;
 pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
-// NOTE from libc v0.2.23
-// Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help enable
-// more optimization opportunities around it recognizing things like
-// malloc/free.
-#[repr(u8)]
-pub enum c_void {
-    // Two dummy variants so the #[repr] attribute can be used.
-    #[doc(hidden)]
-    __variant1,
-    #[doc(hidden)]
-    __variant2,
-}
+pub type c_void = core::ffi::c_void;
