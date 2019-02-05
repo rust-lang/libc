@@ -77,7 +77,7 @@ if [ "$QEMU" != "" ]; then
     -net user \
     -nographic \
     -vga none 2>&1 | tee "${CARGO_TARGET_DIR}/out.log"
-  exec grep "^PASSED .* tests" "${CARGO_TARGET_DIR}/out.log"
+  exec egrep "^(PASSED)|(test result: ok)" "${CARGO_TARGET_DIR}/out.log"
 fi
 
 # FIXME: x86_64-unknown-linux-gnux32 fail to compile without --release

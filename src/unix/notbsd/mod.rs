@@ -1114,26 +1114,14 @@ pub const ARPHRD_IEEE802154: u16 = 804;
 pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
+fn CMSG_ALIGN(len: usize) -> usize {
+    len + mem::size_of::<usize>() - 1 & !(mem::size_of::<usize>() - 1)
+}
+
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
         if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
             (*mhdr).msg_control as *mut cmsghdr
-        } else {
-            0 as *mut cmsghdr
-        }
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
-                       cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if cmsg.is_null() {
-            return CMSG_FIRSTHDR(mhdr);
-        };
-        let pad = mem::align_of::<cmsghdr>() - 1;
-        let next = cmsg as usize + (*cmsg).cmsg_len as usize + pad & !pad;
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
-        if next < max {
-            next as *mut cmsghdr
         } else {
             0 as *mut cmsghdr
         }
@@ -1144,12 +1132,12 @@ f! {
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        let pad = mem::align_of::<cmsghdr>() as ::c_uint - 1;
-        mem::size_of::<cmsghdr>() as ::c_uint + ((length + pad) & !pad)
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(mem::size_of::<cmsghdr>()))
+            as ::c_uint
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        mem::size_of::<cmsghdr>() as ::c_uint + length
+        CMSG_ALIGN(mem::size_of::<cmsghdr>()) as ::c_uint + length
     }
 
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {

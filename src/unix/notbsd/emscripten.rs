@@ -1515,6 +1515,23 @@ pub const ARPD_FLUSH: ::c_ushort = 0x03;
 pub const ATF_MAGIC: ::c_int = 0x80;
 
 f! {
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
+                       cmsg: *const cmsghdr) -> *mut cmsghdr {
+        if ((*cmsg).cmsg_len as usize) < mem::size_of::<cmsghdr>() {
+            return 0 as *mut cmsghdr;
+        };
+        let next = (cmsg as usize +
+                    super::CMSG_ALIGN((*cmsg).cmsg_len as usize))
+            as *mut cmsghdr;
+        let max = (*mhdr).msg_control as usize
+            + (*mhdr).msg_controllen as usize;
+        if (next.offset(1)) as usize > max {
+            0 as *mut cmsghdr
+        } else {
+            next as *mut cmsghdr
+        }
+    }
+
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
             *slot = 0;

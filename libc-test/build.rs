@@ -1,10 +1,21 @@
 #![deny(warnings)]
 
+extern crate cc;
 extern crate ctest;
 
 use std::env;
 
-fn main() {
+#[cfg(unix)]
+fn do_cc() {
+    cc::Build::new()
+        .file("src/cmsg.c")
+        .compile("cmsg");
+}
+#[cfg(not(unix))]
+fn do_cc() {
+}
+
+fn do_ctest() {
     let target = env::var("TARGET").unwrap();
     let aarch64 = target.contains("aarch64");
     let i686 = target.contains("i686");
@@ -974,4 +985,9 @@ fn main() {
         cfg.skip_struct(|_| true);
     }
     cfg.generate("../src/lib.rs", "linux_fcntl.rs");
+}
+
+fn main() {
+    do_cc();
+    do_ctest();
 }

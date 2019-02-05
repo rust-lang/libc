@@ -9,6 +9,7 @@ path = ".."
 default-features = false
 
 [build-dependencies]
+cc = "1.0"
 ctest = "0.2.8"
 
 [features]
@@ -27,3 +28,7 @@ name = "linux-fcntl"
 path = "test/linux_fcntl.rs"
 harness = false
 
+[[test]]
+name = "cmsg"
+path = "test/cmsg.rs"
+harness = true

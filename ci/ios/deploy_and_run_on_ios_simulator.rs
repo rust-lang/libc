@@ -129,8 +129,11 @@ fn run_app_on_simulator() {
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     let passed = stdout.lines()
-                       .find(|l| l.contains("PASSED"))
-                       .map(|l| l.contains("tests"))
+                       .find(|l|
+                             (l.contains("PASSED") &&
+                              l.contains("tests")) ||
+                             l.contains("test result: ok")
+                        )
                        .unwrap_or(false);
 
     println!("Shutting down simulator");

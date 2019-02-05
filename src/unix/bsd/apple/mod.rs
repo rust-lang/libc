@@ -2777,11 +2777,10 @@ f! {
             return ::CMSG_FIRSTHDR(mhdr);
         };
         let cmsg_len = (*cmsg).cmsg_len as usize;
-        let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize)
-            + __DARWIN_ALIGN32(mem::size_of::<::cmsghdr>());
+        let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize);
         let max = (*mhdr).msg_control as usize
                    + (*mhdr).msg_controllen as usize;
-        if next > max {
+        if next + __DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) > max {
             0 as *mut ::cmsghdr
         } else {
             next as *mut ::cmsghdr
@@ -2800,7 +2799,7 @@ f! {
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        __DARWIN_ALIGN32(mem::size_of::<::cmsghdr>() + length as usize)
+        (__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) + length as usize)
             as ::c_uint
     }
 

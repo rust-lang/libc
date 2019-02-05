@@ -47,7 +47,8 @@ fn find_ok(input: &mut Read, tx: mpsc::Sender<()>) {
     for line in BufReader::new(input).lines() {
         let line = line.unwrap();
         println!("{}", line);
-        if line.starts_with("PASSED ") && line.contains(" tests") {
+        if (line.starts_with("PASSED ") && line.contains(" tests")) ||
+            line.starts_with("test result: ok"){
             tx.send(()).unwrap();
         }
     }
