@@ -43,6 +43,11 @@ s! {
         pub s_addr: ::in_addr_t,
     }
 
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,

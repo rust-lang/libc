@@ -27,6 +27,11 @@ s! {
         pub s_addr: ::in_addr_t,
     }
 
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct glob_t {
         pub gl_pathc:  ::size_t,
         pub gl_matchc: ::size_t,
@@ -48,14 +53,6 @@ s! {
         pub fflags: ::c_uint,
         pub data: ::intptr_t,
         pub udata: *mut ::c_void,
-    }
-
-    pub struct sockaddr_storage {
-        pub ss_len: u8,
-        pub ss_family: ::sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_align: i64,
-        __ss_pad2: [u8; 112],
     }
 
     pub struct addrinfo {
@@ -188,6 +185,17 @@ s! {
         pub ar_hln: u8,
         pub ar_pln: u8,
         pub ar_op: u16,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_storage {
+        pub ss_len: u8,
+        pub ss_family: ::sa_family_t,
+        __ss_pad1: [u8; 6],
+        __ss_align: i64,
+        __ss_pad2: [u8; 112],
     }
 }
 

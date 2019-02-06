@@ -162,6 +162,7 @@
 // Enable lints
 #![cfg_attr(feature = "extra_traits", deny(missing_debug_implementations))]
 #![deny(missing_copy_implementations, safe_packed_borrows)]
+#![allow(unused_macros)]
 #[cfg(all(not(cross_platform_docs), feature = "use_std"))]
 extern crate std as core;
 
@@ -181,6 +182,7 @@ cfg_if! {
 cfg_if! {
     if #[cfg(not(cross_platform_docs))] {
         #[cfg(libc_core_cvoid)]
+        #[allow(unused_imports)]
         use core::ffi;
         #[allow(unused_imports)]
         use core::fmt;

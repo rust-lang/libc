@@ -42,6 +42,11 @@ impl ::dox::Clone for timezone {
 }
 
 s! {
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_offset: ::off_t,

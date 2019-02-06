@@ -17,8 +17,21 @@ pub type pthread_rwlockattr_t = *mut ::c_void;
 pub type caddr_t = *mut ::c_char;
 
 s! {
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
+    }
+
+    pub struct sockaddr_in {
+        pub sin_len: u8,
+        pub sin_family: ::sa_family_t,
+        pub sin_port: ::in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [::int8_t; 8],
     }
 
     pub struct dirent {

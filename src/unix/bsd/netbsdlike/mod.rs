@@ -39,14 +39,6 @@ s! {
         pub ss_flags: ::c_int,
     }
 
-    pub struct sockaddr_in {
-        pub sin_len: u8,
-        pub sin_family: ::sa_family_t,
-        pub sin_port: ::in_port_t,
-        pub sin_addr: ::in_addr,
-        pub sin_zero: [::int8_t; 8],
-    }
-
     pub struct in6_pktinfo {
         pub ipi6_addr: ::in6_addr,
         pub ipi6_ifindex: ::c_uint,
