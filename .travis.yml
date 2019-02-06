@@ -6,10 +6,16 @@ services: docker
 
 stages:
   - min-checks-and-tier1
-  - other-targets
+  - tier2-1
+  - tier2-2
+  - tier2-3
+  - tier2-4
+  - tier25
+  - tier3
 
 matrix:
   include:
+    # Min Checks and Tier 1 targets
     - name: "Documentation"
       env: TARGET=x86_64-unknown-linux-gnu
       script: sh ci/dox.sh
@@ -25,7 +31,10 @@ matrix:
       install: true
       script: rustc ci/style.rs && ./style src
       stage: min-checks-and-tier1
-    - env: TARGET=x86_64-unknown-linux-gnu
+
+    - env: TARGET=i686-apple-darwin
+      os: osx
+      osx_image: xcode10
       stage: min-checks-and-tier1
     - env: TARGET=i686-unknown-linux-gnu
       stage: min-checks-and-tier1
@@ -33,72 +42,149 @@ matrix:
       os: osx
       osx_image: xcode10
       stage: min-checks-and-tier1
-    - env: TARGET=i686-apple-darwin
-      os: osx
-      osx_image: xcode10
+    - env: TARGET=x86_64-unknown-linux-gnu
       stage: min-checks-and-tier1
 
-    - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
-      stage: other-targets
-    - env: TARGET=arm-linux-androideabi
-      stage: other-targets
+    # Tier 2 targets
+    - env: TARGET=aarch64-apple-ios BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-1
+      os: osx
+      osx_image: xcode10
+    - env: TARGET=aarch64-fuchsia BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-1
     - env: TARGET=aarch64-linux-android
-      stage: other-targets
-    # FIXME(#826) should reenable
-    #- env: TARGET=i686-linux-android
-    #  stage: other-targets
-    - env: TARGET=x86_64-linux-android
-      stage: other-targets
-    - env: TARGET=x86_64-unknown-linux-musl
-      stage: other-targets
-    - env: TARGET=i686-unknown-linux-musl
-      stage: other-targets
-    - env: TARGET=arm-unknown-linux-gnueabihf
-      stage: other-targets
-    - env: TARGET=arm-unknown-linux-musleabihf
-      stage: other-targets
+      stage: tier2-1
     - env: TARGET=aarch64-unknown-linux-gnu
-      stage: other-targets
+      stage: tier2-1
     - env: TARGET=aarch64-unknown-linux-musl
-      stage: other-targets
-    - env: TARGET=powerpc-unknown-linux-gnu
-      stage: other-targets
-    - env: TARGET=powerpc64-unknown-linux-gnu
-      stage: other-targets
-    - env: TARGET=powerpc64le-unknown-linux-gnu
-      stage: other-targets
-    - env: TARGET=mips-unknown-linux-musl
-      stage: other-targets
-    - env: TARGET=mipsel-unknown-linux-musl
-      stage: other-targets
-    - env: TARGET=mips64-unknown-linux-gnuabi64
-      stage: other-targets
-    - env: TARGET=mips64el-unknown-linux-gnuabi64
-      stage: other-targets
-    - env: TARGET=mips-unknown-linux-gnu
-      stage: other-targets
-    - env: TARGET=s390x-unknown-linux-gnu
-      stage: other-targets
-    - env: TARGET=sparc64-unknown-linux-gnu
-      stage: other-targets
+      stage: tier2-1
+    - env: TARGET=arm-linux-androideabi
+      stage: tier2-1
+    - env: TARGET=arm-unknown-linux-gnueabihf
+      stage: tier2-1
+    - env: TARGET=arm-unknown-linux-musleabihf
+      stage: tier2-1
+    - env: TARGET=armv7-apple-ios BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-1
+      os: osx
+      osx_image: xcode10
+    - env: TARGET=armv7-linux-androideabi BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-1
+    - env: TARGET=armv7-unknown-linux-gnueabihf BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-2
+    - env: TARGET=armv7-unknown-linux-musleabihf BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-2
+    - env: TARGET=armv7s-apple-ios BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-2
+      os: osx
+      osx_image: xcode10
     - env: TARGET=asmjs-unknown-emscripten
-      stage: other-targets
-    - env: TARGET=wasm32-unknown-emscripten
-      stage: other-targets
+      stage: tier2-2
+    - env: TARGET=i586-unknown-linux-gnu BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-2
+    - env: TARGET=i586-unknown-linux-musl BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-2
+      # FIXME(#826) should reenable tests
+    - env: TARGET=i686-linux-android BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-2
+    - env: TARGET=i686-unknown-freebsd BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-2
+    - env: TARGET=i686-unknown-linux-musl
+      stage: tier2-2
+    - env: TARGET=mips-unknown-linux-gnu
+      stage: tier2-2
+    - env: TARGET=mips-unknown-linux-musl
+      stage: tier2-3
+    - env: TARGET=mips64-unknown-linux-gnuabi64
+      stage: tier2-3
+    - env: TARGET=mips64el-unknown-linux-gnuabi64
+      stage: tier2-3
+    - env: TARGET=mipsel-unknown-linux-gnu BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-3
+    - env: TARGET=mipsel-unknown-linux-musl
+      stage: tier2-3
+    - env: TARGET=powerpc-unknown-linux-gnu
+      stage: tier2-3
+    - env: TARGET=powerpc64-unknown-linux-gnu
+      stage: tier2-3
+    - env: TARGET=powerpc64le-unknown-linux-gnu
+      stage: tier2-3
+    - env: TARGET=s390x-unknown-linux-gnu
+      stage: tier2-3
+    - env: TARGET=sparc64-unknown-linux-gnu
+      stage: tier2-3
+    - env: TARGET=sparcv9-sun-solaris
+      stage: tier2-4
     - env: TARGET=wasm32-unknown-unknown BUILD_ONLY=1
-      stage: other-targets
+      stage: tier2-4
+    - env: TARGET=wasm32-unknown-emscripten
+      stage: tier2-4
+    - env: TARGET=x86_64-apple-ios BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-4
+      os: osx
+      osx_image: xcode10
+    - env: TARGET=x86_64-fuchsia BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-4
+    - env: TARGET=x86_64-linux-android
+      stage: tier2-4
+    - env: TARGET=x86_64-rumprun-netbsd BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-4
+    - env: TARGET=x86_64-sun-solaris BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-4
+    - env: TARGET=x86_64-unknown-cloudabi BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-4
     - env: TARGET=x86_64-unknown-freebsd BUILD_ONLY=1
-      stage: other-targets
-    - env: TARGET=x86_64-unknown-openbsd BUILD_ONLY=1
-      stage: other-targets
-    - env: TARGET=x86_64-unknown-bitrig BUILD_ONLY=1
-      stage: other-targets
+      stage: tier2-4
+    - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
+      stage: tier2-4
+    - env: TARGET=x86_64-unknown-linux-musl
+      stage: tier2-4
     - env: TARGET=x86_64-unknown-netbsd BUILD_ONLY=1
-      stage: other-targets
-    - env: TARGET=x86_64-unknown-dragonfly BUILD_ONLY=1
-      stage: other-targets
-    - env: TARGET=x86_64-unknown-solaris BUILD_ONLY=1
-      stage: other-targets
+      stage: tier2-4
+    - env: TARGET=x86_64-unknown-redox BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier2-4
+
+    # Tier 2.5 targets:
+    - env: TARGET=aarch64-unknown-cloudabi BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier25
+    - env: TARGET=armv7-unknown-cloudabi-eabihf BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier25
+    - env: TARGET=i686-unknown-cloudabi BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier25
+    - env: TARGET=powerpc-unknown-linux-gnuspe BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier25
+    - env: TARGET=sparc-unknown-linux-gnu BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier25
+
+    # Tier 3 targets:
+    - env: TARGET=i686-unknown-haiku BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=i686-unknown-netbsd BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=mips-unknown-unknown-linux-uclib BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=mipsel-unknown-unknown-linux-uclib BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=sparc64-unknown-netbsd BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=thumbv6m-none-eabi BUILD_ONLY=1 NIGHTLY_ONLY=1 NO_STD=1
+      stage: tier3
+    - env: TARGET=thumbv7em-none-eabi BUILD_ONLY=1 NIGHTLY_ONLY=1 NO_STD=1
+      stage: tier3
+    - env: TARGET=thumbv7em-none-eabihf BUILD_ONLY=1 NIGHTLY_ONLY=1 NO_STD=1
+      stage: tier3
+    - env: TARGET=thumbv7m-none-eabi BUILD_ONLY=1 NIGHTLY_ONLY=1 NO_STD=1
+      stage: tier3
+    - env: TARGET=x86_64-fortanix-unknown-sgx BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=x86_64-unknown-bitrig BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=x86_64-unknown-dragonfly BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=x86_64-unknown-haiku BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
+    - env: TARGET=x86_64-unknown-openbsd BUILD_ONLY=1 NIGHTLY_ONLY=1
+      stage: tier3
 
   allow_failures:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
@@ -106,21 +192,24 @@ matrix:
       - env: TARGET=wasm32-unknown-emscripten
 
 install:
-  - rustup install beta
-  - rustup install stable
-  - rustup install 1.13.0
-  - rustup install 1.19.0
-  - rustup install 1.24.0
-  - rustup install 1.25.0
-  - rustup install 1.30.0
   - rustup target add $TARGET || true
-  - rustup target add $TARGET --toolchain beta || true
-  - rustup target add $TARGET --toolchain stable || true
-  - rustup target add $TARGET --toolchain 1.13.0 || true
-  - rustup target add $TARGET --toolchain 1.19.0 || true
-  - rustup target add $TARGET --toolchain 1.24.0 || true
-  - rustup target add $TARGET --toolchain 1.25.0 || true
-  - rustup target add $TARGET --toolchain 1.30.0 || true
+  - |
+    if [ "${NIGHTLY_ONLY}" != "1" ]; then
+        rustup install beta
+        rustup install stable
+        rustup install 1.13.0
+        rustup install 1.19.0
+        rustup install 1.24.0
+        rustup install 1.25.0
+        rustup install 1.30.0
+        rustup target add $TARGET --toolchain beta || true
+        rustup target add $TARGET --toolchain stable || true
+        rustup target add $TARGET --toolchain 1.13.0 || true
+        rustup target add $TARGET --toolchain 1.19.0 || true
+        rustup target add $TARGET --toolchain 1.24.0 || true
+        rustup target add $TARGET --toolchain 1.25.0 || true
+        rustup target add $TARGET --toolchain 1.30.0 || true
+    fi
 
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml

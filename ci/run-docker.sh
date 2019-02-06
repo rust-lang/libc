@@ -24,6 +24,8 @@ run() {
       --volume "${HOME}/.cargo":/cargo \
       $kvm \
       --env CARGO_HOME=/cargo \
+      --env BUILD_ONLY="${BUILD_ONLY}" \
+      --env NIGHTLY_ONLY="${NIGHTLY_ONLY}" \
       --volume "$(rustc --print sysroot)":/rust:ro \
       --volume "${HOME}"/.rustup:/.rustup:ro \
       --env RUSTUP_HOME=/.rustup \

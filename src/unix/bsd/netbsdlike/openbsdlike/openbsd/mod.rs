@@ -142,7 +142,7 @@ s_no_extra_traits! {
     }
 }
 
-cfg_f! {
+cfg_if! {
     if #[cfg(libc_union)] {
         s_no_extra_traits! {
             // This type uses the union mount_info:

@@ -83,6 +83,9 @@ fi
 command -v cargo
 
 build_types="+nightly +beta +stable +1.13.0 +1.19.0 +1.24.0 +1.25.0 +1.30.0"
+if [ "$NIGHTLY_ONLY" = "1" ]; then
+    build_types="+nightly"
+fi
 for build_type in $build_types;
 do
     opt=
@@ -100,7 +103,10 @@ do
     fi
 
     if [ "$BUILD_ONLY" = "1" ]; then
-        cargo "$build_type" build $opt --target "${TARGET}"
+        cargo "$build_type" build $opt --no-default-features --target "${TARGET}"
+        if [ "$NO_STD" != "1" ]; then
+            cargo "$build_type" build $opt --target "${TARGET}"
+        fi
     else
         # Building with --no-default-features is currently broken on rumprun
         # because we need cfg(target_vendor), which is currently unstable.
@@ -111,9 +117,11 @@ do
                   --target "${TARGET}"
         fi
 
-        cargo "$build_type" test $opt \
-             --manifest-path libc-test/Cargo.toml \
-             --target "${TARGET}"
+        if [ "$NO_STD" != "1" ]; then
+            cargo "$build_type" test $opt \
+                  --manifest-path libc-test/Cargo.toml \
+                  --target "${TARGET}"
+        fi
     fi
 
     # Test the `extra_traits` feature; requires Rust >= 1.25.0
@@ -122,7 +130,14 @@ do
            [ "$build_type" != "+1.19.0" ] && \
            [ "$build_type" != "+1.24.0" ]; then
         cargo "$build_type" build $opt \
+              --no-default-features \
               --features extra_traits \
               --target "${TARGET}"
+
+        if [ "$NO_STD" != "1" ]; then
+            cargo "$build_type" build $opt \
+                  --features extra_traits \
+                  --target "${TARGET}"
+        fi
     fi
 done
