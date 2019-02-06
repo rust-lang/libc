@@ -87,32 +87,32 @@ matrix:
       rust: 1.30.0
     - name: "Build Stable Rust 1.13.0"
       script: sh ci/build.sh
-      stage: build
+      stage: tier1-and-backwards-compat
       rust: 1.13.0
       os: osx
       osx_image: xcode10
     - name: "Build Stable Rust 1.19.0"
       script: sh ci/build.sh
-      stage: build
+      stage: tier1-and-backwards-compat
       rust: 1.19.0
       os: osx
       osx_image: xcode10
     - name: "Build Stable Rust 1.24.0"
       script: sh ci/build.sh
-      stage: build
+      stage: tier1-and-backwards-compat
       rust: 1.24.0
       os: osx
       osx_image: xcode10
     - name: "Build Stable Rust 1.25.0"
       env: RUST=1.25.0
       script: sh ci/build.sh
-      stage: build
+      stage: tier1-and-backwards-compat
       rust: 1.25.0
       os: osx
       osx_image: xcode10
     - name: "Build Stable Rust 1.30.0"
       script: sh ci/build.sh
-      stage: build
+      stage: tier1-and-backwards-compat
       rust: 1.30.0
       os: osx
       osx_image: xcode10
