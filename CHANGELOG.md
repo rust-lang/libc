@@ -50,7 +50,8 @@ This project adheres to $[Semantic Versioning](http://semver.org/).
 
 - Initial release
 
-[Unreleased]: https://github.com/japaric/cty/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/japaric/cty/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/japaric/cty/compare/v0.1.5...v0.2.0
 [v0.1.5]: https://github.com/japaric/cty/compare/v0.1.4...v0.1.5
 [v0.1.4]: https://github.com/japaric/cty/compare/v0.1.3...v0.1.4
 [v0.1.3]: https://github.com/japaric/cty/compare/v0.1.2...v0.1.3
