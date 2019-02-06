@@ -475,7 +475,6 @@ s! {
 }
 
 s_no_extra_traits!{
-
     // FIXME: https://github.com/rust-lang/libc/issues/1243
     #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]

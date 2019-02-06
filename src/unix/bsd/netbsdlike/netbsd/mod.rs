@@ -323,7 +323,9 @@ s! {
         pub ipi_addr: ::in_addr,
         pub ipi_ifindex: ::c_uint,
     }
+}
 
+s_no_extra_traits! {
     #[repr(packed)]
     pub struct arphdr {
         pub ar_hrd: u16,

@@ -109,16 +109,6 @@ s! {
         pub dli_saddr: *mut ::c_void,
     }
 
-    #[cfg_attr(any(all(target_arch = "x86",
-                       not(target_env = "musl"),
-                       not(target_os = "android")),
-                   target_arch = "x86_64"),
-               repr(packed))]
-    pub struct epoll_event {
-        pub events: ::uint32_t,
-        pub u64: ::uint64_t,
-    }
-
     pub struct lconv {
         pub decimal_point: *mut ::c_char,
         pub thousands_sep: *mut ::c_char,
@@ -213,6 +203,19 @@ s! {
 }
 
 s_no_extra_traits!{
+    #[cfg_attr(
+        any(
+            all(
+                target_arch = "x86",
+                not(target_env = "musl"),
+                not(target_os = "android")),
+            target_arch = "x86_64"),
+      repr(packed))]
+    pub struct epoll_event {
+        pub events: ::uint32_t,
+        pub u64: ::uint64_t,
+    }
+
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [::c_char; 108]

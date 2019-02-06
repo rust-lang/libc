@@ -133,14 +133,6 @@ s! {
         pub dli_saddr: *mut ::c_void,
     }
 
-    #[cfg_attr(any(all(target_arch = "x86",
-                   target_arch = "x86_64")),
-               repr(packed))]
-    pub struct epoll_event {
-        pub events: ::uint32_t,
-        pub u64: ::uint64_t,
-    }
-
     pub struct utsname {
         pub sysname: [::c_char; 65],
         pub nodename: [::c_char; 65],
@@ -443,6 +435,17 @@ s! {
         pub msgssz: ::c_int,
         pub msgtql: ::c_int,
         pub msgseg: ::c_ushort,
+    }
+}
+
+s_no_extra_traits! {
+    #[cfg_attr(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        repr(packed)
+    )]
+    pub struct epoll_event {
+        pub events: ::uint32_t,
+        pub u64: ::uint64_t,
     }
 }
 

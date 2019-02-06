@@ -358,7 +358,9 @@ s! {
         pub portev_object: ::uintptr_t,
         pub portev_user: *mut ::c_void,
     }
+}
 
+s_no_extra_traits! {
     #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed))]
     pub struct epoll_event {
         pub events: ::uint32_t,

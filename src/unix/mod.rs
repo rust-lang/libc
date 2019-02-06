@@ -137,11 +137,6 @@ s! {
         __reserved: [c_long; 16],
     }
 
-    #[cfg_attr(target_os = "netbsd", repr(packed))]
-    pub struct in_addr {
-        pub s_addr: in_addr_t,
-    }
-
     #[cfg_attr(libc_align, repr(align(4)))]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
@@ -223,6 +218,23 @@ s! {
         pub p_name: *mut ::c_char,
         pub p_aliases: *mut *mut ::c_char,
         pub p_proto: ::c_int,
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_os = "netbsd")] {
+        s_no_extra_traits! {
+            #[repr(packed)]
+            pub struct in_addr {
+                pub s_addr: in_addr_t,
+            }
+        }
+    } else {
+        s! {
+            pub struct in_addr {
+                pub s_addr: in_addr_t,
+            }
+        }
     }
 }
 
