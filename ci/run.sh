@@ -80,16 +80,20 @@ if [ "$QEMU" != "" ]; then
   exec egrep "^(PASSED)|(test result: ok)" "${CARGO_TARGET_DIR}/out.log"
 fi
 
+if [ "${RUNNING_IN_DOCKER}" = "1" ]; then
+    export PATH=$PATH:$CARGO_HOME/bin
+fi
+
 command -v cargo
 
 build_types="+nightly +beta +stable +1.13.0 +1.19.0 +1.24.0 +1.25.0 +1.30.0"
-if [ "$NIGHTLY_ONLY" = "1" ]; then
+if [ "${NIGHTLY_ONLY}" = "1" ]; then
     build_types="+nightly"
 fi
 for build_type in $build_types;
 do
     opt=
-    if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
+    if [ "${TARGET}" = "x86_64-unknown-linux-gnux32" ]; then
         # FIXME: x86_64-unknown-linux-gnux32 fail to compile without
         # --release
         #
@@ -97,28 +101,28 @@ do
         opt="--release"
 
         # x86_64-unknown-linux-gnux32 is only available on nightly:
-        if [ "$build_type" != "nightly" ]; then
+        if [ "${build_type}" != "nightly" ]; then
             continue
         fi
     fi
 
-    if [ "$BUILD_ONLY" = "1" ]; then
-        cargo "$build_type" build $opt --no-default-features --target "${TARGET}"
+    if [ "${BUILD_ONLY}" = "1" ]; then
+        cargo "${build_type}" build $opt --no-default-features --target "${TARGET}"
         if [ "$NO_STD" != "1" ]; then
-            cargo "$build_type" build $opt --target "${TARGET}"
+            cargo "${build_type}" build $opt --target "${TARGET}"
         fi
     else
         # Building with --no-default-features is currently broken on rumprun
         # because we need cfg(target_vendor), which is currently unstable.
-        if [ "$TARGET" != "x86_64-rumprun-netbsd" ]; then
-            cargo "$build_type" test $opt \
+        if [ "${TARGET}" != "x86_64-rumprun-netbsd" ]; then
+            cargo "${build_type}" test $opt \
                   --no-default-features \
                   --manifest-path libc-test/Cargo.toml \
                   --target "${TARGET}"
         fi
 
         if [ "$NO_STD" != "1" ]; then
-            cargo "$build_type" test $opt \
+            cargo "${build_type}" test $opt \
                   --manifest-path libc-test/Cargo.toml \
                   --target "${TARGET}"
         fi
@@ -126,16 +130,16 @@ do
 
     # Test the `extra_traits` feature; requires Rust >= 1.25.0
     # No need to run libc-test, only check that libc builds.
-    if [ "$build_type" != "+1.13.0" ] && \
-           [ "$build_type" != "+1.19.0" ] && \
-           [ "$build_type" != "+1.24.0" ]; then
-        cargo "$build_type" build $opt \
+    if [ "${build_type}" != "+1.13.0" ] && \
+           [ "${build_type}" != "+1.19.0" ] && \
+           [ "${build_type}" != "+1.24.0" ]; then
+        cargo "${build_type}" build $opt \
               --no-default-features \
               --features extra_traits \
               --target "${TARGET}"
 
         if [ "$NO_STD" != "1" ]; then
-            cargo "$build_type" build $opt \
+            cargo "${build_type}" build $opt \
                   --features extra_traits \
                   --target "${TARGET}"
         fi

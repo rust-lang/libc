@@ -212,7 +212,6 @@ install:
     fi
 
 script:
-  - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       if [[ $BUILD_ONLY = "1" ]]; then
           sh ci/run.sh $TARGET;

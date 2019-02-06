@@ -24,16 +24,16 @@ run() {
       --volume "${HOME}/.cargo":/cargo \
       $kvm \
       --env CARGO_HOME=/cargo \
+      --env RUNNING_IN_DOCKER=1 \
       --env BUILD_ONLY="${BUILD_ONLY}" \
       --env NIGHTLY_ONLY="${NIGHTLY_ONLY}" \
       --volume "$(rustc --print sysroot)":/rust:ro \
       --volume "${HOME}"/.rustup:/.rustup:ro \
       --env RUSTUP_HOME=/.rustup \
-      --volume "$(pwd)":/checkout:ro \
+      --volume "$(pwd)":/checkout \
       --volume "$(pwd)"/target:/checkout/target \
       --env CARGO_TARGET_DIR=/checkout/target \
       --workdir /checkout \
-      -c 'export PATH=$PATH:/cargo/bin; bash' \
       libc \
       ci/run.sh "${1}"
 }
