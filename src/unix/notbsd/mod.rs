@@ -255,8 +255,8 @@ cfg_if! {
 
         impl Eq for sockaddr_un {}
 
-        impl core::fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
                 // FIXME: .field("sun_path", &self.sun_path)
@@ -264,8 +264,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for sockaddr_un {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for sockaddr_un {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.sun_family.hash(state);
                 self.sun_path.hash(state);
             }
@@ -284,8 +284,8 @@ cfg_if! {
 
         impl Eq for sockaddr_storage {}
 
-        impl core::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_family", &self.ss_family)
                     .field("__ss_align", &self.__ss_align)
@@ -294,8 +294,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for sockaddr_storage {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ss_family.hash(state);
                 self.__ss_pad2.hash(state);
             }
@@ -337,8 +337,8 @@ cfg_if! {
 
         impl Eq for utsname {}
 
-        impl core::fmt::Debug for utsname {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for utsname {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utsname")
                 // FIXME: .field("sysname", &self.sysname)
                 // FIXME: .field("nodename", &self.nodename)
@@ -350,8 +350,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for utsname {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for utsname {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.sysname.hash(state);
                 self.nodename.hash(state);
                 self.release.hash(state);

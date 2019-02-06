@@ -16,8 +16,11 @@ cp ci/landing-page-head.html target/doc/index.html
 for target in $TARGETS; do
   echo "documenting ${target}"
 
-  rustdoc -o "target/doc/${target}" --target "${target}" src/lib.rs --cfg cross_platform_docs \
-    --crate-name libc
+  rustdoc -o "target/doc/${target}" \
+          --target "${target}" \
+          src/lib.rs \
+          --cfg cross_platform_docs \
+          --crate-name libc
 
   echo "<li><a href=\"/libc/${target}/libc/index.html\">${target}</a></li>" \
     >> target/doc/index.html

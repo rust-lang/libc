@@ -175,6 +175,16 @@ cfg_if! {
     }
 }
 
+cfg_if! {
+    if #[cfg(not(cross_platform_docs))] {
+        #[cfg(libc_core_cvoid)]
+        use core::ffi;
+        #[allow(unused_imports)]
+        use core::fmt;
+        #[allow(unused_imports)]
+        use core::hash;
+    }
+}
 
 mod dox;
 

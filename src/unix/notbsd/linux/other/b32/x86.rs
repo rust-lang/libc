@@ -237,8 +237,8 @@ cfg_if! {
 
         impl Eq for user_fpxregs_struct {}
 
-        impl core::fmt::Debug for user_fpxregs_struct {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for user_fpxregs_struct {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("user_fpxregs_struct")
                     .field("cwd", &self.cwd)
                     .field("swd", &self.swd)
@@ -257,8 +257,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for user_fpxregs_struct {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for user_fpxregs_struct {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.cwd.hash(state);
                 self.swd.hash(state);
                 self.twd.hash(state);
@@ -288,8 +288,8 @@ cfg_if! {
 
         impl Eq for ucontext_t {}
 
-        impl core::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_flags", &self.uc_flags)
                     .field("uc_link", &self.uc_link)
@@ -301,8 +301,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for ucontext_t {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for ucontext_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.uc_flags.hash(state);
                 self.uc_link.hash(state);
                 self.uc_stack.hash(state);

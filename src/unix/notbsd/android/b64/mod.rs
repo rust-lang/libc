@@ -143,8 +143,8 @@ cfg_if! {
 
         impl Eq for pthread_mutex_t {}
 
-        impl core::fmt::Debug for pthread_mutex_t {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for pthread_mutex_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("pthread_mutex_t")
                     .field("value", &self.value)
                     // FIXME: .field("__reserved", &self.__reserved)
@@ -152,8 +152,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for pthread_mutex_t {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for pthread_mutex_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.value.hash(state);
                 self.__reserved.hash(state);
             }
@@ -172,8 +172,8 @@ cfg_if! {
 
         impl Eq for pthread_cond_t {}
 
-        impl core::fmt::Debug for pthread_cond_t {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for pthread_cond_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("pthread_cond_t")
                     .field("value", &self.value)
                     // FIXME: .field("__reserved", &self.__reserved)
@@ -181,8 +181,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for pthread_cond_t {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for pthread_cond_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.value.hash(state);
                 self.__reserved.hash(state);
             }
@@ -205,8 +205,8 @@ cfg_if! {
 
         impl Eq for pthread_rwlock_t {}
 
-        impl core::fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for pthread_rwlock_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("pthread_rwlock_t")
                     .field("numLocks", &self.numLocks)
                     .field("writerThreadId", &self.writerThreadId)
@@ -218,8 +218,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for pthread_rwlock_t {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for pthread_rwlock_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.numLocks.hash(state);
                 self.writerThreadId.hash(state);
                 self.pendingReaders.hash(state);

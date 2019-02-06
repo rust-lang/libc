@@ -219,22 +219,18 @@ s! {
         pub p_aliases: *mut *mut ::c_char,
         pub p_proto: ::c_int,
     }
+
+    #[cfg(not(target_os = "netbsd"))]
+    pub struct in_addr {
+        pub s_addr: in_addr_t,
+    }
 }
 
-cfg_if! {
-    if #[cfg(target_os = "netbsd")] {
-        s_no_extra_traits! {
-            #[repr(packed)]
-            pub struct in_addr {
-                pub s_addr: in_addr_t,
-            }
-        }
-    } else {
-        s! {
-            pub struct in_addr {
-                pub s_addr: in_addr_t,
-            }
-        }
+s_no_extra_traits! {
+    #[cfg(target_os = "netbsd")]
+    #[repr(packed)]
+    pub struct in_addr {
+        pub s_addr: in_addr_t,
     }
 }
 
@@ -1182,7 +1178,7 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(libc_core_cvoid)] {
-        pub use core::ffi::c_void;
+        pub use ::ffi::c_void;
     } else {
         // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
         // enable more optimization opportunities around it recognizing things

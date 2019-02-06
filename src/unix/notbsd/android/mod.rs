@@ -258,8 +258,8 @@ cfg_if! {
 
         impl Eq for dirent {}
 
-        impl core::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_off", &self.d_off)
@@ -270,8 +270,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for dirent {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for dirent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
                 self.d_off.hash(state);
                 self.d_reclen.hash(state);
@@ -296,8 +296,8 @@ cfg_if! {
 
         impl Eq for dirent64 {}
 
-        impl core::fmt::Debug for dirent64 {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for dirent64 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("dirent64")
                     .field("d_ino", &self.d_ino)
                     .field("d_off", &self.d_off)
@@ -308,8 +308,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for dirent64 {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for dirent64 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
                 self.d_off.hash(state);
                 self.d_reclen.hash(state);
@@ -330,8 +330,8 @@ cfg_if! {
 
         impl Eq for siginfo_t {}
 
-        impl core::fmt::Debug for siginfo_t {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for siginfo_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("siginfo_t")
                     .field("si_signo", &self.si_signo)
                     .field("si_errno", &self.si_errno)
@@ -342,8 +342,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for siginfo_t {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for siginfo_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.si_signo.hash(state);
                 self.si_errno.hash(state);
                 self.si_code.hash(state);
@@ -370,8 +370,8 @@ cfg_if! {
 
         impl Eq for lastlog {}
 
-        impl core::fmt::Debug for lastlog {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for lastlog {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("lastlog")
                     .field("ll_time", &self.ll_time)
                     .field("ll_line", &self.ll_line)
@@ -380,8 +380,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for lastlog {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for lastlog {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ll_time.hash(state);
                 self.ll_line.hash(state);
                 self.ll_host.hash(state);
@@ -418,8 +418,8 @@ cfg_if! {
 
         impl Eq for utmp {}
 
-        impl core::fmt::Debug for utmp {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for utmp {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utmp")
                     .field("ut_type", &self.ut_type)
                     .field("ut_pid", &self.ut_pid)
@@ -436,8 +436,8 @@ cfg_if! {
             }
         }
 
-        impl core::hash::Hash for utmp {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for utmp {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
                 self.ut_pid.hash(state);
                 self.ut_line.hash(state);

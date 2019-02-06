@@ -37,7 +37,7 @@ pub const INT_MAX: c_int = 2147483647;
 
 cfg_if! {
     if #[cfg(libc_core_cvoid)] {
-        pub use core::ffi::c_void;
+        pub use ::ffi::c_void;
     } else {
         // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
         // enable more optimization opportunities around it recognizing things

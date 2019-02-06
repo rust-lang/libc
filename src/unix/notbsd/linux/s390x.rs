@@ -346,16 +346,16 @@ cfg_if! {
 
         impl Eq for fpreg_t {}
 
-        impl core::fmt::Debug for fpreg_t {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        impl ::fmt::Debug for fpreg_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("fpreg_t")
                     .field("d", &self.d)
                     .finish()
             }
         }
 
-        impl core::hash::Hash for fpreg_t {
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for fpreg_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.d.to_bits().hash(state);
             }
         }
