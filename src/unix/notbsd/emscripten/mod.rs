@@ -43,22 +43,6 @@ impl ::dox::Clone for fpos64_t {
 }
 
 s! {
-    pub struct dirent {
-        pub d_ino: ::ino_t,
-        pub d_off: ::off_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -251,23 +235,6 @@ s! {
         pub l_pid: ::pid_t,
     }
 
-    pub struct sysinfo {
-        pub uptime: ::c_ulong,
-        pub loads: [::c_ulong; 3],
-        pub totalram: ::c_ulong,
-        pub freeram: ::c_ulong,
-        pub sharedram: ::c_ulong,
-        pub bufferram: ::c_ulong,
-        pub totalswap: ::c_ulong,
-        pub freeswap: ::c_ulong,
-        pub procs: ::c_ushort,
-        pub pad: ::c_ushort,
-        pub totalhigh: ::c_ulong,
-        pub freehigh: ::c_ulong,
-        pub mem_unit: ::c_uint,
-        pub __reserved: [::c_char; 256],
-    }
-
     pub struct pthread_attr_t {
         __size: [u32; 11]
     }
@@ -439,6 +406,44 @@ s! {
         pub stamp: ::c_ulong,
         pub updated: ::c_ulong,
         pub ha: [::c_uchar; ::MAX_ADDR_LEN],
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct dirent {
+        pub d_ino: ::ino_t,
+        pub d_off: ::off_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sysinfo {
+        pub uptime: ::c_ulong,
+        pub loads: [::c_ulong; 3],
+        pub totalram: ::c_ulong,
+        pub freeram: ::c_ulong,
+        pub sharedram: ::c_ulong,
+        pub bufferram: ::c_ulong,
+        pub totalswap: ::c_ulong,
+        pub freeswap: ::c_ulong,
+        pub procs: ::c_ushort,
+        pub pad: ::c_ushort,
+        pub totalhigh: ::c_ulong,
+        pub freehigh: ::c_ulong,
+        pub mem_unit: ::c_uint,
+        pub __reserved: [::c_char; 256],
     }
 }
 

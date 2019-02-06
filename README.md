@@ -10,7 +10,7 @@ Raw FFI bindings to platform libraries like `libc`.
 [![Documentation](https://docs.rs/libc/badge.svg)](https://docs.rs/libc)
 ![License](https://img.shields.io/crates/l/libc.svg**
 
-**NOTE:** The minimum supported Rust version is **Rust 1.25.0** . APIs requiring
+**NOTE:** The minimum supported Rust version is **Rust 1.13.0** . APIs requiring
 newer Rust features are only available on newer Rust versions:
 
 | Feature                 | Version |

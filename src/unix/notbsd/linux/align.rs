@@ -12,7 +12,8 @@ s! {
                        all(target_arch = "aarch64", target_env = "musl"))),
                repr(align(8)))]
     pub struct pthread_mutexattr_t {
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
+        #[doc(hidden)]
+        pub size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
     #[cfg_attr(any(target_env = "musl", target_pointer_width = "32"),
@@ -21,12 +22,14 @@ s! {
                    target_pointer_width = "64"),
                repr(align(8)))]
     pub struct pthread_rwlockattr_t {
-        size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
+        #[doc(hidden)]
+        pub size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
     }
 
     #[repr(align(4))]
     pub struct pthread_condattr_t {
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
+        #[doc(hidden)]
+        pub size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
     }
 }
 
@@ -44,7 +47,8 @@ s_no_extra_traits! {
                    not(target_arch = "x86")),
                repr(align(8)))]
     pub struct pthread_cond_t {
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
+        #[doc(hidden)]
+        pub size: [u8; ::__SIZEOF_PTHREAD_COND_T],
     }
 
     #[cfg_attr(all(target_pointer_width = "32",
@@ -62,7 +66,8 @@ s_no_extra_traits! {
                            target_arch = "x86"))),
                repr(align(8)))]
     pub struct pthread_mutex_t {
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
+        #[doc(hidden)]
+        pub size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
     }
 
     #[cfg_attr(all(target_pointer_width = "32",
@@ -80,6 +85,6 @@ s_no_extra_traits! {
                            target_arch = "x86"))),
                repr(align(8)))]
     pub struct pthread_rwlock_t {
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
+        pub size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
     }
 }
