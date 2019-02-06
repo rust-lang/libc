@@ -1,6 +1,8 @@
 //! Compare libc's CMSG(3) family of functions against the actual C macros, for
 //! various inputs.
 
+#![allow(deprecated)]
+
 extern crate libc;
 
 #[cfg(unix)]
