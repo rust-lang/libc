@@ -4,57 +4,101 @@ sudo: required
 dist: xenial
 services: docker
 
+stages:
+  - min-checks-and-tier1
+  - other-targets
+
 matrix:
   include:
     - name: "Documentation"
       env: TARGET=x86_64-unknown-linux-gnu
       script: sh ci/dox.sh
       install: true
+      stage: min-checks-and-tier1
     - name: "Shellcheck"
       install: true
       script:
         - shellcheck --version
         - shellcheck ci/*.sh
-
+      stage: min-checks-and-tier1
+    - name: "Style"
+      install: true
+      script: rustc ci/style.rs && ./style src
+      stage: min-checks-and-tier1
     - env: TARGET=x86_64-unknown-linux-gnu
+      stage: min-checks-and-tier1
     - env: TARGET=i686-unknown-linux-gnu
+      stage: min-checks-and-tier1
+    - env: TARGET=x86_64-apple-darwin
+      os: osx
+      osx_image: xcode10
+      stage: min-checks-and-tier1
+    - env: TARGET=i686-apple-darwin
+      os: osx
+      osx_image: xcode10
+      stage: min-checks-and-tier1
+
     - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
-    - os: osx
-      env: TARGET=x86_64-apple-darwin
-      osx_image: xcode10
-    - os: osx
-      env: TARGET=i686-apple-darwin
-      osx_image: xcode10
+      stage: other-targets
     - env: TARGET=arm-linux-androideabi
+      stage: other-targets
     - env: TARGET=aarch64-linux-android
+      stage: other-targets
     # FIXME(#826) should reenable
     #- env: TARGET=i686-linux-android
+    #  stage: other-targets
     - env: TARGET=x86_64-linux-android
+      stage: other-targets
     - env: TARGET=x86_64-unknown-linux-musl
+      stage: other-targets
     - env: TARGET=i686-unknown-linux-musl
+      stage: other-targets
     - env: TARGET=arm-unknown-linux-gnueabihf
+      stage: other-targets
     - env: TARGET=arm-unknown-linux-musleabihf
+      stage: other-targets
     - env: TARGET=aarch64-unknown-linux-gnu
+      stage: other-targets
     - env: TARGET=aarch64-unknown-linux-musl
+      stage: other-targets
     - env: TARGET=powerpc-unknown-linux-gnu
+      stage: other-targets
     - env: TARGET=powerpc64-unknown-linux-gnu
+      stage: other-targets
     - env: TARGET=powerpc64le-unknown-linux-gnu
+      stage: other-targets
     - env: TARGET=mips-unknown-linux-musl
+      stage: other-targets
     - env: TARGET=mipsel-unknown-linux-musl
+      stage: other-targets
     - env: TARGET=mips64-unknown-linux-gnuabi64
+      stage: other-targets
     - env: TARGET=mips64el-unknown-linux-gnuabi64
+      stage: other-targets
     - env: TARGET=mips-unknown-linux-gnu
+      stage: other-targets
     - env: TARGET=s390x-unknown-linux-gnu
+      stage: other-targets
     - env: TARGET=sparc64-unknown-linux-gnu
+      stage: other-targets
     - env: TARGET=asmjs-unknown-emscripten
+      stage: other-targets
     - env: TARGET=wasm32-unknown-emscripten
+      stage: other-targets
     - env: TARGET=wasm32-unknown-unknown BUILD_ONLY=1
+      stage: other-targets
     - env: TARGET=x86_64-unknown-freebsd BUILD_ONLY=1
+      stage: other-targets
     - env: TARGET=x86_64-unknown-openbsd BUILD_ONLY=1
+      stage: other-targets
     - env: TARGET=x86_64-unknown-bitrig BUILD_ONLY=1
+      stage: other-targets
     - env: TARGET=x86_64-unknown-netbsd BUILD_ONLY=1
+      stage: other-targets
     - env: TARGET=x86_64-unknown-dragonfly BUILD_ONLY=1
+      stage: other-targets
     - env: TARGET=x86_64-unknown-solaris BUILD_ONLY=1
+      stage: other-targets
 
   allow_failures:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
@@ -88,7 +132,7 @@ script:
       export CARGO_TARGET_DIR=`pwd`/target;
       sh ci/run.sh $TARGET;
     fi
-  - rustc ci/style.rs && ./style src
+  
 env:
   global:
     secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="

@@ -711,7 +711,6 @@ cfg_if! {
             }
         }
 
-
         impl PartialEq for dirent64 {
             fn eq(&self, other: &dirent64) -> bool {
                 self.d_ino == other.d_ino
@@ -750,7 +749,6 @@ cfg_if! {
             }
         }
 
-
         impl PartialEq for pthread_cond_t {
             fn eq(&self, other: &pthread_cond_t) -> bool {
                 self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
@@ -772,7 +770,6 @@ cfg_if! {
                 self.size.hash(state);
             }
         }
-
 
         impl PartialEq for pthread_mutex_t {
             fn eq(&self, other: &pthread_mutex_t) -> bool {
@@ -796,7 +793,6 @@ cfg_if! {
             }
         }
 
-
         impl PartialEq for pthread_rwlock_t {
             fn eq(&self, other: &pthread_rwlock_t) -> bool {
                 self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
@@ -812,7 +808,7 @@ cfg_if! {
                     .finish()
             }
         }
-        
+
         impl std::hash::Hash for pthread_rwlock_t {
             fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);

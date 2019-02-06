@@ -615,7 +615,8 @@ cfg_if! {
                 }
                 impl Eq for semun {}
                 impl std::fmt::Debug for semun {
-                    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    fn fmt(&self, f: &mut std::fmt::Formatter)
+                           -> std::fmt::Result {
                         f.debug_struct("semun")
                             .field("val", unsafe { &self.val })
                             .finish()

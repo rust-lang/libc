@@ -290,7 +290,6 @@ cfg_if! {
             }
         }
 
-
         impl PartialEq for ucontext_t {
             fn eq(&self, other: &ucontext_t) -> bool {
                 self.uc_flags == other.uc_flags
