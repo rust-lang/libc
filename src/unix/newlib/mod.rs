@@ -247,103 +247,10 @@ s! {
         __size: [u64; 7]
     }
 
-    #[cfg_attr(all(libc_align,
-                   target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc")),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc")))),
-               repr(align(8)))]
-    pub struct pthread_mutex_t { // Unverified
-        #[cfg(all(not(libc_align),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(libc_align,
-                      target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    #[cfg_attr(all(libc_align,
-                   target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc")),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc")))),
-               repr(align(8)))]
-    pub struct pthread_rwlock_t { // Unverified
-        #[cfg(all(not(libc_align),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(libc_align,
-                      target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
-    }
-
-    #[cfg_attr(all(libc_align,
-                   any(target_pointer_width = "32",
-                       target_arch = "x86_64", target_arch = "powerpc64",
-                       target_arch = "mips64", target_arch = "s390x",
-                       target_arch = "sparc64")),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   not(any(target_pointer_width = "32",
-                           target_arch = "x86_64", target_arch = "powerpc64",
-                           target_arch = "mips64", target_arch = "s390x",
-                           target_arch = "sparc64"))),
-               repr(align(8)))]
-    pub struct pthread_mutexattr_t { // Unverified
-        #[cfg(all(not(libc_align),
-                  any(target_arch = "x86_64", target_arch = "powerpc64",
-                      target_arch = "mips64", target_arch = "s390x",
-                      target_arch = "sparc64")))]
-        __align: [::c_int; 0],
-        #[cfg(all(not(libc_align),
-                  not(any(target_arch = "x86_64", target_arch = "powerpc64",
-                          target_arch = "mips64", target_arch = "s390x",
-                          target_arch = "sparc64"))))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
     pub struct pthread_rwlockattr_t { // Unverified
         __lockkind: ::c_int,
         __pshared: ::c_int,
     }
-
-    #[cfg_attr(libc_align, repr(align(8)))]
-    pub struct pthread_cond_t { // Unverified
-        #[cfg(not(libc_align))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
-    }
-
-    #[cfg_attr(libc_align, repr(align(4)))]
-    pub struct pthread_condattr_t { // Unverified
-        #[cfg(not(libc_align))]
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
-    }
-
 }
 
 // unverified constants
@@ -751,5 +658,15 @@ cfg_if! {
         // Only tested on ARM so far. Other platforms might have different
         // definitions for types and constants.
         pub use target_arch_not_implemented;
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
     }
 }

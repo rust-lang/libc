@@ -77,51 +77,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-    #[cfg_attr(libc_align, repr(align(4)))]
-    pub struct pthread_mutex_t {
-        #[cfg(not(libc_align))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    #[cfg_attr(libc_align, repr(align(4)))]
-    pub struct pthread_rwlock_t {
-        #[cfg(not(libc_align))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
-    }
-
-    #[cfg_attr(libc_align, repr(align(4)))]
-    pub struct pthread_mutexattr_t {
-        #[cfg(not(libc_align))]
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    #[cfg_attr(libc_align, repr(align(4)))]
-    pub struct pthread_rwlockattr_t {
-        #[cfg(not(libc_align))]
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
-    }
-
-    #[cfg_attr(all(libc_align, target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align, target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct pthread_cond_t {
-        #[cfg(not(libc_align))]
-        __align: [*const ::c_void; 0],
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
-    }
-
-    #[cfg_attr(libc_align, repr(align(4)))]
-    pub struct pthread_condattr_t {
-        #[cfg(not(libc_align))]
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
-    }
-
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,
@@ -1701,3 +1656,14 @@ extern {
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
 }
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
+    }
+}
+

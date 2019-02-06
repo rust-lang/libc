@@ -60,8 +60,19 @@ matrix:
       rust: nightly
       os: osx
       osx_image: xcode10
+    - name: "Build Stable Rust 1.13.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.13.0
+    - name: "Build Stable Rust 1.19.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.19.0
+    - name: "Build Stable Rust 1.24.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.24.0
     - name: "Build Stable Rust 1.25.0"
-      env: RUST=1.25.0
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.25.0
@@ -69,8 +80,25 @@ matrix:
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.30.0
+    - name: "Build Stable Rust 1.13.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.13.0
+      os: osx
+      osx_image: xcode10
+    - name: "Build Stable Rust 1.19.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.19.0
+      os: osx
+      osx_image: xcode10
+    - name: "Build Stable Rust 1.24.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.24.0
+      os: osx
+      osx_image: xcode10
     - name: "Build Stable Rust 1.25.0"
-      env: RUST=1.25.0
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.25.0
@@ -138,7 +166,7 @@ matrix:
       stage: tier2
     - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
       stage: tier2
-    - env: TARGET=x86_64-unknown-linux-mussl
+    - env: TARGET=x86_64-unknown-linux-musl
       stage: tier2
 
   allow_failures:

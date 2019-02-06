@@ -137,13 +137,6 @@ s! {
         __reserved: [c_long; 16],
     }
 
-    #[cfg_attr(libc_align, repr(align(4)))]
-    pub struct in6_addr {
-        pub s6_addr: [u8; 16],
-        #[cfg(not(libc_align))]
-        __align: [u32; 0],
-    }
-
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
         #[cfg(target_os = "android")]
@@ -1175,5 +1168,16 @@ cfg_if! {
             #[doc(hidden)]
             __variant2,
         }
+    }
+}
+
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
     }
 }

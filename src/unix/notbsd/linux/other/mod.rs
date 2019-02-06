@@ -121,20 +121,6 @@ s! {
         pub l_pid: ::pid_t,
     }
 
-    // FIXME this is actually a union
-    #[cfg_attr(all(libc_align, target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align, target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct sem_t {
-        #[cfg(target_pointer_width = "32")]
-        __size: [::c_char; 16],
-        #[cfg(target_pointer_width = "64")]
-        __size: [::c_char; 32],
-        #[cfg(not(libc_align))]
-        __align: [::c_long; 0],
-    }
-
     pub struct mallinfo {
         pub arena: ::c_int,
         pub ordblks: ::c_int,
@@ -999,5 +985,15 @@ cfg_if! {
         pub use self::b64::*;
     } else {
         // Unknown target_arch
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
     }
 }

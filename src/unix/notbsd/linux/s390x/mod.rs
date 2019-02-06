@@ -246,17 +246,6 @@ s! {
         pub l_pid: ::pid_t,
     }
 
-    // FIXME this is actually a union
-    #[cfg_attr(all(libc_align, target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align, target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct sem_t {
-        __size: [::c_char; 32],
-        #[cfg(not(libc_align))]
-        __align: [::c_long; 0],
-    }
-
     pub struct __psw_t {
         pub mask: u64,
         pub addr: u64,
@@ -1361,4 +1350,14 @@ extern {
                        argc: ::c_int, ...);
     pub fn swapcontext(uocp: *mut ucontext_t,
                        ucp: *const ucontext_t) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
+    }
 }

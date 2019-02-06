@@ -490,47 +490,6 @@ s! {
         pub ifa_data: *mut ::c_void
     }
 
-    #[cfg_attr(all(libc_align,
-                   any(target_pointer_width = "32",
-                       target_arch = "x86_64",
-                       all(target_arch = "aarch64", target_env = "musl"))),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   not(any(target_pointer_width = "32",
-                           target_arch = "x86_64",
-                           all(target_arch = "aarch64", target_env = "musl")))),
-               repr(align(8)))]
-    pub struct pthread_mutexattr_t {
-        #[cfg(all(not(libc_align),
-                  any(target_arch = "x86_64",
-                      all(target_arch = "aarch64", target_env = "musl"))))]
-        __align: [::c_int; 0],
-        #[cfg(all(not(libc_align),
-                  not(any(target_arch = "x86_64",
-                          all(target_arch = "aarch64", target_env = "musl")))))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    #[cfg_attr(all(libc_align,
-                   target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct pthread_rwlockattr_t {
-        #[cfg(not(libc_align))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
-    }
-
-    #[cfg_attr(libc_align, repr(align(4)))]
-    pub struct pthread_condattr_t {
-        #[cfg(not(libc_align))]
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
-    }
-
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,
@@ -1022,77 +981,6 @@ s_no_extra_traits! {
         pub d_reclen: ::c_ushort,
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
-    }
-
-    #[allow(missing_debug_implementations)]
-    #[cfg_attr(all(libc_align,
-                   target_pointer_width = "32",
-                   any(target_arch = "arm",
-                       target_arch = "x86_64")),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "arm",
-                               target_arch = "x86_64")))),
-               repr(align(8)))]
-    pub struct pthread_mutex_t {
-        #[cfg(all(not(libc_align),
-                  any(target_arch = "arm",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(libc_align,
-                      target_arch = "arm",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    #[allow(missing_debug_implementations)]
-    #[cfg_attr(all(libc_align,
-                   target_pointer_width = "32",
-                   any(target_arch = "arm",
-                       target_arch = "x86_64")),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "arm",
-                               target_arch = "x86_64")))),
-               repr(align(8)))]
-    pub struct pthread_rwlock_t {
-        #[cfg(all(not(libc_align),
-                  any(target_arch = "arm",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(libc_align,
-                      target_arch = "arm",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
-    }
-
-    #[allow(missing_debug_implementations)]
-    #[cfg_attr(all(libc_align,
-                   target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   target_pointer_width = "64"),
-               repr(align(8)))]
-    #[cfg_attr(all(libc_align,
-                   target_arch = "x86"),
-               repr(align(4)))]
-    #[cfg_attr(all(libc_align,
-                   not(target_arch = "x86")),
-               repr(align(8)))]
-    pub struct pthread_cond_t {
-        #[cfg(all(not(libc_align), target_env = "musl"))]
-        __align: [*const ::c_void; 0],
-        #[cfg(not(any(libc_align, target_env = "musl")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
     }
 }
 
@@ -4117,6 +4005,16 @@ cfg_if! {
         pub use self::x86_64::*;
     } else {
         // Unknown target_arch
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
     }
 }
 
