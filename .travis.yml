@@ -111,6 +111,7 @@ install:
   - rustup install 1.13.0
   - rustup install 1.19.0
   - rustup install 1.24.0
+  - rustup install 1.25.0
   - rustup install 1.30.0
   - rustup target add $TARGET || true
   - rustup target add $TARGET --toolchain beta || true
@@ -118,6 +119,7 @@ install:
   - rustup target add $TARGET --toolchain 1.13.0 || true
   - rustup target add $TARGET --toolchain 1.19.0 || true
   - rustup target add $TARGET --toolchain 1.24.0 || true
+  - rustup target add $TARGET --toolchain 1.25.0 || true
   - rustup target add $TARGET --toolchain 1.30.0 || true
 
 script:

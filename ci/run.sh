@@ -82,7 +82,7 @@ fi
 
 command -v cargo
 
-build_types="+nightly +beta +stable +1.13.0 +1.19.0 +1.24.0 +1.30.0"
+build_types="+nightly +beta +stable +1.13.0 +1.19.0 +1.24.0 +1.25.0 +1.30.0"
 for build_type in $build_types;
 do
     opt=
@@ -111,16 +111,18 @@ do
                   --target "${TARGET}"
         fi
 
-        # Test the `extra_traits` feature; requires Rust >= 1.25.0
-        if [ "$build_type" != "+1.13.0" ]; then
-            cargo "$build_type" test $opt \
-                  --features extra_traits \
-                  --manifest-path libc-test/Cargo.toml \
-                  --target "${TARGET}"
-        fi
-
         cargo "$build_type" test $opt \
              --manifest-path libc-test/Cargo.toml \
              --target "${TARGET}"
+    fi
+
+    # Test the `extra_traits` feature; requires Rust >= 1.25.0
+    # No need to run libc-test, only check that libc builds.
+    if [ "$build_type" != "+1.13.0" ] && \
+           [ "$build_type" != "+1.19.0" ] && \
+           [ "$build_type" != "+1.24.0" ]; then
+        cargo "$build_type" build $opt \
+              --features extra_traits \
+              --target "${TARGET}"
     fi
 done
