@@ -26,17 +26,6 @@ s! {
         pub int_n_sign_posn: ::c_char,
     }
 
-    pub union mount_info {
-        pub ufs_args: ufs_args,
-        pub mfs_args: mfs_args,
-        pub nfs_args: nfs_args,
-        pub iso_args: iso_args,
-        pub msdosfs_args: msdosfs_args,
-        pub ntfs_args: ntfs_args,
-        pub tmpfs_args: tmpfs_args,
-        align: [::c_char; 160],
-    }
-
     pub struct ufs_args {
         pub fspec: *mut ::c_char,
         pub export_info: export_args,
@@ -164,6 +153,19 @@ s! {
         pub f_mntfromname: [::c_char; 90],
         pub f_mntfromspec: [::c_char; 90],
         pub mount_info: mount_info,
+    }
+}
+
+s_no_extra_traits! {
+    pub union mount_info {
+        pub ufs_args: ufs_args,
+        pub mfs_args: mfs_args,
+        pub nfs_args: nfs_args,
+        pub iso_args: iso_args,
+        pub msdosfs_args: msdosfs_args,
+        pub ntfs_args: ntfs_args,
+        pub tmpfs_args: tmpfs_args,
+        align: [::c_char; 160],
     }
 }
 
