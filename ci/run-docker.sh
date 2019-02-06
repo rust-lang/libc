@@ -27,6 +27,7 @@ run() {
       --env RUNNING_IN_DOCKER=1 \
       --env BUILD_ONLY="${BUILD_ONLY}" \
       --env NIGHTLY_ONLY="${NIGHTLY_ONLY}" \
+      --env NO_STD="${NO_STD}" \
       --volume "$(rustc --print sysroot)":/rust:ro \
       --volume "${HOME}"/.rustup:/.rustup:ro \
       --env RUSTUP_HOME=/.rustup \

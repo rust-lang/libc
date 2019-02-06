@@ -214,14 +214,9 @@ install:
     fi
 
 script:
-  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
-      if [[ $BUILD_ONLY = "1" ]]; then
-          sh ci/run.sh $TARGET;
-      else 
-          sh ci/run-docker.sh $TARGET;
-      fi
+  - if [[ $TRAVIS_OS_NAME = "linux" ]] && [[ $BUILD_ONLY != "1" ]]; then
+      sh ci/run-docker.sh $TARGET;
     else
-      export CARGO_TARGET_DIR=`pwd`/target;
       sh ci/run.sh $TARGET;
     fi
   
