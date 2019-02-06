@@ -7,8 +7,7 @@ services: docker
 stages:
   - tools-and-build-latest
   - tier1-and-backwards-compat
-  - tier2-1
-  - tier2-2
+  - tier2
 
 matrix:
   include:
@@ -134,51 +133,49 @@ matrix:
 
     # Tier 2 targets
     - env: TARGET=aarch64-linux-android
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=aarch64-unknown-linux-gnu
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=aarch64-unknown-linux-musl
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=arm-linux-androideabi
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=arm-unknown-linux-gnueabihf
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=arm-unknown-linux-musleabihf
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=asmjs-unknown-emscripten
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=i686-unknown-linux-musl
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=mips-unknown-linux-gnu
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=mips-unknown-linux-musl
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=mips64-unknown-linux-gnuabi64
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=mips64el-unknown-linux-gnuabi64
-      stage: tier2-1
+      stage: tier2
     - env: TARGET=mipsel-unknown-linux-musl
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=powerpc-unknown-linux-gnu
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=powerpc64-unknown-linux-gnu
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=powerpc64le-unknown-linux-gnu
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=s390x-unknown-linux-gnu
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=sparc64-unknown-linux-gnu
-      stage: tier2-2
-    - env: TARGaarch64-unknown-cloudabiET=sparcv9-sun-solaris
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=wasm32-unknown-emscripten
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=x86_64-linux-android
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
-      stage: tier2-2
+      stage: tier2
     - env: TARGET=x86_64-unknown-linux-mussl
-      stage: tier2-2
+      stage: tier2
 
   allow_failures:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
