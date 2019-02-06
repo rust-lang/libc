@@ -3,13 +3,11 @@ use std::process::Command;
 use std::str;
 
 fn main() {
-
-    let rustc_minor_ver
-        = rustc_minor_version().expect("Failed to get rustc version");
-    let rustc_dep_of_std
-        = std::env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
-    let align_cargo_feature
-        = std::env::var("CARGO_FEATURE_ALIGN").is_ok();
+    let rustc_minor_ver =
+        rustc_minor_version().expect("Failed to get rustc version");
+    let rustc_dep_of_std =
+        std::env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
+    let align_cargo_feature = std::env::var("CARGO_FEATURE_ALIGN").is_ok();
 
     // Rust >= 1.19 supports unions:
     if rustc_minor_ver >= 19 || rustc_dep_of_std {

@@ -42,7 +42,8 @@ macro_rules! cfg_if {
     // Collects all the negated cfgs in a list at the beginning and after the
     // semicolon is all the remaining items
     (@__items ($($not:meta,)*) ; ) => {};
-    (@__items ($($not:meta,)*) ; ( ($($m:meta),*) ($($it:item)*) ), $($rest:tt)*) => {
+    (@__items ($($not:meta,)*) ; ( ($($m:meta),*) ($($it:item)*) ),
+     $($rest:tt)*) => {
         // Emit all items within one block, applying an approprate #[cfg]. The
         // #[cfg] will require all `$m` matchers specified and must also negate
         // all previous matchers.
@@ -141,7 +142,8 @@ macro_rules! __item {
 
 #[allow(unused_macros)]
 macro_rules! align_const {
-    ($($(#[$attr:meta])* pub const $name:ident : $t1:ty = $t2:ident { $($field:tt)* };)*) => ($(
+    ($($(#[$attr:meta])* pub const $name:ident :
+       $t1:ty = $t2:ident { $($field:tt)* };)*) => ($(
         #[cfg(libc_align)]
         $(#[$attr])*
         pub const $name : $t1 = $t2 {

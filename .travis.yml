@@ -28,8 +28,10 @@ matrix:
         - shellcheck ci/*.sh
       stage: min-checks-and-tier1
     - name: "Style"
-      install: true
-      script: rustc ci/style.rs && ./style src
+      install: rustup component add rustfmt-preview
+      script:
+        - rustc ci/style.rs && ./style src
+        - cargo fmt --all -- --check
       stage: min-checks-and-tier1
 
     - env: TARGET=i686-apple-darwin
