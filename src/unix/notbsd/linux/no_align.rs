@@ -16,7 +16,7 @@ s! {
     pub struct pthread_rwlockattr_t {
         #[cfg(target_env = "musl")]
         __align: [::c_int; 0],
-        #[not(target_env = "musl")]
+        #[cfg(not(target_env = "musl"))]
         __align: [::c_long; 0],
         pub size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
     }
