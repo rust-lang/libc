@@ -107,12 +107,12 @@ do
     fi
 
     # Always test that libc builds without any default features (no libstd)
-    cargo "${build_type}" build $opt --no-default-features --target "${TARGET}"
+    cargo "${build_type}" build $opt --no-default-features --target "${TARGET}" -vv
 
     # Always test that libc builds with default features (e.g. libstd)
     # if the target supports libstd
     if [ "$NO_STD" != "1" ]; then
-        cargo "${build_type}" build $opt --target "${TARGET}"
+        cargo "${build_type}" build $opt --target "${TARGET}" -vv
     fi
 
     # Always test that libc builds with the `extra_traits` feature if Rust >=
@@ -123,13 +123,13 @@ do
         cargo "${build_type}" build $opt \
               --no-default-features \
               --features extra_traits \
-              --target "${TARGET}"
+              --target "${TARGET}" -vv
 
         # Also test that it builds with `extra_traits` and default features:
         if [ "$NO_STD" != "1" ]; then
             cargo "${build_type}" build $opt \
                   --features extra_traits \
-                  --target "${TARGET}"
+                  --target "${TARGET}" -vv
         fi
     fi
 
@@ -138,12 +138,12 @@ do
         cargo "${build_type}" test $opt \
               --no-default-features \
               --manifest-path libc-test/Cargo.toml \
-              --target "${TARGET}"
+              --target "${TARGET}" -vv
 
         if [ "$NO_STD" != "1" ]; then
             cargo "${build_type}" test $opt \
                   --manifest-path libc-test/Cargo.toml \
-                  --target "${TARGET}"
+                  --target "${TARGET}" -vv
         fi
     fi
 done
