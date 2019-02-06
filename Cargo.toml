@@ -7,4 +7,4 @@ keywords = ["c", "types", "bindgen", "ffi"]
 license = "MIT OR Apache-2.0"
 name = "cty"
 repository = "https://github.com/japaric/cty"
-version = "0.1.5"
+version = "0.2.0"

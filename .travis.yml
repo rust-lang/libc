@@ -2,6 +2,10 @@ language: rust
 
 matrix:
   include:
+      # MSRV
+    - env: TARGET=x86_64-unknown-linux-gnu
+      rust: 1.30.0
+
     - env: TARGET=x86_64-unknown-linux-gnu
       rust: stable
 
