@@ -86,64 +86,22 @@ fi
 
 command -v cargo
 
-build_types="+nightly +beta +stable +1.13.0 +1.19.0 +1.24.0 +1.25.0 +1.30.0"
-if [ "${NIGHTLY_ONLY}" = "1" ]; then
-    build_types="+nightly"
+opt=
+if [ "${TARGET}" = "x86_64-unknown-linux-gnux32" ]; then
+    # FIXME: x86_64-unknown-linux-gnux32 fail to compile without
+    # --release
+    #
+    # See https://github.com/rust-lang/rust/issues/45417
+    opt="--release"
 fi
-for build_type in $build_types;
-do
-    opt=
-    if [ "${TARGET}" = "x86_64-unknown-linux-gnux32" ]; then
-        # FIXME: x86_64-unknown-linux-gnux32 fail to compile without
-        # --release
-        #
-        # See https://github.com/rust-lang/rust/issues/45417
-        opt="--release"
 
-        # x86_64-unknown-linux-gnux32 is only available on nightly:
-        if [ "${build_type}" != "nightly" ]; then
-            continue
-        fi
-    fi
+cargo test $opt \
+      --no-default-features \
+      --manifest-path libc-test/Cargo.toml \
+      --target "${TARGET}" -vv
 
-    # Always test that libc builds without any default features (no libstd)
-    cargo "${build_type}" build $opt --no-default-features --target "${TARGET}" -vv
-
-    # Always test that libc builds with default features (e.g. libstd)
-    # if the target supports libstd
-    if [ "$NO_STD" != "1" ]; then
-        cargo "${build_type}" build $opt --target "${TARGET}" -vv
-    fi
-
-    # Always test that libc builds with the `extra_traits` feature if Rust >=
-    # 1.25.0
-    if [ "${build_type}" != "+1.13.0" ] && \
-           [ "${build_type}" != "+1.19.0" ] && \
-           [ "${build_type}" != "+1.24.0" ]; then
-        cargo "${build_type}" build $opt \
-              --no-default-features \
-              --features extra_traits \
-              --target "${TARGET}" -vv
-
-        # Also test that it builds with `extra_traits` and default features:
-        if [ "$NO_STD" != "1" ]; then
-            cargo "${build_type}" build $opt \
-                  --features extra_traits \
-                  --target "${TARGET}" -vv
-        fi
-    fi
-
-    # If libc-test should be run, do so only with Rust nightly w/o libstd:
-    if [ "${BUILD_ONLY}" != "1" ] && [ "${build_type}" = "+nightly" ]; then
-        cargo "${build_type}" test $opt \
-              --no-default-features \
-              --manifest-path libc-test/Cargo.toml \
-              --target "${TARGET}" -vv
-
-        if [ "$NO_STD" != "1" ]; then
-            cargo "${build_type}" test $opt \
-                  --manifest-path libc-test/Cargo.toml \
-                  --target "${TARGET}" -vv
-        fi
-    fi
-done
+if [ "$NO_STD" != "1" ]; then
+    cargo test $opt \
+          --manifest-path libc-test/Cargo.toml \
+          --target "${TARGET}" -vv
+fi
