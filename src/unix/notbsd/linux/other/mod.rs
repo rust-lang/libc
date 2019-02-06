@@ -270,8 +270,8 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl std::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_type", &self.ut_type)
                     .field("ut_pid", &self.ut_pid)
@@ -288,8 +288,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for utmpx {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for utmpx {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
                 self.ut_pid.hash(state);
                 self.ut_line.hash(state);

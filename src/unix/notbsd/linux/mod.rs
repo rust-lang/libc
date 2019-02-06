@@ -689,8 +689,8 @@ cfg_if! {
 
         impl Eq for dirent {}
 
-        impl std::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_off", &self.d_off)
@@ -701,8 +701,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for dirent {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for dirent {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
                 self.d_off.hash(state);
                 self.d_reclen.hash(state);
@@ -727,8 +727,8 @@ cfg_if! {
 
         impl Eq for dirent64 {}
 
-        impl std::fmt::Debug for dirent64 {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for dirent64 {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("dirent64")
                     .field("d_ino", &self.d_ino)
                     .field("d_off", &self.d_off)
@@ -739,8 +739,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for dirent64 {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for dirent64 {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
                 self.d_off.hash(state);
                 self.d_reclen.hash(state);
@@ -757,16 +757,16 @@ cfg_if! {
 
         impl Eq for pthread_cond_t {}
 
-        impl std::fmt::Debug for pthread_cond_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for pthread_cond_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("pthread_cond_t")
                 // FIXME: .field("size", &self.size)
                     .finish()
             }
         }
 
-        impl std::hash::Hash for pthread_cond_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for pthread_cond_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
             }
         }
@@ -779,16 +779,16 @@ cfg_if! {
 
         impl Eq for pthread_mutex_t {}
 
-        impl std::fmt::Debug for pthread_mutex_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for pthread_mutex_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("pthread_mutex_t")
                 // FIXME: .field("size", &self.size)
                     .finish()
             }
         }
 
-        impl std::hash::Hash for pthread_mutex_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for pthread_mutex_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
             }
         }
@@ -801,16 +801,16 @@ cfg_if! {
 
         impl Eq for pthread_rwlock_t {}
 
-        impl std::fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for pthread_rwlock_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("pthread_rwlock_t")
                 // FIXME: .field("size", &self.size)
                     .finish()
             }
         }
 
-        impl std::hash::Hash for pthread_rwlock_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for pthread_rwlock_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
             }
         }

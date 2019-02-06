@@ -346,16 +346,16 @@ cfg_if! {
 
         impl Eq for fpreg_t {}
 
-        impl std::fmt::Debug for fpreg_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for fpreg_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("fpreg_t")
                     .field("d", &self.d)
                     .finish()
             }
         }
 
-        impl std::hash::Hash for fpreg_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for fpreg_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.d.to_bits().hash(state);
             }
         }

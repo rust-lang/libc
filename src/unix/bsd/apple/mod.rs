@@ -614,16 +614,16 @@ cfg_if! {
                     }
                 }
                 impl Eq for semun {}
-                impl std::fmt::Debug for semun {
-                    fn fmt(&self, f: &mut std::fmt::Formatter)
-                           -> std::fmt::Result {
+                impl core::fmt::Debug for semun {
+                    fn fmt(&self, f: &mut core::fmt::Formatter)
+                           -> core::fmt::Result {
                         f.debug_struct("semun")
                             .field("val", unsafe { &self.val })
                             .finish()
                     }
                 }
-                impl std::hash::Hash for semun {
-                    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                impl core::hash::Hash for semun {
+                    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                         unsafe { self.val.hash(state) };
                     }
                 }
@@ -653,8 +653,8 @@ cfg_if! {
             }
         }
         impl Eq for proc_threadinfo {}
-        impl std::fmt::Debug for proc_threadinfo {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for proc_threadinfo {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("proc_threadinfo")
                     .field("pth_user_time", &self.pth_user_time)
                     .field("pth_system_time", &self.pth_system_time)
@@ -671,8 +671,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for proc_threadinfo {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for proc_threadinfo {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.pth_user_time.hash(state);
                 self.pth_system_time.hash(state);
                 self.pth_cpu_usage.hash(state);
@@ -717,8 +717,8 @@ cfg_if! {
         }
 
         impl Eq for statfs {}
-        impl std::fmt::Debug for statfs {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for statfs {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("statfs")
                     .field("f_bsize", &self.f_bsize)
                     .field("f_iosize", &self.f_iosize)
@@ -740,8 +740,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for statfs {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for statfs {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.f_bsize.hash(state);
                 self.f_iosize.hash(state);
                 self.f_blocks.hash(state);
@@ -776,8 +776,8 @@ cfg_if! {
             }
         }
         impl Eq for dirent {}
-        impl std::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_seekoff", &self.d_seekoff)
@@ -788,8 +788,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl std::hash::Hash for dirent {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for dirent {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
                 self.d_seekoff.hash(state);
                 self.d_reclen.hash(state);
@@ -809,16 +809,16 @@ cfg_if! {
             }
         }
         impl Eq for pthread_rwlock_t {}
-        impl std::fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for pthread_rwlock_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("pthread_rwlock_t")
                     .field("__sig", &self.__sig)
                     // FIXME: .field("__opaque", &self.__opaque)
                     .finish()
             }
         }
-        impl std::hash::Hash for pthread_rwlock_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for pthread_rwlock_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.__sig.hash(state);
                 self.__opaque.hash(state);
             }
@@ -837,8 +837,8 @@ cfg_if! {
 
         impl Eq for pthread_mutex_t {}
 
-        impl std::fmt::Debug for pthread_mutex_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for pthread_mutex_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("pthread_mutex_t")
                     .field("__sig", &self.__sig)
                     // FIXME: .field("__opaque", &self.__opaque)
@@ -846,8 +846,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for pthread_mutex_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for pthread_mutex_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.__sig.hash(state);
                 self.__opaque.hash(state);
             }
@@ -866,8 +866,8 @@ cfg_if! {
 
         impl Eq for pthread_cond_t {}
 
-        impl std::fmt::Debug for pthread_cond_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for pthread_cond_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("pthread_cond_t")
                     .field("__sig", &self.__sig)
                     // FIXME: .field("__opaque", &self.__opaque)
@@ -875,8 +875,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for pthread_cond_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for pthread_cond_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.__sig.hash(state);
                 self.__opaque.hash(state);
             }
@@ -902,8 +902,8 @@ cfg_if! {
 
         impl Eq for sockaddr_storage {}
 
-        impl std::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_len", &self.ss_len)
                     .field("ss_family", &self.ss_family)
@@ -914,8 +914,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for sockaddr_storage {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for sockaddr_storage {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.ss_len.hash(state);
                 self.ss_family.hash(state);
                 self.__ss_pad1.hash(state);
@@ -946,8 +946,8 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl std::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("utmpx")
                     // FIXME: .field("ut_user", &self.ut_user)
                     .field("ut_id", &self.ut_id)
@@ -961,8 +961,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for utmpx {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for utmpx {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.ut_user.hash(state);
                 self.ut_id.hash(state);
                 self.ut_line.hash(state);

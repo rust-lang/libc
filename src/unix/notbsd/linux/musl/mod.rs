@@ -122,8 +122,8 @@ cfg_if! {
 
         impl Eq for sysinfo {}
 
-        impl std::fmt::Debug for sysinfo {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for sysinfo {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("sysinfo")
                     .field("uptime", &self.uptime)
                     .field("loads", &self.loads)
@@ -143,8 +143,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for sysinfo {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for sysinfo {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.uptime.hash(state);
                 self.loads.hash(state);
                 self.totalram.hash(state);

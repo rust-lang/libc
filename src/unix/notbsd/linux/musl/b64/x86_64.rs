@@ -94,8 +94,8 @@ cfg_if! {
 
         impl Eq for ucontext_t {}
 
-        impl std::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_flags", &self.uc_flags)
                     .field("uc_link", &self.uc_link)
@@ -107,8 +107,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for ucontext_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for ucontext_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.uc_flags.hash(state);
                 self.uc_link.hash(state);
                 self.uc_stack.hash(state);

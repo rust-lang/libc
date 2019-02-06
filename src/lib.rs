@@ -153,12 +153,9 @@
 #![cfg_attr(feature = "rustc-dep-of-std", feature(cfg_target_vendor))]
 #![cfg_attr(feature = "rustc-dep-of-std", feature(link_cfg))]
 #![cfg_attr(feature = "rustc-dep-of-std", feature(no_core))]
-#![cfg_attr(libc_packedN, feature(repr_packed))]
-#![cfg_attr(libc_align, feature(repr_align))]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 #![cfg_attr(feature = "rustc-dep-of-std", allow(warnings))]
 #![cfg_attr(not(any(feature = "use_std", feature = "rustc-dep-of-std")), no_std)]
-#![allow(stable_features)]
 // Enable lints
 #![cfg_attr(feature = "extra_traits", deny(missing_debug_implementations))]
 #![deny(missing_copy_implementations)]

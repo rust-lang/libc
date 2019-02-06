@@ -64,16 +64,16 @@ cfg_if! {
             }
         }
         impl Eq for pthread_attr_t {}
-        impl std::fmt::Debug for pthread_attr_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for pthread_attr_t {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.debug_struct("pthread_attr_t")
                     .field("__sig", &self.__sig)
                 // FIXME: .field("__opaque", &self.__opaque)
                     .finish()
             }
         }
-        impl std::hash::Hash for pthread_attr_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl core::hash::Hash for pthread_attr_t {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.__sig.hash(state);
                 self.__opaque.hash(state);
             }
