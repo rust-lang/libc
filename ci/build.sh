@@ -11,7 +11,7 @@ OS=${TRAVIS_OS_NAME}
 echo "Testing Rust ${RUST} on ${OS}"
 
 test_target() {
-    TARGET = "${1}"
+    TARGET="${1}"
 
     opt=
     if [ "${TARGET}" = "x86_64-unknown-linux-gnux32" ]; then
