@@ -156,12 +156,12 @@ macro_rules! __item {
 #[allow(unused_macros)]
 macro_rules! align_const {
     ($($(#[$attr:meta])* pub const $name:ident : $t1:ty = $t2:ident { $($field:tt)* };)*) => ($(
-        #[cfg(feature = "align")]
+        #[cfg(libc_align)]
         $(#[$attr])*
         pub const $name : $t1 = $t2 {
             $($field)*
         };
-        #[cfg(not(feature = "align"))]
+        #[cfg(not(libc_align))]
         $(#[$attr])*
         pub const $name : $t1 = $t2 {
             $($field)*

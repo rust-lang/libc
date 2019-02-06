@@ -189,7 +189,7 @@ s! {
         pub sin_zero: [::c_char; 8],
     }
 
-    #[cfg_attr(feature = "rustc-dep-of-std", repr(packed(4)))]
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct kevent {
         pub ident: ::uintptr_t,
         pub filter: ::int16_t,
@@ -473,7 +473,7 @@ s! {
         pub sem_flg: ::c_short,
     }
 
-    #[cfg_attr(feature = "rustc-dep-of-std", repr(packed(4)))]
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
         pub sem_perm: ipc_perm,
@@ -488,7 +488,7 @@ s! {
 
     // sys/shm.h
 
-    #[cfg_attr(feature = "rustc-dep-of-std", repr(packed(4)))]
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
         pub shm_segsz: ::size_t,

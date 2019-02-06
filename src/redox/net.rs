@@ -9,10 +9,10 @@ s! {
         pub s_addr: in_addr_t,
     }
 
-    #[cfg_attr(feature = "align", repr(align(4)))]
+    #[cfg_attr(libc_align, repr(align(4)))]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
-        #[cfg(not(feature = "align"))]
+        #[cfg(not(libc_align))]
         __align: [u32; 0],
     }
 
