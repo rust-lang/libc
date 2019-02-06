@@ -1,9 +1,15 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+This project adheres to $[Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [v0.2.0] - 2019-02-06
+
+### Changed
+
+- [breaking-change] `cty::c_void` is now a type alias of `core::ffi::c_void`.
 
 ## [v0.1.5] - 2017-05-29
 
