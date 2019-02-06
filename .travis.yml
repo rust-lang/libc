@@ -5,10 +5,8 @@ dist: xenial
 services: docker
 
 stages:
-  - tools
-  - build-new
-  - build-old
-  - tier1
+  - tools-and-build-new
+  - build-old-and-tier1
   - tier2-1
   - tier2-2
 
@@ -19,48 +17,48 @@ matrix:
       env: TARGET=x86_64-unknown-linux-gnu
       script: sh ci/dox.sh
       install: true
-      stage: tools
+      stage: tools-and-build-new
     - name: "Shellcheck"
       install: true
       script:
         - shellcheck --version
         - shellcheck ci/*.sh
-      stage: tools
+      stage: tools-and-build-new
     - name: "Style"
       install: rustup component add rustfmt-preview
       script:
         - rustc ci/style.rs && ./style src
         - cargo fmt --all -- --check
-      stage: tools
+      stage: tools-and-build-new
 
     # BUILD stable, beta, nightly
     - name: "Build Stable Rust"
       script: sh ci/build.sh
-      stage: build-new
+      stage: tools-and-build-new
       rust: stable
     - name: "Build Beta Rust"
       script: sh ci/build.sh
-      stage: build-new
+      stage: tools-and-build-new
       rust: beta
     - name: "Build Nightly Rust"
       script: sh ci/build.sh
-      stage: build-new
+      stage: tools-and-build-new
       rust: nightly
     - name: "Build Stable Rust"
       script: sh ci/build.sh
-      stage: build-new
+      stage: tools-and-build-new
       rust: stable
       os: osx
       osx_image: xcode10
     - name: "Build Beta Rust"
       script: sh ci/build.sh
-      stage: build-new
+      stage: tools-and-build-new
       rust: beta
       os: osx
       osx_image: xcode10
     - name: "Build Nightly Rust"
       script: sh ci/build.sh
-      stage: build-new
+      stage: tools-and-build-new
       rust: nightly
       os: osx
       osx_image: xcode10
@@ -68,24 +66,24 @@ matrix:
     # BUILD older Rust versions
     - name: "Build Stable Rust 1.13.0"
       script: sh ci/build.sh
-      stage: build-old
+      stage: build-old-and-tier1
       rust: 1.13.0
     - name: "Build Stable Rust 1.19.0"
       script: sh ci/build.sh
-      stage: build-old
+      stage: build-old-and-tier1
       rust: 1.19.0
     - name: "Build Stable Rust 1.24.0"
       script: sh ci/build.sh
-      stage: build-old
+      stage: build-old-and-tier1
       rust: 1.24.0
     - name: "Build Stable Rust 1.25.0"
       env: RUST=1.25.0
       script: sh ci/build.sh
-      stage: build-old
+      stage: build-old-and-tier1
       rust: 1.25.0
     - name: "Build Stable Rust 1.30.0"
       script: sh ci/build.sh
-      stage: build-old
+      stage: build-old-and-tier1
       rust: 1.30.0
     - name: "Build Stable Rust 1.13.0"
       script: sh ci/build.sh
@@ -124,15 +122,15 @@ matrix:
     - env: TARGET=i686-apple-darwin
       os: osx
       osx_image: xcode10
-      stage: tier1
+      stage: build-old-and-tier1
     - env: TARGET=i686-unknown-linux-gnu
-      stage: tier1
+      stage: build-old-and-tier1
     - env: TARGET=x86_64-apple-darwin
       os: osx
       osx_image: xcode10
-      stage: tier1
+      stage: build-old-and-tier1
     - env: TARGET=x86_64-unknown-linux-gnu
-      stage: tier1
+      stage: build-old-and-tier1
 
     # Tier 2 targets
     - env: TARGET=aarch64-linux-android
