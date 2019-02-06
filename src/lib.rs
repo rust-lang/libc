@@ -187,6 +187,8 @@ cfg_if! {
         use core::fmt;
         #[allow(unused_imports)]
         use core::hash;
+        #[allow(unused_imports)]
+        use core::num;
     }
 }
 

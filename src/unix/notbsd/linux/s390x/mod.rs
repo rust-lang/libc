@@ -345,6 +345,7 @@ cfg_if! {
 
         impl ::hash::Hash for fpreg_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                use ::num::Float;
                 self.d.to_bits().hash(state);
             }
         }
