@@ -111,14 +111,6 @@ do
                   --target "${TARGET}"
         fi
 
-        # Test the #[repr(align(x))] feature; requires Rust >= 1.25.0
-        if [ "$build_type" != "+1.13.0" ]; then
-            cargo "$build_type" test $opt \
-                  --features align \
-                  --manifest-path libc-test/Cargo.toml \
-                  --target "${TARGET}"
-        fi
-
         # Test the `extra_traits` feature; requires Rust >= 1.25.0
         if [ "$build_type" != "+1.13.0" ]; then
             cargo "$build_type" test $opt \
