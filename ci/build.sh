@@ -61,8 +61,8 @@ case "${OS}" in
         TARGETS="i686-unknown-linux-gnu x86_64-unknown-linux-gnu x86_64-unknown-freebsd x86_64-unknown-netbsd i586-unknown-linux-gnu i586-unknown-linux-musl i686-linux-android i686-unknown-freebsd mipsel-unknown-linux-gnu armv7-linux-androideabi armv7-unknown-linux-gnueabihf armv7-unknown-linux-musleabihf x86_64-sun-solaris "
 
         if [ "${RUST}" = "nightly" ]; then
-            # aarch64-unknown-cloudabi armv7-unknown-cloudabi-eabihf i686-unknown-cloudabi powerpc-unknown-linux-gnuspe sparc-unknown-linux-gnu mips-unknown-unknown-linux-uclib i686-unknown-haiku i686-unknown-netbsd mipsel-unknown-unknown-linux-uclib sparc64-unknown-netbsd x86_64-unknown-bitrig x86_64-unknown-haiku x86_64-unknown-openbsd
-            TARGETS="${TARGETS} aarch64-fuchsia  x86_64-fuchsia x86_64-rumprun-netbsd x86_64-unknown-cloudabi x86_64-unknown-redox thumbv6m-none-eabi thumbv7em-none-eabi thumbv7em-none-eabihf thumbv7m-none-eabi x86_64-fortanix-unknown-sgx"
+            # aarch64-unknown-cloudabi armv7-unknown-cloudabi-eabihf i686-unknown-cloudabi powerpc-unknown-linux-gnuspe sparc-unknown-linux-gnu mips-unknown-unknown-linux-uclib i686-unknown-haiku  mipsel-unknown-unknown-linux-uclib sparc64-unknown-netbsd x86_64-unknown-bitrig x86_64-unknown-haiku 
+            TARGETS="${TARGETS} aarch64-fuchsia  x86_64-fuchsia x86_64-rumprun-netbsd x86_64-unknown-cloudabi x86_64-unknown-redox thumbv6m-none-eabi thumbv7em-none-eabi thumbv7em-none-eabihf thumbv7m-none-eabi x86_64-fortanix-unknown-sgx x86_64-unknown-openbsd i686-unknown-netbsd"
         fi
 
         ;;
