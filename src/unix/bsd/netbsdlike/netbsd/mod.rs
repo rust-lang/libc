@@ -327,12 +327,19 @@ s! {
 
 s_no_extra_traits! {
     #[repr(packed)]
+    #[allow(missing_debug_implementations)]
     pub struct arphdr {
         pub ar_hrd: u16,
         pub ar_pro: u16,
         pub ar_hln: u8,
         pub ar_pln: u8,
         pub ar_op: u16,
+    }
+
+    #[repr(packed)]
+    #[allow(missing_debug_implementations)]
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
     }
 }
 

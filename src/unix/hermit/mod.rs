@@ -50,6 +50,10 @@ pub type pthread_rwlock_t = usize;
 pub type pthread_rwlockattr_t = usize;
 
 s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,

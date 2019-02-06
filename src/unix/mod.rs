@@ -219,19 +219,6 @@ s! {
         pub p_aliases: *mut *mut ::c_char,
         pub p_proto: ::c_int,
     }
-
-    #[cfg(not(target_os = "netbsd"))]
-    pub struct in_addr {
-        pub s_addr: in_addr_t,
-    }
-}
-
-s_no_extra_traits! {
-    #[cfg(target_os = "netbsd")]
-    #[repr(packed)]
-    pub struct in_addr {
-        pub s_addr: in_addr_t,
-    }
 }
 
 pub const INT_MIN: c_int = -2147483648;

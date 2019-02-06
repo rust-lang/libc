@@ -27,6 +27,10 @@ pub type time_t = i32;
 pub type useconds_t = u32;
 
 s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],

@@ -17,6 +17,10 @@ pub type pthread_rwlockattr_t = *mut ::c_void;
 pub type caddr_t = *mut ::c_char;
 
 s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
     pub struct dirent {
         pub d_fileno: ::ino_t,
         pub d_off: ::off_t,

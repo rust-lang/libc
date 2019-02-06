@@ -16,6 +16,10 @@ impl ::dox::Clone for timezone {
 }
 
 s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
@@ -210,7 +214,8 @@ s_no_extra_traits!{
                 not(target_env = "musl"),
                 not(target_os = "android")),
             target_arch = "x86_64"),
-      repr(packed))]
+        repr(packed))]
+    #[allow(missing_debug_implementations)]
     pub struct epoll_event {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,

@@ -39,6 +39,10 @@ impl ::dox::Clone for timezone {
 }
 
 s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,

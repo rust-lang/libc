@@ -472,6 +472,10 @@ s! {
         pub ar_pln: u8,
         pub ar_op: u16,
     }
+
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
 }
 
 s_no_extra_traits!{
