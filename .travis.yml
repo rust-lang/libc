@@ -9,10 +9,6 @@ matrix:
     - env: TARGET=x86_64-unknown-linux-gnu
       rust: stable
 
-      # no-std sanity check
-    - env: TARGET=thumbv7m-none-eabi
-      rust: stable
-
 before_install: set -e
 
 install:
