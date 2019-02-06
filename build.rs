@@ -26,14 +26,15 @@ fn main() {
         println!("cargo:rustc-cfg=libc_align");
     }
 
-    // If `core::ffi::c_void` exists, libc can just re-export it. Otherwise, it
-    // must define an incompatible type to retain backwards-compatibility.
+    // Rust >= 1.30 supports `core::ffi::c_void`, so libc can just re-export it.
+    // Otherwise, it defines an incompatible type to retaining
+    // backwards-compatibility.
     if rustc_minor_ver >= 30 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_core_cvoid");
     }
 
     // Rust >= 1.33 supports repr(packed(N))
-    if rustc_minor_ver >= 30 || rustc_dep_of_std {
+    if rustc_minor_ver >= 33 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_packedN");
     }
 }
