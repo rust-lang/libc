@@ -189,16 +189,6 @@ s! {
         pub sin_zero: [::c_char; 8],
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
-    pub struct kevent {
-        pub ident: ::uintptr_t,
-        pub filter: ::int16_t,
-        pub flags: ::uint16_t,
-        pub fflags: ::uint32_t,
-        pub data: ::intptr_t,
-        pub udata: *mut ::c_void,
-    }
-
     pub struct kevent64_s {
         pub ident: ::uint64_t,
         pub filter: ::int16_t,
@@ -473,6 +463,33 @@ s! {
         pub sem_flg: ::c_short,
     }
 
+    // sys/shm.h
+
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
+}
+
+s_no_extra_traits!{
+
+    // FIXME: https://github.com/rust-lang/libc/issues/1243
+    #[allow(missing_debug_implementations)]
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct kevent {
+        pub ident: ::uintptr_t,
+        pub filter: ::int16_t,
+        pub flags: ::uint16_t,
+        pub fflags: ::uint32_t,
+        pub data: ::intptr_t,
+        pub udata: *mut ::c_void,
+    }
+
+    // FIXME: https://github.com/rust-lang/libc/issues/1243
+    #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
@@ -486,8 +503,8 @@ s! {
         pub sem_pad3: [::int32_t; 4],
     }
 
-    // sys/shm.h
-
+    // FIXME: https://github.com/rust-lang/libc/issues/1243
+    #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
@@ -500,19 +517,8 @@ s! {
         pub shm_ctime: ::time_t,  // FIXME: 64-bit wrong align => wrong offset
         // FIXME: 64-bit wrong align => wrong offset:
         pub shm_internal: *mut ::c_void,
-
     }
 
-    pub struct arphdr {
-        pub ar_hrd: u16,
-        pub ar_pro: u16,
-        pub ar_hln: u8,
-        pub ar_pln: u8,
-        pub ar_op: u16,
-    }
-}
-
-s_no_extra_traits!{
     pub struct proc_threadinfo {
         pub pth_user_time: u64,
         pub pth_system_time: u64,
@@ -622,358 +628,350 @@ cfg_if! {
                 }
             }
         }
-    } 
+    }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for proc_threadinfo {
-    fn eq(&self, other: &proc_threadinfo) -> bool {
-        self.pth_user_time == other.pth_user_time
-            && self.pth_system_time == other.pth_system_time
-            && self.pth_cpu_usage == other.pth_cpu_usage
-            && self.pth_policy == other.pth_policy
-            && self.pth_run_state == other.pth_run_state
-            && self.pth_flags == other.pth_flags
-            && self.pth_sleep_time == other.pth_sleep_time
-            && self.pth_curpri == other.pth_curpri
-            && self.pth_priority == other.pth_priority
-            && self.pth_maxpriority == other.pth_maxpriority
-            && self
-                .pth_name
-                .iter()
-                .zip(other.pth_name.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for proc_threadinfo {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for proc_threadinfo {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("proc_threadinfo")
-            .field("pth_user_time", &self.pth_user_time)
-            .field("pth_system_time", &self.pth_system_time)
-            .field("pth_cpu_usage", &self.pth_cpu_usage)
-            .field("pth_policy", &self.pth_policy)
-            .field("pth_run_state", &self.pth_run_state)
-            .field("pth_flags", &self.pth_flags)
-            .field("pth_sleep_time", &self.pth_sleep_time)
-            .field("pth_curpri", &self.pth_curpri)
-            .field("pth_priority", &self.pth_priority)
-            .field("pth_maxpriority", &self.pth_maxpriority)
-            // FIXME: .field("pth_name", &self.pth_name)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for proc_threadinfo {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.pth_user_time.hash(state);
-        self.pth_system_time.hash(state);
-        self.pth_cpu_usage.hash(state);
-        self.pth_policy.hash(state);
-        self.pth_run_state.hash(state);
-        self.pth_flags.hash(state);
-        self.pth_sleep_time.hash(state);
-        self.pth_curpri.hash(state);
-        self.pth_priority.hash(state);
-        self.pth_maxpriority.hash(state);
-        self.pth_name.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for statfs {
-    fn eq(&self, other: &statfs) -> bool {
-        self.f_bsize == other.f_bsize
-            && self.f_iosize == other.f_iosize
-            && self.f_blocks == other.f_blocks
-            && self.f_bfree == other.f_bfree
-            && self.f_bavail == other.f_bavail
-            && self.f_files == other.f_files
-            && self.f_ffree == other.f_ffree
-            && self.f_fsid == other.f_fsid
-            && self.f_owner == other.f_owner
-            && self.f_flags == other.f_flags
-            && self.f_fssubtype == other.f_fssubtype
-            && self.f_fstypename == other.f_fstypename
-            && self.f_type == other.f_type
-            && self
-                .f_mntonname
-                .iter()
-                .zip(other.f_mntonname.iter())
-                .all(|(a,b)| a == b)
-            && self
-                .f_mntfromname
-                .iter()
-                .zip(other.f_mntfromname.iter())
-                .all(|(a,b)| a == b)
-            && self.f_reserved == other.f_reserved
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for statfs {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for statfs {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("statfs")
-            .field("f_bsize", &self.f_bsize)
-            .field("f_iosize", &self.f_iosize)
-            .field("f_blocks", &self.f_blocks)
-            .field("f_bfree", &self.f_bfree)
-            .field("f_bavail", &self.f_bavail)
-            .field("f_files", &self.f_files)
-            .field("f_ffree", &self.f_ffree)
-            .field("f_fsid", &self.f_fsid)
-            .field("f_owner", &self.f_owner)
-            .field("f_flags", &self.f_flags)
-            .field("f_fssubtype", &self.f_fssubtype)
-            .field("f_fstypename", &self.f_fstypename)
-            .field("f_type", &self.f_type)
-            // FIXME: .field("f_mntonname", &self.f_mntonname)
-            // FIXME: .field("f_mntfromname", &self.f_mntfromname)
-            .field("f_reserved", &self.f_reserved)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for statfs {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.f_bsize.hash(state);
-        self.f_iosize.hash(state);
-        self.f_blocks.hash(state);
-        self.f_bfree.hash(state);
-        self.f_bavail.hash(state);
-        self.f_files.hash(state);
-        self.f_ffree.hash(state);
-        self.f_fsid.hash(state);
-        self.f_owner.hash(state);
-        self.f_flags.hash(state);
-        self.f_fssubtype.hash(state);
-        self.f_fstypename.hash(state);
-        self.f_type.hash(state);
-        self.f_mntonname.hash(state);
-        self.f_mntfromname.hash(state);
-        self.f_reserved.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for dirent {
-    fn eq(&self, other: &dirent) -> bool {
-        self.d_ino == other.d_ino
-            && self.d_seekoff == other.d_seekoff
-            && self.d_reclen == other.d_reclen
-            && self.d_namlen == other.d_namlen
-            && self.d_type == other.d_type
-            && self
-                .d_name
-                .iter()
-                .zip(other.d_name.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for dirent {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for dirent {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("dirent")
-            .field("d_ino", &self.d_ino)
-            .field("d_seekoff", &self.d_seekoff)
-            .field("d_reclen", &self.d_reclen)
-            .field("d_namlen", &self.d_namlen)
-            .field("d_type", &self.d_type)
-            // FIXME: .field("d_name", &self.d_name)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for dirent {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.d_ino.hash(state);
-        self.d_seekoff.hash(state);
-        self.d_reclen.hash(state);
-        self.d_namlen.hash(state);
-        self.d_type.hash(state);
-        self.d_name.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for pthread_rwlock_t {
-    fn eq(&self, other: &pthread_rwlock_t) -> bool {
-        self.__sig == other.__sig
-            && self.
-                __opaque
-                .iter()
-                .zip(other.__opaque.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for pthread_rwlock_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for pthread_rwlock_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("pthread_rwlock_t")
-            .field("__sig", &self.__sig)
-            // FIXME: .field("__opaque", &self.__opaque)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for pthread_rwlock_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.__sig.hash(state);
-        self.__opaque.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for pthread_mutex_t {
-    fn eq(&self, other: &pthread_mutex_t) -> bool {
-        self.__sig == other.__sig
-            && self.
-                __opaque
-                .iter()
-                .zip(other.__opaque.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for pthread_mutex_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for pthread_mutex_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("pthread_mutex_t")
-            .field("__sig", &self.__sig)
-            // FIXME: .field("__opaque", &self.__opaque)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for pthread_mutex_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.__sig.hash(state);
-        self.__opaque.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for pthread_cond_t {
-    fn eq(&self, other: &pthread_cond_t) -> bool {
-        self.__sig == other.__sig
-            && self.
-                __opaque
-                .iter()
-                .zip(other.__opaque.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for pthread_cond_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for pthread_cond_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("pthread_cond_t")
-            .field("__sig", &self.__sig)
-            // FIXME: .field("__opaque", &self.__opaque)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for pthread_cond_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.__sig.hash(state);
-        self.__opaque.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for sockaddr_storage {
-    fn eq(&self, other: &sockaddr_storage) -> bool {
-        self.ss_len == other.ss_len
-            && self.ss_family == other.ss_family
-            && self
-                .__ss_pad1
-                .iter()
-                .zip(other.__ss_pad1.iter())
-                .all(|(a, b)| a == b)
-            && self.__ss_align == other.__ss_align
-            && self
-                .__ss_pad2
-                .iter()
-                .zip(other.__ss_pad2.iter())
-                .all(|(a, b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for sockaddr_storage {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for sockaddr_storage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("sockaddr_storage")
-            .field("ss_len", &self.ss_len)
-            .field("ss_family", &self.ss_family)
-            .field("__ss_pad1", &self.__ss_pad1)
-            .field("__ss_align", &self.__ss_align)
-            // FIXME: .field("__ss_pad2", &self.__ss_pad2)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for sockaddr_storage {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.ss_len.hash(state);
-        self.ss_family.hash(state);
-        self.__ss_pad1.hash(state);
-        self.__ss_align.hash(state);
-        self.__ss_pad2.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for utmpx {
-    fn eq(&self, other: &utmpx) -> bool {
-        self.ut_user
-            .iter()
-            .zip(other.ut_user.iter())
-            .all(|(a,b)| a == b)
-            && self.ut_id == other.ut_id
-            && self.ut_line == other.ut_line
-            && self.ut_pid == other.ut_pid
-            && self.ut_type == other.ut_type
-            && self.ut_tv == other.ut_tv
-            && self
-                .ut_host
-                .iter()
-                .zip(other.ut_host.iter())
-                .all(|(a,b)| a == b)
-            && self.ut_pad == other.ut_pad
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for utmpx {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for utmpx {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("utmpx")
-            // FIXME: .field("ut_user", &self.ut_user)
-            .field("ut_id", &self.ut_id)
-            .field("ut_line", &self.ut_line)
-            .field("ut_pid", &self.ut_pid)
-            .field("ut_type", &self.ut_type)
-            .field("ut_tv", &self.ut_tv)
-            // FIXME: .field("ut_host", &self.ut_host)
-            .field("ut_pad", &self.ut_pad)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for utmpx {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.ut_user.hash(state);
-        self.ut_id.hash(state);
-        self.ut_line.hash(state);
-        self.ut_pid.hash(state);
-        self.ut_type.hash(state);
-        self.ut_tv.hash(state);
-        self.ut_host.hash(state);
-        self.ut_pad.hash(state);
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for proc_threadinfo {
+            fn eq(&self, other: &proc_threadinfo) -> bool {
+                self.pth_user_time == other.pth_user_time
+                    && self.pth_system_time == other.pth_system_time
+                    && self.pth_cpu_usage == other.pth_cpu_usage
+                    && self.pth_policy == other.pth_policy
+                    && self.pth_run_state == other.pth_run_state
+                    && self.pth_flags == other.pth_flags
+                    && self.pth_sleep_time == other.pth_sleep_time
+                    && self.pth_curpri == other.pth_curpri
+                    && self.pth_priority == other.pth_priority
+                    && self.pth_maxpriority == other.pth_maxpriority
+                    && self.pth_name
+                           .iter()
+                           .zip(other.pth_name.iter())
+                           .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for proc_threadinfo {}
+        impl std::fmt::Debug for proc_threadinfo {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("proc_threadinfo")
+                    .field("pth_user_time", &self.pth_user_time)
+                    .field("pth_system_time", &self.pth_system_time)
+                    .field("pth_cpu_usage", &self.pth_cpu_usage)
+                    .field("pth_policy", &self.pth_policy)
+                    .field("pth_run_state", &self.pth_run_state)
+                    .field("pth_flags", &self.pth_flags)
+                    .field("pth_sleep_time", &self.pth_sleep_time)
+                    .field("pth_curpri", &self.pth_curpri)
+                    .field("pth_priority", &self.pth_priority)
+                    .field("pth_maxpriority", &self.pth_maxpriority)
+                      // FIXME: .field("pth_name", &self.pth_name)
+                    .finish()
+            }
+        }
+
+        impl std::hash::Hash for proc_threadinfo {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.pth_user_time.hash(state);
+                self.pth_system_time.hash(state);
+                self.pth_cpu_usage.hash(state);
+                self.pth_policy.hash(state);
+                self.pth_run_state.hash(state);
+                self.pth_flags.hash(state);
+                self.pth_sleep_time.hash(state);
+                self.pth_curpri.hash(state);
+                self.pth_priority.hash(state);
+                self.pth_maxpriority.hash(state);
+                self.pth_name.hash(state);
+            }
+        }
+
+        impl PartialEq for statfs {
+            fn eq(&self, other: &statfs) -> bool {
+                self.f_bsize == other.f_bsize
+                    && self.f_iosize == other.f_iosize
+                    && self.f_blocks == other.f_blocks
+                    && self.f_bfree == other.f_bfree
+                    && self.f_bavail == other.f_bavail
+                    && self.f_files == other.f_files
+                    && self.f_ffree == other.f_ffree
+                    && self.f_fsid == other.f_fsid
+                    && self.f_owner == other.f_owner
+                    && self.f_flags == other.f_flags
+                    && self.f_fssubtype == other.f_fssubtype
+                    && self.f_fstypename == other.f_fstypename
+                    && self.f_type == other.f_type
+                    && self
+                    .f_mntonname
+                    .iter()
+                    .zip(other.f_mntonname.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .f_mntfromname
+                    .iter()
+                    .zip(other.f_mntfromname.iter())
+                    .all(|(a,b)| a == b)
+                    && self.f_reserved == other.f_reserved
+            }
+        }
+
+        impl Eq for statfs {}
+        impl std::fmt::Debug for statfs {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("statfs")
+                    .field("f_bsize", &self.f_bsize)
+                    .field("f_iosize", &self.f_iosize)
+                    .field("f_blocks", &self.f_blocks)
+                    .field("f_bfree", &self.f_bfree)
+                    .field("f_bavail", &self.f_bavail)
+                    .field("f_files", &self.f_files)
+                    .field("f_ffree", &self.f_ffree)
+                    .field("f_fsid", &self.f_fsid)
+                    .field("f_owner", &self.f_owner)
+                    .field("f_flags", &self.f_flags)
+                    .field("f_fssubtype", &self.f_fssubtype)
+                    .field("f_fstypename", &self.f_fstypename)
+                    .field("f_type", &self.f_type)
+                // FIXME: .field("f_mntonname", &self.f_mntonname)
+                // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                    .field("f_reserved", &self.f_reserved)
+                    .finish()
+            }
+        }
+
+        impl std::hash::Hash for statfs {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.f_bsize.hash(state);
+                self.f_iosize.hash(state);
+                self.f_blocks.hash(state);
+                self.f_bfree.hash(state);
+                self.f_bavail.hash(state);
+                self.f_files.hash(state);
+                self.f_ffree.hash(state);
+                self.f_fsid.hash(state);
+                self.f_owner.hash(state);
+                self.f_flags.hash(state);
+                self.f_fssubtype.hash(state);
+                self.f_fstypename.hash(state);
+                self.f_type.hash(state);
+                self.f_mntonname.hash(state);
+                self.f_mntfromname.hash(state);
+                self.f_reserved.hash(state);
+            }
+        }
+
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_seekoff == other.d_seekoff
+                    && self.d_reclen == other.d_reclen
+                    && self.d_namlen == other.d_namlen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for dirent {}
+        impl std::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_seekoff", &self.d_seekoff)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_namlen", &self.d_namlen)
+                    .field("d_type", &self.d_type)
+                    // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+        impl std::hash::Hash for dirent {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_seekoff.hash(state);
+                self.d_reclen.hash(state);
+                self.d_namlen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+        impl PartialEq for pthread_rwlock_t {
+            fn eq(&self, other: &pthread_rwlock_t) -> bool {
+                self.__sig == other.__sig
+                    && self.
+                    __opaque
+                    .iter()
+                    .zip(other.__opaque.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for pthread_rwlock_t {}
+        impl std::fmt::Debug for pthread_rwlock_t {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("pthread_rwlock_t")
+                    .field("__sig", &self.__sig)
+                    // FIXME: .field("__opaque", &self.__opaque)
+                    .finish()
+            }
+        }
+        impl std::hash::Hash for pthread_rwlock_t {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.__sig.hash(state);
+                self.__opaque.hash(state);
+            }
+        }
+
+        impl PartialEq for pthread_mutex_t {
+            fn eq(&self, other: &pthread_mutex_t) -> bool {
+                self.__sig == other.__sig
+                    && self.
+                    __opaque
+                    .iter()
+                    .zip(other.__opaque.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for pthread_mutex_t {}
+
+        impl std::fmt::Debug for pthread_mutex_t {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("pthread_mutex_t")
+                    .field("__sig", &self.__sig)
+                    // FIXME: .field("__opaque", &self.__opaque)
+                    .finish()
+            }
+        }
+
+        impl std::hash::Hash for pthread_mutex_t {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.__sig.hash(state);
+                self.__opaque.hash(state);
+            }
+        }
+
+        impl PartialEq for pthread_cond_t {
+            fn eq(&self, other: &pthread_cond_t) -> bool {
+                self.__sig == other.__sig
+                    && self.
+                    __opaque
+                    .iter()
+                    .zip(other.__opaque.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for pthread_cond_t {}
+
+        impl std::fmt::Debug for pthread_cond_t {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("pthread_cond_t")
+                    .field("__sig", &self.__sig)
+                    // FIXME: .field("__opaque", &self.__opaque)
+                    .finish()
+            }
+        }
+
+        impl std::hash::Hash for pthread_cond_t {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.__sig.hash(state);
+                self.__opaque.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_len == other.ss_len
+                    && self.ss_family == other.ss_family
+                    && self
+                    .__ss_pad1
+                    .iter()
+                    .zip(other.__ss_pad1.iter())
+                    .all(|(a, b)| a == b)
+                    && self.__ss_align == other.__ss_align
+                    && self
+                    .__ss_pad2
+                    .iter()
+                    .zip(other.__ss_pad2.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for sockaddr_storage {}
+
+        impl std::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_len", &self.ss_len)
+                    .field("ss_family", &self.ss_family)
+                    .field("__ss_pad1", &self.__ss_pad1)
+                    .field("__ss_align", &self.__ss_align)
+                    // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    .finish()
+            }
+        }
+
+        impl std::hash::Hash for sockaddr_storage {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.ss_len.hash(state);
+                self.ss_family.hash(state);
+                self.__ss_pad1.hash(state);
+                self.__ss_align.hash(state);
+                self.__ss_pad2.hash(state);
+            }
+        }
+
+        impl PartialEq for utmpx {
+            fn eq(&self, other: &utmpx) -> bool {
+                self.ut_user
+                    .iter()
+                    .zip(other.ut_user.iter())
+                    .all(|(a,b)| a == b)
+                    && self.ut_id == other.ut_id
+                    && self.ut_line == other.ut_line
+                    && self.ut_pid == other.ut_pid
+                    && self.ut_type == other.ut_type
+                    && self.ut_tv == other.ut_tv
+                    && self
+                    .ut_host
+                    .iter()
+                    .zip(other.ut_host.iter())
+                    .all(|(a,b)| a == b)
+                    && self.ut_pad == other.ut_pad
+            }
+        }
+
+        impl Eq for utmpx {}
+
+        impl std::fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("utmpx")
+                    // FIXME: .field("ut_user", &self.ut_user)
+                    .field("ut_id", &self.ut_id)
+                    .field("ut_line", &self.ut_line)
+                    .field("ut_pid", &self.ut_pid)
+                    .field("ut_type", &self.ut_type)
+                    .field("ut_tv", &self.ut_tv)
+                    // FIXME: .field("ut_host", &self.ut_host)
+                    .field("ut_pad", &self.ut_pad)
+                    .finish()
+            }
+        }
+
+        impl std::hash::Hash for utmpx {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.ut_user.hash(state);
+                self.ut_id.hash(state);
+                self.ut_line.hash(state);
+                self.ut_pid.hash(state);
+                self.ut_type.hash(state);
+                self.ut_tv.hash(state);
+                self.ut_host.hash(state);
+                self.ut_pad.hash(state);
+            }
+        }
     }
 }
 

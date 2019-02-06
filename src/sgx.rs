@@ -36,7 +36,7 @@ pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
 
 cfg_if! {
-    if #[cfg(core_cvoid)] {
+    if #[cfg(libc_core_cvoid)] {
         pub use core::ffi::c_void;
     } else {
         // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
@@ -44,6 +44,7 @@ cfg_if! {
         // like malloc/free.
         #[repr(u8)]
         #[allow(missing_copy_implementations)]
+        #[allow(missing_debug_implementations)]
         pub enum c_void {
             // Two dummy variants so the #[repr] attribute can be used.
             #[doc(hidden)]

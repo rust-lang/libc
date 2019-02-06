@@ -65,21 +65,7 @@ macro_rules! s {
         s!(it: $(#[$attr])* pub $t $i { $($field)* });
     )*);
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
-        cfg_if! {
-            if #[cfg(libc_union)] {
-                __item! {
-                    #[repr(C)]
-                    #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-                    $(#[$attr])*
-                    pub union $i { $($field)* }
-                }
-
-                impl ::dox::Copy for $i {}
-                impl ::dox::Clone for $i {
-                    fn clone(&self) -> $i { *self }
-                }
-            }
-        }
+        compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
     );
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
@@ -97,7 +83,7 @@ macro_rules! s {
 
 macro_rules! s_no_extra_traits {
     ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
-        s!(it: $(#[$attr])* pub $t $i { $($field)* });
+        s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
     )*);
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
         cfg_if! {

@@ -139,6 +139,11 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
             }
         }
 
+        if line.contains("#[cfg(") && !line.contains(" if ") &&
+            line.contains("extra_traits") {
+            err.error(path, i, "use cfg_if! instead of #[cfg]");
+        }
+
         let line = line.trim_start();
         let is_pub = line.starts_with("pub ");
         let line = if is_pub {&line[4..]} else {line};

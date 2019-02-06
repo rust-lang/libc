@@ -605,11 +605,11 @@ s! {
                            all(target_arch = "aarch64", target_env = "musl")))),
                repr(align(8)))]
     pub struct pthread_mutexattr_t {
-        #[cfg(all(not(features = "align"),
+        #[cfg(all(not(libc_align),
                   any(target_arch = "x86_64",
                       all(target_arch = "aarch64", target_env = "musl"))))]
         __align: [::c_int; 0],
-        #[cfg(all(not(features = "align"),
+        #[cfg(all(not(libc_align),
                   not(any(target_arch = "x86_64",
                           all(target_arch = "aarch64", target_env = "musl")))))]
         __align: [::c_long; 0],
@@ -4120,7 +4120,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(core_cvoid)] {
+    if #[cfg(libc_core_cvoid)] {
         pub use core::ffi::c_void;
     } else {
         // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
@@ -4128,6 +4128,7 @@ cfg_if! {
         // like malloc/free.
         #[repr(u8)]
         #[allow(missing_copy_implementations)]
+        #[allow(missing_debug_implementations)]
         pub enum c_void {
             // Two dummy variants so the #[repr] attribute can be used.
             #[doc(hidden)]

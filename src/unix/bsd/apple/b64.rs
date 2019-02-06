@@ -57,32 +57,32 @@ s_no_extra_traits!{
     }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for pthread_attr_t {
-    fn eq(&self, other: &pthread_attr_t) -> bool {
-        self.__sig == other.__sig
-            && self.__opaque
-                .iter()
-                .zip(other.__opaque.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for pthread_attr_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for pthread_attr_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("pthread_attr_t")
-            .field("__sig", &self.__sig)
-            // FIXME: .field("__opaque", &self.__opaque)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for pthread_attr_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.__sig.hash(state);
-        self.__opaque.hash(state);
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for pthread_attr_t {
+            fn eq(&self, other: &pthread_attr_t) -> bool {
+                self.__sig == other.__sig
+                    && self.__opaque
+                    .iter()
+                    .zip(other.__opaque.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for pthread_attr_t {}
+        impl std::fmt::Debug for pthread_attr_t {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("pthread_attr_t")
+                    .field("__sig", &self.__sig)
+                // FIXME: .field("__opaque", &self.__opaque)
+                    .finish()
+            }
+        }
+        impl std::hash::Hash for pthread_attr_t {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.__sig.hash(state);
+                self.__opaque.hash(state);
+            }
+        }
     }
 }
 

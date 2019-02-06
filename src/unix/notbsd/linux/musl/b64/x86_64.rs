@@ -75,45 +75,48 @@ s_no_extra_traits!{
     }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for ucontext_t {
-    fn eq(&self, other: &ucontext_t) -> bool {
-        self.uc_flags == other.uc_flags
-            && self.uc_link == other.uc_link
-            && self.uc_stack == other.uc_stack
-            && self.uc_mcontext == other.uc_mcontext
-            && self.uc_sigmask == other.uc_sigmask
-            && self
-                .__private
-                .iter()
-                .zip(other.__private.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for ucontext_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for ucontext_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("ucontext_t")
-            .field("uc_flags", &self.uc_flags)
-            .field("uc_link", &self.uc_link)
-            .field("uc_stack", &self.uc_stack)
-            .field("uc_mcontext", &self.uc_mcontext)
-            .field("uc_sigmask", &self.uc_sigmask)
-            // Ignore __private field
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for ucontext_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.uc_flags.hash(state);
-        self.uc_link.hash(state);
-        self.uc_stack.hash(state);
-        self.uc_mcontext.hash(state);
-        self.uc_sigmask.hash(state);
-        self.__private.hash(state);
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for ucontext_t {
+            fn eq(&self, other: &ucontext_t) -> bool {
+                self.uc_flags == other.uc_flags
+                    && self.uc_link == other.uc_link
+                    && self.uc_stack == other.uc_stack
+                    && self.uc_mcontext == other.uc_mcontext
+                    && self.uc_sigmask == other.uc_sigmask
+                    && self
+                    .__private
+                    .iter()
+                    .zip(other.__private.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for ucontext_t {}
+
+        impl std::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_flags", &self.uc_flags)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_sigmask", &self.uc_sigmask)
+                // Ignore __private field
+                    .finish()
+            }
+        }
+
+        impl std::hash::Hash for ucontext_t {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.uc_flags.hash(state);
+                self.uc_link.hash(state);
+                self.uc_stack.hash(state);
+                self.uc_mcontext.hash(state);
+                self.uc_sigmask.hash(state);
+                self.__private.hash(state);
+            }
+        }
     }
 }
 
