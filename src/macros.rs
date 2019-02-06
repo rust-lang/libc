@@ -6,6 +6,7 @@
 ///
 /// This allows you to conveniently provide a long list #[cfg]'d blocks of code
 /// without having to rewrite each clause multiple times.
+#[allow(unused_macros)]
 macro_rules! cfg_if {
     // match if/else chains with a final `else`
     ($(
@@ -61,6 +62,7 @@ macro_rules! cfg_if {
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! s {
     ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
         s!(it: $(#[$attr])* pub $t $i { $($field)* });
@@ -82,6 +84,7 @@ macro_rules! s {
     );
 }
 
+#[allow(unused_macros)]
 macro_rules! s_no_extra_traits {
     ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
         s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
@@ -134,6 +137,7 @@ macro_rules! f {
     )*)
 }
 
+#[allow(unused_macros)]
 macro_rules! __item {
     ($i:item) => {
         $i
