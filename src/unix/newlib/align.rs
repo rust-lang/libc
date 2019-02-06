@@ -10,7 +10,7 @@ s! {
                            target_arch = "powerpc"))),
                repr(align(8)))]
     pub struct pthread_mutex_t { // Unverified
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
+        pub size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
     }
 
     #[cfg_attr(all(target_pointer_width = "32",
@@ -24,7 +24,7 @@ s! {
                            target_arch = "powerpc"))),
                repr(align(8)))]
     pub struct pthread_rwlock_t { // Unverified
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
+        pub size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
     }
 
     #[cfg_attr(any(target_pointer_width = "32",
@@ -38,16 +38,16 @@ s! {
                        target_arch = "sparc64")),
                repr(align(8)))]
     pub struct pthread_mutexattr_t { // Unverified
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
+        pub size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
     #[repr(align(8))]
     pub struct pthread_cond_t { // Unverified
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
+        pub size: [u8; __SIZEOF_PTHREAD_COND_T],
     }
 
     #[repr(align(4))]
     pub struct pthread_condattr_t { // Unverified
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
+        pub size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
     }
 }
