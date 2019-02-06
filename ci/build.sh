@@ -31,7 +31,7 @@ test_target() {
             ;;
     esac
 
-    rustup target add "${TARGET}" --tolchain "${RUST}" || true
+    rustup target add "${TARGET}" --toolchain "${RUST}" || true
 
     # Test that libc builds without any default features (no libstd)
     cargo "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
