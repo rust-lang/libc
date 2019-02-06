@@ -106,30 +106,17 @@ do
         fi
     fi
 
-    if [ "${BUILD_ONLY}" = "1" ]; then
-        cargo "${build_type}" build $opt --no-default-features --target "${TARGET}"
-        if [ "$NO_STD" != "1" ]; then
-            cargo "${build_type}" build $opt --target "${TARGET}"
-        fi
-    else
-        # Building with --no-default-features is currently broken on rumprun
-        # because we need cfg(target_vendor), which is currently unstable.
-        if [ "${TARGET}" != "x86_64-rumprun-netbsd" ]; then
-            cargo "${build_type}" test $opt \
-                  --no-default-features \
-                  --manifest-path libc-test/Cargo.toml \
-                  --target "${TARGET}"
-        fi
+    # Always test that libc builds without any default features (no libstd)
+    cargo "${build_type}" build $opt --no-default-features --target "${TARGET}"
 
-        if [ "$NO_STD" != "1" ]; then
-            cargo "${build_type}" test $opt \
-                  --manifest-path libc-test/Cargo.toml \
-                  --target "${TARGET}"
-        fi
+    # Always test that libc builds with default features (e.g. libstd)
+    # if the target supports libstd
+    if [ "$NO_STD" != "1" ]; then
+        cargo "${build_type}" build $opt --target "${TARGET}"
     fi
 
-    # Test the `extra_traits` feature; requires Rust >= 1.25.0
-    # No need to run libc-test, only check that libc builds.
+    # Always test that libc builds with the `extra_traits` feature if Rust >=
+    # 1.25.0
     if [ "${build_type}" != "+1.13.0" ] && \
            [ "${build_type}" != "+1.19.0" ] && \
            [ "${build_type}" != "+1.24.0" ]; then
@@ -138,9 +125,24 @@ do
               --features extra_traits \
               --target "${TARGET}"
 
+        # Also test that it builds with `extra_traits` and default features:
         if [ "$NO_STD" != "1" ]; then
             cargo "${build_type}" build $opt \
                   --features extra_traits \
+                  --target "${TARGET}"
+        fi
+    fi
+
+    # If libc-test should be run, do so only with Rust nightly w/o libstd:
+    if [ "${BUILD_ONLY}" != "1" ] && [ "${build_type}" = "+nightly" ]; then
+        cargo "${build_type}" test $opt \
+              --no-default-features \
+              --manifest-path libc-test/Cargo.toml \
+              --target "${TARGET}"
+
+        if [ "$NO_STD" != "1" ]; then
+            cargo "${build_type}" test $opt \
+                  --manifest-path libc-test/Cargo.toml \
                   --target "${TARGET}"
         fi
     fi
