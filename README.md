@@ -13,11 +13,11 @@ Raw FFI bindings to platform libraries like `libc`.
 **NOTE:** The minimum supported Rust version is **Rust 1.13.0** . APIs requiring
 newer Rust features are only available on newer Rust versions:
 
-| Feature                 | Version |
-|-------------------------|---------|
-| `union`                |  1.19.0 |
+| Feature              | Version |
+|----------------------|---------|
+| `union`              |  1.19.0 |
 | `const mem::size_of` |  1.24.0 |
-| `repr(align)`         |  1.25.0 |
+| `repr(align)`        |  1.25.0 |
 | `core::ffi::c_void`  |  1.30.0 |
 
 To use `libc` at its fullest, Rust 1.30.0 is required.
