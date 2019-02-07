@@ -54,12 +54,16 @@ test_target() {
 TARGETS=""
 case "${OS}" in
     linux*)
-        TARGETS="i686-unknown-linux-gnu x86_64-unknown-linux-gnu x86_64-unknown-freebsd x86_64-unknown-netbsd i586-unknown-linux-gnu i686-linux-android i686-unknown-freebsd mipsel-unknown-linux-gnu mips64-unknown-linux-gnuabi64 mips64el-unknown-linux-gnuabi64 mipsel-unknown-linux-gnu mipsel-unknown-linux-musl armv7-linux-androideabi armv7-unknown-linux-gnueabihf  aarch64-linux-android powerpc-unknown-linux-gnu powerpc64-unknown-linux-gnu powerpc64le-unknown-linux-gnu s390x-unknown-linux-gnu x86_64-unknown-linux-musl wasm32-unknown-emscripten"
+        TARGETS=" aarch64-apple-ios i686-apple-darwin x86_64-apple-darwin  armv7-apple-ios armv7s-apple-ios x86_64-apple-ios i686-unknown-linux-gnu x86_64-unknown-linux-gnu x86_64-unknown-freebsd x86_64-unknown-netbsd i586-unknown-linux-gnu i686-linux-android i686-unknown-freebsd mipsel-unknown-linux-gnu mips64-unknown-linux-gnuabi64 mips64el-unknown-linux-gnuabi64 mipsel-unknown-linux-gnu mipsel-unknown-linux-musl armv7-linux-androideabi armv7-unknown-linux-gnueabihf  aarch64-linux-android powerpc-unknown-linux-gnu powerpc64-unknown-linux-gnu powerpc64le-unknown-linux-gnu s390x-unknown-linux-gnu x86_64-unknown-linux-musl"
 
-        if [ "${RUST}" != "1.13.0" ] && \
-               [ "${RUST}" != "1.19.0" ] && \
-               [ "${RUST}" != "1.24.0" ]; then
-            TARGETS="${TARGETS} i586-unknown-linux-musl armv7-unknown-linux-musleabihf x86_64-sun-solaris sparc64-unknown-linux-gnu sparcv9-sun-solaris x86_64-linux-android wasm32-unknown-unknown" 
+        if [ "${RUST}" != "1.13.0" ]; then
+            TARGETS="${TARGETS} i586-unknown-linux-musl armv7-unknown-linux-musleabihf x86_64-sun-solaris x86_64-linux-android wasm32-unknown-emscripten sparc64-unknown-linux-gnu sparcv9-sun-solaris wasm32-unknown-unknown x86_64-rumprun-netbsd x86_64-unknown-cloudabi"
+            if [ "${RUST}" != "1.19.0" ]; then
+                TARGETS="${TARGETS}"
+                if [ "${RUST}" != "1.24.0" ]; then
+                    TARGETS="${TARGETS}"
+                fi
+            fi
         fi
 
         if [ "${RUST}" = "nightly" ]; then
@@ -69,12 +73,12 @@ case "${OS}" in
             # i686-unknown-haiku mipsel-unknown-unknown-linux-uclib
             # sparc64-unknown-netbsd x86_64-unknown-bitrig x86_64-unknown-haiku
             # x86_64-unknown-openbsd i686-unknown-netbsd
-            TARGETS="${TARGETS} aarch64-fuchsia  x86_64-fuchsia x86_64-rumprun-netbsd x86_64-unknown-cloudabi x86_64-unknown-redox thumbv6m-none-eabi thumbv7em-none-eabi thumbv7em-none-eabihf thumbv7m-none-eabi x86_64-fortanix-unknown-sgx"
+            TARGETS="${TARGETS} aarch64-fuchsia  x86_64-fuchsia  x86_64-unknown-redox thumbv6m-none-eabi thumbv7em-none-eabi thumbv7em-none-eabihf thumbv7m-none-eabi x86_64-fortanix-unknown-sgx"
         fi
 
         ;;
     osx*)
-        TARGETS="i686-apple-darwin x86_64-apple-darwin aarch64-apple-ios armv7-apple-ios armv7s-apple-ios x86_64-apple-ios"
+        TARGETS="aarch64-apple-ios i686-apple-darwin x86_64-apple-darwin  armv7-apple-ios armv7s-apple-ios x86_64-apple-ios"
         ;;
     *)
         ;;

@@ -10,7 +10,7 @@
 
 //! Crate docs
 
-#![allow(bad_style, overflowing_literals, improper_ctypes)]
+#![allow(bad_style, overflowing_literals, improper_ctypes, unknown_lints)]
 #![crate_type = "rlib"]
 #![crate_name = "libc"]
 #![cfg_attr(cross_platform_docs, feature(no_core, lang_items, const_fn))]
