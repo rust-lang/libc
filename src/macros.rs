@@ -34,6 +34,7 @@ macro_rules! __cfg_if_apply {
     }
 }
 
+#[allow(unused_macros)]
 macro_rules! s {
     ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
         __item! {
@@ -49,6 +50,7 @@ macro_rules! s {
     )*)
 }
 
+#[allow(unused_macros)]
 macro_rules! s_no_extra_traits {
     ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
         __item! {
@@ -82,6 +84,7 @@ macro_rules! f {
     )*)
 }
 
+#[allow(unused_macros)]
 macro_rules! __item {
     ($i:item) => {
         $i
