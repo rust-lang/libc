@@ -228,10 +228,13 @@ cfg_if! {
     } else if #[cfg(unix)] {
         mod unix;
         pub use unix::*;
-    } else {
+    } else if #[cfg(any(feature = "generic_ctypes",
+                        target_env = "sgx",
+                        target_os = "switch"))] {
         // Some targets only need the generic C types (and don't need functions)
-        #[cfg(any(feature = "generic_ctypes", target_env = "sgx", target_os = "switch"))]
         mod generic;
         pub use generic::*;
+    } else {
+        // If you didn't request generic_ctypes, libc is empty
     }
 }

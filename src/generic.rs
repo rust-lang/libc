@@ -47,6 +47,8 @@ cfg_if! {
                         target_arch = "riscv64"))] {
         pub type c_char = i8;
         pub type wchar_t = i32;
+    } else {
+        // Unknown arch, so we don't know if chars are signed or unsigned
     }
 }
 
