@@ -186,17 +186,6 @@ s! {
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 0],
     }
-
-    // FIXME this is actually a union
-    #[cfg_attr(all(feature = "align", target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align", target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct sem_t {
-        __size: [::c_char; 32],
-        #[cfg(not(feature = "align"))]
-        __align: [::c_long; 0],
-    }
 }
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -211,4 +200,14 @@ pub const SYS_gettid: ::c_long = 5178;   // Valid for n64
 #[link(name = "util")]
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
+    }
 }

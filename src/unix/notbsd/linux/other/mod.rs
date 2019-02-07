@@ -121,20 +121,6 @@ s! {
         pub l_pid: ::pid_t,
     }
 
-    // FIXME this is actually a union
-    #[cfg_attr(all(feature = "align", target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align", target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct sem_t {
-        #[cfg(target_pointer_width = "32")]
-        __size: [::c_char; 16],
-        #[cfg(target_pointer_width = "64")]
-        __size: [::c_char; 32],
-        #[cfg(not(feature = "align"))]
-        __align: [::c_long; 0],
-    }
-
     pub struct mallinfo {
         pub arena: ::c_int,
         pub ordblks: ::c_int,
@@ -246,60 +232,63 @@ s_no_extra_traits! {
     }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for utmpx {
-    fn eq(&self, other: &utmpx) -> bool {
-        self.ut_type == other.ut_type
-            && self.ut_pid == other.ut_pid
-            && self.ut_line == other.ut_line
-            && self.ut_id == other.ut_id
-            && self.ut_user == other.ut_user
-            && self
-                .ut_host
-                .iter()
-                .zip(other.ut_host.iter())
-                .all(|(a,b)| a == b)
-            && self.ut_exit == other.ut_exit
-            && self.ut_session == other.ut_session
-            && self.ut_tv == other.ut_tv
-            && self.ut_addr_v6 == other.ut_addr_v6
-            && self.__glibc_reserved == other.__glibc_reserved
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for utmpx {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for utmpx {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("utmpx")
-            .field("ut_type", &self.ut_type)
-            .field("ut_pid", &self.ut_pid)
-            .field("ut_line", &self.ut_line)
-            .field("ut_id", &self.ut_id)
-            .field("ut_user", &self.ut_user)
-            // FIXME: .field("ut_host", &self.ut_host)
-            .field("ut_exit", &self.ut_exit)
-            .field("ut_session", &self.ut_session)
-            .field("ut_tv", &self.ut_tv)
-            .field("ut_addr_v6", &self.ut_addr_v6)
-            .field("__glibc_reserved", &self.__glibc_reserved)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for utmpx {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.ut_type.hash(state);
-        self.ut_pid.hash(state);
-        self.ut_line.hash(state);
-        self.ut_id.hash(state);
-        self.ut_user.hash(state);
-        self.ut_host.hash(state);
-        self.ut_exit.hash(state);
-        self.ut_session.hash(state);
-        self.ut_tv.hash(state);
-        self.ut_addr_v6.hash(state);
-        self.__glibc_reserved.hash(state);
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for utmpx {
+            fn eq(&self, other: &utmpx) -> bool {
+                self.ut_type == other.ut_type
+                    && self.ut_pid == other.ut_pid
+                    && self.ut_line == other.ut_line
+                    && self.ut_id == other.ut_id
+                    && self.ut_user == other.ut_user
+                    && self
+                    .ut_host
+                    .iter()
+                    .zip(other.ut_host.iter())
+                    .all(|(a,b)| a == b)
+                    && self.ut_exit == other.ut_exit
+                    && self.ut_session == other.ut_session
+                    && self.ut_tv == other.ut_tv
+                    && self.ut_addr_v6 == other.ut_addr_v6
+                    && self.__glibc_reserved == other.__glibc_reserved
+            }
+        }
+
+        impl Eq for utmpx {}
+
+        impl ::fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("utmpx")
+                    .field("ut_type", &self.ut_type)
+                    .field("ut_pid", &self.ut_pid)
+                    .field("ut_line", &self.ut_line)
+                    .field("ut_id", &self.ut_id)
+                    .field("ut_user", &self.ut_user)
+                // FIXME: .field("ut_host", &self.ut_host)
+                    .field("ut_exit", &self.ut_exit)
+                    .field("ut_session", &self.ut_session)
+                    .field("ut_tv", &self.ut_tv)
+                    .field("ut_addr_v6", &self.ut_addr_v6)
+                    .field("__glibc_reserved", &self.__glibc_reserved)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for utmpx {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ut_type.hash(state);
+                self.ut_pid.hash(state);
+                self.ut_line.hash(state);
+                self.ut_id.hash(state);
+                self.ut_user.hash(state);
+                self.ut_host.hash(state);
+                self.ut_exit.hash(state);
+                self.ut_session.hash(state);
+                self.ut_tv.hash(state);
+                self.ut_addr_v6.hash(state);
+                self.__glibc_reserved.hash(state);
+            }
+        }
     }
 }
 
@@ -996,5 +985,15 @@ cfg_if! {
         pub use self::b64::*;
     } else {
         // Unknown target_arch
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
     }
 }

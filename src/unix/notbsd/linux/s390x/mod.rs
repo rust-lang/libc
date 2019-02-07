@@ -246,17 +246,6 @@ s! {
         pub l_pid: ::pid_t,
     }
 
-    // FIXME this is actually a union
-    #[cfg_attr(all(feature = "align", target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align", target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct sem_t {
-        __size: [::c_char; 32],
-        #[cfg(not(feature = "align"))]
-        __align: [::c_long; 0],
-    }
-
     pub struct __psw_t {
         pub mask: u64,
         pub addr: u64,
@@ -336,26 +325,30 @@ s_no_extra_traits!{
     }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for fpreg_t {
-    fn eq(&self, other: &fpreg_t) -> bool {
-        self.d == other.d
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for fpreg_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for fpreg_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("fpreg_t")
-            .field("d", &self.d)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for fpreg_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.d.to_bits().hash(state);
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for fpreg_t {
+            fn eq(&self, other: &fpreg_t) -> bool {
+                self.d == other.d
+            }
+        }
+
+        impl Eq for fpreg_t {}
+
+        impl ::fmt::Debug for fpreg_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("fpreg_t")
+                    .field("d", &self.d)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for fpreg_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let d: u64 = unsafe { ::mem::transmute(self.d) };
+                d.hash(state);
+            }
+        }
     }
 }
 
@@ -1358,4 +1351,14 @@ extern {
                        argc: ::c_int, ...);
     pub fn swapcontext(uocp: *mut ucontext_t,
                        ucp: *const ucontext_t) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
+    }
 }

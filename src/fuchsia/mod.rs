@@ -202,9 +202,6 @@ s! {
         pub ru_nivcsw: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad14: u32,
-
-        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
-        __reserved: [c_long; 16],
     }
 
     pub struct in_addr {
@@ -334,23 +331,6 @@ s! {
         pub l_pid: ::pid_t,
     }
 
-    pub struct sysinfo {
-        pub uptime: ::c_ulong,
-        pub loads: [::c_ulong; 3],
-        pub totalram: ::c_ulong,
-        pub freeram: ::c_ulong,
-        pub sharedram: ::c_ulong,
-        pub bufferram: ::c_ulong,
-        pub totalswap: ::c_ulong,
-        pub freeswap: ::c_ulong,
-        pub procs: ::c_ushort,
-        pub pad: ::c_ushort,
-        pub totalhigh: ::c_ulong,
-        pub freehigh: ::c_ulong,
-        pub mem_unit: ::c_uint,
-        pub __reserved: [::c_char; 256],
-    }
-
     pub struct ucred {
         pub pid: ::pid_t,
         pub uid: ::uid_t,
@@ -375,17 +355,6 @@ s! {
         pub sin6_flowinfo: u32,
         pub sin6_addr: ::in6_addr,
         pub sin6_scope_id: u32,
-    }
-
-    pub struct sockaddr_un {
-        pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 108]
-    }
-
-    pub struct sockaddr_storage {
-        pub ss_family: sa_family_t,
-        __ss_align: ::size_t,
-        __ss_pad2: [u8; 128 - 2 * 8],
     }
 
     pub struct addrinfo {
@@ -457,15 +426,6 @@ s! {
         pub u64: ::uint64_t,
     }
 
-    pub struct utsname {
-        pub sysname: [::c_char; 65],
-        pub nodename: [::c_char; 65],
-        pub release: [::c_char; 65],
-        pub version: [::c_char; 65],
-        pub machine: [::c_char; 65],
-        pub domainname: [::c_char; 65]
-    }
-
     pub struct lconv {
         pub decimal_point: *mut ::c_char,
         pub thousands_sep: *mut ::c_char,
@@ -502,22 +462,6 @@ s! {
         pub __pad: [::c_char; 56 - 3 * 8 /* 8 == sizeof(long) */],
     }
 
-    pub struct dirent {
-        pub d_ino: ::ino_t,
-        pub d_off: ::off_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -544,122 +488,6 @@ s! {
         pub ifa_netmask: *mut ::sockaddr,
         pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
         pub ifa_data: *mut ::c_void
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_pointer_width = "32",
-                   any(target_arch = "arm",
-                       target_arch = "x86_64")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "arm",
-                               target_arch = "x86_64")))),
-               repr(align(8)))]
-    pub struct pthread_mutex_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "arm",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(feature = "align",
-                      target_arch = "arm",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_pointer_width = "32",
-                   any(target_arch = "arm",
-                       target_arch = "x86_64")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "arm",
-                               target_arch = "x86_64")))),
-               repr(align(8)))]
-    pub struct pthread_rwlock_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "arm",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(feature = "align",
-                      target_arch = "arm",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "32",
-                       target_arch = "x86_64",
-                       all(target_arch = "aarch64", target_env = "musl"))),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   not(any(target_pointer_width = "32",
-                           target_arch = "x86_64",
-                           all(target_arch = "aarch64", target_env = "musl")))),
-               repr(align(8)))]
-    pub struct pthread_mutexattr_t {
-        #[cfg(all(not(features = "align"),
-                  any(target_arch = "x86_64",
-                      all(target_arch = "aarch64", target_env = "musl"))))]
-        __align: [::c_int; 0],
-        #[cfg(all(not(features = "align"),
-                  not(any(target_arch = "x86_64",
-                          all(target_arch = "aarch64", target_env = "musl")))))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   any(target_env = "musl", target_pointer_width = "32")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   not(target_env = "musl"),
-                   target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct pthread_rwlockattr_t {
-        #[cfg(all(not(feature = "align"), target_env = "musl"))]
-        __align: [::c_int; 0],
-        #[cfg(all(not(feature = "align"), not(target_env = "musl")))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_env = "musl",
-                   target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   target_env = "musl",
-                   target_pointer_width = "64"),
-               repr(align(8)))]
-    #[cfg_attr(all(feature = "align",
-                   not(target_env = "musl"),
-                   target_arch = "x86"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   not(target_env = "musl"),
-                   not(target_arch = "x86")),
-               repr(align(8)))]
-    pub struct pthread_cond_t {
-        #[cfg(all(not(feature = "align"), target_env = "musl"))]
-        __align: [*const ::c_void; 0],
-        #[cfg(not(any(feature = "align", target_env = "musl")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
-    }
-
-    #[cfg_attr(feature = "align", repr(align(4)))]
-    pub struct pthread_condattr_t {
-        #[cfg(not(feature = "align"))]
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
     }
 
     pub struct passwd {
@@ -1092,6 +920,67 @@ s! {
         pub c_cc: [::cc_t; 19],
         pub c_ispeed: ::speed_t,
         pub c_ospeed: ::speed_t,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct sysinfo {
+        pub uptime: ::c_ulong,
+        pub loads: [::c_ulong; 3],
+        pub totalram: ::c_ulong,
+        pub freeram: ::c_ulong,
+        pub sharedram: ::c_ulong,
+        pub bufferram: ::c_ulong,
+        pub totalswap: ::c_ulong,
+        pub freeswap: ::c_ulong,
+        pub procs: ::c_ushort,
+        pub pad: ::c_ushort,
+        pub totalhigh: ::c_ulong,
+        pub freehigh: ::c_ulong,
+        pub mem_unit: ::c_uint,
+        pub __reserved: [::c_char; 256],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_un {
+        pub sun_family: sa_family_t,
+        pub sun_path: [::c_char; 108]
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_storage {
+        pub ss_family: sa_family_t,
+        __ss_align: ::size_t,
+        __ss_pad2: [u8; 128 - 2 * 8],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct utsname {
+        pub sysname: [::c_char; 65],
+        pub nodename: [::c_char; 65],
+        pub release: [::c_char; 65],
+        pub version: [::c_char; 65],
+        pub machine: [::c_char; 65],
+        pub domainname: [::c_char; 65]
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct dirent {
+        pub d_ino: ::ino_t,
+        pub d_off: ::off_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
     }
 }
 
@@ -4120,14 +4009,26 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(core_cvoid)] {
-        pub use core::ffi::c_void;
+    if #[cfg(libc_align)] {
+        #[macro_use]
+        mod align;
+    } else {
+        #[macro_use]
+        mod no_align;
+    }
+}
+expand_align!();
+
+cfg_if! {
+    if #[cfg(libc_core_cvoid)] {
+        pub use ::ffi::c_void;
     } else {
         // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
         // enable more optimization opportunities around it recognizing things
         // like malloc/free.
         #[repr(u8)]
         #[allow(missing_copy_implementations)]
+        #[allow(missing_debug_implementations)]
         pub enum c_void {
             // Two dummy variants so the #[repr] attribute can be used.
             #[doc(hidden)]

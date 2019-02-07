@@ -39,6 +39,15 @@ impl ::dox::Clone for timezone {
 }
 
 s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
@@ -131,14 +140,6 @@ s! {
         pub dli_fbase: *mut ::c_void,
         pub dli_sname: *const ::c_char,
         pub dli_saddr: *mut ::c_void,
-    }
-
-    #[cfg_attr(any(all(target_arch = "x86",
-                   target_arch = "x86_64")),
-               repr(packed))]
-    pub struct epoll_event {
-        pub events: ::uint32_t,
-        pub u64: ::uint64_t,
     }
 
     pub struct utsname {
@@ -234,101 +235,9 @@ s! {
         pub ifa_data: *mut ::c_void
     }
 
-    #[cfg_attr(all(feature = "align",
-                   target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc")))),
-               repr(align(8)))]
-    pub struct pthread_mutex_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(feature = "align",
-                      target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc")))),
-               repr(align(8)))]
-    pub struct pthread_rwlock_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(feature = "align",
-                      target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "32",
-                       target_arch = "x86_64", target_arch = "powerpc64",
-                       target_arch = "mips64", target_arch = "s390x",
-                       target_arch = "sparc64")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   not(any(target_pointer_width = "32",
-                           target_arch = "x86_64", target_arch = "powerpc64",
-                           target_arch = "mips64", target_arch = "s390x",
-                           target_arch = "sparc64"))),
-               repr(align(8)))]
-    pub struct pthread_mutexattr_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "x86_64", target_arch = "powerpc64",
-                      target_arch = "mips64", target_arch = "s390x",
-                      target_arch = "sparc64")))]
-        __align: [::c_int; 0],
-        #[cfg(all(not(feature = "align"),
-                  not(any(target_arch = "x86_64", target_arch = "powerpc64",
-                          target_arch = "mips64", target_arch = "s390x",
-                          target_arch = "sparc64"))))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
     pub struct pthread_rwlockattr_t {
         __lockkind: ::c_int,
         __pshared: ::c_int,
-    }
-
-    #[cfg_attr(feature = "align", repr(align(8)))]
-    pub struct pthread_cond_t {
-        #[cfg(not(feature = "align"))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
-    }
-
-    #[cfg_attr(feature = "align", repr(align(4)))]
-    pub struct pthread_condattr_t {
-        #[cfg(not(feature = "align"))]
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
     }
 
     pub struct passwd {
@@ -443,6 +352,17 @@ s! {
         pub msgssz: ::c_int,
         pub msgtql: ::c_int,
         pub msgseg: ::c_ushort,
+    }
+}
+
+s_no_extra_traits! {
+    #[cfg_attr(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        repr(packed)
+    )]
+    pub struct epoll_event {
+        pub events: ::uint32_t,
+        pub u64: ::uint64_t,
     }
 }
 
@@ -1978,3 +1898,14 @@ cfg_if! {
     }
 }
 
+cfg_if! {
+    if #[cfg(libc_align)] {
+        #[macro_use]
+        mod align;
+    } else {
+        #[macro_use]
+        mod no_align;
+    }
+}
+
+expand_align!();

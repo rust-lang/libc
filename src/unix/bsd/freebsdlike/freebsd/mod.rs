@@ -21,17 +21,6 @@ pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
 
 s! {
-    pub struct utmpx {
-        pub ut_type: ::c_short,
-        pub ut_tv: ::timeval,
-        pub ut_id: [::c_char; 8],
-        pub ut_pid: ::pid_t,
-        pub ut_user: [::c_char; 32],
-        pub ut_line: [::c_char; 16],
-        pub ut_host: [::c_char; 128],
-        pub __ut_spare: [::c_char; 64],
-    }
-
     pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_offset: ::off_t,
@@ -46,14 +35,6 @@ s! {
         __unused4: ::c_long,
         __unused5: *mut ::c_void,
         pub aio_sigevent: sigevent
-    }
-
-    pub struct dirent {
-        pub d_fileno: u32,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_namlen: u8,
-        pub d_name: [::c_char; 256],
     }
 
     pub struct jail {
@@ -99,31 +80,6 @@ s! {
         pub f_frsize: ::c_ulong,
         pub f_fsid: ::c_ulong,
         pub f_namemax: ::c_ulong,
-    }
-
-    pub struct statfs {
-        pub f_version: ::uint32_t,
-        pub f_type: ::uint32_t,
-        pub f_flags: ::uint64_t,
-        pub f_bsize: ::uint64_t,
-        pub f_iosize: ::uint64_t,
-        pub f_blocks: ::uint64_t,
-        pub f_bfree: ::uint64_t,
-        pub f_bavail: ::int64_t,
-        pub f_files: ::uint64_t,
-        pub f_ffree: ::int64_t,
-        pub f_syncwrites: ::uint64_t,
-        pub f_asyncwrites: ::uint64_t,
-        pub f_syncreads: ::uint64_t,
-        pub f_asyncreads: ::uint64_t,
-        f_spare: [::uint64_t; 10],
-        pub f_namemax: ::uint32_t,
-        pub f_owner: ::uid_t,
-        pub f_fsid: ::fsid_t,
-        f_charspare: [::c_char; 80],
-        pub f_fstypename: [::c_char; 16],
-        pub f_mntfromname: [::c_char; 88],
-        pub f_mntonname: [::c_char; 88],
     }
 
     // internal structure has changed over time
@@ -174,6 +130,62 @@ s! {
         __cr_unused1: *mut ::c_void,
     }
 
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct utmpx {
+        pub ut_type: ::c_short,
+        pub ut_tv: ::timeval,
+        pub ut_id: [::c_char; 8],
+        pub ut_pid: ::pid_t,
+        pub ut_user: [::c_char; 32],
+        pub ut_line: [::c_char; 16],
+        pub ut_host: [::c_char; 128],
+        pub __ut_spare: [::c_char; 64],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct dirent {
+        pub d_fileno: u32,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_namlen: u8,
+        pub d_name: [::c_char; 256],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct statfs {
+        pub f_version: ::uint32_t,
+        pub f_type: ::uint32_t,
+        pub f_flags: ::uint64_t,
+        pub f_bsize: ::uint64_t,
+        pub f_iosize: ::uint64_t,
+        pub f_blocks: ::uint64_t,
+        pub f_bfree: ::uint64_t,
+        pub f_bavail: ::int64_t,
+        pub f_files: ::uint64_t,
+        pub f_ffree: ::int64_t,
+        pub f_syncwrites: ::uint64_t,
+        pub f_asyncwrites: ::uint64_t,
+        pub f_syncreads: ::uint64_t,
+        pub f_asyncreads: ::uint64_t,
+        f_spare: [::uint64_t; 10],
+        pub f_namemax: ::uint32_t,
+        pub f_owner: ::uid_t,
+        pub f_fsid: ::fsid_t,
+        f_charspare: [::c_char; 80],
+        pub f_fstypename: [::c_char; 16],
+        pub f_mntfromname: [::c_char; 88],
+        pub f_mntonname: [::c_char; 88],
+    }
+
+    #[allow(missing_debug_implementations)]
     pub struct sockaddr_dl {
         pub sdl_len: ::c_uchar,
         pub sdl_family: ::c_uchar,
@@ -183,12 +195,6 @@ s! {
         pub sdl_alen: ::c_uchar,
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 46],
-    }
-
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
     }
 }
 

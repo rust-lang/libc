@@ -137,23 +137,6 @@ s! {
         __reserved: [c_long; 16],
     }
 
-    #[cfg_attr(target_os = "netbsd", repr(packed))]
-    pub struct in_addr {
-        pub s_addr: in_addr_t,
-    }
-
-    #[cfg_attr(feature = "align", repr(align(4)))]
-    pub struct in6_addr {
-        pub s6_addr: [u8; 16],
-        #[cfg(not(feature = "align"))]
-        __align: [u32; 0],
-    }
-
-    pub struct ip_mreq {
-        pub imr_multiaddr: in_addr,
-        pub imr_interface: in_addr,
-    }
-
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
         #[cfg(target_os = "android")]
@@ -1169,14 +1152,15 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(core_cvoid)] {
-        pub use core::ffi::c_void;
+    if #[cfg(libc_core_cvoid)] {
+        pub use ::ffi::c_void;
     } else {
         // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
         // enable more optimization opportunities around it recognizing things
         // like malloc/free.
         #[repr(u8)]
         #[allow(missing_copy_implementations)]
+        #[allow(missing_debug_implementations)]
         pub enum c_void {
             // Two dummy variants so the #[repr] attribute can be used.
             #[doc(hidden)]
@@ -1184,5 +1168,15 @@ cfg_if! {
             #[doc(hidden)]
             __variant2,
         }
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    } else {
+        mod no_align;
+        pub use self::no_align::*;
     }
 }
