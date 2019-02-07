@@ -180,17 +180,34 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(not(cross_platform_docs))] {
-        #[cfg(libc_core_cvoid)]
-        #[allow(unused_imports)]
-        use core::ffi;
-        #[allow(unused_imports)]
-        use core::fmt;
-        #[allow(unused_imports)]
-        use core::hash;
-        #[allow(unused_imports)]
-        use core::num;
-        #[allow(unused_imports)]
-        use core::mem;
+        cfg_if! {
+            if #[cfg(libc_priv_mod_use)] {
+                #[cfg(libc_core_cvoid)]
+                #[allow(unused_imports)]
+                use core::ffi;
+                #[allow(unused_imports)]
+                use core::fmt;
+                #[allow(unused_imports)]
+                use core::hash;
+                #[allow(unused_imports)]
+                use core::num;
+                #[allow(unused_imports)]
+                use core::mem;
+            } else {
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::fmt;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::hash;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::num;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::mem;
+            }
+        }
     }
 }
 
