@@ -7,13 +7,10 @@ use std::env;
 
 #[cfg(unix)]
 fn do_cc() {
-    cc::Build::new()
-        .file("src/cmsg.c")
-        .compile("cmsg");
+    cc::Build::new().file("src/cmsg.c").compile("cmsg");
 }
 #[cfg(not(unix))]
-fn do_cc() {
-}
+fn do_cc() {}
 
 fn do_ctest() {
     let target = env::var("TARGET").unwrap();
@@ -385,7 +382,7 @@ fn do_ctest() {
             // Fixup a few types on windows that don't actually exist.
             "time64_t" if windows => "__time64_t".to_string(),
             "ssize_t" if windows => "SSIZE_T".to_string(),
-            // windows 
+            // windows
             "sighandler_t" if windows && !mingw => "_crt_signal_t".to_string(),
             "sighandler_t" if windows && mingw => "__p_sig_fn_t".to_string(),
             // OSX calls this something else
@@ -671,7 +668,11 @@ fn do_ctest() {
             // MFD_HUGETLB is not available in some older libc versions on the CI builders. On the
             // x86_64 and i686 builders it seems to be available for all targets, so at least test
             // it there.
-            "MFD_HUGETLB" if !(x86_64 || i686) || musl || (x86_64 && android)=> true,
+            "MFD_HUGETLB"
+                if !(x86_64 || i686) || musl || (x86_64 && android) =>
+            {
+                true
+            }
 
             "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG"
             | "DT_LNK" | "DT_SOCK"
