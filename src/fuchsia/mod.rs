@@ -3080,7 +3080,8 @@ extern {
     pub fn fflush(file: *mut FILE) -> ::c_int;
     pub fn fclose(file: *mut FILE) -> ::c_int;
     pub fn remove(filename: *const ::c_char) -> ::c_int;
-    pub fn rename(oldname: *const ::c_char, newname: *const ::c_char) -> ::c_int;
+    pub fn rename(oldname: *const ::c_char,
+                  newname: *const ::c_char) -> ::c_int;
     pub fn tmpfile() -> *mut FILE;
     pub fn setvbuf(stream: *mut FILE, buffer: *mut ::c_char, mode: ::c_int,
                    size: ::size_t) -> ::c_int;
@@ -3088,7 +3089,8 @@ extern {
     pub fn getchar() -> ::c_int;
     pub fn putchar(c: ::c_int) -> ::c_int;
     pub fn fgetc(stream: *mut FILE) -> ::c_int;
-    pub fn fgets(buf: *mut ::c_char, n: ::c_int, stream: *mut FILE) -> *mut ::c_char;
+    pub fn fgets(buf: *mut ::c_char, n: ::c_int,
+                 stream: *mut FILE) -> *mut ::c_char;
     pub fn fputc(c: ::c_int, stream: *mut FILE) -> ::c_int;
     pub fn fputs(s: *const ::c_char, stream: *mut FILE) -> ::c_int;
     pub fn puts(s: *const ::c_char) -> ::c_int;
@@ -3097,7 +3099,8 @@ extern {
                  stream: *mut FILE) -> ::size_t;
     pub fn fwrite(ptr: *const ::c_void, size: ::size_t, nobj: ::size_t,
                   stream: *mut FILE) -> ::size_t;
-    pub fn fseek(stream: *mut FILE, offset: ::c_long, whence: ::c_int) -> ::c_int;
+    pub fn fseek(stream: *mut FILE, offset: ::c_long,
+                 whence: ::c_int) -> ::c_int;
     pub fn ftell(stream: *mut FILE) -> ::c_long;
     pub fn rewind(stream: *mut FILE);
     pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> ::c_int;
@@ -3129,7 +3132,8 @@ extern {
     pub fn strncat(s: *mut ::c_char, ct: *const ::c_char,
                    n: ::size_t) -> *mut ::c_char;
     pub fn strcmp(cs: *const ::c_char, ct: *const ::c_char) -> ::c_int;
-    pub fn strncmp(cs: *const ::c_char, ct: *const ::c_char, n: ::size_t) -> ::c_int;
+    pub fn strncmp(cs: *const ::c_char, ct: *const ::c_char,
+                   n: ::size_t) -> ::c_int;
     pub fn strcoll(cs: *const ::c_char, ct: *const ::c_char) -> ::c_int;
     pub fn strchr(cs: *const ::c_char, c: ::c_int) -> *mut ::c_char;
     pub fn strrchr(cs: *const ::c_char, c: ::c_int) -> *mut ::c_char;
@@ -3142,18 +3146,22 @@ extern {
     pub fn strnlen(cs: *const ::c_char, maxlen: ::size_t) -> ::size_t;
     pub fn strerror(n: ::c_int) -> *mut ::c_char;
     pub fn strtok(s: *mut ::c_char, t: *const ::c_char) -> *mut ::c_char;
-    pub fn strxfrm(s: *mut ::c_char, ct: *const ::c_char, n: ::size_t) -> ::size_t;
+    pub fn strxfrm(s: *mut ::c_char, ct: *const ::c_char,
+                   n: ::size_t) -> ::size_t;
     pub fn wcslen(buf: *const wchar_t) -> ::size_t;
     pub fn wcstombs(dest: *mut ::c_char, src: *const wchar_t,
                     n: ::size_t) -> ::size_t;
 
-    pub fn memchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
-    pub fn memcmp(cx: *const ::c_void, ct: *const ::c_void, n: ::size_t) -> ::c_int;
+    pub fn memchr(cx: *const ::c_void, c: ::c_int,
+                  n: ::size_t) -> *mut ::c_void;
+    pub fn memcmp(cx: *const ::c_void, ct: *const ::c_void,
+                  n: ::size_t) -> ::c_int;
     pub fn memcpy(dest: *mut ::c_void, src: *const ::c_void,
                   n: ::size_t) -> *mut ::c_void;
     pub fn memmove(dest: *mut ::c_void, src: *const ::c_void,
                    n: ::size_t) -> *mut ::c_void;
-    pub fn memset(dest: *mut ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    pub fn memset(dest: *mut ::c_void, c: ::c_int,
+                  n: ::size_t) -> *mut ::c_void;
 
     pub fn abs(i: ::c_int) -> ::c_int;
     pub fn atof(s: *const ::c_char) -> ::c_double;
@@ -3786,7 +3794,8 @@ extern {
     pub fn flistxattr(filedes: ::c_int, list: *mut ::c_char,
                       size: ::size_t) -> ::ssize_t;
     pub fn removexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
-    pub fn lremovexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
+    pub fn lremovexattr(path: *const ::c_char,
+                        name: *const ::c_char) -> ::c_int;
     pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char) -> ::c_int;
     pub fn signalfd(fd: ::c_int,
                     mask: *const ::sigset_t,
