@@ -40,18 +40,14 @@ test_target() {
         cargo "+${RUST}" build -vv $opt --target "${TARGET}"
     fi
 
-    # Test that libc builds with the `extra_traits` feature if Rust >= 1.25.0
-    if [ "${RUST}" != "+1.13.0" ] && \
-           [ "${RUST}" != "+1.19.0" ] && \
-           [ "${RUST}" != "+1.24.0" ]; then
-        cargo "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}" \
-              --features extra_traits
+    # Test that libc builds with the `extra_traits` feature
+    cargo "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}" \
+          --features extra_traits
 
-        # Also test that it builds with `extra_traits` and default features:
-        if [ "$NO_STD" != "1" ]; then
-            cargo "+${RUST}" build -vv $opt --target "${TARGET}" \
-                  --features extra_traits
-        fi
+    # Also test that it builds with `extra_traits` and default features:
+    if [ "$NO_STD" != "1" ]; then
+        cargo "+${RUST}" build -vv $opt --target "${TARGET}" \
+              --features extra_traits
     fi
 }
 
@@ -60,9 +56,9 @@ case "${OS}" in
     linux*)
         TARGETS="i686-unknown-linux-gnu x86_64-unknown-linux-gnu x86_64-unknown-freebsd x86_64-unknown-netbsd i586-unknown-linux-gnu i686-linux-android i686-unknown-freebsd mipsel-unknown-linux-gnu mips64-unknown-linux-gnuabi64 mips64el-unknown-linux-gnuabi64 mipsel-unknown-linux-gnu mipsel-unknown-linux-musl armv7-linux-androideabi armv7-unknown-linux-gnueabihf  aarch64-linux-android powerpc-unknown-linux-gnu powerpc64-unknown-linux-gnu powerpc64le-unknown-linux-gnu s390x-unknown-linux-gnu sparc64-unknown-linux-gnu sparcv9-sun-solaris x86_64-unknown-linux-musl x86_64-linux-android wasm32-unknown-emscripten"
 
-        if [ "${RUST}" != "+1.13.0" ] && \
-               [ "${RUST}" != "+1.19.0" ] && \
-               [ "${RUST}" != "+1.24.0" ]; then
+        if [ "${RUST}" != "1.13.0" ] && \
+               [ "${RUST}" != "1.19.0" ] && \
+               [ "${RUST}" != "1.24.0" ]; then
             TARGETS="${TARGETS} i586-unknown-linux-musl armv7-unknown-linux-musleabihf x86_64-sun-solaris"
         fi
 
