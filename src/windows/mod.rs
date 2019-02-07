@@ -1,5 +1,17 @@
 //! Windows CRT definitions
 
+pub type c_short = i16;
+pub type c_ushort = u16;
+pub type c_int = i32;
+pub type c_uint = u32;
+pub type c_longlong = i64;
+pub type c_ulonglong = u64;
+pub type intmax_t = i64;
+pub type uintmax_t = u64;
+
+pub type size_t = usize;
+pub type ptrdiff_t = isize;
+pub type ssize_t = isize;
 pub type sighandler_t = usize;
 
 pub type c_char = i8;
@@ -79,6 +91,9 @@ s! {
         pub sa_data: [::c_char; 14],
     }
 }
+
+pub const INT_MIN: ::c_int = -2147483648;
+pub const INT_MAX: ::c_int = 2147483647;
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;

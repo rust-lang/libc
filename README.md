@@ -45,7 +45,7 @@ libc = { version = "0.2", features = ["align"] }
 ```
 
 All structs implemented by the libc crate have the `Copy` and `Clone` traits
-implemented for them. The additional traits of `Debug, `Eq`, `Hash`, and
+implemented for them. The additional traits of `Debug`, `Eq`, `Hash`, and
 `PartialEq` can be enabled with the *extra_traits* feature (requires Rust 1.25
 or newer):
 
@@ -53,6 +53,22 @@ or newer):
 [dependencies]
 libc = { version = "0.2", features = ["extra_traits"] }
 ```
+
+A large number of targets are supported by libc; however, some unsupported or
+custom targets just need libc's basic types (`c_int`, `size_t`, etc...) for 
+linking to C code. These types can be enabled for _any_ target with the
+*generic_ctypes* feature:
+
+```toml
+[dependencies.libc]
+version = "0.2"
+default-features = false
+features = ["generic_ctypes"]
+```
+
+Note that if you target has strange definitions for C types, *generic_ctypes*
+will not necessarily generate the correct types, as the generation process is 
+based only on your CPU architecture and pointer size.
 
 ## What is libc?
 
