@@ -51,7 +51,7 @@ test_target() {
     fi
 }
 
-TARGETS="wasm32-unknown-unknown"
+TARGETS=""
 case "${OS}" in
     linux*)
         TARGETS="i686-unknown-linux-gnu x86_64-unknown-linux-gnu x86_64-unknown-freebsd x86_64-unknown-netbsd i586-unknown-linux-gnu i686-linux-android i686-unknown-freebsd mipsel-unknown-linux-gnu mips64-unknown-linux-gnuabi64 mips64el-unknown-linux-gnuabi64 mipsel-unknown-linux-gnu mipsel-unknown-linux-musl armv7-linux-androideabi armv7-unknown-linux-gnueabihf  aarch64-linux-android powerpc-unknown-linux-gnu powerpc64-unknown-linux-gnu powerpc64le-unknown-linux-gnu s390x-unknown-linux-gnu x86_64-unknown-linux-musl wasm32-unknown-emscripten"
@@ -59,7 +59,7 @@ case "${OS}" in
         if [ "${RUST}" != "1.13.0" ] && \
                [ "${RUST}" != "1.19.0" ] && \
                [ "${RUST}" != "1.24.0" ]; then
-            TARGETS="${TARGETS} i586-unknown-linux-musl armv7-unknown-linux-musleabihf x86_64-sun-solaris sparc64-unknown-linux-gnu sparcv9-sun-solaris x86_64-linux-android"
+            TARGETS="${TARGETS} i586-unknown-linux-musl armv7-unknown-linux-musleabihf x86_64-sun-solaris sparc64-unknown-linux-gnu sparcv9-sun-solaris x86_64-linux-android wasm32-unknown-unknown" 
         fi
 
         if [ "${RUST}" = "nightly" ]; then
