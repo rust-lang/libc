@@ -189,6 +189,8 @@ cfg_if! {
         use core::hash;
         #[allow(unused_imports)]
         use core::num;
+        #[allow(unused_imports)]
+        use core::mem;
     }
 }
 
