@@ -87,17 +87,10 @@ if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
   opt="--release"
 fi
 
-# Building with --no-default-features is currently broken on rumprun because we
-# need cfg(target_vendor), which is currently unstable.
-if [ "$TARGET" != "x86_64-rumprun-netbsd" ]; then
-  cargo test $opt --no-default-features --manifest-path libc-test/Cargo.toml --target "${TARGET}"
-fi
-# Test the #[repr(align(x))] feature if this is building on Rust >= 1.25
-if [ "$(rustc --version | sed -E 's/^rustc 1\.([0-9]*)\..*/\1/')" -ge 25 ]; then
-  cargo test $opt --features align --manifest-path libc-test/Cargo.toml --target "${TARGET}"
-fi
-# Test the `extra_traits` feature if this is building on Rust >= 1.25
-if [ "$(rustc --version | sed -E 's/^rustc 1\.([0-9]*)\..*/\1/')" -ge 25 ]; then
-  cargo test $opt --features extra_traits --manifest-path libc-test/Cargo.toml --target "${TARGET}"
-fi
-exec cargo test $opt --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+cargo test $opt --no-default-features --manifest-path libc-test/Cargo.toml \
+      --target "${TARGET}"
+
+cargo test $opt --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+
+cargo test $opt --features extra_traits --manifest-path libc-test/Cargo.toml \
+      --target "${TARGET}"

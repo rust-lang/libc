@@ -1,112 +1,188 @@
 language: rust
-rust: stable
+rust: nightly
 sudo: required
 dist: xenial
 services: docker
 
+stages:
+  - tools-and-build-and-tier1
+  - tier2
+
 matrix:
   include:
-    # 1.13.0 compat
-    - env: TARGET=x86_64-unknown-linux-gnu
-      rust: 1.13.0
-      script: rm -f Cargo.lock && cargo build
-      install: true
-
-    # build documentation
-    - env: TARGET=x86_64-unknown-linux-gnu
-      rust: nightly
+    # TOOLS
+    - name: "Documentation"
+      env: TARGET=x86_64-unknown-linux-gnu
       script: sh ci/dox.sh
       install: true
-
-    # stable compat
-    - env: TARGET=x86_64-unknown-linux-gnu
-      install: true
-    - env: TARGET=i686-unknown-linux-gnu
-    - os: osx
-      env: TARGET=x86_64-apple-darwin
-      osx_image: xcode10
-      install: true
-    - os: osx
-      env: TARGET=i686-apple-darwin
-      osx_image: xcode10
-    - env: TARGET=arm-linux-androideabi
-    - env: TARGET=aarch64-linux-android
-    # FIXME(#826) should reenable
-    #- env: TARGET=i686-linux-android
-    - env: TARGET=x86_64-linux-android
-    - env: TARGET=x86_64-unknown-linux-musl
-    - env: TARGET=i686-unknown-linux-musl
-    - env: TARGET=arm-unknown-linux-gnueabihf
-    - env: TARGET=arm-unknown-linux-musleabihf
-    - env: TARGET=aarch64-unknown-linux-gnu
-    - env: TARGET=aarch64-unknown-linux-musl
-    - env: TARGET=powerpc-unknown-linux-gnu
-    - env: TARGET=powerpc64-unknown-linux-gnu
-    - env: TARGET=powerpc64le-unknown-linux-gnu
-    - env: TARGET=mips-unknown-linux-musl
-    - env: TARGET=mipsel-unknown-linux-musl
-    - env: TARGET=mips64-unknown-linux-gnuabi64
-    - env: TARGET=mips64el-unknown-linux-gnuabi64
-    - env: TARGET=mips-unknown-linux-gnu
-    - env: TARGET=s390x-unknown-linux-gnu
-    - env: TARGET=sparc64-unknown-linux-gnu
-    - env: TARGET=asmjs-unknown-emscripten
-    - env: TARGET=wasm32-unknown-emscripten
-
-    # beta
-    - env: TARGET=x86_64-unknown-linux-gnu
-      rust: beta
-      install: true
-    - os: osx
-      env: TARGET=x86_64-apple-darwin
-      osx_image: xcode10
-      rust: beta
-      install: true
-
-    # nightly
-    - env: TARGET=x86_64-unknown-linux-gnu
-      rust: nightly
-      install: true
-    - os: osx
-      env: TARGET=x86_64-apple-darwin
-      osx_image: xcode10
-      rust: nightly
-      install: true
-    # not available on stable
-    # without --release the build fails
-    # see https://github.com/rust-lang/rust/issues/45417
-    - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
-      rust: nightly
-
-    - env: TARGET=wasm32-unknown-unknown
-      install: rustup target add $TARGET
-      script: cargo build --no-default-features --target $TARGET --release
-    - name: "Style"
-      install: rustup component add rustfmt-preview
-      script:
-        - rustc ci/style.rs && ./style src
-        - cargo fmt --all -- --check
+      stage: tools-and-build-and-tier1
     - name: "Shellcheck"
       install: true
       script:
         - shellcheck --version
         - shellcheck ci/*.sh
+      stage: tools-and-build-and-tier1
+    - name: "Style"
+      install: rustup component add rustfmt-preview
+      script:
+        - rustc ci/style.rs && ./style src
+        - cargo fmt --all -- --check
+      stage: tools-and-build-and-tier1
+
+    # BUILD stable, beta, nightly
+    - name: "Build Stable Rust"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: stable
+    - name: "Build Beta Rust"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: beta
+    - name: "Build Nightly Rust"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: nightly
+    - name: "Build Stable Rust"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: stable
+      os: osx
+      osx_image: xcode10
+    - name: "Build Beta Rust"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: beta
+      os: osx
+      osx_image: xcode10
+    - name: "Build Nightly Rust"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: nightly
+      os: osx
+      osx_image: xcode10
+    - name: "Build Stable Rust 1.13.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.13.0
+    - name: "Build Stable Rust 1.19.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.19.0
+    - name: "Build Stable Rust 1.24.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.24.0
+    - name: "Build Stable Rust 1.25.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.25.0
+    - name: "Build Stable Rust 1.30.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.30.0
+    - name: "Build Stable Rust 1.13.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.13.0
+      os: osx
+      osx_image: xcode10
+    - name: "Build Stable Rust 1.19.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.19.0
+      os: osx
+      osx_image: xcode10
+    - name: "Build Stable Rust 1.24.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.24.0
+      os: osx
+      osx_image: xcode10
+    - name: "Build Stable Rust 1.25.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.25.0
+      os: osx
+      osx_image: xcode10
+    - name: "Build Stable Rust 1.30.0"
+      script: sh ci/build.sh
+      stage: tools-and-build-and-tier1
+      rust: 1.30.0
+      os: osx
+      osx_image: xcode10
+    - env: TARGET=i686-apple-darwin
+      os: osx
+      osx_image: xcode10
+      stage: tools-and-build-and-tier1
+    - env: TARGET=i686-unknown-linux-gnu
+      stage: tools-and-build-and-tier1
+    - env: TARGET=x86_64-apple-darwin
+      os: osx
+      osx_image: xcode10
+      stage: tools-and-build-and-tier1
+    - env: TARGET=x86_64-unknown-linux-gnu
+      stage: tools-and-build-and-tier1
+
+    # Tier 2 targets
+    - env: TARGET=aarch64-linux-android
+      stage: tier2
+    - env: TARGET=aarch64-unknown-linux-gnu
+      stage: tier2
+    - env: TARGET=aarch64-unknown-linux-musl
+      stage: tier2
+    - env: TARGET=arm-linux-androideabi
+      stage: tier2
+    - env: TARGET=arm-unknown-linux-gnueabihf
+      stage: tier2
+    - env: TARGET=arm-unknown-linux-musleabihf
+      stage: tier2
+    - env: TARGET=asmjs-unknown-emscripten
+      stage: tier2
+    - env: TARGET=i686-unknown-linux-musl
+      stage: tier2
+    - env: TARGET=mips-unknown-linux-gnu
+      stage: tier2
+    - env: TARGET=mips-unknown-linux-musl
+      stage: tier2
+    - env: TARGET=mips64-unknown-linux-gnuabi64
+      stage: tier2
+    - env: TARGET=mips64el-unknown-linux-gnuabi64
+      stage: tier2
+    - env: TARGET=mipsel-unknown-linux-musl
+      stage: tier2
+    - env: TARGET=powerpc-unknown-linux-gnu
+      stage: tier2
+    - env: TARGET=powerpc64-unknown-linux-gnu
+      stage: tier2
+    - env: TARGET=powerpc64le-unknown-linux-gnu
+      stage: tier2
+    - env: TARGET=s390x-unknown-linux-gnu
+      stage: tier2
+    - env: TARGET=sparc64-unknown-linux-gnu
+      stage: tier2
+    - env: TARGET=wasm32-unknown-emscripten
+      stage: tier2
+    - env: TARGET=x86_64-linux-android
+      stage: tier2
+    - env: TARGET=x86_64-unknown-linux-gnux32 OPT="--release"
+      stage: tier2
+    - env: TARGET=x86_64-unknown-linux-musl
+      stage: tier2
 
   allow_failures:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
       - env: TARGET=asmjs-unknown-emscripten
       - env: TARGET=wasm32-unknown-emscripten
 
-install: rustup target add $TARGET
+install: rustup target add $TARGET || true
+
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
-  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
+  - if [[ $TRAVIS_OS_NAME = "linux" ]] && [[ $BUILD_ONLY != "1" ]]; then
       sh ci/run-docker.sh $TARGET;
     else
-      export CARGO_TARGET_DIR=`pwd`/target;
       sh ci/run.sh $TARGET;
     fi
-
 env:
   global:
     secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="
