@@ -949,7 +949,6 @@ cfg_if! {
     }
 }
 
-
 cfg_if! {
     if #[cfg(libc_align)] {
         mod align;
