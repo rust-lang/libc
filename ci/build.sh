@@ -85,7 +85,6 @@ x86_64-unknown-netbsd \
 
 RUST_GT_1_13_LINUX_TARGETS="\
 armv7-unknown-linux-musleabihf \
-i586-unknown-linux-musl  \
 sparc64-unknown-linux-gnu \
 sparcv9-sun-solaris \
 wasm32-unknown-emscripten \
@@ -98,7 +97,9 @@ x86_64-unknown-cloudabi \
 RUST_GT_1_19_LINUX_TARGETS="\
 aarch64-unknown-linux-musl \
 "
-RUST_GT_1_24_LINUX_TARGETS=
+RUST_GT_1_24_LINUX_TARGETS="\
+i586-unknown-linux-musl \
+"
 
 RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
