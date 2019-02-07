@@ -22,50 +22,29 @@ pub type ssize_t = isize;
 //   - longs can either be 32-bit or 64-bit
 
 // Whether chars default to signed or unsigned is primarily determined by
-// architecture (windows is the main exception here).
+// architecture (Windows is the main exception here).
 cfg_if! {
     if #[cfg(any(target_arch = "aarch64",
                  target_arch = "arm",
-                 target_arch = "armebv7r",
-                 target_arch = "armv5te",
-                 target_arch = "armv7",
-                 target_arch = "armv7r",
-                 target_arch = "armv7s",
                  target_arch = "asmjs",
                  target_arch = "wasm32",
                  target_arch = "wasm64",
                  target_arch = "powerpc",
                  target_arch = "powerpc64",
-                 target_arch = "powerpc64le",
-                 target_arch = "s390x",
-                 target_arch = "thumbv6",
-                 target_arch = "thumbv6m",
-                 target_arch = "thummv7",
-                 target_arch = "thumbv7em",
-                 target_arch = "thumbv7m",
-                 target_arch = "thumbv7neon",
-                 target_arch = "tummbv8",
-                 target_arch = "thumbv8m",
-                 target_arch = "thumbv8m.main"))] {
+                 target_arch = "s390x"))] {
         pub type c_char = u8;
         pub type wchar_t = u32;
-    } else if #[cfg(any(target_arch = "i386",
-                        target_arch = "i586",
-                        target_arch = "i686",
-                        target_arch = "x86",
+    } else if #[cfg(any(target_arch = "x86",
                         target_arch = "x86_64",
                         target_arch = "mips",
                         target_arch = "mips64",
-                        target_arch = "mips64el",
-                        target_arch = "mipsel",
+                        target_arch = "msp430",
                         target_arch = "nvptx",
                         target_arch = "nvptx64",
+                        target_arch = "sparc",
                         target_arch = "sparc64",
-                        target_arch = "sparcv9",
-                        target_arch = "riscv64",
                         target_arch = "riscv32",
-                        target_arch = "riscv32imac",
-                        target_arch = "riscv32imc"))] {
+                        target_arch = "riscv64"))] {
         pub type c_char = i8;
         pub type wchar_t = i32;
     }
