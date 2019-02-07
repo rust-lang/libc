@@ -54,7 +54,6 @@ test_target() {
 RUST_LINUX_TARGETS="\
 aarch64-linux-android \
 aarch64-unknown-linux-gnu \
-aarch64-unknown-linux-musl \
 arm-linux-androideabi \
 arm-unknown-linux-gnueabi \
 arm-unknown-linux-gnueabihf \
@@ -96,7 +95,9 @@ x86_64-rumprun-netbsd \
 x86_64-sun-solaris \
 x86_64-unknown-cloudabi \
 "
-RUST_GT_1_19_LINUX_TARGETS=
+RUST_GT_1_19_LINUX_TARGETS="\
+aarch64-unknown-linux-musl \
+"
 RUST_GT_1_24_LINUX_TARGETS=
 
 RUST_NIGHTLY_LINUX_TARGETS="\
@@ -119,7 +120,6 @@ x86_64-unknown-redox \
 # i686-unknown-haiku mipsel-unknown-unknown-linux-uclib
 # sparc64-unknown-netbsd x86_64-unknown-bitrig x86_64-unknown-haiku
 # x86_64-unknown-openbsd i686-unknown-netbsd
-
 
 RUST_OSX_TARGETS="\
 aarch64-apple-ios \
