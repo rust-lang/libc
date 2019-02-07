@@ -1900,10 +1900,12 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(libc_align)] {
+        #[macro_use]
         mod align;
-        pub use self::align::*;
     } else {
+        #[macro_use]
         mod no_align;
-        pub use self::no_align::*;
     }
 }
+
+expand_align!();
