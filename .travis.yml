@@ -81,7 +81,11 @@ matrix:
     - env: TARGET=wasm32-unknown-unknown
       install: rustup target add $TARGET
       script: cargo build --no-default-features --target $TARGET --release
-
+    - name: "Style"
+      install: rustup component add rustfmt-preview
+      script:
+        - rustc ci/style.rs && ./style src
+        - cargo fmt --all -- --check
     - name: "Shellcheck"
       install: true
       script:
@@ -102,7 +106,7 @@ script:
       export CARGO_TARGET_DIR=`pwd`/target;
       sh ci/run.sh $TARGET;
     fi
-  - rustc ci/style.rs && ./style src
+
 env:
   global:
     secure: "e2/3QjgRN9atOuSHp22TrYG7QVKcYUWY48Hi9b60w+r1+BhPkTseIJLte7WefRhdXtqpjjUJTooKDhnurFOeHaCT+nmBgiv+FPU893sBl4bhesY4m0vgUJVbNZcs6lTImYekWVb+aqjGdgV/XAgCw7c3kPmrZV0MzGDWL64Xaps="
