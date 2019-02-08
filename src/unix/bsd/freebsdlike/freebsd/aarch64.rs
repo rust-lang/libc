@@ -33,6 +33,14 @@ s! {
 }
 
 // should be pub(crate), but that requires Rust 1.18.0
-#[doc(hidden)]
-pub const _ALIGNBYTES: usize = mem::size_of::<::c_longlong>() - 1;
+cfg_if! {
+    if #[cfg(libc_const_size_of)] {
+        #[doc(hidden)]
+        pub const _ALIGNBYTES: usize = mem::size_of::<::c_longlong>() - 1;
+    } else {
+        #[doc(hidden)]
+        pub const _ALIGNBYTES: usize = 8 - 1;
+    }
+}
+
 pub const MAP_32BIT: ::c_int = 0x00080000;

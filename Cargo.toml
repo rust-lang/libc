@@ -27,7 +27,7 @@ default = ["use_std"]
 use_std = []
 align = []
 rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
-extra_traits = ["align"]
+extra_traits = []
 
 [workspace]
 members = ["libc-test"]

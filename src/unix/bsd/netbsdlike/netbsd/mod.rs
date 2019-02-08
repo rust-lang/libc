@@ -24,14 +24,6 @@ s! {
         _retval: ::ssize_t
     }
 
-    pub struct dirent {
-        pub d_fileno: ::ino_t,
-        pub d_reclen: u16,
-        pub d_namlen: u16,
-        pub d_type: u8,
-        pub d_name: [::c_char; 512],
-    }
-
     pub struct glob_t {
         pub gl_pathc:   ::size_t,
         pub gl_matchc:  ::size_t,
@@ -91,41 +83,7 @@ s! {
         pub st_spare: [::uint32_t; 2],
     }
 
-    pub struct statvfs {
-        pub f_flag: ::c_ulong,
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_iosize: ::c_ulong,
-
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_bresvd: ::fsblkcnt_t,
-
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_favail: ::fsfilcnt_t,
-        pub f_fresvd: ::fsfilcnt_t,
-
-        pub f_syncreads: ::uint64_t,
-        pub f_syncwrites: ::uint64_t,
-
-        pub f_asyncreads: ::uint64_t,
-        pub f_asyncwrites: ::uint64_t,
-
-        pub f_fsidx: ::fsid_t,
-        pub f_fsid: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        pub f_owner: ::uid_t,
-
-        pub f_spare: [::uint32_t; 4],
-
-        pub f_fstypename: [::c_char; 32],
-        pub f_mntonname: [::c_char; 1024],
-        pub f_mntfromname: [::c_char; 1024],
-    }
-
-    pub struct addrinfo {
+     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
         pub ai_socktype: ::c_int,
@@ -134,14 +92,6 @@ s! {
         pub ai_canonname: *mut ::c_char,
         pub ai_addr: *mut ::sockaddr,
         pub ai_next: *mut ::addrinfo,
-    }
-
-    pub struct sockaddr_storage {
-        pub ss_len: u8,
-        pub ss_family: ::sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_pad2: i64,
-        __ss_pad3: [u8; 112],
     }
 
     pub struct siginfo_t {
@@ -318,19 +268,97 @@ s! {
         pub sdl_slen: ::uint8_t,
         pub sdl_data: [::c_char; 12],
     }
+}
 
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
     pub struct in_pktinfo {
         pub ipi_addr: ::in_addr,
         pub ipi_ifindex: ::c_uint,
     }
 
     #[repr(packed)]
+    #[allow(missing_debug_implementations)]
     pub struct arphdr {
         pub ar_hrd: u16,
         pub ar_pro: u16,
         pub ar_hln: u8,
         pub ar_pln: u8,
         pub ar_op: u16,
+    }
+
+    #[repr(packed)]
+    #[allow(missing_debug_implementations)]
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_in {
+        pub sin_len: u8,
+        pub sin_family: ::sa_family_t,
+        pub sin_port: ::in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [::int8_t; 8],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct dirent {
+        pub d_fileno: ::ino_t,
+        pub d_reclen: u16,
+        pub d_namlen: u16,
+        pub d_type: u8,
+        pub d_name: [::c_char; 512],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct statvfs {
+        pub f_flag: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_iosize: ::c_ulong,
+
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_bresvd: ::fsblkcnt_t,
+
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_favail: ::fsfilcnt_t,
+        pub f_fresvd: ::fsfilcnt_t,
+
+        pub f_syncreads: ::uint64_t,
+        pub f_syncwrites: ::uint64_t,
+
+        pub f_asyncreads: ::uint64_t,
+        pub f_asyncwrites: ::uint64_t,
+
+        pub f_fsidx: ::fsid_t,
+        pub f_fsid: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        pub f_owner: ::uid_t,
+
+        pub f_spare: [::uint32_t; 4],
+
+        pub f_fstypename: [::c_char; 32],
+        pub f_mntonname: [::c_char; 1024],
+        pub f_mntfromname: [::c_char; 1024],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_storage {
+        pub ss_len: u8,
+        pub ss_family: ::sa_family_t,
+        __ss_pad1: [u8; 6],
+        __ss_pad2: i64,
+        __ss_pad3: [u8; 112],
     }
 }
 
@@ -708,21 +736,32 @@ pub const FD_SETSIZE: usize = 0x100;
 
 pub const ST_NOSUID: ::c_ulong = 8;
 
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    ptm_magic: 0x33330003,
-    ptm_errorcheck: 0,
-    #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
-              target_arch = "x86", target_arch = "x86_64"))]
-    ptm_pad1: [0; 3],
-    ptm_unused: 0,
-    #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
-              target_arch = "x86", target_arch = "x86_64"))]
-    ptm_pad2: [0; 3],
-    ptm_waiters: 0 as *mut _,
-    ptm_owner: 0,
-    ptm_recursed: 0,
-    ptm_spare2: 0 as *mut _,
-};
+cfg_if! {
+    if #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
+                 target_arch = "x86", target_arch = "x86_64"))] {
+        pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+            ptm_magic: 0x33330003,
+            ptm_errorcheck: 0,
+            ptm_pad1: [0; 3],
+            ptm_unused: 0,
+            ptm_pad2: [0; 3],
+            ptm_waiters: 0 as *mut _,
+            ptm_owner: 0,
+            ptm_recursed: 0,
+            ptm_spare2: 0 as *mut _,
+        };
+    } else {
+        pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+            ptm_magic: 0x33330003,
+            ptm_errorcheck: 0,
+            ptm_unused: 0,
+            ptm_waiters: 0 as *mut _,
+            ptm_owner: 0,
+            ptm_recursed: 0,
+            ptm_spare2: 0 as *mut _,
+        };
+    }
+}
 
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     ptc_magic: 0x55550005,

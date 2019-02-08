@@ -44,6 +44,15 @@ impl ::dox::Clone for timezone {
 }
 
 s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
@@ -63,11 +72,6 @@ s! {
         pub sin6_addr: ::in6_addr,
         pub sin6_scope_id: u32,
         pub __sin6_src_id: u32
-    }
-
-    pub struct sockaddr_un {
-        pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 108]
     }
 
     pub struct passwd {
@@ -104,15 +108,7 @@ s! {
         pub tm_isdst: ::c_int
     }
 
-    pub struct utsname {
-        pub sysname: [::c_char; 257],
-        pub nodename: [::c_char; 257],
-        pub release: [::c_char; 257],
-        pub version: [::c_char; 257],
-        pub machine: [::c_char; 257],
-    }
-
-    pub struct msghdr {
+     pub struct msghdr {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
@@ -126,13 +122,6 @@ s! {
         pub cmsg_len: ::socklen_t,
         pub cmsg_level: ::c_int,
         pub cmsg_type: ::c_int,
-    }
-
-    pub struct fd_set {
-        #[cfg(target_pointer_width = "64")]
-        fds_bits: [i64; FD_SETSIZE / 64],
-        #[cfg(target_pointer_width = "32")]
-        fds_bits: [i32; FD_SETSIZE / 32],
     }
 
     pub struct pthread_attr_t {
@@ -200,13 +189,6 @@ s! {
         __unused10: *mut ::c_void,
     }
 
-    pub struct sockaddr_storage {
-        pub ss_family: ::sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_align: i64,
-        __ss_pad2: [u8; 240],
-    }
-
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -222,15 +204,6 @@ s! {
 
     pub struct sigset_t {
         bits: [u32; 4],
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_code: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_pad: ::c_int,
-        pub si_addr: *mut ::c_void,
-        __pad: [u8; 232],
     }
 
     pub struct sigaction {
@@ -358,11 +331,55 @@ s! {
         pub portev_object: ::uintptr_t,
         pub portev_user: *mut ::c_void,
     }
+}
 
+s_no_extra_traits! {
     #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed))]
+    #[allow(missing_debug_implementations)]
     pub struct epoll_event {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_un {
+        pub sun_family: sa_family_t,
+        pub sun_path: [c_char; 108]
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct utsname {
+        pub sysname: [::c_char; 257],
+        pub nodename: [::c_char; 257],
+        pub release: [::c_char; 257],
+        pub version: [::c_char; 257],
+        pub machine: [::c_char; 257],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct fd_set {
+        #[cfg(target_pointer_width = "64")]
+        fds_bits: [i64; FD_SETSIZE / 64],
+        #[cfg(target_pointer_width = "32")]
+        fds_bits: [i32; FD_SETSIZE / 32],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_storage {
+        pub ss_family: ::sa_family_t,
+        __ss_pad1: [u8; 6],
+        __ss_align: i64,
+        __ss_pad2: [u8; 240],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_code: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_pad: ::c_int,
+        pub si_addr: *mut ::c_void,
+        __pad: [u8; 232],
     }
 }
 

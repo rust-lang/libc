@@ -16,6 +16,15 @@ impl ::dox::Clone for timezone {
 }
 
 s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
@@ -107,16 +116,6 @@ s! {
         pub dli_fbase: *mut ::c_void,
         pub dli_sname: *const ::c_char,
         pub dli_saddr: *mut ::c_void,
-    }
-
-    #[cfg_attr(any(all(target_arch = "x86",
-                       not(target_env = "musl"),
-                       not(target_os = "android")),
-                   target_arch = "x86_64"),
-               repr(packed))]
-    pub struct epoll_event {
-        pub events: ::uint32_t,
-        pub u64: ::uint64_t,
     }
 
     pub struct lconv {
@@ -213,6 +212,20 @@ s! {
 }
 
 s_no_extra_traits!{
+    #[cfg_attr(
+        any(
+            all(
+                target_arch = "x86",
+                not(target_env = "musl"),
+                not(target_os = "android")),
+            target_arch = "x86_64"),
+        repr(packed))]
+    #[allow(missing_debug_implementations)]
+    pub struct epoll_event {
+        pub events: ::uint32_t,
+        pub u64: ::uint64_t,
+    }
+
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [::c_char; 108]
@@ -237,125 +250,126 @@ s_no_extra_traits!{
     }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for sockaddr_un {
-    fn eq(&self, other: &sockaddr_un) -> bool {
-        self.sun_family == other.sun_family
-            && self
-                .sun_path
-                .iter()
-                .zip(other.sun_path.iter())
-                .all(|(a, b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for sockaddr_un {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for sockaddr_un {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("sockaddr_un")
-            .field("sun_family", &self.sun_family)
-            // FIXME: .field("sun_path", &self.sun_path)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for sockaddr_un {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.sun_family.hash(state);
-        self.sun_path.hash(state);
-    }
-}
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for sockaddr_un {
+            fn eq(&self, other: &sockaddr_un) -> bool {
+                self.sun_family == other.sun_family
+                    && self
+                    .sun_path
+                    .iter()
+                    .zip(other.sun_path.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for sockaddr_storage {
-    fn eq(&self, other: &sockaddr_storage) -> bool {
-        self.ss_family == other.ss_family
-            && self
-                .__ss_pad2
-                .iter()
-                .zip(other.__ss_pad2.iter())
-                .all(|(a, b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for sockaddr_storage {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for sockaddr_storage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("sockaddr_storage")
-            .field("ss_family", &self.ss_family)
-            .field("__ss_align", &self.__ss_align)
-            // FIXME: .field("__ss_pad2", &self.__ss_pad2)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for sockaddr_storage {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.ss_family.hash(state);
-        self.__ss_pad2.hash(state);
-    }
-}
+        impl Eq for sockaddr_un {}
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for utsname {
-    fn eq(&self, other: &utsname) -> bool {
-        self.sysname
-            .iter()
-            .zip(other.sysname.iter())
-            .all(|(a, b)| a == b)
-            && self
-                .nodename
-                .iter()
-                .zip(other.nodename.iter())
-                .all(|(a, b)| a == b)
-            && self
-                .release
-                .iter()
-                .zip(other.release.iter())
-                .all(|(a, b)| a == b)
-            && self
-                .version
-                .iter()
-                .zip(other.version.iter())
-                .all(|(a, b)| a == b)
-            && self
-                .machine
-                .iter()
-                .zip(other.machine.iter())
-                .all(|(a, b)| a == b)
-            && self
-                .domainname
-                .iter()
-                .zip(other.domainname.iter())
-                .all(|(a, b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for utsname {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for utsname {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("utsname")
-            // FIXME: .field("sysname", &self.sysname)
-            // FIXME: .field("nodename", &self.nodename)
-            // FIXME: .field("release", &self.release)
-            // FIXME: .field("version", &self.version)
-            // FIXME: .field("machine", &self.machine)
-            // FIXME: .field("domainname", &self.domainname)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for utsname {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.sysname.hash(state);
-        self.nodename.hash(state);
-        self.release.hash(state);
-        self.version.hash(state);
-        self.machine.hash(state);
-        self.domainname.hash(state);
+        impl ::fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_un")
+                    .field("sun_family", &self.sun_family)
+                // FIXME: .field("sun_path", &self.sun_path)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for sockaddr_un {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sun_family.hash(state);
+                self.sun_path.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_family == other.ss_family
+                    && self
+                    .__ss_pad2
+                    .iter()
+                    .zip(other.__ss_pad2.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for sockaddr_storage {}
+
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_family", &self.ss_family)
+                    .field("__ss_align", &self.__ss_align)
+                // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ss_family.hash(state);
+                self.__ss_pad2.hash(state);
+            }
+        }
+
+        impl PartialEq for utsname {
+            fn eq(&self, other: &utsname) -> bool {
+                self.sysname
+                    .iter()
+                    .zip(other.sysname.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .nodename
+                    .iter()
+                    .zip(other.nodename.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .release
+                    .iter()
+                    .zip(other.release.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .version
+                    .iter()
+                    .zip(other.version.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .machine
+                    .iter()
+                    .zip(other.machine.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .domainname
+                    .iter()
+                    .zip(other.domainname.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for utsname {}
+
+        impl ::fmt::Debug for utsname {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("utsname")
+                // FIXME: .field("sysname", &self.sysname)
+                // FIXME: .field("nodename", &self.nodename)
+                // FIXME: .field("release", &self.release)
+                // FIXME: .field("version", &self.version)
+                // FIXME: .field("machine", &self.machine)
+                // FIXME: .field("domainname", &self.domainname)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for utsname {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sysname.hash(state);
+                self.nodename.hash(state);
+                self.release.hash(state);
+                self.version.hash(state);
+                self.machine.hash(state);
+                self.domainname.hash(state);
+            }
+        }
     }
 }
 

@@ -240,214 +240,217 @@ s_no_extra_traits!{
     }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for dirent {
-    fn eq(&self, other: &dirent) -> bool {
-        self.d_ino == other.d_ino
-            && self.d_off == other.d_off
-            && self.d_reclen == other.d_reclen
-            && self.d_type == other.d_type
-            && self
-                .d_name
-                .iter()
-                .zip(other.d_name.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for dirent {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for dirent {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("dirent")
-            .field("d_ino", &self.d_ino)
-            .field("d_off", &self.d_off)
-            .field("d_reclen", &self.d_reclen)
-            .field("d_type", &self.d_type)
-            // FIXME: .field("d_name", &self.d_name)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for dirent {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.d_ino.hash(state);
-        self.d_off.hash(state);
-        self.d_reclen.hash(state);
-        self.d_type.hash(state);
-        self.d_name.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for dirent64 {
-    fn eq(&self, other: &dirent64) -> bool {
-        self.d_ino == other.d_ino
-            && self.d_off == other.d_off
-            && self.d_reclen == other.d_reclen
-            && self.d_type == other.d_type
-            && self
-                .d_name
-                .iter()
-                .zip(other.d_name.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for dirent64 {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for dirent64 {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("dirent64")
-            .field("d_ino", &self.d_ino)
-            .field("d_off", &self.d_off)
-            .field("d_reclen", &self.d_reclen)
-            .field("d_type", &self.d_type)
-            // FIXME: .field("d_name", &self.d_name)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for dirent64 {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.d_ino.hash(state);
-        self.d_off.hash(state);
-        self.d_reclen.hash(state);
-        self.d_type.hash(state);
-        self.d_name.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for siginfo_t {
-    fn eq(&self, other: &siginfo_t) -> bool {
-        self.si_signo == other.si_signo
-            && self.si_errno == other.si_errno
-            && self.si_code == other.si_code
-            // Ignore _pad
-            // Ignore _align
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for siginfo_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for siginfo_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("siginfo_t")
-            .field("si_signo", &self.si_signo)
-            .field("si_errno", &self.si_errno)
-            .field("si_code", &self.si_code)
-            // Ignore _pad
-            // Ignore _align
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for siginfo_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.si_signo.hash(state);
-        self.si_errno.hash(state);
-        self.si_code.hash(state);
-            // Ignore _pad
-            // Ignore _align
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for lastlog {
-    fn eq(&self, other: &lastlog) -> bool {
-        self.ll_time == other.ll_time
-            && self
-                .ll_line
-                .iter()
-                .zip(other.ll_line.iter())
-                .all(|(a,b)| a == b)
-            && self
-                .ll_host
-                .iter()
-                .zip(other.ll_host.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for lastlog {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for lastlog {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("lastlog")
-            .field("ll_time", &self.ll_time)
-            .field("ll_line", &self.ll_line)
-            // FIXME: .field("ll_host", &self.ll_host)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for lastlog {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.ll_time.hash(state);
-        self.ll_line.hash(state);
-        self.ll_host.hash(state);
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl PartialEq for utmp {
-    fn eq(&self, other: &utmp) -> bool {
-        self.ut_type == other.ut_type
-            && self.ut_pid == other.ut_pid
-            && self
-                .ut_line
-                .iter()
-                .zip(other.ut_line.iter())
-                .all(|(a,b)| a == b)
-            && self.ut_id == other.ut_id
-            && self
-                .ut_user
-                .iter()
-                .zip(other.ut_user.iter())
-                .all(|(a,b)| a == b)
-            && self
-                .ut_host
-                .iter()
-                .zip(other.ut_host.iter())
-                .all(|(a,b)| a == b)
-            && self.ut_exit == other.ut_exit
-            && self.ut_session == other.ut_session
-            && self.ut_tv == other.ut_tv
-            && self.ut_addr_v6 == other.ut_addr_v6
-            && self.unused == other.unused
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for utmp {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for utmp {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("utmp")
-            .field("ut_type", &self.ut_type)
-            .field("ut_pid", &self.ut_pid)
-            .field("ut_line", &self.ut_line)
-            .field("ut_id", &self.ut_id)
-            .field("ut_user", &self.ut_user)
-            // FIXME: .field("ut_host", &self.ut_host)
-            .field("ut_exit", &self.ut_exit)
-            .field("ut_session", &self.ut_session)
-            .field("ut_tv", &self.ut_tv)
-            .field("ut_addr_v6", &self.ut_addr_v6)
-            .field("unused", &self.unused)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for utmp {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.ut_type.hash(state);
-        self.ut_pid.hash(state);
-        self.ut_line.hash(state);
-        self.ut_id.hash(state);
-        self.ut_user.hash(state);
-        self.ut_host.hash(state);
-        self.ut_exit.hash(state);
-        self.ut_session.hash(state);
-        self.ut_tv.hash(state);
-        self.ut_addr_v6.hash(state);
-        self.unused.hash(state);
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_off == other.d_off
+                    && self.d_reclen == other.d_reclen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for dirent {}
+
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_off", &self.d_off)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_type", &self.d_type)
+                // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for dirent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_off.hash(state);
+                self.d_reclen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for dirent64 {
+            fn eq(&self, other: &dirent64) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_off == other.d_off
+                    && self.d_reclen == other.d_reclen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for dirent64 {}
+
+        impl ::fmt::Debug for dirent64 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent64")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_off", &self.d_off)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_type", &self.d_type)
+                // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for dirent64 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_off.hash(state);
+                self.d_reclen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for siginfo_t {
+            fn eq(&self, other: &siginfo_t) -> bool {
+                self.si_signo == other.si_signo
+                    && self.si_errno == other.si_errno
+                    && self.si_code == other.si_code
+                // Ignore _pad
+                // Ignore _align
+            }
+        }
+
+        impl Eq for siginfo_t {}
+
+        impl ::fmt::Debug for siginfo_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("siginfo_t")
+                    .field("si_signo", &self.si_signo)
+                    .field("si_errno", &self.si_errno)
+                    .field("si_code", &self.si_code)
+                // Ignore _pad
+                // Ignore _align
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for siginfo_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.si_signo.hash(state);
+                self.si_errno.hash(state);
+                self.si_code.hash(state);
+                // Ignore _pad
+                // Ignore _align
+            }
+        }
+
+        impl PartialEq for lastlog {
+            fn eq(&self, other: &lastlog) -> bool {
+                self.ll_time == other.ll_time
+                    && self
+                    .ll_line
+                    .iter()
+                    .zip(other.ll_line.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .ll_host
+                    .iter()
+                    .zip(other.ll_host.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for lastlog {}
+
+        impl ::fmt::Debug for lastlog {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("lastlog")
+                    .field("ll_time", &self.ll_time)
+                    .field("ll_line", &self.ll_line)
+                // FIXME: .field("ll_host", &self.ll_host)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for lastlog {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ll_time.hash(state);
+                self.ll_line.hash(state);
+                self.ll_host.hash(state);
+            }
+        }
+
+        impl PartialEq for utmp {
+            fn eq(&self, other: &utmp) -> bool {
+                self.ut_type == other.ut_type
+                    && self.ut_pid == other.ut_pid
+                    && self
+                    .ut_line
+                    .iter()
+                    .zip(other.ut_line.iter())
+                    .all(|(a,b)| a == b)
+                    && self.ut_id == other.ut_id
+                    && self
+                    .ut_user
+                    .iter()
+                    .zip(other.ut_user.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .ut_host
+                    .iter()
+                    .zip(other.ut_host.iter())
+                    .all(|(a,b)| a == b)
+                    && self.ut_exit == other.ut_exit
+                    && self.ut_session == other.ut_session
+                    && self.ut_tv == other.ut_tv
+                    && self.ut_addr_v6 == other.ut_addr_v6
+                    && self.unused == other.unused
+            }
+        }
+
+        impl Eq for utmp {}
+
+        impl ::fmt::Debug for utmp {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("utmp")
+                    .field("ut_type", &self.ut_type)
+                    .field("ut_pid", &self.ut_pid)
+                    .field("ut_line", &self.ut_line)
+                    .field("ut_id", &self.ut_id)
+                    .field("ut_user", &self.ut_user)
+                // FIXME: .field("ut_host", &self.ut_host)
+                    .field("ut_exit", &self.ut_exit)
+                    .field("ut_session", &self.ut_session)
+                    .field("ut_tv", &self.ut_tv)
+                    .field("ut_addr_v6", &self.ut_addr_v6)
+                    .field("unused", &self.unused)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for utmp {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ut_type.hash(state);
+                self.ut_pid.hash(state);
+                self.ut_line.hash(state);
+                self.ut_id.hash(state);
+                self.ut_user.hash(state);
+                self.ut_host.hash(state);
+                self.ut_exit.hash(state);
+                self.ut_session.hash(state);
+                self.ut_tv.hash(state);
+                self.ut_addr_v6.hash(state);
+                self.unused.hash(state);
+            }
+        }
     }
 }
 

@@ -234,96 +234,98 @@ s_no_extra_traits! {
     }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for user_fpregs_struct {
-    fn eq(&self, other: &user_fpregs_struct) -> bool {
-        self.cwd == other.cwd
-            && self.swd == other.swd
-            && self.ftw == other.ftw
-            && self.fop == other.fop
-            && self.rip == other.rip
-            && self.rdp == other.rdp
-            && self.mxcsr == other.mxcsr
-            && self.mxcr_mask == other.mxcr_mask
-            && self.st_space == other.st_space
-            && self
-                .xmm_space
-                .iter()
-                .zip(other.xmm_space.iter())
-                .all(|(a,b)| a == b)
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for user_fpregs_struct {
+            fn eq(&self, other: &user_fpregs_struct) -> bool {
+                self.cwd == other.cwd
+                    && self.swd == other.swd
+                    && self.ftw == other.ftw
+                    && self.fop == other.fop
+                    && self.rip == other.rip
+                    && self.rdp == other.rdp
+                    && self.mxcsr == other.mxcsr
+                    && self.mxcr_mask == other.mxcr_mask
+                    && self.st_space == other.st_space
+                    && self
+                    .xmm_space
+                    .iter()
+                    .zip(other.xmm_space.iter())
+                    .all(|(a,b)| a == b)
                 // Ignore padding field
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for user_fpregs_struct {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for user_fpregs_struct {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("user_fpregs_struct")
-            .field("cwd", &self.cwd)
-            .field("ftw", &self.ftw)
-            .field("fop", &self.fop)
-            .field("rip", &self.rip)
-            .field("rdp", &self.rdp)
-            .field("mxcsr", &self.mxcsr)
-            .field("mxcr_mask", &self.mxcr_mask)
-            .field("st_space", &self.st_space)
-            // FIXME: .field("xmm_space", &self.xmm_space)
-            // Ignore padding field
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for user_fpregs_struct {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.cwd.hash(state);
-        self.ftw.hash(state);
-        self.fop.hash(state);
-        self.rip.hash(state);
-        self.rdp.hash(state);
-        self.mxcsr.hash(state);
-        self.mxcr_mask.hash(state);
-        self.st_space.hash(state);
-        self.xmm_space.hash(state);
-        // Ignore padding field
-    }
-}
+            }
+        }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for ucontext_t {
-    fn eq(&self, other: &ucontext_t) -> bool {
-        self.uc_flags == other.uc_flags
-            && self.uc_link == other.uc_link
-            && self.uc_stack == other.uc_stack
-            && self.uc_mcontext == other.uc_mcontext
-            && self.uc_sigmask == other.uc_sigmask
-            // Ignore __private field
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for ucontext_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for ucontext_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("ucontext_t")
-            .field("uc_flags", &self.uc_flags)
-            .field("uc_link", &self.uc_link)
-            .field("uc_stack", &self.uc_stack)
-            .field("uc_mcontext", &self.uc_mcontext)
-            .field("uc_sigmask", &self.uc_sigmask)
-            // Ignore __private field
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for ucontext_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.uc_flags.hash(state);
-        self.uc_link.hash(state);
-        self.uc_stack.hash(state);
-        self.uc_mcontext.hash(state);
-        self.uc_sigmask.hash(state);
-        // Ignore __private field
+        impl Eq for user_fpregs_struct {}
+
+        impl ::fmt::Debug for user_fpregs_struct {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("user_fpregs_struct")
+                    .field("cwd", &self.cwd)
+                    .field("ftw", &self.ftw)
+                    .field("fop", &self.fop)
+                    .field("rip", &self.rip)
+                    .field("rdp", &self.rdp)
+                    .field("mxcsr", &self.mxcsr)
+                    .field("mxcr_mask", &self.mxcr_mask)
+                    .field("st_space", &self.st_space)
+                // FIXME: .field("xmm_space", &self.xmm_space)
+                // Ignore padding field
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for user_fpregs_struct {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cwd.hash(state);
+                self.ftw.hash(state);
+                self.fop.hash(state);
+                self.rip.hash(state);
+                self.rdp.hash(state);
+                self.mxcsr.hash(state);
+                self.mxcr_mask.hash(state);
+                self.st_space.hash(state);
+                self.xmm_space.hash(state);
+                // Ignore padding field
+            }
+        }
+
+        impl PartialEq for ucontext_t {
+            fn eq(&self, other: &ucontext_t) -> bool {
+                self.uc_flags == other.uc_flags
+                    && self.uc_link == other.uc_link
+                    && self.uc_stack == other.uc_stack
+                    && self.uc_mcontext == other.uc_mcontext
+                    && self.uc_sigmask == other.uc_sigmask
+                // Ignore __private field
+            }
+        }
+
+        impl Eq for ucontext_t {}
+
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_flags", &self.uc_flags)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_sigmask", &self.uc_sigmask)
+                // Ignore __private field
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for ucontext_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.uc_flags.hash(state);
+                self.uc_link.hash(state);
+                self.uc_stack.hash(state);
+                self.uc_mcontext.hash(state);
+                self.uc_sigmask.hash(state);
+                // Ignore __private field
+            }
+        }
     }
 }
 

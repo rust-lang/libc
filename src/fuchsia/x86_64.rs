@@ -51,15 +51,6 @@ s! {
         __private: [u64; 32],
     }
 
-    pub struct ucontext_t {
-        pub uc_flags: ::c_ulong,
-        pub uc_link: *mut ucontext_t,
-        pub uc_stack: ::stack_t,
-        pub uc_mcontext: mcontext_t,
-        pub uc_sigmask: ::sigset_t,
-        __private: [u8; 512],
-    }
-
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,
@@ -70,6 +61,18 @@ s! {
         pub __seq: ::c_int,
         __unused1: ::c_long,
         __unused2: ::c_long
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        __private: [u8; 512],
     }
 }
 

@@ -10,7 +10,7 @@
 
 //! Crate docs
 
-#![allow(bad_style, overflowing_literals, improper_ctypes)]
+#![allow(bad_style, overflowing_literals, improper_ctypes, unknown_lints)]
 #![crate_type = "rlib"]
 #![crate_name = "libc"]
 #![cfg_attr(cross_platform_docs, feature(no_core, lang_items, const_fn))]
@@ -151,7 +151,7 @@
 )]
 // Attributes needed when building as part of the standard library
 #![cfg_attr(feature = "rustc-dep-of-std", feature(cfg_target_vendor))]
-#![cfg_attr(feature = "rustc-dep-of-std", feature(link_cfg, repr_packed))]
+#![cfg_attr(feature = "rustc-dep-of-std", feature(link_cfg))]
 #![cfg_attr(feature = "rustc-dep-of-std", feature(no_core))]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 #![cfg_attr(feature = "rustc-dep-of-std", allow(warnings))]
@@ -161,22 +161,55 @@
 )]
 // Enable lints
 #![cfg_attr(feature = "extra_traits", deny(missing_debug_implementations))]
-#![deny(missing_copy_implementations)]
-
+#![deny(missing_copy_implementations, safe_packed_borrows)]
 #[cfg(all(not(cross_platform_docs), feature = "use_std"))]
 extern crate std as core;
 
-#[cfg(feature = "rustc-dep-of-std")]
-extern crate rustc_std_workspace_core as core;
-#[cfg(feature = "rustc-dep-of-std")]
-#[allow(unused_imports)]
-use core::iter;
-#[cfg(feature = "rustc-dep-of-std")]
-#[allow(unused_imports)]
-use core::option;
-
 #[macro_use]
 mod macros;
+
+cfg_if! {
+    if #[cfg(feature = "rustc-dep-of-std")] {
+        extern crate rustc_std_workspace_core as core;
+        #[allow(unused_imports)]
+        use core::iter;
+        #[allow(unused_imports)]
+        use core::option;
+    }
+}
+
+cfg_if! {
+    if #[cfg(not(cross_platform_docs))] {
+        cfg_if! {
+            if #[cfg(libc_priv_mod_use)] {
+                #[cfg(libc_core_cvoid)]
+                #[allow(unused_imports)]
+                use core::ffi;
+                #[allow(unused_imports)]
+                use core::fmt;
+                #[allow(unused_imports)]
+                use core::hash;
+                #[allow(unused_imports)]
+                use core::num;
+                #[allow(unused_imports)]
+                use core::mem;
+            } else {
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::fmt;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::hash;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::num;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::mem;
+            }
+        }
+    }
+}
 
 mod dox;
 

@@ -8,7 +8,19 @@ Raw FFI bindings to platform libraries like `libc`.
 [![Build Status](https://api.cirrus-ci.com/github/rust-lang/libc.svg)](https://cirrus-ci.com/github/rust-lang/libc)
 [![Latest version](https://img.shields.io/crates/v/libc.svg)](https://crates.io/crates/libc)
 [![Documentation](https://docs.rs/libc/badge.svg)](https://docs.rs/libc)
-![License](https://img.shields.io/crates/l/libc.svg)
+![License](https://img.shields.io/crates/l/libc.svg**
+
+**NOTE:** The minimum supported Rust version is **Rust 1.13.0** . APIs requiring
+newer Rust features are only available on newer Rust versions:
+
+| Feature              | Version |
+|----------------------|---------|
+| `union`              |  1.19.0 |
+| `const mem::size_of` |  1.24.0 |
+| `repr(align)`        |  1.25.0 |
+| `core::ffi::c_void`  |  1.30.0 |
+
+To use `libc` at its fullest, Rust 1.30.0 is required.
 
 ## Usage
 

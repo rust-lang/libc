@@ -64,58 +64,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "32",
-                       target_arch = "x86_64", target_arch = "powerpc64",
-                       target_arch = "mips64", target_arch = "s390x",
-                       target_arch = "sparc64",
-                       all(target_arch = "aarch64", target_env = "musl"))),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   not(any(target_pointer_width = "32",
-                           target_arch = "x86_64", target_arch = "powerpc64",
-                           target_arch = "mips64", target_arch = "s390x",
-                           target_arch = "sparc64",
-                           all(target_arch = "aarch64", target_env = "musl")))),
-               repr(align(8)))]
-    pub struct pthread_mutexattr_t {
-        #[cfg(all(not(features = "align"),
-                  any(target_arch = "x86_64", target_arch = "powerpc64",
-                      target_arch = "mips64", target_arch = "s390x",
-                      target_arch = "sparc64",
-                      all(target_arch = "aarch64", target_env = "musl"))))]
-        __align: [::c_int; 0],
-        #[cfg(all(not(features = "align"),
-                  not(any(target_arch = "x86_64", target_arch = "powerpc64",
-                          target_arch = "mips64", target_arch = "s390x",
-                          target_arch = "sparc64",
-                          all(target_arch = "aarch64", target_env = "musl")))))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   any(target_env = "musl", target_pointer_width = "32")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   not(target_env = "musl"),
-                   target_pointer_width = "64"),
-               repr(align(8)))]
-    pub struct pthread_rwlockattr_t {
-        #[cfg(all(not(feature = "align"), target_env = "musl"))]
-        __align: [::c_int; 0],
-        #[cfg(all(not(feature = "align"), not(target_env = "musl")))]
-        __align: [::c_long; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
-    }
-
-    #[cfg_attr(feature = "align", repr(align(4)))]
-    pub struct pthread_condattr_t {
-        #[cfg(not(feature = "align"))]
-        __align: [::c_int; 0],
-        size: [u8; __SIZEOF_PTHREAD_CONDATTR_T],
-    }
-
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,
@@ -577,244 +525,151 @@ s_no_extra_traits!{
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
     }
-
-    #[cfg_attr(all(feature = "align",
-                   target_env = "musl",
-                   target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   target_env = "musl",
-                   target_pointer_width = "64"),
-               repr(align(8)))]
-    #[cfg_attr(all(feature = "align",
-                   not(target_env = "musl"),
-                   target_arch = "x86"),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   not(target_env = "musl"),
-                   not(target_arch = "x86")),
-               repr(align(8)))]
-    pub struct pthread_cond_t {
-        #[cfg(all(not(feature = "align"), target_env = "musl"))]
-        __align: [*const ::c_void; 0],
-        #[cfg(not(any(feature = "align", target_env = "musl")))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_COND_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc",
-                       target_arch = "x86_64",
-                       target_arch = "x86")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc",
-                               target_arch = "x86_64",
-                               target_arch = "x86")))),
-               repr(align(8)))]
-    pub struct pthread_mutex_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(feature = "align",
-                      target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    #[cfg_attr(all(feature = "align",
-                   target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "arm",
-                       target_arch = "powerpc",
-                       target_arch = "x86_64",
-                       target_arch = "x86")),
-               repr(align(4)))]
-    #[cfg_attr(all(feature = "align",
-                   any(target_pointer_width = "64",
-                       not(any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc",
-                               target_arch = "x86_64",
-                               target_arch = "x86")))),
-               repr(align(8)))]
-    pub struct pthread_rwlock_t {
-        #[cfg(all(not(feature = "align"),
-                  any(target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_long; 0],
-        #[cfg(not(any(feature = "align",
-                      target_arch = "mips",
-                      target_arch = "arm",
-                      target_arch = "powerpc",
-                      all(target_arch = "x86_64",
-                          target_pointer_width = "32"))))]
-        __align: [::c_longlong; 0],
-        size: [u8; __SIZEOF_PTHREAD_RWLOCK_T],
-    }
 }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for dirent {
-    fn eq(&self, other: &dirent) -> bool {
-        self.d_ino == other.d_ino
-            && self.d_off == other.d_off
-            && self.d_reclen == other.d_reclen
-            && self.d_type == other.d_type
-            && self
-                .d_name
-                .iter()
-                .zip(other.d_name.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for dirent {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for dirent {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("dirent")
-            .field("d_ino", &self.d_ino)
-            .field("d_off", &self.d_off)
-            .field("d_reclen", &self.d_reclen)
-            .field("d_type", &self.d_type)
-            // FIXME: .field("d_name", &self.d_name)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for dirent {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.d_ino.hash(state);
-        self.d_off.hash(state);
-        self.d_reclen.hash(state);
-        self.d_type.hash(state);
-        self.d_name.hash(state);
-    }
-}
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_off == other.d_off
+                    && self.d_reclen == other.d_reclen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for dirent64 {
-    fn eq(&self, other: &dirent64) -> bool {
-        self.d_ino == other.d_ino
-            && self.d_off == other.d_off
-            && self.d_reclen == other.d_reclen
-            && self.d_type == other.d_type
-            && self
-                .d_name
-                .iter()
-                .zip(other.d_name.iter())
-                .all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for dirent64 {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for dirent64 {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("dirent64")
-            .field("d_ino", &self.d_ino)
-            .field("d_off", &self.d_off)
-            .field("d_reclen", &self.d_reclen)
-            .field("d_type", &self.d_type)
-            // FIXME: .field("d_name", &self.d_name)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for dirent64 {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.d_ino.hash(state);
-        self.d_off.hash(state);
-        self.d_reclen.hash(state);
-        self.d_type.hash(state);
-        self.d_name.hash(state);
-    }
-}
+        impl Eq for dirent {}
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for pthread_cond_t {
-    fn eq(&self, other: &pthread_cond_t) -> bool {
-        self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for pthread_cond_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for pthread_cond_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("pthread_cond_t")
-            // FIXME: .field("size", &self.size)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for pthread_cond_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.size.hash(state);
-    }
-}
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_off", &self.d_off)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_type", &self.d_type)
+                // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for pthread_mutex_t {
-    fn eq(&self, other: &pthread_mutex_t) -> bool {
-        self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for pthread_mutex_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for pthread_mutex_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("pthread_mutex_t")
-            // FIXME: .field("size", &self.size)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for pthread_mutex_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.size.hash(state);
-    }
-}
+        impl ::hash::Hash for dirent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_off.hash(state);
+                self.d_reclen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
 
-#[cfg(feature = "extra_traits")]
-impl PartialEq for pthread_rwlock_t {
-    fn eq(&self, other: &pthread_rwlock_t) -> bool {
-        self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl Eq for pthread_rwlock_t {}
-#[cfg(feature = "extra_traits")]
-impl std::fmt::Debug for pthread_rwlock_t {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("pthread_rwlock_t")
-            // FIXME: .field("size", &self.size)
-            .finish()
-    }
-}
-#[cfg(feature = "extra_traits")]
-impl std::hash::Hash for pthread_rwlock_t {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.size.hash(state);
+        impl PartialEq for dirent64 {
+            fn eq(&self, other: &dirent64) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_off == other.d_off
+                    && self.d_reclen == other.d_reclen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for dirent64 {}
+
+        impl ::fmt::Debug for dirent64 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent64")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_off", &self.d_off)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_type", &self.d_type)
+                // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for dirent64 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_off.hash(state);
+                self.d_reclen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for pthread_cond_t {
+            fn eq(&self, other: &pthread_cond_t) -> bool {
+                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for pthread_cond_t {}
+
+        impl ::fmt::Debug for pthread_cond_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("pthread_cond_t")
+                // FIXME: .field("size", &self.size)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for pthread_cond_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.size.hash(state);
+            }
+        }
+
+        impl PartialEq for pthread_mutex_t {
+            fn eq(&self, other: &pthread_mutex_t) -> bool {
+                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for pthread_mutex_t {}
+
+        impl ::fmt::Debug for pthread_mutex_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("pthread_mutex_t")
+                // FIXME: .field("size", &self.size)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for pthread_mutex_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.size.hash(state);
+            }
+        }
+
+        impl PartialEq for pthread_rwlock_t {
+            fn eq(&self, other: &pthread_rwlock_t) -> bool {
+                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for pthread_rwlock_t {}
+
+        impl ::fmt::Debug for pthread_rwlock_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("pthread_rwlock_t")
+                // FIXME: .field("size", &self.size)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for pthread_rwlock_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.size.hash(state);
+            }
+        }
     }
 }
 
@@ -2502,3 +2357,14 @@ cfg_if! {
         pub use self::other::*;
     }
 }
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        #[macro_use]
+        mod align;
+    } else {
+        #[macro_use]
+        mod no_align;
+    }
+}
+expand_align!();
