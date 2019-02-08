@@ -774,6 +774,7 @@ pub const IP_RECVTOS: ::c_int = 13;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 pub const IP_TRANSPARENT: ::c_int = 19;
+pub const IPV6_FLOWINFO: ::c_int = 11;
 pub const IPV6_UNICAST_HOPS: ::c_int = 16;
 pub const IPV6_MULTICAST_IF: ::c_int = 17;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
@@ -781,10 +782,15 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_ADD_MEMBERSHIP: ::c_int = 20;
 pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
 pub const IPV6_V6ONLY: ::c_int = 26;
+pub const IPV6_FLOWLABEL_MGR: ::c_int = 32;
+pub const IPV6_FLOWINFO_SEND: ::c_int = 33;
 pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
 pub const IPV6_RECVTCLASS: ::c_int = 66;
 pub const IPV6_TCLASS: ::c_int = 67;
+
+pub const IPV6_FLOWINFO_FLOWLABEL: ::c_int = 0x000fffff;
+pub const IPV6_FLOWINFO_PRIORITY: ::c_int = 0x0ff00000;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;

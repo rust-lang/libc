@@ -695,7 +695,18 @@ fn do_ctest() {
             "AF_MAX" | "PF_MAX" => true,
 
             // These are not in a glibc release yet, only in kernel headers.
-            "AF_XDP" | "PF_XDP" | "SOL_XDP" if linux => true,
+            "AF_XDP"
+            | "PF_XDP"
+            | "SOL_XDP"
+            | "IPV6_FLOWINFO"
+            | "IPV6_FLOWLABEL_MGR"
+            | "IPV6_FLOWINFO_SEND"
+            | "IPV6_FLOWINFO_FLOWLABEL"
+            | "IPV6_FLOWINFO_PRIORITY"
+                if linux =>
+            {
+                true
+            }
 
             // Present on historical versions of iOS, but now removed in more
             // recent SDKs
