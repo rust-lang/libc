@@ -34,82 +34,98 @@ matrix:
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: stable
+      install: true
     - name: "Build Beta Rust"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: beta
+      install: true
     - name: "Build Nightly Rust"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: nightly
+      install: true
     - name: "Build Stable Rust"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: stable
       os: osx
       osx_image: xcode10
+      install: true
     - name: "Build Beta Rust"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: beta
       os: osx
       osx_image: xcode10
+      install: true
     - name: "Build Nightly Rust"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: nightly
       os: osx
       osx_image: xcode10
+      install: true
     - name: "Build Stable Rust 1.13.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.13.0
+      install: true
     - name: "Build Stable Rust 1.19.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.19.0
+      install: true
     - name: "Build Stable Rust 1.24.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.24.0
+      install: true
     - name: "Build Stable Rust 1.25.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.25.0
+      install: true
     - name: "Build Stable Rust 1.30.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.30.0
+      install: true
     - name: "Build Stable Rust 1.13.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.13.0
       os: osx
       osx_image: xcode10
+      install: true
     - name: "Build Stable Rust 1.19.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.19.0
       os: osx
       osx_image: xcode10
+      install: true
     - name: "Build Stable Rust 1.24.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.24.0
       os: osx
       osx_image: xcode10
+      install: true
     - name: "Build Stable Rust 1.25.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.25.0
       os: osx
       osx_image: xcode10
+      install: true
     - name: "Build Stable Rust 1.30.0"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
       rust: 1.30.0
       os: osx
       osx_image: xcode10
+      install: true
     - env: TARGET=i686-apple-darwin
       os: osx
       osx_image: xcode10
@@ -119,9 +135,11 @@ matrix:
     - env: TARGET=x86_64-apple-darwin
       os: osx
       osx_image: xcode10
+      install: true
       stage: tools-and-build-and-tier1
     - env: TARGET=x86_64-unknown-linux-gnu
       stage: tools-and-build-and-tier1
+      install: true
 
     # Tier 2 targets
     - env: TARGET=aarch64-linux-android
@@ -174,7 +192,7 @@ matrix:
       - env: TARGET=asmjs-unknown-emscripten
       - env: TARGET=wasm32-unknown-emscripten
 
-install: rustup target add $TARGET || true
+install: rustup target add $TARGET
 
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
