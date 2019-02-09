@@ -192,7 +192,7 @@ matrix:
       - env: TARGET=asmjs-unknown-emscripten
       - env: TARGET=wasm32-unknown-emscripten
 
-install: rustup target add $TARGET
+install: travis_retry rustup target add $TARGET
 
 script:
   - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
