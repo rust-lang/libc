@@ -142,6 +142,34 @@ s_no_extra_traits! {
     }
 }
 
+#[cfg(feature = "extra_traits")]
+impl PartialEq for mount_info {
+    fn eq(&self, other: &mount_info) -> bool {
+        unsafe {
+            self.align
+                .iter()
+                .zip(other.align.iter())
+                .all(|(a,b)| a == b)
+        }
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl Eq for mount_info { }
+#[cfg(feature = "extra_traits")]
+impl std::fmt::Debug for mount_info {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("mount_info")
+         // FIXME: .field("align", &self.align)
+         .finish()
+    }
+}
+#[cfg(feature = "extra_traits")]
+impl std::hash::Hash for mount_info {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        unsafe { self.align.hash(state) };
+    }
+}
+
 cfg_if! {
     if #[cfg(libc_union)] {
         s_no_extra_traits! {
@@ -169,6 +197,104 @@ cfg_if! {
                 pub f_mntfromname: [::c_char; 90],
                 pub f_mntfromspec: [::c_char; 90],
                 pub mount_info: mount_info,
+            }
+        }
+
+        #[cfg(feature = "extra_traits")]
+        impl PartialEq for statfs {
+            fn eq(&self, other: &statfs) -> bool {
+                self.f_flags == other.f_flags
+                    && self.f_bsize == other.f_bsize
+                    && self.f_iosize == other.f_iosize
+                    && self.f_blocks == other.f_blocks
+                    && self.f_bfree == other.f_bfree
+                    && self.f_bavail == other.f_bavail
+                    && self.f_files == other.f_files
+                    && self.f_ffree == other.f_ffree
+                    && self.f_favail == other.f_favail
+                    && self.f_syncwrites == other.f_syncwrites
+                    && self.f_syncreads == other.f_syncreads
+                    && self.f_asyncwrites == other.f_asyncwrites
+                    && self.f_asyncreads == other.f_asyncreads
+                    && self.f_fsid == other.f_fsid
+                    && self.f_namemax == other.f_namemax
+                    && self.f_owner == other.f_owner
+                    && self.f_ctime == other.f_ctime
+                    && self.f_fstypename
+                           .iter()
+                           .zip(other.f_fstypename.iter())
+                           .all(|(a,b)| a == b)
+                    && self.f_mntonname
+                           .iter()
+                           .zip(other.f_mntonname.iter())
+                           .all(|(a,b)| a == b)
+                    && self.f_mntfromname
+                           .iter()
+                           .zip(other.f_mntfromname.iter())
+                           .all(|(a,b)| a == b)
+                    && self.f_mntfromspec
+                           .iter()
+                           .zip(other.f_mntfromspec.iter())
+                           .all(|(a,b)| a == b)
+                    && self.mount_info == other.mount_info
+            }
+        }
+        #[cfg(feature = "extra_traits")]
+        impl Eq for statfs { }
+        #[cfg(feature = "extra_traits")]
+        impl std::fmt::Debug for statfs {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                f.debug_struct("statfs")
+                 .field("f_flags", &self.f_flags)
+                 .field("f_bsize", &self.f_bsize)
+                 .field("f_iosize", &self.f_iosize)
+                 .field("f_blocks", &self.f_blocks)
+                 .field("f_bfree", &self.f_bfree)
+                 .field("f_bavail", &self.f_bavail)
+                 .field("f_files", &self.f_files)
+                 .field("f_ffree", &self.f_ffree)
+                 .field("f_favail", &self.f_favail)
+                 .field("f_syncwrites", &self.f_syncwrites)
+                 .field("f_syncreads", &self.f_syncreads)
+                 .field("f_asyncwrites", &self.f_asyncwrites)
+                 .field("f_asyncreads", &self.f_asyncreads)
+                 .field("f_fsid", &self.f_fsid)
+                 .field("f_namemax", &self.f_namemax)
+                 .field("f_owner", &self.f_owner)
+                 .field("f_ctime", &self.f_ctime)
+                 // FIXME: .field("f_fstypename", &self.f_fstypename)
+                 // FIXME: .field("f_mntonname", &self.f_mntonname)
+                 // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                 // FIXME: .field("f_mntfromspec", &self.f_mntfromspec)
+                 .field("mount_info", &self.mount_info)
+                 .finish()
+            }
+        }
+        #[cfg(feature = "extra_traits")]
+        impl std::hash::Hash for statfs {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                self.f_flags.hash(state);
+                self.f_bsize.hash(state);
+                self.f_iosize.hash(state);
+                self.f_blocks.hash(state);
+                self.f_bfree.hash(state);
+                self.f_bavail.hash(state);
+                self.f_files.hash(state);
+                self.f_ffree.hash(state);
+                self.f_favail.hash(state);
+                self.f_syncwrites.hash(state);
+                self.f_syncreads.hash(state);
+                self.f_asyncwrites.hash(state);
+                self.f_asyncreads.hash(state);
+                self.f_fsid.hash(state);
+                self.f_namemax.hash(state);
+                self.f_owner.hash(state);
+                self.f_ctime.hash(state);
+                self.f_fstypename.hash(state);
+                self.f_mntonname.hash(state);
+                self.f_mntfromname.hash(state);
+                self.f_mntfromspec.hash(state);
+                self.mount_info.hash(state);
             }
         }
     }
