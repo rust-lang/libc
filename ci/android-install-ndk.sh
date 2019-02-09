@@ -11,7 +11,7 @@
 
 set -ex
 
-curl --retry 5 -O https://dl.google.com/android/repository/android-ndk-r15b-linux-x86_64.zip
+curl --retry 10 -O https://dl.google.com/android/repository/android-ndk-r15b-linux-x86_64.zip
 unzip -q android-ndk-r15b-linux-x86_64.zip
 
 case "$1" in
