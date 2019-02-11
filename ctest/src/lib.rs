@@ -51,6 +51,14 @@ macro_rules! t {
     };
 }
 
+/// Programming language
+pub enum Lang {
+    /// The C programming language.
+    C,
+    /// The C++ programming language.
+    CXX,
+}
+
 /// A builder used to generate a test suite.
 ///
 /// This builder has a number of configuration options which modify how the
@@ -59,6 +67,7 @@ macro_rules! t {
 pub struct TestGenerator {
     headers: Vec<String>,
     includes: Vec<PathBuf>,
+    lang: Lang,
     flags: Vec<String>,
     target: Option<String>,
     out_dir: Option<PathBuf>,
@@ -109,6 +118,7 @@ impl TestGenerator {
         Self {
             headers: Vec::new(),
             includes: Vec::new(),
+            lang: Lang::C,
             flags: Vec::new(),
             target: None,
             out_dir: None,
@@ -180,6 +190,24 @@ impl TestGenerator {
     /// ```
     pub fn include<P: AsRef<Path>>(&mut self, p: P) -> &mut Self {
         self.includes.push(p.as_ref().to_owned());
+        self
+    }
+
+    /// Sets the programming language.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use std::env;
+    /// use std::path::PathBuf;
+    ///
+    /// use ctest::{TestGenerator, Lang};
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.language(Lang::CXX);
+    /// ```
+    pub fn language(&mut self, lang: Lang) -> &mut Self {
+        self.lang = lang;
         self
     }
 
@@ -654,7 +682,14 @@ impl TestGenerator {
 
         // Compile our C shim to be linked into tests
         let mut cfg = cc::Build::new();
-        cfg.file(&out.with_extension("c"));
+        if let Lang::CXX = self.lang {
+            cfg.cpp(true);
+        }
+        let ext = match self.lang {
+            Lang::C => "c",
+            Lang::CXX => "cpp",
+        };
+        cfg.file(&out.with_extension(ext));
         if target.contains("msvc") {
             cfg.flag("/W3").flag("/Wall").flag("/WX")
                 // ignored warnings
@@ -705,7 +740,11 @@ impl TestGenerator {
             .clone()
             .unwrap_or_else(|| PathBuf::from(env::var_os("OUT_DIR").unwrap()));
         let out_file = out_dir.join(out_file);
-        let c_file = out_file.with_extension("c");
+        let ext = match self.lang {
+            Lang::C => "c",
+            Lang::CXX => "cpp",
+        };
+        let c_file = out_file.with_extension(ext);
         let rust_out = BufWriter::new(t!(File::create(&out_file)));
         let c_out = BufWriter::new(t!(File::create(&c_file)));
         let mut sess = ParseSess::new(FilePathMapping::empty());
@@ -953,6 +992,13 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     ret
 }
 
+fn linkage(lang: &Lang) -> &'static str {
+    match lang {
+        Lang::CXX => "extern \"C\"",
+        Lang::C => "",
+    }
+}
+
 impl<'a> Generator<'a> {
     fn rust2c_test(&self, ty: &str) -> bool {
         let rustc_types = [
@@ -1049,10 +1095,10 @@ impl<'a> Generator<'a> {
             t!(writeln!(
                 self.c,
                 r#"
-                uint64_t __test_offset_{ty}_{rust_field}(void) {{
+                {linkage} uint64_t __test_offset_{ty}_{rust_field}(void) {{
                     return offsetof({cstructty}, {c_field});
                 }}
-                uint64_t __test_fsize_{ty}_{rust_field}(void) {{
+                {linkage} uint64_t __test_fsize_{ty}_{rust_field}(void) {{
                     {cstructty}* foo = NULL;
                     return sizeof(foo->{c_field});
                 }}
@@ -1060,7 +1106,8 @@ impl<'a> Generator<'a> {
                 ty = ty,
                 cstructty = cty,
                 rust_field = name,
-                c_field = cfield
+                c_field = cfield,
+                linkage = linkage(&self.opts.lang)
             ));
 
             t!(writeln!(
@@ -1093,12 +1140,13 @@ impl<'a> Generator<'a> {
             t!(writeln!(
                 self.c,
                 r#"
-                {sig} {{
+                {linkage} {sig} {{
                     return &b->{c_field};
                 }}
             "#,
                 sig = sig,
-                c_field = cfield
+                c_field = cfield,
+                linkage = linkage(&self.opts.lang)
             ));
             t!(writeln!(
                 self.rust,
@@ -1135,12 +1183,13 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.c,
             r#"
-            uint64_t __test_size_{ty}(void) {{ return sizeof({cty}); }}
-            uint64_t __test_align_{ty}(void) {{ return {align_of}({cty}); }}
+            {linkage} uint64_t __test_size_{ty}(void) {{ return sizeof({cty}); }}
+            {linkage} uint64_t __test_align_{ty}(void) {{ return {align_of}({cty}); }}
         "#,
             ty = rust,
             cty = c,
-            align_of = align_of
+            align_of = align_of,
+            linkage = linkage(&self.opts.lang)
         ));
         t!(writeln!(
             self.rust,
@@ -1192,12 +1241,13 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.c,
             r#"
-            uint32_t __test_signed_{ty}(void) {{
+            {linkage} uint32_t __test_signed_{ty}(void) {{
                 return ((({cty}) -1) < 0);
             }}
         "#,
             ty = rust,
-            cty = c
+            cty = c,
+            linkage = linkage(&self.opts.lang)
         ));
         t!(writeln!(
             self.rust,
@@ -1246,14 +1296,15 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.c,
             r#"
-            static {cty} __test_const_{name}_val = {cname};
-            {cty}* __test_const_{name}(void) {{
+            static const {cty} __test_const_{name}_val = {cname};
+            {linkage} const {cty}* __test_const_{name}(void) {{
                 return &__test_const_{name}_val;
             }}
         "#,
             name = name,
             cname = cname,
-            cty = cty
+            cty = cty,
+            linkage = linkage(&self.opts.lang)
         ));
 
         if rust_ty == "&str" {
@@ -1298,6 +1349,7 @@ impl<'a> Generator<'a> {
             "#,
                 ty = rust_ty,
                 name = name
+
             ));
         }
         self.tests.push(format!("const_{}", name));
