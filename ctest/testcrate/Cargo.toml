@@ -23,3 +23,11 @@ test = false
 [[bin]]
 name = "t2"
 test = false
+
+[[bin]]
+name = "t1_cxx"
+test = false
+
+[[bin]]
+name = "t2_cxx"
+test = false
