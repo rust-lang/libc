@@ -394,7 +394,7 @@ impl TestGenerator {
     ///     c.replace("FOO", "foo")
     /// });
     pub fn const_cname<F>(&mut self, f: F) -> &mut Self
-        where
+    where
         F: Fn(&str) -> String + 'static,
     {
         self.const_cname = Box::new(f);
@@ -1285,6 +1285,7 @@ impl<'a> Generator<'a> {
         cty
     }
 
+    #[clippy::allow(clippy::similar_names)]
     fn test_const(&mut self, name: &str, rust_ty: &str) {
         if (self.opts.skip_const)(name) {
             return;
@@ -1349,7 +1350,6 @@ impl<'a> Generator<'a> {
             "#,
                 ty = rust_ty,
                 name = name
-
             ));
         }
         self.tests.push(format!("const_{}", name));

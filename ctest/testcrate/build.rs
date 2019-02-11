@@ -60,6 +60,4 @@ fn main() {
             t => t.to_string(),
         })
         .generate("src/t2.rs", "t2gen_cxx.rs");
-
-
 }
