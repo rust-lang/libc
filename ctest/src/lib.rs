@@ -76,6 +76,7 @@ pub struct TestGenerator {
     field_name: Box<Fn(&str, &str) -> String>,
     type_name: Box<Fn(&str, bool, bool) -> String>,
     fn_cname: Box<Fn(&str, Option<&str>) -> String>,
+    const_cname: Box<Fn(&str) -> String>,
 }
 
 struct TyFinder {
@@ -133,6 +134,7 @@ impl TestGenerator {
                     f.to_string()
                 }
             }),
+            const_cname: Box::new(|a| a.to_string()),
         }
     }
 
@@ -344,6 +346,30 @@ impl TestGenerator {
         F: Fn(&str, &str) -> String + 'static,
     {
         self.field_name = Box::new(f);
+        self
+    }
+
+    /// Configures how Rust `const`s names are translated to C.
+    ///
+    /// The closure is given a Rust `const` name. The name of the corresponding
+    /// `const` in C is then returned.
+    ///
+    /// By default the `const` name in C just matches the `const` name in Rust.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.const_cname(|c| {
+    ///     c.replace("FOO", "foo")
+    /// });
+    pub fn const_cname<F>(&mut self, f: F) -> &mut Self
+        where
+        F: Fn(&str) -> String + 'static,
+    {
+        self.const_cname = Box::new(f);
         self
     }
 
@@ -1214,16 +1240,19 @@ impl<'a> Generator<'a> {
             return;
         }
 
+        let cname = (self.opts.const_cname)(name);
+
         let cty = self.rust_ty_to_c_ty(rust_ty);
         t!(writeln!(
             self.c,
             r#"
-            static {cty} __test_const_{name}_val = {name};
+            static {cty} __test_const_{name}_val = {cname};
             {cty}* __test_const_{name}(void) {{
                 return &__test_const_{name}_val;
             }}
         "#,
             name = name,
+            cname = cname,
             cty = cty
         ));
 
