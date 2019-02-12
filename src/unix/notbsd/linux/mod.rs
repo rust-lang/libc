@@ -1331,6 +1331,10 @@ pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
 pub const ENOATTR: ::c_int = ::ENODATA;
 
 pub const SO_ORIGINAL_DST: ::c_int = 80;
+pub const IP_ORIGDSTADDR : ::c_int = 20;
+pub const IP_RECVORIGDSTADDR : ::c_int = IP_ORIGDSTADDR;
+pub const IPV6_ORIGDSTADDR : ::c_int = 74;
+pub const IPV6_RECVORIGDSTADDR : ::c_int = IPV6_ORIGDSTADDR;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const CMSPAR: ::tcflag_t = 0o10000000000;
 
