@@ -26,7 +26,8 @@ matrix:
       install: rustup component add rustfmt-preview
       script:
         - rustc ci/style.rs && ./style src
-        - cargo fmt --all -- --check
+        # Disabled due to rust-lang/rustfmt#3341
+        # - cargo fmt --all -- --check
       stage: tools-and-build-and-tier1
 
     # BUILD stable, beta, nightly
