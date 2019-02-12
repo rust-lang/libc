@@ -1,5 +1,5 @@
 #![cfg(not(test))]
-#![allow(bad_style)]
+#![deny(warnings)]
 
 extern crate libc;
 extern crate testcrate;

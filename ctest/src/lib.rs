@@ -14,6 +14,8 @@
 extern crate cc;
 extern crate syntex_syntax as syntax;
 
+extern crate rustc_version;
+
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::env;
@@ -86,6 +88,7 @@ pub struct TestGenerator {
     type_name: Box<Fn(&str, bool, bool) -> String>,
     fn_cname: Box<Fn(&str, Option<&str>) -> String>,
     const_cname: Box<Fn(&str) -> String>,
+    rust_version: rustc_version::Version,
 }
 
 struct TyFinder {
@@ -145,6 +148,7 @@ impl TestGenerator {
                 }
             }),
             const_cname: Box::new(|a| a.to_string()),
+            rust_version: rustc_version::version().unwrap(),
         }
     }
 
@@ -168,6 +172,21 @@ impl TestGenerator {
     /// ```
     pub fn header(&mut self, header: &str) -> &mut Self {
         self.headers.push(header.to_string());
+        self
+    }
+
+    /// Target Rust version: `major`.`minor`.`patch`
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.rust_version(1, 0, 1);
+    /// ```
+    pub fn rust_version(&mut self, major: u64, minor: u64, patch: u64) -> &mut Self {
+        self.rust_version = rustc_version::Version::new(major, minor, patch);
         self
     }
 
@@ -820,11 +839,24 @@ impl TestGenerator {
             t!(writeln!(gen.c, "#include <{}>", header));
         }
 
+        eprintln!("rust version: {}", self.rust_version);
+        t!(gen.rust.write_all(
+            if self.rust_version < rustc_version::Version::new(1, 30, 0) {
+            br#"
+            static FAILED: AtomicBool = std::sync::atomic::ATOMIC_BOOL_INIT;
+            static NTESTS: AtomicUsize = std::sync::atomic::ATOMIC_USIZE_INIT;
+            "#
+        } else {
+            br#"
+            static FAILED: AtomicBool = AtomicBool::new(false);
+            static NTESTS: AtomicUsize = AtomicUsize::new(0);
+            "#
+        }));
+
         t!(gen.rust.write_all(
             br#"
             use std::any::{Any, TypeId};
             use std::mem;
-            use std::sync::atomic::{ATOMIC_BOOL_INIT, ATOMIC_USIZE_INIT};
             use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
             fn main() {
@@ -860,9 +892,6 @@ impl TestGenerator {
                 )*)
             }
             p! { i8 i16 i32 i64 u8 u16 u32 u64 usize isize }
-
-            static FAILED: AtomicBool = ATOMIC_BOOL_INIT;
-            static NTESTS: AtomicUsize = ATOMIC_USIZE_INIT;
 
             fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
                 if rust != c {
@@ -1070,6 +1099,7 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.rust,
             r#"
+            #[allow(non_snake_case)]
             #[inline(never)]
             fn field_offset_size_{ty}() {{
         "#,
@@ -1114,7 +1144,9 @@ impl<'a> Generator<'a> {
                 self.rust,
                 r#"
                 extern {{
+                    #[allow(non_snake_case)]
                     fn __test_offset_{ty}_{field}() -> u64;
+                    #[allow(non_snake_case)]
                     fn __test_fsize_{ty}_{field}() -> u64;
                 }}
                 unsafe {{
@@ -1152,6 +1184,7 @@ impl<'a> Generator<'a> {
                 self.rust,
                 r#"
                 extern {{
+                    #[allow(non_snake_case)]
                     fn __test_field_type_{ty}_{field}(a: *mut {ty})
                                                       -> *mut u8;
                 }}
@@ -1194,10 +1227,13 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.rust,
             r#"
+            #[allow(non_snake_case)]
             #[inline(never)]
             fn size_align_{ty}() {{
                 extern {{
+                    #[allow(non_snake_case)]
                     fn __test_size_{ty}() -> u64;
+                    #[allow(non_snake_case)]
                     fn __test_align_{ty}() -> u64;
                 }}
                 unsafe {{
@@ -1253,8 +1289,10 @@ impl<'a> Generator<'a> {
             self.rust,
             r#"
             #[inline(never)]
+            #[allow(non_snake_case)]
             fn sign_{ty}() {{
                 extern {{
+                    #[allow(non_snake_case)]
                     fn __test_signed_{ty}() -> u32;
                 }}
                 unsafe {{
@@ -1313,8 +1351,10 @@ impl<'a> Generator<'a> {
                 self.rust,
                 r#"
                 #[inline(never)]
+                #[allow(non_snake_case)]
                 fn const_{name}() {{
                     extern {{
+                        #[allow(non_snake_case)]
                         fn __test_const_{name}() -> *const *const u8;
                     }}
                     let val = {name};
@@ -1332,8 +1372,10 @@ impl<'a> Generator<'a> {
             t!(writeln!(
                 self.rust,
                 r#"
+                #[allow(non_snake_case)]
                 fn const_{name}() {{
                     extern {{
+                        #[allow(non_snake_case)]
                         fn __test_const_{name}() -> *const {ty};
                     }}
                     let val = {name};
@@ -1395,9 +1437,11 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.rust,
             r#"
+            #[allow(non_snake_case)]
             #[inline(never)]
             fn fn_{name}() {{
                 extern {{
+                    #[allow(non_snake_case)]
                     fn __test_fn_{name}() -> *mut u32;
                 }}
                 unsafe {{
@@ -1445,8 +1489,10 @@ impl<'a> Generator<'a> {
                 self.rust,
                 r#"
             #[inline(never)]
+            #[allow(non_snake_case)]
             fn static_{name}() {{
                 extern {{
+                    #[allow(non_snake_case)]
                     fn __test_static_{name}() -> {ty};
                 }}
                 unsafe {{
@@ -1487,8 +1533,10 @@ impl<'a> Generator<'a> {
                 self.rust,
                 r#"
             #[inline(never)]
+            #[allow(non_snake_case)]
             fn static_{name}() {{
                 extern {{
+                    #[allow(non_snake_case)]
                     fn __test_static_{name}() -> *{mutbl} {ty};
                 }}
                 unsafe {{
@@ -1522,9 +1570,11 @@ impl<'a> Generator<'a> {
             t!(writeln!(
                 self.rust,
                 r#"
+            #[allow(non_snake_case)]
             #[inline(never)]
             fn static_{name}() {{
                 extern {{
+                    #[allow(non_snake_case)]
                     fn __test_static_{name}() -> *{mutbl} {ty};
                 }}
                 unsafe {{
