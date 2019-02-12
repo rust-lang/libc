@@ -20,8 +20,58 @@ fn t1() {
 }
 
 #[test]
+fn t1_cxx() {
+    let (o, status) = output(&mut cmd("t1_cxx"));
+    assert!(status.success(), o);
+    assert!(!o.contains("bad "), o);
+}
+
+#[test]
 fn t2() {
     let (o, status) = output(&mut cmd("t2"));
+    assert!(!status.success(), o);
+    let errors = [
+        "bad T2Foo signed",
+        "bad T2TypedefFoo signed",
+        "bad T2TypedefInt signed",
+        "bad T2Bar size",
+        "bad T2Bar align",
+        "bad T2Bar signed",
+        "bad T2Baz size",
+        "bad field offset a of T2Baz",
+        "bad field type a of T2Baz",
+        "bad field offset b of T2Baz",
+        "bad field type b of T2Baz",
+        "bad T2a function pointer",
+        "bad T2C value at byte 0",
+        "bad T2S string",
+        "bad T2Union size",
+        "bad field type b of T2Union",
+        "bad field offset b of T2Union",
+    ];
+    let mut errors = errors.iter().cloned().collect::<HashSet<_>>();
+
+    let mut bad = false;
+    for line in o.lines().filter(|l| l.starts_with("bad ")) {
+        let msg = &line[..line.find(":").unwrap()];
+        if !errors.remove(&msg) {
+            println!("unknown error: {}", msg);
+            bad = true;
+        }
+    }
+
+    for error in errors {
+        println!("didn't find error: {}", error);
+        bad = true;
+    }
+    if bad {
+        panic!();
+    }
+}
+
+#[test]
+fn t2_cxx() {
+    let (o, status) = output(&mut cmd("t2_cxx"));
     assert!(!status.success(), o);
     let errors = [
         "bad T2Foo signed",
