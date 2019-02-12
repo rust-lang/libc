@@ -43,8 +43,10 @@ matrix:
     - name: "clippy"
       install: true
       rust: nightly
-      before_script: rustup component add clippy-preview
-      script: cargo clippy -- -D clippy::pedantic
+      script: |
+        if rustup component add clippy-preview ; then
+            cargo clippy -- -D clippy::pedantic
+        fi
 
 script:
   - cargo test
