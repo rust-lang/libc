@@ -1091,12 +1091,8 @@ extern {
     pub fn tcdrain(fd: ::c_int) -> ::c_int;
     pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t;
     pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t;
-    #[cfg(not(any(target_os = "solaris", target_os = "illumos")))]
-    pub fn cfmakeraw(termios: *mut ::termios);
     pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
     pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
-    #[cfg(not(any(target_os = "solaris", target_os = "illumos")))]
-    pub fn cfsetspeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
     pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int;
     pub fn tcsetattr(fd: ::c_int,
                      optional_actions: ::c_int,
@@ -1127,6 +1123,16 @@ extern {
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn getline (lineptr: *mut *mut c_char, n: *mut size_t,
         stream: *mut FILE) -> ssize_t;
+}
+
+cfg_if! {
+   if #[cfg(not(any(target_os = "solaris", target_os = "illumos")))] {
+        extern {
+            pub fn cfmakeraw(termios: *mut ::termios);
+            pub fn cfsetspeed(termios: *mut ::termios,
+                              speed: ::speed_t) -> ::c_int;
+        }
+   }
 }
 
 cfg_if! {
