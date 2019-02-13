@@ -11,7 +11,8 @@ OS=${TRAVIS_OS_NAME}
 echo "Testing Rust ${RUST} on ${OS}"
 
 test_target() {
-    TARGET="${1}"
+    CARGO="${1}"
+    TARGET="${2}"
 
     opt=
     if [ "${TARGET}" = "x86_64-unknown-linux-gnux32" ]; then
@@ -22,7 +23,7 @@ test_target() {
         opt="--release"
     fi
 
-    NO_STD=
+    NO_STD="${3}"
     case ${TARGET} in
         thumbv*)
             NO_STD=1
@@ -32,24 +33,61 @@ test_target() {
     rustup target add "${TARGET}" --toolchain "${RUST}" || true
 
     # Test that libc builds without any default features (no libstd)
-    cargo "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
+    "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
 
     # Test that libc builds with default features (e.g. libstd)
     # if the target supports libstd
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" build -vv $opt --target "${TARGET}"
+        "$CARGO" "+${RUST}" build -vv $opt --target "${TARGET}"
     fi
 
     # Test that libc builds with the `extra_traits` feature
-    cargo "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}" \
+    "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}" \
           --features extra_traits
 
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" build -vv $opt --target "${TARGET}" \
+        "$CARGO" "+${RUST}" build -vv $opt --target "${TARGET}" \
               --features extra_traits
     fi
 }
+
+rustup component add rust-src || true
+cargo install xargo || true
+
+
+RUST_LINUX_NO_CORE_TARGETS="\
+x86_64-unknown-dragonfly \
+aarch64-pc-windows-msvc \
+aarch64-unknown-cloudabi \
+armv7-unknown-cloudabi-eabihf \
+i586-pc-windows-msvc \
+i686-pc-windows-gnu \
+i686-pc-windows-msvc \
+i686-unknown-cloudabi \
+i686-unknown-haiku \
+i686-unknown-netbsd \
+mips-unknown-linux-uclib \
+mipsel-unknown-unknown-linux-uclib \
+nvptx64-nvidia-cuda \
+powerpc-unknown-linux-gnuspe \
+riscv32imac-unknown-none-elf \
+riscv32imc-unknown-none-elf \
+sparc-unknown-linux-gnu \
+sparc64-unknown-netbsd \
+thumbv8m.main-none-eabi \
+x86_64-pc-windows-gnu \
+x86_64-pc-windows-msvc
+x86_64-unknown-bitrig \
+x86_64-unknown-haiku \
+x86_64-unknown-openbsd
+"
+
+for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
+    if [ "${RUST}" = "nightly" ]; then
+        RUST_LIBC_NO_CORE_BUILD=1 test_target xargo "$TARGET" 1
+    fi
+done
 
 RUST_LINUX_TARGETS="\
 aarch64-linux-android \
@@ -103,6 +141,12 @@ x86_64-unknown-cloudabi \
 
 RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
+armv5te-unknown-linux-gnueabi \
+armv5te-unknown-linux-musleabi \
+armebv7r-none-eabi \
+armebv7r-none-eabihf \
+armv7r-none-eabi \
+armv7r-none-eabihf \
 thumbv6m-none-eabi \
 thumbv7em-none-eabi \
 thumbv7em-none-eabihf \
@@ -161,5 +205,5 @@ case "${OS}" in
 esac
 
 for TARGET in $TARGETS; do
-    test_target "$TARGET"
+    test_target cargo "$TARGET"
 done
