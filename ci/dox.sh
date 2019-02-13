@@ -39,6 +39,7 @@ line=$(grep -n '<div class="platform_docs"></div>' $README | cut -d ":" -f 1)
 
 set +x
 { head -n "$((line-1))" $README; cat $PLATFORM_SUPPORT; tail -n "+$((line+1))" $README; } > $TARGET_DOC_DIR/$README
+set -x
 
 # If we're on travis, not a PR, and on the right branch, publish!
 if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
