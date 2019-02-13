@@ -112,7 +112,10 @@ cfg_if! {
     } else if #[cfg(all(target_env = "sgx", target_vendor = "fortanix"))] {
         mod sgx;
         pub use sgx::*;
-    }  else {
+    } else if #[cfg(target_env = "wasi")] {
+        mod wasi;
+        pub use wasi::*;
+    } else {
         // non-supported targets: empty...
     }
 }
