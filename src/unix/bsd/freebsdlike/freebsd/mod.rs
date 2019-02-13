@@ -1,5 +1,3 @@
-use dox::mem;
-
 pub type fflags_t = u32;
 pub type clock_t = i32;
 pub type ino_t = u32;
@@ -983,11 +981,11 @@ fn _ALIGN(p: usize) -> usize {
 f! {
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
         (cmsg as *mut ::c_uchar)
-            .offset(_ALIGN(mem::size_of::<::cmsghdr>()) as isize)
+            .offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        _ALIGN(mem::size_of::<::cmsghdr>()) as ::c_uint + length
+        _ALIGN(::mem::size_of::<::cmsghdr>()) as ::c_uint + length
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
@@ -997,7 +995,7 @@ f! {
             return ::CMSG_FIRSTHDR(mhdr);
         };
         let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)
-            + _ALIGN(mem::size_of::<::cmsghdr>());
+            + _ALIGN(::mem::size_of::<::cmsghdr>());
         let max = (*mhdr).msg_control as usize
             + (*mhdr).msg_controllen as usize;
         if next > max {
@@ -1009,7 +1007,7 @@ f! {
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (_ALIGN(mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
+        (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
             as ::c_uint
     }
 

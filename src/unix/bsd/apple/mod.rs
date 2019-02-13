@@ -1,8 +1,6 @@
 //! Apple (ios/darwin)-specific definitions
 //!
 //! This covers *-apple-* triples currently
-use dox::mem;
-
 pub type c_char = i8;
 pub type clock_t = c_ulong;
 pub type time_t = c_long;
@@ -36,8 +34,8 @@ pub type shmatt_t = ::c_ushort;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
-impl ::dox::Copy for timezone {}
-impl ::dox::Clone for timezone {
+impl ::Copy for timezone {}
+impl ::Clone for timezone {
     fn clone(&self) -> timezone { *self }
 }
 
@@ -2782,12 +2780,12 @@ pub const UF_HIDDEN:        ::c_uint = 0x00008000;
 cfg_if! {
     if #[cfg(libc_const_size_of)] {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
-            const __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
+            const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
         }
     } else {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
-            let __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
+            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
         }
     }
@@ -2803,7 +2801,7 @@ f! {
         let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize);
         let max = (*mhdr).msg_control as usize
                    + (*mhdr).msg_controllen as usize;
-        if next + __DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) > max {
+        if next + __DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) > max {
             0 as *mut ::cmsghdr
         } else {
             next as *mut ::cmsghdr
@@ -2812,17 +2810,17 @@ f! {
 
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
         (cmsg as *mut ::c_uchar)
-            .offset(__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) as isize)
+            .offset(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>())
+        (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>())
             + __DARWIN_ALIGN32(length as usize))
             as ::c_uint
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        (__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) + length as usize)
+        (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) + length as usize)
             as ::c_uint
     }
 

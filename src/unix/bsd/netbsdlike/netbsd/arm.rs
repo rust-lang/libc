@@ -1,5 +1,3 @@
-use dox::mem;
-
 use PT_FIRSTMACH;
 
 pub type c_long = i32;
@@ -11,7 +9,7 @@ pub type __cpu_simple_lock_nv_t = ::c_int;
 cfg_if! {
     if #[cfg(libc_const_size_of)] {
         #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = mem::size_of::<::c_longlong>() - 1;
+        pub const _ALIGNBYTES: usize = ::mem::size_of::<::c_longlong>() - 1;
     } else {
         #[doc(hidden)]
         pub const _ALIGNBYTES: usize = 8 - 1;
