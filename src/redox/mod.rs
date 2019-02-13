@@ -221,14 +221,14 @@ pub const SIGSYS:    ::c_int = 31;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
-impl ::dox::Copy for FILE {}
-impl ::dox::Clone for FILE {
+impl ::Copy for FILE {}
+impl ::Clone for FILE {
     fn clone(&self) -> FILE { *self }
 }
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
-impl ::dox::Copy for fpos_t {}
-impl ::dox::Clone for fpos_t {
+impl ::Copy for fpos_t {}
+impl ::Clone for fpos_t {
     fn clone(&self) -> fpos_t { *self }
 }
 

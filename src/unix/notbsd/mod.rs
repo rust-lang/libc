@@ -1,5 +1,3 @@
-use dox::mem;
-
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
@@ -10,8 +8,8 @@ pub type id_t = ::c_uint;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
-impl ::dox::Copy for timezone {}
-impl ::dox::Clone for timezone {
+impl ::Copy for timezone {}
+impl ::Clone for timezone {
     fn clone(&self) -> timezone { *self }
 }
 
@@ -1129,12 +1127,12 @@ pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
 fn CMSG_ALIGN(len: usize) -> usize {
-    len + mem::size_of::<usize>() - 1 & !(mem::size_of::<usize>() - 1)
+    len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
 }
 
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
+        if (*mhdr).msg_controllen as usize >= ::mem::size_of::<cmsghdr>() {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
             0 as *mut cmsghdr
@@ -1146,30 +1144,30 @@ f! {
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(mem::size_of::<cmsghdr>()))
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
             as ::c_uint
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        CMSG_ALIGN(mem::size_of::<cmsghdr>()) as ::c_uint + length
+        CMSG_ALIGN(::mem::size_of::<cmsghdr>()) as ::c_uint + length
     }
 
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
         return
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
         return
     }

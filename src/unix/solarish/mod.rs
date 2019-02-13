@@ -1,5 +1,3 @@
-use dox::{mem, Option};
-
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -38,8 +36,8 @@ pub type idtype_t = ::c_uint;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
-impl ::dox::Copy for timezone {}
-impl ::dox::Clone for timezone {
+impl ::Copy for timezone {}
+impl ::Clone for timezone {
     fn clone(&self) -> timezone { *self }
 }
 
@@ -1500,20 +1498,20 @@ pub const VERASE2: usize = 17;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
         return
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
         return
@@ -1637,7 +1635,7 @@ extern {
 
     pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
-                errfunc: Option<extern fn(epath: *const ::c_char,
+                errfunc: ::Option<extern fn(epath: *const ::c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
 
@@ -1779,9 +1777,9 @@ extern {
                link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
-    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
-                          parent: Option<unsafe extern fn()>,
-                          child: Option<unsafe extern fn()>) -> ::c_int;
+    pub fn pthread_atfork(prepare: ::Option<unsafe extern fn()>,
+                          parent: ::Option<unsafe extern fn()>,
+                          child: ::Option<unsafe extern fn()>) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn popen(command: *const c_char,
                  mode: *const c_char) -> *mut ::FILE;

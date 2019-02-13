@@ -20,13 +20,12 @@ pub type sem_t = *mut sem;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
-impl ::dox::Copy for sem {}
-impl ::dox::Clone for sem {
+impl ::Copy for sem {}
+impl ::Clone for sem {
     fn clone(&self) -> sem { *self }
 }
 
 s! {
-
     pub struct exit_status {
         pub e_termination: u16,
         pub e_exit: u16
@@ -801,18 +800,18 @@ fn _CMSG_ALIGN(n: usize) -> usize {
 f! {
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
         (cmsg as *mut ::c_uchar)
-            .offset(_CMSG_ALIGN(mem::size_of::<::cmsghdr>()) as isize)
+            .offset(_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        _CMSG_ALIGN(mem::size_of::<::cmsghdr>()) + length as usize
+        _CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) + length as usize
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
         -> *mut ::cmsghdr
     {
         let next = cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len)
-            + _CMSG_ALIGN(mem::size_of::<::cmsghdr>());
+            + _CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
         let max = (*mhdr).msg_control as usize
             + (*mhdr).msg_controllen as usize;
         if next <= max {
@@ -823,7 +822,8 @@ f! {
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        _CMSG_ALIGN(mem::size_of::<::cmsghdr>()) + _CMSG_ALIGN(length as usize)
+        _CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
+            _CMSG_ALIGN(length as usize)
     }
 }
 

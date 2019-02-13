@@ -1,5 +1,3 @@
-use dox::mem;
-
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
 pub type dev_t = u64;
@@ -1075,7 +1073,7 @@ f! {
         } else {
             0
         };
-        mem::size_of::<sockcred>() + mem::size_of::<::gid_t>() * ngrps
+        ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
 }
 

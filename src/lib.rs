@@ -193,6 +193,15 @@ cfg_if! {
                 use core::num;
                 #[allow(unused_imports)]
                 use core::mem;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::clone::Clone;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::marker::Copy;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::option::Option;
             } else {
                 #[doc(hidden)]
                 #[allow(unused_imports)]
@@ -206,12 +215,26 @@ cfg_if! {
                 #[doc(hidden)]
                 #[allow(unused_imports)]
                 pub use core::mem;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::clone::Clone;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::marker::Copy;
+                #[doc(hidden)]
+                #[allow(unused_imports)]
+                pub use core::option::Option;
             }
         }
     }
 }
 
-mod dox;
+cfg_if! {
+    if #[cfg(cross_platform_docs)] {
+        mod dox;
+        pub use self::dox::*;
+    }
+}
 
 cfg_if! {
     if #[cfg(windows)] {

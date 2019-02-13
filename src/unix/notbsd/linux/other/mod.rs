@@ -35,7 +35,7 @@ s! {
         #[cfg(target_arch = "sparc64")]
         __reserved0: ::c_int,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::dox::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern fn()>,
     }
 
     pub struct stack_t {
@@ -927,7 +927,7 @@ extern {
                      sz: ::c_int) -> ::c_int;
     pub fn glob64(pattern: *const ::c_char,
                   flags: ::c_int,
-                  errfunc: ::dox::Option<extern fn(epath: *const ::c_char,
+                  errfunc: ::Option<extern fn(epath: *const ::c_char,
                                                    errno: ::c_int)
                                                    -> ::c_int>,
                   pglob: *mut glob64_t) -> ::c_int;
