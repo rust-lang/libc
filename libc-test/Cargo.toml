@@ -10,7 +10,7 @@ default-features = false
 
 [build-dependencies]
 cc = "1.0"
-ctest = "0.2.8"
+ctest = "0.2"
 
 [features]
 default = [ "use_std" ]
