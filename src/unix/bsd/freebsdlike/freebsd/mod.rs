@@ -830,7 +830,15 @@ pub const TCP_PCAP_OUT: ::c_int = 2048;
 pub const TCP_PCAP_IN: ::c_int = 4096;
 
 pub const IP_BINDANY: ::c_int = 24;
+pub const IP_BINDMULTI: ::c_int = 25;
+pub const IP_RSS_LISTEN_BUCKET: ::c_int = 26;
+pub const IP_ORIGDSTADDR : ::c_int = 27;
+pub const IP_RECVORIGDSTADDR : ::c_int = IP_ORIGDSTADDR;
+
 pub const IP_RECVTOS: ::c_int = 68;
+
+pub const IPV6_ORIGDSTADDR: ::c_int = 72;
+pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
 
 pub const PF_SLOW: ::c_int = AF_SLOW;
 pub const PF_SCLUSTER: ::c_int = AF_SCLUSTER;
