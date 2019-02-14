@@ -305,6 +305,7 @@ cfg_if! {
             }
         }
     }
+}
 
 //https://github.com/openbsd/src/blob/master/sys/sys/mount.h
 pub const ISOFSMNT_NORRIP: ::c_int = 0x1; // disable Rock Ridge Ext
