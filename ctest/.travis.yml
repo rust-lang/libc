@@ -26,7 +26,7 @@ matrix:
       osx_image: xcode9.4
       after_script:
         - git clone https://github.com/rust-lang/libc
-        - sed -i '' 's@ctest = "0.2.3"@ctest = { path = "../.." }@g' libc/libc-test/Cargo.toml
+        - sed -i '' 's@ctest = "0.2"@ctest = { path = "../.." }@g' libc/libc-test/Cargo.toml
         - cd libc
         - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
         - |
