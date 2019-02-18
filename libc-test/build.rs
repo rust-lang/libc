@@ -102,6 +102,9 @@ fn do_ctest() {
             cfg.header("net/route.h");
             cfg.header("net/if_arp.h");
         }
+        if linux || android {
+            cfg.header("linux/if_alg.h");
+        }
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");

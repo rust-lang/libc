@@ -209,6 +209,13 @@ s! {
         pub ar_pln: u8,
         pub ar_op: u16,
     }
+
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    pub struct af_alg_iv {
+        pub ivlen: u32,
+        pub iv: [::c_uchar; 0],
+    }
+
 }
 
 s_no_extra_traits!{
@@ -240,19 +247,6 @@ s_no_extra_traits!{
         __ss_pad2: [u8; 128 - 2 * 8],
     }
 
-    pub struct sockaddr_alg {
-        pub salg_family: sa_family_t,
-        pub salg_type: [::c_uchar; 14],
-        pub salg_feat: u32,
-        pub salg_mask: u32,
-        pub salg_name: [::c_uchar; 64],
-    }
-
-    pub struct af_alg_iv {
-        pub ivlen: u32,
-        pub iv: [::c_uchar; 0],
-    }
-
     pub struct utsname {
         pub sysname: [::c_char; 65],
         pub nodename: [::c_char; 65],
@@ -261,6 +255,16 @@ s_no_extra_traits!{
         pub machine: [::c_char; 65],
         pub domainname: [::c_char; 65]
     }
+
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    pub struct sockaddr_alg {
+        pub salg_family: sa_family_t,
+        pub salg_type: [::c_uchar; 14],
+        pub salg_feat: u32,
+        pub salg_mask: u32,
+        pub salg_name: [::c_uchar; 64],
+    }
+
 }
 
 cfg_if! {
@@ -321,6 +325,52 @@ cfg_if! {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ss_family.hash(state);
                 self.__ss_pad2.hash(state);
+            }
+        }
+
+        #[cfg(any(target_os = "linux", target_os = "android"))]
+        impl PartialEq for sockaddr_alg {
+            fn eq(&self, other: &sockaddr_alg) -> bool {
+                self.salg_family == other.salg_family
+                    && self
+                    .salg_type
+                    .iter()
+                    .zip(other.salg_type.iter())
+                    .all(|(a, b)| a == b)
+                    && self.salg_feat == other.salg_feat
+                    && self.salg_mask == other.salg_mask
+                    && self
+                    .salg_name
+                    .iter()
+                    .zip(other.salg_name.iter())
+                    .all(|(a, b)| a == b)
+           }
+        }
+
+        #[cfg(any(target_os = "linux", target_os = "android"))]
+        impl Eq for sockaddr_alg {}
+
+        #[cfg(any(target_os = "linux", target_os = "android"))]
+        impl ::fmt::Debug for sockaddr_alg {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_alg")
+                    .field("salg_family", &self.salg_family)
+//                    .field("salg_type", &self.salg_type)
+                    .field("salg_feat", &self.salg_feat)
+                    .field("salg_mask", &self.salg_mask)
+//                    .field("salg_name", &self.salg_name)
+                    .finish()
+            }
+        }
+
+        #[cfg(any(target_os = "linux", target_os = "android"))]
+        impl ::hash::Hash for sockaddr_alg {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.salg_family.hash(state);
+                self.salg_type.hash(state);
+                self.salg_feat.hash(state);
+                self.salg_mask.hash(state);
+                self.salg_name.hash(state);
             }
         }
 
@@ -670,6 +720,7 @@ pub const SOL_DCCP: ::c_int = 269;
 pub const SOL_NETLINK: ::c_int = 270;
 pub const SOL_TIPC: ::c_int = 271;
 pub const SOL_BLUETOOTH: ::c_int = 274;
+#[cfg(any(target_os = "linux", target_os = "android"))]
 pub const SOL_ALG: ::c_int = 279;
 
 pub const AF_UNSPEC: ::c_int = 0;
@@ -1142,13 +1193,20 @@ pub const ARPHRD_IEEE802154: u16 = 804;
 pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
+#[cfg(any(target_os = "linux", target_os = "android"))]
 pub const ALG_SET_KEY: ::c_int = 1;
+#[cfg(any(target_os = "linux", target_os = "android"))]
 pub const ALG_SET_IV: ::c_int = 2;
+#[cfg(any(target_os = "linux", target_os = "android"))]
 pub const ALG_SET_OP: ::c_int = 3;
+#[cfg(any(target_os = "linux", target_os = "android"))]
 pub const ALG_SET_AEAD_ASSOCLEN: ::c_int = 4;
+#[cfg(any(target_os = "linux", target_os = "android"))]
 pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
 
+#[cfg(any(target_os = "linux", target_os = "android"))]
 pub const ALG_OP_DECRYPT: ::c_int = 0;
+#[cfg(any(target_os = "linux", target_os = "android"))]
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
 
 fn CMSG_ALIGN(len: usize) -> usize {
