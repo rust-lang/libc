@@ -725,6 +725,16 @@ fn do_ctest() {
             s if ios && s.starts_with("RTV_") => true,
             s if ios && s.starts_with("DLT_") => true,
 
+            | "IP_ORIGDSTADDR"
+            | "IP_RECVORIGDSTADDR"
+            | "IPV6_ORIGDSTADDR"
+            | "IPV6_RECVORIGDSTADDR"
+                if freebsd =>
+            {
+                // FreeBSD 12 required, but CI has FreeBSD 11.
+                true
+            }
+
             _ => false,
         }
     });
