@@ -56,6 +56,8 @@ rustup component add rust-src || true
 cargo install xargo || true
 
 
+# FIXME: https://github.com/rust-lang/rust/issues/58564
+# sparc-unknown-linux-gnu
 RUST_LINUX_NO_CORE_TARGETS="\
 x86_64-unknown-dragonfly \
 aarch64-pc-windows-msvc \
@@ -71,7 +73,6 @@ nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
-sparc-unknown-linux-gnu \
 sparc64-unknown-netbsd \
 thumbv8m.main-none-eabi \
 x86_64-pc-windows-gnu \
