@@ -45,19 +45,6 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    pub struct sockaddr_alg {
-        pub salg_family: sa_family_t,
-        pub salg_type: [u8; 14],
-        pub salg_feat: u32,
-        pub salg_mask: u32,
-        pub salg_name: [u8; 64],
-    }
-
-    pub struct af_alg_iv {
-        pub ivlen: u32,
-        pub iv: [u8; 0],
-    }
-
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -251,6 +238,19 @@ s_no_extra_traits!{
         __ss_pad2: [u8; 128 - 2 * 4],
         #[cfg(target_pointer_width = "64")]
         __ss_pad2: [u8; 128 - 2 * 8],
+    }
+
+    pub struct sockaddr_alg {
+        pub salg_family: sa_family_t,
+        pub salg_type: [::c_uchar; 14],
+        pub salg_feat: u32,
+        pub salg_mask: u32,
+        pub salg_name: [::c_uchar; 64],
+    }
+
+    pub struct af_alg_iv {
+        pub ivlen: u32,
+        pub iv: [::c_uchar; 0],
     }
 
     pub struct utsname {

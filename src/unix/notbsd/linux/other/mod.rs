@@ -321,7 +321,6 @@ pub const SOL_PNPIPE: ::c_int = 275;
 pub const SOL_RDS: ::c_int = 276;
 pub const SOL_IUCV: ::c_int = 277;
 pub const SOL_CAIF: ::c_int = 278;
-pub const SOL_ALG: ::c_int = 279;
 pub const SOL_NFC: ::c_int = 280;
 pub const SOL_XDP: ::c_int = 283;
 
