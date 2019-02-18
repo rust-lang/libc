@@ -507,6 +507,11 @@ s! {
         pub cookie: ::uint32_t,
         pub len: ::uint32_t
     }
+
+    pub struct af_alg_iv {
+        pub ivlen: u32,
+        pub iv: [::c_uchar; 0],
+    }
 }
 
 s_no_extra_traits!{
@@ -525,6 +530,15 @@ s_no_extra_traits!{
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
     }
+
+    pub struct sockaddr_alg {
+        pub salg_family: sa_family_t,
+        pub salg_type: [::c_uchar; 14],
+        pub salg_feat: u32,
+        pub salg_mask: u32,
+        pub salg_name: [::c_uchar; 64],
+    }
+
 }
 
 cfg_if! {
@@ -668,6 +682,49 @@ cfg_if! {
         impl ::hash::Hash for pthread_rwlock_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
+            }
+        }
+
+
+        impl PartialEq for sockaddr_alg {
+            fn eq(&self, other: &sockaddr_alg) -> bool {
+                self.salg_family == other.salg_family
+                    && self
+                    .salg_type
+                    .iter()
+                    .zip(other.salg_type.iter())
+                    .all(|(a, b)| a == b)
+                    && self.salg_feat == other.salg_feat
+                    && self.salg_mask == other.salg_mask
+                    && self
+                    .salg_name
+                    .iter()
+                    .zip(other.salg_name.iter())
+                    .all(|(a, b)| a == b)
+           }
+        }
+
+        impl Eq for sockaddr_alg {}
+
+        impl ::fmt::Debug for sockaddr_alg {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_alg")
+                    .field("salg_family", &self.salg_family)
+//                    .field("salg_type", &self.salg_type)
+                    .field("salg_feat", &self.salg_feat)
+                    .field("salg_mask", &self.salg_mask)
+//                    .field("salg_name", &self.salg_name)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for sockaddr_alg {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.salg_family.hash(state);
+                self.salg_type.hash(state);
+                self.salg_feat.hash(state);
+                self.salg_mask.hash(state);
+                self.salg_name.hash(state);
             }
         }
     }
@@ -1750,6 +1807,16 @@ pub const SOF_TIMESTAMPING_RX_SOFTWARE: ::c_uint = 1 << 3;
 pub const SOF_TIMESTAMPING_SOFTWARE: ::c_uint = 1 << 4;
 pub const SOF_TIMESTAMPING_SYS_HARDWARE: ::c_uint = 1 << 5;
 pub const SOF_TIMESTAMPING_RAW_HARDWARE: ::c_uint = 1 << 6;
+
+// linux/if_alg.h
+pub const ALG_SET_KEY: ::c_int = 1;
+pub const ALG_SET_IV: ::c_int = 2;
+pub const ALG_SET_OP: ::c_int = 3;
+pub const ALG_SET_AEAD_ASSOCLEN: ::c_int = 4;
+pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
+
+pub const ALG_OP_DECRYPT: ::c_int = 0;
+pub const ALG_OP_ENCRYPT: ::c_int = 1;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
