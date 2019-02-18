@@ -45,6 +45,19 @@ s! {
         pub sin6_scope_id: u32,
     }
 
+    pub struct sockaddr_alg {
+        pub salg_family: sa_family_t,
+        pub salg_type: [u8; 14],
+        pub salg_feat: u32,
+        pub salg_mask: u32,
+        pub salg_name: [u8; 64],
+    }
+
+    pub struct af_alg_iv {
+        pub ivlen: u32,
+        pub iv: [u8; 0],
+    }
+
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -657,6 +670,7 @@ pub const SOL_DCCP: ::c_int = 269;
 pub const SOL_NETLINK: ::c_int = 270;
 pub const SOL_TIPC: ::c_int = 271;
 pub const SOL_BLUETOOTH: ::c_int = 274;
+pub const SOL_ALG: ::c_int = 279;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_UNIX: ::c_int = 1;
@@ -1127,6 +1141,15 @@ pub const ARPHRD_IEEE802154: u16 = 804;
 
 pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
+
+pub const ALG_SET_KEY: ::c_int = 1;
+pub const ALG_SET_IV: ::c_int = 2;
+pub const ALG_SET_OP: ::c_int = 3;
+pub const ALG_SET_AEAD_ASSOCLEN: ::c_int = 4;
+pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
+
+pub const ALG_OP_DECRYPT: ::c_int = 0;
+pub const ALG_OP_ENCRYPT: ::c_int = 1;
 
 fn CMSG_ALIGN(len: usize) -> usize {
     len + mem::size_of::<usize>() - 1 & !(mem::size_of::<usize>() - 1)
