@@ -38,8 +38,10 @@ matrix:
     - name: "rustfmt"
       install: true
       rust: nightly
-      before_script: rustup component add rustfmt-preview
-      script: cargo fmt --all -- --check
+      script: |
+        if rustup component add rustfmt-preview ; then
+            cargo fmt --all -- --check
+        fi
     - name: "clippy"
       install: true
       rust: nightly
