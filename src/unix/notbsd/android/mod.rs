@@ -879,7 +879,6 @@ pub const SOL_AX25: ::c_int = 257;
 pub const SOL_ATALK: ::c_int = 258;
 pub const SOL_NETROM: ::c_int = 259;
 pub const SOL_ROSE: ::c_int = 260;
-pub const SOL_ALG: ::c_int = 279;
 
 #[doc(hidden)]
 pub const AF_MAX: ::c_int = 43;
