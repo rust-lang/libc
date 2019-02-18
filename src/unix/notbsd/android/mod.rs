@@ -241,7 +241,7 @@ s_no_extra_traits!{
     }
 
     pub struct sockaddr_alg {
-        pub salg_family: sa_family_t,
+        pub salg_family: ::sa_family_t,
         pub salg_type: [::c_uchar; 14],
         pub salg_feat: u32,
         pub salg_mask: u32,
