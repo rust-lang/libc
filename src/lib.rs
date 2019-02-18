@@ -25,12 +25,11 @@
     not(any(
         feature = "use_std",
         feature = "rustc-dep-of-std",
-        cross_platform_docs,
     )),
     no_std
 )]
 
-#[cfg(all(not(cross_platform_docs), feature = "use_std"))]
+#[cfg(feature = "use_std")]
 extern crate std as core;
 
 #[macro_use]
