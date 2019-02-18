@@ -192,7 +192,6 @@ s! {
         pub ipi6_addr: ::in6_addr,
         pub ipi6_ifindex: ::c_int,
     }
-
 }
 
 s_no_extra_traits!{
@@ -252,7 +251,6 @@ s_no_extra_traits!{
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
     }
-
 }
 
 cfg_if! {
