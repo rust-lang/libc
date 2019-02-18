@@ -31,23 +31,6 @@ s! {
         pub e_exit: u16
     }
 
-    pub struct utmpx {
-        pub ut_name: [::c_char; 32],
-        pub ut_id: [::c_char; 4],
-
-        pub ut_line: [::c_char; 32],
-        pub ut_host: [::c_char; 256],
-
-        pub ut_unused: [u8; 16],
-        pub ut_session: u16,
-        pub ut_type: u16,
-        pub ut_pid: ::pid_t,
-        ut_exit: exit_status,
-        ut_ss: ::sockaddr_storage,
-        pub ut_tv: ::timeval,
-        pub ut_unused2: [u8; 16],
-    }
-
     pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_offset: ::off_t,
@@ -58,15 +41,6 @@ s! {
         pub aio_reqprio: ::c_int,
         _aio_val: ::c_int,
         _aio_err: ::c_int
-    }
-
-    pub struct dirent {
-        pub d_fileno: ::ino_t,
-        pub d_namlen: u16,
-        pub d_type: u8,
-        __unused1: u8,
-        __unused2: u32,
-        pub d_name: [::c_char; 256],
     }
 
     pub struct uuid {
@@ -118,27 +92,6 @@ s! {
         pub f_asyncwrites: u64,
         pub f_fsid_uuid: ::uuid_t,
         pub f_uid_uuid: ::uuid_t,
-    }
-
-    pub struct statfs {
-        pub f_bsize: ::c_long,
-        pub f_iosize: ::c_long,
-        pub f_blocks: ::c_long,
-        pub f_bfree: ::c_long,
-        pub f_bavail: ::c_long,
-        pub f_files: ::c_long,
-        pub f_ffree: ::c_long,
-        pub f_fsid: ::fsid_t,
-        pub f_owner: ::uid_t,
-        pub f_type: ::int32_t,
-        pub f_flags: ::int32_t,
-        pub f_syncwrites: ::c_long,
-        pub f_asyncwrites: ::c_long,
-        pub f_fstypename: [::c_char; 16],
-        pub f_mntonname: [::c_char; 90],
-        pub f_syncreads: ::c_long,
-        pub f_asyncreads: ::c_long,
-        pub f_mntfromname: [::c_char; 90],
     }
 
     pub struct stat {
@@ -220,6 +173,58 @@ s! {
         pub ss_sp: *mut ::c_char,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct utmpx {
+        pub ut_name: [::c_char; 32],
+        pub ut_id: [::c_char; 4],
+
+        pub ut_line: [::c_char; 32],
+        pub ut_host: [::c_char; 256],
+
+        pub ut_unused: [u8; 16],
+        pub ut_session: u16,
+        pub ut_type: u16,
+        pub ut_pid: ::pid_t,
+        ut_exit: exit_status,
+        ut_ss: ::sockaddr_storage,
+        pub ut_tv: ::timeval,
+        pub ut_unused2: [u8; 16],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct dirent {
+        pub d_fileno: ::ino_t,
+        pub d_namlen: u16,
+        pub d_type: u8,
+        __unused1: u8,
+        __unused2: u32,
+        pub d_name: [::c_char; 256],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct statfs {
+        pub f_bsize: ::c_long,
+        pub f_iosize: ::c_long,
+        pub f_blocks: ::c_long,
+        pub f_bfree: ::c_long,
+        pub f_bavail: ::c_long,
+        pub f_files: ::c_long,
+        pub f_ffree: ::c_long,
+        pub f_fsid: ::fsid_t,
+        pub f_owner: ::uid_t,
+        pub f_type: ::int32_t,
+        pub f_flags: ::int32_t,
+        pub f_syncwrites: ::c_long,
+        pub f_asyncwrites: ::c_long,
+        pub f_fstypename: [::c_char; 16],
+        pub f_mntonname: [::c_char; 90],
+        pub f_syncreads: ::c_long,
+        pub f_asyncreads: ::c_long,
+        pub f_mntfromname: [::c_char; 90],
     }
 }
 
@@ -804,26 +809,28 @@ f! {
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        _CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) + length as usize
+        (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) + length as usize)
+            as ::c_uint
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
         -> *mut ::cmsghdr
     {
-        let next = cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len)
+        let next = cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len as usize)
             + _CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
         let max = (*mhdr).msg_control as usize
             + (*mhdr).msg_controllen as usize;
         if next <= max {
-            (cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len)) as *mut ::cmsghdr
+            (cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len as usize))
+                as *mut ::cmsghdr
         } else {
             0 as *mut ::cmsghdr
         }
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        _CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
-            _CMSG_ALIGN(length as usize)
+        (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
+            _CMSG_ALIGN(length as usize)) as ::c_uint
     }
 }
 
