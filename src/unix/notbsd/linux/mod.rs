@@ -507,11 +507,6 @@ s! {
         pub cookie: ::uint32_t,
         pub len: ::uint32_t
     }
-
-    pub struct af_alg_iv {
-        pub ivlen: u32,
-        pub iv: [::c_uchar; 0],
-    }
 }
 
 s_no_extra_traits!{
@@ -539,6 +534,10 @@ s_no_extra_traits!{
         pub salg_name: [::c_uchar; 64],
     }
 
+    pub struct af_alg_iv {
+        pub ivlen: u32,
+        pub iv: [::c_uchar; 0],
+    }
 }
 
 cfg_if! {
@@ -685,7 +684,6 @@ cfg_if! {
             }
         }
 
-
         impl PartialEq for sockaddr_alg {
             fn eq(&self, other: &sockaddr_alg) -> bool {
                 self.salg_family == other.salg_family
@@ -725,6 +723,34 @@ cfg_if! {
                 self.salg_feat.hash(state);
                 self.salg_mask.hash(state);
                 self.salg_name.hash(state);
+            }
+        }
+
+        impl af_alg_iv {
+            unsafe fn iv(&self) -> &[u8] {
+                ::std::slice::from_raw_parts(self.iv.as_ptr(), self.ivlen as usize)
+            }
+        }
+
+        impl PartialEq for af_alg_iv {
+            fn eq(&self, other: &af_alg_iv) -> bool {
+                *self.iv() == *other.iv()
+           }
+        }
+
+        impl Eq for af_alg_iv {}
+
+        impl ::fmt::Debug for af_alg_iv {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("af_alg_iv")
+                    .field("iv", self.iv())
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for af_alg_iv {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.iv().hash(state);
             }
         }
     }
