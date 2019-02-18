@@ -67,8 +67,6 @@ i686-pc-windows-msvc \
 i686-unknown-cloudabi \
 i686-unknown-haiku \
 i686-unknown-netbsd \
-mips-unknown-linux-uclib \
-mipsel-unknown-unknown-linux-uclib \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 riscv32imac-unknown-none-elf \
