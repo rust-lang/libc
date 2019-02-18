@@ -11,14 +11,22 @@ fn main() {
         println!("cargo:rustc-cfg=core_cvoid");
     }
 
-    let target = env::var("TARGET").unwrap();
-    let linkage = env::var("CARGO_CFG_TARGET_FEATURE").unwrap();
+    let dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD");
 
-    if target.contains("msvc") {
-        if linkage.contains("crt-static") {
-            println!("cargo:rustc-link-lib=dylib=libcmt");
-        } else {
-            println!("cargo:rustc-link-lib=dylib=msvcrt");
+    // Windows-specific:
+    // When this crate is not built as part of std, we explicitly
+    // need to tell the compiler to link the CRT. This enables
+    // usage in no_std scenarios.
+    if dep_of_std.is_err() {
+        let target = env::var("TARGET").unwrap();
+        let linkage = env::var("CARGO_CFG_TARGET_FEATURE").unwrap();
+
+        if target.contains("msvc") {
+            if linkage.contains("crt-static") {
+                println!("cargo:rustc-link-lib=dylib=libcmt");
+            } else {
+                println!("cargo:rustc-link-lib=dylib=msvcrt");
+            }
         }
     }
 }
