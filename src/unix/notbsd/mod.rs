@@ -207,6 +207,11 @@ s! {
         pub ar_pln: u8,
         pub ar_op: u16,
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 s_no_extra_traits!{

@@ -189,11 +189,6 @@ s! {
         pub msgseg: ::c_ushort,
     }
 
-    pub struct mmsghdr {
-        pub msg_hdr: ::msghdr,
-        pub msg_len: ::c_uint,
-    }
-
     pub struct sembuf {
         pub sem_num: ::c_ushort,
         pub sem_op: ::c_short,
@@ -2086,9 +2081,9 @@ extern {
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn vhangup() -> ::c_int;
-    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int) -> ::c_int;
-    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
     pub fn sync();
     pub fn syscall(num: ::c_long, ...) -> ::c_long;

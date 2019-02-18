@@ -266,6 +266,11 @@ s! {
         pub sdl_slen: ::uint8_t,
         pub sdl_data: [::c_char; 12],
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 s_no_extra_traits! {
@@ -1236,6 +1241,11 @@ extern {
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::c_void) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
+
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
 }
 
 #[link(name = "util")]
