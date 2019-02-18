@@ -52,42 +52,6 @@ test_target() {
     fi
 }
 
-rustup component add rust-src || true
-cargo install xargo || true
-
-
-# FIXME: https://github.com/rust-lang/rust/issues/58564
-# sparc-unknown-linux-gnu
-RUST_LINUX_NO_CORE_TARGETS="\
-x86_64-unknown-dragonfly \
-aarch64-pc-windows-msvc \
-aarch64-unknown-cloudabi \
-armv7-unknown-cloudabi-eabihf \
-i586-pc-windows-msvc \
-i686-pc-windows-gnu \
-i686-pc-windows-msvc \
-i686-unknown-cloudabi \
-i686-unknown-haiku \
-i686-unknown-netbsd \
-nvptx64-nvidia-cuda \
-powerpc-unknown-linux-gnuspe \
-riscv32imac-unknown-none-elf \
-riscv32imc-unknown-none-elf \
-sparc64-unknown-netbsd \
-thumbv8m.main-none-eabi \
-x86_64-pc-windows-gnu \
-x86_64-pc-windows-msvc
-x86_64-unknown-bitrig \
-x86_64-unknown-haiku \
-x86_64-unknown-openbsd
-"
-
-for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
-    if [ "${RUST}" = "nightly" ]; then
-        RUST_LIBC_NO_CORE_BUILD=1 test_target xargo "$TARGET" 1
-    fi
-done
-
 RUST_LINUX_TARGETS="\
 aarch64-linux-android \
 aarch64-unknown-linux-gnu \
@@ -206,3 +170,38 @@ esac
 for TARGET in $TARGETS; do
     test_target cargo "$TARGET"
 done
+
+# FIXME: https://github.com/rust-lang/rust/issues/58564
+# sparc-unknown-linux-gnu
+RUST_LINUX_NO_CORE_TARGETS="\
+x86_64-unknown-dragonfly \
+aarch64-pc-windows-msvc \
+aarch64-unknown-cloudabi \
+armv7-unknown-cloudabi-eabihf \
+i586-pc-windows-msvc \
+i686-pc-windows-gnu \
+i686-pc-windows-msvc \
+i686-unknown-cloudabi \
+i686-unknown-haiku \
+i686-unknown-netbsd \
+nvptx64-nvidia-cuda \
+powerpc-unknown-linux-gnuspe \
+riscv32imac-unknown-none-elf \
+riscv32imc-unknown-none-elf \
+sparc64-unknown-netbsd \
+thumbv8m.main-none-eabi \
+x86_64-pc-windows-gnu \
+x86_64-pc-windows-msvc
+x86_64-unknown-bitrig \
+x86_64-unknown-haiku \
+x86_64-unknown-openbsd
+"
+
+if [ "${RUST}" = "nightly" ]; then
+    rustup component add rust-src || true
+    cargo install xargo || true
+
+    for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
+        RUST_LIBC_NO_CORE_BUILD=1 test_target xargo "$TARGET" 1
+    done
+fi
