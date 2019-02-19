@@ -1,7 +1,5 @@
 //! Android-specific definitions for linux-like values
 
-use dox::{mem, Option};
-
 pub type clock_t = ::c_long;
 pub type time_t = ::c_long;
 pub type suseconds_t = ::c_long;
@@ -1716,21 +1714,21 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in___bits = 8 * mem::size_of_val(&cpuset.__bits[0]);
+        let size_in___bits = 8 * ::mem::size_of_val(&cpuset.__bits[0]);
         let (idx, offset) = (cpu / size_in___bits, cpu % size_in___bits);
         cpuset.__bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in___bits = 8 * mem::size_of_val(&cpuset.__bits[0]);
+        let size_in___bits = 8 * ::mem::size_of_val(&cpuset.__bits[0]);
         let (idx, offset) = (cpu / size_in___bits, cpu % size_in___bits);
         cpuset.__bits[idx] &= !(1 << offset);
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in___bits = 8 * mem::size_of_val(&cpuset.__bits[0]);
+        let size_in___bits = 8 * ::mem::size_of_val(&cpuset.__bits[0]);
         let (idx, offset) = (cpu / size_in___bits, cpu % size_in___bits);
         0 != (cpuset.__bits[idx] & (1 << offset))
     }
@@ -1932,9 +1930,9 @@ extern {
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
-    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
-                          parent: Option<unsafe extern fn()>,
-                          child: Option<unsafe extern fn()>) -> ::c_int;
+    pub fn pthread_atfork(prepare: ::Option<unsafe extern fn()>,
+                          parent: ::Option<unsafe extern fn()>,
+                          child: ::Option<unsafe extern fn()>) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn getgrouplist(user: *const ::c_char,
                         group: ::gid_t,
@@ -1955,6 +1953,10 @@ extern {
                           value: *mut ::c_void) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
     pub fn inotify_rm_watch(fd: ::c_int, wd: ::uint32_t) -> ::c_int;
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *const ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *const ::timespec) -> ::c_int;
 }
 
 cfg_if! {

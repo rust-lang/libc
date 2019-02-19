@@ -1,7 +1,5 @@
 //! Linux-specific definitions for linux-like values
 
-use dox::{mem, Option};
-
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
@@ -40,8 +38,8 @@ pub type Elf64_Section = u16;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
-impl ::dox::Copy for fpos64_t {}
-impl ::dox::Clone for fpos64_t {
+impl ::Copy for fpos64_t {}
+impl ::Clone for fpos64_t {
     fn clone(&self) -> fpos64_t { *self }
 }
 
@@ -189,11 +187,6 @@ s! {
         pub msgssz: ::c_int,
         pub msgtql: ::c_int,
         pub msgseg: ::c_ushort,
-    }
-
-    pub struct mmsghdr {
-        pub msg_hdr: ::msghdr,
-        pub msg_len: ::c_uint,
     }
 
     pub struct sembuf {
@@ -1712,7 +1705,7 @@ pub const SOF_TIMESTAMPING_RAW_HARDWARE: ::c_uint = 1 << 6;
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
                        cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < mem::size_of::<cmsghdr>() {
+        if ((*cmsg).cmsg_len as usize) < ::mem::size_of::<cmsghdr>() {
             return 0 as *mut cmsghdr;
         };
         let next = (cmsg as usize +
@@ -1736,21 +1729,23 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits
+            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits
+            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]);
+        let size_in_bits = 8 * ::mem::size_of_val(&cpuset.bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.bits[idx] & (1 << offset))
     }
@@ -2011,7 +2006,7 @@ extern {
 
     pub fn glob(pattern: *const c_char,
                 flags: ::c_int,
-                errfunc: Option<extern fn(epath: *const c_char,
+                errfunc: ::Option<extern fn(epath: *const c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);
@@ -2040,9 +2035,9 @@ extern {
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn vhangup() -> ::c_int;
-    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int) -> ::c_int;
-    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
     pub fn sync();
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
@@ -2184,9 +2179,9 @@ extern {
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
-    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
-                          parent: Option<unsafe extern fn()>,
-                          child: Option<unsafe extern fn()>) -> ::c_int;
+    pub fn pthread_atfork(prepare: ::Option<unsafe extern fn()>,
+                          parent: ::Option<unsafe extern fn()>,
+                          child: ::Option<unsafe extern fn()>) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn getgrouplist(user: *const ::c_char,
                         group: ::gid_t,
@@ -2205,7 +2200,7 @@ extern {
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
     pub fn dl_iterate_phdr(
-        callback: Option<unsafe extern fn(
+        callback: ::Option<unsafe extern fn(
             info: *mut ::dl_phdr_info,
             size: ::size_t,
             data: *mut ::c_void

@@ -1,5 +1,3 @@
-use dox::mem;
-
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
 pub type dev_t = u64;
@@ -267,6 +265,11 @@ s! {
         pub sdl_alen: ::uint8_t,
         pub sdl_slen: ::uint8_t,
         pub sdl_data: [::c_char; 12],
+    }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
     }
 }
 
@@ -1075,7 +1078,7 @@ f! {
         } else {
             0
         };
-        mem::size_of::<sockcred>() + mem::size_of::<::gid_t>() * ngrps
+        ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
 }
 
@@ -1238,6 +1241,11 @@ extern {
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::c_void) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
+
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
 }
 
 #[link(name = "util")]

@@ -1,5 +1,3 @@
-use dox::mem;
-
 pub type fflags_t = u32;
 pub type clock_t = i32;
 pub type ino_t = u32;
@@ -134,6 +132,11 @@ s! {
         pub ss_sp: *mut ::c_void,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
+    }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::ssize_t,
     }
 }
 
@@ -830,7 +833,15 @@ pub const TCP_PCAP_OUT: ::c_int = 2048;
 pub const TCP_PCAP_IN: ::c_int = 4096;
 
 pub const IP_BINDANY: ::c_int = 24;
+pub const IP_BINDMULTI: ::c_int = 25;
+pub const IP_RSS_LISTEN_BUCKET: ::c_int = 26;
+pub const IP_ORIGDSTADDR : ::c_int = 27;
+pub const IP_RECVORIGDSTADDR : ::c_int = IP_ORIGDSTADDR;
+
 pub const IP_RECVTOS: ::c_int = 68;
+
+pub const IPV6_ORIGDSTADDR: ::c_int = 72;
+pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
 
 pub const PF_SLOW: ::c_int = AF_SLOW;
 pub const PF_SCLUSTER: ::c_int = AF_SCLUSTER;
@@ -983,11 +994,11 @@ fn _ALIGN(p: usize) -> usize {
 f! {
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
         (cmsg as *mut ::c_uchar)
-            .offset(_ALIGN(mem::size_of::<::cmsghdr>()) as isize)
+            .offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        _ALIGN(mem::size_of::<::cmsghdr>()) as ::c_uint + length
+        _ALIGN(::mem::size_of::<::cmsghdr>()) as ::c_uint + length
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
@@ -997,7 +1008,7 @@ f! {
             return ::CMSG_FIRSTHDR(mhdr);
         };
         let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)
-            + _ALIGN(mem::size_of::<::cmsghdr>());
+            + _ALIGN(::mem::size_of::<::cmsghdr>());
         let max = (*mhdr).msg_control as usize
             + (*mhdr).msg_controllen as usize;
         if next > max {
@@ -1009,7 +1020,7 @@ f! {
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (_ALIGN(mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
+        (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
             as ::c_uint
     }
 
@@ -1205,6 +1216,11 @@ extern {
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn __xuname(nmln: ::c_int, buf: *mut ::c_void) -> ::c_int;
+
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::size_t,
+                    flags: ::c_int) -> ::ssize_t;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::size_t,
+                    flags: ::c_int, timeout: *const ::timespec) -> ::ssize_t;
 }
 
 #[link(name = "util")]

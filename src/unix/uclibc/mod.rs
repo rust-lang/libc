@@ -1,5 +1,3 @@
-use dox::{mem, Option};
-
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
@@ -26,15 +24,15 @@ pub type idtype_t = ::c_uint;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
-impl ::dox::Copy for fpos64_t {}
-impl ::dox::Clone for fpos64_t {
+impl ::Copy for fpos64_t {}
+impl ::Clone for fpos64_t {
     fn clone(&self) -> fpos64_t { *self }
 }
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
-impl ::dox::Copy for timezone {}
-impl ::dox::Clone for timezone {
+impl ::Copy for timezone {}
+impl ::Clone for timezone {
     fn clone(&self) -> timezone { *self }
 }
 
@@ -1389,20 +1387,20 @@ pub const AF_MAX: ::c_int = 39;
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
         return
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
         return
     }
@@ -1452,21 +1450,23 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits
+            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits
+            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]);
+        let size_in_bits = 8 * ::mem::size_of_val(&cpuset.bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.bits[idx] & (1 << offset))
     }
@@ -1787,7 +1787,7 @@ extern {
 
     pub fn glob(pattern: *const c_char,
                 flags: ::c_int,
-                errfunc: Option<extern fn(epath: *const c_char,
+                errfunc: ::Option<extern fn(epath: *const c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);
@@ -1871,9 +1871,9 @@ extern {
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
-    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
-                          parent: Option<unsafe extern fn()>,
-                          child: Option<unsafe extern fn()>) -> ::c_int;
+    pub fn pthread_atfork(prepare: ::Option<unsafe extern fn()>,
+                          parent: ::Option<unsafe extern fn()>,
+                          child: ::Option<unsafe extern fn()>) -> ::c_int;
     pub fn pthread_create(native: *mut ::pthread_t,
                           attr: *const ::pthread_attr_t,
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,

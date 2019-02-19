@@ -1,5 +1,3 @@
-use dox::mem;
-
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type clock_t = i32;
@@ -543,20 +541,20 @@ pub const EAI_SOCKTYPE: ::c_int = -307;
 
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
         return
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
         return
@@ -636,9 +634,9 @@ extern {
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
-    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
-                          parent: Option<unsafe extern fn()>,
-                          child: Option<unsafe extern fn()>) -> ::c_int;
+    pub fn pthread_atfork(prepare: ::Option<unsafe extern fn()>,
+                          parent: ::Option<unsafe extern fn()>,
+                          child: ::Option<unsafe extern fn()>) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
