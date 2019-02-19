@@ -1425,7 +1425,6 @@ extern {
     pub fn inotify_add_watch(fd: ::c_int,
                              path: *const ::c_char,
                              mask: ::uint32_t) -> ::c_int;
-    pub fn inotify_rm_watch(fd: ::c_int, wd: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

@@ -1954,6 +1954,7 @@ extern {
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
+    pub fn inotify_rm_watch(fd: ::c_int, wd: ::uint32_t) -> ::c_int;
 }
 
 cfg_if! {

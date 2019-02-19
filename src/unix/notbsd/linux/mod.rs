@@ -2291,6 +2291,7 @@ extern {
         nobj: ::size_t,
         stream: *mut ::FILE
     ) -> ::size_t;
+    pub fn inotify_rm_watch(fd: ::c_int, wd: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
