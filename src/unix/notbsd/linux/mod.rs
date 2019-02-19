@@ -711,7 +711,7 @@ cfg_if! {
                     .field("salg_type", &self.salg_type)
                     .field("salg_feat", &self.salg_feat)
                     .field("salg_mask", &self.salg_mask)
-//                    .field("salg_name", &self.salg_name)
+                    .field("salg_name", &&self.salg_name[..])
                     .finish()
             }
         }
@@ -748,7 +748,7 @@ cfg_if! {
         impl ::fmt::Debug for af_alg_iv {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("af_alg_iv")
-                    // .field("iv", self.as_slice())
+                    .field("iv", &self.as_slice())
                     .finish()
             }
         }
