@@ -508,10 +508,13 @@ cfg_if! {
         }
 
         impl af_alg_iv {
-            unsafe fn as_slice(&self) -> &[u8] {
-                use core::slice;
-
-                slice::from_raw_parts(self.iv.as_ptr(), self.ivlen as usize)
+            fn as_slice(&self) -> &[u8] {
+                unsafe {
+                    ::core::slice::from_raw_parts(
+                        self.iv.as_ptr(),
+                        self.ivlen as usize
+                    )
+                }
             }
         }
 
