@@ -509,7 +509,9 @@ cfg_if! {
 
         impl af_alg_iv {
             unsafe fn as_slice(&self) -> &[u8] {
-                ::std::slice::from_raw_parts(self.iv.as_ptr(), self.ivlen as usize)
+                use core::slice;
+
+                slice::from_raw_parts(self.iv.as_ptr(), self.ivlen as usize)
             }
         }
 
@@ -524,7 +526,7 @@ cfg_if! {
         impl ::fmt::Debug for af_alg_iv {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("af_alg_iv")
-                    .field("iv", self.as_slice())
+                    // .field("iv", self.as_slice())
                     .finish()
             }
         }
