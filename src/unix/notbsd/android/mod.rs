@@ -489,7 +489,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sockaddr_alg")
                     .field("salg_family", &self.salg_family)
-//                    .field("salg_type", &self.salg_type)
+                    .field("salg_type", &self.salg_type)
                     .field("salg_feat", &self.salg_feat)
                     .field("salg_mask", &self.salg_mask)
 //                    .field("salg_name", &self.salg_name)
