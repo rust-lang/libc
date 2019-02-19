@@ -30,7 +30,7 @@ test_target() {
             ;;
     esac
 
-    rustup target add "${TARGET}" --toolchain "${RUST}" || true
+    rustup target add "${TARGET}" --toolchain "${RUST}"
 
     # Test that libc builds without any default features (no libstd)
     "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
@@ -198,9 +198,6 @@ x86_64-unknown-openbsd
 "
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
-    rustup component add rust-src || true
-    cargo install xargo || true
-
     for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
         RUST_LIBC_NO_CORE_BUILD=1 test_target xargo "$TARGET" 1
     done
