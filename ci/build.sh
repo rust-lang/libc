@@ -13,6 +13,7 @@ echo "Testing Rust ${RUST} on ${OS}"
 test_target() {
     CARGO="${1}"
     TARGET="${2}"
+    NO_STD="${3}"
 
     opt=
     if [ "${TARGET}" = "x86_64-unknown-linux-gnux32" ]; then
@@ -23,14 +24,10 @@ test_target() {
         opt="--release"
     fi
 
-    NO_STD="${3}"
-    case ${TARGET} in
-        thumbv*)
-            NO_STD=1
-            ;;
-    esac
-
-    rustup target add "${TARGET}" --toolchain "${RUST}"
+    # If there is a std component, fetch it:
+    if [ "${NO_STD}" != "1" ]; then
+        rustup target add "${TARGET}" --toolchain "${RUST}"
+    fi
 
     # Test that libc builds without any default features (no libstd)
     "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
@@ -106,12 +103,6 @@ RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
-thumbv6m-none-eabi \
-thumbv7em-none-eabi \
-thumbv7em-none-eabihf \
-thumbv7m-none-eabi \
-thumbv7neon-linux-androideabi \
-thumbv7neon-unknown-linux-gnueabihf \
 x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
 x86_64-unknown-linux-gnux32 \
@@ -189,6 +180,12 @@ powerpc-unknown-linux-gnuspe \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 sparc64-unknown-netbsd \
+thumbv6m-none-eabi \
+thumbv7em-none-eabi \
+thumbv7em-none-eabihf \
+thumbv7m-none-eabi \
+thumbv7neon-linux-androideabi \
+thumbv7neon-unknown-linux-gnueabihf \
 thumbv8m.main-none-eabi \
 x86_64-pc-windows-gnu \
 x86_64-pc-windows-msvc
@@ -199,6 +196,6 @@ x86_64-unknown-openbsd
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
-        RUST_LIBC_NO_CORE_BUILD=1 test_target xargo "$TARGET" 1
+        test_target xargo "$TARGET" 1
     done
 fi
