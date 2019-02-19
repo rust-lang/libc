@@ -106,8 +106,6 @@ RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
-armv7r-none-eabi \
-armv7r-none-eabihf \
 thumbv6m-none-eabi \
 thumbv7em-none-eabi \
 thumbv7em-none-eabihf \
@@ -178,6 +176,8 @@ aarch64-unknown-cloudabi \
 armebv7r-none-eabi \
 armebv7r-none-eabihf \
 armv7-unknown-cloudabi-eabihf \
+armv7r-none-eabi \
+armv7r-none-eabihf \
 i586-pc-windows-msvc \
 i686-pc-windows-gnu \
 i686-pc-windows-msvc \
