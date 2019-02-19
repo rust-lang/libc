@@ -630,6 +630,8 @@ fn do_ctest() {
             | "RENAME_NOREPLACE"
             | "RENAME_EXCHANGE"
             | "RENAME_WHITEOUT"
+            | "ALG_SET_AEAD_ASSOCLEN"
+            | "ALG_SET_AEAD_AUTHSIZE"
                 if musl =>
             {
                 true
