@@ -630,6 +630,7 @@ fn do_ctest() {
             | "RENAME_NOREPLACE"
             | "RENAME_EXCHANGE"
             | "RENAME_WHITEOUT"
+            // ALG_SET_AEAD_* constants are available starting from kernel 3.19
             | "ALG_SET_AEAD_ASSOCLEN"
             | "ALG_SET_AEAD_AUTHSIZE"
                 if musl =>
