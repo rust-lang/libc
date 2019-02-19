@@ -106,8 +106,6 @@ RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
-armebv7r-none-eabi \
-armebv7r-none-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
 thumbv6m-none-eabi \
@@ -177,6 +175,8 @@ RUST_LINUX_NO_CORE_TARGETS="\
 x86_64-unknown-dragonfly \
 aarch64-pc-windows-msvc \
 aarch64-unknown-cloudabi \
+armebv7r-none-eabi \
+armebv7r-none-eabihf \
 armv7-unknown-cloudabi-eabihf \
 i586-pc-windows-msvc \
 i686-pc-windows-gnu \
@@ -197,7 +197,7 @@ x86_64-unknown-haiku \
 x86_64-unknown-openbsd
 "
 
-if [ "${RUST}" = "nightly" ]; then
+if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     rustup component add rust-src || true
     cargo install xargo || true
 
