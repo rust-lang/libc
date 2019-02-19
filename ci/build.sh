@@ -103,8 +103,10 @@ RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
+i686-pc-windows-gnu \
 x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
+x86_64-pc-windows-gnu \
 x86_64-unknown-linux-gnux32 \
 x86_64-unknown-redox \
 "
@@ -170,7 +172,6 @@ armv7-unknown-cloudabi-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
 i586-pc-windows-msvc \
-i686-pc-windows-gnu \
 i686-pc-windows-msvc \
 i686-unknown-cloudabi \
 i686-unknown-haiku \
@@ -187,7 +188,6 @@ thumbv7m-none-eabi \
 thumbv7neon-linux-androideabi \
 thumbv7neon-unknown-linux-gnueabihf \
 thumbv8m.main-none-eabi \
-x86_64-pc-windows-gnu \
 x86_64-pc-windows-msvc
 x86_64-unknown-bitrig \
 x86_64-unknown-haiku \
