@@ -75,6 +75,7 @@ pub struct TestGenerator {
     out_dir: Option<PathBuf>,
     defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
+    verbose_skip: bool,
     skip_fn: Box<Fn(&str) -> bool>,
     skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
     skip_static: Box<Fn(&str) -> bool>,
@@ -127,6 +128,7 @@ impl TestGenerator {
             out_dir: None,
             defines: Vec::new(),
             cfg: Vec::new(),
+            verbose_skip: false,
             skip_fn: Box::new(|_| false),
             skip_fn_ptrcheck: Box::new(|_| false),
             skip_static: Box::new(|_| false),
@@ -336,6 +338,12 @@ impl TestGenerator {
     /// ```
     pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut Self {
         self.cfg.push((k.to_string(), v.map(|s| s.to_string())));
+        self
+    }
+
+    /// Skipped item names are printed to `stderr` if `v` is `true`.
+    pub fn verbose_skip(&mut self, v: bool) -> &mut Self {
+        self.verbose_skip = v;
         self
     }
 
@@ -1080,6 +1088,9 @@ impl<'a> Generator<'a> {
 
     fn test_type(&mut self, name: &str, ty: &ast::Ty) {
         if (self.opts.skip_type)(name) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping type \"{}\"", name);
+            }
             return;
         }
         let c = self.rust_ty_to_c_ty(name);
@@ -1089,6 +1100,9 @@ impl<'a> Generator<'a> {
 
     fn test_struct(&mut self, ty: &str, s: &ast::VariantData) {
         if (self.opts.skip_struct)(ty) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping struct \"{}\"", ty);
+            }
             return;
         }
 
@@ -1117,6 +1131,10 @@ impl<'a> Generator<'a> {
             let name = name.to_string();
 
             if (self.opts.skip_field)(ty, &name) {
+                if self.opts.verbose_skip {
+                    eprintln!("skipping field \"{}\" of struct \"{}\"", name, ty);
+                }
+
                 continue;
             }
 
@@ -1164,6 +1182,10 @@ impl<'a> Generator<'a> {
             ));
 
             if (self.opts.skip_field_type)(ty, &name.to_string()) {
+                if self.opts.verbose_skip {
+                    eprintln!("skipping field type \"{}\" of struct \"{}\"", name, ty);
+                }
+
                 continue;
             }
 
@@ -1269,6 +1291,10 @@ impl<'a> Generator<'a> {
 
     fn test_sign(&mut self, rust: &str, c: &str, ty: &ast::Ty) {
         if (self.opts.skip_signededness)(rust) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping sign \"{}\"", rust);
+            }
+
             return;
         }
         if !self.has_sign(ty) {
@@ -1326,6 +1352,10 @@ impl<'a> Generator<'a> {
     #[clippy::allow(clippy::similar_names)]
     fn test_const(&mut self, name: &str, rust_ty: &str) {
         if (self.opts.skip_const)(name) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping const \"{}\"", name);
+            }
+
             return;
         }
 
@@ -1407,6 +1437,9 @@ impl<'a> Generator<'a> {
         abi: Abi,
     ) {
         if (self.opts.skip_fn)(name) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping fn \"{}\"", name);
+            }
             return;
         }
         let c_name = (self.opts.fn_cname)(name, c_name.as_ref().map(|s| &**s));
@@ -1456,6 +1489,10 @@ impl<'a> Generator<'a> {
             name = name,
             skip = (self.opts.skip_fn_ptrcheck)(name)
         ));
+        if self.opts.verbose_skip && (self.opts.skip_fn_ptrcheck)(name) {
+            eprintln!("skipping fn ptr check \"{}\"", name);
+        }
+
         self.tests.push(format!("fn_{}", name));
     }
 
@@ -1468,6 +1505,9 @@ impl<'a> Generator<'a> {
         mutbl: bool,
     ) {
         if (self.opts.skip_static)(name) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping static \"{}\"", name);
+            }
             return;
         }
 
