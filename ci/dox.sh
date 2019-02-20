@@ -25,15 +25,25 @@ rm $PLATFORM_SUPPORT || true
 printf '### Platform-specific documentation\n' >> $PLATFORM_SUPPORT
 
 while read -r target; do
-  echo "documenting ${target}"
+    echo "documenting ${target}"
 
-  rustup target add "${target}" || true
-  xargo doc --target "${target}" \
-        --no-default-features  --features extra_traits
+    case "${target}" in
+        *apple*)
+            # FIXME:
+            # We can't build docs of apple targets from Linux yet.
+            continue
+            ;;
+        *)
+            ;;
+    esac
 
-  cp -r "target/${target}/doc" "${TARGET_DOC_DIR}/${target}"
+    rustup target add "${target}" || true
+    xargo doc --target "${target}" \
+          --no-default-features  --features extra_traits
 
-  echo "* [${target}](${target}/libc/index.html)" >> $PLATFORM_SUPPORT
+    cp -r "target/${target}/doc" "${TARGET_DOC_DIR}/${target}"
+
+    echo "* [${target}](${target}/libc/index.html)" >> $PLATFORM_SUPPORT
 done < targets
 
 # Replace <div class="platform_support"></div> with the contents of $PLATFORM_SUPPORT
