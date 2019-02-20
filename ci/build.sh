@@ -32,7 +32,9 @@ test_target() {
         n=0
         until [ $n -ge $N ]
         do
-            rustup target add "${TARGET}" --toolchain "${RUST}" && break
+            if rustup target add "${TARGET}" --toolchain "${RUST}" ; then
+                break
+            fi
             n=$((n+1))
             sleep 1
         done

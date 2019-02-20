@@ -38,8 +38,13 @@ while read -r target; do
     esac
 
     rustup target add "${target}" || true
-    xargo doc --target "${target}" \
-          --no-default-features  --features extra_traits
+
+    # If cargo doc fails, then try xargo:
+    if ! cargo doc --target "${target}" \
+             --no-default-features  --features extra_traits ; then
+        xargo doc --target "${target}" \
+              --no-default-features  --features extra_traits
+    fi
 
     cp -r "target/${target}/doc" "${TARGET_DOC_DIR}/${target}"
 
