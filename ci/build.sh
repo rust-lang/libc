@@ -26,7 +26,16 @@ test_target() {
 
     # If there is a std component, fetch it:
     if [ "${NO_STD}" != "1" ]; then
-        rustup target add "${TARGET}" --toolchain "${RUST}"
+        # FIXME: rustup often fails to download some artifacts due to network
+        # issues, so we retry this N times.
+        N=5
+        n=0
+        until [ $n -ge $N ]
+        do
+            rustup target add "${TARGET}" --toolchain "${RUST}" && break
+            n=$((n+1))
+            sleep 1
+        done
     fi
 
     # Test that libc builds without any default features (no libstd)
@@ -110,13 +119,6 @@ x86_64-pc-windows-gnu \
 x86_64-unknown-linux-gnux32 \
 x86_64-unknown-redox \
 "
-# FIXME: these do not have a rust-std component available
-# aarch64-unknown-cloudabi armv7-unknown-cloudabi-eabihf
-# i686-unknown-cloudabi powerpc-unknown-linux-gnuspe
-# sparc-unknown-linux-gnu mips-unknown-linux-uclib
-# i686-unknown-haiku mipsel-unknown-unknown-linux-uclib
-# sparc64-unknown-netbsd x86_64-unknown-bitrig x86_64-unknown-haiku
-# x86_64-unknown-openbsd i686-unknown-netbsd
 
 RUST_OSX_TARGETS="\
 aarch64-apple-ios \

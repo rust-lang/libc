@@ -49,8 +49,8 @@ matrix:
       stage: tools-and-build-and-tier1
       rust: nightly
       install:
-        - rustup component add rust-src
-        - cargo install xargo
+        - travis_retry rustup component add rust-src
+        - travis_retry cargo install xargo
     - name: "Build Stable Rust"
       script: sh ci/build.sh
       stage: tools-and-build-and-tier1
