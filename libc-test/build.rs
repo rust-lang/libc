@@ -102,6 +102,9 @@ fn do_ctest() {
             cfg.header("net/route.h");
             cfg.header("net/if_arp.h");
         }
+        if linux || android {
+            cfg.header("linux/if_alg.h");
+        }
         cfg.header("netdb.h");
         cfg.header("netinet/in.h");
         cfg.header("netinet/ip.h");
@@ -627,6 +630,9 @@ fn do_ctest() {
             | "RENAME_NOREPLACE"
             | "RENAME_EXCHANGE"
             | "RENAME_WHITEOUT"
+            // ALG_SET_AEAD_* constants are available starting from kernel 3.19
+            | "ALG_SET_AEAD_ASSOCLEN"
+            | "ALG_SET_AEAD_AUTHSIZE"
                 if musl =>
             {
                 true

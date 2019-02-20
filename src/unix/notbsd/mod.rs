@@ -667,6 +667,7 @@ pub const SOL_DCCP: ::c_int = 269;
 pub const SOL_NETLINK: ::c_int = 270;
 pub const SOL_TIPC: ::c_int = 271;
 pub const SOL_BLUETOOTH: ::c_int = 274;
+pub const SOL_ALG: ::c_int = 279;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_UNIX: ::c_int = 1;
