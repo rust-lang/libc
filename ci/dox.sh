@@ -27,8 +27,11 @@ printf '### Platform-specific documentation\n' >> $PLATFORM_SUPPORT
 while read -r target; do
   echo "documenting ${target}"
 
-  #rustdoc -o "$TARGET_DOC_DIR/${target}" --target "${target}" src/lib.rs --cfg cross_platform_docs \
-  #  --crate-name libc
+  rustup target add "${target}" || true
+  xargo doc --target "${target}" \
+        --no-default-features  --features extra_traits
+
+  cp -r "target/${target}/doc" "${TARGET_DOC_DIR}/${target}"
 
   echo "* [${target}](${target}/libc/index.html)" >> $PLATFORM_SUPPORT
 done < targets

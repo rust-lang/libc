@@ -14,7 +14,9 @@ matrix:
     - name: "Documentation"
       env: TARGET=x86_64-unknown-linux-gnu
       script: sh ci/dox.sh
-      install: true
+      install:
+        - travis_retry rustup component add rust-src
+        - travis_retry cargo install xargo
       stage: tools-and-build-and-tier1
     - name: "Shellcheck"
       install: true
