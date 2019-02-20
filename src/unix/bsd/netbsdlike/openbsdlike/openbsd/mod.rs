@@ -157,16 +157,16 @@ cfg_if! {
 
         impl Eq for mount_info { }
 
-        impl std::fmt::Debug for mount_info {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl ::fmt::Debug for mount_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("mount_info")
                 // FIXME: .field("align", &self.align)
                     .finish()
             }
         }
 
-        impl std::hash::Hash for mount_info {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for mount_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.align.hash(state) };
             }
         }
@@ -246,9 +246,9 @@ cfg_if! {
 
                 impl Eq for statfs { }
 
-                impl std::fmt::Debug for statfs {
-                    fn fmt(&self, f: &mut std::fmt::Formatter)
-                           -> std::fmt::Result {
+                impl ::fmt::Debug for statfs {
+                    fn fmt(&self, f: &mut ::fmt::Formatter)
+                           -> ::fmt::Result {
                         f.debug_struct("statfs")
                             .field("f_flags", &self.f_flags)
                             .field("f_bsize", &self.f_bsize)
@@ -276,8 +276,8 @@ cfg_if! {
                     }
                 }
 
-                impl std::hash::Hash for statfs {
-                    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                impl ::hash::Hash for statfs {
+                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                         self.f_flags.hash(state);
                         self.f_bsize.hash(state);
                         self.f_iosize.hash(state);
@@ -305,6 +305,7 @@ cfg_if! {
             }
         }
     }
+}
 
 //https://github.com/openbsd/src/blob/master/sys/sys/mount.h
 pub const ISOFSMNT_NORRIP: ::c_int = 0x1; // disable Rock Ridge Ext
@@ -390,6 +391,56 @@ pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 pub const SIGSTKSZ : ::size_t = 28672;
 
 pub const PT_FIRSTMACH: ::c_int = 32;
+
+fn _ALIGN(p: usize) -> usize {
+    (p + _ALIGNBYTES) & !_ALIGNBYTES
+}
+
+f! {
+    pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
+        (cmsg as *mut ::c_uchar)
+            .offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
+    }
+
+    pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
+        _ALIGN(::mem::size_of::<::cmsghdr>()) as ::c_uint + length
+    }
+
+    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
+        -> *mut ::cmsghdr
+    {
+        if cmsg.is_null() {
+            return ::CMSG_FIRSTHDR(mhdr);
+        };
+        let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)
+            + _ALIGN(::mem::size_of::<::cmsghdr>());
+        let max = (*mhdr).msg_control as usize
+            + (*mhdr).msg_controllen as usize;
+        if next > max {
+            0 as *mut ::cmsghdr
+        } else {
+            (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize))
+                as *mut ::cmsghdr
+        }
+    }
+
+    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+        (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
+            as ::c_uint
+    }
+
+    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        status >> 8
+    }
+
+    pub fn WIFSIGNALED(status: ::c_int) -> bool {
+        (status & 0o177) != 0o177 && (status & 0o177) != 0
+    }
+
+    pub fn WIFSTOPPED(status: ::c_int) -> bool {
+        (status & 0o177) == 0o177
+    }
+}
 
 extern {
     pub fn accept4(s: ::c_int, addr: *mut ::sockaddr,

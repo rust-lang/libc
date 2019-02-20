@@ -124,15 +124,8 @@ macro_rules! f {
         $($body:stmt);*
     })*) => ($(
         #[inline]
-        #[cfg(not(cross_platform_docs))]
         pub unsafe extern fn $i($($arg: $argty),*) -> $ret {
             $($body);*
-        }
-
-        #[cfg(cross_platform_docs)]
-        #[allow(dead_code)]
-        pub unsafe extern fn $i($($arg: $argty),*) -> $ret {
-            loop {}
         }
     )*)
 }

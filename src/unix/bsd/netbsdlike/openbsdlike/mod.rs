@@ -242,8 +242,8 @@ cfg_if! {
 
         impl Eq for dirent {}
 
-        impl std::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_fileno", &self.d_fileno)
                     .field("d_off", &self.d_off)
@@ -255,8 +255,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for dirent {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for dirent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.d_fileno.hash(state);
                 self.d_off.hash(state);
                 self.d_reclen.hash(state);
@@ -275,8 +275,8 @@ cfg_if! {
 
         impl Eq for sockaddr_storage {}
 
-        impl std::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_len", &self.ss_len)
                     .field("ss_family", &self.ss_family)
@@ -284,8 +284,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for sockaddr_storage {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ss_len.hash(state);
                 self.ss_family.hash(state);
             }
@@ -302,8 +302,8 @@ cfg_if! {
 
         impl Eq for siginfo_t {}
 
-        impl std::fmt::Debug for siginfo_t {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl ::fmt::Debug for siginfo_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("siginfo_t")
                     .field("si_signo", &self.si_signo)
                     .field("si_code", &self.si_code)
@@ -313,8 +313,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for siginfo_t {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for siginfo_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.si_signo.hash(state);
                 self.si_code.hash(state);
                 self.si_errno.hash(state);
@@ -340,8 +340,8 @@ cfg_if! {
 
         impl Eq for lastlog {}
 
-        impl std::fmt::Debug for lastlog {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl ::fmt::Debug for lastlog {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("lastlog")
                     .field("ll_time", &self.ll_time)
                 // FIXME: .field("ll_line", &self.ll_line)
@@ -350,8 +350,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for lastlog {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for lastlog {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ll_time.hash(state);
                 self.ll_line.hash(state);
                 self.ll_host.hash(state);
@@ -381,8 +381,8 @@ cfg_if! {
 
         impl Eq for utmp {}
 
-        impl std::fmt::Debug for utmp {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl ::fmt::Debug for utmp {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utmp")
                 // FIXME: .field("ut_line", &self.ut_line)
                 // FIXME: .field("ut_name", &self.ut_name)
@@ -392,8 +392,8 @@ cfg_if! {
             }
         }
 
-        impl std::hash::Hash for utmp {
-            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        impl ::hash::Hash for utmp {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ut_line.hash(state);
                 self.ut_name.hash(state);
                 self.ut_host.hash(state);

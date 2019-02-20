@@ -69,20 +69,6 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    pub struct sockaddr_un {
-        pub sun_len: u8,
-        pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 126]
-    }
-
-    pub struct sockaddr_storage {
-        pub ss_len: u8,
-        pub ss_family: sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_pad2: u64,
-        __ss_pad3: [u8; 112],
-    }
-
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -211,15 +197,6 @@ s! {
         pub st_blocks: blkcnt_t,
     }
 
-    pub struct dirent {
-        pub d_dev: dev_t,
-        pub d_pdev: dev_t,
-        pub d_ino: ino_t,
-        pub d_pino: i64,
-        pub d_reclen: ::c_ushort,
-        pub d_name: [::c_char; 1024], // Max length is _POSIX_PATH_MAX
-    }
-
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         __unused1: ::size_t,
@@ -328,6 +305,32 @@ s! {
     pub struct pthread_condattr_t {
         pub process_shared: bool,
         pub clock_id: i32,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_un {
+        pub sun_len: u8,
+        pub sun_family: sa_family_t,
+        pub sun_path: [::c_char; 126]
+    }
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_storage {
+        pub ss_len: u8,
+        pub ss_family: sa_family_t,
+        __ss_pad1: [u8; 6],
+        __ss_pad2: u64,
+        __ss_pad3: [u8; 112],
+    }
+    #[allow(missing_debug_implementations)]
+    pub struct dirent {
+        pub d_dev: dev_t,
+        pub d_pdev: dev_t,
+        pub d_ino: ino_t,
+        pub d_pino: i64,
+        pub d_reclen: ::c_ushort,
+        pub d_name: [::c_char; 1024], // Max length is _POSIX_PATH_MAX
     }
 }
 

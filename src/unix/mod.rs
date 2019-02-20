@@ -301,9 +301,7 @@ pub const ATF_PUBL: ::c_int = 0x08;
 pub const ATF_USETRAILERS: ::c_int = 0x10;
 
 cfg_if! {
-    if #[cfg(cross_platform_docs)] {
-        // on dox builds don't pull in anything
-    } else if #[cfg(target_os = "l4re")] {
+    if #[cfg(target_os = "l4re")] {
         // required libraries for L4Re are linked externally, ATM
     } else if #[cfg(feature = "use_std")] {
         // cargo build, don't pull in anything extra as the libstd dep
