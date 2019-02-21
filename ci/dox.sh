@@ -62,6 +62,6 @@ set -x
 # If we're on travis, not a PR, and on the right branch, publish!
 if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
   pip install ghp_import --install-option="--prefix=$HOME/.local"
-  "${HOME}/.local/bin/ghp-import" -n $TARGET_DOC_DIR
+  "${HOME}/.local/bin/ghp-import" $TARGET_DOC_DIR
   git push -qf "https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git" gh-pages
 fi

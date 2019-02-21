@@ -33,7 +33,7 @@ libc = "0.2"
   crates.
 
 * `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
-  This feature derives `Debug, `Eq`, `Hash`, and `PartialEq`.
+  This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
 
 ## Rust version support
 
