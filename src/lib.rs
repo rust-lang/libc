@@ -54,13 +54,13 @@ cfg_if! {
         use core::mem;
         #[doc(hidden)]
         #[allow(unused_imports)]
-        pub use core::clone::Clone;
+        use core::clone::Clone;
         #[doc(hidden)]
         #[allow(unused_imports)]
-        pub use core::marker::Copy;
+        use core::marker::Copy;
         #[doc(hidden)]
         #[allow(unused_imports)]
-        pub use core::option::Option;
+        use core::option::Option;
     } else {
         #[doc(hidden)]
         #[allow(unused_imports)]
