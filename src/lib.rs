@@ -20,17 +20,11 @@
 // Enable extra lints:
 #![cfg_attr(feature = "extra_traits", deny(missing_debug_implementations))]
 #![deny(missing_copy_implementations, safe_packed_borrows)]
-// Enable no_std:
-#![cfg_attr(
-    not(any(
-        feature = "use_std",
-        feature = "rustc-dep-of-std",
-    )),
-    no_std
-)]
+#![no_std]
+#![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 
 #[cfg(feature = "use_std")]
-extern crate std as core;
+extern crate std;
 
 #[macro_use]
 mod macros;
