@@ -51,11 +51,13 @@ newer Rust features are only available on newer Rust toolchains:
 
 ## Platform support
 
-[Platform-specific documentation of libc's master branch for all supported platforms][docs.master].
+[Platform-specific documentation (master branch)][docs.master].
 
-See [`ci/build.sh`](ci/build.sh) for the platforms on which `libc` is
-guaranteed to build for each Rust toolchain. The test-matrix at [Travis-CI],
-[Appveyor], and [Cirrus-CI] show the platforms in which `libc` tests are run.
+See
+[`ci/build.sh`](https://github.com/rust-lang/libc/blob/master/libc-test/build.rs)
+for the platforms on which `libc` is guaranteed to build for each Rust
+toolchain. The test-matrix at [Travis-CI], [Appveyor], and [Cirrus-CI] show the
+platforms in which `libc` tests are run.
 
 <div class="platform_docs"></div>
 
@@ -98,4 +100,4 @@ dual licensed as above, without any additional terms or conditions.
 [Documentation]: https://docs.rs/libc/badge.svg
 [docs.rs]: https://docs.rs/libc
 [License]: https://img.shields.io/crates/l/libc.svg
-[docs.master]: https://rust-lang.github.io/libc
+[docs.master]: https://rust-lang.github.io/libc/#platform-specific-documentation

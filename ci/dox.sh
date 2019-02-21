@@ -59,6 +59,9 @@ set +x
 { head -n "$((line-1))" $README; cat $PLATFORM_SUPPORT; tail -n "+$((line+1))" $README; } > $TARGET_DOC_DIR/$README
 set -x
 
+# Copy the licenses
+cp LICENSE-* $TARGET_DOC_DIR/
+
 # If we're on travis, not a PR, and on the right branch, publish!
 if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
   pip install ghp_import --install-option="--prefix=$HOME/.local"
