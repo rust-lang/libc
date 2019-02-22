@@ -23,9 +23,6 @@
 #![no_std]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 
-#[cfg(feature = "use_std")]
-extern crate std;
-
 #[macro_use]
 mod macros;
 
