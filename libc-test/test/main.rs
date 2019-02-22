@@ -1,4 +1,4 @@
-#![allow(bad_style, improper_ctypes)]
+#![allow(bad_style, improper_ctypes, deprecated)]
 extern crate libc;
 
 use libc::*;
