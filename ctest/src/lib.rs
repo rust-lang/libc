@@ -54,11 +54,27 @@ macro_rules! t {
 }
 
 /// Programming language
+#[derive(Debug)]
 pub enum Lang {
     /// The C programming language.
     C,
     /// The C++ programming language.
     CXX,
+}
+
+/// A kind of item to which the C volatile qualifier could apply.
+#[derive(Debug)]
+pub enum VolatileItemKind {
+    /// A struct field (struct_name, field_name)
+    StructField(String, String),
+    /// An extern static
+    Static(String),
+    /// N-th function argument
+    FunctionArg(String, usize),
+    /// Function return type
+    FunctionRet(String),
+    #[doc(hidden)]
+    __Other,
 }
 
 /// A builder used to generate a test suite.
@@ -76,6 +92,7 @@ pub struct TestGenerator {
     defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
     verbose_skip: bool,
+    is_volatile: Box<Fn(VolatileItemKind) -> bool>,
     skip_fn: Box<Fn(&str) -> bool>,
     skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
     skip_static: Box<Fn(&str) -> bool>,
@@ -129,6 +146,7 @@ impl TestGenerator {
             defines: Vec::new(),
             cfg: Vec::new(),
             verbose_skip: false,
+            is_volatile: Box::new(|_| false),
             skip_fn: Box::new(|_| false),
             skip_fn_ptrcheck: Box::new(|_| false),
             skip_static: Box::new(|_| false),
@@ -403,6 +421,34 @@ impl TestGenerator {
         self.field_name = Box::new(f);
         self
     }
+
+    /// Is volatile?
+    ///
+    /// The closure given takes a `VolatileKind` denoting a particular item that
+    /// could be volatile, and returns whether this is the case.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::{TestGenerator, VolatileItemKind::StructField};
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.is_volatile(|i| {
+    ///     match i {
+    ///         StructField(ref s, ref f)
+    ///             if s == "foo_struct" && f == "foo_field"
+    ///              => true,
+    ///         _ => false,
+    /// }});
+    /// ```
+    pub fn is_volatile<F>(&mut self, f: F) -> &mut Self
+        where
+        F: Fn(VolatileItemKind) -> bool + 'static,
+    {
+        self.is_volatile = Box::new(f);
+        self
+    }
+
 
     /// Configures how Rust `const`s names are translated to C.
     ///
@@ -1192,7 +1238,10 @@ impl<'a> Generator<'a> {
             }
 
             let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
-            let sig = self.csig_returning_ptr(&field.ty, &sig);
+            let mut sig = self.csig_returning_ptr(&field.ty, &sig);
+            if (self.opts.is_volatile)(VolatileItemKind::StructField(ty.to_string(), name.to_string())) {
+                sig = format!("volatile {}", sig);
+            }
             t!(writeln!(
                 self.c,
                 r#"
@@ -1448,13 +1497,22 @@ impl<'a> Generator<'a> {
         let args = if args.is_empty() && !variadic {
             "void".to_string()
         } else {
-            args.iter()
-                .map(|a| self.rust_ty_to_c_ty(a))
+            args.iter().enumerate()
+                .map(|(idx, a)| {
+                    let mut arg = self.rust_ty_to_c_ty(a);
+                    if (self.opts.is_volatile)(VolatileItemKind::FunctionArg(name.to_string(), idx)) {
+                        arg = format!("volatile {}", arg);
+                    }
+                    arg
+                })
                 .collect::<Vec<_>>()
                 .join(", ")
                 + if variadic { ", ..." } else { "" }
         };
-        let c_ret = self.rust_ty_to_c_ty(ret);
+        let mut c_ret = self.rust_ty_to_c_ty(ret);
+        if (self.opts.is_volatile)(VolatileItemKind::FunctionRet(name.to_string())) {
+            c_ret = format!("volatile {}", c_ret);
+        }
         let abi = self.abi2str(abi);
         t!(writeln!(
             self.c,
@@ -1516,15 +1574,15 @@ impl<'a> Generator<'a> {
         let c_name = c_name.unwrap_or_else(|| name.to_string());
 
         if rust_ty.contains("extern fn") {
-            let c_ty = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
-            t!(writeln!(
+            let sig = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
+           t!(writeln!(
                 self.c,
                 r#"
-            {ty} {{
+            {sig} {{
                 return {c_name};
             }}
         "#,
-                ty = c_ty,
+               sig = sig,
                 c_name = c_name
             ));
             t!(writeln!(
@@ -1593,6 +1651,12 @@ impl<'a> Generator<'a> {
                 ty = rust_ty
             ));
         } else {
+            let c_ty = if (self.opts.is_volatile)(VolatileItemKind::Static(name.to_owned())) {
+                format!("volatile {}", c_ty)
+            } else {
+                c_ty.to_owned()
+            };
+
             t!(writeln!(
                 self.c,
                 r#"
