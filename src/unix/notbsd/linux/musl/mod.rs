@@ -116,7 +116,11 @@ cfg_if! {
                     && self.totalhigh == other.totalhigh
                     && self.freehigh == other.freehigh
                     && self.mem_unit == other.mem_unit
-                // Ignore __reserved field
+                    && self
+                        .__reserved
+                        .iter()
+                        .zip(other.__reserved.iter())
+                        .all(|(a,b)| a == b)
             }
         }
 
@@ -138,7 +142,7 @@ cfg_if! {
                     .field("totalhigh", &self.totalhigh)
                     .field("freehigh", &self.freehigh)
                     .field("mem_unit", &self.mem_unit)
-                // FIXME: .field("__reserved", &self.__reserved)
+                    // FIXME: .field("__reserved", &self.__reserved)
                     .finish()
             }
         }
