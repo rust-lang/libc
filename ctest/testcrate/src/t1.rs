@@ -146,3 +146,16 @@ pub struct Pack {
     pub a: u8,
     pub b: u16,
 }
+
+#[repr(C)]
+pub struct V {
+    pub v: *mut u8,
+}
+
+extern "C" {
+    pub static mut vol_ptr: *mut u8;
+    pub fn T1_vol0(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
+    pub fn T1_vol1(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
+    pub fn T1_vol2(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
+    pub static T1_fn_ptr_vol : Option<unsafe extern "C" fn(u8, u8) -> u8>;
+}

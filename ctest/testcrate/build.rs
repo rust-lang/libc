@@ -25,6 +25,7 @@ fn main() {
             t if is_union => format!("union {}", t),
             t => t.to_string(),
         })
+        .is_volatile(t1_volatile)
         .generate("src/t1.rs", "t1gen.rs");
     ctest::TestGenerator::new()
         .header("t2.h")
@@ -48,6 +49,7 @@ fn main() {
             t if is_union => format!("union {}", t),
             t => t.to_string(),
         })
+        .is_volatile(t1_volatile)
         .generate("src/t1.rs", "t1gen_cxx.rs");
     ctest::TestGenerator::new()
         .header("t2.h")
@@ -60,4 +62,17 @@ fn main() {
             t => t.to_string(),
         })
         .generate("src/t2.rs", "t2gen_cxx.rs");
+}
+
+fn t1_volatile(i: ctest::VolatileItemKind) -> bool {
+    use ctest::VolatileItemKind::*;
+    match i {
+        StructField(ref n, ref f) if n == "V" && f == "v" => true,
+        Static(ref n) if n == "vol_ptr" => true,
+        FunctionArg(ref n, 0) if n == "T1_vol0" => true,
+        FunctionArg(ref n, 1) if n == "T1_vol2" => true,
+        FunctionRet(ref n) if n == "T1_vol1" || n == "T1_vol2" => true,
+        Static(ref n) if n == "T1_fn_ptr_vol" => true,
+        _ => false,
+    }
 }

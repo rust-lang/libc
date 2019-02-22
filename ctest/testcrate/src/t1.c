@@ -58,3 +58,10 @@ const int32_t* T1_const_opt_const_ref = NULL;
 void (*const T1_opt_fn1)(void) = baz;
 uint32_t (*(*T1_opt_fn2)(uint8_t))(uint16_t) = nested;
 uint32_t (*(*T1_opt_fn3)(uint8_t(*arg0)(uint8_t), uint16_t(*arg1)(uint16_t)))(uint16_t) = nested2;
+
+volatile uint8_t* vol_ptr = NULL;
+void* T1_vol0(volatile void* x, void* a) { return a? a: (void*)x; }
+volatile void* T1_vol1(void* x, void*  b) { return b? (volatile void*)x : (volatile void*)x; }
+volatile void* T1_vol2(void*  c, volatile void* x) { return c? x : x; }
+
+uint8_t (* volatile T1_fn_ptr_vol)(uint8_t, uint8_t) = foo;
