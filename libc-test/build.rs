@@ -18,11 +18,8 @@ fn do_ctest() {
     let i686 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
     let x32 = target.ends_with("gnux32");
-    let windows = target.contains("windows");
-    let mingw = target.contains("windows-gnu");
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
-    let apple = target.contains("apple");
     let emscripten = target.contains("asm");
     let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
@@ -35,11 +32,13 @@ fn do_ctest() {
     let solaris = target.contains("solaris");
     let cloudabi = target.contains("cloudabi");
     let redox = target.contains("redox");
-    let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
+    let bsdlike = freebsd || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
-    if apple {
-        return test_apple(&target);
+    match &target {
+        t if t.contains("apple") => return test_apple(t),
+        t if t.contains("windows") => return test_windows(t),
+        _ => (),
     }
 
     // Pull in extra goodies
@@ -47,8 +46,6 @@ fn do_ctest() {
         cfg.define("_GNU_SOURCE", None);
     } else if netbsd {
         cfg.define("_NETBSD_SOURCE", Some("1"));
-    } else if windows {
-        cfg.define("_WIN32_WINNT", Some("0x8000"));
     } else if solaris {
         cfg.define("_XOPEN_SOURCE", Some("700"));
         cfg.define("__EXTENSIONS__", None);
@@ -76,74 +73,58 @@ fn do_ctest() {
         .header("time.h")
         .header("wchar.h");
 
-    if windows {
-        cfg.header("winsock2.h"); // must be before windows.h
+    cfg.flag("-Wno-deprecated-declarations");
 
-        cfg.header("direct.h");
-        cfg.header("io.h");
-        cfg.header("sys/utime.h");
-        cfg.header("windows.h");
-        cfg.header("process.h");
-        cfg.header("ws2ipdef.h");
-        cfg.header("signal.h");
-
-        if target.contains("gnu") {
-            cfg.header("ws2tcpip.h");
-        }
-    } else {
-        cfg.flag("-Wno-deprecated-declarations");
-
-        cfg.header("ctype.h");
-        cfg.header("dirent.h");
-        if openbsd {
-            cfg.header("sys/socket.h");
-        }
-        cfg.header("net/if.h");
-        cfg.header("net/route.h");
-        cfg.header("net/if_arp.h");
-        if linux || android {
-            cfg.header("linux/if_alg.h");
-        }
-        cfg.header("netdb.h");
-        cfg.header("netinet/in.h");
-        cfg.header("netinet/ip.h");
-        cfg.header("netinet/tcp.h");
-        cfg.header("netinet/udp.h");
-        cfg.header("resolv.h");
-        cfg.header("pthread.h");
-        cfg.header("dlfcn.h");
-        cfg.header("signal.h");
-        cfg.header("string.h");
-        cfg.header("sys/file.h");
-        cfg.header("sys/ioctl.h");
-        cfg.header("sys/mman.h");
-        cfg.header("sys/resource.h");
+    cfg.header("ctype.h");
+    cfg.header("dirent.h");
+    if openbsd {
         cfg.header("sys/socket.h");
-        if linux && !musl {
-            cfg.header("linux/if.h");
-            cfg.header("sys/auxv.h");
-        }
-        cfg.header("sys/time.h");
-        cfg.header("sys/un.h");
-        cfg.header("sys/wait.h");
-        cfg.header("unistd.h");
-        cfg.header("utime.h");
-        cfg.header("pwd.h");
-        cfg.header("grp.h");
-        cfg.header("sys/utsname.h");
-        if !solaris {
-            cfg.header("sys/ptrace.h");
-        }
-        cfg.header("sys/mount.h");
-        cfg.header("sys/uio.h");
-        cfg.header("sched.h");
-        cfg.header("termios.h");
-        cfg.header("poll.h");
-        cfg.header("syslog.h");
-        cfg.header("semaphore.h");
-        cfg.header("sys/statvfs.h");
-        cfg.header("sys/times.h");
     }
+    cfg.header("net/if.h");
+    cfg.header("net/route.h");
+    cfg.header("net/if_arp.h");
+    if linux || android {
+        cfg.header("linux/if_alg.h");
+    }
+    cfg.header("netdb.h");
+    cfg.header("netinet/in.h");
+    cfg.header("netinet/ip.h");
+    cfg.header("netinet/tcp.h");
+    cfg.header("netinet/udp.h");
+    cfg.header("resolv.h");
+    cfg.header("pthread.h");
+    cfg.header("dlfcn.h");
+    cfg.header("signal.h");
+    cfg.header("string.h");
+    cfg.header("sys/file.h");
+    cfg.header("sys/ioctl.h");
+    cfg.header("sys/mman.h");
+    cfg.header("sys/resource.h");
+    cfg.header("sys/socket.h");
+    if linux && !musl {
+        cfg.header("linux/if.h");
+        cfg.header("sys/auxv.h");
+    }
+    cfg.header("sys/time.h");
+    cfg.header("sys/un.h");
+    cfg.header("sys/wait.h");
+    cfg.header("unistd.h");
+    cfg.header("utime.h");
+    cfg.header("pwd.h");
+    cfg.header("grp.h");
+    cfg.header("sys/utsname.h");
+    if !solaris {
+        cfg.header("sys/ptrace.h");
+    }
+    cfg.header("sys/mount.h");
+    cfg.header("sys/uio.h");
+    cfg.header("sched.h");
+    cfg.header("termios.h");
+    cfg.header("poll.h");
+    cfg.header("syslog.h");
+    cfg.header("semaphore.h");
+    cfg.header("sys/statvfs.h");
+    cfg.header("sys/times.h");
 
     if android {
         if !aarch64 && !x86_64 {
@@ -158,7 +139,7 @@ fn do_ctest() {
         if i686 || x86_64 {
             cfg.header("sys/reg.h");
         }
-    } else if !windows {
+    } else {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
         cfg.header("langinfo.h");
@@ -354,12 +335,6 @@ fn do_ctest() {
             | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
             | "Elf64_Chdr" => ty.to_string(),
 
-            // Fixup a few types on windows that don't actually exist.
-            "time64_t" if windows => "__time64_t".to_string(),
-            "ssize_t" if windows => "SSIZE_T".to_string(),
-            // windows
-            "sighandler_t" if windows && !mingw => "_crt_signal_t".to_string(),
-            "sighandler_t" if windows && mingw => "__p_sig_fn_t".to_string(),
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
 
@@ -367,20 +342,8 @@ fn do_ctest() {
 
             t if t.ends_with("_t") => t.to_string(),
 
-            // Windows uppercase structs don't have `struct` in front, there's a
-            // few special cases for windows, and then otherwise put `struct` in
-            // front of everything.
-            t if is_struct => {
-                if windows && ty.chars().next().unwrap().is_uppercase() {
-                    t.to_string()
-                } else if windows && t == "stat" {
-                    "struct __stat64".to_string()
-                } else if windows && t == "utimbuf" {
-                    "struct __utimbuf64".to_string()
-                } else {
-                    format!("struct {}", t)
-                }
-            }
+            // put `struct` in front of all structs:.
+            t if is_struct => format!("struct {}", t),
 
             t => t.to_string(),
         }
@@ -467,27 +430,12 @@ fn do_ctest() {
             // mqd_t is a pointer on FreeBSD and DragonFly
             "mqd_t" if freebsd || dragonfly => true,
 
-            // windows-isms
-            n if n.starts_with("P") => true,
-            n if n.starts_with("H") => true,
-            n if n.starts_with("LP") => true,
-            "__p_sig_fn_t" if mingw => true,
             _ => false,
         }
     });
 
     cfg.skip_const(move |name| {
         match name {
-            // Apparently these don't exist in mingw headers?
-            "MEM_RESET_UNDO"
-            | "FILE_ATTRIBUTE_NO_SCRUB_DATA"
-            | "FILE_ATTRIBUTE_INTEGRITY_STREAM"
-            | "ERROR_NOTHING_TO_TERMINATE"
-                if mingw =>
-            {
-                true
-            }
-
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
             "SIGUNUSED" => true,                       // removed in glibc 2.26
 
@@ -801,15 +749,6 @@ fn do_ctest() {
         }
     });
 
-    cfg.skip_fn_ptrcheck(move |name| {
-        match name {
-            // dllimport weirdness?
-            _ if windows => true,
-
-            _ => false,
-        }
-    });
-
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
@@ -847,13 +786,8 @@ fn do_ctest() {
                                            field == "ssi_arch"))
     });
 
-    cfg.fn_cname(move |name, cname| {
-        if windows {
-            cname.unwrap_or(name).to_string()
-        } else {
-            name.to_string()
-        }
-    });
+    // FIXME: remove
+    cfg.fn_cname(move |name, _cname| name.to_string());
 
     cfg.generate("../src/lib.rs", "main.rs");
 
@@ -1088,6 +1022,119 @@ fn test_apple(target: &str) {
                 "sa_handler".to_string()
             }
             s => s.to_string(),
+        }
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_windows(target: &str) {
+    assert!(target.contains("windows"));
+    let gnu = target.contains("gnu");
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.define("_WIN32_WINNT", Some("0x8000"));
+
+    headers! { cfg:
+        "direct.h",
+        "errno.h",
+        "fcntl.h",
+        "io.h",
+        "limits.h",
+        "locale.h",
+        "process.h",
+        "signal.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "sys/stat.h",
+        "sys/types.h",
+        "sys/utime.h",
+        "time.h",
+        "wchar.h",
+    }
+
+    if gnu {
+        headers! { cfg: "ws2tcpip.h" }
+    } else {
+        headers! { cfg: "Winsock2.h" };
+    }
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+
+            // FIXME: these don't exist:
+            "time64_t" => "__time64_t".to_string(),
+            "ssize_t" => "SSIZE_T".to_string(),
+
+            "sighandler_t" if !gnu => "_crt_signal_t".to_string(),
+            "sighandler_t" if gnu => "__p_sig_fn_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+            t if t.ends_with("_t") => t.to_string(),
+
+            // Windows uppercase structs don't have `struct` in front:
+            t if is_struct => {
+                if ty.clone().chars().next().unwrap().is_uppercase() {
+                    t.to_string()
+                } else if t == "stat" {
+                    "struct __stat64".to_string()
+                } else if t == "utimbuf" {
+                    "struct __utimbuf64".to_string()
+                } else {
+                    // put `struct` in front of all structs:
+                    format!("struct {}", t)
+                }
+            }
+            t => t.to_string(),
+        }
+    });
+
+    cfg.fn_cname(move |name, cname| cname.unwrap_or(name).to_string());
+
+    cfg.skip_type(move |name| {
+        match name {
+            "SSIZE_T" if !gnu => true,
+            "ssize_t" if !gnu => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // FIXME: API error:
+            // SIG_ERR type is "void (*)(int)", not "int"
+            "SIG_ERR" => true,
+           _ => false,
+        }
+    });
+
+    // FIXME: All functions point to the wrong addresses?
+    cfg.skip_fn_ptrcheck(|_| true);
+
+    cfg.skip_signededness(move |c| {
+        match c {
+            // windows-isms
+            n if n.starts_with("P") => true,
+            n if n.starts_with("H") => true,
+            n if n.starts_with("LP") => true,
+            "sighandler_t" if gnu => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        match name {
+            // FIXME: API error:
+            "execv" |
+            "execve" |
+            "execvp" |
+            "execvpe" => true,
+
+            _ => false,
         }
     });
 
