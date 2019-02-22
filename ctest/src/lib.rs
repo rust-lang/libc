@@ -442,13 +442,12 @@ impl TestGenerator {
     /// }});
     /// ```
     pub fn is_volatile<F>(&mut self, f: F) -> &mut Self
-        where
+    where
         F: Fn(VolatileItemKind) -> bool + 'static,
     {
         self.is_volatile = Box::new(f);
         self
     }
-
 
     /// Configures how Rust `const`s names are translated to C.
     ///
@@ -896,16 +895,17 @@ impl TestGenerator {
         eprintln!("rust version: {}", self.rust_version);
         t!(gen.rust.write_all(
             if self.rust_version < rustc_version::Version::new(1, 30, 0) {
-            br#"
+                br#"
             static FAILED: AtomicBool = std::sync::atomic::ATOMIC_BOOL_INIT;
             static NTESTS: AtomicUsize = std::sync::atomic::ATOMIC_USIZE_INIT;
             "#
-        } else {
-            br#"
+            } else {
+                br#"
             static FAILED: AtomicBool = AtomicBool::new(false);
             static NTESTS: AtomicUsize = AtomicUsize::new(0);
             "#
-        }));
+            }
+        ));
 
         t!(gen.rust.write_all(
             br#"
@@ -1239,7 +1239,10 @@ impl<'a> Generator<'a> {
 
             let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
             let mut sig = self.csig_returning_ptr(&field.ty, &sig);
-            if (self.opts.is_volatile)(VolatileItemKind::StructField(ty.to_string(), name.to_string())) {
+            if (self.opts.is_volatile)(VolatileItemKind::StructField(
+                ty.to_string(),
+                name.to_string(),
+            )) {
                 sig = format!("volatile {}", sig);
             }
             t!(writeln!(
@@ -1497,10 +1500,12 @@ impl<'a> Generator<'a> {
         let args = if args.is_empty() && !variadic {
             "void".to_string()
         } else {
-            args.iter().enumerate()
+            args.iter()
+                .enumerate()
                 .map(|(idx, a)| {
                     let mut arg = self.rust_ty_to_c_ty(a);
-                    if (self.opts.is_volatile)(VolatileItemKind::FunctionArg(name.to_string(), idx)) {
+                    if (self.opts.is_volatile)(VolatileItemKind::FunctionArg(name.to_string(), idx))
+                    {
                         arg = format!("volatile {}", arg);
                     }
                     arg
@@ -1575,14 +1580,14 @@ impl<'a> Generator<'a> {
 
         if rust_ty.contains("extern fn") {
             let sig = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
-           t!(writeln!(
+            t!(writeln!(
                 self.c,
                 r#"
             {sig} {{
                 return {c_name};
             }}
         "#,
-               sig = sig,
+                sig = sig,
                 c_name = c_name
             ));
             t!(writeln!(
