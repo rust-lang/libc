@@ -25,7 +25,7 @@ fn main() {
             t if is_union => format!("union {}", t),
             t => t.to_string(),
         })
-        .is_volatile(t1_volatile)
+        .volatile_item(t1_volatile)
         .generate("src/t1.rs", "t1gen.rs");
     ctest::TestGenerator::new()
         .header("t2.h")
@@ -49,7 +49,7 @@ fn main() {
             t if is_union => format!("union {}", t),
             t => t.to_string(),
         })
-        .is_volatile(t1_volatile)
+        .volatile_item(t1_volatile)
         .generate("src/t1.rs", "t1gen_cxx.rs");
     ctest::TestGenerator::new()
         .header("t2.h")

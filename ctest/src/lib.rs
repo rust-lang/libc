@@ -92,7 +92,7 @@ pub struct TestGenerator {
     defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
     verbose_skip: bool,
-    is_volatile: Box<Fn(VolatileItemKind) -> bool>,
+    volatile_item: Box<Fn(VolatileItemKind) -> bool>,
     skip_fn: Box<Fn(&str) -> bool>,
     skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
     skip_static: Box<Fn(&str) -> bool>,
@@ -146,7 +146,7 @@ impl TestGenerator {
             defines: Vec::new(),
             cfg: Vec::new(),
             verbose_skip: false,
-            is_volatile: Box::new(|_| false),
+            volatile_item: Box::new(|_| false),
             skip_fn: Box::new(|_| false),
             skip_fn_ptrcheck: Box::new(|_| false),
             skip_static: Box::new(|_| false),
@@ -167,7 +167,7 @@ impl TestGenerator {
                     f.to_string()
                 }
             }),
-            const_cname: Box::new(|a| a.to_string()),
+            const_cname: Box::new(std::string::ToString::to_string),
             rust_version: rustc_version::version().unwrap(),
         }
     }
@@ -327,7 +327,8 @@ impl TestGenerator {
     ///    .define("_WIN32_WINNT", Some("0x8000"));
     /// ```
     pub fn define(&mut self, k: &str, v: Option<&str>) -> &mut Self {
-        self.defines.push((k.to_string(), v.map(|s| s.to_string())));
+        self.defines
+            .push((k.to_string(), v.map(std::string::ToString::to_string)));
         self
     }
 
@@ -355,7 +356,8 @@ impl TestGenerator {
     ///    .cfg("bar", Some("baz")); // cfg!(bar = "baz")
     /// ```
     pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut Self {
-        self.cfg.push((k.to_string(), v.map(|s| s.to_string())));
+        self.cfg
+            .push((k.to_string(), v.map(std::string::ToString::to_string)));
         self
     }
 
@@ -433,7 +435,7 @@ impl TestGenerator {
     /// use ctest::{TestGenerator, VolatileItemKind::StructField};
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.is_volatile(|i| {
+    /// cfg.volatile_item(|i| {
     ///     match i {
     ///         StructField(ref s, ref f)
     ///             if s == "foo_struct" && f == "foo_field"
@@ -441,11 +443,11 @@ impl TestGenerator {
     ///         _ => false,
     /// }});
     /// ```
-    pub fn is_volatile<F>(&mut self, f: F) -> &mut Self
+    pub fn volatile_item<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(VolatileItemKind) -> bool + 'static,
     {
-        self.is_volatile = Box::new(f);
+        self.volatile_item = Box::new(f);
         self
     }
 
@@ -1239,7 +1241,7 @@ impl<'a> Generator<'a> {
 
             let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
             let mut sig = self.csig_returning_ptr(&field.ty, &sig);
-            if (self.opts.is_volatile)(VolatileItemKind::StructField(
+            if (self.opts.volatile_item)(VolatileItemKind::StructField(
                 ty.to_string(),
                 name.to_string(),
             )) {
@@ -1504,8 +1506,10 @@ impl<'a> Generator<'a> {
                 .enumerate()
                 .map(|(idx, a)| {
                     let mut arg = self.rust_ty_to_c_ty(a);
-                    if (self.opts.is_volatile)(VolatileItemKind::FunctionArg(name.to_string(), idx))
-                    {
+                    if (self.opts.volatile_item)(VolatileItemKind::FunctionArg(
+                        name.to_string(),
+                        idx,
+                    )) {
                         arg = format!("volatile {}", arg);
                     }
                     arg
@@ -1515,7 +1519,7 @@ impl<'a> Generator<'a> {
                 + if variadic { ", ..." } else { "" }
         };
         let mut c_ret = self.rust_ty_to_c_ty(ret);
-        if (self.opts.is_volatile)(VolatileItemKind::FunctionRet(name.to_string())) {
+        if (self.opts.volatile_item)(VolatileItemKind::FunctionRet(name.to_string())) {
             c_ret = format!("volatile {}", c_ret);
         }
         let abi = self.abi2str(abi);
@@ -1656,7 +1660,7 @@ impl<'a> Generator<'a> {
                 ty = rust_ty
             ));
         } else {
-            let c_ty = if (self.opts.is_volatile)(VolatileItemKind::Static(name.to_owned())) {
+            let c_ty = if (self.opts.volatile_item)(VolatileItemKind::Static(name.to_owned())) {
                 format!("volatile {}", c_ty)
             } else {
                 c_ty.to_owned()
