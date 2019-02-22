@@ -976,7 +976,6 @@ s_no_extra_traits! {
     }
 }
 
-
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for sysinfo {

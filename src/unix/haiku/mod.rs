@@ -309,13 +309,11 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
         pub sun_path: [::c_char; 126]
     }
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: sa_family_t,
@@ -323,7 +321,6 @@ s_no_extra_traits! {
         __ss_pad2: u64,
         __ss_pad3: [u8; 112],
     }
-    #[allow(missing_debug_implementations)]
     pub struct dirent {
         pub d_dev: dev_t,
         pub d_pdev: dev_t,
@@ -331,6 +328,116 @@ s_no_extra_traits! {
         pub d_pino: i64,
         pub d_reclen: ::c_ushort,
         pub d_name: [::c_char; 1024], // Max length is _POSIX_PATH_MAX
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for sockaddr_un {
+            fn eq(&self, other: &sockaddr_un) -> bool {
+                self.sun_len == other.sun_len
+                    && self.sun_family == other.sun_family
+                    && self
+                    .sun_path
+                    .iter()
+                    .zip(other.sun_path.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_un {}
+        impl ::fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_un")
+                    .field("sun_len", &self.sun_len)
+                    .field("sun_family", &self.sun_family)
+                    // FIXME: .field("sun_path", &self.sun_path)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_un {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sun_len.hash(state);
+                self.sun_family.hash(state);
+                self.sun_path.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_len == other.ss_len
+                    && self.ss_family == other.ss_family
+                    && self
+                    .__ss_pad1
+                    .iter()
+                    .zip(other.__ss_pad1.iter())
+                    .all(|(a, b)| a == b)
+                    && self.__ss_pad2 == other.__ss_pad2
+                    && self
+                    .__ss_pad3
+                    .iter()
+                    .zip(other.__ss_pad3.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_storage {}
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_len", &self.ss_len)
+                    .field("ss_family", &self.ss_family)
+                    .field("__ss_pad1", &self.__ss_pad1)
+                    .field("__ss_pad2", &self.__ss_pad2)
+                    // FIXME: .field("__ss_pad3", &self.__ss_pad3)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ss_len.hash(state);
+                self.ss_family.hash(state);
+                self.__ss_pad1.hash(state);
+                self.__ss_pad2.hash(state);
+                self.__ss_pad3.hash(state);
+            }
+        }
+
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_dev == other.d_dev
+                    && self.d_pdev == other.d_pdev
+                    && self.d_ino == other.d_ino
+                    && self.d_pino == other.d_pino
+                    && self.d_reclen == other.d_reclen
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for dirent {}
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_dev", &self.d_dev)
+                    .field("d_pdev", &self.d_pdev)
+                    .field("d_ino", &self.d_ino)
+                    .field("d_pino", &self.d_pino)
+                    .field("d_reclen", &self.d_reclen)
+                    // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for dirent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_dev.hash(state);
+                self.d_pdev.hash(state);
+                self.d_ino.hash(state);
+                self.d_pino.hash(state);
+                self.d_reclen.hash(state);
+                self.d_name.hash(state);
+            }
+        }
     }
 }
 
