@@ -597,6 +597,13 @@ pub const TIMER_ABSTIME: ::c_int = 1;
 
 #[link(name = "util")]
 extern {
+    pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t,
+                    pshared: ::c_int,
+                    value: ::c_uint)
+                    -> ::c_int;
+
+    pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_getres50")]

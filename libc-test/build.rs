@@ -23,7 +23,6 @@ fn do_ctest() {
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
     let apple = target.contains("apple");
-    let ios = target.contains("apple-ios");
     let emscripten = target.contains("asm");
     let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
@@ -39,13 +38,15 @@ fn do_ctest() {
     let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
+    if apple {
+        return test_apple(&target);
+    }
+
     // Pull in extra goodies
     if linux || android || emscripten {
         cfg.define("_GNU_SOURCE", None);
     } else if netbsd {
         cfg.define("_NETBSD_SOURCE", Some("1"));
-    } else if apple {
-        cfg.define("__APPLE_USE_RFC_3542", None);
     } else if windows {
         cfg.define("_WIN32_WINNT", Some("0x8000"));
     } else if solaris {
@@ -98,10 +99,8 @@ fn do_ctest() {
             cfg.header("sys/socket.h");
         }
         cfg.header("net/if.h");
-        if !ios {
-            cfg.header("net/route.h");
-            cfg.header("net/if_arp.h");
-        }
+        cfg.header("net/route.h");
+        cfg.header("net/if_arp.h");
         if linux || android {
             cfg.header("linux/if_alg.h");
         }
@@ -132,7 +131,7 @@ fn do_ctest() {
         cfg.header("pwd.h");
         cfg.header("grp.h");
         cfg.header("sys/utsname.h");
-        if !solaris && !ios {
+        if !solaris {
             cfg.header("sys/ptrace.h");
         }
         cfg.header("sys/mount.h");
@@ -182,33 +181,6 @@ fn do_ctest() {
             } else {
                 cfg.header("utmpx.h");
             }
-        }
-    }
-
-    if apple {
-        cfg.header("spawn.h");
-        cfg.header("mach-o/dyld.h");
-        cfg.header("mach/mach_time.h");
-        cfg.header("malloc/malloc.h");
-        cfg.header("util.h");
-        cfg.header("xlocale.h");
-        cfg.header("sys/xattr.h");
-        if target.starts_with("x86") && !ios {
-            cfg.header("crt_externs.h");
-        }
-        cfg.header("netinet/in.h");
-        cfg.header("sys/ipc.h");
-        cfg.header("sys/sem.h");
-        cfg.header("sys/shm.h");
-
-        if !ios {
-            cfg.header("sys/sys_domain.h");
-            cfg.header("net/if_utun.h");
-            cfg.header("net/bpf.h");
-            cfg.header("net/route.h");
-            cfg.header("netinet/if_ether.h");
-            cfg.header("sys/proc_info.h");
-            cfg.header("sys/kern_control.h");
         }
     }
 
@@ -364,7 +336,7 @@ fn do_ctest() {
         cfg.header("sys/loadavg.h");
     }
 
-    if linux || freebsd || dragonfly || netbsd || apple || emscripten {
+    if linux || freebsd || dragonfly || netbsd || emscripten {
         if !uclibc {
             cfg.header("aio.h");
         }
@@ -426,9 +398,7 @@ fn do_ctest() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                if target2.contains("apple") {
-                    s.replace("_nsec", "spec.tv_nsec")
-                } else if target2.contains("android") {
+                if target2.contains("android") {
                     s.to_string()
                 } else {
                     s.replace("e_nsec", ".tv_nsec")
@@ -466,11 +436,6 @@ fn do_ctest() {
             // which is absent in glibc, has to be defined.
             "__timeval" if linux => true,
 
-            // Fixed on feature=align with repr(packed(4))
-            // Once repr_packed stabilizes we can fix this unconditionally
-            // and remove this check.
-            "kevent" | "shmid_ds" | "semid_ds" if apple && x86_64 => true,
-
             // This is actually a union, not a struct
             "sigval" => true,
 
@@ -487,26 +452,13 @@ fn do_ctest() {
             // header conflicts when including them with all the other structs.
             "termios2" => true,
 
-            // Present on historical versions of iOS but missing in more recent
-            // SDKs
-            "bpf_hdr" | "proc_taskinfo" | "proc_taskallinfo"
-            | "proc_bsdinfo" | "proc_threadinfo" | "sockaddr_inarp"
-            | "sockaddr_ctl" | "arphdr"
-                if ios =>
-            {
-                true
-            }
-
             _ => false,
         }
     });
 
     cfg.skip_signededness(move |c| {
         match c {
-            "LARGE_INTEGER"
-            | "mach_timebase_info_data_t"
-            | "float"
-            | "double" => true,
+            "LARGE_INTEGER" | "float" | "double" => true,
             // uuid_t is a struct, not an integer.
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
@@ -514,9 +466,6 @@ fn do_ctest() {
             "sem_t" if openbsd || freebsd || dragonfly || netbsd => true,
             // mqd_t is a pointer on FreeBSD and DragonFly
             "mqd_t" if freebsd || dragonfly => true,
-
-            // Just some typedefs on osx, no need to check their sign
-            "posix_spawnattr_t" | "posix_spawn_file_actions_t" => true,
 
             // windows-isms
             n if n.starts_with("P") => true,
@@ -562,9 +511,6 @@ fn do_ctest() {
             "MS_NOUSER" => true,
             "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
 
-            // These OSX constants are flagged as deprecated
-            "NOTE_EXIT_REPARENTED" | "NOTE_REAP" if apple => true,
-
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
             "MAP_RENAME" | "MAP_NORESERVE" if freebsd => true,
@@ -589,11 +535,6 @@ fn do_ctest() {
 
             // These constants were added in FreeBSD 12
             "SF_USER_READAHEAD" | "SO_REUSEPORT_LB" if freebsd => true,
-
-            // These OSX constants are removed in Sierra.
-            // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
-            "KERN_KDENABLE_BG_TRACE" if apple => true,
-            "KERN_KDDISABLE_BG_TRACE" if apple => true,
 
             // These constants were removed in OpenBSD 6 (https://git.io/v7gBO
             // https://git.io/v7gBq)
@@ -714,34 +655,6 @@ fn do_ctest() {
                 true
             }
 
-            // Present on historical versions of iOS, but now removed in more
-            // recent SDKs
-            "ARPOP_REQUEST"
-            | "ARPOP_REPLY"
-            | "ATF_COM"
-            | "ATF_PERM"
-            | "ATF_PUBL"
-            | "ATF_USETRAILERS"
-            | "AF_SYS_CONTROL"
-            | "SYSPROTO_EVENT"
-            | "PROC_PIDTASKALLINFO"
-            | "PROC_PIDTASKINFO"
-            | "PROC_PIDTHREADINFO"
-            | "UTUN_OPT_FLAGS"
-            | "UTUN_OPT_IFNAME"
-            | "BPF_ALIGNMENT"
-            | "SYSPROTO_CONTROL"
-                if ios =>
-            {
-                true
-            }
-            s if ios && s.starts_with("RTF_") => true,
-            s if ios && s.starts_with("RTM_") => true,
-            s if ios && s.starts_with("RTA_") => true,
-            s if ios && s.starts_with("RTAX_") => true,
-            s if ios && s.starts_with("RTV_") => true,
-            s if ios && s.starts_with("DLT_") => true,
-
             | "IP_ORIGDSTADDR"
             | "IP_RECVORIGDSTADDR"
             | "IPV6_ORIGDSTADDR"
@@ -783,18 +696,6 @@ fn do_ctest() {
 
             "dlerror" if android => true, // const-ness is added
             "dladdr" if musl || solaris => true, // const-ness only added recently
-
-            // OSX has 'struct tm *const' which we can't actually represent in
-            // Rust, but is close enough to *mut
-            "timegm" if apple => true,
-
-            // OSX's daemon is deprecated in 10.5 so we'll get a warning (which
-            // we turn into an error) so just ignore it.
-            "daemon" if apple => true,
-
-            // Deprecated on OSX
-            "sem_destroy" if apple => true,
-            "sem_init" if apple => true,
 
             // These functions presumably exist on netbsd but don't look like
             // they're implemented on rumprun yet, just let them slide for now.
@@ -852,7 +753,6 @@ fn do_ctest() {
             // it's in a header file?
             "endpwent" if android => true,
 
-
             // These are either unimplemented or optionally built into uClibc
             // or "sysinfo", where it's defined but the structs in linux/sysinfo.h and sys/sysinfo.h
             // clash so it can't be tested
@@ -866,15 +766,6 @@ fn do_ctest() {
             // Apparently res_init exists on Android, but isn't defined in a header:
             // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
             "res_init" if android => true,
-
-            // On macOS and iOS, res_init is available, but requires linking with libresolv:
-            // http://blog.achernya.com/2013/03/os-x-has-silly-libsystem.html
-            // See discussion for skipping here:
-            // https://github.com/rust-lang/libc/pull/585#discussion_r114561460
-            "res_init" if apple => true,
-
-            // On Mac we don't use the default `close()`, instead using their $NOCANCEL variants.
-            "close" if apple => true,
 
             // Definition of those functions as changed since unified headers from NDK r14b
             // These changes imply some API breaking changes but are still ABI compatible.
@@ -893,10 +784,6 @@ fn do_ctest() {
 
             // FIXME: mincore is defined with caddr_t on Solaris.
             "mincore" if solaris => true,
-
-            // These were all included in historical versions of iOS but appear
-            // to be removed now
-            "system" | "ptrace" if ios => true,
 
             // Removed in OpenBSD 6.5
             // https://marc.info/?l=openbsd-cvs&m=154723400730318
@@ -1018,4 +905,191 @@ fn do_ctest() {
 fn main() {
     do_cc();
     do_ctest();
+}
+
+macro_rules! headers {
+    ($cfg:ident: $header:expr) => {
+        $cfg.header($header);
+    };
+    ($cfg:ident: $($header:expr),*) => {
+        $(headers!($cfg: $header);)*
+    };
+    ($cfg:ident: $($header:expr,)*) => {
+        $(headers!($cfg: $header);)*
+    };
+}
+
+fn test_apple(target: &str) {
+    assert!(target.contains("apple"));
+    let x86_64 = target.contains("x86_64");
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+    cfg.define("__APPLE_USE_RFC_3542", None);
+
+    headers! { cfg:
+        "aio.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "limits.h",
+        "locale.h",
+        "mach-o/dyld.h",
+        "mach/mach_time.h",
+        "malloc/malloc.h",
+        "net/bpf.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/if_dl.h",
+        "net/if_utun.h",
+        "net/route.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/if_ether.h",
+        "netinet/in.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "spawn.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "sys/event.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/ipc.h",
+        "sys/kern_control.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/proc_info.h",
+        "sys/ptrace.h",
+        "sys/quota.h",
+        "sys/resource.h",
+        "sys/sem.h",
+        "sys/shm.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/sys_domain.h",
+        "sys/sysctl.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "sys/xattr.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "unistd.h",
+        "util.h",
+        "utime.h",
+        "utmpx.h",
+        "wchar.h",
+        "xlocale.h",
+    }
+
+    if x86_64 {
+        headers! { cfg: "crt_externs.h" }
+    }
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // FIXME: actually a union
+            "sigval" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // These OSX constants are removed in Sierra.
+            // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
+            "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verified
+        match name {
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" => true,
+
+            // close calls the close_nocancel system call
+            "close" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        match (struct_, field) {
+            // FIXME: actually a union
+            ("sigevent", "sigev_value") => true,
+            _ => false,
+        }
+    });
+
+    cfg.volatile_item(|i| {
+        use ctest::VolatileItemKind::*;
+        match i {
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => {
+                true
+            }
+            _ => false,
+        }
+    });
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+
+            // OSX calls this something else
+            "sighandler_t" => "sig_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+            t if t.ends_with("_t") => t.to_string(),
+            t if is_struct => format!("struct {}", t),
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                s.replace("e_nsec", "espec.tv_nsec")
+            }
+            // FIXME: sigaction actually contains a union with two variants:
+            // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
+            // a sa_handler with type sig_t
+            "sa_sigaction" if struct_ == "sigaction" => {
+                "sa_handler".to_string()
+            }
+            s => s.to_string(),
+        }
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
 }
