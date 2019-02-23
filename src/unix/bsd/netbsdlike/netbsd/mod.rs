@@ -274,14 +274,12 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
     pub struct in_pktinfo {
         pub ipi_addr: ::in_addr,
         pub ipi_ifindex: ::c_uint,
     }
 
     #[repr(packed)]
-    #[allow(missing_debug_implementations)]
     pub struct arphdr {
         pub ar_hrd: u16,
         pub ar_pro: u16,
@@ -291,18 +289,15 @@ s_no_extra_traits! {
     }
 
     #[repr(packed)]
-    #[allow(missing_debug_implementations)]
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct ip_mreq {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_in {
         pub sin_len: u8,
         pub sin_family: ::sa_family_t,
@@ -311,7 +306,6 @@ s_no_extra_traits! {
         pub sin_zero: [::int8_t; 8],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct dirent {
         pub d_fileno: ::ino_t,
         pub d_reclen: u16,
@@ -320,7 +314,6 @@ s_no_extra_traits! {
         pub d_name: [::c_char; 512],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct statvfs {
         pub f_flag: ::c_ulong,
         pub f_bsize: ::c_ulong,
@@ -355,13 +348,315 @@ s_no_extra_traits! {
         pub f_mntfromname: [::c_char; 1024],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: ::sa_family_t,
         __ss_pad1: [u8; 6],
         __ss_pad2: i64,
         __ss_pad3: [u8; 112],
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for in_pktinfo {
+            fn eq(&self, other: &in_pktinfo) -> bool {
+                self.ipi_addr == other.ipi_addr
+                    && self.ipi_ifindex == other.ipi_ifindex
+            }
+        }
+        impl Eq for in_pktinfo {}
+        impl ::fmt::Debug for in_pktinfo {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("in_pktinfo")
+                    .field("ipi_addr", &self.ipi_addr)
+                    .field("ipi_ifindex", &self.ipi_ifindex)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for in_pktinfo {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ipi_addr.hash(state);
+                self.ipi_ifindex.hash(state);
+            }
+        }
+
+        impl PartialEq for arphdr {
+            fn eq(&self, other: &arphdr) -> bool {
+                self.ar_hrd == other.ar_hrd
+                    && self.ar_pro == other.ar_pro
+                    && self.ar_hln == other.ar_hln
+                    && self.ar_pln == other.ar_pln
+                    && self.ar_op == other.ar_op
+            }
+        }
+        impl Eq for arphdr {}
+        impl ::fmt::Debug for arphdr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ar_hrd = self.ar_hrd;
+                let ar_pro = self.ar_pro;
+                let ar_op = self.ar_op;
+                f.debug_struct("arphdr")
+                    .field("ar_hrd", &ar_hrd)
+                    .field("ar_pro", &ar_pro)
+                    .field("ar_hln", &self.ar_hln)
+                    .field("ar_pln", &self.ar_pln)
+                    .field("ar_op", &ar_op)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for arphdr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let ar_hrd = self.ar_hrd;
+                let ar_pro = self.ar_pro;
+                let ar_op = self.ar_op;
+                ar_hrd.hash(state);
+                ar_pro.hash(state);
+                self.ar_hln.hash(state);
+                self.ar_pln.hash(state);
+                ar_op.hash(state);
+            }
+        }
+
+        impl PartialEq for in_addr {
+            fn eq(&self, other: &in_addr) -> bool {
+                self.s_addr == other.s_addr
+            }
+        }
+        impl Eq for in_addr {}
+        impl ::fmt::Debug for in_addr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let s_addr = self.s_addr;
+                f.debug_struct("in_addr")
+                    .field("s_addr", &s_addr)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for in_addr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let s_addr = self.s_addr;
+                s_addr.hash(state);
+            }
+        }
+
+        impl PartialEq for ip_mreq {
+            fn eq(&self, other: &ip_mreq) -> bool {
+                self.imr_multiaddr == other.imr_multiaddr
+                    && self.imr_interface == other.imr_interface
+            }
+        }
+        impl Eq for ip_mreq {}
+        impl ::fmt::Debug for ip_mreq {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ip_mreq")
+                    .field("imr_multiaddr", &self.imr_multiaddr)
+                    .field("imr_interface", &self.imr_interface)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ip_mreq {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.imr_multiaddr.hash(state);
+                self.imr_interface.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_in {
+            fn eq(&self, other: &sockaddr_in) -> bool {
+                self.sin_len == other.sin_len
+                    && self.sin_family == other.sin_family
+                    && self.sin_port == other.sin_port
+                    && self.sin_addr == other.sin_addr
+                    && self.sin_zero == other.sin_zero
+            }
+        }
+        impl Eq for sockaddr_in {}
+        impl ::fmt::Debug for sockaddr_in {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_in")
+                    .field("sin_len", &self.sin_len)
+                    .field("sin_family", &self.sin_family)
+                    .field("sin_port", &self.sin_port)
+                    .field("sin_addr", &self.sin_addr)
+                    .field("sin_zero", &self.sin_zero)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_in {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sin_len.hash(state);
+                self.sin_family.hash(state);
+                self.sin_port.hash(state);
+                self.sin_addr.hash(state);
+                self.sin_zero.hash(state);
+            }
+        }
+
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_fileno == other.d_fileno
+                    && self.d_reclen == other.d_reclen
+                    && self.d_namlen == other.d_namlen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for dirent {}
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_fileno", &self.d_fileno)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_namlen", &self.d_namlen)
+                    .field("d_type", &self.d_type)
+                    // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for dirent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_fileno.hash(state);
+                self.d_reclen.hash(state);
+                self.d_namlen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for statvfs {
+            fn eq(&self, other: &statvfs) -> bool {
+                self.f_flag == other.f_flag
+                    && self.f_bsize == other.f_bsize
+                    && self.f_frsize == other.f_frsize
+                    && self.f_iosize == other.f_iosize
+                    && self.f_blocks == other.f_blocks
+                    && self.f_bfree == other.f_bfree
+                    && self.f_bavail == other.f_bavail
+                    && self.f_bresvd == other.f_bresvd
+                    && self.f_files == other.f_files
+                    && self.f_ffree == other.f_ffree
+                    && self.f_favail == other.f_favail
+                    && self.f_fresvd == other.f_fresvd
+                    && self.f_syncreads == other.f_syncreads
+                    && self.f_syncwrites == other.f_syncwrites
+                    && self.f_asyncreads == other.f_asyncreads
+                    && self.f_asyncwrites == other.f_asyncwrites
+                    && self.f_fsidx == other.f_fsidx
+                    && self.f_fsid == other.f_fsid
+                    && self.f_namemax == other.f_namemax
+                    && self.f_owner == other.f_owner
+                    && self.f_spare == other.f_spare
+                    && self.f_fstypename == other.f_fstypename
+                    && self
+                    .f_mntonname
+                    .iter()
+                    .zip(other.f_mntonname.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .f_mntfromname
+                    .iter()
+                    .zip(other.f_mntfromname.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for statvfs {}
+        impl ::fmt::Debug for statvfs {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("statvfs")
+                    .field("f_flag", &self.f_flag)
+                    .field("f_bsize", &self.f_bsize)
+                    .field("f_frsize", &self.f_frsize)
+                    .field("f_iosize", &self.f_iosize)
+                    .field("f_blocks", &self.f_blocks)
+                    .field("f_bfree", &self.f_bfree)
+                    .field("f_bavail", &self.f_bavail)
+                    .field("f_bresvd", &self.f_bresvd)
+                    .field("f_files", &self.f_files)
+                    .field("f_ffree", &self.f_ffree)
+                    .field("f_favail", &self.f_favail)
+                    .field("f_fresvd", &self.f_fresvd)
+                    .field("f_syncreads", &self.f_syncreads)
+                    .field("f_syncwrites", &self.f_syncwrites)
+                    .field("f_asyncreads", &self.f_asyncreads)
+                    .field("f_asyncwrites", &self.f_asyncwrites)
+                    .field("f_fsidx", &self.f_fsidx)
+                    .field("f_fsid", &self.f_fsid)
+                    .field("f_namemax", &self.f_namemax)
+                    .field("f_owner", &self.f_owner)
+                    .field("f_spare", &self.f_spare)
+                    .field("f_fstypename", &self.f_fstypename)
+                    // FIXME: .field("f_mntonname", &self.f_mntonname)
+                    // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for statvfs {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.f_flag.hash(state);
+                self.f_bsize.hash(state);
+                self.f_frsize.hash(state);
+                self.f_iosize.hash(state);
+                self.f_blocks.hash(state);
+                self.f_bfree.hash(state);
+                self.f_bavail.hash(state);
+                self.f_bresvd.hash(state);
+                self.f_files.hash(state);
+                self.f_ffree.hash(state);
+                self.f_favail.hash(state);
+                self.f_fresvd.hash(state);
+                self.f_syncreads.hash(state);
+                self.f_syncwrites.hash(state);
+                self.f_asyncreads.hash(state);
+                self.f_asyncwrites.hash(state);
+                self.f_fsidx.hash(state);
+                self.f_fsid.hash(state);
+                self.f_namemax.hash(state);
+                self.f_owner.hash(state);
+                self.f_spare.hash(state);
+                self.f_fstypename.hash(state);
+                self.f_mntonname.hash(state);
+                self.f_mntfromname.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_len == other.ss_len
+                    && self.ss_family == other.ss_family
+                    && self.__ss_pad1 == other.__ss_pad1
+                    && self.__ss_pad2 == other.__ss_pad2
+                    && self
+                    .__ss_pad3
+                    .iter()
+                    .zip(other.__ss_pad3.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_storage {}
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_len", &self.ss_len)
+                    .field("ss_family", &self.ss_family)
+                    .field("__ss_pad1", &self.__ss_pad1)
+                    .field("__ss_pad2", &self.__ss_pad2)
+                    // FIXME: .field("__ss_pad3", &self.__ss_pad3)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ss_len.hash(state);
+                self.ss_family.hash(state);
+                self.__ss_pad1.hash(state);
+                self.__ss_pad2.hash(state);
+                self.__ss_pad3.hash(state);
+            }
+        }
     }
 }
 
