@@ -342,19 +342,16 @@ s! {
 
 s_no_extra_traits! {
     #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed))]
-    #[allow(missing_debug_implementations)]
     pub struct epoll_event {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [c_char; 108]
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct utsname {
         pub sysname: [::c_char; 257],
         pub nodename: [::c_char; 257],
@@ -363,7 +360,6 @@ s_no_extra_traits! {
         pub machine: [::c_char; 257],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct fd_set {
         #[cfg(target_pointer_width = "64")]
         fds_bits: [i64; FD_SETSIZE / 64],
@@ -371,7 +367,6 @@ s_no_extra_traits! {
         fds_bits: [i32; FD_SETSIZE / 32],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_storage {
         pub ss_family: ::sa_family_t,
         __ss_pad1: [u8; 6],
@@ -379,7 +374,6 @@ s_no_extra_traits! {
         __ss_pad2: [u8; 240],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
@@ -389,7 +383,6 @@ s_no_extra_traits! {
         __pad: [u8; 232],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_dl {
         pub sdl_family: ::c_ushort,
         pub sdl_index: ::c_ushort,
@@ -398,6 +391,242 @@ s_no_extra_traits! {
         pub sdl_alen: ::c_uchar,
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 244],
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for epoll_event {
+            fn eq(&self, other: &epoll_event) -> bool {
+                self.events == other.events
+                    && self.u64 == other.u64
+            }
+        }
+        impl Eq for epoll_event {}
+        impl ::fmt::Debug for epoll_event {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let events = self.events;
+                let u64 = self.u64;
+                f.debug_struct("epoll_event")
+                    .field("events", &events)
+                    .field("u64", &u64)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for epoll_event {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let events = self.events;
+                let u64 = self.u64;
+                events.hash(state);
+                u64.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_un {
+            fn eq(&self, other: &sockaddr_un) -> bool {
+                self.sun_family == other.sun_family
+                    && self
+                    .sun_path
+                    .iter()
+                    .zip(other.sun_path.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_un {}
+        impl ::fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_un")
+                    .field("sun_family", &self.sun_family)
+                    // FIXME: .field("sun_path", &self.sun_path)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_un {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sun_family.hash(state);
+                self.sun_path.hash(state);
+            }
+        }
+
+        impl PartialEq for utsname {
+            fn eq(&self, other: &utsname) -> bool {
+                self.sysname
+                    .iter()
+                    .zip(other.sysname.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .nodename
+                    .iter()
+                    .zip(other.nodename.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .release
+                    .iter()
+                    .zip(other.release.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .version
+                    .iter()
+                    .zip(other.version.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                    .machine
+                    .iter()
+                    .zip(other.machine.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for utsname {}
+        impl ::fmt::Debug for utsname {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("utsname")
+                    // FIXME: .field("sysname", &self.sysname)
+                    // FIXME: .field("nodename", &self.nodename)
+                    // FIXME: .field("release", &self.release)
+                    // FIXME: .field("version", &self.version)
+                    // FIXME: .field("machine", &self.machine)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for utsname {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sysname.hash(state);
+                self.nodename.hash(state);
+                self.release.hash(state);
+                self.version.hash(state);
+                self.machine.hash(state);
+            }
+        }
+
+        impl PartialEq for fd_set {
+            fn eq(&self, other: &fd_set) -> bool {
+                self.fds_bits
+                    .iter()
+                    .zip(other.fds_bits.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for fd_set {}
+        impl ::fmt::Debug for fd_set {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("fd_set")
+                    // FIXME: .field("fds_bits", &self.fds_bits)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for fd_set {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.fds_bits.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_family == other.ss_family
+                    && self.__ss_pad1 == other.__ss_pad1
+                    && self.__ss_align == other.__ss_align
+                    && self
+                    .__ss_pad2
+                    .iter()
+                    .zip(other.__ss_pad2.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_storage {}
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_family", &self.ss_family)
+                    .field("__ss_pad1", &self.__ss_pad1)
+                    .field("__ss_align", &self.__ss_align)
+                    // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ss_family.hash(state);
+                self.__ss_pad1.hash(state);
+                self.__ss_align.hash(state);
+                self.__ss_pad2.hash(state);
+            }
+        }
+
+        impl PartialEq for siginfo_t {
+            fn eq(&self, other: &siginfo_t) -> bool {
+                self.si_signo == other.si_signo
+                    && self.si_code == other.si_code
+                    && self.si_errno == other.si_errno
+                    && self.si_addr == other.si_addr
+                    && self
+                    .__pad
+                    .iter()
+                    .zip(other.__pad.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for siginfo_t {}
+        impl ::fmt::Debug for siginfo_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("siginfo_t")
+                    .field("si_signo", &self.si_signo)
+                    .field("si_code", &self.si_code)
+                    .field("si_errno", &self.si_errno)
+                    .field("si_addr", &self.si_addr)
+                    // FIXME: .field("__pad", &self.__pad)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for siginfo_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.si_signo.hash(state);
+                self.si_code.hash(state);
+                self.si_errno.hash(state);
+                self.si_addr.hash(state);
+                self.__pad.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_dl {
+            fn eq(&self, other: &sockaddr_dl) -> bool {
+                self.sdl_family == other.sdl_family
+                    && self.sdl_index == other.sdl_index
+                    && self.sdl_type == other.sdl_type
+                    && self.sdl_nlen == other.sdl_nlen
+                    && self.sdl_alen == other.sdl_alen
+                    && self.sdl_slen == other.sdl_slen
+                    && self
+                    .sdl_data
+                    .iter()
+                    .zip(other.sdl_data.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_dl {}
+        impl ::fmt::Debug for sockaddr_dl {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_dl")
+                    .field("sdl_family", &self.sdl_family)
+                    .field("sdl_index", &self.sdl_index)
+                    .field("sdl_type", &self.sdl_type)
+                    .field("sdl_nlen", &self.sdl_nlen)
+                    .field("sdl_alen", &self.sdl_alen)
+                    .field("sdl_slen", &self.sdl_slen)
+                    // FIXME: .field("sdl_data", &self.sdl_data)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_dl {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sdl_family.hash(state);
+                self.sdl_index.hash(state);
+                self.sdl_type.hash(state);
+                self.sdl_nlen.hash(state);
+                self.sdl_alen.hash(state);
+                self.sdl_slen.hash(state);
+                self.sdl_data.hash(state);
+            }
+        }
     }
 }
 
