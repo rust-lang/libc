@@ -491,10 +491,6 @@ pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_UDP: ::c_int = 17;
-pub const IPPROTO_TCP: ::c_int = 6;
-
 pub const TCP_NODELAY: ::c_int = 8193;
 pub const TCP_MAXSEG: ::c_int = 8194;
 
