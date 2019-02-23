@@ -105,6 +105,9 @@ cfg_if! {
     } else if #[cfg(target_env = "sgx")] {
         mod sgx;
         pub use sgx::*;
+    } else if #[cfg(target_os = "cuda")] {
+        mod cuda;
+        pub use cuda::*;
     }  else {
         // non-supported targets: empty...
     }
