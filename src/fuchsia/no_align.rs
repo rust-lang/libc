@@ -21,7 +21,6 @@ macro_rules! expand_align {
         }
 
         s_no_extra_traits! {
-            #[allow(missing_debug_implementations)]
             pub struct pthread_mutex_t {
                 #[cfg(any(target_arch = "arm",
                           all(target_arch = "x86_64",
@@ -34,19 +33,96 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
             }
 
-            #[allow(missing_debug_implementations)]
             pub struct pthread_rwlock_t {
                 __align: [::c_long; 0],
                 __align: [::c_longlong; 0],
                 size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
             }
 
-            #[allow(missing_debug_implementations)]
             pub struct pthread_cond_t {
                 __align: [*const ::c_void; 0],
                 #[cfg(not(target_env = "musl"))]
                 __align: [::c_longlong; 0],
                 size: [u8; ::__SIZEOF_PTHREAD_COND_T],
+            }
+        }
+
+        cfg_if! {
+            if #[cfg(feature = "extra_traits")] {
+                impl PartialEq for pthread_cond_t {
+                    fn eq(&self, other: &pthread_cond_t) -> bool {
+                        // Ignore __align field
+                        self.size
+                            .iter()
+                            .zip(other.size.iter())
+                            .all(|(a,b)| a == b)
+                    }
+                }
+                impl Eq for pthread_cond_t {}
+                impl ::fmt::Debug for pthread_cond_t {
+                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                        f.debug_struct("pthread_cond_t")
+                            // Ignore __align field
+                            // FIXME: .field("size", &self.size)
+                            .finish()
+                    }
+                }
+                impl ::hash::Hash for pthread_cond_t {
+                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                        // Ignore __align field
+                        self.size.hash(state);
+                    }
+                }
+
+                impl PartialEq for pthread_mutex_t {
+                    fn eq(&self, other: &pthread_mutex_t) -> bool {
+                        // Ignore __align field
+                        self.size
+                            .iter()
+                            .zip(other.size.iter())
+                            .all(|(a,b)| a == b)
+                    }
+                }
+                impl Eq for pthread_mutex_t {}
+                impl ::fmt::Debug for pthread_mutex_t {
+                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                        f.debug_struct("pthread_mutex_t")
+                            // Ignore __align field
+                            // FIXME: .field("size", &self.size)
+                            .finish()
+                    }
+                }
+                impl ::hash::Hash for pthread_mutex_t {
+                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                        // Ignore __align field
+                        self.size.hash(state);
+                    }
+                }
+
+                impl PartialEq for pthread_rwlock_t {
+                    fn eq(&self, other: &pthread_rwlock_t) -> bool {
+                        // Ignore __align field
+                        self.size
+                            .iter()
+                            .zip(other.size.iter())
+                            .all(|(a,b)| a == b)
+                    }
+                }
+                impl Eq for pthread_rwlock_t {}
+                impl ::fmt::Debug for pthread_rwlock_t {
+                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                        f.debug_struct("pthread_rwlock_t")
+                            // Ignore __align field
+                            // FIXME: .field("size", &self.size)
+                            .finish()
+                    }
+                }
+                impl ::hash::Hash for pthread_rwlock_t {
+                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                        // Ignore __align field
+                        self.size.hash(state);
+                    }
+                }
             }
         }
     }

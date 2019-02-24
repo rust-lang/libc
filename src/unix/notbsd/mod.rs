@@ -230,7 +230,6 @@ s_no_extra_traits!{
                 not(target_os = "android")),
             target_arch = "x86_64"),
         repr(packed))]
-    #[allow(missing_debug_implementations)]
     pub struct epoll_event {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,
@@ -262,6 +261,32 @@ s_no_extra_traits!{
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for epoll_event {
+            fn eq(&self, other: &epoll_event) -> bool {
+                self.events == other.events
+                    && self.u64 == other.u64
+            }
+        }
+        impl Eq for epoll_event {}
+        impl ::fmt::Debug for epoll_event {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let events = self.events;
+                let u64 = self.u64;
+                f.debug_struct("epoll_event")
+                    .field("events", &events)
+                    .field("u64", &u64)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for epoll_event {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let events = self.events;
+                let u64 = self.u64;
+                events.hash(state);
+                u64.hash(state);
+            }
+        }
+
         impl PartialEq for sockaddr_un {
             fn eq(&self, other: &sockaddr_un) -> bool {
                 self.sun_family == other.sun_family
@@ -272,9 +297,7 @@ cfg_if! {
                     .all(|(a, b)| a == b)
             }
         }
-
         impl Eq for sockaddr_un {}
-
         impl ::fmt::Debug for sockaddr_un {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sockaddr_un")
@@ -283,7 +306,6 @@ cfg_if! {
                     .finish()
             }
         }
-
         impl ::hash::Hash for sockaddr_un {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.sun_family.hash(state);

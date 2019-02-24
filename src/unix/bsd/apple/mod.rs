@@ -483,8 +483,6 @@ s! {
 }
 
 s_no_extra_traits!{
-    // FIXME: https://github.com/rust-lang/libc/issues/1243
-    #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct kevent {
         pub ident: ::uintptr_t,
@@ -495,8 +493,6 @@ s_no_extra_traits!{
         pub udata: *mut ::c_void,
     }
 
-    // FIXME: https://github.com/rust-lang/libc/issues/1243
-    #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
@@ -510,8 +506,6 @@ s_no_extra_traits!{
         pub sem_pad3: [::int32_t; 4],
     }
 
-    // FIXME: https://github.com/rust-lang/libc/issues/1243
-    #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
@@ -641,6 +635,175 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for kevent {
+            fn eq(&self, other: &kevent) -> bool {
+                self.ident == other.ident
+                    && self.filter == other.filter
+                    && self.flags == other.flags
+                    && self.fflags == other.fflags
+                    && self.data == other.data
+                    && self.udata == other.udata
+            }
+        }
+        impl Eq for kevent {}
+        impl ::fmt::Debug for kevent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ident = self.ident;
+                let filter = self.filter;
+                let flags = self.flags;
+                let fflags = self.fflags;
+                let data = self.data;
+                let udata = self.udata;
+                f.debug_struct("kevent")
+                    .field("ident", &ident)
+                    .field("filter", &filter)
+                    .field("flags", &flags)
+                    .field("fflags", &fflags)
+                    .field("data", &data)
+                    .field("udata", &udata)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for kevent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let ident = self.ident;
+                let filter = self.filter;
+                let flags = self.flags;
+                let fflags = self.fflags;
+                let data = self.data;
+                let udata = self.udata;
+                ident.hash(state);
+                filter.hash(state);
+                flags.hash(state);
+                fflags.hash(state);
+                data.hash(state);
+                udata.hash(state);
+            }
+        }
+
+        impl PartialEq for semid_ds {
+            fn eq(&self, other: &semid_ds) -> bool {
+                let sem_perm = self.sem_perm;
+                let sem_pad3 = self.sem_pad3;
+                let other_sem_perm = other.sem_perm;
+                let other_sem_pad3 = other.sem_pad3;
+                sem_perm == other_sem_perm
+                    && self.sem_base == other.sem_base
+                    && self.sem_nsems == other.sem_nsems
+                    && self.sem_otime == other.sem_otime
+                    && self.sem_pad1 == other.sem_pad1
+                    && self.sem_ctime == other.sem_ctime
+                    && self.sem_pad2 == other.sem_pad2
+                    && sem_pad3 == other_sem_pad3
+            }
+        }
+        impl Eq for semid_ds {}
+        impl ::fmt::Debug for semid_ds {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let sem_perm = self.sem_perm;
+                let sem_base = self.sem_base;
+                let sem_nsems = self.sem_nsems;
+                let sem_otime = self.sem_otime;
+                let sem_pad1 = self.sem_pad1;
+                let sem_ctime = self.sem_ctime;
+                let sem_pad2 = self.sem_pad2;
+                let sem_pad3 = self.sem_pad3;
+                f.debug_struct("semid_ds")
+                    .field("sem_perm", &sem_perm)
+                    .field("sem_base", &sem_base)
+                    .field("sem_nsems", &sem_nsems)
+                    .field("sem_otime", &sem_otime)
+                    .field("sem_pad1", &sem_pad1)
+                    .field("sem_ctime", &sem_ctime)
+                    .field("sem_pad2", &sem_pad2)
+                    .field("sem_pad3", &sem_pad3)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for semid_ds {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let sem_perm = self.sem_perm;
+                let sem_base = self.sem_base;
+                let sem_nsems = self.sem_nsems;
+                let sem_otime = self.sem_otime;
+                let sem_pad1 = self.sem_pad1;
+                let sem_ctime = self.sem_ctime;
+                let sem_pad2 = self.sem_pad2;
+                let sem_pad3 = self.sem_pad3;
+                sem_perm.hash(state);
+                sem_base.hash(state);
+                sem_nsems.hash(state);
+                sem_otime.hash(state);
+                sem_pad1.hash(state);
+                sem_ctime.hash(state);
+                sem_pad2.hash(state);
+                sem_pad3.hash(state);
+            }
+        }
+
+        impl PartialEq for shmid_ds {
+            fn eq(&self, other: &shmid_ds) -> bool {
+                let shm_perm = self.shm_perm;
+                let other_shm_perm = other.shm_perm;
+                shm_perm == other_shm_perm
+                    && self.shm_segsz == other.shm_segsz
+                    && self.shm_lpid == other.shm_lpid
+                    && self.shm_cpid == other.shm_cpid
+                    && self.shm_nattch == other.shm_nattch
+                    && self.shm_atime == other.shm_atime
+                    && self.shm_dtime == other.shm_dtime
+                    && self.shm_ctime == other.shm_ctime
+                    && self.shm_internal == other.shm_internal
+            }
+        }
+        impl Eq for shmid_ds {}
+        impl ::fmt::Debug for shmid_ds {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let shm_perm = self.shm_perm;
+                let shm_segsz = self.shm_segsz;
+                let shm_lpid = self.shm_lpid;
+                let shm_cpid = self.shm_cpid;
+                let shm_nattch = self.shm_nattch;
+                let shm_atime = self.shm_atime;
+                let shm_dtime = self.shm_dtime;
+                let shm_ctime = self.shm_ctime;
+                let shm_internal = self.shm_internal;
+                f.debug_struct("shmid_ds")
+                    .field("shm_perm", &shm_perm)
+                    .field("shm_segsz", &shm_segsz)
+                    .field("shm_lpid", &shm_lpid)
+                    .field("shm_cpid", &shm_cpid)
+                    .field("shm_nattch", &shm_nattch)
+                    .field("shm_atime", &shm_atime)
+                    .field("shm_dtime", &shm_dtime)
+                    .field("shm_ctime", &shm_ctime)
+                    .field("shm_internal", &shm_internal)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for shmid_ds {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let shm_perm = self.shm_perm;
+                let shm_segsz = self.shm_segsz;
+                let shm_lpid = self.shm_lpid;
+                let shm_cpid = self.shm_cpid;
+                let shm_nattch = self.shm_nattch;
+                let shm_atime = self.shm_atime;
+                let shm_dtime = self.shm_dtime;
+                let shm_ctime = self.shm_ctime;
+                let shm_internal = self.shm_internal;
+                shm_perm.hash(state);
+                shm_segsz.hash(state);
+                shm_lpid.hash(state);
+                shm_cpid.hash(state);
+                shm_nattch.hash(state);
+                shm_atime.hash(state);
+                shm_dtime.hash(state);
+                shm_ctime.hash(state);
+                shm_internal.hash(state);
+            }
+        }
+
         impl PartialEq for proc_threadinfo {
             fn eq(&self, other: &proc_threadinfo) -> bool {
                 self.pth_user_time == other.pth_user_time
@@ -677,7 +840,6 @@ cfg_if! {
                     .finish()
             }
         }
-
         impl ::hash::Hash for proc_threadinfo {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.pth_user_time.hash(state);
