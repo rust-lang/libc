@@ -1013,12 +1013,10 @@ fn test_windows(target: &str) {
 
     cfg.fn_cname(move |name, cname| cname.unwrap_or(name).to_string());
 
-    cfg.skip_type(move |name| {
-        match name {
-            "SSIZE_T" if !gnu => true,
-            "ssize_t" if !gnu => true,
-            _ => false,
-        }
+    cfg.skip_type(move |name| match name {
+        "SSIZE_T" if !gnu => true,
+        "ssize_t" if !gnu => true,
+        _ => false,
     });
 
     cfg.skip_const(move |name| {
@@ -1026,7 +1024,7 @@ fn test_windows(target: &str) {
             // FIXME: API error:
             // SIG_ERR type is "void (*)(int)", not "int"
             "SIG_ERR" => true,
-           _ => false,
+            _ => false,
         }
     });
 
@@ -1047,10 +1045,7 @@ fn test_windows(target: &str) {
     cfg.skip_fn(move |name| {
         match name {
             // FIXME: API error:
-            "execv" |
-            "execve" |
-            "execvp" |
-            "execvpe" => true,
+            "execv" | "execve" | "execvp" | "execvpe" => true,
 
             _ => false,
         }
@@ -1065,7 +1060,7 @@ fn test_redox(target: &str) {
     let mut cfg = ctest::TestGenerator::new();
     cfg.flag("-Wno-deprecated-declarations");
 
-    headers!{
+    headers! {
         cfg:
         "ctype.h",
         "dirent.h",
@@ -1131,7 +1126,7 @@ fn test_cloudabi(target: &str) {
     let mut cfg = ctest::TestGenerator::new();
     cfg.flag("-Wno-deprecated-declarations");
 
-    headers!{
+    headers! {
         cfg:
         "execinfo.h",
         "glob.h",
@@ -1206,7 +1201,7 @@ fn test_solaris(target: &str) {
     cfg.define("__EXTENSIONS__", None);
     cfg.define("_LCONV_C99", None);
 
-    headers!{
+    headers! {
         cfg:
         "ctype.h",
         "dirent.h",
@@ -1269,14 +1264,13 @@ fn test_solaris(target: &str) {
         "wchar.h",
     }
 
-    cfg.skip_const(move |name| {
-        match name {
-            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" |
-            "DT_SOCK" |"USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX"
-                => true,
-
-            _ => false,
+    cfg.skip_const(move |name| match name {
+        "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK"
+        | "DT_SOCK" | "USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX" => {
+            true
         }
+
+        _ => false,
     });
 
     cfg.skip_fn(move |name| {
@@ -1412,7 +1406,7 @@ fn test_netbsd(target: &str) {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                    s.replace("e_nsec", ".tv_nsec")
+                s.replace("e_nsec", ".tv_nsec")
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
@@ -1444,7 +1438,7 @@ fn test_netbsd(target: &str) {
             // uuid_t is a struct, not an integer.
             n if n.starts_with("pthread") => true,
             // sem_t is a struct or pointer
-            "sem_t"  => true,
+            "sem_t" => true,
             _ => false,
         }
     });
@@ -1614,14 +1608,17 @@ fn test_dragonflybsd(target: &str) {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                    s.replace("e_nsec", ".tv_nsec")
+                s.replace("e_nsec", ".tv_nsec")
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
-            "type_" if struct_ == "input_event"
-                || struct_ == "input_mask"
-                || struct_ == "ff_effect"
-                || struct_ == "rtprio" =>
-                "type".to_string(),
+            "type_"
+                if struct_ == "input_event"
+                    || struct_ == "input_mask"
+                    || struct_ == "ff_effect"
+                    || struct_ == "rtprio" =>
+            {
+                "type".to_string()
+            }
             s => s.to_string(),
         }
     });
