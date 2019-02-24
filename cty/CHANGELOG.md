@@ -5,6 +5,17 @@ This project adheres to $[Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.2.1] - date
+
+### Changed
+
+- `cty` now lives in the `rust-lang/libc` repository
+
+### Added
+
+- On Rust versions older than Rust 1.30.0 `cty` provides a
+  fallback `cty::c_void` type
+
 ## [v0.2.0] - 2019-02-06
 
 ### Changed

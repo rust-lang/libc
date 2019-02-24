@@ -3,7 +3,7 @@ pub type msgqnum_t = ::c_ulong;
 pub type msglen_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
-pub type rlim_t = c_ulong;
+pub type rlim_t = ::c_ulong;
 pub type __priority_which_t = ::c_uint;
 
 s! {

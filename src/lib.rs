@@ -23,6 +23,9 @@
 #![no_std]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 
+extern crate cty;
+pub use cty::*;
+
 #[macro_use]
 mod macros;
 

@@ -3,34 +3,6 @@
 //! More functions and definitions can be found in the more specific modules
 //! according to the platform in question.
 
-pub type int8_t = i8;
-pub type int16_t = i16;
-pub type int32_t = i32;
-pub type int64_t = i64;
-pub type uint8_t = u8;
-pub type uint16_t = u16;
-pub type uint32_t = u32;
-pub type uint64_t = u64;
-
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_int = i32;
-pub type c_uint = u32;
-pub type c_float = f32;
-pub type c_double = f64;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
-pub type intmax_t = i64;
-pub type uintmax_t = u64;
-
-pub type size_t = usize;
-pub type ptrdiff_t = isize;
-pub type intptr_t = isize;
-pub type uintptr_t = usize;
-pub type ssize_t = isize;
-
 pub type pid_t = i32;
 pub type uid_t = u32;
 pub type gid_t = u32;
@@ -88,51 +60,51 @@ s! {
     pub struct rusage {
         pub ru_utime: timeval,
         pub ru_stime: timeval,
-        pub ru_maxrss: c_long,
+        pub ru_maxrss: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad1: u32,
-        pub ru_ixrss: c_long,
+        pub ru_ixrss: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad2: u32,
-        pub ru_idrss: c_long,
+        pub ru_idrss: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad3: u32,
-        pub ru_isrss: c_long,
+        pub ru_isrss: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad4: u32,
-        pub ru_minflt: c_long,
+        pub ru_minflt: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad5: u32,
-        pub ru_majflt: c_long,
+        pub ru_majflt: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad6: u32,
-        pub ru_nswap: c_long,
+        pub ru_nswap: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad7: u32,
-        pub ru_inblock: c_long,
+        pub ru_inblock: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad8: u32,
-        pub ru_oublock: c_long,
+        pub ru_oublock: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad9: u32,
-        pub ru_msgsnd: c_long,
+        pub ru_msgsnd: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad10: u32,
-        pub ru_msgrcv: c_long,
+        pub ru_msgrcv: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad11: u32,
-        pub ru_nsignals: c_long,
+        pub ru_nsignals: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad12: u32,
-        pub ru_nvcsw: c_long,
+        pub ru_nvcsw: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad13: u32,
-        pub ru_nivcsw: c_long,
+        pub ru_nivcsw: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad14: u32,
 
         #[cfg(any(target_env = "musl", target_os = "emscripten"))]
-        __reserved: [c_long; 16],
+        __reserved: [::c_long; 16],
     }
 
     pub struct ipv6_mreq {
@@ -207,8 +179,8 @@ s! {
     }
 }
 
-pub const INT_MIN: c_int = -2147483648;
-pub const INT_MAX: c_int = 2147483647;
+pub const INT_MIN: ::c_int = -2147483648;
+pub const INT_MAX: ::c_int = 2147483647;
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
@@ -372,132 +344,132 @@ impl ::Clone for fpos_t {
 }
 
 extern {
-    pub fn isalnum(c: c_int) -> c_int;
-    pub fn isalpha(c: c_int) -> c_int;
-    pub fn iscntrl(c: c_int) -> c_int;
-    pub fn isdigit(c: c_int) -> c_int;
-    pub fn isgraph(c: c_int) -> c_int;
-    pub fn islower(c: c_int) -> c_int;
-    pub fn isprint(c: c_int) -> c_int;
-    pub fn ispunct(c: c_int) -> c_int;
-    pub fn isspace(c: c_int) -> c_int;
-    pub fn isupper(c: c_int) -> c_int;
-    pub fn isxdigit(c: c_int) -> c_int;
-    pub fn tolower(c: c_int) -> c_int;
-    pub fn toupper(c: c_int) -> c_int;
+    pub fn isalnum(c: ::c_int) -> ::c_int;
+    pub fn isalpha(c: ::c_int) -> ::c_int;
+    pub fn iscntrl(c: ::c_int) -> ::c_int;
+    pub fn isdigit(c: ::c_int) -> ::c_int;
+    pub fn isgraph(c: ::c_int) -> ::c_int;
+    pub fn islower(c: ::c_int) -> ::c_int;
+    pub fn isprint(c: ::c_int) -> ::c_int;
+    pub fn ispunct(c: ::c_int) -> ::c_int;
+    pub fn isspace(c: ::c_int) -> ::c_int;
+    pub fn isupper(c: ::c_int) -> ::c_int;
+    pub fn isxdigit(c: ::c_int) -> ::c_int;
+    pub fn tolower(c: ::c_int) -> ::c_int;
+    pub fn toupper(c: ::c_int) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "fopen$UNIX2003"
     )]
-    pub fn fopen(filename: *const c_char, mode: *const c_char) -> *mut FILE;
+    pub fn fopen(filename: *const ::c_char, mode: *const ::c_char) -> *mut FILE;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "freopen$UNIX2003"
     )]
-    pub fn freopen(filename: *const c_char, mode: *const c_char,
+    pub fn freopen(filename: *const ::c_char, mode: *const ::c_char,
                    file: *mut FILE) -> *mut FILE;
-    pub fn fflush(file: *mut FILE) -> c_int;
-    pub fn fclose(file: *mut FILE) -> c_int;
-    pub fn remove(filename: *const c_char) -> c_int;
-    pub fn rename(oldname: *const c_char, newname: *const c_char) -> c_int;
+    pub fn fflush(file: *mut FILE) -> ::c_int;
+    pub fn fclose(file: *mut FILE) -> ::c_int;
+    pub fn remove(filename: *const ::c_char) -> ::c_int;
+    pub fn rename(oldname: *const ::c_char, newname: *const ::c_char) -> ::c_int;
     pub fn tmpfile() -> *mut FILE;
-    pub fn setvbuf(stream: *mut FILE, buffer: *mut c_char, mode: c_int,
-                   size: size_t) -> c_int;
-    pub fn setbuf(stream: *mut FILE, buf: *mut c_char);
-    pub fn getchar() -> c_int;
-    pub fn putchar(c: c_int) -> c_int;
-    pub fn fgetc(stream: *mut FILE) -> c_int;
-    pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE) -> *mut c_char;
-    pub fn fputc(c: c_int, stream: *mut FILE) -> c_int;
+    pub fn setvbuf(stream: *mut FILE, buffer: *mut ::c_char, mode: ::c_int,
+                   size: ::size_t) -> ::c_int;
+    pub fn setbuf(stream: *mut FILE, buf: *mut ::c_char);
+    pub fn getchar() -> ::c_int;
+    pub fn putchar(c: ::c_int) -> ::c_int;
+    pub fn fgetc(stream: *mut FILE) -> ::c_int;
+    pub fn fgets(buf: *mut ::c_char, n: ::c_int, stream: *mut FILE) -> *mut ::c_char;
+    pub fn fputc(c: ::c_int, stream: *mut FILE) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "fputs$UNIX2003"
     )]
-    pub fn fputs(s: *const c_char, stream: *mut FILE) -> c_int;
-    pub fn puts(s: *const c_char) -> c_int;
-    pub fn ungetc(c: c_int, stream: *mut FILE) -> c_int;
-    pub fn fread(ptr: *mut c_void, size: size_t, nobj: size_t,
-                 stream: *mut FILE) -> size_t;
+    pub fn fputs(s: *const ::c_char, stream: *mut FILE) -> ::c_int;
+    pub fn puts(s: *const ::c_char) -> ::c_int;
+    pub fn ungetc(c: ::c_int, stream: *mut FILE) -> ::c_int;
+    pub fn fread(ptr: *mut ::c_void, size: ::size_t, nobj: ::size_t,
+                 stream: *mut FILE) -> ::size_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "fwrite$UNIX2003"
     )]
-    pub fn fwrite(ptr: *const c_void, size: size_t, nobj: size_t,
-                  stream: *mut FILE) -> size_t;
-    pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
-    pub fn ftell(stream: *mut FILE) -> c_long;
+    pub fn fwrite(ptr: *const ::c_void, size: ::size_t, nobj: ::size_t,
+                  stream: *mut FILE) -> ::size_t;
+    pub fn fseek(stream: *mut FILE, offset: ::c_long, whence: ::c_int) -> ::c_int;
+    pub fn ftell(stream: *mut FILE) -> ::c_long;
     pub fn rewind(stream: *mut FILE);
     #[cfg_attr(target_os = "netbsd", link_name = "__fgetpos50")]
-    pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
+    pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__fsetpos50")]
-    pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> c_int;
-    pub fn feof(stream: *mut FILE) -> c_int;
-    pub fn ferror(stream: *mut FILE) -> c_int;
-    pub fn perror(s: *const c_char);
-    pub fn atoi(s: *const c_char) -> c_int;
+    pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> ::c_int;
+    pub fn feof(stream: *mut FILE) -> ::c_int;
+    pub fn ferror(stream: *mut FILE) -> ::c_int;
+    pub fn perror(s: *const ::c_char);
+    pub fn atoi(s: *const ::c_char) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "strtod$UNIX2003"
     )]
-    pub fn strtod(s: *const c_char, endp: *mut *mut c_char) -> c_double;
-    pub fn strtol(s: *const c_char, endp: *mut *mut c_char,
-                  base: c_int) -> c_long;
-    pub fn strtoul(s: *const c_char, endp: *mut *mut c_char,
-                   base: c_int) -> c_ulong;
-    pub fn calloc(nobj: size_t, size: size_t) -> *mut c_void;
-    pub fn malloc(size: size_t) -> *mut c_void;
-    pub fn realloc(p: *mut c_void, size: size_t) -> *mut c_void;
-    pub fn free(p: *mut c_void);
+    pub fn strtod(s: *const ::c_char, endp: *mut *mut ::c_char) -> ::c_double;
+    pub fn strtol(s: *const ::c_char, endp: *mut *mut ::c_char,
+                  base: ::c_int) -> ::c_long;
+    pub fn strtoul(s: *const ::c_char, endp: *mut *mut ::c_char,
+                   base: ::c_int) -> ::c_ulong;
+    pub fn calloc(nobj: ::size_t, size: ::size_t) -> *mut ::c_void;
+    pub fn malloc(size: ::size_t) -> *mut ::c_void;
+    pub fn realloc(p: *mut ::c_void, size: ::size_t) -> *mut ::c_void;
+    pub fn free(p: *mut ::c_void);
     pub fn abort() -> !;
-    pub fn exit(status: c_int) -> !;
-    pub fn _exit(status: c_int) -> !;
-    pub fn atexit(cb: extern fn()) -> c_int;
+    pub fn exit(status: ::c_int) -> !;
+    pub fn _exit(status: ::c_int) -> !;
+    pub fn atexit(cb: extern fn()) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "system$UNIX2003"
     )]
-    pub fn system(s: *const c_char) -> c_int;
-    pub fn getenv(s: *const c_char) -> *mut c_char;
+    pub fn system(s: *const ::c_char) -> ::c_int;
+    pub fn getenv(s: *const ::c_char) -> *mut ::c_char;
 
-    pub fn strcpy(dst: *mut c_char, src: *const c_char) -> *mut c_char;
-    pub fn strncpy(dst: *mut c_char, src: *const c_char,
-                   n: size_t) -> *mut c_char;
-    pub fn strcat(s: *mut c_char, ct: *const c_char) -> *mut c_char;
-    pub fn strncat(s: *mut c_char, ct: *const c_char,
-                   n: size_t) -> *mut c_char;
-    pub fn strcmp(cs: *const c_char, ct: *const c_char) -> c_int;
-    pub fn strncmp(cs: *const c_char, ct: *const c_char, n: size_t) -> c_int;
-    pub fn strcoll(cs: *const c_char, ct: *const c_char) -> c_int;
-    pub fn strchr(cs: *const c_char, c: c_int) -> *mut c_char;
-    pub fn strrchr(cs: *const c_char, c: c_int) -> *mut c_char;
-    pub fn strspn(cs: *const c_char, ct: *const c_char) -> size_t;
-    pub fn strcspn(cs: *const c_char, ct: *const c_char) -> size_t;
-    pub fn strdup(cs: *const c_char) -> *mut c_char;
-    pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
-    pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
-    pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
-    pub fn strncasecmp(s1: *const c_char, s2: *const c_char,
-                       n: size_t) -> c_int;
-    pub fn strlen(cs: *const c_char) -> size_t;
-    pub fn strnlen(cs: *const c_char, maxlen: size_t) -> size_t;
+    pub fn strcpy(dst: *mut ::c_char, src: *const ::c_char) -> *mut ::c_char;
+    pub fn strncpy(dst: *mut ::c_char, src: *const ::c_char,
+                   n: ::size_t) -> *mut ::c_char;
+    pub fn strcat(s: *mut ::c_char, ct: *const ::c_char) -> *mut ::c_char;
+    pub fn strncat(s: *mut ::c_char, ct: *const ::c_char,
+                   n: ::size_t) -> *mut ::c_char;
+    pub fn strcmp(cs: *const ::c_char, ct: *const ::c_char) -> ::c_int;
+    pub fn strncmp(cs: *const ::c_char, ct: *const ::c_char, n: ::size_t) -> ::c_int;
+    pub fn strcoll(cs: *const ::c_char, ct: *const ::c_char) -> ::c_int;
+    pub fn strchr(cs: *const ::c_char, c: ::c_int) -> *mut ::c_char;
+    pub fn strrchr(cs: *const ::c_char, c: ::c_int) -> *mut ::c_char;
+    pub fn strspn(cs: *const ::c_char, ct: *const ::c_char) -> ::size_t;
+    pub fn strcspn(cs: *const ::c_char, ct: *const ::c_char) -> ::size_t;
+    pub fn strdup(cs: *const ::c_char) -> *mut ::c_char;
+    pub fn strpbrk(cs: *const ::c_char, ct: *const ::c_char) -> *mut ::c_char;
+    pub fn strstr(cs: *const ::c_char, ct: *const ::c_char) -> *mut ::c_char;
+    pub fn strcasecmp(s1: *const ::c_char, s2: *const ::c_char) -> ::c_int;
+    pub fn strncasecmp(s1: *const ::c_char, s2: *const ::c_char,
+                       n: ::size_t) -> ::c_int;
+    pub fn strlen(cs: *const ::c_char) -> ::size_t;
+    pub fn strnlen(cs: *const ::c_char, maxlen: ::size_t) -> ::size_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "strerror$UNIX2003"
     )]
-    pub fn strerror(n: c_int) -> *mut c_char;
-    pub fn strtok(s: *mut c_char, t: *const c_char) -> *mut c_char;
-    pub fn strxfrm(s: *mut c_char, ct: *const c_char, n: size_t) -> size_t;
-    pub fn wcslen(buf: *const wchar_t) -> size_t;
-    pub fn wcstombs(dest: *mut c_char, src: *const wchar_t,
-                    n: size_t) -> ::size_t;
+    pub fn strerror(n: ::c_int) -> *mut ::c_char;
+    pub fn strtok(s: *mut ::c_char, t: *const ::c_char) -> *mut ::c_char;
+    pub fn strxfrm(s: *mut ::c_char, ct: *const ::c_char, n: ::size_t) -> ::size_t;
+    pub fn wcslen(buf: *const ::wchar_t) -> ::size_t;
+    pub fn wcstombs(dest: *mut ::c_char, src: *const ::wchar_t,
+                    n: ::size_t) -> ::size_t;
 
-    pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
-    pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
-    pub fn memcpy(dest: *mut c_void, src: *const c_void,
-                  n: size_t) -> *mut c_void;
-    pub fn memmove(dest: *mut c_void, src: *const c_void,
-                   n: size_t) -> *mut c_void;
-    pub fn memset(dest: *mut c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn memchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    pub fn memcmp(cx: *const ::c_void, ct: *const ::c_void, n: ::size_t) -> ::c_int;
+    pub fn memcpy(dest: *mut ::c_void, src: *const ::c_void,
+                  n: ::size_t) -> *mut ::c_void;
+    pub fn memmove(dest: *mut ::c_void, src: *const ::c_void,
+                   n: ::size_t) -> *mut ::c_void;
+    pub fn memset(dest: *mut ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
 }
 
 extern {
@@ -560,7 +532,7 @@ extern {
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "chmod$UNIX2003")]
-    pub fn chmod(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn chmod(path: *const ::c_char, mode: mode_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fchmod$UNIX2003")]
     pub fn fchmod(fd: ::c_int, mode: mode_t) -> ::c_int;
@@ -570,25 +542,25 @@ extern {
     #[cfg_attr(target_os = "freebsd", link_name = "fstat@FBSD_1.0")]
     pub fn fstat(fildes: ::c_int, buf: *mut stat) -> ::c_int;
 
-    pub fn mkdir(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn mkdir(path: *const ::c_char, mode: mode_t) -> ::c_int;
 
     #[cfg_attr(target_os = "macos", link_name = "stat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__stat50")]
     #[cfg_attr(target_os = "freebsd", link_name = "stat@FBSD_1.0")]
-    pub fn stat(path: *const c_char, buf: *mut stat) -> ::c_int;
+    pub fn stat(path: *const ::c_char, buf: *mut stat) -> ::c_int;
 
     pub fn pclose(stream: *mut ::FILE) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fdopen$UNIX2003")]
-    pub fn fdopen(fd: ::c_int, mode: *const c_char) -> *mut ::FILE;
+    pub fn fdopen(fd: ::c_int, mode: *const ::c_char) -> *mut ::FILE;
     pub fn fileno(stream: *mut ::FILE) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "open$UNIX2003")]
-    pub fn open(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn open(path: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "creat$UNIX2003")]
-    pub fn creat(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn creat(path: *const ::c_char, mode: mode_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fcntl$UNIX2003")]
     pub fn fcntl(fd: ::c_int, cmd: ::c_int, ...) -> ::c_int;
@@ -598,7 +570,7 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "opendir$INODE64$UNIX2003")]
     #[cfg_attr(target_os = "netbsd", link_name = "__opendir30")]
-    pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
+    pub fn opendir(dirname: *const ::c_char) -> *mut ::DIR;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
                link_name = "fdopendir$INODE64")]
@@ -655,15 +627,15 @@ extern {
     pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
                     flags: ::c_int) -> ::c_int;
 
-    pub fn access(path: *const c_char, amode: ::c_int) -> ::c_int;
+    pub fn access(path: *const ::c_char, amode: ::c_int) -> ::c_int;
     pub fn alarm(seconds: ::c_uint) -> ::c_uint;
-    pub fn chdir(dir: *const c_char) -> ::c_int;
+    pub fn chdir(dir: *const ::c_char) -> ::c_int;
     pub fn fchdir(dirfd: ::c_int) -> ::c_int;
-    pub fn chown(path: *const c_char, uid: uid_t,
+    pub fn chown(path: *const ::c_char, uid: uid_t,
                  gid: gid_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "lchown$UNIX2003")]
-    pub fn lchown(path: *const c_char, uid: uid_t,
+    pub fn lchown(path: *const ::c_char, uid: uid_t,
                   gid: gid_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "close$NOCANCEL$UNIX2003")]
@@ -672,41 +644,41 @@ extern {
     pub fn close(fd: ::c_int) -> ::c_int;
     pub fn dup(fd: ::c_int) -> ::c_int;
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
-    pub fn execl(path: *const c_char,
-                 arg0: *const c_char, ...) -> ::c_int;
+    pub fn execl(path: *const ::c_char,
+                 arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execle(path: *const ::c_char,
                   arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execlp(file: *const ::c_char,
                   arg0: *const ::c_char, ...) -> ::c_int;
-    pub fn execv(prog: *const c_char,
-                 argv: *const *const c_char) -> ::c_int;
-    pub fn execve(prog: *const c_char, argv: *const *const c_char,
-                  envp: *const *const c_char)
+    pub fn execv(prog: *const ::c_char,
+                 argv: *const *const ::c_char) -> ::c_int;
+    pub fn execve(prog: *const ::c_char, argv: *const *const ::c_char,
+                  envp: *const *const ::c_char)
                   -> ::c_int;
-    pub fn execvp(c: *const c_char,
-                  argv: *const *const c_char) -> ::c_int;
+    pub fn execvp(c: *const ::c_char,
+                  argv: *const *const ::c_char) -> ::c_int;
     pub fn fork() -> pid_t;
-    pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
-    pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
+    pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> ::c_long;
+    pub fn getcwd(buf: *mut ::c_char, size: ::size_t) -> *mut ::c_char;
     pub fn getegid() -> gid_t;
     pub fn geteuid() -> uid_t;
     pub fn getgid() -> gid_t;
     pub fn getgroups(ngroups_max: ::c_int, groups: *mut gid_t)
                      -> ::c_int;
-    pub fn getlogin() -> *mut c_char;
+    pub fn getlogin() -> *mut ::c_char;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "getopt$UNIX2003")]
-    pub fn getopt(argc: ::c_int, argv: *const *mut c_char,
-                  optstr: *const c_char) -> ::c_int;
+    pub fn getopt(argc: ::c_int, argv: *const *mut ::c_char,
+                  optstr: *const ::c_char) -> ::c_int;
     pub fn getpgid(pid: pid_t) -> pid_t;
     pub fn getpgrp() -> pid_t;
     pub fn getpid() -> pid_t;
     pub fn getppid() -> pid_t;
     pub fn getuid() -> uid_t;
     pub fn isatty(fd: ::c_int) -> ::c_int;
-    pub fn link(src: *const c_char, dst: *const c_char) -> ::c_int;
+    pub fn link(src: *const ::c_char, dst: *const ::c_char) -> ::c_int;
     pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int) -> off_t;
-    pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
+    pub fn pathconf(path: *const ::c_char, name: ::c_int) -> ::c_long;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pause$UNIX2003")]
     pub fn pause() -> ::c_int;
@@ -718,7 +690,7 @@ extern {
                link_name = "read$UNIX2003")]
     pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
                 -> ::ssize_t;
-    pub fn rmdir(path: *const c_char) -> ::c_int;
+    pub fn rmdir(path: *const ::c_char) -> ::c_int;
     pub fn seteuid(uid: uid_t) -> ::c_int;
     pub fn setegid(gid: gid_t) -> ::c_int;
     pub fn setgid(gid: gid_t) -> ::c_int;
@@ -735,8 +707,8 @@ extern {
                      rmtp: *mut timespec) -> ::c_int;
     pub fn tcgetpgrp(fd: ::c_int) -> pid_t;
     pub fn tcsetpgrp(fd: ::c_int, pgrp: ::pid_t) -> ::c_int;
-    pub fn ttyname(fd: ::c_int) -> *mut c_char;
-    pub fn unlink(c: *const c_char) -> ::c_int;
+    pub fn ttyname(fd: ::c_int) -> *mut ::c_char;
+    pub fn unlink(c: *const ::c_char) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "wait$UNIX2003")]
     pub fn wait(status: *mut ::c_int) -> pid_t;
@@ -759,7 +731,7 @@ extern {
     pub fn umask(mask: mode_t) -> mode_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utime50")]
-    pub fn utime(file: *const c_char, buf: *const utimbuf) -> ::c_int;
+    pub fn utime(file: *const ::c_char, buf: *const utimbuf) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                    link_name = "kill$UNIX2003")]
@@ -786,14 +758,14 @@ extern {
                link_name = "munmap$UNIX2003")]
     pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 
-    pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
+    pub fn if_nametoindex(ifname: *const ::c_char) -> ::c_uint;
     pub fn if_indextoname(ifindex: ::c_uint,
                           ifname: *mut ::c_char) -> *mut ::c_char;
 
     #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
     #[cfg_attr(target_os = "freebsd", link_name = "lstat@FBSD_1.0")]
-    pub fn lstat(path: *const c_char, buf: *mut stat) -> ::c_int;
+    pub fn lstat(path: *const ::c_char, buf: *mut stat) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fsync$UNIX2003")]
@@ -801,17 +773,17 @@ extern {
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "setenv$UNIX2003")]
-    pub fn setenv(name: *const c_char, val: *const c_char,
+    pub fn setenv(name: *const ::c_char, val: *const ::c_char,
                   overwrite: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "unsetenv$UNIX2003")]
     #[cfg_attr(target_os = "netbsd", link_name = "__unsetenv13")]
-    pub fn unsetenv(name: *const c_char) -> ::c_int;
+    pub fn unsetenv(name: *const ::c_char) -> ::c_int;
 
-    pub fn symlink(path1: *const c_char,
-                   path2: *const c_char) -> ::c_int;
+    pub fn symlink(path1: *const ::c_char,
+                   path2: *const ::c_char) -> ::c_int;
 
-    pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
+    pub fn truncate(path: *const ::c_char, length: off_t) -> ::c_int;
     pub fn ftruncate(fd: ::c_int, length: off_t) -> ::c_int;
 
     pub fn signal(signum: ::c_int, handler: sighandler_t) -> sighandler_t;
@@ -919,7 +891,7 @@ extern {
                                       -> ::c_int;
     #[cfg_attr(all(target_os = "linux", not(target_env = "musl")),
                link_name = "__xpg_strerror_r")]
-    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
+    pub fn strerror_r(errnum: ::c_int, buf: *mut ::c_char,
                       buflen: ::size_t) -> ::c_int;
 
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_getsockopt")]
@@ -945,8 +917,8 @@ extern {
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
     pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 
-    pub fn getaddrinfo(node: *const c_char,
-                       service: *const c_char,
+    pub fn getaddrinfo(node: *const ::c_char,
+                       service: *const ::c_char,
                        hints: *const addrinfo,
                        res: *mut *mut addrinfo) -> ::c_int;
     pub fn freeaddrinfo(res: *mut addrinfo);
@@ -1002,7 +974,7 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "putenv$UNIX2003")]
     #[cfg_attr(target_os = "netbsd", link_name = "__putenv50")]
-    pub fn putenv(string: *mut c_char) -> ::c_int;
+    pub fn putenv(string: *mut ::c_char) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "poll$UNIX2003")]
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
@@ -1026,11 +998,11 @@ extern {
     pub fn sem_wait(sem: *mut sem_t) -> ::c_int;
     pub fn sem_trywait(sem: *mut sem_t) -> ::c_int;
     pub fn sem_post(sem: *mut sem_t) -> ::c_int;
-    pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
+    pub fn statvfs(path: *const ::c_char, buf: *mut statvfs) -> ::c_int;
     pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
 
-    pub fn readlink(path: *const c_char,
-                    buf: *mut c_char,
+    pub fn readlink(path: *const ::c_char,
+                    buf: *mut ::c_char,
                     bufsz: ::size_t)
                     -> ::ssize_t;
 
@@ -1060,7 +1032,7 @@ extern {
 
     pub fn sysconf(name: ::c_int) -> ::c_long;
 
-    pub fn mkfifo(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn mkfifo(path: *const ::c_char, mode: mode_t) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
                link_name = "pselect$1050")]
@@ -1111,9 +1083,9 @@ extern {
     pub fn ptsname(fd: ::c_int) -> *mut ::c_char;
     pub fn unlockpt(fd: ::c_int) -> ::c_int;
 
-    pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
-    pub fn getline (lineptr: *mut *mut c_char, n: *mut size_t,
-        stream: *mut FILE) -> ssize_t;
+    pub fn strcasestr(cs: *const ::c_char, ct: *const ::c_char) -> *mut ::c_char;
+    pub fn getline (lineptr: *mut *mut ::c_char, n: *mut ::size_t,
+        stream: *mut FILE) -> ::ssize_t;
 }
 
 cfg_if! {
@@ -1159,26 +1131,6 @@ cfg_if! {
         pub use self::hermit::*;
     } else {
         // Unknown target_os
-    }
-}
-
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
     }
 }
 

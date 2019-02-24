@@ -1,6 +1,3 @@
-pub type c_char = u8;
-pub type wchar_t = i32;
-
 s! {
     pub struct ipc_perm {
         __key: ::key_t,

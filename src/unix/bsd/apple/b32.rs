@@ -1,7 +1,5 @@
 //! 32-bit specific Apple (ios/darwin) definitions
 
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type boolean_t = ::c_int;
 
 s! {
@@ -47,7 +45,7 @@ s! {
 
 s_no_extra_traits!{
     pub struct pthread_attr_t {
-        __sig: c_long,
+        __sig: ::c_long,
         __opaque: [::c_char; 36]
     }
 }

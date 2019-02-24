@@ -1,4 +1,3 @@
-pub type wchar_t = i32;
 pub type off_t = i64;
 pub type useconds_t = u32;
 pub type blkcnt_t = i64;
@@ -107,7 +106,7 @@ s_no_extra_traits!{
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 104]
+        pub sun_path: [::c_char; 104]
     }
 
     pub struct utsname {
@@ -648,8 +647,8 @@ extern {
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
-    pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
+    pub fn popen(command: *const ::c_char,
+                 mode: *const ::c_char) -> *mut ::FILE;
     pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
                      mode: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn pthread_create(native: *mut ::pthread_t,

@@ -1,6 +1,3 @@
-pub type c_char = i8;
-pub type wchar_t = i32;
-
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,

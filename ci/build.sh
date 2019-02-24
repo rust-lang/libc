@@ -41,6 +41,11 @@ test_target() {
     fi
 
     # Test that libc builds without any default features (no libstd)
+    (
+        cd cty
+        "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
+        "$CARGO" "+${RUST}" build -vv $opt --target "${TARGET}"
+    )
     "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
 
     # Test that libc builds with default features (e.g. libstd)

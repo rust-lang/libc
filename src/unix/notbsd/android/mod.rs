@@ -2041,8 +2041,8 @@ extern {
                                         pshared: *mut ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
-    pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
+    pub fn popen(command: *const ::c_char,
+                 mode: *const ::c_char) -> *mut ::FILE;
     pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
                      mode: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn pthread_create(native: *mut ::pthread_t,

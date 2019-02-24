@@ -1,8 +1,5 @@
 use pthread_mutex_t;
 
-pub type c_long = i32;
-pub type c_ulong = u32;
-
 s! {
     pub struct statvfs {
         pub f_bsize: ::c_ulong,

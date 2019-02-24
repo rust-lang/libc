@@ -1,7 +1,3 @@
-pub type c_char = i8;
-pub type c_long = i64;
-pub type c_ulong = u64;
-
 pub type clockid_t = ::c_int;
 pub type blkcnt_t = ::c_long;
 pub type clock_t = ::c_long;
@@ -19,7 +15,6 @@ pub type rlim_t = ::c_ulong;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type time_t = ::c_long;
-pub type wchar_t = ::c_int;
 pub type nfds_t = ::c_ulong;
 
 pub type suseconds_t = ::c_long;
@@ -351,7 +346,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 108]
+        pub sun_path: [::c_char; 108]
     }
 
     #[allow(missing_debug_implementations)]
@@ -1576,7 +1571,7 @@ extern {
 
     pub fn stack_getbounds(sp: *mut ::stack_t) -> ::c_int;
     pub fn mincore(addr: *const ::c_void, len: ::size_t,
-                   vec: *mut c_char) -> ::c_int;
+                   vec: *mut ::c_char) -> ::c_int;
     pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;
@@ -1790,8 +1785,8 @@ extern {
     pub fn setgrent();
     pub fn endgrent();
     pub fn getgrent() -> *mut ::group;
-    pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
+    pub fn popen(command: *const ::c_char,
+                 mode: *const ::c_char) -> *mut ::FILE;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;

@@ -1,12 +1,8 @@
 use pthread_mutex_t;
 
-pub type c_char = i8;
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type clock_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
-pub type wchar_t = i32;
 pub type off_t = i32;
 pub type ino_t = u32;
 pub type blkcnt_t = i32;

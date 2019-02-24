@@ -1,5 +1,3 @@
-pub type c_char = i8;
-pub type wchar_t = i32;
 pub type greg_t = i32;
 
 s! {
@@ -65,7 +63,7 @@ s! {
         pub u_ar0: *mut user_regs_struct,
         pub u_fpstate: *mut user_fpregs_struct,
         pub magic: ::c_ulong,
-        pub u_comm: [c_char; 32],
+        pub u_comm: [::c_char; 32],
         pub u_debugreg: [::c_int; 8],
     }
 

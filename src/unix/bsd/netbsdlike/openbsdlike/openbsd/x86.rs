@@ -1,7 +1,3 @@
-pub type c_long = i32;
-pub type c_ulong = u32;
-pub type c_char = i8;
-
 // should be pub(crate), but that requires Rust 1.18.0
 cfg_if! {
     if #[cfg(libc_const_size_of)] {

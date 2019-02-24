@@ -4,35 +4,6 @@
 //! according to the platform in question.
 
 // PUB_TYPE
-
-pub type int8_t = i8;
-pub type int16_t = i16;
-pub type int32_t = i32;
-pub type int64_t = i64;
-pub type uint8_t = u8;
-pub type uint16_t = u16;
-pub type uint32_t = u32;
-pub type uint64_t = u64;
-
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_int = i32;
-pub type c_uint = u32;
-pub type c_float = f32;
-pub type c_double = f64;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
-pub type intmax_t = i64;
-pub type uintmax_t = u64;
-
-pub type size_t = usize;
-pub type ptrdiff_t = isize;
-pub type intptr_t = isize;
-pub type uintptr_t = usize;
-pub type ssize_t = isize;
-
 pub type pid_t = i32;
 pub type uid_t = u32;
 pub type gid_t = u32;
@@ -50,7 +21,7 @@ pub type id_t = ::c_uint;
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
-pub type pthread_t = c_ulong;
+pub type pthread_t = ::c_ulong;
 pub type mode_t = u32;
 pub type ino64_t = u64;
 pub type off64_t = i64;
@@ -79,9 +50,9 @@ pub type Elf64_Off = u64;
 pub type Elf64_Addr = u64;
 pub type Elf64_Xword = u64;
 
-pub type clock_t = c_long;
-pub type time_t = c_long;
-pub type suseconds_t = c_long;
+pub type clock_t = ::c_long;
+pub type time_t = ::c_long;
+pub type suseconds_t = ::c_long;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
@@ -92,9 +63,6 @@ pub type msglen_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
-
-pub type c_long = i64;
-pub type c_ulong = u64;
 
 // FIXME: why are these uninhabited types? that seems... wrong?
 // Presumably these should be `()` or an `extern type` (when that stabilizes).
@@ -158,46 +126,46 @@ s! {
     pub struct rusage {
         pub ru_utime: timeval,
         pub ru_stime: timeval,
-        pub ru_maxrss: c_long,
+        pub ru_maxrss: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad1: u32,
-        pub ru_ixrss: c_long,
+        pub ru_ixrss: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad2: u32,
-        pub ru_idrss: c_long,
+        pub ru_idrss: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad3: u32,
-        pub ru_isrss: c_long,
+        pub ru_isrss: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad4: u32,
-        pub ru_minflt: c_long,
+        pub ru_minflt: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad5: u32,
-        pub ru_majflt: c_long,
+        pub ru_majflt: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad6: u32,
-        pub ru_nswap: c_long,
+        pub ru_nswap: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad7: u32,
-        pub ru_inblock: c_long,
+        pub ru_inblock: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad8: u32,
-        pub ru_oublock: c_long,
+        pub ru_oublock: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad9: u32,
-        pub ru_msgsnd: c_long,
+        pub ru_msgsnd: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad10: u32,
-        pub ru_msgrcv: c_long,
+        pub ru_msgrcv: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad11: u32,
-        pub ru_nsignals: c_long,
+        pub ru_nsignals: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad12: u32,
-        pub ru_nvcsw: c_long,
+        pub ru_nvcsw: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad13: u32,
-        pub ru_nivcsw: c_long,
+        pub ru_nivcsw: ::c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad14: u32,
     }
@@ -311,12 +279,12 @@ s! {
     }
 
     pub struct termios {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_line: ::cc_t,
-        pub c_cc: [::cc_t; ::NCCS],
+        pub ::c_iflag: ::tcflag_t,
+        pub ::c_oflag: ::tcflag_t,
+        pub ::c_cflag: ::tcflag_t,
+        pub ::c_lflag: ::tcflag_t,
+        pub ::c_line: ::cc_t,
+        pub ::c_cc: [::cc_t; ::NCCS],
         pub __c_ispeed: ::speed_t,
         pub __c_ospeed: ::speed_t,
     }
@@ -364,7 +332,7 @@ s! {
 
         pub ai_addr: *mut ::sockaddr,
 
-        pub ai_canonname: *mut c_char,
+        pub ai_canonname: *mut ::c_char,
 
         pub ai_next: *mut addrinfo,
     }
@@ -467,7 +435,7 @@ s! {
 
     pub struct glob_t {
         pub gl_pathc: ::size_t,
-        pub gl_pathv: *mut *mut c_char,
+        pub gl_pathv: *mut *mut ::c_char,
         pub gl_offs: ::size_t,
         pub gl_flags: ::c_int,
 
@@ -480,7 +448,7 @@ s! {
 
     pub struct ifaddrs {
         pub ifa_next: *mut ifaddrs,
-        pub ifa_name: *mut c_char,
+        pub ifa_name: *mut ::c_char,
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
@@ -910,14 +878,14 @@ s! {
     }
 
     pub struct termios2 {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_line: ::cc_t,
-        pub c_cc: [::cc_t; 19],
-        pub c_ispeed: ::speed_t,
-        pub c_ospeed: ::speed_t,
+        pub ::c_iflag: ::tcflag_t,
+        pub ::c_oflag: ::tcflag_t,
+        pub ::c_cflag: ::tcflag_t,
+        pub ::c_lflag: ::tcflag_t,
+        pub ::c_line: ::cc_t,
+        pub ::c_cc: [::cc_t; 19],
+        pub ::c_ispeed: ::speed_t,
+        pub ::c_ospeed: ::speed_t,
     }
 }
 
@@ -984,8 +952,8 @@ s_no_extra_traits! {
 
 // PUB_CONST
 
-pub const INT_MIN: c_int = -2147483648;
-pub const INT_MAX: c_int = 2147483647;
+pub const INT_MIN: ::c_int = -2147483648;
+pub const INT_MAX: ::c_int = 2147483647;
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
@@ -1673,8 +1641,8 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
-pub const UTIME_OMIT: c_long = 1073741822;
-pub const UTIME_NOW: c_long = 1073741823;
+pub const UTIME_OMIT: ::c_long = 1073741822;
+pub const UTIME_NOW: ::c_long = 1073741823;
 
 pub const POLLIN: ::c_short = 0x1;
 pub const POLLPRI: ::c_short = 0x2;
@@ -2965,105 +2933,105 @@ impl ::Clone for fpos_t {
 }
 
 extern {
-    pub fn isalnum(c: c_int) -> c_int;
-    pub fn isalpha(c: c_int) -> c_int;
-    pub fn iscntrl(c: c_int) -> c_int;
-    pub fn isdigit(c: c_int) -> c_int;
-    pub fn isgraph(c: c_int) -> c_int;
-    pub fn islower(c: c_int) -> c_int;
-    pub fn isprint(c: c_int) -> c_int;
-    pub fn ispunct(c: c_int) -> c_int;
-    pub fn isspace(c: c_int) -> c_int;
-    pub fn isupper(c: c_int) -> c_int;
-    pub fn isxdigit(c: c_int) -> c_int;
-    pub fn tolower(c: c_int) -> c_int;
-    pub fn toupper(c: c_int) -> c_int;
-    pub fn fopen(filename: *const c_char, mode: *const c_char) -> *mut FILE;
-    pub fn freopen(filename: *const c_char, mode: *const c_char,
+    pub fn isalnum(c: ::c_int) -> ::c_int;
+    pub fn isalpha(c: ::c_int) -> ::c_int;
+    pub fn iscntrl(c: ::c_int) -> ::c_int;
+    pub fn isdigit(c: ::c_int) -> ::c_int;
+    pub fn isgraph(c: ::c_int) -> ::c_int;
+    pub fn islower(c: ::c_int) -> ::c_int;
+    pub fn isprint(c: ::c_int) -> ::c_int;
+    pub fn ispunct(c: ::c_int) -> ::c_int;
+    pub fn isspace(c: ::c_int) -> ::c_int;
+    pub fn isupper(c: ::c_int) -> ::c_int;
+    pub fn isxdigit(c: ::c_int) -> ::c_int;
+    pub fn tolower(c: ::c_int) -> ::c_int;
+    pub fn toupper(c: ::c_int) -> ::c_int;
+    pub fn fopen(filename: *const ::c_char, mode: *const ::c_char) -> *mut FILE;
+    pub fn freopen(filename: *const ::c_char, mode: *const ::c_char,
                    file: *mut FILE) -> *mut FILE;
-    pub fn fflush(file: *mut FILE) -> c_int;
-    pub fn fclose(file: *mut FILE) -> c_int;
-    pub fn remove(filename: *const c_char) -> c_int;
-    pub fn rename(oldname: *const c_char, newname: *const c_char) -> c_int;
+    pub fn fflush(file: *mut FILE) -> ::c_int;
+    pub fn fclose(file: *mut FILE) -> ::c_int;
+    pub fn remove(filename: *const ::c_char) -> ::c_int;
+    pub fn rename(oldname: *const ::c_char, newname: *const ::c_char) -> ::c_int;
     pub fn tmpfile() -> *mut FILE;
-    pub fn setvbuf(stream: *mut FILE, buffer: *mut c_char, mode: c_int,
-                   size: size_t) -> c_int;
-    pub fn setbuf(stream: *mut FILE, buf: *mut c_char);
-    pub fn getchar() -> c_int;
-    pub fn putchar(c: c_int) -> c_int;
-    pub fn fgetc(stream: *mut FILE) -> c_int;
-    pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE) -> *mut c_char;
-    pub fn fputc(c: c_int, stream: *mut FILE) -> c_int;
-    pub fn fputs(s: *const c_char, stream: *mut FILE) -> c_int;
-    pub fn puts(s: *const c_char) -> c_int;
-    pub fn ungetc(c: c_int, stream: *mut FILE) -> c_int;
-    pub fn fread(ptr: *mut c_void, size: size_t, nobj: size_t,
-                 stream: *mut FILE) -> size_t;
-    pub fn fwrite(ptr: *const c_void, size: size_t, nobj: size_t,
-                  stream: *mut FILE) -> size_t;
-    pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
-    pub fn ftell(stream: *mut FILE) -> c_long;
+    pub fn setvbuf(stream: *mut FILE, buffer: *mut ::c_char, mode: ::c_int,
+                   size: ::size_t) -> ::c_int;
+    pub fn setbuf(stream: *mut FILE, buf: *mut ::c_char);
+    pub fn getchar() -> ::c_int;
+    pub fn putchar(c: ::c_int) -> ::c_int;
+    pub fn fgetc(stream: *mut FILE) -> ::c_int;
+    pub fn fgets(buf: *mut ::c_char, n: ::c_int, stream: *mut FILE) -> *mut ::c_char;
+    pub fn fputc(c: ::c_int, stream: *mut FILE) -> ::c_int;
+    pub fn fputs(s: *const ::c_char, stream: *mut FILE) -> ::c_int;
+    pub fn puts(s: *const ::c_char) -> ::c_int;
+    pub fn ungetc(c: ::c_int, stream: *mut FILE) -> ::c_int;
+    pub fn fread(ptr: *mut ::c_void, size: ::size_t, nobj: ::size_t,
+                 stream: *mut FILE) -> ::size_t;
+    pub fn fwrite(ptr: *const ::c_void, size: ::size_t, nobj: ::size_t,
+                  stream: *mut FILE) -> ::size_t;
+    pub fn fseek(stream: *mut FILE, offset: ::c_long, whence: ::c_int) -> ::c_int;
+    pub fn ftell(stream: *mut FILE) -> ::c_long;
     pub fn rewind(stream: *mut FILE);
-    pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
-    pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> c_int;
-    pub fn feof(stream: *mut FILE) -> c_int;
-    pub fn ferror(stream: *mut FILE) -> c_int;
-    pub fn perror(s: *const c_char);
-    pub fn atoi(s: *const c_char) -> c_int;
-    pub fn strtod(s: *const c_char, endp: *mut *mut c_char) -> c_double;
-    pub fn strtol(s: *const c_char, endp: *mut *mut c_char,
-                  base: c_int) -> c_long;
-    pub fn strtoul(s: *const c_char, endp: *mut *mut c_char,
-                   base: c_int) -> c_ulong;
-    pub fn calloc(nobj: size_t, size: size_t) -> *mut c_void;
-    pub fn malloc(size: size_t) -> *mut c_void;
-    pub fn realloc(p: *mut c_void, size: size_t) -> *mut c_void;
-    pub fn free(p: *mut c_void);
+    pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> ::c_int;
+    pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> ::c_int;
+    pub fn feof(stream: *mut FILE) -> ::c_int;
+    pub fn ferror(stream: *mut FILE) -> ::c_int;
+    pub fn perror(s: *const ::c_char);
+    pub fn atoi(s: *const ::c_char) -> ::c_int;
+    pub fn strtod(s: *const ::c_char, endp: *mut *mut ::c_char) -> ::c_double;
+    pub fn strtol(s: *const ::c_char, endp: *mut *mut ::c_char,
+                  base: ::c_int) -> ::c_long;
+    pub fn strtoul(s: *const ::c_char, endp: *mut *mut ::c_char,
+                   base: ::c_int) -> ::c_ulong;
+    pub fn calloc(nobj: ::size_t, size: ::size_t) -> *mut ::c_void;
+    pub fn malloc(size: ::size_t) -> *mut ::c_void;
+    pub fn realloc(p: *mut ::c_void, size: ::size_t) -> *mut ::c_void;
+    pub fn free(p: *mut ::c_void);
     pub fn abort() -> !;
-    pub fn exit(status: c_int) -> !;
-    pub fn _exit(status: c_int) -> !;
-    pub fn atexit(cb: extern fn()) -> c_int;
-    pub fn system(s: *const c_char) -> c_int;
-    pub fn getenv(s: *const c_char) -> *mut c_char;
+    pub fn exit(status: ::c_int) -> !;
+    pub fn _exit(status: ::c_int) -> !;
+    pub fn atexit(cb: extern fn()) -> ::c_int;
+    pub fn system(s: *const ::c_char) -> ::c_int;
+    pub fn getenv(s: *const ::c_char) -> *mut ::c_char;
 
-    pub fn strcpy(dst: *mut c_char, src: *const c_char) -> *mut c_char;
-    pub fn strncpy(dst: *mut c_char, src: *const c_char,
-                   n: size_t) -> *mut c_char;
-    pub fn strcat(s: *mut c_char, ct: *const c_char) -> *mut c_char;
-    pub fn strncat(s: *mut c_char, ct: *const c_char,
-                   n: size_t) -> *mut c_char;
-    pub fn strcmp(cs: *const c_char, ct: *const c_char) -> c_int;
-    pub fn strncmp(cs: *const c_char, ct: *const c_char, n: size_t) -> c_int;
-    pub fn strcoll(cs: *const c_char, ct: *const c_char) -> c_int;
-    pub fn strchr(cs: *const c_char, c: c_int) -> *mut c_char;
-    pub fn strrchr(cs: *const c_char, c: c_int) -> *mut c_char;
-    pub fn strspn(cs: *const c_char, ct: *const c_char) -> size_t;
-    pub fn strcspn(cs: *const c_char, ct: *const c_char) -> size_t;
-    pub fn strdup(cs: *const c_char) -> *mut c_char;
-    pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
-    pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
-    pub fn strlen(cs: *const c_char) -> size_t;
-    pub fn strnlen(cs: *const c_char, maxlen: size_t) -> size_t;
-    pub fn strerror(n: c_int) -> *mut c_char;
-    pub fn strtok(s: *mut c_char, t: *const c_char) -> *mut c_char;
-    pub fn strxfrm(s: *mut c_char, ct: *const c_char, n: size_t) -> size_t;
-    pub fn wcslen(buf: *const wchar_t) -> size_t;
-    pub fn wcstombs(dest: *mut c_char, src: *const wchar_t,
-                    n: size_t) -> ::size_t;
+    pub fn strcpy(dst: *mut ::c_char, src: *const ::c_char) -> *mut ::c_char;
+    pub fn strncpy(dst: *mut ::c_char, src: *const ::c_char,
+                   n: ::size_t) -> *mut ::c_char;
+    pub fn strcat(s: *mut ::c_char, ct: *const ::c_char) -> *mut ::c_char;
+    pub fn strncat(s: *mut ::c_char, ct: *const ::c_char,
+                   n: ::size_t) -> *mut ::c_char;
+    pub fn strcmp(cs: *const ::c_char, ct: *const ::c_char) -> ::c_int;
+    pub fn strncmp(cs: *const ::c_char, ct: *const ::c_char, n: ::size_t) -> ::c_int;
+    pub fn strcoll(cs: *const ::c_char, ct: *const ::c_char) -> ::c_int;
+    pub fn strchr(cs: *const ::c_char, c: ::c_int) -> *mut ::c_char;
+    pub fn strrchr(cs: *const ::c_char, c: ::c_int) -> *mut ::c_char;
+    pub fn strspn(cs: *const ::c_char, ct: *const ::c_char) -> ::size_t;
+    pub fn strcspn(cs: *const ::c_char, ct: *const ::c_char) -> ::size_t;
+    pub fn strdup(cs: *const ::c_char) -> *mut ::c_char;
+    pub fn strpbrk(cs: *const ::c_char, ct: *const ::c_char) -> *mut ::c_char;
+    pub fn strstr(cs: *const ::c_char, ct: *const ::c_char) -> *mut ::c_char;
+    pub fn strlen(cs: *const ::c_char) -> ::size_t;
+    pub fn strnlen(cs: *const ::c_char, maxlen: ::size_t) -> ::size_t;
+    pub fn strerror(n: ::c_int) -> *mut ::c_char;
+    pub fn strtok(s: *mut ::c_char, t: *const ::c_char) -> *mut ::c_char;
+    pub fn strxfrm(s: *mut ::c_char, ct: *const ::c_char, n: ::size_t) -> ::size_t;
+    pub fn wcslen(buf: *const ::wchar_t) -> ::size_t;
+    pub fn wcstombs(dest: *mut ::c_char, src: *const ::wchar_t,
+                    n: ::size_t) -> ::size_t;
 
-    pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
-    pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
-    pub fn memcpy(dest: *mut c_void, src: *const c_void,
-                  n: size_t) -> *mut c_void;
-    pub fn memmove(dest: *mut c_void, src: *const c_void,
-                   n: size_t) -> *mut c_void;
-    pub fn memset(dest: *mut c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn memchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    pub fn memcmp(cx: *const ::c_void, ct: *const ::c_void, n: ::size_t) -> ::c_int;
+    pub fn memcpy(dest: *mut ::c_void, src: *const ::c_void,
+                  n: ::size_t) -> *mut ::c_void;
+    pub fn memmove(dest: *mut ::c_void, src: *const ::c_void,
+                   n: ::size_t) -> *mut ::c_void;
+    pub fn memset(dest: *mut ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
 
-    pub fn abs(i: c_int) -> c_int;
-    pub fn atof(s: *const c_char) -> c_double;
-    pub fn labs(i: c_long) -> c_long;
-    pub fn rand() -> c_int;
-    pub fn srand(seed: c_uint);
+    pub fn abs(i: ::c_int) -> ::c_int;
+    pub fn atof(s: *const ::c_char) -> ::c_double;
+    pub fn labs(i: ::c_long) -> ::c_long;
+    pub fn rand() -> ::c_int;
+    pub fn srand(seed: ::c_uint);
 
     pub fn getpwnam(name: *const ::c_char) -> *mut passwd;
     pub fn getpwuid(uid: ::uid_t) -> *mut passwd;
@@ -3100,24 +3068,24 @@ extern {
                   addrlen: socklen_t) -> ::ssize_t;
     pub fn shutdown(socket: ::c_int, how: ::c_int) -> ::c_int;
 
-    pub fn chmod(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn chmod(path: *const ::c_char, mode: mode_t) -> ::c_int;
     pub fn fchmod(fd: ::c_int, mode: mode_t) -> ::c_int;
 
     pub fn fstat(fildes: ::c_int, buf: *mut stat) -> ::c_int;
 
-    pub fn mkdir(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn mkdir(path: *const ::c_char, mode: mode_t) -> ::c_int;
 
-    pub fn stat(path: *const c_char, buf: *mut stat) -> ::c_int;
+    pub fn stat(path: *const ::c_char, buf: *mut stat) -> ::c_int;
 
     pub fn pclose(stream: *mut ::FILE) -> ::c_int;
-    pub fn fdopen(fd: ::c_int, mode: *const c_char) -> *mut ::FILE;
+    pub fn fdopen(fd: ::c_int, mode: *const ::c_char) -> *mut ::FILE;
     pub fn fileno(stream: *mut ::FILE) -> ::c_int;
 
-    pub fn open(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
-    pub fn creat(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn open(path: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn creat(path: *const ::c_char, mode: mode_t) -> ::c_int;
     pub fn fcntl(fd: ::c_int, cmd: ::c_int, ...) -> ::c_int;
 
-    pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
+    pub fn opendir(dirname: *const ::c_char) -> *mut ::DIR;
     pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
     pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
                      result: *mut *mut ::dirent) -> ::c_int;
@@ -3151,50 +3119,50 @@ extern {
     pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
                     flags: ::c_int) -> ::c_int;
 
-    pub fn access(path: *const c_char, amode: ::c_int) -> ::c_int;
+    pub fn access(path: *const ::c_char, amode: ::c_int) -> ::c_int;
     pub fn alarm(seconds: ::c_uint) -> ::c_uint;
-    pub fn chdir(dir: *const c_char) -> ::c_int;
+    pub fn chdir(dir: *const ::c_char) -> ::c_int;
     pub fn fchdir(dirfd: ::c_int) -> ::c_int;
-    pub fn chown(path: *const c_char, uid: uid_t,
+    pub fn chown(path: *const ::c_char, uid: uid_t,
                  gid: gid_t) -> ::c_int;
-    pub fn lchown(path: *const c_char, uid: uid_t,
+    pub fn lchown(path: *const ::c_char, uid: uid_t,
                   gid: gid_t) -> ::c_int;
     pub fn close(fd: ::c_int) -> ::c_int;
     pub fn dup(fd: ::c_int) -> ::c_int;
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
-    pub fn execl(path: *const c_char,
-                 arg0: *const c_char, ...) -> ::c_int;
+    pub fn execl(path: *const ::c_char,
+                 arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execle(path: *const ::c_char,
                   arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execlp(file: *const ::c_char,
                   arg0: *const ::c_char, ...) -> ::c_int;
-    pub fn execv(prog: *const c_char,
-                 argv: *const *const c_char) -> ::c_int;
-    pub fn execve(prog: *const c_char, argv: *const *const c_char,
-                  envp: *const *const c_char)
+    pub fn execv(prog: *const ::c_char,
+                 argv: *const *const ::c_char) -> ::c_int;
+    pub fn execve(prog: *const ::c_char, argv: *const *const ::c_char,
+                  envp: *const *const ::c_char)
                   -> ::c_int;
-    pub fn execvp(c: *const c_char,
-                  argv: *const *const c_char) -> ::c_int;
+    pub fn execvp(c: *const ::c_char,
+                  argv: *const *const ::c_char) -> ::c_int;
     pub fn fork() -> pid_t;
-    pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
-    pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
+    pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> ::c_long;
+    pub fn getcwd(buf: *mut ::c_char, size: ::size_t) -> *mut ::c_char;
     pub fn getegid() -> gid_t;
     pub fn geteuid() -> uid_t;
     pub fn getgid() -> gid_t;
     pub fn getgroups(ngroups_max: ::c_int, groups: *mut gid_t)
                      -> ::c_int;
-    pub fn getlogin() -> *mut c_char;
-    pub fn getopt(argc: ::c_int, argv: *const *mut c_char,
-                  optstr: *const c_char) -> ::c_int;
+    pub fn getlogin() -> *mut ::c_char;
+    pub fn getopt(argc: ::c_int, argv: *const *mut ::c_char,
+                  optstr: *const ::c_char) -> ::c_int;
     pub fn getpgid(pid: pid_t) -> pid_t;
     pub fn getpgrp() -> pid_t;
     pub fn getpid() -> pid_t;
     pub fn getppid() -> pid_t;
     pub fn getuid() -> uid_t;
     pub fn isatty(fd: ::c_int) -> ::c_int;
-    pub fn link(src: *const c_char, dst: *const c_char) -> ::c_int;
+    pub fn link(src: *const ::c_char, dst: *const ::c_char) -> ::c_int;
     pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int) -> off_t;
-    pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
+    pub fn pathconf(path: *const ::c_char, name: ::c_int) -> ::c_long;
     pub fn pause() -> ::c_int;
     pub fn pipe(fds: *mut ::c_int) -> ::c_int;
     pub fn posix_memalign(memptr: *mut *mut ::c_void,
@@ -3202,7 +3170,7 @@ extern {
                       size: ::size_t) -> ::c_int;
     pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
                 -> ::ssize_t;
-    pub fn rmdir(path: *const c_char) -> ::c_int;
+    pub fn rmdir(path: *const ::c_char) -> ::c_int;
     pub fn seteuid(uid: uid_t) -> ::c_int;
     pub fn setegid(gid: gid_t) -> ::c_int;
     pub fn setgid(gid: gid_t) -> ::c_int;
@@ -3214,8 +3182,8 @@ extern {
                      rmtp: *mut timespec) -> ::c_int;
     pub fn tcgetpgrp(fd: ::c_int) -> pid_t;
     pub fn tcsetpgrp(fd: ::c_int, pgrp: ::pid_t) -> ::c_int;
-    pub fn ttyname(fd: ::c_int) -> *mut c_char;
-    pub fn unlink(c: *const c_char) -> ::c_int;
+    pub fn ttyname(fd: ::c_int) -> *mut ::c_char;
+    pub fn unlink(c: *const ::c_char) -> ::c_int;
     pub fn wait(status: *mut ::c_int) -> pid_t;
     pub fn waitpid(pid: pid_t, status: *mut ::c_int, options: ::c_int)
                    -> pid_t;
@@ -3227,7 +3195,7 @@ extern {
                   offset: off_t) -> ::ssize_t;
     pub fn umask(mask: mode_t) -> mode_t;
 
-    pub fn utime(file: *const c_char, buf: *const utimbuf) -> ::c_int;
+    pub fn utime(file: *const ::c_char, buf: *const utimbuf) -> ::c_int;
 
     pub fn kill(pid: pid_t, sig: ::c_int) -> ::c_int;
 
@@ -3245,20 +3213,20 @@ extern {
                 -> *mut ::c_void;
     pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 
-    pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
+    pub fn if_nametoindex(ifname: *const ::c_char) -> ::c_uint;
     pub fn if_indextoname(ifindex: ::c_uint,
                           ifname: *mut ::c_char) -> *mut ::c_char;
 
-    pub fn lstat(path: *const c_char, buf: *mut stat) -> ::c_int;
+    pub fn lstat(path: *const ::c_char, buf: *mut stat) -> ::c_int;
 
     pub fn fsync(fd: ::c_int) -> ::c_int;
 
-    pub fn setenv(name: *const c_char, val: *const c_char,
+    pub fn setenv(name: *const ::c_char, val: *const ::c_char,
                   overwrite: ::c_int) -> ::c_int;
-    pub fn unsetenv(name: *const c_char) -> ::c_int;
+    pub fn unsetenv(name: *const ::c_char) -> ::c_int;
 
-    pub fn symlink(path1: *const c_char,
-                   path2: *const c_char) -> ::c_int;
+    pub fn symlink(path1: *const ::c_char,
+                   path2: *const ::c_char) -> ::c_int;
 
     pub fn ftruncate(fd: ::c_int, length: off_t) -> ::c_int;
 
@@ -3331,7 +3299,7 @@ extern {
     pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
     pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t)
                                       -> ::c_int;
-    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
+    pub fn strerror_r(errnum: ::c_int, buf: *mut ::c_char,
                       buflen: ::size_t) -> ::c_int;
 
     pub fn getsockopt(sockfd: ::c_int,
@@ -3354,8 +3322,8 @@ extern {
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
     pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 
-    pub fn getaddrinfo(node: *const c_char,
-                       service: *const c_char,
+    pub fn getaddrinfo(node: *const ::c_char,
+                       service: *const ::c_char,
                        hints: *const addrinfo,
                        res: *mut *mut addrinfo) -> ::c_int;
     pub fn freeaddrinfo(res: *mut addrinfo);
@@ -3383,7 +3351,7 @@ extern {
                 flags: ::c_int) -> ::ssize_t;
     pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                 flags: ::c_int) -> ::ssize_t;
-    pub fn putenv(string: *mut c_char) -> ::c_int;
+    pub fn putenv(string: *mut ::c_char) -> ::c_int;
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
     pub fn select(nfds: ::c_int,
                   readfs: *mut fd_set,
@@ -3402,11 +3370,11 @@ extern {
                     pshared: ::c_int,
                     value: ::c_uint)
                     -> ::c_int;
-    pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
+    pub fn statvfs(path: *const ::c_char, buf: *mut statvfs) -> ::c_int;
     pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
 
-    pub fn readlink(path: *const c_char,
-                    buf: *mut c_char,
+    pub fn readlink(path: *const ::c_char,
+                    buf: *mut ::c_char,
                     bufsz: ::size_t)
                     -> ::ssize_t;
 
@@ -3428,7 +3396,7 @@ extern {
 
     pub fn sysconf(name: ::c_int) -> ::c_long;
 
-    pub fn mkfifo(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn mkfifo(path: *const ::c_char, mode: mode_t) -> ::c_int;
 
     pub fn pselect(nfds: ::c_int,
                    readfs: *mut fd_set,
@@ -3509,14 +3477,14 @@ extern {
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
-    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn creat64(path: *const ::c_char, mode: mode_t) -> ::c_int;
     pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
-    pub fn fstatat64(dirfd: ::c_int, pathname: *const c_char,
+    pub fn fstatat64(dirfd: ::c_int, pathname: *const ::c_char,
                      buf: *mut stat64, flags: ::c_int) -> ::c_int;
     pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
     pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
     pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
-    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn lstat64(path: *const ::c_char, buf: *mut stat64) -> ::c_int;
     pub fn mmap64(addr: *mut ::c_void,
                   len: ::size_t,
                   prot: ::c_int,
@@ -3524,9 +3492,9 @@ extern {
                   fd: ::c_int,
                   offset: off64_t)
                   -> *mut ::c_void;
-    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn open64(path: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
     pub fn openat64(fd: ::c_int,
-                    path: *const c_char,
+                    path: *const ::c_char,
                     oflag: ::c_int, ...) -> ::c_int;
     pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
                    offset: off64_t) -> ::ssize_t;
@@ -3544,8 +3512,8 @@ extern {
     pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
                        result: *mut *mut ::dirent64) -> ::c_int;
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
-    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-    pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
+    pub fn stat64(path: *const ::c_char, buf: *mut stat64) -> ::c_int;
+    pub fn truncate64(path: *const ::c_char, length: off64_t) -> ::c_int;
 
     pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
 
@@ -3622,7 +3590,7 @@ extern {
     pub fn getspent() -> *mut spwd;
     pub fn getspnam(__name: *const ::c_char) -> *mut spwd;
 
-    pub fn shm_open(name: *const c_char, oflag: ::c_int,
+    pub fn shm_open(name: *const ::c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
 
     // System V IPC
@@ -3651,9 +3619,9 @@ extern {
                     -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;
 
-    pub fn fopen64(filename: *const c_char,
-                   mode: *const c_char) -> *mut ::FILE;
-    pub fn freopen64(filename: *const c_char, mode: *const c_char,
+    pub fn fopen64(filename: *const ::c_char,
+                   mode: *const ::c_char) -> *mut ::FILE;
+    pub fn freopen64(filename: *const ::c_char, mode: *const ::c_char,
                      file: *mut ::FILE) -> *mut ::FILE;
     pub fn tmpfile64() -> *mut ::FILE;
     pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
@@ -3668,30 +3636,30 @@ extern {
                            len: ::off_t) -> ::c_int;
     pub fn readahead(fd: ::c_int, offset: ::off64_t,
                      count: ::size_t) -> ::ssize_t;
-    pub fn getxattr(path: *const c_char, name: *const c_char,
+    pub fn getxattr(path: *const ::c_char, name: *const ::c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn lgetxattr(path: *const c_char, name: *const c_char,
+    pub fn lgetxattr(path: *const ::c_char, name: *const ::c_char,
                      value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn fgetxattr(filedes: ::c_int, name: *const c_char,
+    pub fn fgetxattr(filedes: ::c_int, name: *const ::c_char,
                      value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn setxattr(path: *const c_char, name: *const c_char,
+    pub fn setxattr(path: *const ::c_char, name: *const ::c_char,
                     value: *const ::c_void, size: ::size_t,
                     flags: ::c_int) -> ::c_int;
-    pub fn lsetxattr(path: *const c_char, name: *const c_char,
+    pub fn lsetxattr(path: *const ::c_char, name: *const ::c_char,
                      value: *const ::c_void, size: ::size_t,
                      flags: ::c_int) -> ::c_int;
-    pub fn fsetxattr(filedes: ::c_int, name: *const c_char,
+    pub fn fsetxattr(filedes: ::c_int, name: *const ::c_char,
                      value: *const ::c_void, size: ::size_t,
                      flags: ::c_int) -> ::c_int;
-    pub fn listxattr(path: *const c_char, list: *mut c_char,
+    pub fn listxattr(path: *const ::c_char, list: *mut ::c_char,
                      size: ::size_t) -> ::ssize_t;
-    pub fn llistxattr(path: *const c_char, list: *mut c_char,
+    pub fn llistxattr(path: *const ::c_char, list: *mut ::c_char,
                       size: ::size_t) -> ::ssize_t;
-    pub fn flistxattr(filedes: ::c_int, list: *mut c_char,
+    pub fn flistxattr(filedes: ::c_int, list: *mut ::c_char,
                       size: ::size_t) -> ::ssize_t;
-    pub fn removexattr(path: *const c_char, name: *const c_char) -> ::c_int;
-    pub fn lremovexattr(path: *const c_char, name: *const c_char) -> ::c_int;
-    pub fn fremovexattr(filedes: ::c_int, name: *const c_char) -> ::c_int;
+    pub fn removexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
+    pub fn lremovexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
+    pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char) -> ::c_int;
     pub fn signalfd(fd: ::c_int,
                     mask: *const ::sigset_t,
                     flags: ::c_int) -> ::c_int;
@@ -3793,9 +3761,9 @@ extern {
                   flags: ::c_int,
                   ...) -> *mut ::c_void;
 
-    pub fn glob(pattern: *const c_char,
+    pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
-                errfunc: ::Option<extern fn(epath: *const c_char,
+                errfunc: ::Option<extern fn(epath: *const ::c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);
@@ -3978,8 +3946,8 @@ extern {
                         ngroups: *mut ::c_int) -> ::c_int;
     pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t,
                                         pshared: *mut ::c_int) -> ::c_int;
-    pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
+    pub fn popen(command: *const ::c_char,
+                 mode: *const ::c_char) -> *mut ::FILE;
     pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
                      mode: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn pthread_create(native: *mut ::pthread_t,
@@ -3997,18 +3965,6 @@ extern {
 }
 
 cfg_if! {
-    if #[cfg(target_arch = "aarch64")] {
-        mod aarch64;
-        pub use self::aarch64::*;
-    } else if #[cfg(any(target_arch = "x86_64"))] {
-        mod x86_64;
-        pub use self::x86_64::*;
-    } else {
-        // Unknown target_arch
-    }
-}
-
-cfg_if! {
     if #[cfg(libc_align)] {
         #[macro_use]
         mod align;
@@ -4018,23 +3974,3 @@ cfg_if! {
     }
 }
 expand_align!();
-
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
-    }
-}

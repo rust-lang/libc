@@ -54,7 +54,7 @@ s! {
                   target_os = "emscripten"))]
         pub ai_addr: *mut ::sockaddr,
 
-        pub ai_canonname: *mut c_char,
+        pub ai_canonname: *mut ::c_char,
 
         #[cfg(target_os = "android")]
         pub ai_addr: *mut ::sockaddr,
@@ -164,7 +164,7 @@ s! {
 
     pub struct ifaddrs {
         pub ifa_next: *mut ifaddrs,
-        pub ifa_name: *mut c_char,
+        pub ifa_name: *mut ::c_char,
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
@@ -1012,8 +1012,8 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
-pub const UTIME_OMIT: c_long = 1073741822;
-pub const UTIME_NOW: c_long = 1073741823;
+pub const UTIME_OMIT: ::c_long = 1073741822;
+pub const UTIME_NOW: ::c_long = 1073741823;
 
 pub const POLLIN: ::c_short = 0x1;
 pub const POLLPRI: ::c_short = 0x2;
@@ -1334,14 +1334,14 @@ extern {
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
-    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn creat64(path: *const ::c_char, mode: mode_t) -> ::c_int;
     pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
-    pub fn fstatat64(dirfd: ::c_int, pathname: *const c_char,
+    pub fn fstatat64(dirfd: ::c_int, pathname: *const ::c_char,
                      buf: *mut stat64, flags: ::c_int) -> ::c_int;
     pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
     pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
     pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
-    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn lstat64(path: *const ::c_char, buf: *mut stat64) -> ::c_int;
     pub fn mmap64(addr: *mut ::c_void,
                   len: ::size_t,
                   prot: ::c_int,
@@ -1349,9 +1349,9 @@ extern {
                   fd: ::c_int,
                   offset: off64_t)
                   -> *mut ::c_void;
-    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn open64(path: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
     pub fn openat64(fd: ::c_int,
-                    path: *const c_char,
+                    path: *const ::c_char,
                     oflag: ::c_int, ...) -> ::c_int;
     pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
                    offset: off64_t) -> ::ssize_t;
@@ -1369,8 +1369,8 @@ extern {
     pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
                        result: *mut *mut ::dirent64) -> ::c_int;
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
-    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-    pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
+    pub fn stat64(path: *const ::c_char, buf: *mut stat64) -> ::c_int;
+    pub fn truncate64(path: *const ::c_char, length: off64_t) -> ::c_int;
 
     pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t, dev: dev_t) -> ::c_int;

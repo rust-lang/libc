@@ -3,22 +3,18 @@
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
 pub type clock_t = i64;
-pub type c_char = u8;
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsword_t = ::c_long;
 pub type ino_t = ::c_ulong;
 pub type nlink_t = ::c_uint;
 pub type off_t = ::c_long;
-pub type rlim_t = c_ulong;
+pub type rlim_t = ::c_ulong;
 pub type rlim64_t = u64;
 // [uClibc docs] Note stat64 has the same shape as stat for x86-64.
 pub type stat64 = stat;
 pub type suseconds_t = ::c_long;
 pub type time_t = ::c_int;
-pub type wchar_t = ::c_int;
 
 pub type nfds_t = ::c_ulong;
 
@@ -228,7 +224,7 @@ s! {
 
     pub struct glob_t { // ToDo
         pub gl_pathc: ::size_t,
-        pub gl_pathv: *mut *mut c_char,
+        pub gl_pathv: *mut *mut ::c_char,
         pub gl_offs: ::size_t,
         pub gl_flags: ::c_int,
         __unused1: *mut ::c_void,

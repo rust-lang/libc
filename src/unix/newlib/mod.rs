@@ -633,23 +633,9 @@ extern {
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
-    pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
+    pub fn popen(command: *const ::c_char,
+                 mode: *const ::c_char) -> *mut ::FILE;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
-}
-
-cfg_if! {
-    if #[cfg(target_arch = "arm")] {
-        mod arm;
-        pub use self::arm::*;
-    } else if #[cfg(target_arch = "aarch64")] {
-        mod aarch64;
-        pub use self::aarch64::*;
-    } else {
-        // Only tested on ARM so far. Other platforms might have different
-        // definitions for types and constants.
-        pub use target_arch_not_implemented;
-    }
 }
 
 cfg_if! {

@@ -16,9 +16,6 @@
 //
 // Ported by Colin Finck <colin.finck@rwth-aachen.de>
 
-pub type c_long = i64;
-pub type c_ulong = u64;
-
 pub type uid_t = u16;
 pub type gid_t = u16;
 pub type speed_t = ::c_uint;
@@ -27,18 +24,18 @@ pub type dev_t = i16;
 pub type nfds_t = ::c_ulong;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
-pub type clock_t = c_ulong;
-pub type time_t = c_long;
-pub type suseconds_t = c_long;
+pub type clock_t = ::c_ulong;
+pub type time_t = ::c_long;
+pub type suseconds_t = ::c_long;
 pub type off_t = i64;
 pub type rlim_t = ::c_ulonglong;
 pub type sigset_t = ::c_ulong;
 pub type ino_t = u16;
 pub type nlink_t = u16;
-pub type blksize_t = c_long;
-pub type blkcnt_t = c_long;
+pub type blksize_t = ::c_long;
+pub type blkcnt_t = ::c_long;
 pub type stat64 = stat;
-pub type clockid_t = c_ulong;
+pub type clockid_t = ::c_ulong;
 pub type pthread_t = pte_handle_t;
 pub type pthread_attr_t = usize;
 pub type pthread_cond_t = usize;
@@ -66,7 +63,7 @@ s! {
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
         pub ai_addr: *mut ::sockaddr,
-        pub ai_canonname: *mut c_char,
+        pub ai_canonname: *mut ::c_char,
         pub ai_next: *mut addrinfo,
     }
 
@@ -743,16 +740,4 @@ extern {
 
     pub fn setgroups(ngroups: ::c_int, grouplist: *const ::gid_t) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
-}
-
-cfg_if! {
-    if #[cfg(target_arch = "aarch64")] {
-        mod aarch64;
-        pub use self::aarch64::*;
-    } else if #[cfg(target_arch = "x86_64")] {
-        mod x86_64;
-        pub use self::x86_64::*;
-    } else {
-        // Unknown target_arch
-    }
 }

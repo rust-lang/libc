@@ -89,7 +89,7 @@ s! {
 
         pub ai_addr: *mut ::sockaddr,
 
-        pub ai_canonname: *mut c_char,
+        pub ai_canonname: *mut ::c_char,
 
         pub ai_next: *mut addrinfo,
     }
@@ -212,7 +212,7 @@ s! {
 
     pub struct glob_t {
         pub gl_pathc: ::size_t,
-        pub gl_pathv: *mut *mut c_char,
+        pub gl_pathv: *mut *mut ::c_char,
         pub gl_offs: ::size_t,
         pub gl_flags: ::c_int,
 
@@ -225,7 +225,7 @@ s! {
 
     pub struct ifaddrs {
         pub ifa_next: *mut ifaddrs,
-        pub ifa_name: *mut c_char,
+        pub ifa_name: *mut ::c_char,
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
@@ -951,8 +951,8 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
-pub const UTIME_OMIT: c_long = 1073741822;
-pub const UTIME_NOW: c_long = 1073741823;
+pub const UTIME_OMIT: ::c_long = 1073741822;
+pub const UTIME_NOW: ::c_long = 1073741823;
 
 pub const L_tmpnam: ::c_uint = 20;
 pub const _PC_LINK_MAX: ::c_int = 0;
@@ -1579,14 +1579,14 @@ extern {
                      locale: *const ::c_char,
                      base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
-    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+    pub fn creat64(path: *const ::c_char, mode: mode_t) -> ::c_int;
     pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
     pub fn fstatat64(fildes: ::c_int, path: *const ::c_char,
                      buf: *mut stat64, flag: ::c_int) -> ::c_int;
     pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
     pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
     pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
-    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn lstat64(path: *const ::c_char, buf: *mut stat64) -> ::c_int;
     pub fn mmap64(addr: *mut ::c_void,
                   len: ::size_t,
                   prot: ::c_int,
@@ -1594,9 +1594,9 @@ extern {
                   fd: ::c_int,
                   offset: off64_t)
                   -> *mut ::c_void;
-    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn open64(path: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
     pub fn openat64(fd: ::c_int,
-                    path: *const c_char,
+                    path: *const ::c_char,
                     oflag: ::c_int, ...) -> ::c_int;
     pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t,
                    offset: off64_t) -> ::ssize_t;
@@ -1606,8 +1606,8 @@ extern {
     pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
                        result: *mut *mut ::dirent64) -> ::c_int;
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
-    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-    pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
+    pub fn stat64(path: *const ::c_char, buf: *mut stat64) -> ::c_int;
+    pub fn truncate64(path: *const ::c_char, length: off64_t) -> ::c_int;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
 
     pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
@@ -1668,7 +1668,7 @@ extern {
     pub fn getspent() -> *mut spwd;
     pub fn getspnam(__name: *const ::c_char) -> *mut spwd;
 
-    pub fn shm_open(name: *const c_char, oflag: ::c_int,
+    pub fn shm_open(name: *const ::c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
 
     // System V IPC
@@ -1692,9 +1692,9 @@ extern {
                     -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;
 
-    pub fn fopen64(filename: *const c_char,
-                   mode: *const c_char) -> *mut ::FILE;
-    pub fn freopen64(filename: *const c_char, mode: *const c_char,
+    pub fn fopen64(filename: *const ::c_char,
+                   mode: *const ::c_char) -> *mut ::FILE;
+    pub fn freopen64(filename: *const ::c_char, mode: *const ::c_char,
                      file: *mut ::FILE) -> *mut ::FILE;
     pub fn tmpfile64() -> *mut ::FILE;
     pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
@@ -1705,30 +1705,30 @@ extern {
     pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
     pub fn readahead(fd: ::c_int, offset: ::off64_t,
                      count: ::size_t) -> ::ssize_t;
-    pub fn getxattr(path: *const c_char, name: *const c_char,
+    pub fn getxattr(path: *const ::c_char, name: *const ::c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn lgetxattr(path: *const c_char, name: *const c_char,
+    pub fn lgetxattr(path: *const ::c_char, name: *const ::c_char,
                      value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn fgetxattr(filedes: ::c_int, name: *const c_char,
+    pub fn fgetxattr(filedes: ::c_int, name: *const ::c_char,
                      value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn setxattr(path: *const c_char, name: *const c_char,
+    pub fn setxattr(path: *const ::c_char, name: *const ::c_char,
                     value: *const ::c_void, size: ::size_t,
                     flags: ::c_int) -> ::c_int;
-    pub fn lsetxattr(path: *const c_char, name: *const c_char,
+    pub fn lsetxattr(path: *const ::c_char, name: *const ::c_char,
                      value: *const ::c_void, size: ::size_t,
                      flags: ::c_int) -> ::c_int;
-    pub fn fsetxattr(filedes: ::c_int, name: *const c_char,
+    pub fn fsetxattr(filedes: ::c_int, name: *const ::c_char,
                      value: *const ::c_void, size: ::size_t,
                      flags: ::c_int) -> ::c_int;
-    pub fn listxattr(path: *const c_char, list: *mut c_char,
+    pub fn listxattr(path: *const ::c_char, list: *mut ::c_char,
                      size: ::size_t) -> ::ssize_t;
-    pub fn llistxattr(path: *const c_char, list: *mut c_char,
+    pub fn llistxattr(path: *const ::c_char, list: *mut ::c_char,
                       size: ::size_t) -> ::ssize_t;
-    pub fn flistxattr(filedes: ::c_int, list: *mut c_char,
+    pub fn flistxattr(filedes: ::c_int, list: *mut ::c_char,
                       size: ::size_t) -> ::ssize_t;
-    pub fn removexattr(path: *const c_char, name: *const c_char) -> ::c_int;
-    pub fn lremovexattr(path: *const c_char, name: *const c_char) -> ::c_int;
-    pub fn fremovexattr(filedes: ::c_int, name: *const c_char) -> ::c_int;
+    pub fn removexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
+    pub fn lremovexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
+    pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char) -> ::c_int;
     pub fn signalfd(fd: ::c_int,
                     mask: *const ::sigset_t,
                     flags: ::c_int) -> ::c_int;
@@ -1791,9 +1791,9 @@ extern {
                   flags: ::c_int,
                   ...) -> *mut ::c_void;
 
-    pub fn glob(pattern: *const c_char,
+    pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
-                errfunc: ::Option<extern fn(epath: *const c_char,
+                errfunc: ::Option<extern fn(epath: *const ::c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);
@@ -1887,8 +1887,8 @@ extern {
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
-    pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
+    pub fn popen(command: *const ::c_char,
+                 mode: *const ::c_char) -> *mut ::FILE;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
 

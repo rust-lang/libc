@@ -1,8 +1,6 @@
 // The following definitions are correct for aarch64 and x86_64,
 // but may be wrong for mips64
 
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type mode_t = u32;
 pub type off64_t = i64;
 pub type socklen_t = u32;

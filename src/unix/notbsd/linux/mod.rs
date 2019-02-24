@@ -3,7 +3,7 @@
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
-pub type pthread_t = c_ulong;
+pub type pthread_t = ::c_ulong;
 pub type mode_t = u32;
 pub type ino64_t = u64;
 pub type off64_t = i64;
@@ -51,7 +51,7 @@ s! {
 
     pub struct glob_t {
         pub gl_pathc: ::size_t,
-        pub gl_pathv: *mut *mut c_char,
+        pub gl_pathv: *mut *mut ::c_char,
         pub gl_offs: ::size_t,
         pub gl_flags: ::c_int,
 
@@ -1930,7 +1930,7 @@ extern {
 
     pub fn getspnam(__name: *const ::c_char) -> *mut spwd;
 
-    pub fn shm_open(name: *const c_char, oflag: ::c_int,
+    pub fn shm_open(name: *const ::c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
 
     // System V IPC
@@ -1959,9 +1959,9 @@ extern {
                     -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;
 
-    pub fn fopen64(filename: *const c_char,
-                   mode: *const c_char) -> *mut ::FILE;
-    pub fn freopen64(filename: *const c_char, mode: *const c_char,
+    pub fn fopen64(filename: *const ::c_char,
+                   mode: *const ::c_char) -> *mut ::FILE;
+    pub fn freopen64(filename: *const ::c_char, mode: *const ::c_char,
                      file: *mut ::FILE) -> *mut ::FILE;
     pub fn tmpfile64() -> *mut ::FILE;
     pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
@@ -1980,30 +1980,30 @@ extern {
                              len: ::off64_t) -> ::c_int;
     pub fn readahead(fd: ::c_int, offset: ::off64_t,
                      count: ::size_t) -> ::ssize_t;
-    pub fn getxattr(path: *const c_char, name: *const c_char,
+    pub fn getxattr(path: *const ::c_char, name: *const ::c_char,
                     value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn lgetxattr(path: *const c_char, name: *const c_char,
+    pub fn lgetxattr(path: *const ::c_char, name: *const ::c_char,
                      value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn fgetxattr(filedes: ::c_int, name: *const c_char,
+    pub fn fgetxattr(filedes: ::c_int, name: *const ::c_char,
                      value: *mut ::c_void, size: ::size_t) -> ::ssize_t;
-    pub fn setxattr(path: *const c_char, name: *const c_char,
+    pub fn setxattr(path: *const ::c_char, name: *const ::c_char,
                     value: *const ::c_void, size: ::size_t,
                     flags: ::c_int) -> ::c_int;
-    pub fn lsetxattr(path: *const c_char, name: *const c_char,
+    pub fn lsetxattr(path: *const ::c_char, name: *const ::c_char,
                      value: *const ::c_void, size: ::size_t,
                      flags: ::c_int) -> ::c_int;
-    pub fn fsetxattr(filedes: ::c_int, name: *const c_char,
+    pub fn fsetxattr(filedes: ::c_int, name: *const ::c_char,
                      value: *const ::c_void, size: ::size_t,
                      flags: ::c_int) -> ::c_int;
-    pub fn listxattr(path: *const c_char, list: *mut c_char,
+    pub fn listxattr(path: *const ::c_char, list: *mut ::c_char,
                      size: ::size_t) -> ::ssize_t;
-    pub fn llistxattr(path: *const c_char, list: *mut c_char,
+    pub fn llistxattr(path: *const ::c_char, list: *mut ::c_char,
                       size: ::size_t) -> ::ssize_t;
-    pub fn flistxattr(filedes: ::c_int, list: *mut c_char,
+    pub fn flistxattr(filedes: ::c_int, list: *mut ::c_char,
                       size: ::size_t) -> ::ssize_t;
-    pub fn removexattr(path: *const c_char, name: *const c_char) -> ::c_int;
-    pub fn lremovexattr(path: *const c_char, name: *const c_char) -> ::c_int;
-    pub fn fremovexattr(filedes: ::c_int, name: *const c_char) -> ::c_int;
+    pub fn removexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
+    pub fn lremovexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
+    pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char) -> ::c_int;
     pub fn signalfd(fd: ::c_int,
                     mask: *const ::sigset_t,
                     flags: ::c_int) -> ::c_int;
@@ -2102,9 +2102,9 @@ extern {
                   flags: ::c_int,
                   ...) -> *mut ::c_void;
 
-    pub fn glob(pattern: *const c_char,
+    pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
-                errfunc: ::Option<extern fn(epath: *const c_char,
+                errfunc: ::Option<extern fn(epath: *const ::c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);
@@ -2289,8 +2289,8 @@ extern {
                                         pshared: *mut ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
-    pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
+    pub fn popen(command: *const ::c_char,
+                 mode: *const ::c_char) -> *mut ::FILE;
     pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
                      mode: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn pthread_create(native: *mut ::pthread_t,

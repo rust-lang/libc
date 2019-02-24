@@ -1,9 +1,8 @@
 //! Apple (ios/darwin)-specific definitions
 //!
 //! This covers *-apple-* triples currently
-pub type c_char = i8;
-pub type clock_t = c_ulong;
-pub type time_t = c_long;
+pub type clock_t = ::c_ulong;
+pub type time_t = ::c_long;
 pub type suseconds_t = i32;
 pub type dev_t = i32;
 pub type ino_t = u64;
@@ -12,7 +11,7 @@ pub type nlink_t = u16;
 pub type blksize_t = i32;
 pub type rlim_t = u64;
 pub type mach_timebase_info_data_t = mach_timebase_info;
-pub type pthread_key_t = c_ulong;
+pub type pthread_key_t = ::c_ulong;
 pub type sigset_t = u32;
 pub type clockid_t = ::c_uint;
 pub type fsblkcnt_t = ::c_uint;
@@ -96,13 +95,13 @@ s! {
         pub st_gid: ::gid_t,
         pub st_rdev: dev_t,
         pub st_atime: time_t,
-        pub st_atime_nsec: c_long,
+        pub st_atime_nsec: ::c_long,
         pub st_mtime: time_t,
-        pub st_mtime_nsec: c_long,
+        pub st_mtime_nsec: ::c_long,
         pub st_ctime: time_t,
-        pub st_ctime_nsec: c_long,
+        pub st_ctime_nsec: ::c_long,
         pub st_birthtime: time_t,
-        pub st_birthtime_nsec: c_long,
+        pub st_birthtime_nsec: ::c_long,
         pub st_size: ::off_t,
         pub st_blocks: ::blkcnt_t,
         pub st_blksize: blksize_t,
@@ -2915,7 +2914,7 @@ extern {
                   cmd: ::c_int, ...) -> ::c_int;
     pub fn semop(semid: ::c_int, sops: *mut sembuf, nsops: ::size_t) -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
-    pub fn ftok(pathname : *const c_char, proj_id : ::c_int) -> key_t;
+    pub fn ftok(pathname : *const ::c_char, proj_id : ::c_int) -> key_t;
     pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void,
                  shmflg: ::c_int) -> *mut ::c_void;
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;

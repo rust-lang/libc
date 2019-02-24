@@ -1,9 +1,7 @@
-pub type c_char = i8;
-pub type wchar_t = i32;
 pub type useconds_t = u32;
 pub type dev_t = u32;
 pub type socklen_t = u32;
-pub type pthread_t = c_ulong;
+pub type pthread_t = ::c_ulong;
 pub type mode_t = u32;
 pub type ino64_t = u32;
 pub type off64_t = i32;
@@ -18,19 +16,17 @@ pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type loff_t = i32;
 
-pub type clock_t = c_long;
-pub type time_t = c_long;
-pub type suseconds_t = c_long;
+pub type clock_t = ::c_long;
+pub type time_t = ::c_long;
+pub type suseconds_t = ::c_long;
 pub type ino_t = u32;
 pub type off_t = i32;
 pub type blkcnt_t = i32;
 
-pub type blksize_t = c_long;
+pub type blksize_t = ::c_long;
 pub type fsblkcnt_t = u32;
 pub type fsfilcnt_t = u32;
 pub type rlim_t = ::c_ulonglong;
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type nlink_t = u32;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
@@ -48,7 +44,7 @@ s! {
 
     pub struct glob_t {
         pub gl_pathc: ::size_t,
-        pub gl_pathv: *mut *mut c_char,
+        pub gl_pathv: *mut *mut ::c_char,
         pub gl_offs: ::size_t,
         pub gl_flags: ::c_int,
 
@@ -1560,16 +1556,16 @@ extern {
     pub fn endpwent();
     pub fn getpwent() -> *mut passwd;
 
-    pub fn shm_open(name: *const c_char, oflag: ::c_int,
+    pub fn shm_open(name: *const ::c_char, oflag: ::c_int,
                     mode: mode_t) -> ::c_int;
 
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;
 
-    pub fn fopen64(filename: *const c_char,
-                   mode: *const c_char) -> *mut ::FILE;
-    pub fn freopen64(filename: *const c_char, mode: *const c_char,
+    pub fn fopen64(filename: *const ::c_char,
+                   mode: *const ::c_char) -> *mut ::FILE;
+    pub fn freopen64(filename: *const ::c_char, mode: *const ::c_char,
                      file: *mut ::FILE) -> *mut ::FILE;
     pub fn tmpfile64() -> *mut ::FILE;
     pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
@@ -1615,9 +1611,9 @@ extern {
                   flags: ::c_int,
                   ...) -> *mut ::c_void;
 
-    pub fn glob(pattern: *const c_char,
+    pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
-                errfunc: ::Option<extern fn(epath: *const c_char,
+                errfunc: ::Option<extern fn(epath: *const ::c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);

@@ -1,8 +1,5 @@
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
-pub type c_char = i8;
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type ino_t = u64;
@@ -11,7 +8,6 @@ pub type off_t = i64;
 pub type rlim_t = ::c_ulong;
 pub type suseconds_t = i64;
 pub type time_t = i64;
-pub type wchar_t = i32;
 
 s! {
     pub struct stat {

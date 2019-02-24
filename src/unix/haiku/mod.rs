@@ -4,11 +4,9 @@ pub type pthread_key_t = ::c_int;
 pub type nfds_t = ::c_long;
 pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
-pub type c_char = i8;
 pub type clock_t = i32;
 pub type clockid_t = i32;
 pub type suseconds_t = i32;
-pub type wchar_t = i32;
 pub type off_t = i64;
 pub type ino_t = i64;
 pub type blkcnt_t = i64;
@@ -75,13 +73,13 @@ s! {
         pub ai_socktype: ::c_int,
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
-        pub ai_canonname: *mut c_char,
+        pub ai_canonname: *mut ::c_char,
         pub ai_addr: *mut ::sockaddr,
         pub ai_next: *mut addrinfo,
     }
 
     pub struct fd_set {
-        fds_bits: [c_ulong; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
     }
 
     pub struct tm {
@@ -186,13 +184,13 @@ s! {
         pub st_rdev: dev_t,
         pub st_blksize: blksize_t,
         pub st_atime: time_t,
-        pub st_atime_nsec: c_long,
+        pub st_atime_nsec: ::c_long,
         pub st_mtime: time_t,
-        pub st_mtime_nsec: c_long,
+        pub st_mtime_nsec: ::c_long,
         pub st_ctime: time_t,
-        pub st_ctime_nsec: c_long,
+        pub st_ctime_nsec: ::c_long,
         pub st_crtime: time_t,
-        pub st_crtime_nsec: c_long,
+        pub st_crtime_nsec: ::c_long,
         pub st_type: u32,
         pub st_blocks: blkcnt_t,
     }
@@ -202,7 +200,7 @@ s! {
         __unused1: ::size_t,
         pub gl_offs: ::size_t,
         __unused2: ::size_t,
-        pub gl_pathv: *mut *mut c_char,
+        pub gl_pathv: *mut *mut ::c_char,
 
         __unused3: *mut ::c_void,
         __unused4: *mut ::c_void,
@@ -276,7 +274,7 @@ s! {
         pub si_uid: ::uid_t,
         pub si_addr: *mut ::c_void,
         pub si_status: ::c_int,
-        pub si_band: c_long,
+        pub si_band: ::c_long,
         pub sigval: *mut ::c_void,
     }
 
@@ -856,7 +854,7 @@ pub const PTHREAD_MUTEX_NORMAL: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 3;
 
-pub const FIOCLEX: c_ulong = 0; // TODO: does not exist on Haiku!
+pub const FIOCLEX: ::c_ulong = 0; // TODO: does not exist on Haiku!
 
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 
@@ -1251,8 +1249,8 @@ extern {
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]
-    pub fn popen(command: *const c_char,
-                 mode: *const c_char) -> *mut ::FILE;
+    pub fn popen(command: *const ::c_char,
+                 mode: *const ::c_char) -> *mut ::FILE;
     pub fn openpty(amaster: *mut ::c_int,
                    aslave: *mut ::c_int,
                    name: *mut ::c_char,
