@@ -25,15 +25,6 @@ pub type time_t = i32;
 pub type useconds_t = u32;
 
 s! {
-    pub struct in_addr {
-        pub s_addr: ::in_addr_t,
-    }
-
-    pub struct ip_mreq {
-        pub imr_multiaddr: in_addr,
-        pub imr_interface: in_addr,
-    }
-
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
@@ -499,10 +490,6 @@ pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
 pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
-
-pub const IPPROTO_IP: ::c_int = 0;
-pub const IPPROTO_UDP: ::c_int = 17;
-pub const IPPROTO_TCP: ::c_int = 6;
 
 pub const TCP_NODELAY: ::c_int = 8193;
 pub const TCP_MAXSEG: ::c_int = 8194;
