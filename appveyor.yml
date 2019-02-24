@@ -23,6 +23,6 @@ install:
 build: false
 
 test_script:
-  - cargo test --target %TARGET%
-  - cargo test --no-default-features --target %TARGET%
-  - cargo test --manifest-path libc-test/Cargo.toml --target %TARGET%
+  - cargo -vv test --target %TARGET%
+  - cargo -vv test --no-default-features --target %TARGET%
+  - cargo -vv test --manifest-path libc-test/Cargo.toml --target %TARGET%
