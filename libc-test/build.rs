@@ -29,15 +29,15 @@ fn do_ctest() {
     let netbsd = target.contains("netbsd");
     let openbsd = target.contains("openbsd");
     let rumprun = target.contains("rumprun");
-    let solaris = target.contains("solaris");
-    let cloudabi = target.contains("cloudabi");
-    let redox = target.contains("redox");
     let bsdlike = freebsd || netbsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
     match &target {
         t if t.contains("apple") => return test_apple(t),
         t if t.contains("windows") => return test_windows(t),
+        t if t.contains("redox") => return test_redox(t),
+        t if t.contains("cloudabi") => return test_cloudabi(t),
+        t if t.contains("solaris") => return test_solaris(t),
         _ => (),
     }
 
@@ -46,10 +46,6 @@ fn do_ctest() {
         cfg.define("_GNU_SOURCE", None);
     } else if netbsd {
         cfg.define("_NETBSD_SOURCE", Some("1"));
-    } else if solaris {
-        cfg.define("_XOPEN_SOURCE", Some("700"));
-        cfg.define("__EXTENSIONS__", None);
-        cfg.define("_LCONV_C99", None);
     } else if freebsd {
         cfg.define("_WITH_GETLINE", None);
     }
@@ -77,9 +73,6 @@ fn do_ctest() {
 
     cfg.header("ctype.h");
     cfg.header("dirent.h");
-    if openbsd {
-        cfg.header("sys/socket.h");
-    }
     cfg.header("net/if.h");
     cfg.header("net/route.h");
     cfg.header("net/if_arp.h");
@@ -113,9 +106,7 @@ fn do_ctest() {
     cfg.header("pwd.h");
     cfg.header("grp.h");
     cfg.header("sys/utsname.h");
-    if !solaris {
-        cfg.header("sys/ptrace.h");
-    }
+    cfg.header("sys/ptrace.h");
     cfg.header("sys/mount.h");
     cfg.header("sys/uio.h");
     cfg.header("sched.h");
@@ -144,11 +135,11 @@ fn do_ctest() {
         cfg.header("ifaddrs.h");
         cfg.header("langinfo.h");
 
-        if !openbsd && !freebsd && !dragonfly && !solaris {
+        if !openbsd && !freebsd && !dragonfly {
             cfg.header("sys/quota.h");
         }
 
-        if !musl && !x32 && !solaris {
+        if !musl && !x32 {
             cfg.header("sys/sysctl.h");
         }
 
@@ -241,9 +232,6 @@ fn do_ctest() {
             }
         }
     }
-    if solaris {
-        cfg.header("sys/epoll.h");
-    }
 
     if linux || android {
         cfg.header("sys/fsuid.h");
@@ -310,21 +298,10 @@ fn do_ctest() {
         cfg.header("sys/rtprio.h");
     }
 
-    if solaris {
-        cfg.header("port.h");
-        cfg.header("ucontext.h");
-        cfg.header("sys/filio.h");
-        cfg.header("sys/loadavg.h");
-    }
-
     if linux || freebsd || dragonfly || netbsd || emscripten {
         if !uclibc {
             cfg.header("aio.h");
         }
-    }
-
-    if cloudabi || redox {
-        cfg.header("strings.h");
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -569,16 +546,8 @@ fn do_ctest() {
                 true
             }
 
-            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG"
-            | "DT_LNK" | "DT_SOCK"
-                if solaris =>
-            {
-                true
-            }
-            "USRQUOTA" | "GRPQUOTA" if solaris => true,
-            "PRIO_MIN" | "PRIO_MAX" if solaris => true,
-
-            // These are defined for Solaris 11, but the crate is tested on illumos, where they are currently not defined
+            // These are defined for Solaris 11, but the crate is tested on
+            // illumos, where they are currently not defined
             "EADI"
             | "PORT_SOURCE_POSTWAIT"
             | "PORT_SOURCE_SIGNAL"
@@ -643,7 +612,7 @@ fn do_ctest() {
             "getdtablesize" if android => true,
 
             "dlerror" if android => true, // const-ness is added
-            "dladdr" if musl || solaris => true, // const-ness only added recently
+            "dladdr" if musl => true, // const-ness only added recently
 
             // These functions presumably exist on netbsd but don't look like
             // they're implemented on rumprun yet, just let them slide for now.
@@ -720,18 +689,10 @@ fn do_ctest() {
             // We can wait for the next major release to be compliant with the new API.
             // FIXME: unskip these for next major release
             "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
-            "setpriority" | "personality" if android || solaris => true,
+            "setpriority" | "personality" if android  => true,
             // In Android 64 bits, these functions have been fixed since unified headers.
             // Ignore these until next major version.
             "bind" | "writev" | "readv" | "sendmsg" | "recvmsg" if android && (aarch64 || x86_64) => true,
-
-            // signal is defined with sighandler_t, so ignore
-            "signal" if solaris => true,
-
-            "cfmakeraw" | "cfsetspeed" if solaris => true,
-
-            // FIXME: mincore is defined with caddr_t on Solaris.
-            "mincore" if solaris => true,
 
             // Removed in OpenBSD 6.5
             // https://marc.info/?l=openbsd-cvs&m=154723400730318
@@ -1133,6 +1094,255 @@ fn test_windows(target: &str) {
             "execve" |
             "execvp" |
             "execvpe" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_redox(target: &str) {
+    assert!(target.contains("redox"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    headers!{
+        cfg:
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "limits.h",
+        "locale.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "string.h",
+        "strings.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/ptrace.h",
+        "sys/quota.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/sysctl.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "unistd.h",
+        "utime.h",
+        "utmpx.h",
+        "wchar.h",
+    }
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_cloudabi(target: &str) {
+    assert!(target.contains("cloudabi"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    headers!{
+        cfg:
+        "execinfo.h",
+        "glob.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "sys/ptrace.h",
+        "sys/quota.h",
+        "sys/sysctl.h",
+        "utmpx.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "fcntl.h",
+        "grp.h",
+        "limits.h",
+        "locale.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "strings.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "unistd.h",
+        "utime.h",
+        "wchar.h",
+    }
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_solaris(target: &str) {
+    assert!(target.contains("solaris"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    cfg.define("_XOPEN_SOURCE", Some("700"));
+    cfg.define("__EXTENSIONS__", None);
+    cfg.define("_LCONV_C99", None);
+
+    headers!{
+        cfg:
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "limits.h",
+        "locale.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "port.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "sys/epoll.h",
+        "sys/file.h",
+        "sys/filio.h",
+        "sys/ioctl.h",
+        "sys/loadavg.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "ucontext.h",
+        "unistd.h",
+        "utime.h",
+        "utmpx.h",
+        "wchar.h",
+    }
+
+    cfg.skip_const(move |name| {
+        match name {
+            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" |
+            "DT_SOCK" |"USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX"
+                => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verified
+        match name {
+            // const-ness only added recently
+            "dladdr" => true,
+
+            // Definition of those functions as changed since unified headers
+            // from NDK r14b These changes imply some API breaking changes but
+            // are still ABI compatible. We can wait for the next major release
+            // to be compliant with the new API.
+            //
+            // FIXME: unskip these for next major release
+            "setpriority" | "personality" => true,
+
+            // signal is defined with sighandler_t, so ignore
+            "signal" => true,
+
+            "cfmakeraw" | "cfsetspeed" => true,
+
+            // FIXME: mincore is defined with caddr_t on Solaris.
+            "mincore" => true,
 
             _ => false,
         }
