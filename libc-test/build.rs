@@ -26,10 +26,8 @@ fn do_ctest() {
     let freebsd = target.contains("freebsd");
     let dragonfly = target.contains("dragonfly");
     let mips = target.contains("mips");
-    let netbsd = target.contains("netbsd");
     let openbsd = target.contains("openbsd");
-    let rumprun = target.contains("rumprun");
-    let bsdlike = freebsd || netbsd || openbsd || dragonfly;
+    let bsdlike = freebsd || openbsd || dragonfly;
     let mut cfg = ctest::TestGenerator::new();
 
     match &target {
@@ -38,14 +36,13 @@ fn do_ctest() {
         t if t.contains("redox") => return test_redox(t),
         t if t.contains("cloudabi") => return test_cloudabi(t),
         t if t.contains("solaris") => return test_solaris(t),
+        t if t.contains("netbsd") => return test_netbsd(t),
         _ => (),
     }
 
     // Pull in extra goodies
     if linux || android || emscripten {
         cfg.define("_GNU_SOURCE", None);
-    } else if netbsd {
-        cfg.define("_NETBSD_SOURCE", Some("1"));
     } else if freebsd {
         cfg.define("_WITH_GETLINE", None);
     }
@@ -144,7 +141,7 @@ fn do_ctest() {
         }
 
         if !musl && !uclibc {
-            if !netbsd && !openbsd && !uclibc {
+            if !openbsd && !uclibc {
                 cfg.header("execinfo.h");
             }
 
@@ -274,17 +271,6 @@ fn do_ctest() {
         cfg.header("spawn.h");
     }
 
-    if netbsd {
-        cfg.header("mqueue.h");
-        cfg.header("ufs/ufs/quota.h");
-        cfg.header("ufs/ufs/quota1.h");
-        cfg.header("sys/extattr.h");
-        cfg.header("sys/ioctl_compat.h");
-
-        // DCCP support
-        cfg.header("netinet/dccp.h");
-    }
-
     if openbsd {
         cfg.header("ufs/ufs/quota.h");
         cfg.header("pthread_np.h");
@@ -298,7 +284,7 @@ fn do_ctest() {
         cfg.header("sys/rtprio.h");
     }
 
-    if linux || freebsd || dragonfly || netbsd || emscripten {
+    if linux || freebsd || dragonfly || emscripten {
         if !uclibc {
             cfg.header("aio.h");
         }
@@ -403,7 +389,7 @@ fn do_ctest() {
             "uuid_t" if dragonfly => true,
             n if n.starts_with("pthread") => true,
             // sem_t is a struct or pointer
-            "sem_t" if openbsd || freebsd || dragonfly || netbsd => true,
+            "sem_t" if openbsd || freebsd || dragonfly => true,
             // mqd_t is a pointer on FreeBSD and DragonFly
             "mqd_t" if freebsd || dragonfly => true,
 
@@ -613,26 +599,6 @@ fn do_ctest() {
 
             "dlerror" if android => true, // const-ness is added
             "dladdr" if musl => true, // const-ness only added recently
-
-            // These functions presumably exist on netbsd but don't look like
-            // they're implemented on rumprun yet, just let them slide for now.
-            // Some of them look like they have headers but then don't have
-            // corresponding actual definitions either...
-            "shm_open" |
-            "shm_unlink" |
-            "syscall" |
-            "mq_open" |
-            "mq_close" |
-            "mq_getattr" |
-            "mq_notify" |
-            "mq_receive" |
-            "mq_send" |
-            "mq_setattr" |
-            "mq_timedreceive" |
-            "mq_timedsend" |
-            "mq_unlink" |
-            "ptrace" |
-            "sigaltstack" if rumprun => true,
 
             // There seems to be a small error in EGLIBC's eventfd.h header. The
             // [underlying system call][1] always takes its first `count`
@@ -1346,6 +1312,212 @@ fn test_solaris(target: &str) {
 
             _ => false,
         }
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_netbsd(target: &str) {
+    assert!(target.contains("netbsd"));
+    let rumprun = target.contains("rumprun");
+    let mut cfg = ctest::TestGenerator::new();
+
+    cfg.flag("-Wno-deprecated-declarations");
+    cfg.define("_NETBSD_SOURCE", Some("1"));
+
+    headers! {
+        cfg:
+        "errno.h",
+        "fcntl.h",
+        "limits.h",
+        "locale.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "sys/stat.h",
+        "sys/types.h",
+        "time.h",
+        "wchar.h",
+        "aio.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/if_dl.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "string.h",
+        "sys/extattr.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/ioctl_compat.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/ptrace.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/statvfs.h",
+        "sys/sysctl.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "ufs/ufs/quota.h",
+        "ufs/ufs/quota1.h",
+        "unistd.h",
+        "util.h",
+        "utime.h",
+        "mqueue.h",
+        "netinet/dccp.h",
+        "sys/event.h",
+        "sys/quota.h",
+    }
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
+            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
+            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
+            | "Elf64_Chdr" => ty.to_string(),
+
+            // OSX calls this something else
+            "sighandler_t" => "sig_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+
+            t if t.ends_with("_t") => t.to_string(),
+
+            // put `struct` in front of all structs:.
+            t if is_struct => format!("struct {}", t),
+
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            // Our stat *_nsec fields normally don't actually exist but are part
+            // of a timeval struct
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                    s.replace("e_nsec", ".tv_nsec")
+            }
+            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
+            s => s.to_string(),
+        }
+    });
+
+    cfg.skip_type(move |ty| {
+        match ty {
+            // FIXME: sighandler_t is crazy across platforms
+            "sighandler_t" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // This is actually a union, not a struct
+            "sigval" => true,
+            // These are tested as part of the linux_fcntl tests since there are
+            // header conflicts when including them with all the other structs.
+            "termios2" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_signededness(move |c| {
+        match c {
+            "LARGE_INTEGER" | "float" | "double" => true,
+            // uuid_t is a struct, not an integer.
+            n if n.starts_with("pthread") => true,
+            // sem_t is a struct or pointer
+            "sem_t"  => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
+            "SIGUNUSED" => true,                       // removed in glibc 2.26
+
+            // weird signed extension or something like that?
+            "MS_NOUSER" => true,
+            "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
+            "BOTHER" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        match name {
+            // FIXME: incorrect API
+            "execv" |
+            "execve" |
+            "execvp" |
+            "execvpe" |
+            "fexecve" => true,
+
+            "getrlimit" | "getrlimit64" |    // non-int in 1st arg
+            "setrlimit" | "setrlimit64" |    // non-int in 1st arg
+            "prlimit" | "prlimit64" |        // non-int in 2nd arg
+
+            // These functions presumably exist on netbsd but don't look like
+            // they're implemented on rumprun yet, just let them slide for now.
+            // Some of them look like they have headers but then don't have
+            // corresponding actual definitions either...
+            "shm_open" |
+            "shm_unlink" |
+            "syscall" |
+            "mq_open" |
+            "mq_close" |
+            "mq_getattr" |
+            "mq_notify" |
+            "mq_receive" |
+            "mq_send" |
+            "mq_setattr" |
+            "mq_timedreceive" |
+            "mq_timedsend" |
+            "mq_unlink" |
+            "ptrace" |
+            "sigaltstack" if rumprun => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        // This is a weird union, don't check the type.
+        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        // sighandler_t type is super weird
+        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        // sigval is actually a union, but we pretend it's a struct
+        (struct_ == "sigevent" && field == "sigev_value") ||
+        // aio_buf is "volatile void*" and Rust doesn't understand volatile
+        (struct_ == "aiocb" && field == "aio_buf")
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
