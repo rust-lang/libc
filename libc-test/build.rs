@@ -37,6 +37,7 @@ fn do_ctest() {
 
     match &target {
         t if t.contains("apple") => return test_apple(t),
+        t if t.contains("openbsd") => return test_openbsd(t),
         t if t.contains("windows") => return test_windows(t),
         _ => (),
     }
@@ -1026,6 +1027,150 @@ fn test_apple(target: &str) {
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_openbsd(target: &str) {
+    assert!(target.contains("openbsd"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    headers! { cfg:
+        "errno.h",
+        "fcntl.h",
+        "limits.h",
+        "locale.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "sys/stat.h",
+        "sys/types.h",
+        "time.h",
+        "wchar.h",
+        "ctype.h",
+        "dirent.h",
+        "sys/socket.h",
+        "net/if.h",
+        "net/route.h",
+        "net/if_arp.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "resolv.h",
+        "pthread.h",
+        "dlfcn.h",
+        "signal.h",
+        "string.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/mman.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/time.h",
+        "sys/un.h",
+        "sys/wait.h",
+        "unistd.h",
+        "utime.h",
+        "pwd.h",
+        "grp.h",
+        "sys/utsname.h",
+        "sys/ptrace.h",
+        "sys/mount.h",
+        "sys/uio.h",
+        "sched.h",
+        "termios.h",
+        "poll.h",
+        "syslog.h",
+        "semaphore.h",
+        "sys/statvfs.h",
+        "sys/times.h",
+        "glob.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "sys/sysctl.h",
+        "utmp.h",
+        "sys/event.h",
+        "net/if_dl.h",
+        "util.h",
+        "ufs/ufs/quota.h",
+        "pthread_np.h",
+        "sys/syscall.h",
+    }
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // FIXME: actually a union
+            "sigval" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // Removed in OpenBSD 6.0
+            "KERN_USERMOUNT" | "KERN_ARND" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        match name {
+            "execv" | "execve" | "execvp" | "execvpe" => true,
+
+            // typed 2nd arg
+            "gettimeofday" => true,
+
+            // Removed in OpenBSD 6.5
+            // https://marc.info/?l=openbsd-cvs&m=154723400730318
+            "mincore" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+
+            // OSX calls this something else
+            "sighandler_t" => "sig_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+            t if t.ends_with("_t") => t.to_string(),
+            t if is_struct => format!("struct {}", t),
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            "st_birthtime" if struct_.starts_with("stat") => {
+                "__st_birthtime".to_string()
+            }
+            "st_birthtime_nsec" if struct_.starts_with("stat") => {
+                "__st_birthtimensec".to_string()
+            }
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                s.replace("e_nsec", ".tv_nsec")
+            }
+            "sa_sigaction" if struct_ == "sigaction" => {
+                "sa_handler".to_string()
+            }
+            s => s.to_string(),
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
+        (struct_ == "siginfo_t" && field == "si_addr")
+    });
+
+    cfg.generate("../src/lib.rs", "linux_fcntl.rs");
 }
 
 fn test_windows(target: &str) {
