@@ -43,6 +43,18 @@ test_target() {
     # Test that libc builds without any default features (no libstd)
     "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
 
+    # Test that cty builds
+    (
+        cd cty
+        "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
+    )
+
+    # Test that libc and cty type aliases match
+    (
+        cd cty-libc-tys-test
+        "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
+    )
+
     # Test that libc builds with default features (e.g. libstd)
     # if the target supports libstd
     if [ "$NO_STD" != "1" ]; then

@@ -1,10 +1,14 @@
 [package]
 authors = ["Jorge Aparicio <jorge@japaric.io>"]
 categories = ["embedded", "external-ffi-bindings" ,"no-std"]
-description = "Type aliases to C types like c_int for use with bindgen"
+description = "Type aliases for C FFI"
 documentation = "https://docs.rs/cty"
 keywords = ["c", "types", "bindgen", "ffi"]
 license = "MIT OR Apache-2.0"
 name = "cty"
-repository = "https://github.com/japaric/cty"
-version = "0.2.0"
+repository = "https://github.com/rust-lang/libc"
+version = "0.2.1"
+
+[badges]
+travis-ci = { repository = "rust-lang/libc" }
+appveyor = { repository = "rust-lang/libc", project_name = "rust-lang-libs/libc" }

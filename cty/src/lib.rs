@@ -120,4 +120,20 @@ pub type intptr_t = isize;
 pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
+#[cfg(cty_core_void)]
 pub type c_void = core::ffi::c_void;
+
+// Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
+// enable more optimization opportunities around it recognizing things
+// like malloc/free.
+#[cfg(not(cty_core_void))]
+#[repr(u8)]
+#[allow(missing_copy_implementations)]
+#[allow(missing_debug_implementations)]
+pub enum c_void {
+    // Two dummy variants so the #[repr] attribute can be used.
+    #[doc(hidden)]
+    __variant1,
+    #[doc(hidden)]
+    __variant2,
+}

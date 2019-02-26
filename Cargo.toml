@@ -20,6 +20,7 @@ travis-ci = { repository = "rust-lang/libc" }
 appveyor = { repository = "rust-lang/libc", project_name = "rust-lang-libs/libc" }
 
 [dependencies]
+cty = { version = "0.2", path = "cty" }
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
 
 [features]
@@ -30,4 +31,9 @@ rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
 extra_traits = []
 
 [workspace]
-members = ["libc-test"]
+members = [
+  "cty",
+  "cty-test",
+  "libc-test",
+  "cty-libc-ty-test"
+]

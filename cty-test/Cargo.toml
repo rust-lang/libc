@@ -1,0 +1,16 @@
+[package]
+name = "cty-test"
+version = "0.1.0"
+authors = ["Gonzalo Brito Gadeschi <gonzalobg88@gmail.com>"]
+build = "build.rs"
+
+[dependencies]
+cty = { path = "../cty" }
+
+[build-dependencies]
+ctest = "0.2"
+
+[[test]]
+name = "main"
+path = "test/main.rs"
+harness = false

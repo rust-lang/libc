@@ -1,0 +1,9 @@
+[package]
+name = "cty-libc-ty-test"
+version = "0.1.0"
+authors = ["gnzlbg <gonzalobg88@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+libc = { path = ".." }
+cty = { path = "../cty" }
