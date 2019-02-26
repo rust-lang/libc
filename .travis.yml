@@ -34,14 +34,14 @@ matrix:
         #      cargo fmt --all -- --check
         #  fi
       stage: tools-and-build-and-tier1
-    - name: "Semver"
+    - name: "Semver Linux"
       install: |
         travis_retry cargo +nightly install \
         --git https://github.com/gnzlbg/rust-semverver \
         --branch fix_exit_code
       script: sh ci/semver.sh
       stage: tools-and-build-and-tier1
-    - name: "Semver"
+    - name: "Semver MacOSX"
       install: |
         travis_retry cargo +nightly install \
         --git https://github.com/gnzlbg/rust-semverver \
@@ -218,6 +218,8 @@ matrix:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
       - env: TARGET=asmjs-unknown-emscripten
       - env: TARGET=wasm32-unknown-emscripten
+      - name: "Semver Linux"
+      - name: "Semver MacOSX"
 
 install: travis_retry rustup target add $TARGET
 
