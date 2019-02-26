@@ -11,13 +11,6 @@ stages:
 matrix:
   include:
     # TOOLS
-    - name: "Semver"
-      env: TARGET=x86_64-unknown-linux-gnu
-      install: |
-        travis_retry cargo +nightly install \
-        --git https://github.com/gnzlbg/rust-semverver \
-        --branch fix_exit_code
-      script: cargo +nightly semver --api-guidelines --target="${TARGET}"
     - name: "Documentation"
       env: TARGET=x86_64-unknown-linux-gnu
       script: sh ci/dox.sh
@@ -40,6 +33,22 @@ matrix:
         #  if rustup component add rustfmt-preview ; then
         #      cargo fmt --all -- --check
         #  fi
+      stage: tools-and-build-and-tier1
+    - name: "Semver"
+      install: |
+        travis_retry cargo +nightly install \
+        --git https://github.com/gnzlbg/rust-semverver \
+        --branch fix_exit_code
+      script: sh ci/semver.sh
+      stage: tools-and-build-and-tier1
+    - name: "Semver"
+      install: |
+        travis_retry cargo +nightly install \
+        --git https://github.com/gnzlbg/rust-semverver \
+        --branch fix_exit_code
+      script: sh ci/semver.sh
+      os: osx
+      osx_image: xcode10
       stage: tools-and-build-and-tier1
 
     # BUILD stable, beta, nightly
