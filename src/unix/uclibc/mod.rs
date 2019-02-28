@@ -1893,6 +1893,9 @@ cfg_if! {
     } else if #[cfg(target_arch = "x86_64")] {
         mod x86_64;
         pub use self::x86_64::*;
+    } else if #[cfg(target_arch = "arm")] {
+        mod arm;
+        pub use self::arm::*;
     } else {
         pub use unsupported_target;
     }
