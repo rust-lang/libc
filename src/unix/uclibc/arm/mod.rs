@@ -30,7 +30,8 @@ pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 20;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 pub const NCCS: usize = 32;
 
-// I wasn't able to find those constants in uclibc build environment for armv7
+// I wasn't able to find those constants
+// in uclibc build environment for armv7
 pub const AIO_ALLDONE: ::c_int = 2; // from linux/mod.rs
 pub const AIO_CANCELED: ::c_int = 0; // from linux/mod.rs
 pub const AIO_NOTCANCELED: ::c_int = 1; // from linux/mod.rs
@@ -46,15 +47,13 @@ pub const LIO_READ: ::c_int = 0; // from linux/mod.rs
 pub const LIO_WAIT: ::c_int = 0; // from linux/mod.rs
 pub const LIO_WRITE: ::c_int = 1; // from linux/mod.rs
 pub const MAP_HUGETLB: ::c_int = 0x040000; // from linux/other/mod.rs
-pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY; 
+pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 pub const RB_KEXEC: ::c_int = 0x45584543u32 as i32; // from linux/mod.rs
 pub const RB_SW_SUSPEND: ::c_int = 0xd000fce2u32 as i32; // from linux/mod.rs
-pub const SO_BUSY_POLL: ::c_int = 46; // not defined in asm-generic/socket.h for armv7
-pub const SO_PEEK_OFF: ::c_int = 42; // not defined in asm-generic/socket.h for armv7
-pub const SO_REUSEPORT: ::c_int = 15; // not defined in asm-generic/socket.h for armv7
-pub const SOL_NETLINK: ::c_int = 270; // took it from src/unix/notbsd/mod.rs, I wasn't able to find it in headers
-
-// TODO: check those
+pub const SO_BUSY_POLL: ::c_int = 46; // from src/unix/notbsd/mod.rs
+pub const SO_PEEK_OFF: ::c_int = 42; // from src/unix/notbsd/mod.rs
+pub const SO_REUSEPORT: ::c_int = 15; // from src/unix/notbsd/mod.rs
+pub const SOL_NETLINK: ::c_int = 270; // from src/unix/notbsd/mod.rs
 pub const _POSIX_VDISABLE: ::cc_t = 0; // from linux/mod.rs
 pub const AT_EMPTY_PATH: ::c_int = 0x1000; // from notbsd/mod.rs
 
@@ -526,7 +525,8 @@ s! {
 
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
-        // uClibc defines sa_flags as `unsigned long int`, but nix crate expects `int`
+        // uClibc defines sa_flags as `unsigned long int`,
+        // but nix crate expects `int`
         pub sa_flags: ::c_int,
         pub sa_restorer: *mut ::c_void,
         pub sa_mask: sigset_t,
