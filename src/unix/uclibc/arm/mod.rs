@@ -17,6 +17,182 @@ pub type nlink_t = ::c_uint;
 pub type blksize_t = ::c_long;
 pub type blkcnt_t = ::c_long;
 
+s! {
+    pub struct cmsghdr {
+        pub cmsg_len: ::size_t,
+        pub cmsg_level: ::c_int,
+        pub cmsg_type: ::c_int,
+    }
+
+    pub struct msghdr {
+        pub msg_name: *mut ::c_void,
+        pub msg_namelen: ::socklen_t,
+        pub msg_iov: *mut ::iovec,
+        pub msg_iovlen: ::c_int,
+        pub msg_control: *mut ::c_void,
+        pub msg_controllen: ::socklen_t,
+        pub msg_flags: ::c_int,
+    }
+
+    pub struct pthread_attr_t {
+        __size: [::c_long; 9],
+    }
+
+    pub struct stat {
+        pub st_dev: ::c_ulonglong,
+        pub __pad1: ::c_ushort,
+        pub st_ino: ::ino_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::c_ulonglong,
+        pub __pad2: ::c_ushort,
+        pub st_size: ::off_t,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_atim: ::timespec,
+        pub st_mtim: ::timespec,
+        pub st_ctim: ::timespec,
+        pub __unused4: ::c_ulong,
+        pub __unused5: ::c_ulong,
+    }
+
+    pub struct stat64
+    {
+        pub st_dev: ::c_ulonglong,
+        pub __pad1: ::c_uint,
+        pub __st_ino: ::ino_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::c_ulonglong,
+        pub __pad2: ::c_uint,
+        pub st_size: ::off64_t,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt64_t,
+        pub st_atim: ::timespec,
+        pub st_mtim: ::timespec,
+        pub st_ctim: ::timespec,
+        pub st_ino: ::ino64_t,
+    }
+
+    pub struct flock {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off_t,
+        pub l_len: ::off_t,
+        pub l_pid: ::pid_t,
+    }
+
+    pub struct statfs {
+        pub f_type: ::c_int,
+        pub f_bsize: ::c_int,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_int,
+        pub f_frsize: ::c_int,
+        pub f_spare: [::c_int; 5],
+    }
+
+    pub struct sigset_t {
+        __val: [::c_ulong; 2],
+    }
+
+    pub struct sigaction {
+        pub sa_sigaction: ::sighandler_t,
+        // uClibc defines sa_flags as `unsigned long int`,
+        // but nix crate expects `int`
+        pub sa_flags: ::c_int,
+        pub sa_restorer: *mut ::c_void,
+        pub sa_mask: sigset_t,
+    }
+
+    pub struct termios {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_line: ::cc_t,
+        pub c_cc: [::cc_t; ::NCCS],
+        pub c_ispeed: ::speed_t,
+        pub c_ospeed: ::speed_t,
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        pub _pad: [::c_int; 29],
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        ss_flags: ::c_int,
+        ss_size: ::size_t,
+    }
+
+    pub struct ipc_perm {
+        pub __key: ::key_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub mode: ::c_ushort,
+        pub __pad1: ::c_ushort,
+        pub __seq: ::c_ushort,
+        pub __pad2: ::c_ushort,
+        pub __unused1: ::c_ulong,
+        pub __unused2: ::c_ulong,
+    }
+
+    pub struct msqid_ds {
+        pub msg_perm: ::ipc_perm,
+        pub msg_stime: ::time_t,
+        pub __unused1: ::c_ulong,
+        pub msg_rtime: ::time_t,
+        pub __unused2: ::c_ulong,
+        pub msg_ctime: ::time_t,
+        pub __unused3: ::c_ulong,
+        pub __msg_cbytes: ::c_ulong,
+        pub msg_qnum: ::msgqnum_t,
+        pub msg_qbytes: ::msglen_t,
+        pub msg_lspid: ::pid_t,
+        pub msg_lrpid: ::pid_t,
+        pub __unused4: ::c_ulong,
+        pub __unused5: ::c_ulong,
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_atime: ::time_t,
+        pub __unused1: ::c_ulong,
+        pub shm_dtime: ::time_t,
+        pub __unused2: ::c_ulong,
+        pub shm_ctime: ::time_t,
+        pub __unused3: ::c_ulong,
+        pub shm_cpid: ::pid_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        pub __unused4: ::c_ulong,
+        pub __unused5: ::c_ulong,
+    }
+
+    pub struct ucred {
+        pub pid: ::pid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+    }
+
+}
+
 pub const O_CLOEXEC: ::c_int = 0o2000000;
 pub const RLIM_INFINITY: rlim_t = !0;
 pub const __SIZEOF_PTHREAD_ATTR_T: usize = 36;
@@ -435,204 +611,9 @@ pub const _SC_V6_LP64_OFF64: ::c_int = 0xb2;
 pub const _SC_V6_LPBIG_OFFBIG: ::c_int = 0xb3;
 pub const _SC_XOPEN_STREAMS: ::c_int = 0xf6;
 
-s! {
-    pub struct cmsghdr {
-        pub cmsg_len: ::size_t,
-        pub cmsg_level: ::c_int,
-        pub cmsg_type: ::c_int,
-    }
-
-    pub struct msghdr {
-        pub msg_name: *mut ::c_void,
-        pub msg_namelen: ::socklen_t,
-        pub msg_iov: *mut ::iovec,
-        pub msg_iovlen: ::c_int,
-        pub msg_control: *mut ::c_void,
-        pub msg_controllen: ::socklen_t,
-        pub msg_flags: ::c_int,
-    }
-
-    pub struct pthread_attr_t {
-        __size: [::c_long; 9],
-    }
-
-    pub struct stat {
-        pub st_dev: ::c_ulonglong,
-        pub __pad1: ::c_ushort,
-        pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::c_ulonglong,
-        pub __pad2: ::c_ushort,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt_t,
-        pub st_atim: ::timespec,
-        pub st_mtim: ::timespec,
-        pub st_ctim: ::timespec,
-        pub __unused4: ::c_ulong,
-        pub __unused5: ::c_ulong,
-    }
-
-    pub struct stat64
-    {
-        pub st_dev: ::c_ulonglong,
-        pub __pad1: ::c_uint,
-        pub __st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::c_ulonglong,
-        pub __pad2: ::c_uint,
-        pub st_size: ::off64_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atim: ::timespec,
-        pub st_mtim: ::timespec,
-        pub st_ctim: ::timespec,
-        pub st_ino: ::ino64_t,
-    }
-
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_pid: ::pid_t,
-    }
-
-    pub struct statfs {
-        pub f_type: ::c_int,
-        pub f_bsize: ::c_int,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_int,
-        pub f_frsize: ::c_int,
-        pub f_spare: [::c_int; 5],
-    }
-
-    pub struct sigset_t {
-        __val: [::c_ulong; 2],
-    }
-
-    pub struct sigaction {
-        pub sa_sigaction: ::sighandler_t,
-        // uClibc defines sa_flags as `unsigned long int`,
-        // but nix crate expects `int`
-        pub sa_flags: ::c_int,
-        pub sa_restorer: *mut ::c_void,
-        pub sa_mask: sigset_t,
-    }
-
-    pub struct termios {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_line: ::cc_t,
-        pub c_cc: [::cc_t; ::NCCS],
-        pub c_ispeed: ::speed_t,
-        pub c_ospeed: ::speed_t,
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_code: ::c_int,
-        pub _pad: [::c_int; 29],
-    }
-
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        ss_flags: ::c_int,
-        ss_size: ::size_t,
-    }
-
-    pub struct ipc_perm {
-        pub __key: ::key_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-        pub cuid: ::uid_t,
-        pub cgid: ::gid_t,
-        pub mode: ::c_ushort,
-        pub __pad1: ::c_ushort,
-        pub __seq: ::c_ushort,
-        pub __pad2: ::c_ushort,
-        pub __unused1: ::c_ulong,
-        pub __unused2: ::c_ulong,
-    }
-
-    pub struct msqid_ds {
-        pub msg_perm: ::ipc_perm,
-        pub msg_stime: ::time_t,
-        pub __unused1: ::c_ulong,
-        pub msg_rtime: ::time_t,
-        pub __unused2: ::c_ulong,
-        pub msg_ctime: ::time_t,
-        pub __unused3: ::c_ulong,
-        pub __msg_cbytes: ::c_ulong,
-        pub msg_qnum: ::msgqnum_t,
-        pub msg_qbytes: ::msglen_t,
-        pub msg_lspid: ::pid_t,
-        pub msg_lrpid: ::pid_t,
-        pub __unused4: ::c_ulong,
-        pub __unused5: ::c_ulong,
-    }
-
-    pub struct shmid_ds {
-        pub shm_perm: ::ipc_perm,
-        pub shm_segsz: ::size_t,
-        pub shm_atime: ::time_t,
-        pub __unused1: ::c_ulong,
-        pub shm_dtime: ::time_t,
-        pub __unused2: ::c_ulong,
-        pub shm_ctime: ::time_t,
-        pub __unused3: ::c_ulong,
-        pub shm_cpid: ::pid_t,
-        pub shm_lpid: ::pid_t,
-        pub shm_nattch: ::shmatt_t,
-        pub __unused4: ::c_ulong,
-        pub __unused5: ::c_ulong,
-    }
-
-    pub struct ucred {
-        pub pid: ::pid_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-    }
-
-}
-
-extern {
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-    pub fn openpty(amaster: *mut ::c_int,
-                aslave: *mut ::c_int,
-                name: *mut ::c_char,
-                termp: *mut termios,
-                winp: *mut ::winsize) -> ::c_int;
-    pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
-    pub fn pwritev(fd: ::c_int,
-                   iov: *const ::iovec,
-                   iovcnt: ::c_int,
-                   offset: ::off_t) -> ::ssize_t;
-    pub fn preadv(fd: ::c_int,
-                  iov: *const ::iovec,
-                  iovcnt: ::c_int,
-                  offset: ::off_t) -> ::ssize_t;
-}
-
 fn CMSG_ALIGN(len: usize) -> usize {
     len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
 }
-
 
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
@@ -675,6 +656,24 @@ f! {
         }
     }
 
+}
+
+extern {
+    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+    pub fn openpty(amaster: *mut ::c_int,
+                aslave: *mut ::c_int,
+                name: *mut ::c_char,
+                termp: *mut termios,
+                winp: *mut ::winsize) -> ::c_int;
+    pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
+    pub fn pwritev(fd: ::c_int,
+                   iov: *const ::iovec,
+                   iovcnt: ::c_int,
+                   offset: ::off_t) -> ::ssize_t;
+    pub fn preadv(fd: ::c_int,
+                  iov: *const ::iovec,
+                  iovcnt: ::c_int,
+                  offset: ::off_t) -> ::ssize_t;
 }
 
 cfg_if! {
