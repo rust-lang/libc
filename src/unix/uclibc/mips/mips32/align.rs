@@ -1,6 +1,6 @@
 s! {
     // FIXME this is actually a union
-    #[cfg_attr(arget_pointer_width = "32",
+    #[cfg_attr(target_pointer_width = "32",
                repr(align(4)))]
     #[cfg_attr(target_pointer_width = "64",
                repr(align(8)))]
