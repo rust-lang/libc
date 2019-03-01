@@ -35,17 +35,11 @@ matrix:
         #  fi
       stage: tools-and-build-and-tier1
     - name: "Semver Linux"
-      install: |
-        travis_retry cargo +nightly install \
-        --git https://github.com/gnzlbg/rust-semverver \
-        --branch fix_exit_code
+      install: travis_retry cargo +nightly install semverver
       script: sh ci/semver.sh
       stage: tools-and-build-and-tier1
     - name: "Semver MacOSX"
-      install: |
-        travis_retry cargo +nightly install \
-        --git https://github.com/gnzlbg/rust-semverver \
-        --branch fix_exit_code
+      install: travis_retry cargo +nightly install semverver
       script: sh ci/semver.sh
       os: osx
       osx_image: xcode10
