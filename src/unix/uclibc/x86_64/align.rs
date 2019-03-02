@@ -1,5 +1,5 @@
 macro_rules! expand_align {
-    () = > {
+    () => {
         s! {
             #[cfg_attr(target_pointer_width = "32",
                        repr(align(4)))]
