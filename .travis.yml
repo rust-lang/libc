@@ -34,6 +34,16 @@ matrix:
         #      cargo fmt --all -- --check
         #  fi
       stage: tools-and-build-and-tier1
+    - name: "Semver Linux"
+      install: travis_retry cargo +nightly install semverver
+      script: sh ci/semver.sh
+      stage: tools-and-build-and-tier1
+    - name: "Semver MacOSX"
+      install: travis_retry cargo +nightly install semverver
+      script: sh ci/semver.sh
+      os: osx
+      osx_image: xcode10
+      stage: tools-and-build-and-tier1
 
     # BUILD stable, beta, nightly
     - name: "Build Stable Rust"
@@ -202,6 +212,8 @@ matrix:
       # FIXME: https://github.com/rust-lang/libc/issues/1226
       - env: TARGET=asmjs-unknown-emscripten
       - env: TARGET=wasm32-unknown-emscripten
+      - name: "Semver Linux"
+      - name: "Semver MacOSX"
 
 install: travis_retry rustup target add $TARGET
 
