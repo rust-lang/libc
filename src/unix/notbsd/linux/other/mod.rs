@@ -35,7 +35,7 @@ s! {
         #[cfg(target_arch = "sparc64")]
         __reserved0: ::c_int,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::dox::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern fn()>,
     }
 
     pub struct stack_t {
@@ -321,7 +321,6 @@ pub const SOL_PNPIPE: ::c_int = 275;
 pub const SOL_RDS: ::c_int = 276;
 pub const SOL_IUCV: ::c_int = 277;
 pub const SOL_CAIF: ::c_int = 278;
-pub const SOL_ALG: ::c_int = 279;
 pub const SOL_NFC: ::c_int = 280;
 pub const SOL_XDP: ::c_int = 283;
 
@@ -927,7 +926,7 @@ extern {
                      sz: ::c_int) -> ::c_int;
     pub fn glob64(pattern: *const ::c_char,
                   flags: ::c_int,
-                  errfunc: ::dox::Option<extern fn(epath: *const ::c_char,
+                  errfunc: ::Option<extern fn(epath: *const ::c_char,
                                                    errno: ::c_int)
                                                    -> ::c_int>,
                   pglob: *mut glob64_t) -> ::c_int;

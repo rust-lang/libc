@@ -1,5 +1,3 @@
-use dox::{mem, Option};
-
 pub type c_char = i8;
 pub type wchar_t = i32;
 pub type useconds_t = u32;
@@ -37,8 +35,8 @@ pub type nlink_t = u32;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
-impl ::dox::Copy for fpos64_t {}
-impl ::dox::Clone for fpos64_t {
+impl ::Copy for fpos64_t {}
+impl ::Clone for fpos64_t {
     fn clone(&self) -> fpos64_t { *self }
 }
 
@@ -169,11 +167,6 @@ s! {
         pub msgseg: ::c_ushort,
     }
 
-    pub struct mmsghdr {
-        pub msg_hdr: ::msghdr,
-        pub msg_len: ::c_uint,
-    }
-
     pub struct sembuf {
         pub sem_num: ::c_ushort,
         pub sem_op: ::c_short,
@@ -201,7 +194,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::dox::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern fn()>,
     }
 
     pub struct ipc_perm {
@@ -410,7 +403,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
     pub struct dirent {
         pub d_ino: ::ino_t,
         pub d_off: ::off_t,
@@ -419,7 +411,6 @@ s_no_extra_traits! {
         pub d_name: [::c_char; 256],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct dirent64 {
         pub d_ino: ::ino64_t,
         pub d_off: ::off64_t,
@@ -428,7 +419,6 @@ s_no_extra_traits! {
         pub d_name: [::c_char; 256],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct sysinfo {
         pub uptime: ::c_ulong,
         pub loads: [::c_ulong; 3],
@@ -444,6 +434,142 @@ s_no_extra_traits! {
         pub freehigh: ::c_ulong,
         pub mem_unit: ::c_uint,
         pub __reserved: [::c_char; 256],
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_off == other.d_off
+                    && self.d_reclen == other.d_reclen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for dirent {}
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_off", &self.d_off)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_type", &self.d_type)
+                    // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for dirent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_off.hash(state);
+                self.d_reclen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for dirent64 {
+            fn eq(&self, other: &dirent64) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_off == other.d_off
+                    && self.d_reclen == other.d_reclen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for dirent64 {}
+        impl ::fmt::Debug for dirent64 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent64")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_off", &self.d_off)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_type", &self.d_type)
+                    // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for dirent64 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_off.hash(state);
+                self.d_reclen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for sysinfo {
+            fn eq(&self, other: &sysinfo) -> bool {
+                self.uptime == other.uptime
+                    && self.loads == other.loads
+                    && self.totalram == other.totalram
+                    && self.freeram == other.freeram
+                    && self.sharedram == other.sharedram
+                    && self.bufferram == other.bufferram
+                    && self.totalswap == other.totalswap
+                    && self.freeswap == other.freeswap
+                    && self.procs == other.procs
+                    && self.pad == other.pad
+                    && self.totalhigh == other.totalhigh
+                    && self.freehigh == other.freehigh
+                    && self.mem_unit == other.mem_unit
+                    && self
+                    .__reserved
+                    .iter()
+                    .zip(other.__reserved.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sysinfo {}
+        impl ::fmt::Debug for sysinfo {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sysinfo")
+                    .field("uptime", &self.uptime)
+                    .field("loads", &self.loads)
+                    .field("totalram", &self.totalram)
+                    .field("freeram", &self.freeram)
+                    .field("sharedram", &self.sharedram)
+                    .field("bufferram", &self.bufferram)
+                    .field("totalswap", &self.totalswap)
+                    .field("freeswap", &self.freeswap)
+                    .field("procs", &self.procs)
+                    .field("pad", &self.pad)
+                    .field("totalhigh", &self.totalhigh)
+                    .field("freehigh", &self.freehigh)
+                    .field("mem_unit", &self.mem_unit)
+                    // FIXME: .field("__reserved", &self.__reserved)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sysinfo {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.uptime.hash(state);
+                self.loads.hash(state);
+                self.totalram.hash(state);
+                self.freeram.hash(state);
+                self.sharedram.hash(state);
+                self.bufferram.hash(state);
+                self.totalswap.hash(state);
+                self.freeswap.hash(state);
+                self.procs.hash(state);
+                self.pad.hash(state);
+                self.totalhigh.hash(state);
+                self.freehigh.hash(state);
+                self.mem_unit.hash(state);
+                self.__reserved.hash(state);
+            }
+        }
     }
 }
 
@@ -1477,7 +1603,7 @@ pub const ATF_MAGIC: ::c_int = 0x80;
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
                        cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < mem::size_of::<cmsghdr>() {
+        if ((*cmsg).cmsg_len as usize) < ::mem::size_of::<cmsghdr>() {
             return 0 as *mut cmsghdr;
         };
         let next = (cmsg as usize +
@@ -1499,21 +1625,23 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits
+            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits
+            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]);
+        let size_in_bits = 8 * ::mem::size_of_val(&cpuset.bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.bits[idx] & (1 << offset))
     }
@@ -1622,7 +1750,7 @@ extern {
 
     pub fn glob(pattern: *const c_char,
                 flags: ::c_int,
-                errfunc: Option<extern fn(epath: *const c_char,
+                errfunc: ::Option<extern fn(epath: *const c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);
@@ -1648,9 +1776,9 @@ extern {
 
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
-    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int) -> ::c_int;
-    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
     pub fn sync();
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;

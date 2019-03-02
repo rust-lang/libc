@@ -1,4 +1,4 @@
-use pthread_mutex_t;
+use ::pthread_mutex_t;
 
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
@@ -92,7 +92,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         __glibc_reserved0: ::c_int,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::dox::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern fn()>,
         pub sa_mask: sigset_t,
     }
 
@@ -1322,7 +1322,7 @@ extern {
                      sz: ::c_int) -> ::c_int;
     pub fn glob64(pattern: *const ::c_char,
                   flags: ::c_int,
-                  errfunc: ::dox::Option<extern fn(epath: *const ::c_char,
+                  errfunc: ::Option<extern fn(epath: *const ::c_char,
                                                    errno: ::c_int)
                                                    -> ::c_int>,
                   pglob: *mut glob64_t) -> ::c_int;

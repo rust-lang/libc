@@ -77,8 +77,8 @@ macro_rules! s {
             $(#[$attr])*
             pub struct $i { $($field)* }
         }
-        impl ::dox::Copy for $i {}
-        impl ::dox::Clone for $i {
+        impl ::Copy for $i {}
+        impl ::Clone for $i {
             fn clone(&self) -> $i { *self }
         }
     );
@@ -98,8 +98,8 @@ macro_rules! s_no_extra_traits {
                     pub union $i { $($field)* }
                 }
 
-                impl ::dox::Copy for $i {}
-                impl ::dox::Clone for $i {
+                impl ::Copy for $i {}
+                impl ::Clone for $i {
                     fn clone(&self) -> $i { *self }
                 }
             }
@@ -111,8 +111,8 @@ macro_rules! s_no_extra_traits {
             $(#[$attr])*
             pub struct $i { $($field)* }
         }
-        impl ::dox::Copy for $i {}
-        impl ::dox::Clone for $i {
+        impl ::Copy for $i {}
+        impl ::Clone for $i {
             fn clone(&self) -> $i { *self }
         }
     );
@@ -124,15 +124,8 @@ macro_rules! f {
         $($body:stmt);*
     })*) => ($(
         #[inline]
-        #[cfg(not(cross_platform_docs))]
         pub unsafe extern fn $i($($arg: $argty),*) -> $ret {
             $($body);*
-        }
-
-        #[cfg(cross_platform_docs)]
-        #[allow(dead_code)]
-        pub unsafe extern fn $i($($arg: $argty),*) -> $ret {
-            loop {}
         }
     )*)
 }

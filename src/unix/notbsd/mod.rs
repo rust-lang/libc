@@ -1,5 +1,3 @@
-use dox::mem;
-
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
@@ -10,8 +8,8 @@ pub type id_t = ::c_uint;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
-impl ::dox::Copy for timezone {}
-impl ::dox::Clone for timezone {
+impl ::Copy for timezone {}
+impl ::Clone for timezone {
     fn clone(&self) -> timezone { *self }
 }
 
@@ -209,6 +207,18 @@ s! {
         pub ar_pln: u8,
         pub ar_op: u16,
     }
+
+    pub struct inotify_event {
+        pub wd: ::c_int,
+        pub mask: ::uint32_t,
+        pub cookie: ::uint32_t,
+        pub len: ::uint32_t
+    }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 s_no_extra_traits!{
@@ -220,7 +230,6 @@ s_no_extra_traits!{
                 not(target_os = "android")),
             target_arch = "x86_64"),
         repr(packed))]
-    #[allow(missing_debug_implementations)]
     pub struct epoll_event {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,
@@ -252,6 +261,32 @@ s_no_extra_traits!{
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for epoll_event {
+            fn eq(&self, other: &epoll_event) -> bool {
+                self.events == other.events
+                    && self.u64 == other.u64
+            }
+        }
+        impl Eq for epoll_event {}
+        impl ::fmt::Debug for epoll_event {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let events = self.events;
+                let u64 = self.u64;
+                f.debug_struct("epoll_event")
+                    .field("events", &events)
+                    .field("u64", &u64)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for epoll_event {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let events = self.events;
+                let u64 = self.u64;
+                events.hash(state);
+                u64.hash(state);
+            }
+        }
+
         impl PartialEq for sockaddr_un {
             fn eq(&self, other: &sockaddr_un) -> bool {
                 self.sun_family == other.sun_family
@@ -262,9 +297,7 @@ cfg_if! {
                     .all(|(a, b)| a == b)
             }
         }
-
         impl Eq for sockaddr_un {}
-
         impl ::fmt::Debug for sockaddr_un {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sockaddr_un")
@@ -273,7 +306,6 @@ cfg_if! {
                     .finish()
             }
         }
-
         impl ::hash::Hash for sockaddr_un {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.sun_family.hash(state);
@@ -657,6 +689,7 @@ pub const SOL_DCCP: ::c_int = 269;
 pub const SOL_NETLINK: ::c_int = 270;
 pub const SOL_TIPC: ::c_int = 271;
 pub const SOL_BLUETOOTH: ::c_int = 274;
+pub const SOL_ALG: ::c_int = 279;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_UNIX: ::c_int = 1;
@@ -774,6 +807,7 @@ pub const IP_RECVTOS: ::c_int = 13;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 pub const IP_TRANSPARENT: ::c_int = 19;
+pub const IPV6_FLOWINFO: ::c_int = 11;
 pub const IPV6_UNICAST_HOPS: ::c_int = 16;
 pub const IPV6_MULTICAST_IF: ::c_int = 17;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
@@ -781,10 +815,15 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_ADD_MEMBERSHIP: ::c_int = 20;
 pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
 pub const IPV6_V6ONLY: ::c_int = 26;
+pub const IPV6_FLOWLABEL_MGR: ::c_int = 32;
+pub const IPV6_FLOWINFO_SEND: ::c_int = 33;
 pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
 pub const IPV6_RECVTCLASS: ::c_int = 66;
 pub const IPV6_TCLASS: ::c_int = 67;
+
+pub const IPV6_FLOWINFO_FLOWLABEL: ::c_int = 0x000fffff;
+pub const IPV6_FLOWINFO_PRIORITY: ::c_int = 0x0ff00000;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
@@ -1128,13 +1167,52 @@ pub const ARPHRD_IEEE802154: u16 = 804;
 pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
+// uapi/linux/inotify.h
+pub const IN_ACCESS:        ::uint32_t = 0x0000_0001;
+pub const IN_MODIFY:        ::uint32_t = 0x0000_0002;
+pub const IN_ATTRIB:        ::uint32_t = 0x0000_0004;
+pub const IN_CLOSE_WRITE:   ::uint32_t = 0x0000_0008;
+pub const IN_CLOSE_NOWRITE: ::uint32_t = 0x0000_0010;
+pub const IN_CLOSE:         ::uint32_t = (IN_CLOSE_WRITE | IN_CLOSE_NOWRITE);
+pub const IN_OPEN:          ::uint32_t = 0x0000_0020;
+pub const IN_MOVED_FROM:    ::uint32_t = 0x0000_0040;
+pub const IN_MOVED_TO:      ::uint32_t = 0x0000_0080;
+pub const IN_MOVE:          ::uint32_t = (IN_MOVED_FROM | IN_MOVED_TO);
+pub const IN_CREATE:        ::uint32_t = 0x0000_0100;
+pub const IN_DELETE:        ::uint32_t = 0x0000_0200;
+pub const IN_DELETE_SELF:   ::uint32_t = 0x0000_0400;
+pub const IN_MOVE_SELF:     ::uint32_t = 0x0000_0800;
+
+pub const IN_UNMOUNT:       ::uint32_t = 0x0000_2000;
+pub const IN_Q_OVERFLOW:    ::uint32_t = 0x0000_4000;
+pub const IN_IGNORED:       ::uint32_t = 0x0000_8000;
+
+pub const IN_ONLYDIR:       ::uint32_t = 0x0100_0000;
+pub const IN_DONT_FOLLOW:   ::uint32_t = 0x0200_0000;
+// pub const IN_EXCL_UNLINK:   ::uint32_t = 0x0400_0000;
+
+// pub const IN_MASK_CREATE:   ::uint32_t = 0x1000_0000;
+// pub const IN_MASK_ADD:      ::uint32_t = 0x2000_0000;
+pub const IN_ISDIR:         ::uint32_t = 0x4000_0000;
+pub const IN_ONESHOT:       ::uint32_t = 0x8000_0000;
+
+pub const IN_ALL_EVENTS:    ::uint32_t = (
+  IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE_WRITE |
+  IN_CLOSE_NOWRITE | IN_OPEN | IN_MOVED_FROM |
+  IN_MOVED_TO | IN_DELETE | IN_CREATE | IN_DELETE_SELF |
+  IN_MOVE_SELF
+);
+
+pub const IN_CLOEXEC: ::c_int = O_CLOEXEC;
+pub const IN_NONBLOCK: ::c_int = O_NONBLOCK;
+
 fn CMSG_ALIGN(len: usize) -> usize {
-    len + mem::size_of::<usize>() - 1 & !(mem::size_of::<usize>() - 1)
+    len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
 }
 
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
+        if (*mhdr).msg_controllen as usize >= ::mem::size_of::<cmsghdr>() {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
             0 as *mut cmsghdr
@@ -1146,30 +1224,30 @@ f! {
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(mem::size_of::<cmsghdr>()))
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
             as ::c_uint
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        CMSG_ALIGN(mem::size_of::<cmsghdr>()) as ::c_uint + length
+        CMSG_ALIGN(::mem::size_of::<cmsghdr>()) as ::c_uint + length
     }
 
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
         return
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
-        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
         return
     }
@@ -1234,6 +1312,12 @@ f! {
 }
 
 extern {
+    pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t,
+                    pshared: ::c_int,
+                    value: ::c_uint)
+                    -> ::c_int;
+
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;
@@ -1374,6 +1458,11 @@ extern {
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+    pub fn inotify_init() -> ::c_int;
+    pub fn inotify_init1(flags: ::c_int) -> ::c_int;
+    pub fn inotify_add_watch(fd: ::c_int,
+                             path: *const ::c_char,
+                             mask: ::uint32_t) -> ::c_int;
 }
 
 cfg_if! {

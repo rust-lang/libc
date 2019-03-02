@@ -38,7 +38,7 @@ fn main() {
              String::from_utf8_lossy(&output.stderr));
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let passed = stdout.lines().find(|l|
+    stdout.lines().find(|l|
         (l.starts_with("PASSED ") && l.contains(" tests")) ||
         l.starts_with("test result: ok")
     ).unwrap_or_else(|| {

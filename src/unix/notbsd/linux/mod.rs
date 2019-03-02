@@ -1,7 +1,5 @@
 //! Linux-specific definitions for linux-like values
 
-use dox::{mem, Option};
-
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
@@ -40,8 +38,8 @@ pub type Elf64_Section = u16;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
-impl ::dox::Copy for fpos64_t {}
-impl ::dox::Clone for fpos64_t {
+impl ::Copy for fpos64_t {}
+impl ::Clone for fpos64_t {
     fn clone(&self) -> fpos64_t { *self }
 }
 
@@ -189,11 +187,6 @@ s! {
         pub msgssz: ::c_int,
         pub msgtql: ::c_int,
         pub msgseg: ::c_ushort,
-    }
-
-    pub struct mmsghdr {
-        pub msg_hdr: ::msghdr,
-        pub msg_len: ::c_uint,
     }
 
     pub struct sembuf {
@@ -500,13 +493,6 @@ s! {
         pub updated: ::c_ulong,
         pub ha: [::c_uchar; ::MAX_ADDR_LEN],
     }
-
-    pub struct inotify_event {
-        pub wd: ::c_int,
-        pub mask: ::uint32_t,
-        pub cookie: ::uint32_t,
-        pub len: ::uint32_t
-    }
 }
 
 s_no_extra_traits!{
@@ -524,6 +510,19 @@ s_no_extra_traits!{
         pub d_reclen: ::c_ushort,
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
+    }
+
+    pub struct sockaddr_alg {
+        pub salg_family: ::sa_family_t,
+        pub salg_type: [::c_uchar; 14],
+        pub salg_feat: u32,
+        pub salg_mask: u32,
+        pub salg_name: [::c_uchar; 64],
+    }
+
+    pub struct af_alg_iv {
+        pub ivlen: u32,
+        pub iv: [::c_uchar; 0],
     }
 }
 
@@ -668,6 +667,81 @@ cfg_if! {
         impl ::hash::Hash for pthread_rwlock_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_alg {
+            fn eq(&self, other: &sockaddr_alg) -> bool {
+                self.salg_family == other.salg_family
+                    && self
+                    .salg_type
+                    .iter()
+                    .zip(other.salg_type.iter())
+                    .all(|(a, b)| a == b)
+                    && self.salg_feat == other.salg_feat
+                    && self.salg_mask == other.salg_mask
+                    && self
+                    .salg_name
+                    .iter()
+                    .zip(other.salg_name.iter())
+                    .all(|(a, b)| a == b)
+           }
+        }
+
+        impl Eq for sockaddr_alg {}
+
+        impl ::fmt::Debug for sockaddr_alg {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_alg")
+                    .field("salg_family", &self.salg_family)
+                    .field("salg_type", &self.salg_type)
+                    .field("salg_feat", &self.salg_feat)
+                    .field("salg_mask", &self.salg_mask)
+                    .field("salg_name", &&self.salg_name[..])
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for sockaddr_alg {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.salg_family.hash(state);
+                self.salg_type.hash(state);
+                self.salg_feat.hash(state);
+                self.salg_mask.hash(state);
+                self.salg_name.hash(state);
+            }
+        }
+
+        impl af_alg_iv {
+            fn as_slice(&self) -> &[u8] {
+                unsafe {
+                    ::core::slice::from_raw_parts(
+                        self.iv.as_ptr(),
+                        self.ivlen as usize
+                    )
+                }
+            }
+        }
+
+        impl PartialEq for af_alg_iv {
+            fn eq(&self, other: &af_alg_iv) -> bool {
+                *self.as_slice() == *other.as_slice()
+           }
+        }
+
+        impl Eq for af_alg_iv {}
+
+        impl ::fmt::Debug for af_alg_iv {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("af_alg_iv")
+                    .field("iv", &self.as_slice())
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for af_alg_iv {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.as_slice().hash(state);
             }
         }
     }
@@ -1331,6 +1405,10 @@ pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
 pub const ENOATTR: ::c_int = ::ENODATA;
 
 pub const SO_ORIGINAL_DST: ::c_int = 80;
+pub const IP_ORIGDSTADDR : ::c_int = 20;
+pub const IP_RECVORIGDSTADDR : ::c_int = IP_ORIGDSTADDR;
+pub const IPV6_ORIGDSTADDR : ::c_int = 74;
+pub const IPV6_RECVORIGDSTADDR : ::c_int = IPV6_ORIGDSTADDR;
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const CMSPAR: ::tcflag_t = 0o10000000000;
 
@@ -1693,45 +1771,6 @@ pub const ARPD_LOOKUP: ::c_ushort = 0x02;
 pub const ARPD_FLUSH: ::c_ushort = 0x03;
 pub const ATF_MAGIC: ::c_int = 0x80;
 
-// uapi/linux/inotify.h
-pub const IN_ACCESS:        ::uint32_t = 0x0000_0001;
-pub const IN_MODIFY:        ::uint32_t = 0x0000_0002;
-pub const IN_ATTRIB:        ::uint32_t = 0x0000_0004;
-pub const IN_CLOSE_WRITE:   ::uint32_t = 0x0000_0008;
-pub const IN_CLOSE_NOWRITE: ::uint32_t = 0x0000_0010;
-pub const IN_CLOSE:         ::uint32_t = (IN_CLOSE_WRITE | IN_CLOSE_NOWRITE);
-pub const IN_OPEN:          ::uint32_t = 0x0000_0020;
-pub const IN_MOVED_FROM:    ::uint32_t = 0x0000_0040;
-pub const IN_MOVED_TO:      ::uint32_t = 0x0000_0080;
-pub const IN_MOVE:          ::uint32_t = (IN_MOVED_FROM | IN_MOVED_TO);
-pub const IN_CREATE:        ::uint32_t = 0x0000_0100;
-pub const IN_DELETE:        ::uint32_t = 0x0000_0200;
-pub const IN_DELETE_SELF:   ::uint32_t = 0x0000_0400;
-pub const IN_MOVE_SELF:     ::uint32_t = 0x0000_0800;
-
-pub const IN_UNMOUNT:       ::uint32_t = 0x0000_2000;
-pub const IN_Q_OVERFLOW:    ::uint32_t = 0x0000_4000;
-pub const IN_IGNORED:       ::uint32_t = 0x0000_8000;
-
-pub const IN_ONLYDIR:       ::uint32_t = 0x0100_0000;
-pub const IN_DONT_FOLLOW:   ::uint32_t = 0x0200_0000;
-// pub const IN_EXCL_UNLINK:   ::uint32_t = 0x0400_0000;
-
-// pub const IN_MASK_CREATE:   ::uint32_t = 0x1000_0000;
-// pub const IN_MASK_ADD:      ::uint32_t = 0x2000_0000;
-pub const IN_ISDIR:         ::uint32_t = 0x4000_0000;
-pub const IN_ONESHOT:       ::uint32_t = 0x8000_0000;
-
-pub const IN_ALL_EVENTS:    ::uint32_t = (
-  IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE_WRITE |
-  IN_CLOSE_NOWRITE | IN_OPEN | IN_MOVED_FROM |
-  IN_MOVED_TO | IN_DELETE | IN_CREATE | IN_DELETE_SELF |
-  IN_MOVE_SELF
-);
-
-pub const IN_CLOEXEC: ::c_int = O_CLOEXEC;
-pub const IN_NONBLOCK: ::c_int = O_NONBLOCK;
-
 #[cfg(not(target_arch = "sparc64"))]
 pub const SO_TIMESTAMPING: ::c_int = 37;
 #[cfg(target_arch = "sparc64")]
@@ -1751,10 +1790,20 @@ pub const SOF_TIMESTAMPING_SOFTWARE: ::c_uint = 1 << 4;
 pub const SOF_TIMESTAMPING_SYS_HARDWARE: ::c_uint = 1 << 5;
 pub const SOF_TIMESTAMPING_RAW_HARDWARE: ::c_uint = 1 << 6;
 
+// linux/if_alg.h
+pub const ALG_SET_KEY: ::c_int = 1;
+pub const ALG_SET_IV: ::c_int = 2;
+pub const ALG_SET_OP: ::c_int = 3;
+pub const ALG_SET_AEAD_ASSOCLEN: ::c_int = 4;
+pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
+
+pub const ALG_OP_DECRYPT: ::c_int = 0;
+pub const ALG_OP_ENCRYPT: ::c_int = 1;
+
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
                        cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < mem::size_of::<cmsghdr>() {
+        if ((*cmsg).cmsg_len as usize) < ::mem::size_of::<cmsghdr>() {
             return 0 as *mut cmsghdr;
         };
         let next = (cmsg as usize +
@@ -1778,21 +1827,23 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits
+            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits
+            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]);
+        let size_in_bits = 8 * ::mem::size_of_val(&cpuset.bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.bits[idx] & (1 << offset))
     }
@@ -2053,7 +2104,7 @@ extern {
 
     pub fn glob(pattern: *const c_char,
                 flags: ::c_int,
-                errfunc: Option<extern fn(epath: *const c_char,
+                errfunc: ::Option<extern fn(epath: *const c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);
@@ -2082,9 +2133,9 @@ extern {
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn vhangup() -> ::c_int;
-    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int) -> ::c_int;
-    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut mmsghdr, vlen: ::c_uint,
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
     pub fn sync();
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
@@ -2226,9 +2277,9 @@ extern {
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
-    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
-                          parent: Option<unsafe extern fn()>,
-                          child: Option<unsafe extern fn()>) -> ::c_int;
+    pub fn pthread_atfork(prepare: ::Option<unsafe extern fn()>,
+                          parent: ::Option<unsafe extern fn()>,
+                          child: ::Option<unsafe extern fn()>) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn getgrouplist(user: *const ::c_char,
                         group: ::gid_t,
@@ -2247,7 +2298,7 @@ extern {
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
     pub fn dl_iterate_phdr(
-        callback: Option<unsafe extern fn(
+        callback: ::Option<unsafe extern fn(
             info: *mut ::dl_phdr_info,
             size: ::size_t,
             data: *mut ::c_void
@@ -2333,11 +2384,6 @@ extern {
         nobj: ::size_t,
         stream: *mut ::FILE
     ) -> ::size_t;
-    pub fn inotify_init() -> ::c_int;
-    pub fn inotify_init1(flags: ::c_int) -> ::c_int;
-    pub fn inotify_add_watch(fd: ::c_int,
-                             path: *const ::c_char,
-                             mask: ::uint32_t) -> ::c_int;
     pub fn inotify_rm_watch(fd: ::c_int, wd: ::c_int) -> ::c_int;
 }
 

@@ -1,5 +1,3 @@
-use dox::{mem, Option};
-
 pub type wchar_t = i32;
 pub type off_t = i64;
 pub type useconds_t = u32;
@@ -435,7 +433,7 @@ pub const POLLWRBAND: ::c_short = 0x100;
 
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const ::msghdr) -> *mut ::cmsghdr {
-        if (*mhdr).msg_controllen as usize >= mem::size_of::<::cmsghdr>() {
+        if (*mhdr).msg_controllen as usize >= ::mem::size_of::<::cmsghdr>() {
             (*mhdr).msg_control as *mut ::cmsghdr
         } else {
             0 as *mut ::cmsghdr
@@ -443,20 +441,20 @@ f! {
     }
 
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
         return
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
         return
@@ -527,7 +525,7 @@ extern {
     #[cfg_attr(target_os = "freebsd", link_name = "glob@FBSD_1.0")]
     pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
-                errfunc: Option<extern fn(epath: *const ::c_char,
+                errfunc: ::Option<extern fn(epath: *const ::c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__globfree30")]
@@ -625,7 +623,6 @@ extern {
     pub fn pthread_cancel(thread: ::pthread_t) -> ::c_int;
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
     pub fn sem_unlink(name: *const ::c_char) -> ::c_int;
-    pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwnam_r")]
     pub fn getpwnam_r(name: *const ::c_char,
@@ -645,9 +642,9 @@ extern {
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
-    pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
-                          parent: Option<unsafe extern fn()>,
-                          child: Option<unsafe extern fn()>) -> ::c_int;
+    pub fn pthread_atfork(prepare: ::Option<unsafe extern fn()>,
+                          parent: ::Option<unsafe extern fn()>,
+                          child: ::Option<unsafe extern fn()>) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "popen$UNIX2003")]

@@ -3,8 +3,6 @@
 //! More functions and definitions can be found in the more specific modules
 //! according to the platform in question.
 
-use dox::Option;
-
 pub type int8_t = i8;
 pub type int16_t = i16;
 pub type int32_t = i32;
@@ -43,14 +41,14 @@ pub type cc_t = ::c_uchar;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
-impl ::dox::Copy for DIR {}
-impl ::dox::Clone for DIR {
+impl ::Copy for DIR {}
+impl ::Clone for DIR {
     fn clone(&self) -> DIR { *self }
 }
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum locale_t {}
-impl ::dox::Copy for locale_t {}
-impl ::dox::Clone for locale_t {
+impl ::Copy for locale_t {}
+impl ::Clone for locale_t {
     fn clone(&self) -> locale_t { *self }
 }
 
@@ -303,9 +301,7 @@ pub const ATF_PUBL: ::c_int = 0x08;
 pub const ATF_USETRAILERS: ::c_int = 0x10;
 
 cfg_if! {
-    if #[cfg(cross_platform_docs)] {
-        // on dox builds don't pull in anything
-    } else if #[cfg(target_os = "l4re")] {
+    if #[cfg(target_os = "l4re")] {
         // required libraries for L4Re are linked externally, ATM
     } else if #[cfg(feature = "use_std")] {
         // cargo build, don't pull in anything extra as the libstd dep
@@ -364,14 +360,14 @@ cfg_if! {
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
-impl ::dox::Copy for FILE {}
-impl ::dox::Clone for FILE {
+impl ::Copy for FILE {}
+impl ::Clone for FILE {
     fn clone(&self) -> FILE { *self }
 }
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // TODO: fill this out with a struct
-impl ::dox::Copy for fpos_t {}
-impl ::dox::Clone for fpos_t {
+impl ::Copy for fpos_t {}
+impl ::Clone for fpos_t {
     fn clone(&self) -> fpos_t { *self }
 }
 
@@ -858,7 +854,7 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__libc_thr_yield")]
     pub fn sched_yield() -> ::c_int;
     pub fn pthread_key_create(key: *mut pthread_key_t,
-                              dtor: Option<unsafe extern fn(*mut ::c_void)>)
+                              dtor: ::Option<unsafe extern fn(*mut ::c_void)>)
                               -> ::c_int;
     pub fn pthread_key_delete(key: pthread_key_t) -> ::c_int;
     pub fn pthread_getspecific(key: pthread_key_t) -> *mut ::c_void;
@@ -1025,16 +1021,11 @@ extern {
                      locale: *const ::c_char) -> *mut ::c_char;
     pub fn localeconv() -> *mut lconv;
 
-    pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sem_wait$UNIX2003")]
     pub fn sem_wait(sem: *mut sem_t) -> ::c_int;
     pub fn sem_trywait(sem: *mut sem_t) -> ::c_int;
     pub fn sem_post(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_init(sem: *mut sem_t,
-                    pshared: ::c_int,
-                    value: ::c_uint)
-                    -> ::c_int;
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
     pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
 

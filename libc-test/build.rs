@@ -18,40 +18,32 @@ fn do_ctest() {
     let i686 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
     let x32 = target.ends_with("gnux32");
-    let windows = target.contains("windows");
-    let mingw = target.contains("windows-gnu");
     let linux = target.contains("unknown-linux");
     let android = target.contains("android");
-    let apple = target.contains("apple");
-    let ios = target.contains("apple-ios");
     let emscripten = target.contains("asm");
     let musl = target.contains("musl") || emscripten;
     let uclibc = target.contains("uclibc");
     let freebsd = target.contains("freebsd");
-    let dragonfly = target.contains("dragonfly");
     let mips = target.contains("mips");
-    let netbsd = target.contains("netbsd");
     let openbsd = target.contains("openbsd");
-    let rumprun = target.contains("rumprun");
-    let solaris = target.contains("solaris");
-    let cloudabi = target.contains("cloudabi");
-    let redox = target.contains("redox");
-    let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
+    let bsdlike = freebsd || openbsd;
     let mut cfg = ctest::TestGenerator::new();
+
+    match &target {
+        t if t.contains("apple") => return test_apple(t),
+        t if t.contains("openbsd") => return test_openbsd(t),
+        t if t.contains("windows") => return test_windows(t),
+        t if t.contains("redox") => return test_redox(t),
+        t if t.contains("cloudabi") => return test_cloudabi(t),
+        t if t.contains("solaris") => return test_solaris(t),
+        t if t.contains("netbsd") => return test_netbsd(t),
+        t if t.contains("dragonfly") => return test_dragonflybsd(t),
+        _ => (),
+    }
 
     // Pull in extra goodies
     if linux || android || emscripten {
         cfg.define("_GNU_SOURCE", None);
-    } else if netbsd {
-        cfg.define("_NETBSD_SOURCE", Some("1"));
-    } else if apple {
-        cfg.define("__APPLE_USE_RFC_3542", None);
-    } else if windows {
-        cfg.define("_WIN32_WINNT", Some("0x8000"));
-    } else if solaris {
-        cfg.define("_XOPEN_SOURCE", Some("700"));
-        cfg.define("__EXTENSIONS__", None);
-        cfg.define("_LCONV_C99", None);
     } else if freebsd {
         cfg.define("_WITH_GETLINE", None);
     }
@@ -75,73 +67,53 @@ fn do_ctest() {
         .header("time.h")
         .header("wchar.h");
 
-    if windows {
-        cfg.header("winsock2.h"); // must be before windows.h
+    cfg.flag("-Wno-deprecated-declarations");
 
-        cfg.header("direct.h");
-        cfg.header("io.h");
-        cfg.header("sys/utime.h");
-        cfg.header("windows.h");
-        cfg.header("process.h");
-        cfg.header("ws2ipdef.h");
-        cfg.header("signal.h");
-
-        if target.contains("gnu") {
-            cfg.header("ws2tcpip.h");
-        }
-    } else {
-        cfg.flag("-Wno-deprecated-declarations");
-
-        cfg.header("ctype.h");
-        cfg.header("dirent.h");
-        if openbsd {
-            cfg.header("sys/socket.h");
-        }
-        cfg.header("net/if.h");
-        if !ios {
-            cfg.header("net/route.h");
-            cfg.header("net/if_arp.h");
-        }
-        cfg.header("netdb.h");
-        cfg.header("netinet/in.h");
-        cfg.header("netinet/ip.h");
-        cfg.header("netinet/tcp.h");
-        cfg.header("netinet/udp.h");
-        cfg.header("resolv.h");
-        cfg.header("pthread.h");
-        cfg.header("dlfcn.h");
-        cfg.header("signal.h");
-        cfg.header("string.h");
-        cfg.header("sys/file.h");
-        cfg.header("sys/ioctl.h");
-        cfg.header("sys/mman.h");
-        cfg.header("sys/resource.h");
-        cfg.header("sys/socket.h");
-        if linux && !musl {
-            cfg.header("linux/if.h");
-            cfg.header("sys/auxv.h");
-        }
-        cfg.header("sys/time.h");
-        cfg.header("sys/un.h");
-        cfg.header("sys/wait.h");
-        cfg.header("unistd.h");
-        cfg.header("utime.h");
-        cfg.header("pwd.h");
-        cfg.header("grp.h");
-        cfg.header("sys/utsname.h");
-        if !solaris && !ios {
-            cfg.header("sys/ptrace.h");
-        }
-        cfg.header("sys/mount.h");
-        cfg.header("sys/uio.h");
-        cfg.header("sched.h");
-        cfg.header("termios.h");
-        cfg.header("poll.h");
-        cfg.header("syslog.h");
-        cfg.header("semaphore.h");
-        cfg.header("sys/statvfs.h");
-        cfg.header("sys/times.h");
+    cfg.header("ctype.h");
+    cfg.header("dirent.h");
+    cfg.header("net/if.h");
+    cfg.header("net/route.h");
+    cfg.header("net/if_arp.h");
+    if linux || android {
+        cfg.header("linux/if_alg.h");
     }
+    cfg.header("netdb.h");
+    cfg.header("netinet/in.h");
+    cfg.header("netinet/ip.h");
+    cfg.header("netinet/tcp.h");
+    cfg.header("netinet/udp.h");
+    cfg.header("resolv.h");
+    cfg.header("pthread.h");
+    cfg.header("dlfcn.h");
+    cfg.header("signal.h");
+    cfg.header("string.h");
+    cfg.header("sys/file.h");
+    cfg.header("sys/ioctl.h");
+    cfg.header("sys/mman.h");
+    cfg.header("sys/resource.h");
+    cfg.header("sys/socket.h");
+    if linux && !musl {
+        cfg.header("linux/if.h");
+        cfg.header("sys/auxv.h");
+    }
+    cfg.header("sys/time.h");
+    cfg.header("sys/un.h");
+    cfg.header("sys/wait.h");
+    cfg.header("unistd.h");
+    cfg.header("utime.h");
+    cfg.header("pwd.h");
+    cfg.header("grp.h");
+    cfg.header("sys/utsname.h");
+    cfg.header("sys/ptrace.h");
+    cfg.header("sys/mount.h");
+    cfg.header("sys/uio.h");
+    cfg.header("sched.h");
+    cfg.header("termios.h");
+    cfg.header("poll.h");
+    cfg.header("syslog.h");
+    cfg.header("semaphore.h");
+    cfg.header("sys/statvfs.h");
+    cfg.header("sys/times.h");
 
     if android {
         if !aarch64 && !x86_64 {
@@ -156,21 +128,21 @@ fn do_ctest() {
         if i686 || x86_64 {
             cfg.header("sys/reg.h");
         }
-    } else if !windows {
+    } else {
         cfg.header("glob.h");
         cfg.header("ifaddrs.h");
         cfg.header("langinfo.h");
 
-        if !openbsd && !freebsd && !dragonfly && !solaris {
+        if !openbsd && !freebsd {
             cfg.header("sys/quota.h");
         }
 
-        if !musl && !x32 && !solaris {
+        if !musl && !x32 {
             cfg.header("sys/sysctl.h");
         }
 
         if !musl && !uclibc {
-            if !netbsd && !openbsd && !uclibc {
+            if !openbsd && !uclibc {
                 cfg.header("execinfo.h");
             }
 
@@ -179,33 +151,6 @@ fn do_ctest() {
             } else {
                 cfg.header("utmpx.h");
             }
-        }
-    }
-
-    if apple {
-        cfg.header("spawn.h");
-        cfg.header("mach-o/dyld.h");
-        cfg.header("mach/mach_time.h");
-        cfg.header("malloc/malloc.h");
-        cfg.header("util.h");
-        cfg.header("xlocale.h");
-        cfg.header("sys/xattr.h");
-        if target.starts_with("x86") && !ios {
-            cfg.header("crt_externs.h");
-        }
-        cfg.header("netinet/in.h");
-        cfg.header("sys/ipc.h");
-        cfg.header("sys/sem.h");
-        cfg.header("sys/shm.h");
-
-        if !ios {
-            cfg.header("sys/sys_domain.h");
-            cfg.header("net/if_utun.h");
-            cfg.header("net/bpf.h");
-            cfg.header("net/route.h");
-            cfg.header("netinet/if_ether.h");
-            cfg.header("sys/proc_info.h");
-            cfg.header("sys/kern_control.h");
         }
     }
 
@@ -285,9 +230,6 @@ fn do_ctest() {
             }
         }
     }
-    if solaris {
-        cfg.header("sys/epoll.h");
-    }
 
     if linux || android {
         cfg.header("sys/fsuid.h");
@@ -330,45 +272,16 @@ fn do_ctest() {
         cfg.header("spawn.h");
     }
 
-    if netbsd {
-        cfg.header("mqueue.h");
-        cfg.header("ufs/ufs/quota.h");
-        cfg.header("ufs/ufs/quota1.h");
-        cfg.header("sys/extattr.h");
-        cfg.header("sys/ioctl_compat.h");
-
-        // DCCP support
-        cfg.header("netinet/dccp.h");
-    }
-
     if openbsd {
         cfg.header("ufs/ufs/quota.h");
         cfg.header("pthread_np.h");
         cfg.header("sys/syscall.h");
     }
 
-    if dragonfly {
-        cfg.header("mqueue.h");
-        cfg.header("ufs/ufs/quota.h");
-        cfg.header("pthread_np.h");
-        cfg.header("sys/rtprio.h");
-    }
-
-    if solaris {
-        cfg.header("port.h");
-        cfg.header("ucontext.h");
-        cfg.header("sys/filio.h");
-        cfg.header("sys/loadavg.h");
-    }
-
-    if linux || freebsd || dragonfly || netbsd || apple || emscripten {
+    if linux || freebsd || emscripten {
         if !uclibc {
             cfg.header("aio.h");
         }
-    }
-
-    if cloudabi || redox {
-        cfg.header("strings.h");
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -379,12 +292,6 @@ fn do_ctest() {
             | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
             | "Elf64_Chdr" => ty.to_string(),
 
-            // Fixup a few types on windows that don't actually exist.
-            "time64_t" if windows => "__time64_t".to_string(),
-            "ssize_t" if windows => "SSIZE_T".to_string(),
-            // windows
-            "sighandler_t" if windows && !mingw => "_crt_signal_t".to_string(),
-            "sighandler_t" if windows && mingw => "__p_sig_fn_t".to_string(),
             // OSX calls this something else
             "sighandler_t" if bsdlike => "sig_t".to_string(),
 
@@ -392,20 +299,8 @@ fn do_ctest() {
 
             t if t.ends_with("_t") => t.to_string(),
 
-            // Windows uppercase structs don't have `struct` in front, there's a
-            // few special cases for windows, and then otherwise put `struct` in
-            // front of everything.
-            t if is_struct => {
-                if windows && ty.chars().next().unwrap().is_uppercase() {
-                    t.to_string()
-                } else if windows && t == "stat" {
-                    "struct __stat64".to_string()
-                } else if windows && t == "utimbuf" {
-                    "struct __utimbuf64".to_string()
-                } else {
-                    format!("struct {}", t)
-                }
-            }
+            // put `struct` in front of all structs:.
+            t if is_struct => format!("struct {}", t),
 
             t => t.to_string(),
         }
@@ -423,9 +318,7 @@ fn do_ctest() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                if target2.contains("apple") {
-                    s.replace("_nsec", "spec.tv_nsec")
-                } else if target2.contains("android") {
+                if target2.contains("android") {
                     s.to_string()
                 } else {
                     s.replace("e_nsec", ".tv_nsec")
@@ -433,7 +326,7 @@ fn do_ctest() {
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             "type_"
-                if (linux || freebsd || dragonfly)
+                if (linux || freebsd)
                     && (struct_ == "input_event"
                         || struct_ == "input_mask"
                         || struct_ == "ff_effect"
@@ -463,11 +356,6 @@ fn do_ctest() {
             // which is absent in glibc, has to be defined.
             "__timeval" if linux => true,
 
-            // Fixed on feature=align with repr(packed(4))
-            // Once repr_packed stabilizes we can fix this unconditionally
-            // and remove this check.
-            "kevent" | "shmid_ds" | "semid_ds" if apple && x86_64 => true,
-
             // This is actually a union, not a struct
             "sigval" => true,
 
@@ -484,58 +372,25 @@ fn do_ctest() {
             // header conflicts when including them with all the other structs.
             "termios2" => true,
 
-            // Present on historical versions of iOS but missing in more recent
-            // SDKs
-            "bpf_hdr" | "proc_taskinfo" | "proc_taskallinfo"
-            | "proc_bsdinfo" | "proc_threadinfo" | "sockaddr_inarp"
-            | "sockaddr_ctl" | "arphdr"
-                if ios =>
-            {
-                true
-            }
-
             _ => false,
         }
     });
 
     cfg.skip_signededness(move |c| {
         match c {
-            "LARGE_INTEGER"
-            | "mach_timebase_info_data_t"
-            | "float"
-            | "double" => true,
-            // uuid_t is a struct, not an integer.
-            "uuid_t" if dragonfly => true,
+            "LARGE_INTEGER" | "float" | "double" => true,
             n if n.starts_with("pthread") => true,
             // sem_t is a struct or pointer
-            "sem_t" if openbsd || freebsd || dragonfly || netbsd => true,
-            // mqd_t is a pointer on FreeBSD and DragonFly
-            "mqd_t" if freebsd || dragonfly => true,
+            "sem_t" if openbsd || freebsd => true,
+            // mqd_t is a pointer on FreeBSD
+            "mqd_t" if freebsd => true,
 
-            // Just some typedefs on osx, no need to check their sign
-            "posix_spawnattr_t" | "posix_spawn_file_actions_t" => true,
-
-            // windows-isms
-            n if n.starts_with("P") => true,
-            n if n.starts_with("H") => true,
-            n if n.starts_with("LP") => true,
-            "__p_sig_fn_t" if mingw => true,
             _ => false,
         }
     });
 
     cfg.skip_const(move |name| {
         match name {
-            // Apparently these don't exist in mingw headers?
-            "MEM_RESET_UNDO"
-            | "FILE_ATTRIBUTE_NO_SCRUB_DATA"
-            | "FILE_ATTRIBUTE_INTEGRITY_STREAM"
-            | "ERROR_NOTHING_TO_TERMINATE"
-                if mingw =>
-            {
-                true
-            }
-
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
             "SIGUNUSED" => true,                       // removed in glibc 2.26
 
@@ -558,9 +413,6 @@ fn do_ctest() {
             // weird signed extension or something like that?
             "MS_NOUSER" => true,
             "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
-
-            // These OSX constants are flagged as deprecated
-            "NOTE_EXIT_REPARENTED" | "NOTE_REAP" if apple => true,
 
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
@@ -586,11 +438,6 @@ fn do_ctest() {
 
             // These constants were added in FreeBSD 12
             "SF_USER_READAHEAD" | "SO_REUSEPORT_LB" if freebsd => true,
-
-            // These OSX constants are removed in Sierra.
-            // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
-            "KERN_KDENABLE_BG_TRACE" if apple => true,
-            "KERN_KDDISABLE_BG_TRACE" if apple => true,
 
             // These constants were removed in OpenBSD 6 (https://git.io/v7gBO
             // https://git.io/v7gBq)
@@ -627,6 +474,9 @@ fn do_ctest() {
             | "RENAME_NOREPLACE"
             | "RENAME_EXCHANGE"
             | "RENAME_WHITEOUT"
+            // ALG_SET_AEAD_* constants are available starting from kernel 3.19
+            | "ALG_SET_AEAD_ASSOCLEN"
+            | "ALG_SET_AEAD_AUTHSIZE"
                 if musl =>
             {
                 true
@@ -674,16 +524,8 @@ fn do_ctest() {
                 true
             }
 
-            "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG"
-            | "DT_LNK" | "DT_SOCK"
-                if solaris =>
-            {
-                true
-            }
-            "USRQUOTA" | "GRPQUOTA" if solaris => true,
-            "PRIO_MIN" | "PRIO_MAX" if solaris => true,
-
-            // These are defined for Solaris 11, but the crate is tested on illumos, where they are currently not defined
+            // These are defined for Solaris 11, but the crate is tested on
+            // illumos, where they are currently not defined
             "EADI"
             | "PORT_SOURCE_POSTWAIT"
             | "PORT_SOURCE_SIGNAL"
@@ -695,35 +537,28 @@ fn do_ctest() {
             "AF_MAX" | "PF_MAX" => true,
 
             // These are not in a glibc release yet, only in kernel headers.
-            "AF_XDP" | "PF_XDP" | "SOL_XDP" if linux => true,
-
-            // Present on historical versions of iOS, but now removed in more
-            // recent SDKs
-            "ARPOP_REQUEST"
-            | "ARPOP_REPLY"
-            | "ATF_COM"
-            | "ATF_PERM"
-            | "ATF_PUBL"
-            | "ATF_USETRAILERS"
-            | "AF_SYS_CONTROL"
-            | "SYSPROTO_EVENT"
-            | "PROC_PIDTASKALLINFO"
-            | "PROC_PIDTASKINFO"
-            | "PROC_PIDTHREADINFO"
-            | "UTUN_OPT_FLAGS"
-            | "UTUN_OPT_IFNAME"
-            | "BPF_ALIGNMENT"
-            | "SYSPROTO_CONTROL"
-                if ios =>
+            "AF_XDP"
+            | "PF_XDP"
+            | "SOL_XDP"
+            | "IPV6_FLOWINFO"
+            | "IPV6_FLOWLABEL_MGR"
+            | "IPV6_FLOWINFO_SEND"
+            | "IPV6_FLOWINFO_FLOWLABEL"
+            | "IPV6_FLOWINFO_PRIORITY"
+                if linux =>
             {
                 true
             }
-            s if ios && s.starts_with("RTF_") => true,
-            s if ios && s.starts_with("RTM_") => true,
-            s if ios && s.starts_with("RTA_") => true,
-            s if ios && s.starts_with("RTAX_") => true,
-            s if ios && s.starts_with("RTV_") => true,
-            s if ios && s.starts_with("DLT_") => true,
+
+            | "IP_ORIGDSTADDR"
+            | "IP_RECVORIGDSTADDR"
+            | "IPV6_ORIGDSTADDR"
+            | "IPV6_RECVORIGDSTADDR"
+                if freebsd =>
+            {
+                // FreeBSD 12 required, but CI has FreeBSD 11.
+                true
+            }
 
             _ => false,
         }
@@ -749,45 +584,13 @@ fn do_ctest() {
             "sendmmsg" | "recvmmsg" if musl => true,
 
             // typed 2nd arg on linux and android
-            "gettimeofday" if linux || android || freebsd || openbsd || dragonfly => true,
+            "gettimeofday" if linux || android || freebsd || openbsd => true,
 
             // not declared in newer android toolchains
             "getdtablesize" if android => true,
 
             "dlerror" if android => true, // const-ness is added
-            "dladdr" if musl || solaris => true, // const-ness only added recently
-
-            // OSX has 'struct tm *const' which we can't actually represent in
-            // Rust, but is close enough to *mut
-            "timegm" if apple => true,
-
-            // OSX's daemon is deprecated in 10.5 so we'll get a warning (which
-            // we turn into an error) so just ignore it.
-            "daemon" if apple => true,
-
-            // Deprecated on OSX
-            "sem_destroy" if apple => true,
-            "sem_init" if apple => true,
-
-            // These functions presumably exist on netbsd but don't look like
-            // they're implemented on rumprun yet, just let them slide for now.
-            // Some of them look like they have headers but then don't have
-            // corresponding actual definitions either...
-            "shm_open" |
-            "shm_unlink" |
-            "syscall" |
-            "mq_open" |
-            "mq_close" |
-            "mq_getattr" |
-            "mq_notify" |
-            "mq_receive" |
-            "mq_send" |
-            "mq_setattr" |
-            "mq_timedreceive" |
-            "mq_timedsend" |
-            "mq_unlink" |
-            "ptrace" |
-            "sigaltstack" if rumprun => true,
+            "dladdr" if musl => true, // const-ness only added recently
 
             // There seems to be a small error in EGLIBC's eventfd.h header. The
             // [underlying system call][1] always takes its first `count`
@@ -825,7 +628,6 @@ fn do_ctest() {
             // it's in a header file?
             "endpwent" if android => true,
 
-
             // These are either unimplemented or optionally built into uClibc
             // or "sysinfo", where it's defined but the structs in linux/sysinfo.h and sys/sysinfo.h
             // clash so it can't be tested
@@ -840,36 +642,15 @@ fn do_ctest() {
             // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
             "res_init" if android => true,
 
-            // On macOS and iOS, res_init is available, but requires linking with libresolv:
-            // http://blog.achernya.com/2013/03/os-x-has-silly-libsystem.html
-            // See discussion for skipping here:
-            // https://github.com/rust-lang/libc/pull/585#discussion_r114561460
-            "res_init" if apple => true,
-
-            // On Mac we don't use the default `close()`, instead using their $NOCANCEL variants.
-            "close" if apple => true,
-
             // Definition of those functions as changed since unified headers from NDK r14b
             // These changes imply some API breaking changes but are still ABI compatible.
             // We can wait for the next major release to be compliant with the new API.
             // FIXME: unskip these for next major release
             "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
-            "setpriority" | "personality" if android || solaris => true,
+            "setpriority" | "personality" if android  => true,
             // In Android 64 bits, these functions have been fixed since unified headers.
             // Ignore these until next major version.
             "bind" | "writev" | "readv" | "sendmsg" | "recvmsg" if android && (aarch64 || x86_64) => true,
-
-            // signal is defined with sighandler_t, so ignore
-            "signal" if solaris => true,
-
-            "cfmakeraw" | "cfsetspeed" if solaris => true,
-
-            // FIXME: mincore is defined with caddr_t on Solaris.
-            "mincore" if solaris => true,
-
-            // These were all included in historical versions of iOS but appear
-            // to be removed now
-            "system" | "ptrace" if ios => true,
 
             // Removed in OpenBSD 6.5
             // https://marc.info/?l=openbsd-cvs&m=154723400730318
@@ -883,15 +664,6 @@ fn do_ctest() {
         match name {
             // Internal constant, not declared in any headers.
             "__progname" if android => true,
-            _ => false,
-        }
-    });
-
-    cfg.skip_fn_ptrcheck(move |name| {
-        match name {
-            // dllimport weirdness?
-            _ if windows => true,
-
             _ => false,
         }
     });
@@ -933,13 +705,8 @@ fn do_ctest() {
                                            field == "ssi_arch"))
     });
 
-    cfg.fn_cname(move |name, cname| {
-        if windows {
-            cname.unwrap_or(name).to_string()
-        } else {
-            name.to_string()
-        }
-    });
+    // FIXME: remove
+    cfg.fn_cname(move |name, _cname| name.to_string());
 
     cfg.generate("../src/lib.rs", "main.rs");
 
@@ -991,4 +758,1115 @@ fn do_ctest() {
 fn main() {
     do_cc();
     do_ctest();
+}
+
+macro_rules! headers {
+    ($cfg:ident: $header:expr) => {
+        $cfg.header($header);
+    };
+    ($cfg:ident: $($header:expr),*) => {
+        $(headers!($cfg: $header);)*
+    };
+    ($cfg:ident: $($header:expr,)*) => {
+        $(headers!($cfg: $header);)*
+    };
+}
+
+fn test_apple(target: &str) {
+    assert!(target.contains("apple"));
+    let x86_64 = target.contains("x86_64");
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+    cfg.define("__APPLE_USE_RFC_3542", None);
+
+    headers! { cfg:
+        "aio.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "limits.h",
+        "locale.h",
+        "mach-o/dyld.h",
+        "mach/mach_time.h",
+        "malloc/malloc.h",
+        "net/bpf.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/if_dl.h",
+        "net/if_utun.h",
+        "net/route.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/if_ether.h",
+        "netinet/in.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "spawn.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "sys/event.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/ipc.h",
+        "sys/kern_control.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/proc_info.h",
+        "sys/ptrace.h",
+        "sys/quota.h",
+        "sys/resource.h",
+        "sys/sem.h",
+        "sys/shm.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/sys_domain.h",
+        "sys/sysctl.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "sys/xattr.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "unistd.h",
+        "util.h",
+        "utime.h",
+        "utmpx.h",
+        "wchar.h",
+        "xlocale.h",
+    }
+
+    if x86_64 {
+        headers! { cfg: "crt_externs.h" }
+    }
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // FIXME: actually a union
+            "sigval" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // These OSX constants are removed in Sierra.
+            // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
+            "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verified
+        match name {
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" => true,
+
+            // close calls the close_nocancel system call
+            "close" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        match (struct_, field) {
+            // FIXME: actually a union
+            ("sigevent", "sigev_value") => true,
+            _ => false,
+        }
+    });
+
+    cfg.volatile_item(|i| {
+        use ctest::VolatileItemKind::*;
+        match i {
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => {
+                true
+            }
+            _ => false,
+        }
+    });
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+
+            // OSX calls this something else
+            "sighandler_t" => "sig_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+            t if t.ends_with("_t") => t.to_string(),
+            t if is_struct => format!("struct {}", t),
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                s.replace("e_nsec", "espec.tv_nsec")
+            }
+            // FIXME: sigaction actually contains a union with two variants:
+            // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
+            // a sa_handler with type sig_t
+            "sa_sigaction" if struct_ == "sigaction" => {
+                "sa_handler".to_string()
+            }
+            s => s.to_string(),
+        }
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_openbsd(target: &str) {
+    assert!(target.contains("openbsd"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    headers! { cfg:
+        "errno.h",
+        "fcntl.h",
+        "limits.h",
+        "locale.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "sys/stat.h",
+        "sys/types.h",
+        "time.h",
+        "wchar.h",
+        "ctype.h",
+        "dirent.h",
+        "sys/socket.h",
+        "net/if.h",
+        "net/route.h",
+        "net/if_arp.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "resolv.h",
+        "pthread.h",
+        "dlfcn.h",
+        "signal.h",
+        "string.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/mman.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/time.h",
+        "sys/un.h",
+        "sys/wait.h",
+        "unistd.h",
+        "utime.h",
+        "pwd.h",
+        "grp.h",
+        "sys/utsname.h",
+        "sys/ptrace.h",
+        "sys/mount.h",
+        "sys/uio.h",
+        "sched.h",
+        "termios.h",
+        "poll.h",
+        "syslog.h",
+        "semaphore.h",
+        "sys/statvfs.h",
+        "sys/times.h",
+        "glob.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "sys/sysctl.h",
+        "utmp.h",
+        "sys/event.h",
+        "net/if_dl.h",
+        "util.h",
+        "ufs/ufs/quota.h",
+        "pthread_np.h",
+        "sys/syscall.h",
+    }
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // FIXME: actually a union
+            "sigval" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // Removed in OpenBSD 6.0
+            "KERN_USERMOUNT" | "KERN_ARND" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        match name {
+            "execv" | "execve" | "execvp" | "execvpe" => true,
+
+            // typed 2nd arg
+            "gettimeofday" => true,
+
+            // Removed in OpenBSD 6.5
+            // https://marc.info/?l=openbsd-cvs&m=154723400730318
+            "mincore" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+
+            // OSX calls this something else
+            "sighandler_t" => "sig_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+            t if t.ends_with("_t") => t.to_string(),
+            t if is_struct => format!("struct {}", t),
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            "st_birthtime" if struct_.starts_with("stat") => {
+                "__st_birthtime".to_string()
+            }
+            "st_birthtime_nsec" if struct_.starts_with("stat") => {
+                "__st_birthtimensec".to_string()
+            }
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                s.replace("e_nsec", ".tv_nsec")
+            }
+            "sa_sigaction" if struct_ == "sigaction" => {
+                "sa_handler".to_string()
+            }
+            s => s.to_string(),
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
+        (struct_ == "siginfo_t" && field == "si_addr")
+    });
+
+    cfg.generate("../src/lib.rs", "linux_fcntl.rs");
+}
+
+fn test_windows(target: &str) {
+    assert!(target.contains("windows"));
+    let gnu = target.contains("gnu");
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.define("_WIN32_WINNT", Some("0x8000"));
+
+    headers! { cfg:
+        "direct.h",
+        "errno.h",
+        "fcntl.h",
+        "io.h",
+        "limits.h",
+        "locale.h",
+        "process.h",
+        "signal.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "sys/stat.h",
+        "sys/types.h",
+        "sys/utime.h",
+        "time.h",
+        "wchar.h",
+    }
+
+    if gnu {
+        headers! { cfg: "ws2tcpip.h" }
+    } else {
+        headers! { cfg: "Winsock2.h" };
+    }
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+
+            // FIXME: these don't exist:
+            "time64_t" => "__time64_t".to_string(),
+            "ssize_t" => "SSIZE_T".to_string(),
+
+            "sighandler_t" if !gnu => "_crt_signal_t".to_string(),
+            "sighandler_t" if gnu => "__p_sig_fn_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+            t if t.ends_with("_t") => t.to_string(),
+
+            // Windows uppercase structs don't have `struct` in front:
+            t if is_struct => {
+                if ty.clone().chars().next().unwrap().is_uppercase() {
+                    t.to_string()
+                } else if t == "stat" {
+                    "struct __stat64".to_string()
+                } else if t == "utimbuf" {
+                    "struct __utimbuf64".to_string()
+                } else {
+                    // put `struct` in front of all structs:
+                    format!("struct {}", t)
+                }
+            }
+            t => t.to_string(),
+        }
+    });
+
+    cfg.fn_cname(move |name, cname| cname.unwrap_or(name).to_string());
+
+    cfg.skip_type(move |name| match name {
+        "SSIZE_T" if !gnu => true,
+        "ssize_t" if !gnu => true,
+        _ => false,
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // FIXME: API error:
+            // SIG_ERR type is "void (*)(int)", not "int"
+            "SIG_ERR" => true,
+            _ => false,
+        }
+    });
+
+    // FIXME: All functions point to the wrong addresses?
+    cfg.skip_fn_ptrcheck(|_| true);
+
+    cfg.skip_signededness(move |c| {
+        match c {
+            // windows-isms
+            n if n.starts_with("P") => true,
+            n if n.starts_with("H") => true,
+            n if n.starts_with("LP") => true,
+            "sighandler_t" if gnu => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        match name {
+            // FIXME: API error:
+            "execv" | "execve" | "execvp" | "execvpe" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_redox(target: &str) {
+    assert!(target.contains("redox"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    headers! {
+        cfg:
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "limits.h",
+        "locale.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "string.h",
+        "strings.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/ptrace.h",
+        "sys/quota.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/sysctl.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "unistd.h",
+        "utime.h",
+        "utmpx.h",
+        "wchar.h",
+    }
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_cloudabi(target: &str) {
+    assert!(target.contains("cloudabi"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    headers! {
+        cfg:
+        "execinfo.h",
+        "glob.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "sys/ptrace.h",
+        "sys/quota.h",
+        "sys/sysctl.h",
+        "utmpx.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "fcntl.h",
+        "grp.h",
+        "limits.h",
+        "locale.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "strings.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "unistd.h",
+        "utime.h",
+        "wchar.h",
+    }
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_solaris(target: &str) {
+    assert!(target.contains("solaris"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    cfg.define("_XOPEN_SOURCE", Some("700"));
+    cfg.define("__EXTENSIONS__", None);
+    cfg.define("_LCONV_C99", None);
+
+    headers! {
+        cfg:
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "limits.h",
+        "locale.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "port.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "sys/epoll.h",
+        "sys/file.h",
+        "sys/filio.h",
+        "sys/ioctl.h",
+        "sys/loadavg.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "ucontext.h",
+        "unistd.h",
+        "utime.h",
+        "utmpx.h",
+        "wchar.h",
+    }
+
+    cfg.skip_const(move |name| match name {
+        "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK"
+        | "DT_SOCK" | "USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX" => {
+            true
+        }
+
+        _ => false,
+    });
+
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verified
+        match name {
+            // const-ness only added recently
+            "dladdr" => true,
+
+            // Definition of those functions as changed since unified headers
+            // from NDK r14b These changes imply some API breaking changes but
+            // are still ABI compatible. We can wait for the next major release
+            // to be compliant with the new API.
+            //
+            // FIXME: unskip these for next major release
+            "setpriority" | "personality" => true,
+
+            // signal is defined with sighandler_t, so ignore
+            "signal" => true,
+
+            "cfmakeraw" | "cfsetspeed" => true,
+
+            // FIXME: mincore is defined with caddr_t on Solaris.
+            "mincore" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_netbsd(target: &str) {
+    assert!(target.contains("netbsd"));
+    let rumprun = target.contains("rumprun");
+    let mut cfg = ctest::TestGenerator::new();
+
+    cfg.flag("-Wno-deprecated-declarations");
+    cfg.define("_NETBSD_SOURCE", Some("1"));
+
+    headers! {
+        cfg:
+        "errno.h",
+        "fcntl.h",
+        "limits.h",
+        "locale.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "sys/stat.h",
+        "sys/types.h",
+        "time.h",
+        "wchar.h",
+        "aio.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/if_dl.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "string.h",
+        "sys/extattr.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/ioctl_compat.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/ptrace.h",
+        "sys/resource.h",
+        "sys/socket.h",
+        "sys/statvfs.h",
+        "sys/sysctl.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "ufs/ufs/quota.h",
+        "ufs/ufs/quota1.h",
+        "unistd.h",
+        "util.h",
+        "utime.h",
+        "mqueue.h",
+        "netinet/dccp.h",
+        "sys/event.h",
+        "sys/quota.h",
+    }
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
+            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
+            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
+            | "Elf64_Chdr" => ty.to_string(),
+
+            // OSX calls this something else
+            "sighandler_t" => "sig_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+
+            t if t.ends_with("_t") => t.to_string(),
+
+            // put `struct` in front of all structs:.
+            t if is_struct => format!("struct {}", t),
+
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            // Our stat *_nsec fields normally don't actually exist but are part
+            // of a timeval struct
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                s.replace("e_nsec", ".tv_nsec")
+            }
+            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
+            s => s.to_string(),
+        }
+    });
+
+    cfg.skip_type(move |ty| {
+        match ty {
+            // FIXME: sighandler_t is crazy across platforms
+            "sighandler_t" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // This is actually a union, not a struct
+            "sigval" => true,
+            // These are tested as part of the linux_fcntl tests since there are
+            // header conflicts when including them with all the other structs.
+            "termios2" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_signededness(move |c| {
+        match c {
+            "LARGE_INTEGER" | "float" | "double" => true,
+            // uuid_t is a struct, not an integer.
+            n if n.starts_with("pthread") => true,
+            // sem_t is a struct or pointer
+            "sem_t" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
+            "SIGUNUSED" => true,                       // removed in glibc 2.26
+
+            // weird signed extension or something like that?
+            "MS_NOUSER" => true,
+            "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
+            "BOTHER" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        match name {
+            // FIXME: incorrect API
+            "execv" |
+            "execve" |
+            "execvp" |
+            "execvpe" |
+            "fexecve" => true,
+
+            "getrlimit" | "getrlimit64" |    // non-int in 1st arg
+            "setrlimit" | "setrlimit64" |    // non-int in 1st arg
+            "prlimit" | "prlimit64" |        // non-int in 2nd arg
+
+            // These functions presumably exist on netbsd but don't look like
+            // they're implemented on rumprun yet, just let them slide for now.
+            // Some of them look like they have headers but then don't have
+            // corresponding actual definitions either...
+            "shm_open" |
+            "shm_unlink" |
+            "syscall" |
+            "mq_open" |
+            "mq_close" |
+            "mq_getattr" |
+            "mq_notify" |
+            "mq_receive" |
+            "mq_send" |
+            "mq_setattr" |
+            "mq_timedreceive" |
+            "mq_timedsend" |
+            "mq_unlink" |
+            "ptrace" |
+            "sigaltstack" if rumprun => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        // This is a weird union, don't check the type.
+        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        // sighandler_t type is super weird
+        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        // sigval is actually a union, but we pretend it's a struct
+        (struct_ == "sigevent" && field == "sigev_value") ||
+        // aio_buf is "volatile void*" and Rust doesn't understand volatile
+        (struct_ == "aiocb" && field == "aio_buf")
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_dragonflybsd(target: &str) {
+    assert!(target.contains("dragonfly"));
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    headers! {
+        cfg:
+        "aio.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "glob.h",
+        "grp.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "limits.h",
+        "locale.h",
+        "mqueue.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/if_dl.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "poll.h",
+        "pthread.h",
+        "pthread_np.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "sys/event.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/ptrace.h",
+        "sys/resource.h",
+        "sys/rtprio.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/sysctl.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "ufs/ufs/quota.h",
+        "unistd.h",
+        "util.h",
+        "utime.h",
+        "utmpx.h",
+        "wchar.h",
+    }
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
+            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
+            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
+            | "Elf64_Chdr" => ty.to_string(),
+
+            // FIXME: OSX calls this something else
+            "sighandler_t" => "sig_t".to_string(),
+
+            t if is_union => format!("union {}", t),
+
+            t if t.ends_with("_t") => t.to_string(),
+
+            // put `struct` in front of all structs:.
+            t if is_struct => format!("struct {}", t),
+
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            // Our stat *_nsec fields normally don't actually exist but are part
+            // of a timeval struct
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                s.replace("e_nsec", ".tv_nsec")
+            }
+            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
+            "type_"
+                if struct_ == "input_event"
+                    || struct_ == "input_mask"
+                    || struct_ == "ff_effect"
+                    || struct_ == "rtprio" =>
+            {
+                "type".to_string()
+            }
+            s => s.to_string(),
+        }
+    });
+
+    cfg.skip_type(move |ty| {
+        match ty {
+            // sighandler_t is crazy across platforms
+            "sighandler_t" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // This is actually a union, not a struct
+            "sigval" => true,
+
+            // FIXME: These are tested as part of the linux_fcntl tests since
+            // there are header conflicts when including them with all the other
+            // structs.
+            "termios2" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_signededness(move |c| {
+        match c {
+            "LARGE_INTEGER" | "float" | "double" => true,
+            // uuid_t is a struct, not an integer.
+            "uuid_t" => true,
+            n if n.starts_with("pthread") => true,
+            // sem_t is a struct or pointer
+            "sem_t" => true,
+            // mqd_t is a pointer on DragonFly
+            "mqd_t" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
+
+            // weird signed extension or something like that?
+            "MS_NOUSER" => true,
+            "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
+
+            // These are defined for Solaris 11, but the crate is tested on
+            // illumos, where they are currently not defined
+            "EADI"
+            | "PORT_SOURCE_POSTWAIT"
+            | "PORT_SOURCE_SIGNAL"
+            | "PTHREAD_STACK_MIN" => true,
+
+            // These change all the time from release to release of linux
+            // distros, let's just not bother trying to verify them. They
+            // shouldn't be used in code anyway...
+            "AF_MAX" | "PF_MAX" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verified
+        match name {
+            "execv" |       // crazy stuff with const/mut
+            "execve" |
+            "execvp" |
+            "execvpe" |
+            "fexecve" => true,
+
+            "getrlimit" | "getrlimit64" |    // non-int in 1st arg
+            "setrlimit" | "setrlimit64" |    // non-int in 1st arg
+            "prlimit" | "prlimit64" |        // non-int in 2nd arg
+            // typed 2nd arg on linux and android
+            "gettimeofday" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        // This is a weird union, don't check the type.
+        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        // sighandler_t type is super weird
+        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        // sigval is actually a union, but we pretend it's a struct
+        (struct_ == "sigevent" && field == "sigev_value") ||
+        // aio_buf is "volatile void*" and Rust doesn't understand volatile
+        (struct_ == "aiocb" && field == "aio_buf")
+    });
+
+    cfg.skip_field(move |struct_, field| {
+        // this is actually a union on linux, so we can't represent it well and
+        // just insert some padding.
+        (struct_ == "siginfo_t" && field == "_pad") ||
+        // sigev_notify_thread_id is actually part of a sigev_un union
+        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
 }

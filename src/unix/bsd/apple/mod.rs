@@ -1,8 +1,6 @@
 //! Apple (ios/darwin)-specific definitions
 //!
 //! This covers *-apple-* triples currently
-use dox::mem;
-
 pub type c_char = i8;
 pub type clock_t = c_ulong;
 pub type time_t = c_long;
@@ -36,8 +34,8 @@ pub type shmatt_t = ::c_ushort;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
-impl ::dox::Copy for timezone {}
-impl ::dox::Clone for timezone {
+impl ::Copy for timezone {}
+impl ::Clone for timezone {
     fn clone(&self) -> timezone { *self }
 }
 
@@ -141,6 +139,7 @@ s! {
     }
 
     pub struct sigaction {
+        // FIXME: this field is actually a union
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: sigset_t,
         pub sa_flags: ::c_int,
@@ -484,8 +483,6 @@ s! {
 }
 
 s_no_extra_traits!{
-    // FIXME: https://github.com/rust-lang/libc/issues/1243
-    #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct kevent {
         pub ident: ::uintptr_t,
@@ -496,8 +493,6 @@ s_no_extra_traits!{
         pub udata: *mut ::c_void,
     }
 
-    // FIXME: https://github.com/rust-lang/libc/issues/1243
-    #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
@@ -511,8 +506,6 @@ s_no_extra_traits!{
         pub sem_pad3: [::int32_t; 4],
     }
 
-    // FIXME: https://github.com/rust-lang/libc/issues/1243
-    #[allow(missing_debug_implementations)]
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
@@ -642,6 +635,175 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for kevent {
+            fn eq(&self, other: &kevent) -> bool {
+                self.ident == other.ident
+                    && self.filter == other.filter
+                    && self.flags == other.flags
+                    && self.fflags == other.fflags
+                    && self.data == other.data
+                    && self.udata == other.udata
+            }
+        }
+        impl Eq for kevent {}
+        impl ::fmt::Debug for kevent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ident = self.ident;
+                let filter = self.filter;
+                let flags = self.flags;
+                let fflags = self.fflags;
+                let data = self.data;
+                let udata = self.udata;
+                f.debug_struct("kevent")
+                    .field("ident", &ident)
+                    .field("filter", &filter)
+                    .field("flags", &flags)
+                    .field("fflags", &fflags)
+                    .field("data", &data)
+                    .field("udata", &udata)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for kevent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let ident = self.ident;
+                let filter = self.filter;
+                let flags = self.flags;
+                let fflags = self.fflags;
+                let data = self.data;
+                let udata = self.udata;
+                ident.hash(state);
+                filter.hash(state);
+                flags.hash(state);
+                fflags.hash(state);
+                data.hash(state);
+                udata.hash(state);
+            }
+        }
+
+        impl PartialEq for semid_ds {
+            fn eq(&self, other: &semid_ds) -> bool {
+                let sem_perm = self.sem_perm;
+                let sem_pad3 = self.sem_pad3;
+                let other_sem_perm = other.sem_perm;
+                let other_sem_pad3 = other.sem_pad3;
+                sem_perm == other_sem_perm
+                    && self.sem_base == other.sem_base
+                    && self.sem_nsems == other.sem_nsems
+                    && self.sem_otime == other.sem_otime
+                    && self.sem_pad1 == other.sem_pad1
+                    && self.sem_ctime == other.sem_ctime
+                    && self.sem_pad2 == other.sem_pad2
+                    && sem_pad3 == other_sem_pad3
+            }
+        }
+        impl Eq for semid_ds {}
+        impl ::fmt::Debug for semid_ds {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let sem_perm = self.sem_perm;
+                let sem_base = self.sem_base;
+                let sem_nsems = self.sem_nsems;
+                let sem_otime = self.sem_otime;
+                let sem_pad1 = self.sem_pad1;
+                let sem_ctime = self.sem_ctime;
+                let sem_pad2 = self.sem_pad2;
+                let sem_pad3 = self.sem_pad3;
+                f.debug_struct("semid_ds")
+                    .field("sem_perm", &sem_perm)
+                    .field("sem_base", &sem_base)
+                    .field("sem_nsems", &sem_nsems)
+                    .field("sem_otime", &sem_otime)
+                    .field("sem_pad1", &sem_pad1)
+                    .field("sem_ctime", &sem_ctime)
+                    .field("sem_pad2", &sem_pad2)
+                    .field("sem_pad3", &sem_pad3)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for semid_ds {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let sem_perm = self.sem_perm;
+                let sem_base = self.sem_base;
+                let sem_nsems = self.sem_nsems;
+                let sem_otime = self.sem_otime;
+                let sem_pad1 = self.sem_pad1;
+                let sem_ctime = self.sem_ctime;
+                let sem_pad2 = self.sem_pad2;
+                let sem_pad3 = self.sem_pad3;
+                sem_perm.hash(state);
+                sem_base.hash(state);
+                sem_nsems.hash(state);
+                sem_otime.hash(state);
+                sem_pad1.hash(state);
+                sem_ctime.hash(state);
+                sem_pad2.hash(state);
+                sem_pad3.hash(state);
+            }
+        }
+
+        impl PartialEq for shmid_ds {
+            fn eq(&self, other: &shmid_ds) -> bool {
+                let shm_perm = self.shm_perm;
+                let other_shm_perm = other.shm_perm;
+                shm_perm == other_shm_perm
+                    && self.shm_segsz == other.shm_segsz
+                    && self.shm_lpid == other.shm_lpid
+                    && self.shm_cpid == other.shm_cpid
+                    && self.shm_nattch == other.shm_nattch
+                    && self.shm_atime == other.shm_atime
+                    && self.shm_dtime == other.shm_dtime
+                    && self.shm_ctime == other.shm_ctime
+                    && self.shm_internal == other.shm_internal
+            }
+        }
+        impl Eq for shmid_ds {}
+        impl ::fmt::Debug for shmid_ds {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let shm_perm = self.shm_perm;
+                let shm_segsz = self.shm_segsz;
+                let shm_lpid = self.shm_lpid;
+                let shm_cpid = self.shm_cpid;
+                let shm_nattch = self.shm_nattch;
+                let shm_atime = self.shm_atime;
+                let shm_dtime = self.shm_dtime;
+                let shm_ctime = self.shm_ctime;
+                let shm_internal = self.shm_internal;
+                f.debug_struct("shmid_ds")
+                    .field("shm_perm", &shm_perm)
+                    .field("shm_segsz", &shm_segsz)
+                    .field("shm_lpid", &shm_lpid)
+                    .field("shm_cpid", &shm_cpid)
+                    .field("shm_nattch", &shm_nattch)
+                    .field("shm_atime", &shm_atime)
+                    .field("shm_dtime", &shm_dtime)
+                    .field("shm_ctime", &shm_ctime)
+                    .field("shm_internal", &shm_internal)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for shmid_ds {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let shm_perm = self.shm_perm;
+                let shm_segsz = self.shm_segsz;
+                let shm_lpid = self.shm_lpid;
+                let shm_cpid = self.shm_cpid;
+                let shm_nattch = self.shm_nattch;
+                let shm_atime = self.shm_atime;
+                let shm_dtime = self.shm_dtime;
+                let shm_ctime = self.shm_ctime;
+                let shm_internal = self.shm_internal;
+                shm_perm.hash(state);
+                shm_segsz.hash(state);
+                shm_lpid.hash(state);
+                shm_cpid.hash(state);
+                shm_nattch.hash(state);
+                shm_atime.hash(state);
+                shm_dtime.hash(state);
+                shm_ctime.hash(state);
+                shm_internal.hash(state);
+            }
+        }
+
         impl PartialEq for proc_threadinfo {
             fn eq(&self, other: &proc_threadinfo) -> bool {
                 self.pth_user_time == other.pth_user_time
@@ -678,7 +840,6 @@ cfg_if! {
                     .finish()
             }
         }
-
         impl ::hash::Hash for proc_threadinfo {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.pth_user_time.hash(state);
@@ -2257,12 +2418,14 @@ pub const NOTE_NONE: ::uint32_t = 0x00000080;
 pub const NOTE_EXIT: ::uint32_t = 0x80000000;
 pub const NOTE_FORK: ::uint32_t = 0x40000000;
 pub const NOTE_EXEC: ::uint32_t = 0x20000000;
+#[deprecated(since="0.2.49", note="Deprecated since MacOSX 10.9")]
 pub const NOTE_REAP: ::uint32_t = 0x10000000;
 pub const NOTE_SIGNAL: ::uint32_t = 0x08000000;
 pub const NOTE_EXITSTATUS: ::uint32_t = 0x04000000;
 pub const NOTE_EXIT_DETAIL: ::uint32_t = 0x02000000;
 pub const NOTE_PDATAMASK: ::uint32_t = 0x000fffff;
 pub const NOTE_PCTRLMASK: ::uint32_t = 0xfff00000;
+#[deprecated(since="0.2.49", note="Deprecated since MacOSX 10.9")]
 pub const NOTE_EXIT_REPARENTED: ::uint32_t = 0x00080000;
 pub const NOTE_EXIT_DETAIL_MASK: ::uint32_t = 0x00070000;
 pub const NOTE_EXIT_DECRYPTFAIL: ::uint32_t = 0x00010000;
@@ -2468,7 +2631,9 @@ pub const KERN_KDSETRTCDEC: ::c_int = 15;
 pub const KERN_KDGETENTROPY: ::c_int = 16;
 pub const KERN_KDWRITETR: ::c_int = 17;
 pub const KERN_KDWRITEMAP: ::c_int = 18;
+#[deprecated(since = "0.2.49", note ="Removed in MacOSX 10.12")]
 pub const KERN_KDENABLE_BG_TRACE: ::c_int = 19;
+#[deprecated(since = "0.2.49", note ="Removed in MacOSX 10.12")]
 pub const KERN_KDDISABLE_BG_TRACE: ::c_int = 20;
 pub const KERN_KDREADCURTHRMAP: ::c_int = 21;
 pub const KERN_KDSET_TYPEFILTER: ::c_int = 22;
@@ -2782,12 +2947,12 @@ pub const UF_HIDDEN:        ::c_uint = 0x00008000;
 cfg_if! {
     if #[cfg(libc_const_size_of)] {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
-            const __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
+            const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
         }
     } else {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
-            let __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
+            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
         }
     }
@@ -2803,7 +2968,7 @@ f! {
         let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize);
         let max = (*mhdr).msg_control as usize
                    + (*mhdr).msg_controllen as usize;
-        if next + __DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) > max {
+        if next + __DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) > max {
             0 as *mut ::cmsghdr
         } else {
             next as *mut ::cmsghdr
@@ -2812,17 +2977,17 @@ f! {
 
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
         (cmsg as *mut ::c_uchar)
-            .offset(__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) as isize)
+            .offset(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>())
+        (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>())
             + __DARWIN_ALIGN32(length as usize))
             as ::c_uint
     }
 
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        (__DARWIN_ALIGN32(mem::size_of::<::cmsghdr>()) + length as usize)
+        (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) + length as usize)
             as ::c_uint
     }
 
@@ -2848,6 +3013,16 @@ f! {
 }
 
 extern {
+    #[deprecated(since="0.2.49", note="Deprecated in MacOSX 10.5")]
+    #[link_name = "daemon$1050"]
+    pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
+    #[deprecated(since="0.2.49", note="Deprecated in MacOSX 10.10")]
+    pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
+    #[deprecated(since="0.2.49", note="Deprecated in MacOSX 10.10")]
+    pub fn sem_init(sem: *mut sem_t,
+                    pshared: ::c_int,
+                    value: ::c_uint)
+                    -> ::c_int;
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;

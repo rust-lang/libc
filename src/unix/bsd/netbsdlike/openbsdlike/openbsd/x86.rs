@@ -1,5 +1,3 @@
-use dox::mem;
-
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type c_char = i8;
@@ -8,7 +6,7 @@ pub type c_char = i8;
 cfg_if! {
     if #[cfg(libc_const_size_of)] {
         #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = mem::size_of::<::c_int>() - 1;
+        pub const _ALIGNBYTES: usize = ::mem::size_of::<::c_int>() - 1;
     } else {
         #[doc(hidden)]
         pub const _ALIGNBYTES: usize = 4 - 1;

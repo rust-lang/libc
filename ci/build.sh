@@ -11,7 +11,9 @@ OS=${TRAVIS_OS_NAME}
 echo "Testing Rust ${RUST} on ${OS}"
 
 test_target() {
-    TARGET="${1}"
+    CARGO="${1}"
+    TARGET="${2}"
+    NO_STD="${3}"
 
     opt=
     if [ "${TARGET}" = "x86_64-unknown-linux-gnux32" ]; then
@@ -22,31 +24,38 @@ test_target() {
         opt="--release"
     fi
 
-    NO_STD=
-    case ${TARGET} in
-        thumbv*)
-            NO_STD=1
-            ;;
-    esac
-
-    rustup target add "${TARGET}" --toolchain "${RUST}" || true
+    # If there is a std component, fetch it:
+    if [ "${NO_STD}" != "1" ]; then
+        # FIXME: rustup often fails to download some artifacts due to network
+        # issues, so we retry this N times.
+        N=5
+        n=0
+        until [ $n -ge $N ]
+        do
+            if rustup target add "${TARGET}" --toolchain "${RUST}" ; then
+                break
+            fi
+            n=$((n+1))
+            sleep 1
+        done
+    fi
 
     # Test that libc builds without any default features (no libstd)
-    cargo "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
+    "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
 
     # Test that libc builds with default features (e.g. libstd)
     # if the target supports libstd
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" build -vv $opt --target "${TARGET}"
+        "$CARGO" "+${RUST}" build -vv $opt --target "${TARGET}"
     fi
 
     # Test that libc builds with the `extra_traits` feature
-    cargo "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}" \
+    "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}" \
           --features extra_traits
 
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" build -vv $opt --target "${TARGET}" \
+        "$CARGO" "+${RUST}" build -vv $opt --target "${TARGET}" \
               --features extra_traits
     fi
 }
@@ -103,24 +112,15 @@ x86_64-unknown-cloudabi \
 
 RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
-thumbv6m-none-eabi \
-thumbv7em-none-eabi \
-thumbv7em-none-eabihf \
-thumbv7m-none-eabi \
-thumbv7neon-linux-androideabi \
-thumbv7neon-unknown-linux-gnueabihf \
+armv5te-unknown-linux-gnueabi \
+armv5te-unknown-linux-musleabi \
+i686-pc-windows-gnu \
 x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
+x86_64-pc-windows-gnu \
 x86_64-unknown-linux-gnux32 \
 x86_64-unknown-redox \
 "
-# FIXME: these do not have a rust-std component available
-# aarch64-unknown-cloudabi armv7-unknown-cloudabi-eabihf
-# i686-unknown-cloudabi powerpc-unknown-linux-gnuspe
-# sparc-unknown-linux-gnu mips-unknown-linux-uclib
-# i686-unknown-haiku mipsel-unknown-unknown-linux-uclib
-# sparc64-unknown-netbsd x86_64-unknown-bitrig x86_64-unknown-haiku
-# x86_64-unknown-openbsd i686-unknown-netbsd
 
 RUST_OSX_TARGETS="\
 aarch64-apple-ios \
@@ -161,5 +161,45 @@ case "${OS}" in
 esac
 
 for TARGET in $TARGETS; do
-    test_target "$TARGET"
+    test_target cargo "$TARGET"
 done
+
+# FIXME: https://github.com/rust-lang/rust/issues/58564
+# sparc-unknown-linux-gnu
+RUST_LINUX_NO_CORE_TARGETS="\
+x86_64-unknown-dragonfly \
+aarch64-pc-windows-msvc \
+aarch64-unknown-cloudabi \
+armebv7r-none-eabi \
+armebv7r-none-eabihf \
+armv7-unknown-cloudabi-eabihf \
+armv7r-none-eabi \
+armv7r-none-eabihf \
+i586-pc-windows-msvc \
+i686-pc-windows-msvc \
+i686-unknown-cloudabi \
+i686-unknown-haiku \
+i686-unknown-netbsd \
+nvptx64-nvidia-cuda \
+powerpc-unknown-linux-gnuspe \
+riscv32imac-unknown-none-elf \
+riscv32imc-unknown-none-elf \
+sparc64-unknown-netbsd \
+thumbv6m-none-eabi \
+thumbv7em-none-eabi \
+thumbv7em-none-eabihf \
+thumbv7m-none-eabi \
+thumbv7neon-linux-androideabi \
+thumbv7neon-unknown-linux-gnueabihf \
+thumbv8m.main-none-eabi \
+x86_64-pc-windows-msvc
+x86_64-unknown-bitrig \
+x86_64-unknown-haiku \
+x86_64-unknown-openbsd
+"
+
+if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
+    for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
+        test_target xargo "$TARGET" 1
+    done
+fi
