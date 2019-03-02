@@ -8,6 +8,10 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 //! libc - Raw FFI bindings to platforms' system libraries
+//!
+//! [Documentation for other platforms][pd].
+//!
+//! [pd]: https://rust-lang.github.io/libc/#platform-specific-documentation
 #![crate_name = "libc"]
 #![crate_type = "rlib"]
 #![cfg_attr(not(feature = "rustc-dep-of-std"), deny(warnings))]
