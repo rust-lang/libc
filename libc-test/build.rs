@@ -1088,7 +1088,7 @@ fn test_openbsd(target: &str) {
         (struct_ == "siginfo_t" && field == "si_addr")
     });
 
-    cfg.generate("../src/lib.rs", "linux_fcntl.rs");
+    cfg.generate("../src/lib.rs", "main.rs");
 }
 
 fn test_windows(target: &str) {
