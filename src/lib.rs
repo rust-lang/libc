@@ -232,6 +232,9 @@ cfg_if! {
     } else if #[cfg(unix)] {
         mod unix;
         pub use unix::*;
+    } else if #[cfg(target_os = "hermit")] {
+        mod redox;
+        pub use hermit::*;
     } else if #[cfg(target_env = "sgx")] {
         mod sgx;
         pub use sgx::*;
