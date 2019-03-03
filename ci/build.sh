@@ -167,11 +167,11 @@ done
 # FIXME: https://github.com/rust-lang/rust/issues/58564
 # sparc-unknown-linux-gnu
 RUST_LINUX_NO_CORE_TARGETS="\
-x86_64-unknown-hermit \
-x86_64-unknown-dragonfly \
-aarch64-unknown-hermit \
 aarch64-pc-windows-msvc \
 aarch64-unknown-cloudabi \
+aarch64-unknown-hermit \
+aarch64-unknown-netbsd \
+aarch64-unknown-openbsd \
 armebv7r-none-eabi \
 armebv7r-none-eabihf \
 armv7-unknown-cloudabi-eabihf \
@@ -182,8 +182,12 @@ i686-pc-windows-msvc \
 i686-unknown-cloudabi \
 i686-unknown-haiku \
 i686-unknown-netbsd \
+i686-unknown-openbsd \
+mips-unknown-linux-uclibc \
+mipsel-unknown-linux-uclibc \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
+powerpc-unknown-netbsd \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 sparc64-unknown-netbsd \
@@ -196,8 +200,12 @@ thumbv7neon-unknown-linux-gnueabihf \
 thumbv8m.main-none-eabi \
 x86_64-pc-windows-msvc
 x86_64-unknown-bitrig \
+x86_64-unknown-dragonfly \
+x86_64-unknown-dragonfly \
 x86_64-unknown-haiku \
-x86_64-unknown-openbsd
+x86_64-unknown-hermit \
+x86_64-unknown-l4re-uclibc \
+x86_64-unknown-openbsd \
 "
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then

@@ -66,20 +66,6 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    pub struct sockaddr_un {
-        pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 108]
-    }
-
-    pub struct sockaddr_storage {
-        pub ss_family: sa_family_t,
-        __ss_align: ::size_t,
-        #[cfg(target_pointer_width = "32")]
-        __ss_pad2: [u8; 128 - 2 * 4],
-        #[cfg(target_pointer_width = "64")]
-        __ss_pad2: [u8; 128 - 2 * 8],
-    }
-
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -140,15 +126,6 @@ s! {
         pub dli_saddr: *mut ::c_void,
     }
 
-    pub struct utsname {
-        pub sysname: [::c_char; 65],
-        pub nodename: [::c_char; 65],
-        pub release: [::c_char; 65],
-        pub version: [::c_char; 65],
-        pub machine: [::c_char; 65],
-        pub domainname: [::c_char; 65]
-    }
-
     pub struct lconv {
         pub decimal_point: *mut ::c_char,
         pub thousands_sep: *mut ::c_char,
@@ -187,22 +164,6 @@ s! {
         __unused1: [::c_int; 11],
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12]
-    }
-
-    pub struct dirent {
-        pub d_ino: ::ino_t,
-        pub d_off: ::off_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
     }
 
     pub struct rlimit64 {
@@ -358,9 +319,54 @@ s_no_extra_traits! {
         any(target_arch = "x86", target_arch = "x86_64"),
         repr(packed)
     )]
+    #[allow(missing_debug_implementations)]
     pub struct epoll_event {
         pub events: ::uint32_t,
         pub u64: ::uint64_t,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_un {
+        pub sun_family: sa_family_t,
+        pub sun_path: [::c_char; 108]
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_storage {
+        pub ss_family: sa_family_t,
+        __ss_align: ::size_t,
+        #[cfg(target_pointer_width = "32")]
+        __ss_pad2: [u8; 128 - 2 * 4],
+        #[cfg(target_pointer_width = "64")]
+        __ss_pad2: [u8; 128 - 2 * 8],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct utsname {
+        pub sysname: [::c_char; 65],
+        pub nodename: [::c_char; 65],
+        pub release: [::c_char; 65],
+        pub version: [::c_char; 65],
+        pub machine: [::c_char; 65],
+        pub domainname: [::c_char; 65]
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct dirent {
+        pub d_ino: ::ino_t,
+        pub d_off: ::off_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
     }
 }
 
