@@ -43,10 +43,12 @@ void* T1c(void*);
 int32_t T1d(unsigned);
 void T1e(unsigned, const struct T1Bar*);
 void T1f(void);
-void T1g(const int32_t a[4]);
-void T1h(const int32_t a[4]);
+void T1g(int32_t* a);
+void T1h(const int32_t* b);
 void T1i(int32_t a[4]);
-void T1j(int32_t a[4]);
+void T1j(const int32_t b[4]);
+void T1o(int32_t (*a)[4]);
+void T1p(int32_t (*const a)[4]);
 
 #define T1C 4
 

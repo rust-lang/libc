@@ -1514,6 +1514,23 @@ impl<'a> Generator<'a> {
                     }
                     arg
                 })
+                .map(|s| {
+                    if let Some(i) = s.rfind(']') {
+                        let c = s.chars().filter(|&c| c == '*').count();
+                        if c == 0 {
+                            return s;
+                        }
+                        let postfix_idx = s.find('[').unwrap();
+                        let postfix = &s[postfix_idx..=i];
+                        let prefix = &s[..postfix_idx];
+                        let pointers = &s[i + 1..];
+                        let has_const = pointers.contains("const");
+                        let pointers = pointers.replace("const *", "* const");
+                        let prefix = prefix.replacen("const", "", if has_const { 1 } else { 0 });
+                        return format!("{} ({}) {}", prefix, pointers, postfix);
+                    }
+                    return s;
+                })
                 .collect::<Vec<_>>()
                 .join(", ")
                 + if variadic { ", ..." } else { "" }
@@ -1750,8 +1767,10 @@ impl<'a> Generator<'a> {
                         ast::TyKind::Ptr(..) => {
                             format!("{} {}*", self.ty2name(&t.ty, rust), modifier)
                         }
-                        ast::TyKind::Array(ref t, _) => {
-                            format!("{}{}*", modifier, self.ty2name(t, rust))
+                        ast::TyKind::Array(ref t, ref e) => {
+                            let len = self.expr2str(e);
+                            let ty = self.ty2name(t, rust);
+                            format!("{} {} [{}]", modifier, ty, len)
                         }
                         _ => format!("{}{}*", modifier, self.ty2name(&t.ty, rust)),
                     }
@@ -2027,6 +2046,15 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
         match i.node {
             ast::ForeignItemKind::Fn(ref decl, ref generics) => {
                 self.assert_no_generics(i.ident, generics);
+                for ref arg in &decl.inputs {
+                    if let ast::TyKind::Array(_, _) = arg.ty.node {
+                        panic!(
+                            "Foreing Function decl `{}` uses array in C FFI",
+                            &i.ident.to_string()
+                        );
+                    }
+                }
+
                 let (ret, args, variadic) = self.decl2rust(decl);
                 let c_name = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
                     .map(|i| i.to_string());
