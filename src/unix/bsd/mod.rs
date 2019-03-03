@@ -6,7 +6,6 @@ pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type pthread_t = ::uintptr_t;
 pub type nfds_t = ::c_uint;
-pub type vm_size_t = ::uintptr_t;
 
 s! {
     pub struct sockaddr {
