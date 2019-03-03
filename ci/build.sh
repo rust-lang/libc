@@ -167,7 +167,9 @@ done
 # FIXME: https://github.com/rust-lang/rust/issues/58564
 # sparc-unknown-linux-gnu
 RUST_LINUX_NO_CORE_TARGETS="\
+x86_64-unknown-hermit \
 x86_64-unknown-dragonfly \
+aarch64-unknown-hermit \
 aarch64-pc-windows-msvc \
 aarch64-unknown-cloudabi \
 armebv7r-none-eabi \
