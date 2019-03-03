@@ -20,22 +20,6 @@ pub type time_t = ::c_int;
 pub type wchar_t = ::c_int;
 
 s! {
-    pub struct dirent {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_name: [::c_char; 256],
-    }
-
     pub struct ipc_perm {
         pub __key: ::key_t,
         pub uid: ::uid_t,
@@ -249,6 +233,25 @@ s! {
 
     pub struct fsid_t { // ToDo
         __val: [::c_int; 2],
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct dirent {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_name: [::c_char; 256],
+    }
+    #[allow(missing_debug_implementations)]
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_name: [::c_char; 256],
     }
 }
 
