@@ -52,20 +52,20 @@ pub type pthread_rwlock_t = usize;
 pub type pthread_rwlockattr_t = usize;
 
 s_no_extra_traits! {
-	pub struct dirent {
+    pub struct dirent {
         pub d_ino: ::c_long,
         pub d_off: off_t,
         pub d_reclen: u16,
         pub d_name: [::c_char; 256],
     }
 
-	// Dummy
+    // Dummy
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [::c_char; 108],
     }
 
-	pub struct sockaddr {
+    pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
@@ -255,6 +255,46 @@ cfg_if! {
         impl ::hash::Hash for fd_set {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.fds_bits.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.s2_len == other.s2_len
+                    && self.ss_family == other.ss_family
+                    && self.s2_data1
+                    .iter()
+                    .zip(other.s2_data1.iter())
+                    .all(|(a,b)| a == b)
+                    && self.s2_data2
+                    .iter()
+                    .zip(other.s2_data2.iter())
+                    .all(|(a,b)| a == b)
+                    && self.s2_data3
+                    .iter()
+                    .zip(other.s2_data3.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_storage {}
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("s2_len", &self.s2_len)
+                    .field("ss_family", &self.ss_family)
+                    // FIXME: .field("s2_data1", &self.s2_data1)
+                    // FIXME: .field("s2_data2", &self.s2_data2)
+                    // FIXME: .field("s2_data3", &self.s2_data3)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.s2_len.hash(state);
+                self.ss_family.hash(state);
+                self.s2_data1.hash(state);
+                self.s2_data2.hash(state);
+                self.s2_data3.hash(state);
             }
         }
 
