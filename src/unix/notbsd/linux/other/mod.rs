@@ -670,8 +670,7 @@ pub const NFPROTO_NETDEV: ::c_int = 5;
 
 // linux/netfilter/nf_tables.h
 cfg_if!{
-    if #[cfg(any(target_arch = "arm", target_arch = "powerpc",
-                 target_arch = "powerpc64", target_arch = "aarch64"))] {
+    if #[cfg(any(target_arch = "arm", target_arch = "aarch64"))] {
         pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
         pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
         pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
