@@ -47,14 +47,17 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
             }
 
-            #[repr(align(8))]
-            pub struct pthread_cond_t {
-                size: [u8; ::__SIZEOF_PTHREAD_COND_T],
-            }
-
             #[repr(align(4))]
             pub struct pthread_condattr_t {
                 size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
+            }
+        }
+
+        s_no_extra_traits! {
+            #[repr(align(8))]
+            #[allow(missing_debug_implementations)]
+            pub struct pthread_cond_t {
+                size: [u8; ::__SIZEOF_PTHREAD_COND_T],
             }
         }
     }
