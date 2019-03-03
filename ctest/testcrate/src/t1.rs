@@ -66,10 +66,12 @@ extern "C" {
     #[link_name = "T1f"]
     pub fn f() -> ();
 
-    pub fn T1g(a: *const [i32; 4]);
-    pub fn T1h(a: &[i32; 4]);
+    pub fn T1g(a: *mut [i32; 4]);
+    pub fn T1h(a: *const [i32; 4]) -> !;
     pub fn T1i(a: *mut [i32; 4]);
-    pub fn T1j(a: &mut [i32; 4]) -> !;
+    pub fn T1j(a: *const [i32; 4]) -> !;
+    pub fn T1o(a: *mut *mut [i32; 4]);
+    pub fn T1p(a: *const *const [i32; 4]) -> !;
 
     pub static T1static: c_uint;
 }
