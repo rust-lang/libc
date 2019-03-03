@@ -1,5 +1,4 @@
 //! Definitions for uclibc on 64bit systems
-//!
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
 pub type clock_t = i64;
@@ -19,8 +18,6 @@ pub type stat64 = stat;
 pub type suseconds_t = ::c_long;
 pub type time_t = ::c_int;
 pub type wchar_t = ::c_int;
-
-pub type nfds_t = ::c_ulong;
 
 s! {
     pub struct dirent {
@@ -275,7 +272,6 @@ pub const O_NONBLOCK: ::c_int = 04000;
 pub const O_TRUNC: ::c_int = 01000;
 pub const NCCS: usize = 32;
 pub const SIG_SETMASK: ::c_int = 2; // Set the set of blocked signals
-pub const PTHREAD_STACK_MIN: usize = 16384;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const SO_BROADCAST: ::c_int = 6;
@@ -286,18 +282,10 @@ pub const SOL_SOCKET: ::c_int = 1;
 pub const SO_RCVTIMEO: ::c_int = 20;
 pub const SO_REUSEADDR: ::c_int = 2;
 pub const SO_SNDTIMEO: ::c_int = 21;
-pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
-pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
-pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
-pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 pub const RLIM_INFINITY: u64 = 0xffffffffffffffff;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
-
-extern {
-    pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
-}
 
 cfg_if! {
     if #[cfg(target_os = "l4re")] {
