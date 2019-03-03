@@ -14,6 +14,7 @@ pub type tcflag_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type nl_item = ::c_int;
 pub type id_t = i64;
+pub type vm_size_t = ::uintptr_t;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
