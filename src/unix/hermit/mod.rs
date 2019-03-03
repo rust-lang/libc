@@ -19,8 +19,6 @@
 pub type c_long = i64;
 pub type c_ulong = u64;
 
-//pub type uid_t = u16;
-//pub type gid_t = u16;
 pub type speed_t = ::c_uint;
 pub type mode_t = u32;
 pub type dev_t = i16;
