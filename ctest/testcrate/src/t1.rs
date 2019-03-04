@@ -56,6 +56,8 @@ i! {
 
 const NOT_PRESENT: u32 = 5;
 
+pub type Arr = [i32; 4];
+
 extern "C" {
     pub fn T1a();
     pub fn T1b() -> *mut c_void;
@@ -72,6 +74,12 @@ extern "C" {
     pub fn T1j(a: *const [i32; 4]) -> !;
     pub fn T1o(a: *mut *mut [i32; 4]);
     pub fn T1p(a: *const *const [i32; 4]) -> !;
+
+    pub fn T1r(a: *mut Arr);
+    pub fn T1s(a: *const Arr) -> !;
+    pub fn T1t(a: *mut *mut Arr);
+    pub fn T1v(a: *const *const Arr) -> !;
+
 
     pub static T1static: c_uint;
 }
