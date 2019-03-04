@@ -50,6 +50,13 @@ void T1j(const int32_t b[4]);
 void T1o(int32_t (*a)[4]);
 void T1p(int32_t (*const a)[4]);
 
+typedef int32_t (Arr)[4];
+
+void T1r(Arr a);
+void T1s(const Arr a);
+void T1t(Arr* a);
+void T1v(const Arr* a);
+
 #define T1C 4
 
 extern uint32_t T1static;

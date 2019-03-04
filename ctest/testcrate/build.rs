@@ -26,6 +26,7 @@ fn main() {
             t => t.to_string(),
         })
         .volatile_item(t1_volatile)
+        .array_arg(t1_arrays)
         .generate("src/t1.rs", "t1gen.rs");
     ctest::TestGenerator::new()
         .header("t2.h")
@@ -50,6 +51,7 @@ fn main() {
             t => t.to_string(),
         })
         .volatile_item(t1_volatile)
+        .array_arg(t1_arrays)
         .generate("src/t1.rs", "t1gen_cxx.rs");
     ctest::TestGenerator::new()
         .header("t2.h")
@@ -73,6 +75,13 @@ fn t1_volatile(i: ctest::VolatileItemKind) -> bool {
         FunctionArg(ref n, 1) if n == "T1_vol2" => true,
         FunctionRet(ref n) if n == "T1_vol1" || n == "T1_vol2" => true,
         Static(ref n) if n == "T1_fn_ptr_vol" => true,
+        _ => false,
+    }
+}
+
+fn t1_arrays(n: &str, i: usize) -> bool {
+    match n {
+        "T1r" | "T1s" | "T1t" | "T1v" if i == 0 => true,
         _ => false,
     }
 }

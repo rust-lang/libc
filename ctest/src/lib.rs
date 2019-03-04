@@ -93,6 +93,7 @@ pub struct TestGenerator {
     cfg: Vec<(String, Option<String>)>,
     verbose_skip: bool,
     volatile_item: Box<Fn(VolatileItemKind) -> bool>,
+    array_arg: Box<Fn(&str, usize) -> bool>,
     skip_fn: Box<Fn(&str) -> bool>,
     skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
     skip_static: Box<Fn(&str) -> bool>,
@@ -147,6 +148,7 @@ impl TestGenerator {
             cfg: Vec::new(),
             verbose_skip: false,
             volatile_item: Box::new(|_| false),
+            array_arg: Box::new(|_,_| false),
             skip_fn: Box::new(|_| false),
             skip_fn_ptrcheck: Box::new(|_| false),
             skip_static: Box::new(|_| false),
@@ -450,6 +452,31 @@ impl TestGenerator {
         self.volatile_item = Box::new(f);
         self
     }
+
+    /// Is argument of function an array?
+    ///
+    /// The closure denotes whether particular argument of a function is an array.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::{TestGenerator};
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.array_arg(|i, n| {
+    ///     match (i, n) {
+    ///         ("foo", 0) => true,
+    ///         _ => false,
+    /// }});
+    /// ```
+    pub fn array_arg<F>(&mut self, f: F) -> &mut Self
+        where
+        F: Fn(&str, usize) -> bool + 'static,
+    {
+        self.array_arg = Box::new(f);
+        self
+    }
+
 
     /// Configures how Rust `const`s names are translated to C.
     ///
@@ -1511,6 +1538,13 @@ impl<'a> Generator<'a> {
                         idx,
                     )) {
                         arg = format!("volatile {}", arg);
+                    }
+                    if (self.opts.array_arg)(name, idx) {
+                        if let Some(last_ptr) = arg.rfind("*") {
+                            arg = format!("{}", &arg[..last_ptr]);
+                        } else {
+                            panic!("C FFI decl `{}` contains array argument", name);
+                        }
                     }
                     arg
                 })
