@@ -10,7 +10,7 @@ default-features = false
 
 [build-dependencies]
 cc = "1.0"
-ctest = "0.2"
+ctest = { git = "https://github.com/gnzlbg/ctest", branch = "arr" }
 
 [features]
 default = [ "use_std" ]
