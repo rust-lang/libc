@@ -109,7 +109,7 @@ cfg_if! {
     } else if #[cfg(target_os = "hermit")] {
         mod hermit;
         pub use hermit::*;
-    } else if #[cfg(target_env = "sgx")] {
+    } else if #[cfg(all(target_env = "sgx", target_vendor = "fortanix"))] {
         mod sgx;
         pub use sgx::*;
     }  else {
