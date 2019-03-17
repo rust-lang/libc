@@ -1,3 +1,5 @@
+pub use ::ffi::c_void;
+
 pub type sa_family_t = u16;
 pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
