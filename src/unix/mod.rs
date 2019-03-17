@@ -498,7 +498,6 @@ extern {
     pub fn memmove(dest: *mut c_void, src: *const c_void,
                    n: size_t) -> *mut c_void;
     pub fn memset(dest: *mut c_void, c: c_int, n: size_t) -> *mut c_void;
-    pub fn memmem(haystack: *mut c_void, haystacklen: size_t, needle: *mut c_void, needlelen: size_t) -> *mut c_void;
 }
 
 extern {
