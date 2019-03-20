@@ -1,6 +1,6 @@
 # ctest
 
-[![Build Status](https://travis-ci.org/alexcrichton/ctest.svg?branch=master)](https://travis-ci.org/alexcrichton/ctest)
+[![Build Status](https://travis-ci.com/gnzlbg/ctest.svg?branch=master)](https://travis-ci.com/gnzlbg/ctest)
 [![Build status](https://ci.appveyor.com/api/projects/status/akjf8gn5pem05iyw?svg=true)](https://ci.appveyor.com/project/alexcrichton/ctest)
 
 [Documentation][dox]
@@ -92,9 +92,9 @@ you can browse [the documentation][dox].
 ### Projects using ctest
 
 * [libc](https://github.com/rust-lang/libc)
-* [git2-rs](https://github.com/alexcrichton/git2-rs)
+* [git2-rs](https://github.com/rust-lang/git2-rs)
 * [ssh2-rs](https://github.com/alexcrichton/ssh2-rs)
-* [libz-sys](https://github.com/alexcrichton/libz-sys)
+* [libz-sys](https://github.com/rust-lang/libz-sys)
 * [openssl-sys](https://github.com/sfackler/rust-openssl)
 
 ### License
