@@ -190,6 +190,13 @@ s! {
         pub ipi6_addr: ::in6_addr,
         pub ipi6_ifindex: ::c_int,
     }
+
+    pub struct inotify_event {
+        pub wd: ::c_int,
+        pub mask: ::uint32_t,
+        pub cookie: ::uint32_t,
+        pub len: ::uint32_t
+    }
 }
 
 s_no_extra_traits!{
@@ -248,13 +255,6 @@ s_no_extra_traits!{
     pub struct af_alg_iv {
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
-    }
-
-    pub struct inotify_event {
-        pub wd: ::c_int,
-        pub mask: ::uint32_t,
-        pub cookie: ::uint32_t,
-        pub len: ::uint32_t
     }
 }
 

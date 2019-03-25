@@ -493,6 +493,13 @@ s! {
         pub updated: ::c_ulong,
         pub ha: [::c_uchar; ::MAX_ADDR_LEN],
     }
+
+    pub struct inotify_event {
+        pub wd: ::c_int,
+        pub mask: ::uint32_t,
+        pub cookie: ::uint32_t,
+        pub len: ::uint32_t
+    }
 }
 
 s_no_extra_traits!{
@@ -523,13 +530,6 @@ s_no_extra_traits!{
     pub struct af_alg_iv {
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
-    }
-
-    pub struct inotify_event {
-        pub wd: ::c_int,
-        pub mask: ::uint32_t,
-        pub cookie: ::uint32_t,
-        pub len: ::uint32_t
     }
 }
 
