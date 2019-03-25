@@ -208,13 +208,6 @@ s! {
         pub ar_op: u16,
     }
 
-    pub struct inotify_event {
-        pub wd: ::c_int,
-        pub mask: ::uint32_t,
-        pub cookie: ::uint32_t,
-        pub len: ::uint32_t
-    }
-
     pub struct mmsghdr {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
