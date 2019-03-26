@@ -1065,22 +1065,18 @@ fn test_openbsd(target: &str) {
         }
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
-            "st_birthtime" if struct_.starts_with("stat") => {
-                "__st_birthtime".to_string()
-            }
-            "st_birthtime_nsec" if struct_.starts_with("stat") => {
-                "__st_birthtimensec".to_string()
-            }
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
-            }
-            "sa_sigaction" if struct_ == "sigaction" => {
-                "sa_handler".to_string()
-            }
-            s => s.to_string(),
+    cfg.field_name(move |struct_, field| match field {
+        "st_birthtime" if struct_.starts_with("stat") => {
+            "__st_birthtime".to_string()
         }
+        "st_birthtime_nsec" if struct_.starts_with("stat") => {
+            "__st_birthtimensec".to_string()
+        }
+        s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+            s.replace("e_nsec", ".tv_nsec")
+        }
+        "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
+        s => s.to_string(),
     });
 
     cfg.skip_field_type(move |struct_, field| {
