@@ -1332,6 +1332,7 @@ extern {
 
     pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
                             timeout: *mut ::timespec) -> ::ssize_t;
+    pub fn mq_getfd_np(mqd: ::mqd_t) -> ::c_int;
 
     pub fn freelocale(loc: ::locale_t) -> ::c_int;
     pub fn waitid(idtype: idtype_t, id: ::id_t, infop: *mut ::siginfo_t,
