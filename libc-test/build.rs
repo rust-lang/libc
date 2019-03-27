@@ -1896,37 +1896,27 @@ fn test_wasi(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| match ty {
         "FILE" => ty.to_string(),
         t if is_union => format!("union {}", t),
-        t if t.starts_with("__wasi") && t.ends_with("_u") => format!("union {}", t),
+        t if t.starts_with("__wasi") && t.ends_with("_u") => {
+            format!("union {}", t)
+        }
         t if t.starts_with("__wasi") && is_struct => format!("struct {}", t),
         t if t.ends_with("_t") => t.to_string(),
         t if is_struct => format!("struct {}", t),
         t => t.to_string(),
     });
 
-    // This is an opaque struct but we go through shenanigans to define values
-    // for it
-    cfg.skip_struct(move |ty| ty == "__clockid");
-
     cfg.field_name(move |_struct, field| {
         match field {
-			// deal with fields as rust keywords
+            // deal with fields as rust keywords
             "type_" => "type".to_string(),
             s => s.to_string(),
-        }
-    });
-
-    cfg.skip_static(move |name| {
-        match name {
-            // wasi shenanigans for defining CLOCK_REALTIME and such
-            s if s.starts_with("__CLOCK") => true,
-            _ => false,
         }
     });
 
     // Looks like LLD doesn't merge duplicate imports, so if the Rust
     // code imports from a module and the C code also imports from a
     // module we end up with two imports of function pointers which
-    // improt the same thing bug have different function pointers
+    // import the same thing but have different function pointers
     cfg.skip_fn_ptrcheck(|f| f.starts_with("__wasi"));
 
     cfg.generate("../src/lib.rs", "main.rs");

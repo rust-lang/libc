@@ -26,7 +26,6 @@ pub type clock_t = c_longlong;
 pub type time_t = c_longlong;
 pub type c_double = f64;
 pub type c_float = f32;
-pub type clockid_t = &'static __clockid;
 
 pub type __wasi_advice_t = u8;
 pub type __wasi_clockid_t = u32;
@@ -289,8 +288,6 @@ s! {
         pub it_value: timespec,
     }
 
-    pub struct __clockid {}
-
     pub struct __wasi_dirent_t {
         pub d_next: __wasi_dircookie_t,
         pub d_ino: __wasi_inode_t,
@@ -323,12 +320,12 @@ s! {
 
     pub struct __wasi_ciovec_t {
         pub buf: *const ::c_void,
-        pub buf_len: usize,
+        pub buf_len: size_t,
     }
 
     pub struct __wasi_iovec_t {
         pub buf: *mut ::c_void,
-        pub buf_len: usize,
+        pub buf_len: size_t,
     }
 
     pub struct __wasi_subscription_u_clock_t {
@@ -344,7 +341,7 @@ s! {
     }
 
     pub struct __wasi_prestat_u_dir_t {
-        pub pr_name_len: usize,
+        pub pr_name_len: size_t,
     }
 }
 
@@ -367,7 +364,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     pub union __wasi_event_u {
         pub fd_readwrite: __wasi_event_u_fd_readwrite_t,
-        _bindgen_union_align: [u64; 2usize],
+        _bindgen_union_align: [u64; 2],
     }
 
     #[allow(missing_debug_implementations)]
@@ -375,7 +372,7 @@ s_no_extra_traits! {
         pub clock: __wasi_subscription_u_clock_t,
         pub fd_readwrite:
             __wasi_subscription_u_fd_readwrite_t,
-        _bindgen_union_align: [u64; 5usize],
+        _bindgen_union_align: [u64; 5],
     }
 
     #[allow(missing_debug_implementations)]
@@ -390,11 +387,6 @@ s_no_extra_traits! {
     }
 
 }
-
-pub static CLOCK_REALTIME: clockid_t = unsafe { &__CLOCK_REALTIME_ADDR };
-pub static CLOCK_MONOTONIC: clockid_t = unsafe { &__CLOCK_MONOTONIC_ADDR };
-pub static CLOCK_MONOTONIC_RAW: clockid_t =
-    unsafe { &__CLOCK_MONOTONIC_RAW_ADDR };
 
 #[cfg_attr(feature = "rustc-dep-of-std",
            link(name = "c", kind = "static",
@@ -484,21 +476,15 @@ extern "C" {
     pub fn asctime_r(a: *const tm, b: *mut c_char) -> *mut c_char;
     pub fn ctime_r(a: *const time_t, b: *mut c_char) -> *mut c_char;
 
-    #[link_name = "CLOCK_REALTIME"]
-    pub static __CLOCK_REALTIME_ADDR: __clockid;
-    #[link_name = "CLOCK_MONOTONIC"]
-    pub static __CLOCK_MONOTONIC_ADDR: __clockid;
-    #[link_name = "CLOCK_MONOTONIC_RAW"]
-    pub static __CLOCK_MONOTONIC_RAW_ADDR: __clockid;
     pub fn nanosleep(a: *const timespec, b: *mut timespec) -> c_int;
-    pub fn clock_getres(a: clockid_t, b: *mut timespec) -> c_int;
-    pub fn clock_gettime(a: clockid_t, b: *mut timespec) -> c_int;
-    pub fn clock_nanosleep(
-        a: clockid_t,
-        a2: c_int,
-        b: *const timespec,
-        c: *mut timespec,
-    ) -> c_int;
+    // pub fn clock_getres(a: clockid_t, b: *mut timespec) -> c_int;
+    // pub fn clock_gettime(a: clockid_t, b: *mut timespec) -> c_int;
+    // pub fn clock_nanosleep(
+    //     a: clockid_t,
+    //     a2: c_int,
+    //     b: *const timespec,
+    //     c: *mut timespec,
+    // ) -> c_int;
 
     pub fn __wasilibc_register_preopened_fd(
         fd: c_int,
@@ -510,7 +496,7 @@ extern "C" {
     pub fn __wasilibc_init_preopen();
 
     pub fn arc4random() -> u32;
-    pub fn arc4random_buf(a: *mut c_void, b: usize);
+    pub fn arc4random_buf(a: *mut c_void, b: size_t);
     pub fn arc4random_uniform(a: u32) -> u32;
 }
 
@@ -535,24 +521,24 @@ extern "C" {
     pub fn __wasi_fd_pread(
         fd: __wasi_fd_t,
         iovs: *const __wasi_iovec_t,
-        iovs_len: usize,
+        iovs_len: size_t,
         offset: __wasi_filesize_t,
-        nread: *mut usize,
+        nread: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "fd_pwrite"]
     pub fn __wasi_fd_pwrite(
         fd: __wasi_fd_t,
         iovs: *const __wasi_ciovec_t,
-        iovs_len: usize,
+        iovs_len: size_t,
         offset: __wasi_filesize_t,
-        nwritten: *mut usize,
+        nwritten: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "fd_read"]
     pub fn __wasi_fd_read(
         fd: __wasi_fd_t,
         iovs: *const __wasi_iovec_t,
-        iovs_len: usize,
-        nread: *mut usize,
+        iovs_len: size_t,
+        nread: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "fd_renumber"]
     pub fn __wasi_fd_renumber(
@@ -593,8 +579,8 @@ extern "C" {
     pub fn __wasi_fd_write(
         fd: __wasi_fd_t,
         iovs: *const __wasi_ciovec_t,
-        iovs_len: usize,
-        nwritten: *mut usize,
+        iovs_len: size_t,
+        nwritten: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "fd_advise"]
     pub fn __wasi_fd_advise(
@@ -613,24 +599,24 @@ extern "C" {
     pub fn __wasi_path_create_directory(
         fd: __wasi_fd_t,
         path: *const ::c_char,
-        path_len: usize,
+        path_len: size_t,
     ) -> __wasi_errno_t;
     #[link_name = "path_link"]
     pub fn __wasi_path_link(
         old_fd: __wasi_fd_t,
         old_flags: __wasi_lookupflags_t,
         old_path: *const ::c_char,
-        old_path_len: usize,
+        old_path_len: size_t,
         new_fd: __wasi_fd_t,
         new_path: *const ::c_char,
-        new_path_len: usize,
+        new_path_len: size_t,
     ) -> __wasi_errno_t;
     #[link_name = "path_open"]
     pub fn __wasi_path_open(
         dirfd: __wasi_fd_t,
         dirflags: __wasi_lookupflags_t,
         path: *const ::c_char,
-        path_len: usize,
+        path_len: size_t,
         oflags: __wasi_oflags_t,
         fs_rights_base: __wasi_rights_t,
         fs_rights_inheriting: __wasi_rights_t,
@@ -641,27 +627,27 @@ extern "C" {
     pub fn __wasi_fd_readdir(
         fd: __wasi_fd_t,
         buf: *mut ::c_void,
-        buf_len: usize,
+        buf_len: size_t,
         cookie: __wasi_dircookie_t,
-        bufused: *mut usize,
+        bufused: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "path_readlink"]
     pub fn __wasi_path_readlink(
         fd: __wasi_fd_t,
         path: *const ::c_char,
-        path_len: usize,
+        path_len: size_t,
         buf: *mut ::c_char,
-        buf_len: usize,
-        bufused: *mut usize,
+        buf_len: size_t,
+        bufused: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "path_rename"]
     pub fn __wasi_path_rename(
         old_fd: __wasi_fd_t,
         old_path: *const ::c_char,
-        old_path_len: usize,
+        old_path_len: size_t,
         new_fd: __wasi_fd_t,
         new_path: *const ::c_char,
-        new_path_len: usize,
+        new_path_len: size_t,
     ) -> __wasi_errno_t;
     #[link_name = "fd_filestat_get"]
     pub fn __wasi_fd_filestat_get(
@@ -685,7 +671,7 @@ extern "C" {
         fd: __wasi_fd_t,
         flags: __wasi_lookupflags_t,
         path: *const ::c_char,
-        path_len: usize,
+        path_len: size_t,
         buf: *mut __wasi_filestat_t,
     ) -> __wasi_errno_t;
     #[link_name = "path_filestat_set_times"]
@@ -693,7 +679,7 @@ extern "C" {
         fd: __wasi_fd_t,
         flags: __wasi_lookupflags_t,
         path: *const ::c_char,
-        path_len: usize,
+        path_len: size_t,
         st_atim: __wasi_timestamp_t,
         st_mtim: __wasi_timestamp_t,
         fstflags: __wasi_fstflags_t,
@@ -701,29 +687,29 @@ extern "C" {
     #[link_name = "path_symlink"]
     pub fn __wasi_path_symlink(
         old_path: *const ::c_char,
-        old_path_len: usize,
+        old_path_len: size_t,
         fd: __wasi_fd_t,
         new_path: *const ::c_char,
-        new_path_len: usize,
+        new_path_len: size_t,
     ) -> __wasi_errno_t;
     #[link_name = "path_unlink_file"]
     pub fn __wasi_path_unlink_file(
         fd: __wasi_fd_t,
         path: *const ::c_char,
-        path_len: usize,
+        path_len: size_t,
     ) -> __wasi_errno_t;
     #[link_name = "path_remove_directory"]
     pub fn __wasi_path_remove_directory(
         fd: __wasi_fd_t,
         path: *const ::c_char,
-        path_len: usize,
+        path_len: size_t,
     ) -> __wasi_errno_t;
     #[link_name = "poll_oneoff"]
     pub fn __wasi_poll_oneoff(
         in_: *const __wasi_subscription_t,
         out: *mut __wasi_event_t,
-        nsubscriptions: usize,
-        nevents: *mut usize,
+        nsubscriptions: size_t,
+        nevents: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "proc_exit"]
     pub fn __wasi_proc_exit(rval: __wasi_exitcode_t);
@@ -732,24 +718,24 @@ extern "C" {
     #[link_name = "random_get"]
     pub fn __wasi_random_get(
         buf: *mut ::c_void,
-        buf_len: usize,
+        buf_len: size_t,
     ) -> __wasi_errno_t;
     #[link_name = "sock_recv"]
     pub fn __wasi_sock_recv(
         sock: __wasi_fd_t,
         ri_data: *const __wasi_iovec_t,
-        ri_data_len: usize,
+        ri_data_len: size_t,
         ri_flags: __wasi_riflags_t,
-        ro_datalen: *mut usize,
+        ro_datalen: *mut size_t,
         ro_flags: *mut __wasi_roflags_t,
     ) -> __wasi_errno_t;
     #[link_name = "sock_send"]
     pub fn __wasi_sock_send(
         sock: __wasi_fd_t,
         si_data: *const __wasi_ciovec_t,
-        si_data_len: usize,
+        si_data_len: size_t,
         si_flags: __wasi_siflags_t,
-        so_datalen: *mut usize,
+        so_datalen: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "sock_shutdown"]
     pub fn __wasi_sock_shutdown(
@@ -765,8 +751,8 @@ extern "C" {
     ) -> __wasi_errno_t;
     #[link_name = "args_sizes_get"]
     pub fn __wasi_args_sizes_get(
-        argc: *mut usize,
-        argv_buf_size: *mut usize,
+        argc: *mut size_t,
+        argv_buf_size: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "environ_get"]
     pub fn __wasi_environ_get(
@@ -775,8 +761,8 @@ extern "C" {
     ) -> __wasi_errno_t;
     #[link_name = "environ_sizes_get"]
     pub fn __wasi_environ_sizes_get(
-        environ_count: *mut usize,
-        environ_buf_size: *mut usize,
+        environ_count: *mut size_t,
+        environ_buf_size: *mut size_t,
     ) -> __wasi_errno_t;
     #[link_name = "fd_prestat_get"]
     pub fn __wasi_fd_prestat_get(
@@ -787,6 +773,6 @@ extern "C" {
     pub fn __wasi_fd_prestat_dir_name(
         fd: __wasi_fd_t,
         path: *mut c_char,
-        path_len: usize,
+        path_len: size_t,
     ) -> __wasi_errno_t;
 }
