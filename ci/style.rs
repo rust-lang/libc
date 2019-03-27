@@ -144,6 +144,9 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         let line = if is_pub {&line[4..]} else {line};
 
         let line_state = if line.starts_with("use ") {
+            if line.contains("c_void") {
+                continue;
+            }
             if is_pub {
                 State::Modules
             } else {

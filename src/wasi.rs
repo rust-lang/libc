@@ -57,6 +57,146 @@ pub type __wasi_userdata_t = u64;
 pub type __wasi_whence_t = u8;
 pub type __wasi_preopentype_t = u8;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum FILE {}
+impl ::Copy for FILE {}
+impl ::Clone for FILE {
+    fn clone(&self) -> FILE {
+        *self
+    }
+}
+
+s! {
+    #[repr(align(8))]
+    pub struct fpos_t {
+        data: [u8; 16],
+    }
+
+    pub struct tm {
+        pub tm_sec: c_int,
+        pub tm_min: c_int,
+        pub tm_hour: c_int,
+        pub tm_mday: c_int,
+        pub tm_mon: c_int,
+        pub tm_year: c_int,
+        pub tm_wday: c_int,
+        pub tm_yday: c_int,
+        pub tm_isdst: c_int,
+        pub __tm_gmtoff: c_int,
+        pub __tm_zone: *const c_char,
+        pub __tm_nsec: c_int,
+    }
+
+    pub struct timespec {
+        pub tv_sec: time_t,
+        pub tv_nsec: c_long,
+    }
+
+    pub struct itimerspec {
+        pub it_interval: timespec,
+        pub it_value: timespec,
+    }
+
+    pub struct __wasi_dirent_t {
+        pub d_next: __wasi_dircookie_t,
+        pub d_ino: __wasi_inode_t,
+        pub d_namlen: u32,
+        pub d_type: __wasi_filetype_t,
+    }
+
+    pub struct __wasi_event_u_fd_readwrite_t {
+        pub nbytes: __wasi_filesize_t,
+        pub flags: __wasi_eventrwflags_t,
+    }
+
+    pub struct __wasi_fdstat_t {
+        pub fs_filetype: __wasi_filetype_t,
+        pub fs_flags: __wasi_fdflags_t,
+        pub fs_rights_base: __wasi_rights_t,
+        pub fs_rights_inheriting: __wasi_rights_t,
+    }
+
+    pub struct __wasi_filestat_t {
+        pub st_dev: __wasi_device_t,
+        pub st_ino: __wasi_inode_t,
+        pub st_filetype: __wasi_filetype_t,
+        pub st_nlink: __wasi_linkcount_t,
+        pub st_size: __wasi_filesize_t,
+        pub st_atim: __wasi_timestamp_t,
+        pub st_mtim: __wasi_timestamp_t,
+        pub st_ctim: __wasi_timestamp_t,
+    }
+
+    pub struct __wasi_ciovec_t {
+        pub buf: *const ::c_void,
+        pub buf_len: size_t,
+    }
+
+    pub struct __wasi_iovec_t {
+        pub buf: *mut ::c_void,
+        pub buf_len: size_t,
+    }
+
+    pub struct __wasi_subscription_u_clock_t {
+        pub identifier: __wasi_userdata_t,
+        pub clock_id: __wasi_clockid_t,
+        pub timeout: __wasi_timestamp_t,
+        pub precision: __wasi_timestamp_t,
+        pub flags: __wasi_subclockflags_t,
+    }
+
+    pub struct __wasi_subscription_u_fd_readwrite_t {
+        pub fd: __wasi_fd_t,
+    }
+
+    pub struct __wasi_prestat_u_dir_t {
+        pub pr_name_len: size_t,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct __wasi_subscription_t {
+        pub userdata: __wasi_userdata_t,
+        pub type_: __wasi_eventtype_t,
+        pub u: __wasi_subscription_u,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct __wasi_event_t {
+        pub userdata: __wasi_userdata_t,
+        pub error: __wasi_errno_t,
+        pub type_: __wasi_eventtype_t,
+        pub u: __wasi_event_u,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub union __wasi_event_u {
+        pub fd_readwrite: __wasi_event_u_fd_readwrite_t,
+        _bindgen_union_align: [u64; 2],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub union __wasi_subscription_u {
+        pub clock: __wasi_subscription_u_clock_t,
+        pub fd_readwrite:
+            __wasi_subscription_u_fd_readwrite_t,
+        _bindgen_union_align: [u64; 5],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct __wasi_prestat_t {
+        pub pr_type: __wasi_preopentype_t,
+        pub u: __wasi_prestat_u,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub union __wasi_prestat_u {
+        pub dir: __wasi_prestat_u_dir_t,
+    }
+
+}
+
 pub const STDIN_FILENO: c_int = 0;
 pub const STDOUT_FILENO: c_int = 1;
 pub const STDERR_FILENO: c_int = 2;
@@ -248,152 +388,12 @@ pub const __WASI_WHENCE_CUR: u8 = 0;
 pub const __WASI_WHENCE_END: u8 = 1;
 pub const __WASI_WHENCE_SET: u8 = 2;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum FILE {}
-impl ::Copy for FILE {}
-impl ::Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
-
-s! {
-    #[repr(align(8))]
-    pub struct fpos_t {
-        data: [u8; 16],
-    }
-
-    pub struct tm {
-        pub tm_sec: c_int,
-        pub tm_min: c_int,
-        pub tm_hour: c_int,
-        pub tm_mday: c_int,
-        pub tm_mon: c_int,
-        pub tm_year: c_int,
-        pub tm_wday: c_int,
-        pub tm_yday: c_int,
-        pub tm_isdst: c_int,
-        pub __tm_gmtoff: c_int,
-        pub __tm_zone: *const c_char,
-        pub __tm_nsec: c_int,
-    }
-
-    pub struct timespec {
-        pub tv_sec: time_t,
-        pub tv_nsec: c_long,
-    }
-
-    pub struct itimerspec {
-        pub it_interval: timespec,
-        pub it_value: timespec,
-    }
-
-    pub struct __wasi_dirent_t {
-        pub d_next: __wasi_dircookie_t,
-        pub d_ino: __wasi_inode_t,
-        pub d_namlen: u32,
-        pub d_type: __wasi_filetype_t,
-    }
-
-    pub struct __wasi_event_u_fd_readwrite_t {
-        pub nbytes: __wasi_filesize_t,
-        pub flags: __wasi_eventrwflags_t,
-    }
-
-    pub struct __wasi_fdstat_t {
-        pub fs_filetype: __wasi_filetype_t,
-        pub fs_flags: __wasi_fdflags_t,
-        pub fs_rights_base: __wasi_rights_t,
-        pub fs_rights_inheriting: __wasi_rights_t,
-    }
-
-    pub struct __wasi_filestat_t {
-        pub st_dev: __wasi_device_t,
-        pub st_ino: __wasi_inode_t,
-        pub st_filetype: __wasi_filetype_t,
-        pub st_nlink: __wasi_linkcount_t,
-        pub st_size: __wasi_filesize_t,
-        pub st_atim: __wasi_timestamp_t,
-        pub st_mtim: __wasi_timestamp_t,
-        pub st_ctim: __wasi_timestamp_t,
-    }
-
-    pub struct __wasi_ciovec_t {
-        pub buf: *const ::c_void,
-        pub buf_len: size_t,
-    }
-
-    pub struct __wasi_iovec_t {
-        pub buf: *mut ::c_void,
-        pub buf_len: size_t,
-    }
-
-    pub struct __wasi_subscription_u_clock_t {
-        pub identifier: __wasi_userdata_t,
-        pub clock_id: __wasi_clockid_t,
-        pub timeout: __wasi_timestamp_t,
-        pub precision: __wasi_timestamp_t,
-        pub flags: __wasi_subclockflags_t,
-    }
-
-    pub struct __wasi_subscription_u_fd_readwrite_t {
-        pub fd: __wasi_fd_t,
-    }
-
-    pub struct __wasi_prestat_u_dir_t {
-        pub pr_name_len: size_t,
-    }
-}
-
-s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
-    pub struct __wasi_subscription_t {
-        pub userdata: __wasi_userdata_t,
-        pub type_: __wasi_eventtype_t,
-        pub u: __wasi_subscription_u,
-    }
-
-    #[allow(missing_debug_implementations)]
-    pub struct __wasi_event_t {
-        pub userdata: __wasi_userdata_t,
-        pub error: __wasi_errno_t,
-        pub type_: __wasi_eventtype_t,
-        pub u: __wasi_event_u,
-    }
-
-    #[allow(missing_debug_implementations)]
-    pub union __wasi_event_u {
-        pub fd_readwrite: __wasi_event_u_fd_readwrite_t,
-        _bindgen_union_align: [u64; 2],
-    }
-
-    #[allow(missing_debug_implementations)]
-    pub union __wasi_subscription_u {
-        pub clock: __wasi_subscription_u_clock_t,
-        pub fd_readwrite:
-            __wasi_subscription_u_fd_readwrite_t,
-        _bindgen_union_align: [u64; 5],
-    }
-
-    #[allow(missing_debug_implementations)]
-    pub struct __wasi_prestat_t {
-        pub pr_type: __wasi_preopentype_t,
-        pub u: __wasi_prestat_u,
-    }
-
-    #[allow(missing_debug_implementations)]
-    pub union __wasi_prestat_u {
-        pub dir: __wasi_prestat_u_dir_t,
-    }
-
-}
-
 #[cfg_attr(feature = "rustc-dep-of-std",
            link(name = "c", kind = "static",
                 cfg(target_feature = "crt-static")))]
 #[cfg_attr(feature = "rustc-dep-of-std",
            link(name = "c", cfg(not(target_feature = "crt-static"))))]
-extern "C" {
+extern {
     pub fn _Exit(code: c_int) -> !;
     pub fn _exit(code: c_int) -> !;
     pub fn abort() -> !;
@@ -452,8 +452,8 @@ extern "C" {
     pub fn puts(a: *const c_char) -> c_int;
     pub fn perror(a: *const c_char);
     pub fn srand(a: c_uint);
-    pub fn atexit(a: extern "C" fn()) -> c_int;
-    pub fn at_quick_exit(a: extern "C" fn()) -> c_int;
+    pub fn atexit(a: extern fn()) -> c_int;
+    pub fn at_quick_exit(a: extern fn()) -> c_int;
     pub fn quick_exit(a: c_int) -> !;
     pub fn posix_memalign(a: *mut *mut c_void, b: size_t, c: size_t) -> c_int;
     pub fn rand_r(a: *mut c_uint) -> c_int;
@@ -501,7 +501,7 @@ extern "C" {
 }
 
 #[link(wasm_import_module = "wasi_unstable")]
-extern "C" {
+extern {
     #[link_name = "clock_res_get"]
     pub fn __wasi_clock_res_get(
         clock_id: __wasi_clockid_t,
