@@ -34,6 +34,9 @@ pub type sa_family_t = u8;
 pub type socklen_t = usize;
 pub type time_t = i64;
 
+pub type clockid_t = *const __clockid;
+pub type cloudabi_clockid_t = u32;
+
 s! {
     pub struct addrinfo {
         pub ai_flags: ::c_int,
@@ -96,13 +99,17 @@ s! {
     }
 
     pub struct pthread_condattr_t {
-        __clock: usize,
+        __clock: clockid_t,
         __pshared: ::c_int,
     }
 
     pub struct timespec {
         pub tv_sec: ::time_t,
         pub tv_nsec: ::c_long,
+    }
+
+    pub struct __clockid {
+        pub id: cloudabi_clockid_t,
     }
 }
 
@@ -155,6 +162,9 @@ pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
 
 pub const SOCK_DGRAM: ::c_int = 128;
 pub const SOCK_STREAM: ::c_int = 130;
+
+pub const CLOCK_MONOTONIC: clockid_t = &__clockid { id: 1 };
+pub const CLOCK_REALTIME: clockid_t = &__clockid { id: 3 };
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
@@ -274,6 +284,8 @@ extern {
     pub fn rand() -> c_int;
     pub fn srand(seed: c_uint);
 
+    pub fn clock_gettime(clock_id: clockid_t, tp: *mut timespec) -> ::c_int;
+
     pub fn arc4random_buf(buf: *const ::c_void, len: ::size_t);
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
@@ -318,6 +330,10 @@ extern {
     ) -> ::c_int;
     pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> ::c_int;
     pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> ::c_int;
+    pub fn pthread_condattr_setclock(
+        attr: *mut pthread_condattr_t,
+        clock_id: clockid_t
+    ) -> ::c_int;
     pub fn pthread_create(
         native: *mut ::pthread_t,
         attr: *const ::pthread_attr_t,
