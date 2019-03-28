@@ -15,6 +15,7 @@ pub type key_t = ::c_long;
 pub type msglen_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 
+pub type mqd_t = *mut ::c_void;
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
 
@@ -1332,6 +1333,7 @@ extern {
 
     pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
                             timeout: *mut ::timespec) -> ::ssize_t;
+    pub fn mq_getfd_np(mqd: ::mqd_t) -> ::c_int;
 
     pub fn freelocale(loc: ::locale_t) -> ::c_int;
     pub fn waitid(idtype: idtype_t, id: ::id_t, infop: *mut ::siginfo_t,

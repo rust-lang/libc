@@ -16,6 +16,7 @@ pub type uuid_t = ::uuid;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 
+pub type mqd_t = ::c_int;
 pub type sem_t = *mut sem;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
