@@ -5,12 +5,12 @@ extern crate ctest;
 
 use std::env;
 
-#[cfg(unix)]
 fn do_cc() {
-    cc::Build::new().file("src/cmsg.c").compile("cmsg");
+    let target = env::var("TARGET").unwrap();
+    if cfg!(unix) && !target.contains("wasi") {
+        cc::Build::new().file("src/cmsg.c").compile("cmsg");
+    }
 }
-#[cfg(not(unix))]
-fn do_cc() {}
 
 fn do_ctest() {
     let target = env::var("TARGET").unwrap();
@@ -38,6 +38,7 @@ fn do_ctest() {
         t if t.contains("solaris") => return test_solaris(t),
         t if t.contains("netbsd") => return test_netbsd(t),
         t if t.contains("dragonfly") => return test_dragonflybsd(t),
+        t if t.contains("wasi") => return test_wasi(t),
         _ => (),
     }
 
@@ -1863,6 +1864,60 @@ fn test_dragonflybsd(target: &str) {
         // sigev_notify_thread_id is actually part of a sigev_un union
         (struct_ == "sigevent" && field == "sigev_notify_thread_id")
     });
+
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_wasi(target: &str) {
+    assert!(target.contains("wasi"));
+
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.define("_GNU_SOURCE", None);
+
+    headers! { cfg:
+        "errno.h",
+        "fcntl.h",
+        "limits.h",
+        "locale.h",
+        "malloc.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "sys/stat.h",
+        "sys/types.h",
+        "time.h",
+        "unistd.h",
+        "wasi/core.h",
+        "wasi/libc.h",
+        "wchar.h",
+    }
+
+    cfg.type_name(move |ty, is_struct, is_union| match ty {
+        "FILE" => ty.to_string(),
+        t if is_union => format!("union {}", t),
+        t if t.starts_with("__wasi") && t.ends_with("_u") => {
+            format!("union {}", t)
+        }
+        t if t.starts_with("__wasi") && is_struct => format!("struct {}", t),
+        t if t.ends_with("_t") => t.to_string(),
+        t if is_struct => format!("struct {}", t),
+        t => t.to_string(),
+    });
+
+    cfg.field_name(move |_struct, field| {
+        match field {
+            // deal with fields as rust keywords
+            "type_" => "type".to_string(),
+            s => s.to_string(),
+        }
+    });
+
+    // Looks like LLD doesn't merge duplicate imports, so if the Rust
+    // code imports from a module and the C code also imports from a
+    // module we end up with two imports of function pointers which
+    // import the same thing but have different function pointers
+    cfg.skip_fn_ptrcheck(|f| f.starts_with("__wasi"));
 
     cfg.generate("../src/lib.rs", "main.rs");
 }
