@@ -301,6 +301,23 @@ extern {
         attr: *mut ::pthread_attr_t,
         stack_size: ::size_t,
     ) -> ::c_int;
+    pub fn pthread_cond_destroy(cond: *mut pthread_cond_t) -> ::c_int;
+    pub fn pthread_cond_init(
+        cond: *mut pthread_cond_t,
+        attr: *const pthread_condattr_t
+    ) -> ::c_int;
+    pub fn pthread_cond_signal(cond: *mut pthread_cond_t) -> ::c_int;
+    pub fn pthread_cond_timedwait(
+        cond: *mut pthread_cond_t,
+        mutex: *mut pthread_mutex_t,
+        abstime: *const timespec,
+    ) -> ::c_int;
+    pub fn pthread_cond_wait(
+        cond: *mut pthread_cond_t,
+        mutex: *mut pthread_mutex_t
+    ) -> ::c_int;
+    pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> ::c_int;
+    pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> ::c_int;
     pub fn pthread_create(
         native: *mut ::pthread_t,
         attr: *const ::pthread_attr_t,
@@ -322,6 +339,9 @@ extern {
         key: pthread_key_t,
         value: *const ::c_void,
     ) -> ::c_int;
+    pub fn pthread_mutex_destroy(mutex: *mut pthread_mutex_t) -> ::c_int;
+    pub fn pthread_mutex_lock(mutex: *mut pthread_mutex_t) -> ::c_int;
+    pub fn pthread_mutex_unlock(mutex: *mut pthread_mutex_t) -> ::c_int;
     pub fn send(
         socket: ::c_int,
         buf: *const ::c_void,
