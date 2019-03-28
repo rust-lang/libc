@@ -99,6 +99,11 @@ s! {
         __clock: usize,
         __pshared: ::c_int,
     }
+
+    pub struct timespec {
+        pub tv_sec: ::time_t,
+        pub tv_nsec: ::c_long,
+    }
 }
 
 pub const INT_MIN: c_int = -2147483648;
