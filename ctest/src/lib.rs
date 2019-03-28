@@ -148,7 +148,7 @@ impl TestGenerator {
             cfg: Vec::new(),
             verbose_skip: false,
             volatile_item: Box::new(|_| false),
-            array_arg: Box::new(|_,_| false),
+            array_arg: Box::new(|_, _| false),
             skip_fn: Box::new(|_| false),
             skip_fn_ptrcheck: Box::new(|_| false),
             skip_static: Box::new(|_| false),
@@ -470,13 +470,12 @@ impl TestGenerator {
     /// }});
     /// ```
     pub fn array_arg<F>(&mut self, f: F) -> &mut Self
-        where
+    where
         F: Fn(&str, usize) -> bool + 'static,
     {
         self.array_arg = Box::new(f);
         self
     }
-
 
     /// Configures how Rust `const`s names are translated to C.
     ///
