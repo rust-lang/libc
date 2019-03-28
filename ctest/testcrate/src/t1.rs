@@ -80,7 +80,6 @@ extern "C" {
     pub fn T1t(a: *mut *mut Arr);
     pub fn T1v(a: *const *const Arr) -> !;
 
-
     pub static T1static: c_uint;
 }
 
