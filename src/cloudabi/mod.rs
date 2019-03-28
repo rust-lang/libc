@@ -54,11 +54,6 @@ s! {
         pub s6_addr: [u8; 16],
     }
 
-    pub struct pthread_attr_t {
-        __detachstate: ::c_int,
-        __stacksize: usize,
-    }
-
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 0],
@@ -81,6 +76,28 @@ s! {
     pub struct sockaddr_storage {
         pub ss_family: ::sa_family_t,
         __ss_data: [u8; 32],
+    }
+
+    pub struct pthread_attr_t {
+        __detachstate: ::c_int,
+        __stacksize: usize,
+    }
+
+    pub struct pthread_mutex_t {
+        __state: u32,
+        __write_recursion: i32,
+        __pshared: u8,
+    }
+
+    pub struct pthread_cond_t {
+        __waiters: u32,
+        __clock: u32,
+        __pshared: u8,
+    }
+
+    pub struct pthread_condattr_t {
+        __clock: usize,
+        __pshared: ::c_int,
     }
 }
 
@@ -116,6 +133,20 @@ pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 1024;
+
+pub const PTHREAD_PROCESS_PRIVATE: u8 = 0x4;
+pub const PTHREAD_PROCESS_SHARED: u8 = 0x8;
+
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    __waiters: 0,
+    __clock: 3,
+    __pshared: PTHREAD_PROCESS_PRIVATE,
+};
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    __state: 0,
+    __write_recursion: -1,
+    __pshared: PTHREAD_PROCESS_PRIVATE,
+};
 
 pub const SOCK_DGRAM: ::c_int = 128;
 pub const SOCK_STREAM: ::c_int = 130;
