@@ -28,7 +28,7 @@ Then, edit `systest/Cargo.toml` to add these dependencies:
 build = "build.rs"
 
 [dependencies]
-my-sys-library = { path = "../my-sys-library" }
+mylib-sys = { path = "../mylib-sys" }
 libc = "0.2"
 
 [build-dependencies]
@@ -52,7 +52,7 @@ fn main() {
 
     // Generate the tests, passing the path to the `*-sys` library as well as
     // the module to generate.
-    cfg.generate("../my-sys-library/lib.rs", "all.rs");
+    cfg.generate("../mylib-sys/lib.rs", "all.rs");
 }
 
 ```
@@ -62,11 +62,11 @@ Next, add this to `src/main.rs`
 ```rust
 #![allow(bad_style)]
 
-extern crate my_sys_library;
+extern crate mylib_sys;
 extern crate libc;
 
 use libc::*;
-use my_sys_library::*;
+use mylib_sys::*;
 
 include!(concat!(env!("OUT_DIR"), "/all.rs"));
 ```
