@@ -31,6 +31,7 @@ pub type pthread_t = ::c_uint;
 pub type pthread_key_t = ::c_uint;
 pub type blksize_t = ::c_int;
 pub type nl_item = ::c_int;
+pub type mqd_t = *mut ::c_void;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 
@@ -329,6 +330,14 @@ s! {
     pub struct if_nameindex {
         pub if_index: ::c_uint,
         pub if_name: *mut ::c_char,
+    }
+
+    pub struct mq_attr {
+        pub mq_flags: ::c_long,
+        pub mq_maxmsg: ::c_long,
+        pub mq_msgsize: ::c_long,
+        pub mq_curmsgs: ::c_long,
+        _pad: [::c_int; 4]
     }
 
     pub struct port_event {
@@ -1937,6 +1946,31 @@ extern {
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
 
+    pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
+    pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
+    pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
+    pub fn mq_receive(mqd: ::mqd_t,
+                      msg_ptr: *mut ::c_char,
+                      msg_len: ::size_t,
+                      msq_prio: *mut ::c_uint) -> ::ssize_t;
+    pub fn mq_timedreceive(mqd: ::mqd_t,
+                           msg_ptr: *mut ::c_char,
+                           msg_len: ::size_t,
+                           msq_prio: *mut ::c_uint,
+                           abs_timeout: *const ::timespec) -> ::ssize_t;
+    pub fn mq_send(mqd: ::mqd_t,
+                   msg_ptr: *const ::c_char,
+                   msg_len: ::size_t,
+                   msq_prio: ::c_uint) -> ::c_int;
+    pub fn mq_timedsend(mqd: ::mqd_t,
+                        msg_ptr: *const ::c_char,
+                        msg_len: ::size_t,
+                        msq_prio: ::c_uint,
+                        abs_timeout: *const ::timespec) -> ::c_int;
+    pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
+    pub fn mq_setattr(mqd: ::mqd_t,
+                      newattr: *const ::mq_attr,
+                      oldattr: *mut ::mq_attr) -> ::c_int;
     pub fn port_create() -> ::c_int;
     pub fn port_associate(port: ::c_int, source: ::c_int, object: ::uintptr_t,
                           events: ::c_int, user: *mut ::c_void) -> ::c_int;
