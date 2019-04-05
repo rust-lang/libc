@@ -124,7 +124,6 @@ fn do_ctest() {
         }
         cfg.header("arpa/inet.h");
         cfg.header("xlocale.h");
-        cfg.header("utmp.h");
         cfg.header("ifaddrs.h");
         if i686 || x86_64 {
             cfg.header("sys/reg.h");
@@ -208,6 +207,7 @@ fn do_ctest() {
         cfg.header("sys/personality.h");
         cfg.header("sys/swap.h");
         cfg.header("pty.h");
+        cfg.header("utmp.h");
         if !uclibc {
             cfg.header("sys/sysinfo.h");
         }

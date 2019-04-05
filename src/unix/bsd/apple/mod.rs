@@ -3168,6 +3168,7 @@ extern {
                    name: *mut ::c_char,
                    termp: *mut termios,
                    winp: *mut ::winsize) -> ::pid_t;
+    pub fn login_tty(fd: ::c_int) -> ::c_int;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn freelocale(loc: ::locale_t) -> ::c_int;
     pub fn localeconv_l(loc: ::locale_t) -> *mut lconv;
