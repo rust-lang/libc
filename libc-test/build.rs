@@ -1890,6 +1890,7 @@ fn test_wasi(target: &str) {
         "unistd.h",
         "wasi/core.h",
         "wasi/libc.h",
+        "wasi/libc-find-relpath.h",
         "wchar.h",
     }
 
