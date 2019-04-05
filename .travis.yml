@@ -204,6 +204,9 @@ matrix:
       stage: tier2
     - env: TARGET=x86_64-unknown-linux-musl
       stage: tier2
+    - env: TARGET=wasm32-unknown-wasi
+      rust: nightly
+      stage: tier2
 
   allow_failures:
       # FIXME: android build bots time out irregularly

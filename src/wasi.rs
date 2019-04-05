@@ -388,12 +388,15 @@ pub const __WASI_WHENCE_CUR: u8 = 0;
 pub const __WASI_WHENCE_END: u8 = 1;
 pub const __WASI_WHENCE_SET: u8 = 2;
 
-#[cfg_attr(feature = "rustc-dep-of-std",
-           link(name = "c", kind = "static",
-                cfg(target_feature = "crt-static")))]
-#[cfg_attr(feature = "rustc-dep-of-std",
-           link(name = "c", cfg(not(target_feature = "crt-static"))))]
-extern {
+#[cfg_attr(
+    feature = "rustc-dep-of-std",
+    link(name = "c", kind = "static", cfg(target_feature = "crt-static"))
+)]
+#[cfg_attr(
+    feature = "rustc-dep-of-std",
+    link(name = "c", cfg(not(target_feature = "crt-static")))
+)]
+extern "C" {
     pub fn _Exit(code: c_int) -> !;
     pub fn _exit(code: c_int) -> !;
     pub fn abort() -> !;
@@ -452,8 +455,8 @@ extern {
     pub fn puts(a: *const c_char) -> c_int;
     pub fn perror(a: *const c_char);
     pub fn srand(a: c_uint);
-    pub fn atexit(a: extern fn()) -> c_int;
-    pub fn at_quick_exit(a: extern fn()) -> c_int;
+    pub fn atexit(a: extern "C" fn()) -> c_int;
+    pub fn at_quick_exit(a: extern "C" fn()) -> c_int;
     pub fn quick_exit(a: c_int) -> !;
     pub fn posix_memalign(a: *mut *mut c_void, b: size_t, c: size_t) -> c_int;
     pub fn rand_r(a: *mut c_uint) -> c_int;
@@ -501,7 +504,7 @@ extern {
 }
 
 #[link(wasm_import_module = "wasi_unstable")]
-extern {
+extern "C" {
     #[link_name = "clock_res_get"]
     pub fn __wasi_clock_res_get(
         clock_id: __wasi_clockid_t,
