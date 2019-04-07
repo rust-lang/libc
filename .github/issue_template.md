@@ -1,3 +1,4 @@
+<!-- 
 **Help us help you.**
 
 If you are reporting a bug, include:
@@ -20,3 +21,4 @@ need of help so they need to prioritize to which issues they devote their free
 time, etc. So try to give most of the information upfront, be concise, show
 small self-contained examples (nobody has time to create a new cargo project,
 set up dependencies,...), etc. Help us help you.
+-->
