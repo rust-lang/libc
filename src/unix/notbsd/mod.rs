@@ -1383,6 +1383,11 @@ extern {
                 name: *mut ::c_char,
                 termp: *const termios,
                 winp: *const ::winsize) -> ::c_int;
+    pub fn forkpty(amaster: *mut ::c_int,
+                name: *mut ::c_char,
+                termp: *const termios,
+                winp: *const ::winsize) -> ::pid_t;
+    pub fn login_tty(fd: ::c_int) -> ::c_int;
     pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
                    envp: *const *const ::c_char) -> ::c_int;
     pub fn fexecve(fd: ::c_int, argv: *const *const ::c_char,
@@ -1422,7 +1427,3 @@ cfg_if! {
         // Unknown target_os
     }
 }
-    // pub fn forkpty(amaster: *mut ::c_int,
-    //             name: *mut ::c_char,
-    //             termp: *const termios,
-    //             winp: *const ::winsize) -> ::pid_t;
