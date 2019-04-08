@@ -28,7 +28,7 @@ RUN mv /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04 /wasmcc
 # those breaking changes on `libc`'s own CI
 RUN git clone https://github.com/CraneStation/wasi-sysroot && \
   cd wasi-sysroot && \
-  git reset --hard 320054e84f8f2440def3b1c8700cedb8fd697bf8
+  git reset --hard e5f14be38362f1ab83302895a6e74b2ffd0e2302
 RUN make -C wasi-sysroot install -j $(nproc) WASM_CC=/wasmcc/bin/clang INSTALL_DIR=/wasi-sysroot
 
 # This is a small wrapper script which executes the actual clang binary in
@@ -58,9 +58,9 @@ RUN curl -sSf https://sh.rustup.rs |  sh -s -- -y
 ENV PATH=/root/.cargo/bin:$PATH
 
 RUN apt-get install -y --no-install-recommends python
-RUN git clone https://github.com/CraneStation/wasmtime-wasi wasmtime && \
+RUN git clone https://github.com/CraneStation/wasmtime wasmtime && \
   cd wasmtime && \
-  git reset --hard 4fe2d6084e5b5cc74e69a26860f12750df51d339
+  git reset --hard a1c123c3dd8f9766990efe0f1734a646f61ba8a0
 RUN cargo build --release --manifest-path wasmtime/Cargo.toml
 
 # And finally in the last image we're going to assemble everything together.
@@ -72,12 +72,13 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gcc \
     libc6-dev \
-    libxml2
+    libxml2 \
+    ca-certificates
 
 # Copy over clang we downloaded to link executables ...
-COPY --from=reference-sysroot /wasmcc /wasmcc/
+COPY --from=wasi-sysroot /wasmcc /wasmcc/
 # ... and the sysroot we built to link executables against ...
-COPY --from=reference-sysroot /wasi-sysroot/ /wasi-sysroot/
+COPY --from=wasi-sysroot /wasi-sysroot/ /wasi-sysroot/
 # ... and finally wasmtime to actually execute binaries
 COPY --from=wasmtime /wasmtime/target/release/wasmtime /usr/bin/
 

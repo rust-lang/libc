@@ -388,11 +388,14 @@ pub const __WASI_WHENCE_CUR: u8 = 0;
 pub const __WASI_WHENCE_END: u8 = 1;
 pub const __WASI_WHENCE_SET: u8 = 2;
 
-#[cfg_attr(feature = "rustc-dep-of-std",
-           link(name = "c", kind = "static",
-                cfg(target_feature = "crt-static")))]
-#[cfg_attr(feature = "rustc-dep-of-std",
-           link(name = "c", cfg(not(target_feature = "crt-static"))))]
+#[cfg_attr(
+    feature = "rustc-dep-of-std",
+    link(name = "c", kind = "static", cfg(target_feature = "crt-static"))
+)]
+#[cfg_attr(
+    feature = "rustc-dep-of-std",
+    link(name = "c", cfg(not(target_feature = "crt-static")))
+)]
 extern {
     pub fn _Exit(code: c_int) -> !;
     pub fn _exit(code: c_int) -> !;
@@ -494,6 +497,12 @@ extern {
     pub fn __wasilibc_rmfileat(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_rmdirat(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_init_preopen();
+    pub fn __wasilibc_find_relpath(
+        path: *const c_char,
+        rights_base: __wasi_rights_t,
+        rights_inheriting: __wasi_rights_t,
+        relative_path: *mut *const c_char,
+    ) -> c_int;
 
     pub fn arc4random() -> u32;
     pub fn arc4random_buf(a: *mut c_void, b: size_t);
