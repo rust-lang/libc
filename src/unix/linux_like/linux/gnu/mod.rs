@@ -2,6 +2,126 @@ pub type pthread_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
 pub type __rlimit_resource_t = ::c_uint;
 
+cfg_if! {
+    if #[cfg(libc_union)] {
+        #[repr(C)]
+        #[derive(Copy, Clone)]
+        struct addr_bnd_t {
+            lower: *mut ::c_void,
+            upper: *mut ::c_void,
+        }
+
+        #[repr(C)]
+        #[derive(Copy, Clone)]
+        union sigfault_t_anonymous_union {
+            addr_bnd: addr_bnd_t,
+            pkey: u32,
+        }
+
+        #[repr(C)]
+        #[derive(Copy, Clone)]
+        struct sigfault_t {
+            addr: *mut ::c_void,
+            #[cfg(target_arch = "sparc")]
+            trapno: ::c_int,
+            addr_lsb: ::c_short,
+            anonymous_union: sigfault_t_anonymous_union,
+        }
+
+        cfg_if! {
+            if #[cfg(target_pointer_width = "64")] {
+                type SI_PADDING = [::c_int; 28];
+            } else {
+                type SI_PADDING = [::c_int; 29];
+            }
+        }
+
+        #[repr(C)]
+        #[derive(Copy, Clone)]
+        union sifields_t {
+            _pad: SI_PADDING,
+            sigfault: sigfault_t,
+        }
+
+        impl ::fmt::Debug for sigfault_t_anonymous_union {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                // Excludes the fields because we can't know which is valid
+                f.debug_struct("sigfault_t_anonymous_union")
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for sigfault_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                // TODO: include trapno on Sparc
+                f.debug_struct("sigfault_t")
+                    .field("addr", &self.addr)
+                    .field("addr_lsb", &self.addr_lsb)
+                    .field("anonymous_union", &self.anonymous_union)
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for sifields_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                // No way to print anything more detailed without the
+                // discriminant from siginfo_t
+                f.debug_struct("sifields_t").finish()
+            }
+        }
+    } else {
+        type sifields_t = [::c_int; 29];
+    }
+}
+
+s_no_extra_traits! {
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        sifields: sifields_t,
+
+        #[cfg(target_arch = "x86_64")]
+        _align: [u64; 0],
+        #[cfg(not(target_arch = "x86_64"))]
+        _align: [usize; 0],
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_union)] {
+        impl siginfo_t {
+            pub unsafe fn si_addr(&self) -> *mut ::c_void {
+                self.sifields.sigfault.addr
+            }
+        }
+    } else {
+        impl siginfo_t {
+            pub unsafe fn si_addr(&self) -> *mut ::c_void {
+                #[repr(C)]
+                struct siginfo_sigfault {
+                    _si_signo: ::c_int,
+                    _si_errno: ::c_int,
+                    _si_code: ::c_int,
+                    si_addr: *mut ::c_void
+                }
+                (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
+            }
+        }
+    }
+}
+
+impl ::fmt::Debug for siginfo_t {
+    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        // TODO: include fields from sifields
+        f.debug_struct("siginfo_t")
+            .field("si_signo", &self.si_signo)
+            .field("si_errno", &self.si_errno)
+            .field("si_code", &self.si_code)
+            .finish()
+    }
+}
+
 s! {
     pub struct statx {
         pub stx_mask: u32,
@@ -179,19 +299,6 @@ s! {
         pub rt_mtu: ::c_ulong,
         pub rt_window: ::c_ulong,
         pub rt_irtt: ::c_ushort,
-    }
-}
-
-impl siginfo_t {
-    pub unsafe fn si_addr(&self) -> *mut ::c_void {
-        #[repr(C)]
-        struct siginfo_sigfault {
-            _si_signo: ::c_int,
-            _si_errno: ::c_int,
-            _si_code: ::c_int,
-            si_addr: *mut ::c_void
-        }
-        (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
     }
 }
 
