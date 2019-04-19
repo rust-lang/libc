@@ -1931,5 +1931,9 @@ fn test_wasi(target: &str) {
     // import the same thing but have different function pointers
     cfg.skip_fn_ptrcheck(|f| f.starts_with("__wasi"));
 
+    // d_name is declared as a flexible array in WASI libc, so it
+    // doesn't support sizeof.
+    cfg.skip_field(|s, field| s == "dirent" && field == "d_name");
+
     cfg.generate("../src/lib.rs", "main.rs");
 }

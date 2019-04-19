@@ -141,12 +141,6 @@ s! {
         fds_bits: [c_ulong; FD_SETSIZE / ULONG_SIZE],
     }
 
-    pub struct dirent {
-        pub d_ino: ino_t,
-        pub d_type: c_uchar,
-        pub d_name: [c_char; 1024],
-    }
-
     pub struct lconv {
         pub decimal_point: *mut c_char,
         pub thousands_sep: *mut c_char,
@@ -301,6 +295,20 @@ s_no_extra_traits! {
         pub dir: __wasi_prestat_u_dir_t,
     }
 
+}
+
+// Declare dirent outside of s! so that it doesn't implement Copy, Eq, Hash,
+// etc., since it contains a flexible array member with a dynamic size.
+#[repr(C)]
+#[allow(missing_copy_implementations)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub struct dirent {
+    pub d_ino: ino_t,
+    pub d_type: c_uchar,
+    /// d_name is declared in WASI libc as a flexible array member, which
+    /// can't be directly expressed in Rust. As an imperfect workaround,
+    /// declare it as a zero-length array instead.
+    pub d_name: [c_char; 0],
 }
 
 // intentionally not public, only used for fd_set
