@@ -377,7 +377,6 @@ extern {
                  -> ::ssize_t;
 }
 
-
 #[cfg_attr(feature = "rustc-dep-of-std",
            link(name = "c", kind = "static",
                 cfg(target_feature = "crt-static")))]
