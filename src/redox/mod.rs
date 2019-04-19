@@ -377,8 +377,11 @@ extern {
                  -> ::ssize_t;
 }
 
-#[link(name = "c")]
-#[link(name = "m")]
+#[cfg_attr(feature = "rustc-dep-of-std",
+           link(name = "c", kind = "static",
+                cfg(target_feature = "crt-static")))]
+#[cfg_attr(feature = "rustc-dep-of-std",
+           link(name = "c", cfg(not(target_feature = "crt-static"))))]
 extern {}
 
 pub use self::net::*;
