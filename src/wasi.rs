@@ -68,30 +68,17 @@ pub type __wasi_userdata_t = u64;
 pub type __wasi_whence_t = u8;
 pub type __wasi_preopentype_t = u8;
 
+#[allow(missing_copy_implementations)]
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
-impl ::Copy for FILE {}
-impl ::Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
+#[allow(missing_copy_implementations)]
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
-impl ::Copy for DIR {}
-impl ::Clone for DIR {
-    fn clone(&self) -> DIR {
-        *self
-    }
-}
+#[allow(missing_copy_implementations)]
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum locale_t {}
-impl ::Copy for locale_t {}
-impl ::Clone for locale_t {
-    fn clone(&self) -> locale_t {
-        *self
-    }
-}
+pub enum __locale_struct {}
+
+pub type locale_t = *mut __locale_struct;
 
 s! {
     #[repr(align(8))]
