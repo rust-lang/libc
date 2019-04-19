@@ -112,7 +112,7 @@ cfg_if! {
     } else if #[cfg(all(target_env = "sgx", target_vendor = "fortanix"))] {
         mod sgx;
         pub use sgx::*;
-    } else if #[cfg(target_env = "wasi")] {
+    } else if #[cfg(any(target_env = "wasi", target_os = "wasi"))] {
         mod wasi;
         pub use wasi::*;
     } else {
