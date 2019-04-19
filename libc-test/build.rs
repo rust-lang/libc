@@ -1875,6 +1875,7 @@ fn test_wasi(target: &str) {
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
+        "dirent.h",
         "errno.h",
         "fcntl.h",
         "limits.h",
@@ -1885,9 +1886,12 @@ fn test_wasi(target: &str) {
         "stdint.h",
         "stdio.h",
         "stdlib.h",
+        "sys/resource.h",
         "sys/stat.h",
         "sys/times.h",
         "sys/types.h",
+        "sys/uio.h",
+        "sys/utsname.h",
         "time.h",
         "unistd.h",
         "wasi/core.h",
