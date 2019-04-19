@@ -1053,7 +1053,7 @@ extern {
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
 
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> ();
-    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool;
+    pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool;
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> ();
     pub fn FD_ZERO(set: *mut fd_set) -> ();
 
