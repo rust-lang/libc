@@ -1906,7 +1906,7 @@ fn test_wasi(target: &str) {
     }
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
-        "FILE" => ty.to_string(),
+        "FILE" | "fd_set" | "DIR" => ty.to_string(),
         t if is_union => format!("union {}", t),
         t if t.starts_with("__wasi") && t.ends_with("_u") => {
             format!("union {}", t)
