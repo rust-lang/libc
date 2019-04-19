@@ -609,6 +609,12 @@ extern {
     #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
     #[cfg_attr(target_os = "freebsd", link_name = "readdir@FBSD_1.0")]
+    /// The 64-bit libc on Solaris and illumos only has readdir_r.  If a
+    /// 32-bit Solaris or illumos target is ever created, it should use
+    /// __posix_readdir_r.  See libc(3LIB) on Solaris or illumos:
+    /// https://illumos.org/man/3lib/libc
+    /// https://docs.oracle.com/cd/E36784_01/html/E36873/libc-3lib.html
+    /// https://www.unix.com/man-page/opensolaris/3LIB/libc/
     pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
     #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
