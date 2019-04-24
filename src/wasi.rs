@@ -137,11 +137,6 @@ s! {
         pub domainname: [c_char; 65]
     }
 
-    pub struct fd_set {
-        pub __nfds: size_t,
-        pub __fds: [c_int; FD_SETSIZE],
-    }
-
     pub struct lconv {
         pub decimal_point: *mut c_char,
         pub thousands_sep: *mut c_char,
@@ -946,13 +941,6 @@ extern {
         flags: ::c_int,
     ) -> ::ssize_t;
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
-    pub fn select(
-        nfds: ::c_int,
-        readfs: *mut fd_set,
-        writefds: *mut fd_set,
-        errorfds: *mut fd_set,
-        timeout: *mut timeval,
-    ) -> ::c_int;
     pub fn setlocale(
         category: ::c_int,
         locale: *const ::c_char,
@@ -969,14 +957,6 @@ extern {
 
     pub fn sysconf(name: ::c_int) -> ::c_long;
 
-    pub fn pselect(
-        nfds: ::c_int,
-        readfs: *mut fd_set,
-        writefds: *mut fd_set,
-        errorfds: *mut fd_set,
-        timeout: *const timespec,
-        sigmask: *const sigset_t,
-    ) -> ::c_int;
     pub fn fseeko(
         stream: *mut ::FILE,
         offset: ::off_t,
