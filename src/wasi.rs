@@ -138,7 +138,8 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [c_ulong; FD_SETSIZE / ULONG_SIZE],
+        pub __nfds: size_t,
+        pub __fds: [c_int; FD_SETSIZE],
     }
 
     pub struct lconv {
