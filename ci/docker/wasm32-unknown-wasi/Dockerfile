@@ -28,7 +28,7 @@ RUN mv /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04 /wasmcc
 # those breaking changes on `libc`'s own CI
 RUN git clone https://github.com/CraneStation/wasi-sysroot && \
   cd wasi-sysroot && \
-  git reset --hard e5f14be38362f1ab83302895a6e74b2ffd0e2302
+  git reset --hard 2201343c17b7149a75f543f523bea0c3243c6091
 RUN make -C wasi-sysroot install -j $(nproc) WASM_CC=/wasmcc/bin/clang INSTALL_DIR=/wasi-sysroot
 
 # This is a small wrapper script which executes the actual clang binary in
