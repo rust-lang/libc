@@ -312,17 +312,6 @@ pub struct dirent {
     pub d_name: [c_char; 0],
 }
 
-// intentionally not public, only used for fd_set
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        const ULONG_SIZE: usize = 32;
-    } else if #[cfg(target_pointer_width = "64")] {
-        const ULONG_SIZE: usize = 64;
-    } else {
-        // Unknown target_pointer_width
-    }
-}
-
 pub const EXIT_SUCCESS: c_int = 0;
 pub const EXIT_FAILURE: c_int = 1;
 pub const STDIN_FILENO: c_int = 0;
