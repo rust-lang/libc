@@ -128,15 +128,6 @@ s! {
         pub iov_len: size_t,
     }
 
-    pub struct utsname {
-        pub sysname: [c_char; 65],
-        pub nodename: [c_char; 65],
-        pub release: [c_char; 65],
-        pub version: [c_char; 65],
-        pub machine: [c_char; 65],
-        pub domainname: [c_char; 65]
-    }
-
     pub struct lconv {
         pub decimal_point: *mut c_char,
         pub thousands_sep: *mut c_char,
@@ -999,7 +990,6 @@ extern {
         iovcnt: ::c_int,
         offset: ::off_t,
     ) -> ::ssize_t;
-    pub fn uname(buf: *mut ::utsname) -> ::c_int;
     pub fn posix_fadvise(
         fd: ::c_int,
         offset: ::off_t,
