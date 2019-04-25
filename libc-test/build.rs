@@ -1875,17 +1875,28 @@ fn test_wasi(target: &str) {
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
+        "ctype.h",
+        "dirent.h",
         "errno.h",
         "fcntl.h",
         "limits.h",
         "locale.h",
         "malloc.h",
+        "poll.h",
+        "stdbool.h",
         "stddef.h",
         "stdint.h",
         "stdio.h",
         "stdlib.h",
+        "string.h",
+        "sys/resource.h",
+        "sys/select.h",
+        "sys/socket.h",
         "sys/stat.h",
+        "sys/times.h",
         "sys/types.h",
+        "sys/uio.h",
+        "sys/utsname.h",
         "time.h",
         "unistd.h",
         "wasi/core.h",
@@ -1895,7 +1906,7 @@ fn test_wasi(target: &str) {
     }
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
-        "FILE" => ty.to_string(),
+        "FILE" | "fd_set" | "DIR" => ty.to_string(),
         t if is_union => format!("union {}", t),
         t if t.starts_with("__wasi") && t.ends_with("_u") => {
             format!("union {}", t)
@@ -1919,6 +1930,10 @@ fn test_wasi(target: &str) {
     // module we end up with two imports of function pointers which
     // import the same thing but have different function pointers
     cfg.skip_fn_ptrcheck(|f| f.starts_with("__wasi"));
+
+    // d_name is declared as a flexible array in WASI libc, so it
+    // doesn't support sizeof.
+    cfg.skip_field(|s, field| s == "dirent" && field == "d_name");
 
     cfg.generate("../src/lib.rs", "main.rs");
 }
