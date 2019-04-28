@@ -602,7 +602,8 @@ pub const __WASI_WHENCE_SET: u8 = 2;
 
 #[cfg_attr(
     feature = "rustc-dep-of-std",
-    link(name = "c", kind = "static", cfg(target_feature = "crt-static"))
+    link(name = "c", kind = "static-nobundle",
+        cfg(target_feature = "crt-static"))
 )]
 #[cfg_attr(
     feature = "rustc-dep-of-std",

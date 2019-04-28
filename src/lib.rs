@@ -19,7 +19,7 @@
 // Attributes needed when building as part of the standard library
 #![cfg_attr(
     feature = "rustc-dep-of-std",
-    feature(cfg_target_vendor, link_cfg, no_core)
+    feature(cfg_target_vendor, link_cfg, no_core, static_nobundle)
 )]
 // Enable extra lints:
 #![cfg_attr(feature = "extra_traits", deny(missing_debug_implementations))]

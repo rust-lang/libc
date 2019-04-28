@@ -308,7 +308,7 @@ cfg_if! {
         // already pulls in all libs.
     } else if #[cfg(target_env = "musl")] {
         #[cfg_attr(feature = "rustc-dep-of-std",
-                   link(name = "c", kind = "static",
+                   link(name = "c", kind = "static-nobundle",
                         cfg(target_feature = "crt-static")))]
         #[cfg_attr(feature = "rustc-dep-of-std",
                    link(name = "c", cfg(not(target_feature = "crt-static"))))]
