@@ -1306,7 +1306,7 @@ extern {
     pub fn execvpe(file: *const ::c_char, argv: *const *const ::c_char,
                    environment: *const *const ::c_char) -> ::c_int;
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrgid_r")]
-    pub fn getgrgid_r(uid: ::uid_t,
+    pub fn getgrgid_r(gid: ::gid_t,
                       grp: *mut ::group,
                       buf: *mut ::c_char,
                       buflen: ::size_t,

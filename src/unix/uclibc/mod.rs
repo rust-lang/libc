@@ -1837,7 +1837,7 @@ extern {
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int)
                    -> ::ssize_t;
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrgid_r")]
-    pub fn getgrgid_r(uid: ::uid_t,
+    pub fn getgrgid_r(gid: ::gid_t,
                       grp: *mut ::group,
                       buf: *mut ::c_char,
                       buflen: ::size_t,

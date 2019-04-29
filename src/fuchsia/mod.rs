@@ -4168,7 +4168,7 @@ extern {
                     offset: *mut off_t,
                     count: ::size_t) -> ::ssize_t;
     pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
-    pub fn getgrgid_r(uid: ::uid_t,
+    pub fn getgrgid_r(gid: ::gid_t,
                       grp: *mut ::group,
                       buf: *mut ::c_char,
                       buflen: ::size_t,
