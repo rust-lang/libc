@@ -135,7 +135,7 @@ s! {
     }
 
     pub struct fsid_t {
-        __val: [::c_int; 2],
+        val: [::c_int; 2],
     }
 
     pub struct mq_attr {

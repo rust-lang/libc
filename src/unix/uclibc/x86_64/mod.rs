@@ -232,7 +232,7 @@ s! {
     }
 
     pub struct fsid_t { // ToDo
-        __val: [::c_int; 2],
+        val: [::c_int; 2],
     }
 }
 

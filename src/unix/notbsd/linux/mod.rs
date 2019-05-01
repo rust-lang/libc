@@ -127,10 +127,10 @@ s! {
     }
 
     pub struct fsid_t {
-        __val: [::c_int; 2],
+        val: [::c_int; 2],
     }
 
-    // x32 compatibility
+    // x32 compatibilityf
     // See https://sourceware.org/bugzilla/show_bug.cgi?id=21279
     pub struct mq_attr {
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
