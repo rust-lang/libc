@@ -48,12 +48,30 @@ s! {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
         pub si_code: ::c_int,
-        #[deprecated(since="0.2.54", note="Please leave a comment on https://github.com/rust-lang/libc/pull/1316 if you're using this field")]
+        #[deprecated(
+            since="0.2.54",
+            note="Please leave a comment on \
+                https://github.com/rust-lang/libc/pull/1316 if you're using \
+                this field"
+        )]
         pub _pad: [::c_int; 29],
         #[cfg(target_arch = "x86_64")]
         _align: [u64; 0],
         #[cfg(not(target_arch = "x86_64"))]
         _align: [usize; 0],
+    }
+
+    impl siginfo_t {
+        pub unsafe fn si_addr(&self) -> *mut ::c_void {
+            #[repr(C)]
+            struct siginfo_sigfault {
+                _si_signo: ::c_int,
+                _si_errno: ::c_int,
+                _si_code: ::c_int,
+                si_addr: *mut ::c_void
+            }
+            (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
+        }
     }
 
     pub struct glob64_t {
