@@ -48,6 +48,7 @@ s! {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
         pub si_code: ::c_int,
+        #[deprecated(since="0.2.54", note="Please leave a comment on https://github.com/rust-lang/libc/pull/1316 if you're using this field")]
         pub _pad: [::c_int; 29],
         #[cfg(target_arch = "x86_64")]
         _align: [u64; 0],
