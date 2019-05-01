@@ -61,19 +61,6 @@ s! {
         _align: [usize; 0],
     }
 
-    impl siginfo_t {
-        pub unsafe fn si_addr(&self) -> *mut ::c_void {
-            #[repr(C)]
-            struct siginfo_sigfault {
-                _si_signo: ::c_int,
-                _si_errno: ::c_int,
-                _si_code: ::c_int,
-                si_addr: *mut ::c_void
-            }
-            (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
-        }
-    }
-
     pub struct glob64_t {
         pub gl_pathc: ::size_t,
         pub gl_pathv: *mut *mut ::c_char,
@@ -210,6 +197,19 @@ s! {
         pub rt_mtu: ::c_ulong,
         pub rt_window: ::c_ulong,
         pub rt_irtt: ::c_ushort,
+    }
+}
+
+impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut ::c_void {
+        #[repr(C)]
+        struct siginfo_sigfault {
+            _si_signo: ::c_int,
+            _si_errno: ::c_int,
+            _si_code: ::c_int,
+            si_addr: *mut ::c_void
+        }
+        (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
     }
 }
 
