@@ -278,7 +278,7 @@ s! {
     }
 
     pub struct fsid_t {
-        val: [::c_int; 2],
+        pub val: [::c_int; 2],
     }
 
     pub struct mq_attr {
