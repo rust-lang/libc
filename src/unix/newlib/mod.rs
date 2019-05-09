@@ -520,6 +520,11 @@ pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
 pub const TCP_NODELAY: ::c_int = 8193;
 pub const TCP_MAXSEG: ::c_int = 8194;
+pub const TCP_NOPUSH: ::c_int = 4;
+pub const TCP_NOOPT: ::c_int = 8;
+pub const TCP_KEEPIDLE: ::c_int = 256;
+pub const TCP_KEEPINTVL: ::c_int = 512;
+pub const TCP_KEEPCNT: ::c_int = 1024;
 
 pub const IP_TOS: ::c_int = 3;
 pub const IP_TTL: ::c_int = 8;
