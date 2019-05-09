@@ -520,12 +520,19 @@ pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 pub const TCP_NODELAY: ::c_int = 8193;
 pub const TCP_MAXSEG: ::c_int = 8194;
 
-pub const IP_TOS: ::c_int = 7;
+pub const IP_TOS: ::c_int = 3;
 pub const IP_TTL: ::c_int = 8;
-pub const IP_MULTICAST_LOOP: ::c_int = 9;
+pub const IP_MULTICAST_IF: ::c_int = 9;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
+pub const IP_MULTICAST_LOOP: ::c_int = 11;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
+
+pub const IPV6_UNICAST_HOPS: ::c_int = 4;
+pub const IPV6_MULTICAST_IF: ::c_int = 9;
+pub const IPV6_MULTICAST_HOPS: ::c_int = 10;
+pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
+pub const IPV6_V6ONLY: ::c_int = 27;
 
 pub const HOST_NOT_FOUND: ::c_int = 1;
 pub const NO_DATA: ::c_int = 2;
