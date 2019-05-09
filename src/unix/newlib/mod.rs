@@ -534,6 +534,10 @@ pub const IPV6_MULTICAST_IF: ::c_int = 9;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 10;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
+pub const IPV6_JOIN_GROUP ::c_int = 12;
+pub const IPV6_LEAVE_GROUP ::c_int = 13;
+pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
+pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
 
 pub const HOST_NOT_FOUND: ::c_int = 1;
 pub const NO_DATA: ::c_int = 2;
