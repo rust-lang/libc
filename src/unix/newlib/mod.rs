@@ -407,6 +407,7 @@ pub const SEEK_CUR: ::c_int = 1;
 pub const SEEK_END: ::c_int = 2;
 
 pub const FIONBIO: ::c_int = 1;
+pub const FIOCLEX: ::c_ulong = 0x20006601;
 
 pub const S_BLKSIZE: ::mode_t = 1024;
 pub const S_IREAD: ::mode_t = 256;
