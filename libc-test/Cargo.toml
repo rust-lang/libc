@@ -1,0 +1,34 @@
+[package]
+name = "libc-test"
+version = "0.1.0"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+build = "build.rs"
+
+[dependencies.libc]
+path = ".."
+default-features = false
+
+[build-dependencies]
+cc = "1.0"
+ctest = "0.2"
+
+[features]
+default = [ "use_std" ]
+use_std = [ "libc/use_std" ]
+align = [ "libc/align" ]
+extra_traits = [ "libc/extra_traits" ]
+
+[[test]]
+name = "main"
+path = "test/main.rs"
+harness = false
+
+[[test]]
+name = "linux-fcntl"
+path = "test/linux_fcntl.rs"
+harness = false
+
+[[test]]
+name = "cmsg"
+path = "test/cmsg.rs"
+harness = true

@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -e
+
+arch=$1
+prog=$2
+
+# Skip cmsg test on linux-s390x
+# https://github.com/rust-lang/libc/issues/1240
+if [ "$arch" = "s390x" ]; then
+	progbasename=`basename $prog`
+	if [ "${progbasename%%-*}" = "cmsg" ]; then
+		exit 0
+	fi
+fi
+
+cd /qemu/init
+echo "#!/bin/sh\n/prog --color=never" > run_prog.sh
+chmod +x run_prog.sh
+cp -f $2 prog
+find . | cpio --create --format='newc' --quiet | gzip > ../initrd.gz
+cd ..
+
+timeout 30s qemu-system-$arch \
+  -m 1024 \
+  -nographic \
+  -kernel kernel \
+  -initrd initrd.gz \
+  -append init=/run_prog.sh > output || true
+
+# remove kernel messages
+tr -d '\r' < output | egrep -v '^\['
+
+egrep "(PASSED)|(test result: ok)" output > /dev/null
