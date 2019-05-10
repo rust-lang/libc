@@ -207,6 +207,27 @@ matrix:
     - env: TARGET=wasm32-unknown-wasi
       rust: nightly
       stage: tier2
+    - name: "Nintendo Switch - build libcore only"
+      rust: nightly
+      stage: tier2
+      install:
+        - rustup component add rust-src
+        - (test -x $HOME/.cargo/bin/cargo-xbuild || cargo install cargo-xbuild)
+      script:
+        - mkdir -p target
+        - cd target
+        - wget https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.1/devkitpro-pacman.deb
+        - sudo dpkg -i devkitpro-pacman.deb
+        - sudo dkp-pacman -Sy
+        - sudo dkp-pacman -Syu
+        - sudo dkp-pacman -S -v --noconfirm switch-dev devkitA64
+        - export PATH="$PATH:/opt/devkitpro/devkitA64/bin"
+        - export PATH="$PATH:/opt/devkitpro/tools/bin"
+        - cd ..
+        # Pull the target spec up into the current directory and then build
+        - mv ci/switch.json switch.json
+        - cargo xbuild --target switch.json
+
 
   allow_failures:
       # FIXME: android build bots time out irregularly
