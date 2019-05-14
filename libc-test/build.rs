@@ -1635,6 +1635,7 @@ fn test_freebsd(target: &str) {
                 "sys/socket.h",
                 "sys/stat.h",
                 "sys/statvfs.h",
+                "sys/sysctl.h",
                 "sys/time.h",
                 "sys/times.h",
                 "sys/types.h",
