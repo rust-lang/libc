@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
