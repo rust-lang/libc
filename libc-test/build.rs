@@ -2260,6 +2260,17 @@ fn test_linux(target: &str) {
     // FIXME: still necessary?
     cfg.flag("-Wno-deprecated-declarations");
 
+    // note: aio.h must be included before sys/mount.h
+    if !uclibc {
+        assert!(gnu || musl);
+        // optionally included in uclibc
+        headers! { cfg:
+                   "sys/xattr.h",
+                   "sys/sysinfo.h",
+                   "aio.h",
+        }
+    }
+
     headers! { cfg:
                "ctype.h",
                "dirent.h",
@@ -2392,16 +2403,6 @@ fn test_linux(target: &str) {
         if !mips {
             assert!((gnu || uclibc) && !mips);
             headers! { cfg: "linux/quota.h" };
-        }
-    }
-
-    if !uclibc {
-        assert!(gnu || musl);
-        // optionally included in uclibc
-        headers! { cfg:
-                   "sys/xattr.h",
-                   "sys/sysinfo.h",
-                   "aio.h",
         }
     }
 
