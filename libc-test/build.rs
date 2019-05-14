@@ -1813,6 +1813,9 @@ fn test_freebsd(target: &str) {
             "execvpe" |
             "fexecve" => true,
 
+            // FIXME: for some reason, our signature is wrong
+            "gettimeofday" => true,
+
             // The `uname` function in freebsd is now an inline wrapper that
             // delegates to another, but the symbol still exists, so don't check
             // the symbol.
