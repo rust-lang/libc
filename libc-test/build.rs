@@ -2280,7 +2280,6 @@ fn test_linux(target: &str) {
                "linux/input.h",
                "linux/module.h",
                "linux/net_tstamp.h",
-               "linux/netfilter_ipv4.h",
                "linux/netfilter_ipv6.h",
                "linux/netlink.h",
                "linux/random.h",
