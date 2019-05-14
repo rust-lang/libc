@@ -1648,6 +1648,7 @@ fn test_freebsd(target: &str) {
                 "ufs/ufs/quota.h",
                 "unistd.h",
                 "utime.h",
+                "utmpx.h",
                 "wchar.h",
     }
 
