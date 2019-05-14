@@ -2671,7 +2671,8 @@ fn test_linux(target: &str) {
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
-            "prlimit" | "prlimit64" |        // non-int in 2nd arg
+            "prlimit" | "prlimit64"          // non-int in 2nd arg
+                => true,
 
             // int vs uint. Sorry musl, your prototype declarations are "correct" in the sense that
             // they match the interface defined by Linux verbatim, but they conflict with other
