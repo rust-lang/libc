@@ -837,6 +837,14 @@ extern {
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
+    #[deprecated(
+        since="0.2.54",
+        note=
+            "The signature of this function is incorrect. \
+             If you are using it, please report that in the following issue \
+             so that we can evaluate the impact of fixing it: \
+             https://github.com/rust-lang/libc/issues/1338"
+    )]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
