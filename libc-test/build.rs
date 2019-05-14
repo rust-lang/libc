@@ -1600,6 +1600,7 @@ fn test_freebsd(target: &str) {
                 "net/if_dl.h",
                 "net/route.h",
                 "netdb.h",
+                "netinet/ip.h",
                 "netinet/in.h",
                 "netinet/tcp.h",
                 "netinet/udp.h",
