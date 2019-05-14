@@ -2274,19 +2274,6 @@ fn test_linux(target: &str) {
                "langinfo.h",
                "limits.h",
                "link.h",
-               "linux/falloc.h",
-               "linux/fs.h",
-               "linux/genetlink.h",
-               "linux/if_alg.h",
-               "linux/if_ether.h",
-               "linux/if_tun.h",
-               "linux/input.h",
-               "linux/module.h",
-               "linux/net_tstamp.h",
-               "linux/netlink.h",
-               "linux/random.h",
-               "linux/seccomp.h",
-               "linux/sockios.h",
                "locale.h",
                "malloc.h",
                "mntent.h",
@@ -2360,6 +2347,24 @@ fn test_linux(target: &str) {
                "utmp.h",
                "wchar.h",
                "errno.h",
+    }
+
+    // Include linux headers at the end:
+    headers! {
+        cfg:
+        "linux/falloc.h",
+        "linux/fs.h",
+        "linux/genetlink.h",
+        "linux/if_alg.h",
+        "linux/if_ether.h",
+        "linux/if_tun.h",
+        "linux/input.h",
+        "linux/module.h",
+        "linux/net_tstamp.h",
+        "linux/netlink.h",
+        "linux/random.h",
+        "linux/seccomp.h",
+        "linux/sockios.h",
     }
 
     if x86_64 {
