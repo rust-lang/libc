@@ -23,8 +23,7 @@ fn do_ctest() {
     let uclibc = target.contains("uclibc");
     let freebsd = target.contains("freebsd");
     let mips = target.contains("mips");
-    let openbsd = target.contains("openbsd");
-    let bsdlike = freebsd || openbsd;
+    let bsdlike = freebsd;
     let mut cfg = ctest::TestGenerator::new();
 
     match &target {
@@ -113,7 +112,7 @@ fn do_ctest() {
     cfg.header("ifaddrs.h");
     cfg.header("langinfo.h");
 
-    if !openbsd && !freebsd {
+    if !freebsd {
         cfg.header("sys/quota.h");
     }
 
@@ -122,15 +121,11 @@ fn do_ctest() {
     }
 
     if !musl && !uclibc {
-        if !openbsd && !uclibc {
+        if !uclibc {
             cfg.header("execinfo.h");
         }
 
-        if openbsd {
-            cfg.header("utmp.h");
-        } else {
-            cfg.header("utmpx.h");
-        }
+        cfg.header("utmpx.h");
     }
 
     if bsdlike {
@@ -252,12 +247,6 @@ fn do_ctest() {
         cfg.header("spawn.h");
     }
 
-    if openbsd {
-        cfg.header("ufs/ufs/quota.h");
-        cfg.header("pthread_np.h");
-        cfg.header("sys/syscall.h");
-    }
-
     if linux || freebsd || emscripten {
         if !uclibc {
             cfg.header("aio.h");
@@ -288,12 +277,6 @@ fn do_ctest() {
 
     cfg.field_name(move |struct_, field| {
         match field {
-            "st_birthtime" if openbsd && struct_ == "stat" => {
-                "__st_birthtime".to_string()
-            }
-            "st_birthtime_nsec" if openbsd && struct_ == "stat" => {
-                "__st_birthtimensec".to_string()
-            }
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
@@ -351,7 +334,7 @@ fn do_ctest() {
             "LARGE_INTEGER" | "float" | "double" => true,
             n if n.starts_with("pthread") => true,
             // sem_t is a struct or pointer
-            "sem_t" if openbsd || freebsd => true,
+            "sem_t" if freebsd => true,
             // mqd_t is a pointer on FreeBSD
             "mqd_t" if freebsd => true,
 
@@ -408,10 +391,6 @@ fn do_ctest() {
 
             // These constants were added in FreeBSD 12
             "SF_USER_READAHEAD" | "SO_REUSEPORT_LB" if freebsd => true,
-
-            // These constants were removed in OpenBSD 6 (https://git.io/v7gBO
-            // https://git.io/v7gBq)
-            "KERN_USERMOUNT" | "KERN_ARND" if openbsd => true,
 
             // These are either unimplemented or optionally built into uClibc
             "LC_CTYPE_MASK"
@@ -554,7 +533,7 @@ fn do_ctest() {
             "sendmmsg" | "recvmmsg" if musl => true,
 
             // typed 2nd arg on linux
-            "gettimeofday" if linux || freebsd || openbsd => true,
+            "gettimeofday" if linux || freebsd => true,
 
             "dladdr" if musl => true, // const-ness only added recently
 
@@ -605,9 +584,6 @@ fn do_ctest() {
             // We can wait for the next major release to be compliant with the new API.
             // FIXME: unskip these for next major release
             "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
-            // Removed in OpenBSD 6.5
-            // https://marc.info/?l=openbsd-cvs&m=154723400730318
-            "mincore" if openbsd => true,
 
             _ => false,
         }
@@ -626,8 +602,6 @@ fn do_ctest() {
         (struct_ == "aiocb" && field == "aio_buf") ||
         // stack_t.ss_sp's type changed from FreeBSD 10 to 11 in svn r294930
         (freebsd && struct_ == "stack_t" && field == "ss_sp") ||
-        // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
-        (openbsd && struct_ == "siginfo_t" && field == "si_addr") ||
         // this one is an anonymous union
         (linux && struct_ == "ff_effect" && field == "u")
     });
