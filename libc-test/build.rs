@@ -2257,6 +2257,10 @@ fn test_linux(target: &str) {
     let mut cfg = ctest::TestGenerator::new();
     // FIXME: still necessary?
     cfg.define("_GNU_SOURCE", None);
+    // This macro re-deifnes fscanf,scanf,sscanf to link to the symbols that are
+    // deprecated since glibc >= 2.29. This allows Rust binaries to link against
+    // glibc versions older than 2.29.
+    cfg.define("DEPRECATED_SCANF", None);
 
     // FIXME: still necessary?
     cfg.flag("-Wno-deprecated-declarations");
