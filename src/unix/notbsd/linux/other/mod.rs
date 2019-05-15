@@ -229,7 +229,6 @@ s_no_extra_traits! {
                       not(target_arch = "x86_64"))))]
         pub ut_session: ::c_long,
         #[cfg(any(target_arch = "aarch64",
-                  target_arch = "sparc64",
                   all(target_pointer_width = "32",
                       not(target_arch = "x86_64"))))]
         pub ut_tv: ::timeval,
@@ -239,7 +238,6 @@ s_no_extra_traits! {
                           not(target_arch = "x86_64")))))]
         pub ut_session: ::int32_t,
         #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "sparc64",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_tv: __timeval,
