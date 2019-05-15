@@ -748,11 +748,9 @@ cfg_if! {
         pub const NFT_MSG_GETOBJ: ::c_int = 19;
         pub const NFT_MSG_DELOBJ: ::c_int = 20;
         pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
-        pub const NFT_MSG_MAX: ::c_int = 25;
-    } else {
-        pub const NFT_MSG_MAX: ::c_int = 18;
     }
 }
+pub const NFT_MSG_MAX: ::c_int = 25;
 
 pub const NFT_SET_ANONYMOUS: ::c_int = 0x1;
 pub const NFT_SET_CONSTANT: ::c_int = 0x2;
