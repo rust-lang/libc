@@ -686,18 +686,10 @@ pub const NFPROTO_INET: ::c_int = 1;
 pub const NFPROTO_NETDEV: ::c_int = 5;
 
 // linux/netfilter/nf_tables.h
-cfg_if!{
-    if #[cfg(target_arch = "sparc64")] {
-        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
-    } else {
-        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
-        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
-        pub const NFT_SET_MAXNAMELEN: ::c_int = 256;
-        pub const NFT_OBJ_MAXNAMELEN: ::c_int = 256;
-    }
-}
+pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
+pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
+pub const NFT_SET_MAXNAMELEN: ::c_int = 256;
+pub const NFT_OBJ_MAXNAMELEN: ::c_int = 256;
 pub const NFT_USERDATA_MAXLEN: ::c_int = 256;
 
 pub const NFT_REG_VERDICT: ::c_int = 0;
