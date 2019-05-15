@@ -2410,7 +2410,7 @@ fn test_linux(target: &str) {
     }
 
     if !musl || mips {
-        assert!(gnu || uclibc || (mips && !musl));
+        assert!(gnu || uclibc || (mips && musl));
         headers! { cfg:  "linux/memfd.h" };
     }
 
