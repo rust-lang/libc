@@ -1906,7 +1906,6 @@ fn test_emscripten(target: &str) {
                "dirent.h",
                "dlfcn.h",
                "errno.h",
-               "execinfo.h",
                "fcntl.h",
                "glob.h",
                "grp.h",
