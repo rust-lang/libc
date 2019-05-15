@@ -2473,6 +2473,10 @@ fn test_linux(target: &str) {
             // FIXME: is this necessary?
             "sighandler_t" => true,
 
+            // These cannot be tested when "resolv.h" is included and are tested
+            // below.
+            "Elf64_Phdr" | "Elf32_Phdr" => true,
+
             _ => false,
         }
     });
@@ -2481,6 +2485,10 @@ fn test_linux(target: &str) {
         match ty {
             // FIXME: is this necessary?
             "sockaddr_nl" if musl => true,
+
+            // These cannot be tested when "resolv.h" is included and are tested
+            // below.
+            "Elf64_Phdr" | "Elf32_Phdr" => true,
 
             // On Linux, the type of `ut_tv` field of `struct utmpx`
             // can be an anonymous struct, so an extra struct,
@@ -2810,4 +2818,30 @@ fn test_linux(target: &str) {
         t => t.to_string(),
     });
     cfg.generate("../src/lib.rs", "linux_fcntl.rs");
+
+    // Test Elf64_Phdr and Elf32_Phdr
+    // These types have a field called `p_type`, but including
+    // "resolve.h" defines a `p_type` macro that expands to `__p_type`
+    // making the tests for these fails when both are included.
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.skip_fn(|_| true)
+        .skip_const(|_| true)
+        .skip_static(|_| true)
+        .type_name(move |ty, _is_struct, _is_union| {
+            ty.to_string()
+        });
+    cfg.skip_struct(move |ty| {
+        match ty {
+            "Elf64_Phdr" | "Elf32_Phdr" => false,
+            _ => true,
+        }
+    });
+    cfg.skip_type(move |ty| {
+        match ty {
+            "Elf64_Phdr" | "Elf32_Phdr" => false,
+            _ => true,
+        }
+    });
+    cfg.header("elf.h");
+    cfg.generate("../src/lib.rs", "linux_elf.rs");
 }
