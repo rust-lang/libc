@@ -786,7 +786,6 @@ pub const SYS_rt_tgsigqueueinfo: ::c_long = 240;
 pub const SYS_perf_event_open: ::c_long = 241;
 pub const SYS_accept4: ::c_long = 242;
 pub const SYS_recvmmsg: ::c_long = 243;
-pub const SYS_arch_specific_syscall: ::c_long = 244;
 pub const SYS_wait4: ::c_long = 260;
 pub const SYS_prlimit64: ::c_long = 261;
 pub const SYS_fanotify_init: ::c_long = 262;
@@ -818,7 +817,6 @@ pub const SYS_pwritev2: ::c_long = 287;
 pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
-pub const SYS_syscalls: ::c_long = 291;
 
 #[link(name = "util")]
 extern {
