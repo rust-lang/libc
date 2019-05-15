@@ -512,8 +512,11 @@ extern {
     pub fn snprintf(s: *mut ::c_char, n: ::size_t,
                     format: *const ::c_char, ...) -> ::c_int;
     pub fn sprintf(s: *mut ::c_char, format: *const ::c_char, ...) -> ::c_int;
+    #[cfg_attr(target_os = "linux", link_name = "__isoc99_fscanf")]
     pub fn fscanf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
+    #[cfg_attr(target_os = "linux", link_name = "__isoc99_scanf")]
     pub fn scanf(format: *const ::c_char, ...) -> ::c_int;
+    #[cfg_attr(target_os = "linux", link_name = "__isoc99_sscanf")]
     pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...) -> ::c_int;
     pub fn getchar_unlocked() -> ::c_int;
     pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
