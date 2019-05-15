@@ -1256,6 +1256,9 @@ pub const LIO_NOP: ::c_int = 2;
 pub const LIO_WAIT: ::c_int = 0;
 pub const LIO_NOWAIT: ::c_int = 1;
 
+pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
+pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
+
 pub const MREMAP_MAYMOVE: ::c_int = 1;
 pub const MREMAP_FIXED: ::c_int = 2;
 
