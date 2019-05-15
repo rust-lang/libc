@@ -45,6 +45,9 @@ case "$1" in
     ;;
 esac;
 
+# See: https://stackoverflow.com/a/51644855/1422197
+export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+
 # --no_https avoids
      # javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: No trusted certificate found
 yes | ./sdk/tools/bin/sdkmanager --licenses --no_https
