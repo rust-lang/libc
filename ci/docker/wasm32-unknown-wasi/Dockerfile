@@ -1,7 +1,7 @@
 # In the first container we want to assemble the `wasi-sysroot` by compiling it
 # from source. This requires a clang 8.0+ compiler with enough wasm support and
 # then we're just running a standard `make` inside of what we clone.
-FROM ubuntu:18.04 as wasi-sysroot
+FROM ubuntu:19.04 as wasi-sysroot
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -40,7 +40,7 @@ COPY docker/wasm32-unknown-wasi/clang.sh /wasi-sysroot/bin/clang
 # used to execute wasi executables. This is a standard Rust project so we're
 # just checking out a known revision (which pairs with the sysroot one we
 # downlaoded above) and then we're building it with Cargo
-FROM ubuntu:18.04 as wasmtime
+FROM ubuntu:19.04 as wasmtime
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -66,7 +66,7 @@ RUN cargo build --release --manifest-path wasmtime/Cargo.toml
 # And finally in the last image we're going to assemble everything together.
 # We'll install things needed at runtime for now and then copy over the
 # sysroot/wasmtime artifacts into their final location.
-FROM ubuntu:18.04
+FROM ubuntu:19.04
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \

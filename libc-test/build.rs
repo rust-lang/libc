@@ -2260,7 +2260,7 @@ fn test_linux(target: &str) {
     // This macro re-deifnes fscanf,scanf,sscanf to link to the symbols that are
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
     // glibc versions older than 2.29.
-    cfg.define("DEPRECATED_SCANF", None);
+    cfg.define("__GLIBC_USE_DEPRECATED_SCANF", None);
 
     // FIXME: still necessary?
     cfg.flag("-Wno-deprecated-declarations");

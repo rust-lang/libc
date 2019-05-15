@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:19.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc make libc6-dev git curl ca-certificates \
