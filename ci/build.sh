@@ -115,6 +115,7 @@ aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
+wasm32-wasi \
 x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
 x86_64-pc-windows-gnu \
