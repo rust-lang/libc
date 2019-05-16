@@ -1025,7 +1025,7 @@ extern {
         path: *const c_char,
     ) -> c_int;
     pub fn __wasilibc_fd_renumber(fd: c_int, newfd: c_int) -> c_int;
-    pub fn __wasilibc_rmfileat(fd: c_int, path: *const c_char) -> c_int;
+    pub fn __wasilibc_unlinkat(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_rmdirat(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_init_preopen();
     pub fn __wasilibc_find_relpath(
