@@ -223,7 +223,11 @@ pub const DT_REG: u8 = 8;
 pub const DT_LNK: u8 = 10;
 pub const DT_SOCK: u8 = 12;
 
-pub const FD_CLOEXEC: ::c_int = 0x1;
+cfg_if! {
+    if #[cfg(not(target_os = "redox"))] {
+        pub const FD_CLOEXEC: ::c_int = 0x1;
+    }
+}
 
 pub const USRQUOTA: ::c_int = 0;
 pub const GRPQUOTA: ::c_int = 1;
@@ -347,6 +351,13 @@ cfg_if! {
     } else if #[cfg(target_env = "illumos")] {
         #[link(name = "c")]
         #[link(name = "m")]
+        extern {}
+    } else if #[cfg(target_os = "redox")] {
+        #[cfg_attr(feature = "rustc-dep-of-std",
+                   link(name = "c", kind = "static-nobundle",
+                        cfg(target_feature = "crt-static")))]
+        #[cfg_attr(feature = "rustc-dep-of-std",
+                   link(name = "c", cfg(not(target_feature = "crt-static"))))]
         extern {}
     } else {
         #[link(name = "c")]
@@ -1170,6 +1181,9 @@ cfg_if! {
     } else if #[cfg(target_os = "hermit")] {
         mod hermit;
         pub use self::hermit::*;
+    } else if #[cfg(target_os = "redox")] {
+        mod redox;
+        pub use self::redox::*;
     } else {
         // Unknown target_os
     }

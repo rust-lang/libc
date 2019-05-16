@@ -26,6 +26,7 @@
 #![deny(missing_copy_implementations, safe_packed_borrows)]
 #![no_std]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
+#![cfg_attr(target_os = "redox", feature(static_nobundle))]
 
 #[macro_use]
 mod macros;
@@ -91,9 +92,6 @@ cfg_if! {
     if #[cfg(windows)] {
         mod windows;
         pub use windows::*;
-    } else if #[cfg(target_os = "redox")] {
-        mod redox;
-        pub use redox::*;
     } else if #[cfg(target_os = "cloudabi")] {
         mod cloudabi;
         pub use cloudabi::*;
