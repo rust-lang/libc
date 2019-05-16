@@ -508,7 +508,6 @@ extern {
     pub fn getpwent() -> *mut passwd;
     pub fn setpwent();
     pub fn endpwent();
-    pub fn setgrent();
     pub fn endgrent();
     pub fn getgrent() -> *mut ::group;
 
@@ -524,14 +523,20 @@ extern {
 
     #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
-    #[cfg_attr(target_os = "freebsd", link_name = "glob@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "glob@FBSD_1.0"
+    )]
     pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
                 errfunc: ::Option<extern fn(epath: *const ::c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__globfree30")]
-    #[cfg_attr(target_os = "freebsd", link_name = "globfree@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "globfree@FBSD_1.0"
+    )]
     pub fn globfree(pglob: *mut ::glob_t);
 
     pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)

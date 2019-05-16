@@ -1,3 +1,4 @@
+pub type dev_t = u32;
 pub type c_char = i8;
 pub type clock_t = u64;
 pub type ino_t = u64;
@@ -27,6 +28,15 @@ impl ::Clone for sem {
 }
 
 s! {
+    pub struct kevent {
+        pub ident: ::uintptr_t,
+        pub filter: ::c_short,
+        pub flags: ::c_ushort,
+        pub fflags: ::c_uint,
+        pub data: ::intptr_t,
+        pub udata: *mut ::c_void,
+    }
+
     pub struct exit_status {
         pub e_termination: u16,
         pub e_exit: u16
@@ -1008,6 +1018,7 @@ f! {
 }
 
 extern {
+    pub fn setgrent();
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
