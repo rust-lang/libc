@@ -547,6 +547,9 @@ cfg_if! {
     }
 }
 
+pub const MS_NOUSER: ::c_ulong = 0xffffffff80000000;
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
+
 pub const O_TRUNC: ::c_int = 512;
 pub const O_CLOEXEC: ::c_int = 0x80000;
 pub const O_PATH: ::c_int = 0o10000000;
@@ -582,11 +585,11 @@ pub const EFD_CLOEXEC: ::c_int = 0x80000;
 pub const USER_PROCESS: ::c_short = 7;
 
 pub const BUFSIZ: ::c_uint = 1024;
-pub const FILENAME_MAX: ::c_uint = 1024;
+pub const FILENAME_MAX: ::c_uint = 4096;
 pub const FOPEN_MAX: ::c_uint = 20;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
-pub const L_tmpnam: ::c_uint = 1024;
+pub const L_tmpnam: ::c_uint = 4096;
 pub const TMP_MAX: ::c_uint = 308915776;
 pub const _PC_LINK_MAX: ::c_int = 1;
 pub const _PC_MAX_CANON: ::c_int = 2;
@@ -1459,10 +1462,10 @@ pub const NF_IP6_PRI_CONNTRACK_HELPER: ::c_int = 300;
 pub const NF_IP6_PRI_LAST: ::c_int = ::INT_MAX;
 
 // linux/netfilter/nf_tables.h
-pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
-pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
-pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
-pub const NFT_OBJ_MAXNAMELEN: ::c_int = 32;
+pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
+pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
+pub const NFT_SET_MAXNAMELEN: ::c_int = 256;
+pub const NFT_OBJ_MAXNAMELEN: ::c_int = 256;
 pub const NFT_USERDATA_MAXLEN: ::c_int = 256;
 
 pub const NFT_REG_VERDICT: ::c_int = 0;
@@ -1519,7 +1522,7 @@ pub const NFT_MSG_NEWOBJ: ::c_int = 18;
 pub const NFT_MSG_GETOBJ: ::c_int = 19;
 pub const NFT_MSG_DELOBJ: ::c_int = 20;
 pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
-pub const NFT_MSG_MAX: ::c_int = 22;
+pub const NFT_MSG_MAX: ::c_int = 25;
 
 pub const NFT_SET_ANONYMOUS: ::c_int = 0x1;
 pub const NFT_SET_CONSTANT: ::c_int = 0x2;

@@ -573,6 +573,9 @@ cfg_if! {
     }
 }
 
+pub const MS_NOUSER: ::c_ulong = 0x80000000;
+pub const MS_RMT_MASK: ::c_ulong = 0x800051;
+
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;
 pub const ABDAY_3: ::nl_item = 0x20002;
