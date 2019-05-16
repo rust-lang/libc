@@ -1245,6 +1245,7 @@ fn test_android(target: &str) {
                "ifaddrs.h",
                "limits.h",
                "linux/dccp.h",
+               "linux/futex.h",
                "linux/fs.h",
                "linux/genetlink.h",
                "linux/if_alg.h",
@@ -2353,6 +2354,7 @@ fn test_linux(target: &str) {
     headers! {
         cfg:
         "linux/falloc.h",
+        "linux/futex.h",
         "linux/fs.h",
         "linux/genetlink.h",
         "linux/if_alg.h",
