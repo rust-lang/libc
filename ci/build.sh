@@ -199,7 +199,6 @@ thumbv7neon-linux-androideabi \
 thumbv7neon-unknown-linux-gnueabihf \
 thumbv8m.main-none-eabi \
 x86_64-pc-windows-msvc
-x86_64-unknown-bitrig \
 x86_64-unknown-dragonfly \
 x86_64-unknown-haiku \
 x86_64-unknown-hermit \

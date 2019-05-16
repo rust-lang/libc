@@ -327,8 +327,7 @@ cfg_if! {
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
                         target_os = "android",
-                        target_os = "openbsd",
-                        target_os = "bitrig"))] {
+                        target_os = "openbsd"))] {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
@@ -1158,8 +1157,7 @@ cfg_if! {
                         target_os = "freebsd",
                         target_os = "dragonfly",
                         target_os = "openbsd",
-                        target_os = "netbsd",
-                        target_os = "bitrig"))] {
+                        target_os = "netbsd"))] {
         mod bsd;
         pub use self::bsd::*;
     } else if #[cfg(any(target_os = "solaris",
