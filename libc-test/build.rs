@@ -1572,11 +1572,8 @@ fn test_freebsd(target: &str) {
     let x86 = target.contains("i686") || target.contains("x86_64");
 
     let mut cfg = ctest::TestGenerator::new();
-    // FIXME: still necessary?
+    // Required for `getline`:
     cfg.define("_WITH_GETLINE", None);
-
-    // FIXME: still necessary?
-    cfg.flag("-Wno-deprecated-declarations");
 
     headers! { cfg:
                 "aio.h",
