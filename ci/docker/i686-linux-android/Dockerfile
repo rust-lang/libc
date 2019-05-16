@@ -9,7 +9,7 @@ RUN dpkg --add-architecture i386 && \
   python \
   unzip \
   expect \
-  openjdk-11-jre \
+  openjdk-8-jre \
   libstdc++6:i386 \
   libpulse0 \
   gcc \
