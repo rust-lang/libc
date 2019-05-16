@@ -1951,7 +1951,8 @@ extern {
     pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
     pub fn __sched_cpualloc(count: ::size_t) -> *mut ::cpu_set_t;
     pub fn __sched_cpufree(set: *mut ::cpu_set_t);
-    pub fn __sched_cpucount(setsize: ::size_t, set: *mut cpu_set_t) -> ::c_int;
+    pub fn __sched_cpucount(setsize: ::size_t,
+                            set: *const cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
 
     pub fn utmpname(name: *const ::c_char) -> ::c_int;
