@@ -1158,6 +1158,7 @@ fn test_wasi(target: &str) {
         "locale.h",
         "malloc.h",
         "poll.h",
+        "sched.h",
         "stdbool.h",
         "stddef.h",
         "stdint.h",

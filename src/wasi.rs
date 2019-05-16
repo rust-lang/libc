@@ -10,8 +10,13 @@ pub type c_long = i32;
 pub type c_ulong = u32;
 pub type c_longlong = i64;
 pub type c_ulonglong = u64;
+pub type intmax_t = i64;
+pub type uintmax_t = u64;
 pub type size_t = usize;
 pub type ssize_t = isize;
+pub type ptrdiff_t = isize;
+pub type intptr_t = isize;
+pub type uintptr_t = usize;
 pub type off_t = i64;
 pub type pid_t = i32;
 pub type int8_t = i8;
@@ -619,11 +624,13 @@ extern {
     pub fn getenv(s: *const c_char) -> *mut c_char;
     pub fn malloc(amt: size_t) -> *mut c_void;
     pub fn malloc_usable_size(ptr: *mut c_void) -> size_t;
+    pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
     pub fn rand() -> c_int;
     pub fn read(fd: c_int, ptr: *mut c_void, size: size_t) -> ssize_t;
     pub fn realloc(ptr: *mut c_void, amt: size_t) -> *mut c_void;
     pub fn setenv(k: *const c_char, v: *const c_char, a: c_int) -> c_int;
     pub fn unsetenv(k: *const c_char) -> c_int;
+    pub fn clearenv() -> ::c_int;
     pub fn write(fd: c_int, ptr: *const c_void, size: size_t) -> ssize_t;
     pub static mut environ: *mut *mut c_char;
     pub fn fopen(a: *const c_char, b: *const c_char) -> *mut FILE;
@@ -724,6 +731,7 @@ extern {
     pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE)
         -> *mut c_char;
     pub fn atoi(s: *const c_char) -> c_int;
+    pub fn atof(s: *const c_char) -> c_double;
     pub fn strtod(s: *const c_char, endp: *mut *mut c_char) -> c_double;
     pub fn strtol(
         s: *const c_char,
@@ -822,6 +830,7 @@ extern {
     pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
     pub fn closedir(dirp: *mut ::DIR) -> ::c_int;
     pub fn rewinddir(dirp: *mut ::DIR);
+    pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
 
     pub fn openat(
         dirfd: ::c_int,
@@ -902,9 +911,11 @@ extern {
     pub fn lstat(path: *const c_char, buf: *mut stat) -> ::c_int;
 
     pub fn fsync(fd: ::c_int) -> ::c_int;
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
 
     pub fn symlink(path1: *const c_char, path2: *const c_char) -> ::c_int;
 
+    pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
     pub fn ftruncate(fd: ::c_int, length: off_t) -> ::c_int;
 
     pub fn getrusage(resource: ::c_int, usage: *mut rusage) -> ::c_int;
@@ -954,6 +965,11 @@ extern {
         whence: ::c_int,
     ) -> ::c_int;
     pub fn ftello(stream: *mut ::FILE) -> ::off_t;
+    pub fn posix_fallocate(
+        fd: ::c_int,
+        offset: ::off_t,
+        len: ::off_t,
+    ) -> ::c_int;
 
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn getline(
@@ -1019,6 +1035,7 @@ extern {
         base: ::locale_t,
     ) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
+    pub fn sched_yield() -> ::c_int;
 
     pub fn __wasilibc_register_preopened_fd(
         fd: c_int,
@@ -1034,6 +1051,7 @@ extern {
         rights_inheriting: __wasi_rights_t,
         relative_path: *mut *const c_char,
     ) -> c_int;
+    pub fn __wasilibc_tell(fd: c_int) -> ::off_t;
 
     pub fn arc4random() -> u32;
     pub fn arc4random_buf(a: *mut c_void, b: size_t);
