@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:19.04
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc libc6-dev ca-certificates \
   gcc-aarch64-linux-gnu libc6-dev-arm64-cross qemu-user

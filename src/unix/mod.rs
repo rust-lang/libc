@@ -327,8 +327,7 @@ cfg_if! {
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
                         target_os = "android",
-                        target_os = "openbsd",
-                        target_os = "bitrig"))] {
+                        target_os = "openbsd"))] {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
@@ -512,8 +511,11 @@ extern {
     pub fn snprintf(s: *mut ::c_char, n: ::size_t,
                     format: *const ::c_char, ...) -> ::c_int;
     pub fn sprintf(s: *mut ::c_char, format: *const ::c_char, ...) -> ::c_int;
+    #[cfg_attr(target_os = "linux", link_name = "__isoc99_fscanf")]
     pub fn fscanf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
+    #[cfg_attr(target_os = "linux", link_name = "__isoc99_scanf")]
     pub fn scanf(format: *const ::c_char, ...) -> ::c_int;
+    #[cfg_attr(target_os = "linux", link_name = "__isoc99_sscanf")]
     pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...) -> ::c_int;
     pub fn getchar_unlocked() -> ::c_int;
     pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
@@ -837,6 +839,14 @@ extern {
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
+    #[deprecated(
+        since="0.2.54",
+        note=
+            "The signature of this function is incorrect. \
+             If you are using it, please report that in the following issue \
+             so that we can evaluate the impact of fixing it: \
+             https://github.com/rust-lang/libc/issues/1338"
+    )]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
@@ -1147,8 +1157,7 @@ cfg_if! {
                         target_os = "freebsd",
                         target_os = "dragonfly",
                         target_os = "openbsd",
-                        target_os = "netbsd",
-                        target_os = "bitrig"))] {
+                        target_os = "netbsd"))] {
         mod bsd;
         pub use self::bsd::*;
     } else if #[cfg(any(target_os = "solaris",

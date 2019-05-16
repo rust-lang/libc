@@ -28,13 +28,13 @@ RUN mv /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04 /wasmcc
 # those breaking changes on `libc`'s own CI
 RUN git clone https://github.com/CraneStation/wasi-sysroot && \
   cd wasi-sysroot && \
-  git reset --hard 2201343c17b7149a75f543f523bea0c3243c6091
+  git reset --hard eee6ee7566e26f2535eb6088c8494a112ff423b9
 RUN make -C wasi-sysroot install -j $(nproc) WASM_CC=/wasmcc/bin/clang INSTALL_DIR=/wasi-sysroot
 
 # This is a small wrapper script which executes the actual clang binary in
 # `/wasmcc` and then is sure to pass the right `--sysroot` argument which we
 # just built above.
-COPY docker/wasm32-unknown-wasi/clang.sh /wasi-sysroot/bin/clang
+COPY docker/wasm32-wasi/clang.sh /wasi-sysroot/bin/clang
 
 # In the second container we're going to build the `wasmtime` binary which is
 # used to execute wasi executables. This is a standard Rust project so we're
@@ -58,9 +58,9 @@ RUN curl -sSf https://sh.rustup.rs |  sh -s -- -y
 ENV PATH=/root/.cargo/bin:$PATH
 
 RUN apt-get install -y --no-install-recommends python
-RUN git clone https://github.com/CraneStation/wasmtime wasmtime && \
+RUN git clone --recursive https://github.com/CraneStation/wasmtime wasmtime && \
   cd wasmtime && \
-  git reset --hard a1c123c3dd8f9766990efe0f1734a646f61ba8a0
+  git reset --hard 67edb00f29b62864b00179fe4bfa99bc29973285
 RUN cargo build --release --manifest-path wasmtime/Cargo.toml
 
 # And finally in the last image we're going to assemble everything together.
@@ -86,8 +86,8 @@ COPY --from=wasmtime /wasmtime/target/release/wasmtime /usr/bin/
 # executable with the right sysroot, and then we're sure to turn off the
 # crt-static feature to ensure that the CRT that we're specifying with `clang`
 # is used.
-ENV CARGO_TARGET_WASM32_UNKNOWN_WASI_RUNNER=wasmtime \
-  CARGO_TARGET_WASM32_UNKNOWN_WASI_LINKER=/wasi-sysroot/bin/clang \
-  CC_wasm32_unknown_wasi=/wasi-sysroot/bin/clang \
+ENV CARGO_TARGET_WASM32_WASI_RUNNER=wasmtime \
+  CARGO_TARGET_WASM32_WASI_LINKER=/wasi-sysroot/bin/clang \
+  CC_wasm32_wasi=/wasi-sysroot/bin/clang \
   PATH=$PATH:/rust/bin \
   RUSTFLAGS=-Ctarget-feature=-crt-static

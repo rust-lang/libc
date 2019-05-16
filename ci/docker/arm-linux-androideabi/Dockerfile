@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:19.04
 
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
@@ -9,7 +9,7 @@ RUN dpkg --add-architecture i386 && \
   python \
   unzip \
   expect \
-  openjdk-9-jre \
+  openjdk-11-jre \
   libstdc++6:i386 \
   libpulse0 \
   gcc \

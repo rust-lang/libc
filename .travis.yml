@@ -204,7 +204,7 @@ matrix:
       stage: tier2
     - env: TARGET=x86_64-unknown-linux-musl
       stage: tier2
-    - env: TARGET=wasm32-unknown-wasi
+    - env: TARGET=wasm32-wasi
       rust: nightly
       stage: tier2
 

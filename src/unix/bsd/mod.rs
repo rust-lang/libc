@@ -663,8 +663,7 @@ cfg_if! {
     if #[cfg(any(target_os = "macos", target_os = "ios"))] {
         mod apple;
         pub use self::apple::*;
-    } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd",
-                        target_os = "bitrig"))] {
+    } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd"))] {
         mod netbsdlike;
         pub use self::netbsdlike::*;
     } else if #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))] {

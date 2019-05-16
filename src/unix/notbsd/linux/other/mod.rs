@@ -225,23 +225,19 @@ s_no_extra_traits! {
         pub ut_exit: __exit_status,
 
         #[cfg(any(target_arch = "aarch64",
-                  target_arch = "sparc64",
                   all(target_pointer_width = "32",
                       not(target_arch = "x86_64"))))]
         pub ut_session: ::c_long,
         #[cfg(any(target_arch = "aarch64",
-                  target_arch = "sparc64",
                   all(target_pointer_width = "32",
                       not(target_arch = "x86_64"))))]
         pub ut_tv: ::timeval,
 
         #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "sparc64",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_session: ::int32_t,
         #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "sparc64",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_tv: __timeval,
@@ -688,23 +684,10 @@ pub const NFPROTO_INET: ::c_int = 1;
 pub const NFPROTO_NETDEV: ::c_int = 5;
 
 // linux/netfilter/nf_tables.h
-cfg_if!{
-    if #[cfg(any(target_arch = "arm", target_arch = "aarch64"))] {
-        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_OBJ_MAXNAMELEN: ::c_int = 32;
-    } else if #[cfg(target_arch = "sparc64")] {
-        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
-        pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
-    } else {
-        pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
-        pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
-        pub const NFT_SET_MAXNAMELEN: ::c_int = 256;
-        pub const NFT_OBJ_MAXNAMELEN: ::c_int = 256;
-    }
-}
+pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
+pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
+pub const NFT_SET_MAXNAMELEN: ::c_int = 256;
+pub const NFT_OBJ_MAXNAMELEN: ::c_int = 256;
 pub const NFT_USERDATA_MAXLEN: ::c_int = 256;
 
 pub const NFT_REG_VERDICT: ::c_int = 0;
@@ -763,11 +746,9 @@ cfg_if! {
         pub const NFT_MSG_GETOBJ: ::c_int = 19;
         pub const NFT_MSG_DELOBJ: ::c_int = 20;
         pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
-        pub const NFT_MSG_MAX: ::c_int = 22;
-    } else {
-        pub const NFT_MSG_MAX: ::c_int = 18;
     }
 }
+pub const NFT_MSG_MAX: ::c_int = 25;
 
 pub const NFT_SET_ANONYMOUS: ::c_int = 0x1;
 pub const NFT_SET_CONSTANT: ::c_int = 0x2;
