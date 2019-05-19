@@ -3,14 +3,14 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc make libc6-dev git curl ca-certificates \
   gcc-aarch64-linux-gnu qemu-user
-RUN curl --retry 5 https://www.musl-libc.org/releases/musl-1.1.19.tar.gz | \
+RUN curl --retry 5 https://www.musl-libc.org/releases/musl-1.1.22.tar.gz | \
     tar xzf - && \
-    cd musl-1.1.19 && \
+    cd musl-1.1.22 && \
     CC=aarch64-linux-gnu-gcc \
     ./configure --prefix=/musl-aarch64 --enable-wrapper=yes && \
     make install -j4 && \
     cd .. && \
-    rm -rf musl-1.1.19
+    rm -rf musl-1.1.22
 # Install linux kernel headers sanitized for use with musl
 RUN curl --retry 5 -L https://github.com/sabotage-linux/kernel-headers/archive/v3.12.6-6.tar.gz | \
     tar xzf - && \
