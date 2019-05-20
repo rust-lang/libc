@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc make libc6-dev git curl ca-certificates \
   gcc-mips-linux-gnu qemu-user qemu-system-mips
-RUN curl --retry 5 https://www.musl-libc.org/releases/musl-1.2.22.tar.gz | \
+RUN curl --retry 5 https://www.musl-libc.org/releases/musl-1.1.22.tar.gz | \
     tar xzf - && \
     cd musl-1.1.22 \
     CC=mips-linux-gcc \
