@@ -601,6 +601,20 @@ pub const LINUX_REBOOT_CMD_RESTART2: ::c_int = 0xA1B2C3D4;
 pub const LINUX_REBOOT_CMD_SW_SUSPEND: ::c_int = 0xD000FCE2;
 pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 
+// linux/rtnetlink.h
+pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
+pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
+
+pub const RTA_VIA: ::c_ushort = 18;
+pub const RTA_NEWDST: ::c_ushort = 19;
+pub const RTA_PREF: ::c_ushort = 20;
+pub const RTA_ENCAP_TYPE: ::c_ushort = 21;
+pub const RTA_ENCAP: ::c_ushort = 22;
+pub const RTA_EXPIRES: ::c_ushort = 23;
+pub const RTA_PAD: ::c_ushort = 24;
+pub const RTA_UID: ::c_ushort = 25;
+pub const RTA_TTL_PROPAGATE: ::c_ushort = 26;
+
 // linux/if_addr.h
 pub const IFA_FLAGS: ::c_ushort = 8;
 
