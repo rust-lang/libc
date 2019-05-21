@@ -373,6 +373,8 @@ pub const MAP_EXECUTABLE: ::c_int = 0x01000;
 pub const MAP_POPULATE: ::c_int = 0x08000;
 pub const MAP_NONBLOCK: ::c_int = 0x010000;
 pub const MAP_STACK: ::c_int = 0x020000;
+pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
+pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
 
 pub const ENOTSUP: ::c_int = EOPNOTSUPP;
 pub const EUCLEAN: ::c_int = 117;

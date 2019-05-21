@@ -517,6 +517,8 @@ pub const MAP_NORESERVE: ::c_int = 0x04000;
 pub const MAP_POPULATE: ::c_int = 0x08000;
 pub const MAP_NONBLOCK: ::c_int = 0x010000;
 pub const MAP_STACK: ::c_int = 0x020000;
+pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
+pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
 
 pub const EDEADLOCK: ::c_int = 35;
 pub const ENAMETOOLONG: ::c_int = 36;
