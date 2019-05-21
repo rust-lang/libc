@@ -279,6 +279,9 @@ pub const PTRACE_PEEKSIGINFO: ::c_int = 0x4209;
 
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
+pub const SEEK_DATA: ::c_int = 3;
+pub const SEEK_HOLE: ::c_int = 4;
+
 pub const EFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
 
 pub const SFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
