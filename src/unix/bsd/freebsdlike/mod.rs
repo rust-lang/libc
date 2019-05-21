@@ -1095,7 +1095,8 @@ extern {
                     -> ::c_int;
 
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
-
+    pub fn gettimeofday(tp: *mut ::timeval,
+                        tz: *mut ::timezone) -> ::c_int;
     pub fn accept4(s: ::c_int, addr: *mut ::sockaddr,
                    addrlen: *mut ::socklen_t, flags: ::c_int) -> ::c_int;
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;

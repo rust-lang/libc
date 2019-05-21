@@ -916,6 +916,8 @@ extern {
     pub fn endutxent();
     pub fn getpt() -> ::c_int;
     pub fn mallopt(param: ::c_int, value: ::c_int) -> ::c_int;
+    pub fn gettimeofday(tp: *mut ::timeval,
+                        tz: *mut ::timezone) -> ::c_int;
 }
 
 #[link(name = "util")]

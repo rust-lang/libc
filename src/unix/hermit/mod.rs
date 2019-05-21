@@ -981,6 +981,8 @@ extern {
 
     pub fn clock_gettime(clock_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
 
+    pub fn gettimeofday(tp: *mut ::timeval,
+                        tz: *mut ::c_void) -> ::c_int;
     pub fn getpwuid_r(uid: ::uid_t, pwd: *mut passwd, buf: *mut ::c_char,
         buflen: ::size_t, result: *mut *mut passwd) -> ::c_int;
 

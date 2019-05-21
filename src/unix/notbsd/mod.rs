@@ -1265,7 +1265,6 @@ extern {
                     pshared: ::c_int,
                     value: ::c_uint)
                     -> ::c_int;
-
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_uchar) -> ::c_int;
