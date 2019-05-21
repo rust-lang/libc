@@ -2358,7 +2358,7 @@ fn test_linux(target: &str) {
         "linux/futex.h",
         "linux/fs.h",
         "linux/genetlink.h",
-        "linux/if_addr.h"
+        "linux/if_addr.h",
         "linux/if_alg.h",
         "linux/if_ether.h",
         "linux/if_tun.h",
@@ -2369,7 +2369,7 @@ fn test_linux(target: &str) {
         "linux/netfilter_ipv6.h",
         "linux/netlink.h",
         "linux/random.h",
-        "linux/rtnetlink.h"
+        "linux/rtnetlink.h",
         "linux/seccomp.h",
         "linux/sockios.h",
     }
