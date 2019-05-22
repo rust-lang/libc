@@ -1409,9 +1409,10 @@ pub const FALLOC_FL_ZERO_RANGE: ::c_int = 0x10;
 pub const FALLOC_FL_INSERT_RANGE: ::c_int = 0x20;
 pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
 
-// On Linux, libc doesn't define this constant, libattr does instead.
-// We still define it for Linux as it's defined by libc on other platforms,
-// and it's mentioned in the man pages for getxattr and setxattr.
+#[deprecated(
+    since = "0.2.55",
+    note = "ENOATTR is not available on Linux; use ENODATA instead"
+)]
 pub const ENOATTR: ::c_int = ::ENODATA;
 
 pub const SO_ORIGINAL_DST: ::c_int = 80;

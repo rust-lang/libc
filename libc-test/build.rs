@@ -1379,6 +1379,12 @@ fn test_android(target: &str) {
             // FIXME: deprecated: not available in any header
             // See: https://github.com/rust-lang/libc/issues/1356
             "ENOATTR" => true,
+
+            // FIXME: still necessary?
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
+            // FIXME: still necessary?
+            "SIGUNUSED" => true, // removed in glibc 2.26
+
             _ => false,
         }
     });
