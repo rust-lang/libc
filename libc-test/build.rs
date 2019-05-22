@@ -2815,20 +2815,14 @@ fn test_linux(target: &str) {
     cfg.skip_fn(|_| true)
         .skip_const(|_| true)
         .skip_static(|_| true)
-        .type_name(move |ty, _is_struct, _is_union| {
-            ty.to_string()
-        });
-    cfg.skip_struct(move |ty| {
-        match ty {
-            "Elf64_Phdr" | "Elf32_Phdr" => false,
-            _ => true,
-        }
+        .type_name(move |ty, _is_struct, _is_union| ty.to_string());
+    cfg.skip_struct(move |ty| match ty {
+        "Elf64_Phdr" | "Elf32_Phdr" => false,
+        _ => true,
     });
-    cfg.skip_type(move |ty| {
-        match ty {
-            "Elf64_Phdr" | "Elf32_Phdr" => false,
-            _ => true,
-        }
+    cfg.skip_type(move |ty| match ty {
+        "Elf64_Phdr" | "Elf32_Phdr" => false,
+        _ => true,
     });
     cfg.header("elf.h");
     cfg.generate("../src/lib.rs", "linux_elf.rs");
