@@ -895,6 +895,8 @@ f! {
 }
 
 extern {
+    pub fn gettimeofday(tp: *mut ::timeval,
+                        tz: *mut ::timezone) -> ::c_int;
     pub fn chflags(path: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn fchflags(fd: ::c_int, flags: ::c_uint) -> ::c_int;
     pub fn chflagsat(fd: ::c_int, path: *const ::c_char, flags: ::c_uint,

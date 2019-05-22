@@ -315,9 +315,6 @@ fn test_openbsd(target: &str) {
         match name {
             "execv" | "execve" | "execvp" | "execvpe" => true,
 
-            // typed 2nd arg
-            "gettimeofday" => true,
-
             // Removed in OpenBSD 6.5
             // https://marc.info/?l=openbsd-cvs&m=154723400730318
             "mincore" => true,
@@ -1113,9 +1110,8 @@ fn test_dragonflybsd(target: &str) {
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
-            "prlimit" | "prlimit64" |        // non-int in 2nd arg
-            // typed 2nd arg on linux
-            "gettimeofday" => true,
+            "prlimit" | "prlimit64"        // non-int in 2nd arg
+             => true,
 
             _ => false,
         }
@@ -1460,10 +1456,6 @@ fn test_android(target: &str) {
             "execvp" |
             "execvpe" |
             "fexecve" => true,
-
-            // typed 2nd arg on android
-            // FIXME: still necessary?
-            "gettimeofday" => true,
 
             // not declared in newer android toolchains
             // FIXME: still necessary?
@@ -1814,9 +1806,6 @@ fn test_freebsd(target: &str) {
             "execvp" |
             "execvpe" |
             "fexecve" => true,
-
-            // FIXME: for some reason, our signature is wrong
-            "gettimeofday" => true,
 
             // The `uname` function in freebsd is now an inline wrapper that
             // delegates to another, but the symbol still exists, so don't check
@@ -2700,10 +2689,6 @@ fn test_linux(target: &str) {
             // send*/recv* syscalls
             // FIXME: is this necessary?
             "sendmmsg" | "recvmmsg" if musl => true,
-
-            // typed 2nd arg on linux
-            // FIXME: is this necessary?
-            "gettimeofday" => true,
 
             // FIXME: is this necessary?
             "dladdr" if musl => true, // const-ness only added recently
