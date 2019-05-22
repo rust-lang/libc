@@ -615,6 +615,14 @@ pub const RTA_PAD: ::c_ushort = 24;
 pub const RTA_UID: ::c_ushort = 25;
 pub const RTA_TTL_PROPAGATE: ::c_ushort = 26;
 
+// linux/neighbor.h
+pub const NTF_EXT_LEARNED: u8 = 0x10;
+pub const NTF_OFFLOADED: u8 = 0x20;
+
+pub const NDA_MASTER: ::c_ushort = 9;
+pub const NDA_LINK_NETNSID: ::c_ushort = 10;
+pub const NDA_SRC_VNI: ::c_ushort = 11;
+
 // linux/if_addr.h
 pub const IFA_FLAGS: ::c_ushort = 8;
 

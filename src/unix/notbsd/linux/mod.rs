@@ -1812,8 +1812,6 @@ pub const NTF_USE: u8 = 0x01;
 pub const NTF_SELF: u8 = 0x02;
 pub const NTF_MASTER: u8 = 0x04;
 pub const NTF_PROXY: u8 = 0x08;
-pub const NTF_EXT_LEARNED: u8 = 0x10;
-pub const NTF_OFFLOADED: u8 = 0x20;
 pub const NTF_ROUTER: u8 = 0x80;
 
 pub const NDA_UNSPEC: ::c_ushort = 0;
@@ -1825,9 +1823,6 @@ pub const NDA_VLAN: ::c_ushort = 5;
 pub const NDA_PORT: ::c_ushort = 6;
 pub const NDA_VNI: ::c_ushort = 7;
 pub const NDA_IFINDEX: ::c_ushort = 8;
-pub const NDA_MASTER: ::c_ushort = 9;
-pub const NDA_LINK_NETNSID: ::c_ushort = 10;
-pub const NDA_SRC_VNI: ::c_ushort = 11;
 
 // linux/rtnetlink.h
 pub const RTM_F_NOTIFY: ::c_uint = 0x100;
