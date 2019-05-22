@@ -17,6 +17,7 @@ pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type loff_t = i32;
+pub type pthread_key_t = ::c_uint;
 
 pub type clock_t = c_long;
 pub type time_t = c_long;

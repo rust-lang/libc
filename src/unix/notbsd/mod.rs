@@ -1,5 +1,4 @@
 pub type sa_family_t = u16;
-pub type pthread_key_t = ::c_uint;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type clockid_t = ::c_int;

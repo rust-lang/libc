@@ -12,6 +12,7 @@ pub type pthread_t = ::c_long;
 pub type pthread_mutexattr_t = ::c_long;
 pub type pthread_rwlockattr_t = ::c_long;
 pub type pthread_condattr_t = ::c_long;
+pub type pthread_key_t = ::c_int;
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type nfds_t = ::c_uint;

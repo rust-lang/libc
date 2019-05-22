@@ -14,6 +14,7 @@ pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type loff_t = ::c_longlong;
+pub type pthread_key_t = ::c_uint;
 
 pub type __u8 = ::c_uchar;
 pub type __u16 = ::c_ushort;
