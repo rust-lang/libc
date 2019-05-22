@@ -603,6 +603,36 @@ pub const LINUX_REBOOT_CMD_RESTART2: ::c_int = 0xA1B2C3D4;
 pub const LINUX_REBOOT_CMD_SW_SUSPEND: ::c_int = 0xD000FCE2;
 pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 
+// linux/rtnetlink.h
+pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
+pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
+
+pub const RTA_VIA: ::c_ushort = 18;
+pub const RTA_NEWDST: ::c_ushort = 19;
+pub const RTA_PREF: ::c_ushort = 20;
+pub const RTA_ENCAP_TYPE: ::c_ushort = 21;
+pub const RTA_ENCAP: ::c_ushort = 22;
+pub const RTA_EXPIRES: ::c_ushort = 23;
+pub const RTA_PAD: ::c_ushort = 24;
+pub const RTA_UID: ::c_ushort = 25;
+pub const RTA_TTL_PROPAGATE: ::c_ushort = 26;
+
+// linux/neighbor.h
+pub const NTF_EXT_LEARNED: u8 = 0x10;
+pub const NTF_OFFLOADED: u8 = 0x20;
+
+pub const NDA_MASTER: ::c_ushort = 9;
+pub const NDA_LINK_NETNSID: ::c_ushort = 10;
+pub const NDA_SRC_VNI: ::c_ushort = 11;
+
+// linux/if_addr.h
+pub const IFA_FLAGS: ::c_ushort = 8;
+
+pub const IFA_F_MANAGETEMPADDR: u32 = 0x100;
+pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
+pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
+pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
+
 pub const NETLINK_ROUTE: ::c_int = 0;
 pub const NETLINK_UNUSED: ::c_int = 1;
 pub const NETLINK_USERSOCK: ::c_int = 2;

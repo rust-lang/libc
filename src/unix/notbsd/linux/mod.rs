@@ -1024,6 +1024,36 @@ pub const IFF_LOWER_UP: ::c_int = 0x10000;
 pub const IFF_DORMANT: ::c_int = 0x20000;
 pub const IFF_ECHO: ::c_int = 0x40000;
 
+// linux/if_addr.h
+pub const IFA_UNSPEC: ::c_ushort = 0;
+pub const IFA_ADDRESS: ::c_ushort = 1;
+pub const IFA_LOCAL: ::c_ushort = 2;
+pub const IFA_LABEL: ::c_ushort = 3;
+pub const IFA_BROADCAST: ::c_ushort = 4;
+pub const IFA_ANYCAST: ::c_ushort = 5;
+pub const IFA_CACHEINFO: ::c_ushort = 6;
+pub const IFA_MULTICAST: ::c_ushort = 7;
+
+pub const IFA_F_SECONDARY: u32 = 0x01;
+pub const IFA_F_TEMPORARY: u32 = 0x01;
+pub const IFA_F_NODAD: u32 = 0x02;
+pub const IFA_F_OPTIMISTIC: u32 = 0x04;
+pub const IFA_F_DADFAILED: u32 = 0x08;
+pub const IFA_F_HOMEADDRESS: u32 = 0x10;
+pub const IFA_F_DEPRECATED: u32 = 0x20;
+pub const IFA_F_TENTATIVE: u32 = 0x40;
+pub const IFA_F_PERMANENT: u32 = 0x80;
+
+// linux/if_link.h
+pub const IFLA_UNSPEC: ::c_ushort = 0;
+pub const IFLA_ADDRESS: ::c_ushort = 1;
+pub const IFLA_BROADCAST: ::c_ushort = 2;
+pub const IFLA_IFNAME: ::c_ushort = 3;
+pub const IFLA_MTU: ::c_ushort = 4;
+pub const IFLA_LINK: ::c_ushort = 5;
+pub const IFLA_QDISC: ::c_ushort = 6;
+pub const IFLA_STATS: ::c_ushort = 7;
+
 // linux/if_tun.h
 pub const IFF_TUN: ::c_short = 0x0001;
 pub const IFF_TAP: ::c_short = 0x0002;
@@ -1766,6 +1796,89 @@ pub const RT_CLASS_DEFAULT: u8 = 253;
 pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
 pub const RT_CLASS_MAX: u8 = 255;
+
+// linux/neighbor.h
+pub const NUD_NONE: u16 = 0x00;
+pub const NUD_INCOMPLETE: u16 = 0x01;
+pub const NUD_REACHABLE: u16 = 0x02;
+pub const NUD_STALE: u16 = 0x04;
+pub const NUD_DELAY: u16 = 0x08;
+pub const NUD_PROBE: u16 = 0x10;
+pub const NUD_FAILED: u16 = 0x20;
+pub const NUD_NOARP: u16 = 0x40;
+pub const NUD_PERMANENT: u16 = 0x80;
+
+pub const NTF_USE: u8 = 0x01;
+pub const NTF_SELF: u8 = 0x02;
+pub const NTF_MASTER: u8 = 0x04;
+pub const NTF_PROXY: u8 = 0x08;
+pub const NTF_ROUTER: u8 = 0x80;
+
+pub const NDA_UNSPEC: ::c_ushort = 0;
+pub const NDA_DST: ::c_ushort = 1;
+pub const NDA_LLADDR: ::c_ushort = 2;
+pub const NDA_CACHEINFO: ::c_ushort = 3;
+pub const NDA_PROBES: ::c_ushort = 4;
+pub const NDA_VLAN: ::c_ushort = 5;
+pub const NDA_PORT: ::c_ushort = 6;
+pub const NDA_VNI: ::c_ushort = 7;
+pub const NDA_IFINDEX: ::c_ushort = 8;
+
+// linux/rtnetlink.h
+pub const RTM_F_NOTIFY: ::c_uint = 0x100;
+pub const RTM_F_CLONED: ::c_uint = 0x200;
+pub const RTM_F_EQUALIZE: ::c_uint = 0x400;
+pub const RTM_F_PREFIX: ::c_uint = 0x800;
+
+pub const RTA_UNSPEC: ::c_ushort = 0;
+pub const RTA_DST: ::c_ushort = 1;
+pub const RTA_SRC: ::c_ushort = 2;
+pub const RTA_IIF: ::c_ushort = 3;
+pub const RTA_OIF: ::c_ushort = 4;
+pub const RTA_GATEWAY: ::c_ushort = 5;
+pub const RTA_PRIORITY: ::c_ushort = 6;
+pub const RTA_PREFSRC: ::c_ushort = 7;
+pub const RTA_METRICS: ::c_ushort = 8;
+pub const RTA_MULTIPATH: ::c_ushort = 9;
+pub const RTA_PROTOINFO: ::c_ushort = 10; // No longer used
+pub const RTA_FLOW: ::c_ushort = 11;
+pub const RTA_CACHEINFO: ::c_ushort = 12;
+pub const RTA_SESSION: ::c_ushort = 13; // No longer used
+pub const RTA_MP_ALGO: ::c_ushort = 14; // No longer used
+pub const RTA_TABLE: ::c_ushort = 15;
+pub const RTA_MARK: ::c_ushort = 16;
+pub const RTA_MFC_STATS: ::c_ushort = 17;
+
+pub const RTN_UNSPEC: ::c_uchar = 0;
+pub const RTN_UNICAST: ::c_uchar = 1;
+pub const RTN_LOCAL: ::c_uchar = 2;
+pub const RTN_BROADCAST: ::c_uchar = 3;
+pub const RTN_ANYCAST: ::c_uchar = 4;
+pub const RTN_MULTICAST: ::c_uchar = 5;
+pub const RTN_BLACKHOLE: ::c_uchar = 6;
+pub const RTN_UNREACHABLE: ::c_uchar = 7;
+pub const RTN_PROHIBIT: ::c_uchar = 8;
+pub const RTN_THROW: ::c_uchar = 9;
+pub const RTN_NAT: ::c_uchar = 10;
+pub const RTN_XRESOLVE: ::c_uchar = 11;
+
+pub const RTPROT_UNSPEC: ::c_uchar = 0;
+pub const RTPROT_REDIRECT: ::c_uchar = 1;
+pub const RTPROT_KERNEL: ::c_uchar = 2;
+pub const RTPROT_BOOT: ::c_uchar = 3;
+pub const RTPROT_STATIC: ::c_uchar = 4;
+
+pub const RT_SCOPE_UNIVERSE: ::c_uchar = 0;
+pub const RT_SCOPE_SITE: ::c_uchar = 200;
+pub const RT_SCOPE_LINK: ::c_uchar = 253;
+pub const RT_SCOPE_HOST: ::c_uchar = 254;
+pub const RT_SCOPE_NOWHERE: ::c_uchar = 255;
+
+pub const RT_TABLE_UNSPEC: ::c_uchar = 0;
+pub const RT_TABLE_COMPAT: ::c_uchar = 252;
+pub const RT_TABLE_DEFAULT: ::c_uchar = 253;
+pub const RT_TABLE_MAIN: ::c_uchar = 254;
+pub const RT_TABLE_LOCAL: ::c_uchar = 255;
 
 pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 pub const RTMSG_NEWDEVICE: u32 = 0x11;
