@@ -1351,6 +1351,7 @@ fn test_android(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.to_string()
             }
+            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
         }
     });
