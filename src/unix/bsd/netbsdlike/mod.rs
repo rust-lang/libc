@@ -677,8 +677,8 @@ cfg_if! {
         mod netbsd;
         pub use self::netbsd::*;
     } else if #[cfg(target_os = "openbsd")] {
-        mod openbsdlike;
-        pub use self::openbsdlike::*;
+        mod openbsd;
+        pub use self::openbsd::*;
     } else {
         // Unknown target_os
     }
