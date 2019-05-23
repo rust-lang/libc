@@ -1938,7 +1938,7 @@ extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn msync(addr: *mut ::c_void, len: ::size_t,
                  flags: ::c_int) -> ::c_int;
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
                     flags: ::c_int, addr: *const ::sockaddr,
