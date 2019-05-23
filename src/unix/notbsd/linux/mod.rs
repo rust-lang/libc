@@ -1830,6 +1830,22 @@ pub const NDA_VNI: ::c_ushort = 7;
 pub const NDA_IFINDEX: ::c_ushort = 8;
 
 // linux/rtnetlink.h
+pub const TCA_UNSPEC: ::c_ushort = 0;
+pub const TCA_KIND: ::c_ushort = 1;
+pub const TCA_OPTIONS: ::c_ushort = 2;
+pub const TCA_STATS: ::c_ushort = 3;
+pub const TCA_XSTATS: ::c_ushort = 4;
+pub const TCA_RATE: ::c_ushort = 5;
+
+// possibly should go in linux/other/mod.rs
+pub const TCA_FCNT: ::c_ushort = 6;
+pub const TCA_STATS2: ::c_ushort = 7;
+pub const TCA_STAB: ::c_ushort = 8;
+pub const TCA_PAD: ::c_ushort = 9;
+pub const TCA_DUMP_INVISIBLE: ::c_ushort = 10;
+pub const TCA_CHAIN: ::c_ushort = 11;
+pub const TCA_HW_OFFLOAD: ::c_ushort = 12;
+
 pub const RTM_F_NOTIFY: ::c_uint = 0x100;
 pub const RTM_F_CLONED: ::c_uint = 0x200;
 pub const RTM_F_EQUALIZE: ::c_uint = 0x400;
