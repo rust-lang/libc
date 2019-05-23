@@ -313,6 +313,7 @@ fn test_openbsd(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" => true,
 
             // Removed in OpenBSD 6.5
@@ -458,7 +459,7 @@ fn test_windows(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
-            // FIXME: API error:
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" => true,
 
             _ => false,
@@ -873,12 +874,8 @@ fn test_netbsd(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
-            // FIXME: incorrect API
-            "execv" |
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
@@ -1102,11 +1099,8 @@ fn test_dragonflybsd(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            "execv" |       // crazy stuff with const/mut
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
@@ -1396,12 +1390,8 @@ fn test_android(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: still necessary?
-            "execv" |       // crazy stuff with const/mut
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
             // There are two versions of the sterror_r function, see
             //
@@ -1419,20 +1409,6 @@ fn test_android(target: &str) {
             // We skip the test here since here _GNU_SOURCE is defined, and
             // test the XSI version below.
             "strerror_r" => true,
-
-            // not declared in newer android toolchains
-            // FIXME: still necessary?
-            "getdtablesize" => true,
-
-            // Apparently the NDK doesn't have this defined on android, but
-            // it's in a header file?
-            // FIXME: still necessary?
-            "endpwent" => true,
-
-            // Apparently res_init exists on Android, but isn't defined in a header:
-            // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
-            // FIXME: still necessary?
-            "res_init" => true,
 
             _ => false,
         }
