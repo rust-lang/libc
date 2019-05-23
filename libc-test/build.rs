@@ -1348,6 +1348,7 @@ fn test_android(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.to_string()
             }
+            // FIXME: appears that `epoll_event.data` is an union
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
         }
@@ -1355,8 +1356,8 @@ fn test_android(target: &str) {
 
     cfg.skip_type(move |ty| {
         match ty {
-            // sighandler_t is crazy across platforms
-            // FIXME: still necessary?
+            // FIXME: `sighandler_t` type is incorrect, see:
+            // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
             _ => false,
         }
@@ -1425,8 +1426,15 @@ fn test_android(target: &str) {
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
         (struct_ == "siginfo_t" && field == "_pad") ||
+        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
+        (struct_ == "sigaction" && field == "sa_sigaction") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
+        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+        // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
+        (struct_ == "signalfd_siginfo" && (field == "ssi_syscall" ||
+                                           field == "ssi_call_addr" ||
+                                           field == "ssi_arch"))
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
