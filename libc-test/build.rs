@@ -1414,31 +1414,19 @@ fn test_android(target: &str) {
         }
     });
 
-    // FIXME: still necessary?
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
-        // sighandler_t type is super weird
-        (struct_ == "sigaction" && field == "sa_sigaction") ||
         // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value") ||
-        // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_ == "aiocb" && field == "aio_buf")
+        (struct_ == "sigevent" && field == "sigev_value")
     });
 
-    // FIXME: still necessary?
     cfg.skip_field(move |struct_, field| {
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
         (struct_ == "siginfo_t" && field == "_pad") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
-        // signalfd had SIGSYS fields added in Linux 4.18, but no libc release has them yet.
-        (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
-                                           field == "_pad2" ||
-                                           field == "ssi_syscall" ||
-                                           field == "ssi_call_addr" ||
-                                           field == "ssi_arch"))
+        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
