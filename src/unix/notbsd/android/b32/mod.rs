@@ -13,7 +13,7 @@ s! {
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
-        pub sa_flags: ::c_ulong,
+        pub sa_flags: ::c_int,
         pub sa_restorer: ::Option<extern fn()>,
     }
 
@@ -35,12 +35,12 @@ s! {
         pub st_size: ::c_longlong,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::c_ulonglong,
-        pub st_atime: ::c_ulong,
-        pub st_atime_nsec: ::c_ulong,
-        pub st_mtime: ::c_ulong,
-        pub st_mtime_nsec: ::c_ulong,
-        pub st_ctime: ::c_ulong,
-        pub st_ctime_nsec: ::c_ulong,
+        pub st_atime: ::c_long,
+        pub st_atime_nsec: ::c_long,
+        pub st_mtime: ::c_long,
+        pub st_mtime_nsec: ::c_long,
+        pub st_ctime: ::c_long,
+        pub st_ctime_nsec: ::c_long,
         pub st_ino: ::c_ulonglong,
     }
 
@@ -57,12 +57,12 @@ s! {
         pub st_size: ::c_longlong,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::c_ulonglong,
-        pub st_atime: ::c_ulong,
-        pub st_atime_nsec: ::c_ulong,
-        pub st_mtime: ::c_ulong,
-        pub st_mtime_nsec: ::c_ulong,
-        pub st_ctime: ::c_ulong,
-        pub st_ctime_nsec: ::c_ulong,
+        pub st_atime: ::c_long,
+        pub st_atime_nsec: ::c_long,
+        pub st_mtime: ::c_long,
+        pub st_mtime_nsec: ::c_long,
+        pub st_ctime: ::c_long,
+        pub st_ctime_nsec: ::c_long,
         pub st_ino: ::c_ulonglong,
     }
 

@@ -931,10 +931,6 @@ extern {
     pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
     pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t)
                                       -> ::c_int;
-    #[cfg_attr(all(target_os = "linux", not(target_env = "musl")),
-               link_name = "__xpg_strerror_r")]
-    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
-                      buflen: ::size_t) -> ::c_int;
 
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_getsockopt")]
     pub fn getsockopt(sockfd: ::c_int,

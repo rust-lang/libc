@@ -12,6 +12,7 @@ pub type pthread_t = ::c_long;
 pub type pthread_mutexattr_t = ::c_long;
 pub type pthread_rwlockattr_t = ::c_long;
 pub type pthread_condattr_t = ::c_long;
+pub type pthread_key_t = ::c_int;
 pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type nfds_t = ::c_uint;
@@ -547,6 +548,9 @@ cfg_if! {
     }
 }
 
+pub const MS_NOUSER: ::c_ulong = 0xffffffff80000000;
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
+
 pub const O_TRUNC: ::c_int = 512;
 pub const O_CLOEXEC: ::c_int = 0x80000;
 pub const O_PATH: ::c_int = 0o10000000;
@@ -582,11 +586,11 @@ pub const EFD_CLOEXEC: ::c_int = 0x80000;
 pub const USER_PROCESS: ::c_short = 7;
 
 pub const BUFSIZ: ::c_uint = 1024;
-pub const FILENAME_MAX: ::c_uint = 1024;
+pub const FILENAME_MAX: ::c_uint = 4096;
 pub const FOPEN_MAX: ::c_uint = 20;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
-pub const L_tmpnam: ::c_uint = 1024;
+pub const L_tmpnam: ::c_uint = 4096;
 pub const TMP_MAX: ::c_uint = 308915776;
 pub const _PC_LINK_MAX: ::c_int = 1;
 pub const _PC_MAX_CANON: ::c_int = 2;
@@ -1459,10 +1463,10 @@ pub const NF_IP6_PRI_CONNTRACK_HELPER: ::c_int = 300;
 pub const NF_IP6_PRI_LAST: ::c_int = ::INT_MAX;
 
 // linux/netfilter/nf_tables.h
-pub const NFT_TABLE_MAXNAMELEN: ::c_int = 32;
-pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 32;
-pub const NFT_SET_MAXNAMELEN: ::c_int = 32;
-pub const NFT_OBJ_MAXNAMELEN: ::c_int = 32;
+pub const NFT_TABLE_MAXNAMELEN: ::c_int = 256;
+pub const NFT_CHAIN_MAXNAMELEN: ::c_int = 256;
+pub const NFT_SET_MAXNAMELEN: ::c_int = 256;
+pub const NFT_OBJ_MAXNAMELEN: ::c_int = 256;
 pub const NFT_USERDATA_MAXLEN: ::c_int = 256;
 
 pub const NFT_REG_VERDICT: ::c_int = 0;
@@ -1519,7 +1523,7 @@ pub const NFT_MSG_NEWOBJ: ::c_int = 18;
 pub const NFT_MSG_GETOBJ: ::c_int = 19;
 pub const NFT_MSG_DELOBJ: ::c_int = 20;
 pub const NFT_MSG_GETOBJ_RESET: ::c_int = 21;
-pub const NFT_MSG_MAX: ::c_int = 22;
+pub const NFT_MSG_MAX: ::c_int = 25;
 
 pub const NFT_SET_ANONYMOUS: ::c_int = 0x1;
 pub const NFT_SET_CONSTANT: ::c_int = 0x2;
@@ -1789,7 +1793,10 @@ pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
 
-// Similarity to Linux it's not used but defined for compatibility.
+#[deprecated(
+    since = "0.2.55",
+    note = "ENOATTR is not available on Android; use ENODATA instead"
+)]
 pub const ENOATTR: ::c_int = ::ENODATA;
 
 // linux/if_alg.h
@@ -1920,21 +1927,20 @@ f! {
 }
 
 extern {
-    static mut __progname: *mut ::c_char;
-}
+    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
+                      buflen: ::size_t) -> ::c_int;
 
-extern {
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::timezone) -> ::c_int;
-    pub fn madvise(addr: *const ::c_void, len: ::size_t, advice: ::c_int)
+    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
                    -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn msync(addr: *const ::c_void, len: ::size_t,
+    pub fn msync(addr: *mut ::c_void, len: ::size_t,
                  flags: ::c_int) -> ::c_int;
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
     pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
-                    flags: ::c_int, addr: *const ::sockaddr,
+                    flags: ::c_int, addr: *mut ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
     pub fn getnameinfo(sa: *const ::sockaddr,
                        salen: ::socklen_t,
@@ -1944,11 +1950,12 @@ extern {
                        sevlen: ::size_t,
                        flags: ::c_int) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
-    pub fn getpriority(which: ::c_int, who: ::c_int) -> ::c_int;
-    pub fn setpriority(which: ::c_int, who: ::c_int, prio: ::c_int) -> ::c_int;
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
     pub fn __sched_cpualloc(count: ::size_t) -> *mut ::cpu_set_t;
     pub fn __sched_cpufree(set: *mut ::cpu_set_t);
-    pub fn __sched_cpucount(setsize: ::size_t, set: *mut cpu_set_t) -> ::c_int;
+    pub fn __sched_cpucount(setsize: ::size_t,
+                            set: *const cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
 
     pub fn utmpname(name: *const ::c_char) -> ::c_int;
@@ -2011,7 +2018,7 @@ extern {
                  fstype: *const ::c_char,
                  flags: ::c_ulong,
                  data: *const ::c_void) -> ::c_int;
-    pub fn personality(persona: ::c_ulong) -> ::c_int;
+    pub fn personality(persona: ::c_uint) -> ::c_int;
     pub fn prctl(option: ::c_int, ...) -> ::c_int;
     pub fn sched_getparam(pid: ::pid_t, param: *mut ::sched_param) -> ::c_int;
     pub fn ppoll(fds: *mut ::pollfd,
@@ -2063,7 +2070,6 @@ extern {
     pub fn sigaltstack(ss: *const stack_t,
                        oss: *mut stack_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
-    pub fn getdtablesize() -> ::c_int;
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrnam_r")]
     pub fn getgrnam_r(name: *const ::c_char,
                       grp: *mut ::group,

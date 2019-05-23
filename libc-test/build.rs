@@ -313,6 +313,7 @@ fn test_openbsd(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" => true,
 
             // Removed in OpenBSD 6.5
@@ -458,7 +459,7 @@ fn test_windows(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
-            // FIXME: API error:
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" => true,
 
             _ => false,
@@ -873,12 +874,8 @@ fn test_netbsd(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
-            // FIXME: incorrect API
-            "execv" |
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
@@ -1102,11 +1099,8 @@ fn test_dragonflybsd(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            "execv" |       // crazy stuff with const/mut
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
@@ -1222,14 +1216,6 @@ fn test_android(target: &str) {
     let mut cfg = ctest::TestGenerator::new();
     cfg.define("_GNU_SOURCE", None);
 
-    // FIXME: still necessary?
-    cfg.flag("-Wno-deprecated-declarations");
-
-    // Android doesn't actually have in_port_t but it's much easier if we
-    // provide one for us to test against
-    // FIXME: still necessary?
-    cfg.define("in_port_t", Some("uint16_t"));
-
     headers! { cfg:
                "arpa/inet.h",
                "asm/mman.h",
@@ -1296,6 +1282,7 @@ fn test_android(target: &str) {
                "sys/personality.h",
                "sys/prctl.h",
                "sys/ptrace.h",
+               "sys/random.h",
                "sys/reboot.h",
                "sys/resource.h",
                "sys/sendfile.h",
@@ -1313,6 +1300,7 @@ fn test_android(target: &str) {
                "sys/un.h",
                "sys/utsname.h",
                "sys/vfs.h",
+               "sys/xattr.h",
                "sys/wait.h",
                "syslog.h",
                "termios.h",
@@ -1329,6 +1317,7 @@ fn test_android(target: &str) {
         // generate the error 'Your time_t is already 64-bit'
         cfg.header("time64.h");
     }
+
     if x86 {
         cfg.header("sys/reg.h");
     }
@@ -1336,15 +1325,14 @@ fn test_android(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            // FIXME: still required ?
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
-            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
-            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
-            | "Elf64_Chdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" => ty.to_string(),
 
             t if is_union => format!("union {}", t),
 
             t if t.ends_with("_t") => t.to_string(),
+
+            // sigval is a struct in Rust, but a union in C:
+            "sigval" => format!("union sigval"),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
@@ -1360,7 +1348,7 @@ fn test_android(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.to_string()
             }
-            // FIXME: still necessary?
+            // FIXME: appears that `epoll_event.data` is an union
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
         }
@@ -1368,8 +1356,8 @@ fn test_android(target: &str) {
 
     cfg.skip_type(move |ty| {
         match ty {
-            // sighandler_t is crazy across platforms
-            // FIXME: still necessary?
+            // FIXME: `sighandler_t` type is incorrect, see:
+            // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
             _ => false,
         }
@@ -1377,71 +1365,24 @@ fn test_android(target: &str) {
 
     cfg.skip_struct(move |ty| {
         match ty {
-            // This is actually a union, not a struct
-            // FIXME: still necessary
-            "sigval" => true,
-
-            // These structs have changed since unified headers in NDK r14b.
-            // `st_atime` and `st_atime_nsec` have changed sign.
-            // FIXME: unskip it for next major release
-            "stat" | "stat64" => true,
-
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
-            // FIXME: still necessary
             "termios2" => true,
 
             _ => false,
         }
     });
 
-    cfg.skip_signededness(move |c| {
-        match c {
-            // FIXME: still necessary?
-            "LARGE_INTEGER" | "float" | "double" => true,
-            // FIXME: still necessary?
-            n if n.starts_with("pthread") => true,
-            _ => false,
-        }
-    });
-
     cfg.skip_const(move |name| {
         match name {
+            // FIXME: deprecated: not available in any header
+            // See: https://github.com/rust-lang/libc/issues/1356
+            "ENOATTR" => true,
+
             // FIXME: still necessary?
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
             // FIXME: still necessary?
             "SIGUNUSED" => true, // removed in glibc 2.26
-
-            // weird signed extension or something like that?
-            // FIXME: still necessary?
-            "MS_NOUSER" => true,
-            // FIXME: still necessary?
-            "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
-
-            // Android uses old kernel headers
-            // These are constants used in getrandom syscall
-            // FIXME: still necessary?
-            "GRND_NONBLOCK" | "GRND_RANDOM" => true,
-
-            // Defined by libattr not libc on linux (hard to test).
-            // See constant definition for more details.
-            // FIXME: still necessary?
-            "ENOATTR" => true,
-
-            // FIXME: still necessary?
-            "BOTHER" => true,
-
-            // MFD_HUGETLB is not available in some older libc versions on the CI builders. On the
-            // x86_64 and i686 builders it seems to be available for all targets, so at least test
-            // it there.
-            // FIXME: still necessary?
-            "MFD_HUGETLB" => true,
-
-            // These change all the time from release to release of linux
-            // distros, let's just not bother trying to verify them. They
-            // shouldn't be used in code anyway...
-            // FIXME: still necessary?
-            "AF_MAX" | "PF_MAX" => true,
 
             _ => false,
         }
@@ -1450,83 +1391,51 @@ fn test_android(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: still necessary?
-            "execv" |       // crazy stuff with const/mut
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
-            // not declared in newer android toolchains
-            // FIXME: still necessary?
-            "getdtablesize" => true,
-
-            // FIXME: still necessary?
-            "dlerror" => true, // const-ness is added
-
-            // Apparently the NDK doesn't have this defined on android, but
-            // it's in a header file?
-            // FIXME: still necessary?
-            "endpwent" => true,
-
-            // Apparently res_init exists on Android, but isn't defined in a header:
-            // https://mail.gnome.org/archives/commits-list/2013-May/msg01329.html
-            // FIXME: still necessary?
-            "res_init" => true,
-
-            // Definition of those functions as changed since unified headers from NDK r14b
-            // These changes imply some API breaking changes but are still ABI compatible.
-            // We can wait for the next major release to be compliant with the new API.
-            // FIXME: unskip these for next major release
-            "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
-            "setpriority" | "personality"  => true,
-            // In Android 64 bits, these functions have been fixed since unified headers.
-            // Ignore these until next major version.
-            "bind" | "writev" | "readv" | "sendmsg" | "recvmsg"
-                if target_pointer_width == 64 => true,
+            // There are two versions of the sterror_r function, see
+            //
+            // https://linux.die.net/man/3/strerror_r
+            //
+            // An XSI-compliant version provided if:
+            //
+            // (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+            //
+            // and a GNU specific version provided if _GNU_SOURCE is defined.
+            //
+            // libc provides bindings for the XSI-compliant version, which is
+            // preferred for portable applications.
+            //
+            // We skip the test here since here _GNU_SOURCE is defined, and
+            // test the XSI version below.
+            "strerror_r" => true,
 
             _ => false,
         }
     });
 
-    cfg.skip_static(move |name| {
-        match name {
-            // Internal constant, not declared in any headers.
-            // FIXME: still necessary
-            "__progname" => true,
-            _ => false,
-        }
-    });
-
-    // FIXME: still necessary?
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
-        // sighandler_t type is super weird
-        (struct_ == "sigaction" && field == "sa_sigaction") ||
         // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value") ||
-        // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_ == "aiocb" && field == "aio_buf")
+        (struct_ == "sigevent" && field == "sigev_value")
     });
 
-    // FIXME: still necessary?
     cfg.skip_field(move |struct_, field| {
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
         (struct_ == "siginfo_t" && field == "_pad") ||
+        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
+        (struct_ == "sigaction" && field == "sa_sigaction") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
         (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
-        // signalfd had SIGSYS fields added in Linux 4.18, but no libc release has them yet.
-        (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
-                                           field == "_pad2" ||
-                                           field == "ssi_syscall" ||
+        // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
+        (struct_ == "signalfd_siginfo" && (field == "ssi_syscall" ||
                                            field == "ssi_call_addr" ||
                                            field == "ssi_arch"))
     });
-
-    // FIXME: remove
-    cfg.fn_cname(move |name, _cname| name.to_string());
 
     cfg.generate("../src/lib.rs", "main.rs");
 
@@ -1534,31 +1443,8 @@ fn test_android(target: &str) {
     // declarations. These cannot be tested normally because including both
     // `linux/fcntl.h` and `fcntl.h` fails.
     //
-    // FIXME: is still necessary?
-    let mut cfg = ctest::TestGenerator::new();
-    cfg.skip_type(|_| true)
-        .skip_fn(|_| true)
-        .skip_static(|_| true);
-    cfg.header("linux/fcntl.h");
-    cfg.header("net/if.h");
-    cfg.header("linux/if.h");
-    cfg.header("linux/quota.h");
-    cfg.header("asm/termbits.h");
-    cfg.skip_const(move |name| match name {
-        "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
-        "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => {
-            false
-        }
-        "BOTHER" => false,
-        _ => true,
-    });
-    cfg.skip_struct(|s| s != "termios2");
-    cfg.type_name(move |ty, is_struct, is_union| match ty {
-        t if is_struct => format!("struct {}", t),
-        t if is_union => format!("union {}", t),
-        t => t.to_string(),
-    });
-    cfg.generate("../src/lib.rs", "linux_fcntl.rs");
+    // This also tests strerror_r.
+    test_linux_termios2(target);
 }
 
 fn test_freebsd(target: &str) {
@@ -2776,38 +2662,7 @@ fn test_linux(target: &str) {
     // On Linux also generate another script for testing linux/fcntl declarations.
     // These cannot be tested normally because including both `linux/fcntl.h` and `fcntl.h`
     // fails on a lot of platforms.
-    let mut cfg = ctest::TestGenerator::new();
-    cfg.skip_type(|_| true)
-        .skip_fn(|_| true)
-        .skip_static(|_| true);
-    // musl defines these directly in `fcntl.h`
-    if musl {
-        cfg.header("fcntl.h");
-    } else {
-        cfg.header("linux/fcntl.h");
-    }
-    if !musl {
-        cfg.header("net/if.h");
-        cfg.header("linux/if.h");
-    }
-    cfg.header("linux/quota.h");
-    cfg.header("asm/termbits.h");
-    cfg.skip_const(move |name| match name {
-        "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
-        "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => {
-            false
-        }
-        "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1" if mips => false,
-        "BOTHER" => false,
-        _ => true,
-    });
-    cfg.skip_struct(|s| s != "termios2");
-    cfg.type_name(move |ty, is_struct, is_union| match ty {
-        t if is_struct => format!("struct {}", t),
-        t if is_union => format!("union {}", t),
-        t => t.to_string(),
-    });
-    cfg.generate("../src/lib.rs", "linux_fcntl.rs");
+    test_linux_termios2(target);
 
     // Test Elf64_Phdr and Elf32_Phdr
     // These types have a field called `p_type`, but including
@@ -2828,4 +2683,46 @@ fn test_linux(target: &str) {
     });
     cfg.header("elf.h");
     cfg.generate("../src/lib.rs", "linux_elf.rs");
+}
+
+fn test_linux_termios2(target: &str) {
+    assert!(target.contains("linux") || target.contains("android"));
+    let musl = target.contains("musl");
+    let mut cfg = ctest::TestGenerator::new();
+    cfg.skip_type(|_| true)
+        .skip_fn(|f| match f {
+            "strerror_r" => false,
+            _ => true,
+        })
+        .skip_static(|_| true);
+    headers! {
+        cfg:
+      "linux/quota.h",
+        "asm/termbits.h",
+        "string.h"
+    }
+    if musl {
+        cfg.header("fcntl.h");
+    } else {
+        cfg.header("linux/fcntl.h");
+    }
+    if !musl {
+        cfg.header("net/if.h");
+        cfg.header("linux/if.h");
+    }
+
+    cfg.skip_const(move |name| match name {
+        "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
+        "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => {
+            false
+        }
+        _ => true,
+    });
+    cfg.skip_struct(|s| s != "termios2");
+    cfg.type_name(move |ty, is_struct, is_union| match ty {
+        t if is_struct => format!("struct {}", t),
+        t if is_union => format!("union {}", t),
+        t => t.to_string(),
+    });
+    cfg.generate("../src/lib.rs", "linux_fcntl.rs");
 }

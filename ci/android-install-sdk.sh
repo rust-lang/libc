@@ -18,46 +18,56 @@ set -ex
 # located in https://github.com/appunite/docker by just wrapping it in a script
 # which apparently magically accepts the licenses.
 
+SDK=4333796
 mkdir sdk
-curl --retry 10 https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip -O
-unzip -d sdk sdk-tools-linux-3859397.zip
+curl --retry 20 https://dl.google.com/android/repository/sdk-tools-linux-${SDK}.zip -O
+unzip -q -d sdk sdk-tools-linux-${SDK}.zip
 
 case "$1" in
   arm | armv7)
-    abi=armeabi-v7a
+    api=24
+    image="system-images;android-${api};google_apis;armeabi-v7a"
     ;;
-
   aarch64)
-    abi=arm64-v8a
+    api=24
+    image="system-images;android-${api};google_apis;arm64-v8a"
     ;;
-
   i686)
-    abi=x86
+    api=28
+    image="system-images;android-${api};default;x86"
     ;;
-
   x86_64)
-    abi=x86_64
+    api=28
+    image="system-images;android-${api};default;x86_64"
     ;;
-
   *)
     echo "invalid arch: $1"
     exit 1
     ;;
 esac;
 
-# See: https://stackoverflow.com/a/51644855/1422197
-export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+# Try to fix warning about missing file.
+# See https://askubuntu.com/a/1078784
+mkdir -p /root/.android/
+echo '### User Sources for Android SDK Manager' >> /root/.android/repositories.cfg
+echo '#Fri Nov 03 10:11:27 CET 2017 count=0' >> /root/.android/repositories.cfg
+
+# Print all available packages
+# yes | ./sdk/tools/bin/sdkmanager --list --verbose
 
 # --no_https avoids
-     # javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: No trusted certificate found
-yes | ./sdk/tools/bin/sdkmanager --licenses --no_https
+# javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: No trusted certificate found
+#
+# | grep -v = || true    removes the progress bar output from the sdkmanager
+# which produces an insane amount of output.
+yes | ./sdk/tools/bin/sdkmanager --licenses --no_https | grep -v = || true
 yes | ./sdk/tools/bin/sdkmanager --no_https \
         "emulator" \
         "platform-tools" \
-        "platforms;android-24" \
-        "system-images;android-24;default;$abi"
+        "platforms;android-${api}" \
+        "${image}" | grep -v = || true
 
 echo "no" |
     ./sdk/tools/bin/avdmanager create avd \
         --name "${1}" \
-        --package "system-images;android-24;default;$abi"
+        --package "${image}" | grep -v = || true

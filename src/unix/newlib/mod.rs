@@ -598,6 +598,11 @@ f! {
 }
 
 extern {
+    #[cfg_attr(target_os = "linux",
+               link_name = "__xpg_strerror_r")]
+    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
+                      buflen: ::size_t) -> ::c_int;
+
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     pub fn sem_init(sem: *mut sem_t,
                     pshared: ::c_int,

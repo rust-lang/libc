@@ -14,6 +14,7 @@ pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type loff_t = ::c_longlong;
+pub type pthread_key_t = ::c_uint;
 
 pub type __u8 = ::c_uchar;
 pub type __u16 = ::c_ushort;
@@ -849,6 +850,9 @@ pub const _PC_ALLOC_SIZE_MIN: ::c_int = 18;
 pub const _PC_SYMLINK_MAX: ::c_int = 19;
 pub const _PC_2_SYMLINKS: ::c_int = 20;
 
+pub const MS_NOUSER: ::c_ulong = 0x80000000;
+pub const MS_RMT_MASK: ::c_ulong = 0x800051;
+
 pub const _SC_ARG_MAX: ::c_int = 0;
 pub const _SC_CHILD_MAX: ::c_int = 1;
 pub const _SC_CLK_TCK: ::c_int = 2;
@@ -1436,9 +1440,10 @@ pub const FALLOC_FL_ZERO_RANGE: ::c_int = 0x10;
 pub const FALLOC_FL_INSERT_RANGE: ::c_int = 0x20;
 pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
 
-// On Linux, libc doesn't define this constant, libattr does instead.
-// We still define it for Linux as it's defined by libc on other platforms,
-// and it's mentioned in the man pages for getxattr and setxattr.
+#[deprecated(
+    since = "0.2.55",
+    note = "ENOATTR is not available on Linux; use ENODATA instead"
+)]
 pub const ENOATTR: ::c_int = ::ENODATA;
 
 pub const SO_ORIGINAL_DST: ::c_int = 80;
@@ -2080,6 +2085,11 @@ f! {
 }
 
 extern {
+    #[cfg_attr(not(target_env = "musl"),
+               link_name = "__xpg_strerror_r")]
+    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
+                      buflen: ::size_t) -> ::c_int;
+
     pub fn abs(i: ::c_int) -> ::c_int;
     pub fn atof(s: *const ::c_char) -> ::c_double;
     pub fn labs(i: ::c_long) -> ::c_long;

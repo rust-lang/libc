@@ -16,11 +16,11 @@ s! {
         __pad2: ::c_int,
         pub st_blocks: ::c_long,
         pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_ulong,
+        pub st_atime_nsec: ::c_long,
         pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_ulong,
+        pub st_mtime_nsec: ::c_long,
         pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_ulong,
+        pub st_ctime_nsec: ::c_long,
         __unused4: ::c_uint,
         __unused5: ::c_uint,
     }
@@ -39,11 +39,11 @@ s! {
         __pad2: ::c_int,
         pub st_blocks: ::c_long,
         pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_ulong,
+        pub st_atime_nsec: ::c_long,
         pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_ulong,
+        pub st_mtime_nsec: ::c_long,
         pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_ulong,
+        pub st_ctime_nsec: ::c_long,
         __unused4: ::c_uint,
         __unused5: ::c_uint,
     }
@@ -322,4 +322,4 @@ pub const SYS_pwritev2: ::c_long = 287;
 pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
-pub const SYS_syscalls: ::c_long = 291;
+pub const SYS_syscalls: ::c_long = 292;
