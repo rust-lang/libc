@@ -232,9 +232,6 @@ matrix:
 
 
   allow_failures:
-      # FIXME: android build bots time out irregularly
-      - env: TARGET=aarch64-linux-android
-      - env: TARGET=arm-linux-androideabi
       # FIXME: https://github.com/rust-lang/libc/issues/1226
       - env: TARGET=asmjs-unknown-emscripten
       - env: TARGET=wasm32-unknown-emscripten
