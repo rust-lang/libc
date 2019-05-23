@@ -1075,12 +1075,15 @@ pub const TMP_MAX : ::c_uint = 0x7fffffff;
 pub const NI_MAXHOST: ::size_t = 256;
 
 pub const RTLD_LOCAL: ::c_int = 0;
+
 pub const CTL_MAXNAME: ::c_int = 12;
+
 pub const CTLTYPE_NODE: ::c_int = 1;
 pub const CTLTYPE_INT: ::c_int = 2;
 pub const CTLTYPE_STRING: ::c_int = 3;
 pub const CTLTYPE_QUAD: ::c_int = 4;
 pub const CTLTYPE_STRUCT: ::c_int = 5;
+
 pub const CTL_UNSPEC: ::c_int = 0;
 pub const CTL_KERN: ::c_int = 1;
 pub const CTL_VM: ::c_int = 2;
@@ -1092,7 +1095,9 @@ pub const CTL_MACHDEP: ::c_int = 7;
 pub const CTL_DDB: ::c_int = 9;
 pub const CTL_VFS: ::c_int = 10;
 pub const CTL_MAXID: ::c_int = 11;
+
 pub const HW_NCPUONLINE: ::c_int = 25;
+
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
 pub const KERN_OSREV: ::c_int = 3;
@@ -1169,7 +1174,9 @@ pub const KERN_CONSBUFSIZE: ::c_int = 82;
 pub const KERN_CONSBUF: ::c_int = 83;
 pub const KERN_AUDIO: ::c_int = 84;
 pub const KERN_CPUSTATS: ::c_int = 85;
-pub const KERN_MAXID: ::c_int = 86;
+pub const KERN_PFSTATUS: ::c_int = 86;
+pub const KERN_MAXID: ::c_int = 87;
+
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
 pub const KERN_PROC_PGRP: ::c_int = 2;
@@ -1179,13 +1186,16 @@ pub const KERN_PROC_UID: ::c_int = 5;
 pub const KERN_PROC_RUID: ::c_int = 6;
 pub const KERN_PROC_KTHREAD: ::c_int = 7;
 pub const KERN_PROC_SHOW_THREADS: ::c_int = 0x40000000;
+
 pub const KERN_SYSVIPC_MSG_INFO: ::c_int = 1;
 pub const KERN_SYSVIPC_SEM_INFO: ::c_int = 2;
 pub const KERN_SYSVIPC_SHM_INFO: ::c_int = 3;
+
 pub const KERN_PROC_ARGV: ::c_int = 1;
 pub const KERN_PROC_NARGV: ::c_int = 2;
 pub const KERN_PROC_ENV: ::c_int = 3;
 pub const KERN_PROC_NENV: ::c_int = 4;
+
 pub const KI_NGROUPS: ::c_int = 16;
 pub const KI_MAXCOMLEN: ::c_int = 24;
 pub const KI_WMESGLEN: ::c_int = 8;
