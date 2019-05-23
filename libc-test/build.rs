@@ -1337,6 +1337,9 @@ fn test_android(target: &str) {
 
             t if t.ends_with("_t") => t.to_string(),
 
+            // sigval is a struct in Rust, but a union in C:
+            "sigval" => format!("union sigval"),
+
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
 
@@ -1400,6 +1403,23 @@ fn test_android(target: &str) {
             "execvpe" |
             "fexecve" => true,
 
+            // There are two versions of the sterror_r function, see
+            //
+            // https://linux.die.net/man/3/strerror_r
+            //
+            // An XSI-compliant version provided if:
+            //
+            // (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+            //
+            // and a GNU specific version provided if _GNU_SOURCE is defined.
+            //
+            // libc provides bindings for the XSI-compliant version, which is
+            // preferred for portable applications.
+            //
+            // We skip the test here since here _GNU_SOURCE is defined, and
+            // test the XSI version below.
+            "strerror_r" => true,
+
             // not declared in newer android toolchains
             // FIXME: still necessary?
             "getdtablesize" => true,
@@ -1459,6 +1479,8 @@ fn test_android(target: &str) {
     // On Android also generate another script for testing linux/fcntl
     // declarations. These cannot be tested normally because including both
     // `linux/fcntl.h` and `fcntl.h` fails.
+    //
+    // This also tests strerror_r.
     test_linux_termios2();
 }
 
@@ -2701,7 +2723,10 @@ fn test_linux(target: &str) {
 fn test_linux_termios2() {
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_type(|_| true)
-        .skip_fn(|_| true)
+        .skip_fn(|f| match f {
+            "strerror_r" => false,
+            _ => true,
+        })
         .skip_static(|_| true);
     headers! {
         cfg:
@@ -2709,7 +2734,8 @@ fn test_linux_termios2() {
         "net/if.h",
         "linux/if.h",
         "linux/quota.h",
-        "asm/termbits.h"
+        "asm/termbits.h",
+        "string.h"
     }
     cfg.skip_const(move |name| match name {
         "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,

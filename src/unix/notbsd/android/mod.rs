@@ -1931,6 +1931,9 @@ extern {
 }
 
 extern {
+    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
+                      buflen: ::size_t) -> ::c_int;
+
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::timezone) -> ::c_int;
     pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
