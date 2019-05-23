@@ -1444,7 +1444,7 @@ fn test_android(target: &str) {
     // `linux/fcntl.h` and `fcntl.h` fails.
     //
     // This also tests strerror_r.
-    test_linux_termios2();
+    test_linux_termios2(target);
 }
 
 fn test_freebsd(target: &str) {
@@ -2660,7 +2660,7 @@ fn test_linux(target: &str) {
     // On Linux also generate another script for testing linux/fcntl declarations.
     // These cannot be tested normally because including both `linux/fcntl.h` and `fcntl.h`
     // fails on a lot of platforms.
-    test_linux_termios2();
+    test_linux_termios2(target);
 
     // Test Elf64_Phdr and Elf32_Phdr
     // These types have a field called `p_type`, but including
@@ -2683,7 +2683,9 @@ fn test_linux(target: &str) {
     cfg.generate("../src/lib.rs", "linux_elf.rs");
 }
 
-fn test_linux_termios2() {
+fn test_linux_termios2(target: &str) {
+    assert!(target.contains("linux") || target.contains("android"));
+    let musl = target.contains("musl");
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_type(|_| true)
         .skip_fn(|f| match f {
@@ -2693,13 +2695,20 @@ fn test_linux_termios2() {
         .skip_static(|_| true);
     headers! {
         cfg:
-        "linux/fcntl.h",
-        "net/if.h",
-        "linux/if.h",
-        "linux/quota.h",
+      "linux/quota.h",
         "asm/termbits.h",
         "string.h"
     }
+    if musl {
+        cfg.header("fcntl.h");
+    } else {
+        cfg.header("linux/fcntl.h");
+    }
+    if !musl {
+        cfg.header("net/if.h");
+        cfg.header("linux/if.h");
+    }
+
     cfg.skip_const(move |name| match name {
         "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
         "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => {
