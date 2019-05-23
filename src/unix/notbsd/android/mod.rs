@@ -19,7 +19,6 @@ pub type nfds_t = ::c_uint;
 pub type rlim_t = ::c_ulong;
 pub type dev_t = ::c_ulong;
 pub type ino_t = ::c_ulong;
-pub type id_t = ::c_uint;
 pub type __CPU_BITTYPE = ::c_ulong;
 pub type idtype_t = ::c_int;
 pub type loff_t = ::c_longlong;
@@ -2020,7 +2019,7 @@ extern {
                  fstype: *const ::c_char,
                  flags: ::c_ulong,
                  data: *const ::c_void) -> ::c_int;
-    pub fn personality(persona: ::c_ulong) -> ::c_int;
+    pub fn personality(persona: ::c_uint) -> ::c_int;
     pub fn prctl(option: ::c_int, ...) -> ::c_int;
     pub fn sched_getparam(pid: ::pid_t, param: *mut ::sched_param) -> ::c_int;
     pub fn ppoll(fds: *mut ::pollfd,
