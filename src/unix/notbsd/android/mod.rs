@@ -1933,7 +1933,7 @@ extern {
 extern {
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::timezone) -> ::c_int;
-    pub fn madvise(addr: *const ::c_void, len: ::size_t, advice: ::c_int)
+    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
                    -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn msync(addr: *const ::c_void, len: ::size_t,
