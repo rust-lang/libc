@@ -1414,15 +1414,6 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_static(move |name| {
-        match name {
-            // Internal constant, not declared in any headers.
-            // FIXME: still necessary
-            "__progname" => true,
-            _ => false,
-        }
-    });
-
     // FIXME: still necessary?
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.

@@ -1927,10 +1927,6 @@ f! {
 }
 
 extern {
-    static mut __progname: *mut ::c_char;
-}
-
-extern {
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
                       buflen: ::size_t) -> ::c_int;
 
