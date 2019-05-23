@@ -1936,7 +1936,7 @@ extern {
     pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
                    -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn msync(addr: *const ::c_void, len: ::size_t,
+    pub fn msync(addr: *mut ::c_void, len: ::size_t,
                  flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
