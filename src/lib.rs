@@ -157,6 +157,9 @@ cfg_if! {
 
         mod xous;
         pub use xous::*;
+    } else if #[cfg(target_os = "zephyr")] {
+        mod zephyr;
+        pub use zephyr::*;
     } else {
         // non-supported targets: empty...
     }
