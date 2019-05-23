@@ -12,7 +12,7 @@
 set -ex
 
 NDK=android-ndk-r19c
-curl --retry 10 -O https://dl.google.com/android/repository/${NDK}-linux-x86_64.zip
+curl --retry 20 -O https://dl.google.com/android/repository/${NDK}-linux-x86_64.zip
 unzip -q ${NDK}-linux-x86_64.zip
 
 case "$1" in
