@@ -81,6 +81,7 @@ mipsel-unknown-linux-gnu \
 mipsel-unknown-linux-gnu \
 mipsel-unknown-linux-musl \
 powerpc-unknown-linux-gnu \
+powerpc64-unknown-freebsd \
 powerpc64-unknown-linux-gnu \
 powerpc64le-unknown-linux-gnu \
 s390x-unknown-linux-gnu \
