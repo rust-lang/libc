@@ -61,6 +61,7 @@ test_target() {
 }
 
 RUST_LINUX_TARGETS="\
+aarch64-unknown-freebsd \
 aarch64-linux-android \
 aarch64-unknown-linux-gnu \
 arm-linux-androideabi \
