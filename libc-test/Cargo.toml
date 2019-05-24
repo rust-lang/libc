@@ -13,8 +13,8 @@ cc = "1.0"
 ctest = "0.2"
 
 [features]
-default = [ "use_std" ]
-use_std = [ "libc/use_std" ]
+default = [ "std" ]
+std = [ "libc/std" ]
 align = [ "libc/align" ]
 extra_traits = [ "libc/extra_traits" ]
 
