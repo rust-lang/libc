@@ -45,12 +45,7 @@ impl ::Copy for DIR {}
 impl ::Clone for DIR {
     fn clone(&self) -> DIR { *self }
 }
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum locale_t {}
-impl ::Copy for locale_t {}
-impl ::Clone for locale_t {
-    fn clone(&self) -> locale_t { *self }
-}
+pub type locale_t = *mut :: c_void;
 
 s! {
     pub struct group {
