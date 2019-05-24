@@ -9,6 +9,13 @@ fn main() {
         std::env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let align_cargo_feature = std::env::var("CARGO_FEATURE_ALIGN").is_ok();
 
+    if std::env::var("CARGO_FEATURE_USE_STD").is_ok() {
+        println!(
+            "cargo:warning=\"libc's use_std cargo feature is deprecated since libc 0.2.55; \
+             please consider using the `std` cargo feature instead\""
+        );
+    }
+
     // Rust >= 1.15 supports private module use:
     if rustc_minor_ver >= 15 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_priv_mod_use");

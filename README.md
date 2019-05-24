@@ -28,12 +28,14 @@ libc = "0.2"
 
 ## Features
 
-* `use_std`: by default `libc` links to the standard library. Disable this
+* `std`: by default `libc` links to the standard library. Disable this
   feature remove this dependency and be able to use `libc` in `#![no_std]`
   crates.
 
 * `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
   This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
+
+* **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
 
 ## Rust version support
 

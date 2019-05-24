@@ -307,7 +307,7 @@ pub const ATF_USETRAILERS: ::c_int = 0x10;
 cfg_if! {
     if #[cfg(target_os = "l4re")] {
         // required libraries for L4Re are linked externally, ATM
-    } else if #[cfg(feature = "use_std")] {
+    } else if #[cfg(feature = "std")] {
         // cargo build, don't pull in anything extra as the libstd dep
         // already pulls in all libs.
     } else if #[cfg(target_env = "musl")] {
