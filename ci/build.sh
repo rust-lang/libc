@@ -61,7 +61,6 @@ test_target() {
 }
 
 RUST_LINUX_TARGETS="\
-aarch64-unknown-freebsd \
 aarch64-linux-android \
 aarch64-unknown-linux-gnu \
 arm-linux-androideabi \
@@ -82,7 +81,6 @@ mipsel-unknown-linux-gnu \
 mipsel-unknown-linux-gnu \
 mipsel-unknown-linux-musl \
 powerpc-unknown-linux-gnu \
-powerpc64-unknown-freebsd \
 powerpc64-unknown-linux-gnu \
 powerpc64le-unknown-linux-gnu \
 s390x-unknown-linux-gnu \
@@ -113,10 +111,12 @@ x86_64-unknown-cloudabi \
 "
 
 RUST_NIGHTLY_LINUX_TARGETS="\
+aarch64-unknown-freebsd \
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
+powerpc64-unknown-freebsd \
 wasm32-wasi \
 x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
