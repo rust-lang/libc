@@ -111,12 +111,10 @@ x86_64-unknown-cloudabi \
 "
 
 RUST_NIGHTLY_LINUX_TARGETS="\
-aarch64-unknown-freebsd \
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
-powerpc64-unknown-freebsd \
 wasm32-wasi \
 x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
@@ -172,6 +170,7 @@ done
 RUST_LINUX_NO_CORE_TARGETS="\
 aarch64-pc-windows-msvc \
 aarch64-unknown-cloudabi \
+aarch64-unknown-freebsd \
 aarch64-unknown-hermit \
 aarch64-unknown-netbsd \
 aarch64-unknown-openbsd \
@@ -191,6 +190,7 @@ mipsel-unknown-linux-uclibc \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \
+powerpc64-unknown-freebsd \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 sparc64-unknown-netbsd \
