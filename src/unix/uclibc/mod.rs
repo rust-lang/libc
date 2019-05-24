@@ -1583,6 +1583,8 @@ extern {
 
     pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
                          advise: ::c_int) -> ::c_int;
+    pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
                      times: *const ::timespec, flag: ::c_int) -> ::c_int;

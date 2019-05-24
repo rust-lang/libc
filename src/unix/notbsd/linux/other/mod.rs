@@ -1,3 +1,4 @@
+pub type pthread_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
 
 s! {
@@ -307,6 +308,8 @@ cfg_if! {
         }
     }
 }
+
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const __UT_LINESIZE: usize = 32;
 pub const __UT_NAMESIZE: usize = 32;
@@ -922,7 +925,7 @@ pub const M_ARENA_TEST: ::c_int = -7;
 pub const M_ARENA_MAX: ::c_int = -8;
 
 #[doc(hidden)]
-pub const AF_MAX: ::c_int = 42;
+pub const AF_MAX: ::c_int = 45;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 

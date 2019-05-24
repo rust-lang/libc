@@ -1,5 +1,6 @@
 use ::pthread_mutex_t;
 
+pub type pthread_t = c_ulong;
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
 pub type c_char = u8;
@@ -352,6 +353,8 @@ cfg_if! {
     }
 }
 
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
+
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
@@ -638,6 +641,10 @@ pub const SIGURG: ::c_int = 23;
 pub const SIGIO: ::c_int = 29;
 pub const SIGSYS: ::c_int = 31;
 pub const SIGSTKFLT: ::c_int = 16;
+#[deprecated(
+    since = "0.2.55",
+    note = "Use SIGSYS instead"
+)]
 pub const SIGUNUSED: ::c_int = 31;
 pub const SIGTTIN: ::c_int = 21;
 pub const SIGTTOU: ::c_int = 22;

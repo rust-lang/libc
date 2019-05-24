@@ -493,11 +493,11 @@ pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
 #[doc(hidden)]
-pub const AF_MAX: ::c_int = 42;
+pub const AF_MAX: ::c_int = 45;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
-pub const RLIMIT_NLIMITS: ::c_int = 16;
+pub const RLIMIT_NLIMITS: ::c_int = 15;
 pub const TIOCINQ: ::c_int = ::FIONREAD;
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;

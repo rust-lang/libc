@@ -1,3 +1,4 @@
+pub type pthread_t = c_ulong;
 pub type shmatt_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 pub type msglen_t = ::c_ulong;
@@ -69,6 +70,8 @@ s! {
         pub nla_type: u16,
     }
 }
+
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 

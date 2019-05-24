@@ -4,20 +4,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc make libc6-dev git curl ca-certificates \
   gcc-arm-linux-gnueabihf qemu-user
 
-RUN curl --retry 5 https://www.musl-libc.org/releases/musl-1.1.22.tar.gz | tar xzf -
-WORKDIR /musl-1.1.22
-RUN CC=arm-linux-gnueabihf-gcc \
-    CFLAGS="-march=armv6 -marm -mfpu=vfp" \
-    ./configure --prefix=/musl-arm --enable-wrapper=yes
-RUN make install -j4
-
-# Install linux kernel headers sanitized for use with musl
-RUN curl --retry 5 -L https://github.com/sabotage-linux/kernel-headers/archive/v3.12.6-6.tar.gz | \
-    tar xzf - && \
-    cd kernel-headers-3.12.6-6 && \
-    make ARCH=arm prefix=/musl-arm install -j4 && \
-    cd .. && \
-    rm -rf kernel-headers-3.12.6-6
+COPY install-musl.sh /
+RUN sh /install-musl.sh arm
 
 ENV PATH=$PATH:/musl-arm/bin:/rust/bin \
     CC_arm_unknown_linux_musleabihf=musl-gcc \

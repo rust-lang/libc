@@ -4,6 +4,7 @@ pub type tcflag_t = ::c_uint;
 pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
+pub type __rlimit_resource_t = ::c_uint;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -1305,7 +1306,8 @@ extern {
     pub fn fstatat64(dirfd: ::c_int, pathname: *const c_char,
                      buf: *mut stat64, flags: ::c_int) -> ::c_int;
     pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
-    pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
+    pub fn getrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *mut rlimit64) -> ::c_int;
     pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
     pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
     pub fn mmap64(addr: *mut ::c_void,
@@ -1334,7 +1336,8 @@ extern {
     pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
     pub fn readdir64_r(dirp: *mut ::DIR, entry: *mut ::dirent64,
                        result: *mut *mut ::dirent64) -> ::c_int;
-    pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *const rlimit64) -> ::c_int;
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
     pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
 

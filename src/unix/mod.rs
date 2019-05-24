@@ -846,12 +846,6 @@ extern {
 
     pub fn signal(signum: ::c_int, handler: sighandler_t) -> sighandler_t;
 
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "getrlimit$UNIX2003")]
-    pub fn getrlimit(resource: ::c_int, rlim: *mut rlimit) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "setrlimit$UNIX2003")]
-    pub fn setrlimit(resource: ::c_int, rlim: *const rlimit) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getrusage50")]
     pub fn getrusage(resource: ::c_int, usage: *mut rusage) -> ::c_int;
 

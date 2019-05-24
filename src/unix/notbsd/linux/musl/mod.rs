@@ -1,3 +1,4 @@
+pub type pthread_t = *mut ::c_void;
 pub type clock_t = c_long;
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
@@ -168,6 +169,8 @@ cfg_if! {
     }
 }
 
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
+
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
@@ -239,6 +242,10 @@ pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
 pub const TCP_FASTOPEN: ::c_int = 23;
 pub const TCP_TIMESTAMP: ::c_int = 24;
 
+#[deprecated(
+    since = "0.2.55",
+    note = "Use SIGSYS instead"
+)]
 pub const SIGUNUSED: ::c_int = ::SIGSYS;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
