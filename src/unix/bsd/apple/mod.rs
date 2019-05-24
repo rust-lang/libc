@@ -11,7 +11,6 @@ pub type mode_t = u16;
 pub type nlink_t = u16;
 pub type blksize_t = i32;
 pub type rlim_t = u64;
-pub type mach_timebase_info_data_t = mach_timebase_info;
 pub type pthread_key_t = c_ulong;
 pub type sigset_t = u32;
 pub type clockid_t = ::c_uint;
@@ -26,12 +25,17 @@ pub type idtype_t = ::c_uint;
 pub type integer_t = ::c_int;
 pub type cpu_type_t = integer_t;
 pub type cpu_subtype_t = integer_t;
-pub type vm_prot_t = ::c_int;
+
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
 pub type key_t = ::c_int;
 pub type shmatt_t = ::c_ushort;
-pub type vm_size_t = ::uintptr_t;
+
+deprecated_mach! {
+    pub type vm_prot_t = ::c_int;
+    pub type vm_size_t = ::uintptr_t;
+    pub type mach_timebase_info_data_t = mach_timebase_info;
+}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -83,6 +87,10 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
+    #[deprecated(
+        since = "0.2.55",
+        note = "Use the `mach` crate instead",
+    )]
     pub struct mach_timebase_info {
         pub numer: u32,
         pub denom: u32,
@@ -353,6 +361,10 @@ s! {
         pub cr_groups: [::gid_t;16]
     }
 
+    #[deprecated(
+        since = "0.2.55",
+        note = "Use the `mach` crate instead",
+    )]
     pub struct mach_header {
         pub magic: u32,
         pub cputype: cpu_type_t,
@@ -363,6 +375,10 @@ s! {
         pub flags: u32,
     }
 
+    #[deprecated(
+        since = "0.2.55",
+        note = "Use the `mach` crate instead",
+    )]
     pub struct mach_header_64 {
         pub magic: u32,
         pub cputype: cpu_type_t,
@@ -1361,103 +1377,106 @@ pub const MAP_FIXED: ::c_int = 0x0010;
 pub const MAP_ANON: ::c_int = 0x1000;
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
-pub const VM_FLAGS_FIXED: ::c_int = 0x0000;
-pub const VM_FLAGS_ANYWHERE: ::c_int = 0x0001;
-pub const VM_FLAGS_PURGABLE: ::c_int = 0x0002;
-pub const VM_FLAGS_RANDOM_ADDR: ::c_int = 0x0008;
-pub const VM_FLAGS_NO_CACHE: ::c_int = 0x0010;
-pub const VM_FLAGS_RESILIENT_CODESIGN: ::c_int = 0x0020;
-pub const VM_FLAGS_RESILIENT_MEDIA: ::c_int = 0x0040;
-pub const VM_FLAGS_OVERWRITE: ::c_int = 0x4000;
-pub const VM_FLAGS_SUPERPAGE_MASK: ::c_int = 0x70000;
-pub const VM_FLAGS_RETURN_DATA_ADDR: ::c_int = 0x100000;
-pub const VM_FLAGS_RETURN_4K_DATA_ADDR: ::c_int = 0x800000;
-pub const VM_FLAGS_ALIAS_MASK: ::c_int = 0xFF000000;
-pub const VM_FLAGS_USER_ALLOCATE: ::c_int = 0xff07401f;
-pub const VM_FLAGS_USER_MAP: ::c_int = 0xff97401f;
-pub const VM_FLAGS_USER_REMAP: ::c_int = VM_FLAGS_FIXED | VM_FLAGS_ANYWHERE |
-                                        VM_FLAGS_RANDOM_ADDR |
-                                        VM_FLAGS_OVERWRITE |
-                                        VM_FLAGS_RETURN_DATA_ADDR |
-                                        VM_FLAGS_RESILIENT_CODESIGN;
+deprecated_mach! {
+    pub const VM_FLAGS_FIXED: ::c_int = 0x0000;
+    pub const VM_FLAGS_ANYWHERE: ::c_int = 0x0001;
+    pub const VM_FLAGS_PURGABLE: ::c_int = 0x0002;
+    pub const VM_FLAGS_RANDOM_ADDR: ::c_int = 0x0008;
+    pub const VM_FLAGS_NO_CACHE: ::c_int = 0x0010;
+    pub const VM_FLAGS_RESILIENT_CODESIGN: ::c_int = 0x0020;
+    pub const VM_FLAGS_RESILIENT_MEDIA: ::c_int = 0x0040;
+    pub const VM_FLAGS_OVERWRITE: ::c_int = 0x4000;
+    pub const VM_FLAGS_SUPERPAGE_MASK: ::c_int = 0x70000;
+    pub const VM_FLAGS_RETURN_DATA_ADDR: ::c_int = 0x100000;
+    pub const VM_FLAGS_RETURN_4K_DATA_ADDR: ::c_int = 0x800000;
+    pub const VM_FLAGS_ALIAS_MASK: ::c_int = 0xFF000000;
+    pub const VM_FLAGS_USER_ALLOCATE: ::c_int = 0xff07401f;
+    pub const VM_FLAGS_USER_MAP: ::c_int = 0xff97401f;
+    pub const VM_FLAGS_USER_REMAP: ::c_int = VM_FLAGS_FIXED |
+                                             VM_FLAGS_ANYWHERE |
+                                             VM_FLAGS_RANDOM_ADDR |
+                                             VM_FLAGS_OVERWRITE |
+                                             VM_FLAGS_RETURN_DATA_ADDR |
+                                             VM_FLAGS_RESILIENT_CODESIGN;
 
-pub const VM_FLAGS_SUPERPAGE_SHIFT: ::c_int = 16;
-pub const SUPERPAGE_NONE: ::c_int = 0;
-pub const SUPERPAGE_SIZE_ANY: ::c_int = 1;
-pub const VM_FLAGS_SUPERPAGE_NONE: ::c_int = SUPERPAGE_NONE <<
-                                             VM_FLAGS_SUPERPAGE_SHIFT;
-pub const VM_FLAGS_SUPERPAGE_SIZE_ANY: ::c_int = SUPERPAGE_SIZE_ANY <<
+    pub const VM_FLAGS_SUPERPAGE_SHIFT: ::c_int = 16;
+    pub const SUPERPAGE_NONE: ::c_int = 0;
+    pub const SUPERPAGE_SIZE_ANY: ::c_int = 1;
+    pub const VM_FLAGS_SUPERPAGE_NONE: ::c_int = SUPERPAGE_NONE <<
                                                  VM_FLAGS_SUPERPAGE_SHIFT;
-pub const SUPERPAGE_SIZE_2MB: ::c_int = 2;
-pub const VM_FLAGS_SUPERPAGE_SIZE_2MB: ::c_int = SUPERPAGE_SIZE_2MB <<
-                                                 VM_FLAGS_SUPERPAGE_SHIFT;
+    pub const VM_FLAGS_SUPERPAGE_SIZE_ANY: ::c_int = SUPERPAGE_SIZE_ANY <<
+                                                     VM_FLAGS_SUPERPAGE_SHIFT;
+    pub const SUPERPAGE_SIZE_2MB: ::c_int = 2;
+    pub const VM_FLAGS_SUPERPAGE_SIZE_2MB: ::c_int = SUPERPAGE_SIZE_2MB <<
+                                                     VM_FLAGS_SUPERPAGE_SHIFT;
 
-pub const VM_MEMORY_MALLOC: ::c_int = 1;
-pub const VM_MEMORY_MALLOC_SMALL: ::c_int = 2;
-pub const VM_MEMORY_MALLOC_LARGE: ::c_int = 3;
-pub const VM_MEMORY_MALLOC_HUGE: ::c_int = 4;
-pub const VM_MEMORY_SBRK: ::c_int = 5;
-pub const VM_MEMORY_REALLOC: ::c_int = 6;
-pub const VM_MEMORY_MALLOC_TINY: ::c_int = 7;
-pub const VM_MEMORY_MALLOC_LARGE_REUSABLE: ::c_int = 8;
-pub const VM_MEMORY_MALLOC_LARGE_REUSED: ::c_int = 9;
-pub const VM_MEMORY_ANALYSIS_TOOL: ::c_int = 10;
-pub const VM_MEMORY_MALLOC_NANO: ::c_int = 11;
-pub const VM_MEMORY_MACH_MSG: ::c_int = 20;
-pub const VM_MEMORY_IOKIT: ::c_int = 21;
-pub const VM_MEMORY_STACK: ::c_int = 30;
-pub const VM_MEMORY_GUARD: ::c_int = 31;
-pub const VM_MEMORY_SHARED_PMAP: ::c_int = 32;
-pub const VM_MEMORY_DYLIB: ::c_int = 33;
-pub const VM_MEMORY_OBJC_DISPATCHERS: ::c_int = 34;
-pub const VM_MEMORY_UNSHARED_PMAP: ::c_int = 35;
-pub const VM_MEMORY_APPKIT: ::c_int = 40;
-pub const VM_MEMORY_FOUNDATION: ::c_int = 41;
-pub const VM_MEMORY_COREGRAPHICS: ::c_int = 42;
-pub const VM_MEMORY_CORESERVICES: ::c_int = 43;
-pub const VM_MEMORY_CARBON: ::c_int = VM_MEMORY_CORESERVICES;
-pub const VM_MEMORY_JAVA: ::c_int = 44;
-pub const VM_MEMORY_COREDATA: ::c_int = 45;
-pub const VM_MEMORY_COREDATA_OBJECTIDS: ::c_int = 46;
-pub const VM_MEMORY_ATS: ::c_int = 50;
-pub const VM_MEMORY_LAYERKIT: ::c_int = 51;
-pub const VM_MEMORY_CGIMAGE: ::c_int = 52;
-pub const VM_MEMORY_TCMALLOC: ::c_int = 53;
-pub const VM_MEMORY_COREGRAPHICS_DATA: ::c_int = 54;
-pub const VM_MEMORY_COREGRAPHICS_SHARED: ::c_int = 55;
-pub const VM_MEMORY_COREGRAPHICS_FRAMEBUFFERS: ::c_int = 56;
-pub const VM_MEMORY_COREGRAPHICS_BACKINGSTORES: ::c_int = 57;
-pub const VM_MEMORY_COREGRAPHICS_XALLOC: ::c_int = 58;
-pub const VM_MEMORY_COREGRAPHICS_MISC: ::c_int = VM_MEMORY_COREGRAPHICS;
-pub const VM_MEMORY_DYLD: ::c_int = 60;
-pub const VM_MEMORY_DYLD_MALLOC: ::c_int = 61;
-pub const VM_MEMORY_SQLITE: ::c_int = 62;
-pub const VM_MEMORY_JAVASCRIPT_CORE: ::c_int = 63;
-pub const VM_MEMORY_JAVASCRIPT_JIT_EXECUTABLE_ALLOCATOR: ::c_int = 64;
-pub const VM_MEMORY_JAVASCRIPT_JIT_REGISTER_FILE: ::c_int = 65;
-pub const VM_MEMORY_GLSL: ::c_int = 66;
-pub const VM_MEMORY_OPENCL: ::c_int = 67;
-pub const VM_MEMORY_COREIMAGE: ::c_int = 68;
-pub const VM_MEMORY_WEBCORE_PURGEABLE_BUFFERS: ::c_int = 69;
-pub const VM_MEMORY_IMAGEIO: ::c_int = 70;
-pub const VM_MEMORY_COREPROFILE: ::c_int = 71;
-pub const VM_MEMORY_ASSETSD: ::c_int = 72;
-pub const VM_MEMORY_OS_ALLOC_ONCE: ::c_int = 73;
-pub const VM_MEMORY_LIBDISPATCH: ::c_int = 74;
-pub const VM_MEMORY_ACCELERATE: ::c_int = 75;
-pub const VM_MEMORY_COREUI: ::c_int = 76;
-pub const VM_MEMORY_COREUIFILE: ::c_int = 77;
-pub const VM_MEMORY_GENEALOGY: ::c_int = 78;
-pub const VM_MEMORY_RAWCAMERA: ::c_int = 79;
-pub const VM_MEMORY_CORPSEINFO: ::c_int = 80;
-pub const VM_MEMORY_ASL: ::c_int = 81;
-pub const VM_MEMORY_SWIFT_RUNTIME: ::c_int = 82;
-pub const VM_MEMORY_SWIFT_METADATA: ::c_int = 83;
-pub const VM_MEMORY_DHMM: ::c_int = 84;
-pub const VM_MEMORY_SCENEKIT: ::c_int = 86;
-pub const VM_MEMORY_SKYWALK: ::c_int = 87;
-pub const VM_MEMORY_APPLICATION_SPECIFIC_1: ::c_int = 240;
-pub const VM_MEMORY_APPLICATION_SPECIFIC_16: ::c_int = 255;
+    pub const VM_MEMORY_MALLOC: ::c_int = 1;
+    pub const VM_MEMORY_MALLOC_SMALL: ::c_int = 2;
+    pub const VM_MEMORY_MALLOC_LARGE: ::c_int = 3;
+    pub const VM_MEMORY_MALLOC_HUGE: ::c_int = 4;
+    pub const VM_MEMORY_SBRK: ::c_int = 5;
+    pub const VM_MEMORY_REALLOC: ::c_int = 6;
+    pub const VM_MEMORY_MALLOC_TINY: ::c_int = 7;
+    pub const VM_MEMORY_MALLOC_LARGE_REUSABLE: ::c_int = 8;
+    pub const VM_MEMORY_MALLOC_LARGE_REUSED: ::c_int = 9;
+    pub const VM_MEMORY_ANALYSIS_TOOL: ::c_int = 10;
+    pub const VM_MEMORY_MALLOC_NANO: ::c_int = 11;
+    pub const VM_MEMORY_MACH_MSG: ::c_int = 20;
+    pub const VM_MEMORY_IOKIT: ::c_int = 21;
+    pub const VM_MEMORY_STACK: ::c_int = 30;
+    pub const VM_MEMORY_GUARD: ::c_int = 31;
+    pub const VM_MEMORY_SHARED_PMAP: ::c_int = 32;
+    pub const VM_MEMORY_DYLIB: ::c_int = 33;
+    pub const VM_MEMORY_OBJC_DISPATCHERS: ::c_int = 34;
+    pub const VM_MEMORY_UNSHARED_PMAP: ::c_int = 35;
+    pub const VM_MEMORY_APPKIT: ::c_int = 40;
+    pub const VM_MEMORY_FOUNDATION: ::c_int = 41;
+    pub const VM_MEMORY_COREGRAPHICS: ::c_int = 42;
+    pub const VM_MEMORY_CORESERVICES: ::c_int = 43;
+    pub const VM_MEMORY_CARBON: ::c_int = VM_MEMORY_CORESERVICES;
+    pub const VM_MEMORY_JAVA: ::c_int = 44;
+    pub const VM_MEMORY_COREDATA: ::c_int = 45;
+    pub const VM_MEMORY_COREDATA_OBJECTIDS: ::c_int = 46;
+    pub const VM_MEMORY_ATS: ::c_int = 50;
+    pub const VM_MEMORY_LAYERKIT: ::c_int = 51;
+    pub const VM_MEMORY_CGIMAGE: ::c_int = 52;
+    pub const VM_MEMORY_TCMALLOC: ::c_int = 53;
+    pub const VM_MEMORY_COREGRAPHICS_DATA: ::c_int = 54;
+    pub const VM_MEMORY_COREGRAPHICS_SHARED: ::c_int = 55;
+    pub const VM_MEMORY_COREGRAPHICS_FRAMEBUFFERS: ::c_int = 56;
+    pub const VM_MEMORY_COREGRAPHICS_BACKINGSTORES: ::c_int = 57;
+    pub const VM_MEMORY_COREGRAPHICS_XALLOC: ::c_int = 58;
+    pub const VM_MEMORY_COREGRAPHICS_MISC: ::c_int = VM_MEMORY_COREGRAPHICS;
+    pub const VM_MEMORY_DYLD: ::c_int = 60;
+    pub const VM_MEMORY_DYLD_MALLOC: ::c_int = 61;
+    pub const VM_MEMORY_SQLITE: ::c_int = 62;
+    pub const VM_MEMORY_JAVASCRIPT_CORE: ::c_int = 63;
+    pub const VM_MEMORY_JAVASCRIPT_JIT_EXECUTABLE_ALLOCATOR: ::c_int = 64;
+    pub const VM_MEMORY_JAVASCRIPT_JIT_REGISTER_FILE: ::c_int = 65;
+    pub const VM_MEMORY_GLSL: ::c_int = 66;
+    pub const VM_MEMORY_OPENCL: ::c_int = 67;
+    pub const VM_MEMORY_COREIMAGE: ::c_int = 68;
+    pub const VM_MEMORY_WEBCORE_PURGEABLE_BUFFERS: ::c_int = 69;
+    pub const VM_MEMORY_IMAGEIO: ::c_int = 70;
+    pub const VM_MEMORY_COREPROFILE: ::c_int = 71;
+    pub const VM_MEMORY_ASSETSD: ::c_int = 72;
+    pub const VM_MEMORY_OS_ALLOC_ONCE: ::c_int = 73;
+    pub const VM_MEMORY_LIBDISPATCH: ::c_int = 74;
+    pub const VM_MEMORY_ACCELERATE: ::c_int = 75;
+    pub const VM_MEMORY_COREUI: ::c_int = 76;
+    pub const VM_MEMORY_COREUIFILE: ::c_int = 77;
+    pub const VM_MEMORY_GENEALOGY: ::c_int = 78;
+    pub const VM_MEMORY_RAWCAMERA: ::c_int = 79;
+    pub const VM_MEMORY_CORPSEINFO: ::c_int = 80;
+    pub const VM_MEMORY_ASL: ::c_int = 81;
+    pub const VM_MEMORY_SWIFT_RUNTIME: ::c_int = 82;
+    pub const VM_MEMORY_SWIFT_METADATA: ::c_int = 83;
+    pub const VM_MEMORY_DHMM: ::c_int = 84;
+    pub const VM_MEMORY_SCENEKIT: ::c_int = 86;
+    pub const VM_MEMORY_SKYWALK: ::c_int = 87;
+    pub const VM_MEMORY_APPLICATION_SPECIFIC_1: ::c_int = 240;
+    pub const VM_MEMORY_APPLICATION_SPECIFIC_16: ::c_int = 255;
+}
 
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
@@ -2106,15 +2125,18 @@ pub const PF_SYSTEM: ::c_int = AF_SYSTEM;
 pub const PF_NETBIOS: ::c_int = AF_NETBIOS;
 pub const PF_PPP: ::c_int =  AF_PPP;
 #[doc(hidden)]
+#[deprecated(since = "0.2.55")]
 pub const PF_MAX: ::c_int =  AF_MAX;
 
 #[doc(hidden)]
+#[deprecated(since = "0.2.55")]
 pub const NET_MAXID: ::c_int = AF_MAX;
 
 pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
 pub const NET_RT_IFLIST: ::c_int = 3;
 #[doc(hidden)]
+#[deprecated(since = "0.2.55")]
 pub const NET_RT_MAXID: ::c_int = 10;
 
 pub const SOMAXCONN: ::c_int = 128;
@@ -3102,7 +3124,10 @@ extern {
                         newp: *mut ::c_void,
                         newlen: ::size_t)
                         -> ::c_int;
+    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
     pub fn mach_absolute_time() -> u64;
+    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[allow(deprecated)]
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
     pub fn pthread_get_stackaddr_np(thread: ::pthread_t) -> *mut ::c_void;
@@ -3222,9 +3247,14 @@ extern {
     pub fn brk(addr: *const ::c_void) -> *mut ::c_void;
     pub fn sbrk(increment: ::c_int) -> *mut ::c_void;
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
+    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
     pub fn _dyld_image_count() -> u32;
+    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[allow(deprecated)]
     pub fn _dyld_get_image_header(image_index: u32) -> *const mach_header;
+    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
     pub fn _dyld_get_image_vmaddr_slide(image_index: u32) -> ::intptr_t;
+    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
     pub fn _dyld_get_image_name(image_index: u32) -> *const ::c_char;
 
     pub fn posix_spawn(pid: *mut ::pid_t,
