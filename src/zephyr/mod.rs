@@ -12,6 +12,10 @@ pub type uint16_t = u16;
 pub type uint32_t = u32;
 pub type uint64_t = u64;
 
+#[cfg(target_arch = "aarch64")]
+pub type c_char = u8;
+#[cfg(not(target_arch = "aarch64"))]
+pub type c_char = i8;
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;
