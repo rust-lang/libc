@@ -604,6 +604,11 @@ pub const LINUX_REBOOT_CMD_SW_SUSPEND: ::c_int = 0xD000FCE2;
 pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
 
 // linux/rtnetlink.h
+pub const TCA_PAD: ::c_ushort = 9;
+pub const TCA_DUMP_INVISIBLE: ::c_ushort = 10;
+pub const TCA_CHAIN: ::c_ushort = 11;
+pub const TCA_HW_OFFLOAD: ::c_ushort = 12;
+
 pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
 pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
 
