@@ -27,6 +27,8 @@ pub type c_ulonglong = u64;
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
 
+pub type locale_t = *mut ::c_void;
+
 pub type size_t = usize;
 pub type ptrdiff_t = isize;
 pub type intptr_t = isize;
@@ -110,12 +112,7 @@ impl ::Copy for DIR {}
 impl ::Clone for DIR {
     fn clone(&self) -> DIR { *self }
 }
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum locale_t {}
-impl ::Copy for locale_t {}
-impl ::Clone for locale_t {
-    fn clone(&self) -> locale_t { *self }
-}
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // TODO: fill this out with a struct
 impl ::Copy for fpos64_t {}
