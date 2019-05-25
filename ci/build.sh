@@ -24,7 +24,8 @@ test_target() {
         opt="--release"
     fi
     # FIXME: https://github.com/rust-lang/rust/issues/61174
-    if [ "${TARGET}" = "sparcv9-sun-solaris" ]; then
+    if [ "${TARGET}" = "sparcv9-sun-solaris" ] ||
+       [ "${TARGET}" = "x86_64-sun-solaris" ]; then
         return 0
     fi
 
