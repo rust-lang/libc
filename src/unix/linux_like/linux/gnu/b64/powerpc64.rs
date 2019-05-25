@@ -545,6 +545,7 @@ pub const EISNAM: ::c_int = 120;
 pub const EREMOTEIO: ::c_int = 121;
 
 pub const FIOCLEX: ::c_ulong = 0x20006601;
+pub const FIONCLEX: ::c_ulong = 0x20006602;
 pub const FIONBIO: ::c_ulong = 0x8004667e;
 
 pub const MCL_CURRENT: ::c_int = 0x2000;

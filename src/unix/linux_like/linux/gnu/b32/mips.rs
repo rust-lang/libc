@@ -698,6 +698,7 @@ pub const SO_ATTACH_BPF: ::c_int = 50;
 pub const SO_DETACH_BPF: ::c_int = SO_DETACH_FILTER;
 
 pub const FIOCLEX: ::c_ulong = 0x6601;
+pub const FIONCLEX: ::c_ulong = 0x6602;
 pub const FIONBIO: ::c_ulong = 0x667e;
 
 pub const SA_SIGINFO: ::c_int = 0x00000008;

@@ -394,6 +394,7 @@ pub const FF1: ::c_int = 0x8000;
 pub const FFDLY: ::c_int = 0x8000;
 pub const FIONBIO: ::c_ulong = 0x5421;
 pub const FIOCLEX: ::c_ulong = 0x5451;
+pub const FIONCLEX: ::c_ulong = 0x5450;
 pub const FLUSHO: ::tcflag_t = 0x1000;
 pub const F_GETLK: ::c_int = 0x5;
 pub const F_SETLK: ::c_int = 0x6;

@@ -322,6 +322,7 @@ pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 
 pub const FIOCLEX: ::c_ulong = 0x5451;
+pub const FIONCLEX: ::c_ulong = 0x5450;
 pub const FIONBIO: ::c_ulong = 0x5421;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;

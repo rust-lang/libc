@@ -224,6 +224,7 @@ pub const SO_MAX_PACING_RATE: ::c_int = 47;
 pub const SO_BPF_EXTENSIONS: ::c_int = 48;
 
 pub const FIOCLEX: ::c_ulong = 0x6601;
+pub const FIONCLEX: ::c_ulong = 0x6602;
 pub const FIONBIO: ::c_ulong = 0x667e;
 
 pub const SA_ONSTACK: ::c_uint = 0x08000000;

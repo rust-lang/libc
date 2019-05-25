@@ -529,6 +529,7 @@ pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
 
 pub const FIOCLEX: ::c_ulong = 0x5451;
+pub const FIONCLEX: ::c_ulong = 0x5450;
 pub const FIONBIO: ::c_ulong = 0x5421;
 
 pub const PTRACE_GETFPXREGS: ::c_uint = 18;
