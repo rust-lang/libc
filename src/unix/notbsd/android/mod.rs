@@ -571,11 +571,6 @@ pub const ECOMM: ::c_int = 70;
 pub const EPROTO: ::c_int = 71;
 pub const EDOTDOT: ::c_int = 73;
 
-pub const SA_NODEFER: ::c_int = 0x40000000;
-pub const SA_RESETHAND: ::c_int = 0x80000000;
-pub const SA_RESTART: ::c_int = 0x10000000;
-pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
-
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
 pub const EPOLLRDHUP: ::c_int = 0x00002000;
@@ -756,9 +751,6 @@ pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
 pub const FIOCLEX: ::c_int = 0x5451;
 
-pub const SA_ONSTACK: ::c_ulong = 0x08000000;
-pub const SA_SIGINFO: ::c_ulong = 0x00000004;
-pub const SA_NOCLDWAIT: ::c_ulong = 0x00000002;
 pub const SIGCHLD: ::c_int = 17;
 pub const SIGBUS: ::c_int = 7;
 pub const SIGUSR1: ::c_int = 10;
