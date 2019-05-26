@@ -2441,6 +2441,7 @@ pub const NOTE_NONE: ::uint32_t = 0x00000080;
 pub const NOTE_EXIT: ::uint32_t = 0x80000000;
 pub const NOTE_FORK: ::uint32_t = 0x40000000;
 pub const NOTE_EXEC: ::uint32_t = 0x20000000;
+#[doc(hidden)]
 #[deprecated(since="0.2.49", note="Deprecated since MacOSX 10.9")]
 pub const NOTE_REAP: ::uint32_t = 0x10000000;
 pub const NOTE_SIGNAL: ::uint32_t = 0x08000000;
@@ -2448,6 +2449,7 @@ pub const NOTE_EXITSTATUS: ::uint32_t = 0x04000000;
 pub const NOTE_EXIT_DETAIL: ::uint32_t = 0x02000000;
 pub const NOTE_PDATAMASK: ::uint32_t = 0x000fffff;
 pub const NOTE_PCTRLMASK: ::uint32_t = 0xfff00000;
+#[doc(hidden)]
 #[deprecated(since="0.2.49", note="Deprecated since MacOSX 10.9")]
 pub const NOTE_EXIT_REPARENTED: ::uint32_t = 0x00080000;
 pub const NOTE_EXIT_DETAIL_MASK: ::uint32_t = 0x00070000;
@@ -2654,8 +2656,10 @@ pub const KERN_KDSETRTCDEC: ::c_int = 15;
 pub const KERN_KDGETENTROPY: ::c_int = 16;
 pub const KERN_KDWRITETR: ::c_int = 17;
 pub const KERN_KDWRITEMAP: ::c_int = 18;
+#[doc(hidden)]
 #[deprecated(since = "0.2.49", note ="Removed in MacOSX 10.12")]
 pub const KERN_KDENABLE_BG_TRACE: ::c_int = 19;
+#[doc(hidden)]
 #[deprecated(since = "0.2.49", note ="Removed in MacOSX 10.12")]
 pub const KERN_KDDISABLE_BG_TRACE: ::c_int = 20;
 pub const KERN_KDREADCURTHRMAP: ::c_int = 21;
@@ -3036,11 +3040,15 @@ f! {
 }
 
 extern {
+    pub fn setgrent();
+    #[doc(hidden)]
     #[deprecated(since="0.2.49", note="Deprecated in MacOSX 10.5")]
     #[link_name = "daemon$1050"]
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
+    #[doc(hidden)]
     #[deprecated(since="0.2.49", note="Deprecated in MacOSX 10.10")]
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
+    #[doc(hidden)]
     #[deprecated(since="0.2.49", note="Deprecated in MacOSX 10.10")]
     pub fn sem_init(sem: *mut sem_t,
                     pshared: ::c_int,

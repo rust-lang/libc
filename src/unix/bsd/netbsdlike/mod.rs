@@ -597,6 +597,7 @@ pub const TIMER_ABSTIME: ::c_int = 1;
 
 #[link(name = "util")]
 extern {
+    pub fn setgrent();
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     pub fn sem_init(sem: *mut sem_t,
                     pshared: ::c_int,

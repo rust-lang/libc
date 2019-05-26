@@ -1,14 +1,27 @@
-freebsd_instance:
-  image: freebsd-11-1-release-amd64
-
 task:
-  # This name gets reported as a build status in GitHub
-  name: stable x86_64-unknown-freebsd
+  name: stable x86_64-unknown-freebsd-11
+  freebsd_instance:
+    image: freebsd-11-2-release-amd64
   setup_script:
     - pkg install -y curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh -y
+    - . $HOME/.cargo/env
+    - rustup default stable
   test_script:
     - . $HOME/.cargo/env
-    - cd libc-test
-    - cargo test
+    - sh ci/run.sh x86_64-unknown-freebsd
+    
+task:
+  name: nightly x86_64-unknown-freebsd-12
+  freebsd_instance:
+    image: freebsd-12-0-release-amd64
+  setup_script:
+    - pkg install -y curl
+    - curl https://sh.rustup.rs -sSf --output rustup.sh
+    - sh rustup.sh --default-toolchain nightly -y
+    - . $HOME/.cargo/env
+    - rustup default nightly
+  test_script:
+    - . $HOME/.cargo/env
+    - sh ci/run.sh x86_64-unknown-freebsd

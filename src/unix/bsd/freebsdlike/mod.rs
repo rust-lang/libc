@@ -1,4 +1,3 @@
-pub type dev_t = u32;
 pub type mode_t = u16;
 pub type pthread_attr_t = *mut ::c_void;
 pub type rlim_t = i64;
@@ -44,15 +43,6 @@ s! {
         __unused6: *mut ::c_void,
         __unused7: *mut ::c_void,
         __unused8: *mut ::c_void,
-    }
-
-    pub struct kevent {
-        pub ident: ::uintptr_t,
-        pub filter: ::c_short,
-        pub flags: ::c_ushort,
-        pub fflags: ::c_uint,
-        pub data: ::intptr_t,
-        pub udata: *mut ::c_void,
     }
 
     pub struct addrinfo {
@@ -758,7 +748,11 @@ pub const LOCK_NB: ::c_int = 4;
 pub const LOCK_UN: ::c_int = 8;
 
 pub const MAP_COPY: ::c_int = 0x0002;
+#[doc(hidden)]
+#[deprecated(since="0.2.54",note="Removed in FreeBSD 11")]
 pub const MAP_RENAME: ::c_int = 0x0020;
+#[doc(hidden)]
+#[deprecated(since="0.2.54",note="Removed in FreeBSD 11")]
 pub const MAP_NORESERVE: ::c_int = 0x0040;
 pub const MAP_HASSEMAPHORE: ::c_int = 0x0200;
 pub const MAP_STACK: ::c_int = 0x0400;
@@ -1141,7 +1135,10 @@ extern {
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
     pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
     pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
-    #[cfg_attr(target_os = "freebsd", link_name = "kevent@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "kevent@FBSD_1.0"
+    )]
     pub fn kevent(kq: ::c_int,
                   changelist: *const ::kevent,
                   nchanges: ::c_int,
@@ -1157,7 +1154,10 @@ extern {
                    n: ::size_t) -> *mut ::c_void;
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t) -> ::c_int;
-    #[cfg_attr(target_os = "freebsd", link_name = "mknodat@FBSD_1.1")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "mknodat@FBSD_1.1"
+    )]
     pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
                   mode: ::mode_t, dev: dev_t) -> ::c_int;
     pub fn mq_close(mqd: ::mqd_t) -> ::c_int;

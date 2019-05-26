@@ -575,14 +575,20 @@ extern {
 
     #[cfg_attr(target_os = "macos", link_name = "fstat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__fstat50")]
-    #[cfg_attr(target_os = "freebsd", link_name = "fstat@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "fstat@FBSD_1.0"
+    )]
     pub fn fstat(fildes: ::c_int, buf: *mut stat) -> ::c_int;
 
     pub fn mkdir(path: *const c_char, mode: mode_t) -> ::c_int;
 
     #[cfg_attr(target_os = "macos", link_name = "stat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__stat50")]
-    #[cfg_attr(target_os = "freebsd", link_name = "stat@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "stat@FBSD_1.0"
+    )]
     pub fn stat(path: *const c_char, buf: *mut stat) -> ::c_int;
 
     pub fn pclose(stream: *mut ::FILE) -> ::c_int;
@@ -616,11 +622,17 @@ extern {
 
     #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
-    #[cfg_attr(target_os = "freebsd", link_name = "readdir@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "readdir@FBSD_1.0"
+    )]
     pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
     #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
-    #[cfg_attr(target_os = "freebsd", link_name = "readdir_r@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "readdir_r@FBSD_1.0"
+    )]
     /// The 64-bit libc on Solaris and illumos only has readdir_r.  If a
     /// 32-bit Solaris or illumos target is ever created, it should use
     /// __posix_readdir_r.  See libc(3LIB) on Solaris or illumos:
@@ -649,7 +661,10 @@ extern {
                     owner: ::uid_t, group: ::gid_t,
                     flags: ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "macos", link_name = "fstatat$INODE64")]
-    #[cfg_attr(target_os = "freebsd", link_name = "fstatat@FBSD_1.1")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "fstatat@FBSD_1.1"
+    )]
     pub fn fstatat(dirfd: ::c_int, pathname: *const ::c_char,
                    buf: *mut stat, flags: ::c_int) -> ::c_int;
     pub fn linkat(olddirfd: ::c_int, oldpath: *const ::c_char,
@@ -804,7 +819,10 @@ extern {
 
     #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
-    #[cfg_attr(target_os = "freebsd", link_name = "lstat@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "lstat@FBSD_1.0"
+    )]
     pub fn lstat(path: *const c_char, buf: *mut stat) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -984,7 +1002,10 @@ extern {
     pub fn difftime(time1: time_t, time0: time_t) -> ::c_double;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
-    #[cfg_attr(target_os = "freebsd", link_name = "mknod@FBSD_1.0")]
+    #[cfg_attr(
+        all(target_os = "freebsd", not(freebsd12)),
+        link_name = "mknod@FBSD_1.0"
+    )]
     pub fn mknod(pathname: *const ::c_char, mode: ::mode_t,
                  dev: ::dev_t) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;

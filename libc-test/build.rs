@@ -1022,14 +1022,9 @@ fn test_dragonflybsd(target: &str) {
                 s.replace("e_nsec", ".tv_nsec")
             }
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
-            "type_"
-                if struct_ == "input_event"
-                    || struct_ == "input_mask"
-                    || struct_ == "ff_effect"
-                    || struct_ == "rtprio" =>
-            {
-                "type".to_string()
-            }
+            // Field is named `type` in C but that is a Rust keyword,
+            // so these fields are translated to `type_` in the bindings.
+            "type_" if struct_ == "rtprio" => "type".to_string(),
             s => s.to_string(),
         }
     });
@@ -1449,11 +1444,19 @@ fn test_android(target: &str) {
 
 fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
-    let x86 = target.contains("i686") || target.contains("x86_64");
-
     let mut cfg = ctest::TestGenerator::new();
+
+    let freebsd_ver = which_freebsd();
+
+    if let Some(12) = freebsd_ver {
+        // If the host is FreeBSD 12, run FreeBSD 12 tests
+        cfg.cfg("freebsd12", None);
+    }
+
     // Required for `getline`:
     cfg.define("_WITH_GETLINE", None);
+    // Required for making freebsd11_stat available in the headers
+    cfg.define("_WANT_FREEBSD11_STAT", None);
 
     headers! { cfg:
                 "aio.h",
@@ -1533,18 +1536,17 @@ fn test_freebsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            // FIXME: still required?
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
-            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
-            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
-            | "Elf64_Chdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" => ty.to_string(),
 
-            // FIXME: still required?
+            // FIXME: https://github.com/rust-lang/libc/issues/1273
             "sighandler_t" => "sig_t".to_string(),
 
             t if is_union => format!("union {}", t),
 
             t if t.ends_with("_t") => t.to_string(),
+
+            // sigval is a struct in Rust, but a union in C:
+            "sigval" => format!("union sigval"),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
@@ -1560,124 +1562,39 @@ fn test_freebsd(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // FIXME: still required?
-            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
-            // FIXME: still required?
-            "type_"
-                if struct_ == "input_event"
-                    || struct_ == "input_mask"
-                    || struct_ == "ff_effect"
-                    || struct_ == "rtprio" =>
-            {
-                "type".to_string()
-            }
+            // Field is named `type` in C but that is a Rust keyword,
+            // so these fields are translated to `type_` in the bindings.
+            "type_" if struct_ == "rtprio" => "type".to_string(),
             s => s.to_string(),
-        }
-    });
-
-    cfg.skip_type(move |ty| {
-        match ty {
-            // sighandler_t is crazy across platforms
-            // FIXME: still required?
-            "sighandler_t" => true,
-
-            _ => false,
-        }
-    });
-
-    cfg.skip_struct(move |ty| {
-        match ty {
-            // This is actually a union, not a struct
-            // FIXME: still required?
-            "sigval" => true,
-
-            // These are tested as part of the linux_fcntl tests since there are
-            // header conflicts when including them with all the other structs.
-            // FIXME: still required?
-            "termios2" => true,
-
-            _ => false,
-        }
-    });
-
-    cfg.skip_signededness(move |c| {
-        match c {
-            // FIXME: still required?
-            "LARGE_INTEGER" | "float" | "double" => true,
-            // FIXME: still required?
-            n if n.starts_with("pthread") => true,
-            // sem_t is a struct or pointer
-            // FIXME: still required?
-            "sem_t" => true,
-            // mqd_t is a pointer on FreeBSD
-            // FIXME: still required?
-            "mqd_t" => true,
-
-            _ => false,
         }
     });
 
     cfg.skip_const(move |name| {
         match name {
-            // FIXME: still required?
-            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
-            // FIXME: still required?
-            "SIGUNUSED" => true, // removed in glibc 2.26
+            // These constants were introduced in FreeBSD 12:
+            "SF_USER_READAHEAD"
+            | "EVFILT_EMPTY"
+            | "SO_REUSEPORT_LB"
+            | "IP_ORIGDSTADDR"
+            | "IP_RECVORIGDSTADDR"
+            | "IPV6_ORIGDSTADDR"
+            | "IPV6_RECVORIGDSTADDR"
+                if Some(12) != freebsd_ver =>
+            {
+                true
+            }
 
-            // weird signed extension or something like that?
-            // FIXME: still required?
-            "MS_NOUSER" => true,
-            // FIXME: still required?
-            "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
-
+            // FIXME: There are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
-            "MAP_RENAME" | "MAP_NORESERVE" => true,
+            "MAP_RENAME" | "MAP_NORESERVE" if Some(10) != freebsd_ver => true,
 
+            // FIXME: There are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r262489),
             // and they've never had any legitimate use outside of the
             // base system anyway.
             "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "NET_MAXID"
             | "USER_MAXID" => true,
-
-            // These constants were added in FreeBSD 11
-            // FIXME: still required?
-            "EVFILT_PROCDESC" | "EVFILT_SENDFILE" | "EVFILT_EMPTY"
-            | "PD_CLOEXEC" | "PD_ALLOWED_AT_FORK" => true,
-
-            // These constants were added in FreeBSD 12
-            // FIXME: still required?
-            "SF_USER_READAHEAD" | "SO_REUSEPORT_LB" => true,
-
-            // These constants are tested in a separate test program generated
-            // below because there are header conflicts if we try to include the
-            // headers that define them here.
-            // FIXME: still required?
-            "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => true,
-            // FIXME: still required?
-            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
-            | "F_SEAL_WRITE" => true,
-            // FIXME: still required?
-            "BOTHER" => true,
-
-            // MFD_HUGETLB is not available in some older libc versions on the
-            // CI builders. On the x86_64 and i686 builders it seems to be
-            // available for all targets, so at least test it there.
-            // FIXME: still required?
-            "MFD_HUGETLB" if !x86 => true,
-
-            // These change all the time from release to release of linux
-            // distros, let's just not bother trying to verify them. They
-            // shouldn't be used in code anyway...
-            // FIXME: still required?
-            "AF_MAX" | "PF_MAX" => true,
-
-            // FreeBSD 12 required, but CI has FreeBSD 11.
-            // FIXME: still required?
-            "IP_ORIGDSTADDR"
-            | "IP_RECVORIGDSTADDR"
-            | "IPV6_ORIGDSTADDR"
-            | "IPV6_RECVORIGDSTADDR" => true,
 
             _ => false,
         }
@@ -1686,80 +1603,41 @@ fn test_freebsd(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: still required?
-            "execv" |       // crazy stuff with const/mut
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
-            // The `uname` function in freebsd is now an inline wrapper that
-            // delegates to another, but the symbol still exists, so don't check
-            // the symbol.
-            // FIXME: still required?
+            // The `uname` function in the `utsname.h` FreeBSD header is a C
+            // inline function (has no symbol) that calls the `__xuname` symbol.
+            // Therefore the function pointer comparison does not make sense for it.
             "uname" => true,
 
-            // FIXME: need to upgrade FreeBSD version; see https://github.com/rust-lang/libc/issues/938
-            // FIXME: still required?
-            "setgrent" => true,
-
-            // aio_waitcomplete's return type changed between FreeBSD 10 and 11.
-            // FIXME: still required?
-            "aio_waitcomplete"  => true,
-
-            // lio_listio confuses the checker, probably because one of its
-            // arguments is an array
-            // FIXME: still required?
+            // FIXME: Our API is unsound. The Rust API allows aliasing
+            // pointers, but the C API requires pointers not to alias.
+            // We should probably be at least using `&`/`&mut` here, see:
+            // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" => true,
-
-            // Definition of those functions as changed since unified headers from NDK r14b
-            // These changes imply some API breaking changes but are still ABI compatible.
-            // We can wait for the next major release to be compliant with the new API.
-            // FIXME: unskip these for next major release
-            // FIXME: still required ?
-            "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
 
             _ => false,
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
-        // This is a weird union, don't check the type.
-        // FIXME: still required?
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
-        // FIXME: still required?
-        // sighandler_t type is super weird
-            (struct_ == "sigaction" && field == "sa_sigaction") ||
-        // FIXME: still required?
-        // sigval is actually a union, but we pretend it's a struct
-            (struct_ == "sigevent" && field == "sigev_value") ||
-        // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        // FIXME: still required?
-            (struct_ == "aiocb" && field == "aio_buf") ||
-        // stack_t.ss_sp's type changed from FreeBSD 10 to 11 in svn r294930
-        // FIXME: still required?
-            (struct_ == "stack_t" && field == "ss_sp")
+    cfg.volatile_item(|i| {
+        use ctest::VolatileItemKind::*;
+        match i {
+            // aio_buf is a volatile void** but since we cannot express that in
+            // Rust types, we have to explicitly tell the checker about it here:
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => {
+                true
+            }
+            _ => false,
+        }
     });
 
     cfg.skip_field(move |struct_, field| {
-        // this is actually a union on linux, so we can't represent it well and
-        // just insert some padding.
-        // FIXME: still required?
-        (struct_ == "siginfo_t" && field == "_pad") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        // FIXME: still required?
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
-        // signalfd had SIGSYS fields added in Linux 4.18, but no libc release has them yet.
-        // FIXME: still required?
-        (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
-                                           field == "_pad2" ||
-                                           field == "ssi_syscall" ||
-                                           field == "ssi_call_addr" ||
-                                           field == "ssi_arch"))
+        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
+        (struct_ == "sigaction" && field == "sa_sigaction")
     });
-
-    // FIXME: remove
-    cfg.fn_cname(move |name, _cname| name.to_string());
 
     cfg.generate("../src/lib.rs", "main.rs");
 }
@@ -2334,12 +2212,13 @@ fn test_linux(target: &str) {
             }
             // FIXME: is this necessary?
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
-            // FIXME: is this necessary?
+            // The following structs have a field called `type` in C,
+            // but `type` is a Rust keyword, so these fields are translated
+            // to `type_` in Rust.
             "type_"
                 if struct_ == "input_event"
                     || struct_ == "input_mask"
-                    || struct_ == "ff_effect"
-                    || struct_ == "rtprio" =>
+                    || struct_ == "ff_effect" =>
             {
                 "type".to_string()
             }
@@ -2725,4 +2604,21 @@ fn test_linux_termios2(target: &str) {
         t => t.to_string(),
     });
     cfg.generate("../src/lib.rs", "linux_fcntl.rs");
+}
+
+fn which_freebsd() -> Option<i32> {
+    let output = std::process::Command::new("freebsd-version")
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+
+    let stdout = String::from_utf8(output.stdout).ok()?;
+
+    match &stdout {
+        s if s.starts_with("11") => Some(11),
+        s if s.starts_with("12") => Some(12),
+        _ => None,
+    }
 }
