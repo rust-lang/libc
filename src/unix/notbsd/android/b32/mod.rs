@@ -162,13 +162,13 @@ s! {
 }
 
 // These constants must be of the same type of sigaction.sa_flags
-pub const SA_NOCLDSTOP: ::c_ulong = 0x00000001;
-pub const SA_NOCLDWAIT: ::c_ulong = 0x00000002;
-pub const SA_NODEFER: ::c_ulong = 0x40000000;
-pub const SA_ONSTACK: ::c_ulong = 0x08000000;
-pub const SA_RESETHAND: ::c_ulong = 0x80000000;
-pub const SA_RESTART: ::c_ulong = 0x10000000;
-pub const SA_SIGINFO: ::c_ulong = 0x00000004;
+pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
+pub const SA_NOCLDWAIT: ::c_int = 0x00000002;
+pub const SA_NODEFER: ::c_int = 0x40000000;
+pub const SA_ONSTACK: ::c_int = 0x08000000;
+pub const SA_RESETHAND: ::c_int = 0x80000000;
+pub const SA_RESTART: ::c_int = 0x10000000;
+pub const SA_SIGINFO: ::c_int = 0x00000004;
 
 pub const RTLD_GLOBAL: ::c_int = 2;
 pub const RTLD_NOW: ::c_int = 0;
