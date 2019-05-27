@@ -366,13 +366,6 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
-    pub struct sockaddr_nl {
-        pub nl_family: ::sa_family_t,
-        nl_pad: ::c_ushort,
-        pub nl_pid: u32,
-        pub nl_groups: u32
-    }
-
     pub struct sockaddr_ll {
         pub sll_family: ::c_ushort,
         pub sll_protocol: ::c_ushort,
@@ -571,32 +564,6 @@ s! {
 
     pub struct fsid_t {
         __val: [::c_int; 2],
-    }
-
-    // x32 compatibility
-    // See https://sourceware.org/bugzilla/show_bug.cgi?id=21279
-    pub struct mq_attr {
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub mq_flags: i64,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub mq_maxmsg: i64,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub mq_msgsize: i64,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub mq_curmsgs: i64,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pad: [i64; 4],
-
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub mq_flags: ::c_long,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub mq_maxmsg: ::c_long,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub mq_msgsize: ::c_long,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub mq_curmsgs: ::c_long,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pad: [::c_long; 4],
     }
 
     pub struct cpu_set_t {
@@ -971,6 +938,39 @@ s_no_extra_traits! {
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
     }
+
+    // x32 compatibility
+    // See https://sourceware.org/bugzilla/show_bug.cgi?id=21279
+    pub struct mq_attr {
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub mq_flags: i64,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub mq_maxmsg: i64,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub mq_msgsize: i64,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub mq_curmsgs: i64,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pad: [i64; 4],
+
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub mq_flags: ::c_long,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub mq_maxmsg: ::c_long,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub mq_msgsize: ::c_long,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub mq_curmsgs: ::c_long,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pad: [::c_long; 4],
+    }
+
+    pub struct sockaddr_nl {
+        pub nl_family: ::sa_family_t,
+        nl_pad: ::c_ushort,
+        pub nl_pid: u32,
+        pub nl_groups: u32
+    }
 }
 
 cfg_if! {
@@ -1209,6 +1209,59 @@ cfg_if! {
                 self.d_reclen.hash(state);
                 self.d_type.hash(state);
                 self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for mq_attr {
+            fn eq(&self, other: &mq_attr) -> bool {
+                self.mq_flags == other.mq_flags &&
+                self.mq_maxmsg == other.mq_maxmsg &&
+                self.mq_msgsize == other.mq_msgsize &&
+                self.mq_curmsgs == other.mq_curmsgs
+            }
+        }
+        impl Eq for mq_attr {}
+        impl ::fmt::Debug for mq_attr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("mq_attr")
+                    .field("mq_flags", &self.mq_flags)
+                    .field("mq_maxmsg", &self.mq_maxmsg)
+                    .field("mq_msgsize", &self.mq_msgsize)
+                    .field("mq_curmsgs", &self.mq_curmsgs)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for mq_attr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.mq_flags.hash(state);
+                self.mq_maxmsg.hash(state);
+                self.mq_msgsize.hash(state);
+                self.mq_curmsgs.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_nl {
+            fn eq(&self, other: &sockaddr_nl) -> bool {
+                self.nl_family == other.nl_family &&
+                self.nl_pid == other.nl_pid &&
+                self.nl_groups == other.nl_groups
+            }
+        }
+        impl Eq for sockaddr_nl {}
+        impl ::fmt::Debug for sockaddr_nl {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_nl")
+                    .field("nl_family", &self.nl_family)
+                    .field("nl_pid", &self.nl_pid)
+                    .field("nl_groups", &self.nl_groups)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_nl {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.nl_family.hash(state);
+                self.nl_pid.hash(state);
+                self.nl_groups.hash(state);
             }
         }
     }

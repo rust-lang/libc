@@ -131,32 +131,6 @@ s! {
         __val: [::c_int; 2],
     }
 
-    // x32 compatibility
-    // See https://sourceware.org/bugzilla/show_bug.cgi?id=21279
-    pub struct mq_attr {
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub mq_flags: i64,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub mq_maxmsg: i64,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub mq_msgsize: i64,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub mq_curmsgs: i64,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pad: [i64; 4],
-
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub mq_flags: ::c_long,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub mq_maxmsg: ::c_long,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub mq_msgsize: ::c_long,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub mq_curmsgs: ::c_long,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pad: [::c_long; 4],
-    }
-
     pub struct packet_mreq {
         pub mr_ifindex: ::c_int,
         pub mr_type: ::c_ushort,
@@ -532,6 +506,32 @@ s_no_extra_traits!{
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
     }
+
+    // x32 compatibility
+    // See https://sourceware.org/bugzilla/show_bug.cgi?id=21279
+    pub struct mq_attr {
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub mq_flags: i64,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub mq_maxmsg: i64,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub mq_msgsize: i64,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub mq_curmsgs: i64,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pad: [i64; 4],
+
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub mq_flags: ::c_long,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub mq_maxmsg: ::c_long,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub mq_msgsize: ::c_long,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub mq_curmsgs: ::c_long,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pad: [::c_long; 4],
+    }
 }
 
 cfg_if! {
@@ -750,6 +750,34 @@ cfg_if! {
         impl ::hash::Hash for af_alg_iv {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.as_slice().hash(state);
+            }
+        }
+
+        impl PartialEq for mq_attr {
+            fn eq(&self, other: &mq_attr) -> bool {
+                self.mq_flags == other.mq_flags &&
+                self.mq_maxmsg == other.mq_maxmsg &&
+                self.mq_msgsize == other.mq_msgsize &&
+                self.mq_curmsgs == other.mq_curmsgs
+            }
+        }
+        impl Eq for mq_attr {}
+        impl ::fmt::Debug for mq_attr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("mq_attr")
+                    .field("mq_flags", &self.mq_flags)
+                    .field("mq_maxmsg", &self.mq_maxmsg)
+                    .field("mq_msgsize", &self.mq_msgsize)
+                    .field("mq_curmsgs", &self.mq_curmsgs)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for mq_attr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.mq_flags.hash(state);
+                self.mq_maxmsg.hash(state);
+                self.mq_msgsize.hash(state);
+                self.mq_curmsgs.hash(state);
             }
         }
     }

@@ -46,14 +46,6 @@ s! {
         pub ip6: *mut ::in6_addr,
     }
 
-    pub struct mq_attr {
-        pub mq_flags: ::c_long,
-        pub mq_maxmsg: ::c_long,
-        pub mq_msgsize: ::c_long,
-        pub mq_curmsgs: ::c_long,
-        __reserved: [::c_long; 4]
-    }
-
     pub struct sigevent {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
@@ -151,6 +143,14 @@ s_no_extra_traits! {
         pub sdl_slen: ::c_uchar,
         pub sdl_data: [::c_char; 46],
     }
+
+    pub struct mq_attr {
+        pub mq_flags: ::c_long,
+        pub mq_maxmsg: ::c_long,
+        pub mq_msgsize: ::c_long,
+        pub mq_curmsgs: ::c_long,
+        __reserved: [::c_long; 4]
+    }
 }
 
 cfg_if! {
@@ -244,6 +244,34 @@ cfg_if! {
                 self.sdl_alen.hash(state);
                 self.sdl_slen.hash(state);
                 self.sdl_data.hash(state);
+            }
+        }
+
+        impl PartialEq for mq_attr {
+            fn eq(&self, other: &mq_attr) -> bool {
+                self.mq_flags == other.mq_flags &&
+                self.mq_maxmsg == other.mq_maxmsg &&
+                self.mq_msgsize == other.mq_msgsize &&
+                self.mq_curmsgs == other.mq_curmsgs
+            }
+        }
+        impl Eq for mq_attr {}
+        impl ::fmt::Debug for mq_attr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("mq_attr")
+                    .field("mq_flags", &self.mq_flags)
+                    .field("mq_maxmsg", &self.mq_maxmsg)
+                    .field("mq_msgsize", &self.mq_msgsize)
+                    .field("mq_curmsgs", &self.mq_curmsgs)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for mq_attr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.mq_flags.hash(state);
+                self.mq_maxmsg.hash(state);
+                self.mq_msgsize.hash(state);
+                self.mq_curmsgs.hash(state);
             }
         }
     }
