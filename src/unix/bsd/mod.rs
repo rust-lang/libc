@@ -233,7 +233,12 @@ pub const LC_TIME: ::c_int = 5;
 pub const LC_MESSAGES: ::c_int = 6;
 
 pub const FIOCLEX: ::c_ulong = 0x20006601;
+pub const FIONCLEX: ::c_ulong = 0x20006602;
+pub const FIONREAD: ::c_ulong = 0x4004667f;
 pub const FIONBIO: ::c_ulong = 0x8004667e;
+pub const FIOASYNC: ::c_ulong = 0x8004667d;
+pub const FIOSETOWN: ::c_ulong = 0x8004667c;
+pub const FIOGETOWN: ::c_ulong = 0x4004667b;
 
 pub const PATH_MAX: ::c_int = 1024;
 

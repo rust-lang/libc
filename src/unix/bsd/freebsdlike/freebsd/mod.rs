@@ -540,11 +540,6 @@ pub const TIOCSIG: ::c_uint = 0x2004745f;
 pub const TIOCM_DCD: ::c_int = 0x40;
 pub const H4DISC: ::c_int = 0x7;
 
-pub const FIONCLEX: ::c_ulong = 0x20006602;
-pub const FIONREAD: ::c_ulong = 0x4004667f;
-pub const FIOASYNC: ::c_ulong = 0x8004667d;
-pub const FIOSETOWN: ::c_ulong = 0x8004667c;
-pub const FIOGETOWN: ::c_ulong = 0x4004667b;
 pub const FIODTYPE: ::c_ulong = 0x4004667a;
 pub const FIOGETLBA: ::c_ulong = 0x40046679;
 pub const FIODGNAME: ::c_ulong = 0x80106678;
