@@ -332,6 +332,11 @@ pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
 
 extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_uint) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_uint, timeout: *mut ::timespec) -> ::c_int;
+
     pub fn getrlimit64(resource: ::c_int,
                        rlim: *mut ::rlimit64) -> ::c_int;
     pub fn setrlimit64(resource: ::c_int,

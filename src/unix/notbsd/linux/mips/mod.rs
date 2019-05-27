@@ -907,6 +907,11 @@ f! {
 
 #[link(name = "util")]
 extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
+
     pub fn getrlimit64(resource: ::__rlimit_resource_t,
                        rlim: *mut ::rlimit64) -> ::c_int;
     pub fn setrlimit64(resource: ::__rlimit_resource_t,

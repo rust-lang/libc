@@ -37,14 +37,22 @@ fn main() {
 }
 
 macro_rules! headers {
-    ($cfg:ident: $header:expr) => {
+    ($cfg:ident: [$m:expr]: $header:literal) => {
+        if $m {
+            $cfg.header($header);
+        }
+    };
+    ($cfg:ident: $header:literal) => {
         $cfg.header($header);
     };
-    ($cfg:ident: $($header:expr),*) => {
-        $(headers!($cfg: $header);)*
+    ($($cfg:ident: $([$c:expr]:)* $header:literal,)*) => {
+        $(headers!($cfg: $([$c]:)* $header);)*
     };
-    ($cfg:ident: $($header:expr,)*) => {
-        $(headers!($cfg: $header);)*
+    ($cfg:ident: $( $([$c:expr]:)* $header:literal,)*) => {
+        headers!($($cfg: $([$c]:)* $header,)*);
+    };
+    ($cfg:ident: $( $([$c:expr]:)* $header:literal),*) => {
+        headers!($($cfg: $([$c]:)* $header,)*);
     };
 }
 
@@ -135,10 +143,7 @@ fn test_apple(target: &str) {
         "utmpx.h",
         "wchar.h",
         "xlocale.h",
-    }
-
-    if x86_64 {
-        headers! { cfg: "crt_externs.h" }
+        [x86_64]: "crt_externs.h",
     }
 
     cfg.skip_struct(move |ty| {
@@ -386,12 +391,8 @@ fn test_windows(target: &str) {
         "sys/utime.h",
         "time.h",
         "wchar.h",
-    }
-
-    if gnu {
-        headers! { cfg: "ws2tcpip.h" }
-    } else {
-        headers! { cfg: "Winsock2.h" };
+        [gnu]: "ws2tcpip.h",
+        [!gnu]: "Winsock2.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -1304,16 +1305,10 @@ fn test_android(target: &str) {
                "utmp.h",
                "wchar.h",
                "xlocale.h",
-    }
-
-    if target_pointer_width == 32 {
-        // time64_t is not defined for 64-bit targets If included it will
-        // generate the error 'Your time_t is already 64-bit'
-        cfg.header("time64.h");
-    }
-
-    if x86 {
-        cfg.header("sys/reg.h");
+               // time64_t is not defined for 64-bit targets If included it will
+               // generate the error 'Your time_t is already 64-bit'
+               [target_pointer_width == 32]: "time64.h",
+               [x86]: "sys/reg.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -2000,7 +1995,7 @@ fn test_linux(target: &str) {
     let x86_32 = target.contains("i686");
     let x32 = target.contains("x32");
     let mips = target.contains("mips");
-    let mips32 = mips && !target.contains("64");
+    let mips32_musl = mips && !target.contains("64") && musl;
 
     let mut cfg = ctest::TestGenerator::new();
     cfg.define("_GNU_SOURCE", None);
@@ -2064,7 +2059,8 @@ fn test_linux(target: &str) {
                "sys/prctl.h",
                "sys/ptrace.h",
                "sys/quota.h",
-               "sys/random.h",
+               // FIXME: the mips-musl CI build jobs use ancient musl 1.0.15:
+               [!mips32_musl]: "sys/random.h",
                "sys/reboot.h",
                "sys/resource.h",
                "sys/sem.h",
@@ -2096,29 +2092,17 @@ fn test_linux(target: &str) {
                "utmpx.h",
                "wchar.h",
                "errno.h",
-    }
-
-    // `sys/io.h` is only available on x86*, Alpha, IA64, and 32-bit ARM:
-    // https://bugzilla.redhat.com/show_bug.cgi?id=1116162
-    if x86_64 || x86_32 || arm {
-        headers! { cfg: "sys/io.h" }
-    }
-
-    // `sys/reg.h` is only available on x86 and x86_64
-    if x86_64 || x86_32 {
-        headers! { cfg: "sys/reg.h" }
-    }
-
-    // sysctl system call is deprecated and not available on musl
-    // It is also unsupported in x32:
-    if !(x32 || musl) {
-        headers! { cfg:  "sys/sysctl.h"}
-    }
-
-    // <execinfo.h> is not supported by musl:
-    // https://www.openwall.com/lists/musl/2015/04/09/3
-    if !musl {
-        headers! { cfg: "execinfo.h" }
+               // `sys/io.h` is only available on x86*, Alpha, IA64, and 32-bit
+               // ARM: https://bugzilla.redhat.com/show_bug.cgi?id=1116162
+               [x86_64 || x86_32 || arm]: "sys/io.h",
+               // `sys/reg.h` is only available on x86 and x86_64
+               [x86_64 || x86_32]: "sys/reg.h",
+               // sysctl system call is deprecated and not available on musl
+               // It is also unsupported in x32:
+               [!(x32 || musl)]: "sys/sysctl.h",
+               // <execinfo.h> is not supported by musl:
+               // https://www.openwall.com/lists/musl/2015/04/09/3
+               [!musl]: "execinfo.h",
     }
 
     // Include linux headers at the end:
@@ -2130,7 +2114,8 @@ fn test_linux(target: &str) {
         "linux/fs.h",
         "linux/futex.h",
         "linux/genetlink.h",
-        "linux/if.h",
+        // FIXME: musl version 1.0.15 used by mips build jobs is ancient
+        [!mips32_musl]: "linux/if.h",
         "linux/if_addr.h",
         "linux/if_alg.h",
         "linux/if_ether.h",
@@ -2154,10 +2139,11 @@ fn test_linux(target: &str) {
     }
 
     // note: aio.h must be included before sys/mount.h
-    headers! { cfg:
-               "sys/xattr.h",
-               "sys/sysinfo.h",
-               "aio.h",
+    headers! {
+        cfg:
+        "sys/xattr.h",
+        "sys/sysinfo.h",
+        "aio.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -2243,17 +2229,15 @@ fn test_linux(target: &str) {
             // structs.
             "termios2" => true,
 
+            // FIXME: musl version using by mips build jobs 1.0.15 is ancient:
+            "ifmap" | "ifreq" | "ifconf" if mips32_musl => true,
+
             _ => false,
         }
     });
 
     cfg.skip_const(move |name| {
         match name {
-            // These are not available in the MUSL version used by the
-            // 32-bit mips build jobs:
-            | "AF_XDP"
-            | "PF_XDP" if musl && mips32 => true,
-
             // These constants are not available if gnu headers have been included
             // and can therefore not be tested here
             //
@@ -2281,7 +2265,7 @@ fn test_linux(target: &str) {
             //
             // Require Linux kernel 5.x:
             | "MSG_COPY"
-                => true,
+               if musl  => true,
 
             // The musl version 1.0.22 used in CI does not
             // contain these glibc constants yet:
@@ -2304,6 +2288,11 @@ fn test_linux(target: &str) {
             // FIXME: on musl the pthread types are defined a little differently
             // - these constants are used by the glibc implementation.
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
+
+            // FIXME: musl version 1.0.15 used by mips build jobs is ancient
+            t if mips32_musl && t.starts_with("IFF") => true,
+            "MFD_HUGETLB" | "AF_XDP" | "PF_XDP" if mips32_musl => true,
+
             _ => false,
         }
     });
@@ -2320,7 +2309,8 @@ fn test_linux(target: &str) {
             //
             // An XSI-compliant version provided if:
             //
-            // (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+            // (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600)
+            //  && ! _GNU_SOURCE
             //
             // and a GNU specific version provided if _GNU_SOURCE is defined.
             //
@@ -2341,7 +2331,6 @@ fn test_linux(target: &str) {
         }
     });
 
-    // FIXME: is this necessary?
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
@@ -2351,10 +2340,20 @@ fn test_linux(target: &str) {
         (struct_ == "utmpx" && field == "ut_tv") ||
         // sigval is actually a union, but we pretend it's a struct
         (struct_ == "sigevent" && field == "sigev_value") ||
-        // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_ == "aiocb" && field == "aio_buf") ||
         // this one is an anonymous union
         (struct_ == "ff_effect" && field == "u")
+    });
+
+    cfg.volatile_item(|i| {
+        use ctest::VolatileItemKind::*;
+        match i {
+            // aio_buf is a volatile void** but since we cannot express that in
+            // Rust types, we have to explicitly tell the checker about it here:
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => {
+                true
+            }
+            _ => false,
+        }
     });
 
     cfg.skip_field(move |struct_, field| {

@@ -7,4 +7,4 @@ use libc::*;
 include!(concat!(env!("OUT_DIR"), "/linux_elf.rs"));
 
 #[cfg(not(target_os = "linux"))]
-fn main() {}
+fn main() { println!("PASSED 0 tests"); }
