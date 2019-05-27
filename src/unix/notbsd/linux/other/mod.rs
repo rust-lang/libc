@@ -309,6 +309,7 @@ cfg_if! {
     }
 }
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const __UT_LINESIZE: usize = 32;

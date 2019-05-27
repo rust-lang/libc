@@ -75,6 +75,7 @@ pub const PF_MAX: ::c_int = 45;
 #[doc(hidden)]
 pub const AF_MAX: ::c_int = PF_MAX;
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const SYS_io_setup: ::c_long = 0;
 pub const SYS_io_destroy: ::c_long = 1;
 pub const SYS_io_submit: ::c_long = 2;

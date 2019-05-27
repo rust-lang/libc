@@ -574,6 +574,7 @@ cfg_if! {
     }
 }
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MS_NOUSER: ::c_ulong = 0x80000000;
 pub const MS_RMT_MASK: ::c_ulong = 0x800051;
 

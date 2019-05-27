@@ -483,6 +483,7 @@ pub const ES: ::c_int = 24;
 pub const FS: ::c_int = 25;
 pub const GS: ::c_int = 26;
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MAP_32BIT: ::c_int = 0x0040;
 pub const O_DIRECT: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x10000;

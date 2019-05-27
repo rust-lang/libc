@@ -643,7 +643,6 @@ pub const MADV_NOHUGEPAGE: ::c_int = 15;
 pub const MADV_DONTDUMP: ::c_int = 16;
 pub const MADV_DODUMP: ::c_int = 17;
 pub const MADV_HWPOISON: ::c_int = 100;
-pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 
 pub const IFF_UP: ::c_int = 0x1;
 pub const IFF_BROADCAST: ::c_int = 0x2;

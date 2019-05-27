@@ -1995,6 +1995,10 @@ fn test_linux(target: &str) {
         ),
     }
 
+    let arm = target.contains("arm");
+    let x86_64 = target.contains("x86_64");
+    let x86_32 = target.contains("i686");
+    let x32 = target.contains("x32");
     let mips = target.contains("mips");
     let mips32 = mips && !target.contains("64");
 
@@ -2046,7 +2050,6 @@ fn test_linux(target: &str) {
                "stdio.h",
                "stdlib.h",
                "string.h",
-               "sys/sysctl.h",
                "sys/epoll.h",
                "sys/eventfd.h",
                "sys/file.h",
@@ -2097,13 +2100,25 @@ fn test_linux(target: &str) {
 
     // `sys/io.h` is only available on x86*, Alpha, IA64, and 32-bit ARM:
     // https://bugzilla.redhat.com/show_bug.cgi?id=1116162
-    if target.contains("x86") || target.contains("arm") {
+    if x86_64 || x86_32 || arm {
         headers! { cfg: "sys/io.h" }
     }
 
     // `sys/reg.h` is only available on x86 and x86_64
-    if target.contains("x86") {
+    if x86_64 || x86_32 {
         headers! { cfg: "sys/reg.h" }
+    }
+
+    // sysctl system call is deprecated and not available on musl
+    // It is also unsupported in x32:
+    if !(x32 || musl) {
+        headers! { cfg:  "sys/sysctl.h"}
+    }
+
+    // <execinfo.h> is not supported by musl:
+    // https://www.openwall.com/lists/musl/2015/04/09/3
+    if !musl {
+        headers! { cfg: "execinfo.h" }
     }
 
     // Include linux headers at the end:
@@ -2115,7 +2130,6 @@ fn test_linux(target: &str) {
         "linux/fs.h",
         "linux/futex.h",
         "linux/genetlink.h",
-        "linux/if.h",
         "linux/if_addr.h",
         "linux/if_alg.h",
         "linux/if_ether.h",
@@ -2136,6 +2150,11 @@ fn test_linux(target: &str) {
         "linux/seccomp.h",
         "linux/sockios.h",
         "sys/auxv.h",
+    }
+
+    // FIXME: https://github.com/sabotage-linux/kernel-headers/issues/16
+    if !musl {
+        headers!{ cfg: "linux/if.h" }
     }
 
     // note: aio.h must be included before sys/mount.h
