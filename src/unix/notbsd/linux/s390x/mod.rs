@@ -1,5 +1,6 @@
 use ::pthread_mutex_t;
 
+pub type __rlimit_resource_t = ::c_uint;
 pub type pthread_t = c_ulong;
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
@@ -1316,6 +1317,22 @@ pub const SYS_newfstatat: ::c_long = 293;
 
 #[link(name = "util")]
 extern {
+    pub fn getrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *mut ::rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *const ::rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *const ::rlimit) -> ::c_int;
+    pub fn prlimit(pid: ::pid_t,
+                   resource: ::__rlimit_resource_t, new_limit: *const ::rlimit,
+                   old_limit: *mut ::rlimit) -> ::c_int;
+    pub fn prlimit64(pid: ::pid_t,
+                     resource: ::__rlimit_resource_t,
+                     new_limit: *const ::rlimit64,
+                     old_limit: *mut ::rlimit64) -> ::c_int;
+
     pub fn sysctl(name: *mut ::c_int,
                   namelen: ::c_int,
                   oldp: *mut ::c_void,

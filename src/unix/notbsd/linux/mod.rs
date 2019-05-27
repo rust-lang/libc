@@ -2265,17 +2265,6 @@ extern {
                        flags: ::c_int) -> ::c_int;
     pub fn pthread_setschedprio(native: ::pthread_t,
                                 priority: ::c_int) -> ::c_int;
-    pub fn getrlimit(resource: ::__rlimit_resource_t,
-                     rlim: *mut ::rlimit) -> ::c_int;
-    pub fn setrlimit(resource: ::__rlimit_resource_t,
-                     rlim: *const ::rlimit) -> ::c_int;
-    pub fn prlimit(pid: ::pid_t,
-                   resource: ::__rlimit_resource_t, new_limit: *const ::rlimit,
-                   old_limit: *mut ::rlimit) -> ::c_int;
-    pub fn prlimit64(pid: ::pid_t,
-                     resource: ::__rlimit_resource_t,
-                     new_limit: *const ::rlimit64,
-                     old_limit: *mut ::rlimit64) -> ::c_int;
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
     pub fn process_vm_readv(pid: ::pid_t,
                             local_iov: *const ::iovec,

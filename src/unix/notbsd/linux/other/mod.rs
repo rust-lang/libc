@@ -1,5 +1,6 @@
 pub type pthread_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
+pub type __rlimit_resource_t = ::c_uint;
 
 s! {
     pub struct aiocb {
@@ -949,6 +950,21 @@ f! {
 }
 
 extern {
+    pub fn getrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *mut ::rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *const ::rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *const ::rlimit) -> ::c_int;
+    pub fn prlimit(pid: ::pid_t,
+                   resource: ::__rlimit_resource_t, new_limit: *const ::rlimit,
+                   old_limit: *mut ::rlimit) -> ::c_int;
+    pub fn prlimit64(pid: ::pid_t,
+                     resource: ::__rlimit_resource_t,
+                     new_limit: *const ::rlimit64,
+                     old_limit: *mut ::rlimit64) -> ::c_int;
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
     pub fn getutxent() -> *mut utmpx;
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;

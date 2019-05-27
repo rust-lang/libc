@@ -58,11 +58,12 @@ cd ..
 rm -rf $MUSL
 
 # Download, configure, build, and install musl-sanitized kernel headers:
+KERNEL_HEADER_VER="4.4.2-2"
 curl --retry 5 -L \
-     https://github.com/sabotage-linux/kernel-headers/archive/v4.4.2-1.tar.gz | \
+     "https://github.com/sabotage-linux/kernel-headers/archive/v${KERNEL_HEADER_VER}.tar.gz" | \
     tar xzf -
 (
-    cd kernel-headers-4.4.2-1
+    cd kernel-headers-${KERNEL_HEADER_VER}
     make ARCH="${kernel_arch}" prefix="/musl-${musl_arch}" install -j4
 )
-rm -rf kernel-headers-4.4.2-1
+rm -rf kernel-headers-${KERNEL_HEADER_VER}

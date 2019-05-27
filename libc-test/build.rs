@@ -2130,6 +2130,7 @@ fn test_linux(target: &str) {
         "linux/fs.h",
         "linux/futex.h",
         "linux/genetlink.h",
+        "linux/if.h",
         "linux/if_addr.h",
         "linux/if_alg.h",
         "linux/if_ether.h",
@@ -2150,11 +2151,6 @@ fn test_linux(target: &str) {
         "linux/seccomp.h",
         "linux/sockios.h",
         "sys/auxv.h",
-    }
-
-    // FIXME: https://github.com/sabotage-linux/kernel-headers/issues/16
-    if !musl {
-        headers!{ cfg: "linux/if.h" }
     }
 
     // note: aio.h must be included before sys/mount.h
@@ -2305,6 +2301,9 @@ fn test_linux(target: &str) {
             // `linux_termios.rs` below:
             "BOTHER" => true,
 
+            // FIXME: on musl the pthread types are defined a little differently
+            // - these constants are used by the glibc implementation.
+            n if musl && n.contains("__SIZEOF_PTHREAD") => true,
             _ => false,
         }
     });
@@ -2331,6 +2330,12 @@ fn test_linux(target: &str) {
             // We skip the test here since here _GNU_SOURCE is defined, and
             // test the XSI version below.
             "strerror_r" => true,
+
+            // FIXME: Our API is unsound. The Rust API allows aliasing
+            // pointers, but the C API requires pointers not to alias.
+            // We should probably be at least using `&`/`&mut` here, see:
+            // https://github.com/gnzlbg/ctest/issues/68
+            "lio_listio" if musl => true,
 
             _ => false,
         }

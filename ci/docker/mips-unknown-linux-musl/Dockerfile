@@ -9,7 +9,7 @@ RUN mkdir /toolchain
 # Note that this originally came from:
 # https://downloads.openwrt.org/snapshots/targets/ar71xx/generic/openwrt-sdk-ar71xx-generic_gcc-7.4.0_musl.Linux-x86_64.tar.xz
 RUN curl --retry 5 -L https://downloads.openwrt.org/snapshots/targets/ar71xx/generic/openwrt-sdk-ar71xx-generic_gcc-7.4.0_musl.Linux-x86_64.tar.xz | \
-      tar xf - -C /toolchain --strip-components=1
+      tar xf -J - -C /toolchain --strip-components=1
 
 ENV PATH=$PATH:/rust/bin:/toolchain/staging_dir/toolchain-mips_34kc_gcc-7.4.0_musl.Linux-x86_64/bin \
     CC_mips_unknown_linux_musl=mips-openwrt-linux-gcc \
