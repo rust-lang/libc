@@ -1370,8 +1370,8 @@ fn test_android(target: &str) {
 
             // FIXME: still necessary?
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
-            // FIXME: still necessary?
-            "SIGUNUSED" => true, // removed in glibc 2.26
+            // FIXME: deprecated - removed in glibc 2.26
+            "SIGUNUSED" => true,
 
             _ => false,
         }
