@@ -13,6 +13,14 @@ PLATFORM_SUPPORT=platform-support.md
 rm -rf $TARGET_DOC_DIR
 mkdir -p $TARGET_DOC_DIR
 
+if ! rustc --version | grep -E "nightly" ; then
+    echo "Building the documentation requires a nightly Rust toolchain"
+    exit 1
+fi
+
+rustup component add rust-src
+cargo +nightly install xargo -Z install-upgrade
+
 # List all targets that do currently build successfully:
 # shellcheck disable=SC1003
 grep '[\d|\w|-]* \\' ci/build.sh > targets

@@ -1,4 +1,4 @@
-[![Travis-CI Status]][Travis-CI] [![Appveyor Status]][Appveyor] [![Cirrus-CI Status]][Cirrus-CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
+[![Build Status](https://dev.azure.com/rust-lang/libc/_apis/build/status/rust-lang.libc?branchName=master)](https://dev.azure.com/rust-lang/libc/_build/latest?definitionId=11&branchName=master) [![Appveyor Status]][Appveyor] [![Cirrus-CI Status]][Cirrus-CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
 
 libc - Raw FFI bindings to platforms' system libraries
 ====

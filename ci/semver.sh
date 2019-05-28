@@ -4,9 +4,16 @@
 
 set -ex
 
-OS=${TRAVIS_OS_NAME}
+OS=${1}
 
 echo "Testing Semver on ${OS}"
+
+if ! rustc --version | grep -E "nightly" ; then
+    echo "Building semverver requires a nightly Rust toolchain"
+    exit 1
+fi
+
+cargo +nightly install semverver -Z install-upgrade
 
 TARGETS=
 case "${OS}" in

@@ -5,6 +5,9 @@
 
 set -ex
 
+echo "${HOME}"
+pwd
+
 run() {
     echo "Building docker container for target ${1}"
 
@@ -18,19 +21,19 @@ run() {
     fi
 
     docker run \
-      --user "$(id -u)":"$(id -g)" \
       --rm \
-      --init \
-      --volume "${HOME}/.cargo":/cargo \
-      $kvm \
+      --user "$(id -u)":"$(id -g)" \
       --env CARGO_HOME=/cargo \
+      --env CARGO_TARGET_DIR=/checkout/target \
+      --volume "$(dirname "$(dirname "$(command -v cargo)")")":/cargo \
       --volume "$(rustc --print sysroot)":/rust:ro \
       --volume "$(pwd)":/checkout:ro \
       --volume "$(pwd)"/target:/checkout/target \
-      --env CARGO_TARGET_DIR=/checkout/target \
+      $kvm \
+      --init \
       --workdir /checkout \
       libc \
-      ci/run.sh "${1}"
+      sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh ${1}"
 }
 
 if [ -z "${1}" ]; then
