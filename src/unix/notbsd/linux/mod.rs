@@ -3,7 +3,6 @@
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
-pub type pthread_t = c_ulong;
 pub type mode_t = u32;
 pub type ino64_t = u64;
 pub type off64_t = i64;
@@ -878,8 +877,7 @@ pub const _PC_ALLOC_SIZE_MIN: ::c_int = 18;
 pub const _PC_SYMLINK_MAX: ::c_int = 19;
 pub const _PC_2_SYMLINKS: ::c_int = 20;
 
-pub const MS_NOUSER: ::c_ulong = 0x80000000;
-pub const MS_RMT_MASK: ::c_ulong = 0x800051;
+pub const MS_NOUSER: ::c_ulong = 0xffffffff80000000;
 
 pub const _SC_ARG_MAX: ::c_int = 0;
 pub const _SC_CHILD_MAX: ::c_int = 1;
@@ -2295,12 +2293,6 @@ extern {
                        flags: ::c_int) -> ::c_int;
     pub fn pthread_setschedprio(native: ::pthread_t,
                                 priority: ::c_int) -> ::c_int;
-    pub fn prlimit(pid: ::pid_t, resource: ::c_int, new_limit: *const ::rlimit,
-                   old_limit: *mut ::rlimit) -> ::c_int;
-    pub fn prlimit64(pid: ::pid_t,
-                     resource: ::c_int,
-                     new_limit: *const ::rlimit64,
-                     old_limit: *mut ::rlimit64) -> ::c_int;
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
     pub fn process_vm_readv(pid: ::pid_t,
                             local_iov: *const ::iovec,
@@ -2362,10 +2354,6 @@ extern {
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn vhangup() -> ::c_int;
-    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
-                    flags: ::c_int) -> ::c_int;
-    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
-                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
     pub fn sync();
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
     pub fn sched_getaffinity(pid: ::pid_t,

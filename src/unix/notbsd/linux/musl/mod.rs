@@ -1,3 +1,4 @@
+pub type pthread_t = *mut ::c_void;
 pub type clock_t = c_long;
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
@@ -168,6 +169,8 @@ cfg_if! {
     }
 }
 
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
+
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
@@ -239,6 +242,10 @@ pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
 pub const TCP_FASTOPEN: ::c_int = 23;
 pub const TCP_TIMESTAMP: ::c_int = 24;
 
+#[deprecated(
+    since = "0.2.55",
+    note = "Use SIGSYS instead"
+)]
 pub const SIGUNUSED: ::c_int = ::SIGSYS;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -325,6 +332,27 @@ pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
 
 extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_uint) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_uint, timeout: *mut ::timespec) -> ::c_int;
+
+    pub fn getrlimit64(resource: ::c_int,
+                       rlim: *mut ::rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::c_int,
+                       rlim: *const ::rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::c_int,
+                     rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::c_int,
+                     rlim: *const ::rlimit) -> ::c_int;
+    pub fn prlimit(pid: ::pid_t,
+                   resource: ::c_int, new_limit: *const ::rlimit,
+                   old_limit: *mut ::rlimit) -> ::c_int;
+    pub fn prlimit64(pid: ::pid_t,
+                     resource: ::c_int,
+                     new_limit: *const ::rlimit64,
+                     old_limit: *mut ::rlimit64) -> ::c_int;
+
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;

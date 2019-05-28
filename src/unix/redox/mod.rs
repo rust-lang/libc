@@ -534,6 +534,9 @@ cfg_if! {
 }
 
 extern {
+    pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
+
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
                       buflen: ::size_t) -> ::c_int;
 

@@ -1,4 +1,6 @@
+pub type pthread_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
+pub type __rlimit_resource_t = ::c_uint;
 
 s! {
     pub struct aiocb {
@@ -307,6 +309,9 @@ cfg_if! {
         }
     }
 }
+
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const __UT_LINESIZE: usize = 32;
 pub const __UT_NAMESIZE: usize = 32;
@@ -922,7 +927,7 @@ pub const M_ARENA_TEST: ::c_int = -7;
 pub const M_ARENA_MAX: ::c_int = -8;
 
 #[doc(hidden)]
-pub const AF_MAX: ::c_int = 42;
+pub const AF_MAX: ::c_int = 45;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
@@ -945,6 +950,26 @@ f! {
 }
 
 extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
+
+    pub fn getrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *mut ::rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *const ::rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *const ::rlimit) -> ::c_int;
+    pub fn prlimit(pid: ::pid_t,
+                   resource: ::__rlimit_resource_t, new_limit: *const ::rlimit,
+                   old_limit: *mut ::rlimit) -> ::c_int;
+    pub fn prlimit64(pid: ::pid_t,
+                     resource: ::__rlimit_resource_t,
+                     new_limit: *const ::rlimit64,
+                     old_limit: *mut ::rlimit64) -> ::c_int;
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
     pub fn getutxent() -> *mut utmpx;
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;

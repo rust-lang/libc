@@ -598,6 +598,9 @@ f! {
 }
 
 extern {
+    pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
+
     #[cfg_attr(target_os = "linux",
                link_name = "__xpg_strerror_r")]
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,

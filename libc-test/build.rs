@@ -37,14 +37,22 @@ fn main() {
 }
 
 macro_rules! headers {
-    ($cfg:ident: $header:expr) => {
+    ($cfg:ident: [$m:expr]: $header:literal) => {
+        if $m {
+            $cfg.header($header);
+        }
+    };
+    ($cfg:ident: $header:literal) => {
         $cfg.header($header);
     };
-    ($cfg:ident: $($header:expr),*) => {
-        $(headers!($cfg: $header);)*
+    ($($cfg:ident: $([$c:expr]:)* $header:literal,)*) => {
+        $(headers!($cfg: $([$c]:)* $header);)*
     };
-    ($cfg:ident: $($header:expr,)*) => {
-        $(headers!($cfg: $header);)*
+    ($cfg:ident: $( $([$c:expr]:)* $header:literal,)*) => {
+        headers!($($cfg: $([$c]:)* $header,)*);
+    };
+    ($cfg:ident: $( $([$c:expr]:)* $header:literal),*) => {
+        headers!($($cfg: $([$c]:)* $header,)*);
     };
 }
 
@@ -135,10 +143,7 @@ fn test_apple(target: &str) {
         "utmpx.h",
         "wchar.h",
         "xlocale.h",
-    }
-
-    if x86_64 {
-        headers! { cfg: "crt_externs.h" }
+        [x86_64]: "crt_externs.h",
     }
 
     cfg.skip_struct(move |ty| {
@@ -386,12 +391,8 @@ fn test_windows(target: &str) {
         "sys/utime.h",
         "time.h",
         "wchar.h",
-    }
-
-    if gnu {
-        headers! { cfg: "ws2tcpip.h" }
-    } else {
-        headers! { cfg: "Winsock2.h" };
+        [gnu]: "ws2tcpip.h",
+        [!gnu]: "Winsock2.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -850,7 +851,6 @@ fn test_netbsd(target: &str) {
     cfg.skip_signededness(move |c| {
         match c {
             "LARGE_INTEGER" | "float" | "double" => true,
-            // uuid_t is a struct, not an integer.
             n if n.starts_with("pthread") => true,
             // sem_t is a struct or pointer
             "sem_t" => true,
@@ -1305,16 +1305,10 @@ fn test_android(target: &str) {
                "utmp.h",
                "wchar.h",
                "xlocale.h",
-    }
-
-    if target_pointer_width == 32 {
-        // time64_t is not defined for 64-bit targets If included it will
-        // generate the error 'Your time_t is already 64-bit'
-        cfg.header("time64.h");
-    }
-
-    if x86 {
-        cfg.header("sys/reg.h");
+               // time64_t is not defined for 64-bit targets If included it will
+               // generate the error 'Your time_t is already 64-bit'
+               [target_pointer_width == 32]: "time64.h",
+               [x86]: "sys/reg.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -1434,12 +1428,7 @@ fn test_android(target: &str) {
 
     cfg.generate("../src/lib.rs", "main.rs");
 
-    // On Android also generate another script for testing linux/fcntl
-    // declarations. These cannot be tested normally because including both
-    // `linux/fcntl.h` and `fcntl.h` fails.
-    //
-    // This also tests strerror_r.
-    test_linux_termios2(target);
+    test_linux_incompatible_apis(target);
 }
 
 fn test_freebsd(target: &str) {
@@ -2001,21 +1990,19 @@ fn test_linux(target: &str) {
         ),
     }
 
-    let mips = target.contains("mips");
-    let i686 = target.contains("i686");
+    let arm = target.contains("arm");
     let x86_64 = target.contains("x86_64");
-    let x32 = target.ends_with("gnux32");
+    let x86_32 = target.contains("i686");
+    let x32 = target.contains("x32");
+    let mips = target.contains("mips");
+    let mips32_musl = mips && !target.contains("64") && musl;
 
     let mut cfg = ctest::TestGenerator::new();
-    // FIXME: still necessary?
     cfg.define("_GNU_SOURCE", None);
     // This macro re-deifnes fscanf,scanf,sscanf to link to the symbols that are
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
     // glibc versions older than 2.29.
     cfg.define("__GLIBC_USE_DEPRECATED_SCANF", None);
-
-    // FIXME: still necessary?
-    cfg.flag("-Wno-deprecated-declarations");
 
     headers! { cfg:
                "ctype.h",
@@ -2072,6 +2059,8 @@ fn test_linux(target: &str) {
                "sys/prctl.h",
                "sys/ptrace.h",
                "sys/quota.h",
+               // FIXME: the mips-musl CI build jobs use ancient musl 1.0.15:
+               [!mips32_musl]: "sys/random.h",
                "sys/reboot.h",
                "sys/resource.h",
                "sys/sem.h",
@@ -2100,88 +2089,61 @@ fn test_linux(target: &str) {
                "unistd.h",
                "utime.h",
                "utmp.h",
+               "utmpx.h",
                "wchar.h",
                "errno.h",
+               // `sys/io.h` is only available on x86*, Alpha, IA64, and 32-bit
+               // ARM: https://bugzilla.redhat.com/show_bug.cgi?id=1116162
+               [x86_64 || x86_32 || arm]: "sys/io.h",
+               // `sys/reg.h` is only available on x86 and x86_64
+               [x86_64 || x86_32]: "sys/reg.h",
+               // sysctl system call is deprecated and not available on musl
+               // It is also unsupported in x32:
+               [!(x32 || musl)]: "sys/sysctl.h",
+               // <execinfo.h> is not supported by musl:
+               // https://www.openwall.com/lists/musl/2015/04/09/3
+               [!musl]: "execinfo.h",
     }
 
     // Include linux headers at the end:
     headers! {
         cfg:
+        "asm/mman.h",
+        "linux/dccp.h",
         "linux/falloc.h",
-        "linux/futex.h",
         "linux/fs.h",
+        "linux/futex.h",
         "linux/genetlink.h",
+        // FIXME: musl version 1.0.15 used by mips build jobs is ancient
+        [!mips32_musl]: "linux/if.h",
         "linux/if_addr.h",
         "linux/if_alg.h",
         "linux/if_ether.h",
         "linux/if_tun.h",
         "linux/input.h",
+        "linux/magic.h",
+        "linux/memfd.h",
         "linux/module.h",
         "linux/net_tstamp.h",
+        "linux/netfilter/nf_tables.h",
         "linux/netfilter_ipv4.h",
         "linux/netfilter_ipv6.h",
         "linux/netlink.h",
+        "linux/quota.h",
         "linux/random.h",
+        "linux/reboot.h",
         "linux/rtnetlink.h",
         "linux/seccomp.h",
         "linux/sockios.h",
-    }
-
-    if x86_64 {
-        headers! { cfg: "sys/io.h" };
-    }
-    if i686 || x86_64 {
-        headers! { cfg: "sys/reg.h" };
-    }
-
-    if !musl {
-        assert!(uclibc || gnu);
-        headers! { cfg:
-                   "asm/mman.h",
-                   "linux/if.h",
-                   "linux/magic.h",
-                   "linux/netfilter/nf_tables.h",
-                   "linux/reboot.h",
-                   "sys/auxv.h",
-        };
-
-        if !x32 {
-            assert!((gnu || uclibc) && !x32);
-            headers! { cfg: "sys/sysctl.h", }
-        }
-        if !uclibc {
-            assert!(gnu);
-            headers! { cfg:
-                       "execinfo.h",
-                       "utmpx.h",
-            }
-        }
-        if !mips {
-            assert!((gnu || uclibc) && !mips);
-            headers! { cfg: "linux/quota.h" };
-        }
-    }
-
-    // DCCP support
-    if !uclibc && !musl {
-        assert!(gnu);
-        headers! { cfg: "linux/dccp.h" };
-    }
-
-    if !musl || mips {
-        assert!(gnu || uclibc || (mips && musl));
-        headers! { cfg:  "linux/memfd.h" };
+        "sys/auxv.h",
     }
 
     // note: aio.h must be included before sys/mount.h
-    if !uclibc {
-        assert!(gnu || musl);
-        // optionally included in uclibc
-        headers! { cfg:
-                   "sys/xattr.h",
-                   "sys/sysinfo.h",
-                   "aio.h",
-        }
+    headers! {
+        cfg:
+        "sys/xattr.h",
+        "sys/sysinfo.h",
+        "aio.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -2210,7 +2172,9 @@ fn test_linux(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // FIXME: is this necessary?
+            // FIXME: epoll_event.data is actuall a union in C, but in Rust
+            // it is only a u64 because we only expose one field
+            // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
@@ -2222,19 +2186,25 @@ fn test_linux(target: &str) {
             {
                 "type".to_string()
             }
+
             s => s.to_string(),
         }
     });
 
     cfg.skip_type(move |ty| {
         match ty {
-            // sighandler_t is crazy across platforms
-            // FIXME: is this necessary?
+            // FIXME: `sighandler_t` type is incorrect, see:
+            // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
 
             // These cannot be tested when "resolv.h" is included and are tested
-            // below.
+            // in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
+
+            // This type is private on Linux. It is implemented as a C `enum`
+            // (`c_uint`) and this clashes with the type of the `rlimit` APIs
+            // which expect a `c_int` even though both are ABI compatible.
+            "__rlimit_resource_t" => true,
 
             _ => false,
         }
@@ -2242,11 +2212,8 @@ fn test_linux(target: &str) {
 
     cfg.skip_struct(move |ty| {
         match ty {
-            // FIXME: is this necessary?
-            "sockaddr_nl" if musl => true,
-
             // These cannot be tested when "resolv.h" is included and are tested
-            // below.
+            // in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
 
             // On Linux, the type of `ut_tv` field of `struct utmpx`
@@ -2254,184 +2221,77 @@ fn test_linux(target: &str) {
             // which is absent in glibc, has to be defined.
             "__timeval" => true,
 
-            // This is actually a union, not a struct
+            // FIXME: This is actually a union, not a struct
             "sigval" => true,
 
-            // Linux kernel headers used on musl are too old to have this
-            // definition. Because it's tested on other Linux targets, skip it.
-            // FIXME: is this necessary?
-            "input_mask" if musl => true,
-
-            // These are tested as part of the linux_fcntl tests since there are
-            // header conflicts when including them with all the other structs.
-            // FIXME: is this necessary?
+            // This type is tested in the `linux_termios.rs` file since there
+            // are header conflicts when including them with all the other
+            // structs.
             "termios2" => true,
+
+            // FIXME: musl version using by mips build jobs 1.0.15 is ancient:
+            "ifmap" | "ifreq" | "ifconf" if mips32_musl => true,
 
             _ => false,
         }
     });
 
-    cfg.skip_signededness(move |c| match c {
-        // FIXME: is this necessary?
-        "LARGE_INTEGER" | "float" | "double" => true,
-        // FIXME: is this necessary?
-        n if n.starts_with("pthread") => true,
-        _ => false,
-    });
-
     cfg.skip_const(move |name| {
         match name {
-            // FIXME: is this necessary?
-            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
-            // FIXME: is this necessary?
-            "SIGUNUSED" => true,                       // removed in glibc 2.26
-
-            // types on musl are defined a little differently
-            // FIXME: is this necessary?
-            n if musl && n.contains("__SIZEOF_PTHREAD") => true,
-
-            // Skip constants not defined in MUSL but just passed down to the
-            // kernel regardless
-            // FIXME: is this necessary?
-            "RLIMIT_NLIMITS"
-            | "TCP_COOKIE_TRANSACTIONS"
-            | "RLIMIT_RTTIME"
-            | "MSG_COPY"
-                if musl =>
-            {
-                true
-            }
-            // work around super old mips toolchain
-            // FIXME: is this necessary?
-            "SCHED_IDLE" | "SHM_NORESERVE" => mips,
-
-            // weird signed extension or something like that?
-            // FIXME: is this necessary?
-            "MS_NOUSER" => true,
-            // FIXME: is this necessary?
-            "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
-
-            // These are either unimplemented or optionally built into uClibc
-            // FIXME: is this necessary?
-            "LC_CTYPE_MASK"
-            | "LC_NUMERIC_MASK"
-            | "LC_TIME_MASK"
-            | "LC_COLLATE_MASK"
-            | "LC_MONETARY_MASK"
-            | "LC_MESSAGES_MASK"
-            | "MADV_MERGEABLE"
-            | "MADV_UNMERGEABLE"
-            | "MADV_HWPOISON"
-            | "IPV6_ADD_MEMBERSHIP"
-            | "IPV6_DROP_MEMBERSHIP"
-            | "IPV6_MULTICAST_LOOP"
-            | "IPV6_V6ONLY"
-            | "MAP_STACK"
-            | "RTLD_DEEPBIND"
-            | "SOL_IPV6"
-            | "SOL_ICMPV6"
-                if uclibc =>
-            {
-                true
-            }
-
-            // Musl uses old, patched kernel headers
-            // FIXME: is this necessary?
-            "FALLOC_FL_COLLAPSE_RANGE"
-            | "FALLOC_FL_ZERO_RANGE"
-            | "FALLOC_FL_INSERT_RANGE"
-            | "FALLOC_FL_UNSHARE_RANGE"
-            | "RENAME_NOREPLACE"
-            | "RENAME_EXCHANGE"
-            | "RENAME_WHITEOUT"
-            // ALG_SET_AEAD_* constants are available starting from kernel 3.19
-            | "ALG_SET_AEAD_ASSOCLEN"
-            | "ALG_SET_AEAD_AUTHSIZE"
-                if musl =>
-            {
-                true
-            }
-
-            // musl uses old kernel headers
-            // These are constants used in getrandom syscall
-            // FIXME: is this necessary?
-            "GRND_NONBLOCK" | "GRND_RANDOM" if musl => true,
-
-            // Defined by libattr not libc on linux (hard to test).
-            // See constant definition for more details.
-            // FIXME: is this necessary?
-            "ENOATTR" => true,
-
-            // On mips*-unknown-linux-gnu* CMSPAR cannot be included with the set of headers we
-            // want to use here for testing. It's originally defined in asm/termbits.h, which is
-            // also included by asm/termios.h, but not the standard termios.h. There's no way to
-            // include both asm/termbits.h and termios.h and there's no way to include both
-            // asm/termios.h and ioctl.h (+ some other headers) because of redeclared types.
-            // FIXME: is this necessary?
-            "CMSPAR" if mips && !musl => true,
-
-            // On mips Linux targets, MADV_SOFT_OFFLINE is currently missing, though it's been added but CI has too old
-            // of a Linux version. Since it exists on all other Linux targets, just ignore this for now and remove once
-            // it's been fixed in CI.
-            // FIXME: is this necessary?
-            "MADV_SOFT_OFFLINE" if mips => true,
-
-            // These constants are tested in a separate test program generated below because there
-            // are header conflicts if we try to include the headers that define them here.
-            // FIXME: is this necessary?
-            "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => true,
-            // FIXME: is this necessary?
-            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
-                | "F_SEAL_WRITE" => true,
-            // FIXME: is this necessary?
-            "QFMT_VFS_OLD" | "QFMT_VFS_V0" | "QFMT_VFS_V1"
-                if mips =>
-            {
-                true
-            } // Only on MIPS
-            // FIXME: is this necessary?
-            "BOTHER" => true,
-
-            // FIXME: is this necessary?
-            "MFD_CLOEXEC" | "MFD_ALLOW_SEALING" if !mips && musl => true,
-            // MFD_HUGETLB is not available in some older libc versions on the CI builders. On the
-            // x86_64 and i686 builders it seems to be available for all targets, so at least test
-            // it there.
-            // FIXME: is this necessary?
-            "MFD_HUGETLB"
-                if !(x86_64 || i686) || musl =>
-            {
-                true
-            }
-
-            // These are defined for Solaris 11, but the crate is tested on
-            // illumos, where they are currently not defined
-            // FIXME: is this necessary?
-            "EADI"
-            | "PORT_SOURCE_POSTWAIT"
-            | "PORT_SOURCE_SIGNAL"
-            | "PTHREAD_STACK_MIN" => true,
-
-            // These change all the time from release to release of linux
-            // distros, let's just not bother trying to verify them. They
-            // shouldn't be used in code anyway...
-            // FIXME: is this necessary?
-            "AF_MAX" | "PF_MAX" => true,
-
-            // These are not in a glibc release yet, only in kernel headers.
-            // FIXME: is this necessary?
-            "AF_XDP"
-            | "PF_XDP"
-            | "SOL_XDP"
+            // These constants are not available if gnu headers have been included
+            // and can therefore not be tested here
+            //
+            // The IPV6 constants are tested in the `linux_ipv6.rs` tests:
             | "IPV6_FLOWINFO"
             | "IPV6_FLOWLABEL_MGR"
             | "IPV6_FLOWINFO_SEND"
             | "IPV6_FLOWINFO_FLOWLABEL"
             | "IPV6_FLOWINFO_PRIORITY"
-                 =>
-            {
-                true
-            }
+            // The F_ fnctl constants are tested in the `linux_fnctl.rs` tests:
+            | "F_CANCELLK"
+            | "F_ADD_SEALS"
+            | "F_GET_SEALS"
+            | "F_SEAL_SEAL"
+            | "F_SEAL_SHRINK"
+            | "F_SEAL_GROW"
+            | "F_SEAL_WRITE" => true,
+
+            // The musl-sanitized kernel headers used in CI
+            // target the Linux kernel 4.4 and do not contain the
+            // following constants:
+            //
+            // Requires Linux kernel 4.9
+            | "FALLOC_FL_UNSHARE_RANGE"
+            //
+            // Require Linux kernel 5.x:
+            | "MSG_COPY"
+               if musl  => true,
+
+            // The musl version 1.0.22 used in CI does not
+            // contain these glibc constants yet:
+            | "RLIMIT_RTTIME" // should be in `resource.h`
+            | "TCP_COOKIE_TRANSACTIONS"  // should be in the `netinet/tcp.h` header
+                if musl => true,
+
+            // FIXME: deprecated: not available in any header
+            // See: https://github.com/rust-lang/libc/issues/1356
+            "ENOATTR" => true,
+
+            // FIXME: SIGUNUSED was removed in glibc 2.26
+            // Users should use SIGSYS instead.
+            "SIGUNUSED" => true,
+
+            // FIXME: conflicts with glibc headers and is tested in
+            // `linux_termios.rs` below:
+            "BOTHER" => true,
+
+            // FIXME: on musl the pthread types are defined a little differently
+            // - these constants are used by the glibc implementation.
+            n if musl && n.contains("__SIZEOF_PTHREAD") => true,
+
+            // FIXME: musl version 1.0.15 used by mips build jobs is ancient
+            t if mips32_musl && t.starts_with("IFF") => true,
+            "MFD_HUGETLB" | "AF_XDP" | "PF_XDP" if mips32_musl => true,
 
             _ => false,
         }
@@ -2440,66 +2300,37 @@ fn test_linux(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            "execv" |       // crazy stuff with const/mut
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
-            "getrlimit" | "getrlimit64" |    // non-int in 1st arg
-            "setrlimit" | "setrlimit64" |    // non-int in 1st arg
-            "prlimit" | "prlimit64"          // non-int in 2nd arg
-                => true,
-
-            // int vs uint. Sorry musl, your prototype declarations are "correct" in the sense that
-            // they match the interface defined by Linux verbatim, but they conflict with other
-            // send*/recv* syscalls
-            // FIXME: is this necessary?
-            "sendmmsg" | "recvmmsg" if musl => true,
-
-            // FIXME: is this necessary?
-            "dladdr" if musl => true, // const-ness only added recently
-
-            // There seems to be a small error in EGLIBC's eventfd.h header. The
-            // [underlying system call][1] always takes its first `count`
-            // argument as an `unsigned int`, but [EGLIBC's <sys/eventfd.h>
-            // header][2] declares it to take an `int`. [GLIBC's header][3]
-            // matches the kernel.
+            // There are two versions of the sterror_r function, see
             //
-            // EGLIBC is no longer actively developed, and Debian, the largest
-            // distribution that had been using it, switched back to GLIBC in
-            // April 2015. So effectively all Linux <sys/eventfd.h> headers will
-            // be using `unsigned int` soon.
+            // https://linux.die.net/man/3/strerror_r
             //
-            // [1]: https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/fs/eventfd.c?id=refs/tags/v3.12.51#n397
-            // [2]: http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/trusty/eglibc/trusty/view/head:/sysdeps/unix/sysv/linux/sys/eventfd.h
-            // [3]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/sys/eventfd.h;h=6295f32e937e779e74318eb9d3bdbe76aef8a8f3;hb=4e42b5b8f89f0e288e68be7ad70f9525aebc2cff#l34
-            // FIXME: is this necessary?
-            "eventfd" => true,
+            // An XSI-compliant version provided if:
+            //
+            // (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600)
+            //  && ! _GNU_SOURCE
+            //
+            // and a GNU specific version provided if _GNU_SOURCE is defined.
+            //
+            // libc provides bindings for the XSI-compliant version, which is
+            // preferred for portable applications.
+            //
+            // We skip the test here since here _GNU_SOURCE is defined, and
+            // test the XSI version below.
+            "strerror_r" => true,
 
+            // FIXME: Our API is unsound. The Rust API allows aliasing
+            // pointers, but the C API requires pointers not to alias.
+            // We should probably be at least using `&`/`&mut` here, see:
+            // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" if musl => true,
-
-            // These are either unimplemented or optionally built into uClibc
-            // or "sysinfo", where it's defined but the structs in linux/sysinfo.h and sys/sysinfo.h
-            // clash so it can't be tested
-            "getxattr" | "lgetxattr" | "fgetxattr" | "setxattr" | "lsetxattr" | "fsetxattr" |
-            "listxattr" | "llistxattr" | "flistxattr" | "removexattr" | "lremovexattr" |
-            "fremovexattr" |
-            "backtrace" |
-            "sysinfo" | "newlocale" | "duplocale" | "freelocale" | "uselocale" |
-            "nl_langinfo_l" | "wcslen" | "wcstombs" if uclibc => true,
-
-            // Definition of those functions as changed since unified headers from NDK r14b
-            // These changes imply some API breaking changes but are still ABI compatible.
-            // We can wait for the next major release to be compliant with the new API.
-            // FIXME: unskip these for next major release
-            "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority"  => true,
 
             _ => false,
         }
     });
 
-    // FIXME: is this necessary?
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
@@ -2509,10 +2340,20 @@ fn test_linux(target: &str) {
         (struct_ == "utmpx" && field == "ut_tv") ||
         // sigval is actually a union, but we pretend it's a struct
         (struct_ == "sigevent" && field == "sigev_value") ||
-        // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_ == "aiocb" && field == "aio_buf") ||
         // this one is an anonymous union
         (struct_ == "ff_effect" && field == "u")
+    });
+
+    cfg.volatile_item(|i| {
+        use ctest::VolatileItemKind::*;
+        match i {
+            // aio_buf is a volatile void** but since we cannot express that in
+            // Rust types, we have to explicitly tell the checker about it here:
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => {
+                true
+            }
+            _ => false,
+        }
     });
 
     cfg.skip_field(move |struct_, field| {
@@ -2525,7 +2366,8 @@ fn test_linux(target: &str) {
         (musl && struct_ == "statvfs" && field == "__f_unused") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
         (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
-        // signalfd had SIGSYS fields added in Linux 4.18, but no libc release has them yet.
+        // signalfd had SIGSYS fields added in Linux 4.18, but no libc release
+        // has them yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
                                            field == "_pad2" ||
                                            field == "ssi_syscall" ||
@@ -2533,77 +2375,133 @@ fn test_linux(target: &str) {
                                            field == "ssi_arch"))
     });
 
-    // FIXME: remove
-    cfg.fn_cname(move |name, _cname| name.to_string());
-
     cfg.generate("../src/lib.rs", "main.rs");
 
-    // On Linux also generate another script for testing linux/fcntl declarations.
-    // These cannot be tested normally because including both `linux/fcntl.h` and `fcntl.h`
-    // fails on a lot of platforms.
-    test_linux_termios2(target);
-
-    // Test Elf64_Phdr and Elf32_Phdr
-    // These types have a field called `p_type`, but including
-    // "resolve.h" defines a `p_type` macro that expands to `__p_type`
-    // making the tests for these fails when both are included.
-    let mut cfg = ctest::TestGenerator::new();
-    cfg.skip_fn(|_| true)
-        .skip_const(|_| true)
-        .skip_static(|_| true)
-        .type_name(move |ty, _is_struct, _is_union| ty.to_string());
-    cfg.skip_struct(move |ty| match ty {
-        "Elf64_Phdr" | "Elf32_Phdr" => false,
-        _ => true,
-    });
-    cfg.skip_type(move |ty| match ty {
-        "Elf64_Phdr" | "Elf32_Phdr" => false,
-        _ => true,
-    });
-    cfg.header("elf.h");
-    cfg.generate("../src/lib.rs", "linux_elf.rs");
+    test_linux_incompatible_apis(target);
 }
 
-fn test_linux_termios2(target: &str) {
+// This function tests APIs that are incompatible to test when other APIs
+// are included (e.g. because including both sets of headers clashes)
+fn test_linux_incompatible_apis(target: &str) {
     assert!(target.contains("linux") || target.contains("android"));
     let musl = target.contains("musl");
-    let mut cfg = ctest::TestGenerator::new();
-    cfg.skip_type(|_| true)
-        .skip_fn(|f| match f {
+    let linux = target.contains("linux");
+
+    {
+        // test strerror_r from the `string.h` header
+        let mut cfg = ctest::TestGenerator::new();
+        cfg.skip_type(|_| true).skip_static(|_| true);
+
+        headers! { cfg: "string.h" }
+        cfg.skip_fn(|f| match f {
             "strerror_r" => false,
             _ => true,
         })
-        .skip_static(|_| true);
-    headers! {
-        cfg:
-      "linux/quota.h",
-        "asm/termbits.h",
-        "string.h"
+        .skip_const(|_| true)
+        .skip_struct(|_| true);
+        cfg.generate("../src/lib.rs", "linux_strerror_r.rs");
     }
-    if musl {
-        cfg.header("fcntl.h");
-    } else {
-        cfg.header("linux/fcntl.h");
+    {
+        // test fcntl - see:
+        // http://man7.org/linux/man-pages/man2/fcntl.2.html
+        let mut cfg = ctest::TestGenerator::new();
+
+        if musl {
+            cfg.header("fcntl.h");
+        } else {
+            cfg.header("linux/fcntl.h");
+        }
+
+        cfg.skip_type(|_| true)
+            .skip_static(|_| true)
+            .skip_struct(|_| true)
+            .skip_fn(|_| true)
+            .skip_const(move |name| match name {
+                // test fcntl constants:
+                "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS"
+                | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
+                | "F_SEAL_WRITE" => false,
+                _ => true,
+            })
+            .type_name(move |ty, is_struct, is_union| match ty {
+                t if is_struct => format!("struct {}", t),
+                t if is_union => format!("union {}", t),
+                t => t.to_string(),
+            });
+
+        cfg.generate("../src/lib.rs", "linux_fcntl.rs");
     }
-    if !musl {
-        cfg.header("net/if.h");
-        cfg.header("linux/if.h");
+    {
+        // test termios
+        let mut cfg = ctest::TestGenerator::new();
+        cfg.header("asm/termbits.h");
+        cfg.skip_type(|_| true)
+            .skip_static(|_| true)
+            .skip_fn(|_| true)
+            .skip_const(|c| c != "BOTHER")
+            .skip_struct(|s| s != "termios2")
+            .type_name(move |ty, is_struct, is_union| match ty {
+                t if is_struct => format!("struct {}", t),
+                t if is_union => format!("union {}", t),
+                t => t.to_string(),
+            });
+        cfg.generate("../src/lib.rs", "linux_termios.rs");
     }
 
-    cfg.skip_const(move |name| match name {
-        "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => false,
-        "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE" => {
-            false
+    if !linux {
+        return;
+    }
+    // linux-only tests (no android):
+
+    {
+        // test IPV6_ constants:
+        let mut cfg = ctest::TestGenerator::new();
+        headers! {
+            cfg:
+            "linux/in6.h"
         }
-        _ => true,
-    });
-    cfg.skip_struct(|s| s != "termios2");
-    cfg.type_name(move |ty, is_struct, is_union| match ty {
-        t if is_struct => format!("struct {}", t),
-        t if is_union => format!("union {}", t),
-        t => t.to_string(),
-    });
-    cfg.generate("../src/lib.rs", "linux_fcntl.rs");
+        cfg.skip_type(|_| true)
+            .skip_static(|_| true)
+            .skip_fn(|_| true)
+            .skip_const(|_| true)
+            .skip_struct(|_| true)
+            .skip_const(move |name| match name {
+                "IPV6_FLOWINFO"
+                | "IPV6_FLOWLABEL_MGR"
+                | "IPV6_FLOWINFO_SEND"
+                | "IPV6_FLOWINFO_FLOWLABEL"
+                | "IPV6_FLOWINFO_PRIORITY" => false,
+                _ => true,
+            })
+            .type_name(move |ty, is_struct, is_union| match ty {
+                t if is_struct => format!("struct {}", t),
+                t if is_union => format!("union {}", t),
+                t => t.to_string(),
+            });
+        cfg.generate("../src/lib.rs", "linux_ipv6.rs");
+    }
+    {
+        // Test Elf64_Phdr and Elf32_Phdr
+        // These types have a field called `p_type`, but including
+        // "resolve.h" defines a `p_type` macro that expands to `__p_type`
+        // making the tests for these fails when both are included.
+        let mut cfg = ctest::TestGenerator::new();
+        cfg.header("elf.h");
+        cfg.skip_fn(|_| true)
+            .skip_static(|_| true)
+            .skip_fn(|_| true)
+            .skip_const(|_| true)
+            .type_name(move |ty, _is_struct, _is_union| ty.to_string())
+            .skip_struct(move |ty| match ty {
+                "Elf64_Phdr" | "Elf32_Phdr" => false,
+                _ => true,
+            })
+            .skip_type(move |ty| match ty {
+                "Elf64_Phdr" | "Elf32_Phdr" => false,
+                _ => true,
+            });
+        cfg.generate("../src/lib.rs", "linux_elf.rs");
+    }
 }
 
 fn which_freebsd() -> Option<i32> {

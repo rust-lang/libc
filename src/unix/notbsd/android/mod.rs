@@ -548,6 +548,7 @@ cfg_if! {
     }
 }
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MS_NOUSER: ::c_ulong = 0xffffffff80000000;
 pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
@@ -762,6 +763,10 @@ pub const SIGURG: ::c_int = 23;
 pub const SIGIO: ::c_int = 29;
 pub const SIGSYS: ::c_int = 31;
 pub const SIGSTKFLT: ::c_int = 16;
+#[deprecated(
+    since = "0.2.55",
+    note = "Use SIGSYS instead"
+)]
 pub const SIGUNUSED: ::c_int = 31;
 pub const SIGTTIN: ::c_int = 21;
 pub const SIGTTOU: ::c_int = 22;
@@ -1919,6 +1924,12 @@ f! {
 }
 
 extern {
+    pub fn getrlimit64(resource: ::c_int,
+                       rlim: *mut rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::c_int,
+                       rlim: *const rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
                       buflen: ::size_t) -> ::c_int;
 

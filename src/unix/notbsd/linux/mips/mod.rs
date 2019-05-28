@@ -1,3 +1,4 @@
+pub type pthread_t = c_ulong;
 pub type shmatt_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 pub type msglen_t = ::c_ulong;
@@ -5,6 +6,7 @@ pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type rlim_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
+pub type __rlimit_resource_t = ::c_uint;
 
 s! {
     pub struct glob64_t {
@@ -69,6 +71,8 @@ s! {
         pub nla_type: u16,
     }
 }
+
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
@@ -891,7 +895,7 @@ pub const NFT_NG_INCREMENTAL: ::c_int = 0;
 pub const NFT_NG_RANDOM: ::c_int = 1;
 
 #[doc(hidden)]
-pub const AF_MAX: ::c_int = 42;
+pub const AF_MAX: ::c_int = 45;
 #[doc(hidden)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
@@ -903,6 +907,26 @@ f! {
 
 #[link(name = "util")]
 extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
+
+    pub fn getrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *mut ::rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *const ::rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *const ::rlimit) -> ::c_int;
+    pub fn prlimit(pid: ::pid_t,
+                   resource: ::__rlimit_resource_t, new_limit: *const ::rlimit,
+                   old_limit: *mut ::rlimit) -> ::c_int;
+    pub fn prlimit64(pid: ::pid_t,
+                     resource: ::__rlimit_resource_t,
+                     new_limit: *const ::rlimit64,
+                     old_limit: *mut ::rlimit64) -> ::c_int;
     pub fn sysctl(name: *mut ::c_int,
                   namelen: ::c_int,
                   oldp: *mut ::c_void,

@@ -488,6 +488,13 @@ f! {
 }
 
 extern {
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "getrlimit$UNIX2003")]
+    pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
+    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+               link_name = "setrlimit$UNIX2003")]
+    pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
+
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
                       buflen: ::size_t) -> ::c_int;
     pub fn abs(i: ::c_int) -> ::c_int;

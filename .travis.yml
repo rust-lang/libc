@@ -22,7 +22,8 @@ matrix:
       install: true
       script:
         - shellcheck --version
-        - shellcheck ci/*.sh
+        # FIXME: https://github.com/koalaman/shellcheck/issues/1591
+        - shellcheck -e SC2103 ci/*.sh
       stage: tools-and-build-and-tier1
     - name: "Style"
       install: true

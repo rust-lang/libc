@@ -29,6 +29,26 @@ path = "test/linux_fcntl.rs"
 harness = false
 
 [[test]]
+name = "linux-ipv6"
+path = "test/linux_ipv6.rs"
+harness = false
+
+[[test]]
+name = "linux-elf"
+path = "test/linux_elf.rs"
+harness = false
+
+[[test]]
+name = "linux-strerror_r"
+path = "test/linux_strerror_r.rs"
+harness = false
+
+[[test]]
+name = "linux-termios"
+path = "test/linux_termios.rs"
+harness = false
+
+[[test]]
 name = "cmsg"
 path = "test/cmsg.rs"
 harness = true

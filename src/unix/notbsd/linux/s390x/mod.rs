@@ -1,5 +1,7 @@
 use ::pthread_mutex_t;
 
+pub type __rlimit_resource_t = ::c_uint;
+pub type pthread_t = c_ulong;
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
 pub type c_char = u8;
@@ -352,6 +354,9 @@ cfg_if! {
     }
 }
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
+
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
@@ -638,6 +643,10 @@ pub const SIGURG: ::c_int = 23;
 pub const SIGIO: ::c_int = 29;
 pub const SIGSYS: ::c_int = 31;
 pub const SIGSTKFLT: ::c_int = 16;
+#[deprecated(
+    since = "0.2.55",
+    note = "Use SIGSYS instead"
+)]
 pub const SIGUNUSED: ::c_int = 31;
 pub const SIGTTIN: ::c_int = 21;
 pub const SIGTTOU: ::c_int = 22;
@@ -1308,6 +1317,27 @@ pub const SYS_newfstatat: ::c_long = 293;
 
 #[link(name = "util")]
 extern {
+    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int) -> ::c_int;
+    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
+                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
+
+    pub fn getrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *mut ::rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::__rlimit_resource_t,
+                       rlim: *const ::rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::__rlimit_resource_t,
+                     rlim: *const ::rlimit) -> ::c_int;
+    pub fn prlimit(pid: ::pid_t,
+                   resource: ::__rlimit_resource_t, new_limit: *const ::rlimit,
+                   old_limit: *mut ::rlimit) -> ::c_int;
+    pub fn prlimit64(pid: ::pid_t,
+                     resource: ::__rlimit_resource_t,
+                     new_limit: *const ::rlimit64,
+                     old_limit: *mut ::rlimit64) -> ::c_int;
+
     pub fn sysctl(name: *mut ::c_int,
                   namelen: ::c_int,
                   oldp: *mut ::c_void,
