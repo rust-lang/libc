@@ -947,6 +947,17 @@ pub const UESP: ::c_int = 15;
 pub const SS: ::c_int = 16;
 
 #[doc(hidden)]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
 pub const AF_MAX: ::c_int = 45;
 #[doc(hidden)]
+#[allow(deprecated)]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
 pub const PF_MAX: ::c_int = AF_MAX;

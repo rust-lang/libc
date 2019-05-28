@@ -865,6 +865,17 @@ pub const SYS_pkey_free: ::c_long = 385;
 pub const SYS_pkey_mprotect: ::c_long = 386;
 
 #[doc(hidden)]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
 pub const AF_MAX: ::c_int = 43;
 #[doc(hidden)]
+#[allow(deprecated)]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
 pub const PF_MAX: ::c_int = AF_MAX;
