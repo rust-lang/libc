@@ -1428,7 +1428,7 @@ fn test_android(target: &str) {
 
     cfg.generate("../src/lib.rs", "main.rs");
 
-    test_linux_incompatible_apis(target);
+    test_linux_like_apis(target);
 }
 
 fn test_freebsd(target: &str) {
@@ -2241,17 +2241,19 @@ fn test_linux(target: &str) {
 
     cfg.generate("../src/lib.rs", "main.rs");
 
-    test_linux_incompatible_apis(target);
+    test_linux_like_apis(target);
 }
 
 // This function tests APIs that are incompatible to test when other APIs
 // are included (e.g. because including both sets of headers clashes)
-fn test_linux_incompatible_apis(target: &str) {
-    assert!(target.contains("linux") || target.contains("android"));
+fn test_linux_like_apis(target: &str) {
     let musl = target.contains("musl");
     let linux = target.contains("linux");
+    let emscripten = target.contains("emscripten");
+    let android = target.contains("android");
+    assert!(linux || android || emscripten);
 
-    {
+    if linux || android || emscripten {
         // test strerror_r from the `string.h` header
         let mut cfg = ctest::TestGenerator::new();
         cfg.skip_type(|_| true).skip_static(|_| true);
@@ -2265,7 +2267,8 @@ fn test_linux_incompatible_apis(target: &str) {
         .skip_struct(|_| true);
         cfg.generate("../src/lib.rs", "linux_strerror_r.rs");
     }
-    {
+
+    if linux || android || emscripten {
         // test fcntl - see:
         // http://man7.org/linux/man-pages/man2/fcntl.2.html
         let mut cfg = ctest::TestGenerator::new();
@@ -2295,7 +2298,8 @@ fn test_linux_incompatible_apis(target: &str) {
 
         cfg.generate("../src/lib.rs", "linux_fcntl.rs");
     }
-    {
+
+    if linux || android {
         // test termios
         let mut cfg = ctest::TestGenerator::new();
         cfg.header("asm/termbits.h");
@@ -2312,12 +2316,7 @@ fn test_linux_incompatible_apis(target: &str) {
         cfg.generate("../src/lib.rs", "linux_termios.rs");
     }
 
-    if !linux {
-        return;
-    }
-    // linux-only tests (no android):
-
-    {
+    if linux || android {
         // test IPV6_ constants:
         let mut cfg = ctest::TestGenerator::new();
         headers! {
@@ -2344,7 +2343,8 @@ fn test_linux_incompatible_apis(target: &str) {
             });
         cfg.generate("../src/lib.rs", "linux_ipv6.rs");
     }
-    {
+
+    if linux || android {
         // Test Elf64_Phdr and Elf32_Phdr
         // These types have a field called `p_type`, but including
         // "resolve.h" defines a `p_type` macro that expands to `__p_type`
