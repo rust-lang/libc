@@ -1789,6 +1789,9 @@ fn test_emscripten(target: &str) {
             // users should use SIGSYS instead
             "SIGUNUSED" => true,
 
+            // FIXME: emscripten uses different constants to constructs these
+            n if n.contains("__SIZEOF_PTHREAD") => true,
+
             _ => false,
         }
     });
