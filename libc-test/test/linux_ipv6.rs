@@ -7,4 +7,6 @@ use libc::*;
 include!(concat!(env!("OUT_DIR"), "/linux_ipv6.rs"));
 
 #[cfg(not(target_os = "linux"))]
-fn main() { println!("PASSED 0 tests"); }
+fn main() {
+    println!("PASSED 0 tests");
+}

@@ -201,6 +201,13 @@ s! {
 }
 
 s_no_extra_traits!{
+    pub struct sockaddr_nl {
+        pub nl_family: ::sa_family_t,
+        nl_pad: ::c_ushort,
+        pub nl_pid: u32,
+        pub nl_groups: u32
+    }
+
     pub struct dirent {
         pub d_ino: u64,
         pub d_off: i64,
@@ -261,6 +268,31 @@ s_no_extra_traits!{
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for sockaddr_nl {
+            fn eq(&self, other: &sockaddr_nl) -> bool {
+                self.nl_family == other.nl_family &&
+                    self.nl_pid == other.nl_pid &&
+                    self.nl_groups == other.nl_groups
+            }
+        }
+        impl Eq for sockaddr_nl {}
+        impl ::fmt::Debug for sockaddr_nl {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_nl")
+                    .field("nl_family", &self.nl_family)
+                    .field("nl_pid", &self.nl_pid)
+                    .field("nl_groups", &self.nl_groups)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_nl {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.nl_family.hash(state);
+                self.nl_pid.hash(state);
+                self.nl_groups.hash(state);
+            }
+        }
+
         impl PartialEq for dirent {
             fn eq(&self, other: &dirent) -> bool {
                 self.d_ino == other.d_ino
@@ -580,6 +612,8 @@ pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
 pub const USER_PROCESS: ::c_short = 7;
+
+pub const FALLOC_FL_COLLAPSE_RANGE: ::c_int = 0x08;
 
 pub const BUFSIZ: ::c_uint = 1024;
 pub const FILENAME_MAX: ::c_uint = 4096;

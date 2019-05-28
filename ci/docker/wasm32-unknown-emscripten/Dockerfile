@@ -3,11 +3,17 @@ FROM ubuntu:19.04
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
+    g++ \
+    make \
+    file \
     curl \
     gcc \
     git \
     libc6-dev \
     python \
+    cmake \
+    sudo \
+    gdb \
     xz-utils
 
 COPY emscripten.sh /

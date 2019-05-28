@@ -604,7 +604,7 @@ cfg_if! {
 
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MS_NOUSER: ::c_ulong = 0x80000000;
-pub const MS_RMT_MASK: ::c_ulong = 0x800051;
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;
@@ -946,7 +946,6 @@ pub const MSG_INFO: ::c_int = 12;
 
 pub const MSG_NOERROR: ::c_int = 0o10000;
 pub const MSG_EXCEPT: ::c_int = 0o20000;
-pub const MSG_COPY: ::c_int = 0o40000;
 
 pub const SHM_R: ::c_int = 0o400;
 pub const SHM_W: ::c_int = 0o200;
@@ -1157,10 +1156,6 @@ pub const _POSIX_VDISABLE: ::cc_t = 0;
 
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
-pub const FALLOC_FL_COLLAPSE_RANGE: ::c_int = 0x08;
-pub const FALLOC_FL_ZERO_RANGE: ::c_int = 0x10;
-pub const FALLOC_FL_INSERT_RANGE: ::c_int = 0x20;
-pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
 
 // On Linux, libc doesn't define this constant, libattr does instead.
 // We still define it for Linux as it's defined by libc on other platforms,
@@ -1213,12 +1208,10 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const POSIX_MADV_DONTNEED: ::c_int = 0;
 
 pub const RLIM_INFINITY: ::rlim_t = !0;
-pub const RLIMIT_RTTIME: ::c_int = 15;
-pub const RLIMIT_NLIMITS: ::c_int = 16;
+pub const RLIMIT_NLIMITS: ::c_int = 15;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
-pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
 pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
 pub const TCP_THIN_DUPACK: ::c_int = 17;
 pub const TCP_USER_TIMEOUT: ::c_int = 18;
@@ -1229,6 +1222,11 @@ pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
 pub const TCP_FASTOPEN: ::c_int = 23;
 pub const TCP_TIMESTAMP: ::c_int = 24;
 
+#[doc(hidden)]
+#[deprecated(
+    since = "0.2.55",
+    note = "Use SIGSYS instead"
+)]
 pub const SIGUNUSED: ::c_int = ::SIGSYS;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -1822,9 +1820,9 @@ extern {
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
-                    flags: ::c_int) -> ::c_int;
+                    flags: ::c_uint) -> ::c_int;
     pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
-                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
+                    flags: ::c_uint, timeout: *mut ::timespec) -> ::c_int;
     pub fn sync();
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;

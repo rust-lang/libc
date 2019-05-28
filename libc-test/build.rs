@@ -1370,8 +1370,8 @@ fn test_android(target: &str) {
 
             // FIXME: still necessary?
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
-            // FIXME: still necessary?
-            "SIGUNUSED" => true, // removed in glibc 2.26
+            // FIXME: deprecated - removed in glibc 2.26
+            "SIGUNUSED" => true,
 
             _ => false,
         }
@@ -1428,7 +1428,7 @@ fn test_android(target: &str) {
 
     cfg.generate("../src/lib.rs", "main.rs");
 
-    test_linux_incompatible_apis(target);
+    test_linux_like_apis(target);
 }
 
 fn test_freebsd(target: &str) {
@@ -1635,11 +1635,7 @@ fn test_emscripten(target: &str) {
     assert!(target.contains("emscripten"));
 
     let mut cfg = ctest::TestGenerator::new();
-    // FIXME: still necessary?
-    cfg.define("_GNU_SOURCE", None);
-
-    // FIXME: still necessary?
-    cfg.flag("-Wno-deprecated-declarations");
+    cfg.define("_GNU_SOURCE", None); // FIXME: ??
 
     headers! { cfg:
                "aio.h",
@@ -1732,11 +1728,7 @@ fn test_emscripten(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            // FIXME: is this necessary?
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
-            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
-            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
-            | "Elf64_Chdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" => ty.to_string(),
 
             t if is_union => format!("union {}", t),
 
@@ -1756,7 +1748,7 @@ fn test_emscripten(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // FIXME: is this necessary?
+            // FIXME: appears that `epoll_event.data` is an union
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
         }
@@ -1774,157 +1766,31 @@ fn test_emscripten(target: &str) {
 
     cfg.skip_struct(move |ty| {
         match ty {
-            // FIXME: is this necessary?
-            "sockaddr_nl" => true,
-
             // This is actually a union, not a struct
             // FIXME: is this necessary?
             "sigval" => true,
-
-            // Linux kernel headers used on musl are too old to have this
-            // definition. Because it's tested on other Linux targets, skip it.
-            // FIXME: is this necessary?
-            "input_mask" => true,
-
-            // These are tested as part of the linux_fcntl tests since there are
-            // header conflicts when including them with all the other structs.
-            // FIXME: is this necessary?
-            "termios2" => true,
-
-            _ => false,
-        }
-    });
-
-    cfg.skip_signededness(move |c| match c {
-        // FIXME: is this necessary?
-        "LARGE_INTEGER" | "float" | "double" => true,
-        // FIXME: is this necessary?
-        n if n.starts_with("pthread") => true,
-        _ => false,
-    });
-
-    cfg.skip_const(move |name| {
-        match name {
-            // FIXME: is this necessary?
-            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
-            // FIXME: is this necessary?
-            "SIGUNUSED" => true,                       // removed in glibc 2.26
-
-            // types on musl are defined a little differently
-            // FIXME: is this necessary?
-            n if n.contains("__SIZEOF_PTHREAD") => true,
-
-            // Skip constants not defined in MUSL but just passed down to the
-            // kernel regardless
-            // FIXME: is this necessary?
-            "RLIMIT_NLIMITS"
-            | "TCP_COOKIE_TRANSACTIONS"
-            | "RLIMIT_RTTIME"
-            | "MSG_COPY"
-                 =>
-            {
-                true
-            }
-
-            // weird signed extension or something like that?
-            // FIXME: is this necessary?
-            "MS_NOUSER" => true,
-            // FIXME: is this necessary?
-            "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
-
-            // Musl uses old, patched kernel headers
-            // FIXME: is this necessary?
-            "FALLOC_FL_COLLAPSE_RANGE"
-            | "FALLOC_FL_ZERO_RANGE"
-            | "FALLOC_FL_INSERT_RANGE"
-            | "FALLOC_FL_UNSHARE_RANGE"
-            | "RENAME_NOREPLACE"
-            | "RENAME_EXCHANGE"
-            | "RENAME_WHITEOUT"
-            // ALG_SET_AEAD_* constants are available starting from kernel 3.19
-            | "ALG_SET_AEAD_ASSOCLEN"
-            | "ALG_SET_AEAD_AUTHSIZE"
-                 =>
-            {
-                true
-            }
-
-            // musl uses old kernel headers
-            // These are constants used in getrandom syscall
-            // FIXME: is this necessary?
-            "GRND_NONBLOCK" | "GRND_RANDOM" => true,
-
-
-            // These constants are tested in a separate test program generated below because there
-            // are header conflicts if we try to include the headers that define them here.
-            // FIXME: is this necessary?
-            "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" => true,
-            // FIXME: is this necessary?
-            "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
-                | "F_SEAL_WRITE" => true,
-            // FIXME: is this necessary?
-            "BOTHER" => true,
-
-            // FIXME: is this necessary?
-            "MFD_CLOEXEC" | "MFD_ALLOW_SEALING"  => true,
-            // MFD_HUGETLB is not available in some older libc versions on the CI builders. On the
-            // x86_64 and i686 builders it seems to be available for all targets, so at least test
-            // it there.
-            // FIXME: is this necessary?
-            "MFD_HUGETLB"  =>
-            {
-                true
-            }
-
-            // These are defined for Solaris 11, but the crate is tested on
-            // illumos, where they are currently not defined
-            // FIXME: is this necessary?
-            "EADI"
-            | "PORT_SOURCE_POSTWAIT"
-            | "PORT_SOURCE_SIGNAL"
-            | "PTHREAD_STACK_MIN" => true,
-
-            // These change all the time from release to release of linux
-            // distros, let's just not bother trying to verify them. They
-            // shouldn't be used in code anyway...
-            // FIXME: is this necessary?
-            "AF_MAX" | "PF_MAX" => true,
 
             _ => false,
         }
     });
 
     cfg.skip_fn(move |name| {
-        // skip those that are manually verified
         match name {
-            // FIXME: is this necessary?
-            "execv" |       // crazy stuff with const/mut
-            "execve" |
-            "execvp" |
-            "execvpe" |
-            "fexecve" => true,
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
-            "getrlimit" | "getrlimit64" |    // non-int in 1st arg
-            "setrlimit" | "setrlimit64" |    // non-int in 1st arg
-            "prlimit" | "prlimit64" |        // non-int in 2nd arg
+            _ => false,
+        }
+    });
 
-            // int vs uint. Sorry musl, your prototype declarations are "correct" in the sense that
-            // they match the interface defined by Linux verbatim, but they conflict with other
-            // send*/recv* syscalls
-            // FIXME: is this necessary?
-            "sendmmsg" | "recvmmsg" => true,
+    cfg.skip_const(move |name| {
+        match name {
+            // FIXME: deprecated - SIGNUNUSED was removed in glibc 2.26
+            // users should use SIGSYS instead
+            "SIGUNUSED" => true,
 
-            // FIXME: is this necessary?
-            "dladdr" => true, // const-ness only added recently
-
-            // FIXME: is this necessary?
-            "lio_listio" => true,
-
-            // Definition of those functions as changed since unified headers from NDK r14b
-            // These changes imply some API breaking changes but are still ABI compatible.
-            // We can wait for the next major release to be compliant with the new API.
-            // FIXME: unskip these for next major release
-            "strerror_r" | "madvise" | "msync" | "mprotect" | "recvfrom" | "getpriority" |
+            // FIXME: emscripten uses different constants to constructs these
+            n if n.contains("__SIZEOF_PTHREAD") => true,
 
             _ => false,
         }
@@ -1966,9 +1832,7 @@ fn test_emscripten(target: &str) {
                                            field == "ssi_arch"))
     });
 
-    // FIXME: remove
-    cfg.fn_cname(move |name, _cname| name.to_string());
-
+    // FIXME: test linux like
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
@@ -2377,17 +2241,19 @@ fn test_linux(target: &str) {
 
     cfg.generate("../src/lib.rs", "main.rs");
 
-    test_linux_incompatible_apis(target);
+    test_linux_like_apis(target);
 }
 
 // This function tests APIs that are incompatible to test when other APIs
 // are included (e.g. because including both sets of headers clashes)
-fn test_linux_incompatible_apis(target: &str) {
-    assert!(target.contains("linux") || target.contains("android"));
+fn test_linux_like_apis(target: &str) {
     let musl = target.contains("musl");
     let linux = target.contains("linux");
+    let emscripten = target.contains("emscripten");
+    let android = target.contains("android");
+    assert!(linux || android || emscripten);
 
-    {
+    if linux || android || emscripten {
         // test strerror_r from the `string.h` header
         let mut cfg = ctest::TestGenerator::new();
         cfg.skip_type(|_| true).skip_static(|_| true);
@@ -2401,7 +2267,8 @@ fn test_linux_incompatible_apis(target: &str) {
         .skip_struct(|_| true);
         cfg.generate("../src/lib.rs", "linux_strerror_r.rs");
     }
-    {
+
+    if linux || android || emscripten {
         // test fcntl - see:
         // http://man7.org/linux/man-pages/man2/fcntl.2.html
         let mut cfg = ctest::TestGenerator::new();
@@ -2431,7 +2298,8 @@ fn test_linux_incompatible_apis(target: &str) {
 
         cfg.generate("../src/lib.rs", "linux_fcntl.rs");
     }
-    {
+
+    if linux || android {
         // test termios
         let mut cfg = ctest::TestGenerator::new();
         cfg.header("asm/termbits.h");
@@ -2448,12 +2316,7 @@ fn test_linux_incompatible_apis(target: &str) {
         cfg.generate("../src/lib.rs", "linux_termios.rs");
     }
 
-    if !linux {
-        return;
-    }
-    // linux-only tests (no android):
-
-    {
+    if linux || android {
         // test IPV6_ constants:
         let mut cfg = ctest::TestGenerator::new();
         headers! {
@@ -2480,7 +2343,8 @@ fn test_linux_incompatible_apis(target: &str) {
             });
         cfg.generate("../src/lib.rs", "linux_ipv6.rs");
     }
-    {
+
+    if linux || android {
         // Test Elf64_Phdr and Elf32_Phdr
         // These types have a field called `p_type`, but including
         // "resolve.h" defines a `p_type` macro that expands to `__p_type`
