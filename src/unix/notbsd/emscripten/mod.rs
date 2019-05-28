@@ -946,7 +946,6 @@ pub const MSG_INFO: ::c_int = 12;
 
 pub const MSG_NOERROR: ::c_int = 0o10000;
 pub const MSG_EXCEPT: ::c_int = 0o20000;
-pub const MSG_COPY: ::c_int = 0o40000;
 
 pub const SHM_R: ::c_int = 0o400;
 pub const SHM_W: ::c_int = 0o200;
@@ -1157,10 +1156,6 @@ pub const _POSIX_VDISABLE: ::cc_t = 0;
 
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
-pub const FALLOC_FL_COLLAPSE_RANGE: ::c_int = 0x08;
-pub const FALLOC_FL_ZERO_RANGE: ::c_int = 0x10;
-pub const FALLOC_FL_INSERT_RANGE: ::c_int = 0x20;
-pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
 
 // On Linux, libc doesn't define this constant, libattr does instead.
 // We still define it for Linux as it's defined by libc on other platforms,
@@ -1213,12 +1208,10 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const POSIX_MADV_DONTNEED: ::c_int = 0;
 
 pub const RLIM_INFINITY: ::rlim_t = !0;
-pub const RLIMIT_RTTIME: ::c_int = 15;
 pub const RLIMIT_NLIMITS: ::c_int = 16;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
-pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
 pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
 pub const TCP_THIN_DUPACK: ::c_int = 17;
 pub const TCP_USER_TIMEOUT: ::c_int = 18;

@@ -613,6 +613,8 @@ pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
 pub const USER_PROCESS: ::c_short = 7;
 
+pub const FALLOC_FL_COLLAPSE_RANGE: ::c_int = 0x08;
+
 pub const BUFSIZ: ::c_uint = 1024;
 pub const FILENAME_MAX: ::c_uint = 4096;
 pub const FOPEN_MAX: ::c_uint = 20;
