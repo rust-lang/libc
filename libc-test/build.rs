@@ -2266,6 +2266,8 @@ fn test_linux(target: &str) {
             // Require Linux kernel 5.x:
             | "MSG_COPY"
                if musl  => true,
+            // Require Linux kernel 5.1:
+            "F_SEAL_FUTURE_WRITE" => true,
 
             // The musl version 1.0.22 used in CI does not
             // contain these glibc constants yet:
