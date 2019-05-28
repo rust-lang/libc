@@ -233,8 +233,6 @@ matrix:
 
 
   allow_failures:
-      # FIXME: https://github.com/rust-lang/libc/issues/1226
-      - env: TARGET=asmjs-unknown-emscripten
       - name: "Semver Linux"
       - name: "Semver MacOSX"
 
