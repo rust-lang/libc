@@ -604,7 +604,7 @@ cfg_if! {
 
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MS_NOUSER: ::c_ulong = 0x80000000;
-pub const MS_RMT_MASK: ::c_ulong = 0x800051;
+pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;
@@ -1208,7 +1208,7 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const POSIX_MADV_DONTNEED: ::c_int = 0;
 
 pub const RLIM_INFINITY: ::rlim_t = !0;
-pub const RLIMIT_NLIMITS: ::c_int = 16;
+pub const RLIMIT_NLIMITS: ::c_int = 15;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
