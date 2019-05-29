@@ -343,8 +343,8 @@ s! {
 s_no_extra_traits! {
     #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed))]
     pub struct epoll_event {
-        pub events: ::uint32_t,
-        pub u64: ::uint64_t,
+        pub events: u32,
+        pub u64: u64,
     }
 
     pub struct sockaddr_un {

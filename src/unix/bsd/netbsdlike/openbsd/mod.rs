@@ -4,9 +4,9 @@ pub type clock_t = i64;
 pub type suseconds_t = ::c_long;
 pub type dev_t = i32;
 pub type sigset_t = ::c_uint;
-pub type blksize_t = ::int32_t;
-pub type fsblkcnt_t = ::uint64_t;
-pub type fsfilcnt_t = ::uint64_t;
+pub type blksize_t = i32;
+pub type fsblkcnt_t = u64;
+pub type fsfilcnt_t = u64;
 pub type pthread_attr_t = *mut ::c_void;
 pub type pthread_mutex_t = *mut ::c_void;
 pub type pthread_mutexattr_t = *mut ::c_void;
@@ -124,7 +124,7 @@ s! {
 
     pub struct udf_args {
         pub fspec: *mut ::c_char,
-        pub lastblock: ::uint32_t,
+        pub lastblock: u32,
     }
 
     pub struct tmpfs_args {
@@ -175,7 +175,7 @@ s! {
         pub sin_family: ::sa_family_t,
         pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
-        pub sin_zero: [::int8_t; 8],
+        pub sin_zero: [i8; 8],
     }
 
     pub struct kevent {
@@ -183,7 +183,7 @@ s! {
         pub filter: ::c_short,
         pub flags: ::c_ushort,
         pub fflags: ::c_uint,
-        pub data: ::int64_t,
+        pub data: i64,
         pub udata: *mut ::c_void,
     }
 
@@ -204,8 +204,8 @@ s! {
         pub st_size: ::off_t,
         pub st_blocks: ::blkcnt_t,
         pub st_blksize: ::blksize_t,
-        pub st_flags: ::uint32_t,
-        pub st_gen: ::uint32_t,
+        pub st_flags: u32,
+        pub st_gen: u32,
         pub st_birthtime: ::time_t,
         pub st_birthtime_nsec: ::c_long,
     }
@@ -576,23 +576,23 @@ cfg_if! {
         s_no_extra_traits! {
             // This type uses the union mount_info:
             pub struct statfs {
-                pub f_flags: ::uint32_t,
-                pub f_bsize: ::uint32_t,
-                pub f_iosize: ::uint32_t,
-                pub f_blocks: ::uint64_t,
-                pub f_bfree: ::uint64_t,
-                pub f_bavail: ::int64_t,
-                pub f_files: ::uint64_t,
-                pub f_ffree: ::uint64_t,
-                pub f_favail: ::int64_t,
-                pub f_syncwrites: ::uint64_t,
-                pub f_syncreads: ::uint64_t,
-                pub f_asyncwrites: ::uint64_t,
-                pub f_asyncreads: ::uint64_t,
+                pub f_flags: u32,
+                pub f_bsize: u32,
+                pub f_iosize: u32,
+                pub f_blocks: u64,
+                pub f_bfree: u64,
+                pub f_bavail: i64,
+                pub f_files: u64,
+                pub f_ffree: u64,
+                pub f_favail: i64,
+                pub f_syncwrites: u64,
+                pub f_syncreads: u64,
+                pub f_asyncwrites: u64,
+                pub f_asyncreads: u64,
                 pub f_fsid: ::fsid_t,
-                pub f_namemax: ::uint32_t,
+                pub f_namemax: u32,
                 pub f_owner: ::uid_t,
-                pub f_ctime: ::uint64_t,
+                pub f_ctime: u64,
                 pub f_fstypename: [::c_char; 16],
                 pub f_mntonname: [::c_char; 90],
                 pub f_mntfromname: [::c_char; 90],
@@ -1030,45 +1030,45 @@ pub const PTHREAD_MUTEX_NORMAL: ::c_int = 3;
 pub const PTHREAD_MUTEX_STRICT_NP: ::c_int = 4;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_STRICT_NP;
 
-pub const EVFILT_AIO: ::int16_t = -3;
-pub const EVFILT_PROC: ::int16_t = -5;
-pub const EVFILT_READ: ::int16_t = -1;
-pub const EVFILT_SIGNAL: ::int16_t = -6;
-pub const EVFILT_TIMER: ::int16_t = -7;
-pub const EVFILT_VNODE: ::int16_t = -4;
-pub const EVFILT_WRITE: ::int16_t = -2;
+pub const EVFILT_AIO: i16 = -3;
+pub const EVFILT_PROC: i16 = -5;
+pub const EVFILT_READ: i16 = -1;
+pub const EVFILT_SIGNAL: i16 = -6;
+pub const EVFILT_TIMER: i16 = -7;
+pub const EVFILT_VNODE: i16 = -4;
+pub const EVFILT_WRITE: i16 = -2;
 
-pub const EV_ADD: ::uint16_t = 0x1;
-pub const EV_DELETE: ::uint16_t = 0x2;
-pub const EV_ENABLE: ::uint16_t = 0x4;
-pub const EV_DISABLE: ::uint16_t = 0x8;
-pub const EV_ONESHOT: ::uint16_t = 0x10;
-pub const EV_CLEAR: ::uint16_t = 0x20;
-pub const EV_RECEIPT: ::uint16_t = 0x40;
-pub const EV_DISPATCH: ::uint16_t = 0x80;
-pub const EV_FLAG1: ::uint16_t = 0x2000;
-pub const EV_ERROR: ::uint16_t = 0x4000;
-pub const EV_EOF: ::uint16_t = 0x8000;
-pub const EV_SYSFLAGS: ::uint16_t = 0xf000;
+pub const EV_ADD: u16 = 0x1;
+pub const EV_DELETE: u16 = 0x2;
+pub const EV_ENABLE: u16 = 0x4;
+pub const EV_DISABLE: u16 = 0x8;
+pub const EV_ONESHOT: u16 = 0x10;
+pub const EV_CLEAR: u16 = 0x20;
+pub const EV_RECEIPT: u16 = 0x40;
+pub const EV_DISPATCH: u16 = 0x80;
+pub const EV_FLAG1: u16 = 0x2000;
+pub const EV_ERROR: u16 = 0x4000;
+pub const EV_EOF: u16 = 0x8000;
+pub const EV_SYSFLAGS: u16 = 0xf000;
 
-pub const NOTE_LOWAT: ::uint32_t = 0x00000001;
-pub const NOTE_EOF: ::uint32_t = 0x00000002;
-pub const NOTE_DELETE: ::uint32_t = 0x00000001;
-pub const NOTE_WRITE: ::uint32_t = 0x00000002;
-pub const NOTE_EXTEND: ::uint32_t = 0x00000004;
-pub const NOTE_ATTRIB: ::uint32_t = 0x00000008;
-pub const NOTE_LINK: ::uint32_t = 0x00000010;
-pub const NOTE_RENAME: ::uint32_t = 0x00000020;
-pub const NOTE_REVOKE: ::uint32_t = 0x00000040;
-pub const NOTE_TRUNCATE: ::uint32_t = 0x00000080;
-pub const NOTE_EXIT: ::uint32_t = 0x80000000;
-pub const NOTE_FORK: ::uint32_t = 0x40000000;
-pub const NOTE_EXEC: ::uint32_t = 0x20000000;
-pub const NOTE_PDATAMASK: ::uint32_t = 0x000fffff;
-pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
-pub const NOTE_TRACK: ::uint32_t = 0x00000001;
-pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
-pub const NOTE_CHILD: ::uint32_t = 0x00000004;
+pub const NOTE_LOWAT: u32 = 0x00000001;
+pub const NOTE_EOF: u32 = 0x00000002;
+pub const NOTE_DELETE: u32 = 0x00000001;
+pub const NOTE_WRITE: u32 = 0x00000002;
+pub const NOTE_EXTEND: u32 = 0x00000004;
+pub const NOTE_ATTRIB: u32 = 0x00000008;
+pub const NOTE_LINK: u32 = 0x00000010;
+pub const NOTE_RENAME: u32 = 0x00000020;
+pub const NOTE_REVOKE: u32 = 0x00000040;
+pub const NOTE_TRUNCATE: u32 = 0x00000080;
+pub const NOTE_EXIT: u32 = 0x80000000;
+pub const NOTE_FORK: u32 = 0x40000000;
+pub const NOTE_EXEC: u32 = 0x20000000;
+pub const NOTE_PDATAMASK: u32 = 0x000fffff;
+pub const NOTE_PCTRLMASK: u32 = 0xf0000000;
+pub const NOTE_TRACK: u32 = 0x00000001;
+pub const NOTE_TRACKERR: u32 = 0x00000002;
+pub const NOTE_CHILD: u32 = 0x00000004;
 
 pub const TMP_MAX : ::c_uint = 0x7fffffff;
 

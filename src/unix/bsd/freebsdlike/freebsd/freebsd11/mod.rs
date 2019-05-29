@@ -1,8 +1,8 @@
 // APIs that had breaking changes after FreeBSD 11
 
-// The type of `nlink_t` changed from `u16` to `uint64_t` in FreeBSD 12:
+// The type of `nlink_t` changed from `u16` to `u64` in FreeBSD 12:
 pub type nlink_t = u16;
-// Type of `dev_t` changed from `u32` to `uint64_t` in FreeBSD 12:
+// Type of `dev_t` changed from `u32` to `u64` in FreeBSD 12:
 pub type dev_t = u32;
 // Type of `ino_t` changed from `unsigned int` to `unsigned long` in FreeBSD 12:
 pub type ino_t = u32;
@@ -36,28 +36,28 @@ s_no_extra_traits! {
         pub d_fileno: ::ino_t,
         pub d_reclen: u16,
         pub d_type: u8,
-        // Type of `d_namlen` changed from `char` to `uint16_t` in FreeBSD 12:
+        // Type of `d_namlen` changed from `char` to `u16` in FreeBSD 12:
         pub d_namlen: u8,
         pub d_name: [::c_char; 256],
     }
 
     pub struct statfs {
-        pub f_version: ::uint32_t,
-        pub f_type: ::uint32_t,
-        pub f_flags: ::uint64_t,
-        pub f_bsize: ::uint64_t,
-        pub f_iosize: ::uint64_t,
-        pub f_blocks: ::uint64_t,
-        pub f_bfree: ::uint64_t,
-        pub f_bavail: ::int64_t,
-        pub f_files: ::uint64_t,
-        pub f_ffree: ::int64_t,
-        pub f_syncwrites: ::uint64_t,
-        pub f_asyncwrites: ::uint64_t,
-        pub f_syncreads: ::uint64_t,
-        pub f_asyncreads: ::uint64_t,
-        f_spare: [::uint64_t; 10],
-        pub f_namemax: ::uint32_t,
+        pub f_version: u32,
+        pub f_type: u32,
+        pub f_flags: u64,
+        pub f_bsize: u64,
+        pub f_iosize: u64,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: i64,
+        pub f_files: u64,
+        pub f_ffree: i64,
+        pub f_syncwrites: u64,
+        pub f_asyncwrites: u64,
+        pub f_syncreads: u64,
+        pub f_asyncreads: u64,
+        f_spare: [u64; 10],
+        pub f_namemax: u32,
         pub f_owner: ::uid_t,
         pub f_fsid: ::fsid_t,
         f_charspare: [::c_char; 80],

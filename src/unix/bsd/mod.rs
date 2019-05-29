@@ -94,7 +94,7 @@ s! {
     }
 
     pub struct fsid_t {
-        __fsid_val: [::int32_t; 2],
+        __fsid_val: [i32; 2],
     }
 
     pub struct if_nameindex {

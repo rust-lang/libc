@@ -216,8 +216,8 @@ s_no_extra_traits!{
             target_arch = "x86_64"),
         repr(packed))]
     pub struct epoll_event {
-        pub events: ::uint32_t,
-        pub u64: ::uint64_t,
+        pub events: u32,
+        pub u64: u64,
     }
 
     pub struct sockaddr_un {
@@ -855,16 +855,16 @@ pub const MNT_EXPIRE: ::c_int = 0x4;
 pub const Q_GETFMT: ::c_int = 0x800004;
 pub const Q_GETINFO: ::c_int = 0x800005;
 pub const Q_SETINFO: ::c_int = 0x800006;
-pub const QIF_BLIMITS: ::uint32_t = 1;
-pub const QIF_SPACE: ::uint32_t = 2;
-pub const QIF_ILIMITS: ::uint32_t = 4;
-pub const QIF_INODES: ::uint32_t = 8;
-pub const QIF_BTIME: ::uint32_t = 16;
-pub const QIF_ITIME: ::uint32_t = 32;
-pub const QIF_LIMITS: ::uint32_t = 5;
-pub const QIF_USAGE: ::uint32_t = 10;
-pub const QIF_TIMES: ::uint32_t = 48;
-pub const QIF_ALL: ::uint32_t = 63;
+pub const QIF_BLIMITS: u32 = 1;
+pub const QIF_SPACE: u32 = 2;
+pub const QIF_ILIMITS: u32 = 4;
+pub const QIF_INODES: u32 = 8;
+pub const QIF_BTIME: u32 = 16;
+pub const QIF_ITIME: u32 = 32;
+pub const QIF_LIMITS: u32 = 5;
+pub const QIF_USAGE: u32 = 10;
+pub const QIF_TIMES: u32 = 48;
+pub const QIF_ALL: u32 = 63;
 
 pub const MNT_FORCE: ::c_int = 0x1;
 

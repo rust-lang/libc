@@ -401,8 +401,8 @@ s! {
     }
 
     pub struct epoll_event {
-        pub events: ::uint32_t,
-        pub u64: ::uint64_t,
+        pub events: u32,
+        pub u64: u64,
     }
 
     pub struct lconv {
@@ -512,40 +512,40 @@ s! {
     }
 
     pub struct dqblk {
-        pub dqb_bhardlimit: ::uint64_t,
-        pub dqb_bsoftlimit: ::uint64_t,
-        pub dqb_curspace: ::uint64_t,
-        pub dqb_ihardlimit: ::uint64_t,
-        pub dqb_isoftlimit: ::uint64_t,
-        pub dqb_curinodes: ::uint64_t,
-        pub dqb_btime: ::uint64_t,
-        pub dqb_itime: ::uint64_t,
-        pub dqb_valid: ::uint32_t,
+        pub dqb_bhardlimit: u64,
+        pub dqb_bsoftlimit: u64,
+        pub dqb_curspace: u64,
+        pub dqb_ihardlimit: u64,
+        pub dqb_isoftlimit: u64,
+        pub dqb_curinodes: u64,
+        pub dqb_btime: u64,
+        pub dqb_itime: u64,
+        pub dqb_valid: u32,
     }
 
     pub struct signalfd_siginfo {
-        pub ssi_signo: ::uint32_t,
-        pub ssi_errno: ::int32_t,
-        pub ssi_code: ::int32_t,
-        pub ssi_pid: ::uint32_t,
-        pub ssi_uid: ::uint32_t,
-        pub ssi_fd: ::int32_t,
-        pub ssi_tid: ::uint32_t,
-        pub ssi_band: ::uint32_t,
-        pub ssi_overrun: ::uint32_t,
-        pub ssi_trapno: ::uint32_t,
-        pub ssi_status: ::int32_t,
-        pub ssi_int: ::int32_t,
-        pub ssi_ptr: ::uint64_t,
-        pub ssi_utime: ::uint64_t,
-        pub ssi_stime: ::uint64_t,
-        pub ssi_addr: ::uint64_t,
-        pub ssi_addr_lsb: ::uint16_t,
-        _pad2: ::uint16_t,
-        pub ssi_syscall: ::int32_t,
-        pub ssi_call_addr: ::uint64_t,
-        pub ssi_arch: ::uint32_t,
-        _pad: [::uint8_t; 28],
+        pub ssi_signo: u32,
+        pub ssi_errno: i32,
+        pub ssi_code: i32,
+        pub ssi_pid: u32,
+        pub ssi_uid: u32,
+        pub ssi_fd: i32,
+        pub ssi_tid: u32,
+        pub ssi_band: u32,
+        pub ssi_overrun: u32,
+        pub ssi_trapno: u32,
+        pub ssi_status: i32,
+        pub ssi_int: i32,
+        pub ssi_ptr: u64,
+        pub ssi_utime: u64,
+        pub ssi_stime: u64,
+        pub ssi_addr: u64,
+        pub ssi_addr_lsb: u16,
+        _pad2: u16,
+        pub ssi_syscall: i32,
+        pub ssi_call_addr: u64,
+        pub ssi_arch: u32,
+        _pad: [u8; 28],
     }
 
     pub struct itimerspec {
@@ -1794,16 +1794,16 @@ pub const MNT_EXPIRE: ::c_int = 0x4;
 pub const Q_GETFMT: ::c_int = 0x800004;
 pub const Q_GETINFO: ::c_int = 0x800005;
 pub const Q_SETINFO: ::c_int = 0x800006;
-pub const QIF_BLIMITS: ::uint32_t = 1;
-pub const QIF_SPACE: ::uint32_t = 2;
-pub const QIF_ILIMITS: ::uint32_t = 4;
-pub const QIF_INODES: ::uint32_t = 8;
-pub const QIF_BTIME: ::uint32_t = 16;
-pub const QIF_ITIME: ::uint32_t = 32;
-pub const QIF_LIMITS: ::uint32_t = 5;
-pub const QIF_USAGE: ::uint32_t = 10;
-pub const QIF_TIMES: ::uint32_t = 48;
-pub const QIF_ALL: ::uint32_t = 63;
+pub const QIF_BLIMITS: u32 = 1;
+pub const QIF_SPACE: u32 = 2;
+pub const QIF_ILIMITS: u32 = 4;
+pub const QIF_INODES: u32 = 8;
+pub const QIF_BTIME: u32 = 16;
+pub const QIF_ITIME: u32 = 32;
+pub const QIF_LIMITS: u32 = 5;
+pub const QIF_USAGE: u32 = 10;
+pub const QIF_TIMES: u32 = 48;
+pub const QIF_ALL: u32 = 63;
 
 pub const MNT_FORCE: ::c_int = 0x1;
 

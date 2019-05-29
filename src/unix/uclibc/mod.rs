@@ -235,39 +235,39 @@ s! {
     }
 
     pub struct dqblk {
-        pub dqb_bhardlimit: ::uint32_t,
-        pub dqb_bsoftlimit: ::uint32_t,
-        pub dqb_curblocks: ::uint32_t,
-        pub dqb_ihardlimit: ::uint32_t,
-        pub dqb_isoftlimit: ::uint32_t,
-        pub dqb_curinodes: ::uint32_t,
+        pub dqb_bhardlimit: u32,
+        pub dqb_bsoftlimit: u32,
+        pub dqb_curblocks: u32,
+        pub dqb_ihardlimit: u32,
+        pub dqb_isoftlimit: u32,
+        pub dqb_curinodes: u32,
         pub dqb_btime: ::time_t,
         pub dqb_itime: ::time_t,
     }
 
     pub struct signalfd_siginfo {
-        pub ssi_signo: ::uint32_t,
-        pub ssi_errno: ::int32_t,
-        pub ssi_code: ::int32_t,
-        pub ssi_pid: ::uint32_t,
-        pub ssi_uid: ::uint32_t,
-        pub ssi_fd: ::int32_t,
-        pub ssi_tid: ::uint32_t,
-        pub ssi_band: ::uint32_t,
-        pub ssi_overrun: ::uint32_t,
-        pub ssi_trapno: ::uint32_t,
-        pub ssi_status: ::int32_t,
-        pub ssi_int: ::int32_t,
-        pub ssi_ptr: ::uint64_t,
-        pub ssi_utime: ::uint64_t,
-        pub ssi_stime: ::uint64_t,
-        pub ssi_addr: ::uint64_t,
-        pub ssi_addr_lsb: ::uint16_t,
-        _pad2: ::uint16_t,
-        pub ssi_syscall: ::int32_t,
-        pub ssi_call_addr: ::uint64_t,
-        pub ssi_arch: ::uint32_t,
-        _pad: [::uint8_t; 28],
+        pub ssi_signo: u32,
+        pub ssi_errno: i32,
+        pub ssi_code: i32,
+        pub ssi_pid: u32,
+        pub ssi_uid: u32,
+        pub ssi_fd: i32,
+        pub ssi_tid: u32,
+        pub ssi_band: u32,
+        pub ssi_overrun: u32,
+        pub ssi_trapno: u32,
+        pub ssi_status: i32,
+        pub ssi_int: i32,
+        pub ssi_ptr: u64,
+        pub ssi_utime: u64,
+        pub ssi_stime: u64,
+        pub ssi_addr: u64,
+        pub ssi_addr_lsb: u16,
+        _pad2: u16,
+        pub ssi_syscall: i32,
+        pub ssi_call_addr: u64,
+        pub ssi_arch: u32,
+        _pad: [u8; 28],
     }
 
     pub struct fsid_t {
@@ -306,8 +306,8 @@ s_no_extra_traits! {
     )]
     #[allow(missing_debug_implementations)]
     pub struct epoll_event {
-        pub events: ::uint32_t,
-        pub u64: ::uint64_t,
+        pub events: u32,
+        pub u64: u64,
     }
 
     #[allow(missing_debug_implementations)]
