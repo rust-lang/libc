@@ -252,6 +252,8 @@ pub const TIOCSPGRP: ::c_ulong = 0x5410;
 pub const TIOCOUTQ: ::c_ulong = 0x5411;
 pub const TIOCGWINSZ: ::c_ulong = 0x5413;
 pub const TIOCSWINSZ: ::c_ulong = 0x5414;
+pub const TIOCGRS485: ::c_int = 0x542E;
+pub const TIOCSRS485: ::c_int = 0x542F;
 pub const FIONREAD: ::c_ulong = 0x541B;
 
 // Syscall table

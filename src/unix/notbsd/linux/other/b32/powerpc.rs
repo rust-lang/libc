@@ -241,6 +241,8 @@ pub const TIOCSPGRP: ::c_ulong = 0x80047476;
 pub const TIOCOUTQ: ::c_ulong = 0x40047473;
 pub const TIOCGWINSZ: ::c_ulong = 0x40087468;
 pub const TIOCSWINSZ: ::c_ulong = 0x80087467;
+pub const TIOCGRS485: ::c_int = 0x542e;
+pub const TIOCSRS485: ::c_int = 0x542f;
 pub const FIONREAD: ::c_ulong = 0x4004667f;
 
 pub const SYS_restart_syscall: ::c_long = 0;

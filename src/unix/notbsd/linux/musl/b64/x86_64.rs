@@ -490,6 +490,9 @@ pub const O_DIRECTORY: ::c_int = 0x10000;
 pub const O_LARGEFILE: ::c_int = 0;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
 
+pub const TIOCGRS485: ::c_int = 0x542E;
+pub const TIOCSRS485: ::c_int = 0x542F;
+
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
