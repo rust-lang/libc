@@ -4,33 +4,33 @@ pub type __rlimit_resource_t = ::c_uint;
 
 s! {
     pub struct statx {
-        pub stx_mask: ::uint32_t,
-        pub stx_blksize: ::uint32_t,
-        pub stx_attributes: ::uint64_t,
-        pub stx_nlink: ::uint32_t,
-        pub stx_uid: ::uint32_t,
-        pub stx_gid: ::uint32_t,
-        pub stx_mode: ::uint16_t,
-        pub __statx_pad1: [::uint16_t; 1],
-        pub stx_ino: ::uint64_t,
-        pub stx_size: ::uint64_t,
-        pub stx_blocks: ::uint64_t,
-        pub stx_attributes_mask: ::uint64_t,
+        pub stx_mask: u32,
+        pub stx_blksize: u32,
+        pub stx_attributes: u64,
+        pub stx_nlink: u32,
+        pub stx_uid: u32,
+        pub stx_gid: u32,
+        pub stx_mode: u16,
+        pub __statx_pad1: [u16; 1],
+        pub stx_ino: u64,
+        pub stx_size: u64,
+        pub stx_blocks: u64,
+        pub stx_attributes_mask: u64,
         pub stx_atime: ::statx_timestamp,
         pub stx_btime: ::statx_timestamp,
         pub stx_ctime: ::statx_timestamp,
         pub stx_mtime: ::statx_timestamp,
-        pub stx_rdev_major: ::uint32_t,
-        pub stx_rdev_minor: ::uint32_t,
-        pub stx_dev_major: ::uint32_t,
-        pub stx_dev_minor: ::uint32_t,
-        pub __statx_pad2: [::uint64_t; 14],
+        pub stx_rdev_major: u32,
+        pub stx_rdev_minor: u32,
+        pub stx_dev_major: u32,
+        pub stx_dev_minor: u32,
+        pub __statx_pad2: [u64; 14],
     }
 
     pub struct statx_timestamp {
-        pub tv_sec: ::int64_t,
-        pub tv_nsec: ::uint32_t,
-        pub __statx_timestamp_pad1: [::int32_t; 1],
+        pub tv_sec: i64,
+        pub tv_nsec: u32,
+        pub __statx_timestamp_pad1: [i32; 1],
     }
 
     pub struct aiocb {
