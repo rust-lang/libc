@@ -408,6 +408,7 @@ pub const SYS_pwritev2: ::c_long = 328;
 pub const SYS_pkey_mprotect: ::c_long = 329;
 pub const SYS_pkey_alloc: ::c_long = 330;
 pub const SYS_pkey_free: ::c_long = 331;
+pub const SYS_statx: ::c_long = 332;
 
 #[link(name = "util")]
 extern {

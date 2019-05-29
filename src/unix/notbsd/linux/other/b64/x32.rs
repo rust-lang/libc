@@ -336,6 +336,7 @@ pub const SYS_copy_file_range: ::c_long = __X32_SYSCALL_BIT + 326;
 pub const SYS_pkey_mprotect: ::c_long = __X32_SYSCALL_BIT + 329;
 pub const SYS_pkey_alloc: ::c_long = __X32_SYSCALL_BIT + 330;
 pub const SYS_pkey_free: ::c_long = __X32_SYSCALL_BIT + 331;
+pub const SYS_statx: ::c_long = __X32_SYSCALL_BIT + 332;
 pub const SYS_rt_sigaction: ::c_long = __X32_SYSCALL_BIT + 512;
 pub const SYS_rt_sigreturn: ::c_long = __X32_SYSCALL_BIT + 513;
 pub const SYS_ioctl: ::c_long = __X32_SYSCALL_BIT + 514;
