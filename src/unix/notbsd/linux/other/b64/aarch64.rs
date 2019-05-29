@@ -147,6 +147,8 @@ pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 
 pub const TIOCGSOFTCAR: ::c_ulong = 0x5419;
 pub const TIOCSSOFTCAR: ::c_ulong = 0x541A;
+pub const TIOCGRS485: ::c_int = 0x542E;
+pub const TIOCSRS485: ::c_int = 0x542F;
 
 pub const RLIMIT_NOFILE: ::c_int = 7;
 pub const RLIMIT_NPROC: ::c_int = 6;

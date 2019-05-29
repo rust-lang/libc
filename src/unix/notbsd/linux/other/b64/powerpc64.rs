@@ -344,6 +344,8 @@ pub const TIOCMBIS: ::c_ulong = 0x5416;
 pub const TIOCMBIC: ::c_ulong = 0x5417;
 pub const TIOCMSET: ::c_ulong = 0x5418;
 pub const TIOCCONS: ::c_ulong = 0x541D;
+pub const TIOCGRS485: ::c_int = 0x542E;
+pub const TIOCSRS485: ::c_int = 0x542F;
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
