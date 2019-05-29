@@ -1860,6 +1860,7 @@ fn test_linux(target: &str) {
     let x32 = target.contains("x32");
     let mips = target.contains("mips");
     let mips32_musl = mips && !target.contains("64") && musl;
+    let sparc64 = target.contains("sparc64");
 
     let mut cfg = ctest::TestGenerator::new();
     cfg.define("_GNU_SOURCE", None);
@@ -2192,6 +2193,10 @@ fn test_linux(target: &str) {
             // We should probably be at least using `&`/`&mut` here, see:
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" if musl => true,
+
+            // FIXME: the glibc version used by the Sparc64 build jobs
+            // which use Debian 10.0 is too old.
+            "statx" if sparc64 => true,
 
             _ => false,
         }
