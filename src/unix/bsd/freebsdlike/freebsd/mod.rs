@@ -625,6 +625,11 @@ pub const AF_IEEE80211: ::c_int = 37;
 pub const AF_INET_SDP: ::c_int = 40;
 pub const AF_INET6_SDP: ::c_int = 42;
 #[doc(hidden)]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
 pub const AF_MAX: ::c_int = 42;
 
 // https://github.com/freebsd/freebsd/blob/master/sys/net/if.h#L140
@@ -635,7 +640,6 @@ pub const IFF_LOOPBACK: ::c_int = 0x8; // (i) is a loopback net
 pub const IFF_POINTOPOINT: ::c_int = 0x10; // (i) is a point-to-point link
 // 0x20           was IFF_SMART
 pub const IFF_RUNNING: ::c_int = 0x40; // (d) resources allocated
-#[doc(hidden)]
 #[doc(hidden)]
 #[deprecated(
     since="0.2.54",
@@ -934,6 +938,12 @@ pub const PF_IEEE80211: ::c_int = AF_IEEE80211;
 pub const PF_INET_SDP: ::c_int = AF_INET_SDP;
 pub const PF_INET6_SDP: ::c_int = AF_INET6_SDP;
 #[doc(hidden)]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
+#[allow(deprecated)]
 pub const PF_MAX: ::c_int = AF_MAX;
 
 pub const NET_RT_DUMP: ::c_int = 1;
@@ -971,6 +981,7 @@ pub const SHM_ANON: *mut ::c_char = 1 as *mut ::c_char;
 // compatibility only, and are scheduled to be removed in libc 1.0.0.
 #[doc(hidden)]
 #[deprecated(since="0.2.54",note="Removed in FreeBSD 11")]
+#[allow(deprecated)]
 pub const NET_MAXID: ::c_int = AF_MAX;
 #[doc(hidden)]
 #[deprecated(since="0.2.54",note="Removed in FreeBSD 11")]

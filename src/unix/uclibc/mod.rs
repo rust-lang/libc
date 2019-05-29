@@ -1445,6 +1445,11 @@ pub const NOSTR: ::nl_item = 0x503;
 
 pub const FILENAME_MAX: ::c_uint = 4095;
 
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
 pub const AF_MAX: ::c_int = 39;
 
 f! {

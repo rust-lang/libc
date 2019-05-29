@@ -770,6 +770,12 @@ pub const AF_NOTIFY: ::c_int = 8;
 pub const AF_LOCAL: ::c_int = 9;
 pub const AF_UNIX: ::c_int = AF_LOCAL;
 pub const AF_BLUETOOTH: ::c_int = 10;
+#[doc(hidden)]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
 pub const AF_MAX: ::c_int = 11;
 
 pub const IP_OPTIONS: ::c_int = 1;

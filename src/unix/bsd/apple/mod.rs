@@ -2083,6 +2083,11 @@ pub const AF_NETBIOS: ::c_int = 33;
 pub const AF_PPP: ::c_int = 34;
 pub const pseudo_AF_HDRCMPLT: ::c_int = 35;
 #[doc(hidden)]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
 pub const AF_MAX: ::c_int = 40;
 pub const AF_SYS_CONTROL: ::c_int = 2;
 
@@ -2125,11 +2130,21 @@ pub const PF_SYSTEM: ::c_int = AF_SYSTEM;
 pub const PF_NETBIOS: ::c_int = AF_NETBIOS;
 pub const PF_PPP: ::c_int =  AF_PPP;
 #[doc(hidden)]
-#[deprecated(since = "0.2.55")]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
+#[allow(deprecated)]
 pub const PF_MAX: ::c_int =  AF_MAX;
 
 #[doc(hidden)]
-#[deprecated(since = "0.2.55")]
+#[deprecated(
+    since = "0.2.55",
+    note = "If you are using this report to: \
+            https://github.com/rust-lang/libc/issues/665"
+)]
+#[allow(deprecated)]
 pub const NET_MAXID: ::c_int = AF_MAX;
 
 pub const NET_RT_DUMP: ::c_int = 1;
