@@ -90,27 +90,51 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(windows)] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
         mod windows;
         pub use windows::*;
     } else if #[cfg(target_os = "cloudabi")] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
         mod cloudabi;
         pub use cloudabi::*;
     } else if #[cfg(target_os = "fuchsia")] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
         mod fuchsia;
         pub use fuchsia::*;
     } else if #[cfg(target_os = "switch")] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
         mod switch;
         pub use switch::*;
     } else if #[cfg(unix)] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
         mod unix;
         pub use unix::*;
     } else if #[cfg(target_os = "hermit")] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
         mod hermit;
         pub use hermit::*;
     } else if #[cfg(all(target_env = "sgx", target_vendor = "fortanix"))] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
         mod sgx;
         pub use sgx::*;
     } else if #[cfg(any(target_env = "wasi", target_os = "wasi"))] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
         mod wasi;
         pub use wasi::*;
     } else {

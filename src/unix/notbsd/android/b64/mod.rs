@@ -25,12 +25,12 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        pub flags: ::uint32_t,
+        pub flags: u32,
         pub stack_base: *mut ::c_void,
         pub stack_size: ::size_t,
         pub guard_size: ::size_t,
-        pub sched_policy: ::int32_t,
-        pub sched_priority: ::int32_t,
+        pub sched_policy: i32,
+        pub sched_priority: i32,
         __reserved: [::c_char; 16],
     }
 
@@ -45,18 +45,18 @@ s! {
     }
 
     pub struct statfs {
-        pub f_type: ::uint64_t,
-        pub f_bsize: ::uint64_t,
-        pub f_blocks: ::uint64_t,
-        pub f_bfree: ::uint64_t,
-        pub f_bavail: ::uint64_t,
-        pub f_files: ::uint64_t,
-        pub f_ffree: ::uint64_t,
+        pub f_type: u64,
+        pub f_bsize: u64,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
         pub f_fsid: ::__fsid_t,
-        pub f_namelen: ::uint64_t,
-        pub f_frsize: ::uint64_t,
-        pub f_flags: ::uint64_t,
-        pub f_spare: [::uint64_t; 4],
+        pub f_namelen: u64,
+        pub f_frsize: u64,
+        pub f_flags: u64,
+        pub f_spare: [u64; 4],
     }
 
     pub struct sysinfo {

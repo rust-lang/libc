@@ -9,10 +9,10 @@ s! {
         pub cuid: ::uid_t,
         pub cgid: ::gid_t,
         pub mode: ::mode_t,
-        __seq: ::uint32_t,
-        __pad1: ::uint32_t,
-        __glibc_reserved1: ::uint64_t,
-        __glibc_reserved2: ::uint64_t,
+        __seq: u32,
+        __pad1: u32,
+        __glibc_reserved1: u64,
+        __glibc_reserved2: u64,
     }
 
     pub struct stat64 {

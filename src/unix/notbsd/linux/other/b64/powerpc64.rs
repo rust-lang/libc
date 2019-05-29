@@ -110,9 +110,9 @@ s! {
         pub cuid: ::uid_t,
         pub cgid: ::gid_t,
         pub mode: ::mode_t,
-        pub __seq: ::uint32_t,
-        __pad1: ::uint32_t,
-        __unused1: ::uint64_t,
+        pub __seq: u32,
+        __pad1: u32,
+        __unused1: u64,
         __unused2: ::c_ulong,
     }
 

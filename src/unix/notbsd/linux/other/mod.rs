@@ -57,8 +57,8 @@ s! {
     }
 
     pub struct __timeval {
-        pub tv_sec: ::int32_t,
-        pub tv_usec: ::int32_t,
+        pub tv_sec: i32,
+        pub tv_usec: i32,
     }
 
     pub struct sigaction {
@@ -269,13 +269,13 @@ s_no_extra_traits! {
         #[cfg(not(any(target_arch = "aarch64",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
-        pub ut_session: ::int32_t,
+        pub ut_session: i32,
         #[cfg(not(any(target_arch = "aarch64",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_tv: __timeval,
 
-        pub ut_addr_v6: [::int32_t; 4],
+        pub ut_addr_v6: [i32; 4],
         __glibc_reserved: [::c_char; 20],
     }
 }

@@ -113,28 +113,28 @@ s! {
     }
 
     pub struct signalfd_siginfo {
-        pub ssi_signo: ::uint32_t,
-        pub ssi_errno: ::int32_t,
-        pub ssi_code: ::int32_t,
-        pub ssi_pid: ::uint32_t,
-        pub ssi_uid: ::uint32_t,
-        pub ssi_fd: ::int32_t,
-        pub ssi_tid: ::uint32_t,
-        pub ssi_band: ::uint32_t,
-        pub ssi_overrun: ::uint32_t,
-        pub ssi_trapno: ::uint32_t,
-        pub ssi_status: ::int32_t,
-        pub ssi_int: ::int32_t,
+        pub ssi_signo: u32,
+        pub ssi_errno: i32,
+        pub ssi_code: i32,
+        pub ssi_pid: u32,
+        pub ssi_uid: u32,
+        pub ssi_fd: i32,
+        pub ssi_tid: u32,
+        pub ssi_band: u32,
+        pub ssi_overrun: u32,
+        pub ssi_trapno: u32,
+        pub ssi_status: i32,
+        pub ssi_int: i32,
         pub ssi_ptr: ::c_ulonglong,
         pub ssi_utime: ::c_ulonglong,
         pub ssi_stime: ::c_ulonglong,
         pub ssi_addr: ::c_ulonglong,
-        pub ssi_addr_lsb: ::uint16_t,
-        _pad2: ::uint16_t,
-        pub ssi_syscall: ::int32_t,
-        pub ssi_call_addr: ::uint64_t,
-        pub ssi_arch: ::uint32_t,
-        _pad: [::uint8_t; 28],
+        pub ssi_addr_lsb: u16,
+        _pad2: u16,
+        pub ssi_syscall: i32,
+        pub ssi_call_addr: u64,
+        pub ssi_arch: u32,
+        _pad: [u8; 28],
     }
 
     pub struct ucred {
@@ -194,9 +194,9 @@ s! {
 
     pub struct inotify_event {
         pub wd: ::c_int,
-        pub mask: ::uint32_t,
-        pub cookie: ::uint32_t,
-        pub len: ::uint32_t
+        pub mask: u32,
+        pub cookie: u32,
+        pub len: u32
     }
 }
 
@@ -248,7 +248,7 @@ s_no_extra_traits!{
         pub ut_exit: exit_status,
         pub ut_session: ::c_long,
         pub ut_tv: ::timeval,
-        pub ut_addr_v6: [::int32_t; 4],
+        pub ut_addr_v6: [i32; 4],
         unused: [::c_char; 20],
     }
 
@@ -1852,33 +1852,33 @@ pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
 
 // uapi/linux/inotify.h
-pub const IN_ACCESS:        ::uint32_t = 0x0000_0001;
-pub const IN_MODIFY:        ::uint32_t = 0x0000_0002;
-pub const IN_ATTRIB:        ::uint32_t = 0x0000_0004;
-pub const IN_CLOSE_WRITE:   ::uint32_t = 0x0000_0008;
-pub const IN_CLOSE_NOWRITE: ::uint32_t = 0x0000_0010;
-pub const IN_CLOSE:         ::uint32_t = (IN_CLOSE_WRITE | IN_CLOSE_NOWRITE);
-pub const IN_OPEN:          ::uint32_t = 0x0000_0020;
-pub const IN_MOVED_FROM:    ::uint32_t = 0x0000_0040;
-pub const IN_MOVED_TO:      ::uint32_t = 0x0000_0080;
-pub const IN_MOVE:          ::uint32_t = (IN_MOVED_FROM | IN_MOVED_TO);
-pub const IN_CREATE:        ::uint32_t = 0x0000_0100;
-pub const IN_DELETE:        ::uint32_t = 0x0000_0200;
-pub const IN_DELETE_SELF:   ::uint32_t = 0x0000_0400;
-pub const IN_MOVE_SELF:     ::uint32_t = 0x0000_0800;
-pub const IN_UNMOUNT:       ::uint32_t = 0x0000_2000;
-pub const IN_Q_OVERFLOW:    ::uint32_t = 0x0000_4000;
-pub const IN_IGNORED:       ::uint32_t = 0x0000_8000;
-pub const IN_ONLYDIR:       ::uint32_t = 0x0100_0000;
-pub const IN_DONT_FOLLOW:   ::uint32_t = 0x0200_0000;
-// pub const IN_EXCL_UNLINK:   ::uint32_t = 0x0400_0000;
+pub const IN_ACCESS:        u32 = 0x0000_0001;
+pub const IN_MODIFY:        u32 = 0x0000_0002;
+pub const IN_ATTRIB:        u32 = 0x0000_0004;
+pub const IN_CLOSE_WRITE:   u32 = 0x0000_0008;
+pub const IN_CLOSE_NOWRITE: u32 = 0x0000_0010;
+pub const IN_CLOSE:         u32 = (IN_CLOSE_WRITE | IN_CLOSE_NOWRITE);
+pub const IN_OPEN:          u32 = 0x0000_0020;
+pub const IN_MOVED_FROM:    u32 = 0x0000_0040;
+pub const IN_MOVED_TO:      u32 = 0x0000_0080;
+pub const IN_MOVE:          u32 = (IN_MOVED_FROM | IN_MOVED_TO);
+pub const IN_CREATE:        u32 = 0x0000_0100;
+pub const IN_DELETE:        u32 = 0x0000_0200;
+pub const IN_DELETE_SELF:   u32 = 0x0000_0400;
+pub const IN_MOVE_SELF:     u32 = 0x0000_0800;
+pub const IN_UNMOUNT:       u32 = 0x0000_2000;
+pub const IN_Q_OVERFLOW:    u32 = 0x0000_4000;
+pub const IN_IGNORED:       u32 = 0x0000_8000;
+pub const IN_ONLYDIR:       u32 = 0x0100_0000;
+pub const IN_DONT_FOLLOW:   u32 = 0x0200_0000;
+// pub const IN_EXCL_UNLINK:   u32 = 0x0400_0000;
 
-// pub const IN_MASK_CREATE:   ::uint32_t = 0x1000_0000;
-// pub const IN_MASK_ADD:      ::uint32_t = 0x2000_0000;
-pub const IN_ISDIR:         ::uint32_t = 0x4000_0000;
-pub const IN_ONESHOT:       ::uint32_t = 0x8000_0000;
+// pub const IN_MASK_CREATE:   u32 = 0x1000_0000;
+// pub const IN_MASK_ADD:      u32 = 0x2000_0000;
+pub const IN_ISDIR:         u32 = 0x4000_0000;
+pub const IN_ONESHOT:       u32 = 0x8000_0000;
 
-pub const IN_ALL_EVENTS:    ::uint32_t = (
+pub const IN_ALL_EVENTS:    u32 = (
   IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE_WRITE |
   IN_CLOSE_NOWRITE | IN_OPEN | IN_MOVED_FROM |
   IN_MOVED_TO | IN_DELETE | IN_CREATE | IN_DELETE_SELF |
@@ -2174,7 +2174,7 @@ extern {
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
-    pub fn inotify_rm_watch(fd: ::c_int, wd: ::uint32_t) -> ::c_int;
+    pub fn inotify_rm_watch(fd: ::c_int, wd: u32) -> ::c_int;
     pub fn sendmmsg(sockfd: ::c_int, msgvec: *const ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_int) -> ::c_int;
     pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
@@ -2183,7 +2183,7 @@ extern {
     pub fn inotify_init1(flags: ::c_int) -> ::c_int;
     pub fn inotify_add_watch(fd: ::c_int,
                              path: *const ::c_char,
-                             mask: ::uint32_t) -> ::c_int;
+                             mask: u32) -> ::c_int;
 }
 
 cfg_if! {

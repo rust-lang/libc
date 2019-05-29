@@ -110,7 +110,7 @@ s! {
         pub st_nlink: ::nlink_t,
         pub st_dev: ::dev_t,
         pub st_mode: ::mode_t,
-        pub st_padding1: ::uint16_t,
+        pub st_padding1: u16,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
         pub st_rdev: ::dev_t,
@@ -121,13 +121,13 @@ s! {
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
         pub st_size: ::off_t,
-        pub st_blocks: ::int64_t,
-        pub st_blksize: ::uint32_t,
-        pub st_flags: ::uint32_t,
-        pub st_gen: ::uint32_t,
-        pub st_lspare: ::int32_t,
-        pub st_qspare1: ::int64_t,
-        pub st_qspare2: ::int64_t,
+        pub st_blocks: i64,
+        pub st_blksize: u32,
+        pub st_flags: u32,
+        pub st_gen: u32,
+        pub st_lspare: i32,
+        pub st_qspare1: i64,
+        pub st_qspare2: i64,
     }
 
     pub struct if_data {
@@ -224,8 +224,8 @@ s_no_extra_traits! {
         pub f_ffree: ::c_long,
         pub f_fsid: ::fsid_t,
         pub f_owner: ::uid_t,
-        pub f_type: ::int32_t,
-        pub f_flags: ::int32_t,
+        pub f_type: i32,
+        pub f_flags: i32,
         pub f_syncwrites: ::c_long,
         pub f_asyncwrites: ::c_long,
         pub f_fstypename: [::c_char; 16],
@@ -577,55 +577,55 @@ pub const CTL_P1003_1B_SIGQUEUE_MAX: ::c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: ::c_int = 25;
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
-pub const EVFILT_READ: ::int16_t = -1;
-pub const EVFILT_WRITE: ::int16_t = -2;
-pub const EVFILT_AIO: ::int16_t = -3;
-pub const EVFILT_VNODE: ::int16_t = -4;
-pub const EVFILT_PROC: ::int16_t = -5;
-pub const EVFILT_SIGNAL: ::int16_t = -6;
-pub const EVFILT_TIMER: ::int16_t = -7;
-pub const EVFILT_EXCEPT: ::int16_t = -8;
-pub const EVFILT_USER: ::int16_t = -9;
-pub const EVFILT_FS: ::int16_t = -10;
+pub const EVFILT_READ: i16 = -1;
+pub const EVFILT_WRITE: i16 = -2;
+pub const EVFILT_AIO: i16 = -3;
+pub const EVFILT_VNODE: i16 = -4;
+pub const EVFILT_PROC: i16 = -5;
+pub const EVFILT_SIGNAL: i16 = -6;
+pub const EVFILT_TIMER: i16 = -7;
+pub const EVFILT_EXCEPT: i16 = -8;
+pub const EVFILT_USER: i16 = -9;
+pub const EVFILT_FS: i16 = -10;
 
-pub const EV_ADD: ::uint16_t = 0x1;
-pub const EV_DELETE: ::uint16_t = 0x2;
-pub const EV_ENABLE: ::uint16_t = 0x4;
-pub const EV_DISABLE: ::uint16_t = 0x8;
-pub const EV_ONESHOT: ::uint16_t = 0x10;
-pub const EV_CLEAR: ::uint16_t = 0x20;
-pub const EV_RECEIPT: ::uint16_t = 0x40;
-pub const EV_DISPATCH: ::uint16_t = 0x80;
-pub const EV_NODATA: ::uint16_t = 0x1000;
-pub const EV_FLAG1: ::uint16_t = 0x2000;
-pub const EV_ERROR: ::uint16_t = 0x4000;
-pub const EV_EOF: ::uint16_t = 0x8000;
-pub const EV_SYSFLAGS: ::uint16_t = 0xf000;
+pub const EV_ADD: u16 = 0x1;
+pub const EV_DELETE: u16 = 0x2;
+pub const EV_ENABLE: u16 = 0x4;
+pub const EV_DISABLE: u16 = 0x8;
+pub const EV_ONESHOT: u16 = 0x10;
+pub const EV_CLEAR: u16 = 0x20;
+pub const EV_RECEIPT: u16 = 0x40;
+pub const EV_DISPATCH: u16 = 0x80;
+pub const EV_NODATA: u16 = 0x1000;
+pub const EV_FLAG1: u16 = 0x2000;
+pub const EV_ERROR: u16 = 0x4000;
+pub const EV_EOF: u16 = 0x8000;
+pub const EV_SYSFLAGS: u16 = 0xf000;
 
-pub const NOTE_TRIGGER: ::uint32_t = 0x01000000;
-pub const NOTE_FFNOP: ::uint32_t = 0x00000000;
-pub const NOTE_FFAND: ::uint32_t = 0x40000000;
-pub const NOTE_FFOR: ::uint32_t = 0x80000000;
-pub const NOTE_FFCOPY: ::uint32_t = 0xc0000000;
-pub const NOTE_FFCTRLMASK: ::uint32_t = 0xc0000000;
-pub const NOTE_FFLAGSMASK: ::uint32_t = 0x00ffffff;
-pub const NOTE_LOWAT: ::uint32_t = 0x00000001;
-pub const NOTE_OOB: ::uint32_t = 0x00000002;
-pub const NOTE_DELETE: ::uint32_t = 0x00000001;
-pub const NOTE_WRITE: ::uint32_t = 0x00000002;
-pub const NOTE_EXTEND: ::uint32_t = 0x00000004;
-pub const NOTE_ATTRIB: ::uint32_t = 0x00000008;
-pub const NOTE_LINK: ::uint32_t = 0x00000010;
-pub const NOTE_RENAME: ::uint32_t = 0x00000020;
-pub const NOTE_REVOKE: ::uint32_t = 0x00000040;
-pub const NOTE_EXIT: ::uint32_t = 0x80000000;
-pub const NOTE_FORK: ::uint32_t = 0x40000000;
-pub const NOTE_EXEC: ::uint32_t = 0x20000000;
-pub const NOTE_PDATAMASK: ::uint32_t = 0x000fffff;
-pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
-pub const NOTE_TRACK: ::uint32_t = 0x00000001;
-pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
-pub const NOTE_CHILD: ::uint32_t = 0x00000004;
+pub const NOTE_TRIGGER: u32 = 0x01000000;
+pub const NOTE_FFNOP: u32 = 0x00000000;
+pub const NOTE_FFAND: u32 = 0x40000000;
+pub const NOTE_FFOR: u32 = 0x80000000;
+pub const NOTE_FFCOPY: u32 = 0xc0000000;
+pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
+pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
+pub const NOTE_LOWAT: u32 = 0x00000001;
+pub const NOTE_OOB: u32 = 0x00000002;
+pub const NOTE_DELETE: u32 = 0x00000001;
+pub const NOTE_WRITE: u32 = 0x00000002;
+pub const NOTE_EXTEND: u32 = 0x00000004;
+pub const NOTE_ATTRIB: u32 = 0x00000008;
+pub const NOTE_LINK: u32 = 0x00000010;
+pub const NOTE_RENAME: u32 = 0x00000020;
+pub const NOTE_REVOKE: u32 = 0x00000040;
+pub const NOTE_EXIT: u32 = 0x80000000;
+pub const NOTE_FORK: u32 = 0x40000000;
+pub const NOTE_EXEC: u32 = 0x20000000;
+pub const NOTE_PDATAMASK: u32 = 0x000fffff;
+pub const NOTE_PCTRLMASK: u32 = 0xf0000000;
+pub const NOTE_TRACK: u32 = 0x00000001;
+pub const NOTE_TRACKERR: u32 = 0x00000002;
+pub const NOTE_CHILD: u32 = 0x00000004;
 
 pub const SO_SNDSPACE: ::c_int = 0x100a;
 pub const SO_CPUHINT: ::c_int = 0x1030;
