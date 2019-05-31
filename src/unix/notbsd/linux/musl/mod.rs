@@ -331,6 +331,17 @@ pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
 
+pub const RLIMIT_CPU: ::c_int = 0;
+pub const RLIMIT_FSIZE: ::c_int = 1;
+pub const RLIMIT_DATA: ::c_int = 2;
+pub const RLIMIT_STACK: ::c_int = 3;
+pub const RLIMIT_CORE: ::c_int = 4;
+pub const RLIMIT_LOCKS: ::c_int = 10;
+pub const RLIMIT_SIGPENDING: ::c_int = 11;
+pub const RLIMIT_MSGQUEUE: ::c_int = 12;
+pub const RLIMIT_NICE: ::c_int = 13;
+pub const RLIMIT_RTPRIO: ::c_int = 14;
+
 extern {
     pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_uint) -> ::c_int;
