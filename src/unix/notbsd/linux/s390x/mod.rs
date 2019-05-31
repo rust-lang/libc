@@ -992,6 +992,17 @@ pub const POLLWRBAND: ::c_short = 0x200;
 pub const IXON: ::tcflag_t = 0o002000;
 pub const IXOFF: ::tcflag_t = 0o010000;
 
+pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
+pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
+pub const RLIMIT_DATA: ::__rlimit_resource_t = 2;
+pub const RLIMIT_STACK: ::__rlimit_resource_t = 3;
+pub const RLIMIT_CORE: ::__rlimit_resource_t = 4;
+pub const RLIMIT_LOCKS: ::__rlimit_resource_t = 10;
+pub const RLIMIT_SIGPENDING: ::__rlimit_resource_t = 11;
+pub const RLIMIT_MSGQUEUE: ::__rlimit_resource_t = 12;
+pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
+pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
+
 pub const SYS_exit: ::c_long = 1;
 pub const SYS_fork: ::c_long = 2;
 pub const SYS_read: ::c_long = 3;
