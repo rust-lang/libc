@@ -457,7 +457,6 @@ pub const CLOCK_BOOTTIME_ALARM: ::clockid_t = 9;
 // pub const CLOCK_TAI: ::clockid_t = 11;
 pub const TIMER_ABSTIME: ::c_int = 1;
 
-
 pub const RUSAGE_SELF: ::c_int = 0;
 
 pub const O_RDONLY: ::c_int = 0;
