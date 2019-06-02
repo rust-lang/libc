@@ -368,12 +368,12 @@ pub const USER_PROCESS: ::c_short = 7;
 pub const DEAD_PROCESS: ::c_short = 8;
 pub const ACCOUNTING: ::c_short = 9;
 
-pub const RLIMIT_RSS: ::c_int = 5;
-pub const RLIMIT_AS: ::c_int = 9;
-pub const RLIMIT_MEMLOCK: ::c_int = 8;
+pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
+pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
+pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
 pub const RLIM_INFINITY: ::rlim_t = !0;
-pub const RLIMIT_RTTIME: ::c_int = 15;
-pub const RLIMIT_NLIMITS: ::c_int = 16;
+pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
+pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = 16;
 
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 

@@ -469,13 +469,13 @@ pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
 
-pub const RLIMIT_RSS: ::c_int = 5;
-pub const RLIMIT_NOFILE: ::c_int = 7;
-pub const RLIMIT_AS: ::c_int = 9;
-pub const RLIMIT_NPROC: ::c_int = 6;
-pub const RLIMIT_MEMLOCK: ::c_int = 8;
-pub const RLIMIT_RTTIME: ::c_int = 15;
-pub const RLIMIT_NLIMITS: ::c_int = 16;
+pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
+pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 7;
+pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
+pub const RLIMIT_NPROC: ::__rlimit_resource_t = 6;
+pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
+pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
+pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = 16;
 
 pub const O_NOCTTY: ::c_int = 256;
 pub const O_SYNC: ::c_int = 1052672;

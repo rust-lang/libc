@@ -91,8 +91,8 @@ s! {
 pub const TIOCGSOFTCAR: ::c_ulong = 0x5419;
 pub const TIOCSSOFTCAR: ::c_ulong = 0x541A;
 
-pub const RLIMIT_NOFILE: ::c_int = 7;
-pub const RLIMIT_NPROC: ::c_int = 6;
+pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 7;
+pub const RLIMIT_NPROC: ::__rlimit_resource_t = 6;
 
 pub const O_APPEND: ::c_int = 1024;
 pub const O_CREAT: ::c_int = 64;
