@@ -197,12 +197,12 @@ pub const O_NOFOLLOW: ::c_int = 0x20000;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
 
-pub const RLIMIT_NOFILE: ::c_int = 5;
-pub const RLIMIT_AS: ::c_int = 6;
-pub const RLIMIT_RSS: ::c_int = 7;
-pub const RLIMIT_NPROC: ::c_int = 8;
-pub const RLIMIT_MEMLOCK: ::c_int = 9;
-pub const RLIMIT_NLIMITS: ::c_int = 16;
+pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 5;
+pub const RLIMIT_AS: ::__rlimit_resource_t = 6;
+pub const RLIMIT_RSS: ::__rlimit_resource_t = 7;
+pub const RLIMIT_NPROC: ::__rlimit_resource_t = 8;
+pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 9;
+pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = 16;
 
 pub const O_APPEND: ::c_int = 8;
 pub const O_CREAT: ::c_int = 256;
