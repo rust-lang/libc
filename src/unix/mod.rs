@@ -1147,8 +1147,8 @@ cfg_if! {
     } else if #[cfg(any(target_os = "linux",
                         target_os = "android",
                         target_os = "emscripten"))] {
-        mod notbsd;
-        pub use self::notbsd::*;
+        mod linux_like;
+        pub use self::linux_like::*;
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
                         target_os = "freebsd",

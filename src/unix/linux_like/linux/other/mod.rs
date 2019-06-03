@@ -1101,11 +1101,10 @@ extern {
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwent_r")]
-    pub fn getpwent_r(pwd: *mut ::unix::notbsd::linux::passwd,
+    pub fn getpwent_r(pwd: *mut ::passwd,
                       buf: *mut ::c_char,
                       buflen: ::size_t,
-                      result: *mut *mut ::unix::notbsd
-                                        ::linux::passwd) -> ::c_int;
+                      result: *mut *mut ::passwd) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getgrent_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrent_r")]
     pub fn getgrent_r(grp: *mut ::group,
