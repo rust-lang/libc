@@ -68,6 +68,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "sparc64"))] {
         mod sparc64;
         pub use self::sparc64::*;
+    } else if #[cfg(any(target_arch = "mips64"))] {
+        mod mips64;
+        pub use self::mips64::*;
     } else if #[cfg(any(target_arch = "s390x"))] {
         mod s390x;
         pub use self::s390x::*;
