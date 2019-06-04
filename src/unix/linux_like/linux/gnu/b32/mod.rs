@@ -62,6 +62,15 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
+    pub struct sigaction {
+        pub sa_sigaction: ::sighandler_t,
+        pub sa_mask: ::sigset_t,
+        #[cfg(target_arch = "sparc64")]
+        __reserved0: ::c_int,
+        pub sa_flags: ::c_int,
+        pub sa_restorer: ::Option<extern fn()>,
+    }
+
     pub struct pthread_attr_t {
         __size: [u32; 9]
     }

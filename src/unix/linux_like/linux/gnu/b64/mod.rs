@@ -51,6 +51,7 @@ s! {
         __glibc_reserved4: u64,
         __glibc_reserved5: u64,
     }
+
 }
 
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
@@ -67,6 +68,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "sparc64"))] {
         mod sparc64;
         pub use self::sparc64::*;
+    } else if #[cfg(any(target_arch = "s390x"))] {
+        mod s390x;
+        pub use self::s390x::*;
     } else if #[cfg(any(target_arch = "x86_64"))] {
         mod x86_64;
         pub use self::x86_64::*;

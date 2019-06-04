@@ -61,14 +61,6 @@ s! {
         pub tv_usec: i32,
     }
 
-    pub struct sigaction {
-        pub sa_sigaction: ::sighandler_t,
-        pub sa_mask: ::sigset_t,
-        #[cfg(target_arch = "sparc64")]
-        __reserved0: ::c_int,
-        pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
-    }
 
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
@@ -88,6 +80,8 @@ s! {
                 this field"
         )]
         pub _pad: [::c_int; 29],
+        #[cfg(target_arch = "s390x")]
+        _pad2: [::c_long; 14],
         #[cfg(target_arch = "x86_64")]
         _align: [u64; 0],
         #[cfg(not(target_arch = "x86_64"))]
@@ -120,7 +114,12 @@ s! {
 
         pub f_namelen: __fsword_t,
         pub f_frsize: __fsword_t,
+        #[cfg(not(target_arch = "s390x"))]
         f_spare: [__fsword_t; 5],
+        #[cfg(target_arch = "s390x")]
+        pub f_flags: ::c_uint,
+        #[cfg(target_arch = "s390x")]
+        f_spare: [::c_uint; 4],
     }
 
     pub struct msghdr {
@@ -1122,6 +1121,7 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "x86_64",
                         target_arch = "aarch64",
                         target_arch = "powerpc64",
+                        target_arch = "s390x",
                         target_arch = "sparc64"))] {
         mod b64;
         pub use self::b64::*;

@@ -4,6 +4,15 @@ pub type c_long = i64;
 pub type c_ulong = u64;
 
 s! {
+    pub struct sigaction {
+        pub sa_sigaction: ::sighandler_t,
+        pub sa_mask: ::sigset_t,
+        #[cfg(target_arch = "sparc64")]
+        __reserved0: ::c_int,
+        pub sa_flags: ::c_int,
+        pub sa_restorer: ::Option<extern fn()>,
+    }
+
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
