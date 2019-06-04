@@ -149,14 +149,6 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_pid: ::pid_t,
-    }
-
     pub struct __psw_t {
         pub mask: u64,
         pub addr: u64,
