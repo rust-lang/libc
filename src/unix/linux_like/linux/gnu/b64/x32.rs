@@ -58,48 +58,8 @@ s! {
     }
 }
 
-pub const VEOF: usize = 4;
-pub const RTLD_DEEPBIND: ::c_int = 0x8;
-pub const RTLD_GLOBAL: ::c_int = 0x100;
-pub const RTLD_NOLOAD: ::c_int = 0x4;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 32;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 44;
-pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
-pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
-pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
-pub const TIOCM_ST: ::c_int = 0x008;
-pub const TIOCM_SR: ::c_int = 0x010;
-pub const TIOCM_CTS: ::c_int = 0x020;
-pub const TIOCM_CAR: ::c_int = 0x040;
-pub const TIOCM_RNG: ::c_int = 0x080;
-pub const TIOCM_DSR: ::c_int = 0x100;
-pub const EUCLEAN: ::c_int = 117;
-pub const ENOTNAM: ::c_int = 118;
-pub const ENAVAIL: ::c_int = 119;
-pub const EISNAM: ::c_int = 120;
-pub const EREMOTEIO: ::c_int = 121;
-pub const MAP_ANON: ::c_int = 0x0020;
-pub const MAP_ANONYMOUS: ::c_int = 0x0020;
-pub const MAP_DENYWRITE: ::c_int = 0x0800;
-pub const MAP_EXECUTABLE: ::c_int = 0x01000;
-pub const MAP_POPULATE: ::c_int = 0x08000;
-pub const MAP_NONBLOCK: ::c_int = 0x010000;
-pub const MAP_STACK: ::c_int = 0x020000;
-pub const MAP_HUGETLB: ::c_int = 0x040000;
-pub const SOCK_STREAM: ::c_int = 1;
-pub const SOCK_DGRAM: ::c_int = 2;
-pub const SIGTTIN: ::c_int = 21;
-pub const SIGTTOU: ::c_int = 22;
-pub const SIGXCPU: ::c_int = 24;
-pub const SIGXFSZ: ::c_int = 25;
-pub const SIGVTALRM: ::c_int = 26;
-pub const SIGPROF: ::c_int = 27;
-pub const SIGWINCH: ::c_int = 28;
-pub const TCSANOW: ::c_int = 0;
-pub const TCSADRAIN: ::c_int = 1;
-pub const TCSAFLUSH: ::c_int = 2;
-pub const TIOCLINUX: ::c_ulong = 0x541C;
-pub const TIOCGSERIAL: ::c_ulong = 0x541E;
 
 align_const! {
     pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
