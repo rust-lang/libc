@@ -151,12 +151,6 @@ s! {
     }
 }
 
-pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
-pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
-pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
-pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
-
 pub const O_LARGEFILE: ::c_int = 0x2000;
 
 pub const SYS_syscall: ::c_long = 4000 + 0;
