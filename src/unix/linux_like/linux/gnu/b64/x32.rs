@@ -4,23 +4,6 @@ pub type c_long = i32;
 pub type c_ulong = u32;
 
 s! {
-    pub struct sigaction {
-        pub sa_sigaction: ::sighandler_t,
-        pub sa_mask: ::sigset_t,
-        #[cfg(target_arch = "sparc64")]
-        __reserved0: ::c_int,
-        pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
-    }
-
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_pid: ::pid_t,
-    }
-
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -34,27 +17,6 @@ s! {
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
         __f_spare: [::c_int; 6],
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_code: ::c_int,
-        #[doc(hidden)]
-        #[deprecated(
-            since="0.2.54",
-            note="Please leave a comment on \
-                  https://github.com/rust-lang/libc/pull/1316 if you're using \
-                  this field"
-        )]
-        pub _pad: [::c_int; 29],
-        _align: [usize; 0],
-    }
-
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
     }
 }
 
