@@ -867,7 +867,6 @@ extern {
                   turn_on: ::c_int) -> ::c_int;
 }
 
-
 cfg_if! {
     if #[cfg(target_pointer_width = "32")] {
         mod x32;
