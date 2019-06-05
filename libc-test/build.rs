@@ -2000,6 +2000,7 @@ fn test_linux(target: &str) {
         "linux/rtnetlink.h",
         "linux/seccomp.h",
         "linux/sockios.h",
+        "linux/vm_sockets.h",
         "sys/auxv.h",
     }
 
