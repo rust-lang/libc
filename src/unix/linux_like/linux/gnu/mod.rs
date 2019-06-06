@@ -61,39 +61,6 @@ s! {
         pub tv_usec: i32,
     }
 
-    pub struct sigaction {
-        pub sa_sigaction: ::sighandler_t,
-        pub sa_mask: ::sigset_t,
-        #[cfg(target_arch = "sparc64")]
-        __reserved0: ::c_int,
-        pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
-    }
-
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_code: ::c_int,
-        #[doc(hidden)]
-        #[deprecated(
-            since="0.2.54",
-            note="Please leave a comment on \
-                https://github.com/rust-lang/libc/pull/1316 if you're using \
-                this field"
-        )]
-        pub _pad: [::c_int; 29],
-        #[cfg(target_arch = "x86_64")]
-        _align: [u64; 0],
-        #[cfg(not(target_arch = "x86_64"))]
-        _align: [usize; 0],
-    }
-
     pub struct glob64_t {
         pub gl_pathc: ::size_t,
         pub gl_pathv: *mut *mut ::c_char,
@@ -105,22 +72,6 @@ s! {
         __unused3: *mut ::c_void,
         __unused4: *mut ::c_void,
         __unused5: *mut ::c_void,
-    }
-
-    pub struct statfs {
-        pub f_type: __fsword_t,
-        pub f_bsize: __fsword_t,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_fsid: ::fsid_t,
-
-        pub f_namelen: __fsword_t,
-        pub f_frsize: __fsword_t,
-        f_spare: [__fsword_t; 5],
     }
 
     pub struct msghdr {
@@ -146,18 +97,16 @@ s! {
         pub c_lflag: ::tcflag_t,
         pub c_line: ::cc_t,
         pub c_cc: [::cc_t; ::NCCS],
-        #[cfg(not(target_arch = "sparc64"))]
+        #[cfg(not(any(
+            target_arch = "sparc64",
+            target_arch = "mips",
+            target_arch = "mips64")))]
         pub c_ispeed: ::speed_t,
-        #[cfg(not(target_arch = "sparc64"))]
+        #[cfg(not(any(
+            target_arch = "sparc64",
+            target_arch = "mips",
+            target_arch = "mips64")))]
         pub c_ospeed: ::speed_t,
-    }
-
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_pid: ::pid_t,
     }
 
     pub struct mallinfo {
@@ -258,19 +207,23 @@ s_no_extra_traits! {
         pub ut_exit: __exit_status,
 
         #[cfg(any(target_arch = "aarch64",
+                  target_arch = "s390x",
                   all(target_pointer_width = "32",
                       not(target_arch = "x86_64"))))]
         pub ut_session: ::c_long,
         #[cfg(any(target_arch = "aarch64",
+                  target_arch = "s390x",
                   all(target_pointer_width = "32",
                       not(target_arch = "x86_64"))))]
         pub ut_tv: ::timeval,
 
         #[cfg(not(any(target_arch = "aarch64",
+                      target_arch = "s390x",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_session: i32,
         #[cfg(not(any(target_arch = "aarch64",
+                      target_arch = "s390x",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_tv: __timeval,
@@ -350,8 +303,9 @@ pub const RLIMIT_SIGPENDING: ::__rlimit_resource_t = 11;
 pub const RLIMIT_MSGQUEUE: ::__rlimit_resource_t = 12;
 pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
 pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
+pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
+pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = 16;
 
-pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const __UT_LINESIZE: usize = 32;
@@ -367,13 +321,6 @@ pub const LOGIN_PROCESS: ::c_short = 6;
 pub const USER_PROCESS: ::c_short = 7;
 pub const DEAD_PROCESS: ::c_short = 8;
 pub const ACCOUNTING: ::c_short = 9;
-
-pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
-pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
-pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
-pub const RLIM_INFINITY: ::rlim_t = !0;
-pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
-pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = 16;
 
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 
@@ -413,25 +360,11 @@ pub const LC_ALL_MASK: ::c_int = ::LC_CTYPE_MASK
                                | LC_MEASUREMENT_MASK
                                | LC_IDENTIFICATION_MASK;
 
-pub const MAP_ANON: ::c_int = 0x0020;
-pub const MAP_ANONYMOUS: ::c_int = 0x0020;
-pub const MAP_DENYWRITE: ::c_int = 0x0800;
-pub const MAP_EXECUTABLE: ::c_int = 0x01000;
-pub const MAP_POPULATE: ::c_int = 0x08000;
-pub const MAP_NONBLOCK: ::c_int = 0x010000;
-pub const MAP_STACK: ::c_int = 0x020000;
 pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
 pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
 
 pub const ENOTSUP: ::c_int = EOPNOTSUPP;
-pub const EUCLEAN: ::c_int = 117;
-pub const ENOTNAM: ::c_int = 118;
-pub const ENAVAIL: ::c_int = 119;
-pub const EISNAM: ::c_int = 120;
-pub const EREMOTEIO: ::c_int = 121;
 
-pub const SOCK_STREAM: ::c_int = 1;
-pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOCK_DCCP: ::c_int = 6;
 pub const SOCK_PACKET: ::c_int = 10;
@@ -468,21 +401,11 @@ pub const DCCP_SOCKOPT_CCID_TX_INFO: ::c_int = 192;
 /// maximum number of services provided on the same listening port
 pub const DCCP_SERVICE_LIST_MAX_LEN: ::c_int = 32;
 
-pub const SIGTTIN: ::c_int = 21;
-pub const SIGTTOU: ::c_int = 22;
-pub const SIGXCPU: ::c_int = 24;
-pub const SIGXFSZ: ::c_int = 25;
-pub const SIGVTALRM: ::c_int = 26;
-pub const SIGPROF: ::c_int = 27;
-pub const SIGWINCH: ::c_int = 28;
-
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 pub const BUFSIZ: ::c_uint = 8192;
 pub const TMP_MAX: ::c_uint = 238328;
 pub const FOPEN_MAX: ::c_uint = 16;
-pub const POSIX_FADV_DONTNEED: ::c_int = 4;
-pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const _SC_EQUIV_CLASS_MAX: ::c_int = 41;
 pub const _SC_CHARCLASS_NAME_MAX: ::c_int = 45;
@@ -590,8 +513,6 @@ pub const SMB_SUPER_MAGIC: ::c_long = 0x0000517b;
 pub const TMPFS_MAGIC: ::c_long = 0x01021994;
 pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
 
-pub const VEOF: usize = 4;
-
 pub const CPU_SETSIZE: ::c_int = 0x400;
 
 pub const PTRACE_TRACEME: ::c_uint = 0;
@@ -619,21 +540,8 @@ pub const PTRACE_PEEKSIGINFO: ::c_uint = 0x4209;
 
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
-pub const MAP_HUGETLB: ::c_int = 0x040000;
-
 pub const SEEK_DATA: ::c_int = 3;
 pub const SEEK_HOLE: ::c_int = 4;
-
-pub const TCSANOW: ::c_int = 0;
-pub const TCSADRAIN: ::c_int = 1;
-pub const TCSAFLUSH: ::c_int = 2;
-
-pub const TIOCLINUX: ::c_ulong = 0x541C;
-pub const TIOCGSERIAL: ::c_ulong = 0x541E;
-
-pub const RTLD_DEEPBIND: ::c_int = 0x8;
-pub const RTLD_GLOBAL: ::c_int = 0x100;
-pub const RTLD_NOLOAD: ::c_int = 0x4;
 
 pub const LINUX_REBOOT_MAGIC1: ::c_int = 0xfee1dead;
 pub const LINUX_REBOOT_MAGIC2: ::c_int = 672274793;
@@ -752,12 +660,6 @@ pub const GENL_ID_PMCRAID: ::c_int = ::NLMSG_MIN_TYPE + 2;
 pub const TIOCM_LE: ::c_int = 0x001;
 pub const TIOCM_DTR: ::c_int = 0x002;
 pub const TIOCM_RTS: ::c_int = 0x004;
-pub const TIOCM_ST: ::c_int = 0x008;
-pub const TIOCM_SR: ::c_int = 0x010;
-pub const TIOCM_CTS: ::c_int = 0x020;
-pub const TIOCM_CAR: ::c_int = 0x040;
-pub const TIOCM_RNG: ::c_int = 0x080;
-pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
@@ -1010,8 +912,12 @@ pub const STATX_ATTR_ENCRYPTED: ::c_int = 0x0800;
 pub const STATX_ATTR_AUTOMOUNT: ::c_int = 0x1000;
 
 cfg_if! {
-    if #[cfg(any(target_arch = "arm", target_arch = "x86",
-                 target_arch = "x86_64"))] {
+    if #[cfg(any(
+        target_arch = "arm",
+        target_arch = "x86",
+        target_arch = "x86_64",
+        target_arch = "s390x"
+    ))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
     } else if #[cfg(target_arch = "sparc64")] {
         pub const PTHREAD_STACK_MIN: ::size_t = 0x6000;
@@ -1116,12 +1022,15 @@ extern {
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
                  target_arch = "arm",
+                 target_arch = "mips",
                  target_arch = "powerpc"))] {
         mod b32;
         pub use self::b32::*;
     } else if #[cfg(any(target_arch = "x86_64",
                         target_arch = "aarch64",
                         target_arch = "powerpc64",
+                        target_arch = "mips64",
+                        target_arch = "s390x",
                         target_arch = "sparc64"))] {
         mod b64;
         pub use self::b64::*;

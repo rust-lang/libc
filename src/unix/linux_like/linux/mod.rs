@@ -2647,16 +2647,9 @@ cfg_if! {
     if #[cfg(target_env = "musl")] {
         mod musl;
         pub use self::musl::*;
-    } else if #[cfg(any(target_arch = "mips",
-                        target_arch = "mips64"))] {
-        mod mips;
-        pub use self::mips::*;
-    } else if #[cfg(any(target_arch = "s390x"))] {
-        mod s390x;
-        pub use self::s390x::*;
-    } else {
-        mod other;
-        pub use self::other::*;
+    } else if #[cfg(target_env = "gnu")] {
+        mod gnu;
+        pub use self::gnu::*;
     }
 }
 

@@ -12,6 +12,60 @@ pub type suseconds_t = i32;
 pub type __u64 = ::c_ulonglong;
 
 s! {
+    pub struct sigaction {
+        pub sa_sigaction: ::sighandler_t,
+        pub sa_mask: ::sigset_t,
+        #[cfg(target_arch = "sparc64")]
+        __reserved0: ::c_int,
+        pub sa_flags: ::c_int,
+        pub sa_restorer: ::Option<extern fn()>,
+    }
+
+    pub struct statfs {
+        pub f_type: ::__fsword_t,
+        pub f_bsize: ::__fsword_t,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+
+        pub f_namelen: ::__fsword_t,
+        pub f_frsize: ::__fsword_t,
+        f_spare: [::__fsword_t; 5],
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        #[doc(hidden)]
+        #[deprecated(
+            since="0.2.54",
+            note="Please leave a comment on \
+                  https://github.com/rust-lang/libc/pull/1316 if you're using \
+                  this field"
+        )]
+        pub _pad: [::c_int; 29],
+        _align: [usize; 0],
+    }
+
+    pub struct flock {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off_t,
+        pub l_len: ::off_t,
+        pub l_pid: ::pid_t,
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut ::c_void,
+        pub ss_flags: ::c_int,
+        pub ss_size: ::size_t
+    }
+
     pub struct stat {
         pub st_dev: ::dev_t,
         __pad0: u64,
@@ -143,11 +197,21 @@ s! {
     }
 }
 
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+
+pub const VEOF: usize = 4;
+pub const RTLD_DEEPBIND: ::c_int = 0x8;
+pub const RTLD_GLOBAL: ::c_int = 0x100;
+pub const RTLD_NOLOAD: ::c_int = 0x4;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 
 pub const TIOCGSOFTCAR: ::c_ulong = 0x40047464;
 pub const TIOCSSOFTCAR: ::c_ulong = 0x80047465;
 
+pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
+pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
+pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
 pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 6;
 pub const RLIMIT_NPROC: ::__rlimit_resource_t = 7;
 
@@ -164,7 +228,16 @@ pub const O_NOATIME: ::c_int = 0x200000;
 pub const O_PATH: ::c_int = 0x1000000;
 pub const O_TMPFILE: ::c_int = 0x2000000 | O_DIRECTORY;
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MAP_GROWSDOWN: ::c_int = 0x0200;
+pub const MAP_ANON: ::c_int = 0x0020;
+pub const MAP_ANONYMOUS: ::c_int = 0x0020;
+pub const MAP_DENYWRITE: ::c_int = 0x0800;
+pub const MAP_EXECUTABLE: ::c_int = 0x01000;
+pub const MAP_POPULATE: ::c_int = 0x08000;
+pub const MAP_NONBLOCK: ::c_int = 0x010000;
+pub const MAP_STACK: ::c_int = 0x020000;
+pub const MAP_HUGETLB: ::c_int = 0x040000;
 
 pub const EDEADLK: ::c_int = 78;
 pub const ENAMETOOLONG: ::c_int = 63;
@@ -270,10 +343,20 @@ pub const SO_LINGER: ::c_int = 128;
 pub const SO_REUSEPORT: ::c_int = 0x200;
 pub const SO_ACCEPTCONN: ::c_int = 0x8000;
 
+pub const SOCK_STREAM: ::c_int = 1;
+pub const SOCK_DGRAM: ::c_int = 2;
+
 pub const SA_ONSTACK: ::c_int = 1;
 pub const SA_SIGINFO: ::c_int = 0x200;
 pub const SA_NOCLDWAIT: ::c_int = 0x100;
 
+pub const SIGTTIN: ::c_int = 21;
+pub const SIGTTOU: ::c_int = 22;
+pub const SIGXCPU: ::c_int = 24;
+pub const SIGXFSZ: ::c_int = 25;
+pub const SIGVTALRM: ::c_int = 26;
+pub const SIGPROF: ::c_int = 27;
+pub const SIGWINCH: ::c_int = 28;
 pub const SIGCHLD: ::c_int = 20;
 pub const SIGBUS: ::c_int = 10;
 pub const SIGUSR1: ::c_int = 30;
@@ -312,6 +395,12 @@ pub const F_UNLCK: ::c_int = 3;
 
 pub const SFD_NONBLOCK: ::c_int = 0x4000;
 
+pub const TCSANOW: ::c_int = 0;
+pub const TCSADRAIN: ::c_int = 1;
+pub const TCSAFLUSH: ::c_int = 2;
+
+pub const TIOCLINUX: ::c_ulong = 0x541C;
+pub const TIOCGSERIAL: ::c_ulong = 0x541E;
 pub const TIOCEXCL: ::c_ulong = 0x2000740d;
 pub const TIOCNXCL: ::c_ulong = 0x2000740e;
 pub const TIOCSCTTY: ::c_ulong = 0x20007484;
@@ -321,6 +410,13 @@ pub const TIOCMBIS: ::c_ulong = 0x8004746c;
 pub const TIOCMBIC: ::c_ulong = 0x8004746b;
 pub const TIOCMSET: ::c_ulong = 0x8004746d;
 pub const TIOCCONS: ::c_ulong = 0x20007424;
+
+pub const TIOCM_ST: ::c_int = 0x008;
+pub const TIOCM_SR: ::c_int = 0x010;
+pub const TIOCM_CTS: ::c_int = 0x020;
+pub const TIOCM_CAR: ::c_int = 0x040;
+pub const TIOCM_RNG: ::c_int = 0x080;
+pub const TIOCM_DSR: ::c_int = 0x100;
 
 pub const SFD_CLOEXEC: ::c_int = 0x400000;
 
@@ -388,6 +484,11 @@ pub const MAP_LOCKED: ::c_int = 0x0100;
 pub const MAP_NORESERVE: ::c_int = 0x00040;
 
 pub const EDEADLOCK: ::c_int = 108;
+pub const EUCLEAN: ::c_int = 117;
+pub const ENOTNAM: ::c_int = 118;
+pub const ENAVAIL: ::c_int = 119;
+pub const EISNAM: ::c_int = 120;
+pub const EREMOTEIO: ::c_int = 121;
 
 pub const SO_PEERCRED: ::c_int = 0x40;
 pub const SO_RCVLOWAT: ::c_int = 0x800;

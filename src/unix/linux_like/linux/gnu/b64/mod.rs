@@ -5,13 +5,13 @@ pub type time_t = i64;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
-pub type __fsword_t = i64;
 pub type shmatt_t = u64;
 pub type msgqnum_t = u64;
 pub type msglen_t = u64;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type rlim_t = u64;
+pub type __fsword_t = i64;
 
 s! {
     pub struct sigset_t {
@@ -51,8 +51,10 @@ s! {
         __glibc_reserved4: u64,
         __glibc_reserved5: u64,
     }
+
 }
 
+pub const RLIM_INFINITY: ::rlim_t = !0;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
 pub const O_LARGEFILE: ::c_int = 0;
@@ -67,18 +69,15 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "sparc64"))] {
         mod sparc64;
         pub use self::sparc64::*;
+    } else if #[cfg(any(target_arch = "mips64"))] {
+        mod mips64;
+        pub use self::mips64::*;
+    } else if #[cfg(any(target_arch = "s390x"))] {
+        mod s390x;
+        pub use self::s390x::*;
     } else if #[cfg(any(target_arch = "x86_64"))] {
         mod x86_64;
         pub use self::x86_64::*;
-        cfg_if! {
-            if #[cfg(target_pointer_width = "32")] {
-                mod x32;
-                pub use self::x32::*;
-            } else {
-                mod not_x32;
-                pub use self::not_x32::*;
-            }
-        }
     } else {
         // Unknown target_arch
     }
