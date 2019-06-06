@@ -150,6 +150,7 @@ s! {
     }
 }
 
+pub const RLIM_INFINITY: ::rlim_t = !0;
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: ::c_int = 0x8;
 pub const RTLD_GLOBAL: ::c_int = 0x100;

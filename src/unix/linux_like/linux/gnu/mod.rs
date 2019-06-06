@@ -375,8 +375,6 @@ pub const USER_PROCESS: ::c_short = 7;
 pub const DEAD_PROCESS: ::c_short = 8;
 pub const ACCOUNTING: ::c_short = 9;
 
-pub const RLIM_INFINITY: ::rlim_t = !0;
-
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 
 pub const SOL_RXRPC: ::c_int = 272;
