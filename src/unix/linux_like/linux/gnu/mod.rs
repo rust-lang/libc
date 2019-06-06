@@ -74,61 +74,6 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-    pub struct statfs {
-        #[cfg(not(any(target_arch = "mips", target_arch = "s390x")))]
-        pub f_type: ::__fsword_t,
-        #[cfg(target_arch = "mips")]
-        pub f_type: ::c_long,
-        #[cfg(target_arch = "s390x")]
-        pub f_type: ::c_uint,
-
-        #[cfg(not(any(target_arch = "mips", target_arch = "s390x")))]
-        pub f_bsize: ::__fsword_t,
-        #[cfg(target_arch = "mips")]
-        pub f_bsize: ::c_long,
-        #[cfg(target_arch = "s390x")]
-        pub f_bsize: ::c_uint,
-        #[cfg(any(target_arch = "mips", target_arch = "mips64"))]
-        pub f_frsize: ::c_long,
-
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
-        pub f_bavail: ::fsblkcnt_t,
-
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        #[cfg(any(target_arch = "mips", target_arch = "mips64"))]
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_fsid: ::fsid_t,
-
-        #[cfg(not(any(target_arch = "mips", target_arch = "s390x")))]
-        pub f_namelen: ::__fsword_t,
-        #[cfg(target_arch = "mips")]
-        pub f_namelen: ::c_long,
-        #[cfg(target_arch = "s390x")]
-        pub f_namelen: ::c_uint,
-        #[cfg(not(any(
-            target_arch = "mips",
-            target_arch = "mips64",
-            target_arch = "s390x"
-        )))]
-        pub f_frsize: ::__fsword_t,
-        #[cfg(any(target_arch = "s390x"))]
-        pub f_frsize: ::c_uint,
-        #[cfg(not(any(
-            target_arch = "s390x",
-            target_arch = "mips",
-            target_arch = "mips64")))]
-        f_spare: [::__fsword_t; 5],
-        #[cfg(target_arch = "s390x")]
-        pub f_flags: ::c_uint,
-        #[cfg(target_arch = "s390x")]
-        f_spare: [::c_uint; 4],
-        #[cfg(any(target_arch = "mips", target_arch = "mips64"))]
-        f_spare: [::c_uint; 6],
-    }
-
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,

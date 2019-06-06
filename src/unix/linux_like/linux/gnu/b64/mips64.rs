@@ -34,6 +34,21 @@ s! {
         st_pad5: [::c_long; 7],
     }
 
+    pub struct statfs {
+        pub f_type: ::c_long,
+        pub f_bsize: ::c_long,
+        pub f_frsize: ::c_long,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_files: ::fsblkcnt_t,
+        pub f_ffree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_fsid: ::fsid_t,
+
+        pub f_namelen: ::c_long,
+        f_spare: [::c_long; 6],
+    }
+
     pub struct flock {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
