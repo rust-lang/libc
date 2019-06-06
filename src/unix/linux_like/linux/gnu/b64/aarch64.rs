@@ -212,6 +212,7 @@ pub const O_NOATIME: ::c_int = 0o1000000;
 pub const O_PATH: ::c_int = 0o10000000;
 pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
 
 pub const EUCLEAN: ::c_int = 117;

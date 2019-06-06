@@ -176,6 +176,7 @@ pub const TIOCM_CAR: ::c_int = 0x040;
 pub const TIOCM_RNG: ::c_int = 0x080;
 pub const TIOCM_DSR: ::c_int = 0x100;
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MAP_LOCKED: ::c_int = 0x00080;
 pub const MAP_NORESERVE: ::c_int = 0x00040;
 pub const MAP_ANON: ::c_int = 0x0020;

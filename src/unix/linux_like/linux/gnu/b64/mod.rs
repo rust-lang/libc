@@ -5,13 +5,13 @@ pub type time_t = i64;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i64;
-pub type __fsword_t = i64;
 pub type shmatt_t = u64;
 pub type msgqnum_t = u64;
 pub type msglen_t = u64;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type rlim_t = u64;
+pub type __fsword_t = i64;
 
 s! {
     pub struct sigset_t {

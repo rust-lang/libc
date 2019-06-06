@@ -10,7 +10,6 @@ pub type suseconds_t = i32;
 pub type ino_t = u32;
 pub type off_t = i32;
 pub type blkcnt_t = i32;
-pub type __fsword_t = i32;
 
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
@@ -21,10 +20,15 @@ pub type msglen_t = ::c_ulong;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
 pub type __u64 = ::c_ulonglong;
+pub type __fsword_t = i32;
 
 s! {
     pub struct stat {
+        #[cfg(not(target_arch = "mips"))]
         pub st_dev: ::dev_t,
+        #[cfg(target_arch = "mips")]
+        pub st_dev: ::c_ulong,
+
         #[cfg(not(target_arch = "mips"))]
         __pad1: ::c_short,
         #[cfg(target_arch = "mips")]
@@ -34,7 +38,10 @@ s! {
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
+        #[cfg(not(target_arch = "mips"))]
         pub st_rdev: ::dev_t,
+        #[cfg(target_arch = "mips")]
+        pub st_rdev: ::c_ulong,
         #[cfg(not(target_arch = "mips"))]
         __pad2: ::c_short,
         #[cfg(target_arch = "mips")]

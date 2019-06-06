@@ -161,19 +161,6 @@ s! {
         __unused5: ::c_ulong
     }
 
-    pub struct glob64_t {
-        pub gl_pathc: ::size_t,
-        pub gl_pathv: *mut *mut ::c_char,
-        pub gl_offs: ::size_t,
-        pub gl_flags: ::c_int,
-
-        __unused1: *mut ::c_void,
-        __unused2: *mut ::c_void,
-        __unused3: *mut ::c_void,
-        __unused4: *mut ::c_void,
-        __unused5: *mut ::c_void,
-    }
-
     pub struct termios2 {
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,

@@ -378,6 +378,7 @@ pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
 
 pub const SOL_SOCKET: ::c_int = 1;
 
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MAP_LOCKED: ::c_int = 0x02000;
 pub const MAP_NORESERVE: ::c_int = 0x04000;
 pub const MAP_32BIT: ::c_int = 0x0040;
