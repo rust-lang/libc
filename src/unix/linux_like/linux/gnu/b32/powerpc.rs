@@ -10,8 +10,8 @@ s! {
     }
 
     pub struct statfs {
-        pub f_type: __fsword_t,
-        pub f_bsize: __fsword_t,
+        pub f_type: ::__fsword_t,
+        pub f_bsize: ::__fsword_t,
         pub f_blocks: ::fsblkcnt_t,
         pub f_bfree: ::fsblkcnt_t,
         pub f_bavail: ::fsblkcnt_t,
@@ -20,9 +20,9 @@ s! {
         pub f_ffree: ::fsfilcnt_t,
         pub f_fsid: ::fsid_t,
 
-        pub f_namelen: __fsword_t,
-        pub f_frsize: __fsword_t,
-        f_spare: [__fsword_t; 5],
+        pub f_namelen: ::__fsword_t,
+        pub f_frsize: ::__fsword_t,
+        f_spare: [::__fsword_t; 5],
     }
 
     pub struct flock {
