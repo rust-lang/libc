@@ -406,8 +406,6 @@ pub const SIGEV_THREAD_ID: ::c_int = 4;
 pub const BUFSIZ: ::c_uint = 8192;
 pub const TMP_MAX: ::c_uint = 238328;
 pub const FOPEN_MAX: ::c_uint = 16;
-pub const POSIX_FADV_DONTNEED: ::c_int = 4;
-pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const _SC_EQUIV_CLASS_MAX: ::c_int = 41;
 pub const _SC_CHARCLASS_NAME_MAX: ::c_int = 45;
@@ -914,8 +912,12 @@ pub const STATX_ATTR_ENCRYPTED: ::c_int = 0x0800;
 pub const STATX_ATTR_AUTOMOUNT: ::c_int = 0x1000;
 
 cfg_if! {
-    if #[cfg(any(target_arch = "arm", target_arch = "x86",
-                 target_arch = "x86_64"))] {
+    if #[cfg(any(
+        target_arch = "arm",
+        target_arch = "x86",
+        target_arch = "x86_64",
+        target_arch = "s390x"
+    ))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
     } else if #[cfg(target_arch = "sparc64")] {
         pub const PTHREAD_STACK_MIN: ::size_t = 0x6000;

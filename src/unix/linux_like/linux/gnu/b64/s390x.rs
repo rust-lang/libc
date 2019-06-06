@@ -48,16 +48,8 @@ s! {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
         pub si_code: ::c_int,
-        #[doc(hidden)]
-        #[deprecated(
-            since="0.2.54",
-            note="Please leave a comment on \
-                  https://github.com/rust-lang/libc/pull/1316 if you're using \
-                  this field"
-        )]
-        pub _pad: [::c_int; 29],
+        _pad: ::c_int,
         _pad2: [::c_long; 14],
-        _align: [usize; 0],
     }
 
     pub struct stack_t {
@@ -255,6 +247,9 @@ cfg_if! {
         }
     }
 }
+
+pub const POSIX_FADV_DONTNEED: ::c_int = 6;
+pub const POSIX_FADV_NOREUSE: ::c_int = 7;
 
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: ::c_int = 0x8;

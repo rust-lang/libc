@@ -600,6 +600,9 @@ pub const SA_RESETHAND: ::c_int = 0x80000000;
 pub const SA_RESTART: ::c_int = 0x10000000;
 pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
 
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;

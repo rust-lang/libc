@@ -315,6 +315,9 @@ pub const ENOTRECOVERABLE: ::c_int = 131;
 pub const EHWPOISON: ::c_int = 133;
 pub const ERFKILL: ::c_int = 132;
 
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+
 pub const SOL_SOCKET: ::c_int = 1;
 
 pub const SO_REUSEADDR: ::c_int = 2;

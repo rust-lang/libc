@@ -197,6 +197,9 @@ s! {
     }
 }
 
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: ::c_int = 0x8;
 pub const RTLD_GLOBAL: ::c_int = 0x100;

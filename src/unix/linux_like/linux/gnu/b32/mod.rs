@@ -133,6 +133,8 @@ pub const SO_BUSY_POLL: ::c_int = 46;
 pub const SA_ONSTACK: ::c_int = 0x08000000;
 
 pub const PTRACE_DETACH: ::c_uint = 17;
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
 pub const F_SETLK: ::c_int = 6;
 pub const F_SETLKW: ::c_int = 7;
