@@ -77,16 +77,16 @@ s! {
     pub struct statfs {
         #[cfg(not(any(target_arch = "mips", target_arch = "s390x")))]
         pub f_type: ::__fsword_t,
-        #[cfg(any(target_arch = "mips"))]
+        #[cfg(target_arch = "mips")]
         pub f_type: ::c_long,
-        #[cfg(any(target_arch = "s390x"))]
+        #[cfg(target_arch = "s390x")]
         pub f_type: ::c_uint,
 
         #[cfg(not(any(target_arch = "mips", target_arch = "s390x")))]
         pub f_bsize: ::__fsword_t,
-        #[cfg(any(target_arch = "mips"))]
+        #[cfg(target_arch = "mips")]
         pub f_bsize: ::c_long,
-        #[cfg(any(target_arch = "s390x"))]
+        #[cfg(target_arch = "s390x")]
         pub f_bsize: ::c_uint,
         #[cfg(any(target_arch = "mips", target_arch = "mips64"))]
         pub f_frsize: ::c_long,
@@ -102,13 +102,17 @@ s! {
         pub f_bavail: ::fsblkcnt_t,
         pub f_fsid: ::fsid_t,
 
-        #[cfg(any(target_arch = "mips", target_arch = "s390x"))]
+        #[cfg(not(any(target_arch = "mips", target_arch = "s390x")))]
         pub f_namelen: ::__fsword_t,
-        #[cfg(any(target_arch = "mips"))]
+        #[cfg(target_arch = "mips")]
         pub f_namelen: ::c_long,
-        #[cfg(any(target_arch = "s390x"))]
+        #[cfg(target_arch = "s390x")]
         pub f_namelen: ::c_uint,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips64", target_arch = "s390x")))]
+        #[cfg(not(any(
+            target_arch = "mips",
+            target_arch = "mips64",
+            target_arch = "s390x"
+        )))]
         pub f_frsize: ::__fsword_t,
         #[cfg(any(target_arch = "s390x"))]
         pub f_frsize: ::c_uint,
