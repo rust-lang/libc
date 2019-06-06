@@ -212,6 +212,7 @@ s_no_extra_traits! {
                       not(target_arch = "x86_64"))))]
         pub ut_session: ::c_long,
         #[cfg(any(target_arch = "aarch64",
+                  target_arch = "s390x",
                   all(target_pointer_width = "32",
                       not(target_arch = "x86_64"))))]
         pub ut_tv: ::timeval,
@@ -222,6 +223,7 @@ s_no_extra_traits! {
                           not(target_arch = "x86_64")))))]
         pub ut_session: i32,
         #[cfg(not(any(target_arch = "aarch64",
+                      target_arch = "s390x",
                       all(target_pointer_width = "32",
                           not(target_arch = "x86_64")))))]
         pub ut_tv: __timeval,
