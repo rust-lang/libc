@@ -474,6 +474,14 @@ s! {
         pub cookie: u32,
         pub len: u32
     }
+
+    pub struct sockaddr_vm {
+        pub svm_family: ::sa_family_t,
+        pub svm_reserved1: ::c_ushort,
+        pub svm_port: ::c_uint,
+        pub svm_cid: ::c_uint,
+        pub svm_zero: [u8; 4]
+    }
 }
 
 s_no_extra_traits!{
@@ -1999,6 +2007,13 @@ pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
 
 pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
+
+// uapi/linux/vm_sockets.h
+pub const VMADDR_CID_ANY: ::c_uint = 0xFFFFFFFF;
+pub const VMADDR_CID_HYPERVISOR: ::c_uint = 0;
+pub const VMADDR_CID_RESERVED: ::c_uint = 1;
+pub const VMADDR_CID_HOST: ::c_uint = 2;
+pub const VMADDR_PORT_ANY: ::c_uint = 0xFFFFFFFF;
 
 // uapi/linux/inotify.h
 pub const IN_ACCESS:        u32 = 0x0000_0001;
