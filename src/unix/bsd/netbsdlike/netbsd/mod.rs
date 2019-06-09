@@ -46,14 +46,6 @@ s! {
         pub mq_curmsgs: ::c_long,
     }
 
-    pub struct sigevent {
-        pub sigev_notify: ::c_int,
-        pub sigev_signo: ::c_int,
-        pub sigev_value: ::sigval,
-        __unused1: *mut ::c_void,       //actually a function pointer
-        pub sigev_notify_attributes: *mut ::c_void
-    }
-
     pub struct sigset_t {
         __bits: [u32; 4],
     }
@@ -356,6 +348,14 @@ s_no_extra_traits! {
         __ss_pad2: i64,
         __ss_pad3: [u8; 112],
     }
+
+    pub struct sigevent {
+        pub sigev_notify: ::c_int,
+        pub sigev_signo: ::c_int,
+        pub sigev_value: ::sigval,
+        __unused1: *mut ::c_void,       //actually a function pointer
+        pub sigev_notify_attributes: *mut ::c_void
+    }
 }
 
 cfg_if! {
@@ -656,6 +656,36 @@ cfg_if! {
                 self.__ss_pad1.hash(state);
                 self.__ss_pad2.hash(state);
                 self.__ss_pad3.hash(state);
+            }
+        }
+
+        impl PartialEq for sigevent {
+            fn eq(&self, other: &sigevent) -> bool {
+                self.sigev_notify == other.sigev_notify
+                    && self.sigev_signo == other.sigev_signo
+                    && self.sigev_value == other.sigev_value
+                    && self.sigev_notify_attributes
+                        == other.sigev_notify_attributes
+            }
+        }
+        impl Eq for sigevent {}
+        impl ::fmt::Debug for sigevent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigevent")
+                    .field("sigev_notify", &self.sigev_notify)
+                    .field("sigev_signo", &self.sigev_signo)
+                    .field("sigev_value", &self.sigev_value)
+                    .field("sigev_notify_attributes",
+                           &self.sigev_notify_attributes)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sigevent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sigev_notify.hash(state);
+                self.sigev_signo.hash(state);
+                self.sigev_value.hash(state);
+                self.sigev_notify_attributes.hash(state);
             }
         }
     }
