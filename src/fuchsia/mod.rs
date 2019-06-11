@@ -432,15 +432,6 @@ s! {
         pub int_n_sign_posn: ::c_char,
     }
 
-    pub struct sigevent {
-        pub sigev_value: ::sigval,
-        pub sigev_signo: ::c_int,
-        pub sigev_notify: ::c_int,
-        pub sigev_notify_function: fn(::sigval),
-        pub sigev_notify_attributes: *mut pthread_attr_t,
-        pub __pad: [::c_char; 56 - 3 * 8 /* 8 == sizeof(long) */],
-    }
-
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -962,6 +953,15 @@ s_no_extra_traits! {
         pub nl_pid: u32,
         pub nl_groups: u32
     }
+
+    pub struct sigevent {
+        pub sigev_value: ::sigval,
+        pub sigev_signo: ::c_int,
+        pub sigev_notify: ::c_int,
+        pub sigev_notify_function: fn(::sigval),
+        pub sigev_notify_attributes: *mut pthread_attr_t,
+        pub __pad: [::c_char; 56 - 3 * 8 /* 8 == sizeof(long) */],
+    }
 }
 
 cfg_if! {
@@ -1253,6 +1253,39 @@ cfg_if! {
                 self.nl_family.hash(state);
                 self.nl_pid.hash(state);
                 self.nl_groups.hash(state);
+            }
+        }
+
+        impl PartialEq for sigevent {
+            fn eq(&self, other: &sigevent) -> bool {
+                self.sigev_value == other.sigev_value
+                    && self.sigev_signo == other.sigev_signo
+                    && self.sigev_notify == other.sigev_notify
+                    && self.sigev_notify_function == other.sigev_notify_function
+                    && self.sigev_notify_attributes
+                        == other.sigev_notify_attributes
+            }
+        }
+        impl Eq for sigevent {}
+        impl ::fmt::Debug for sigevent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigevent")
+                    .field("sigev_value", &self.sigev_value)
+                    .field("sigev_signo", &self.sigev_signo)
+                    .field("sigev_notify", &self.sigev_notify)
+                    .field("sigev_notify_function", &self.sigev_notify_function)
+                    .field("sigev_notify_attributes",
+                           &self.sigev_notify_attributes)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sigevent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sigev_value.hash(state);
+                self.sigev_signo.hash(state);
+                self.sigev_notify.hash(state);
+                self.sigev_notify_function.hash(state);
+                self.sigev_notify_attributes.hash(state);
             }
         }
     }

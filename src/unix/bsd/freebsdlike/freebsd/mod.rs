@@ -46,18 +46,6 @@ s! {
         pub ip6: *mut ::in6_addr,
     }
 
-    pub struct sigevent {
-        pub sigev_notify: ::c_int,
-        pub sigev_signo: ::c_int,
-        pub sigev_value: ::sigval,
-        //The rest of the structure is actually a union.  We expose only
-        //sigev_notify_thread_id because it's the most useful union member.
-        pub sigev_notify_thread_id: ::lwpid_t,
-        #[cfg(target_pointer_width = "64")]
-        __unused1: ::c_int,
-        __unused2: [::c_long; 7]
-    }
-
     pub struct statvfs {
         pub f_bavail: ::fsblkcnt_t,
         pub f_bfree: ::fsblkcnt_t,
@@ -150,6 +138,18 @@ s_no_extra_traits! {
         pub mq_msgsize: ::c_long,
         pub mq_curmsgs: ::c_long,
         __reserved: [::c_long; 4]
+    }
+
+    pub struct sigevent {
+        pub sigev_notify: ::c_int,
+        pub sigev_signo: ::c_int,
+        pub sigev_value: ::sigval,
+        //The rest of the structure is actually a union.  We expose only
+        //sigev_notify_thread_id because it's the most useful union member.
+        pub sigev_notify_thread_id: ::lwpid_t,
+        #[cfg(target_pointer_width = "64")]
+        __unused1: ::c_int,
+        __unused2: [::c_long; 7]
     }
 }
 
@@ -272,6 +272,36 @@ cfg_if! {
                 self.mq_maxmsg.hash(state);
                 self.mq_msgsize.hash(state);
                 self.mq_curmsgs.hash(state);
+            }
+        }
+
+        impl PartialEq for sigevent {
+            fn eq(&self, other: &sigevent) -> bool {
+                self.sigev_notify == other.sigev_notify
+                    && self.sigev_signo == other.sigev_signo
+                    && self.sigev_value == other.sigev_value
+                    && self.sigev_notify_thread_id
+                        == other.sigev_notify_thread_id
+            }
+        }
+        impl Eq for sigevent {}
+        impl ::fmt::Debug for sigevent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigevent")
+                    .field("sigev_notify", &self.sigev_notify)
+                    .field("sigev_signo", &self.sigev_signo)
+                    .field("sigev_value", &self.sigev_value)
+                    .field("sigev_notify_thread_id",
+                           &self.sigev_notify_thread_id)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sigevent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sigev_notify.hash(state);
+                self.sigev_signo.hash(state);
+                self.sigev_value.hash(state);
+                self.sigev_notify_thread_id.hash(state);
             }
         }
     }
