@@ -785,6 +785,7 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
 pub const FIOCLEX: ::c_int = 0x5451;
+pub const FIONCLEX: ::c_int = 0x5450;
 
 pub const SIGCHLD: ::c_int = 17;
 pub const SIGBUS: ::c_int = 7;

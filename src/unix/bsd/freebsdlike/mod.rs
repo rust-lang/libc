@@ -997,6 +997,10 @@ pub const SLIPDISC: ::c_int = 0x4;
 pub const PPPDISC: ::c_int = 0x5;
 pub const NETGRAPHDISC: ::c_int = 0x6;
 
+pub const FIODTYPE: ::c_ulong = 0x4004667a;
+pub const FIOGETLBA: ::c_ulong = 0x40046679;
+pub const FIODGNAME: ::c_ulong = 0x80106678;
+
 pub const B0: speed_t = 0;
 pub const B50: speed_t = 50;
 pub const B75: speed_t = 75;

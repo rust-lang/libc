@@ -162,6 +162,7 @@ pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_LARGEFILE: ::c_int = 0o400000;
 
 pub const FIOCLEX: ::c_int = 0x5451;
+pub const FIONCLEX: ::c_int = 0x5450;
 pub const FIONBIO: ::c_int = 0x5421;
 
 pub const RLIMIT_RSS: ::c_int = 5;
