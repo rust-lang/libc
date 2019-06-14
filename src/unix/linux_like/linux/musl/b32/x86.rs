@@ -167,14 +167,6 @@ s_no_extra_traits!{
     }
 }
 
-extern {
-    pub fn getrandom(
-        buf: *mut ::c_void,
-        buflen: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
-}
-
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for ucontext_t {
@@ -959,3 +951,11 @@ pub const AF_MAX: ::c_int = 45;
             https://github.com/rust-lang/libc/issues/665"
 )]
 pub const PF_MAX: ::c_int = AF_MAX;
+
+extern {
+    pub fn getrandom(
+        buf: *mut ::c_void,
+        buflen: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
+}

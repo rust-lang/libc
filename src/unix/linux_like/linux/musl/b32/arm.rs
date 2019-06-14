@@ -152,14 +152,6 @@ s! {
     }
 }
 
-extern {
-    pub fn getrandom(
-        buf: *mut ::c_void,
-        buflen: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
-}
-
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
@@ -851,3 +843,11 @@ pub const AF_MAX: ::c_int = 45;
             https://github.com/rust-lang/libc/issues/665"
 )]
 pub const PF_MAX: ::c_int = AF_MAX;
+
+extern {
+    pub fn getrandom(
+        buf: *mut ::c_void,
+        buflen: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
+}
