@@ -2195,11 +2195,6 @@ extern {
     pub fn inotify_add_watch(fd: ::c_int,
                              path: *const ::c_char,
                              mask: u32) -> ::c_int;
-    pub fn getrandom(
-        buf: *mut ::c_void,
-        buflen: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
 }
 
 cfg_if! {
