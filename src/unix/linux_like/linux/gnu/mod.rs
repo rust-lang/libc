@@ -967,6 +967,11 @@ extern {
                         tz: *mut ::timezone) -> ::c_int;
     pub fn statx(dirfd: ::c_int, pathname: *const c_char, flags: ::c_int,
                  mask: ::c_uint, statxbuf: *mut statx) -> ::c_int;
+    pub fn getrandom(
+        buf: *mut ::c_void,
+        buflen: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
 }
 
 #[link(name = "util")]
