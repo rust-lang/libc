@@ -2196,7 +2196,7 @@ extern {
                              path: *const ::c_char,
                              mask: u32) -> ::c_int;
     pub fn getrandom(
-        buf: *mut u8,
+        buf: *mut ::c_void,
         buflen: ::size_t,
         flags: ::c_uint,
     ) -> ::ssize_t;
