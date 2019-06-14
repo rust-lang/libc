@@ -155,6 +155,14 @@ s! {
     }
 }
 
+extern {
+    pub fn getrandom(
+        buf: *mut ::c_void,
+        buflen: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
+}
+
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const SIGSTKSZ: ::size_t = 10240;
 pub const MINSIGSTKSZ: ::size_t = 4096;

@@ -167,6 +167,14 @@ s_no_extra_traits!{
     }
 }
 
+extern {
+    pub fn getrandom(
+        buf: *mut ::c_void,
+        buflen: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
+}
+
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for ucontext_t {

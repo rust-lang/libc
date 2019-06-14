@@ -129,6 +129,14 @@ s! {
     }
 }
 
+extern {
+    pub fn getrandom(
+        buf: *mut ::c_void,
+        buflen: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
+}
+
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 

@@ -152,6 +152,14 @@ s! {
     }
 }
 
+extern {
+    pub fn getrandom(
+        buf: *mut ::c_void,
+        buflen: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
+}
+
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
