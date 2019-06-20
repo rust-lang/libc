@@ -1183,6 +1183,31 @@ pub const TCIFLUSH: ::c_int = 0x01;
 pub const TCOFLUSH: ::c_int = 0x02;
 pub const TCIOFLUSH: ::c_int = 0x03;
 
+pub const TCGETA:      ::c_int = 0x8000;
+pub const TCSETA:      ::c_int = TCGETA + 1;
+pub const TCSETAF:     ::c_int = TCGETA + 2;
+pub const TCSETAW:     ::c_int = TCGETA + 3;
+pub const TCWAITEVENT: ::c_int = TCGETA + 4;
+pub const TCSBRK:      ::c_int = TCGETA + 5;
+pub const TCFLSH:      ::c_int = TCGETA + 6;
+pub const TCXONC:      ::c_int = TCGETA + 7;
+pub const TCQUERYCONNECTED: ::c_int = TCGETA + 8;
+pub const TCGETBITS:   ::c_int = TCGETA + 9;
+pub const TCSETDTR:    ::c_int = TCGETA + 10;
+pub const TCSETRTS:    ::c_int = TCGETA + 11;
+pub const TIOCGWINSZ:  ::c_int = TCGETA + 12;
+pub const TIOCSWINSZ:  ::c_int = TCGETA + 13;
+pub const TCVTIME:     ::c_int = TCGETA + 14;
+pub const TIOCGPGRP:   ::c_int = TCGETA + 15;
+pub const TIOCSPGRP:   ::c_int = TCGETA + 16;
+pub const TIOCSCTTY:   ::c_int = TCGETA + 17;
+pub const TIOCMGET:    ::c_int = TCGETA + 18;
+pub const TIOCMSET:    ::c_int = TCGETA + 19;
+pub const TIOCSBRK:    ::c_int = TCGETA + 20;
+pub const TIOCCBRK:    ::c_int = TCGETA + 21;
+pub const TIOCMBIS:    ::c_int = TCGETA + 22;
+pub const TIOCMBIC:    ::c_int = TCGETA + 23;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
