@@ -1090,6 +1090,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("emscripten", "unix", "")
     } else if target.contains("wasi") {
         ("unknown", "", "wasi")
+    } else if target.contains("redox") {
+        ("redox", "unix", "")
     } else {
         panic!("unknown os/family width: {}", target)
     };
