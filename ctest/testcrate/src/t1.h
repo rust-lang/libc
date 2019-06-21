@@ -121,26 +121,14 @@ struct T1_conflict{
 // on msvc there is only pragma pack
 // on clang and gcc there is a packed attribute
 
-#ifdef _MSC_VER
-#pragma pack(push,1)
-#endif
-
-#ifndef _MSC_VER
-#define PACK __attribute__((packed))
-#else
-#define PACK
-#endif
+# pragma pack(push,1)
 
 struct Pack {
   uint8_t a;
   uint16_t b;
-} PACK;
+};
 
-#undef PACK
-
-#ifdef _MSC_VER
-#pragma pack(pop)
-#endif
+# pragma pack(pop)
 
 // volatile pointers in struct fields:
 struct V {
