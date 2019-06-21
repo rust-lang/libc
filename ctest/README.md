@@ -1,7 +1,7 @@
 # ctest
 
 [![Build Status](https://travis-ci.com/gnzlbg/ctest.svg?branch=master)](https://travis-ci.com/gnzlbg/ctest)
-[![Build status](https://ci.appveyor.com/api/projects/status/akjf8gn5pem05iyw?svg=true)](https://ci.appveyor.com/project/alexcrichton/ctest)
+[![Build status](https://ci.appveyor.com/api/projects/status/hdx031pk29jjnhxr?svg=true)](https://ci.appveyor.com/project/gnzlbg/ctest-x6e9k)
 
 [Documentation][dox]
 
