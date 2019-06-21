@@ -799,6 +799,7 @@ impl TestGenerator {
                .flag("/wd4296")  // '<' being always false
                .flag("/wd4255")  // converting () to (void)
                .flag("/wd4668")  // using an undefined thing in preprocessor?
+               .flag("/wd4366")  // taking ref to packed struct field might be unaligned
                 ;
         } else {
             cfg.flag("-Wall")
