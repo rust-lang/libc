@@ -800,6 +800,7 @@ impl TestGenerator {
                .flag("/wd4255")  // converting () to (void)
                .flag("/wd4668")  // using an undefined thing in preprocessor?
                .flag("/wd4366")  // taking ref to packed struct field might be unaligned
+               .flag("/wd4189") // local variable initialized but not referenced
                 ;
         } else {
             cfg.flag("-Wall")
