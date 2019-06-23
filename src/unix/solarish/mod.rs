@@ -35,6 +35,9 @@ pub type mqd_t = *mut ::c_void;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 
+pub type door_attr_t = ::c_uint;
+pub type door_id_t = ::c_ulonglong;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 impl ::Copy for timezone {}
@@ -338,6 +341,11 @@ s! {
         pub portev_object: ::uintptr_t,
         pub portev_user: *mut ::c_void,
     }
+
+    pub struct door_desc_t__d_data__d_desc {
+        pub d_descriptor: ::c_int,
+        pub d_id: ::door_id_t
+    }
 }
 
 s_no_extra_traits! {
@@ -400,6 +408,25 @@ s_no_extra_traits! {
         pub ss_sp: *mut ::c_void,
         pub sigev_notify_attributes: *const ::pthread_attr_t,
         __sigev_pad2: ::c_int,
+    }
+
+    pub union door_desc_t__d_data {
+        pub d_desc: door_desc_t__d_data__d_desc,
+        d_resv: [::c_int; 5], /* Check out /usr/include/sys/door.h */
+    }
+
+    pub struct door_desc_t {
+        pub d_attributes: door_attr_t,
+        pub d_data: door_desc_t__d_data,
+    }
+
+    pub struct door_arg_t {
+        pub data_ptr: *const ::c_char,
+        pub data_size: ::size_t,
+        pub desc_ptr: *const door_desc_t,
+        pub dec_num: ::c_uint,
+        pub rbuf: *const ::c_char,
+        pub rsize: ::size_t,
     }
 }
 
@@ -1835,6 +1862,14 @@ f! {
     }
 }
 
+pub type door_server_proc_t = extern fn(
+    cookie: *const ::c_void,
+    argp: *const ::c_char,
+    arg_size: ::size_t,
+    dp: *const door_desc_t,
+    n_desc: ::c_uint
+);
+
 extern {
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
@@ -2108,6 +2143,10 @@ extern {
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn door_call(d: ::c_int, params: *const door_arg_t) -> ::c_int;
+    pub fn door_return(data_ptr: *const ::c_char, data_size: ::size_t, desc_ptr: *const door_desc_t, num_desc: ::c_uint);
+    pub fn door_create(server_procedure: door_server_proc_t, cookie: *const ::c_void, attributes: door_attr_t) -> ::c_int;
+    pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
 }
 
 mod compat;
