@@ -1862,14 +1862,6 @@ f! {
     }
 }
 
-pub type door_server_proc_t = extern fn(
-    cookie: *const ::c_void,
-    argp: *const ::c_char,
-    arg_size: ::size_t,
-    dp: *const door_desc_t,
-    n_desc: ::c_uint
-);
-
 extern {
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
@@ -2144,8 +2136,17 @@ extern {
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
     pub fn door_call(d: ::c_int, params: *const door_arg_t) -> ::c_int;
-    pub fn door_return(data_ptr: *const ::c_char, data_size: ::size_t, desc_ptr: *const door_desc_t, num_desc: ::c_uint);
-    pub fn door_create(server_procedure: door_server_proc_t, cookie: *const ::c_void, attributes: door_attr_t) -> ::c_int;
+    pub fn door_return(data_ptr: *const ::c_char,
+                       data_size: ::size_t,
+                       desc_ptr: *const door_desc_t,
+                       num_desc: ::c_uint);
+    pub fn door_create(server_procedure: extern fn(cookie: *const ::c_void,
+                                                   argp: *const ::c_char,
+                                                   arg_size: ::size_t,
+                                                   dp: *const door_desc_t,
+                                                   n_desc: ::c_uint),
+                       cookie: *const ::c_void,
+                       attributes: door_attr_t) -> ::c_int;
     pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
 }
 
