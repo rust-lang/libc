@@ -1950,6 +1950,7 @@ fn test_linux(target: &str) {
                "syslog.h",
                "termios.h",
                "time.h",
+               "ucontext.h",
                "unistd.h",
                "utime.h",
                "utmp.h",
@@ -1967,10 +1968,6 @@ fn test_linux(target: &str) {
                // <execinfo.h> is not supported by musl:
                // https://www.openwall.com/lists/musl/2015/04/09/3
                [!musl]: "execinfo.h",
-               // ucontext_t added a new field as of glibc 2.28; our struct definition is
-               // conservative and omits the field, but that means the size doesn't match for newer
-               // glibcs
-               [!gnu]: "ucontext.h",
     }
 
     // Include linux headers at the end:
@@ -2100,6 +2097,11 @@ fn test_linux(target: &str) {
 
             // FIXME: musl version using by mips build jobs 1.0.15 is ancient:
             "ifmap" | "ifreq" | "ifconf" if mips32_musl => true,
+
+            // ucontext_t added a new field as of glibc 2.28; our struct definition is
+            // conservative and omits the field, but that means the size doesn't match for newer
+            // glibcs (see https://github.com/rust-lang/libc/issues/1410)
+            "ucontext_t" if gnu => true,
 
             _ => false,
         }
