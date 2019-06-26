@@ -564,6 +564,11 @@ pub const TCA_DUMP_INVISIBLE: ::c_ushort = 10;
 pub const TCA_CHAIN: ::c_ushort = 11;
 pub const TCA_HW_OFFLOAD: ::c_ushort = 12;
 
+pub const RTM_DELNETCONF: u16 = 81;
+pub const RTM_NEWSTATS: u16 = 92;
+pub const RTM_GETSTATS: u16 = 94;
+pub const RTM_NEWCACHEREPORT: u16 = 96;
+
 pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
 pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
 

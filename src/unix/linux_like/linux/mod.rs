@@ -1949,7 +1949,6 @@ pub const RTM_GETADDRLABEL: u16 = 74;
 pub const RTM_GETDCB: u16 = 78;
 pub const RTM_SETDCB: u16 = 79;
 pub const RTM_NEWNETCONF: u16 = 80;
-pub const RTM_DELNETCONF: u16 = 81;
 pub const RTM_GETNETCONF: u16 = 82;
 pub const RTM_NEWMDB: u16 = 84;
 pub const RTM_DELMDB: u16 = 85;
@@ -1957,9 +1956,6 @@ pub const RTM_GETMDB: u16 = 86;
 pub const RTM_NEWNSID: u16 = 88;
 pub const RTM_DELNSID: u16 = 89;
 pub const RTM_GETNSID: u16 = 90;
-pub const RTM_NEWSTATS: u16 = 92;
-pub const RTM_GETSTATS: u16 = 94;
-pub const RTM_NEWCACHEREPORT: u16 = 96;
 
 pub const RTM_F_NOTIFY: ::c_uint = 0x100;
 pub const RTM_F_CLONED: ::c_uint = 0x200;
