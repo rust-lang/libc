@@ -285,7 +285,6 @@ s_no_extra_traits! {
         pub uc_mcontext: mcontext_t,
         pub uc_sigmask: ::sigset_t,
         __private: [u8; 512],
-        __ssp: [::c_ulonglong; 4],
     }
 }
 
