@@ -29,11 +29,10 @@ matrix:
       install: true
       script:
         - rustc ci/style.rs && ./style src
-        # Disabled due to rust-lang/rustfmt#3341
-        #- |
-        #  if rustup component add rustfmt-preview ; then
-        #      cargo fmt --all -- --check
-        #  fi
+        - |
+          if rustup component add rustfmt-preview ; then
+              cargo fmt --all -- --check
+          fi
       stage: tools-and-build-and-tier1
     - name: "Semver Linux"
       install: travis_retry cargo +nightly install semverver
