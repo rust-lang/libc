@@ -10,6 +10,7 @@
 //! [project]: https://github.com/alexcrichton/ctest
 
 #![deny(missing_docs)]
+#![allow(bare_trait_objects)]
 
 extern crate cc;
 extern crate syntex_syntax2 as syntax;
@@ -103,6 +104,7 @@ pub struct TestGenerator {
     skip_signededness: Box<Fn(&str) -> bool>,
     skip_type: Box<Fn(&str) -> bool>,
     skip_struct: Box<Fn(&str) -> bool>,
+    skip_roundtrip: Box<Fn(&str) -> bool>,
     field_name: Box<Fn(&str, &str) -> String>,
     type_name: Box<Fn(&str, bool, bool) -> String>,
     fn_cname: Box<Fn(&str, Option<&str>) -> String>,
@@ -156,6 +158,7 @@ impl TestGenerator {
             skip_signededness: Box::new(|_| false),
             skip_type: Box::new(|_| false),
             skip_struct: Box::new(|_| false),
+            skip_roundtrip: Box::new(|_| false),
             field_name: Box::new(|_, f| f.to_string()),
             skip_field: Box::new(|_, _| false),
             skip_field_type: Box::new(|_, _| false),
@@ -723,6 +726,33 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether the ABI roundtrip tests for a type are emitted.
+    ///
+    /// The closure is passed the name of a Rust type and returns whether the
+    /// tests are generated.
+    ///
+    /// By default all types undergo ABI roundtrip tests. Arrays cannot undergo
+    /// an ABI roundtrip because they cannot be returned by C functions, and
+    /// have to be manually skipped here.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_roundtrip(|s| {
+    ///     s.starts_with("foo_")
+    /// });
+    /// ```
+    pub fn skip_roundtrip<F>(&mut self, f: F) -> &mut Self
+    where
+        F: Fn(&str) -> bool + 'static,
+    {
+        self.skip_roundtrip = Box::new(f);
+        self
+    }
+
     /// Configures the name of a function in the generate C code.
     ///
     /// The closure is passed the Rust name of a function as well as any
@@ -800,7 +830,8 @@ impl TestGenerator {
                .flag("/wd4255")  // converting () to (void)
                .flag("/wd4668")  // using an undefined thing in preprocessor?
                .flag("/wd4366")  // taking ref to packed struct field might be unaligned
-               .flag("/wd4189") // local variable initialized but not referenced
+                .flag("/wd4189") // local variable initialized but not referenced
+                .flag("/wd4710") // function not inlined
                 ;
         } else {
             cfg.flag("-Wall")
@@ -916,6 +947,7 @@ impl TestGenerator {
             sess: &sess,
             opts: self,
         };
+        t!(writeln!(gen.c, "#include <stdio.h>"));
         t!(writeln!(gen.c, "#include <stdint.h>"));
         t!(writeln!(gen.c, "#include <stddef.h>"));
         for header in &self.headers {
@@ -1021,7 +1053,7 @@ impl TestGenerator {
     }
 }
 
-#[cfg_attr(feature = "cargo-clippy", allow(clippy::cyclomatic_complexity))]
+#[allow(clippy::cognitive_complexity)]
 fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     let mut ret = Vec::new();
     let (arch, width, endian) = if target.starts_with("x86_64") {
@@ -1435,7 +1467,7 @@ impl<'a> Generator<'a> {
         cty
     }
 
-    #[clippy::allow(clippy::similar_names)]
+    #[allow(clippy::similar_names)]
     fn test_const(&mut self, name: &str, rust_ty: &str) {
         if (self.opts.skip_const)(name) {
             if self.opts.verbose_skip {
@@ -1445,19 +1477,19 @@ impl<'a> Generator<'a> {
             return;
         }
 
-        let cname = (self.opts.const_cname)(name);
+        let c_name = (self.opts.const_cname)(name);
 
         let cty = self.rust_ty_to_c_ty(rust_ty);
         t!(writeln!(
             self.c,
             r#"
-            static const {cty} __test_const_{name}_val = {cname};
+            static const {cty} __test_const_{name}_val = {c_name};
             {linkage} const {cty}* __test_const_{name}(void) {{
                 return &__test_const_{name}_val;
             }}
         "#,
             name = name,
-            cname = cname,
+            c_name = c_name,
             cty = cty,
             linkage = linkage(&self.opts.lang)
         ));
@@ -1543,8 +1575,8 @@ impl<'a> Generator<'a> {
                         arg = format!("volatile {}", arg);
                     }
                     if (self.opts.array_arg)(name, idx) {
-                        if let Some(last_ptr) = arg.rfind("*") {
-                            arg = format!("{}", &arg[..last_ptr]);
+                        if let Some(last_ptr) = arg.rfind('*') {
+                            arg = arg[..last_ptr].to_string();
                         } else {
                             panic!("C FFI decl `{}` contains array argument", name);
                         }
@@ -1566,7 +1598,7 @@ impl<'a> Generator<'a> {
                         let prefix = prefix.replacen("const", "", if has_const { 1 } else { 0 });
                         return format!("{} ({}) {}", prefix, pointers, postfix);
                     }
-                    return s;
+                    s
                 })
                 .collect::<Vec<_>>()
                 .join(", ")
@@ -1759,6 +1791,117 @@ impl<'a> Generator<'a> {
             ));
         };
         self.tests.push(format!("static_{}", name));
+    }
+
+    fn test_roundtrip(&mut self, rust: &str) {
+        if (self.opts.skip_struct)(rust) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping roundtrip (skip_struct) \"{}\"", rust);
+            }
+            return;
+        }
+        if (self.opts.skip_type)(rust) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping roundtrip (skip_type) \"{}\"", rust);
+            }
+            return;
+        }
+        if (self.opts.skip_roundtrip)(rust) {
+            if self.opts.verbose_skip {
+                eprintln!("skipping roundtrip (skip_roundtrip)\"{}\"", rust);
+            }
+            return;
+        }
+
+        let c = self.rust_ty_to_c_ty(rust);
+        // Rust writes 1,2,3... to each byte of the type, passes
+        // the type to C by value exercising the call ABI.
+        // C verifies the bytes, writes the pattern 255,254,253...
+        // to it, and returns it by value.
+        // Rust reads it, and verifies it. The value `0` is never written
+        // to a byte (42 is used instead). Uninitialized memory is often
+        // all zeros, so for a single byte the test could return
+        // success even though it should have failed.
+        t!(writeln!(
+            self.c,
+            r#"
+            {linkage} {cty} __test_roundtrip_{ty}({cty} value, int* error) {{
+                unsigned char* p = (unsigned char*)&value;
+                int size = (int)sizeof({cty});
+                int i = 0;
+                for (i = 0; i < size; ++i) {{
+                      unsigned char c = (unsigned char)(i % 252);
+                      c = c == 0? 42 : c;
+                      if (p[i] != c) {{
+                          *error = 1;
+                          fprintf(
+                              stderr,
+                              "rust[%d] = %d != %d (C): Rust \"{ty}\" -> C\n",
+                              i, (int)p[i], (int)c
+                          );
+                      }}
+                      unsigned char d
+                         = (unsigned char)(255) - (unsigned char)(i % 256);
+                      d = d == 0? 42: d;
+                      p[i] = d;
+                }}
+                return value;
+            }}
+        "#,
+            ty = rust,
+            cty = c,
+            linkage = linkage(&self.opts.lang),
+        ));
+        t!(writeln!(
+            self.rust,
+            r#"
+            #[allow(non_snake_case)]
+            #[inline(never)]
+            fn roundtrip_{ty}() {{
+                use libc::c_int;
+                extern {{
+                    #[allow(non_snake_case)]
+                    fn __test_roundtrip_{ty}(
+                        x: {ty}, e: *mut c_int
+                    ) -> {ty};
+                }}
+                unsafe {{
+                  use std::mem::{{uninitialized, size_of}};
+                  let mut x: {ty} = uninitialized();
+                  let mut y: {ty} = uninitialized();
+                  let x_ptr = &mut x as *mut _ as *mut u8;
+                  let y_ptr = &mut y as *mut _ as *mut u8;
+                  for i in 0..size_of::<{ty}>() {{
+                      let c: u8 = (i % 256) as u8;
+                      let c = if c == 0 {{ 42 }} else {{ c }};
+                      let d: u8 = 255_u8 - (i % 256) as u8;
+                      let d = if d == 0 {{ 42 }} else {{ d }};
+                      *(x_ptr.add(i)) = c;
+                      *(y_ptr.add(i)) = d;
+                  }}
+                  let mut error: c_int = 0;
+                  let r = __test_roundtrip_{ty}(x, &mut error);
+                  if error == 1 {{
+                      FAILED.store(true, Ordering::SeqCst);
+                      return;
+                  }}
+                  for i in 0..size_of::<{ty}>() {{
+                      let rust = (*y_ptr.add(i)) as usize;
+                      let c = (*(&r as *const _ as *const u8).add(i)) as usize;
+                      if rust != c {{
+                        eprintln!(
+                            "rust [{{}}] = {{}} != {{}} (C): C \"{ty}\" -> Rust",
+                             i, rust, c
+                        );
+                        FAILED.store(true, Ordering::SeqCst);
+                      }}
+                  }}
+                }}
+            }}
+        "#,
+            ty = rust
+        ));
+        self.tests.push(format!("roundtrip_{}", rust));
     }
 
     fn assert_no_generics(&self, _i: ast::Ident, generics: &ast::Generics) {
@@ -2042,6 +2185,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
             ast::ItemKind::Ty(ref ty, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
                 self.test_type(&i.ident.to_string(), ty);
+                self.test_roundtrip(&i.ident.to_string());
             }
 
             ast::ItemKind::Struct(ref s, ref generics)
@@ -2058,6 +2202,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                     panic!("{} is not marked #[repr(C)]", i.ident);
                 }
                 self.test_struct(&i.ident.to_string(), s);
+                self.test_roundtrip(&i.ident.to_string());
             }
 
             ast::ItemKind::Const(ref ty, _) if public => {
@@ -2083,7 +2228,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
         match i.node {
             ast::ForeignItemKind::Fn(ref decl, ref generics) => {
                 self.assert_no_generics(i.ident, generics);
-                for ref arg in &decl.inputs {
+                for arg in &decl.inputs {
                     if let ast::TyKind::Array(_, _) = arg.ty.node {
                         panic!(
                             "Foreing Function decl `{}` uses array in C FFI",

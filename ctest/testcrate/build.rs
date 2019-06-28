@@ -28,6 +28,7 @@ fn main() {
         })
         .volatile_item(t1_volatile)
         .array_arg(t1_arrays)
+        .skip_roundtrip(|n| n == "Arr")
         .generate("src/t1.rs", "t1gen.rs");
     ctest::TestGenerator::new()
         .header("t2.h")
@@ -38,6 +39,7 @@ fn main() {
             t if is_union => format!("union {}", t),
             t => t.to_string(),
         })
+        .skip_roundtrip(|_| true)
         .generate("src/t2.rs", "t2gen.rs");
 
     ctest::TestGenerator::new()
@@ -54,6 +56,7 @@ fn main() {
         })
         .volatile_item(t1_volatile)
         .array_arg(t1_arrays)
+        .skip_roundtrip(|n| n == "Arr")
         .generate("src/t1.rs", "t1gen_cxx.rs");
     ctest::TestGenerator::new()
         .header("t2.h")
@@ -65,6 +68,7 @@ fn main() {
             t if is_union => format!("union {}", t),
             t => t.to_string(),
         })
+        .skip_roundtrip(|_| true)
         .generate("src/t2.rs", "t2gen_cxx.rs");
 }
 
