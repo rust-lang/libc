@@ -15,7 +15,7 @@ Automated tests of FFI bindings.
 """
 
 [dependencies]
-syntex_syntax = "0.59.1"
+syntex_syntax2 = "0.0.1"
 cc = "1.0.1"
 rustc_version = "0.2"
 
