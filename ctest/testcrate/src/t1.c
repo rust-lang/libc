@@ -25,7 +25,6 @@ unsigned T1static = 3;
 const uint8_t T1_static_u8 = 42;
 uint8_t T1_static_mut_u8 = 37;
 
-
 uint8_t foo(uint8_t a, uint8_t b) { return a + b; }
 void bar(uint8_t a) { return; }
 void baz(void) { return; }

@@ -46,6 +46,9 @@ pub struct T1StructWithUnion {
     pub u: T1NoTypedefUnion,
 }
 
+// #[repr(transparent)]
+// pub struct Transparent(i32);
+
 pub type T1TypedefDouble = c_double;
 pub type T1TypedefPtr = *mut c_int;
 pub type T1TypedefStruct = T1Bar;
@@ -154,6 +157,12 @@ pub struct T1_conflict {
 pub struct Pack {
     pub a: u8,
     pub b: u16,
+}
+
+#[repr(C, packed(2))]
+pub struct Pack2 {
+    pub a: u8,
+    pub b: u32,
 }
 
 #[repr(C)]

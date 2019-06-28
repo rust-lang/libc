@@ -130,6 +130,15 @@ struct Pack {
 
 # pragma pack(pop)
 
+# pragma pack(push,2)
+
+struct Pack2 {
+  uint8_t a;
+  uint32_t b;
+};
+
+# pragma pack(pop)
+
 // volatile pointers in struct fields:
 struct V {
   volatile uint8_t* v;
