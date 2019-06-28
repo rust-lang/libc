@@ -21,6 +21,7 @@ fn main() {
         .fn_cname(|a, b| b.unwrap_or(a).to_string())
         .type_name(move |ty, is_struct, is_union| match ty {
             "T1Union" => ty.to_string(),
+            "Transparent" => ty.to_string(),
             t if is_struct => format!("struct {}", t),
             t if is_union => format!("union {}", t),
             t => t.to_string(),
@@ -46,6 +47,7 @@ fn main() {
         .fn_cname(|a, b| b.unwrap_or(a).to_string())
         .type_name(move |ty, is_struct, is_union| match ty {
             "T1Union" => ty.to_string(),
+            "Transparent" => ty.to_string(),
             t if is_struct => format!("struct {}", t),
             t if is_union => format!("union {}", t),
             t => t.to_string(),

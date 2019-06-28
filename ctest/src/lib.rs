@@ -2052,7 +2052,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 let is_c = i.attrs.iter().any(|a| {
                     attr::find_repr_attrs(self.sh, a)
                         .iter()
-                        .any(|a| *a == ReprAttr::ReprExtern /*|| *a == ReprAttr::ReprTransparent*/)
+                        .any(|a| *a == ReprAttr::ReprExtern || *a == ReprAttr::ReprTransparent)
                 });
                 if !is_c && !(self.opts.skip_struct)(&i.ident.to_string()) {
                     panic!("{} is not marked #[repr(C)]", i.ident);
