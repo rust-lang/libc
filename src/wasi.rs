@@ -2,6 +2,7 @@ pub use ffi::c_void;
 
 pub type c_char = i8;
 pub type c_uchar = u8;
+pub type c_schar = i8;
 pub type c_int = i32;
 pub type c_uint = u32;
 pub type c_short = i16;
