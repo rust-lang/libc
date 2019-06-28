@@ -46,8 +46,8 @@ pub struct T1StructWithUnion {
     pub u: T1NoTypedefUnion,
 }
 
-// #[repr(transparent)]
-// pub struct Transparent(i32);
+#[repr(transparent)]
+pub struct Transparent(i32);
 
 pub type T1TypedefDouble = c_double;
 pub type T1TypedefPtr = *mut c_int;
