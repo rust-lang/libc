@@ -177,6 +177,14 @@ fn test_apple(target: &str) {
         }
     });
 
+    cfg.skip_field(move |struct_, field| {
+        match (struct_, field) {
+            // __int128 does not have fields in C
+            ("__int128", "value") => true,
+            _ => false,
+        }
+    });
+
     cfg.skip_field_type(move |struct_, field| {
         match (struct_, field) {
             // FIXME: actually a union
@@ -198,7 +206,7 @@ fn test_apple(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+            "FILE" | "DIR" | "Dl_info" | "__int128" => ty.to_string(),
 
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),

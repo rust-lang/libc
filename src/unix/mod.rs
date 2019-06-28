@@ -38,6 +38,11 @@ impl ::Clone for DIR {
 }
 pub type locale_t = *mut :: c_void;
 
+#[cfg(target_pointer_width = "64")]
+#[repr(C, align(16))]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub struct __int128{ pub value: i128 }
+
 s! {
     pub struct group {
         pub gr_name: *mut ::c_char,
