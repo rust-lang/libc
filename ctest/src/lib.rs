@@ -1954,8 +1954,8 @@ impl<'a> Generator<'a> {
                       let c = if c == 0 {{ 42 }} else {{ c }};
                       let d: u8 = 255_u8 - (i % 256) as u8;
                       let d = if d == 0 {{ 42 }} else {{ d }};
-                      x_ptr.add(i).write(c);
-                      y_ptr.add(i).write(d);
+                      x_ptr.add(i).write_volatile(c);
+                      y_ptr.add(i).write_volatile(d);
                   }}
                   let r: U = __test_roundtrip_{ty}(x, &mut error, pad.as_ptr());
                   if error == 1 {{
@@ -1966,8 +1966,8 @@ impl<'a> Generator<'a> {
                       if pad[i] == 1 {{ continue; }}
                       // eprintln!("Rusta testing byte {{}} of {{}} of {ty}", i, size_of::<U>());
                       let rust = (*y_ptr.add(i)) as usize;
-                      let c = (&r as *const _ as *const u8).add(i).read()
-                                 as usize;
+                      let c = (&r as *const _ as *const u8)
+                                 .add(i).read_volatile() as usize;
                       if rust != c {{
                         eprintln!(
                             "rust [{{}}] = {{}} != {{}} (C): C \"{ty}\" -> Rust",
