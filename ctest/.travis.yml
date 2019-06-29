@@ -3,15 +3,22 @@ language: rust
 matrix:
   fast_finish: true
   include:
-    - name: "stable"
+    - name: "stable (x86_64-unknown-linux-gnu)"
       rust: stable
-    - name: "beta"
+    - name: "beta (x86_64-unknown-linux-gnu)"
       rust: beta
-    - name: "nightly"
+    - name: "nightly (x86_64-unknown-linux-gnu) + libc-test + tools + docs"
       rust: nightly
-    - name: "master doc to gh-pages"
-      rust: nightly
-      script:
+      after_script:
+        - ci/run-docker.sh x86_64-unknown-linux-gnu
+        - |
+          if rustup component add rustfmt-preview ; then
+              cargo fmt --all -- --check
+          fi
+        - |
+          if rustup component add clippy-preview ; then
+            cargo clippy -- -D clippy::pedantic
+          fi
         - cargo doc --no-deps
       deploy:
         provider: script
@@ -19,8 +26,7 @@ matrix:
         skip_cleanup: true
         on:
           branch: master
-
-    - name: "libc-test (osx)"
+    - name: "nightly (x86_64-apple-darwin) + libc-test"
       rust: nightly
       os: osx
       osx_image: xcode9.4
@@ -32,23 +38,6 @@ matrix:
         - |
           export TARGET=x86_64-apple-darwin
           sh ci/run.sh $TARGET
-    - name: "libc-test (linux)"
-      rust: nightly
-      script: ci/run-docker.sh x86_64-unknown-linux-gnu
-    - name: "rustfmt"
-      install: true
-      rust: nightly
-      script: |
-        if rustup component add rustfmt-preview ; then
-            cargo fmt --all -- --check
-        fi
-    - name: "clippy"
-      install: true
-      rust: nightly
-      script: |
-        if rustup component add clippy-preview ; then
-            cargo clippy -- -D clippy::pedantic
-        fi
 
 script:
   - cargo test
