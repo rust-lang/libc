@@ -65,6 +65,7 @@ fn t2() {
         bad = true;
     }
     if bad {
+        println!("output was:\n\n{}", o);
         panic!();
     }
 }
@@ -108,6 +109,7 @@ fn t2_cxx() {
         bad = true;
     }
     if bad {
+        println!("output was:\n\n{}", o);
         panic!();
     }
 }
