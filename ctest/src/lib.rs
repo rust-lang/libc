@@ -974,7 +974,7 @@ impl TestGenerator {
 
         t!(gen.rust.write_all(
             br#"
-            use std::any::{Any, TypeId};
+            use std::any::{Any};
             use std::mem;
             use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
@@ -1024,18 +1024,6 @@ impl TestGenerator {
 
             #[allow(deprecated)] // min_align_of is correct, but deprecated
             fn align<T: Any>() -> u64 {
-                // TODO: apparently these three types have less alignment in
-                //       Rust on x86 than they do in C this difference
-                //       should.. probably be reconciled.
-                //
-                //       Perhaps #27195?
-                if cfg!(target_pointer_width = "32") {
-                    if TypeId::of::<T>() == TypeId::of::<f64>() ||
-                       TypeId::of::<T>() == TypeId::of::<i64>() ||
-                       TypeId::of::<T>() == TypeId::of::<u64>() {
-                        return 8
-                    }
-                }
                 mem::min_align_of::<T>() as u64
             }
 
@@ -1796,7 +1784,7 @@ impl<'a> Generator<'a> {
         self.tests.push(format!("static_{}", name));
     }
 
-    fn test_roundtrip(&mut self, rust: &str) {
+    fn test_roundtrip(&mut self, rust: &str, ast: Option<&ast::VariantData>) {
         if (self.opts.skip_struct)(rust) {
             if self.opts.verbose_skip {
                 eprintln!("skipping roundtrip (skip_struct) \"{}\"", rust);
@@ -1817,6 +1805,77 @@ impl<'a> Generator<'a> {
         }
 
         let c = self.rust_ty_to_c_ty(rust);
+
+        // Generate a function that returns a vector for a type
+        // that contains 1 if the byte is padding, and 0 if the byte is not
+        // padding:
+        t!(writeln!(
+            self.rust,
+            r#"
+                #[allow(non_snake_case, unused_mut, unused_variables)]
+                #[inline(never)]
+                fn roundtrip_padding_{ty}() -> Vec<u8> {{
+                  // stores (offset, size) for each field
+                  let mut v = Vec::<(usize, usize)>::new();
+                  let foo = mem::MaybeUninit::<{ty}>::uninit();
+                  let foo = &foo as *const _ as *const {ty};
+               "#,
+            ty = rust
+        ));
+
+        if let Some(ast) = ast {
+            for field in ast.fields() {
+                // If a field is private, we can't access it, so
+                // we treat that as padding..
+                match field.vis {
+                    ast::Visibility::Public => {}
+                    _ => continue,
+                }
+
+                let name = match field.ident {
+                    Some(name) => name,
+                    None => panic!("no tuple structs in FFI"),
+                };
+                let name = name.to_string();
+
+                t!(writeln!(
+                    self.rust,
+                    r#"
+                    unsafe {{
+                      let size = mem::size_of_val(&(*foo).{field});
+                      let off = offset_of!({ty}, {field}) as usize;
+                      v.push((off, size));
+                    }}
+                    "#,
+                    ty = rust,
+                    field = name
+                ));
+            }
+        }
+        t!(writeln!(
+            self.rust,
+            r#"
+                  // This vector contains `1` if the byte is padding
+                  // and `0` if the byte is not padding.
+                  let mut pad = Vec::<u8>::new();
+                  // Initialize all bytes as:
+                  //  - padding if we have fields, this means that only
+                  //  the fields will be checked
+                  //  - no-padding if we have a type alias: if this
+                  //  causes problems the type alias should be skipped
+                  pad.resize(mem::size_of::<{ty}>(), {def});
+                  for (off, size) in &v {{
+                      for i in 0..*size {{
+                          pad[off + i] = 0;
+                      }}
+                  }}
+                  pad
+                }}
+                "#,
+            ty = rust,
+            def = if ast.is_some() { 1 } else { 0 }
+        ));
+
         // Rust writes 1,2,3... to each byte of the type, passes
         // the type to C by value exercising the call ABI.
         // C verifies the bytes, writes the pattern 255,254,253...
@@ -1833,11 +1892,15 @@ impl<'a> Generator<'a> {
             // These trigger even if the conversion is explicit.
             #  pragma warning(disable:4365)
             #endif
-            {linkage} {cty} __test_roundtrip_{ty}({cty} value, int* error) {{
-                unsigned char* p = (unsigned char*)&value;
+            {linkage} {cty} __test_roundtrip_{ty}(
+                 {cty} value, int* error, unsigned char* pad
+            ) {{
+                volatile unsigned char* p = (volatile unsigned char*)&value;
                 int size = (int)sizeof({cty});
                 int i = 0;
                 for (i = 0; i < size; ++i) {{
+                      if (pad[i]) {{ continue; }}
+                      // fprintf(stdout, "C testing byte %d of %d of \"{ty}\"\n", i, size);
                       unsigned char c = (unsigned char)(i % 252);
                       c = c == 0? 42 : c;
                       if (p[i] != c) {{
@@ -1870,35 +1933,41 @@ impl<'a> Generator<'a> {
             #[inline(never)]
             fn roundtrip_{ty}() {{
                 use libc::c_int;
+                type U = std::mem::MaybeUninit<{ty}>;
+                #[allow(improper_ctypes)]
                 extern {{
                     #[allow(non_snake_case)]
                     fn __test_roundtrip_{ty}(
-                        x: {ty}, e: *mut c_int
-                    ) -> {ty};
+                        x: U, e: *mut c_int, pad: *const u8
+                    ) -> U;
                 }}
+                let pad = roundtrip_padding_{ty}();
                 unsafe {{
                   use std::mem::{{uninitialized, size_of}};
-                  let mut x: {ty} = uninitialized();
-                  let mut y: {ty} = uninitialized();
+                  let mut error: c_int = 0;
+                  let mut y: U = uninitialized();
+                  let mut x: U = uninitialized();
                   let x_ptr = &mut x as *mut _ as *mut u8;
                   let y_ptr = &mut y as *mut _ as *mut u8;
-                  for i in 0..size_of::<{ty}>() {{
+                  for i in 0..size_of::<U>() {{
                       let c: u8 = (i % 256) as u8;
                       let c = if c == 0 {{ 42 }} else {{ c }};
                       let d: u8 = 255_u8 - (i % 256) as u8;
                       let d = if d == 0 {{ 42 }} else {{ d }};
-                      *(x_ptr.add(i)) = c;
-                      *(y_ptr.add(i)) = d;
+                      x_ptr.add(i).write(c);
+                      y_ptr.add(i).write(d);
                   }}
-                  let mut error: c_int = 0;
-                  let r = __test_roundtrip_{ty}(x, &mut error);
+                  let r: U = __test_roundtrip_{ty}(x, &mut error, pad.as_ptr());
                   if error == 1 {{
                       FAILED.store(true, Ordering::SeqCst);
                       return;
                   }}
-                  for i in 0..size_of::<{ty}>() {{
+                  for i in 0..size_of::<U>() {{
+                      if pad[i] == 1 {{ continue; }}
+                      // eprintln!("Rusta testing byte {{}} of {{}} of {ty}", i, size_of::<U>());
                       let rust = (*y_ptr.add(i)) as usize;
-                      let c = (*(&r as *const _ as *const u8).add(i)) as usize;
+                      let c = (&r as *const _ as *const u8).add(i).read()
+                                 as usize;
                       if rust != c {{
                         eprintln!(
                             "rust [{{}}] = {{}} != {{}} (C): C \"{ty}\" -> Rust",
@@ -2196,7 +2265,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
             ast::ItemKind::Ty(ref ty, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
                 self.test_type(&i.ident.to_string(), ty);
-                self.test_roundtrip(&i.ident.to_string());
+                self.test_roundtrip(&i.ident.to_string(), None);
             }
 
             ast::ItemKind::Struct(ref s, ref generics)
@@ -2213,7 +2282,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                     panic!("{} is not marked #[repr(C)]", i.ident);
                 }
                 self.test_struct(&i.ident.to_string(), s);
-                self.test_roundtrip(&i.ident.to_string());
+                self.test_roundtrip(&i.ident.to_string(), Some(s));
             }
 
             ast::ItemKind::Const(ref ty, _) if public => {

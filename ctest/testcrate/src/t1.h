@@ -133,7 +133,7 @@ struct Pack {
 
 # pragma pack(push,4)
 
-struct Pack2 {
+struct Pack4 {
   uint8_t a;
   uint32_t b;
 };
