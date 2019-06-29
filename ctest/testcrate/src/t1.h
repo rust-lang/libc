@@ -131,7 +131,7 @@ struct Pack {
 
 # pragma pack(pop)
 
-# pragma pack(push,2)
+# pragma pack(push,4)
 
 struct Pack2 {
   uint8_t a;
