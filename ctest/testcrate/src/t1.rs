@@ -159,7 +159,7 @@ pub struct Pack {
     pub b: u16,
 }
 
-#[repr(C, packed(2))]
+#[repr(C, packed(4))]
 pub struct Pack2 {
     pub a: u8,
     pub b: u32,

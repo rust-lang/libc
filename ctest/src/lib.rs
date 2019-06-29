@@ -830,8 +830,11 @@ impl TestGenerator {
                .flag("/wd4255")  // converting () to (void)
                .flag("/wd4668")  // using an undefined thing in preprocessor?
                .flag("/wd4366")  // taking ref to packed struct field might be unaligned
-                .flag("/wd4189") // local variable initialized but not referenced
-                .flag("/wd4710") // function not inlined
+               .flag("/wd4189")  // local variable initialized but not referenced
+               .flag("/wd4710")  // function not inlined
+               .flag("/wd5045")  // compiler will insert Spectre mitigation
+               .flag("/wd4514")  // unreferenced inline function removed
+               .flag("/wd4711")  // function selected for automatic inline
                 ;
         } else {
             cfg.flag("-Wall")
@@ -1825,6 +1828,11 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.c,
             r#"
+            #ifdef _MSC_VER
+            // Disable signed/unsigned conversion warnings on MSVC.
+            // These trigger even if the conversion is explicit.
+            #  pragma warning(disable:4365)
+            #endif
             {linkage} {cty} __test_roundtrip_{ty}({cty} value, int* error) {{
                 unsigned char* p = (unsigned char*)&value;
                 int size = (int)sizeof({cty});
@@ -1847,6 +1855,9 @@ impl<'a> Generator<'a> {
                 }}
                 return value;
             }}
+            #ifdef _MSC_VER
+            #  pragma warning(default:4365)
+            #endif
         "#,
             ty = rust,
             cty = c,
