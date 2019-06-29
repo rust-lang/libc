@@ -3,10 +3,6 @@ language: rust
 matrix:
   fast_finish: true
   include:
-    - name: "stable (x86_64-unknown-linux-gnu)"
-      rust: stable
-    - name: "beta (x86_64-unknown-linux-gnu)"
-      rust: beta
     - name: "nightly (x86_64-unknown-linux-gnu) + libc-test + tools + docs"
       rust: nightly
       after_script:
@@ -38,6 +34,10 @@ matrix:
         - |
           export TARGET=x86_64-apple-darwin
           sh ci/run.sh $TARGET
+    - name: "stable (x86_64-unknown-linux-gnu)"
+      rust: stable
+    - name: "beta (x86_64-unknown-linux-gnu)"
+      rust: beta
 
 script:
   - cargo test
