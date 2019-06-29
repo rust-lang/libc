@@ -1,19 +1,19 @@
 environment:
   matrix:
   - TARGET: x86_64-pc-windows-gnu
+    ARCH: x86_64
     MSYS_BITS: 64
   - TARGET: i686-pc-windows-gnu
+    ARCH: i686
     MSYS_BITS: 32
   - TARGET: x86_64-pc-windows-msvc
   - TARGET: i686-pc-windows-msvc
 install:
   - if defined MSYS_BITS set PATH=C:\msys64\mingw%MSYS_BITS%\bin;C:\msys64\usr\bin;%PATH%;
-  - if defined MSYS_BITS pacman -U /var/cache/pacman/pkg/mingw-w64-x86_64-crt-git-5.0.0.4745.d2384c2-1-any.pkg.tar.xz
-  - if defined MSYS_BITS pacman -U /var/cache/pacman/pkg/mingw-w64-x86_64-headers-git-5.0.0.4747.0f8f626-1-any.pkg.tar.xz
-  - if defined MSYS_BITS pacman -U /var/cache/pacman/pkg/mingw-w64-x86_64-winpthreads-git-5.0.0.4741.2c8939a-1-any.pkg.tar.xz /var/cache/pacman/pkg/mingw-w64-x86_64-libwinpthread-git-5.0.0.4741.2c8939a-1-any.pkg.tar.xz
   - ps: Start-FileDownload "https://static.rust-lang.org/dist/rust-nightly-${env:TARGET}.exe"
   - rust-nightly-%TARGET%.exe /VERYSILENT /NORESTART /DIR="C:\Program Files (x86)\Rust"
   - set PATH=%PATH%;C:\Program Files (x86)\Rust\bin
+  - if defined MSYS_BITS for %%I in (crt2.o dllcrt2.o libmsvcrt.a) do xcopy /Y "C:\msys64\mingw%MSYS_BITS%\%ARCH%-w64-mingw32\lib\%%I" "C:\Program Files (x86)\Rust\lib\rustlib\%TARGET%\lib"
   - rustc -V
   - cargo -V
 
