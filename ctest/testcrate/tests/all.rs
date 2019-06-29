@@ -17,6 +17,7 @@ fn t1() {
     let (o, status) = output(&mut cmd("t1"));
     assert!(status.success(), o);
     assert!(!o.contains("bad "), o);
+    eprintln!("o: {}", o);
 }
 
 #[test]

@@ -40,8 +40,8 @@ matrix:
       rust: beta
 
 script:
-  - cargo test
-  - cargo test --manifest-path testcrate/Cargo.toml
+  - cargo test --all
+  - cargo test --all --release
 
 notifications:
   email:

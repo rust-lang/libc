@@ -17,5 +17,5 @@ install:
 build: false
 
 test_script:
-  - cargo test
-  - cargo test --manifest-path testcrate/Cargo.toml
+  - cargo test --all
+  - cargo test --all --release
