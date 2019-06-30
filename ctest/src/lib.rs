@@ -1817,7 +1817,7 @@ impl<'a> Generator<'a> {
                 fn roundtrip_padding_{ty}() -> Vec<u8> {{
                   // stores (offset, size) for each field
                   let mut v = Vec::<(usize, usize)>::new();
-                  let foo = mem::MaybeUninit::<{ty}>::uninit();
+                  let foo: {} = unsafe {{ std::mem::uninitialized() }};
                   let foo = &foo as *const _ as *const {ty};
                "#,
             ty = rust
@@ -1933,7 +1933,7 @@ impl<'a> Generator<'a> {
             #[inline(never)]
             fn roundtrip_{ty}() {{
                 use libc::c_int;
-                type U = std::mem::MaybeUninit<{ty}>;
+                type U = {ty};
                 #[allow(improper_ctypes)]
                 extern {{
                     #[allow(non_snake_case)]
