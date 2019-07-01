@@ -195,6 +195,8 @@ matrix:
       stage: tier2
     - env: TARGET=powerpc64le-unknown-linux-gnu
       stage: tier2
+    - env: TARGET=riscv64gc-unknown-linux-gnu
+      stage: tier2
     - env: TARGET=s390x-unknown-linux-gnu
       stage: tier2
     - env: TARGET=sparc64-unknown-linux-gnu
