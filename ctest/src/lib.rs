@@ -956,6 +956,22 @@ impl TestGenerator {
         for header in &self.headers {
             t!(writeln!(gen.c, "#include <{}>", header));
         }
+        t!(gen.c.write_all(
+            br#"
+            // Define a proper macro for computing the alignment of a type
+            #if __cplusplus >= 201103L
+               // on C++ >= 11 we use the alignof operator
+               #define libc_test_align_of(x) alignof(x)
+            #elif __STDC_VERSION__ >= 201112L
+               // On C >= 11 we just use _Alignof
+               #define libc_test_align_of(x) _Alignof(x)
+            #elif defined(_MSC_VER)
+               #define libc_test_align_of(x) __alignof(x)
+            #else
+               #define libc_test_align_of(x) __alignof__(x)
+            #endif
+            "#
+        ));
 
         eprintln!("rust version: {}", self.rust_version);
         t!(gen.rust.write_all(
@@ -1339,20 +1355,14 @@ impl<'a> Generator<'a> {
     }
 
     fn test_size_align(&mut self, rust: &str, c: &str) {
-        let align_of = if self.target.contains("msvc") {
-            "__alignof"
-        } else {
-            "__alignof__"
-        };
         t!(writeln!(
             self.c,
             r#"
             {linkage} uint64_t __test_size_{ty}(void) {{ return sizeof({cty}); }}
-            {linkage} uint64_t __test_align_{ty}(void) {{ return {align_of}({cty}); }}
+            {linkage} uint64_t __test_align_{ty}(void) {{ return libc_test_align_of({cty}); }}
         "#,
             ty = rust,
             cty = c,
-            align_of = align_of,
             linkage = linkage(&self.opts.lang)
         ));
         t!(writeln!(
