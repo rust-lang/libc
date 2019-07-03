@@ -225,7 +225,7 @@ fn test_apple(target: &str) {
         }
     });
 
-    cfg.skip_roundtrip(|s| match s {
+    cfg.skip_roundtrip(move |s| match s {
         // FIXME: TODO
         "utsname" | "statfs" | "dirent" | "utmpx" => true,
         _ => false,
@@ -2257,6 +2257,19 @@ fn test_linux(target: &str) {
                                            field == "ssi_syscall" ||
                                            field == "ssi_call_addr" ||
                                            field == "ssi_arch"))
+    });
+
+    cfg.skip_roundtrip(move |s| match s {
+        // FIXME: TODO
+        "_libc_fpstate" | "user_fpregs_struct" if x86_64 => true,
+        "utsname"
+        | "statx"
+        | "dirent"
+        | "dirent64"
+        | "utmpx"
+        | "user"
+        | "user_fpxregs_struct" => true,
+        _ => false,
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
