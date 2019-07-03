@@ -225,6 +225,12 @@ fn test_apple(target: &str) {
         }
     });
 
+    cfg.skip_roundtrip(|s| match s {
+        // FIXME: TODO
+        "utsname" | "statfs" | "dirent" | "utmpx" => true,
+        _ => false,
+    });
+
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
