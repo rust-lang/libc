@@ -23,17 +23,17 @@ matrix:
         on:
           branch: master
     - name: "nightly (x86_64-apple-darwin) + libc-test"
+      env: TARGET=x86_64-apple-darwin
       rust: nightly
       os: osx
-      osx_image: xcode9.4
-      after_script:
-        - git clone https://github.com/rust-lang/libc
-        - sed -i '' 's@ctest = "0.2"@ctest = { path = "../.." }@g' libc/libc-test/Cargo.toml
-        - cd libc
-        - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
-        - |
-          export TARGET=x86_64-apple-darwin
-          sh ci/run.sh $TARGET
+      osx_image: xcode10
+      after_script: sh ci/run.sh $TARGET
+    - name: "nightly (i686-apple-darwin) + libc-test"
+      env: TARGET=i686-apple-darwin
+      rust: nightly
+      os: osx
+      osx_image: xcode10
+      after_script: sh ci/run.sh $TARGET
     - name: "stable (x86_64-unknown-linux-gnu)"
       rust: stable
     - name: "beta (x86_64-unknown-linux-gnu)"

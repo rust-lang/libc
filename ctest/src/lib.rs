@@ -956,23 +956,6 @@ impl TestGenerator {
         for header in &self.headers {
             t!(writeln!(gen.c, "#include <{}>", header));
         }
-        t!(gen.c.write_all(
-            br#"
-            // Define a proper macro for computing the alignment of a type
-            #if __cplusplus >= 201103L
-               // on C++ >= 11 we use the alignof operator
-               #define libc_test_align_of(x) alignof(x)
-            #elif __STDC_VERSION__ >= 201112L
-               // On C >= 11 we just use _Alignof
-               #define libc_test_align_of(x) _Alignof(x)
-            #elif defined(_MSC_VER)
-               #define libc_test_align_of(x) __alignof(x)
-            #else
-               #define libc_test_align_of(x) __alignof__(x)
-            #endif
-            "#
-        ));
-
         eprintln!("rust version: {}", self.rust_version);
         t!(gen.rust.write_all(
             if self.rust_version < rustc_version::Version::new(1, 30, 0) {
@@ -990,7 +973,6 @@ impl TestGenerator {
 
         t!(gen.rust.write_all(
             br#"
-            use std::any::{Any};
             use std::mem;
             use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
@@ -1036,11 +1018,6 @@ impl TestGenerator {
                 } else {
                     NTESTS.fetch_add(1, Ordering::SeqCst);
                 }
-            }
-
-            #[allow(deprecated)] // min_align_of is correct, but deprecated
-            fn align<T: Any>() -> u64 {
-                mem::min_align_of::<T>() as u64
             }
 
             macro_rules! offset_of {
@@ -1359,7 +1336,16 @@ impl<'a> Generator<'a> {
             self.c,
             r#"
             {linkage} uint64_t __test_size_{ty}(void) {{ return sizeof({cty}); }}
-            {linkage} uint64_t __test_align_{ty}(void) {{ return libc_test_align_of({cty}); }}
+            {linkage} uint64_t __test_align_{ty}(void) {{
+                typedef struct {{
+                  unsigned char c;
+                  {cty} v;
+                }} type;
+                type t;
+                size_t t_addr = (size_t)(unsigned char*)(&t);
+                size_t v_addr = (size_t)(unsigned char*)(&t.v);
+                return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+            }}
         "#,
             ty = rust,
             cty = c,
@@ -1380,7 +1366,7 @@ impl<'a> Generator<'a> {
                 unsafe {{
                     same(mem::size_of::<{ty}>() as u64,
                          __test_size_{ty}(), "{ty} size");
-                    same(align::<{ty}>() as u64,
+                    same(mem::align_of::<{ty}>() as u64,
                          __test_align_{ty}(), "{ty} align");
                 }}
             }}
