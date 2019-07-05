@@ -236,6 +236,7 @@ matrix:
       - name: "Semver MacOSX"
       - env: TARGET=wasm32-wasi
       - env: TARGET=powerpc-unknown-linux-gnu
+      - env: TARGET=s390x-unknown-linux-gnu
 
 install: travis_retry rustup target add $TARGET
 
