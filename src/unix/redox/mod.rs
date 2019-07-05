@@ -35,6 +35,7 @@ pub type speed_t = u32;
 pub type suseconds_t = ::c_int;
 pub type tcflag_t = u32;
 pub type time_t = ::c_long;
+pub enum timezone {}
 
 s! {
     pub struct addrinfo {

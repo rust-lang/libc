@@ -113,7 +113,7 @@ cfg_if! {
 
         mod switch;
         pub use switch::*;
-    } else if #[cfg(unix)] {
+    } else if #[cfg(any(unix, target_os="redox"))] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
 
