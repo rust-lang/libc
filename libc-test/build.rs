@@ -473,6 +473,11 @@ fn test_windows(target: &str) {
         }
     });
 
+    cfg.skip_roundtrip(move |s| match s {
+        "dirent" | "statfs" | "utsname" | "utmpx" => true,
+        _ => false,
+    });
+
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
@@ -1639,6 +1644,11 @@ fn test_freebsd(target: &str) {
         // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
         // incorrect, see: https://github.com/rust-lang/libc/issues/1359
         (struct_ == "sigaction" && field == "sa_sigaction")
+    });
+
+    cfg.skip_roundtrip(move |s| match s {
+        "dirent" | "statfs" | "utsname" | "utmpx" => true,
+        _ => false,
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
