@@ -917,23 +917,8 @@ pub const TCP_FASTKEEP:   ::c_int = 128;
 pub const AF_BLUETOOTH: ::c_int = 33;
 pub const AF_MPLS: ::c_int = 34;
 pub const AF_IEEE80211: ::c_int = 35;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const AF_MAX: ::c_int = 36;
 
 pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-#[allow(deprecated)]
-pub const PF_MAX: ::c_int = AF_MAX;
 
 pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
@@ -941,15 +926,6 @@ pub const NET_RT_IFLIST: ::c_int = 3;
 pub const NET_RT_MAXID: ::c_int = 4;
 
 pub const SOMAXOPT_SIZE: ::c_int = 65536;
-
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-#[allow(deprecated)]
-pub const NET_MAXID: ::c_int = AF_MAX;
 
 pub const MSG_UNUSED09: ::c_int = 0x00000200;
 pub const MSG_NOSIGNAL: ::c_int = 0x00000400;

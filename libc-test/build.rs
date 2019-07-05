@@ -1082,11 +1082,6 @@ fn test_dragonflybsd(target: &str) {
             | "PORT_SOURCE_SIGNAL"
             | "PTHREAD_STACK_MIN" => true,
 
-            // These change all the time from release to release of linux
-            // distros, let's just not bother trying to verify them. They
-            // shouldn't be used in code anyway...
-            "AF_MAX" | "PF_MAX" => true,
-
             _ => false,
         }
     });
@@ -1582,7 +1577,7 @@ fn test_freebsd(target: &str) {
             // These constants were removed in FreeBSD 11 (svn r262489),
             // and they've never had any legitimate use outside of the
             // base system anyway.
-            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "NET_MAXID"
+            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID"
             | "USER_MAXID" => true,
 
             _ => false,

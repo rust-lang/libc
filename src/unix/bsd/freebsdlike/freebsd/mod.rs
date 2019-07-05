@@ -646,13 +646,6 @@ pub const AF_BLUETOOTH: ::c_int = 36;
 pub const AF_IEEE80211: ::c_int = 37;
 pub const AF_INET_SDP: ::c_int = 40;
 pub const AF_INET6_SDP: ::c_int = 42;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const AF_MAX: ::c_int = 42;
 
 // https://github.com/freebsd/freebsd/blob/master/sys/net/if.h#L140
 pub const IFF_UP: ::c_int = 0x1; // (n) interface is up
@@ -959,14 +952,6 @@ pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
 pub const PF_IEEE80211: ::c_int = AF_IEEE80211;
 pub const PF_INET_SDP: ::c_int = AF_INET_SDP;
 pub const PF_INET6_SDP: ::c_int = AF_INET6_SDP;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-#[allow(deprecated)]
-pub const PF_MAX: ::c_int = AF_MAX;
 
 pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
@@ -1001,10 +986,6 @@ pub const SHM_ANON: *mut ::c_char = 1 as *mut ::c_char;
 // FreeBSD base system.  And with the exception of CTL_P1003_1B_MAXID,
 // they were all removed in svn r262489.  They remain here for backwards
 // compatibility only, and are scheduled to be removed in libc 1.0.0.
-#[doc(hidden)]
-#[deprecated(since="0.2.54",note="Removed in FreeBSD 11")]
-#[allow(deprecated)]
-pub const NET_MAXID: ::c_int = AF_MAX;
 #[doc(hidden)]
 #[deprecated(since="0.2.54",note="Removed in FreeBSD 11")]
 pub const CTL_MAXID: ::c_int = 10;

@@ -834,22 +834,6 @@ pub const AF_BLUETOOTH: ::c_int = 32;
 pub const AF_MPLS: ::c_int = 33;
 pub const pseudo_AF_PFLOW: ::c_int = 34;
 pub const pseudo_AF_PIPEX: ::c_int = 35;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const AF_MAX: ::c_int = 36;
-
-#[doc(hidden)]
-#[allow(deprecated)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const NET_MAXID: ::c_int = AF_MAX;
 pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
 pub const NET_RT_IFLIST: ::c_int = 3;
@@ -872,14 +856,6 @@ pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
 pub const PF_MPLS: ::c_int = AF_MPLS;
 pub const PF_PFLOW: ::c_int = pseudo_AF_PFLOW;
 pub const PF_PIPEX: ::c_int = pseudo_AF_PIPEX;
-#[doc(hidden)]
-#[allow(deprecated)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const PF_MAX: ::c_int = AF_MAX;
 
 pub const SCM_TIMESTAMP: ::c_int = 0x04;
 
