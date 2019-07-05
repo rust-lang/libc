@@ -225,6 +225,12 @@ fn test_apple(target: &str) {
         }
     });
 
+    cfg.skip_roundtrip(move |s| match s {
+        // FIXME: TODO
+        "utsname" | "statfs" | "dirent" | "utmpx" => true,
+        _ => false,
+    });
+
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
@@ -465,6 +471,11 @@ fn test_windows(target: &str) {
 
             _ => false,
         }
+    });
+
+    cfg.skip_roundtrip(move |s| match s {
+        "dirent" | "statfs" | "utsname" | "utmpx" => true,
+        _ => false,
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -1426,6 +1437,13 @@ fn test_android(target: &str) {
                                            field == "ssi_arch"))
     });
 
+    let bit64 = target.contains("64");
+    cfg.skip_roundtrip(move |s| match s {
+        "utsname" | "dirent" | "dirent64" => true,
+        "utmp" if bit64 => true,
+        _ => false,
+    });
+
     cfg.generate("../src/lib.rs", "main.rs");
 
     test_linux_like_apis(target);
@@ -1626,6 +1644,11 @@ fn test_freebsd(target: &str) {
         // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
         // incorrect, see: https://github.com/rust-lang/libc/issues/1359
         (struct_ == "sigaction" && field == "sa_sigaction")
+    });
+
+    cfg.skip_roundtrip(move |s| match s {
+        "dirent" | "statfs" | "utsname" | "utmpx" => true,
+        _ => false,
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -1832,6 +1855,15 @@ fn test_emscripten(target: &str) {
                                            field == "ssi_arch"))
     });
 
+    cfg.skip_roundtrip(move |s| match s {
+        "pthread_mutexattr_t"
+        | "utsname"
+        | "dirent"
+        | "dirent64"
+        | "sysinfo" => true,
+        _ => false,
+    });
+
     // FIXME: test linux like
     cfg.generate("../src/lib.rs", "main.rs");
 }
@@ -1859,8 +1891,11 @@ fn test_linux(target: &str) {
     let x86_32 = target.contains("i686");
     let x32 = target.contains("x32");
     let mips = target.contains("mips");
-    let mips32_musl = mips && !target.contains("64") && musl;
+    let mips32 = mips && !target.contains("64");
+    let mips64 = mips && target.contains("64");
+    let mips32_musl = mips32 && musl;
     let sparc64 = target.contains("sparc64");
+    let s390x = target.contains("s390x");
 
     let mut cfg = ctest::TestGenerator::new();
     cfg.define("_GNU_SOURCE", None);
@@ -2251,6 +2286,49 @@ fn test_linux(target: &str) {
                                            field == "ssi_syscall" ||
                                            field == "ssi_call_addr" ||
                                            field == "ssi_arch"))
+    });
+
+    cfg.skip_roundtrip(move |s| match s {
+        // FIXME: TODO
+        "_libc_fpstate" | "user_fpregs_struct" if x86_64 => true,
+        "utsname"
+        | "statx"
+        | "dirent"
+        | "dirent64"
+        | "utmpx"
+        | "user"
+        | "user_fpxregs_struct" => true,
+        "sysinfo" if musl => true,
+        "ucontext_t" if x86_64 && musl => true,
+        "sockaddr_un" | "sembuf" | "ff_constant_effect"
+            if mips32 && (gnu || musl) =>
+        {
+            true
+        }
+        "ipv6_mreq"
+        | "sockaddr_in6"
+        | "sockaddr_ll"
+        | "in_pktinfo"
+        | "arpreq"
+        | "arpreq_old"
+        | "sockaddr_un"
+        | "ff_constant_effect"
+        | "ff_ramp_effect"
+        | "ff_condition_effect"
+        | "Elf32_Ehdr"
+        | "Elf32_Chdr"
+        | "ucred"
+        | "in6_pktinfo"
+        | "sockaddr_nl"
+        | "termios"
+        | "nlmsgerr"
+            if (mips64 || sparc64) && gnu =>
+        {
+            true
+        }
+        "mcontext_t" if s390x => true,
+
+        _ => false,
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
