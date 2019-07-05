@@ -2299,6 +2299,7 @@ fn test_linux(target: &str) {
         | "user"
         | "user_fpxregs_struct" => true,
         "sysinfo" if musl => true,
+        "ucontext_t" if x86_64 && musl => true,
         "sockaddr_un" | "sembuf" | "ff_constant_effect"
             if mips32 && (gnu || musl) =>
         {
