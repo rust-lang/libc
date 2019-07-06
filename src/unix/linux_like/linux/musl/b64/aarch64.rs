@@ -70,22 +70,6 @@ pub const O_NOFOLLOW: ::c_int = 0x8000;
 pub const MINSIGSTKSZ: ::size_t = 6144;
 pub const SIGSTKSZ: ::size_t = 12288;
 
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const PF_MAX: ::c_int = 45;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-#[allow(deprecated)]
-pub const AF_MAX: ::c_int = PF_MAX;
-
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const SYS_io_setup: ::c_long = 0;
 pub const SYS_io_destroy: ::c_long = 1;

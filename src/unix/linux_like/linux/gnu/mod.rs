@@ -874,22 +874,6 @@ pub const M_PERTURB: ::c_int = -6;
 pub const M_ARENA_TEST: ::c_int = -7;
 pub const M_ARENA_MAX: ::c_int = -8;
 
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const AF_MAX: ::c_int = 45;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-#[allow(deprecated)]
-pub const PF_MAX: ::c_int = AF_MAX;
-
 pub const AT_STATX_SYNC_TYPE: ::c_int = 0x6000;
 pub const AT_STATX_SYNC_AS_STAT: ::c_int = 0x0000;
 pub const AT_STATX_FORCE_SYNC: ::c_int = 0x2000;

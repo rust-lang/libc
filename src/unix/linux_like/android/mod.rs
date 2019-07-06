@@ -952,22 +952,6 @@ pub const SOL_ATALK: ::c_int = 258;
 pub const SOL_NETROM: ::c_int = 259;
 pub const SOL_ROSE: ::c_int = 260;
 
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const AF_MAX: ::c_int = 43;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-#[allow(deprecated)]
-pub const PF_MAX: ::c_int = AF_MAX;
-
 /* DCCP socket options */
 pub const DCCP_SOCKOPT_PACKET_SIZE: ::c_int = 1;
 pub const DCCP_SOCKOPT_SERVICE: ::c_int = 2;

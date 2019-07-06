@@ -64,19 +64,3 @@ s! {
 
 pub const MINSIGSTKSZ: ::size_t = 6144;
 pub const SIGSTKSZ: ::size_t = 12288;
-
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-pub const PF_MAX: ::c_int = 43;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.55",
-    note = "If you are using this report to: \
-            https://github.com/rust-lang/libc/issues/665"
-)]
-#[allow(deprecated)]
-pub const AF_MAX: ::c_int = PF_MAX;
