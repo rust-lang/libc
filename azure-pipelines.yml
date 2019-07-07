@@ -98,23 +98,23 @@ jobs:
       - script: sh ci/dox.sh
         displayName: Generate and upload documentation
 
-  - job: SemverLinux
-    continueOnError: true
-    pool:
-      vmImage: ubuntu-16.04
-    steps:
-      - template: ci/azure-install-rust.yml
-      - script: sh ci/semver.sh linux
-        displayName: Check breaking changes
+  #- job: SemverLinux
+  #  continueOnError: true
+  #  pool:
+  #    vmImage: ubuntu-16.04
+  #  steps:
+  #    - template: ci/azure-install-rust.yml
+  #    - script: sh ci/semver.sh linux
+  #      displayName: Check breaking changes
 
-  - job: SemverOSX
-    continueOnError: true
-    pool:
-      vmImage: macos-10.14
-    steps:
-      - template: ci/azure-install-rust.yml
-      - script: sh ci/semver.sh osx
-        displayName: Check breaking changes
+  #- job: SemverOSX
+  #  continueOnError: true
+  #  pool:
+  #    vmImage: macos-10.14
+  #  steps:
+  #    - template: ci/azure-install-rust.yml
+  #    - script: sh ci/semver.sh osx
+  #      displayName: Check breaking changes
 
   - job: BuildChannelsLinux
     pool:
