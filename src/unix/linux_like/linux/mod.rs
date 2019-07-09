@@ -2724,6 +2724,10 @@ cfg_if! {
     } else if #[cfg(target_env = "gnu")] {
         mod gnu;
         pub use self::gnu::*;
+    } else {
+        // Similar to previous 'others'
+        mod gnu;
+        pub use self::gnu::*;
     }
 }
 
