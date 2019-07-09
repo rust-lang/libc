@@ -16,9 +16,8 @@ steps:
     condition: ne( variables['Agent.OS'], 'Windows_NT' )
   - script: |
       if not defined TOOLCHAIN set TOOLCHAIN=nightly
-      curl -sSf -o rustup-init.exe https://win.rustup.rs
-      rustup-init.exe -y --default-toolchain %TOOLCHAIN%-%TARGET%
-      echo ##vso[task.prependpath]%USERPROFILE%\.cargo\bin
+      rustup update %TOOLCHAIN%
+      rustup default %TOOLCHAIN%
     displayName: Install rust (windows)
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
   - script: |
@@ -31,9 +30,9 @@ steps:
   - script: if defined TARGET rustup target add %TARGET%
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install target (windows)
-  - script: if defined MSYS_BITS for %%I in (crt2.o dllcrt2.o libmsvcrt.a) do xcopy /Y "C:\msys64\mingw%MSYS_BITS%\%ARCH%-w64-mingw32\lib\%%I" "C:\Program Files (x86)\Rust\lib\rustlib\%TARGET%\lib"
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Fix MinGW (windows)
+  #- script: if defined MSYS_BITS for %%I in (crt2.o dllcrt2.o libmsvcrt.a) do xcopy /Y "C:\msys64\mingw%MSYS_BITS%\%ARCH%-w64-mingw32\lib\%%I" "C:\Program Files (x86)\Rust\lib\rustlib\%TARGET%\lib"
+  #  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  #  displayName: Fix MinGW (windows)
   - script: |
         set -ex
         rustc -Vv
