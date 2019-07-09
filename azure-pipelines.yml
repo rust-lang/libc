@@ -88,6 +88,28 @@ jobs:
         i686-apple-darwin:
           TARGET: i686-apple-darwin
 
+  - job: Windows
+    pool:
+      vmImage: vs2017-win2016
+    steps:
+      - template: ci/azure-install-rust.yml
+      - bash: sh ./ci/run.sh $TARGET
+        displayName: Execute run.sh
+    strategy:
+      matrix:
+        x86_64-pc-windows-gnu:
+          TARGET: x86_64-pc-windows-gnu
+          MSYS_BITS: 64
+          ARCH: x86_64
+        x86_64-pc-windows-msvc:
+          TARGET: x86_64-pc-windows-msvc
+        i686-pc-windows-gnu:
+          TARGET: i686-pc-windows-gnu
+          MSYS_BITS: 32
+          ARCH: i686
+        i686-pc-windows-msvc:
+          TARGET: i686-pc-windows-msvc
+
   - job: StyleAndDocs
     pool:
       vmImage: ubuntu-16.04
