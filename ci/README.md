@@ -8,19 +8,12 @@ this project.
 
 First up, let's talk about the files in this directory:
 
-* `run-travis.sh` - a shell script run by all Travis builders, this is
-  responsible for setting up the rest of the environment such as installing new
-  packages, downloading Rust target libraries, etc.
+* `run-docker.sh` - a shell script run by most builders, it will execute
+  `run.sh` inside a Docker container configured for the target.
 
 * `run.sh` - the actual script which runs tests for a particular architecture.
-  Called from the `run-travis.sh` script this will run all tests for the target
-  specified.
 
-* `cargo-config` - Cargo configuration of linkers to use copied into place by
-  the `run-travis.sh` script before builds are run.
-
-* `dox.sh` - script called from `run-travis.sh` on only the linux 64-bit nightly
-  Travis bots to build documentation for this crate.
+* `dox.sh` - build the documentation of the crate and publish it to gh-pages.
 
 * `landing-page-*.html` - used by `dox.sh` to generate a landing page for all
   architectures' documentation.

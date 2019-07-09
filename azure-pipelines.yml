@@ -1,5 +1,13 @@
-trigger:
-  - master
+variables:
+  - group: secrets
+resources:
+  repositories:
+    - repository: rustinfra
+      type: github
+      name: rust-lang/simpleinfra
+      endpoint: rust-lang
+trigger: ["master"]
+pr: ["master"]
 
 jobs:
   - job: DockerLinux
@@ -99,13 +107,13 @@ jobs:
       matrix:
         x86_64-pc-windows-gnu:
           TARGET: x86_64-pc-windows-gnu
-          MSYS_BITS: 64
+          ARCH_BITS: 64
           ARCH: x86_64
         x86_64-pc-windows-msvc:
           TARGET: x86_64-pc-windows-msvc
         i686-pc-windows-gnu:
           TARGET: i686-pc-windows-gnu
-          MSYS_BITS: 32
+          ARCH_BITS: 32
           ARCH: i686
         i686-pc-windows-msvc:
           TARGET: i686-pc-windows-msvc
@@ -118,7 +126,10 @@ jobs:
       - script: sh ci/style.sh
         displayName: Check style
       - script: sh ci/dox.sh
-        displayName: Generate and upload documentation
+        displayName: Generate documentation
+      - template: azure-configs/static-websites.yml@rustinfra
+        parameters:
+          deploy_dir: target/doc
 
   #- job: SemverLinux
   #  continueOnError: true

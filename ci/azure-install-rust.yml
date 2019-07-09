@@ -15,9 +15,10 @@ steps:
     displayName: Install rust (unix)
     condition: ne( variables['Agent.OS'], 'Windows_NT' )
   - script: |
+      @echo on
       if not defined TOOLCHAIN set TOOLCHAIN=nightly
-      rustup update %TOOLCHAIN%
-      rustup default %TOOLCHAIN%
+      rustup update %TOOLCHAIN%-%TARGET%
+      rustup default %TOOLCHAIN%-%TARGET%
     displayName: Install rust (windows)
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
   - script: |
@@ -27,13 +28,31 @@ steps:
       fi
     condition: ne( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install target (unix)
-  - script: if defined TARGET rustup target add %TARGET%
+  - script: |
+      @echo on
+      if defined TARGET rustup target add %TARGET%
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install target (windows)
-  #- script: if defined MSYS_BITS for %%I in (crt2.o dllcrt2.o libmsvcrt.a) do xcopy /Y "C:\msys64\mingw%MSYS_BITS%\%ARCH%-w64-mingw32\lib\%%I" "C:\Program Files (x86)\Rust\lib\rustlib\%TARGET%\lib"
-  #  condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  #  displayName: Fix MinGW (windows)
   - script: |
+      @echo on
+      if "%ARCH%" == "i686" choco install mingw --x86 --force
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install MinGW32 (windows)
+  - bash: |
+      set -ex
+      gcc -print-search-dirs
+      find "C:\ProgramData\Chocolatey" -name "crt2*"
+      find "C:\ProgramData\Chocolatey" -name "dllcrt2*"
+      find "C:\ProgramData\Chocolatey" -name "libmsvcrt*"
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )	
+    displayName: Find GCC libraries (windows)
+  - script: |	
+      @echo on
+      if not defined TOOLCHAIN set TOOLCHAIN=nightly
+      if defined ARCH_BITS for %%I in (crt2.o dllcrt2.o libmsvcrt.a) do xcopy /Y "C:\ProgramData\Chocolatey\lib\mingw\tools\install\mingw%ARCH_BITS%\%ARCH%-w64-mingw32\lib\%%I" "C:\Program Files\Rust\.rustup\toolchains\%TOOLCHAIN%-%TARGET%\lib\rustlib\%TARGET%\lib\%%I"
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )	
+    displayName: Fix MinGW (windows)
+  - bash: |
         set -ex
         rustc -Vv
         cargo -V
@@ -44,6 +63,11 @@ steps:
         which rustup
     displayName: Query rust and cargo versions
   - script: |
+      @echo on
+      where gcc
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Query gcc path
+  - bash: |
       set -ex
       cargo generate-lockfile
       cargo generate-lockfile --manifest-path libc-test/Cargo.toml
