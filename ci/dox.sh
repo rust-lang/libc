@@ -19,7 +19,7 @@ if ! rustc --version | grep -E "nightly" ; then
 fi
 
 rustup component add rust-src
-cargo +nightly install xargo -Z install-upgrade
+cargo +nightly install cargo-xbuild -Z install-upgrade
 
 # List all targets that do currently build successfully:
 # shellcheck disable=SC1003
@@ -50,7 +50,7 @@ while read -r target; do
     # If cargo doc fails, then try xargo:
     if ! cargo doc --target "${target}" \
              --no-default-features  --features extra_traits ; then
-        xargo doc --target "${target}" \
+        cargo xdoc --target "${target}" \
               --no-default-features  --features extra_traits
     fi
 
