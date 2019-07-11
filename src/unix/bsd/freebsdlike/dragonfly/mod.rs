@@ -1036,18 +1036,9 @@ f! {
         (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
             _CMSG_ALIGN(length as usize)) as ::c_uint
     }
-
-    #[cfg(libc_thread_local)]
-    pub fn __error() -> *mut ::c_int {
-        &mut errno
-    }
 }
 
 extern {
-    #[cfg(libc_thread_local)]
-    #[thread_local]
-    static mut errno: ::c_int;
-
     pub fn setgrent();
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
@@ -1068,4 +1059,11 @@ extern {
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(libc_thread_local)] {
+        mod errno;
+        pub use self::errno::*;
+    }
 }

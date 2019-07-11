@@ -35,6 +35,9 @@ libc = "0.2"
 * `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
   This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
 
+* `unstable`: enable currently unstable bindings. Right now, this just allows
+  bindings to `#[thread_local]` statics on certain platforms. Requires nightly.
+
 * **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
 
 ## Rust version support
