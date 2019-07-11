@@ -1036,9 +1036,18 @@ f! {
         (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
             _CMSG_ALIGN(length as usize)) as ::c_uint
     }
+
+    #[cfg(libc_thread_local)]
+    pub fn __error() -> *mut ::c_int {
+        &mut errno
+    }
 }
 
 extern {
+    #[cfg(libc_thread_local)]
+    #[thread_local]
+    static mut errno: ::c_int;
+
     pub fn setgrent();
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
                     -> ::c_int;
