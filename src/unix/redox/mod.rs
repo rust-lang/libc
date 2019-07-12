@@ -36,6 +36,39 @@ pub type suseconds_t = ::c_int;
 pub type tcflag_t = u32;
 pub type time_t = ::c_long;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum timezone {}
+impl ::Copy for timezone {}
+impl ::Clone for timezone {
+    fn clone(&self) -> timezone { *self }
+}
+
+s_no_extra_traits! {
+    pub struct dirent {
+        pub d_ino: ::ino_t,
+        pub d_off: ::off_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
+    }
+
+    pub struct sockaddr_un {
+        pub sun_family: ::sa_family_t,
+        pub sun_path: [::c_char; 108]
+    }
+
+    pub struct sockaddr_storage {
+        pub ss_family: ::sa_family_t,
+        __ss_padding: [
+            u8;
+            128 -
+            ::core::mem::size_of::<sa_family_t>() -
+            ::core::mem::size_of::<c_ulong>()
+        ],
+        __ss_align: ::c_ulong,
+    }
+}
+
 s! {
     pub struct addrinfo {
         pub ai_flags: ::c_int,
@@ -46,14 +79,6 @@ s! {
         pub ai_canonname: *mut ::c_char,
         pub ai_addr: *mut ::sockaddr,
         pub ai_next: *mut ::addrinfo,
-    }
-
-    pub struct dirent {
-        pub d_ino: ::ino_t,
-        pub d_off: ::off_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
     }
 
     pub struct Dl_info {
@@ -140,22 +165,6 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    pub struct sockaddr_storage {
-        pub ss_family: ::sa_family_t,
-        __ss_padding: [
-            u8;
-            128 -
-            ::core::mem::size_of::<sa_family_t>() -
-            ::core::mem::size_of::<c_ulong>()
-        ],
-        __ss_align: ::c_ulong,
-    }
-
-    pub struct sockaddr_un {
-        pub sun_family: ::sa_family_t,
-        pub sun_path: [::c_char; 108]
-    }
-
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -217,7 +226,7 @@ s! {
 }
 
 // TODO: relibc {
-    pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
+pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
 // }
 
 // dlfcn.h
@@ -281,7 +290,7 @@ pub const F_SETFD: ::c_int = 2;
 pub const F_GETFL: ::c_int = 3;
 pub const F_SETFL: ::c_int = 4;
 // TODO: relibc {
-    pub const F_DUPFD_CLOEXEC: ::c_int = ::F_DUPFD;
+pub const F_DUPFD_CLOEXEC: ::c_int = ::F_DUPFD;
 // }
 pub const FD_CLOEXEC: ::c_int = 0x0100_0000;
 pub const O_RDONLY: ::c_int = 0x0001_0000;
@@ -310,25 +319,25 @@ pub const EAI_SYSTEM: ::c_int = -11;
 
 // netinet/in.h
 // TODO: relibc {
-    pub const IP_TTL: ::c_int = 2;
-    pub const IPV6_UNICAST_HOPS: ::c_int = 16;
-    pub const IPV6_MULTICAST_IF: ::c_int = 17;
-    pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
-    pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
-    pub const IPV6_ADD_MEMBERSHIP: ::c_int = 20;
-    pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
-    pub const IPV6_V6ONLY: ::c_int = 26;
-    pub const IP_MULTICAST_IF: ::c_int = 32;
-    pub const IP_MULTICAST_TTL: ::c_int = 33;
-    pub const IP_MULTICAST_LOOP: ::c_int = 34;
-    pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
-    pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+pub const IP_TTL: ::c_int = 2;
+pub const IPV6_UNICAST_HOPS: ::c_int = 16;
+pub const IPV6_MULTICAST_IF: ::c_int = 17;
+pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
+pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
+pub const IPV6_ADD_MEMBERSHIP: ::c_int = 20;
+pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
+pub const IPV6_V6ONLY: ::c_int = 26;
+pub const IP_MULTICAST_IF: ::c_int = 32;
+pub const IP_MULTICAST_TTL: ::c_int = 33;
+pub const IP_MULTICAST_LOOP: ::c_int = 34;
+pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
+pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 // }
 
 // netinet/tcp.h
 pub const TCP_NODELAY: ::c_int = 1;
 // TODO: relibc {
-    pub const TCP_KEEPIDLE: ::c_int = 1;
+pub const TCP_KEEPIDLE: ::c_int = 1;
 // }
 
 // poll.h
@@ -345,7 +354,7 @@ pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_INITIALIZER: ::pthread_mutex_t = -1isize as *mut _;
 pub const PTHREAD_COND_INITIALIZER: ::pthread_cond_t = -1isize as *mut _;
 pub const PTHREAD_RWLOCK_INITIALIZER: ::pthread_rwlock_t = -1isize as *mut _;
-pub const PTHREAD_STACK_MIN : ::size_t = 4096;
+pub const PTHREAD_STACK_MIN: ::size_t = 4096;
 
 // signal.h
 pub const SIG_BLOCK: ::c_int = 0;
@@ -434,8 +443,8 @@ pub const EXIT_FAILURE: ::c_int = 1;
 
 // sys/ioctl.h
 // TODO: relibc {
-    pub const FIONBIO: ::c_ulong = 0x5421;
-    pub const FIOCLEX: ::c_ulong = 0x5451;
+pub const FIONBIO: ::c_ulong = 0x5421;
+pub const FIOCLEX: ::c_ulong = 0x5451;
 // }
 pub const TCGETS: ::c_ulong = 0x5401;
 pub const TCSETS: ::c_ulong = 0x5402;
@@ -489,6 +498,28 @@ pub const STDIN_FILENO: ::c_int = 0;
 pub const STDOUT_FILENO: ::c_int = 1;
 pub const STDERR_FILENO: ::c_int = 2;
 
+pub const _PC_LINK_MAX: ::c_int = 0;
+pub const _PC_MAX_CANON: ::c_int = 1;
+pub const _PC_MAX_INPUT: ::c_int = 2;
+pub const _PC_NAME_MAX: ::c_int = 3;
+pub const _PC_PATH_MAX: ::c_int = 4;
+pub const _PC_PIPE_BUF: ::c_int = 5;
+pub const _PC_CHOWN_RESTRICTED: ::c_int = 6;
+pub const _PC_NO_TRUNC: ::c_int = 7;
+pub const _PC_VDISABLE: ::c_int = 8;
+pub const _PC_SYNC_IO: ::c_int = 9;
+pub const _PC_ASYNC_IO: ::c_int = 10;
+pub const _PC_PRIO_IO: ::c_int = 11;
+pub const _PC_SOCK_MAXBUF: ::c_int = 12;
+pub const _PC_FILESIZEBITS: ::c_int = 13;
+pub const _PC_REC_INCR_XFER_SIZE: ::c_int = 14;
+pub const _PC_REC_MAX_XFER_SIZE: ::c_int = 15;
+pub const _PC_REC_MIN_XFER_SIZE: ::c_int = 16;
+pub const _PC_REC_XFER_ALIGN: ::c_int = 17;
+pub const _PC_ALLOC_SIZE_MIN: ::c_int = 18;
+pub const _PC_SYMLINK_MAX: ::c_int = 19;
+pub const _PC_2_SYMLINKS: ::c_int = 20;
+
 // wait.h
 pub fn WIFSTOPPED(status: ::c_int) -> bool {
     (status & 0xff) == 0x7f
@@ -533,7 +564,8 @@ cfg_if! {
     }
 }
 
-extern {
+extern "C" {
+    // sys/resource.h
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
 
@@ -545,53 +577,180 @@ extern {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
 
     // pthread.h
-    pub fn pthread_atfork(prepare: ::Option<unsafe extern fn()>,
-                          parent: ::Option<unsafe extern fn()>,
-                          child: ::Option<unsafe extern fn()>) -> ::c_int;
-    pub fn pthread_create(tid: *mut ::pthread_t,
-                          attr: *const ::pthread_attr_t,
-                          start: extern fn(*mut ::c_void) -> *mut ::c_void,
-                          arg: *mut ::c_void) -> ::c_int;
-    pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
-                                     clock_id: ::clockid_t) -> ::c_int;
+    pub fn pthread_atfork(
+        prepare: ::Option<unsafe extern "C" fn()>,
+        parent: ::Option<unsafe extern "C" fn()>,
+        child: ::Option<unsafe extern "C" fn()>,
+    ) -> ::c_int;
+    pub fn pthread_create(
+        tid: *mut ::pthread_t,
+        attr: *const ::pthread_attr_t,
+        start: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
+        arg: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_condattr_setclock(
+        attr: *mut pthread_condattr_t,
+        clock_id: ::clockid_t,
+    ) -> ::c_int;
 
     // signal.h
-    pub fn pthread_sigmask(how: ::c_int,
-                           set: *const ::sigset_t,
-                           oldset: *mut ::sigset_t) -> ::c_int;
+    pub fn pthread_sigmask(
+        how: ::c_int,
+        set: *const ::sigset_t,
+        oldset: *mut ::sigset_t,
+    ) -> ::c_int;
 
     // sys/epoll.h
     pub fn epoll_create(size: ::c_int) -> ::c_int;
     pub fn epoll_create1(flags: ::c_int) -> ::c_int;
-    pub fn epoll_wait(epfd: ::c_int,
-                      events: *mut ::epoll_event,
-                      maxevents: ::c_int,
-                      timeout: ::c_int) -> ::c_int;
-    pub fn epoll_ctl(epfd: ::c_int,
-                     op: ::c_int,
-                     fd: ::c_int,
-                     event: *mut ::epoll_event) -> ::c_int;
+    pub fn epoll_wait(
+        epfd: ::c_int,
+        events: *mut ::epoll_event,
+        maxevents: ::c_int,
+        timeout: ::c_int,
+    ) -> ::c_int;
+    pub fn epoll_ctl(
+        epfd: ::c_int,
+        op: ::c_int,
+        fd: ::c_int,
+        event: *mut ::epoll_event,
+    ) -> ::c_int;
 
     // sys/ioctl.h
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
 
     // sys/socket.h
-    pub fn bind(socket: ::c_int, address: *const ::sockaddr,
-                address_len: ::socklen_t) -> ::c_int;
-    pub fn recvfrom(socket: ::c_int, buf: *mut ::c_void, len: ::size_t,
-                    flags: ::c_int, addr: *mut ::sockaddr,
-                    addrlen: *mut ::socklen_t) -> ::ssize_t;
+    pub fn bind(
+        socket: ::c_int,
+        address: *const ::sockaddr,
+        address_len: ::socklen_t,
+    ) -> ::c_int;
+    pub fn recvfrom(
+        socket: ::c_int,
+        buf: *mut ::c_void,
+        len: ::size_t,
+        flags: ::c_int,
+        addr: *mut ::sockaddr,
+        addrlen: *mut ::socklen_t,
+    ) -> ::ssize_t;
 
     // sys/uio.h
-    pub fn readv(fd: ::c_int,
-                 iov: *const ::iovec,
-                 iovcnt: ::c_int) -> ::ssize_t;
-    pub fn writev(fd: ::c_int,
-                  iov: *const ::iovec,
-                  iovcnt: ::c_int) -> ::ssize_t;
+    pub fn readv(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+    ) -> ::ssize_t;
+    pub fn writev(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+    ) -> ::ssize_t;
 
     // time.h
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::timezone) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_off == other.d_off
+                    && self.d_reclen == other.d_reclen
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for dirent {}
+
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_off", &self.d_off)
+                    .field("d_reclen", &self.d_reclen)
+                    .field("d_type", &self.d_type)
+                // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for dirent {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_off.hash(state);
+                self.d_reclen.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_un {
+            fn eq(&self, other: &sockaddr_un) -> bool {
+                self.sun_family == other.sun_family
+                    && self
+                    .sun_path
+                    .iter()
+                    .zip(other.sun_path.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for sockaddr_un {}
+
+        impl ::fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_un")
+                    .field("sun_family", &self.sun_family)
+                // FIXME: .field("sun_path", &self.sun_path)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for sockaddr_un {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sun_family.hash(state);
+                self.sun_path.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_family == other.ss_family
+                    && self.__ss_align == self.__ss_align
+                    && self
+                    .__ss_padding
+                    .iter()
+                    .zip(other.__ss_padding.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for sockaddr_storage {}
+
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_family", &self.ss_family)
+                    .field("__ss_align", &self.__ss_align)
+                // FIXME: .field("__ss_padding", &self.__ss_padding)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ss_family.hash(state);
+                self.__ss_padding.hash(state);
+                self.__ss_align.hash(state);
+            }
+        }
+    }
 }
