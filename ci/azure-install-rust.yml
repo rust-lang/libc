@@ -46,10 +46,13 @@ steps:
       find "C:\ProgramData\Chocolatey" -name "libmsvcrt*"
     condition: eq( variables['Agent.OS'], 'Windows_NT' )	
     displayName: Find GCC libraries (windows)
-  - script: |	
-      @echo on
-      if not defined TOOLCHAIN set TOOLCHAIN=nightly
-      if defined ARCH_BITS for %%I in (crt2.o dllcrt2.o libmsvcrt.a) do xcopy /Y "C:\ProgramData\Chocolatey\lib\mingw\tools\install\mingw%ARCH_BITS%\%ARCH%-w64-mingw32\lib\%%I" "C:\Program Files\Rust\.rustup\toolchains\%TOOLCHAIN%-%TARGET%\lib\rustlib\%TARGET%\lib\%%I"
+  - bash: |
+      set -ex
+      if [[ -n ${ARCH_BITS} ]]; then
+        for i in crt2.o dllcrt2.o libmsvcrt.a ; do
+          cp -f "/C/ProgramData/Chocolatey/lib/mingw/tools/install/mingw${ARCH_BITS}/${ARCH}-w64-mingw32/lib/$i" "`rustc --print sysroot`/lib/rustlib/${TARGET}/lib"
+        done
+      fi
     condition: eq( variables['Agent.OS'], 'Windows_NT' )	
     displayName: Fix MinGW (windows)
   - bash: |
