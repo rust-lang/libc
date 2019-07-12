@@ -1,9 +1,3 @@
-pub const PATH_MAX: ::c_int = 4096;
-
-pub const F_GETLK: ::c_int = 5;
-pub const F_SETLK: ::c_int = 6;
-pub const F_SETLKW: ::c_int = 7;
-
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -48,8 +42,6 @@ impl ::Copy for timezone {}
 impl ::Clone for timezone {
     fn clone(&self) -> timezone { *self }
 }
-
-pub const UTSLENGTH: usize = 65;
 
 s_no_extra_traits! {
     #[repr(C)]
@@ -243,6 +235,27 @@ s! {
     }
 }
 
+pub const UTSLENGTH: usize = 65;
+
+// intentionally not public, only used for fd_set
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        const ULONG_SIZE: usize = 32;
+    } else if #[cfg(target_pointer_width = "64")] {
+        const ULONG_SIZE: usize = 64;
+    } else {
+        // Unknown target_pointer_width
+    }
+}
+
+// limits.h
+pub const PATH_MAX: ::c_int = 4096;
+
+// fcntl.h
+pub const F_GETLK: ::c_int = 5;
+pub const F_SETLK: ::c_int = 6;
+pub const F_SETLKW: ::c_int = 7;
+
 // TODO: relibc {
 pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
 // }
@@ -335,10 +348,12 @@ pub const EREMCHG: ::c_int = 78; /* Remote address changed */
 pub const ELIBACC: ::c_int = 79; /* Can not access a needed shared library */
 pub const ELIBBAD: ::c_int = 80; /* Accessing a corrupted shared library */
 pub const ELIBSCN: ::c_int = 81; /* .lib section in a.out corrupted */
-pub const ELIBMAX: ::c_int = 82; /* Attempting to link in too many shared libraries */
+/* Attempting to link in too many shared libraries */
+pub const ELIBMAX: ::c_int = 82;
 pub const ELIBEXEC: ::c_int = 83; /* Cannot exec a shared library directly */
 pub const EILSEQ: ::c_int = 84; /* Illegal byte sequence */
-pub const ERESTART: ::c_int = 85; /* Interrupted system call should be restarted */
+/* Interrupted system call should be restarted */
+pub const ERESTART: ::c_int = 85;
 pub const ESTRPIPE: ::c_int = 86; /* Streams pipe error */
 pub const EUSERS: ::c_int = 87; /* Too many users */
 pub const ENOTSOCK: ::c_int = 88; /* Socket operation on non-socket */
@@ -348,20 +363,24 @@ pub const EPROTOTYPE: ::c_int = 91; /* Protocol wrong type for socket */
 pub const ENOPROTOOPT: ::c_int = 92; /* Protocol not available */
 pub const EPROTONOSUPPORT: ::c_int = 93; /* Protocol not supported */
 pub const ESOCKTNOSUPPORT: ::c_int = 94; /* Socket type not supported */
-pub const EOPNOTSUPP: ::c_int = 95; /* Operation not supported on transport endpoint */
+/* Operation not supported on transport endpoint */
+pub const EOPNOTSUPP: ::c_int = 95;
 pub const EPFNOSUPPORT: ::c_int = 96; /* Protocol family not supported */
-pub const EAFNOSUPPORT: ::c_int = 97; /* Address family not supported by protocol */
+/* Address family not supported by protocol */
+pub const EAFNOSUPPORT: ::c_int = 97;
 pub const EADDRINUSE: ::c_int = 98; /* Address already in use */
 pub const EADDRNOTAVAIL: ::c_int = 99; /* Cannot assign requested address */
 pub const ENETDOWN: ::c_int = 100; /* Network is down */
 pub const ENETUNREACH: ::c_int = 101; /* Network is unreachable */
-pub const ENETRESET: ::c_int = 102; /* Network dropped connection because of reset */
+/* Network dropped connection because of reset */
+pub const ENETRESET: ::c_int = 102;
 pub const ECONNABORTED: ::c_int = 103; /* Software caused connection abort */
 pub const ECONNRESET: ::c_int = 104; /* Connection reset by peer */
 pub const ENOBUFS: ::c_int = 105; /* No buffer space available */
 pub const EISCONN: ::c_int = 106; /* Transport endpoint is already connected */
 pub const ENOTCONN: ::c_int = 107; /* Transport endpoint is not connected */
-pub const ESHUTDOWN: ::c_int = 108; /* Cannot send after transport endpoint shutdown */
+/* Cannot send after transport endpoint shutdown */
+pub const ESHUTDOWN: ::c_int = 108;
 pub const ETOOMANYREFS: ::c_int = 109; /* Too many references: cannot splice */
 pub const ETIMEDOUT: ::c_int = 110; /* Connection timed out */
 pub const ECONNREFUSED: ::c_int = 111; /* Connection refused */
@@ -705,18 +724,7 @@ f! {
     }
 }
 
-// intentionally not public, only used for fd_set
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        const ULONG_SIZE: usize = 32;
-    } else if #[cfg(target_pointer_width = "64")] {
-        const ULONG_SIZE: usize = 64;
-    } else {
-        // Unknown target_pointer_width
-    }
-}
-
-extern "C" {
+extern {
     // errno.h
     pub fn __errno_location() -> *mut ::c_int;
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
@@ -730,14 +738,14 @@ extern "C" {
 
     // pthread.h
     pub fn pthread_atfork(
-        prepare: ::Option<unsafe extern "C" fn()>,
-        parent: ::Option<unsafe extern "C" fn()>,
-        child: ::Option<unsafe extern "C" fn()>,
+        prepare: ::Option<unsafe extern fn()>,
+        parent: ::Option<unsafe extern fn()>,
+        child: ::Option<unsafe extern fn()>,
     ) -> ::c_int;
     pub fn pthread_create(
         tid: *mut ::pthread_t,
         attr: *const ::pthread_attr_t,
-        start: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
+        start: extern fn(*mut ::c_void) -> *mut ::c_void,
         arg: *mut ::c_void,
     ) -> ::c_int;
     pub fn pthread_condattr_setclock(
