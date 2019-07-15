@@ -605,13 +605,6 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__opendir30")]
     pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
 
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
-               link_name = "fdopendir$INODE64")]
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "fdopendir$INODE64$UNIX2003")]
-    #[cfg(not(target_os = "redox"))]
-    pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
-
     #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
     #[cfg_attr(
@@ -619,21 +612,6 @@ extern {
         link_name = "readdir@FBSD_1.0"
     )]
     pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
-    #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
-    #[cfg_attr(
-        all(target_os = "freebsd", not(freebsd12)),
-        link_name = "readdir_r@FBSD_1.0"
-    )]
-    /// The 64-bit libc on Solaris and illumos only has readdir_r.  If a
-    /// 32-bit Solaris or illumos target is ever created, it should use
-    /// __posix_readdir_r.  See libc(3LIB) on Solaris or illumos:
-    /// https://illumos.org/man/3lib/libc
-    /// https://docs.oracle.com/cd/E36784_01/html/E36873/libc-3lib.html
-    /// https://www.unix.com/man-page/opensolaris/3LIB/libc/
-    #[cfg(not(target_os = "redox"))]
-    pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
-                     result: *mut *mut ::dirent) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "closedir$UNIX2003")]
     pub fn closedir(dirp: *mut ::DIR) -> ::c_int;
@@ -643,9 +621,6 @@ extern {
                link_name = "rewinddir$INODE64$UNIX2003")]
     pub fn rewinddir(dirp: *mut ::DIR);
 
-    #[cfg(not(target_os = "redox"))]
-    pub fn openat(dirfd: ::c_int, pathname: *const ::c_char,
-                  flags: ::c_int, ...) -> ::c_int;
     pub fn fchmodat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t, flags: ::c_int) -> ::c_int;
     pub fn fchown(fd: ::c_int,
@@ -664,12 +639,6 @@ extern {
     pub fn linkat(olddirfd: ::c_int, oldpath: *const ::c_char,
                   newdirfd: ::c_int, newpath: *const ::c_char,
                   flags: ::c_int) -> ::c_int;
-    #[cfg(not(target_os = "redox"))]
-    pub fn mkdirat(dirfd: ::c_int, pathname: *const ::c_char,
-                   mode: ::mode_t) -> ::c_int;
-    #[cfg(not(target_os = "redox"))]
-    pub fn readlinkat(dirfd: ::c_int, pathname: *const ::c_char,
-                      buf: *mut ::c_char, bufsiz: ::size_t) -> ::ssize_t;
     pub fn renameat(olddirfd: ::c_int, oldpath: *const ::c_char,
                     newdirfd: ::c_int, newpath: *const ::c_char)
                     -> ::c_int;
@@ -732,8 +701,6 @@ extern {
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pause$UNIX2003")]
-    #[cfg(not(target_os = "redox"))]
-    pub fn pause() -> ::c_int;
     pub fn pipe(fds: *mut ::c_int) -> ::c_int;
     pub fn posix_memalign(memptr: *mut *mut ::c_void,
                       align: ::size_t,
@@ -842,8 +809,6 @@ extern {
     pub fn symlink(path1: *const c_char,
                    path2: *const c_char) -> ::c_int;
 
-    #[cfg(not(target_os = "redox"))]
-    pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
     pub fn ftruncate(fd: ::c_int, length: off_t) -> ::c_int;
 
     pub fn signal(signum: ::c_int, handler: sighandler_t) -> sighandler_t;
@@ -1078,9 +1043,6 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
 
-    #[cfg(not(target_os = "redox"))]
-    pub fn getsid(pid: pid_t) -> pid_t;
-
     pub fn sysconf(name: ::c_int) -> ::c_long;
 
     pub fn mkfifo(path: *const c_char, mode: mode_t) -> ::c_int;
@@ -1137,6 +1099,46 @@ extern {
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn getline (lineptr: *mut *mut c_char, n: *mut size_t,
         stream: *mut FILE) -> ssize_t;
+}
+
+cfg_if! {
+    if #[cfg(not(target_os = "redox"))] {
+        extern {
+            pub fn getsid(pid: pid_t) -> pid_t;
+            pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
+            pub fn pause() -> ::c_int;
+
+            pub fn readlinkat(dirfd: ::c_int,
+                              pathname: *const ::c_char,
+                              buf: *mut ::c_char,
+                              bufsiz: ::size_t) -> ::ssize_t;
+            pub fn mkdirat(dirfd: ::c_int, pathname: *const ::c_char,
+                           mode: ::mode_t) -> ::c_int;
+            pub fn openat(dirfd: ::c_int, pathname: *const ::c_char,
+                          flags: ::c_int, ...) -> ::c_int;
+
+            #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
+                       link_name = "fdopendir$INODE64")]
+            #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+                       link_name = "fdopendir$INODE64$UNIX2003")]
+            pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
+
+            #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
+            #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
+            #[cfg_attr(
+                all(target_os = "freebsd", not(freebsd12)),
+                link_name = "readdir_r@FBSD_1.0"
+            )]
+            /// The 64-bit libc on Solaris and illumos only has readdir_r.  If a
+            /// 32-bit Solaris or illumos target is ever created, it should use
+            /// __posix_readdir_r.  See libc(3LIB) on Solaris or illumos:
+            /// https://illumos.org/man/3lib/libc
+            /// https://docs.oracle.com/cd/E36784_01/html/E36873/libc-3lib.html
+            /// https://www.unix.com/man-page/opensolaris/3LIB/libc/
+            pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
+                             result: *mut *mut ::dirent) -> ::c_int;
+        }
+    }
 }
 
 cfg_if! {
