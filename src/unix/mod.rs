@@ -609,6 +609,7 @@ extern {
                link_name = "fdopendir$INODE64")]
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "fdopendir$INODE64$UNIX2003")]
+    #[cfg(not(target_os = "redox"))]
     pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
 
     #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
@@ -630,6 +631,7 @@ extern {
     /// https://illumos.org/man/3lib/libc
     /// https://docs.oracle.com/cd/E36784_01/html/E36873/libc-3lib.html
     /// https://www.unix.com/man-page/opensolaris/3LIB/libc/
+    #[cfg(not(target_os = "redox"))]
     pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
                      result: *mut *mut ::dirent) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -641,6 +643,7 @@ extern {
                link_name = "rewinddir$INODE64$UNIX2003")]
     pub fn rewinddir(dirp: *mut ::DIR);
 
+    #[cfg(not(target_os = "redox"))]
     pub fn openat(dirfd: ::c_int, pathname: *const ::c_char,
                   flags: ::c_int, ...) -> ::c_int;
     pub fn fchmodat(dirfd: ::c_int, pathname: *const ::c_char,
@@ -661,8 +664,10 @@ extern {
     pub fn linkat(olddirfd: ::c_int, oldpath: *const ::c_char,
                   newdirfd: ::c_int, newpath: *const ::c_char,
                   flags: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "redox"))]
     pub fn mkdirat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t) -> ::c_int;
+    #[cfg(not(target_os = "redox"))]
     pub fn readlinkat(dirfd: ::c_int, pathname: *const ::c_char,
                       buf: *mut ::c_char, bufsiz: ::size_t) -> ::ssize_t;
     pub fn renameat(olddirfd: ::c_int, oldpath: *const ::c_char,
@@ -727,6 +732,7 @@ extern {
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pause$UNIX2003")]
+    #[cfg(not(target_os = "redox"))]
     pub fn pause() -> ::c_int;
     pub fn pipe(fds: *mut ::c_int) -> ::c_int;
     pub fn posix_memalign(memptr: *mut *mut ::c_void,
@@ -836,6 +842,7 @@ extern {
     pub fn symlink(path1: *const c_char,
                    path2: *const c_char) -> ::c_int;
 
+    #[cfg(not(target_os = "redox"))]
     pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
     pub fn ftruncate(fd: ::c_int, length: off_t) -> ::c_int;
 
@@ -1071,6 +1078,7 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
 
+    #[cfg(not(target_os = "redox"))]
     pub fn getsid(pid: pid_t) -> pid_t;
 
     pub fn sysconf(name: ::c_int) -> ::c_long;

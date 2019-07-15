@@ -766,7 +766,6 @@ extern {
         set: *const ::sigset_t,
         oldset: *mut ::sigset_t,
     ) -> ::c_int;
-    pub fn sigwait(set: *const ::sigset_t, sig: *mut ::c_int) -> ::c_int;
 
     // sys/epoll.h
     pub fn epoll_create(size: ::c_int) -> ::c_int;
