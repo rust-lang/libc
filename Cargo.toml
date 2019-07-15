@@ -26,9 +26,8 @@ rustc-std-workspace-core = { version = "1.0.0", optional = true }
 default = ["std"]
 std = []
 align = []
-rustc-dep-of-std = ['align', 'rustc-std-workspace-core', 'unstable']
+rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
 extra_traits = []
-unstable = []
 # use_std is deprecated, use `std` instead
 use_std = [ 'std' ]
 
