@@ -186,6 +186,7 @@ armebv7r-none-eabihf \
 armv7-unknown-cloudabi-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
+hexagon-unknown-linux-musl \
 i586-pc-windows-msvc \
 i686-pc-windows-msvc \
 i686-unknown-cloudabi \

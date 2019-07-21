@@ -56,6 +56,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "powerpc"))] {
         mod powerpc;
         pub use self::powerpc::*;
+    } else if #[cfg(any(target_arch = "hexagon"))] {
+        mod hexagon;
+        pub use self::hexagon::*;
     } else {
         // Unknown target_arch
     }
