@@ -1450,15 +1450,12 @@ fn test_freebsd(target: &str) {
 
     let freebsd_ver = which_freebsd();
 
-    if let Some(12) = freebsd_ver {
-        // If the host is FreeBSD 12, run FreeBSD 12 tests
-        cfg.cfg("freebsd12", None);
-    }
-
-    if let Some(13) = freebsd_ver {
-        // If the host is FreeBSD 12, run FreeBSD 12 tests
-        cfg.cfg("freebsd13", None);
-    }
+    match freebsd_ver {
+        Some(11) => cfg.cfg("freebsd11", None),
+        Some(12) => cfg.cfg("freebsd12", None),
+        Some(13) => cfg.cfg("freebsd13", None),
+        _ => &mut cfg
+    };
 
     // Required for `getline`:
     cfg.define("_WITH_GETLINE", None);
