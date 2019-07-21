@@ -190,10 +190,14 @@ cfg_if! {
     }
 }
 
-#[cfg(not(freebsd13))]
-pub const ELAST: ::c_int = 96;
-#[cfg(freebsd13)]
-pub const ELAST: ::c_int = 97;
+cfg_if! {
+    if #[cfg(not(freebsd13))] {
+        pub const ELAST: ::c_int = 96;
+    } else {
+        pub const EINTEGRITY: ::c_int = 97;
+        pub const ELAST: ::c_int = 97;
+    }
+}
 
 extern {
     pub fn setgrent();
