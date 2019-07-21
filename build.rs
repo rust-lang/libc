@@ -16,6 +16,9 @@ fn main() {
     }
 
     if env::var("LIBC_CI").is_ok() {
+        if let Some(11) = which_freebsd() {
+            println!("cargo:rustc-cfg=freebsd11");
+        }
         if let Some(12) = which_freebsd() {
             println!("cargo:rustc-cfg=freebsd12");
         }
