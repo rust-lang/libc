@@ -189,6 +189,8 @@ cfg_if! {
     }
 }
 
+pub const ELAST: ::c_int = 96;
+
 extern {
     // Return type ::c_int was removed in FreeBSD 12
     pub fn setgrent() -> ::c_int;

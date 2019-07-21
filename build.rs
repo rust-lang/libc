@@ -19,6 +19,9 @@ fn main() {
         if let Some(12) = which_freebsd() {
             println!("cargo:rustc-cfg=freebsd12");
         }
+        if let Some(13) = which_freebsd() {
+            println!("cargo:rustc-cfg=freebsd13");
+        }
     }
 
     // Rust >= 1.15 supports private module use:
@@ -100,6 +103,7 @@ fn which_freebsd() -> Option<i32> {
     match &stdout {
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
+        s if s.starts_with("13") => Some(13),
         _ => None,
     }
 }

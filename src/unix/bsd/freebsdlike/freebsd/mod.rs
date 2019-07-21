@@ -333,7 +333,6 @@ pub const ENOTCAPABLE: ::c_int = 93;
 pub const ECAPMODE: ::c_int = 94;
 pub const ENOTRECOVERABLE: ::c_int = 95;
 pub const EOWNERDEAD: ::c_int = 96;
-pub const ELAST: ::c_int = 96;
 pub const RLIMIT_NPTS: ::c_int = 11;
 pub const RLIMIT_SWAP: ::c_int = 12;
 pub const RLIMIT_KQUEUES: ::c_int = 13;
@@ -1330,6 +1329,9 @@ extern {
 
 cfg_if! {
     if #[cfg(freebsd12)] {
+        mod freebsd12;
+        pub use self::freebsd12::*;
+    } else if #[cfg(freebsd13)] {
         mod freebsd12;
         pub use self::freebsd12::*;
     } else {

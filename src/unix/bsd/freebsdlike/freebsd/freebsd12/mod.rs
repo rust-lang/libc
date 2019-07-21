@@ -190,6 +190,11 @@ cfg_if! {
     }
 }
 
+#[cfg(not(freebsd13))]
+pub const ELAST: ::c_int = 96;
+#[cfg(freebsd13)]
+pub const ELAST: ::c_int = 97;
+
 extern {
     pub fn setgrent();
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
