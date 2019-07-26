@@ -60,7 +60,7 @@ ENV PATH=/root/.cargo/bin:$PATH
 RUN apt-get install -y --no-install-recommends python
 RUN git clone --recursive https://github.com/CraneStation/wasmtime wasmtime && \
   cd wasmtime && \
-  git reset --hard 67edb00f29b62864b00179fe4bfa99bc29973285
+  git reset --hard a2647878977726935c3d04c05cabad9607ec7606
 RUN cargo build --release --manifest-path wasmtime/Cargo.toml
 
 # And finally in the last image we're going to assemble everything together.
