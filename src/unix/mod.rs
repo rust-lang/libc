@@ -699,8 +699,6 @@ extern {
     pub fn link(src: *const c_char, dst: *const c_char) -> ::c_int;
     pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int) -> off_t;
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pause$UNIX2003")]
     pub fn pipe(fds: *mut ::c_int) -> ::c_int;
     pub fn posix_memalign(memptr: *mut *mut ::c_void,
                       align: ::size_t,
@@ -1106,6 +1104,8 @@ cfg_if! {
         extern {
             pub fn getsid(pid: pid_t) -> pid_t;
             pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
+            #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
+                       link_name = "pause$UNIX2003")]
             pub fn pause() -> ::c_int;
 
             pub fn readlinkat(dirfd: ::c_int,
