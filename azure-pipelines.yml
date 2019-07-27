@@ -142,6 +142,7 @@ jobs:
         parameters:
           deploy_dir: target/doc
 
+  # FIXME: re-enable these after the next release
   #- job: SemverLinux
   #  dependsOn: BuildChannelsLinux
   #  continueOnError: true
