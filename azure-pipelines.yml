@@ -6,7 +6,7 @@ resources:
       type: github
       name: rust-lang/simpleinfra
       endpoint: gnzlbg
-trigger: ["master"]
+trigger: ["auto","try"]
 pr: ["master"]
 
 jobs:
