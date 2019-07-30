@@ -569,6 +569,8 @@ pub const TIOCSIG: ::c_uint = 0x2004745f;
 pub const TIOCM_DCD: ::c_int = 0x40;
 pub const H4DISC: ::c_int = 0x7;
 
+pub const BIOCSETFNR: ::c_ulong = 0x80104282;
+
 pub const FIONWRITE: ::c_ulong = 0x40046677;
 pub const FIONSPACE: ::c_ulong = 0x40046676;
 pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;

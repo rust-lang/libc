@@ -1761,6 +1761,9 @@ pub const TIOCPTYGRANT: ::c_uint = 0x20007454;
 pub const TIOCPTYGNAME: ::c_uint = 0x40807453;
 pub const TIOCPTYUNLK: ::c_uint = 0x20007452;
 
+pub const BIOCGDLTLIST: ::c_ulong = 0xc00c4279;
+pub const BIOCSETFNR: ::c_ulong = 0x8010427e;
+
 pub const FIODTYPE: ::c_ulong = 0x4004667a;
 
 pub const B0: speed_t = 0;
