@@ -1761,6 +1761,30 @@ pub const TIOCPTYGRANT: ::c_uint = 0x20007454;
 pub const TIOCPTYGNAME: ::c_uint = 0x40807453;
 pub const TIOCPTYUNLK: ::c_uint = 0x20007452;
 
+pub const BIOCGBLEN ::c_ulong = 0x40044266;
+pub const BIOCSBLEN ::c_ulong = 0xc0044266;
+pub const BIOCSETF ::c_ulong = 0x80104267;
+pub const BIOCFLUSH ::c_uint = 0x20004268;
+pub const BIOCPROMISC ::c_uint = 0x20004269;
+pub const BIOCGDLT ::c_ulong = 0x4004426a
+pub const BIOCGETIF ::c_ulong = 0x4020426b;
+pub const BIOCSETIF ::c_ulong = 0x8020426c;
+pub const BIOCSRTIMEOUT ::c_ulong = 0x8010426d;
+pub const BIOCGRTIMEOUT ::c_ulong = 0x4010426e;
+pub const BIOCGSTATS ::c_ulong = 0x4008426f;
+pub const BIOCIMMEDIATE ::c_ulong = 0x80044270;
+pub const BIOCVERSION ::c_ulong = 0x40044271;
+pub const BIOCGRSIG ::c_ulong = 0x40044272;
+pub const BIOCSRSIG ::c_ulong = 0x40044273;
+pub const BIOCGHDRCMPLT ::c_ulong = 0x40044274;
+pub const BIOCSHDRCMPLT ::c_ulong = 0x40044275;
+pub const BIOCGSEESENT ::c_ulong  = 0x40044276;
+pub const BIOCSSEESENT ::c_ulong  = 0x40044277;
+pub const BIOCSDLT ::c_ulong = 0x40044278;
+pub const BIOCGDLTLIST ::c_ulong = 0x40044279;
+pub const BIOCSETFNR ::c_ulong = 0x8010427e;
+pub const SIOCGIFADDR ::c_ulong = 0xc0206921;
+
 pub const FIODTYPE: ::c_ulong = 0x4004667a;
 
 pub const B0: speed_t = 0;
