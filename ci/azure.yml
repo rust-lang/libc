@@ -14,7 +14,7 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
-      - template: ci/azure-install-rust.yml
+      - template: azure-install-rust.yml
       - bash: sh ./ci/run-docker.sh $TARGET
         displayName: Execute run-docker.sh
     strategy:
@@ -29,7 +29,7 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
-      - template: ci/azure-install-rust.yml
+      - template: azure-install-rust.yml
       - bash: sh ./ci/run-docker.sh $TARGET
         displayName: Execute run-docker.sh
     strategy:
@@ -87,7 +87,7 @@ jobs:
     pool:
       vmImage: macos-10.14
     steps:
-      - template: ci/azure-install-rust.yml
+      - template: azure-install-rust.yml
       - bash: sh ./ci/run.sh $TARGET
         displayName: Execute run.sh
     strategy:
@@ -99,7 +99,7 @@ jobs:
     pool:
       vmImage: macos-10.13
     steps:
-      - template: ci/azure-install-rust.yml
+      - template: azure-install-rust.yml
       - bash: sh ./ci/run.sh $TARGET
         displayName: Execute run.sh
     strategy:
@@ -111,7 +111,7 @@ jobs:
     pool:
       vmImage: vs2017-win2016
     steps:
-      - template: ci/azure-install-rust.yml
+      - template: azure-install-rust.yml
       - bash: sh ./ci/run.sh $TARGET
         displayName: Execute run.sh
     strategy:
@@ -133,7 +133,7 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
-      - template: ci/azure-install-rust.yml
+      - template: azure-install-rust.yml
       - script: sh ci/style.sh
         displayName: Check style
       - script: sh ci/dox.sh
@@ -149,7 +149,7 @@ jobs:
   #  pool:
   #    vmImage: ubuntu-16.04
   #  steps:
-  #    - template: ci/azure-install-rust.yml
+  #    - template: azure-install-rust.yml
   #    - script: sh ci/semver.sh linux
   #      displayName: Check breaking changes
 
@@ -159,7 +159,7 @@ jobs:
   #  pool:
   #    vmImage: macos-10.14
   #  steps:
-  #    - template: ci/azure-install-rust.yml
+  #    - template: azure-install-rust.yml
   #    - script: sh ci/semver.sh osx
   #      displayName: Check breaking changes
 
@@ -168,7 +168,7 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
-      - template: ci/azure-install-rust.yml
+      - template: azure-install-rust.yml
       - script: sh ./ci/build.sh
         displayName: Execute build.sh
     strategy:
@@ -197,7 +197,7 @@ jobs:
     pool:
       vmImage: macos-10.13
     steps:
-      - template: ci/azure-install-rust.yml
+      - template: azure-install-rust.yml
       - script: sh ./ci/build.sh
         displayName: Execute build.sh
     strategy:
