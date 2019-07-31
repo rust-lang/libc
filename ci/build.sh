@@ -204,6 +204,8 @@ i686-unknown-netbsd \
 i686-unknown-openbsd \
 mips-unknown-linux-uclibc \
 mipsel-unknown-linux-uclibc \
+mips64-unknown-linux-muslabi64 \
+mips64el-unknown-linux-muslabi64 \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \
