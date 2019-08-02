@@ -49,7 +49,7 @@ steps:
   - bash: |
       set -ex
       if [[ -n ${ARCH_BITS} ]]; then
-        for i in crt2.o dllcrt2.o libmsvcrt.a ; do
+        for i in crt2.o dllcrt2.o libmingwex.a libmsvcrt.a ; do
           cp -f "/C/ProgramData/Chocolatey/lib/mingw/tools/install/mingw${ARCH_BITS}/${ARCH}-w64-mingw32/lib/$i" "`rustc --print sysroot`/lib/rustlib/${TARGET}/lib"
         done
       fi
