@@ -1183,7 +1183,8 @@ pub const KERN_CONSBUF: ::c_int = 83;
 pub const KERN_AUDIO: ::c_int = 84;
 pub const KERN_CPUSTATS: ::c_int = 85;
 pub const KERN_PFSTATUS: ::c_int = 86;
-pub const KERN_MAXID: ::c_int = 87;
+pub const KERN_TIMEOUT_STATS: ::c_int = 87;
+pub const KERN_MAXID: ::c_int = 88;
 
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
