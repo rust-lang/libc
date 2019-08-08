@@ -10,7 +10,7 @@ documentation = "http://doc.rust-lang.org/libc"
 keywords = ["libc", "ffi", "bindings", "operating", "system" ]
 categories = ["external-ffi-bindings", "no-std", "os"]
 build = "build.rs"
-exclude = ["/ci/*", "/.travis.yml", "/appveyor.yml"]
+exclude = ["/ci/*", "/azure-pipelines.yml"]
 description = """
 Raw FFI bindings to platform libraries like libc.
 """

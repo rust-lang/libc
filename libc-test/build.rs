@@ -1595,8 +1595,7 @@ fn test_freebsd(target: &str) {
             // These constants were removed in FreeBSD 11 (svn r262489),
             // and they've never had any legitimate use outside of the
             // base system anyway.
-            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID"
-            | "USER_MAXID" => true,
+            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "USER_MAXID" => true,
 
             _ => false,
         }

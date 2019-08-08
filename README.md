@@ -1,4 +1,4 @@
-[![Travis-CI Status]][Travis-CI] [![Appveyor Status]][Appveyor] [![Cirrus-CI Status]][Cirrus-CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
+[![Azure Status]][Azure] [![Cirrus-CI Status]][Cirrus-CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
 
 libc - Raw FFI bindings to platforms' system libraries
 ====
@@ -91,10 +91,8 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in `libc` by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
-[Travis-CI]: https://travis-ci.com/rust-lang/libc
-[Travis-CI Status]: https://travis-ci.com/rust-lang/libc.svg?branch=master
-[Appveyor]: https://ci.appveyor.com/project/rust-lang-libs/libc
-[Appveyor Status]: https://ci.appveyor.com/api/projects/status/github/rust-lang/libc?svg=true
+[Azure Status]: https://dev.azure.com/rust-lang/libc/_apis/build/status/rust-lang.libc?branchName=master
+[Azure]: https://dev.azure.com/rust-lang/libc/_build/latest?definitionId=11&branchName=master
 [Cirrus-CI]: https://cirrus-ci.com/github/rust-lang/libc
 [Cirrus-CI Status]: https://api.cirrus-ci.com/github/rust-lang/libc.svg
 [crates.io]: https://crates.io/crates/libc

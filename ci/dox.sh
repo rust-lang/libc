@@ -13,6 +13,14 @@ PLATFORM_SUPPORT=platform-support.md
 rm -rf $TARGET_DOC_DIR
 mkdir -p $TARGET_DOC_DIR
 
+if ! rustc --version | grep -E "nightly" ; then
+    echo "Building the documentation requires a nightly Rust toolchain"
+    exit 1
+fi
+
+rustup component add rust-src
+cargo +nightly install cargo-xbuild -Z install-upgrade
+
 # List all targets that do currently build successfully:
 # shellcheck disable=SC1003
 grep '[\d|\w|-]* \\' ci/build.sh > targets
@@ -42,7 +50,7 @@ while read -r target; do
     # If cargo doc fails, then try xargo:
     if ! cargo doc --target "${target}" \
              --no-default-features  --features extra_traits ; then
-        xargo doc --target "${target}" \
+        cargo xdoc --target "${target}" \
               --no-default-features  --features extra_traits
     fi
 
@@ -61,10 +69,3 @@ set -x
 
 # Copy the licenses
 cp LICENSE-* $TARGET_DOC_DIR/
-
-# If we're on travis, not a PR, and on the right branch, publish!
-if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
-  pip install ghp_import --install-option="--prefix=$HOME/.local"
-  "${HOME}/.local/bin/ghp-import" $TARGET_DOC_DIR
-  git push -qf "https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git" gh-pages
-fi

@@ -5,13 +5,20 @@
 
 set -ex
 
-RUST=${TRAVIS_RUST_VERSION}
-OS=${TRAVIS_OS_NAME}
+: "${TOOLCHAIN?The TOOLCHAIN environment variable must be set.}"
+: "${OS?The OS environment variable must be set.}"
+
+RUST=${TOOLCHAIN}
 
 echo "Testing Rust ${RUST} on ${OS}"
 
+if [ "${TOOLCHAIN}" = "nightly" ] ; then
+    cargo +nightly install cargo-xbuild -Z install-upgrade
+    rustup component add rust-src
+fi
+
 test_target() {
-    CARGO="${1}"
+    BUILD_CMD="${1}"
     TARGET="${2}"
     NO_STD="${3}"
 
@@ -46,21 +53,21 @@ test_target() {
     fi
 
     # Test that libc builds without any default features (no libstd)
-    "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}"
+    cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --no-default-features --target "${TARGET}"
 
     # Test that libc builds with default features (e.g. libstd)
     # if the target supports libstd
     if [ "$NO_STD" != "1" ]; then
-        "$CARGO" "+${RUST}" build -vv $opt --target "${TARGET}"
+        cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --target "${TARGET}"
     fi
 
     # Test that libc builds with the `extra_traits` feature
-    "$CARGO" "+${RUST}" build -vv $opt --no-default-features --target "${TARGET}" \
+    cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --no-default-features --target "${TARGET}" \
           --features extra_traits
 
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
-        "$CARGO" "+${RUST}" build -vv $opt --target "${TARGET}" \
+        cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --target "${TARGET}" \
               --features extra_traits
     fi
 }
@@ -115,6 +122,9 @@ i586-unknown-linux-musl \
 x86_64-unknown-cloudabi \
 "
 
+# FIXME: temporarirly disable the redox target
+# https://github.com/rust-lang/libc/issues/1457
+# x86_64-unknown-redox
 RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
@@ -125,7 +135,6 @@ x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
 x86_64-pc-windows-gnu \
 x86_64-unknown-linux-gnux32 \
-x86_64-unknown-redox \
 "
 
 RUST_OSX_TARGETS="\
@@ -167,7 +176,7 @@ case "${OS}" in
 esac
 
 for TARGET in $TARGETS; do
-    test_target cargo "$TARGET"
+    test_target build "$TARGET"
 done
 
 # FIXME: https://github.com/rust-lang/rust/issues/58564
@@ -219,6 +228,23 @@ x86_64-unknown-openbsd \
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
-        test_target xargo "$TARGET" 1
+        test_target xbuild "$TARGET" 1
     done
+
+    # Nintendo switch
+    cargo clean
+    mkdir -p target
+    (
+        cd target
+        wget https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.1/devkitpro-pacman.deb
+        sudo dpkg -i devkitpro-pacman.deb
+        sudo dkp-pacman -Sy
+        sudo dkp-pacman -Syu
+        sudo dkp-pacman -S -v --noconfirm switch-dev devkitA64
+    )
+    cp ci/switch.json switch.json
+    PATH="$PATH:/opt/devkitpro/devkitA64/bin"
+    PATH="$PATH:/opt/devkitpro/tools/bin"
+    cargo xbuild --target switch.json
 fi
+
