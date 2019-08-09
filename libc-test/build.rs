@@ -1454,7 +1454,7 @@ fn test_freebsd(target: &str) {
         Some(11) => cfg.cfg("freebsd11", None),
         Some(12) => cfg.cfg("freebsd12", None),
         Some(13) => cfg.cfg("freebsd13", None),
-        _ => &mut cfg
+        _ => &mut cfg,
     };
 
     // Required for `getline`:
