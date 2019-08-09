@@ -369,6 +369,11 @@ fn test_openbsd(target: &str) {
         (struct_ == "siginfo_t" && field == "si_addr")
     });
 
+    cfg.skip_roundtrip(move |s| match s {
+        "dirent" | "utsname" | "utmp" => true,
+        _ => false,
+    });
+
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
