@@ -1455,10 +1455,12 @@ fn test_freebsd(target: &str) {
 
     let freebsd_ver = which_freebsd();
 
-    if let Some(12) = freebsd_ver {
-        // If the host is FreeBSD 12, run FreeBSD 12 tests
-        cfg.cfg("freebsd12", None);
-    }
+    match freebsd_ver {
+        Some(11) => cfg.cfg("freebsd11", None),
+        Some(12) => cfg.cfg("freebsd12", None),
+        Some(13) => cfg.cfg("freebsd13", None),
+        _ => &mut cfg,
+    };
 
     // Required for `getline`:
     cfg.define("_WITH_GETLINE", None);
@@ -1586,7 +1588,7 @@ fn test_freebsd(target: &str) {
             | "IP_RECVORIGDSTADDR"
             | "IPV6_ORIGDSTADDR"
             | "IPV6_RECVORIGDSTADDR"
-                if Some(12) != freebsd_ver =>
+                if Some(11) == freebsd_ver =>
             {
                 true
             }
@@ -2472,6 +2474,7 @@ fn which_freebsd() -> Option<i32> {
     match &stdout {
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
+        s if s.starts_with("13") => Some(13),
         _ => None,
     }
 }

@@ -16,8 +16,14 @@ fn main() {
     }
 
     if env::var("LIBC_CI").is_ok() {
+        if let Some(11) = which_freebsd() {
+            println!("cargo:rustc-cfg=freebsd11");
+        }
         if let Some(12) = which_freebsd() {
             println!("cargo:rustc-cfg=freebsd12");
+        }
+        if let Some(13) = which_freebsd() {
+            println!("cargo:rustc-cfg=freebsd13");
         }
     }
 
@@ -100,6 +106,7 @@ fn which_freebsd() -> Option<i32> {
     match &stdout {
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
+        s if s.starts_with("13") => Some(13),
         _ => None,
     }
 }
