@@ -224,6 +224,13 @@ x86_64-unknown-haiku \
 x86_64-unknown-hermit \
 x86_64-unknown-l4re-uclibc \
 x86_64-unknown-openbsd \
+armv7-wrs-vxworks \
+aarch64-wrs-vxworks \
+i686-wrs-vxworks \
+x86_64-wrs-vxworks \
+powerpc-wrs-vxworks \
+powerpc-wrs-vxworks-spe \
+powerpc64-wrs-vxworks \
 "
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
