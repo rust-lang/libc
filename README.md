@@ -91,8 +91,8 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in `libc` by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
-[Azure Status]: https://dev.azure.com/rust-lang/libc/_apis/build/status/rust-lang.libc?branchName=master
-[Azure]: https://dev.azure.com/rust-lang/libc/_build/latest?definitionId=11&branchName=master
+[Azure Status]: https://dev.azure.com/rust-lang2/libc/_apis/build/status/rust-lang.libc?branchName=master
+[Azure]: https://dev.azure.com/rust-lang2/libc/_build/latest?definitionId=1&branchName=master
 [Cirrus-CI]: https://cirrus-ci.com/github/rust-lang/libc
 [Cirrus-CI Status]: https://api.cirrus-ci.com/github/rust-lang/libc.svg
 [crates.io]: https://crates.io/crates/libc
