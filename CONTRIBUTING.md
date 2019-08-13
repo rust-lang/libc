@@ -38,7 +38,7 @@ With that in mind, the steps for adding a new API are:
 
 ### Test before you commit
 
-We have two automated tests running on [Travis](https://travis-ci.com/rust-lang/libc):
+We have two automated tests running on [Azure Pipelines](https://dev.azure.com/rust-lang2/libc/_build?definitionId=1&_a=summary):
 
 1. [`libc-test`](https://github.com/gnzlbg/ctest)
   - `cd libc-test && cargo test`
