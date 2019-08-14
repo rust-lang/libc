@@ -7,6 +7,8 @@ fn main() {
         rustc_minor_version().expect("Failed to get rustc version");
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
+    #[allow(unused)]
+    let libc_ci = env::var("LIBC_CI").is_ok();
 
     if env::var("CARGO_FEATURE_USE_STD").is_ok() {
         println!(
@@ -15,15 +17,20 @@ fn main() {
         );
     }
 
-    if env::var("LIBC_CI").is_ok() {
-        if let Some(11) = which_freebsd() {
-            println!("cargo:rustc-cfg=freebsd11");
-        }
-        if let Some(12) = which_freebsd() {
-            println!("cargo:rustc-cfg=freebsd12");
-        }
-        if let Some(13) = which_freebsd() {
-            println!("cargo:rustc-cfg=freebsd13");
+    // The ABI of libc is backward compatible with FreeBSD 11.
+    //
+    // On CI, we detect the actual FreeBSD version and match its ABI exactly,
+    // running tests to ensure that the ABI is correct.
+    #[cfg(target_os = "freebsd")]
+    match which_freebsd() {
+        Some(11) if libc_ci => println!("cargo:rustc-cfg=freebsd11"),
+        Some(12) if libc_ci => println!("cargo:rustc-cfg=freebsd12"),
+        Some(13) if libc_ci => println!("cargo:rustc-cfg=freebsd13"),
+        Some(_) => println!("cargo:rustc-cfg=freebsd11"),
+        None =>
+        /* not FreeBSD - nothing to do here */
+        {
+            ()
         }
     }
 
@@ -87,6 +94,7 @@ fn rustc_minor_version() -> Option<u32> {
     otry!(pieces.next()).parse().ok()
 }
 
+#[cfg(target_os = "freebsd")]
 fn which_freebsd() -> Option<i32> {
     let output = std::process::Command::new("freebsd-version").output().ok();
     if output.is_none() {
