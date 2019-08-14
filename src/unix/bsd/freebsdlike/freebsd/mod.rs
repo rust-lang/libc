@@ -1334,9 +1334,11 @@ cfg_if! {
     } else if #[cfg(freebsd13)] {
         mod freebsd12;
         pub use self::freebsd12::*;
-    } else {
+    } else if #[cfg(freebsd11)] {
         mod freebsd11;
         pub use self::freebsd11::*;
+    } else {
+        // Unknown freebsd version
     }
 }
 
