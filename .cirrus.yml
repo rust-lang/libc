@@ -1,19 +1,4 @@
 task:
-  name: stable x86_64-unknown-freebsd
-  freebsd_instance:
-    image: freebsd-11-3-stable-amd64-v20190801
-  setup_script:
-    - pkg install -y curl
-    - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh -y
-    - . $HOME/.cargo/env
-    - rustup default stable
-  test_script:
-    - . $HOME/.cargo/env
-    - sh ci/run.sh x86_64-unknown-freebsd
-
-
-task:
   name: stable x86_64-unknown-freebsd-11
   freebsd_instance:
     image: freebsd-11-3-stable-amd64-v20190801
@@ -26,6 +11,7 @@ task:
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
+    - sh ci/run.sh x86_64-unknown-freebsd
     
 task:
   name: nightly x86_64-unknown-freebsd-12
@@ -40,3 +26,4 @@ task:
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
+    - sh ci/run.sh x86_64-unknown-freebsd
