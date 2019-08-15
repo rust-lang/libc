@@ -23,6 +23,7 @@ run() {
     docker run \
       --rm \
       --user "$(id -u)":"$(id -g)" \
+      --env LIBC_CI \
       --env CARGO_HOME=/cargo \
       --env CARGO_TARGET_DIR=/checkout/target \
       --volume "$(dirname "$(dirname "$(command -v cargo)")")":/cargo \

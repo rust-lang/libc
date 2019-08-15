@@ -87,8 +87,6 @@ if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
   opt="--release"
 fi
 
-export LIBC_CI=1
-
 cargo test -vv $opt --no-default-features --manifest-path libc-test/Cargo.toml \
       --target "${TARGET}"
 
