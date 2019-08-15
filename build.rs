@@ -21,17 +21,11 @@ fn main() {
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
-    #[cfg(target_os = "freebsd")]
     match which_freebsd() {
         Some(11) if libc_ci => println!("cargo:rustc-cfg=freebsd11"),
         Some(12) if libc_ci => println!("cargo:rustc-cfg=freebsd12"),
         Some(13) if libc_ci => println!("cargo:rustc-cfg=freebsd13"),
-        Some(_) => println!("cargo:rustc-cfg=freebsd11"),
-        None =>
-        /* not FreeBSD - nothing to do here */
-        {
-            ()
-        }
+        Some(_) | None => println!("cargo:rustc-cfg=freebsd11"),
     }
 
     // Rust >= 1.15 supports private module use:
@@ -94,7 +88,6 @@ fn rustc_minor_version() -> Option<u32> {
     otry!(pieces.next()).parse().ok()
 }
 
-#[cfg(target_os = "freebsd")]
 fn which_freebsd() -> Option<i32> {
     let output = std::process::Command::new("freebsd-version").output().ok();
     if output.is_none() {
