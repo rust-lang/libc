@@ -438,14 +438,11 @@ pub const POLLWRBAND: ::c_short = 0x100;
 
 pub const BIOCGBLEN: ::c_ulong = 0x40044266;
 pub const BIOCSBLEN: ::c_ulong = 0xc0044266;
-pub const BIOCSETF: ::c_ulong = 0x80104267;
 pub const BIOCFLUSH: ::c_uint = 0x20004268;
 pub const BIOCPROMISC: ::c_uint = 0x20004269;
 pub const BIOCGDLT: ::c_ulong = 0x4004426a;
 pub const BIOCGETIF: ::c_ulong = 0x4020426b;
 pub const BIOCSETIF: ::c_ulong = 0x8020426c;
-pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
-pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
 pub const BIOCGSTATS: ::c_ulong = 0x4008426f;
 pub const BIOCIMMEDIATE: ::c_ulong = 0x80044270;
 pub const BIOCVERSION: ::c_ulong = 0x40044271;
