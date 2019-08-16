@@ -136,7 +136,7 @@ jobs:
       - template: azure-install-rust.yml
       - script: sh ci/style.sh
         displayName: Check style
-      - script: sh ci/dox.sh
+      - script: LIBC_CI=1 sh ci/dox.sh
         displayName: Generate documentation
       - template: azure-configs/static-websites.yml@rustinfra
         parameters:
@@ -169,7 +169,7 @@ jobs:
       vmImage: ubuntu-16.04
     steps:
       - template: azure-install-rust.yml
-      - script: sh ./ci/build.sh
+      - script: LIBC_CI=1 sh ./ci/build.sh
         displayName: Execute build.sh
     strategy:
       matrix:
@@ -198,7 +198,7 @@ jobs:
       vmImage: macos-10.13
     steps:
       - template: azure-install-rust.yml
-      - script: sh ./ci/build.sh
+      - script: LIBC_CI=1 sh ./ci/build.sh
         displayName: Execute build.sh
     strategy:
       matrix:
