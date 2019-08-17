@@ -25,29 +25,6 @@ pub type time_t = i32;
 pub type useconds_t = u32;
 
 s! {
-    pub struct sockaddr {
-        pub sa_len: u8,
-        pub sa_family: sa_family_t,
-        pub sa_data: [::c_char; 14],
-    }
-
-    pub struct sockaddr_in6 {
-        pub sin6_len: u8,
-        pub sin6_family: sa_family_t,
-        pub sin6_port: ::in_port_t,
-        pub sin6_flowinfo: u32,
-        pub sin6_addr: ::in6_addr,
-        pub sin6_scope_id: u32,
-    }
-
-    pub struct sockaddr_in {
-        pub sin_len: u8,
-        pub sin_family: ::sa_family_t,
-        pub sin_port: ::in_port_t,
-        pub sin_addr: ::in_addr,
-        pub sin_zero: [::c_char; 8],
-    }
-
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -389,9 +366,7 @@ pub const O_CLOEXEC: ::c_int = 0x80000;
 
 pub const POLLIN: ::c_short = 0x1;
 pub const POLLPRI: ::c_short = 0x2;
-pub const POLLOUT: ::c_short = 0x4;
 pub const POLLERR: ::c_short = 0x8;
-pub const POLLHUP: ::c_short = 0x10;
 pub const POLLNVAL: ::c_short = 0x20;
 
 pub const RTLD_LAZY: ::c_int = 0x1;
