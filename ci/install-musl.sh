@@ -46,6 +46,20 @@ case ${1} in
         ./configure --prefix="/musl-${musl_arch}"
         make install -j4
         ;;
+    mips64)
+        musl_arch=mips64
+        kernel_arch=mips
+        CC=mips64-linux-gnuabi64-gcc CFLAGS="-march=mips64r2 -mabi=64" \
+          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+        make install -j4
+        ;;
+    mips64el)
+        musl_arch=mips64el
+        kernel_arch=mips
+        CC=mips64el-linux-gnuabi64-gcc CFLAGS="-march=mips64r2 -mabi=64" \
+          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+        make install -j4
+        ;;
     *)
         echo "Unknown target arch: \"${1}\""
         exit 1

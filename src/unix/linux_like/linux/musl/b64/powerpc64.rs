@@ -47,6 +47,36 @@ s! {
         __reserved: [::c_long; 3],
     }
 
+    pub struct statfs {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
+    }
+
+    pub struct statfs64 {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
+    }
+
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,
@@ -62,10 +92,31 @@ s! {
 
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MAP_32BIT: ::c_int = 0x0040;
+pub const MAP_ANON: ::c_int = 0x0020;
+pub const MAP_GROWSDOWN: ::c_int = 0x0100;
+pub const MAP_DENYWRITE: ::c_int = 0x0800;
+pub const MAP_EXECUTABLE: ::c_int = 0x01000;
+pub const MAP_LOCKED: ::c_int = 0x02000;
+pub const MAP_NORESERVE: ::c_int = 0x04000;
+pub const MAP_POPULATE: ::c_int = 0x08000;
+pub const MAP_NONBLOCK: ::c_int = 0x010000;
+pub const MAP_STACK: ::c_int = 0x020000;
+pub const MAP_HUGETLB: ::c_int = 0x040000;
+pub const O_ASYNC: ::c_int = 0x2000;
+pub const O_APPEND: ::c_int = 1024;
+pub const O_CREAT: ::c_int = 64;
+pub const O_EXCL: ::c_int = 128;
+pub const O_NOCTTY: ::c_int = 256;
+pub const O_NONBLOCK: ::c_int = 2048;
+pub const O_SYNC: ::c_int = 1052672;
+pub const O_RSYNC: ::c_int = 1052672;
+pub const O_DSYNC: ::c_int = 4096;
 pub const O_DIRECT: ::c_int = 0x20000;
 pub const O_DIRECTORY: ::c_int = 0x4000;
 pub const O_LARGEFILE: ::c_int = 0x10000;
 pub const O_NOFOLLOW: ::c_int = 0x8000;
+pub const POLLWRNORM: ::c_short = 0x100;
+pub const POLLWRBAND: ::c_short = 0x200;
 
 pub const SIGSTKSZ: ::size_t = 10240;
 pub const MINSIGSTKSZ: ::size_t = 4096;
@@ -431,11 +482,117 @@ pub const SYS_preadv2: ::c_long = 380;
 pub const SYS_pwritev2: ::c_long = 381;
 pub const SYS_kexec_file_load: ::c_long = 382;
 
+pub const ENAMETOOLONG: ::c_int = 36;
+pub const ENOLCK: ::c_int = 37;
+pub const ENOSYS: ::c_int = 38;
+pub const ENOTEMPTY: ::c_int = 39;
+pub const ELOOP: ::c_int = 40;
+pub const ENOMSG: ::c_int = 42;
+pub const EIDRM: ::c_int = 43;
+pub const ECHRNG: ::c_int = 44;
+pub const EL2NSYNC: ::c_int = 45;
+pub const EL3HLT: ::c_int = 46;
+pub const EL3RST: ::c_int = 47;
+pub const ELNRNG: ::c_int = 48;
+pub const EUNATCH: ::c_int = 49;
+pub const ENOCSI: ::c_int = 50;
+pub const EL2HLT: ::c_int = 51;
+pub const EBADE: ::c_int = 52;
+pub const EBADR: ::c_int = 53;
+pub const EXFULL: ::c_int = 54;
+pub const ENOANO: ::c_int = 55;
+pub const EBADRQC: ::c_int = 56;
+pub const EBADSLT: ::c_int = 57;
+pub const EMULTIHOP: ::c_int = 72;
+pub const EBADMSG: ::c_int = 74;
+pub const EOVERFLOW: ::c_int = 75;
+pub const ENOTUNIQ: ::c_int = 76;
+pub const EBADFD: ::c_int = 77;
+pub const EREMCHG: ::c_int = 78;
+pub const ELIBACC: ::c_int = 79;
+pub const ELIBBAD: ::c_int = 80;
+pub const ELIBSCN: ::c_int = 81;
+pub const ELIBMAX: ::c_int = 82;
+pub const ELIBEXEC: ::c_int = 83;
+pub const EILSEQ: ::c_int = 84;
+pub const ERESTART: ::c_int = 85;
+pub const ESTRPIPE: ::c_int = 86;
+pub const EUSERS: ::c_int = 87;
+pub const ENOTSOCK: ::c_int = 88;
+pub const EDESTADDRREQ: ::c_int = 89;
+pub const EMSGSIZE: ::c_int = 90;
+pub const EPROTOTYPE: ::c_int = 91;
+pub const ENOPROTOOPT: ::c_int = 92;
+pub const EPROTONOSUPPORT: ::c_int = 93;
+pub const ESOCKTNOSUPPORT: ::c_int = 94;
+pub const EOPNOTSUPP: ::c_int = 95;
+pub const ENOTSUP: ::c_int = EOPNOTSUPP;
+pub const EPFNOSUPPORT: ::c_int = 96;
+pub const EAFNOSUPPORT: ::c_int = 97;
+pub const EADDRINUSE: ::c_int = 98;
+pub const EADDRNOTAVAIL: ::c_int = 99;
+pub const ENETDOWN: ::c_int = 100;
+
+pub const F_GETLK: ::c_int = 5;
+pub const F_GETOWN: ::c_int = 9;
+pub const F_SETLK: ::c_int = 6;
+pub const F_SETLKW: ::c_int = 7;
+pub const F_SETOWN: ::c_int = 8;
+
+pub const SIGCHLD: ::c_int = 17;
+pub const SIGBUS: ::c_int = 7;
+pub const SIGTTIN: ::c_int = 21;
+pub const SIGTTOU: ::c_int = 22;
+pub const SIGXCPU: ::c_int = 24;
+pub const SIGXFSZ: ::c_int = 25;
+pub const SIGVTALRM: ::c_int = 26;
+pub const SIGPROF: ::c_int = 27;
+pub const SIGWINCH: ::c_int = 28;
+pub const SIGUSR1: ::c_int = 10;
+pub const SIGUSR2: ::c_int = 12;
+pub const SIGCONT: ::c_int = 18;
+pub const SIGSTOP: ::c_int = 19;
+pub const SIGTSTP: ::c_int = 20;
+pub const SIGURG: ::c_int = 23;
+pub const SIGIO: ::c_int = 29;
+pub const SIGSYS: ::c_int = 31;
+pub const SIGSTKFLT: ::c_int = 16;
+pub const SIGPOLL: ::c_int = 29;
+pub const SIGPWR: ::c_int = 30;
+pub const SIG_SETMASK: ::c_int = 2;
+pub const SIG_BLOCK: ::c_int = 0x000000;
+pub const SIG_UNBLOCK: ::c_int = 0x01;
+
 pub const FIOCLEX: ::c_int = 0x20006601;
 pub const FIONCLEX: ::c_int = 0x20006602;
 pub const FIONBIO: ::c_int = 0x8004667e;
 pub const EDEADLK: ::c_int = 58;
 pub const EDEADLOCK: ::c_int = EDEADLK;
+pub const SA_ONSTACK: ::c_int = 0x08000000;
+pub const SA_SIGINFO: ::c_int = 0x00000004;
+pub const SA_NOCLDWAIT: ::c_int = 0x00000002;
+pub const SOCK_STREAM: ::c_int = 1;
+pub const SOCK_DGRAM: ::c_int = 2;
+pub const SOL_SOCKET: ::c_int = 1;
+pub const SO_REUSEADDR: ::c_int = 2;
+pub const SO_TYPE: ::c_int = 3;
+pub const SO_ERROR: ::c_int = 4;
+pub const SO_DONTROUTE: ::c_int = 5;
+pub const SO_BROADCAST: ::c_int = 6;
+pub const SO_SNDBUF: ::c_int = 7;
+pub const SO_RCVBUF: ::c_int = 8;
+pub const SO_KEEPALIVE: ::c_int = 9;
+pub const SO_OOBINLINE: ::c_int = 10;
+pub const SO_NO_CHECK: ::c_int = 11;
+pub const SO_PRIORITY: ::c_int = 12;
+pub const SO_LINGER: ::c_int = 13;
+pub const SO_BSDCOMPAT: ::c_int = 14;
+pub const SO_REUSEPORT: ::c_int = 15;
+pub const SO_ACCEPTCONN: ::c_int = 30;
+pub const SO_SNDBUFFORCE: ::c_int = 32;
+pub const SO_RCVBUFFORCE: ::c_int = 33;
+pub const SO_PROTOCOL: ::c_int = 38;
+pub const SO_DOMAIN: ::c_int = 39;
 pub const SO_PASSCRED: ::c_int = 20;
 pub const SO_PEERCRED: ::c_int = 21;
 pub const SO_RCVLOWAT: ::c_int = 16;
@@ -443,6 +600,7 @@ pub const SO_SNDLOWAT: ::c_int = 17;
 pub const SO_RCVTIMEO: ::c_int = 18;
 pub const SO_SNDTIMEO: ::c_int = 19;
 pub const EXTPROC: ::tcflag_t = 0x10000000;
+pub const VEOF: usize = 4;
 pub const VEOL: usize = 6;
 pub const VEOL2: usize = 8;
 pub const VMIN: usize = 5;
@@ -566,6 +724,8 @@ pub const B2500000: ::speed_t = 0o00033;
 pub const B3000000: ::speed_t = 0o00034;
 pub const B3500000: ::speed_t = 0o00035;
 pub const B4000000: ::speed_t = 0o00036;
+
+pub const EHWPOISON: ::c_int = 133;
 
 extern {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
