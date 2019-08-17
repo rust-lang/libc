@@ -16,7 +16,10 @@
 #![crate_type = "rlib"]
 #![cfg_attr(libc_deny_warnings, deny(warnings))]
 #![allow(
-    bad_style, overflowing_literals, improper_ctypes, unknown_lints,
+    bad_style,
+    overflowing_literals,
+    improper_ctypes,
+    unknown_lints,
     redundant_semicolon
 )]
 // Attributes needed when building as part of the standard library
