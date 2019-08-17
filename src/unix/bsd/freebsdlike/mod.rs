@@ -1009,6 +1009,11 @@ pub const SLIPDISC: ::c_int = 0x4;
 pub const PPPDISC: ::c_int = 0x5;
 pub const NETGRAPHDISC: ::c_int = 0x6;
 
+pub const BIOCSETF: ::c_ulong = 0x80104267;
+pub const BIOCGDLTLIST: ::c_ulong = 0xc0104279;
+pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
+pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
+
 pub const FIODTYPE: ::c_ulong = 0x4004667a;
 pub const FIOGETLBA: ::c_ulong = 0x40046679;
 pub const FIODGNAME: ::c_ulong = 0x80106678;
