@@ -1307,6 +1307,10 @@ pub const SOCK_CLOEXEC: ::c_int = 0x8000;
 pub const SOCK_NONBLOCK: ::c_int = 0x4000;
 pub const SOCK_DNS: ::c_int = 0x1000;
 
+pub const BIOCGRSIG: ::c_ulong = 0x40044273;
+pub const BIOCSRSIG: ::c_ulong = 0x80044272;
+pub const BIOCSDLT: ::c_ulong = 0x8004427a;
+
 pub const PTRACE_FORK: ::c_int = 0x0002;
 
 pub const WCONTINUED: ::c_int = 8;

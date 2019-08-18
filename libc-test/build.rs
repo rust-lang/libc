@@ -264,6 +264,7 @@ fn test_openbsd(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "net/bpf.h",
         "resolv.h",
         "pthread.h",
         "dlfcn.h",
