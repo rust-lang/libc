@@ -337,7 +337,6 @@ pub const AT_REMOVEDIR: c_int = 0x4;
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
 
-
 pub const E2BIG: c_int = __WASI_E2BIG as c_int;
 pub const EACCES: c_int = __WASI_EACCES as c_int;
 pub const EADDRINUSE: c_int = __WASI_EADDRINUSE as c_int;
