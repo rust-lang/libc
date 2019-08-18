@@ -1243,7 +1243,6 @@ extern {
         fd: ::c_int,
         offset: off_t,
     ) -> *mut ::c_void;
-
     pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
@@ -1289,7 +1288,6 @@ extern {
     ) -> *mut ::c_void;
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
     pub fn res_init() -> ::c_int;
-
     pub fn difftime(time1: time_t, time0: time_t) -> ::c_double;
 
     pub fn mknod(
