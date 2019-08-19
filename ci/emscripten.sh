@@ -34,8 +34,8 @@ curl --retry 5 -L https://s3.amazonaws.com/mozilla-games/emscripten/releases/ems
 
 cd /emsdk-portable
 ./emsdk update
-hide_output ./emsdk install sdk-1.38.15-64bit
-./emsdk activate sdk-1.38.15-64bit
+hide_output ./emsdk install sdk-1.38.40-64bit
+./emsdk activate sdk-1.38.40-64bit
 
 # Compile and cache libc
 # shellcheck disable=SC1091
@@ -53,4 +53,3 @@ chmod a+rxw -R /emsdk-portable
 cd /
 curl --retry 5 -L https://nodejs.org/dist/v12.3.1/node-v12.3.1-linux-x64.tar.xz | \
     tar -xJ
-
