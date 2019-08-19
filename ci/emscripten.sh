@@ -34,8 +34,8 @@ curl --retry 5 -L https://s3.amazonaws.com/mozilla-games/emscripten/releases/ems
 
 cd /emsdk-portable
 ./emsdk update
-hide_output ./emsdk install sdk-1.38.40-64bit
-./emsdk activate sdk-1.38.40-64bit
+hide_output ./emsdk install 1.38.37
+./emsdk activate 1.38.37
 
 # Compile and cache libc
 # shellcheck disable=SC1091
