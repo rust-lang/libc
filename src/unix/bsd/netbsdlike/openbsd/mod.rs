@@ -748,6 +748,9 @@ pub const ELAST : ::c_int = 95;
 
 pub const F_DUPFD_CLOEXEC : ::c_int = 10;
 
+pub const UTIME_OMIT: c_long = -2;
+pub const UTIME_NOW: c_long = -1;
+
 pub const AT_FDCWD: ::c_int = -100;
 pub const AT_EACCESS: ::c_int = 0x01;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x02;
@@ -1297,14 +1300,19 @@ pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
 pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
-pub const PTHREAD_STACK_MIN : ::size_t = 4096;
-pub const SIGSTKSZ : ::size_t = 28672;
+pub const PTHREAD_STACK_MIN: ::size_t = (1_usize << _MAX_PAGE_SHIFT);
+pub const MINSIGSTKSZ: ::size_t = (3_usize << _MAX_PAGE_SHIFT);
+pub const SIGSTKSZ: ::size_t = MINSIGSTKSZ + (1_usize << _MAX_PAGE_SHIFT) * 4;
 
 pub const PT_FIRSTMACH: ::c_int = 32;
 
 pub const SOCK_CLOEXEC: ::c_int = 0x8000;
 pub const SOCK_NONBLOCK: ::c_int = 0x4000;
 pub const SOCK_DNS: ::c_int = 0x1000;
+
+pub const BIOCGRSIG: ::c_ulong = 0x40044273;
+pub const BIOCSRSIG: ::c_ulong = 0x80044272;
+pub const BIOCSDLT: ::c_ulong = 0x8004427a;
 
 pub const PTRACE_FORK: ::c_int = 0x0002;
 
@@ -1437,6 +1445,9 @@ cfg_if! {
     } else if #[cfg(target_arch = "aarch64")] {
         mod aarch64;
         pub use self::aarch64::*;
+    } else if #[cfg(target_arch = "sparc64")] {
+        mod sparc64;
+        pub use self::sparc64::*;
     } else {
         // Unknown target_arch
     }

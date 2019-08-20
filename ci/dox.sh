@@ -47,6 +47,9 @@ while read -r target; do
 
     rustup target add "${target}" || true
 
+    # Enable extra configuration flags:
+    export RUSTDOCFLAGS="--cfg freebsd11"
+
     # If cargo doc fails, then try xargo:
     if ! cargo doc --target "${target}" \
              --no-default-features  --features extra_traits ; then

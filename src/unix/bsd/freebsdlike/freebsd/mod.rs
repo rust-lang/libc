@@ -569,6 +569,8 @@ pub const TIOCSIG: ::c_uint = 0x2004745f;
 pub const TIOCM_DCD: ::c_int = 0x40;
 pub const H4DISC: ::c_int = 0x7;
 
+pub const BIOCSETFNR: ::c_ulong = 0x80104282;
+
 pub const FIONWRITE: ::c_ulong = 0x40046677;
 pub const FIONSPACE: ::c_ulong = 0x40046676;
 pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;
@@ -1041,6 +1043,9 @@ pub const P_PID: idtype_t = 0;
 pub const P_PGID: idtype_t = 2;
 pub const P_ALL: idtype_t = 7;
 
+pub const UTIME_OMIT: c_long = -2;
+pub const UTIME_NOW: c_long = -1;
+
 pub const B460800: ::speed_t = 460800;
 pub const B921600: ::speed_t = 921600;
 
@@ -1334,9 +1339,11 @@ cfg_if! {
     } else if #[cfg(freebsd13)] {
         mod freebsd12;
         pub use self::freebsd12::*;
-    } else {
+    } else if #[cfg(freebsd11)] {
         mod freebsd11;
         pub use self::freebsd11::*;
+    } else {
+        // Unknown freebsd version
     }
 }
 

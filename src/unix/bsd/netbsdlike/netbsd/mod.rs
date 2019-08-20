@@ -1077,6 +1077,12 @@ pub const FD_SETSIZE: usize = 0x100;
 
 pub const ST_NOSUID: ::c_ulong = 8;
 
+pub const BIOCGRSIG: ::c_ulong = 0x40044272;
+pub const BIOCSRSIG: ::c_ulong = 0x80044273;
+pub const BIOCSDLT: ::c_ulong = 0x80044278;
+pub const BIOCGSEESENT: ::c_ulong = 0x40044276;
+pub const BIOCSSEESENT: ::c_ulong = 0x80044277;
+
 cfg_if! {
     if #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
                  target_arch = "x86", target_arch = "x86_64"))] {
@@ -1356,6 +1362,9 @@ pub const WNOWAIT: ::c_int = 0x00010000;
 pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 4;
+
+pub const UTIME_OMIT: c_long = 1073741822;
+pub const UTIME_NOW: c_long = 1073741823;
 
 pub const B460800: ::speed_t = 460800;
 pub const B921600: ::speed_t = 921600;

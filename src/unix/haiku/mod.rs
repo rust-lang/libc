@@ -1039,6 +1039,9 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
+pub const UTIME_OMIT: c_long = 1000000001;
+pub const UTIME_NOW: c_long = 1000000000;
+
 pub const VINTR: usize = 0;
 pub const VQUIT: usize = 1;
 pub const VERASE: usize = 2;
