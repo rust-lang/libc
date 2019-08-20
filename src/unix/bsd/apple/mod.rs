@@ -2830,6 +2830,9 @@ pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
 
+pub const UTIME_OMIT: c_long = -2;
+pub const UTIME_NOW: c_long = -1;
+
 pub const XATTR_NOFOLLOW: ::c_int = 0x0001;
 pub const XATTR_CREATE: ::c_int = 0x0002;
 pub const XATTR_REPLACE: ::c_int = 0x0004;

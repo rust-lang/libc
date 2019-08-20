@@ -748,6 +748,9 @@ pub const ELAST : ::c_int = 95;
 
 pub const F_DUPFD_CLOEXEC : ::c_int = 10;
 
+pub const UTIME_OMIT: c_long = -2;
+pub const UTIME_NOW: c_long = -1;
+
 pub const AT_FDCWD: ::c_int = -100;
 pub const AT_EACCESS: ::c_int = 0x01;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x02;

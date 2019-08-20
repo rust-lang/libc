@@ -1043,6 +1043,9 @@ pub const P_PID: idtype_t = 0;
 pub const P_PGID: idtype_t = 2;
 pub const P_ALL: idtype_t = 7;
 
+pub const UTIME_OMIT: c_long = -2;
+pub const UTIME_NOW: c_long = -1;
+
 pub const B460800: ::speed_t = 460800;
 pub const B921600: ::speed_t = 921600;
 
