@@ -523,12 +523,12 @@ pub const EOWNERDEAD: ::c_int = 165;
 pub const ENOTRECOVERABLE: ::c_int = 166;
 pub const ERFKILL: ::c_int = 167;
 
-pub const MAP_NORESERVE: ::c_int = 0x400;
 pub const MAP_ANON: ::c_int = 0x800;
 pub const MAP_GROWSDOWN: ::c_int = 0x1000;
 pub const MAP_DENYWRITE: ::c_int = 0x2000;
 pub const MAP_EXECUTABLE: ::c_int = 0x4000;
 pub const MAP_LOCKED: ::c_int = 0x8000;
+pub const MAP_NORESERVE: ::c_int = 0x400;
 pub const MAP_POPULATE: ::c_int = 0x10000;
 pub const MAP_NONBLOCK: ::c_int = 0x20000;
 pub const MAP_STACK: ::c_int = 0x40000;

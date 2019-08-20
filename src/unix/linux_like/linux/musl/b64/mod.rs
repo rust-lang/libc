@@ -2,6 +2,21 @@ pub type c_long = i64;
 pub type c_ulong = u64;
 
 s! {
+    pub struct statfs64 {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
+    }
+
     pub struct statvfs64 {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -56,6 +71,21 @@ s! {
         pub msg_lrpid: ::pid_t,
         __pad1: ::c_ulong,
         __pad2: ::c_ulong,
+    }
+
+    pub struct statfs {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
     }
 
     pub struct msghdr {
