@@ -370,6 +370,9 @@ pub const RLIMIT_MSGQUEUE: ::c_int = 12;
 pub const RLIMIT_NICE: ::c_int = 13;
 pub const RLIMIT_RTPRIO: ::c_int = 14;
 
+pub const UTIME_OMIT: c_long = 1073741822;
+pub const UTIME_NOW: c_long = 1073741823;
+
 extern {
     pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
                     flags: ::c_uint) -> ::c_int;
