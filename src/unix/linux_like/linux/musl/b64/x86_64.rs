@@ -47,6 +47,36 @@ s! {
         __reserved: [::c_long; 3],
     }
 
+    pub struct user_regs_struct {
+        pub r15: ::c_ulonglong,
+        pub r14: ::c_ulonglong,
+        pub r13: ::c_ulonglong,
+        pub r12: ::c_ulonglong,
+        pub rbp: ::c_ulonglong,
+        pub rbx: ::c_ulonglong,
+        pub r11: ::c_ulonglong,
+        pub r10: ::c_ulonglong,
+        pub r9: ::c_ulonglong,
+        pub r8: ::c_ulonglong,
+        pub rax: ::c_ulonglong,
+        pub rcx: ::c_ulonglong,
+        pub rdx: ::c_ulonglong,
+        pub rsi: ::c_ulonglong,
+        pub rdi: ::c_ulonglong,
+        pub orig_rax: ::c_ulonglong,
+        pub rip: ::c_ulonglong,
+        pub cs: ::c_ulonglong,
+        pub eflags: ::c_ulonglong,
+        pub rsp: ::c_ulonglong,
+        pub ss: ::c_ulonglong,
+        pub fs_base: ::c_ulonglong,
+        pub gs_base: ::c_ulonglong,
+        pub ds: ::c_ulonglong,
+        pub es: ::c_ulonglong,
+        pub fs: ::c_ulonglong,
+        pub gs: ::c_ulonglong,
+    }
+
     pub struct mcontext_t {
         __private: [u64; 32],
     }
