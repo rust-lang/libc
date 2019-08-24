@@ -1,18 +1,4 @@
 task:
-  name: stable x86_64-unknown-freebsd-11
-  freebsd_instance:
-    image: freebsd-11-3-stable-amd64-v20190801
-  setup_script:
-    - pkg install -y curl
-    - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh -y
-    - . $HOME/.cargo/env
-    - rustup default stable
-  test_script:
-    - . $HOME/.cargo/env
-    - cargo test
-    
-task:
   name: nightly x86_64-unknown-freebsd-12
   freebsd_instance:
     image: freebsd-12-0-release-amd64
@@ -24,4 +10,4 @@ task:
     - rustup default nightly
   test_script:
     - . $HOME/.cargo/env
-    - cargo test
+    - gdb --args cargo build
