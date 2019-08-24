@@ -844,6 +844,7 @@ impl TestGenerator {
                 .flag("-Wno-type-limits")
                 // allow taking address of packed struct members:
                 .flag("-Wno-address-of-packed-member")
+                .flag("-Wno-unknown-warning-option")
                 .flag("-Wno-deprecated-declarations"); // allow deprecated items
         }
 
