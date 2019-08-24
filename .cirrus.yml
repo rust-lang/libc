@@ -10,4 +10,4 @@ task:
     - rustup default nightly
   test_script:
     - . $HOME/.cargo/env
-    - gdb --args cargo build
+    - gdb -batch -ex "run" -ex "bt" "cargo build" 2>&1 
