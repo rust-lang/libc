@@ -1339,7 +1339,7 @@ cfg_if! {
     } else if #[cfg(freebsd13)] {
         mod freebsd12;
         pub use self::freebsd12::*;
-    } else if #[cfg(freebsd11)] {
+    } else if #[cfg(any(freebsd10, freebsd11))] {
         mod freebsd11;
         pub use self::freebsd11::*;
     } else {

@@ -16,7 +16,8 @@ fn main() {
         );
     }
 
-    // The ABI of libc is backward compatible with FreeBSD 11.
+    // The ABI of libc used by libstd is backward compatible with FreeBSD 10.
+    // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
