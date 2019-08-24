@@ -10,8 +10,7 @@ task:
     - rustup default stable
   test_script:
     - . $HOME/.cargo/env
-    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
-    - sh ci/run.sh x86_64-unknown-freebsd
+    - cargo test
     
 task:
   name: nightly x86_64-unknown-freebsd-12
@@ -25,5 +24,4 @@ task:
     - rustup default nightly
   test_script:
     - . $HOME/.cargo/env
-    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
-    - sh ci/run.sh x86_64-unknown-freebsd
+    - cargo test
