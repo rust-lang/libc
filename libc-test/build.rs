@@ -1457,6 +1457,7 @@ fn test_freebsd(target: &str) {
     let freebsd_ver = which_freebsd();
 
     match freebsd_ver {
+        Some(10) => cfg.cfg("freebsd10", None),
         Some(11) => cfg.cfg("freebsd11", None),
         Some(12) => cfg.cfg("freebsd12", None),
         Some(13) => cfg.cfg("freebsd13", None),
@@ -1466,7 +1467,10 @@ fn test_freebsd(target: &str) {
     // Required for `getline`:
     cfg.define("_WITH_GETLINE", None);
     // Required for making freebsd11_stat available in the headers
-    cfg.define("_WANT_FREEBSD11_STAT", None);
+    match freebsd_ver {
+        Some(10) => &mut cfg,
+        _ => cfg.define("_WANT_FREEBSD11_STAT", None),
+    };
 
     headers! { cfg:
                 "aio.h",
@@ -1594,6 +1598,34 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // These constants were introduced in FreeBSD 11:
+            "SF_USER_READAHEAD"
+            | "SF_NOCACHE"
+            | "RLIMIT_KQUEUES"
+            | "RLIMIT_UMTXP"
+            | "EVFILT_PROCDESC"
+            | "EVFILT_SENDFILE"
+            | "EVFILT_EMPTY"
+            | "SO_REUSEPORT_LB"
+            | "TCP_CCALGOOPT"
+            | "TCP_PCAP_OUT"
+            | "TCP_PCAP_IN"
+            | "IP_BINDMULTI"
+            | "IP_ORIGDSTADDR"
+            | "IP_RECVORIGDSTADDR"
+            | "IPV6_ORIGDSTADDR"
+            | "IPV6_RECVORIGDSTADDR"
+            | "PD_CLOEXEC"
+            | "PD_ALLOWED_AT_FORK"
+            | "IP_RSS_LISTEN_BUCKET"
+                if Some(10) == freebsd_ver =>
+            {
+                true
+            }
+
+            // FIXME: This constant has a different value in FreeBSD 10:
+            "RLIM_NLIMITS" if Some(10) == freebsd_ver => true,
+
             // FIXME: There are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
@@ -1609,11 +1641,31 @@ fn test_freebsd(target: &str) {
         }
     });
 
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // `mmsghdr` is not available in FreeBSD 10
+            "mmsghdr" if Some(10) == freebsd_ver => true,
+
+            _ => false,
+        }
+    });
+
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
+
+            // These functions were added in FreeBSD 11:
+            "fdatasync" | "mq_getfd_np" | "sendmmsg" | "recvmmsg"
+                if Some(10) == freebsd_ver =>
+            {
+                true
+            }
+
+            // This function changed its return type from `int` in FreeBSD10 to
+            // `ssize_t` in FreeBSD11:
+            "aio_waitcomplete" if Some(10) == freebsd_ver => true,
 
             // The `uname` function in the `utsname.h` FreeBSD header is a C
             // inline function (has no symbol) that calls the `__xuname` symbol.
@@ -1626,6 +1678,14 @@ fn test_freebsd(target: &str) {
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" => true,
 
+            _ => false,
+        }
+    });
+
+    cfg.skip_signededness(move |c| {
+        match c {
+            // FIXME: has a different sign in FreeBSD10
+            "blksize_t" if Some(10) == freebsd_ver => true,
             _ => false,
         }
     });
@@ -1643,9 +1703,17 @@ fn test_freebsd(target: &str) {
     });
 
     cfg.skip_field(move |struct_, field| {
-        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
-        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
-        (struct_ == "sigaction" && field == "sa_sigaction")
+        match (struct_, field) {
+            // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+            // incorrect, see: https://github.com/rust-lang/libc/issues/1359
+            ("sigaction", "sa_sigaction") => true,
+
+            // FIXME: in FreeBSD10 this field has type `char*` instead of
+            // `void*`:
+            ("stack_t", "ss_sp") if Some(10) == freebsd_ver => true,
+
+            _ => false,
+        }
     });
 
     cfg.skip_roundtrip(move |s| match s {
@@ -2473,6 +2541,7 @@ fn which_freebsd() -> Option<i32> {
     let stdout = String::from_utf8(output.stdout).ok()?;
 
     match &stdout {
+        s if s.starts_with("10") => Some(10),
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),
