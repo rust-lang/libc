@@ -104,6 +104,10 @@ s! {
     }
 }
 
+// FIXME: FreeBSD10 is only defined when building libstd
+// These types are not available in FreeBSD10 and
+// cfg'ing them out prevents them from being used from
+// libstd by accident.
 #[cfg(not(freebsd10))]
 s! {
     pub struct mmsghdr {
@@ -310,10 +314,12 @@ cfg_if! {
     }
 }
 
+// FIXME: FreeBSD10 is only defined when building libstd
+// These constants are not available in FreeBSD10 and
+// cfg'ing them out prevents them from being used from
+// libstd by accident.
 cfg_if! {
     if #[cfg(not(freebsd10))] {
-        // These constants are not available in FreeBSD10
-        // This prevents them from being used from libstd:
         pub const SF_USER_READAHEAD: ::c_int = 0x00000008;
         pub const SF_NOCACHE: ::c_int = 0x00000010;
         pub const RLIMIT_KQUEUES: ::c_int = 13;
@@ -1143,6 +1149,10 @@ f! {
     }
 }
 
+// FIXME: FreeBSD10 is only defined when building libstd
+// These functions are not available in FreeBSD10 and
+// cfg'ing them out prevents them from being used from
+// libstd by accident.
 #[cfg(not(freebsd10))]
 extern {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
