@@ -1611,8 +1611,8 @@ fn test_freebsd(target: &str) {
             | "TCP_PCAP_OUT"
             | "TCP_PCAP_IN"
             | "IP_BINDMULTI"
-            | "IP_ORIGDSTADDR "
-            | "IP_RECVORIGDSTADDR "
+            | "IP_ORIGDSTADDR"
+            | "IP_RECVORIGDSTADDR"
             | "IPV6_ORIGDSTADDR"
             | "IPV6_RECVORIGDSTADDR"
             | "PD_CLOEXEC"
@@ -1657,11 +1657,11 @@ fn test_freebsd(target: &str) {
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
             // These functions were added in FreeBSD 11:
-            "fdatasync" | "aio_waitcomplete" | "mq_getfd_np"
-                if Some(10) == freebsd_ver =>
-            {
-                true
-            }
+            "fdatasync" | "mq_getfd_np" if Some(10) == freebsd_ver => true,
+
+            // This function changed its return type from `int` in FreeBSD10 to
+            // `ssize_t` in FreeBSD11:
+            "aio_waitcomplete" if Some(10) == freebsd_ver => true,
 
             // The `uname` function in the `utsname.h` FreeBSD header is a C
             // inline function (has no symbol) that calls the `__xuname` symbol.
