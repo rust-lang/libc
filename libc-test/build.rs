@@ -1598,6 +1598,9 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // FIXME: This constant has a different value in FreeBSD 10:
+            "RLIM_NLIMITS" if Some(10) == freebsd_ver => true,
+
             // FIXME: There are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
@@ -1634,6 +1637,14 @@ fn test_freebsd(target: &str) {
         }
     });
 
+    cfg.skip_signededness(move |c| {
+        match c {
+            // FIXME: has a different sign in FreeBSD10
+            "blksize_t" if Some(10) == freebsd_ver => true,
+            _ => false,
+        }
+    });
+
     cfg.volatile_item(|i| {
         use ctest::VolatileItemKind::*;
         match i {
@@ -1647,9 +1658,17 @@ fn test_freebsd(target: &str) {
     });
 
     cfg.skip_field(move |struct_, field| {
-        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
-        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
-        (struct_ == "sigaction" && field == "sa_sigaction")
+        match (struct_, field) {
+            // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+            // incorrect, see: https://github.com/rust-lang/libc/issues/1359
+            ("sigaction", "sa_sigaction") => true,
+
+            // FIXME: in FreeBSD10 this field has type `char*` instead of
+            // `void*`:
+            ("stack_t", "ss_sp") if Some(10) == freebsd_ver => true,
+
+            _ => false,
+        }
     });
 
     cfg.skip_roundtrip(move |s| match s {

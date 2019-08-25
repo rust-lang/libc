@@ -310,6 +310,32 @@ cfg_if! {
     }
 }
 
+cfg_if! {
+    if #[cfg(not(freebsd10))] {
+        // These constants are not available in FreeBSD10
+        // This prevents them from being used from libstd:
+        pub const SF_USER_READAHEAD: ::c_int = 0x00000008;
+        pub const SF_NOCACHE: ::c_int = 0x00000010;
+        pub const RLIMIT_KQUEUES: ::c_int = 13;
+        pub const RLIMIT_UMTXP: ::c_int = 14;
+        pub const EVFILT_PROCDESC: i16 = -8;
+        pub const EVFILT_SENDFILE: i16 = -12;
+        pub const EVFILT_EMPTY: i16 = -13;
+        pub const SO_REUSEPORT_LB: ::c_int = 0x10000;
+        pub const TCP_CCALGOOPT: ::c_int = 65;
+        pub const TCP_PCAP_OUT: ::c_int = 2048;
+        pub const TCP_PCAP_IN: ::c_int = 4096;
+        pub const IP_BINDMULTI: ::c_int = 25;
+        pub const IP_ORIGDSTADDR : ::c_int = 27;
+        pub const IP_RECVORIGDSTADDR : ::c_int = IP_ORIGDSTADDR;
+        pub const IPV6_ORIGDSTADDR: ::c_int = 72;
+        pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
+        pub const PD_CLOEXEC: ::c_int = 0x00000002;
+        pub const PD_ALLOWED_AT_FORK: ::c_int = PD_DAEMON | PD_CLOEXEC;
+        pub const IP_RSS_LISTEN_BUCKET: ::c_int = 26;
+    }
+}
+
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
@@ -323,8 +349,6 @@ pub const SIGSTKSZ: ::size_t = 34816;
 pub const SF_NODISKIO: ::c_int = 0x00000001;
 pub const SF_MNOWAIT: ::c_int = 0x00000002;
 pub const SF_SYNC: ::c_int = 0x00000004;
-pub const SF_USER_READAHEAD: ::c_int = 0x00000008;
-pub const SF_NOCACHE: ::c_int = 0x00000010;
 pub const O_CLOEXEC: ::c_int = 0x00100000;
 pub const O_DIRECTORY: ::c_int = 0x00020000;
 pub const O_EXEC: ::c_int = 0x00040000;
@@ -338,8 +362,6 @@ pub const ENOTRECOVERABLE: ::c_int = 95;
 pub const EOWNERDEAD: ::c_int = 96;
 pub const RLIMIT_NPTS: ::c_int = 11;
 pub const RLIMIT_SWAP: ::c_int = 12;
-pub const RLIMIT_KQUEUES: ::c_int = 13;
-pub const RLIMIT_UMTXP: ::c_int = 14;
 pub const RLIM_NLIMITS: ::rlim_t = 15;
 
 pub const Q_GETQUOTA: ::c_int = 0x700;
@@ -361,12 +383,9 @@ pub const EVFILT_VNODE: i16 = -4;
 pub const EVFILT_PROC: i16 = -5;
 pub const EVFILT_SIGNAL: i16 = -6;
 pub const EVFILT_TIMER: i16 = -7;
-pub const EVFILT_PROCDESC: i16 = -8;
 pub const EVFILT_FS: i16 = -9;
 pub const EVFILT_LIO: i16 = -10;
 pub const EVFILT_USER: i16 = -11;
-pub const EVFILT_SENDFILE: i16 = -12;
-pub const EVFILT_EMPTY: i16 = -13;
 
 pub const EV_ADD: u16 = 0x1;
 pub const EV_DELETE: u16 = 0x2;
@@ -593,7 +612,6 @@ pub const JAIL_SYS_INHERIT: ::c_int = 2;
 pub const SO_BINTIME: ::c_int = 0x2000;
 pub const SO_NO_OFFLOAD: ::c_int = 0x4000;
 pub const SO_NO_DDP: ::c_int = 0x8000;
-pub const SO_REUSEPORT_LB: ::c_int = 0x10000;
 pub const SO_LABEL: ::c_int = 0x1009;
 pub const SO_PEERLABEL: ::c_int = 0x1010;
 pub const SO_LISTENQLIMIT: ::c_int = 0x1011;
@@ -932,22 +950,11 @@ pub const IPPROTO_SEND: ::c_int = 259;
 pub const TCP_MD5SIG: ::c_int = 16;
 pub const TCP_INFO: ::c_int = 32;
 pub const TCP_CONGESTION: ::c_int = 64;
-pub const TCP_CCALGOOPT: ::c_int = 65;
 pub const TCP_KEEPINIT: ::c_int = 128;
 pub const TCP_FASTOPEN: ::c_int = 1025;
-pub const TCP_PCAP_OUT: ::c_int = 2048;
-pub const TCP_PCAP_IN: ::c_int = 4096;
 
 pub const IP_BINDANY: ::c_int = 24;
-pub const IP_BINDMULTI: ::c_int = 25;
-pub const IP_RSS_LISTEN_BUCKET: ::c_int = 26;
-pub const IP_ORIGDSTADDR : ::c_int = 27;
-pub const IP_RECVORIGDSTADDR : ::c_int = IP_ORIGDSTADDR;
-
 pub const IP_RECVTOS: ::c_int = 68;
-
-pub const IPV6_ORIGDSTADDR: ::c_int = 72;
-pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
 
 pub const PF_SLOW: ::c_int = AF_SLOW;
 pub const PF_SCLUSTER: ::c_int = AF_SCLUSTER;
@@ -1071,8 +1078,6 @@ pub const XUCRED_VERSION: ::c_uint = 0;
 
 // Flags which can be passed to pdfork(2)
 pub const PD_DAEMON: ::c_int = 0x00000001;
-pub const PD_CLOEXEC: ::c_int = 0x00000002;
-pub const PD_ALLOWED_AT_FORK: ::c_int = PD_DAEMON | PD_CLOEXEC;
 
 // Values for struct rtprio (type_ field)
 pub const RTP_PRIO_REALTIME: ::c_ushort = 2;
@@ -1136,6 +1141,14 @@ f! {
     pub fn uname(buf: *mut ::utsname) -> ::c_int {
         __xuname(256, buf as *mut ::c_void)
     }
+}
+
+#[cfg(not(freebsd10))]
+extern {
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
+    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
+                            timeout: *mut ::timespec) -> ::ssize_t;
+    pub fn mq_getfd_np(mqd: ::mqd_t) -> ::c_int;
 }
 
 extern {
@@ -1205,7 +1218,6 @@ extern {
     pub fn jail_set(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int)
                     -> ::c_int;
 
-    pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t,
                            len: ::off_t) -> ::c_int;
     pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t,
@@ -1217,10 +1229,6 @@ extern {
 
     pub fn getutxuser(user: *const ::c_char) -> *mut utmpx;
     pub fn setutxdb(_type: ::c_int, file: *const ::c_char) -> ::c_int;
-
-    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
-                            timeout: *mut ::timespec) -> ::ssize_t;
-    pub fn mq_getfd_np(mqd: ::mqd_t) -> ::c_int;
 
     pub fn waitid(idtype: idtype_t, id: ::id_t, infop: *mut ::siginfo_t,
                   options: ::c_int) -> ::c_int;
