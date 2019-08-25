@@ -1457,6 +1457,7 @@ fn test_freebsd(target: &str) {
     let freebsd_ver = which_freebsd();
 
     match freebsd_ver {
+        Some(10) => cfg.cfg("freebsd10", None),
         Some(11) => cfg.cfg("freebsd11", None),
         Some(12) => cfg.cfg("freebsd12", None),
         Some(13) => cfg.cfg("freebsd13", None),
@@ -1466,7 +1467,10 @@ fn test_freebsd(target: &str) {
     // Required for `getline`:
     cfg.define("_WITH_GETLINE", None);
     // Required for making freebsd11_stat available in the headers
-    cfg.define("_WANT_FREEBSD11_STAT", None);
+    match freebsd_ver {
+        Some(10) => &mut cfg,
+        _ => cfg.define("_WANT_FREEBSD11_STAT", None),
+    };
 
     headers! { cfg:
                 "aio.h",
@@ -2473,6 +2477,7 @@ fn which_freebsd() -> Option<i32> {
     let stdout = String::from_utf8(output.stdout).ok()?;
 
     match &stdout {
+        s if s.starts_with("10") => Some(10),
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),

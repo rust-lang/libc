@@ -22,7 +22,7 @@ fn main() {
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
     match which_freebsd() {
-        Some(10) if libc_ci | rustc_dep_of_std => println!("cargo:rustc-cfg=freebsd10"),
+        Some(10) if libc_ci || rustc_dep_of_std => println!("cargo:rustc-cfg=freebsd10"),
         Some(11) if libc_ci => println!("cargo:rustc-cfg=freebsd11"),
         Some(12) if libc_ci => println!("cargo:rustc-cfg=freebsd12"),
         Some(13) if libc_ci => println!("cargo:rustc-cfg=freebsd13"),
