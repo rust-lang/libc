@@ -1,6 +1,6 @@
 [package]
 name = "ctest"
-version = "0.2.17"
+version = "0.2.18"
 authors = [
   "Alex Crichton <alex@alexcrichton.com>",
   "Gonzalo Brito Gadeschi <gonzalobg88@gmail.com>"
