@@ -844,6 +844,7 @@ impl TestGenerator {
                 .flag("-Wno-type-limits")
                 // allow taking address of packed struct members:
                 .flag("-Wno-address-of-packed-member")
+                .flag("-Wno-unknown-warning-option")
                 .flag("-Wno-deprecated-declarations"); // allow deprecated items
         }
 
@@ -1808,7 +1809,7 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.rust,
             r#"
-                #[allow(non_snake_case, unused_mut, unused_variables)]
+                #[allow(non_snake_case, unused_mut, unused_variables, deprecated)]
                 #[inline(never)]
                 fn roundtrip_padding_{ty}() -> Vec<u8> {{
                   // stores (offset, size) for each field
@@ -1925,7 +1926,7 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.rust,
             r#"
-            #[allow(non_snake_case)]
+            #[allow(non_snake_case, deprecated)]
             #[inline(never)]
             fn roundtrip_{ty}() {{
                 use libc::c_int;
