@@ -11,8 +11,7 @@ task:
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
-    - sh ci/run.sh x86_64-unknown-freebsd
-
+ 
 task:
   name: stable x86_64-unknown-freebsd-11
   freebsd_instance:
