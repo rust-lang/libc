@@ -102,7 +102,10 @@ s! {
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
     }
+}
 
+#[cfg(not(freebsd10))]
+s! {
     pub struct mmsghdr {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::ssize_t,
@@ -1318,8 +1321,10 @@ extern {
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn __xuname(nmln: ::c_int, buf: *mut ::c_void) -> ::c_int;
 
+    #[cfg(not(freebsd10))]
     pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::size_t,
                     flags: ::c_int) -> ::ssize_t;
+    #[cfg(not(freebsd10))]
     pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::size_t,
                     flags: ::c_int, timeout: *const ::timespec) -> ::ssize_t;
 }
