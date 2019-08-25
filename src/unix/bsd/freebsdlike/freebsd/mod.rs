@@ -102,14 +102,7 @@ s! {
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
     }
-}
 
-// FIXME: FreeBSD10 is only defined when building libstd
-// These types are not available in FreeBSD10 and
-// cfg'ing them out prevents them from being used from
-// libstd by accident.
-#[cfg(not(freebsd10))]
-s! {
     pub struct mmsghdr {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::ssize_t,
@@ -314,33 +307,25 @@ cfg_if! {
     }
 }
 
-// FIXME: FreeBSD10 is only defined when building libstd
-// These constants are not available in FreeBSD10 and
-// cfg'ing them out prevents them from being used from
-// libstd by accident.
-cfg_if! {
-    if #[cfg(not(freebsd10))] {
-        pub const SF_USER_READAHEAD: ::c_int = 0x00000008;
-        pub const SF_NOCACHE: ::c_int = 0x00000010;
-        pub const RLIMIT_KQUEUES: ::c_int = 13;
-        pub const RLIMIT_UMTXP: ::c_int = 14;
-        pub const EVFILT_PROCDESC: i16 = -8;
-        pub const EVFILT_SENDFILE: i16 = -12;
-        pub const EVFILT_EMPTY: i16 = -13;
-        pub const SO_REUSEPORT_LB: ::c_int = 0x10000;
-        pub const TCP_CCALGOOPT: ::c_int = 65;
-        pub const TCP_PCAP_OUT: ::c_int = 2048;
-        pub const TCP_PCAP_IN: ::c_int = 4096;
-        pub const IP_BINDMULTI: ::c_int = 25;
-        pub const IP_ORIGDSTADDR : ::c_int = 27;
-        pub const IP_RECVORIGDSTADDR : ::c_int = IP_ORIGDSTADDR;
-        pub const IPV6_ORIGDSTADDR: ::c_int = 72;
-        pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
-        pub const PD_CLOEXEC: ::c_int = 0x00000002;
-        pub const PD_ALLOWED_AT_FORK: ::c_int = PD_DAEMON | PD_CLOEXEC;
-        pub const IP_RSS_LISTEN_BUCKET: ::c_int = 26;
-    }
-}
+pub const SF_USER_READAHEAD: ::c_int = 0x00000008;
+pub const SF_NOCACHE: ::c_int = 0x00000010;
+pub const RLIMIT_KQUEUES: ::c_int = 13;
+pub const RLIMIT_UMTXP: ::c_int = 14;
+pub const EVFILT_PROCDESC: i16 = -8;
+pub const EVFILT_SENDFILE: i16 = -12;
+pub const EVFILT_EMPTY: i16 = -13;
+pub const SO_REUSEPORT_LB: ::c_int = 0x10000;
+pub const TCP_CCALGOOPT: ::c_int = 65;
+pub const TCP_PCAP_OUT: ::c_int = 2048;
+pub const TCP_PCAP_IN: ::c_int = 4096;
+pub const IP_BINDMULTI: ::c_int = 25;
+pub const IP_ORIGDSTADDR : ::c_int = 27;
+pub const IP_RECVORIGDSTADDR : ::c_int = IP_ORIGDSTADDR;
+pub const IPV6_ORIGDSTADDR: ::c_int = 72;
+pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
+pub const PD_CLOEXEC: ::c_int = 0x00000002;
+pub const PD_ALLOWED_AT_FORK: ::c_int = PD_DAEMON | PD_CLOEXEC;
+pub const IP_RSS_LISTEN_BUCKET: ::c_int = 26;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
@@ -1149,19 +1134,12 @@ f! {
     }
 }
 
-// FIXME: FreeBSD10 is only defined when building libstd
-// These functions are not available in FreeBSD10 and
-// cfg'ing them out prevents them from being used from
-// libstd by accident.
-#[cfg(not(freebsd10))]
 extern {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
                             timeout: *mut ::timespec) -> ::ssize_t;
     pub fn mq_getfd_np(mqd: ::mqd_t) -> ::c_int;
-}
 
-extern {
     pub fn __error() -> *mut ::c_int;
 
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;

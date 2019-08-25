@@ -1598,6 +1598,31 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // These constants were introduced in FreeBSD 11:
+            "SF_USER_READAHEAD"
+            | "SF_NOCACHE"
+            | "RLIMIT_KQUEUES"
+            | "RLIMIT_UMTXP"
+            | "EVFILT_PROCDESC"
+            | "EVFILT_SENDFILE"
+            | "EVFILT_EMPTY"
+            | "SO_REUSEPORT_LB"
+            | "TCP_CCALGOOPT"
+            | "TCP_PCAP_OUT"
+            | "TCP_PCAP_IN"
+            | "IP_BINDMULTI"
+            | "IP_ORIGDSTADDR "
+            | "IP_RECVORIGDSTADDR "
+            | "IPV6_ORIGDSTADDR"
+            | "IPV6_RECVORIGDSTADDR"
+            | "PD_CLOEXEC"
+            | "PD_ALLOWED_AT_FORK"
+            | "IP_RSS_LISTEN_BUCKET"
+                if Some(10) == freebsd_ver =>
+            {
+                true
+            }
+
             // FIXME: This constant has a different value in FreeBSD 10:
             "RLIM_NLIMITS" if Some(10) == freebsd_ver => true,
 
@@ -1616,11 +1641,27 @@ fn test_freebsd(target: &str) {
         }
     });
 
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // `mmsghdr` is not available in FreeBSD 10
+            "mmsghdr" if Some(10) == freebsd_ver => true,
+
+            _ => false,
+        }
+    });
+
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
+
+            // These functions were added in FreeBSD 11:
+            "fdatasync" | "aio_waitcomplete" | "mq_getfd_np"
+                if Some(10) == freebsd_ver =>
+            {
+                true
+            }
 
             // The `uname` function in the `utsname.h` FreeBSD header is a C
             // inline function (has no symbol) that calls the `__xuname` symbol.
