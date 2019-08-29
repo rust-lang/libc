@@ -22,7 +22,7 @@ pub type pthread_key_t = ::c_uint;
 pub type clock_t = c_long;
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
-pub type ino_t = u32;
+pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i32;
 
