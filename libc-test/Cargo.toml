@@ -1,6 +1,3 @@
-[build]
-rustc = "~/code/rust/build/x86_64-unknown-linux-gnu/stage2/bin/rustc"
-
 [package]
 name = "libc-test"
 version = "0.1.0"
