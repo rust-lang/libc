@@ -104,8 +104,8 @@ pub type SD_ID = ::OBJ_HANDLE;
 pub type CONDVAR_ID = ::OBJ_HANDLE;
 
 // From vxTypes.h
-pub type _Vx_usr_arg_t = ::isize;
-pub type _Vx_exit_code_t = ::isize;
+pub type _Vx_usr_arg_t = isize;
+pub type _Vx_exit_code_t = isize;
 pub type _Vx_ticks_t = ::c_uint;
 pub type _Vx_ticks64_t = ::c_ulonglong;
 
