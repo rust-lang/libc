@@ -187,6 +187,22 @@ s! {
         pub iov_len: ::size_t,
     }
 
+    pub struct msghdr {
+        pub msg_name: *mut c_void,
+        pub msg_namelen: socklen_t,
+        pub msg_iov: *mut iovec,
+        pub msg_iovlen: ::c_int,
+        pub msg_control: *mut c_void,
+        pub msg_controllen: socklen_t,
+        pub msg_flags: ::c_int,
+    }
+
+    pub struct cmsghdr {
+        pub cmsg_len: socklen_t,
+        pub cmsg_level: ::c_int,
+        pub cmsg_type: ::c_int,
+    }
+    
     // poll.h
     pub struct pollfd {
         pub fd      : ::c_int,
@@ -438,6 +454,13 @@ s! {
         pub pw_shell: *mut ::c_char,
     }
 
+    // epoll.h
+
+    pub struct epoll_event {
+        pub events: u32,
+        pub u64: u64,
+    }
+    
     // rtpLibCommon.h
     pub struct RTP_DESC {
         pub status    : ::c_int,
@@ -804,6 +827,21 @@ pub const FIOCANCEL: ::c_int = 14;
 pub const FIOSQUEEZE: ::c_int = 15;
 pub const FIONBIO: ::c_int = 16;
 pub const _POSIX_PATH_MAX: ::c_int = 256;
+
+// epoll.h
+pub const EPOLLIN: ::c_int = 0x1;
+pub const EPOLLPRI: ::c_int = 0x2;
+pub const EPOLLOUT: ::c_int = 0x4;
+pub const EPOLLERR: ::c_int = 0x8;
+pub const EPOLLHUP: ::c_int = 0x10;
+pub const EPOLLRDHUP: ::c_int = 0x2000;
+pub const EPOLLONESHOT: ::c_int = 1 << 30;
+pub const EPOLLET: ::c_int = 1 << 31;
+
+
+pub const EPOLL_CTL_ADD: ::c_int = 1;
+pub const EPOLL_CTL_DEL: ::c_int = 2;
+pub const EPOLL_CTL_MOD: ::c_int = 3;
 
 // Some poll stuff
 pub const POLLIN: ::c_short = 0x0001;
@@ -1743,6 +1781,12 @@ extern "C" {
         pFromLen: *mut ::socklen_t,
     ) -> ::ssize_t;
 
+    pub fn recvmsg(
+        socket: ::c_int,
+        mp: *mut ::msghdr,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    
     // socket.h
     pub fn send(
         socket: ::c_int,
@@ -1751,6 +1795,12 @@ extern "C" {
         flags: ::c_int,
     ) -> ::ssize_t;
 
+    pub fn sendmsg(
+        socket: ::c_int,
+        mp: *const ::msghdr,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    
     // socket.h
     pub fn sendto(
         socket: ::c_int,
@@ -2054,6 +2104,30 @@ extern "C" {
         iovcnt: ::c_int,
     ) -> ::ssize_t;
 
+    // epoll.h
+    pub fn epoll_create(size: ::c_int) -> ::c_int;
+    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
+
+    pub fn epoll_ctl(
+        epfd: ::c_int,
+        op: ::c_int,
+        fd: ::c_int,
+        event: *mut ::epoll_event
+    ) -> ::c_int;
+
+    pub fn epoll_create_and_ctl(
+        num: ::c_int,
+        fds: *mut ::c_int,
+        event: *mut ::epoll_event
+    ) -> ::c_int;
+    
+    pub fn epoll_wait(
+        epfd: ::c_int,
+        events: *mut ::epoll_event,
+        maxevents: ::c_int,
+        timeout: ::c_int
+    ) -> ::c_int;
+    
     // randomNumGen.h
     pub fn randBytes(buf: *mut c_uchar, length: c_int) -> c_int;
     pub fn randABytes(buf: *mut c_uchar, length: c_int) -> c_int;
