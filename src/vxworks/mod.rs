@@ -1428,10 +1428,7 @@ extern {
 }
 
 extern {
-    // this is gonna be a big one
-
     // stdlib.h
-    // This function may not be defined for armv7
     pub fn memalign(block_size: ::size_t, size_arg: ::size_t)
         -> *mut ::c_void;
 
@@ -1443,7 +1440,6 @@ extern {
 
     // pthread.h
     pub fn pthread_mutexattr_init(
-        /* PTHREAD STUFF */
         attr: *mut pthread_mutexattr_t,
     ) -> ::c_int;
 
@@ -2104,30 +2100,6 @@ extern {
         iovcnt: ::c_int,
     ) -> ::ssize_t;
 
-    // epoll.h
-    pub fn epoll_create(size: ::c_int) -> ::c_int;
-    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
-
-    pub fn epoll_ctl(
-        epfd: ::c_int,
-        op: ::c_int,
-        fd: ::c_int,
-        event: *mut ::epoll_event
-    ) -> ::c_int;
-
-    pub fn epoll_create_and_ctl(
-        num: ::c_int,
-        fds: *mut ::c_int,
-        event: *mut ::epoll_event
-    ) -> ::c_int;
-    
-    pub fn epoll_wait(
-        epfd: ::c_int,
-        events: *mut ::epoll_event,
-        maxevents: ::c_int,
-        timeout: ::c_int
-    ) -> ::c_int;
-    
     // randomNumGen.h
     pub fn randBytes(buf: *mut c_uchar, length: c_int) -> c_int;
     pub fn randABytes(buf: *mut c_uchar, length: c_int) -> c_int;
@@ -2203,6 +2175,37 @@ pub fn posix_memalign(
             0
         }
     }
+}
+
+// epoll.h
+// Unfortunately epoll is currently only supported in the VxWorks kernel
+pub fn epoll_create(size: ::c_int) -> ::c_int { -1 }
+pub fn epoll_create1(flags: ::c_int) -> ::c_int { -1 }
+
+pub fn epoll_ctl(
+    epfd: ::c_int,
+    op: ::c_int,
+    fd: ::c_int,
+    event: *mut ::epoll_event
+    ) -> ::c_int {
+    -1
+}
+
+pub fn epoll_create_and_ctl(
+    num: ::c_int,
+    fds: *mut ::c_int,
+        event: *mut ::epoll_event
+) -> ::c_int {
+    -1
+}
+
+pub fn epoll_wait(
+    epfd: ::c_int,
+    events: *mut ::epoll_event,
+    maxevents: ::c_int,
+    timeout: ::c_int
+) -> ::c_int {
+        -1
 }
 
 // From sysconf.c -> doesn't seem to be supported?
