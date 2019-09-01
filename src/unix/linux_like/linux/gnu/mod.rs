@@ -893,6 +893,7 @@ extern {
                      resource: ::__rlimit_resource_t,
                      new_limit: *const ::rlimit64,
                      old_limit: *mut ::rlimit64) -> ::c_int;
+    pub fn utmpname(file: *const ::c_char) -> ::c_int;
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
     pub fn getutxent() -> *mut utmpx;
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
