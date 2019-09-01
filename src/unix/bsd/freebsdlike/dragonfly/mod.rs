@@ -935,6 +935,7 @@ pub const MSG_FBLOCKING: ::c_int = 0x00010000;
 pub const MSG_FNONBLOCKING: ::c_int = 0x00020000;
 pub const MSG_FMASK: ::c_int = 0xFFFF0000;
 
+// utmpx entry types
 pub const EMPTY: ::c_short = 0;
 pub const RUN_LVL: ::c_short = 1;
 pub const BOOT_TIME: ::c_short = 2;
@@ -944,6 +945,13 @@ pub const INIT_PROCESS: ::c_short = 5;
 pub const LOGIN_PROCESS: ::c_short = 6;
 pub const USER_PROCESS: ::c_short = 7;
 pub const DEAD_PROCESS: ::c_short = 8;
+pub const ACCOUNTING: ::c_short = 9;
+pub const SIGNATURE: ::c_short = 10;
+pub const DOWNTIME: ::c_short = 11;
+// utmpx database types
+pub const UTX_DB_UTMPX: ::c_uint = 0;
+pub const UTX_DB_WTMPX: ::c_uint = 1;
+pub const UTX_DB_LASTLOG: ::c_uint = 2;
 
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
 pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
