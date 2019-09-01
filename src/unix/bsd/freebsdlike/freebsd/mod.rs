@@ -1008,6 +1008,7 @@ pub const MSG_COMPAT: ::c_int = 0x00008000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x00040000;
 pub const MSG_NOSIGNAL: ::c_int = 0x20000;
 
+// utmpx entry types
 pub const EMPTY: ::c_short = 0;
 pub const BOOT_TIME: ::c_short = 1;
 pub const OLD_TIME: ::c_short = 2;
@@ -1017,6 +1018,10 @@ pub const INIT_PROCESS: ::c_short = 5;
 pub const LOGIN_PROCESS: ::c_short = 6;
 pub const DEAD_PROCESS: ::c_short = 7;
 pub const SHUTDOWN_TIME: ::c_short = 8;
+// utmp database types
+pub const UTXDB_ACTIVE: ::c_int = 0;
+pub const UTXDB_LASTLOGIN: ::c_int = 1;
+pub const UTXDB_LOG: ::c_int = 2;
 
 pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
 pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
