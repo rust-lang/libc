@@ -1312,7 +1312,15 @@ extern {
         newfd: ::c_int,
     ) -> ::c_int;
 
+    #[cfg_attr(
+        all(target_os = "freebsd", freebsd11),
+        link_name = "statfs@FBSD_1.0"
+    )]
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "freebsd", freebsd11),
+        link_name = "fstatfs@FBSD_1.0"
+    )]
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
