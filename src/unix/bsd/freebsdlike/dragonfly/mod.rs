@@ -451,6 +451,10 @@ pub const ENOMEDIUM: ::c_int = 93;
 pub const EASYNC: ::c_int = 99;
 pub const ELAST: ::c_int = 99;
 pub const RLIMIT_POSIXLOCKS: ::c_int = 11;
+#[deprecated(
+    since = "0.2.64",
+    note = "Not stable across OS versions"
+)]
 pub const RLIM_NLIMITS: ::rlim_t = 12;
 
 pub const Q_GETQUOTA: ::c_int = 0x300;

@@ -288,6 +288,10 @@ pub const RLIMIT_MEMLOCK: ::c_int = 8;
 pub const RLIMIT_NOFILE: ::c_int = 7;
 pub const RLIMIT_NPROC: ::c_int = 6;
 pub const RLIMIT_RSS: ::c_int = 5;
+#[deprecated(
+    since = "0.2.64",
+    note = "Not stable across OS versions"
+)]
 pub const RLIM_NLIMITS: ::c_int = 16;
 pub const SA_ONSTACK: ::c_int = 0x08000000;
 pub const SA_SIGINFO: ::c_int = 0x00000004;
