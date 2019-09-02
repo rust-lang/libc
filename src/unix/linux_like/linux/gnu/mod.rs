@@ -499,6 +499,10 @@ pub const O_ACCMODE: ::c_int = 3;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
 
+// paths.h
+pub const _PATH_UTMP: &'static [u8; 14usize] = b"/var/run/utmp\0";
+pub const _PATH_WTMP: &'static [u8; 14usize] = b"/var/log/wtmp\0";
+
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
 pub const CODA_SUPER_MAGIC: ::c_long = 0x73757245;
