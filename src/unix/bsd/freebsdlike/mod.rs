@@ -239,6 +239,10 @@ cfg_if! {
     }
 }
 
+#[deprecated(
+    since="0.2.64",
+    note="Can vary at runtime.  Use sysconf(3) instead")
+]
 pub const AIO_LISTIO_MAX: ::c_int = 16;
 pub const AIO_CANCELED: ::c_int = 1;
 pub const AIO_NOTCANCELED: ::c_int = 2;
