@@ -220,6 +220,12 @@ s! {
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 8],
     }
+
+    pub struct ucred {
+        pub pid: ::pid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+    }
 }
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -587,6 +593,12 @@ pub const SYS_pwritev2: ::c_long = 4000 + 362;
 pub const SYS_pkey_mprotect: ::c_long = 4000 + 363;
 pub const SYS_pkey_alloc: ::c_long = 4000 + 364;
 pub const SYS_pkey_free: ::c_long = 4000 + 365;
+pub const IPV6_UNICAST_HOPS: ::c_int = 16;
+pub const IPV6_MULTICAST_IF: ::c_int = 17;
+pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
+pub const IP_MULTICAST_IF: ::c_int = 32;
+pub const IP_MULTICAST_TTL: ::c_int = 33;
+
 
 #[link(name = "util")]
 extern {
