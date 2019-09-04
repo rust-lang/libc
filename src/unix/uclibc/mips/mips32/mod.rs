@@ -599,7 +599,6 @@ pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
 pub const IP_MULTICAST_IF: ::c_int = 32;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 
-
 #[link(name = "util")]
 extern {
     pub fn sysctl(name: *mut ::c_int,
