@@ -1,4 +1,5 @@
-#[repr(C)] struct JmpBuf([i64; 64]);
+#![feature(unwind_attributes)]
+#[repr(C)] struct JmpBuf([i64; 256]);
 
 use std::mem::MaybeUninit;
 static mut JMP_BUF: MaybeUninit<JmpBuf> = MaybeUninit::uninit();
@@ -8,11 +9,16 @@ extern "C" {
     fn setjmp(env: *mut JmpBuf) -> i64;
 }
 
+#[unwind(aborts)]
+unsafe extern "C" fn oh_noes() {
+    longjmp(JMP_BUF.as_mut_ptr(), 1)
+}
+
 unsafe fn jumps() {
     if setjmp(JMP_BUF.as_mut_ptr()) != 0 {
         return;
     }
-    std::panic::catch_unwind(|| longjmp(JMP_BUF.as_mut_ptr(), 1)).unwrap();
+    oh_noes();
     panic!("oh noes");
 }
 
