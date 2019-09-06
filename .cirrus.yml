@@ -22,7 +22,7 @@ task:
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh --default-toolchain nightly -y
     - . $HOME/.cargo/env
-    - rustup default nightly
+    - rustup default nightly-2019-08-22
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
