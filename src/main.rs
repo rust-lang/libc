@@ -1,12 +1,12 @@
 #![feature(unwind_attributes)]
-#[repr(C)] struct JmpBuf([i64; 256]);
+#[repr(C, align(64))] struct JmpBuf([i32; 512]);
 
 use std::mem::MaybeUninit;
 static mut JMP_BUF: MaybeUninit<JmpBuf> = MaybeUninit::uninit();
 
 extern "C" {
-    fn longjmp(env: *mut JmpBuf, status: i64);
-    fn setjmp(env: *mut JmpBuf) -> i64;
+    fn longjmp(env: *mut JmpBuf, status: i32);
+    fn setjmp(env: *mut JmpBuf) -> i32;
 }
 
 #[unwind(aborts)]
