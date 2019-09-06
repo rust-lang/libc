@@ -9,7 +9,6 @@ extern "C" {
     fn setjmp(env: *mut JmpBuf) -> i32;
 }
 
-#[unwind(aborts)]
 unsafe extern "C" fn oh_noes() {
     longjmp(JMP_BUF.as_mut_ptr(), 1)
 }
