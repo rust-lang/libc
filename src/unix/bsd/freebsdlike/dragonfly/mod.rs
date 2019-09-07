@@ -1002,6 +1002,10 @@ pub const SF_NOHISTORY: ::c_ulong = 0x00400000;
 pub const SF_CACHE:     ::c_ulong = 0x00800000;
 pub const SF_XLINK:     ::c_ulong = 0x01000000;
 
+// timespec constants
+pub const UTIME_OMIT: c_long = -2;
+pub const UTIME_NOW: c_long = -1;
+
 fn _CMSG_ALIGN(n: usize) -> usize {
     (n + 3) & !3
 }
