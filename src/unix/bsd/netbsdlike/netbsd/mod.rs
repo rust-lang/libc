@@ -741,6 +741,10 @@ pub const O_RSYNC : ::c_int = 0x00020000;
 pub const MS_SYNC : ::c_int = 0x4;
 pub const MS_INVALIDATE : ::c_int = 0x2;
 
+#[deprecated(
+    since = "0.2.64",
+    note = "Not stable across OS versions"
+)]
 pub const RLIM_NLIMITS: ::c_int = 12;
 
 pub const EIDRM: ::c_int = 82;

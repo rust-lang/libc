@@ -337,6 +337,10 @@ pub const RLIMIT_NPTS: ::c_int = 11;
 pub const RLIMIT_SWAP: ::c_int = 12;
 pub const RLIMIT_KQUEUES: ::c_int = 13;
 pub const RLIMIT_UMTXP: ::c_int = 14;
+#[deprecated(
+    since = "0.2.64",
+    note = "Not stable across OS versions"
+)]
 pub const RLIM_NLIMITS: ::rlim_t = 15;
 
 pub const Q_GETQUOTA: ::c_int = 0x700;

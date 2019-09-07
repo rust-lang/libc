@@ -1862,6 +1862,10 @@ pub const RLIMIT_RSS: ::c_int = RLIMIT_AS;
 pub const RLIMIT_MEMLOCK: ::c_int = 6;
 pub const RLIMIT_NPROC: ::c_int = 7;
 pub const RLIMIT_NOFILE: ::c_int = 8;
+#[deprecated(
+    since = "0.2.64",
+    note = "Not stable across OS versions"
+)]
 pub const RLIM_NLIMITS: ::c_int = 9;
 pub const _RLIMIT_POSIX_FLAG: ::c_int = 0x1000;
 

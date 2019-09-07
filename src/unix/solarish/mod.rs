@@ -1199,6 +1199,10 @@ pub const RLIMIT_NOFILE: ::c_int = 5;
 pub const RLIMIT_VMEM: ::c_int = 6;
 pub const RLIMIT_AS: ::c_int = RLIMIT_VMEM;
 
+#[deprecated(
+    since = "0.2.64",
+    note = "Not stable across OS versions"
+)]
 pub const RLIM_NLIMITS: rlim_t = 7;
 pub const RLIM_INFINITY: rlim_t = 0x7fffffff;
 

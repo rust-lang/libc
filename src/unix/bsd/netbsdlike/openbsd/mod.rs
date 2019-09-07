@@ -757,6 +757,10 @@ pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x02;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x04;
 pub const AT_REMOVEDIR: ::c_int = 0x08;
 
+#[deprecated(
+    since = "0.2.64",
+    note = "Not stable across OS versions"
+)]
 pub const RLIM_NLIMITS: ::c_int = 9;
 
 pub const SO_TIMESTAMP: ::c_int = 0x0800;
