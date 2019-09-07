@@ -7,6 +7,7 @@ RUN apt-get update && \
     gcc \
     git \
     libc6-dev \
+    libxml2 \
     python \
     xz-utils
 

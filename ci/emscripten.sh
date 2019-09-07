@@ -28,21 +28,18 @@ exit 1
   set -x
 }
 
-cd /
-curl --retry 5 -L https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz | \
-    tar -xz
-
+git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable
 cd /emsdk-portable
-./emsdk update
-hide_output ./emsdk install sdk-1.38.15-64bit
-./emsdk activate sdk-1.38.15-64bit
+# TODO: switch to an upstream install once
+# https://github.com/rust-lang/rust/pull/63649 lands
+hide_output ./emsdk install 1.38.42
+./emsdk activate 1.38.42
 
 # Compile and cache libc
 # shellcheck disable=SC1091
 source ./emsdk_env.sh
 echo "main(){}" > a.c
 HOME=/emsdk-portable/ emcc a.c
-HOME=/emsdk-portable/ emcc -s BINARYEN=1 a.c
 rm -f a.*
 
 # Make emsdk usable by any user
@@ -53,4 +50,3 @@ chmod a+rxw -R /emsdk-portable
 cd /
 curl --retry 5 -L https://nodejs.org/dist/v12.3.1/node-v12.3.1-linux-x64.tar.xz | \
     tar -xJ
-
