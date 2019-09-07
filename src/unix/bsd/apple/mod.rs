@@ -2818,6 +2818,10 @@ pub const SIGEV_THREAD: ::c_int = 3;
 pub const AIO_CANCELED: ::c_int = 2;
 pub const AIO_NOTCANCELED: ::c_int = 4;
 pub const AIO_ALLDONE: ::c_int = 1;
+#[deprecated(
+    since="0.2.64",
+    note="Can vary at runtime.  Use sysconf(3) instead")
+]
 pub const AIO_LISTIO_MAX: ::c_int = 16;
 pub const LIO_NOP: ::c_int = 0;
 pub const LIO_WRITE: ::c_int = 2;
