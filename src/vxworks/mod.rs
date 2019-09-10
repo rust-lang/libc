@@ -1,4 +1,3 @@
-// Copyright (c) 2019 Wind River Systems, Inc. 
 //! Interface to VxWorks C library
 
 use core::mem::size_of;
