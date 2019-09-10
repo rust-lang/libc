@@ -1,3 +1,4 @@
+// Copyright (c) 2019 Wind River Systems, Inc. 
 //! Interface to VxWorks C library
 
 use core::mem::size_of;
@@ -11,6 +12,9 @@ impl ::Clone for DIR {
         *self
     }
 }
+
+// Throughout we use usize / isize for types that are
+// (unsigned) int in ILP32 and (unsigned) long in ILP64
 
 pub type c_schar = i8;
 pub type c_uchar = u8;
@@ -80,9 +84,9 @@ pub type off64_t = ::c_longlong;
 pub type off_t64 = ::c_longlong;
 
 // From b_BOOL.h
-pub type BOOL = ::c_int; // excuse me what
+pub type BOOL = ::c_int;
 
-//Straight from vxWind.h ..
+// From vxWind.h ..
 pub type _Vx_OBJ_HANDLE = ::c_int;
 pub type _Vx_TASK_ID = ::_Vx_OBJ_HANDLE;
 pub type _Vx_MSG_Q_ID = ::_Vx_OBJ_HANDLE;
@@ -100,8 +104,8 @@ pub type SD_ID = ::OBJ_HANDLE;
 pub type CONDVAR_ID = ::OBJ_HANDLE;
 
 // From vxTypes.h
-pub type _Vx_usr_arg_t = ::ssize_t; // c_int for LP32
-pub type _Vx_exit_code_t = ::ssize_t; // c_int for LP32
+pub type _Vx_usr_arg_t = isize;
+pub type _Vx_exit_code_t = isize;
 pub type _Vx_ticks_t = ::c_uint;
 pub type _Vx_ticks64_t = ::c_ulonglong;
 
@@ -112,25 +116,7 @@ pub type sa_family_t = ::c_uchar;
 
 // structs that only exist in userspace
 s! {
-    // b_struct_vx_eventsResourceCb.h
-    pub struct _Vx_EVENTS_RSRC {
-        pub registered : ::c_uint,
-        pub taskId     : ::c_int,
-        pub options    : ::c_uchar,
-        pub pad        : [::c_uchar; 3],
-    }
-
-    // b_struct_vx_semaphore.h
-    pub struct _Vx_semaphore {
-        pub magic  : ::c_uint,
-        pub semType: ::c_uint,
-        pub options: ::c_uint,
-        pub recurse: ::c_uint,
-        pub owned_k: ::c_uint, // owned_k is volatile
-        pub semId_k: ::_Vx_SEM_ID_KERNEL,
-        pub state  : ::c_uint, //state is union of _Vx_UINT and _Vx_UINT
-        pub events : ::_Vx_EVENTS_RSRC,
-    }
+    pub struct _Vx_semaphore {}
 
     // b_pthread_condattr_t.h
     pub struct pthread_condattr_t {
@@ -173,6 +159,11 @@ s! {
     }
 
     // socket.h
+    pub struct linger {
+        pub l_onoff: ::c_int,
+        pub l_linger: ::c_int,
+    }
+
     pub struct sockaddr {
         pub sa_len    : ::c_uchar,
         pub sa_family : sa_family_t,
@@ -196,6 +187,22 @@ s! {
         pub iov_len: ::size_t,
     }
 
+    pub struct msghdr {
+        pub msg_name: *mut c_void,
+        pub msg_namelen: socklen_t,
+        pub msg_iov: *mut iovec,
+        pub msg_iovlen: ::c_int,
+        pub msg_control: *mut c_void,
+        pub msg_controllen: socklen_t,
+        pub msg_flags: ::c_int,
+    }
+
+    pub struct cmsghdr {
+        pub cmsg_len: socklen_t,
+        pub cmsg_level: ::c_int,
+        pub cmsg_type: ::c_int,
+    }
+    
     // poll.h
     pub struct pollfd {
         pub fd      : ::c_int,
@@ -361,6 +368,19 @@ s! {
         pub tv_nsec: ::c_long,
     }
 
+    // time.h
+    pub struct tm {
+    	pub tm_sec: ::c_int,
+    	pub tm_min: ::c_int,
+    	pub tm_hour: ::c_int,
+    	pub tm_mday: ::c_int,
+    	pub tm_mon: ::c_int,
+    	pub tm_year: ::c_int,
+    	pub tm_wday: ::c_int,
+    	pub tm_yday: ::c_int,
+    	pub tm_isdst: ::c_int,	
+    }
+
     // in.h
     pub struct in_addr {
         pub s_addr: in_addr_t,
@@ -434,6 +454,13 @@ s! {
         pub pw_shell: *mut ::c_char,
     }
 
+    // epoll.h
+
+    pub struct epoll_event {
+        pub events: u32,
+        pub u64: u64,
+    }
+    
     // rtpLibCommon.h
     pub struct RTP_DESC {
         pub status    : ::c_int,
@@ -476,7 +503,7 @@ pub const EAI_SYSTEM: ::c_int = 11;
 
 pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
 
-//Clock Lib Stuff
+// Clock Lib Stuff
 pub const CLOCK_REALTIME: ::c_int = 0x0;
 pub const CLOCK_MONOTONIC: ::c_int = 0x1;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::c_int = 0x2;
@@ -508,7 +535,7 @@ pub const EEXIST: ::c_int = 17;
 pub const ENODEV: ::c_int = 19;
 pub const EINVAL: ::c_int = 22;
 pub const EPIPE: ::c_int = 32;
-pub const ERANGE: ::c_int = 34;
+pub const ERANGE: ::c_int = 38;
 
 // ERRNO STUFF
 pub const EPERM: ::c_int = 1; /* Not owner */
@@ -647,16 +674,25 @@ pub const S_nfsLib_NFSERR_BADTYPE: ::c_int =
 pub const S_nfsLib_NFSERR_JUKEBOX: ::c_int =
     M_nfsStat | nfsstat::NFSERR_JUKEBOX as ::c_int;
 
-// IP Stuff? These are allll guesswork
+// in.h
 pub const IPPROTO_IP: ::c_int = 0;
-pub const IP_TTL: ::c_int = 4; // not sure if this is right
-pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
-pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
-pub const IPV6_V6ONLY: ::c_int = 26;
-pub const IP_MULTICAST_TTL: ::c_int = 33;
-pub const IP_MULTICAST_LOOP: ::c_int = 34;
-pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
-pub const IPPROTO_IPV6: ::c_int = 41; // or this one, for that matter
+pub const IPPROTO_IPV6: ::c_int = 41;
+
+pub const IP_TTL: ::c_int = 4;
+pub const IP_MULTICAST_IF: ::c_int = 9;
+pub const IP_MULTICAST_TTL: ::c_int = 10;
+pub const IP_MULTICAST_LOOP: ::c_int = 11;
+pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
+pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
+
+// in6.h
+pub const IPV6_V6ONLY: ::c_int = 1;
+pub const IPV6_UNICAST_HOPS: ::c_int = 4;
+pub const IPV6_MULTICAST_IF: ::c_int = 9;
+pub const IPV6_MULTICAST_HOPS: ::c_int = 10;
+pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
+pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
+pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
 
 // STAT Stuff
 pub const S_IFMT: ::c_int = 0xf000;
@@ -685,21 +721,39 @@ pub const S_IWOTH: ::c_int = 0x0002;
 pub const S_IXOTH: ::c_int = 0x0001;
 pub const S_IRWXO: ::c_int = 0x0007;
 
+// socket.h
 pub const SOL_SOCKET: ::c_int = 0xffff;
-pub const SO_BROADCAST: ::c_int = 0x001e;
-pub const SO_SNDTIMEO: ::c_int = 0x1005;
-pub const SO_RCVTIMEO: ::c_int = 0x1006;
+
+pub const SO_DEBUG: ::c_int =  0x0001;
+pub const SO_REUSEADDR: ::c_int =  0x0004;
+pub const SO_KEEPALIVE: ::c_int =  0x0008;
+pub const SO_DONTROUTE: ::c_int =  0x0010;
+pub const SO_RCVLOWAT: ::c_int =  0x0012;
+pub const SO_SNDLOWAT: ::c_int =  0x0013;
+pub const SO_SNDTIMEO: ::c_int =  0x1005;
+pub const SO_ACCEPTCONN: ::c_int =  0x001e;
+pub const SO_BROADCAST: ::c_int =  0x0020;
+pub const SO_USELOOPBACK: ::c_int =  0x0040;
+pub const SO_LINGER: ::c_int =  0x0080;
+pub const SO_REUSEPORT: ::c_int =  0x0200;
+
+pub const SO_VLAN: ::c_int =  0x8000;
+
+pub const SO_SNDBUF: ::c_int =  0x1001;
+pub const SO_RCVBUF: ::c_int =  0x1002;
+pub const SO_RCVTIMEO: ::c_int =  0x1006;
+pub const SO_ERROR: ::c_int =  0x1007;
+pub const SO_TYPE: ::c_int =  0x1008;
+pub const SO_BINDTODEVICE: ::c_int =  0x1010;
+pub const SO_OOBINLINE: ::c_int =  0x1011;
+pub const SO_CONNTIMEO: ::c_int =  0x100a;
+
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
 pub const SOCK_RDM: ::c_int = 4;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOCK_PACKET: ::c_int = 10;
-pub const SO_DEBUG: ::c_int = 0x0001;
-pub const SO_REUSEADDR: ::c_int = 0x0004;
-pub const SO_KEEPALIVE: ::c_int = 0x0008;
-pub const SO_DONTROUTE: ::c_int = 0x0010;
-pub const SO_RCVLOWAT: ::c_int = 0x0012;
 
 pub const _SS_MAXSIZE: usize = 128;
 pub const _SS_ALIGNSIZE: usize = size_of::<u32>();
@@ -753,7 +807,6 @@ pub const TCP_NOPUSH: ::c_int = 3;
 pub const TCP_KEEPIDLE: ::c_int = 4;
 pub const TCP_KEEPINTVL: ::c_int = 5;
 pub const TCP_KEEPCNT: ::c_int = 6;
-pub const SO_ERROR: ::c_int = 4;
 
 // IO Lib Definitions:
 
@@ -772,8 +825,23 @@ pub const FIOWRITE: ::c_int = 12;
 pub const FIODISKCHANGE: ::c_int = 13;
 pub const FIOCANCEL: ::c_int = 14;
 pub const FIOSQUEEZE: ::c_int = 15;
-pub const FIONBIO: ::c_int = -1878786032; // it goes on ...
+pub const FIONBIO: ::c_int = 16;
 pub const _POSIX_PATH_MAX: ::c_int = 256;
+
+// epoll.h
+pub const EPOLLIN: ::c_int = 0x1;
+pub const EPOLLPRI: ::c_int = 0x2;
+pub const EPOLLOUT: ::c_int = 0x4;
+pub const EPOLLERR: ::c_int = 0x8;
+pub const EPOLLHUP: ::c_int = 0x10;
+pub const EPOLLRDHUP: ::c_int = 0x2000;
+pub const EPOLLONESHOT: ::c_int = 1 << 30;
+pub const EPOLLET: ::c_int = 1 << 31;
+
+
+pub const EPOLL_CTL_ADD: ::c_int = 1;
+pub const EPOLL_CTL_DEL: ::c_int = 2;
+pub const EPOLL_CTL_MOD: ::c_int = 3;
 
 // Some poll stuff
 pub const POLLIN: ::c_short = 0x0001;
@@ -814,8 +882,6 @@ pub const DT_WHT: ::c_uchar = 0xE;
 
 // Other Random Stuff
 pub const VXSIM_EWOULDBLOCK: ::c_int = 70;
-pub const IPV6_ADD_MEMBERSHIP: ::c_int = 20;
-pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
@@ -1288,6 +1354,15 @@ extern {
     ) -> *mut ::c_void;
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
     pub fn res_init() -> ::c_int;
+
+    // time.h
+    pub fn gmtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
+    pub fn localtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
+    pub fn mktime(tm: *mut tm) -> time_t;
+    pub fn time(time: *mut time_t) -> time_t;
+    pub fn gmtime(time_p: *const time_t) -> *mut tm;
+    pub fn localtime(time_p: *const time_t) -> *mut tm;
+    pub fn timegm(tm: *mut tm) -> time_t;
     pub fn difftime(time1: time_t, time0: time_t) -> ::c_double;
 
     pub fn mknod(
@@ -1353,10 +1428,7 @@ extern {
 }
 
 extern {
-    // this is gonna be a big one
-
     // stdlib.h
-    // This function may not be defined for armv7
     pub fn memalign(block_size: ::size_t, size_arg: ::size_t)
         -> *mut ::c_void;
 
@@ -1368,7 +1440,6 @@ extern {
 
     // pthread.h
     pub fn pthread_mutexattr_init(
-        /* PTHREAD STUFF */
         attr: *mut pthread_mutexattr_t,
     ) -> ::c_int;
 
@@ -1706,6 +1777,12 @@ extern {
         pFromLen: *mut ::socklen_t,
     ) -> ::ssize_t;
 
+    pub fn recvmsg(
+        socket: ::c_int,
+        mp: *mut ::msghdr,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    
     // socket.h
     pub fn send(
         socket: ::c_int,
@@ -1714,6 +1791,12 @@ extern {
         flags: ::c_int,
     ) -> ::ssize_t;
 
+    pub fn sendmsg(
+        socket: ::c_int,
+        mp: *const ::msghdr,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    
     // socket.h
     pub fn sendto(
         socket: ::c_int,
@@ -1894,7 +1977,7 @@ extern {
     pub fn closedir(ptr: *mut ::DIR) -> ::c_int;
 
     pub fn pwrite64(
-        fd: ::c_int, // if you want to use fd, you gotta fix these
+        fd: ::c_int,
         buf: *const ::c_void,
         count: ::size_t,
         offset: off64_t,
@@ -2092,6 +2175,37 @@ pub fn posix_memalign(
             0
         }
     }
+}
+
+// epoll.h
+// Unfortunately epoll is currently only supported in the VxWorks kernel
+pub fn epoll_create(size: ::c_int) -> ::c_int { -1 }
+pub fn epoll_create1(flags: ::c_int) -> ::c_int { -1 }
+
+pub fn epoll_ctl(
+    epfd: ::c_int,
+    op: ::c_int,
+    fd: ::c_int,
+    event: *mut ::epoll_event
+    ) -> ::c_int {
+    -1
+}
+
+pub fn epoll_create_and_ctl(
+    num: ::c_int,
+    fds: *mut ::c_int,
+        event: *mut ::epoll_event
+) -> ::c_int {
+    -1
+}
+
+pub fn epoll_wait(
+    epfd: ::c_int,
+    events: *mut ::epoll_event,
+    maxevents: ::c_int,
+    timeout: ::c_int
+) -> ::c_int {
+        -1
 }
 
 // From sysconf.c -> doesn't seem to be supported?
