@@ -17,7 +17,6 @@
 //! * No trailing whitespace
 //! * No tabs
 //! * 80-character lines
-//! * `extern` instead of `extern "C"`
 //! * Specific module layout:
 //!     1. use directives
 //!     2. typedefs
@@ -125,9 +124,6 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         }
         if line.len() > 80 {
             err.error(path, i, "line longer than 80 chars");
-        }
-        if line.contains("extern \"C\"") {
-            err.error(path, i, "use `extern` instead of `extern \"C\"");
         }
         if line.contains("#[cfg(") && !line.contains(" if ")
             && !(line.contains("target_endian") ||
