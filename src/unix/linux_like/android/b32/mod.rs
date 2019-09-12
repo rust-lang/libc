@@ -179,12 +179,10 @@ pub const PTRACE_SETFPREGS: ::c_int = 15;
 pub const PTRACE_GETREGS: ::c_int = 12;
 pub const PTRACE_SETREGS: ::c_int = 13;
 
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    value: 0,
-};
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    value: 0,
-};
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t =
+    pthread_mutex_t { value: 0 };
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t =
+    pthread_cond_t { value: 0 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     lock: PTHREAD_MUTEX_INITIALIZER,
     cond: PTHREAD_COND_INITIALIZER,
@@ -206,7 +204,7 @@ pub const UT_HOSTSIZE: usize = 16;
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
-extern {
+extern "C" {
     pub fn timegm64(tm: *const ::tm) -> ::time64_t;
 }
 

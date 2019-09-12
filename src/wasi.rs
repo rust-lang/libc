@@ -297,7 +297,7 @@ pub const EWOULDBLOCK: c_int = EAGAIN;
     feature = "rustc-dep-of-std",
     link(name = "c", cfg(not(target_feature = "crt-static")))
 )]
-extern {
+extern "C" {
     pub fn _Exit(code: c_int) -> !;
     pub fn _exit(code: c_int) -> !;
     pub fn abort() -> !;
@@ -358,8 +358,8 @@ extern {
     pub fn puts(a: *const c_char) -> c_int;
     pub fn perror(a: *const c_char);
     pub fn srand(a: c_uint);
-    pub fn atexit(a: extern fn()) -> c_int;
-    pub fn at_quick_exit(a: extern fn()) -> c_int;
+    pub fn atexit(a: extern "C" fn()) -> c_int;
+    pub fn at_quick_exit(a: extern "C" fn()) -> c_int;
     pub fn quick_exit(a: c_int) -> !;
     pub fn posix_memalign(a: *mut *mut c_void, b: size_t, c: size_t) -> c_int;
     pub fn rand_r(a: *mut c_uint) -> c_int;

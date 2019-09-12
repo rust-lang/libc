@@ -39,7 +39,7 @@ pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
 
 pub const TIOCINQ: ::c_int = ::FIONREAD;
 
-extern {
+extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 }
 

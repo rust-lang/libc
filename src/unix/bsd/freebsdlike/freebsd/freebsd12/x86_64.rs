@@ -28,5 +28,7 @@ pub struct stat {
 
 impl ::Copy for ::stat {}
 impl ::Clone for ::stat {
-    fn clone(&self) -> ::stat { *self }
+    fn clone(&self) -> ::stat {
+        *self
+    }
 }

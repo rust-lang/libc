@@ -107,7 +107,7 @@ s! {
     }
 }
 
-s_no_extra_traits!{
+s_no_extra_traits! {
     pub struct pthread_mutex_t {
         value: ::c_int,
         __reserved: [::c_char; 36],

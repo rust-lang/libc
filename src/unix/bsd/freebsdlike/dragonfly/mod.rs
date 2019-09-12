@@ -24,7 +24,9 @@ pub type sem_t = *mut sem;
 pub enum sem {}
 impl ::Copy for sem {}
 impl ::Clone for sem {
-    fn clone(&self) -> sem { *self }
+    fn clone(&self) -> sem {
+        *self
+    }
 }
 
 s! {
@@ -451,10 +453,7 @@ pub const ENOMEDIUM: ::c_int = 93;
 pub const EASYNC: ::c_int = 99;
 pub const ELAST: ::c_int = 99;
 pub const RLIMIT_POSIXLOCKS: ::c_int = 11;
-#[deprecated(
-    since = "0.2.64",
-    note = "Not stable across OS versions"
-)]
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::rlim_t = 12;
 
 pub const Q_GETQUOTA: ::c_int = 0x300;
@@ -680,7 +679,7 @@ pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
 pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
-// was interface is in polling mode
+                                           // was interface is in polling mode
 pub const IFF_POLLING_COMPAT: ::c_int = 0x10000;
 pub const IFF_PPROMISC: ::c_int = 0x20000; // user-requested promisc mode
 pub const IFF_MONITOR: ::c_int = 0x40000; // user-requested monitor mode
@@ -914,9 +913,9 @@ pub const IPPROTO_DONE: ::c_int = 257;
 pub const IPPROTO_UNKNOWN: ::c_int = 258;
 
 // sys/netinet/tcp.h
-pub const TCP_SIGNATURE_ENABLE:   ::c_int = 16;
-pub const TCP_KEEPINIT:   ::c_int = 32;
-pub const TCP_FASTKEEP:   ::c_int = 128;
+pub const TCP_SIGNATURE_ENABLE: ::c_int = 16;
+pub const TCP_KEEPINIT: ::c_int = 32;
+pub const TCP_FASTKEEP: ::c_int = 128;
 
 pub const AF_BLUETOOTH: ::c_int = 33;
 pub const AF_MPLS: ::c_int = 34;
@@ -956,11 +955,11 @@ pub const LC_NUMERIC_MASK: ::c_int = (1 << 3);
 pub const LC_TIME_MASK: ::c_int = (1 << 4);
 pub const LC_MESSAGES_MASK: ::c_int = (1 << 5);
 pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
-                               | LC_CTYPE_MASK
-                               | LC_MESSAGES_MASK
-                               | LC_MONETARY_MASK
-                               | LC_NUMERIC_MASK
-                               | LC_TIME_MASK;
+    | LC_CTYPE_MASK
+    | LC_MESSAGES_MASK
+    | LC_MONETARY_MASK
+    | LC_NUMERIC_MASK
+    | LC_TIME_MASK;
 
 pub const TIOCSIG: ::c_uint = 0x2000745f;
 pub const BTUARTDISC: ::c_int = 0x7;
@@ -971,11 +970,11 @@ pub const TIOCMODS: ::c_ulong = 0x80047404;
 pub const TIOCREMOTE: ::c_ulong = 0x80047469;
 
 // Constants used by "at" family of system calls.
-pub const AT_FDCWD:            ::c_int = 0xFFFAFDCD; // invalid file descriptor
+pub const AT_FDCWD: ::c_int = 0xFFFAFDCD; // invalid file descriptor
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 1;
-pub const AT_REMOVEDIR:        ::c_int = 2;
-pub const AT_EACCESS:          ::c_int = 4;
-pub const AT_SYMLINK_FOLLOW:   ::c_int = 8;
+pub const AT_REMOVEDIR: ::c_int = 2;
+pub const AT_EACCESS: ::c_int = 4;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 8;
 
 pub const VCHECKPT: usize = 19;
 
@@ -1000,11 +999,11 @@ pub const RTP_PRIO_THREAD: ::c_ushort = 3;
 
 // Flags for chflags(2)
 pub const UF_NOHISTORY: ::c_ulong = 0x00000040;
-pub const UF_CACHE:     ::c_ulong = 0x00000080;
-pub const UF_XLINK:     ::c_ulong = 0x00000100;
+pub const UF_CACHE: ::c_ulong = 0x00000080;
+pub const UF_XLINK: ::c_ulong = 0x00000100;
 pub const SF_NOHISTORY: ::c_ulong = 0x00400000;
-pub const SF_CACHE:     ::c_ulong = 0x00800000;
-pub const SF_XLINK:     ::c_ulong = 0x01000000;
+pub const SF_CACHE: ::c_ulong = 0x00800000;
+pub const SF_XLINK: ::c_ulong = 0x01000000;
 
 // timespec constants
 pub const UTIME_OMIT: c_long = -2;
@@ -1046,23 +1045,35 @@ f! {
     }
 }
 
-extern {
+extern "C" {
     pub fn setgrent();
-    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
+    pub fn mprotect(
+        addr: *mut ::c_void,
+        len: ::size_t,
+        prot: ::c_int,
+    ) -> ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn clock_settime(
+        clk_id: ::clockid_t,
+        tp: *const ::timespec,
+    ) -> ::c_int;
 
     pub fn setutxdb(_type: ::c_uint, file: *mut ::c_char) -> ::c_int;
 
-    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb,
-                            timeout: *mut ::timespec) -> ::c_int;
+    pub fn aio_waitcomplete(
+        iocbp: *mut *mut aiocb,
+        timeout: *mut ::timespec,
+    ) -> ::c_int;
 
     pub fn freelocale(loc: ::locale_t);
 
-    pub fn lwp_rtprio(function: ::c_int, pid: ::pid_t, lwpid: lwpid_t,
-                      rtp: *mut super::rtprio) -> ::c_int;
+    pub fn lwp_rtprio(
+        function: ::c_int,
+        pid: ::pid_t,
+        lwpid: lwpid_t,
+        rtp: *mut super::rtprio,
+    ) -> ::c_int;
 
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;

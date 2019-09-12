@@ -806,7 +806,7 @@ pub const _SC_TRACE_SYS_MAX: ::c_int = 89;
 pub const _SC_TRACE_USER_EVENT_MAX: ::c_int = 90;
 pub const _SC_TYPED_MEMORY_OBJECTS: ::c_int = 91;
 pub const _SC_V7_ILP32_OFF32: ::c_int = 92;
-pub const _SC_V6_ILP32_OFF32: ::c_int =_SC_V7_ILP32_OFF32;
+pub const _SC_V6_ILP32_OFF32: ::c_int = _SC_V7_ILP32_OFF32;
 pub const _SC_XBS5_ILP32_OFF32: ::c_int = _SC_V7_ILP32_OFF32;
 pub const _SC_V7_ILP32_OFFBIG: ::c_int = 93;
 pub const _SC_V6_ILP32_OFFBIG: ::c_int = _SC_V7_ILP32_OFFBIG;
@@ -963,17 +963,21 @@ f! {
     }
 }
 
-extern {
+extern "C" {
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
-    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
-                      buflen: ::size_t) -> ::c_int;
+    pub fn strerror_r(
+        errnum: ::c_int,
+        buf: *mut c_char,
+        buflen: ::size_t,
+    ) -> ::c_int;
 
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_init(sem: *mut sem_t,
-                    pshared: ::c_int,
-                    value: ::c_uint)
-                    -> ::c_int;
+    pub fn sem_init(
+        sem: *mut sem_t,
+        pshared: ::c_int,
+        value: ::c_uint,
+    ) -> ::c_int;
 
     pub fn abs(i: ::c_int) -> ::c_int;
     pub fn atof(s: *const ::c_char) -> ::c_double;
@@ -981,31 +985,52 @@ extern {
     pub fn rand() -> ::c_int;
     pub fn srand(seed: ::c_uint);
 
-    pub fn bind(s: ::c_int, name: *const ::sockaddr, namelen: ::socklen_t)
-        -> ::c_int;
+    pub fn bind(
+        s: ::c_int,
+        name: *const ::sockaddr,
+        namelen: ::socklen_t,
+    ) -> ::c_int;
 
-    pub fn clock_gettime(clock_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_gettime(
+        clock_id: ::clockid_t,
+        tp: *mut ::timespec,
+    ) -> ::c_int;
 
-    pub fn gettimeofday(tp: *mut ::timeval,
-                        tz: *mut ::c_void) -> ::c_int;
-    pub fn getpwuid_r(uid: ::uid_t, pwd: *mut passwd, buf: *mut ::c_char,
-        buflen: ::size_t, result: *mut *mut passwd) -> ::c_int;
+    pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
+    pub fn getpwuid_r(
+        uid: ::uid_t,
+        pwd: *mut passwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut passwd,
+    ) -> ::c_int;
 
     // Dummy
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 
     pub fn memalign(align: ::size_t, nbytes: ::size_t) -> *mut ::c_void;
 
-    pub fn pthread_create(tid: *mut ::pthread_t, attr: *const ::pthread_attr_t,
-        start: extern fn(*mut ::c_void) -> *mut ::c_void, arg: *mut ::c_void)
-        -> ::c_int;
+    pub fn pthread_create(
+        tid: *mut ::pthread_t,
+        attr: *const ::pthread_attr_t,
+        start: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
+        arg: *mut ::c_void,
+    ) -> ::c_int;
 
-    pub fn pthread_sigmask(how: ::c_int, set: *const ::sigset_t,
-        oset: *mut ::sigset_t) -> ::c_int;
+    pub fn pthread_sigmask(
+        how: ::c_int,
+        set: *const ::sigset_t,
+        oset: *mut ::sigset_t,
+    ) -> ::c_int;
 
-    pub fn recvfrom(s: ::c_int, mem: *mut ::c_void, len: ::size_t,
-        flags: ::c_int, from: *mut ::sockaddr, fromlen: *mut ::socklen_t)
-        -> ::c_int;
+    pub fn recvfrom(
+        s: ::c_int,
+        mem: *mut ::c_void,
+        len: ::size_t,
+        flags: ::c_int,
+        from: *mut ::sockaddr,
+        fromlen: *mut ::socklen_t,
+    ) -> ::c_int;
 
     pub fn setgroups(ngroups: ::c_int, grouplist: *const ::gid_t) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;

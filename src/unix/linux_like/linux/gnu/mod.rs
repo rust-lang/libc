@@ -189,7 +189,7 @@ impl siginfo_t {
             _si_signo: ::c_int,
             _si_errno: ::c_int,
             _si_code: ::c_int,
-            si_addr: *mut ::c_void
+            si_addr: *mut ::c_void,
         }
         (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
     }
@@ -361,17 +361,17 @@ pub const LC_TELEPHONE_MASK: ::c_int = (1 << LC_TELEPHONE);
 pub const LC_MEASUREMENT_MASK: ::c_int = (1 << LC_MEASUREMENT);
 pub const LC_IDENTIFICATION_MASK: ::c_int = (1 << LC_IDENTIFICATION);
 pub const LC_ALL_MASK: ::c_int = ::LC_CTYPE_MASK
-                               | ::LC_NUMERIC_MASK
-                               | ::LC_TIME_MASK
-                               | ::LC_COLLATE_MASK
-                               | ::LC_MONETARY_MASK
-                               | ::LC_MESSAGES_MASK
-                               | LC_PAPER_MASK
-                               | LC_NAME_MASK
-                               | LC_ADDRESS_MASK
-                               | LC_TELEPHONE_MASK
-                               | LC_MEASUREMENT_MASK
-                               | LC_IDENTIFICATION_MASK;
+    | ::LC_NUMERIC_MASK
+    | ::LC_TIME_MASK
+    | ::LC_COLLATE_MASK
+    | ::LC_MONETARY_MASK
+    | ::LC_MESSAGES_MASK
+    | LC_PAPER_MASK
+    | LC_NAME_MASK
+    | LC_ADDRESS_MASK
+    | LC_TELEPHONE_MASK
+    | LC_MEASUREMENT_MASK
+    | LC_IDENTIFICATION_MASK;
 
 pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
 pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
@@ -872,27 +872,49 @@ cfg_if! {
 }
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 3;
 
-extern {
-    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
-                    flags: ::c_int) -> ::c_int;
-    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
-                    flags: ::c_int, timeout: *mut ::timespec) -> ::c_int;
+extern "C" {
+    pub fn sendmmsg(
+        sockfd: ::c_int,
+        msgvec: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn recvmmsg(
+        sockfd: ::c_int,
+        msgvec: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_int,
+        timeout: *mut ::timespec,
+    ) -> ::c_int;
 
-    pub fn getrlimit64(resource: ::__rlimit_resource_t,
-                       rlim: *mut ::rlimit64) -> ::c_int;
-    pub fn setrlimit64(resource: ::__rlimit_resource_t,
-                       rlim: *const ::rlimit64) -> ::c_int;
-    pub fn getrlimit(resource: ::__rlimit_resource_t,
-                     rlim: *mut ::rlimit) -> ::c_int;
-    pub fn setrlimit(resource: ::__rlimit_resource_t,
-                     rlim: *const ::rlimit) -> ::c_int;
-    pub fn prlimit(pid: ::pid_t,
-                   resource: ::__rlimit_resource_t, new_limit: *const ::rlimit,
-                   old_limit: *mut ::rlimit) -> ::c_int;
-    pub fn prlimit64(pid: ::pid_t,
-                     resource: ::__rlimit_resource_t,
-                     new_limit: *const ::rlimit64,
-                     old_limit: *mut ::rlimit64) -> ::c_int;
+    pub fn getrlimit64(
+        resource: ::__rlimit_resource_t,
+        rlim: *mut ::rlimit64,
+    ) -> ::c_int;
+    pub fn setrlimit64(
+        resource: ::__rlimit_resource_t,
+        rlim: *const ::rlimit64,
+    ) -> ::c_int;
+    pub fn getrlimit(
+        resource: ::__rlimit_resource_t,
+        rlim: *mut ::rlimit,
+    ) -> ::c_int;
+    pub fn setrlimit(
+        resource: ::__rlimit_resource_t,
+        rlim: *const ::rlimit,
+    ) -> ::c_int;
+    pub fn prlimit(
+        pid: ::pid_t,
+        resource: ::__rlimit_resource_t,
+        new_limit: *const ::rlimit,
+        old_limit: *mut ::rlimit,
+    ) -> ::c_int;
+    pub fn prlimit64(
+        pid: ::pid_t,
+        resource: ::__rlimit_resource_t,
+        new_limit: *const ::rlimit64,
+        old_limit: *mut ::rlimit64,
+    ) -> ::c_int;
     pub fn utmpname(file: *const ::c_char) -> ::c_int;
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
     pub fn getutxent() -> *mut utmpx;
@@ -903,10 +925,14 @@ extern {
     pub fn endutxent();
     pub fn getpt() -> ::c_int;
     pub fn mallopt(param: ::c_int, value: ::c_int) -> ::c_int;
-    pub fn gettimeofday(tp: *mut ::timeval,
-                        tz: *mut ::timezone) -> ::c_int;
-    pub fn statx(dirfd: ::c_int, pathname: *const c_char, flags: ::c_int,
-                 mask: ::c_uint, statxbuf: *mut statx) -> ::c_int;
+    pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
+    pub fn statx(
+        dirfd: ::c_int,
+        pathname: *const c_char,
+        flags: ::c_int,
+        mask: ::c_uint,
+        statxbuf: *mut statx,
+    ) -> ::c_int;
     pub fn getrandom(
         buf: *mut ::c_void,
         buflen: ::size_t,
@@ -915,58 +941,82 @@ extern {
 }
 
 #[link(name = "util")]
-extern {
+extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-    pub fn backtrace(buf: *mut *mut ::c_void,
-                     sz: ::c_int) -> ::c_int;
-    pub fn glob64(pattern: *const ::c_char,
-                  flags: ::c_int,
-                  errfunc: ::Option<extern fn(epath: *const ::c_char,
-                                                   errno: ::c_int)
-                                                   -> ::c_int>,
-                  pglob: *mut glob64_t) -> ::c_int;
+    pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
+    pub fn glob64(
+        pattern: *const ::c_char,
+        flags: ::c_int,
+        errfunc: ::Option<
+            extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int,
+        >,
+        pglob: *mut glob64_t,
+    ) -> ::c_int;
     pub fn globfree64(pglob: *mut glob64_t);
     pub fn ptrace(request: ::c_uint, ...) -> ::c_long;
-    pub fn pthread_attr_getaffinity_np(attr: *const ::pthread_attr_t,
-                                       cpusetsize: ::size_t,
-                                       cpuset: *mut ::cpu_set_t) -> ::c_int;
-    pub fn pthread_attr_setaffinity_np(attr: *mut ::pthread_attr_t,
-                                       cpusetsize: ::size_t,
-                                       cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn pthread_attr_getaffinity_np(
+        attr: *const ::pthread_attr_t,
+        cpusetsize: ::size_t,
+        cpuset: *mut ::cpu_set_t,
+    ) -> ::c_int;
+    pub fn pthread_attr_setaffinity_np(
+        attr: *mut ::pthread_attr_t,
+        cpusetsize: ::size_t,
+        cpuset: *const ::cpu_set_t,
+    ) -> ::c_int;
     pub fn getpriority(which: ::__priority_which_t, who: ::id_t) -> ::c_int;
-    pub fn setpriority(which: ::__priority_which_t, who: ::id_t,
-                                       prio: ::c_int) -> ::c_int;
-    pub fn pthread_getaffinity_np(thread: ::pthread_t,
-                                  cpusetsize: ::size_t,
-                                  cpuset: *mut ::cpu_set_t) -> ::c_int;
-    pub fn pthread_setaffinity_np(thread: ::pthread_t,
-                                  cpusetsize: ::size_t,
-                                  cpuset: *const ::cpu_set_t) -> ::c_int;
-    pub fn pthread_rwlockattr_getkind_np(attr: *const ::pthread_rwlockattr_t,
-                                         val: *mut ::c_int) -> ::c_int;
-    pub fn pthread_rwlockattr_setkind_np(attr: *mut ::pthread_rwlockattr_t,
-                                         val: ::c_int) -> ::c_int;
+    pub fn setpriority(
+        which: ::__priority_which_t,
+        who: ::id_t,
+        prio: ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_getaffinity_np(
+        thread: ::pthread_t,
+        cpusetsize: ::size_t,
+        cpuset: *mut ::cpu_set_t,
+    ) -> ::c_int;
+    pub fn pthread_setaffinity_np(
+        thread: ::pthread_t,
+        cpusetsize: ::size_t,
+        cpuset: *const ::cpu_set_t,
+    ) -> ::c_int;
+    pub fn pthread_rwlockattr_getkind_np(
+        attr: *const ::pthread_rwlockattr_t,
+        val: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_rwlockattr_setkind_np(
+        attr: *mut ::pthread_rwlockattr_t,
+        val: ::c_int,
+    ) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwent_r")]
-    pub fn getpwent_r(pwd: *mut ::passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut ::passwd) -> ::c_int;
+    pub fn getpwent_r(
+        pwd: *mut ::passwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut ::passwd,
+    ) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getgrent_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrent_r")]
-    pub fn getgrent_r(grp: *mut ::group,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut ::group) -> ::c_int;
-    pub fn pthread_getname_np(thread: ::pthread_t,
-                              name: *mut ::c_char,
-                              len: ::size_t) -> ::c_int;
-    pub fn pthread_setname_np(thread: ::pthread_t,
-                              name: *const ::c_char) -> ::c_int;
+    pub fn getgrent_r(
+        grp: *mut ::group,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut ::group,
+    ) -> ::c_int;
+    pub fn pthread_getname_np(
+        thread: ::pthread_t,
+        name: *mut ::c_char,
+        len: ::size_t,
+    ) -> ::c_int;
+    pub fn pthread_setname_np(
+        thread: ::pthread_t,
+        name: *const ::c_char,
+    ) -> ::c_int;
 }
 
 cfg_if! {
