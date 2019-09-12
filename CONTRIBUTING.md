@@ -21,7 +21,7 @@ Consequently, this indicates where an API should be added! Adding an API at a
 particular level in the hierarchy means that it is supported on all the child
 platforms of that level. For example, when adding a Unix API it should be added
 to `src/unix/mod.rs`, but when adding a Linux-only API it should be added to
-`src/unix/notbsd/linux/mod.rs`.
+`src/unix/linux_like/linux/mod.rs`.
 
 If you're not 100% sure at what level of the hierarchy an API should be added
 at, fear not! This crate has CI support which tests any binding against all
