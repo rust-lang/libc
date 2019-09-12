@@ -742,13 +742,15 @@ pub const IFF_NOTRAILERS: ::c_int = 0x20; // Avoid use of trailers.
 pub const IFF_RUNNING: ::c_int = 0x40; // Resources allocated.
 pub const IFF_NOARP: ::c_int = 0x80; // No address resolution protocol.
 pub const IFF_PROMISC: ::c_int = 0x100; // Receive all packets.
-                                        // Not supported
+
+// Not supported
 pub const IFF_ALLMULTI: ::c_int = 0x200; // Receive all multicast packets.
 pub const IFF_MASTER: ::c_int = 0x400; // Master of a load balancer.
 pub const IFF_SLAVE: ::c_int = 0x800; // Slave of a load balancer.
 pub const IFF_MULTICAST: ::c_int = 0x1000; // Supports multicast.
 pub const IFF_PORTSEL: ::c_int = 0x2000; // Can set media type.
 pub const IFF_AUTOMEDIA: ::c_int = 0x4000; // Auto media select active.
+
 // Dialup device with changing addresses.
 pub const IFF_DYNAMIC: ::c_int = 0x8000;
 
