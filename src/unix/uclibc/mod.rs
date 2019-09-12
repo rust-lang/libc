@@ -749,7 +749,7 @@ pub const IFF_SLAVE: ::c_int = 0x800; // Slave of a load balancer.
 pub const IFF_MULTICAST: ::c_int = 0x1000; // Supports multicast.
 pub const IFF_PORTSEL: ::c_int = 0x2000; // Can set media type.
 pub const IFF_AUTOMEDIA: ::c_int = 0x4000; // Auto media select active.
-                                           // Dialup device with changing addresses.
+// Dialup device with changing addresses.
 pub const IFF_DYNAMIC: ::c_int = 0x8000;
 
 pub const SOL_IP: ::c_int = 0;

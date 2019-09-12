@@ -1319,14 +1319,15 @@ pub const IFF_NOARP: ::c_int = 0x0000000080; // No address res. protocol
 pub const IFF_PROMISC: ::c_int = 0x0000000100; // Receive all packets
 pub const IFF_ALLMULTI: ::c_int = 0x0000000200; // Receive all multicast pkts
 pub const IFF_INTELLIGENT: ::c_int = 0x0000000400; // Protocol code on board
-pub const IFF_MULTICAST: ::c_int = 0x0000000800; // Supports multicast
-                                                 // Multicast using broadcst. add.
+// Supports multicast Multicast using broadcst. add.
+pub const IFF_MULTICAST: ::c_int = 0x0000000800;
 pub const IFF_MULTI_BCAST: ::c_int = 0x0000001000;
 pub const IFF_UNNUMBERED: ::c_int = 0x0000002000; // Non-unique address
 pub const IFF_DHCPRUNNING: ::c_int = 0x0000004000; // DHCP controls interface
 pub const IFF_PRIVATE: ::c_int = 0x0000008000; // Do not advertise
-pub const IFF_NOXMIT: ::c_int = 0x0000010000; // Do not transmit pkts
-                                              // No address - just on-link subnet
+// Do not transmit pkts
+// No address - just on-link subnet
+pub const IFF_NOXMIT: ::c_int = 0x0000010000;
 pub const IFF_NOLOCAL: ::c_int = 0x0000020000;
 pub const IFF_DEPRECATED: ::c_int = 0x0000040000; // Address is deprecated
 pub const IFF_ADDRCONF: ::c_int = 0x0000080000; // Addr. from stateless addrconf
