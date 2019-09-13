@@ -349,10 +349,7 @@ pub const SIGURG: ::c_int = 23;
 pub const SIGIO: ::c_int = 29;
 pub const SIGSYS: ::c_int = 31;
 pub const SIGSTKFLT: ::c_int = 16;
-#[deprecated(
-    since = "0.2.55",
-    note = "Use SIGSYS instead"
-)]
+#[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
 pub const SIGUNUSED: ::c_int = 31;
 pub const SIGPOLL: ::c_int = 29;
 pub const SIGPWR: ::c_int = 30;
@@ -411,14 +408,14 @@ pub const NOFLSH: ::tcflag_t = 0x00000080;
 pub const CIBAUD: ::tcflag_t = 0o02003600000;
 pub const CBAUDEX: ::tcflag_t = 0o010000;
 pub const VSWTC: usize = 7;
-pub const OLCUC:  ::tcflag_t = 0o000002;
-pub const NLDLY:  ::tcflag_t = 0o000400;
-pub const CRDLY:  ::tcflag_t = 0o003000;
+pub const OLCUC: ::tcflag_t = 0o000002;
+pub const NLDLY: ::tcflag_t = 0o000400;
+pub const CRDLY: ::tcflag_t = 0o003000;
 pub const TABDLY: ::tcflag_t = 0o014000;
-pub const BSDLY:  ::tcflag_t = 0o020000;
-pub const FFDLY:  ::tcflag_t = 0o100000;
-pub const VTDLY:  ::tcflag_t = 0o040000;
-pub const XTABS:  ::tcflag_t = 0o014000;
+pub const BSDLY: ::tcflag_t = 0o020000;
+pub const FFDLY: ::tcflag_t = 0o100000;
+pub const VTDLY: ::tcflag_t = 0o040000;
+pub const XTABS: ::tcflag_t = 0o014000;
 
 pub const B0: ::speed_t = 0o000000;
 pub const B50: ::speed_t = 0o000001;

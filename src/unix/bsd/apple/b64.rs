@@ -50,7 +50,7 @@ s! {
     }
 }
 
-s_no_extra_traits!{
+s_no_extra_traits! {
     pub struct pthread_attr_t {
         __sig: c_long,
         __opaque: [::c_char; 56]
@@ -104,8 +104,10 @@ pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
 pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
 pub const BIOCSETFNR: ::c_ulong = 0x8010427e;
 
-extern {
-    pub fn exchangedata(path1: *const ::c_char,
-                        path2: *const ::c_char,
-                        options: ::c_uint) -> ::c_int;
+extern "C" {
+    pub fn exchangedata(
+        path1: *const ::c_char,
+        path2: *const ::c_char,
+        options: ::c_uint,
+    ) -> ::c_int;
 }

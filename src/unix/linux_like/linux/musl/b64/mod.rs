@@ -142,7 +142,7 @@ pub const SOCK_NONBLOCK: ::c_int = 2048;
 
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
-extern {
+extern "C" {
     pub fn getrandom(
         buf: *mut ::c_void,
         buflen: ::size_t,

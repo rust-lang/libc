@@ -40,7 +40,9 @@ pub type time_t = ::c_long;
 pub enum timezone {}
 impl ::Copy for timezone {}
 impl ::Clone for timezone {
-    fn clone(&self) -> timezone { *self }
+    fn clone(&self) -> timezone {
+        *self
+    }
 }
 
 s_no_extra_traits! {
@@ -839,11 +841,14 @@ f! {
     }
 }
 
-extern {
+extern "C" {
     // errno.h
     pub fn __errno_location() -> *mut ::c_int;
-    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
-                      buflen: ::size_t) -> ::c_int;
+    pub fn strerror_r(
+        errnum: ::c_int,
+        buf: *mut c_char,
+        buflen: ::size_t,
+    ) -> ::c_int;
 
     // unistd.h
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
@@ -853,14 +858,14 @@ extern {
 
     // pthread.h
     pub fn pthread_atfork(
-        prepare: ::Option<unsafe extern fn()>,
-        parent: ::Option<unsafe extern fn()>,
-        child: ::Option<unsafe extern fn()>,
+        prepare: ::Option<unsafe extern "C" fn()>,
+        parent: ::Option<unsafe extern "C" fn()>,
+        child: ::Option<unsafe extern "C" fn()>,
     ) -> ::c_int;
     pub fn pthread_create(
         tid: *mut ::pthread_t,
         attr: *const ::pthread_attr_t,
-        start: extern fn(*mut ::c_void) -> *mut ::c_void,
+        start: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         arg: *mut ::c_void,
     ) -> ::c_int;
     pub fn pthread_condattr_setclock(
@@ -869,11 +874,13 @@ extern {
     ) -> ::c_int;
 
     // pwd.h
-    pub fn getpwuid_r(uid: ::uid_t,
-                      pwd: *mut passwd,
-                      buf: *mut ::c_char,
-                      buflen: ::size_t,
-                      result: *mut *mut passwd) -> ::c_int;
+    pub fn getpwuid_r(
+        uid: ::uid_t,
+        pwd: *mut passwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut passwd,
+    ) -> ::c_int;
 
     // signal.h
     pub fn pthread_sigmask(
@@ -939,8 +946,7 @@ extern {
     pub fn uname(utsname: *mut utsname) -> ::c_int;
 
     // time.h
-    pub fn gettimeofday(tp: *mut ::timeval,
-                        tz: *mut ::timezone) -> ::c_int;
+    pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
 }
 

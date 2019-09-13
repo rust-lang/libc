@@ -199,13 +199,21 @@ cfg_if! {
     }
 }
 
-extern {
+extern "C" {
     pub fn setgrent();
-    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int)
-                    -> ::c_int;
+    pub fn mprotect(
+        addr: *mut ::c_void,
+        len: ::size_t,
+        prot: ::c_int,
+    ) -> ::c_int;
     pub fn freelocale(loc: ::locale_t);
-    pub fn msgrcv(msqid: ::c_int, msgp: *mut ::c_void, msgsz: ::size_t,
-                  msgtyp: ::c_long, msgflg: ::c_int) -> ::ssize_t;
+    pub fn msgrcv(
+        msqid: ::c_int,
+        msgp: *mut ::c_void,
+        msgsz: ::size_t,
+        msgtyp: ::c_long,
+        msgflg: ::c_int,
+    ) -> ::ssize_t;
 }
 
 cfg_if! {

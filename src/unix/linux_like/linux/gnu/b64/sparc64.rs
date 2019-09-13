@@ -548,14 +548,14 @@ pub const NOFLSH: ::tcflag_t = 0x80;
 pub const CIBAUD: ::tcflag_t = 0o02003600000;
 pub const CBAUDEX: ::tcflag_t = 0x00001000;
 pub const VSWTC: usize = 7;
-pub const OLCUC:  ::tcflag_t = 0o000002;
-pub const NLDLY:  ::tcflag_t = 0o000400;
-pub const CRDLY:  ::tcflag_t = 0o003000;
+pub const OLCUC: ::tcflag_t = 0o000002;
+pub const NLDLY: ::tcflag_t = 0o000400;
+pub const CRDLY: ::tcflag_t = 0o003000;
 pub const TABDLY: ::tcflag_t = 0o014000;
-pub const BSDLY:  ::tcflag_t = 0o020000;
-pub const FFDLY:  ::tcflag_t = 0o100000;
-pub const VTDLY:  ::tcflag_t = 0o040000;
-pub const XTABS:  ::tcflag_t = 0o014000;
+pub const BSDLY: ::tcflag_t = 0o020000;
+pub const FFDLY: ::tcflag_t = 0o100000;
+pub const VTDLY: ::tcflag_t = 0o040000;
+pub const XTABS: ::tcflag_t = 0o014000;
 
 pub const B0: ::speed_t = 0o000000;
 pub const B50: ::speed_t = 0o000001;
@@ -841,11 +841,11 @@ pub const SYS_mlockall: ::c_long = 239;
 pub const SYS_munlockall: ::c_long = 240;
 pub const SYS_sched_setparam: ::c_long = 241;
 pub const SYS_sched_getparam: ::c_long = 242;
-pub const SYS_sched_setscheduler: ::c_long =243;
-pub const SYS_sched_getscheduler: ::c_long =244;
+pub const SYS_sched_setscheduler: ::c_long = 243;
+pub const SYS_sched_getscheduler: ::c_long = 244;
 pub const SYS_sched_yield: ::c_long = 245;
-pub const SYS_sched_get_priority_max: ::c_long =246;
-pub const SYS_sched_get_priority_min: ::c_long =247;
+pub const SYS_sched_get_priority_max: ::c_long = 246;
+pub const SYS_sched_get_priority_min: ::c_long = 247;
 pub const SYS_sched_rr_get_interval: ::c_long = 248;
 pub const SYS_nanosleep: ::c_long = 249;
 pub const SYS_mremap: ::c_long = 250;
@@ -899,7 +899,7 @@ pub const SYS_ppoll: ::c_long = 298;
 pub const SYS_unshare: ::c_long = 299;
 pub const SYS_set_robust_list: ::c_long = 300;
 pub const SYS_get_robust_list: ::c_long = 301;
-pub const SYS_migrate_pages: ::c_long =302;
+pub const SYS_migrate_pages: ::c_long = 302;
 pub const SYS_mbind: ::c_long = 303;
 pub const SYS_get_mempolicy: ::c_long = 304;
 pub const SYS_set_mempolicy: ::c_long = 305;
@@ -960,12 +960,13 @@ pub const SYS_pwritev2: ::c_long = 359;
 pub const SYS_statx: ::c_long = 360;
 
 #[link(name = "util")]
-extern {
-    pub fn sysctl(name: *mut ::c_int,
-                  namelen: ::c_int,
-                  oldp: *mut ::c_void,
-                  oldlenp: *mut ::size_t,
-                  newp: *mut ::c_void,
-                  newlen: ::size_t)
-                  -> ::c_int;
+extern "C" {
+    pub fn sysctl(
+        name: *mut ::c_int,
+        namelen: ::c_int,
+        oldp: *mut ::c_void,
+        oldlenp: *mut ::size_t,
+        newp: *mut ::c_void,
+        newlen: ::size_t,
+    ) -> ::c_int;
 }

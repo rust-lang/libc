@@ -20,7 +20,7 @@ impl siginfo_t {
             _si_signo: ::c_int,
             _si_errno: ::c_int,
             _si_code: ::c_int,
-            si_addr: *mut ::c_void
+            si_addr: *mut ::c_void,
         }
 
         (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
@@ -109,7 +109,7 @@ s! {
     }
 }
 
-s_no_extra_traits!{
+s_no_extra_traits! {
     pub struct sysinfo {
         pub uptime: ::c_ulong,
         pub loads: [::c_ulong; 3],
@@ -270,10 +270,7 @@ pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
 pub const TCP_FASTOPEN: ::c_int = 23;
 pub const TCP_TIMESTAMP: ::c_int = 24;
 
-#[deprecated(
-    since = "0.2.55",
-    note = "Use SIGSYS instead"
-)]
+#[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
 pub const SIGUNUSED: ::c_int = ::SIGSYS;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -370,39 +367,52 @@ pub const RLIMIT_MSGQUEUE: ::c_int = 12;
 pub const RLIMIT_NICE: ::c_int = 13;
 pub const RLIMIT_RTPRIO: ::c_int = 14;
 
-extern {
-    pub fn sendmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
-                    flags: ::c_uint) -> ::c_int;
-    pub fn recvmmsg(sockfd: ::c_int, msgvec: *mut ::mmsghdr, vlen: ::c_uint,
-                    flags: ::c_uint, timeout: *mut ::timespec) -> ::c_int;
+extern "C" {
+    pub fn sendmmsg(
+        sockfd: ::c_int,
+        msgvec: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_uint,
+    ) -> ::c_int;
+    pub fn recvmmsg(
+        sockfd: ::c_int,
+        msgvec: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_uint,
+        timeout: *mut ::timespec,
+    ) -> ::c_int;
 
-    pub fn getrlimit64(resource: ::c_int,
-                       rlim: *mut ::rlimit64) -> ::c_int;
-    pub fn setrlimit64(resource: ::c_int,
-                       rlim: *const ::rlimit64) -> ::c_int;
-    pub fn getrlimit(resource: ::c_int,
-                     rlim: *mut ::rlimit) -> ::c_int;
-    pub fn setrlimit(resource: ::c_int,
-                     rlim: *const ::rlimit) -> ::c_int;
-    pub fn prlimit(pid: ::pid_t,
-                   resource: ::c_int, new_limit: *const ::rlimit,
-                   old_limit: *mut ::rlimit) -> ::c_int;
-    pub fn prlimit64(pid: ::pid_t,
-                     resource: ::c_int,
-                     new_limit: *const ::rlimit64,
-                     old_limit: *mut ::rlimit64) -> ::c_int;
+    pub fn getrlimit64(resource: ::c_int, rlim: *mut ::rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::c_int, rlim: *const ::rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
+    pub fn prlimit(
+        pid: ::pid_t,
+        resource: ::c_int,
+        new_limit: *const ::rlimit,
+        old_limit: *mut ::rlimit,
+    ) -> ::c_int;
+    pub fn prlimit64(
+        pid: ::pid_t,
+        resource: ::c_int,
+        new_limit: *const ::rlimit64,
+        old_limit: *mut ::rlimit64,
+    ) -> ::c_int;
 
-    pub fn gettimeofday(tp: *mut ::timeval,
-                        tz: *mut ::c_void) -> ::c_int;
+    pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
-    pub fn pthread_getaffinity_np(thread: ::pthread_t,
-                                  cpusetsize: ::size_t,
-                                  cpuset: *mut ::cpu_set_t) -> ::c_int;
-    pub fn pthread_setaffinity_np(thread: ::pthread_t,
-                                  cpusetsize: ::size_t,
-                                  cpuset: *const ::cpu_set_t) -> ::c_int;
+    pub fn pthread_getaffinity_np(
+        thread: ::pthread_t,
+        cpusetsize: ::size_t,
+        cpuset: *mut ::cpu_set_t,
+    ) -> ::c_int;
+    pub fn pthread_setaffinity_np(
+        thread: ::pthread_t,
+        cpusetsize: ::size_t,
+        cpuset: *const ::cpu_set_t,
+    ) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
 }
 
