@@ -1898,7 +1898,7 @@ impl<'a> Generator<'a> {
                 for (i = 0; i < size; ++i) {{
                       if (pad[i]) {{ continue; }}
                       // fprintf(stdout, "C testing byte %d of %d of \"{ty}\"\n", i, size);
-                      unsigned char c = (unsigned char)(i % 252);
+                      unsigned char c = (unsigned char)(i % 256);
                       c = c == 0? 42 : c;
                       if (p[i] != c) {{
                           *error = 1;
