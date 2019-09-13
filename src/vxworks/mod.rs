@@ -551,50 +551,35 @@ enum nfsstat {
     NFSERR_BAD_COOKIE = 10003,
     NFSERR_NOTSUPP = 45,
     NFSERR_TOOSMALL = 10005,
-//    NFSERR_SERVERFAULT = 10006,
     NFSERR_BADTYPE = 10007,
     NFSERR_JUKEBOX = 10008,
 }
 
 pub const S_nfsLib_NFS_OK: ::c_int = nfsstat::NFS_OK as ::c_int;
-pub const S_nfsLib_NFSERR_PERM: ::c_int =
-    nfsstat::NFSERR_PERM as ::c_int;
-pub const S_nfsLib_NFSERR_NOENT: ::c_int =
-    nfsstat::NFSERR_NOENT as ::c_int;
-pub const S_nfsLib_NFSERR_IO: ::c_int =
-    nfsstat::NFSERR_IO as ::c_int;
-pub const S_nfsLib_NFSERR_NXIO: ::c_int =
-    nfsstat::NFSERR_NXIO as ::c_int;
-pub const S_nfsLib_NFSERR_ACCESS: ::c_int =
-    nfsstat::NFSERR_ACCESS as ::c_int;
-pub const S_nfsLib_NFSERR_EXIST: ::c_int =
-    nfsstat::NFSERR_EXIST as ::c_int;
+pub const S_nfsLib_NFSERR_PERM: ::c_int = nfsstat::NFSERR_PERM as ::c_int;
+pub const S_nfsLib_NFSERR_NOENT: ::c_int = nfsstat::NFSERR_NOENT as ::c_int;
+pub const S_nfsLib_NFSERR_IO: ::c_int = nfsstat::NFSERR_IO as ::c_int;
+pub const S_nfsLib_NFSERR_NXIO: ::c_int = nfsstat::NFSERR_NXIO as ::c_int;
+pub const S_nfsLib_NFSERR_ACCESS: ::c_int = nfsstat::NFSERR_ACCESS as ::c_int;
+pub const S_nfsLib_NFSERR_EXIST: ::c_int = nfsstat::NFSERR_EXIST as ::c_int;
 pub const S_nfsLib_NFSERR_XDEV: ::c_int =
     M_nfsStat | nfsstat::NFSERR_XDEV as ::c_int;
 pub const S_nfsLib_NFSERR_NODEV: ::c_int =
     M_nfsStat | nfsstat::NFSERR_NODEV as ::c_int;
-pub const S_nfsLib_NFSERR_NOTDIR: ::c_int =
-    nfsstat::NFSERR_NOTDIR as ::c_int;
-pub const S_nfsLib_NFSERR_ISDIR: ::c_int =
-    nfsstat::NFSERR_ISDIR as ::c_int;
-pub const S_nfsLib_NFSERR_INVAL: ::c_int =
-    nfsstat::NFSERR_INVAL as ::c_int;
-pub const S_nfsLib_NFSERR_FBIG: ::c_int =
-    nfsstat::NFSERR_FBIG as ::c_int;
-pub const S_nfsLib_NFSERR_NOSPC: ::c_int =
-    nfsstat::NFSERR_NOSPC as ::c_int;
-pub const S_nfsLib_NFSERR_ROFS: ::c_int =
-    nfsstat::NFSERR_ROFS as ::c_int;
+pub const S_nfsLib_NFSERR_NOTDIR: ::c_int = nfsstat::NFSERR_NOTDIR as ::c_int;
+pub const S_nfsLib_NFSERR_ISDIR: ::c_int = nfsstat::NFSERR_ISDIR as ::c_int;
+pub const S_nfsLib_NFSERR_INVAL: ::c_int = nfsstat::NFSERR_INVAL as ::c_int;
+pub const S_nfsLib_NFSERR_FBIG: ::c_int = nfsstat::NFSERR_FBIG as ::c_int;
+pub const S_nfsLib_NFSERR_NOSPC: ::c_int = nfsstat::NFSERR_NOSPC as ::c_int;
+pub const S_nfsLib_NFSERR_ROFS: ::c_int = nfsstat::NFSERR_ROFS as ::c_int;
 pub const S_nfsLib_NFSERR_MLINK: ::c_int =
     M_nfsStat | nfsstat::NFSERR_MLINK as ::c_int;
 pub const S_nfsLib_NFSERR_NAMETOOLONG: ::c_int =
     nfsstat::NFSERR_NAMETOOLONG as ::c_int;
 pub const S_nfsLib_NFSERR_NOTEMPTY: ::c_int =
     nfsstat::NFSERR_NOTEMPTY as ::c_int;
-pub const S_nfsLib_NFSERR_DQUOT: ::c_int =
-    nfsstat::NFSERR_DQUOT as ::c_int;
-pub const S_nfsLib_NFSERR_STALE: ::c_int =
-    nfsstat::NFSERR_STALE as ::c_int;
+pub const S_nfsLib_NFSERR_DQUOT: ::c_int = nfsstat::NFSERR_DQUOT as ::c_int;
+pub const S_nfsLib_NFSERR_STALE: ::c_int = nfsstat::NFSERR_STALE as ::c_int;
 pub const S_nfsLib_NFSERR_WFLUSH: ::c_int =
     M_nfsStat | nfsstat::NFSERR_WFLUSH as ::c_int;
 pub const S_nfsLib_NFSERR_REMOTE: ::c_int =
@@ -609,8 +594,7 @@ pub const S_nfsLib_NFSERR_NOTSUPP: ::c_int =
     nfsstat::NFSERR_NOTSUPP as ::c_int;
 pub const S_nfsLib_NFSERR_TOOSMALL: ::c_int =
     M_nfsStat | nfsstat::NFSERR_TOOSMALL as ::c_int;
-pub const S_nfsLib_NFSERR_SERVERFAULT: ::c_int =
-    nfsstat::NFSERR_IO as ::c_int;
+pub const S_nfsLib_NFSERR_SERVERFAULT: ::c_int = nfsstat::NFSERR_IO as ::c_int;
 pub const S_nfsLib_NFSERR_BADTYPE: ::c_int =
     M_nfsStat | nfsstat::NFSERR_BADTYPE as ::c_int;
 pub const S_nfsLib_NFSERR_JUKEBOX: ::c_int =
@@ -666,29 +650,29 @@ pub const S_IRWXO: ::c_int = 0x0007;
 // socket.h
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
-pub const SO_DEBUG: ::c_int =  0x0001;
-pub const SO_REUSEADDR: ::c_int =  0x0004;
-pub const SO_KEEPALIVE: ::c_int =  0x0008;
-pub const SO_DONTROUTE: ::c_int =  0x0010;
-pub const SO_RCVLOWAT: ::c_int =  0x0012;
-pub const SO_SNDLOWAT: ::c_int =  0x0013;
-pub const SO_SNDTIMEO: ::c_int =  0x1005;
-pub const SO_ACCEPTCONN: ::c_int =  0x001e;
-pub const SO_BROADCAST: ::c_int =  0x0020;
-pub const SO_USELOOPBACK: ::c_int =  0x0040;
-pub const SO_LINGER: ::c_int =  0x0080;
-pub const SO_REUSEPORT: ::c_int =  0x0200;
+pub const SO_DEBUG: ::c_int = 0x0001;
+pub const SO_REUSEADDR: ::c_int = 0x0004;
+pub const SO_KEEPALIVE: ::c_int = 0x0008;
+pub const SO_DONTROUTE: ::c_int = 0x0010;
+pub const SO_RCVLOWAT: ::c_int = 0x0012;
+pub const SO_SNDLOWAT: ::c_int = 0x0013;
+pub const SO_SNDTIMEO: ::c_int = 0x1005;
+pub const SO_ACCEPTCONN: ::c_int = 0x001e;
+pub const SO_BROADCAST: ::c_int = 0x0020;
+pub const SO_USELOOPBACK: ::c_int = 0x0040;
+pub const SO_LINGER: ::c_int = 0x0080;
+pub const SO_REUSEPORT: ::c_int = 0x0200;
 
-pub const SO_VLAN: ::c_int =  0x8000;
+pub const SO_VLAN: ::c_int = 0x8000;
 
-pub const SO_SNDBUF: ::c_int =  0x1001;
-pub const SO_RCVBUF: ::c_int =  0x1002;
-pub const SO_RCVTIMEO: ::c_int =  0x1006;
-pub const SO_ERROR: ::c_int =  0x1007;
-pub const SO_TYPE: ::c_int =  0x1008;
-pub const SO_BINDTODEVICE: ::c_int =  0x1010;
-pub const SO_OOBINLINE: ::c_int =  0x1011;
-pub const SO_CONNTIMEO: ::c_int =  0x100a;
+pub const SO_SNDBUF: ::c_int = 0x1001;
+pub const SO_RCVBUF: ::c_int = 0x1002;
+pub const SO_RCVTIMEO: ::c_int = 0x1006;
+pub const SO_ERROR: ::c_int = 0x1007;
+pub const SO_TYPE: ::c_int = 0x1008;
+pub const SO_BINDTODEVICE: ::c_int = 0x1010;
+pub const SO_OOBINLINE: ::c_int = 0x1011;
+pub const SO_CONNTIMEO: ::c_int = 0x100a;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
@@ -899,7 +883,7 @@ const PTHREAD_RWLOCKATTR_INITIALIZER: pthread_rwlockattr_t =
         rwlockAttrStatus: PTHREAD_INITIALIZED_OBJ,
         rwlockAttrPshared: 1,
         rwlockAttrMaxReaders: 0,
-        rwlockAttrConformOpt:1,
+        rwlockAttrConformOpt: 1,
     };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     rwlockSemId: null_mut(),
@@ -990,7 +974,7 @@ f! {
     }
 }
 
-extern {
+extern "C" {
     pub fn isalnum(c: c_int) -> c_int;
     pub fn isalpha(c: c_int) -> c_int;
     pub fn iscntrl(c: c_int) -> c_int;
@@ -1069,7 +1053,7 @@ extern {
     pub fn free(p: *mut c_void);
     pub fn abort() -> !;
     pub fn exit(status: c_int) -> !;
-    pub fn atexit(cb: extern fn()) -> c_int;
+    pub fn atexit(cb: extern "C" fn()) -> c_int;
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
 
@@ -1127,7 +1111,7 @@ extern {
     pub fn memset(dest: *mut c_void, c: c_int, n: size_t) -> *mut c_void;
 }
 
-extern {
+extern "C" {
     pub fn getpwnam(name: *const ::c_char) -> *mut passwd;
     pub fn getpwuid(uid: ::uid_t) -> *mut passwd;
 
@@ -1399,7 +1383,7 @@ extern {
     pub fn _rtld_dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 }
 
-extern {
+extern "C" {
     // stdlib.h
     pub fn memalign(block_size: ::size_t, size_arg: ::size_t)
         -> *mut ::c_void;
@@ -1411,9 +1395,7 @@ extern {
     pub fn chdir(attr: *const ::c_char) -> ::c_int;
 
     // pthread.h
-    pub fn pthread_mutexattr_init(
-        attr: *mut pthread_mutexattr_t,
-    ) -> ::c_int;
+    pub fn pthread_mutexattr_init(attr: *mut pthread_mutexattr_t) -> ::c_int;
 
     // pthread.h
     pub fn pthread_mutexattr_destroy(
@@ -1475,7 +1457,7 @@ extern {
     pub fn pthread_create(
         pThread: *mut ::pthread_t,
         pAttr: *const ::pthread_attr_t,
-        start_routine: extern fn(*mut ::c_void) -> *mut ::c_void,
+        start_routine: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
 
@@ -1487,9 +1469,9 @@ extern {
 
     // int pthread_atfork (void (*)(void), void (*)(void), void (*)(void));
     pub fn pthread_atfork(
-        prepare: ::Option<unsafe extern fn()>,
-        parent: ::Option<unsafe extern fn()>,
-        child: ::Option<unsafe extern fn()>,
+        prepare: ::Option<unsafe extern "C" fn()>,
+        parent: ::Option<unsafe extern "C" fn()>,
+        child: ::Option<unsafe extern "C" fn()>,
     ) -> ::c_int;
     // stat.h
     pub fn fstat(fildes: ::c_int, buf: *mut stat) -> ::c_int;
@@ -1618,7 +1600,7 @@ extern {
     // pthread.h
     pub fn pthread_key_create(
         key: *mut ::pthread_key_t,
-        dtor: ::Option<unsafe extern fn(*mut ::c_void)>,
+        dtor: ::Option<unsafe extern "C" fn(*mut ::c_void)>,
     ) -> ::c_int;
 
     // pthread.h
@@ -2152,23 +2134,27 @@ pub fn posix_memalign(
 // epoll.h
 // Unfortunately epoll is currently only supported in the VxWorks kernel
 #[allow(unused_variables)]
-pub fn epoll_create(size: ::c_int) -> ::c_int { -1 }
+pub fn epoll_create(size: ::c_int) -> ::c_int {
+    -1
+}
 #[allow(unused_variables)]
-pub fn epoll_create1(flags: ::c_int) -> ::c_int { -1 }
+pub fn epoll_create1(flags: ::c_int) -> ::c_int {
+    -1
+}
 #[allow(unused_variables)]
 pub fn epoll_ctl(
     epfd: ::c_int,
     op: ::c_int,
     fd: ::c_int,
-    event: *mut ::epoll_event
-    ) -> ::c_int {
+    event: *mut ::epoll_event,
+) -> ::c_int {
     -1
 }
 #[allow(unused_variables)]
 pub fn epoll_create_and_ctl(
     num: ::c_int,
     fds: *mut ::c_int,
-        event: *mut ::epoll_event
+    event: *mut ::epoll_event,
 ) -> ::c_int {
     -1
 }
@@ -2177,9 +2163,9 @@ pub fn epoll_wait(
     epfd: ::c_int,
     events: *mut ::epoll_event,
     maxevents: ::c_int,
-    timeout: ::c_int
+    timeout: ::c_int,
 ) -> ::c_int {
-        -1
+    -1
 }
 
 // From sysconf.c -> doesn't seem to be supported?
