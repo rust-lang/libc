@@ -12,6 +12,47 @@ impl ::Clone for DIR {
     }
 }
 
+f! {
+    pub fn CMSG_ALIGN(len: usize) -> usize {
+    	len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
+    }
+
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
+                       cmsg: *const cmsghdr) -> *mut cmsghdr {
+	let next = cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)
+            + CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
+        let max = (*mhdr).msg_control as usize
+            + (*mhdr).msg_controllen as usize;
+        if next <= max {
+            (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize))
+                as *mut ::cmsghdr
+        } else { 
+            0 as *mut ::cmsghdr
+        }
+    }
+
+    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
+        if (*mhdr).msg_controllen as usize > 0  {
+            (*mhdr).msg_control as *mut cmsghdr
+        } else {
+            0 as *mut cmsghdr
+        }
+    }
+
+    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut ::c_uchar {
+	(cmsg as *mut ::c_uchar)
+            .offset(CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
+    }
+
+    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
+            as ::c_uint
+    }
+
+    pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
+        CMSG_ALIGN(::mem::size_of::<cmsghdr>()) as ::c_uint + length
+    }
+}
 // Throughout we use usize / isize for types that are
 // (unsigned) int in ILP32 and (unsigned) long in ILP64
 
@@ -36,25 +77,23 @@ pub type ssize_t = isize;
 
 pub type pid_t = i32;
 pub type in_addr_t = u32;
-pub type in_port_t = u16;
 pub type sighandler_t = ::size_t;
-pub type cc_t = ::c_uchar;
+pub type cpuset_t = u32;
 
 pub type blkcnt_t = ::c_long;
 pub type blksize_t = ::c_long;
 pub type ino_t = ::c_ulong;
-pub type ino32_t = u32;
 pub type off_t = ::c_longlong;
 
-pub type rlim_t = ::c_ulonglong;
+pub type rlim_t = ::c_ulong;
 pub type suseconds_t = ::c_long;
 pub type time_t = ::c_long;
-pub type wchar_t = ::c_int;
+
 pub type errno_t = ::c_int;
 
 pub type useconds_t = ::c_ulong;
 
-pub type socklen_t = ::c_int;
+pub type socklen_t = ::c_uint;
 
 pub type pthread_t = ::c_ulong;
 
@@ -68,19 +107,14 @@ pub type uid_t = ::c_ushort;
 pub type gid_t = ::c_ushort;
 pub type sigset_t = ::c_ulonglong;
 pub type key_t = ::c_long;
-pub type shmatt_t = ::c_ulong;
-
-pub type mqd_t = ::c_int;
 
 pub type nfds_t = ::c_uint;
-pub type nl_item = ::c_int;
 pub type stat64 = ::stat;
 
 pub type pthread_key_t = ::c_ulong;
 
 // From b_off_t.h
 pub type off64_t = ::c_longlong;
-pub type off_t64 = ::c_longlong;
 
 // From b_BOOL.h
 pub type BOOL = ::c_int;
@@ -108,9 +142,6 @@ pub type _Vx_exit_code_t = isize;
 pub type _Vx_ticks_t = ::c_uint;
 pub type _Vx_ticks64_t = ::c_ulonglong;
 
-// From vxTypesBase.h
-pub type va_list = *mut ::c_char;
-
 pub type sa_family_t = ::c_uchar;
 
 // structs that only exist in userspace
@@ -121,7 +152,7 @@ s! {
     pub struct pthread_condattr_t {
         pub condAttrStatus: ::c_int,
         pub condAttrPshared: ::c_int,
-        pub _CondAttrClockId: ::clockid_t,
+        pub condAttrClockId: ::clockid_t,
     }
 
     // b_pthread_cond_t.h
@@ -132,23 +163,25 @@ s! {
         pub condRefCount: ::c_int,
         pub condMutex: *mut ::pthread_mutex_t,
         pub condAttr: ::pthread_condattr_t,
-        pub condSemName: [::c_char; PTHREAD_SHARED_SEM_NAME_MAX]
+        pub condSemName: [::c_char; _PTHREAD_SHARED_SEM_NAME_MAX]
     }
 
     // b_pthread_rwlockattr_t.h
     pub struct pthread_rwlockattr_t {
         pub rwlockAttrStatus: ::c_int,
+	pub rwlockAttrPshared: ::c_int,
         pub rwlockAttrMaxReaders: ::c_uint,
+	pub rwlockAttrConformOpt: ::c_uint,
     }
 
     // b_pthread_rwlock_t.h
     pub struct pthread_rwlock_t {
         pub rwlockSemId: :: _Vx_SEM_ID,
-        pub rwlockReadersRefCount: ::c_int,
+        pub rwlockReadersRefCount: ::c_uint,
         pub rwlockValid: ::c_int,
         pub rwlockInitted: ::c_int,
         pub rwlockAttr: ::pthread_rwlockattr_t,
-        pub rwlockName: [::c_char; PTHREAD_SHARED_SEM_NAME_MAX]
+        pub rwlockSemName: [::c_char; _PTHREAD_SHARED_SEM_NAME_MAX]
     }
 
     // b_struct_timeval.h
@@ -175,17 +208,13 @@ s! {
         pub ss_family  : ::sa_family_t,
         pub __ss_pad1  : [::c_char; _SS_PAD1SIZE],
         pub __ss_align : i32,
-        // pub __ss_pad2  : [::c_char; _SS_PAD2SIZE],
-        pub __ss_pad2  : [::c_char; 32],
-        pub __ss_pad3  : [::c_char; 32],
-        pub __ss_pad4  : [::c_char; 32],
-        pub __ss_pad5  : [::c_char; _SS_PAD2SIZE - 96],
+        pub __ss_pad2  : [::c_char; _SS_PAD2SIZE],
     }
     pub struct iovec {
         pub iov_base: *mut ::c_void,
         pub iov_len: ::size_t,
     }
-
+    
     pub struct msghdr {
         pub msg_name: *mut c_void,
         pub msg_namelen: socklen_t,
@@ -201,7 +230,7 @@ s! {
         pub cmsg_level: ::c_int,
         pub cmsg_type: ::c_int,
     }
-    
+
     // poll.h
     pub struct pollfd {
         pub fd      : ::c_int,
@@ -212,37 +241,13 @@ s! {
     // dirent.h
     pub struct dirent {
         pub d_ino  : ::ino_t,
-        // pub d_name : [::c_char; (_PARM_NAME_MAX + 1)],
-        pub d_name : [::c_char; 32],
-        pub d_name1 : [::c_char; 32],
-        pub d_name2 : [::c_char; 32],
-        pub d_name3 : [::c_char; 32],
-        pub d_name4 : [::c_char; 32],
-        pub d_name5 : [::c_char; 32],
-        pub d_name6 : [::c_char; 32],
-        pub d_name7 : [::c_char; 32],
+        pub d_name : [::c_char; _PARM_NAME_MAX + 1],
     }
-
-    pub struct dirent64 {
-        pub d_ino    : ::ino_t,
-        pub d_off    : ::off64_t,
-        pub d_reclen : u16,
-        pub d_type   : u8,
-        // pub d_name   : [::c_char; 256],
-        pub d_name   : [::c_char; 32],
-        pub d_name1   : [::c_char; 32],
-        pub d_name2   : [::c_char; 32],
-        pub d_name3   : [::c_char; 32],
-        pub d_name4   : [::c_char; 32],
-        pub d_name5   : [::c_char; 32],
-        pub d_name6   : [::c_char; 32],
-        pub d_name7   : [::c_char; 32],
-    } // Doesn't seem like it exists anymore
 
     // resource.h
     pub struct rlimit { /* Is this really needed? Questionable ... */
-                           pub rlim_cur : ::size_t,
-                           pub rlim_max : ::size_t,
+                           pub rlim_cur : ::rlim_t,
+                           pub rlim_max : ::rlim_t,
     }
 
     // stat.h
@@ -322,21 +327,11 @@ s! {
         // This field is a union of int and void * in vxworks
         // The size has been set to the larger of the two
         pub si_value : ::size_t,
-    }
-
-    pub struct ipc_perm {
-                             pub __key : key_t,
-                             pub uid   : uid_t,
-                             pub gid   : gid_t,
-                             pub cuid  : uid_t,
-                             pub cgid  : gid_t,
-                             pub mode  : ::c_ushort,
-                             pub __seq : ::c_ushort,
-    }
-
-    pub struct shmid_ds {
-        pub shm_perm  : ipc_perm,
-        pub shm_segsz : ::c_int,
+	pub si_errno : ::c_int,
+	pub si_status: ::c_int,
+	pub si_addr: *mut ::c_void,
+ 	pub si_uid: ::uid_t,
+	pub si_pid: ::pid_t,	
     }
 
     // pthread.h (krnl)
@@ -358,7 +353,7 @@ s! {
         pub mutexCondRefCount: ::c_int,
         pub mutexSavPriority: ::c_int,
         pub mutexAttr: ::pthread_mutexattr_t,
-        pub mutexSemName: [::c_char; PTHREAD_SHARED_SEM_NAME_MAX],
+        pub mutexSemName: [::c_char; _PTHREAD_SHARED_SEM_NAME_MAX],
     }
 
     // b_struct_timespec.h
@@ -392,6 +387,7 @@ s! {
     }
 
     // in6.h
+    #[repr(align(4))]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
     }
@@ -437,12 +433,9 @@ s! {
     }
 
     pub struct sockaddr_un {
+	pub sun_len: u8,
         pub sun_family: sa_family_t,
-        //pub sun_path: [::c_char; 108]
-        pub sun_path: [::c_char; 32],
-        pub sun_path1: [::c_char; 32],
-        pub sun_path2: [::c_char; 32],
-        pub sun_path3: [::c_char; 12],
+        pub sun_path: [::c_char; 104]
     }
 
     pub struct passwd {
@@ -454,12 +447,11 @@ s! {
     }
 
     // epoll.h
-
-    pub struct epoll_event {
+     pub struct epoll_event {
         pub events: u32,
         pub u64: u64,
     }
-    
+
     // rtpLibCommon.h
     pub struct RTP_DESC {
         pub status    : ::c_int,
@@ -467,16 +459,8 @@ s! {
         pub entrAddr  : *mut ::c_void,
         pub initTaskId: ::TASK_ID,
         pub parentId  : ::RTP_ID,
-        //pub pathName  : [::c_char; (VX_RTP_NAME_LENGTH + 1)],
-        pub pathName  : [::c_char; 32],
-        pub pathName1  : [::c_char; 32],
-        pub pathName2  : [::c_char; 32],
-        pub pathName3  : [::c_char; 32],
-        pub pathName4  : [::c_char; 32],
-        pub pathName5  : [::c_char; 32],
-        pub pathName6  : [::c_char; 32],
-        pub pathName7  : [::c_char; 32],
-        pub taskCnt   : u32,
+        pub pathName  : [::c_char; VX_RTP_NAME_LENGTH + 1],
+        pub taskCnt   : ::c_int,
         pub textStart : *mut ::c_void,
         pub textEnd   : *mut ::c_void,
     }
@@ -502,7 +486,7 @@ pub const EAI_SYSTEM: ::c_int = 11;
 
 pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
 
-// Clock Lib Stuff
+//Clock Lib Stuff
 pub const CLOCK_REALTIME: ::c_int = 0x0;
 pub const CLOCK_MONOTONIC: ::c_int = 0x1;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::c_int = 0x2;
@@ -526,7 +510,7 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 pub const PTHREAD_STACK_MIN: usize = 4096;
-pub const PTHREAD_SHARED_SEM_NAME_MAX: usize = 30;
+pub const _PTHREAD_SHARED_SEM_NAME_MAX: usize = 30;
 
 pub const EFAULT: ::c_int = 14;
 pub const EBUSY: ::c_int = 16;
@@ -597,61 +581,61 @@ enum nfsstat {
     NFSERR_NOSPC = 28,
     NFSERR_ROFS = 30,
     NFSERR_MLINK = 31,
-    NFSERR_NAMETOOLONG = 63,
-    NFSERR_NOTEMPTY = 66,
-    NFSERR_DQUOT = 69,
-    NFSERR_STALE = 70,
+    NFSERR_NAMETOOLONG = 26,
+    NFSERR_NOTEMPTY = 15,
+    NFSERR_DQUOT = 83,
+    NFSERR_STALE = 88,
     NFSERR_REMOTE = 71,
     NFSERR_WFLUSH = 99,
     NFSERR_BADHANDLE = 10001,
     NFSERR_NOT_SYNC = 10002,
     NFSERR_BAD_COOKIE = 10003,
-    NFSERR_NOTSUPP = 10004,
+    NFSERR_NOTSUPP = 45,
     NFSERR_TOOSMALL = 10005,
-    NFSERR_SERVERFAULT = 10006,
+//    NFSERR_SERVERFAULT = 10006,
     NFSERR_BADTYPE = 10007,
     NFSERR_JUKEBOX = 10008,
 }
 
-pub const S_nfsLib_NFS_OK: ::c_int = M_nfsStat | nfsstat::NFS_OK as ::c_int;
+pub const S_nfsLib_NFS_OK: ::c_int = nfsstat::NFS_OK as ::c_int;
 pub const S_nfsLib_NFSERR_PERM: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_PERM as ::c_int;
+    nfsstat::NFSERR_PERM as ::c_int;
 pub const S_nfsLib_NFSERR_NOENT: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_NOENT as ::c_int;
+    nfsstat::NFSERR_NOENT as ::c_int;
 pub const S_nfsLib_NFSERR_IO: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_IO as ::c_int;
+    nfsstat::NFSERR_IO as ::c_int;
 pub const S_nfsLib_NFSERR_NXIO: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_NXIO as ::c_int;
+    nfsstat::NFSERR_NXIO as ::c_int;
 pub const S_nfsLib_NFSERR_ACCESS: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_ACCESS as ::c_int;
+    nfsstat::NFSERR_ACCESS as ::c_int;
 pub const S_nfsLib_NFSERR_EXIST: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_EXIST as ::c_int;
+    nfsstat::NFSERR_EXIST as ::c_int;
 pub const S_nfsLib_NFSERR_XDEV: ::c_int =
     M_nfsStat | nfsstat::NFSERR_XDEV as ::c_int;
 pub const S_nfsLib_NFSERR_NODEV: ::c_int =
     M_nfsStat | nfsstat::NFSERR_NODEV as ::c_int;
 pub const S_nfsLib_NFSERR_NOTDIR: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_NOTDIR as ::c_int;
+    nfsstat::NFSERR_NOTDIR as ::c_int;
 pub const S_nfsLib_NFSERR_ISDIR: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_ISDIR as ::c_int;
+    nfsstat::NFSERR_ISDIR as ::c_int;
 pub const S_nfsLib_NFSERR_INVAL: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_INVAL as ::c_int;
+    nfsstat::NFSERR_INVAL as ::c_int;
 pub const S_nfsLib_NFSERR_FBIG: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_FBIG as ::c_int;
+    nfsstat::NFSERR_FBIG as ::c_int;
 pub const S_nfsLib_NFSERR_NOSPC: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_NOSPC as ::c_int;
+    nfsstat::NFSERR_NOSPC as ::c_int;
 pub const S_nfsLib_NFSERR_ROFS: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_ROFS as ::c_int;
+    nfsstat::NFSERR_ROFS as ::c_int;
 pub const S_nfsLib_NFSERR_MLINK: ::c_int =
     M_nfsStat | nfsstat::NFSERR_MLINK as ::c_int;
 pub const S_nfsLib_NFSERR_NAMETOOLONG: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_NAMETOOLONG as ::c_int;
+    nfsstat::NFSERR_NAMETOOLONG as ::c_int;
 pub const S_nfsLib_NFSERR_NOTEMPTY: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_NOTEMPTY as ::c_int;
+    nfsstat::NFSERR_NOTEMPTY as ::c_int;
 pub const S_nfsLib_NFSERR_DQUOT: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_DQUOT as ::c_int;
+    nfsstat::NFSERR_DQUOT as ::c_int;
 pub const S_nfsLib_NFSERR_STALE: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_STALE as ::c_int;
+    nfsstat::NFSERR_STALE as ::c_int;
 pub const S_nfsLib_NFSERR_WFLUSH: ::c_int =
     M_nfsStat | nfsstat::NFSERR_WFLUSH as ::c_int;
 pub const S_nfsLib_NFSERR_REMOTE: ::c_int =
@@ -663,11 +647,11 @@ pub const S_nfsLib_NFSERR_NOT_SYNC: ::c_int =
 pub const S_nfsLib_NFSERR_BAD_COOKIE: ::c_int =
     M_nfsStat | nfsstat::NFSERR_BAD_COOKIE as ::c_int;
 pub const S_nfsLib_NFSERR_NOTSUPP: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_NOTSUPP as ::c_int;
+    nfsstat::NFSERR_NOTSUPP as ::c_int;
 pub const S_nfsLib_NFSERR_TOOSMALL: ::c_int =
     M_nfsStat | nfsstat::NFSERR_TOOSMALL as ::c_int;
 pub const S_nfsLib_NFSERR_SERVERFAULT: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_SERVERFAULT as ::c_int;
+    nfsstat::NFSERR_IO as ::c_int;
 pub const S_nfsLib_NFSERR_BADTYPE: ::c_int =
     M_nfsStat | nfsstat::NFSERR_BADTYPE as ::c_int;
 pub const S_nfsLib_NFSERR_JUKEBOX: ::c_int =
@@ -793,7 +777,7 @@ pub const AF_SOCKDEV: ::c_int = 31;
 pub const AF_TIPC: ::c_int = 33;
 pub const AF_MIPC: ::c_int = 34;
 pub const AF_MIPC_SAFE: ::c_int = 35;
-pub const AF_MAX: ::c_int = 36;
+pub const AF_MAX: ::c_int = 37;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -837,7 +821,6 @@ pub const EPOLLRDHUP: ::c_int = 0x2000;
 pub const EPOLLONESHOT: ::c_int = 1 << 30;
 pub const EPOLLET: ::c_int = 1 << 31;
 
-
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_DEL: ::c_int = 2;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
@@ -850,7 +833,7 @@ pub const POLLRDNORM: ::c_short = 0x0040;
 pub const POLLWRNORM: ::c_short = POLLOUT;
 pub const POLLRDBAND: ::c_short = 0x0080;
 pub const POLLWRBAND: ::c_short = 0x0100;
-pub const POLLER: ::c_short = 0x0008;
+pub const POLLERR: ::c_short = 0x0008;
 pub const POLLHUP: ::c_short = 0x0010;
 pub const POLLNVAL: ::c_short = 0x0020;
 
@@ -868,23 +851,12 @@ pub const F_SETLK: ::c_int = 8;
 pub const F_SETLKW: ::c_int = 9;
 pub const F_DUPFD_CLOEXEC: ::c_int = 14;
 
-//Some Dirent.h stuff
-pub const DT_UNKNOWN: ::c_uchar = 0x0;
-pub const DT_FIFO: ::c_uchar = 0x1;
-pub const DT_CHR: ::c_uchar = 0x2;
-pub const DT_DIR: ::c_uchar = 0x4;
-pub const DT_BLK: ::c_uchar = 0x6;
-pub const DT_REG: ::c_uchar = 0x8;
-pub const DT_LNK: ::c_uchar = 0xA;
-pub const DT_SOCK: ::c_uchar = 0xC;
-pub const DT_WHT: ::c_uchar = 0xE;
-
 // Other Random Stuff
 pub const VXSIM_EWOULDBLOCK: ::c_int = 70;
 
-pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
-pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
-pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
+pub const SIG_DFL: c_int = 0;
+pub const SIG_IGN: c_int = 1;
+pub const SIG_ERR: c_int = !0;
 
 pub const SIGHUP: ::c_int = 1;
 pub const SIGINT: ::c_int = 2;
@@ -943,15 +915,15 @@ pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     mutexValid: PTHREAD_VALID_OBJ,
     mutexInitted: PTHREAD_UNUSED_YET_OBJ,
     mutexCondRefCount: 0,
-    mutexSavPriority: 0,
+    mutexSavPriority: -1,
     mutexAttr: PTHREAD_MUTEXATTR_INITIALIZER,
-    mutexSemName: [0; PTHREAD_SHARED_SEM_NAME_MAX],
+    mutexSemName: [0; _PTHREAD_SHARED_SEM_NAME_MAX],
 };
 
 const PTHREAD_CONDATTR_INITIALIZER: pthread_condattr_t = pthread_condattr_t {
-    condAttrStatus: 0,
-    condAttrPshared: 0,
-    _CondAttrClockId: CLOCK_REALTIME,
+    condAttrStatus: 0xf70990ef,
+    condAttrPshared: 1,
+    condAttrClockId: CLOCK_REALTIME,
 };
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     condSemId: null_mut(),
@@ -960,13 +932,15 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     condRefCount: 0,
     condMutex: null_mut(),
     condAttr: PTHREAD_CONDATTR_INITIALIZER,
-    condSemName: [0; PTHREAD_SHARED_SEM_NAME_MAX],
+    condSemName: [0; _PTHREAD_SHARED_SEM_NAME_MAX],
 };
 
 const PTHREAD_RWLOCKATTR_INITIALIZER: pthread_rwlockattr_t =
     pthread_rwlockattr_t {
         rwlockAttrStatus: PTHREAD_INITIALIZED_OBJ,
+        rwlockAttrPshared: 1,
         rwlockAttrMaxReaders: 0,
+	rwlockAttrConformOpt:1,
     };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     rwlockSemId: null_mut(),
@@ -974,7 +948,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     rwlockValid: PTHREAD_VALID_OBJ,
     rwlockInitted: PTHREAD_UNUSED_YET_OBJ,
     rwlockAttr: PTHREAD_RWLOCKATTR_INITIALIZER,
-    rwlockName: [0; PTHREAD_SHARED_SEM_NAME_MAX],
+    rwlockSemName: [0; _PTHREAD_SHARED_SEM_NAME_MAX],
 };
 
 pub const SEEK_SET: ::c_int = 0;
@@ -984,19 +958,19 @@ pub const SEEK_END: ::c_int = 2;
 // rtpLibCommon.h
 pub const VX_RTP_NAME_LENGTH: usize = 255;
 
-//Some unsupported stuff
-pub const _SC_GETPW_R_SIZE_MAX: ::c_int = -1; // Via unistd.h
-pub const _SC_PAGESIZE: ::c_int = 64;
+// h/public/unistd.h
+pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 21; // Via unistd.h
+pub const _SC_PAGESIZE: ::c_int = 39;
 pub const O_ACCMODE: ::c_int = 3;
 pub const O_CLOEXEC: ::c_int = 0x100000; // fcntlcom
 pub const O_EXCL: ::c_int = 0x0800;
 pub const O_CREAT: ::c_int = 0x0200;
 pub const O_TRUNC: ::c_int = 0x0400;
 pub const O_APPEND: ::c_int = 0x0008;
-pub const O_RDWR: ::c_int = 2;
-pub const O_WRONLY: ::c_int = 1;
+pub const O_RDWR: ::c_int = 0x0002;
+pub const O_WRONLY: ::c_int = 0x0001;
 pub const O_RDONLY: ::c_int = 0;
-pub const O_NONBLOCK: ::c_int = 0x4;
+pub const O_NONBLOCK: ::c_int = 0x4000;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
@@ -1094,7 +1068,6 @@ extern {
     pub fn free(p: *mut c_void);
     pub fn abort() -> !;
     pub fn exit(status: c_int) -> !;
-    //    pub fn _exit(status: c_int) -> !;
     pub fn atexit(cb: extern fn()) -> c_int;
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
@@ -1128,7 +1101,6 @@ extern {
         n: size_t,
     ) -> c_int;
     pub fn strlen(cs: *const c_char) -> size_t;
-    pub fn strnlen(cs: *const c_char, maxlen: size_t) -> size_t;
     pub fn strerror(n: c_int) -> *mut c_char;
     pub fn strtok(s: *mut c_char, t: *const c_char) -> *mut c_char;
     pub fn strxfrm(s: *mut c_char, ct: *const c_char, n: size_t) -> size_t;
@@ -1371,7 +1343,7 @@ extern {
     ) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn chroot(name: *const ::c_char) -> ::c_int;
-    pub fn usleep(secs: ::c_uint) -> ::c_int;
+    pub fn usleep(secs: ::useconds_t) -> ::c_int;
     pub fn putenv(string: *mut c_char) -> ::c_int;
     pub fn setlocale(
         category: ::c_int,
@@ -1781,7 +1753,7 @@ extern {
         mp: *mut ::msghdr,
         flags: ::c_int,
     ) -> ::ssize_t;
-    
+
     // socket.h
     pub fn send(
         socket: ::c_int,
@@ -1795,7 +1767,7 @@ extern {
         mp: *const ::msghdr,
         flags: ::c_int,
     ) -> ::ssize_t;
-    
+
     // socket.h
     pub fn sendto(
         socket: ::c_int,
@@ -2176,11 +2148,14 @@ pub fn posix_memalign(
     }
 }
 
+
 // epoll.h
 // Unfortunately epoll is currently only supported in the VxWorks kernel
+#[allow(unused_variables)]
 pub fn epoll_create(size: ::c_int) -> ::c_int { -1 }
+#[allow(unused_variables)]
 pub fn epoll_create1(flags: ::c_int) -> ::c_int { -1 }
-
+#[allow(unused_variables)]
 pub fn epoll_ctl(
     epfd: ::c_int,
     op: ::c_int,
@@ -2189,7 +2164,7 @@ pub fn epoll_ctl(
     ) -> ::c_int {
     -1
 }
-
+#[allow(unused_variables)]
 pub fn epoll_create_and_ctl(
     num: ::c_int,
     fds: *mut ::c_int,
@@ -2197,7 +2172,7 @@ pub fn epoll_create_and_ctl(
 ) -> ::c_int {
     -1
 }
-
+#[allow(unused_variables)]
 pub fn epoll_wait(
     epfd: ::c_int,
     events: *mut ::epoll_event,
@@ -2266,9 +2241,6 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "arm"))] {
         mod arm;
         pub use self::arm::*;
-    } else if #[cfg(any(target_arch = "armv7"))] {
-        mod armv7;
-        pub use self::armv7::*;
     }  else if #[cfg(any(target_arch = "x86"))] {
         mod x86;
         pub use self::x86::*;
