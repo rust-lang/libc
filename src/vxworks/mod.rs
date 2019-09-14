@@ -12,9 +12,6 @@ impl ::Clone for DIR {
     }
 }
 
-// Throughout we use usize / isize for types that are
-// (unsigned) int in ILP32 and (unsigned) long in ILP64
-
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;
@@ -28,11 +25,23 @@ pub type c_ulonglong = u64;
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
 
-pub type size_t = usize;
-pub type ptrdiff_t = isize;
-pub type intptr_t = isize;
-pub type uintptr_t = usize;
-pub type ssize_t = isize;
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        pub type size_t = c_uint;
+        pub type ssize_t = c_int;
+        pub type ptrdiff_t = c_int;
+        pub type intptr_t = c_int;
+        pub type uintptr_t = c_uint;
+    } else if #[cfg(target_pointer_width = "64")] {
+        pub type size_t = c_ulonglong;
+        pub type ssize_t = c_longlong;
+        pub type ptrdiff_t = c_longlong;
+        pub type intptr_t = c_longlong;
+        pub type uintptr_t = c_ulonglong;
+    } else {
+        // Unknown target_pointer_width
+    }
+}
 
 pub type pid_t = i32;
 pub type in_addr_t = u32;
@@ -103,10 +112,17 @@ pub type _Vx_ticks64_t = ::c_ulonglong;
 
 pub type sa_family_t = ::c_uchar;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum _Vx_semaphore {}
+impl ::Copy for _Vx_semaphore {}
+impl ::Clone for _Vx_semaphore {
+    fn clone(&self) -> _Vx_semaphore {
+        *self
+    }
+}
+
 // structs that only exist in userspace
 s! {
-    pub struct _Vx_semaphore {}
-
     // b_pthread_condattr_t.h
     pub struct pthread_condattr_t {
         pub condAttrStatus: ::c_int,
@@ -161,14 +177,6 @@ s! {
         pub sa_data   : [::c_char; 14],
     }
 
-    // socket.h
-    pub struct sockaddr_storage {
-        pub ss_len     : ::c_uchar,
-        pub ss_family  : ::sa_family_t,
-        pub __ss_pad1  : [::c_char; _SS_PAD1SIZE],
-        pub __ss_align : i32,
-        pub __ss_pad2  : [::c_char; _SS_PAD2SIZE],
-    }
     pub struct iovec {
         pub iov_base: *mut ::c_void,
         pub iov_len: ::size_t,
@@ -195,12 +203,6 @@ s! {
         pub fd      : ::c_int,
         pub events  : ::c_short,
         pub revents : ::c_short,
-    }
-
-    // dirent.h
-    pub struct dirent {
-        pub d_ino  : ::ino_t,
-        pub d_name : [::c_char; _PARM_NAME_MAX + 1],
     }
 
     // resource.h
@@ -391,12 +393,6 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    pub struct sockaddr_un {
-        pub sun_len: u8,
-        pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 104]
-    }
-
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_uid: ::uid_t,
@@ -405,10 +401,25 @@ s! {
         pub pw_shell: *mut ::c_char,
     }
 
-    // epoll.h
-     pub struct epoll_event {
-        pub events: u32,
-        pub u64: u64,
+    pub struct Dl_info {
+        pub dli_fname: *const ::c_char,
+        pub dli_fbase: *mut ::c_void,
+        pub dli_sname: *const ::c_char,
+        pub dli_saddr: *mut ::c_void,
+    }
+}
+
+s_no_extra_traits! {
+    // dirent.h
+    pub struct dirent {
+        pub d_ino  : ::ino_t,
+        pub d_name : [::c_char; _PARM_NAME_MAX + 1],
+    }
+
+    pub struct sockaddr_un {
+        pub sun_len: u8,
+        pub sun_family: sa_family_t,
+        pub sun_path: [::c_char; 104]
     }
 
     // rtpLibCommon.h
@@ -423,12 +434,64 @@ s! {
         pub textStart : *mut ::c_void,
         pub textEnd   : *mut ::c_void,
     }
+    // socket.h
+    pub struct sockaddr_storage {
+        pub ss_len     : ::c_uchar,
+        pub ss_family  : ::sa_family_t,
+        pub __ss_pad1  : [::c_char; _SS_PAD1SIZE],
+        pub __ss_align : i32,
+        pub __ss_pad2  : [::c_char; _SS_PAD2SIZE],
+    }
 
-    pub struct Dl_info {
-        pub dli_fname: *const ::c_char,
-        pub dli_fbase: *mut ::c_void,
-        pub dli_sname: *const ::c_char,
-        pub dli_saddr: *mut ::c_void,
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl ::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_name", &&self.d_name[..])
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_un")
+                    .field("sun_len", &self.sun_len)
+                    .field("sun_family", &self.sun_family)
+                    .field("sun_path", &&self.sun_path[..])
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for RTP_DESC {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("RTP_DESC")
+                    .field("status", &self.status)
+                    .field("options", &self.options)
+                    .field("entrAddr", &self.entrAddr)
+                    .field("initTaskId", &self.initTaskId)
+                    .field("parentId", &self.parentId)
+                    .field("pathName", &&self.pathName[..])
+                    .field("taskCnt", &self.taskCnt)
+                    .field("textStart", &self.textStart)
+                    .field("textEnd", &self.textEnd)
+                    .finish()
+            }
+        }
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_len", &self.ss_len)
+                    .field("ss_family", &self.ss_family)
+                    .field("__ss_pad1", &&self.__ss_pad1[..])
+                    .field("__ss_align", &self.__ss_align)
+                    .field("__ss_pad2", &&self.__ss_pad2[..])
+                    .finish()
+            }
+        }
     }
 }
 
@@ -753,20 +816,6 @@ pub const FIOCANCEL: ::c_int = 14;
 pub const FIOSQUEEZE: ::c_int = 15;
 pub const FIONBIO: ::c_int = 16;
 pub const _POSIX_PATH_MAX: ::c_int = 256;
-
-// epoll.h
-pub const EPOLLIN: ::c_int = 0x1;
-pub const EPOLLPRI: ::c_int = 0x2;
-pub const EPOLLOUT: ::c_int = 0x4;
-pub const EPOLLERR: ::c_int = 0x8;
-pub const EPOLLHUP: ::c_int = 0x10;
-pub const EPOLLRDHUP: ::c_int = 0x2000;
-pub const EPOLLONESHOT: ::c_int = 1 << 30;
-pub const EPOLLET: ::c_int = 1 << 31;
-
-pub const EPOLL_CTL_ADD: ::c_int = 1;
-pub const EPOLL_CTL_DEL: ::c_int = 2;
-pub const EPOLL_CTL_MOD: ::c_int = 3;
 
 // Some poll stuff
 pub const POLLIN: ::c_short = 0x0001;
@@ -2111,7 +2160,9 @@ pub fn posix_memalign(
 ) -> ::c_int {
     // check to see if align is a power of 2 and if align is a multiple
     //  of sizeof(void *)
-    if (align & align - 1 != 0) || (align % size_of::<::size_t>() != 0) {
+    if (align & align - 1 != 0)
+        || (align as usize % size_of::<::size_t>() != 0)
+    {
         return ::EINVAL;
     }
 
@@ -2129,43 +2180,6 @@ pub fn posix_memalign(
             0
         }
     }
-}
-
-// epoll.h
-// Unfortunately epoll is currently only supported in the VxWorks kernel
-#[allow(unused_variables)]
-pub fn epoll_create(size: ::c_int) -> ::c_int {
-    -1
-}
-#[allow(unused_variables)]
-pub fn epoll_create1(flags: ::c_int) -> ::c_int {
-    -1
-}
-#[allow(unused_variables)]
-pub fn epoll_ctl(
-    epfd: ::c_int,
-    op: ::c_int,
-    fd: ::c_int,
-    event: *mut ::epoll_event,
-) -> ::c_int {
-    -1
-}
-#[allow(unused_variables)]
-pub fn epoll_create_and_ctl(
-    num: ::c_int,
-    fds: *mut ::c_int,
-    event: *mut ::epoll_event,
-) -> ::c_int {
-    -1
-}
-#[allow(unused_variables)]
-pub fn epoll_wait(
-    epfd: ::c_int,
-    events: *mut ::epoll_event,
-    maxevents: ::c_int,
-    timeout: ::c_int,
-) -> ::c_int {
-    -1
 }
 
 // From sysconf.c -> doesn't seem to be supported?
