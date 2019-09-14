@@ -155,3 +155,20 @@ volatile void* T1_vol2(void*, volatile void*);
 
 // volatile function pointers:
 uint8_t (*volatile T1_fn_ptr_vol)(uint8_t, uint8_t);
+
+#define LOG_MAX_LINE_LENGTH (1400)
+
+typedef struct {
+  long tv_sec;
+  int tv_usec;
+} timeval;
+
+typedef struct
+{
+  long level;
+  char const *file;
+  long line;
+  char const *module;
+  timeval tv;
+  char message[LOG_MAX_LINE_LENGTH];
+} log_record_t;

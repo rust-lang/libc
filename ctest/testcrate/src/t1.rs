@@ -177,3 +177,21 @@ extern "C" {
     pub fn T1_vol2(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
     pub static T1_fn_ptr_vol: Option<unsafe extern "C" fn(u8, u8) -> u8>;
 }
+
+pub const LOG_MAX_LINE_LENGTH: usize = 1400;
+
+#[repr(C)]
+struct timeval {
+    tv_sec: c_long,
+    tv_usec: c_int,
+}
+
+#[repr(C)]
+struct log_record_t {
+    level: c_long,
+    file: *const c_char,
+    line: c_long,
+    module: *const c_char,
+    tv: timeval,
+    message: [c_char; LOG_MAX_LINE_LENGTH],
+}
