@@ -385,6 +385,7 @@ extern "C" {
     pub fn isspace(c: c_int) -> c_int;
     pub fn isupper(c: c_int) -> c_int;
     pub fn isxdigit(c: c_int) -> c_int;
+    pub fn isblank(c: c_int) -> c_int;
     pub fn tolower(c: c_int) -> c_int;
     pub fn toupper(c: c_int) -> c_int;
     #[cfg_attr(

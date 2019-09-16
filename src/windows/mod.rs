@@ -228,6 +228,7 @@ extern "C" {
     pub fn isspace(c: c_int) -> c_int;
     pub fn isupper(c: c_int) -> c_int;
     pub fn isxdigit(c: c_int) -> c_int;
+    pub fn isblank(c: c_int) -> c_int;
     pub fn tolower(c: c_int) -> c_int;
     pub fn toupper(c: c_int) -> c_int;
     pub fn fopen(filename: *const c_char, mode: *const c_char) -> *mut FILE;
