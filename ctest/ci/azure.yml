@@ -6,8 +6,10 @@ jobs:
       vmImage: ubuntu-16.04
     steps:
       - template: azure-install-rust.yml
+      - bash: cargo test --all
+        displayName: Run tests
       - bash: sh ./ci/run-docker.sh $TARGET
-        displayName: Execute run-docker.sh
+        displayName: Run libc tests
       - bash: |
           if rustup component add rustfmt-preview ; then
               which rustfmt
@@ -28,7 +30,6 @@ jobs:
               exit 1
           fi
         displayName: shellcheck
-
     strategy:
       matrix:
         x86_64-unknown-linux-gnu:
@@ -39,8 +40,10 @@ jobs:
       vmImage: macos-10.14
     steps:
       - template: azure-install-rust.yml
+      - bash: cargo test --all
+        displayName: Run tests
       - bash: sh ./ci/run.sh $TARGET
-        displayName: Execute run.sh
+        displayName: Run libc tests
     strategy:
       matrix:
         x86_64-apple-darwin:
@@ -51,8 +54,10 @@ jobs:
       vmImage: macos-10.13
     steps:
       - template: azure-install-rust.yml
+      - bash: cargo test --all
+        displayName: Run tests
       - bash: sh ./ci/run.sh $TARGET
-        displayName: Execute run.sh
+        displayName: Run libc tests
     strategy:
       matrix:
         i686-apple-darwin:

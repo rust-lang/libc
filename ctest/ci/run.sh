@@ -8,7 +8,8 @@ set -ex
 : ${TARGET?"The TARGET environment variable must be set."}
 
 mkdir -p target
-git clone https://github.com/rust-lang/libc target/libc
+rm -rf target/libc || true
+git clone --depth=1 https://github.com/rust-lang/libc target/libc
 mkdir -p target/libc/target/ctest
 
 case $TARGET in
@@ -16,7 +17,7 @@ case $TARGET in
         sed -i 's@ctest = "0.2"@ctest = { path = "../../.." }@g' target/libc/libc-test/Cargo.toml
         ;;
     *apple*)
-        sed -i '' 's@ctest = "0.2"@ctest = { path = "../.." }@g' target/libc/libc-test/Cargo.toml
+        sed -i '' 's@ctest = "0.2"@ctest = { path = "../../.." }@g' target/libc/libc-test/Cargo.toml
         ;;
 esac
 
