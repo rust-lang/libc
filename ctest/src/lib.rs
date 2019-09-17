@@ -1897,8 +1897,8 @@ impl<'a> Generator<'a> {
                 if (size != rust_size) {{
                     fprintf(
                         stderr,
-                        "size of {cty} is %d in C and %d in Rust",
-                        size, rust_size
+                        "size of {cty} is %d in C and %d in Rust\n",
+                        (int)size, (int)rust_size
                     );
                     *error = 1;
                     return value;
