@@ -1890,10 +1890,19 @@ impl<'a> Generator<'a> {
             #  pragma warning(disable:4365)
             #endif
             {linkage} {cty} __test_roundtrip_{ty}(
-                 {cty} value, int* error, unsigned char* pad
+                 {cty} value, int32_t rust_size, int* error, unsigned char* pad
             ) {{
                 volatile unsigned char* p = (volatile unsigned char*)&value;
                 int size = (int)sizeof({cty});
+                if (size != rust_size) {{
+                    fprintf(
+                        stderr,
+                        "size of {cty} is %d in C and %d in Rust",
+                        size, rust_size
+                    );
+                    *error = 1;
+                    return value;
+                }}
                 int i = 0;
                 for (i = 0; i < size; ++i) {{
                       if (pad[i]) {{ continue; }}
@@ -1935,7 +1944,7 @@ impl<'a> Generator<'a> {
                 extern {{
                     #[allow(non_snake_case)]
                     fn __test_roundtrip_{ty}(
-                        x: U, e: *mut c_int, pad: *const u8
+                        x: U, size: i32, e: *mut c_int, pad: *const u8
                     ) -> U;
                 }}
                 let pad = roundtrip_padding_{ty}();
@@ -1946,7 +1955,8 @@ impl<'a> Generator<'a> {
                   let mut x: U = uninitialized();
                   let x_ptr = &mut x as *mut _ as *mut u8;
                   let y_ptr = &mut y as *mut _ as *mut u8;
-                  for i in 0..size_of::<U>() {{
+                  let sz = size_of::<U>();
+                  for i in 0..sz {{
                       let c: u8 = (i % 256) as u8;
                       let c = if c == 0 {{ 42 }} else {{ c }};
                       let d: u8 = 255_u8 - (i % 256) as u8;
@@ -1954,7 +1964,7 @@ impl<'a> Generator<'a> {
                       x_ptr.add(i).write_volatile(c);
                       y_ptr.add(i).write_volatile(d);
                   }}
-                  let r: U = __test_roundtrip_{ty}(x, &mut error, pad.as_ptr());
+                  let r: U = __test_roundtrip_{ty}(x, sz as i32, &mut error, pad.as_ptr());
                   if error == 1 {{
                       FAILED.store(true, Ordering::SeqCst);
                       return;
