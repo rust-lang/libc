@@ -31,6 +31,23 @@ fn do_ctest() {
     }
 }
 
+fn ctest_cfg() -> ctest::TestGenerator {
+    let mut cfg = ctest::TestGenerator::new();
+    let libc_cfgs = [
+        "libc_priv_mod_use",
+        "libc_union",
+        "libc_const_size_of",
+        "libc_align",
+        "libc_core_cvoid",
+        "libc_packedN",
+        "libc_thread_local",
+    ];
+    for f in &libc_cfgs {
+        cfg.cfg(f, None);
+    }
+    cfg
+}
+
 fn main() {
     do_cc();
     do_ctest();
@@ -59,8 +76,9 @@ macro_rules! headers {
 fn test_apple(target: &str) {
     assert!(target.contains("apple"));
     let x86_64 = target.contains("x86_64");
+    let i686 = target.contains("i686");
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__APPLE_USE_RFC_3542", None);
 
@@ -225,13 +243,18 @@ fn test_apple(target: &str) {
         }
     });
 
+    cfg.skip_roundtrip(move |s| match s {
+        // FIXME: this type has the wrong ABI
+        "max_align_t" if i686 => true,
+        _ => false,
+    });
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
 fn test_openbsd(target: &str) {
     assert!(target.contains("openbsd"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! { cfg:
@@ -371,7 +394,7 @@ fn test_windows(target: &str) {
     assert!(target.contains("windows"));
     let gnu = target.contains("gnu");
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_WIN32_WINNT", Some("0x8000"));
 
     headers! { cfg:
@@ -474,7 +497,7 @@ fn test_windows(target: &str) {
 fn test_redox(target: &str) {
     assert!(target.contains("redox"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -540,7 +563,7 @@ fn test_redox(target: &str) {
 fn test_cloudabi(target: &str) {
     assert!(target.contains("cloudabi"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -611,7 +634,7 @@ fn test_cloudabi(target: &str) {
 fn test_solaris(target: &str) {
     assert!(target.contains("solaris"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     cfg.define("_XOPEN_SOURCE", Some("700"));
@@ -722,7 +745,7 @@ fn test_solaris(target: &str) {
 fn test_netbsd(target: &str) {
     assert!(target.contains("netbsd"));
     let rumprun = target.contains("rumprun");
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
 
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("_NETBSD_SOURCE", Some("1"));
@@ -922,7 +945,7 @@ fn test_netbsd(target: &str) {
 
 fn test_dragonflybsd(target: &str) {
     assert!(target.contains("dragonfly"));
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -1127,7 +1150,7 @@ fn test_dragonflybsd(target: &str) {
 fn test_wasi(target: &str) {
     assert!(target.contains("wasi"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -1204,7 +1227,7 @@ fn test_android(target: &str) {
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -1429,7 +1452,7 @@ fn test_android(target: &str) {
 
 fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
 
     let freebsd_ver = which_freebsd();
 
@@ -1631,7 +1654,7 @@ fn test_freebsd(target: &str) {
 fn test_emscripten(target: &str) {
     assert!(target.contains("emscripten"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None); // FIXME: ??
 
     headers! { cfg:
@@ -1852,17 +1875,19 @@ fn test_linux(target: &str) {
     }
 
     let arm = target.contains("arm");
-    let x86_64 = target.contains("x86_64");
-    let x86_32 = target.contains("i686");
-    let x32 = target.contains("x32");
+    let i686 = target.contains("i686");
     let mips = target.contains("mips");
     let mips32 = mips && !target.contains("64");
-    let mips64 = mips && target.contains("64");
     let mips32_musl = mips32 && musl;
-    let sparc64 = target.contains("sparc64");
+    let mips64 = mips && target.contains("64");
+    let ppc64 = target.contains("powerpc64");
     let s390x = target.contains("s390x");
+    let sparc64 = target.contains("sparc64");
+    let x32 = target.contains("x32");
+    let x86_32 = target.contains("i686");
+    let x86_64 = target.contains("x86_64");
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
     // This macro re-deifnes fscanf,scanf,sscanf to link to the symbols that are
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
@@ -2286,6 +2311,9 @@ fn test_linux(target: &str) {
             true
         }
 
+        // FIXME: the call ABI of max_align_t is incorrect on these platforms:
+        "max_align_t" if i686 || mips64 || ppc64 => true,
+
         _ => false,
     });
 
@@ -2305,7 +2333,7 @@ fn test_linux_like_apis(target: &str) {
 
     if linux || android || emscripten {
         // test strerror_r from the `string.h` header
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
         cfg.skip_type(|_| true).skip_static(|_| true);
 
         headers! { cfg: "string.h" }
@@ -2321,7 +2349,7 @@ fn test_linux_like_apis(target: &str) {
     if linux || android || emscripten {
         // test fcntl - see:
         // http://man7.org/linux/man-pages/man2/fcntl.2.html
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
 
         if musl {
             cfg.header("fcntl.h");
@@ -2351,7 +2379,7 @@ fn test_linux_like_apis(target: &str) {
 
     if linux || android {
         // test termios
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
         cfg.header("asm/termbits.h");
         cfg.skip_type(|_| true)
             .skip_static(|_| true)
@@ -2368,7 +2396,7 @@ fn test_linux_like_apis(target: &str) {
 
     if linux || android {
         // test IPV6_ constants:
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
         headers! {
             cfg:
             "linux/in6.h"
@@ -2399,7 +2427,7 @@ fn test_linux_like_apis(target: &str) {
         // These types have a field called `p_type`, but including
         // "resolve.h" defines a `p_type` macro that expands to `__p_type`
         // making the tests for these fails when both are included.
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
         cfg.header("elf.h");
         cfg.skip_fn(|_| true)
             .skip_static(|_| true)
