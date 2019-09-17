@@ -73,6 +73,5 @@ steps:
   - bash: |
       set -ex
       cargo generate-lockfile
-      cargo generate-lockfile --manifest-path libc-test/Cargo.toml
     displayName: Generate lockfiles
 
