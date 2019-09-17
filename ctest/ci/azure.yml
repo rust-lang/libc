@@ -22,14 +22,15 @@ jobs:
               cargo clippy -- -D clippy::pedantic
           fi
         displayName: clippy
-      - bash: |
-          if shellcheck --version ; then
-              shellcheck -e SC2103 ci/*.sh
-          else
-              echo "shellcheck not found"
-              exit 1
-          fi
-        displayName: shellcheck
+# FIXME: shellcheck
+#      - bash: |
+#          if shellcheck --version ; then
+#              shellcheck -e SC2103 ci/*.sh
+#          else
+#              echo "shellcheck not found"
+#              exit 1
+#          fi
+#        displayName: shellcheck
     strategy:
       matrix:
         x86_64-unknown-linux-gnu:
