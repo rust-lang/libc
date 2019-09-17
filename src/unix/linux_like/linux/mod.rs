@@ -1197,6 +1197,8 @@ pub const SCHED_RR: ::c_int = 2;
 pub const SCHED_BATCH: ::c_int = 3;
 pub const SCHED_IDLE: ::c_int = 5;
 
+pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
+
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
 
