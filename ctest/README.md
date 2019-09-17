@@ -1,8 +1,6 @@
 # ctest
 
-[![Build Status](https://travis-ci.com/gnzlbg/ctest.svg?branch=master)](https://travis-ci.com/gnzlbg/ctest)
-[![Build status](https://ci.appveyor.com/api/projects/status/hdx031pk29jjnhxr?svg=true)](https://ci.appveyor.com/project/gnzlbg/ctest-x6e9k)
-
+[![Build Status](https://dev.azure.com/gonzalobg88/ctest/_apis/build/status/gnzlbg.ctest?branchName=master)](https://dev.azure.com/gonzalobg88/ctest/_build/latest?definitionId=5&branchName=master)
 [Documentation][dox]
 
 [dox]: https://docs.rs/ctest
