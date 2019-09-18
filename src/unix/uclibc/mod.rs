@@ -2024,13 +2024,13 @@ extern "C" {
         mqd: ::mqd_t,
         msg_ptr: *mut ::c_char,
         msg_len: ::size_t,
-        msq_prio: *mut ::c_uint,
+        msg_prio: *mut ::c_uint,
     ) -> ::ssize_t;
     pub fn mq_send(
         mqd: ::mqd_t,
         msg_ptr: *const ::c_char,
         msg_len: ::size_t,
-        msq_prio: ::c_uint,
+        msg_prio: ::c_uint,
     ) -> ::c_int;
     pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
     pub fn mq_setattr(
