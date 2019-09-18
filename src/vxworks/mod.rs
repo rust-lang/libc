@@ -25,23 +25,11 @@ pub type c_ulonglong = u64;
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
 
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        pub type size_t = c_uint;
-        pub type ssize_t = c_int;
-        pub type ptrdiff_t = c_int;
-        pub type intptr_t = c_int;
-        pub type uintptr_t = c_uint;
-    } else if #[cfg(target_pointer_width = "64")] {
-        pub type size_t = c_ulonglong;
-        pub type ssize_t = c_longlong;
-        pub type ptrdiff_t = c_longlong;
-        pub type intptr_t = c_longlong;
-        pub type uintptr_t = c_ulonglong;
-    } else {
-        // Unknown target_pointer_width
-    }
-}
+pub type uintptr_t = usize;
+pub type intptr_t = isize;
+pub type ptrdiff_t = isize;
+pub type size_t = ::uintptr_t;
+pub type ssize_t = ::intptr_t;
 
 pub type pid_t = i32;
 pub type in_addr_t = u32;
