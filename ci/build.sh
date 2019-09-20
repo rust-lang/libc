@@ -2,6 +2,8 @@
 
 # Checks that libc builds properly for all supported targets on a particular
 # Rust version:
+# The FILTER environment variable can be used to select which target(s) to build.
+# For example: set FILTER to vxworks to select the targets that has vxworks in name
 
 set -ex
 
@@ -176,7 +178,9 @@ case "${OS}" in
 esac
 
 for TARGET in $TARGETS; do
-    test_target build "$TARGET"
+    if echo "$TARGET"|grep -q "$FILTER";then
+        test_target build "$TARGET"
+    fi
 done
 
 # FIXME: https://github.com/rust-lang/rust/issues/58564
@@ -237,7 +241,9 @@ powerpc64-wrs-vxworks \
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
-        test_target xbuild "$TARGET" 1
+        if echo "$TARGET"|grep -q "$FILTER";then
+            test_target xbuild "$TARGET" 1
+        fi
     done
 
     # Nintendo switch
