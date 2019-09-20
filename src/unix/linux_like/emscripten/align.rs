@@ -1,5 +1,9 @@
 macro_rules! expand_align {
     () => {
+        #[derive(Copy, Clone, Debug, PartialEq)]
+        #[repr(C, align(8))]
+        pub struct max_align_t([f64; 2]);
+
         s! {
             #[repr(align(4))]
             pub struct pthread_mutex_t {
