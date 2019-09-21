@@ -1646,6 +1646,9 @@ fn test_freebsd(target: &str) {
             // `mmsghdr` is not available in FreeBSD 10
             "mmsghdr" if Some(10) == freebsd_ver => true,
 
+            // `max_align_t` is not available in FreeBSD 10
+            "max_align_t" if Some(10) == freebsd_ver => true,
+
             _ => false,
         }
     });
