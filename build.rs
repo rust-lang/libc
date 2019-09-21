@@ -16,11 +16,15 @@ fn main() {
         );
     }
 
-    // The ABI of libc is backward compatible with FreeBSD 11.
+    // The ABI of libc used by libstd is backward compatible with FreeBSD 10.
+    // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
     match which_freebsd() {
+        Some(10) if libc_ci || rustc_dep_of_std => {
+            println!("cargo:rustc-cfg=freebsd10")
+        }
         Some(11) if libc_ci => println!("cargo:rustc-cfg=freebsd11"),
         Some(12) if libc_ci => println!("cargo:rustc-cfg=freebsd12"),
         Some(13) if libc_ci => println!("cargo:rustc-cfg=freebsd13"),
@@ -109,6 +113,7 @@ fn which_freebsd() -> Option<i32> {
     let stdout = stdout.unwrap();
 
     match &stdout {
+        s if s.starts_with("10") => Some(10),
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),
