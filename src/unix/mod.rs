@@ -1543,10 +1543,18 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
+        s! {
+            #[repr(align(4))]
+            pub struct in6_addr {
+                pub s6_addr: [u8; 16],
+            }
+        }
     } else {
-        mod no_align;
-        pub use self::no_align::*;
+        s! {
+            pub struct in6_addr {
+                pub s6_addr: [u8; 16],
+                __align: [u32; 0],
+            }
+        }
     }
 }

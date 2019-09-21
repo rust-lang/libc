@@ -1,3 +1,9 @@
+macro_rules! identity {
+    ($($i:tt)*) => {
+        $($i)*
+    };
+}
+
 /// A macro for defining #[cfg] if-else statements.
 ///
 /// This is similar to the `if/elif` C preprocessor macro by allowing definition
@@ -10,9 +16,9 @@
 macro_rules! cfg_if {
     // match if/else chains with a final `else`
     ($(
-        if #[cfg($($meta:meta),*)] { $($it:item)* }
+        if #[cfg($($meta:meta),*)] { $($it:tt)* }
     ) else * else {
-        $($it2:item)*
+        $($it2:tt)*
     }) => {
         cfg_if! {
             @__items
@@ -24,9 +30,9 @@ macro_rules! cfg_if {
 
     // match if/else chains lacking a final `else`
     (
-        if #[cfg($($i_met:meta),*)] { $($i_it:item)* }
+        if #[cfg($($i_met:meta),*)] { $($i_it:tt)* }
         $(
-            else if #[cfg($($e_met:meta),*)] { $($e_it:item)* }
+            else if #[cfg($($e_met:meta),*)] { $($e_it:tt)* }
         )*
     ) => {
         cfg_if! {
@@ -43,7 +49,7 @@ macro_rules! cfg_if {
     // Collects all the negated cfgs in a list at the beginning and after the
     // semicolon is all the remaining items
     (@__items ($($not:meta,)*) ; ) => {};
-    (@__items ($($not:meta,)*) ; ( ($($m:meta),*) ($($it:item)*) ),
+    (@__items ($($not:meta,)*) ; ( ($($m:meta),*) ($($it:tt)*) ),
      $($rest:tt)*) => {
         // Emit all items within one block, applying an approprate #[cfg]. The
         // #[cfg] will require all `$m` matchers specified and must also negate
@@ -57,8 +63,8 @@ macro_rules! cfg_if {
     };
 
     // Internal macro to Apply a cfg attribute to a list of items
-    (@__apply $m:meta, $($it:item)*) => {
-        $(#[$m] $it)*
+    (@__apply $m:meta, $($it:tt)*) => {
+        #[$m] identity! { $($it)* }
     };
 }
 
