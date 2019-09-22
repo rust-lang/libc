@@ -3732,7 +3732,7 @@ extern "C" {
         native: ::pthread_t,
         value: *mut *mut ::c_void,
     ) -> ::c_int;
-    pub fn pthread_exit(value: *mut ::c_void);
+    pub fn pthread_exit(value: *mut ::c_void) -> !;
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_setstacksize(

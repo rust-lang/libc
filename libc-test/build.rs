@@ -31,6 +31,23 @@ fn do_ctest() {
     }
 }
 
+fn ctest_cfg() -> ctest::TestGenerator {
+    let mut cfg = ctest::TestGenerator::new();
+    let libc_cfgs = [
+        "libc_priv_mod_use",
+        "libc_union",
+        "libc_const_size_of",
+        "libc_align",
+        "libc_core_cvoid",
+        "libc_packedN",
+        "libc_thread_local",
+    ];
+    for f in &libc_cfgs {
+        cfg.cfg(f, None);
+    }
+    cfg
+}
+
 fn main() {
     do_cc();
     do_ctest();
@@ -59,8 +76,9 @@ macro_rules! headers {
 fn test_apple(target: &str) {
     assert!(target.contains("apple"));
     let x86_64 = target.contains("x86_64");
+    let i686 = target.contains("i686");
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__APPLE_USE_RFC_3542", None);
 
@@ -225,13 +243,18 @@ fn test_apple(target: &str) {
         }
     });
 
+    cfg.skip_roundtrip(move |s| match s {
+        // FIXME: this type has the wrong ABI
+        "max_align_t" if i686 => true,
+        _ => false,
+    });
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
 fn test_openbsd(target: &str) {
     assert!(target.contains("openbsd"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! { cfg:
@@ -371,7 +394,7 @@ fn test_windows(target: &str) {
     assert!(target.contains("windows"));
     let gnu = target.contains("gnu");
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_WIN32_WINNT", Some("0x8000"));
 
     headers! { cfg:
@@ -474,7 +497,7 @@ fn test_windows(target: &str) {
 fn test_redox(target: &str) {
     assert!(target.contains("redox"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -540,7 +563,7 @@ fn test_redox(target: &str) {
 fn test_cloudabi(target: &str) {
     assert!(target.contains("cloudabi"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -611,7 +634,7 @@ fn test_cloudabi(target: &str) {
 fn test_solaris(target: &str) {
     assert!(target.contains("solaris"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     cfg.define("_XOPEN_SOURCE", Some("700"));
@@ -722,7 +745,7 @@ fn test_solaris(target: &str) {
 fn test_netbsd(target: &str) {
     assert!(target.contains("netbsd"));
     let rumprun = target.contains("rumprun");
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
 
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("_NETBSD_SOURCE", Some("1"));
@@ -922,7 +945,7 @@ fn test_netbsd(target: &str) {
 
 fn test_dragonflybsd(target: &str) {
     assert!(target.contains("dragonfly"));
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -1127,7 +1150,7 @@ fn test_dragonflybsd(target: &str) {
 fn test_wasi(target: &str) {
     assert!(target.contains("wasi"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -1204,7 +1227,7 @@ fn test_android(target: &str) {
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -1429,11 +1452,12 @@ fn test_android(target: &str) {
 
 fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
 
     let freebsd_ver = which_freebsd();
 
     match freebsd_ver {
+        Some(10) => cfg.cfg("freebsd10", None),
         Some(11) => cfg.cfg("freebsd11", None),
         Some(12) => cfg.cfg("freebsd12", None),
         Some(13) => cfg.cfg("freebsd13", None),
@@ -1443,7 +1467,10 @@ fn test_freebsd(target: &str) {
     // Required for `getline`:
     cfg.define("_WITH_GETLINE", None);
     // Required for making freebsd11_stat available in the headers
-    cfg.define("_WANT_FREEBSD11_STAT", None);
+    match freebsd_ver {
+        Some(10) => &mut cfg,
+        _ => cfg.define("_WANT_FREEBSD11_STAT", None),
+    };
 
     headers! { cfg:
                 "aio.h",
@@ -1571,6 +1598,34 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // These constants were introduced in FreeBSD 11:
+            "SF_USER_READAHEAD"
+            | "SF_NOCACHE"
+            | "RLIMIT_KQUEUES"
+            | "RLIMIT_UMTXP"
+            | "EVFILT_PROCDESC"
+            | "EVFILT_SENDFILE"
+            | "EVFILT_EMPTY"
+            | "SO_REUSEPORT_LB"
+            | "TCP_CCALGOOPT"
+            | "TCP_PCAP_OUT"
+            | "TCP_PCAP_IN"
+            | "IP_BINDMULTI"
+            | "IP_ORIGDSTADDR"
+            | "IP_RECVORIGDSTADDR"
+            | "IPV6_ORIGDSTADDR"
+            | "IPV6_RECVORIGDSTADDR"
+            | "PD_CLOEXEC"
+            | "PD_ALLOWED_AT_FORK"
+            | "IP_RSS_LISTEN_BUCKET"
+                if Some(10) == freebsd_ver =>
+            {
+                true
+            }
+
+            // FIXME: This constant has a different value in FreeBSD 10:
+            "RLIM_NLIMITS" if Some(10) == freebsd_ver => true,
+
             // FIXME: There are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
@@ -1586,11 +1641,34 @@ fn test_freebsd(target: &str) {
         }
     });
 
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // `mmsghdr` is not available in FreeBSD 10
+            "mmsghdr" if Some(10) == freebsd_ver => true,
+
+            // `max_align_t` is not available in FreeBSD 10
+            "max_align_t" if Some(10) == freebsd_ver => true,
+
+            _ => false,
+        }
+    });
+
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
+
+            // These functions were added in FreeBSD 11:
+            "fdatasync" | "mq_getfd_np" | "sendmmsg" | "recvmmsg"
+                if Some(10) == freebsd_ver =>
+            {
+                true
+            }
+
+            // This function changed its return type from `int` in FreeBSD10 to
+            // `ssize_t` in FreeBSD11:
+            "aio_waitcomplete" if Some(10) == freebsd_ver => true,
 
             // The `uname` function in the `utsname.h` FreeBSD header is a C
             // inline function (has no symbol) that calls the `__xuname` symbol.
@@ -1603,6 +1681,14 @@ fn test_freebsd(target: &str) {
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" => true,
 
+            _ => false,
+        }
+    });
+
+    cfg.skip_signededness(move |c| {
+        match c {
+            // FIXME: has a different sign in FreeBSD10
+            "blksize_t" if Some(10) == freebsd_ver => true,
             _ => false,
         }
     });
@@ -1620,9 +1706,17 @@ fn test_freebsd(target: &str) {
     });
 
     cfg.skip_field(move |struct_, field| {
-        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
-        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
-        (struct_ == "sigaction" && field == "sa_sigaction")
+        match (struct_, field) {
+            // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+            // incorrect, see: https://github.com/rust-lang/libc/issues/1359
+            ("sigaction", "sa_sigaction") => true,
+
+            // FIXME: in FreeBSD10 this field has type `char*` instead of
+            // `void*`:
+            ("stack_t", "ss_sp") if Some(10) == freebsd_ver => true,
+
+            _ => false,
+        }
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -1631,7 +1725,7 @@ fn test_freebsd(target: &str) {
 fn test_emscripten(target: &str) {
     assert!(target.contains("emscripten"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None); // FIXME: ??
 
     headers! { cfg:
@@ -1852,17 +1946,19 @@ fn test_linux(target: &str) {
     }
 
     let arm = target.contains("arm");
-    let x86_64 = target.contains("x86_64");
-    let x86_32 = target.contains("i686");
-    let x32 = target.contains("x32");
+    let i686 = target.contains("i686");
     let mips = target.contains("mips");
     let mips32 = mips && !target.contains("64");
-    let mips64 = mips && target.contains("64");
     let mips32_musl = mips32 && musl;
-    let sparc64 = target.contains("sparc64");
+    let mips64 = mips && target.contains("64");
+    let ppc64 = target.contains("powerpc64");
     let s390x = target.contains("s390x");
+    let sparc64 = target.contains("sparc64");
+    let x32 = target.contains("x32");
+    let x86_32 = target.contains("i686");
+    let x86_64 = target.contains("x86_64");
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
     // This macro re-deifnes fscanf,scanf,sscanf to link to the symbols that are
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
@@ -2286,6 +2382,9 @@ fn test_linux(target: &str) {
             true
         }
 
+        // FIXME: the call ABI of max_align_t is incorrect on these platforms:
+        "max_align_t" if i686 || mips64 || ppc64 => true,
+
         _ => false,
     });
 
@@ -2305,7 +2404,7 @@ fn test_linux_like_apis(target: &str) {
 
     if linux || android || emscripten {
         // test strerror_r from the `string.h` header
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
         cfg.skip_type(|_| true).skip_static(|_| true);
 
         headers! { cfg: "string.h" }
@@ -2321,7 +2420,7 @@ fn test_linux_like_apis(target: &str) {
     if linux || android || emscripten {
         // test fcntl - see:
         // http://man7.org/linux/man-pages/man2/fcntl.2.html
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
 
         if musl {
             cfg.header("fcntl.h");
@@ -2351,7 +2450,7 @@ fn test_linux_like_apis(target: &str) {
 
     if linux || android {
         // test termios
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
         cfg.header("asm/termbits.h");
         cfg.skip_type(|_| true)
             .skip_static(|_| true)
@@ -2368,7 +2467,7 @@ fn test_linux_like_apis(target: &str) {
 
     if linux || android {
         // test IPV6_ constants:
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
         headers! {
             cfg:
             "linux/in6.h"
@@ -2399,7 +2498,7 @@ fn test_linux_like_apis(target: &str) {
         // These types have a field called `p_type`, but including
         // "resolve.h" defines a `p_type` macro that expands to `__p_type`
         // making the tests for these fails when both are included.
-        let mut cfg = ctest::TestGenerator::new();
+        let mut cfg = ctest_cfg();
         cfg.header("elf.h");
         cfg.skip_fn(|_| true)
             .skip_static(|_| true)
@@ -2429,6 +2528,7 @@ fn which_freebsd() -> Option<i32> {
     let stdout = String::from_utf8(output.stdout).ok()?;
 
     match &stdout {
+        s if s.starts_with("10") => Some(10),
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),
