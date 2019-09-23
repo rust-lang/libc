@@ -252,8 +252,9 @@ s! {
     }
 
     // signal.h
+
     pub struct sigaction {
-        pub sa_u     : ::size_t, // actually union of two function pointers
+        pub sa_u     : ::sa_u_t,
         pub sa_mask  : ::sigset_t,
         pub sa_flags : ::c_int,
     }
@@ -269,7 +270,7 @@ s! {
     pub struct siginfo_t {
         pub si_signo : ::c_int,
         pub si_code  : ::c_int,
-        pub si_value : ::size_t, // actually union of int and void *
+        pub si_value : ::sigval,
         pub si_errno : ::c_int,
         pub si_status: ::c_int,
         pub si_addr: *mut ::c_void,
@@ -414,6 +415,16 @@ s_no_extra_traits! {
         pub __ss_pad2  : [::c_char; _SS_PAD2SIZE],
     }
 
+    pub union sa_u_t {
+        pub sa_handler : extern "C" fn(::c_int) -> !,
+        pub sa_sigaction: extern "C" fn(::c_int, *mut ::siginfo_t,
+                                        *mut ::c_void) -> !,
+    }
+
+    pub union sigval {
+        pub sival_int : ::c_int,
+        pub sival_ptr : *mut ::c_void,
+    }
 }
 
 cfg_if! {
@@ -461,6 +472,46 @@ cfg_if! {
                     .field("__ss_align", &self.__ss_align)
                     .field("__ss_pad2", &&self.__ss_pad2[..])
                     .finish()
+            }
+        }
+
+        impl PartialEq for sa_u_t {
+            fn eq(&self, other: &sa_u_t) -> bool {
+                unsafe { self.sa_handler == other.sa_handler }
+            }
+        }
+        impl Eq for sa_u_t {}
+        impl ::fmt::Debug for sa_u_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sa_u_t")
+                    .field("sa_handler", unsafe { &self.sa_handler })
+                    .field("sa_sigaction", unsafe { &self.sa_sigaction })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sa_u_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.sa_handler.hash(state) };
+            }
+        }
+
+        impl PartialEq for sigval {
+            fn eq(&self, other: &sigval) -> bool {
+                unsafe { self.sival_ptr == other.sival_ptr }
+            }
+        }
+        impl Eq for sigval {}
+        impl ::fmt::Debug for sigval {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigval")
+                    .field("sival_int", unsafe { &self.sival_int})
+                    .field("sival_ptr", unsafe { &self.sival_ptr })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sigval {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.sival_ptr.hash(state) };
             }
         }
     }
@@ -1976,16 +2027,14 @@ extern "C" {
     pub fn sigqueue(
         __pid: pid_t,
         __signo: ::c_int,
-        __value: ::size_t, // Actual type is const union sigval value,
-                           // which is a union of int and void *
+        __value: ::sigval,
     ) -> ::c_int;
 
     // signal.h for user
     pub fn _sigqueue(
         rtpId: ::RTP_ID,
         signo: ::c_int,
-        pValue: *mut ::size_t, // Actual type is const union * sigval value,
-        // which is a union of int and void *
+        pValue: *const ::sigval,
         sigCode: ::c_int,
     ) -> ::c_int;
 
@@ -2001,6 +2050,15 @@ extern "C" {
 
     // rtpLibCommon.h
     pub fn rtpInfoGet(rtpId: ::RTP_ID, rtpStruct: *mut ::RTP_DESC) -> ::c_int;
+    pub fn rtpSpawn(
+        pubrtpFileName: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+        priority: ::c_int,
+        uStackSize: ::size_t,
+        options: ::c_int,
+        taskOptions: ::c_int,
+    ) -> RTP_ID;
 
     // ioLib.h
     pub fn _realpath(
