@@ -968,6 +968,7 @@ pub const SEEK_END: ::c_int = 2;
 
 // rtpLibCommon.h
 pub const VX_RTP_NAME_LENGTH: usize = 255;
+pub const RTP_ID_ERROR: ::RTP_ID = -1;
 
 // h/public/unistd.h
 pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 21; // Via unistd.h
