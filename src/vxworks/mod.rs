@@ -1361,7 +1361,7 @@ extern "C" {
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
-    pub fn pthread_exit(value: *mut ::c_void);
+    pub fn pthread_exit(value: *mut ::c_void) -> !;
     pub fn pthread_attr_setdetachstate(
         attr: *mut ::pthread_attr_t,
         state: ::c_int,

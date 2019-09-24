@@ -558,7 +558,7 @@ extern "C" {
     #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
     #[cfg_attr(
-        all(target_os = "freebsd", freebsd11),
+        all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "glob@FBSD_1.0"
     )]
     pub fn glob(
@@ -571,7 +571,7 @@ extern "C" {
     ) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__globfree30")]
     #[cfg_attr(
-        all(target_os = "freebsd", freebsd11),
+        all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "globfree@FBSD_1.0"
     )]
     pub fn globfree(pglob: *mut ::glob_t);

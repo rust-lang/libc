@@ -1193,7 +1193,7 @@ extern "C" {
     pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
     pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
     #[cfg_attr(
-        all(target_os = "freebsd", freebsd11),
+        all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "kevent@FBSD_1.0"
     )]
     pub fn kevent(
@@ -1223,7 +1223,7 @@ extern "C" {
         mode: ::mode_t,
     ) -> ::c_int;
     #[cfg_attr(
-        all(target_os = "freebsd", freebsd11),
+        all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "mknodat@FBSD_1.1"
     )]
     pub fn mknodat(
@@ -1241,13 +1241,13 @@ extern "C" {
         mqd: ::mqd_t,
         msg_ptr: *mut ::c_char,
         msg_len: ::size_t,
-        msq_prio: *mut ::c_uint,
+        msg_prio: *mut ::c_uint,
     ) -> ::ssize_t;
     pub fn mq_send(
         mqd: ::mqd_t,
         msg_ptr: *const ::c_char,
         msg_len: ::size_t,
-        msq_prio: ::c_uint,
+        msg_prio: ::c_uint,
     ) -> ::c_int;
     pub fn mq_setattr(
         mqd: ::mqd_t,
@@ -1258,14 +1258,14 @@ extern "C" {
         mqd: ::mqd_t,
         msg_ptr: *mut ::c_char,
         msg_len: ::size_t,
-        msq_prio: *mut ::c_uint,
+        msg_prio: *mut ::c_uint,
         abs_timeout: *const ::timespec,
     ) -> ::ssize_t;
     pub fn mq_timedsend(
         mqd: ::mqd_t,
         msg_ptr: *const ::c_char,
         msg_len: ::size_t,
-        msq_prio: ::c_uint,
+        msg_prio: ::c_uint,
         abs_timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn mq_unlink(name: *const ::c_char) -> ::c_int;

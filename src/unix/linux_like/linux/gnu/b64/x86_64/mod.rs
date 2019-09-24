@@ -906,3 +906,10 @@ cfg_if! {
         pub use self::not_x32::*;
     }
 }
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    }
+}
