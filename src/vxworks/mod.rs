@@ -31,7 +31,7 @@ pub type ptrdiff_t = isize;
 pub type size_t = ::uintptr_t;
 pub type ssize_t = ::intptr_t;
 
-pub type pid_t = i32;
+pub type pid_t = ::c_int;
 pub type in_addr_t = u32;
 pub type sighandler_t = ::size_t;
 pub type cpuset_t = u32;
@@ -39,7 +39,6 @@ pub type cpuset_t = u32;
 pub type blkcnt_t = ::c_long;
 pub type blksize_t = ::c_long;
 pub type ino_t = ::c_ulong;
-pub type off_t = ::c_longlong;
 
 pub type rlim_t = ::c_ulong;
 pub type suseconds_t = ::c_long;
@@ -70,7 +69,8 @@ pub type stat64 = ::stat;
 pub type pthread_key_t = ::c_ulong;
 
 // From b_off_t.h
-pub type off64_t = ::c_longlong;
+pub type off_t = ::c_longlong;
+pub type off64_t = off_t;
 
 // From b_BOOL.h
 pub type BOOL = ::c_int;
@@ -109,7 +109,6 @@ impl ::Clone for _Vx_semaphore {
     }
 }
 
-// structs that only exist in userspace
 s! {
     // b_pthread_condattr_t.h
     pub struct pthread_condattr_t {
@@ -194,7 +193,7 @@ s! {
     }
 
     // resource.h
-    pub struct rlimit { /* Is this really needed? Questionable ... */
+    pub struct rlimit {
                            pub rlim_cur : ::rlim_t,
                            pub rlim_max : ::rlim_t,
     }
@@ -208,7 +207,7 @@ s! {
                          pub st_uid       : ::uid_t,
                          pub st_gid       : ::gid_t,
                          pub st_rdev      : ::dev_t,
-                         pub st_size      : ::off64_t,
+                         pub st_size      : ::off_t,
                          pub st_atime     : ::time_t,
                          pub st_mtime     : ::time_t,
                          pub st_ctime     : ::time_t,
@@ -253,11 +252,9 @@ s! {
     }
 
     // signal.h
-    pub struct sigaction { // pulled from kernel side,
-        pub sa_u     : ::size_t,
-        // This is a union of two function pointers.
-        // Under the assumption that function pointers are the same
-        // size as other pointers, we can replace the union with size_t
+
+    pub struct sigaction {
+        pub sa_u     : ::sa_u_t,
         pub sa_mask  : ::sigset_t,
         pub sa_flags : ::c_int,
     }
@@ -273,9 +270,7 @@ s! {
     pub struct siginfo_t {
         pub si_signo : ::c_int,
         pub si_code  : ::c_int,
-        // This field is a union of int and void * in vxworks
-        // The size has been set to the larger of the two
-        pub si_value : ::size_t,
+        pub si_value : ::sigval,
         pub si_errno : ::c_int,
         pub si_status: ::c_int,
         pub si_addr: *mut ::c_void,
@@ -369,9 +364,6 @@ s! {
     }
 
     // in6.h
-    // There is a different implementation in ipv6.h in
-    // krnl directory, but this seems to only happen
-    // when the VSB is built for ipv6 only.
     pub struct sockaddr_in6 {
         pub sin6_len     : u8,
         pub sin6_family  : u8,
@@ -379,14 +371,6 @@ s! {
         pub sin6_flowinfo: u32,
         pub sin6_addr    : ::in6_addr,
         pub sin6_scope_id: u32,
-    }
-
-    pub struct passwd {
-        pub pw_name: *mut ::c_char,
-        pub pw_uid: ::uid_t,
-        pub pw_gid: ::gid_t,
-        pub pw_dir: *mut ::c_char,
-        pub pw_shell: *mut ::c_char,
     }
 
     pub struct Dl_info {
@@ -431,6 +415,16 @@ s_no_extra_traits! {
         pub __ss_pad2  : [::c_char; _SS_PAD2SIZE],
     }
 
+    pub union sa_u_t {
+        pub sa_handler : Option<unsafe extern "C" fn(::c_int) -> !>,
+        pub sa_sigaction: Option<unsafe extern "C" fn(::c_int, *mut ::siginfo_t,
+                                        *mut ::c_void) -> !>,
+    }
+
+    pub union sigval {
+        pub sival_int : ::c_int,
+        pub sival_ptr : *mut ::c_void,
+    }
 }
 
 cfg_if! {
@@ -478,6 +472,67 @@ cfg_if! {
                     .field("__ss_align", &self.__ss_align)
                     .field("__ss_pad2", &&self.__ss_pad2[..])
                     .finish()
+            }
+        }
+
+        impl PartialEq for sa_u_t {
+            fn eq(&self, other: &sa_u_t) -> bool {
+                unsafe {
+                    let h1 = match self.sa_handler {
+                        Some(handler) => handler as usize,
+                        None => 0 as usize,
+                    };
+                    let h2 = match other.sa_handler {
+                        Some(handler) => handler as usize,
+                        None => 0 as usize,
+                    };
+                    h1 == h2
+                }
+            }
+        }
+        impl Eq for sa_u_t {}
+        impl ::fmt::Debug for sa_u_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                unsafe {
+                    let h = match self.sa_handler {
+                        Some(handler) => handler as usize,
+                        None => 0 as usize,
+                    };
+
+                    f.debug_struct("sa_u_t")
+                        .field("sa_handler", &h)
+                        .finish()
+                }
+            }
+        }
+        impl ::hash::Hash for sa_u_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    let h = match self.sa_handler {
+                        Some(handler) => handler as usize,
+                        None => 0 as usize,
+                    };
+                    h.hash(state)
+                }
+            }
+        }
+
+        impl PartialEq for sigval {
+            fn eq(&self, other: &sigval) -> bool {
+                unsafe { self.sival_ptr as usize == other.sival_ptr as usize }
+            }
+        }
+        impl Eq for sigval {}
+        impl ::fmt::Debug for sigval {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigval")
+                    .field("sival_ptr", unsafe { &(self.sival_ptr as usize) })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sigval {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { (self.sival_ptr as usize).hash(state) };
             }
         }
     }
@@ -785,9 +840,8 @@ pub const TCP_KEEPIDLE: ::c_int = 4;
 pub const TCP_KEEPINTVL: ::c_int = 5;
 pub const TCP_KEEPCNT: ::c_int = 6;
 
-// IO Lib Definitions:
-
-pub const FIONREAD: ::c_int = 1;
+// ioLib.h
+pub const FIONREAD: ::c_int = 0x40040001;
 pub const FIOFLUSH: ::c_int = 2;
 pub const FIOOPTIONS: ::c_int = 3;
 pub const FIOBAUDRATE: ::c_int = 4;
@@ -798,11 +852,11 @@ pub const FIOWHERE: ::c_int = 8;
 pub const FIODIRENTRY: ::c_int = 9;
 pub const FIORENAME: ::c_int = 10;
 pub const FIOREADYCHANGE: ::c_int = 11;
-pub const FIOWRITE: ::c_int = 12;
 pub const FIODISKCHANGE: ::c_int = 13;
 pub const FIOCANCEL: ::c_int = 14;
 pub const FIOSQUEEZE: ::c_int = 15;
-pub const FIONBIO: ::c_int = 16;
+pub const FIONBIO: ::c_int = 0x90040010;
+
 pub const _POSIX_PATH_MAX: ::c_int = 256;
 
 // Some poll stuff
@@ -817,7 +871,7 @@ pub const POLLERR: ::c_short = 0x0008;
 pub const POLLHUP: ::c_short = 0x0010;
 pub const POLLNVAL: ::c_short = 0x0020;
 
-//Some Fcntlcom Stuff (look at fcntlcom.h to find definitions)
+// fnctlcom.h
 pub const FD_CLOEXEC: ::c_int = 1;
 pub const F_DUPFD: ::c_int = 0;
 pub const F_GETFD: ::c_int = 1;
@@ -831,12 +885,10 @@ pub const F_SETLK: ::c_int = 8;
 pub const F_SETLKW: ::c_int = 9;
 pub const F_DUPFD_CLOEXEC: ::c_int = 14;
 
-// Other Random Stuff
-pub const VXSIM_EWOULDBLOCK: ::c_int = 70;
-
-pub const SIG_DFL: c_int = 0;
-pub const SIG_IGN: c_int = 1;
-pub const SIG_ERR: c_int = !0;
+// signal.h
+pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
+pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
+pub const SIG_ERR: sighandler_t = -1 as isize as sighandler_t;
 
 pub const SIGHUP: ::c_int = 1;
 pub const SIGINT: ::c_int = 2;
@@ -937,6 +989,7 @@ pub const SEEK_END: ::c_int = 2;
 
 // rtpLibCommon.h
 pub const VX_RTP_NAME_LENGTH: usize = 255;
+pub const RTP_ID_ERROR: ::RTP_ID = -1;
 
 // h/public/unistd.h
 pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 21; // Via unistd.h
@@ -1150,9 +1203,6 @@ extern "C" {
 }
 
 extern "C" {
-    pub fn getpwnam(name: *const ::c_char) -> *mut passwd;
-    pub fn getpwuid(uid: ::uid_t) -> *mut passwd;
-
     pub fn fprintf(
         stream: *mut ::FILE,
         format: *const ::c_char,
@@ -1262,11 +1312,6 @@ extern "C" {
         argv: *const *const c_char,
         envp: *const *const c_char,
     ) -> ::c_int;
-    /*
-    pub fn execvp(c: *const c_char,
-    argv: *const *const c_char) -> ::c_int;
-     */
-    //    pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
     pub fn getegid() -> gid_t;
     pub fn geteuid() -> uid_t;
@@ -1313,8 +1358,6 @@ extern "C" {
 
     pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
 
-    pub fn getrlimit(resource: ::c_int, rlim: *mut rlimit) -> ::c_int;
-    pub fn setrlimit(resource: ::c_int, rlim: *const rlimit) -> ::c_int;
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
@@ -1340,13 +1383,25 @@ extern "C" {
         filename: *const ::c_char,
         times: *const ::timeval,
     ) -> ::c_int;
+
+    #[link_name = "_rtld_dlopen"]
     pub fn dlopen(filename: *const ::c_char, flag: ::c_int) -> *mut ::c_void;
+
+    #[link_name = "_rtld_dlerror"]
     pub fn dlerror() -> *mut ::c_char;
+
+    #[link_name = "_rtld_dlsym"]
     pub fn dlsym(
         handle: *mut ::c_void,
         symbol: *const ::c_char,
     ) -> *mut ::c_void;
+
+    #[link_name = "_rtld_dlclose"]
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
+
+    #[link_name = "_rtld_dladdr"]
+    pub fn dladdr(addr: *mut ::c_void, info: *mut Dl_info) -> ::c_int;
+
     pub fn res_init() -> ::c_int;
 
     // time.h
@@ -1418,7 +1473,6 @@ extern "C" {
         stream: *mut FILE,
     ) -> ssize_t;
 
-    pub fn _rtld_dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 }
 
 extern "C" {
@@ -1532,12 +1586,7 @@ extern "C" {
 
     // fcntl.h or
     // ioLib.h
-    pub fn open(
-        // this might be hacked
-        path: *const ::c_char,
-        oflag: ::c_int,
-        ...
-    ) -> ::c_int;
+    pub fn open(path: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
 
     // poll.h
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
@@ -1842,12 +1891,8 @@ extern "C" {
 
     // ioLib.h or
     // unistd.h
-    pub fn read(
-        // Since this is from FD< big errors might happen
-        fd: ::c_int,
-        buf: *mut ::c_void,
-        count: ::size_t,
-    ) -> ::ssize_t;
+    pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
+        -> ::ssize_t;
 
     // ioLib.h or
     // unistd.h
@@ -1893,32 +1938,20 @@ extern "C" {
     pub fn freeaddrinfo(res: *mut addrinfo);
 
     // signal.h
-    pub fn signal(
-        // Probably wrong ...
-        signum: ::c_int,
-        handler: sighandler_t,
-    ) -> sighandler_t;
+    pub fn signal(signum: ::c_int, handler: sighandler_t) -> sighandler_t;
 
     // unistd.h
-    pub fn getpid() -> ::c_int; //should be pid_t, but is being dodged
+    pub fn getpid() -> pid_t;
 
     // unistd.h
-    pub fn getppid() -> ::c_int;
+    pub fn getppid() -> pid_t;
 
     // wait.h
-    pub fn waitpid(
-        pid: ::c_int, //should be pid_t, but is being dodged
-        status: *mut ::c_int,
-        optons: ::c_int,
-    ) -> ::c_int; //should be pid_t, but is being dodged
+    pub fn waitpid(pid: pid_t, status: *mut ::c_int, optons: ::c_int)
+        -> pid_t;
 
     // unistd.h
     pub fn sysconf(attr: ::c_int) -> ::c_long;
-
-    // unistd.h
-    // For user space, return value is static inline int
-    // For kernel space, exactly how it should be
-    pub fn getpagesize() -> ::c_int;
 
     // stdlib.h
     pub fn setenv(
@@ -1933,6 +1966,12 @@ extern "C" {
         // setenv.c
         envVarName: *const ::c_char,
     ) -> ::c_int;
+
+    // stdlib.h
+    pub fn realpath(
+        fileName: *const ::c_char,
+        resolvedName: *mut ::c_char,
+    ) -> *mut ::c_char;
 
     // unistd.h
     pub fn link(src: *const ::c_char, dst: *const ::c_char) -> ::c_int;
@@ -1968,20 +2007,6 @@ extern "C" {
     // dirent.h
     pub fn closedir(ptr: *mut ::DIR) -> ::c_int;
 
-    pub fn pwrite64(
-        fd: ::c_int,
-        buf: *const ::c_void,
-        count: ::size_t,
-        offset: off64_t,
-    ) -> ::ssize_t;
-
-    pub fn pread64(
-        fd: ::c_int,
-        buf: *const ::c_void,
-        count: ::size_t,
-        offset: off64_t,
-    ) -> ::ssize_t;
-
     // sched.h
     pub fn sched_yield() -> ::c_int;
 
@@ -1990,9 +2015,6 @@ extern "C" {
 
     // errnoLib.h
     pub fn errnoGet() -> ::c_int;
-
-    pub fn fork(// Does not exist at all
-    ) -> ::c_int;
 
     // unistd.h
     pub fn _exit(status: ::c_int) -> !;
@@ -2009,12 +2031,6 @@ extern "C" {
     // unistd.h
     pub fn getuid() -> ::uid_t;
 
-    pub fn setgroups(
-        // Does not exist at all
-        ngroups: ::c_int,
-        grouplist: *const ::gid_t,
-    ) -> ::c_int;
-
     // signal.h
     pub fn sigemptyset(__set: *mut sigset_t) -> ::c_int;
 
@@ -2026,48 +2042,45 @@ extern "C" {
         __oset: *mut sigset_t,
     ) -> ::c_int;
 
-    pub fn execvp(
-        // Does not exist at all
-        c: *const ::c_char,
-        argv: *const *const ::c_char,
-    ) -> ::c_int;
-
     // signal.h for user
-    pub fn kill(
-        __pid: ::c_int, //should be pid_t, but is being dodged
-        __signo: ::c_int,
-    ) -> ::c_int;
+    pub fn kill(__pid: pid_t, __signo: ::c_int) -> ::c_int;
 
     // signal.h for user
     pub fn sigqueue(
-        __pid: ::c_int, //should be pid_t, but is being dodged
+        __pid: pid_t,
         __signo: ::c_int,
-        __value: ::size_t, // Actual type is const union sigval value,
-                           // which is a union of int and void *
+        __value: ::sigval,
     ) -> ::c_int;
 
     // signal.h for user
     pub fn _sigqueue(
         rtpId: ::RTP_ID,
         signo: ::c_int,
-        pValue: *mut ::size_t, // Actual type is const union * sigval value,
-        // which is a union of int and void *
+        pValue: *const ::sigval,
         sigCode: ::c_int,
     ) -> ::c_int;
 
     // signal.h
-    // It seems like for kernel space, this function doesn't actually exist,
-    // it just macros to kill
     pub fn taskKill(taskId: ::TASK_ID, signo: ::c_int) -> ::c_int;
 
     // signal.h
     pub fn raise(__signo: ::c_int) -> ::c_int;
+
     // taskLibCommon.h
     pub fn taskIdSelf() -> ::TASK_ID;
     pub fn taskDelay(ticks: ::_Vx_ticks_t) -> ::c_int;
 
     // rtpLibCommon.h
     pub fn rtpInfoGet(rtpId: ::RTP_ID, rtpStruct: *mut ::RTP_DESC) -> ::c_int;
+    pub fn rtpSpawn(
+        pubrtpFileName: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+        priority: ::c_int,
+        uStackSize: ::size_t,
+        options: ::c_int,
+        taskOptions: ::c_int,
+    ) -> RTP_ID;
 
     // ioLib.h
     pub fn _realpath(
@@ -2097,10 +2110,6 @@ extern "C" {
     pub fn randABytes(buf: *mut c_uchar, length: c_int) -> c_int;
     pub fn randUBytes(buf: *mut c_uchar, length: c_int) -> c_int;
     pub fn randSecure() -> c_int;
-}
-
-pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int {
-    unsafe { _rtld_dladdr(addr, info) }
 }
 
 //Dummy functions, these don't really exist in VxWorks.
@@ -2167,38 +2176,6 @@ pub fn posix_memalign(
         } else {
             *memptr = temp;
             0
-        }
-    }
-}
-
-// From sysconf.c -> doesn't seem to be supported?
-pub fn getpwuid_r(
-    _uid: ::uid_t,
-    _pwd: *mut passwd,
-    _buf: *mut ::c_char,
-    _buflen: ::size_t,
-    _result: *mut *mut passwd,
-) -> ::c_int {
-    0
-}
-
-// VxWorks requires that resolvedName be allocated in userspace
-pub fn realpath(
-    fileName: *const ::c_char,
-    resolvedName: *mut ::c_char,
-) -> *mut ::c_char {
-    unsafe {
-        if resolvedName == null_mut::<::c_char>() {
-            let emptyResolvedName =
-                super::malloc(::_POSIX_PATH_MAX as _) as *mut ::c_char;
-            let r = _realpath(fileName, emptyResolvedName);
-
-            if r == null_mut::<::c_char>() {
-                super::free(emptyResolvedName as *mut _);
-            }
-            r
-        } else {
-            _realpath(fileName, resolvedName)
         }
     }
 }
