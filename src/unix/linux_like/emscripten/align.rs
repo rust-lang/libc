@@ -37,6 +37,7 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_COND_T],
             }
 
+            #[allow(missing_debug_implementations)]
             #[repr(align(8))]
             pub struct max_align_t {
                 priv_: [f64; 2]
