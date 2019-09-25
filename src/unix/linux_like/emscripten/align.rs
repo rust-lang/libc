@@ -2,7 +2,9 @@ macro_rules! expand_align {
     () => {
         s! {
             #[repr(align(8))]
-            pub struct max_align_t([f64; 2]);
+            pub struct max_align_t {
+                priv_: f64; 2]
+            }
 
             #[repr(align(4))]
             pub struct pthread_mutex_t {
