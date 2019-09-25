@@ -1,6 +1,7 @@
 macro_rules! expand_align {
     () => {
         s! {
+            #[allow(missing_debug_implementations)]
             #[repr(align(4))]
             pub struct pthread_mutex_t {
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
