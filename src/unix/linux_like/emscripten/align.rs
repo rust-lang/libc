@@ -39,7 +39,7 @@ macro_rules! expand_align {
 
             #[repr(align(8))]
             pub struct max_align_t {
-                priv_: f64; 2]
+                priv_: [f64; 2]
             }
 
         }
