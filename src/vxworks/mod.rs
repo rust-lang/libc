@@ -416,9 +416,10 @@ s_no_extra_traits! {
     }
 
     pub union sa_u_t {
-        pub sa_handler : Option<unsafe extern "C" fn(::c_int) -> !>,
-        pub sa_sigaction: Option<unsafe extern "C" fn(::c_int, *mut ::siginfo_t,
-                                        *mut ::c_void) -> !>,
+        pub sa_handler : ::Option<unsafe extern "C" fn(::c_int) -> !>,
+        pub sa_sigaction: ::Option<unsafe extern "C" fn(::c_int,
+                                                        *mut ::siginfo_t,
+                                                        *mut ::c_void) -> !>,
     }
 
     pub union sigval {
