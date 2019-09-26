@@ -416,9 +416,10 @@ s_no_extra_traits! {
     }
 
     pub union sa_u_t {
-        pub sa_handler : Option<unsafe extern "C" fn(::c_int) -> !>,
-        pub sa_sigaction: Option<unsafe extern "C" fn(::c_int, *mut ::siginfo_t,
-                                        *mut ::c_void) -> !>,
+        pub sa_handler : ::Option<unsafe extern "C" fn(::c_int) -> !>,
+        pub sa_sigaction: ::Option<unsafe extern "C" fn(::c_int,
+                                                        *mut ::siginfo_t,
+                                                        *mut ::c_void) -> !>,
     }
 
     pub union sigval {
@@ -2074,8 +2075,8 @@ extern "C" {
     pub fn rtpInfoGet(rtpId: ::RTP_ID, rtpStruct: *mut ::RTP_DESC) -> ::c_int;
     pub fn rtpSpawn(
         pubrtpFileName: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
+        argv: *mut *const ::c_char,
+        envp: *mut *const ::c_char,
         priority: ::c_int,
         uStackSize: ::size_t,
         options: ::c_int,
