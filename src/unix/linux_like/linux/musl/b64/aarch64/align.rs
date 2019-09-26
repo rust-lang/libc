@@ -1,3 +1,7 @@
-#[derive(Copy, Clone, Debug, PartialEq)]
-#[repr(C, align(16))]
-pub struct max_align_t([f32; 8]);
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f32; 8]
+    }
+}
