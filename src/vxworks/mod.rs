@@ -2074,8 +2074,8 @@ extern "C" {
     pub fn rtpInfoGet(rtpId: ::RTP_ID, rtpStruct: *mut ::RTP_DESC) -> ::c_int;
     pub fn rtpSpawn(
         pubrtpFileName: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
+        argv: *mut *const ::c_char,
+        envp: *mut *const ::c_char,
         priority: ::c_int,
         uStackSize: ::size_t,
         options: ::c_int,
