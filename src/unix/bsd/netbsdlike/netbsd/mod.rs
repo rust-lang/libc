@@ -8,6 +8,7 @@ pub type idtype_t = ::c_int;
 pub type mqd_t = ::c_int;
 type __pthread_spin_t = __cpu_simple_lock_nv_t;
 pub type vm_size_t = ::uintptr_t;
+pub type lwpid_t = ::c_uint;
 
 impl siginfo_t {
     pub unsafe fn si_value(&self) -> ::sigval {
@@ -1714,6 +1715,8 @@ extern "C" {
         flags: ::c_int,
         timeout: *mut ::timespec,
     ) -> ::c_int;
+
+    pub fn _lwp_self() -> lwpid_t;
 }
 
 #[link(name = "util")]
