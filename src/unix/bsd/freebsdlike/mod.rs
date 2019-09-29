@@ -1323,6 +1323,7 @@ extern "C" {
         attr: *mut pthread_condattr_t,
         pshared: ::c_int,
     ) -> ::c_int;
+    pub fn pthread_main_np() -> ::c_int;
     pub fn pthread_mutex_timedlock(
         lock: *mut pthread_mutex_t,
         abstime: *const ::timespec,
