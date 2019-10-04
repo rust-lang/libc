@@ -570,8 +570,8 @@ pub const O_NOFOLLOW: ::c_int = 0x00080000;
 pub const O_NOCACHE: ::c_int = 0x00100000;
 pub const O_DIRECTORY: ::c_int = 0x00200000;
 
-pub const S_IFIFO: ::mode_t = 61440;
-pub const S_IFCHR: ::mode_t = 49152;
+pub const S_IFIFO: ::mode_t = 4096;
+pub const S_IFCHR: ::mode_t = 8192;
 pub const S_IFBLK: ::mode_t = 24576;
 pub const S_IFDIR: ::mode_t = 16384;
 pub const S_IFREG: ::mode_t = 32768;
