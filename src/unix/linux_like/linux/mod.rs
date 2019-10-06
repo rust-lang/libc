@@ -1128,6 +1128,13 @@ pub const IFLA_LINK: ::c_ushort = 5;
 pub const IFLA_QDISC: ::c_ushort = 6;
 pub const IFLA_STATS: ::c_ushort = 7;
 
+pub const IFLA_INFO_UNSPEC: ::c_ushort = 0;
+pub const IFLA_INFO_KIND: ::c_ushort = 1;
+pub const IFLA_INFO_DATA: ::c_ushort = 2;
+pub const IFLA_INFO_XSTATS: ::c_ushort = 3;
+pub const IFLA_INFO_SLAVE_KIND: ::c_ushort = 4;
+pub const IFLA_INFO_SLAVE_DATA: ::c_ushort = 5;
+
 // linux/if_tun.h
 pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;
