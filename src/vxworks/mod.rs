@@ -385,7 +385,7 @@ s_no_extra_traits! {
     // dirent.h
     pub struct dirent {
         pub d_ino  : ::ino_t,
-        pub d_name : [::c_char; _PARM_NAME_MAX + 1],
+        pub d_name : [::c_char; _PARM_NAME_MAX as usize + 1],
     }
 
     pub struct sockaddr_un {
@@ -401,7 +401,7 @@ s_no_extra_traits! {
         pub entrAddr  : *mut ::c_void,
         pub initTaskId: ::TASK_ID,
         pub parentId  : ::RTP_ID,
-        pub pathName  : [::c_char; VX_RTP_NAME_LENGTH + 1],
+        pub pathName  : [::c_char; VX_RTP_NAME_LENGTH as usize + 1],
         pub taskCnt   : ::c_int,
         pub textStart : *mut ::c_void,
         pub textEnd   : *mut ::c_void,
@@ -856,8 +856,11 @@ pub const FIOREADYCHANGE: ::c_int = 11;
 pub const FIODISKCHANGE: ::c_int = 13;
 pub const FIOCANCEL: ::c_int = 14;
 pub const FIOSQUEEZE: ::c_int = 15;
+pub const FIOGETNAME: ::c_int = 18;
 pub const FIONBIO: ::c_int = 0x90040010;
 
+// limits.h
+pub const PATH_MAX: ::c_int = _PARM_PATH_MAX;
 pub const _POSIX_PATH_MAX: ::c_int = 256;
 
 // Some poll stuff
@@ -928,8 +931,8 @@ pub const SI_CHILD: ::c_int = -6;
 pub const SI_KILL: ::c_int = SI_USER;
 
 // vxParams.h definitions
-pub const _PARM_NAME_MAX: usize = 255;
-pub const _PARM_PATH_MAX: usize = 1024;
+pub const _PARM_NAME_MAX: ::c_int = 255;
+pub const _PARM_PATH_MAX: ::c_int = 1024;
 
 // WAIT STUFF
 pub const WNOHANG: ::c_int = 0x01;
@@ -989,7 +992,7 @@ pub const SEEK_CUR: ::c_int = 1;
 pub const SEEK_END: ::c_int = 2;
 
 // rtpLibCommon.h
-pub const VX_RTP_NAME_LENGTH: usize = 255;
+pub const VX_RTP_NAME_LENGTH: ::c_int = 255;
 pub const RTP_ID_ERROR: ::RTP_ID = -1;
 
 // h/public/unistd.h
