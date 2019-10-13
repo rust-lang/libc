@@ -1374,6 +1374,7 @@ f! {
 
 extern "C" {
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
+    pub fn settimeofday(tp: *const ::timeval, tz: *const ::timezone) -> ::c_int;
     pub fn accept4(
         s: ::c_int,
         addr: *mut ::sockaddr,
