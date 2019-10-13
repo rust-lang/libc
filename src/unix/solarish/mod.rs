@@ -1889,6 +1889,7 @@ extern "C" {
     pub fn srand(seed: ::c_uint);
 
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
+    pub fn settimeofday(tp: *const ::timeval, tz: *const ::c_void) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
 
