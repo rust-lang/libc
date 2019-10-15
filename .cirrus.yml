@@ -5,7 +5,7 @@ task:
   setup_script:
     - pkg install -y curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh --default-toolchain nightly -y
+    - sh rustup.sh --default-toolchain nightly -y --profile=minimal
     - . $HOME/.cargo/env
     - rustup default nightly
   test_script:
@@ -19,7 +19,7 @@ task:
   setup_script:
     - pkg install -y curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh -y
+    - sh rustup.sh -y --profile=minimal
     - . $HOME/.cargo/env
     - rustup default stable
   test_script:
@@ -34,7 +34,7 @@ task:
   setup_script:
     - pkg install -y curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh --default-toolchain nightly -y
+    - sh rustup.sh --default-toolchain nightly -y --profile=minimal
     - . $HOME/.cargo/env
     - rustup default nightly
   test_script:
