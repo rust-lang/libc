@@ -550,6 +550,8 @@ pub const EAI_SERVICE: ::c_int = 9;
 pub const EAI_SOCKTYPE: ::c_int = 10;
 pub const EAI_SYSTEM: ::c_int = 11;
 
+// This is not defined in vxWorks, but we have to define it here
+// to make the building pass for getrandom and libstd, FIXME
 pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
 
 //Clock Lib Stuff
@@ -558,7 +560,7 @@ pub const CLOCK_MONOTONIC: ::c_int = 0x1;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::c_int = 0x2;
 pub const CLOCK_THREAD_CPUTIME_ID: ::c_int = 0x3;
 pub const TIMER_ABSTIME: ::c_int = 0x1;
-pub const TIME_RELTIME: ::c_int = 0xFFFFFFFE;
+pub const TIMER_RELTIME: ::c_int = 0x0;
 
 // PTHREAD STUFF
 pub const PTHREAD_INITIALIZED_OBJ: ::c_int = 0xF70990EF;
@@ -578,33 +580,36 @@ pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 pub const PTHREAD_STACK_MIN: usize = 4096;
 pub const _PTHREAD_SHARED_SEM_NAME_MAX: usize = 30;
 
-pub const EFAULT: ::c_int = 14;
-pub const EBUSY: ::c_int = 16;
-pub const EEXIST: ::c_int = 17;
-pub const ENODEV: ::c_int = 19;
-pub const EINVAL: ::c_int = 22;
-pub const EPIPE: ::c_int = 32;
-pub const ERANGE: ::c_int = 38;
-
 // ERRNO STUFF
+pub const OK: ::c_int = 0;
 pub const EPERM: ::c_int = 1; /* Not owner */
 pub const ENOENT: ::c_int = 2; /* No such file or directory */
 pub const ESRCH: ::c_int = 3; /* No such process */
 pub const EINTR: ::c_int = 4; /* Interrupted system call */
-pub const EIOA: ::c_int = 5; /* I/O error */
+pub const EIO: ::c_int = 5; /* I/O error */
 pub const ENXIO: ::c_int = 6; /* No such device or address */
 pub const E2BIG: ::c_int = 7; /* Arg list too long */
 pub const ENOEXEC: ::c_int = 8; /* Exec format error */
 pub const EBADF: ::c_int = 9; /* Bad file number */
-pub const CHILD: ::c_int = 10; /* No children */
+pub const ECHILD: ::c_int = 10; /* No children */
 pub const EAGAIN: ::c_int = 11; /* No more processes */
 pub const ENOMEM: ::c_int = 12; /* Not enough core */
 pub const EACCES: ::c_int = 13; /* Permission denied */
+pub const EFAULT: ::c_int = 14;
+pub const ENOTEMPTY: ::c_int = 15;
+pub const EBUSY: ::c_int = 16;
+pub const EEXIST: ::c_int = 17;
+pub const ENODEV: ::c_int = 19;
+pub const ENOTDIR: ::c_int = 20;
+pub const EISDIR: ::c_int = 21;
+pub const EINVAL: ::c_int = 22;
+pub const ENAMETOOLONG: ::c_int = 26;
+pub const EFBIG: ::c_int = 27;
+pub const ENOSPC: ::c_int = 28;
+pub const EROFS: ::c_int = 30;
+pub const EPIPE: ::c_int = 32;
 pub const EDEADLK: ::c_int = 33;
-pub const EINPROGRESS: ::c_int = 68;
-pub const EALREADY: ::c_int = 69;
-pub const EWOULDBLOCK: ::c_int = 70;
-pub const ENOSYS: ::c_int = 71;
+pub const ERANGE: ::c_int = 38;
 pub const EDESTADDRREQ: ::c_int = 40;
 pub const EPROTOTYPE: ::c_int = 41;
 pub const ENOPROTOOPT: ::c_int = 42;
@@ -627,66 +632,44 @@ pub const ESHUTDOWN: ::c_int = 58;
 pub const ETOOMANYREFS: ::c_int = 59;
 pub const ETIMEDOUT: ::c_int = 60;
 pub const ECONNREFUSED: ::c_int = 61;
+pub const EINPROGRESS: ::c_int = 68;
+pub const EALREADY: ::c_int = 69;
+pub const EWOULDBLOCK: ::c_int = 70;
+pub const ENOSYS: ::c_int = 71;
+pub const EDQUOT: ::c_int = 83;
+pub const ESTALE: ::c_int = 88;
 
 // NFS errnos: Refer to pkgs_v2/storage/fs/nfs/h/nfs/nfsCommon.h
 const M_nfsStat: ::c_int = 48 << 16;
 enum nfsstat {
-    NFS_OK = 0,
-    NFSERR_PERM = 1,
-    NFSERR_NOENT = 2,
-    NFSERR_IO = 5,
-    NFSERR_NXIO = 6,
-    NFSERR_ACCESS = 13,
-    NFSERR_EXIST = 17,
-    NFSERR_XDEV = 18,
-    NFSERR_NODEV = 19,
-    NFSERR_NOTDIR = 20,
-    NFSERR_ISDIR = 21,
-    NFSERR_INVAL = 22,
-    NFSERR_FBIG = 27,
-    NFSERR_NOSPC = 28,
-    NFSERR_ROFS = 30,
-    NFSERR_MLINK = 31,
-    NFSERR_NAMETOOLONG = 26,
-    NFSERR_NOTEMPTY = 15,
-    NFSERR_DQUOT = 83,
-    NFSERR_STALE = 88,
     NFSERR_REMOTE = 71,
     NFSERR_WFLUSH = 99,
     NFSERR_BADHANDLE = 10001,
     NFSERR_NOT_SYNC = 10002,
     NFSERR_BAD_COOKIE = 10003,
-    NFSERR_NOTSUPP = 45,
     NFSERR_TOOSMALL = 10005,
     NFSERR_BADTYPE = 10007,
     NFSERR_JUKEBOX = 10008,
 }
 
-pub const S_nfsLib_NFS_OK: ::c_int = nfsstat::NFS_OK as ::c_int;
-pub const S_nfsLib_NFSERR_PERM: ::c_int = nfsstat::NFSERR_PERM as ::c_int;
-pub const S_nfsLib_NFSERR_NOENT: ::c_int = nfsstat::NFSERR_NOENT as ::c_int;
-pub const S_nfsLib_NFSERR_IO: ::c_int = nfsstat::NFSERR_IO as ::c_int;
-pub const S_nfsLib_NFSERR_NXIO: ::c_int = nfsstat::NFSERR_NXIO as ::c_int;
-pub const S_nfsLib_NFSERR_ACCESS: ::c_int = nfsstat::NFSERR_ACCESS as ::c_int;
-pub const S_nfsLib_NFSERR_EXIST: ::c_int = nfsstat::NFSERR_EXIST as ::c_int;
-pub const S_nfsLib_NFSERR_XDEV: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_XDEV as ::c_int;
-pub const S_nfsLib_NFSERR_NODEV: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_NODEV as ::c_int;
-pub const S_nfsLib_NFSERR_NOTDIR: ::c_int = nfsstat::NFSERR_NOTDIR as ::c_int;
-pub const S_nfsLib_NFSERR_ISDIR: ::c_int = nfsstat::NFSERR_ISDIR as ::c_int;
-pub const S_nfsLib_NFSERR_INVAL: ::c_int = nfsstat::NFSERR_INVAL as ::c_int;
-pub const S_nfsLib_NFSERR_FBIG: ::c_int = nfsstat::NFSERR_FBIG as ::c_int;
-pub const S_nfsLib_NFSERR_NOSPC: ::c_int = nfsstat::NFSERR_NOSPC as ::c_int;
-pub const S_nfsLib_NFSERR_ROFS: ::c_int = nfsstat::NFSERR_ROFS as ::c_int;
-pub const S_nfsLib_NFSERR_MLINK: ::c_int =
-    M_nfsStat | nfsstat::NFSERR_MLINK as ::c_int;
-pub const S_nfsLib_NFSERR_NAMETOOLONG: ::c_int =
-    nfsstat::NFSERR_NAMETOOLONG as ::c_int;
-pub const S_nfsLib_NFSERR_NOTEMPTY: ::c_int =
-    nfsstat::NFSERR_NOTEMPTY as ::c_int;
-pub const S_nfsLib_NFSERR_DQUOT: ::c_int = nfsstat::NFSERR_DQUOT as ::c_int;
-pub const S_nfsLib_NFSERR_STALE: ::c_int = nfsstat::NFSERR_STALE as ::c_int;
+pub const S_nfsLib_NFS_OK: ::c_int = OK;
+pub const S_nfsLib_NFSERR_PERM: ::c_int = EPERM;
+pub const S_nfsLib_NFSERR_NOENT: ::c_int = ENOENT;
+pub const S_nfsLib_NFSERR_IO: ::c_int = EIO;
+pub const S_nfsLib_NFSERR_NXIO: ::c_int = ENXIO;
+pub const S_nfsLib_NFSERR_ACCESS: ::c_int = EACCES;
+pub const S_nfsLib_NFSERR_EXIST: ::c_int = EEXIST;
+pub const S_nfsLib_NFSERR_ENODEV: ::c_int = ENODEV;
+pub const S_nfsLib_NFSERR_NOTDIR: ::c_int = ENOTDIR;
+pub const S_nfsLib_NFSERR_ISDIR: ::c_int = EISDIR;
+pub const S_nfsLib_NFSERR_INVAL: ::c_int = EINVAL;
+pub const S_nfsLib_NFSERR_FBIG: ::c_int = EFBIG;
+pub const S_nfsLib_NFSERR_NOSPC: ::c_int = ENOSPC;
+pub const S_nfsLib_NFSERR_ROFS: ::c_int = EROFS;
+pub const S_nfsLib_NFSERR_NAMETOOLONG: ::c_int = ENAMETOOLONG;
+pub const S_nfsLib_NFSERR_NOTEMPTY: ::c_int = ENOTEMPTY;
+pub const S_nfsLib_NFSERR_DQUOT: ::c_int = EDQUOT;
+pub const S_nfsLib_NFSERR_STALE: ::c_int = ESTALE;
 pub const S_nfsLib_NFSERR_WFLUSH: ::c_int =
     M_nfsStat | nfsstat::NFSERR_WFLUSH as ::c_int;
 pub const S_nfsLib_NFSERR_REMOTE: ::c_int =
@@ -697,11 +680,10 @@ pub const S_nfsLib_NFSERR_NOT_SYNC: ::c_int =
     M_nfsStat | nfsstat::NFSERR_NOT_SYNC as ::c_int;
 pub const S_nfsLib_NFSERR_BAD_COOKIE: ::c_int =
     M_nfsStat | nfsstat::NFSERR_BAD_COOKIE as ::c_int;
-pub const S_nfsLib_NFSERR_NOTSUPP: ::c_int =
-    nfsstat::NFSERR_NOTSUPP as ::c_int;
+pub const S_nfsLib_NFSERR_NOTSUPP: ::c_int = EOPNOTSUPP;
 pub const S_nfsLib_NFSERR_TOOSMALL: ::c_int =
     M_nfsStat | nfsstat::NFSERR_TOOSMALL as ::c_int;
-pub const S_nfsLib_NFSERR_SERVERFAULT: ::c_int = nfsstat::NFSERR_IO as ::c_int;
+pub const S_nfsLib_NFSERR_SERVERFAULT: ::c_int = EIO;
 pub const S_nfsLib_NFSERR_BADTYPE: ::c_int =
     M_nfsStat | nfsstat::NFSERR_BADTYPE as ::c_int;
 pub const S_nfsLib_NFSERR_JUKEBOX: ::c_int =
@@ -736,7 +718,6 @@ pub const S_IFBLK: ::c_int = 0x6000;
 pub const S_IFREG: ::c_int = 0x8000;
 pub const S_IFLNK: ::c_int = 0xa000;
 pub const S_IFSHM: ::c_int = 0xb000;
-pub const S_IFDEVMEM: ::c_int = 0xd000;
 pub const S_IFSOCK: ::c_int = 0xc000;
 pub const S_ISUID: ::c_int = 0x0800;
 pub const S_ISGID: ::c_int = 0x0400;
@@ -1231,91 +1212,15 @@ extern "C" {
     pub fn getchar_unlocked() -> ::c_int;
     pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
     pub fn stat(path: *const c_char, buf: *mut stat) -> ::c_int;
-    pub fn pclose(stream: *mut ::FILE) -> ::c_int;
     pub fn fdopen(fd: ::c_int, mode: *const c_char) -> *mut ::FILE;
     pub fn fileno(stream: *mut ::FILE) -> ::c_int;
     pub fn creat(path: *const c_char, mode: mode_t) -> ::c_int;
-    pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
     pub fn rewinddir(dirp: *mut ::DIR);
-
-    pub fn openat(
-        dirfd: ::c_int,
-        pathname: *const ::c_char,
-        flags: ::c_int,
-        ...
-    ) -> ::c_int;
-    pub fn fchmodat(
-        dirfd: ::c_int,
-        pathname: *const ::c_char,
-        mode: ::mode_t,
-        flags: ::c_int,
-    ) -> ::c_int;
     pub fn fchown(fd: ::c_int, owner: ::uid_t, group: ::gid_t) -> ::c_int;
-    pub fn fchownat(
-        dirfd: ::c_int,
-        pathname: *const ::c_char,
-        owner: ::uid_t,
-        group: ::gid_t,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn fstatat(
-        dirfd: ::c_int,
-        pathname: *const ::c_char,
-        buf: *mut stat,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn linkat(
-        olddirfd: ::c_int,
-        oldpath: *const ::c_char,
-        newdirfd: ::c_int,
-        newpath: *const ::c_char,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn mkdirat(
-        dirfd: ::c_int,
-        pathname: *const ::c_char,
-        mode: ::mode_t,
-    ) -> ::c_int;
-    pub fn readlinkat(
-        dirfd: ::c_int,
-        pathname: *const ::c_char,
-        buf: *mut ::c_char,
-        bufsiz: ::size_t,
-    ) -> ::ssize_t;
-    pub fn renameat(
-        olddirfd: ::c_int,
-        oldpath: *const ::c_char,
-        newdirfd: ::c_int,
-        newpath: *const ::c_char,
-    ) -> ::c_int;
-    pub fn symlinkat(
-        target: *const ::c_char,
-        newdirfd: ::c_int,
-        linkpath: *const ::c_char,
-    ) -> ::c_int;
-
     pub fn access(path: *const c_char, amode: ::c_int) -> ::c_int;
     pub fn alarm(seconds: ::c_uint) -> ::c_uint;
     pub fn fchdir(dirfd: ::c_int) -> ::c_int;
     pub fn chown(path: *const c_char, uid: uid_t, gid: gid_t) -> ::c_int;
-    pub fn lchown(path: *const c_char, uid: uid_t, gid: gid_t) -> ::c_int;
-    pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> ::c_int;
-    pub fn execle(
-        path: *const ::c_char,
-        arg0: *const ::c_char,
-        ...
-    ) -> ::c_int;
-    pub fn execlp(
-        file: *const ::c_char,
-        arg0: *const ::c_char,
-        ...
-    ) -> ::c_int;
-    pub fn execv(prog: *const c_char, argv: *const *const c_char) -> ::c_int;
-    pub fn execve(
-        prog: *const c_char,
-        argv: *const *const c_char,
-        envp: *const *const c_char,
-    ) -> ::c_int;
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
     pub fn getegid() -> gid_t;
     pub fn geteuid() -> uid_t;
@@ -1330,17 +1235,11 @@ extern "C" {
     pub fn pause() -> ::c_int;
     pub fn seteuid(uid: uid_t) -> ::c_int;
     pub fn setegid(gid: gid_t) -> ::c_int;
-    pub fn setpgid(pid: pid_t, pgid: pid_t) -> ::c_int;
-    pub fn setsid() -> pid_t;
     pub fn sleep(secs: ::c_uint) -> ::c_uint;
-    pub fn tcgetpgrp(fd: ::c_int) -> pid_t;
-    pub fn tcsetpgrp(fd: ::c_int, pgrp: ::pid_t) -> ::c_int;
     pub fn ttyname(fd: ::c_int) -> *mut c_char;
     pub fn wait(status: *mut ::c_int) -> pid_t;
     pub fn umask(mask: mode_t) -> mode_t;
-    pub fn killpg(pgrp: pid_t, sig: ::c_int) -> ::c_int;
     pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
-    pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
     pub fn mlockall(flags: ::c_int) -> ::c_int;
     pub fn munlockall() -> ::c_int;
 
@@ -1353,16 +1252,7 @@ extern "C" {
         offset: off_t,
     ) -> *mut ::c_void;
     pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
-
-    pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
-    pub fn if_indextoname(
-        ifindex: ::c_uint,
-        ifname: *mut ::c_char,
-    ) -> *mut ::c_char;
-
     pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
-
-    pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn pthread_exit(value: *mut ::c_void) -> !;
@@ -1406,8 +1296,6 @@ extern "C" {
     #[link_name = "_rtld_dladdr"]
     pub fn dladdr(addr: *mut ::c_void, info: *mut Dl_info) -> ::c_int;
 
-    pub fn res_init() -> ::c_int;
-
     // time.h
     pub fn gmtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
     pub fn localtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
@@ -1417,14 +1305,7 @@ extern "C" {
     pub fn localtime(time_p: *const time_t) -> *mut tm;
     pub fn timegm(tm: *mut tm) -> time_t;
     pub fn difftime(time1: time_t, time0: time_t) -> ::c_double;
-
-    pub fn mknod(
-        pathname: *const ::c_char,
-        mode: ::mode_t,
-        dev: ::dev_t,
-    ) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
-    pub fn chroot(name: *const ::c_char) -> ::c_int;
     pub fn usleep(secs: ::useconds_t) -> ::c_int;
     pub fn putenv(string: *mut c_char) -> ::c_int;
     pub fn setlocale(
@@ -1439,8 +1320,6 @@ extern "C" {
     ) -> ::c_int;
     pub fn sigpending(set: *mut sigset_t) -> ::c_int;
 
-    pub fn getsid(pid: pid_t) -> pid_t;
-
     pub fn mkfifo(path: *const c_char, mode: mode_t) -> ::c_int;
 
     pub fn fseeko(
@@ -1449,13 +1328,7 @@ extern "C" {
         whence: ::c_int,
     ) -> ::c_int;
     pub fn ftello(stream: *mut ::FILE) -> ::off_t;
-    pub fn tcdrain(fd: ::c_int) -> ::c_int;
-    pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int;
-    pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int;
-    pub fn tcgetsid(fd: ::c_int) -> ::pid_t;
-    pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int;
     pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
-    pub fn mkdtemp(template: *mut ::c_char) -> *mut ::c_char;
 
     pub fn tmpnam(ptr: *mut ::c_char) -> *mut ::c_char;
 
@@ -1463,14 +1336,6 @@ extern "C" {
     pub fn closelog();
     pub fn setlogmask(maskpri: ::c_int) -> ::c_int;
     pub fn syslog(priority: ::c_int, message: *const ::c_char, ...);
-    pub fn nice(incr: ::c_int) -> ::c_int;
-
-    pub fn grantpt(fd: ::c_int) -> ::c_int;
-    pub fn posix_openpt(flags: ::c_int) -> ::c_int;
-    pub fn ptsname(fd: ::c_int) -> *mut ::c_char;
-    pub fn unlockpt(fd: ::c_int) -> ::c_int;
-
-    pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn getline(
         lineptr: *mut *mut c_char,
         n: *mut size_t,
@@ -1871,14 +1736,6 @@ extern "C" {
         protocol: ::c_int,
     ) -> ::c_int;
 
-    pub fn socketpair(
-        // Doesn't exist
-        domain: ::c_int,
-        type_: ::c_int,
-        protocol: ::c_int,
-        socket_vector: *mut ::c_int,
-    ) -> ::c_int;
-
     // icotl.h
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 
@@ -2095,8 +1952,8 @@ extern "C" {
     // pathLib.h
     pub fn _pathIsAbsolute(
         filepath: *const ::c_char,
-        pNameTail: *const *const ::c_char,
-    ) -> bool;
+        pNameTail: *mut *const ::c_char,
+    ) -> BOOL;
 
     pub fn writev(
         fd: ::c_int,
