@@ -6,10 +6,12 @@ steps:
         toolchain=nightly
       fi
       if command -v rustup; then
+        # Uncomment when rustup on Azure is updated
+        #rustup set profile minimal
         rustup update $toolchain
         rustup default $toolchain
       else
-        curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $toolchain
+        curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $toolchain --profile=minimal
         echo "##vso[task.prependpath]$HOME/.cargo/bin"
       fi
     displayName: Install rust (unix)
@@ -17,6 +19,8 @@ steps:
   - script: |
       @echo on
       if not defined TOOLCHAIN set TOOLCHAIN=nightly
+      :: Uncomment when rustup on Azure is updated
+      ::rustup set profile minimal
       rustup update --no-self-update %TOOLCHAIN%-%TARGET%
       rustup default %TOOLCHAIN%-%TARGET%
     displayName: Install rust (windows)
