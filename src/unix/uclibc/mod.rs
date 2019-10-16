@@ -891,6 +891,22 @@ pub const TCP_INFO: ::c_int = 11;
 pub const TCP_QUICKACK: ::c_int = 12;
 pub const TCP_CONGESTION: ::c_int = 13;
 
+// Source:
+// https://github.com/kraj/uClibc/blob/ca1c74d67dd115d059a875150e10b8560a9c35a8
+// /libc/sysdeps/linux/common/bits/in.h
+// Same for all architectures
+pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
+pub const IP_MULTICAST_IF: ::c_int = 32;
+pub const IPV6_MULTICAST_IF: ::c_int = 17;
+pub const IPV6_UNICAST_HOPS: ::c_int = 16;
+
+// Source:
+// https://github.com/kraj/uClibc/tree/ca1c74d67dd115d059a875150e10b8560a9c35a8
+// Same for all architectures
+pub const FUTEX_WAIT: ::c_int = 0;
+pub const FUTEX_PRIVATE_FLAG: ::c_int = 128;
+pub const FUTEX_WAKE: ::c_int = 1;
+
 pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_V6ONLY: ::c_int = 26;
 
