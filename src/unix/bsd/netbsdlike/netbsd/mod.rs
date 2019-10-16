@@ -1669,6 +1669,10 @@ extern "C" {
         name: *const ::c_char,
         arg: *mut ::c_void,
     ) -> ::c_int;
+    pub fn pthread_attr_get_np(
+        thread: ::pthread_t,
+        attr: *mut ::pthread_attr_t,
+    ) -> ::c_int;
     pub fn pthread_getattr_np(
         native: ::pthread_t,
         attr: *mut ::pthread_attr_t,
