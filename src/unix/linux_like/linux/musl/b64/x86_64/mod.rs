@@ -100,7 +100,9 @@ s! {
         pub u_debugreg: [::c_ulong; 8],
     }
 
-    // https://github.com/ifduyue/musl/blob/b4b1e10364c8737a632be61582e05a8d3acf5690/arch/x86_64/bits/signal.h#L80-L84
+    // GitHub repo: ifduyue/musl/
+    // commit: b4b1e10364c8737a632be61582e05a8d3acf5690
+    // file: arch/x86_64/bits/signal.h#L80-L84
     pub struct mcontext_t {
         pub gregs: [greg_t; 23],
         __private: [u64; 9],
@@ -607,7 +609,9 @@ pub const FS: ::c_int = 25;
 pub const GS: ::c_int = 26;
 
 // offsets in mcontext_t.gregs from bits/signal.h
-// https://github.com/ifduyue/musl/blob/b4b1e10364c8737a632be61582e05a8d3acf5690/arch/x86_64/bits/signal.h#L9-L56
+// GitHub repo: ifduyue/musl/
+// commit: b4b1e10364c8737a632be61582e05a8d3acf5690
+// file: arch/x86_64/bits/signal.h#L9-L56
 pub const REG_R8: ::c_int = 0;
 pub const REG_R9: ::c_int = 1;
 pub const REG_R10: ::c_int = 2;
