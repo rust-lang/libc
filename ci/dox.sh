@@ -25,7 +25,7 @@ cargo +nightly install cargo-xbuild -Z install-upgrade
 # shellcheck disable=SC1003
 grep '[\d|\w|-]* \\' ci/build.sh > targets
 sed -i.bak 's/ \\//g' targets
-grep '^[_a-zA-Z0-9-]*$' targets > tmp && mv tmp targets
+grep '^[_a-zA-Z0-9-]*$' targets | sort > tmp && mv tmp targets
 
 # Create a markdown list of supported platforms in $PLATFORM_SUPPORT
 rm $PLATFORM_SUPPORT || true
