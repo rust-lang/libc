@@ -58,7 +58,7 @@ newer Rust features are only available on newer Rust toolchains:
 See
 [`ci/build.sh`](https://github.com/rust-lang/libc/blob/master/ci/build.sh)
 for the platforms on which `libc` is guaranteed to build for each Rust
-toolchain. The test-matrix at [Travis-CI], [Appveyor], and [Cirrus-CI] show the
+toolchain. The test-matrix at [Azure] and [Cirrus-CI] show the
 platforms in which `libc` tests are run.
 
 <div class="platform_docs"></div>
