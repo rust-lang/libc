@@ -92,7 +92,6 @@ mips-unknown-linux-musl \
 mips64-unknown-linux-gnuabi64 \
 mips64el-unknown-linux-gnuabi64 \
 mipsel-unknown-linux-gnu \
-mipsel-unknown-linux-gnu \
 mipsel-unknown-linux-musl \
 powerpc-unknown-linux-gnu \
 powerpc64-unknown-linux-gnu \
