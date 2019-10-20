@@ -837,6 +837,7 @@ extern "C" {
     pub fn getgid() -> gid_t;
     pub fn getgroups(ngroups_max: ::c_int, groups: *mut gid_t) -> ::c_int;
     pub fn getlogin() -> *mut c_char;
+    pub fn getlogin_r(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getopt$UNIX2003"
