@@ -215,7 +215,6 @@ pub const ENOTRECOVERABLE: ::c_int = 127;
 pub const ENOTSOCK: ::c_int = 128;
 pub const ENOTSUP: ::c_int = 129;
 pub const EOPNOTSUPP: ::c_int = 130;
-pub const EOTHER: ::c_int = 131;
 pub const EOVERFLOW: ::c_int = 132;
 pub const EOWNERDEAD: ::c_int = 133;
 pub const EPROTO: ::c_int = 134;
@@ -378,8 +377,6 @@ extern "C" {
         n: size_t,
     ) -> ::size_t;
 
-    pub fn time(destTime: *mut time_t) -> time_t;
-
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
     pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
     pub fn memcpy(
@@ -403,6 +400,8 @@ extern "C" {
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
     pub fn raise(signum: c_int) -> c_int;
 
+    #[link_name = "_time64"]
+    pub fn time(destTime: *mut time_t) -> time_t;
     #[link_name = "_chmod"]
     pub fn chmod(path: *const c_char, mode: ::c_int) -> ::c_int;
     #[link_name = "_wchmod"]
@@ -471,8 +470,11 @@ extern "C" {
     #[link_name = "_lseek"]
     pub fn lseek(fd: ::c_int, offset: c_long, origin: ::c_int) -> c_long;
     #[link_name = "_lseeki64"]
-    pub fn lseek64(fd: ::c_int, offset: c_longlong, origin: ::c_int)
-        -> c_longlong;
+    pub fn lseek64(
+        fd: ::c_int,
+        offset: c_longlong,
+        origin: ::c_int,
+    ) -> c_longlong;
     #[link_name = "_pipe"]
     pub fn pipe(
         fds: *mut ::c_int,
