@@ -20,9 +20,17 @@ run() {
         kvm=""
     fi
 
+    # Emscripten targets require that the user is the same for building and
+    # running the image
+    if [[ "${1}" == *"emscripten" ]]; then
+      user="0"
+    else
+      user="$(id -u):$(id -g)"
+    fi
+
     docker run \
       --rm \
-      --user "$(id -u)":"$(id -g)" \
+      --user "$user" \
       --env LIBC_CI \
       --env CARGO_HOME=/cargo \
       --env CARGO_TARGET_DIR=/checkout/target \

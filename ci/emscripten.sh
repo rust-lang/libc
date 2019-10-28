@@ -30,21 +30,8 @@ exit 1
 
 git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable
 cd /emsdk-portable
-# TODO: switch to an upstream install once
-# https://github.com/rust-lang/rust/pull/63649 lands
-hide_output ./emsdk install 1.38.42
-./emsdk activate 1.38.42
-
-# Compile and cache libc
-# shellcheck disable=SC1091
-source ./emsdk_env.sh
-echo "main(){}" > a.c
-HOME=/emsdk-portable/ emcc a.c
-rm -f a.*
-
-# Make emsdk usable by any user
-cp /root/.emscripten /emsdk-portable
-chmod a+rxw -R /emsdk-portable
+hide_output ./emsdk install 1.38.46-upstream
+./emsdk activate 1.38.46-upstream
 
 # node 8 is required to run wasm
 cd /
