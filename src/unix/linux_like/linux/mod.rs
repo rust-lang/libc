@@ -1692,6 +1692,12 @@ pub const NFNL_SUBSYS_NFTABLES: ::c_int = 10;
 pub const NFNL_SUBSYS_NFT_COMPAT: ::c_int = 11;
 pub const NFNL_SUBSYS_COUNT: ::c_int = 12;
 
+pub const NFNL_BATCH_UNSPEC: ::c_int = 0;
+pub const NFNL_BATCH_GENID: ::c_int = 1;
+
+pub const NFNL_MSG_BATCH_BEGIN: ::c_int = NLMSG_MIN_TYPE;
+pub const NFNL_MSG_BATCH_END: ::c_int = NLMSG_MIN_TYPE + 1;
+
 // linux/netfilter/nfnetlink_log.h
 pub const NFULNL_MSG_PACKET: ::c_int = 0;
 pub const NFULNL_MSG_CONFIG: ::c_int = 1;
