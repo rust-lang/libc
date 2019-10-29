@@ -7,6 +7,7 @@ fn main() {
         rustc_minor_version().expect("Failed to get rustc version");
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
+    let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
 
     if env::var("CARGO_FEATURE_USE_STD").is_ok() {
@@ -71,6 +72,10 @@ fn main() {
     // #[thread_local] is currently unstable
     if rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_thread_local");
+    }
+
+    if const_extern_fn_cargo_feature {
+        println!("cargo:rustc-cfg=libc_const_extern_fn");
     }
 }
 
