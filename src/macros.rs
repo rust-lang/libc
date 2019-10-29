@@ -149,7 +149,7 @@ macro_rules! s_no_extra_traits {
 // 2. Allow users of this macro to mix 'pub fn foo' and 'pub const fn bar' within the same
 // 'f!' block
 cfg_if! {
-    if #[cfg(feature = "const-extern-fn")] {
+    if #[cfg(libc_const_extern_fn)] {
         #[allow(unused_macros)]
         macro_rules! f {
             ($(pub $({$constness:ident})* fn $i:ident(
