@@ -67,6 +67,13 @@ test_target() {
     cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --no-default-features --target "${TARGET}" \
           --features extra_traits
 
+    # Test the 'const-extern-fn' feature on nightly
+    if [ "${RUST}" = "nightly" ]; then
+        cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --no-default-features --target "${TARGET}" \
+          --features const-extern-fn
+    fi
+
+
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --target "${TARGET}" \
