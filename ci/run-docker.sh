@@ -22,7 +22,7 @@ run() {
 
     # Emscripten targets require that the user is the same for building and
     # running the image
-    if [[ "${1}" == *"emscripten" ]]; then
+    if echo "${1}" | grep emscripten > /dev/null; then
       user="0"
     else
       user="$(id -u):$(id -g)"
