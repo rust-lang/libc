@@ -710,6 +710,7 @@ pub const SYS_wait4: ::c_int = 260;
 pub const SYS_waitid: ::c_int = 95;
 pub const SYS_write: ::c_int = 64;
 pub const SYS_writev: ::c_int = 66;
+pub const SYS_statx: ::c_int = 291;
 pub const TCFLSH: ::c_int = 21515;
 pub const TCGETA: ::c_int = 21509;
 pub const TCGETS: ::c_int = 21505;
