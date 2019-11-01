@@ -348,6 +348,11 @@ s! {
         pub d_descriptor: ::c_int,
         pub d_id: ::door_id_t
     }
+
+    pub struct exit_status {
+        e_termination: ::c_short,
+        e_exit: ::c_short,
+    }
 }
 
 s_no_extra_traits! {
@@ -355,6 +360,20 @@ s_no_extra_traits! {
     pub struct epoll_event {
         pub events: u32,
         pub u64: u64,
+    }
+
+    pub struct utmpx {
+        pub ut_user: [::c_char; _UTX_USERSIZE],
+        pub ut_id: [::c_char; _UTX_IDSIZE],
+        pub ut_line: [::c_char; _UTX_LINESIZE],
+        pub ut_pid: ::pid_t,
+        pub ut_type: ::c_short,
+        pub ut_exit: exit_status,
+        pub ut_tv: ::timeval,
+        pub ut_session: ::c_int,
+        pub ut_pad: [::c_int; _UTX_PADSIZE],
+        pub ut_syslen: ::c_short,
+        pub ut_host: [::c_char; _UTX_HOSTSIZE],
     }
 
     pub struct sockaddr_un {
@@ -434,6 +453,62 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for utmpx {
+            fn eq(&self, other: &utmpx) -> bool {
+                self.ut_type == other.ut_type
+                    && self.ut_pid == other.ut_pid
+                    && self.ut_user == other.ut_user
+                    && self.ut_line == other.ut_line
+                    && self.ut_id == other.ut_id
+                    && self.ut_exit == other.ut_exit
+                    && self.ut_session == other.ut_session
+                    && self.ut_tv == other.ut_tv
+                    && self.ut_syslen == other.ut_syslen
+                    && self.ut_pad == other.ut_pad
+                    && self
+                    .ut_host
+                    .iter()
+                    .zip(other.ut_host.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for utmpx {}
+
+        impl ::fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("utmpx")
+                    .field("ut_user", &self.ut_user)
+                    .field("ut_id", &self.ut_id)
+                    .field("ut_line", &self.ut_line)
+                    .field("ut_pid", &self.ut_pid)
+                    .field("ut_type", &self.ut_type)
+                    .field("ut_exit", &self.ut_exit)
+                    .field("ut_tv", &self.ut_tv)
+                    .field("ut_session", &self.ut_session)
+                    .field("ut_pad", &self.ut_pad)
+                    .field("ut_syslen", &self.ut_syslen)
+                    .field("ut_host", &self.ut_host)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for utmpx {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ut_user.hash(state);
+                self.ut_type.hash(state);
+                self.ut_pid.hash(state);
+                self.ut_line.hash(state);
+                self.ut_id.hash(state);
+                self.ut_host.hash(state);
+                self.ut_exit.hash(state);
+                self.ut_session.hash(state);
+                self.ut_tv.hash(state);
+                self.ut_syslen.hash(state);
+                self.ut_pad.hash(state);
+            }
+        }
+
         impl PartialEq for epoll_event {
             fn eq(&self, other: &epoll_event) -> bool {
                 self.events == other.events
@@ -1615,6 +1690,23 @@ pub const PORT_SOURCE_FILE: ::c_int = 7;
 pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
 pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
 
+pub const _UTX_USERSIZE: usize = 32;
+pub const _UTX_LINESIZE: usize = 32;
+pub const _UTX_PADSIZE: usize = 5;
+pub const _UTX_IDSIZE: usize = 4;
+pub const _UTX_HOSTSIZE: usize = 257;
+pub const EMPTY: ::c_short = 0;
+pub const RUN_LVL: ::c_short = 1;
+pub const BOOT_TIME: ::c_short = 2;
+pub const OLD_TIME: ::c_short = 3;
+pub const NEW_TIME: ::c_short = 4;
+pub const INIT_PROCESS: ::c_short = 5;
+pub const LOGIN_PROCESS: ::c_short = 6;
+pub const USER_PROCESS: ::c_short = 7;
+pub const DEAD_PROCESS: ::c_short = 8;
+pub const ACCOUNTING: ::c_short = 9;
+pub const DOWN_TIME: ::c_short = 10;
+
 const _TIOC: ::c_int = ('T' as i32) << 8;
 const tIOC: ::c_int = ('t' as i32) << 8;
 pub const TCGETA: ::c_int = (_TIOC | 1);
@@ -2296,6 +2388,21 @@ extern "C" {
         attributes: door_attr_t,
     ) -> ::c_int;
     pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
+
+    pub fn makeutx(ux: *const utmpx) -> *mut utmpx;
+    pub fn modutx(ux: *const utmpx) -> *mut utmpx;
+    pub fn updwtmpx(file: *const ::c_char, ut: *const utmpx) -> ::c_int;
+    pub fn utmpxname(file: *const ::c_char) -> ::c_int;
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn endutxent();
+    // TODO: uncomment after utmp implementation
+    // pub fn getutmp(ux: *const utmpx, u: *mut utmp);
+    // pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
+    // pub fn updwtmp(file: *const ::c_char, u: *mut utmp);
 }
 
 mod compat;
