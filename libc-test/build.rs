@@ -2325,7 +2325,6 @@ fn test_linux(target: &str) {
             | "IPV6_FLOWINFO_SEND"
             | "IPV6_FLOWINFO_FLOWLABEL"
             | "IPV6_FLOWINFO_PRIORITY"
-
             | "IPV6_ADDRFORM"
             | "IPV6_2292PKTINFO"
             | "IPV6_2292HOPOPTS"
@@ -2618,7 +2617,31 @@ fn test_linux_like_apis(target: &str) {
                 | "IPV6_FLOWLABEL_MGR"
                 | "IPV6_FLOWINFO_SEND"
                 | "IPV6_FLOWINFO_FLOWLABEL"
-                | "IPV6_FLOWINFO_PRIORITY" => false,
+                | "IPV6_FLOWINFO_PRIORITY"
+                | "IPV6_ADDRFORM"
+                | "IPV6_2292PKTINFO"
+                | "IPV6_2292HOPOPTS"
+                | "IPV6_2292DSTOPTS"
+                | "IPV6_2292RTHDR"
+                | "IPV6_2292PKTOPTIONS"
+                | "IPV6_CHECKSUM"
+                | "IPV6_2292HOPLIMIT"
+                | "IPV6_NEXTHOP"
+                | "IPV6_UNICAST_HOPS"
+                | "IPV6_MULTICAST_IF"
+                | "IPV6_MULTICAST_HOPS"
+                | "IPV6_MULTICAST_LOOP"
+                | "IPV6_ADD_MEMBERSHIP"
+                | "IPV6_DROP_MEMBERSHIP"
+                | "IPV6_ROUTER_ALERT"
+                | "IPV6_MTU_DISCOVER"
+                | "IPV6_MTU"
+                | "IPV6_RECVERR"
+                | "IPV6_V6ONLY"
+                | "IPV6_JOIN_ANYCAST"
+                | "IPV6_LEAVE_ANYCAST"
+                | "IPV6_MULTICAST_ALL"
+                | "IPV6_ROUTER_ALERT_ISOLATE" => false,
                 _ => true,
             })
             .type_name(move |ty, is_struct, is_union| match ty {
