@@ -834,7 +834,6 @@ pub const IPV6_RECVERR: ::c_int = 25;
 pub const IPV6_V6ONLY: ::c_int = 26;
 pub const IPV6_JOIN_ANYCAST: ::c_int = 27;
 pub const IPV6_LEAVE_ANYCAST: ::c_int = 28;
-pub const IPV6_MULTICAST_ALL: ::c_int = 29;
 pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
 pub const IPV6_RECVTCLASS: ::c_int = 66;
