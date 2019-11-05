@@ -2640,8 +2640,7 @@ fn test_linux_like_apis(target: &str) {
                 | "IPV6_V6ONLY"
                 | "IPV6_JOIN_ANYCAST"
                 | "IPV6_LEAVE_ANYCAST"
-                | "IPV6_MULTICAST_ALL"
-                | "IPV6_ROUTER_ALERT_ISOLATE" => false,
+                | "IPV6_MULTICAST_ALL" => false,
                 _ => true,
             })
             .type_name(move |ty, is_struct, is_union| match ty {
