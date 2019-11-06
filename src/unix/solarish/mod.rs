@@ -1010,6 +1010,7 @@ pub const MAP_PRIVATE: ::c_int = 0x0002;
 pub const MAP_FIXED: ::c_int = 0x0010;
 pub const MAP_NORESERVE: ::c_int = 0x40;
 pub const MAP_ANON: ::c_int = 0x0100;
+pub const MAP_ANONYMOUS: ::c_int = 0x0100;
 pub const MAP_RENAME: ::c_int = 0x20;
 pub const MAP_ALIGN: ::c_int = 0x200;
 pub const MAP_TEXT: ::c_int = 0x400;
