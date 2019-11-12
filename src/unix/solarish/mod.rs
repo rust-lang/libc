@@ -2296,6 +2296,10 @@ extern "C" {
         attributes: door_attr_t,
     ) -> ::c_int;
     pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
+
+#[cfg_attr(any(target_os = "solaris"))]
+    pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
+
 }
 
 mod compat;
