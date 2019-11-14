@@ -1803,6 +1803,11 @@ pub const VLNEXT: usize = 15;
 pub const VSTATUS: usize = 16;
 pub const VERASE2: usize = 17;
 
+// 3SOCKET flags
+pub const SOCK_CLOEXEC: ::c_int = 0x080000;
+pub const SOCK_NONBLOCK: ::c_int = 0x100000;
+pub const SOCK_NDELAY: ::c_int = 0x200000;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
