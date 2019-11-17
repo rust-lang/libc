@@ -1674,7 +1674,6 @@ pub const NFNLGRP_CONNTRACK_EXP_UPDATE: ::c_int = 5;
 pub const NFNLGRP_CONNTRACK_EXP_DESTROY: ::c_int = 6;
 pub const NFNLGRP_NFTABLES: ::c_int = 7;
 pub const NFNLGRP_ACCT_QUOTA: ::c_int = 8;
-pub const NFNLGRP_NFTRACE: ::c_int = 9;
 
 pub const NFNETLINK_V0: ::c_int = 0;
 
@@ -1691,9 +1690,6 @@ pub const NFNL_SUBSYS_CTHELPER: ::c_int = 9;
 pub const NFNL_SUBSYS_NFTABLES: ::c_int = 10;
 pub const NFNL_SUBSYS_NFT_COMPAT: ::c_int = 11;
 pub const NFNL_SUBSYS_COUNT: ::c_int = 12;
-
-pub const NFNL_BATCH_UNSPEC: ::c_int = 0;
-pub const NFNL_BATCH_GENID: ::c_int = 1;
 
 pub const NFNL_MSG_BATCH_BEGIN: ::c_int = NLMSG_MIN_TYPE;
 pub const NFNL_MSG_BATCH_END: ::c_int = NLMSG_MIN_TYPE + 1;
