@@ -9,6 +9,7 @@ pub type mqd_t = ::c_int;
 type __pthread_spin_t = __cpu_simple_lock_nv_t;
 pub type vm_size_t = ::uintptr_t;
 pub type lwpid_t = ::c_uint;
+pub type shmatt_t = ::c_uint;
 
 impl siginfo_t {
     pub unsafe fn si_value(&self) -> ::sigval {
@@ -280,6 +281,18 @@ s! {
     pub struct mmsghdr {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        _shm_internal: *mut ::c_void,
     }
 }
 

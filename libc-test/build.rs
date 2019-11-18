@@ -322,6 +322,7 @@ fn test_openbsd(target: &str) {
         "ufs/ufs/quota.h",
         "pthread_np.h",
         "sys/syscall.h",
+        "sys/shm.h",
     }
 
     cfg.skip_struct(move |ty| {
@@ -818,6 +819,7 @@ fn test_netbsd(target: &str) {
         "netinet/dccp.h",
         "sys/event.h",
         "sys/quota.h",
+        "sys/shm.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
