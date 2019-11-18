@@ -585,7 +585,7 @@ cfg_if! {
                     .field("tcpi_wscale", &self.tcpi_wscale)
                     .field(
                         "tcpi_delivery_rate_app_limited",
-                        &self.tcpi_delivery_rate_app_limited,
+                        &(self.tcpi_delivery_rate_app_limited & 1),
                     )
                     .field("tcpi_rto", &self.tcpi_rto)
                     .field("tcpi_ato", &self.tcpi_ato)
@@ -645,7 +645,7 @@ cfg_if! {
                 self.tcpi_backoff.hash(state);
                 self.tcpi_options.hash(state);
                 self.tcpi_wscale.hash(state);
-                self.tcpi_delivery_rate_app_limited.hash(state);
+                (self.tcpi_delivery_rate_app_limited & 1).hash(state);
                 self.tcpi_rto.hash(state);
                 self.tcpi_ato.hash(state);
                 self.tcpi_snd_mss.hash(state);
