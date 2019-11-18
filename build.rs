@@ -3,10 +3,12 @@ use std::process::Command;
 use std::str;
 
 fn main() {
-    let rustc_minor_ver =
-        rustc_minor_version().expect("Failed to get rustc version");
+    let (rustc_minor_ver, is_nightly) =
+        rustc_minor_nightly().expect("Failed to get rustc version");
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
+    let const_extern_fn_cargo_feature =
+        env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
 
     if env::var("CARGO_FEATURE_USE_STD").is_ok() {
@@ -72,9 +74,16 @@ fn main() {
     if rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_thread_local");
     }
+
+    if const_extern_fn_cargo_feature {
+        if !is_nightly || rustc_minor_ver < 40 {
+            panic!("const-extern-fn requires a nightly compiler >= 1.40")
+        }
+        println!("cargo:rustc-cfg=libc_const_extern_fn");
+    }
 }
 
-fn rustc_minor_version() -> Option<u32> {
+fn rustc_minor_nightly() -> Option<(u32, bool)> {
     macro_rules! otry {
         ($e:expr) => {
             match $e {
@@ -93,7 +102,13 @@ fn rustc_minor_version() -> Option<u32> {
         return None;
     }
 
-    otry!(pieces.next()).parse().ok()
+    let minor = pieces.next();
+    let nightly_raw = otry!(otry!(pieces.next()).split('-').nth(1));
+    let nightly =
+        nightly_raw.starts_with("dev") || nightly_raw.starts_with("nightly");
+    let minor = otry!(otry!(minor).parse().ok());
+
+    Some((minor, nightly))
 }
 
 fn which_freebsd() -> Option<i32> {

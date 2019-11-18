@@ -35,6 +35,9 @@ libc = "0.2"
 * `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
   This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
 
+* `const-extern-fn`: Changes some `extern fn`s into `const extern fn`s.
+   This features requires a nightly rustc
+
 * **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
 
 ## Rust version support
