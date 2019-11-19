@@ -183,6 +183,48 @@ pub const ENOTEMPTY: ::c_int = 41;
 pub const EILSEQ: ::c_int = 42;
 pub const STRUNCATE: ::c_int = 80;
 
+// POSIX Supplement (from errno.h)
+pub const EADDRINUSE: ::c_int = 100;
+pub const EADDRNOTAVAIL: ::c_int = 101;
+pub const EAFNOSUPPORT: ::c_int = 102;
+pub const EALREADY: ::c_int = 103;
+pub const EBADMSG: ::c_int = 104;
+pub const ECANCELED: ::c_int = 105;
+pub const ECONNABORTED: ::c_int = 106;
+pub const ECONNREFUSED: ::c_int = 107;
+pub const ECONNRESET: ::c_int = 108;
+pub const EDESTADDRREQ: ::c_int = 109;
+pub const EHOSTUNREACH: ::c_int = 110;
+pub const EIDRM: ::c_int = 111;
+pub const EINPROGRESS: ::c_int = 112;
+pub const EISCONN: ::c_int = 113;
+pub const ELOOP: ::c_int = 114;
+pub const EMSGSIZE: ::c_int = 115;
+pub const ENETDOWN: ::c_int = 116;
+pub const ENETRESET: ::c_int = 117;
+pub const ENETUNREACH: ::c_int = 118;
+pub const ENOBUFS: ::c_int = 119;
+pub const ENODATA: ::c_int = 120;
+pub const ENOLINK: ::c_int = 121;
+pub const ENOMSG: ::c_int = 122;
+pub const ENOPROTOOPT: ::c_int = 123;
+pub const ENOSR: ::c_int = 124;
+pub const ENOSTR: ::c_int = 125;
+pub const ENOTCONN: ::c_int = 126;
+pub const ENOTRECOVERABLE: ::c_int = 127;
+pub const ENOTSOCK: ::c_int = 128;
+pub const ENOTSUP: ::c_int = 129;
+pub const EOPNOTSUPP: ::c_int = 130;
+pub const EOVERFLOW: ::c_int = 132;
+pub const EOWNERDEAD: ::c_int = 133;
+pub const EPROTO: ::c_int = 134;
+pub const EPROTONOSUPPORT: ::c_int = 135;
+pub const EPROTOTYPE: ::c_int = 136;
+pub const ETIME: ::c_int = 137;
+pub const ETIMEDOUT: ::c_int = 138;
+pub const ETXTBSY: ::c_int = 139;
+pub const EWOULDBLOCK: ::c_int = 140;
+
 // signal codes
 pub const SIGINT: ::c_int = 2;
 pub const SIGILL: ::c_int = 4;
@@ -358,6 +400,8 @@ extern "C" {
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
     pub fn raise(signum: c_int) -> c_int;
 
+    #[link_name = "_time64"]
+    pub fn time(destTime: *mut time_t) -> time_t;
     #[link_name = "_chmod"]
     pub fn chmod(path: *const c_char, mode: ::c_int) -> ::c_int;
     #[link_name = "_wchmod"]
@@ -425,6 +469,12 @@ extern "C" {
     pub fn isatty(fd: ::c_int) -> ::c_int;
     #[link_name = "_lseek"]
     pub fn lseek(fd: ::c_int, offset: c_long, origin: ::c_int) -> c_long;
+    #[link_name = "_lseeki64"]
+    pub fn lseek64(
+        fd: ::c_int,
+        offset: c_longlong,
+        origin: ::c_int,
+    ) -> c_longlong;
     #[link_name = "_pipe"]
     pub fn pipe(
         fds: *mut ::c_int,
