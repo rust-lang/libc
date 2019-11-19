@@ -1907,9 +1907,9 @@ extern "C" {
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
     pub fn setutxent();
     pub fn endutxent();
-    // TODO: uncomment after utmp implementation
-    // pub fn getutmp(ux: *const utmpx, u: *mut utmp);
-    // pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
+// TODO: uncomment after utmp implementation
+// pub fn getutmp(ux: *const utmpx, u: *mut utmp);
+// pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
 }
 
 cfg_if! {
