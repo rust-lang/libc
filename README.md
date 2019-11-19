@@ -1,4 +1,4 @@
-[![Azure Status]][Azure] [![Cirrus-CI Status]][Cirrus-CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
+[![Azure Status]][Azure] [![Cirrus CI Status]][Cirrus CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
 
 libc - Raw FFI bindings to platforms' system libraries
 ====
@@ -35,6 +35,9 @@ libc = "0.2"
 * `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
   This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
 
+* `const-extern-fn`: Changes some `extern fn`s into `const extern fn`s.
+   This features requires a nightly rustc
+
 * **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
 
 ## Rust version support
@@ -47,9 +50,9 @@ newer Rust features are only available on newer Rust toolchains:
 | `union`              |  1.19.0 |
 | `const mem::size_of` |  1.24.0 |
 | `repr(align)`        |  1.25.0 |
-| `extra_traits`      |  1.25.0 |
+| `extra_traits`       |  1.25.0 |
 | `core::ffi::c_void`  |  1.30.0 |
-| `repr(packed(N))` |  1.33.0 |
+| `repr(packed(N))`    |  1.33.0 |
 
 ## Platform support
 
@@ -58,7 +61,7 @@ newer Rust features are only available on newer Rust toolchains:
 See
 [`ci/build.sh`](https://github.com/rust-lang/libc/blob/master/ci/build.sh)
 for the platforms on which `libc` is guaranteed to build for each Rust
-toolchain. The test-matrix at [Azure] and [Cirrus-CI] show the
+toolchain. The test-matrix at [Azure] and [Cirrus CI] show the
 platforms in which `libc` tests are run.
 
 <div class="platform_docs"></div>
@@ -67,10 +70,10 @@ platforms in which `libc` tests are run.
 
 This project is licensed under either of
 
-* [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
   ([LICENSE-APACHE](LICENSE-APACHE))
 
-* [MIT License](http://opensource.org/licenses/MIT)
+* [MIT License](https://opensource.org/licenses/MIT)
   ([LICENSE-MIT](LICENSE-MIT))
 
 at your option.
@@ -85,7 +88,7 @@ instructions] for more information.
 Contributions in any form (issues, pull requests, etc.) to this project
 must adhere to Rust's [Code of Conduct].
 
-[Code of Conduct]: https://www.rust-lang.org/en-US/conduct.html
+[Code of Conduct]: https://www.rust-lang.org/policies/code-of-conduct
 
 Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in `libc` by you, as defined in the Apache-2.0 license, shall be
@@ -93,8 +96,8 @@ dual licensed as above, without any additional terms or conditions.
 
 [Azure Status]: https://dev.azure.com/rust-lang2/libc/_apis/build/status/rust-lang.libc?branchName=master
 [Azure]: https://dev.azure.com/rust-lang2/libc/_build/latest?definitionId=1&branchName=master
-[Cirrus-CI]: https://cirrus-ci.com/github/rust-lang/libc
-[Cirrus-CI Status]: https://api.cirrus-ci.com/github/rust-lang/libc.svg
+[Cirrus CI]: https://cirrus-ci.com/github/rust-lang/libc
+[Cirrus CI Status]: https://api.cirrus-ci.com/github/rust-lang/libc.svg
 [crates.io]: https://crates.io/crates/libc
 [Latest Version]: https://img.shields.io/crates/v/libc.svg
 [Documentation]: https://docs.rs/libc/badge.svg

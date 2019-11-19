@@ -10,6 +10,7 @@ pub type nl_item = c_long;
 pub type clockid_t = ::c_int;
 pub type id_t = u32;
 pub type sem_t = *mut sem;
+pub type key_t = c_long;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -62,6 +63,16 @@ s! {
         pub l_pid: ::pid_t,
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
+    }
+
+    pub struct ipc_perm {
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub mode: ::mode_t,
+        pub seq: ::c_ushort,
+        pub key: ::key_t,
     }
 }
 
@@ -199,8 +210,19 @@ pub const MAP_SHARED: ::c_int = 0x0001;
 pub const MAP_PRIVATE: ::c_int = 0x0002;
 pub const MAP_FIXED: ::c_int = 0x0010;
 pub const MAP_ANON: ::c_int = 0x1000;
+pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
+
+pub const IPC_CREAT: ::c_int = 0o001000;
+pub const IPC_EXCL: ::c_int = 0o002000;
+pub const IPC_NOWAIT: ::c_int = 0o004000;
+
+pub const IPC_PRIVATE: ::key_t = 0;
+
+pub const IPC_RMID: ::c_int = 0;
+pub const IPC_SET: ::c_int = 1;
+pub const IPC_STAT: ::c_int = 2;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
@@ -715,6 +737,19 @@ extern "C" {
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+
+    pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
+    pub fn shmat(
+        shmid: ::c_int,
+        shmaddr: *const ::c_void,
+        shmflg: ::c_int,
+    ) -> *mut ::c_void;
+    pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
+    pub fn shmctl(
+        shmid: ::c_int,
+        cmd: ::c_int,
+        buf: *mut ::shmid_ds,
+    ) -> ::c_int;
 }
 
 cfg_if! {

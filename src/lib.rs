@@ -34,6 +34,7 @@
 #![no_std]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 #![cfg_attr(target_os = "redox", feature(static_nobundle))]
+#![cfg_attr(libc_const_extern_fn, feature(const_extern_fn))]
 
 #[macro_use]
 mod macros;

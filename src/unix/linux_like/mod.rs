@@ -1165,8 +1165,10 @@ pub const ARPHRD_IEEE802154: u16 = 804;
 pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
-fn CMSG_ALIGN(len: usize) -> usize {
-    len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
+const_fn! {
+    {const} fn CMSG_ALIGN(len: usize) -> usize {
+        len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
+    }
 }
 
 f! {
@@ -1182,7 +1184,7 @@ f! {
         cmsg.offset(1) as *mut ::c_uchar
     }
 
-    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
             as ::c_uint
     }
@@ -1458,6 +1460,10 @@ extern "C" {
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
+    #[deprecated(
+        since = "0.2.66",
+        note = "causes memory corruption, see rust-lang/libc#1596"
+    )]
     pub fn vfork() -> ::pid_t;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;

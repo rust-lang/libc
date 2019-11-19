@@ -261,6 +261,12 @@ s! {
         pub c_ispeed: ::speed_t,
         pub c_ospeed: ::speed_t,
     }
+
+    pub struct ip_mreqn {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_address: ::in_addr,
+        pub imr_ifindex: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
