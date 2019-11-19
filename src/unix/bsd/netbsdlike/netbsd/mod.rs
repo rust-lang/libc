@@ -283,7 +283,6 @@ s! {
         pub msg_len: ::c_uint,
     }
 
-
     pub struct __exit_status {
         pub e_termination: u16,
         pub e_exit: u16,
