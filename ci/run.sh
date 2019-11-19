@@ -5,7 +5,7 @@
 
 set -ex
 
-MIRRORS_URL="https://rust-lang-ci-mirrors.s3-us-west-1.amazonaws.com/libc"
+MIRRORS_URL="https://ci-mirrors.rust-lang.org/libc"
 
 TARGET="${1}"
 
