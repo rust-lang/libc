@@ -1309,6 +1309,83 @@ pub const NLMSG_DONE: ::c_int = 0x3;
 pub const NLMSG_OVERRUN: ::c_int = 0x4;
 pub const NLMSG_MIN_TYPE: ::c_int = 0x10;
 
+// linux/netfilter/nfnetlink.h
+pub const NFNLGRP_NONE: ::c_int = 0;
+pub const NFNLGRP_CONNTRACK_NEW: ::c_int = 1;
+pub const NFNLGRP_CONNTRACK_UPDATE: ::c_int = 2;
+pub const NFNLGRP_CONNTRACK_DESTROY: ::c_int = 3;
+pub const NFNLGRP_CONNTRACK_EXP_NEW: ::c_int = 4;
+pub const NFNLGRP_CONNTRACK_EXP_UPDATE: ::c_int = 5;
+pub const NFNLGRP_CONNTRACK_EXP_DESTROY: ::c_int = 6;
+pub const NFNLGRP_NFTABLES: ::c_int = 7;
+pub const NFNLGRP_ACCT_QUOTA: ::c_int = 8;
+
+pub const NFNETLINK_V0: ::c_int = 0;
+
+pub const NFNL_SUBSYS_NONE: ::c_int = 0;
+pub const NFNL_SUBSYS_CTNETLINK: ::c_int = 1;
+pub const NFNL_SUBSYS_CTNETLINK_EXP: ::c_int = 2;
+pub const NFNL_SUBSYS_QUEUE: ::c_int = 3;
+pub const NFNL_SUBSYS_ULOG: ::c_int = 4;
+pub const NFNL_SUBSYS_OSF: ::c_int = 5;
+pub const NFNL_SUBSYS_IPSET: ::c_int = 6;
+pub const NFNL_SUBSYS_ACCT: ::c_int = 7;
+pub const NFNL_SUBSYS_CTNETLINK_TIMEOUT: ::c_int = 8;
+pub const NFNL_SUBSYS_CTHELPER: ::c_int = 9;
+pub const NFNL_SUBSYS_NFTABLES: ::c_int = 10;
+pub const NFNL_SUBSYS_NFT_COMPAT: ::c_int = 11;
+pub const NFNL_SUBSYS_COUNT: ::c_int = 12;
+
+pub const NFNL_MSG_BATCH_BEGIN: ::c_int = NLMSG_MIN_TYPE;
+pub const NFNL_MSG_BATCH_END: ::c_int = NLMSG_MIN_TYPE + 1;
+
+// linux/netfilter/nfnetlink_log.h
+pub const NFULNL_MSG_PACKET: ::c_int = 0;
+pub const NFULNL_MSG_CONFIG: ::c_int = 1;
+
+pub const NFULA_UNSPEC: ::c_int = 0;
+pub const NFULA_PACKET_HDR: ::c_int = 1;
+pub const NFULA_MARK: ::c_int = 2;
+pub const NFULA_TIMESTAMP: ::c_int = 3;
+pub const NFULA_IFINDEX_INDEV: ::c_int = 4;
+pub const NFULA_IFINDEX_OUTDEV: ::c_int = 5;
+pub const NFULA_IFINDEX_PHYSINDEV: ::c_int = 6;
+pub const NFULA_IFINDEX_PHYSOUTDEV: ::c_int = 7;
+pub const NFULA_HWADDR: ::c_int = 8;
+pub const NFULA_PAYLOAD: ::c_int = 9;
+pub const NFULA_PREFIX: ::c_int = 10;
+pub const NFULA_UID: ::c_int = 11;
+pub const NFULA_SEQ: ::c_int = 12;
+pub const NFULA_SEQ_GLOBAL: ::c_int = 13;
+pub const NFULA_GID: ::c_int = 14;
+pub const NFULA_HWTYPE: ::c_int = 15;
+pub const NFULA_HWHEADER: ::c_int = 16;
+pub const NFULA_HWLEN: ::c_int = 17;
+pub const NFULA_CT: ::c_int = 18;
+pub const NFULA_CT_INFO: ::c_int = 19;
+
+pub const NFULNL_CFG_CMD_NONE: ::c_int = 0;
+pub const NFULNL_CFG_CMD_BIND: ::c_int = 1;
+pub const NFULNL_CFG_CMD_UNBIND: ::c_int = 2;
+pub const NFULNL_CFG_CMD_PF_BIND: ::c_int = 3;
+pub const NFULNL_CFG_CMD_PF_UNBIND: ::c_int = 4;
+
+pub const NFULA_CFG_UNSPEC: ::c_int = 0;
+pub const NFULA_CFG_CMD: ::c_int = 1;
+pub const NFULA_CFG_MODE: ::c_int = 2;
+pub const NFULA_CFG_NLBUFSIZ: ::c_int = 3;
+pub const NFULA_CFG_TIMEOUT: ::c_int = 4;
+pub const NFULA_CFG_QTHRESH: ::c_int = 5;
+pub const NFULA_CFG_FLAGS: ::c_int = 6;
+
+pub const NFULNL_COPY_NONE: ::c_int = 0x00;
+pub const NFULNL_COPY_META: ::c_int = 0x01;
+pub const NFULNL_COPY_PACKET: ::c_int = 0x02;
+
+pub const NFULNL_CFG_F_SEQ: ::c_int = 0x0001;
+pub const NFULNL_CFG_F_SEQ_GLOBAL: ::c_int = 0x0002;
+pub const NFULNL_CFG_F_CONNTRACK: ::c_int = 0x0004;
+
 pub const GENL_NAMSIZ: ::c_int = 16;
 
 pub const GENL_MIN_ID: ::c_int = NLMSG_MIN_TYPE;
