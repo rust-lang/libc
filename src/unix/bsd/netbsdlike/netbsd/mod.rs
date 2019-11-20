@@ -428,7 +428,11 @@ cfg_if! {
                     && self.ut_session == other.ut_session
                     && self.ut_tv == other.ut_tv
                     && self.ut_ss == other.ut_ss
-                    && self.ut_pad == other.ut_pad
+                    && self
+                    .ut_pad
+                    .iter()
+                    .zip(other.ut_pad.iter())
+                    .all(|(a,b)| a == b)
                     && self
                     .ut_host
                     .iter()
