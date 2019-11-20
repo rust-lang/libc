@@ -2230,6 +2230,9 @@ fn test_linux(target: &str) {
 
             t if t.ends_with("_t") => t.to_string(),
 
+            // This is either a struct or a typedef to a struct
+            "flock64" if musl => format!("struct {}", ty),
+
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
 
