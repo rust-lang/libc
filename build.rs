@@ -103,9 +103,16 @@ fn rustc_minor_nightly() -> Option<(u32, bool)> {
     }
 
     let minor = pieces.next();
-    let nightly_raw = otry!(otry!(pieces.next()).split('-').nth(1));
-    let nightly =
-        nightly_raw.starts_with("dev") || nightly_raw.starts_with("nightly");
+
+    // If `rustc` was built from a tarball, its version string
+    // will have neither a git hash nor a commit date
+    // (e.g. "rustc 1.39.0"). Treat this case as non-nightly,
+    // since a nightly build should either come from CI
+    // or a git checkout
+    let nightly_raw = otry!(pieces.next()).split('-').nth(1);
+    let nightly = nightly_raw
+        .map(|raw| raw.starts_with("dev") || raw.starts_with("nightly"))
+        .unwrap_or(false);
     let minor = otry!(otry!(minor).parse().ok());
 
     Some((minor, nightly))
