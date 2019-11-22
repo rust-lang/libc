@@ -220,6 +220,9 @@ s! {
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
         pub shm_segsz: ::size_t,
+        #[cfg(target_os = "illumos")]
+        pub shm_amp: *mut ::c_void,
+        #[cfg(target_os = "solaris")]
         pub shm_flags: ::uintptr_t,
         pub shm_lkcnt: ::c_ushort,
         pub shm_lpid: ::pid_t,
@@ -229,9 +232,15 @@ s! {
         pub shm_atime: ::time_t,
         pub shm_dtime: ::time_t,
         pub shm_ctime: ::time_t,
+        #[cfg(target_os = "illumos")]
+        pub shm_pad4: [i64; 4],
+        #[cfg(target_os = "solaris")]
         pub shm_amp: *mut ::c_void,
+        #[cfg(target_os = "solaris")]
         pub shm_gransize: u64,
+        #[cfg(target_os = "solaris")]
         pub shm_allocated: u64,
+        #[cfg(target_os = "solaris")]
         pub shm_pad4: [i64; 1],
     }
 
