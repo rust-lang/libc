@@ -914,8 +914,10 @@ pub const SYS_mlock2: ::c_long = 376;
 pub const SYS_copy_file_range: ::c_long = 377;
 pub const SYS_preadv2: ::c_long = 378;
 pub const SYS_pwritev2: ::c_long = 379;
-// FIXME syscalls 380-382 have been added in musl 1.16
-// See discussion https://github.com/rust-lang/libc/pull/699
+pub const SYS_pkey_mprotect: ::c_long = 380;
+pub const SYS_pkey_alloc: ::c_long = 381;
+pub const SYS_pkey_free: ::c_long = 382;
+pub const SYS_statx: ::c_long = 383;
 
 // offsets in user_regs_structs, from sys/reg.h
 pub const EBX: ::c_int = 0;

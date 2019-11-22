@@ -993,6 +993,7 @@ pub const SYS_chown: ::c_long = 212;
 pub const SYS_setfsuid: ::c_long = 215;
 pub const SYS_setfsgid: ::c_long = 216;
 pub const SYS_newfstatat: ::c_long = 293;
+pub const SYS_statx: ::c_long = 379;
 
 #[link(name = "util")]
 extern "C" {
