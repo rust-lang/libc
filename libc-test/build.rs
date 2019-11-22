@@ -2471,6 +2471,7 @@ fn test_linux(target: &str) {
             true
         }
         "ipv6_mreq"
+        | "ip_mreq_source"
         | "sockaddr_in6"
         | "sockaddr_ll"
         | "in_pktinfo"
