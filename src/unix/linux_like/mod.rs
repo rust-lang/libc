@@ -820,6 +820,7 @@ pub const IPV6_2292PKTOPTIONS: ::c_int = 6;
 pub const IPV6_CHECKSUM: ::c_int = 7;
 pub const IPV6_2292HOPLIMIT: ::c_int = 8;
 pub const IPV6_NEXTHOP: ::c_int = 9;
+pub const IPV6_FLOWINFO: ::c_int = 11;
 pub const IPV6_UNICAST_HOPS: ::c_int = 16;
 pub const IPV6_MULTICAST_IF: ::c_int = 17;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
