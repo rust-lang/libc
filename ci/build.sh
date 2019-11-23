@@ -220,6 +220,7 @@ nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \
 powerpc64-unknown-freebsd \
+riscv64gc-unknown-linux-gnu \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 sparc64-unknown-netbsd \
