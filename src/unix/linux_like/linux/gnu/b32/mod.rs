@@ -262,6 +262,9 @@ cfg_if! {
     } else if #[cfg(target_arch = "powerpc")] {
         mod powerpc;
         pub use self::powerpc::*;
+    } else if #[cfg(target_arch = "sparc")] {
+        mod sparc;
+        pub use self::sparc::*;
     } else {
         // Unknown target_arch
     }

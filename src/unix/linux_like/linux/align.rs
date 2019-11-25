@@ -62,6 +62,7 @@ macro_rules! expand_align {
                                target_arch = "arm",
                                target_arch = "hexagon",
                                target_arch = "powerpc",
+                               target_arch = "sparc",
                                target_arch = "x86_64",
                                target_arch = "x86")),
                        repr(align(4)))]
@@ -70,6 +71,7 @@ macro_rules! expand_align {
                                    target_arch = "arm",
                                    target_arch = "hexagon",
                                    target_arch = "powerpc",
+                                   target_arch = "sparc",
                                    target_arch = "x86_64",
                                    target_arch = "x86"))),
                        repr(align(8)))]
@@ -83,6 +85,7 @@ macro_rules! expand_align {
                                target_arch = "arm",
                                target_arch = "hexagon",
                                target_arch = "powerpc",
+                               target_arch = "sparc",
                                target_arch = "x86_64",
                                target_arch = "x86")),
                        repr(align(4)))]
@@ -91,6 +94,7 @@ macro_rules! expand_align {
                                    target_arch = "arm",
                                    target_arch = "hexagon",
                                    target_arch = "powerpc",
+                                   target_arch = "sparc",
                                    target_arch = "x86_64",
                                    target_arch = "x86"))),
                        repr(align(8)))]
