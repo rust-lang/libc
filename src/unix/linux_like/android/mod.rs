@@ -1490,11 +1490,11 @@ pub const IP_ORIGDSTADDR: ::c_int = 20;
 pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
 pub const IPV6_ORIGDSTADDR: ::c_int = 74;
 pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
-pub const IPV6_FLOWINFO: ::c_int = 11;
 pub const IPV6_FLOWLABEL_MGR: ::c_int = 32;
 pub const IPV6_FLOWINFO_SEND: ::c_int = 33;
 pub const IPV6_FLOWINFO_FLOWLABEL: ::c_int = 0x000fffff;
 pub const IPV6_FLOWINFO_PRIORITY: ::c_int = 0x0ff00000;
+
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
