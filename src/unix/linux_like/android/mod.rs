@@ -22,6 +22,8 @@ pub type ino_t = ::c_ulong;
 pub type __CPU_BITTYPE = ::c_ulong;
 pub type idtype_t = ::c_int;
 pub type loff_t = ::c_longlong;
+pub type __kernel_loff_t = ::c_longlong;
+pub type __kernel_pid_t = ::c_int;
 
 s! {
     pub struct stack_t {
@@ -76,6 +78,14 @@ s! {
         pub l_start: ::off_t,
         pub l_len: ::off_t,
         pub l_pid: ::pid_t,
+    }
+
+    pub struct flock64 {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::__kernel_loff_t,
+        pub l_len: ::__kernel_loff_t,
+        pub l_pid: ::__kernel_pid_t,
     }
 
     pub struct cpu_set_t {

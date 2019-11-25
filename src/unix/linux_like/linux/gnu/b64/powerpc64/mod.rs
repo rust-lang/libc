@@ -45,6 +45,14 @@ s! {
         pub l_pid: ::pid_t,
     }
 
+    pub struct flock64 {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off64_t,
+        pub l_len: ::off64_t,
+        pub l_pid: ::pid_t,
+    }
+
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,

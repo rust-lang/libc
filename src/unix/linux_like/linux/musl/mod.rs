@@ -13,6 +13,8 @@ pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
 
+pub type flock64 = flock;
+
 impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut ::c_void {
         #[repr(C)]

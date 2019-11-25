@@ -60,6 +60,15 @@ s! {
         pub l_pid: ::pid_t,
     }
 
+    pub struct flock64 {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off64_t,
+        pub l_len: ::off64_t,
+        pub l_pid: ::pid_t,
+        __reserved:  ::c_short,
+    }
+
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,

@@ -44,6 +44,14 @@ s! {
         pub l_pid: ::pid_t,
     }
 
+    pub struct flock64 {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off64_t,
+        pub l_len: ::off64_t,
+        pub l_pid: ::pid_t,
+    }
+
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
