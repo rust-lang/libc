@@ -24,6 +24,12 @@ s! {
         pub imr_interface: in_addr,
     }
 
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+        pub imr_sourceaddr: in_addr,
+    }
+
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
@@ -810,6 +816,8 @@ pub const IP_RECVTOS: ::c_int = 13;
 pub const IP_RECVERR: ::c_int = 11;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 39;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 40;
 pub const IP_TRANSPARENT: ::c_int = 19;
 pub const IPV6_UNICAST_HOPS: ::c_int = 16;
 pub const IPV6_MULTICAST_IF: ::c_int = 17;
