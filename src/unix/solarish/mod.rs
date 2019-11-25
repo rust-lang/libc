@@ -353,6 +353,16 @@ s! {
         e_termination: ::c_short,
         e_exit: ::c_short,
     }
+
+    pub struct utmp {
+        pub ut_user: [::c_char; 8],
+        pub ut_id: [::c_char; 4],
+        pub ut_line: [::c_char; 12],
+        pub ut_pid: ::c_short,
+        pub ut_type: ::c_short,
+        pub ut_exit: exit_status,
+        pub ut_time: ::time_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -1690,6 +1700,7 @@ pub const PORT_SOURCE_FILE: ::c_int = 7;
 pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
 pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
 
+pub const NONROOT_USR: ::c_short = 2;
 pub const _UTX_USERSIZE: usize = 32;
 pub const _UTX_LINESIZE: usize = 32;
 pub const _UTX_PADSIZE: usize = 5;
@@ -2404,10 +2415,18 @@ extern "C" {
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
     pub fn setutxent();
     pub fn endutxent();
-// TODO: uncomment after utmp implementation
-// pub fn getutmp(ux: *const utmpx, u: *mut utmp);
-// pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
-// pub fn updwtmp(file: *const ::c_char, u: *mut utmp);
+
+    pub fn endutent();
+    pub fn getutent() -> *mut utmp;
+    pub fn getutid(u: *const utmp) -> *mut utmp;
+    pub fn getutline(u: *const utmp) -> *mut utmp;
+    pub fn pututline(u: *const utmp) -> *mut utmp;
+    pub fn setutent();
+    pub fn utmpname(file: *const ::c_char) -> ::c_int;
+
+    pub fn getutmp(ux: *const utmpx, u: *mut utmp);
+    pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
+    pub fn updwtmp(file: *const ::c_char, u: *mut utmp);
 }
 
 mod compat;
