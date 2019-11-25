@@ -98,11 +98,13 @@ s! {
         pub c_line: ::cc_t,
         pub c_cc: [::cc_t; ::NCCS],
         #[cfg(not(any(
+            target_arch = "sparc",
             target_arch = "sparc64",
             target_arch = "mips",
             target_arch = "mips64")))]
         pub c_ispeed: ::speed_t,
         #[cfg(not(any(
+            target_arch = "sparc",
             target_arch = "sparc64",
             target_arch = "mips",
             target_arch = "mips64")))]
@@ -864,7 +866,10 @@ cfg_if! {
         target_arch = "s390x"
     ))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
-    } else if #[cfg(target_arch = "sparc64")] {
+    } else if #[cfg(any(
+               target_arch = "sparc",
+               target_arch = "sparc64"
+           ))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 0x6000;
     } else {
         pub const PTHREAD_STACK_MIN: ::size_t = 131072;
@@ -1023,7 +1028,8 @@ cfg_if! {
     if #[cfg(any(target_arch = "x86",
                  target_arch = "arm",
                  target_arch = "mips",
-                 target_arch = "powerpc"))] {
+                 target_arch = "powerpc",
+                 target_arch = "sparc"))] {
         mod b32;
         pub use self::b32::*;
     } else if #[cfg(any(target_arch = "x86_64",
