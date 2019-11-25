@@ -2060,11 +2060,17 @@ extern "C" {
         advice: ::c_int,
     ) -> ::c_int;
 
-    pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void,
-                 shmflg: ::c_int) -> *mut ::c_void;
+    pub fn shmat(
+        shmid: ::c_int,
+        shmaddr: *const ::c_void,
+        shmflg: ::c_int,
+    ) -> *mut ::c_void;
 
-    pub fn shmctl(shmid: ::c_int, cmd: ::c_int,
-                  buf: *mut ::shmid_ds) -> ::c_int;
+    pub fn shmctl(
+        shmid: ::c_int,
+        cmd: ::c_int,
+        buf: *mut ::shmid_ds,
+    ) -> ::c_int;
 
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
 
