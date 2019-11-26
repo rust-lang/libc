@@ -288,6 +288,12 @@ s! {
         pub msgtql: ::c_int,
         pub msgseg: ::c_ushort,
     }
+
+    pub struct ucred {
+        pub pid: ::pid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+    }
 }
 
 s_no_extra_traits! {
