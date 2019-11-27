@@ -449,14 +449,14 @@ cfg_if! {
                     .field("ut_name", &self.ut_name)
                     .field("ut_id", &self.ut_id)
                     .field("ut_line", &self.ut_line)
-                    .field("ut_host", &self.ut_host)
+                // FIXME .field("ut_host", &self.ut_host)
                     .field("ut_session", &self.ut_session)
                     .field("ut_type", &self.ut_type)
                     .field("ut_pid", &self.ut_pid)
                     .field("ut_exit", &self.ut_exit)
                     .field("ut_ss", &self.ut_ss)
                     .field("ut_tv", &self.ut_tv)
-                    .field("ut_pad", &self.ut_pad)
+                // FIXME .field("ut_pad", &self.ut_pad)
                     .finish()
             }
         }
@@ -497,7 +497,7 @@ cfg_if! {
                 f.debug_struct("lastlogx")
                     .field("ll_tv", &self.ll_tv)
                     .field("ll_line", &self.ll_line)
-                    .field("ll_host", &self.ll_host)
+                // FIXME.field("ll_host", &self.ll_host)
                     .field("ll_ss", &self.ll_ss)
                     .finish()
             }
