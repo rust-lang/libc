@@ -481,8 +481,12 @@ cfg_if! {
             fn eq(&self, other: &lastlogx) -> bool {
                 self.ll_tv == other.ll_tv
                     && self.ll_line == other.ll_line
-                    && self.ll_host == other.ll_host
                     && self.ll_ss == other.ll_ss
+                    && self
+                    .ll_host
+                    .iter()
+                    .zip(other.ll_host.iter())
+                    .all(|(a,b)| a == b)
             }
         }
 
