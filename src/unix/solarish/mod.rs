@@ -34,6 +34,7 @@ pub type nl_item = ::c_int;
 pub type mqd_t = *mut ::c_void;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
+pub type shmatt_t = ::c_ulong;
 
 pub type door_attr_t = ::c_uint;
 pub type door_id_t = ::c_ulonglong;
@@ -55,6 +56,16 @@ s! {
     pub struct ip_mreq {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
+    }
+
+    pub struct ipc_perm {
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub mode: ::mode_t,
+        pub seq: ::c_uint,
+        pub key: ::key_t,
     }
 
     pub struct sockaddr {
@@ -204,6 +215,33 @@ s! {
         pub ai_canonname: *mut ::c_char,
         pub ai_addr: *mut ::sockaddr,
         pub ai_next: *mut addrinfo,
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ipc_perm,
+        pub shm_segsz: ::size_t,
+        #[cfg(target_os = "illumos")]
+        pub shm_amp: *mut ::c_void,
+        #[cfg(target_os = "solaris")]
+        pub shm_flags: ::uintptr_t,
+        pub shm_lkcnt: ::c_ushort,
+        pub shm_lpid: ::pid_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        pub shm_cnattch: ::c_ulong,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        #[cfg(target_os = "illumos")]
+        pub shm_pad4: [i64; 4],
+        #[cfg(target_os = "solaris")]
+        pub shm_amp: *mut ::c_void,
+        #[cfg(target_os = "solaris")]
+        pub shm_gransize: u64,
+        #[cfg(target_os = "solaris")]
+        pub shm_allocated: u64,
+        #[cfg(target_os = "solaris")]
+        pub shm_pad4: [i64; 1],
     }
 
     pub struct sigset_t {
@@ -1066,6 +1104,7 @@ pub const MAP_PRIVATE: ::c_int = 0x0002;
 pub const MAP_FIXED: ::c_int = 0x0010;
 pub const MAP_NORESERVE: ::c_int = 0x40;
 pub const MAP_ANON: ::c_int = 0x0100;
+pub const MAP_ANONYMOUS: ::c_int = 0x0100;
 pub const MAP_RENAME: ::c_int = 0x20;
 pub const MAP_ALIGN: ::c_int = 0x200;
 pub const MAP_TEXT: ::c_int = 0x400;
@@ -1436,6 +1475,16 @@ pub const IFF_FIXEDMTU: ::c_longlong = 0x1000000000; // MTU set with SIOCSLIFMTU
 pub const IFF_VIRTUAL: ::c_longlong = 0x2000000000; // Cannot send/receive pkts
 pub const IFF_DUPLICATE: ::c_longlong = 0x4000000000; // Local address in use
 pub const IFF_IPMP: ::c_longlong = 0x8000000000; // IPMP IP interface
+
+// sys/ipc.h:
+pub const IPC_ALLOC: ::c_int = 0x8000;
+pub const IPC_CREAT: ::c_int = 0x200;
+pub const IPC_EXCL: ::c_int = 0x400;
+pub const IPC_NOWAIT: ::c_int = 0x800;
+pub const IPC_PRIVATE: key_t = 0;
+pub const IPC_RMID: ::c_int = 10;
+pub const IPC_SET: ::c_int = 11;
+pub const IPC_SEAT: ::c_int = 12;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -2118,6 +2167,22 @@ extern "C" {
         len: ::size_t,
         advice: ::c_int,
     ) -> ::c_int;
+
+    pub fn shmat(
+        shmid: ::c_int,
+        shmaddr: *const ::c_void,
+        shmflg: ::c_int,
+    ) -> *mut ::c_void;
+
+    pub fn shmctl(
+        shmid: ::c_int,
+        cmd: ::c_int,
+        buf: *mut ::shmid_ds,
+    ) -> ::c_int;
+
+    pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
+
+    pub fn shmget(key: key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
 
     pub fn shm_open(
         name: *const ::c_char,
