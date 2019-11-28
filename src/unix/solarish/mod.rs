@@ -2157,6 +2157,7 @@ extern "C" {
         path: *const ::c_char,
         times: *const ::timeval,
     ) -> ::c_int;
+    pub fn futimens(dirfd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn utimensat(
         dirfd: ::c_int,
         path: *const ::c_char,
