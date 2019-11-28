@@ -299,6 +299,19 @@ s! {
         pub shm_ctime: ::time_t,
         _shm_internal: *mut ::c_void,
     }
+
+    pub struct utmp {
+        pub ut_line: [::c_char; UT_LINESIZE],
+        pub ut_name: [::c_char; UT_NAMESIZE],
+        pub ut_host: [::c_char; UT_HOSTSIZE],
+        pub ut_time: ::time_t
+    }
+
+    pub struct lastlog {
+        pub ll_line: [::c_char; UT_LINESIZE],
+        pub ll_host: [::c_char; UT_HOSTSIZE],
+        pub ll_time: ::time_t
+    }
 }
 
 s_no_extra_traits! {
@@ -1517,6 +1530,9 @@ pub const CHWFLOW: ::tcflag_t = ::MDMBUF | ::CRTSCTS | ::CDTRCTS;
 // pub const _PATH_WTMPX: &[::c_char; 14] = b"/var/log/wtmpx";
 // pub const _PATH_LASTLOGX: &[::c_char; 17] = b"/var/log/lastlogx";
 // pub const _PATH_UTMP_UPDATE: &[::c_char; 24] = b"/usr/libexec/utmp_update";
+pub const UT_NAMESIZE: usize = 8;
+pub const UT_LINESIZE: usize = 8;
+pub const UT_HOSTSIZE: usize = 16;
 pub const _UTX_USERSIZE: usize = 32;
 pub const _UTX_LINESIZE: usize = 32;
 pub const _UTX_PADSIZE: usize = 40;
@@ -1914,9 +1930,14 @@ extern "C" {
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
     pub fn setutxent();
     pub fn endutxent();
-// TODO: uncomment after utmp implementation
-// pub fn getutmp(ux: *const utmpx, u: *mut utmp);
-// pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
+
+    pub fn getutmp(ux: *const utmpx, u: *mut utmp);
+    pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
+
+    pub fn utpname(file: *const ::c_char) -> ::c_int;
+    pub fn setutent();
+    pub fn endutent();
+    pub fn getutent() -> *mut utmp;
 }
 
 cfg_if! {
