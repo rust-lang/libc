@@ -1680,7 +1680,7 @@ extern "C" {
     pub fn pthread_setname_np(
         t: ::pthread_t,
         name: *const ::c_char,
-        arg: *mut ::c_void,
+        arg: *const ::c_void,
     ) -> ::c_int;
     pub fn pthread_attr_get_np(
         thread: ::pthread_t,
