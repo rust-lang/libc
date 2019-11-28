@@ -19,7 +19,7 @@ if ! rustc --version | grep -E "nightly" ; then
 fi
 
 rustup component add rust-src
-cargo +nightly install cargo-xbuild -Z install-upgrade
+cargo +nightly install cargo-xbuild
 
 # List all targets that do currently build successfully:
 # shellcheck disable=SC1003

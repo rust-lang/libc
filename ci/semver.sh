@@ -13,7 +13,7 @@ if ! rustc --version | grep -E "nightly" ; then
     exit 1
 fi
 
-cargo +nightly install semverver -Z install-upgrade
+cargo +nightly install semverver
 
 TARGETS=
 case "${OS}" in

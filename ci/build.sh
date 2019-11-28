@@ -15,7 +15,7 @@ RUST=${TOOLCHAIN}
 echo "Testing Rust ${RUST} on ${OS}"
 
 if [ "${TOOLCHAIN}" = "nightly" ] ; then
-    cargo +nightly install cargo-xbuild -Z install-upgrade
+    cargo +nightly install cargo-xbuild
     rustup component add rust-src
 fi
 
