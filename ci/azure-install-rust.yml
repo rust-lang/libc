@@ -8,7 +8,7 @@ steps:
       if command -v rustup; then
         # Uncomment when rustup on Azure is updated
         #rustup set profile minimal
-        rustup update $toolchain
+        rustup update --force $toolchain
         rustup default $toolchain
       else
         curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $toolchain --profile=minimal
