@@ -2523,6 +2523,13 @@ fn test_linux(target: &str) {
         _ => false,
     });
 
+    cfg.skip_field(move |struct_, field| {
+        struct_ == "tcp_info"
+            && (field == "tcpi_snd_wscale"
+                || field == "tcpi_rcv_wscale"
+                || field == "tcpi_delivery_rate_app_limited")
+    });
+
     cfg.generate("../src/lib.rs", "main.rs");
 
     test_linux_like_apis(target);
