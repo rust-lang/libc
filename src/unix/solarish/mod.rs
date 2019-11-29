@@ -374,6 +374,20 @@ s! {
         _pad: [::c_int; 4]
     }
 
+    pub struct pollfd {
+        pub fd: ::c_int,
+        pub events: ::c_short,
+        pub revents: ::c_short,
+    }
+
+    pub struct dvpoll {
+        pub dp_fds: *mut ::pollfd,
+        pub dp_nfds: ::c_ulong,
+        pub dp_timeout: ::c_int,
+        #[cfg(target_os = "illumos")]
+        pub dp_setp: *mut ::sigset_t,
+    }
+
     pub struct port_event {
         pub portev_events: ::c_int,
         pub portev_source: ::c_ushort,
@@ -1286,6 +1300,11 @@ pub const POLLRDNORM: ::c_short = 0x0040;
 pub const POLLWRNORM: ::c_short = 0x4; /* POLLOUT */
 pub const POLLRDBAND: ::c_short = 0x0080;
 pub const POLLWRBAND: ::c_short = 0x0100;
+pub const POLLREMOVE: ::c_short = 0x0800;
+#[cfg(target_os = "illumos")]
+pub const POLLONESHOT: ::c_short = 0x1000;
+#[cfg(target_os = "illumos")]
+pub const POLLET: ::c_short = 0x2000;
 
 pub const POSIX_MADV_NORMAL: ::c_int = 0;
 pub const POSIX_MADV_RANDOM: ::c_int = 1;
@@ -1841,6 +1860,13 @@ pub const TIOCMBIC: ::c_int = (tIOC | 28);
 pub const TIOCMGET: ::c_int = (tIOC | 29);
 pub const TIOCREMOTE: ::c_int = (tIOC | 30);
 pub const TIOCSIGNAL: ::c_int = (tIOC | 31);
+
+pub const DP_POLL: ::c_int = 0xd001;
+pub const DP_ISPOLLED: ::c_int = 0xd002;
+#[cfg(target_os = "illumos")]
+pub const DP_PPOLL: ::c_int = 0xd003;
+#[cfg(target_os = "illumos")]
+pub const DP_EPOLLCOMPAT: ::c_int = 0xd004;
 
 pub const EPOLLIN: ::c_int = 0x1;
 pub const EPOLLPRI: ::c_int = 0x2;
