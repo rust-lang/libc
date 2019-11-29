@@ -2480,7 +2480,11 @@ fn test_linux(target: &str) {
             "sched_ss_max_repl",
         ].contains(&field) && musl) ||
         // FIXME: After musl 1.1.24, the type becomes `int` instead of `unsigned short`.
-        (struct_ == "ipc_perm" && field == "__seq" && aarch64_musl)
+        (struct_ == "ipc_perm" && field == "__seq" && aarch64_musl) ||
+        (struct_ == "tcp_info"
+            && (field == "tcpi_snd_wscale"
+                || field == "tcpi_rcv_wscale"
+                || field == "tcpi_delivery_rate_app_limited"))
     });
 
     cfg.skip_roundtrip(move |s| match s {
@@ -2521,13 +2525,6 @@ fn test_linux(target: &str) {
         "max_align_t" if i686 || mips64 || ppc64 => true,
 
         _ => false,
-    });
-
-    cfg.skip_field(move |struct_, field| {
-        struct_ == "tcp_info"
-            && (field == "tcpi_snd_wscale"
-                || field == "tcpi_rcv_wscale"
-                || field == "tcpi_delivery_rate_app_limited")
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
