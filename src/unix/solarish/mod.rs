@@ -536,7 +536,7 @@ cfg_if! {
                     .field("ut_session", &self.ut_session)
                     .field("ut_pad", &self.ut_pad)
                     .field("ut_syslen", &self.ut_syslen)
-                    .field("ut_host", &self.ut_host)
+                // .field("ut_host", &self.ut_host)
                     .finish()
             }
         }
