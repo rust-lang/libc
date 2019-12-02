@@ -1204,12 +1204,7 @@ pub const SO_EE_ORIGIN_LOCAL: u8 = 1;
 pub const SO_EE_ORIGIN_ICMP: u8 = 2;
 pub const SO_EE_ORIGIN_ICMP6: u8 = 3;
 pub const SO_EE_ORIGIN_TXSTATUS: u8 = 4;
-pub const SO_EE_ORIGIN_ZEROCOPY: u8 = 5;
-pub const SO_EE_ORIGIN_TXTIME: u8 = 6;
 pub const SO_EE_ORIGIN_TIMESTAMPING: u8 = SO_EE_ORIGIN_TXSTATUS;
-pub const SO_EE_CODE_ZEROCOPY_COPIED: u8 = 1;
-pub const SO_EE_CODE_TXTIME_INVALID_PARAM: u8 = 1;
-pub const SO_EE_CODE_TXTIME_MISSED: u8 = 2;
 
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
