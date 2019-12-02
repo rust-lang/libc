@@ -10,6 +10,9 @@ fn do_cc() {
     if cfg!(unix) && !target.contains("wasi") {
         cc::Build::new().file("src/cmsg.c").compile("cmsg");
     }
+    if target.contains("android") || target.contains("linux") {
+        cc::Build::new().file("src/errqueue.c").compile("errqueue");
+    }
 }
 
 fn do_ctest() {
