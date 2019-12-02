@@ -2189,6 +2189,7 @@ fn test_linux(target: &str) {
         cfg:
         "asm/mman.h",
         "linux/dccp.h",
+        "linux/errqueue.h",
         "linux/falloc.h",
         "linux/fs.h",
         "linux/futex.h",
