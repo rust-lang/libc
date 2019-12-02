@@ -1266,6 +1266,7 @@ fn test_android(target: &str) {
                "linux/reboot.h",
                "linux/seccomp.h",
                "linux/sockios.h",
+               "linux/time.h",
                "locale.h",
                "malloc.h",
                "net/ethernet.h",
@@ -2212,6 +2213,7 @@ fn test_linux(target: &str) {
         "linux/rtnetlink.h",
         "linux/seccomp.h",
         "linux/sockios.h",
+        "linux/time.h",
         "linux/vm_sockets.h",
         "sys/auxv.h",
     }
