@@ -199,6 +199,16 @@ s! {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
     }
+
+    pub struct sock_extended_err {
+        pub ee_errno: u32,
+        pub ee_origin: u8,
+        pub ee_type: u8,
+        pub ee_code: u8,
+        pub ee_pad: u8,
+        pub ee_info: u32,
+        pub ee_data: u32
+    }
 }
 
 s_no_extra_traits! {
@@ -1189,6 +1199,18 @@ pub const ARPHRD_IEEE802154: u16 = 804;
 pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
+pub const SO_EE_ORIGIN_NONE: u8 = 0;
+pub const SO_EE_ORIGIN_LOCAL: u8 = 1;
+pub const SO_EE_ORIGIN_ICMP: u8 = 2;
+pub const SO_EE_ORIGIN_ICMP6: u8 = 3;
+pub const SO_EE_ORIGIN_TXSTATUS: u8 = 4;
+pub const SO_EE_ORIGIN_ZEROCOPY: u8 = 5;
+pub const SO_EE_ORIGIN_TXTIME: u8 = 6;
+pub const SO_EE_ORIGIN_TIMESTAMPING: u8 = SO_EE_ORIGIN_TXSTATUS;
+pub const SO_EE_CODE_ZEROCOPY_COPIED: u8 = 1;
+pub const SO_EE_CODE_TXTIME_INVALID_PARAM: u8 = 1;
+pub const SO_EE_CODE_TXTIME_MISSED: u8 = 2;
+
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
         len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
@@ -1293,6 +1315,10 @@ f! {
 
     pub fn IPTOS_ECN(x: u8) -> u8 {
         x & ::IPTOS_ECN_MASK
+    }
+
+    pub fn SO_EE_OFFENDER(ee: *const sock_extended_err) -> *mut sockaddr {
+        ee.offset(1) as *mut ::sockaddr
     }
 }
 
