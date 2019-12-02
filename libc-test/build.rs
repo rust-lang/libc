@@ -1317,6 +1317,7 @@ fn test_android(target: &str) {
     headers! { cfg:
                "asm/mman.h",
                "linux/dccp.h",
+               "linux/errqueue.h",
                "linux/futex.h",
                "linux/fs.h",
                "linux/genetlink.h",
