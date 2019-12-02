@@ -1245,6 +1245,7 @@ fn test_android(target: &str) {
                "ifaddrs.h",
                "limits.h",
                "linux/dccp.h",
+               "linux/errqueue.h",
                "linux/futex.h",
                "linux/fs.h",
                "linux/genetlink.h",
@@ -2184,6 +2185,7 @@ fn test_linux(target: &str) {
         cfg:
         "asm/mman.h",
         "linux/dccp.h",
+        "linux/errqueue.h",
         "linux/falloc.h",
         "linux/fs.h",
         "linux/futex.h",
