@@ -2863,6 +2863,14 @@ extern "C" {
         len: ::size_t,
         flags: ::c_uint,
     ) -> ::ssize_t;
+    pub fn copy_file_range(
+        fd_in: ::c_int,
+        off_in: *mut ::loff_t,
+        fd_out: ::c_int,
+        off_out: *mut ::loff_t,
+        len: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec)
         -> ::c_int;
