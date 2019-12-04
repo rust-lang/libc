@@ -1,6 +1,5 @@
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
-pub type clock_t = i32;
 pub type clockid_t = ::c_ulong;
 pub type dev_t = u32;
 pub type fsblkcnt_t = u64;
@@ -31,8 +30,15 @@ s! {
         pub ai_socktype: ::c_int,
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
-        pub ai_canonname: *mut ::c_char,
+
+        #[cfg(target_arch = "xtensa")]
         pub ai_addr: *mut sockaddr,
+
+        pub ai_canonname: *mut ::c_char,
+
+        #[cfg(not(target_arch = "xtensa"))]
+        pub ai_addr: *mut sockaddr,
+
         pub ai_next: *mut addrinfo,
     }
 
@@ -364,11 +370,6 @@ pub const O_NONBLOCK: ::c_int = 16384;
 pub const O_ACCMODE: ::c_int = 3;
 pub const O_CLOEXEC: ::c_int = 0x80000;
 
-pub const POLLIN: ::c_short = 0x1;
-pub const POLLPRI: ::c_short = 0x2;
-pub const POLLERR: ::c_short = 0x8;
-pub const POLLNVAL: ::c_short = 0x20;
-
 pub const RTLD_LAZY: ::c_int = 0x1;
 
 pub const STDIN_FILENO: ::c_int = 0;
@@ -379,7 +380,6 @@ pub const SEEK_SET: ::c_int = 0;
 pub const SEEK_CUR: ::c_int = 1;
 pub const SEEK_END: ::c_int = 2;
 
-pub const FIONBIO: ::c_ulong = 1;
 pub const FIOCLEX: ::c_ulong = 0x20006601;
 pub const FIONCLEX: ::c_ulong = 0x20006602;
 
@@ -406,7 +406,6 @@ pub const S_IROTH: ::mode_t = 4;
 pub const S_IWOTH: ::mode_t = 2;
 pub const S_IXOTH: ::mode_t = 1;
 
-pub const SOL_SOCKET: ::c_int = 65535;
 pub const SOL_TCP: ::c_int = 6;
 
 pub const PF_UNSPEC: ::c_int = 0;
@@ -546,6 +545,9 @@ pub const EAI_FAMILY: ::c_int = -303;
 pub const EAI_MEMORY: ::c_int = -304;
 pub const EAI_NONAME: ::c_int = -305;
 pub const EAI_SOCKTYPE: ::c_int = -307;
+
+pub const EXIT_SUCCESS: ::c_int = 0;
+pub const EXIT_FAILURE: ::c_int = 1;
 
 pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
@@ -702,6 +704,9 @@ cfg_if! {
     } else if #[cfg(target_arch = "aarch64")] {
         mod aarch64;
         pub use self::aarch64::*;
+    } else if #[cfg(target_arch = "xtensa")] {
+        mod xtensa;
+        pub use self::xtensa::*;
     } else {
         // Only tested on ARM so far. Other platforms might have different
         // definitions for types and constants.

@@ -1,3 +1,4 @@
+pub type clock_t = ::c_long;
 pub type c_char = u8;
 pub type wchar_t = u32;
 
@@ -31,5 +32,13 @@ s! {
     }
 }
 
-pub const POLLOUT: ::c_short = 0x10;
+pub const FIONBIO: ::c_ulong = 1;
+
+pub const POLLIN: ::c_short = 0x1;
+pub const POLLPRI: ::c_short = 0x2;
 pub const POLLHUP: ::c_short = 0x4;
+pub const POLLERR: ::c_short = 0x8;
+pub const POLLOUT: ::c_short = 0x10;
+pub const POLLNVAL: ::c_short = 0x20;
+
+pub const SOL_SOCKET: ::c_int = 65535;
