@@ -441,6 +441,8 @@ pub const TIOCMBIS: ::c_ulong = 0x5416;
 pub const TIOCMBIC: ::c_ulong = 0x5417;
 pub const TIOCMSET: ::c_ulong = 0x5418;
 pub const TIOCCONS: ::c_ulong = 0x541D;
+pub const TIOCSBRK: ::c_ulong = 0x5427;
+pub const TIOCCBRK: ::c_ulong = 0x5428;
 pub const TIOCGRS485: ::c_int = 0x542E;
 pub const TIOCSRS485: ::c_int = 0x542F;
 

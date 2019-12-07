@@ -422,6 +422,8 @@ pub const TIOCMBIC: ::c_ulong = 0x8004746b;
 pub const TIOCMBIS: ::c_ulong = 0x8004746c;
 pub const TIOCMSET: ::c_ulong = 0x8004746d;
 pub const TIOCSTI: ::c_ulong = 0x80017472;
+pub const TIOCCBRK: ::c_ulong = 0x2000747a;
+pub const TIOCSBRK: ::c_ulong = 0x2000747b;
 pub const TIOCSCTTY: ::c_ulong = 0x20007484;
 
 pub const TIOCM_ST: ::c_int = 0x008;
