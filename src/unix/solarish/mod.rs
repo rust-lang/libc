@@ -557,6 +557,17 @@ cfg_if! {
             }
         }
 
+        impl ::fmt::Debug for door_desc_t__d_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                unsafe {
+                    match self {
+                        Self { d_desc } => f.debug_struct("door_desc_t__d_data").field("d_desc", &self.d_desc),
+                        Self { d_resv } => f.debug_struct("door_desc_t__d_data").field("d_resv", &self.d_resv),
+                    }
+                }
+            }
+        }
+
         impl PartialEq for epoll_event {
             fn eq(&self, other: &epoll_event) -> bool {
                 self.events == other.events
