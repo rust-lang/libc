@@ -561,8 +561,8 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
                     match self {
-                        Self { d_desc } => f.debug_struct("door_desc_t__d_data").field("d_desc", &self.d_desc),
-                        Self { d_resv } => f.debug_struct("door_desc_t__d_data").field("d_resv", &self.d_resv),
+                        Self { d_desc } => f.debug_struct("door_desc_t__d_data").field("d_desc", &self.d_desc).finish(),
+                        Self { d_resv } => f.debug_struct("door_desc_t__d_data").field("d_resv", &self.d_resv).finish(),
                     }
                 }
             }
