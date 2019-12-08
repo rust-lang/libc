@@ -484,11 +484,13 @@ s_no_extra_traits! {
         d_resv: [::c_int; 5], /* Check out /usr/include/sys/door.h */
     }
 
+    #[derive(Debug)]
     pub struct door_desc_t {
         pub d_attributes: door_attr_t,
         pub d_data: door_desc_t__d_data,
     }
 
+    #[derive(Debug)]
     pub struct door_arg_t {
         pub data_ptr: *const ::c_char,
         pub data_size: ::size_t,
@@ -561,8 +563,12 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
                     match self {
-                        Self { d_desc } => f.debug_struct("door_desc_t__d_data").field("d_desc", &self.d_desc).finish(),
-                        Self { d_resv } => f.debug_struct("door_desc_t__d_data").field("d_resv", &self.d_resv).finish(),
+                        Self { d_desc } => f.debug_struct("door_desc_t__d_data")
+                            .field("d_desc", &self.d_desc)
+                            .finish(),
+                        Self { d_resv } => f.debug_struct("door_desc_t__d_data")
+                            .field("d_resv", &self.d_resv)
+                            .finish(),
                     }
                 }
             }
