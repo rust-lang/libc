@@ -479,18 +479,19 @@ s_no_extra_traits! {
         __sigev_pad2: ::c_int,
     }
 
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub union door_desc_t__d_data {
         pub d_desc: door_desc_t__d_data__d_desc,
         d_resv: [::c_int; 5], /* Check out /usr/include/sys/door.h */
     }
 
-    #[derive(Debug)]
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub struct door_desc_t {
         pub d_attributes: door_attr_t,
         pub d_data: door_desc_t__d_data,
     }
 
-    #[derive(Debug)]
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub struct door_arg_t {
         pub data_ptr: *const ::c_char,
         pub data_size: ::size_t,
@@ -556,21 +557,6 @@ cfg_if! {
                 self.ut_tv.hash(state);
                 self.ut_syslen.hash(state);
                 self.ut_pad.hash(state);
-            }
-        }
-
-        impl ::fmt::Debug for door_desc_t__d_data {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                unsafe {
-                    match self {
-                        Self { d_desc } => f.debug_struct("door_desc_t__d_data")
-                            .field("d_desc", &self.d_desc)
-                            .finish(),
-                        Self { d_resv } => f.debug_struct("door_desc_t__d_data")
-                            .field("d_resv", &self.d_resv)
-                            .finish(),
-                    }
-                }
             }
         }
 
