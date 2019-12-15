@@ -1,6 +1,7 @@
 pub type pthread_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
 pub type __rlimit_resource_t = ::c_uint;
+pub type Lmid_t = ::c_long;
 
 s! {
     pub struct statx {
@@ -336,6 +337,21 @@ pub const LOGIN_PROCESS: ::c_short = 6;
 pub const USER_PROCESS: ::c_short = 7;
 pub const DEAD_PROCESS: ::c_short = 8;
 pub const ACCOUNTING: ::c_short = 9;
+
+// dlfcn.h
+pub const LM_ID_BASE: ::c_long = 0;
+pub const LM_ID_NEWLM: ::c_long = -1;
+
+pub const RTLD_DI_LMID: ::c_int = 1;
+pub const RTLD_DI_LINKMAP: ::c_int = 2;
+pub const RTLD_DI_CONFIGADDR: ::c_int = 3;
+pub const RTLD_DI_SERINFO: ::c_int = 4;
+pub const RTLD_DI_SERINFOSIZE: ::c_int = 5;
+pub const RTLD_DI_ORIGIN: ::c_int = 6;
+pub const RTLD_DI_PROFILENAME: ::c_int = 7;
+pub const RTLD_DI_PROFILEOUT: ::c_int = 8;
+pub const RTLD_DI_TLS_MODID: ::c_int = 9;
+pub const RTLD_DI_TLS_DATA: ::c_int = 10;
 
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 
@@ -1022,6 +1038,12 @@ extern "C" {
         thread: ::pthread_t,
         name: *const ::c_char,
     ) -> ::c_int;
+}
+
+#[link(name = "dl")]
+extern "C" {
+    pub fn dlmopen(lmid: Lmid_t, filename: *const ::c_char, flag: ::c_int) -> *mut ::c_void;
+    pub fn dlinfo(handle: *mut ::c_void, request: ::c_int, info: *mut ::c_void) -> ::c_int;
 }
 
 cfg_if! {
