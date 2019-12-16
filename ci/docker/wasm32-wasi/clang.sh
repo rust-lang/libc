@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-exec /wasmcc/bin/clang --target=wasm32-wasi --sysroot /wasi-sysroot "$@"
+exec /usr/bin/clang --target=wasm32-wasi --sysroot /wasi-libc/sysroot "$@"

@@ -174,9 +174,9 @@ pub const EXIT_FAILURE: c_int = 1;
 pub const STDIN_FILENO: c_int = 0;
 pub const STDOUT_FILENO: c_int = 1;
 pub const STDERR_FILENO: c_int = 2;
-pub const SEEK_SET: c_int = 2;
-pub const SEEK_CUR: c_int = 0;
-pub const SEEK_END: c_int = 1;
+pub const SEEK_SET: c_int = 0;
+pub const SEEK_CUR: c_int = 1;
+pub const SEEK_END: c_int = 2;
 pub const _IOFBF: c_int = 0;
 pub const _IONBF: c_int = 2;
 pub const _IOLBF: c_int = 1;
@@ -207,8 +207,8 @@ pub const AT_EACCESS: c_int = 0x0;
 pub const AT_SYMLINK_NOFOLLOW: c_int = 0x1;
 pub const AT_SYMLINK_FOLLOW: c_int = 0x2;
 pub const AT_REMOVEDIR: c_int = 0x4;
-pub const UTIME_OMIT: c_long = 1073741822;
-pub const UTIME_NOW: c_long = 1073741823;
+pub const UTIME_OMIT: c_long = 0xfffffffe;
+pub const UTIME_NOW: c_long = 0xffffffff;
 
 pub const E2BIG: c_int = 1;
 pub const EACCES: c_int = 2;
@@ -728,11 +728,8 @@ extern "C" {
     pub fn __wasilibc_fd_renumber(fd: c_int, newfd: c_int) -> c_int;
     pub fn __wasilibc_unlinkat(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_rmdirat(fd: c_int, path: *const c_char) -> c_int;
-    pub fn __wasilibc_init_preopen();
     pub fn __wasilibc_find_relpath(
         path: *const c_char,
-        rights_base: __wasi_rights_t,
-        rights_inheriting: __wasi_rights_t,
         relative_path: *mut *const c_char,
     ) -> c_int;
     pub fn __wasilibc_tell(fd: c_int) -> ::off_t;
