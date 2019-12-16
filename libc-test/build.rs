@@ -1182,7 +1182,7 @@ fn test_wasi(target: &str) {
         "sys/utsname.h",
         "time.h",
         "unistd.h",
-        "wasi/core.h",
+        "wasi/api.h",
         "wasi/libc.h",
         "wasi/libc-find-relpath.h",
         "wchar.h",
@@ -1217,6 +1217,10 @@ fn test_wasi(target: &str) {
     // d_name is declared as a flexible array in WASI libc, so it
     // doesn't support sizeof.
     cfg.skip_field(|s, field| s == "dirent" && field == "d_name");
+
+    // Currently Rust/clang disagree on function argument ABI, so skip these
+    // tests. For more info see WebAssembly/tool-conventions#88
+    cfg.skip_roundtrip(|_| true);
 
     cfg.generate("../src/lib.rs", "main.rs");
 }
