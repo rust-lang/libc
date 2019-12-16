@@ -465,7 +465,9 @@ fn test_windows(target: &str) {
         match name {
             // FIXME: API error:
             // SIG_ERR type is "void (*)(int)", not "int"
-            "SIG_ERR" => true,
+            "SIG_ERR" |
+            // Similar for SIG_DFL/IGN/GET/SGE/ACK
+            "SIG_DFL" | "SIG_IGN" | "SIG_GET" | "SIG_SGE" | "SIG_ACK" => true,
             _ => false,
         }
     });
