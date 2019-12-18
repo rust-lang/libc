@@ -1042,8 +1042,16 @@ extern "C" {
 
 #[link(name = "dl")]
 extern "C" {
-    pub fn dlmopen(lmid: Lmid_t, filename: *const ::c_char, flag: ::c_int) -> *mut ::c_void;
-    pub fn dlinfo(handle: *mut ::c_void, request: ::c_int, info: *mut ::c_void) -> ::c_int;
+    pub fn dlmopen(
+        lmid: Lmid_t,
+        filename: *const ::c_char,
+        flag: ::c_int,
+    ) -> *mut ::c_void;
+    pub fn dlinfo(
+        handle: *mut ::c_void,
+        request: ::c_int,
+        info: *mut ::c_void,
+    ) -> ::c_int;
 }
 
 cfg_if! {
