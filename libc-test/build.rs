@@ -10,6 +10,9 @@ fn do_cc() {
     if cfg!(unix) && !target.contains("wasi") {
         cc::Build::new().file("src/cmsg.c").compile("cmsg");
     }
+    if target.contains("android") || target.contains("linux") {
+        cc::Build::new().file("src/errqueue.c").compile("errqueue");
+    }
 }
 
 fn do_ctest() {
@@ -1239,7 +1242,6 @@ fn test_android(target: &str) {
 
     headers! { cfg:
                "arpa/inet.h",
-               "asm/mman.h",
                "ctype.h",
                "dirent.h",
                "dlfcn.h",
@@ -1248,27 +1250,6 @@ fn test_android(target: &str) {
                "grp.h",
                "ifaddrs.h",
                "limits.h",
-               "linux/dccp.h",
-               "linux/futex.h",
-               "linux/fs.h",
-               "linux/genetlink.h",
-               "linux/if_alg.h",
-               "linux/if_ether.h",
-               "linux/if_tun.h",
-               "linux/magic.h",
-               "linux/memfd.h",
-               "linux/module.h",
-               "linux/net_tstamp.h",
-               "linux/netfilter/nfnetlink.h",
-               "linux/netfilter/nfnetlink_log.h",
-               "linux/netfilter/nf_tables.h",
-               "linux/netfilter_ipv4.h",
-               "linux/netfilter_ipv6.h",
-               "linux/netlink.h",
-               "linux/quota.h",
-               "linux/reboot.h",
-               "linux/seccomp.h",
-               "linux/sockios.h",
                "locale.h",
                "malloc.h",
                "net/ethernet.h",
@@ -1337,6 +1318,34 @@ fn test_android(target: &str) {
                // generate the error 'Your time_t is already 64-bit'
                [target_pointer_width == 32]: "time64.h",
                [x86]: "sys/reg.h",
+    }
+
+    // Include linux headers at the end:
+    headers! { cfg:
+                "asm/mman.h",
+                "linux/dccp.h",
+                "linux/errqueue.h",
+                "linux/futex.h",
+                "linux/fs.h",
+                "linux/genetlink.h",
+                "linux/if_alg.h",
+                "linux/if_ether.h",
+                "linux/if_tun.h",
+                "linux/magic.h",
+                "linux/memfd.h",
+                "linux/module.h",
+                "linux/net_tstamp.h",
+                "linux/netfilter/nfnetlink.h",
+                "linux/netfilter/nfnetlink_log.h",
+                "linux/netfilter/nf_tables.h",
+                "linux/netfilter_ipv4.h",
+                "linux/netfilter_ipv6.h",
+                "linux/netlink.h",
+                "linux/quota.h",
+                "linux/reboot.h",
+                "linux/seccomp.h",
+                "linux/sockios.h",
+
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -2188,6 +2197,7 @@ fn test_linux(target: &str) {
         cfg:
         "asm/mman.h",
         "linux/dccp.h",
+        "linux/errqueue.h",
         "linux/falloc.h",
         "linux/fs.h",
         "linux/futex.h",
