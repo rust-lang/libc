@@ -1411,6 +1411,72 @@ pub const NFULNL_CFG_F_SEQ: ::c_int = 0x0001;
 pub const NFULNL_CFG_F_SEQ_GLOBAL: ::c_int = 0x0002;
 pub const NFULNL_CFG_F_CONNTRACK: ::c_int = 0x0004;
 
+// linux/netfilter/nfnetlink_log.h
+pub const NFQNL_MSG_PACKET: ::c_int = 0;
+pub const NFQNL_MSG_VERDICT: ::c_int = 1;
+pub const NFQNL_MSG_CONFIG: ::c_int = 2;
+pub const NFQNL_MSG_VERDICT_BATCH: ::c_int = 3;
+
+pub const NFQA_UNSPEC: ::c_int = 0;
+pub const NFQA_PACKET_HDR: ::c_int = 1;
+pub const NFQA_VERDICT_HDR: ::c_int = 2;
+pub const NFQA_MARK: ::c_int = 3;
+pub const NFQA_TIMESTAMP: ::c_int = 4;
+pub const NFQA_IFINDEX_INDEV: ::c_int = 5;
+pub const NFQA_IFINDEX_OUTDEV: ::c_int = 6;
+pub const NFQA_IFINDEX_PHYSINDEV: ::c_int = 7;
+pub const NFQA_IFINDEX_PHYSOUTDEV: ::c_int = 8;
+pub const NFQA_HWADDR: ::c_int = 9;
+pub const NFQA_PAYLOAD: ::c_int = 10;
+pub const NFQA_CT: ::c_int = 11;
+pub const NFQA_CT_INFO: ::c_int = 12;
+pub const NFQA_CAP_LEN: ::c_int = 13;
+pub const NFQA_SKB_INFO: ::c_int = 14;
+pub const NFQA_EXP: ::c_int = 15;
+pub const NFQA_UID: ::c_int = 16;
+pub const NFQA_GID: ::c_int = 17;
+pub const NFQA_SECCTX: ::c_int = 18;
+/*
+ FIXME: These are not yet available in musl sanitized kernel headers and
+ make the tests fail. Enable them once musl has them.
+
+ See https://github.com/rust-lang/libc/pull/1628 for more details.
+pub const NFQA_VLAN: ::c_int = 19;
+pub const NFQA_L2HDR: ::c_int = 20;
+
+pub const NFQA_VLAN_UNSPEC: ::c_int = 0;
+pub const NFQA_VLAN_PROTO: ::c_int = 1;
+pub const NFQA_VLAN_TCI: ::c_int = 2;
+*/
+
+pub const NFQNL_CFG_CMD_NONE: ::c_int = 0;
+pub const NFQNL_CFG_CMD_BIND: ::c_int = 1;
+pub const NFQNL_CFG_CMD_UNBIND: ::c_int = 2;
+pub const NFQNL_CFG_CMD_PF_BIND: ::c_int = 3;
+pub const NFQNL_CFG_CMD_PF_UNBIND: ::c_int = 4;
+
+pub const NFQNL_COPY_NONE: ::c_int = 0;
+pub const NFQNL_COPY_META: ::c_int = 1;
+pub const NFQNL_COPY_PACKET: ::c_int = 2;
+
+pub const NFQA_CFG_UNSPEC: ::c_int = 0;
+pub const NFQA_CFG_CMD: ::c_int = 1;
+pub const NFQA_CFG_PARAMS: ::c_int = 2;
+pub const NFQA_CFG_QUEUE_MAXLEN: ::c_int = 3;
+pub const NFQA_CFG_MASK: ::c_int = 4;
+pub const NFQA_CFG_FLAGS: ::c_int = 5;
+
+pub const NFQA_CFG_F_FAIL_OPEN: ::c_int = 0x0001;
+pub const NFQA_CFG_F_CONNTRACK: ::c_int = 0x0002;
+pub const NFQA_CFG_F_GSO: ::c_int = 0x0004;
+pub const NFQA_CFG_F_UID_GID: ::c_int = 0x0008;
+pub const NFQA_CFG_F_SECCTX: ::c_int = 0x0010;
+pub const NFQA_CFG_F_MAX: ::c_int = 0x0020;
+
+pub const NFQA_SKB_CSUMNOTREADY: ::c_int = 0x0001;
+pub const NFQA_SKB_GSO: ::c_int = 0x0002;
+pub const NFQA_SKB_CSUM_NOTVERIFIED: ::c_int = 0x0004;
+
 pub const GENL_NAMSIZ: ::c_int = 16;
 
 pub const GENL_MIN_ID: ::c_int = NLMSG_MIN_TYPE;
