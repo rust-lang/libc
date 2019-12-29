@@ -185,6 +185,7 @@ cfg_if! {
     }
 }
 pub const MAP_32BIT: ::c_int = 0x00080000;
+pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
 
 cfg_if! {
     if #[cfg(libc_align)] {

@@ -41,3 +41,4 @@ cfg_if! {
         pub const _ALIGNBYTES: usize = 8 - 1;
     }
 }
+pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
