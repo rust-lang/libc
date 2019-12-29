@@ -1,4 +1,3 @@
-pub type wchar_t = i32;
 pub type off_t = i64;
 pub type useconds_t = u32;
 pub type blkcnt_t = i64;

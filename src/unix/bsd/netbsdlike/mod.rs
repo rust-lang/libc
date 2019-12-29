@@ -1,3 +1,4 @@
+pub type wchar_t = i32;
 pub type time_t = i64;
 pub type mode_t = u32;
 pub type nlink_t = u32;

@@ -1,5 +1,6 @@
 pub type dev_t = u32;
 pub type c_char = i8;
+pub type wchar_t = i32;
 pub type clock_t = u64;
 pub type ino_t = u64;
 pub type lwpid_t = i32;
