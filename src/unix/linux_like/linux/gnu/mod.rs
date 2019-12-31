@@ -410,6 +410,7 @@ pub const TCP_QUEUE_SEQ: ::c_int = 21;
 pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
 pub const TCP_FASTOPEN: ::c_int = 23;
 pub const TCP_TIMESTAMP: ::c_int = 24;
+pub const TCP_FASTOPEN_CONNECT: ::c_int = 30;
 
 /* DCCP socket options */
 pub const DCCP_SOCKOPT_PACKET_SIZE: ::c_int = 1;
