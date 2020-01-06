@@ -1894,6 +1894,12 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn _lwp_self() -> lwpid_t;
+    pub fn memmem(
+        haystack: *const ::c_void,
+        haystacklen: ::size_t,
+        needle: *const ::c_void,
+        needlelen: ::size_t,
+    ) -> *mut ::c_void;
 }
 
 #[link(name = "util")]
