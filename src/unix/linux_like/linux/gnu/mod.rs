@@ -978,6 +978,7 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+    pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 }
 
 #[link(name = "util")]
@@ -1031,7 +1032,6 @@ extern "C" {
     pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
-    pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwent_r")]
     pub fn getpwent_r(
