@@ -401,6 +401,33 @@ s! {
         pub ut_exit: exit_status,
         pub ut_time: ::time_t,
     }
+
+    pub struct timex {
+        pub modes: u32,
+        pub offset: i32,
+        pub freq: i32,
+        pub maxerror: i32,
+        pub esterror: i32,
+        pub status: i32,
+        pub constant: i32,
+        pub precision: i32,
+        pub tolerance: i32,
+        pub ppsfreq: i32,
+        pub jitter: i32,
+        pub shift: i32,
+        pub stabil: i32,
+        pub jitcnt: i32,
+        pub calcnt: i32,
+        pub errcnt: i32,
+        pub stbcnt: i32,
+    }
+
+    pub struct ntptimeval {
+        pub time: ::timeval,
+        pub maxerror: i32,
+        pub esterror: i32,
+    }
+
 }
 
 s_no_extra_traits! {
@@ -1963,6 +1990,58 @@ pub const SOCK_CLOEXEC: ::c_int = 0x080000;
 pub const SOCK_NONBLOCK: ::c_int = 0x100000;
 pub const SOCK_NDELAY: ::c_int = 0x200000;
 
+//<sys/timex.h>
+pub const SCALE_KG: ::c_int = 1 << 6;
+pub const SCALE_KF: ::c_int = 1 << 16;
+pub const SCALE_KH: ::c_int = 1 << 2;
+pub const MAXTC: ::c_int = 1 << 6;
+pub const SCALE_PHASE: ::c_int = 1 << 22;
+pub const SCALE_USEC: ::c_int = 1 << 16;
+pub const SCALE_UPDATE: ::c_int = SCALE_KG * MAXTC;
+pub const FINEUSEC: ::c_int = 1 << 22;
+pub const MAXPHASE: ::c_int = 512000;
+pub const MAXFREQ: ::c_int = 512 * SCALE_USEC;
+pub const MAXTIME: ::c_int = 200 << PPS_AVG;
+pub const MINSEC: ::c_int = 16;
+pub const MAXSEC: ::c_int = 1200;
+pub const PPS_AVG: ::c_int = 2;
+pub const PPS_SHIFT: ::c_int = 2;
+pub const PPS_SHIFTMAX: ::c_int = 8;
+pub const PPS_VALID: ::c_int = 120;
+pub const MAXGLITCH: ::c_int = 30;
+pub const MOD_OFFSET: u32 = 0x0001;
+pub const MOD_FREQUENCY: u32 = 0x0002;
+pub const MOD_MAXERROR: u32 = 0x0004;
+pub const MOD_ESTERROR: u32 = 0x0008;
+pub const MOD_STATUS: u32 = 0x0010;
+pub const MOD_TIMECONST: u32 = 0x0020;
+pub const MOD_CLKB: u32 = 0x4000;
+pub const MOD_CLKA: u32 = 0x8000;
+pub const STA_PLL: u32 = 0x0001;
+pub const STA_PPSFREQ: i32 = 0x0002;
+pub const STA_PPSTIME: i32 = 0x0004;
+pub const STA_FLL: i32 = 0x0008;
+pub const STA_INS: i32 = 0x0010;
+pub const STA_DEL: i32 = 0x0020;
+pub const STA_UNSYNC: i32 = 0x0040;
+pub const STA_FREQHOLD: i32 = 0x0080;
+pub const STA_PPSSIGNAL: i32 = 0x0100;
+pub const STA_PPSJITTER: i32 = 0x0200;
+pub const STA_PPSWANDER: i32 = 0x0400;
+pub const STA_PPSERROR: i32 = 0x0800;
+pub const STA_CLOCKERR: i32 = 0x1000;
+pub const STA_RONLY: i32 = STA_PPSSIGNAL
+    | STA_PPSJITTER
+    | STA_PPSWANDER
+    | STA_PPSERROR
+    | STA_CLOCKERR;
+pub const TIME_OK: i32 = 0;
+pub const TIME_INS: i32 = 1;
+pub const TIME_DEL: i32 = 2;
+pub const TIME_OOP: i32 = 3;
+pub const TIME_WAIT: i32 = 4;
+pub const TIME_ERROR: i32 = 5;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
@@ -2496,6 +2575,9 @@ extern "C" {
     pub fn getutmp(ux: *const utmpx, u: *mut utmp);
     pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
     pub fn updwtmp(file: *const ::c_char, u: *mut utmp);
+
+    pub fn ntp_adjtime(buf: *mut timex) -> ::c_int;
+    pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
 }
 
 mod compat;

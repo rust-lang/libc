@@ -707,6 +707,7 @@ fn test_solaris(target: &str) {
         "sys/statvfs.h",
         "sys/time.h",
         "sys/times.h",
+        "sys/timex.h",
         "sys/types.h",
         "sys/uio.h",
         "sys/un.h",
