@@ -183,6 +183,96 @@ s! {
         pub rt_window: ::c_ulong,
         pub rt_irtt: ::c_ushort,
     }
+
+    pub struct timex {
+        pub modes: ::c_uint,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub offset: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub offset: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub freq: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub freq: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub maxerror: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub maxerror: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub esterror: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub esterror: ::c_long,
+        pub status: ::c_int,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub constant: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub constant: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub precision: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub precision: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub tolerance: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub tolerance: ::c_long,
+        pub time: ::timeval,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub tick: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub tick: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub ppsfreq: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub ppsfreq: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub jitter: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub jitter: ::c_long,
+        pub shift: ::c_int,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub stabil: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub stabil: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub jitcnt: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub jitcnt: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub calcnt: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub calcnt: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub errcnt: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub errcnt: ::c_long,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub stbcnt: i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub stbcnt: ::c_long,
+        pub tai: ::c_int,
+        pub __unused1: i32,
+        pub __unused2: i32,
+        pub __unused3: i32,
+        pub __unused4: i32,
+        pub __unused5: i32,
+        pub __unused6: i32,
+        pub __unused7: i32,
+        pub __unused8: i32,
+        pub __unused9: i32,
+        pub __unused10: i32,
+        pub __unused11: i32,
+    }
+
+    pub struct ntptimeval {
+        pub time: ::timeval,
+        pub maxerror: ::c_long,
+        pub esterror: ::c_long,
+        pub tai: ::c_long,
+        pub __glibc_reserved1: ::c_long,
+        pub __glibc_reserved2: ::c_long,
+        pub __glibc_reserved3: ::c_long,
+        pub __glibc_reserved4: ::c_long,
+    }
 }
 
 impl siginfo_t {
@@ -902,6 +992,65 @@ pub const AT_HWCAP2: ::c_ulong = 26;
 
 pub const AT_EXECFN: ::c_ulong = 31;
 
+//sys/timex.h
+pub const ADJ_OFFSET: ::c_uint = 0x0001;
+pub const ADJ_FREQUENCY: ::c_uint = 0x0002;
+pub const ADJ_MAXERROR: ::c_uint = 0x0004;
+pub const ADJ_ESTERROR: ::c_uint = 0x0008;
+pub const ADJ_STATUS: ::c_uint = 0x0010;
+pub const ADJ_TIMECONST: ::c_uint = 0x0020;
+pub const ADJ_TAI: ::c_uint = 0x0080;
+pub const ADJ_SETOFFSET: ::c_uint = 0x0100;
+pub const ADJ_MICRO: ::c_uint = 0x1000;
+pub const ADJ_NANO: ::c_uint = 0x2000;
+pub const ADJ_TICK: ::c_uint = 0x4000;
+pub const ADJ_OFFSET_SINGLESHOT: ::c_uint = 0x8001;
+pub const ADJ_OFFSET_SS_READ: ::c_uint = 0xa001;
+pub const MOD_OFFSET: ::c_uint = ADJ_OFFSET;
+pub const MOD_FREQUENCY: ::c_uint = ADJ_FREQUENCY;
+pub const MOD_MAXERROR: ::c_uint = ADJ_MAXERROR;
+pub const MOD_ESTERROR: ::c_uint = ADJ_ESTERROR;
+pub const MOD_STATUS: ::c_uint = ADJ_STATUS;
+pub const MOD_TIMECONST: ::c_uint = ADJ_TIMECONST;
+pub const MOD_CLKB: ::c_uint = ADJ_TICK;
+pub const MOD_CLKA: ::c_uint = ADJ_OFFSET_SINGLESHOT;
+pub const MOD_TAI: ::c_uint = ADJ_TAI;
+pub const MOD_MICRO: ::c_uint = ADJ_MICRO;
+pub const MOD_NANO: ::c_uint = ADJ_NANO;
+pub const STA_PLL: ::c_int = 0x0001;
+pub const STA_PPSFREQ: ::c_int = 0x0002;
+pub const STA_PPSTIME: ::c_int = 0x0004;
+pub const STA_FLL: ::c_int = 0x0008;
+pub const STA_INS: ::c_int = 0x0010;
+pub const STA_DEL: ::c_int = 0x0020;
+pub const STA_UNSYNC: ::c_int = 0x0040;
+pub const STA_FREQHOLD: ::c_int = 0x0080;
+pub const STA_PPSSIGNAL: ::c_int = 0x0100;
+pub const STA_PPSJITTER: ::c_int = 0x0200;
+pub const STA_PPSWANDER: ::c_int = 0x0400;
+pub const STA_PPSERROR: ::c_int = 0x0800;
+pub const STA_CLOCKERR: ::c_int = 0x1000;
+pub const STA_NANO: ::c_int = 0x2000;
+pub const STA_MODE: ::c_int = 0x4000;
+pub const STA_CLK: ::c_int = 0x8000;
+pub const STA_RONLY: ::c_int = STA_PPSSIGNAL
+    | STA_PPSJITTER
+    | STA_PPSWANDER
+    | STA_PPSERROR
+    | STA_CLOCKERR
+    | STA_NANO
+    | STA_MODE
+    | STA_CLK;
+pub const NTP_API: ::c_int = 4;
+pub const TIME_OK: ::c_int = 0;
+pub const TIME_INS: ::c_int = 1;
+pub const TIME_DEL: ::c_int = 2;
+pub const TIME_OOP: ::c_int = 3;
+pub const TIME_WAIT: ::c_int = 4;
+pub const TIME_ERROR: ::c_int = 5;
+pub const TIME_BAD: ::c_int = TIME_ERROR;
+pub const MAXTC: ::c_long = 6;
+
 cfg_if! {
     if #[cfg(any(
         target_arch = "arm",
@@ -1001,6 +1150,7 @@ extern "C" {
         buflen: ::size_t,
         flags: ::c_uint,
     ) -> ::ssize_t;
+
     pub fn memmem(
         haystack: *const ::c_void,
         haystacklen: ::size_t,
@@ -1008,6 +1158,11 @@ extern "C" {
         needlelen: ::size_t,
     ) -> *mut ::c_void;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
+
+    pub fn adjtimex(buf: *mut timex) -> ::c_int;
+    pub fn ntp_adjtime(buf: *mut timex) -> ::c_int;
+    #[link_name = "ntp_gettimex"]
+    pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
 }
 
 #[link(name = "util")]
