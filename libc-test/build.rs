@@ -2006,6 +2006,7 @@ fn test_vxworks(target: &str) {
                "errno.h",
                "sys/mman.h",
                "pathLib.h",
+               "mqueue.h",
     }
     /* Fix me */
     cfg.skip_const(move |name| match name {
