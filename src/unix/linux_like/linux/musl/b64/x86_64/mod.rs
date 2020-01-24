@@ -66,6 +66,30 @@ s! {
         pub nla_type: u16,
     }
 
+    pub struct _libc_fpxreg {
+        pub significand: [u16; 4],
+        pub exponent: u16,
+        __private: [u16; 3],
+    }
+
+    pub struct _libc_xmmreg {
+        pub element: [u32; 4],
+    }
+
+    pub struct _libc_fpstate {
+        pub cwd: u16,
+        pub swd: u16,
+        pub ftw: u16,
+        pub fop: u16,
+        pub rip: u64,
+        pub rdp: u64,
+        pub mxcsr: u32,
+        pub mxcr_mask: u32,
+        pub _st: [_libc_fpxreg; 8],
+        pub _xmm: [_libc_xmmreg; 16],
+        __private: [u64; 12],
+    }
+
     pub struct user_regs_struct {
         pub r15: ::c_ulong,
         pub r14: ::c_ulong,
@@ -123,7 +147,8 @@ s! {
     // file: arch/x86_64/bits/signal.h#L80-L84
     pub struct mcontext_t {
         pub gregs: [greg_t; 23],
-        __private: [u64; 9],
+        pub fpregs: *mut _libc_fpstate,
+        __private: [u64; 8],
     }
 
     pub struct ipc_perm {
