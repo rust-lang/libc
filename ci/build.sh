@@ -147,12 +147,15 @@ x86_64-unknown-linux-gnux32 \
 
 RUST_OSX_TARGETS="\
 aarch64-apple-ios \
+x86_64-apple-darwin \
+x86_64-apple-ios \
+"
+
+RUST_LT_1_42_OSX_TARGETS="\
 armv7-apple-ios \
 armv7s-apple-ios \
 i386-apple-ios \
 i686-apple-darwin \
-x86_64-apple-darwin \
-x86_64-apple-ios \
 "
 
 # The targets are listed here alphabetically
@@ -178,6 +181,12 @@ case "${OS}" in
         ;;
     osx*)
         TARGETS="${RUST_OSX_TARGETS}"
+
+        if [ "${RUST}" != "nightly" ]; then
+            if [ "${RUST}" != "beta" ]; then
+                TARGETS="${TARGETS} ${RUST_LT_1_42_OSX_TARGETS}"
+            fi
+        fi
         ;;
     *)
         ;;
