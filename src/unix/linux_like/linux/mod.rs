@@ -2248,11 +2248,11 @@ pub const IN_MODIFY: u32 = 0x0000_0002;
 pub const IN_ATTRIB: u32 = 0x0000_0004;
 pub const IN_CLOSE_WRITE: u32 = 0x0000_0008;
 pub const IN_CLOSE_NOWRITE: u32 = 0x0000_0010;
-pub const IN_CLOSE: u32 = (IN_CLOSE_WRITE | IN_CLOSE_NOWRITE);
+pub const IN_CLOSE: u32 = IN_CLOSE_WRITE | IN_CLOSE_NOWRITE;
 pub const IN_OPEN: u32 = 0x0000_0020;
 pub const IN_MOVED_FROM: u32 = 0x0000_0040;
 pub const IN_MOVED_TO: u32 = 0x0000_0080;
-pub const IN_MOVE: u32 = (IN_MOVED_FROM | IN_MOVED_TO);
+pub const IN_MOVE: u32 = IN_MOVED_FROM | IN_MOVED_TO;
 pub const IN_CREATE: u32 = 0x0000_0100;
 pub const IN_DELETE: u32 = 0x0000_0200;
 pub const IN_DELETE_SELF: u32 = 0x0000_0400;
@@ -2269,7 +2269,7 @@ pub const IN_DONT_FOLLOW: u32 = 0x0200_0000;
 pub const IN_ISDIR: u32 = 0x4000_0000;
 pub const IN_ONESHOT: u32 = 0x8000_0000;
 
-pub const IN_ALL_EVENTS: u32 = (IN_ACCESS
+pub const IN_ALL_EVENTS: u32 = IN_ACCESS
     | IN_MODIFY
     | IN_ATTRIB
     | IN_CLOSE_WRITE
@@ -2280,7 +2280,7 @@ pub const IN_ALL_EVENTS: u32 = (IN_ACCESS
     | IN_DELETE
     | IN_CREATE
     | IN_DELETE_SELF
-    | IN_MOVE_SELF);
+    | IN_MOVE_SELF;
 
 pub const IN_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const IN_NONBLOCK: ::c_int = O_NONBLOCK;

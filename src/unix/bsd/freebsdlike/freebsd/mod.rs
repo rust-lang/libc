@@ -1024,12 +1024,12 @@ pub const UTXDB_ACTIVE: ::c_int = 0;
 pub const UTXDB_LASTLOGIN: ::c_int = 1;
 pub const UTXDB_LOG: ::c_int = 2;
 
-pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
-pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
-pub const LC_MONETARY_MASK: ::c_int = (1 << 2);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << 3);
-pub const LC_TIME_MASK: ::c_int = (1 << 4);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << 5);
+pub const LC_COLLATE_MASK: ::c_int = 1 << 0;
+pub const LC_CTYPE_MASK: ::c_int = 1 << 1;
+pub const LC_MONETARY_MASK: ::c_int = 1 << 2;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << 3;
+pub const LC_TIME_MASK: ::c_int = 1 << 4;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << 5;
 pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
     | LC_CTYPE_MASK
     | LC_MESSAGES_MASK

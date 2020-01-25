@@ -772,12 +772,12 @@ pub const SOCK_PACKET: ::c_int = 10;
 pub const _SS_MAXSIZE: usize = 128;
 pub const _SS_ALIGNSIZE: usize = size_of::<u32>();
 pub const _SS_PAD1SIZE: usize =
-    (_SS_ALIGNSIZE - size_of::<::c_uchar>() - size_of::<::sa_family_t>());
-pub const _SS_PAD2SIZE: usize = (_SS_MAXSIZE
+    _SS_ALIGNSIZE - size_of::<::c_uchar>() - size_of::<::sa_family_t>();
+pub const _SS_PAD2SIZE: usize = _SS_MAXSIZE
     - size_of::<::c_uchar>()
     - size_of::<::sa_family_t>()
     - _SS_PAD1SIZE
-    - _SS_ALIGNSIZE);
+    - _SS_ALIGNSIZE;
 
 pub const MSG_OOB: ::c_int = 0x0001;
 pub const MSG_PEEK: ::c_int = 0x0002;
