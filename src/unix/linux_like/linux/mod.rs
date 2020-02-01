@@ -1966,6 +1966,9 @@ pub const NF_IP6_PRI_SELINUX_LAST: ::c_int = 225;
 pub const NF_IP6_PRI_CONNTRACK_HELPER: ::c_int = 300;
 pub const NF_IP6_PRI_LAST: ::c_int = ::INT_MAX;
 
+// linux/netfilter_ipv6/ip6_tables.h
+pub const IP6T_SO_ORIGINAL_DST: ::c_int = 80;
+
 pub const SIOCADDRT: ::c_ulong = 0x0000890B;
 pub const SIOCDELRT: ::c_ulong = 0x0000890C;
 pub const SIOCGIFNAME: ::c_ulong = 0x00008910;
