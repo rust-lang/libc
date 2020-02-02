@@ -2,7 +2,7 @@
 FROM ubuntu:19.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        gcc libc6-dev qemu-user ca-certificates \
+        gcc libc6-dev libcap-dev qemu-user ca-certificates \
         gcc-mips-linux-gnu libc6-dev-mips-cross \
         qemu-system-mips linux-headers-generic
 

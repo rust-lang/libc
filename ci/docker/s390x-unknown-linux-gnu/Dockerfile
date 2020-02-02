@@ -2,7 +2,7 @@ FROM ubuntu:19.10
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
-        gcc libc6-dev \
+        gcc libc6-dev libcap-dev \
         gcc-s390x-linux-gnu libc6-dev-s390x-cross \
         qemu-system-s390x \
         cpio

@@ -1,7 +1,7 @@
 FROM ubuntu:19.10
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        gcc libc6-dev qemu-user ca-certificates \
+        gcc libc6-dev libcap-dev qemu-user ca-certificates \
         gcc-powerpc64-linux-gnu libc6-dev-ppc64-cross \
         qemu-system-ppc
 
