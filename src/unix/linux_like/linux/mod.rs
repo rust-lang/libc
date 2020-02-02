@@ -15,6 +15,13 @@ pub type idtype_t = ::c_uint;
 pub type loff_t = ::c_longlong;
 pub type pthread_key_t = ::c_uint;
 
+pub type cap_user_header_t = *mut ::c_void;
+pub type cap_user_data_t = *mut ::c_void;
+pub type cap_t = *mut ::c_void;
+pub type cap_value_t = ::c_int;
+pub type cap_flag_t = u32;
+pub type cap_flag_value_t = u32;
+
 pub type __u8 = ::c_uchar;
 pub type __u16 = ::c_ushort;
 pub type __s16 = ::c_short;
@@ -1536,6 +1543,52 @@ pub const PR_CAP_AMBIENT_IS_SET: ::c_int = 1;
 pub const PR_CAP_AMBIENT_RAISE: ::c_int = 2;
 pub const PR_CAP_AMBIENT_LOWER: ::c_int = 3;
 pub const PR_CAP_AMBIENT_CLEAR_ALL: ::c_int = 4;
+
+pub const CAP_CHOWN: u32 = 0;
+pub const CAP_DAC_OVERRIDE: u32 = 1;
+pub const CAP_DAC_READ_SEARCH: u32 = 2;
+pub const CAP_FOWNER: u32 = 3;
+pub const CAP_FSETID: u32 = 4;
+pub const CAP_KILL: u32 = 5;
+pub const CAP_SETGID: u32 = 6;
+pub const CAP_SETUID: u32 = 7;
+pub const CAP_SETPCAP: u32 = 8;
+pub const CAP_LINUX_IMMUTABLE: u32 = 9;
+pub const CAP_NET_BIND_SERVICE: u32 = 10;
+pub const CAP_NET_BROADCAST: u32 = 11;
+pub const CAP_NET_ADMIN: u32 = 12;
+pub const CAP_NET_RAW: u32 = 13;
+pub const CAP_IPC_LOCK: u32 = 14;
+pub const CAP_IPC_OWNER: u32 = 15;
+pub const CAP_SYS_MODULE: u32 = 16;
+pub const CAP_SYS_RAWIO: u32 = 17;
+pub const CAP_SYS_CHROOT: u32 = 18;
+pub const CAP_SYS_PTRACE: u32 = 19;
+pub const CAP_SYS_PACCT: u32 = 20;
+pub const CAP_SYS_ADMIN: u32 = 21;
+pub const CAP_SYS_BOOT: u32 = 22;
+pub const CAP_SYS_NICE: u32 = 23;
+pub const CAP_SYS_RESOURCE: u32 = 24;
+pub const CAP_SYS_TIME: u32 = 25;
+pub const CAP_SYS_TTY_CONFIG: u32 = 26;
+pub const CAP_MKNOD: u32 = 27;
+pub const CAP_LEASE: u32 = 28;
+pub const CAP_AUDIT_WRITE: u32 = 29;
+pub const CAP_AUDIT_CONTROL: u32 = 30;
+pub const CAP_SETFCAP: u32 = 31;
+pub const CAP_MAC_OVERRIDE: u32 = 32;
+pub const CAP_MAC_ADMIN: u32 = 33;
+pub const CAP_SYSLOG: u32 = 34;
+pub const CAP_WAKE_ALARM: u32 = 35;
+pub const CAP_BLOCK_SUSPEND: u32 = 36;
+pub const CAP_AUDIT_READ: u32 = 37;
+pub const CAP_LAST_CAP: u32 = 37;
+
+pub const CAP_EFFECTIVE: cap_flag_t = 0;
+pub const CAP_PERMITTED: cap_flag_t = 1;
+pub const CAP_INHERITABLE: cap_flag_t = 2;
+pub const CAP_CLEAR: cap_flag_value_t = 0;
+pub const CAP_SET: cap_flag_value_t = 1;
 
 pub const GRND_NONBLOCK: ::c_uint = 0x0001;
 pub const GRND_RANDOM: ::c_uint = 0x0002;
@@ -3330,59 +3383,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-pub const CAP_CHOWN: u32 = 0;
-pub const CAP_DAC_OVERRIDE: u32 = 1;
-pub const CAP_DAC_READ_SEARCH: u32 = 2;
-pub const CAP_FOWNER: u32 = 3;
-pub const CAP_FSETID: u32 = 4;
-pub const CAP_KILL: u32 = 5;
-pub const CAP_SETGID: u32 = 6;
-pub const CAP_SETUID: u32 = 7;
-pub const CAP_SETPCAP: u32 = 8;
-pub const CAP_LINUX_IMMUTABLE: u32 = 9;
-pub const CAP_NET_BIND_SERVICE: u32 = 10;
-pub const CAP_NET_BROADCAST: u32 = 11;
-pub const CAP_NET_ADMIN: u32 = 12;
-pub const CAP_NET_RAW: u32 = 13;
-pub const CAP_IPC_LOCK: u32 = 14;
-pub const CAP_IPC_OWNER: u32 = 15;
-pub const CAP_SYS_MODULE: u32 = 16;
-pub const CAP_SYS_RAWIO: u32 = 17;
-pub const CAP_SYS_CHROOT: u32 = 18;
-pub const CAP_SYS_PTRACE: u32 = 19;
-pub const CAP_SYS_PACCT: u32 = 20;
-pub const CAP_SYS_ADMIN: u32 = 21;
-pub const CAP_SYS_BOOT: u32 = 22;
-pub const CAP_SYS_NICE: u32 = 23;
-pub const CAP_SYS_RESOURCE: u32 = 24;
-pub const CAP_SYS_TIME: u32 = 25;
-pub const CAP_SYS_TTY_CONFIG: u32 = 26;
-pub const CAP_MKNOD: u32 = 27;
-pub const CAP_LEASE: u32 = 28;
-pub const CAP_AUDIT_WRITE: u32 = 29;
-pub const CAP_AUDIT_CONTROL: u32 = 30;
-pub const CAP_SETFCAP: u32 = 31;
-pub const CAP_MAC_OVERRIDE: u32 = 32;
-pub const CAP_MAC_ADMIN: u32 = 33;
-pub const CAP_SYSLOG: u32 = 34;
-pub const CAP_WAKE_ALARM: u32 = 35;
-pub const CAP_BLOCK_SUSPEND: u32 = 36;
-pub const CAP_AUDIT_READ: u32 = 37;
-pub const CAP_LAST_CAP: u32 = 37;
-
-pub type cap_user_header_t = *mut ::c_void;
-pub type cap_user_data_t = *mut ::c_void;
-pub type cap_t = *mut ::c_void;
-pub type cap_value_t = ::c_int;
-pub type cap_flag_t = u32;
-pub type cap_flag_value_t = u32;
-
-pub const CAP_EFFECTIVE: cap_flag_t = 0;
-pub const CAP_PERMITTED: cap_flag_t = 1;
-pub const CAP_INHERITABLE: cap_flag_t = 2;
-pub const CAP_CLEAR: cap_flag_value_t = 0;
-pub const CAP_SET: cap_flag_value_t = 1;
-
 #[link(name = "cap")]
 extern "C" {
     pub fn cap_dup(arg1: cap_t) -> cap_t;
@@ -3413,10 +3413,17 @@ extern "C" {
     pub fn cap_get_bound(arg1: cap_value_t) -> ::c_int;
     pub fn cap_drop_bound(arg1: cap_value_t) -> ::c_int;
     pub fn cap_get_ambient(arg1: cap_value_t) -> ::c_int;
-    pub fn cap_set_ambient(arg1: cap_value_t, arg2: cap_flag_value_t) -> ::c_int;
+    pub fn cap_set_ambient(
+        arg1: cap_value_t,
+        arg2: cap_flag_value_t,
+    ) -> ::c_int;
     pub fn cap_reset_ambient() -> ::c_int;
     pub fn cap_size(arg1: cap_t) -> isize;
-    pub fn cap_copy_ext(arg1: *mut ::c_void, arg2: cap_t, arg3: isize) -> isize;
+    pub fn cap_copy_ext(
+        arg1: *mut ::c_void,
+        arg2: cap_t,
+        arg3: isize,
+    ) -> isize;
     pub fn cap_copy_int(arg1: *const ::c_void) -> cap_t;
     pub fn cap_from_text(arg1: *const ::c_char) -> cap_t;
     pub fn cap_to_text(arg1: cap_t, arg2: *mut isize) -> *mut ::c_char;
@@ -3426,8 +3433,10 @@ extern "C" {
     ) -> ::c_int;
     pub fn cap_to_name(arg1: cap_value_t) -> *mut ::c_char;
     pub fn cap_compare(arg1: cap_t, arg2: cap_t) -> ::c_int;
-    pub fn capset(header: cap_user_header_t, data: cap_user_data_t) -> ::c_int;
-    pub fn capget(header: cap_user_header_t, data: cap_user_data_t) -> ::c_int;
+    pub fn capset(header: cap_user_header_t, data: cap_user_data_t)
+        -> ::c_int;
+    pub fn capget(header: cap_user_header_t, data: cap_user_data_t)
+        -> ::c_int;
     pub fn capgetp(pid: ::pid_t, cap_d: cap_t) -> ::c_int;
     pub fn capsetp(pid: ::pid_t, cap_d: cap_t) -> ::c_int;
 }
