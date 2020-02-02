@@ -3412,12 +3412,15 @@ extern "C" {
     pub fn cap_set_proc(arg1: cap_t) -> ::c_int;
     pub fn cap_get_bound(arg1: cap_value_t) -> ::c_int;
     pub fn cap_drop_bound(arg1: cap_value_t) -> ::c_int;
-    pub fn cap_get_ambient(arg1: cap_value_t) -> ::c_int;
-    pub fn cap_set_ambient(
-        arg1: cap_value_t,
-        arg2: cap_flag_value_t,
-    ) -> ::c_int;
-    pub fn cap_reset_ambient() -> ::c_int;
+
+    // Commented out as these are recent additions to the kernel
+    // They have not yet landed in stable ubuntu for CI
+    //pub fn cap_get_ambient(arg1: cap_value_t) -> ::c_int;
+    //pub fn cap_set_ambient(
+    //    arg1: cap_value_t,
+    //    arg2: cap_flag_value_t,
+    //) -> ::c_int;
+    //pub fn cap_reset_ambient() -> ::c_int;
     pub fn cap_size(arg1: cap_t) -> isize;
     pub fn cap_copy_ext(
         arg1: *mut ::c_void,
