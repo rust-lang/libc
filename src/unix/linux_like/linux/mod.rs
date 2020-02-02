@@ -3383,6 +3383,7 @@ pub const CAP_INHERITABLE: cap_flag_t = 2;
 pub const CAP_CLEAR: cap_flag_value_t = 0;
 pub const CAP_SET: cap_flag_value_t = 1;
 
+#[link(name = "cap")]
 extern "C" {
     pub fn cap_dup(arg1: cap_t) -> cap_t;
     pub fn cap_free(arg1: *mut ::c_void) -> ::c_int;
