@@ -2159,6 +2159,7 @@ fn test_linux(target: &str) {
                "stdio.h",
                "stdlib.h",
                "string.h",
+               "sys/capability.h",
                "sys/epoll.h",
                "sys/eventfd.h",
                "sys/file.h",
