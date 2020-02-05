@@ -2498,6 +2498,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __opaque: [0; __PTHREAD_RWLOCK_SIZE__],
 };
 
+pub const MINSIGSTKSZ: ::size_t = 32768;
 pub const SIGSTKSZ: ::size_t = 131072;
 
 pub const FD_SETSIZE: usize = 1024;
