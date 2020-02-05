@@ -2579,7 +2579,17 @@ extern "C" {
     pub fn endspent();
     pub fn getspent() -> *mut spwd;
 
-    pub fn getspnam(__name: *const ::c_char) -> *mut spwd;
+    pub fn getspnam(name: *const ::c_char) -> *mut spwd;
+    // Only `getspnam_r` is implemented for musl, out of all of the reenterant
+    // functions from `shadow.h`.
+    // https://git.musl-libc.org/cgit/musl/tree/include/shadow.h
+    pub fn getspnam_r(
+        name: *const ::c_char,
+        spbuf: *mut spwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        spbufp: *mut *mut spwd,
+    ) -> ::c_int;
 
     pub fn shm_open(
         name: *const c_char,
