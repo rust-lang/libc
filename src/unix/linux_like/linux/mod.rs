@@ -2310,6 +2310,7 @@ pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
 // include/uapi/asm-generic/mman-common.h
 #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const MAP_SYNC : ::c_int = 0x080000;
+pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
 
 // uapi/linux/vm_sockets.h
 pub const VMADDR_CID_ANY: ::c_uint = 0xFFFFFFFF;
