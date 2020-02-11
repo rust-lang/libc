@@ -481,9 +481,7 @@ pub const LC_ALL_MASK: ::c_int = ::LC_CTYPE_MASK
     | LC_MEASUREMENT_MASK
     | LC_IDENTIFICATION_MASK;
 
-pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
 pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
-
 pub const ENOTSUP: ::c_int = EOPNOTSUPP;
 
 pub const SOCK_SEQPACKET: ::c_int = 5;

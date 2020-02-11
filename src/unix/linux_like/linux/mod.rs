@@ -2304,6 +2304,9 @@ pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
 pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
 
+// include/uapi/linux/mman.h
+pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
+
 // uapi/linux/vm_sockets.h
 pub const VMADDR_CID_ANY: ::c_uint = 0xFFFFFFFF;
 pub const VMADDR_CID_HYPERVISOR: ::c_uint = 0;
