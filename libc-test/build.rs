@@ -389,7 +389,7 @@ fn test_openbsd(target: &str) {
 
     cfg.skip_field_type(move |struct_, field| {
         // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
-        (struct_ == "siginfo_t" && field == "si_addr")
+        struct_ == "siginfo_t" && field == "si_addr"
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
