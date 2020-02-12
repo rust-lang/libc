@@ -634,6 +634,8 @@ pub const REISERFS_SUPER_MAGIC: ::c_long = 0x52654973;
 pub const SMB_SUPER_MAGIC: ::c_long = 0x0000517b;
 pub const TMPFS_MAGIC: ::c_long = 0x01021994;
 pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
+pub const CGROUP_SUPER_MAGIC: ::c_long = 0x27e0eb;
+pub const CGROUP2_SUPER_MAGIC: ::c_long = 0x63677270;
 
 pub const CPU_SETSIZE: ::c_int = 0x400;
 
