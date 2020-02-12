@@ -1509,12 +1509,12 @@ pub const LC_COLLATE: ::c_int = 3;
 pub const LC_MONETARY: ::c_int = 4;
 pub const LC_MESSAGES: ::c_int = 5;
 pub const LC_ALL: ::c_int = 6;
-pub const LC_CTYPE_MASK: ::c_int = (1 << LC_CTYPE);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << LC_NUMERIC);
-pub const LC_TIME_MASK: ::c_int = (1 << LC_TIME);
-pub const LC_COLLATE_MASK: ::c_int = (1 << LC_COLLATE);
-pub const LC_MONETARY_MASK: ::c_int = (1 << LC_MONETARY);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << LC_MESSAGES);
+pub const LC_CTYPE_MASK: ::c_int = 1 << LC_CTYPE;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << LC_NUMERIC;
+pub const LC_TIME_MASK: ::c_int = 1 << LC_TIME;
+pub const LC_COLLATE_MASK: ::c_int = 1 << LC_COLLATE;
+pub const LC_MONETARY_MASK: ::c_int = 1 << LC_MONETARY;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << LC_MESSAGES;
 // LC_ALL_MASK defined per platform
 
 pub const MAP_FILE: ::c_int = 0x0000;
@@ -2691,7 +2691,7 @@ pub const FOPEN_MAX: ::c_uint = 1000;
 pub const O_PATH: ::c_int = 0x00400000;
 pub const O_EXEC: ::c_int = O_PATH;
 pub const O_SEARCH: ::c_int = O_PATH;
-pub const O_ACCMODE: ::c_int = (03 | O_SEARCH);
+pub const O_ACCMODE: ::c_int = 03 | O_SEARCH;
 pub const O_NDELAY: ::c_int = O_NONBLOCK;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
@@ -2893,7 +2893,7 @@ pub const O_CREAT: ::c_int = 0x00010000;
 pub const O_EXCL: ::c_int = 0x00020000;
 pub const O_NOCTTY: ::c_int = 0x00000200;
 pub const O_NONBLOCK: ::c_int = 0x00000010;
-pub const O_SYNC: ::c_int = (0x00000040 | O_DSYNC);
+pub const O_SYNC: ::c_int = 0x00000040 | O_DSYNC;
 pub const O_RSYNC: ::c_int = O_SYNC;
 pub const O_DSYNC: ::c_int = 0x00000020;
 
