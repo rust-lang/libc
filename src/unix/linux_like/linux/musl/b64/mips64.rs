@@ -97,6 +97,33 @@ s! {
     }
 }
 
+pub fn _IOC(a: ::c_int, b: ::c_int,c: ::c_int, d: ::c_int) -> ::c_int {
+    ( (a<<29) | (b<<8) | c | (d<<16) )
+}
+
+pub const _IOC_NONE: ::c_int = 1;
+pub const _IOC_READ: ::c_int = 2;
+pub const _IOC_WRITE: ::c_int = 4;
+
+pub fn _IO(a:u8,b:u8) -> ::c_int {
+    _IOC(_IOC_NONE,(a as ::c_int),(b as ::c_int),0)
+}
+
+pub fn _IOW<T: Sized> (a:u8,b:u8) -> ::c_int {
+    let size = ::core::mem::size_of::<T>() as ::c_int;
+    _IOC(_IOC_WRITE,(a as ::c_int),(b as ::c_int),size)
+}
+
+pub fn _IOR<T: Sized> (a:u8,b:u8) -> ::c_int {
+    let size = ::core::mem::size_of::<T>() as ::c_int;
+    _IOC(_IOC_READ,(a as ::c_int),(b as ::c_int),size)
+}
+
+pub fn _IOWR<T: Sized> (a:u8,b:u8) -> ::c_int {
+    let size = ::core::mem::size_of::<T>() as ::c_int;
+    _IOC(_IOC_READ|_IOC_WRITE,(a as ::c_int),(b as ::c_int),size)
+}
+
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
