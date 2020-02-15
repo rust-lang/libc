@@ -890,6 +890,16 @@ pub const REG_TRAPNO: ::c_int = 20;
 pub const REG_OLDMASK: ::c_int = 21;
 pub const REG_CR2: ::c_int = 22;
 
+// from uapi/asm-generic
+pub const _IOC_NRBITS: u32 = 8;
+pub const _IOC_TYPEBITS: u32 = 8;
+pub const _IOC_SIZEBITS: u32 = 14;
+pub const _IOC_DIRBITS: u32 = 2;
+
+pub const _IOC_NONE: ::c_ulong = 0;
+pub const _IOC_READ: ::c_ulong = 1;
+pub const _IOC_WRITE: ::c_ulong = 2;
+
 extern "C" {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;

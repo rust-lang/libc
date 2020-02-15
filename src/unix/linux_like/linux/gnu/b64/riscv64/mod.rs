@@ -859,3 +859,13 @@ pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
 pub const SYS_statx: ::c_long = 291;
+
+// from uapi/asm-generic
+pub const _IOC_NRBITS: u32 = 8;
+pub const _IOC_TYPEBITS: u32 = 8;
+pub const _IOC_SIZEBITS: u32 = 14;
+pub const _IOC_DIRBITS: u32 = 2;
+
+pub const _IOC_NONE: ::c_ulong = 0;
+pub const _IOC_READ: ::c_ulong = 1;
+pub const _IOC_WRITE: ::c_ulong = 2;

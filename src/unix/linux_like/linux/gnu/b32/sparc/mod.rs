@@ -958,6 +958,17 @@ pub const SYS_preadv2: ::c_long = 358;
 pub const SYS_pwritev2: ::c_long = 359;
 pub const SYS_statx: ::c_long = 360;
 
+// from uapi/asm-generic
+pub const _IOC_NRBITS: u32 = 8;
+pub const _IOC_TYPEBITS: u32 = 8;
+// from arch/sparc/include/uapi/asm
+pub const _IOC_SIZEBITS: u32 = 13;
+pub const _IOC_DIRBITS: u32 = 3;
+
+pub const _IOC_NONE: ::c_ulong = 1;
+pub const _IOC_READ: ::c_ulong = 2;
+pub const _IOC_WRITE: ::c_ulong = 4;
+
 #[link(name = "util")]
 extern "C" {
     pub fn sysctl(

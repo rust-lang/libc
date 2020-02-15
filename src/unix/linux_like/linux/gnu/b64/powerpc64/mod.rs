@@ -1032,6 +1032,17 @@ pub const SYS_pwritev2: ::c_long = 381;
 pub const SYS_kexec_file_load: ::c_long = 382;
 pub const SYS_statx: ::c_long = 383;
 
+// from uapi/asm-generic
+pub const _IOC_NRBITS: u32 = 8;
+pub const _IOC_TYPEBITS: u32 = 8;
+// from arch/powerpc/include/uapi/asm
+pub const _IOC_SIZEBITS: u32 = 13;
+pub const _IOC_DIRBITS: u32 = 3;
+
+pub const _IOC_NONE: ::c_ulong = 1;
+pub const _IOC_READ: ::c_ulong = 2;
+pub const _IOC_WRITE: ::c_ulong = 4;
+
 #[link(name = "util")]
 extern "C" {
     pub fn sysctl(

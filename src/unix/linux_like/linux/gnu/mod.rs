@@ -961,6 +961,38 @@ extern "C" {
     ) -> ::ssize_t;
 }
 
+// glibc uses the definitions from the kernel header files.
+pub fn _IOC(dir: ::c_ulong, typ: ::c_ulong, nr: ::c_ulong, size: ::c_ulong) -> ::c_ulong {
+    const _IOC_NRSHIFT: u32 = 0;
+    const _IOC_TYPESHIFT: u32 = _IOC_NRSHIFT+_IOC_NRBITS;
+    const _IOC_SIZESHIFT: u32 = _IOC_TYPESHIFT+_IOC_TYPEBITS;
+    const _IOC_DIRSHIFT: u32 = _IOC_SIZESHIFT+_IOC_SIZEBITS;
+
+    (((dir)  << _IOC_DIRSHIFT) |
+     ((typ) << _IOC_TYPESHIFT) |
+     ((nr)   << _IOC_NRSHIFT) |
+     ((size) << _IOC_SIZESHIFT))
+}
+
+pub fn _IO(a:u8,b:u8) -> ::c_ulong {
+    _IOC(_IOC_NONE,(a as ::c_ulong),(b as ::c_ulong),0)
+}
+
+pub fn _IOW<T: Sized> (a:u8,b:u8) -> ::c_ulong {
+    let size = ::core::mem::size_of::<T>() as ::c_ulong;
+    _IOC(_IOC_WRITE,(a as ::c_ulong),(b as ::c_ulong),size)
+}
+
+pub fn _IOR<T: Sized> (a:u8,b:u8) -> ::c_ulong {
+    let size = ::core::mem::size_of::<T>() as ::c_ulong;
+    _IOC(_IOC_READ,(a as ::c_ulong),(b as ::c_ulong),size)
+}
+
+pub fn _IOWR<T: Sized> (a:u8,b:u8) -> ::c_ulong {
+    let size = ::core::mem::size_of::<T>() as ::c_ulong;
+    _IOC(_IOC_READ|_IOC_WRITE,(a as ::c_ulong),(b as ::c_ulong),size)
+}
+
 #[link(name = "util")]
 extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
