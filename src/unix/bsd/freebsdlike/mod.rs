@@ -219,6 +219,14 @@ s! {
         pub cmcred_groups: [::gid_t; CMGROUP_MAX],
     }
 
+    pub struct xucred {
+        pub cr_version: ::c_uint,
+        pub cr_uid: ::uid_t,
+        pub cr_ngroups: ::c_short,
+        pub cr_groups: [::gid_t; 16],
+        __cr_unused1: *mut ::c_void,
+    }
+
     pub struct rtprio {
         pub type_: ::c_ushort,
         pub prio: ::c_ushort,
@@ -947,6 +955,8 @@ pub const SO_RCVTIMEO: ::c_int = 0x1006;
 pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
 
+pub const LOCAL_PEERCRED: ::c_int = 1;
+
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
@@ -1132,6 +1142,9 @@ pub const FD_SETSIZE: usize = 1024;
 pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const NI_MAXHOST: ::size_t = 1025;
+
+pub const XU_NGROUPS: ::c_int = 16;
+pub const XUCRED_VERSION: ::c_uint = 0;
 
 pub const RTLD_LOCAL: ::c_int = 0;
 pub const RTLD_NODELETE: ::c_int = 0x1000;

@@ -89,14 +89,6 @@ s! {
         pub msg_ctime: ::time_t,
     }
 
-    pub struct xucred {
-        pub cr_version: ::c_uint,
-        pub cr_uid: ::uid_t,
-        pub cr_ngroups: ::c_short,
-        pub cr_groups: [::gid_t;16],
-        __cr_unused1: *mut ::c_void,
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_size: ::size_t,
@@ -629,7 +621,6 @@ pub const SO_PROTOCOL: ::c_int = 0x1016;
 pub const SO_PROTOTYPE: ::c_int = SO_PROTOCOL;
 pub const SO_VENDOR: ::c_int = 0x80000000;
 
-pub const LOCAL_PEERCRED: ::c_int = 1;
 pub const LOCAL_CREDS: ::c_int = 2;
 pub const LOCAL_CONNWAIT: ::c_int = 4;
 pub const LOCAL_VENDOR: ::c_int = SO_VENDOR;
@@ -1102,9 +1093,6 @@ pub const TAB3: ::tcflag_t = 0x00000004;
 pub const _PC_ACL_NFS4: ::c_int = 64;
 
 pub const _SC_CPUSET_SIZE: ::c_int = 122;
-
-pub const XU_NGROUPS: ::c_int = 16;
-pub const XUCRED_VERSION: ::c_uint = 0;
 
 // Flags which can be passed to pdfork(2)
 pub const PD_DAEMON: ::c_int = 0x00000001;
