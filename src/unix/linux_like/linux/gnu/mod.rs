@@ -968,10 +968,10 @@ pub fn _IOC(dir: ::c_ulong, typ: u8, nr: u8, size: ::c_ulong) -> ::c_ulong {
     const _IOC_SIZESHIFT: u32 = _IOC_TYPESHIFT+_IOC_TYPEBITS;
     const _IOC_DIRSHIFT: u32 = _IOC_SIZESHIFT+_IOC_SIZEBITS;
 
-    (((dir)              << _IOC_DIRSHIFT) |
-     ((typ as ::c_ulong) << _IOC_TYPESHIFT) |
-     ((nr as ::c_ulong)  << _IOC_NRSHIFT) |
-     ((size)             << _IOC_SIZESHIFT))
+    ((dir)              << _IOC_DIRSHIFT) |
+    ((typ as ::c_ulong) << _IOC_TYPESHIFT) |
+    ((nr as ::c_ulong)  << _IOC_NRSHIFT) |
+    ((size)             << _IOC_SIZESHIFT)
 }
 
 pub fn _IO(a:u8,b:u8) -> ::c_ulong {

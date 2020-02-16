@@ -213,7 +213,7 @@ cfg_if! {
 }
 
 pub fn _IOC(a: ::c_uint, b: u8, c: u8, d: ::c_int) -> ::c_int {
-    ( (a<<30) as ::c_int | (b as ::c_int)<<8 | c as ::c_int | (d<<16) )
+    (a<<30) as ::c_int | (b as ::c_int)<<8 | c as ::c_int | (d<<16)
 }
 
 pub const _IOC_NONE: ::c_uint = 0;

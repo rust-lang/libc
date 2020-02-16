@@ -61,7 +61,7 @@ s! {
 }
 
 pub fn _IOC(a: ::c_uint, b: u8, c: u8, d: ::c_int) -> ::c_int {
-    (a<<29) as ::c_int | (b as ::c_int)<<8 | c as ::c_int | (d<<16) )
+    (a<<29) as ::c_int | (b as ::c_int)<<8 | c as ::c_int | (d<<16)
 }
 
 pub const _IOC_NONE: ::c_uint = 1;
