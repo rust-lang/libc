@@ -2373,6 +2373,22 @@ pub const FUTEX_CLOCK_REALTIME: ::c_int = 256;
 pub const FUTEX_CMD_MASK: ::c_int =
     !(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME);
 
+// linux/reboot.h
+pub const LINUX_REBOOT_MAGIC1: ::c_int = 0xfee1dead;
+pub const LINUX_REBOOT_MAGIC2: ::c_int = 672274793;
+pub const LINUX_REBOOT_MAGIC2A: ::c_int = 85072278;
+pub const LINUX_REBOOT_MAGIC2B: ::c_int = 369367448;
+pub const LINUX_REBOOT_MAGIC2C: ::c_int = 537993216;
+
+pub const LINUX_REBOOT_CMD_RESTART: ::c_int = 0x01234567;
+pub const LINUX_REBOOT_CMD_HALT: ::c_int = 0xCDEF0123;
+pub const LINUX_REBOOT_CMD_CAD_ON: ::c_int = 0x89ABCDEF;
+pub const LINUX_REBOOT_CMD_CAD_OFF: ::c_int = 0x00000000;
+pub const LINUX_REBOOT_CMD_POWER_OFF: ::c_int = 0x4321FEDC;
+pub const LINUX_REBOOT_CMD_RESTART2: ::c_int = 0xA1B2C3D4;
+pub const LINUX_REBOOT_CMD_SW_SUSPEND: ::c_int = 0xD000FCE2;
+pub const LINUX_REBOOT_CMD_KEXEC: ::c_int = 0x45584543;
+
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
