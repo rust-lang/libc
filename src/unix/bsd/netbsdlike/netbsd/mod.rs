@@ -299,6 +299,12 @@ s! {
         pub sc_groups: [::gid_t; 1],
     }
 
+    pub struct unpcbid {
+        pub unp_pid: ::pid_t,
+        pub unp_euid: ::uid_t,
+        pub unp_egid: ::gid_t,
+    }
+
     pub struct sockaddr_dl {
         pub sdl_len: ::c_uchar,
         pub sdl_family: ::c_uchar,
@@ -1046,6 +1052,12 @@ pub const SO_ACCEPTFILTER: ::c_int = 0x1000;
 pub const SO_TIMESTAMP: ::c_int = 0x2000;
 pub const SO_OVERFLOWED: ::c_int = 0x1009;
 pub const SO_NOHEADER: ::c_int = 0x100a;
+
+// http://cvsweb.netbsd.org/bsdweb.cgi/src/sys/sys/un.h?annotate
+pub const LOCAL_OCREDS: ::c_int = 0x0001; // pass credentials to receiver
+pub const LOCAL_CONNWAIT: ::c_int = 0x0002; // connects block until accepted
+pub const LOCAL_PEEREID: ::c_int = 0x0003; // get peer identification
+pub const LOCAL_CREDS: ::c_int = 0x0004; // pass credentials to receiver
 
 // https://github.com/NetBSD/src/blob/trunk/sys/net/if.h#L373
 pub const IFF_UP: ::c_int = 0x0001; // interface is up
