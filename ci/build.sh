@@ -279,3 +279,17 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     cargo xbuild --target switch.json
 fi
 
+RUST_OSX_NO_CORE_TARGETS="\
+armv7-apple-ios \
+armv7s-apple-ios \
+i386-apple-ios \
+i686-apple-darwin \
+"
+
+if [ "${RUST}" = "nightly" ] && [ "${OS}" = "osx" ]; then
+    for TARGET in $RUST_OSX_NO_CORE_TARGETS; do
+        if echo "$TARGET" | grep -q "$FILTER"; then
+            test_target xbuild "$TARGET" 1
+        fi
+    done
+fi
