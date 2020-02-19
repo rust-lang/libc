@@ -388,6 +388,23 @@ extern "C" {
     pub fn isblank(c: c_int) -> c_int;
     pub fn tolower(c: c_int) -> c_int;
     pub fn toupper(c: c_int) -> c_int;
+    pub fn qsort(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        compar: ::Option<
+            unsafe extern "C" fn(*const c_void, *const c_void) -> c_int,
+        >,
+    );
+    pub fn bsearch(
+        key: *const c_void,
+        base: *const c_void,
+        num: size_t,
+        size: size_t,
+        compar: ::Option<
+            unsafe extern "C" fn(*const c_void, *const c_void) -> c_int,
+        >,
+    ) -> *mut c_void;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "fopen$UNIX2003"

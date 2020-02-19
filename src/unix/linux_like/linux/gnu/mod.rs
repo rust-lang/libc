@@ -894,6 +894,19 @@ cfg_if! {
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 3;
 
 extern "C" {
+    pub fn qsort_r(
+        base: *mut ::c_void,
+        num: ::size_t,
+        size: ::size_t,
+        compar: ::Option<
+            unsafe extern "C" fn(
+                *const ::c_void,
+                *const ::c_void,
+                *mut ::c_void,
+            ) -> ::c_int,
+        >,
+        arg: *mut ::c_void,
+    );
     pub fn sendmmsg(
         sockfd: ::c_int,
         msgvec: *mut ::mmsghdr,
