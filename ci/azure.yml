@@ -99,18 +99,6 @@ jobs:
         x86_64-apple-darwin:
           TARGET: x86_64-apple-darwin
 
-  - job: DockerOSX32
-    pool:
-      vmImage: macos-10.13
-    steps:
-      - template: azure-install-rust.yml
-      - bash: LIBC_CI=1 sh ./ci/run.sh $TARGET
-        displayName: Execute run.sh
-    strategy:
-      matrix:
-        i686-apple-darwin:
-          TARGET: i686-apple-darwin
-
   - job: Windows
     pool:
       vmImage: vs2017-win2016

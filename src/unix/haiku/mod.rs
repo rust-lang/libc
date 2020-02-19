@@ -1238,7 +1238,7 @@ f! {
     }
 
     pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
-        (status & 0xff)
+        status & 0xff
     }
 
     pub fn WIFSIGNALED(status: ::c_int) -> bool {

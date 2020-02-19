@@ -45,9 +45,9 @@ steps:
   - bash: |
       set -ex
       gcc -print-search-dirs
-      find "C:\ProgramData\Chocolatey" -name "crt2*"
-      find "C:\ProgramData\Chocolatey" -name "dllcrt2*"
-      find "C:\ProgramData\Chocolatey" -name "libmsvcrt*"
+      /usr/bin/find "C:\ProgramData\Chocolatey" -name "crt2*"
+      /usr/bin/find "C:\ProgramData\Chocolatey" -name "dllcrt2*"
+      /usr/bin/find "C:\ProgramData\Chocolatey" -name "libmsvcrt*"
     condition: eq( variables['Agent.OS'], 'Windows_NT' )	
     displayName: Find GCC libraries (windows)
   - bash: |

@@ -865,12 +865,12 @@ pub const AT_REMOVEDIR: ::c_int = 0x800;
 pub const EXTATTR_NAMESPACE_USER: ::c_int = 1;
 pub const EXTATTR_NAMESPACE_SYSTEM: ::c_int = 2;
 
-pub const LC_COLLATE_MASK: ::c_int = (1 << ::LC_COLLATE);
-pub const LC_CTYPE_MASK: ::c_int = (1 << ::LC_CTYPE);
-pub const LC_MONETARY_MASK: ::c_int = (1 << ::LC_MONETARY);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << ::LC_NUMERIC);
-pub const LC_TIME_MASK: ::c_int = (1 << ::LC_TIME);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << ::LC_MESSAGES);
+pub const LC_COLLATE_MASK: ::c_int = 1 << ::LC_COLLATE;
+pub const LC_CTYPE_MASK: ::c_int = 1 << ::LC_CTYPE;
+pub const LC_MONETARY_MASK: ::c_int = 1 << ::LC_MONETARY;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << ::LC_NUMERIC;
+pub const LC_TIME_MASK: ::c_int = 1 << ::LC_TIME;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << ::LC_MESSAGES;
 pub const LC_ALL_MASK: ::c_int = !0;
 
 pub const ERA: ::nl_item = 52;

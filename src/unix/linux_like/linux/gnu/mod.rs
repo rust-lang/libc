@@ -372,12 +372,12 @@ pub const LC_ADDRESS: ::c_int = 9;
 pub const LC_TELEPHONE: ::c_int = 10;
 pub const LC_MEASUREMENT: ::c_int = 11;
 pub const LC_IDENTIFICATION: ::c_int = 12;
-pub const LC_PAPER_MASK: ::c_int = (1 << LC_PAPER);
-pub const LC_NAME_MASK: ::c_int = (1 << LC_NAME);
-pub const LC_ADDRESS_MASK: ::c_int = (1 << LC_ADDRESS);
-pub const LC_TELEPHONE_MASK: ::c_int = (1 << LC_TELEPHONE);
-pub const LC_MEASUREMENT_MASK: ::c_int = (1 << LC_MEASUREMENT);
-pub const LC_IDENTIFICATION_MASK: ::c_int = (1 << LC_IDENTIFICATION);
+pub const LC_PAPER_MASK: ::c_int = 1 << LC_PAPER;
+pub const LC_NAME_MASK: ::c_int = 1 << LC_NAME;
+pub const LC_ADDRESS_MASK: ::c_int = 1 << LC_ADDRESS;
+pub const LC_TELEPHONE_MASK: ::c_int = 1 << LC_TELEPHONE;
+pub const LC_MEASUREMENT_MASK: ::c_int = 1 << LC_MEASUREMENT;
+pub const LC_IDENTIFICATION_MASK: ::c_int = 1 << LC_IDENTIFICATION;
 pub const LC_ALL_MASK: ::c_int = ::LC_CTYPE_MASK
     | ::LC_NUMERIC_MASK
     | ::LC_TIME_MASK
@@ -747,12 +747,12 @@ pub const NFT_CMP_GTE: ::c_int = 5;
 pub const NFT_RANGE_EQ: ::c_int = 0;
 pub const NFT_RANGE_NEQ: ::c_int = 1;
 
-pub const NFT_LOOKUP_F_INV: ::c_int = (1 << 0);
+pub const NFT_LOOKUP_F_INV: ::c_int = 1 << 0;
 
 pub const NFT_DYNSET_OP_ADD: ::c_int = 0;
 pub const NFT_DYNSET_OP_UPDATE: ::c_int = 1;
 
-pub const NFT_DYNSET_F_INV: ::c_int = (1 << 0);
+pub const NFT_DYNSET_F_INV: ::c_int = 1 << 0;
 
 pub const NFT_PAYLOAD_LL_HEADER: ::c_int = 0;
 pub const NFT_PAYLOAD_NETWORK_HEADER: ::c_int = 1;
@@ -807,13 +807,13 @@ pub const NFT_CT_BYTES: ::c_int = 15;
 pub const NFT_LIMIT_PKTS: ::c_int = 0;
 pub const NFT_LIMIT_PKT_BYTES: ::c_int = 1;
 
-pub const NFT_LIMIT_F_INV: ::c_int = (1 << 0);
+pub const NFT_LIMIT_F_INV: ::c_int = 1 << 0;
 
 pub const NFT_QUEUE_FLAG_BYPASS: ::c_int = 0x01;
 pub const NFT_QUEUE_FLAG_CPU_FANOUT: ::c_int = 0x02;
 pub const NFT_QUEUE_FLAG_MASK: ::c_int = 0x03;
 
-pub const NFT_QUOTA_F_INV: ::c_int = (1 << 0);
+pub const NFT_QUOTA_F_INV: ::c_int = 1 << 0;
 
 pub const NFT_REJECT_ICMP_UNREACH: ::c_int = 0;
 pub const NFT_REJECT_TCP_RST: ::c_int = 1;

@@ -956,12 +956,12 @@ pub const UTX_DB_UTMPX: ::c_uint = 0;
 pub const UTX_DB_WTMPX: ::c_uint = 1;
 pub const UTX_DB_LASTLOG: ::c_uint = 2;
 
-pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
-pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
-pub const LC_MONETARY_MASK: ::c_int = (1 << 2);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << 3);
-pub const LC_TIME_MASK: ::c_int = (1 << 4);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << 5);
+pub const LC_COLLATE_MASK: ::c_int = 1 << 0;
+pub const LC_CTYPE_MASK: ::c_int = 1 << 1;
+pub const LC_MONETARY_MASK: ::c_int = 1 << 2;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << 3;
+pub const LC_TIME_MASK: ::c_int = 1 << 4;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << 5;
 pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
     | LC_CTYPE_MASK
     | LC_MESSAGES_MASK

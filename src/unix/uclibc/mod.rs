@@ -588,12 +588,12 @@ pub const LC_TIME: ::c_int = 3;
 pub const LC_COLLATE: ::c_int = 4;
 pub const LC_MESSAGES: ::c_int = 5;
 pub const LC_ALL: ::c_int = 6;
-pub const LC_CTYPE_MASK: ::c_int = (1 << LC_CTYPE);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << LC_NUMERIC);
-pub const LC_TIME_MASK: ::c_int = (1 << LC_TIME);
-pub const LC_COLLATE_MASK: ::c_int = (1 << LC_COLLATE);
-pub const LC_MONETARY_MASK: ::c_int = (1 << LC_MONETARY);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << LC_MESSAGES);
+pub const LC_CTYPE_MASK: ::c_int = 1 << LC_CTYPE;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << LC_NUMERIC;
+pub const LC_TIME_MASK: ::c_int = 1 << LC_TIME;
+pub const LC_COLLATE_MASK: ::c_int = 1 << LC_COLLATE;
+pub const LC_MONETARY_MASK: ::c_int = 1 << LC_MONETARY;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << LC_MESSAGES;
 // LC_ALL_MASK defined per platform
 
 pub const MAP_FILE: ::c_int = 0x0000;
