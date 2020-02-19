@@ -189,7 +189,7 @@ jobs:
   - job: BuildChannelsOSX
     dependsOn: StyleAndDocs
     pool:
-      vmImage: macos-10.13
+      vmImage: macos-10.14
     steps:
       - template: azure-install-rust.yml
       - script: LIBC_CI=1 sh ./ci/build.sh
