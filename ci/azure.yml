@@ -136,26 +136,25 @@ jobs:
         parameters:
           deploy_dir: target/doc
 
-  # FIXME: re-enable these after the next release
-  #- job: SemverLinux
-  #  dependsOn: BuildChannelsLinux
-  #  continueOnError: true
-  #  pool:
-  #    vmImage: ubuntu-18.04
-  #  steps:
-  #    - template: azure-install-rust.yml
-  #    - script: sh ci/semver.sh linux
-  #      displayName: Check breaking changes
+  - job: SemverLinux
+    dependsOn: BuildChannelsLinux
+    continueOnError: true
+    pool:
+      vmImage: ubuntu-18.04
+    steps:
+      - template: azure-install-rust.yml
+      - script: sh ci/semver.sh linux
+        displayName: Check breaking changes
 
-  #- job: SemverOSX
-  #  dependsOn: BuildChannelsOSX
-  #  continueOnError: true
-  #  pool:
-  #    vmImage: macos-10.15
-  #  steps:
-  #    - template: azure-install-rust.yml
-  #    - script: sh ci/semver.sh osx
-  #      displayName: Check breaking changes
+  - job: SemverOSX
+    dependsOn: BuildChannelsOSX
+    continueOnError: true
+    pool:
+      vmImage: macos-10.15
+    steps:
+      - template: azure-install-rust.yml
+      - script: sh ci/semver.sh osx
+        displayName: Check breaking changes
 
   - job: BuildChannelsLinux
     dependsOn: StyleAndDocs
