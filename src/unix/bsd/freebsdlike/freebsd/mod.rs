@@ -1435,6 +1435,12 @@ extern "C" {
         flags: ::c_int,
         timeout: *const ::timespec,
     ) -> ::ssize_t;
+    pub fn memmem(
+        haystack: *const ::c_void,
+        haystacklen: ::size_t,
+        needle: *const ::c_void,
+        needlelen: ::size_t,
+    ) -> *mut ::c_void;
 }
 
 #[link(name = "util")]
