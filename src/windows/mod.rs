@@ -400,6 +400,8 @@ extern "C" {
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
     pub fn raise(signum: c_int) -> c_int;
 
+    #[link_name = "_gmtime64_s"]
+    pub fn gmtime_s(destTime: *mut tm, srcTime: *const time_t) -> ::c_int;
     #[link_name = "_time64"]
     pub fn time(destTime: *mut time_t) -> time_t;
     #[link_name = "_chmod"]
