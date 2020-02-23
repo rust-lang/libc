@@ -2186,8 +2186,8 @@ fn test_linux(target: &str) {
                // `sys/reg.h` is only available on x86 and x86_64
                [x86_64 || x86_32]: "sys/reg.h",
                // sysctl system call is deprecated and not available on musl
-               // It is also unsupported in x32:
-               [!(x32 || musl)]: "sys/sysctl.h",
+               // It is also unsupported in x32, deprecated since glibc 2.30:
+               [!(x32 || musl || gnu)]: "sys/sysctl.h",
                // <execinfo.h> is not supported by musl:
                // https://www.openwall.com/lists/musl/2015/04/09/3
                [!musl]: "execinfo.h",
@@ -2425,6 +2425,9 @@ fn test_linux(target: &str) {
             // FIXME: the glibc version used by the Sparc64 build jobs
             // which use Debian 10.0 is too old.
             "statx" if sparc64 => true,
+
+            // FIXME: Deprecated since glibc 2.30. Remove fn once upstream does.
+            "sysctl" if gnu => true,
 
             _ => false,
         }
