@@ -1,4 +1,5 @@
-FROM ubuntu:19.10
+# FIXME: Ubuntu 19.10 is missing gcc-mips-linux-gnu.
+FROM ubuntu:19.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         gcc libc6-dev qemu-user ca-certificates \
