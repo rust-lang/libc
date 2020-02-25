@@ -100,6 +100,9 @@ pub type _Vx_ticks64_t = ::c_ulonglong;
 
 pub type sa_family_t = ::c_uchar;
 
+// mqueue.h
+pub type mqd_t = ::c_int;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum _Vx_semaphore {}
 impl ::Copy for _Vx_semaphore {}
@@ -378,6 +381,13 @@ s! {
         pub dli_fbase: *mut ::c_void,
         pub dli_sname: *const ::c_char,
         pub dli_saddr: *mut ::c_void,
+    }
+
+    pub struct mq_attr {
+        pub mq_maxmsg:  ::c_long,
+        pub mq_msgsize: ::c_long,
+        pub mq_flags:   ::c_long,
+        pub mq_curmsgs: ::c_long,
     }
 }
 
@@ -1972,6 +1982,43 @@ extern "C" {
     pub fn randABytes(buf: *mut c_uchar, length: c_int) -> c_int;
     pub fn randUBytes(buf: *mut c_uchar, length: c_int) -> c_int;
     pub fn randSecure() -> c_int;
+
+    // mqueue.h
+    pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
+    pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
+    pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
+    pub fn mq_receive(
+        mqd: ::mqd_t,
+        msg_ptr: *mut ::c_char,
+        msg_len: ::size_t,
+        msg_prio: *mut ::c_uint,
+    ) -> ::ssize_t;
+    pub fn mq_timedreceive(
+        mqd: ::mqd_t,
+        msg_ptr: *mut ::c_char,
+        msg_len: ::size_t,
+        msg_prio: *mut ::c_uint,
+        abs_timeout: *const ::timespec,
+    ) -> ::ssize_t;
+    pub fn mq_send(
+        mqd: ::mqd_t,
+        msg_ptr: *const ::c_char,
+        msg_len: ::size_t,
+        msg_prio: ::c_uint,
+    ) -> ::c_int;
+    pub fn mq_timedsend(
+        mqd: ::mqd_t,
+        msg_ptr: *const ::c_char,
+        msg_len: ::size_t,
+        msg_prio: ::c_uint,
+        abs_timeout: *const ::timespec,
+    ) -> ::c_int;
+    pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
+    pub fn mq_setattr(
+        mqd: ::mqd_t,
+        newattr: *const ::mq_attr,
+        oldattr: *mut ::mq_attr,
+    ) -> ::c_int;
 }
 
 //Dummy functions, these don't really exist in VxWorks.
