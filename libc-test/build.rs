@@ -2085,6 +2085,7 @@ fn test_linux(target: &str) {
     let x86_32 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
     let aarch64_musl = target.contains("aarch64") && musl;
+    let gnuabihf = target.contains("gnueabihf");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2182,7 +2183,9 @@ fn test_linux(target: &str) {
                "errno.h",
                // `sys/io.h` is only available on x86*, Alpha, IA64, and 32-bit
                // ARM: https://bugzilla.redhat.com/show_bug.cgi?id=1116162
-               [x86_64 || x86_32 || arm]: "sys/io.h",
+               // Also unavailable on gnuabihf with glibc 2.30.
+               // https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=6b33f373c7b9199e00ba5fbafd94ac9bfb4337b1
+               [(x86_64 || x86_32 || arm) && !gnuabihf]: "sys/io.h",
                // `sys/reg.h` is only available on x86 and x86_64
                [x86_64 || x86_32]: "sys/reg.h",
                // sysctl system call is deprecated and not available on musl
