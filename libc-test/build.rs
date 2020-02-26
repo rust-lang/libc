@@ -2085,6 +2085,7 @@ fn test_linux(target: &str) {
     let x86_32 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
     let aarch64_musl = target.contains("aarch64") && musl;
+    let gnuabihf = target.contains("gnueabihf");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2182,12 +2183,14 @@ fn test_linux(target: &str) {
                "errno.h",
                // `sys/io.h` is only available on x86*, Alpha, IA64, and 32-bit
                // ARM: https://bugzilla.redhat.com/show_bug.cgi?id=1116162
-               [x86_64 || x86_32 || arm]: "sys/io.h",
+               // Also unavailable on gnuabihf with glibc 2.30.
+               // https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=6b33f373c7b9199e00ba5fbafd94ac9bfb4337b1
+               [(x86_64 || x86_32 || arm) && !gnuabihf]: "sys/io.h",
                // `sys/reg.h` is only available on x86 and x86_64
                [x86_64 || x86_32]: "sys/reg.h",
                // sysctl system call is deprecated and not available on musl
-               // It is also unsupported in x32:
-               [!(x32 || musl)]: "sys/sysctl.h",
+               // It is also unsupported in x32, deprecated since glibc 2.30:
+               [!(x32 || musl || gnu)]: "sys/sysctl.h",
                // <execinfo.h> is not supported by musl:
                // https://www.openwall.com/lists/musl/2015/04/09/3
                [!musl]: "execinfo.h",
@@ -2329,6 +2332,12 @@ fn test_linux(target: &str) {
             // glibcs (see https://github.com/rust-lang/libc/issues/1410)
             "ucontext_t" if gnu => true,
 
+            // FIXME: Somehow we cannot include headers correctly in glibc 2.30.
+            // So let's ignore for now and re-visit later.
+            // Probably related: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91085
+            "statx" => true,
+            "statx_timestamp" => true,
+
             _ => false,
         }
     });
@@ -2425,6 +2434,9 @@ fn test_linux(target: &str) {
             // FIXME: the glibc version used by the Sparc64 build jobs
             // which use Debian 10.0 is too old.
             "statx" if sparc64 => true,
+
+            // FIXME: Deprecated since glibc 2.30. Remove fn once upstream does.
+            "sysctl" if gnu => true,
 
             _ => false,
         }
