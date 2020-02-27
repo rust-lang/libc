@@ -695,15 +695,17 @@ pub const HWCAP_SSBS: ::c_ulong = 1 << 28;
 pub const HWCAP_SB: ::c_ulong = 1 << 29;
 pub const HWCAP_PACA: ::c_ulong = 1 << 30;
 pub const HWCAP_PACG: ::c_ulong = 1 << 31;
-pub const HWCAP2_DCPODP: ::c_ulong = 1 << 0;
-pub const HWCAP2_SVE2: ::c_ulong = 1 << 1;
-pub const HWCAP2_SVEAES: ::c_ulong = 1 << 2;
-pub const HWCAP2_SVEPMULL: ::c_ulong = 1 << 3;
-pub const HWCAP2_SVEBITPERM: ::c_ulong = 1 << 4;
-pub const HWCAP2_SVESHA3: ::c_ulong = 1 << 5;
-pub const HWCAP2_SVESM4: ::c_ulong = 1 << 6;
-pub const HWCAP2_FLAGM2: ::c_ulong = 1 << 7;
-pub const HWCAP2_FRINT: ::c_ulong = 1 << 8;
+// TODO: enable these again once linux-api-headers are up to date enough on CI.
+// See discussion in https://github.com/rust-lang/libc/pull/1638
+//pub const HWCAP2_DCPODP: ::c_ulong = 1 << 0;
+//pub const HWCAP2_SVE2: ::c_ulong = 1 << 1;
+//pub const HWCAP2_SVEAES: ::c_ulong = 1 << 2;
+//pub const HWCAP2_SVEPMULL: ::c_ulong = 1 << 3;
+//pub const HWCAP2_SVEBITPERM: ::c_ulong = 1 << 4;
+//pub const HWCAP2_SVESHA3: ::c_ulong = 1 << 5;
+//pub const HWCAP2_SVESM4: ::c_ulong = 1 << 6;
+//pub const HWCAP2_FLAGM2: ::c_ulong = 1 << 7;
+//pub const HWCAP2_FRINT: ::c_ulong = 1 << 8;
 
 // Syscall table
 pub const SYS_io_setup: ::c_long = 0;
