@@ -1300,6 +1300,7 @@ fn test_android(target: &str) {
                "sys/time.h",
                "sys/times.h",
                "sys/types.h",
+               "sys/ucontext.h",
                "sys/uio.h",
                "sys/un.h",
                "sys/utsname.h",
@@ -1390,10 +1391,15 @@ fn test_android(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
+            // uc_sigmask and uc_sigmask64 of ucontext_t are an anonymous union
+            "ucontext_t" => true,
 
             _ => false,
         }
