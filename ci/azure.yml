@@ -47,7 +47,7 @@ jobs:
         arm-unknown-linux-musleabihf:
           TARGET: arm-unknown-linux-musleabihf
         # Disabled because currently broken, see:
-        # https://github.com/rust-lang/libc/issues/1591         
+        # https://github.com/rust-lang/libc/issues/1591
         # asmjs-unknown-emscripten:
         #  TARGET: asmjs-unknown-emscripten
         i686-linux-android:
@@ -77,7 +77,7 @@ jobs:
         sparc64-unknown-linux-gnu:
           TARGET: sparc64-unknown-linux-gnu
         # Disabled because currently broken, see:
-        # https://github.com/rust-lang/libc/issues/1591         
+        # https://github.com/rust-lang/libc/issues/1591
         # wasm32-unknown-emscripten:
         #  TARGET: wasm32-unknown-emscripten
         x86_64-linux-android:
@@ -114,7 +114,7 @@ jobs:
           ARCH: x86_64
         x86_64-pc-windows-msvc:
           TARGET: x86_64-pc-windows-msvc
-        # Disabled because broken:          
+        # Disabled because broken:
         #  https://github.com/rust-lang/libc/issues/1592
         #i686-pc-windows-gnu:
         #  TARGET: i686-pc-windows-gnu

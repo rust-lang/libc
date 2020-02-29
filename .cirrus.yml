@@ -1,7 +1,7 @@
 task:
   name: nightly x86_64-unknown-freebsd-10
   freebsd_instance:
-    image: freebsd-10-4-release-amd64 
+    image: freebsd-10-4-release-amd64
   setup_script:
     - pkg install -y curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
@@ -11,7 +11,7 @@ task:
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
- 
+
 task:
   name: stable x86_64-unknown-freebsd-11
   freebsd_instance:
@@ -26,7 +26,7 @@ task:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
     - sh ci/run.sh x86_64-unknown-freebsd
-    
+
 task:
   name: nightly x86_64-unknown-freebsd-12
   freebsd_instance:
