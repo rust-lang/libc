@@ -35,7 +35,7 @@ pub type c_ulong = u32;
 pub type nlink_t = u32;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos64_t {} // TODO: fill this out with a struct
+pub enum fpos64_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos64_t {}
 impl ::Clone for fpos64_t {
     fn clone(&self) -> fpos64_t {
@@ -1286,7 +1286,7 @@ pub const TIOCINQ: ::c_int = ::FIONREAD;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
 
-// TODO(#247) Temporarily musl-specific (available since musl 0.9.12 / Linux
+// FIXME(#247) Temporarily musl-specific (available since musl 0.9.12 / Linux
 // kernel 3.10).  See also linux_like/mod.rs
 pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
 pub const CLOCK_TAI: ::clockid_t = 11;
