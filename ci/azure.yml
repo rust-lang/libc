@@ -125,7 +125,7 @@ jobs:
 
   - job: StyleAndDocs
     pool:
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-18.04
     steps:
       - template: azure-install-rust.yml
       - script: sh ci/style.sh
@@ -141,7 +141,7 @@ jobs:
   #  dependsOn: BuildChannelsLinux
   #  continueOnError: true
   #  pool:
-  #    vmImage: ubuntu-16.04
+  #    vmImage: ubuntu-18.04
   #  steps:
   #    - template: azure-install-rust.yml
   #    - script: sh ci/semver.sh linux
@@ -160,7 +160,7 @@ jobs:
   - job: BuildChannelsLinux
     dependsOn: StyleAndDocs
     pool:
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-18.04
     steps:
       - template: azure-install-rust.yml
       - script: LIBC_CI=1 sh ./ci/build.sh
