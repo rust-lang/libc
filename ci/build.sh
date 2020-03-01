@@ -24,12 +24,6 @@ test_target() {
     TARGET="${2}"
     NO_STD="${3}"
 
-    # FIXME: https://github.com/rust-lang/rust/issues/61174
-    if [ "${TARGET}" = "sparcv9-sun-solaris" ] ||
-       [ "${TARGET}" = "x86_64-sun-solaris" ]; then
-        return 0
-    fi
-
     # If there is a std component, fetch it:
     if [ "${NO_STD}" != "1" ]; then
         # FIXME: rustup often fails to download some artifacts due to network
