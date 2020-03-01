@@ -24,14 +24,6 @@ test_target() {
     TARGET="${2}"
     NO_STD="${3}"
 
-    opt=
-    if [ "${TARGET}" = "x86_64-unknown-linux-gnux32" ]; then
-        # FIXME: x86_64-unknown-linux-gnux32 fail to compile without
-        # --release
-        #
-        # See https://github.com/rust-lang/rust/issues/45417
-        opt="--release"
-    fi
     # FIXME: https://github.com/rust-lang/rust/issues/61174
     if [ "${TARGET}" = "sparcv9-sun-solaris" ] ||
        [ "${TARGET}" = "x86_64-sun-solaris" ]; then
@@ -55,28 +47,28 @@ test_target() {
     fi
 
     # Test that libc builds without any default features (no libstd)
-    cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --no-default-features --target "${TARGET}"
+    cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}"
 
     # Test that libc builds with default features (e.g. libstd)
     # if the target supports libstd
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --target "${TARGET}"
+        cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}"
     fi
 
     # Test that libc builds with the `extra_traits` feature
-    cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --no-default-features --target "${TARGET}" \
+    cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
           --features extra_traits
 
     # Test the 'const-extern-fn' feature on nightly
     if [ "${RUST}" = "nightly" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --no-default-features --target "${TARGET}" \
+        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
           --features const-extern-fn
     fi
 
 
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv $opt --target "${TARGET}" \
+        cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}" \
               --features extra_traits
     fi
 }
