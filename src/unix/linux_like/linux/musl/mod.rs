@@ -328,7 +328,7 @@ pub const TCSAFLUSH: ::c_int = 2;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
 
-// TODO(#247) Temporarily musl-specific (available since musl 0.9.12 / Linux
+// FIXME(#247) Temporarily musl-specific (available since musl 0.9.12 / Linux
 // kernel 3.10).  See also linux_like/mod.rs
 pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
 pub const CLOCK_TAI: ::clockid_t = 11;

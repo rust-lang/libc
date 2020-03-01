@@ -182,6 +182,10 @@ fn test_apple(target: &str) {
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
+            // FIXME: the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
+            "SF_SETTABLE" => true,
+            // FIXME: the value has been changed since Catalina (VM_FLAGS_RESILIENT_MEDIA is also contained now).
+            "VM_FLAGS_USER_REMAP" => true,
             _ => false,
         }
     });
@@ -195,6 +199,14 @@ fn test_apple(target: &str) {
             // close calls the close_nocancel system call
             "close" => true,
 
+            _ => false,
+        }
+    });
+
+    cfg.skip_field(move |struct_, field| {
+        match (struct_, field) {
+            // FIXME: the array size has been changed since macOS 10.15 ([8] -> [7]).
+            ("statfs", "f_reserved") => true,
             _ => false,
         }
     });

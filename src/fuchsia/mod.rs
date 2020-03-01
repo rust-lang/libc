@@ -109,7 +109,7 @@ impl ::Clone for DIR {
 }
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos64_t {} // TODO: fill this out with a struct
+pub enum fpos64_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos64_t {}
 impl ::Clone for fpos64_t {
     fn clone(&self) -> fpos64_t {
@@ -1416,7 +1416,7 @@ pub const F_SEAL_SHRINK: ::c_int = 0x0002;
 pub const F_SEAL_GROW: ::c_int = 0x0004;
 pub const F_SEAL_WRITE: ::c_int = 0x0008;
 
-// TODO(#235): Include file sealing fcntls once we have a way to verify them.
+// FIXME(#235): Include file sealing fcntls once we have a way to verify them.
 
 pub const SIGTRAP: ::c_int = 5;
 
@@ -1433,7 +1433,7 @@ pub const CLOCK_MONOTONIC_COARSE: ::clockid_t = 6;
 pub const CLOCK_BOOTTIME: ::clockid_t = 7;
 pub const CLOCK_REALTIME_ALARM: ::clockid_t = 8;
 pub const CLOCK_BOOTTIME_ALARM: ::clockid_t = 9;
-// TODO(#247) Someday our Travis shall have glibc 2.21 (released in Sep
+// FIXME(#247) Someday our Travis shall have glibc 2.21 (released in Sep
 // 2014.) See also musl/mod.rs
 // pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
 // pub const CLOCK_TAI: ::clockid_t = 11;
@@ -2773,7 +2773,7 @@ pub const TIOCINQ: ::c_int = ::FIONREAD;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
 
-// TODO(#247) Temporarily musl-specific (available since musl 0.9.12 / Linux
+// FIXME(#247) Temporarily musl-specific (available since musl 0.9.12 / Linux
 // kernel 3.10).  See also notbsd/mod.rs
 pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
 pub const CLOCK_TAI: ::clockid_t = 11;
@@ -3273,7 +3273,7 @@ impl ::Clone for FILE {
     }
 }
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos_t {} // TODO: fill this out with a struct
+pub enum fpos_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos_t {}
 impl ::Clone for fpos_t {
     fn clone(&self) -> fpos_t {
