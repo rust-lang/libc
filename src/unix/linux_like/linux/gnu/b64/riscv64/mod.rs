@@ -4,23 +4,10 @@ pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type wchar_t = ::c_int;
-pub type time_t = ::c_long;
 
-pub type dev_t = ::c_ulong;
-pub type uid_t = ::c_uint;
-pub type gid_t = ::c_uint;
-pub type ino_t = ::c_ulong;
-pub type ino64_t = ::c_ulong;
-pub type mode_t = ::c_uint;
 pub type nlink_t = ::c_uint;
-pub type off_t = ::c_long;
-pub type off64_t = ::c_long;
-pub type pid_t = ::c_int;
 pub type blksize_t = ::c_int;
-pub type blkcnt_t = ::c_long;
-pub type fsblkcnt_t = ::c_ulong;
 pub type fsblkcnt64_t = ::c_ulong;
-pub type fsfilcnt_t = ::c_ulong;
 pub type fsfilcnt64_t = ::c_ulong;
 pub type suseconds_t = i64;
 pub type __u64 = ::c_ulonglong;
@@ -31,50 +18,50 @@ s! {
     }
 
     pub struct timespec {
-        pub tv_sec: time_t,
+        pub tv_sec: ::time_t,
         pub tv_nsec: ::c_long,
     }
 
     pub struct stat {
-        pub st_dev: dev_t,
-        pub st_ino: ino_t,
-        pub st_mode: mode_t,
-        pub st_nlink: nlink_t,
-        pub st_uid: uid_t,
-        pub st_gid: gid_t,
-        pub st_rdev: dev_t,
-        pub __pad1: dev_t,
-        pub st_size: off_t,
-        pub st_blksize: blksize_t,
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub __pad1: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_blksize: ::blksize_t,
         pub __pad2: ::c_int,
-        pub st_blocks: blkcnt_t,
-        pub st_atime: time_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_atime: ::time_t,
         pub st_atime_nsec: ::c_long,
-        pub st_mtime: time_t,
+        pub st_mtime: ::time_t,
         pub st_mtime_nsec: ::c_long,
-        pub st_ctime: time_t,
+        pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
         pub __unused: [::c_int; 2usize],
     }
 
     pub struct stat64 {
-        pub st_dev: dev_t,
-        pub st_ino: ino64_t,
-        pub st_mode: mode_t,
-        pub st_nlink: nlink_t,
-        pub st_uid: uid_t,
-        pub st_gid: gid_t,
-        pub st_rdev: dev_t,
-        pub __pad1: dev_t,
-        pub st_size: off64_t,
-        pub st_blksize: blksize_t,
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino64_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub __pad1: ::dev_t,
+        pub st_size: ::off64_t,
+        pub st_blksize: ::blksize_t,
         pub __pad2: ::c_int,
-        pub st_blocks: blkcnt_t,
-        pub st_atime: time_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_atime: ::time_t,
         pub st_atime_nsec: ::c_long,
-        pub st_mtime: time_t,
+        pub st_mtime: ::time_t,
         pub st_mtime_nsec: ::c_long,
-        pub st_ctime: time_t,
+        pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
         pub __unused: [::c_int; 2],
     }
@@ -82,11 +69,11 @@ s! {
     pub struct statfs {
         pub f_type: ::c_long,
         pub f_bsize: ::c_long,
-        pub f_blocks: fsblkcnt_t,
-        pub f_bfree: fsblkcnt_t,
-        pub f_bavail: fsblkcnt_t,
-        pub f_files: fsfilcnt_t,
-        pub f_ffree: fsfilcnt_t,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
         pub f_fsid: ::fsid_t,
         pub f_namelen: ::c_long,
         pub f_frsize: ::c_long,
@@ -97,11 +84,11 @@ s! {
     pub struct statfs64 {
         pub f_type: ::c_long,
         pub f_bsize: ::c_long,
-        pub f_blocks: fsblkcnt64_t,
-        pub f_bfree: fsblkcnt64_t,
-        pub f_bavail: fsblkcnt64_t,
-        pub f_files: fsfilcnt64_t,
-        pub f_ffree: fsfilcnt64_t,
+        pub f_blocks: ::fsblkcnt64_t,
+        pub f_bfree: ::fsblkcnt64_t,
+        pub f_bavail: ::fsblkcnt64_t,
+        pub f_files: ::fsfilcnt64_t,
+        pub f_ffree: ::fsfilcnt64_t,
         pub f_fsid: ::fsid_t,
         pub f_namelen: ::c_long,
         pub f_frsize: ::c_long,
@@ -112,12 +99,12 @@ s! {
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
-        pub f_blocks: fsblkcnt_t,
-        pub f_bfree: fsblkcnt_t,
-        pub f_bavail: fsblkcnt_t,
-        pub f_files: fsfilcnt_t,
-        pub f_ffree: fsfilcnt_t,
-        pub f_favail: fsfilcnt_t,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_favail: ::fsfilcnt_t,
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
@@ -127,12 +114,12 @@ s! {
     pub struct statvfs64 {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
-        pub f_blocks: fsblkcnt64_t,
-        pub f_bfree: fsblkcnt64_t,
-        pub f_bavail: fsblkcnt64_t,
-        pub f_files: fsfilcnt64_t,
-        pub f_ffree: fsfilcnt64_t,
-        pub f_favail: fsfilcnt64_t,
+        pub f_blocks: ::fsblkcnt64_t,
+        pub f_bfree: ::fsblkcnt64_t,
+        pub f_bavail: ::fsblkcnt64_t,
+        pub f_files: ::fsfilcnt64_t,
+        pub f_ffree: ::fsfilcnt64_t,
+        pub f_favail: ::fsfilcnt64_t,
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
@@ -167,16 +154,12 @@ s! {
         pub sa_restorer: ::Option<unsafe extern "C" fn()>,
     }
 
-    pub struct sigset_t {
-        pub __val: [::c_ulong; 16],
-    }
-
     pub struct ipc_perm {
         pub __key: ::key_t,
-        pub uid: uid_t,
-        pub gid: gid_t,
-        pub cuid: uid_t,
-        pub cgid: gid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
         pub mode: ::c_ushort,
         pub __pad1: ::c_ushort,
         pub __seq: ::c_ushort,
@@ -186,13 +169,13 @@ s! {
     }
 
     pub struct shmid_ds {
-        pub shm_perm: ipc_perm,
+        pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
-        pub shm_atime: time_t,
-        pub shm_dtime: time_t,
-        pub shm_ctime: time_t,
-        pub shm_cpid: pid_t,
-        pub shm_lpid: pid_t,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_lpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
         pub __unused5: ::c_ulong,
         pub __unused6: ::c_ulong,
