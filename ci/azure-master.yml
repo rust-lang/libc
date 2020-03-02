@@ -6,14 +6,14 @@ resources:
       type: github
       name: rust-lang/simpleinfra
       endpoint: gnzlbg
+      branch: fix-azure
 trigger: ["master"]
 pr: ["master"]
 
 jobs:
   - job: StyleAndDocs
     pool:
-      # FIXME: It seems Ubuntu 18.04 doesn't work well with simpleinfra.
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-18.04
     steps:
       - template: azure-install-rust.yml
       - script: LIBC_CI=1 sh ci/dox.sh
