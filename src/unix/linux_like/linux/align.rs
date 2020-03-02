@@ -39,6 +39,17 @@ macro_rules! expand_align {
                 #[doc(hidden)]
                 size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
             }
+
+            #[repr(align(8))]
+            pub struct fanotify_event_metadata {
+                pub event_len: __u32,
+                pub vers: __u8,
+                pub reserved: __u8,
+                pub metadata_len: __u16,
+                pub mask: __u64,
+                pub fd: ::c_int,
+                pub pid: ::c_int,
+            }
         }
 
         s_no_extra_traits! {
