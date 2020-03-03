@@ -6,7 +6,6 @@ resources:
       type: github
       name: rust-lang/simpleinfra
       endpoint: gnzlbg
-      ref: refs/heads/fix-azure
 trigger: ["master"]
 pr: ["master"]
 
