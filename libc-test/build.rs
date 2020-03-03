@@ -10,6 +10,9 @@ fn do_cc() {
     if cfg!(unix) && !target.contains("wasi") {
         cc::Build::new().file("src/cmsg.c").compile("cmsg");
     }
+    if target.contains("android") || target.contains("linux") {
+        cc::Build::new().file("src/errqueue.c").compile("errqueue");
+    }
 }
 
 fn do_ctest() {
@@ -179,6 +182,10 @@ fn test_apple(target: &str) {
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
+            // FIXME: the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
+            "SF_SETTABLE" => true,
+            // FIXME: the value has been changed since Catalina (VM_FLAGS_RESILIENT_MEDIA is also contained now).
+            "VM_FLAGS_USER_REMAP" => true,
             _ => false,
         }
     });
@@ -192,6 +199,14 @@ fn test_apple(target: &str) {
             // close calls the close_nocancel system call
             "close" => true,
 
+            _ => false,
+        }
+    });
+
+    cfg.skip_field(move |struct_, field| {
+        match (struct_, field) {
+            // FIXME: the array size has been changed since macOS 10.15 ([8] -> [7]).
+            ("statfs", "f_reserved") => true,
             _ => false,
         }
     });
@@ -386,7 +401,7 @@ fn test_openbsd(target: &str) {
 
     cfg.skip_field_type(move |struct_, field| {
         // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
-        (struct_ == "siginfo_t" && field == "si_addr")
+        struct_ == "siginfo_t" && field == "si_addr"
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -1182,7 +1197,7 @@ fn test_wasi(target: &str) {
         "sys/utsname.h",
         "time.h",
         "unistd.h",
-        "wasi/core.h",
+        "wasi/api.h",
         "wasi/libc.h",
         "wasi/libc-find-relpath.h",
         "wchar.h",
@@ -1218,6 +1233,10 @@ fn test_wasi(target: &str) {
     // doesn't support sizeof.
     cfg.skip_field(|s, field| s == "dirent" && field == "d_name");
 
+    // Currently Rust/clang disagree on function argument ABI, so skip these
+    // tests. For more info see WebAssembly/tool-conventions#88
+    cfg.skip_roundtrip(|_| true);
+
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
@@ -1235,7 +1254,6 @@ fn test_android(target: &str) {
 
     headers! { cfg:
                "arpa/inet.h",
-               "asm/mman.h",
                "ctype.h",
                "dirent.h",
                "dlfcn.h",
@@ -1244,27 +1262,6 @@ fn test_android(target: &str) {
                "grp.h",
                "ifaddrs.h",
                "limits.h",
-               "linux/dccp.h",
-               "linux/futex.h",
-               "linux/fs.h",
-               "linux/genetlink.h",
-               "linux/if_alg.h",
-               "linux/if_ether.h",
-               "linux/if_tun.h",
-               "linux/magic.h",
-               "linux/memfd.h",
-               "linux/module.h",
-               "linux/net_tstamp.h",
-               "linux/netfilter/nfnetlink.h",
-               "linux/netfilter/nfnetlink_log.h",
-               "linux/netfilter/nf_tables.h",
-               "linux/netfilter_ipv4.h",
-               "linux/netfilter_ipv6.h",
-               "linux/netlink.h",
-               "linux/quota.h",
-               "linux/reboot.h",
-               "linux/seccomp.h",
-               "linux/sockios.h",
                "locale.h",
                "malloc.h",
                "net/ethernet.h",
@@ -1315,6 +1312,7 @@ fn test_android(target: &str) {
                "sys/time.h",
                "sys/times.h",
                "sys/types.h",
+               "sys/ucontext.h",
                "sys/uio.h",
                "sys/un.h",
                "sys/utsname.h",
@@ -1333,6 +1331,35 @@ fn test_android(target: &str) {
                // generate the error 'Your time_t is already 64-bit'
                [target_pointer_width == 32]: "time64.h",
                [x86]: "sys/reg.h",
+    }
+
+    // Include linux headers at the end:
+    headers! { cfg:
+                "asm/mman.h",
+                "linux/dccp.h",
+                "linux/errqueue.h",
+                "linux/futex.h",
+                "linux/fs.h",
+                "linux/genetlink.h",
+                "linux/if_alg.h",
+                "linux/if_ether.h",
+                "linux/if_tun.h",
+                "linux/magic.h",
+                "linux/memfd.h",
+                "linux/module.h",
+                "linux/net_tstamp.h",
+                "linux/netfilter/nfnetlink.h",
+                "linux/netfilter/nfnetlink_log.h",
+                "linux/netfilter/nfnetlink_queue.h",
+                "linux/netfilter/nf_tables.h",
+                "linux/netfilter_ipv4.h",
+                "linux/netfilter_ipv6.h",
+                "linux/netlink.h",
+                "linux/quota.h",
+                "linux/reboot.h",
+                "linux/seccomp.h",
+                "linux/sockios.h",
+
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -1377,10 +1404,15 @@ fn test_android(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
+            // uc_sigmask and uc_sigmask64 of ucontext_t are an anonymous union
+            "ucontext_t" => true,
 
             _ => false,
         }
@@ -1993,6 +2025,7 @@ fn test_vxworks(target: &str) {
                "errno.h",
                "sys/mman.h",
                "pathLib.h",
+               "mqueue.h",
     }
     /* Fix me */
     cfg.skip_const(move |name| match name {
@@ -2071,6 +2104,7 @@ fn test_linux(target: &str) {
     let x86_32 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
     let aarch64_musl = target.contains("aarch64") && musl;
+    let gnuabihf = target.contains("gnueabihf");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2168,12 +2202,14 @@ fn test_linux(target: &str) {
                "errno.h",
                // `sys/io.h` is only available on x86*, Alpha, IA64, and 32-bit
                // ARM: https://bugzilla.redhat.com/show_bug.cgi?id=1116162
-               [x86_64 || x86_32 || arm]: "sys/io.h",
+               // Also unavailable on gnuabihf with glibc 2.30.
+               // https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=6b33f373c7b9199e00ba5fbafd94ac9bfb4337b1
+               [(x86_64 || x86_32 || arm) && !gnuabihf]: "sys/io.h",
                // `sys/reg.h` is only available on x86 and x86_64
                [x86_64 || x86_32]: "sys/reg.h",
                // sysctl system call is deprecated and not available on musl
-               // It is also unsupported in x32:
-               [!(x32 || musl)]: "sys/sysctl.h",
+               // It is also unsupported in x32, deprecated since glibc 2.30:
+               [!(x32 || musl || gnu)]: "sys/sysctl.h",
                // <execinfo.h> is not supported by musl:
                // https://www.openwall.com/lists/musl/2015/04/09/3
                [!musl]: "execinfo.h",
@@ -2184,6 +2220,7 @@ fn test_linux(target: &str) {
         cfg:
         "asm/mman.h",
         "linux/dccp.h",
+        "linux/errqueue.h",
         "linux/falloc.h",
         "linux/fs.h",
         "linux/futex.h",
@@ -2200,6 +2237,7 @@ fn test_linux(target: &str) {
         "linux/net_tstamp.h",
         "linux/netfilter/nfnetlink.h",
         "linux/netfilter/nfnetlink_log.h",
+        "linux/netfilter/nfnetlink_queue.h",
         "linux/netfilter/nf_tables.h",
         "linux/netfilter_ipv4.h",
         "linux/netfilter_ipv6.h",
@@ -2314,6 +2352,12 @@ fn test_linux(target: &str) {
             // glibcs (see https://github.com/rust-lang/libc/issues/1410)
             "ucontext_t" if gnu => true,
 
+            // FIXME: Somehow we cannot include headers correctly in glibc 2.30.
+            // So let's ignore for now and re-visit later.
+            // Probably related: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91085
+            "statx" => true,
+            "statx_timestamp" => true,
+
             _ => false,
         }
     });
@@ -2410,6 +2454,9 @@ fn test_linux(target: &str) {
             // FIXME: the glibc version used by the Sparc64 build jobs
             // which use Debian 10.0 is too old.
             "statx" if sparc64 => true,
+
+            // FIXME: Deprecated since glibc 2.30. Remove fn once upstream does.
+            "sysctl" if gnu => true,
 
             _ => false,
         }

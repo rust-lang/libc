@@ -365,7 +365,7 @@ impl ::Clone for FILE {
     }
 }
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos_t {} // TODO: fill this out with a struct
+pub enum fpos_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos_t {}
 impl ::Clone for fpos_t {
     fn clone(&self) -> fpos_t {
@@ -388,6 +388,23 @@ extern "C" {
     pub fn isblank(c: c_int) -> c_int;
     pub fn tolower(c: c_int) -> c_int;
     pub fn toupper(c: c_int) -> c_int;
+    pub fn qsort(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        compar: ::Option<
+            unsafe extern "C" fn(*const c_void, *const c_void) -> c_int,
+        >,
+    );
+    pub fn bsearch(
+        key: *const c_void,
+        base: *const c_void,
+        num: size_t,
+        size: size_t,
+        compar: ::Option<
+            unsafe extern "C" fn(*const c_void, *const c_void) -> c_int,
+        >,
+    ) -> *mut c_void;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "fopen$UNIX2003"
@@ -529,6 +546,7 @@ extern "C" {
     ) -> ::size_t;
 
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn wmemchr(cx: *const wchar_t, c: wchar_t, n: size_t) -> *mut wchar_t;
     pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
     pub fn memcpy(
         dest: *mut c_void,

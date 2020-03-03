@@ -417,6 +417,10 @@ pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_INET: ::c_int = 2;
 pub const AF_INET6: ::c_int = 23;
 
+pub const CLOCK_REALTIME: ::clockid_t = 1;
+pub const CLOCK_MONOTONIC: ::clockid_t = 4;
+pub const CLOCK_BOOTTIME: ::clockid_t = 4;
+
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 
@@ -597,6 +601,18 @@ extern "C" {
 
     pub fn bind(fd: ::c_int, addr: *const sockaddr, len: socklen_t)
         -> ::c_int;
+    pub fn clock_settime(
+        clock_id: ::clockid_t,
+        tp: *const ::timespec,
+    ) -> ::c_int;
+    pub fn clock_gettime(
+        clock_id: ::clockid_t,
+        tp: *mut ::timespec,
+    ) -> ::c_int;
+    pub fn clock_getres(
+        clock_id: ::clockid_t,
+        res: *mut ::timespec,
+    ) -> ::c_int;
     pub fn closesocket(sockfd: ::c_int) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn recvfrom(

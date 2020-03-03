@@ -493,16 +493,19 @@ s_no_extra_traits! {
         __sigev_pad2: ::c_int,
     }
 
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub union door_desc_t__d_data {
         pub d_desc: door_desc_t__d_data__d_desc,
         d_resv: [::c_int; 5], /* Check out /usr/include/sys/door.h */
     }
 
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub struct door_desc_t {
         pub d_attributes: door_attr_t,
         pub d_data: door_desc_t__d_data,
     }
 
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub struct door_arg_t {
         pub data_ptr: *const ::c_char,
         pub data_size: ::size_t,
@@ -550,7 +553,7 @@ cfg_if! {
                     .field("ut_session", &self.ut_session)
                     .field("ut_pad", &self.ut_pad)
                     .field("ut_syslen", &self.ut_syslen)
-                    .field("ut_host", &self.ut_host)
+                    .field("ut_host", &&self.ut_host[..])
                     .finish()
             }
         }
@@ -846,12 +849,12 @@ pub const LC_COLLATE: ::c_int = 3;
 pub const LC_MONETARY: ::c_int = 4;
 pub const LC_MESSAGES: ::c_int = 5;
 pub const LC_ALL: ::c_int = 6;
-pub const LC_CTYPE_MASK: ::c_int = (1 << LC_CTYPE);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << LC_NUMERIC);
-pub const LC_TIME_MASK: ::c_int = (1 << LC_TIME);
-pub const LC_COLLATE_MASK: ::c_int = (1 << LC_COLLATE);
-pub const LC_MONETARY_MASK: ::c_int = (1 << LC_MONETARY);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << LC_MESSAGES);
+pub const LC_CTYPE_MASK: ::c_int = 1 << LC_CTYPE;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << LC_NUMERIC;
+pub const LC_TIME_MASK: ::c_int = 1 << LC_TIME;
+pub const LC_COLLATE_MASK: ::c_int = 1 << LC_COLLATE;
+pub const LC_MONETARY_MASK: ::c_int = 1 << LC_MONETARY;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << LC_MESSAGES;
 pub const LC_ALL_MASK: ::c_int = LC_CTYPE_MASK
     | LC_NUMERIC_MASK
     | LC_TIME_MASK
@@ -1788,21 +1791,21 @@ pub const DOWN_TIME: ::c_short = 10;
 
 const _TIOC: ::c_int = ('T' as i32) << 8;
 const tIOC: ::c_int = ('t' as i32) << 8;
-pub const TCGETA: ::c_int = (_TIOC | 1);
-pub const TCSETA: ::c_int = (_TIOC | 2);
-pub const TCSETAW: ::c_int = (_TIOC | 3);
-pub const TCSETAF: ::c_int = (_TIOC | 4);
-pub const TCSBRK: ::c_int = (_TIOC | 5);
-pub const TCXONC: ::c_int = (_TIOC | 6);
-pub const TCFLSH: ::c_int = (_TIOC | 7);
-pub const TCDSET: ::c_int = (_TIOC | 32);
-pub const TCGETS: ::c_int = (_TIOC | 13);
-pub const TCSETS: ::c_int = (_TIOC | 14);
-pub const TCSANOW: ::c_int = (_TIOC | 14);
-pub const TCSETSW: ::c_int = (_TIOC | 15);
-pub const TCSADRAIN: ::c_int = (_TIOC | 15);
-pub const TCSETSF: ::c_int = (_TIOC | 16);
-pub const TCSAFLUSH: ::c_int = (_TIOC | 16);
+pub const TCGETA: ::c_int = _TIOC | 1;
+pub const TCSETA: ::c_int = _TIOC | 2;
+pub const TCSETAW: ::c_int = _TIOC | 3;
+pub const TCSETAF: ::c_int = _TIOC | 4;
+pub const TCSBRK: ::c_int = _TIOC | 5;
+pub const TCXONC: ::c_int = _TIOC | 6;
+pub const TCFLSH: ::c_int = _TIOC | 7;
+pub const TCDSET: ::c_int = _TIOC | 32;
+pub const TCGETS: ::c_int = _TIOC | 13;
+pub const TCSETS: ::c_int = _TIOC | 14;
+pub const TCSANOW: ::c_int = _TIOC | 14;
+pub const TCSETSW: ::c_int = _TIOC | 15;
+pub const TCSADRAIN: ::c_int = _TIOC | 15;
+pub const TCSETSF: ::c_int = _TIOC | 16;
+pub const TCSAFLUSH: ::c_int = _TIOC | 16;
 pub const TCIFLUSH: ::c_int = 0;
 pub const TCOFLUSH: ::c_int = 1;
 pub const TCIOFLUSH: ::c_int = 2;
@@ -1811,55 +1814,55 @@ pub const TCOON: ::c_int = 1;
 pub const TCIOFF: ::c_int = 2;
 pub const TCION: ::c_int = 3;
 pub const TIOC: ::c_int = _TIOC;
-pub const TIOCKBON: ::c_int = (_TIOC | 8);
-pub const TIOCKBOF: ::c_int = (_TIOC | 9);
-pub const TIOCGWINSZ: ::c_int = (_TIOC | 104);
-pub const TIOCSWINSZ: ::c_int = (_TIOC | 103);
-pub const TIOCGSOFTCAR: ::c_int = (_TIOC | 105);
-pub const TIOCSSOFTCAR: ::c_int = (_TIOC | 106);
-pub const TIOCSETLD: ::c_int = (_TIOC | 123);
-pub const TIOCGETLD: ::c_int = (_TIOC | 124);
-pub const TIOCGPPS: ::c_int = (_TIOC | 125);
-pub const TIOCSPPS: ::c_int = (_TIOC | 126);
-pub const TIOCGPPSEV: ::c_int = (_TIOC | 127);
-pub const TIOCGETD: ::c_int = (tIOC | 0);
-pub const TIOCSETD: ::c_int = (tIOC | 1);
-pub const TIOCHPCL: ::c_int = (tIOC | 2);
-pub const TIOCGETP: ::c_int = (tIOC | 8);
-pub const TIOCSETP: ::c_int = (tIOC | 9);
-pub const TIOCSETN: ::c_int = (tIOC | 10);
-pub const TIOCEXCL: ::c_int = (tIOC | 13);
-pub const TIOCNXCL: ::c_int = (tIOC | 14);
-pub const TIOCFLUSH: ::c_int = (tIOC | 16);
-pub const TIOCSETC: ::c_int = (tIOC | 17);
-pub const TIOCGETC: ::c_int = (tIOC | 18);
-pub const TIOCLBIS: ::c_int = (tIOC | 127);
-pub const TIOCLBIC: ::c_int = (tIOC | 126);
-pub const TIOCLSET: ::c_int = (tIOC | 125);
-pub const TIOCLGET: ::c_int = (tIOC | 124);
-pub const TIOCSBRK: ::c_int = (tIOC | 123);
-pub const TIOCCBRK: ::c_int = (tIOC | 122);
-pub const TIOCSDTR: ::c_int = (tIOC | 121);
-pub const TIOCCDTR: ::c_int = (tIOC | 120);
-pub const TIOCSLTC: ::c_int = (tIOC | 117);
-pub const TIOCGLTC: ::c_int = (tIOC | 116);
-pub const TIOCOUTQ: ::c_int = (tIOC | 115);
-pub const TIOCNOTTY: ::c_int = (tIOC | 113);
-pub const TIOCSCTTY: ::c_int = (tIOC | 132);
-pub const TIOCSTOP: ::c_int = (tIOC | 111);
-pub const TIOCSTART: ::c_int = (tIOC | 110);
-pub const TIOCSILOOP: ::c_int = (tIOC | 109);
-pub const TIOCCILOOP: ::c_int = (tIOC | 108);
-pub const TIOCGPGRP: ::c_int = (tIOC | 20);
-pub const TIOCSPGRP: ::c_int = (tIOC | 21);
-pub const TIOCGSID: ::c_int = (tIOC | 22);
-pub const TIOCSTI: ::c_int = (tIOC | 23);
-pub const TIOCMSET: ::c_int = (tIOC | 26);
-pub const TIOCMBIS: ::c_int = (tIOC | 27);
-pub const TIOCMBIC: ::c_int = (tIOC | 28);
-pub const TIOCMGET: ::c_int = (tIOC | 29);
-pub const TIOCREMOTE: ::c_int = (tIOC | 30);
-pub const TIOCSIGNAL: ::c_int = (tIOC | 31);
+pub const TIOCKBON: ::c_int = _TIOC | 8;
+pub const TIOCKBOF: ::c_int = _TIOC | 9;
+pub const TIOCGWINSZ: ::c_int = _TIOC | 104;
+pub const TIOCSWINSZ: ::c_int = _TIOC | 103;
+pub const TIOCGSOFTCAR: ::c_int = _TIOC | 105;
+pub const TIOCSSOFTCAR: ::c_int = _TIOC | 106;
+pub const TIOCSETLD: ::c_int = _TIOC | 123;
+pub const TIOCGETLD: ::c_int = _TIOC | 124;
+pub const TIOCGPPS: ::c_int = _TIOC | 125;
+pub const TIOCSPPS: ::c_int = _TIOC | 126;
+pub const TIOCGPPSEV: ::c_int = _TIOC | 127;
+pub const TIOCGETD: ::c_int = tIOC | 0;
+pub const TIOCSETD: ::c_int = tIOC | 1;
+pub const TIOCHPCL: ::c_int = tIOC | 2;
+pub const TIOCGETP: ::c_int = tIOC | 8;
+pub const TIOCSETP: ::c_int = tIOC | 9;
+pub const TIOCSETN: ::c_int = tIOC | 10;
+pub const TIOCEXCL: ::c_int = tIOC | 13;
+pub const TIOCNXCL: ::c_int = tIOC | 14;
+pub const TIOCFLUSH: ::c_int = tIOC | 16;
+pub const TIOCSETC: ::c_int = tIOC | 17;
+pub const TIOCGETC: ::c_int = tIOC | 18;
+pub const TIOCLBIS: ::c_int = tIOC | 127;
+pub const TIOCLBIC: ::c_int = tIOC | 126;
+pub const TIOCLSET: ::c_int = tIOC | 125;
+pub const TIOCLGET: ::c_int = tIOC | 124;
+pub const TIOCSBRK: ::c_int = tIOC | 123;
+pub const TIOCCBRK: ::c_int = tIOC | 122;
+pub const TIOCSDTR: ::c_int = tIOC | 121;
+pub const TIOCCDTR: ::c_int = tIOC | 120;
+pub const TIOCSLTC: ::c_int = tIOC | 117;
+pub const TIOCGLTC: ::c_int = tIOC | 116;
+pub const TIOCOUTQ: ::c_int = tIOC | 115;
+pub const TIOCNOTTY: ::c_int = tIOC | 113;
+pub const TIOCSCTTY: ::c_int = tIOC | 132;
+pub const TIOCSTOP: ::c_int = tIOC | 111;
+pub const TIOCSTART: ::c_int = tIOC | 110;
+pub const TIOCSILOOP: ::c_int = tIOC | 109;
+pub const TIOCCILOOP: ::c_int = tIOC | 108;
+pub const TIOCGPGRP: ::c_int = tIOC | 20;
+pub const TIOCSPGRP: ::c_int = tIOC | 21;
+pub const TIOCGSID: ::c_int = tIOC | 22;
+pub const TIOCSTI: ::c_int = tIOC | 23;
+pub const TIOCMSET: ::c_int = tIOC | 26;
+pub const TIOCMBIS: ::c_int = tIOC | 27;
+pub const TIOCMBIC: ::c_int = tIOC | 28;
+pub const TIOCMGET: ::c_int = tIOC | 29;
+pub const TIOCREMOTE: ::c_int = tIOC | 30;
+pub const TIOCSIGNAL: ::c_int = tIOC | 31;
 
 pub const DP_POLL: ::c_int = 0xd001;
 pub const DP_ISPOLLED: ::c_int = 0xd002;

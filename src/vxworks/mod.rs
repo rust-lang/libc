@@ -100,6 +100,9 @@ pub type _Vx_ticks64_t = ::c_ulonglong;
 
 pub type sa_family_t = ::c_uchar;
 
+// mqueue.h
+pub type mqd_t = ::c_int;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum _Vx_semaphore {}
 impl ::Copy for _Vx_semaphore {}
@@ -378,6 +381,13 @@ s! {
         pub dli_fbase: *mut ::c_void,
         pub dli_sname: *const ::c_char,
         pub dli_saddr: *mut ::c_void,
+    }
+
+    pub struct mq_attr {
+        pub mq_maxmsg:  ::c_long,
+        pub mq_msgsize: ::c_long,
+        pub mq_flags:   ::c_long,
+        pub mq_curmsgs: ::c_long,
     }
 }
 
@@ -772,12 +782,12 @@ pub const SOCK_PACKET: ::c_int = 10;
 pub const _SS_MAXSIZE: usize = 128;
 pub const _SS_ALIGNSIZE: usize = size_of::<u32>();
 pub const _SS_PAD1SIZE: usize =
-    (_SS_ALIGNSIZE - size_of::<::c_uchar>() - size_of::<::sa_family_t>());
-pub const _SS_PAD2SIZE: usize = (_SS_MAXSIZE
+    _SS_ALIGNSIZE - size_of::<::c_uchar>() - size_of::<::sa_family_t>();
+pub const _SS_PAD2SIZE: usize = _SS_MAXSIZE
     - size_of::<::c_uchar>()
     - size_of::<::sa_family_t>()
     - _SS_PAD1SIZE
-    - _SS_ALIGNSIZE);
+    - _SS_ALIGNSIZE;
 
 pub const MSG_OOB: ::c_int = 0x0001;
 pub const MSG_PEEK: ::c_int = 0x0002;
@@ -999,7 +1009,7 @@ impl ::Clone for FILE {
     }
 }
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos_t {} // TODO: fill this out with a struct
+pub enum fpos_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos_t {}
 impl ::Clone for fpos_t {
     fn clone(&self) -> fpos_t {
@@ -1173,6 +1183,7 @@ extern "C" {
     ) -> ::size_t;
 
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn wmemchr(cx: *const wchar_t, c: wchar_t, n: size_t) -> *mut wchar_t;
     pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
     pub fn memcpy(
         dest: *mut c_void,
@@ -1971,6 +1982,43 @@ extern "C" {
     pub fn randABytes(buf: *mut c_uchar, length: c_int) -> c_int;
     pub fn randUBytes(buf: *mut c_uchar, length: c_int) -> c_int;
     pub fn randSecure() -> c_int;
+
+    // mqueue.h
+    pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
+    pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
+    pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
+    pub fn mq_receive(
+        mqd: ::mqd_t,
+        msg_ptr: *mut ::c_char,
+        msg_len: ::size_t,
+        msg_prio: *mut ::c_uint,
+    ) -> ::ssize_t;
+    pub fn mq_timedreceive(
+        mqd: ::mqd_t,
+        msg_ptr: *mut ::c_char,
+        msg_len: ::size_t,
+        msg_prio: *mut ::c_uint,
+        abs_timeout: *const ::timespec,
+    ) -> ::ssize_t;
+    pub fn mq_send(
+        mqd: ::mqd_t,
+        msg_ptr: *const ::c_char,
+        msg_len: ::size_t,
+        msg_prio: ::c_uint,
+    ) -> ::c_int;
+    pub fn mq_timedsend(
+        mqd: ::mqd_t,
+        msg_ptr: *const ::c_char,
+        msg_len: ::size_t,
+        msg_prio: ::c_uint,
+        abs_timeout: *const ::timespec,
+    ) -> ::c_int;
+    pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
+    pub fn mq_setattr(
+        mqd: ::mqd_t,
+        newattr: *const ::mq_attr,
+        oldattr: *mut ::mq_attr,
+    ) -> ::c_int;
 }
 
 //Dummy functions, these don't really exist in VxWorks.

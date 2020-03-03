@@ -31,6 +31,9 @@ pub type posix_spawn_file_actions_t = *mut ::c_void;
 pub type key_t = ::c_int;
 pub type shmatt_t = ::c_ushort;
 
+pub type sae_associd_t = u32;
+pub type sae_connid_t = u32;
+
 deprecated_mach! {
     pub type vm_prot_t = ::c_int;
     pub type vm_size_t = ::uintptr_t;
@@ -492,6 +495,16 @@ s! {
 
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
+    }
+
+    // sys/socket.h
+
+    pub struct sa_endpoints_t {
+        pub sae_srcif: ::c_uint, // optional source interface
+        pub sae_srcaddr: *const ::sockaddr, // optional source address
+        pub sae_srcaddrlen: ::socklen_t, // size of source address
+        pub sae_dstaddr: *const ::sockaddr, // destination address
+        pub sae_dstaddrlen: ::socklen_t, // size of destination address
     }
 }
 
@@ -1239,12 +1252,12 @@ pub const ACCOUNTING: ::c_short = 9;
 pub const SIGNATURE: ::c_short = 10;
 pub const SHUTDOWN_TIME: ::c_short = 11;
 
-pub const LC_COLLATE_MASK: ::c_int = (1 << 0);
-pub const LC_CTYPE_MASK: ::c_int = (1 << 1);
-pub const LC_MESSAGES_MASK: ::c_int = (1 << 2);
-pub const LC_MONETARY_MASK: ::c_int = (1 << 3);
-pub const LC_NUMERIC_MASK: ::c_int = (1 << 4);
-pub const LC_TIME_MASK: ::c_int = (1 << 5);
+pub const LC_COLLATE_MASK: ::c_int = 1 << 0;
+pub const LC_CTYPE_MASK: ::c_int = 1 << 1;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << 2;
+pub const LC_MONETARY_MASK: ::c_int = 1 << 3;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << 4;
+pub const LC_TIME_MASK: ::c_int = 1 << 5;
 pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
     | LC_CTYPE_MASK
     | LC_MESSAGES_MASK
@@ -2216,6 +2229,8 @@ pub const IPV6_RECVPKTINFO: ::c_int = 61;
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
 pub const TCP_KEEPALIVE: ::c_int = 0x10;
+/// Enable/Disable TCP Fastopen on this socket
+pub const TCP_FASTOPEN: ::c_int = 0x105;
 
 pub const SOL_LOCAL: ::c_int = 0;
 
@@ -2303,6 +2318,23 @@ pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
+
+pub const SAE_ASSOCID_ANY: ::sae_associd_t = 0;
+/// ((sae_associd_t)(-1ULL))
+pub const SAE_ASSOCID_ALL: ::sae_associd_t = 0xffffffff;
+
+pub const SAE_CONNID_ANY: ::sae_connid_t = 0;
+/// ((sae_connid_t)(-1ULL))
+pub const SAE_CONNID_ALL: ::sae_connid_t = 0xffffffff;
+
+// connectx() flag parameters
+
+/// resume connect() on read/write
+pub const CONNECT_RESUME_ON_READ_WRITE: ::c_uint = 0x1;
+/// data is idempotent
+pub const CONNECT_DATA_IDEMPOTENT: ::c_uint = 0x2;
+/// data includes security that replaces the TFO-cookie
+pub const CONNECT_DATA_AUTHENTICATED: ::c_uint = 0x4;
 
 pub const LOCK_SH: ::c_int = 1;
 pub const LOCK_EX: ::c_int = 2;
@@ -3528,6 +3560,22 @@ extern "C" {
         newfd: ::c_int,
     ) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+
+    pub fn connectx(
+        socket: ::c_int,
+        endpoints: *const sa_endpoints_t,
+        associd: sae_associd_t,
+        flags: ::c_uint,
+        iov: *const ::iovec,
+        iovcnt: ::c_uint,
+        len: *mut ::size_t,
+        connid: *mut sae_connid_t,
+    ) -> ::c_int;
+    pub fn disconnectx(
+        socket: ::c_int,
+        associd: sae_associd_t,
+        connid: sae_connid_t,
+    ) -> ::c_int;
 }
 
 cfg_if! {

@@ -12,7 +12,7 @@ pr: ["master"]
 jobs:
   - job: DockerLinuxTier1
     pool:
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-18.04
     steps:
       - template: azure-install-rust.yml
       - bash: LIBC_CI=1 sh ./ci/run-docker.sh $TARGET
@@ -27,7 +27,7 @@ jobs:
   - job: DockerLinuxTier2
     #dependsOn: DockerLinuxTier1
     pool:
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-18.04
     steps:
       - template: azure-install-rust.yml
       - bash: LIBC_CI=1 sh ./ci/run-docker.sh $TARGET
@@ -47,7 +47,7 @@ jobs:
         arm-unknown-linux-musleabihf:
           TARGET: arm-unknown-linux-musleabihf
         # Disabled because currently broken, see:
-        # https://github.com/rust-lang/libc/issues/1591         
+        # https://github.com/rust-lang/libc/issues/1591
         # asmjs-unknown-emscripten:
         #  TARGET: asmjs-unknown-emscripten
         i686-linux-android:
@@ -77,7 +77,7 @@ jobs:
         sparc64-unknown-linux-gnu:
           TARGET: sparc64-unknown-linux-gnu
         # Disabled because currently broken, see:
-        # https://github.com/rust-lang/libc/issues/1591         
+        # https://github.com/rust-lang/libc/issues/1591
         # wasm32-unknown-emscripten:
         #  TARGET: wasm32-unknown-emscripten
         x86_64-linux-android:
@@ -89,7 +89,7 @@ jobs:
 
   - job: DockerOSX64
     pool:
-      vmImage: macos-10.14
+      vmImage: macos-10.15
     steps:
       - template: azure-install-rust.yml
       - bash: LIBC_CI=1 sh ./ci/run.sh $TARGET
@@ -98,18 +98,6 @@ jobs:
       matrix:
         x86_64-apple-darwin:
           TARGET: x86_64-apple-darwin
-
-  - job: DockerOSX32
-    pool:
-      vmImage: macos-10.13
-    steps:
-      - template: azure-install-rust.yml
-      - bash: LIBC_CI=1 sh ./ci/run.sh $TARGET
-        displayName: Execute run.sh
-    strategy:
-      matrix:
-        i686-apple-darwin:
-          TARGET: i686-apple-darwin
 
   - job: Windows
     pool:
@@ -126,7 +114,7 @@ jobs:
           ARCH: x86_64
         x86_64-pc-windows-msvc:
           TARGET: x86_64-pc-windows-msvc
-        # Disabled because broken:          
+        # Disabled because broken:
         #  https://github.com/rust-lang/libc/issues/1592
         #i686-pc-windows-gnu:
         #  TARGET: i686-pc-windows-gnu
@@ -137,7 +125,7 @@ jobs:
 
   - job: StyleAndDocs
     pool:
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-18.04
     steps:
       - template: azure-install-rust.yml
       - script: sh ci/style.sh
@@ -153,7 +141,7 @@ jobs:
   #  dependsOn: BuildChannelsLinux
   #  continueOnError: true
   #  pool:
-  #    vmImage: ubuntu-16.04
+  #    vmImage: ubuntu-18.04
   #  steps:
   #    - template: azure-install-rust.yml
   #    - script: sh ci/semver.sh linux
@@ -163,7 +151,7 @@ jobs:
   #  dependsOn: BuildChannelsOSX
   #  continueOnError: true
   #  pool:
-  #    vmImage: macos-10.14
+  #    vmImage: macos-10.15
   #  steps:
   #    - template: azure-install-rust.yml
   #    - script: sh ci/semver.sh osx
@@ -172,7 +160,7 @@ jobs:
   - job: BuildChannelsLinux
     dependsOn: StyleAndDocs
     pool:
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-18.04
     steps:
       - template: azure-install-rust.yml
       - script: LIBC_CI=1 sh ./ci/build.sh
@@ -201,7 +189,7 @@ jobs:
   - job: BuildChannelsOSX
     dependsOn: StyleAndDocs
     pool:
-      vmImage: macos-10.13
+      vmImage: macos-10.15
     steps:
       - template: azure-install-rust.yml
       - script: LIBC_CI=1 sh ./ci/build.sh

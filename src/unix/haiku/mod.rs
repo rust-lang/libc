@@ -662,7 +662,7 @@ pub const LC_NUMERIC: ::c_int = 4;
 pub const LC_TIME: ::c_int = 5;
 pub const LC_MESSAGES: ::c_int = 6;
 
-// TODO: Haiku does not have MAP_FILE, but libstd/os.rs requires it
+// FIXME: Haiku does not have MAP_FILE, but libstd/os.rs requires it
 pub const MAP_FILE: ::c_int = 0x00;
 pub const MAP_SHARED: ::c_int = 0x01;
 pub const MAP_PRIVATE: ::c_int = 0x02;
@@ -994,7 +994,7 @@ pub const PTHREAD_MUTEX_NORMAL: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 3;
 
-pub const FIOCLEX: c_ulong = 0; // TODO: does not exist on Haiku!
+pub const FIOCLEX: c_ulong = 0; // FIXME: does not exist on Haiku!
 
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 
@@ -1238,7 +1238,7 @@ f! {
     }
 
     pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
-        (status & 0xff)
+        status & 0xff
     }
 
     pub fn WIFSIGNALED(status: ::c_int) -> bool {
