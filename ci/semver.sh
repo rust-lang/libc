@@ -13,7 +13,8 @@ if ! rustc --version | grep -E "nightly" ; then
     exit 1
 fi
 
-cargo +nightly install semverver
+# FIXME: Use upstream once it gets rustup.
+cargo +nightly install semververfork
 
 TARGETS=
 case "${OS}" in
@@ -73,5 +74,6 @@ for TARGET in $TARGETS; do
         sleep 1
     done
 
-    cargo +nightly semver --api-guidelines --target="${TARGET}"
+    # FIXME: Use upstream once it gets rustup.
+    cargo +nightly semverfork --api-guidelines --target="${TARGET}"
 done
