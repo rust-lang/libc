@@ -2237,6 +2237,7 @@ fn test_linux(target: &str) {
         "linux/if_ether.h",
         "linux/if_tun.h",
         "linux/input.h",
+        "linux/keyctl.h",
         "linux/magic.h",
         "linux/memfd.h",
         "linux/module.h",
