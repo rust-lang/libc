@@ -5,7 +5,7 @@ set -ex
 rustc ci/style.rs && ./style src
 
 if rustup component add rustfmt-preview ; then
-    which rustfmt
+    command -v rustfmt
     rustfmt -V
     cargo fmt --all -- --check
 fi
