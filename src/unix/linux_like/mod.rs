@@ -260,6 +260,97 @@ s_no_extra_traits! {
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12]
     }
+
+    pub struct tcp_info {
+        pub tcpi_state: u8,
+        pub tcpi_ca_state: u8,
+        pub tcpi_retransmits: u8,
+        pub tcpi_probes: u8,
+        pub tcpi_backoff: u8,
+        pub tcpi_options: u8,
+
+        // __u8	tcpi_snd_wscale: 4, tcpi_rcv_wscale: 4;
+        tcpi_wscale: u8,
+        // __u8 tcpi_delivery_rate_app_limited: 1
+        tcpi_delivery_rate_app_limited: u8,
+
+        pub tcpi_rto: u32,
+        pub tcpi_ato: u32,
+        pub tcpi_snd_mss: u32,
+        pub tcpi_rcv_mss: u32,
+
+        pub tcpi_unacked: u32,
+        pub tcpi_sacked: u32,
+        pub tcpi_lost: u32,
+        pub tcpi_retrans: u32,
+        pub tcpi_fackets: u32,
+
+        /* Times. */
+        pub tcpi_last_data_sent: u32,
+        pub tcpi_last_ack_sent: u32,     /* Not remembered, sorry. */
+        pub tcpi_last_data_recv: u32,
+        pub tcpi_last_ack_recv: u32,
+
+        /* Metrics. */
+        pub tcpi_pmtu: u32,
+        pub tcpi_rcv_ssthresh: u32,
+        pub tcpi_rtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub tcpi_advmss: u32,
+        pub tcpi_reordering: u32,
+
+        pub tcpi_rcv_rtt: u32,
+        pub tcpi_rcv_space: u32,
+
+        pub tcpi_total_retrans: u32,
+
+        pub tcpi_pacing_rate: u64,
+        pub tcpi_max_pacing_rate: u64,
+        /// RFC4898 tcpEStatsAppHCThruOctetsAcked
+        pub tcpi_bytes_acked: u64,
+        /// RFC4898 tcpEStatsAppHCThruOctetsReceived
+        pub tcpi_bytes_received: u64,
+        /// RFC4898 tcpEStatsPerfSegsOut
+        pub tcpi_segs_out: u32,
+        /// RFC4898 tcpEStatsPerfSegsIn
+        pub tcpi_segs_in: u32,
+
+        pub tcpi_notsent_bytes: u32,
+        pub tcpi_min_rtt: u32,
+        /// RFC4898 tcpEStatsDataSegsIn
+        pub tcpi_data_segs_in: u32,
+        /// RFC4898 tcpEStatsDataSegsOut
+        pub tcpi_data_segs_out: u32,
+
+        pub tcpi_delivery_rate: u64,
+
+        /// Time (usec) busy sending data
+        pub tcpi_busy_time: u64,
+        /// Time (usec) limited by receive window
+        pub tcpi_rwnd_limited: u64,
+        /// Time (usec) limited by send buffer
+        pub tcpi_sndbuf_limited: u64,
+
+        pub tcpi_delivered: u32,
+        pub tcpi_delivered_ce: u32,
+
+        /// RFC4898 tcpEStatsPerfHCDataOctetsOut
+        pub tcpi_bytes_sent: u64,
+        /// RFC4898 tcpEStatsPerfOctetsRetrans
+        pub tcpi_bytes_retrans: u64,
+        /// RFC4898 tcpEStatsStackDSACKDups
+        pub tcpi_dsack_dups: u32,
+        /// reordering events seen
+        pub tcpi_reord_seen: u32,
+
+        /// Out-of-order packets received
+        pub tcpi_rcv_ooopack: u32,
+
+        /// peer's advertised receive window after scaling in bytes
+        pub tcpi_snd_wnd: u32,
+    }
 }
 
 cfg_if! {
@@ -433,6 +524,178 @@ cfg_if! {
                 self.sigev_signo.hash(state);
                 self.sigev_notify.hash(state);
                 self.sigev_notify_thread_id.hash(state);
+            }
+        }
+
+        impl PartialEq for tcp_info {
+            fn eq(&self, other: &tcp_info) -> bool {
+                self.tcpi_state == other.tcpi_state &&
+                self.tcpi_ca_state == other.tcpi_ca_state &&
+                self.tcpi_retransmits == other.tcpi_retransmits &&
+                self.tcpi_probes == other.tcpi_probes &&
+                self.tcpi_backoff == other.tcpi_backoff &&
+                self.tcpi_options == other.tcpi_options &&
+                self.tcpi_rto == other.tcpi_rto &&
+                self.tcpi_ato == other.tcpi_ato &&
+                self.tcpi_snd_mss == other.tcpi_snd_mss &&
+                self.tcpi_rcv_mss == other.tcpi_rcv_mss &&
+                self.tcpi_unacked == other.tcpi_unacked &&
+                self.tcpi_sacked == other.tcpi_sacked &&
+                self.tcpi_lost == other.tcpi_lost &&
+                self.tcpi_retrans == other.tcpi_retrans &&
+                self.tcpi_fackets == other.tcpi_fackets &&
+                self.tcpi_last_data_sent == other.tcpi_last_data_sent &&
+                self.tcpi_last_ack_sent == other.tcpi_last_ack_sent &&
+                self.tcpi_last_data_recv == other.tcpi_last_data_recv &&
+                self.tcpi_last_ack_recv == other.tcpi_last_ack_recv &&
+                self.tcpi_pmtu == other.tcpi_pmtu &&
+                self.tcpi_rcv_ssthresh == other.tcpi_rcv_ssthresh &&
+                self.tcpi_rtt == other.tcpi_rtt &&
+                self.tcpi_rttvar == other.tcpi_rttvar &&
+                self.tcpi_snd_ssthresh == other.tcpi_snd_ssthresh &&
+                self.tcpi_snd_cwnd == other.tcpi_snd_cwnd &&
+                self.tcpi_advmss == other.tcpi_advmss &&
+                self.tcpi_reordering == other.tcpi_reordering &&
+                self.tcpi_rcv_rtt == other.tcpi_rcv_rtt &&
+                self.tcpi_rcv_space == other.tcpi_rcv_space &&
+                self.tcpi_total_retrans == other.tcpi_total_retrans &&
+                self.tcpi_pacing_rate == other.tcpi_pacing_rate &&
+                self.tcpi_max_pacing_rate == other.tcpi_max_pacing_rate &&
+                self.tcpi_bytes_acked == other.tcpi_bytes_acked &&
+                self.tcpi_bytes_received == other.tcpi_bytes_received &&
+                self.tcpi_segs_out == other.tcpi_segs_out &&
+                self.tcpi_segs_in == other.tcpi_segs_in &&
+                self.tcpi_notsent_bytes == other.tcpi_notsent_bytes &&
+                self.tcpi_min_rtt == other.tcpi_min_rtt &&
+                self.tcpi_data_segs_in == other.tcpi_data_segs_in &&
+                self.tcpi_data_segs_out == other.tcpi_data_segs_out &&
+                self.tcpi_delivery_rate == other.tcpi_delivery_rate &&
+                self.tcpi_busy_time == other.tcpi_busy_time &&
+                self.tcpi_rwnd_limited == other.tcpi_rwnd_limited &&
+                self.tcpi_sndbuf_limited == other.tcpi_sndbuf_limited &&
+                self.tcpi_delivered == other.tcpi_delivered &&
+                self.tcpi_delivered_ce == other.tcpi_delivered_ce &&
+                self.tcpi_bytes_sent == other.tcpi_bytes_sent &&
+                self.tcpi_bytes_retrans == other.tcpi_bytes_retrans &&
+                self.tcpi_dsack_dups == other.tcpi_dsack_dups &&
+                self.tcpi_reord_seen == other.tcpi_reord_seen &&
+                self.tcpi_rcv_ooopack == other.tcpi_rcv_ooopack &&
+                self.tcpi_snd_wnd == other.tcpi_snd_wnd
+            }
+        }
+        impl Eq for tcp_info {}
+        impl ::fmt::Debug for tcp_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("icp_info")
+                    .field("tcpi_state", &self.tcpi_state)
+                    .field("tcpi_ca_state", &self.tcpi_ca_state)
+                    .field("tcpi_retransmits", &self.tcpi_retransmits)
+                    .field("tcpi_probes", &self.tcpi_probes)
+                    .field("tcpi_backoff", &self.tcpi_backoff)
+                    .field("tcpi_options", &self.tcpi_options)
+                    .field("tcpi_rto", &self.tcpi_rto)
+                    .field("tcpi_ato", &self.tcpi_ato)
+                    .field("tcpi_snd_mss", &self.tcpi_snd_mss)
+                    .field("tcpi_rcv_mss", &self.tcpi_rcv_mss)
+                    .field("tcpi_unacked", &self.tcpi_unacked)
+                    .field("tcpi_sacked", &self.tcpi_sacked)
+                    .field("tcpi_lost", &self.tcpi_lost)
+                    .field("tcpi_retrans", &self.tcpi_retrans)
+                    .field("tcpi_fackets", &self.tcpi_fackets)
+                    .field("tcpi_last_data_sent", &self.tcpi_last_data_sent)
+                    .field("tcpi_last_ack_sent", &self.tcpi_last_ack_sent)
+                    .field("tcpi_last_data_recv", &self.tcpi_last_data_recv)
+                    .field("tcpi_last_ack_recv", &self.tcpi_last_ack_recv)
+                    .field("tcpi_pmtu", &self.tcpi_pmtu)
+                    .field("tcpi_rcv_ssthresh", &self.tcpi_rcv_ssthresh)
+                    .field("tcpi_rtt", &self.tcpi_rtt)
+                    .field("tcpi_rttvar", &self.tcpi_rttvar)
+                    .field("tcpi_snd_ssthresh", &self.tcpi_snd_ssthresh)
+                    .field("tcpi_snd_cwnd", &self.tcpi_snd_cwnd)
+                    .field("tcpi_advmss", &self.tcpi_advmss)
+                    .field("tcpi_reordering", &self.tcpi_reordering)
+                    .field("tcpi_rcv_rtt", &self.tcpi_rcv_rtt)
+                    .field("tcpi_rcv_space", &self.tcpi_rcv_space)
+                    .field("tcpi_total_retrans", &self.tcpi_total_retrans)
+                    .field("tcpi_pacing_rate", &self.tcpi_pacing_rate)
+                    .field("tcpi_max_pacing_rate", &self.tcpi_max_pacing_rate)
+                    .field("tcpi_bytes_acked", &self.tcpi_bytes_acked)
+                    .field("tcpi_bytes_received", &self.tcpi_bytes_received)
+                    .field("tcpi_segs_out", &self.tcpi_segs_out)
+                    .field("tcpi_segs_in", &self.tcpi_segs_in)
+                    .field("tcpi_notsent_bytes", &self.tcpi_notsent_bytes)
+                    .field("tcpi_min_rtt", &self.tcpi_min_rtt)
+                    .field("tcpi_data_segs_in", &self.tcpi_data_segs_in)
+                    .field("tcpi_data_segs_out", &self.tcpi_data_segs_out)
+                    .field("tcpi_delivery_rate", &self.tcpi_delivery_rate)
+                    .field("tcpi_busy_time", &self.tcpi_busy_time)
+                    .field("tcpi_rwnd_limited", &self.tcpi_rwnd_limited)
+                    .field("tcpi_sndbuf_limited", &self.tcpi_sndbuf_limited)
+                    .field("tcpi_delivered", &self.tcpi_delivered)
+                    .field("tcpi_delivered_ce", &self.tcpi_delivered_ce)
+                    .field("tcpi_bytes_sent", &self.tcpi_bytes_sent)
+                    .field("tcpi_bytes_retrans", &self.tcpi_bytes_retrans)
+                    .field("tcpi_dsack_dups", &self.tcpi_dsack_dups)
+                    .field("tcpi_reord_seen", &self.tcpi_reord_seen)
+                    .field("tcpi_rcv_ooopack", &self.tcpi_rcv_ooopack)
+                    .field("tcpi_snd_wnd", &self.tcpi_snd_wnd)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for tcp_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.tcpi_state.hash(state);
+                self.tcpi_ca_state.hash(state);
+                self.tcpi_retransmits.hash(state);
+                self.tcpi_probes.hash(state);
+                self.tcpi_backoff.hash(state);
+                self.tcpi_options.hash(state);
+                self.tcpi_rto.hash(state);
+                self.tcpi_ato.hash(state);
+                self.tcpi_snd_mss.hash(state);
+                self.tcpi_rcv_mss.hash(state);
+                self.tcpi_unacked.hash(state);
+                self.tcpi_sacked.hash(state);
+                self.tcpi_lost.hash(state);
+                self.tcpi_retrans.hash(state);
+                self.tcpi_fackets.hash(state);
+                self.tcpi_last_data_sent.hash(state);
+                self.tcpi_last_ack_sent.hash(state);
+                self.tcpi_last_data_recv.hash(state);
+                self.tcpi_last_ack_recv.hash(state);
+                self.tcpi_pmtu.hash(state);
+                self.tcpi_rcv_ssthresh.hash(state);
+                self.tcpi_rtt.hash(state);
+                self.tcpi_rttvar.hash(state);
+                self.tcpi_snd_ssthresh.hash(state);
+                self.tcpi_snd_cwnd.hash(state);
+                self.tcpi_advmss.hash(state);
+                self.tcpi_reordering.hash(state);
+                self.tcpi_rcv_rtt.hash(state);
+                self.tcpi_rcv_space.hash(state);
+                self.tcpi_total_retrans.hash(state);
+                self.tcpi_pacing_rate.hash(state);
+                self.tcpi_max_pacing_rate.hash(state);
+                self.tcpi_bytes_acked.hash(state);
+                self.tcpi_bytes_received.hash(state);
+                self.tcpi_segs_out.hash(state);
+                self.tcpi_segs_in.hash(state);
+                self.tcpi_notsent_bytes.hash(state);
+                self.tcpi_min_rtt.hash(state);
+                self.tcpi_data_segs_in.hash(state);
+                self.tcpi_data_segs_out.hash(state);
+                self.tcpi_delivery_rate.hash(state);
+                self.tcpi_busy_time.hash(state);
+                self.tcpi_rwnd_limited.hash(state);
+                self.tcpi_sndbuf_limited.hash(state);
+                self.tcpi_delivered.hash(state);
+                self.tcpi_delivered_ce.hash(state);
+                self.tcpi_bytes_sent.hash(state);
+                self.tcpi_bytes_retrans.hash(state);
+                self.tcpi_dsack_dups.hash(state);
+                self.tcpi_reord_seen.hash(state);
+                self.tcpi_rcv_ooopack.hash(state);
+                self.tcpi_snd_wnd.hash(state);
             }
         }
     }
