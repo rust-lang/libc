@@ -150,6 +150,7 @@ fn test_apple(target: &str) {
         "sys/sysctl.h",
         "sys/time.h",
         "sys/times.h",
+        "sys/timex.h",
         "sys/types.h",
         "sys/uio.h",
         "sys/un.h",
@@ -706,6 +707,7 @@ fn test_solaris(target: &str) {
         "sys/statvfs.h",
         "sys/time.h",
         "sys/times.h",
+        "sys/timex.h",
         "sys/types.h",
         "sys/uio.h",
         "sys/un.h",
@@ -819,6 +821,7 @@ fn test_netbsd(target: &str) {
         "sys/sysctl.h",
         "sys/time.h",
         "sys/times.h",
+        "sys/timex.h",
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
@@ -1569,6 +1572,7 @@ fn test_freebsd(target: &str) {
                 "sys/sysctl.h",
                 "sys/time.h",
                 "sys/times.h",
+                "sys/timex.h",
                 "sys/types.h",
                 "sys/uio.h",
                 "sys/un.h",
@@ -2183,6 +2187,7 @@ fn test_linux(target: &str) {
                "sys/time.h",
                "sys/timerfd.h",
                "sys/times.h",
+               "sys/timex.h",
                "sys/types.h",
                "sys/uio.h",
                "sys/un.h",
@@ -2513,7 +2518,9 @@ fn test_linux(target: &str) {
             "sched_ss_max_repl",
         ].contains(&field) && musl) ||
         // FIXME: After musl 1.1.24, the type becomes `int` instead of `unsigned short`.
-        (struct_ == "ipc_perm" && field == "__seq" && aarch64_musl)
+        (struct_ == "ipc_perm" && field == "__seq" && aarch64_musl) ||
+        // glibc uses unnamed fields here and Rust doesn't support that yet
+        (struct_ == "timex" && field.starts_with("__unused"))
     });
 
     cfg.skip_roundtrip(move |s| match s {
