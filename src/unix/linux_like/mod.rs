@@ -822,6 +822,7 @@ pub const IP_TOS: ::c_int = 1;
 pub const IP_TTL: ::c_int = 2;
 pub const IP_HDRINCL: ::c_int = 3;
 pub const IP_PKTINFO: ::c_int = 8;
+pub const IP_MTU_DISCOVER: ::c_int = 10;
 pub const IP_RECVTOS: ::c_int = 13;
 pub const IP_RECVERR: ::c_int = 11;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
@@ -856,6 +857,11 @@ pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
 pub const IPV6_RECVTCLASS: ::c_int = 66;
 pub const IPV6_TCLASS: ::c_int = 67;
+
+pub const IP_PMTUDISC_DONT: ::c_int = 0;
+pub const IP_PMTUDISC_WANT: ::c_int = 1;
+pub const IP_PMTUDISC_DO: ::c_int = 2;
+pub const IP_PMTUDISC_PROBE: ::c_int = 3;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
