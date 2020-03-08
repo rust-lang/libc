@@ -52,10 +52,6 @@ wasm32-unknown-unknown \
     *osx*)
         TARGETS="\
 aarch64-apple-ios \
-armv7-apple-ios \
-armv7s-apple-ios \
-i386-apple-ios \
-i686-apple-darwin \
 x86_64-apple-darwin \
 x86_64-apple-ios \
 "
