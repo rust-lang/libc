@@ -499,10 +499,7 @@ pub const CLOCK_MONOTONIC_COARSE: ::clockid_t = 6;
 pub const CLOCK_BOOTTIME: ::clockid_t = 7;
 pub const CLOCK_REALTIME_ALARM: ::clockid_t = 8;
 pub const CLOCK_BOOTTIME_ALARM: ::clockid_t = 9;
-// FIXME(#247) Someday our Travis shall have glibc 2.21 (released in Sep
-// 2014.) See also musl/mod.rs
-// pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
-// pub const CLOCK_TAI: ::clockid_t = 11;
+pub const CLOCK_TAI: ::clockid_t = 11;
 pub const TIMER_ABSTIME: ::c_int = 1;
 
 pub const RUSAGE_SELF: ::c_int = 0;
