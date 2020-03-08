@@ -83,7 +83,7 @@ if [ "$QEMU" != "" ]; then
 fi
 
 # FIXME: x86_64-unknown-linux-gnux32 fail to compile without --release
-# See https://github.com/rust-lang/rust/issues/45417
+# See https://github.com/rust-lang/rust/issues/59220
 opt=
 if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
   opt="--release"
