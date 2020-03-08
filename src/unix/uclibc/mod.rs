@@ -512,8 +512,7 @@ pub const CLOCK_REALTIME: ::clockid_t = 0;
 pub const CLOCK_MONOTONIC: ::clockid_t = 1;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 2;
 pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 3;
-// FIXME(#247) Someday our Travis shall have glibc 2.21 (released in Sep
-// 2014.) See also musl/mod.rs
+// FIXME: Add these constants once uclibc gets them.
 // pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
 // pub const CLOCK_TAI: ::clockid_t = 11;
 pub const TIMER_ABSTIME: ::c_int = 1;

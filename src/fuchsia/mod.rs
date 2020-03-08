@@ -1433,10 +1433,8 @@ pub const CLOCK_MONOTONIC_COARSE: ::clockid_t = 6;
 pub const CLOCK_BOOTTIME: ::clockid_t = 7;
 pub const CLOCK_REALTIME_ALARM: ::clockid_t = 8;
 pub const CLOCK_BOOTTIME_ALARM: ::clockid_t = 9;
-// FIXME(#247) Someday our Travis shall have glibc 2.21 (released in Sep
-// 2014.) See also musl/mod.rs
-// pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
-// pub const CLOCK_TAI: ::clockid_t = 11;
+pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
+pub const CLOCK_TAI: ::clockid_t = 11;
 pub const TIMER_ABSTIME: ::c_int = 1;
 
 pub const RLIMIT_CPU: ::c_int = 0;
@@ -2772,11 +2770,6 @@ pub const TIOCINQ: ::c_int = ::FIONREAD;
 
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
-
-// FIXME(#247) Temporarily musl-specific (available since musl 0.9.12 / Linux
-// kernel 3.10).  See also notbsd/mod.rs
-pub const CLOCK_SGI_CYCLE: ::clockid_t = 10;
-pub const CLOCK_TAI: ::clockid_t = 11;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
