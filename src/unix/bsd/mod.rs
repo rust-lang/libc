@@ -776,6 +776,20 @@ extern "C" {
         value: *mut ::c_void,
     ) -> ::c_int;
     pub fn acct(filename: *const ::c_char) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "wait4$UNIX2003"
+    )]
+    #[cfg_attr(
+        all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
+        link_name = "wait4@FBSD_1.0"
+    )]
+    pub fn wait4(
+        pid: ::pid_t,
+        status: *mut ::c_int,
+        options: ::c_int,
+        rusage: *mut ::rusage,
+    ) -> ::pid_t;
 }
 
 cfg_if! {
