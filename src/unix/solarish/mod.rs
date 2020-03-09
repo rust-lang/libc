@@ -2404,6 +2404,18 @@ extern "C" {
         nget: *mut ::c_uint,
         timeout: *mut ::timespec,
     ) -> ::c_int;
+    pub fn port_send(
+        port: ::c_int,
+        events: ::c_int,
+        user: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn port_sendn(
+        port_list: *mut ::c_int,
+        error_list: *mut ::c_int,
+        nent: ::c_uint,
+        events: ::c_int,
+        user: *mut ::c_void,
+    ) -> ::c_int;
     pub fn fexecve(
         fd: ::c_int,
         argv: *const *const ::c_char,
