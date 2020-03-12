@@ -3037,6 +3037,44 @@ pub const DLT_LOOP: ::c_uint = 108;
 // sizeof(i32)
 pub const BPF_ALIGNMENT: ::c_int = 4;
 
+// sys/mount.h
+pub const MNT_RDONLY: ::c_int = 0x00000001; //read only filesystem
+pub const MNT_SYNCHRONOUS: ::c_int = 0x00000002; //file system written synchronously
+pub const MNT_NOEXEC: ::c_int = 0x00000004; //can't exec from filesystem
+pub const MNT_NOSUID: ::c_int = 0x00000008; //don't honor setuid bits on fs
+pub const MNT_NODEV: ::c_int = 0x00000010; //don't interpret special files
+pub const MNT_UNION: ::c_int = 0x00000020; //union with underlying filesystem
+pub const MNT_ASYNC: ::c_int = 0x00000040; //file system written asynchronously
+pub const MNT_CPROTECT: ::c_int = 0x00000080; //file system supports content protection
+
+// NFS export related mount flags.
+pub const MNT_EXPORTED: ::c_int = 0x00000100; //file system is exported
+
+// MAC labeled / "quarantined" flag
+pub const MNT_QUARANTINE: ::c_int = 0x00000400; //file system is quarantined
+
+// Flags set by internal operations.
+pub const MNT_LOCAL: ::c_int = 0x00001000; //filesystem is stored locally
+pub const MNT_QUOTA: ::c_int = 0x00002000; //quotas are enabled on filesystem
+pub const MNT_ROOTFS: ::c_int = 0x00004000; //identifies the root filesystem
+pub const MNT_DOVOLFS: ::c_int = 0x00008000; //FS supports volfs (deprecated flag in Mac OS X 10.5)
+
+pub const MNT_DONTBROWSE: ::c_int = 0x00100000; //file system is not appropriate path to user data
+pub const MNT_IGNORE_OWNERSHIP: ::c_int = 0x00200000; //VFS will ignore ownership information on filesystem objects
+pub const MNT_AUTOMOUNTED: ::c_int = 0x00400000; //filesystem was mounted by automounter
+pub const MNT_JOURNALED: ::c_int = 0x00800000; //filesystem is journaled
+pub const MNT_NOUSERXATTR: ::c_int = 0x01000000; //Don't allow user extended attributes
+pub const MNT_DEFWRITE: ::c_int = 0x02000000; //filesystem should defer writes
+pub const MNT_MULTILABEL: ::c_int = 0x04000000; //MAC support for individual labels
+pub const MNT_NOATIME: ::c_int = : ::c_int = 0x10000000; //disable update of file access time
+pub const MNT_SNAPSHOT: ::c_int = 0x40000000; //The mount is a snapshot
+
+// External filesystem command modifier flags.
+pub const MNT_UPDATE: ::c_int = 0x00010000; //not a real mount, just an update
+pub const MNT_NOBLOCK: ::c_int = 0x00020000; //don't block unmount if not responding
+pub const MNT_RELOAD: ::c_int = 0x00040000; //reload filesystem data
+pub const MNT_FORCE: ::c_int = 0x00080000; //force unmount or readonly change
+
 // sys/spawn.h:
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
