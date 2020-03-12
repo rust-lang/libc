@@ -3037,6 +3037,43 @@ pub const DLT_LOOP: ::c_uint = 108;
 // sizeof(i32)
 pub const BPF_ALIGNMENT: ::c_int = 4;
 
+// sys/mount.h
+pub const MNT_RDONLY: ::c_int = 0x00000001;
+pub const MNT_SYNCHRONOUS: ::c_int = 0x00000002;
+pub const MNT_NOEXEC: ::c_int = 0x00000004;
+pub const MNT_NOSUID: ::c_int = 0x00000008;
+pub const MNT_NODEV: ::c_int = 0x00000010;
+pub const MNT_UNION: ::c_int = 0x00000020;
+pub const MNT_ASYNC: ::c_int = 0x00000040;
+pub const MNT_CPROTECT: ::c_int = 0x00000080;
+
+// NFS export related mount flags.
+pub const MNT_EXPORTED: ::c_int = 0x00000100;
+
+// MAC labeled / "quarantined" flag
+pub const MNT_QUARANTINE: ::c_int = 0x00000400;
+
+// Flags set by internal operations.
+pub const MNT_LOCAL: ::c_int = 0x00001000;
+pub const MNT_QUOTA: ::c_int = 0x00002000;
+pub const MNT_ROOTFS: ::c_int = 0x00004000;
+pub const MNT_DOVOLFS: ::c_int = 0x00008000;
+
+pub const MNT_DONTBROWSE: ::c_int = 0x00100000;
+pub const MNT_IGNORE_OWNERSHIP: ::c_int = 0x00200000;
+pub const MNT_AUTOMOUNTED: ::c_int = 0x00400000;
+pub const MNT_JOURNALED: ::c_int = 0x00800000;
+pub const MNT_NOUSERXATTR: ::c_int = 0x01000000;
+pub const MNT_DEFWRITE: ::c_int = 0x02000000;
+pub const MNT_MULTILABEL: ::c_int = 0x04000000;
+pub const MNT_NOATIME: ::c_int = 0x10000000;
+pub const MNT_SNAPSHOT: ::c_int = 0x40000000;
+
+// External filesystem command modifier flags.
+pub const MNT_UPDATE: ::c_int = 0x00010000;
+pub const MNT_NOBLOCK: ::c_int = 0x00020000;
+pub const MNT_RELOAD: ::c_int = 0x00040000;
+
 // sys/spawn.h:
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
