@@ -16,8 +16,8 @@ Raw FFI bindings to platform libraries like libc.
 """
 
 [badges]
-travis-ci = { repository = "rust-lang/libc" }
-appveyor = { repository = "rust-lang/libc", project_name = "rust-lang-libs/libc" }
+cirrus-ci = { repository = "rust-lang/libc", branch = "master" }
+azure-devops = { project = "rust-lang2/libc", pipeline = "rust-lang.libc%20(1)" }
 
 [dependencies]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
