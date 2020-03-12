@@ -421,6 +421,9 @@ pub const F_GETOWN: ::c_int = 9;
 pub const F_SETLK: ::c_int = 13;
 pub const F_SETLKW: ::c_int = 14;
 pub const F_SETOWN: ::c_int = 8;
+pub const F_OFD_GETLK: ::c_int = 36;
+pub const F_OFD_SETLK: ::c_int = 37;
+pub const F_OFD_SETLKW: ::c_int = 38;
 
 pub const VEOF: usize = 4;
 pub const VEOL: usize = 6;

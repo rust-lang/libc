@@ -1097,6 +1097,9 @@ pub const F_SETLKW: ::c_int = 7;
 pub const F_RDLCK: ::c_int = 0;
 pub const F_WRLCK: ::c_int = 1;
 pub const F_UNLCK: ::c_int = 2;
+pub const F_OFD_GETLK: ::c_int = 36;
+pub const F_OFD_SETLK: ::c_int = 37;
+pub const F_OFD_SETLKW: ::c_int = 38;
 
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
