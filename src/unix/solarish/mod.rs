@@ -1102,6 +1102,10 @@ pub const WNOWAIT: ::c_int = 0x80;
 
 pub const AT_FDCWD: ::c_int = 0xffd19553;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x1000;
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x2000;
+pub const AT_REMOVEDIR: ::c_int = 0x1;
+pub const _AT_TRIGGER: ::c_int = 0x2;
+pub const AT_EACCESS: ::c_int = 0x4;
 
 pub const P_PID: idtype_t = 0;
 pub const P_PPID: idtype_t = 1;
