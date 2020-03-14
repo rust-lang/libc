@@ -2531,6 +2531,8 @@ fn test_linux(target: &str) {
         "utsname" if mips32 || mips64 => true,
         // FIXME:
         "mcontext_t" if s390x => true,
+        // FIXME: This is actually a union.
+        "fpreg_t" if s390x => true,
 
         "sockaddr_un" | "sembuf" | "ff_constant_effect"
             if mips32 && (gnu || musl) =>
