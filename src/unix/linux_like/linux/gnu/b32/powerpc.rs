@@ -213,6 +213,7 @@ pub const MAP_NONBLOCK: ::c_int = 0x010000;
 pub const MAP_STACK: ::c_int = 0x020000;
 pub const MAP_HUGETLB: ::c_int = 0x040000;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
+pub const MAP_SYNC : ::c_int = 0x080000;
 
 pub const SOL_SOCKET: ::c_int = 1;
 
