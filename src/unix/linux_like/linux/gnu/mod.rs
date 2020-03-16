@@ -1087,6 +1087,26 @@ cfg_if! {
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 3;
 
 extern "C" {
+    pub fn fgetspent_r(
+        fp: *mut ::FILE,
+        spbuf: *mut ::spwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        spbufp: *mut *mut ::spwd,
+    ) -> ::c_int;
+    pub fn sgetspent_r(
+        s: *const ::c_char,
+        spbuf: *mut ::spwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        spbufp: *mut *mut ::spwd,
+    ) -> ::c_int;
+    pub fn getspent_r(
+        spbuf: *mut ::spwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        spbufp: *mut *mut ::spwd,
+    ) -> ::c_int;
     pub fn qsort_r(
         base: *mut ::c_void,
         num: ::size_t,
