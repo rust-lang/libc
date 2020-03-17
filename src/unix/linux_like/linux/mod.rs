@@ -1298,6 +1298,17 @@ pub const IPPROTO_MPLS: ::c_int = 137;
 pub const IPPROTO_RAW: ::c_int = 255;
 pub const IPPROTO_MAX: ::c_int = 256;
 
+pub const IP_MSFILTER: ::c_int = 41;
+pub const MCAST_JOIN_GROUP: ::c_int = 42;
+pub const MCAST_BLOCK_SOURCE: ::c_int = 43;
+pub const MCAST_UNBLOCK_SOURCE: ::c_int = 44;
+pub const MCAST_LEAVE_GROUP: ::c_int = 45;
+pub const MCAST_JOIN_SOURCE_GROUP: ::c_int = 46;
+pub const MCAST_LEAVE_SOURCE_GROUP: ::c_int = 47;
+pub const MCAST_MSFILTER: ::c_int = 48;
+pub const IP_MULTICAST_ALL: ::c_int = 49;
+pub const IP_UNICAST_IF: ::c_int = 50;
+
 pub const AF_IB: ::c_int = 27;
 pub const AF_MPLS: ::c_int = 28;
 pub const AF_NFC: ::c_int = 39;
