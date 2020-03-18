@@ -378,7 +378,6 @@ extern "C" {
     ) -> ::size_t;
 
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
-    pub fn wmemchr(cx: *const wchar_t, c: wchar_t, n: size_t) -> *mut wchar_t;
     pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
     pub fn memcpy(
         dest: *mut c_void,
