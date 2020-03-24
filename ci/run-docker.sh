@@ -5,6 +5,13 @@
 
 set -ex
 
+# Default to assuming the CARGO_HOME is one directory up (to account for a `bin`
+# subdir) from where the `cargo` binary in `$PATH` lives.
+DEFAULT_CARGO_HOME="$(dirname "$(dirname "$(command -v cargo)")")"
+# If the CARGO_HOME env var is already set, use that. If it isn't set use the
+# default.
+CARGO_HOME="${CARGO_HOME:-$DEFAULT_CARGO_HOME}"
+
 echo "${HOME}"
 pwd
 
@@ -26,7 +33,7 @@ run() {
       --env LIBC_CI \
       --env CARGO_HOME=/cargo \
       --env CARGO_TARGET_DIR=/checkout/target \
-      --volume "$(dirname "$(dirname "$(command -v cargo)")")":/cargo \
+      --volume "$CARGO_HOME":/cargo \
       --volume "$(rustc --print sysroot)":/rust:ro \
       --volume "$(pwd)":/checkout:ro \
       --volume "$(pwd)"/target:/checkout/target \
