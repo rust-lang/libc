@@ -1209,6 +1209,11 @@ pub const SO_EE_ORIGIN_ICMP6: u8 = 3;
 pub const SO_EE_ORIGIN_TXSTATUS: u8 = 4;
 pub const SO_EE_ORIGIN_TIMESTAMPING: u8 = SO_EE_ORIGIN_TXSTATUS;
 
+pub const F_ULOCK: ::c_int = 0;
+pub const F_LOCK: ::c_int = 1;
+pub const F_TLOCK: ::c_int = 2;
+pub const F_TEST: ::c_int = 3;
+
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
         len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
@@ -1575,6 +1580,12 @@ extern "C" {
         flags: ::c_int,
     ) -> ::ssize_t;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+
+    pub fn lockf(
+        fd: ::c_int,
+        cmd: ::c_int,
+        len: ::off_t,
+    ) -> ::c_int;
 }
 
 cfg_if! {
