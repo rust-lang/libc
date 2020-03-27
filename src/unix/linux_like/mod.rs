@@ -1590,4 +1590,11 @@ cfg_if! {
     } else {
         // Unknown target_os
     }
+
+    if #[cfg(any(target_os = "linux",
+                 target_os = "android"))] {
+        mod headers;
+        pub use self::headers::*;
+    }
 }
+
