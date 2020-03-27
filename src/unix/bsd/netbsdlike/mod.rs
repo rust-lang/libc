@@ -632,6 +632,12 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
+    pub fn accept4(
+        s: ::c_int,
+        addr: *mut ::sockaddr,
+        addrlen: *mut ::socklen_t,
+        flags: ::c_int,
+    ) -> ::c_int;
     pub fn mincore(
         addr: *mut ::c_void,
         len: ::size_t,

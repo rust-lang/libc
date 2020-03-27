@@ -1393,12 +1393,6 @@ extern "C" {
         tp: *const ::timeval,
         tz: *const ::timezone,
     ) -> ::c_int;
-    pub fn accept4(
-        s: ::c_int,
-        addr: *mut ::sockaddr,
-        addrlen: *mut ::socklen_t,
-        flags: ::c_int,
-    ) -> ::c_int;
     pub fn execvpe(
         file: *const ::c_char,
         argv: *const *const ::c_char,

@@ -2347,6 +2347,12 @@ extern "C" {
         msg: *mut ::msghdr,
         flags: ::c_int,
     ) -> ::ssize_t;
+    pub fn accept4(
+        fd: ::c_int,
+        address: *mut sockaddr,
+        address_len: *mut socklen_t,
+        flags: ::c_int
+    ) -> ::c_int;
 
     pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
     pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
