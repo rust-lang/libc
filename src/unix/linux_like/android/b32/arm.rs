@@ -147,11 +147,6 @@ cfg_if! {
     }
 }
 
-pub const O_DIRECT: ::c_int = 0x10000;
-pub const O_DIRECTORY: ::c_int = 0x4000;
-pub const O_NOFOLLOW: ::c_int = 0x8000;
-pub const O_LARGEFILE: ::c_int = 0o400000;
-
 // offsets in mcontext_t.gregs from sys/ucontext.h
 pub const REG_R0: ::c_int = 0;
 pub const REG_R1: ::c_int = 1;

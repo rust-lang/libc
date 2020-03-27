@@ -354,3 +354,18 @@ pub const SYS_pkey_mprotect: ::c_long = 394;
 pub const SYS_pkey_alloc: ::c_long = 395;
 pub const SYS_pkey_free: ::c_long = 396;
 pub const SYS_statx: ::c_long = 397;
+
+// fcntl.h
+pub const O_CREAT: ::c_int = 0o100;
+pub const O_EXCL: ::c_int = 0o200;
+pub const O_NOCTTY: ::c_int = 0o400;
+pub const O_APPEND: ::c_int = 0o2000;
+pub const O_NONBLOCK: ::c_int = 0o4000;
+pub const O_DSYNC: ::c_int = 0o10000;
+pub const O_FASYNC: ::c_int = 0o20000;
+pub const O_DIRECT: ::c_int = 0o200000;
+pub const O_LARGEFILE: ::c_int = 0o400000;
+pub const O_DIRECTORY: ::c_int = 0o40000;
+pub const O_NOFOLLOW: ::c_int = 0o100000;
+pub const O_SYNC: ::c_int = 0o4000000;
+pub const O_NDELAY: ::c_int = O_NONBLOCK;

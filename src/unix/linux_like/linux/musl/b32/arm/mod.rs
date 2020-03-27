@@ -173,11 +173,7 @@ s! {
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
-pub const O_DIRECT: ::c_int = 0x10000;
-pub const O_DIRECTORY: ::c_int = 0x4000;
-pub const O_NOFOLLOW: ::c_int = 0x8000;
 pub const O_ASYNC: ::c_int = 0x2000;
-pub const O_LARGEFILE: ::c_int = 0o400000;
 
 pub const FIOCLEX: ::c_int = 0x5451;
 pub const FIONCLEX: ::c_int = 0x5450;
@@ -259,15 +255,6 @@ pub const B2500000: ::speed_t = 0o010014;
 pub const B3000000: ::speed_t = 0o010015;
 pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
-
-pub const O_APPEND: ::c_int = 1024;
-pub const O_CREAT: ::c_int = 64;
-pub const O_EXCL: ::c_int = 128;
-pub const O_NOCTTY: ::c_int = 256;
-pub const O_NONBLOCK: ::c_int = 2048;
-pub const O_SYNC: ::c_int = 1052672;
-pub const O_RSYNC: ::c_int = 1052672;
-pub const O_DSYNC: ::c_int = 4096;
 
 pub const SOCK_NONBLOCK: ::c_int = 2048;
 
