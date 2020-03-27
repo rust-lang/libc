@@ -1447,6 +1447,12 @@ extern "C" {
         n: *mut size_t,
         stream: *mut FILE,
     ) -> ssize_t;
+
+    pub fn lockf(
+        fd: ::c_int,
+        cmd: ::c_int,
+        len: ::off_t,
+    ) -> ::c_int;
 }
 
 cfg_if! {
