@@ -3340,6 +3340,9 @@ cfg_if! {
     }
 }
 
+mod headers;
+pub use self::headers::*;
+
 cfg_if! {
     if #[cfg(libc_align)] {
         #[macro_use]
