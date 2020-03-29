@@ -1259,16 +1259,12 @@ extern "C" {
     pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwent_r")]
     pub fn getpwent_r(
         pwd: *mut ::passwd,
         buf: *mut ::c_char,
         buflen: ::size_t,
         result: *mut *mut ::passwd,
     ) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getgrent_r50")]
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrent_r")]
     pub fn getgrent_r(
         grp: *mut ::group,
         buf: *mut ::c_char,

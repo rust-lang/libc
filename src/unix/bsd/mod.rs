@@ -686,7 +686,6 @@ extern "C" {
     ) -> ::ssize_t;
 
     pub fn sync();
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrgid_r")]
     pub fn getgrgid_r(
         gid: ::gid_t,
         grp: *mut ::group,
@@ -702,7 +701,6 @@ extern "C" {
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrnam_r")]
     pub fn getgrnam_r(
         name: *const ::c_char,
         grp: *mut ::group,
@@ -729,7 +727,6 @@ extern "C" {
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
     pub fn sem_unlink(name: *const ::c_char) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam_r50")]
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwnam_r")]
     pub fn getpwnam_r(
         name: *const ::c_char,
         pwd: *mut passwd,
@@ -738,7 +735,6 @@ extern "C" {
         result: *mut *mut passwd,
     ) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid_r50")]
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwuid_r")]
     pub fn getpwuid_r(
         uid: ::uid_t,
         pwd: *mut passwd,
@@ -750,7 +746,6 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "sigwait$UNIX2003"
     )]
-    #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
     pub fn sigwait(set: *const sigset_t, sig: *mut ::c_int) -> ::c_int;
     pub fn pthread_atfork(
         prepare: ::Option<unsafe extern "C" fn()>,
