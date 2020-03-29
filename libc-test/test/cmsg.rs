@@ -4,6 +4,7 @@
 extern crate libc;
 
 #[cfg(unix)]
+#[cfg(not(any(target_os = "solaris", target_os = "illumos")))]
 mod t {
 
     use libc::{self, c_uchar, c_uint, c_void, cmsghdr, msghdr};

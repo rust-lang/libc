@@ -7,8 +7,11 @@ use std::env;
 
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
-    if cfg!(unix) && !target.contains("wasi") {
-        cc::Build::new().file("src/cmsg.c").compile("cmsg");
+    if cfg!(unix) {
+        let exclude = ["wasi", "solaris", "illumos"];
+        if !exclude.iter().any(|x| target.contains(x)) {
+            cc::Build::new().file("src/cmsg.c").compile("cmsg");
+        }
     }
     if target.contains("android") || target.contains("linux") {
         cc::Build::new().file("src/errqueue.c").compile("errqueue");
@@ -27,7 +30,8 @@ fn do_ctest() {
         t if t.contains("netbsd") => return test_netbsd(t),
         t if t.contains("openbsd") => return test_openbsd(t),
         t if t.contains("redox") => return test_redox(t),
-        t if t.contains("solaris") => return test_solaris(t),
+        t if t.contains("solaris") => return test_solarish(t),
+        t if t.contains("illumos") => return test_solarish(t),
         t if t.contains("wasi") => return test_wasi(t),
         t if t.contains("windows") => return test_windows(t),
         t if t.contains("vxworks") => return test_vxworks(t),
@@ -649,9 +653,13 @@ fn test_cloudabi(target: &str) {
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
-fn test_solaris(target: &str) {
-    assert!(target.contains("solaris"));
+fn test_solarish(target: &str) {
+    let is_solaris = target.contains("solaris");
+    let is_illumos = target.contains("illumos");
+    assert!(is_solaris || is_illumos);
 
+    // ctest generates arguments supported only by clang, so make sure to run with CC=clang.
+    // While debugging, "CFLAGS=-ferror-limit=<large num>" is useful to get more error output.
     let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
@@ -664,6 +672,7 @@ fn test_solaris(target: &str) {
         "ctype.h",
         "dirent.h",
         "dlfcn.h",
+        "door.h",
         "errno.h",
         "execinfo.h",
         "fcntl.h",
@@ -673,6 +682,7 @@ fn test_solaris(target: &str) {
         "langinfo.h",
         "limits.h",
         "locale.h",
+        "mqueue.h",
         "net/if.h",
         "net/if_arp.h",
         "net/route.h",
@@ -705,6 +715,7 @@ fn test_solaris(target: &str) {
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",
+        "sys/shm.h",
         "sys/time.h",
         "sys/times.h",
         "sys/timex.h",
@@ -723,13 +734,98 @@ fn test_solaris(target: &str) {
         "wchar.h",
     }
 
+    cfg.skip_type(move |ty| {
+        match ty {
+            // sighandler_t is not present here
+            "sighandler_t" => true,
+            _ => false,
+        }
+    });
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            "FILE" => "__FILE".to_string(),
+            "DIR" | "Dl_info" => ty.to_string(),
+            t if t.ends_with("_t") => t.to_string(),
+            t if is_struct => format!("struct {}", t),
+            t if is_union => format!("union {}", t),
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match struct_ {
+            // rust struct uses raw u64, rather than union
+            "epoll_event" if field == "u64" => "data.u64".to_string(),
+            // rust struct was committed with typo for Solaris
+            "door_arg_t" if field == "dec_num" => "desc_num".to_string(),
+            "stat" if field.ends_with("_nsec") => {
+                // expose stat.Xtim.tv_nsec fields
+                field.trim_end_matches("e_nsec").to_string() + ".tv_nsec"
+            },
+            _ => field.to_string()
+        }
+    });
+
     cfg.skip_const(move |name| match name {
         "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK"
         | "DT_SOCK" | "USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX" => {
             true
         }
 
+        // skip sighandler_t assignments
+        "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
+
+        "DT_UNKNOWN" => true,
+
+        "_UTX_LINESIZE" | "_UTX_USERSIZE" |
+            "_UTX_PADSIZE" | "_UTX_IDSIZE" | "_UTX_HOSTSIZE" => true,
+
+        "EADI" | "EXTPROC" | "IPC_SEAT" => true,
+
+        // This evaluates to a sysconf() call rather than a constant
+        "PTHREAD_STACK_MIN" => true,
+
         _ => false,
+    });
+
+
+
+    cfg.skip_struct(move |ty| {
+        // the union handling is a mess
+        if ty.contains("door_desc_t_") {
+            return true
+        }
+        match ty {
+            // union, not a struct
+            "sigval" => true,
+            // a bunch of solaris-only fields
+            "utmpx" if is_illumos => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_field(move |s, field| {
+        match s {
+            // C99 sizing on this is tough
+            "dirent" if field == "d_name" => true,
+            // the union/macro makes this rough
+            "sigaction" if field == "sa_sigaction" => true,
+            // Missing in illumos
+            "sigevent" if field == "ss_sp" => true,
+            // Avoid sigval union issues
+            "sigevent" if field == "sigev_value" => true,
+            // const issues
+            "sigevent" if field == "sigev_notify_attributes" => true,
+
+            // Avoid const and union issues
+            "door_arg" if field == "desc_ptr" => true,
+            "door_desc_t" if field == "d_data" => true,
+            "door_arg_t" if field.ends_with("_ptr") => true,
+            "door_arg_t" if field.ends_with("rbuf") => true,
+
+            _ => false
+        }
     });
 
     cfg.skip_fn(move |name| {
@@ -746,13 +842,19 @@ fn test_solaris(target: &str) {
             // FIXME: unskip these for next major release
             "setpriority" | "personality" => true,
 
-            // signal is defined with sighandler_t, so ignore
+            // signal is defined in terms of sighandler_t, so ignore
             "signal" => true,
 
+            // Currently missing
             "cfmakeraw" | "cfsetspeed" => true,
 
-            // FIXME: mincore is defined with caddr_t on Solaris.
-            "mincore" => true,
+            // const-ness issues
+            "execv" | "execve" | "execvp" | "settimeofday" | "sethostname" => true,
+
+            // Solaris-different
+            "getpwent_r" | "getgrent_r" |  "updwtmpx" if is_illumos => true,
+            "madvise" | "mprotect" if is_illumos => true,
+            "door_call" | "door_return" | "door_create" if is_illumos => true,
 
             _ => false,
         }
