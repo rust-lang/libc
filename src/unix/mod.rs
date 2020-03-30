@@ -226,8 +226,12 @@ pub const S_ISUID: ::mode_t = 0x800;
 pub const S_ISGID: ::mode_t = 0x400;
 pub const S_ISVTX: ::mode_t = 0x200;
 
-pub const IF_NAMESIZE: ::size_t = 16;
-pub const IFNAMSIZ: ::size_t = IF_NAMESIZE;
+cfg_if! {
+    if #[cfg(not(any(target_os = "illumos", target_os = "solaris")))] {
+        pub const IF_NAMESIZE: ::size_t = 16;
+        pub const IFNAMSIZ: ::size_t = IF_NAMESIZE;
+    }
+}
 
 pub const LOG_EMERG: ::c_int = 0;
 pub const LOG_ALERT: ::c_int = 1;
@@ -611,7 +615,6 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "listen$UNIX2003"
     )]
-    #[cfg_attr(target_os = "illumos", link_name = "__xnet_listen")]
     pub fn listen(socket: ::c_int, backlog: ::c_int) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -854,6 +857,7 @@ extern "C" {
     pub fn geteuid() -> uid_t;
     pub fn getgid() -> gid_t;
     pub fn getgroups(ngroups_max: ::c_int, groups: *mut gid_t) -> ::c_int;
+    #[cfg_attr(target_os = "illumos", link_name = "getloginx")]
     pub fn getlogin() -> *mut c_char;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -910,6 +914,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "ttyname_r$UNIX2003"
     )]
+    #[cfg_attr(target_os = "illumos", link_name = "__posix_ttyname_r")]
     pub fn ttyname_r(
         fd: ::c_int,
         buf: *mut c_char,
@@ -1216,6 +1221,7 @@ extern "C" {
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
     pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_getaddrinfo")]
     pub fn getaddrinfo(
         node: *const c_char,
         service: *const c_char,

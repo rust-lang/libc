@@ -1,6 +1,7 @@
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
+pub type caddr_t = *mut ::c_char;
 
 pub type clockid_t = ::c_int;
 pub type blkcnt_t = ::c_long;
@@ -35,9 +36,6 @@ pub type mqd_t = *mut ::c_void;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type shmatt_t = ::c_ulong;
-
-pub type door_attr_t = ::c_uint;
-pub type door_id_t = ::c_ulonglong;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -217,33 +215,6 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
-    pub struct shmid_ds {
-        pub shm_perm: ipc_perm,
-        pub shm_segsz: ::size_t,
-        #[cfg(target_os = "illumos")]
-        pub shm_amp: *mut ::c_void,
-        #[cfg(target_os = "solaris")]
-        pub shm_flags: ::uintptr_t,
-        pub shm_lkcnt: ::c_ushort,
-        pub shm_lpid: ::pid_t,
-        pub shm_cpid: ::pid_t,
-        pub shm_nattch: ::shmatt_t,
-        pub shm_cnattch: ::c_ulong,
-        pub shm_atime: ::time_t,
-        pub shm_dtime: ::time_t,
-        pub shm_ctime: ::time_t,
-        #[cfg(target_os = "illumos")]
-        pub shm_pad4: [i64; 4],
-        #[cfg(target_os = "solaris")]
-        pub shm_amp: *mut ::c_void,
-        #[cfg(target_os = "solaris")]
-        pub shm_gransize: u64,
-        #[cfg(target_os = "solaris")]
-        pub shm_allocated: u64,
-        #[cfg(target_os = "solaris")]
-        pub shm_pad4: [i64; 1],
-    }
-
     pub struct sigset_t {
         bits: [u32; 4],
     }
@@ -371,7 +342,7 @@ s! {
         pub mq_maxmsg: ::c_long,
         pub mq_msgsize: ::c_long,
         pub mq_curmsgs: ::c_long,
-        _pad: [::c_int; 4]
+        _pad: [::c_int; 12]
     }
 
     pub struct port_event {
@@ -380,11 +351,6 @@ s! {
         pub portev_pad: ::c_ushort,
         pub portev_object: ::uintptr_t,
         pub portev_user: *mut ::c_void,
-    }
-
-    pub struct door_desc_t__d_data__d_desc {
-        pub d_descriptor: ::c_int,
-        pub d_id: ::door_id_t
     }
 
     pub struct exit_status {
@@ -431,7 +397,14 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed))]
+    #[cfg_attr(all(
+            any(target_arch = "x86", target_arch = "x86_64"),
+            libc_packedN
+        ), repr(packed(4)))]
+    #[cfg_attr(all(
+            any(target_arch = "x86", target_arch = "x86_64"),
+            not(libc_packedN)
+        ), repr(packed))]
     pub struct epoll_event {
         pub events: u32,
         pub u64: u64,
@@ -504,28 +477,6 @@ s_no_extra_traits! {
         pub ss_sp: *mut ::c_void,
         pub sigev_notify_attributes: *const ::pthread_attr_t,
         __sigev_pad2: ::c_int,
-    }
-
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
-    pub union door_desc_t__d_data {
-        pub d_desc: door_desc_t__d_data__d_desc,
-        d_resv: [::c_int; 5], /* Check out /usr/include/sys/door.h */
-    }
-
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
-    pub struct door_desc_t {
-        pub d_attributes: door_attr_t,
-        pub d_data: door_desc_t__d_data,
-    }
-
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
-    pub struct door_arg_t {
-        pub data_ptr: *const ::c_char,
-        pub data_size: ::size_t,
-        pub desc_ptr: *const door_desc_t,
-        pub dec_num: ::c_uint,
-        pub rbuf: *const ::c_char,
-        pub rsize: ::size_t,
     }
 }
 
@@ -1018,7 +969,7 @@ pub const O_CREAT: ::c_int = 256;
 pub const O_EXCL: ::c_int = 1024;
 pub const O_NOCTTY: ::c_int = 2048;
 pub const O_TRUNC: ::c_int = 512;
-pub const O_NOFOLLOW: ::c_int = 0x200000;
+pub const O_NOFOLLOW: ::c_int = 0x20000;
 pub const O_SEARCH: ::c_int = 0x200000;
 pub const O_EXEC: ::c_int = 0x400000;
 pub const O_CLOEXEC: ::c_int = 0x800000;
@@ -1361,7 +1312,7 @@ pub const RLIMIT_AS: ::c_int = RLIMIT_VMEM;
 
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: rlim_t = 7;
-pub const RLIM_INFINITY: rlim_t = 0x7fffffff;
+pub const RLIM_INFINITY: rlim_t = 0xfffffffffffffffd;
 
 pub const RUSAGE_SELF: ::c_int = 0;
 pub const RUSAGE_CHILDREN: ::c_int = -1;
@@ -1375,8 +1326,6 @@ pub const MADV_FREE: ::c_int = 5;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_UNIX: ::c_int = 1;
-pub const AF_LOCAL: ::c_int = 0;
-pub const AF_FILE: ::c_int = 0;
 pub const AF_INET: ::c_int = 2;
 pub const AF_IMPLINK: ::c_int = 3;
 pub const AF_PUP: ::c_int = 4;
@@ -1464,6 +1413,9 @@ pub const MSG_NOSIGNAL: ::c_int = 0x200;
 pub const MSG_DUPCTRL: ::c_int = 0x800;
 pub const MSG_XPG4_2: ::c_int = 0x8000;
 pub const MSG_MAXIOVLEN: ::c_int = 16;
+
+pub const IF_NAMESIZE: ::size_t = 32;
+pub const IFNAMSIZ: ::size_t = 16;
 
 // https://docs.oracle.com/cd/E23824_01/html/821-1475/if-7p.html
 pub const IFF_UP: ::c_int = 0x0000000001; // Address is up
@@ -1780,8 +1732,6 @@ pub const PORT_SOURCE_FD: ::c_int = 4;
 pub const PORT_SOURCE_ALERT: ::c_int = 5;
 pub const PORT_SOURCE_MQ: ::c_int = 6;
 pub const PORT_SOURCE_FILE: ::c_int = 7;
-pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
-pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
 
 pub const NONROOT_USR: ::c_short = 2;
 pub const _UTX_USERSIZE: usize = 32;
@@ -1888,7 +1838,6 @@ pub const EPOLLERR: ::c_int = 0x8;
 pub const EPOLLHUP: ::c_int = 0x10;
 pub const EPOLLET: ::c_int = 0x80000000;
 pub const EPOLLRDHUP: ::c_int = 0x2000;
-pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 pub const EPOLL_CTL_ADD: ::c_int = 1;
@@ -1920,9 +1869,9 @@ pub const B230400: speed_t = 20;
 pub const B307200: speed_t = 21;
 pub const B460800: speed_t = 22;
 pub const B921600: speed_t = 23;
-pub const CSTART: ::tcflag_t = 021;
-pub const CSTOP: ::tcflag_t = 023;
-pub const CSWTCH: ::tcflag_t = 032;
+pub const CSTART: ::tcflag_t = 0o21;
+pub const CSTOP: ::tcflag_t = 0o23;
+pub const CSWTCH: ::tcflag_t = 0o32;
 pub const CSIZE: ::tcflag_t = 0o000060;
 pub const CS5: ::tcflag_t = 0;
 pub const CS6: ::tcflag_t = 0o000020;
@@ -2137,11 +2086,6 @@ extern "C" {
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
 
     pub fn stack_getbounds(sp: *mut ::stack_t) -> ::c_int;
-    pub fn mincore(
-        addr: *const ::c_void,
-        len: ::size_t,
-        vec: *mut c_char,
-    ) -> ::c_int;
     pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
     pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fildes: ::c_int, request: ::c_int, ...) -> ::c_int;
@@ -2237,6 +2181,7 @@ extern "C" {
         options: ::c_int,
     ) -> ::c_int;
 
+    #[cfg_attr(target_os = "illumos", link_name = "_glob_ext")]
     pub fn glob(
         pattern: *const ::c_char,
         flags: ::c_int,
@@ -2246,6 +2191,7 @@ extern "C" {
         pglob: *mut ::glob_t,
     ) -> ::c_int;
 
+    #[cfg_attr(target_os = "illumos", link_name = "_globfree_ext")]
     pub fn globfree(pglob: *mut ::glob_t);
 
     pub fn posix_madvise(
@@ -2426,11 +2372,6 @@ extern "C" {
         events: ::c_int,
         user: *mut ::c_void,
     ) -> ::c_int;
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
     #[cfg_attr(
         any(target_os = "solaris", target_os = "illumos"),
         link_name = "__posix_getgrgid_r"
@@ -2555,25 +2496,6 @@ extern "C" {
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
-    pub fn door_call(d: ::c_int, params: *const door_arg_t) -> ::c_int;
-    pub fn door_return(
-        data_ptr: *const ::c_char,
-        data_size: ::size_t,
-        desc_ptr: *const door_desc_t,
-        num_desc: ::c_uint,
-    );
-    pub fn door_create(
-        server_procedure: extern "C" fn(
-            cookie: *const ::c_void,
-            argp: *const ::c_char,
-            arg_size: ::size_t,
-            dp: *const door_desc_t,
-            n_desc: ::c_uint,
-        ),
-        cookie: *const ::c_void,
-        attributes: door_attr_t,
-    ) -> ::c_int;
-    pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
 
     pub fn makeutx(ux: *const utmpx) -> *mut utmpx;
     pub fn modutx(ux: *const utmpx) -> *mut utmpx;
@@ -2604,3 +2526,15 @@ extern "C" {
 
 mod compat;
 pub use self::compat::*;
+
+cfg_if! {
+    if #[cfg(target_os = "illumos")] {
+        mod illumos;
+        pub use self::illumos::*;
+    } else if #[cfg(target_os = "solaris")] {
+        mod solaris;
+        pub use self::solaris::*;
+    } else {
+        // Unknown target_os
+    }
+}
