@@ -1245,7 +1245,6 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
     pub fn getpwent_r(
         pwd: *mut ::passwd,
         buf: *mut ::c_char,
