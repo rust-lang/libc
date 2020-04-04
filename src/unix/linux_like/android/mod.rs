@@ -1582,6 +1582,7 @@ pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 pub const SO_ORIGINAL_DST: ::c_int = 80;
 pub const IP_ORIGDSTADDR: ::c_int = 20;
 pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
+pub const IPV6_FLOWINFO: ::c_int = 11;
 pub const IPV6_ORIGDSTADDR: ::c_int = 74;
 pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
 pub const IPV6_FLOWLABEL_MGR: ::c_int = 32;
