@@ -6,8 +6,7 @@ steps:
         toolchain=nightly
       fi
       if command -v rustup; then
-        # Uncomment when rustup on Azure is updated
-        #rustup set profile minimal
+        rustup set profile minimal
         rustup update --force $toolchain
         rustup default $toolchain
       else
