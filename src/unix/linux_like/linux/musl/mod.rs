@@ -109,6 +109,14 @@ s! {
         pub l_len: ::off_t,
         pub l_pid: ::pid_t,
     }
+
+    pub struct regex_t {
+        __re_nsub: ::size_t,
+        __opaque: *mut ::c_void,
+        __padding: [*mut ::c_void; 4usize],
+        __nsub2: ::size_t,
+        __padding2: ::c_char,
+    }
 }
 
 s_no_extra_traits! {
@@ -390,6 +398,8 @@ pub const RLIMIT_SIGPENDING: ::c_int = 11;
 pub const RLIMIT_MSGQUEUE: ::c_int = 12;
 pub const RLIMIT_NICE: ::c_int = 13;
 pub const RLIMIT_RTPRIO: ::c_int = 14;
+
+pub const REG_OK: ::c_int = 0;
 
 extern "C" {
     pub fn sendmmsg(
