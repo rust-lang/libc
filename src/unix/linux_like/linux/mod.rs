@@ -477,6 +477,11 @@ s! {
         pub len: u32
     }
 
+    pub struct fanotify_response {
+        pub fd: ::c_int,
+        pub response: __u32,
+    }
+
     pub struct sockaddr_vm {
         pub svm_family: ::sa_family_t,
         pub svm_reserved1: ::c_ushort,
@@ -2417,6 +2422,53 @@ pub const IN_ALL_EVENTS: u32 = IN_ACCESS
 pub const IN_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const IN_NONBLOCK: ::c_int = O_NONBLOCK;
 
+// uapi/linux/fanotify.h
+pub const FAN_ACCESS: u64 = 0x0000_0001;
+pub const FAN_MODIFY: u64 = 0x0000_0002;
+pub const FAN_CLOSE_WRITE: u64 = 0x0000_0008;
+pub const FAN_CLOSE_NOWRITE: u64 = 0x0000_0010;
+pub const FAN_OPEN: u64 = 0x0000_0020;
+
+pub const FAN_Q_OVERFLOW: u64 = 0x0000_4000;
+
+pub const FAN_OPEN_PERM: u64 = 0x0001_0000;
+pub const FAN_ACCESS_PERM: u64 = 0x0002_0000;
+
+pub const FAN_ONDIR: u64 = 0x4000_0000;
+
+pub const FAN_EVENT_ON_CHILD: u64 = 0x0800_0000;
+
+pub const FAN_CLOSE: u64 = FAN_CLOSE_WRITE | FAN_CLOSE_NOWRITE;
+
+pub const FAN_CLOEXEC: ::c_uint = 0x0000_0001;
+pub const FAN_NONBLOCK: ::c_uint = 0x0000_0002;
+
+pub const FAN_CLASS_NOTIF: ::c_uint = 0x0000_0000;
+pub const FAN_CLASS_CONTENT: ::c_uint = 0x0000_0004;
+pub const FAN_CLASS_PRE_CONTENT: ::c_uint = 0x0000_0008;
+
+pub const FAN_UNLIMITED_QUEUE: ::c_uint = 0x0000_0010;
+pub const FAN_UNLIMITED_MARKS: ::c_uint = 0x0000_0020;
+
+pub const FAN_MARK_ADD: ::c_uint = 0x0000_0001;
+pub const FAN_MARK_REMOVE: ::c_uint = 0x0000_0002;
+pub const FAN_MARK_DONT_FOLLOW: ::c_uint = 0x0000_0004;
+pub const FAN_MARK_ONLYDIR: ::c_uint = 0x0000_0008;
+pub const FAN_MARK_INODE: ::c_uint = 0x0000_0000;
+pub const FAN_MARK_MOUNT: ::c_uint = 0x0000_0010;
+// NOTE: FAN_MARK_FILESYSTEM requires Linux Kernel >= 4.20.0
+pub const FAN_MARK_FILESYSTEM: ::c_uint = 0x0000_0100;
+pub const FAN_MARK_IGNORED_MASK: ::c_uint = 0x0000_0020;
+pub const FAN_MARK_IGNORED_SURV_MODIFY: ::c_uint = 0x0000_0040;
+pub const FAN_MARK_FLUSH: ::c_uint = 0x0000_0080;
+
+pub const FANOTIFY_METADATA_VERSION: u8 = 3;
+
+pub const FAN_ALLOW: u32 = 0x01;
+pub const FAN_DENY: u32 = 0x02;
+
+pub const FAN_NOFD: ::c_int = -1;
+
 pub const FUTEX_WAIT: ::c_int = 0;
 pub const FUTEX_WAKE: ::c_int = 1;
 pub const FUTEX_FD: ::c_int = 2;
@@ -3304,6 +3356,7 @@ extern "C" {
         path: *const ::c_char,
         mask: u32,
     ) -> ::c_int;
+    pub fn fanotify_init(flags: ::c_uint, event_f_flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {

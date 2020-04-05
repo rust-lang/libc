@@ -420,6 +420,16 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+    // Musl targets need the `mask` argument of `fanotify_mark` be specified
+    // `::c_ulonglong` instead of `u64` or there will be a type mismatch between
+    // `long long unsigned int` and the expected `uint64_t`.
+    pub fn fanotify_mark(
+        fd: ::c_int,
+        flags: ::c_uint,
+        mask: ::c_ulonglong,
+        dirfd: ::c_int,
+        path: *const ::c_char,
+    ) -> ::c_int;
 }
 
 cfg_if! {

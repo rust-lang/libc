@@ -2258,6 +2258,7 @@ fn test_linux(target: &str) {
         "linux/sockios.h",
         "linux/vm_sockets.h",
         "sys/auxv.h",
+        "sys/fanotify.h",
     }
 
     // note: aio.h must be included before sys/mount.h
