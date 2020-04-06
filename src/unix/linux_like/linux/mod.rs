@@ -2322,6 +2322,14 @@ pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
 pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
 
+// include/uapi/linux/udp.h
+pub const UDP_CORK: ::c_int = 1;
+pub const UDP_ENCAP: ::c_int = 100;
+pub const UDP_NO_CHECK6_TX: ::c_int = 101;
+pub const UDP_NO_CHECK6_RX: ::c_int = 102;
+pub const UDP_SEGMENT: ::c_int = 103;
+pub const UDP_GRO: ::c_int = 104;
+
 // include/uapi/linux/mman.h
 pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
 
