@@ -10,7 +10,8 @@ default-features = false
 
 [build-dependencies]
 cc = "1.0"
-ctest = "0.2"
+# FIXME: Use fork ctest until the maintainer gets back.
+ctest = { git = "https://github.com/JohnTitor/ctest.git", branch = "master" }
 
 [features]
 default = [ "std" ]
