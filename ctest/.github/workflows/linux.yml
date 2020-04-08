@@ -1,0 +1,38 @@
+name: CI (Linux)
+
+on: [pull_request]
+
+jobs:
+  build_and_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - stable
+          - beta
+          - nightly
+        target:
+          - x86_64-unknown-linux-gnu
+
+    name: ${{ matrix.version }} - ${{ matrix.target }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Install ${{ matrix.version }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.version }}-${{ matrix.target }}
+          profile: minimal
+          override: true
+
+      - name: Run tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all -- --nocapture
+
+      - name: Run libc tests
+        run: |
+          sh ./ci/run-docker.sh ${{ matrix.target }}
