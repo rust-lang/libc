@@ -2240,6 +2240,7 @@ fn test_linux(target: &str) {
         "linux/keyctl.h",
         "linux/magic.h",
         "linux/memfd.h",
+        "linux/mman.h",
         "linux/module.h",
         "linux/net_tstamp.h",
         "linux/netfilter/nfnetlink.h",
