@@ -742,15 +742,13 @@ fn test_solarish(target: &str) {
         }
     });
 
-    cfg.type_name(move |ty, is_struct, is_union| {
-        match ty {
-            "FILE" => "__FILE".to_string(),
-            "DIR" | "Dl_info" => ty.to_string(),
-            t if t.ends_with("_t") => t.to_string(),
-            t if is_struct => format!("struct {}", t),
-            t if is_union => format!("union {}", t),
-            t => t.to_string(),
-        }
+    cfg.type_name(move |ty, is_struct, is_union| match ty {
+        "FILE" => "__FILE".to_string(),
+        "DIR" | "Dl_info" => ty.to_string(),
+        t if t.ends_with("_t") => t.to_string(),
+        t if is_struct => format!("struct {}", t),
+        t if is_union => format!("union {}", t),
+        t => t.to_string(),
     });
 
     cfg.field_name(move |struct_, field| {
@@ -762,8 +760,8 @@ fn test_solarish(target: &str) {
             "stat" if field.ends_with("_nsec") => {
                 // expose stat.Xtim.tv_nsec fields
                 field.trim_end_matches("e_nsec").to_string() + ".tv_nsec"
-            },
-            _ => field.to_string()
+            }
+            _ => field.to_string(),
         }
     });
 
@@ -778,8 +776,8 @@ fn test_solarish(target: &str) {
 
         "DT_UNKNOWN" => true,
 
-        "_UTX_LINESIZE" | "_UTX_USERSIZE" |
-            "_UTX_PADSIZE" | "_UTX_IDSIZE" | "_UTX_HOSTSIZE" => true,
+        "_UTX_LINESIZE" | "_UTX_USERSIZE" | "_UTX_PADSIZE" | "_UTX_IDSIZE"
+        | "_UTX_HOSTSIZE" => true,
 
         "EADI" | "EXTPROC" | "IPC_SEAT" => true,
 
@@ -789,12 +787,10 @@ fn test_solarish(target: &str) {
         _ => false,
     });
 
-
-
     cfg.skip_struct(move |ty| {
         // the union handling is a mess
         if ty.contains("door_desc_t_") {
-            return true
+            return true;
         }
         match ty {
             // union, not a struct
@@ -824,7 +820,7 @@ fn test_solarish(target: &str) {
             "door_arg_t" if field.ends_with("_ptr") => true,
             "door_arg_t" if field.ends_with("rbuf") => true,
 
-            _ => false
+            _ => false,
         }
     });
 
@@ -849,10 +845,12 @@ fn test_solarish(target: &str) {
             "cfmakeraw" | "cfsetspeed" => true,
 
             // const-ness issues
-            "execv" | "execve" | "execvp" | "settimeofday" | "sethostname" => true,
+            "execv" | "execve" | "execvp" | "settimeofday" | "sethostname" => {
+                true
+            }
 
             // Solaris-different
-            "getpwent_r" | "getgrent_r" |  "updwtmpx" if is_illumos => true,
+            "getpwent_r" | "getgrent_r" | "updwtmpx" if is_illumos => true,
             "madvise" | "mprotect" if is_illumos => true,
             "door_call" | "door_return" | "door_create" if is_illumos => true,
 
