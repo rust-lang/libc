@@ -1,0 +1,40 @@
+name: CI (macOS)
+
+on: [pull_request]
+
+jobs:
+  build_and_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - stable
+          - beta
+          - nightly
+        target:
+          - x86_64-apple-darwin
+
+    name: ${{ matrix.version }} - ${{ matrix.target }}
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Install ${{ matrix.version }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.version }}-${{ matrix.target }}
+          profile: minimal
+          override: true
+
+      - name: Run tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all -- --nocapture
+
+      - name: Run libc tests
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          sh ./ci/run.sh ${{ matrix.target }}
