@@ -23,8 +23,8 @@ git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable
 cd /emsdk-portable
 # FIXME: switch to an upstream install once
 # https://github.com/rust-lang/rust/pull/63649 lands
-hide_output ./emsdk install 1.38.42
-./emsdk activate 1.38.42
+hide_output ./emsdk install 1.39.12
+./emsdk activate 1.39.12
 
 # Compile and cache libc
 # shellcheck disable=SC1091
