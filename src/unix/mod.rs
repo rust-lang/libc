@@ -525,6 +525,7 @@ extern "C" {
     pub fn strspn(cs: *const c_char, ct: *const c_char) -> size_t;
     pub fn strcspn(cs: *const c_char, ct: *const c_char) -> size_t;
     pub fn strdup(cs: *const c_char) -> *mut c_char;
+    pub fn strndup(cs: *const c_char, n: size_t) -> *mut c_char;
     pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
