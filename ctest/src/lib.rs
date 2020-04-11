@@ -1818,8 +1818,8 @@ impl<'a> Generator<'a> {
                 fn roundtrip_padding_{ty}() -> Vec<u8> {{
                   // stores (offset, size) for each field
                   let mut v = Vec::<(usize, usize)>::new();
-                  let foo: {} = unsafe {{ std::mem::uninitialized() }};
-                  let foo = &foo as *const _ as *const {ty};
+                  let foo = std::mem::MaybeUninit::<{ty}>::uninit();
+                  let foo = foo.as_ptr();
                "#,
             ty = rust
         ));
@@ -1953,12 +1953,12 @@ impl<'a> Generator<'a> {
                 }}
                 let pad = roundtrip_padding_{ty}();
                 unsafe {{
-                  use std::mem::{{uninitialized, size_of}};
+                  use std::mem::{{MaybeUninit, size_of}};
                   let mut error: c_int = 0;
-                  let mut y: U = uninitialized();
-                  let mut x: U = uninitialized();
-                  let x_ptr = &mut x as *mut _ as *mut u8;
-                  let y_ptr = &mut y as *mut _ as *mut u8;
+                  let mut y = MaybeUninit::<U>::uninit();
+                  let mut x = MaybeUninit::<U>::uninit();
+                  let x_ptr = x.as_mut_ptr().cast::<u8>();
+                  let y_ptr = y.as_mut_ptr().cast::<u8>();
                   let sz = size_of::<U>();
                   for i in 0..sz {{
                       let c: u8 = (i % 256) as u8;
@@ -1968,7 +1968,7 @@ impl<'a> Generator<'a> {
                       x_ptr.add(i).write_volatile(c);
                       y_ptr.add(i).write_volatile(d);
                   }}
-                  let r: U = __test_roundtrip_{ty}(x, sz as i32, &mut error, pad.as_ptr());
+                  let r: U = __test_roundtrip_{ty}(x.assume_init(), sz as i32, &mut error, pad.as_ptr());
                   if error == 1 {{
                       FAILED.store(true, Ordering::SeqCst);
                       return;
