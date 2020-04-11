@@ -1076,6 +1076,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("asmjs", "32", "little")
     } else if target.starts_with("wasm32") {
         ("wasm32", "32", "little")
+    } else if target.starts_with("riscv64gc") {
+        ("riscv64", "64", "little")
     } else {
         panic!("unknown arch/pointer width: {}", target)
     };
