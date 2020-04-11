@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -ex
 
 # shellcheck disable=SC1091

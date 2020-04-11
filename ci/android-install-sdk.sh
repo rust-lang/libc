@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 set -ex
 
 # Prep the SDK and emulator

@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 set -ex
 
 NDK=android-ndk-r19c
