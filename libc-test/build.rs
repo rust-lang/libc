@@ -2025,6 +2025,9 @@ fn test_emscripten(target: &str) {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
+            // FIXME: Investigate why CI is missing it.
+            "clearenv" => true,
+
             _ => false,
         }
     });

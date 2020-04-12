@@ -39,5 +39,5 @@ chmod a+rxw -R /emsdk-portable
 
 # node 8 is required to run wasm
 cd /
-curl --retry 5 -L https://nodejs.org/dist/v12.3.1/node-v12.3.1-linux-x64.tar.xz | \
+curl --retry 5 -L https://nodejs.org/dist/v12.16.2/node-v12.16.2-linux-x64.tar.xz | \
     tar -xJ
