@@ -3,6 +3,7 @@ pub type c_ulong = u32;
 pub type nlink_t = u32;
 pub type blksize_t = ::c_long;
 pub type __u64 = ::c_ulonglong;
+pub type regoff_t = ::c_int;
 
 s! {
     pub struct pthread_attr_t {

@@ -2,6 +2,7 @@ pub type pthread_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
 pub type __rlimit_resource_t = ::c_uint;
 pub type Lmid_t = ::c_long;
+pub type regoff_t = ::c_int;
 
 s! {
     pub struct statx {
@@ -272,6 +273,17 @@ s! {
         pub __glibc_reserved2: ::c_long,
         pub __glibc_reserved3: ::c_long,
         pub __glibc_reserved4: ::c_long,
+    }
+
+    pub struct regex_t {
+        __buffer: *mut ::c_void,
+        __allocated: ::size_t,
+        __used: ::size_t,
+        __syntax: ::c_ulong,
+        __fastmap: *mut ::c_char,
+        __translate: *mut ::c_char,
+        __re_nsub: ::size_t,
+        __bitfield: u8,
     }
 }
 
@@ -1126,6 +1138,12 @@ cfg_if! {
     }
 }
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 3;
+
+pub const REG_STARTEND: ::c_int = 4;
+
+pub const REG_EEND: ::c_int = 14;
+pub const REG_ESIZE: ::c_int = 15;
+pub const REG_ERPAREN: ::c_int = 16;
 
 extern "C" {
     pub fn fgetspent_r(
