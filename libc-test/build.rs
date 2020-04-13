@@ -2137,7 +2137,7 @@ fn test_vxworks(target: &str) {
                "pathLib.h",
                "mqueue.h",
     }
-    /* Fix me */
+    // FIXME
     cfg.skip_const(move |name| match name {
         // sighandler_t weirdness
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN"
@@ -2145,7 +2145,7 @@ fn test_vxworks(target: &str) {
         | "RTLD_DEFAULT"   => true,
         _ => false,
     });
-    /* Fix me */
+    // FIXME
     cfg.skip_type(move |ty| match ty {
         "stat64" | "sighandler_t" | "off64_t" => true,
         _ => false,
@@ -2170,13 +2170,13 @@ fn test_vxworks(target: &str) {
         t => t.to_string(),
     });
 
-    /* Fix me */
+    // FIXME
     cfg.skip_fn(move |name| match name {
-        /* sigval */
+        // sigval
         "sigqueue" | "_sigqueue"
-        /* sighandler_t*/
+        // sighandler_t
         | "signal"
-        /* not used in static linking by default */
+        // not used in static linking by default
         | "dlerror" => true,
         _ => false,
     });
