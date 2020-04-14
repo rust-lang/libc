@@ -621,8 +621,6 @@ pub const SF_APPEND: ::c_ulong = 0x00040000;
 
 pub const TIMER_ABSTIME: ::c_int = 1;
 
-pub const REG_ENOSYS: ::c_int = 17;
-
 #[link(name = "util")]
 extern "C" {
     pub fn setgrent();

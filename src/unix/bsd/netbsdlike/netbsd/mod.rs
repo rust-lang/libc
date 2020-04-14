@@ -1646,6 +1646,8 @@ pub const FIBMAP: ::c_ulong = 0xc008667a;
 
 pub const SIGSTKSZ: ::size_t = 40960;
 
+pub const REG_ENOSYS: ::c_int = 17;
+
 pub const PT_DUMPCORE: ::c_int = 12;
 pub const PT_LWPINFO: ::c_int = 13;
 pub const PT_SYSCALL: ::c_int = 14;
