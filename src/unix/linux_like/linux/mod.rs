@@ -2564,6 +2564,19 @@ f! {
         0 != (cpuset.bits[idx] & (1 << offset))
     }
 
+    pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> ::c_int {
+        let mut s: u32 = 0;
+        let size_of_mask = ::mem::size_of_val(&cpuset.bits[0]);
+        for i in cpuset.bits[..(size / size_of_mask)].iter() {
+            s += i.count_ones();
+        };
+        s as ::c_int
+    }
+
+    pub fn CPU_COUNT(cpuset: &cpu_set_t) -> ::c_int {
+        CPU_COUNT_S(::mem::size_of::<cpu_set_t>(), cpuset)
+    }
+
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.bits == set2.bits
     }
