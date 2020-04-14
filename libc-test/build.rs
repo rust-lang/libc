@@ -2230,6 +2230,7 @@ fn test_linux(target: &str) {
     let x86_64 = target.contains("x86_64");
     let aarch64_musl = target.contains("aarch64") && musl;
     let gnuabihf = target.contains("gnueabihf");
+    let x86_64_gnux32 = target.contains("gnux32") && x86_64;
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2548,6 +2549,10 @@ fn test_linux(target: &str) {
             // - these constants are used by the glibc implementation.
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
 
+            // FIXME: It was extended to 4096 since glibc 2.31 (Linux 5.4).
+            // We should do so after a while.
+            "SOMAXCONN" if gnu => true,
+
             _ => false,
         }
     });
@@ -2588,6 +2593,9 @@ fn test_linux(target: &str) {
 
             // FIXME: Deprecated since glibc 2.30. Remove fn once upstream does.
             "sysctl" if gnu => true,
+
+            // FIXME: It now takes c_void instead of timezone since glibc 2.31.
+            "gettimeofday" if gnu => true,
 
             _ => false,
         }
@@ -2646,7 +2654,11 @@ fn test_linux(target: &str) {
         // FIXME: After musl 1.1.24, the type becomes `int` instead of `unsigned short`.
         (struct_ == "ipc_perm" && field == "__seq" && aarch64_musl) ||
         // glibc uses unnamed fields here and Rust doesn't support that yet
-        (struct_ == "timex" && field.starts_with("__unused"))
+        (struct_ == "timex" && field.starts_with("__unused")) ||
+        // FIXME: It now takes mode_t since glibc 2.31 on some targets.
+        (struct_ == "ipc_perm" && field == "mode"
+            && ((x86_64 || i686 || arm) && gnu || x86_64_gnux32)
+        )
     });
 
     cfg.skip_roundtrip(move |s| match s {
