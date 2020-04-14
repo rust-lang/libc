@@ -117,6 +117,27 @@ s! {
         __nsub2: ::size_t,
         __padding2: ::c_char,
     }
+
+    pub struct rtentry {
+        pub rt_pad1: ::c_ulong,
+        pub rt_dst: ::sockaddr,
+        pub rt_gateway: ::sockaddr,
+        pub rt_genmask: ::sockaddr,
+        pub rt_flags: ::c_ushort,
+        pub rt_pad2: ::c_short,
+        pub rt_pad3: ::c_ulong,
+        pub rt_tos: ::c_uchar,
+        pub rt_class: ::c_uchar,
+        #[cfg(target_pointer_width = "64")]
+        pub rt_pad4: [::c_short; 3usize],
+        #[cfg(not(target_pointer_width = "64"))]
+        pub rt_pad4: [::c_short; 1usize],
+        pub rt_metric: ::c_short,
+        pub rt_dev: *mut ::c_char,
+        pub rt_mtu: ::c_ulong,
+        pub rt_window: ::c_ulong,
+        pub rt_irtt: ::c_ushort,
+    }
 }
 
 s_no_extra_traits! {
