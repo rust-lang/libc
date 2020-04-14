@@ -18,8 +18,7 @@ steps:
   - script: |
       @echo on
       if not defined TOOLCHAIN set TOOLCHAIN=nightly
-      :: Uncomment when rustup on Azure is updated
-      ::rustup set profile minimal
+      rustup set profile minimal
       rustup update --no-self-update %TOOLCHAIN%-%TARGET%
       rustup default %TOOLCHAIN%-%TARGET%
     displayName: Install rust (windows)
