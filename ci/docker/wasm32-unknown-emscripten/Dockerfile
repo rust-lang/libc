@@ -1,7 +1,12 @@
 FROM ubuntu:20.04
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# This is a workaround to avoid the interaction with tzdata.
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/New_York
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends tzdata
+RUN apt-get install -y --no-install-recommends \
     ca-certificates \
     g++ \
     make \
