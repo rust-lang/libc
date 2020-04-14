@@ -6,7 +6,8 @@ RUN apt-get update && \
   curl \
   gcc \
   libc-dev \
-  python \
+  python3 \
+  python3-distutils \
   unzip
 
 WORKDIR /android/

@@ -33,7 +33,7 @@ case "$1" in
     ;;
 esac;
 
-${NDK}/build/tools/make_standalone_toolchain.py \
+python3 ${NDK}/build/tools/make_standalone_toolchain.py \
         --install-dir "/android/ndk-${1}" \
         --arch "${arch}" \
         --api ${api}

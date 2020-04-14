@@ -11,12 +11,15 @@ RUN apt-get update && \
     git \
     libc6-dev \
     libxml2 \
-    python \
+    python3 \
+    python3-distutils \
     cmake \
     sudo \
     gdb \
     xz-utils
 
+RUN ln -s /usr/bin/python3 /usr/bin/python & \
+    ln -s /usr/bin/pip3 /usr/bin/pip
 COPY emscripten.sh /
 RUN bash /emscripten.sh
 

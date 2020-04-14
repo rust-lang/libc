@@ -6,7 +6,8 @@ RUN dpkg --add-architecture i386 && \
   file \
   curl \
   ca-certificates \
-  python \
+  python3 \
+  python3-distutils \
   unzip \
   expect \
   openjdk-8-jre \

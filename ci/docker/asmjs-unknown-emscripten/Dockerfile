@@ -8,7 +8,8 @@ RUN apt-get update && \
     git \
     libc6-dev \
     libxml2 \
-    python \
+    python3 \
+    python3-distutils \
     xz-utils
 
 COPY emscripten.sh /
