@@ -4,6 +4,9 @@ result the CI is pretty complicated and also pretty large! Hopefully this can
 serve as a guide through the sea of scripts in this directory and elsewhere in
 this project.
 
+Note that this documentation is quite outdated. See CI config and scripts
+in the `ci` directory how we run CI now.
+
 # Files
 
 First up, let's talk about the files in this directory:
@@ -15,30 +18,10 @@ First up, let's talk about the files in this directory:
 
 * `dox.sh` - build the documentation of the crate and publish it to gh-pages.
 
-* `landing-page-*.html` - used by `dox.sh` to generate a landing page for all
-  architectures' documentation.
-
-* `run-qemu.sh` - see discussion about QEMU below
-
-* `mips`, `rumprun` - instructions to build the docker image for each respective
-  CI target
-
 # CI Systems
 
-Currently this repository leverages a combination of Travis CI and AppVeyor for
-running tests. The triples tested are:
-
-* AppVeyor
-  * `{i686,x86_64}-pc-windows-{msvc,gnu}`
-* Travis
-  * `{i686,x86_64,mips,aarch64}-unknown-linux-gnu`
-  * `{x86_64,aarch64}-unknown-linux-musl`
-  * `arm-unknown-linux-gnueabihf`
-  * `arm-linux-androideabi`
-  * `{i686,x86_64}-apple-{darwin,ios}`
-  * `x86_64-rumprun-netbsd`
-  * `x86_64-unknown-freebsd`
-  * `x86_64-unknown-openbsd`
+Currently this repository leverages a combination of Azure Pipelines and Cirrus CI
+for running tests. You can find tested triples in [Pipelines config] or [Cirrus config].
 
 The Windows triples are all pretty standard, they just set up their environment
 then run tests, no need for downloading any extra target libs (we just download
@@ -62,7 +45,9 @@ The remaining architectures look like:
 * The BSD builds, currently OpenBSD and FreeBSD, use QEMU to boot up a system
   and compile/run tests. More information on that below.
 
-[android-docker]: https://github.com/rust-lang/rust-buildbot/blob/master/slaves/android/Dockerfile
+[Pipelines config]: https://github.com/rust-lang/libc/blob/master/ci/azure.yml
+[Cirrus config]: https://github.com/rust-lang/libc/blob/master/.cirrus.yml
+[android-docker]: https://github.com/rust-lang/libc/blob/master/ci/docker/x86_64-linux-android/Dockerfile
 
 ## QEMU
 
@@ -88,9 +73,7 @@ working for these platforms, but the gist of it looks like:
   We may be able to get it working but it might be difficult at that point to
   ensure that the libc definitions align with what you'd get on the BSD itself.
   As a result, we try to do compiles within the BSD distro.
-* On Travis we can't run a VM-in-a-VM, so we resort to userspace emulation
-  (QEMU).
-* Unfortunately on Travis we also can't use KVM, so the emulation is super slow.
+* We resort to userspace emulation (QEMU).
 
 With all that in mind, the way BSD is tested looks like:
 
@@ -109,7 +92,7 @@ There's some pretty specific instructions for setting up each image (detailed
 below), but the main gist of this is that we must avoid a vanilla `cargo run`
 inside of the `libc-test` directory (which is what it's intended for) because
 that would compile `syntex_syntax`, a large library, with userspace emulation.
-This invariably times out on Travis, so we can't do that.
+This invariably times out on CI, so we can't do that.
 
 Once all those hoops are jumped through, however, we can be happy that we're
 testing almost everything!
@@ -194,7 +177,6 @@ Helpful links
 * https://blog.nekoconeko.nl/blog/2015/06/04/creating-an-openstack-freebsd-image.html
 * https://www.freebsd.org/doc/handbook/serialconsole-setup.html
 
-
 ### QEMU setup - OpenBSD
 
 1. Download CD installer
@@ -233,4 +215,3 @@ Helpful links:
 
 Hopefully that's at least somewhat of an introduction to everything going on
 here, and feel free to ping @alexcrichton with questions!
-
