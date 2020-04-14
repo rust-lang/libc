@@ -738,6 +738,7 @@ pub const MSG_DONTWAIT: ::c_int = 0x00000080;
 pub const MSG_EOF: ::c_int = 0x00000100;
 
 pub const SCM_TIMESTAMP: ::c_int = 0x02;
+pub const SCM_CREDS: ::c_int = 0x03;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
