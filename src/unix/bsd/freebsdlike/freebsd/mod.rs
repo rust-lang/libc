@@ -107,6 +107,15 @@ s! {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::ssize_t,
     }
+
+    pub struct sockcred {
+        pub sc_uid: ::uid_t,
+        pub sc_euid: ::uid_t,
+        pub sc_gid: ::gid_t,
+        pub sc_egid: ::gid_t,
+        pub sc_ngroups: ::c_int,
+        pub sc_groups: [::gid_t; 1],
+    }
 }
 
 s_no_extra_traits! {
@@ -1134,6 +1143,15 @@ f! {
     pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
             as ::c_uint
+    }
+
+    pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
+        let ngrps = if ngrps > 0 {
+            ngrps - 1
+        } else {
+            0
+        };
+        ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
 
     pub fn uname(buf: *mut ::utsname) -> ::c_int {
