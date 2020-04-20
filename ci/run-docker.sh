@@ -15,6 +15,12 @@ CARGO_HOME="${CARGO_HOME:-$DEFAULT_CARGO_HOME}"
 echo "${HOME}"
 pwd
 
+# Avoid "no space left on device" failure.
+if [ "${1}" = "aarch64-linux-android" ] ; then
+  docker system prune -af
+  docker system df
+fi
+
 run() {
     echo "Building docker container for target ${1}"
 
