@@ -1,4 +1,4 @@
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
@@ -6,7 +6,8 @@ RUN dpkg --add-architecture i386 && \
   file \
   curl \
   ca-certificates \
-  python \
+  python3 \
+  python3-distutils \
   unzip \
   expect \
   openjdk-8-jre \

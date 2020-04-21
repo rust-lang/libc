@@ -1,4 +1,4 @@
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -8,7 +8,8 @@ RUN apt-get update && \
     git \
     libc6-dev \
     libxml2 \
-    python \
+    python3 \
+    python3-distutils \
     xz-utils
 
 COPY emscripten.sh /
