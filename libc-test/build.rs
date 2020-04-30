@@ -2231,6 +2231,7 @@ fn test_linux(target: &str) {
     let aarch64_musl = target.contains("aarch64") && musl;
     let gnuabihf = target.contains("gnueabihf");
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
+    let riscv64 = target.contains("riscv64");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2657,7 +2658,7 @@ fn test_linux(target: &str) {
         (struct_ == "timex" && field.starts_with("__unused")) ||
         // FIXME: It now takes mode_t since glibc 2.31 on some targets.
         (struct_ == "ipc_perm" && field == "mode"
-            && ((x86_64 || i686 || arm) && gnu || x86_64_gnux32)
+            && ((x86_64 || i686 || arm || riscv64) && gnu || x86_64_gnux32)
         )
     });
 
