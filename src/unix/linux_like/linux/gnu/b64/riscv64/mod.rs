@@ -17,11 +17,6 @@ s! {
         __size: [::c_ulong; 7],
     }
 
-    pub struct timespec {
-        pub tv_sec: ::time_t,
-        pub tv_nsec: ::c_long,
-    }
-
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
