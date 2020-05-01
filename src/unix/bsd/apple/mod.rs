@@ -2253,6 +2253,7 @@ pub const IPV6_CHECKSUM: ::c_int = 26;
 pub const IPV6_RECVTCLASS: ::c_int = 35;
 pub const IPV6_TCLASS: ::c_int = 36;
 pub const IPV6_PKTINFO: ::c_int = 46;
+pub const IPV6_HOPLIMIT: ::c_int = 47;
 pub const IPV6_RECVPKTINFO: ::c_int = 61;
 
 pub const TCP_NOPUSH: ::c_int = 4;
