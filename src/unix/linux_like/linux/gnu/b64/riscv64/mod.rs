@@ -17,11 +17,6 @@ s! {
         __size: [::c_ulong; 7],
     }
 
-    pub struct timespec {
-        pub tv_sec: ::time_t,
-        pub tv_nsec: ::c_long,
-    }
-
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -41,7 +36,7 @@ s! {
         pub st_mtime_nsec: ::c_long,
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
-        pub __unused: [::c_int; 2usize],
+        __unused: [::c_int; 2usize],
     }
 
     pub struct stat64 {
@@ -63,7 +58,7 @@ s! {
         pub st_mtime_nsec: ::c_long,
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
-        pub __unused: [::c_int; 2],
+        __unused: [::c_int; 2],
     }
 
     pub struct statfs {
@@ -161,11 +156,11 @@ s! {
         pub cuid: ::uid_t,
         pub cgid: ::gid_t,
         pub mode: ::c_ushort,
-        pub __pad1: ::c_ushort,
+        __pad1: ::c_ushort,
         pub __seq: ::c_ushort,
-        pub __pad2: ::c_ushort,
-        pub __unused1: ::c_ulong,
-        pub __unused2: ::c_ulong,
+        __pad2: ::c_ushort,
+        __unused1: ::c_ulong,
+        __unused2: ::c_ulong,
     }
 
     pub struct shmid_ds {
@@ -177,8 +172,8 @@ s! {
         pub shm_cpid: ::pid_t,
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
-        pub __unused5: ::c_ulong,
-        pub __unused6: ::c_ulong,
+        __unused5: ::c_ulong,
+        __unused6: ::c_ulong,
     }
 
     pub struct flock {

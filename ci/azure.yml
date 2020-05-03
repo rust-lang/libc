@@ -72,6 +72,8 @@ jobs:
           TARGET: powerpc64le-unknown-linux-gnu
         s390x-unknown-linux-gnu:
           TARGET: s390x-unknown-linux-gnu
+        riscv64gc-unknown-linux-gnu:
+          TARGET: riscv64gc-unknown-linux-gnu
         #wasm32-wasi
         #  TARGET: wasm32-wasi
         sparc64-unknown-linux-gnu:
