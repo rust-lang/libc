@@ -115,6 +115,12 @@ cfg_if! {
 
         mod switch;
         pub use switch::*;
+    } else if #[cfg(target_os = "psp")] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
+        mod psp;
+        pub use psp::*;
     } else if #[cfg(target_os = "vxworks")] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
