@@ -241,6 +241,9 @@ pub const PTRACE_SETFPREGS: ::c_uint = 15;
 pub const PTRACE_GETREGS: ::c_uint = 12;
 pub const PTRACE_SETREGS: ::c_uint = 13;
 
+pub const TIOCSBRK: ::c_int = 0x5427;
+pub const TIOCCBRK: ::c_int = 0x5428;
+
 #[link(name = "util")]
 extern "C" {
     pub fn sysctl(
