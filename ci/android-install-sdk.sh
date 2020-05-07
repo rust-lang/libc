@@ -17,7 +17,7 @@ unzip -q -d sdk sdk-tools-linux-${SDK}.zip
 case "$1" in
   arm | armv7)
     api=24
-    image="system-images;android-${api};google_apis;armeabi-v7a"
+    image="system-images;android-${api};default;armeabi-v7a"
     ;;
   aarch64)
     api=24
