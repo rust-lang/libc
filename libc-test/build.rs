@@ -2472,7 +2472,7 @@ fn test_linux(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // FIXME: epoll_event.data is actuall a union in C, but in Rust
+            // FIXME: epoll_event.data is actually a union in C, but in Rust
             // it is only a u64 because we only expose one field
             // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
@@ -2482,7 +2482,8 @@ fn test_linux(target: &str) {
             "type_"
                 if struct_ == "input_event"
                     || struct_ == "input_mask"
-                    || struct_ == "ff_effect" =>
+                    || struct_ == "ff_effect"
+                    || struct_ == "f_owner_ex" =>
             {
                 "type".to_string()
             }

@@ -634,7 +634,11 @@ pub const EFD_NONBLOCK: ::c_int = 0x800;
 
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
+pub const F_GETOWN_EX: ::c_int = 16;
+pub const F_GETSIG: ::c_int = 11;
 pub const F_SETOWN: ::c_int = 8;
+pub const F_SETOWN_EX: ::c_int = 15;
+pub const F_SETSIG: ::c_int = 10;
 pub const F_SETLK: ::c_int = 6;
 pub const F_SETLKW: ::c_int = 7;
 pub const F_OFD_GETLK: ::c_int = 36;

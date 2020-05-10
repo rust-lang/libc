@@ -541,6 +541,11 @@ s! {
         pub can_id: canid_t,
         pub can_mask: canid_t,
     }
+
+    pub struct f_owner_ex {
+        pub type_: ::c_int,
+        pub pid: ::pid_t,
+    }
 }
 
 s_no_extra_traits! {
