@@ -2,6 +2,7 @@
 
 extern crate libc;
 
+/*
 #[cfg(any(target_os = "linux", target_os = "android"))]
 mod t {
     use libc::{self, sock_extended_err, sockaddr};
@@ -20,3 +21,4 @@ mod t {
         }
     }
 }
+*/
