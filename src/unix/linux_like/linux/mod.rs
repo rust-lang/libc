@@ -3497,6 +3497,9 @@ extern "C" {
     pub fn regfree(preg: *mut ::regex_t);
 }
 
+mod kernel;
+pub use self::kernel::*;
+
 cfg_if! {
     if #[cfg(target_env = "musl")] {
         mod musl;
