@@ -3,7 +3,8 @@
 extern crate cc;
 extern crate ctest;
 
-use std::env;
+use std::collections::HashSet;
+use std::{env, fs};
 
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
@@ -2495,7 +2496,17 @@ fn test_linux(target: &str) {
         }
     });
 
+    let syscall_consts = fs::read_to_string("src/linux_syscall_constants")
+        .unwrap()
+        .lines()
+        .map(|l| l.to_owned())
+        .collect::<HashSet<_>>();
+
     cfg.skip_const(move |name| {
+        if syscall_consts.contains(name) {
+            return true;
+        }
+
         match name {
             // These constants are not available if gnu headers have been included
             // and can therefore not be tested here

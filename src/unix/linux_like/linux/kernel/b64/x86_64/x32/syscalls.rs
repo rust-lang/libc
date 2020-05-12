@@ -1,4 +1,4 @@
-// Syscall table
+// This file was generated via generate_syscalls.sh. Do not edit it manually.
 
 pub const SYS_read: ::c_long = super::__X32_SYSCALL_BIT + 0;
 pub const SYS_write: ::c_long = super::__X32_SYSCALL_BIT + 1;
@@ -286,6 +286,22 @@ pub const SYS_pkey_mprotect: ::c_long = super::__X32_SYSCALL_BIT + 329;
 pub const SYS_pkey_alloc: ::c_long = super::__X32_SYSCALL_BIT + 330;
 pub const SYS_pkey_free: ::c_long = super::__X32_SYSCALL_BIT + 331;
 pub const SYS_statx: ::c_long = super::__X32_SYSCALL_BIT + 332;
+pub const SYS_io_pgetevents: ::c_long = super::__X32_SYSCALL_BIT + 333;
+pub const SYS_rseq: ::c_long = super::__X32_SYSCALL_BIT + 334;
+pub const SYS_pidfd_send_signal: ::c_long = super::__X32_SYSCALL_BIT + 424;
+pub const SYS_io_uring_setup: ::c_long = super::__X32_SYSCALL_BIT + 425;
+pub const SYS_io_uring_enter: ::c_long = super::__X32_SYSCALL_BIT + 426;
+pub const SYS_io_uring_register: ::c_long = super::__X32_SYSCALL_BIT + 427;
+pub const SYS_open_tree: ::c_long = super::__X32_SYSCALL_BIT + 428;
+pub const SYS_move_mount: ::c_long = super::__X32_SYSCALL_BIT + 429;
+pub const SYS_fsopen: ::c_long = super::__X32_SYSCALL_BIT + 430;
+pub const SYS_fsconfig: ::c_long = super::__X32_SYSCALL_BIT + 431;
+pub const SYS_fsmount: ::c_long = super::__X32_SYSCALL_BIT + 432;
+pub const SYS_fspick: ::c_long = super::__X32_SYSCALL_BIT + 433;
+pub const SYS_pidfd_open: ::c_long = super::__X32_SYSCALL_BIT + 434;
+pub const SYS_clone3: ::c_long = super::__X32_SYSCALL_BIT + 435;
+pub const SYS_openat2: ::c_long = super::__X32_SYSCALL_BIT + 437;
+pub const SYS_pidfd_getfd: ::c_long = super::__X32_SYSCALL_BIT + 438;
 pub const SYS_rt_sigaction: ::c_long = super::__X32_SYSCALL_BIT + 512;
 pub const SYS_rt_sigreturn: ::c_long = super::__X32_SYSCALL_BIT + 513;
 pub const SYS_ioctl: ::c_long = super::__X32_SYSCALL_BIT + 514;
