@@ -50,6 +50,8 @@ s! {
         pub sin6_scope_id: u32,
     }
 
+    // The order of the `ai_addr` field in this struct is crucial
+    // for converting between the Rust and C types.
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
