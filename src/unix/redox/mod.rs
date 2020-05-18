@@ -587,6 +587,23 @@ pub const TIOCSPGRP: ::c_ulong = 0x5410;
 pub const TIOCGWINSZ: ::c_ulong = 0x5413;
 pub const TIOCSWINSZ: ::c_ulong = 0x5414;
 
+// sys/mman.h
+pub const PROT_NONE: ::c_int = 0x0000;
+pub const PROT_READ: ::c_int = 0x0004;
+pub const PROT_WRITE: ::c_int = 0x0002;
+pub const PROT_EXEC: ::c_int = 0x0001;
+
+pub const MAP_SHARED: ::c_int = 0x0001;
+pub const MAP_PRIVATE: ::c_int = 0x0002;
+pub const MAP_ANON: ::c_int = 0x0020;
+pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
+pub const MAP_FIXED: ::c_int = 0x0010;
+pub const MAP_FAILED: *mut ::c_void = !0 as _;
+
+pub const MS_ASYNC: ::c_int = 0x0001;
+pub const MS_INVALIDATE: ::c_int = 0x0002;
+pub const MS_SYNC: ::c_int = 0x0004;
+
 // sys/select.h
 pub const FD_SETSIZE: usize = 1024;
 
@@ -933,6 +950,24 @@ extern "C" {
 
     // sys/ioctl.h
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+
+    // sys/mman.h
+    pub fn msync(
+        addr: *mut ::c_void,
+        len: ::size_t,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn mprotect(
+        addr: *mut ::c_void,
+        len: ::size_t,
+        prot: ::c_int,
+    ) -> ::c_int;
+    pub fn shm_open(
+        name: *const c_char,
+        oflag: ::c_int,
+        mode: mode_t,
+    ) -> ::c_int;
+    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 
     // sys/resource.h
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
