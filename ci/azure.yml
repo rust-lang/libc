@@ -34,8 +34,9 @@ jobs:
         displayName: Execute run-docker.sh
     strategy:
       matrix:
-        aarch64-unknown-linux-android:
-          TARGET: aarch64-linux-android
+        # FIXME: Disabled due to https://github.com/rust-lang/libc/issues/1765
+        # aarch64-unknown-linux-android:
+        #   TARGET: aarch64-linux-android
         aarch64-unknown-linux-gnu:
           TARGET: aarch64-unknown-linux-gnu
         aarch64-unknown-linux-musl:
@@ -50,8 +51,9 @@ jobs:
         # https://github.com/rust-lang/libc/issues/1591
         # asmjs-unknown-emscripten:
         #  TARGET: asmjs-unknown-emscripten
-        i686-linux-android:
-          TARGET: i686-linux-android
+        # FIXME: Disabled due to https://github.com/rust-lang/libc/issues/1765
+        # i686-linux-android:
+        #   TARGET: i686-linux-android
         i686-unknown-linux-musl:
           TARGET: i686-unknown-linux-musl
         mips-unknown-linux-gnu:
