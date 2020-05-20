@@ -1740,6 +1740,7 @@ fn test_freebsd(target: &str) {
             | "IP_RECVORIGDSTADDR"
             | "IPV6_ORIGDSTADDR"
             | "IPV6_RECVORIGDSTADDR"
+            | "NI_NUMERICSCOPE"
                 if Some(11) == freebsd_ver =>
             {
                 true
@@ -1765,6 +1766,7 @@ fn test_freebsd(target: &str) {
             | "PD_CLOEXEC"
             | "PD_ALLOWED_AT_FORK"
             | "IP_RSS_LISTEN_BUCKET"
+            | "NI_NUMERICSCOPE"
                 if Some(10) == freebsd_ver =>
             {
                 true
