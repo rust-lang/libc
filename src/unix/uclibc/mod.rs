@@ -1503,6 +1503,10 @@ pub const NOSTR: ::nl_item = 0x503;
 
 pub const FILENAME_MAX: ::c_uint = 4095;
 
+pub const PRIO_PROCESS: ::c_int = 0;
+pub const PRIO_PGRP: ::c_int = 1;
+pub const PRIO_USER: ::c_int = 2;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;

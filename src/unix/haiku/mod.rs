@@ -1206,6 +1206,10 @@ pub const TIOCCBRK: ::c_int = TCGETA + 21;
 pub const TIOCMBIS: ::c_int = TCGETA + 22;
 pub const TIOCMBIC: ::c_int = TCGETA + 23;
 
+pub const PRIO_PROCESS: ::c_int = 0;
+pub const PRIO_PGRP: ::c_int = 1;
+pub const PRIO_USER: ::c_int = 2;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
