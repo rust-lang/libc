@@ -15,7 +15,7 @@ Automated tests of FFI bindings.
 """
 
 [dependencies]
-syntex_syntax2 = "0.0.2"
+syntex_syntax2 = { git = "https://github.com/JohnTitor/syntex", branch = "master" }
 cc = "1.0.1"
 rustc_version = "0.2"
 
