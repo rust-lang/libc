@@ -823,6 +823,10 @@ pub const _PC_ALLOC_SIZE_MIN: ::c_int = 18;
 pub const _PC_SYMLINK_MAX: ::c_int = 19;
 pub const _PC_2_SYMLINKS: ::c_int = 20;
 
+pub const PRIO_PROCESS: ::c_int = 0;
+pub const PRIO_PGRP: ::c_int = 1;
+pub const PRIO_USER: ::c_int = 2;
+
 // wait.h
 f! {
     pub fn WIFSTOPPED(status: ::c_int) -> bool {

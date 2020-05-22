@@ -547,6 +547,10 @@ pub const EAI_MEMORY: ::c_int = -304;
 pub const EAI_NONAME: ::c_int = -305;
 pub const EAI_SOCKTYPE: ::c_int = -307;
 
+pub const PRIO_PROCESS: ::c_int = 0;
+pub const PRIO_PGRP: ::c_int = 1;
+pub const PRIO_USER: ::c_int = 2;
+
 f! {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;

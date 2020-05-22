@@ -939,6 +939,10 @@ const ULONG_SIZE: usize = 64;
 
 pub const WNOHANG: ::c_int = 0x00000001;
 
+pub const PRIO_PROCESS: ::c_int = 0;
+pub const PRIO_PGRP: ::c_int = 1;
+pub const PRIO_USER: ::c_int = 2;
+
 f! {
     pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
         (status >> 8) & 0xff

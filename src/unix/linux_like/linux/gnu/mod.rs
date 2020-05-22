@@ -465,6 +465,10 @@ pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
 pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
 pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = 16;
 
+pub const PRIO_PROCESS: ::__priority_which_t = 0;
+pub const PRIO_PGRP: ::__priority_which_t = 1;
+pub const PRIO_USER: ::__priority_which_t = 2;
+
 pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const __UT_LINESIZE: usize = 32;

@@ -269,10 +269,6 @@ pub const LOG_NOWAIT: ::c_int = 0x10;
 pub const LOG_PRIMASK: ::c_int = 7;
 pub const LOG_FACMASK: ::c_int = 0x3f8;
 
-pub const PRIO_PROCESS: ::c_int = 0;
-pub const PRIO_PGRP: ::c_int = 1;
-pub const PRIO_USER: ::c_int = 2;
-
 pub const PRIO_MIN: ::c_int = -20;
 pub const PRIO_MAX: ::c_int = 20;
 

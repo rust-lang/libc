@@ -501,6 +501,10 @@ pub const REG_BACKR: ::c_int = 0o02000;
 pub const TIOCCBRK: ::c_uint = 0x2000747a;
 pub const TIOCSBRK: ::c_uint = 0x2000747b;
 
+pub const PRIO_PROCESS: ::c_int = 0;
+pub const PRIO_PGRP: ::c_int = 1;
+pub const PRIO_USER: ::c_int = 2;
+
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const ::msghdr) -> *mut ::cmsghdr {
         if (*mhdr).msg_controllen as usize >= ::mem::size_of::<::cmsghdr>() {
