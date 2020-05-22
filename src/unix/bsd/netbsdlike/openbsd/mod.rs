@@ -1150,12 +1150,14 @@ pub const KERN_NTHREADS: ::c_int = 26;
 pub const KERN_OSVERSION: ::c_int = 27;
 pub const KERN_SOMAXCONN: ::c_int = 28;
 pub const KERN_SOMINCONN: ::c_int = 29;
+#[deprecated(since = "0.2.71", note = "Removed in OpenBSD 6.0")]
 pub const KERN_USERMOUNT: ::c_int = 30;
 pub const KERN_NOSUIDCOREDUMP: ::c_int = 32;
 pub const KERN_FSYNC: ::c_int = 33;
 pub const KERN_SYSVMSG: ::c_int = 34;
 pub const KERN_SYSVSEM: ::c_int = 35;
 pub const KERN_SYSVSHM: ::c_int = 36;
+#[deprecated(since = "0.2.71", note = "Removed in OpenBSD 6.0")]
 pub const KERN_ARND: ::c_int = 37;
 pub const KERN_MSGBUFSIZE: ::c_int = 38;
 pub const KERN_MALLOCSTATS: ::c_int = 39;
