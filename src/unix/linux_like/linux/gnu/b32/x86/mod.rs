@@ -543,6 +543,8 @@ pub const FIONBIO: ::c_ulong = 0x5421;
 
 pub const PTRACE_GETFPXREGS: ::c_uint = 18;
 pub const PTRACE_SETFPXREGS: ::c_uint = 19;
+pub const PTRACE_SYSEMU: ::c_uint = 31;
+pub const PTRACE_SYSEMU_SINGLESTEP: ::c_uint = 32;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
