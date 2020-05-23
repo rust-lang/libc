@@ -2488,7 +2488,7 @@ fn test_linux(target: &str) {
             // structs.
             "termios2" => true,
 
-            // FIXME: remove once Ubuntu 20.04 LTS is released, somewhere in 2020.
+            // FIXME: remove once we set minimum supported glibc version.
             // ucontext_t added a new field as of glibc 2.28; our struct definition is
             // conservative and omits the field, but that means the size doesn't match for newer
             // glibcs (see https://github.com/rust-lang/libc/issues/1410)
