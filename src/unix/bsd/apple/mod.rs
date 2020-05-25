@@ -2257,6 +2257,8 @@ pub const IPV6_RECVPKTINFO: ::c_int = 61;
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
 pub const TCP_KEEPALIVE: ::c_int = 0x10;
+pub const TCP_KEEPINTVL: ::c_int = 0x101;
+pub const TCP_KEEPCNT: ::c_int = 0x102;
 /// Enable/Disable TCP Fastopen on this socket
 pub const TCP_FASTOPEN: ::c_int = 0x105;
 
