@@ -39,6 +39,8 @@ cfg_if! {
         #[allow(unused_imports)]
         use core::iter;
         #[allow(unused_imports)]
+        use core::ops;
+        #[allow(unused_imports)]
         use core::option;
     }
 }
