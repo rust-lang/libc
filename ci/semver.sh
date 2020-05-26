@@ -13,7 +13,7 @@ if ! rustc --version | grep -E "nightly" ; then
     exit 1
 fi
 
-rustup component add rustc-dev
+rustup component add rustc-dev llvm-tools-preview
 
 # FIXME: Use upstream once it gets rustup.
 cargo +nightly install semververfork
