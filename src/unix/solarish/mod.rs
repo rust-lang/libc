@@ -1102,7 +1102,6 @@ pub const MCL_FUTURE: ::c_int = 0x0002;
 pub const MS_SYNC: ::c_int = 0x0004;
 pub const MS_ASYNC: ::c_int = 0x0001;
 pub const MS_INVALIDATE: ::c_int = 0x0002;
-pub const MS_INVALCURPROC: ::c_int = 0x0008;
 
 pub const EPERM: ::c_int = 1;
 pub const ENOENT: ::c_int = 2;
@@ -1357,7 +1356,6 @@ pub const AF_POLICY: ::c_int = 29;
 pub const AF_INET_OFFLOAD: ::c_int = 30;
 pub const AF_TRILL: ::c_int = 31;
 pub const AF_PACKET: ::c_int = 32;
-pub const AF_LX_NETLINK: ::c_int = 33;
 
 pub const SOCK_DGRAM: ::c_int = 1;
 pub const SOCK_STREAM: ::c_int = 2;
@@ -1782,8 +1780,6 @@ pub const TIOCGWINSZ: ::c_int = _TIOC | 104;
 pub const TIOCSWINSZ: ::c_int = _TIOC | 103;
 pub const TIOCGSOFTCAR: ::c_int = _TIOC | 105;
 pub const TIOCSSOFTCAR: ::c_int = _TIOC | 106;
-pub const TIOCSETLD: ::c_int = _TIOC | 123;
-pub const TIOCGETLD: ::c_int = _TIOC | 124;
 pub const TIOCGPPS: ::c_int = _TIOC | 125;
 pub const TIOCSPPS: ::c_int = _TIOC | 126;
 pub const TIOCGPPSEV: ::c_int = _TIOC | 127;
