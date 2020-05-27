@@ -1,9 +1,10 @@
-# ctest
+# ctest2
 
-[![Build Status](https://dev.azure.com/gonzalobg88/ctest/_apis/build/status/gnzlbg.ctest?branchName=master)](https://dev.azure.com/gonzalobg88/ctest/_build/latest?definitionId=5&branchName=master)
 [Documentation][dox]
 
-[dox]: https://docs.rs/ctest
+[dox]: https://docs.rs/ctest2
+
+**Note: This is a fork repository and we intend to use this in libc-test only.**
 
 Automated testing of FFI bindings in Rust. This repository is intended to
 validate the `*-sys` crates that can be found on crates.io to ensure that the
@@ -30,16 +31,16 @@ mylib-sys = { path = "../mylib-sys" }
 libc = "0.2"
 
 [build-dependencies]
-ctest = "0.2"
+ctest2 = "0.2"
 ```
 
 Next, add a build script to `systest/build.rs`:
 
 ```rust
-extern crate ctest;
+extern crate ctest2;
 
 fn main() {
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest2::TestGenerator::new();
 
     // Include the header files where the C APIs are defined
     cfg.header("foo.h")
@@ -87,13 +88,9 @@ and returns information about the C side of things (which is validated in Rust).
 A large amount of configuration can be applied to how the C file is generated,
 you can browse [the documentation][dox].
 
-### Projects using ctest
+### Projects using ctest2
 
 * [libc](https://github.com/rust-lang/libc)
-* [git2-rs](https://github.com/rust-lang/git2-rs)
-* [ssh2-rs](https://github.com/alexcrichton/ssh2-rs)
-* [libz-sys](https://github.com/rust-lang/libz-sys)
-* [openssl-sys](https://github.com/sfackler/rust-openssl)
 
 ### License
 
@@ -109,5 +106,5 @@ at your option.
 ### Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in ctest by you, as defined in the Apache-2.0 license, shall be
+for inclusion in ctest2 by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
