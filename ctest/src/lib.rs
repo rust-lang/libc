@@ -1,4 +1,4 @@
-//! # ctest - an FFI binding validator
+//! # ctest2 - an FFI binding validator
 //!
 //! This library is intended to be used as a build dependency in a separate
 //! project from the main repo to generate tests which can be used to validate
@@ -7,7 +7,7 @@
 //! For example usage, see the [main `README.md`][project] for how to set it
 //! up.
 //!
-//! [project]: https://github.com/alexcrichton/ctest
+//! [project]: https://github.com/alexcrichton/ctest2
 
 #![deny(missing_docs)]
 #![allow(bare_trait_objects)]
@@ -189,7 +189,7 @@ impl TestGenerator {
     /// use std::env;
     /// use std::path::PathBuf;
     ///
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.header("foo.h")
@@ -205,7 +205,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rust_version(1, 0, 1);
@@ -226,7 +226,7 @@ impl TestGenerator {
     /// use std::env;
     /// use std::path::PathBuf;
     ///
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
@@ -245,7 +245,7 @@ impl TestGenerator {
     /// use std::env;
     /// use std::path::PathBuf;
     ///
-    /// use ctest::{TestGenerator, Lang};
+    /// use ctest2::{TestGenerator, Lang};
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.language(Lang::CXX);
@@ -266,7 +266,7 @@ impl TestGenerator {
     /// use std::env;
     /// use std::path::PathBuf;
     ///
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     ///
@@ -289,7 +289,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.out_dir("path/to/output");
@@ -307,7 +307,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.target("x86_64-unknown-linux-gnu");
@@ -325,7 +325,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.define("_GNU_SOURCE", None)
@@ -354,7 +354,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.cfg("foo", None) // cfg!(foo)
@@ -385,7 +385,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.type_name(|ty, is_struct, is_union| {
@@ -415,7 +415,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.field_name(|_s, field| {
@@ -437,7 +437,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::{TestGenerator, VolatileItemKind::StructField};
+    /// use ctest2::{TestGenerator, VolatileItemKind::StructField};
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.volatile_item(|i| {
@@ -463,7 +463,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::{TestGenerator};
+    /// use ctest2::{TestGenerator};
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.array_arg(|i, n| {
@@ -490,7 +490,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.const_cname(|c| {
@@ -515,7 +515,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_field(|s, field| {
@@ -540,7 +540,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_field_type(|s, field| {
@@ -565,7 +565,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_signededness(|s| {
@@ -591,7 +591,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_fn(|s| {
@@ -617,7 +617,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_static(|s| {
@@ -660,7 +660,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_const(|s| {
@@ -685,7 +685,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_type(|s| {
@@ -711,7 +711,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_struct(|s| {
@@ -738,7 +738,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_roundtrip(|s| {
@@ -765,7 +765,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.fn_cname(|rust, link_name| link_name.unwrap_or(rust).to_string());
@@ -793,7 +793,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::TestGenerator;
+    /// use ctest2::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.generate("../path/to/libfoo-sys/lib.rs", "all.rs");
