@@ -10,14 +10,14 @@ set -ex
 mkdir -p target
 rm -rf target/libc || true
 git clone --depth=1 https://github.com/rust-lang/libc target/libc
-mkdir -p target/libc/target/ctest
+mkdir -p target/libc/target/ctest2
 
 case $TARGET in
     *linux*)
-        sed -i 's@ctest = "0.2"@ctest = { path = "../../.." }@g' target/libc/libc-test/Cargo.toml
+        sed -i 's@ctest2 = "0.2"@ctest2 = { path = "../../.." }@g' target/libc/libc-test/Cargo.toml
         ;;
     *apple*)
-        sed -i '' 's@ctest = "0.2"@ctest = { path = "../../.." }@g' target/libc/libc-test/Cargo.toml
+        sed -i '' 's@ctest2 = "0.2"@ctest2 = { path = "../../.." }@g' target/libc/libc-test/Cargo.toml
         ;;
 esac
 
