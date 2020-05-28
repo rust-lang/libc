@@ -138,6 +138,12 @@ s! {
         pub rt_window: ::c_ulong,
         pub rt_irtt: ::c_ushort,
     }
+
+    pub struct ip_mreqn {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_address: ::in_addr,
+        pub imr_ifindex: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
