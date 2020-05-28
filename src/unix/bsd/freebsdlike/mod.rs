@@ -1194,10 +1194,6 @@ f! {
         status >> 8
     }
 
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
-        (status & 0o177) != 0o177 && (status & 0o177) != 0
-    }
-
     pub fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0o177) == 0o177
     }
