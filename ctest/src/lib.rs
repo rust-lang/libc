@@ -13,7 +13,7 @@
 #![allow(bare_trait_objects)]
 
 extern crate cc;
-extern crate syntex_syntax2 as syntax;
+extern crate garando_syntax as syntax;
 
 extern crate rustc_version;
 
