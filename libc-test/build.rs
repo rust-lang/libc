@@ -1,7 +1,7 @@
 #![deny(warnings)]
 
 extern crate cc;
-extern crate ctest;
+extern crate ctest2 as ctest;
 
 use std::env;
 
