@@ -2,8 +2,6 @@
 name = "ctest2"
 version = "0.3.0"
 authors = [
-  "Alex Crichton <alex@alexcrichton.com>",
-  "Gonzalo Brito Gadeschi <gonzalobg88@gmail.com>",
   "Yuki Okushi <huyuumi.dev@gmail.com>"
 ]
 license = "MIT/Apache-2.0"
