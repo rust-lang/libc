@@ -2,6 +2,8 @@
 
 set -ex
 
+EMSDK_VERSION=1.39.16
+
 hide_output() {
   set +x
   on_err="
@@ -23,8 +25,8 @@ git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable
 cd /emsdk-portable
 # FIXME: switch to an upstream install once
 # https://github.com/rust-lang/rust/pull/63649 lands
-hide_output ./emsdk install 1.39.12
-./emsdk activate 1.39.12
+hide_output ./emsdk install "${EMSDK_VERSION}"
+./emsdk activate "${EMSDK_VERSION}"
 
 # Compile and cache libc
 # shellcheck disable=SC1091
@@ -34,7 +36,6 @@ HOME=/emsdk-portable/ emcc a.c
 rm -f a.*
 
 # Make emsdk usable by any user
-cp /root/.emscripten /emsdk-portable
 chmod a+rxw -R /emsdk-portable
 
 # node 8 is required to run wasm
