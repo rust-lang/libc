@@ -474,8 +474,8 @@ s! {
 }
 
 pub const AF_UNSPEC: ::c_int = 0;
-pub const AF_INET: ::c_int = 2;
-pub const AF_INET6: ::c_int = 10;
+pub const AF_INET: ::sa_family_t = 2;
+pub const AF_INET6: ::sa_family_t = 10;
 
 // Dummy
 pub const AF_UNIX: ::c_int = 1;

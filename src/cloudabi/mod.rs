@@ -81,8 +81,8 @@ pub const INT_MAX: c_int = 2147483647;
 pub const _SC_NPROCESSORS_ONLN: ::c_int = 52;
 pub const _SC_PAGESIZE: ::c_int = 54;
 
-pub const AF_INET: ::c_int = 1;
-pub const AF_INET6: ::c_int = 2;
+pub const AF_INET: ::sa_family_t = 1;
+pub const AF_INET6: ::sa_family_t = 2;
 
 pub const EACCES: ::c_int = 2;
 pub const EADDRINUSE: ::c_int = 3;

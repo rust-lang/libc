@@ -609,8 +609,8 @@ pub const FD_SETSIZE: usize = 1024;
 
 // sys/socket.h
 pub const AF_UNIX: ::c_int = 1;
-pub const AF_INET: ::c_int = 2;
-pub const AF_INET6: ::c_int = 10;
+pub const AF_INET: ::sa_family_t = 2;
+pub const AF_INET6: ::sa_family_t = 10;
 pub const MSG_PEEK: ::c_int = 2;
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;

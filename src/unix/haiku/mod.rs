@@ -791,11 +791,11 @@ pub const IFF_CONFIGURING: ::c_int = 0x4000;
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
 pub const AF_UNSPEC: ::c_int = 0;
-pub const AF_INET: ::c_int = 1;
+pub const AF_INET: ::sa_family_t = 1;
 pub const AF_APPLETALK: ::c_int = 2;
 pub const AF_ROUTE: ::c_int = 3;
 pub const AF_LINK: ::c_int = 4;
-pub const AF_INET6: ::c_int = 5;
+pub const AF_INET6: ::sa_family_t = 5;
 pub const AF_DLI: ::c_int = 6;
 pub const AF_IPX: ::c_int = 7;
 pub const AF_NOTIFY: ::c_int = 8;

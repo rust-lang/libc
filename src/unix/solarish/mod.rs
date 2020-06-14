@@ -1327,7 +1327,7 @@ pub const MADV_FREE: ::c_int = 5;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_UNIX: ::c_int = 1;
-pub const AF_INET: ::c_int = 2;
+pub const AF_INET: ::sa_family_t = 2;
 pub const AF_IMPLINK: ::c_int = 3;
 pub const AF_PUP: ::c_int = 4;
 pub const AF_CHAOS: ::c_int = 5;
@@ -1351,7 +1351,7 @@ pub const AF_GOSIP: ::c_int = 22;
 pub const AF_IPX: ::c_int = 23;
 pub const AF_ROUTE: ::c_int = 24;
 pub const AF_LINK: ::c_int = 25;
-pub const AF_INET6: ::c_int = 26;
+pub const AF_INET6: ::sa_family_t = 26;
 pub const AF_KEY: ::c_int = 27;
 pub const AF_NCA: ::c_int = 28;
 pub const AF_POLICY: ::c_int = 29;
