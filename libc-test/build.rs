@@ -707,6 +707,7 @@ fn test_solarish(target: &str) {
         "stdlib.h",
         "string.h",
         "sys/epoll.h",
+        "sys/eventfd.h",
         "sys/file.h",
         "sys/filio.h",
         "sys/ioctl.h",
