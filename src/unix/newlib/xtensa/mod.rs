@@ -60,6 +60,7 @@ s! {
 }
 
 pub const AF_UNIX: ::c_int = 1;
+pub const AF_INET6: ::c_int = 10;
 
 pub const FIONBIO: ::c_ulong = 2147772030;
 

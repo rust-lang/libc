@@ -416,7 +416,6 @@ pub const PF_INET6: ::c_int = 23;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_INET: ::c_int = 2;
-pub const AF_INET6: ::c_int = 23;
 
 pub const CLOCK_REALTIME: ::clockid_t = 1;
 pub const CLOCK_MONOTONIC: ::clockid_t = 4;

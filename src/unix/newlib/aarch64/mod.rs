@@ -30,6 +30,8 @@ s! {
     }
 }
 
+pub const AF_INET6: ::c_int = 23;
+
 pub const FIONBIO: ::c_ulong = 1;
 
 pub const POLLIN: ::c_short = 0x1;
