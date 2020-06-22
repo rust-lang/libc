@@ -42,3 +42,11 @@ pub const POLLOUT: ::c_short = 0x10;
 pub const POLLNVAL: ::c_short = 0x20;
 
 pub const SOL_SOCKET: ::c_int = 65535;
+
+pub const MSG_OOB: ::c_int = 1;
+pub const MSG_PEEK: ::c_int = 2;
+pub const MSG_DONTWAIT: ::c_int = 4;
+pub const MSG_DONTROUTE: ::c_int = 0;
+pub const MSG_WAITALL: ::c_int = 0;
+pub const MSG_MORE: ::c_int = 0;
+pub const MSG_NOSIGNAL: ::c_int = 0;

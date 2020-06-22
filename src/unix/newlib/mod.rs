@@ -425,14 +425,6 @@ pub const CLOCK_BOOTTIME: ::clockid_t = 4;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 
-pub const MSG_OOB: ::c_int = 1;
-pub const MSG_PEEK: ::c_int = 2;
-pub const MSG_DONTWAIT: ::c_int = 4;
-pub const MSG_DONTROUTE: ::c_int = 0;
-pub const MSG_WAITALL: ::c_int = 0;
-pub const MSG_MORE: ::c_int = 0;
-pub const MSG_NOSIGNAL: ::c_int = 0;
-
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
