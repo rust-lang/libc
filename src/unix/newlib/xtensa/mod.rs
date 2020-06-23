@@ -60,6 +60,7 @@ s! {
 }
 
 pub const AF_UNIX: ::c_int = 1;
+pub const AF_INET6: ::c_int = 10;
 
 pub const FIONBIO: ::c_ulong = 2147772030;
 
@@ -74,6 +75,14 @@ pub const POLLERR: ::c_short = 1 << 5;
 pub const POLLHUP: ::c_short = 1 << 6;
 
 pub const SOL_SOCKET: ::c_int = 0xfff;
+
+pub const MSG_OOB: ::c_int = 0x04;
+pub const MSG_PEEK: ::c_int = 0x01;
+pub const MSG_DONTWAIT: ::c_int = 0x08;
+pub const MSG_DONTROUTE: ::c_int = 0x4;
+pub const MSG_WAITALL: ::c_int = 0x02;
+pub const MSG_MORE: ::c_int = 0x10;
+pub const MSG_NOSIGNAL: ::c_int = 0x20;
 
 extern "C" {
     pub fn sendmsg(

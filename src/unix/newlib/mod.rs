@@ -416,7 +416,6 @@ pub const PF_INET6: ::c_int = 23;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_INET: ::c_int = 2;
-pub const AF_INET6: ::c_int = 23;
 
 pub const CLOCK_REALTIME: ::clockid_t = 1;
 pub const CLOCK_MONOTONIC: ::clockid_t = 4;
@@ -424,14 +423,6 @@ pub const CLOCK_BOOTTIME: ::clockid_t = 4;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
-
-pub const MSG_OOB: ::c_int = 1;
-pub const MSG_PEEK: ::c_int = 2;
-pub const MSG_DONTWAIT: ::c_int = 4;
-pub const MSG_DONTROUTE: ::c_int = 0;
-pub const MSG_WAITALL: ::c_int = 0;
-pub const MSG_MORE: ::c_int = 0;
-pub const MSG_NOSIGNAL: ::c_int = 0;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
