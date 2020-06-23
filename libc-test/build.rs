@@ -1644,6 +1644,7 @@ fn test_freebsd(target: &str) {
                 "libutil.h",
                 "limits.h",
                 "locale.h",
+                "machine/reg.h",
                 "mqueue.h",
                 "net/bpf.h",
                 "net/if.h",
