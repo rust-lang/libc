@@ -1,4 +1,8 @@
 //! PSP C type definitions
+//!
+//! These type declarations are not enough, as they must be ultimately resolved
+//! by the linker. Crates that use these definitions must, somewhere in the
+//! crate graph, include a stub provider crate such as the `psp` crate.
 
 pub type c_schar = i8;
 pub type c_uchar = u8;
@@ -45,3 +49,72 @@ cfg_if! {
         }
     }
 }
+
+mod audio;
+pub use self::audio::*;
+
+mod atrac;
+pub use self::atrac::*;
+
+mod ctrl;
+pub use self::ctrl::*;
+
+mod display;
+pub use self::display::*;
+
+mod ge;
+pub use self::ge::*;
+
+mod kernel;
+pub use self::kernel::*;
+
+mod usb;
+pub use self::usb::*;
+
+mod power;
+pub use self::power::*;
+
+mod wlan;
+pub use self::wlan::*;
+
+mod rtc;
+pub use self::rtc::*;
+
+mod io;
+pub use self::io::*;
+
+mod jpeg;
+pub use self::jpeg::*;
+
+mod umd;
+pub use self::umd::*;
+
+mod mpeg;
+pub use self::mpeg::*;
+
+mod hprm;
+pub use self::hprm::*;
+
+mod gu;
+pub use self::gu::*;
+
+mod gum;
+pub use self::gum::*;
+
+mod types;
+pub use self::types::*;
+
+mod mp3;
+pub use self::mp3::*;
+
+mod registry;
+pub use self::registry::*;
+
+mod openpsid;
+pub use self::openpsid::*;
+
+mod utility;
+pub use self::utility::*;
+
+mod net;
+pub use self::net::*;
