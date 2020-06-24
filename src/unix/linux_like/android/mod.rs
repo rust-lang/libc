@@ -19,6 +19,7 @@ pub type nfds_t = ::c_uint;
 pub type rlim_t = ::c_ulong;
 pub type dev_t = ::c_ulong;
 pub type ino_t = ::c_ulong;
+pub type ino64_t = u64;
 pub type __CPU_BITTYPE = ::c_ulong;
 pub type idtype_t = ::c_int;
 pub type loff_t = ::c_longlong;
@@ -145,6 +146,11 @@ s! {
         pub ssi_call_addr: u64,
         pub ssi_arch: u32,
         _pad: [u8; 28],
+    }
+
+    pub struct itimerspec {
+        pub it_interval: ::timespec,
+        pub it_value: ::timespec,
     }
 
     pub struct ucred {
@@ -629,11 +635,27 @@ pub const EPOLLONESHOT: ::c_int = 0x40000000;
 pub const EPOLLRDHUP: ::c_int = 0x00002000;
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
-pub const EFD_CLOEXEC: ::c_int = 0x80000;
+// sys/eventfd.h
+pub const EFD_SEMAPHORE: ::c_int = 0x1;
+pub const EFD_CLOEXEC: ::c_int = O_CLOEXEC;
+pub const EFD_NONBLOCK: ::c_int = O_NONBLOCK;
+
+// sys/timerfd.h
+pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
+pub const TFD_NONBLOCK: ::c_int = O_NONBLOCK;
+pub const TFD_TIMER_ABSTIME: ::c_int = 1;
+pub const TFD_TIMER_CANCEL_ON_SET: ::c_int = 2;
 
 pub const USER_PROCESS: ::c_short = 7;
 
+// linux/falloc.h
+pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
+pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
+pub const FALLOC_FL_NO_HIDE_STALE: ::c_int = 0x04;
 pub const FALLOC_FL_COLLAPSE_RANGE: ::c_int = 0x08;
+pub const FALLOC_FL_ZERO_RANGE: ::c_int = 0x10;
+pub const FALLOC_FL_INSERT_RANGE: ::c_int = 0x20;
+pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
 
 pub const BUFSIZ: ::c_uint = 1024;
 pub const FILENAME_MAX: ::c_uint = 4096;
@@ -803,6 +825,11 @@ pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
+
+// stdio.h
+pub const RENAME_NOREPLACE: ::c_int = 1;
+pub const RENAME_EXCHANGE: ::c_int = 2;
+pub const RENAME_WHITEOUT: ::c_int = 4;
 
 pub const FIOCLEX: ::c_int = 0x5451;
 pub const FIONCLEX: ::c_int = 0x5450;
@@ -1096,8 +1123,6 @@ pub const PTRACE_SETOPTIONS: ::c_int = 0x4200;
 pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
 pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
 pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
-
-pub const EFD_NONBLOCK: ::c_int = 0x800;
 
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
@@ -2148,6 +2173,18 @@ pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
 
+// linux/sched.h
+pub const SCHED_NORMAL: ::c_int = 0;
+pub const SCHED_FIFO: ::c_int = 1;
+pub const SCHED_RR: ::c_int = 2;
+pub const SCHED_BATCH: ::c_int = 3;
+pub const SCHED_IDLE: ::c_int = 5;
+pub const SCHED_DEADLINE: ::c_int = 6;
+
+// bits/seek_constants.h
+pub const SEEK_DATA: ::c_int = 3;
+pub const SEEK_HOLE: ::c_int = 4;
+
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
                        cmsg: *const cmsghdr) -> *mut cmsghdr {
@@ -2218,6 +2255,18 @@ extern "C" {
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
+    pub fn prlimit(
+        pid: ::pid_t,
+        resource: ::c_int,
+        new_limit: *const ::rlimit,
+        old_limit: *mut ::rlimit,
+    ) -> ::c_int;
+    pub fn prlimit64(
+        pid: ::pid_t,
+        resource: ::c_int,
+        new_limit: *const ::rlimit64,
+        old_limit: *mut ::rlimit64,
+    ) -> ::c_int;
     pub fn strerror_r(
         errnum: ::c_int,
         buf: *mut c_char,
@@ -2273,15 +2322,100 @@ extern "C" {
     pub fn setutent();
     pub fn getutent() -> *mut utmp;
 
+    pub fn fallocate(
+        fd: ::c_int,
+        mode: ::c_int,
+        offset: ::off_t,
+        len: ::off_t,
+    ) -> ::c_int;
+    pub fn fallocate64(
+        fd: ::c_int,
+        mode: ::c_int,
+        offset: ::off64_t,
+        len: ::off64_t,
+    ) -> ::c_int;
     pub fn posix_fallocate(
         fd: ::c_int,
         offset: ::off_t,
         len: ::off_t,
     ) -> ::c_int;
+    pub fn posix_fallocate64(
+        fd: ::c_int,
+        offset: ::off64_t,
+        len: ::off64_t,
+    ) -> ::c_int;
+    pub fn getxattr(
+        path: *const c_char,
+        name: *const c_char,
+        value: *mut ::c_void,
+        size: ::size_t,
+    ) -> ::ssize_t;
+    pub fn lgetxattr(
+        path: *const c_char,
+        name: *const c_char,
+        value: *mut ::c_void,
+        size: ::size_t,
+    ) -> ::ssize_t;
+    pub fn fgetxattr(
+        filedes: ::c_int,
+        name: *const c_char,
+        value: *mut ::c_void,
+        size: ::size_t,
+    ) -> ::ssize_t;
+    pub fn setxattr(
+        path: *const c_char,
+        name: *const c_char,
+        value: *const ::c_void,
+        size: ::size_t,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn lsetxattr(
+        path: *const c_char,
+        name: *const c_char,
+        value: *const ::c_void,
+        size: ::size_t,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn fsetxattr(
+        filedes: ::c_int,
+        name: *const c_char,
+        value: *const ::c_void,
+        size: ::size_t,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn listxattr(
+        path: *const c_char,
+        list: *mut c_char,
+        size: ::size_t,
+    ) -> ::ssize_t;
+    pub fn llistxattr(
+        path: *const c_char,
+        list: *mut c_char,
+        size: ::size_t,
+    ) -> ::ssize_t;
+    pub fn flistxattr(
+        filedes: ::c_int,
+        list: *mut c_char,
+        size: ::size_t,
+    ) -> ::ssize_t;
+    pub fn removexattr(path: *const c_char, name: *const c_char) -> ::c_int;
+    pub fn lremovexattr(path: *const c_char, name: *const c_char) -> ::c_int;
+    pub fn fremovexattr(filedes: ::c_int, name: *const c_char) -> ::c_int;
     pub fn signalfd(
         fd: ::c_int,
         mask: *const ::sigset_t,
         flags: ::c_int,
+    ) -> ::c_int;
+    pub fn timerfd_create(clock: ::clockid_t, flags: ::c_int) -> ::c_int;
+    pub fn timerfd_gettime(
+        fd: ::c_int,
+        current_value: *mut itimerspec,
+    ) -> ::c_int;
+    pub fn timerfd_settime(
+        fd: ::c_int,
+        flags: ::c_int,
+        new_value: *const itimerspec,
+        old_value: *mut itimerspec,
     ) -> ::c_int;
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
     pub fn sched_getaffinity(
@@ -2459,6 +2593,11 @@ extern "C" {
         buf: *mut ::c_char,
         buflen: ::size_t,
         result: *mut *mut passwd,
+    ) -> ::c_int;
+    pub fn sigtimedwait(
+        set: *const sigset_t,
+        info: *mut siginfo_t,
+        timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn sigwait(set: *const sigset_t, sig: *mut ::c_int) -> ::c_int;
     pub fn pthread_atfork(
