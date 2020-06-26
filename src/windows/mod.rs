@@ -463,6 +463,28 @@ extern "C" {
         argv: *const *const c_char,
         envp: *const *const c_char,
     ) -> ::c_int;
+    #[link_name = "_wexecv"]
+    pub fn wexecv(
+        prog: *const wchar_t,
+        argv: *const *const wchar_t,
+    ) -> ::intptr_t;
+    #[link_name = "_wexecve"]
+    pub fn wexecve(
+        prog: *const wchar_t,
+        argv: *const *const wchar_t,
+        envp: *const *const wchar_t,
+    ) -> ::intptr_t;
+    #[link_name = "_wexecvp"]
+    pub fn wexecvp(
+        c: *const wchar_t,
+        argv: *const *const wchar_t,
+    ) -> ::intptr_t;
+    #[link_name = "_wexecvpe"]
+    pub fn wexecvpe(
+        c: *const wchar_t,
+        argv: *const *const wchar_t,
+        envp: *const *const wchar_t,
+    ) -> ::intptr_t;
     #[link_name = "_getcwd"]
     pub fn getcwd(buf: *mut c_char, size: ::c_int) -> *mut c_char;
     #[link_name = "_getpid"]
