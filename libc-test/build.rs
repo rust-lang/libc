@@ -8,9 +8,16 @@ use std::env;
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
     if cfg!(unix) {
-        let exclude = ["wasi", "solaris", "illumos"];
+        let exclude = ["wasi"];
         if !exclude.iter().any(|x| target.contains(x)) {
-            cc::Build::new().file("src/cmsg.c").compile("cmsg");
+            let mut cmsg = cc::Build::new();
+
+            cmsg.file("src/cmsg.c");
+
+            if target.contains("solaris") || target.contains("illumos") {
+                cmsg.define("_XOPEN_SOURCE", "700");
+            }
+            cmsg.compile("cmsg");
         }
     }
     if target.contains("android") || target.contains("linux") {
