@@ -13,7 +13,7 @@ pub struct Atrac3BufferInfo {
     pub ui_read_position_second_buf: u32,
 }
 
-extern {
+extern "C" {
     pub fn sceAtracGetAtracID(ui_codec_type: u32) -> i32;
     pub fn sceAtracSetDataAndGetID(
         buf: *mut c_void,

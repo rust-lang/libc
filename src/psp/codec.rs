@@ -1,4 +1,4 @@
-extern {
+extern "C" {
     pub fn sceVideocodecOpen(
         buffer: *mut u32,
         type_: i32,
@@ -25,7 +25,7 @@ pub enum AudioCodec {
     Aac = 0x00001003,
 }
 
-extern {
+extern "C" {
     pub fn sceAudiocodecCheckNeedMem(
         buffer: *mut u32,
         type_: i32,

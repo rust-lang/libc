@@ -4,6 +4,6 @@ pub struct OpenPSID {
     pub data: [u8; 16usize],
 }
 
-extern {
+extern "C" {
     pub fn sceOpenPSIDGetOpenPSID(openpsid: *mut OpenPSID) -> i32;
 }

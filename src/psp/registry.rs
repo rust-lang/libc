@@ -26,7 +26,7 @@ pub enum KeyType {
     Bytes = 4,
 }
 
-extern {
+extern "C" {
     pub fn sceRegOpenRegistry(
         reg: *mut Key,
         mode: i32,

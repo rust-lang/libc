@@ -22,7 +22,7 @@ pub const UMD_INITING: i32 = 0x08;
 pub const UMD_INITED: i32 = 0x10;
 pub const UMD_READY: i32 = 0x20;
 
-extern {
+extern "C" {
     pub fn sceUmdCheckMedium() -> i32;
     pub fn sceUmdGetDiscInfo(info: *mut UmdInfo) -> i32;
     pub fn sceUmdActivate(unit: i32, drive: *const u8) -> i32;

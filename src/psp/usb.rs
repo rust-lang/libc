@@ -14,7 +14,7 @@ pub const ESTABLISHED: i32 = 0x002;
 pub const USB_CAM_FLIP: i32 = 1;
 pub const USB_CAM_MIRROR: i32 = 0x100;
 
-extern {
+extern "C" {
     pub fn sceUsbStart(
         driver_name: *const u8,
         size: i32,
@@ -196,7 +196,7 @@ pub enum UsbCamEvLevel {
     Neg2_0,
 }
 
-extern {
+extern "C" {
     pub fn sceUsbCamSetupStill(param: *mut UsbCamSetupStillParam) -> i32;
     pub fn sceUsbCamSetupStillEx(param: *mut UsbCamSetupStillExParam) -> i32;
     pub fn sceUsbCamStillInputBlocking(buf: *mut u8, size: usize) -> i32;
@@ -247,7 +247,7 @@ extern {
     pub fn sceUsbCamGetLensDirection() -> i32;
 }
 
-extern {
+extern "C" {
     pub fn sceUsbstorBootRegisterNotify(event_flag: SceUid) -> i32;
     pub fn sceUsbstorBootUnregisterNotify(event_flag: u32) -> i32;
     pub fn sceUsbstorBootSetCapacity(size: u32) -> i32;

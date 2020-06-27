@@ -6,6 +6,6 @@ pub struct SircsData {
     pub dev: u16,
 }
 
-extern {
+extern "C" {
     pub fn sceSircsSend(sd: *mut SircsData, count: i32) -> i32;
 }

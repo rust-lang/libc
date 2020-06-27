@@ -17,7 +17,7 @@ pub struct SceMp3InitArg {
 #[repr(transparent)]
 pub struct Handle(pub i32);
 
-extern {
+extern "C" {
     pub fn sceMp3ReserveMp3Handle(args: *mut SceMp3InitArg) -> i32;
     pub fn sceMp3ReleaseMp3Handle(handle: Handle) -> i32;
     pub fn sceMp3InitResource() -> i32;

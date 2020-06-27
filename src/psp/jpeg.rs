@@ -1,5 +1,5 @@
 use super::c_void;
-extern {
+extern "C" {
     pub fn sceJpegInitMJpeg() -> i32;
     pub fn sceJpegFinishMJpeg() -> i32;
     pub fn sceJpegCreateMJpeg(width: i32, height: i32) -> i32;

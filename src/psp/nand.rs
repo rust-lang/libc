@@ -1,5 +1,5 @@
 use super::c_void;
-extern {
+extern "C" {
     pub fn sceNandSetWriteProtect(protect_flag: i32) -> i32;
     pub fn sceNandLock(write_flag: i32) -> i32;
     pub fn sceNandUnlock();
