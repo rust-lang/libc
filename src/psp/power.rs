@@ -1,5 +1,7 @@
 use super::SceUid;
 
+pub type PowerCallback = extern "C" fn(unknown: i32, power_info: i32);
+
 pub const POWER_INFO_POWER_SWITCH: i32 = 0x80000000;
 pub const POWER_INFO_HOLD_SWITCH: i32 = 0x40000000;
 pub const POWER_INFO_STANDBY: i32 = 0x00080000;
@@ -19,9 +21,7 @@ pub enum PowerTick {
     Display = 6,
 }
 
-pub type PowerCallback = extern fn (unknown: i32, power_info: i32);
-
-extern {
+extern "C" {
     pub fn scePowerRegisterCallback(slot: i32, cbid: SceUid) -> i32;
     pub fn scePowerUnregisterCallback(slot: i32) -> i32;
     pub fn scePowerIsPowerOnline() -> i32;
@@ -42,7 +42,11 @@ extern {
     pub fn scePowerGetBusClockFrequency() -> i32;
     pub fn scePowerGetBusClockFrequencyInt() -> i32;
     pub fn scePowerGetBusClockFrequencyFloat() -> f32;
-    pub fn scePowerSetClockFrequency(pllfreq: i32, cpufreq: i32, busfreq: i32) -> i32;
+    pub fn scePowerSetClockFrequency(
+        pllfreq: i32,
+        cpufreq: i32,
+        busfreq: i32,
+    ) -> i32;
     pub fn scePowerLock(unknown: i32) -> i32;
     pub fn scePowerUnlock(unknown: i32) -> i32;
     pub fn scePowerTick(t: PowerTick) -> i32;

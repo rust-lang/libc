@@ -1,4 +1,6 @@
-use super::{c_void, SceUid, ScePspDateTime};
+use super::{c_void, ScePspDateTime, SceUid};
+
+pub type IoPermissions = i32;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -70,14 +72,16 @@ pub const PSP_O_TRUNC: i32 = 0x0400;
 pub const PSP_O_EXCL: i32 = 0x0800;
 pub const PSP_O_NO_WAIT: i32 = 0x8000;
 
-pub type IoPermissions = i32;
-
-extern {
-    pub fn sceIoOpen(file: *const u8, flags: i32, permissions: IoPermissions) -> SceUid;
+extern "C" {
+    pub fn sceIoOpen(
+        file: *const u8,
+        flags: i32,
+        permissions: IoPermissions,
+    ) -> SceUid;
     pub fn sceIoOpenAsync(
         file: *const u8,
         flags: i32,
-        permissions: IoPermissions
+        permissions: IoPermissions,
     ) -> SceUid;
     pub fn sceIoClose(fd: SceUid) -> i32;
     pub fn sceIoCloseAsync(fd: SceUid) -> i32;
@@ -88,7 +92,8 @@ extern {
     pub fn sceIoLseek(fd: SceUid, offset: i64, whence: IoWhence) -> i64;
     pub fn sceIoLseekAsync(fd: SceUid, offset: i64, whence: IoWhence) -> i32;
     pub fn sceIoLseek32(fd: SceUid, offset: i32, whence: IoWhence) -> i32;
-    pub fn sceIoLseek32Async(fd: SceUid, offset: i32, whence: IoWhence) -> i32;
+    pub fn sceIoLseek32Async(fd: SceUid, offset: i32, whence: IoWhence)
+        -> i32;
     pub fn sceIoRemove(file: *const u8) -> i32;
     pub fn sceIoMkdir(dir: *const u8, mode: IoPermissions) -> i32;
     pub fn sceIoRmdir(path: *const u8) -> i32;
@@ -103,7 +108,7 @@ extern {
         indata: *mut c_void,
         inlen: i32,
         outdata: *mut c_void,
-        outlen: i32
+        outlen: i32,
     ) -> i32;
     pub fn sceIoAssign(
         dev1: *const u8,
@@ -111,18 +116,22 @@ extern {
         dev3: *const u8,
         mode: IoAssignPerms,
         unk1: *mut c_void,
-        unk2: i32
+        unk2: i32,
     ) -> i32;
     pub fn sceIoUnassign(dev: *const u8) -> i32;
     pub fn sceIoGetstat(file: *const u8, stat: *mut SceIoStat) -> i32;
-    pub fn sceIoChstat(file: *const u8, stat: *mut SceIoStat, bits: i32) -> i32;
+    pub fn sceIoChstat(
+        file: *const u8,
+        stat: *mut SceIoStat,
+        bits: i32,
+    ) -> i32;
     pub fn sceIoIoctl(
         fd: SceUid,
         cmd: u32,
         indata: *mut c_void,
         inlen: i32,
         outdata: *mut c_void,
-        outlen: i32
+        outlen: i32,
     ) -> i32;
     pub fn sceIoIoctlAsync(
         fd: SceUid,
@@ -130,7 +139,7 @@ extern {
         indata: *mut c_void,
         inlen: i32,
         outdata: *mut c_void,
-        outlen: i32
+        outlen: i32,
     ) -> i32;
     pub fn sceIoSync(device: *const u8, unk: u32) -> i32;
     pub fn sceIoWaitAsync(fd: SceUid, res: *mut i64) -> i32;
@@ -143,6 +152,6 @@ extern {
     pub fn sceIoSetAsyncCallback(
         fd: SceUid,
         cb: SceUid,
-        argp: *mut c_void
+        argp: *mut c_void,
     ) -> i32;
 }

@@ -1,9 +1,11 @@
 use super::{
-    c_void,
-    ge::{GeContext, GeCommand, GeListState},
-    display::DisplayPixelFormat,
-    types::{ScePspFMatrix4, ScePspFVector3, ScePspIMatrix4},
+    c_void, DisplayPixelFormat, GeCommand, GeContext, GeListState,
+    ScePspFMatrix4, ScePspFVector3, ScePspIMatrix4,
 };
+
+pub type GuCallback = Option<extern "C" fn(id: i32, arg: *mut c_void)>;
+pub type GuSwapBuffersCallback =
+    Option<extern "C" fn(display: *mut *mut c_void, render: *mut *mut c_void)>;
 
 pub const GU_PI: f32 = 3.141593;
 
@@ -411,14 +413,24 @@ pub enum ClutPixelFormat {
     Psm8888 = 3,
 }
 
-pub type GuCallback = Option<extern fn(id: i32, arg: *mut c_void)>;
-pub type GuSwapBuffersCallback = Option<extern fn(display: *mut *mut c_void, render: *mut *mut c_void)>;
-
-extern {
+extern "C" {
     pub fn sceGuDepthBuffer(zbp: *mut c_void, zbw: i32);
-    pub fn sceGuDispBuffer(width: i32, height: i32, dispbp: *mut c_void, dispbw: i32);
-    pub fn sceGuDrawBuffer(psm: DisplayPixelFormat, fbp: *mut c_void, fbw: i32);
-    pub fn sceGuDrawBufferList(psm: DisplayPixelFormat, fbp: *mut c_void, fbw: i32);
+    pub fn sceGuDispBuffer(
+        width: i32,
+        height: i32,
+        dispbp: *mut c_void,
+        dispbw: i32,
+    );
+    pub fn sceGuDrawBuffer(
+        psm: DisplayPixelFormat,
+        fbp: *mut c_void,
+        fbw: i32,
+    );
+    pub fn sceGuDrawBufferList(
+        psm: DisplayPixelFormat,
+        fbp: *mut c_void,
+        fbw: i32,
+    );
     pub fn sceGuDisplay(state: bool) -> bool;
     pub fn sceGuDepthFunc(function: DepthFunc);
     pub fn sceGuDepthMask(mask: i32);
@@ -446,9 +458,16 @@ extern {
     pub fn sceGuCallList(list: *const c_void);
     pub fn sceGuCallMode(mode: i32);
     pub fn sceGuCheckList() -> i32;
-    pub fn sceGuSendList(mode: GuQueueMode, list: *const c_void, context: *mut GeContext);
+    pub fn sceGuSendList(
+        mode: GuQueueMode,
+        list: *const c_void,
+        context: *mut GeContext,
+    );
     pub fn sceGuSwapBuffers() -> *mut c_void;
-    pub fn sceGuSync(mode: GuSyncMode, behavior: GuSyncBehavior) -> GeListState;
+    pub fn sceGuSync(
+        mode: GuSyncMode,
+        behavior: GuSyncBehavior,
+    ) -> GeListState;
     pub fn sceGuDrawArray(
         prim: GuPrimitive,
         vtype: i32,
@@ -478,7 +497,12 @@ extern {
     pub fn sceGuLightAtt(light: i32, atten0: f32, atten1: f32, atten2: f32);
     pub fn sceGuLightColor(light: i32, component: i32, color: u32);
     pub fn sceGuLightMode(mode: LightMode);
-    pub fn sceGuLightSpot(light: i32, direction: &ScePspFVector3, exponent: f32, cutoff: f32);
+    pub fn sceGuLightSpot(
+        light: i32,
+        direction: &ScePspFVector3,
+        exponent: f32,
+        cutoff: f32,
+    );
     pub fn sceGuClear(flags: i32);
     pub fn sceGuClearColor(color: u32);
     pub fn sceGuClearDepth(depth: u32);
@@ -500,7 +524,12 @@ extern {
         dest_fix: u32,
     );
     pub fn sceGuMaterial(components: i32, color: u32);
-    pub fn sceGuModelColor(emissive: u32, ambient: u32, diffuse: u32, specular: u32);
+    pub fn sceGuModelColor(
+        emissive: u32,
+        ambient: u32,
+        diffuse: u32,
+        specular: u32,
+    );
     pub fn sceGuStencilFunc(func: StencilFunc, ref_: i32, mask: i32);
     pub fn sceGuStencilOp(
         fail: StencilOperation,
@@ -529,10 +558,21 @@ extern {
     pub fn sceGuTexFilter(min: TextureFilter, mag: TextureFilter);
     pub fn sceGuTexFlush();
     pub fn sceGuTexFunc(tfx: TextureEffect, tcc: TextureColorComponent);
-    pub fn sceGuTexImage(mipmap: MipmapLevel, width: i32, height: i32, tbw: i32, tbp: *const c_void);
+    pub fn sceGuTexImage(
+        mipmap: MipmapLevel,
+        width: i32,
+        height: i32,
+        tbw: i32,
+        tbp: *const c_void,
+    );
     pub fn sceGuTexLevelMode(mode: TextureLevelMode, bias: f32);
     pub fn sceGuTexMapMode(mode: TextureMapMode, a1: u32, a2: u32);
-    pub fn sceGuTexMode(tpsm: TexturePixelFormat, maxmips: i32, a2: i32, swizzle: i32);
+    pub fn sceGuTexMode(
+        tpsm: TexturePixelFormat,
+        maxmips: i32,
+        a2: i32,
+        swizzle: i32,
+    );
     pub fn sceGuTexOffset(u: f32, v: f32);
     pub fn sceGuTexProjMapMode(mode: TextureProjectionMapMode);
     pub fn sceGuTexScale(u: f32, v: f32);
@@ -541,7 +581,12 @@ extern {
     pub fn sceGuTexSync();
     pub fn sceGuTexWrap(u: GuTexWrapMode, v: GuTexWrapMode);
     pub fn sceGuClutLoad(num_blocks: i32, cbp: *const c_void);
-    pub fn sceGuClutMode(cpsm: ClutPixelFormat, shift: u32, mask: u32, a3: u32);
+    pub fn sceGuClutMode(
+        cpsm: ClutPixelFormat,
+        shift: u32,
+        mask: u32,
+        a3: u32,
+    );
     pub fn sceGuOffset(x: u32, y: u32);
     pub fn sceGuScissor(x: i32, y: i32, w: i32, h: i32);
     pub fn sceGuViewport(cx: i32, cy: i32, width: i32, height: i32);

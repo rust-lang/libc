@@ -1,6 +1,6 @@
-use super::{c_void, ScePspFMatrix4, ScePspFVector3, MatrixMode, GuPrimitive};
+use super::{c_void, GuPrimitive, MatrixMode, ScePspFMatrix4, ScePspFVector3};
 
-extern {
+extern "C" {
     pub fn sceGumDrawArray(
         prim: GuPrimitive,
         v_type: i32,
@@ -40,7 +40,11 @@ extern {
     pub fn sceGumFullInverse();
     pub fn sceGumLoadIdentity();
     pub fn sceGumLoadMatrix(m: &ScePspFMatrix4);
-    pub fn sceGumLookAt(eye: &ScePspFVector3, center: &ScePspFVector3, up: &ScePspFVector3);
+    pub fn sceGumLookAt(
+        eye: &ScePspFVector3,
+        center: &ScePspFVector3,
+        up: &ScePspFVector3,
+    );
     pub fn sceGumMatrixMode(mode: MatrixMode);
     pub fn sceGumMultMatrix(m: &ScePspFMatrix4);
     pub fn sceGumOrtho(
@@ -49,7 +53,7 @@ extern {
         bottom: f32,
         top: f32,
         near: f32,
-        far: f32
+        far: f32,
     );
     pub fn sceGumPerspective(fovy: f32, aspect: f32, near: f32, far: f32);
     pub fn sceGumPopMatrix();

@@ -1,5 +1,50 @@
 use super::c_void;
 
+pub type SceNetAdhocctlHandler =
+    Option<unsafe extern "C" fn(flag: i32, error: i32, unknown: *mut c_void)>;
+
+pub type AdhocMatchingCallback = Option<
+    unsafe extern "C" fn(
+        matching_id: i32,
+        event: i32,
+        mac: *mut u8,
+        opt_len: i32,
+        opt_data: *mut c_void,
+    ),
+>;
+
+pub type SceNetApctlHandler = Option<
+    unsafe extern "C" fn(
+        oldState: i32,
+        newState: i32,
+        event: i32,
+        error: i32,
+        pArg: *mut c_void,
+    ),
+>;
+
+pub type HttpMallocFunction =
+    Option<unsafe extern "C" fn(size: usize) -> *mut c_void>;
+pub type HttpReallocFunction =
+    Option<unsafe extern "C" fn(p: *mut c_void, size: usize) -> *mut c_void>;
+pub type HttpFreeFunction = Option<unsafe extern "C" fn(p: *mut c_void)>;
+pub type HttpPasswordCB = Option<
+    unsafe extern "C" fn(
+        request: i32,
+        auth_type: HttpAuthType,
+        realm: *const u8,
+        username: *mut u8,
+        password: *mut u8,
+        need_entity: i32,
+        entity_body: *mut *mut u8,
+        entity_size: *mut usize,
+        save: *mut i32,
+    ) -> i32,
+>;
+
+#[allow(non_camel_case_types)]
+pub type socklen_t = u32;
+
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SceNetMallocStat {
@@ -8,7 +53,7 @@ pub struct SceNetMallocStat {
     pub free: i32,
 }
 
-extern {
+extern "C" {
     pub fn sceNetInit(
         poolsize: i32,
         calloutprio: i32,
@@ -70,10 +115,7 @@ pub struct SceNetAdhocctlParams {
     pub nickname: [u8; 128usize],
 }
 
-pub type SceNetAdhocctlHandler =
-    Option<unsafe extern "C" fn(flag: i32, error: i32, unknown: *mut c_void)>;
-
-extern {
+extern "C" {
     pub fn sceNetAdhocctlInit(
         stacksize: i32,
         priority: i32,
@@ -123,16 +165,16 @@ extern {
         unknown: *mut c_void,
     ) -> i32;
     pub fn sceNetAdhocctlDelHandler(id: i32) -> i32;
-    pub fn sceNetAdhocctlGetNameByAddr(
-        mac: *mut u8,
-        nickname: *mut u8,
-    ) -> i32;
+    pub fn sceNetAdhocctlGetNameByAddr(mac: *mut u8, nickname: *mut u8)
+        -> i32;
     pub fn sceNetAdhocctlGetAddrByName(
         nickname: *mut u8,
         length: *mut i32,
         buf: *mut c_void,
     ) -> i32;
-    pub fn sceNetAdhocctlGetParameter(params: *mut SceNetAdhocctlParams) -> i32;
+    pub fn sceNetAdhocctlGetParameter(
+        params: *mut SceNetAdhocctlParams,
+    ) -> i32;
 }
 
 #[repr(C)]
@@ -169,7 +211,7 @@ pub struct SceNetAdhocPdpStat {
     pub rcvd_data: u32,
 }
 
-extern {
+extern "C" {
     pub fn sceNetAdhocInit() -> i32;
     pub fn sceNetAdhocTerm() -> i32;
     pub fn sceNetAdhocPdpCreate(
@@ -178,10 +220,7 @@ extern {
         buf_size: u32,
         unk1: i32,
     ) -> i32;
-    pub fn sceNetAdhocPdpDelete(
-        id: i32,
-        unk1: i32,
-    ) -> i32;
+    pub fn sceNetAdhocPdpDelete(id: i32, unk1: i32) -> i32;
     pub fn sceNetAdhocPdpSend(
         id: i32,
         dest_mac_addr: *mut u8,
@@ -214,10 +253,7 @@ extern {
         size: i32,
     ) -> i32;
     pub fn sceNetAdhocGameModeUpdateMaster() -> i32;
-    pub fn sceNetAdhocGameModeUpdateReplica(
-        id: i32,
-        unk1: i32,
-    ) -> i32;
+    pub fn sceNetAdhocGameModeUpdateReplica(id: i32, unk1: i32) -> i32;
     pub fn sceNetAdhocGameModeDeleteMaster() -> i32;
     pub fn sceNetAdhocGameModeDeleteReplica(id: i32) -> i32;
     pub fn sceNetAdhocPtpOpen(
@@ -230,11 +266,7 @@ extern {
         count: i32,
         unk1: i32,
     ) -> i32;
-    pub fn sceNetAdhocPtpConnect(
-        id: i32,
-        timeout: u32,
-        nonblock: i32,
-    ) -> i32;
+    pub fn sceNetAdhocPtpConnect(id: i32, timeout: u32, nonblock: i32) -> i32;
     pub fn sceNetAdhocPtpListen(
         srcmac: *mut u8,
         srcport: u16,
@@ -265,15 +297,8 @@ extern {
         timeout: u32,
         nonblock: i32,
     ) -> i32;
-    pub fn sceNetAdhocPtpFlush(
-        id: i32,
-        timeout: u32,
-        nonblock: i32,
-    ) -> i32;
-    pub fn sceNetAdhocPtpClose(
-        id: i32,
-        unk1: i32,
-    ) -> i32;
+    pub fn sceNetAdhocPtpFlush(id: i32, timeout: u32, nonblock: i32) -> i32;
+    pub fn sceNetAdhocPtpClose(id: i32, unk1: i32) -> i32;
     pub fn sceNetAdhocGetPtpStat(
         size: *mut i32,
         stat: *mut SceNetAdhocPtpStat,
@@ -288,16 +313,6 @@ pub struct AdhocPoolStat {
     pub freesize: i32,
 }
 
-pub type AdhocMatchingCallback = Option<
-    unsafe extern "C" fn(
-        matching_id: i32,
-        event: i32,
-        mac: *mut u8,
-        opt_len: i32,
-        opt_data: *mut c_void,
-    ),
->;
-
 #[repr(u32)]
 #[derive(Copy, Clone)]
 pub enum AdhocMatchingMode {
@@ -306,7 +321,7 @@ pub enum AdhocMatchingMode {
     Ptp,
 }
 
-extern {
+extern "C" {
     pub fn sceNetAdhocMatchingInit(memsize: i32) -> i32;
     pub fn sceNetAdhocMatchingTerm() -> i32;
     pub fn sceNetAdhocMatchingCreate(
@@ -373,7 +388,8 @@ extern {
         buf: *mut c_void,
     ) -> i32;
     pub fn sceNetAdhocMatchingGetPoolMaxAlloc() -> i32;
-    pub fn sceNetAdhocMatchingGetPoolStat(poolstat: *mut AdhocPoolStat) -> i32;
+    pub fn sceNetAdhocMatchingGetPoolStat(poolstat: *mut AdhocPoolStat)
+        -> i32;
 }
 
 #[repr(u32)]
@@ -460,15 +476,8 @@ pub union SceNetApctlInfo {
     pub wifisp: u32,
 }
 
-pub type SceNetApctlHandler = Option<
-    unsafe extern "C" fn(oldState: i32, newState: i32, event: i32, error: i32, pArg: *mut c_void),
->;
-
-extern {
-    pub fn sceNetApctlInit(
-        stack_size: i32,
-        init_priority: i32,
-    ) -> i32;
+extern "C" {
+    pub fn sceNetApctlInit(stack_size: i32, init_priority: i32) -> i32;
     pub fn sceNetApctlTerm() -> i32;
     pub fn sceNetApctlGetInfo(
         code: ApctlInfo,
@@ -484,14 +493,11 @@ extern {
     pub fn sceNetApctlGetState(pstate: *mut ApctlState) -> i32;
 }
 
-#[allow(non_camel_case_types)]
-pub type socklen_t = u32;
-
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct sockaddr(pub u32);
 
-extern {
+extern "C" {
     pub fn sceNetInetInit() -> i32;
     pub fn sceNetInetTerm() -> i32;
     pub fn sceNetInetAccept(
@@ -516,10 +522,7 @@ extern {
         opt_val: *mut c_void,
         optl_en: *mut socklen_t,
     ) -> i32;
-    pub fn sceNetInetListen(
-        s: i32,
-        backlog: i32,
-    ) -> i32;
+    pub fn sceNetInetListen(s: i32, backlog: i32) -> i32;
     pub fn sceNetInetRecv(
         s: i32,
         buf: *mut c_void,
@@ -555,20 +558,13 @@ extern {
         opt_val: *const c_void,
         opt_len: socklen_t,
     ) -> i32;
-    pub fn sceNetInetShutdown(
-        s: i32,
-        how: i32,
-    ) -> i32;
-    pub fn sceNetInetSocket(
-        domain: i32,
-        type_: i32,
-        protocol: i32,
-    ) -> i32;
+    pub fn sceNetInetShutdown(s: i32, how: i32) -> i32;
+    pub fn sceNetInetSocket(domain: i32, type_: i32, protocol: i32) -> i32;
     pub fn sceNetInetClose(s: i32) -> i32;
     pub fn sceNetInetGetErrno() -> i32;
 }
 
-extern {
+extern "C" {
     pub fn sceSslInit(unknown1: i32) -> i32;
     pub fn sceSslEnd() -> i32;
     pub fn sceSslGetUsedMemoryMax(memory: *mut u32) -> i32;
@@ -590,26 +586,7 @@ pub enum HttpAuthType {
     Digest,
 }
 
-pub type HttpMallocFunction = Option<unsafe extern "C" fn(size: usize) -> *mut c_void>;
-pub type HttpReallocFunction =
-    Option<unsafe extern "C" fn(p: *mut c_void, size: usize) -> *mut c_void>;
-
-pub type HttpFreeFunction = Option<unsafe extern "C" fn(p: *mut c_void)>;
-pub type HttpPasswordCB = Option<
-    unsafe extern "C" fn(
-        request: i32,
-        auth_type: HttpAuthType,
-        realm: *const u8,
-        username: *mut u8,
-        password: *mut u8,
-        need_entity: i32,
-        entity_body: *mut *mut u8,
-        entity_size: *mut usize,
-        save: *mut i32,
-    ) -> i32,
->;
-
-extern {
+extern "C" {
     pub fn sceHttpInit(unknown1: u32) -> i32;
     pub fn sceHttpEnd() -> i32;
     pub fn sceHttpCreateTemplate(
@@ -659,30 +636,13 @@ extern {
         request_id: i32,
         content_length: *mut u64,
     ) -> i32;
-    pub fn sceHttpGetStatusCode(
-        request_id: i32,
-        status_code: *mut i32,
-    ) -> i32;
-    pub fn sceHttpSetResolveTimeOut(
-        id: i32,
-        timeout: u32,
-    ) -> i32;
-    pub fn sceHttpSetResolveRetry(
-        id: i32,
-        count: i32,
-    ) -> i32;
-    pub fn sceHttpSetConnectTimeOut(
-        id: i32,
-        timeout: u32,
-    ) -> i32;
-    pub fn sceHttpSetSendTimeOut(
-        id: i32,
-        timeout: u32,
-    ) -> i32;
-    pub fn sceHttpSetRecvTimeOut(
-        id: i32,
-        timeout: u32,
-    ) -> i32;
+    pub fn sceHttpGetStatusCode(request_id: i32, status_code: *mut i32)
+        -> i32;
+    pub fn sceHttpSetResolveTimeOut(id: i32, timeout: u32) -> i32;
+    pub fn sceHttpSetResolveRetry(id: i32, count: i32) -> i32;
+    pub fn sceHttpSetConnectTimeOut(id: i32, timeout: u32) -> i32;
+    pub fn sceHttpSetSendTimeOut(id: i32, timeout: u32) -> i32;
+    pub fn sceHttpSetRecvTimeOut(id: i32, timeout: u32) -> i32;
     pub fn sceHttpEnableKeepAlive(id: i32) -> i32;
     pub fn sceHttpDisableKeepAlive(id: i32) -> i32;
     pub fn sceHttpEnableRedirect(id: i32) -> i32;
@@ -697,10 +657,7 @@ extern {
         value: *mut u8,
         unknown1: i32,
     ) -> i32;
-    pub fn sceHttpDeleteHeader(
-        id: i32,
-        name: *const u8,
-    ) -> i32;
+    pub fn sceHttpDeleteHeader(id: i32, name: *const u8) -> i32;
     pub fn sceHttpsInit(
         unknown1: i32,
         unknown2: i32,
@@ -708,10 +665,7 @@ extern {
         unknown4: i32,
     ) -> i32;
     pub fn sceHttpsEnd() -> i32;
-    pub fn sceHttpsLoadDefaultCert(
-        unknown1: i32,
-        unknown2: i32,
-    ) -> i32;
+    pub fn sceHttpsLoadDefaultCert(unknown1: i32, unknown2: i32) -> i32;
     pub fn sceHttpDisableAuth(id: i32) -> i32;
     pub fn sceHttpDisableCache(id: i32) -> i32;
     pub fn sceHttpEnableAuth(id: i32) -> i32;
@@ -722,10 +676,7 @@ extern {
         header: *mut *mut u8,
         header_size: *mut u32,
     ) -> i32;
-    pub fn sceHttpGetNetworkErrno(
-        request: i32,
-        err_num: *mut i32,
-    ) -> i32;
+    pub fn sceHttpGetNetworkErrno(request: i32, err_num: *mut i32) -> i32;
     pub fn sceHttpGetProxy(
         id: i32,
         activate_flag: *mut i32,
@@ -735,10 +686,7 @@ extern {
         proxy_port: *mut u16,
     ) -> i32;
     pub fn sceHttpInitCache(max_size: usize) -> i32;
-    pub fn sceHttpSetAuthInfoCB(
-        id: i32,
-        cbfunc: HttpPasswordCB,
-    ) -> i32;
+    pub fn sceHttpSetAuthInfoCB(id: i32, cbfunc: HttpPasswordCB) -> i32;
     pub fn sceHttpSetProxy(
         id: i32,
         activate_flag: i32,
@@ -746,10 +694,7 @@ extern {
         new_proxy_host: *const u8,
         new_proxy_port: u16,
     ) -> i32;
-    pub fn sceHttpSetResHeaderMaxSize(
-        id: i32,
-        header_size: u32,
-    ) -> i32;
+    pub fn sceHttpSetResHeaderMaxSize(id: i32, header_size: u32) -> i32;
     pub fn sceHttpSetMallocFunction(
         malloc_func: HttpMallocFunction,
         free_func: HttpFreeFunction,
@@ -761,7 +706,7 @@ extern {
 #[repr(C)]
 pub struct in_addr(pub u32);
 
-extern {
+extern "C" {
     pub fn sceNetResolverInit() -> i32;
     pub fn sceNetResolverCreate(
         rid: *mut i32,

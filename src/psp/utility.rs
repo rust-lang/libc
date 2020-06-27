@@ -492,7 +492,8 @@ pub const UTILITY_HTMLVIEWER_DISABLE_EXIT_DIALOG: i32 = 0x000004;
 pub const UTILITY_HTMLVIEWER_DISABLE_CURSOR: i32 = 0x000008;
 pub const UTILITY_HTMLVIEWER_DISABLE_DOWNLOAD_COMPLETE_DIALOG: i32 = 0x000010;
 pub const UTILITY_HTMLVIEWER_DISABLE_DOWNLOAD_START_DIALOG: i32 = 0x000020;
-pub const UTILITY_HTMLVIEWER_DISABLE_DOWNLOAD_DESTINATION_DIALOG: i32 = 0x000040;
+pub const UTILITY_HTMLVIEWER_DISABLE_DOWNLOAD_DESTINATION_DIALOG: i32 =
+    0x000040;
 pub const UTILITY_HTMLVIEWER_LOCK_DOWNLOAD_DESTINATION_DIALOG: i32 = 0x000080;
 pub const UTILITY_HTMLVIEWER_DISABLE_TAB_DISPLAY: i32 = 0x000100;
 pub const UTILITY_HTMLVIEWER_ENABLE_ANALOG_HOLD: i32 = 0x000200;
@@ -527,7 +528,7 @@ pub struct SceUtilityOskParams {
     pub unk_60: i32,
 }
 
-extern {
+extern "C" {
     pub fn sceUtilityMsgDialogInitStart(
         params: *mut UtilityMsgDialogParams,
     ) -> i32;
@@ -563,10 +564,7 @@ extern {
     pub fn sceUtilityHtmlViewerShutdownStart() -> i32;
     pub fn sceUtilityHtmlViewerUpdate(n: i32) -> i32;
     pub fn sceUtilityHtmlViewerGetStatus() -> i32;
-    pub fn sceUtilitySetSystemParamInt(
-        id: SystemParamId,
-        value: i32,
-    ) -> i32;
+    pub fn sceUtilitySetSystemParamInt(id: SystemParamId, value: i32) -> i32;
     pub fn sceUtilitySetSystemParamString(
         id: SystemParamId,
         str: *const u8,
@@ -594,15 +592,9 @@ extern {
     pub fn sceUtilityUnloadModule(module: Module) -> i32;
 }
 
-extern {
+extern "C" {
     pub fn sceUtilityCreateNetParam(conf: i32) -> i32;
-    pub fn sceUtilitySetNetParam(
-        param: NetParam,
-        val: *const c_void,
-    ) -> i32;
-    pub fn sceUtilityCopyNetParam(
-        src: i32,
-        dest: i32,
-    ) -> i32;
+    pub fn sceUtilitySetNetParam(param: NetParam, val: *const c_void) -> i32;
+    pub fn sceUtilityCopyNetParam(src: i32, dest: i32) -> i32;
     pub fn sceUtilityDeleteNetParam(conf: i32) -> i32;
 }

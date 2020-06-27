@@ -24,7 +24,7 @@ pub const PSP_CTRL_MS: i32 = 0x2000000;
 #[repr(u32)]
 pub enum CtrlMode {
     Digital = 0,
-    Analaog
+    Analaog,
 }
 
 #[derive(Copy, Clone)]
@@ -34,8 +34,7 @@ pub struct SceCtrlData {
     pub buttons: i32,
     pub lx: u8,
     pub ly: u8,
-    pub rsrv: [u8;
-6],
+    pub rsrv: [u8; 6],
 }
 
 #[derive(Copy, Clone)]
@@ -47,17 +46,33 @@ pub struct SceCtrlLatch {
     pub ui_release: u32,
 }
 
-extern {
+extern "C" {
     pub fn sceCtrlSetSamplingCycle(cycle: i32) -> i32;
     pub fn sceCtrlGetSamplingCycle(pcycle: *mut i32) -> i32;
     pub fn sceCtrlSetSamplingMode(mode: CtrlMode) -> i32;
     pub fn sceCtrlGetSamplingMode(pmode: *mut i32) -> i32;
-    pub fn sceCtrlPeekBufferPositive(pad_data: *mut SceCtrlData, count: i32) -> i32;
-    pub fn sceCtrlPeekBufferNegative(pad_data: *mut SceCtrlData, count: i32) -> i32;
-    pub fn sceCtrlReadBufferPositive(pad_data: *mut SceCtrlData, count: i32) -> i32;
-    pub fn sceCtrlReadBufferNegative(pad_data: *mut SceCtrlData, count: i32) -> i32;
+    pub fn sceCtrlPeekBufferPositive(
+        pad_data: *mut SceCtrlData,
+        count: i32,
+    ) -> i32;
+    pub fn sceCtrlPeekBufferNegative(
+        pad_data: *mut SceCtrlData,
+        count: i32,
+    ) -> i32;
+    pub fn sceCtrlReadBufferPositive(
+        pad_data: *mut SceCtrlData,
+        count: i32,
+    ) -> i32;
+    pub fn sceCtrlReadBufferNegative(
+        pad_data: *mut SceCtrlData,
+        count: i32,
+    ) -> i32;
     pub fn sceCtrlPeekLatch(latch_data: *mut SceCtrlLatch) -> i32;
     pub fn sceCtrlReadLatch(latch_data: *mut SceCtrlLatch) -> i32;
-    pub fn sceCtrlSetIdleCancelThreshold(idlereset: i32, idleback: i32) -> i32;
-    pub fn sceCtrlGetIdleCancelThreshold(idlereset: *mut i32, idleback: *mut i32) -> i32;
+    pub fn sceCtrlSetIdleCancelThreshold(idlereset: i32, idleback: i32)
+        -> i32;
+    pub fn sceCtrlGetIdleCancelThreshold(
+        idlereset: *mut i32,
+        idleback: *mut i32,
+    ) -> i32;
 }

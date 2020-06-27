@@ -9,15 +9,15 @@ pub struct GeContext {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct GeStack {
-    pub stack: [u32;8]
+    pub stack: [u32; 8],
 }
 
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct GeCallbackData {
-    pub signal_func: Option<extern fn(id: i32, arg: *mut c_void)>,
+    pub signal_func: Option<extern "C" fn(id: i32, arg: *mut c_void)>,
     pub signal_arg: *mut c_void,
-    pub finish_func: Option<extern fn(id: i32, arg: *mut c_void)>,
+    pub finish_func: Option<extern "C" fn(id: i32, arg: *mut c_void)>,
     pub finish_arg: *mut c_void,
 }
 
@@ -33,7 +33,7 @@ pub struct GeListArgs {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct GeBreakParam {
-    pub buf: [u32;4]
+    pub buf: [u32; 4],
 }
 
 #[derive(Copy, Clone)]
@@ -325,7 +325,7 @@ pub enum GeCommand {
     NopFF = 0xff,
 }
 
-extern {
+extern "C" {
     pub fn sceGeEdramGetSize() -> u32;
     pub fn sceGeEdramGetAddr() -> *mut u8;
     pub fn sceGeEdramSetAddrTranslation(width: i32) -> i32;
@@ -335,12 +335,17 @@ extern {
     pub fn sceGeSaveContext(context: *mut GeContext) -> i32;
     pub fn sceGeRestoreContext(context: *const GeContext) -> i32;
     pub fn sceGeListEnQueue(
-       list: *const c_void,
-       stall: *mut c_void,
-       cbid: i32,
-       arg: *mut GeListArgs,
+        list: *const c_void,
+        stall: *mut c_void,
+        cbid: i32,
+        arg: *mut GeListArgs,
     ) -> i32;
-    pub fn sceGeListEnQueueHead(list: *const c_void, stall: *mut c_void, cbid: i32, arg: *mut GeListArgs) -> i32;
+    pub fn sceGeListEnQueueHead(
+        list: *const c_void,
+        stall: *mut c_void,
+        cbid: i32,
+        arg: *mut GeListArgs,
+    ) -> i32;
     pub fn sceGeListDeQueue(qid: i32) -> i32;
     pub fn sceGeListUpdateStallAddr(qid: i32, stall: *mut c_void) -> i32;
     pub fn sceGeListSync(qid: i32, sync_type: i32) -> GeListState;

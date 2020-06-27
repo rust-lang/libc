@@ -1,4 +1,27 @@
-use super::{SceUid, c_void};
+use super::{c_void, SceUid};
+
+pub type SceKernelVTimerHandler = unsafe extern "C" fn(
+    uid: SceUid,
+    arg1: *mut SceKernelSysClock,
+    arg2: *mut SceKernelSysClock,
+    arg3: *mut c_void,
+) -> u32;
+
+pub type SceKernelVTimerHandlerWide = unsafe extern "C" fn(
+    uid: SceUid,
+    arg1: i64,
+    arg2: i64,
+    arg3: *mut c_void,
+) -> u32;
+
+pub type SceKernelThreadEventHandler =
+    unsafe extern "C" fn(mask: i32, thid: SceUid, common: *mut c_void) -> i32;
+
+pub type SceKernelAlarmHandler =
+    unsafe extern "C" fn(common: *mut c_void) -> u32;
+
+pub type SceKernelCallbackFunction =
+    unsafe extern "C" fn(arg1: i32, arg2: i32, arg: *mut c_void) -> i32;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -32,7 +55,8 @@ pub struct SceKernelSysClock {
     pub hi: u32,
 }
 
-pub type SceKernelThreadEntry = unsafe extern "C" fn(args: usize, argp: *mut c_void) -> i32;
+pub type SceKernelThreadEntry =
+    unsafe extern "C" fn(args: usize, argp: *mut c_void) -> i32;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SceKernelThreadOptParam {
@@ -144,20 +168,6 @@ pub struct SceKernelMbxInfo {
     pub first_message: *mut c_void,
 }
 
-pub type SceKernelVTimerHandler = unsafe extern "C" fn(
-    uid: SceUid,
-    arg1: *mut SceKernelSysClock,
-    arg2: *mut SceKernelSysClock,
-    arg3: *mut c_void,
-) -> u32;
-
-pub type SceKernelVTimerHandlerWide = unsafe extern "C" fn(
-    uid: SceUid,
-    arg1: i64,
-    arg2: i64,
-    arg3: *mut c_void,
-) -> u32;
-
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SceKernelVTimerInfo {
@@ -171,12 +181,6 @@ pub struct SceKernelVTimerInfo {
     pub common: *mut c_void,
 }
 
-pub type SceKernelThreadEventHandler = unsafe extern "C" fn(
-    mask: i32,
-    thid: SceUid,
-    common: *mut c_void
-) -> i32;
-
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SceKernelThreadEventHandlerInfo {
@@ -187,8 +191,6 @@ pub struct SceKernelThreadEventHandlerInfo {
     pub handler: SceKernelThreadEventHandler,
     pub common: *mut c_void,
 }
-
-pub type SceKernelAlarmHandler = unsafe extern "C" fn(common: *mut c_void) -> u32;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -283,12 +285,6 @@ pub struct SceKernelVTimerOptParam {
     pub size: usize,
 }
 
-pub type SceKernelCallbackFunction = unsafe extern "C" fn(
-    arg1: i32,
-    arg2: i32,
-    arg: *mut c_void,
-) -> i32;
-
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SceKernelCallbackInfo {
@@ -301,7 +297,7 @@ pub struct SceKernelCallbackInfo {
     pub notify_arg: i32,
 }
 
-extern {
+extern "C" {
     pub fn sceKernelGetThreadmanIdType(uid: SceUid) -> SceKernelIdListType;
     pub fn sceKernelCreateThread(
         name: *const u8,
@@ -334,18 +330,12 @@ extern {
     pub fn sceKernelDelayThread(delay: u32) -> i32;
     pub fn sceKernelDelayThreadCB(delay: u32) -> i32;
     pub fn sceKernelDelaySysClockThread(delay: *mut SceKernelSysClock) -> i32;
-    pub fn sceKernelDelaySysClockThreadCB(delay: *mut SceKernelSysClock) -> i32;
-    pub fn sceKernelChangeCurrentThreadAttr(
-        unknown: i32,
-        attr: i32,
+    pub fn sceKernelDelaySysClockThreadCB(
+        delay: *mut SceKernelSysClock,
     ) -> i32;
-    pub fn sceKernelChangeThreadPriority(
-        thid: SceUid,
-        priority: i32,
-    ) -> i32;
-    pub fn sceKernelRotateThreadReadyQueue(
-        priority: i32,
-    ) -> i32;
+    pub fn sceKernelChangeCurrentThreadAttr(unknown: i32, attr: i32) -> i32;
+    pub fn sceKernelChangeThreadPriority(thid: SceUid, priority: i32) -> i32;
+    pub fn sceKernelRotateThreadReadyQueue(priority: i32) -> i32;
     pub fn sceKernelReleaseWaitThread(thid: SceUid) -> i32;
     pub fn sceKernelGetThreadId() -> i32;
     pub fn sceKernelGetThreadCurrentPriority() -> i32;
@@ -368,10 +358,7 @@ extern {
         option: *mut SceKernelSemaOptParam,
     ) -> SceUid;
     pub fn sceKernelDeleteSema(sema_id: SceUid) -> i32;
-    pub fn sceKernelSignalSema(
-        sema_id: SceUid,
-        signal: i32,
-    ) -> i32;
+    pub fn sceKernelSignalSema(sema_id: SceUid, signal: i32) -> i32;
     pub fn sceKernelWaitSema(
         sema_id: SceUid,
         signal: i32,
@@ -382,10 +369,7 @@ extern {
         signal: i32,
         timeout: *mut u32,
     ) -> i32;
-    pub fn sceKernelPollSema(
-        sema_id: SceUid,
-        signal: i32,
-    ) -> i32;
+    pub fn sceKernelPollSema(sema_id: SceUid, signal: i32) -> i32;
     pub fn sceKernelReferSemaStatus(
         sema_id: SceUid,
         info: *mut SceKernelSemaInfo,
@@ -429,10 +413,7 @@ extern {
         option: *mut SceKernelMbxOptParam,
     ) -> SceUid;
     pub fn sceKernelDeleteMbx(mbx_id: SceUid) -> i32;
-    pub fn sceKernelSendMbx(
-        mbx_id: SceUid,
-        message: *mut c_void,
-    ) -> i32;
+    pub fn sceKernelSendMbx(mbx_id: SceUid, message: *mut c_void) -> i32;
     pub fn sceKernelReceiveMbx(
         mbx_id: SceUid,
         message: *mut *mut c_void,
@@ -443,14 +424,9 @@ extern {
         message: *mut *mut c_void,
         timeout: *mut u32,
     ) -> i32;
-    pub fn sceKernelPollMbx(
-        mbx_id: SceUid,
-        pmessage: *mut *mut c_void,
-    ) -> i32;
-    pub fn sceKernelCancelReceiveMbx(
-        mbx_id: SceUid,
-        num: *mut i32,
-    ) -> i32;
+    pub fn sceKernelPollMbx(mbx_id: SceUid, pmessage: *mut *mut c_void)
+        -> i32;
+    pub fn sceKernelCancelReceiveMbx(mbx_id: SceUid, num: *mut i32) -> i32;
     pub fn sceKernelReferMbxStatus(
         mbx_id: SceUid,
         info: *mut SceKernelMbxInfo,
@@ -480,10 +456,7 @@ extern {
         status: *mut SceKernelCallbackInfo,
     ) -> i32;
     pub fn sceKernelDeleteCallback(cb: SceUid) -> i32;
-    pub fn sceKernelNotifyCallback(
-        cb: SceUid,
-        arg2: i32,
-    ) -> i32;
+    pub fn sceKernelNotifyCallback(cb: SceUid, arg2: i32) -> i32;
     pub fn sceKernelCancelCallback(cb: SceUid) -> i32;
     pub fn sceKernelGetCallbackCount(cb: SceUid) -> i32;
     pub fn sceKernelCheckCallback() -> i32;
@@ -493,7 +466,9 @@ extern {
         read_buf_size: i32,
         id_count: *mut i32,
     ) -> i32;
-    pub fn sceKernelReferSystemStatus(status: *mut SceKernelSystemStatus) -> i32;
+    pub fn sceKernelReferSystemStatus(
+        status: *mut SceKernelSystemStatus,
+    ) -> i32;
     pub fn sceKernelCreateMsgPipe(
         name: *const u8,
         part: i32,
@@ -582,14 +557,8 @@ extern {
         size: u32,
         data: *mut *mut c_void,
     ) -> i32;
-    pub fn sceKernelFreeVpl(
-        uid: SceUid,
-        data: *mut c_void,
-    ) -> i32;
-    pub fn sceKernelCancelVpl(
-        uid: SceUid,
-        num: *mut i32,
-    ) -> i32;
+    pub fn sceKernelFreeVpl(uid: SceUid, data: *mut c_void) -> i32;
+    pub fn sceKernelCancelVpl(uid: SceUid, num: *mut i32) -> i32;
     pub fn sceKernelReferVplStatus(
         uid: SceUid,
         info: *mut SceKernelVplInfo,
@@ -613,18 +582,10 @@ extern {
         data: *mut *mut c_void,
         timeout: *mut u32,
     ) -> i32;
-    pub fn sceKernelTryAllocateFpl(
-        uid: SceUid,
-        data: *mut *mut c_void,
-    ) -> i32;
-    pub fn sceKernelFreeFpl(
-        uid: SceUid,
-        data: *mut c_void,
-    ) -> i32;
-    pub fn sceKernelCancelFpl(
-        uid: SceUid,
-        pnum: *mut i32,
-    ) -> i32;
+    pub fn sceKernelTryAllocateFpl(uid: SceUid, data: *mut *mut c_void)
+        -> i32;
+    pub fn sceKernelFreeFpl(uid: SceUid, data: *mut c_void) -> i32;
+    pub fn sceKernelCancelFpl(uid: SceUid, pnum: *mut i32) -> i32;
     pub fn sceKernelReferFplStatus(
         uid: SceUid,
         info: *mut SceKernelFplInfo,

@@ -1,5 +1,3 @@
-
-
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SircsData {

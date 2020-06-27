@@ -1,8 +1,5 @@
 use super::c_void;
 
-mod thread;
-pub use self::thread::*;
-
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SceKernelLoadExecParam {
@@ -12,7 +9,7 @@ pub struct SceKernelLoadExecParam {
     pub key: *const u8,
 }
 
-extern {
+extern "C" {
     pub fn sceKernelExitGame();
     pub fn sceKernelRegisterExitCallback(id: SceUid) -> i32;
     pub fn sceKernelLoadExec(
@@ -51,7 +48,7 @@ pub enum SceSysMemBlockTypes {
     Addr,
 }
 
-extern {
+extern "C" {
     pub fn sceKernelAllocPartitionMemory(
         partition: SceSysMemPartitionId,
         name: *const u8,
@@ -107,40 +104,38 @@ pub struct SceKernelUtilsMd5Context {
     pub buf: [u8; 64usize],
 }
 
-extern {
+extern "C" {
     pub fn sceKernelLibcTime(t: *mut i32) -> i32;
     pub fn sceKernelLibcClock() -> u32;
-    pub fn sceKernelLibcGettimeofday(tp: *mut timeval, tzp: *mut timezone) -> i32;
+    pub fn sceKernelLibcGettimeofday(
+        tp: *mut timeval,
+        tzp: *mut timezone,
+    ) -> i32;
     pub fn sceKernelDcacheWritebackAll();
     pub fn sceKernelDcacheWritebackInvalidateAll();
-    pub fn sceKernelDcacheWritebackRange(
-        p: *const c_void,
-        size: u32,
-    );
+    pub fn sceKernelDcacheWritebackRange(p: *const c_void, size: u32);
     pub fn sceKernelDcacheWritebackInvalidateRange(
         p: *const c_void,
         size: u32,
     );
-    pub fn sceKernelDcacheInvalidateRange(
-        p: *const c_void,
-        size: u32,
-    );
+    pub fn sceKernelDcacheInvalidateRange(p: *const c_void, size: u32);
     pub fn sceKernelIcacheInvalidateAll();
-    pub fn sceKernelIcacheInvalidateRange(
-        p: *const c_void,
-        size: u32,
-    );
+    pub fn sceKernelIcacheInvalidateRange(p: *const c_void, size: u32);
     pub fn sceKernelUtilsMt19937Init(
         ctx: *mut SceKernelUtilsMt19937Context,
         seed: u32,
     ) -> i32;
-    pub fn sceKernelUtilsMt19937UInt(ctx: *mut SceKernelUtilsMt19937Context) -> u32;
+    pub fn sceKernelUtilsMt19937UInt(
+        ctx: *mut SceKernelUtilsMt19937Context,
+    ) -> u32;
     pub fn sceKernelUtilsMd5Digest(
         data: *mut u8,
         size: u32,
         digest: *mut u8,
     ) -> i32;
-    pub fn sceKernelUtilsMd5BlockInit(ctx: *mut SceKernelUtilsMd5Context) -> i32;
+    pub fn sceKernelUtilsMd5BlockInit(
+        ctx: *mut SceKernelUtilsMd5Context,
+    ) -> i32;
     pub fn sceKernelUtilsMd5BlockUpdate(
         ctx: *mut SceKernelUtilsMd5Context,
         data: *mut u8,
@@ -232,25 +227,16 @@ pub enum SubInterrupt {
     Display = Interrupt::Vblank as u32,
 }
 
-extern {
+extern "C" {
     pub fn sceKernelRegisterSubIntrHandler(
         int_no: i32,
         no: i32,
         handler: *mut c_void,
         arg: *mut c_void,
     ) -> i32;
-    pub fn sceKernelReleaseSubIntrHandler(
-        int_no: i32,
-        no: i32,
-    ) -> i32;
-    pub fn sceKernelEnableSubIntr(
-        int_no: i32,
-        no: i32,
-    ) -> i32;
-    pub fn sceKernelDisableSubIntr(
-        int_no: i32,
-        no: i32,
-    ) -> i32;
+    pub fn sceKernelReleaseSubIntrHandler(int_no: i32, no: i32) -> i32;
+    pub fn sceKernelEnableSubIntr(int_no: i32, no: i32) -> i32;
+    pub fn sceKernelDisableSubIntr(int_no: i32, no: i32) -> i32;
     pub fn QueryIntrHandlerInfo(
         intr_code: SceUid,
         sub_intr_code: SceUid,
@@ -258,7 +244,7 @@ extern {
     ) -> i32;
 }
 
-extern {
+extern "C" {
     pub fn sceKernelCpuSuspendIntr() -> u32;
     pub fn sceKernelCpuResumeIntr(flags: u32);
     pub fn sceKernelCpuResumeIntrWithSync(flags: u32);
@@ -307,7 +293,7 @@ pub struct SceKernelModuleInfo {
     pub name: [u8; 28usize],
 }
 
-extern {
+extern "C" {
     pub fn sceKernelLoadModule(
         path: *const u8,
         flags: i32,
@@ -366,7 +352,7 @@ extern {
     ) -> i32;
 }
 
-extern {
+extern "C" {
     pub fn sceKernelVolatileMemLock(
         unk: i32,
         ptr: *mut *mut c_void,
@@ -380,8 +366,11 @@ extern {
     pub fn sceKernelVolatileMemUnlock(unk: i32) -> i32;
 }
 
-extern {
+extern "C" {
     pub fn sceKernelStdin() -> SceUid;
     pub fn sceKernelStdout() -> SceUid;
     pub fn sceKernelStderr() -> SceUid;
 }
+
+mod thread;
+pub use self::thread::*;

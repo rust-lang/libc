@@ -22,9 +22,17 @@ pub enum DisplaySetBufSync {
     NextFrame = 1,
 }
 
-extern {
-    pub fn sceDisplaySetMode(mode: DisplayMode, width: usize, height: usize) -> u32;
-    pub fn sceDisplayGetMode(pmode: *mut i32, pwidth: *mut i32, pheight: *mut i32) -> i32;
+extern "C" {
+    pub fn sceDisplaySetMode(
+        mode: DisplayMode,
+        width: usize,
+        height: usize,
+    ) -> u32;
+    pub fn sceDisplayGetMode(
+        pmode: *mut i32,
+        pwidth: *mut i32,
+        pheight: *mut i32,
+    ) -> i32;
     pub fn sceDisplaySetFrameBuf(
         top_addr: *const u8,
         buffer_width: usize,

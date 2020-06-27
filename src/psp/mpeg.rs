@@ -8,7 +8,11 @@ pub struct SceMpeg(*mut *mut c_void);
 #[derive(Copy, Clone)]
 pub struct SceMpegStream(*mut c_void);
 pub type SceMpegRingbufferCb = Option<
-    unsafe extern "C" fn(data: *mut c_void, num_packets: i32, param: *mut c_void) -> i32,
+    unsafe extern "C" fn(
+        data: *mut c_void,
+        num_packets: i32,
+        param: *mut c_void,
+    ) -> i32,
 >;
 
 #[repr(C)]
@@ -45,7 +49,7 @@ pub struct SceMpegAvcMode {
     pub pixel_format: super::DisplayPixelFormat,
 }
 
-extern {
+extern "C" {
     pub fn sceMpegInit() -> i32;
     pub fn sceMpegFinish();
     pub fn sceMpegRingbufferQueryMemSize(packets: i32) -> i32;
@@ -58,7 +62,9 @@ extern {
         cb_param: *mut c_void,
     ) -> i32;
     pub fn sceMpegRingbufferDestruct(ringbuffer: *mut SceMpegRingbuffer);
-    pub fn sceMpegRingbufferAvailableSize(ringbuffer: *mut SceMpegRingbuffer) -> i32;
+    pub fn sceMpegRingbufferAvailableSize(
+        ringbuffer: *mut SceMpegRingbuffer,
+    ) -> i32;
     pub fn sceMpegRingbufferPut(
         ringbuffer: *mut SceMpegRingbuffer,
         num_packets: i32,
@@ -95,14 +101,21 @@ extern {
         es_size: *mut i32,
         out_size: *mut i32,
     ) -> i32;
-    pub fn sceMpegInitAu(handle: SceMpeg, es_buffer: *mut c_void, au: *mut SceMpegAu) -> i32;
+    pub fn sceMpegInitAu(
+        handle: SceMpeg,
+        es_buffer: *mut c_void,
+        au: *mut SceMpegAu,
+    ) -> i32;
     pub fn sceMpegGetAvcAu(
         handle: SceMpeg,
         stream: SceMpegStream,
         au: *mut SceMpegAu,
         unk: *mut i32,
     ) -> i32;
-    pub fn sceMpegAvcDecodeMode(handle: SceMpeg, mode: *mut SceMpegAvcMode) -> i32;
+    pub fn sceMpegAvcDecodeMode(
+        handle: SceMpeg,
+        mode: *mut SceMpegAvcMode,
+    ) -> i32;
     pub fn sceMpegAvcDecode(
         handle: SceMpeg,
         au: *mut SceMpegAu,
@@ -161,7 +174,7 @@ pub struct SceMpegYCrCbBuffer {
     pub unknown3: [i32; 11usize],
 }
 
-extern {
+extern "C" {
     pub fn sceMpegBaseYCrCbCopyVme(
         yuv_buffer: *mut c_void,
         buffer: *mut i32,

@@ -11,6 +11,9 @@ pub const ACTIVATED: i32 = 0x200;
 pub const CONNECTED: i32 = 0x020;
 pub const ESTABLISHED: i32 = 0x002;
 
+pub const USB_CAM_FLIP: i32 = 1;
+pub const USB_CAM_MIRROR: i32 = 0x100;
+
 extern {
     pub fn sceUsbStart(
         driver_name: *const u8,
@@ -127,9 +130,6 @@ pub enum UsbCamResolutionEx {
     Px1024_768 = 7,
     Px1280_960 = 8,
 }
-
-pub const USB_CAM_FLIP: i32 = 1;
-pub const USB_CAM_MIRROR: i32 = 0x100;
 
 #[repr(i32)]
 #[derive(Copy, Clone)]

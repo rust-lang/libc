@@ -1,3 +1,5 @@
+pub type UmdCallback = fn(unknown: i32, event: i32) -> i32;
+
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct UmdInfo {
@@ -19,8 +21,6 @@ pub const UMD_CHANGED: i32 = 0x04;
 pub const UMD_INITING: i32 = 0x08;
 pub const UMD_INITED: i32 = 0x10;
 pub const UMD_READY: i32 = 0x20;
-
-pub type UmdCallback = fn(unknown: i32, event: i32) -> i32;
 
 extern {
     pub fn sceUmdCheckMedium() -> i32;
