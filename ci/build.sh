@@ -239,7 +239,7 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     mkdir -p target
     (
         cd target
-        wget https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.1/devkitpro-pacman.deb
+        wget https://github.com/devkitPro/pacman/releases/download/v1.0.1/devkitpro-pacman.deb
         sudo dpkg -i devkitpro-pacman.deb
         sudo dkp-pacman -Sy
         sudo dkp-pacman -Syu
