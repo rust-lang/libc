@@ -5,15 +5,15 @@
 //! [pd]: https://rust-lang.github.io/libc/#platform-specific-documentation
 #![crate_name = "libc"]
 #![crate_type = "rlib"]
-// FIXME: Remove this and redundant_semicolon once renamed lint reaches stable.
-#![allow(renamed_and_removed_lints)]
 #![allow(
     bad_style,
     overflowing_literals,
     improper_ctypes,
-    unknown_lints,
+    // This lint is renamed but we run CI for old stable rustc so should be here.
     redundant_semicolon,
-    redundant_semicolons
+    redundant_semicolons,
+    renamed_and_removed_lints,
+    unknown_lints
 )]
 #![cfg_attr(libc_deny_warnings, deny(warnings))]
 // Attributes needed when building as part of the standard library
