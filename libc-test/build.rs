@@ -1427,6 +1427,7 @@ fn test_android(target: &str) {
                "sys/sysinfo.h",
                "sys/time.h",
                "sys/times.h",
+               "sys/timerfd.h",
                "sys/types.h",
                "sys/ucontext.h",
                "sys/uio.h",
@@ -1454,6 +1455,7 @@ fn test_android(target: &str) {
                 "asm/mman.h",
                 "linux/dccp.h",
                 "linux/errqueue.h",
+                "linux/falloc.h",
                 "linux/futex.h",
                 "linux/fs.h",
                 "linux/genetlink.h",
@@ -1475,6 +1477,7 @@ fn test_android(target: &str) {
                 "linux/quota.h",
                 "linux/reboot.h",
                 "linux/seccomp.h",
+                "linux/sched.h",
                 "linux/sockios.h",
 
     }
@@ -1577,7 +1580,7 @@ fn test_android(target: &str) {
             // https://github.com/rust-lang/libc/issues/1765
             "lockf" | "preadv64" | "pwritev64" | "openpty" | "forkpty"
             | "login_tty" | "getifaddrs" | "freeifaddrs" | "sethostname"
-            | "getgrgid_r" | "getgrnam_r"
+            | "getgrgid_r" | "getgrnam_r" | "sigtimedwait"
                 if aarch64 =>
             {
                 true
