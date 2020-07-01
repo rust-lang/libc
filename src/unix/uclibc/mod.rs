@@ -870,6 +870,7 @@ pub const MSG_WAITFORONE: ::c_int = 0x10000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
 
 pub const SOCK_RAW: ::c_int = 3;
+pub const SOCK_RDM: ::c_int = 4;
 pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_TTL: ::c_int = 2;
