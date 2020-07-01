@@ -322,7 +322,14 @@ pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
 pub const EXTATTR_NAMESPACE_USER: ::c_int = 1;
 pub const EXTATTR_NAMESPACE_SYSTEM: ::c_int = 2;
 
-pub const RAND_MAX: ::c_int = 0x7fff_fffd;
+cfg_if! {
+    if #[cfg(any(freebsd10, freebsd11, freebsd12))] {
+        pub const RAND_MAX: ::c_int = 0x7fff_fffd;
+    } else {
+        pub const RAND_MAX: ::c_int = 0x7fff_ffff;
+    }
+}
+
 pub const PTHREAD_STACK_MIN: ::size_t = MINSIGSTKSZ;
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 4;
 pub const SIGSTKSZ: ::size_t = MINSIGSTKSZ + 32768;
