@@ -1310,6 +1310,7 @@ fn test_wasi(target: &str) {
         "sys/types.h",
         "sys/uio.h",
         "sys/utsname.h",
+        "sys/ioctl.h",
         "time.h",
         "unistd.h",
         "wasi/api.h",

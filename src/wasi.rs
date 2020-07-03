@@ -180,6 +180,11 @@ pub const SEEK_END: c_int = 2;
 pub const _IOFBF: c_int = 0;
 pub const _IONBF: c_int = 2;
 pub const _IOLBF: c_int = 1;
+pub const F_GETFD: c_int = 1;
+pub const F_SETFD: c_int = 2;
+pub const F_GETFL: c_int = 3;
+pub const F_SETFL: c_int = 4;
+pub const FD_CLOEXEC: c_int = 1;
 pub const FD_SETSIZE: size_t = 1024;
 pub const O_APPEND: c_int = 0x0001;
 pub const O_DSYNC: c_int = 0x0002;
@@ -209,6 +214,22 @@ pub const AT_SYMLINK_FOLLOW: c_int = 0x2;
 pub const AT_REMOVEDIR: c_int = 0x4;
 pub const UTIME_OMIT: c_long = 0xfffffffe;
 pub const UTIME_NOW: c_long = 0xffffffff;
+pub const S_IFIFO: mode_t = 49152;
+pub const S_IFCHR: mode_t = 8192;
+pub const S_IFBLK: mode_t = 24576;
+pub const S_IFDIR: mode_t = 16384;
+pub const S_IFREG: mode_t = 32768;
+pub const S_IFLNK: mode_t = 40960;
+pub const S_IFSOCK: mode_t = 49152;
+pub const S_IFMT: mode_t = 57344;
+pub const DT_UNKNOWN: u8 = 0;
+pub const DT_BLK: u8 = 1;
+pub const DT_CHR: u8 = 2;
+pub const DT_DIR: u8 = 3;
+pub const DT_REG: u8 = 4;
+pub const DT_LNK: u8 = 7;
+pub const FIONREAD: c_int = 1;
+pub const FIONBIO: c_int = 2;
 
 pub const E2BIG: c_int = 1;
 pub const EACCES: c_int = 2;
@@ -378,6 +399,7 @@ extern "C" {
     ) -> size_t;
     pub fn gmtime(a: *const time_t) -> *mut tm;
     pub fn gmtime_r(a: *const time_t, b: *mut tm) -> *mut tm;
+    pub fn localtime(a: *const time_t) -> *mut tm;
     pub fn localtime_r(a: *const time_t, b: *mut tm) -> *mut tm;
     pub fn asctime_r(a: *const tm, b: *mut c_char) -> *mut c_char;
     pub fn ctime_r(a: *const time_t, b: *mut c_char) -> *mut c_char;
@@ -403,6 +425,7 @@ extern "C" {
     pub fn isspace(c: c_int) -> c_int;
     pub fn isupper(c: c_int) -> c_int;
     pub fn isxdigit(c: c_int) -> c_int;
+    pub fn isblank(c: c_int) -> c_int;
     pub fn tolower(c: c_int) -> c_int;
     pub fn toupper(c: c_int) -> c_int;
     pub fn setvbuf(
@@ -448,6 +471,7 @@ extern "C" {
     pub fn strspn(cs: *const c_char, ct: *const c_char) -> size_t;
     pub fn strcspn(cs: *const c_char, ct: *const c_char) -> size_t;
     pub fn strdup(cs: *const c_char) -> *mut c_char;
+    pub fn strndup(cs: *const c_char, n: size_t) -> *mut c_char;
     pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
@@ -577,7 +601,6 @@ extern "C" {
     pub fn link(src: *const c_char, dst: *const c_char) -> ::c_int;
     pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int) -> off_t;
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
-    pub fn pause() -> ::c_int;
     pub fn rmdir(path: *const c_char) -> ::c_int;
     pub fn sleep(secs: ::c_uint) -> ::c_uint;
     pub fn unlink(c: *const c_char) -> ::c_int;
@@ -644,6 +667,8 @@ extern "C" {
     pub fn timegm(tm: *mut ::tm) -> time_t;
 
     pub fn sysconf(name: ::c_int) -> ::c_long;
+
+    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 
     pub fn fseeko(
         stream: *mut ::FILE,
