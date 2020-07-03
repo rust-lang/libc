@@ -6,14 +6,14 @@
 #![crate_name = "libc"]
 #![crate_type = "rlib"]
 #![allow(
+    renamed_and_removed_lints, // Keep this order.
+    unknown_lints, // Keep this order.
     bad_style,
     overflowing_literals,
     improper_ctypes,
     // This lint is renamed but we run CI for old stable rustc so should be here.
     redundant_semicolon,
-    redundant_semicolons,
-    renamed_and_removed_lints,
-    unknown_lints
+    redundant_semicolons
 )]
 #![cfg_attr(libc_deny_warnings, deny(warnings))]
 // Attributes needed when building as part of the standard library
