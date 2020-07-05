@@ -235,20 +235,23 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     done
 
     # Nintendo switch
-    cargo clean
-    mkdir -p target
-    (
-        cd target
-        wget https://github.com/devkitPro/pacman/releases/download/v1.0.1/devkitpro-pacman.deb
-        sudo dpkg -i devkitpro-pacman.deb
-        sudo dkp-pacman -Sy
-        sudo dkp-pacman -Syu
-        sudo dkp-pacman -S -v --noconfirm switch-dev devkitA64
-    )
-    cp ci/switch.json switch.json
-    PATH="$PATH:/opt/devkitpro/devkitA64/bin"
-    PATH="$PATH:/opt/devkitpro/tools/bin"
-    cargo xbuild --target switch.json
+    # FIXME: Somehow downloads.devkitpro.org returns 403 now.
+    # Temorarily disabled tests for this target.
+    # cargo clean
+    # mkdir -p target
+    # (
+    #     cd target
+    #     wget https://github.com/devkitPro/pacman/releases/download/v1.0.2/devkitpro-pacman.amd64.deb
+    #     sudo apt-get install gdebi-core
+    #     sudo gdebi -nq devkitpro-pacman.amd64.deb
+    #     sudo dkp-pacman -Sy
+    #     sudo dkp-pacman -Syu
+    #     sudo dkp-pacman -S -v --noconfirm switch-dev devkitA64
+    # )
+    # cp ci/switch.json switch.json
+    # PATH="$PATH:/opt/devkitpro/devkitA64/bin"
+    # PATH="$PATH:/opt/devkitpro/tools/bin"
+    # cargo xbuild --target switch.json
 fi
 
 RUST_OSX_NO_CORE_TARGETS="\
