@@ -322,10 +322,17 @@ pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
 pub const EXTATTR_NAMESPACE_USER: ::c_int = 1;
 pub const EXTATTR_NAMESPACE_SYSTEM: ::c_int = 2;
 
-pub const RAND_MAX: ::c_int = 0x7fff_fffd;
-pub const PTHREAD_STACK_MIN: ::size_t = 2048;
+cfg_if! {
+    if #[cfg(any(freebsd10, freebsd11, freebsd12))] {
+        pub const RAND_MAX: ::c_int = 0x7fff_fffd;
+    } else {
+        pub const RAND_MAX: ::c_int = 0x7fff_ffff;
+    }
+}
+
+pub const PTHREAD_STACK_MIN: ::size_t = MINSIGSTKSZ;
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 4;
-pub const SIGSTKSZ: ::size_t = 34816;
+pub const SIGSTKSZ: ::size_t = MINSIGSTKSZ + 32768;
 pub const SF_NODISKIO: ::c_int = 0x00000001;
 pub const SF_MNOWAIT: ::c_int = 0x00000002;
 pub const SF_SYNC: ::c_int = 0x00000004;
@@ -442,7 +449,13 @@ pub const CLOCK_SECOND: ::clockid_t = 13;
 pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 14;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 15;
 
+#[doc(hidden)]
+#[deprecated(
+    since = "0.2.72",
+    note = "CTL_UNSPEC is deprecated. Use CTL_SYSCTL instead"
+)]
 pub const CTL_UNSPEC: ::c_int = 0;
+pub const CTL_SYSCTL: ::c_int = 0;
 pub const CTL_KERN: ::c_int = 1;
 pub const CTL_VM: ::c_int = 2;
 pub const CTL_VFS: ::c_int = 3;
@@ -452,6 +465,13 @@ pub const CTL_HW: ::c_int = 6;
 pub const CTL_MACHDEP: ::c_int = 7;
 pub const CTL_USER: ::c_int = 8;
 pub const CTL_P1003_1B: ::c_int = 9;
+pub const CTL_SYSCTL_DEBUG: ::c_int = 0;
+pub const CTL_SYSCTL_NAME: ::c_int = 1;
+pub const CTL_SYSCTL_NEXT: ::c_int = 2;
+pub const CTL_SYSCTL_NAME2OID: ::c_int = 3;
+pub const CTL_SYSCTL_OIDFMT: ::c_int = 4;
+pub const CTL_SYSCTL_OIDDESCR: ::c_int = 5;
+pub const CTL_SYSCTL_OIDLABEL: ::c_int = 6;
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
 pub const KERN_OSREV: ::c_int = 3;
@@ -769,8 +789,14 @@ pub const IPPROTO_BLT: ::c_int = 30;
 pub const IPPROTO_NSP: ::c_int = 31;
 /// Merit Internodal
 pub const IPPROTO_INP: ::c_int = 32;
-/// Sequential Exchange
+#[doc(hidden)]
+#[deprecated(
+    since = "0.2.72",
+    note = "IPPROTO_SEP is deprecated. Use IPPROTO_DCCP instead"
+)]
 pub const IPPROTO_SEP: ::c_int = 33;
+/// Datagram Congestion Control Protocol
+pub const IPPROTO_DCCP: ::c_int = 33;
 /// Third Party Connect
 pub const IPPROTO_3PC: ::c_int = 34;
 /// InterDomain Policy Routing

@@ -1703,6 +1703,7 @@ fn test_freebsd(target: &str) {
                 "sys/times.h",
                 "sys/timex.h",
                 "sys/types.h",
+                "sys/ucontext.h",
                 "sys/uio.h",
                 "sys/un.h",
                 "sys/utsname.h",
@@ -1808,6 +1809,22 @@ fn test_freebsd(target: &str) {
             // and they've never had any legitimate use outside of the
             // base system anyway.
             "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "USER_MAXID" => true,
+
+            // This was renamed in FreeBSD 12.2 and 13 (r352486).
+            "CTL_UNSPEC" | "CTL_SYSCTL" => true,
+
+            // These were added in FreeBSD 12.2 and 13 (r352486),
+            // but they are just names for magic numbers that existed for ages.
+            "CTL_SYSCTL_DEBUG"
+            | "CTL_SYSCTL_NAME"
+            | "CTL_SYSCTL_NEXT"
+            | "CTL_SYSCTL_NAME2OID"
+            | "CTL_SYSCTL_OIDFMT"
+            | "CTL_SYSCTL_OIDDESCR"
+            | "CTL_SYSCTL_OIDLABEL" => true,
+
+            // This was renamed in FreeBSD 12.2 and 13 (r350749).
+            "IPPROTO_SEP" | "IPPROTO_DCCP" => true,
 
             _ => false,
         }

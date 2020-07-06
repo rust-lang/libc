@@ -1,4 +1,3 @@
-pub type wchar_t = i32;
 pub type off_t = i64;
 pub type useconds_t = u32;
 pub type blkcnt_t = i64;
@@ -581,7 +580,15 @@ extern "C" {
     pub fn abs(i: ::c_int) -> ::c_int;
     pub fn atof(s: *const ::c_char) -> ::c_double;
     pub fn labs(i: ::c_long) -> ::c_long;
+    #[cfg_attr(
+        all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
+        link_name = "rand@FBSD_1.0"
+    )]
     pub fn rand() -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
+        link_name = "srand@FBSD_1.0"
+    )]
     pub fn srand(seed: ::c_uint);
 
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;

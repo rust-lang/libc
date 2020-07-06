@@ -2,6 +2,7 @@
 //!
 //! This covers *-apple-* triples currently
 pub type c_char = i8;
+pub type wchar_t = i32;
 pub type clock_t = c_ulong;
 pub type time_t = c_long;
 pub type suseconds_t = i32;
