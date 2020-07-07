@@ -52,9 +52,9 @@ while read -r target; do
 
     # If cargo doc fails, then try xargo:
     if ! cargo doc --target "${target}" \
-             --no-default-features  --features extra_traits ; then
+        --no-default-features --features extra_traits ; then
         cargo xdoc --target "${target}" \
-              --no-default-features  --features extra_traits
+        --no-default-features --features extra_traits
     fi
 
     cp -r "target/${target}/doc" "${TARGET_DOC_DIR}/${target}"
@@ -69,6 +69,8 @@ line=$(grep -n '<div class="platform_docs"></div>' $README | cut -d ":" -f 1)
 set +x
 { head -n "$((line-1))" $README; cat $PLATFORM_SUPPORT; tail -n "+$((line+1))" $README; } > $TARGET_DOC_DIR/$README
 set -x
+
+RUSTDOCFLAGS="--enable-index-page --index-page=${TARGET_DOC_DIR}/${README} -Zunstable-options" cargo doc
 
 # Copy the licenses
 cp LICENSE-* $TARGET_DOC_DIR/
