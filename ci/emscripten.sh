@@ -2,7 +2,7 @@
 
 set -ex
 
-EMSDK_VERSION=1.39.16
+EMSDK_VERSION=1.39.19
 
 hide_output() {
   set +x
