@@ -40,7 +40,7 @@ cfg_if! {
         pub const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
     } else {
         #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = 8 - 1;
+        pub const _ALIGNBYTES: usize = 4 - 1;
     }
 }
 pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
