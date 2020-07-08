@@ -333,6 +333,7 @@ pub const UTILITY_HTMLVIEWER_ENABLE_ANALOG_HOLD: i32 = 0x000200;
 pub const UTILITY_HTMLVIEWER_ENABLE_FLASH: i32 = 0x000400;
 pub const UTILITY_HTMLVIEWER_DISABLE_LRTRIGGER: i32 = 0x000800;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum AudioFormat {
@@ -340,6 +341,7 @@ pub enum AudioFormat {
     Mono = 0x10,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct AudioInputParams {
@@ -351,6 +353,7 @@ pub struct AudioInputParams {
     pub unknown5: i32,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(i32)]
 pub enum AudioOutputFrequency {
@@ -365,6 +368,7 @@ pub enum AudioOutputFrequency {
     Khz8 = 8000,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(i32)]
 pub enum AudioInputFrequency {
@@ -440,6 +444,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct Atrac3BufferInfo {
     pub puc_write_position_first_buf: *mut u8,
@@ -454,10 +459,7 @@ pub struct Atrac3BufferInfo {
 
 extern "C" {
     pub fn sceAtracGetAtracID(ui_codec_type: u32) -> i32;
-    pub fn sceAtracSetDataAndGetID(
-        buf: *mut c_void,
-        bufsize: usize,
-    ) -> i32;
+    pub fn sceAtracSetDataAndGetID(buf: *mut c_void, bufsize: usize) -> i32;
     pub fn sceAtracDecodeData(
         atrac_id: i32,
         out_samples: *mut u16,
@@ -475,36 +477,18 @@ extern "C" {
         available_bytes: *mut u32,
         read_offset: *mut u32,
     ) -> i32;
-    pub fn sceAtracAddStreamData(
-        atrac_id: i32,
-        bytes_to_add: u32,
-    ) -> i32;
-    pub fn sceAtracGetBitrate(
-        atrac_id: i32,
-        out_bitrate: *mut i32,
-    ) -> i32;
-    pub fn sceAtracSetLoopNum(
-        atrac_id: i32,
-        nloops: i32,
-    ) -> i32;
+    pub fn sceAtracAddStreamData(atrac_id: i32, bytes_to_add: u32) -> i32;
+    pub fn sceAtracGetBitrate(atrac_id: i32, out_bitrate: *mut i32) -> i32;
+    pub fn sceAtracSetLoopNum(atrac_id: i32, nloops: i32) -> i32;
     pub fn sceAtracReleaseAtracID(atrac_id: i32) -> i32;
-    pub fn sceAtracGetNextSample(
-        atrac_id: i32,
-        out_n: *mut i32,
-    ) -> i32;
-    pub fn sceAtracGetMaxSample(
-        atrac_id: i32,
-        out_max: *mut i32,
-    ) -> i32;
+    pub fn sceAtracGetNextSample(atrac_id: i32, out_n: *mut i32) -> i32;
+    pub fn sceAtracGetMaxSample(atrac_id: i32, out_max: *mut i32) -> i32;
     pub fn sceAtracGetBufferInfoForReseting(
         atrac_id: i32,
         ui_sample: u32,
         pbuffer_info: *mut Atrac3BufferInfo,
     ) -> i32;
-    pub fn sceAtracGetChannel(
-        atrac_id: i32,
-        pui_channel: *mut u32,
-    ) -> i32;
+    pub fn sceAtracGetChannel(atrac_id: i32, pui_channel: *mut u32) -> i32;
     pub fn sceAtracGetInternalErrorInfo(
         atrac_id: i32,
         pi_result: *mut i32,
@@ -558,13 +542,15 @@ extern "C" {
     ) -> i32;
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum CtrlMode {
     Digital = 0,
-    Analaog,
+    Analog,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct SceCtrlData {
@@ -575,6 +561,7 @@ pub struct SceCtrlData {
     pub rsrv: [u8; 6],
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct SceCtrlLatch {
@@ -615,12 +602,14 @@ extern "C" {
     ) -> i32;
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum DisplayMode {
     Lcd = 0,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum DisplayPixelFormat {
@@ -630,6 +619,7 @@ pub enum DisplayPixelFormat {
     Psm8888 = 3,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum DisplaySetBufSync {
@@ -672,18 +662,21 @@ extern "C" {
     pub fn sceDisplayIsVblank() -> i32;
 }
 
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct GeContext {
     pub context: [u32; 512],
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct GeStack {
     pub stack: [u32; 8],
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct GeCallbackData {
@@ -693,6 +686,7 @@ pub struct GeCallbackData {
     pub finish_arg: *mut c_void,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct GeListArgs {
@@ -702,12 +696,14 @@ pub struct GeListArgs {
     pub stacks: *mut GeStack,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct GeBreakParam {
     pub buf: [u32; 4],
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(i32)]
 pub enum GeMatrixType {
@@ -725,6 +721,7 @@ pub enum GeMatrixType {
     TexGen,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(i32)]
 pub enum GeListState {
@@ -735,6 +732,7 @@ pub enum GeListState {
     CancelDone,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[repr(u8)]
 #[derive(Copy, Clone)]
 pub enum GeCommand {
@@ -1029,6 +1027,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelLoadExecParam {
     pub size: usize,
@@ -1047,9 +1046,11 @@ extern "C" {
 }
 
 #[repr(transparent)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceUid(pub i32);
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(i32)]
 pub enum SceSysMemPartitionId {
@@ -1068,6 +1069,7 @@ pub enum SceSysMemPartitionId {
     SceKernelExtendedKernelPartition = 12,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(i32)]
 pub enum SceSysMemBlockTypes {
@@ -1094,6 +1096,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct timeval {
     pub tv_sec: i32,
@@ -1101,12 +1104,15 @@ pub struct timeval {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct timezone {
     pub tz_minutes_west: i32,
     pub tz_dst_time: i32,
 }
+
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct SceKernelUtilsSha1Context {
     pub h: [u32; 5usize],
@@ -1115,13 +1121,17 @@ pub struct SceKernelUtilsSha1Context {
     pub ull_total_len: u64,
     pub buf: [u8; 64usize],
 }
+
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct SceKernelUtilsMt19937Context {
     pub count: u32,
     pub state: [u32; 624usize],
 }
+
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct SceKernelUtilsMd5Context {
     pub h: [u32; 4usize],
@@ -1192,6 +1202,7 @@ extern "C" {
     ) -> i32;
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(packed, C)]
 pub struct IntrHandlerOptionParam {
@@ -1213,6 +1224,7 @@ pub struct IntrHandlerOptionParam {
     max_clock_hi: u32,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum Interrupt {
@@ -1244,6 +1256,7 @@ pub enum Interrupt {
     Interrupt = 66,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum SubInterrupt {
@@ -1281,6 +1294,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelLMOption {
     pub size: usize,
@@ -1293,6 +1307,7 @@ pub struct SceKernelLMOption {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelSMOption {
     pub size: usize,
@@ -1303,6 +1318,7 @@ pub struct SceKernelSMOption {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelModuleInfo {
     pub size: usize,
@@ -1401,6 +1417,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct DebugProfilerRegs {
     pub enable: u32,
@@ -1426,6 +1443,7 @@ pub struct DebugProfilerRegs {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelSysClock {
     pub low: u32,
@@ -1433,6 +1451,7 @@ pub struct SceKernelSysClock {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelThreadOptParam {
     pub size: usize,
@@ -1440,6 +1459,7 @@ pub struct SceKernelThreadOptParam {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelThreadInfo {
     pub size: usize,
@@ -1463,6 +1483,7 @@ pub struct SceKernelThreadInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelThreadRunStatus {
     pub size: usize,
@@ -1478,12 +1499,14 @@ pub struct SceKernelThreadRunStatus {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelSemaOptParam {
     pub size: usize,
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelSemaInfo {
     pub size: usize,
@@ -1496,6 +1519,7 @@ pub struct SceKernelSemaInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelEventFlagInfo {
     pub size: usize,
@@ -1507,18 +1531,21 @@ pub struct SceKernelEventFlagInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelEventFlagOptParam {
     pub size: usize,
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelMbxOptParam {
     pub size: usize,
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelMbxInfo {
     pub size: usize,
@@ -1530,6 +1557,7 @@ pub struct SceKernelMbxInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelVTimerInfo {
     pub size: usize,
@@ -1543,6 +1571,7 @@ pub struct SceKernelVTimerInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelThreadEventHandlerInfo {
     pub size: usize,
@@ -1554,6 +1583,7 @@ pub struct SceKernelThreadEventHandlerInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelAlarmInfo {
     pub size: usize,
@@ -1563,6 +1593,7 @@ pub struct SceKernelAlarmInfo {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum SceKernelIdListType {
     Thread = 1,
@@ -1583,6 +1614,7 @@ pub enum SceKernelIdListType {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelSystemStatus {
     pub size: usize,
@@ -1594,6 +1626,7 @@ pub struct SceKernelSystemStatus {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelMppInfo {
     pub size: usize,
@@ -1606,12 +1639,14 @@ pub struct SceKernelMppInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelVplOptParam {
     pub size: usize,
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelVplInfo {
     pub size: usize,
@@ -1623,12 +1658,14 @@ pub struct SceKernelVplInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelFplOptParam {
     pub size: usize,
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelFplInfo {
     pub size: usize,
@@ -1641,12 +1678,14 @@ pub struct SceKernelFplInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelVTimerOptParam {
     pub size: usize,
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceKernelCallbackInfo {
     pub size: usize,
@@ -2042,6 +2081,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UsbCamSetupStillParam {
     pub size: i32,
@@ -2053,6 +2093,7 @@ pub struct UsbCamSetupStillParam {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UsbCamSetupStillExParam {
     pub size: i32,
@@ -2069,6 +2110,7 @@ pub struct UsbCamSetupStillExParam {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UsbCamSetupVideoParam {
     pub size: i32,
@@ -2086,6 +2128,7 @@ pub struct UsbCamSetupVideoParam {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UsbCamSetupVideoExParam {
     pub size: i32,
@@ -2114,34 +2157,37 @@ pub struct UsbCamSetupVideoExParam {
 }
 
 #[repr(i32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UsbCamResolution {
-    Px160_120  = 0,
-    Px176_144  = 1,
-    Px320_240  = 2,
-    Px352_288  = 3,
-    Px640_480  = 4,
+    Px160_120 = 0,
+    Px176_144 = 1,
+    Px320_240 = 2,
+    Px352_288 = 3,
+    Px640_480 = 4,
     Px1024_768 = 5,
     Px1280_960 = 6,
-    Px480_272  = 7,
-    Px360_272  = 8,
+    Px480_272 = 7,
+    Px360_272 = 8,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(i32)]
 pub enum UsbCamResolutionEx {
-    Px160_120  = 0,
-    Px176_144  = 1,
-    Px320_240  = 2,
-    Px352_288  = 3,
-    Px360_272  = 4,
-    Px480_272  = 5,
-    Px640_480  = 6,
+    Px160_120 = 0,
+    Px176_144 = 1,
+    Px320_240 = 2,
+    Px352_288 = 3,
+    Px360_272 = 4,
+    Px480_272 = 5,
+    Px640_480 = 6,
     Px1024_768 = 7,
     Px1280_960 = 8,
 }
 
 #[repr(i32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UsbCamDelay {
     NoDelay = 0,
@@ -2151,6 +2197,7 @@ pub enum UsbCamDelay {
 }
 
 #[repr(i32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UsbCamFrameRate {
     Fps3_75 = 0,
@@ -2164,6 +2211,7 @@ pub enum UsbCamFrameRate {
 }
 
 #[repr(i32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UsbCamWb {
     Auto = 0,
@@ -2173,6 +2221,7 @@ pub enum UsbCamWb {
 }
 
 #[repr(i32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UsbCamEffectMode {
     Normal = 0,
@@ -2185,6 +2234,7 @@ pub enum UsbCamEffectMode {
 }
 
 #[repr(i32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UsbCamEvLevel {
     Pos2_0 = 0,
@@ -2248,9 +2298,7 @@ extern "C" {
         effect_mode: *mut UsbCamEffectMode,
     ) -> i32;
     pub fn sceUsbCamGetEvLevel(exposure_level: *mut UsbCamEvLevel) -> i32;
-    pub fn sceUsbCamGetReverseMode(
-        reverse_flags: *mut i32,
-    ) -> i32;
+    pub fn sceUsbCamGetReverseMode(reverse_flags: *mut i32) -> i32;
     pub fn sceUsbCamGetZoom(zoom: *mut i32) -> i32;
     pub fn sceUsbCamAutoImageReverseSW(on: i32) -> i32;
     pub fn sceUsbCamGetAutoImageReverseState() -> i32;
@@ -2264,6 +2312,7 @@ extern "C" {
 }
 
 #[derive(Copy, Clone)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[repr(u32)]
 pub enum PowerTick {
     All = 0,
@@ -2319,6 +2368,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspDateTime {
     pub year: u16,
@@ -2331,7 +2381,8 @@ pub struct ScePspDateTime {
 }
 
 #[repr(i32)]
-#[derive(Eq, PartialEq, Copy, Clone)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq))]
+#[derive(Copy, Clone)]
 pub enum RtcCheckValidError {
     InvalidYear = -1,
     InvalidMonth = -2,
@@ -2449,6 +2500,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct SceIoDirent {
     pub d_stat: SceIoStat,
@@ -2458,6 +2510,7 @@ pub struct SceIoDirent {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceIoStat {
     pub st_mode: i32,
@@ -2470,12 +2523,14 @@ pub struct SceIoStat {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum IoAssignPerms {
     RdWr = 0,
     RdOnly = 1,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum IoWhence {
@@ -2582,6 +2637,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UmdInfo {
     pub size: u32,
@@ -2589,6 +2645,7 @@ pub struct UmdInfo {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UmdType {
     Game = 0x10,
@@ -2602,14 +2659,8 @@ extern "C" {
     pub fn sceUmdActivate(unit: i32, drive: *const u8) -> i32;
     pub fn sceUmdDeactivate(unit: i32, drive: *const u8) -> i32;
     pub fn sceUmdWaitDriveStat(state: i32) -> i32;
-    pub fn sceUmdWaitDriveStatWithTimer(
-        state: i32,
-        timeout: u32,
-    ) -> i32;
-    pub fn sceUmdWaitDriveStatCB(
-        state: i32,
-        timeout: u32,
-    ) -> i32;
+    pub fn sceUmdWaitDriveStatWithTimer(state: i32, timeout: u32) -> i32;
+    pub fn sceUmdWaitDriveStatCB(state: i32, timeout: u32) -> i32;
     pub fn sceUmdCancelWaitDriveStat() -> i32;
     pub fn sceUmdGetDriveStat() -> i32;
     pub fn sceUmdGetErrorStat() -> i32;
@@ -2620,14 +2671,17 @@ extern "C" {
 }
 
 #[repr(transparent)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceMpeg(*mut *mut c_void);
 
 #[repr(transparent)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceMpegStream(*mut c_void);
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceMpegRingbuffer {
     pub packets: i32,
@@ -2644,6 +2698,7 @@ pub struct SceMpegRingbuffer {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceMpegAu {
     pub pts_msb: u32,
@@ -2655,6 +2710,7 @@ pub struct SceMpegAu {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceMpegAvcMode {
     pub unk0: i32,
@@ -2757,6 +2813,7 @@ extern "C" {
 
 #[repr(C)]
 #[repr(align(64))]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceMpegLLI {
     pub src: *mut c_void,
@@ -2767,6 +2824,7 @@ pub struct SceMpegLLI {
 
 #[repr(C)]
 #[repr(align(64))]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceMpegYCrCbBuffer {
     pub frame_buffer_height16: i32,
@@ -2804,14 +2862,15 @@ extern "C" {
 
 extern "C" {
     pub fn sceHprmPeekCurrentKey(key: *mut i32) -> i32;
-    pub fn sceHprmPeekLatch(latch: *mut [u32;4]) -> i32;
-    pub fn sceHprmReadLatch(latch: *mut [u32;4]) -> i32;
+    pub fn sceHprmPeekLatch(latch: *mut [u32; 4]) -> i32;
+    pub fn sceHprmReadLatch(latch: *mut [u32; 4]) -> i32;
     pub fn sceHprmIsHeadphoneExist() -> i32;
     pub fn sceHprmIsRemoteExist() -> i32;
     pub fn sceHprmIsMicrophoneExist() -> i32;
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum GuPrimitive {
     Points = 0,
@@ -2824,6 +2883,7 @@ pub enum GuPrimitive {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum PatchPrimitive {
     Points = 0,
@@ -2831,7 +2891,8 @@ pub enum PatchPrimitive {
     TriangleStrip = 4,
 }
 
-#[derive(Clone, Copy, Eq, PartialEq)]
+#[derive(Clone, Copy)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq))]
 #[repr(u32)]
 pub enum GuState {
     AlphaTest = 0,
@@ -2859,6 +2920,7 @@ pub enum GuState {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum MatrixMode {
     Projection = 0,
@@ -2867,6 +2929,7 @@ pub enum MatrixMode {
     Texture = 3,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum TexturePixelFormat {
@@ -2883,6 +2946,7 @@ pub enum TexturePixelFormat {
     PsmDxt5 = 10,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum SplineMode {
@@ -2892,6 +2956,7 @@ pub enum SplineMode {
     OpenOpen = 3,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum ShadingModel {
@@ -2899,6 +2964,7 @@ pub enum ShadingModel {
     Smooth = 1,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum LogicalOperation {
@@ -2920,6 +2986,7 @@ pub enum LogicalOperation {
     Set = 15,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum TextureFilter {
@@ -2931,6 +2998,7 @@ pub enum TextureFilter {
     LinearMipmapLinear = 7,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum TextureMapMode {
@@ -2939,6 +3007,7 @@ pub enum TextureMapMode {
     EnvironmentMap = 2,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum TextureLevelMode {
@@ -2947,6 +3016,7 @@ pub enum TextureLevelMode {
     Slope = 2,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum TextureProjectionMapMode {
@@ -2956,6 +3026,7 @@ pub enum TextureProjectionMapMode {
     Normal = 3,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum GuTexWrapMode {
@@ -2963,6 +3034,7 @@ pub enum GuTexWrapMode {
     Clamp = 1,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum FrontFaceDirection {
@@ -2970,6 +3042,7 @@ pub enum FrontFaceDirection {
     CounterClockwise = 1,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum AlphaFunc {
@@ -2983,6 +3056,7 @@ pub enum AlphaFunc {
     GreaterOrEqual,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum StencilFunc {
@@ -2996,6 +3070,7 @@ pub enum StencilFunc {
     GreaterOrEqual,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum ColorFunc {
@@ -3005,6 +3080,7 @@ pub enum ColorFunc {
     NotEqual,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum DepthFunc {
@@ -3018,6 +3094,7 @@ pub enum DepthFunc {
     GreaterOrEqual,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum TextureEffect {
@@ -3028,6 +3105,7 @@ pub enum TextureEffect {
     Add = 4,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum TextureColorComponent {
@@ -3035,6 +3113,7 @@ pub enum TextureColorComponent {
     Rgba = 1,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum MipmapLevel {
@@ -3048,6 +3127,7 @@ pub enum MipmapLevel {
     Level7,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum BlendOp {
@@ -3059,6 +3139,7 @@ pub enum BlendOp {
     Abs = 5,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum BlendSrc {
@@ -3069,6 +3150,7 @@ pub enum BlendSrc {
     Fix = 10,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum BlendDst {
@@ -3079,6 +3161,7 @@ pub enum BlendDst {
     Fix = 10,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum StencilOperation {
@@ -3090,6 +3173,7 @@ pub enum StencilOperation {
     Decr = 5,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum LightMode {
@@ -3097,6 +3181,7 @@ pub enum LightMode {
     SeparateSpecularColor = 1,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum LightType {
@@ -3105,6 +3190,7 @@ pub enum LightType {
     Spotlight = 2,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[repr(u32)]
 #[derive(Copy, Clone)]
 pub enum GuContextType {
@@ -3113,6 +3199,7 @@ pub enum GuContextType {
     Send = 2,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum GuQueueMode {
@@ -3120,6 +3207,7 @@ pub enum GuQueueMode {
     Head = 1,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum GuSyncMode {
@@ -3130,6 +3218,7 @@ pub enum GuSyncMode {
     Send = 4,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum GuSyncBehavior {
@@ -3137,6 +3226,7 @@ pub enum GuSyncBehavior {
     NoWait = 1,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum GuCallbackId {
@@ -3144,6 +3234,7 @@ pub enum GuCallbackId {
     Finish = 4,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum SignalBehavior {
@@ -3151,6 +3242,7 @@ pub enum SignalBehavior {
     Continue = 2,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(u32)]
 pub enum ClutPixelFormat {
@@ -3441,6 +3533,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspSRect {
     pub x: i16,
@@ -3450,6 +3543,7 @@ pub struct ScePspSRect {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspIRect {
     pub x: i32,
@@ -3459,6 +3553,7 @@ pub struct ScePspIRect {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspL64Rect {
     pub x: u64,
@@ -3468,6 +3563,7 @@ pub struct ScePspL64Rect {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFRect {
     pub x: f32,
@@ -3477,6 +3573,7 @@ pub struct ScePspFRect {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspSVector2 {
     pub x: i16,
@@ -3484,6 +3581,7 @@ pub struct ScePspSVector2 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspIVector2 {
     pub x: i32,
@@ -3491,6 +3589,7 @@ pub struct ScePspIVector2 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspL64Vector2 {
     pub x: u64,
@@ -3498,6 +3597,7 @@ pub struct ScePspL64Vector2 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFVector2 {
     pub x: f32,
@@ -3505,6 +3605,7 @@ pub struct ScePspFVector2 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub union ScePspVector2 {
     pub fv: ScePspFVector2,
@@ -3514,6 +3615,7 @@ pub union ScePspVector2 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspSVector3 {
     pub x: i16,
@@ -3522,6 +3624,7 @@ pub struct ScePspSVector3 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspIVector3 {
     pub x: i32,
@@ -3530,13 +3633,16 @@ pub struct ScePspIVector3 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspL64Vector3 {
     pub x: u64,
     pub y: u64,
     pub z: u64,
 }
+
 #[repr(C, align(16))]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFVector3 {
     pub x: f32,
@@ -3545,6 +3651,7 @@ pub struct ScePspFVector3 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub union ScePspVector3 {
     pub fv: ScePspFVector3,
@@ -3554,6 +3661,7 @@ pub union ScePspVector3 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspSVector4 {
     pub x: i16,
@@ -3563,6 +3671,7 @@ pub struct ScePspSVector4 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspIVector4 {
     pub x: i32,
@@ -3572,6 +3681,7 @@ pub struct ScePspIVector4 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspL64Vector4 {
     pub x: u64,
@@ -3581,6 +3691,7 @@ pub struct ScePspL64Vector4 {
 }
 
 #[repr(C, align(16))]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFVector4 {
     pub x: f32,
@@ -3590,6 +3701,7 @@ pub struct ScePspFVector4 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFVector4Unaligned {
     pub x: f32,
@@ -3599,6 +3711,7 @@ pub struct ScePspFVector4Unaligned {
 }
 
 #[repr(C, align(16))]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub union ScePspVector4 {
     pub fv: ScePspFVector4,
@@ -3609,6 +3722,7 @@ pub union ScePspVector4 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspIMatrix2 {
     pub x: ScePspIVector2,
@@ -3616,6 +3730,7 @@ pub struct ScePspIMatrix2 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFMatrix2 {
     pub x: ScePspFVector2,
@@ -3623,6 +3738,7 @@ pub struct ScePspFMatrix2 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub union ScePspMatrix2 {
     pub fm: ScePspFMatrix2,
@@ -3635,6 +3751,7 @@ pub union ScePspMatrix2 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspIMatrix3 {
     pub x: ScePspIVector3,
@@ -3643,6 +3760,7 @@ pub struct ScePspIMatrix3 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFMatrix3 {
     pub x: ScePspFVector3,
@@ -3651,6 +3769,7 @@ pub struct ScePspFMatrix3 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub union ScePspMatrix3 {
     pub fm: ScePspFMatrix3,
@@ -3663,6 +3782,7 @@ pub union ScePspMatrix3 {
 }
 
 #[repr(C, align(16))]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspIMatrix4 {
     pub x: ScePspIVector4,
@@ -3672,6 +3792,7 @@ pub struct ScePspIMatrix4 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspIMatrix4Unaligned {
     pub x: ScePspIVector4,
@@ -3681,6 +3802,7 @@ pub struct ScePspIMatrix4Unaligned {
 }
 
 #[repr(C, align(16))]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFMatrix4 {
     pub x: ScePspFVector4,
@@ -3690,6 +3812,7 @@ pub struct ScePspFMatrix4 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct ScePspFMatrix4Unaligned {
     pub x: ScePspFVector4,
@@ -3699,6 +3822,7 @@ pub struct ScePspFMatrix4Unaligned {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub union ScePspMatrix4 {
     pub fm: ScePspFMatrix4,
@@ -3711,6 +3835,7 @@ pub union ScePspMatrix4 {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceMp3InitArg {
     pub mp3_stream_start: u32,
@@ -3723,6 +3848,7 @@ pub struct SceMp3InitArg {
     pub pcm_buf_size: i32,
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(transparent)]
 pub struct Mp3Handle(pub i32);
@@ -3753,10 +3879,12 @@ extern "C" {
 }
 
 #[repr(transparent)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[allow(missing_copy_implementations)]
 pub struct RegHandle(u32);
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct Key {
     pub key_type: KeyType,
@@ -3767,6 +3895,7 @@ pub struct Key {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum KeyType {
     Directory = 1,
@@ -3789,10 +3918,7 @@ extern "C" {
         mode: i32,
         dir_handle: *mut RegHandle,
     ) -> i32;
-    pub fn sceRegRemoveCategory(
-        handle: RegHandle,
-        name: *const u8,
-    ) -> i32;
+    pub fn sceRegRemoveCategory(handle: RegHandle, name: *const u8) -> i32;
     pub fn sceRegCloseCategory(dir_handle: RegHandle) -> i32;
     pub fn sceRegFlushCategory(dir_handle: RegHandle) -> i32;
     pub fn sceRegGetKeyInfo(
@@ -3826,15 +3952,9 @@ extern "C" {
         buf: *const c_void,
         size: usize,
     ) -> i32;
-    pub fn sceRegGetKeysNum(
-        dir_handle: RegHandle,
-        num: *mut i32,
-    ) -> i32;
-    pub fn sceRegGetKeys(
-        dir_handle: RegHandle,
-        buf: *mut u8,
-        num: i32,
-    ) -> i32;
+    pub fn sceRegGetKeysNum(dir_handle: RegHandle, num: *mut i32) -> i32;
+    pub fn sceRegGetKeys(dir_handle: RegHandle, buf: *mut u8, num: i32)
+        -> i32;
     pub fn sceRegCreateKey(
         dir_handle: RegHandle,
         name: *const u8,
@@ -3845,6 +3965,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct OpenPSID {
     pub data: [u8; 16usize],
@@ -3855,6 +3976,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UtilityDialogCommon {
     pub size: u32,
@@ -3869,6 +3991,7 @@ pub struct UtilityDialogCommon {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityMsgDialogMode {
     Error,
@@ -3876,6 +3999,7 @@ pub enum UtilityMsgDialogMode {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityMsgDialogPressed {
     Unknown1,
@@ -3885,6 +4009,7 @@ pub enum UtilityMsgDialogPressed {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityDialogButtonAccept {
     Circle,
@@ -3892,6 +4017,7 @@ pub enum UtilityDialogButtonAccept {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SceUtilityOskInputLanguage {
     Default,
@@ -3908,6 +4034,7 @@ pub enum SceUtilityOskInputLanguage {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SceUtilityOskInputType {
     All,
@@ -3929,6 +4056,8 @@ pub enum SceUtilityOskInputType {
     Url = 0x80000,
 }
 
+#[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SceUtilityOskState {
     None,
@@ -3939,6 +4068,8 @@ pub enum SceUtilityOskState {
     Finished,
 }
 
+#[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SceUtilityOskResult {
     Unchanged,
@@ -3947,6 +4078,7 @@ pub enum SceUtilityOskResult {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SystemParamLanguage {
     Japanese,
@@ -3964,6 +4096,7 @@ pub enum SystemParamLanguage {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SystemParamId {
     StringNickname = 1,
@@ -3978,6 +4111,7 @@ pub enum SystemParamId {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SystemParamAdhocChannel {
     ChannelAutomatic = 0,
@@ -3987,6 +4121,7 @@ pub enum SystemParamAdhocChannel {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SystemParamWlanPowerSaveState {
     Off,
@@ -3994,6 +4129,7 @@ pub enum SystemParamWlanPowerSaveState {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SystemParamDateFormat {
     YYYYMMDD,
@@ -4002,6 +4138,7 @@ pub enum SystemParamDateFormat {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SystemParamTimeFormat {
     Hour24,
@@ -4009,6 +4146,7 @@ pub enum SystemParamTimeFormat {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum SystemParamDaylightSavings {
     Std,
@@ -4016,6 +4154,7 @@ pub enum SystemParamDaylightSavings {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum AvModule {
     AvCodec,
@@ -4029,6 +4168,7 @@ pub enum AvModule {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum Module {
     NetCommon = 0x100,
@@ -4061,6 +4201,7 @@ pub enum Module {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum NetModule {
     NetCommon = 1,
@@ -4072,6 +4213,7 @@ pub enum NetModule {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UsbModule {
     UsbPspCm = 1,
@@ -4082,6 +4224,7 @@ pub enum UsbModule {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum NetParam {
     Name,
@@ -4104,6 +4247,8 @@ pub enum NetParam {
     Unknown2,
 }
 
+#[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UtilityNetconfAction {
     ConnectAP,
@@ -4112,6 +4257,7 @@ pub enum UtilityNetconfAction {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct UtilityMsgDialogParams {
     pub base: UtilityDialogCommon,
@@ -4124,6 +4270,7 @@ pub struct UtilityMsgDialogParams {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UtilityNetconfAdhoc {
     pub name: [u8; 8usize],
@@ -4131,6 +4278,7 @@ pub struct UtilityNetconfAdhoc {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UtilityNetconfData {
     pub base: UtilityDialogCommon,
@@ -4142,6 +4290,7 @@ pub struct UtilityNetconfData {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub union UtilityNetData {
     pub as_uint: u32,
@@ -4149,6 +4298,7 @@ pub union UtilityNetData {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UtilitySavedataMode {
     AutoLoad,
@@ -4162,6 +4312,7 @@ pub enum UtilitySavedataMode {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UtilitySavedataFocus {
     Unknown1,
@@ -4176,6 +4327,7 @@ pub enum UtilitySavedataFocus {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct UtilitySavedataSFOParam {
     pub title: [u8; 128usize],
@@ -4186,6 +4338,7 @@ pub struct UtilitySavedataSFOParam {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UtilitySavedataFileData {
     pub buf: *mut c_void,
@@ -4195,12 +4348,15 @@ pub struct UtilitySavedataFileData {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UtilitySavedataListSaveNewData {
     pub icon0: UtilitySavedataFileData,
     pub title: *mut u8,
 }
+
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct SceUtilitySavedataParam {
     pub base: UtilityDialogCommon,
@@ -4229,6 +4385,7 @@ pub struct SceUtilitySavedataParam {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UtilityGameSharingMode {
     Single = 1,
@@ -4236,12 +4393,15 @@ pub enum UtilityGameSharingMode {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum UtilityGameSharingDataType {
     File = 1,
     Memory,
 }
+
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UtilityGameSharingParams {
     pub base: UtilityDialogCommon,
@@ -4260,6 +4420,7 @@ pub struct UtilityGameSharingParams {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct UtilityHtmlViewerParam {
     pub base: UtilityDialogCommon,
@@ -4287,6 +4448,7 @@ pub struct UtilityHtmlViewerParam {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityHtmlViewerInterfaceMode {
     Full,
@@ -4295,6 +4457,7 @@ pub enum UtilityHtmlViewerInterfaceMode {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityHtmlViewerCookieMode {
     Disabled = 0,
@@ -4304,6 +4467,7 @@ pub enum UtilityHtmlViewerCookieMode {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityHtmlViewerTextSize {
     Large,
@@ -4312,6 +4476,7 @@ pub enum UtilityHtmlViewerTextSize {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityHtmlViewerDisplayMode {
     Normal,
@@ -4320,6 +4485,7 @@ pub enum UtilityHtmlViewerDisplayMode {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityHtmlViewerConnectMode {
     Last,
@@ -4328,6 +4494,7 @@ pub enum UtilityHtmlViewerConnectMode {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum UtilityHtmlViewerDisconnectMode {
     Enable,
@@ -4336,6 +4503,7 @@ pub enum UtilityHtmlViewerDisconnectMode {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceUtilityOskData {
     pub unk_00: i32,
@@ -4354,6 +4522,7 @@ pub struct SceUtilityOskData {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceUtilityOskParams {
     pub base: UtilityDialogCommon,
@@ -4435,6 +4604,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceNetMallocStat {
     pub pool: i32,
@@ -4460,6 +4630,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceNetAdhocctlAdhocId {
     pub unknown: i32,
@@ -4468,6 +4639,7 @@ pub struct SceNetAdhocctlAdhocId {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct SceNetAdhocctlPeerInfo {
     pub next: *mut SceNetAdhocctlPeerInfo,
@@ -4478,6 +4650,7 @@ pub struct SceNetAdhocctlPeerInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceNetAdhocctlScanInfo {
     pub next: *mut SceNetAdhocctlScanInfo,
@@ -4489,6 +4662,7 @@ pub struct SceNetAdhocctlScanInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceNetAdhocctlGameModeInfo {
     pub count: i32,
@@ -4496,6 +4670,7 @@ pub struct SceNetAdhocctlGameModeInfo {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub struct SceNetAdhocctlParams {
     pub channel: i32,
@@ -4567,6 +4742,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceNetAdhocPtpStat {
     pub next: *mut SceNetAdhocPtpStat,
@@ -4581,6 +4757,7 @@ pub struct SceNetAdhocPtpStat {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum ScePspnetAdhocPtpState {
     Closed,
@@ -4591,6 +4768,7 @@ pub enum ScePspnetAdhocPtpState {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct SceNetAdhocPdpStat {
     pub next: *mut SceNetAdhocPdpStat,
@@ -4695,6 +4873,7 @@ extern "C" {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub struct AdhocPoolStat {
     pub size: i32,
@@ -4703,6 +4882,7 @@ pub struct AdhocPoolStat {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum AdhocMatchingMode {
     Host = 1,
@@ -4782,6 +4962,7 @@ extern "C" {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum ApctlState {
     Disconnected,
@@ -4794,6 +4975,7 @@ pub enum ApctlState {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum ApctlEvent {
     ConnectRequest,
@@ -4810,6 +4992,7 @@ pub enum ApctlEvent {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum ApctlInfo {
     ProfileName,
@@ -4834,6 +5017,7 @@ pub enum ApctlInfo {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Clone, Copy)]
 pub enum ApctlInfoSecurityType {
     None,
@@ -4842,6 +5026,7 @@ pub enum ApctlInfoSecurityType {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
 #[derive(Copy, Clone)]
 pub union SceNetApctlInfo {
     pub name: [u8; 64usize],
@@ -4882,6 +5067,7 @@ extern "C" {
     pub fn sceNetApctlGetState(pstate: *mut ApctlState) -> i32;
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct sockaddr(pub u32);
@@ -4961,6 +5147,7 @@ extern "C" {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum HttpMethod {
     Get,
@@ -4969,6 +5156,7 @@ pub enum HttpMethod {
 }
 
 #[repr(u32)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 pub enum HttpAuthType {
     Basic,
@@ -5091,6 +5279,7 @@ extern "C" {
     ) -> i32;
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct in_addr(pub u32);
