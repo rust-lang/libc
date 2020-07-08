@@ -66,11 +66,16 @@ done < targets
 cp $README $TARGET_DOC_DIR
 line=$(grep -n '<div class="platform_docs"></div>' $README | cut -d ":" -f 1)
 
-set +x
 { head -n "$((line-1))" $README; cat $PLATFORM_SUPPORT; tail -n "+$((line+1))" $README; } > $TARGET_DOC_DIR/$README
-set -x
 
-RUSTDOCFLAGS="--enable-index-page --index-page=${TARGET_DOC_DIR}/${README} -Zunstable-options" cargo doc
+cp $TARGET_DOC_DIR/$README $TARGET_DOC_DIR/index.md
+
+RUSTDOCFLAGS="--enable-index-page --index-page=${TARGET_DOC_DIR}/index.md -Zunstable-options" cargo doc
+
+# Tweak style
+cp ci/rust.css $TARGET_DOC_DIR
+sed -ie "8i <link rel=\"stylesheet\" type=\"text/css\" href=\"normalize.css\">" $TARGET_DOC_DIR/index.html
+sed -ie "9i <link rel=\"stylesheet\" type=\"text/css\" href=\"rust.css\">" $TARGET_DOC_DIR/index.html
 
 # Copy the licenses
 cp LICENSE-* $TARGET_DOC_DIR/

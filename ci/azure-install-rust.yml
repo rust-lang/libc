@@ -72,9 +72,18 @@ steps:
       where gcc
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Query gcc path
+  # This often fails fetching. Let's try several times.
   - bash: |
       set -ex
       cargo generate-lockfile
-      cargo generate-lockfile --manifest-path libc-test/Cargo.toml
+      N=5
+      n=0
+      until [ $n -ge $N ]
+      do
+          if cargo generate-lockfile ; then
+              break
+          fi
+          n=$((n+1))
+          sleep 1
+      done
     displayName: Generate lockfiles
-
