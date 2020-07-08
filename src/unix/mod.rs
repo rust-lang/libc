@@ -685,7 +685,10 @@ extern "C" {
     )]
     pub fn fchmod(fd: ::c_int, mode: mode_t) -> ::c_int;
 
-    #[cfg_attr(target_os = "macos", link_name = "fstat$INODE64")]
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "fstat$INODE64"
+    )]
     #[cfg_attr(target_os = "netbsd", link_name = "__fstat50")]
     #[cfg_attr(
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
@@ -695,7 +698,10 @@ extern "C" {
 
     pub fn mkdir(path: *const c_char, mode: mode_t) -> ::c_int;
 
-    #[cfg_attr(target_os = "macos", link_name = "stat$INODE64")]
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "stat$INODE64"
+    )]
     #[cfg_attr(target_os = "netbsd", link_name = "__stat50")]
     #[cfg_attr(
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
@@ -738,7 +744,10 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__opendir30")]
     pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
 
-    #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "readdir$INODE64"
+    )]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
     #[cfg_attr(
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
@@ -774,7 +783,10 @@ extern "C" {
         group: ::gid_t,
         flags: ::c_int,
     ) -> ::c_int;
-    #[cfg_attr(target_os = "macos", link_name = "fstatat$INODE64")]
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "fstatat$INODE64"
+    )]
     #[cfg_attr(
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "fstatat@FBSD_1.1"
@@ -1007,7 +1019,10 @@ extern "C" {
         ifname: *mut ::c_char,
     ) -> *mut ::c_char;
 
-    #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "lstat$INODE64"
+    )]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
     #[cfg_attr(
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
@@ -1483,7 +1498,8 @@ cfg_if! {
                        link_name = "fdopendir$INODE64$UNIX2003")]
             pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
 
-            #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
+            #[cfg_attr(all(target_os = "macos", not(target_arch = "aarch64")),
+                       link_name = "readdir_r$INODE64")]
             #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
             #[cfg_attr(
                 all(target_os = "freebsd", any(freebsd11, freebsd10)),
