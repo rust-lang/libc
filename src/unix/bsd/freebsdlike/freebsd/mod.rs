@@ -1162,14 +1162,6 @@ pub const F_SETLK_REMOTE: ::c_int = 14;
 pub const F_READAHEAD: ::c_int = 15;
 pub const F_RDAHEAD: ::c_int = 16;
 pub const F_DUP2FD_CLOEXEC: ::c_int = 18;
-pub const F_ADD_SEALS: ::c_int = 19;
-pub const F_GET_SEALS: ::c_int = 20;
-
-pub const F_SEAL_SEAL: ::c_int = 0x0001;
-pub const F_SEAL_SHRINK: ::c_int = 0x0002;
-pub const F_SEAL_GROW: ::c_int = 0x0004;
-pub const F_SEAL_WRITE: ::c_int = 0x0008;
-
 
 fn _ALIGN(p: usize) -> usize {
     (p + _ALIGNBYTES) & !_ALIGNBYTES

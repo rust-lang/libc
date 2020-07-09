@@ -1769,7 +1769,7 @@ fn test_freebsd(target: &str) {
             | "F_SEAL_SHRINK"
             | "F_SEAL_GROW"
             | "F_SEAL_WRITE"
-                if Some(12) == freebsd_ver =>
+                if Some(12) <= freebsd_ver =>
             {
                 true
             }

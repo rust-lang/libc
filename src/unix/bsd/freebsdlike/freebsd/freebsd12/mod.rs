@@ -190,6 +190,13 @@ cfg_if! {
     }
 }
 
+pub const F_ADD_SEALS: ::c_int = 19;
+pub const F_GET_SEALS: ::c_int = 20;
+pub const F_SEAL_SEAL: ::c_int = 0x0001;
+pub const F_SEAL_SHRINK: ::c_int = 0x0002;
+pub const F_SEAL_GROW: ::c_int = 0x0004;
+pub const F_SEAL_WRITE: ::c_int = 0x0008;
+
 cfg_if! {
     if #[cfg(not(freebsd13))] {
         pub const ELAST: ::c_int = 96;
