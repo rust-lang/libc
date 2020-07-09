@@ -218,6 +218,13 @@ s! {
         pub tai: ::c_long,
         pub time_state: ::c_int,
     }
+
+    pub struct ptrace_io_desc {
+        pub piod_op: ::c_int,
+        pub piod_offs: *mut ::c_void,
+        pub piod_addr: *mut ::c_void,
+        pub piod_len: ::size_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -712,6 +719,11 @@ pub const PF_INET6: ::c_int = AF_INET6;
 pub const PF_NATM: ::c_int = AF_NATM;
 pub const PF_ATM: ::c_int = AF_ATM;
 pub const PF_NETGRAPH: ::c_int = AF_NETGRAPH;
+
+pub const PIOD_READ_D: ::c_int = 1;
+pub const PIOD_WRITE_D: ::c_int = 2;
+pub const PIOD_READ_I: ::c_int = 3;
+pub const PIOD_WRITE_I: ::c_int = 4;
 
 pub const PT_TRACE_ME: ::c_int = 0;
 pub const PT_READ_I: ::c_int = 1;

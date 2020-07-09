@@ -75,6 +75,13 @@ s! {
         pub seq: ::c_ushort,
         pub key: ::key_t,
     }
+
+    pub struct ptrace_io_desc {
+        pub piod_op: ::c_int,
+        pub piod_offs: *mut ::c_void,
+        pub piod_addr: *mut ::c_void,
+        pub piod_len: ::size_t,
+    }
 }
 
 pub const D_T_FMT: ::nl_item = 0;
@@ -342,6 +349,12 @@ pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 1;
+
+pub const PIOD_READ_D: ::c_int = 1;
+pub const PIOD_WRITE_D: ::c_int = 2;
+pub const PIOD_READ_I: ::c_int = 3;
+pub const PIOD_WRITE_I: ::c_int = 4;
+pub const PIOD_READ_AUXV: ::c_int = 5;
 
 pub const PT_TRACE_ME: ::c_int = 0;
 pub const PT_READ_I: ::c_int = 1;
