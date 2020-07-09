@@ -778,6 +778,7 @@ pub const IP_PKTINFO: ::c_int = 8;
 pub const IP_MTU_DISCOVER: ::c_int = 10;
 pub const IP_RECVTOS: ::c_int = 13;
 pub const IP_RECVERR: ::c_int = 11;
+pub const IP_FREEBIND: ::c_int = 15;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 39;
