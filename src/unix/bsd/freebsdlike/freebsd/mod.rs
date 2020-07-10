@@ -116,6 +116,19 @@ s! {
         pub sc_ngroups: ::c_int,
         pub sc_groups: [::gid_t; 1],
     }
+
+    pub struct ptrace_vm_entry {
+        pub pve_entry: ::c_int,
+        pub pve_timestamp: ::c_int,
+        pub pve_start: ::c_ulong,
+        pub pve_end: ::c_ulong,
+        pub pve_offset: ::c_ulong,
+        pub pve_prot: ::c_uint,
+        pub pve_pathlen: ::c_uint,
+        pub pve_fileid: ::c_long,
+        pub pve_fsid: u32,
+        pub pve_path: *mut ::c_char,
+    }
 }
 
 s_no_extra_traits! {
