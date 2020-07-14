@@ -51,19 +51,19 @@ test_target() {
 
     # Test that libc builds with the `extra_traits` feature
     cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
-          --features extra_traits
+            --features extra_traits
 
     # Test the 'const-extern-fn' feature on nightly
     if [ "${RUST}" = "nightly" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
-          --features const-extern-fn
+            --features const-extern-fn
     fi
 
 
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}" \
-              --features extra_traits
+            --features extra_traits
     fi
 }
 
@@ -233,25 +233,6 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
             test_target xbuild "$TARGET" 1
         fi
     done
-
-    # Nintendo switch
-    # FIXME: Somehow downloads.devkitpro.org returns 403 now.
-    # Temorarily disabled tests for this target.
-    # cargo clean
-    # mkdir -p target
-    # (
-    #     cd target
-    #     wget https://github.com/devkitPro/pacman/releases/download/v1.0.2/devkitpro-pacman.amd64.deb
-    #     sudo apt-get install gdebi-core
-    #     sudo gdebi -nq devkitpro-pacman.amd64.deb
-    #     sudo dkp-pacman -Sy
-    #     sudo dkp-pacman -Syu
-    #     sudo dkp-pacman -S -v --noconfirm switch-dev devkitA64
-    # )
-    # cp ci/switch.json switch.json
-    # PATH="$PATH:/opt/devkitpro/devkitA64/bin"
-    # PATH="$PATH:/opt/devkitpro/tools/bin"
-    # cargo xbuild --target switch.json
 fi
 
 RUST_OSX_NO_CORE_TARGETS="\
