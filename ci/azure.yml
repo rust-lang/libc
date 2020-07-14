@@ -88,6 +88,14 @@ jobs:
         x86_64-unknown-linux-musl:
           TARGET: x86_64-unknown-linux-musl
 
+  - job: DockerSwitch
+    pool:
+      vmImage: ubuntu-18.04
+    steps:
+      - template: azure-install-rust.yml
+      - bash: LIBC_CI=1 sh ./ci/run-docker.sh switch
+        displayName: Execute run-docker.sh
+
   - job: DockerOSX64
     pool:
       vmImage: macos-10.15

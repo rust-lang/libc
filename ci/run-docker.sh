@@ -50,9 +50,44 @@ run() {
       sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh ${1}"
 }
 
+build_switch() {
+    echo "Building docker container for target switch"
+
+    # use -f so we can use ci/ as build context
+    docker build -t libc -f "ci/docker/switch/Dockerfile" ci/
+    mkdir -p target
+    if [ -w /dev/kvm ]; then
+        kvm="--volume /dev/kvm:/dev/kvm"
+    else
+        kvm=""
+    fi
+
+    cargo +nightly install cargo-xbuild
+
+    docker run \
+      --rm \
+      --user "$(id -u)":"$(id -g)" \
+      --env LIBC_CI \
+      --env CARGO_HOME=/cargo \
+      --env CARGO_TARGET_DIR=/checkout/target \
+      --volume "$CARGO_HOME":/cargo \
+      --volume "$(rustc --print sysroot)":/rust:ro \
+      --volume "$(pwd)":/checkout:ro \
+      --volume "$(pwd)"/target:/checkout/target \
+      $kvm \
+      --init \
+      --workdir /checkout \
+      libc \
+      sh -c "HOME=/tmp PATH=\$PATH:/rust/bin:/opt/devkitpro/devkitA64/bin:/opt/devkitpro/tools/bin cargo xbuild --target ci/switch.json"
+}
+
 if [ -z "${1}" ]; then
   for d in ci/docker/*; do
-    run "${d}"
+    if ["${d}" != "switch"]; then
+      run "${d}"
+    else
+      build_switch
+    fi
   done
 else
   run "${1}"
