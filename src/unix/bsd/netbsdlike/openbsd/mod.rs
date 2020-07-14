@@ -1385,7 +1385,7 @@ f! {
     }
 
     pub fn WIFSTOPPED(status: ::c_int) -> bool {
-        (status & 0o177) == 0o177
+        (status & 0xff) == 0o177
     }
 }
 
