@@ -1838,6 +1838,7 @@ pub const EPOLLET: ::c_int = 0x80000000;
 pub const EPOLLRDHUP: ::c_int = 0x2000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
 pub const EPOLLWAKEUP: ::c_int = 0x20000000;
+pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;

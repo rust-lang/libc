@@ -29,8 +29,6 @@ s! {
 pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
 pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
 
-pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
-
 pub const AF_LOCAL: ::c_int = 0;
 pub const AF_FILE: ::c_int = 0;
 
