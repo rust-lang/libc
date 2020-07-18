@@ -794,6 +794,11 @@ fn test_solarish(target: &str) {
         // This evaluates to a sysconf() call rather than a constant
         "PTHREAD_STACK_MIN" => true,
 
+        // EPOLLEXCLUSIVE is a relatively recent addition to the epoll interface and may not be
+        // defined on older systems.  It is, however, safe to use on systems which do not
+        // explicitly support it. (A no-op is an acceptable implementation of EPOLLEXCLUSIVE.)
+        "EPOLLEXCLUSIVE" => true,
+
         _ => false,
     });
 
