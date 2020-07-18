@@ -50,10 +50,49 @@ run() {
       sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh ${1}"
 }
 
+build_switch() {
+    echo "Building docker container for target switch"
+
+    # use -f so we can use ci/ as build context
+    docker build -t libc -f "ci/docker/switch/Dockerfile" ci/
+    mkdir -p target
+    if [ -w /dev/kvm ]; then
+        kvm="--volume /dev/kvm:/dev/kvm"
+    else
+        kvm=""
+    fi
+
+    cargo +nightly install cargo-xbuild
+    cp "$(which rustup)" "$(rustc --print sysroot)/bin"
+
+    docker run \
+      --rm \
+      --user "$(id -u)":"$(id -g)" \
+      --env LIBC_CI \
+      --env CARGO_HOME=/cargo \
+      --env CARGO_TARGET_DIR=/checkout/target \
+      --volume "$CARGO_HOME":/cargo \
+      --volume "$(rustc --print sysroot)":/rust:ro \
+      --volume "$(pwd)":/checkout:ro \
+      --volume "$(pwd)"/target:/checkout/target \
+      --volume ~/.rustup:/.rustup:Z \
+      $kvm \
+      --init \
+      --workdir /checkout \
+      libc \
+      sh -c "HOME=/tmp RUSTUP_HOME=/tmp PATH=\$PATH:/rust/bin rustup default nightly \
+        && rustup component add rust-src --target ci/switch.json \
+        && cargo xbuild --target ci/switch.json"
+}
+
 if [ -z "${1}" ]; then
   for d in ci/docker/*; do
     run "${d}"
   done
 else
-  run "${1}"
+  if [ "${1}" != "switch" ]; then
+    run "${1}"
+  else
+    build_switch
+  fi
 fi

@@ -186,6 +186,16 @@ jobs:
     variables:
       OS: linux
 
+  # devkitpro's pacman needs to be connected from Docker.
+  - job: DockerSwitch
+    dependsOn: StyleAndDocs
+    pool:
+      vmImage: ubuntu-18.04
+    steps:
+      - template: azure-install-rust.yml
+      - bash: LIBC_CI=1 sh ./ci/run-docker.sh switch
+        displayName: Execute run-docker.sh
+
   - job: BuildChannelsOSX
     dependsOn: StyleAndDocs
     pool:
