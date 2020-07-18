@@ -111,12 +111,6 @@ cfg_if! {
 
         mod fuchsia;
         pub use fuchsia::*;
-    } else if #[cfg(target_os = "switch")] {
-        mod fixed_width_ints;
-        pub use fixed_width_ints::*;
-
-        mod switch;
-        pub use switch::*;
     } else if #[cfg(target_os = "psp")] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
@@ -129,12 +123,18 @@ cfg_if! {
 
         mod vxworks;
         pub use vxworks::*;
-    } else if #[cfg(unix)] {
+    } else if #[cfg(all(unix, any(not(target_os = "switch"), target_env = "devkita64")))] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
 
         mod unix;
         pub use unix::*;
+    } else if #[cfg(target_os = "switch")] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
+        mod switch;
+        pub use switch::*;
     } else if #[cfg(target_os = "hermit")] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
