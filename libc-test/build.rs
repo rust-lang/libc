@@ -1762,6 +1762,18 @@ fn test_freebsd(target: &str) {
 
     cfg.skip_const(move |name| {
         match name {
+            // These constants are to be introduced in yet-unreleased FreeBSD 12.2.
+            "F_ADD_SEALS"
+            | "F_GET_SEALS"
+            | "F_SEAL_SEAL"
+            | "F_SEAL_SHRINK"
+            | "F_SEAL_GROW"
+            | "F_SEAL_WRITE"
+                if Some(12) <= freebsd_ver =>
+            {
+                true
+            }
+
             // These constants were introduced in FreeBSD 12:
             "SF_USER_READAHEAD"
             | "EVFILT_EMPTY"

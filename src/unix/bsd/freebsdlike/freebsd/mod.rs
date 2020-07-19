@@ -1154,6 +1154,15 @@ pub const UF_READONLY: ::c_ulong = 0x00001000;
 pub const UF_HIDDEN: ::c_ulong = 0x00008000;
 pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
 
+pub const F_OGETLK: ::c_int = 7;
+pub const F_OSETLK: ::c_int = 8;
+pub const F_OSETLKW: ::c_int = 9;
+pub const F_DUP2FD: ::c_int = 10;
+pub const F_SETLK_REMOTE: ::c_int = 14;
+pub const F_READAHEAD: ::c_int = 15;
+pub const F_RDAHEAD: ::c_int = 16;
+pub const F_DUP2FD_CLOEXEC: ::c_int = 18;
+
 fn _ALIGN(p: usize) -> usize {
     (p + _ALIGNBYTES) & !_ALIGNBYTES
 }
