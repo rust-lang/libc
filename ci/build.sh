@@ -233,6 +233,9 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
             test_target xbuild "$TARGET" 1
         fi
     done
+
+    # Sony PSP
+    cargo xbuild --target mipsel-sony-psp
 fi
 
 RUST_OSX_NO_CORE_TARGETS="\
