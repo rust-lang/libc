@@ -2,11 +2,1646 @@ use core::prelude::v1::*;
 use *;
 
 pub type c_char = u8;
-
 pub type c_long = i64;
 pub type c_ulong = u64;
-
 pub type rlim_t = u64;
+pub type __int8_t = c_schar;
+pub type __uint8_t = c_uchar;
+pub type __int16_t = c_short;
+pub type __uint16_t = c_ushort;
+pub type __int32_t = c_int;
+pub type __uint32_t = c_uint;
+pub type __int64_t = c_long;
+pub type __uint64_t = c_ulong;
+pub type __int_least8_t = c_schar;
+pub type __uint_least8_t = c_uchar;
+pub type __int_least16_t = c_short;
+pub type __uint_least16_t = c_ushort;
+pub type __int_least32_t = c_int;
+pub type __uint_least32_t = c_uint;
+pub type __int_least64_t = c_long;
+pub type __uint_least64_t = c_ulong;
+pub type __intmax_t = c_long;
+pub type __uintmax_t = c_ulong;
+pub type __intptr_t = c_long;
+pub type __uintptr_t = c_ulong;
+pub type size_t = usize;
+pub type _ssize_t = isize;
+pub type u_int8_t = __uint8_t;
+pub type u_int16_t = __uint16_t;
+pub type u_int32_t = __uint32_t;
+pub type u_int64_t = __uint64_t;
+pub type register_t = c_int;
+pub type wchar_t = c_int;
+pub type intmax_t = __intmax_t;
+pub type uintmax_t = __uintmax_t;
+pub type int_least8_t = __int_least8_t;
+pub type uint_least8_t = __uint_least8_t;
+pub type int_least16_t = __int_least16_t;
+pub type uint_least16_t = __uint_least16_t;
+pub type int_least32_t = __int_least32_t;
+pub type uint_least32_t = __uint_least32_t;
+pub type int_least64_t = __int_least64_t;
+pub type uint_least64_t = __uint_least64_t;
+pub type int_fast8_t = c_schar;
+pub type uint_fast8_t = c_uchar;
+pub type int_fast16_t = c_short;
+pub type uint_fast16_t = c_ushort;
+pub type int_fast32_t = c_int;
+pub type uint_fast32_t = c_uint;
+pub type int_fast64_t = c_long;
+pub type uint_fast64_t = c_ulong;
+pub type _LOCK_T = i32;
+pub type _LOCK_RECURSIVE_T = __lock_t;
+pub type _COND_T = u32;
+pub type __blkcnt_t = c_long;
+pub type __blksize_t = c_long;
+pub type __fsblkcnt_t = __uint64_t;
+pub type __fsfilcnt_t = __uint32_t;
+pub type _off_t = c_long;
+pub type __pid_t = c_int;
+pub type __dev_t = c_short;
+pub type __uid_t = u32;
+pub type __gid_t = c_ushort;
+pub type __id_t = __uint32_t;
+pub type __ino_t = c_ushort;
+pub type __mode_t = __uint32_t;
+pub type __off_t = _off_t;
+pub type __key_t = c_long;
+pub type _fpos_t = c_long;
+pub type wint_t = c_uint;
+pub type _flock_t = _LOCK_RECURSIVE_T;
+pub type _iconv_t = *mut c_void;
+pub type __clockid_t = c_ulong;
+pub type __timer_t = c_ulong;
+pub type __sa_family_t = __uint8_t;
+pub type __socklen_t = __uint32_t;
+pub type __nl_item = c_int;
+pub type __nlink_t = c_ushort;
+pub type __suseconds_t = c_long;
+pub type __useconds_t = c_ulong;
+pub type __sigset_t = c_ulong;
+pub type suseconds_t = __suseconds_t;
+pub type time_t = c_long;
+pub type sigset_t = __sigset_t;
+pub type fd_mask = c_ulong;
+pub type in_addr_t = __uint32_t;
+pub type in_port_t = __uint16_t;
+pub type u_char = c_uchar;
+pub type u_short = c_ushort;
+pub type u_int = c_uint;
+pub type u_long = c_ulong;
+pub type ushort = c_ushort;
+pub type uint = c_uint;
+pub type ulong = c_ulong;
+pub type blkcnt_t = __blkcnt_t;
+pub type blksize_t = __blksize_t;
+pub type clock_t = c_ulong;
+pub type daddr_t = c_long;
+pub type caddr_t = *mut c_char;
+pub type fsblkcnt_t = __fsblkcnt_t;
+pub type fsfilcnt_t = __fsfilcnt_t;
+pub type id_t = __id_t;
+pub type ino_t = __ino_t;
+pub type off_t = __off_t;
+pub type dev_t = __dev_t;
+pub type uid_t = __uid_t;
+pub type gid_t = __gid_t;
+pub type pid_t = __pid_t;
+pub type key_t = __key_t;
+pub type ssize_t = _ssize_t;
+pub type mode_t = __mode_t;
+pub type nlink_t = __nlink_t;
+pub type clockid_t = __clockid_t;
+pub type timer_t = __timer_t;
+pub type useconds_t = __useconds_t;
+pub type sbintime_t = __int64_t;
+pub type pthread_t = *mut __pthread_t;
+pub type pthread_key_t = __uint32_t;
+pub type once_flag = pthread_once_t;
+pub type tss_t = pthread_key_t;
+pub type mtx_t = pthread_mutex_t;
+pub type cnd_t = pthread_cond_t;
+pub type thrd_t = pthread_t;
+pub type __ULong = c_uint;
+pub type __FILE = __sFILE;
+pub type locale_t = *mut __locale_t;
+pub type __tzrule_type = __tzrule_struct;
+pub type __tzinfo_type = __tzinfo_struct;
+pub type tss_dtor_t = ::Option<unsafe extern "C" fn(arg1: *mut c_void)>;
+pub type thrd_start_t =
+    ::Option<unsafe extern "C" fn(arg1: *mut c_void) -> c_int>;
+pub type _bindgen_ty_1 = u32;
+pub type _bindgen_ty_2 = u32;
+pub type float_t = f32;
+pub type double_t = f64;
+pub type Elf32_Half = u16;
+pub type Elf64_Half = u16;
+pub type Elf32_Word = u32;
+pub type Elf32_Sword = i32;
+pub type Elf64_Word = u32;
+pub type Elf64_Sword = i32;
+pub type Elf32_Xword = u64;
+pub type Elf32_Sxword = i64;
+pub type Elf64_Xword = u64;
+pub type Elf64_Sxword = i64;
+pub type Elf32_Addr = u32;
+pub type Elf64_Addr = u64;
+pub type Elf32_Off = u32;
+pub type Elf64_Off = u64;
+pub type Elf32_Section = u16;
+pub type Elf64_Section = u16;
+pub type Elf32_Versym = Elf32_Half;
+pub type Elf64_Versym = Elf64_Half;
+pub type Elf32_Conflict = Elf32_Addr;
+pub type _bindgen_ty_3 = u32;
+pub type __gnuc_va_list = __builtin_va_list;
+pub type va_list = __gnuc_va_list;
+pub type FILE = __FILE;
+pub type mbstate_t = _mbstate_t;
+pub type jmp_buf = [c_longlong; 8usize];
+pub type wordexp_t = _wordexp_t;
+pub type _bindgen_ty_4 = u32;
+pub type memory_order = u32;
+pub type atomic_bool = u8;
+pub type atomic_char = u8;
+pub type atomic_schar = u8;
+pub type atomic_uchar = u8;
+pub type atomic_short = u16;
+pub type atomic_ushort = u16;
+pub type atomic_int = u32;
+pub type atomic_uint = u32;
+pub type atomic_long = u64;
+pub type atomic_ulong = u64;
+pub type atomic_llong = u64;
+pub type atomic_ullong = u64;
+pub type atomic_wchar_t = wchar_t;
+pub type atomic_int_least8_t = int_least8_t;
+pub type atomic_uint_least8_t = uint_least8_t;
+pub type atomic_int_least16_t = int_least16_t;
+pub type atomic_uint_least16_t = uint_least16_t;
+pub type atomic_int_least32_t = int_least32_t;
+pub type atomic_uint_least32_t = uint_least32_t;
+pub type atomic_int_least64_t = int_least64_t;
+pub type atomic_uint_least64_t = uint_least64_t;
+pub type atomic_int_fast8_t = int_fast8_t;
+pub type atomic_uint_fast8_t = uint_fast8_t;
+pub type atomic_int_fast16_t = int_fast16_t;
+pub type atomic_uint_fast16_t = uint_fast16_t;
+pub type atomic_int_fast32_t = int_fast32_t;
+pub type atomic_uint_fast32_t = uint_fast32_t;
+pub type atomic_int_fast64_t = int_fast64_t;
+pub type atomic_uint_fast64_t = uint_fast64_t;
+pub type atomic_intptr_t = isize;
+pub type atomic_uintptr_t = usize;
+pub type atomic_size_t = size_t;
+pub type atomic_ptrdiff_t = isize;
+pub type atomic_intmax_t = intmax_t;
+pub type atomic_uintmax_t = uintmax_t;
+pub type _bindgen_ty_5 = u32;
+pub type regoff_t = off_t;
+pub type wctype_t = c_int;
+pub type wctrans_t = c_int;
+pub type __compar_fn_t = ::Option<
+    unsafe extern "C" fn(arg1: *const c_void, arg2: *const c_void) -> c_int,
+>;
+pub type error_t = c_int;
+pub type fpos_t = _fpos_t;
+pub type iconv_t = _iconv_t;
+pub type sa_family_t = __sa_family_t;
+pub type socklen_t = __socklen_t;
+pub type _sig_func_ptr = ::Option<unsafe extern "C" fn(arg1: c_int)>;
+pub type stack_t = sigaltstack;
+pub type sig_atomic_t = c_int;
+pub type sig_t = _sig_func_ptr;
+pub type nfds_t = c_uint;
+pub type posix_spawnattr_t = *mut __posix_spawnattr;
+pub type posix_spawn_file_actions_t = *mut __posix_spawn_file_actions;
+pub type ENTRY = entry;
+pub type ACTION = u32;
+pub type VISIT = u32;
+pub type nl_item = __nl_item;
+pub type _bindgen_ty_6 = u32;
+pub type __builtin_va_list = [__va_list_tag; 1usize];
+
+#[repr(C)]
+#[repr(align(16))]
+#[derive(Debug, Copy, Clone)]
+pub struct max_align_t {
+    pub __max_align_ll: c_longlong,
+    pub __bindgen_padding_0: u64,
+    pub __max_align_ld: u128,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __lock_t {
+    pub lock: _LOCK_T,
+    pub thread_tag: u32,
+    pub counter: u32,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct _mbstate_t {
+    pub __count: c_int,
+    pub __value: _mbstate_t__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union _mbstate_t__bindgen_ty_1 {
+    pub __wch: wint_t,
+    pub __wchb: [c_uchar; 4usize],
+    _bindgen_union_align: u32,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct timeval {
+    pub tv_sec: time_t,
+    pub tv_usec: suseconds_t,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct itimerspec {
+    pub it_interval: timespec,
+    pub it_value: timespec,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct fd_set {
+    pub fds_bits: [fd_mask; 1usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sched_param {
+    pub sched_priority: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __pthread_t {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pthread_attr_t {
+    pub stackaddr: *mut c_void,
+    pub stacksize: c_int,
+    pub schedparam: sched_param,
+    pub detachstate: c_int,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pthread_mutex_t {
+    pub type_: c_int,
+    pub inner: pthread_mutex_t_inner,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pthread_mutex_t_inner {
+    pub normal: _LOCK_T,
+    pub recursive: _LOCK_RECURSIVE_T,
+    align: [u32; 3usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pthread_mutexattr_t {}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pthread_cond_t {
+    pub clock_id: clockid_t,
+    pub cond: _COND_T,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pthread_condattr_t {
+    pub clock_id: clockid_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pthread_once_t {
+    pub status: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __locale_t {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _Bigint {
+    pub _next: *mut _Bigint,
+    pub _k: c_int,
+    pub _maxwds: c_int,
+    pub _sign: c_int,
+    pub _wds: c_int,
+    pub _x: [__ULong; 1usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __tm {
+    pub __tm_sec: c_int,
+    pub __tm_min: c_int,
+    pub __tm_hour: c_int,
+    pub __tm_mday: c_int,
+    pub __tm_mon: c_int,
+    pub __tm_year: c_int,
+    pub __tm_wday: c_int,
+    pub __tm_yday: c_int,
+    pub __tm_isdst: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _on_exit_args {
+    pub _fnargs: [*mut c_void; 32usize],
+    pub _dso_handle: [*mut c_void; 32usize],
+    pub _fntypes: __ULong,
+    pub _is_cxa: __ULong,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _atexit {
+    pub _next: *mut _atexit,
+    pub _ind: c_int,
+    pub _fns: [::Option<unsafe extern "C" fn()>; 32usize],
+    pub _on_exit_args: _on_exit_args,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __sbuf {
+    pub _base: *mut c_uchar,
+    pub _size: c_int,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct __sFILE {
+    pub _p: *mut c_uchar,
+    pub _r: c_int,
+    pub _w: c_int,
+    pub _flags: c_short,
+    pub _file: c_short,
+    pub _bf: __sbuf,
+    pub _lbfsize: c_int,
+    pub _cookie: *mut c_void,
+    pub _read: ::Option<
+        unsafe extern "C" fn(
+            arg1: *mut _reent,
+            arg2: *mut c_void,
+            arg3: *mut c_char,
+            arg4: c_int,
+        ) -> c_int,
+    >,
+    pub _write: ::Option<
+        unsafe extern "C" fn(
+            arg1: *mut _reent,
+            arg2: *mut c_void,
+            arg3: *const c_char,
+            arg4: c_int,
+        ) -> c_int,
+    >,
+    pub _seek: ::Option<
+        unsafe extern "C" fn(
+            arg1: *mut _reent,
+            arg2: *mut c_void,
+            arg3: _fpos_t,
+            arg4: c_int,
+        ) -> _fpos_t,
+    >,
+    pub _close: ::Option<
+        unsafe extern "C" fn(arg1: *mut _reent, arg2: *mut c_void) -> c_int,
+    >,
+    pub _ub: __sbuf,
+    pub _up: *mut c_uchar,
+    pub _ur: c_int,
+    pub _ubuf: [c_uchar; 3usize],
+    pub _nbuf: [c_uchar; 1usize],
+    pub _lb: __sbuf,
+    pub _blksize: c_int,
+    pub _offset: _off_t,
+    pub _data: *mut _reent,
+    pub _lock: _flock_t,
+    pub _mbstate: _mbstate_t,
+    pub _flags2: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _glue {
+    pub _next: *mut _glue,
+    pub _niobs: c_int,
+    pub _iobs: *mut __FILE,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _rand48 {
+    pub _seed: [c_ushort; 3usize],
+    pub _mult: [c_ushort; 3usize],
+    pub _add: c_ushort,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct _reent {
+    pub _errno: c_int,
+    pub _stdin: *mut __FILE,
+    pub _stdout: *mut __FILE,
+    pub _stderr: *mut __FILE,
+    pub _inc: c_int,
+    pub _emergency: [c_char; 25usize],
+    pub _unspecified_locale_info: c_int,
+    pub _locale: *mut __locale_t,
+    pub __sdidinit: c_int,
+    pub __cleanup: ::Option<unsafe extern "C" fn(arg1: *mut _reent)>,
+    pub _result: *mut _Bigint,
+    pub _result_k: c_int,
+    pub _p5s: *mut _Bigint,
+    pub _freelist: *mut *mut _Bigint,
+    pub _cvtlen: c_int,
+    pub _cvtbuf: *mut c_char,
+    pub _new: _reent__bindgen_ty_1,
+    pub _atexit: *mut _atexit,
+    pub _atexit0: _atexit,
+    pub _sig_func: *mut ::Option<unsafe extern "C" fn(arg1: c_int)>,
+    pub __sglue: _glue,
+    pub __sf: [__FILE; 3usize],
+    pub deviceData: *mut c_void,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union _reent__bindgen_ty_1 {
+    pub _reent: _reent__bindgen_ty_1__bindgen_ty_1,
+    pub _unused: _reent__bindgen_ty_1__bindgen_ty_2,
+    _bindgen_union_align: [u64; 45usize],
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct _reent__bindgen_ty_1__bindgen_ty_1 {
+    pub _unused_rand: c_uint,
+    pub _strtok_last: *mut c_char,
+    pub _asctime_buf: [c_char; 26usize],
+    pub _localtime_buf: __tm,
+    pub _gamma_signgam: c_int,
+    pub _rand_next: c_ulonglong,
+    pub _r48: _rand48,
+    pub _mblen_state: _mbstate_t,
+    pub _mbtowc_state: _mbstate_t,
+    pub _wctomb_state: _mbstate_t,
+    pub _l64a_buf: [c_char; 8usize],
+    pub _signal_buf: [c_char; 24usize],
+    pub _getdate_err: c_int,
+    pub _mbrlen_state: _mbstate_t,
+    pub _mbrtowc_state: _mbstate_t,
+    pub _mbsrtowcs_state: _mbstate_t,
+    pub _wcrtomb_state: _mbstate_t,
+    pub _wcsrtombs_state: _mbstate_t,
+    pub _h_errno: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _reent__bindgen_ty_1__bindgen_ty_2 {
+    pub _nextf: [*mut c_uchar; 30usize],
+    pub _nmalloc: [c_uint; 30usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct tm {
+    pub tm_sec: c_int,
+    pub tm_min: c_int,
+    pub tm_hour: c_int,
+    pub tm_mday: c_int,
+    pub tm_mon: c_int,
+    pub tm_year: c_int,
+    pub tm_wday: c_int,
+    pub tm_yday: c_int,
+    pub tm_isdst: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __tzrule_struct {
+    pub ch: c_char,
+    pub m: c_int,
+    pub n: c_int,
+    pub d: c_int,
+    pub s: c_int,
+    pub change: time_t,
+    pub offset: c_long,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __tzinfo_struct {
+    pub __tznorth: c_int,
+    pub __tzyear: c_int,
+    pub __tzrule: [__tzrule_type; 2usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct group {
+    pub gr_name: *mut c_char,
+    pub gr_passwd: *mut c_char,
+    pub gr_gid: gid_t,
+    pub gr_mem: *mut *mut c_char,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct exception {
+    pub type_: c_int,
+    pub name: *mut c_char,
+    pub arg1: f64,
+    pub arg2: f64,
+    pub retval: f64,
+    pub err: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Ehdr {
+    pub e_ident: [c_uchar; 16usize],
+    pub e_type: Elf32_Half,
+    pub e_machine: Elf32_Half,
+    pub e_version: Elf32_Word,
+    pub e_entry: Elf32_Addr,
+    pub e_phoff: Elf32_Off,
+    pub e_shoff: Elf32_Off,
+    pub e_flags: Elf32_Word,
+    pub e_ehsize: Elf32_Half,
+    pub e_phentsize: Elf32_Half,
+    pub e_phnum: Elf32_Half,
+    pub e_shentsize: Elf32_Half,
+    pub e_shnum: Elf32_Half,
+    pub e_shstrndx: Elf32_Half,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Ehdr {
+    pub e_ident: [c_uchar; 16usize],
+    pub e_type: Elf64_Half,
+    pub e_machine: Elf64_Half,
+    pub e_version: Elf64_Word,
+    pub e_entry: Elf64_Addr,
+    pub e_phoff: Elf64_Off,
+    pub e_shoff: Elf64_Off,
+    pub e_flags: Elf64_Word,
+    pub e_ehsize: Elf64_Half,
+    pub e_phentsize: Elf64_Half,
+    pub e_phnum: Elf64_Half,
+    pub e_shentsize: Elf64_Half,
+    pub e_shnum: Elf64_Half,
+    pub e_shstrndx: Elf64_Half,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Shdr {
+    pub sh_name: Elf32_Word,
+    pub sh_type: Elf32_Word,
+    pub sh_flags: Elf32_Word,
+    pub sh_addr: Elf32_Addr,
+    pub sh_offset: Elf32_Off,
+    pub sh_size: Elf32_Word,
+    pub sh_link: Elf32_Word,
+    pub sh_info: Elf32_Word,
+    pub sh_addralign: Elf32_Word,
+    pub sh_entsize: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Shdr {
+    pub sh_name: Elf64_Word,
+    pub sh_type: Elf64_Word,
+    pub sh_flags: Elf64_Xword,
+    pub sh_addr: Elf64_Addr,
+    pub sh_offset: Elf64_Off,
+    pub sh_size: Elf64_Xword,
+    pub sh_link: Elf64_Word,
+    pub sh_info: Elf64_Word,
+    pub sh_addralign: Elf64_Xword,
+    pub sh_entsize: Elf64_Xword,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Chdr {
+    pub ch_type: Elf32_Word,
+    pub ch_size: Elf32_Word,
+    pub ch_addralign: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Chdr {
+    pub ch_type: Elf64_Word,
+    pub ch_reserved: Elf64_Word,
+    pub ch_size: Elf64_Xword,
+    pub ch_addralign: Elf64_Xword,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Sym {
+    pub st_name: Elf32_Word,
+    pub st_value: Elf32_Addr,
+    pub st_size: Elf32_Word,
+    pub st_info: c_uchar,
+    pub st_other: c_uchar,
+    pub st_shndx: Elf32_Section,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Sym {
+    pub st_name: Elf64_Word,
+    pub st_info: c_uchar,
+    pub st_other: c_uchar,
+    pub st_shndx: Elf64_Section,
+    pub st_value: Elf64_Addr,
+    pub st_size: Elf64_Xword,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Syminfo {
+    pub si_boundto: Elf32_Half,
+    pub si_flags: Elf32_Half,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Syminfo {
+    pub si_boundto: Elf64_Half,
+    pub si_flags: Elf64_Half,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Rel {
+    pub r_offset: Elf32_Addr,
+    pub r_info: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Rel {
+    pub r_offset: Elf64_Addr,
+    pub r_info: Elf64_Xword,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Rela {
+    pub r_offset: Elf32_Addr,
+    pub r_info: Elf32_Word,
+    pub r_addend: Elf32_Sword,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Rela {
+    pub r_offset: Elf64_Addr,
+    pub r_info: Elf64_Xword,
+    pub r_addend: Elf64_Sxword,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Phdr {
+    pub p_type: Elf32_Word,
+    pub p_offset: Elf32_Off,
+    pub p_vaddr: Elf32_Addr,
+    pub p_paddr: Elf32_Addr,
+    pub p_filesz: Elf32_Word,
+    pub p_memsz: Elf32_Word,
+    pub p_flags: Elf32_Word,
+    pub p_align: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Phdr {
+    pub p_type: Elf64_Word,
+    pub p_flags: Elf64_Word,
+    pub p_offset: Elf64_Off,
+    pub p_vaddr: Elf64_Addr,
+    pub p_paddr: Elf64_Addr,
+    pub p_filesz: Elf64_Xword,
+    pub p_memsz: Elf64_Xword,
+    pub p_align: Elf64_Xword,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Elf32_Dyn {
+    pub d_tag: Elf32_Sword,
+    pub d_un: Elf32_Dyn__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union Elf32_Dyn__bindgen_ty_1 {
+    pub d_val: Elf32_Word,
+    pub d_ptr: Elf32_Addr,
+    _bindgen_union_align: u32,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Elf64_Dyn {
+    pub d_tag: Elf64_Sxword,
+    pub d_un: Elf64_Dyn__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union Elf64_Dyn__bindgen_ty_1 {
+    pub d_val: Elf64_Xword,
+    pub d_ptr: Elf64_Addr,
+    _bindgen_union_align: u64,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Verdef {
+    pub vd_version: Elf32_Half,
+    pub vd_flags: Elf32_Half,
+    pub vd_ndx: Elf32_Half,
+    pub vd_cnt: Elf32_Half,
+    pub vd_hash: Elf32_Word,
+    pub vd_aux: Elf32_Word,
+    pub vd_next: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Verdef {
+    pub vd_version: Elf64_Half,
+    pub vd_flags: Elf64_Half,
+    pub vd_ndx: Elf64_Half,
+    pub vd_cnt: Elf64_Half,
+    pub vd_hash: Elf64_Word,
+    pub vd_aux: Elf64_Word,
+    pub vd_next: Elf64_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Verdaux {
+    pub vda_name: Elf32_Word,
+    pub vda_next: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Verdaux {
+    pub vda_name: Elf64_Word,
+    pub vda_next: Elf64_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Verneed {
+    pub vn_version: Elf32_Half,
+    pub vn_cnt: Elf32_Half,
+    pub vn_file: Elf32_Word,
+    pub vn_aux: Elf32_Word,
+    pub vn_next: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Verneed {
+    pub vn_version: Elf64_Half,
+    pub vn_cnt: Elf64_Half,
+    pub vn_file: Elf64_Word,
+    pub vn_aux: Elf64_Word,
+    pub vn_next: Elf64_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Vernaux {
+    pub vna_hash: Elf32_Word,
+    pub vna_flags: Elf32_Half,
+    pub vna_other: Elf32_Half,
+    pub vna_name: Elf32_Word,
+    pub vna_next: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Vernaux {
+    pub vna_hash: Elf64_Word,
+    pub vna_flags: Elf64_Half,
+    pub vna_other: Elf64_Half,
+    pub vna_name: Elf64_Word,
+    pub vna_next: Elf64_Word,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Elf32_auxv_t {
+    pub a_type: u32,
+    pub a_un: Elf32_auxv_t__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union Elf32_auxv_t__bindgen_ty_1 {
+    pub a_val: u32,
+    _bindgen_union_align: u32,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Elf64_auxv_t {
+    pub a_type: u64,
+    pub a_un: Elf64_auxv_t__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union Elf64_auxv_t__bindgen_ty_1 {
+    pub a_val: u64,
+    _bindgen_union_align: u64,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Nhdr {
+    pub n_namesz: Elf32_Word,
+    pub n_descsz: Elf32_Word,
+    pub n_type: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Nhdr {
+    pub n_namesz: Elf64_Word,
+    pub n_descsz: Elf64_Word,
+    pub n_type: Elf64_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Move {
+    pub m_value: Elf32_Xword,
+    pub m_info: Elf32_Word,
+    pub m_poffset: Elf32_Word,
+    pub m_repeat: Elf32_Half,
+    pub m_stride: Elf32_Half,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Move {
+    pub m_value: Elf64_Xword,
+    pub m_info: Elf64_Xword,
+    pub m_poffset: Elf64_Xword,
+    pub m_repeat: Elf64_Half,
+    pub m_stride: Elf64_Half,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union Elf32_gptab {
+    pub gt_header: Elf32_gptab__bindgen_ty_1,
+    pub gt_entry: Elf32_gptab__bindgen_ty_2,
+    _bindgen_union_align: [u32; 2usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_gptab__bindgen_ty_1 {
+    pub gt_current_g_value: Elf32_Word,
+    pub gt_unused: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_gptab__bindgen_ty_2 {
+    pub gt_g_value: Elf32_Word,
+    pub gt_bytes: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_RegInfo {
+    pub ri_gprmask: Elf32_Word,
+    pub ri_cprmask: [Elf32_Word; 4usize],
+    pub ri_gp_value: Elf32_Sword,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf_Options {
+    pub kind: c_uchar,
+    pub size: c_uchar,
+    pub section: Elf32_Section,
+    pub info: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf_Options_Hw {
+    pub hwp_flags1: Elf32_Word,
+    pub hwp_flags2: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf32_Lib {
+    pub l_name: Elf32_Word,
+    pub l_time_stamp: Elf32_Word,
+    pub l_checksum: Elf32_Word,
+    pub l_version: Elf32_Word,
+    pub l_flags: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf64_Lib {
+    pub l_name: Elf64_Word,
+    pub l_time_stamp: Elf64_Word,
+    pub l_checksum: Elf64_Word,
+    pub l_version: Elf64_Word,
+    pub l_flags: Elf64_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Elf_MIPS_ABIFlags_v0 {
+    pub version: Elf32_Half,
+    pub isa_level: c_uchar,
+    pub isa_rev: c_uchar,
+    pub gpr_size: c_uchar,
+    pub cpr1_size: c_uchar,
+    pub cpr2_size: c_uchar,
+    pub fp_abi: c_uchar,
+    pub isa_ext: Elf32_Word,
+    pub ases: Elf32_Word,
+    pub flags1: Elf32_Word,
+    pub flags2: Elf32_Word,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _wordexp_t {
+    pub we_wordc: size_t,
+    pub we_wordv: *mut *mut c_char,
+    pub we_offs: size_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct atomic_flag {
+    pub __flag: atomic_bool,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct stat {
+    pub st_dev: dev_t,
+    pub st_ino: ino_t,
+    pub st_mode: mode_t,
+    pub st_nlink: nlink_t,
+    pub st_uid: uid_t,
+    pub st_gid: gid_t,
+    pub st_rdev: dev_t,
+    pub st_size: off_t,
+    pub st_atime: time_t,
+    pub st_spare1: c_long,
+    pub st_mtime: time_t,
+    pub st_spare2: c_long,
+    pub st_ctime: time_t,
+    pub st_spare3: c_long,
+    pub st_blksize: blksize_t,
+    pub st_blocks: blkcnt_t,
+    pub st_spare4: [c_long; 2usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct statvfs {
+    pub f_bsize: c_ulong,
+    pub f_frsize: c_ulong,
+    pub f_blocks: fsblkcnt_t,
+    pub f_bfree: fsblkcnt_t,
+    pub f_bavail: fsblkcnt_t,
+    pub f_files: fsfilcnt_t,
+    pub f_ffree: fsfilcnt_t,
+    pub f_favail: fsfilcnt_t,
+    pub f_fsid: c_ulong,
+    pub f_flag: c_ulong,
+    pub f_namemax: c_ulong,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct timezone {
+    pub tz_minuteswest: c_int,
+    pub tz_dsttime: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct bintime {
+    pub sec: time_t,
+    pub frac: u64,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct itimerval {
+    pub it_interval: timeval,
+    pub it_value: timeval,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __handle {
+    pub device: c_uint,
+    pub refcount: c_uint,
+    pub fileStruct: *mut c_void,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct DIR_ITER {
+    pub device: c_int,
+    pub dirStruct: *mut c_void,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct devoptab_t {
+    pub name: *const c_char,
+    pub structSize: size_t,
+    pub open_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            fileStruct: *mut c_void,
+            path: *const c_char,
+            flags: c_int,
+            mode: c_int,
+        ) -> c_int,
+    >,
+    pub close_r: ::Option<
+        unsafe extern "C" fn(r: *mut _reent, fd: *mut c_void) -> c_int,
+    >,
+    pub write_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            fd: *mut c_void,
+            ptr: *const c_char,
+            len: size_t,
+        ) -> ssize_t,
+    >,
+    pub read_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            fd: *mut c_void,
+            ptr: *mut c_char,
+            len: size_t,
+        ) -> ssize_t,
+    >,
+    pub seek_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            fd: *mut c_void,
+            pos: off_t,
+            dir: c_int,
+        ) -> off_t,
+    >,
+    pub fstat_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            fd: *mut c_void,
+            st: *mut stat,
+        ) -> c_int,
+    >,
+    pub stat_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            file: *const c_char,
+            st: *mut stat,
+        ) -> c_int,
+    >,
+    pub link_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            existing: *const c_char,
+            newLink: *const c_char,
+        ) -> c_int,
+    >,
+    pub unlink_r: ::Option<
+        unsafe extern "C" fn(r: *mut _reent, name: *const c_char) -> c_int,
+    >,
+    pub chdir_r: ::Option<
+        unsafe extern "C" fn(r: *mut _reent, name: *const c_char) -> c_int,
+    >,
+    pub rename_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            oldName: *const c_char,
+            newName: *const c_char,
+        ) -> c_int,
+    >,
+    pub mkdir_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            path: *const c_char,
+            mode: c_int,
+        ) -> c_int,
+    >,
+    pub dirStateSize: size_t,
+    pub diropen_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            dirState: *mut DIR_ITER,
+            path: *const c_char,
+        ) -> *mut DIR_ITER,
+    >,
+    pub dirreset_r: ::Option<
+        unsafe extern "C" fn(r: *mut _reent, dirState: *mut DIR_ITER) -> c_int,
+    >,
+    pub dirnext_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            dirState: *mut DIR_ITER,
+            filename: *mut c_char,
+            filestat: *mut stat,
+        ) -> c_int,
+    >,
+    pub dirclose_r: ::Option<
+        unsafe extern "C" fn(r: *mut _reent, dirState: *mut DIR_ITER) -> c_int,
+    >,
+    pub statvfs_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            path: *const c_char,
+            buf: *mut statvfs,
+        ) -> c_int,
+    >,
+    pub ftruncate_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            fd: *mut c_void,
+            len: off_t,
+        ) -> c_int,
+    >,
+    pub fsync_r: ::Option<
+        unsafe extern "C" fn(r: *mut _reent, fd: *mut c_void) -> c_int,
+    >,
+    pub deviceData: *mut c_void,
+    pub chmod_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            path: *const c_char,
+            mode: mode_t,
+        ) -> c_int,
+    >,
+    pub fchmod_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            fd: *mut c_void,
+            mode: mode_t,
+        ) -> c_int,
+    >,
+    pub rmdir_r: ::Option<
+        unsafe extern "C" fn(r: *mut _reent, name: *const c_char) -> c_int,
+    >,
+    pub lstat_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            file: *const c_char,
+            st: *mut stat,
+        ) -> c_int,
+    >,
+    pub utimes_r: ::Option<
+        unsafe extern "C" fn(
+            r: *mut _reent,
+            filename: *const c_char,
+            times: *const timeval,
+        ) -> c_int,
+    >,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct dirent {
+    pub d_ino: ino_t,
+    pub d_type: c_uchar,
+    pub d_name: [c_char; 256usize],
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DIR {
+    pub position: c_long,
+    pub dirData: *mut DIR_ITER,
+    pub fileData: dirent,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct imaxdiv_t {
+    pub quot: intmax_t,
+    pub rem: intmax_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct lconv {
+    pub decimal_point: *mut c_char,
+    pub thousands_sep: *mut c_char,
+    pub grouping: *mut c_char,
+    pub int_curr_symbol: *mut c_char,
+    pub currency_symbol: *mut c_char,
+    pub mon_decimal_point: *mut c_char,
+    pub mon_thousands_sep: *mut c_char,
+    pub mon_grouping: *mut c_char,
+    pub positive_sign: *mut c_char,
+    pub negative_sign: *mut c_char,
+    pub int_frac_digits: c_char,
+    pub frac_digits: c_char,
+    pub p_cs_precedes: c_char,
+    pub p_sep_by_space: c_char,
+    pub n_cs_precedes: c_char,
+    pub n_sep_by_space: c_char,
+    pub p_sign_posn: c_char,
+    pub n_sign_posn: c_char,
+    pub int_n_cs_precedes: c_char,
+    pub int_n_sep_by_space: c_char,
+    pub int_n_sign_posn: c_char,
+    pub int_p_cs_precedes: c_char,
+    pub int_p_sep_by_space: c_char,
+    pub int_p_sign_posn: c_char,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct regex_t {
+    pub re_magic: c_int,
+    pub re_nsub: size_t,
+    pub re_endp: *const c_char,
+    pub re_g: *mut re_guts,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct regmatch_t {
+    pub rm_so: regoff_t,
+    pub rm_eo: regoff_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct div_t {
+    pub quot: c_int,
+    pub rem: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct ldiv_t {
+    pub quot: c_long,
+    pub rem: c_long,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct lldiv_t {
+    pub quot: c_longlong,
+    pub rem: c_longlong,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct ar_hdr {
+    pub ar_name: [c_char; 16usize],
+    pub ar_date: [c_char; 12usize],
+    pub ar_uid: [c_char; 6usize],
+    pub ar_gid: [c_char; 6usize],
+    pub ar_mode: [c_char; 8usize],
+    pub ar_size: [c_char; 10usize],
+    pub ar_fmag: [c_char; 2usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct utimbuf {
+    pub actime: time_t,
+    pub modtime: time_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct glob_t {
+    pub gl_pathc: c_int,
+    pub gl_matchc: c_int,
+    pub gl_offs: c_int,
+    pub gl_flags: c_int,
+    pub gl_pathv: *mut *mut c_char,
+    pub gl_errfunc: ::Option<
+        unsafe extern "C" fn(arg1: *const c_char, arg2: c_int) -> c_int,
+    >,
+    pub gl_closedir: ::Option<unsafe extern "C" fn(arg1: *mut c_void)>,
+    pub gl_readdir:
+        ::Option<unsafe extern "C" fn(arg1: *mut c_void) -> *mut dirent>,
+    pub gl_opendir:
+        ::Option<unsafe extern "C" fn(arg1: *const c_char) -> *mut c_void>,
+    pub gl_lstat: ::Option<
+        unsafe extern "C" fn(arg1: *const c_char, arg2: *mut stat) -> c_int,
+    >,
+    pub gl_stat: ::Option<
+        unsafe extern "C" fn(arg1: *const c_char, arg2: *mut stat) -> c_int,
+    >,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct passwd {
+    pub pw_name: *mut c_char,
+    pub pw_passwd: *mut c_char,
+    pub pw_uid: uid_t,
+    pub pw_gid: gid_t,
+    pub pw_comment: *mut c_char,
+    pub pw_gecos: *mut c_char,
+    pub pw_dir: *mut c_char,
+    pub pw_shell: *mut c_char,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct option {
+    pub name: *const c_char,
+    pub has_arg: c_int,
+    pub flag: *mut c_int,
+    pub val: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct ctlname {
+    pub ctl_name: *mut c_char,
+    pub ctl_type: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct tms {
+    pub tms_utime: clock_t,
+    pub tms_stime: clock_t,
+    pub tms_cutime: clock_t,
+    pub tms_cstime: clock_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct flock {
+    pub l_type: c_short,
+    pub l_whence: c_short,
+    pub l_start: c_long,
+    pub l_len: c_long,
+    pub l_pid: c_short,
+    pub l_xxx: c_short,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct eflock {
+    pub l_type: c_short,
+    pub l_whence: c_short,
+    pub l_start: c_long,
+    pub l_len: c_long,
+    pub l_pid: c_short,
+    pub l_xxx: c_short,
+    pub l_rpid: c_long,
+    pub l_rsys: c_long,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct iovec {
+    pub iov_base: *mut c_void,
+    pub iov_len: size_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct linger {
+    pub l_onoff: c_int,
+    pub l_linger: c_int,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct accept_filter_arg {
+    pub af_name: [c_char; 16usize],
+    pub af_arg: [c_char; 240usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sockaddr {
+    pub sa_len: c_uchar,
+    pub sa_family: sa_family_t,
+    pub sa_data: [c_char; 14usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sockproto {
+    pub sp_family: c_ushort,
+    pub sp_protocol: c_ushort,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct sockaddr_storage {
+    pub ss_len: c_uchar,
+    pub ss_family: sa_family_t,
+    pub __ss_pad1: [c_char; 6usize],
+    pub __ss_align: i64,
+    pub __ss_pad2: [c_char; 112usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct msghdr {
+    pub msg_name: *mut c_void,
+    pub msg_namelen: socklen_t,
+    pub msg_iov: *mut iovec,
+    pub msg_iovlen: c_int,
+    pub msg_control: *mut c_void,
+    pub msg_controllen: socklen_t,
+    pub msg_flags: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct cmsghdr {
+    pub cmsg_len: socklen_t,
+    pub cmsg_level: c_int,
+    pub cmsg_type: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sock_timestamp_info {
+    pub st_info_flags: u32,
+    pub st_info_pad0: u32,
+    pub st_info_rsv: [u64; 7usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct osockaddr {
+    pub sa_family: c_ushort,
+    pub sa_data: [c_char; 14usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct omsghdr {
+    pub msg_name: *mut c_char,
+    pub msg_namelen: c_int,
+    pub msg_iov: *mut iovec,
+    pub msg_iovlen: c_int,
+    pub msg_accrights: *mut c_char,
+    pub msg_accrightslen: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sf_hdtr {
+    pub headers: *mut iovec,
+    pub hdr_cnt: c_int,
+    pub trailers: *mut iovec,
+    pub trl_cnt: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct mmsghdr {
+    pub msg_hdr: msghdr,
+    pub msg_len: ssize_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct rusage {
+    pub ru_utime: timeval,
+    pub ru_stime: timeval,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct timeb {
+    pub time: time_t,
+    pub millitm: c_ushort,
+    pub timezone: c_short,
+    pub dstflag: c_short,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct fiodgname_arg {
+    pub len: c_int,
+    pub buf: *mut c_void,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union sigval {
+    pub sival_int: c_int,
+    pub sival_ptr: *mut c_void,
+    _bindgen_union_align: u64,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct sigevent {
+    pub sigev_notify: c_int,
+    pub sigev_signo: c_int,
+    pub sigev_value: sigval,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct siginfo_t {
+    pub si_signo: c_int,
+    pub si_code: c_int,
+    pub si_value: sigval,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sigaction {
+    pub sa_handler: _sig_func_ptr,
+    pub sa_mask: sigset_t,
+    pub sa_flags: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sigaltstack {
+    pub ss_sp: *mut c_void,
+    pub ss_flags: c_int,
+    pub ss_size: size_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pollfd {
+    pub fd: c_int,
+    pub events: c_short,
+    pub revents: c_short,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __posix_spawnattr {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __posix_spawn_file_actions {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct entry {
+    pub key: *mut c_char,
+    pub data: *mut c_void,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct hsearch_data {
+    pub htable: *mut internal_head,
+    pub htablesize: size_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct mallinfo {
+    pub arena: size_t,
+    pub ordblks: size_t,
+    pub smblks: size_t,
+    pub hblks: size_t,
+    pub hblkhd: size_t,
+    pub usmblks: size_t,
+    pub fsmblks: size_t,
+    pub uordblks: size_t,
+    pub fordblks: size_t,
+    pub keepcost: size_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __va_list_tag {
+    pub gp_offset: c_uint,
+    pub fp_offset: c_uint,
+    pub overflow_arg_area: *mut c_void,
+    pub reg_save_area: *mut c_void,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct re_guts {
+    pub _address: u8,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct internal_head {
+    pub _address: u8,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct hostent {
+    pub h_name: *mut c_char,
+    pub h_aliases: *mut *mut c_char,
+    pub h_addrtype: c_int,
+    pub h_length: c_int,
+    pub h_addr_list: *mut *mut c_char,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct netent {
+    pub n_name: *mut c_char,
+    pub n_aliases: *mut *mut c_char,
+    pub n_addrtype: c_int,
+    pub n_net: u32,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct servent {
+    pub s_name: *mut c_char,
+    pub s_aliases: *mut *mut c_char,
+    pub s_port: c_int,
+    pub s_proto: *mut c_char,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct protoent {
+    pub p_name: *mut c_char,
+    pub p_aliases: *mut *mut c_char,
+    pub p_proto: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct addrinfo {
+    pub ai_flags: c_int,
+    pub ai_family: c_int,
+    pub ai_socktype: c_int,
+    pub ai_protocol: c_int,
+    pub ai_addrlen: socklen_t,
+    pub ai_canonname: *mut c_char,
+    pub ai_addr: *mut sockaddr,
+    pub ai_next: *mut addrinfo,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sem_t {
+    pub lock: _LOCK_T,
+    pub cond: _COND_T,
+    pub value: c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pthread_rwlock_t {
+    pub lock: _LOCK_T,
+    pub cond_r: _COND_T,
+    pub cond_w: _COND_T,
+    pub data: [u8; 4],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pthread_rwlockattr_t {}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct sockaddr_un {
+    pub sun_len: u8,
+    pub sun_family: sa_family_t,
+    pub sun_path: [c_char; 104],
+}
+#[derive(Copy, Clone)]
+pub struct in_addr {
+    pub s_addr: in_addr_t,
+}
+#[derive(Copy, Clone)]
+pub struct sockaddr_in {
+    pub sin_len: u8,
+    pub sin_family: sa_family_t,
+    pub sin_port: ::in_port_t,
+    pub sin_addr: in_addr,
+    pub sin_zero: [c_char; 8],
+}
+#[derive(Copy, Clone)]
+pub struct sockaddr_in6 {
+    pub sin6_len: u8,
+    pub sin6_family: sa_family_t,
+    pub sin6_port: ::in_port_t,
+    pub sin6_flowinfo: u32,
+    pub sin6_addr: ::in6_addr,
+    pub sin6_scope_id: u32,
+}
 
 pub const HAVE_INITFINI_ARRAY: i32 = 1;
 pub const WINT_MIN: i32 = 0;
@@ -2819,7 +4454,7 @@ pub const O_EXCL: i32 = 2048;
 pub const O_SYNC: i32 = 8192;
 pub const O_NONBLOCK: i32 = 16384;
 pub const O_NOCTTY: i32 = 32768;
-pub const O_CLOEXEC: i32 = 0; // not supported (but exec isn't either)
+pub const O_CLOEXEC: i32 = 0;
 pub const O_NOFOLLOW: i32 = 1048576;
 pub const O_DIRECTORY: i32 = 2097152;
 pub const O_EXEC: i32 = 4194304;
@@ -3439,1924 +5074,14 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     clock_id: CLOCK_REALTIME,
     cond: __COND_INITIALIZER,
 };
-pub type __int8_t = c_schar;
-pub type __uint8_t = c_uchar;
-pub type __int16_t = c_short;
-pub type __uint16_t = c_ushort;
-pub type __int32_t = c_int;
-pub type __uint32_t = c_uint;
-pub type __int64_t = c_long;
-pub type __uint64_t = c_ulong;
-pub type __int_least8_t = c_schar;
-pub type __uint_least8_t = c_uchar;
-pub type __int_least16_t = c_short;
-pub type __uint_least16_t = c_ushort;
-pub type __int_least32_t = c_int;
-pub type __uint_least32_t = c_uint;
-pub type __int_least64_t = c_long;
-pub type __uint_least64_t = c_ulong;
-pub type __intmax_t = c_long;
-pub type __uintmax_t = c_ulong;
-pub type __intptr_t = c_long;
-pub type __uintptr_t = c_ulong;
-pub type size_t = usize;
-pub type _ssize_t = isize;
-pub type u_int8_t = __uint8_t;
-pub type u_int16_t = __uint16_t;
-pub type u_int32_t = __uint32_t;
-pub type u_int64_t = __uint64_t;
-pub type register_t = c_int;
-pub type wchar_t = c_int;
-#[repr(C)]
-#[repr(align(16))]
-#[derive(Debug, Copy, Clone)]
-pub struct max_align_t {
-    pub __max_align_ll: c_longlong,
-    pub __bindgen_padding_0: u64,
-    pub __max_align_ld: u128,
-}
-pub type intmax_t = __intmax_t;
-pub type uintmax_t = __uintmax_t;
-pub type int_least8_t = __int_least8_t;
-pub type uint_least8_t = __uint_least8_t;
-pub type int_least16_t = __int_least16_t;
-pub type uint_least16_t = __uint_least16_t;
-pub type int_least32_t = __int_least32_t;
-pub type uint_least32_t = __uint_least32_t;
-pub type int_least64_t = __int_least64_t;
-pub type uint_least64_t = __uint_least64_t;
-pub type int_fast8_t = c_schar;
-pub type uint_fast8_t = c_uchar;
-pub type int_fast16_t = c_short;
-pub type uint_fast16_t = c_ushort;
-pub type int_fast32_t = c_int;
-pub type uint_fast32_t = c_uint;
-pub type int_fast64_t = c_long;
-pub type uint_fast64_t = c_ulong;
-pub type _LOCK_T = i32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __lock_t {
-    pub lock: _LOCK_T,
-    pub thread_tag: u32,
-    pub counter: u32,
-}
-pub type _LOCK_RECURSIVE_T = __lock_t;
-pub type _COND_T = u32;
-pub type __blkcnt_t = c_long;
-pub type __blksize_t = c_long;
-pub type __fsblkcnt_t = __uint64_t;
-pub type __fsfilcnt_t = __uint32_t;
-pub type _off_t = c_long;
-pub type __pid_t = c_int;
-pub type __dev_t = c_short;
-pub type __uid_t = u32;
-pub type __gid_t = c_ushort;
-pub type __id_t = __uint32_t;
-pub type __ino_t = c_ushort;
-pub type __mode_t = __uint32_t;
-pub type __off_t = _off_t;
-pub type __key_t = c_long;
-pub type _fpos_t = c_long;
-pub type wint_t = c_uint;
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct _mbstate_t {
-    pub __count: c_int,
-    pub __value: _mbstate_t__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union _mbstate_t__bindgen_ty_1 {
-    pub __wch: wint_t,
-    pub __wchb: [c_uchar; 4usize],
-    _bindgen_union_align: u32,
-}
-pub type _flock_t = _LOCK_RECURSIVE_T;
-pub type _iconv_t = *mut c_void;
-pub type __clockid_t = c_ulong;
-pub type __timer_t = c_ulong;
-pub type __sa_family_t = __uint8_t;
-pub type __socklen_t = __uint32_t;
-pub type __nl_item = c_int;
-pub type __nlink_t = c_ushort;
-pub type __suseconds_t = c_long;
-pub type __useconds_t = c_ulong;
-pub type __sigset_t = c_ulong;
-pub type suseconds_t = __suseconds_t;
-pub type time_t = c_long;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct timeval {
-    pub tv_sec: time_t,
-    pub tv_usec: suseconds_t,
-}
-extern "C" {
-    pub fn timespec2nsec(ts: *const timespec) -> __uint64_t;
-}
-extern "C" {
-    pub fn abstimespec2nsec(
-        clock_id: __clockid_t,
-        ts: *const timespec,
-    ) -> __uint64_t;
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct itimerspec {
-    pub it_interval: timespec,
-    pub it_value: timespec,
-}
-pub type sigset_t = __sigset_t;
-pub type fd_mask = c_ulong;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct fd_set {
-    pub fds_bits: [fd_mask; 1usize],
-}
-extern "C" {
-    pub fn select(
-        __n: c_int,
-        __readfds: *mut fd_set,
-        __writefds: *mut fd_set,
-        __exceptfds: *mut fd_set,
-        __timeout: *mut timeval,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn pselect(
-        __n: c_int,
-        __readfds: *mut fd_set,
-        __writefds: *mut fd_set,
-        __exceptfds: *mut fd_set,
-        __timeout: *const timespec,
-        __set: *const sigset_t,
-    ) -> c_int;
-}
-pub type in_addr_t = __uint32_t;
-pub type in_port_t = __uint16_t;
-pub type u_char = c_uchar;
-pub type u_short = c_ushort;
-pub type u_int = c_uint;
-pub type u_long = c_ulong;
-pub type ushort = c_ushort;
-pub type uint = c_uint;
-pub type ulong = c_ulong;
-pub type blkcnt_t = __blkcnt_t;
-pub type blksize_t = __blksize_t;
-pub type clock_t = c_ulong;
-pub type daddr_t = c_long;
-pub type caddr_t = *mut c_char;
-pub type fsblkcnt_t = __fsblkcnt_t;
-pub type fsfilcnt_t = __fsfilcnt_t;
-pub type id_t = __id_t;
-pub type ino_t = __ino_t;
-pub type off_t = __off_t;
-pub type dev_t = __dev_t;
-pub type uid_t = __uid_t;
-pub type gid_t = __gid_t;
-pub type pid_t = __pid_t;
-pub type key_t = __key_t;
-pub type ssize_t = _ssize_t;
-pub type mode_t = __mode_t;
-pub type nlink_t = __nlink_t;
-pub type clockid_t = __clockid_t;
-pub type timer_t = __timer_t;
-pub type useconds_t = __useconds_t;
-pub type sbintime_t = __int64_t;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sched_param {
-    pub sched_priority: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __pthread_t {
-    _unused: [u8; 0],
-}
-pub type pthread_t = *mut __pthread_t;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pthread_attr_t {
-    pub stackaddr: *mut c_void,
-    pub stacksize: c_int,
-    pub schedparam: sched_param,
-    pub detachstate: c_int,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct pthread_mutex_t {
-    pub type_: c_int,
-    pub inner: pthread_mutex_t_inner,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union pthread_mutex_t_inner {
-    pub normal: _LOCK_T,
-    pub recursive: _LOCK_RECURSIVE_T,
-    align: [u32; 3usize],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pthread_mutexattr_t {}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pthread_cond_t {
-    pub clock_id: clockid_t,
-    pub cond: _COND_T,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pthread_condattr_t {
-    pub clock_id: clockid_t,
-}
-pub type pthread_key_t = __uint32_t;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pthread_once_t {
-    pub status: c_int,
-}
-extern "C" {
-    pub static mut environ: *mut *mut c_char;
-}
-extern "C" {
-    pub fn access(__path: *const c_char, __amode: c_int) -> c_int;
-}
-extern "C" {
-    pub fn alarm(__secs: c_uint) -> c_uint;
-}
-extern "C" {
-    pub fn chdir(__path: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn chmod(__path: *const c_char, __mode: mode_t) -> c_int;
-}
-extern "C" {
-    pub fn chown(
-        __path: *const c_char,
-        __owner: uid_t,
-        __group: gid_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn chroot(__path: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn close(__fildes: c_int) -> c_int;
-}
-extern "C" {
-    pub fn confstr(__name: c_int, __buf: *mut c_char, __len: size_t)
-        -> size_t;
-}
-extern "C" {
-    pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
-}
-extern "C" {
-    pub fn dup(__fildes: c_int) -> c_int;
-}
-extern "C" {
-    pub fn dup2(__fildes: c_int, __fildes2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn endusershell();
-}
-extern "C" {
-    pub fn execl(__path: *const c_char, arg1: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn execle(__path: *const c_char, arg1: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn execlp(__file: *const c_char, arg1: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn execlpe(__file: *const c_char, arg1: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn execv(__path: *const c_char, __argv: *const *mut c_char) -> c_int;
-}
-extern "C" {
-    pub fn execve(
-        __path: *const c_char,
-        __argv: *const *mut c_char,
-        __envp: *const *mut c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn execvp(__file: *const c_char, __argv: *const *mut c_char) -> c_int;
-}
-extern "C" {
-    pub fn faccessat(
-        __dirfd: c_int,
-        __path: *const c_char,
-        __mode: c_int,
-        __flags: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn fchdir(__fildes: c_int) -> c_int;
-}
-extern "C" {
-    pub fn fchmod(__fildes: c_int, __mode: mode_t) -> c_int;
-}
-extern "C" {
-    pub fn fchown(__fildes: c_int, __owner: uid_t, __group: gid_t) -> c_int;
-}
-extern "C" {
-    pub fn fchownat(
-        __dirfd: c_int,
-        __path: *const c_char,
-        __owner: uid_t,
-        __group: gid_t,
-        __flags: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn fexecve(
-        __fd: c_int,
-        __argv: *const *mut c_char,
-        __envp: *const *mut c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn fork() -> pid_t;
-}
-extern "C" {
-    pub fn fpathconf(__fd: c_int, __name: c_int) -> c_long;
-}
-extern "C" {
-    pub fn fsync(__fd: c_int) -> c_int;
-}
-extern "C" {
-    pub fn fdatasync(__fd: c_int) -> c_int;
-}
-extern "C" {
-    pub fn getcwd(__buf: *mut c_char, __size: size_t) -> *mut c_char;
-}
-extern "C" {
-    pub fn getdomainname(__name: *mut c_char, __len: size_t) -> c_int;
-}
-extern "C" {
-    pub fn getentropy(arg1: *mut c_void, arg2: size_t) -> c_int;
-}
-extern "C" {
-    pub fn getegid() -> gid_t;
-}
-extern "C" {
-    pub fn geteuid() -> uid_t;
-}
-extern "C" {
-    pub fn getgid() -> gid_t;
-}
-extern "C" {
-    pub fn getgroups(__gidsetsize: c_int, __grouplist: *mut gid_t) -> c_int;
-}
-extern "C" {
-    pub fn gethostid() -> c_long;
-}
-extern "C" {
-    pub fn getlogin() -> *mut c_char;
-}
-extern "C" {
-    pub fn getpass(__prompt: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn getpagesize() -> c_int;
-}
-extern "C" {
-    pub fn getpeereid(
-        arg1: c_int,
-        arg2: *mut uid_t,
-        arg3: *mut gid_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getpgid(arg1: pid_t) -> pid_t;
-}
-extern "C" {
-    pub fn getpgrp() -> pid_t;
-}
-extern "C" {
-    pub fn getpid() -> pid_t;
-}
-extern "C" {
-    pub fn getppid() -> pid_t;
-}
-extern "C" {
-    pub fn getsid(arg1: pid_t) -> pid_t;
-}
-extern "C" {
-    pub fn getuid() -> uid_t;
-}
-extern "C" {
-    pub fn getusershell() -> *mut c_char;
-}
-extern "C" {
-    pub fn getwd(__buf: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn iruserok(
-        raddr: c_ulong,
-        superuser: c_int,
-        ruser: *const c_char,
-        luser: *const c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn isatty(__fildes: c_int) -> c_int;
-}
-extern "C" {
-    pub fn issetugid() -> c_int;
-}
-extern "C" {
-    pub fn lchown(
-        __path: *const c_char,
-        __owner: uid_t,
-        __group: gid_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn link(__path1: *const c_char, __path2: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn linkat(
-        __dirfd1: c_int,
-        __path1: *const c_char,
-        __dirfd2: c_int,
-        __path2: *const c_char,
-        __flags: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn nice(__nice_value: c_int) -> c_int;
-}
-extern "C" {
-    pub fn lseek(__fildes: c_int, __offset: off_t, __whence: c_int) -> off_t;
-}
-extern "C" {
-    pub fn lockf(__fd: c_int, __cmd: c_int, __len: off_t) -> c_int;
-}
-extern "C" {
-    pub fn pathconf(__path: *const c_char, __name: c_int) -> c_long;
-}
-extern "C" {
-    pub fn pause() -> c_int;
-}
-extern "C" {
-    pub fn pthread_atfork(
-        arg1: ::Option<unsafe extern "C" fn()>,
-        arg2: ::Option<unsafe extern "C" fn()>,
-        arg3: ::Option<unsafe extern "C" fn()>,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn pipe(__fildes: *mut c_int) -> c_int;
-}
-extern "C" {
-    pub fn pread(
-        __fd: c_int,
-        __buf: *mut c_void,
-        __nbytes: size_t,
-        __offset: off_t,
-    ) -> ssize_t;
-}
-extern "C" {
-    pub fn pwrite(
-        __fd: c_int,
-        __buf: *const c_void,
-        __nbytes: size_t,
-        __offset: off_t,
-    ) -> ssize_t;
-}
-extern "C" {
-    pub fn read(__fd: c_int, __buf: *mut c_void, __nbyte: size_t) -> c_int;
-}
-extern "C" {
-    pub fn rresvport(__alport: *mut c_int) -> c_int;
-}
-extern "C" {
-    pub fn revoke(__path: *mut c_char) -> c_int;
-}
-extern "C" {
-    pub fn rmdir(__path: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn ruserok(
-        rhost: *const c_char,
-        superuser: c_int,
-        ruser: *const c_char,
-        luser: *const c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn sbrk(__incr: isize) -> *mut c_void;
-}
-extern "C" {
-    pub fn setegid(__gid: gid_t) -> c_int;
-}
-extern "C" {
-    pub fn seteuid(__uid: uid_t) -> c_int;
-}
-extern "C" {
-    pub fn setgid(__gid: gid_t) -> c_int;
-}
-extern "C" {
-    pub fn setgroups(ngroups: c_int, grouplist: *const gid_t) -> c_int;
-}
-extern "C" {
-    pub fn sethostname(arg1: *const c_char, arg2: size_t) -> c_int;
-}
-extern "C" {
-    pub fn setpgid(__pid: pid_t, __pgid: pid_t) -> c_int;
-}
-extern "C" {
-    pub fn setpgrp() -> c_int;
-}
-extern "C" {
-    pub fn setregid(__rgid: gid_t, __egid: gid_t) -> c_int;
-}
-extern "C" {
-    pub fn setreuid(__ruid: uid_t, __euid: uid_t) -> c_int;
-}
-extern "C" {
-    pub fn setsid() -> pid_t;
-}
-extern "C" {
-    pub fn setuid(__uid: uid_t) -> c_int;
-}
-extern "C" {
-    pub fn setusershell();
-}
-extern "C" {
-    pub fn sleep(__seconds: c_uint) -> c_uint;
-}
-extern "C" {
-    pub fn tcgetpgrp(__fildes: c_int) -> pid_t;
-}
-extern "C" {
-    pub fn tcsetpgrp(__fildes: c_int, __pgrp_id: pid_t) -> c_int;
-}
-extern "C" {
-    pub fn ttyname(__fildes: c_int) -> *mut c_char;
-}
-extern "C" {
-    pub fn ttyname_r(arg1: c_int, arg2: *mut c_char, arg3: size_t) -> c_int;
-}
-extern "C" {
-    pub fn unlink(__path: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn usleep(__useconds: useconds_t) -> c_int;
-}
-extern "C" {
-    pub fn vhangup() -> c_int;
-}
-extern "C" {
-    pub fn write(__fd: c_int, __buf: *const c_void, __nbyte: size_t) -> c_int;
-}
-extern "C" {
-    pub static mut optarg: *mut c_char;
-}
-extern "C" {
-    pub static mut optind: c_int;
-}
-extern "C" {
-    pub static mut opterr: c_int;
-}
-extern "C" {
-    pub static mut optopt: c_int;
-}
-extern "C" {
-    pub fn getopt(
-        arg1: c_int,
-        arg2: *const *mut c_char,
-        arg3: *const c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub static mut optreset: c_int;
-}
-extern "C" {
-    pub fn vfork() -> c_int;
-}
-extern "C" {
-    pub fn ftruncate(__fd: c_int, __length: off_t) -> c_int;
-}
-extern "C" {
-    pub fn truncate(arg1: *const c_char, __length: off_t) -> c_int;
-}
-extern "C" {
-    pub fn getdtablesize() -> c_int;
-}
-extern "C" {
-    pub fn ualarm(
-        __useconds: useconds_t,
-        __interval: useconds_t,
-    ) -> useconds_t;
-}
-extern "C" {
-    pub fn gethostname(__name: *mut c_char, __len: size_t) -> c_int;
-}
-extern "C" {
-    pub fn setdtablesize(arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn sync();
-}
-extern "C" {
-    pub fn readlink(
-        __path: *const c_char,
-        __buf: *mut c_char,
-        __buflen: size_t,
-    ) -> ssize_t;
-}
-extern "C" {
-    pub fn symlink(__name1: *const c_char, __name2: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn readlinkat(
-        __dirfd1: c_int,
-        __path: *const c_char,
-        __buf: *mut c_char,
-        __buflen: size_t,
-    ) -> ssize_t;
-}
-extern "C" {
-    pub fn symlinkat(
-        arg1: *const c_char,
-        arg2: c_int,
-        arg3: *const c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn unlinkat(arg1: c_int, arg2: *const c_char, arg3: c_int) -> c_int;
-}
-pub type once_flag = pthread_once_t;
-pub type tss_t = pthread_key_t;
-pub type mtx_t = pthread_mutex_t;
-pub type cnd_t = pthread_cond_t;
-pub type thrd_t = pthread_t;
-pub type __ULong = c_uint;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __locale_t {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _Bigint {
-    pub _next: *mut _Bigint,
-    pub _k: c_int,
-    pub _maxwds: c_int,
-    pub _sign: c_int,
-    pub _wds: c_int,
-    pub _x: [__ULong; 1usize],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __tm {
-    pub __tm_sec: c_int,
-    pub __tm_min: c_int,
-    pub __tm_hour: c_int,
-    pub __tm_mday: c_int,
-    pub __tm_mon: c_int,
-    pub __tm_year: c_int,
-    pub __tm_wday: c_int,
-    pub __tm_yday: c_int,
-    pub __tm_isdst: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _on_exit_args {
-    pub _fnargs: [*mut c_void; 32usize],
-    pub _dso_handle: [*mut c_void; 32usize],
-    pub _fntypes: __ULong,
-    pub _is_cxa: __ULong,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _atexit {
-    pub _next: *mut _atexit,
-    pub _ind: c_int,
-    pub _fns: [::Option<unsafe extern "C" fn()>; 32usize],
-    pub _on_exit_args: _on_exit_args,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __sbuf {
-    pub _base: *mut c_uchar,
-    pub _size: c_int,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct __sFILE {
-    pub _p: *mut c_uchar,
-    pub _r: c_int,
-    pub _w: c_int,
-    pub _flags: c_short,
-    pub _file: c_short,
-    pub _bf: __sbuf,
-    pub _lbfsize: c_int,
-    pub _cookie: *mut c_void,
-    pub _read: ::Option<
-        unsafe extern "C" fn(
-            arg1: *mut _reent,
-            arg2: *mut c_void,
-            arg3: *mut c_char,
-            arg4: c_int,
-        ) -> c_int,
-    >,
-    pub _write: ::Option<
-        unsafe extern "C" fn(
-            arg1: *mut _reent,
-            arg2: *mut c_void,
-            arg3: *const c_char,
-            arg4: c_int,
-        ) -> c_int,
-    >,
-    pub _seek: ::Option<
-        unsafe extern "C" fn(
-            arg1: *mut _reent,
-            arg2: *mut c_void,
-            arg3: _fpos_t,
-            arg4: c_int,
-        ) -> _fpos_t,
-    >,
-    pub _close: ::Option<
-        unsafe extern "C" fn(arg1: *mut _reent, arg2: *mut c_void) -> c_int,
-    >,
-    pub _ub: __sbuf,
-    pub _up: *mut c_uchar,
-    pub _ur: c_int,
-    pub _ubuf: [c_uchar; 3usize],
-    pub _nbuf: [c_uchar; 1usize],
-    pub _lb: __sbuf,
-    pub _blksize: c_int,
-    pub _offset: _off_t,
-    pub _data: *mut _reent,
-    pub _lock: _flock_t,
-    pub _mbstate: _mbstate_t,
-    pub _flags2: c_int,
-}
-pub type __FILE = __sFILE;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _glue {
-    pub _next: *mut _glue,
-    pub _niobs: c_int,
-    pub _iobs: *mut __FILE,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _rand48 {
-    pub _seed: [c_ushort; 3usize],
-    pub _mult: [c_ushort; 3usize],
-    pub _add: c_ushort,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct _reent {
-    pub _errno: c_int,
-    pub _stdin: *mut __FILE,
-    pub _stdout: *mut __FILE,
-    pub _stderr: *mut __FILE,
-    pub _inc: c_int,
-    pub _emergency: [c_char; 25usize],
-    pub _unspecified_locale_info: c_int,
-    pub _locale: *mut __locale_t,
-    pub __sdidinit: c_int,
-    pub __cleanup: ::Option<unsafe extern "C" fn(arg1: *mut _reent)>,
-    pub _result: *mut _Bigint,
-    pub _result_k: c_int,
-    pub _p5s: *mut _Bigint,
-    pub _freelist: *mut *mut _Bigint,
-    pub _cvtlen: c_int,
-    pub _cvtbuf: *mut c_char,
-    pub _new: _reent__bindgen_ty_1,
-    pub _atexit: *mut _atexit,
-    pub _atexit0: _atexit,
-    pub _sig_func: *mut ::Option<unsafe extern "C" fn(arg1: c_int)>,
-    pub __sglue: _glue,
-    pub __sf: [__FILE; 3usize],
-    pub deviceData: *mut c_void,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union _reent__bindgen_ty_1 {
-    pub _reent: _reent__bindgen_ty_1__bindgen_ty_1,
-    pub _unused: _reent__bindgen_ty_1__bindgen_ty_2,
-    _bindgen_union_align: [u64; 45usize],
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct _reent__bindgen_ty_1__bindgen_ty_1 {
-    pub _unused_rand: c_uint,
-    pub _strtok_last: *mut c_char,
-    pub _asctime_buf: [c_char; 26usize],
-    pub _localtime_buf: __tm,
-    pub _gamma_signgam: c_int,
-    pub _rand_next: c_ulonglong,
-    pub _r48: _rand48,
-    pub _mblen_state: _mbstate_t,
-    pub _mbtowc_state: _mbstate_t,
-    pub _wctomb_state: _mbstate_t,
-    pub _l64a_buf: [c_char; 8usize],
-    pub _signal_buf: [c_char; 24usize],
-    pub _getdate_err: c_int,
-    pub _mbrlen_state: _mbstate_t,
-    pub _mbrtowc_state: _mbstate_t,
-    pub _mbsrtowcs_state: _mbstate_t,
-    pub _wcrtomb_state: _mbstate_t,
-    pub _wcsrtombs_state: _mbstate_t,
-    pub _h_errno: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _reent__bindgen_ty_1__bindgen_ty_2 {
-    pub _nextf: [*mut c_uchar; 30usize],
-    pub _nmalloc: [c_uint; 30usize],
-}
-pub type locale_t = *mut __locale_t;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct tm {
-    pub tm_sec: c_int,
-    pub tm_min: c_int,
-    pub tm_hour: c_int,
-    pub tm_mday: c_int,
-    pub tm_mon: c_int,
-    pub tm_year: c_int,
-    pub tm_wday: c_int,
-    pub tm_yday: c_int,
-    pub tm_isdst: c_int,
-}
-extern "C" {
-    pub fn clock() -> clock_t;
-}
-extern "C" {
-    pub fn difftime(_time2: time_t, _time1: time_t) -> f64;
-}
-extern "C" {
-    pub fn mktime(_timeptr: *mut tm) -> time_t;
-}
-extern "C" {
-    pub fn time(_timer: *mut time_t) -> time_t;
-}
-extern "C" {
-    pub fn asctime(_tblock: *const tm) -> *mut c_char;
-}
-extern "C" {
-    pub fn ctime(_time: *const time_t) -> *mut c_char;
-}
-extern "C" {
-    pub fn gmtime(_timer: *const time_t) -> *mut tm;
-}
-extern "C" {
-    pub fn localtime(_timer: *const time_t) -> *mut tm;
-}
-extern "C" {
-    pub fn strftime(
-        _s: *mut c_char,
-        _maxsize: size_t,
-        _fmt: *const c_char,
-        _t: *const tm,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn strftime_l(
-        _s: *mut c_char,
-        _maxsize: size_t,
-        _fmt: *const c_char,
-        _t: *const tm,
-        _l: locale_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn asctime_r(arg1: *const tm, arg2: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn ctime_r(arg1: *const time_t, arg2: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn gmtime_r(arg1: *const time_t, arg2: *mut tm) -> *mut tm;
-}
-extern "C" {
-    pub fn localtime_r(arg1: *const time_t, arg2: *mut tm) -> *mut tm;
-}
-extern "C" {
-    pub fn tzset();
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __tzrule_struct {
-    pub ch: c_char,
-    pub m: c_int,
-    pub n: c_int,
-    pub d: c_int,
-    pub s: c_int,
-    pub change: time_t,
-    pub offset: c_long,
-}
-pub type __tzrule_type = __tzrule_struct;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __tzinfo_struct {
-    pub __tznorth: c_int,
-    pub __tzyear: c_int,
-    pub __tzrule: [__tzrule_type; 2usize],
-}
-pub type __tzinfo_type = __tzinfo_struct;
-pub type tss_dtor_t = ::Option<unsafe extern "C" fn(arg1: *mut c_void)>;
-pub type thrd_start_t =
-    ::Option<unsafe extern "C" fn(arg1: *mut c_void) -> c_int>;
 pub const mtx_plain: _bindgen_ty_1 = 1;
 pub const mtx_recursive: _bindgen_ty_1 = 2;
 pub const mtx_timed: _bindgen_ty_1 = 4;
-pub type _bindgen_ty_1 = u32;
 pub const thrd_busy: _bindgen_ty_2 = 1;
 pub const thrd_error: _bindgen_ty_2 = 2;
 pub const thrd_nomem: _bindgen_ty_2 = 3;
 pub const thrd_success: _bindgen_ty_2 = 4;
 pub const thrd_timedout: _bindgen_ty_2 = 5;
-pub type _bindgen_ty_2 = u32;
-extern "C" {
-    pub fn call_once(
-        arg1: *mut once_flag,
-        arg2: ::Option<unsafe extern "C" fn()>,
-    );
-}
-extern "C" {
-    pub fn cnd_broadcast(arg1: *mut cnd_t) -> c_int;
-}
-extern "C" {
-    pub fn cnd_destroy(arg1: *mut cnd_t);
-}
-extern "C" {
-    pub fn cnd_init(arg1: *mut cnd_t) -> c_int;
-}
-extern "C" {
-    pub fn cnd_signal(arg1: *mut cnd_t) -> c_int;
-}
-extern "C" {
-    pub fn cnd_timedwait(
-        arg1: *mut cnd_t,
-        __mtx: *mut mtx_t,
-        arg2: *const timespec,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn cnd_wait(arg1: *mut cnd_t, __mtx: *mut mtx_t) -> c_int;
-}
-extern "C" {
-    pub fn mtx_destroy(__mtx: *mut mtx_t);
-}
-extern "C" {
-    pub fn mtx_init(__mtx: *mut mtx_t, arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn mtx_lock(__mtx: *mut mtx_t) -> c_int;
-}
-extern "C" {
-    pub fn mtx_timedlock(__mtx: *mut mtx_t, arg1: *const timespec) -> c_int;
-}
-extern "C" {
-    pub fn mtx_trylock(__mtx: *mut mtx_t) -> c_int;
-}
-extern "C" {
-    pub fn mtx_unlock(__mtx: *mut mtx_t) -> c_int;
-}
-extern "C" {
-    pub fn thrd_create(
-        arg1: *mut thrd_t,
-        arg2: thrd_start_t,
-        arg3: *mut c_void,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn thrd_current() -> thrd_t;
-}
-extern "C" {
-    pub fn thrd_detach(arg1: thrd_t) -> c_int;
-}
-extern "C" {
-    pub fn thrd_equal(arg1: thrd_t, arg2: thrd_t) -> c_int;
-}
-extern "C" {
-    pub fn thrd_exit(arg1: c_int);
-}
-extern "C" {
-    pub fn thrd_join(arg1: thrd_t, arg2: *mut c_int) -> c_int;
-}
-extern "C" {
-    pub fn thrd_sleep(arg1: *const timespec, arg2: *mut timespec) -> c_int;
-}
-extern "C" {
-    pub fn thrd_yield();
-}
-extern "C" {
-    pub fn tss_create(arg1: *mut tss_t, arg2: tss_dtor_t) -> c_int;
-}
-extern "C" {
-    pub fn tss_delete(arg1: tss_t);
-}
-extern "C" {
-    pub fn tss_get(arg1: tss_t) -> *mut c_void;
-}
-extern "C" {
-    pub fn tss_set(arg1: tss_t, arg2: *mut c_void) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct group {
-    pub gr_name: *mut c_char,
-    pub gr_passwd: *mut c_char,
-    pub gr_gid: gid_t,
-    pub gr_mem: *mut *mut c_char,
-}
-extern "C" {
-    pub fn getgrgid(arg1: gid_t) -> *mut group;
-}
-extern "C" {
-    pub fn getgrnam(arg1: *const c_char) -> *mut group;
-}
-extern "C" {
-    pub fn getgrnam_r(
-        arg1: *const c_char,
-        arg2: *mut group,
-        arg3: *mut c_char,
-        arg4: size_t,
-        arg5: *mut *mut group,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getgrgid_r(
-        arg1: gid_t,
-        arg2: *mut group,
-        arg3: *mut c_char,
-        arg4: size_t,
-        arg5: *mut *mut group,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getgrent() -> *mut group;
-}
-extern "C" {
-    pub fn setgrent();
-}
-extern "C" {
-    pub fn endgrent();
-}
-extern "C" {
-    pub fn initgroups(arg1: *const c_char, arg2: gid_t) -> c_int;
-}
-extern "C" {
-    pub fn atan(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn cos(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn sin(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn tan(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn tanh(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn frexp(arg1: f64, arg2: *mut c_int) -> f64;
-}
-extern "C" {
-    pub fn modf(arg1: f64, arg2: *mut f64) -> f64;
-}
-extern "C" {
-    pub fn ceil(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn fabs(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn floor(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn acos(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn asin(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn atan2(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn cosh(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn sinh(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn exp(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn ldexp(arg1: f64, arg2: c_int) -> f64;
-}
-extern "C" {
-    pub fn log(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn log10(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn pow(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn sqrt(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn fmod(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn finite(arg1: f64) -> c_int;
-}
-extern "C" {
-    pub fn finitef(arg1: f32) -> c_int;
-}
-extern "C" {
-    pub fn finitel(arg1: u128) -> c_int;
-}
-extern "C" {
-    pub fn isinff(arg1: f32) -> c_int;
-}
-extern "C" {
-    pub fn isnanf(arg1: f32) -> c_int;
-}
-extern "C" {
-    pub fn isinf(arg1: f64) -> c_int;
-}
-extern "C" {
-    pub fn isnan(arg1: f64) -> c_int;
-}
-pub type float_t = f32;
-pub type double_t = f64;
-extern "C" {
-    pub fn infinity() -> f64;
-}
-extern "C" {
-    pub fn nan(arg1: *const c_char) -> f64;
-}
-extern "C" {
-    pub fn copysign(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn logb(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn ilogb(arg1: f64) -> c_int;
-}
-extern "C" {
-    pub fn asinh(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn cbrt(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn nextafter(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn rint(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn scalbn(arg1: f64, arg2: c_int) -> f64;
-}
-extern "C" {
-    pub fn exp2(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn scalbln(arg1: f64, arg2: c_long) -> f64;
-}
-extern "C" {
-    pub fn tgamma(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn nearbyint(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn lrint(arg1: f64) -> c_long;
-}
-extern "C" {
-    pub fn llrint(arg1: f64) -> c_longlong;
-}
-extern "C" {
-    pub fn round(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn lround(arg1: f64) -> c_long;
-}
-extern "C" {
-    pub fn llround(arg1: f64) -> c_longlong;
-}
-extern "C" {
-    pub fn trunc(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn remquo(arg1: f64, arg2: f64, arg3: *mut c_int) -> f64;
-}
-extern "C" {
-    pub fn fdim(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn fmax(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn fmin(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn fma(arg1: f64, arg2: f64, arg3: f64) -> f64;
-}
-extern "C" {
-    pub fn log1p(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn expm1(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn acosh(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn atanh(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn remainder(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn gamma(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn lgamma(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn erf(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn erfc(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn log2(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn hypot(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn atanf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn cosf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn sinf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn tanf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn tanhf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn frexpf(arg1: f32, arg2: *mut c_int) -> f32;
-}
-extern "C" {
-    pub fn modff(arg1: f32, arg2: *mut f32) -> f32;
-}
-extern "C" {
-    pub fn ceilf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn fabsf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn floorf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn acosf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn asinf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn atan2f(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn coshf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn sinhf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn expf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn ldexpf(arg1: f32, arg2: c_int) -> f32;
-}
-extern "C" {
-    pub fn logf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn log10f(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn powf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn sqrtf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn fmodf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn exp2f(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn scalblnf(arg1: f32, arg2: c_long) -> f32;
-}
-extern "C" {
-    pub fn tgammaf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn nearbyintf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn lrintf(arg1: f32) -> c_long;
-}
-extern "C" {
-    pub fn llrintf(arg1: f32) -> c_longlong;
-}
-extern "C" {
-    pub fn roundf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn lroundf(arg1: f32) -> c_long;
-}
-extern "C" {
-    pub fn llroundf(arg1: f32) -> c_longlong;
-}
-extern "C" {
-    pub fn truncf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn remquof(arg1: f32, arg2: f32, arg3: *mut c_int) -> f32;
-}
-extern "C" {
-    pub fn fdimf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn fmaxf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn fminf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn fmaf(arg1: f32, arg2: f32, arg3: f32) -> f32;
-}
-extern "C" {
-    pub fn infinityf() -> f32;
-}
-extern "C" {
-    pub fn nanf(arg1: *const c_char) -> f32;
-}
-extern "C" {
-    pub fn copysignf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn logbf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn ilogbf(arg1: f32) -> c_int;
-}
-extern "C" {
-    pub fn asinhf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn cbrtf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn nextafterf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn rintf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn scalbnf(arg1: f32, arg2: c_int) -> f32;
-}
-extern "C" {
-    pub fn log1pf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn expm1f(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn acoshf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn atanhf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn remainderf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn gammaf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn lgammaf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn erff(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn erfcf(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn log2f(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn hypotf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn hypotl(arg1: u128, arg2: u128) -> u128;
-}
-extern "C" {
-    pub fn sqrtl(arg1: u128) -> u128;
-}
-extern "C" {
-    pub fn drem(arg1: f64, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn dremf(arg1: f32, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn gamma_r(arg1: f64, arg2: *mut c_int) -> f64;
-}
-extern "C" {
-    pub fn lgamma_r(arg1: f64, arg2: *mut c_int) -> f64;
-}
-extern "C" {
-    pub fn gammaf_r(arg1: f32, arg2: *mut c_int) -> f32;
-}
-extern "C" {
-    pub fn lgammaf_r(arg1: f32, arg2: *mut c_int) -> f32;
-}
-extern "C" {
-    pub fn y0(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn y1(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn yn(arg1: c_int, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn j0(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn j1(arg1: f64) -> f64;
-}
-extern "C" {
-    pub fn jn(arg1: c_int, arg2: f64) -> f64;
-}
-extern "C" {
-    pub fn y0f(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn y1f(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn ynf(arg1: c_int, arg2: f32) -> f32;
-}
-extern "C" {
-    pub fn j0f(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn j1f(arg1: f32) -> f32;
-}
-extern "C" {
-    pub fn jnf(arg1: c_int, arg2: f32) -> f32;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct exception {
-    pub type_: c_int,
-    pub name: *mut c_char,
-    pub arg1: f64,
-    pub arg2: f64,
-    pub retval: f64,
-    pub err: c_int,
-}
-extern "C" {
-    pub fn matherr(e: *mut exception) -> c_int;
-}
-pub type Elf32_Half = u16;
-pub type Elf64_Half = u16;
-pub type Elf32_Word = u32;
-pub type Elf32_Sword = i32;
-pub type Elf64_Word = u32;
-pub type Elf64_Sword = i32;
-pub type Elf32_Xword = u64;
-pub type Elf32_Sxword = i64;
-pub type Elf64_Xword = u64;
-pub type Elf64_Sxword = i64;
-pub type Elf32_Addr = u32;
-pub type Elf64_Addr = u64;
-pub type Elf32_Off = u32;
-pub type Elf64_Off = u64;
-pub type Elf32_Section = u16;
-pub type Elf64_Section = u16;
-pub type Elf32_Versym = Elf32_Half;
-pub type Elf64_Versym = Elf64_Half;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Ehdr {
-    pub e_ident: [c_uchar; 16usize],
-    pub e_type: Elf32_Half,
-    pub e_machine: Elf32_Half,
-    pub e_version: Elf32_Word,
-    pub e_entry: Elf32_Addr,
-    pub e_phoff: Elf32_Off,
-    pub e_shoff: Elf32_Off,
-    pub e_flags: Elf32_Word,
-    pub e_ehsize: Elf32_Half,
-    pub e_phentsize: Elf32_Half,
-    pub e_phnum: Elf32_Half,
-    pub e_shentsize: Elf32_Half,
-    pub e_shnum: Elf32_Half,
-    pub e_shstrndx: Elf32_Half,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Ehdr {
-    pub e_ident: [c_uchar; 16usize],
-    pub e_type: Elf64_Half,
-    pub e_machine: Elf64_Half,
-    pub e_version: Elf64_Word,
-    pub e_entry: Elf64_Addr,
-    pub e_phoff: Elf64_Off,
-    pub e_shoff: Elf64_Off,
-    pub e_flags: Elf64_Word,
-    pub e_ehsize: Elf64_Half,
-    pub e_phentsize: Elf64_Half,
-    pub e_phnum: Elf64_Half,
-    pub e_shentsize: Elf64_Half,
-    pub e_shnum: Elf64_Half,
-    pub e_shstrndx: Elf64_Half,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Shdr {
-    pub sh_name: Elf32_Word,
-    pub sh_type: Elf32_Word,
-    pub sh_flags: Elf32_Word,
-    pub sh_addr: Elf32_Addr,
-    pub sh_offset: Elf32_Off,
-    pub sh_size: Elf32_Word,
-    pub sh_link: Elf32_Word,
-    pub sh_info: Elf32_Word,
-    pub sh_addralign: Elf32_Word,
-    pub sh_entsize: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Shdr {
-    pub sh_name: Elf64_Word,
-    pub sh_type: Elf64_Word,
-    pub sh_flags: Elf64_Xword,
-    pub sh_addr: Elf64_Addr,
-    pub sh_offset: Elf64_Off,
-    pub sh_size: Elf64_Xword,
-    pub sh_link: Elf64_Word,
-    pub sh_info: Elf64_Word,
-    pub sh_addralign: Elf64_Xword,
-    pub sh_entsize: Elf64_Xword,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Chdr {
-    pub ch_type: Elf32_Word,
-    pub ch_size: Elf32_Word,
-    pub ch_addralign: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Chdr {
-    pub ch_type: Elf64_Word,
-    pub ch_reserved: Elf64_Word,
-    pub ch_size: Elf64_Xword,
-    pub ch_addralign: Elf64_Xword,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Sym {
-    pub st_name: Elf32_Word,
-    pub st_value: Elf32_Addr,
-    pub st_size: Elf32_Word,
-    pub st_info: c_uchar,
-    pub st_other: c_uchar,
-    pub st_shndx: Elf32_Section,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Sym {
-    pub st_name: Elf64_Word,
-    pub st_info: c_uchar,
-    pub st_other: c_uchar,
-    pub st_shndx: Elf64_Section,
-    pub st_value: Elf64_Addr,
-    pub st_size: Elf64_Xword,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Syminfo {
-    pub si_boundto: Elf32_Half,
-    pub si_flags: Elf32_Half,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Syminfo {
-    pub si_boundto: Elf64_Half,
-    pub si_flags: Elf64_Half,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Rel {
-    pub r_offset: Elf32_Addr,
-    pub r_info: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Rel {
-    pub r_offset: Elf64_Addr,
-    pub r_info: Elf64_Xword,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Rela {
-    pub r_offset: Elf32_Addr,
-    pub r_info: Elf32_Word,
-    pub r_addend: Elf32_Sword,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Rela {
-    pub r_offset: Elf64_Addr,
-    pub r_info: Elf64_Xword,
-    pub r_addend: Elf64_Sxword,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Phdr {
-    pub p_type: Elf32_Word,
-    pub p_offset: Elf32_Off,
-    pub p_vaddr: Elf32_Addr,
-    pub p_paddr: Elf32_Addr,
-    pub p_filesz: Elf32_Word,
-    pub p_memsz: Elf32_Word,
-    pub p_flags: Elf32_Word,
-    pub p_align: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Phdr {
-    pub p_type: Elf64_Word,
-    pub p_flags: Elf64_Word,
-    pub p_offset: Elf64_Off,
-    pub p_vaddr: Elf64_Addr,
-    pub p_paddr: Elf64_Addr,
-    pub p_filesz: Elf64_Xword,
-    pub p_memsz: Elf64_Xword,
-    pub p_align: Elf64_Xword,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct Elf32_Dyn {
-    pub d_tag: Elf32_Sword,
-    pub d_un: Elf32_Dyn__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Elf32_Dyn__bindgen_ty_1 {
-    pub d_val: Elf32_Word,
-    pub d_ptr: Elf32_Addr,
-    _bindgen_union_align: u32,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct Elf64_Dyn {
-    pub d_tag: Elf64_Sxword,
-    pub d_un: Elf64_Dyn__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Elf64_Dyn__bindgen_ty_1 {
-    pub d_val: Elf64_Xword,
-    pub d_ptr: Elf64_Addr,
-    _bindgen_union_align: u64,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Verdef {
-    pub vd_version: Elf32_Half,
-    pub vd_flags: Elf32_Half,
-    pub vd_ndx: Elf32_Half,
-    pub vd_cnt: Elf32_Half,
-    pub vd_hash: Elf32_Word,
-    pub vd_aux: Elf32_Word,
-    pub vd_next: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Verdef {
-    pub vd_version: Elf64_Half,
-    pub vd_flags: Elf64_Half,
-    pub vd_ndx: Elf64_Half,
-    pub vd_cnt: Elf64_Half,
-    pub vd_hash: Elf64_Word,
-    pub vd_aux: Elf64_Word,
-    pub vd_next: Elf64_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Verdaux {
-    pub vda_name: Elf32_Word,
-    pub vda_next: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Verdaux {
-    pub vda_name: Elf64_Word,
-    pub vda_next: Elf64_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Verneed {
-    pub vn_version: Elf32_Half,
-    pub vn_cnt: Elf32_Half,
-    pub vn_file: Elf32_Word,
-    pub vn_aux: Elf32_Word,
-    pub vn_next: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Verneed {
-    pub vn_version: Elf64_Half,
-    pub vn_cnt: Elf64_Half,
-    pub vn_file: Elf64_Word,
-    pub vn_aux: Elf64_Word,
-    pub vn_next: Elf64_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Vernaux {
-    pub vna_hash: Elf32_Word,
-    pub vna_flags: Elf32_Half,
-    pub vna_other: Elf32_Half,
-    pub vna_name: Elf32_Word,
-    pub vna_next: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Vernaux {
-    pub vna_hash: Elf64_Word,
-    pub vna_flags: Elf64_Half,
-    pub vna_other: Elf64_Half,
-    pub vna_name: Elf64_Word,
-    pub vna_next: Elf64_Word,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct Elf32_auxv_t {
-    pub a_type: u32,
-    pub a_un: Elf32_auxv_t__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Elf32_auxv_t__bindgen_ty_1 {
-    pub a_val: u32,
-    _bindgen_union_align: u32,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct Elf64_auxv_t {
-    pub a_type: u64,
-    pub a_un: Elf64_auxv_t__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Elf64_auxv_t__bindgen_ty_1 {
-    pub a_val: u64,
-    _bindgen_union_align: u64,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Nhdr {
-    pub n_namesz: Elf32_Word,
-    pub n_descsz: Elf32_Word,
-    pub n_type: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Nhdr {
-    pub n_namesz: Elf64_Word,
-    pub n_descsz: Elf64_Word,
-    pub n_type: Elf64_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Move {
-    pub m_value: Elf32_Xword,
-    pub m_info: Elf32_Word,
-    pub m_poffset: Elf32_Word,
-    pub m_repeat: Elf32_Half,
-    pub m_stride: Elf32_Half,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Move {
-    pub m_value: Elf64_Xword,
-    pub m_info: Elf64_Xword,
-    pub m_poffset: Elf64_Xword,
-    pub m_repeat: Elf64_Half,
-    pub m_stride: Elf64_Half,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Elf32_gptab {
-    pub gt_header: Elf32_gptab__bindgen_ty_1,
-    pub gt_entry: Elf32_gptab__bindgen_ty_2,
-    _bindgen_union_align: [u32; 2usize],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_gptab__bindgen_ty_1 {
-    pub gt_current_g_value: Elf32_Word,
-    pub gt_unused: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_gptab__bindgen_ty_2 {
-    pub gt_g_value: Elf32_Word,
-    pub gt_bytes: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_RegInfo {
-    pub ri_gprmask: Elf32_Word,
-    pub ri_cprmask: [Elf32_Word; 4usize],
-    pub ri_gp_value: Elf32_Sword,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf_Options {
-    pub kind: c_uchar,
-    pub size: c_uchar,
-    pub section: Elf32_Section,
-    pub info: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf_Options_Hw {
-    pub hwp_flags1: Elf32_Word,
-    pub hwp_flags2: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf32_Lib {
-    pub l_name: Elf32_Word,
-    pub l_time_stamp: Elf32_Word,
-    pub l_checksum: Elf32_Word,
-    pub l_version: Elf32_Word,
-    pub l_flags: Elf32_Word,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf64_Lib {
-    pub l_name: Elf64_Word,
-    pub l_time_stamp: Elf64_Word,
-    pub l_checksum: Elf64_Word,
-    pub l_version: Elf64_Word,
-    pub l_flags: Elf64_Word,
-}
-pub type Elf32_Conflict = Elf32_Addr;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Elf_MIPS_ABIFlags_v0 {
-    pub version: Elf32_Half,
-    pub isa_level: c_uchar,
-    pub isa_rev: c_uchar,
-    pub gpr_size: c_uchar,
-    pub cpr1_size: c_uchar,
-    pub cpr2_size: c_uchar,
-    pub fp_abi: c_uchar,
-    pub isa_ext: Elf32_Word,
-    pub ases: Elf32_Word,
-    pub flags1: Elf32_Word,
-    pub flags2: Elf32_Word,
-}
 pub const Val_GNU_MIPS_ABI_FP_ANY: _bindgen_ty_3 = 0;
 pub const Val_GNU_MIPS_ABI_FP_DOUBLE: _bindgen_ty_3 = 1;
 pub const Val_GNU_MIPS_ABI_FP_SINGLE: _bindgen_ty_3 = 2;
@@ -5366,402 +5091,6 @@ pub const Val_GNU_MIPS_ABI_FP_XX: _bindgen_ty_3 = 5;
 pub const Val_GNU_MIPS_ABI_FP_64: _bindgen_ty_3 = 6;
 pub const Val_GNU_MIPS_ABI_FP_64A: _bindgen_ty_3 = 7;
 pub const Val_GNU_MIPS_ABI_FP_MAX: _bindgen_ty_3 = 7;
-pub type _bindgen_ty_3 = u32;
-pub type __gnuc_va_list = __builtin_va_list;
-pub type va_list = __gnuc_va_list;
-pub type FILE = __FILE;
-pub type mbstate_t = _mbstate_t;
-extern "C" {
-    pub fn btowc(arg1: c_int) -> wint_t;
-}
-extern "C" {
-    pub fn wctob(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn mbrlen(
-        arg1: *const c_char,
-        arg2: size_t,
-        arg3: *mut mbstate_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn mbrtowc(
-        arg1: *mut wchar_t,
-        arg2: *const c_char,
-        arg3: size_t,
-        arg4: *mut mbstate_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn mbsinit(arg1: *const mbstate_t) -> c_int;
-}
-extern "C" {
-    pub fn mbsnrtowcs(
-        arg1: *mut wchar_t,
-        arg2: *mut *const c_char,
-        arg3: size_t,
-        arg4: size_t,
-        arg5: *mut mbstate_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn mbsrtowcs(
-        arg1: *mut wchar_t,
-        arg2: *mut *const c_char,
-        arg3: size_t,
-        arg4: *mut mbstate_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcrtomb(
-        arg1: *mut c_char,
-        arg2: wchar_t,
-        arg3: *mut mbstate_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcsnrtombs(
-        arg1: *mut c_char,
-        arg2: *mut *const wchar_t,
-        arg3: size_t,
-        arg4: size_t,
-        arg5: *mut mbstate_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcsrtombs(
-        arg1: *mut c_char,
-        arg2: *mut *const wchar_t,
-        arg3: size_t,
-        arg4: *mut mbstate_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcscasecmp(arg1: *const wchar_t, arg2: *const wchar_t) -> c_int;
-}
-extern "C" {
-    pub fn wcscat(arg1: *mut wchar_t, arg2: *const wchar_t) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcschr(arg1: *const c_int, arg2: c_int) -> *mut c_int;
-}
-extern "C" {
-    pub fn wcscmp(arg1: *const c_int, arg2: *const c_int) -> c_int;
-}
-extern "C" {
-    pub fn wcscoll(arg1: *const wchar_t, arg2: *const wchar_t) -> c_int;
-}
-extern "C" {
-    pub fn wcscpy(arg1: *mut wchar_t, arg2: *const wchar_t) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcpcpy(arg1: *mut wchar_t, arg2: *const wchar_t) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcsdup(arg1: *const wchar_t) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcscspn(arg1: *const wchar_t, arg2: *const wchar_t) -> size_t;
-}
-extern "C" {
-    pub fn wcsftime(
-        arg1: *mut wchar_t,
-        arg2: size_t,
-        arg3: *const wchar_t,
-        arg4: *const tm,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcslcat(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcslcpy(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcslen(arg1: *const c_int) -> c_ulong;
-}
-extern "C" {
-    pub fn wcsncasecmp(
-        arg1: *const wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wcsncat(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcsncmp(
-        arg1: *const c_int,
-        arg2: *const c_int,
-        arg3: c_ulong,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wcsncpy(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcpncpy(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcsnlen(arg1: *const wchar_t, arg2: size_t) -> size_t;
-}
-extern "C" {
-    pub fn wcspbrk(arg1: *const wchar_t, arg2: *const wchar_t)
-        -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcsrchr(arg1: *const wchar_t, arg2: wchar_t) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcsspn(arg1: *const wchar_t, arg2: *const wchar_t) -> size_t;
-}
-extern "C" {
-    pub fn wcsstr(arg1: *const wchar_t, arg2: *const wchar_t) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcstok(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: *mut *mut wchar_t,
-    ) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcstod(arg1: *const wchar_t, arg2: *mut *mut wchar_t) -> f64;
-}
-extern "C" {
-    pub fn wcstof(arg1: *const wchar_t, arg2: *mut *mut wchar_t) -> f32;
-}
-extern "C" {
-    pub fn wcsxfrm(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcscasecmp_l(
-        arg1: *const wchar_t,
-        arg2: *const wchar_t,
-        arg3: locale_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wcsncasecmp_l(
-        arg1: *const wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-        arg4: locale_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wcscoll_l(
-        arg1: *const wchar_t,
-        arg2: *const wchar_t,
-        arg3: locale_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wcsxfrm_l(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-        arg4: locale_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wmemchr(
-        arg1: *const c_int,
-        arg2: c_int,
-        arg3: c_ulong,
-    ) -> *mut c_int;
-}
-extern "C" {
-    pub fn wmemcmp(
-        arg1: *const c_int,
-        arg2: *const c_int,
-        arg3: c_ulong,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wmemcpy(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wmemmove(
-        arg1: *mut wchar_t,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wmemset(
-        arg1: *mut wchar_t,
-        arg2: wchar_t,
-        arg3: size_t,
-    ) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn wcstol(
-        arg1: *const wchar_t,
-        arg2: *mut *mut wchar_t,
-        arg3: c_int,
-    ) -> c_long;
-}
-extern "C" {
-    pub fn wcstoll(
-        arg1: *const wchar_t,
-        arg2: *mut *mut wchar_t,
-        arg3: c_int,
-    ) -> c_longlong;
-}
-extern "C" {
-    pub fn wcstoul(
-        arg1: *const wchar_t,
-        arg2: *mut *mut wchar_t,
-        arg3: c_int,
-    ) -> c_ulong;
-}
-extern "C" {
-    pub fn wcstoull(
-        arg1: *const wchar_t,
-        arg2: *mut *mut wchar_t,
-        arg3: c_int,
-    ) -> c_ulonglong;
-}
-extern "C" {
-    pub fn wcstold(arg1: *const wchar_t, arg2: *mut *mut wchar_t) -> u128;
-}
-extern "C" {
-    pub fn fgetwc(arg1: *mut __FILE) -> wint_t;
-}
-extern "C" {
-    pub fn fgetws(
-        arg1: *mut wchar_t,
-        arg2: c_int,
-        arg3: *mut __FILE,
-    ) -> *mut wchar_t;
-}
-extern "C" {
-    pub fn fputwc(arg1: wchar_t, arg2: *mut __FILE) -> wint_t;
-}
-extern "C" {
-    pub fn fputws(arg1: *const wchar_t, arg2: *mut __FILE) -> c_int;
-}
-extern "C" {
-    pub fn fwide(arg1: *mut __FILE, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn getwc(arg1: *mut __FILE) -> wint_t;
-}
-extern "C" {
-    pub fn getwchar() -> wint_t;
-}
-extern "C" {
-    pub fn putwc(arg1: wchar_t, arg2: *mut __FILE) -> wint_t;
-}
-extern "C" {
-    pub fn putwchar(arg1: wchar_t) -> wint_t;
-}
-extern "C" {
-    pub fn ungetwc(wc: wint_t, arg1: *mut __FILE) -> wint_t;
-}
-extern "C" {
-    pub fn open_wmemstream(
-        arg1: *mut *mut wchar_t,
-        arg2: *mut size_t,
-    ) -> *mut __FILE;
-}
-extern "C" {
-    pub fn fwprintf(arg1: *mut __FILE, arg2: *const wchar_t, ...) -> c_int;
-}
-extern "C" {
-    pub fn swprintf(
-        arg1: *mut wchar_t,
-        arg2: size_t,
-        arg3: *const wchar_t,
-        ...
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vfwprintf(
-        arg1: *mut __FILE,
-        arg2: *const wchar_t,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vswprintf(
-        arg1: *mut wchar_t,
-        arg2: size_t,
-        arg3: *const wchar_t,
-        arg4: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vwprintf(arg1: *const wchar_t, arg2: *mut __va_list_tag) -> c_int;
-}
-extern "C" {
-    pub fn wprintf(arg1: *const wchar_t, ...) -> c_int;
-}
-extern "C" {
-    pub fn fwscanf(arg1: *mut __FILE, arg2: *const wchar_t, ...) -> c_int;
-}
-extern "C" {
-    pub fn swscanf(arg1: *const wchar_t, arg2: *const wchar_t, ...) -> c_int;
-}
-extern "C" {
-    pub fn vfwscanf(
-        arg1: *mut __FILE,
-        arg2: *const wchar_t,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vswscanf(
-        arg1: *const wchar_t,
-        arg2: *const wchar_t,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vwscanf(arg1: *const wchar_t, arg2: *mut __va_list_tag) -> c_int;
-}
-extern "C" {
-    pub fn wscanf(arg1: *const wchar_t, ...) -> c_int;
-}
-pub type jmp_buf = [c_longlong; 8usize];
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _wordexp_t {
-    pub we_wordc: size_t,
-    pub we_wordv: *mut *mut c_char,
-    pub we_offs: size_t,
-}
-pub type wordexp_t = _wordexp_t;
 pub const WRDE_SUCCESS: _bindgen_ty_4 = 0;
 pub const WRDE_NOSPACE: _bindgen_ty_4 = 1;
 pub const WRDE_BADCHAR: _bindgen_ty_4 = 2;
@@ -5769,2840 +5098,22 @@ pub const WRDE_BADVAL: _bindgen_ty_4 = 3;
 pub const WRDE_CMDSUB: _bindgen_ty_4 = 4;
 pub const WRDE_SYNTAX: _bindgen_ty_4 = 5;
 pub const WRDE_NOSYS: _bindgen_ty_4 = 6;
-pub type _bindgen_ty_4 = u32;
-extern "C" {
-    pub fn wordexp(
-        arg1: *const c_char,
-        arg2: *mut wordexp_t,
-        arg3: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wordfree(arg1: *mut wordexp_t);
-}
-extern "C" {
-    pub fn fnmatch(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: c_int,
-    ) -> c_int;
-}
 pub const memory_order_memory_order_relaxed: memory_order = 0;
 pub const memory_order_memory_order_consume: memory_order = 1;
 pub const memory_order_memory_order_acquire: memory_order = 2;
 pub const memory_order_memory_order_release: memory_order = 3;
 pub const memory_order_memory_order_acq_rel: memory_order = 4;
 pub const memory_order_memory_order_seq_cst: memory_order = 5;
-pub type memory_order = u32;
-pub type atomic_bool = u8;
-pub type atomic_char = u8;
-pub type atomic_schar = u8;
-pub type atomic_uchar = u8;
-pub type atomic_short = u16;
-pub type atomic_ushort = u16;
-pub type atomic_int = u32;
-pub type atomic_uint = u32;
-pub type atomic_long = u64;
-pub type atomic_ulong = u64;
-pub type atomic_llong = u64;
-pub type atomic_ullong = u64;
-pub type atomic_wchar_t = wchar_t;
-pub type atomic_int_least8_t = int_least8_t;
-pub type atomic_uint_least8_t = uint_least8_t;
-pub type atomic_int_least16_t = int_least16_t;
-pub type atomic_uint_least16_t = uint_least16_t;
-pub type atomic_int_least32_t = int_least32_t;
-pub type atomic_uint_least32_t = uint_least32_t;
-pub type atomic_int_least64_t = int_least64_t;
-pub type atomic_uint_least64_t = uint_least64_t;
-pub type atomic_int_fast8_t = int_fast8_t;
-pub type atomic_uint_fast8_t = uint_fast8_t;
-pub type atomic_int_fast16_t = int_fast16_t;
-pub type atomic_uint_fast16_t = uint_fast16_t;
-pub type atomic_int_fast32_t = int_fast32_t;
-pub type atomic_uint_fast32_t = uint_fast32_t;
-pub type atomic_int_fast64_t = int_fast64_t;
-pub type atomic_uint_fast64_t = uint_fast64_t;
-pub type atomic_intptr_t = isize;
-pub type atomic_uintptr_t = usize;
-pub type atomic_size_t = size_t;
-pub type atomic_ptrdiff_t = isize;
-pub type atomic_intmax_t = intmax_t;
-pub type atomic_uintmax_t = uintmax_t;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct atomic_flag {
-    pub __flag: atomic_bool,
-}
-extern "C" {
-    pub fn bcmp(
-        arg1: *const c_void,
-        arg2: *const c_void,
-        arg3: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn bcopy(arg1: *const c_void, arg2: *mut c_void, arg3: size_t);
-}
-extern "C" {
-    pub fn bzero(arg1: *mut c_void, arg2: c_ulong);
-}
-extern "C" {
-    pub fn explicit_bzero(arg1: *mut c_void, arg2: size_t);
-}
-extern "C" {
-    pub fn ffs(arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn ffsl(arg1: c_long) -> c_int;
-}
-extern "C" {
-    pub fn ffsll(arg1: c_longlong) -> c_int;
-}
-extern "C" {
-    pub fn fls(arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn flsl(arg1: c_long) -> c_int;
-}
-extern "C" {
-    pub fn flsll(arg1: c_longlong) -> c_int;
-}
-extern "C" {
-    pub fn index(arg1: *const c_char, arg2: c_int) -> *mut c_char;
-}
-extern "C" {
-    pub fn rindex(arg1: *const c_char, arg2: c_int) -> *mut c_char;
-}
-extern "C" {
-    pub fn strcasecmp(arg1: *const c_char, arg2: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn strncasecmp(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: c_ulong,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn strcasecmp_l(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: locale_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn strncasecmp_l(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: size_t,
-        arg4: locale_t,
-    ) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct stat {
-    pub st_dev: dev_t,
-    pub st_ino: ino_t,
-    pub st_mode: mode_t,
-    pub st_nlink: nlink_t,
-    pub st_uid: uid_t,
-    pub st_gid: gid_t,
-    pub st_rdev: dev_t,
-    pub st_size: off_t,
-    pub st_atime: time_t,
-    pub st_spare1: c_long,
-    pub st_mtime: time_t,
-    pub st_spare2: c_long,
-    pub st_ctime: time_t,
-    pub st_spare3: c_long,
-    pub st_blksize: blksize_t,
-    pub st_blocks: blkcnt_t,
-    pub st_spare4: [c_long; 2usize],
-}
-extern "C" {
-    pub fn fstat(__fd: c_int, __sbuf: *mut stat) -> c_int;
-}
-extern "C" {
-    pub fn mkdir(_path: *const c_char, __mode: mode_t) -> c_int;
-}
-extern "C" {
-    pub fn mkfifo(__path: *const c_char, __mode: mode_t) -> c_int;
-}
-extern "C" {
-    pub fn stat(__path: *const c_char, __sbuf: *mut stat) -> c_int;
-}
-extern "C" {
-    pub fn umask(__mask: mode_t) -> mode_t;
-}
-extern "C" {
-    pub fn lstat(__path: *const c_char, __buf: *mut stat) -> c_int;
-}
-extern "C" {
-    pub fn fchmodat(
-        arg1: c_int,
-        arg2: *const c_char,
-        arg3: mode_t,
-        arg4: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn fstatat(
-        arg1: c_int,
-        arg2: *const c_char,
-        arg3: *mut stat,
-        arg4: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn mkdirat(arg1: c_int, arg2: *const c_char, arg3: mode_t) -> c_int;
-}
-extern "C" {
-    pub fn mkfifoat(arg1: c_int, arg2: *const c_char, arg3: mode_t) -> c_int;
-}
-extern "C" {
-    pub fn mknodat(
-        arg1: c_int,
-        arg2: *const c_char,
-        arg3: mode_t,
-        arg4: dev_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn utimensat(
-        arg1: c_int,
-        arg2: *const c_char,
-        arg3: *const timespec,
-        arg4: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn futimens(arg1: c_int, arg2: *const timespec) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct statvfs {
-    pub f_bsize: c_ulong,
-    pub f_frsize: c_ulong,
-    pub f_blocks: fsblkcnt_t,
-    pub f_bfree: fsblkcnt_t,
-    pub f_bavail: fsblkcnt_t,
-    pub f_files: fsfilcnt_t,
-    pub f_ffree: fsfilcnt_t,
-    pub f_favail: fsfilcnt_t,
-    pub f_fsid: c_ulong,
-    pub f_flag: c_ulong,
-    pub f_namemax: c_ulong,
-}
-extern "C" {
-    pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct timezone {
-    pub tz_minuteswest: c_int,
-    pub tz_dsttime: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct bintime {
-    pub sec: time_t,
-    pub frac: u64,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct itimerval {
-    pub it_interval: timeval,
-    pub it_value: timeval,
-}
-extern "C" {
-    pub fn utimes(__path: *const c_char, __tvp: *const timeval) -> c_int;
-}
-extern "C" {
-    pub fn adjtime(arg1: *const timeval, arg2: *mut timeval) -> c_int;
-}
-extern "C" {
-    pub fn futimes(arg1: c_int, arg2: *const timeval) -> c_int;
-}
-extern "C" {
-    pub fn lutimes(arg1: *const c_char, arg2: *const timeval) -> c_int;
-}
-extern "C" {
-    pub fn settimeofday(arg1: *const timeval, arg2: *const timezone) -> c_int;
-}
-extern "C" {
-    pub fn getitimer(__which: c_int, __value: *mut itimerval) -> c_int;
-}
-extern "C" {
-    pub fn setitimer(
-        __which: c_int,
-        __value: *const itimerval,
-        __ovalue: *mut itimerval,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn gettimeofday(__p: *mut timeval, __tz: *mut c_void) -> c_int;
-}
 pub const STD_IN: _bindgen_ty_5 = 0;
 pub const STD_OUT: _bindgen_ty_5 = 1;
 pub const STD_ERR: _bindgen_ty_5 = 2;
 pub const STD_MAX: _bindgen_ty_5 = 16;
-pub type _bindgen_ty_5 = u32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __handle {
-    pub device: c_uint,
-    pub refcount: c_uint,
-    pub fileStruct: *mut c_void,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct DIR_ITER {
-    pub device: c_int,
-    pub dirStruct: *mut c_void,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct devoptab_t {
-    pub name: *const c_char,
-    pub structSize: size_t,
-    pub open_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            fileStruct: *mut c_void,
-            path: *const c_char,
-            flags: c_int,
-            mode: c_int,
-        ) -> c_int,
-    >,
-    pub close_r: ::Option<
-        unsafe extern "C" fn(r: *mut _reent, fd: *mut c_void) -> c_int,
-    >,
-    pub write_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            fd: *mut c_void,
-            ptr: *const c_char,
-            len: size_t,
-        ) -> ssize_t,
-    >,
-    pub read_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            fd: *mut c_void,
-            ptr: *mut c_char,
-            len: size_t,
-        ) -> ssize_t,
-    >,
-    pub seek_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            fd: *mut c_void,
-            pos: off_t,
-            dir: c_int,
-        ) -> off_t,
-    >,
-    pub fstat_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            fd: *mut c_void,
-            st: *mut stat,
-        ) -> c_int,
-    >,
-    pub stat_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            file: *const c_char,
-            st: *mut stat,
-        ) -> c_int,
-    >,
-    pub link_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            existing: *const c_char,
-            newLink: *const c_char,
-        ) -> c_int,
-    >,
-    pub unlink_r: ::Option<
-        unsafe extern "C" fn(r: *mut _reent, name: *const c_char) -> c_int,
-    >,
-    pub chdir_r: ::Option<
-        unsafe extern "C" fn(r: *mut _reent, name: *const c_char) -> c_int,
-    >,
-    pub rename_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            oldName: *const c_char,
-            newName: *const c_char,
-        ) -> c_int,
-    >,
-    pub mkdir_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            path: *const c_char,
-            mode: c_int,
-        ) -> c_int,
-    >,
-    pub dirStateSize: size_t,
-    pub diropen_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            dirState: *mut DIR_ITER,
-            path: *const c_char,
-        ) -> *mut DIR_ITER,
-    >,
-    pub dirreset_r: ::Option<
-        unsafe extern "C" fn(r: *mut _reent, dirState: *mut DIR_ITER) -> c_int,
-    >,
-    pub dirnext_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            dirState: *mut DIR_ITER,
-            filename: *mut c_char,
-            filestat: *mut stat,
-        ) -> c_int,
-    >,
-    pub dirclose_r: ::Option<
-        unsafe extern "C" fn(r: *mut _reent, dirState: *mut DIR_ITER) -> c_int,
-    >,
-    pub statvfs_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            path: *const c_char,
-            buf: *mut statvfs,
-        ) -> c_int,
-    >,
-    pub ftruncate_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            fd: *mut c_void,
-            len: off_t,
-        ) -> c_int,
-    >,
-    pub fsync_r: ::Option<
-        unsafe extern "C" fn(r: *mut _reent, fd: *mut c_void) -> c_int,
-    >,
-    pub deviceData: *mut c_void,
-    pub chmod_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            path: *const c_char,
-            mode: mode_t,
-        ) -> c_int,
-    >,
-    pub fchmod_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            fd: *mut c_void,
-            mode: mode_t,
-        ) -> c_int,
-    >,
-    pub rmdir_r: ::Option<
-        unsafe extern "C" fn(r: *mut _reent, name: *const c_char) -> c_int,
-    >,
-    pub lstat_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            file: *const c_char,
-            st: *mut stat,
-        ) -> c_int,
-    >,
-    pub utimes_r: ::Option<
-        unsafe extern "C" fn(
-            r: *mut _reent,
-            filename: *const c_char,
-            times: *const timeval,
-        ) -> c_int,
-    >,
-}
-extern "C" {
-    pub static mut devoptab_list: [*const devoptab_t; 0usize];
-}
-extern "C" {
-    pub fn AddDevice(device: *const devoptab_t) -> c_int;
-}
-extern "C" {
-    pub fn FindDevice(name: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn RemoveDevice(name: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn setDefaultDevice(device: c_int);
-}
-extern "C" {
-    pub fn GetDeviceOpTab(name: *const c_char) -> *const devoptab_t;
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct dirent {
-    pub d_ino: ino_t,
-    pub d_type: c_uchar,
-    pub d_name: [c_char; 256usize],
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct DIR {
-    pub position: c_long,
-    pub dirData: *mut DIR_ITER,
-    pub fileData: dirent,
-}
-extern "C" {
-    pub fn closedir(dirp: *mut DIR) -> c_int;
-}
-extern "C" {
-    pub fn opendir(dirname: *const c_char) -> *mut DIR;
-}
-extern "C" {
-    pub fn readdir(dirp: *mut DIR) -> *mut dirent;
-}
-extern "C" {
-    pub fn readdir_r(
-        dirp: *mut DIR,
-        entry: *mut dirent,
-        result: *mut *mut dirent,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn rewinddir(dirp: *mut DIR);
-}
-extern "C" {
-    pub fn seekdir(dirp: *mut DIR, loc: c_long);
-}
-extern "C" {
-    pub fn telldir(dirp: *mut DIR) -> c_long;
-}
-extern "C" {
-    pub fn scandir(
-        dirp: *const c_char,
-        namelist: *mut *mut *mut dirent,
-        filter: ::Option<unsafe extern "C" fn(arg1: *const dirent) -> c_int>,
-        compar: ::Option<
-            unsafe extern "C" fn(
-                arg1: *mut *const dirent,
-                arg2: *mut *const dirent,
-            ) -> c_int,
-        >,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn alphasort(a: *mut *const dirent, b: *mut *const dirent) -> c_int;
-}
-extern "C" {
-    pub fn dirfd(arg1: *mut DIR) -> c_int;
-}
-extern "C" {
-    pub fn fdclosedir(arg1: *mut DIR) -> c_int;
-}
-extern "C" {
-    pub fn fdopendir(arg1: c_int) -> *mut DIR;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct imaxdiv_t {
-    pub quot: intmax_t,
-    pub rem: intmax_t,
-}
-extern "C" {
-    pub fn imaxabs(j: intmax_t) -> intmax_t;
-}
-extern "C" {
-    pub fn imaxdiv(numer: intmax_t, denomer: intmax_t) -> imaxdiv_t;
-}
-extern "C" {
-    pub fn strtoimax(
-        arg1: *const c_char,
-        arg2: *mut *mut c_char,
-        arg3: c_int,
-    ) -> intmax_t;
-}
-extern "C" {
-    pub fn strtoumax(
-        arg1: *const c_char,
-        arg2: *mut *mut c_char,
-        arg3: c_int,
-    ) -> uintmax_t;
-}
-extern "C" {
-    pub fn wcstoimax(
-        arg1: *const wchar_t,
-        arg2: *mut *mut wchar_t,
-        arg3: c_int,
-    ) -> intmax_t;
-}
-extern "C" {
-    pub fn wcstoumax(
-        arg1: *const wchar_t,
-        arg2: *mut *mut wchar_t,
-        arg3: c_int,
-    ) -> uintmax_t;
-}
-extern "C" {
-    pub fn strtoimax_l(
-        arg1: *const c_char,
-        _restrict: *mut *mut c_char,
-        arg2: c_int,
-        arg3: locale_t,
-    ) -> intmax_t;
-}
-extern "C" {
-    pub fn strtoumax_l(
-        arg1: *const c_char,
-        _restrict: *mut *mut c_char,
-        arg2: c_int,
-        arg3: locale_t,
-    ) -> uintmax_t;
-}
-extern "C" {
-    pub fn wcstoimax_l(
-        arg1: *const wchar_t,
-        _restrict: *mut *mut wchar_t,
-        arg2: c_int,
-        arg3: locale_t,
-    ) -> intmax_t;
-}
-extern "C" {
-    pub fn wcstoumax_l(
-        arg1: *const wchar_t,
-        _restrict: *mut *mut wchar_t,
-        arg2: c_int,
-        arg3: locale_t,
-    ) -> uintmax_t;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct lconv {
-    pub decimal_point: *mut c_char,
-    pub thousands_sep: *mut c_char,
-    pub grouping: *mut c_char,
-    pub int_curr_symbol: *mut c_char,
-    pub currency_symbol: *mut c_char,
-    pub mon_decimal_point: *mut c_char,
-    pub mon_thousands_sep: *mut c_char,
-    pub mon_grouping: *mut c_char,
-    pub positive_sign: *mut c_char,
-    pub negative_sign: *mut c_char,
-    pub int_frac_digits: c_char,
-    pub frac_digits: c_char,
-    pub p_cs_precedes: c_char,
-    pub p_sep_by_space: c_char,
-    pub n_cs_precedes: c_char,
-    pub n_sep_by_space: c_char,
-    pub p_sign_posn: c_char,
-    pub n_sign_posn: c_char,
-    pub int_n_cs_precedes: c_char,
-    pub int_n_sep_by_space: c_char,
-    pub int_n_sign_posn: c_char,
-    pub int_p_cs_precedes: c_char,
-    pub int_p_sep_by_space: c_char,
-    pub int_p_sign_posn: c_char,
-}
-extern "C" {
-    pub fn setlocale(arg1: c_int, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn localeconv() -> *mut lconv;
-}
-extern "C" {
-    pub fn newlocale(
-        arg1: c_int,
-        arg2: *const c_char,
-        arg3: locale_t,
-    ) -> locale_t;
-}
-extern "C" {
-    pub fn freelocale(arg1: locale_t);
-}
-extern "C" {
-    pub fn duplocale(arg1: locale_t) -> locale_t;
-}
-extern "C" {
-    pub fn uselocale(arg1: locale_t) -> locale_t;
-}
-pub type regoff_t = off_t;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct regex_t {
-    pub re_magic: c_int,
-    pub re_nsub: size_t,
-    pub re_endp: *const c_char,
-    pub re_g: *mut re_guts,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct regmatch_t {
-    pub rm_so: regoff_t,
-    pub rm_eo: regoff_t,
-}
-extern "C" {
-    pub fn regcomp(
-        arg1: *mut regex_t,
-        arg2: *const c_char,
-        arg3: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn regerror(
-        arg1: c_int,
-        arg2: *const regex_t,
-        arg3: *mut c_char,
-        arg4: size_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn regexec(
-        arg1: *const regex_t,
-        arg2: *const c_char,
-        arg3: size_t,
-        arg4: *mut regmatch_t,
-        arg5: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn regfree(arg1: *mut regex_t);
-}
-pub type wctype_t = c_int;
-pub type wctrans_t = c_int;
-extern "C" {
-    pub fn iswalpha(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswalnum(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswblank(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswcntrl(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswctype(arg1: wint_t, arg2: wctype_t) -> c_int;
-}
-extern "C" {
-    pub fn iswdigit(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswgraph(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswlower(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswprint(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswpunct(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswspace(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswupper(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn iswxdigit(arg1: wint_t) -> c_int;
-}
-extern "C" {
-    pub fn towctrans(arg1: wint_t, arg2: wctrans_t) -> wint_t;
-}
-extern "C" {
-    pub fn towupper(arg1: wint_t) -> wint_t;
-}
-extern "C" {
-    pub fn towlower(arg1: wint_t) -> wint_t;
-}
-extern "C" {
-    pub fn wctrans(arg1: *const c_char) -> wctrans_t;
-}
-extern "C" {
-    pub fn wctype(arg1: *const c_char) -> wctype_t;
-}
-extern "C" {
-    pub fn iswalpha_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswalnum_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswblank_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswcntrl_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswctype_l(arg1: wint_t, arg2: wctype_t, arg3: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswdigit_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswgraph_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswlower_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswprint_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswpunct_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswspace_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswupper_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn iswxdigit_l(arg1: wint_t, arg2: locale_t) -> c_int;
-}
-extern "C" {
-    pub fn towctrans_l(
-        arg1: wint_t,
-        arg2: wctrans_t,
-        arg3: locale_t,
-    ) -> wint_t;
-}
-extern "C" {
-    pub fn towupper_l(arg1: wint_t, arg2: locale_t) -> wint_t;
-}
-extern "C" {
-    pub fn towlower_l(arg1: wint_t, arg2: locale_t) -> wint_t;
-}
-extern "C" {
-    pub fn wctrans_l(arg1: *const c_char, arg2: locale_t) -> wctrans_t;
-}
-extern "C" {
-    pub fn wctype_l(arg1: *const c_char, arg2: locale_t) -> wctype_t;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct div_t {
-    pub quot: c_int,
-    pub rem: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ldiv_t {
-    pub quot: c_long,
-    pub rem: c_long,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct lldiv_t {
-    pub quot: c_longlong,
-    pub rem: c_longlong,
-}
-pub type __compar_fn_t = ::Option<
-    unsafe extern "C" fn(arg1: *const c_void, arg2: *const c_void) -> c_int,
->;
-extern "C" {
-    pub fn abort();
-}
-extern "C" {
-    pub fn abs(arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn arc4random() -> __uint32_t;
-}
-extern "C" {
-    pub fn arc4random_uniform(arg1: __uint32_t) -> __uint32_t;
-}
-extern "C" {
-    pub fn arc4random_buf(arg1: *mut c_void, arg2: size_t);
-}
-extern "C" {
-    pub fn atexit(__func: ::Option<unsafe extern "C" fn()>) -> c_int;
-}
-extern "C" {
-    pub fn atof(__nptr: *const c_char) -> f64;
-}
-extern "C" {
-    pub fn atoff(__nptr: *const c_char) -> f32;
-}
-extern "C" {
-    pub fn atoi(__nptr: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn atol(__nptr: *const c_char) -> c_long;
-}
-extern "C" {
-    pub fn bsearch(
-        __key: *const c_void,
-        __base: *const c_void,
-        __nmemb: size_t,
-        __size: size_t,
-        _compar: __compar_fn_t,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn calloc(arg1: c_ulong, arg2: c_ulong) -> *mut c_void;
-}
-extern "C" {
-    pub fn div(__numer: c_int, __denom: c_int) -> div_t;
-}
-extern "C" {
-    pub fn exit(__status: c_int);
-}
-extern "C" {
-    pub fn free(arg1: *mut c_void);
-}
-extern "C" {
-    pub fn getenv(__string: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub static mut suboptarg: *mut c_char;
-}
-extern "C" {
-    pub fn getsubopt(
-        arg1: *mut *mut c_char,
-        arg2: *const *mut c_char,
-        arg3: *mut *mut c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn labs(arg1: c_long) -> c_long;
-}
-extern "C" {
-    pub fn ldiv(__numer: c_long, __denom: c_long) -> ldiv_t;
-}
-extern "C" {
-    pub fn malloc(arg1: c_ulong) -> *mut c_void;
-}
-extern "C" {
-    pub fn mblen(arg1: *const c_char, arg2: size_t) -> c_int;
-}
-extern "C" {
-    pub fn mbtowc(
-        arg1: *mut wchar_t,
-        arg2: *const c_char,
-        arg3: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wctomb(arg1: *mut c_char, arg2: wchar_t) -> c_int;
-}
-extern "C" {
-    pub fn mbstowcs(
-        arg1: *mut wchar_t,
-        arg2: *const c_char,
-        arg3: size_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn wcstombs(
-        arg1: *mut c_char,
-        arg2: *const wchar_t,
-        arg3: size_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn mkdtemp(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn mkstemp(arg1: *mut c_char) -> c_int;
-}
-extern "C" {
-    pub fn mkstemps(arg1: *mut c_char, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn mktemp(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn qsort(
-        __base: *mut c_void,
-        __nmemb: size_t,
-        __size: size_t,
-        _compar: __compar_fn_t,
-    );
-}
-extern "C" {
-    pub fn rand() -> c_int;
-}
-extern "C" {
-    pub fn realloc(arg1: *mut c_void, arg2: c_ulong) -> *mut c_void;
-}
-extern "C" {
-    pub fn reallocarray(
-        arg1: *mut c_void,
-        arg2: size_t,
-        arg3: size_t,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn reallocf(arg1: *mut c_void, arg2: size_t) -> *mut c_void;
-}
-extern "C" {
-    pub fn realpath(
-        path: *const c_char,
-        resolved_path: *mut c_char,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn rpmatch(response: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn srand(__seed: c_uint);
-}
-extern "C" {
-    pub fn strtod(__n: *const c_char, __end_PTR: *mut *mut c_char) -> f64;
-}
-extern "C" {
-    pub fn strtof(__n: *const c_char, __end_PTR: *mut *mut c_char) -> f32;
-}
-extern "C" {
-    pub fn strtol(
-        __n: *const c_char,
-        __end_PTR: *mut *mut c_char,
-        __base: c_int,
-    ) -> c_long;
-}
-extern "C" {
-    pub fn strtoul(
-        __n: *const c_char,
-        __end_PTR: *mut *mut c_char,
-        __base: c_int,
-    ) -> c_ulong;
-}
-extern "C" {
-    pub fn system(__string: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn a64l(__input: *const c_char) -> c_long;
-}
-extern "C" {
-    pub fn l64a(__input: c_long) -> *mut c_char;
-}
-extern "C" {
-    pub fn on_exit(
-        __func: ::Option<unsafe extern "C" fn(arg1: c_int, arg2: *mut c_void)>,
-        __arg: *mut c_void,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn putenv(__string: *mut c_char) -> c_int;
-}
-extern "C" {
-    pub fn setenv(
-        __string: *const c_char,
-        __value: *const c_char,
-        __overwrite: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn itoa(arg1: c_int, arg2: *mut c_char, arg3: c_int) -> *mut c_char;
-}
-extern "C" {
-    pub fn utoa(arg1: c_uint, arg2: *mut c_char, arg3: c_int) -> *mut c_char;
-}
-extern "C" {
-    pub fn rand_r(__seed: *mut c_uint) -> c_int;
-}
-extern "C" {
-    pub fn drand48() -> f64;
-}
-extern "C" {
-    pub fn erand48(arg1: *mut c_ushort) -> f64;
-}
-extern "C" {
-    pub fn jrand48(arg1: *mut c_ushort) -> c_long;
-}
-extern "C" {
-    pub fn lcong48(arg1: *mut c_ushort);
-}
-extern "C" {
-    pub fn lrand48() -> c_long;
-}
-extern "C" {
-    pub fn mrand48() -> c_long;
-}
-extern "C" {
-    pub fn nrand48(arg1: *mut c_ushort) -> c_long;
-}
-extern "C" {
-    pub fn seed48(arg1: *mut c_ushort) -> *mut c_ushort;
-}
-extern "C" {
-    pub fn srand48(arg1: c_long);
-}
-extern "C" {
-    pub fn initstate(
-        arg1: c_uint,
-        arg2: *mut c_char,
-        arg3: size_t,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn random() -> c_long;
-}
-extern "C" {
-    pub fn setstate(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn srandom(arg1: c_uint);
-}
-extern "C" {
-    pub fn atoll(__nptr: *const c_char) -> c_longlong;
-}
-extern "C" {
-    pub fn llabs(arg1: c_longlong) -> c_longlong;
-}
-extern "C" {
-    pub fn lldiv(__numer: c_longlong, __denom: c_longlong) -> lldiv_t;
-}
-extern "C" {
-    pub fn strtoll(
-        __n: *const c_char,
-        __end_PTR: *mut *mut c_char,
-        __base: c_int,
-    ) -> c_longlong;
-}
-extern "C" {
-    pub fn strtoull(
-        __n: *const c_char,
-        __end_PTR: *mut *mut c_char,
-        __base: c_int,
-    ) -> c_ulonglong;
-}
-extern "C" {
-    pub fn cfree(arg1: *mut c_void);
-}
-extern "C" {
-    pub fn unsetenv(__string: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn posix_memalign(
-        arg1: *mut *mut c_void,
-        arg2: size_t,
-        arg3: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    #[link_name = "\u{1}__bsd_qsort_r"]
-    pub fn qsort_r(
-        __base: *mut c_void,
-        __nmemb: size_t,
-        __size: size_t,
-        __thunk: *mut c_void,
-        _compar: ::Option<
-            unsafe extern "C" fn(
-                arg1: *mut c_void,
-                arg2: *const c_void,
-                arg3: *const c_void,
-            ) -> c_int,
-        >,
-    );
-}
-extern "C" {
-    pub fn strtold(arg1: *const c_char, arg2: *mut *mut c_char) -> u128;
-}
-extern "C" {
-    pub fn aligned_alloc(arg1: size_t, arg2: size_t) -> *mut c_void;
-}
-extern "C" {
-    pub fn at_quick_exit(arg1: ::Option<unsafe extern "C" fn()>) -> c_int;
-}
-extern "C" {
-    pub fn quick_exit(arg1: c_int);
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ar_hdr {
-    pub ar_name: [c_char; 16usize],
-    pub ar_date: [c_char; 12usize],
-    pub ar_uid: [c_char; 6usize],
-    pub ar_gid: [c_char; 6usize],
-    pub ar_mode: [c_char; 8usize],
-    pub ar_size: [c_char; 10usize],
-    pub ar_fmag: [c_char; 2usize],
-}
-pub type error_t = c_int;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct utimbuf {
-    pub actime: time_t,
-    pub modtime: time_t,
-}
-extern "C" {
-    pub fn utime(path: *const c_char, times: *const utimbuf) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct glob_t {
-    pub gl_pathc: c_int,
-    pub gl_matchc: c_int,
-    pub gl_offs: c_int,
-    pub gl_flags: c_int,
-    pub gl_pathv: *mut *mut c_char,
-    pub gl_errfunc: ::Option<
-        unsafe extern "C" fn(arg1: *const c_char, arg2: c_int) -> c_int,
-    >,
-    pub gl_closedir: ::Option<unsafe extern "C" fn(arg1: *mut c_void)>,
-    pub gl_readdir:
-        ::Option<unsafe extern "C" fn(arg1: *mut c_void) -> *mut dirent>,
-    pub gl_opendir:
-        ::Option<unsafe extern "C" fn(arg1: *const c_char) -> *mut c_void>,
-    pub gl_lstat: ::Option<
-        unsafe extern "C" fn(arg1: *const c_char, arg2: *mut stat) -> c_int,
-    >,
-    pub gl_stat: ::Option<
-        unsafe extern "C" fn(arg1: *const c_char, arg2: *mut stat) -> c_int,
-    >,
-}
-extern "C" {
-    pub fn glob(
-        arg1: *const c_char,
-        arg2: c_int,
-        arg3: ::Option<
-            unsafe extern "C" fn(arg1: *const c_char, arg2: c_int) -> c_int,
-        >,
-        arg4: *mut glob_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn globfree(arg1: *mut glob_t);
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct passwd {
-    pub pw_name: *mut c_char,
-    pub pw_passwd: *mut c_char,
-    pub pw_uid: uid_t,
-    pub pw_gid: gid_t,
-    pub pw_comment: *mut c_char,
-    pub pw_gecos: *mut c_char,
-    pub pw_dir: *mut c_char,
-    pub pw_shell: *mut c_char,
-}
-extern "C" {
-    pub fn getpwuid(arg1: uid_t) -> *mut passwd;
-}
-extern "C" {
-    pub fn getpwnam(arg1: *const c_char) -> *mut passwd;
-}
-extern "C" {
-    pub fn getpwnam_r(
-        arg1: *const c_char,
-        arg2: *mut passwd,
-        arg3: *mut c_char,
-        arg4: size_t,
-        arg5: *mut *mut passwd,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getpwuid_r(
-        arg1: uid_t,
-        arg2: *mut passwd,
-        arg3: *mut c_char,
-        arg4: size_t,
-        arg5: *mut *mut passwd,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getpwent() -> *mut passwd;
-}
-extern "C" {
-    pub fn setpwent();
-}
-extern "C" {
-    pub fn endpwent();
-}
-extern "C" {
-    pub fn setpassent(arg1: c_int) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct option {
-    pub name: *const c_char,
-    pub has_arg: c_int,
-    pub flag: *mut c_int,
-    pub val: c_int,
-}
-extern "C" {
-    pub fn getopt_long(
-        __argc: c_int,
-        __argv: *const *mut c_char,
-        __shortopts: *const c_char,
-        __longopts: *const option,
-        __longind: *mut c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getopt_long_only(
-        __argc: c_int,
-        __argv: *const *mut c_char,
-        __shortopts: *const c_char,
-        __longopts: *const option,
-        __longind: *mut c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn envz_entry(
-        envz: *const c_char,
-        envz_len: size_t,
-        name: *const c_char,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn envz_get(
-        envz: *const c_char,
-        envz_len: size_t,
-        name: *const c_char,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn envz_add(
-        envz: *mut *mut c_char,
-        envz_len: *mut size_t,
-        name: *const c_char,
-        value: *const c_char,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn envz_merge(
-        envz: *mut *mut c_char,
-        envz_len: *mut size_t,
-        envz2: *const c_char,
-        envz2_len: size_t,
-        override_: c_int,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn envz_remove(
-        envz: *mut *mut c_char,
-        envz_len: *mut size_t,
-        name: *const c_char,
-    );
-}
-extern "C" {
-    pub fn envz_strip(envz: *mut *mut c_char, envz_len: *mut size_t);
-}
-extern "C" {
-    pub fn argz_create(
-        argv: *const *mut c_char,
-        argz: *mut *mut c_char,
-        argz_len: *mut size_t,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn argz_create_sep(
-        string: *const c_char,
-        sep: c_int,
-        argz: *mut *mut c_char,
-        argz_len: *mut size_t,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn argz_count(argz: *const c_char, argz_len: size_t) -> size_t;
-}
-extern "C" {
-    pub fn argz_extract(
-        argz: *mut c_char,
-        argz_len: size_t,
-        argv: *mut *mut c_char,
-    );
-}
-extern "C" {
-    pub fn argz_stringify(argz: *mut c_char, argz_len: size_t, sep: c_int);
-}
-extern "C" {
-    pub fn argz_add(
-        argz: *mut *mut c_char,
-        argz_len: *mut size_t,
-        str: *const c_char,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn argz_add_sep(
-        argz: *mut *mut c_char,
-        argz_len: *mut size_t,
-        str: *const c_char,
-        sep: c_int,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn argz_append(
-        argz: *mut *mut c_char,
-        argz_len: *mut size_t,
-        buf: *const c_char,
-        buf_len: size_t,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn argz_delete(
-        argz: *mut *mut c_char,
-        argz_len: *mut size_t,
-        entry: *mut c_char,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn argz_insert(
-        argz: *mut *mut c_char,
-        argz_len: *mut size_t,
-        before: *mut c_char,
-        entry: *const c_char,
-    ) -> error_t;
-}
-extern "C" {
-    pub fn argz_next(
-        argz: *mut c_char,
-        argz_len: size_t,
-        entry: *const c_char,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn argz_replace(
-        argz: *mut *mut c_char,
-        argz_len: *mut size_t,
-        str: *const c_char,
-        with: *const c_char,
-        replace_count: *mut c_uint,
-    ) -> error_t;
-}
-pub type fpos_t = _fpos_t;
-extern "C" {
-    pub fn ctermid(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn tmpfile() -> *mut FILE;
-}
-extern "C" {
-    pub fn tmpnam(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn tempnam(arg1: *const c_char, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn fclose(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fflush(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn freopen(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: *mut FILE,
-    ) -> *mut FILE;
-}
-extern "C" {
-    pub fn setbuf(arg1: *mut FILE, arg2: *mut c_char);
-}
-extern "C" {
-    pub fn setvbuf(
-        arg1: *mut FILE,
-        arg2: *mut c_char,
-        arg3: c_int,
-        arg4: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn fprintf(arg1: *mut FILE, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn fscanf(arg1: *mut FILE, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn printf(arg1: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn scanf(arg1: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn sscanf(arg1: *const c_char, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn vfprintf(
-        arg1: *mut FILE,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vprintf(arg1: *const c_char, arg2: *mut __va_list_tag) -> c_int;
-}
-extern "C" {
-    pub fn vsprintf(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn fgetc(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fgets(
-        arg1: *mut c_char,
-        arg2: c_int,
-        arg3: *mut FILE,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn fputc(arg1: c_int, arg2: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fputs(arg1: *const c_char, arg2: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn getc(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn getchar() -> c_int;
-}
-extern "C" {
-    pub fn gets(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn putc(arg1: c_int, arg2: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn putchar(arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn puts(arg1: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn ungetc(arg1: c_int, arg2: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fread(
-        arg1: *mut c_void,
-        _size: c_ulong,
-        _n: c_ulong,
-        arg2: *mut FILE,
-    ) -> c_ulong;
-}
-extern "C" {
-    pub fn fwrite(
-        arg1: *const c_void,
-        _size: c_ulong,
-        _n: c_ulong,
-        arg2: *mut FILE,
-    ) -> c_ulong;
-}
-extern "C" {
-    pub fn fgetpos(arg1: *mut FILE, arg2: *mut fpos_t) -> c_int;
-}
-extern "C" {
-    pub fn fseek(arg1: *mut FILE, arg2: c_long, arg3: c_int) -> c_int;
-}
-extern "C" {
-    pub fn fsetpos(arg1: *mut FILE, arg2: *const fpos_t) -> c_int;
-}
-extern "C" {
-    pub fn ftell(arg1: *mut FILE) -> c_long;
-}
-extern "C" {
-    pub fn rewind(arg1: *mut FILE);
-}
-extern "C" {
-    pub fn clearerr(arg1: *mut FILE);
-}
-extern "C" {
-    pub fn feof(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn ferror(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn perror(arg1: *const c_char);
-}
-extern "C" {
-    pub fn fopen(_name: *const c_char, _type: *const c_char) -> *mut FILE;
-}
-extern "C" {
-    pub fn sprintf(arg1: *mut c_char, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn remove(arg1: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn rename(arg1: *const c_char, arg2: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn fseeko(arg1: *mut FILE, arg2: off_t, arg3: c_int) -> c_int;
-}
-extern "C" {
-    pub fn ftello(arg1: *mut FILE) -> off_t;
-}
-extern "C" {
-    pub fn snprintf(
-        arg1: *mut c_char,
-        arg2: c_ulong,
-        arg3: *const c_char,
-        ...
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vsnprintf(
-        arg1: *mut c_char,
-        arg2: c_ulong,
-        arg3: *const c_char,
-        arg4: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vfscanf(
-        arg1: *mut FILE,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vscanf(arg1: *const c_char, arg2: *mut __va_list_tag) -> c_int;
-}
-extern "C" {
-    pub fn vsscanf(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn asiprintf(
-        arg1: *mut *mut c_char,
-        arg2: *const c_char,
-        ...
-    ) -> c_int;
-}
-extern "C" {
-    pub fn asniprintf(
-        arg1: *mut c_char,
-        arg2: *mut size_t,
-        arg3: *const c_char,
-        ...
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn asnprintf(
-        arg1: *mut c_char,
-        arg2: *mut size_t,
-        arg3: *const c_char,
-        ...
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn diprintf(arg1: c_int, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn fiprintf(arg1: *mut FILE, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn fiscanf(arg1: *mut FILE, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn iprintf(arg1: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn iscanf(arg1: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn siprintf(arg1: *mut c_char, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn siscanf(arg1: *const c_char, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn sniprintf(
-        arg1: *mut c_char,
-        arg2: size_t,
-        arg3: *const c_char,
-        ...
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vasiprintf(
-        arg1: *mut *mut c_char,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vasniprintf(
-        arg1: *mut c_char,
-        arg2: *mut size_t,
-        arg3: *const c_char,
-        arg4: *mut __va_list_tag,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn vasnprintf(
-        arg1: *mut c_char,
-        arg2: *mut size_t,
-        arg3: *const c_char,
-        arg4: *mut __va_list_tag,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn vdiprintf(
-        arg1: c_int,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vfiprintf(
-        arg1: *mut FILE,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vfiscanf(
-        arg1: *mut FILE,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn viprintf(arg1: *const c_char, arg2: *mut __va_list_tag) -> c_int;
-}
-extern "C" {
-    pub fn viscanf(arg1: *const c_char, arg2: *mut __va_list_tag) -> c_int;
-}
-extern "C" {
-    pub fn vsiprintf(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vsiscanf(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn vsniprintf(
-        arg1: *mut c_char,
-        arg2: size_t,
-        arg3: *const c_char,
-        arg4: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn fdopen(arg1: c_int, arg2: *const c_char) -> *mut FILE;
-}
-extern "C" {
-    pub fn fileno(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn pclose(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn popen(arg1: *const c_char, arg2: *const c_char) -> *mut FILE;
-}
-extern "C" {
-    pub fn setbuffer(arg1: *mut FILE, arg2: *mut c_char, arg3: c_int);
-}
-extern "C" {
-    pub fn setlinebuf(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn getw(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn putw(arg1: c_int, arg2: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn getc_unlocked(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn getchar_unlocked() -> c_int;
-}
-extern "C" {
-    pub fn flockfile(arg1: *mut FILE);
-}
-extern "C" {
-    pub fn ftrylockfile(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn funlockfile(arg1: *mut FILE);
-}
-extern "C" {
-    pub fn putc_unlocked(arg1: c_int, arg2: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn putchar_unlocked(arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn dprintf(arg1: c_int, arg2: *const c_char, ...) -> c_int;
-}
-extern "C" {
-    pub fn fmemopen(
-        arg1: *mut c_void,
-        arg2: size_t,
-        arg3: *const c_char,
-    ) -> *mut FILE;
-}
-extern "C" {
-    pub fn open_memstream(
-        arg1: *mut *mut c_char,
-        arg2: *mut size_t,
-    ) -> *mut FILE;
-}
-extern "C" {
-    pub fn vdprintf(
-        arg1: c_int,
-        arg2: *const c_char,
-        arg3: *mut __va_list_tag,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn renameat(
-        arg1: c_int,
-        arg2: *const c_char,
-        arg3: c_int,
-        arg4: *const c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn fpurge(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn clearerr_unlocked(arg1: *mut FILE);
-}
-extern "C" {
-    pub fn feof_unlocked(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn ferror_unlocked(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fileno_unlocked(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fflush_unlocked(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fgetc_unlocked(arg1: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fputc_unlocked(arg1: c_int, arg2: *mut FILE) -> c_int;
-}
-extern "C" {
-    pub fn fread_unlocked(
-        arg1: *mut c_void,
-        _size: size_t,
-        _n: size_t,
-        arg2: *mut FILE,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn fwrite_unlocked(
-        arg1: *const c_void,
-        _size: size_t,
-        _n: size_t,
-        arg2: *mut FILE,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn funopen(
-        __cookie: *const c_void,
-        __readfn: ::Option<
-            unsafe extern "C" fn(
-                __cookie: *mut c_void,
-                __buf: *mut c_char,
-                __n: c_int,
-            ) -> c_int,
-        >,
-        __writefn: ::Option<
-            unsafe extern "C" fn(
-                __cookie: *mut c_void,
-                __buf: *const c_char,
-                __n: c_int,
-            ) -> c_int,
-        >,
-        __seekfn: ::Option<
-            unsafe extern "C" fn(
-                __cookie: *mut c_void,
-                __off: fpos_t,
-                __whence: c_int,
-            ) -> fpos_t,
-        >,
-        __closefn: ::Option<
-            unsafe extern "C" fn(__cookie: *mut c_void) -> c_int,
-        >,
-    ) -> *mut FILE;
-}
-extern "C" {
-    pub fn memchr(
-        arg1: *const c_void,
-        arg2: c_int,
-        arg3: c_ulong,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn memcmp(
-        arg1: *const c_void,
-        arg2: *const c_void,
-        arg3: c_ulong,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn memcpy(
-        arg1: *mut c_void,
-        arg2: *const c_void,
-        arg3: c_ulong,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn memmove(
-        arg1: *mut c_void,
-        arg2: *const c_void,
-        arg3: c_ulong,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn memset(
-        arg1: *mut c_void,
-        arg2: c_int,
-        arg3: c_ulong,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn strcat(arg1: *mut c_char, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strchr(arg1: *const c_char, arg2: c_int) -> *mut c_char;
-}
-extern "C" {
-    pub fn strcmp(arg1: *const c_char, arg2: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn strcoll(arg1: *const c_char, arg2: *const c_char) -> c_int;
-}
-extern "C" {
-    pub fn strcpy(arg1: *mut c_char, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strcspn(arg1: *const c_char, arg2: *const c_char) -> c_ulong;
-}
-extern "C" {
-    pub fn strerror(arg1: c_int) -> *mut c_char;
-}
-extern "C" {
-    pub fn strlen(arg1: *const c_char) -> c_ulong;
-}
-extern "C" {
-    pub fn strncat(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: c_ulong,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn strncmp(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: c_ulong,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn strncpy(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: c_ulong,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn strpbrk(arg1: *const c_char, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strrchr(arg1: *const c_char, arg2: c_int) -> *mut c_char;
-}
-extern "C" {
-    pub fn strspn(arg1: *const c_char, arg2: *const c_char) -> c_ulong;
-}
-extern "C" {
-    pub fn strstr(arg1: *const c_char, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strtok(arg1: *mut c_char, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strxfrm(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: c_ulong,
-    ) -> c_ulong;
-}
-extern "C" {
-    pub fn strcoll_l(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: locale_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn strerror_l(arg1: c_int, arg2: locale_t) -> *mut c_char;
-}
-extern "C" {
-    pub fn strxfrm_l(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: size_t,
-        arg4: locale_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn strtok_r(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: *mut *mut c_char,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn timingsafe_bcmp(
-        arg1: *const c_void,
-        arg2: *const c_void,
-        arg3: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn timingsafe_memcmp(
-        arg1: *const c_void,
-        arg2: *const c_void,
-        arg3: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn memccpy(
-        arg1: *mut c_void,
-        arg2: *const c_void,
-        arg3: c_int,
-        arg4: size_t,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn stpcpy(arg1: *mut c_char, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn stpncpy(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: c_ulong,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn strdup(arg1: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strndup(arg1: *const c_char, arg2: c_ulong) -> *mut c_char;
-}
-extern "C" {
-    #[link_name = "\u{1}__xpg_strerror_r"]
-    pub fn strerror_r(arg1: c_int, arg2: *mut c_char, arg3: size_t) -> c_int;
-}
-extern "C" {
-    pub fn strlcat(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: c_ulong,
-    ) -> c_ulong;
-}
-extern "C" {
-    pub fn strlcpy(
-        arg1: *mut c_char,
-        arg2: *const c_char,
-        arg3: c_ulong,
-    ) -> c_ulong;
-}
-extern "C" {
-    pub fn strnlen(arg1: *const c_char, arg2: size_t) -> size_t;
-}
-extern "C" {
-    pub fn strsep(arg1: *mut *mut c_char, arg2: *const c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strnstr(
-        arg1: *const c_char,
-        arg2: *const c_char,
-        arg3: size_t,
-    ) -> *mut c_char;
-}
-extern "C" {
-    pub fn strlwr(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strupr(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn strsignal(__signo: c_int) -> *mut c_char;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ctlname {
-    pub ctl_name: *mut c_char,
-    pub ctl_type: c_int,
-}
-extern "C" {
-    pub fn sysctl(
-        name: *const c_int,
-        namelen: c_uint,
-        oldp: *mut c_void,
-        oldlenp: *mut size_t,
-        newp: *const c_void,
-        newlen: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn sysctlbyname(
-        name: *const c_char,
-        oldp: *mut c_void,
-        oldlenp: *mut size_t,
-        newp: *const c_void,
-        newlen: size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn sysctlnametomib(
-        name: *const c_char,
-        mibp: *mut c_int,
-        sizep: *mut size_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn wait(arg1: *mut c_int) -> pid_t;
-}
-extern "C" {
-    pub fn waitpid(arg1: pid_t, arg2: *mut c_int, arg3: c_int) -> pid_t;
-}
-extern "C" {
-    pub fn ioctl(fd: c_int, request: c_int, ...) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct tms {
-    pub tms_utime: clock_t,
-    pub tms_stime: clock_t,
-    pub tms_cutime: clock_t,
-    pub tms_cstime: clock_t,
-}
-extern "C" {
-    pub fn times(arg1: *mut tms) -> clock_t;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct flock {
-    pub l_type: c_short,
-    pub l_whence: c_short,
-    pub l_start: c_long,
-    pub l_len: c_long,
-    pub l_pid: c_short,
-    pub l_xxx: c_short,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct eflock {
-    pub l_type: c_short,
-    pub l_whence: c_short,
-    pub l_start: c_long,
-    pub l_len: c_long,
-    pub l_pid: c_short,
-    pub l_xxx: c_short,
-    pub l_rpid: c_long,
-    pub l_rsys: c_long,
-}
-extern "C" {
-    pub fn open(arg1: *const c_char, arg2: c_int, ...) -> c_int;
-}
-extern "C" {
-    pub fn openat(arg1: c_int, arg2: *const c_char, arg3: c_int, ...)
-        -> c_int;
-}
-extern "C" {
-    pub fn creat(arg1: *const c_char, arg2: mode_t) -> c_int;
-}
-extern "C" {
-    pub fn fcntl(arg1: c_int, arg2: c_int, ...) -> c_int;
-}
-extern "C" {
-    pub fn flock(arg1: c_int, arg2: c_int) -> c_int;
-}
-pub type iconv_t = _iconv_t;
-extern "C" {
-    pub fn iconv_open(arg1: *const c_char, arg2: *const c_char) -> iconv_t;
-}
-extern "C" {
-    pub fn iconv(
-        arg1: iconv_t,
-        arg2: *mut *mut c_char,
-        arg3: *mut size_t,
-        arg4: *mut *mut c_char,
-        arg5: *mut size_t,
-    ) -> size_t;
-}
-extern "C" {
-    pub fn iconv_close(arg1: iconv_t) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct iovec {
-    pub iov_base: *mut c_void,
-    pub iov_len: size_t,
-}
-pub type sa_family_t = __sa_family_t;
-pub type socklen_t = __socklen_t;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct linger {
-    pub l_onoff: c_int,
-    pub l_linger: c_int,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct accept_filter_arg {
-    pub af_name: [c_char; 16usize],
-    pub af_arg: [c_char; 240usize],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sockaddr {
-    pub sa_len: c_uchar,
-    pub sa_family: sa_family_t,
-    pub sa_data: [c_char; 14usize],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sockproto {
-    pub sp_family: c_ushort,
-    pub sp_protocol: c_ushort,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct sockaddr_storage {
-    pub ss_len: c_uchar,
-    pub ss_family: sa_family_t,
-    pub __ss_pad1: [c_char; 6usize],
-    pub __ss_align: i64,
-    pub __ss_pad2: [c_char; 112usize],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct msghdr {
-    pub msg_name: *mut c_void,
-    pub msg_namelen: socklen_t,
-    pub msg_iov: *mut iovec,
-    pub msg_iovlen: c_int,
-    pub msg_control: *mut c_void,
-    pub msg_controllen: socklen_t,
-    pub msg_flags: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct cmsghdr {
-    pub cmsg_len: socklen_t,
-    pub cmsg_level: c_int,
-    pub cmsg_type: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sock_timestamp_info {
-    pub st_info_flags: u32,
-    pub st_info_pad0: u32,
-    pub st_info_rsv: [u64; 7usize],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct osockaddr {
-    pub sa_family: c_ushort,
-    pub sa_data: [c_char; 14usize],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct omsghdr {
-    pub msg_name: *mut c_char,
-    pub msg_namelen: c_int,
-    pub msg_iov: *mut iovec,
-    pub msg_iovlen: c_int,
-    pub msg_accrights: *mut c_char,
-    pub msg_accrightslen: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sf_hdtr {
-    pub headers: *mut iovec,
-    pub hdr_cnt: c_int,
-    pub trailers: *mut iovec,
-    pub trl_cnt: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct mmsghdr {
-    pub msg_hdr: msghdr,
-    pub msg_len: ssize_t,
-}
-extern "C" {
-    pub fn socket(domain: c_int, type_: c_int, protocol: c_int) -> c_int;
-}
-extern "C" {
-    pub fn recv(
-        sockfd: c_int,
-        buf: *mut c_void,
-        len: size_t,
-        flags: c_int,
-    ) -> ssize_t;
-}
-extern "C" {
-    pub fn recvfrom(
-        sockfd: c_int,
-        buf: *mut c_void,
-        len: size_t,
-        flags: c_int,
-        src_addr: *mut sockaddr,
-        addrlen: *mut socklen_t,
-    ) -> ssize_t;
-}
-extern "C" {
-    pub fn send(
-        sockfd: c_int,
-        buf: *const c_void,
-        len: size_t,
-        flags: c_int,
-    ) -> ssize_t;
-}
-extern "C" {
-    pub fn sendto(
-        sockfd: c_int,
-        buf: *const c_void,
-        len: size_t,
-        flags: c_int,
-        dest_addr: *const sockaddr,
-        addrlen: socklen_t,
-    ) -> ssize_t;
-}
-extern "C" {
-    pub fn accept(
-        sockfd: c_int,
-        addr: *mut sockaddr,
-        addrlen: *mut socklen_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn bind(
-        sockfd: c_int,
-        addr: *const sockaddr,
-        addrlen: socklen_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn connect(
-        sockfd: c_int,
-        addr: *const sockaddr,
-        addrlen: socklen_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getpeername(
-        sockfd: c_int,
-        addr: *mut sockaddr,
-        addrlen: *mut socklen_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getsockname(
-        sockfd: c_int,
-        addr: *mut sockaddr,
-        addrlen: *mut socklen_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn getsockopt(
-        sockfd: c_int,
-        level: c_int,
-        optname: c_int,
-        optval: *mut c_void,
-        optlen: *mut socklen_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn listen(sockfd: c_int, backlog: c_int) -> c_int;
-}
-extern "C" {
-    pub fn setsockopt(
-        sockfd: c_int,
-        level: c_int,
-        optname: c_int,
-        optval: *const c_void,
-        optlen: socklen_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn shutdown(sockfd: c_int, how: c_int) -> c_int;
-}
-extern "C" {
-    pub fn sockatmark(sockfd: c_int) -> c_int;
-}
-extern "C" {
-    pub fn socketpair(
-        domain: c_int,
-        type_: c_int,
-        protocol: c_int,
-        sv: *mut c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn recvmsg(sockfd: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
-}
-extern "C" {
-    pub fn sendmsg(sockfd: c_int, msg: *const msghdr, flags: c_int)
-        -> ssize_t;
-}
-extern "C" {
-    pub fn sendmmsg(
-        sockfd: c_int,
-        msgvec: *mut mmsghdr,
-        vlen: c_uint,
-        flags: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn recvmmsg(
-        sockfd: c_int,
-        msgvec: *mut mmsghdr,
-        vlen: c_uint,
-        flags: c_int,
-        timeout: *mut timespec,
-    ) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct rusage {
-    pub ru_utime: timeval,
-    pub ru_stime: timeval,
-}
-extern "C" {
-    pub fn getrusage(arg1: c_int, arg2: *mut rusage) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct timeb {
-    pub time: time_t,
-    pub millitm: c_ushort,
-    pub timezone: c_short,
-    pub dstflag: c_short,
-}
-extern "C" {
-    pub fn ftime(arg1: *mut timeb) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct fiodgname_arg {
-    pub len: c_int,
-    pub buf: *mut c_void,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union sigval {
-    pub sival_int: c_int,
-    pub sival_ptr: *mut c_void,
-    _bindgen_union_align: u64,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct sigevent {
-    pub sigev_notify: c_int,
-    pub sigev_signo: c_int,
-    pub sigev_value: sigval,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct siginfo_t {
-    pub si_signo: c_int,
-    pub si_code: c_int,
-    pub si_value: sigval,
-}
-pub type _sig_func_ptr = ::Option<unsafe extern "C" fn(arg1: c_int)>;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sigaction {
-    pub sa_handler: _sig_func_ptr,
-    pub sa_mask: sigset_t,
-    pub sa_flags: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sigaltstack {
-    pub ss_sp: *mut c_void,
-    pub ss_flags: c_int,
-    pub ss_size: size_t,
-}
-pub type stack_t = sigaltstack;
-extern "C" {
-    pub fn sigprocmask(
-        arg1: c_int,
-        arg2: *const sigset_t,
-        arg3: *mut sigset_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn pthread_sigmask(
-        arg1: c_int,
-        arg2: *const sigset_t,
-        arg3: *mut sigset_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn kill(arg1: pid_t, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn killpg(arg1: pid_t, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn sigaction(
-        arg1: c_int,
-        arg2: *const sigaction,
-        arg3: *mut sigaction,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn sigaddset(arg1: *mut sigset_t, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn sigdelset(arg1: *mut sigset_t, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn sigismember(arg1: *const sigset_t, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn sigfillset(arg1: *mut sigset_t) -> c_int;
-}
-extern "C" {
-    pub fn sigemptyset(arg1: *mut sigset_t) -> c_int;
-}
-extern "C" {
-    pub fn sigpending(arg1: *mut sigset_t) -> c_int;
-}
-extern "C" {
-    pub fn sigsuspend(arg1: *const sigset_t) -> c_int;
-}
-extern "C" {
-    pub fn sigwait(arg1: *const sigset_t, arg2: *mut c_int) -> c_int;
-}
-extern "C" {
-    pub fn sigpause(arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn sigaltstack(arg1: *const stack_t, arg2: *mut stack_t) -> c_int;
-}
-extern "C" {
-    pub fn pthread_kill(arg1: pthread_t, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn sigwaitinfo(arg1: *const sigset_t, arg2: *mut siginfo_t) -> c_int;
-}
-extern "C" {
-    pub fn sigtimedwait(
-        arg1: *const sigset_t,
-        arg2: *mut siginfo_t,
-        arg3: *const timespec,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn sigqueue(arg1: pid_t, arg2: c_int, arg3: sigval) -> c_int;
-}
-pub type sig_atomic_t = c_int;
-pub type sig_t = _sig_func_ptr;
-extern "C" {
-    pub fn signal(arg1: c_int, arg2: _sig_func_ptr) -> _sig_func_ptr;
-}
-extern "C" {
-    pub fn raise(arg1: c_int) -> c_int;
-}
-extern "C" {
-    pub fn psignal(arg1: c_int, arg2: *const c_char);
-}
-pub type nfds_t = c_uint;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pollfd {
-    pub fd: c_int,
-    pub events: c_short,
-    pub revents: c_short,
-}
-extern "C" {
-    pub fn poll(pfd: *mut pollfd, nfds: nfds_t, timeout: c_int) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __posix_spawnattr {
-    _unused: [u8; 0],
-}
-pub type posix_spawnattr_t = *mut __posix_spawnattr;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __posix_spawn_file_actions {
-    _unused: [u8; 0],
-}
-pub type posix_spawn_file_actions_t = *mut __posix_spawn_file_actions;
-extern "C" {
-    pub fn posix_spawn(
-        arg1: *mut pid_t,
-        arg2: *const c_char,
-        arg3: *const posix_spawn_file_actions_t,
-        arg4: *const posix_spawnattr_t,
-        arg5: *const *mut c_char,
-        arg6: *const *mut c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnp(
-        arg1: *mut pid_t,
-        arg2: *const c_char,
-        arg3: *const posix_spawn_file_actions_t,
-        arg4: *const posix_spawnattr_t,
-        arg5: *const *mut c_char,
-        arg6: *const *mut c_char,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawn_file_actions_init(
-        arg1: *mut posix_spawn_file_actions_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawn_file_actions_destroy(
-        arg1: *mut posix_spawn_file_actions_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawn_file_actions_addopen(
-        arg1: *mut posix_spawn_file_actions_t,
-        arg2: c_int,
-        arg3: *const c_char,
-        arg4: c_int,
-        arg5: mode_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawn_file_actions_adddup2(
-        arg1: *mut posix_spawn_file_actions_t,
-        arg2: c_int,
-        arg3: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawn_file_actions_addclose(
-        arg1: *mut posix_spawn_file_actions_t,
-        arg2: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_init(arg1: *mut posix_spawnattr_t) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_destroy(arg1: *mut posix_spawnattr_t) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_getflags(
-        arg1: *const posix_spawnattr_t,
-        arg2: *mut c_short,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_getpgroup(
-        arg1: *const posix_spawnattr_t,
-        arg2: *mut pid_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_getschedparam(
-        arg1: *const posix_spawnattr_t,
-        arg2: *mut sched_param,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_getschedpolicy(
-        arg1: *const posix_spawnattr_t,
-        arg2: *mut c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_getsigdefault(
-        arg1: *const posix_spawnattr_t,
-        arg2: *mut sigset_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_getsigmask(
-        arg1: *const posix_spawnattr_t,
-        arg2: *mut sigset_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_setflags(
-        arg1: *mut posix_spawnattr_t,
-        arg2: c_short,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_setpgroup(
-        arg1: *mut posix_spawnattr_t,
-        arg2: pid_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_setschedparam(
-        arg1: *mut posix_spawnattr_t,
-        arg2: *const sched_param,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_setschedpolicy(
-        arg1: *mut posix_spawnattr_t,
-        arg2: c_int,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_setsigdefault(
-        arg1: *mut posix_spawnattr_t,
-        arg2: *const sigset_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn posix_spawnattr_setsigmask(
-        arg1: *mut posix_spawnattr_t,
-        arg2: *const sigset_t,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn dirname(arg1: *mut c_char) -> *mut c_char;
-}
-extern "C" {
-    pub fn longjmp(__jmpb: *mut c_longlong, __retval: c_int);
-}
-extern "C" {
-    pub fn setjmp(__jmpb: *mut c_longlong) -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct entry {
-    pub key: *mut c_char,
-    pub data: *mut c_void,
-}
-pub type ENTRY = entry;
 pub const ACTION_FIND: ACTION = 0;
 pub const ACTION_ENTER: ACTION = 1;
-pub type ACTION = u32;
 pub const VISIT_preorder: VISIT = 0;
 pub const VISIT_postorder: VISIT = 1;
 pub const VISIT_endorder: VISIT = 2;
 pub const VISIT_leaf: VISIT = 3;
-pub type VISIT = u32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct hsearch_data {
-    pub htable: *mut internal_head,
-    pub htablesize: size_t,
-}
-extern "C" {
-    pub fn hcreate(arg1: size_t) -> c_int;
-}
-extern "C" {
-    pub fn hdestroy();
-}
-extern "C" {
-    pub fn hsearch(arg1: ENTRY, arg2: ACTION) -> *mut ENTRY;
-}
-extern "C" {
-    pub fn hcreate_r(arg1: size_t, arg2: *mut hsearch_data) -> c_int;
-}
-extern "C" {
-    pub fn hdestroy_r(arg1: *mut hsearch_data);
-}
-extern "C" {
-    pub fn hsearch_r(
-        arg1: ENTRY,
-        arg2: ACTION,
-        arg3: *mut *mut ENTRY,
-        arg4: *mut hsearch_data,
-    ) -> c_int;
-}
-extern "C" {
-    pub fn tdelete(
-        arg1: *const c_void,
-        arg2: *mut *mut c_void,
-        arg3: __compar_fn_t,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn tdestroy(
-        arg1: *mut c_void,
-        arg2: ::Option<unsafe extern "C" fn(arg1: *mut c_void)>,
-    );
-}
-extern "C" {
-    pub fn tfind(
-        arg1: *const c_void,
-        arg2: *mut *mut c_void,
-        arg3: __compar_fn_t,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn tsearch(
-        arg1: *const c_void,
-        arg2: *mut *mut c_void,
-        arg3: __compar_fn_t,
-    ) -> *mut c_void;
-}
-extern "C" {
-    pub fn twalk(
-        arg1: *const c_void,
-        arg2: ::Option<
-            unsafe extern "C" fn(
-                arg1: *const c_void,
-                arg2: VISIT,
-                arg3: c_int,
-            ),
-        >,
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct mallinfo {
-    pub arena: size_t,
-    pub ordblks: size_t,
-    pub smblks: size_t,
-    pub hblks: size_t,
-    pub hblkhd: size_t,
-    pub usmblks: size_t,
-    pub fsmblks: size_t,
-    pub uordblks: size_t,
-    pub fordblks: size_t,
-    pub keepcost: size_t,
-}
-extern "C" {
-    pub fn memalign(arg1: size_t, arg2: size_t) -> *mut c_void;
-}
-extern "C" {
-    pub fn mallinfo() -> mallinfo;
-}
-extern "C" {
-    pub fn malloc_stats();
-}
-extern "C" {
-    pub fn mallopt(arg1: c_int, arg2: c_int) -> c_int;
-}
-extern "C" {
-    pub fn malloc_usable_size(arg1: *mut c_void) -> size_t;
-}
-extern "C" {
-    pub fn valloc(arg1: size_t) -> *mut c_void;
-}
-extern "C" {
-    pub fn pvalloc(arg1: size_t) -> *mut c_void;
-}
-extern "C" {
-    pub fn malloc_trim(arg1: size_t) -> c_int;
-}
-extern "C" {
-    pub fn mstats(arg1: *mut c_char);
-}
-pub type nl_item = __nl_item;
 pub const _NL_CTYPE_CODESET_NAME: _bindgen_ty_6 = 0;
 pub const D_T_FMT: _bindgen_ty_6 = 1;
 pub const D_FMT: _bindgen_ty_6 = 2;
@@ -8662,240 +5173,1986 @@ pub const NOSTR: _bindgen_ty_6 = 55;
 pub const CRNCYSTR: _bindgen_ty_6 = 56;
 pub const D_MD_ORDER: _bindgen_ty_6 = 57;
 pub const _NL_TIME_DATE_FMT: _bindgen_ty_6 = 84;
-pub type _bindgen_ty_6 = u32;
+
+pub fn WIFSTOPPED(status: ::c_int) -> bool {
+    (status & 0xff) == 0x7f
+}
+pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+    (status >> 8) & 0xff
+}
+pub fn WIFCONTINUED(status: ::c_int) -> bool {
+    status == 0xffff
+}
+pub fn WIFSIGNALED(status: ::c_int) -> bool {
+    ((status & 0x7f) + 1) as i8 >= 2
+}
+pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+    status & 0x7f
+}
+pub fn WIFEXITED(status: ::c_int) -> bool {
+    (status & 0x7f) == 0
+}
+pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+    (status >> 8) & 0xff
+}
+pub fn WCOREDUMP(status: ::c_int) -> bool {
+    (status & 0x80) != 0
+}
+
 extern "C" {
+    pub fn timespec2nsec(ts: *const timespec) -> __uint64_t;
+    pub fn abstimespec2nsec(
+        clock_id: __clockid_t,
+        ts: *const timespec,
+    ) -> __uint64_t;
+    pub fn select(
+        __n: c_int,
+        __readfds: *mut fd_set,
+        __writefds: *mut fd_set,
+        __exceptfds: *mut fd_set,
+        __timeout: *mut timeval,
+    ) -> c_int;
+    pub fn pselect(
+        __n: c_int,
+        __readfds: *mut fd_set,
+        __writefds: *mut fd_set,
+        __exceptfds: *mut fd_set,
+        __timeout: *const timespec,
+        __set: *const sigset_t,
+    ) -> c_int;
+    pub static mut environ: *mut *mut c_char;
+    pub fn access(__path: *const c_char, __amode: c_int) -> c_int;
+    pub fn alarm(__secs: c_uint) -> c_uint;
+    pub fn chdir(__path: *const c_char) -> c_int;
+    pub fn chmod(__path: *const c_char, __mode: mode_t) -> c_int;
+    pub fn chown(
+        __path: *const c_char,
+        __owner: uid_t,
+        __group: gid_t,
+    ) -> c_int;
+    pub fn chroot(__path: *const c_char) -> c_int;
+    pub fn close(__fildes: c_int) -> c_int;
+    pub fn confstr(__name: c_int, __buf: *mut c_char, __len: size_t)
+        -> size_t;
+    pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
+    pub fn dup(__fildes: c_int) -> c_int;
+    pub fn dup2(__fildes: c_int, __fildes2: c_int) -> c_int;
+    pub fn endusershell();
+    pub fn execl(__path: *const c_char, arg1: *const c_char, ...) -> c_int;
+    pub fn execle(__path: *const c_char, arg1: *const c_char, ...) -> c_int;
+    pub fn execlp(__file: *const c_char, arg1: *const c_char, ...) -> c_int;
+    pub fn execlpe(__file: *const c_char, arg1: *const c_char, ...) -> c_int;
+    pub fn execv(__path: *const c_char, __argv: *const *mut c_char) -> c_int;
+    pub fn execve(
+        __path: *const c_char,
+        __argv: *const *mut c_char,
+        __envp: *const *mut c_char,
+    ) -> c_int;
+    pub fn execvp(__file: *const c_char, __argv: *const *mut c_char) -> c_int;
+    pub fn faccessat(
+        __dirfd: c_int,
+        __path: *const c_char,
+        __mode: c_int,
+        __flags: c_int,
+    ) -> c_int;
+    pub fn fchdir(__fildes: c_int) -> c_int;
+    pub fn fchmod(__fildes: c_int, __mode: mode_t) -> c_int;
+    pub fn fchown(__fildes: c_int, __owner: uid_t, __group: gid_t) -> c_int;
+    pub fn fchownat(
+        __dirfd: c_int,
+        __path: *const c_char,
+        __owner: uid_t,
+        __group: gid_t,
+        __flags: c_int,
+    ) -> c_int;
+    pub fn fexecve(
+        __fd: c_int,
+        __argv: *const *mut c_char,
+        __envp: *const *mut c_char,
+    ) -> c_int;
+    pub fn fork() -> pid_t;
+    pub fn fpathconf(__fd: c_int, __name: c_int) -> c_long;
+    pub fn fsync(__fd: c_int) -> c_int;
+    pub fn fdatasync(__fd: c_int) -> c_int;
+    pub fn getcwd(__buf: *mut c_char, __size: size_t) -> *mut c_char;
+    pub fn getdomainname(__name: *mut c_char, __len: size_t) -> c_int;
+    pub fn getentropy(arg1: *mut c_void, arg2: size_t) -> c_int;
+    pub fn getegid() -> gid_t;
+    pub fn geteuid() -> uid_t;
+    pub fn getgid() -> gid_t;
+    pub fn getgroups(__gidsetsize: c_int, __grouplist: *mut gid_t) -> c_int;
+    pub fn gethostid() -> c_long;
+    pub fn getlogin() -> *mut c_char;
+    pub fn getpass(__prompt: *const c_char) -> *mut c_char;
+    pub fn getpagesize() -> c_int;
+    pub fn getpeereid(
+        arg1: c_int,
+        arg2: *mut uid_t,
+        arg3: *mut gid_t,
+    ) -> c_int;
+    pub fn getpgid(arg1: pid_t) -> pid_t;
+    pub fn getpgrp() -> pid_t;
+    pub fn getpid() -> pid_t;
+    pub fn getppid() -> pid_t;
+    pub fn getsid(arg1: pid_t) -> pid_t;
+    pub fn getuid() -> uid_t;
+    pub fn getusershell() -> *mut c_char;
+    pub fn getwd(__buf: *mut c_char) -> *mut c_char;
+    pub fn iruserok(
+        raddr: c_ulong,
+        superuser: c_int,
+        ruser: *const c_char,
+        luser: *const c_char,
+    ) -> c_int;
+    pub fn isatty(__fildes: c_int) -> c_int;
+    pub fn issetugid() -> c_int;
+    pub fn lchown(
+        __path: *const c_char,
+        __owner: uid_t,
+        __group: gid_t,
+    ) -> c_int;
+    pub fn link(__path1: *const c_char, __path2: *const c_char) -> c_int;
+    pub fn linkat(
+        __dirfd1: c_int,
+        __path1: *const c_char,
+        __dirfd2: c_int,
+        __path2: *const c_char,
+        __flags: c_int,
+    ) -> c_int;
+    pub fn nice(__nice_value: c_int) -> c_int;
+    pub fn lseek(__fildes: c_int, __offset: off_t, __whence: c_int) -> off_t;
+    pub fn lockf(__fd: c_int, __cmd: c_int, __len: off_t) -> c_int;
+    pub fn pathconf(__path: *const c_char, __name: c_int) -> c_long;
+    pub fn pause() -> c_int;
+    pub fn pthread_atfork(
+        arg1: ::Option<unsafe extern "C" fn()>,
+        arg2: ::Option<unsafe extern "C" fn()>,
+        arg3: ::Option<unsafe extern "C" fn()>,
+    ) -> c_int;
+    pub fn pipe(__fildes: *mut c_int) -> c_int;
+    pub fn pread(
+        __fd: c_int,
+        __buf: *mut c_void,
+        __nbytes: size_t,
+        __offset: off_t,
+    ) -> ssize_t;
+    pub fn pwrite(
+        __fd: c_int,
+        __buf: *const c_void,
+        __nbytes: size_t,
+        __offset: off_t,
+    ) -> ssize_t;
+    pub fn read(__fd: c_int, __buf: *mut c_void, __nbyte: size_t) -> c_int;
+    pub fn rresvport(__alport: *mut c_int) -> c_int;
+    pub fn revoke(__path: *mut c_char) -> c_int;
+    pub fn rmdir(__path: *const c_char) -> c_int;
+    pub fn ruserok(
+        rhost: *const c_char,
+        superuser: c_int,
+        ruser: *const c_char,
+        luser: *const c_char,
+    ) -> c_int;
+    pub fn sbrk(__incr: isize) -> *mut c_void;
+    pub fn setegid(__gid: gid_t) -> c_int;
+    pub fn seteuid(__uid: uid_t) -> c_int;
+    pub fn setgid(__gid: gid_t) -> c_int;
+    pub fn setgroups(ngroups: c_int, grouplist: *const gid_t) -> c_int;
+    pub fn sethostname(arg1: *const c_char, arg2: size_t) -> c_int;
+    pub fn setpgid(__pid: pid_t, __pgid: pid_t) -> c_int;
+    pub fn setpgrp() -> c_int;
+    pub fn setregid(__rgid: gid_t, __egid: gid_t) -> c_int;
+    pub fn setreuid(__ruid: uid_t, __euid: uid_t) -> c_int;
+    pub fn setsid() -> pid_t;
+    pub fn setuid(__uid: uid_t) -> c_int;
+    pub fn setusershell();
+    pub fn sleep(__seconds: c_uint) -> c_uint;
+    pub fn tcgetpgrp(__fildes: c_int) -> pid_t;
+    pub fn tcsetpgrp(__fildes: c_int, __pgrp_id: pid_t) -> c_int;
+    pub fn ttyname(__fildes: c_int) -> *mut c_char;
+    pub fn ttyname_r(arg1: c_int, arg2: *mut c_char, arg3: size_t) -> c_int;
+    pub fn unlink(__path: *const c_char) -> c_int;
+    pub fn usleep(__useconds: useconds_t) -> c_int;
+    pub fn vhangup() -> c_int;
+    pub fn write(__fd: c_int, __buf: *const c_void, __nbyte: size_t) -> c_int;
+    pub static mut optarg: *mut c_char;
+    pub static mut optind: c_int;
+    pub static mut opterr: c_int;
+    pub static mut optopt: c_int;
+    pub fn getopt(
+        arg1: c_int,
+        arg2: *const *mut c_char,
+        arg3: *const c_char,
+    ) -> c_int;
+    pub static mut optreset: c_int;
+    pub fn vfork() -> c_int;
+    pub fn ftruncate(__fd: c_int, __length: off_t) -> c_int;
+    pub fn truncate(arg1: *const c_char, __length: off_t) -> c_int;
+    pub fn getdtablesize() -> c_int;
+    pub fn ualarm(
+        __useconds: useconds_t,
+        __interval: useconds_t,
+    ) -> useconds_t;
+    pub fn gethostname(__name: *mut c_char, __len: size_t) -> c_int;
+    pub fn setdtablesize(arg1: c_int) -> c_int;
+    pub fn sync();
+    pub fn readlink(
+        __path: *const c_char,
+        __buf: *mut c_char,
+        __buflen: size_t,
+    ) -> ssize_t;
+    pub fn symlink(__name1: *const c_char, __name2: *const c_char) -> c_int;
+    pub fn readlinkat(
+        __dirfd1: c_int,
+        __path: *const c_char,
+        __buf: *mut c_char,
+        __buflen: size_t,
+    ) -> ssize_t;
+    pub fn symlinkat(
+        arg1: *const c_char,
+        arg2: c_int,
+        arg3: *const c_char,
+    ) -> c_int;
+    pub fn unlinkat(arg1: c_int, arg2: *const c_char, arg3: c_int) -> c_int;
+    pub fn clock() -> clock_t;
+    pub fn difftime(_time2: time_t, _time1: time_t) -> f64;
+    pub fn mktime(_timeptr: *mut tm) -> time_t;
+    pub fn time(_timer: *mut time_t) -> time_t;
+    pub fn asctime(_tblock: *const tm) -> *mut c_char;
+    pub fn ctime(_time: *const time_t) -> *mut c_char;
+    pub fn gmtime(_timer: *const time_t) -> *mut tm;
+    pub fn localtime(_timer: *const time_t) -> *mut tm;
+    pub fn strftime(
+        _s: *mut c_char,
+        _maxsize: size_t,
+        _fmt: *const c_char,
+        _t: *const tm,
+    ) -> size_t;
+    pub fn strftime_l(
+        _s: *mut c_char,
+        _maxsize: size_t,
+        _fmt: *const c_char,
+        _t: *const tm,
+        _l: locale_t,
+    ) -> size_t;
+    pub fn asctime_r(arg1: *const tm, arg2: *mut c_char) -> *mut c_char;
+    pub fn ctime_r(arg1: *const time_t, arg2: *mut c_char) -> *mut c_char;
+    pub fn gmtime_r(arg1: *const time_t, arg2: *mut tm) -> *mut tm;
+    pub fn localtime_r(arg1: *const time_t, arg2: *mut tm) -> *mut tm;
+    pub fn tzset();
+    pub fn call_once(
+        arg1: *mut once_flag,
+        arg2: ::Option<unsafe extern "C" fn()>,
+    );
+    pub fn cnd_broadcast(arg1: *mut cnd_t) -> c_int;
+    pub fn cnd_destroy(arg1: *mut cnd_t);
+    pub fn cnd_init(arg1: *mut cnd_t) -> c_int;
+    pub fn cnd_signal(arg1: *mut cnd_t) -> c_int;
+    pub fn cnd_timedwait(
+        arg1: *mut cnd_t,
+        __mtx: *mut mtx_t,
+        arg2: *const timespec,
+    ) -> c_int;
+    pub fn cnd_wait(arg1: *mut cnd_t, __mtx: *mut mtx_t) -> c_int;
+    pub fn mtx_destroy(__mtx: *mut mtx_t);
+    pub fn mtx_init(__mtx: *mut mtx_t, arg1: c_int) -> c_int;
+    pub fn mtx_lock(__mtx: *mut mtx_t) -> c_int;
+    pub fn mtx_timedlock(__mtx: *mut mtx_t, arg1: *const timespec) -> c_int;
+    pub fn mtx_trylock(__mtx: *mut mtx_t) -> c_int;
+    pub fn mtx_unlock(__mtx: *mut mtx_t) -> c_int;
+    pub fn thrd_create(
+        arg1: *mut thrd_t,
+        arg2: thrd_start_t,
+        arg3: *mut c_void,
+    ) -> c_int;
+    pub fn thrd_current() -> thrd_t;
+    pub fn thrd_detach(arg1: thrd_t) -> c_int;
+    pub fn thrd_equal(arg1: thrd_t, arg2: thrd_t) -> c_int;
+    pub fn thrd_exit(arg1: c_int);
+    pub fn thrd_join(arg1: thrd_t, arg2: *mut c_int) -> c_int;
+    pub fn thrd_sleep(arg1: *const timespec, arg2: *mut timespec) -> c_int;
+    pub fn thrd_yield();
+    pub fn tss_create(arg1: *mut tss_t, arg2: tss_dtor_t) -> c_int;
+    pub fn tss_delete(arg1: tss_t);
+    pub fn tss_get(arg1: tss_t) -> *mut c_void;
+    pub fn tss_set(arg1: tss_t, arg2: *mut c_void) -> c_int;
+    pub fn getgrgid(arg1: gid_t) -> *mut group;
+    pub fn getgrnam(arg1: *const c_char) -> *mut group;
+    pub fn getgrnam_r(
+        arg1: *const c_char,
+        arg2: *mut group,
+        arg3: *mut c_char,
+        arg4: size_t,
+        arg5: *mut *mut group,
+    ) -> c_int;
+    pub fn getgrgid_r(
+        arg1: gid_t,
+        arg2: *mut group,
+        arg3: *mut c_char,
+        arg4: size_t,
+        arg5: *mut *mut group,
+    ) -> c_int;
+    pub fn getgrent() -> *mut group;
+    pub fn setgrent();
+    pub fn endgrent();
+    pub fn initgroups(arg1: *const c_char, arg2: gid_t) -> c_int;
+    pub fn atan(arg1: f64) -> f64;
+    pub fn cos(arg1: f64) -> f64;
+    pub fn sin(arg1: f64) -> f64;
+    pub fn tan(arg1: f64) -> f64;
+    pub fn tanh(arg1: f64) -> f64;
+    pub fn frexp(arg1: f64, arg2: *mut c_int) -> f64;
+    pub fn modf(arg1: f64, arg2: *mut f64) -> f64;
+    pub fn ceil(arg1: f64) -> f64;
+    pub fn fabs(arg1: f64) -> f64;
+    pub fn floor(arg1: f64) -> f64;
+    pub fn acos(arg1: f64) -> f64;
+    pub fn asin(arg1: f64) -> f64;
+    pub fn atan2(arg1: f64, arg2: f64) -> f64;
+    pub fn cosh(arg1: f64) -> f64;
+    pub fn sinh(arg1: f64) -> f64;
+    pub fn exp(arg1: f64) -> f64;
+    pub fn ldexp(arg1: f64, arg2: c_int) -> f64;
+    pub fn log(arg1: f64) -> f64;
+    pub fn log10(arg1: f64) -> f64;
+    pub fn pow(arg1: f64, arg2: f64) -> f64;
+    pub fn sqrt(arg1: f64) -> f64;
+    pub fn fmod(arg1: f64, arg2: f64) -> f64;
+    pub fn finite(arg1: f64) -> c_int;
+    pub fn finitef(arg1: f32) -> c_int;
+    pub fn finitel(arg1: u128) -> c_int;
+    pub fn isinff(arg1: f32) -> c_int;
+    pub fn isnanf(arg1: f32) -> c_int;
+    pub fn isinf(arg1: f64) -> c_int;
+    pub fn isnan(arg1: f64) -> c_int;
+    pub fn infinity() -> f64;
+    pub fn nan(arg1: *const c_char) -> f64;
+    pub fn copysign(arg1: f64, arg2: f64) -> f64;
+    pub fn logb(arg1: f64) -> f64;
+    pub fn ilogb(arg1: f64) -> c_int;
+    pub fn asinh(arg1: f64) -> f64;
+    pub fn cbrt(arg1: f64) -> f64;
+    pub fn nextafter(arg1: f64, arg2: f64) -> f64;
+    pub fn rint(arg1: f64) -> f64;
+    pub fn scalbn(arg1: f64, arg2: c_int) -> f64;
+    pub fn exp2(arg1: f64) -> f64;
+    pub fn scalbln(arg1: f64, arg2: c_long) -> f64;
+    pub fn tgamma(arg1: f64) -> f64;
+    pub fn nearbyint(arg1: f64) -> f64;
+    pub fn lrint(arg1: f64) -> c_long;
+    pub fn llrint(arg1: f64) -> c_longlong;
+    pub fn round(arg1: f64) -> f64;
+    pub fn lround(arg1: f64) -> c_long;
+    pub fn llround(arg1: f64) -> c_longlong;
+    pub fn trunc(arg1: f64) -> f64;
+    pub fn remquo(arg1: f64, arg2: f64, arg3: *mut c_int) -> f64;
+    pub fn fdim(arg1: f64, arg2: f64) -> f64;
+    pub fn fmax(arg1: f64, arg2: f64) -> f64;
+    pub fn fmin(arg1: f64, arg2: f64) -> f64;
+    pub fn fma(arg1: f64, arg2: f64, arg3: f64) -> f64;
+    pub fn log1p(arg1: f64) -> f64;
+    pub fn expm1(arg1: f64) -> f64;
+    pub fn acosh(arg1: f64) -> f64;
+    pub fn atanh(arg1: f64) -> f64;
+    pub fn remainder(arg1: f64, arg2: f64) -> f64;
+    pub fn gamma(arg1: f64) -> f64;
+    pub fn lgamma(arg1: f64) -> f64;
+    pub fn erf(arg1: f64) -> f64;
+    pub fn erfc(arg1: f64) -> f64;
+    pub fn log2(arg1: f64) -> f64;
+    pub fn hypot(arg1: f64, arg2: f64) -> f64;
+    pub fn atanf(arg1: f32) -> f32;
+    pub fn cosf(arg1: f32) -> f32;
+    pub fn sinf(arg1: f32) -> f32;
+    pub fn tanf(arg1: f32) -> f32;
+    pub fn tanhf(arg1: f32) -> f32;
+    pub fn frexpf(arg1: f32, arg2: *mut c_int) -> f32;
+    pub fn modff(arg1: f32, arg2: *mut f32) -> f32;
+    pub fn ceilf(arg1: f32) -> f32;
+    pub fn fabsf(arg1: f32) -> f32;
+    pub fn floorf(arg1: f32) -> f32;
+    pub fn acosf(arg1: f32) -> f32;
+    pub fn asinf(arg1: f32) -> f32;
+    pub fn atan2f(arg1: f32, arg2: f32) -> f32;
+    pub fn coshf(arg1: f32) -> f32;
+    pub fn sinhf(arg1: f32) -> f32;
+    pub fn expf(arg1: f32) -> f32;
+    pub fn ldexpf(arg1: f32, arg2: c_int) -> f32;
+    pub fn logf(arg1: f32) -> f32;
+    pub fn log10f(arg1: f32) -> f32;
+    pub fn powf(arg1: f32, arg2: f32) -> f32;
+    pub fn sqrtf(arg1: f32) -> f32;
+    pub fn fmodf(arg1: f32, arg2: f32) -> f32;
+    pub fn exp2f(arg1: f32) -> f32;
+    pub fn scalblnf(arg1: f32, arg2: c_long) -> f32;
+    pub fn tgammaf(arg1: f32) -> f32;
+    pub fn nearbyintf(arg1: f32) -> f32;
+    pub fn lrintf(arg1: f32) -> c_long;
+    pub fn llrintf(arg1: f32) -> c_longlong;
+    pub fn roundf(arg1: f32) -> f32;
+    pub fn lroundf(arg1: f32) -> c_long;
+    pub fn llroundf(arg1: f32) -> c_longlong;
+    pub fn truncf(arg1: f32) -> f32;
+    pub fn remquof(arg1: f32, arg2: f32, arg3: *mut c_int) -> f32;
+    pub fn fdimf(arg1: f32, arg2: f32) -> f32;
+    pub fn fmaxf(arg1: f32, arg2: f32) -> f32;
+    pub fn fminf(arg1: f32, arg2: f32) -> f32;
+    pub fn fmaf(arg1: f32, arg2: f32, arg3: f32) -> f32;
+    pub fn infinityf() -> f32;
+    pub fn nanf(arg1: *const c_char) -> f32;
+    pub fn copysignf(arg1: f32, arg2: f32) -> f32;
+    pub fn logbf(arg1: f32) -> f32;
+    pub fn ilogbf(arg1: f32) -> c_int;
+    pub fn asinhf(arg1: f32) -> f32;
+    pub fn cbrtf(arg1: f32) -> f32;
+    pub fn nextafterf(arg1: f32, arg2: f32) -> f32;
+    pub fn rintf(arg1: f32) -> f32;
+    pub fn scalbnf(arg1: f32, arg2: c_int) -> f32;
+    pub fn log1pf(arg1: f32) -> f32;
+    pub fn expm1f(arg1: f32) -> f32;
+    pub fn acoshf(arg1: f32) -> f32;
+    pub fn atanhf(arg1: f32) -> f32;
+    pub fn remainderf(arg1: f32, arg2: f32) -> f32;
+    pub fn gammaf(arg1: f32) -> f32;
+    pub fn lgammaf(arg1: f32) -> f32;
+    pub fn erff(arg1: f32) -> f32;
+    pub fn erfcf(arg1: f32) -> f32;
+    pub fn log2f(arg1: f32) -> f32;
+    pub fn hypotf(arg1: f32, arg2: f32) -> f32;
+    pub fn hypotl(arg1: u128, arg2: u128) -> u128;
+    pub fn sqrtl(arg1: u128) -> u128;
+    pub fn drem(arg1: f64, arg2: f64) -> f64;
+    pub fn dremf(arg1: f32, arg2: f32) -> f32;
+    pub fn gamma_r(arg1: f64, arg2: *mut c_int) -> f64;
+    pub fn lgamma_r(arg1: f64, arg2: *mut c_int) -> f64;
+    pub fn gammaf_r(arg1: f32, arg2: *mut c_int) -> f32;
+    pub fn lgammaf_r(arg1: f32, arg2: *mut c_int) -> f32;
+    pub fn y0(arg1: f64) -> f64;
+    pub fn y1(arg1: f64) -> f64;
+    pub fn yn(arg1: c_int, arg2: f64) -> f64;
+    pub fn j0(arg1: f64) -> f64;
+    pub fn j1(arg1: f64) -> f64;
+    pub fn jn(arg1: c_int, arg2: f64) -> f64;
+    pub fn y0f(arg1: f32) -> f32;
+    pub fn y1f(arg1: f32) -> f32;
+    pub fn ynf(arg1: c_int, arg2: f32) -> f32;
+    pub fn j0f(arg1: f32) -> f32;
+    pub fn j1f(arg1: f32) -> f32;
+    pub fn jnf(arg1: c_int, arg2: f32) -> f32;
+    pub fn matherr(e: *mut exception) -> c_int;
+    pub fn btowc(arg1: c_int) -> wint_t;
+    pub fn wctob(arg1: wint_t) -> c_int;
+    pub fn mbrlen(
+        arg1: *const c_char,
+        arg2: size_t,
+        arg3: *mut mbstate_t,
+    ) -> size_t;
+    pub fn mbrtowc(
+        arg1: *mut wchar_t,
+        arg2: *const c_char,
+        arg3: size_t,
+        arg4: *mut mbstate_t,
+    ) -> size_t;
+    pub fn mbsinit(arg1: *const mbstate_t) -> c_int;
+    pub fn mbsnrtowcs(
+        arg1: *mut wchar_t,
+        arg2: *mut *const c_char,
+        arg3: size_t,
+        arg4: size_t,
+        arg5: *mut mbstate_t,
+    ) -> size_t;
+    pub fn mbsrtowcs(
+        arg1: *mut wchar_t,
+        arg2: *mut *const c_char,
+        arg3: size_t,
+        arg4: *mut mbstate_t,
+    ) -> size_t;
+    pub fn wcrtomb(
+        arg1: *mut c_char,
+        arg2: wchar_t,
+        arg3: *mut mbstate_t,
+    ) -> size_t;
+    pub fn wcsnrtombs(
+        arg1: *mut c_char,
+        arg2: *mut *const wchar_t,
+        arg3: size_t,
+        arg4: size_t,
+        arg5: *mut mbstate_t,
+    ) -> size_t;
+    pub fn wcsrtombs(
+        arg1: *mut c_char,
+        arg2: *mut *const wchar_t,
+        arg3: size_t,
+        arg4: *mut mbstate_t,
+    ) -> size_t;
+    pub fn wcscasecmp(arg1: *const wchar_t, arg2: *const wchar_t) -> c_int;
+    pub fn wcscat(arg1: *mut wchar_t, arg2: *const wchar_t) -> *mut wchar_t;
+    pub fn wcschr(arg1: *const c_int, arg2: c_int) -> *mut c_int;
+    pub fn wcscmp(arg1: *const c_int, arg2: *const c_int) -> c_int;
+    pub fn wcscoll(arg1: *const wchar_t, arg2: *const wchar_t) -> c_int;
+    pub fn wcscpy(arg1: *mut wchar_t, arg2: *const wchar_t) -> *mut wchar_t;
+    pub fn wcpcpy(arg1: *mut wchar_t, arg2: *const wchar_t) -> *mut wchar_t;
+    pub fn wcsdup(arg1: *const wchar_t) -> *mut wchar_t;
+    pub fn wcscspn(arg1: *const wchar_t, arg2: *const wchar_t) -> size_t;
+    pub fn wcsftime(
+        arg1: *mut wchar_t,
+        arg2: size_t,
+        arg3: *const wchar_t,
+        arg4: *const tm,
+    ) -> size_t;
+    pub fn wcslcat(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> size_t;
+    pub fn wcslcpy(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> size_t;
+    pub fn wcslen(arg1: *const c_int) -> c_ulong;
+    pub fn wcsncasecmp(
+        arg1: *const wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> c_int;
+    pub fn wcsncat(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> *mut wchar_t;
+    pub fn wcsncmp(
+        arg1: *const c_int,
+        arg2: *const c_int,
+        arg3: c_ulong,
+    ) -> c_int;
+    pub fn wcsncpy(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> *mut wchar_t;
+    pub fn wcpncpy(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> *mut wchar_t;
+    pub fn wcsnlen(arg1: *const wchar_t, arg2: size_t) -> size_t;
+    pub fn wcspbrk(arg1: *const wchar_t, arg2: *const wchar_t)
+        -> *mut wchar_t;
+    pub fn wcsrchr(arg1: *const wchar_t, arg2: wchar_t) -> *mut wchar_t;
+    pub fn wcsspn(arg1: *const wchar_t, arg2: *const wchar_t) -> size_t;
+    pub fn wcsstr(arg1: *const wchar_t, arg2: *const wchar_t) -> *mut wchar_t;
+    pub fn wcstok(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: *mut *mut wchar_t,
+    ) -> *mut wchar_t;
+    pub fn wcstod(arg1: *const wchar_t, arg2: *mut *mut wchar_t) -> f64;
+    pub fn wcstof(arg1: *const wchar_t, arg2: *mut *mut wchar_t) -> f32;
+    pub fn wcsxfrm(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> size_t;
+    pub fn wcscasecmp_l(
+        arg1: *const wchar_t,
+        arg2: *const wchar_t,
+        arg3: locale_t,
+    ) -> c_int;
+    pub fn wcsncasecmp_l(
+        arg1: *const wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+        arg4: locale_t,
+    ) -> c_int;
+    pub fn wcscoll_l(
+        arg1: *const wchar_t,
+        arg2: *const wchar_t,
+        arg3: locale_t,
+    ) -> c_int;
+    pub fn wcsxfrm_l(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+        arg4: locale_t,
+    ) -> size_t;
+    pub fn wmemchr(
+        arg1: *const c_int,
+        arg2: c_int,
+        arg3: c_ulong,
+    ) -> *mut c_int;
+    pub fn wmemcmp(
+        arg1: *const c_int,
+        arg2: *const c_int,
+        arg3: c_ulong,
+    ) -> c_int;
+    pub fn wmemcpy(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> *mut wchar_t;
+    pub fn wmemmove(
+        arg1: *mut wchar_t,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> *mut wchar_t;
+    pub fn wmemset(
+        arg1: *mut wchar_t,
+        arg2: wchar_t,
+        arg3: size_t,
+    ) -> *mut wchar_t;
+    pub fn wcstol(
+        arg1: *const wchar_t,
+        arg2: *mut *mut wchar_t,
+        arg3: c_int,
+    ) -> c_long;
+    pub fn wcstoll(
+        arg1: *const wchar_t,
+        arg2: *mut *mut wchar_t,
+        arg3: c_int,
+    ) -> c_longlong;
+    pub fn wcstoul(
+        arg1: *const wchar_t,
+        arg2: *mut *mut wchar_t,
+        arg3: c_int,
+    ) -> c_ulong;
+    pub fn wcstoull(
+        arg1: *const wchar_t,
+        arg2: *mut *mut wchar_t,
+        arg3: c_int,
+    ) -> c_ulonglong;
+    pub fn wcstold(arg1: *const wchar_t, arg2: *mut *mut wchar_t) -> u128;
+    pub fn fgetwc(arg1: *mut __FILE) -> wint_t;
+    pub fn fgetws(
+        arg1: *mut wchar_t,
+        arg2: c_int,
+        arg3: *mut __FILE,
+    ) -> *mut wchar_t;
+    pub fn fputwc(arg1: wchar_t, arg2: *mut __FILE) -> wint_t;
+    pub fn fputws(arg1: *const wchar_t, arg2: *mut __FILE) -> c_int;
+    pub fn fwide(arg1: *mut __FILE, arg2: c_int) -> c_int;
+    pub fn getwc(arg1: *mut __FILE) -> wint_t;
+    pub fn getwchar() -> wint_t;
+    pub fn putwc(arg1: wchar_t, arg2: *mut __FILE) -> wint_t;
+    pub fn putwchar(arg1: wchar_t) -> wint_t;
+    pub fn ungetwc(wc: wint_t, arg1: *mut __FILE) -> wint_t;
+    pub fn open_wmemstream(
+        arg1: *mut *mut wchar_t,
+        arg2: *mut size_t,
+    ) -> *mut __FILE;
+    pub fn fwprintf(arg1: *mut __FILE, arg2: *const wchar_t, ...) -> c_int;
+    pub fn swprintf(
+        arg1: *mut wchar_t,
+        arg2: size_t,
+        arg3: *const wchar_t,
+        ...
+    ) -> c_int;
+    pub fn vfwprintf(
+        arg1: *mut __FILE,
+        arg2: *const wchar_t,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vswprintf(
+        arg1: *mut wchar_t,
+        arg2: size_t,
+        arg3: *const wchar_t,
+        arg4: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vwprintf(arg1: *const wchar_t, arg2: *mut __va_list_tag) -> c_int;
+    pub fn wprintf(arg1: *const wchar_t, ...) -> c_int;
+    pub fn fwscanf(arg1: *mut __FILE, arg2: *const wchar_t, ...) -> c_int;
+    pub fn swscanf(arg1: *const wchar_t, arg2: *const wchar_t, ...) -> c_int;
+    pub fn vfwscanf(
+        arg1: *mut __FILE,
+        arg2: *const wchar_t,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vswscanf(
+        arg1: *const wchar_t,
+        arg2: *const wchar_t,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vwscanf(arg1: *const wchar_t, arg2: *mut __va_list_tag) -> c_int;
+    pub fn wscanf(arg1: *const wchar_t, ...) -> c_int;
+    pub fn wordexp(
+        arg1: *const c_char,
+        arg2: *mut wordexp_t,
+        arg3: c_int,
+    ) -> c_int;
+    pub fn wordfree(arg1: *mut wordexp_t);
+    pub fn fnmatch(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: c_int,
+    ) -> c_int;
+    pub fn bcmp(
+        arg1: *const c_void,
+        arg2: *const c_void,
+        arg3: size_t,
+    ) -> c_int;
+    pub fn bcopy(arg1: *const c_void, arg2: *mut c_void, arg3: size_t);
+    pub fn bzero(arg1: *mut c_void, arg2: c_ulong);
+    pub fn explicit_bzero(arg1: *mut c_void, arg2: size_t);
+    pub fn ffs(arg1: c_int) -> c_int;
+    pub fn ffsl(arg1: c_long) -> c_int;
+    pub fn ffsll(arg1: c_longlong) -> c_int;
+    pub fn fls(arg1: c_int) -> c_int;
+    pub fn flsl(arg1: c_long) -> c_int;
+    pub fn flsll(arg1: c_longlong) -> c_int;
+    pub fn index(arg1: *const c_char, arg2: c_int) -> *mut c_char;
+    pub fn rindex(arg1: *const c_char, arg2: c_int) -> *mut c_char;
+    pub fn strcasecmp(arg1: *const c_char, arg2: *const c_char) -> c_int;
+    pub fn strncasecmp(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: c_ulong,
+    ) -> c_int;
+    pub fn strcasecmp_l(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: locale_t,
+    ) -> c_int;
+    pub fn strncasecmp_l(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: size_t,
+        arg4: locale_t,
+    ) -> c_int;
+    pub fn fstat(__fd: c_int, __sbuf: *mut stat) -> c_int;
+    pub fn mkdir(_path: *const c_char, __mode: mode_t) -> c_int;
+    pub fn mkfifo(__path: *const c_char, __mode: mode_t) -> c_int;
+    pub fn stat(__path: *const c_char, __sbuf: *mut stat) -> c_int;
+    pub fn umask(__mask: mode_t) -> mode_t;
+    pub fn lstat(__path: *const c_char, __buf: *mut stat) -> c_int;
+    pub fn fchmodat(
+        arg1: c_int,
+        arg2: *const c_char,
+        arg3: mode_t,
+        arg4: c_int,
+    ) -> c_int;
+    pub fn fstatat(
+        arg1: c_int,
+        arg2: *const c_char,
+        arg3: *mut stat,
+        arg4: c_int,
+    ) -> c_int;
+    pub fn mkdirat(arg1: c_int, arg2: *const c_char, arg3: mode_t) -> c_int;
+    pub fn mkfifoat(arg1: c_int, arg2: *const c_char, arg3: mode_t) -> c_int;
+    pub fn mknodat(
+        arg1: c_int,
+        arg2: *const c_char,
+        arg3: mode_t,
+        arg4: dev_t,
+    ) -> c_int;
+    pub fn utimensat(
+        arg1: c_int,
+        arg2: *const c_char,
+        arg3: *const timespec,
+        arg4: c_int,
+    ) -> c_int;
+    pub fn futimens(arg1: c_int, arg2: *const timespec) -> c_int;
+    pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> c_int;
+    pub fn utimes(__path: *const c_char, __tvp: *const timeval) -> c_int;
+    pub fn adjtime(arg1: *const timeval, arg2: *mut timeval) -> c_int;
+    pub fn futimes(arg1: c_int, arg2: *const timeval) -> c_int;
+    pub fn lutimes(arg1: *const c_char, arg2: *const timeval) -> c_int;
+    pub fn settimeofday(arg1: *const timeval, arg2: *const timezone) -> c_int;
+    pub fn getitimer(__which: c_int, __value: *mut itimerval) -> c_int;
+    pub fn setitimer(
+        __which: c_int,
+        __value: *const itimerval,
+        __ovalue: *mut itimerval,
+    ) -> c_int;
+    pub fn gettimeofday(__p: *mut timeval, __tz: *mut c_void) -> c_int;
+    pub static mut devoptab_list: [*const devoptab_t; 0usize];
+    pub fn AddDevice(device: *const devoptab_t) -> c_int;
+    pub fn FindDevice(name: *const c_char) -> c_int;
+    pub fn RemoveDevice(name: *const c_char) -> c_int;
+    pub fn setDefaultDevice(device: c_int);
+    pub fn GetDeviceOpTab(name: *const c_char) -> *const devoptab_t;
+    pub fn closedir(dirp: *mut DIR) -> c_int;
+    pub fn opendir(dirname: *const c_char) -> *mut DIR;
+    pub fn readdir(dirp: *mut DIR) -> *mut dirent;
+    pub fn readdir_r(
+        dirp: *mut DIR,
+        entry: *mut dirent,
+        result: *mut *mut dirent,
+    ) -> c_int;
+    pub fn rewinddir(dirp: *mut DIR);
+    pub fn seekdir(dirp: *mut DIR, loc: c_long);
+    pub fn telldir(dirp: *mut DIR) -> c_long;
+    pub fn scandir(
+        dirp: *const c_char,
+        namelist: *mut *mut *mut dirent,
+        filter: ::Option<unsafe extern "C" fn(arg1: *const dirent) -> c_int>,
+        compar: ::Option<
+            unsafe extern "C" fn(
+                arg1: *mut *const dirent,
+                arg2: *mut *const dirent,
+            ) -> c_int,
+        >,
+    ) -> c_int;
+    pub fn alphasort(a: *mut *const dirent, b: *mut *const dirent) -> c_int;
+    pub fn dirfd(arg1: *mut DIR) -> c_int;
+    pub fn fdclosedir(arg1: *mut DIR) -> c_int;
+    pub fn fdopendir(arg1: c_int) -> *mut DIR;
+    pub fn imaxabs(j: intmax_t) -> intmax_t;
+    pub fn imaxdiv(numer: intmax_t, denomer: intmax_t) -> imaxdiv_t;
+    pub fn strtoimax(
+        arg1: *const c_char,
+        arg2: *mut *mut c_char,
+        arg3: c_int,
+    ) -> intmax_t;
+    pub fn strtoumax(
+        arg1: *const c_char,
+        arg2: *mut *mut c_char,
+        arg3: c_int,
+    ) -> uintmax_t;
+    pub fn wcstoimax(
+        arg1: *const wchar_t,
+        arg2: *mut *mut wchar_t,
+        arg3: c_int,
+    ) -> intmax_t;
+    pub fn wcstoumax(
+        arg1: *const wchar_t,
+        arg2: *mut *mut wchar_t,
+        arg3: c_int,
+    ) -> uintmax_t;
+    pub fn strtoimax_l(
+        arg1: *const c_char,
+        _restrict: *mut *mut c_char,
+        arg2: c_int,
+        arg3: locale_t,
+    ) -> intmax_t;
+    pub fn strtoumax_l(
+        arg1: *const c_char,
+        _restrict: *mut *mut c_char,
+        arg2: c_int,
+        arg3: locale_t,
+    ) -> uintmax_t;
+    pub fn wcstoimax_l(
+        arg1: *const wchar_t,
+        _restrict: *mut *mut wchar_t,
+        arg2: c_int,
+        arg3: locale_t,
+    ) -> intmax_t;
+    pub fn wcstoumax_l(
+        arg1: *const wchar_t,
+        _restrict: *mut *mut wchar_t,
+        arg2: c_int,
+        arg3: locale_t,
+    ) -> uintmax_t;
+    pub fn setlocale(arg1: c_int, arg2: *const c_char) -> *mut c_char;
+    pub fn localeconv() -> *mut lconv;
+    pub fn newlocale(
+        arg1: c_int,
+        arg2: *const c_char,
+        arg3: locale_t,
+    ) -> locale_t;
+    pub fn freelocale(arg1: locale_t);
+    pub fn duplocale(arg1: locale_t) -> locale_t;
+    pub fn uselocale(arg1: locale_t) -> locale_t;
+    pub fn regcomp(
+        arg1: *mut regex_t,
+        arg2: *const c_char,
+        arg3: c_int,
+    ) -> c_int;
+    pub fn regerror(
+        arg1: c_int,
+        arg2: *const regex_t,
+        arg3: *mut c_char,
+        arg4: size_t,
+    ) -> size_t;
+    pub fn regexec(
+        arg1: *const regex_t,
+        arg2: *const c_char,
+        arg3: size_t,
+        arg4: *mut regmatch_t,
+        arg5: c_int,
+    ) -> c_int;
+    pub fn regfree(arg1: *mut regex_t);
+    pub fn iswalpha(arg1: wint_t) -> c_int;
+    pub fn iswalnum(arg1: wint_t) -> c_int;
+    pub fn iswblank(arg1: wint_t) -> c_int;
+    pub fn iswcntrl(arg1: wint_t) -> c_int;
+    pub fn iswctype(arg1: wint_t, arg2: wctype_t) -> c_int;
+    pub fn iswdigit(arg1: wint_t) -> c_int;
+    pub fn iswgraph(arg1: wint_t) -> c_int;
+    pub fn iswlower(arg1: wint_t) -> c_int;
+    pub fn iswprint(arg1: wint_t) -> c_int;
+    pub fn iswpunct(arg1: wint_t) -> c_int;
+    pub fn iswspace(arg1: wint_t) -> c_int;
+    pub fn iswupper(arg1: wint_t) -> c_int;
+    pub fn iswxdigit(arg1: wint_t) -> c_int;
+    pub fn towctrans(arg1: wint_t, arg2: wctrans_t) -> wint_t;
+    pub fn towupper(arg1: wint_t) -> wint_t;
+    pub fn towlower(arg1: wint_t) -> wint_t;
+    pub fn wctrans(arg1: *const c_char) -> wctrans_t;
+    pub fn wctype(arg1: *const c_char) -> wctype_t;
+    pub fn iswalpha_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswalnum_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswblank_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswcntrl_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswctype_l(arg1: wint_t, arg2: wctype_t, arg3: locale_t) -> c_int;
+    pub fn iswdigit_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswgraph_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswlower_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswprint_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswpunct_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswspace_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswupper_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn iswxdigit_l(arg1: wint_t, arg2: locale_t) -> c_int;
+    pub fn towctrans_l(
+        arg1: wint_t,
+        arg2: wctrans_t,
+        arg3: locale_t,
+    ) -> wint_t;
+    pub fn towupper_l(arg1: wint_t, arg2: locale_t) -> wint_t;
+    pub fn towlower_l(arg1: wint_t, arg2: locale_t) -> wint_t;
+    pub fn wctrans_l(arg1: *const c_char, arg2: locale_t) -> wctrans_t;
+    pub fn wctype_l(arg1: *const c_char, arg2: locale_t) -> wctype_t;
+    pub fn abort();
+    pub fn abs(arg1: c_int) -> c_int;
+    pub fn arc4random() -> __uint32_t;
+    pub fn arc4random_uniform(arg1: __uint32_t) -> __uint32_t;
+    pub fn arc4random_buf(arg1: *mut c_void, arg2: size_t);
+    pub fn atexit(__func: ::Option<unsafe extern "C" fn()>) -> c_int;
+    pub fn atof(__nptr: *const c_char) -> f64;
+    pub fn atoff(__nptr: *const c_char) -> f32;
+    pub fn atoi(__nptr: *const c_char) -> c_int;
+    pub fn atol(__nptr: *const c_char) -> c_long;
+    pub fn bsearch(
+        __key: *const c_void,
+        __base: *const c_void,
+        __nmemb: size_t,
+        __size: size_t,
+        _compar: __compar_fn_t,
+    ) -> *mut c_void;
+    pub fn calloc(arg1: c_ulong, arg2: c_ulong) -> *mut c_void;
+    pub fn div(__numer: c_int, __denom: c_int) -> div_t;
+    pub fn exit(__status: c_int);
+    pub fn free(arg1: *mut c_void);
+    pub fn getenv(__string: *const c_char) -> *mut c_char;
+    pub static mut suboptarg: *mut c_char;
+    pub fn getsubopt(
+        arg1: *mut *mut c_char,
+        arg2: *const *mut c_char,
+        arg3: *mut *mut c_char,
+    ) -> c_int;
+    pub fn labs(arg1: c_long) -> c_long;
+    pub fn ldiv(__numer: c_long, __denom: c_long) -> ldiv_t;
+    pub fn malloc(arg1: c_ulong) -> *mut c_void;
+    pub fn mblen(arg1: *const c_char, arg2: size_t) -> c_int;
+    pub fn mbtowc(
+        arg1: *mut wchar_t,
+        arg2: *const c_char,
+        arg3: size_t,
+    ) -> c_int;
+    pub fn wctomb(arg1: *mut c_char, arg2: wchar_t) -> c_int;
+    pub fn mbstowcs(
+        arg1: *mut wchar_t,
+        arg2: *const c_char,
+        arg3: size_t,
+    ) -> size_t;
+    pub fn wcstombs(
+        arg1: *mut c_char,
+        arg2: *const wchar_t,
+        arg3: size_t,
+    ) -> size_t;
+    pub fn mkdtemp(arg1: *mut c_char) -> *mut c_char;
+    pub fn mkstemp(arg1: *mut c_char) -> c_int;
+    pub fn mkstemps(arg1: *mut c_char, arg2: c_int) -> c_int;
+    pub fn mktemp(arg1: *mut c_char) -> *mut c_char;
+    pub fn qsort(
+        __base: *mut c_void,
+        __nmemb: size_t,
+        __size: size_t,
+        _compar: __compar_fn_t,
+    );
+    pub fn rand() -> c_int;
+    pub fn realloc(arg1: *mut c_void, arg2: c_ulong) -> *mut c_void;
+    pub fn reallocarray(
+        arg1: *mut c_void,
+        arg2: size_t,
+        arg3: size_t,
+    ) -> *mut c_void;
+    pub fn reallocf(arg1: *mut c_void, arg2: size_t) -> *mut c_void;
+    pub fn realpath(
+        path: *const c_char,
+        resolved_path: *mut c_char,
+    ) -> *mut c_char;
+    pub fn rpmatch(response: *const c_char) -> c_int;
+    pub fn srand(__seed: c_uint);
+    pub fn strtod(__n: *const c_char, __end_PTR: *mut *mut c_char) -> f64;
+    pub fn strtof(__n: *const c_char, __end_PTR: *mut *mut c_char) -> f32;
+    pub fn strtol(
+        __n: *const c_char,
+        __end_PTR: *mut *mut c_char,
+        __base: c_int,
+    ) -> c_long;
+    pub fn strtoul(
+        __n: *const c_char,
+        __end_PTR: *mut *mut c_char,
+        __base: c_int,
+    ) -> c_ulong;
+    pub fn system(__string: *const c_char) -> c_int;
+    pub fn a64l(__input: *const c_char) -> c_long;
+    pub fn l64a(__input: c_long) -> *mut c_char;
+    pub fn on_exit(
+        __func: ::Option<unsafe extern "C" fn(arg1: c_int, arg2: *mut c_void)>,
+        __arg: *mut c_void,
+    ) -> c_int;
+    pub fn putenv(__string: *mut c_char) -> c_int;
+    pub fn setenv(
+        __string: *const c_char,
+        __value: *const c_char,
+        __overwrite: c_int,
+    ) -> c_int;
+    pub fn itoa(arg1: c_int, arg2: *mut c_char, arg3: c_int) -> *mut c_char;
+    pub fn utoa(arg1: c_uint, arg2: *mut c_char, arg3: c_int) -> *mut c_char;
+    pub fn rand_r(__seed: *mut c_uint) -> c_int;
+    pub fn drand48() -> f64;
+    pub fn erand48(arg1: *mut c_ushort) -> f64;
+    pub fn jrand48(arg1: *mut c_ushort) -> c_long;
+    pub fn lcong48(arg1: *mut c_ushort);
+    pub fn lrand48() -> c_long;
+    pub fn mrand48() -> c_long;
+    pub fn nrand48(arg1: *mut c_ushort) -> c_long;
+    pub fn seed48(arg1: *mut c_ushort) -> *mut c_ushort;
+    pub fn srand48(arg1: c_long);
+    pub fn initstate(
+        arg1: c_uint,
+        arg2: *mut c_char,
+        arg3: size_t,
+    ) -> *mut c_char;
+    pub fn random() -> c_long;
+    pub fn setstate(arg1: *mut c_char) -> *mut c_char;
+    pub fn srandom(arg1: c_uint);
+    pub fn atoll(__nptr: *const c_char) -> c_longlong;
+    pub fn llabs(arg1: c_longlong) -> c_longlong;
+    pub fn lldiv(__numer: c_longlong, __denom: c_longlong) -> lldiv_t;
+    pub fn strtoll(
+        __n: *const c_char,
+        __end_PTR: *mut *mut c_char,
+        __base: c_int,
+    ) -> c_longlong;
+    pub fn strtoull(
+        __n: *const c_char,
+        __end_PTR: *mut *mut c_char,
+        __base: c_int,
+    ) -> c_ulonglong;
+    pub fn cfree(arg1: *mut c_void);
+    pub fn unsetenv(__string: *const c_char) -> c_int;
+    pub fn posix_memalign(
+        arg1: *mut *mut c_void,
+        arg2: size_t,
+        arg3: size_t,
+    ) -> c_int;
+    #[link_name = "\u{1}__bsd_qsort_r"]
+    pub fn qsort_r(
+        __base: *mut c_void,
+        __nmemb: size_t,
+        __size: size_t,
+        __thunk: *mut c_void,
+        _compar: ::Option<
+            unsafe extern "C" fn(
+                arg1: *mut c_void,
+                arg2: *const c_void,
+                arg3: *const c_void,
+            ) -> c_int,
+        >,
+    );
+    pub fn strtold(arg1: *const c_char, arg2: *mut *mut c_char) -> u128;
+    pub fn aligned_alloc(arg1: size_t, arg2: size_t) -> *mut c_void;
+    pub fn at_quick_exit(arg1: ::Option<unsafe extern "C" fn()>) -> c_int;
+    pub fn quick_exit(arg1: c_int);
+    pub fn utime(path: *const c_char, times: *const utimbuf) -> c_int;
+    pub fn glob(
+        arg1: *const c_char,
+        arg2: c_int,
+        arg3: ::Option<
+            unsafe extern "C" fn(arg1: *const c_char, arg2: c_int) -> c_int,
+        >,
+        arg4: *mut glob_t,
+    ) -> c_int;
+    pub fn globfree(arg1: *mut glob_t);
+    pub fn getpwuid(arg1: uid_t) -> *mut passwd;
+    pub fn getpwnam(arg1: *const c_char) -> *mut passwd;
+    pub fn getpwnam_r(
+        arg1: *const c_char,
+        arg2: *mut passwd,
+        arg3: *mut c_char,
+        arg4: size_t,
+        arg5: *mut *mut passwd,
+    ) -> c_int;
+    pub fn getpwuid_r(
+        arg1: uid_t,
+        arg2: *mut passwd,
+        arg3: *mut c_char,
+        arg4: size_t,
+        arg5: *mut *mut passwd,
+    ) -> c_int;
+    pub fn getpwent() -> *mut passwd;
+    pub fn setpwent();
+    pub fn endpwent();
+    pub fn setpassent(arg1: c_int) -> c_int;
+    pub fn getopt_long(
+        __argc: c_int,
+        __argv: *const *mut c_char,
+        __shortopts: *const c_char,
+        __longopts: *const option,
+        __longind: *mut c_int,
+    ) -> c_int;
+    pub fn getopt_long_only(
+        __argc: c_int,
+        __argv: *const *mut c_char,
+        __shortopts: *const c_char,
+        __longopts: *const option,
+        __longind: *mut c_int,
+    ) -> c_int;
+    pub fn envz_entry(
+        envz: *const c_char,
+        envz_len: size_t,
+        name: *const c_char,
+    ) -> *mut c_char;
+    pub fn envz_get(
+        envz: *const c_char,
+        envz_len: size_t,
+        name: *const c_char,
+    ) -> *mut c_char;
+    pub fn envz_add(
+        envz: *mut *mut c_char,
+        envz_len: *mut size_t,
+        name: *const c_char,
+        value: *const c_char,
+    ) -> error_t;
+    pub fn envz_merge(
+        envz: *mut *mut c_char,
+        envz_len: *mut size_t,
+        envz2: *const c_char,
+        envz2_len: size_t,
+        override_: c_int,
+    ) -> error_t;
+    pub fn envz_remove(
+        envz: *mut *mut c_char,
+        envz_len: *mut size_t,
+        name: *const c_char,
+    );
+    pub fn envz_strip(envz: *mut *mut c_char, envz_len: *mut size_t);
+    pub fn argz_create(
+        argv: *const *mut c_char,
+        argz: *mut *mut c_char,
+        argz_len: *mut size_t,
+    ) -> error_t;
+    pub fn argz_create_sep(
+        string: *const c_char,
+        sep: c_int,
+        argz: *mut *mut c_char,
+        argz_len: *mut size_t,
+    ) -> error_t;
+    pub fn argz_count(argz: *const c_char, argz_len: size_t) -> size_t;
+    pub fn argz_extract(
+        argz: *mut c_char,
+        argz_len: size_t,
+        argv: *mut *mut c_char,
+    );
+    pub fn argz_stringify(argz: *mut c_char, argz_len: size_t, sep: c_int);
+    pub fn argz_add(
+        argz: *mut *mut c_char,
+        argz_len: *mut size_t,
+        str: *const c_char,
+    ) -> error_t;
+    pub fn argz_add_sep(
+        argz: *mut *mut c_char,
+        argz_len: *mut size_t,
+        str: *const c_char,
+        sep: c_int,
+    ) -> error_t;
+    pub fn argz_append(
+        argz: *mut *mut c_char,
+        argz_len: *mut size_t,
+        buf: *const c_char,
+        buf_len: size_t,
+    ) -> error_t;
+    pub fn argz_delete(
+        argz: *mut *mut c_char,
+        argz_len: *mut size_t,
+        entry: *mut c_char,
+    ) -> error_t;
+    pub fn argz_insert(
+        argz: *mut *mut c_char,
+        argz_len: *mut size_t,
+        before: *mut c_char,
+        entry: *const c_char,
+    ) -> error_t;
+    pub fn argz_next(
+        argz: *mut c_char,
+        argz_len: size_t,
+        entry: *const c_char,
+    ) -> *mut c_char;
+    pub fn argz_replace(
+        argz: *mut *mut c_char,
+        argz_len: *mut size_t,
+        str: *const c_char,
+        with: *const c_char,
+        replace_count: *mut c_uint,
+    ) -> error_t;
+    pub fn ctermid(arg1: *mut c_char) -> *mut c_char;
+    pub fn tmpfile() -> *mut FILE;
+    pub fn tmpnam(arg1: *mut c_char) -> *mut c_char;
+    pub fn tempnam(arg1: *const c_char, arg2: *const c_char) -> *mut c_char;
+    pub fn fclose(arg1: *mut FILE) -> c_int;
+    pub fn fflush(arg1: *mut FILE) -> c_int;
+    pub fn freopen(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: *mut FILE,
+    ) -> *mut FILE;
+    pub fn setbuf(arg1: *mut FILE, arg2: *mut c_char);
+    pub fn setvbuf(
+        arg1: *mut FILE,
+        arg2: *mut c_char,
+        arg3: c_int,
+        arg4: size_t,
+    ) -> c_int;
+    pub fn fprintf(arg1: *mut FILE, arg2: *const c_char, ...) -> c_int;
+    pub fn fscanf(arg1: *mut FILE, arg2: *const c_char, ...) -> c_int;
+    pub fn printf(arg1: *const c_char, ...) -> c_int;
+    pub fn scanf(arg1: *const c_char, ...) -> c_int;
+    pub fn sscanf(arg1: *const c_char, arg2: *const c_char, ...) -> c_int;
+    pub fn vfprintf(
+        arg1: *mut FILE,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vprintf(arg1: *const c_char, arg2: *mut __va_list_tag) -> c_int;
+    pub fn vsprintf(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn fgetc(arg1: *mut FILE) -> c_int;
+    pub fn fgets(
+        arg1: *mut c_char,
+        arg2: c_int,
+        arg3: *mut FILE,
+    ) -> *mut c_char;
+    pub fn fputc(arg1: c_int, arg2: *mut FILE) -> c_int;
+    pub fn fputs(arg1: *const c_char, arg2: *mut FILE) -> c_int;
+    pub fn getc(arg1: *mut FILE) -> c_int;
+    pub fn getchar() -> c_int;
+    pub fn gets(arg1: *mut c_char) -> *mut c_char;
+    pub fn putc(arg1: c_int, arg2: *mut FILE) -> c_int;
+    pub fn putchar(arg1: c_int) -> c_int;
+    pub fn puts(arg1: *const c_char) -> c_int;
+    pub fn ungetc(arg1: c_int, arg2: *mut FILE) -> c_int;
+    pub fn fread(
+        arg1: *mut c_void,
+        _size: c_ulong,
+        _n: c_ulong,
+        arg2: *mut FILE,
+    ) -> c_ulong;
+    pub fn fwrite(
+        arg1: *const c_void,
+        _size: c_ulong,
+        _n: c_ulong,
+        arg2: *mut FILE,
+    ) -> c_ulong;
+    pub fn fgetpos(arg1: *mut FILE, arg2: *mut fpos_t) -> c_int;
+    pub fn fseek(arg1: *mut FILE, arg2: c_long, arg3: c_int) -> c_int;
+    pub fn fsetpos(arg1: *mut FILE, arg2: *const fpos_t) -> c_int;
+    pub fn ftell(arg1: *mut FILE) -> c_long;
+    pub fn rewind(arg1: *mut FILE);
+    pub fn clearerr(arg1: *mut FILE);
+    pub fn feof(arg1: *mut FILE) -> c_int;
+    pub fn ferror(arg1: *mut FILE) -> c_int;
+    pub fn perror(arg1: *const c_char);
+    pub fn fopen(_name: *const c_char, _type: *const c_char) -> *mut FILE;
+    pub fn sprintf(arg1: *mut c_char, arg2: *const c_char, ...) -> c_int;
+    pub fn remove(arg1: *const c_char) -> c_int;
+    pub fn rename(arg1: *const c_char, arg2: *const c_char) -> c_int;
+    pub fn fseeko(arg1: *mut FILE, arg2: off_t, arg3: c_int) -> c_int;
+    pub fn ftello(arg1: *mut FILE) -> off_t;
+    pub fn snprintf(
+        arg1: *mut c_char,
+        arg2: c_ulong,
+        arg3: *const c_char,
+        ...
+    ) -> c_int;
+    pub fn vsnprintf(
+        arg1: *mut c_char,
+        arg2: c_ulong,
+        arg3: *const c_char,
+        arg4: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vfscanf(
+        arg1: *mut FILE,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vscanf(arg1: *const c_char, arg2: *mut __va_list_tag) -> c_int;
+    pub fn vsscanf(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn asiprintf(
+        arg1: *mut *mut c_char,
+        arg2: *const c_char,
+        ...
+    ) -> c_int;
+    pub fn asniprintf(
+        arg1: *mut c_char,
+        arg2: *mut size_t,
+        arg3: *const c_char,
+        ...
+    ) -> *mut c_char;
+    pub fn asnprintf(
+        arg1: *mut c_char,
+        arg2: *mut size_t,
+        arg3: *const c_char,
+        ...
+    ) -> *mut c_char;
+    pub fn diprintf(arg1: c_int, arg2: *const c_char, ...) -> c_int;
+    pub fn fiprintf(arg1: *mut FILE, arg2: *const c_char, ...) -> c_int;
+    pub fn fiscanf(arg1: *mut FILE, arg2: *const c_char, ...) -> c_int;
+    pub fn iprintf(arg1: *const c_char, ...) -> c_int;
+    pub fn iscanf(arg1: *const c_char, ...) -> c_int;
+    pub fn siprintf(arg1: *mut c_char, arg2: *const c_char, ...) -> c_int;
+    pub fn siscanf(arg1: *const c_char, arg2: *const c_char, ...) -> c_int;
+    pub fn sniprintf(
+        arg1: *mut c_char,
+        arg2: size_t,
+        arg3: *const c_char,
+        ...
+    ) -> c_int;
+    pub fn vasiprintf(
+        arg1: *mut *mut c_char,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vasniprintf(
+        arg1: *mut c_char,
+        arg2: *mut size_t,
+        arg3: *const c_char,
+        arg4: *mut __va_list_tag,
+    ) -> *mut c_char;
+    pub fn vasnprintf(
+        arg1: *mut c_char,
+        arg2: *mut size_t,
+        arg3: *const c_char,
+        arg4: *mut __va_list_tag,
+    ) -> *mut c_char;
+    pub fn vdiprintf(
+        arg1: c_int,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vfiprintf(
+        arg1: *mut FILE,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vfiscanf(
+        arg1: *mut FILE,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn viprintf(arg1: *const c_char, arg2: *mut __va_list_tag) -> c_int;
+    pub fn viscanf(arg1: *const c_char, arg2: *mut __va_list_tag) -> c_int;
+    pub fn vsiprintf(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vsiscanf(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn vsniprintf(
+        arg1: *mut c_char,
+        arg2: size_t,
+        arg3: *const c_char,
+        arg4: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn fdopen(arg1: c_int, arg2: *const c_char) -> *mut FILE;
+    pub fn fileno(arg1: *mut FILE) -> c_int;
+    pub fn pclose(arg1: *mut FILE) -> c_int;
+    pub fn popen(arg1: *const c_char, arg2: *const c_char) -> *mut FILE;
+    pub fn setbuffer(arg1: *mut FILE, arg2: *mut c_char, arg3: c_int);
+    pub fn setlinebuf(arg1: *mut FILE) -> c_int;
+    pub fn getw(arg1: *mut FILE) -> c_int;
+    pub fn putw(arg1: c_int, arg2: *mut FILE) -> c_int;
+    pub fn getc_unlocked(arg1: *mut FILE) -> c_int;
+    pub fn getchar_unlocked() -> c_int;
+    pub fn flockfile(arg1: *mut FILE);
+    pub fn ftrylockfile(arg1: *mut FILE) -> c_int;
+    pub fn funlockfile(arg1: *mut FILE);
+    pub fn putc_unlocked(arg1: c_int, arg2: *mut FILE) -> c_int;
+    pub fn putchar_unlocked(arg1: c_int) -> c_int;
+    pub fn dprintf(arg1: c_int, arg2: *const c_char, ...) -> c_int;
+    pub fn fmemopen(
+        arg1: *mut c_void,
+        arg2: size_t,
+        arg3: *const c_char,
+    ) -> *mut FILE;
+    pub fn open_memstream(
+        arg1: *mut *mut c_char,
+        arg2: *mut size_t,
+    ) -> *mut FILE;
+    pub fn vdprintf(
+        arg1: c_int,
+        arg2: *const c_char,
+        arg3: *mut __va_list_tag,
+    ) -> c_int;
+    pub fn renameat(
+        arg1: c_int,
+        arg2: *const c_char,
+        arg3: c_int,
+        arg4: *const c_char,
+    ) -> c_int;
+    pub fn fpurge(arg1: *mut FILE) -> c_int;
+    pub fn clearerr_unlocked(arg1: *mut FILE);
+    pub fn feof_unlocked(arg1: *mut FILE) -> c_int;
+    pub fn ferror_unlocked(arg1: *mut FILE) -> c_int;
+    pub fn fileno_unlocked(arg1: *mut FILE) -> c_int;
+    pub fn fflush_unlocked(arg1: *mut FILE) -> c_int;
+    pub fn fgetc_unlocked(arg1: *mut FILE) -> c_int;
+    pub fn fputc_unlocked(arg1: c_int, arg2: *mut FILE) -> c_int;
+    pub fn fread_unlocked(
+        arg1: *mut c_void,
+        _size: size_t,
+        _n: size_t,
+        arg2: *mut FILE,
+    ) -> size_t;
+    pub fn fwrite_unlocked(
+        arg1: *const c_void,
+        _size: size_t,
+        _n: size_t,
+        arg2: *mut FILE,
+    ) -> size_t;
+    pub fn funopen(
+        __cookie: *const c_void,
+        __readfn: ::Option<
+            unsafe extern "C" fn(
+                __cookie: *mut c_void,
+                __buf: *mut c_char,
+                __n: c_int,
+            ) -> c_int,
+        >,
+        __writefn: ::Option<
+            unsafe extern "C" fn(
+                __cookie: *mut c_void,
+                __buf: *const c_char,
+                __n: c_int,
+            ) -> c_int,
+        >,
+        __seekfn: ::Option<
+            unsafe extern "C" fn(
+                __cookie: *mut c_void,
+                __off: fpos_t,
+                __whence: c_int,
+            ) -> fpos_t,
+        >,
+        __closefn: ::Option<
+            unsafe extern "C" fn(__cookie: *mut c_void) -> c_int,
+        >,
+    ) -> *mut FILE;
+    pub fn memchr(
+        arg1: *const c_void,
+        arg2: c_int,
+        arg3: c_ulong,
+    ) -> *mut c_void;
+    pub fn memcmp(
+        arg1: *const c_void,
+        arg2: *const c_void,
+        arg3: c_ulong,
+    ) -> c_int;
+    pub fn memcpy(
+        arg1: *mut c_void,
+        arg2: *const c_void,
+        arg3: c_ulong,
+    ) -> *mut c_void;
+    pub fn memmove(
+        arg1: *mut c_void,
+        arg2: *const c_void,
+        arg3: c_ulong,
+    ) -> *mut c_void;
+    pub fn memset(
+        arg1: *mut c_void,
+        arg2: c_int,
+        arg3: c_ulong,
+    ) -> *mut c_void;
+    pub fn strcat(arg1: *mut c_char, arg2: *const c_char) -> *mut c_char;
+    pub fn strchr(arg1: *const c_char, arg2: c_int) -> *mut c_char;
+    pub fn strcmp(arg1: *const c_char, arg2: *const c_char) -> c_int;
+    pub fn strcoll(arg1: *const c_char, arg2: *const c_char) -> c_int;
+    pub fn strcpy(arg1: *mut c_char, arg2: *const c_char) -> *mut c_char;
+    pub fn strcspn(arg1: *const c_char, arg2: *const c_char) -> c_ulong;
+    pub fn strerror(arg1: c_int) -> *mut c_char;
+    pub fn strlen(arg1: *const c_char) -> c_ulong;
+    pub fn strncat(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: c_ulong,
+    ) -> *mut c_char;
+    pub fn strncmp(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: c_ulong,
+    ) -> c_int;
+    pub fn strncpy(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: c_ulong,
+    ) -> *mut c_char;
+    pub fn strpbrk(arg1: *const c_char, arg2: *const c_char) -> *mut c_char;
+    pub fn strrchr(arg1: *const c_char, arg2: c_int) -> *mut c_char;
+    pub fn strspn(arg1: *const c_char, arg2: *const c_char) -> c_ulong;
+    pub fn strstr(arg1: *const c_char, arg2: *const c_char) -> *mut c_char;
+    pub fn strtok(arg1: *mut c_char, arg2: *const c_char) -> *mut c_char;
+    pub fn strxfrm(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: c_ulong,
+    ) -> c_ulong;
+    pub fn strcoll_l(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: locale_t,
+    ) -> c_int;
+    pub fn strerror_l(arg1: c_int, arg2: locale_t) -> *mut c_char;
+    pub fn strxfrm_l(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: size_t,
+        arg4: locale_t,
+    ) -> size_t;
+    pub fn strtok_r(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: *mut *mut c_char,
+    ) -> *mut c_char;
+    pub fn timingsafe_bcmp(
+        arg1: *const c_void,
+        arg2: *const c_void,
+        arg3: size_t,
+    ) -> c_int;
+    pub fn timingsafe_memcmp(
+        arg1: *const c_void,
+        arg2: *const c_void,
+        arg3: size_t,
+    ) -> c_int;
+    pub fn memccpy(
+        arg1: *mut c_void,
+        arg2: *const c_void,
+        arg3: c_int,
+        arg4: size_t,
+    ) -> *mut c_void;
+    pub fn stpcpy(arg1: *mut c_char, arg2: *const c_char) -> *mut c_char;
+    pub fn stpncpy(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: c_ulong,
+    ) -> *mut c_char;
+    pub fn strdup(arg1: *const c_char) -> *mut c_char;
+    pub fn strndup(arg1: *const c_char, arg2: c_ulong) -> *mut c_char;
+    #[link_name = "\u{1}__xpg_strerror_r"]
+    pub fn strerror_r(arg1: c_int, arg2: *mut c_char, arg3: size_t) -> c_int;
+    pub fn strlcat(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: c_ulong,
+    ) -> c_ulong;
+    pub fn strlcpy(
+        arg1: *mut c_char,
+        arg2: *const c_char,
+        arg3: c_ulong,
+    ) -> c_ulong;
+    pub fn strnlen(arg1: *const c_char, arg2: size_t) -> size_t;
+    pub fn strsep(arg1: *mut *mut c_char, arg2: *const c_char) -> *mut c_char;
+    pub fn strnstr(
+        arg1: *const c_char,
+        arg2: *const c_char,
+        arg3: size_t,
+    ) -> *mut c_char;
+    pub fn strlwr(arg1: *mut c_char) -> *mut c_char;
+    pub fn strupr(arg1: *mut c_char) -> *mut c_char;
+    pub fn strsignal(__signo: c_int) -> *mut c_char;
+    pub fn sysctl(
+        name: *const c_int,
+        namelen: c_uint,
+        oldp: *mut c_void,
+        oldlenp: *mut size_t,
+        newp: *const c_void,
+        newlen: size_t,
+    ) -> c_int;
+    pub fn sysctlbyname(
+        name: *const c_char,
+        oldp: *mut c_void,
+        oldlenp: *mut size_t,
+        newp: *const c_void,
+        newlen: size_t,
+    ) -> c_int;
+    pub fn sysctlnametomib(
+        name: *const c_char,
+        mibp: *mut c_int,
+        sizep: *mut size_t,
+    ) -> c_int;
+    pub fn wait(arg1: *mut c_int) -> pid_t;
+    pub fn waitpid(arg1: pid_t, arg2: *mut c_int, arg3: c_int) -> pid_t;
+    pub fn ioctl(fd: c_int, request: c_int, ...) -> c_int;
+    pub fn times(arg1: *mut tms) -> clock_t;
+    pub fn open(arg1: *const c_char, arg2: c_int, ...) -> c_int;
+    pub fn openat(arg1: c_int, arg2: *const c_char, arg3: c_int, ...)
+        -> c_int;
+    pub fn creat(arg1: *const c_char, arg2: mode_t) -> c_int;
+    pub fn fcntl(arg1: c_int, arg2: c_int, ...) -> c_int;
+    pub fn flock(arg1: c_int, arg2: c_int) -> c_int;
+    pub fn iconv_open(arg1: *const c_char, arg2: *const c_char) -> iconv_t;
+    pub fn iconv(
+        arg1: iconv_t,
+        arg2: *mut *mut c_char,
+        arg3: *mut size_t,
+        arg4: *mut *mut c_char,
+        arg5: *mut size_t,
+    ) -> size_t;
+    pub fn iconv_close(arg1: iconv_t) -> c_int;
+    pub fn socket(domain: c_int, type_: c_int, protocol: c_int) -> c_int;
+    pub fn recv(
+        sockfd: c_int,
+        buf: *mut c_void,
+        len: size_t,
+        flags: c_int,
+    ) -> ssize_t;
+    pub fn recvfrom(
+        sockfd: c_int,
+        buf: *mut c_void,
+        len: size_t,
+        flags: c_int,
+        src_addr: *mut sockaddr,
+        addrlen: *mut socklen_t,
+    ) -> ssize_t;
+    pub fn send(
+        sockfd: c_int,
+        buf: *const c_void,
+        len: size_t,
+        flags: c_int,
+    ) -> ssize_t;
+    pub fn sendto(
+        sockfd: c_int,
+        buf: *const c_void,
+        len: size_t,
+        flags: c_int,
+        dest_addr: *const sockaddr,
+        addrlen: socklen_t,
+    ) -> ssize_t;
+    pub fn accept(
+        sockfd: c_int,
+        addr: *mut sockaddr,
+        addrlen: *mut socklen_t,
+    ) -> c_int;
+    pub fn bind(
+        sockfd: c_int,
+        addr: *const sockaddr,
+        addrlen: socklen_t,
+    ) -> c_int;
+    pub fn connect(
+        sockfd: c_int,
+        addr: *const sockaddr,
+        addrlen: socklen_t,
+    ) -> c_int;
+    pub fn getpeername(
+        sockfd: c_int,
+        addr: *mut sockaddr,
+        addrlen: *mut socklen_t,
+    ) -> c_int;
+    pub fn getsockname(
+        sockfd: c_int,
+        addr: *mut sockaddr,
+        addrlen: *mut socklen_t,
+    ) -> c_int;
+    pub fn getsockopt(
+        sockfd: c_int,
+        level: c_int,
+        optname: c_int,
+        optval: *mut c_void,
+        optlen: *mut socklen_t,
+    ) -> c_int;
+    pub fn listen(sockfd: c_int, backlog: c_int) -> c_int;
+    pub fn setsockopt(
+        sockfd: c_int,
+        level: c_int,
+        optname: c_int,
+        optval: *const c_void,
+        optlen: socklen_t,
+    ) -> c_int;
+    pub fn shutdown(sockfd: c_int, how: c_int) -> c_int;
+    pub fn sockatmark(sockfd: c_int) -> c_int;
+    pub fn socketpair(
+        domain: c_int,
+        type_: c_int,
+        protocol: c_int,
+        sv: *mut c_int,
+    ) -> c_int;
+    pub fn recvmsg(sockfd: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
+    pub fn sendmsg(sockfd: c_int, msg: *const msghdr, flags: c_int)
+        -> ssize_t;
+    pub fn sendmmsg(
+        sockfd: c_int,
+        msgvec: *mut mmsghdr,
+        vlen: c_uint,
+        flags: c_int,
+    ) -> c_int;
+    pub fn recvmmsg(
+        sockfd: c_int,
+        msgvec: *mut mmsghdr,
+        vlen: c_uint,
+        flags: c_int,
+        timeout: *mut timespec,
+    ) -> c_int;
+    pub fn getrusage(arg1: c_int, arg2: *mut rusage) -> c_int;
+    pub fn ftime(arg1: *mut timeb) -> c_int;
+    pub fn sigprocmask(
+        arg1: c_int,
+        arg2: *const sigset_t,
+        arg3: *mut sigset_t,
+    ) -> c_int;
+    pub fn pthread_sigmask(
+        arg1: c_int,
+        arg2: *const sigset_t,
+        arg3: *mut sigset_t,
+    ) -> c_int;
+    pub fn kill(arg1: pid_t, arg2: c_int) -> c_int;
+    pub fn killpg(arg1: pid_t, arg2: c_int) -> c_int;
+    pub fn sigaction(
+        arg1: c_int,
+        arg2: *const sigaction,
+        arg3: *mut sigaction,
+    ) -> c_int;
+    pub fn sigaddset(arg1: *mut sigset_t, arg2: c_int) -> c_int;
+    pub fn sigdelset(arg1: *mut sigset_t, arg2: c_int) -> c_int;
+    pub fn sigismember(arg1: *const sigset_t, arg2: c_int) -> c_int;
+    pub fn sigfillset(arg1: *mut sigset_t) -> c_int;
+    pub fn sigemptyset(arg1: *mut sigset_t) -> c_int;
+    pub fn sigpending(arg1: *mut sigset_t) -> c_int;
+    pub fn sigsuspend(arg1: *const sigset_t) -> c_int;
+    pub fn sigwait(arg1: *const sigset_t, arg2: *mut c_int) -> c_int;
+    pub fn sigpause(arg1: c_int) -> c_int;
+    pub fn sigaltstack(arg1: *const stack_t, arg2: *mut stack_t) -> c_int;
+    pub fn pthread_kill(arg1: pthread_t, arg2: c_int) -> c_int;
+    pub fn sigwaitinfo(arg1: *const sigset_t, arg2: *mut siginfo_t) -> c_int;
+    pub fn sigtimedwait(
+        arg1: *const sigset_t,
+        arg2: *mut siginfo_t,
+        arg3: *const timespec,
+    ) -> c_int;
+    pub fn sigqueue(arg1: pid_t, arg2: c_int, arg3: sigval) -> c_int;
+    pub fn signal(arg1: c_int, arg2: _sig_func_ptr) -> _sig_func_ptr;
+    pub fn raise(arg1: c_int) -> c_int;
+    pub fn psignal(arg1: c_int, arg2: *const c_char);
+    pub fn poll(pfd: *mut pollfd, nfds: nfds_t, timeout: c_int) -> c_int;
+    pub fn posix_spawn(
+        arg1: *mut pid_t,
+        arg2: *const c_char,
+        arg3: *const posix_spawn_file_actions_t,
+        arg4: *const posix_spawnattr_t,
+        arg5: *const *mut c_char,
+        arg6: *const *mut c_char,
+    ) -> c_int;
+    pub fn posix_spawnp(
+        arg1: *mut pid_t,
+        arg2: *const c_char,
+        arg3: *const posix_spawn_file_actions_t,
+        arg4: *const posix_spawnattr_t,
+        arg5: *const *mut c_char,
+        arg6: *const *mut c_char,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_init(
+        arg1: *mut posix_spawn_file_actions_t,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_destroy(
+        arg1: *mut posix_spawn_file_actions_t,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_addopen(
+        arg1: *mut posix_spawn_file_actions_t,
+        arg2: c_int,
+        arg3: *const c_char,
+        arg4: c_int,
+        arg5: mode_t,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_adddup2(
+        arg1: *mut posix_spawn_file_actions_t,
+        arg2: c_int,
+        arg3: c_int,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_addclose(
+        arg1: *mut posix_spawn_file_actions_t,
+        arg2: c_int,
+    ) -> c_int;
+    pub fn posix_spawnattr_init(arg1: *mut posix_spawnattr_t) -> c_int;
+    pub fn posix_spawnattr_destroy(arg1: *mut posix_spawnattr_t) -> c_int;
+    pub fn posix_spawnattr_getflags(
+        arg1: *const posix_spawnattr_t,
+        arg2: *mut c_short,
+    ) -> c_int;
+    pub fn posix_spawnattr_getpgroup(
+        arg1: *const posix_spawnattr_t,
+        arg2: *mut pid_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_getschedparam(
+        arg1: *const posix_spawnattr_t,
+        arg2: *mut sched_param,
+    ) -> c_int;
+    pub fn posix_spawnattr_getschedpolicy(
+        arg1: *const posix_spawnattr_t,
+        arg2: *mut c_int,
+    ) -> c_int;
+    pub fn posix_spawnattr_getsigdefault(
+        arg1: *const posix_spawnattr_t,
+        arg2: *mut sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_getsigmask(
+        arg1: *const posix_spawnattr_t,
+        arg2: *mut sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setflags(
+        arg1: *mut posix_spawnattr_t,
+        arg2: c_short,
+    ) -> c_int;
+    pub fn posix_spawnattr_setpgroup(
+        arg1: *mut posix_spawnattr_t,
+        arg2: pid_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setschedparam(
+        arg1: *mut posix_spawnattr_t,
+        arg2: *const sched_param,
+    ) -> c_int;
+    pub fn posix_spawnattr_setschedpolicy(
+        arg1: *mut posix_spawnattr_t,
+        arg2: c_int,
+    ) -> c_int;
+    pub fn posix_spawnattr_setsigdefault(
+        arg1: *mut posix_spawnattr_t,
+        arg2: *const sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setsigmask(
+        arg1: *mut posix_spawnattr_t,
+        arg2: *const sigset_t,
+    ) -> c_int;
+    pub fn dirname(arg1: *mut c_char) -> *mut c_char;
+    pub fn longjmp(__jmpb: *mut c_longlong, __retval: c_int);
+    pub fn setjmp(__jmpb: *mut c_longlong) -> c_int;
+    pub fn hcreate(arg1: size_t) -> c_int;
+    pub fn hdestroy();
+    pub fn hsearch(arg1: ENTRY, arg2: ACTION) -> *mut ENTRY;
+    pub fn hcreate_r(arg1: size_t, arg2: *mut hsearch_data) -> c_int;
+    pub fn hdestroy_r(arg1: *mut hsearch_data);
+    pub fn hsearch_r(
+        arg1: ENTRY,
+        arg2: ACTION,
+        arg3: *mut *mut ENTRY,
+        arg4: *mut hsearch_data,
+    ) -> c_int;
+    pub fn tdelete(
+        arg1: *const c_void,
+        arg2: *mut *mut c_void,
+        arg3: __compar_fn_t,
+    ) -> *mut c_void;
+    pub fn tdestroy(
+        arg1: *mut c_void,
+        arg2: ::Option<unsafe extern "C" fn(arg1: *mut c_void)>,
+    );
+    pub fn tfind(
+        arg1: *const c_void,
+        arg2: *mut *mut c_void,
+        arg3: __compar_fn_t,
+    ) -> *mut c_void;
+    pub fn tsearch(
+        arg1: *const c_void,
+        arg2: *mut *mut c_void,
+        arg3: __compar_fn_t,
+    ) -> *mut c_void;
+    pub fn twalk(
+        arg1: *const c_void,
+        arg2: ::Option<
+            unsafe extern "C" fn(
+                arg1: *const c_void,
+                arg2: VISIT,
+                arg3: c_int,
+            ),
+        >,
+    );
+    pub fn memalign(arg1: size_t, arg2: size_t) -> *mut c_void;
+    pub fn mallinfo() -> mallinfo;
+    pub fn malloc_stats();
+    pub fn mallopt(arg1: c_int, arg2: c_int) -> c_int;
+    pub fn malloc_usable_size(arg1: *mut c_void) -> size_t;
+    pub fn valloc(arg1: size_t) -> *mut c_void;
+    pub fn pvalloc(arg1: size_t) -> *mut c_void;
+    pub fn malloc_trim(arg1: size_t) -> c_int;
+    pub fn mstats(arg1: *mut c_char);
     pub fn nl_langinfo(arg1: nl_item) -> *mut c_char;
-}
-extern "C" {
     pub fn nl_langinfo_l(arg1: nl_item, arg2: locale_t) -> *mut c_char;
-}
-extern "C" {
     pub fn isalnum(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isalpha(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn iscntrl(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isdigit(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isgraph(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn islower(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isprint(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn ispunct(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isspace(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isupper(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isxdigit(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn tolower(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn toupper(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isblank(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isascii(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn toascii(__c: c_int) -> c_int;
-}
-extern "C" {
     pub fn isalnum_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isalpha_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isblank_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn iscntrl_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isdigit_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isgraph_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn islower_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isprint_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn ispunct_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isspace_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isupper_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isxdigit_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn tolower_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn toupper_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn isascii_l(__c: c_int, __l: locale_t) -> c_int;
-}
-extern "C" {
     pub fn toascii_l(__c: c_int, __l: locale_t) -> c_int;
-}
-pub type __builtin_va_list = [__va_list_tag; 1usize];
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __va_list_tag {
-    pub gp_offset: c_uint,
-    pub fp_offset: c_uint,
-    pub overflow_arg_area: *mut c_void,
-    pub reg_save_area: *mut c_void,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct re_guts {
-    pub _address: u8,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct internal_head {
-    pub _address: u8,
-}
-extern "C" {
     pub static mut h_errno: c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct hostent {
-    pub h_name: *mut c_char,
-    pub h_aliases: *mut *mut c_char,
-    pub h_addrtype: c_int,
-    pub h_length: c_int,
-    pub h_addr_list: *mut *mut c_char,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct netent {
-    pub n_name: *mut c_char,
-    pub n_aliases: *mut *mut c_char,
-    pub n_addrtype: c_int,
-    pub n_net: u32,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct servent {
-    pub s_name: *mut c_char,
-    pub s_aliases: *mut *mut c_char,
-    pub s_port: c_int,
-    pub s_proto: *mut c_char,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct protoent {
-    pub p_name: *mut c_char,
-    pub p_aliases: *mut *mut c_char,
-    pub p_proto: c_int,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct addrinfo {
-    pub ai_flags: c_int,
-    pub ai_family: c_int,
-    pub ai_socktype: c_int,
-    pub ai_protocol: c_int,
-    pub ai_addrlen: socklen_t,
-    pub ai_canonname: *mut c_char,
-    pub ai_addr: *mut sockaddr,
-    pub ai_next: *mut addrinfo,
-}
-extern "C" {
     pub fn endhostent();
-}
-extern "C" {
     pub fn endnetent();
-}
-extern "C" {
     pub fn endprotoent();
-}
-extern "C" {
     pub fn endservent();
-}
-extern "C" {
     pub fn gethostbyname(name: *const c_char) -> *mut hostent;
-}
-extern "C" {
     pub fn gethostbyaddr(
         addr: *const c_void,
         len: socklen_t,
         type_: c_int,
     ) -> *mut hostent;
-}
-extern "C" {
     pub fn gethostent() -> *mut hostent;
-}
-extern "C" {
     pub fn getnetbyaddr(arg1: u32, arg2: c_int) -> *mut netent;
-}
-extern "C" {
     pub fn getnetbyname(arg1: *const c_char) -> *mut netent;
-}
-extern "C" {
     pub fn getnetent() -> *mut netent;
-}
-extern "C" {
     pub fn getprotobyname(arg1: *const c_char) -> *mut protoent;
-}
-extern "C" {
     pub fn getprotobynumber(arg1: c_int) -> *mut protoent;
-}
-extern "C" {
     pub fn getprotoent() -> *mut protoent;
-}
-extern "C" {
     pub fn getservbyname(
         arg1: *const c_char,
         arg2: *const c_char,
     ) -> *mut servent;
-}
-extern "C" {
     pub fn getservbyport(arg1: c_int, arg2: *const c_char) -> *mut servent;
-}
-extern "C" {
     pub fn getservent() -> *mut servent;
-}
-extern "C" {
     pub fn sethostent(arg1: c_int);
-}
-extern "C" {
     pub fn setnetent(arg1: c_int);
-}
-extern "C" {
     pub fn setprotoent(arg1: c_int);
-}
-extern "C" {
     pub fn getnameinfo(
         sa: *const sockaddr,
         salen: socklen_t,
@@ -8905,44 +7162,19 @@ extern "C" {
         servlen: socklen_t,
         flags: c_int,
     ) -> c_int;
-}
-extern "C" {
     pub fn getaddrinfo(
         node: *const c_char,
         service: *const c_char,
         hints: *const addrinfo,
         res: *mut *mut addrinfo,
     ) -> c_int;
-}
-extern "C" {
     pub fn freeaddrinfo(ai: *mut addrinfo);
-}
-extern "C" {
     pub fn gai_strerror(err: c_int) -> *const c_char;
-}
-extern "C" {
     pub fn setservent(arg1: c_int);
-}
-extern "C" {
     pub fn freehostent(he: *mut hostent);
-}
-extern "C" {
     pub fn herror(s: *const c_char);
-}
-extern "C" {
     pub fn hstrerror(err: c_int) -> *const c_char;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sem_t {
-    pub lock: _LOCK_T,
-    pub cond: _COND_T,
-    pub value: c_int,
-}
-extern "C" {
     pub fn clock_gettime(clock_id: clockid_t, tp: *mut timespec) -> c_int;
-}
-extern "C" {
     pub fn pthread_create(
         __pthread: *mut pthread_t,
         __attr: *const pthread_attr_t,
@@ -8951,144 +7183,41 @@ extern "C" {
         ) -> *mut c_void,
         __arg: *mut c_void,
     ) -> c_int;
-}
-extern "C" {
     pub fn pthread_join(
         __pthread: pthread_t,
         __value_ptr: *mut *mut c_void,
     ) -> c_int;
-}
-extern "C" {
     pub fn pthread_detach(__pthread: pthread_t) -> c_int;
-}
-extern "C" {
     pub fn pthread_exit(__value_ptr: *mut c_void);
-}
-extern "C" {
     pub fn pthread_self() -> pthread_t;
-}
-extern "C" {
     pub fn pthread_equal(__t1: pthread_t, __t2: pthread_t) -> c_int;
-}
-extern "C" {
     pub fn pthread_getcpuclockid(
         thread: pthread_t,
         clock_id: *mut clockid_t,
     ) -> c_int;
-}
-extern "C" {
     pub fn pthread_setconcurrency(new_level: c_int) -> c_int;
-}
-extern "C" {
     pub fn pthread_getconcurrency() -> c_int;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pthread_rwlock_t {
-    pub lock: _LOCK_T,
-    pub cond_r: _COND_T,
-    pub cond_w: _COND_T,
-    pub data: [u8; 4],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pthread_rwlockattr_t {}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct sockaddr_un {
-    pub sun_len: u8,
-    pub sun_family: sa_family_t,
-    pub sun_path: [c_char; 104],
-}
-extern "C" {
     pub fn pthread_condattr_init(__attr: *mut pthread_condattr_t) -> c_int;
-}
-extern "C" {
     pub fn pthread_condattr_destroy(__attr: *mut pthread_condattr_t) -> c_int;
-}
-extern "C" {
     pub fn pthread_condattr_getclock(
         __attr: *const pthread_condattr_t,
         __clock_id: *mut clockid_t,
     ) -> c_int;
-}
-extern "C" {
     pub fn pthread_condattr_setclock(
         __attr: *mut pthread_condattr_t,
         __clock_id: clockid_t,
     ) -> c_int;
-}
-extern "C" {
     pub fn pthread_condattr_getpshared(
         __attr: *const pthread_condattr_t,
         __pshared: *mut c_int,
     ) -> c_int;
-}
-extern "C" {
     pub fn pthread_condattr_setpshared(
         __attr: *mut pthread_condattr_t,
         __pshared: c_int,
     ) -> c_int;
-}
-extern "C" {
     pub fn pthread_cond_init(
         __cond: *mut pthread_cond_t,
         __attr: *const pthread_condattr_t,
     ) -> c_int;
-}
-extern "C" {
     pub fn pthread_cond_destroy(__mutex: *mut pthread_cond_t) -> c_int;
-}
-#[derive(Copy, Clone)]
-pub struct in_addr {
-    pub s_addr: in_addr_t,
-}
-#[derive(Copy, Clone)]
-pub struct sockaddr_in {
-    pub sin_len: u8,
-    pub sin_family: sa_family_t,
-    pub sin_port: ::in_port_t,
-    pub sin_addr: in_addr,
-    pub sin_zero: [c_char; 8],
-}
-#[derive(Copy, Clone)]
-pub struct sockaddr_in6 {
-    pub sin6_len: u8,
-    pub sin6_family: sa_family_t,
-    pub sin6_port: ::in_port_t,
-    pub sin6_flowinfo: u32,
-    pub sin6_addr: ::in6_addr,
-    pub sin6_scope_id: u32,
-}
-
-pub fn WIFSTOPPED(status: ::c_int) -> bool {
-    (status & 0xff) == 0x7f
-}
-
-pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
-    (status >> 8) & 0xff
-}
-
-pub fn WIFCONTINUED(status: ::c_int) -> bool {
-    status == 0xffff
-}
-
-pub fn WIFSIGNALED(status: ::c_int) -> bool {
-    ((status & 0x7f) + 1) as i8 >= 2
-}
-
-pub fn WTERMSIG(status: ::c_int) -> ::c_int {
-    status & 0x7f
-}
-
-pub fn WIFEXITED(status: ::c_int) -> bool {
-    (status & 0x7f) == 0
-}
-
-pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
-    (status >> 8) & 0xff
-}
-
-pub fn WCOREDUMP(status: ::c_int) -> bool {
-    (status & 0x80) != 0
 }
