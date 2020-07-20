@@ -504,6 +504,33 @@ s! {
         pub ee_info: u32,
         pub ee_data: u32,
     }
+
+    pub struct pppoe_addr {
+        pub sid: u16,
+        pub remote: [u8; 6],
+        pub dev: [::c_char; 16]
+    }
+
+    pub struct pptp_addr {
+        pub call_id: u16,
+        pub sin_addr: ::in_addr
+    }
+}
+
+#[cfg(libc_union)]
+s_no_extra_traits! {
+
+    pub union sockaddr_pppox_sa_addr_t {
+        pub pppoe: ::pppoe_addr,
+        pub pptp: ::pptp_addr
+    }
+
+    #[repr(packed)]
+    pub struct sockaddr_pppox {
+        pub sa_family: ::sa_family_t,
+        pub sa_protocol: ::c_uint,
+        pub sa_addr: ::sockaddr_pppox_sa_addr_t
+    }
 }
 
 s_no_extra_traits! {
@@ -594,6 +621,77 @@ cfg_if! {
                 self.nl_family.hash(state);
                 self.nl_pid.hash(state);
                 self.nl_groups.hash(state);
+            }
+        }
+
+        cfg_if! {
+            if #[cfg(libc_union)] {
+                impl PartialEq for sockaddr_pppox {
+                    fn eq(&self, other: &Self) -> bool {
+                        self.sa_family == other.sa_family &&
+                        self.sa_protocol == other.sa_protocol &&
+                        match self.sa_protocol {
+                            /* PX_PROTO_OE */
+                            0 => unsafe {
+                                self.sa_addr.pppoe == other.sa_addr.pppoe
+                            },
+
+                            /* PX_PROTO_PPTP */
+                            2  => unsafe {
+                                self.sa_addr.pptp == other.sa_addr.pptp
+                            },
+
+                            _ => false
+                        }
+                    }
+                }
+                impl Eq for sockaddr_pppox {}
+
+                #[allow(unused_unsafe)]
+                impl ::hash::Hash for sockaddr_pppox {
+                    fn hash<H: ::hash::Hasher>(&self, s: &mut H) {
+                        unsafe {
+                            self.sa_family.hash(s);
+                            self.sa_protocol.hash(s);
+                        }
+
+                        match self.sa_protocol {
+                            /* PX_PROTO_OE */
+                            0 => unsafe { self.sa_addr.pppoe.hash(s) },
+
+                            /* PX_PROTO_PPTP */
+                            2 => unsafe { self.sa_addr.pptp.hash(s) },
+
+                            _ => {  }
+                        }
+                    }
+                }
+                impl ::fmt::Debug for sockaddr_pppox_sa_addr_t {
+                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                        assert_eq!(24, ::mem::size_of::<Self>());
+                        unsafe{::mem::transmute::<_, [u8; 24]>(*self).fmt(f)}
+                    }
+                }
+
+                impl ::fmt::Debug for sockaddr_pppox {
+                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                        unsafe {
+                            if self.sa_protocol == 0 {
+                                (self.sa_family,
+                                self.sa_protocol,
+                                self.sa_addr.pppoe).fmt(f)
+                            } else if self.sa_protocol == 2 {
+                                (self.sa_family,
+                                self.sa_protocol,
+                                self.sa_addr.pptp).fmt(f)
+                            } else {
+                                (self.sa_family,
+                                self.sa_protocol,
+                                self.sa_addr).fmt(f)
+                            }
+                        }
+                    }
+                }
             }
         }
 

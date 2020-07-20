@@ -2293,6 +2293,9 @@ fn test_linux(target: &str) {
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
 
+    let supports_unaligned_memory_access =
+        !(mips32 || mips64 || sparc64 || s390x);
+
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
     // This macro re-deifnes fscanf,scanf,sscanf to link to the symbols that are
@@ -2419,6 +2422,7 @@ fn test_linux(target: &str) {
         "linux/if_alg.h",
         "linux/if_ether.h",
         "linux/if_tun.h",
+        "linux/if_pppox.h",
         "linux/input.h",
         "linux/keyctl.h",
         "linux/magic.h",
@@ -2551,6 +2555,9 @@ fn test_linux(target: &str) {
             "statx" => true,
             "statx_timestamp" => true,
 
+            // This is an anonymous union on linux.
+            "sockaddr_pppox_sa_addr_t" => true,
+
             _ => false,
         }
     });
@@ -2678,7 +2685,9 @@ fn test_linux(target: &str) {
         // sigval is actually a union, but we pretend it's a struct
         (struct_ == "sigevent" && field == "sigev_value") ||
         // this one is an anonymous union
-        (struct_ == "ff_effect" && field == "u")
+        (struct_ == "ff_effect" && field == "u") || 
+        // this one is an anonymous union
+        (struct_ == "sockaddr_pppox" && field == "sa_addr")
     });
 
     cfg.volatile_item(|i| {
@@ -2763,6 +2772,8 @@ fn test_linux(target: &str) {
         {
             true
         }
+
+        "sockaddr_pppox" if !supports_unaligned_memory_access => true,
 
         // FIXME: the call ABI of max_align_t is incorrect on these platforms:
         "max_align_t" if i686 || mips64 || ppc64 => true,
