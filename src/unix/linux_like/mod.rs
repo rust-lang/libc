@@ -1316,6 +1316,12 @@ extern "C" {
         len: ::off_t,
         advise: ::c_int,
     ) -> ::c_int;
+    pub fn posix_fadvise64(
+        fd: ::c_int,
+        offset: ::off64_t,
+        len: ::off64_t,
+        advise: ::c_int,
+    ) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn utimensat(
         dirfd: ::c_int,
