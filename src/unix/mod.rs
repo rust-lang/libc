@@ -1241,19 +1241,6 @@ extern "C" {
         filename: *const ::c_char,
         times: *const ::timeval,
     ) -> ::c_int;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn dlopen(filename: *const ::c_char, flag: ::c_int) -> *mut ::c_void;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn dlerror() -> *mut ::c_char;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn dlsym(
-        handle: *mut ::c_void,
-        symbol: *const ::c_char,
-    ) -> *mut ::c_void;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 
     #[cfg(not(all(libc_cfg_target_vendor, target_arch = "powerpc",
           target_vendor = "nintendo")))]
@@ -1450,22 +1437,6 @@ extern "C" {
         link_name = "tcdrain$UNIX2003"
     )]
     pub fn tcdrain(fd: ::c_int) -> ::c_int;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int;
-    #[cfg(not(target_env = "devkita64"))]
-    pub fn tcsetattr(
-        fd: ::c_int,
-        optional_actions: ::c_int,
-        termios: *const ::termios,
-    ) -> ::c_int;
     pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcgetsid(fd: ::c_int) -> ::pid_t;
@@ -1503,6 +1474,35 @@ extern "C" {
         cmd: ::c_int,
         len: ::off_t,
     ) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(not(target_env = "devkita64"))] {
+        extern "C" {
+            pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t;
+            pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t;
+            pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t)
+                -> ::c_int;
+            pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t)
+                -> ::c_int;
+            pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int;
+            pub fn tcsetattr(
+                fd: ::c_int,
+                optional_actions: ::c_int,
+                termios: *const ::termios,
+            ) -> ::c_int;
+
+            pub fn dlopen(filename: *const ::c_char, flag: ::c_int)
+                -> *mut ::c_void;
+            pub fn dlerror() -> *mut ::c_char;
+            pub fn dlsym(
+                handle: *mut ::c_void,
+                symbol: *const ::c_char,
+            ) -> *mut ::c_void;
+            pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
+            pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
+        }
+    }
 }
 
 cfg_if! {
@@ -1549,7 +1549,11 @@ cfg_if! {
 }
 
 cfg_if! {
-   if #[cfg(not(any(target_os = "solaris", target_os = "illumos", target_env = "devkita64")))] {
+   if #[cfg(not(any(
+        target_os = "solaris",
+        target_os = "illumos",
+        target_env = "devkita64"
+    )))] {
         extern {
             pub fn cfmakeraw(termios: *mut ::termios);
             pub fn cfsetspeed(termios: *mut ::termios,
