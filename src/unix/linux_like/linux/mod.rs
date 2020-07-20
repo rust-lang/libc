@@ -2355,7 +2355,13 @@ pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
 // uapi/linux/vm_sockets.h
 pub const VMADDR_CID_ANY: ::c_uint = 0xFFFFFFFF;
 pub const VMADDR_CID_HYPERVISOR: ::c_uint = 0;
+#[deprecated(
+    since = "0.2.74",
+    note = "VMADDR_CID_RESERVED is removed since Linux v5.6 and \
+            replaced with VMADDR_CID_LOCAL"
+)]
 pub const VMADDR_CID_RESERVED: ::c_uint = 1;
+pub const VMADDR_CID_LOCAL: ::c_uint = 1;
 pub const VMADDR_CID_HOST: ::c_uint = 2;
 pub const VMADDR_PORT_ANY: ::c_uint = 0xFFFFFFFF;
 
