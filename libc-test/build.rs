@@ -2614,6 +2614,12 @@ fn test_linux(target: &str) {
             // We should do so after a while.
             "SOMAXCONN" if gnu => true,
 
+            // deprecated: not available from Linux kernel 5.6:
+            "VMADDR_CID_RESERVED" => true,
+
+            // Require Linux kernel 5.6:
+            "VMADDR_CID_LOCAL" => true,
+
             _ => false,
         }
     });
