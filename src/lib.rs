@@ -123,7 +123,7 @@ cfg_if! {
 
         mod vxworks;
         pub use vxworks::*;
-    } else if #[cfg(all(unix, any(not(target_os = "switch"), target_env = "devkita64")))] {
+    } else if #[cfg(all(unix, any(not(target_os = "switch"), target_env = "libnx")))] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
 

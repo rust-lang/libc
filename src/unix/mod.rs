@@ -327,7 +327,7 @@ cfg_if! {
         #[link(name = "root")]
         #[link(name = "network")]
         extern {}
-    } else if #[cfg(target_env = "devkita64")] {
+    } else if #[cfg(target_env = "libnx")] {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
@@ -1477,7 +1477,7 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(not(target_env = "devkita64"))] {
+    if #[cfg(not(target_env = "libnx"))] {
         extern "C" {
             pub fn cfgetispeed(termios: *const ::termios) -> ::speed_t;
             pub fn cfgetospeed(termios: *const ::termios) -> ::speed_t;
@@ -1552,7 +1552,7 @@ cfg_if! {
    if #[cfg(not(any(
         target_os = "solaris",
         target_os = "illumos",
-        target_env = "devkita64"
+        target_env = "libnx"
     )))] {
         extern {
             pub fn cfmakeraw(termios: *mut ::termios);
@@ -1566,9 +1566,9 @@ cfg_if! {
     if #[cfg(target_env = "uclibc")] {
         mod uclibc;
         pub use self::uclibc::*;
-    } else if #[cfg(target_env = "devkita64")] {
-        mod devkita64;
-        pub use self::devkita64::*;
+    } else if #[cfg(target_env = "libnx")] {
+        mod libnx;
+        pub use self::libnx::*;
     } else if #[cfg(target_env = "newlib")] {
         mod newlib;
         pub use self::newlib::*;
