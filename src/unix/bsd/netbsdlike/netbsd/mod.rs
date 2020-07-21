@@ -92,7 +92,7 @@ s! {
         pub st_spare: [u32; 2],
     }
 
-     pub struct addrinfo {
+    pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
         pub ai_socktype: ::c_int,
@@ -286,7 +286,7 @@ s! {
     pub struct __exit_status {
         pub e_termination: u16,
         pub e_exit: u16,
-   }
+    }
 
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,

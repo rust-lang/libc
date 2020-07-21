@@ -2551,6 +2551,11 @@ fn test_linux(target: &str) {
             "statx" => true,
             "statx_timestamp" => true,
 
+            // On Linux, the type of `ut_exit` field of struct `utmpx`
+            // can be an anonymous struct, so an extra struct,
+            // which is absent in musl, has to be defined.
+            "__exit_status" if musl => true,
+
             _ => false,
         }
     });
@@ -2672,7 +2677,9 @@ fn test_linux(target: &str) {
         // sigval is actually a union, but we pretend it's a struct
         (struct_ == "sigevent" && field == "sigev_value") ||
         // this one is an anonymous union
-        (struct_ == "ff_effect" && field == "u")
+        (struct_ == "ff_effect" && field == "u") ||
+        // `__exit_status` type is a patch which is absent in musl
+        (struct_ == "utmpx" && field == "ut_exit" && musl)
     });
 
     cfg.volatile_item(|i| {
