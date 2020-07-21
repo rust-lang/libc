@@ -1,5 +1,5 @@
 use core::prelude::v1::*;
-use ::*;
+use super::super::*;
 
 pub type c_char = u8;
 pub type c_long = i64;
