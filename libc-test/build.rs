@@ -1595,7 +1595,9 @@ fn test_android(target: &str) {
             // FIXME: Somehow we cannot find these fns on aarch64.
             // https://github.com/rust-lang/libc/issues/1765
             "lockf"
+            | "preadv"
             | "preadv64"
+            | "pwritev"
             | "pwritev64"
             | "openpty"
             | "forkpty"

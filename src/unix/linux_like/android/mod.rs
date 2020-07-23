@@ -2513,6 +2513,34 @@ extern "C" {
         new_value: *const itimerspec,
         old_value: *mut itimerspec,
     ) -> ::c_int;
+    pub fn preadv(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        count: ::c_int,
+        offset: ::off_t,
+    ) -> ::ssize_t;
+    pub fn pwritev(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        count: ::c_int,
+        offset: ::off_t,
+    ) -> ::ssize_t;
+    pub fn process_vm_readv(
+        pid: ::pid_t,
+        local_iov: *const ::iovec,
+        local_iov_count: ::c_ulong,
+        remote_iov: *const ::iovec,
+        remote_iov_count: ::c_ulong,
+        flags: ::c_ulong,
+    ) -> ::ssize_t;
+    pub fn process_vm_writev(
+        pid: ::pid_t,
+        local_iov: *const ::iovec,
+        local_iov_count: ::c_ulong,
+        remote_iov: *const ::iovec,
+        remote_iov_count: ::c_ulong,
+        flags: ::c_ulong,
+    ) -> ::ssize_t;
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
     pub fn sched_getaffinity(
         pid: ::pid_t,
