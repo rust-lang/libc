@@ -2761,7 +2761,7 @@ extern "C" {
 
     pub fn clock_getcpuclockid(
         pid: ::pid_t,
-        clk_id: *mut ::clockid_t
+        clk_id: *mut ::clockid_t,
     ) -> ::c_int;
 
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
