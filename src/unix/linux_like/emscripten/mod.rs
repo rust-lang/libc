@@ -1943,6 +1943,12 @@ extern "C" {
         f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
+    pub fn faccessat(
+        dirfd: ::c_int,
+        pathname: *const ::c_char,
+        mode: ::c_int,
+        flags: ::c_int,
+    ) -> ::c_int;
 }
 
 cfg_if! {
