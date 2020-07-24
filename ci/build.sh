@@ -15,7 +15,6 @@ RUST=${TOOLCHAIN}
 echo "Testing Rust ${RUST} on ${OS}"
 
 if [ "${TOOLCHAIN}" = "nightly" ] ; then
-    cargo +nightly install cargo-xbuild
     rustup component add rust-src
 fi
 
@@ -41,28 +40,45 @@ test_target() {
     fi
 
     # Test that libc builds without any default features (no libstd)
-    cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}"
-
+    if [ "${NO_STD}" != "1" ]; then
+        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}"
+    else
+        cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --no-default-features --target "${TARGET}"
+    fi
     # Test that libc builds with default features (e.g. libstd)
     # if the target supports libstd
     if [ "$NO_STD" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}"
+    else
+        cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --target "${TARGET}"
     fi
 
     # Test that libc builds with the `extra_traits` feature
-    cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
+    if [ "${NO_STD}" != "1" ]; then
+        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
             --features extra_traits
+    else
+        cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --no-default-features \
+            --target "${TARGET}" --features extra_traits
+    fi
 
     # Test the 'const-extern-fn' feature on nightly
     if [ "${RUST}" = "nightly" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
-            --features const-extern-fn
+        if [ "${NO_STD}" != "1" ]; then
+            cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
+                --features const-extern-fn
+        else
+            cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --no-default-features \
+                --target "${TARGET}" --features const-extern-fn
+        fi
     fi
-
 
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}" \
+            --features extra_traits
+    else
+        cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --target "${TARGET}" \
             --features extra_traits
     fi
 }
@@ -166,7 +182,7 @@ case "${OS}" in
 esac
 
 for TARGET in $TARGETS; do
-    if echo "$TARGET"|grep -q "$FILTER";then
+    if echo "$TARGET"|grep -q "$FILTER"; then
         test_target build "$TARGET"
     fi
 done
@@ -193,6 +209,7 @@ i686-unknown-haiku \
 i686-unknown-netbsd \
 i686-unknown-openbsd \
 mips-unknown-linux-uclibc \
+mipsel-sony-psp \
 mipsel-unknown-linux-uclibc \
 mips64-unknown-linux-muslabi64 \
 mips64el-unknown-linux-muslabi64 \
@@ -229,13 +246,10 @@ powerpc64-wrs-vxworks \
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
-        if echo "$TARGET"|grep -q "$FILTER";then
-            test_target xbuild "$TARGET" 1
+        if echo "$TARGET"|grep -q "$FILTER"; then
+            test_target build "$TARGET" 1
         fi
     done
-
-    # Sony PSP
-    cargo xbuild --target mipsel-sony-psp
 fi
 
 RUST_OSX_NO_CORE_TARGETS="\
@@ -248,7 +262,7 @@ i686-apple-darwin \
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "osx" ]; then
     for TARGET in $RUST_OSX_NO_CORE_TARGETS; do
         if echo "$TARGET" | grep -q "$FILTER"; then
-            test_target xbuild "$TARGET" 1
+            test_target build "$TARGET" 1
         fi
     done
 fi
