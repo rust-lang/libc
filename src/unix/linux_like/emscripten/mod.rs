@@ -899,6 +899,8 @@ pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
 pub const RTLD_NODELETE: ::c_int = 0x1000;
 pub const RTLD_NOW: ::c_int = 0x2;
 
+pub const AT_EACCESS: ::c_int = 0x200;
+
 pub const TCP_MD5SIG: ::c_int = 14;
 
 align_const! {
