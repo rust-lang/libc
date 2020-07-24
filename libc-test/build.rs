@@ -2328,12 +2328,6 @@ fn test_freebsd(target: &str) {
             // still be accepted and ignored at runtime.
             "MAP_RENAME" | "MAP_NORESERVE" => true,
 
-            // FIXME: These are deprecated - remove in a couple of releases.
-            // These constants were removed in FreeBSD 11 (svn r262489),
-            // and they've never had any legitimate use outside of the
-            // base system anyway.
-            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "USER_MAXID" => true,
-
             // FIXME: This is deprecated - remove in a couple of releases.
             // This was removed in FreeBSD 14 (git 1b4701fe1e8) and never
             // should've been used anywhere anyway.

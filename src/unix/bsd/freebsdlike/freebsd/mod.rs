@@ -3857,26 +3857,6 @@ pub const SHM_STAT: ::c_int = 13;
 pub const SHM_INFO: ::c_int = 14;
 pub const SHM_ANON: *mut ::c_char = 1 as *mut ::c_char;
 
-// The *_MAXID constants never should've been used outside of the
-// FreeBSD base system.  And with the exception of CTL_P1003_1B_MAXID,
-// they were all removed in svn r262489.  They remain here for backwards
-// compatibility only, and are scheduled to be removed in libc 1.0.0.
-#[doc(hidden)]
-#[deprecated(since = "0.2.54", note = "Removed in FreeBSD 11")]
-pub const CTL_MAXID: ::c_int = 10;
-#[doc(hidden)]
-#[deprecated(since = "0.2.54", note = "Removed in FreeBSD 11")]
-pub const KERN_MAXID: ::c_int = 38;
-#[doc(hidden)]
-#[deprecated(since = "0.2.54", note = "Removed in FreeBSD 11")]
-pub const HW_MAXID: ::c_int = 13;
-#[doc(hidden)]
-#[deprecated(since = "0.2.54", note = "Removed in FreeBSD 11")]
-pub const USER_MAXID: ::c_int = 21;
-#[doc(hidden)]
-#[deprecated(since = "0.2.74", note = "Removed in FreeBSD 13")]
-pub const CTL_P1003_1B_MAXID: ::c_int = 26;
-
 pub const MSG_NOTIFICATION: ::c_int = 0x00002000;
 pub const MSG_NBIO: ::c_int = 0x00004000;
 pub const MSG_COMPAT: ::c_int = 0x00008000;
