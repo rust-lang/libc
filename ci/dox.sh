@@ -19,7 +19,6 @@ if ! rustc --version | grep -E "nightly" ; then
 fi
 
 rustup component add rust-src
-cargo +nightly install cargo-xbuild
 
 # List all targets that do currently build successfully:
 # shellcheck disable=SC1003
@@ -50,10 +49,11 @@ while read -r target; do
     # Enable extra configuration flags:
     export RUSTDOCFLAGS="--cfg freebsd11"
 
-    # If cargo doc fails, then try xargo:
+    # If cargo doc fails, then try with unstable feature:
     if ! cargo doc --target "${target}" \
         --no-default-features --features extra_traits ; then
-        cargo xdoc --target "${target}" \
+        cargo doc --target "${target}" \
+        -Z build-std=core,alloc \
         --no-default-features --features extra_traits
     fi
 
