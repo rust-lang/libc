@@ -1039,6 +1039,11 @@ pub const SHM_STAT: ::c_int = 13;
 pub const SHM_INFO: ::c_int = 14;
 pub const SHM_ANON: *mut ::c_char = 1 as *mut ::c_char;
 
+// The *_MAXID constants never should've been used outside of the
+// FreeBSD base system.
+#[doc(hidden)]
+pub const CTL_P1003_1B_MAXID: ::c_int = 26;
+
 pub const MSG_NOTIFICATION: ::c_int = 0x00002000;
 pub const MSG_NBIO: ::c_int = 0x00004000;
 pub const MSG_COMPAT: ::c_int = 0x00008000;
