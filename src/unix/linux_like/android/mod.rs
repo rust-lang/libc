@@ -1124,6 +1124,8 @@ pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
 pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
 pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
 
+pub const PTRACE_EVENT_STOP: ::c_int = 128;
+
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
