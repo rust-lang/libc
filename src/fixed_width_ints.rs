@@ -18,3 +18,12 @@ pub type uint16_t = u16;
 pub type uint32_t = u32;
 #[deprecated(since = "0.2.55", note = "Use u64 instead.")]
 pub type uint64_t = u64;
+
+pub type int_least8_t = i8;
+pub type int_least16_t = i16;
+pub type int_least32_t = i32;
+pub type int_least64_t = i64;
+pub type uint_least8_t = u8;
+pub type uint_least16_t = u16;
+pub type uint_least32_t = u32;
+pub type uint_least64_t = u64;
