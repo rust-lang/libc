@@ -20,6 +20,7 @@ cirrus-ci = { repository = "rust-lang/libc", branch = "master" }
 azure-devops = { project = "rust-lang2/libc", pipeline = "rust-lang.libc%20(1)" }
 
 [dependencies]
+cty = { version = "0.2", path = "cty" }
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
 
 [features]
@@ -33,4 +34,9 @@ const-extern-fn = []
 use_std = [ 'std' ]
 
 [workspace]
-members = ["libc-test"]
+members = [
+  "cty",
+  "cty-test",
+  "libc-test",
+  "cty-libc-ty-test"
+]
