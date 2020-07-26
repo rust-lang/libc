@@ -43,14 +43,17 @@ test_target() {
     if [ "${NO_STD}" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}"
     else
-        cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --no-default-features --target "${TARGET}"
+        # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
+        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
+            -Z build-std=core,alloc -vv --no-default-features --target "${TARGET}"
     fi
     # Test that libc builds with default features (e.g. libstd)
     # if the target supports libstd
     if [ "$NO_STD" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}"
     else
-        cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --target "${TARGET}"
+        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
+            -Z build-std=core,alloc -vv --target "${TARGET}"
     fi
 
     # Test that libc builds with the `extra_traits` feature
@@ -58,7 +61,8 @@ test_target() {
         cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
             --features extra_traits
     else
-        cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --no-default-features \
+        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
+            -Z build-std=core,alloc -vv --no-default-features \
             --target "${TARGET}" --features extra_traits
     fi
 
@@ -68,7 +72,8 @@ test_target() {
             cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
                 --features const-extern-fn
         else
-            cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --no-default-features \
+            RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
+                -Z build-std=core,alloc -vv --no-default-features \
                 --target "${TARGET}" --features const-extern-fn
         fi
     fi
@@ -78,7 +83,8 @@ test_target() {
         cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}" \
             --features extra_traits
     else
-        cargo "+${RUST}" "${BUILD_CMD}" -Z build-std=core,alloc -vv --target "${TARGET}" \
+        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
+            -Z build-std=core,alloc -vv --target "${TARGET}" \
             --features extra_traits
     fi
 }
