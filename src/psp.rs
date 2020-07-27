@@ -79,7 +79,7 @@ pub type IoPermissions = i32;
 
 pub type UmdCallback = fn(unknown: i32, event: i32) -> i32;
 
-pub type SceMpegRingbufferCb = Option<
+pub type SceMpegRingbufferCb = ::Option<
     unsafe extern "C" fn(
         data: *mut c_void,
         num_packets: i32,
@@ -87,14 +87,18 @@ pub type SceMpegRingbufferCb = Option<
     ) -> i32,
 >;
 
-pub type GuCallback = Option<extern "C" fn(id: i32, arg: *mut c_void)>;
-pub type GuSwapBuffersCallback =
-    Option<extern "C" fn(display: *mut *mut c_void, render: *mut *mut c_void)>;
+pub type GuCallback = ::Option<extern "C" fn(id: i32, arg: *mut c_void)>;
+pub type GuSwapBuffersCallback = ::Option<extern "C" fn(
+        display: *mut *mut c_void, render: *mut *mut c_void
+    ),
+>;
 
-pub type SceNetAdhocctlHandler =
-    Option<unsafe extern "C" fn(flag: i32, error: i32, unknown: *mut c_void)>;
+pub type SceNetAdhocctlHandler = ::Option<unsafe extern "C" fn(
+        flag: i32, error: i32, unknown: *mut c_void
+    ),
+>;
 
-pub type AdhocMatchingCallback = Option<
+pub type AdhocMatchingCallback = ::Option<
     unsafe extern "C" fn(
         matching_id: i32,
         event: i32,
@@ -104,7 +108,7 @@ pub type AdhocMatchingCallback = Option<
     ),
 >;
 
-pub type SceNetApctlHandler = Option<
+pub type SceNetApctlHandler = ::Option<
     unsafe extern "C" fn(
         oldState: i32,
         newState: i32,
@@ -115,11 +119,11 @@ pub type SceNetApctlHandler = Option<
 >;
 
 pub type HttpMallocFunction =
-    Option<unsafe extern "C" fn(size: usize) -> *mut c_void>;
+    ::Option<unsafe extern "C" fn(size: usize) -> *mut c_void>;
 pub type HttpReallocFunction =
-    Option<unsafe extern "C" fn(p: *mut c_void, size: usize) -> *mut c_void>;
-pub type HttpFreeFunction = Option<unsafe extern "C" fn(p: *mut c_void)>;
-pub type HttpPasswordCB = Option<
+    ::Option<unsafe extern "C" fn(p: *mut c_void, size: usize) -> *mut c_void>;
+pub type HttpFreeFunction = ::Option<unsafe extern "C" fn(p: *mut c_void)>;
+pub type HttpPasswordCB = ::Option<
     unsafe extern "C" fn(
         request: i32,
         auth_type: HttpAuthType,
@@ -135,1498 +139,1288 @@ pub type HttpPasswordCB = Option<
 
 pub type socklen_t = u32;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum AudioFormat {
-    Stereo = 0,
-    Mono = 0x10,
+e! {
+    #[repr(u32)]
+    pub enum AudioFormat {
+        Stereo = 0,
+        Mono = 0x10,
+    }
+
+    #[repr(u32)]
+    pub enum DisplayMode {
+        Lcd = 0,
+    }
+
+    #[repr(u32)]
+    pub enum DisplayPixelFormat {
+        Psm5650 = 0,
+        Psm5551 = 1,
+        Psm4444 = 2,
+        Psm8888 = 3,
+    }
+
+    #[repr(u32)]
+    pub enum DisplaySetBufSync {
+        Immediate = 0,
+        NextFrame = 1,
+    }
+
+    #[repr(i32)]
+    pub enum AudioOutputFrequency {
+        Khz48 = 48000,
+        Khz44_1 = 44100,
+        Khz32 = 32000,
+        Khz24 = 24000,
+        Khz22_05 = 22050,
+        Khz16 = 16000,
+        Khz12 = 12000,
+        Khz11_025 = 11025,
+        Khz8 = 8000,
+    }
+
+    #[repr(i32)]
+    pub enum AudioInputFrequency {
+        Khz44_1 = 44100,
+        Khz22_05 = 22050,
+        Khz11_025 = 11025,
+    }
+
+    #[repr(u32)]
+    pub enum CtrlMode {
+        Digital = 0,
+        Analog,
+    }
+
+    #[repr(i32)]
+    pub enum GeMatrixType {
+        Bone0 = 0,
+        Bone1,
+        Bone2,
+        Bone3,
+        Bone4,
+        Bone5,
+        Bone6,
+        Bone7,
+        World,
+        View,
+        Projection,
+        TexGen,
+    }
+
+    #[repr(i32)]
+    pub enum GeListState {
+        Done = 0,
+        Queued,
+        DrawingDone,
+        StallReached,
+        CancelDone,
+    }
+
+    #[repr(u8)]
+    pub enum GeCommand {
+        Nop = 0,
+        Vaddr = 0x1,
+        Iaddr = 0x2,
+        Prim = 0x4,
+        Bezier = 0x5,
+        Spline = 0x6,
+        BoundingBox = 0x7,
+        Jump = 0x8,
+        BJump = 0x9,
+        Call = 0xa,
+        Ret = 0xb,
+        End = 0xc,
+        Signal = 0xe,
+        Finish = 0xf,
+        Base = 0x10,
+        VertexType = 0x12,
+        OffsetAddr = 0x13,
+        Origin = 0x14,
+        Region1 = 0x15,
+        Region2 = 0x16,
+        LightingEnable = 0x17,
+        LightEnable0 = 0x18,
+        LightEnable1 = 0x19,
+        LightEnable2 = 0x1a,
+        LightEnable3 = 0x1b,
+        DepthClampEnable = 0x1c,
+        CullFaceEnable = 0x1d,
+        TextureMapEnable = 0x1e,
+        FogEnable = 0x1f,
+        DitherEnable = 0x20,
+        AlphaBlendEnable = 0x21,
+        AlphaTestEnable = 0x22,
+        ZTestEnable = 0x23,
+        StencilTestEnable = 0x24,
+        AntiAliasEnable = 0x25,
+        PatchCullEnable = 0x26,
+        ColorTestEnable = 0x27,
+        LogicOpEnable = 0x28,
+        BoneMatrixNumber = 0x2a,
+        BoneMatrixData = 0x2b,
+        MorphWeight0 = 0x2c,
+        MorphWeight1 = 0x2d,
+        MorphWeight2 = 0x2e,
+        MorphWeight3 = 0x2f,
+        MorphWeight4 = 0x30,
+        MorphWeight5 = 0x31,
+        MorphWeight6 = 0x32,
+        MorphWeight7 = 0x33,
+        PatchDivision = 0x36,
+        PatchPrimitive = 0x37,
+        PatchFacing = 0x38,
+        WorldMatrixNumber = 0x3a,
+        WorldMatrixData = 0x3b,
+        ViewMatrixNumber = 0x3c,
+        ViewMatrixData = 0x3d,
+        ProjMatrixNumber = 0x3e,
+        ProjMatrixData = 0x3f,
+        TGenMatrixNumber = 0x40,
+        TGenMatrixData = 0x41,
+        ViewportXScale = 0x42,
+        ViewportYScale = 0x43,
+        ViewportZScale = 0x44,
+        ViewportXCenter = 0x45,
+        ViewportYCenter = 0x46,
+        ViewportZCenter = 0x47,
+        TexScaleU = 0x48,
+        TexScaleV = 0x49,
+        TexOffsetU = 0x4a,
+        TexOffsetV = 0x4b,
+        OffsetX = 0x4c,
+        OffsetY = 0x4d,
+        ShadeMode = 0x50,
+        ReverseNormal = 0x51,
+        MaterialUpdate = 0x53,
+        MaterialEmissive = 0x54,
+        MaterialAmbient = 0x55,
+        MaterialDiffuse = 0x56,
+        MaterialSpecular = 0x57,
+        MaterialAlpha = 0x58,
+        MaterialSpecularCoef = 0x5b,
+        AmbientColor = 0x5c,
+        AmbientAlpha = 0x5d,
+        LightMode = 0x5e,
+        LightType0 = 0x5f,
+        LightType1 = 0x60,
+        LightType2 = 0x61,
+        LightType3 = 0x62,
+        Light0X = 0x63,
+        Light0Y,
+        Light0Z,
+        Light1X,
+        Light1Y,
+        Light1Z,
+        Light2X,
+        Light2Y,
+        Light2Z,
+        Light3X,
+        Light3Y,
+        Light3Z,
+        Light0DirectionX = 0x6f,
+        Light0DirectionY,
+        Light0DirectionZ,
+        Light1DirectionX,
+        Light1DirectionY,
+        Light1DirectionZ,
+        Light2DirectionX,
+        Light2DirectionY,
+        Light2DirectionZ,
+        Light3DirectionX,
+        Light3DirectionY,
+        Light3DirectionZ,
+        Light0ConstantAtten = 0x7b,
+        Light0LinearAtten,
+        Light0QuadtraticAtten,
+        Light1ConstantAtten,
+        Light1LinearAtten,
+        Light1QuadtraticAtten,
+        Light2ConstantAtten,
+        Light2LinearAtten,
+        Light2QuadtraticAtten,
+        Light3ConstantAtten,
+        Light3LinearAtten,
+        Light3QuadtraticAtten,
+        Light0ExponentAtten = 0x87,
+        Light1ExponentAtten,
+        Light2ExponentAtten,
+        Light3ExponentAtten,
+        Light0CutoffAtten = 0x8b,
+        Light1CutoffAtten,
+        Light2CutoffAtten,
+        Light3CutoffAtten,
+        Light0Ambient = 0x8f,
+        Light0Diffuse,
+        Light0Specular,
+        Light1Ambient,
+        Light1Diffuse,
+        Light1Specular,
+        Light2Ambient,
+        Light2Diffuse,
+        Light2Specular,
+        Light3Ambient,
+        Light3Diffuse,
+        Light3Specular,
+        Cull = 0x9b,
+        FrameBufPtr = 0x9c,
+        FrameBufWidth = 0x9d,
+        ZBufPtr = 0x9e,
+        ZBufWidth = 0x9f,
+        TexAddr0 = 0xa0,
+        TexAddr1,
+        TexAddr2,
+        TexAddr3,
+        TexAddr4,
+        TexAddr5,
+        TexAddr6,
+        TexAddr7,
+        TexBufWidth0 = 0xa8,
+        TexBufWidth1,
+        TexBufWidth2,
+        TexBufWidth3,
+        TexBufWidth4,
+        TexBufWidth5,
+        TexBufWidth6,
+        TexBufWidth7,
+        ClutAddr = 0xb0,
+        ClutAddrUpper = 0xb1,
+        TransferSrc,
+        TransferSrcW,
+        TransferDst,
+        TransferDstW,
+        TexSize0 = 0xb8,
+        TexSize1,
+        TexSize2,
+        TexSize3,
+        TexSize4,
+        TexSize5,
+        TexSize6,
+        TexSize7,
+        TexMapMode = 0xc0,
+        TexShadeLs = 0xc1,
+        TexMode = 0xc2,
+        TexFormat = 0xc3,
+        LoadClut = 0xc4,
+        ClutFormat = 0xc5,
+        TexFilter = 0xc6,
+        TexWrap = 0xc7,
+        TexLevel = 0xc8,
+        TexFunc = 0xc9,
+        TexEnvColor = 0xca,
+        TexFlush = 0xcb,
+        TexSync = 0xcc,
+        Fog1 = 0xcd,
+        Fog2 = 0xce,
+        FogColor = 0xcf,
+        TexLodSlope = 0xd0,
+        FramebufPixFormat = 0xd2,
+        ClearMode = 0xd3,
+        Scissor1 = 0xd4,
+        Scissor2 = 0xd5,
+        MinZ = 0xd6,
+        MaxZ = 0xd7,
+        ColorTest = 0xd8,
+        ColorRef = 0xd9,
+        ColorTestmask = 0xda,
+        AlphaTest = 0xdb,
+        StencilTest = 0xdc,
+        StencilOp = 0xdd,
+        ZTest = 0xde,
+        BlendMode = 0xdf,
+        BlendFixedA = 0xe0,
+        BlendFixedB = 0xe1,
+        Dith0 = 0xe2,
+        Dith1,
+        Dith2,
+        Dith3,
+        LogicOp = 0xe6,
+        ZWriteDisable = 0xe7,
+        MaskRgb = 0xe8,
+        MaskAlpha = 0xe9,
+        TransferStart = 0xea,
+        TransferSrcPos = 0xeb,
+        TransferDstPos = 0xec,
+        TransferSize = 0xee,
+        Vscx = 0xf0,
+        Vscy = 0xf1,
+        Vscz = 0xf2,
+        Vtcs = 0xf3,
+        Vtct = 0xf4,
+        Vtcq = 0xf5,
+        Vcv = 0xf6,
+        Vap = 0xf7,
+        Vfc = 0xf8,
+        Vscv = 0xf9,
+
+        Unknown03 = 0x03,
+        Unknown0D = 0x0d,
+        Unknown11 = 0x11,
+        Unknown29 = 0x29,
+        Unknown34 = 0x34,
+        Unknown35 = 0x35,
+        Unknown39 = 0x39,
+        Unknown4E = 0x4e,
+        Unknown4F = 0x4f,
+        Unknown52 = 0x52,
+        Unknown59 = 0x59,
+        Unknown5A = 0x5a,
+        UnknownB6 = 0xb6,
+        UnknownB7 = 0xb7,
+        UnknownD1 = 0xd1,
+        UnknownED = 0xed,
+        UnknownEF = 0xef,
+        UnknownFA = 0xfa,
+        UnknownFB = 0xfb,
+        UnknownFC = 0xfc,
+        UnknownFD = 0xfd,
+        UnknownFE = 0xfe,
+        NopFF = 0xff,
+    }
+
+    #[repr(i32)]
+    pub enum SceSysMemPartitionId {
+        SceKernelUnknownPartition = 0,
+        SceKernelPrimaryKernelPartition = 1,
+        SceKernelPrimaryUserPartition = 2,
+        SceKernelOtherKernelPartition1 = 3,
+        SceKernelOtherKernelPartition2 = 4,
+        SceKernelVshellPARTITION = 5,
+        SceKernelScUserPartition = 6,
+        SceKernelMeUserPartition = 7,
+        SceKernelExtendedScKernelPartition = 8,
+        SceKernelExtendedSc2KernelPartition = 9,
+        SceKernelExtendedMeKernelPartition = 10,
+        SceKernelVshellKernelPartition = 11,
+        SceKernelExtendedKernelPartition = 12,
+    }
+
+    #[repr(i32)]
+    pub enum SceSysMemBlockTypes {
+        Low = 0,
+        High,
+        Addr,
+    }
+
+    #[repr(u32)]
+    pub enum Interrupt {
+        Gpio = 4,
+        Ata = 5,
+        Umd = 6,
+        Mscm0 = 7,
+        Wlan = 8,
+        Audio = 10,
+        I2c = 12,
+        Sircs = 14,
+        Systimer0 = 15,
+        Systimer1 = 16,
+        Systimer2 = 17,
+        Systimer3 = 18,
+        Thread0 = 19,
+        Nand = 20,
+        Dmacplus = 21,
+        Dma0 = 22,
+        Dma1 = 23,
+        Memlmd = 24,
+        Ge = 25,
+        Vblank = 30,
+        Mecodec = 31,
+        Hpremote = 36,
+        Mscm1 = 60,
+        Mscm2 = 61,
+        Thread1 = 65,
+        Interrupt = 66,
+    }
+
+    #[repr(u32)]
+    pub enum SubInterrupt {
+        Gpio = Interrupt::Gpio as u32,
+        Ata = Interrupt::Ata as u32,
+        Umd = Interrupt::Umd as u32,
+        Dmacplus = Interrupt::Dmacplus as u32,
+        Ge = Interrupt::Ge as u32,
+        Display = Interrupt::Vblank as u32,
+    }
+
+    #[repr(u32)]
+    pub enum SceKernelIdListType {
+        Thread = 1,
+        Semaphore = 2,
+        EventFlag = 3,
+        Mbox = 4,
+        Vpl = 5,
+        Fpl = 6,
+        Mpipe = 7,
+        Callback = 8,
+        ThreadEventHandler = 9,
+        Alarm = 10,
+        VTimer = 11,
+        SleepThread = 64,
+        DelayThread = 65,
+        SuspendThread = 66,
+        DormantThread = 67,
+    }
+
+    #[repr(i32)]
+    pub enum UsbCamResolution {
+        Px160_120 = 0,
+        Px176_144 = 1,
+        Px320_240 = 2,
+        Px352_288 = 3,
+        Px640_480 = 4,
+        Px1024_768 = 5,
+        Px1280_960 = 6,
+        Px480_272 = 7,
+        Px360_272 = 8,
+    }
+
+    #[repr(i32)]
+    pub enum UsbCamResolutionEx {
+        Px160_120 = 0,
+        Px176_144 = 1,
+        Px320_240 = 2,
+        Px352_288 = 3,
+        Px360_272 = 4,
+        Px480_272 = 5,
+        Px640_480 = 6,
+        Px1024_768 = 7,
+        Px1280_960 = 8,
+    }
+
+    #[repr(i32)]
+    pub enum UsbCamDelay {
+        NoDelay = 0,
+        Delay10Sec = 1,
+        Delay20Sec = 2,
+        Delay30Sec = 3,
+    }
+
+    #[repr(i32)]
+    pub enum UsbCamFrameRate {
+        Fps3_75 = 0,
+        Fps5 = 1,
+        Fps7_5 = 2,
+        Fps10 = 3,
+        Fps15 = 4,
+        Fps20 = 5,
+        Fps30 = 6,
+        Fps60 = 7,
+    }
+
+    #[repr(i32)]
+    pub enum UsbCamWb {
+        Auto = 0,
+        Daylight = 1,
+        Fluorescent = 2,
+        Incadescent = 3,
+    }
+
+    #[repr(i32)]
+    pub enum UsbCamEffectMode {
+        Normal = 0,
+        Negative = 1,
+        Blackwhite = 2,
+        Sepia = 3,
+        Blue = 4,
+        Red = 5,
+        Green = 6,
+    }
+
+    #[repr(i32)]
+    pub enum UsbCamEvLevel {
+        Pos2_0 = 0,
+        Pos1_7 = 1,
+        Pos1_5 = 2,
+        Pos1_3 = 3,
+        Pos1_0 = 4,
+        Pos0_7 = 5,
+        Pos0_5 = 6,
+        Pos0_3 = 7,
+        Zero = 8,
+        Neg0_3,
+        Neg0_5,
+        Neg0_7,
+        Neg1_0,
+        Neg1_3,
+        Neg1_5,
+        Neg1_7,
+        Neg2_0,
+    }
+
+    #[repr(i32)]
+    pub enum RtcCheckValidError {
+        InvalidYear = -1,
+        InvalidMonth = -2,
+        InvalidDay = -3,
+        InvalidHour = -4,
+        InvalidMinutes = -5,
+        InvalidSeconds = -6,
+        InvalidMicroseconds = -7,
+    }
+
+    #[repr(u32)]
+    pub enum PowerTick {
+        All = 0,
+        Suspend = 1,
+        Display = 6,
+    }
+
+    #[repr(u32)]
+    pub enum IoAssignPerms {
+        RdWr = 0,
+        RdOnly = 1,
+    }
+
+    #[repr(u32)]
+    pub enum IoWhence {
+        Set = 0,
+        Cur = 1,
+        End = 2,
+    }
+
+    #[repr(u32)]
+    pub enum UmdType {
+        Game = 0x10,
+        Video = 0x20,
+        Audio = 0x40,
+    }
+
+    #[repr(u32)]
+    pub enum GuPrimitive {
+        Points = 0,
+        Lines = 1,
+        LineStrip = 2,
+        Triangles = 3,
+        TriangleStrip = 4,
+        TriangleFan = 5,
+        Sprites = 6,
+    }
+
+    #[repr(u32)]
+    pub enum PatchPrimitive {
+        Points = 0,
+        LineStrip = 2,
+        TriangleStrip = 4,
+    }
+
+    #[repr(u32)]
+    pub enum GuState {
+        AlphaTest = 0,
+        DepthTest = 1,
+        ScissorTest = 2,
+        StencilTest = 3,
+        Blend = 4,
+        CullFace = 5,
+        Dither = 6,
+        Fog = 7,
+        ClipPlanes = 8,
+        Texture2D = 9,
+        Lighting = 10,
+        Light0 = 11,
+        Light1 = 12,
+        Light2 = 13,
+        Light3 = 14,
+        LineSmooth = 15,
+        PatchCullFace = 16,
+        ColorTest = 17,
+        ColorLogicOp = 18,
+        FaceNormalReverse = 19,
+        PatchFace = 20,
+        Fragment2X = 21,
+    }
+
+    #[repr(u32)]
+    pub enum MatrixMode {
+        Projection = 0,
+        View = 1,
+        Model = 2,
+        Texture = 3,
+    }
+
+    #[repr(u32)]
+    pub enum TexturePixelFormat {
+        Psm5650 = 0,
+        Psm5551 = 1,
+        Psm4444 = 2,
+        Psm8888 = 3,
+        PsmT4 = 4,
+        PsmT8 = 5,
+        PsmT16 = 6,
+        PsmT32 = 7,
+        PsmDxt1 = 8,
+        PsmDxt3 = 9,
+        PsmDxt5 = 10,
+    }
+
+    #[repr(u32)]
+    pub enum SplineMode {
+        FillFill = 0,
+        OpenFill = 1,
+        FillOpen = 2,
+        OpenOpen = 3,
+    }
+
+    #[repr(u32)]
+    pub enum ShadingModel {
+        Flat = 0,
+        Smooth = 1,
+    }
+
+    #[repr(u32)]
+    pub enum LogicalOperation {
+        Clear = 0,
+        And = 1,
+        AndReverse = 2,
+        Copy = 3,
+        AndInverted = 4,
+        Noop = 5,
+        Xor = 6,
+        Or = 7,
+        Nor = 8,
+        Equiv = 9,
+        Inverted = 10,
+        OrReverse = 11,
+        CopyInverted = 12,
+        OrInverted = 13,
+        Nand = 14,
+        Set = 15,
+    }
+
+    #[repr(u32)]
+    pub enum TextureFilter {
+        Nearest = 0,
+        Linear = 1,
+        NearestMipmapNearest = 4,
+        LinearMipmapNearest = 5,
+        NearestMipmapLinear = 6,
+        LinearMipmapLinear = 7,
+    }
+
+    #[repr(u32)]
+    pub enum TextureMapMode {
+        TextureCoords = 0,
+        TextureMatrix = 1,
+        EnvironmentMap = 2,
+    }
+
+    #[repr(u32)]
+    pub enum TextureLevelMode {
+        Auto = 0,
+        Const = 1,
+        Slope = 2,
+    }
+
+    #[repr(u32)]
+    pub enum TextureProjectionMapMode {
+        Position = 0,
+        Uv = 1,
+        NormalizedNormal = 2,
+        Normal = 3,
+    }
+
+    #[repr(u32)]
+    pub enum GuTexWrapMode {
+        Repeat = 0,
+        Clamp = 1,
+    }
+
+    #[repr(u32)]
+    pub enum FrontFaceDirection {
+        Clockwise = 0,
+        CounterClockwise = 1,
+    }
+
+    #[repr(u32)]
+    pub enum AlphaFunc {
+        Never = 0,
+        Always,
+        Equal,
+        NotEqual,
+        Less,
+        LessOrEqual,
+        Greater,
+        GreaterOrEqual,
+    }
+
+    #[repr(u32)]
+    pub enum StencilFunc {
+        Never = 0,
+        Always,
+        Equal,
+        NotEqual,
+        Less,
+        LessOrEqual,
+        Greater,
+        GreaterOrEqual,
+    }
+
+    #[repr(u32)]
+    pub enum ColorFunc {
+        Never = 0,
+        Always,
+        Equal,
+        NotEqual,
+    }
+
+    #[repr(u32)]
+    pub enum DepthFunc {
+        Never = 0,
+        Always,
+        Equal,
+        NotEqual,
+        Less,
+        LessOrEqual,
+        Greater,
+        GreaterOrEqual,
+    }
+
+    #[repr(u32)]
+    pub enum TextureEffect {
+        Modulate = 0,
+        Decal = 1,
+        Blend = 2,
+        Replace = 3,
+        Add = 4,
+    }
+
+    #[repr(u32)]
+    pub enum TextureColorComponent {
+        Rgb = 0,
+        Rgba = 1,
+    }
+
+    #[repr(u32)]
+    pub enum MipmapLevel {
+        None = 0,
+        Level1,
+        Level2,
+        Level3,
+        Level4,
+        Level5,
+        Level6,
+        Level7,
+    }
+
+    #[repr(u32)]
+    pub enum BlendOp {
+        Add = 0,
+        Subtract = 1,
+        ReverseSubtract = 2,
+        Min = 3,
+        Max = 4,
+        Abs = 5,
+    }
+
+    #[repr(u32)]
+    pub enum BlendSrc {
+        SrcColor = 0,
+        OneMinusSrcColor = 1,
+        SrcAlpha = 2,
+        OneMinusSrcAlpha = 3,
+        Fix = 10,
+    }
+
+    #[repr(u32)]
+    pub enum BlendDst {
+        DstColor = 0,
+        OneMinusDstColor = 1,
+        DstAlpha = 4,
+        OneMinusDstAlpha = 5,
+        Fix = 10,
+    }
+
+    #[repr(u32)]
+    pub enum StencilOperation {
+        Keep = 0,
+        Zero = 1,
+        Replace = 2,
+        Invert = 3,
+        Incr = 4,
+        Decr = 5,
+    }
+
+    #[repr(u32)]
+    pub enum LightMode {
+        SingleColor = 0,
+        SeparateSpecularColor = 1,
+    }
+
+    #[repr(u32)]
+    pub enum LightType {
+        Directional = 0,
+        Pointlight = 1,
+        Spotlight = 2,
+    }
+
+    #[repr(u32)]
+    pub enum GuContextType {
+        Direct = 0,
+        Call = 1,
+        Send = 2,
+    }
+
+    #[repr(u32)]
+    pub enum GuQueueMode {
+        Tail = 0,
+        Head = 1,
+    }
+
+    #[repr(u32)]
+    pub enum GuSyncMode {
+        Finish = 0,
+        Signal = 1,
+        Done = 2,
+        List = 3,
+        Send = 4,
+    }
+
+    #[repr(u32)]
+    pub enum GuSyncBehavior {
+        Wait = 0,
+        NoWait = 1,
+    }
+
+    #[repr(u32)]
+    pub enum GuCallbackId {
+        Signal = 1,
+        Finish = 4,
+    }
+
+    #[repr(u32)]
+    pub enum SignalBehavior {
+        Suspend = 1,
+        Continue = 2,
+    }
+
+    #[repr(u32)]
+    pub enum ClutPixelFormat {
+        Psm5650 = 0,
+        Psm5551 = 1,
+        Psm4444 = 2,
+        Psm8888 = 3,
+    }
+
+    #[repr(C)]
+    pub enum KeyType {
+        Directory = 1,
+        Integer = 2,
+        String = 3,
+        Bytes = 4,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityMsgDialogMode {
+        Error,
+        Text,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityMsgDialogPressed {
+        Unknown1,
+        Yes,
+        No,
+        Back,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityDialogButtonAccept {
+        Circle,
+        Cross,
+    }
+
+    #[repr(u32)]
+    pub enum SceUtilityOskInputLanguage {
+        Default,
+        Japanese,
+        English,
+        French,
+        Spanish,
+        German,
+        Italian,
+        Dutch,
+        Portugese,
+        Russian,
+        Korean,
+    }
+
+    #[repr(u32)]
+    pub enum SceUtilityOskInputType {
+        All,
+        LatinDigit,
+        LatinSymbol,
+        LatinLowercase = 4,
+        LatinUppercase = 8,
+        JapaneseDigit = 0x100,
+        JapaneseSymbol = 0x200,
+        JapaneseLowercase = 0x400,
+        JapaneseUppercase = 0x800,
+        JapaneseHiragana = 0x1000,
+        JapaneseHalfWidthKatakana = 0x2000,
+        JapaneseKatakana = 0x4000,
+        JapaneseKanji = 0x8000,
+        RussianLowercase = 0x10000,
+        RussianUppercase = 0x20000,
+        Korean = 0x40000,
+        Url = 0x80000,
+    }
+
+    #[repr(u32)]
+    pub enum SceUtilityOskState {
+        None,
+        Initializing,
+        Initialized,
+        Visible,
+        Quit,
+        Finished,
+    }
+
+    #[repr(u32)]
+    pub enum SceUtilityOskResult {
+        Unchanged,
+        Cancelled,
+        Changed,
+    }
+
+    #[repr(u32)]
+    pub enum SystemParamLanguage {
+        Japanese,
+        English,
+        French,
+        Spanish,
+        German,
+        Italian,
+        Dutch,
+        Portugese,
+        Russian,
+        Korean,
+        ChineseTraditional,
+        ChineseSimplified,
+    }
+
+    #[repr(u32)]
+    pub enum SystemParamId {
+        StringNickname = 1,
+        AdhocChannel,
+        WlanPowerSave,
+        DateFormat,
+        TimeFormat,
+        Timezone,
+        DaylightSavings,
+        Language,
+        Unknown,
+    }
+
+    #[repr(u32)]
+    pub enum SystemParamAdhocChannel {
+        ChannelAutomatic = 0,
+        Channel1 = 1,
+        Channel6 = 6,
+        Channel11 = 11,
+    }
+
+    #[repr(u32)]
+    pub enum SystemParamWlanPowerSaveState {
+        Off,
+        On,
+    }
+
+    #[repr(u32)]
+    pub enum SystemParamDateFormat {
+        YYYYMMDD,
+        MMDDYYYY,
+        DDMMYYYY,
+    }
+
+    #[repr(u32)]
+    pub enum SystemParamTimeFormat {
+        Hour24,
+        Hour12,
+    }
+
+    #[repr(u32)]
+    pub enum SystemParamDaylightSavings {
+        Std,
+        Dst,
+    }
+
+    #[repr(u32)]
+    pub enum AvModule {
+        AvCodec,
+        SasCore,
+        Atrac3Plus,
+        MpegBase,
+        Mp3,
+        Vaudio,
+        Aac,
+        G729,
+    }
+
+    #[repr(u32)]
+    pub enum Module {
+        NetCommon = 0x100,
+        NetAdhoc,
+        NetInet,
+        NetParseUri,
+        NetHttp,
+        NetSsl,
+
+        UsbPspCm = 0x200,
+        UsbMic,
+        UsbCam,
+        UsbGps,
+
+        AvCodec = 0x300,
+        AvSascore,
+        AvAtrac3Plus,
+        AvMpegBase,
+        AvMp3,
+        AvVaudio,
+        AvAac,
+        AvG729,
+
+        NpCommon = 0x400,
+        NpService,
+        NpMatching2,
+        NpDrm = 0x500,
+
+        Irda = 0x600,
+    }
+
+    #[repr(u32)]
+    pub enum NetModule {
+        NetCommon = 1,
+        NetAdhoc,
+        NetInet,
+        NetParseUri,
+        NetHttp,
+        NetSsl,
+    }
+
+    #[repr(u32)]
+    pub enum UsbModule {
+        UsbPspCm = 1,
+        UsbAcc,
+        UsbMic,
+        UsbCam,
+        UsbGps,
+    }
+
+    #[repr(u32)]
+    pub enum NetParam {
+        Name,
+        Ssid,
+        Secure,
+        WepKey,
+        IsStaticIp,
+        Ip,
+        NetMask,
+        Route,
+        ManualDns,
+        PrimaryDns,
+        SecondaryDns,
+        ProxyUser,
+        ProxyPass,
+        UseProxy,
+        ProxyServer,
+        ProxyPort,
+        Unknown1,
+        Unknown2,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityNetconfAction {
+        ConnectAP,
+        DisplayStatus,
+        ConnectAdhoc,
+    }
+
+    #[repr(u32)]
+    pub enum UtilitySavedataMode {
+        AutoLoad,
+        AutoSave,
+        Load,
+        Save,
+        ListLoad,
+        ListSave,
+        ListDelete,
+        Delete,
+    }
+
+    #[repr(u32)]
+    pub enum UtilitySavedataFocus {
+        Unknown1,
+        FirstList,
+        LastList,
+        Latest,
+        Oldest,
+        Unknown2,
+        Unknown3,
+        FirstEmpty,
+        LastEmpty,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityGameSharingMode {
+        Single = 1,
+        Multiple,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityGameSharingDataType {
+        File = 1,
+        Memory,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityHtmlViewerInterfaceMode {
+        Full,
+        Limited,
+        None,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityHtmlViewerCookieMode {
+        Disabled = 0,
+        Enabled,
+        Confirm,
+        Default,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityHtmlViewerTextSize {
+        Large,
+        Normal,
+        Small,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityHtmlViewerDisplayMode {
+        Normal,
+        Fit,
+        SmartFit,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityHtmlViewerConnectMode {
+        Last,
+        ManualOnce,
+        ManualAll,
+    }
+
+    #[repr(u32)]
+    pub enum UtilityHtmlViewerDisconnectMode {
+        Enable,
+        Disable,
+        Confirm,
+    }
+
+    #[repr(u32)]
+    pub enum ScePspnetAdhocPtpState {
+        Closed,
+        Listen,
+        SynSent,
+        SynReceived,
+        Established,
+    }
+
+    #[repr(u32)]
+    pub enum AdhocMatchingMode {
+        Host = 1,
+        Client,
+        Ptp,
+    }
+
+    #[repr(u32)]
+    pub enum ApctlState {
+        Disconnected,
+        Scanning,
+        Joining,
+        GettingIp,
+        GotIp,
+        EapAuth,
+        KeyExchange,
+    }
+
+    #[repr(u32)]
+    pub enum ApctlEvent {
+        ConnectRequest,
+        ScanRequest,
+        ScanComplete,
+        Established,
+        GetIp,
+        DisconnectRequest,
+        Error,
+        Info,
+        EapAuth,
+        KeyExchange,
+        Reconnect,
+    }
+
+    #[repr(u32)]
+    pub enum ApctlInfo {
+        ProfileName,
+        Bssid,
+        Ssid,
+        SsidLength,
+        SecurityType,
+        Strength,
+        Channel,
+        PowerSave,
+        Ip,
+        SubnetMask,
+        Gateway,
+        PrimaryDns,
+        SecondaryDns,
+        UseProxy,
+        ProxyUrl,
+        ProxyPort,
+        EapType,
+        StartBrowser,
+        Wifisp,
+    }
+
+    #[repr(u32)]
+    pub enum ApctlInfoSecurityType {
+        None,
+        Wep,
+        Wpa,
+    }
+
+    #[repr(u32)]
+    pub enum HttpMethod {
+        Get,
+        Post,
+        Head,
+    }
+
+    #[repr(u32)]
+    pub enum HttpAuthType {
+        Basic,
+        Digest,
+    }
+}
+
+s_paren! {
+    #[repr(transparent)]
+    pub struct SceUid(pub i32);
+
+    #[repr(transparent)]
+    pub struct SceMpeg(*mut *mut c_void);
+
+    #[repr(transparent)]
+    pub struct SceMpegStream(*mut c_void);
+
+    #[repr(transparent)]
+    pub struct Mp3Handle(pub i32);
+
+    #[repr(transparent)]
+    pub struct RegHandle(u32);
+
+    #[repr(C)]
+    pub struct sockaddr(pub u32);
+
+    #[repr(C)]
+    pub struct in_addr(pub u32);
 }
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-#[repr(u32)]
-pub enum DisplayMode {
-    Lcd = 0,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum DisplayPixelFormat {
-    Psm5650 = 0,
-    Psm5551 = 1,
-    Psm4444 = 2,
-    Psm8888 = 3,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-#[repr(u32)]
-pub enum DisplaySetBufSync {
-    Immediate = 0,
-    NextFrame = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(i32)]
-pub enum AudioOutputFrequency {
-    Khz48 = 48000,
-    Khz44_1 = 44100,
-    Khz32 = 32000,
-    Khz24 = 24000,
-    Khz22_05 = 22050,
-    Khz16 = 16000,
-    Khz12 = 12000,
-    Khz11_025 = 11025,
-    Khz8 = 8000,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(i32)]
-pub enum AudioInputFrequency {
-    Khz44_1 = 44100,
-    Khz22_05 = 22050,
-    Khz11_025 = 11025,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum CtrlMode {
-    Digital = 0,
-    Analog,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(i32)]
-pub enum GeMatrixType {
-    Bone0 = 0,
-    Bone1,
-    Bone2,
-    Bone3,
-    Bone4,
-    Bone5,
-    Bone6,
-    Bone7,
-    World,
-    View,
-    Projection,
-    TexGen,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(i32)]
-pub enum GeListState {
-    Done = 0,
-    Queued,
-    DrawingDone,
-    StallReached,
-    CancelDone,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[repr(u8)]
-#[derive(Copy, Clone)]
-pub enum GeCommand {
-    Nop = 0,
-    Vaddr = 0x1,
-    Iaddr = 0x2,
-    Prim = 0x4,
-    Bezier = 0x5,
-    Spline = 0x6,
-    BoundingBox = 0x7,
-    Jump = 0x8,
-    BJump = 0x9,
-    Call = 0xa,
-    Ret = 0xb,
-    End = 0xc,
-    Signal = 0xe,
-    Finish = 0xf,
-    Base = 0x10,
-    VertexType = 0x12,
-    OffsetAddr = 0x13,
-    Origin = 0x14,
-    Region1 = 0x15,
-    Region2 = 0x16,
-    LightingEnable = 0x17,
-    LightEnable0 = 0x18,
-    LightEnable1 = 0x19,
-    LightEnable2 = 0x1a,
-    LightEnable3 = 0x1b,
-    DepthClampEnable = 0x1c,
-    CullFaceEnable = 0x1d,
-    TextureMapEnable = 0x1e,
-    FogEnable = 0x1f,
-    DitherEnable = 0x20,
-    AlphaBlendEnable = 0x21,
-    AlphaTestEnable = 0x22,
-    ZTestEnable = 0x23,
-    StencilTestEnable = 0x24,
-    AntiAliasEnable = 0x25,
-    PatchCullEnable = 0x26,
-    ColorTestEnable = 0x27,
-    LogicOpEnable = 0x28,
-    BoneMatrixNumber = 0x2a,
-    BoneMatrixData = 0x2b,
-    MorphWeight0 = 0x2c,
-    MorphWeight1 = 0x2d,
-    MorphWeight2 = 0x2e,
-    MorphWeight3 = 0x2f,
-    MorphWeight4 = 0x30,
-    MorphWeight5 = 0x31,
-    MorphWeight6 = 0x32,
-    MorphWeight7 = 0x33,
-    PatchDivision = 0x36,
-    PatchPrimitive = 0x37,
-    PatchFacing = 0x38,
-    WorldMatrixNumber = 0x3a,
-    WorldMatrixData = 0x3b,
-    ViewMatrixNumber = 0x3c,
-    ViewMatrixData = 0x3d,
-    ProjMatrixNumber = 0x3e,
-    ProjMatrixData = 0x3f,
-    TGenMatrixNumber = 0x40,
-    TGenMatrixData = 0x41,
-    ViewportXScale = 0x42,
-    ViewportYScale = 0x43,
-    ViewportZScale = 0x44,
-    ViewportXCenter = 0x45,
-    ViewportYCenter = 0x46,
-    ViewportZCenter = 0x47,
-    TexScaleU = 0x48,
-    TexScaleV = 0x49,
-    TexOffsetU = 0x4a,
-    TexOffsetV = 0x4b,
-    OffsetX = 0x4c,
-    OffsetY = 0x4d,
-    ShadeMode = 0x50,
-    ReverseNormal = 0x51,
-    MaterialUpdate = 0x53,
-    MaterialEmissive = 0x54,
-    MaterialAmbient = 0x55,
-    MaterialDiffuse = 0x56,
-    MaterialSpecular = 0x57,
-    MaterialAlpha = 0x58,
-    MaterialSpecularCoef = 0x5b,
-    AmbientColor = 0x5c,
-    AmbientAlpha = 0x5d,
-    LightMode = 0x5e,
-    LightType0 = 0x5f,
-    LightType1 = 0x60,
-    LightType2 = 0x61,
-    LightType3 = 0x62,
-    Light0X = 0x63,
-    Light0Y,
-    Light0Z,
-    Light1X,
-    Light1Y,
-    Light1Z,
-    Light2X,
-    Light2Y,
-    Light2Z,
-    Light3X,
-    Light3Y,
-    Light3Z,
-    Light0DirectionX = 0x6f,
-    Light0DirectionY,
-    Light0DirectionZ,
-    Light1DirectionX,
-    Light1DirectionY,
-    Light1DirectionZ,
-    Light2DirectionX,
-    Light2DirectionY,
-    Light2DirectionZ,
-    Light3DirectionX,
-    Light3DirectionY,
-    Light3DirectionZ,
-    Light0ConstantAtten = 0x7b,
-    Light0LinearAtten,
-    Light0QuadtraticAtten,
-    Light1ConstantAtten,
-    Light1LinearAtten,
-    Light1QuadtraticAtten,
-    Light2ConstantAtten,
-    Light2LinearAtten,
-    Light2QuadtraticAtten,
-    Light3ConstantAtten,
-    Light3LinearAtten,
-    Light3QuadtraticAtten,
-    Light0ExponentAtten = 0x87,
-    Light1ExponentAtten,
-    Light2ExponentAtten,
-    Light3ExponentAtten,
-    Light0CutoffAtten = 0x8b,
-    Light1CutoffAtten,
-    Light2CutoffAtten,
-    Light3CutoffAtten,
-    Light0Ambient = 0x8f,
-    Light0Diffuse,
-    Light0Specular,
-    Light1Ambient,
-    Light1Diffuse,
-    Light1Specular,
-    Light2Ambient,
-    Light2Diffuse,
-    Light2Specular,
-    Light3Ambient,
-    Light3Diffuse,
-    Light3Specular,
-    Cull = 0x9b,
-    FrameBufPtr = 0x9c,
-    FrameBufWidth = 0x9d,
-    ZBufPtr = 0x9e,
-    ZBufWidth = 0x9f,
-    TexAddr0 = 0xa0,
-    TexAddr1,
-    TexAddr2,
-    TexAddr3,
-    TexAddr4,
-    TexAddr5,
-    TexAddr6,
-    TexAddr7,
-    TexBufWidth0 = 0xa8,
-    TexBufWidth1,
-    TexBufWidth2,
-    TexBufWidth3,
-    TexBufWidth4,
-    TexBufWidth5,
-    TexBufWidth6,
-    TexBufWidth7,
-    ClutAddr = 0xb0,
-    ClutAddrUpper = 0xb1,
-    TransferSrc,
-    TransferSrcW,
-    TransferDst,
-    TransferDstW,
-    TexSize0 = 0xb8,
-    TexSize1,
-    TexSize2,
-    TexSize3,
-    TexSize4,
-    TexSize5,
-    TexSize6,
-    TexSize7,
-    TexMapMode = 0xc0,
-    TexShadeLs = 0xc1,
-    TexMode = 0xc2,
-    TexFormat = 0xc3,
-    LoadClut = 0xc4,
-    ClutFormat = 0xc5,
-    TexFilter = 0xc6,
-    TexWrap = 0xc7,
-    TexLevel = 0xc8,
-    TexFunc = 0xc9,
-    TexEnvColor = 0xca,
-    TexFlush = 0xcb,
-    TexSync = 0xcc,
-    Fog1 = 0xcd,
-    Fog2 = 0xce,
-    FogColor = 0xcf,
-    TexLodSlope = 0xd0,
-    FramebufPixFormat = 0xd2,
-    ClearMode = 0xd3,
-    Scissor1 = 0xd4,
-    Scissor2 = 0xd5,
-    MinZ = 0xd6,
-    MaxZ = 0xd7,
-    ColorTest = 0xd8,
-    ColorRef = 0xd9,
-    ColorTestmask = 0xda,
-    AlphaTest = 0xdb,
-    StencilTest = 0xdc,
-    StencilOp = 0xdd,
-    ZTest = 0xde,
-    BlendMode = 0xdf,
-    BlendFixedA = 0xe0,
-    BlendFixedB = 0xe1,
-    Dith0 = 0xe2,
-    Dith1,
-    Dith2,
-    Dith3,
-    LogicOp = 0xe6,
-    ZWriteDisable = 0xe7,
-    MaskRgb = 0xe8,
-    MaskAlpha = 0xe9,
-    TransferStart = 0xea,
-    TransferSrcPos = 0xeb,
-    TransferDstPos = 0xec,
-    TransferSize = 0xee,
-    Vscx = 0xf0,
-    Vscy = 0xf1,
-    Vscz = 0xf2,
-    Vtcs = 0xf3,
-    Vtct = 0xf4,
-    Vtcq = 0xf5,
-    Vcv = 0xf6,
-    Vap = 0xf7,
-    Vfc = 0xf8,
-    Vscv = 0xf9,
-
-    Unknown03 = 0x03,
-    Unknown0D = 0x0d,
-    Unknown11 = 0x11,
-    Unknown29 = 0x29,
-    Unknown34 = 0x34,
-    Unknown35 = 0x35,
-    Unknown39 = 0x39,
-    Unknown4E = 0x4e,
-    Unknown4F = 0x4f,
-    Unknown52 = 0x52,
-    Unknown59 = 0x59,
-    Unknown5A = 0x5a,
-    UnknownB6 = 0xb6,
-    UnknownB7 = 0xb7,
-    UnknownD1 = 0xd1,
-    UnknownED = 0xed,
-    UnknownEF = 0xef,
-    UnknownFA = 0xfa,
-    UnknownFB = 0xfb,
-    UnknownFC = 0xfc,
-    UnknownFD = 0xfd,
-    UnknownFE = 0xfe,
-    NopFF = 0xff,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(i32)]
-pub enum SceSysMemPartitionId {
-    SceKernelUnknownPartition = 0,
-    SceKernelPrimaryKernelPartition = 1,
-    SceKernelPrimaryUserPartition = 2,
-    SceKernelOtherKernelPartition1 = 3,
-    SceKernelOtherKernelPartition2 = 4,
-    SceKernelVshellPARTITION = 5,
-    SceKernelScUserPartition = 6,
-    SceKernelMeUserPartition = 7,
-    SceKernelExtendedScKernelPartition = 8,
-    SceKernelExtendedSc2KernelPartition = 9,
-    SceKernelExtendedMeKernelPartition = 10,
-    SceKernelVshellKernelPartition = 11,
-    SceKernelExtendedKernelPartition = 12,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(i32)]
-pub enum SceSysMemBlockTypes {
-    Low = 0,
-    High,
-    Addr,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum Interrupt {
-    Gpio = 4,
-    Ata = 5,
-    Umd = 6,
-    Mscm0 = 7,
-    Wlan = 8,
-    Audio = 10,
-    I2c = 12,
-    Sircs = 14,
-    Systimer0 = 15,
-    Systimer1 = 16,
-    Systimer2 = 17,
-    Systimer3 = 18,
-    Thread0 = 19,
-    Nand = 20,
-    Dmacplus = 21,
-    Dma0 = 22,
-    Dma1 = 23,
-    Memlmd = 24,
-    Ge = 25,
-    Vblank = 30,
-    Mecodec = 31,
-    Hpremote = 36,
-    Mscm1 = 60,
-    Mscm2 = 61,
-    Thread1 = 65,
-    Interrupt = 66,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum SubInterrupt {
-    Gpio = Interrupt::Gpio as u32,
-    Ata = Interrupt::Ata as u32,
-    Umd = Interrupt::Umd as u32,
-    Dmacplus = Interrupt::Dmacplus as u32,
-    Ge = Interrupt::Ge as u32,
-    Display = Interrupt::Vblank as u32,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum SceKernelIdListType {
-    Thread = 1,
-    Semaphore = 2,
-    EventFlag = 3,
-    Mbox = 4,
-    Vpl = 5,
-    Fpl = 6,
-    Mpipe = 7,
-    Callback = 8,
-    ThreadEventHandler = 9,
-    Alarm = 10,
-    VTimer = 11,
-    SleepThread = 64,
-    DelayThread = 65,
-    SuspendThread = 66,
-    DormantThread = 67,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(i32)]
-pub enum UsbCamResolution {
-    Px160_120 = 0,
-    Px176_144 = 1,
-    Px320_240 = 2,
-    Px352_288 = 3,
-    Px640_480 = 4,
-    Px1024_768 = 5,
-    Px1280_960 = 6,
-    Px480_272 = 7,
-    Px360_272 = 8,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(i32)]
-pub enum UsbCamResolutionEx {
-    Px160_120 = 0,
-    Px176_144 = 1,
-    Px320_240 = 2,
-    Px352_288 = 3,
-    Px360_272 = 4,
-    Px480_272 = 5,
-    Px640_480 = 6,
-    Px1024_768 = 7,
-    Px1280_960 = 8,
-}
-
-#[repr(i32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UsbCamDelay {
-    NoDelay = 0,
-    Delay10Sec = 1,
-    Delay20Sec = 2,
-    Delay30Sec = 3,
-}
-
-#[repr(i32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UsbCamFrameRate {
-    Fps3_75 = 0,
-    Fps5 = 1,
-    Fps7_5 = 2,
-    Fps10 = 3,
-    Fps15 = 4,
-    Fps20 = 5,
-    Fps30 = 6,
-    Fps60 = 7,
-}
-
-#[repr(i32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UsbCamWb {
-    Auto = 0,
-    Daylight = 1,
-    Fluorescent = 2,
-    Incadescent = 3,
-}
-
-#[repr(i32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UsbCamEffectMode {
-    Normal = 0,
-    Negative = 1,
-    Blackwhite = 2,
-    Sepia = 3,
-    Blue = 4,
-    Red = 5,
-    Green = 6,
-}
-
-#[repr(i32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UsbCamEvLevel {
-    Pos2_0 = 0,
-    Pos1_7 = 1,
-    Pos1_5 = 2,
-    Pos1_3 = 3,
-    Pos1_0 = 4,
-    Pos0_7 = 5,
-    Pos0_5 = 6,
-    Pos0_3 = 7,
-    Zero = 8,
-    Neg0_3,
-    Neg0_5,
-    Neg0_7,
-    Neg1_0,
-    Neg1_3,
-    Neg1_5,
-    Neg1_7,
-    Neg2_0,
-}
-
-#[repr(i32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum RtcCheckValidError {
-    InvalidYear = -1,
-    InvalidMonth = -2,
-    InvalidDay = -3,
-    InvalidHour = -4,
-    InvalidMinutes = -5,
-    InvalidSeconds = -6,
-    InvalidMicroseconds = -7,
-}
-
-#[derive(Copy, Clone)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[repr(u32)]
-pub enum PowerTick {
-    All = 0,
-    Suspend = 1,
-    Display = 6,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum IoAssignPerms {
-    RdWr = 0,
-    RdOnly = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum IoWhence {
-    Set = 0,
-    Cur = 1,
-    End = 2,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UmdType {
-    Game = 0x10,
-    Video = 0x20,
-    Audio = 0x40,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum GuPrimitive {
-    Points = 0,
-    Lines = 1,
-    LineStrip = 2,
-    Triangles = 3,
-    TriangleStrip = 4,
-    TriangleFan = 5,
-    Sprites = 6,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum PatchPrimitive {
-    Points = 0,
-    LineStrip = 2,
-    TriangleStrip = 4,
-}
-
-#[derive(Clone, Copy)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[repr(u32)]
-pub enum GuState {
-    AlphaTest = 0,
-    DepthTest = 1,
-    ScissorTest = 2,
-    StencilTest = 3,
-    Blend = 4,
-    CullFace = 5,
-    Dither = 6,
-    Fog = 7,
-    ClipPlanes = 8,
-    Texture2D = 9,
-    Lighting = 10,
-    Light0 = 11,
-    Light1 = 12,
-    Light2 = 13,
-    Light3 = 14,
-    LineSmooth = 15,
-    PatchCullFace = 16,
-    ColorTest = 17,
-    ColorLogicOp = 18,
-    FaceNormalReverse = 19,
-    PatchFace = 20,
-    Fragment2X = 21,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum MatrixMode {
-    Projection = 0,
-    View = 1,
-    Model = 2,
-    Texture = 3,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-#[repr(u32)]
-pub enum TexturePixelFormat {
-    Psm5650 = 0,
-    Psm5551 = 1,
-    Psm4444 = 2,
-    Psm8888 = 3,
-    PsmT4 = 4,
-    PsmT8 = 5,
-    PsmT16 = 6,
-    PsmT32 = 7,
-    PsmDxt1 = 8,
-    PsmDxt3 = 9,
-    PsmDxt5 = 10,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum SplineMode {
-    FillFill = 0,
-    OpenFill = 1,
-    FillOpen = 2,
-    OpenOpen = 3,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum ShadingModel {
-    Flat = 0,
-    Smooth = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum LogicalOperation {
-    Clear = 0,
-    And = 1,
-    AndReverse = 2,
-    Copy = 3,
-    AndInverted = 4,
-    Noop = 5,
-    Xor = 6,
-    Or = 7,
-    Nor = 8,
-    Equiv = 9,
-    Inverted = 10,
-    OrReverse = 11,
-    CopyInverted = 12,
-    OrInverted = 13,
-    Nand = 14,
-    Set = 15,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum TextureFilter {
-    Nearest = 0,
-    Linear = 1,
-    NearestMipmapNearest = 4,
-    LinearMipmapNearest = 5,
-    NearestMipmapLinear = 6,
-    LinearMipmapLinear = 7,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-#[repr(u32)]
-pub enum TextureMapMode {
-    TextureCoords = 0,
-    TextureMatrix = 1,
-    EnvironmentMap = 2,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum TextureLevelMode {
-    Auto = 0,
-    Const = 1,
-    Slope = 2,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-#[repr(u32)]
-pub enum TextureProjectionMapMode {
-    Position = 0,
-    Uv = 1,
-    NormalizedNormal = 2,
-    Normal = 3,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum GuTexWrapMode {
-    Repeat = 0,
-    Clamp = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum FrontFaceDirection {
-    Clockwise = 0,
-    CounterClockwise = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum AlphaFunc {
-    Never = 0,
-    Always,
-    Equal,
-    NotEqual,
-    Less,
-    LessOrEqual,
-    Greater,
-    GreaterOrEqual,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum StencilFunc {
-    Never = 0,
-    Always,
-    Equal,
-    NotEqual,
-    Less,
-    LessOrEqual,
-    Greater,
-    GreaterOrEqual,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum ColorFunc {
-    Never = 0,
-    Always,
-    Equal,
-    NotEqual,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum DepthFunc {
-    Never = 0,
-    Always,
-    Equal,
-    NotEqual,
-    Less,
-    LessOrEqual,
-    Greater,
-    GreaterOrEqual,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-#[repr(u32)]
-pub enum TextureEffect {
-    Modulate = 0,
-    Decal = 1,
-    Blend = 2,
-    Replace = 3,
-    Add = 4,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-#[repr(u32)]
-pub enum TextureColorComponent {
-    Rgb = 0,
-    Rgba = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-#[repr(u32)]
-pub enum MipmapLevel {
-    None = 0,
-    Level1,
-    Level2,
-    Level3,
-    Level4,
-    Level5,
-    Level6,
-    Level7,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum BlendOp {
-    Add = 0,
-    Subtract = 1,
-    ReverseSubtract = 2,
-    Min = 3,
-    Max = 4,
-    Abs = 5,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum BlendSrc {
-    SrcColor = 0,
-    OneMinusSrcColor = 1,
-    SrcAlpha = 2,
-    OneMinusSrcAlpha = 3,
-    Fix = 10,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum BlendDst {
-    DstColor = 0,
-    OneMinusDstColor = 1,
-    DstAlpha = 4,
-    OneMinusDstAlpha = 5,
-    Fix = 10,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum StencilOperation {
-    Keep = 0,
-    Zero = 1,
-    Replace = 2,
-    Invert = 3,
-    Incr = 4,
-    Decr = 5,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum LightMode {
-    SingleColor = 0,
-    SeparateSpecularColor = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum LightType {
-    Directional = 0,
-    Pointlight = 1,
-    Spotlight = 2,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[repr(u32)]
-#[derive(Copy, Clone)]
-pub enum GuContextType {
-    Direct = 0,
-    Call = 1,
-    Send = 2,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum GuQueueMode {
-    Tail = 0,
-    Head = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum GuSyncMode {
-    Finish = 0,
-    Signal = 1,
-    Done = 2,
-    List = 3,
-    Send = 4,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum GuSyncBehavior {
-    Wait = 0,
-    NoWait = 1,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum GuCallbackId {
-    Signal = 1,
-    Finish = 4,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum SignalBehavior {
-    Suspend = 1,
-    Continue = 2,
-}
-
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-#[repr(u32)]
-pub enum ClutPixelFormat {
-    Psm5650 = 0,
-    Psm5551 = 1,
-    Psm4444 = 2,
-    Psm8888 = 3,
-}
-
-#[repr(C)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum KeyType {
-    Directory = 1,
-    Integer = 2,
-    String = 3,
-    Bytes = 4,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityMsgDialogMode {
-    Error,
-    Text,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityMsgDialogPressed {
-    Unknown1,
-    Yes,
-    No,
-    Back,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityDialogButtonAccept {
-    Circle,
-    Cross,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SceUtilityOskInputLanguage {
-    Default,
-    Japanese,
-    English,
-    French,
-    Spanish,
-    German,
-    Italian,
-    Dutch,
-    Portugese,
-    Russian,
-    Korean,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SceUtilityOskInputType {
-    All,
-    LatinDigit,
-    LatinSymbol,
-    LatinLowercase = 4,
-    LatinUppercase = 8,
-    JapaneseDigit = 0x100,
-    JapaneseSymbol = 0x200,
-    JapaneseLowercase = 0x400,
-    JapaneseUppercase = 0x800,
-    JapaneseHiragana = 0x1000,
-    JapaneseHalfWidthKatakana = 0x2000,
-    JapaneseKatakana = 0x4000,
-    JapaneseKanji = 0x8000,
-    RussianLowercase = 0x10000,
-    RussianUppercase = 0x20000,
-    Korean = 0x40000,
-    Url = 0x80000,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SceUtilityOskState {
-    None,
-    Initializing,
-    Initialized,
-    Visible,
-    Quit,
-    Finished,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SceUtilityOskResult {
-    Unchanged,
-    Cancelled,
-    Changed,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SystemParamLanguage {
-    Japanese,
-    English,
-    French,
-    Spanish,
-    German,
-    Italian,
-    Dutch,
-    Portugese,
-    Russian,
-    Korean,
-    ChineseTraditional,
-    ChineseSimplified,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SystemParamId {
-    StringNickname = 1,
-    AdhocChannel,
-    WlanPowerSave,
-    DateFormat,
-    TimeFormat,
-    Timezone,
-    DaylightSavings,
-    Language,
-    Unknown,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SystemParamAdhocChannel {
-    ChannelAutomatic = 0,
-    Channel1 = 1,
-    Channel6 = 6,
-    Channel11 = 11,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SystemParamWlanPowerSaveState {
-    Off,
-    On,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SystemParamDateFormat {
-    YYYYMMDD,
-    MMDDYYYY,
-    DDMMYYYY,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SystemParamTimeFormat {
-    Hour24,
-    Hour12,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum SystemParamDaylightSavings {
-    Std,
-    Dst,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum AvModule {
-    AvCodec,
-    SasCore,
-    Atrac3Plus,
-    MpegBase,
-    Mp3,
-    Vaudio,
-    Aac,
-    G729,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum Module {
-    NetCommon = 0x100,
-    NetAdhoc,
-    NetInet,
-    NetParseUri,
-    NetHttp,
-    NetSsl,
-
-    UsbPspCm = 0x200,
-    UsbMic,
-    UsbCam,
-    UsbGps,
-
-    AvCodec = 0x300,
-    AvSascore,
-    AvAtrac3Plus,
-    AvMpegBase,
-    AvMp3,
-    AvVaudio,
-    AvAac,
-    AvG729,
-
-    NpCommon = 0x400,
-    NpService,
-    NpMatching2,
-    NpDrm = 0x500,
-
-    Irda = 0x600,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum NetModule {
-    NetCommon = 1,
-    NetAdhoc,
-    NetInet,
-    NetParseUri,
-    NetHttp,
-    NetSsl,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UsbModule {
-    UsbPspCm = 1,
-    UsbAcc,
-    UsbMic,
-    UsbCam,
-    UsbGps,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum NetParam {
-    Name,
-    Ssid,
-    Secure,
-    WepKey,
-    IsStaticIp,
-    Ip,
-    NetMask,
-    Route,
-    ManualDns,
-    PrimaryDns,
-    SecondaryDns,
-    ProxyUser,
-    ProxyPass,
-    UseProxy,
-    ProxyServer,
-    ProxyPort,
-    Unknown1,
-    Unknown2,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UtilityNetconfAction {
-    ConnectAP,
-    DisplayStatus,
-    ConnectAdhoc,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UtilitySavedataMode {
-    AutoLoad,
-    AutoSave,
-    Load,
-    Save,
-    ListLoad,
-    ListSave,
-    ListDelete,
-    Delete,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UtilitySavedataFocus {
-    Unknown1,
-    FirstList,
-    LastList,
-    Latest,
-    Oldest,
-    Unknown2,
-    Unknown3,
-    FirstEmpty,
-    LastEmpty,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UtilityGameSharingMode {
-    Single = 1,
-    Multiple,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum UtilityGameSharingDataType {
-    File = 1,
-    Memory,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityHtmlViewerInterfaceMode {
-    Full,
-    Limited,
-    None,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityHtmlViewerCookieMode {
-    Disabled = 0,
-    Enabled,
-    Confirm,
-    Default,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityHtmlViewerTextSize {
-    Large,
-    Normal,
-    Small,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityHtmlViewerDisplayMode {
-    Normal,
-    Fit,
-    SmartFit,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityHtmlViewerConnectMode {
-    Last,
-    ManualOnce,
-    ManualAll,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum UtilityHtmlViewerDisconnectMode {
-    Enable,
-    Disable,
-    Confirm,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum ScePspnetAdhocPtpState {
-    Closed,
-    Listen,
-    SynSent,
-    SynReceived,
-    Established,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum AdhocMatchingMode {
-    Host = 1,
-    Client,
-    Ptp,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum ApctlState {
-    Disconnected,
-    Scanning,
-    Joining,
-    GettingIp,
-    GotIp,
-    EapAuth,
-    KeyExchange,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum ApctlEvent {
-    ConnectRequest,
-    ScanRequest,
-    ScanComplete,
-    Established,
-    GetIp,
-    DisconnectRequest,
-    Error,
-    Info,
-    EapAuth,
-    KeyExchange,
-    Reconnect,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum ApctlInfo {
-    ProfileName,
-    Bssid,
-    Ssid,
-    SsidLength,
-    SecurityType,
-    Strength,
-    Channel,
-    PowerSave,
-    Ip,
-    SubnetMask,
-    Gateway,
-    PrimaryDns,
-    SecondaryDns,
-    UseProxy,
-    ProxyUrl,
-    ProxyPort,
-    EapType,
-    StartBrowser,
-    Wifisp,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Clone, Copy)]
-pub enum ApctlInfoSecurityType {
-    None,
-    Wep,
-    Wpa,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum HttpMethod {
-    Get,
-    Post,
-    Head,
-}
-
-#[repr(u32)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub enum HttpAuthType {
-    Basic,
-    Digest,
-}
-
-#[repr(transparent)]
-#[cfg_attr(feature = "extra_traits", derive(Debug, Eq, PartialEq, Hash))]
-#[derive(Copy, Clone)]
-pub struct SceUid(pub i32);
-
-#[repr(transparent)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-#[derive(Copy, Clone)]
-pub struct SceMpeg(*mut *mut c_void);
-
-#[repr(transparent)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-#[derive(Copy, Clone)]
-pub struct SceMpegStream(*mut c_void);
-
-#[repr(transparent)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-#[derive(Copy, Clone)]
-pub struct Mp3Handle(pub i32);
-
-#[repr(transparent)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-#[derive(Copy, Clone)]
-pub struct RegHandle(u32);
-
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct sockaddr(pub u32);
-
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct in_addr(pub u32);
 
 s! {
     pub struct AudioInputParams {
@@ -1669,9 +1463,9 @@ s! {
     }
 
     pub struct GeCallbackData {
-        pub signal_func: Option<extern "C" fn(id: i32, arg: *mut c_void)>,
+        pub signal_func: ::Option<extern "C" fn(id: i32, arg: *mut c_void)>,
         pub signal_arg: *mut c_void,
-        pub finish_func: Option<extern "C" fn(id: i32, arg: *mut c_void)>,
+        pub finish_func: ::Option<extern "C" fn(id: i32, arg: *mut c_void)>,
         pub finish_arg: *mut c_void,
     }
 
@@ -2996,7 +2790,7 @@ extern "C" {
     pub fn sceCtrlPeekLatch(latch_data: *mut SceCtrlLatch) -> i32;
     pub fn sceCtrlReadLatch(latch_data: *mut SceCtrlLatch) -> i32;
     pub fn sceCtrlSetIdleCancelThreshold(idlereset: i32, idleback: i32)
-        -> i32;
+    -> i32;
     pub fn sceCtrlGetIdleCancelThreshold(
         idlereset: *mut i32,
         idleback: *mut i32,
@@ -3365,7 +3159,7 @@ extern "C" {
         timeout: *mut u32,
     ) -> i32;
     pub fn sceKernelPollMbx(mbx_id: SceUid, pmessage: *mut *mut c_void)
-        -> i32;
+    -> i32;
     pub fn sceKernelCancelReceiveMbx(mbx_id: SceUid, num: *mut i32) -> i32;
     pub fn sceKernelReferMbxStatus(
         mbx_id: SceUid,
@@ -3523,7 +3317,7 @@ extern "C" {
         timeout: *mut u32,
     ) -> i32;
     pub fn sceKernelTryAllocateFpl(uid: SceUid, data: *mut *mut c_void)
-        -> i32;
+    -> i32;
     pub fn sceKernelFreeFpl(uid: SceUid, data: *mut c_void) -> i32;
     pub fn sceKernelCancelFpl(uid: SceUid, pnum: *mut i32) -> i32;
     pub fn sceKernelReferFplStatus(
@@ -3777,7 +3571,7 @@ extern "C" {
     ) -> i32;
     pub fn sceRtcSetTime_t(date: *mut ScePspDateTime, time: i64) -> i32;
     pub fn sceRtcGetTime_t(date: *const ScePspDateTime, time: *mut i64)
-        -> i32;
+    -> i32;
     pub fn sceRtcSetDosTime(date: *mut ScePspDateTime, dos_time: u32) -> i32;
     pub fn sceRtcGetDosTime(date: *mut ScePspDateTime, dos_time: u32) -> i32;
     pub fn sceRtcSetWin32FileTime(
@@ -3835,7 +3629,7 @@ extern "C" {
     pub fn sceIoLseekAsync(fd: SceUid, offset: i64, whence: IoWhence) -> i32;
     pub fn sceIoLseek32(fd: SceUid, offset: i32, whence: IoWhence) -> i32;
     pub fn sceIoLseek32Async(fd: SceUid, offset: i32, whence: IoWhence)
-        -> i32;
+    -> i32;
     pub fn sceIoRemove(file: *const u8) -> i32;
     pub fn sceIoMkdir(dir: *const u8, mode: IoPermissions) -> i32;
     pub fn sceIoRmdir(path: *const u8) -> i32;
@@ -4372,7 +4166,7 @@ extern "C" {
     ) -> i32;
     pub fn sceRegGetKeysNum(dir_handle: RegHandle, num: *mut i32) -> i32;
     pub fn sceRegGetKeys(dir_handle: RegHandle, buf: *mut u8, num: i32)
-        -> i32;
+    -> i32;
     pub fn sceRegCreateKey(
         dir_handle: RegHandle,
         name: *const u8,
@@ -4514,7 +4308,7 @@ extern "C" {
     ) -> i32;
     pub fn sceNetAdhocctlDelHandler(id: i32) -> i32;
     pub fn sceNetAdhocctlGetNameByAddr(mac: *mut u8, nickname: *mut u8)
-        -> i32;
+    -> i32;
     pub fn sceNetAdhocctlGetAddrByName(
         nickname: *mut u8,
         length: *mut i32,
@@ -4685,7 +4479,7 @@ extern "C" {
     ) -> i32;
     pub fn sceNetAdhocMatchingGetPoolMaxAlloc() -> i32;
     pub fn sceNetAdhocMatchingGetPoolStat(poolstat: *mut AdhocPoolStat)
-        -> i32;
+    -> i32;
 }
 
 extern "C" {
@@ -4824,7 +4618,7 @@ extern "C" {
         content_length: *mut u64,
     ) -> i32;
     pub fn sceHttpGetStatusCode(request_id: i32, status_code: *mut i32)
-        -> i32;
+    -> i32;
     pub fn sceHttpSetResolveTimeOut(id: i32, timeout: u32) -> i32;
     pub fn sceHttpSetResolveRetry(id: i32, count: i32) -> i32;
     pub fn sceHttpSetConnectTimeOut(id: i32, timeout: u32) -> i32;
