@@ -1056,6 +1056,7 @@ pub const HW_MAXID: ::c_int = 13;
 #[deprecated(since = "0.2.54", note = "Removed in FreeBSD 11")]
 pub const USER_MAXID: ::c_int = 21;
 #[doc(hidden)]
+#[deprecated(since = "0.2.74", note = "Removed in FreeBSD 13")]
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
 pub const MSG_NOTIFICATION: ::c_int = 0x00002000;
