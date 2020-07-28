@@ -529,6 +529,8 @@ extern "C" {
         category: ::c_int,
         locale: *const wchar_t,
     ) -> *mut wchar_t;
+    #[link_name = "_aligned_malloc"]
+    pub fn aligned_malloc(size: size_t, alignment: size_t) -> *mut c_void;
 }
 
 extern "system" {

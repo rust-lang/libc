@@ -1042,6 +1042,7 @@ pub const SHM_ANON: *mut ::c_char = 1 as *mut ::c_char;
 // The *_MAXID constants never should've been used outside of the
 // FreeBSD base system.
 #[doc(hidden)]
+#[deprecated(since = "0.2.74", note = "Removed in FreeBSD 13")]
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
 pub const MSG_NOTIFICATION: ::c_int = 0x00002000;

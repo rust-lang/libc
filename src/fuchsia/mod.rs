@@ -3250,6 +3250,61 @@ f! {
         dev |= (minor & 0xffffff00) << 12;
         dev
     }
+
+    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
+        cmsg.offset(1) as *mut c_uchar
+    }
+
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr)
+        -> *mut cmsghdr
+    {
+        if ((*cmsg).cmsg_len as ::size_t) < ::mem::size_of::<cmsghdr>() {
+            0 as *mut cmsghdr
+        } else if __CMSG_NEXT(cmsg).add(::mem::size_of::<cmsghdr>())
+            >= __MHDR_END(mhdr) {
+            0 as *mut cmsghdr
+        } else {
+            __CMSG_NEXT(cmsg).cast()
+        }
+    }
+
+    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
+        if (*mhdr).msg_controllen as ::size_t >= ::mem::size_of::<cmsghdr>() {
+            (*mhdr).msg_control.cast()
+        } else {
+            0 as *mut cmsghdr
+        }
+    }
+
+    pub fn CMSG_ALIGN(len: ::size_t) -> ::size_t {
+        (len + ::mem::size_of::<::size_t>() - 1)
+            & !(::mem::size_of::<::size_t>() - 1)
+    }
+
+    pub fn CMSG_SPACE(len: ::c_uint) -> ::c_uint {
+        (CMSG_ALIGN(len as ::size_t) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
+            as ::c_uint
+    }
+
+    pub fn CMSG_LEN(len: ::c_uint) -> ::c_uint {
+        (CMSG_ALIGN(::mem::size_of::<cmsghdr>()) + len as ::size_t) as ::c_uint
+    }
+}
+
+fn __CMSG_LEN(cmsg: *const cmsghdr) -> ::ssize_t {
+    ((unsafe { (*cmsg).cmsg_len as ::size_t } + ::mem::size_of::<::c_long>()
+        - 1)
+        & !(::mem::size_of::<::c_long>() - 1)) as ::ssize_t
+}
+
+fn __CMSG_NEXT(cmsg: *const cmsghdr) -> *mut c_uchar {
+    (unsafe { cmsg.offset(__CMSG_LEN(cmsg)) }) as *mut c_uchar
+}
+
+fn __MHDR_END(mhdr: *const msghdr) -> *mut c_uchar {
+    unsafe {
+        (*mhdr).msg_control.offset((*mhdr).msg_controllen as isize)
+    }.cast()
 }
 
 // EXTERN_FN

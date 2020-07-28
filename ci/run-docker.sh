@@ -62,7 +62,6 @@ build_switch() {
         kvm=""
     fi
 
-    cargo +nightly install cargo-xbuild
     cp "$(which rustup)" "$(rustc --print sysroot)/bin"
 
     docker run \
@@ -82,7 +81,7 @@ build_switch() {
       libc \
       sh -c "HOME=/tmp RUSTUP_HOME=/tmp PATH=\$PATH:/rust/bin rustup default nightly \
         && rustup component add rust-src --target ci/switch.json \
-        && cargo xbuild --target ci/switch.json"
+        && cargo build -Z build-std=core,alloc --target ci/switch.json"
 }
 
 if [ -z "${1}" ]; then
