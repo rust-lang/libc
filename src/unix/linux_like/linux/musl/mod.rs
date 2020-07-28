@@ -184,15 +184,15 @@ s_no_extra_traits! {
         pub ut_host: [::c_char; 256],
         pub ut_exit: __exit_status,
 
-        //#[cfg(target_endian = "little")]
+        #[cfg(target_endian = "little")]
         pub ut_session: ::c_long,
-        //#[cfg(target_endian = "little")]
-        //__ut_pad2: ::c_long,
+        #[cfg(target_endian = "little")]
+        __ut_pad2: ::c_long,
 
-        //#[cfg(not(target_endian = "little"))]
-        //__ut_pad2: ::c_int,
-        //#[cfg(not(target_endian = "little"))]
-        //pub ut_session: ::c_int,
+        #[cfg(not(target_endian = "little"))]
+        __ut_pad2: ::c_int,
+        #[cfg(not(target_endian = "little"))]
+        pub ut_session: ::c_int,
 
         pub ut_tv: ::timeval,
         pub ut_addr_v6: [::c_uint; 4],
@@ -282,7 +282,7 @@ cfg_if! {
                         .all(|(a,b)| a == b)
                     && self.ut_exit == other.ut_exit
                     && self.ut_session == other.ut_session
-                    //&& self.__ut_pad2 == other.__ut_pad2
+                    && self.__ut_pad2 == other.__ut_pad2
                     && self.ut_tv == other.ut_tv
                     && self.ut_addr_v6 == other.ut_addr_v6
                     && self.__unused == other.__unused
@@ -295,7 +295,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_type", &self.ut_type)
-                    //.field("__ut_pad1", &self.__ut_pad1)
+                    .field("__ut_pad1", &self.__ut_pad1)
                     .field("ut_pid", &self.ut_pid)
                     .field("ut_line", &self.ut_line)
                     .field("ut_id", &self.ut_id)
@@ -303,7 +303,7 @@ cfg_if! {
                     //FIXME: .field("ut_host", &self.ut_host)
                     .field("ut_exit", &self.ut_exit)
                     .field("ut_session", &self.ut_session)
-                    //.field("__ut_pad2", &self.__ut_pad2)
+                    .field("__ut_pad2", &self.__ut_pad2)
                     .field("ut_tv", &self.ut_tv)
                     .field("ut_addr_v6", &self.ut_addr_v6)
                     .field("__unused", &self.__unused)
@@ -314,7 +314,7 @@ cfg_if! {
         impl ::hash::Hash for utmpx {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
-                //self.__ut_pad1.hash(state);
+                self.__ut_pad1.hash(state);
                 self.ut_pid.hash(state);
                 self.ut_line.hash(state);
                 self.ut_id.hash(state);
@@ -322,7 +322,7 @@ cfg_if! {
                 self.ut_host.hash(state);
                 self.ut_exit.hash(state);
                 self.ut_session.hash(state);
-                //self.__ut_pad2.hash(state);
+                self.__ut_pad2.hash(state);
                 self.ut_tv.hash(state);
                 self.ut_addr_v6.hash(state);
                 self.__unused.hash(state);
