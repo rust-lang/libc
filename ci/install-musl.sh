@@ -5,11 +5,11 @@
 
 set -ex
 
-MUSL_VERSION=1.1.24
+MUSL_VERSION=1.2.0
 MUSL="musl-${MUSL_VERSION}"
 
 # Download, configure, build, and install musl:
-curl --retry 5 https://www.musl-libc.org/releases/${MUSL}.tar.gz | tar xzf -
+curl --retry 5 https://musl.libc.org/releases/${MUSL}.tar.gz | tar xzf -
 
 cd $MUSL
 case ${1} in
@@ -72,7 +72,7 @@ cd ..
 rm -rf $MUSL
 
 # Download, configure, build, and install musl-sanitized kernel headers:
-KERNEL_HEADER_VER="4.4.2-2"
+KERNEL_HEADER_VER="4.19.88"
 curl --retry 5 -L \
      "https://github.com/sabotage-linux/kernel-headers/archive/v${KERNEL_HEADER_VER}.tar.gz" | \
     tar xzf -
