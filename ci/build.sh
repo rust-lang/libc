@@ -195,16 +195,19 @@ done
 
 # FIXME: https://github.com/rust-lang/rust/issues/58564
 # sparc-unknown-linux-gnu
+# FIXME: Today(2020-07-29)'s nightly is missing rust-src for these targets.
+# aarch64-unknown-cloudabi
+# aarch64-unknown-freebsd
+# aarch64-unknown-hermit
+# aarch64-unknown-netbsd
+# aarch64-unknown-openbsd
+# aarch64-wrs-vxworks
+# armv7-unknown-cloudabi-eabihf
+# armv7-wrs-vxworks-eabihf
 RUST_LINUX_NO_CORE_TARGETS="\
 aarch64-pc-windows-msvc \
-aarch64-unknown-cloudabi \
-aarch64-unknown-freebsd \
-aarch64-unknown-hermit \
-aarch64-unknown-netbsd \
-aarch64-unknown-openbsd \
 armebv7r-none-eabi \
 armebv7r-none-eabihf \
-armv7-unknown-cloudabi-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
 hexagon-unknown-linux-musl \
@@ -241,8 +244,6 @@ x86_64-unknown-haiku \
 x86_64-unknown-hermit \
 x86_64-unknown-l4re-uclibc \
 x86_64-unknown-openbsd \
-armv7-wrs-vxworks-eabihf \
-aarch64-wrs-vxworks \
 i686-wrs-vxworks \
 x86_64-wrs-vxworks \
 powerpc-wrs-vxworks \
