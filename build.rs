@@ -65,9 +65,10 @@ fn main() {
         println!("cargo:rustc-cfg=libc_core_cvoid");
     }
 
-    // Rust >= 1.33 supports repr(packed(N))
+    // Rust >= 1.33 supports repr(packed(N)) and cfg(target_vendor).
     if rustc_minor_ver >= 33 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_packedN");
+        println!("cargo:rustc-cfg=libc_cfg_target_vendor");
     }
 
     // #[thread_local] is currently unstable
