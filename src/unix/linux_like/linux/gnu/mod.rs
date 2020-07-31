@@ -771,6 +771,10 @@ pub const NDA_MASTER: ::c_ushort = 9;
 pub const NDA_LINK_NETNSID: ::c_ushort = 10;
 pub const NDA_SRC_VNI: ::c_ushort = 11;
 
+// linux/personality.h
+pub const UNAME26: ::c_int = 0x0020000;
+pub const FDPIC_FUNCPTRS: ::c_int = 0x0080000;
+
 // linux/if_addr.h
 pub const IFA_FLAGS: ::c_ushort = 8;
 
