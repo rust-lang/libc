@@ -1062,6 +1062,13 @@ pub const O_NDELAY: ::c_int = 0x800;
 pub const O_DSYNC: ::c_int = 4096;
 
 pub const NI_MAXHOST: ::size_t = 1025;
+pub const NI_MAXSERV: ::size_t = 32;
+
+pub const NI_NOFQDN: ::c_int = 0x00000001;
+pub const NI_NUMERICHOST: ::c_int = 0x00000002;
+pub const NI_NAMEREQD: ::c_int = 0x00000004;
+pub const NI_NUMERICSERV: ::c_int = 0x00000008;
+pub const NI_DGRAM: ::c_int = 0x00000010;
 
 pub const NCCS: usize = 19;
 pub const TCSBRKP: ::c_int = 0x5425;
