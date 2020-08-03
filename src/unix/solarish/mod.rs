@@ -22,6 +22,8 @@ pub type tcflag_t = ::c_uint;
 pub type time_t = ::c_long;
 pub type wchar_t = ::c_int;
 pub type nfds_t = ::c_ulong;
+pub type projid_t = ::c_int;
+pub type zoneid_t = ::c_int;
 
 pub type suseconds_t = ::c_long;
 pub type off_t = ::c_long;
@@ -42,6 +44,15 @@ pub enum timezone {}
 impl ::Copy for timezone {}
 impl ::Clone for timezone {
     fn clone(&self) -> timezone {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum ucred_t {}
+impl ::Copy for ucred_t {}
+impl ::Clone for ucred_t {
+    fn clone(&self) -> ucred_t {
         *self
     }
 }
@@ -2582,6 +2593,28 @@ extern "C" {
 
     pub fn ntp_adjtime(buf: *mut timex) -> ::c_int;
     pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
+
+    pub fn ucred_get(pid: ::pid_t) -> *mut ucred_t;
+    pub fn getpeerucred(fd: ::c_int, ucred: *mut *mut ucred_t) -> ::c_int;
+
+    pub fn ucred_free(ucred: *mut ucred_t);
+
+    pub fn ucred_geteuid(ucred: *const ucred_t) -> ::uid_t;
+    pub fn ucred_getruid(ucred: *const ucred_t) -> ::uid_t;
+    pub fn ucred_getsuid(ucred: *const ucred_t) -> ::uid_t;
+    pub fn ucred_getegid(ucred: *const ucred_t) -> ::gid_t;
+    pub fn ucred_getrgid(ucred: *const ucred_t) -> ::gid_t;
+    pub fn ucred_getsgid(ucred: *const ucred_t) -> ::gid_t;
+    pub fn ucred_getgroups(
+        ucred: *const ucred_t,
+        groups: *mut *const ::gid_t,
+    ) -> ::c_int;
+    pub fn ucred_getpid(ucred: *const ucred_t) -> ::pid_t;
+    pub fn ucred_getprojid(ucred: *const ucred_t) -> projid_t;
+    pub fn ucred_getzoneid(ucred: *const ucred_t) -> zoneid_t;
+    pub fn ucred_getpflags(ucred: *const ucred_t, flags: ::c_uint) -> ::c_uint;
+
+    pub fn ucred_size() -> ::size_t;
 }
 
 mod compat;
