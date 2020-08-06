@@ -725,6 +725,7 @@ fn test_solarish(target: &str) {
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",
+        "sys/stropts.h",
         "sys/shm.h",
         "sys/time.h",
         "sys/times.h",

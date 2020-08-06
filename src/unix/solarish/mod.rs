@@ -1949,6 +1949,44 @@ pub const VLNEXT: usize = 15;
 pub const VSTATUS: usize = 16;
 pub const VERASE2: usize = 17;
 
+// <sys/stropts.h>
+const STR: ::c_int = (b'S' as ::c_int) << 8;
+pub const I_NREAD: ::c_int = STR | 0o1;
+pub const I_PUSH: ::c_int = STR | 0o2;
+pub const I_POP: ::c_int = STR | 0o3;
+pub const I_LOOK: ::c_int = STR | 0o4;
+pub const I_FLUSH: ::c_int = STR | 0o5;
+pub const I_SRDOPT: ::c_int = STR | 0o6;
+pub const I_GRDOPT: ::c_int = STR | 0o7;
+pub const I_STR: ::c_int = STR | 0o10;
+pub const I_SETSIG: ::c_int = STR | 0o11;
+pub const I_GETSIG: ::c_int = STR | 0o12;
+pub const I_FIND: ::c_int = STR | 0o13;
+pub const I_LINK: ::c_int = STR | 0o14;
+pub const I_UNLINK: ::c_int = STR | 0o15;
+pub const I_PEEK: ::c_int = STR | 0o17;
+pub const I_FDINSERT: ::c_int = STR | 0o20;
+pub const I_SENDFD: ::c_int = STR | 0o21;
+pub const I_RECVFD: ::c_int = STR | 0o16;
+pub const I_SWROPT: ::c_int = STR | 0o23;
+pub const I_GWROPT: ::c_int = STR | 0o24;
+pub const I_LIST: ::c_int = STR | 0o25;
+pub const I_PLINK: ::c_int = STR | 0o26;
+pub const I_PUNLINK: ::c_int = STR | 0o27;
+pub const I_ANCHOR: ::c_int = STR | 0o30;
+pub const I_FLUSHBAND: ::c_int = STR | 0o34;
+pub const I_CKBAND: ::c_int = STR | 0o35;
+pub const I_GETBAND: ::c_int = STR | 0o36;
+pub const I_ATMARK: ::c_int = STR | 0o37;
+pub const I_SETCLTIME: ::c_int = STR | 0o40;
+pub const I_GETCLTIME: ::c_int = STR | 0o41;
+pub const I_CANPUT: ::c_int = STR | 0o42;
+pub const I_SERROPT: ::c_int = STR | 0o43;
+pub const I_GERROPT: ::c_int = STR | 0o44;
+pub const I_ESETSIG: ::c_int = STR | 0o45;
+pub const I_EGETSIG: ::c_int = STR | 0o46;
+pub const __I_PUSH_NOCTTY: ::c_int = STR | 0o47;
+
 // 3SOCKET flags
 pub const SOCK_CLOEXEC: ::c_int = 0x080000;
 pub const SOCK_NONBLOCK: ::c_int = 0x100000;
