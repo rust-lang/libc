@@ -52,6 +52,7 @@ newer Rust features are only available on newer Rust toolchains:
 | `extra_traits`       |  1.25.0 |
 | `core::ffi::c_void`  |  1.30.0 |
 | `repr(packed(N))`    |  1.33.0 |
+| `cfg(target_vendor)` |  1.33.0 |
 
 ## Platform support
 
