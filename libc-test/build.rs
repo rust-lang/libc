@@ -1592,7 +1592,8 @@ fn test_android(target: &str) {
             // https://github.com/rust-lang/libc/issues/1765
             "lockf" | "preadv64" | "pwritev64" | "openpty" | "forkpty"
             | "login_tty" | "getifaddrs" | "freeifaddrs" | "sethostname"
-            | "getgrgid_r" | "getgrnam_r" | "sigtimedwait"
+            | "getgrgid_r" | "getgrnam_r" | "sigtimedwait" | "fmemopen"
+            | "open_memstream" | "open_wmemstream"
                 if aarch64 =>
             {
                 true
