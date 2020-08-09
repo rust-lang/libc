@@ -112,6 +112,24 @@ impl ::Clone for _Vx_semaphore {
     }
 }
 
+impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut ::c_void {
+        self.si_addr
+    }
+
+    pub unsafe fn si_value(&self) -> ::sigval {
+        self.si_value
+    }
+
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.si_pid
+    }
+
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.si_uid
+    }
+}
+
 s! {
     // b_pthread_condattr_t.h
     pub struct pthread_condattr_t {

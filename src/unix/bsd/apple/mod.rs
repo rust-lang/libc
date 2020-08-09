@@ -680,6 +680,14 @@ impl siginfo_t {
 
         (*(self as *const siginfo_t as *const siginfo_timer)).si_value
     }
+
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.si_pid
+    }
+
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.si_uid
+    }
 }
 
 cfg_if! {

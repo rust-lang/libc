@@ -313,6 +313,55 @@ impl siginfo_t {
     }
 }
 
+cfg_if! {
+    if #[cfg(libc_union)] {
+        // Internal, for casts to access union fields
+        #[repr(C)]
+        #[derive(Copy,Clone)]
+        struct sifields_sigchld {
+            si_pid: ::pid_t,
+            si_uid: ::uid_t,
+            si_status: ::c_int,
+        }
+
+        // Internal, for casts to access union fields
+        #[repr(C)]
+        union sifields {
+            _align_pointer: *mut ::c_void,
+            sigchld: sifields_sigchld,
+        }
+
+        // Internal, for casts to access union fields. Note that some variants
+        // of sifields start with a pointer, which makes the alignment of
+        // sifields vary on 32-bit and 64-bit architectures.
+        #[repr(C)]
+        struct siginfo_f {
+            _si_signo: ::c_int,
+            _si_errno: ::c_int,
+            _si_code: ::c_int,
+            sifields: sifields,
+        }
+
+        impl siginfo_t {
+            unsafe fn sifields(&self) -> &sifields {
+                &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+            }
+
+            pub unsafe fn si_pid(&self) -> ::pid_t {
+                self.sifields().sigchld.si_pid
+            }
+
+            pub unsafe fn si_uid(&self) -> ::uid_t {
+                self.sifields().sigchld.si_uid
+            }
+
+            pub unsafe fn si_status(&self) -> ::c_int {
+                self.sifields().sigchld.si_status
+            }
+        }
+    }
+}
+
 s_no_extra_traits! {
     pub struct utmpx {
         pub ut_type: ::c_short,

@@ -31,6 +31,14 @@ impl siginfo_t {
     pub unsafe fn si_value(&self) -> ::sigval {
         self.si_value
     }
+
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.si_pid
+    }
+
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.si_uid
+    }
 }
 
 s! {

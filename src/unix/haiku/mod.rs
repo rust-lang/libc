@@ -38,6 +38,20 @@ impl ::Clone for timezone {
     }
 }
 
+impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut ::c_void {
+        self.si_addr
+    }
+
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.si_pid
+    }
+
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.si_uid
+    }
+}
+
 s! {
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
