@@ -444,6 +444,35 @@ extern "C" {
     pub fn dup(fd: ::c_int) -> ::c_int;
     #[link_name = "_dup2"]
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
+    #[link_name = "_execl"]
+    pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> intptr_t;
+    #[link_name = "_wexecl"]
+    pub fn wexecl(path: *const wchar_t, arg0: *const wchar_t, ...)
+        -> intptr_t;
+    #[link_name = "_execle"]
+    pub fn execle(path: *const c_char, arg0: *const c_char, ...) -> intptr_t;
+    #[link_name = "_wexecle"]
+    pub fn wexecle(
+        path: *const wchar_t,
+        arg0: *const wchar_t,
+        ...
+    ) -> intptr_t;
+    #[link_name = "_execlp"]
+    pub fn execlp(path: *const c_char, arg0: *const c_char, ...) -> intptr_t;
+    #[link_name = "_wexeclp"]
+    pub fn wexeclp(
+        path: *const wchar_t,
+        arg0: *const wchar_t,
+        ...
+    ) -> intptr_t;
+    #[link_name = "_execlpe"]
+    pub fn execlpe(path: *const c_char, arg0: *const c_char, ...) -> intptr_t;
+    #[link_name = "_wexeclpe"]
+    pub fn wexeclpe(
+        path: *const wchar_t,
+        arg0: *const wchar_t,
+        ...
+    ) -> intptr_t;
     #[link_name = "_execv"]
     pub fn execv(
         prog: *const c_char,
