@@ -1486,6 +1486,7 @@ fn test_android(target: &str) {
                 "linux/seccomp.h",
                 "linux/sched.h",
                 "linux/sockios.h",
+                "linux/wait.h",
 
     }
 
@@ -1555,6 +1556,9 @@ fn test_android(target: &str) {
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
             // FIXME: deprecated - removed in glibc 2.26
             "SIGUNUSED" => true,
+
+            // Needs a newer Android SDK for the definition
+            "P_PIDFD" => true,
 
             _ => false,
         }
@@ -2442,6 +2446,7 @@ fn test_linux(target: &str) {
         "linux/seccomp.h",
         "linux/sockios.h",
         "linux/vm_sockets.h",
+        "linux/wait.h",
         "sys/auxv.h",
         "sys/fanotify.h",
     }
@@ -2625,6 +2630,10 @@ fn test_linux(target: &str) {
 
             // Require Linux kernel 5.6:
             "VMADDR_CID_LOCAL" => true,
+
+            // Defined in kernel headers but musl removes it; need musl 1.2 for definition in musl
+            // headers.
+            "P_PIDFD" => true,
 
             _ => false,
         }
