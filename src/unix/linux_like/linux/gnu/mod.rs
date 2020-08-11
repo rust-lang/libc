@@ -322,6 +322,8 @@ cfg_if! {
             si_pid: ::pid_t,
             si_uid: ::uid_t,
             si_status: ::c_int,
+            si_utime: ::c_long,
+            si_stime: ::c_long,
         }
 
         // Internal, for casts to access union fields
@@ -355,6 +357,14 @@ cfg_if! {
 
             pub unsafe fn si_status(&self) -> ::c_int {
                 self.sifields().sigchld.si_status
+            }
+
+            pub unsafe fn si_utime(&self) -> ::c_long {
+                self.sifields().sigchld.si_utime
+            }
+
+            pub unsafe fn si_stime(&self) -> ::c_long {
+                self.sifields().sigchld.si_stime
             }
         }
     }
