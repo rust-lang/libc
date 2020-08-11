@@ -336,9 +336,7 @@ cfg_if! {
         // sifields vary on 32-bit and 64-bit architectures.
         #[repr(C)]
         struct siginfo_f {
-            _si_signo: ::c_int,
-            _si_errno: ::c_int,
-            _si_code: ::c_int,
+            _siginfo_base: [::c_int; 3],
             sifields: sifields,
         }
 
