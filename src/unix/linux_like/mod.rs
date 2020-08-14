@@ -1261,6 +1261,14 @@ f! {
         (status & 0x80) != 0
     }
 
+    pub fn W_EXITCODE(ret: ::c_int, sig: ::c_int) -> ::c_int {
+        (ret << 8) | sig
+    }
+
+    pub fn W_STOPCODE(sig: ::c_int) -> ::c_int {
+        (sig << 8) | 0x7f
+    }
+
     pub fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
     }
