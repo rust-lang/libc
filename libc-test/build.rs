@@ -1401,6 +1401,7 @@ fn test_android(target: &str) {
                "pthread.h",
                "pty.h",
                "pwd.h",
+               "regex.h",
                "resolv.h",
                "sched.h",
                "semaphore.h",
