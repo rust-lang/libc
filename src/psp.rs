@@ -1414,15 +1414,19 @@ s_paren! {
 
     #[repr(transparent)]
     pub struct RegHandle(u32);
-
-    #[repr(C)]
-    pub struct sockaddr(pub u32);
-
-    #[repr(C)]
-    pub struct in_addr(pub u32);
 }
 
 s! {
+    pub struct sockaddr {
+        pub sa_len: u8,
+        pub sa_family: u8,
+        pub sa_data: [u8;14],
+    }
+
+    pub struct in_addr {
+        pub s_addr: u32,
+    }
+
     pub struct AudioInputParams {
         pub unknown1: i32,
         pub gain: i32,
@@ -3569,9 +3573,12 @@ extern "C" {
         src_tick: *const u64,
         num_years: u64,
     ) -> i32;
-    pub fn sceRtcSetTime_t(date: *mut ScePspDateTime, time: i64) -> i32;
-    pub fn sceRtcGetTime_t(date: *const ScePspDateTime, time: *mut i64)
-    -> i32;
+    pub fn sceRtcSetTime_t(date: *mut ScePspDateTime, time: u32) -> i32;
+    pub fn sceRtcGetTime_t(date: *const ScePspDateTime, time: *mut u32) -> i32;
+    pub fn sceRtcSetTime64_t(date: *mut ScePspDateTime, time: u64) -> i32;
+    pub fn sceRtcGetTime64_t(
+        date: *const ScePspDateTime, time: *mut u64
+    ) -> i32;
     pub fn sceRtcSetDosTime(date: *mut ScePspDateTime, dos_time: u32) -> i32;
     pub fn sceRtcGetDosTime(date: *mut ScePspDateTime, dos_time: u32) -> i32;
     pub fn sceRtcSetWin32FileTime(
