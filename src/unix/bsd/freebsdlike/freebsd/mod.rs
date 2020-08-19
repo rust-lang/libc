@@ -447,21 +447,6 @@ pub const NOTE_NSECONDS: u32 = 0x00000008;
 pub const MADV_PROTECT: ::c_int = 10;
 pub const RUSAGE_THREAD: ::c_int = 1;
 
-pub const CLOCK_REALTIME: ::clockid_t = 0;
-pub const CLOCK_VIRTUAL: ::clockid_t = 1;
-pub const CLOCK_PROF: ::clockid_t = 2;
-pub const CLOCK_MONOTONIC: ::clockid_t = 4;
-pub const CLOCK_UPTIME: ::clockid_t = 5;
-pub const CLOCK_UPTIME_PRECISE: ::clockid_t = 7;
-pub const CLOCK_UPTIME_FAST: ::clockid_t = 8;
-pub const CLOCK_REALTIME_PRECISE: ::clockid_t = 9;
-pub const CLOCK_REALTIME_FAST: ::clockid_t = 10;
-pub const CLOCK_MONOTONIC_PRECISE: ::clockid_t = 11;
-pub const CLOCK_MONOTONIC_FAST: ::clockid_t = 12;
-pub const CLOCK_SECOND: ::clockid_t = 13;
-pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 14;
-pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 15;
-
 #[doc(hidden)]
 #[deprecated(
     since = "0.2.72",
@@ -1221,13 +1206,6 @@ f! {
 
 extern "C" {
     pub fn __error() -> *mut ::c_int;
-
-    pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_settime(
-        clk_id: ::clockid_t,
-        tp: *const ::timespec,
-    ) -> ::c_int;
 
     pub fn extattr_delete_fd(
         fd: ::c_int,

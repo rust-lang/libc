@@ -1310,12 +1310,18 @@ extern "C" {
         len: ::size_t,
         vec: *mut ::c_uchar,
     ) -> ::c_int;
+
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(
         clk_id: ::clockid_t,
         tp: *const ::timespec,
     ) -> ::c_int;
+    pub fn clock_getcpuclockid(
+        pid: ::pid_t,
+        clk_id: *mut ::clockid_t,
+    ) -> ::c_int;
+
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
 
     pub fn pthread_getattr_np(
