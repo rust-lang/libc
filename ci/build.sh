@@ -135,7 +135,6 @@ x86_64-sun-solaris \
 "
 RUST_GT_1_24_LINUX_TARGETS="\
 i586-unknown-linux-musl \
-x86_64-unknown-cloudabi \
 "
 
 # FIXME: temporarirly disable the redox target
@@ -235,7 +234,8 @@ thumbv7m-none-eabi \
 thumbv7neon-linux-androideabi \
 thumbv7neon-unknown-linux-gnueabihf \
 thumbv8m.main-none-eabi \
-x86_64-pc-windows-msvc
+x86_64-pc-windows-msvc \
+x86_64-unknown-cloudabi \
 x86_64-unknown-dragonfly \
 x86_64-unknown-haiku \
 x86_64-unknown-hermit \
