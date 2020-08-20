@@ -196,6 +196,21 @@ cfg_if! {
         }
 
         #[allow(unused_macros)]
+        macro_rules! safe_f {
+            ($(pub $({$constness:ident})* fn $i:ident(
+                        $($arg:ident: $argty:ty),*
+            ) -> $ret:ty {
+                $($body:stmt);*
+            })*) => ($(
+                #[inline]
+                pub $($constness)* extern fn $i($($arg: $argty),*
+                ) -> $ret {
+                    $($body);*
+                }
+            )*)
+        }
+
+        #[allow(unused_macros)]
         macro_rules! const_fn {
             ($($({$constness:ident})* fn $i:ident(
                         $($arg:ident: $argty:ty),*
@@ -220,6 +235,21 @@ cfg_if! {
             })*) => ($(
                 #[inline]
                 pub unsafe extern fn $i($($arg: $argty),*
+                ) -> $ret {
+                    $($body);*
+                }
+            )*)
+        }
+
+        #[allow(unused_macros)]
+        macro_rules! safe_f {
+            ($(pub $({$constness:ident})* fn $i:ident(
+                        $($arg:ident: $argty:ty),*
+            ) -> $ret:ty {
+                $($body:stmt);*
+            })*) => ($(
+                #[inline]
+                pub extern fn $i($($arg: $argty),*
                 ) -> $ret {
                     $($body);*
                 }
