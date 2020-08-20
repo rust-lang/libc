@@ -134,6 +134,9 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
                                     instead of #[cfg]");
             }
         }
+        if line.contains("#[derive(") && (line.contains("Copy") || line.contains("Clone")) {
+            err.error(path, i, "impl ::Copy and ::Clone manually");
+        }
 
         let line = line.trim_start();
         let is_pub = line.starts_with("pub ");
