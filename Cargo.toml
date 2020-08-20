@@ -1,6 +1,6 @@
 [package]
 name = "libc"
-version = "0.2.75"
+version = "0.2.76"
 authors = ["The Rust Project Developers"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
