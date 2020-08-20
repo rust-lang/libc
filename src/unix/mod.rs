@@ -419,6 +419,19 @@ extern "C" {
         mode: *const c_char,
         file: *mut FILE,
     ) -> *mut FILE;
+    pub fn fmemopen(
+        buf: *mut c_void,
+        size: size_t,
+        mode: *const c_char,
+    ) -> *mut FILE;
+    pub fn open_memstream(
+        ptr: *mut *mut c_char,
+        sizeloc: *mut size_t,
+    ) -> *mut FILE;
+    pub fn open_wmemstream(
+        ptr: *mut *mut wchar_t,
+        sizeloc: *mut size_t,
+    ) -> *mut FILE;
     pub fn fflush(file: *mut FILE) -> c_int;
     pub fn fclose(file: *mut FILE) -> c_int;
     pub fn remove(filename: *const c_char) -> c_int;
