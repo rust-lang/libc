@@ -7,7 +7,7 @@
 //! For example usage, see the [main `README.md`][project] for how to set it
 //! up.
 //!
-//! [project]: https://github.com/alexcrichton/ctest2
+//! [project]: https://github.com/JohnTitor/ctest2
 
 #![deny(missing_docs)]
 #![allow(bare_trait_objects)]
