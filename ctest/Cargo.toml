@@ -4,7 +4,7 @@ version = "0.3.0"
 authors = [
   "Yuki Okushi <huyuumi.dev@gmail.com>"
 ]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/JohnTitor/ctest2"
 homepage = "https://github.com/JohnTitor/ctest2"
