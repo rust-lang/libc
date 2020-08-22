@@ -1590,10 +1590,22 @@ fn test_android(target: &str) {
 
             // FIXME: Somehow we cannot find these fns on aarch64.
             // https://github.com/rust-lang/libc/issues/1765
-            "lockf" | "preadv64" | "pwritev64" | "openpty" | "forkpty"
-            | "login_tty" | "getifaddrs" | "freeifaddrs" | "sethostname"
-            | "getgrgid_r" | "getgrnam_r" | "sigtimedwait" | "fmemopen"
-            | "open_memstream" | "open_wmemstream"
+            "lockf"
+            | "preadv64"
+            | "pwritev64"
+            | "openpty"
+            | "forkpty"
+            | "login_tty"
+            | "getifaddrs"
+            | "freeifaddrs"
+            | "sethostname"
+            | "getgrgid_r"
+            | "getgrnam_r"
+            | "sigtimedwait"
+            | "fmemopen"
+            | "open_memstream"
+            | "open_wmemstream"
+            | "clock_getcpuclockid"
                 if aarch64 =>
             {
                 true
