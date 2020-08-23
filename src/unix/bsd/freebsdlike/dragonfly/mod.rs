@@ -1044,6 +1044,7 @@ f! {
 }
 
 extern "C" {
+    pub fn __errno_location() -> *mut ::c_int;
     pub fn setgrent();
     pub fn mprotect(
         addr: *mut ::c_void,
@@ -1076,11 +1077,4 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
-}
-
-cfg_if! {
-    if #[cfg(libc_thread_local)] {
-        mod errno;
-        pub use self::errno::*;
-    }
 }
