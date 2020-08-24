@@ -1292,6 +1292,9 @@ f! {
 extern "C" {
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
+    pub fn getpriority(which: ::c_int, who: id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: id_t, priority: ::c_int) -> ::c_int;
+
     pub fn utimensat(
         fd: ::c_int,
         path: *const ::c_char,
