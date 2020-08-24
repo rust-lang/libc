@@ -1078,3 +1078,10 @@ extern "C" {
         needlelen: ::size_t,
     ) -> *mut ::c_void;
 }
+
+cfg_if! {
+    if #[cfg(libc_thread_local)] {
+        mod errno;
+        pub use self::errno::*;
+    }
+}
