@@ -1406,6 +1406,7 @@ pub const O_DSYNC: ::c_int = 0x400000;
 pub const O_NOCTTY: ::c_int = 0x20000;
 pub const O_CLOEXEC: ::c_int = 0x1000000;
 pub const O_DIRECTORY: ::c_int = 0x100000;
+pub const O_SYMLINK: ::c_int = 0x200000;
 pub const S_IFIFO: mode_t = 4096;
 pub const S_IFCHR: mode_t = 8192;
 pub const S_IFBLK: mode_t = 24576;
