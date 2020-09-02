@@ -847,6 +847,8 @@ pub const SS_DISABLE: ::c_int = 2;
 
 pub const PATH_MAX: ::c_int = 4096;
 
+pub const UIO_MAXIOV: ::c_int = 1024;
+
 pub const FD_SETSIZE: usize = 1024;
 
 pub const EPOLLIN: ::c_int = 0x1;

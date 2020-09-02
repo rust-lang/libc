@@ -254,6 +254,8 @@ pub const FIOGETOWN: ::c_ulong = 0x4004667b;
 
 pub const PATH_MAX: ::c_int = 1024;
 
+pub const IOV_MAX: ::c_int = 1024;
+
 pub const SA_ONSTACK: ::c_int = 0x0001;
 pub const SA_SIGINFO: ::c_int = 0x0040;
 pub const SA_RESTART: ::c_int = 0x0002;
