@@ -506,6 +506,10 @@ pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
 
+pub const ITIMER_REAL: ::c_int = 0;
+pub const ITIMER_VIRTUAL: ::c_int = 1;
+pub const ITIMER_PROF: ::c_int = 2;
+
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const ::msghdr) -> *mut ::cmsghdr {
         if (*mhdr).msg_controllen as usize >= ::mem::size_of::<::cmsghdr>() {
@@ -849,6 +853,23 @@ extern "C" {
         options: ::c_int,
         rusage: *mut ::rusage,
     ) -> ::pid_t;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "getitimer$UNIX2003"
+    )]
+    pub fn getitimer(
+        which: ::c_int,
+        curr_value: *mut ::itimerval
+    ) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "setitimer$UNIX2003"
+    )]
+    pub fn setitimer(
+        which: ::c_int,
+        new_value: *const ::itimerval,
+        old_value: *mut ::itimerval,
+    ) -> ::c_int;
 
     pub fn regcomp(
         preg: *mut regex_t,
