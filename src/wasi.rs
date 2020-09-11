@@ -322,6 +322,11 @@ pub const ENOTCAPABLE: c_int = 76;
 pub const EOPNOTSUPP: c_int = ENOTSUP;
 pub const EWOULDBLOCK: c_int = EAGAIN;
 
+pub const _SC_PAGESIZE: c_int = 30;
+pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
+pub const _SC_IOV_MAX: c_int = 60;
+pub const _SC_SYMLOOP_MAX: c_int = 173;
+
 #[cfg_attr(
     feature = "rustc-dep-of-std",
     link(name = "c", kind = "static", cfg(target_feature = "crt-static"))
