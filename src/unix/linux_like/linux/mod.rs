@@ -781,20 +781,9 @@ cfg_if! {
             }
         }
 
-        impl af_alg_iv {
-            fn as_slice(&self) -> &[u8] {
-                unsafe {
-                    ::core::slice::from_raw_parts(
-                        self.iv.as_ptr(),
-                        self.ivlen as usize
-                    )
-                }
-            }
-        }
-
         impl PartialEq for af_alg_iv {
             fn eq(&self, other: &af_alg_iv) -> bool {
-                *self.as_slice() == *other.as_slice()
+                self.ivlen == other.ivlen
            }
         }
 
@@ -803,14 +792,14 @@ cfg_if! {
         impl ::fmt::Debug for af_alg_iv {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("af_alg_iv")
-                    .field("iv", &self.as_slice())
+                    .field("ivlen", &self.ivlen)
                     .finish()
             }
         }
 
         impl ::hash::Hash for af_alg_iv {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.as_slice().hash(state);
+                self.ivlen.hash(state);
             }
         }
 
