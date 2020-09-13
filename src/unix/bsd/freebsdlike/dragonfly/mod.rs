@@ -1037,8 +1037,10 @@ f! {
         (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
             _CMSG_ALIGN(length as usize)) as ::c_uint
     }
+}
 
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
+safe_f! {
+    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0
     }
 }

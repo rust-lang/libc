@@ -1340,7 +1340,7 @@ fn _ALIGN(p: usize) -> usize {
 }
 
 f! {
-    pub fn WIFCONTINUED(status: ::c_int) -> bool {
+    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         status & 0o177777 == 0o177777
     }
 
@@ -1375,16 +1375,18 @@ f! {
         (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
             as ::c_uint
     }
+}
 
-    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+safe_f! {
+    pub {const} fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
     }
 
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
+    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0
     }
 
-    pub fn WIFSTOPPED(status: ::c_int) -> bool {
+    pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0xff) == 0o177
     }
 }

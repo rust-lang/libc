@@ -1220,16 +1220,16 @@ pub const TIME_ERROR: ::c_int = 5;
 pub const REG_ENOSYS: ::c_int = -1;
 pub const REG_ILLSEQ: ::c_int = 17;
 
-f! {
-    pub fn WIFCONTINUED(status: ::c_int) -> bool {
+safe_f! {
+    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
     }
 
-    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+    pub {const} fn WSTOPSIG(status: ::c_int) -> ::c_int {
         status >> 8
     }
 
-    pub fn WIFSTOPPED(status: ::c_int) -> bool {
+    pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0o177) == 0o177
     }
 }

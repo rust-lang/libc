@@ -2042,23 +2042,25 @@ extern "C" {
 //Dummy functions, these don't really exist in VxWorks.
 
 // wait.h macros
-pub fn WIFEXITED(status: ::c_int) -> bool {
-    (status & 0xFF00) == 0
-}
-pub fn WIFSIGNALED(status: ::c_int) -> bool {
-    (status & 0xFF00) != 0
-}
-pub fn WIFSTOPPED(status: ::c_int) -> bool {
-    (status & 0xFF0000) != 0
-}
-pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
-    status & 0xFF
-}
-pub fn WTERMSIG(status: ::c_int) -> ::c_int {
-    (status >> 8) & 0xFF
-}
-pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
-    (status >> 16) & 0xFF
+safe_f! {
+    pub {const} fn WIFEXITED(status: ::c_int) -> bool {
+        (status & 0xFF00) == 0
+    }
+    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
+        (status & 0xFF00) != 0
+    }
+    pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
+        (status & 0xFF0000) != 0
+    }
+    pub {const} fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+        status & 0xFF
+    }
+    pub {const} fn WTERMSIG(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xFF
+    }
+    pub {const} fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        (status >> 16) & 0xFF
+    }
 }
 
 pub fn pread(

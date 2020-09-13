@@ -1535,38 +1535,6 @@ f! {
         }
     }
 
-    pub fn WIFSTOPPED(status: ::c_int) -> bool {
-        (status & 0xff) == 0x7f
-    }
-
-    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
-        (status >> 8) & 0xff
-    }
-
-    pub fn WIFCONTINUED(status: ::c_int) -> bool {
-        status == 0xffff
-    }
-
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
-        ((status & 0x7f) + 1) as i8 >= 2
-    }
-
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
-        status & 0x7f
-    }
-
-    pub fn WIFEXITED(status: ::c_int) -> bool {
-        (status & 0x7f) == 0
-    }
-
-    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
-        (status >> 8) & 0xff
-    }
-
-    pub fn WCOREDUMP(status: ::c_int) -> bool {
-        (status & 0x80) != 0
-    }
-
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
             *slot = 0;
@@ -1598,8 +1566,42 @@ f! {
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.bits == set2.bits
     }
+}
 
-    pub fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
+safe_f! {
+    pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
+        (status & 0xff) == 0x7f
+    }
+
+    pub {const} fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
+        status == 0xffff
+    }
+
+    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
+        ((status & 0x7f) + 1) as i8 >= 2
+    }
+
+    pub {const} fn WTERMSIG(status: ::c_int) -> ::c_int {
+        status & 0x7f
+    }
+
+    pub {const} fn WIFEXITED(status: ::c_int) -> bool {
+        (status & 0x7f) == 0
+    }
+
+    pub {const} fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub {const} fn WCOREDUMP(status: ::c_int) -> bool {
+        (status & 0x80) != 0
+    }
+
+    pub {const} fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
     }
 }

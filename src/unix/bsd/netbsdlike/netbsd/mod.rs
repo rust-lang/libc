@@ -1699,27 +1699,11 @@ f! {
             as ::c_uint
     }
 
-    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
-        status >> 8
-    }
-
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
-        (status & 0o177) != 0o177 && (status & 0o177) != 0
-    }
-
-    pub fn WIFSTOPPED(status: ::c_int) -> bool {
-        (status & 0o177) == 0o177
-    }
-
     // dirfd() is a macro on netbsd to access
     // the first field of the struct where dirp points to:
     // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int {
         *(dirp as *const ::c_int)
-    }
-
-    pub fn WIFCONTINUED(status: ::c_int) -> bool {
-        status == 0xffff
     }
 
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
@@ -1729,6 +1713,24 @@ f! {
             0
         };
         ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
+    }
+}
+
+safe_f! {
+    pub {const} fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        status >> 8
+    }
+
+    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
+        (status & 0o177) != 0o177 && (status & 0o177) != 0
+    }
+
+    pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
+        (status & 0o177) == 0o177
+    }
+
+    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
+        status == 0xffff
     }
 }
 
