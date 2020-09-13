@@ -544,24 +544,26 @@ f! {
             *slot = 0;
         }
     }
+}
 
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+safe_f! {
+    pub {const} fn WTERMSIG(status: ::c_int) -> ::c_int {
         status & 0o177
     }
 
-    pub fn WIFEXITED(status: ::c_int) -> bool {
+    pub {const} fn WIFEXITED(status: ::c_int) -> bool {
         (status & 0o177) == 0
     }
 
-    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+    pub {const} fn WEXITSTATUS(status: ::c_int) -> ::c_int {
         status >> 8
     }
 
-    pub fn WCOREDUMP(status: ::c_int) -> bool {
+    pub {const} fn WCOREDUMP(status: ::c_int) -> bool {
         (status & 0o200) != 0
     }
 
-    pub fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
+    pub {const} fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
     }
 }
