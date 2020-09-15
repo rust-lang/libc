@@ -278,6 +278,9 @@ cfg_if! {
     } else if #[cfg(target_arch = "sparc")] {
         mod sparc;
         pub use self::sparc::*;
+    } else if #[cfg(any(target_arch = "riscv32"))] {
+        mod riscv32;
+        pub use self::riscv32::*;
     } else {
         // Unknown target_arch
     }
