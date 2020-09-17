@@ -577,6 +577,8 @@ pub const SYS_pkey_mprotect: ::c_long = 5000 + 323;
 pub const SYS_pkey_alloc: ::c_long = 5000 + 324;
 pub const SYS_pkey_free: ::c_long = 5000 + 325;
 pub const SYS_statx: ::c_long = 5000 + 326;
+pub const SYS_pidfd_open: ::c_long = 5000 + 434;
+pub const SYS_clone3: ::c_long = 5000 + 435;
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 

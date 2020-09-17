@@ -2649,6 +2649,13 @@ fn test_linux(target: &str) {
             // headers.
             "P_PIDFD" => true,
 
+            // FIXME: Not currently available in headers
+            "SYS_pidfd_open" if mips => true,
+
+            // FIXME: Not currently available in headers on MIPS
+            // Not yet implemented on sparc64
+            "SYS_clone3" if mips | sparc64 => true,
+
             _ => false,
         }
     });
