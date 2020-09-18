@@ -198,7 +198,7 @@ s! {
     }
 
     pub struct vscr_t {
-        if #[cfg(target_arch = "powerpc64")] {
+        if #[cfg(target_endian = "big")] {
             __pad: [::c_uint; 3],
             vscr_word: ::c_uint,
         } else {
