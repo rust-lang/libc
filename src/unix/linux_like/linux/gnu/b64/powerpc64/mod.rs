@@ -14,7 +14,7 @@ pub type gregset_t = [::c_ulong; 48];
 pub type fpregset_t = [::c_double; 33];
 
 s! {
-    pub struct pt_regs = {};
+    pub struct pt_regs {}
 
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
