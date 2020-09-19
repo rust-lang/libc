@@ -2,8 +2,6 @@
 
 use pthread_mutex_t;
 
-pub type c_int = i32;
-pub type c_double = f64;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type c_char = u8;
