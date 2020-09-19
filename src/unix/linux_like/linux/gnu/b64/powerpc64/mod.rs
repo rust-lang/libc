@@ -223,7 +223,7 @@ s! {
         pub gp_regs: [::c_ulong; 48],
         pub fp_regs: [::c_double; 33],
         pub v_regs: *mut vrregset_t,
-        pub vpmx_reserve: [::c_long; 69]
+        pub vmx_reserve: [::c_long; 69],
     }
 
     pub struct ucontext_t {
