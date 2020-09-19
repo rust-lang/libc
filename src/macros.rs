@@ -70,6 +70,21 @@ macro_rules! s {
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
         compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
     );
+    (it: $(#[$attr:meta])* pub struct $i:ident {}) => (
+        __item! {
+            #[repr(C)]
+            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            #[allow(deprecated)]
+            $(#[$attr])*
+            pub struct $i;
+        }
+        #[allow(deprecated)]
+        impl ::Copy for $i {}
+        #[allow(deprecated)]
+        impl ::Clone for $i {
+            fn clone(&self) -> $i { *self }
+        }
+    );
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
