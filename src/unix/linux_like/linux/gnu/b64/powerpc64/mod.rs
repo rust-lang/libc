@@ -195,14 +195,17 @@ s! {
         pub ss_size: ::size_t
     }
 
+    #[repr(C)]
     pub struct vscr_t {
-        if #[cfg(target_endian = "big")] {
-            __pad: [::c_uint; 3],
-            vscr_word: ::c_uint,
-        } else {
-            vscr_word: ::c_uint,
-            __pad: [::c_uint; 3],
-        }
+        #[cfg(target_endian = "big")]
+        __pad: [::c_uint; 3],
+        #[cfg(target_endian = "big")]
+        pub vscr_word: ::c_uint,
+
+        #[cfg(target_endian = "little")]
+        pub vscr_word: ::c_uint,
+        #[cfg(target_endian = "little")]
+        __pad: [::c_uint; 3],
     }
 
     pub struct vrregset_t {
