@@ -10,8 +10,6 @@ pub type nlink_t = u64;
 pub type blksize_t = i64;
 pub type suseconds_t = i64;
 pub type __u64 = ::c_ulong;
-pub type gregset_t = [::c_ulong; 48];
-pub type fpregset_t = [::c_double; 33];
 
 s! {
     pub struct pt_regs {}
@@ -222,8 +220,8 @@ s! {
         pub handler: ::c_ulong,
         pub oldmask: ::c_ulong,
         pub regs: *mut pt_regs,
-        pub gp_regs: ::gregset_t,
-        pub fp_regs: ::fpregset_t,
+        pub gp_regs: [::c_ulong; 48],
+        pub fp_regs: [::c_double; 33],
         pub v_regs: *mut vrregset_t,
         pub vpmx_reserve: [::c_long; 69]
     }
