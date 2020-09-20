@@ -301,6 +301,8 @@ cfg_if! {
     } else if #[cfg(all(target_os = "linux",
                         target_env = "gnu",
                         feature = "rustc-dep-of-std"))] {
+        #[link(name = "util", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
         #[link(name = "rt", kind = "static-nobundle",
             cfg(target_feature = "crt-static"))]
         #[link(name = "pthread", kind = "static-nobundle",
@@ -313,6 +315,7 @@ cfg_if! {
             cfg(target_feature = "crt-static"))]
         #[link(name = "gcc", kind = "static-nobundle",
             cfg(target_feature = "crt-static"))]
+        #[link(name = "util", cfg(not(target_feature = "crt-static")))]
         #[link(name = "rt", cfg(not(target_feature = "crt-static")))]
         #[link(name = "pthread", cfg(not(target_feature = "crt-static")))]
         #[link(name = "m", cfg(not(target_feature = "crt-static")))]
