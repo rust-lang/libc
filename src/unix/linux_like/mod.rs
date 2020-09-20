@@ -4,6 +4,7 @@ pub type tcflag_t = ::c_uint;
 pub type clockid_t = ::c_int;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
+pub type timer_t = *mut ::c_void;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -200,6 +201,11 @@ s! {
     pub struct mmsghdr {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
+    }
+
+    pub struct itimerspec {
+        pub it_interval: ::timespec,
+        pub it_value: ::timespec,
     }
 }
 
@@ -1566,6 +1572,24 @@ extern "C" {
         flags: ::c_int,
     ) -> ::ssize_t;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+
+    pub fn timer_create(
+        clockid: ::clockid_t,
+        sevp: *mut ::sigevent,
+        timerid: *mut ::timer_t,
+    ) -> ::c_int;
+    pub fn timer_settime(
+        timerid: ::timer_t,
+        flags: ::c_int,
+        new_value: *const ::itimerspec,
+        old_value: *mut ::itimerspec,
+    ) -> ::c_int;
+    pub fn timer_gettime(
+        timerid: ::timer_t,
+        curr_value: *mut ::itimerspec,
+    ) -> ::c_int;
+    pub fn timer_getoverrun(timerid: ::timer_t) -> ::c_int;
+    pub fn timer_delete(timerid: ::timer_t) -> ::c_int;
 }
 
 cfg_if! {

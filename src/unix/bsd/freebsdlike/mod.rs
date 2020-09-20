@@ -13,6 +13,7 @@ pub type speed_t = ::c_uint;
 pub type nl_item = ::c_int;
 pub type id_t = i64;
 pub type vm_size_t = ::uintptr_t;
+pub type timer_t = *mut ::c_void;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -232,6 +233,11 @@ s! {
         pub piod_offs: *mut ::c_void,
         pub piod_addr: *mut ::c_void,
         pub piod_len: ::size_t,
+    }
+
+    pub struct itimerspec {
+        pub it_interval: ::timespec,
+        pub it_value: ::timespec,
     }
 }
 
@@ -1566,6 +1572,24 @@ extern "C" {
         abs_timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
+
+    pub fn timer_create(
+        clockid: ::clockid_t,
+        sevp: *mut ::sigevent,
+        timerid: *mut ::timer_t,
+    ) -> ::c_int;
+    pub fn timer_settime(
+        timerid: ::timer_t,
+        flags: ::c_int,
+        new_value: *const ::itimerspec,
+        old_value: *mut ::itimerspec,
+    ) -> ::c_int;
+    pub fn timer_gettime(
+        timerid: ::timer_t,
+        curr_value: *mut ::itimerspec,
+    ) -> ::c_int;
+    pub fn timer_getoverrun(timerid: ::timer_t) -> ::c_int;
+    pub fn timer_delete(timerid: ::timer_t) -> ::c_int;
 }
 
 #[link(name = "util")]

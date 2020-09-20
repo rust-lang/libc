@@ -10,6 +10,7 @@ type __pthread_spin_t = __cpu_simple_lock_nv_t;
 pub type vm_size_t = ::uintptr_t;
 pub type lwpid_t = ::c_uint;
 pub type shmatt_t = ::c_uint;
+pub type timer_t = *mut ::c_void;
 
 impl siginfo_t {
     pub unsafe fn si_value(&self) -> ::sigval {
@@ -339,6 +340,11 @@ s! {
         pub esterror: ::c_long,
         pub tai: ::c_long,
         pub time_state: ::c_int,
+    }
+
+    pub struct itimerspec {
+        pub it_interval: ::timespec,
+        pub it_value: ::timespec,
     }
 
 }
@@ -1759,6 +1765,24 @@ extern "C" {
         nitems: ::c_int,
         sevp: *mut sigevent,
     ) -> ::c_int;
+
+    pub fn timer_create(
+        clockid: ::clockid_t,
+        sevp: *mut ::sigevent,
+        timerid: *mut ::timer_t,
+    ) -> ::c_int;
+    pub fn timer_settime(
+        timerid: ::timer_t,
+        flags: ::c_int,
+        new_value: *const ::itimerspec,
+        old_value: *mut ::itimerspec,
+    ) -> ::c_int;
+    pub fn timer_gettime(
+        timerid: ::timer_t,
+        curr_value: *mut ::itimerspec,
+    ) -> ::c_int;
+    pub fn timer_getoverrun(timerid: ::timer_t) -> ::c_int;
+    pub fn timer_delete(timerid: ::timer_t) -> ::c_int;
 }
 
 extern "C" {

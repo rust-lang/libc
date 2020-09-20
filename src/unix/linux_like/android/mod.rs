@@ -148,11 +148,6 @@ s! {
         _pad: [u8; 28],
     }
 
-    pub struct itimerspec {
-        pub it_interval: ::timespec,
-        pub it_value: ::timespec,
-    }
-
     pub struct ucred {
         pub pid: ::pid_t,
         pub uid: ::uid_t,
@@ -2465,13 +2460,13 @@ extern "C" {
     pub fn timerfd_create(clock: ::clockid_t, flags: ::c_int) -> ::c_int;
     pub fn timerfd_gettime(
         fd: ::c_int,
-        current_value: *mut itimerspec,
+        current_value: *mut ::itimerspec,
     ) -> ::c_int;
     pub fn timerfd_settime(
         fd: ::c_int,
         flags: ::c_int,
-        new_value: *const itimerspec,
-        old_value: *mut itimerspec,
+        new_value: *const ::itimerspec,
+        old_value: *mut ::itimerspec,
     ) -> ::c_int;
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
     pub fn sched_getaffinity(
