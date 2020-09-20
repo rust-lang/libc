@@ -1435,7 +1435,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "dl")]
 extern "C" {
     pub fn dlmopen(
         lmid: Lmid_t,

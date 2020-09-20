@@ -309,6 +309,8 @@ cfg_if! {
             cfg(target_feature = "crt-static"))]
         #[link(name = "m", kind = "static-nobundle",
             cfg(target_feature = "crt-static"))]
+        #[link(name = "dl", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
         #[link(name = "c", kind = "static-nobundle",
             cfg(target_feature = "crt-static"))]
         #[link(name = "gcc_eh", kind = "static-nobundle",
@@ -319,6 +321,7 @@ cfg_if! {
         #[link(name = "rt", cfg(not(target_feature = "crt-static")))]
         #[link(name = "pthread", cfg(not(target_feature = "crt-static")))]
         #[link(name = "m", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "dl", cfg(not(target_feature = "crt-static")))]
         #[link(name = "c", cfg(not(target_feature = "crt-static")))]
         extern {}
     } else if #[cfg(target_env = "musl")] {
