@@ -115,6 +115,12 @@ s! {
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 8],
     }
+
+    pub struct ip_mreqn {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_address: ::in_addr,
+        pub imr_ifindex: ::c_int,
+    }
 }
 
 pub const O_NOATIME: ::c_int = 0o1000000;
