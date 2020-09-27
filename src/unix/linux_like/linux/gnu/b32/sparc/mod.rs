@@ -1,6 +1,6 @@
 //! SPARC-specific definitions for 32-bit linux-like values
 
-pub type c_char = u8;
+pub type c_char = i8;
 pub type wchar_t = i32;
 
 s! {
