@@ -236,6 +236,14 @@ s! {
         pub rm_so: ::ssize_t,
         pub rm_eo: ::ssize_t,
     }
+
+    pub struct sockaddr_vm {
+        pub svm_family: ::sa_family_t,
+        pub svm_reserved1: ::c_ushort,
+        pub svm_port: ::c_uint,
+        pub svm_cid: ::c_uint,
+        pub svm_zero: [u8; 4]
+    }
 }
 
 s_no_extra_traits! {
@@ -2240,6 +2248,12 @@ pub const SCHED_DEADLINE: ::c_int = 6;
 // bits/seek_constants.h
 pub const SEEK_DATA: ::c_int = 3;
 pub const SEEK_HOLE: ::c_int = 4;
+
+// sys/socket.h
+pub const AF_NFC: ::c_int = 39;
+pub const AF_VSOCK: ::c_int = 40;
+pub const PF_NFC: ::c_int = AF_NFC;
+pub const PF_VSOCK: ::c_int = AF_VSOCK;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
