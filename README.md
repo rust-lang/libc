@@ -35,7 +35,7 @@ libc = "0.2"
   This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
 
 * `const-extern-fn`: Changes some `extern fn`s into `const extern fn`s.
-   This features requires a nightly rustc
+   This feature requires a nightly rustc.
 
 * **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
 
