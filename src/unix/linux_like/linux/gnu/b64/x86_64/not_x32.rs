@@ -410,7 +410,6 @@ pub const SYS_pkey_alloc: ::c_long = 330;
 pub const SYS_pkey_free: ::c_long = 331;
 pub const SYS_statx: ::c_long = 332;
 
-#[link(name = "util")]
 extern "C" {
     pub fn sysctl(
         name: *mut ::c_int,

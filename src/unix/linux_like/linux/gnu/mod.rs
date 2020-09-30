@@ -1362,7 +1362,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "util")]
 extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
@@ -1436,7 +1435,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "dl")]
 extern "C" {
     pub fn dlmopen(
         lmid: Lmid_t,

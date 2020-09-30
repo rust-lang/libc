@@ -298,6 +298,32 @@ cfg_if! {
     } else if #[cfg(feature = "std")] {
         // cargo build, don't pull in anything extra as the libstd dep
         // already pulls in all libs.
+    } else if #[cfg(all(target_os = "linux",
+                        target_env = "gnu",
+                        feature = "rustc-dep-of-std"))] {
+        #[link(name = "util", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "rt", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "pthread", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "m", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "dl", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "c", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "gcc_eh", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "gcc", kind = "static-nobundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "util", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "rt", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "pthread", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "m", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "dl", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "c", cfg(not(target_feature = "crt-static")))]
+        extern {}
     } else if #[cfg(target_env = "musl")] {
         #[cfg_attr(feature = "rustc-dep-of-std",
                    link(name = "c", kind = "static",
