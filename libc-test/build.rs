@@ -1487,6 +1487,7 @@ fn test_android(target: &str) {
                 "linux/seccomp.h",
                 "linux/sched.h",
                 "linux/sockios.h",
+                "linux/vm_sockets.h",
                 "linux/wait.h",
 
     }
