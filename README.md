@@ -28,7 +28,7 @@ libc = "0.2"
 ## Features
 
 * `std`: by default `libc` links to the standard library. Disable this
-  feature remove this dependency and be able to use `libc` in `#![no_std]`
+  feature to remove this dependency and be able to use `libc` in `#![no_std]`
   crates.
 
 * `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
