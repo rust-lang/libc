@@ -409,6 +409,8 @@ pub const SYS_pkey_mprotect: ::c_long = 329;
 pub const SYS_pkey_alloc: ::c_long = 330;
 pub const SYS_pkey_free: ::c_long = 331;
 pub const SYS_statx: ::c_long = 332;
+pub const SYS_pidfd_open: ::c_long = 434;
+pub const SYS_clone3: ::c_long = 435;
 
 extern "C" {
     pub fn sysctl(
