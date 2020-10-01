@@ -1262,73 +1262,6 @@ pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
 
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
-
-// IPPROTO_IP defined in src/unix/mod.rs
-/// Hop-by-hop option header
-pub const IPPROTO_HOPOPTS: ::c_int = 0;
-// IPPROTO_ICMP defined in src/unix/mod.rs
-/// group mgmt protocol
-pub const IPPROTO_IGMP: ::c_int = 2;
-/// for compatibility
-pub const IPPROTO_IPIP: ::c_int = 4;
-// IPPROTO_TCP defined in src/unix/mod.rs
-/// exterior gateway protocol
-pub const IPPROTO_EGP: ::c_int = 8;
-/// pup
-pub const IPPROTO_PUP: ::c_int = 12;
-// IPPROTO_UDP defined in src/unix/mod.rs
-/// xns idp
-pub const IPPROTO_IDP: ::c_int = 22;
-/// tp-4 w/ class negotiation
-pub const IPPROTO_TP: ::c_int = 29;
-/// DCCP
-pub const IPPROTO_DCCP: ::c_int = 33;
-// IPPROTO_IPV6 defined in src/unix/mod.rs
-/// IP6 routing header
-pub const IPPROTO_ROUTING: ::c_int = 43;
-/// IP6 fragmentation header
-pub const IPPROTO_FRAGMENT: ::c_int = 44;
-/// resource reservation
-pub const IPPROTO_RSVP: ::c_int = 46;
-/// General Routing Encap.
-pub const IPPROTO_GRE: ::c_int = 47;
-/// IP6 Encap Sec. Payload
-pub const IPPROTO_ESP: ::c_int = 50;
-/// IP6 Auth Header
-pub const IPPROTO_AH: ::c_int = 51;
-// IPPROTO_ICMPV6 defined in src/unix/mod.rs
-/// IP6 no next header
-pub const IPPROTO_NONE: ::c_int = 59;
-/// IP6 destination option
-pub const IPPROTO_DSTOPTS: ::c_int = 60;
-pub const IPPROTO_MTP: ::c_int = 92;
-pub const IPPROTO_BEETPH: ::c_int = 94;
-/// encapsulation header
-pub const IPPROTO_ENCAP: ::c_int = 98;
-/// Protocol indep. multicast
-pub const IPPROTO_PIM: ::c_int = 103;
-/// IP Payload Comp. Protocol
-pub const IPPROTO_COMP: ::c_int = 108;
-/// SCTP
-pub const IPPROTO_SCTP: ::c_int = 132;
-pub const IPPROTO_MH: ::c_int = 135;
-pub const IPPROTO_UDPLITE: ::c_int = 136;
-pub const IPPROTO_MPLS: ::c_int = 137;
-/// raw IP packet
-pub const IPPROTO_RAW: ::c_int = 255;
-pub const IPPROTO_MAX: ::c_int = 256;
-
-pub const IP_MSFILTER: ::c_int = 41;
-pub const MCAST_JOIN_GROUP: ::c_int = 42;
-pub const MCAST_BLOCK_SOURCE: ::c_int = 43;
-pub const MCAST_UNBLOCK_SOURCE: ::c_int = 44;
-pub const MCAST_LEAVE_GROUP: ::c_int = 45;
-pub const MCAST_JOIN_SOURCE_GROUP: ::c_int = 46;
-pub const MCAST_LEAVE_SOURCE_GROUP: ::c_int = 47;
-pub const MCAST_MSFILTER: ::c_int = 48;
-pub const IP_MULTICAST_ALL: ::c_int = 49;
-pub const IP_UNICAST_IF: ::c_int = 50;
-
 pub const AF_IB: ::c_int = 27;
 pub const AF_MPLS: ::c_int = 28;
 pub const AF_NFC: ::c_int = 39;
@@ -1591,15 +1524,21 @@ pub const FALLOC_FL_UNSHARE_RANGE: ::c_int = 0x40;
 pub const ENOATTR: ::c_int = ::ENODATA;
 
 pub const SO_ORIGINAL_DST: ::c_int = 80;
-pub const IP_ORIGDSTADDR: ::c_int = 20;
-pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
+
+pub const IP_RECVFRAGSIZE: ::c_int = 25;
+
 pub const IPV6_FLOWINFO: ::c_int = 11;
-pub const IPV6_ORIGDSTADDR: ::c_int = 74;
-pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
+pub const IPV6_MULTICAST_ALL: ::c_int = 29;
+pub const IPV6_ROUTER_ALERT_ISOLATE: ::c_int = 30;
 pub const IPV6_FLOWLABEL_MGR: ::c_int = 32;
 pub const IPV6_FLOWINFO_SEND: ::c_int = 33;
+pub const IPV6_RECVFRAGSIZE: ::c_int = 77;
+pub const IPV6_FREEBIND: ::c_int = 78;
 pub const IPV6_FLOWINFO_FLOWLABEL: ::c_int = 0x000fffff;
 pub const IPV6_FLOWINFO_PRIORITY: ::c_int = 0x0ff00000;
+
+pub const IPV6_RTHDR_LOOSE: ::c_int = 0;
+pub const IPV6_RTHDR_STRICT: ::c_int = 1;
 
 pub const IUTF8: ::tcflag_t = 0x00004000;
 pub const CMSPAR: ::tcflag_t = 0o10000000000;
