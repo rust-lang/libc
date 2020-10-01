@@ -1,22 +1,7 @@
 //! RISC-V-specific definitions for 32-bit linux-like values
 
 pub type c_char = u8;
-pub type c_ulong = u32;
 pub type wchar_t = ::c_int;
-
-pub type nlink_t = ::c_uint;
-pub type fsblkcnt64_t = u64;
-pub type fsfilcnt64_t = u64;
-pub type suseconds_t = i64;
-pub type time_t = i64;
-pub type fsfilcnt_t = u64;
-pub type fsblkcnt_t = u64;
-pub type blksize_t = i64;
-pub type blkcnt_t = i64;
-pub type rlim_t = u64;
-pub type off_t = i64;
-pub type ino_t = u64;
-pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct pthread_attr_t {
