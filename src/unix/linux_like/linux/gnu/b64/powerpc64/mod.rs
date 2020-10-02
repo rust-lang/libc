@@ -233,6 +233,12 @@ s! {
         pub uc_mcontext: mcontext_t,
         pub uc_sigmask: ::sigset_t,
     }
+
+    pub struct ip_mreqn {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_address: ::in_addr,
+        pub imr_ifindex: ::c_int,
+    }
 }
 
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
@@ -1080,6 +1086,8 @@ pub const SYS_preadv2: ::c_long = 380;
 pub const SYS_pwritev2: ::c_long = 381;
 pub const SYS_kexec_file_load: ::c_long = 382;
 pub const SYS_statx: ::c_long = 383;
+pub const SYS_pidfd_open: ::c_long = 434;
+pub const SYS_clone3: ::c_long = 435;
 
 #[link(name = "util")]
 extern "C" {

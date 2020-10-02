@@ -1487,6 +1487,7 @@ fn test_android(target: &str) {
                 "linux/seccomp.h",
                 "linux/sched.h",
                 "linux/sockios.h",
+                "linux/vm_sockets.h",
                 "linux/wait.h",
 
     }
@@ -2648,6 +2649,13 @@ fn test_linux(target: &str) {
             // Defined in kernel headers but musl removes it; need musl 1.2 for definition in musl
             // headers.
             "P_PIDFD" => true,
+
+            // FIXME: Not currently available in headers
+            "SYS_pidfd_open" if mips => true,
+
+            // FIXME: Not currently available in headers on MIPS
+            // Not yet implemented on sparc64
+            "SYS_clone3" if mips | sparc64 => true,
 
             _ => false,
         }

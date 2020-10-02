@@ -1213,7 +1213,8 @@ cfg_if! {
         target_arch = "x86",
         target_arch = "x86_64",
         target_arch = "s390x",
-        target_arch = "riscv64"
+        target_arch = "riscv64",
+        target_arch = "riscv32"
     ))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
     } else if #[cfg(any(
@@ -1362,7 +1363,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "util")]
 extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
@@ -1436,7 +1436,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "dl")]
 extern "C" {
     pub fn dlmopen(
         lmid: Lmid_t,
@@ -1455,7 +1454,8 @@ cfg_if! {
                  target_arch = "arm",
                  target_arch = "mips",
                  target_arch = "powerpc",
-                 target_arch = "sparc"))] {
+                 target_arch = "sparc",
+                 target_arch = "riscv32"))] {
         mod b32;
         pub use self::b32::*;
     } else if #[cfg(any(target_arch = "x86_64",

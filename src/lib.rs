@@ -19,7 +19,7 @@
 // Attributes needed when building as part of the standard library
 #![cfg_attr(
     feature = "rustc-dep-of-std",
-    feature(cfg_target_vendor, link_cfg, no_core)
+    feature(cfg_target_vendor, link_cfg, no_core, static_nobundle)
 )]
 #![cfg_attr(libc_thread_local, feature(thread_local))]
 // Enable extra lints:

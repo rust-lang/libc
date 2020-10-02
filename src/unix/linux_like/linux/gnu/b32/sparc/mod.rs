@@ -1,6 +1,6 @@
 //! SPARC-specific definitions for 32-bit linux-like values
 
-pub type c_char = u8;
+pub type c_char = i8;
 pub type wchar_t = i32;
 
 s! {
@@ -961,6 +961,9 @@ pub const SYS_copy_file_range: ::c_long = 357;
 pub const SYS_preadv2: ::c_long = 358;
 pub const SYS_pwritev2: ::c_long = 359;
 pub const SYS_statx: ::c_long = 360;
+pub const SYS_pidfd_open: ::c_long = 434;
+// Reserved in the kernel, but not actually implemented yet
+pub const SYS_clone3: ::c_long = 435;
 
 #[link(name = "util")]
 extern "C" {

@@ -1,20 +1,25 @@
-//! RISC-V-specific definitions for 64-bit linux-like values
+//! RISC-V-specific definitions for 32-bit linux-like values
 
 pub type c_char = u8;
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type wchar_t = ::c_int;
-
-pub type nlink_t = ::c_uint;
-pub type blksize_t = ::c_int;
-pub type fsblkcnt64_t = ::c_ulong;
-pub type fsfilcnt64_t = ::c_ulong;
-pub type suseconds_t = i64;
-pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct pthread_attr_t {
         __size: [::c_ulong; 7],
+    }
+
+    pub struct msqid_ds {
+        pub msg_perm: ::ipc_perm,
+        pub msg_stime: ::time_t,
+        pub msg_rtime: ::time_t,
+        pub msg_ctime: ::time_t,
+        __msg_cbytes: ::c_ulong,
+        pub msg_qnum: ::msgqnum_t,
+        pub msg_qbytes: ::msglen_t,
+        pub msg_lspid: ::pid_t,
+        pub msg_lrpid: ::pid_t,
+        __glibc_reserved4: ::c_ulong,
+        __glibc_reserved5: ::c_ulong,
     }
 
     pub struct stat {
@@ -51,7 +56,7 @@ s! {
         pub st_size: ::off64_t,
         pub st_blksize: ::blksize_t,
         pub __pad2: ::c_int,
-        pub st_blocks: ::blkcnt_t,
+        pub st_blocks: ::blkcnt64_t,
         pub st_atime: ::time_t,
         pub st_atime_nsec: ::c_long,
         pub st_mtime: ::time_t,
@@ -191,16 +196,9 @@ s! {
         pub l_len: ::off64_t,
         pub l_pid: ::pid_t,
     }
-
-    pub struct ip_mreqn {
-        pub imr_multiaddr: ::in_addr,
-        pub imr_address: ::in_addr,
-        pub imr_ifindex: ::c_int,
-    }
 }
 
-pub const POSIX_FADV_DONTNEED: ::c_int = 4;
-pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+pub const RLIM_INFINITY: ::rlim_t = !0;
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: ::c_int = 0x8;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
@@ -223,9 +221,6 @@ pub const O_SYNC: ::c_int = 1052672;
 pub const O_RSYNC: ::c_int = 1052672;
 pub const O_DSYNC: ::c_int = 4096;
 pub const O_FSYNC: ::c_int = 1052672;
-pub const O_NOATIME: ::c_int = 262144;
-pub const O_PATH: ::c_int = 2097152;
-pub const O_TMPFILE: ::c_int = 4259840;
 pub const MAP_GROWSDOWN: ::c_int = 256;
 pub const EDEADLK: ::c_int = 35;
 pub const ENAMETOOLONG: ::c_int = 36;
@@ -318,9 +313,7 @@ pub const SO_RCVBUFFORCE: ::c_int = 33;
 pub const SO_KEEPALIVE: ::c_int = 9;
 pub const SO_OOBINLINE: ::c_int = 10;
 pub const SO_NO_CHECK: ::c_int = 11;
-pub const SO_PRIORITY: ::c_int = 12;
 pub const SO_LINGER: ::c_int = 13;
-pub const SO_BSDCOMPAT: ::c_int = 14;
 pub const SO_REUSEPORT: ::c_int = 15;
 pub const SO_PASSCRED: ::c_int = 16;
 pub const SO_PEERCRED: ::c_int = 17;
@@ -331,28 +324,22 @@ pub const SO_SNDTIMEO: ::c_int = 21;
 pub const SO_SECURITY_AUTHENTICATION: ::c_int = 22;
 pub const SO_SECURITY_ENCRYPTION_TRANSPORT: ::c_int = 23;
 pub const SO_SECURITY_ENCRYPTION_NETWORK: ::c_int = 24;
-pub const SO_BINDTODEVICE: ::c_int = 25;
 pub const SO_ATTACH_FILTER: ::c_int = 26;
 pub const SO_DETACH_FILTER: ::c_int = 27;
 pub const SO_GET_FILTER: ::c_int = 26;
 pub const SO_PEERNAME: ::c_int = 28;
-pub const SO_TIMESTAMP: ::c_int = 29;
 pub const SO_ACCEPTCONN: ::c_int = 30;
 pub const SO_PEERSEC: ::c_int = 31;
 pub const SO_PASSSEC: ::c_int = 34;
 pub const SO_TIMESTAMPNS: ::c_int = 35;
 pub const SCM_TIMESTAMPNS: ::c_int = 35;
-pub const SO_MARK: ::c_int = 36;
 pub const SO_PROTOCOL: ::c_int = 38;
 pub const SO_DOMAIN: ::c_int = 39;
-pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_WIFI_STATUS: ::c_int = 41;
 pub const SCM_WIFI_STATUS: ::c_int = 41;
-pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_NOFCS: ::c_int = 43;
 pub const SO_LOCK_FILTER: ::c_int = 44;
 pub const SO_SELECT_ERR_QUEUE: ::c_int = 45;
-pub const SO_BUSY_POLL: ::c_int = 46;
 pub const SO_MAX_PACING_RATE: ::c_int = 47;
 pub const SO_BPF_EXTENSIONS: ::c_int = 48;
 pub const SO_INCOMING_CPU: ::c_int = 49;
@@ -360,7 +347,6 @@ pub const SO_ATTACH_BPF: ::c_int = 50;
 pub const SO_DETACH_BPF: ::c_int = 27;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
-pub const SA_ONSTACK: ::c_int = 134217728;
 pub const SA_SIGINFO: ::c_int = 4;
 pub const SA_NOCLDWAIT: ::c_int = 2;
 pub const SIGTTIN: ::c_int = 21;
@@ -390,19 +376,10 @@ pub const POLLWRNORM: ::c_short = 256;
 pub const POLLWRBAND: ::c_short = 512;
 pub const O_ASYNC: ::c_int = 8192;
 pub const O_NDELAY: ::c_int = 2048;
-pub const PTRACE_DETACH: ::c_uint = 17;
 pub const EFD_NONBLOCK: ::c_int = 2048;
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
-pub const F_SETLK: ::c_int = 6;
-pub const F_SETLKW: ::c_int = 7;
-pub const F_RDLCK: ::c_int = 0;
-pub const F_WRLCK: ::c_int = 1;
-pub const F_UNLCK: ::c_int = 2;
-pub const F_OFD_GETLK: ::c_int = 36;
-pub const F_OFD_SETLK: ::c_int = 37;
-pub const F_OFD_SETLKW: ::c_int = 38;
 pub const SFD_NONBLOCK: ::c_int = 2048;
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
@@ -424,30 +401,7 @@ pub const TIOCM_CTS: ::c_int = 32;
 pub const TIOCM_CAR: ::c_int = 64;
 pub const TIOCM_RNG: ::c_int = 128;
 pub const TIOCM_DSR: ::c_int = 256;
-pub const SFD_CLOEXEC: ::c_int = 524288;
-pub const NCCS: usize = 32;
-pub const O_TRUNC: ::c_int = 512;
-pub const O_CLOEXEC: ::c_int = 524288;
-pub const EBFONT: ::c_int = 59;
-pub const ENOSTR: ::c_int = 60;
-pub const ENODATA: ::c_int = 61;
-pub const ETIME: ::c_int = 62;
-pub const ENOSR: ::c_int = 63;
-pub const ENONET: ::c_int = 64;
-pub const ENOPKG: ::c_int = 65;
-pub const EREMOTE: ::c_int = 66;
-pub const ENOLINK: ::c_int = 67;
-pub const EADV: ::c_int = 68;
-pub const ESRMNT: ::c_int = 69;
-pub const ECOMM: ::c_int = 70;
-pub const EPROTO: ::c_int = 71;
-pub const EDOTDOT: ::c_int = 73;
-pub const SA_NODEFER: ::c_int = 1073741824;
-pub const SA_RESETHAND: ::c_int = -2147483648;
-pub const SA_RESTART: ::c_int = 268435456;
-pub const SA_NOCLDSTOP: ::c_int = 1;
-pub const EPOLL_CLOEXEC: ::c_int = 524288;
-pub const EFD_CLOEXEC: ::c_int = 524288;
+
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const O_DIRECT: ::c_int = 16384;
@@ -588,6 +542,7 @@ pub const TIOCSWINSZ: ::c_ulong = 21524;
 pub const FIONREAD: ::c_ulong = 21531;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+
 pub const SYS_read: ::c_long = 63;
 pub const SYS_write: ::c_long = 64;
 pub const SYS_close: ::c_long = 57;
@@ -863,5 +818,3 @@ pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
 pub const SYS_statx: ::c_long = 291;
-pub const SYS_pidfd_open: ::c_long = 434;
-pub const SYS_clone3: ::c_long = 435;

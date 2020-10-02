@@ -5,22 +5,39 @@ use pthread_mutex_t;
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type clock_t = i32;
-pub type time_t = i32;
-pub type suseconds_t = i32;
-pub type ino_t = u32;
-pub type off_t = i32;
-pub type blkcnt_t = i32;
 
-pub type fsblkcnt_t = ::c_ulong;
-pub type fsfilcnt_t = ::c_ulong;
-pub type rlim_t = c_ulong;
 pub type shmatt_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 pub type msglen_t = ::c_ulong;
-pub type blksize_t = i32;
 pub type nlink_t = u32;
 pub type __u64 = ::c_ulonglong;
 pub type __fsword_t = i32;
+pub type fsblkcnt64_t = u64;
+pub type fsfilcnt64_t = u64;
+
+cfg_if! {
+    if #[cfg(target_arch = "riscv32")] {
+        pub type time_t = i64;
+        pub type suseconds_t = i64;
+        pub type ino_t = u64;
+        pub type off_t = i64;
+        pub type blkcnt_t = i64;
+        pub type fsblkcnt_t = u64;
+        pub type fsfilcnt_t = u64;
+        pub type rlim_t = u64;
+        pub type blksize_t = i64;
+    } else {
+        pub type time_t = i32;
+        pub type suseconds_t = i32;
+        pub type ino_t = u32;
+        pub type off_t = i32;
+        pub type blkcnt_t = i32;
+        pub type fsblkcnt_t = ::c_ulong;
+        pub type fsfilcnt_t = ::c_ulong;
+        pub type rlim_t = c_ulong;
+        pub type blksize_t = i32;
+    }
+}
 
 s! {
     pub struct stat {
@@ -114,6 +131,12 @@ s! {
         pub freehigh: ::c_ulong,
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 8],
+    }
+
+    pub struct ip_mreqn {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_address: ::in_addr,
+        pub imr_ifindex: ::c_int,
     }
 }
 
@@ -272,6 +295,9 @@ cfg_if! {
     } else if #[cfg(target_arch = "sparc")] {
         mod sparc;
         pub use self::sparc::*;
+    } else if #[cfg(target_arch = "riscv32")] {
+        mod riscv32;
+        pub use self::riscv32::*;
     } else {
         // Unknown target_arch
     }

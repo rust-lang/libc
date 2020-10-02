@@ -225,6 +225,7 @@ powerpc64-unknown-freebsd \
 riscv64gc-unknown-linux-gnu \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
+riscv32gc-unknown-linux-gnu \
 sparc64-unknown-netbsd \
 
 thumbv6m-none-eabi \

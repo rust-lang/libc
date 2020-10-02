@@ -236,6 +236,14 @@ s! {
         pub rm_so: ::ssize_t,
         pub rm_eo: ::ssize_t,
     }
+
+    pub struct sockaddr_vm {
+        pub svm_family: ::sa_family_t,
+        pub svm_reserved1: ::c_ushort,
+        pub svm_port: ::c_uint,
+        pub svm_cid: ::c_uint,
+        pub svm_zero: [u8; 4]
+    }
 }
 
 s_no_extra_traits! {
@@ -1668,13 +1676,16 @@ pub const SFD_NONBLOCK: ::c_int = O_NONBLOCK;
 pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 
 pub const SO_ORIGINAL_DST: ::c_int = 80;
-pub const IP_ORIGDSTADDR: ::c_int = 20;
-pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
+
+pub const IP_RECVFRAGSIZE: ::c_int = 25;
+
 pub const IPV6_FLOWINFO: ::c_int = 11;
-pub const IPV6_ORIGDSTADDR: ::c_int = 74;
-pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
+pub const IPV6_MULTICAST_ALL: ::c_int = 29;
+pub const IPV6_ROUTER_ALERT_ISOLATE: ::c_int = 30;
 pub const IPV6_FLOWLABEL_MGR: ::c_int = 32;
 pub const IPV6_FLOWINFO_SEND: ::c_int = 33;
+pub const IPV6_RECVFRAGSIZE: ::c_int = 77;
+pub const IPV6_FREEBIND: ::c_int = 78;
 pub const IPV6_FLOWINFO_FLOWLABEL: ::c_int = 0x000fffff;
 pub const IPV6_FLOWINFO_PRIORITY: ::c_int = 0x0ff00000;
 
@@ -2240,6 +2251,12 @@ pub const SCHED_DEADLINE: ::c_int = 6;
 // bits/seek_constants.h
 pub const SEEK_DATA: ::c_int = 3;
 pub const SEEK_HOLE: ::c_int = 4;
+
+// sys/socket.h
+pub const AF_NFC: ::c_int = 39;
+pub const AF_VSOCK: ::c_int = 40;
+pub const PF_NFC: ::c_int = AF_NFC;
+pub const PF_VSOCK: ::c_int = AF_VSOCK;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
