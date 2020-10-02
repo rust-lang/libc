@@ -145,6 +145,7 @@ aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
+riscv64gc-unknown-linux-gnu \
 wasm32-wasi \
 x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
@@ -222,10 +223,12 @@ nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \
 powerpc64-unknown-freebsd \
-riscv64gc-unknown-linux-gnu \
+riscv32i-unknown-none-elf \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 riscv32gc-unknown-linux-gnu \
+riscv64gc-unknown-none-elf \
+riscv64imac-unknown-none-elf \
 sparc64-unknown-netbsd \
 
 thumbv6m-none-eabi \
