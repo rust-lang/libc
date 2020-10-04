@@ -2268,10 +2268,6 @@ extern "C" {
         f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
-    pub fn pthread_getattr_np(
-        thread: ::pthread_t,
-        attr: *mut ::pthread_attr_t,
-    ) -> ::c_int;
     pub fn pthread_attr_getstack(
         attr: *const ::pthread_attr_t,
         stackaddr: *mut *mut ::c_void,

@@ -65,6 +65,11 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
+
+    pub fn pthread_getattr_np(
+        thread: ::pthread_t,
+        attr: *mut ::pthread_attr_t,
+    ) -> ::c_int;
 }
 
 s_no_extra_traits! {
