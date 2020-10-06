@@ -2129,6 +2129,13 @@ pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
 pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
 
+// uapi/linux/vm_sockets.h
+pub const VMADDR_CID_ANY: ::c_uint = 0xFFFFFFFF;
+pub const VMADDR_CID_HYPERVISOR: ::c_uint = 0;
+pub const VMADDR_CID_LOCAL: ::c_uint = 1;
+pub const VMADDR_CID_HOST: ::c_uint = 2;
+pub const VMADDR_PORT_ANY: ::c_uint = 0xFFFFFFFF;
+
 // uapi/linux/inotify.h
 pub const IN_ACCESS: u32 = 0x0000_0001;
 pub const IN_MODIFY: u32 = 0x0000_0002;

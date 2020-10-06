@@ -1562,6 +1562,9 @@ fn test_android(target: &str) {
             // Needs a newer Android SDK for the definition
             "P_PIDFD" => true,
 
+            // Requires Linux kernel 5.6
+            "VMADDR_CID_LOCAL" => true,
+
             _ => false,
         }
     });
