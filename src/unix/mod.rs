@@ -508,6 +508,7 @@ extern "C" {
     pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> c_int;
     pub fn feof(stream: *mut FILE) -> c_int;
     pub fn ferror(stream: *mut FILE) -> c_int;
+    pub fn clearerr(stream: *mut FILE);
     pub fn perror(s: *const c_char);
     pub fn atoi(s: *const c_char) -> c_int;
     #[cfg_attr(
