@@ -82,17 +82,45 @@ if [ "$QEMU" != "" ]; then
   exec egrep "^(PASSED)|(test result: ok)" "${CARGO_TARGET_DIR}/out.log"
 fi
 
-# FIXME: x86_64-unknown-linux-gnux32 fail to compile without --release
+# FIXME: x86_64-unknown-linux-gnux32 fails to compile without --release
 # See https://github.com/rust-lang/rust/issues/59220
 opt=
 if [ "$TARGET" = "x86_64-unknown-linux-gnux32" ]; then
   opt="--release"
 fi
 
-cargo test $opt --no-default-features --manifest-path libc-test/Cargo.toml \
-      --target "${TARGET}"
+if [ "$TARGET" = "s390x-unknown-linux-gnu" ]; then
+  # FIXME: s390x-unknown-linux-gnu often fails to test due to timeout,
+  # so we retry this N times.
+  N=5
+  n=0
+  passed=0
+  until [ $n -ge $N ]
+  do
+    if [ "$passed" = "0" ]; then
+      if cargo test --no-default-features --manifest-path libc-test/Cargo.toml --target "${TARGET}" ; then
+        passed=$((passed+1))
+        continue
+      fi
+    elif [ "$passed" = "1" ]; then
+      if cargo test $opt --manifest-path libc-test/Cargo.toml --target "${TARGET}" ; then
+        passed=$((passed+1))
+        continue
+      fi
+    elif [ "$passed" = "2" ]; then
+      if cargo test $opt --features extra_traits --manifest-path libc-test/Cargo.toml --target "${TARGET}"; then
+        break
+      fi
+    fi
+    n=$((n+1))
+    sleep 1
+  done
+else
+  cargo test $opt --no-default-features --manifest-path libc-test/Cargo.toml \
+    --target "${TARGET}"
 
-cargo test $opt --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+  cargo test $opt --manifest-path libc-test/Cargo.toml --target "${TARGET}"
 
-cargo test $opt --features extra_traits --manifest-path libc-test/Cargo.toml \
-      --target "${TARGET}"
+  cargo test $opt --features extra_traits --manifest-path libc-test/Cargo.toml \
+    --target "${TARGET}"
+fi
