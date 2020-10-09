@@ -1,8 +1,9 @@
 FROM ubuntu:20.04
 
-RUN dpkg --add-architecture i386 && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN dpkg --add-architecture i386
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends libc6-dev gcc
+RUN apt-get install -y --no-install-recommends \
   file \
   curl \
   ca-certificates \
@@ -12,9 +13,7 @@ RUN dpkg --add-architecture i386 && \
   expect \
   openjdk-8-jre \
   libstdc++6:i386 \
-  libpulse0 \
-  gcc \
-  libc6-dev
+  libpulse0
 
 WORKDIR /android/
 COPY android* /android/
