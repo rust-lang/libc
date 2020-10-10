@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - master
+
+jobs:
+  docker_linux_tier1:
+    name: Docker Linux Tier1
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [
+          i686-unknown-linux-gnu,
+          x86_64-unknown-linux-gnu,
+        ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force nightly
+          rustup default nightly
+
+      - name: Install target
+        run: |
+          set -ex
+          if [ -n "${{ matrix.target }}" ]; then
+            rustup target add ${{ matrix.target }}
+          fi
+
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+
+      - name: Execute run-docker.sh
+        run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
