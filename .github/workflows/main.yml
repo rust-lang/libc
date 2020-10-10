@@ -56,7 +56,6 @@ jobs:
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
-
   macos:
     name: macOS
     runs-on: macos-10.15
@@ -228,6 +227,7 @@ jobs:
 
   docker_linux_tier2:
     name: Docker Linux Tier2
+    needs: [docker_linux_tier1, style_and_docs]
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
@@ -306,6 +306,7 @@ jobs:
   # devkitpro's pacman needs to be connected from Docker.
   DockerSwitch:
     name: Docker Switch
+    needs: [docker_linux_tier1, style_and_docs]
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
@@ -345,12 +346,13 @@ jobs:
 
   build_channels_linux:
     name: Build Channels Linux
+    needs: docker_linux_tier2
     runs-on: ubuntu-18.04
     env:
       OS: linux
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 4
       matrix:
         toolchain: [
           stable,
@@ -396,15 +398,15 @@ jobs:
       - name: Execute build.sh
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
-
   build_channels_macos:
     name: Build Channels macOS
+    needs: macos
     runs-on: macos-10.15
     env:
       OS: macos
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 3
       matrix:
         toolchain: [
           stable,
@@ -450,9 +452,9 @@ jobs:
       - name: Execute build.sh
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
-
   semver_linux:
     name: Semver Linux
+    needs: build_channels_linux
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
@@ -492,6 +494,7 @@ jobs:
 
   semver_macos:
     name: Semver macOS
+    needs: build_channels_macos
     runs-on: macos-10.15
     strategy:
       fail-fast: false
