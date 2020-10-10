@@ -13,15 +13,10 @@ if ! rustc --version | grep -E "nightly" ; then
     exit 1
 fi
 
-# FIXME: Pin nightly version to make semverver compile.
-NIGHTLY_DATE=nightly-2020-06-18
-
-rustup override set ${NIGHTLY_DATE}
-
 rustup component add rustc-dev llvm-tools-preview
 
 # FIXME: Use upstream once it gets rustup.
-cargo +${NIGHTLY_DATE} install semververfork
+cargo install semververfork
 
 TARGETS=
 case "${OS}" in

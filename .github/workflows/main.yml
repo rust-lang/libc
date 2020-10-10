@@ -21,38 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force nightly
-          rustup default nightly
-      - name: Install target
-        run: |
-          set -ex
-          rustup target add ${{ matrix.target }}
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
@@ -68,44 +37,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force nightly
-          rustup default nightly
-      - name: Install target
-        run: |
-          set -ex
-          rustup target add ${{ matrix.target }}
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run.sh
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
     name: Windows
     runs-on: windows-2019
+    env:
+      OS: windows
     strategy:
       fail-fast: false
       matrix:
@@ -125,60 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          rustup set profile minimal
-          rustup update --force --no-self-update nightly-${{ matrix.target }}
-          rustup default nightly-${{ matrix.target }}
-      - name: Install target
-        run: rustup target add ${{ matrix.target }}
-      - name: Install MinGW32
-        run: |
-          set -ex
-          if [[ ${ARCH_BITS} = "i686" ]]; then
-            choco install mingw --x86 --force
-          fi
-        shell: bash
-      - name: Find GCC libraries
-        run: |
-          set -ex
-          gcc -print-search-dirs
-          /usr/bin/find "C:\ProgramData\Chocolatey" -name "crt2*"
-          /usr/bin/find "C:\ProgramData\Chocolatey" -name "dllcrt2*"
-          /usr/bin/find "C:\ProgramData\Chocolatey" -name "libmsvcrt*"
-        shell: bash
-      - name: Fix MinGW
-        run: |
-          set -ex
-          if [[ -n ${ARCH_BITS} ]]; then
-            for i in crt2.o dllcrt2.o libmingwex.a libmsvcrt.a ; do
-              cp -f "/C/ProgramData/Chocolatey/lib/mingw/tools/install/mingw${ARCH_BITS}/${ARCH}-w64-mingw32/lib/$i" "`rustc --print sysroot`/lib/rustlib/${TARGET}/lib"
-            done
-          fi
-        shell: bash
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-        shell: bash
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
         shell: bash
       - name: Execute run.sh
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
@@ -192,34 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force nightly
-          rustup default nightly
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        run: sh ./ci/install-rust.sh
       - name: Check style
         run: sh ci/style.sh
       - name: Generate documentation
@@ -268,38 +128,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force nightly
-          rustup default nightly
-      - name: Install target
-        run: |
-          set -ex
-          rustup target add ${{ matrix.target }}
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
@@ -313,34 +142,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force nightly
-          rustup default nightly
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        run: sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh switch
 
@@ -367,34 +169,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force ${{ matrix.toolchain }}
-          rustup default ${{ matrix.toolchain }}
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
       - name: Execute build.sh
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
@@ -421,34 +196,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force ${{ matrix.toolchain }}
-          rustup default ${{ matrix.toolchain }}
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
       - name: Execute build.sh
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
@@ -461,34 +209,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force nightly
-          rustup default nightly
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        # FIXME: Pin nightly version to make semverver compilable.
+        run: TOOLCHAIN=nightly-2020-06-18 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh linux
 
@@ -501,33 +223,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        run: |
-          set -ex
-          rustup set profile minimal
-          rustup update --force nightly
-          rustup default nightly
-      - name: Query Rust and Cargo versions
-        run: |
-          set -ex
-          rustc -Vv
-          cargo -V
-          rustup -Vv
-          rustup show
-          which rustc
-          which cargo
-          which rustup
-      - name: Generate lockfile
-        run: |
-          set -ex
-          N=5
-          n=0
-          until [ $n -ge $N ]
-          do
-            if cargo generate-lockfile ; then
-              break
-            fi
-            n=$((n+1))
-            sleep 1
-          done
+        # FIXME: Pin nightly version to make semverver compilable.
+        run: TOOLCHAIN=nightly-2020-06-18 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh macos
