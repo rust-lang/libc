@@ -72,5 +72,5 @@ for TARGET in $TARGETS; do
     done
 
     # FIXME: Use upstream once it gets rustup.
-    cargo +${NIGHTLY_DATE} semverfork --api-guidelines --target="${TARGET}"
+    cargo semverfork --api-guidelines --target="${TARGET}"
 done
