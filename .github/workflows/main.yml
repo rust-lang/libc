@@ -31,9 +31,7 @@ jobs:
       - name: Install target
         run: |
           set -ex
-          if [ -n "${{ matrix.target }}" ]; then
-            rustup target add ${{ matrix.target }}
-          fi
+          rustup target add ${{ matrix.target }}
 
       - name: Query Rust and Cargo versions
         run: |
@@ -62,3 +60,228 @@ jobs:
 
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
+
+
+  docker_linux_tier2:
+    name: Docker Linux Tier2
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        target: [
+          aarch64-linux-android,
+          aarch64-unknown-linux-gnu,
+          aarch64-unknown-linux-musl,
+          arm-linux-androideabi,
+          arm-unknown-linux-gnueabihf,
+          arm-unknown-linux-musleabihf,
+          # FIXME: Disabled because currently broken, see:
+          # https://github.com/rust-lang/libc/issues/1591
+          # asmjs-unknown-emscripten,
+          # FIXME: Disabled due to https://github.com/rust-lang/libc/issues/1765
+          # i686-linux-android,
+          i686-unknown-linux-musl,
+          mips-unknown-linux-gnu,
+          mips-unknown-linux-musl,
+          mips64-unknown-linux-gnuabi64,
+          mips64el-unknown-linux-gnuabi64,
+          mipsel-unknown-linux-musl,
+          # FIXME: Figure out why this is disabled.
+          #powerpc-unknown-linux-gnu,
+          powerpc64-unknown-linux-gnu,
+          powerpc64le-unknown-linux-gnu,
+          s390x-unknown-linux-gnu,
+          riscv64gc-unknown-linux-gnu,
+          # FIXME: Figure out why this is disabled.
+          #wasm32-wasi,
+          sparc64-unknown-linux-gnu,
+          wasm32-unknown-emscripten,
+          x86_64-linux-android,
+          x86_64-unknown-linux-gnux32,
+          x86_64-unknown-linux-musl,
+        ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force nightly
+          rustup default nightly
+
+      - name: Install target
+        run: |
+          set -ex
+          rustup target add ${{ matrix.target }}
+
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+
+      - name: Execute run-docker.sh
+        run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
+
+  macos:
+    name: macOS
+    runs-on: macos-10.15
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [
+          x86_64-apple-darwin,
+        ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force nightly
+          rustup default nightly
+
+      - name: Install target
+        run: |
+          set -ex
+          rustup target add ${{ matrix.target }}
+
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+
+      - name: Execute run.sh
+        run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
+
+
+  windows:
+    name: Windows
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-pc-windows-gnu
+            env:
+              ARCH_BITS: 64
+              ARCH: x86_64
+          - target: x86_64-pc-windows-msvc
+          # Disabled because broken:
+          #  https://github.com/rust-lang/libc/issues/1592
+          #- target: i686-pc-windows-gnu
+          #  env:
+          #    ARCH_BITS: 32
+          #    ARCH: i686
+          - target: i686-pc-windows-msvc
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          rustup set profile minimal
+          rustup update --force --no-self-update nightly-${{ matrix.target }}
+          rustup default nightly-${{ matrix.target }}
+
+      - name: Install target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Install MinGW32
+        run: |
+          set -ex
+          if [[ ${ARCH_BITS} = "i686" ]]; then
+            choco install mingw --x86 --force
+          fi
+        shell: bash
+
+      - name: Find GCC libraries
+        run: |
+          set -ex
+          gcc -print-search-dirs
+          /usr/bin/find "C:\ProgramData\Chocolatey" -name "crt2*"
+          /usr/bin/find "C:\ProgramData\Chocolatey" -name "dllcrt2*"
+          /usr/bin/find "C:\ProgramData\Chocolatey" -name "libmsvcrt*"
+        shell: bash
+
+      - name: Fix MinGW
+        run: |
+          set -ex
+          if [[ -n ${ARCH_BITS} ]]; then
+            for i in crt2.o dllcrt2.o libmingwex.a libmsvcrt.a ; do
+              cp -f "/C/ProgramData/Chocolatey/lib/mingw/tools/install/mingw${ARCH_BITS}/${ARCH}-w64-mingw32/lib/$i" "`rustc --print sysroot`/lib/rustlib/${TARGET}/lib"
+            done
+          fi
+        shell: bash
+
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+        shell: bash
+
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+        shell: bash
+
+      - name: Execute run.sh
+        run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
+        shell: bash
