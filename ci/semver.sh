@@ -53,7 +53,7 @@ x86_64-fortanix-unknown-sgx \
 wasm32-unknown-unknown \
 "
     ;;
-    *osx*)
+    *macos*)
         TARGETS="\
 aarch64-apple-ios \
 x86_64-apple-darwin \

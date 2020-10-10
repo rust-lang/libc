@@ -426,3 +426,138 @@ jobs:
           done
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh switch
+
+  build_channels_macos:
+    name: Build Channels macOS
+    runs-on: macos-10.15
+    env:
+      OS: macos
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        toolchain: [
+          stable,
+          beta,
+          nightly,
+          1.13.0,
+          1.19.0,
+          1.24.0,
+          1.25.0,
+          1.30.0,
+        ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force ${{ matrix.toolchain }}
+          rustup default ${{ matrix.toolchain }}
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+      - name: Execute build.sh
+        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+
+  semver_linux:
+    name: Semver Linux
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force nightly
+          rustup default nightly
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+      - name: Check breaking changes
+        run: sh ci/semver.sh linux
+
+
+  semver_macos:
+    name: Semver macOS
+    runs-on: macos-10.15
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force nightly
+          rustup default nightly
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+      - name: Check breaking changes
+        run: sh ci/semver.sh macos
