@@ -285,3 +285,144 @@ jobs:
       - name: Execute run.sh
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
         shell: bash
+
+
+  style_and_docs:
+    name: Style and docs
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force nightly
+          rustup default nightly
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+
+      - name: Check style
+        run: sh ci/style.sh
+      - name: Generate documentation
+        run: LIBC_CI=1 sh ci/dox.sh
+
+
+  build_channels_linux:
+    name: Build Channels Linux
+    runs-on: ubuntu-18.04
+    env:
+      OS: linux
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        toolchain: [
+          stable,
+          beta,
+          nightly,
+          1.13.0,
+          1.19.0,
+          1.24.0,
+          1.25.0,
+          1.30.0,
+        ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force ${{ matrix.toolchain }}
+          rustup default ${{ matrix.toolchain }}
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+      - name: Execute build.sh
+        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+
+
+  # devkitpro's pacman needs to be connected from Docker.
+  DockerSwitch:
+    name: Docker Switch
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust toolchain
+        run: |
+          set -ex
+          rustup set profile minimal
+          rustup update --force nightly
+          rustup default nightly
+      - name: Query Rust and Cargo versions
+        run: |
+          set -ex
+          rustc -Vv
+          cargo -V
+          rustup -Vv
+          rustup show
+          which rustc
+          which cargo
+          which rustup
+      - name: Generate lockfile
+        run: |
+          set -ex
+          N=5
+          n=0
+          until [ $n -ge $N ]
+          do
+            if cargo generate-lockfile ; then
+              break
+            fi
+            n=$((n+1))
+            sleep 1
+          done
+      - name: Execute run-docker.sh
+        run: LIBC_CI=1 sh ./ci/run-docker.sh switch
