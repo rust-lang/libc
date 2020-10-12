@@ -1,0 +1,306 @@
+name: CI (bors)
+
+on:
+  push:
+    branches:
+      - auto-libc
+      - try
+
+jobs:
+  docker_linux_tier1:
+    name: Docker Linux Tier1
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [
+          i686-unknown-linux-gnu,
+          x86_64-unknown-linux-gnu,
+        ]
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+      - name: Execute run-docker.sh
+        run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
+
+  macos:
+    name: macOS
+    runs-on: macos-10.15
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [
+          x86_64-apple-darwin,
+        ]
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+      - name: Execute run.sh
+        run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
+
+  windows:
+    name: Windows
+    runs-on: windows-2019
+    env:
+      OS: windows
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-pc-windows-gnu
+            env:
+              ARCH_BITS: 64
+              ARCH: x86_64
+          - target: x86_64-pc-windows-msvc
+          # Disabled because broken:
+          #  https://github.com/rust-lang/libc/issues/1592
+          #- target: i686-pc-windows-gnu
+          #  env:
+          #    ARCH_BITS: 32
+          #    ARCH: i686
+          - target: i686-pc-windows-msvc
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+        shell: bash
+      - name: Execute run.sh
+        run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
+        shell: bash
+
+  style_and_docs:
+    name: Style and docs
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: sh ./ci/install-rust.sh
+      - name: Check style
+        run: sh ci/style.sh
+      - name: Generate documentation
+        run: LIBC_CI=1 sh ci/dox.sh
+
+  docker_linux_tier2:
+    name: Docker Linux Tier2
+    needs: [docker_linux_tier1, style_and_docs]
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        target: [
+          aarch64-linux-android,
+          aarch64-unknown-linux-gnu,
+          aarch64-unknown-linux-musl,
+          arm-linux-androideabi,
+          arm-unknown-linux-gnueabihf,
+          arm-unknown-linux-musleabihf,
+          # FIXME: Disabled because currently broken, see:
+          # https://github.com/rust-lang/libc/issues/1591
+          # asmjs-unknown-emscripten,
+          # FIXME: Disabled due to https://github.com/rust-lang/libc/issues/1765
+          # i686-linux-android,
+          i686-unknown-linux-musl,
+          mips-unknown-linux-gnu,
+          mips-unknown-linux-musl,
+          mips64-unknown-linux-gnuabi64,
+          mips64el-unknown-linux-gnuabi64,
+          mipsel-unknown-linux-musl,
+          # FIXME: Figure out why this is disabled.
+          #powerpc-unknown-linux-gnu,
+          powerpc64-unknown-linux-gnu,
+          powerpc64le-unknown-linux-gnu,
+          s390x-unknown-linux-gnu,
+          riscv64gc-unknown-linux-gnu,
+          # FIXME: Figure out why this is disabled.
+          #wasm32-wasi,
+          sparc64-unknown-linux-gnu,
+          wasm32-unknown-emscripten,
+          x86_64-linux-android,
+          x86_64-unknown-linux-gnux32,
+          x86_64-unknown-linux-musl,
+        ]
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+      - name: Execute run-docker.sh
+        run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
+
+  # devkitpro's pacman needs to be connected from Docker.
+  docker_switch:
+    name: Docker Switch
+    needs: [docker_linux_tier1, style_and_docs]
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: sh ./ci/install-rust.sh
+      - name: Execute run-docker.sh
+        run: LIBC_CI=1 sh ./ci/run-docker.sh switch
+
+  build_channels_linux:
+    name: Build Channels Linux
+    needs: docker_linux_tier2
+    runs-on: ubuntu-18.04
+    env:
+      OS: linux
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        toolchain: [
+          stable,
+          beta,
+          nightly,
+          1.13.0,
+          1.19.0,
+          1.24.0,
+          1.25.0,
+          1.30.0,
+        ]
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
+      - name: Execute build.sh
+        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+
+  build_channels_macos:
+    name: Build Channels macOS
+    needs: macos
+    runs-on: macos-10.15
+    env:
+      OS: macos
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        toolchain: [
+          stable,
+          beta,
+          nightly,
+          1.13.0,
+          1.19.0,
+          1.24.0,
+          1.25.0,
+          1.30.0,
+        ]
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
+      - name: Execute build.sh
+        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+
+  semver_linux:
+    name: Semver Linux
+    needs: build_channels_linux
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        # FIXME: Pin nightly version to make semverver compilable.
+        run: TOOLCHAIN=nightly-2020-06-18 sh ./ci/install-rust.sh
+      - name: Check breaking changes
+        run: sh ci/semver.sh linux
+
+  semver_macos:
+    name: Semver macOS
+    needs: build_channels_macos
+    runs-on: macos-10.15
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        # FIXME: Pin nightly version to make semverver compilable.
+        run: TOOLCHAIN=nightly-2020-06-18 sh ./ci/install-rust.sh
+      - name: Check breaking changes
+        run: sh ci/semver.sh macos
+
+  # These jobs doesn't actually test anything, but they're only used to tell
+  # bors the build completed, as there is no practical way to detect when a
+  # workflow is successful listening to webhooks only.
+  #
+  # ALL THE PREVIOUS JOBS NEED TO BE ADDED TO THE `needs` SECTION OF THIS JOB!
+
+  end_success:
+    name: bors test finished
+    if: github.event.pusher.name == 'bors' && success()
+    runs-on: ubuntu-18.04
+    needs: [
+      docker_linux_tier1,
+      docker_linux_tier2,
+      macos,
+      windows,
+      style_and_docs,
+      docker_switch,
+      build_channels_linux,
+      build_channels_macos,
+      semver_linux,
+      semver_macos
+    ]
+
+    steps:
+      - name: Mark the job as successful
+        run: exit 0
+
+  end_failure:
+    name: bors test finished
+    if: github.event.pusher.name == 'bors' && (failure() || cancelled())
+    runs-on: ubuntu-18.04
+    needs: [
+      docker_linux_tier1,
+      docker_linux_tier2,
+      macos,
+      windows,
+      style_and_docs,
+      docker_switch,
+      build_channels_linux,
+      build_channels_macos,
+      semver_linux,
+      semver_macos
+    ]
+
+    steps:
+      - name: Mark the job as a failure
+        run: exit 1
