@@ -919,6 +919,12 @@ pub const O_RSYNC: ::c_int = 0x00020000;
 pub const MS_SYNC: ::c_int = 0x4;
 pub const MS_INVALIDATE: ::c_int = 0x2;
 
+// Here because they are not present on OpenBSD
+// (https://github.com/openbsd/src/blob/master/sys/sys/resource.h)
+pub const RLIMIT_SBSIZE: ::c_int = 9;
+pub const RLIMIT_AS: ::c_int = 10;
+pub const RLIMIT_NTHR: ::c_int = 11;
+
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = 12;
 
