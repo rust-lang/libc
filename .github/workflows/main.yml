@@ -12,7 +12,7 @@ jobs:
     name: Docker Linux Tier1
     runs-on: ubuntu-18.04
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         target: [
           i686-unknown-linux-gnu,
@@ -29,7 +29,7 @@ jobs:
     name: macOS
     runs-on: macos-10.15
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         target: [
           x86_64-apple-darwin,
@@ -47,7 +47,7 @@ jobs:
     env:
       OS: windows
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - target: x86_64-pc-windows-gnu
@@ -75,7 +75,7 @@ jobs:
     name: Style and docs
     runs-on: ubuntu-18.04
     strategy:
-      fail-fast: false
+      fail-fast: true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
