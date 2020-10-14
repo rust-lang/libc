@@ -180,7 +180,7 @@ case "${OS}" in
         fi
 
         ;;
-    osx*)
+    macos*)
         TARGETS="${RUST_OSX_TARGETS}"
         ;;
     *)
@@ -269,7 +269,7 @@ i386-apple-ios \
 i686-apple-darwin \
 "
 
-if [ "${RUST}" = "nightly" ] && [ "${OS}" = "osx" ]; then
+if [ "${RUST}" = "nightly" ] && [ "${OS}" = "macos" ]; then
     for TARGET in $RUST_OSX_NO_CORE_TARGETS; do
         if echo "$TARGET" | grep -q "$FILTER"; then
             test_target build "$TARGET" 1
