@@ -3,7 +3,7 @@
 set -ex
 
 NDK=android-ndk-r21d
-curl --retry 20 -O https://dl.google.com/android/repository/${NDK}-linux-x86_64.zip
+wget --tries=20 https://dl.google.com/android/repository/${NDK}-linux-x86_64.zip
 unzip -q ${NDK}-linux-x86_64.zip
 
 case "$1" in

@@ -5,7 +5,7 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends libc6-dev gcc
 RUN apt-get install -y --no-install-recommends \
   file \
-  curl \
+  wget \
   ca-certificates \
   python3 \
   python3-distutils \

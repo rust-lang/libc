@@ -11,7 +11,7 @@ set -ex
 
 SDK=4333796
 mkdir sdk
-curl --retry 20 https://dl.google.com/android/repository/sdk-tools-linux-${SDK}.zip -O
+wget --tries=20 https://dl.google.com/android/repository/sdk-tools-linux-${SDK}.zip
 unzip -q -d sdk sdk-tools-linux-${SDK}.zip
 
 case "$1" in
