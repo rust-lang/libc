@@ -264,7 +264,7 @@ jobs:
   # ALL THE PREVIOUS JOBS NEED TO BE ADDED TO THE `needs` SECTION OF THIS JOB!
 
   end_success:
-    name: bors test finished
+    name: bors build finished
     if: github.event.pusher.name == 'bors' && success()
     runs-on: ubuntu-18.04
     needs: [
@@ -285,7 +285,7 @@ jobs:
         run: exit 0
 
   end_failure:
-    name: bors test finished
+    name: bors build finished
     if: github.event.pusher.name == 'bors' && (failure() || cancelled())
     runs-on: ubuntu-18.04
     needs: [
