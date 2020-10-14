@@ -71,8 +71,8 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
         shell: bash
 
-  style_and_docs:
-    name: Style and docs
+  style_check:
+    name: Style check
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: true
@@ -82,5 +82,3 @@ jobs:
         run: sh ./ci/install-rust.sh
       - name: Check style
         run: sh ci/style.sh
-      - name: Generate documentation
-        run: LIBC_CI=1 sh ci/dox.sh
