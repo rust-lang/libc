@@ -538,6 +538,8 @@ s_no_extra_traits! {
         pub salg_name: [::c_uchar; 64],
     }
 
+    /// WARNING: The `PartialEq`, `Eq` and `Hash` implementations of this
+    /// type are unsound and will be removed in the future.
     pub struct af_alg_iv {
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
@@ -781,11 +783,45 @@ cfg_if! {
             }
         }
 
+        impl af_alg_iv {
+            fn as_slice(&self) -> &[u8] {
+                unsafe {
+                    ::core::slice::from_raw_parts(
+                        self.iv.as_ptr(),
+                        self.ivlen as usize
+                    )
+                }
+            }
+        }
+
+        #[deprecated(
+            note = "this trait implementation is unsound and will be removed"
+        )]
+        impl PartialEq for af_alg_iv {
+            fn eq(&self, other: &af_alg_iv) -> bool {
+                *self.as_slice() == *other.as_slice()
+           }
+        }
+
+        #[deprecated(
+            note = "this trait implementation is unsound and will be removed"
+        )]
+        impl Eq for af_alg_iv {}
+
         impl ::fmt::Debug for af_alg_iv {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("af_alg_iv")
                     .field("ivlen", &self.ivlen)
                     .finish()
+            }
+        }
+
+        #[deprecated(
+            note = "this trait implementation is unsound and will be removed"
+        )]
+        impl ::hash::Hash for af_alg_iv {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.as_slice().hash(state);
             }
         }
 
