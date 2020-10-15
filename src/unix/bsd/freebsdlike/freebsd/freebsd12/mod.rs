@@ -221,6 +221,12 @@ extern "C" {
         msgtyp: ::c_long,
         msgflg: ::c_int,
     ) -> ::ssize_t;
+    pub fn clock_nanosleep(
+        clk_id: ::clockid_t,
+        flags: ::c_int,
+        rqtp: *const ::timespec,
+        rmtp: *mut ::timespec,
+    ) -> ::c_int;
 }
 
 cfg_if! {
