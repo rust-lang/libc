@@ -79,8 +79,8 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
         shell: bash
 
-  style_and_docs:
-    name: Style and docs
+  style_check:
+    name: Style check
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: true
@@ -93,16 +93,14 @@ jobs:
         run: sh ./ci/install-rust.sh
       - name: Check style
         run: sh ci/style.sh
-      - name: Generate documentation
-        run: LIBC_CI=1 sh ci/dox.sh
 
   docker_linux_tier2:
     name: Docker Linux Tier2
-    needs: [docker_linux_tier1, style_and_docs]
+    needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: true
-      max-parallel: 10
+      max-parallel: 12
       matrix:
         target: [
           aarch64-linux-android,
@@ -149,7 +147,7 @@ jobs:
   # devkitpro's pacman needs to be connected from Docker.
   docker_switch:
     name: Docker Switch
-    needs: [docker_linux_tier1, style_and_docs]
+    needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: true
@@ -171,7 +169,7 @@ jobs:
       OS: linux
     strategy:
       fail-fast: true
-      max-parallel: 4
+      max-parallel: 5
       matrix:
         toolchain: [
           stable,
@@ -201,7 +199,7 @@ jobs:
       OS: macos
     strategy:
       fail-fast: true
-      max-parallel: 3
+      max-parallel: 4
       matrix:
         toolchain: [
           stable,
@@ -257,6 +255,22 @@ jobs:
       - name: Check breaking changes
         run: sh ci/semver.sh macos
 
+  docs:
+    name: Generate documentation
+    runs-on: ubuntu-18.04
+    needs: docker_linux_tier2
+    strategy:
+      fail-fast: true
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        run: sh ./ci/install-rust.sh
+      - name: Generate documentation
+        run: LIBC_CI=1 sh ci/dox.sh
+
   # These jobs doesn't actually test anything, but they're only used to tell
   # bors the build completed, as there is no practical way to detect when a
   # workflow is successful listening to webhooks only.
@@ -272,12 +286,13 @@ jobs:
       docker_linux_tier2,
       macos,
       windows,
-      style_and_docs,
+      style_check,
       docker_switch,
       build_channels_linux,
       build_channels_macos,
       semver_linux,
-      semver_macos
+      semver_macos,
+      docs,
     ]
 
     steps:
@@ -293,12 +308,13 @@ jobs:
       docker_linux_tier2,
       macos,
       windows,
-      style_and_docs,
+      style_check,
       docker_switch,
       build_channels_linux,
       build_channels_macos,
       semver_linux,
-      semver_macos
+      semver_macos,
+      docs,
     ]
 
     steps:
