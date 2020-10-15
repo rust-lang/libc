@@ -1,6 +1,6 @@
 # libc - Raw FFI bindings to platforms' system libraries
 
-[![Azure Status]][Azure] [![Cirrus CI Status]][Cirrus CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
+[![GHA Status]][GitHub Actions] [![Cirrus CI Status]][Cirrus CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
 
 `libc` provides all of the definitions necessary to easily interoperate with C
 code (or "C-like" code) on each of the platforms that Rust supports. This
@@ -94,8 +94,8 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in `libc` by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
-[Azure Status]: https://dev.azure.com/rust-lang2/libc/_apis/build/status/rust-lang.libc%20(1)?branchName=master
-[Azure]: https://dev.azure.com/rust-lang2/libc/_build/latest?definitionId=1&branchName=master
+[GitHub Actions]: https://github.com/rust-lang/libc/actions
+[GHA Status]: https://github.com/rust-lang/libc/workflows/CI/badge.svg
 [Cirrus CI]: https://cirrus-ci.com/github/rust-lang/libc
 [Cirrus CI Status]: https://api.cirrus-ci.com/github/rust-lang/libc.svg
 [crates.io]: https://crates.io/crates/libc
