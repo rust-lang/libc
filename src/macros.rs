@@ -114,7 +114,9 @@ macro_rules! s_no_extra_traits {
             $(#[$attr])*
             pub struct $i { $($field)* }
         }
+        #[allow(deprecated)]
         impl ::Copy for $i {}
+        #[allow(deprecated)]
         impl ::Clone for $i {
             fn clone(&self) -> $i { *self }
         }
