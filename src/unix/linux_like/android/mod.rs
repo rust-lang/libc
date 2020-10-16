@@ -2387,6 +2387,22 @@ extern "C" {
         sevlen: ::size_t,
         flags: ::c_int,
     ) -> ::c_int;
+    pub fn process_vm_readv(
+        pid: ::pid_t,
+        local_iov: *const ::iovec,
+        liovcnt: ::c_ulong,
+        remote_iov: *const ::iovec,
+        riovcnt: ::c_ulong,
+        flags: ::c_ulong,
+    ) -> ::ssize_t;
+    pub fn process_vm_writev(
+        pid: ::pid_t,
+        local_iov: *const ::iovec,
+        liovcnt: ::c_ulong,
+        remote_iov: *const ::iovec,
+        riovcnt: ::c_ulong,
+        flags: ::c_ulong,
+    ) -> ::ssize_t;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;

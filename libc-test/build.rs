@@ -1610,6 +1610,8 @@ fn test_android(target: &str) {
             | "open_memstream"
             | "open_wmemstream"
             | "clock_getcpuclockid"
+            | "process_vm_readv"
+            | "process_vm_writev"
                 if aarch64 =>
             {
                 true
