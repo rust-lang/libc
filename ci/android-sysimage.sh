@@ -14,7 +14,7 @@ main() {
     apt-get install --no-install-recommends e2tools
 
     pushd "${td}"
-    wget --tries=5 "${URL}/${name}"
+    wget -q --tries=5 "${URL}/${name}"
     unzip -q "${name}"
 
     local system
