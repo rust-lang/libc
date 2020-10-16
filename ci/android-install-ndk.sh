@@ -3,21 +3,21 @@
 set -ex
 
 NDK=android-ndk-r21d
-wget --tries=20 https://dl.google.com/android/repository/${NDK}-linux-x86_64.zip
+wget --tries=20 -q https://dl.google.com/android/repository/${NDK}-linux-x86_64.zip
 unzip -q ${NDK}-linux-x86_64.zip
 
 case "$1" in
   arm)
     arch=arm
-    api=24
+    api=28
     ;;
   armv7)
     arch=arm
-    api=24
+    api=28
     ;;
   aarch64)
     arch=arm64
-    api=24
+    api=28
     ;;
   i686)
     arch=x86

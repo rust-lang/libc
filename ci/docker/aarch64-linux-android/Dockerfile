@@ -19,16 +19,17 @@ WORKDIR /android/
 COPY android* /android/
 
 ENV ANDROID_ARCH=aarch64
-ENV PATH=$PATH:/android/ndk-$ANDROID_ARCH/bin:/android/sdk/tools:/android/sdk/platform-tools
+ENV PATH=$PATH:/android/ndk-$ANDROID_ARCH/bin:/android/sdk/cmdline-tools/tools:/android/sdk/platform-tools
 
 RUN sh /android/android-install-ndk.sh $ANDROID_ARCH
 RUN sh /android/android-install-sdk.sh $ANDROID_ARCH
 RUN mv /root/.android /tmp
 RUN chmod 777 -R /tmp/.android
-RUN chmod 755 /android/sdk/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
+RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
+RUN ls -a /android/sdk/platform-tools
 
 ENV PATH=$PATH:/rust/bin \
-    CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android-gcc \
+    CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android28-clang \
     CARGO_TARGET_AARCH64_LINUX_ANDROID_RUNNER=/tmp/runtest \
     HOME=/tmp
 
