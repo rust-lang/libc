@@ -26,7 +26,6 @@ RUN sh /android/android-install-sdk.sh $ANDROID_ARCH
 RUN mv /root/.android /tmp
 RUN chmod 777 -R /tmp/.android
 RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
-RUN ls -a /android/sdk/platform-tools
 
 ENV PATH=$PATH:/rust/bin \
     CARGO_TARGET_ARM_LINUX_ANDROIDEABI_LINKER=arm-linux-androideabi-gcc \
