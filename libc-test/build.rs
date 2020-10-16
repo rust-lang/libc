@@ -1370,7 +1370,6 @@ fn test_android(target: &str) {
         t => panic!("unsupported target: {}", t),
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
-    let aarch64 = target.contains("aarch64");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -1591,31 +1590,6 @@ fn test_android(target: &str) {
             // We skip the test here since here _GNU_SOURCE is defined, and
             // test the XSI version below.
             "strerror_r" => true,
-
-            // FIXME: Somehow we cannot find these fns on aarch64.
-            // https://github.com/rust-lang/libc/issues/1765
-            "lockf"
-            | "preadv64"
-            | "pwritev64"
-            | "openpty"
-            | "forkpty"
-            | "login_tty"
-            | "getifaddrs"
-            | "freeifaddrs"
-            | "sethostname"
-            | "getgrgid_r"
-            | "getgrnam_r"
-            | "sigtimedwait"
-            | "fmemopen"
-            | "open_memstream"
-            | "open_wmemstream"
-            | "clock_getcpuclockid"
-            | "process_vm_readv"
-            | "process_vm_writev"
-                if aarch64 =>
-            {
-                true
-            }
 
             _ => false,
         }
