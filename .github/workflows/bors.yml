@@ -112,8 +112,7 @@ jobs:
           # FIXME: Disabled because currently broken, see:
           # https://github.com/rust-lang/libc/issues/1591
           # asmjs-unknown-emscripten,
-          # FIXME: Disabled due to https://github.com/rust-lang/libc/issues/1765
-          # i686-linux-android,
+          i686-linux-android,
           i686-unknown-linux-musl,
           mips-unknown-linux-gnu,
           mips-unknown-linux-musl,
