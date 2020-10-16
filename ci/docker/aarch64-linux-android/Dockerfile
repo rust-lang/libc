@@ -29,7 +29,7 @@ RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linu
 RUN ls -a /android/sdk/platform-tools
 
 ENV PATH=$PATH:/rust/bin \
-    CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android-gcc \
+    CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android28-clang \
     CARGO_TARGET_AARCH64_LINUX_ANDROID_RUNNER=/tmp/runtest \
     HOME=/tmp
 
