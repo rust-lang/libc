@@ -204,9 +204,11 @@ aarch64-unknown-freebsd \
 aarch64-unknown-hermit \
 aarch64-unknown-netbsd \
 aarch64-unknown-openbsd \
+aarch64-wrs-vxworks \
 armebv7r-none-eabi \
 armebv7r-none-eabihf \
 armv7-unknown-cloudabi-eabihf \
+armv7-wrs-vxworks-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
 hexagon-unknown-linux-musl \
@@ -216,6 +218,7 @@ i686-unknown-cloudabi \
 i686-unknown-haiku \
 i686-unknown-netbsd \
 i686-unknown-openbsd \
+i686-wrs-vxworks \
 mips-unknown-linux-uclibc \
 mipsel-sony-psp \
 mipsel-unknown-linux-uclibc \
@@ -224,7 +227,10 @@ mips64el-unknown-linux-muslabi64 \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \
+powerpc-wrs-vxworks \
+powerpc-wrs-vxworks-spe \
 powerpc64-unknown-freebsd \
+powerpc64-wrs-vxworks \
 riscv32i-unknown-none-elf \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
@@ -247,13 +253,7 @@ x86_64-unknown-haiku \
 x86_64-unknown-hermit \
 x86_64-unknown-l4re-uclibc \
 x86_64-unknown-openbsd \
-armv7-wrs-vxworks-eabihf \
-aarch64-wrs-vxworks \
-i686-wrs-vxworks \
 x86_64-wrs-vxworks \
-powerpc-wrs-vxworks \
-powerpc-wrs-vxworks-spe \
-powerpc64-wrs-vxworks \
 "
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
@@ -267,8 +267,8 @@ fi
 RUST_OSX_NO_CORE_TARGETS="\
 armv7-apple-ios \
 armv7s-apple-ios \
-i386-apple-ios \
 i686-apple-darwin \
+i386-apple-ios \
 "
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "macos" ]; then
