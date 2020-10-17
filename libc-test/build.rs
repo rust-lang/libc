@@ -1843,6 +1843,11 @@ fn test_freebsd(target: &str) {
             // This was renamed in FreeBSD 12.2 and 13 (r350749).
             "IPPROTO_SEP" | "IPPROTO_DCCP" => true,
 
+            // This was changed to 96(0x60) in FreeBSD 13:
+            // https://github.com/freebsd/freebsd/
+            // commit/06b00ceaa914a3907e4e27bad924f44612bae1d7
+            "MINCORE_SUPER" if Some(13) == freebsd_ver => true,
+
             _ => false,
         }
     });
