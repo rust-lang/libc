@@ -8,7 +8,7 @@ use std::env;
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
     if cfg!(unix) {
-        let exclude = ["wasi"];
+        let exclude = ["redox", "wasi"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
 
@@ -564,7 +564,6 @@ fn test_redox(target: &str) {
         "sys/un.h",
         "sys/utsname.h",
         "sys/wait.h",
-        "syslog.h",
         "termios.h",
         "time.h",
         "unistd.h",
