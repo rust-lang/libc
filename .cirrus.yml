@@ -1,18 +1,4 @@
 task:
-  name: nightly x86_64-unknown-freebsd-10
-  freebsd_instance:
-    image: freebsd-10-4-release-amd64
-  setup_script:
-    - pkg install -y curl
-    - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh --default-toolchain nightly -y --profile=minimal
-    - . $HOME/.cargo/env
-    - rustup default nightly
-  test_script:
-    - . $HOME/.cargo/env
-    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
-
-task:
   name: stable x86_64-unknown-freebsd-11
   freebsd_instance:
     image: freebsd-11-4-release-amd64
@@ -35,6 +21,21 @@ task:
     - pkg install -y curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh --default-toolchain nightly -y --profile=minimal
+    - . $HOME/.cargo/env
+    - rustup default nightly
+  test_script:
+    - . $HOME/.cargo/env
+    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
+    - sh ci/run.sh x86_64-unknown-freebsd
+
+task:
+  name: nightly x86_64-unknown-freebsd-13
+  freebsd_instance:
+    image: freebsd-13-0-current-amd64-v20201001
+  setup_script:
+    - pkg install -y curl
+    - curl https://sh.rustup.rs -sSf --output rustup.sh
+    - sh rustup.sh -y --profile=minimal
     - . $HOME/.cargo/env
     - rustup default nightly
   test_script:
