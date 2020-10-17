@@ -132,6 +132,9 @@ jobs:
           x86_64-linux-android,
           x86_64-unknown-linux-gnux32,
           x86_64-unknown-linux-musl,
+          # FIXME: It seems some items in `src/unix/mod.rs`
+          # aren't defined on redox actually.
+          # x86_64-unknown-redox,
         ]
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
