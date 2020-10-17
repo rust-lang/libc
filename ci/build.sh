@@ -154,11 +154,14 @@ x86_64-unknown-illumos \
 x86_64-unknown-linux-gnux32 \
 "
 
-RUST_OSX_TARGETS="\
-aarch64-apple-darwin \
+RUST_APPLE_TARGETS="\
 aarch64-apple-ios \
 x86_64-apple-darwin \
 x86_64-apple-ios \
+"
+
+RUST_NIGHTLY_APPLE_TARGETS="\
+aarch64-apple-darwin \
 "
 
 # The targets are listed here alphabetically
@@ -183,7 +186,12 @@ case "${OS}" in
 
         ;;
     macos*)
-        TARGETS="${RUST_OSX_TARGETS}"
+        TARGETS="${RUST_APPLE_TARGETS}"
+
+        if [ "${RUST}" = "nightly" ]; then
+            TARGETS="${TARGETS} ${RUST_NIGHTLY_APPLE_TARGETS}"
+        fi
+
         ;;
     *)
         ;;
