@@ -1499,6 +1499,12 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+
+    pub fn nmount(
+	iov: *const ::iovec,
+	niov: ::c_uint,
+	flags: ::c_int
+    ) -> ::c_int;
 }
 
 #[link(name = "util")]
