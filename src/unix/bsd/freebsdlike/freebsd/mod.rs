@@ -1299,7 +1299,6 @@ extern "C" {
         flags: ::c_int,
     ) -> ::c_int;
 
-    pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn posix_fallocate(
         fd: ::c_int,
         offset: ::off_t,
@@ -1499,6 +1498,12 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+
+    pub fn nmount(
+        iov: *mut ::iovec,
+        niov: ::c_uint,
+        flags: ::c_int
+    ) -> ::c_int;
 }
 
 #[link(name = "util")]
