@@ -137,9 +137,6 @@ RUST_GT_1_24_LINUX_TARGETS="\
 i586-unknown-linux-musl \
 "
 
-# FIXME: temporarirly disable the redox target
-# https://github.com/rust-lang/libc/issues/1457
-# x86_64-unknown-redox
 RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
@@ -151,6 +148,7 @@ x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
 x86_64-pc-windows-gnu \
 x86_64-unknown-linux-gnux32 \
+x86_64-unknown-redox \
 "
 
 RUST_OSX_TARGETS="\

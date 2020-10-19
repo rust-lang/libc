@@ -8,7 +8,7 @@ use std::env;
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
     if cfg!(unix) {
-        let exclude = ["wasi"];
+        let exclude = ["redox", "wasi"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
 
@@ -537,54 +537,37 @@ fn test_redox(target: &str) {
         "dirent.h",
         "dlfcn.h",
         "errno.h",
-        "execinfo.h",
         "fcntl.h",
-        "glob.h",
         "grp.h",
-        "ifaddrs.h",
-        "langinfo.h",
         "limits.h",
         "locale.h",
-        "net/if.h",
-        "net/if_arp.h",
-        "net/route.h",
         "netdb.h",
         "netinet/in.h",
         "netinet/ip.h",
         "netinet/tcp.h",
-        "netinet/udp.h",
         "poll.h",
-        "pthread.h",
         "pwd.h",
-        "resolv.h",
-        "sched.h",
         "semaphore.h",
         "string.h",
         "strings.h",
         "sys/file.h",
         "sys/ioctl.h",
         "sys/mman.h",
-        "sys/mount.h",
         "sys/ptrace.h",
-        "sys/quota.h",
         "sys/resource.h",
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",
-        "sys/sysctl.h",
         "sys/time.h",
-        "sys/times.h",
         "sys/types.h",
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
         "sys/wait.h",
-        "syslog.h",
         "termios.h",
         "time.h",
         "unistd.h",
         "utime.h",
-        "utmpx.h",
         "wchar.h",
     }
 
