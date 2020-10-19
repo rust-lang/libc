@@ -227,6 +227,8 @@ extern "C" {
         rqtp: *const ::timespec,
         rmtp: *mut ::timespec,
     ) -> ::c_int;
+
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
