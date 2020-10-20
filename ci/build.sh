@@ -201,8 +201,6 @@ for TARGET in $TARGETS; do
     fi
 done
 
-# FIXME: https://github.com/rust-lang/rust/issues/58564
-# sparc-unknown-linux-gnu
 RUST_LINUX_NO_CORE_TARGETS="\
 aarch64-pc-windows-msvc \
 aarch64-unknown-cloudabi \
@@ -243,6 +241,7 @@ riscv32imc-unknown-none-elf \
 riscv32gc-unknown-linux-gnu \
 riscv64gc-unknown-none-elf \
 riscv64imac-unknown-none-elf \
+sparc-unknown-linux-gnu \
 sparc64-unknown-netbsd \
 
 thumbv6m-none-eabi \
