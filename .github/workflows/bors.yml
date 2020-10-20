@@ -116,8 +116,9 @@ jobs:
           i686-unknown-linux-musl,
           mips-unknown-linux-gnu,
           mips-unknown-linux-musl,
-          mips64-unknown-linux-gnuabi64,
-          mips64el-unknown-linux-gnuabi64,
+          # FIXME: Disabled because of the `relocation truncated to fit` error
+          # mips64-unknown-linux-gnuabi64,
+          # mips64el-unknown-linux-gnuabi64,
           mipsel-unknown-linux-musl,
           powerpc-unknown-linux-gnu,
           powerpc64-unknown-linux-gnu,
