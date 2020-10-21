@@ -2649,6 +2649,10 @@ fn test_linux(target: &str) {
             // Require Linux kernel 5.6:
             "VMADDR_CID_LOCAL" => true,
 
+            // IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
+            | "IPPROTO_MAX"
+            | "IPPROTO_MPTCP" => true,
+
             // Defined in kernel headers but musl removes it; need musl 1.2 for definition in musl
             // headers.
             "P_PIDFD" => true,

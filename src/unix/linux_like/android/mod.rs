@@ -1008,6 +1008,8 @@ pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOCK_DCCP: ::c_int = 6;
 pub const SOCK_PACKET: ::c_int = 10;
 
+pub const IPPROTO_MAX: ::c_int = 256;
+
 pub const SOL_SOCKET: ::c_int = 1;
 pub const SOL_SCTP: ::c_int = 132;
 pub const SOL_IPX: ::c_int = 256;
@@ -1067,6 +1069,8 @@ pub const SO_DOMAIN: ::c_int = 39;
 pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
+
+pub const TCP_ULP: ::c_int = 31;
 
 pub const IPTOS_ECN_NOTECT: u8 = 0x00;
 
