@@ -853,6 +853,11 @@ pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 140;
 pub const _SC_XOPEN_STREAMS: ::c_int = 141;
 pub const _SC_XOPEN_UUCP: ::c_int = 142;
 
+pub const F_LOCK: ::c_int = 1;
+pub const F_TEST: ::c_int = 3;
+pub const F_TLOCK: ::c_int = 2;
+pub const F_ULOCK: ::c_int = 0;
+
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
