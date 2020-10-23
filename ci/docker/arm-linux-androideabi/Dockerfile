@@ -30,6 +30,7 @@ RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linu
 ENV PATH=$PATH:/rust/bin \
     CARGO_TARGET_ARM_LINUX_ANDROIDEABI_LINKER=arm-linux-androideabi-gcc \
     CARGO_TARGET_ARM_LINUX_ANDROIDEABI_RUNNER=/tmp/runtest \
+    CC_arm_linux_androideabi=arm-linux-androideabi-gcc \
     HOME=/tmp
 
 ADD runtest-android.rs /tmp/runtest.rs
