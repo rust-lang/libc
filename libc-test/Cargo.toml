@@ -9,7 +9,7 @@ path = ".."
 default-features = false
 
 [build-dependencies]
-cc = "=1.0.52"
+cc = "1.0.61"
 # FIXME: Use fork ctest until the maintainer gets back.
 ctest2 = "0.3"
 
