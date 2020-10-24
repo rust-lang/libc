@@ -1240,6 +1240,7 @@ pub const RTLD_NOW: ::c_int = 0x2;
 pub const AT_EACCESS: ::c_int = 0x200;
 
 pub const TCP_MD5SIG: ::c_int = 14;
+pub const TCP_ULP: ::c_int = 31;
 
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
@@ -1274,6 +1275,17 @@ pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
 
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
+
+/// Multipath TCP
+pub const IPPROTO_MPTCP: ::c_int = 262;
+#[deprecated(
+    since = "0.2.80",
+    note = "This value was increased in the newer kernel \
+            and we'll change this following upstream in the future release. \
+            See #1896 for more info."
+)]
+pub const IPPROTO_MAX: ::c_int = 256;
+
 pub const AF_IB: ::c_int = 27;
 pub const AF_MPLS: ::c_int = 28;
 pub const AF_NFC: ::c_int = 39;
