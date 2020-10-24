@@ -1267,10 +1267,12 @@ pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
 /// Multipath TCP
 pub const IPPROTO_MPTCP: ::c_int = 262;
 #[deprecated(
-    since = "0.2.79",
-    note = "IPPROTO_MAX depends on the kernel version on the target system"
+    since = "0.2.80",
+    note = "This value was increased in the newer kernel \
+            and we'll change this following upstream in the future release. \
+            See #1896 for more info."
 )]
-pub const IPPROTO_MAX: ::c_int = 263;
+pub const IPPROTO_MAX: ::c_int = 256;
 
 pub const AF_IB: ::c_int = 27;
 pub const AF_MPLS: ::c_int = 28;
