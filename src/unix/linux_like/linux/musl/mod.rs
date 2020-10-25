@@ -1,5 +1,11 @@
 pub type pthread_t = *mut ::c_void;
 pub type clock_t = c_long;
+#[deprecated(
+    since = "0.2.80",
+    note = "This type is changed to 64-bit in musl 1.2.0, \
+            we'll follow that change in the future release. \
+            See #1848 for more info."
+)]
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
 pub type ino_t = u64;
