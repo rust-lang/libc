@@ -1,12 +1,12 @@
 [package]
 name = "libc"
-version = "0.2.79"
+version = "0.2.80"
 authors = ["The Rust Project Developers"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/rust-lang/libc"
 homepage = "https://github.com/rust-lang/libc"
-documentation = "http://doc.rust-lang.org/libc"
+documentation = "https://docs.rs/libc/0.2.79/libc/"
 keywords = ["libc", "ffi", "bindings", "operating", "system" ]
 categories = ["external-ffi-bindings", "no-std", "os"]
 build = "build.rs"
