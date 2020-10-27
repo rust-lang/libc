@@ -287,9 +287,11 @@ fn test_openbsd(target: &str) {
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! { cfg:
+        "elf.h",
         "errno.h",
         "fcntl.h",
         "limits.h",
+        "link.h",
         "locale.h",
         "stddef.h",
         "stdint.h",
@@ -387,7 +389,9 @@ fn test_openbsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+            "FILE" | "DIR" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => {
+                ty.to_string()
+            }
 
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
@@ -416,6 +420,15 @@ fn test_openbsd(target: &str) {
     cfg.skip_field_type(move |struct_, field| {
         // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
         struct_ == "siginfo_t" && field == "si_addr"
+    });
+
+    cfg.skip_field(|struct_, field| {
+        match (struct_, field) {
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") => true,
+            ("Elf64_Phdr", "p_type") => true,
+            _ => false,
+        }
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -870,9 +883,11 @@ fn test_netbsd(target: &str) {
 
     headers! {
         cfg:
+        "elf.h",
         "errno.h",
         "fcntl.h",
         "limits.h",
+        "link.h",
         "locale.h",
         "stddef.h",
         "stdint.h",
@@ -1059,6 +1074,15 @@ fn test_netbsd(target: &str) {
         (struct_ == "sigevent" && field == "sigev_value") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
         (struct_ == "aiocb" && field == "aio_buf")
+    });
+
+    cfg.skip_field(|struct_, field| {
+        match (struct_, field) {
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") => true,
+            ("Elf64_Phdr", "p_type") => true,
+            _ => false,
+        }
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -1633,6 +1657,7 @@ fn test_freebsd(target: &str) {
                 "ctype.h",
                 "dirent.h",
                 "dlfcn.h",
+                "elf.h",
                 "errno.h",
                 "fcntl.h",
                 "glob.h",
@@ -1641,6 +1666,7 @@ fn test_freebsd(target: &str) {
                 "langinfo.h",
                 "libutil.h",
                 "limits.h",
+                "link.h",
                 "locale.h",
                 "machine/reg.h",
                 "mqueue.h",
@@ -1709,7 +1735,8 @@ fn test_freebsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
+            | "Elf64_Phdr" => ty.to_string(),
 
             // FIXME: https://github.com/rust-lang/libc/issues/1273
             "sighandler_t" => "sig_t".to_string(),
@@ -1908,6 +1935,10 @@ fn test_freebsd(target: &str) {
             // FIXME: in FreeBSD10 this field has type `char*` instead of
             // `void*`:
             ("stack_t", "ss_sp") if Some(10) == freebsd_ver => true,
+
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") => true,
+            ("Elf64_Phdr", "p_type") => true,
 
             _ => false,
         }

@@ -1502,7 +1502,7 @@ extern "C" {
     pub fn nmount(
         iov: *mut ::iovec,
         niov: ::c_uint,
-        flags: ::c_int
+        flags: ::c_int,
     ) -> ::c_int;
 }
 
