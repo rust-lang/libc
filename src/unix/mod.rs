@@ -1354,10 +1354,17 @@ extern "C" {
         dev: ::dev_t,
     ) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn endservent();
     pub fn getservbyname(
         name: *const ::c_char,
         proto: *const ::c_char,
     ) -> *mut servent;
+    pub fn getservbyport(
+        port: ::c_int,
+        proto: *const ::c_char,
+    ) -> *mut servent;
+    pub fn getservent() -> *mut servent;
+    pub fn setservent(stayopen: ::c_int);
     pub fn getprotobyname(name: *const ::c_char) -> *mut protoent;
     pub fn getprotobynumber(proto: ::c_int) -> *mut protoent;
     pub fn chroot(name: *const ::c_char) -> ::c_int;
