@@ -27,6 +27,12 @@ pub const TCP_KEEPCNT: ::c_int = 35;
 pub const TCP_KEEPINTVL: ::c_int = 36;
 pub const TCP_CONGESTION: ::c_int = 37;
 
+pub const F_OFD_GETLK: ::c_int = 50;
+pub const F_OFD_SETLKL: ::c_int = 51;
+pub const F_OFD_SETLKW: ::c_int = 52;
+pub const F_FLOCK: ::c_int = 55;
+pub const F_FLOCKW: ::c_int = 56;
+
 extern "C" {
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
 
