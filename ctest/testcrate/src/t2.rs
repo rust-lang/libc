@@ -28,7 +28,7 @@ pub union T2Union {
 pub const T2C: i32 = 5;
 
 i! {
-    pub const T2S: &'static str = "b";
+    pub const T2S: &str = "b";
 }
 
 extern "C" {
