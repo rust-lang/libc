@@ -1,6 +1,3 @@
-extern crate cc;
-extern crate ctest2;
-
 fn main() {
     use std::env;
     let opt_level = env::var("OPT_LEVEL")
