@@ -32,6 +32,10 @@ pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
 pub const AF_LOCAL: ::c_int = 0;
 pub const AF_FILE: ::c_int = 0;
 
+pub const TCP_KEEPIDLE: ::c_int = 0x1d;
+pub const TCP_KEEPCNT: ::c_int = 0x1e;
+pub const TCP_KEEPINTVL: ::c_int = 0x1f;
+
 extern "C" {
     pub fn fexecve(
         fd: ::c_int,
