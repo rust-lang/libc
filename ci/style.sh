@@ -4,11 +4,11 @@ set -ex
 
 rustc ci/style.rs && ./style src
 
-if rustup component add rustfmt-preview ; then
-    command -v rustfmt
-    rustfmt -V
-    cargo fmt --all -- --check
-fi
+rustup toolchain install nightly -c rustfmt --allow-downgrade
+rustup override set nightly
+command -v rustfmt
+rustfmt -V
+cargo fmt --all -- --check
 
 if shellcheck --version ; then
     # GHA's shellcheck is too old (0.4.6) and cannot handle SC2153 correctly.
