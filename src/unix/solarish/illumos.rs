@@ -22,6 +22,10 @@ pub const EFD_SEMAPHORE: ::c_int = 0x1;
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
+pub const TCP_KEEPIDLE: ::c_int = 34;
+pub const TCP_KEEPCNT: ::c_int = 35;
+pub const TCP_KEEPINTVL: ::c_int = 36;
+
 extern "C" {
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
 
