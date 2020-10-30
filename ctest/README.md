@@ -10,7 +10,11 @@ Automated testing of FFI bindings in Rust. This repository is intended to
 validate the `*-sys` crates that can be found on crates.io to ensure that the
 APIs in Rust match the APIs defined in C.
 
-### Example
+## MSRV (Minimum Supported Rust Version)
+
+The MSRV is 1.32.0 since our dependency uses the feature `int_to_from_bytes`.
+
+## Example
 
 Unfortunately the usage today is a little wonky, but to use this library, first,
 create a new Cargo project in your repo:
@@ -73,7 +77,7 @@ include!(concat!(env!("OUT_DIR"), "/all.rs"));
 And you're good to go! To run the tests execute `cargo run` in the `systest`
 directory, and everything should be kicked into action!
 
-### How it works
+## How it works
 
 This library will parse the `*-sys` crate to learn about all extern fn
 definitions within. It will then generate a test suite to ensure that all
@@ -88,11 +92,11 @@ and returns information about the C side of things (which is validated in Rust).
 A large amount of configuration can be applied to how the C file is generated,
 you can browse [the documentation][dox].
 
-### Projects using ctest2
+## Projects using ctest2
 
 * [libc](https://github.com/rust-lang/libc)
 
-### License
+## License
 
 This project is licensed under either of
 
@@ -103,7 +107,7 @@ This project is licensed under either of
 
 at your option.
 
-### Contribution
+## Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in ctest2 by you, as defined in the Apache-2.0 license, shall be
