@@ -10,7 +10,7 @@ on:
 jobs:
   docker_linux_tier1:
     name: Docker Linux Tier1
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
       matrix:
@@ -73,7 +73,7 @@ jobs:
 
   style_check:
     name: Style check
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
     steps:

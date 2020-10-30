@@ -47,13 +47,13 @@ if [ "$OS" = "windows" ]; then
 fi
 
 echo "Query rust and cargo versions"
+command -v rustc
+command -v cargo
+command -v rustup
 rustc -Vv
 cargo -V
 rustup -Vv
 rustup show
-which rustc
-which cargo
-which rustup
 
 echo "Generate lockfile"
 N=5

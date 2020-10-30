@@ -9,7 +9,7 @@ on:
 jobs:
   docker_linux_tier1:
     name: Docker Linux Tier1
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
       matrix:
@@ -81,7 +81,7 @@ jobs:
 
   style_check:
     name: Style check
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
     steps:
@@ -97,7 +97,7 @@ jobs:
   docker_linux_tier2:
     name: Docker Linux Tier2
     needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
       max-parallel: 12
@@ -149,7 +149,7 @@ jobs:
   docker_switch:
     name: Docker Switch
     needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
     steps:
@@ -165,7 +165,7 @@ jobs:
   build_channels_linux:
     name: Build Channels Linux
     needs: docker_linux_tier2
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       OS: linux
     strategy:
@@ -225,7 +225,7 @@ jobs:
   semver_linux:
     name: Semver Linux
     needs: build_channels_linux
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
     steps:
@@ -258,7 +258,7 @@ jobs:
 
   docs:
     name: Generate documentation
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: docker_linux_tier2
     strategy:
       fail-fast: true
@@ -281,7 +281,7 @@ jobs:
   end_success:
     name: bors build finished
     if: github.event.pusher.name == 'bors' && success()
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: [
       docker_linux_tier1,
       docker_linux_tier2,
@@ -303,7 +303,7 @@ jobs:
   end_failure:
     name: bors build finished
     if: github.event.pusher.name == 'bors' && (failure() || cancelled())
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: [
       docker_linux_tier1,
       docker_linux_tier2,
