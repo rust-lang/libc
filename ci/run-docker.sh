@@ -62,7 +62,7 @@ build_switch() {
         kvm=""
     fi
 
-    cp "$(which rustup)" "$(rustc --print sysroot)/bin"
+    cp "$(command -v rustup)" "$(rustc --print sysroot)/bin"
 
     docker run \
       --rm \
