@@ -1,8 +1,6 @@
 #![cfg(not(test))]
 #![deny(warnings)]
 
-extern crate libc;
-extern crate testcrate;
 use libc::*;
 use testcrate::t1::*;
 
