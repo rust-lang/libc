@@ -61,6 +61,7 @@ pub enum Lang {
 
 /// A kind of item to which the C volatile qualifier could apply.
 #[derive(Debug)]
+#[allow(clippy::manual_non_exhaustive)] // FIXME: Use `#[non_exhaustive]` in the future.
 pub enum VolatileItemKind {
     /// A struct field (struct_name, field_name)
     StructField(String, String),
@@ -1691,7 +1692,7 @@ impl<'a> Generator<'a> {
                 ty = rust_ty
             ));
         } else if rust_ty.starts_with('[') && rust_ty.ends_with(']') {
-            let c_ptr_ty = c_ty.split(' ').nth(0).unwrap();
+            let c_ptr_ty = c_ty.split(' ').next().unwrap();
             let mut lens = Vec::new();
             for i in c_ty.split(' ').skip(1) {
                 lens.push(i);
