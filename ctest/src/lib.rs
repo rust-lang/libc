@@ -10,12 +10,8 @@
 //! [project]: https://github.com/JohnTitor/ctest2
 
 #![deny(missing_docs)]
-#![allow(bare_trait_objects)]
 
-extern crate cc;
-extern crate garando_syntax as syntax;
-
-extern crate rustc_version;
+use garando_syntax as syntax;
 
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -93,22 +89,22 @@ pub struct TestGenerator {
     defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
     verbose_skip: bool,
-    volatile_item: Box<Fn(VolatileItemKind) -> bool>,
-    array_arg: Box<Fn(&str, usize) -> bool>,
-    skip_fn: Box<Fn(&str) -> bool>,
-    skip_fn_ptrcheck: Box<Fn(&str) -> bool>,
-    skip_static: Box<Fn(&str) -> bool>,
-    skip_field: Box<Fn(&str, &str) -> bool>,
-    skip_field_type: Box<Fn(&str, &str) -> bool>,
-    skip_const: Box<Fn(&str) -> bool>,
-    skip_signededness: Box<Fn(&str) -> bool>,
-    skip_type: Box<Fn(&str) -> bool>,
-    skip_struct: Box<Fn(&str) -> bool>,
-    skip_roundtrip: Box<Fn(&str) -> bool>,
-    field_name: Box<Fn(&str, &str) -> String>,
-    type_name: Box<Fn(&str, bool, bool) -> String>,
-    fn_cname: Box<Fn(&str, Option<&str>) -> String>,
-    const_cname: Box<Fn(&str) -> String>,
+    volatile_item: Box<dyn Fn(VolatileItemKind) -> bool>,
+    array_arg: Box<dyn Fn(&str, usize) -> bool>,
+    skip_fn: Box<dyn Fn(&str) -> bool>,
+    skip_fn_ptrcheck: Box<dyn Fn(&str) -> bool>,
+    skip_static: Box<dyn Fn(&str) -> bool>,
+    skip_field: Box<dyn Fn(&str, &str) -> bool>,
+    skip_field_type: Box<dyn Fn(&str, &str) -> bool>,
+    skip_const: Box<dyn Fn(&str) -> bool>,
+    skip_signededness: Box<dyn Fn(&str) -> bool>,
+    skip_type: Box<dyn Fn(&str) -> bool>,
+    skip_struct: Box<dyn Fn(&str) -> bool>,
+    skip_roundtrip: Box<dyn Fn(&str) -> bool>,
+    field_name: Box<dyn Fn(&str, &str) -> String>,
+    type_name: Box<dyn Fn(&str, bool, bool) -> String>,
+    fn_cname: Box<dyn Fn(&str, Option<&str>) -> String>,
+    const_cname: Box<dyn Fn(&str) -> String>,
     rust_version: rustc_version::Version,
 }
 
@@ -120,8 +116,8 @@ struct TyFinder {
 
 struct Generator<'a> {
     target: &'a str,
-    rust: Box<Write>,
-    c: Box<Write>,
+    rust: Box<dyn Write>,
+    c: Box<dyn Write>,
     sh: &'a SpanHandler,
     structs: HashSet<String>,
     unions: HashSet<String>,
