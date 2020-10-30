@@ -12,6 +12,7 @@ documentation = "https://docs.rs/ctest2"
 description = """
 Automated tests of FFI bindings.
 """
+include = ["src/lib.rs", "LICENSE-*", "README.md"]
 
 [dependencies]
 garando_syntax = "0.1"
