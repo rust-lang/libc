@@ -13,6 +13,7 @@ description = """
 Automated tests of FFI bindings.
 """
 include = ["src/lib.rs", "LICENSE-*", "README.md"]
+edition = "2018"
 
 [dependencies]
 garando_syntax = "0.1"

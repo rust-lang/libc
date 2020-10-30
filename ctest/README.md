@@ -41,8 +41,6 @@ ctest2 = "0.2"
 Next, add a build script to `systest/build.rs`:
 
 ```rust
-extern crate ctest2;
-
 fn main() {
     let mut cfg = ctest2::TestGenerator::new();
 
@@ -57,16 +55,12 @@ fn main() {
     // the module to generate.
     cfg.generate("../mylib-sys/lib.rs", "all.rs");
 }
-
 ```
 
 Next, add this to `src/main.rs`
 
 ```rust
 #![allow(bad_style)]
-
-extern crate mylib_sys;
-extern crate libc;
 
 use libc::*;
 use mylib_sys::*;
