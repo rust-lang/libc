@@ -1,6 +1,10 @@
 name: CI (Windows)
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
   build_and_test:
@@ -28,7 +32,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
 
       - name: Install MinGW (i686)
         if: matrix.arch == 'i686'
