@@ -1581,12 +1581,6 @@ extern "C" {
         attr: *mut pthread_condattr_t,
         pshared: ::c_int,
     ) -> ::c_int;
-    pub fn accept4(
-        fd: ::c_int,
-        addr: *mut ::sockaddr,
-        len: *mut ::socklen_t,
-        flg: ::c_int,
-    ) -> ::c_int;
     pub fn pthread_mutexattr_setpshared(
         attr: *mut pthread_mutexattr_t,
         pshared: ::c_int,

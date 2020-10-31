@@ -2349,6 +2349,20 @@ f! {
     pub fn SO_EE_OFFENDER(ee: *const ::sock_extended_err) -> *mut ::sockaddr {
         ee.offset(1) as *mut ::sockaddr
     }
+
+    // Sadly, Android before 5.0 (API level 21), the accept4 syscall is not
+    // exposed by the libc. As work-around, we implement it through `syscall`
+    // directly. This workaround can be removed if the minimum version of
+    // Android is bumped. When the workaround is removed, `accept4` can be
+    // moved back to `linux_like/mod.rs`
+    pub fn accept4(
+        fd: ::c_int,
+        addr: *mut ::sockaddr,
+        len: *mut ::socklen_t,
+        flg: ::c_int
+    ) -> ::c_int {
+        syscall(SYS_accept4, fd, addr, len, flg) as ::c_int
+    }
 }
 
 extern "C" {
