@@ -1858,6 +1858,11 @@ fn test_freebsd(target: &str) {
             // commit/06b00ceaa914a3907e4e27bad924f44612bae1d7
             "MINCORE_SUPER" if Some(13) == freebsd_ver => true,
 
+            // This was increased to 97 in FreeBSD 12.2 and 13.
+            // https://github.com/freebsd/freebsd/
+            // commit/72a21ba0f62da5e86a1c0b462aeb3f5ff849a1b7
+            "ELAST" if Some(12) == freebsd_ver => true,
+
             _ => false,
         }
     });
