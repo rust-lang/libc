@@ -12,7 +12,48 @@ pub type suseconds_t = i64;
 pub type __u64 = ::c_ulong;
 
 s! {
-    pub struct pt_regs {}
+    pub struct user_pt_regs {
+        pub grp: [::c_ulong, 32],
+        pub nip: ::c_ulong,
+        pub msr: ::c_ulong,
+        pub orig_grp3: ::c_ulong,
+        pub ctr: ::c_ulong,
+        pub link: ::c_ulong,
+        pub xer: ::c_ulong,
+        pub ccr: ::c_ulong,
+        pub softe: ::c_ulong,
+        pub trap: ::c_ulong,
+        pub dar: ::c_ulong,
+        pub dsisr: ::c_ulong,
+        pub result: ::c_ulong,
+    }
+
+    pub struct pt_regs {
+        pub union {
+            pub user_regs: user_pt_regs,
+            pub struct {
+                pub gpr: [::c_ulong; 32],
+                pub msr: ::c_ulong,
+                pub orig_gpr3: ::c_ulong,
+                pub ctr: ::c_ulong,
+                pub link: ::c_ulong,
+                pub xer: ::c_ulong,
+                pub ccr: ::c_ulong,
+                pub softe: ::c_ulong,
+                pub trap: ::c_ulong,
+                pub dar: ::c_ulong,
+                pub dsisr: ::c_ulong,
+                pub result: ::c_ulong,
+          };
+        };
+
+        pub union {
+            pub struct {
+              pub ppr: ::c_ulong
+            };
+            __pad: [::c_uint; 2] // Maintain 16 byte interrupt stack alignment
+        };
+    }
 
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
