@@ -21,6 +21,16 @@ pub type msglen_t = ::c_ulong;
 pub type nfds_t = ::c_ulong;
 pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
+pub type Elf32_Half = u16;
+pub type Elf32_Word = u32;
+pub type Elf32_Off = u32;
+pub type Elf32_Addr = u32;
+pub type Elf64_Half = u16;
+pub type Elf64_Word = u32;
+pub type Elf64_Off = u64;
+pub type Elf64_Addr = u64;
+pub type Elf64_Xword = u64;
+pub type Elf64_Sxword = i64;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // FIXME: fill this out with a struct
@@ -287,6 +297,54 @@ s! {
         pub msgssz: ::c_int,
         pub msgtql: ::c_int,
         pub msgseg: ::c_ushort,
+    }
+
+    pub struct Elf32_Phdr {
+        pub p_type: Elf32_Word,
+        pub p_offset: Elf32_Off,
+        pub p_vaddr: Elf32_Addr,
+        pub p_paddr: Elf32_Addr,
+        pub p_filesz: Elf32_Word,
+        pub p_memsz: Elf32_Word,
+        pub p_flags: Elf32_Word,
+        pub p_align: Elf32_Word,
+    }
+
+    pub struct Elf64_Phdr {
+        pub p_type: Elf64_Word,
+        pub p_flags: Elf64_Word,
+        pub p_offset: Elf64_Off,
+        pub p_vaddr: Elf64_Addr,
+        pub p_paddr: Elf64_Addr,
+        pub p_filesz: Elf64_Xword,
+        pub p_memsz: Elf64_Xword,
+        pub p_align: Elf64_Xword,
+    }
+
+    pub struct dl_phdr_info {
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_addr: Elf64_Addr,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_addr: Elf32_Addr,
+        pub dlpi_name: *const ::c_char,
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_phdr: *const Elf64_Phdr,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_phdr: *const Elf32_Phdr,
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_phnum: Elf64_Half,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_phnum: Elf32_Half,
+        // As of uClibc 1.0.36, the following fields are
+        // gated behind a "#if 0" block which always evaluates
+        // to false. So I'm just commenting these out and if uClibc changes
+        // the #if block in the future to include the following fields, these
+        // will probably need including here. tsidea
+        //
+        // pub dlpi_adds: ::c_ulonglong,
+        // pub dlpi_subs: ::c_ulonglong,
+        // pub dlpi_tls_modid: ::size_t,
+        // pub dlpi_tls_data: *mut ::c_void,
     }
 
     pub struct ucred {
@@ -2246,6 +2304,16 @@ extern "C" {
         attr: *const ::pthread_attr_t,
         f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn dl_iterate_phdr(
+        callback: ::Option<
+            unsafe extern "C" fn(
+                info: *mut ::dl_phdr_info,
+                size: ::size_t,
+                data: *mut ::c_void,
+            ) -> ::c_int,
+        >,
+        data: *mut ::c_void,
     ) -> ::c_int;
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut ::FILE;
