@@ -2997,6 +2997,12 @@ extern "C" {
     pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> ::c_int;
     pub fn nl_langinfo_l(item: ::nl_item, locale: ::locale_t)
         -> *mut ::c_char;
+    pub fn accept4(
+        fd: ::c_int,
+        addr: *mut ::sockaddr,
+        len: *mut ::socklen_t,
+        flg: ::c_int,
+    ) -> ::c_int;
     pub fn getnameinfo(
         sa: *const ::sockaddr,
         salen: ::socklen_t,
