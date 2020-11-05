@@ -716,6 +716,7 @@ pub const EPIPE: ::c_int = 32;
 pub const EDOM: ::c_int = 33;
 pub const ERANGE: ::c_int = 34;
 pub const EWOULDBLOCK: ::c_int = EAGAIN;
+pub const ENOTSUP: ::c_int = EOPNOTSUPP;
 
 pub const SCM_RIGHTS: ::c_int = 0x01;
 pub const SCM_CREDENTIALS: ::c_int = 0x02;
