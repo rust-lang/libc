@@ -302,9 +302,18 @@ s! {
         #[cfg(target_pointer_width = "32")]
         pub dlpi_phnum: Elf32_Half,
 
+        // As of uClibc 1.0.36, the following fields are
+        // gated behind a "#if 0" block which always evaluates
+        // to false. So I'm just removing these, and if uClibc changes
+        // the #if block in the future to include the following fields, these
+        // will probably need including here. tsidea, skrap
+        #[cfg(not(target_env = "uclibc"))]
         pub dlpi_adds: ::c_ulonglong,
+        #[cfg(not(target_env = "uclibc"))]
         pub dlpi_subs: ::c_ulonglong,
+        #[cfg(not(target_env = "uclibc"))]
         pub dlpi_tls_modid: ::size_t,
+        #[cfg(not(target_env = "uclibc"))]
         pub dlpi_tls_data: *mut ::c_void,
     }
 
@@ -2792,20 +2801,8 @@ f! {
     }
 }
 
+#[cfg(not(target_env = "uclibc"))]
 extern "C" {
-    #[cfg_attr(not(target_env = "musl"), link_name = "__xpg_strerror_r")]
-    pub fn strerror_r(
-        errnum: ::c_int,
-        buf: *mut c_char,
-        buflen: ::size_t,
-    ) -> ::c_int;
-
-    pub fn abs(i: ::c_int) -> ::c_int;
-    pub fn atof(s: *const ::c_char) -> ::c_double;
-    pub fn labs(i: ::c_long) -> ::c_long;
-    pub fn rand() -> ::c_int;
-    pub fn srand(seed: ::c_uint);
-
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
@@ -2823,6 +2820,22 @@ extern "C" {
         nitems: ::c_int,
         sevp: *mut ::sigevent,
     ) -> ::c_int;
+}
+
+
+extern "C" {
+    #[cfg_attr(not(target_env = "musl"), link_name = "__xpg_strerror_r")]
+    pub fn strerror_r(
+        errnum: ::c_int,
+        buf: *mut c_char,
+        buflen: ::size_t,
+    ) -> ::c_int;
+
+    pub fn abs(i: ::c_int) -> ::c_int;
+    pub fn atof(s: *const ::c_char) -> ::c_double;
+    pub fn labs(i: ::c_long) -> ::c_long;
+    pub fn rand() -> ::c_int;
+    pub fn srand(seed: ::c_uint);
 
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
 
@@ -3594,7 +3607,10 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(target_env = "musl")] {
+    if #[cfg(target_env = "uclibc")] {
+        mod uclibc;
+        pub use self::uclibc::*;
+    } else if #[cfg(target_env = "musl")] {
         mod musl;
         pub use self::musl::*;
     } else if #[cfg(target_env = "gnu")] {

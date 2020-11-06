@@ -245,14 +245,6 @@ s_no_extra_traits! {
         pub d_type: u8,
         pub d_name: [::c_char; 256],
     }
-    #[allow(missing_debug_implementations)]
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_name: [::c_char; 256],
-    }
 }
 
 // constants
