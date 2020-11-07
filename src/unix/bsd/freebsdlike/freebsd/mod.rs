@@ -984,6 +984,7 @@ pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
 
 pub const IP_RECVTOS: ::c_int = 68;
 
+pub const IPV6_BINDANY: ::c_int = 64;
 pub const IPV6_ORIGDSTADDR: ::c_int = 72;
 pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
 
