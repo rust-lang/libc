@@ -24,43 +24,5 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
             }
         }
-
-        s_no_extra_traits! {
-            #[repr(align(8))]
-            #[allow(missing_debug_implementations)]
-            pub struct pthread_cond_t {
-                size: [u8; ::__SIZEOF_PTHREAD_COND_T],
-            }
-
-            #[cfg_attr(all(target_pointer_width = "32",
-                           any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc")),
-                       repr(align(4)))]
-            #[cfg_attr(any(target_pointer_width = "64",
-                           not(any(target_arch = "mips",
-                                   target_arch = "arm",
-                                   target_arch = "powerpc"))),
-                       repr(align(8)))]
-            #[allow(missing_debug_implementations)]
-            pub struct pthread_mutex_t {
-                size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
-            }
-
-            #[cfg_attr(all(target_pointer_width = "32",
-                           any(target_arch = "mips",
-                               target_arch = "arm",
-                               target_arch = "powerpc")),
-                       repr(align(4)))]
-            #[cfg_attr(any(target_pointer_width = "64",
-                           not(any(target_arch = "mips",
-                                   target_arch = "arm",
-                                   target_arch = "powerpc"))),
-                       repr(align(8)))]
-            #[allow(missing_debug_implementations)]
-            pub struct pthread_rwlock_t {
-                size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
-            }
-        }
     };
 }

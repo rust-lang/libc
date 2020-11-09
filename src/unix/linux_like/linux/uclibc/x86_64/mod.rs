@@ -143,7 +143,7 @@ s! {
     pub struct sigaction {
         pub sa_handler: ::sighandler_t,
         pub sa_flags: ::c_ulong,
-        pub sa_restorer: *mut ::c_void,
+        pub sa_restorer: ::Option<extern fn()>,
         pub sa_mask: ::sigset_t,
     }
 
@@ -217,11 +217,6 @@ s! {
         __unused3: *mut ::c_void,
         __unused4: *mut ::c_void,
         __unused5: *mut ::c_void,
-    }
-
-    pub struct rlimit64 { // FIXME
-        pub rlim_cur: rlim64_t,
-        pub rlim_max: rlim64_t,
     }
 
     pub struct cpu_set_t { // FIXME

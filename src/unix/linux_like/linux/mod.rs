@@ -417,19 +417,6 @@ s! {
         pub sh_entsize: Elf64_Xword,
     }
 
-    pub struct Elf32_Chdr {
-        pub ch_type: Elf32_Word,
-        pub ch_size: Elf32_Word,
-        pub ch_addralign: Elf32_Word,
-    }
-
-    pub struct Elf64_Chdr {
-        pub ch_type: Elf64_Word,
-        pub ch_reserved: Elf64_Word,
-        pub ch_size: Elf64_Xword,
-        pub ch_addralign: Elf64_Xword,
-    }
-
     pub struct ucred {
         pub pid: ::pid_t,
         pub uid: ::uid_t,
@@ -535,6 +522,25 @@ s! {
     pub struct can_filter {
         pub can_id: canid_t,
         pub can_mask: canid_t,
+    }
+}
+
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        s! {
+            pub struct Elf64_Chdr {
+                pub ch_type: Elf64_Word,
+                pub ch_reserved: Elf64_Word,
+                pub ch_size: Elf64_Xword,
+                pub ch_addralign: Elf64_Xword,
+            }
+
+            pub struct Elf32_Chdr {
+                pub ch_type: Elf32_Word,
+                pub ch_size: Elf32_Word,
+                pub ch_addralign: Elf32_Word,
+            }
+        }
     }
 }
 
@@ -908,78 +914,82 @@ cfg_if! {
     }
 }
 
-pub const ABDAY_1: ::nl_item = 0x20000;
-pub const ABDAY_2: ::nl_item = 0x20001;
-pub const ABDAY_3: ::nl_item = 0x20002;
-pub const ABDAY_4: ::nl_item = 0x20003;
-pub const ABDAY_5: ::nl_item = 0x20004;
-pub const ABDAY_6: ::nl_item = 0x20005;
-pub const ABDAY_7: ::nl_item = 0x20006;
+cfg_if! {
+    if #[cfg(any(target_env = "gnu", target_env = "musl"))] {
+        pub const ABDAY_1: ::nl_item = 0x20000;
+        pub const ABDAY_2: ::nl_item = 0x20001;
+        pub const ABDAY_3: ::nl_item = 0x20002;
+        pub const ABDAY_4: ::nl_item = 0x20003;
+        pub const ABDAY_5: ::nl_item = 0x20004;
+        pub const ABDAY_6: ::nl_item = 0x20005;
+        pub const ABDAY_7: ::nl_item = 0x20006;
 
-pub const DAY_1: ::nl_item = 0x20007;
-pub const DAY_2: ::nl_item = 0x20008;
-pub const DAY_3: ::nl_item = 0x20009;
-pub const DAY_4: ::nl_item = 0x2000A;
-pub const DAY_5: ::nl_item = 0x2000B;
-pub const DAY_6: ::nl_item = 0x2000C;
-pub const DAY_7: ::nl_item = 0x2000D;
+        pub const DAY_1: ::nl_item = 0x20007;
+        pub const DAY_2: ::nl_item = 0x20008;
+        pub const DAY_3: ::nl_item = 0x20009;
+        pub const DAY_4: ::nl_item = 0x2000A;
+        pub const DAY_5: ::nl_item = 0x2000B;
+        pub const DAY_6: ::nl_item = 0x2000C;
+        pub const DAY_7: ::nl_item = 0x2000D;
 
-pub const ABMON_1: ::nl_item = 0x2000E;
-pub const ABMON_2: ::nl_item = 0x2000F;
-pub const ABMON_3: ::nl_item = 0x20010;
-pub const ABMON_4: ::nl_item = 0x20011;
-pub const ABMON_5: ::nl_item = 0x20012;
-pub const ABMON_6: ::nl_item = 0x20013;
-pub const ABMON_7: ::nl_item = 0x20014;
-pub const ABMON_8: ::nl_item = 0x20015;
-pub const ABMON_9: ::nl_item = 0x20016;
-pub const ABMON_10: ::nl_item = 0x20017;
-pub const ABMON_11: ::nl_item = 0x20018;
-pub const ABMON_12: ::nl_item = 0x20019;
+        pub const ABMON_1: ::nl_item = 0x2000E;
+        pub const ABMON_2: ::nl_item = 0x2000F;
+        pub const ABMON_3: ::nl_item = 0x20010;
+        pub const ABMON_4: ::nl_item = 0x20011;
+        pub const ABMON_5: ::nl_item = 0x20012;
+        pub const ABMON_6: ::nl_item = 0x20013;
+        pub const ABMON_7: ::nl_item = 0x20014;
+        pub const ABMON_8: ::nl_item = 0x20015;
+        pub const ABMON_9: ::nl_item = 0x20016;
+        pub const ABMON_10: ::nl_item = 0x20017;
+        pub const ABMON_11: ::nl_item = 0x20018;
+        pub const ABMON_12: ::nl_item = 0x20019;
 
-pub const MON_1: ::nl_item = 0x2001A;
-pub const MON_2: ::nl_item = 0x2001B;
-pub const MON_3: ::nl_item = 0x2001C;
-pub const MON_4: ::nl_item = 0x2001D;
-pub const MON_5: ::nl_item = 0x2001E;
-pub const MON_6: ::nl_item = 0x2001F;
-pub const MON_7: ::nl_item = 0x20020;
-pub const MON_8: ::nl_item = 0x20021;
-pub const MON_9: ::nl_item = 0x20022;
-pub const MON_10: ::nl_item = 0x20023;
-pub const MON_11: ::nl_item = 0x20024;
-pub const MON_12: ::nl_item = 0x20025;
+        pub const MON_1: ::nl_item = 0x2001A;
+        pub const MON_2: ::nl_item = 0x2001B;
+        pub const MON_3: ::nl_item = 0x2001C;
+        pub const MON_4: ::nl_item = 0x2001D;
+        pub const MON_5: ::nl_item = 0x2001E;
+        pub const MON_6: ::nl_item = 0x2001F;
+        pub const MON_7: ::nl_item = 0x20020;
+        pub const MON_8: ::nl_item = 0x20021;
+        pub const MON_9: ::nl_item = 0x20022;
+        pub const MON_10: ::nl_item = 0x20023;
+        pub const MON_11: ::nl_item = 0x20024;
+        pub const MON_12: ::nl_item = 0x20025;
 
-pub const AM_STR: ::nl_item = 0x20026;
-pub const PM_STR: ::nl_item = 0x20027;
+        pub const AM_STR: ::nl_item = 0x20026;
+        pub const PM_STR: ::nl_item = 0x20027;
 
-pub const D_T_FMT: ::nl_item = 0x20028;
-pub const D_FMT: ::nl_item = 0x20029;
-pub const T_FMT: ::nl_item = 0x2002A;
-pub const T_FMT_AMPM: ::nl_item = 0x2002B;
+        pub const D_T_FMT: ::nl_item = 0x20028;
+        pub const D_FMT: ::nl_item = 0x20029;
+        pub const T_FMT: ::nl_item = 0x2002A;
+        pub const T_FMT_AMPM: ::nl_item = 0x2002B;
 
-pub const ERA: ::nl_item = 0x2002C;
-pub const ERA_D_FMT: ::nl_item = 0x2002E;
-pub const ALT_DIGITS: ::nl_item = 0x2002F;
-pub const ERA_D_T_FMT: ::nl_item = 0x20030;
-pub const ERA_T_FMT: ::nl_item = 0x20031;
+        pub const ERA: ::nl_item = 0x2002C;
+        pub const ERA_D_FMT: ::nl_item = 0x2002E;
+        pub const ALT_DIGITS: ::nl_item = 0x2002F;
+        pub const ERA_D_T_FMT: ::nl_item = 0x20030;
+        pub const ERA_T_FMT: ::nl_item = 0x20031;
 
-pub const CODESET: ::nl_item = 14;
+        pub const CODESET: ::nl_item = 14;
+        pub const CRNCYSTR: ::nl_item = 0x4000F;
+        pub const RADIXCHAR: ::nl_item = 0x10000;
+        pub const THOUSEP: ::nl_item = 0x10001;
+        pub const YESEXPR: ::nl_item = 0x50000;
+        pub const NOEXPR: ::nl_item = 0x50001;
+        pub const YESSTR: ::nl_item = 0x50002;
+        pub const NOSTR: ::nl_item = 0x50003;
+    }
+}
 
-pub const CRNCYSTR: ::nl_item = 0x4000F;
-
-pub const RUSAGE_THREAD: ::c_int = 1;
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        pub const RUSAGE_THREAD: ::c_int = 1;
+    }
+}
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 
-pub const RADIXCHAR: ::nl_item = 0x10000;
-pub const THOUSEP: ::nl_item = 0x10001;
-
-pub const YESEXPR: ::nl_item = 0x50000;
-pub const NOEXPR: ::nl_item = 0x50001;
-pub const YESSTR: ::nl_item = 0x50002;
-pub const NOSTR: ::nl_item = 0x50003;
-
-pub const FILENAME_MAX: ::c_uint = 4096;
 pub const L_tmpnam: ::c_uint = 20;
 pub const _PC_LINK_MAX: ::c_int = 0;
 pub const _PC_MAX_CANON: ::c_int = 1;
@@ -1289,6 +1299,10 @@ pub const IFF_DETACH_QUEUE: ::c_int = 0x0400;
 pub const IFF_PERSIST: ::c_int = 0x0800;
 pub const IFF_NOFILTER: ::c_int = 0x1000;
 
+// Since Linux 3.1
+pub const SEEK_DATA: ::c_int = 3;
+pub const SEEK_HOLE: ::c_int = 4;
+
 pub const ST_RDONLY: ::c_ulong = 1;
 pub const ST_NOSUID: ::c_ulong = 2;
 pub const ST_NODEV: ::c_ulong = 4;
@@ -1309,6 +1323,7 @@ pub const RTLD_NOW: ::c_int = 0x2;
 pub const AT_EACCESS: ::c_int = 0x200;
 
 pub const TCP_MD5SIG: ::c_int = 14;
+#[cfg(not(target_env = "uclibc"))]
 pub const TCP_ULP: ::c_int = 31;
 
 align_const! {
@@ -1355,17 +1370,6 @@ pub const IPPROTO_MPTCP: ::c_int = 262;
 )]
 pub const IPPROTO_MAX: ::c_int = 256;
 
-pub const AF_IB: ::c_int = 27;
-pub const AF_MPLS: ::c_int = 28;
-pub const AF_NFC: ::c_int = 39;
-pub const AF_VSOCK: ::c_int = 40;
-pub const AF_XDP: ::c_int = 44;
-pub const PF_IB: ::c_int = AF_IB;
-pub const PF_MPLS: ::c_int = AF_MPLS;
-pub const PF_NFC: ::c_int = AF_NFC;
-pub const PF_VSOCK: ::c_int = AF_VSOCK;
-pub const PF_XDP: ::c_int = AF_XDP;
-
 // System V IPC
 pub const IPC_PRIVATE: ::key_t = 0;
 
@@ -1382,6 +1386,7 @@ pub const MSG_INFO: ::c_int = 12;
 
 pub const MSG_NOERROR: ::c_int = 0o10000;
 pub const MSG_EXCEPT: ::c_int = 0o20000;
+#[cfg(not(target_env = "uclibc"))]
 pub const MSG_COPY: ::c_int = 0o40000;
 
 pub const SHM_R: ::c_int = 0o400;
@@ -1390,15 +1395,18 @@ pub const SHM_W: ::c_int = 0o200;
 pub const SHM_RDONLY: ::c_int = 0o10000;
 pub const SHM_RND: ::c_int = 0o20000;
 pub const SHM_REMAP: ::c_int = 0o40000;
+#[cfg(not(target_env = "uclibc"))]
 pub const SHM_EXEC: ::c_int = 0o100000;
 
 pub const SHM_LOCK: ::c_int = 11;
 pub const SHM_UNLOCK: ::c_int = 12;
 
 pub const SHM_HUGETLB: ::c_int = 0o4000;
+#[cfg(not(all(target_env = "uclibc", target_arch = "mips")))]
 pub const SHM_NORESERVE: ::c_int = 0o10000;
 
 pub const EPOLLRDHUP: ::c_int = 0x2000;
+#[cfg(not(target_env = "uclibc"))]
 pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
 
@@ -1451,14 +1459,18 @@ pub const SYNC_FILE_RANGE_WAIT_BEFORE: ::c_uint = 1;
 pub const SYNC_FILE_RANGE_WRITE: ::c_uint = 2;
 pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_uint = 4;
 
-pub const AIO_CANCELED: ::c_int = 0;
-pub const AIO_NOTCANCELED: ::c_int = 1;
-pub const AIO_ALLDONE: ::c_int = 2;
-pub const LIO_READ: ::c_int = 0;
-pub const LIO_WRITE: ::c_int = 1;
-pub const LIO_NOP: ::c_int = 2;
-pub const LIO_WAIT: ::c_int = 0;
-pub const LIO_NOWAIT: ::c_int = 1;
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        pub const AIO_CANCELED: ::c_int = 0;
+        pub const AIO_NOTCANCELED: ::c_int = 1;
+        pub const AIO_ALLDONE: ::c_int = 2;
+        pub const LIO_READ: ::c_int = 0;
+        pub const LIO_WRITE: ::c_int = 1;
+        pub const LIO_NOP: ::c_int = 2;
+        pub const LIO_WAIT: ::c_int = 0;
+        pub const LIO_NOWAIT: ::c_int = 1;
+    }
+}
 
 pub const MREMAP_MAYMOVE: ::c_int = 1;
 pub const MREMAP_FIXED: ::c_int = 2;
@@ -1621,7 +1633,9 @@ pub const SO_ORIGINAL_DST: ::c_int = 80;
 pub const IP_RECVFRAGSIZE: ::c_int = 25;
 
 pub const IPV6_FLOWINFO: ::c_int = 11;
+#[cfg(not(target_env = "uclibc"))]
 pub const IPV6_MULTICAST_ALL: ::c_int = 29;
+#[cfg(not(target_env = "uclibc"))]
 pub const IPV6_ROUTER_ALERT_ISOLATE: ::c_int = 30;
 pub const IPV6_FLOWLABEL_MGR: ::c_int = 32;
 pub const IPV6_FLOWINFO_SEND: ::c_int = 33;
@@ -1634,6 +1648,7 @@ pub const IPV6_RTHDR_LOOSE: ::c_int = 0;
 pub const IPV6_RTHDR_STRICT: ::c_int = 1;
 
 pub const IUTF8: ::tcflag_t = 0x00004000;
+#[cfg(not(all(target_env = "uclibc", target_arch = "mips")))]
 pub const CMSPAR: ::tcflag_t = 0o10000000000;
 
 pub const MFD_CLOEXEC: ::c_uint = 0x0001;
@@ -1952,6 +1967,7 @@ pub const PACKET_DROP_MEMBERSHIP: ::c_int = 2;
 pub const PACKET_MR_MULTICAST: ::c_int = 0;
 pub const PACKET_MR_PROMISC: ::c_int = 1;
 pub const PACKET_MR_ALLMULTI: ::c_int = 2;
+#[cfg(not(target_env = "uclibc"))]
 pub const PACKET_MR_UNICAST: ::c_int = 3;
 
 // linux/netfilter.h
@@ -2073,6 +2089,7 @@ pub const SIOCSRARP: ::c_ulong = 0x00008962;
 pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
 pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 
+#[cfg(not(target_env = "uclibc"))]
 pub const PTRACE_EVENT_STOP: ::c_int = 128;
 
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
@@ -2377,7 +2394,9 @@ pub const UDP_CORK: ::c_int = 1;
 pub const UDP_ENCAP: ::c_int = 100;
 pub const UDP_NO_CHECK6_TX: ::c_int = 101;
 pub const UDP_NO_CHECK6_RX: ::c_int = 102;
+#[cfg(not(target_env = "uclibc"))]
 pub const UDP_SEGMENT: ::c_int = 103;
+#[cfg(not(target_env = "uclibc"))]
 pub const UDP_GRO: ::c_int = 104;
 
 // include/uapi/linux/mman.h
@@ -2518,10 +2537,6 @@ pub const FAN_MARK_ADD: ::c_uint = 0x0000_0001;
 pub const FAN_MARK_REMOVE: ::c_uint = 0x0000_0002;
 pub const FAN_MARK_DONT_FOLLOW: ::c_uint = 0x0000_0004;
 pub const FAN_MARK_ONLYDIR: ::c_uint = 0x0000_0008;
-pub const FAN_MARK_INODE: ::c_uint = 0x0000_0000;
-pub const FAN_MARK_MOUNT: ::c_uint = 0x0000_0010;
-// NOTE: FAN_MARK_FILESYSTEM requires Linux Kernel >= 4.20.0
-pub const FAN_MARK_FILESYSTEM: ::c_uint = 0x0000_0100;
 pub const FAN_MARK_IGNORED_MASK: ::c_uint = 0x0000_0020;
 pub const FAN_MARK_IGNORED_SURV_MODIFY: ::c_uint = 0x0000_0040;
 pub const FAN_MARK_FLUSH: ::c_uint = 0x0000_0080;
@@ -2822,7 +2837,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-
 extern "C" {
     #[cfg_attr(not(target_env = "musl"), link_name = "__xpg_strerror_r")]
     pub fn strerror_r(
@@ -3035,12 +3049,14 @@ extern "C" {
         new_value: *const itimerspec,
         old_value: *mut itimerspec,
     ) -> ::c_int;
+    #[cfg(not(target_env = "uclibc"))]
     pub fn pwritev(
         fd: ::c_int,
         iov: *const ::iovec,
         iovcnt: ::c_int,
         offset: ::off_t,
     ) -> ::ssize_t;
+    #[cfg(not(target_env = "uclibc"))]
     pub fn preadv(
         fd: ::c_int,
         iov: *const ::iovec,
@@ -3116,6 +3132,7 @@ extern "C" {
         len: *mut ::socklen_t,
         flg: ::c_int,
     ) -> ::c_int;
+    #[cfg(not(target_env = "uclibc"))]
     pub fn getnameinfo(
         sa: *const ::sockaddr,
         salen: ::socklen_t,
@@ -3129,7 +3146,10 @@ extern "C" {
         native: ::pthread_t,
         priority: ::c_int,
     ) -> ::c_int;
+    #[cfg(not(target_env = "uclibc"))]
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
+
+    #[cfg(not(target_env = "uclibc"))]
     pub fn process_vm_readv(
         pid: ::pid_t,
         local_iov: *const ::iovec,
@@ -3138,6 +3158,8 @@ extern "C" {
         riovcnt: ::c_ulong,
         flags: ::c_ulong,
     ) -> isize;
+
+    #[cfg(not(target_env = "uclibc"))]
     pub fn process_vm_writev(
         pid: ::pid_t,
         local_iov: *const ::iovec,
@@ -3146,6 +3168,7 @@ extern "C" {
         riovcnt: ::c_ulong,
         flags: ::c_ulong,
     ) -> isize;
+
     pub fn reboot(how_to: ::c_int) -> ::c_int;
     pub fn setfsgid(gid: ::gid_t) -> ::c_int;
     pub fn setfsuid(uid: ::uid_t) -> ::c_int;
@@ -3220,6 +3243,8 @@ extern "C" {
         addrlen: *mut ::socklen_t,
     ) -> ::ssize_t;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
+
+    #[cfg(not(target_env = "uclibc"))]
     pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 

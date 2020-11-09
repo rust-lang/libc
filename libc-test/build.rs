@@ -2267,6 +2267,7 @@ fn test_linux(target: &str) {
     let gnuabihf = target.contains("gnueabihf");
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
+    let uclibc = target.contains("uclibc");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2377,7 +2378,8 @@ fn test_linux(target: &str) {
                [!(x32 || musl || gnu)]: "sys/sysctl.h",
                // <execinfo.h> is not supported by musl:
                // https://www.openwall.com/lists/musl/2015/04/09/3
-               [!musl]: "execinfo.h",
+               // <execinfo.h> is not present on uclibc.
+               [!(musl || uclibc)]: "execinfo.h",
     }
 
     // Include linux headers at the end:
@@ -2419,8 +2421,9 @@ fn test_linux(target: &str) {
         "linux/sockios.h",
         "linux/vm_sockets.h",
         "linux/wait.h",
-        "sys/auxv.h",
         "sys/fanotify.h",
+        // <sys/auxv.h> is not present on uclibc
+        [!uclibc]: "sys/auxv.h",
     }
 
     // note: aio.h must be included before sys/mount.h
@@ -2428,7 +2431,8 @@ fn test_linux(target: &str) {
         cfg:
         "sys/xattr.h",
         "sys/sysinfo.h",
-        "aio.h",
+        // AIO is not supported by uclibc:
+        [!uclibc]: "aio.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -2650,6 +2654,8 @@ fn test_linux(target: &str) {
             | "CAN_J1939"
             | "CAN_RAW_FILTER_MAX"
             | "CAN_NPROTO" => true,
+            
+            "MS_RMT_MASK" if uclibc => true, // updated in glibc 2.22 and musl 1.1.13
 
             // FIXME: Requires recent kernel headers (5.8):
             "STATX_MNT_ID" => true,
@@ -2697,6 +2703,27 @@ fn test_linux(target: &str) {
 
             // FIXME: It now takes c_void instead of timezone since glibc 2.31.
             "gettimeofday" if gnu => true,
+
+            // These are all implemented as static inline functions in uclibc, so
+            // they cannot be linked against.
+            // If implementations are required, they might need to be implemented
+            // in this crate.
+            "posix_spawnattr_init" if uclibc => true,
+            "posix_spawnattr_destroy" if uclibc => true,
+            "posix_spawnattr_getsigdefault" if uclibc => true,
+            "posix_spawnattr_setsigdefault" if uclibc => true,
+            "posix_spawnattr_getsigmask" if uclibc => true,
+            "posix_spawnattr_setsigmask" if uclibc => true,
+            "posix_spawnattr_getflags" if uclibc => true,
+            "posix_spawnattr_setflags" if uclibc => true,
+            "posix_spawnattr_getpgroup" if uclibc => true,
+            "posix_spawnattr_setpgroup" if uclibc => true,
+            "posix_spawnattr_getschedpolicy" if uclibc => true,
+            "posix_spawnattr_setschedpolicy" if uclibc => true,
+            "posix_spawnattr_getschedparam" if uclibc => true,
+            "posix_spawnattr_setschedparam" if uclibc => true,
+            "posix_spawn_file_actions_init" if uclibc => true,
+            "posix_spawn_file_actions_destroy" if uclibc => true,
 
             _ => false,
         }

@@ -458,6 +458,7 @@ extern "C" {
         ptr: *mut *mut c_char,
         sizeloc: *mut size_t,
     ) -> *mut FILE;
+    #[cfg(not(target_env = "uclibc"))]
     pub fn open_wmemstream(
         ptr: *mut *mut wchar_t,
         sizeloc: *mut size_t,
@@ -626,15 +627,18 @@ extern "C" {
         ...
     ) -> ::c_int;
     pub fn sprintf(s: *mut ::c_char, format: *const ::c_char, ...) -> ::c_int;
-    #[cfg_attr(target_os = "linux", link_name = "__isoc99_fscanf")]
+    #[cfg_attr(all(target_os = "linux", not(target_env = "uclibc")),
+               link_name = "__isoc99_fscanf")]
     pub fn fscanf(
         stream: *mut ::FILE,
         format: *const ::c_char,
         ...
     ) -> ::c_int;
-    #[cfg_attr(target_os = "linux", link_name = "__isoc99_scanf")]
+    #[cfg_attr(all(target_os = "linux", not(target_env = "uclibc")),
+               link_name = "__isoc99_scanf")]
     pub fn scanf(format: *const ::c_char, ...) -> ::c_int;
-    #[cfg_attr(target_os = "linux", link_name = "__isoc99_sscanf")]
+    #[cfg_attr(all(target_os = "linux", not(target_env = "uclibc")),
+               link_name = "__isoc99_sscanf")]
     pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...)
         -> ::c_int;
     pub fn getchar_unlocked() -> ::c_int;
