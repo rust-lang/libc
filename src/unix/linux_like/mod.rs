@@ -1091,15 +1091,15 @@ pub const WCONTINUED: ::c_int = 0x00000008;
 pub const WNOWAIT: ::c_int = 0x01000000;
 
 // Options for personality(2).
-pub const ADDR_NO_RANDOMIZE: ::c_int = 0x0040000;
-pub const MMAP_PAGE_ZERO: ::c_int = 0x0100000;
-pub const ADDR_COMPAT_LAYOUT: ::c_int = 0x0200000;
-pub const READ_IMPLIES_EXEC: ::c_int = 0x0400000;
-pub const ADDR_LIMIT_32BIT: ::c_int = 0x0800000;
-pub const SHORT_INODE: ::c_int = 0x1000000;
-pub const WHOLE_SECONDS: ::c_int = 0x2000000;
-pub const STICKY_TIMEOUTS: ::c_int = 0x4000000;
-pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
+pub const ADDR_NO_RANDOMIZE: ::c_ulong = 0x0040000;
+pub const MMAP_PAGE_ZERO: ::c_ulong = 0x0100000;
+pub const ADDR_COMPAT_LAYOUT: ::c_ulong = 0x0200000;
+pub const READ_IMPLIES_EXEC: ::c_ulong = 0x0400000;
+pub const ADDR_LIMIT_32BIT: ::c_ulong = 0x0800000;
+pub const SHORT_INODE: ::c_ulong = 0x1000000;
+pub const WHOLE_SECONDS: ::c_ulong = 0x2000000;
+pub const STICKY_TIMEOUTS: ::c_ulong = 0x4000000;
+pub const ADDR_LIMIT_3GB: ::c_ulong = 0x8000000;
 
 // Options set using PTRACE_SETOPTIONS.
 pub const PTRACE_O_TRACESYSGOOD: ::c_int = 0x00000001;
