@@ -1369,8 +1369,6 @@ pub const SYNC_FILE_RANGE_WAIT_BEFORE: ::c_uint = 1;
 pub const SYNC_FILE_RANGE_WRITE: ::c_uint = 2;
 pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_uint = 4;
 
-pub const EAI_SYSTEM: ::c_int = -11;
-
 pub const MREMAP_MAYMOVE: ::c_int = 1;
 pub const MREMAP_FIXED: ::c_int = 2;
 
