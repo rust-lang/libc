@@ -116,6 +116,19 @@ s! {
         pub sc_ngroups: ::c_int,
         pub sc_groups: [::gid_t; 1],
     }
+
+    pub struct ptrace_vm_entry {
+        pub pve_entry: ::c_int,
+        pub pve_timestamp: ::c_int,
+        pub pve_start: ::c_ulong,
+        pub pve_end: ::c_ulong,
+        pub pve_offset: ::c_ulong,
+        pub pve_prot: ::c_uint,
+        pub pve_pathlen: ::c_uint,
+        pub pve_fileid: ::c_long,
+        pub pve_fsid: u32,
+        pub pve_path: *mut ::c_char,
+    }
 }
 
 s_no_extra_traits! {
@@ -322,10 +335,17 @@ pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
 pub const EXTATTR_NAMESPACE_USER: ::c_int = 1;
 pub const EXTATTR_NAMESPACE_SYSTEM: ::c_int = 2;
 
-pub const RAND_MAX: ::c_int = 0x7fff_fffd;
-pub const PTHREAD_STACK_MIN: ::size_t = 2048;
+cfg_if! {
+    if #[cfg(any(freebsd10, freebsd11, freebsd12))] {
+        pub const RAND_MAX: ::c_int = 0x7fff_fffd;
+    } else {
+        pub const RAND_MAX: ::c_int = 0x7fff_ffff;
+    }
+}
+
+pub const PTHREAD_STACK_MIN: ::size_t = MINSIGSTKSZ;
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 4;
-pub const SIGSTKSZ: ::size_t = 34816;
+pub const SIGSTKSZ: ::size_t = MINSIGSTKSZ + 32768;
 pub const SF_NODISKIO: ::c_int = 0x00000001;
 pub const SF_MNOWAIT: ::c_int = 0x00000002;
 pub const SF_SYNC: ::c_int = 0x00000004;
@@ -427,22 +447,13 @@ pub const NOTE_NSECONDS: u32 = 0x00000008;
 pub const MADV_PROTECT: ::c_int = 10;
 pub const RUSAGE_THREAD: ::c_int = 1;
 
-pub const CLOCK_REALTIME: ::clockid_t = 0;
-pub const CLOCK_VIRTUAL: ::clockid_t = 1;
-pub const CLOCK_PROF: ::clockid_t = 2;
-pub const CLOCK_MONOTONIC: ::clockid_t = 4;
-pub const CLOCK_UPTIME: ::clockid_t = 5;
-pub const CLOCK_UPTIME_PRECISE: ::clockid_t = 7;
-pub const CLOCK_UPTIME_FAST: ::clockid_t = 8;
-pub const CLOCK_REALTIME_PRECISE: ::clockid_t = 9;
-pub const CLOCK_REALTIME_FAST: ::clockid_t = 10;
-pub const CLOCK_MONOTONIC_PRECISE: ::clockid_t = 11;
-pub const CLOCK_MONOTONIC_FAST: ::clockid_t = 12;
-pub const CLOCK_SECOND: ::clockid_t = 13;
-pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 14;
-pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 15;
-
+#[doc(hidden)]
+#[deprecated(
+    since = "0.2.72",
+    note = "CTL_UNSPEC is deprecated. Use CTL_SYSCTL instead"
+)]
 pub const CTL_UNSPEC: ::c_int = 0;
+pub const CTL_SYSCTL: ::c_int = 0;
 pub const CTL_KERN: ::c_int = 1;
 pub const CTL_VM: ::c_int = 2;
 pub const CTL_VFS: ::c_int = 3;
@@ -452,6 +463,13 @@ pub const CTL_HW: ::c_int = 6;
 pub const CTL_MACHDEP: ::c_int = 7;
 pub const CTL_USER: ::c_int = 8;
 pub const CTL_P1003_1B: ::c_int = 9;
+pub const CTL_SYSCTL_DEBUG: ::c_int = 0;
+pub const CTL_SYSCTL_NAME: ::c_int = 1;
+pub const CTL_SYSCTL_NEXT: ::c_int = 2;
+pub const CTL_SYSCTL_NAME2OID: ::c_int = 3;
+pub const CTL_SYSCTL_OIDFMT: ::c_int = 4;
+pub const CTL_SYSCTL_OIDDESCR: ::c_int = 5;
+pub const CTL_SYSCTL_OIDLABEL: ::c_int = 6;
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
 pub const KERN_OSREV: ::c_int = 3;
@@ -769,8 +787,14 @@ pub const IPPROTO_BLT: ::c_int = 30;
 pub const IPPROTO_NSP: ::c_int = 31;
 /// Merit Internodal
 pub const IPPROTO_INP: ::c_int = 32;
-/// Sequential Exchange
+#[doc(hidden)]
+#[deprecated(
+    since = "0.2.72",
+    note = "IPPROTO_SEP is deprecated. Use IPPROTO_DCCP instead"
+)]
 pub const IPPROTO_SEP: ::c_int = 33;
+/// Datagram Congestion Control Protocol
+pub const IPPROTO_DCCP: ::c_int = 33;
 /// Third Party Connect
 pub const IPPROTO_3PC: ::c_int = 34;
 /// InterDomain Policy Routing
@@ -1017,6 +1041,7 @@ pub const HW_MAXID: ::c_int = 13;
 #[deprecated(since = "0.2.54", note = "Removed in FreeBSD 11")]
 pub const USER_MAXID: ::c_int = 21;
 #[doc(hidden)]
+#[deprecated(since = "0.2.74", note = "Removed in FreeBSD 13")]
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
 pub const MSG_NOTIFICATION: ::c_int = 0x00002000;
@@ -1115,6 +1140,15 @@ pub const UF_READONLY: ::c_ulong = 0x00001000;
 pub const UF_HIDDEN: ::c_ulong = 0x00008000;
 pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
 
+pub const F_OGETLK: ::c_int = 7;
+pub const F_OSETLK: ::c_int = 8;
+pub const F_OSETLKW: ::c_int = 9;
+pub const F_DUP2FD: ::c_int = 10;
+pub const F_SETLK_REMOTE: ::c_int = 14;
+pub const F_READAHEAD: ::c_int = 15;
+pub const F_RDAHEAD: ::c_int = 16;
+pub const F_DUP2FD_CLOEXEC: ::c_int = 18;
+
 fn _ALIGN(p: usize) -> usize {
     (p + _ALIGNBYTES) & !_ALIGNBYTES
 }
@@ -1161,24 +1195,19 @@ f! {
         ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
 
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
-        (status & 0o177) != 0o177 && (status & 0o177) != 0 && status != 0x13
-    }
-
     pub fn uname(buf: *mut ::utsname) -> ::c_int {
         __xuname(256, buf as *mut ::c_void)
     }
 }
 
+safe_f! {
+    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
+        (status & 0o177) != 0o177 && (status & 0o177) != 0 && status != 0x13
+    }
+}
+
 extern "C" {
     pub fn __error() -> *mut ::c_int;
-
-    pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_settime(
-        clk_id: ::clockid_t,
-        tp: *const ::timespec,
-    ) -> ::c_int;
 
     pub fn extattr_delete_fd(
         fd: ::c_int,
@@ -1270,7 +1299,6 @@ extern "C" {
         flags: ::c_int,
     ) -> ::c_int;
 
-    pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn posix_fallocate(
         fd: ::c_int,
         offset: ::off_t,
@@ -1470,6 +1498,12 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+
+    pub fn nmount(
+        iov: *mut ::iovec,
+        niov: ::c_uint,
+        flags: ::c_int,
+    ) -> ::c_int;
 }
 
 #[link(name = "util")]

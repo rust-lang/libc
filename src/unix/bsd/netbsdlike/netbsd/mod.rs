@@ -11,6 +11,36 @@ pub type vm_size_t = ::uintptr_t;
 pub type lwpid_t = ::c_uint;
 pub type shmatt_t = ::c_uint;
 
+// elf.h
+
+pub type Elf32_Addr = u32;
+pub type Elf32_Half = u16;
+pub type Elf32_Lword = u64;
+pub type Elf32_Off = u32;
+pub type Elf32_Sword = i32;
+pub type Elf32_Word = u32;
+
+pub type Elf64_Addr = u64;
+pub type Elf64_Half = u16;
+pub type Elf64_Lword = u64;
+pub type Elf64_Off = u64;
+pub type Elf64_Sword = i32;
+pub type Elf64_Sxword = i64;
+pub type Elf64_Word = u32;
+pub type Elf64_Xword = u64;
+
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        type Elf_Addr = Elf64_Addr;
+        type Elf_Half = Elf64_Half;
+        type Elf_Phdr = Elf64_Phdr;
+    } else if #[cfg(target_pointer_width = "32")] {
+        type Elf_Addr = Elf32_Addr;
+        type Elf_Half = Elf32_Half;
+        type Elf_Phdr = Elf32_Phdr;
+    }
+}
+
 impl siginfo_t {
     pub unsafe fn si_value(&self) -> ::sigval {
         #[repr(C)]
@@ -92,7 +122,7 @@ s! {
         pub st_spare: [u32; 2],
     }
 
-     pub struct addrinfo {
+    pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
         pub ai_socktype: ::c_int,
@@ -286,7 +316,7 @@ s! {
     pub struct __exit_status {
         pub e_termination: u16,
         pub e_exit: u16,
-   }
+    }
 
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
@@ -341,6 +371,42 @@ s! {
         pub time_state: ::c_int,
     }
 
+    // elf.h
+
+    pub struct Elf32_Phdr {
+        pub p_type: Elf32_Word,
+        pub p_offset: Elf32_Off,
+        pub p_vaddr: Elf32_Addr,
+        pub p_paddr: Elf32_Addr,
+        pub p_filesz: Elf32_Word,
+        pub p_memsz: Elf32_Word,
+        pub p_flags: Elf32_Word,
+        pub p_align: Elf32_Word,
+    }
+
+    pub struct Elf64_Phdr {
+        pub p_type: Elf64_Word,
+        pub p_flags: Elf64_Word,
+        pub p_offset: Elf64_Off,
+        pub p_vaddr: Elf64_Addr,
+        pub p_paddr: Elf64_Addr,
+        pub p_filesz: Elf64_Xword,
+        pub p_memsz: Elf64_Xword,
+        pub p_align: Elf64_Xword,
+    }
+
+    // link.h
+
+    pub struct dl_phdr_info {
+        pub dlpi_addr: Elf_Addr,
+        pub dlpi_name: *const ::c_char,
+        pub dlpi_phdr: *const Elf_Phdr,
+        pub dlpi_phnum: Elf_Half,
+        pub dlpi_adds: ::c_ulonglong,
+        pub dlpi_subs: ::c_ulonglong,
+        pub dlpi_tls_modid: usize,
+        pub dlpi_tls_data: *mut ::c_void,
+    }
 }
 
 s_no_extra_traits! {
@@ -918,6 +984,12 @@ pub const O_RSYNC: ::c_int = 0x00020000;
 
 pub const MS_SYNC: ::c_int = 0x4;
 pub const MS_INVALIDATE: ::c_int = 0x2;
+
+// Here because they are not present on OpenBSD
+// (https://github.com/openbsd/src/blob/master/sys/sys/resource.h)
+pub const RLIMIT_SBSIZE: ::c_int = 9;
+pub const RLIMIT_AS: ::c_int = 10;
+pub const RLIMIT_NTHR: ::c_int = 11;
 
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = 12;
@@ -1699,27 +1771,11 @@ f! {
             as ::c_uint
     }
 
-    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
-        status >> 8
-    }
-
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
-        (status & 0o177) != 0o177 && (status & 0o177) != 0
-    }
-
-    pub fn WIFSTOPPED(status: ::c_int) -> bool {
-        (status & 0o177) == 0o177
-    }
-
     // dirfd() is a macro on netbsd to access
     // the first field of the struct where dirp points to:
     // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int {
         *(dirp as *const ::c_int)
-    }
-
-    pub fn WIFCONTINUED(status: ::c_int) -> bool {
-        status == 0xffff
     }
 
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
@@ -1732,9 +1788,33 @@ f! {
     }
 }
 
+safe_f! {
+    pub {const} fn WSTOPSIG(status: ::c_int) -> ::c_int {
+        status >> 8
+    }
+
+    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
+        (status & 0o177) != 0o177 && (status & 0o177) != 0
+    }
+
+    pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
+        (status & 0o177) == 0o177
+    }
+
+    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
+        status == 0xffff
+    }
+}
+
 extern "C" {
     pub fn ntp_adjtime(buf: *mut timex) -> ::c_int;
     pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
+    pub fn clock_nanosleep(
+        clk_id: ::clockid_t,
+        flags: ::c_int,
+        rqtp: *const ::timespec,
+        rmtp: *mut ::timespec,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]
@@ -1988,6 +2068,19 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+
+    // link.h
+
+    pub fn dl_iterate_phdr(
+        callback: ::Option<
+            unsafe extern "C" fn(
+                info: *mut dl_phdr_info,
+                size: usize,
+                data: *mut ::c_void,
+            ) -> ::c_int,
+        >,
+        data: *mut ::c_void,
+    ) -> ::c_int;
 }
 
 #[link(name = "util")]

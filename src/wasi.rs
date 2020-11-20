@@ -180,6 +180,11 @@ pub const SEEK_END: c_int = 2;
 pub const _IOFBF: c_int = 0;
 pub const _IONBF: c_int = 2;
 pub const _IOLBF: c_int = 1;
+pub const F_GETFD: c_int = 1;
+pub const F_SETFD: c_int = 2;
+pub const F_GETFL: c_int = 3;
+pub const F_SETFL: c_int = 4;
+pub const FD_CLOEXEC: c_int = 1;
 pub const FD_SETSIZE: size_t = 1024;
 pub const O_APPEND: c_int = 0x0001;
 pub const O_DSYNC: c_int = 0x0002;
@@ -197,6 +202,7 @@ pub const O_SEARCH: c_int = 0x08000000;
 pub const O_WRONLY: c_int = 0x10000000;
 pub const O_RDWR: c_int = O_WRONLY | O_RDONLY;
 pub const O_ACCMODE: c_int = O_EXEC | O_RDWR | O_SEARCH;
+pub const O_NOCTTY: c_int = 0x0;
 pub const POSIX_FADV_DONTNEED: c_int = 4;
 pub const POSIX_FADV_NOREUSE: c_int = 5;
 pub const POSIX_FADV_NORMAL: c_int = 0;
@@ -209,6 +215,33 @@ pub const AT_SYMLINK_FOLLOW: c_int = 0x2;
 pub const AT_REMOVEDIR: c_int = 0x4;
 pub const UTIME_OMIT: c_long = 0xfffffffe;
 pub const UTIME_NOW: c_long = 0xffffffff;
+pub const S_IFIFO: mode_t = 49152;
+pub const S_IFCHR: mode_t = 8192;
+pub const S_IFBLK: mode_t = 24576;
+pub const S_IFDIR: mode_t = 16384;
+pub const S_IFREG: mode_t = 32768;
+pub const S_IFLNK: mode_t = 40960;
+pub const S_IFSOCK: mode_t = 49152;
+pub const S_IFMT: mode_t = 57344;
+pub const DT_UNKNOWN: u8 = 0;
+pub const DT_BLK: u8 = 1;
+pub const DT_CHR: u8 = 2;
+pub const DT_DIR: u8 = 3;
+pub const DT_REG: u8 = 4;
+pub const DT_LNK: u8 = 7;
+pub const FIONREAD: c_int = 1;
+pub const FIONBIO: c_int = 2;
+pub const F_OK: ::c_int = 0;
+pub const R_OK: ::c_int = 4;
+pub const W_OK: ::c_int = 2;
+pub const X_OK: ::c_int = 1;
+pub const POLLIN: ::c_short = 0x1;
+pub const POLLOUT: ::c_short = 0x2;
+pub const POLLERR: ::c_short = 0x1000;
+pub const POLLHUP: ::c_short = 0x2000;
+pub const POLLNVAL: ::c_short = 0x4000;
+pub const POLLRDNORM: ::c_short = 0x1;
+pub const POLLWRNORM: ::c_short = 0x2;
 
 pub const E2BIG: c_int = 1;
 pub const EACCES: c_int = 2;
@@ -288,6 +321,11 @@ pub const EXDEV: c_int = 75;
 pub const ENOTCAPABLE: c_int = 76;
 pub const EOPNOTSUPP: c_int = ENOTSUP;
 pub const EWOULDBLOCK: c_int = EAGAIN;
+
+pub const _SC_PAGESIZE: c_int = 30;
+pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
+pub const _SC_IOV_MAX: c_int = 60;
+pub const _SC_SYMLOOP_MAX: c_int = 173;
 
 #[cfg_attr(
     feature = "rustc-dep-of-std",
@@ -378,6 +416,7 @@ extern "C" {
     ) -> size_t;
     pub fn gmtime(a: *const time_t) -> *mut tm;
     pub fn gmtime_r(a: *const time_t, b: *mut tm) -> *mut tm;
+    pub fn localtime(a: *const time_t) -> *mut tm;
     pub fn localtime_r(a: *const time_t, b: *mut tm) -> *mut tm;
     pub fn asctime_r(a: *const tm, b: *mut c_char) -> *mut c_char;
     pub fn ctime_r(a: *const time_t, b: *mut c_char) -> *mut c_char;
@@ -403,6 +442,7 @@ extern "C" {
     pub fn isspace(c: c_int) -> c_int;
     pub fn isupper(c: c_int) -> c_int;
     pub fn isxdigit(c: c_int) -> c_int;
+    pub fn isblank(c: c_int) -> c_int;
     pub fn tolower(c: c_int) -> c_int;
     pub fn toupper(c: c_int) -> c_int;
     pub fn setvbuf(
@@ -448,6 +488,7 @@ extern "C" {
     pub fn strspn(cs: *const c_char, ct: *const c_char) -> size_t;
     pub fn strcspn(cs: *const c_char, ct: *const c_char) -> size_t;
     pub fn strdup(cs: *const c_char) -> *mut c_char;
+    pub fn strndup(cs: *const c_char, n: size_t) -> *mut c_char;
     pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
@@ -515,6 +556,8 @@ extern "C" {
     pub fn closedir(dirp: *mut ::DIR) -> ::c_int;
     pub fn rewinddir(dirp: *mut ::DIR);
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
+    pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
+    pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
 
     pub fn openat(
         dirfd: ::c_int,
@@ -575,7 +618,6 @@ extern "C" {
     pub fn link(src: *const c_char, dst: *const c_char) -> ::c_int;
     pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int) -> off_t;
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
-    pub fn pause() -> ::c_int;
     pub fn rmdir(path: *const c_char) -> ::c_int;
     pub fn sleep(secs: ::c_uint) -> ::c_uint;
     pub fn unlink(c: *const c_char) -> ::c_int;
@@ -642,6 +684,8 @@ extern "C" {
     pub fn timegm(tm: *mut ::tm) -> time_t;
 
     pub fn sysconf(name: ::c_int) -> ::c_long;
+
+    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 
     pub fn fseeko(
         stream: *mut ::FILE,

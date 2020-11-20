@@ -5,13 +5,13 @@
 //! [pd]: https://rust-lang.github.io/libc/#platform-specific-documentation
 #![crate_name = "libc"]
 #![crate_type = "rlib"]
-// FIXME: Remove this and redundant_semicolon once renamed lint reaches stable.
-#![allow(renamed_and_removed_lints)]
 #![allow(
+    renamed_and_removed_lints, // Keep this order.
+    unknown_lints, // Keep this order.
     bad_style,
     overflowing_literals,
     improper_ctypes,
-    unknown_lints,
+    // This lint is renamed but we run CI for old stable rustc so should be here.
     redundant_semicolon,
     redundant_semicolons
 )]
@@ -27,7 +27,10 @@
 #![deny(missing_copy_implementations, safe_packed_borrows)]
 #![no_std]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
-#![cfg_attr(target_os = "redox", feature(static_nobundle))]
+#![cfg_attr(
+    any(feature = "rustc-dep-of-std", target_os = "redox"),
+    feature(static_nobundle)
+)]
 #![cfg_attr(libc_const_extern_fn, feature(const_extern_fn))]
 
 #[macro_use]

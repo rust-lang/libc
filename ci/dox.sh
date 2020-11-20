@@ -19,7 +19,6 @@ if ! rustc --version | grep -E "nightly" ; then
 fi
 
 rustup component add rust-src
-cargo +nightly install cargo-xbuild
 
 # List all targets that do currently build successfully:
 # shellcheck disable=SC1003
@@ -50,11 +49,12 @@ while read -r target; do
     # Enable extra configuration flags:
     export RUSTDOCFLAGS="--cfg freebsd11"
 
-    # If cargo doc fails, then try xargo:
+    # If cargo doc fails, then try with unstable feature:
     if ! cargo doc --target "${target}" \
-             --no-default-features  --features extra_traits ; then
-        cargo xdoc --target "${target}" \
-              --no-default-features  --features extra_traits
+        --no-default-features --features extra_traits ; then
+        cargo doc --target "${target}" \
+        -Z build-std=core,alloc \
+        --no-default-features --features extra_traits
     fi
 
     cp -r "target/${target}/doc" "${TARGET_DOC_DIR}/${target}"
@@ -66,9 +66,16 @@ done < targets
 cp $README $TARGET_DOC_DIR
 line=$(grep -n '<div class="platform_docs"></div>' $README | cut -d ":" -f 1)
 
-set +x
 { head -n "$((line-1))" $README; cat $PLATFORM_SUPPORT; tail -n "+$((line+1))" $README; } > $TARGET_DOC_DIR/$README
-set -x
+
+cp $TARGET_DOC_DIR/$README $TARGET_DOC_DIR/index.md
+
+RUSTDOCFLAGS="--enable-index-page --index-page=${TARGET_DOC_DIR}/index.md -Zunstable-options" cargo doc
+
+# Tweak style
+cp ci/rust.css $TARGET_DOC_DIR
+sed -ie "8i <link rel=\"stylesheet\" type=\"text/css\" href=\"normalize.css\">" $TARGET_DOC_DIR/index.html
+sed -ie "9i <link rel=\"stylesheet\" type=\"text/css\" href=\"rust.css\">" $TARGET_DOC_DIR/index.html
 
 # Copy the licenses
 cp LICENSE-* $TARGET_DOC_DIR/

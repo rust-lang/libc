@@ -1,4 +1,3 @@
-pub type wchar_t = i32;
 pub type off_t = i64;
 pub type useconds_t = u32;
 pub type blkcnt_t = i64;
@@ -255,6 +254,8 @@ pub const FIOGETOWN: ::c_ulong = 0x4004667b;
 
 pub const PATH_MAX: ::c_int = 1024;
 
+pub const IOV_MAX: ::c_int = 1024;
+
 pub const SA_ONSTACK: ::c_int = 0x0001;
 pub const SA_SIGINFO: ::c_int = 0x0040;
 pub const SA_RESTART: ::c_int = 0x0002;
@@ -505,6 +506,10 @@ pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
 
+pub const ITIMER_REAL: ::c_int = 0;
+pub const ITIMER_VIRTUAL: ::c_int = 1;
+pub const ITIMER_PROF: ::c_int = 2;
+
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const ::msghdr) -> *mut ::cmsghdr {
         if (*mhdr).msg_controllen as usize >= ::mem::size_of::<::cmsghdr>() {
@@ -539,24 +544,26 @@ f! {
             *slot = 0;
         }
     }
+}
 
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+safe_f! {
+    pub {const} fn WTERMSIG(status: ::c_int) -> ::c_int {
         status & 0o177
     }
 
-    pub fn WIFEXITED(status: ::c_int) -> bool {
+    pub {const} fn WIFEXITED(status: ::c_int) -> bool {
         (status & 0o177) == 0
     }
 
-    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+    pub {const} fn WEXITSTATUS(status: ::c_int) -> ::c_int {
         status >> 8
     }
 
-    pub fn WCOREDUMP(status: ::c_int) -> bool {
+    pub {const} fn WCOREDUMP(status: ::c_int) -> bool {
         (status & 0o200) != 0
     }
 
-    pub fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
+    pub {const} fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
     }
 }
@@ -581,7 +588,15 @@ extern "C" {
     pub fn abs(i: ::c_int) -> ::c_int;
     pub fn atof(s: *const ::c_char) -> ::c_double;
     pub fn labs(i: ::c_long) -> ::c_long;
+    #[cfg_attr(
+        all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
+        link_name = "rand@FBSD_1.0"
+    )]
     pub fn rand() -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
+        link_name = "srand@FBSD_1.0"
+    )]
     pub fn srand(seed: ::c_uint);
 
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
@@ -840,6 +855,23 @@ extern "C" {
         options: ::c_int,
         rusage: *mut ::rusage,
     ) -> ::pid_t;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "getitimer$UNIX2003"
+    )]
+    pub fn getitimer(
+        which: ::c_int,
+        curr_value: *mut ::itimerval
+    ) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "setitimer$UNIX2003"
+    )]
+    pub fn setitimer(
+        which: ::c_int,
+        new_value: *const ::itimerval,
+        old_value: *mut ::itimerval,
+    ) -> ::c_int;
 
     pub fn regcomp(
         preg: *mut regex_t,

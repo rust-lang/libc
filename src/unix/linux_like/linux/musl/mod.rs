@@ -1,5 +1,11 @@
 pub type pthread_t = *mut ::c_void;
 pub type clock_t = c_long;
+#[deprecated(
+    since = "0.2.80",
+    note = "This type is changed to 64-bit in musl 1.2.0, \
+            we'll follow that change in the future release. \
+            See #1848 for more info."
+)]
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
 pub type ino_t = u64;
@@ -24,7 +30,6 @@ impl siginfo_t {
             _si_code: ::c_int,
             si_addr: *mut ::c_void,
         }
-
         (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
     }
 
@@ -38,8 +43,69 @@ impl siginfo_t {
             _si_overrun: ::c_int,
             si_value: ::sigval,
         }
-
         (*(self as *const siginfo_t as *const siginfo_si_value)).si_value
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_union)] {
+        // Internal, for casts to access union fields
+        #[repr(C)]
+        struct sifields_sigchld {
+            si_pid: ::pid_t,
+            si_uid: ::uid_t,
+            si_status: ::c_int,
+            si_utime: ::c_long,
+            si_stime: ::c_long,
+        }
+        impl ::Copy for sifields_sigchld {}
+        impl ::Clone for sifields_sigchld {
+            fn clone(&self) -> sifields_sigchld {
+                *self
+            }
+        }
+
+        // Internal, for casts to access union fields
+        #[repr(C)]
+        union sifields {
+            _align_pointer: *mut ::c_void,
+            sigchld: sifields_sigchld,
+        }
+
+        // Internal, for casts to access union fields. Note that some variants
+        // of sifields start with a pointer, which makes the alignment of
+        // sifields vary on 32-bit and 64-bit architectures.
+        #[repr(C)]
+        struct siginfo_f {
+            _siginfo_base: [::c_int; 3],
+            sifields: sifields,
+        }
+
+        impl siginfo_t {
+            unsafe fn sifields(&self) -> &sifields {
+                &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+            }
+
+            pub unsafe fn si_pid(&self) -> ::pid_t {
+                self.sifields().sigchld.si_pid
+            }
+
+            pub unsafe fn si_uid(&self) -> ::uid_t {
+                self.sifields().sigchld.si_uid
+            }
+
+            pub unsafe fn si_status(&self) -> ::c_int {
+                self.sifields().sigchld.si_status
+            }
+
+            pub unsafe fn si_utime(&self) -> ::c_long {
+                self.sifields().sigchld.si_utime
+            }
+
+            pub unsafe fn si_stime(&self) -> ::c_long {
+                self.sifields().sigchld.si_stime
+            }
+        }
     }
 }
 
@@ -144,6 +210,11 @@ s! {
         pub imr_address: ::in_addr,
         pub imr_ifindex: ::c_int,
     }
+
+    pub struct __exit_status {
+        pub e_termination: ::c_short,
+        pub e_exit: ::c_short,
+    }
 }
 
 s_no_extra_traits! {
@@ -162,6 +233,36 @@ s_no_extra_traits! {
         pub freehigh: ::c_ulong,
         pub mem_unit: ::c_uint,
         pub __reserved: [::c_char; 256],
+    }
+
+    // FIXME: musl added paddings and adjusted
+    // layout in 1.2.0 but our CI is still 1.1.24.
+    // So, I'm leaving some fields as comments for now.
+    // ref. https://github.com/bminor/musl/commit/
+    // 1e7f0fcd7ff2096904fd93a2ee6d12a2392be392
+    pub struct utmpx {
+        pub ut_type: ::c_short,
+        //__ut_pad1: ::c_short,
+        pub ut_pid: ::pid_t,
+        pub ut_line: [::c_char; 32],
+        pub ut_id: [::c_char; 4],
+        pub ut_user: [::c_char; 32],
+        pub ut_host: [::c_char; 256],
+        pub ut_exit: __exit_status,
+
+        //#[cfg(target_endian = "little")]
+        pub ut_session: ::c_long,
+        //#[cfg(target_endian = "little")]
+        //__ut_pad2: ::c_long,
+
+        //#[cfg(not(target_endian = "little"))]
+        //__ut_pad2: ::c_int,
+        //#[cfg(not(target_endian = "little"))]
+        //pub ut_session: ::c_int,
+
+        pub ut_tv: ::timeval,
+        pub ut_addr_v6: [::c_uint; 4],
+        __unused: [::c_char; 20],
     }
 }
 
@@ -229,6 +330,68 @@ cfg_if! {
                 self.freehigh.hash(state);
                 self.mem_unit.hash(state);
                 self.__reserved.hash(state);
+            }
+        }
+
+        impl PartialEq for utmpx {
+            fn eq(&self, other: &utmpx) -> bool {
+                self.ut_type == other.ut_type
+                    //&& self.__ut_pad1 == other.__ut_pad1
+                    && self.ut_pid == other.ut_pid
+                    && self.ut_line == other.ut_line
+                    && self.ut_id == other.ut_id
+                    && self.ut_user == other.ut_user
+                    && self
+                        .ut_host
+                        .iter()
+                        .zip(other.ut_host.iter())
+                        .all(|(a,b)| a == b)
+                    && self.ut_exit == other.ut_exit
+                    && self.ut_session == other.ut_session
+                    //&& self.__ut_pad2 == other.__ut_pad2
+                    && self.ut_tv == other.ut_tv
+                    && self.ut_addr_v6 == other.ut_addr_v6
+                    && self.__unused == other.__unused
+            }
+        }
+
+        impl Eq for utmpx {}
+
+        impl ::fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("utmpx")
+                    .field("ut_type", &self.ut_type)
+                    //.field("__ut_pad1", &self.__ut_pad1)
+                    .field("ut_pid", &self.ut_pid)
+                    .field("ut_line", &self.ut_line)
+                    .field("ut_id", &self.ut_id)
+                    .field("ut_user", &self.ut_user)
+                    //FIXME: .field("ut_host", &self.ut_host)
+                    .field("ut_exit", &self.ut_exit)
+                    .field("ut_session", &self.ut_session)
+                    //.field("__ut_pad2", &self.__ut_pad2)
+                    .field("ut_tv", &self.ut_tv)
+                    .field("ut_addr_v6", &self.ut_addr_v6)
+                    .field("__unused", &self.__unused)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for utmpx {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ut_type.hash(state);
+                //self.__ut_pad1.hash(state);
+                self.ut_pid.hash(state);
+                self.ut_line.hash(state);
+                self.ut_id.hash(state);
+                self.ut_user.hash(state);
+                self.ut_host.hash(state);
+                self.ut_exit.hash(state);
+                self.ut_session.hash(state);
+                //self.__ut_pad2.hash(state);
+                self.ut_tv.hash(state);
+                self.ut_addr_v6.hash(state);
+                self.__unused.hash(state);
             }
         }
     }

@@ -8,7 +8,7 @@ use std::env;
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
     if cfg!(unix) {
-        let exclude = ["wasi"];
+        let exclude = ["redox", "wasi"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
 
@@ -287,9 +287,11 @@ fn test_openbsd(target: &str) {
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! { cfg:
+        "elf.h",
         "errno.h",
         "fcntl.h",
         "limits.h",
+        "link.h",
         "locale.h",
         "stddef.h",
         "stdint.h",
@@ -387,7 +389,9 @@ fn test_openbsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+            "FILE" | "DIR" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => {
+                ty.to_string()
+            }
 
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
@@ -416,6 +420,15 @@ fn test_openbsd(target: &str) {
     cfg.skip_field_type(move |struct_, field| {
         // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
         struct_ == "siginfo_t" && field == "si_addr"
+    });
+
+    cfg.skip_field(|struct_, field| {
+        match (struct_, field) {
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") => true,
+            ("Elf64_Phdr", "p_type") => true,
+            _ => false,
+        }
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -537,54 +550,37 @@ fn test_redox(target: &str) {
         "dirent.h",
         "dlfcn.h",
         "errno.h",
-        "execinfo.h",
         "fcntl.h",
-        "glob.h",
         "grp.h",
-        "ifaddrs.h",
-        "langinfo.h",
         "limits.h",
         "locale.h",
-        "net/if.h",
-        "net/if_arp.h",
-        "net/route.h",
         "netdb.h",
         "netinet/in.h",
         "netinet/ip.h",
         "netinet/tcp.h",
-        "netinet/udp.h",
         "poll.h",
-        "pthread.h",
         "pwd.h",
-        "resolv.h",
-        "sched.h",
         "semaphore.h",
         "string.h",
         "strings.h",
         "sys/file.h",
         "sys/ioctl.h",
         "sys/mman.h",
-        "sys/mount.h",
         "sys/ptrace.h",
-        "sys/quota.h",
         "sys/resource.h",
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",
-        "sys/sysctl.h",
         "sys/time.h",
-        "sys/times.h",
         "sys/types.h",
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
         "sys/wait.h",
-        "syslog.h",
         "termios.h",
         "time.h",
         "unistd.h",
         "utime.h",
-        "utmpx.h",
         "wchar.h",
     }
 
@@ -725,6 +721,7 @@ fn test_solarish(target: &str) {
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",
+        "sys/stropts.h",
         "sys/shm.h",
         "sys/time.h",
         "sys/times.h",
@@ -793,6 +790,11 @@ fn test_solarish(target: &str) {
 
         // This evaluates to a sysconf() call rather than a constant
         "PTHREAD_STACK_MIN" => true,
+
+        // EPOLLEXCLUSIVE is a relatively recent addition to the epoll interface and may not be
+        // defined on older systems.  It is, however, safe to use on systems which do not
+        // explicitly support it. (A no-op is an acceptable implementation of EPOLLEXCLUSIVE.)
+        "EPOLLEXCLUSIVE" => true,
 
         _ => false,
     });
@@ -881,9 +883,11 @@ fn test_netbsd(target: &str) {
 
     headers! {
         cfg:
+        "elf.h",
         "errno.h",
         "fcntl.h",
         "limits.h",
+        "link.h",
         "locale.h",
         "stddef.h",
         "stdint.h",
@@ -1070,6 +1074,15 @@ fn test_netbsd(target: &str) {
         (struct_ == "sigevent" && field == "sigev_value") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
         (struct_ == "aiocb" && field == "aio_buf")
+    });
+
+    cfg.skip_field(|struct_, field| {
+        match (struct_, field) {
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") => true,
+            ("Elf64_Phdr", "p_type") => true,
+            _ => false,
+        }
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -1310,6 +1323,7 @@ fn test_wasi(target: &str) {
         "sys/types.h",
         "sys/uio.h",
         "sys/utsname.h",
+        "sys/ioctl.h",
         "time.h",
         "unistd.h",
         "wasi/api.h",
@@ -1363,7 +1377,6 @@ fn test_android(target: &str) {
         t => panic!("unsupported target: {}", t),
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
-    let aarch64 = target.contains("aarch64");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -1394,6 +1407,7 @@ fn test_android(target: &str) {
                "pthread.h",
                "pty.h",
                "pwd.h",
+               "regex.h",
                "resolv.h",
                "sched.h",
                "semaphore.h",
@@ -1479,6 +1493,8 @@ fn test_android(target: &str) {
                 "linux/seccomp.h",
                 "linux/sched.h",
                 "linux/sockios.h",
+                "linux/vm_sockets.h",
+                "linux/wait.h",
 
     }
 
@@ -1549,6 +1565,12 @@ fn test_android(target: &str) {
             // FIXME: deprecated - removed in glibc 2.26
             "SIGUNUSED" => true,
 
+            // Needs a newer Android SDK for the definition
+            "P_PIDFD" => true,
+
+            // Requires Linux kernel 5.6
+            "VMADDR_CID_LOCAL" => true,
+
             _ => false,
         }
     });
@@ -1575,16 +1597,6 @@ fn test_android(target: &str) {
             // We skip the test here since here _GNU_SOURCE is defined, and
             // test the XSI version below.
             "strerror_r" => true,
-
-            // FIXME: Somehow we cannot find these fns on aarch64.
-            // https://github.com/rust-lang/libc/issues/1765
-            "lockf" | "preadv64" | "pwritev64" | "openpty" | "forkpty"
-            | "login_tty" | "getifaddrs" | "freeifaddrs" | "sethostname"
-            | "getgrgid_r" | "getgrnam_r" | "sigtimedwait"
-                if aarch64 =>
-            {
-                true
-            }
 
             _ => false,
         }
@@ -1645,6 +1657,7 @@ fn test_freebsd(target: &str) {
                 "ctype.h",
                 "dirent.h",
                 "dlfcn.h",
+                "elf.h",
                 "errno.h",
                 "fcntl.h",
                 "glob.h",
@@ -1653,6 +1666,7 @@ fn test_freebsd(target: &str) {
                 "langinfo.h",
                 "libutil.h",
                 "limits.h",
+                "link.h",
                 "locale.h",
                 "machine/reg.h",
                 "mqueue.h",
@@ -1703,6 +1717,7 @@ fn test_freebsd(target: &str) {
                 "sys/times.h",
                 "sys/timex.h",
                 "sys/types.h",
+                "sys/ucontext.h",
                 "sys/uio.h",
                 "sys/un.h",
                 "sys/utsname.h",
@@ -1720,7 +1735,8 @@ fn test_freebsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
+            | "Elf64_Phdr" => ty.to_string(),
 
             // FIXME: https://github.com/rust-lang/libc/issues/1273
             "sighandler_t" => "sig_t".to_string(),
@@ -1755,6 +1771,14 @@ fn test_freebsd(target: &str) {
 
     cfg.skip_const(move |name| {
         match name {
+            // These constants are to be introduced in yet-unreleased FreeBSD 12.2.
+            "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL"
+            | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE"
+                if Some(12) <= freebsd_ver =>
+            {
+                true
+            }
+
             // These constants were introduced in FreeBSD 12:
             "SF_USER_READAHEAD"
             | "EVFILT_EMPTY"
@@ -1808,6 +1832,36 @@ fn test_freebsd(target: &str) {
             // and they've never had any legitimate use outside of the
             // base system anyway.
             "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "USER_MAXID" => true,
+
+            // This constant was removed in FreeBSD 13 (svn r363622), and never
+            // had any legitimate use outside of the base system anyway.
+            "CTL_P1003_1B_MAXID" => true,
+
+            // This was renamed in FreeBSD 12.2 and 13 (r352486).
+            "CTL_UNSPEC" | "CTL_SYSCTL" => true,
+
+            // These were added in FreeBSD 12.2 and 13 (r352486),
+            // but they are just names for magic numbers that existed for ages.
+            "CTL_SYSCTL_DEBUG"
+            | "CTL_SYSCTL_NAME"
+            | "CTL_SYSCTL_NEXT"
+            | "CTL_SYSCTL_NAME2OID"
+            | "CTL_SYSCTL_OIDFMT"
+            | "CTL_SYSCTL_OIDDESCR"
+            | "CTL_SYSCTL_OIDLABEL" => true,
+
+            // This was renamed in FreeBSD 12.2 and 13 (r350749).
+            "IPPROTO_SEP" | "IPPROTO_DCCP" => true,
+
+            // This was changed to 96(0x60) in FreeBSD 13:
+            // https://github.com/freebsd/freebsd/
+            // commit/06b00ceaa914a3907e4e27bad924f44612bae1d7
+            "MINCORE_SUPER" if Some(13) == freebsd_ver => true,
+
+            // This was increased to 97 in FreeBSD 12.2 and 13.
+            // https://github.com/freebsd/freebsd/
+            // commit/72a21ba0f62da5e86a1c0b462aeb3f5ff849a1b7
+            "ELAST" if Some(12) == freebsd_ver => true,
 
             _ => false,
         }
@@ -1886,6 +1940,10 @@ fn test_freebsd(target: &str) {
             // FIXME: in FreeBSD10 this field has type `char*` instead of
             // `void*`:
             ("stack_t", "ss_sp") if Some(10) == freebsd_ver => true,
+
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") => true,
+            ("Elf64_Phdr", "p_type") => true,
 
             _ => false,
         }
@@ -2406,6 +2464,7 @@ fn test_linux(target: &str) {
         "linux/seccomp.h",
         "linux/sockios.h",
         "linux/vm_sockets.h",
+        "linux/wait.h",
         "sys/auxv.h",
         "sys/fanotify.h",
     }
@@ -2516,6 +2575,11 @@ fn test_linux(target: &str) {
             "statx" => true,
             "statx_timestamp" => true,
 
+            // On Linux, the type of `ut_exit` field of struct `utmpx`
+            // can be an anonymous struct, so an extra struct,
+            // which is absent in musl, has to be defined.
+            "__exit_status" if musl => true,
+
             _ => false,
         }
     });
@@ -2579,6 +2643,27 @@ fn test_linux(target: &str) {
             // We should do so after a while.
             "SOMAXCONN" if gnu => true,
 
+            // deprecated: not available from Linux kernel 5.6:
+            "VMADDR_CID_RESERVED" => true,
+
+            // Require Linux kernel 5.6:
+            "VMADDR_CID_LOCAL" => true,
+
+            // IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
+            | "IPPROTO_MAX"
+            | "IPPROTO_MPTCP" => true,
+
+            // Defined in kernel headers but musl removes it; need musl 1.2 for definition in musl
+            // headers.
+            "P_PIDFD" => true,
+
+            // FIXME: Not currently available in headers
+            "SYS_pidfd_open" if mips => true,
+
+            // FIXME: Not currently available in headers on MIPS
+            // Not yet implemented on sparc64
+            "SYS_clone3" if mips | sparc64 => true,
+
             _ => false,
         }
     });
@@ -2637,7 +2722,9 @@ fn test_linux(target: &str) {
         // sigval is actually a union, but we pretend it's a struct
         (struct_ == "sigevent" && field == "sigev_value") ||
         // this one is an anonymous union
-        (struct_ == "ff_effect" && field == "u")
+        (struct_ == "ff_effect" && field == "u") ||
+        // `__exit_status` type is a patch which is absent in musl
+        (struct_ == "utmpx" && field == "ut_exit" && musl)
     });
 
     cfg.volatile_item(|i| {

@@ -2,7 +2,7 @@
 
 set -ex
 
-EMSDK_VERSION=1.39.16
+EMSDK_VERSION=1.39.20
 
 hide_output() {
   set +x
@@ -23,8 +23,6 @@ exit 1
 
 git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable
 cd /emsdk-portable
-# FIXME: switch to an upstream install once
-# https://github.com/rust-lang/rust/pull/63649 lands
 hide_output ./emsdk install "${EMSDK_VERSION}"
 ./emsdk activate "${EMSDK_VERSION}"
 
@@ -39,6 +37,7 @@ rm -f a.*
 chmod a+rxw -R /emsdk-portable
 
 # node 8 is required to run wasm
+# NOTE: Do not forget to sync Node.js version with `emscripten-entry.sh`!
 cd /
-curl --retry 5 -L https://nodejs.org/dist/v12.16.2/node-v12.16.2-linux-x64.tar.xz | \
+curl --retry 5 -L https://nodejs.org/dist/v12.18.3/node-v12.18.3-linux-x64.tar.xz | \
     tar -xJ

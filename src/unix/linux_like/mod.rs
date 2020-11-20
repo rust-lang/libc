@@ -768,21 +768,118 @@ pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
 
 pub const SOCK_RAW: ::c_int = 3;
 pub const SOCK_RDM: ::c_int = 4;
-pub const IP_MULTICAST_IF: ::c_int = 32;
-pub const IP_MULTICAST_TTL: ::c_int = 33;
-pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_TOS: ::c_int = 1;
 pub const IP_TTL: ::c_int = 2;
 pub const IP_HDRINCL: ::c_int = 3;
+pub const IP_OPTIONS: ::c_int = 4;
+pub const IP_ROUTER_ALERT: ::c_int = 5;
+pub const IP_RECVOPTS: ::c_int = 6;
+pub const IP_RETOPTS: ::c_int = 7;
 pub const IP_PKTINFO: ::c_int = 8;
+pub const IP_PKTOPTIONS: ::c_int = 9;
 pub const IP_MTU_DISCOVER: ::c_int = 10;
-pub const IP_RECVTOS: ::c_int = 13;
 pub const IP_RECVERR: ::c_int = 11;
+pub const IP_RECVTTL: ::c_int = 12;
+pub const IP_RECVTOS: ::c_int = 13;
+pub const IP_MTU: ::c_int = 14;
+pub const IP_FREEBIND: ::c_int = 15;
+pub const IP_IPSEC_POLICY: ::c_int = 16;
+pub const IP_XFRM_POLICY: ::c_int = 17;
+pub const IP_PASSSEC: ::c_int = 18;
+pub const IP_TRANSPARENT: ::c_int = 19;
+pub const IP_ORIGDSTADDR: ::c_int = 20;
+pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
+pub const IP_MINTTL: ::c_int = 21;
+pub const IP_NODEFRAG: ::c_int = 22;
+pub const IP_CHECKSUM: ::c_int = 23;
+pub const IP_BIND_ADDRESS_NO_PORT: ::c_int = 24;
+pub const IP_MULTICAST_IF: ::c_int = 32;
+pub const IP_MULTICAST_TTL: ::c_int = 33;
+pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 37;
+pub const IP_BLOCK_SOURCE: ::c_int = 38;
 pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 39;
 pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 40;
-pub const IP_TRANSPARENT: ::c_int = 19;
+pub const IP_MSFILTER: ::c_int = 41;
+pub const IP_MULTICAST_ALL: ::c_int = 49;
+pub const IP_UNICAST_IF: ::c_int = 50;
+
+pub const IP_DEFAULT_MULTICAST_TTL: ::c_int = 1;
+pub const IP_DEFAULT_MULTICAST_LOOP: ::c_int = 1;
+
+pub const IP_PMTUDISC_DONT: ::c_int = 0;
+pub const IP_PMTUDISC_WANT: ::c_int = 1;
+pub const IP_PMTUDISC_DO: ::c_int = 2;
+pub const IP_PMTUDISC_PROBE: ::c_int = 3;
+pub const IP_PMTUDISC_INTERFACE: ::c_int = 4;
+pub const IP_PMTUDISC_OMIT: ::c_int = 5;
+
+// IPPROTO_IP defined in src/unix/mod.rs
+/// Hop-by-hop option header
+pub const IPPROTO_HOPOPTS: ::c_int = 0;
+// IPPROTO_ICMP defined in src/unix/mod.rs
+/// group mgmt protocol
+pub const IPPROTO_IGMP: ::c_int = 2;
+/// for compatibility
+pub const IPPROTO_IPIP: ::c_int = 4;
+// IPPROTO_TCP defined in src/unix/mod.rs
+/// exterior gateway protocol
+pub const IPPROTO_EGP: ::c_int = 8;
+/// pup
+pub const IPPROTO_PUP: ::c_int = 12;
+// IPPROTO_UDP defined in src/unix/mod.rs
+/// xns idp
+pub const IPPROTO_IDP: ::c_int = 22;
+/// tp-4 w/ class negotiation
+pub const IPPROTO_TP: ::c_int = 29;
+/// DCCP
+pub const IPPROTO_DCCP: ::c_int = 33;
+// IPPROTO_IPV6 defined in src/unix/mod.rs
+/// IP6 routing header
+pub const IPPROTO_ROUTING: ::c_int = 43;
+/// IP6 fragmentation header
+pub const IPPROTO_FRAGMENT: ::c_int = 44;
+/// resource reservation
+pub const IPPROTO_RSVP: ::c_int = 46;
+/// General Routing Encap.
+pub const IPPROTO_GRE: ::c_int = 47;
+/// IP6 Encap Sec. Payload
+pub const IPPROTO_ESP: ::c_int = 50;
+/// IP6 Auth Header
+pub const IPPROTO_AH: ::c_int = 51;
+// IPPROTO_ICMPV6 defined in src/unix/mod.rs
+/// IP6 no next header
+pub const IPPROTO_NONE: ::c_int = 59;
+/// IP6 destination option
+pub const IPPROTO_DSTOPTS: ::c_int = 60;
+pub const IPPROTO_MTP: ::c_int = 92;
+pub const IPPROTO_BEETPH: ::c_int = 94;
+/// encapsulation header
+pub const IPPROTO_ENCAP: ::c_int = 98;
+/// Protocol indep. multicast
+pub const IPPROTO_PIM: ::c_int = 103;
+/// IP Payload Comp. Protocol
+pub const IPPROTO_COMP: ::c_int = 108;
+/// SCTP
+pub const IPPROTO_SCTP: ::c_int = 132;
+pub const IPPROTO_MH: ::c_int = 135;
+pub const IPPROTO_UDPLITE: ::c_int = 136;
+pub const IPPROTO_MPLS: ::c_int = 137;
+/// raw IP packet
+pub const IPPROTO_RAW: ::c_int = 255;
+
+pub const MCAST_EXCLUDE: ::c_int = 0;
+pub const MCAST_INCLUDE: ::c_int = 1;
+pub const MCAST_JOIN_GROUP: ::c_int = 42;
+pub const MCAST_BLOCK_SOURCE: ::c_int = 43;
+pub const MCAST_UNBLOCK_SOURCE: ::c_int = 44;
+pub const MCAST_LEAVE_GROUP: ::c_int = 45;
+pub const MCAST_JOIN_SOURCE_GROUP: ::c_int = 46;
+pub const MCAST_LEAVE_SOURCE_GROUP: ::c_int = 47;
+pub const MCAST_MSFILTER: ::c_int = 48;
+
 pub const IPV6_ADDRFORM: ::c_int = 1;
 pub const IPV6_2292PKTINFO: ::c_int = 2;
 pub const IPV6_2292HOPOPTS: ::c_int = 3;
@@ -792,6 +889,7 @@ pub const IPV6_2292PKTOPTIONS: ::c_int = 6;
 pub const IPV6_CHECKSUM: ::c_int = 7;
 pub const IPV6_2292HOPLIMIT: ::c_int = 8;
 pub const IPV6_NEXTHOP: ::c_int = 9;
+pub const IPV6_AUTHHDR: ::c_int = 10;
 pub const IPV6_UNICAST_HOPS: ::c_int = 16;
 pub const IPV6_MULTICAST_IF: ::c_int = 17;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
@@ -805,16 +903,46 @@ pub const IPV6_RECVERR: ::c_int = 25;
 pub const IPV6_V6ONLY: ::c_int = 26;
 pub const IPV6_JOIN_ANYCAST: ::c_int = 27;
 pub const IPV6_LEAVE_ANYCAST: ::c_int = 28;
+pub const IPV6_IPSEC_POLICY: ::c_int = 34;
+pub const IPV6_XFRM_POLICY: ::c_int = 35;
+pub const IPV6_HDRINCL: ::c_int = 36;
 pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
+pub const IPV6_RECVHOPLIMIT: ::c_int = 51;
 pub const IPV6_HOPLIMIT: ::c_int = 52;
+pub const IPV6_RECVHOPOPTS: ::c_int = 53;
+pub const IPV6_HOPOPTS: ::c_int = 54;
+pub const IPV6_RTHDRDSTOPTS: ::c_int = 55;
+pub const IPV6_RECVRTHDR: ::c_int = 56;
+pub const IPV6_RTHDR: ::c_int = 57;
+pub const IPV6_RECVDSTOPTS: ::c_int = 58;
+pub const IPV6_DSTOPTS: ::c_int = 59;
+pub const IPV6_RECVPATHMTU: ::c_int = 60;
+pub const IPV6_PATHMTU: ::c_int = 61;
+pub const IPV6_DONTFRAG: ::c_int = 62;
 pub const IPV6_RECVTCLASS: ::c_int = 66;
 pub const IPV6_TCLASS: ::c_int = 67;
+pub const IPV6_AUTOFLOWLABEL: ::c_int = 70;
+pub const IPV6_ADDR_PREFERENCES: ::c_int = 72;
+pub const IPV6_MINHOPCOUNT: ::c_int = 73;
+pub const IPV6_ORIGDSTADDR: ::c_int = 74;
+pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
+pub const IPV6_TRANSPARENT: ::c_int = 75;
+pub const IPV6_UNICAST_IF: ::c_int = 76;
+pub const IPV6_PREFER_SRC_TMP: ::c_int = 0x0001;
+pub const IPV6_PREFER_SRC_PUBLIC: ::c_int = 0x0002;
+pub const IPV6_PREFER_SRC_PUBTMP_DEFAULT: ::c_int = 0x0100;
+pub const IPV6_PREFER_SRC_COA: ::c_int = 0x0004;
+pub const IPV6_PREFER_SRC_HOME: ::c_int = 0x0400;
+pub const IPV6_PREFER_SRC_CGA: ::c_int = 0x0008;
+pub const IPV6_PREFER_SRC_NONCGA: ::c_int = 0x0800;
 
-pub const IP_PMTUDISC_DONT: ::c_int = 0;
-pub const IP_PMTUDISC_WANT: ::c_int = 1;
-pub const IP_PMTUDISC_DO: ::c_int = 2;
-pub const IP_PMTUDISC_PROBE: ::c_int = 3;
+pub const IPV6_PMTUDISC_DONT: ::c_int = 0;
+pub const IPV6_PMTUDISC_WANT: ::c_int = 1;
+pub const IPV6_PMTUDISC_DO: ::c_int = 2;
+pub const IPV6_PMTUDISC_PROBE: ::c_int = 3;
+pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
+pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
@@ -845,6 +973,8 @@ pub const SS_ONSTACK: ::c_int = 1;
 pub const SS_DISABLE: ::c_int = 2;
 
 pub const PATH_MAX: ::c_int = 4096;
+
+pub const UIO_MAXIOV: ::c_int = 1024;
 
 pub const FD_SETSIZE: usize = 1024;
 
@@ -960,6 +1090,17 @@ pub const WEXITED: ::c_int = 0x00000004;
 pub const WCONTINUED: ::c_int = 0x00000008;
 pub const WNOWAIT: ::c_int = 0x01000000;
 
+// Options for personality(2).
+pub const ADDR_NO_RANDOMIZE: ::c_int = 0x0040000;
+pub const MMAP_PAGE_ZERO: ::c_int = 0x0100000;
+pub const ADDR_COMPAT_LAYOUT: ::c_int = 0x0200000;
+pub const READ_IMPLIES_EXEC: ::c_int = 0x0400000;
+pub const ADDR_LIMIT_32BIT: ::c_int = 0x0800000;
+pub const SHORT_INODE: ::c_int = 0x1000000;
+pub const WHOLE_SECONDS: ::c_int = 0x2000000;
+pub const STICKY_TIMEOUTS: ::c_int = 0x4000000;
+pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
+
 // Options set using PTRACE_SETOPTIONS.
 pub const PTRACE_O_TRACESYSGOOD: ::c_int = 0x00000001;
 pub const PTRACE_O_TRACEFORK: ::c_int = 0x00000002;
@@ -981,8 +1122,6 @@ pub const PTRACE_EVENT_EXEC: ::c_int = 4;
 pub const PTRACE_EVENT_VFORK_DONE: ::c_int = 5;
 pub const PTRACE_EVENT_EXIT: ::c_int = 6;
 pub const PTRACE_EVENT_SECCOMP: ::c_int = 7;
-// PTRACE_EVENT_STOP was added to glibc in 2.26
-// pub const PTRACE_EVENT_STOP: ::c_int = 128;
 
 pub const __WNOTHREAD: ::c_int = 0x20000000;
 pub const __WALL: ::c_int = 0x40000000;
@@ -1017,6 +1156,13 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: ::c_uint = 16;
 
+pub const CLD_EXITED: ::c_int = 1;
+pub const CLD_KILLED: ::c_int = 2;
+pub const CLD_DUMPED: ::c_int = 3;
+pub const CLD_TRAPPED: ::c_int = 4;
+pub const CLD_STOPPED: ::c_int = 5;
+pub const CLD_CONTINUED: ::c_int = 6;
+
 pub const SIGEV_SIGNAL: ::c_int = 0;
 pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
@@ -1024,6 +1170,11 @@ pub const SIGEV_THREAD: ::c_int = 2;
 pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;
+cfg_if! {
+    if #[cfg(not(target_os = "emscripten"))] {
+        pub const P_PIDFD: idtype_t = 3;
+    }
+}
 
 pub const UTIME_OMIT: c_long = 1073741822;
 pub const UTIME_NOW: c_long = 1073741823;
@@ -1211,56 +1362,66 @@ f! {
             *slot = 0;
         }
     }
+}
 
-    pub fn WIFSTOPPED(status: ::c_int) -> bool {
+safe_f! {
+    pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0xff) == 0x7f
     }
 
-    pub fn WSTOPSIG(status: ::c_int) -> ::c_int {
+    pub {const} fn WSTOPSIG(status: ::c_int) -> ::c_int {
         (status >> 8) & 0xff
     }
 
-    pub fn WIFCONTINUED(status: ::c_int) -> bool {
+    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0xffff
     }
 
-    pub fn WIFSIGNALED(status: ::c_int) -> bool {
+    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
         ((status & 0x7f) + 1) as i8 >= 2
     }
 
-    pub fn WTERMSIG(status: ::c_int) -> ::c_int {
+    pub {const} fn WTERMSIG(status: ::c_int) -> ::c_int {
         status & 0x7f
     }
 
-    pub fn WIFEXITED(status: ::c_int) -> bool {
+    pub {const} fn WIFEXITED(status: ::c_int) -> bool {
         (status & 0x7f) == 0
     }
 
-    pub fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+    pub {const} fn WEXITSTATUS(status: ::c_int) -> ::c_int {
         (status >> 8) & 0xff
     }
 
-    pub fn WCOREDUMP(status: ::c_int) -> bool {
+    pub {const} fn WCOREDUMP(status: ::c_int) -> bool {
         (status & 0x80) != 0
     }
 
-    pub fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
+    pub {const} fn W_EXITCODE(ret: ::c_int, sig: ::c_int) -> ::c_int {
+        (ret << 8) | sig
+    }
+
+    pub {const} fn W_STOPCODE(sig: ::c_int) -> ::c_int {
+        (sig << 8) | 0x7f
+    }
+
+    pub {const} fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
     }
 
-    pub fn IPOPT_COPIED(o: u8) -> u8 {
+    pub {const} fn IPOPT_COPIED(o: u8) -> u8 {
         o & IPOPT_COPY
     }
 
-    pub fn IPOPT_CLASS(o: u8) -> u8 {
+    pub {const} fn IPOPT_CLASS(o: u8) -> u8 {
         o & IPOPT_CLASS_MASK
     }
 
-    pub fn IPOPT_NUMBER(o: u8) -> u8 {
+    pub {const} fn IPOPT_NUMBER(o: u8) -> u8 {
         o & IPOPT_NUMBER_MASK
     }
 
-    pub fn IPTOS_ECN(x: u8) -> u8 {
+    pub {const} fn IPTOS_ECN(x: u8) -> u8 {
         x & ::IPTOS_ECN_MASK
     }
 }
@@ -1278,12 +1439,18 @@ extern "C" {
         len: ::size_t,
         vec: *mut ::c_uchar,
     ) -> ::c_int;
+
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(
         clk_id: ::clockid_t,
         tp: *const ::timespec,
     ) -> ::c_int;
+    pub fn clock_getcpuclockid(
+        pid: ::pid_t,
+        clk_id: *mut ::clockid_t,
+    ) -> ::c_int;
+
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
 
     pub fn pthread_getattr_np(
@@ -1314,6 +1481,12 @@ extern "C" {
         fd: ::c_int,
         offset: ::off_t,
         len: ::off_t,
+        advise: ::c_int,
+    ) -> ::c_int;
+    pub fn posix_fadvise64(
+        fd: ::c_int,
+        offset: ::off64_t,
+        len: ::off64_t,
         advise: ::c_int,
     ) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
@@ -1407,12 +1580,6 @@ extern "C" {
     pub fn pthread_condattr_setpshared(
         attr: *mut pthread_condattr_t,
         pshared: ::c_int,
-    ) -> ::c_int;
-    pub fn accept4(
-        fd: ::c_int,
-        addr: *mut ::sockaddr,
-        len: *mut ::socklen_t,
-        flg: ::c_int,
     ) -> ::c_int;
     pub fn pthread_mutexattr_setpshared(
         attr: *mut pthread_mutexattr_t,

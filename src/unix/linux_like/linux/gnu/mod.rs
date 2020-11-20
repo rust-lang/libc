@@ -313,6 +313,68 @@ impl siginfo_t {
     }
 }
 
+cfg_if! {
+    if #[cfg(libc_union)] {
+        // Internal, for casts to access union fields
+        #[repr(C)]
+        struct sifields_sigchld {
+            si_pid: ::pid_t,
+            si_uid: ::uid_t,
+            si_status: ::c_int,
+            si_utime: ::c_long,
+            si_stime: ::c_long,
+        }
+        impl ::Copy for sifields_sigchld {}
+        impl ::Clone for sifields_sigchld {
+            fn clone(&self) -> sifields_sigchld {
+                *self
+            }
+        }
+
+        // Internal, for casts to access union fields
+        #[repr(C)]
+        union sifields {
+            _align_pointer: *mut ::c_void,
+            sigchld: sifields_sigchld,
+        }
+
+        // Internal, for casts to access union fields. Note that some variants
+        // of sifields start with a pointer, which makes the alignment of
+        // sifields vary on 32-bit and 64-bit architectures.
+        #[repr(C)]
+        struct siginfo_f {
+            _siginfo_base: [::c_int; 3],
+            sifields: sifields,
+        }
+
+        impl siginfo_t {
+            unsafe fn sifields(&self) -> &sifields {
+                &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+            }
+
+            pub unsafe fn si_pid(&self) -> ::pid_t {
+                self.sifields().sigchld.si_pid
+            }
+
+            pub unsafe fn si_uid(&self) -> ::uid_t {
+                self.sifields().sigchld.si_uid
+            }
+
+            pub unsafe fn si_status(&self) -> ::c_int {
+                self.sifields().sigchld.si_status
+            }
+
+            pub unsafe fn si_utime(&self) -> ::c_long {
+                self.sifields().sigchld.si_utime
+            }
+
+            pub unsafe fn si_stime(&self) -> ::c_long {
+                self.sifields().sigchld.si_stime
+            }
+        }
+    }
+}
+
 s_no_extra_traits! {
     pub struct utmpx {
         pub ut_type: ::c_short,
@@ -664,32 +726,54 @@ pub const NI_MAXHOST: ::socklen_t = 1025;
 
 pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
 pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
+pub const AFS_SUPER_MAGIC: ::c_long = 0x5346414f;
+pub const AUTOFS_SUPER_MAGIC: ::c_long = 0x0187;
+pub const BINDERFS_SUPER_MAGIC: ::c_long = 0x6c6f6f70;
+pub const BPF_FS_MAGIC: ::c_long = 0xcafe4a11;
+pub const BTRFS_SUPER_MAGIC: ::c_long = 0x9123683e;
+pub const CGROUP2_SUPER_MAGIC: ::c_long = 0x63677270;
+pub const CGROUP_SUPER_MAGIC: ::c_long = 0x27e0eb;
 pub const CODA_SUPER_MAGIC: ::c_long = 0x73757245;
 pub const CRAMFS_MAGIC: ::c_long = 0x28cd3d45;
+pub const DEBUGFS_MAGIC: ::c_long = 0x64626720;
+pub const DEVPTS_SUPER_MAGIC: ::c_long = 0x1cd1;
+pub const ECRYPTFS_SUPER_MAGIC: ::c_long = 0xf15f;
 pub const EFS_SUPER_MAGIC: ::c_long = 0x00414a53;
 pub const EXT2_SUPER_MAGIC: ::c_long = 0x0000ef53;
 pub const EXT3_SUPER_MAGIC: ::c_long = 0x0000ef53;
 pub const EXT4_SUPER_MAGIC: ::c_long = 0x0000ef53;
+pub const F2FS_SUPER_MAGIC: ::c_long = 0xf2f52010;
+pub const FUTEXFS_SUPER_MAGIC: ::c_long = 0xbad1dea;
+pub const HOSTFS_SUPER_MAGIC: ::c_long = 0x00c0ffee;
 pub const HPFS_SUPER_MAGIC: ::c_long = 0xf995e849;
 pub const HUGETLBFS_MAGIC: ::c_long = 0x958458f6;
 pub const ISOFS_SUPER_MAGIC: ::c_long = 0x00009660;
 pub const JFFS2_SUPER_MAGIC: ::c_long = 0x000072b6;
-pub const MINIX_SUPER_MAGIC: ::c_long = 0x0000137f;
-pub const MINIX_SUPER_MAGIC2: ::c_long = 0x0000138f;
-pub const MINIX2_SUPER_MAGIC: ::c_long = 0x00002468;
 pub const MINIX2_SUPER_MAGIC2: ::c_long = 0x00002478;
+pub const MINIX2_SUPER_MAGIC: ::c_long = 0x00002468;
+pub const MINIX3_SUPER_MAGIC: ::c_long = 0x4d5a;
+pub const MINIX_SUPER_MAGIC2: ::c_long = 0x0000138f;
+pub const MINIX_SUPER_MAGIC: ::c_long = 0x0000137f;
 pub const MSDOS_SUPER_MAGIC: ::c_long = 0x00004d44;
 pub const NCP_SUPER_MAGIC: ::c_long = 0x0000564c;
 pub const NFS_SUPER_MAGIC: ::c_long = 0x00006969;
+pub const NILFS_SUPER_MAGIC: ::c_long = 0x3434;
+pub const OCFS2_SUPER_MAGIC: ::c_long = 0x7461636f;
 pub const OPENPROM_SUPER_MAGIC: ::c_long = 0x00009fa1;
+pub const OVERLAYFS_SUPER_MAGIC: ::c_long = 0x794c7630;
 pub const PROC_SUPER_MAGIC: ::c_long = 0x00009fa0;
 pub const QNX4_SUPER_MAGIC: ::c_long = 0x0000002f;
+pub const QNX6_SUPER_MAGIC: ::c_long = 0x68191122;
+pub const RDTGROUP_SUPER_MAGIC: ::c_long = 0x7655821;
 pub const REISERFS_SUPER_MAGIC: ::c_long = 0x52654973;
 pub const SMB_SUPER_MAGIC: ::c_long = 0x0000517b;
+pub const SYSFS_MAGIC: ::c_long = 0x62656572;
 pub const TMPFS_MAGIC: ::c_long = 0x01021994;
+pub const TRACEFS_MAGIC: ::c_long = 0x74726163;
+pub const UDF_SUPER_MAGIC: ::c_long = 0x15013346;
 pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
-pub const CGROUP_SUPER_MAGIC: ::c_long = 0x27e0eb;
-pub const CGROUP2_SUPER_MAGIC: ::c_long = 0x63677270;
+pub const XENFS_SUPER_MAGIC: ::c_long = 0xabba1974;
+pub const XFS_SUPER_MAGIC: ::c_long = 0x58465342;
 
 pub const CPU_SETSIZE: ::c_int = 0x400;
 
@@ -752,6 +836,10 @@ pub const NTF_OFFLOADED: u8 = 0x20;
 pub const NDA_MASTER: ::c_ushort = 9;
 pub const NDA_LINK_NETNSID: ::c_ushort = 10;
 pub const NDA_SRC_VNI: ::c_ushort = 11;
+
+// linux/personality.h
+pub const UNAME26: ::c_int = 0x0020000;
+pub const FDPIC_FUNCPTRS: ::c_int = 0x0080000;
 
 // linux/if_addr.h
 pub const IFA_FLAGS: ::c_ushort = 8;
@@ -1129,7 +1217,8 @@ cfg_if! {
         target_arch = "x86",
         target_arch = "x86_64",
         target_arch = "s390x",
-        target_arch = "riscv64"
+        target_arch = "riscv64",
+        target_arch = "riscv32"
     ))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
     } else if #[cfg(any(
@@ -1278,7 +1367,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "util")]
 extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
@@ -1352,7 +1440,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "dl")]
 extern "C" {
     pub fn dlmopen(
         lmid: Lmid_t,
@@ -1371,7 +1458,8 @@ cfg_if! {
                  target_arch = "arm",
                  target_arch = "mips",
                  target_arch = "powerpc",
-                 target_arch = "sparc"))] {
+                 target_arch = "sparc",
+                 target_arch = "riscv32"))] {
         mod b32;
         pub use self::b32::*;
     } else if #[cfg(any(target_arch = "x86_64",
