@@ -1365,6 +1365,7 @@ pub const EAI_BADFLAGS: ::c_int = -1;
 pub const EAI_NONAME: ::c_int = -2;
 pub const EAI_AGAIN: ::c_int = -3;
 pub const EAI_FAIL: ::c_int = -4;
+pub const EAI_NODATA: ::c_int = -5;
 pub const EAI_FAMILY: ::c_int = -6;
 pub const EAI_SOCKTYPE: ::c_int = -7;
 pub const EAI_SERVICE: ::c_int = -8;
@@ -2318,6 +2319,15 @@ extern "C" {
     pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut ::FILE;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+    pub fn getnameinfo(
+        sa: *const ::sockaddr,
+        salen: ::socklen_t,
+        host: *mut ::c_char,
+        hostlen: ::socklen_t,
+        serv: *mut ::c_char,
+        sevlen: ::socklen_t,
+        flags: ::c_int,
+    ) -> ::c_int;
 }
 
 cfg_if! {
