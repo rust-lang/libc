@@ -271,7 +271,7 @@ extern "C" {
         hostlen: ::socklen_t,
         serv: *mut ::c_char,
         sevlen: ::socklen_t,
-        flags: ::c_uint,
+        flags: ::c_int,
     ) -> ::c_int;
 
     pub fn pwritev(

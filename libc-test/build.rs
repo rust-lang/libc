@@ -2725,6 +2725,10 @@ fn test_linux(target: &str) {
             "posix_spawn_file_actions_init" if uclibc => true,
             "posix_spawn_file_actions_destroy" if uclibc => true,
 
+            // uclibc defines the flags type as a uint, but dependent crates
+            // assume it's a int instead.
+            "getnameinfo" if uclibc => true,
+
             _ => false,
         }
     });
