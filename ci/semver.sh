@@ -15,8 +15,7 @@ fi
 
 rustup component add rustc-dev llvm-tools-preview
 
-# FIXME: Use upstream once it gets rustup.
-cargo install semververfork
+cargo install --git https://github.com/rust-dev-tools/rust-semverver
 
 TARGETS=
 case "${OS}" in
@@ -71,6 +70,5 @@ for TARGET in $TARGETS; do
         sleep 1
     done
 
-    # FIXME: Use upstream once it gets rustup.
-    cargo semverfork --api-guidelines --target="${TARGET}"
+    cargo semver --api-guidelines --target="${TARGET}"
 done
