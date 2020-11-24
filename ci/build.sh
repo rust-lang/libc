@@ -205,7 +205,6 @@ done
 # sparc-unknown-linux-gnu
 RUST_LINUX_NO_CORE_TARGETS="\
 aarch64-pc-windows-msvc \
-aarch64-unknown-cloudabi \
 aarch64-unknown-freebsd \
 aarch64-unknown-hermit \
 aarch64-unknown-netbsd \
@@ -213,14 +212,12 @@ aarch64-unknown-openbsd \
 aarch64-wrs-vxworks \
 armebv7r-none-eabi \
 armebv7r-none-eabihf \
-armv7-unknown-cloudabi-eabihf \
 armv7-wrs-vxworks-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
 hexagon-unknown-linux-musl \
 i586-pc-windows-msvc \
 i686-pc-windows-msvc \
-i686-unknown-cloudabi \
 i686-unknown-haiku \
 i686-unknown-netbsd \
 i686-unknown-openbsd \
@@ -253,7 +250,6 @@ thumbv7neon-linux-androideabi \
 thumbv7neon-unknown-linux-gnueabihf \
 thumbv8m.main-none-eabi \
 x86_64-pc-windows-msvc \
-x86_64-unknown-cloudabi \
 x86_64-unknown-dragonfly \
 x86_64-unknown-haiku \
 x86_64-unknown-hermit \
