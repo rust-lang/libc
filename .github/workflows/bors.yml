@@ -234,7 +234,7 @@ jobs:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        # FIXME: Pin nightly version to make semverver compilable.
+        # Should update the semverver revision in semver.sh if we touch nightly ver.
         run: TOOLCHAIN=nightly-2020-11-19 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh linux
