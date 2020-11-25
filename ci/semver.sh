@@ -15,7 +15,8 @@ fi
 
 rustup component add rustc-dev llvm-tools-preview
 
-cargo install --git https://github.com/rust-dev-tools/rust-semverver
+# Should update the nightly version in bors CI config if we touch this.
+cargo install --git https://github.com/rust-lang/rust-semverver --rev 71c340ff867d2f79613cfe02c6714f1d2ef00bc4
 
 TARGETS=
 case "${OS}" in
