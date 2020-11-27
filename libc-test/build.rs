@@ -866,6 +866,11 @@ fn test_solarish(target: &str) {
             "madvise" | "mprotect" if is_illumos => true,
             "door_call" | "door_return" | "door_create" if is_illumos => true,
 
+            // These functions may return int or void depending on the exact
+            // configuration of the compilation environment, but the return
+            // value is not useful (always 0) so we can ignore it:
+            "setservent" | "endservent" if is_illumos => true,
+
             _ => false,
         }
     });
