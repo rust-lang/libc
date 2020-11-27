@@ -1711,6 +1711,7 @@ fn test_freebsd(target: &str) {
                 "sys/msg.h",
                 "sys/procdesc.h",
                 "sys/ptrace.h",
+                "sys/random.h",
                 "sys/resource.h",
                 "sys/rtprio.h",
                 "sys/shm.h",
