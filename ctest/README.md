@@ -12,7 +12,7 @@ APIs in Rust match the APIs defined in C.
 
 ## MSRV (Minimum Supported Rust Version)
 
-The MSRV is 1.32.0 since our dependency uses the feature `int_to_from_bytes`.
+The MSRV is 1.34.0 since our dependency uses the feature `int_to_from_bytes`.
 
 ## Example
 
