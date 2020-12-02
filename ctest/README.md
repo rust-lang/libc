@@ -35,7 +35,7 @@ mylib-sys = { path = "../mylib-sys" }
 libc = "0.2"
 
 [build-dependencies]
-ctest2 = "0.2"
+ctest2 = "0.3"
 ```
 
 Next, add a build script to `systest/build.rs`:
