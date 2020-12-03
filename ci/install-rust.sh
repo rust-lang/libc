@@ -13,7 +13,8 @@ fi
 if [ "$OS" = "windows" ]; then
   : "${TARGET?The TARGET environment variable must be set.}"
   rustup set profile minimal
-  rustup update --force $toolchain-"$TARGET"
+  # FIXME: Add `--no-self-update` to avoid CI failure.
+  rustup update --force $toolchain-"$TARGET" --no-self-update
   rustup default $toolchain-"$TARGET"
 else
   rustup set profile minimal
