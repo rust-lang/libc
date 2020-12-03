@@ -83,24 +83,6 @@ s! {
         pub f_spare: [::c_ulong; 5],
     }
 
-    pub struct nlmsghdr {
-        pub nlmsg_len: u32,
-        pub nlmsg_type: u16,
-        pub nlmsg_flags: u16,
-        pub nlmsg_seq: u32,
-        pub nlmsg_pid: u32,
-    }
-
-    pub struct nlmsgerr {
-        pub error: ::c_int,
-        pub msg: nlmsghdr,
-    }
-
-    pub struct nlattr {
-        pub nla_len: u16,
-        pub nla_type: u16,
-    }
-
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,
