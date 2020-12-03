@@ -4,7 +4,9 @@
 
 [dox]: https://docs.rs/ctest2
 
-**Note: This is a fork repository and we intend to use this in libc-test only.**
+**Note: This is a fork of [`ctest`], intended as a temporary replacement until maintenance of [`ctest`] resumes.**
+
+[`ctest`]: https://crates.io/crates/ctest
 
 Automated testing of FFI bindings in Rust. This repository is intended to
 validate the `*-sys` crates that can be found on crates.io to ensure that the
