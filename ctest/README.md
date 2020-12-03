@@ -91,6 +91,7 @@ you can browse [the documentation][dox].
 ## Projects using ctest2
 
 * [libc](https://github.com/rust-lang/libc)
+* [libz-sys](https://github.com/rust-lang/libz-sys)
 
 ## License
 
