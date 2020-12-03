@@ -130,6 +130,24 @@ s! {
         __dummy4: [::c_char; 16],
     }
 
+    pub struct nlmsghdr {
+        pub nlmsg_len: u32,
+        pub nlmsg_type: u16,
+        pub nlmsg_flags: u16,
+        pub nlmsg_seq: u32,
+        pub nlmsg_pid: u32,
+    }
+
+    pub struct nlmsgerr {
+        pub error: ::c_int,
+        pub msg: nlmsghdr,
+    }
+
+    pub struct nlattr {
+        pub nla_len: u16,
+        pub nla_type: u16,
+    }
+
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
