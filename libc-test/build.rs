@@ -1473,7 +1473,7 @@ fn test_android(target: &str) {
     // Include linux headers at the end:
     headers! { cfg:
                 "asm/mman.h",
-                "linux/auxvec.h"
+                "linux/auxvec.h",
                 "linux/dccp.h",
                 "linux/errqueue.h",
                 "linux/falloc.h",
