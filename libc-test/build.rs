@@ -1422,6 +1422,7 @@ fn test_android(target: &str) {
                "stdio.h",
                "stdlib.h",
                "string.h",
+               "sys/auxv.h",
                "sys/epoll.h",
                "sys/eventfd.h",
                "sys/file.h",
@@ -1472,6 +1473,7 @@ fn test_android(target: &str) {
     // Include linux headers at the end:
     headers! { cfg:
                 "asm/mman.h",
+                "linux/auxvec.h",
                 "linux/dccp.h",
                 "linux/errqueue.h",
                 "linux/falloc.h",
