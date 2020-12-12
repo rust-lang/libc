@@ -226,12 +226,10 @@ jobs:
     name: Semver Linux
     needs: build_channels_linux
     runs-on: ubuntu-20.04
+    continue-on-error: true
     strategy:
       fail-fast: true
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
         # Should update the semverver revision in semver.sh if we touch nightly ver.
@@ -243,12 +241,10 @@ jobs:
     name: Semver macOS
     needs: build_channels_macos
     runs-on: macos-10.15
+    continue-on-error: true
     strategy:
       fail-fast: true
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
         # FIXME: Pin nightly version to make semverver compilable.
@@ -291,8 +287,6 @@ jobs:
       docker_switch,
       build_channels_linux,
       build_channels_macos,
-      semver_linux,
-      semver_macos,
       docs,
     ]
 
@@ -313,8 +307,6 @@ jobs:
       docker_switch,
       build_channels_linux,
       build_channels_macos,
-      semver_linux,
-      semver_macos,
       docs,
     ]
 
