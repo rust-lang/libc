@@ -2465,6 +2465,8 @@ extern "C" {
     pub fn setutent();
     pub fn getutent() -> *mut utmp;
 
+    pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
+    pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
     pub fn fallocate(
         fd: ::c_int,
         mode: ::c_int,
