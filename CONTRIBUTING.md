@@ -36,7 +36,7 @@ With that in mind, the steps for adding a new API are:
 4. Wait for CI to pass, fixing errors.
 5. Wait for a merge!
 
-### Test before you commit
+## Test before you commit
 
 We have two automated tests running on [GitHub Actions](https://github.com/rust-lang/libc/actions):
 
@@ -46,7 +46,23 @@ We have two automated tests running on [GitHub Actions](https://github.com/rust-
 2. Style checker
   - `rustc ci/style.rs && ./style src`
 
-### Releasing your change to crates.io
+## Breaking change policy
+
+Sometimes an upstream adds a breaking change to their API e.g. removing outdated items,
+changing the type signature, etc. And we probably should follow that change to build the
+`libc` crate successfully. It's annoying to do the equivalent of semver-major versioning
+for each such change. Instead, we mark the item as deprecated and do the actual change
+after a certain period. The steps are:
+
+1. Add `#[deprecated(since = "", note="")]` attribute to the item.
+  - The `since` field should have a next version of `libc`
+    (e.g., if the current version is `0.2.1`, it should be `0.2.2`).
+  - The `note` field should have a reason to deprecate and a tracking issue to call for comments
+    (e.g., "We consider removing this as the upstream removed it.
+    If you're using it, please comment on #XXX").
+2. If we don't see any concerns for a while, do the change actually.
+
+## Releasing your change to crates.io
 
 Now that you've done the amazing job of landing your new API or your new
 platform in this crate, the next step is to get that sweet, sweet usage from
