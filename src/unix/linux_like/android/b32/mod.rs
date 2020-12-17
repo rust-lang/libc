@@ -74,7 +74,7 @@ s! {
         pub f_bavail: u64,
         pub f_files: u64,
         pub f_ffree: u64,
-        f_fsid: [u32; 2],
+        pub f_fsid: ::__fsid_t,
         pub f_namelen: u32,
         pub f_frsize: u32,
         pub f_flags: u32,
