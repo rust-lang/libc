@@ -71,6 +71,10 @@ impl siginfo_t {
     pub unsafe fn si_uid(&self) -> ::uid_t {
         self.si_uid
     }
+
+    pub unsafe fn si_status(&self) -> ::c_int {
+        self.si_status
+    }
 }
 
 s! {
