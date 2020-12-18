@@ -6,7 +6,7 @@ s_no_extra_traits! {
     }
 }
 
-s!{
+s! {
     pub struct ucontext_t {
         pub uc_flags: ::c_ulong,
         pub uc_link: *mut ucontext_t,
@@ -17,9 +17,11 @@ s!{
 
     #[repr(align(16))]
     pub struct mcontext_t {
-        // What we want here is a single [u64; 36 + 512], but splitting things
-        // up allows Debug to be auto-derived.
-        __regs1: [[u64; 18]; 2], // 36
-        __regs2: [[u64; 32]; 16], // 512
+        pub fault_address: ::c_ulong,
+        pub regs: [::c_ulong; 31],
+        pub sp: ::c_ulong,
+        pub pc: ::c_ulong,
+        pub pstate: ::c_ulong,
+        __reserved: [[u64; 32]; 16],
     }
 }
