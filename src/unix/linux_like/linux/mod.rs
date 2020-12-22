@@ -36,6 +36,10 @@ pub type Elf64_Sxword = i64;
 pub type Elf32_Section = u16;
 pub type Elf64_Section = u16;
 
+// linux/can.h
+pub type canid_t = u32;
+pub type can_err_mask_t = u32;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos64_t {}
@@ -504,6 +508,23 @@ s! {
         pub ee_info: u32,
         pub ee_data: u32,
     }
+
+    // linux/can.h
+    pub struct __c_anonymous_sockaddr_can_tp {
+        pub rx_id: canid_t,
+        pub tx_id: canid_t,
+    }
+
+    pub struct __c_anonymous_sockaddr_can_j1939 {
+        pub name: u64,
+        pub pgn: u32,
+        pub addr: u8,
+    }
+
+    pub struct can_filter {
+        pub can_id: canid_t,
+        pub can_mask: canid_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -574,6 +595,26 @@ s_no_extra_traits! {
         pub mq_curmsgs: ::c_long,
         #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
         pad: [::c_long; 4],
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_union)] {
+        s_no_extra_traits! {
+            // linux/can.h
+            #[allow(missing_debug_implementations)]
+            pub union __c_anonymous_sockaddr_can_can_addr {
+                pub tp: __c_anonymous_sockaddr_can_tp,
+                pub j1939: __c_anonymous_sockaddr_can_j1939,
+            }
+
+            #[allow(missing_debug_implementations)]
+            pub struct sockaddr_can {
+                pub can_family: ::sa_family_t,
+                pub can_ifindex: ::c_int,
+                pub can_addr: __c_anonymous_sockaddr_can_can_addr,
+            }
+        }
     }
 }
 
@@ -2583,6 +2624,46 @@ pub const EPIPE: ::c_int = 32;
 pub const EDOM: ::c_int = 33;
 pub const ERANGE: ::c_int = 34;
 pub const EWOULDBLOCK: ::c_int = EAGAIN;
+
+// linux/can.h
+pub const CAN_EFF_FLAG: canid_t = 0x80000000;
+pub const CAN_RTR_FLAG: canid_t = 0x40000000;
+pub const CAN_ERR_FLAG: canid_t = 0x20000000;
+pub const CAN_SFF_MASK: canid_t = 0x000007FF;
+pub const CAN_EFF_MASK: canid_t = 0x1FFFFFFF;
+pub const CAN_ERR_MASK: canid_t = 0x1FFFFFFF;
+
+pub const CAN_SFF_ID_BITS: ::c_int = 11;
+pub const CAN_EFF_ID_BITS: ::c_int = 29;
+
+pub const CAN_MAX_DLC: ::c_int = 8;
+pub const CAN_MAX_DLEN: usize = 8;
+pub const CANFD_MAX_DLC: ::c_int = 15;
+pub const CANFD_MAX_DLEN: usize = 64;
+
+pub const CANFD_BRS: ::c_int = 0x01;
+pub const CANFD_ESI: ::c_int = 0x02;
+
+cfg_if! {
+    if #[cfg(libc_const_size_of)] {
+        pub const CAN_MTU: usize = ::mem::size_of::<can_frame>();
+        pub const CANFD_MTU: usize = ::mem::size_of::<canfd_frame>();
+    }
+}
+
+pub const CAN_RAW: ::c_int = 1;
+pub const CAN_BCM: ::c_int = 2;
+pub const CAN_TP16: ::c_int = 3;
+pub const CAN_TP20: ::c_int = 4;
+pub const CAN_MCNET: ::c_int = 5;
+pub const CAN_ISOTP: ::c_int = 6;
+pub const CAN_J1939: ::c_int = 7;
+pub const CAN_NPROTO: ::c_int = 8;
+
+pub const SOL_CAN_BASE: ::c_int = 100;
+
+pub const CAN_INV_FILTER: canid_t = 0x20000000;
+pub const CAN_RAW_FILTER_MAX: ::c_int = 512;
 
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
