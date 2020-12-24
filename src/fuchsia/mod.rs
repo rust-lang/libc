@@ -209,6 +209,12 @@ s! {
         pub imr_interface: in_addr,
     }
 
+    pub struct ip_mreqn {
+        pub imr_multiaddr: in_addr,
+        pub imr_address: in_addr,
+        pub imr_ifindex: ::c_int,
+    }
+
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
         pub ipv6mr_interface: ::c_uint,
