@@ -1059,6 +1059,13 @@ pub const WEXITED: ::c_int = 0x08;
 pub const WSTOPPED: ::c_int = 0x10;
 pub const WNOWAIT: ::c_int = 0x20;
 
+pub const CLD_EXITED: ::c_int = 60;
+pub const CLD_KILLED: ::c_int = 61;
+pub const CLD_DUMPED: ::c_int = 62;
+pub const CLD_TRAPPED: ::c_int = 63;
+pub const CLD_STOPPED: ::c_int = 64;
+pub const CLD_CONTINUED: ::c_int = 65;
+
 pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 2;

@@ -439,6 +439,13 @@ pub const TCP_MAXSEG: ::c_int = 2;
 
 pub const PIPE_BUF: usize = 512;
 
+pub const CLD_EXITED: ::c_int = 1;
+pub const CLD_KILLED: ::c_int = 2;
+pub const CLD_DUMPED: ::c_int = 3;
+pub const CLD_TRAPPED: ::c_int = 4;
+pub const CLD_STOPPED: ::c_int = 5;
+pub const CLD_CONTINUED: ::c_int = 6;
+
 pub const POLLIN: ::c_short = 0x1;
 pub const POLLPRI: ::c_short = 0x2;
 pub const POLLOUT: ::c_short = 0x4;
