@@ -3273,7 +3273,7 @@ extern "C" {
     pub fn setgrent();
     #[doc(hidden)]
     #[deprecated(since = "0.2.49", note = "Deprecated in MacOSX 10.5")]
-    #[link_name = "daemon$1050"]
+    #[cfg_attr(not(target_arch = "aarch64"), link_name = "daemon$1050")]
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
     #[doc(hidden)]
     #[deprecated(since = "0.2.49", note = "Deprecated in MacOSX 10.10")]
@@ -3441,9 +3441,15 @@ extern "C" {
     ) -> ::c_int;
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
-    #[cfg_attr(target_os = "macos", link_name = "statfs$INODE64")]
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "statfs$INODE64"
+    )]
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
-    #[cfg_attr(target_os = "macos", link_name = "fstatfs$INODE64")]
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "fstatfs$INODE64"
+    )]
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
     pub fn kevent(
         kq: ::c_int,
