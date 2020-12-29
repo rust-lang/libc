@@ -200,6 +200,8 @@ pub const F_SEAL_WRITE: ::c_int = 0x0008;
 pub const GRND_NONBLOCK: ::c_uint = 0x1;
 pub const GRND_RANDOM: ::c_uint = 0x2;
 
+pub const SO_DOMAIN: ::c_int = 0x1019;
+
 cfg_if! {
     if #[cfg(not(freebsd13))] {
         pub const ELAST: ::c_int = 96;
@@ -237,7 +239,7 @@ extern "C" {
     pub fn getrandom(
         buf: *mut ::c_void,
         buflen: ::size_t,
-        flags: ::c_uint
+        flags: ::c_uint,
     ) -> ::ssize_t;
 }
 
