@@ -1907,6 +1907,9 @@ pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 2;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 1;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 2;
+#[cfg(target_arch = "aarch64")]
+pub const PTHREAD_STACK_MIN: ::size_t = 16384;
+#[cfg(not(target_arch = "aarch64"))]
 pub const PTHREAD_STACK_MIN: ::size_t = 8192;
 
 pub const RLIMIT_CPU: ::c_int = 0;
@@ -3129,6 +3132,9 @@ pub const SETALL: ::c_int = 9;
 // sys/shm.h
 pub const SHM_RDONLY: ::c_int = 0x1000;
 pub const SHM_RND: ::c_int = 0x2000;
+#[cfg(target_arch = "aarch64")]
+pub const SHMLBA: ::c_int = 16 * 1024;
+#[cfg(not(target_arch = "aarch64"))]
 pub const SHMLBA: ::c_int = 4096;
 pub const SHM_R: ::c_int = IPC_R;
 pub const SHM_W: ::c_int = IPC_W;
