@@ -1,6 +1,6 @@
 pub type pthread_t = c_ulong;
-pub type __priority_which_t = ::c_uint;
-pub type __rlimit_resource_t = ::c_uint;
+pub type __priority_which_t = ::c_int;
+pub type __rlimit_resource_t = ::c_int;
 pub type Lmid_t = ::c_long;
 pub type regoff_t = ::c_int;
 
