@@ -1,3 +1,10 @@
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct max_align_t {
+        priv_: f64
+    }
+}
+
 s! {
     pub struct __darwin_mcontext64 {
         pub __es: __darwin_arm_exception_state64,
