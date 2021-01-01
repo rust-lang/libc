@@ -2,7 +2,6 @@
 
 pub type c_long = i64;
 pub type c_ulong = u64;
-pub type boolean_t = ::c_uint;
 pub type mcontext_t = *mut __darwin_mcontext64;
 
 s! {

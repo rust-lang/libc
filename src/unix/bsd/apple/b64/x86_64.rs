@@ -1,3 +1,5 @@
+pub type boolean_t = ::c_uint;
+
 s! {
     pub struct __darwin_mcontext64 {
         pub __es: __darwin_x86_exception_state64,
