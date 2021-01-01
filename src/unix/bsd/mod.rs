@@ -632,7 +632,10 @@ extern "C" {
         egid: *mut ::gid_t,
     ) -> ::c_int;
 
-    #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "glob$INODE64")
+    ]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
     #[cfg_attr(
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
