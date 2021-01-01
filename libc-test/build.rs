@@ -199,6 +199,8 @@ fn test_apple(target: &str) {
             "SF_SETTABLE" => true,
             // FIXME: the value has been changed since Catalina (VM_FLAGS_RESILIENT_MEDIA is also contained now).
             "VM_FLAGS_USER_REMAP" => true,
+            // FIXME: the values have been changed since Big Sur
+            "HW_TARGET" | "HW_PRODUCT" | "HW_MAXID" => true,
             _ => false,
         }
     });
