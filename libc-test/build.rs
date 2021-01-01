@@ -220,6 +220,7 @@ fn test_apple(target: &str) {
         match (struct_, field) {
             // FIXME: the array size has been changed since macOS 10.15 ([8] -> [7]).
             ("statfs", "f_reserved") => true,
+            ("__darwin_arm_neon_state64", "__v") => true,
             _ => false,
         }
     });
