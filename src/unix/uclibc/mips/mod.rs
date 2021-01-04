@@ -28,6 +28,8 @@ pub const SA_RESETHAND: ::c_int = 0x80000000;
 pub const SA_RESTART: ::c_int = 0x10000000;
 pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
 
+pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000; // from linux/mod.rs
+pub const EPOLLWAKEUP: ::c_int = 0x20000000; // from linux/other/mod.rs
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
