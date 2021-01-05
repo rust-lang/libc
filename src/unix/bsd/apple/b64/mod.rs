@@ -2,7 +2,6 @@
 
 pub type c_long = i64;
 pub type c_ulong = u64;
-pub type mcontext_t = *mut __darwin_mcontext64;
 
 s! {
     pub struct timeval32 {
@@ -47,15 +46,6 @@ s! {
         pub bh_caplen: u32,
         pub bh_datalen: u32,
         pub bh_hdrlen: ::c_ushort,
-    }
-
-    pub struct ucontext_t {
-        pub uc_onstack: ::c_int,
-        pub uc_sigmask: ::sigset_t,
-        pub uc_stack: ::stack_t,
-        pub uc_link: *mut ::ucontext_t,
-        pub uc_mcsize: usize,
-        pub uc_mcontext: mcontext_t,
     }
 }
 
