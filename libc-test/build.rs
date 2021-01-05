@@ -199,6 +199,8 @@ fn test_apple(target: &str) {
             "SF_SETTABLE" => true,
             // FIXME: the value has been changed since Catalina (VM_FLAGS_RESILIENT_MEDIA is also contained now).
             "VM_FLAGS_USER_REMAP" => true,
+            // FIXME: the values have been changed since Big Sur
+            "HW_TARGET" | "HW_PRODUCT" | "HW_MAXID" => true,
             _ => false,
         }
     });
@@ -220,6 +222,7 @@ fn test_apple(target: &str) {
         match (struct_, field) {
             // FIXME: the array size has been changed since macOS 10.15 ([8] -> [7]).
             ("statfs", "f_reserved") => true,
+            ("__darwin_arm_neon_state64", "__v") => true,
             _ => false,
         }
     });
