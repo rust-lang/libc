@@ -1393,12 +1393,6 @@ extern "C" {
         timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn lchflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
-    pub fn lio_listio(
-        mode: ::c_int,
-        aiocb_list: *const *mut aiocb,
-        nitems: ::c_int,
-        sevp: *mut sigevent,
-    ) -> ::c_int;
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn memrchr(
         cx: *const ::c_void,
@@ -1603,17 +1597,6 @@ extern "C" {
 
 #[link(name = "rt")]
 extern "C" {
-    pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
-    pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
-    pub fn aio_suspend(
-        aiocb_list: *const *const aiocb,
-        nitems: ::c_int,
-        timeout: *const ::timespec,
-    ) -> ::c_int;
-    pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
     pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
     pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
     pub fn mq_notify(mqd: ::mqd_t, notification: *const ::sigevent)
