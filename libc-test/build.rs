@@ -2672,6 +2672,28 @@ fn test_linux(target: &str) {
             // Not yet implemented on sparc64
             "SYS_clone3" if mips | sparc64 => true,
 
+            // Missing from musl's kernel headers
+            | "IFLA_GSO_MAX_SEGS"
+            | "IFLA_GSO_MAX_SIZE"
+            | "IFLA_PAD"
+            | "IFLA_XDP"
+            | "IFLA_EVENT"
+            | "IFLA_NEW_NETNSID"
+            | "IFLA_IF_NETNSID"
+            | "IFLA_TARGET_NETNSID"
+            | "IFLA_CARRIER_UP_COUNT"
+            | "IFLA_CARRIER_DOWN_COUNT"
+            | "IFLA_NEW_IFINDEX"
+            | "IFLA_MIN_MTU"
+            | "IFLA_MAX_MTU"
+                if musl => true,
+
+            // Requires more recent kernel headers:
+            | "IFLA_PROP_LIST"
+            | "IFLA_ALT_IFNAME"
+            | "IFLA_PERM_ADDRESS"
+            | "IFLA_PROTO_DOWN_REASON" => true,
+
             _ => false,
         }
     });
