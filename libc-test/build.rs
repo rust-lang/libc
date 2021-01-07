@@ -2595,6 +2595,9 @@ fn test_linux(target: &str) {
             // which is absent in musl, has to be defined.
             "__exit_status" if musl => true,
 
+            // FIXME: CI's kernel header version is old.
+            "sockaddr_can" => true,
+
             _ => false,
         }
     });
@@ -2701,9 +2704,10 @@ fn test_linux(target: &str) {
             | "IFLA_PERM_ADDRESS"
             | "IFLA_PROTO_DOWN_REASON" => true,
 
-            // FIXME: J1939 requires kernel header version 5.4 or higher,
-            // the MIPS CI target has a lower version
-            "CAN_J1939" => true,
+            // FIXME: They require recent kernel header:
+            | "CAN_J1939"
+            | "CAN_RAW_FILTER_MAX"
+            | "CAN_NPROTO" => true,
 
             _ => false,
         }
