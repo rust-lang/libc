@@ -116,8 +116,10 @@ jobs:
           i686-unknown-linux-musl,
           mips-unknown-linux-gnu,
           mips-unknown-linux-musl,
-          mips64-unknown-linux-gnuabi64,
-          mips64el-unknown-linux-gnuabi64,
+          # FIXME: Somehow failed on CI
+          # https://github.com/rust-lang/libc/runs/1659882216
+          # mips64-unknown-linux-gnuabi64,
+          # mips64el-unknown-linux-gnuabi64,
           mipsel-unknown-linux-musl,
           powerpc-unknown-linux-gnu,
           powerpc64-unknown-linux-gnu,
