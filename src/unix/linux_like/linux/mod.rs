@@ -2645,7 +2645,7 @@ pub const CANFD_BRS: ::c_int = 0x01;
 pub const CANFD_ESI: ::c_int = 0x02;
 
 cfg_if! {
-    if #[cfg(libc_const_size_of)] {
+    if #[cfg(libc_align)] {
         pub const CAN_MTU: usize = ::mem::size_of::<can_frame>();
         pub const CANFD_MTU: usize = ::mem::size_of::<canfd_frame>();
     }
