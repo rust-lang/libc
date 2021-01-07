@@ -2442,6 +2442,7 @@ fn test_linux(target: &str) {
     headers! {
         cfg:
         "asm/mman.h",
+        "linux/can.h",
         "linux/dccp.h",
         "linux/errqueue.h",
         "linux/falloc.h",
@@ -2556,6 +2557,9 @@ fn test_linux(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // These cannot be tested when "resolv.h" is included and are tested
             // in the `linux_elf.rs` file.
@@ -2590,6 +2594,9 @@ fn test_linux(target: &str) {
             // can be an anonymous struct, so an extra struct,
             // which is absent in musl, has to be defined.
             "__exit_status" if musl => true,
+
+            // FIXME: CI's kernel header version is old.
+            "sockaddr_can" => true,
 
             _ => false,
         }
@@ -2697,6 +2704,11 @@ fn test_linux(target: &str) {
             | "IFLA_PERM_ADDRESS"
             | "IFLA_PROTO_DOWN_REASON" => true,
 
+            // FIXME: They require recent kernel header:
+            | "CAN_J1939"
+            | "CAN_RAW_FILTER_MAX"
+            | "CAN_NPROTO" => true,
+
             _ => false,
         }
     });
@@ -2757,7 +2769,9 @@ fn test_linux(target: &str) {
         // this one is an anonymous union
         (struct_ == "ff_effect" && field == "u") ||
         // `__exit_status` type is a patch which is absent in musl
-        (struct_ == "utmpx" && field == "ut_exit" && musl)
+        (struct_ == "utmpx" && field == "ut_exit" && musl) ||
+        // `can_addr` is an anonymous union
+        (struct_ == "sockaddr_can" && field == "can_addr")
     });
 
     cfg.volatile_item(|i| {
