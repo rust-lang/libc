@@ -52,27 +52,6 @@ macro_rules! expand_align {
                 pub fd: ::c_int,
                 pub pid: ::c_int,
             }
-
-            // linux/can.h
-            #[repr(align(8))]
-            pub struct can_frame {
-                pub can_id: canid_t,
-                pub can_dlc: u8,
-                __pad: u8,
-                __res0: u8,
-                __res1: u8,
-                pub data: [u8; CAN_MAX_DLEN],
-            }
-
-            #[repr(align(8))]
-            pub struct canfd_frame {
-                pub can_id: canid_t,
-                pub len: u8,
-                pub flags: u8,
-                __res0: u8,
-                __res1: u8,
-                pub data: [u8; CANFD_MAX_DLEN],
-            }
         }
 
         s_no_extra_traits! {
@@ -136,6 +115,29 @@ macro_rules! expand_align {
                        repr(align(8)))]
             pub struct pthread_rwlock_t {
                 size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
+            }
+
+            // linux/can.h
+            #[repr(align(8))]
+            #[allow(missing_debug_implementations)]
+            pub struct can_frame {
+                pub can_id: canid_t,
+                pub can_dlc: u8,
+                __pad: u8,
+                __res0: u8,
+                __res1: u8,
+                pub data: [u8; CAN_MAX_DLEN],
+            }
+
+            #[repr(align(8))]
+            #[allow(missing_debug_implementations)]
+            pub struct canfd_frame {
+                pub can_id: canid_t,
+                pub len: u8,
+                pub flags: u8,
+                __res0: u8,
+                __res1: u8,
+                pub data: [u8; CANFD_MAX_DLEN],
             }
         }
     };
