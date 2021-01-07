@@ -26,7 +26,9 @@ s! {
         pub stx_rdev_minor: u32,
         pub stx_dev_major: u32,
         pub stx_dev_minor: u32,
-        __statx_pad2: [u64; 14],
+        pub stx_mnt_id: u64,
+        __statx_pad2: u64,
+        __statx_pad3: [u64; 12],
     }
 
     pub struct statx_timestamp {
@@ -1171,6 +1173,7 @@ pub const STATX_SIZE: ::c_uint = 0x0200;
 pub const STATX_BLOCKS: ::c_uint = 0x0400;
 pub const STATX_BASIC_STATS: ::c_uint = 0x07ff;
 pub const STATX_BTIME: ::c_uint = 0x0800;
+pub const STATX_MNT_ID: ::c_uint = 0x1000;
 pub const STATX_ALL: ::c_uint = 0x0fff;
 pub const STATX__RESERVED: ::c_int = 0x80000000;
 pub const STATX_ATTR_COMPRESSED: ::c_int = 0x0004;
