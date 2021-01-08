@@ -29,7 +29,7 @@ jobs:
 
   macos:
     name: macOS
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     strategy:
       fail-fast: true
       matrix:
@@ -195,7 +195,7 @@ jobs:
   build_channels_macos:
     name: Build Channels macOS
     needs: macos
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     env:
       OS: macos
     strategy:
@@ -240,7 +240,7 @@ jobs:
   semver_macos:
     name: Semver macOS
     needs: build_channels_macos
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     continue-on-error: true
     strategy:
       fail-fast: true
