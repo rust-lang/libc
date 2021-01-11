@@ -2657,6 +2657,13 @@ fn test_linux(target: &str) {
 
             "MS_RMT_MASK" if uclibc => true, // updated in glibc 2.22 and musl 1.1.13
 
+            // These are not defined in uclibc but will be passed through to the kernel
+            // so they will be supported if the kernel supports them.  Otherwise the
+            // kernel will return runtime errors.  Since they're required for tokio 
+            // support, we except them from the tests here.
+            // See https://github.com/rust-lang/libc/pull/2019#issuecomment-754351482
+            "EPOLLEXCLUSIVE" | "EPOLLWAKEUP" if uclibc => true,
+            
             // FIXME: Requires recent kernel headers (5.8):
             "STATX_MNT_ID" => true,
 

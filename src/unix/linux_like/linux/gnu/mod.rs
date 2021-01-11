@@ -887,8 +887,6 @@ pub const PTRACE_INTERRUPT: ::c_uint = 0x4207;
 pub const PTRACE_LISTEN: ::c_uint = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_uint = 0x4209;
 
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
-
 // linux/fs.h
 
 // Flags for preadv2/pwritev2
