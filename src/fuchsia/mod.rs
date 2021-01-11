@@ -1461,8 +1461,6 @@ pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
 
-pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
-
 pub const S_IFIFO: ::mode_t = 4096;
 pub const S_IFCHR: ::mode_t = 8192;
 pub const S_IFBLK: ::mode_t = 24576;
@@ -2908,7 +2906,8 @@ pub const O_SYNC: ::c_int = 0x00000040 | O_DSYNC;
 pub const O_RSYNC: ::c_int = O_SYNC;
 pub const O_DSYNC: ::c_int = 0x00000020;
 
-pub const SOCK_NONBLOCK: ::c_int = 2048;
+pub const SOCK_CLOEXEC: ::c_int = 0o2000000;
+pub const SOCK_NONBLOCK: ::c_int = 0o4000;
 
 pub const MAP_ANON: ::c_int = 0x0020;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
