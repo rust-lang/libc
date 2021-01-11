@@ -254,7 +254,6 @@ pub const POLLWRBAND: ::c_short = 0x100;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 
-
 pub const VEOF: usize = 16;
 pub const VEOL: usize = 17;
 pub const VEOL2: usize = 6;
@@ -267,7 +266,6 @@ pub const TCSADRAIN: ::c_int = 0x540f;
 pub const TCSAFLUSH: ::c_int = 0x5410;
 
 pub const CPU_SETSIZE: ::c_int = 0x400;
-
 
 pub const EFD_NONBLOCK: ::c_int = 0x80;
 

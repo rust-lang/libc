@@ -458,11 +458,7 @@ extern "C" {
         ptr: *mut *mut c_char,
         sizeloc: *mut size_t,
     ) -> *mut FILE;
-    #[cfg(not(target_env = "uclibc"))]
-    pub fn open_wmemstream(
-        ptr: *mut *mut wchar_t,
-        sizeloc: *mut size_t,
-    ) -> *mut FILE;
+
     pub fn fflush(file: *mut FILE) -> c_int;
     pub fn fclose(file: *mut FILE) -> c_int;
     pub fn remove(filename: *const c_char) -> c_int;
@@ -1578,6 +1574,17 @@ extern "C" {
     ) -> ssize_t;
 
     pub fn lockf(fd: ::c_int, cmd: ::c_int, len: ::off_t) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        extern "C" {
+            pub fn open_wmemstream(
+                ptr: *mut *mut wchar_t,
+                sizeloc: *mut size_t,
+            ) -> *mut FILE;
+        }
+    }
 }
 
 cfg_if! {

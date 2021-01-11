@@ -17,7 +17,6 @@ pub type __u64 = ::c_ulonglong;
 pub type fsblkcnt64_t = u64;
 pub type fsfilcnt64_t = u64;
 
-
 s! {
     pub struct stat {
         pub st_dev: ::dev_t,

@@ -525,25 +525,6 @@ s! {
     }
 }
 
-cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
-        s! {
-            pub struct Elf64_Chdr {
-                pub ch_type: Elf64_Word,
-                pub ch_reserved: Elf64_Word,
-                pub ch_size: Elf64_Xword,
-                pub ch_addralign: Elf64_Xword,
-            }
-
-            pub struct Elf32_Chdr {
-                pub ch_type: Elf32_Word,
-                pub ch_size: Elf32_Word,
-                pub ch_addralign: Elf32_Word,
-            }
-        }
-    }
-}
-
 s_no_extra_traits! {
     pub struct sockaddr_nl {
         pub nl_family: ::sa_family_t,
@@ -983,13 +964,7 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
-        pub const RUSAGE_THREAD: ::c_int = 1;
-    }
-}
 pub const RUSAGE_CHILDREN: ::c_int = -1;
-
 pub const L_tmpnam: ::c_uint = 20;
 pub const _PC_LINK_MAX: ::c_int = 0;
 pub const _PC_MAX_CANON: ::c_int = 1;
@@ -1323,8 +1298,6 @@ pub const RTLD_NOW: ::c_int = 0x2;
 pub const AT_EACCESS: ::c_int = 0x200;
 
 pub const TCP_MD5SIG: ::c_int = 14;
-#[cfg(not(target_env = "uclibc"))]
-pub const TCP_ULP: ::c_int = 31;
 
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
@@ -1386,8 +1359,6 @@ pub const MSG_INFO: ::c_int = 12;
 
 pub const MSG_NOERROR: ::c_int = 0o10000;
 pub const MSG_EXCEPT: ::c_int = 0o20000;
-#[cfg(not(target_env = "uclibc"))]
-pub const MSG_COPY: ::c_int = 0o40000;
 
 pub const SHM_R: ::c_int = 0o400;
 pub const SHM_W: ::c_int = 0o200;
@@ -1395,8 +1366,6 @@ pub const SHM_W: ::c_int = 0o200;
 pub const SHM_RDONLY: ::c_int = 0o10000;
 pub const SHM_RND: ::c_int = 0o20000;
 pub const SHM_REMAP: ::c_int = 0o40000;
-#[cfg(not(target_env = "uclibc"))]
-pub const SHM_EXEC: ::c_int = 0o100000;
 
 pub const SHM_LOCK: ::c_int = 11;
 pub const SHM_UNLOCK: ::c_int = 12;
@@ -1406,8 +1375,6 @@ pub const SHM_HUGETLB: ::c_int = 0o4000;
 pub const SHM_NORESERVE: ::c_int = 0o10000;
 
 pub const EPOLLRDHUP: ::c_int = 0x2000;
-#[cfg(not(target_env = "uclibc"))]
-pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
 pub const EPOLLONESHOT: ::c_int = 0x40000000;
 
 pub const QFMT_VFS_OLD: ::c_int = 1;
@@ -1469,6 +1436,16 @@ cfg_if! {
         pub const LIO_NOP: ::c_int = 2;
         pub const LIO_WAIT: ::c_int = 0;
         pub const LIO_NOWAIT: ::c_int = 1;
+        pub const RUSAGE_THREAD: ::c_int = 1;
+        pub const TCP_ULP: ::c_int = 31;
+        pub const MSG_COPY: ::c_int = 0o40000;
+        pub const SHM_EXEC: ::c_int = 0o100000;
+        pub const IPV6_MULTICAST_ALL: ::c_int = 29;
+        pub const IPV6_ROUTER_ALERT_ISOLATE: ::c_int = 30;
+        pub const PACKET_MR_UNICAST: ::c_int = 3;
+        pub const PTRACE_EVENT_STOP: ::c_int = 128;
+        pub const UDP_SEGMENT: ::c_int = 103;
+        pub const UDP_GRO: ::c_int = 104;
     }
 }
 
@@ -1633,10 +1610,6 @@ pub const SO_ORIGINAL_DST: ::c_int = 80;
 pub const IP_RECVFRAGSIZE: ::c_int = 25;
 
 pub const IPV6_FLOWINFO: ::c_int = 11;
-#[cfg(not(target_env = "uclibc"))]
-pub const IPV6_MULTICAST_ALL: ::c_int = 29;
-#[cfg(not(target_env = "uclibc"))]
-pub const IPV6_ROUTER_ALERT_ISOLATE: ::c_int = 30;
 pub const IPV6_FLOWLABEL_MGR: ::c_int = 32;
 pub const IPV6_FLOWINFO_SEND: ::c_int = 33;
 pub const IPV6_RECVFRAGSIZE: ::c_int = 77;
@@ -1967,8 +1940,6 @@ pub const PACKET_DROP_MEMBERSHIP: ::c_int = 2;
 pub const PACKET_MR_MULTICAST: ::c_int = 0;
 pub const PACKET_MR_PROMISC: ::c_int = 1;
 pub const PACKET_MR_ALLMULTI: ::c_int = 2;
-#[cfg(not(target_env = "uclibc"))]
-pub const PACKET_MR_UNICAST: ::c_int = 3;
 
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;
@@ -2088,9 +2059,6 @@ pub const SIOCGRARP: ::c_ulong = 0x00008961;
 pub const SIOCSRARP: ::c_ulong = 0x00008962;
 pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
 pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
-
-#[cfg(not(target_env = "uclibc"))]
-pub const PTRACE_EVENT_STOP: ::c_int = 128;
 
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
 pub const IPTOS_PREC_MASK: u8 = 0xE0;
@@ -2394,10 +2362,6 @@ pub const UDP_CORK: ::c_int = 1;
 pub const UDP_ENCAP: ::c_int = 100;
 pub const UDP_NO_CHECK6_TX: ::c_int = 101;
 pub const UDP_NO_CHECK6_RX: ::c_int = 102;
-#[cfg(not(target_env = "uclibc"))]
-pub const UDP_SEGMENT: ::c_int = 103;
-#[cfg(not(target_env = "uclibc"))]
-pub const UDP_GRO: ::c_int = 104;
 
 // include/uapi/linux/mman.h
 pub const MAP_SHARED_VALIDATE: ::c_int = 0x3;
@@ -2816,25 +2780,73 @@ f! {
     }
 }
 
-#[cfg(not(target_env = "uclibc"))]
-extern "C" {
-    pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
-    pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
-    pub fn aio_suspend(
-        aiocb_list: *const *const aiocb,
-        nitems: ::c_int,
-        timeout: *const ::timespec,
-    ) -> ::c_int;
-    pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
-    pub fn lio_listio(
-        mode: ::c_int,
-        aiocb_list: *const *mut aiocb,
-        nitems: ::c_int,
-        sevp: *mut ::sigevent,
-    ) -> ::c_int;
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        extern "C" {
+            pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
+            pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
+            pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+            pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
+            pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
+            pub fn aio_suspend(
+                aiocb_list: *const *const aiocb,
+                nitems: ::c_int,
+                timeout: *const ::timespec,
+            ) -> ::c_int;
+            pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+            pub fn lio_listio(
+                mode: ::c_int,
+                aiocb_list: *const *mut aiocb,
+                nitems: ::c_int,
+                sevp: *mut ::sigevent,
+            ) -> ::c_int;
+            pub fn pwritev(
+                fd: ::c_int,
+                iov: *const ::iovec,
+                iovcnt: ::c_int,
+                offset: ::off_t,
+            ) -> ::ssize_t;
+            pub fn preadv(
+                fd: ::c_int,
+                iov: *const ::iovec,
+                iovcnt: ::c_int,
+                offset: ::off_t,
+            ) -> ::ssize_t;
+            pub fn getnameinfo(
+                sa: *const ::sockaddr,
+                salen: ::socklen_t,
+                host: *mut ::c_char,
+                hostlen: ::socklen_t,
+                serv: *mut ::c_char,
+                sevlen: ::socklen_t,
+                flags: ::c_int,
+            ) -> ::c_int;
+            pub fn getloadavg(
+                loadavg: *mut ::c_double,
+                nelem: ::c_int
+            ) -> ::c_int;
+            pub fn process_vm_readv(
+                pid: ::pid_t,
+                local_iov: *const ::iovec,
+                liovcnt: ::c_ulong,
+                remote_iov: *const ::iovec,
+                riovcnt: ::c_ulong,
+                flags: ::c_ulong,
+            ) -> isize;
+            pub fn process_vm_writev(
+                pid: ::pid_t,
+                local_iov: *const ::iovec,
+                liovcnt: ::c_ulong,
+                remote_iov: *const ::iovec,
+                riovcnt: ::c_ulong,
+                flags: ::c_ulong,
+            ) -> isize;
+            pub fn futimes(
+                fd: ::c_int,
+                times: *const ::timeval
+            ) -> ::c_int;
+        }
+    }
 }
 
 extern "C" {
@@ -3049,20 +3061,6 @@ extern "C" {
         new_value: *const itimerspec,
         old_value: *mut itimerspec,
     ) -> ::c_int;
-    #[cfg(not(target_env = "uclibc"))]
-    pub fn pwritev(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off_t,
-    ) -> ::ssize_t;
-    #[cfg(not(target_env = "uclibc"))]
-    pub fn preadv(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off_t,
-    ) -> ::ssize_t;
     pub fn quotactl(
         cmd: ::c_int,
         special: *const ::c_char,
@@ -3132,43 +3130,10 @@ extern "C" {
         len: *mut ::socklen_t,
         flg: ::c_int,
     ) -> ::c_int;
-    #[cfg(not(target_env = "uclibc"))]
-    pub fn getnameinfo(
-        sa: *const ::sockaddr,
-        salen: ::socklen_t,
-        host: *mut ::c_char,
-        hostlen: ::socklen_t,
-        serv: *mut ::c_char,
-        sevlen: ::socklen_t,
-        flags: ::c_int,
-    ) -> ::c_int;
     pub fn pthread_setschedprio(
         native: ::pthread_t,
         priority: ::c_int,
     ) -> ::c_int;
-    #[cfg(not(target_env = "uclibc"))]
-    pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
-
-    #[cfg(not(target_env = "uclibc"))]
-    pub fn process_vm_readv(
-        pid: ::pid_t,
-        local_iov: *const ::iovec,
-        liovcnt: ::c_ulong,
-        remote_iov: *const ::iovec,
-        riovcnt: ::c_ulong,
-        flags: ::c_ulong,
-    ) -> isize;
-
-    #[cfg(not(target_env = "uclibc"))]
-    pub fn process_vm_writev(
-        pid: ::pid_t,
-        local_iov: *const ::iovec,
-        liovcnt: ::c_ulong,
-        remote_iov: *const ::iovec,
-        riovcnt: ::c_ulong,
-        flags: ::c_ulong,
-    ) -> isize;
-
     pub fn reboot(how_to: ::c_int) -> ::c_int;
     pub fn setfsgid(gid: ::gid_t) -> ::c_int;
     pub fn setfsuid(uid: ::uid_t) -> ::c_int;
@@ -3244,8 +3209,6 @@ extern "C" {
     ) -> ::ssize_t;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
 
-    #[cfg(not(target_env = "uclibc"))]
-    pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 
     pub fn getdomainname(name: *mut ::c_char, len: ::size_t) -> ::c_int;

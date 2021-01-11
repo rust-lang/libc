@@ -2654,7 +2654,7 @@ fn test_linux(target: &str) {
             | "CAN_J1939"
             | "CAN_RAW_FILTER_MAX"
             | "CAN_NPROTO" => true,
-            
+
             "MS_RMT_MASK" if uclibc => true, // updated in glibc 2.22 and musl 1.1.13
 
             // FIXME: Requires recent kernel headers (5.8):

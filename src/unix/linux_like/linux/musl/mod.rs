@@ -236,6 +236,19 @@ s! {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
     }
+
+    pub struct Elf64_Chdr {
+        pub ch_type: ::Elf64_Word,
+        pub ch_reserved: ::Elf64_Word,
+        pub ch_size: ::Elf64_Xword,
+        pub ch_addralign: ::Elf64_Xword,
+    }
+
+    pub struct Elf32_Chdr {
+        pub ch_type: ::Elf32_Word,
+        pub ch_size: ::Elf32_Word,
+        pub ch_addralign: ::Elf32_Word,
+    }
 }
 
 s_no_extra_traits! {
