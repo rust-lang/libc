@@ -1553,3 +1553,6 @@ cfg_if! {
         pub use self::b32::*;
     }
 }
+
+mod native;
+pub use self::native::*;
