@@ -12,12 +12,15 @@ pub type ino_t = ::c_ulong;
 pub type nlink_t = ::c_uint;
 pub type off_t = ::c_long;
 pub type rlim_t = c_ulong;
-pub type rlim64_t = u64;
 // [uClibc docs] Note stat64 has the same shape as stat for x86-64.
 pub type stat64 = stat;
 pub type suseconds_t = ::c_long;
 pub type time_t = ::c_int;
 pub type wchar_t = ::c_int;
+
+pub type fsblkcnt64_t = u64;
+pub type fsfilcnt64_t = u64;
+pub type __u64 = ::c_ulong;
 
 s! {
     pub struct ipc_perm {
@@ -167,6 +170,37 @@ s! {
         f_spare: [fsword_t; 5],
     }
 
+    pub struct statfs64 {
+        pub f_type: ::c_int,
+        pub f_bsize: ::c_int,
+        pub f_blocks: ::fsblkcnt64_t,
+        pub f_bfree: ::fsblkcnt64_t,
+        pub f_bavail: ::fsblkcnt64_t,
+        pub f_files: ::fsfilcnt64_t,
+        pub f_ffree: ::fsfilcnt64_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_int,
+        pub f_frsize: ::c_int,
+        pub f_flags: ::c_int,
+        pub f_spare: [::c_int; 4],
+    }
+
+    pub struct statvfs64 {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_favail: u64,
+        pub f_fsid: ::c_ulong,
+        __f_unused: ::c_int,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        __f_spare: [::c_int; 6],
+    }
+
     pub struct msghdr { // FIXME
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,
@@ -229,6 +263,21 @@ s! {
     pub struct fsid_t { // FIXME
         __val: [::c_int; 2],
     }
+
+    // FIXME this is actually a union
+    pub struct sem_t {
+        #[cfg(target_pointer_width = "32")]
+        __size: [::c_char; 16],
+        #[cfg(target_pointer_width = "64")]
+        __size: [::c_char; 32],
+        __align: [::c_long; 0],
+    }
+
+    pub struct cmsghdr {
+        pub cmsg_len: ::size_t,
+        pub cmsg_level: ::c_int,
+        pub cmsg_type: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
@@ -252,6 +301,8 @@ pub const EDEADLK: ::c_int = 35; // Resource deadlock would occur
 pub const ENOSYS: ::c_int = 38; // Function not implemented
 pub const ENOTCONN: ::c_int = 107; // Transport endpoint is not connected
 pub const ETIMEDOUT: ::c_int = 110; // connection timed out
+pub const EOPNOTSUPP: ::c_int = 0x5f;
+pub const ENODATA: ::c_int = 0x3d;
 pub const O_APPEND: ::c_int = 02000;
 pub const O_ACCMODE: ::c_int = 0003;
 pub const O_CLOEXEC: ::c_int = 0x80000;
@@ -272,10 +323,12 @@ pub const SOL_SOCKET: ::c_int = 1;
 pub const SO_RCVTIMEO: ::c_int = 20;
 pub const SO_REUSEADDR: ::c_int = 2;
 pub const SO_SNDTIMEO: ::c_int = 21;
+pub const SO_TIMESTAMP: ::c_int = 0x1d;
 pub const RLIM_INFINITY: u64 = 0xffffffffffffffff;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
 cfg_if! {
     if #[cfg(target_os = "l4re")] {
@@ -286,14 +339,3 @@ cfg_if! {
         pub use other::*;
     }
 }
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        #[macro_use]
-        mod align;
-    } else {
-        #[macro_use]
-        mod no_align;
-    }
-}
-expand_align!();
