@@ -1114,6 +1114,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("redox", "unix", "")
     } else if target.contains("vxworks") {
         ("vxworks", "unix", "")
+    } else if target.contains("haiku") {
+        ("haiku", "unix", "")
     } else {
         panic!("unknown os/family: {}", target)
     };
