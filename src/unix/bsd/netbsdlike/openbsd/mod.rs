@@ -1402,11 +1402,7 @@ fn _ALIGN(p: usize) -> usize {
 }
 
 f! {
-    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
-        status & 0o177777 == 0o177777
-    }
-
-        pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
+    pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
         (cmsg as *mut ::c_uchar)
             .offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
@@ -1450,6 +1446,10 @@ safe_f! {
 
     pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0xff) == 0o177
+    }
+
+    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
+        (status & 0o177777) == 0o177777
     }
 }
 
