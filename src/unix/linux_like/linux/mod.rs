@@ -40,6 +40,8 @@ pub type Elf64_Section = u16;
 pub type canid_t = u32;
 pub type can_err_mask_t = u32;
 
+pub type iconv_t = *mut ::c_void;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos64_t {}
@@ -3576,6 +3578,19 @@ extern "C" {
     ) -> ::size_t;
 
     pub fn regfree(preg: *mut ::regex_t);
+
+    pub fn iconv_open(
+        tocode: *const ::c_char,
+        fromcode: *const ::c_char,
+    ) -> iconv_t;
+    pub fn iconv(
+        cd: iconv_t,
+        inbuf: *mut *mut ::c_char,
+        inbytesleft: *mut ::size_t,
+        outbuf: *mut *mut ::c_char,
+        outbytesleft: *mut ::size_t,
+    ) -> ::size_t;
+    pub fn iconv_close(cd: iconv_t) -> ::c_int;
 }
 
 cfg_if! {
