@@ -3538,6 +3538,18 @@ extern "C" {
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
     pub fn getdomainname(name: *mut ::c_char, len: ::c_int) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::c_int) -> ::c_int;
+    pub fn preadv(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        offset: ::off_t,
+    ) -> ::ssize_t;
+    pub fn pwritev(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        offset: ::off_t,
+    ) -> ::ssize_t;
     pub fn getxattr(
         path: *const ::c_char,
         name: *const ::c_char,
