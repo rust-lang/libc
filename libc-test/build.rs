@@ -1439,6 +1439,11 @@ fn test_android(target: &str) {
 
     }
 
+    // Include Android-specific headers:
+    headers! { cfg:
+                "android/set_abort_message.h"
+    }
+
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
