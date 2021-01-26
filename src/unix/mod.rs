@@ -299,7 +299,7 @@ cfg_if! {
         // cargo build, don't pull in anything extra as the libstd dep
         // already pulls in all libs.
     } else if #[cfg(all(target_os = "linux",
-                        target_env = "gnu",
+                        any(target_env = "gnu", target_env = "uclibc"),
                         feature = "rustc-dep-of-std"))] {
         #[link(name = "util", kind = "static-nobundle",
             cfg(target_feature = "crt-static"))]
