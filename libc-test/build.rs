@@ -213,6 +213,9 @@ fn test_apple(target: &str) {
             // close calls the close_nocancel system call
             "close" => true,
 
+            // these calls require macOS 11.0 or higher
+            "preadv" | "pwritev" => true,
+
             _ => false,
         }
     });
