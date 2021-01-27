@@ -370,6 +370,11 @@ s! {
         pub portev_user: *mut ::c_void,
     }
 
+    pub struct port_notify {
+        pub portnfy_port: ::c_int,
+        pub portnfy_user: *mut ::c_void,
+    }
+
     pub struct exit_status {
         e_termination: ::c_short,
         e_exit: ::c_short,
