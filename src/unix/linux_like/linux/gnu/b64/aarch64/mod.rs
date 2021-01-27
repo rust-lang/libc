@@ -1,9 +1,5 @@
 //! AArch64-specific definitions for 64-bit linux-like values
 
-use pthread_mutex_t;
-
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type c_char = u8;
 pub type wchar_t = u32;
 pub type nlink_t = u32;
@@ -143,7 +139,7 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        __size: [u64; 8]
+        __size: [usize; 8]
     }
 
     pub struct ipc_perm {
@@ -212,7 +208,6 @@ s! {
 }
 
 pub const VEOF: usize = 4;
-pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 
 pub const RTLD_DEEPBIND: ::c_int = 0x8;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
@@ -514,37 +509,6 @@ pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
-pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 8;
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 48;
-pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 8;
-
-align_const! {
-    pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
-            ],
-        };
-    pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
-            ],
-        };
-    pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
-            ],
-        };
-}
-
 pub const O_DIRECT: ::c_int = 0x10000;
 pub const O_DIRECTORY: ::c_int = 0x4000;
 pub const O_NOFOLLOW: ::c_int = 0x8000;
@@ -776,7 +740,7 @@ pub const SYS_mkdirat: ::c_long = 34;
 pub const SYS_unlinkat: ::c_long = 35;
 pub const SYS_symlinkat: ::c_long = 36;
 pub const SYS_linkat: ::c_long = 37;
-pub const SYS_renameat: ::c_long = 38;
+// 38 is renameat only on LP64
 pub const SYS_umount2: ::c_long = 39;
 pub const SYS_mount: ::c_long = 40;
 pub const SYS_pivot_root: ::c_long = 41;
@@ -821,7 +785,7 @@ pub const SYS_fstat: ::c_long = 80;
 pub const SYS_sync: ::c_long = 81;
 pub const SYS_fsync: ::c_long = 82;
 pub const SYS_fdatasync: ::c_long = 83;
-pub const SYS_sync_file_range: ::c_long = 84;
+// 84 sync_file_range on LP64 and sync_file_range2 on ILP32
 pub const SYS_timerfd_create: ::c_long = 85;
 pub const SYS_timerfd_settime: ::c_long = 86;
 pub const SYS_timerfd_gettime: ::c_long = 87;
@@ -900,8 +864,8 @@ pub const SYS_setgroups: ::c_long = 159;
 pub const SYS_uname: ::c_long = 160;
 pub const SYS_sethostname: ::c_long = 161;
 pub const SYS_setdomainname: ::c_long = 162;
-pub const SYS_getrlimit: ::c_long = 163;
-pub const SYS_setrlimit: ::c_long = 164;
+// 163 is getrlimit only on LP64
+// 164 is setrlimit only on LP64
 pub const SYS_getrusage: ::c_long = 165;
 pub const SYS_umask: ::c_long = 166;
 pub const SYS_prctl: ::c_long = 167;
@@ -1025,6 +989,16 @@ extern "C" {
         newp: *mut ::c_void,
         newlen: ::size_t,
     ) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        mod ilp32;
+        pub use self::ilp32::*;
+    } else {
+        mod lp64;
+        pub use self::lp64::*;
+    }
 }
 
 cfg_if! {
