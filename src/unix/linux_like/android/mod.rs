@@ -2821,6 +2821,8 @@ extern "C" {
     ) -> ::size_t;
 
     pub fn regfree(preg: *mut ::regex_t);
+
+    pub fn android_set_abort_message(msg: *const ::c_char);
 }
 
 cfg_if! {
