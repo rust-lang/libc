@@ -20,8 +20,8 @@ First up, let's talk about the files in this directory:
 
 # CI Systems
 
-Currently this repository leverages a combination of Azure Pipelines and Cirrus CI
-for running tests. You can find tested triples in [Pipelines config] or [Cirrus config].
+Currently this repository leverages a combination of GitHub Actions and Cirrus CI
+for running tests. You can find tested triples in [Actions config] or [Cirrus config].
 
 The Windows triples are all pretty standard, they just set up their environment
 then run tests, no need for downloading any extra target libs (we just download
@@ -45,7 +45,7 @@ The remaining architectures look like:
 * The BSD builds, currently OpenBSD and FreeBSD, use QEMU to boot up a system
   and compile/run tests. More information on that below.
 
-[Pipelines config]: https://github.com/rust-lang/libc/blob/master/ci/azure.yml
+[Actions config]: https://github.com/rust-lang/libc/tree/master/.github/workflows
 [Cirrus config]: https://github.com/rust-lang/libc/blob/master/.cirrus.yml
 [android-docker]: https://github.com/rust-lang/libc/blob/master/ci/docker/x86_64-linux-android/Dockerfile
 
