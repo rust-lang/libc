@@ -1004,7 +1004,6 @@ pub const TIOCM_DSR: ::c_int = 0x400;
 
 pub const EHWPOISON: ::c_int = 168;
 
-#[link(name = "util")]
 extern "C" {
     pub fn sysctl(
         name: *mut ::c_int,

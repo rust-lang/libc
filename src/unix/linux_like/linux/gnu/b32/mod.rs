@@ -321,7 +321,6 @@ pub const PTRACE_SETREGS: ::c_uint = 13;
 pub const TIOCSBRK: ::c_int = 0x5427;
 pub const TIOCCBRK: ::c_int = 0x5428;
 
-#[link(name = "util")]
 extern "C" {
     pub fn sysctl(
         name: *mut ::c_int,
