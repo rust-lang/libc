@@ -227,7 +227,8 @@ pub const S_ISGID: ::mode_t = 0x400;
 pub const S_ISVTX: ::mode_t = 0x200;
 
 cfg_if! {
-    if #[cfg(not(any(target_os = "illumos", target_os = "solaris")))] {
+    if #[cfg(not(any(target_os = "haiku", target_os = "illumos",
+                     target_os = "solaris")))] {
         pub const IF_NAMESIZE: ::size_t = 16;
         pub const IFNAMSIZ: ::size_t = IF_NAMESIZE;
     }
@@ -260,12 +261,15 @@ pub const LOG_LOCAL5: ::c_int = 21 << 3;
 pub const LOG_LOCAL6: ::c_int = 22 << 3;
 pub const LOG_LOCAL7: ::c_int = 23 << 3;
 
-pub const LOG_PID: ::c_int = 0x01;
-pub const LOG_CONS: ::c_int = 0x02;
-pub const LOG_ODELAY: ::c_int = 0x04;
-pub const LOG_NDELAY: ::c_int = 0x08;
-pub const LOG_NOWAIT: ::c_int = 0x10;
-
+cfg_if! {
+    if #[cfg(not(target_os = "haiku"))] {
+        pub const LOG_PID: ::c_int = 0x01;
+        pub const LOG_CONS: ::c_int = 0x02;
+        pub const LOG_ODELAY: ::c_int = 0x04;
+        pub const LOG_NDELAY: ::c_int = 0x08;
+        pub const LOG_NOWAIT: ::c_int = 0x10;
+    }
+}
 pub const LOG_PRIMASK: ::c_int = 7;
 pub const LOG_FACMASK: ::c_int = 0x3f8;
 
