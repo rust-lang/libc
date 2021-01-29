@@ -209,6 +209,8 @@ pub const ELAST: ::c_int = 97;
 pub const GRND_INSECURE: ::c_uint = 0x4;
 
 extern "C" {
+    pub fn aio_readv(aiocbp: *mut ::aiocb) -> ::c_int;
+    pub fn aio_writev(aiocbp: *mut ::aiocb) -> ::c_int;
     pub fn setgrent();
     pub fn mprotect(
         addr: *mut ::c_void,
