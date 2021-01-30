@@ -1,4 +1,4 @@
-// APIs in FreeBSD 12 that have changed since 11.
+// APIs in FreeBSD 13 that have changed since 11.
 
 pub type nlink_t = u64;
 pub type dev_t = u64;
@@ -200,13 +200,17 @@ pub const F_SEAL_WRITE: ::c_int = 0x0008;
 pub const GRND_NONBLOCK: ::c_uint = 0x1;
 pub const GRND_RANDOM: ::c_uint = 0x2;
 
-pub const RAND_MAX: ::c_int = 0x7fff_fffd;
+pub const RAND_MAX: ::c_int = 0x7fff_ffff;
 
 pub const SO_DOMAIN: ::c_int = 0x1019;
 
-pub const ELAST: ::c_int = 96;
+pub const EINTEGRITY: ::c_int = 97;
+pub const ELAST: ::c_int = 97;
+pub const GRND_INSECURE: ::c_uint = 0x4;
 
 extern "C" {
+    pub fn aio_readv(aiocbp: *mut ::aiocb) -> ::c_int;
+    pub fn aio_writev(aiocbp: *mut ::aiocb) -> ::c_int;
     pub fn setgrent();
     pub fn mprotect(
         addr: *mut ::c_void,
