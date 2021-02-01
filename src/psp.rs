@@ -88,14 +88,12 @@ pub type SceMpegRingbufferCb = ::Option<
 >;
 
 pub type GuCallback = ::Option<extern "C" fn(id: i32, arg: *mut c_void)>;
-pub type GuSwapBuffersCallback = ::Option<extern "C" fn(
-        display: *mut *mut c_void, render: *mut *mut c_void
-    ),
+pub type GuSwapBuffersCallback = ::Option<
+    extern "C" fn(display: *mut *mut c_void, render: *mut *mut c_void),
 >;
 
-pub type SceNetAdhocctlHandler = ::Option<unsafe extern "C" fn(
-        flag: i32, error: i32, unknown: *mut c_void
-    ),
+pub type SceNetAdhocctlHandler = ::Option<
+    unsafe extern "C" fn(flag: i32, error: i32, unknown: *mut c_void),
 >;
 
 pub type AdhocMatchingCallback = ::Option<
@@ -2794,7 +2792,7 @@ extern "C" {
     pub fn sceCtrlPeekLatch(latch_data: *mut SceCtrlLatch) -> i32;
     pub fn sceCtrlReadLatch(latch_data: *mut SceCtrlLatch) -> i32;
     pub fn sceCtrlSetIdleCancelThreshold(idlereset: i32, idleback: i32)
-    -> i32;
+        -> i32;
     pub fn sceCtrlGetIdleCancelThreshold(
         idlereset: *mut i32,
         idleback: *mut i32,
@@ -3163,7 +3161,7 @@ extern "C" {
         timeout: *mut u32,
     ) -> i32;
     pub fn sceKernelPollMbx(mbx_id: SceUid, pmessage: *mut *mut c_void)
-    -> i32;
+        -> i32;
     pub fn sceKernelCancelReceiveMbx(mbx_id: SceUid, num: *mut i32) -> i32;
     pub fn sceKernelReferMbxStatus(
         mbx_id: SceUid,
@@ -3321,7 +3319,7 @@ extern "C" {
         timeout: *mut u32,
     ) -> i32;
     pub fn sceKernelTryAllocateFpl(uid: SceUid, data: *mut *mut c_void)
-    -> i32;
+        -> i32;
     pub fn sceKernelFreeFpl(uid: SceUid, data: *mut c_void) -> i32;
     pub fn sceKernelCancelFpl(uid: SceUid, pnum: *mut i32) -> i32;
     pub fn sceKernelReferFplStatus(
@@ -3574,10 +3572,12 @@ extern "C" {
         num_years: u64,
     ) -> i32;
     pub fn sceRtcSetTime_t(date: *mut ScePspDateTime, time: u32) -> i32;
-    pub fn sceRtcGetTime_t(date: *const ScePspDateTime, time: *mut u32) -> i32;
+    pub fn sceRtcGetTime_t(date: *const ScePspDateTime, time: *mut u32)
+        -> i32;
     pub fn sceRtcSetTime64_t(date: *mut ScePspDateTime, time: u64) -> i32;
     pub fn sceRtcGetTime64_t(
-        date: *const ScePspDateTime, time: *mut u64
+        date: *const ScePspDateTime,
+        time: *mut u64,
     ) -> i32;
     pub fn sceRtcSetDosTime(date: *mut ScePspDateTime, dos_time: u32) -> i32;
     pub fn sceRtcGetDosTime(date: *mut ScePspDateTime, dos_time: u32) -> i32;
@@ -3636,7 +3636,7 @@ extern "C" {
     pub fn sceIoLseekAsync(fd: SceUid, offset: i64, whence: IoWhence) -> i32;
     pub fn sceIoLseek32(fd: SceUid, offset: i32, whence: IoWhence) -> i32;
     pub fn sceIoLseek32Async(fd: SceUid, offset: i32, whence: IoWhence)
-    -> i32;
+        -> i32;
     pub fn sceIoRemove(file: *const u8) -> i32;
     pub fn sceIoMkdir(dir: *const u8, mode: IoPermissions) -> i32;
     pub fn sceIoRmdir(path: *const u8) -> i32;
@@ -4173,7 +4173,7 @@ extern "C" {
     ) -> i32;
     pub fn sceRegGetKeysNum(dir_handle: RegHandle, num: *mut i32) -> i32;
     pub fn sceRegGetKeys(dir_handle: RegHandle, buf: *mut u8, num: i32)
-    -> i32;
+        -> i32;
     pub fn sceRegCreateKey(
         dir_handle: RegHandle,
         name: *const u8,
@@ -4315,7 +4315,7 @@ extern "C" {
     ) -> i32;
     pub fn sceNetAdhocctlDelHandler(id: i32) -> i32;
     pub fn sceNetAdhocctlGetNameByAddr(mac: *mut u8, nickname: *mut u8)
-    -> i32;
+        -> i32;
     pub fn sceNetAdhocctlGetAddrByName(
         nickname: *mut u8,
         length: *mut i32,
@@ -4486,7 +4486,7 @@ extern "C" {
     ) -> i32;
     pub fn sceNetAdhocMatchingGetPoolMaxAlloc() -> i32;
     pub fn sceNetAdhocMatchingGetPoolStat(poolstat: *mut AdhocPoolStat)
-    -> i32;
+        -> i32;
 }
 
 extern "C" {
@@ -4625,7 +4625,7 @@ extern "C" {
         content_length: *mut u64,
     ) -> i32;
     pub fn sceHttpGetStatusCode(request_id: i32, status_code: *mut i32)
-    -> i32;
+        -> i32;
     pub fn sceHttpSetResolveTimeOut(id: i32, timeout: u32) -> i32;
     pub fn sceHttpSetResolveRetry(id: i32, count: i32) -> i32;
     pub fn sceHttpSetConnectTimeOut(id: i32, timeout: u32) -> i32;
