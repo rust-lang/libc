@@ -552,7 +552,7 @@ pub const O_DIRECT: ::c_int = 0x20000;
 
 pub const MAP_LOCKED: ::c_int = 0x00080;
 pub const MAP_NORESERVE: ::c_int = 0x00040;
-pub const MAP_SYNC : ::c_int = 0x080000;
+pub const MAP_SYNC: ::c_int = 0x080000;
 
 pub const EDEADLOCK: ::c_int = 58;
 pub const EUCLEAN: ::c_int = 117;

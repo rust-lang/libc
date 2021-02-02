@@ -1,10 +1,13 @@
 pub type pthread_t = *mut ::c_void;
 pub type clock_t = c_long;
-#[deprecated(
-    since = "0.2.80",
-    note = "This type is changed to 64-bit in musl 1.2.0, \
-            we'll follow that change in the future release. \
-            See #1848 for more info."
+#[cfg_attr(
+    not(feature = "rustc-dep-of-std"),
+    deprecated(
+        since = "0.2.80",
+        note = "This type is changed to 64-bit in musl 1.2.0, \
+                we'll follow that change in the future release. \
+                See #1848 for more info."
+    )
 )]
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
@@ -424,20 +427,20 @@ cfg_if! {
  * the running system.  See mmap(2) man page for details.
  */
 pub const MAP_HUGE_SHIFT: ::c_int = 26;
-pub const MAP_HUGE_MASK:  ::c_int = 0x3f;
+pub const MAP_HUGE_MASK: ::c_int = 0x3f;
 
-pub const MAP_HUGE_64KB:  ::c_int = 16 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_64KB: ::c_int = 16 << MAP_HUGE_SHIFT;
 pub const MAP_HUGE_512KB: ::c_int = 19 << MAP_HUGE_SHIFT;
-pub const MAP_HUGE_1MB:   ::c_int = 20 << MAP_HUGE_SHIFT;
-pub const MAP_HUGE_2MB:   ::c_int = 21 << MAP_HUGE_SHIFT;
-pub const MAP_HUGE_8MB:   ::c_int = 23 << MAP_HUGE_SHIFT;
-pub const MAP_HUGE_16MB:  ::c_int = 24 << MAP_HUGE_SHIFT;
-pub const MAP_HUGE_32MB:  ::c_int = 25 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_1MB: ::c_int = 20 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_2MB: ::c_int = 21 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_8MB: ::c_int = 23 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_16MB: ::c_int = 24 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_32MB: ::c_int = 25 << MAP_HUGE_SHIFT;
 pub const MAP_HUGE_256MB: ::c_int = 28 << MAP_HUGE_SHIFT;
 pub const MAP_HUGE_512MB: ::c_int = 29 << MAP_HUGE_SHIFT;
-pub const MAP_HUGE_1GB:   ::c_int = 30 << MAP_HUGE_SHIFT;
-pub const MAP_HUGE_2GB:   ::c_int = 31 << MAP_HUGE_SHIFT;
-pub const MAP_HUGE_16GB:  ::c_int = 34 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_1GB: ::c_int = 30 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_2GB: ::c_int = 31 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_16GB: ::c_int = 34 << MAP_HUGE_SHIFT;
 
 pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 

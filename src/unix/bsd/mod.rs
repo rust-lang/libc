@@ -634,8 +634,8 @@ extern "C" {
 
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
-        link_name = "glob$INODE64")
-    ]
+        link_name = "glob$INODE64"
+    )]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
     #[cfg_attr(
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
@@ -869,10 +869,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getitimer$UNIX2003"
     )]
-    pub fn getitimer(
-        which: ::c_int,
-        curr_value: *mut ::itimerval
-    ) -> ::c_int;
+    pub fn getitimer(which: ::c_int, curr_value: *mut ::itimerval) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "setitimer$UNIX2003"

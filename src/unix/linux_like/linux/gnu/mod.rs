@@ -475,20 +475,20 @@ cfg_if! {
 
 // include/uapi/asm-generic/hugetlb_encode.h
 pub const HUGETLB_FLAG_ENCODE_SHIFT: ::c_int = 26;
-pub const HUGETLB_FLAG_ENCODE_MASK:  ::c_int = 0x3f;
+pub const HUGETLB_FLAG_ENCODE_MASK: ::c_int = 0x3f;
 
-pub const HUGETLB_FLAG_ENCODE_64KB:  ::c_int = 16 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_64KB: ::c_int = 16 << HUGETLB_FLAG_ENCODE_SHIFT;
 pub const HUGETLB_FLAG_ENCODE_512KB: ::c_int = 19 << HUGETLB_FLAG_ENCODE_SHIFT;
-pub const HUGETLB_FLAG_ENCODE_1MB:   ::c_int = 20 << HUGETLB_FLAG_ENCODE_SHIFT;
-pub const HUGETLB_FLAG_ENCODE_2MB:   ::c_int = 21 << HUGETLB_FLAG_ENCODE_SHIFT;
-pub const HUGETLB_FLAG_ENCODE_8MB:   ::c_int = 23 << HUGETLB_FLAG_ENCODE_SHIFT;
-pub const HUGETLB_FLAG_ENCODE_16MB:  ::c_int = 24 << HUGETLB_FLAG_ENCODE_SHIFT;
-pub const HUGETLB_FLAG_ENCODE_32MB:  ::c_int = 25 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_1MB: ::c_int = 20 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_2MB: ::c_int = 21 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_8MB: ::c_int = 23 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_16MB: ::c_int = 24 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_32MB: ::c_int = 25 << HUGETLB_FLAG_ENCODE_SHIFT;
 pub const HUGETLB_FLAG_ENCODE_256MB: ::c_int = 28 << HUGETLB_FLAG_ENCODE_SHIFT;
 pub const HUGETLB_FLAG_ENCODE_512MB: ::c_int = 29 << HUGETLB_FLAG_ENCODE_SHIFT;
-pub const HUGETLB_FLAG_ENCODE_1GB:   ::c_int = 30 << HUGETLB_FLAG_ENCODE_SHIFT;
-pub const HUGETLB_FLAG_ENCODE_2GB:   ::c_int = 31 << HUGETLB_FLAG_ENCODE_SHIFT;
-pub const HUGETLB_FLAG_ENCODE_16GB:  ::c_int = 34 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_1GB: ::c_int = 30 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_2GB: ::c_int = 31 << HUGETLB_FLAG_ENCODE_SHIFT;
+pub const HUGETLB_FLAG_ENCODE_16GB: ::c_int = 34 << HUGETLB_FLAG_ENCODE_SHIFT;
 
 // include/uapi/linux/mman.h
 /*
@@ -499,20 +499,20 @@ pub const HUGETLB_FLAG_ENCODE_16GB:  ::c_int = 34 << HUGETLB_FLAG_ENCODE_SHIFT;
  * the running system.  See mmap(2) man page for details.
  */
 pub const MAP_HUGE_SHIFT: ::c_int = HUGETLB_FLAG_ENCODE_SHIFT;
-pub const MAP_HUGE_MASK:  ::c_int = HUGETLB_FLAG_ENCODE_MASK;
+pub const MAP_HUGE_MASK: ::c_int = HUGETLB_FLAG_ENCODE_MASK;
 
-pub const MAP_HUGE_64KB:  ::c_int = HUGETLB_FLAG_ENCODE_64KB;
+pub const MAP_HUGE_64KB: ::c_int = HUGETLB_FLAG_ENCODE_64KB;
 pub const MAP_HUGE_512KB: ::c_int = HUGETLB_FLAG_ENCODE_512KB;
-pub const MAP_HUGE_1MB:   ::c_int = HUGETLB_FLAG_ENCODE_1MB;
-pub const MAP_HUGE_2MB:   ::c_int = HUGETLB_FLAG_ENCODE_2MB;
-pub const MAP_HUGE_8MB:   ::c_int = HUGETLB_FLAG_ENCODE_8MB;
-pub const MAP_HUGE_16MB:  ::c_int = HUGETLB_FLAG_ENCODE_16MB;
-pub const MAP_HUGE_32MB:  ::c_int = HUGETLB_FLAG_ENCODE_32MB;
+pub const MAP_HUGE_1MB: ::c_int = HUGETLB_FLAG_ENCODE_1MB;
+pub const MAP_HUGE_2MB: ::c_int = HUGETLB_FLAG_ENCODE_2MB;
+pub const MAP_HUGE_8MB: ::c_int = HUGETLB_FLAG_ENCODE_8MB;
+pub const MAP_HUGE_16MB: ::c_int = HUGETLB_FLAG_ENCODE_16MB;
+pub const MAP_HUGE_32MB: ::c_int = HUGETLB_FLAG_ENCODE_32MB;
 pub const MAP_HUGE_256MB: ::c_int = HUGETLB_FLAG_ENCODE_256MB;
 pub const MAP_HUGE_512MB: ::c_int = HUGETLB_FLAG_ENCODE_512MB;
-pub const MAP_HUGE_1GB:   ::c_int = HUGETLB_FLAG_ENCODE_1GB;
-pub const MAP_HUGE_2GB:   ::c_int = HUGETLB_FLAG_ENCODE_2GB;
-pub const MAP_HUGE_16GB:  ::c_int = HUGETLB_FLAG_ENCODE_16GB;
+pub const MAP_HUGE_1GB: ::c_int = HUGETLB_FLAG_ENCODE_1GB;
+pub const MAP_HUGE_2GB: ::c_int = HUGETLB_FLAG_ENCODE_2GB;
+pub const MAP_HUGE_16GB: ::c_int = HUGETLB_FLAG_ENCODE_16GB;
 
 pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
 pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
