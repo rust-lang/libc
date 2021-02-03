@@ -173,11 +173,6 @@ s! {
         pub l_linger: c_int,
     }
 
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut c_void,
-    }
-
     // <sys/time.h>
     pub struct itimerval {
         pub it_interval: crate::timeval,
@@ -214,6 +209,29 @@ s! {
     #[repr(align(4))]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
+    }
+}
+
+s_no_extra_traits! {
+    pub union sigval {
+        pub sival_int: c_int,
+        pub sival_ptr: *mut c_void,
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for sigval {
+            fn eq(&self, _other: &sigval) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for sigval {}
+        impl hash::Hash for sigval {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits")
+            }
+        }
     }
 }
 
