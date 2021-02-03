@@ -182,15 +182,6 @@ fn test_apple(target: &str) {
         [x86_64]: "crt_externs.h",
     }
 
-    cfg.skip_struct(move |ty| {
-        match ty {
-            // FIXME: actually a union
-            "sigval" => true,
-
-            _ => false,
-        }
-    });
-
     cfg.skip_const(move |name| {
         match name {
             // These OSX constants are removed in Sierra.
@@ -227,14 +218,6 @@ fn test_apple(target: &str) {
             // FIXME: the array size has been changed since macOS 10.15 ([8] -> [7]).
             ("statfs", "f_reserved") => true,
             ("__darwin_arm_neon_state64", "__v") => true,
-            _ => false,
-        }
-    });
-
-    cfg.skip_field_type(move |struct_, field| {
-        match (struct_, field) {
-            // FIXME: actually a union
-            ("sigevent", "sigev_value") => true,
             _ => false,
         }
     });
@@ -362,15 +345,6 @@ fn test_openbsd(target: &str) {
         "sys/syscall.h",
         "sys/shm.h",
     }
-
-    cfg.skip_struct(move |ty| {
-        match ty {
-            // FIXME: actually a union
-            "sigval" => true,
-
-            _ => false,
-        }
-    });
 
     cfg.skip_const(move |name| {
         match name {
@@ -741,8 +715,6 @@ fn test_solarish(target: &str) {
             return true;
         }
         match ty {
-            // union, not a struct
-            "sigval" => true,
             // a bunch of solaris-only fields
             "utmpx" if is_illumos => true,
             _ => false,
@@ -757,8 +729,6 @@ fn test_solarish(target: &str) {
             "sigaction" if field == "sa_sigaction" => true,
             // Missing in illumos
             "sigevent" if field == "ss_sp" => true,
-            // Avoid sigval union issues
-            "sigevent" if field == "sigev_value" => true,
             // const issues
             "sigevent" if field == "sigev_notify_attributes" => true,
 
@@ -941,8 +911,6 @@ fn test_netbsd(target: &str) {
 
     cfg.skip_struct(move |ty| {
         match ty {
-            // This is actually a union, not a struct
-            "sigval" => true,
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
@@ -1012,8 +980,6 @@ fn test_netbsd(target: &str) {
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
         (struct_ == "sigaction" && field == "sa_sigaction") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
         (struct_ == "aiocb" && field == "aio_buf")
     });
@@ -1153,9 +1119,6 @@ fn test_dragonflybsd(target: &str) {
 
     cfg.skip_struct(move |ty| {
         match ty {
-            // This is actually a union, not a struct
-            "sigval" => true,
-
             // FIXME: These are tested as part of the linux_fcntl tests since
             // there are header conflicts when including them with all the other
             // structs.
@@ -1219,8 +1182,6 @@ fn test_dragonflybsd(target: &str) {
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
         (struct_ == "sigaction" && field == "sa_sigaction") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
         (struct_ == "aiocb" && field == "aio_buf")
     });
@@ -1457,9 +1418,6 @@ fn test_android(target: &str) {
 
             t if t.ends_with("_t") => t.to_string(),
 
-            // sigval is a struct in Rust, but a union in C:
-            "sigval" => format!("union sigval"),
-
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
 
@@ -1554,9 +1512,7 @@ fn test_android(target: &str) {
 
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value")
+        struct_ == "ifaddrs" && field == "ifa_ifu"
     });
 
     cfg.skip_field(move |struct_, field| {
@@ -1696,9 +1652,6 @@ fn test_freebsd(target: &str) {
             t if is_union => format!("union {}", t),
 
             t if t.ends_with("_t") => t.to_string(),
-
-            // sigval is a struct in Rust, but a union in C:
-            "sigval" => format!("union sigval"),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
@@ -2039,10 +1992,6 @@ fn test_emscripten(target: &str) {
 
     cfg.skip_struct(move |ty| {
         match ty {
-            // This is actually a union, not a struct
-            // FIXME: is this necessary?
-            "sigval" => true,
-
             // FIXME: It was removed in
             // emscripten-core/emscripten@953e414
             "pthread_mutexattr_t" => true,
@@ -2091,9 +2040,6 @@ fn test_emscripten(target: &str) {
         // sighandler_t type is super weird
         // FIXME: is this necessary?
         (struct_ == "sigaction" && field == "sa_sigaction") ||
-        // sigval is actually a union, but we pretend it's a struct
-        // FIXME: is this necessary?
-        (struct_ == "sigevent" && field == "sigev_value") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
         // FIXME: is this necessary?
         (struct_ == "aiocb" && field == "aio_buf")
@@ -2222,10 +2168,8 @@ fn test_vxworks(target: &str) {
 
     // FIXME
     cfg.skip_fn(move |name| match name {
-        // sigval
-        "sigqueue" | "_sigqueue"
         // sighandler_t
-        | "signal"
+        "signal"
         // not used in static linking by default
         | "dlerror" => true,
         _ => false,
@@ -2516,9 +2460,6 @@ fn test_linux(target: &str) {
             // which is absent in glibc, has to be defined.
             "__timeval" => true,
 
-            // FIXME: This is actually a union, not a struct
-            "sigval" => true,
-
             // This type is tested in the `linux_termios.rs` file since there
             // are header conflicts when including them with all the other
             // structs.
@@ -2747,8 +2688,6 @@ fn test_linux(target: &str) {
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // __timeval type is a patch which doesn't exist in glibc
         (struct_ == "utmpx" && field == "ut_tv") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value") ||
         // this one is an anonymous union
         (struct_ == "ff_effect" && field == "u") ||
         // `__exit_status` type is a patch which is absent in musl

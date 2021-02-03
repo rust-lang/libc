@@ -251,11 +251,6 @@ s! {
         pub l_linger: ::c_int,
     }
 
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut ::c_void
-    }
-
     // <sys/time.h>
     pub struct itimerval {
         pub it_interval: ::timeval,
@@ -974,6 +969,11 @@ s_no_extra_traits! {
         pub sigev_notify_attributes: *mut pthread_attr_t,
         pub __pad: [::c_char; 56 - 3 * 8 /* 8 == sizeof(long) */],
     }
+
+    pub union sigval {
+        pub sival_int: ::int,
+        pub sival_ptr: *mut ::c_void,
+    }
 }
 
 cfg_if! {
@@ -1299,6 +1299,25 @@ cfg_if! {
                 self.sigev_notify.hash(state);
                 self.sigev_notify_function.hash(state);
                 self.sigev_notify_attributes.hash(state);
+            }
+        }
+
+        impl PartialEq for sigval {
+            fn eq(&self, other: &sigval) -> bool {
+                unsafe { self.sival_ptr as usize == other.sival_ptr as usize }
+            }
+        }
+        impl Eq for sigval {}
+        impl ::fmt::Debug for sigval {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigval")
+                    .field("sival_ptr", unsafe { &(self.sival_ptr as usize) })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sigval {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { (self.sival_ptr as usize).hash(state) };
             }
         }
     }
