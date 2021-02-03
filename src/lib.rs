@@ -99,12 +99,6 @@ cfg_if! {
 
         mod windows;
         pub use windows::*;
-    } else if #[cfg(target_os = "cloudabi")] {
-        mod fixed_width_ints;
-        pub use fixed_width_ints::*;
-
-        mod cloudabi;
-        pub use cloudabi::*;
     } else if #[cfg(target_os = "fuchsia")] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
