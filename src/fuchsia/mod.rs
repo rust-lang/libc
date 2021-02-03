@@ -253,11 +253,6 @@ s! {
         pub l_linger: ::c_int,
     }
 
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut ::c_void,
-    }
-
     // <sys/time.h>
     pub struct itimerval {
         pub it_interval: ::timeval,
@@ -1046,6 +1041,11 @@ s_no_extra_traits! {
     pub struct pthread_cond_t {
         size: [u8; ::__SIZEOF_PTHREAD_COND_T],
     }
+
+    pub union sigval {
+        pub sival_int: ::int,
+        pub sival_ptr: *mut ::c_void,
+    }
 }
 
 cfg_if! {
@@ -1340,16 +1340,6 @@ cfg_if! {
             }
         }
 
-        impl PartialEq for sigevent {
-            fn eq(&self, other: &sigevent) -> bool {
-                self.sigev_value == other.sigev_value
-                    && self.sigev_signo == other.sigev_signo
-                    && self.sigev_notify == other.sigev_notify
-                    && self.sigev_notify_function == other.sigev_notify_function
-                    && self.sigev_notify_attributes == other.sigev_notify_attributes
-            }
-        }
-        impl Eq for sigevent {}
         impl ::fmt::Debug for sigevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sigevent")
@@ -1361,70 +1351,10 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for sigevent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sigev_value.hash(state);
-                self.sigev_signo.hash(state);
-                self.sigev_notify.hash(state);
-                self.sigev_notify_function.hash(state);
-                self.sigev_notify_attributes.hash(state);
-            }
-        }
 
-        impl PartialEq for pthread_cond_t {
-            fn eq(&self, other: &pthread_cond_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_cond_t {}
-        impl ::fmt::Debug for pthread_cond_t {
+        impl ::fmt::Debug for sigval {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("pthread_cond_t")
-                    // FIXME: .field("size", &self.size)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for pthread_cond_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_mutex_t {
-            fn eq(&self, other: &pthread_mutex_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_mutex_t {}
-        impl ::fmt::Debug for pthread_mutex_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("pthread_mutex_t")
-                    // FIXME: .field("size", &self.size)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for pthread_mutex_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_rwlock_t {
-            fn eq(&self, other: &pthread_rwlock_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_rwlock_t {}
-        impl ::fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("pthread_rwlock_t")
-                    // FIXME: .field("size", &self.size)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for pthread_rwlock_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
+                f.debug_struct("sigval").finish_non_exhaustive()
             }
         }
     }

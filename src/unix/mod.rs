@@ -175,11 +175,6 @@ s! {
         pub l_linger: ::c_int,
     }
 
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut ::c_void,
-    }
-
     // <sys/time.h>
     pub struct itimerval {
         pub it_interval: ::timeval,
@@ -210,6 +205,23 @@ s! {
     #[repr(align(4))]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
+    }
+}
+
+s_no_extra_traits! {
+    pub union sigval {
+        pub sival_int: ::c_int,
+        pub sival_ptr: *mut ::c_void,
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl ::fmt::Debug for sigval {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigval").finish_non_exhaustive()
+            }
+        }
     }
 }
 
