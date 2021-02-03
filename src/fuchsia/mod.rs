@@ -240,11 +240,6 @@ s! {
         pub l_linger: c_int,
     }
 
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut c_void,
-    }
-
     // <sys/time.h>
     pub struct itimerval {
         pub it_interval: crate::timeval,
@@ -1043,6 +1038,11 @@ s_no_extra_traits! {
     pub struct pthread_cond_t {
         size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
     }
+
+    pub union sigval {
+        pub sival_int: c_int,
+        pub sival_ptr: *mut c_void,
+    }
 }
 
 cfg_if! {
@@ -1303,6 +1303,18 @@ cfg_if! {
         impl hash::Hash for pthread_rwlock_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
+            }
+        }
+
+        impl PartialEq for sigval {
+            fn eq(&self, other: &sigval) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for sigval {}
+        impl hash::Hash for sigval {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                unimplemented!("traits")
             }
         }
     }
