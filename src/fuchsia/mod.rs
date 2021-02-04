@@ -408,7 +408,7 @@ s! {
 
     pub struct epoll_event {
         pub events: u32,
-        pub u64: u64,
+        pub data: epoll_data,
     }
 
     pub struct lconv {
@@ -1044,6 +1044,13 @@ s_no_extra_traits! {
         pub sival_ptr: *mut c_void,
     }
 
+    pub union epoll_data {
+        pub ptr: *mut c_void,
+        pub fd: c_int,
+        pub u32: u32,
+        pub u64: u64,
+    }
+
     pub union __c_anonymous_ifaddrs_ifa_ifu {
         ifu_broadaddr: *mut sockaddr,
         ifu_dstaddr: *mut sockaddr,
@@ -1312,13 +1319,25 @@ cfg_if! {
         }
 
         impl PartialEq for sigval {
-            fn eq(&self, other: &sigval) -> bool {
+            fn eq(&self, _other: &sigval) -> bool {
                 unimplemented!("traits")
             }
         }
         impl Eq for sigval {}
         impl hash::Hash for sigval {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits")
+            }
+        }
+
+        impl PartialEq for epoll_data {
+            fn eq(&self, _other: &epoll_data) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for epoll_data {}
+        impl hash::Hash for epoll_data {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
                 unimplemented!("traits")
             }
         }

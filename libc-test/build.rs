@@ -1098,8 +1098,6 @@ fn test_solarish(target: &str) {
 
     cfg.field_name(move |struct_, field| {
         match struct_ {
-            // rust struct uses raw u64, rather than union
-            "epoll_event" if field == "u64" => "data.u64".to_string(),
             // rust struct was committed with typo for Solaris
             "door_arg_t" if field == "dec_num" => "desc_num".to_string(),
             "stat" if field.ends_with("_nsec") => {
@@ -1372,7 +1370,6 @@ fn test_netbsd(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
         }
     });
@@ -1583,7 +1580,6 @@ fn test_dragonflybsd(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             // Field is named `type` in C but that is a Rust keyword,
             // so these fields are translated to `type_` in the bindings.
             "type_" if struct_ == "rtprio" => "type".to_string(),
@@ -1965,8 +1961,6 @@ fn test_android(target: &str) {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => s.to_string(),
-            // FIXME(union): appears that `epoll_event.data` is an union
-            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
@@ -3064,8 +3058,6 @@ fn test_emscripten(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // Rust struct uses raw u64, rather than union
-            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
         }
     });
@@ -3875,10 +3867,6 @@ fn test_linux(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // FIXME(linux): epoll_event.data is actually a union in C, but in Rust
-            // it is only a u64 because we only expose one field
-            // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
-            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
