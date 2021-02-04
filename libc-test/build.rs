@@ -976,8 +976,6 @@ fn test_netbsd(target: &str) {
     });
 
     cfg.skip_field_type(move |struct_, field| {
-        // This is a weird union, don't check the type.
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
@@ -1178,8 +1176,6 @@ fn test_dragonflybsd(target: &str) {
     });
 
     cfg.skip_field_type(move |struct_, field| {
-        // This is a weird union, don't check the type.
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
@@ -1508,11 +1504,6 @@ fn test_android(target: &str) {
 
             _ => false,
         }
-    });
-
-    cfg.skip_field_type(move |struct_, field| {
-        // This is a weird union, don't check the type.
-        struct_ == "ifaddrs" && field == "ifa_ifu"
     });
 
     cfg.skip_field(move |struct_, field| {
@@ -1991,6 +1982,9 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // FIXME: It was removed in
             // emscripten-core/emscripten@953e414
@@ -2034,9 +2028,6 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_field_type(move |struct_, field| {
-        // This is a weird union, don't check the type.
-        // FIXME: is this necessary?
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
         // FIXME: is this necessary?
         (struct_ == "sigaction" && field == "sa_sigaction") ||

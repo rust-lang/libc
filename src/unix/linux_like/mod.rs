@@ -157,8 +157,8 @@ s! {
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
-        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
-        pub ifa_data: *mut ::c_void
+        pub ifa_ifu: __c_anonymous_ifa_ifu,
+        pub ifa_data: *mut ::c_void,
     }
 
     pub struct in6_rtmsg {
@@ -251,6 +251,11 @@ s_no_extra_traits! {
         __unused1: [::c_int; 11],
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12]
+    }
+
+    pub union __c_anonymous_ifa_ifu {
+        ifu_broadaddr: *mut sockaddr,
+        ifu_dstaddr: *mut sockaddr,
     }
 }
 
@@ -425,6 +430,25 @@ cfg_if! {
                 self.sigev_signo.hash(state);
                 self.sigev_notify.hash(state);
                 self.sigev_notify_thread_id.hash(state);
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifa_ifu {
+            fn eq(&self, other: &__c_anonymous_ifa_ifu) -> bool {
+                unsafe { self.ifu_dstaddr == other.ifu_dstaddr }
+            }
+        }
+        impl Eq for __c_anonymous_ifa_ifu {}
+        impl ::fmt::Debug for __c_anonymous_ifa_ifu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifa_ifu")
+                    .field("ifu_dstaddr", unsafe { &self.ifu_dstaddr } )
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for __c_anonymous_ifa_ifu {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.ifu_dstaddr.hash(state) };
             }
         }
     }
