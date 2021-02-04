@@ -168,7 +168,7 @@ s! {
         pub ifa_flags: c_uint,
         pub ifa_addr: *mut crate::sockaddr,
         pub ifa_netmask: *mut crate::sockaddr,
-        pub ifa_ifu: *mut crate::sockaddr, // FIXME(union) This should be a union
+        pub ifa_ifu: __c_anonymous_ifaddrs_ifa_ifu,
         pub ifa_data: *mut c_void,
     }
 
@@ -335,6 +335,11 @@ s_no_extra_traits! {
         pub sigev_notify: c_int,
         pub _sigev_un: __c_anonymous_sigev_un,
     }
+
+    pub union __c_anonymous_ifaddrs_ifa_ifu {
+        ifu_broadaddr: *mut sockaddr,
+        ifu_dstaddr: *mut sockaddr,
+    }
 }
 
 cfg_if! {
@@ -436,6 +441,18 @@ cfg_if! {
                 self.version.hash(state);
                 self.machine.hash(state);
                 self.domainname.hash(state);
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifaddrs_ifa_ifu {
+            fn eq(&self, _other: &__c_anonymous_ifaddrs_ifa_ifu) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for __c_anonymous_ifaddrs_ifa_ifu {}
+        impl hash::Hash for __c_anonymous_ifaddrs_ifa_ifu {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits")
             }
         }
     }
