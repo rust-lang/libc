@@ -2836,6 +2836,9 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // FIXME: It was removed in
             // emscripten-core/emscripten@953e414

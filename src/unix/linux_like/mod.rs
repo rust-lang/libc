@@ -159,7 +159,7 @@ s! {
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
-        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
+        pub ifa_ifu: __c_anonymous_ifa_ifu,
         pub ifa_data: *mut ::c_void,
     }
 
@@ -256,6 +256,11 @@ s_no_extra_traits! {
         __unused1: [::c_int; 11],
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12],
+    }
+
+    pub union __c_anonymous_ifa_ifu {
+        ifu_broadaddr: *mut sockaddr,
+        ifu_dstaddr: *mut sockaddr,
     }
 }
 
@@ -410,6 +415,12 @@ cfg_if! {
                     .field("sigev_notify", &self.sigev_notify)
                     .field("sigev_notify_thread_id", &self.sigev_notify_thread_id)
                     .finish()
+            }
+        }
+
+        impl ::fmt::Debug for __c_anonymous_ifa_ifu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifa_ifu").finish_non_exhaustive()
             }
         }
     }

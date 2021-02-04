@@ -465,7 +465,7 @@ s! {
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
-        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
+        pub ifa_ifu: __c_anonymous_ifa_ifu,
         pub ifa_data: *mut ::c_void,
     }
 
@@ -1046,6 +1046,11 @@ s_no_extra_traits! {
         pub sival_int: ::int,
         pub sival_ptr: *mut ::c_void,
     }
+
+    pub union __c_anonymous_ifa_ifu {
+        ifu_broadaddr: *mut sockaddr,
+        ifu_dstaddr: *mut sockaddr,
+    }
 }
 
 cfg_if! {
@@ -1355,6 +1360,12 @@ cfg_if! {
         impl ::fmt::Debug for sigval {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sigval").finish_non_exhaustive()
+            }
+        }
+
+        impl ::fmt::Debug for __c_anonymous_ifa_ifu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifa_ifu").finish_non_exhaustive()
             }
         }
     }
