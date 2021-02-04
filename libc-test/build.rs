@@ -4427,8 +4427,6 @@ fn test_linux(target: &str) {
     cfg.skip_roundtrip(move |s| match s {
         // FIXME:
         "mcontext_t" if s390x => true,
-        // FIXME: This is actually a union.
-        "fpreg_t" if s390x => true,
 
         // The test doesn't work on some env:
         "ipv6_mreq"
