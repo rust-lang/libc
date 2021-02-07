@@ -3207,6 +3207,10 @@ pub const TIME_OOP: ::c_int = 3;
 pub const TIME_WAIT: ::c_int = 4;
 pub const TIME_ERROR: ::c_int = 5;
 
+// <sys/mount.h>
+pub const MNT_WAIT: ::c_int = 1;
+pub const MNT_NOWAIT: ::c_int = 2;
+
 cfg_if! {
     if #[cfg(libc_const_size_of)] {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
@@ -3744,6 +3748,21 @@ extern "C" {
 
     pub fn ntp_adjtime(buf: *mut timex) -> ::c_int;
     pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
+
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "getmntinfo$INODE64"
+    )]
+    pub fn getmntinfo(mntbufp: *mut *mut statfs, flags: ::c_int) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", not(target_arch = "aarch64")),
+        link_name = "getfsstat$INODE64"
+    )]
+    pub fn getfsstat(
+        mntbufp: *mut statfs,
+        bufsize: ::c_int,
+        flags: ::c_int,
+    ) -> ::c_int;
 }
 
 cfg_if! {
