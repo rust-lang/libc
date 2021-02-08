@@ -32,6 +32,7 @@ fn do_ctest() {
         t if t.contains("dragonfly") => return test_dragonflybsd(t),
         t if t.contains("emscripten") => return test_emscripten(t),
         t if t.contains("freebsd") => return test_freebsd(t),
+        t if t.contains("haiku") => return test_haiku(t),
         t if t.contains("linux") => return test_linux(t),
         t if t.contains("netbsd") => return test_netbsd(t),
         t if t.contains("openbsd") => return test_openbsd(t),
@@ -2945,4 +2946,284 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("13") => Some(13),
         _ => None,
     }
+}
+
+fn test_haiku(target: &str) {
+    assert!(target.contains("haiku"));
+
+    let mut cfg = ctest_cfg();
+    cfg.flag("-Wno-deprecated-declarations");
+    cfg.define("__USE_GNU", Some("1"));
+
+    // POSIX API
+    headers! { cfg:
+               "alloca.h",
+               "arpa/inet.h",
+               "arpa/nameser.h",
+               "arpa/nameser_compat.h",
+               "assert.h",
+               "bsd_mem.h",
+               "complex.h",
+               "ctype.h",
+               "dirent.h",
+               "div_t.h",
+               "dlfcn.h",
+               "endian.h",
+               "errno.h",
+               "fcntl.h",
+               "fenv.h",
+               "fnmatch.h",
+               "fts.h",
+               "ftw.h",
+               "getopt.h",
+               "glob.h",
+               "grp.h",
+               "inttypes.h",
+               "iovec.h",
+               "langinfo.h",
+               "libgen.h",
+               "libio.h",
+               "limits.h",
+               "locale.h",
+               "malloc.h",
+               "malloc_debug.h",
+               "math.h",
+               "memory.h",
+               "monetary.h",
+               "net/if.h",
+               "net/if_dl.h",
+               "net/if_media.h",
+               "net/if_tun.h",
+               "net/if_types.h",
+               "net/route.h",
+               "netdb.h",
+               "netinet/icmp6.h",
+               "netinet/in.h",
+               "netinet/ip.h",
+               "netinet/ip6.h",
+               "netinet/ip_icmp.h",
+               "netinet/ip_var.h",
+               "netinet/tcp.h",
+               "netinet/udp.h",
+               "netinet6/in6.h",
+               "nl_types.h",
+               "null.h",
+               "poll.h",
+               "pthread.h",
+               "pwd.h",
+               "regex.h",
+               "resolv.h",
+               "sched.h",
+               "search.h",
+               "semaphore.h",
+               "setjmp.h",
+               "shadow.h",
+               "signal.h",
+               "size_t.h",
+               "spawn.h",
+               "stdint.h",
+               "stdio.h",
+               "stdlib.h",
+               "string.h",
+               "strings.h",
+               "sys/cdefs.h",
+               "sys/file.h",
+               "sys/ioctl.h",
+               "sys/ipc.h",
+               "sys/mman.h",
+               "sys/msg.h",
+               "sys/param.h",
+               "sys/poll.h",
+               "sys/resource.h",
+               "sys/select.h",
+               "sys/sem.h",
+               "sys/socket.h",
+               "sys/sockio.h",
+               "sys/stat.h",
+               "sys/statvfs.h",
+               "sys/time.h",
+               "sys/timeb.h",
+               "sys/times.h",
+               "sys/types.h",
+               "sys/uio.h",
+               "sys/un.h",
+               "sys/utsname.h",
+               "sys/wait.h",
+               "syslog.h",
+               "tar.h",
+               "termios.h",
+               "time.h",
+               "uchar.h",
+               "unistd.h",
+               "utime.h",
+               "wchar.h",
+               "wchar_t.h",
+               "wctype.h"
+    }
+
+    // BSD Extensions
+    headers! { cfg:
+               "pty.h",
+    }
+
+    // Native API
+    headers! { cfg:
+               "kernel/OS.h",
+               "kernel/fs_attr.h",
+               "kernel/fs_index.h",
+               "kernel/fs_info.h",
+               "kernel/fs_query.h",
+               "kernel/fs_volume.h",
+               "kernel/image.h",
+               "storage/StorageDefs.h",
+               "support/Errors.h",
+               "support/SupportDefs.h",
+               "support/TypeConstants.h"
+    }
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // FIXME: actually a union
+            "sigval" => true,
+            // FIXME: locale_t does not exist on Haiku
+            "locale_t" => true,
+            // FIXME: rusage has a different layout on Haiku
+            "rusage" => true,
+            // FIXME?: complains that rust aligns on 4 byte boundary, but
+            //         Haiku does not align it at all.
+            "in6_addr" => true,
+            // The d_name attribute is an array of 1 on Haiku, with the
+            // intention that the developer allocates a larger or smaller
+            // piece of memory depending on the expected/actual size of the name.
+            // Other platforms have sensible defaults. In Rust, the d_name field
+            // is sized as the _POSIX_MAX_PATH, so that path names will fit in
+            // newly allocated dirent objects. This breaks the automated tests.
+            "dirent" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_type(move |ty| {
+        match ty {
+            // FIXME: locale_t does not exist on Haiku
+            "locale_t" => true,
+            // These cause errors, to be reviewed in the future
+            "sighandler_t" => true,
+            "pthread_t" => true,
+            "pthread_condattr_t" => true,
+            "pthread_mutexattr_t" => true,
+            "pthread_rwlockattr_t" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verified
+        match name {
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" | "execvpe" => true,
+            // FIXME: does not exist on haiku
+            "open_wmemstream" => true,
+            "mlockall" | "munlockall" => true,
+            "tcgetsid" => true,
+            "cfsetspeed" => true,
+            // ignore for now, will be part of Haiku R1 beta 3
+            "mlock" | "munlock" => true,
+            // returns const char * on Haiku
+            "strsignal" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // FIXME: these constants do not exist on Haiku
+            "DT_UNKNOWN" | "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK"
+            | "DT_REG" | "DT_LNK" | "DT_SOCK" => true,
+            "USRQUOTA" | "GRPQUOTA" => true,
+            "SIGIOT" => true,
+            "ARPOP_REQUEST" | "ARPOP_REPLY" | "ATF_COM" | "ATF_PERM"
+            | "ATF_PUBL" | "ATF_USETRAILERS" => true,
+            // Haiku does not have MAP_FILE, but rustc requires it
+            "MAP_FILE" => true,
+            // The following does not exist on Haiku but is required by
+            // several crates
+            "FIOCLEX" => true,
+            // just skip this one, it is not defined on Haiku beta 2 but
+            // since it is meant as a mask and not a parameter it can exist
+            // here
+            "LOG_PRIMASK" => true,
+            // not defined on Haiku, but [get|set]priority is, so they are
+            // useful
+            "PRIO_MIN" | "PRIO_MAX" => true,
+            //
+            _ => false,
+        }
+    });
+
+    cfg.skip_field(move |struct_, field| {
+        match (struct_, field) {
+            // FIXME: the stat struct actually has timespec members, whereas
+            //        the current representation has these unpacked.
+            ("stat", "st_atime") => true,
+            ("stat", "st_atime_nsec") => true,
+            ("stat", "st_mtime") => true,
+            ("stat", "st_mtime_nsec") => true,
+            ("stat", "st_ctime") => true,
+            ("stat", "st_ctime_nsec") => true,
+            ("stat", "st_crtime") => true,
+            ("stat", "st_crtime_nsec") => true,
+
+            // these are actually unions, but we cannot represent it well
+            ("siginfo_t", "sigval") => true,
+            ("sem_t", "named_sem_id") => true,
+            ("sigaction", "sa_sigaction") => true,
+            ("sigevent", "sigev_value") => true,
+
+            // skip these enum-type fields
+            ("thread_info", "state") => true,
+            ("image_info", "image_type") => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_roundtrip(move |s| match s {
+        // FIXME: for some reason the roundtrip check fails for cpu_info
+        "cpu_info" => true,
+        _ => false,
+    });
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "area_info" | "port_info" | "port_message_info" | "team_info"
+            | "sem_info" | "team_usage_info" | "thread_info" | "cpu_info"
+            | "system_info" | "object_wait_info" | "image_info"
+            | "attr_info" | "index_info" | "fs_info" | "FILE" | "DIR"
+            | "Dl_info" => ty.to_string(),
+
+            // is actually a union
+            "sigval" => format!("union sigval"),
+            t if is_union => format!("union {}", t),
+            t if t.ends_with("_t") => t.to_string(),
+            t if is_struct => format!("struct {}", t),
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            // Field is named `type` in C but that is a Rust keyword,
+            // so these fields are translated to `type_` in the bindings.
+            "type_" if struct_ == "object_wait_info" => "type".to_string(),
+            "type_" if struct_ == "sem_t" => "type".to_string(),
+            "type_" if struct_ == "attr_info" => "type".to_string(),
+            "type_" if struct_ == "index_info" => "type".to_string(),
+            "image_type" if struct_ == "image_info" => "type".to_string(),
+            s => s.to_string(),
+        }
+    });
+    cfg.generate("../src/lib.rs", "main.rs");
 }

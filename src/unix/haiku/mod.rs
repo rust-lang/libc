@@ -1,9 +1,9 @@
 pub type rlim_t = ::uintptr_t;
 pub type sa_family_t = u8;
 pub type pthread_key_t = ::c_int;
-pub type nfds_t = ::c_long;
+pub type nfds_t = ::c_ulong;
 pub type tcflag_t = ::c_uint;
-pub type speed_t = ::c_uint;
+pub type speed_t = ::c_uchar;
 pub type c_char = i8;
 pub type clock_t = i32;
 pub type clockid_t = i32;
@@ -19,6 +19,7 @@ pub type nlink_t = i32;
 pub type useconds_t = u32;
 pub type socklen_t = u32;
 pub type pthread_t = ::uintptr_t;
+pub type pthread_condattr_t = ::uintptr_t;
 pub type pthread_mutexattr_t = ::uintptr_t;
 pub type pthread_rwlockattr_t = ::uintptr_t;
 pub type sigset_t = u64;
@@ -28,6 +29,7 @@ pub type pthread_attr_t = *mut ::c_void;
 pub type nl_item = ::c_int;
 pub type id_t = i32;
 pub type idtype_t = ::c_uint;
+pub type fd_mask = u32;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -69,7 +71,7 @@ s! {
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,
-        pub sa_data: [::c_char; 30],
+        pub sa_data: [u8; 30],
     }
 
     pub struct sockaddr_in {
@@ -77,13 +79,13 @@ s! {
         pub sin_family: sa_family_t,
         pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
-        pub sin_zero: [u8; 24],
+        pub sin_zero: [i8; 24],
     }
 
     pub struct sockaddr_in6 {
         pub sin6_len: u8,
-        pub sin6_family: sa_family_t,
-        pub sin6_port: ::in_port_t,
+        pub sin6_family: u8,
+        pub sin6_port: u16,
         pub sin6_flowinfo: u32,
         pub sin6_addr: ::in6_addr,
         pub sin6_scope_id: u32,
@@ -101,7 +103,8 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [c_ulong; FD_SETSIZE / ULONG_SIZE],
+        // size for 1024 bits, and a fd_mask with size u32
+        fds_bits: [fd_mask; 32],
     }
 
     pub struct tm {
@@ -114,8 +117,8 @@ s! {
         pub tm_wday: ::c_int,
         pub tm_yday: ::c_int,
         pub tm_isdst: ::c_int,
-        pub tm_gmtoff: ::c_long,
-        pub tm_zone: *const ::c_char,
+        pub tm_gmtoff: ::c_int,
+        pub tm_zone: *mut ::c_char,
     }
 
     pub struct utsname {
@@ -155,16 +158,16 @@ s! {
 
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
-        pub msg_namelen: ::socklen_t,
+        pub msg_namelen: socklen_t,
         pub msg_iov: *mut ::iovec,
         pub msg_iovlen: ::c_int,
         pub msg_control: *mut ::c_void,
-        pub msg_controllen: ::socklen_t,
+        pub msg_controllen: socklen_t,
         pub msg_flags: ::c_int,
     }
 
     pub struct cmsghdr {
-        pub cmsg_len: ::size_t,
+        pub cmsg_len: ::socklen_t,
         pub cmsg_level: ::c_int,
         pub cmsg_type: ::c_int,
     }
@@ -301,22 +304,16 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_sigaction: ::sighandler_t,
+        pub sa_sigaction: ::sighandler_t, //actually a union with sa_handler
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
         sa_userdata: *mut ::c_void,
     }
 
     pub struct sem_t {
-        pub se_type: i32,
-        pub se_named_id: i32, // this is actually a union
-        pub se_unnamed: i32,
-        pub se_padding: [i32; 4],
-    }
-
-    pub struct pthread_condattr_t {
-        pub process_shared: bool,
-        pub clock_id: i32,
+        pub type_: i32,
+        pub named_sem_id: i32, // actually a union with unnamed_sem (i32)
+        pub padding: [i32; 2],
     }
 }
 
@@ -491,17 +488,6 @@ cfg_if! {
     }
 }
 
-// intentionally not public, only used for fd_set
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        const ULONG_SIZE: usize = 32;
-    } else if #[cfg(target_pointer_width = "64")] {
-        const ULONG_SIZE: usize = 64;
-    } else {
-        // Unknown target_pointer_width
-    }
-}
-
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
 pub const RAND_MAX: ::c_int = 2147483647;
@@ -559,7 +545,7 @@ pub const RLIMIT_STACK: ::c_int = 5;
 pub const RLIMIT_AS: ::c_int = 6;
 // Haiku specific
 pub const RLIMIT_NOVMON: ::c_int = 7;
-pub const RLIMIT_NLIMITS: ::c_int = 8;
+pub const RLIM_NLIMITS: ::c_int = 8;
 
 pub const RUSAGE_SELF: ::c_int = 0;
 
@@ -596,18 +582,20 @@ pub const S_IFREG: ::mode_t = 32768;
 pub const S_IFLNK: ::mode_t = 40960;
 pub const S_IFSOCK: ::mode_t = 49152;
 pub const S_IFMT: ::mode_t = 61440;
-pub const S_IRWXU: ::mode_t = 448;
-pub const S_IXUSR: ::mode_t = 64;
-pub const S_IWUSR: ::mode_t = 128;
-pub const S_IRUSR: ::mode_t = 256;
-pub const S_IRWXG: ::mode_t = 70;
-pub const S_IXGRP: ::mode_t = 10;
-pub const S_IWGRP: ::mode_t = 20;
-pub const S_IRGRP: ::mode_t = 40;
-pub const S_IRWXO: ::mode_t = 7;
-pub const S_IXOTH: ::mode_t = 1;
-pub const S_IWOTH: ::mode_t = 2;
-pub const S_IROTH: ::mode_t = 4;
+
+pub const S_IRWXU: ::mode_t = 0o00700;
+pub const S_IRUSR: ::mode_t = 0o00400;
+pub const S_IWUSR: ::mode_t = 0o00200;
+pub const S_IXUSR: ::mode_t = 0o00100;
+pub const S_IRWXG: ::mode_t = 0o00070;
+pub const S_IRGRP: ::mode_t = 0o00040;
+pub const S_IWGRP: ::mode_t = 0o00020;
+pub const S_IXGRP: ::mode_t = 0o00010;
+pub const S_IRWXO: ::mode_t = 0o00007;
+pub const S_IROTH: ::mode_t = 0o00004;
+pub const S_IWOTH: ::mode_t = 0o00002;
+pub const S_IXOTH: ::mode_t = 0o00001;
+
 pub const F_OK: ::c_int = 0;
 pub const R_OK: ::c_int = 4;
 pub const W_OK: ::c_int = 2;
@@ -707,8 +695,8 @@ pub const ENOTTY: ::c_int = -2147454966;
 pub const ENXIO: ::c_int = -2147454965;
 pub const ESPIPE: ::c_int = -2147454964;
 pub const ESRCH: ::c_int = -2147454963;
-pub const EFPOS: ::c_int = -2147457962;
-pub const ESIGPARM: ::c_int = -2147457961;
+pub const EFPOS: ::c_int = -2147454962;
+pub const ESIGPARM: ::c_int = -2147454961;
 pub const EDOM: ::c_int = -2147454960;
 pub const ERANGE: ::c_int = -2147454959;
 pub const EPROTOTYPE: ::c_int = -2147454958;
@@ -756,7 +744,7 @@ pub const ETXTBSY: ::c_int = -2147454917;
 pub const ENOATTR: ::c_int = -2147454916;
 
 // INT_MIN
-pub const ENOMEM: ::c_int = -2147454976;
+pub const ENOMEM: ::c_int = -2147483648;
 
 // POSIX errors that can be mapped to BeOS error codes
 pub const EACCES: ::c_int = -2147483646;
@@ -844,6 +832,9 @@ pub const TCP_MAXSEG: ::c_int = 0x02;
 pub const TCP_NOPUSH: ::c_int = 0x04;
 pub const TCP_NOOPT: ::c_int = 0x08;
 
+pub const IF_NAMESIZE: ::size_t = 32;
+pub const IFNAMSIZ: ::size_t = IF_NAMESIZE;
+
 pub const IPV6_MULTICAST_IF: ::c_int = 24;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 25;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 26;
@@ -854,7 +845,7 @@ pub const IPV6_V6ONLY: ::c_int = 30;
 pub const IPV6_PKTINFO: ::c_int = 31;
 pub const IPV6_RECVPKTINFO: ::c_int = 32;
 pub const IPV6_HOPLIMIT: ::c_int = 33;
-pub const IPV6_REVCHOPLIMIT: ::c_int = 34;
+pub const IPV6_RECVHOPLIMIT: ::c_int = 34;
 pub const IPV6_HOPOPTS: ::c_int = 35;
 pub const IPV6_DSTOPTS: ::c_int = 36;
 pub const IPV6_RTHDR: ::c_int = 37;
@@ -1239,7 +1230,60 @@ pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
 
+pub const LOG_PID: ::c_int = 1 << 12;
+pub const LOG_CONS: ::c_int = 2 << 12;
+pub const LOG_ODELAY: ::c_int = 4 << 12;
+pub const LOG_NDELAY: ::c_int = 8 << 12;
+pub const LOG_SERIAL: ::c_int = 16 << 12;
+pub const LOG_PERROR: ::c_int = 32 << 12;
+pub const LOG_NOWAIT: ::c_int = 64 << 12;
+
+const_fn! {
+    {const} fn CMSG_ALIGN(len: usize) -> usize {
+        len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
+    }
+}
+
 f! {
+    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
+        if (*mhdr).msg_controllen as usize >= ::mem::size_of::<cmsghdr>() {
+            (*mhdr).msg_control as *mut cmsghdr
+        } else {
+            0 as *mut cmsghdr
+        }
+    }
+
+    pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
+        (cmsg as *mut ::c_uchar)
+            .offset(CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
+    }
+
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
+            as ::c_uint
+    }
+
+    pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
+        CMSG_ALIGN(::mem::size_of::<cmsghdr>()) as ::c_uint + length
+    }
+
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
+                       cmsg: *const cmsghdr) -> *mut cmsghdr {
+        if cmsg.is_null() {
+            return ::CMSG_FIRSTHDR(mhdr);
+        };
+        let next = cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)
+            + CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
+        let max = (*mhdr).msg_control as usize
+            + (*mhdr).msg_controllen as usize;
+        if next > max {
+            0 as *mut ::cmsghdr
+        } else {
+            (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize))
+                as *mut ::cmsghdr
+        }
+    }
+
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
@@ -1368,10 +1412,10 @@ extern "C" {
         clock_id: ::clockid_t,
     ) -> ::c_int;
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
-    pub fn setgroups(ngroups: ::size_t, ptr: *const ::gid_t) -> ::c_int;
-    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
+    pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
+    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn mprotect(
-        addr: *const ::c_void,
+        addr: *mut ::c_void,
         len: ::size_t,
         prot: ::c_int,
     ) -> ::c_int;
@@ -1380,9 +1424,9 @@ extern "C" {
         sa: *const ::sockaddr,
         salen: ::socklen_t,
         host: *mut ::c_char,
-        hostlen: ::size_t,
+        hostlen: ::socklen_t,
         serv: *mut ::c_char,
-        sevlen: ::size_t,
+        sevlen: ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
     pub fn pthread_mutex_timedlock(
@@ -1455,12 +1499,12 @@ extern "C" {
     pub fn writev(
         fd: ::c_int,
         iov: *const ::iovec,
-        iovcnt: ::c_int,
+        count: ::size_t,
     ) -> ::ssize_t;
     pub fn readv(
         fd: ::c_int,
         iov: *const ::iovec,
-        iovcnt: ::c_int,
+        count: ::size_t,
     ) -> ::ssize_t;
 
     pub fn sendmsg(
@@ -1553,3 +1597,6 @@ cfg_if! {
         pub use self::b32::*;
     }
 }
+
+mod native;
+pub use self::native::*;
