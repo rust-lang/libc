@@ -2323,6 +2323,7 @@ pub const SO_NOADDRERR: ::c_int = 0x1023;
 pub const SO_NWRITE: ::c_int = 0x1024;
 pub const SO_REUSESHAREUID: ::c_int = 0x1025;
 pub const SO_NOTIFYCONFLICT: ::c_int = 0x1026;
+pub const SO_LINGER_SEC: ::c_int = 0x1080;
 pub const SO_RANDOMPORT: ::c_int = 0x1082;
 pub const SO_NP_EXTENSIONS: ::c_int = 0x1083;
 
