@@ -35,6 +35,7 @@ pub type nlink_t = u64;
 pub type blksize_t = c_long;
 pub type blkcnt_t = i64;
 pub type nfds_t = c_ulong;
+pub type wchar_t = i32;
 
 pub type __wasi_rights_t = u64;
 
