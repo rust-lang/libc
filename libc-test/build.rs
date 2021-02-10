@@ -107,6 +107,7 @@ fn test_apple(target: &str) {
         "fcntl.h",
         "glob.h",
         "grp.h",
+        "iconv.h",
         "ifaddrs.h",
         "langinfo.h",
         "limits.h",
@@ -360,6 +361,7 @@ fn test_openbsd(target: &str) {
         "pthread_np.h",
         "sys/syscall.h",
         "sys/shm.h",
+        "iconv.h",
     }
 
     cfg.skip_struct(move |ty| {
@@ -558,6 +560,7 @@ fn test_redox(target: &str) {
         "errno.h",
         "fcntl.h",
         "grp.h",
+        "iconv.h",
         "limits.h",
         "locale.h",
         "netdb.h",
@@ -618,6 +621,7 @@ fn test_solarish(target: &str) {
         "fcntl.h",
         "glob.h",
         "grp.h",
+        "iconv.h",
         "ifaddrs.h",
         "langinfo.h",
         "limits.h",
@@ -893,6 +897,7 @@ fn test_netbsd(target: &str) {
         "sys/event.h",
         "sys/quota.h",
         "sys/shm.h",
+        "iconv.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -1100,6 +1105,7 @@ fn test_dragonflybsd(target: &str) {
         "utime.h",
         "utmpx.h",
         "wchar.h",
+        "iconv.h",
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -1329,6 +1335,7 @@ fn test_android(target: &str) {
                "errno.h",
                "fcntl.h",
                "grp.h",
+               "iconv.h",
                "ifaddrs.h",
                "limits.h",
                "locale.h",
@@ -1381,8 +1388,8 @@ fn test_android(target: &str) {
                "sys/syscall.h",
                "sys/sysinfo.h",
                "sys/time.h",
-               "sys/times.h",
                "sys/timerfd.h",
+               "sys/times.h",
                "sys/types.h",
                "sys/ucontext.h",
                "sys/uio.h",
@@ -1609,6 +1616,7 @@ fn test_freebsd(target: &str) {
                 "fcntl.h",
                 "glob.h",
                 "grp.h",
+                "iconv.h",
                 "ifaddrs.h",
                 "langinfo.h",
                 "libutil.h",
@@ -1915,6 +1923,7 @@ fn test_emscripten(target: &str) {
                "fcntl.h",
                "glob.h",
                "grp.h",
+               "iconv.h",
                "ifaddrs.h",
                "langinfo.h",
                "limits.h",
@@ -2279,6 +2288,7 @@ fn test_linux(target: &str) {
                "fcntl.h",
                "glob.h",
                "grp.h",
+               "iconv.h",
                "ifaddrs.h",
                "langinfo.h",
                "limits.h",

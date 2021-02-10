@@ -37,6 +37,8 @@ pub type sae_connid_t = u32;
 
 pub type mach_port_t = ::c_uint;
 
+pub type iconv_t = *mut ::c_void;
+
 deprecated_mach! {
     pub type vm_prot_t = ::c_int;
     pub type vm_size_t = ::uintptr_t;
@@ -3764,6 +3766,19 @@ extern "C" {
         bufsize: ::c_int,
         flags: ::c_int,
     ) -> ::c_int;
+
+    pub fn iconv_open(
+        tocode: *const ::c_char,
+        fromcode: *const ::c_char,
+    ) -> iconv_t;
+    pub fn iconv(
+        cd: iconv_t,
+        inbuf: *mut *mut ::c_char,
+        inbytesleft: *mut ::size_t,
+        outbuf: *mut *mut ::c_char,
+        outbytesleft: *mut ::size_t,
+    ) -> ::size_t;
+    pub fn iconv_close(cd: iconv_t) -> ::c_int;
 }
 
 cfg_if! {
