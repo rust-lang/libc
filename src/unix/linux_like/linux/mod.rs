@@ -1440,6 +1440,13 @@ pub const SYNC_FILE_RANGE_WAIT_BEFORE: ::c_uint = 1;
 pub const SYNC_FILE_RANGE_WRITE: ::c_uint = 2;
 pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_uint = 4;
 
+// Flags for preadv2/pwritev2
+pub const RWF_HIPRI: ::c_int = 0x00000001;
+pub const RWF_DSYNC: ::c_int = 0x00000002;
+pub const RWF_SYNC: ::c_int = 0x00000004;
+pub const RWF_NOWAIT: ::c_int = 0x00000008;
+pub const RWF_APPEND: ::c_int = 0x00000010;
+
 pub const AIO_CANCELED: ::c_int = 0;
 pub const AIO_NOTCANCELED: ::c_int = 1;
 pub const AIO_ALLDONE: ::c_int = 2;
@@ -3026,11 +3033,25 @@ extern "C" {
         iovcnt: ::c_int,
         offset: ::off_t,
     ) -> ::ssize_t;
+    pub fn pwritev2(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        offset: ::off_t,
+        flags: ::c_int,
+    ) -> ::ssize_t;
     pub fn preadv(
         fd: ::c_int,
         iov: *const ::iovec,
         iovcnt: ::c_int,
         offset: ::off_t,
+    ) -> ::ssize_t;
+    pub fn preadv2(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        offset: ::off_t,
+        flags: ::c_int,
     ) -> ::ssize_t;
     pub fn quotactl(
         cmd: ::c_int,
