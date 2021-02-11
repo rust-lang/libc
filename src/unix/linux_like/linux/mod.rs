@@ -3033,25 +3033,11 @@ extern "C" {
         iovcnt: ::c_int,
         offset: ::off_t,
     ) -> ::ssize_t;
-    pub fn pwritev2(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off_t,
-        flags: ::c_int,
-    ) -> ::ssize_t;
     pub fn preadv(
         fd: ::c_int,
         iov: *const ::iovec,
         iovcnt: ::c_int,
         offset: ::off_t,
-    ) -> ::ssize_t;
-    pub fn preadv2(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off_t,
-        flags: ::c_int,
     ) -> ::ssize_t;
     pub fn quotactl(
         cmd: ::c_int,
