@@ -361,7 +361,6 @@ fn test_openbsd(target: &str) {
         "pthread_np.h",
         "sys/syscall.h",
         "sys/shm.h",
-        "iconv.h",
     }
 
     cfg.skip_struct(move |ty| {
