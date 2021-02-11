@@ -13,7 +13,7 @@ s! {
         pub stx_uid: u32,
         pub stx_gid: u32,
         pub stx_mode: u16,
-        pub __statx_pad1: [u16; 1],
+        __statx_pad1: [u16; 1],
         pub stx_ino: u64,
         pub stx_size: u64,
         pub stx_blocks: u64,
@@ -26,7 +26,7 @@ s! {
         pub stx_rdev_minor: u32,
         pub stx_dev_major: u32,
         pub stx_dev_minor: u32,
-        pub __statx_pad2: [u64; 14],
+        __statx_pad2: [u64; 14],
     }
 
     pub struct statx_timestamp {
