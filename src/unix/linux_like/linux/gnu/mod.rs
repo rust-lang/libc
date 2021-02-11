@@ -860,6 +860,15 @@ pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 pub const SEEK_DATA: ::c_int = 3;
 pub const SEEK_HOLE: ::c_int = 4;
 
+// linux/fs.h
+
+// Flags for preadv2/pwritev2
+pub const RWF_HIPRI: ::c_int = 0x00000001;
+pub const RWF_DSYNC: ::c_int = 0x00000002;
+pub const RWF_SYNC: ::c_int = 0x00000004;
+pub const RWF_NOWAIT: ::c_int = 0x00000008;
+pub const RWF_APPEND: ::c_int = 0x00000010;
+
 // linux/rtnetlink.h
 pub const TCA_PAD: ::c_ushort = 9;
 pub const TCA_DUMP_INVISIBLE: ::c_ushort = 10;
