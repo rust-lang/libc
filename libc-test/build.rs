@@ -2655,6 +2655,9 @@ fn test_linux(target: &str) {
             | "CAN_RAW_FILTER_MAX"
             | "CAN_NPROTO" => true,
 
+            // FIXME: Requires recent kernel headers (5.8):
+            "STATX_MNT_ID" => true,
+
             _ => false,
         }
     });
