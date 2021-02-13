@@ -458,10 +458,7 @@ extern "C" {
         ptr: *mut *mut c_char,
         sizeloc: *mut size_t,
     ) -> *mut FILE;
-    pub fn open_wmemstream(
-        ptr: *mut *mut wchar_t,
-        sizeloc: *mut size_t,
-    ) -> *mut FILE;
+
     pub fn fflush(file: *mut FILE) -> c_int;
     pub fn fclose(file: *mut FILE) -> c_int;
     pub fn remove(filename: *const c_char) -> c_int;
@@ -626,15 +623,24 @@ extern "C" {
         ...
     ) -> ::c_int;
     pub fn sprintf(s: *mut ::c_char, format: *const ::c_char, ...) -> ::c_int;
-    #[cfg_attr(target_os = "linux", link_name = "__isoc99_fscanf")]
+    #[cfg_attr(
+        all(target_os = "linux", not(target_env = "uclibc")),
+        link_name = "__isoc99_fscanf"
+    )]
     pub fn fscanf(
         stream: *mut ::FILE,
         format: *const ::c_char,
         ...
     ) -> ::c_int;
-    #[cfg_attr(target_os = "linux", link_name = "__isoc99_scanf")]
+    #[cfg_attr(
+        all(target_os = "linux", not(target_env = "uclibc")),
+        link_name = "__isoc99_scanf"
+    )]
     pub fn scanf(format: *const ::c_char, ...) -> ::c_int;
-    #[cfg_attr(target_os = "linux", link_name = "__isoc99_sscanf")]
+    #[cfg_attr(
+        all(target_os = "linux", not(target_env = "uclibc")),
+        link_name = "__isoc99_sscanf"
+    )]
     pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...)
         -> ::c_int;
     pub fn getchar_unlocked() -> ::c_int;
@@ -1577,6 +1583,17 @@ extern "C" {
 }
 
 cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        extern "C" {
+            pub fn open_wmemstream(
+                ptr: *mut *mut wchar_t,
+                sizeloc: *mut size_t,
+            ) -> *mut FILE;
+        }
+    }
+}
+
+cfg_if! {
     if #[cfg(not(target_os = "redox"))] {
         extern {
             pub fn getsid(pid: pid_t) -> pid_t;
@@ -1631,13 +1648,11 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(target_env = "uclibc")] {
-        mod uclibc;
-        pub use self::uclibc::*;
-    } else if #[cfg(target_env = "newlib")] {
+    if #[cfg(target_env = "newlib")] {
         mod newlib;
         pub use self::newlib::*;
     } else if #[cfg(any(target_os = "linux",
+                        target_os = "l4re",
                         target_os = "android",
                         target_os = "emscripten"))] {
         mod linux_like;

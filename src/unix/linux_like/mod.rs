@@ -546,13 +546,18 @@ pub const PROT_READ: ::c_int = 1;
 pub const PROT_WRITE: ::c_int = 2;
 pub const PROT_EXEC: ::c_int = 4;
 
-pub const LC_CTYPE: ::c_int = 0;
-pub const LC_NUMERIC: ::c_int = 1;
-pub const LC_TIME: ::c_int = 2;
-pub const LC_COLLATE: ::c_int = 3;
-pub const LC_MONETARY: ::c_int = 4;
-pub const LC_MESSAGES: ::c_int = 5;
-pub const LC_ALL: ::c_int = 6;
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        pub const LC_CTYPE: ::c_int = 0;
+        pub const LC_NUMERIC: ::c_int = 1;
+        pub const LC_TIME: ::c_int = 2;
+        pub const LC_COLLATE: ::c_int = 3;
+        pub const LC_MONETARY: ::c_int = 4;
+        pub const LC_MESSAGES: ::c_int = 5;
+        pub const LC_ALL: ::c_int = 6;
+    }
+}
+
 pub const LC_CTYPE_MASK: ::c_int = 1 << LC_CTYPE;
 pub const LC_NUMERIC_MASK: ::c_int = 1 << LC_NUMERIC;
 pub const LC_TIME_MASK: ::c_int = 1 << LC_TIME;
@@ -855,7 +860,6 @@ pub const IPPROTO_NONE: ::c_int = 59;
 /// IP6 destination option
 pub const IPPROTO_DSTOPTS: ::c_int = 60;
 pub const IPPROTO_MTP: ::c_int = 92;
-pub const IPPROTO_BEETPH: ::c_int = 94;
 /// encapsulation header
 pub const IPPROTO_ENCAP: ::c_int = 98;
 /// Protocol indep. multicast
@@ -866,7 +870,6 @@ pub const IPPROTO_COMP: ::c_int = 108;
 pub const IPPROTO_SCTP: ::c_int = 132;
 pub const IPPROTO_MH: ::c_int = 135;
 pub const IPPROTO_UDPLITE: ::c_int = 136;
-pub const IPPROTO_MPLS: ::c_int = 137;
 /// raw IP packet
 pub const IPPROTO_RAW: ::c_int = 255;
 
@@ -905,7 +908,6 @@ pub const IPV6_JOIN_ANYCAST: ::c_int = 27;
 pub const IPV6_LEAVE_ANYCAST: ::c_int = 28;
 pub const IPV6_IPSEC_POLICY: ::c_int = 34;
 pub const IPV6_XFRM_POLICY: ::c_int = 35;
-pub const IPV6_HDRINCL: ::c_int = 36;
 pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
 pub const IPV6_RECVHOPLIMIT: ::c_int = 51;
@@ -941,8 +943,6 @@ pub const IPV6_PMTUDISC_DONT: ::c_int = 0;
 pub const IPV6_PMTUDISC_WANT: ::c_int = 1;
 pub const IPV6_PMTUDISC_DO: ::c_int = 2;
 pub const IPV6_PMTUDISC_PROBE: ::c_int = 3;
-pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
-pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
@@ -1081,7 +1081,6 @@ pub const CLONE_NEWUSER: ::c_int = 0x10000000;
 pub const CLONE_NEWPID: ::c_int = 0x20000000;
 pub const CLONE_NEWNET: ::c_int = 0x40000000;
 pub const CLONE_IO: ::c_int = 0x80000000;
-pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 
 pub const WNOHANG: ::c_int = 0x00000001;
 pub const WUNTRACED: ::c_int = 0x00000002;
@@ -1091,15 +1090,11 @@ pub const WCONTINUED: ::c_int = 0x00000008;
 pub const WNOWAIT: ::c_int = 0x01000000;
 
 // Options for personality(2).
-pub const ADDR_NO_RANDOMIZE: ::c_int = 0x0040000;
 pub const MMAP_PAGE_ZERO: ::c_int = 0x0100000;
-pub const ADDR_COMPAT_LAYOUT: ::c_int = 0x0200000;
-pub const READ_IMPLIES_EXEC: ::c_int = 0x0400000;
 pub const ADDR_LIMIT_32BIT: ::c_int = 0x0800000;
 pub const SHORT_INODE: ::c_int = 0x1000000;
 pub const WHOLE_SECONDS: ::c_int = 0x2000000;
 pub const STICKY_TIMEOUTS: ::c_int = 0x4000000;
-pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
 
 // Options set using PTRACE_SETOPTIONS.
 pub const PTRACE_O_TRACESYSGOOD: ::c_int = 0x00000001;
@@ -1110,9 +1105,6 @@ pub const PTRACE_O_TRACEEXEC: ::c_int = 0x00000010;
 pub const PTRACE_O_TRACEVFORKDONE: ::c_int = 0x00000020;
 pub const PTRACE_O_TRACEEXIT: ::c_int = 0x00000040;
 pub const PTRACE_O_TRACESECCOMP: ::c_int = 0x00000080;
-pub const PTRACE_O_EXITKILL: ::c_int = 0x00100000;
-pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 0x00200000;
-pub const PTRACE_O_MASK: ::c_int = 0x003000ff;
 
 // Wait extended result codes for the above trace options.
 pub const PTRACE_EVENT_FORK: ::c_int = 1;
@@ -1308,6 +1300,24 @@ pub const ARPHRD_IEEE802154: u16 = 804;
 
 pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
+
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        pub const IPPROTO_BEETPH: ::c_int = 94;
+        pub const IPPROTO_MPLS: ::c_int = 137;
+        pub const IPV6_HDRINCL: ::c_int = 36;
+        pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
+        pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
+        pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
+        pub const ADDR_NO_RANDOMIZE: ::c_int = 0x0040000;
+        pub const ADDR_COMPAT_LAYOUT: ::c_int = 0x0200000;
+        pub const READ_IMPLIES_EXEC: ::c_int = 0x0400000;
+        pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
+        pub const PTRACE_O_EXITKILL: ::c_int = 0x00100000;
+        pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 0x00200000;
+        pub const PTRACE_O_MASK: ::c_int = 0x003000ff;
+    }
+}
 
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
@@ -1536,24 +1546,6 @@ extern "C" {
         count: ::size_t,
         offset: off64_t,
     ) -> ::ssize_t;
-    pub fn preadv64(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off64_t,
-    ) -> ::ssize_t;
-    pub fn pwrite64(
-        fd: ::c_int,
-        buf: *const ::c_void,
-        count: ::size_t,
-        offset: off64_t,
-    ) -> ::ssize_t;
-    pub fn pwritev64(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off64_t,
-    ) -> ::ssize_t;
     pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
     pub fn readdir64_r(
         dirp: *mut ::DIR,
@@ -1633,19 +1625,6 @@ extern "C" {
         options: ::c_int,
         rusage: *mut ::rusage,
     ) -> ::pid_t;
-    pub fn openpty(
-        amaster: *mut ::c_int,
-        aslave: *mut ::c_int,
-        name: *mut ::c_char,
-        termp: *const termios,
-        winp: *const ::winsize,
-    ) -> ::c_int;
-    pub fn forkpty(
-        amaster: *mut ::c_int,
-        name: *mut ::c_char,
-        termp: *const termios,
-        winp: *const ::winsize,
-    ) -> ::pid_t;
     pub fn login_tty(fd: ::c_int) -> ::c_int;
     pub fn execvpe(
         file: *const ::c_char,
@@ -1690,10 +1669,53 @@ extern "C" {
 }
 
 cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        extern "C" {
+            pub fn preadv64(
+                fd: ::c_int,
+                iov: *const ::iovec,
+                iovcnt: ::c_int,
+                offset: ::off64_t,
+            ) -> ::ssize_t;
+            pub fn pwrite64(
+                fd: ::c_int,
+                buf: *const ::c_void,
+                count: ::size_t,
+                offset: off64_t,
+            ) -> ::ssize_t;
+            pub fn pwritev64(
+                fd: ::c_int,
+                iov: *const ::iovec,
+                iovcnt: ::c_int,
+                offset: ::off64_t,
+            ) -> ::ssize_t;
+            // uclibc has separate non-const version of this function
+            pub fn forkpty(
+                amaster: *mut ::c_int,
+                name: *mut ::c_char,
+                termp: *const termios,
+                winp: *const ::winsize,
+            ) -> ::pid_t;
+            // uclibc has separate non-const version of this function
+            pub fn openpty(
+                amaster: *mut ::c_int,
+                aslave: *mut ::c_int,
+                name: *mut ::c_char,
+                termp: *const termios,
+                winp: *const ::winsize,
+            ) -> ::c_int;
+        }
+    }
+}
+
+cfg_if! {
     if #[cfg(target_os = "emscripten")] {
         mod emscripten;
         pub use self::emscripten::*;
     } else if #[cfg(target_os = "linux")] {
+        mod linux;
+        pub use self::linux::*;
+    } else if #[cfg(target_os = "l4re")] {
         mod linux;
         pub use self::linux::*;
     } else if #[cfg(target_os = "android")] {
