@@ -2663,7 +2663,7 @@ fn test_linux(target: &str) {
             // support, we except them from the tests here.
             // See https://github.com/rust-lang/libc/pull/2019#issuecomment-754351482
             "EPOLLEXCLUSIVE" | "EPOLLWAKEUP" if uclibc => true,
-            
+
             // FIXME: Requires recent kernel headers (5.8):
             "STATX_MNT_ID" => true,
 
