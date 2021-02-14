@@ -1023,14 +1023,14 @@ pub unsafe fn get_next_area_info(
     )
 }
 
-pub unsafe fn get_port_info(port: port_id, buf: &mut port_info) -> status_t {
+pub unsafe fn get_port_info(port: port_id, buf: *mut port_info) -> status_t {
     _get_port_info(port, buf, core::mem::size_of::<port_info>() as ::size_t)
 }
 
 pub unsafe fn get_next_port_info(
     port: port_id,
-    cookie: &mut i32,
-    portInfo: &mut port_info,
+    cookie: *mut i32,
+    portInfo: *mut port_info,
 ) -> status_t {
     _get_next_port_info(
         port,
@@ -1042,7 +1042,7 @@ pub unsafe fn get_next_port_info(
 
 pub unsafe fn get_port_message_info_etc(
     port: port_id,
-    info: &mut port_message_info,
+    info: *mut port_message_info,
     flags: u32,
     timeout: bigtime_t,
 ) -> status_t {
@@ -1055,14 +1055,14 @@ pub unsafe fn get_port_message_info_etc(
     )
 }
 
-pub unsafe fn get_sem_info(id: sem_id, info: &mut sem_info) -> status_t {
+pub unsafe fn get_sem_info(id: sem_id, info: *mut sem_info) -> status_t {
     _get_sem_info(id, info, core::mem::size_of::<sem_info>() as ::size_t)
 }
 
 pub unsafe fn get_next_sem_info(
     team: team_id,
-    cookie: &mut i32,
-    info: &mut sem_info,
+    cookie: *mut i32,
+    info: *mut sem_info,
 ) -> status_t {
     _get_next_sem_info(
         team,
@@ -1072,13 +1072,13 @@ pub unsafe fn get_next_sem_info(
     )
 }
 
-pub unsafe fn get_team_info(team: team_id, info: &mut team_info) -> status_t {
+pub unsafe fn get_team_info(team: team_id, info: *mut team_info) -> status_t {
     _get_team_info(team, info, core::mem::size_of::<team_info>() as ::size_t)
 }
 
 pub unsafe fn get_next_team_info(
-    cookie: &mut i32,
-    info: &mut team_info,
+    cookie: *mut i32,
+    info: *mut team_info,
 ) -> status_t {
     _get_next_team_info(
         cookie,
@@ -1090,7 +1090,7 @@ pub unsafe fn get_next_team_info(
 pub unsafe fn get_team_usage_info(
     team: team_id,
     who: i32,
-    info: &mut team_usage_info,
+    info: *mut team_usage_info,
 ) -> status_t {
     _get_team_usage_info(
         team,
@@ -1102,15 +1102,15 @@ pub unsafe fn get_team_usage_info(
 
 pub unsafe fn get_thread_info(
     id: thread_id,
-    info: &mut thread_info,
+    info: *mut thread_info,
 ) -> status_t {
     _get_thread_info(id, info, core::mem::size_of::<thread_info>() as ::size_t)
 }
 
 pub unsafe fn get_next_thread_info(
     team: team_id,
-    cookie: &mut i32,
-    info: &mut thread_info,
+    cookie: *mut i32,
+    info: *mut thread_info,
 ) -> status_t {
     _get_next_thread_info(
         team,
@@ -1123,7 +1123,7 @@ pub unsafe fn get_next_thread_info(
 // kernel/image.h
 pub unsafe fn get_image_info(
     image: image_id,
-    info: &mut image_info,
+    info: *mut image_info,
 ) -> status_t {
     _get_image_info(
         image,
@@ -1134,8 +1134,8 @@ pub unsafe fn get_image_info(
 
 pub unsafe fn get_next_image_info(
     team: team_id,
-    cookie: &mut i32,
-    info: &mut image_info,
+    cookie: *mut i32,
+    info: *mut image_info,
 ) -> status_t {
     _get_next_image_info(
         team,
