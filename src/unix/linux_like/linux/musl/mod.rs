@@ -713,7 +713,8 @@ cfg_if! {
     if #[cfg(any(target_arch = "x86_64",
                  target_arch = "aarch64",
                  target_arch = "mips64",
-                 target_arch = "powerpc64"))] {
+                 target_arch = "powerpc64",
+                 target_arch = "s390x"))] {
         mod b64;
         pub use self::b64::*;
     } else if #[cfg(any(target_arch = "x86",
