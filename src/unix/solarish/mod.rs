@@ -994,6 +994,7 @@ pub const O_EXCL: ::c_int = 1024;
 pub const O_NOCTTY: ::c_int = 2048;
 pub const O_TRUNC: ::c_int = 512;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
+pub const O_DIRECTORY: ::c_int = 0x1000000;
 pub const O_SEARCH: ::c_int = 0x200000;
 pub const O_EXEC: ::c_int = 0x400000;
 pub const O_CLOEXEC: ::c_int = 0x800000;
