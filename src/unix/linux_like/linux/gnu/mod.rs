@@ -4,6 +4,12 @@ pub type __rlimit_resource_t = ::c_uint;
 pub type Lmid_t = ::c_long;
 pub type regoff_t = ::c_int;
 
+#[cfg(feature = "extra_traits")]
+use core::{
+    cmp::{Eq, PartialEq},
+    iter::Iterator,
+};
+
 s! {
     pub struct statx {
         pub stx_mask: u32,
@@ -453,7 +459,7 @@ cfg_if! {
         impl Eq for utmpx {}
 
         impl ::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_type", &self.ut_type)
                     .field("ut_pid", &self.ut_pid)

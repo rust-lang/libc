@@ -3,6 +3,9 @@
 //! More functions and definitions can be found in the more specific modules
 //! according to the platform in question.
 
+#[cfg(feature = "extra_traits")]
+use core::fmt::Debug;
+
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;

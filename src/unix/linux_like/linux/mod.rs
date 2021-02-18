@@ -1,5 +1,12 @@
 //! Linux-specific definitions for linux-like values
 
+#[cfg(feature = "extra_traits")]
+use core::{
+    cmp::{Eq, PartialEq},
+    fmt::Debug,
+    iter::Iterator,
+};
+
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
@@ -627,7 +634,7 @@ cfg_if! {
         }
         impl Eq for sockaddr_nl {}
         impl ::fmt::Debug for sockaddr_nl {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("sockaddr_nl")
                     .field("nl_family", &self.nl_family)
                     .field("nl_pid", &self.nl_pid)
@@ -660,7 +667,7 @@ cfg_if! {
         impl Eq for dirent {}
 
         impl ::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_off", &self.d_off)
@@ -698,7 +705,7 @@ cfg_if! {
         impl Eq for dirent64 {}
 
         impl ::fmt::Debug for dirent64 {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("dirent64")
                     .field("d_ino", &self.d_ino)
                     .field("d_off", &self.d_off)
@@ -728,7 +735,7 @@ cfg_if! {
         impl Eq for pthread_cond_t {}
 
         impl ::fmt::Debug for pthread_cond_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("pthread_cond_t")
                 // FIXME: .field("size", &self.size)
                     .finish()
@@ -750,7 +757,7 @@ cfg_if! {
         impl Eq for pthread_mutex_t {}
 
         impl ::fmt::Debug for pthread_mutex_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("pthread_mutex_t")
                 // FIXME: .field("size", &self.size)
                     .finish()
@@ -772,7 +779,7 @@ cfg_if! {
         impl Eq for pthread_rwlock_t {}
 
         impl ::fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("pthread_rwlock_t")
                 // FIXME: .field("size", &self.size)
                     .finish()
@@ -806,7 +813,7 @@ cfg_if! {
         impl Eq for sockaddr_alg {}
 
         impl ::fmt::Debug for sockaddr_alg {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("sockaddr_alg")
                     .field("salg_family", &self.salg_family)
                     .field("salg_type", &self.salg_type)
@@ -851,7 +858,7 @@ cfg_if! {
 
         #[allow(deprecated)]
         impl ::fmt::Debug for af_alg_iv {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("af_alg_iv")
                     .field("ivlen", &self.ivlen)
                     .finish()
@@ -875,7 +882,7 @@ cfg_if! {
         }
         impl Eq for mq_attr {}
         impl ::fmt::Debug for mq_attr {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("mq_attr")
                     .field("mq_flags", &self.mq_flags)
                     .field("mq_maxmsg", &self.mq_maxmsg)
