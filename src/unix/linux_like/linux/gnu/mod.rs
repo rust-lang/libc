@@ -1,14 +1,14 @@
-pub type pthread_t = c_ulong;
-pub type __priority_which_t = ::c_uint;
-pub type __rlimit_resource_t = ::c_uint;
-pub type Lmid_t = ::c_long;
-pub type regoff_t = ::c_int;
-
 #[cfg(feature = "extra_traits")]
 use core::{
     cmp::{Eq, PartialEq},
     iter::Iterator,
 };
+
+pub type pthread_t = c_ulong;
+pub type __priority_which_t = ::c_uint;
+pub type __rlimit_resource_t = ::c_uint;
+pub type Lmid_t = ::c_long;
+pub type regoff_t = ::c_int;
 
 s! {
     pub struct statx {
