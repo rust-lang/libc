@@ -1272,6 +1272,7 @@ fn test_wasi(target: &str) {
         "wasi/api.h",
         "wasi/libc.h",
         "wasi/libc-find-relpath.h",
+        "wasi/libc-nocwd.h",
         "wchar.h",
     }
 

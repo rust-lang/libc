@@ -14,9 +14,9 @@ RUN apt-get update && \
 # verification for now. The sysroot is currently in somewhat of a state of flux
 # and is expected to have breaking changes, so this is an attempt to mitigate
 # those breaking changes on `libc`'s own CI
-RUN git clone https://github.com/CraneStation/wasi-libc && \
+RUN git clone https://github.com/WebAssembly/wasi-libc && \
   cd wasi-libc && \
-  git reset --hard f645f498dfbbbc00a7a97874d33082d3605c3f21
+  git reset --hard f2e779e5f1ba4a539937cedeeaa762c1e0c162df
 RUN apt-get install -y --no-install-recommends llvm
 RUN make -C wasi-libc install -j $(nproc) INSTALL_DIR=/wasi-libc
 
