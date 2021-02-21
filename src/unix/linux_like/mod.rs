@@ -1265,6 +1265,7 @@ pub const ARPHRD_ADAPT: u16 = 264;
 pub const ARPHRD_ROSE: u16 = 270;
 pub const ARPHRD_X25: u16 = 271;
 pub const ARPHRD_HWX25: u16 = 272;
+pub const ARPHRD_CAN: u16 = 280;
 pub const ARPHRD_PPP: u16 = 512;
 pub const ARPHRD_CISCO: u16 = 513;
 pub const ARPHRD_HDLC: u16 = ARPHRD_CISCO;
