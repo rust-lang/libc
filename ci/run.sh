@@ -121,6 +121,6 @@ else
 
   cargo test $opt --manifest-path libc-test/Cargo.toml --target "${TARGET}"
 
-  cargo test $opt --features extra_traits --manifest-path libc-test/Cargo.toml \
+  RUST_BACKTRACE=1 cargo test $opt --features extra_traits --manifest-path libc-test/Cargo.toml \
     --target "${TARGET}"
 fi

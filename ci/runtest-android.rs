@@ -27,6 +27,7 @@ fn main() {
 
     let output = Command::new("adb")
         .arg("shell")
+        .arg("RUST_BACKTRACE=1")
         .arg(&dst)
         .output()
         .expect("failed to run: adb shell");
