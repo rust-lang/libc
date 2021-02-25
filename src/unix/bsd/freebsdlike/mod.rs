@@ -272,6 +272,42 @@ s! {
         pub piod_len: ::size_t,
     }
 
+    // bpf.h
+
+    pub struct bpf_program {
+        pub bf_len: ::c_uint,
+        pub bf_insns: *mut bpf_insn,
+    }
+
+    pub struct bpf_stat {
+        pub bs_recv: ::c_uint,
+        pub bs_drop: ::c_uint,
+    }
+
+    pub struct bpf_version {
+        pub bv_major: ::c_ushort,
+        pub bv_minor: ::c_ushort,
+    }
+
+    pub struct bpf_hdr {
+        pub bh_tstamp: ::timeval,
+        pub bh_caplen: u32,
+        pub bh_datalen: u32,
+        pub bh_hdrlen: ::c_ushort,
+    }
+
+    pub struct bpf_insn {
+        pub code: ::c_ushort,
+        pub jt: ::c_uchar,
+        pub jf: ::c_uchar,
+        pub k: u32,
+    }
+
+    pub struct bpf_dltlist {
+        bfl_len: ::c_uint,
+        bfl_list: *mut ::c_uint,
+    }
+
     // elf.h
 
     pub struct Elf32_Phdr {
