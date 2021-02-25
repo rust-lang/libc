@@ -359,6 +359,14 @@ cfg_if! {
     }
 }
 
+// Non-public helper constant
+#[cfg(all(not(libc_const_size_of), target_pointer_width = "32"))]
+const SIZEOF_LONG: usize = 4;
+#[cfg(all(not(libc_const_size_of), target_pointer_width = "64"))]
+const SIZEOF_LONG: usize = 8;
+#[cfg(libc_const_size_of)]
+const SIZEOF_LONG: usize = ::mem::size_of::<::c_long>();
+
 #[deprecated(
     since = "0.2.64",
     note = "Can vary at runtime.  Use sysconf(3) instead"
@@ -1216,8 +1224,7 @@ pub const ONLRET: ::tcflag_t = 0x40;
 pub const CMGROUP_MAX: usize = 16;
 
 // https://github.com/freebsd/freebsd/blob/master/sys/net/bpf.h
-// sizeof(long)
-pub const BPF_ALIGNMENT: ::c_int = 8;
+pub const BPF_ALIGNMENT: usize = SIZEOF_LONG;
 
 // Values for rtprio struct (prio field) and syscall (function argument)
 pub const RTP_PRIO_MIN: ::c_ushort = 0;
