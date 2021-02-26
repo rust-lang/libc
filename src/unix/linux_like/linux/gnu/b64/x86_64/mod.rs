@@ -1,10 +1,11 @@
 //! x86_64-specific definitions for 64-bit linux-like values
 
-#[cfg(feature = "extra_traits")]
-use core::{
-    cmp::{Eq, PartialEq},
-    iter::Iterator,
-};
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        use core::cmp::{Eq, PartialEq};
+        use core::iter::Iterator;
+    }
+}
 
 pub type c_char = i8;
 pub type wchar_t = i32;

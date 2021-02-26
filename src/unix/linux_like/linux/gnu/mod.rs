@@ -1,8 +1,9 @@
-#[cfg(feature = "extra_traits")]
-use core::{
-    cmp::{Eq, PartialEq},
-    iter::Iterator,
-};
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        use core::cmp::{Eq, PartialEq};
+        use core::iter::Iterator;
+    }
+}
 
 pub type pthread_t = c_ulong;
 pub type __priority_which_t = ::c_uint;

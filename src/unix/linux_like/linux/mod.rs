@@ -1,11 +1,12 @@
 //! Linux-specific definitions for linux-like values
 
-#[cfg(feature = "extra_traits")]
-use core::{
-    cmp::{Eq, PartialEq},
-    fmt::Debug,
-    iter::Iterator,
-};
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        use core::cmp::{Eq, PartialEq};
+        use core::fmt::Debug;
+        use core::iter::Iterator;
+    }
+}
 
 pub type useconds_t = u32;
 pub type dev_t = u64;

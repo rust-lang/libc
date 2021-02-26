@@ -1,9 +1,11 @@
-#[cfg(feature = "extra_traits")]
-use core::{
-    cmp::{Eq, PartialEq},
-    fmt::Debug,
-    iter::Iterator,
-};
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        use core::cmp::{Eq, PartialEq};
+        use core::fmt::Debug;
+        use core::iter::Iterator;
+    }
+}
+
 
 pub type sa_family_t = u16;
 pub type speed_t = ::c_uint;
