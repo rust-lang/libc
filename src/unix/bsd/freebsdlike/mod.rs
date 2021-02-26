@@ -272,6 +272,42 @@ s! {
         pub piod_len: ::size_t,
     }
 
+    // bpf.h
+
+    pub struct bpf_program {
+        pub bf_len: ::c_uint,
+        pub bf_insns: *mut bpf_insn,
+    }
+
+    pub struct bpf_stat {
+        pub bs_recv: ::c_uint,
+        pub bs_drop: ::c_uint,
+    }
+
+    pub struct bpf_version {
+        pub bv_major: ::c_ushort,
+        pub bv_minor: ::c_ushort,
+    }
+
+    pub struct bpf_hdr {
+        pub bh_tstamp: ::timeval,
+        pub bh_caplen: u32,
+        pub bh_datalen: u32,
+        pub bh_hdrlen: ::c_ushort,
+    }
+
+    pub struct bpf_insn {
+        pub code: ::c_ushort,
+        pub jt: ::c_uchar,
+        pub jf: ::c_uchar,
+        pub k: u32,
+    }
+
+    pub struct bpf_dltlist {
+        bfl_len: ::c_uint,
+        bfl_list: *mut ::c_uint,
+    }
+
     // elf.h
 
     pub struct Elf32_Phdr {
@@ -358,6 +394,14 @@ cfg_if! {
         }
     }
 }
+
+// Non-public helper constant
+#[cfg(all(not(libc_const_size_of), target_pointer_width = "32"))]
+const SIZEOF_LONG: usize = 4;
+#[cfg(all(not(libc_const_size_of), target_pointer_width = "64"))]
+const SIZEOF_LONG: usize = 8;
+#[cfg(libc_const_size_of)]
+const SIZEOF_LONG: usize = ::mem::size_of::<::c_long>();
 
 #[deprecated(
     since = "0.2.64",
@@ -1216,8 +1260,7 @@ pub const ONLRET: ::tcflag_t = 0x40;
 pub const CMGROUP_MAX: usize = 16;
 
 // https://github.com/freebsd/freebsd/blob/master/sys/net/bpf.h
-// sizeof(long)
-pub const BPF_ALIGNMENT: ::c_int = 8;
+pub const BPF_ALIGNMENT: usize = SIZEOF_LONG;
 
 // Values for rtprio struct (prio field) and syscall (function argument)
 pub const RTP_PRIO_MIN: ::c_ushort = 0;
