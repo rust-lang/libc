@@ -210,6 +210,7 @@ pub const POSIX_FADV_NORMAL: c_int = 0;
 pub const POSIX_FADV_RANDOM: c_int = 2;
 pub const POSIX_FADV_SEQUENTIAL: c_int = 1;
 pub const POSIX_FADV_WILLNEED: c_int = 3;
+pub const AT_FDCWD: ::c_int = -2;
 pub const AT_EACCESS: c_int = 0x0;
 pub const AT_SYMLINK_NOFOLLOW: c_int = 0x1;
 pub const AT_SYMLINK_FOLLOW: c_int = 0x2;
@@ -775,9 +776,116 @@ extern "C" {
     pub fn __wasilibc_rmdirat(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_find_relpath(
         path: *const c_char,
-        relative_path: *mut *const c_char,
+        abs_prefix: *mut *const c_char,
+        relative_path: *mut *mut c_char,
+        relative_path_len: usize,
     ) -> c_int;
     pub fn __wasilibc_tell(fd: c_int) -> ::off_t;
+    pub fn __wasilibc_nocwd___wasilibc_unlinkat(
+        dirfd: c_int,
+        path: *const c_char,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd___wasilibc_rmdirat(
+        dirfd: c_int,
+        path: *const c_char,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_linkat(
+        olddirfd: c_int,
+        oldpath: *const c_char,
+        newdirfd: c_int,
+        newpath: *const c_char,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_symlinkat(
+        target: *const c_char,
+        dirfd: c_int,
+        path: *const c_char,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_readlinkat(
+        dirfd: c_int,
+        path: *const c_char,
+        buf: *mut c_char,
+        bufsize: usize,
+    ) -> isize;
+    pub fn __wasilibc_nocwd_faccessat(
+        dirfd: c_int,
+        path: *const c_char,
+        mode: c_int,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_renameat(
+        olddirfd: c_int,
+        oldpath: *const c_char,
+        newdirfd: c_int,
+        newpath: *const c_char,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_openat_nomode(
+        dirfd: c_int,
+        path: *const c_char,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_fstatat(
+        dirfd: c_int,
+        path: *const c_char,
+        buf: *mut stat,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_mkdirat_nomode(
+        dirfd: c_int,
+        path: *const c_char,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_utimensat(
+        dirfd: c_int,
+        path: *const c_char,
+        times: *const ::timespec,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_nocwd_opendirat(
+        dirfd: c_int,
+        path: *const c_char,
+    ) -> *mut ::DIR;
+    pub fn __wasilibc_access(
+        pathname: *const c_char,
+        mode: c_int,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_stat(
+        pathname: *const c_char,
+        buf: *mut stat,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_utimens(
+        pathname: *const c_char,
+        times: *const ::timespec,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_link(
+        oldpath: *const c_char,
+        newpath: *const c_char,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_link_oldat(
+        olddirfd: c_int,
+        oldpath: *const c_char,
+        newpath: *const c_char,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_link_newat(
+        oldpath: *const c_char,
+        newdirfd: c_int,
+        newpath: *const c_char,
+        flags: c_int,
+    ) -> c_int;
+    pub fn __wasilibc_rename_oldat(
+        olddirfd: c_int,
+        oldpath: *const c_char,
+        newpath: *const c_char,
+    ) -> c_int;
+    pub fn __wasilibc_rename_newat(
+        oldpath: *const c_char,
+        newdirfd: c_int,
+        newpath: *const c_char,
+    ) -> c_int;
 
     pub fn arc4random() -> u32;
     pub fn arc4random_buf(a: *mut c_void, b: size_t);

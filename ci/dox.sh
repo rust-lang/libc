@@ -6,12 +6,12 @@
 
 set -ex
 
-TARGET_DOC_DIR=target/doc
-README=README.md
-PLATFORM_SUPPORT=platform-support.md
+TARGET_DOC_DIR="target/doc"
+README="README.md"
+PLATFORM_SUPPORT="platform-support.md"
 
-rm -rf $TARGET_DOC_DIR
-mkdir -p $TARGET_DOC_DIR
+rm -rf "$TARGET_DOC_DIR"
+mkdir -p "$TARGET_DOC_DIR"
 
 if ! rustc --version | grep -E "nightly" ; then
     echo "Building the documentation requires a nightly Rust toolchain"
@@ -57,6 +57,7 @@ while read -r target; do
         --no-default-features --features extra_traits
     fi
 
+    mkdir -p "${TARGET_DOC_DIR}/${target}"
     cp -r "target/${target}/doc" "${TARGET_DOC_DIR}/${target}"
 
     echo "* [${target}](${target}/libc/index.html)" >> $PLATFORM_SUPPORT
