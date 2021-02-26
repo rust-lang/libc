@@ -6,7 +6,6 @@ cfg_if! {
     }
 }
 
-
 pub type sa_family_t = u16;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
