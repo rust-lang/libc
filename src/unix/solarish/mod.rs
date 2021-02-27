@@ -946,10 +946,15 @@ pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_SIGNAL: ::c_int = 2;
 pub const SIGEV_THREAD: ::c_int = 3;
 
+pub const IP_RECVDSTADDR: ::c_int = 0x7;
+pub const IP_SEC_OPT: ::c_int = 0x22;
+
 pub const IPV6_UNICAST_HOPS: ::c_int = 0x5;
 pub const IPV6_MULTICAST_IF: ::c_int = 0x6;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 0x7;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
+pub const IPV6_RECVPKTINFO: ::c_int = 0x12;
+pub const IPV6_SEC_OPT: ::c_int = 0x22;
 pub const IPV6_V6ONLY: ::c_int = 0x27;
 
 cfg_if! {
@@ -1425,6 +1430,8 @@ pub const TCP_RTO_INITIAL: ::c_int = 0x19;
 pub const TCP_RTO_MIN: ::c_int = 0x1a;
 pub const TCP_RTO_MAX: ::c_int = 0x1b;
 pub const TCP_LINGER2: ::c_int = 0x1c;
+
+pub const UDP_NAT_T_ENDPOINT: ::c_int = 0x0103;
 
 pub const SOL_SOCKET: ::c_int = 0xffff;
 pub const SO_DEBUG: ::c_int = 0x01;
