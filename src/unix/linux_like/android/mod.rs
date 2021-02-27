@@ -2364,6 +2364,13 @@ f! {
     ) -> ::c_int {
         syscall(SYS_accept4, fd, addr, len, flg) as ::c_int
     }
+
+    // bionic started exposing memfd_create in Android 11 (API level 30).
+    // Once the CI is updated to work with Android 11, the implementation
+    // can be removed.
+    pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int {
+        syscall(SYS_memfd_create, name, flags) as ::c_int
+    }
 }
 
 extern "C" {
