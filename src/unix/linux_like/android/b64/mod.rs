@@ -317,7 +317,7 @@ f! {
         len: *mut ::socklen_t,
         flg: ::c_int
     ) -> ::c_int {
-        syscall(SYS_accept4, fd, addr, len, flg) as ::c_int
+        ::syscall(SYS_accept4, fd, addr, len, flg) as ::c_int
     }
 }
 
