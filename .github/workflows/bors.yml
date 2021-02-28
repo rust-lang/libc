@@ -134,6 +134,7 @@ jobs:
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
           # x86_64-unknown-redox,
+          s390x-unknown-linux-musl,
         ]
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
