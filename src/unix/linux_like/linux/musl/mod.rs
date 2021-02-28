@@ -505,8 +505,6 @@ pub const O_ACCMODE: ::c_int = 0o10000003;
 pub const O_NDELAY: ::c_int = O_NONBLOCK;
 pub const NI_MAXHOST: ::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: ::size_t = 2048;
-pub const POSIX_FADV_DONTNEED: ::c_int = 4;
-pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
@@ -643,6 +641,16 @@ pub const TIOCCBRK: ::c_int = 0x5428;
 pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
+
+cfg_if! {
+    if #[cfg(target_arch = "s390x")] {
+        pub const POSIX_FADV_DONTNEED: ::c_int = 6;
+        pub const POSIX_FADV_NOREUSE: ::c_int = 7;
+    } else {
+        pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+        pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+    }
+}
 
 extern "C" {
     pub fn sendmmsg(
