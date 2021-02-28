@@ -355,13 +355,6 @@ s_no_extra_traits! {
         pub __reserved: [::c_char; 256],
     }
 
-    // FIXME: musl added paddings and adjusted
-    // layout in 1.2.0 but our CI is still 1.1.24.
-    // So, I'm leaving some fields as cfg for now.
-    // ref. https://github.com/bminor/musl/commit/
-    // 1e7f0fcd7ff2096904fd93a2ee6d12a2392be392
-    //
-    // OpenHarmony uses the musl 1.2 layout.
     pub struct utmpx {
         pub ut_type: ::c_short,
         __ut_pad1: ::c_short,
@@ -372,20 +365,13 @@ s_no_extra_traits! {
         pub ut_host: [::c_char; 256],
         pub ut_exit: __exit_status,
 
-        #[cfg(target_env = "musl")]
-        pub ut_session: ::c_long,
-
-        #[cfg(target_env = "ohos")]
         #[cfg(target_endian = "little")]
         pub ut_session: ::c_int,
-        #[cfg(target_env = "ohos")]
         #[cfg(target_endian = "little")]
         __ut_pad2: ::c_int,
 
-        #[cfg(target_env = "ohos")]
         #[cfg(not(target_endian = "little"))]
         __ut_pad2: ::c_int,
-        #[cfg(target_env = "ohos")]
         #[cfg(not(target_endian = "little"))]
         pub ut_session: ::c_int,
 
