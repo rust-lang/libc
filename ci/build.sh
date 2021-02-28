@@ -238,6 +238,7 @@ riscv32imc-unknown-none-elf \
 riscv32gc-unknown-linux-gnu \
 riscv64gc-unknown-none-elf \
 riscv64imac-unknown-none-elf \
+s390x-unknown-linux-musl \
 sparc-unknown-linux-gnu \
 sparc64-unknown-netbsd \
 
