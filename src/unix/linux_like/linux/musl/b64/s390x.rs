@@ -412,8 +412,8 @@ pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
 pub const TCSAFLUSH: ::c_int = 2;
 
-pub const TIOCLINUX: ::c_ulong = 0x541C;
-pub const TIOCGSERIAL: ::c_ulong = 0x541E;
+pub const TIOCLINUX: ::c_int = 0x541C;
+pub const TIOCGSERIAL: ::c_int = 0x541E;
 pub const TIOCM_ST: ::c_int = 0x008;
 pub const TIOCM_SR: ::c_int = 0x010;
 pub const TIOCM_CTS: ::c_int = 0x020;
