@@ -1,0 +1,30 @@
+{
+  "arch": "s390x",
+  "cpu": "z10",
+  "crt-static-respected": true,
+  "data-layout": "E-m:e-i1:8:16-i8:8:16-i64:64-f128:64-a:8:16-n32:64",
+  "dynamic-linking": true,
+  "env": "musl",
+  "executables": true,
+  "features": "-vector",
+  "has-elf-tls": true,
+  "has-rpath": true,
+  "is-builtin": true,
+  "linker-is-gnu": true,
+  "llvm-target": "s390x-unknown-linux-musl",
+  "max-atomic-width": 64,
+  "min-global-align": 16,
+  "os": "linux",
+  "position-independent-executables": true,
+  "pre-link-args": {
+    "gcc": [
+      "-Wl,--as-needed",
+      "-Wl,-z,noexecstack"
+    ]
+  },
+  "relro-level": "full",
+  "static-position-independent-executables": true,
+  "target-endian": "big",
+  "target-family": "unix",
+  "target-pointer-width": "64"
+}
