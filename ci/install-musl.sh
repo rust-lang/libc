@@ -60,6 +60,13 @@ case ${1} in
           ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
+    s390x)
+        musl_arch=s390x
+        kernel_arch=s390
+        CC=s390x-linux-gnu-gcc \
+          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+        make install -j4
+        ;;
     *)
         echo "Unknown target arch: \"${1}\""
         exit 1
