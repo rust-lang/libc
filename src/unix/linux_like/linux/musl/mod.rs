@@ -260,14 +260,9 @@ s_no_extra_traits! {
         pub __reserved: [::c_char; 256],
     }
 
-    // FIXME: musl added paddings and adjusted
-    // layout in 1.2.0 but our CI is still 1.1.24.
-    // So, I'm leaving some fields as comments for now.
-    // ref. https://github.com/bminor/musl/commit/
-    // 1e7f0fcd7ff2096904fd93a2ee6d12a2392be392
     pub struct utmpx {
         pub ut_type: ::c_short,
-        //__ut_pad1: ::c_short,
+        __ut_pad1: ::c_short,
         pub ut_pid: ::pid_t,
         pub ut_line: [::c_char; 32],
         pub ut_id: [::c_char; 4],
@@ -275,15 +270,15 @@ s_no_extra_traits! {
         pub ut_host: [::c_char; 256],
         pub ut_exit: __exit_status,
 
-        //#[cfg(target_endian = "little")]
-        pub ut_session: ::c_long,
-        //#[cfg(target_endian = "little")]
-        //__ut_pad2: ::c_long,
+        #[cfg(target_endian = "little")]
+        pub ut_session: ::c_int,
+        #[cfg(target_endian = "little")]
+        __ut_pad2: ::c_int,
 
-        //#[cfg(not(target_endian = "little"))]
-        //__ut_pad2: ::c_int,
-        //#[cfg(not(target_endian = "little"))]
-        //pub ut_session: ::c_int,
+        #[cfg(not(target_endian = "little"))]
+        __ut_pad2: ::c_int,
+        #[cfg(not(target_endian = "little"))]
+        pub ut_session: ::c_int,
 
         pub ut_tv: ::timeval,
         pub ut_addr_v6: [::c_uint; 4],
