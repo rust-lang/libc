@@ -125,7 +125,6 @@ armv7-unknown-linux-musleabihf \
 sparc64-unknown-linux-gnu \
 wasm32-unknown-emscripten \
 x86_64-linux-android \
-x86_64-rumprun-netbsd \
 "
 RUST_GT_1_19_LINUX_TARGETS="\
 aarch64-unknown-linux-musl \
