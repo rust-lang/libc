@@ -800,6 +800,7 @@ cfg_if! {
         pub const QNX6_SUPER_MAGIC: ::c_long = 0x68191122;
         pub const RDTGROUP_SUPER_MAGIC: ::c_long = 0x7655821;
         pub const REISERFS_SUPER_MAGIC: ::c_long = 0x52654973;
+        pub const SELINUX_MAGIC: ::c_long = 0xf97cff8c;
         pub const SMB_SUPER_MAGIC: ::c_long = 0x0000517b;
         pub const SYSFS_MAGIC: ::c_long = 0x62656572;
         pub const TMPFS_MAGIC: ::c_long = 0x01021994;
@@ -851,6 +852,7 @@ cfg_if! {
         pub const QNX6_SUPER_MAGIC: ::c_uint = 0x68191122;
         pub const RDTGROUP_SUPER_MAGIC: ::c_uint = 0x7655821;
         pub const REISERFS_SUPER_MAGIC: ::c_uint = 0x52654973;
+        pub const SELINUX_MAGIC: ::c_uint = 0xf97cff8c;
         pub const SMB_SUPER_MAGIC: ::c_uint = 0x0000517b;
         pub const SYSFS_MAGIC: ::c_uint = 0x62656572;
         pub const TMPFS_MAGIC: ::c_uint = 0x01021994;
