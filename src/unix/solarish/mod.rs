@@ -2551,7 +2551,7 @@ extern "C" {
 
     // The epoll functions are actually only present on illumos.  However,
     // there are things using epoll on illumos (built using the
-    // x86_64-sun-solaris target) which would break until the illumos target is
+    // x86_64-pc-solaris target) which would break until the illumos target is
     // present in rustc.
     pub fn epoll_pwait(
         epfd: ::c_int,

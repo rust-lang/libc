@@ -130,7 +130,6 @@ RUST_GT_1_19_LINUX_TARGETS="\
 aarch64-unknown-linux-musl \
 sparcv9-sun-solaris \
 wasm32-unknown-unknown \
-x86_64-sun-solaris \
 "
 RUST_GT_1_24_LINUX_TARGETS="\
 i586-unknown-linux-musl \
@@ -145,6 +144,7 @@ riscv64gc-unknown-linux-gnu \
 wasm32-wasi \
 x86_64-fortanix-unknown-sgx \
 x86_64-fuchsia \
+x86_64-pc-solaris \
 x86_64-pc-windows-gnu \
 x86_64-unknown-illumos \
 x86_64-unknown-linux-gnux32 \
