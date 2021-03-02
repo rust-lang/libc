@@ -1,11 +1,15 @@
 [package]
 name = "libc-test"
-version = "0.1.0"
-authors = ["Alex Crichton <alex@alexcrichton.com>"]
+version = "0.2.87"
+authors = ["The Rust Project Developers"]
+license = "MIT OR Apache-2.0"
 build = "build.rs"
+repository = "https://github.com/rust-lang/libc"
+homepage = "https://github.com/rust-lang/libc"
 
 [dependencies.libc]
 path = ".."
+version = "0.2.87"
 default-features = false
 
 [build-dependencies]
