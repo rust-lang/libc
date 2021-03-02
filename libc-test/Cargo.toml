@@ -6,6 +6,9 @@ license = "MIT OR Apache-2.0"
 build = "build.rs"
 repository = "https://github.com/rust-lang/libc"
 homepage = "https://github.com/rust-lang/libc"
+description = """
+A test crate for the libc crate.
+"""
 
 [dependencies.libc]
 path = ".."
