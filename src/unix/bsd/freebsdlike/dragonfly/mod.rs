@@ -983,8 +983,6 @@ pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 125;
 pub const _SC_THREAD_ROBUST_PRIO_INHERIT: ::c_int = 126;
 pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 127;
 
-pub const WNOHANG: ::c_int = 0x1;
-pub const WUNTRACED: ::c_int = 0x2;
 pub const WCONTINUED: ::c_int = 0x4;
 pub const WSTOPPED: ::c_int = 0x2;
 pub const WNOWAIT: ::c_int = 0x8;
