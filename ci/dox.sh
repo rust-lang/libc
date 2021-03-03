@@ -60,7 +60,7 @@ while read -r target; do
     mkdir -p "${TARGET_DOC_DIR}/${target}"
     cp -r "target/${target}/doc" "${TARGET_DOC_DIR}/${target}"
 
-    echo "* [${target}](${target}/libc/index.html)" >> $PLATFORM_SUPPORT
+    echo "* [${target}](${target}/doc/libc/index.html)" >> $PLATFORM_SUPPORT
 done < targets
 
 # Replace <div class="platform_support"></div> with the contents of $PLATFORM_SUPPORT
