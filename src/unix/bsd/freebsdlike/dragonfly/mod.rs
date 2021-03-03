@@ -17,6 +17,7 @@ pub type uuid_t = ::uuid;
 
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
+pub type idtype_t = ::c_uint;
 
 pub type mqd_t = ::c_int;
 pub type sem_t = *mut sem;
@@ -982,8 +983,17 @@ pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 125;
 pub const _SC_THREAD_ROBUST_PRIO_INHERIT: ::c_int = 126;
 pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 127;
 
-pub const WCONTINUED: ::c_int = 4;
-pub const WSTOPPED: ::c_int = 0o177;
+pub const WCONTINUED: ::c_int = 0x4;
+pub const WSTOPPED: ::c_int = 0x2;
+pub const WNOWAIT: ::c_int = 0x8;
+pub const WEXITED: ::c_int = 0x10;
+pub const WTRAPPED: ::c_int = 0x20;
+
+// Similar to FreeBSD, only the standardized ones are exposed.
+// There are more.
+pub const P_PID: idtype_t = 0;
+pub const P_PGID: idtype_t = 2;
+pub const P_ALL: idtype_t = 7;
 
 // Values for struct rtprio (type_ field)
 pub const RTP_PRIO_REALTIME: ::c_ushort = 0;
@@ -1059,6 +1069,13 @@ extern "C" {
     pub fn aio_waitcomplete(
         iocbp: *mut *mut aiocb,
         timeout: *mut ::timespec,
+    ) -> ::c_int;
+
+    pub fn waitid(
+        idtype: idtype_t,
+        id: ::id_t,
+        infop: *mut ::siginfo_t,
+        options: ::c_int,
     ) -> ::c_int;
 
     pub fn freelocale(loc: ::locale_t);
