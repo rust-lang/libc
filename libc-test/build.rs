@@ -2737,6 +2737,9 @@ fn test_linux(target: &str) {
             // assume it's a int instead.
             "getnameinfo" if uclibc => true,
 
+            // FIXME: This needs musl 1.2.2 or later.
+            "gettid" if musl => true,
+
             _ => false,
         }
     });
