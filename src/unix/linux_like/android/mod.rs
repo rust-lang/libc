@@ -2809,6 +2809,8 @@ extern "C" {
     pub fn regfree(preg: *mut ::regex_t);
 
     pub fn android_set_abort_message(msg: *const ::c_char);
+
+    pub fn gettid() -> ::pid_t;
 }
 
 cfg_if! {
