@@ -219,14 +219,6 @@ s! {
         pub cmcred_groups: [::gid_t; CMGROUP_MAX],
     }
 
-    pub struct xucred {
-        pub cr_version: ::c_uint,
-        pub cr_uid: ::uid_t,
-        pub cr_ngroups: ::c_short,
-        pub cr_groups: [::gid_t; 16],
-        __cr_unused1: *mut ::c_void,
-    }
-
     pub struct rtprio {
         pub type_: ::c_ushort,
         pub prio: ::c_ushort,
