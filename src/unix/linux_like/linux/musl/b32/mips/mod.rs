@@ -388,8 +388,10 @@ pub const SO_PRIORITY: ::c_int = 12;
 pub const SO_BSDCOMPAT: ::c_int = 14;
 pub const SO_PASSCRED: ::c_int = 17;
 pub const SO_PEERCRED: ::c_int = 18;
+pub const SO_PEERSEC: ::c_int = 30;
 pub const SO_SNDBUFFORCE: ::c_int = 31;
 pub const SO_RCVBUFFORCE: ::c_int = 33;
+pub const SO_PASSSEC: ::c_int = 34;
 
 pub const SA_ONSTACK: ::c_int = 0x08000000;
 pub const SA_SIGINFO: ::c_int = 8;
