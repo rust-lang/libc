@@ -1821,6 +1821,9 @@ fn test_freebsd(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // `mmsghdr` is not available in FreeBSD 10
             "mmsghdr" if Some(10) == freebsd_ver => true,
@@ -1897,6 +1900,9 @@ fn test_freebsd(target: &str) {
             // conflicting with `p_type` macro from <resolve.h>.
             ("Elf32_Phdr", "p_type") => true,
             ("Elf64_Phdr", "p_type") => true,
+
+            // not available until FreeBSD 12, and is an anonymous union there.
+            ("xucred", "cr_pid__c_anonymous_union") => true,
 
             _ => false,
         }

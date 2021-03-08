@@ -171,6 +171,14 @@ s! {
         pub sdl_route: [::c_ushort; 16],
     }
 
+    pub struct xucred {
+        pub cr_version: ::c_uint,
+        pub cr_uid: ::uid_t,
+        pub cr_ngroups: ::c_short,
+        pub cr_groups: [::gid_t; 16],
+        __cr_unused1: *mut ::c_void,
+    }
+
     pub struct stack_t {
         pub ss_sp: *mut ::c_char,
         pub ss_size: ::size_t,
@@ -238,7 +246,6 @@ s_no_extra_traits! {
         pub sigev_value: ::sigval,
         __unused3: *mut ::c_void        //actually a function pointer
     }
-
 }
 
 cfg_if! {

@@ -89,14 +89,6 @@ s! {
         pub msg_ctime: ::time_t,
     }
 
-    pub struct xucred {
-        pub cr_version: ::c_uint,
-        pub cr_uid: ::uid_t,
-        pub cr_ngroups: ::c_short,
-        pub cr_groups: [::gid_t;16],
-        __cr_unused1: *mut ::c_void,
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_size: ::size_t,
@@ -141,6 +133,23 @@ s_no_extra_traits! {
         pub ut_line: [::c_char; 16],
         pub ut_host: [::c_char; 128],
         pub __ut_spare: [::c_char; 64],
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_cr_pid {
+        __cr_unused: *mut ::c_void,
+        pub cr_pid: ::pid_t,
+    }
+
+    pub struct xucred {
+        pub cr_version: ::c_uint,
+        pub cr_uid: ::uid_t,
+        pub cr_ngroups: ::c_short,
+        pub cr_groups: [::gid_t; 16],
+        #[cfg(libc_union)]
+        pub cr_pid__c_anonymous_union: __c_anonymous_cr_pid,
+        #[cfg(not(libc_union))]
+        __cr_unused1: *mut ::c_void,
     }
 
     pub struct sockaddr_dl {
@@ -222,6 +231,73 @@ cfg_if! {
                 self.ut_line.hash(state);
                 self.ut_host.hash(state);
                 self.__ut_spare.hash(state);
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_cr_pid {
+            fn eq(&self, other: &__c_anonymous_cr_pid) -> bool {
+                unsafe { self.cr_pid == other.cr_pid}
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_cr_pid {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_cr_pid {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("cr_pid")
+                    .field("cr_pid", unsafe { &self.cr_pid })
+                    .finish()
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_cr_pid {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.cr_pid.hash(state) };
+            }
+        }
+
+        impl PartialEq for xucred {
+            fn eq(&self, other: &xucred) -> bool {
+                #[cfg(libc_union)]
+                let equal_cr_pid = self.cr_pid__c_anonymous_union
+                    == other.cr_pid__c_anonymous_union;
+                #[cfg(not(libc_union))]
+                let equal_cr_pid = self.__cr_unused1 == other.__cr_unused1;
+
+                self.cr_version == other.cr_version
+                    && self.cr_uid == other.cr_uid
+                    && self.cr_ngroups == other.cr_ngroups
+                    && self.cr_groups == other.cr_groups
+                    && equal_cr_pid
+            }
+        }
+        impl Eq for xucred {}
+        impl ::fmt::Debug for xucred {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let mut struct_formatter = f.debug_struct("xucred");
+                struct_formatter.field("cr_version", &self.cr_version);
+                struct_formatter.field("cr_uid", &self.cr_uid);
+                struct_formatter.field("cr_ngroups", &self.cr_ngroups);
+                struct_formatter.field("cr_groups", &self.cr_groups);
+                #[cfg(libc_union)]
+                struct_formatter.field(
+                    "cr_pid__c_anonymous_union",
+                    &self.cr_pid__c_anonymous_union
+                );
+                struct_formatter.finish()
+            }
+        }
+        impl ::hash::Hash for xucred {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cr_version.hash(state);
+                self.cr_uid.hash(state);
+                self.cr_ngroups.hash(state);
+                self.cr_groups.hash(state);
+                #[cfg(libc_union)]
+                self.cr_pid__c_anonymous_union.hash(state);
+                #[cfg(not(libc_union))]
+                self.__cr_unused1.hash(state);
             }
         }
 
@@ -629,7 +705,6 @@ pub const SO_PROTOCOL: ::c_int = 0x1016;
 pub const SO_PROTOTYPE: ::c_int = SO_PROTOCOL;
 pub const SO_VENDOR: ::c_int = 0x80000000;
 
-pub const LOCAL_PEERCRED: ::c_int = 1;
 pub const LOCAL_CREDS: ::c_int = 2;
 pub const LOCAL_CONNWAIT: ::c_int = 4;
 pub const LOCAL_VENDOR: ::c_int = SO_VENDOR;
@@ -1102,9 +1177,6 @@ pub const TAB3: ::tcflag_t = 0x00000004;
 pub const _PC_ACL_NFS4: ::c_int = 64;
 
 pub const _SC_CPUSET_SIZE: ::c_int = 122;
-
-pub const XU_NGROUPS: ::c_int = 16;
-pub const XUCRED_VERSION: ::c_uint = 0;
 
 // Flags which can be passed to pdfork(2)
 pub const PD_DAEMON: ::c_int = 0x00000001;
