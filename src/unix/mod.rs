@@ -27,7 +27,7 @@ pub type uid_t = u32;
 pub type gid_t = u32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
-pub type sighandler_t = _c_anonymous_sigaction_handler;
+pub type sighandler_t = __c_anonymous_sigaction_handler;
 pub type cc_t = ::c_uchar;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
@@ -41,7 +41,7 @@ impl ::Clone for DIR {
 pub type locale_t = *mut ::c_void;
 
 s_no_extra_traits! {
-    pub union _c_anonymous_sigaction_handler {
+    pub union __c_anonymous_sigaction_handler {
         pub sa_handler: Option<extern "C" fn(c_int) -> ()>,
         pub sa_sigaction: Option<extern "C" fn(
             c_int,
