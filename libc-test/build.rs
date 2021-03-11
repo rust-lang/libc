@@ -183,6 +183,9 @@ fn test_apple(target: &str) {
     }
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // FIXME: actually a union
             "sigval" => true,
