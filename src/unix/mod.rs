@@ -210,9 +210,9 @@ s! {
 pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
 
-pub const SIG_DFL: sighandler_t = sighandler_t {default: 0};
-pub const SIG_IGN: sighandler_t = sighandler_t {default: 1};
-pub const SIG_ERR: sighandler_t = sighandler_t {default: !0};
+pub const SIG_DFL: sighandler_t = sighandler_t { default: 0 };
+pub const SIG_IGN: sighandler_t = sighandler_t { default: 1 };
+pub const SIG_ERR: sighandler_t = sighandler_t { default: !0 };
 
 pub const DT_UNKNOWN: u8 = 0;
 pub const DT_FIFO: u8 = 1;
@@ -1722,5 +1722,28 @@ cfg_if! {
     } else {
         mod no_align;
         pub use self::no_align::*;
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for __c_anonymous_sigaction_handler {
+            fn eq(&self, other: &__c_anonymous_sigaction_handler) -> bool {
+                unsafe { self.default == other.default }
+            }
+        }
+        impl Eq for __c_anonymous_sigaction_handler {}
+        impl ::fmt::Debug for __c_anonymous_sigaction_handler {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigaction_t")
+                    .field("value", unsafe { &self.default } )
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for __c_anonymous_sigaction_handler {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.default.hash(state) };
+            }
+        }
     }
 }
