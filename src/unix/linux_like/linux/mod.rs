@@ -284,6 +284,40 @@ s! {
         pub u: [u32; 7],
     }
 
+    pub struct uinput_ff_upload {
+        pub request_id: ::__u32,
+        pub retval: ::__s32,
+        pub effect: ff_effect,
+        pub old: ff_effect,
+    }
+
+    pub struct uinput_ff_erase {
+        pub request_id: ::__u32,
+        pub retval: ::__s32,
+        pub effect_id: ::__u32,
+    }
+
+    pub struct uinput_setup {
+        pub id: input_id,
+        pub name: [::c_char; UINPUT_MAX_NAME_SIZE],
+        pub ff_effects_max: ::__u32,
+    }
+
+    pub struct uinput_abs_setup {
+        pub code: ::__u16,
+        pub absinfo: input_absinfo,
+    }
+
+    pub struct uinput_user_dev {
+        pub name: [::c_char; UINPUT_MAX_NAME_SIZE],
+        pub id: input_id,
+        pub ff_effects_max: ::__u32,
+        pub absmax: [::__s32; ABS_CNT],
+        pub absmin: [::__s32; ABS_CNT],
+        pub absfuzz: [::__s32; ABS_CNT],
+        pub absflat: [::__s32; ABS_CNT],
+    }
+
     pub struct dl_phdr_info {
         #[cfg(target_pointer_width = "64")]
         pub dlpi_addr: Elf64_Addr,
@@ -2470,6 +2504,38 @@ pub const IN_ALL_EVENTS: u32 = IN_ACCESS
 
 pub const IN_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const IN_NONBLOCK: ::c_int = O_NONBLOCK;
+
+// linux/input.h
+pub const FF_MAX: ::__u16 = 0x7f;
+pub const FF_CNT: usize = FF_MAX as usize + 1;
+
+// linux/input-event-codes.h
+pub const INPUT_PROP_MAX: ::__u16 = 0x1f;
+pub const INPUT_PROP_CNT: usize = INPUT_PROP_MAX as usize + 1;
+pub const EV_MAX: ::__u16 = 0x1f;
+pub const EV_CNT: usize = EV_MAX as usize + 1;
+pub const SYN_MAX: ::__u16 = 0xf;
+pub const SYN_CNT: usize = SYN_MAX as usize + 1;
+pub const KEY_MAX: ::__u16 = 0x2ff;
+pub const KEY_CNT: usize = KEY_MAX as usize + 1;
+pub const REL_MAX: ::__u16 = 0x0f;
+pub const REL_CNT: usize = REL_MAX as usize + 1;
+pub const ABS_MAX: ::__u16 = 0x3f;
+pub const ABS_CNT: usize = ABS_MAX as usize + 1;
+pub const SW_MAX: ::__u16 = 0x10;
+pub const SW_CNT: usize = SW_MAX as usize + 1;
+pub const MSC_MAX: ::__u16 = 0x07;
+pub const MSC_CNT: usize = MSC_MAX as usize + 1;
+pub const LED_MAX: ::__u16 = 0x0f;
+pub const LED_CNT: usize = LED_MAX as usize + 1;
+pub const REP_MAX: ::__u16 = 0x01;
+pub const REP_CNT: usize = REP_MAX as usize + 1;
+pub const SND_MAX: ::__u16 = 0x07;
+pub const SND_CNT: usize = SND_MAX as usize + 1;
+
+// linux/uinput.h
+pub const UINPUT_VERSION: ::c_uint = 5;
+pub const UINPUT_MAX_NAME_SIZE: usize = 80;
 
 // uapi/linux/fanotify.h
 pub const FAN_ACCESS: u64 = 0x0000_0001;

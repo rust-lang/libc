@@ -2426,6 +2426,7 @@ fn test_linux(target: &str) {
         "linux/rtnetlink.h",
         "linux/seccomp.h",
         "linux/sockios.h",
+        "linux/uinput.h",
         "linux/vm_sockets.h",
         "linux/wait.h",
         "sys/fanotify.h",
