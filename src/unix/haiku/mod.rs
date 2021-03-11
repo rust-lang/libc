@@ -874,6 +874,7 @@ pub const LOCK_UN: ::c_int = 0x08;
 
 pub const SIGSTKSZ: ::size_t = 16384;
 
+pub const IOV_MAX: ::c_int = 1024;
 pub const PATH_MAX: ::c_int = 1024;
 
 pub const SA_NOCLDSTOP: ::c_int = 0x01;
@@ -1502,12 +1503,12 @@ extern "C" {
     pub fn writev(
         fd: ::c_int,
         iov: *const ::iovec,
-        count: ::size_t,
+        count: ::c_int,
     ) -> ::ssize_t;
     pub fn readv(
         fd: ::c_int,
         iov: *const ::iovec,
-        count: ::size_t,
+        count: ::c_int,
     ) -> ::ssize_t;
 
     pub fn sendmsg(
