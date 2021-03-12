@@ -874,6 +874,7 @@ pub const LOCK_UN: ::c_int = 0x08;
 
 pub const SIGSTKSZ: ::size_t = 16384;
 
+pub const IOV_MAX: ::c_int = 1024;
 pub const PATH_MAX: ::c_int = 1024;
 
 pub const SA_NOCLDSTOP: ::c_int = 0x01;
@@ -924,7 +925,10 @@ pub const _PC_2_SYMLINKS: ::c_int = 37;
 pub const _PC_XATTR_EXISTS: ::c_int = 38;
 pub const _PC_XATTR_ENABLED: ::c_int = 39;
 
-pub const FIONBIO: ::c_int = 0xbe000000;
+pub const FIONBIO: ::c_ulong = 0xbe000000;
+pub const FIONREAD: ::c_ulong = 0xbe000001;
+pub const FIOSEEKDATA: ::c_ulong = 0xbe000002;
+pub const FIOSEEKHOLE: ::c_ulong = 0xbe000003;
 
 pub const _SC_ARG_MAX: ::c_int = 15;
 pub const _SC_CHILD_MAX: ::c_int = 16;
@@ -1201,30 +1205,30 @@ pub const TCIFLUSH: ::c_int = 0x01;
 pub const TCOFLUSH: ::c_int = 0x02;
 pub const TCIOFLUSH: ::c_int = 0x03;
 
-pub const TCGETA: ::c_int = 0x8000;
-pub const TCSETA: ::c_int = TCGETA + 1;
-pub const TCSETAF: ::c_int = TCGETA + 2;
-pub const TCSETAW: ::c_int = TCGETA + 3;
-pub const TCWAITEVENT: ::c_int = TCGETA + 4;
-pub const TCSBRK: ::c_int = TCGETA + 5;
-pub const TCFLSH: ::c_int = TCGETA + 6;
-pub const TCXONC: ::c_int = TCGETA + 7;
-pub const TCQUERYCONNECTED: ::c_int = TCGETA + 8;
-pub const TCGETBITS: ::c_int = TCGETA + 9;
-pub const TCSETDTR: ::c_int = TCGETA + 10;
-pub const TCSETRTS: ::c_int = TCGETA + 11;
-pub const TIOCGWINSZ: ::c_int = TCGETA + 12;
-pub const TIOCSWINSZ: ::c_int = TCGETA + 13;
-pub const TCVTIME: ::c_int = TCGETA + 14;
-pub const TIOCGPGRP: ::c_int = TCGETA + 15;
-pub const TIOCSPGRP: ::c_int = TCGETA + 16;
-pub const TIOCSCTTY: ::c_int = TCGETA + 17;
-pub const TIOCMGET: ::c_int = TCGETA + 18;
-pub const TIOCMSET: ::c_int = TCGETA + 19;
-pub const TIOCSBRK: ::c_int = TCGETA + 20;
-pub const TIOCCBRK: ::c_int = TCGETA + 21;
-pub const TIOCMBIS: ::c_int = TCGETA + 22;
-pub const TIOCMBIC: ::c_int = TCGETA + 23;
+pub const TCGETA: ::c_ulong = 0x8000;
+pub const TCSETA: ::c_ulong = TCGETA + 1;
+pub const TCSETAF: ::c_ulong = TCGETA + 2;
+pub const TCSETAW: ::c_ulong = TCGETA + 3;
+pub const TCWAITEVENT: ::c_ulong = TCGETA + 4;
+pub const TCSBRK: ::c_ulong = TCGETA + 5;
+pub const TCFLSH: ::c_ulong = TCGETA + 6;
+pub const TCXONC: ::c_ulong = TCGETA + 7;
+pub const TCQUERYCONNECTED: ::c_ulong = TCGETA + 8;
+pub const TCGETBITS: ::c_ulong = TCGETA + 9;
+pub const TCSETDTR: ::c_ulong = TCGETA + 10;
+pub const TCSETRTS: ::c_ulong = TCGETA + 11;
+pub const TIOCGWINSZ: ::c_ulong = TCGETA + 12;
+pub const TIOCSWINSZ: ::c_ulong = TCGETA + 13;
+pub const TCVTIME: ::c_ulong = TCGETA + 14;
+pub const TIOCGPGRP: ::c_ulong = TCGETA + 15;
+pub const TIOCSPGRP: ::c_ulong = TCGETA + 16;
+pub const TIOCSCTTY: ::c_ulong = TCGETA + 17;
+pub const TIOCMGET: ::c_ulong = TCGETA + 18;
+pub const TIOCMSET: ::c_ulong = TCGETA + 19;
+pub const TIOCSBRK: ::c_ulong = TCGETA + 20;
+pub const TIOCCBRK: ::c_ulong = TCGETA + 21;
+pub const TIOCMBIS: ::c_ulong = TCGETA + 22;
+pub const TIOCMBIC: ::c_ulong = TCGETA + 23;
 
 pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
@@ -1499,12 +1503,12 @@ extern "C" {
     pub fn writev(
         fd: ::c_int,
         iov: *const ::iovec,
-        count: ::size_t,
+        count: ::c_int,
     ) -> ::ssize_t;
     pub fn readv(
         fd: ::c_int,
         iov: *const ::iovec,
-        count: ::size_t,
+        count: ::c_int,
     ) -> ::ssize_t;
 
     pub fn sendmsg(
