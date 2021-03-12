@@ -2514,6 +2514,10 @@ fn test_linux(target: &str) {
         if ty.starts_with("__c_anonymous_") {
             return true;
         }
+        // FIXME: musl CI has old headers
+        if (musl || sparc64) && ty.starts_with("uinput_") {
+            return true;
+        }
         match ty {
             // These cannot be tested when "resolv.h" is included and are tested
             // in the `linux_elf.rs` file.
@@ -2674,6 +2678,12 @@ fn test_linux(target: &str) {
 
             // FIXME: Requires recent kernel headers (5.8):
             "STATX_MNT_ID" => true,
+
+            // FIXME: requires more recent kernel headers on CI
+            | "UINPUT_VERSION"
+            | "SW_MAX"
+            | "SW_CNT"
+                if musl || mips || ppc64 || riscv64 || sparc64 => true,
 
             _ => false,
         }
