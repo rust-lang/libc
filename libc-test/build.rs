@@ -84,7 +84,10 @@ fn do_semver() {
 
     // NOTE: Windows has the same `family` as `os`, no point in including it
     // twice.
-    if family != os {
+    // NOTE: Android doesn't include the unix file (or the Linux file) because
+    // there are some many definitions missing it's actually easier just to
+    // maintain a file for Android.
+    if family != os && os != "android" {
         process_semver_file(&mut output, &mut semver_root, &family);
     }
     process_semver_file(&mut output, &mut semver_root, &vendor);
