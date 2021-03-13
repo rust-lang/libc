@@ -632,7 +632,6 @@ MADV_PROTECT
 MADV_RANDOM
 MADV_SEQUENTIAL
 MADV_WILLNEED
-MAP_32BIT
 MAP_COPY
 MAP_FILE
 MAP_HASSEMAPHORE
@@ -1170,15 +1169,6 @@ YESSTR
 _IOFBF
 _IOLBF
 _IONBF
-_MC_FLAG_MASK
-_MC_FPFMT_NODEV
-_MC_FPFMT_XMM
-_MC_FPOWNED_FPU
-_MC_FPOWNED_NONE
-_MC_FPOWNED_PCB
-_MC_HASBASES
-_MC_HASFPXSTATE
-_MC_HASSEGS
 _PC_ACL_EXTENDED
 _PC_ACL_NFS4
 _PC_ACL_PATH_MAX
@@ -1363,8 +1353,6 @@ fdopendir
 fexecve
 fflags_t
 forkpty
-fpreg
-fpreg32
 freeifaddrs
 freelocale
 fsid_t
@@ -1425,8 +1413,6 @@ login_tty
 lutimes
 lwpid_t
 madvise
-max_align_t
-mcontext_t
 memmem
 memrchr
 mincore
@@ -1534,8 +1520,6 @@ readdir_r
 readlinkat
 recvmmsg
 recvmsg
-reg
-reg32
 regcomp
 regerror
 regex_t
@@ -1598,7 +1582,6 @@ sysctlnametomib
 telldir
 timex
 truncate
-ucontext_t
 unmount
 useconds_t
 uselocale
@@ -1607,5 +1590,4 @@ utmpx
 vm_size_t
 wait4
 waitid
-xmmreg
 xucred
