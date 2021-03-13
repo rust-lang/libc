@@ -153,7 +153,6 @@ DAY_4
 DAY_5
 DAY_6
 DAY_7
-
 DCCP_CCID
 DCCP_CSLEN
 DCCP_FEATURE_ACKRATIO
@@ -617,14 +616,15 @@ OXTABS
 O_ALT_IO
 O_DIRECT
 O_DSYNC
+O_EXLOCK
 O_NDELAY
 O_NOCTTY
 O_NOSIGPIPE
 O_RSYNC
 O_SEARCH
+O_SHLOCK
 O_SYNC
 PENDIN
-
 PF_APPLETALK
 PF_ARP
 PF_BLUETOOTH
@@ -1152,7 +1152,6 @@ pthread_mutex_timedlock
 pthread_setname_np
 ptrace
 ptrace_io_desc
-
 pututxline
 pwritev
 rand
