@@ -297,25 +297,9 @@ s! {
         pub effect_id: ::__u32,
     }
 
-    pub struct uinput_setup {
-        pub id: input_id,
-        pub name: [::c_char; UINPUT_MAX_NAME_SIZE],
-        pub ff_effects_max: ::__u32,
-    }
-
     pub struct uinput_abs_setup {
         pub code: ::__u16,
         pub absinfo: input_absinfo,
-    }
-
-    pub struct uinput_user_dev {
-        pub name: [::c_char; UINPUT_MAX_NAME_SIZE],
-        pub id: input_id,
-        pub ff_effects_max: ::__u32,
-        pub absmax: [::__s32; ABS_CNT],
-        pub absmin: [::__s32; ABS_CNT],
-        pub absfuzz: [::__s32; ABS_CNT],
-        pub absflat: [::__s32; ABS_CNT],
     }
 
     pub struct dl_phdr_info {
@@ -591,6 +575,22 @@ s_no_extra_traits! {
         pub salg_name: [::c_uchar; 64],
     }
 
+    pub struct uinput_setup {
+        pub id: input_id,
+        pub name: [::c_char; UINPUT_MAX_NAME_SIZE],
+        pub ff_effects_max: ::__u32,
+    }
+
+    pub struct uinput_user_dev {
+        pub name: [::c_char; UINPUT_MAX_NAME_SIZE],
+        pub id: input_id,
+        pub ff_effects_max: ::__u32,
+        pub absmax: [::__s32; ABS_CNT],
+        pub absmin: [::__s32; ABS_CNT],
+        pub absfuzz: [::__s32; ABS_CNT],
+        pub absflat: [::__s32; ABS_CNT],
+    }
+
     /// WARNING: The `PartialEq`, `Eq` and `Hash` implementations of this
     /// type are unsound and will be removed in the future.
     #[deprecated(
@@ -858,6 +858,72 @@ cfg_if! {
                 self.salg_feat.hash(state);
                 self.salg_mask.hash(state);
                 self.salg_name.hash(state);
+            }
+        }
+
+        impl PartialEq for uinput_setup {
+            fn eq(&self, other: &uinput_setup) -> bool {
+                self.id == other.id
+                    && self.name[..] == other.name[..]
+                    && self.ff_effects_max == other.ff_effects_max
+           }
+        }
+        impl Eq for uinput_setup {}
+
+        impl ::fmt::Debug for uinput_setup {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("uinput_setup")
+                    .field("id", &self.id)
+                    .field("name", &&self.name[..])
+                    .field("ff_effects_max", &self.ff_effects_max)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for uinput_setup {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.id.hash(state);
+                self.name.hash(state);
+                self.ff_effects_max.hash(state);
+            }
+        }
+
+        impl PartialEq for uinput_user_dev {
+            fn eq(&self, other: &uinput_user_dev) -> bool {
+                 self.name[..] == other.name[..]
+                    && self.id == other.id
+                    && self.ff_effects_max == other.ff_effects_max
+                    && self.absmax[..] == other.absmax[..]
+                    && self.absmin[..] == other.absmin[..]
+                    && self.absfuzz[..] == other.absfuzz[..]
+                    && self.absflat[..] == other.absflat[..]
+           }
+        }
+        impl Eq for uinput_user_dev {}
+
+        impl ::fmt::Debug for uinput_user_dev {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("uinput_setup")
+                    .field("name", &&self.name[..])
+                    .field("id", &self.id)
+                    .field("ff_effects_max", &self.ff_effects_max)
+                    .field("absmax", &&self.absmax[..])
+                    .field("absmin", &&self.absmin[..])
+                    .field("absfuzz", &&self.absfuzz[..])
+                    .field("absflat", &&self.absflat[..])
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for uinput_user_dev {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.name.hash(state);
+                self.id.hash(state);
+                self.ff_effects_max.hash(state);
+                self.absmax.hash(state);
+                self.absmin.hash(state);
+                self.absfuzz.hash(state);
+                self.absflat.hash(state);
             }
         }
 
