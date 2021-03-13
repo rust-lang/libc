@@ -1495,6 +1495,12 @@ pub const MAP_FIXED: ::c_int = 0x0010;
 pub const MAP_ANON: ::c_int = 0x1000;
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
+pub const CPU_STATE_USER: ::c_int = 0;
+pub const CPU_STATE_SYSTEM: ::c_int = 1;
+pub const CPU_STATE_IDLE: ::c_int = 2;
+pub const CPU_STATE_NICE: ::c_int = 3;
+pub const CPU_STATE_MAX: ::c_int = 4;
+
 deprecated_mach! {
     pub const VM_FLAGS_FIXED: ::c_int = 0x0000;
     pub const VM_FLAGS_ANYWHERE: ::c_int = 0x0001;
