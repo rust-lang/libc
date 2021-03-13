@@ -52,6 +52,12 @@ AIO_NOTCANCELED
 ALTWERASE
 ALT_DIGITS
 AM_STR
+ARPOP_REPLY
+ARPOP_REQUEST
+ATF_COM
+ATF_PERM
+ATF_PUBL
+ATF_USETRAILERS
 AT_EACCESS
 AT_FDCWD
 AT_REMOVEDIR
@@ -208,6 +214,7 @@ DCCP_TYPE_RESET
 DCCP_TYPE_RESPONSE
 DEAD_PROCESS
 DOWN_TIME
+DT_UNKNOWN
 D_FMT
 D_T_FMT
 EAI_AGAIN
@@ -617,6 +624,7 @@ O_ALT_IO
 O_DIRECT
 O_DSYNC
 O_EXLOCK
+O_FSYNC
 O_NDELAY
 O_NOCTTY
 O_NOSIGPIPE
@@ -1000,12 +1008,16 @@ aio_write
 aiocb
 arphdr
 atof
+bsearch
 chflags
+chroot
+clearerr
 clock_getres
 clock_nanosleep
 clock_settime
 cmsghdr
 daemon
+difftime
 dirfd
 dl_iterate_phdr
 dl_phdr_info
@@ -1014,6 +1026,7 @@ dup3
 duplocale
 endgrent
 endpwent
+endservent
 endutent
 endutxent
 extattr_delete_fd
@@ -1028,9 +1041,11 @@ extattr_set_file
 extattr_set_link
 extattr_string_to_namespace
 faccessat
+fchdir
 fchflags
 fdatasync
 fdopendir
+fmemopen
 forkpty
 freeifaddrs
 freelocale
@@ -1048,6 +1063,7 @@ getgrouplist
 getifaddrs
 getitimer
 getlastlogx
+getline
 getloadavg
 getnameinfo
 getpeereid
@@ -1056,6 +1072,10 @@ getprogname
 getpwent
 getpwent_r
 getpwnam_r
+getrlimit
+getrusage
+getservbyport
+getservent
 getsid
 getutent
 getutmp
@@ -1083,6 +1103,7 @@ initgroups
 ipc_perm
 kevent
 key_t
+killpg
 kqueue
 labs
 lastlog
@@ -1090,6 +1111,7 @@ lastlogx
 lchflags
 lio_listio
 localeconv_l
+lockf
 login_tty
 lutimes
 lwpid_t
@@ -1119,11 +1141,14 @@ mq_unlink
 mqd_t
 msghdr
 newlocale
+nice
 nl_item
 nl_langinfo
 ntp_adjtime
 ntp_gettime
 ntptimeval
+open_memstream
+open_wmemstream
 openat
 openpty
 pause
@@ -1149,6 +1174,7 @@ ptrace
 ptrace_io_desc
 pututxline
 pwritev
+qsort
 rand
 readdir_r
 readlinkat
@@ -1180,6 +1206,8 @@ setitimer
 setpriority
 setprogname
 setpwent
+setrlimit
+setservent
 settimeofday
 setutent
 setutxent
@@ -1199,6 +1227,11 @@ sockaddr_dl
 sockcred
 srand
 stack_t
+strcasecmp
+strcasestr
+strncasecmp
+strndup
+strsignal
 sync
 syscall
 sysctl
@@ -1206,6 +1239,7 @@ sysctlbyname
 telldir
 timex
 truncate
+ttyname_r
 unmount
 unpcbid
 updlastlogx

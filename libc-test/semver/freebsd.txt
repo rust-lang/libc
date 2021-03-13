@@ -70,6 +70,12 @@ ALTMON_9
 ALTWERASE
 ALT_DIGITS
 AM_STR
+ARPOP_REPLY
+ARPOP_REQUEST
+ATF_COM
+ATF_PERM
+ATF_PUBL
+ATF_USETRAILERS
 AT_EACCESS
 AT_FDCWD
 AT_REMOVEDIR
@@ -189,6 +195,7 @@ DAY_5
 DAY_6
 DAY_7
 DEAD_PROCESS
+DT_UNKNOWN
 D_FMT
 D_MD_ORDER
 D_T_FMT
@@ -737,6 +744,7 @@ OXTABS
 O_DIRECT
 O_EXEC
 O_EXLOCK
+O_FSYNC
 O_NDELAY
 O_NOCTTY
 O_SHLOCK
@@ -1315,15 +1323,19 @@ bpf_insn
 bpf_program
 bpf_stat
 bpf_version
+bsearch
 cfmakesane
 chflags
 chflagsat
+chroot
+clearerr
 clock_getcpuclockid
 clock_getres
 clock_settime
 cmsgcred
 cmsghdr
 daemon
+difftime
 dirfd
 dl_iterate_phdr
 dl_phdr_info
@@ -1331,6 +1343,7 @@ dup3
 duplocale
 endgrent
 endpwent
+endservent
 endutxent
 extattr_delete_fd
 extattr_delete_file
@@ -1347,11 +1360,13 @@ extattr_set_file
 extattr_set_link
 extattr_string_to_namespace
 faccessat
+fchdir
 fchflags
 fdatasync
 fdopendir
 fexecve
 fflags_t
+fmemopen
 forkpty
 freeifaddrs
 freelocale
@@ -1370,6 +1385,7 @@ getgrnam_r
 getgrouplist
 getifaddrs
 getitimer
+getline
 getloadavg
 getnameinfo
 getpeereid
@@ -1378,6 +1394,10 @@ getprogname
 getpwent
 getpwent_r
 getpwnam_r
+getrlimit
+getrusage
+getservbyport
+getservent
 getsid
 getutxent
 getutxid
@@ -1405,10 +1425,12 @@ jail_remove
 jail_set
 kevent
 key_t
+killpg
 kqueue
 labs
 lchflags
 lio_listio
+lockf
 login_tty
 lutimes
 lwpid_t
@@ -1445,6 +1467,7 @@ msgrcv
 msgsnd
 msqid_ds
 newlocale
+nice
 nl_item
 nl_langinfo
 nl_langinfo_l
@@ -1452,6 +1475,8 @@ nmount
 ntp_adjtime
 ntp_gettime
 ntptimeval
+open_memstream
+open_wmemstream
 openat
 openpty
 pause
@@ -1514,6 +1539,7 @@ ptrace_io_desc
 ptrace_vm_entry
 pututxline
 pwritev
+qsort
 querylocale
 rand
 readdir_r
@@ -1554,6 +1580,8 @@ setprogname
 setpwent
 setresgid
 setresuid
+setrlimit
+setservent
 settimeofday
 setutxdb
 setutxent
@@ -1574,6 +1602,11 @@ sockcred
 srand
 stack_t
 statfs
+strcasecmp
+strcasestr
+strncasecmp
+strndup
+strsignal
 sync
 syscall
 sysctl
@@ -1582,6 +1615,7 @@ sysctlnametomib
 telldir
 timex
 truncate
+ttyname_r
 unmount
 useconds_t
 uselocale

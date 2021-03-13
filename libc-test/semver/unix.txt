@@ -2,12 +2,6 @@ AF_INET
 AF_INET6
 AF_UNIX
 AF_UNSPEC
-ARPOP_REPLY
-ARPOP_REQUEST
-ATF_COM
-ATF_PERM
-ATF_PUBL
-ATF_USETRAILERS
 B0
 B110
 B115200
@@ -46,7 +40,6 @@ DT_FIFO
 DT_LNK
 DT_REG
 DT_SOCK
-DT_UNKNOWN
 Dl_info
 E2BIG
 EACCES
@@ -264,7 +257,6 @@ O_CLOEXEC
 O_CREAT
 O_DIRECTORY
 O_EXCL
-O_FSYNC
 O_NOFOLLOW
 O_NONBLOCK
 O_RDONLY
@@ -483,7 +475,6 @@ atoi
 bind
 blkcnt_t
 blksize_t
-bsearch
 c_char
 c_double
 c_float
@@ -509,8 +500,6 @@ cfsetspeed
 chdir
 chmod
 chown
-chroot
-clearerr
 clock_gettime
 clock_t
 clockid_t
@@ -520,7 +509,6 @@ closelog
 connect
 creat
 dev_t
-difftime
 dirent
 dladdr
 dlclose
@@ -529,7 +517,6 @@ dlopen
 dlsym
 dup
 dup2
-endservent
 execl
 execle
 execlp
@@ -537,7 +524,6 @@ execv
 execve
 execvp
 exit
-fchdir
 fchmod
 fchmodat
 fchown
@@ -554,7 +540,6 @@ fgetpos
 fgets
 fileno
 flock
-fmemopen
 fopen
 fork
 fpathconf
@@ -592,7 +577,6 @@ geteuid
 getgid
 getgroups
 gethostname
-getline
 getlogin
 getopt
 getpeername
@@ -605,11 +589,7 @@ getprotobynumber
 getpwnam
 getpwuid
 getpwuid_r
-getrlimit
-getrusage
 getservbyname
-getservbyport
-getservent
 getsockname
 getsockopt
 gettimeofday
@@ -652,7 +632,6 @@ isupper
 isxdigit
 itimerval
 kill
-killpg
 lchown
 lconv
 linger
@@ -663,7 +642,6 @@ locale_t
 localeconv
 localtime
 localtime_r
-lockf
 lseek
 lstat
 malloc
@@ -689,12 +667,9 @@ munlockall
 munmap
 nanosleep
 nfds_t
-nice
 nlink_t
 off_t
 open
-open_memstream
-open_wmemstream
 opendir
 openlog
 passwd
@@ -767,7 +742,6 @@ putchar_unlocked
 putenv
 puts
 pwrite
-qsort
 raise
 read
 readdir
@@ -806,8 +780,6 @@ setgid
 setlocale
 setlogmask
 setpgid
-setrlimit
-setservent
 setsid
 setsockopt
 setuid
@@ -844,8 +816,6 @@ sscanf
 ssize_t
 stat
 statvfs
-strcasecmp
-strcasestr
 strcat
 strchr
 strcmp
@@ -856,15 +826,12 @@ strdup
 strerror
 strerror_r
 strlen
-strncasecmp
 strncat
 strncmp
 strncpy
-strndup
 strnlen
 strpbrk
 strrchr
-strsignal
 strspn
 strstr
 strtod
@@ -903,7 +870,6 @@ tms
 tolower
 toupper
 ttyname
-ttyname_r
 uid_t
 uint16_t
 uint32_t

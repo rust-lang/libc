@@ -162,11 +162,17 @@ ARPHRD_X25
 ARPOP_InREPLY
 ARPOP_InREQUEST
 ARPOP_NAK
+ARPOP_REPLY
+ARPOP_REQUEST
 ARPOP_RREPLY
 ARPOP_RREQUEST
+ATF_COM
 ATF_DONTPUB
 ATF_MAGIC
 ATF_NETMASK
+ATF_PERM
+ATF_PUBL
+ATF_USETRAILERS
 AT_BASE
 AT_BASE_PLATFORM
 AT_CLKTCK
@@ -362,6 +368,7 @@ DCCP_SOCKOPT_TX_CCID
 DEAD_PROCESS
 DEBUGFS_MAGIC
 DEVPTS_SUPER_MAGIC
+DT_UNKNOWN
 D_FMT
 D_T_FMT
 EADV
@@ -1755,6 +1762,7 @@ OPENPROM_SUPER_MAGIC
 OVERLAYFS_SUPER_MAGIC
 O_DIRECT
 O_DSYNC
+O_FSYNC
 O_LARGEFILE
 O_NDELAY
 O_NOATIME
@@ -3146,12 +3154,15 @@ atof
 backtrace
 blkcnt64_t
 brk
+bsearch
 can_err_mask_t
 can_filter
 can_frame
 canfd_frame
 canid_t
+chroot
 clearenv
+clearerr
 clock_getcpuclockid
 clock_getres
 clock_nanosleep
@@ -3162,6 +3173,7 @@ copy_file_range
 cpu_set_t
 creat64
 daemon
+difftime
 dirent64
 dirfd
 dl_iterate_phdr
@@ -3174,6 +3186,7 @@ duplocale
 endgrent
 endmntent
 endpwent
+endservent
 endspent
 endutxent
 epoll_create
@@ -3191,6 +3204,7 @@ fanotify_event_metadata
 fanotify_init
 fanotify_mark
 fanotify_response
+fchdir
 fdatasync
 fdopendir
 fexecve
@@ -3207,6 +3221,7 @@ fgetpos64
 fgetspent_r
 fgetxattr
 flistxattr
+fmemopen
 fopen64
 forkpty
 fpos64_t
@@ -3240,6 +3255,7 @@ getgrnam
 getgrnam_r
 getgrouplist
 getifaddrs
+getline
 getloadavg
 getmntent
 getnameinfo
@@ -3251,7 +3267,11 @@ getpwnam_r
 getrandom
 getresgid
 getresuid
+getrlimit
 getrlimit64
+getrusage
+getservbyport
+getservent
 getsid
 getspent
 getspent_r
@@ -3297,11 +3317,13 @@ ip_mreq_source
 ipc_perm
 itimerspec
 key_t
+killpg
 labs
 lgetxattr
 lio_listio
 listxattr
 llistxattr
+lockf
 loff_t
 login_tty
 lremovexattr
@@ -3352,6 +3374,7 @@ msgrcv
 msgsnd
 msqid_ds
 newlocale
+nice
 nl_item
 nl_langinfo
 nl_langinfo_l
@@ -3366,6 +3389,8 @@ ntp_gettime
 ntptimeval
 off64_t
 open64
+open_memstream
+open_wmemstream
 openat
 openat64
 openpty
@@ -3444,6 +3469,7 @@ pwrite64
 pwritev
 pwritev2
 pwritev64
+qsort
 qsort_r
 quotactl
 rand
@@ -3509,7 +3535,9 @@ setregid
 setresgid
 setresuid
 setreuid
+setrlimit
 setrlimit64
+setservent
 setspent
 settimeofday
 setutxent
@@ -3546,6 +3574,11 @@ statfs64
 statvfs64
 statx
 statx_timestamp
+strcasecmp
+strcasestr
+strncasecmp
+strndup
+strsignal
 swapoff
 swapon
 sync
@@ -3561,6 +3594,7 @@ timex
 tmpfile64
 truncate
 truncate64
+ttyname_r
 ucred
 uinput_abs_setup
 uinput_ff_erase
