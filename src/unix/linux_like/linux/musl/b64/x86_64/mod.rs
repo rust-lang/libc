@@ -580,6 +580,7 @@ pub const SYS_pkey_mprotect: ::c_long = 329;
 pub const SYS_pkey_alloc: ::c_long = 330;
 pub const SYS_pkey_free: ::c_long = 331;
 pub const SYS_statx: ::c_long = 332;
+pub const SYS_clone3: ::c_long = 435;
 
 // offsets in user_regs_structs, from sys/reg.h
 pub const R15: ::c_int = 0;

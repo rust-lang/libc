@@ -834,6 +834,7 @@ pub const SYS_pkey_mprotect: ::c_long = 394;
 pub const SYS_pkey_alloc: ::c_long = 395;
 pub const SYS_pkey_free: ::c_long = 396;
 pub const SYS_statx: ::c_long = 397;
+pub const SYS_clone3: ::c_long = 435;
 
 extern "C" {
     pub fn getrandom(
