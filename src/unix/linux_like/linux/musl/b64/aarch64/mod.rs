@@ -515,6 +515,7 @@ pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
 pub const SYS_statx: ::c_long = 291;
+pub const SYS_clone3: ::c_long = 435;
 
 pub const RLIMIT_NLIMITS: ::c_int = 15;
 pub const TIOCINQ: ::c_int = ::FIONREAD;
