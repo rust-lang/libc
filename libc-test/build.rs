@@ -2638,7 +2638,8 @@ fn test_linux(target: &str) {
 
             // FIXME: Not currently available in headers on MIPS
             // Not yet implemented on sparc64
-            "SYS_clone3" if mips | sparc64 => true,
+            // FIXME: available in musl headers since musl 1.2.0 
+            "SYS_clone3" if mips | sparc64 | musl => true,
 
             // Missing from musl's kernel headers
             | "IFLA_GSO_MAX_SEGS"
