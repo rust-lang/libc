@@ -2561,6 +2561,38 @@ fn test_linux(target: &str) {
     });
 
     cfg.skip_const(move |name| {
+        if !gnu {
+            // Skip definitions from the kernel on non-glibc Linux targets.
+            // They're libc-independent, so we only need to check them on one
+            // libc. We don't want to break CI if musl or another libc doesn't
+            // have the definitions yet. (We do still want to check them on
+            // every glibc target, though, as some of them can vary by
+            // architecture.)
+            //
+            // This is not an exhaustive list of kernel constants, just a list
+            // of prefixes of all those that have appeared here or that get
+            // updated regularly and seem likely to cause breakage.
+            if name.starts_with("AF_")
+                || name.starts_with("EPOLL")
+                || name.starts_with("F_")
+                || name.starts_with("FALLOC_FL_")
+                || name.starts_with("IFLA_")
+                || name.starts_with("MS_")
+                || name.starts_with("MSG_")
+                || name.starts_with("P_")
+                || name.starts_with("PF_")
+                || name.starts_with("RLIMIT_")
+                || name.starts_with("SOL_")
+                || name.starts_with("STATX_")
+                || name.starts_with("SW_")
+                || name.starts_with("SYS_")
+                || name.starts_with("TCP_")
+                || name.starts_with("UINPUT_")
+                || name.starts_with("VMADDR_")
+            {
+                return true;
+            }
+        }
         match name {
             // These constants are not available if gnu headers have been included
             // and can therefore not be tested here
@@ -2580,24 +2612,8 @@ fn test_linux(target: &str) {
             | "F_SEAL_GROW"
             | "F_SEAL_WRITE" => true,
 
-            // The musl-sanitized kernel headers used in CI
-            // target the Linux kernel 4.4 and do not contain the
-            // following constants:
-            //
-            // Requires Linux kernel 4.9
-            | "FALLOC_FL_UNSHARE_RANGE"
-            //
-            // Require Linux kernel 5.x:
-            | "MSG_COPY"
-               if musl  => true,
             // Require Linux kernel 5.1:
             "F_SEAL_FUTURE_WRITE" => true,
-
-            // The musl version 1.1.24 used in CI does not
-            // contain these glibc constants yet:
-            | "RLIMIT_RTTIME" // should be in `resource.h`
-            | "TCP_COOKIE_TRANSACTIONS"  // should be in the `netinet/tcp.h` header
-                if musl => true,
 
             // FIXME: deprecated: not available in any header
             // See: https://github.com/rust-lang/libc/issues/1356
@@ -2629,33 +2645,13 @@ fn test_linux(target: &str) {
             | "IPPROTO_MAX"
             | "IPPROTO_MPTCP" => true,
 
-            // Defined in kernel headers but musl removes it; need musl 1.2 for definition in musl
-            // headers.
-            "P_PIDFD" => true,
-
             // FIXME: Not currently available in headers
+            "P_PIDFD" if mips => true,
             "SYS_pidfd_open" if mips => true,
 
             // FIXME: Not currently available in headers on MIPS
             // Not yet implemented on sparc64
-            // FIXME: available in musl headers since musl 1.2.0 
-            "SYS_clone3" if mips | sparc64 | musl => true,
-
-            // Missing from musl's kernel headers
-            | "IFLA_GSO_MAX_SEGS"
-            | "IFLA_GSO_MAX_SIZE"
-            | "IFLA_PAD"
-            | "IFLA_XDP"
-            | "IFLA_EVENT"
-            | "IFLA_NEW_NETNSID"
-            | "IFLA_IF_NETNSID"
-            | "IFLA_TARGET_NETNSID"
-            | "IFLA_CARRIER_UP_COUNT"
-            | "IFLA_CARRIER_DOWN_COUNT"
-            | "IFLA_NEW_IFINDEX"
-            | "IFLA_MIN_MTU"
-            | "IFLA_MAX_MTU"
-                if musl => true,
+            "SYS_clone3" if mips | sparc64 => true,
 
             // Requires more recent kernel headers:
             | "IFLA_PROP_LIST"
@@ -2668,15 +2664,6 @@ fn test_linux(target: &str) {
             | "CAN_RAW_FILTER_MAX"
             | "CAN_NPROTO" => true,
 
-            "MS_RMT_MASK" if uclibc => true, // updated in glibc 2.22 and musl 1.1.13
-
-            // These are not defined in uclibc but will be passed through to the kernel
-            // so they will be supported if the kernel supports them.  Otherwise the
-            // kernel will return runtime errors.  Since they're required for tokio 
-            // support, we except them from the tests here.
-            // See https://github.com/rust-lang/libc/pull/2019#issuecomment-754351482
-            "EPOLLEXCLUSIVE" | "EPOLLWAKEUP" if uclibc => true,
-
             // FIXME: Requires recent kernel headers (5.8):
             "STATX_MNT_ID" => true,
 
@@ -2684,7 +2671,7 @@ fn test_linux(target: &str) {
             | "UINPUT_VERSION"
             | "SW_MAX"
             | "SW_CNT"
-                if musl || mips || ppc64 || riscv64 || sparc64 => true,
+                if mips || ppc64 || riscv64 || sparc64 => true,
 
             _ => false,
         }
