@@ -2573,6 +2573,7 @@ fn test_linux(target: &str) {
             // of prefixes of all those that have appeared here or that get
             // updated regularly and seem likely to cause breakage.
             if name.starts_with("AF_")
+                || name.starts_with("ARPHRD_")
                 || name.starts_with("EPOLL")
                 || name.starts_with("F_")
                 || name.starts_with("FALLOC_FL_")
