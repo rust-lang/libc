@@ -2654,6 +2654,16 @@ fn test_linux(target: &str) {
             // Not yet implemented on sparc64
             "SYS_clone3" if mips | sparc64 => true,
 
+            // FIXME: these syscalls were added in Linux 5.9 or later
+            // and are currently not included in the glibc headers.
+            | "SYS_close_range"
+            | "SYS_openat2"
+            | "SYS_pidfd_getfd"
+            | "SYS_faccessat2"
+            | "SYS_process_madvise"
+            | "SYS_epoll_pwait2"
+            | "SYS_mount_setattr" => true,
+
             // Requires more recent kernel headers:
             | "IFLA_PROP_LIST"
             | "IFLA_ALT_IFNAME"
