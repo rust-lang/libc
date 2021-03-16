@@ -908,7 +908,6 @@ pub const SYS_copy_file_range: ::c_long = 357;
 pub const SYS_preadv2: ::c_long = 358;
 pub const SYS_pwritev2: ::c_long = 359;
 pub const SYS_statx: ::c_long = 360;
-pub const SYS_pidfd_open: ::c_long = 434;
 pub const SYS_pidfd_send_signal: ::c_long = 424;
 pub const SYS_io_uring_setup: ::c_long = 425;
 pub const SYS_io_uring_enter: ::c_long = 426;
