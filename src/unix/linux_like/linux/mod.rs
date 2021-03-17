@@ -1418,9 +1418,9 @@ pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 0;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
-pub const RENAME_NOREPLACE: ::c_int = 1;
-pub const RENAME_EXCHANGE: ::c_int = 2;
-pub const RENAME_WHITEOUT: ::c_int = 4;
+pub const RENAME_NOREPLACE: ::c_uint = 1;
+pub const RENAME_EXCHANGE: ::c_uint = 2;
+pub const RENAME_WHITEOUT: ::c_uint = 4;
 
 pub const SCHED_OTHER: ::c_int = 0;
 pub const SCHED_FIFO: ::c_int = 1;
