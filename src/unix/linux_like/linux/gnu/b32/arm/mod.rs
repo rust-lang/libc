@@ -325,6 +325,7 @@ pub const SO_PEERSEC: ::c_int = 31;
 pub const SO_SNDBUFFORCE: ::c_int = 32;
 pub const SO_RCVBUFFORCE: ::c_int = 33;
 pub const SO_PASSSEC: ::c_int = 34;
+pub const SO_INCOMING_CPU: ::c_int = 49;
 
 pub const SA_SIGINFO: ::c_int = 0x00000004;
 pub const SA_NOCLDWAIT: ::c_int = 0x00000002;
