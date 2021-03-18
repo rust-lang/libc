@@ -715,6 +715,7 @@ extern "C" {
         dirfd: ::c_int,
         path: *const ::c_char,
     ) -> ::c_int;
+    pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 }
 
 cfg_if! {
