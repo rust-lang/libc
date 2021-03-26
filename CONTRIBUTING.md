@@ -28,13 +28,23 @@ at, fear not! This crate has CI support which tests any binding against all
 platforms supported, so you'll see failures if an API is added at the wrong
 level or has different signatures across platforms.
 
+New symbol(s) (i.e. functions, constants etc.) should also be added to the
+symbols list(s) found in the `libc-test/semver` directory. These lists keep
+track of what symbols are public in the libc crate and ensures they remain
+available between changes to the crate. If the new symbol(s) are available on
+all supported Unixes it should be added to `unix.txt` list<sup>1</sup>,
+otherwise they should be added to the OS specific list(s).
+
 With that in mind, the steps for adding a new API are:
 
 1. Determine where in the module hierarchy your API should be added.
-2. Add the API.
+2. Add the API, including adding new symbol(s) to the semver lists.
 3. Send a PR to this repo.
 4. Wait for CI to pass, fixing errors.
 5. Wait for a merge!
+
+<sup>1</sup>: Note that this list has nothing to do with any Unix or Posix
+standard, it's just a list shared between all OSs that declare `#[cfg(unix)]`.
 
 ## Test before you commit
 
