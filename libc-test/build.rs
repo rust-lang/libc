@@ -97,6 +97,9 @@ fn do_semver() {
     if target_env != "" {
         let os_env = format!("{}-{}", os, target_env);
         process_semver_file(&mut output, &mut semver_root, &os_env);
+
+        let os_env_arch = format!("{}-{}-{}", os, target_env, arch);
+        process_semver_file(&mut output, &mut semver_root, &os_env_arch);
     }
 }
 
