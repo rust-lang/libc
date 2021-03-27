@@ -447,6 +447,8 @@ pub const NI_NUMERICSCOPE: ::c_int = 0x00000020;
 pub const Q_GETQUOTA: ::c_int = 0x700;
 pub const Q_SETQUOTA: ::c_int = 0x800;
 
+pub const MAP_GUARD: ::c_int = 0x00002000;
+
 pub const POSIX_FADV_NORMAL: ::c_int = 0;
 pub const POSIX_FADV_RANDOM: ::c_int = 1;
 pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
