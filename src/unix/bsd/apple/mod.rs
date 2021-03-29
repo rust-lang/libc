@@ -38,6 +38,7 @@ pub type sae_associd_t = u32;
 pub type sae_connid_t = u32;
 
 pub type mach_port_t = ::c_uint;
+pub type processor_flavor_t = ::c_int;
 
 pub type iconv_t = *mut ::c_void;
 
@@ -49,6 +50,8 @@ pub type processor_set_basic_info_data_t = processor_set_basic_info;
 pub type processor_set_basic_info_t = *mut processor_set_basic_info;
 pub type processor_set_load_info_data_t = processor_set_load_info;
 pub type processor_set_load_info_t = *mut processor_set_load_info;
+pub type processor_info_t = *mut integer_t;
+pub type processor_info_array_t = *mut integer_t;
 
 deprecated_mach! {
     pub type vm_prot_t = ::c_int;
