@@ -26,6 +26,8 @@ pub type idtype_t = ::c_uint;
 pub type integer_t = ::c_int;
 pub type cpu_type_t = integer_t;
 pub type cpu_subtype_t = integer_t;
+pub type natural_t = u32;
+pub type mach_msg_type_number_t = natural_t;
 
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
@@ -38,6 +40,15 @@ pub type sae_connid_t = u32;
 pub type mach_port_t = ::c_uint;
 
 pub type iconv_t = *mut ::c_void;
+
+pub type processor_cpu_load_info_t = *mut processor_cpu_load_info;
+pub type processor_cpu_load_info_data_t = processor_cpu_load_info;
+pub type processor_basic_info_t = *mut processor_basic_info;
+pub type processor_basic_info_data_t = processor_basic_info;
+pub type processor_set_basic_info_data_t = processor_set_basic_info;
+pub type processor_set_basic_info_t = *mut processor_set_basic_info;
+pub type processor_set_load_info_data_t = processor_set_load_info;
+pub type processor_set_load_info_t = *mut processor_set_load_info;
 
 deprecated_mach! {
     pub type vm_prot_t = ::c_int;
@@ -662,6 +673,30 @@ s_no_extra_traits! {
         __unused1: *mut ::c_void,       //actually a function pointer
         pub sigev_notify_attributes: *mut ::pthread_attr_t
     }
+
+    pub struct processor_cpu_load_info {
+        pub cpu_ticks: [::c_uint; CPU_STATE_MAX as usize],
+    }
+
+    pub struct processor_basic_info {
+        pub cpu_type: cpu_type_t,
+        pub cpu_subtype: cpu_subtype_t,
+        pub running: ::boolean_t,
+        pub slot_num: ::c_int,
+        pub is_master: ::boolean_t,
+    }
+
+    pub struct processor_set_basic_info {
+        pub processor_count: ::c_int,
+        pub default_policy: ::c_int,
+    }
+
+    pub struct processor_set_load_info {
+        pub task_count: ::c_int,
+        pub thread_count: ::c_int,
+        pub load_average: integer_t,
+        pub mach_factor: integer_t,
+    }
 }
 
 impl siginfo_t {
@@ -1276,6 +1311,106 @@ cfg_if! {
                 self.sigev_notify_attributes.hash(state);
             }
         }
+
+        impl PartialEq for processor_cpu_load_info {
+            fn eq(&self, other: &processor_cpu_load_info) -> bool {
+                self.cpu_ticks == other.cpu_ticks
+            }
+        }
+        impl Eq for processor_cpu_load_info {}
+        impl ::fmt::Debug for processor_cpu_load_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("processor_cpu_load_info")
+                    .field("cpu_ticks", &self.cpu_ticks)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for processor_cpu_load_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cpu_ticks.hash(state);
+            }
+        }
+
+        impl PartialEq for processor_basic_info {
+            fn eq(&self, other: &processor_basic_info) -> bool {
+                self.cpu_type == other.cpu_type
+                    && self.cpu_subtype == other.cpu_subtype
+                    && self.running == other.running
+                    && self.slot_num == other.slot_num
+                    && self.is_master == other.is_master
+            }
+        }
+        impl Eq for processor_basic_info {}
+        impl ::fmt::Debug for processor_basic_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("processor_basic_info")
+                    .field("cpu_type", &self.cpu_type)
+                    .field("cpu_subtype", &self.cpu_subtype)
+                    .field("running", &self.running)
+                    .field("slot_num", &self.slot_num)
+                    .field("is_master", &self.is_master)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for processor_basic_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cpu_type.hash(state);
+                self.cpu_subtype.hash(state);
+                self.running.hash(state);
+                self.slot_num.hash(state);
+                self.is_master.hash(state);
+            }
+        }
+
+        impl PartialEq for processor_set_basic_info {
+            fn eq(&self, other: &processor_set_basic_info) -> bool {
+                self.processor_count == other.processor_count
+                    && self.default_policy == other.default_policy
+            }
+        }
+        impl Eq for processor_set_basic_info {}
+        impl ::fmt::Debug for processor_set_basic_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("processor_set_basic_info")
+                    .field("processor_count", &self.processor_count)
+                    .field("default_policy", &self.default_policy)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for processor_set_basic_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.processor_count.hash(state);
+                self.default_policy.hash(state);
+            }
+        }
+
+        impl PartialEq for processor_set_load_info {
+            fn eq(&self, other: &processor_set_load_info) -> bool {
+                self.task_count == other.task_count
+                    && self.thread_count == other.thread_count
+                    && self.load_average == other.load_average
+                    && self.mach_factor == other.mach_factor
+            }
+        }
+        impl Eq for processor_set_load_info {}
+        impl ::fmt::Debug for processor_set_load_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("processor_set_load_info")
+                    .field("task_count", &self.task_count)
+                    .field("thread_count", &self.thread_count)
+                    .field("load_average", &self.load_average)
+                    .field("mach_factor", &self.mach_factor)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for processor_set_load_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.task_count.hash(state);
+                self.thread_count.hash(state);
+                self.load_average.hash(state);
+                self.mach_factor.hash(state);
+            }
+        }
     }
 }
 
@@ -1500,6 +1635,13 @@ pub const CPU_STATE_SYSTEM: ::c_int = 1;
 pub const CPU_STATE_IDLE: ::c_int = 2;
 pub const CPU_STATE_NICE: ::c_int = 3;
 pub const CPU_STATE_MAX: ::c_int = 4;
+
+pub const PROCESSOR_BASIC_INFO: ::c_int = 1;
+pub const PROCESSOR_CPU_LOAD_INFO: ::c_int = 2;
+pub const PROCESSOR_PM_REGS_INFO: ::c_int = 0x10000001;
+pub const PROCESSOR_TEMPERATURE: ::c_int = 0x10000002;
+pub const PROCESSOR_SET_LOAD_INFO: ::c_int = 4;
+pub const PROCESSOR_SET_BASIC_INFO: ::c_int = 5;
 
 deprecated_mach! {
     pub const VM_FLAGS_FIXED: ::c_int = 0x0000;
