@@ -1216,8 +1216,10 @@ pub const F_READAHEAD: ::c_int = 15;
 pub const F_RDAHEAD: ::c_int = 16;
 pub const F_DUP2FD_CLOEXEC: ::c_int = 18;
 
-fn _ALIGN(p: usize) -> usize {
-    (p + _ALIGNBYTES) & !_ALIGNBYTES
+const_fn! {
+    {const} fn _ALIGN(p: usize) -> usize {
+        (p + _ALIGNBYTES) & !_ALIGNBYTES
+    }
 }
 
 f! {
@@ -1248,7 +1250,7 @@ f! {
         }
     }
 
-    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
             as ::c_uint
     }

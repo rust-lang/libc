@@ -2103,12 +2103,14 @@ const _CMSG_HDR_ALIGNMENT: usize = 4;
 
 const _CMSG_DATA_ALIGNMENT: usize = ::mem::size_of::<::c_int>();
 
-fn _CMSG_HDR_ALIGN(p: usize) -> usize {
-    (p + _CMSG_HDR_ALIGNMENT - 1) & !(_CMSG_HDR_ALIGNMENT - 1)
-}
+const_fn! {
+    {const} fn _CMSG_HDR_ALIGN(p: usize) -> usize {
+        (p + _CMSG_HDR_ALIGNMENT - 1) & !(_CMSG_HDR_ALIGNMENT - 1)
+    }
 
-fn _CMSG_DATA_ALIGN(p: usize) -> usize {
-    (p + _CMSG_DATA_ALIGNMENT - 1) & !(_CMSG_DATA_ALIGNMENT - 1)
+    {const} fn _CMSG_DATA_ALIGN(p: usize) -> usize {
+        (p + _CMSG_DATA_ALIGNMENT - 1) & !(_CMSG_DATA_ALIGNMENT - 1)
+    }
 }
 
 f! {
@@ -2146,7 +2148,7 @@ f! {
         }
     }
 
-    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         _CMSG_HDR_ALIGN(::mem::size_of::<::cmsghdr>() as usize
             + length as usize) as ::c_uint
     }

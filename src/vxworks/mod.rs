@@ -1040,7 +1040,7 @@ impl ::Clone for fpos_t {
 }
 
 f! {
-    pub fn CMSG_ALIGN(len: usize) -> usize {
+    pub {const} fn CMSG_ALIGN(len: usize) -> usize {
         len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
     }
 
@@ -1071,7 +1071,7 @@ f! {
             .offset(CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
-    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
             as ::c_uint
     }

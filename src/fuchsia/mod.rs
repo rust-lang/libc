@@ -3256,12 +3256,12 @@ f! {
         }
     }
 
-    pub fn CMSG_ALIGN(len: ::size_t) -> ::size_t {
+    pub {const} fn CMSG_ALIGN(len: ::size_t) -> ::size_t {
         (len + ::mem::size_of::<::size_t>() - 1)
             & !(::mem::size_of::<::size_t>() - 1)
     }
 
-    pub fn CMSG_SPACE(len: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(len: ::c_uint) -> ::c_uint {
         (CMSG_ALIGN(len as ::size_t) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
             as ::c_uint
     }

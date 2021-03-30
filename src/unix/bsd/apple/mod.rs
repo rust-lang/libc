@@ -3366,7 +3366,12 @@ pub const MNT_WAIT: ::c_int = 1;
 pub const MNT_NOWAIT: ::c_int = 2;
 
 cfg_if! {
-    if #[cfg(libc_const_size_of)] {
+    if #[cfg(libc_const_extern_fn)] {
+        const fn __DARWIN_ALIGN32(p: usize) -> usize {
+            const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
+            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+        }
+    } else if #[cfg(libc_const_size_of)] {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
             const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
@@ -3388,7 +3393,7 @@ f! {
         let cmsg_len = (*cmsg).cmsg_len as usize;
         let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize);
         let max = (*mhdr).msg_control as usize
-                   + (*mhdr).msg_controllen as usize;
+                    + (*mhdr).msg_controllen as usize;
         if next + __DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) > max {
             0 as *mut ::cmsghdr
         } else {
@@ -3401,7 +3406,7 @@ f! {
             .offset(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
-    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>())
             + __DARWIN_ALIGN32(length as usize))
             as ::c_uint
