@@ -3439,7 +3439,7 @@ extern "C" {
         param: *const ::sched_param,
     ) -> ::c_int;
     pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
-    pub fn swapoff(puath: *const ::c_char) -> ::c_int;
+    pub fn swapoff(path: *const ::c_char) -> ::c_int;
     pub fn vmsplice(
         fd: ::c_int,
         iov: *const ::iovec,
