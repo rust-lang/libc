@@ -1546,6 +1546,12 @@ extern "C" {
         count: ::size_t,
         offset: off64_t,
     ) -> ::ssize_t;
+    pub fn pwrite64(
+        fd: ::c_int,
+        buf: *const ::c_void,
+        count: ::size_t,
+        offset: off64_t,
+    ) -> ::ssize_t;
     pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
     pub fn readdir64_r(
         dirp: *mut ::DIR,
@@ -1676,12 +1682,6 @@ cfg_if! {
                 iov: *const ::iovec,
                 iovcnt: ::c_int,
                 offset: ::off64_t,
-            ) -> ::ssize_t;
-            pub fn pwrite64(
-                fd: ::c_int,
-                buf: *const ::c_void,
-                count: ::size_t,
-                offset: off64_t,
             ) -> ::ssize_t;
             pub fn pwritev64(
                 fd: ::c_int,
