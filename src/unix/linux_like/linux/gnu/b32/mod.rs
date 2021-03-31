@@ -140,10 +140,6 @@ s! {
     }
 }
 
-pub const SO_PRIORITY: ::c_int = 12;
-pub const SO_BSDCOMPAT: ::c_int = 14;
-pub const SO_TIMESTAMP: ::c_int = 29;
-
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
@@ -162,11 +158,6 @@ cfg_if! {
         pub const O_NOATIME: ::c_int = 0x200000;
         pub const O_PATH: ::c_int = 0x1000000;
         pub const O_TMPFILE: ::c_int = 0x2000000 | O_DIRECTORY;
-        pub const SO_BINDTODEVICE: ::c_int = 0x000d;
-        pub const SO_MARK: ::c_int = 0x0022;
-        pub const SO_RXQ_OVFL: ::c_int = 0x0024;
-        pub const SO_PEEK_OFF: ::c_int = 0x0026;
-        pub const SO_BUSY_POLL: ::c_int = 0x0030;
 
         pub const SA_ONSTACK: ::c_int = 1;
 
@@ -213,11 +204,6 @@ cfg_if! {
         pub const O_NOATIME: ::c_int = 0o1000000;
         pub const O_PATH: ::c_int = 0o10000000;
         pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
-        pub const SO_BINDTODEVICE: ::c_int = 25;
-        pub const SO_MARK: ::c_int = 36;
-        pub const SO_RXQ_OVFL: ::c_int = 40;
-        pub const SO_PEEK_OFF: ::c_int = 42;
-        pub const SO_BUSY_POLL: ::c_int = 46;
 
         pub const SA_ONSTACK: ::c_int = 0x08000000;
 
