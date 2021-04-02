@@ -2143,7 +2143,6 @@ SYS_getpriority
 SYS_getrandom
 SYS_getresgid
 SYS_getresuid
-SYS_getrlimit
 SYS_getrusage
 SYS_getsid
 SYS_getsockname
@@ -2181,14 +2180,12 @@ SYS_madvise
 SYS_mbind
 SYS_membarrier
 SYS_memfd_create
-SYS_migrate_pages
 SYS_mincore
 SYS_mkdirat
 SYS_mknodat
 SYS_mlock
 SYS_mlock2
 SYS_mlockall
-SYS_mmap
 SYS_mount
 SYS_move_pages
 SYS_mprotect
