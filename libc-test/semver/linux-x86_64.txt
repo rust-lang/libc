@@ -27,14 +27,12 @@ SO_NO_CHECK
 SO_PRIORITY
 SO_PROTOCOL
 SS
-SYS__sysctl
 SYS_access
 SYS_afs_syscall
 SYS_alarm
 SYS_chmod
 SYS_chown
 SYS_creat
-SYS_create_module
 SYS_dup2
 SYS_epoll_create
 SYS_epoll_wait
@@ -42,8 +40,6 @@ SYS_eventfd
 SYS_fadvise64
 SYS_fork
 SYS_futimesat
-SYS_get_kernel_syms
-SYS_get_thread_area
 SYS_getdents
 SYS_getpgrp
 SYS_getpmsg
@@ -64,14 +60,12 @@ SYS_pkey_free
 SYS_pkey_mprotect
 SYS_poll
 SYS_putpmsg
-SYS_query_module
 SYS_readlink
 SYS_rename
 SYS_renameat
 SYS_rmdir
 SYS_select
 SYS_sendfile
-SYS_set_thread_area
 SYS_signalfd
 SYS_stat
 SYS_symlink
@@ -79,7 +73,6 @@ SYS_sync_file_range
 SYS_sysfs
 SYS_time
 SYS_unlink
-SYS_uselib
 SYS_ustat
 SYS_utime
 SYS_utimes

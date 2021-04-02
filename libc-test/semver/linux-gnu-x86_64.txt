@@ -26,5 +26,4 @@ getcontext
 makecontext
 setcontext
 swapcontext
-sysctl
 termios2

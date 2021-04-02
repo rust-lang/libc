@@ -2202,7 +2202,6 @@ SYS_munlockall
 SYS_munmap
 SYS_name_to_handle_at
 SYS_nanosleep
-SYS_nfsservctl
 SYS_open_by_handle_at
 SYS_openat
 SYS_perf_event_open
