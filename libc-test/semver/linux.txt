@@ -2212,7 +2212,6 @@ SYS_pipe2
 SYS_pivot_root
 SYS_ppoll
 SYS_prctl
-SYS_pread64
 SYS_preadv
 SYS_preadv2
 SYS_prlimit64
@@ -2220,7 +2219,6 @@ SYS_process_vm_readv
 SYS_process_vm_writev
 SYS_pselect6
 SYS_ptrace
-SYS_pwrite64
 SYS_pwritev
 SYS_pwritev2
 SYS_quotactl
@@ -2722,7 +2720,6 @@ getmntent
 getnameinfo
 getpriority
 getpwent
-getrandom
 getresgid
 getresuid
 getrlimit
