@@ -1,0 +1,4 @@
+__c_anonymous_uc_sigmask
+__c_anonymous_uc_sigmask_with_padding
+time64_t
+timegm64

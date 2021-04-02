@@ -1,0 +1,3 @@
+EOTHER
+stricmp
+strnicmp
