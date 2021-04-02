@@ -588,7 +588,6 @@ getprotobyname
 getprotobynumber
 getpwnam
 getpwuid
-getpwuid_r
 getservbyname
 getsockname
 getsockopt
@@ -686,7 +685,6 @@ pread
 printf
 protoent
 pselect
-pthread_atfork
 pthread_attr_destroy
 pthread_attr_init
 pthread_attr_setdetachstate
@@ -733,7 +731,6 @@ pthread_rwlockattr_init
 pthread_rwlockattr_t
 pthread_self
 pthread_setspecific
-pthread_sigmask
 pthread_t
 ptrdiff_t
 ptsname

@@ -1,0 +1,5 @@
+# These symbols are missing for the targets:
+# * asmjs-unknown-emscripten
+getpwuid_r
+pthread_atfork
+pthread_sigmask
