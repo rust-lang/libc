@@ -320,27 +320,6 @@ pub const ENOTRECOVERABLE: ::c_int = 133;
 pub const EHWPOISON: ::c_int = 135;
 pub const ERFKILL: ::c_int = 134;
 
-pub const SOL_SOCKET: ::c_int = 0xffff;
-
-pub const SO_PASSCRED: ::c_int = 2;
-pub const SO_REUSEADDR: ::c_int = 4;
-pub const SO_PEERSEC: ::c_int = 0x001e;
-pub const SO_PASSSEC: ::c_int = 0x001f;
-pub const SO_TYPE: ::c_int = 0x1008;
-pub const SO_ERROR: ::c_int = 0x1007;
-pub const SO_DONTROUTE: ::c_int = 16;
-pub const SO_BROADCAST: ::c_int = 32;
-pub const SO_SNDBUF: ::c_int = 0x1001;
-pub const SO_RCVBUF: ::c_int = 0x1002;
-pub const SO_SNDBUFFORCE: ::c_int = 0x100a;
-pub const SO_RCVBUFFORCE: ::c_int = 0x100b;
-pub const SO_DOMAIN: ::c_int = 0x1029;
-pub const SO_KEEPALIVE: ::c_int = 8;
-pub const SO_OOBINLINE: ::c_int = 0x100;
-pub const SO_LINGER: ::c_int = 128;
-pub const SO_REUSEPORT: ::c_int = 0x200;
-pub const SO_ACCEPTCONN: ::c_int = 0x8000;
-
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 
@@ -421,12 +400,6 @@ pub const ENOTNAM: ::c_int = 118;
 pub const ENAVAIL: ::c_int = 119;
 pub const EISNAM: ::c_int = 120;
 pub const EREMOTEIO: ::c_int = 121;
-
-pub const SO_PEERCRED: ::c_int = 0x40;
-pub const SO_RCVLOWAT: ::c_int = 0x800;
-pub const SO_SNDLOWAT: ::c_int = 0x1000;
-pub const SO_RCVTIMEO: ::c_int = 0x2000;
-pub const SO_SNDTIMEO: ::c_int = 0x4000;
 
 pub const FIOCLEX: ::c_ulong = 0x20006601;
 pub const FIONCLEX: ::c_ulong = 0x20006602;

@@ -2456,12 +2456,6 @@ pub const ARPD_LOOKUP: ::c_ushort = 0x02;
 pub const ARPD_FLUSH: ::c_ushort = 0x03;
 pub const ATF_MAGIC: ::c_int = 0x80;
 
-#[cfg(not(target_arch = "sparc64"))]
-pub const SO_TIMESTAMPING: ::c_int = 37;
-#[cfg(target_arch = "sparc64")]
-pub const SO_TIMESTAMPING: ::c_int = 35;
-pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
-
 // linux/module.h
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
@@ -3768,6 +3762,9 @@ cfg_if! {
         pub use self::gnu::*;
     }
 }
+
+mod arch;
+pub use self::arch::*;
 
 cfg_if! {
     if #[cfg(libc_align)] {

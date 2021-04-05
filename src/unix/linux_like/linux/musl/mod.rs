@@ -615,13 +615,6 @@ pub const B38400: ::speed_t = 0o000017;
 pub const EXTA: ::speed_t = B19200;
 pub const EXTB: ::speed_t = B38400;
 
-pub const SO_BINDTODEVICE: ::c_int = 25;
-pub const SO_TIMESTAMP: ::c_int = 29;
-pub const SO_MARK: ::c_int = 36;
-pub const SO_RXQ_OVFL: ::c_int = 40;
-pub const SO_PEEK_OFF: ::c_int = 42;
-pub const SO_BUSY_POLL: ::c_int = 46;
-
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
 pub const RLIMIT_DATA: ::c_int = 2;
