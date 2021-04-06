@@ -1354,11 +1354,7 @@ extern "C" {
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
     pub fn getpriority(which: ::c_int, who: id_t) -> ::c_int;
-    pub fn setpriority(
-        which: ::c_int,
-        who: id_t,
-        priority: ::c_int,
-    ) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: id_t, priority: ::c_int) -> ::c_int;
 
     pub fn utimensat(
         fd: ::c_int,
@@ -1367,11 +1363,7 @@ extern "C" {
         flag: ::c_int,
     ) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
-    pub fn strerror_r(
-        errnum: ::c_int,
-        buf: *mut c_char,
-        buflen: ::size_t,
-    ) -> ::c_int;
+    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
     pub fn _errnop() -> *mut ::c_int;
 
     pub fn abs(i: ::c_int) -> ::c_int;
@@ -1384,11 +1376,7 @@ extern "C" {
 #[link(name = "bsd")]
 extern "C" {
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_init(
-        sem: *mut sem_t,
-        pshared: ::c_int,
-        value: ::c_uint,
-    ) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
 
     pub fn clock_gettime(clk_id: ::c_int, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: ::c_int, tp: *const ::timespec) -> ::c_int;
@@ -1418,11 +1406,7 @@ extern "C" {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn getnameinfo(
         sa: *const ::sockaddr,
@@ -1437,50 +1421,28 @@ extern "C" {
         lock: *mut pthread_mutex_t,
         abstime: *const ::timespec,
     ) -> ::c_int;
-    pub fn waitid(
-        idtype: idtype_t,
-        id: id_t,
-        infop: *mut ::siginfo_t,
-        options: ::c_int,
-    ) -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
+        -> ::c_int;
 
     pub fn glob(
         pattern: *const ::c_char,
         flags: ::c_int,
-        errfunc: ::Option<
-            extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int,
-        >,
+        errfunc: ::Option<extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int>,
         pglob: *mut ::glob_t,
     ) -> ::c_int;
     pub fn globfree(pglob: *mut ::glob_t);
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
-    pub fn posix_madvise(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        advice: ::c_int,
-    ) -> ::c_int;
+    pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
 
-    pub fn shm_open(
-        name: *const ::c_char,
-        oflag: ::c_int,
-        mode: ::mode_t,
-    ) -> ::c_int;
+    pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t) -> ::c_int;
     pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 
     pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
 
     pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
-    pub fn madvise(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        advice: ::c_int,
-    ) -> ::c_int;
+    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
 
-    pub fn msync(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
 
     pub fn recvfrom(
         socket: ::c_int,
@@ -1494,33 +1456,13 @@ extern "C" {
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 
-    pub fn bind(
-        socket: ::c_int,
-        address: *const ::sockaddr,
-        address_len: ::socklen_t,
-    ) -> ::c_int;
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
 
-    pub fn writev(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        count: ::c_int,
-    ) -> ::ssize_t;
-    pub fn readv(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        count: ::c_int,
-    ) -> ::ssize_t;
+    pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
+    pub fn readv(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
 
-    pub fn sendmsg(
-        fd: ::c_int,
-        msg: *const ::msghdr,
-        flags: ::c_int,
-    ) -> ::ssize_t;
-    pub fn recvmsg(
-        fd: ::c_int,
-        msg: *mut ::msghdr,
-        flags: ::c_int,
-    ) -> ::ssize_t;
+    pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn execvpe(
         file: *const ::c_char,
         argv: *const *const ::c_char,
@@ -1543,11 +1485,7 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
-    pub fn pthread_sigmask(
-        how: ::c_int,
-        set: *const sigset_t,
-        oldset: *mut sigset_t,
-    ) -> ::c_int;
+    pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t, oldset: *mut sigset_t) -> ::c_int;
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;

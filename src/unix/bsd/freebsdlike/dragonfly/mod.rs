@@ -1067,18 +1067,11 @@ safe_f! {
 extern "C" {
     pub fn __errno_location() -> *mut ::c_int;
     pub fn setgrent();
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
 
     pub fn setutxdb(_type: ::c_uint, file: *mut ::c_char) -> ::c_int;
 
-    pub fn aio_waitcomplete(
-        iocbp: *mut *mut aiocb,
-        timeout: *mut ::timespec,
-    ) -> ::c_int;
+    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb, timeout: *mut ::timespec) -> ::c_int;
 
     pub fn waitid(
         idtype: idtype_t,

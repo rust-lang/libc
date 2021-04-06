@@ -640,9 +640,7 @@ extern "C" {
     pub fn glob64(
         pattern: *const ::c_char,
         flags: ::c_int,
-        errfunc: ::Option<
-            extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int,
-        >,
+        errfunc: ::Option<extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int>,
         pglob: *mut glob64_t,
     ) -> ::c_int;
     pub fn globfree64(pglob: *mut glob64_t);

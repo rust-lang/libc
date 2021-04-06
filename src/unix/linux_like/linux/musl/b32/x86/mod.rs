@@ -934,11 +934,7 @@ pub const UESP: ::c_int = 15;
 pub const SS: ::c_int = 16;
 
 extern "C" {
-    pub fn getrandom(
-        buf: *mut ::c_void,
-        buflen: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 }
 
 cfg_if! {

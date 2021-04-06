@@ -16,7 +16,7 @@
 //!
 //! * No trailing whitespace
 //! * No tabs
-//! * 80-character lines
+//! * 100-character lines
 //! * Specific module layout:
 //!     1. use directives
 //!     2. typedefs
@@ -122,11 +122,10 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         if line.contains("\t") {
             err.error(path, i, "tab character");
         }
-        if line.len() > 80 {
-            err.error(path, i, "line longer than 80 chars");
+        if line.len() > 100 && !(line.contains("https://") || line.contains("http://")) {
+            err.error(path, i, "line longer than 100 chars");
         }
-        // This doesn't work any more due to rustfmt changes
-        /*if line.contains("#[cfg(") && !line.contains(" if ")
+        if line.contains("#[cfg(") && line.contains(']') && !line.contains(" if ")
             && !(line.contains("target_endian") ||
                  line.contains("target_arch"))
         {
@@ -134,7 +133,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
                 err.error(path, i, "use cfg_if! and submodules \
                                     instead of #[cfg]");
             }
-        }*/
+        }
         if line.contains("#[derive(") && (line.contains("Copy") || line.contains("Clone")) {
             err.error(path, i, "impl ::Copy and ::Clone manually");
         }

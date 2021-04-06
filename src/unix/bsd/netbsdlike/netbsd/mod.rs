@@ -1937,11 +1937,7 @@ extern "C" {
         sevlen: ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn sysctl(
         name: *const ::c_int,
         namelen: ::c_uint,
@@ -1977,8 +1973,7 @@ extern "C" {
     pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
     pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
     pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
-    pub fn mq_notify(mqd: ::mqd_t, notification: *const ::sigevent)
-        -> ::c_int;
+    pub fn mq_notify(mqd: ::mqd_t, notification: *const ::sigevent) -> ::c_int;
     pub fn mq_receive(
         mqd: ::mqd_t,
         msg_ptr: *mut ::c_char,
@@ -1991,11 +1986,7 @@ extern "C" {
         msg_len: ::size_t,
         msg_prio: ::c_uint,
     ) -> ::c_int;
-    pub fn mq_setattr(
-        mqd: ::mqd_t,
-        newattr: *const ::mq_attr,
-        oldattr: *mut ::mq_attr,
-    ) -> ::c_int;
+    pub fn mq_setattr(mqd: ::mqd_t, newattr: *const ::mq_attr, oldattr: *mut ::mq_attr) -> ::c_int;
     #[link_name = "__mq_timedreceive50"]
     pub fn mq_timedreceive(
         mqd: ::mqd_t,
@@ -2013,25 +2004,14 @@ extern "C" {
         abs_timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
-    pub fn ptrace(
-        request: ::c_int,
-        pid: ::pid_t,
-        addr: *mut ::c_void,
-        data: ::c_int,
-    ) -> ::c_int;
+    pub fn ptrace(request: ::c_int, pid: ::pid_t, addr: *mut ::c_void, data: ::c_int) -> ::c_int;
     pub fn pthread_setname_np(
         t: ::pthread_t,
         name: *const ::c_char,
         arg: *const ::c_void,
     ) -> ::c_int;
-    pub fn pthread_attr_get_np(
-        thread: ::pthread_t,
-        attr: *mut ::pthread_attr_t,
-    ) -> ::c_int;
-    pub fn pthread_getattr_np(
-        native: ::pthread_t,
-        attr: *mut ::pthread_attr_t,
-    ) -> ::c_int;
+    pub fn pthread_attr_get_np(thread: ::pthread_t, attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_getattr_np(native: ::pthread_t, attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_getguardsize(
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,
@@ -2051,11 +2031,7 @@ extern "C" {
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn freelocale(loc: ::locale_t);
     pub fn localeconv_l(loc: ::locale_t) -> *mut lconv;
-    pub fn newlocale(
-        mask: ::c_int,
-        locale: *const ::c_char,
-        base: ::locale_t,
-    ) -> ::locale_t;
+    pub fn newlocale(mask: ::c_int, locale: *const ::c_char, base: ::locale_t) -> ::locale_t;
     #[link_name = "__settimeofday50"]
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::c_void) -> ::c_int;
 
@@ -2096,10 +2072,7 @@ extern "C" {
         data: *mut ::c_void,
     ) -> ::c_int;
 
-    pub fn iconv_open(
-        tocode: *const ::c_char,
-        fromcode: *const ::c_char,
-    ) -> iconv_t;
+    pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
     pub fn iconv(
         cd: iconv_t,
         inbuf: *mut *mut ::c_char,
@@ -2127,16 +2100,8 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn updwtmpx(file: *const ::c_char, ut: *const utmpx) -> ::c_int;
-    pub fn getlastlogx(
-        fname: *const ::c_char,
-        uid: ::uid_t,
-        ll: *mut lastlogx,
-    ) -> *mut lastlogx;
-    pub fn updlastlogx(
-        fname: *const ::c_char,
-        uid: ::uid_t,
-        ll: *mut lastlogx,
-    ) -> ::c_int;
+    pub fn getlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> *mut lastlogx;
+    pub fn updlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> ::c_int;
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
     pub fn getutxent() -> *mut utmpx;
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;

@@ -1140,16 +1140,8 @@ pub const REG_SS: ::c_int = 18;
 extern "C" {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
-    pub fn makecontext(
-        ucp: *mut ucontext_t,
-        func: extern "C" fn(),
-        argc: ::c_int,
-        ...
-    );
-    pub fn swapcontext(
-        uocp: *mut ucontext_t,
-        ucp: *const ucontext_t,
-    ) -> ::c_int;
+    pub fn makecontext(ucp: *mut ucontext_t, func: extern "C" fn(), argc: ::c_int, ...);
+    pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> ::c_int;
 }
 
 cfg_if! {

@@ -6,12 +6,10 @@ fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
 
-    let (rustc_minor_ver, is_nightly) =
-        rustc_minor_nightly().expect("Failed to get rustc version");
+    let (rustc_minor_ver, is_nightly) = rustc_minor_nightly().expect("Failed to get rustc version");
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
-    let const_extern_fn_cargo_feature =
-        env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
+    let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
     let target = env::var("TARGET").unwrap();
 

@@ -1335,11 +1335,7 @@ extern "C" {
         num: ::size_t,
         size: ::size_t,
         compar: ::Option<
-            unsafe extern "C" fn(
-                *const ::c_void,
-                *const ::c_void,
-                *mut ::c_void,
-            ) -> ::c_int,
+            unsafe extern "C" fn(*const ::c_void, *const ::c_void, *mut ::c_void) -> ::c_int,
         >,
         arg: *mut ::c_void,
     );
@@ -1357,22 +1353,10 @@ extern "C" {
         timeout: *mut ::timespec,
     ) -> ::c_int;
 
-    pub fn getrlimit64(
-        resource: ::__rlimit_resource_t,
-        rlim: *mut ::rlimit64,
-    ) -> ::c_int;
-    pub fn setrlimit64(
-        resource: ::__rlimit_resource_t,
-        rlim: *const ::rlimit64,
-    ) -> ::c_int;
-    pub fn getrlimit(
-        resource: ::__rlimit_resource_t,
-        rlim: *mut ::rlimit,
-    ) -> ::c_int;
-    pub fn setrlimit(
-        resource: ::__rlimit_resource_t,
-        rlim: *const ::rlimit,
-    ) -> ::c_int;
+    pub fn getrlimit64(resource: ::__rlimit_resource_t, rlim: *mut ::rlimit64) -> ::c_int;
+    pub fn setrlimit64(resource: ::__rlimit_resource_t, rlim: *const ::rlimit64) -> ::c_int;
+    pub fn getrlimit(resource: ::__rlimit_resource_t, rlim: *mut ::rlimit) -> ::c_int;
+    pub fn setrlimit(resource: ::__rlimit_resource_t, rlim: *const ::rlimit) -> ::c_int;
     pub fn prlimit(
         pid: ::pid_t,
         resource: ::__rlimit_resource_t,
@@ -1403,11 +1387,7 @@ extern "C" {
         mask: ::c_uint,
         statxbuf: *mut statx,
     ) -> ::c_int;
-    pub fn getrandom(
-        buf: *mut ::c_void,
-        buflen: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 
     pub fn memmem(
         haystack: *const ::c_void,
@@ -1465,9 +1445,7 @@ extern "C" {
     pub fn glob64(
         pattern: *const ::c_char,
         flags: ::c_int,
-        errfunc: ::Option<
-            extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int,
-        >,
+        errfunc: ::Option<extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int>,
         pglob: *mut glob64_t,
     ) -> ::c_int;
     pub fn globfree64(pglob: *mut glob64_t);
@@ -1483,11 +1461,7 @@ extern "C" {
         cpuset: *const ::cpu_set_t,
     ) -> ::c_int;
     pub fn getpriority(which: ::__priority_which_t, who: ::id_t) -> ::c_int;
-    pub fn setpriority(
-        which: ::__priority_which_t,
-        who: ::id_t,
-        prio: ::c_int,
-    ) -> ::c_int;
+    pub fn setpriority(which: ::__priority_which_t, who: ::id_t, prio: ::c_int) -> ::c_int;
     pub fn pthread_getaffinity_np(
         thread: ::pthread_t,
         cpusetsize: ::size_t,
@@ -1521,28 +1495,13 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
-    pub fn pthread_getname_np(
-        thread: ::pthread_t,
-        name: *mut ::c_char,
-        len: ::size_t,
-    ) -> ::c_int;
-    pub fn pthread_setname_np(
-        thread: ::pthread_t,
-        name: *const ::c_char,
-    ) -> ::c_int;
+    pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn pthread_setname_np(thread: ::pthread_t, name: *const ::c_char) -> ::c_int;
 }
 
 extern "C" {
-    pub fn dlmopen(
-        lmid: Lmid_t,
-        filename: *const ::c_char,
-        flag: ::c_int,
-    ) -> *mut ::c_void;
-    pub fn dlinfo(
-        handle: *mut ::c_void,
-        request: ::c_int,
-        info: *mut ::c_void,
-    ) -> ::c_int;
+    pub fn dlmopen(lmid: Lmid_t, filename: *const ::c_char, flag: ::c_int) -> *mut ::c_void;
+    pub fn dlinfo(handle: *mut ::c_void, request: ::c_int, info: *mut ::c_void) -> ::c_int;
 }
 
 cfg_if! {

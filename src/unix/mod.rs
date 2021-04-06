@@ -422,18 +422,14 @@ extern "C" {
         base: *mut c_void,
         num: size_t,
         size: size_t,
-        compar: ::Option<
-            unsafe extern "C" fn(*const c_void, *const c_void) -> c_int,
-        >,
+        compar: ::Option<unsafe extern "C" fn(*const c_void, *const c_void) -> c_int>,
     );
     pub fn bsearch(
         key: *const c_void,
         base: *const c_void,
         num: size_t,
         size: size_t,
-        compar: ::Option<
-            unsafe extern "C" fn(*const c_void, *const c_void) -> c_int,
-        >,
+        compar: ::Option<unsafe extern "C" fn(*const c_void, *const c_void) -> c_int>,
     ) -> *mut c_void;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -444,38 +440,21 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "freopen$UNIX2003"
     )]
-    pub fn freopen(
-        filename: *const c_char,
-        mode: *const c_char,
-        file: *mut FILE,
-    ) -> *mut FILE;
-    pub fn fmemopen(
-        buf: *mut c_void,
-        size: size_t,
-        mode: *const c_char,
-    ) -> *mut FILE;
-    pub fn open_memstream(
-        ptr: *mut *mut c_char,
-        sizeloc: *mut size_t,
-    ) -> *mut FILE;
+    pub fn freopen(filename: *const c_char, mode: *const c_char, file: *mut FILE) -> *mut FILE;
+    pub fn fmemopen(buf: *mut c_void, size: size_t, mode: *const c_char) -> *mut FILE;
+    pub fn open_memstream(ptr: *mut *mut c_char, sizeloc: *mut size_t) -> *mut FILE;
 
     pub fn fflush(file: *mut FILE) -> c_int;
     pub fn fclose(file: *mut FILE) -> c_int;
     pub fn remove(filename: *const c_char) -> c_int;
     pub fn rename(oldname: *const c_char, newname: *const c_char) -> c_int;
     pub fn tmpfile() -> *mut FILE;
-    pub fn setvbuf(
-        stream: *mut FILE,
-        buffer: *mut c_char,
-        mode: c_int,
-        size: size_t,
-    ) -> c_int;
+    pub fn setvbuf(stream: *mut FILE, buffer: *mut c_char, mode: c_int, size: size_t) -> c_int;
     pub fn setbuf(stream: *mut FILE, buf: *mut c_char);
     pub fn getchar() -> c_int;
     pub fn putchar(c: c_int) -> c_int;
     pub fn fgetc(stream: *mut FILE) -> c_int;
-    pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE)
-        -> *mut c_char;
+    pub fn fgets(buf: *mut c_char, n: c_int, stream: *mut FILE) -> *mut c_char;
     pub fn fputc(c: c_int, stream: *mut FILE) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -484,22 +463,12 @@ extern "C" {
     pub fn fputs(s: *const c_char, stream: *mut FILE) -> c_int;
     pub fn puts(s: *const c_char) -> c_int;
     pub fn ungetc(c: c_int, stream: *mut FILE) -> c_int;
-    pub fn fread(
-        ptr: *mut c_void,
-        size: size_t,
-        nobj: size_t,
-        stream: *mut FILE,
-    ) -> size_t;
+    pub fn fread(ptr: *mut c_void, size: size_t, nobj: size_t, stream: *mut FILE) -> size_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "fwrite$UNIX2003"
     )]
-    pub fn fwrite(
-        ptr: *const c_void,
-        size: size_t,
-        nobj: size_t,
-        stream: *mut FILE,
-    ) -> size_t;
+    pub fn fwrite(ptr: *const c_void, size: size_t, nobj: size_t, stream: *mut FILE) -> size_t;
     pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
     pub fn ftell(stream: *mut FILE) -> c_long;
     pub fn rewind(stream: *mut FILE);
@@ -517,16 +486,8 @@ extern "C" {
         link_name = "strtod$UNIX2003"
     )]
     pub fn strtod(s: *const c_char, endp: *mut *mut c_char) -> c_double;
-    pub fn strtol(
-        s: *const c_char,
-        endp: *mut *mut c_char,
-        base: c_int,
-    ) -> c_long;
-    pub fn strtoul(
-        s: *const c_char,
-        endp: *mut *mut c_char,
-        base: c_int,
-    ) -> c_ulong;
+    pub fn strtol(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_long;
+    pub fn strtoul(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_ulong;
     pub fn calloc(nobj: size_t, size: size_t) -> *mut c_void;
     pub fn malloc(size: size_t) -> *mut c_void;
     pub fn realloc(p: *mut c_void, size: size_t) -> *mut c_void;
@@ -543,17 +504,9 @@ extern "C" {
     pub fn getenv(s: *const c_char) -> *mut c_char;
 
     pub fn strcpy(dst: *mut c_char, src: *const c_char) -> *mut c_char;
-    pub fn strncpy(
-        dst: *mut c_char,
-        src: *const c_char,
-        n: size_t,
-    ) -> *mut c_char;
+    pub fn strncpy(dst: *mut c_char, src: *const c_char, n: size_t) -> *mut c_char;
     pub fn strcat(s: *mut c_char, ct: *const c_char) -> *mut c_char;
-    pub fn strncat(
-        s: *mut c_char,
-        ct: *const c_char,
-        n: size_t,
-    ) -> *mut c_char;
+    pub fn strncat(s: *mut c_char, ct: *const c_char, n: size_t) -> *mut c_char;
     pub fn strcmp(cs: *const c_char, ct: *const c_char) -> c_int;
     pub fn strncmp(cs: *const c_char, ct: *const c_char, n: size_t) -> c_int;
     pub fn strcoll(cs: *const c_char, ct: *const c_char) -> c_int;
@@ -566,11 +519,7 @@ extern "C" {
     pub fn strpbrk(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strstr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
-    pub fn strncasecmp(
-        s1: *const c_char,
-        s2: *const c_char,
-        n: size_t,
-    ) -> c_int;
+    pub fn strncasecmp(s1: *const c_char, s2: *const c_char, n: size_t) -> c_int;
     pub fn strlen(cs: *const c_char) -> size_t;
     pub fn strnlen(cs: *const c_char, maxlen: size_t) -> size_t;
     #[cfg_attr(
@@ -582,25 +531,13 @@ extern "C" {
     pub fn strxfrm(s: *mut c_char, ct: *const c_char, n: size_t) -> size_t;
     pub fn strsignal(sig: c_int) -> *mut c_char;
     pub fn wcslen(buf: *const wchar_t) -> size_t;
-    pub fn wcstombs(
-        dest: *mut c_char,
-        src: *const wchar_t,
-        n: size_t,
-    ) -> ::size_t;
+    pub fn wcstombs(dest: *mut c_char, src: *const wchar_t, n: size_t) -> ::size_t;
 
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
     pub fn wmemchr(cx: *const wchar_t, c: wchar_t, n: size_t) -> *mut wchar_t;
     pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
-    pub fn memcpy(
-        dest: *mut c_void,
-        src: *const c_void,
-        n: size_t,
-    ) -> *mut c_void;
-    pub fn memmove(
-        dest: *mut c_void,
-        src: *const c_void,
-        n: size_t,
-    ) -> *mut c_void;
+    pub fn memcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
+    pub fn memmove(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
     pub fn memset(dest: *mut c_void, c: c_int, n: size_t) -> *mut c_void;
 }
 
@@ -610,28 +547,15 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid50")]
     pub fn getpwuid(uid: ::uid_t) -> *mut passwd;
 
-    pub fn fprintf(
-        stream: *mut ::FILE,
-        format: *const ::c_char,
-        ...
-    ) -> ::c_int;
+    pub fn fprintf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
     pub fn printf(format: *const ::c_char, ...) -> ::c_int;
-    pub fn snprintf(
-        s: *mut ::c_char,
-        n: ::size_t,
-        format: *const ::c_char,
-        ...
-    ) -> ::c_int;
+    pub fn snprintf(s: *mut ::c_char, n: ::size_t, format: *const ::c_char, ...) -> ::c_int;
     pub fn sprintf(s: *mut ::c_char, format: *const ::c_char, ...) -> ::c_int;
     #[cfg_attr(
         all(target_os = "linux", not(target_env = "uclibc")),
         link_name = "__isoc99_fscanf"
     )]
-    pub fn fscanf(
-        stream: *mut ::FILE,
-        format: *const ::c_char,
-        ...
-    ) -> ::c_int;
+    pub fn fscanf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
     #[cfg_attr(
         all(target_os = "linux", not(target_env = "uclibc")),
         link_name = "__isoc99_scanf"
@@ -641,8 +565,7 @@ extern "C" {
         all(target_os = "linux", not(target_env = "uclibc")),
         link_name = "__isoc99_sscanf"
     )]
-    pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...)
-        -> ::c_int;
+    pub fn sscanf(s: *const ::c_char, format: *const ::c_char, ...) -> ::c_int;
     pub fn getchar_unlocked() -> ::c_int;
     pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
 
@@ -664,11 +587,7 @@ extern "C" {
         link_name = "connect$UNIX2003"
     )]
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_connect")]
-    pub fn connect(
-        socket: ::c_int,
-        address: *const sockaddr,
-        len: socklen_t,
-    ) -> ::c_int;
+    pub fn connect(socket: ::c_int, address: *const sockaddr, len: socklen_t) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "listen$UNIX2003"
@@ -683,11 +602,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "accept$UNIX2003"
     )]
-    pub fn accept(
-        socket: ::c_int,
-        address: *mut sockaddr,
-        address_len: *mut socklen_t,
-    ) -> ::c_int;
+    pub fn accept(socket: ::c_int, address: *mut sockaddr, address_len: *mut socklen_t) -> ::c_int;
     #[cfg(not(all(
         libc_cfg_target_vendor,
         target_arch = "powerpc",
@@ -895,11 +810,7 @@ extern "C" {
         newdirfd: ::c_int,
         linkpath: *const ::c_char,
     ) -> ::c_int;
-    pub fn unlinkat(
-        dirfd: ::c_int,
-        pathname: *const ::c_char,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char, flags: ::c_int) -> ::c_int;
 
     pub fn access(path: *const c_char, amode: ::c_int) -> ::c_int;
     pub fn alarm(seconds: ::c_uint) -> ::c_uint;
@@ -923,16 +834,8 @@ extern "C" {
     pub fn dup(fd: ::c_int) -> ::c_int;
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
     pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> ::c_int;
-    pub fn execle(
-        path: *const ::c_char,
-        arg0: *const ::c_char,
-        ...
-    ) -> ::c_int;
-    pub fn execlp(
-        file: *const ::c_char,
-        arg0: *const ::c_char,
-        ...
-    ) -> ::c_int;
+    pub fn execle(path: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
+    pub fn execlp(file: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execv(prog: *const c_char, argv: *const *const c_char) -> ::c_int;
     pub fn execve(
         prog: *const c_char,
@@ -953,11 +856,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getopt$UNIX2003"
     )]
-    pub fn getopt(
-        argc: ::c_int,
-        argv: *const *mut c_char,
-        optstr: *const c_char,
-    ) -> ::c_int;
+    pub fn getopt(argc: ::c_int, argv: *const *mut c_char, optstr: *const c_char) -> ::c_int;
     pub fn getpgid(pid: pid_t) -> pid_t;
     pub fn getpgrp() -> pid_t;
     pub fn getpid() -> pid_t;
@@ -968,17 +867,12 @@ extern "C" {
     pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int) -> off_t;
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
     pub fn pipe(fds: *mut ::c_int) -> ::c_int;
-    pub fn posix_memalign(
-        memptr: *mut *mut ::c_void,
-        align: ::size_t,
-        size: ::size_t,
-    ) -> ::c_int;
+    pub fn posix_memalign(memptr: *mut *mut ::c_void, align: ::size_t, size: ::size_t) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "read$UNIX2003"
     )]
-    pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t)
-        -> ::ssize_t;
+    pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t) -> ::ssize_t;
     pub fn rmdir(path: *const c_char) -> ::c_int;
     pub fn seteuid(uid: uid_t) -> ::c_int;
     pub fn setegid(gid: gid_t) -> ::c_int;
@@ -1005,11 +899,7 @@ extern "C" {
         link_name = "ttyname_r$UNIX2003"
     )]
     #[cfg_attr(target_os = "illumos", link_name = "__posix_ttyname_r")]
-    pub fn ttyname_r(
-        fd: ::c_int,
-        buf: *mut c_char,
-        buflen: ::size_t,
-    ) -> ::c_int;
+    pub fn ttyname_r(fd: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
     pub fn unlink(c: *const c_char) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -1020,40 +910,22 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "waitpid$UNIX2003"
     )]
-    pub fn waitpid(
-        pid: pid_t,
-        status: *mut ::c_int,
-        options: ::c_int,
-    ) -> pid_t;
+    pub fn waitpid(pid: pid_t, status: *mut ::c_int, options: ::c_int) -> pid_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "write$UNIX2003"
     )]
-    pub fn write(
-        fd: ::c_int,
-        buf: *const ::c_void,
-        count: ::size_t,
-    ) -> ::ssize_t;
+    pub fn write(fd: ::c_int, buf: *const ::c_void, count: ::size_t) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pread$UNIX2003"
     )]
-    pub fn pread(
-        fd: ::c_int,
-        buf: *mut ::c_void,
-        count: ::size_t,
-        offset: off_t,
-    ) -> ::ssize_t;
+    pub fn pread(fd: ::c_int, buf: *mut ::c_void, count: ::size_t, offset: off_t) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pwrite$UNIX2003"
     )]
-    pub fn pwrite(
-        fd: ::c_int,
-        buf: *const ::c_void,
-        count: ::size_t,
-        offset: off_t,
-    ) -> ::ssize_t;
+    pub fn pwrite(fd: ::c_int, buf: *const ::c_void, count: ::size_t, offset: off_t) -> ::ssize_t;
     pub fn umask(mask: mode_t) -> mode_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utime50")]
@@ -1094,10 +966,7 @@ extern "C" {
     pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn if_nametoindex(ifname: *const c_char) -> ::c_uint;
-    pub fn if_indextoname(
-        ifindex: ::c_uint,
-        ifname: *mut ::c_char,
-    ) -> *mut ::c_char;
+    pub fn if_indextoname(ifindex: ::c_uint, ifname: *mut ::c_char) -> *mut ::c_char;
 
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
@@ -1120,11 +989,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "setenv$UNIX2003"
     )]
-    pub fn setenv(
-        name: *const c_char,
-        val: *const c_char,
-        overwrite: ::c_int,
-    ) -> ::c_int;
+    pub fn setenv(name: *const c_char, val: *const c_char, overwrite: ::c_int) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "unsetenv$UNIX2003"
@@ -1145,10 +1010,7 @@ extern "C" {
         any(target_os = "macos", target_os = "ios"),
         link_name = "realpath$DARWIN_EXTSN"
     )]
-    pub fn realpath(
-        pathname: *const ::c_char,
-        resolved: *mut ::c_char,
-    ) -> *mut ::c_char;
+    pub fn realpath(pathname: *const ::c_char, resolved: *mut ::c_char) -> *mut ::c_char;
 
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
@@ -1160,21 +1022,12 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pthread_join$UNIX2003"
     )]
-    pub fn pthread_join(
-        native: ::pthread_t,
-        value: *mut *mut ::c_void,
-    ) -> ::c_int;
+    pub fn pthread_join(native: ::pthread_t, value: *mut *mut ::c_void) -> ::c_int;
     pub fn pthread_exit(value: *mut ::c_void) -> !;
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
-    pub fn pthread_attr_setstacksize(
-        attr: *mut ::pthread_attr_t,
-        stack_size: ::size_t,
-    ) -> ::c_int;
-    pub fn pthread_attr_setdetachstate(
-        attr: *mut ::pthread_attr_t,
-        state: ::c_int,
-    ) -> ::c_int;
+    pub fn pthread_attr_setstacksize(attr: *mut ::pthread_attr_t, stack_size: ::size_t) -> ::c_int;
+    pub fn pthread_attr_setdetachstate(attr: *mut ::pthread_attr_t, state: ::c_int) -> ::c_int;
     pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__libc_thr_yield")]
     pub fn sched_yield() -> ::c_int;
@@ -1184,10 +1037,7 @@ extern "C" {
     ) -> ::c_int;
     pub fn pthread_key_delete(key: pthread_key_t) -> ::c_int;
     pub fn pthread_getspecific(key: pthread_key_t) -> *mut ::c_void;
-    pub fn pthread_setspecific(
-        key: pthread_key_t,
-        value: *const ::c_void,
-    ) -> ::c_int;
+    pub fn pthread_setspecific(key: pthread_key_t, value: *const ::c_void) -> ::c_int;
     pub fn pthread_mutex_init(
         lock: *mut pthread_mutex_t,
         attr: *const pthread_mutexattr_t,
@@ -1202,30 +1052,20 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pthread_mutexattr_destroy$UNIX2003"
     )]
-    pub fn pthread_mutexattr_destroy(
-        attr: *mut pthread_mutexattr_t,
-    ) -> ::c_int;
-    pub fn pthread_mutexattr_settype(
-        attr: *mut pthread_mutexattr_t,
-        _type: ::c_int,
-    ) -> ::c_int;
+    pub fn pthread_mutexattr_destroy(attr: *mut pthread_mutexattr_t) -> ::c_int;
+    pub fn pthread_mutexattr_settype(attr: *mut pthread_mutexattr_t, _type: ::c_int) -> ::c_int;
 
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pthread_cond_init$UNIX2003"
     )]
-    pub fn pthread_cond_init(
-        cond: *mut pthread_cond_t,
-        attr: *const pthread_condattr_t,
-    ) -> ::c_int;
+    pub fn pthread_cond_init(cond: *mut pthread_cond_t, attr: *const pthread_condattr_t)
+        -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pthread_cond_wait$UNIX2003"
     )]
-    pub fn pthread_cond_wait(
-        cond: *mut pthread_cond_t,
-        lock: *mut pthread_mutex_t,
-    ) -> ::c_int;
+    pub fn pthread_cond_wait(cond: *mut pthread_cond_t, lock: *mut pthread_mutex_t) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pthread_cond_timedwait$UNIX2003"
@@ -1278,11 +1118,8 @@ extern "C" {
         link_name = "pthread_rwlock_unlock$UNIX2003"
     )]
     pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> ::c_int;
-    pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t)
-        -> ::c_int;
-    pub fn pthread_rwlockattr_destroy(
-        attr: *mut pthread_rwlockattr_t,
-    ) -> ::c_int;
+    pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
+    pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t) -> ::c_int;
 
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_getsockopt")]
     pub fn getsockopt(
@@ -1294,23 +1131,13 @@ extern "C" {
     ) -> ::c_int;
     pub fn raise(signum: ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
-    pub fn sigaction(
-        signum: ::c_int,
-        act: *const sigaction,
-        oldact: *mut sigaction,
-    ) -> ::c_int;
+    pub fn sigaction(signum: ::c_int, act: *const sigaction, oldact: *mut sigaction) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utimes50")]
-    pub fn utimes(
-        filename: *const ::c_char,
-        times: *const ::timeval,
-    ) -> ::c_int;
+    pub fn utimes(filename: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn dlopen(filename: *const ::c_char, flag: ::c_int) -> *mut ::c_void;
     pub fn dlerror() -> *mut ::c_char;
-    pub fn dlsym(
-        handle: *mut ::c_void,
-        symbol: *const ::c_char,
-    ) -> *mut ::c_void;
+    pub fn dlsym(handle: *mut ::c_void, symbol: *const ::c_char) -> *mut ::c_void;
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
     pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 
@@ -1342,10 +1169,7 @@ extern "C" {
         ),
         link_name = "__res_init"
     )]
-    #[cfg_attr(
-        any(target_os = "macos", target_os = "ios"),
-        link_name = "res_9_init"
-    )]
+    #[cfg_attr(any(target_os = "macos", target_os = "ios"), link_name = "res_9_init")]
     pub fn res_init() -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
@@ -1390,21 +1214,11 @@ extern "C" {
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "mknod@FBSD_1.0"
     )]
-    pub fn mknod(
-        pathname: *const ::c_char,
-        mode: ::mode_t,
-        dev: ::dev_t,
-    ) -> ::c_int;
+    pub fn mknod(pathname: *const ::c_char, mode: ::mode_t, dev: ::dev_t) -> ::c_int;
     pub fn gethostname(name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn endservent();
-    pub fn getservbyname(
-        name: *const ::c_char,
-        proto: *const ::c_char,
-    ) -> *mut servent;
-    pub fn getservbyport(
-        port: ::c_int,
-        proto: *const ::c_char,
-    ) -> *mut servent;
+    pub fn getservbyname(name: *const ::c_char, proto: *const ::c_char) -> *mut servent;
+    pub fn getservbyport(port: ::c_int, proto: *const ::c_char) -> *mut servent;
     pub fn getservent() -> *mut servent;
     pub fn setservent(stayopen: ::c_int);
     pub fn getprotobyname(name: *const ::c_char) -> *mut protoent;
@@ -1419,22 +1233,12 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "send$UNIX2003"
     )]
-    pub fn send(
-        socket: ::c_int,
-        buf: *const ::c_void,
-        len: ::size_t,
-        flags: ::c_int,
-    ) -> ::ssize_t;
+    pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "recv$UNIX2003"
     )]
-    pub fn recv(
-        socket: ::c_int,
-        buf: *mut ::c_void,
-        len: ::size_t,
-        flags: ::c_int,
-    ) -> ::ssize_t;
+    pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "putenv$UNIX2003"
@@ -1463,10 +1267,7 @@ extern "C" {
         timeout: *mut timeval,
     ) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__setlocale50")]
-    pub fn setlocale(
-        category: ::c_int,
-        locale: *const ::c_char,
-    ) -> *mut ::c_char;
+    pub fn setlocale(category: ::c_int, locale: *const ::c_char) -> *mut ::c_char;
     pub fn localeconv() -> *mut lconv;
 
     #[cfg_attr(
@@ -1479,11 +1280,7 @@ extern "C" {
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
     pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
 
-    pub fn readlink(
-        path: *const c_char,
-        buf: *mut c_char,
-        bufsz: ::size_t,
-    ) -> ::ssize_t;
+    pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: ::size_t) -> ::ssize_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__sigemptyset14")]
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int;
@@ -1497,11 +1294,7 @@ extern "C" {
     pub fn sigismember(set: *const sigset_t, signum: ::c_int) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__sigprocmask14")]
-    pub fn sigprocmask(
-        how: ::c_int,
-        set: *const sigset_t,
-        oldset: *mut sigset_t,
-    ) -> ::c_int;
+    pub fn sigprocmask(how: ::c_int, set: *const sigset_t, oldset: *mut sigset_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigpending14")]
     pub fn sigpending(set: *mut sigset_t) -> ::c_int;
 
@@ -1526,11 +1319,7 @@ extern "C" {
         timeout: *const timespec,
         sigmask: *const sigset_t,
     ) -> ::c_int;
-    pub fn fseeko(
-        stream: *mut ::FILE,
-        offset: ::off_t,
-        whence: ::c_int,
-    ) -> ::c_int;
+    pub fn fseeko(stream: *mut ::FILE, offset: ::off_t, whence: ::c_int) -> ::c_int;
     pub fn ftello(stream: *mut ::FILE) -> ::off_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -1542,11 +1331,7 @@ extern "C" {
     pub fn cfsetispeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
     pub fn cfsetospeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int;
     pub fn tcgetattr(fd: ::c_int, termios: *mut ::termios) -> ::c_int;
-    pub fn tcsetattr(
-        fd: ::c_int,
-        optional_actions: ::c_int,
-        termios: *const ::termios,
-    ) -> ::c_int;
+    pub fn tcsetattr(fd: ::c_int, optional_actions: ::c_int, termios: *const ::termios) -> ::c_int;
     pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcgetsid(fd: ::c_int) -> ::pid_t;
@@ -1573,11 +1358,7 @@ extern "C" {
     pub fn unlockpt(fd: ::c_int) -> ::c_int;
 
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
-    pub fn getline(
-        lineptr: *mut *mut c_char,
-        n: *mut size_t,
-        stream: *mut FILE,
-    ) -> ssize_t;
+    pub fn getline(lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
 
     pub fn lockf(fd: ::c_int, cmd: ::c_int, len: ::off_t) -> ::c_int;
 }

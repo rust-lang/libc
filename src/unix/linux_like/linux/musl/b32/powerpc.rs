@@ -849,9 +849,5 @@ pub const SYS_epoll_pwait2: ::c_long = 441;
 pub const SYS_mount_setattr: ::c_long = 442;
 
 extern "C" {
-    pub fn getrandom(
-        buf: *mut ::c_void,
-        buflen: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 }

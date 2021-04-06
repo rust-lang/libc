@@ -36,9 +36,5 @@ pub const F_FLOCKW: ::c_int = 56;
 extern "C" {
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
 
-    pub fn mincore(
-        addr: ::caddr_t,
-        len: ::size_t,
-        vec: *mut ::c_char,
-    ) -> ::c_int;
+    pub fn mincore(addr: ::caddr_t, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
 }
