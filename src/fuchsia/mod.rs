@@ -251,11 +251,6 @@ s! {
         pub l_linger: ::c_int,
     }
 
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut ::c_void
-    }
-
     // <sys/time.h>
     pub struct itimerval {
         pub it_interval: ::timeval,
@@ -414,6 +409,13 @@ s! {
 
     pub struct epoll_event {
         pub events: u32,
+        pub data: epoll_data,
+    }
+
+    pub union epoll_data {
+        pub ptr: *mut ::c_void,
+        pub fd: ::c_int,
+        pub u32: u32,
         pub u64: u64,
     }
 
@@ -468,8 +470,8 @@ s! {
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
-        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
-        pub ifa_data: *mut ::c_void
+        pub ifa_ifu: __c_anonymous_ifa_ifu,
+        pub ifa_data: *mut ::c_void,
     }
 
     pub struct passwd {
@@ -974,6 +976,16 @@ s_no_extra_traits! {
         pub sigev_notify_attributes: *mut pthread_attr_t,
         pub __pad: [::c_char; 56 - 3 * 8 /* 8 == sizeof(long) */],
     }
+
+    pub union sigval {
+        pub sival_int: ::int,
+        pub sival_ptr: *mut ::c_void,
+    }
+
+    pub union __c_anonymous_ifa_ifu {
+        ifu_broadaddr: *mut sockaddr,
+        ifu_dstaddr: *mut sockaddr,
+    }
 }
 
 cfg_if! {
@@ -1299,6 +1311,44 @@ cfg_if! {
                 self.sigev_notify.hash(state);
                 self.sigev_notify_function.hash(state);
                 self.sigev_notify_attributes.hash(state);
+            }
+        }
+
+        impl PartialEq for sigval {
+            fn eq(&self, other: &sigval) -> bool {
+                unsafe { self.sival_ptr as usize == other.sival_ptr as usize }
+            }
+        }
+        impl Eq for sigval {}
+        impl ::fmt::Debug for sigval {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigval")
+                    .field("sival_ptr", unsafe { &(self.sival_ptr as usize) })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sigval {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { (self.sival_ptr as usize).hash(state) };
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifa_ifu {
+            fn eq(&self, other: &__c_anonymous_ifa_ifu) -> bool {
+                unsafe { self.ifu_dstaddr == other.ifu_dstaddr }
+            }
+        }
+        impl Eq for __c_anonymous_ifa_ifu {}
+        impl ::fmt::Debug for __c_anonymous_ifa_ifu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifa_ifu")
+                    .field("ifu_dstaddr", unsafe { &self.ifu_dstaddr } )
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for __c_anonymous_ifa_ifu {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.ifu_dstaddr.hash(state) };
             }
         }
     }
