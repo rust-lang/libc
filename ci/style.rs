@@ -122,7 +122,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         if line.contains("\t") {
             err.error(path, i, "tab character");
         }
-        if line.len() > 80 {
+        if line.len() > 80 && !(line.contains("https://") || line.contains("http://")) {
             err.error(path, i, "line longer than 80 chars");
         }
         if line.contains("#[cfg(") && line.contains(']') && !line.contains(" if ")
