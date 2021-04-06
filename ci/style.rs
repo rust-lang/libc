@@ -16,7 +16,7 @@
 //!
 //! * No trailing whitespace
 //! * No tabs
-//! * 80-character lines
+//! * 100-character lines
 //! * Specific module layout:
 //!     1. use directives
 //!     2. typedefs
@@ -122,8 +122,8 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         if line.contains("\t") {
             err.error(path, i, "tab character");
         }
-        if line.len() > 80 && !(line.contains("https://") || line.contains("http://")) {
-            err.error(path, i, "line longer than 80 chars");
+        if line.len() > 100 && !(line.contains("https://") || line.contains("http://")) {
+            err.error(path, i, "line longer than 100 chars");
         }
         if line.contains("#[cfg(") && line.contains(']') && !line.contains(" if ")
             && !(line.contains("target_endian") ||
