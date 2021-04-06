@@ -198,11 +198,7 @@ extern "C" {
 
     // Type of `addr` argument changed from `const void*` to `void*`
     // in FreeBSD 12
-    pub fn mprotect(
-        addr: *const ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
 
     // Return type ::c_int was removed in FreeBSD 12
     pub fn freelocale(loc: ::locale_t) -> ::c_int;

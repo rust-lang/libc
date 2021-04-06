@@ -20,10 +20,7 @@
 
 macro_rules! haiku_constant {
     ($a:tt, $b:tt, $c:tt, $d:tt) => {
-        (($a as u32) << 24)
-            + (($b as u32) << 16)
-            + (($c as u32) << 8)
-            + ($d as u32)
+        (($a as u32) << 24) + (($b as u32) << 16) + (($c as u32) << 8) + ($d as u32)
     };
 }
 
@@ -236,8 +233,7 @@ pub const B_INFINITE_TIMEOUT: usize = 9223372036854775807;
 pub const B_RELATIVE_TIMEOUT: u32 = 0x8;
 pub const B_ABSOLUTE_TIMEOUT: u32 = 0x10;
 pub const B_TIMEOUT_REAL_TIME_BASE: u32 = 0x40;
-pub const B_ABSOLUTE_REAL_TIME_TIMEOUT: u32 =
-    B_ABSOLUTE_TIMEOUT | B_TIMEOUT_REAL_TIME_BASE;
+pub const B_ABSOLUTE_REAL_TIME_TIMEOUT: u32 = B_ABSOLUTE_TIMEOUT | B_TIMEOUT_REAL_TIME_BASE;
 
 pub const B_NO_LOCK: u32 = 0;
 pub const B_LAZY_LOCK: u32 = 1;
@@ -440,8 +436,7 @@ pub const B_LAUNCH_FAILED_EXECUTABLE: status_t = B_APP_ERROR_BASE + 10;
 pub const B_LAUNCH_FAILED_APP_NOT_FOUND: status_t = B_APP_ERROR_BASE + 11;
 pub const B_LAUNCH_FAILED_APP_IN_TRASH: status_t = B_APP_ERROR_BASE + 12;
 pub const B_LAUNCH_FAILED_NO_PREFERRED_APP: status_t = B_APP_ERROR_BASE + 13;
-pub const B_LAUNCH_FAILED_FILES_APP_NOT_FOUND: status_t =
-    B_APP_ERROR_BASE + 14;
+pub const B_LAUNCH_FAILED_FILES_APP_NOT_FOUND: status_t = B_APP_ERROR_BASE + 14;
 pub const B_BAD_MIME_SNIFFER_RULE: status_t = B_APP_ERROR_BASE + 15;
 pub const B_NOT_A_MESSAGE: status_t = B_APP_ERROR_BASE + 16;
 pub const B_SHUTDOWN_CANCELLED: status_t = B_APP_ERROR_BASE + 17;
@@ -586,11 +581,9 @@ pub const B_INT32_TYPE: u32 = haiku_constant!('L', 'O', 'N', 'G');
 pub const B_INT64_TYPE: u32 = haiku_constant!('L', 'L', 'N', 'G');
 pub const B_INT8_TYPE: u32 = haiku_constant!('B', 'Y', 'T', 'E');
 pub const B_LARGE_ICON_TYPE: u32 = haiku_constant!('I', 'C', 'O', 'N');
-pub const B_MEDIA_PARAMETER_GROUP_TYPE: u32 =
-    haiku_constant!('B', 'M', 'C', 'G');
+pub const B_MEDIA_PARAMETER_GROUP_TYPE: u32 = haiku_constant!('B', 'M', 'C', 'G');
 pub const B_MEDIA_PARAMETER_TYPE: u32 = haiku_constant!('B', 'M', 'C', 'T');
-pub const B_MEDIA_PARAMETER_WEB_TYPE: u32 =
-    haiku_constant!('B', 'M', 'C', 'W');
+pub const B_MEDIA_PARAMETER_WEB_TYPE: u32 = haiku_constant!('B', 'M', 'C', 'W');
 pub const B_MESSAGE_TYPE: u32 = haiku_constant!('M', 'S', 'G', 'G');
 pub const B_MESSENGER_TYPE: u32 = haiku_constant!('M', 'S', 'N', 'G');
 pub const B_MIME_TYPE: u32 = haiku_constant!('M', 'I', 'M', 'E');
@@ -645,11 +638,7 @@ extern "C" {
     pub fn delete_area(id: area_id) -> status_t;
     pub fn resize_area(id: area_id, newSize: usize) -> status_t;
     pub fn set_area_protection(id: area_id, newProtection: u32) -> status_t;
-    pub fn _get_area_info(
-        id: area_id,
-        areaInfo: *mut area_info,
-        size: usize,
-    ) -> status_t;
+    pub fn _get_area_info(id: area_id, areaInfo: *mut area_info, size: usize) -> status_t;
     pub fn _get_next_area_info(
         team: team_id,
         cookie: *mut isize,
@@ -690,19 +679,11 @@ extern "C" {
     pub fn close_port(port: port_id) -> status_t;
     pub fn delete_port(port: port_id) -> status_t;
     pub fn port_buffer_size(port: port_id) -> ::ssize_t;
-    pub fn port_buffer_size_etc(
-        port: port_id,
-        flags: u32,
-        timeout: bigtime_t,
-    ) -> ::ssize_t;
+    pub fn port_buffer_size_etc(port: port_id, flags: u32, timeout: bigtime_t) -> ::ssize_t;
     pub fn port_count(port: port_id) -> ::ssize_t;
     pub fn set_port_owner(port: port_id, team: team_id) -> status_t;
 
-    pub fn _get_port_info(
-        port: port_id,
-        buf: *mut port_info,
-        portInfoSize: ::size_t,
-    ) -> status_t;
+    pub fn _get_port_info(port: port_id, buf: *mut port_info, portInfoSize: ::size_t) -> status_t;
     pub fn _get_next_port_info(
         port: port_id,
         cookie: *mut i32,
@@ -720,12 +701,7 @@ extern "C" {
     pub fn create_sem(count: i32, name: *const ::c_char) -> sem_id;
     pub fn delete_sem(id: sem_id) -> status_t;
     pub fn acquire_sem(id: sem_id) -> status_t;
-    pub fn acquire_sem_etc(
-        id: sem_id,
-        count: i32,
-        flags: u32,
-        timeout: bigtime_t,
-    ) -> status_t;
+    pub fn acquire_sem_etc(id: sem_id, count: i32, flags: u32, timeout: bigtime_t) -> status_t;
     pub fn release_sem(id: sem_id) -> status_t;
     pub fn release_sem_etc(id: sem_id, count: i32, flags: u32) -> status_t;
     pub fn switch_sem(semToBeReleased: sem_id, id: sem_id) -> status_t;
@@ -738,11 +714,7 @@ extern "C" {
     ) -> status_t;
     pub fn get_sem_count(id: sem_id, threadCount: *mut i32) -> status_t;
     pub fn set_sem_owner(id: sem_id, team: team_id) -> status_t;
-    pub fn _get_sem_info(
-        id: sem_id,
-        info: *mut sem_info,
-        infoSize: ::size_t,
-    ) -> status_t;
+    pub fn _get_sem_info(id: sem_id, info: *mut sem_info, infoSize: ::size_t) -> status_t;
     pub fn _get_next_sem_info(
         team: team_id,
         cookie: *mut i32,
@@ -751,16 +723,8 @@ extern "C" {
     ) -> status_t;
 
     pub fn kill_team(team: team_id) -> status_t;
-    pub fn _get_team_info(
-        team: team_id,
-        info: *mut team_info,
-        size: ::size_t,
-    ) -> status_t;
-    pub fn _get_next_team_info(
-        cookie: *mut i32,
-        info: *mut team_info,
-        size: ::size_t,
-    ) -> status_t;
+    pub fn _get_team_info(team: team_id, info: *mut team_info, size: ::size_t) -> status_t;
+    pub fn _get_next_team_info(cookie: *mut i32, info: *mut team_info, size: ::size_t) -> status_t;
 
     pub fn spawn_thread(
         func: thread_func,
@@ -772,23 +736,11 @@ extern "C" {
     pub fn resume_thread(thread: thread_id) -> status_t;
     pub fn suspend_thread(thread: thread_id) -> status_t;
 
-    pub fn rename_thread(
-        thread: thread_id,
-        newName: *const ::c_char,
-    ) -> status_t;
-    pub fn set_thread_priority(
-        thread: thread_id,
-        newPriority: i32,
-    ) -> status_t;
+    pub fn rename_thread(thread: thread_id, newName: *const ::c_char) -> status_t;
+    pub fn set_thread_priority(thread: thread_id, newPriority: i32) -> status_t;
     pub fn exit_thread(status: status_t);
-    pub fn wait_for_thread(
-        thread: thread_id,
-        returnValue: *mut status_t,
-    ) -> status_t;
-    pub fn on_exit_thread(
-        callback: extern "C" fn(*mut ::c_void),
-        data: *mut ::c_void,
-    ) -> status_t;
+    pub fn wait_for_thread(thread: thread_id, returnValue: *mut status_t) -> status_t;
+    pub fn on_exit_thread(callback: extern "C" fn(*mut ::c_void), data: *mut ::c_void) -> status_t;
 
     pub fn find_thread(name: *const ::c_char) -> thread_id;
 
@@ -798,26 +750,15 @@ extern "C" {
         buffer: *const ::c_void,
         bufferSize: ::size_t,
     ) -> status_t;
-    pub fn receive_data(
-        sender: *mut thread_id,
-        buffer: *mut ::c_void,
-        bufferSize: ::size_t,
-    ) -> i32;
+    pub fn receive_data(sender: *mut thread_id, buffer: *mut ::c_void, bufferSize: ::size_t)
+        -> i32;
     pub fn has_data(thread: thread_id) -> bool;
 
     pub fn snooze(amount: bigtime_t) -> status_t;
-    pub fn snooze_etc(
-        amount: bigtime_t,
-        timeBase: ::c_int,
-        flags: u32,
-    ) -> status_t;
+    pub fn snooze_etc(amount: bigtime_t, timeBase: ::c_int, flags: u32) -> status_t;
     pub fn snooze_until(time: bigtime_t, timeBase: ::c_int) -> status_t;
 
-    pub fn _get_thread_info(
-        id: thread_id,
-        info: *mut thread_info,
-        size: ::size_t,
-    ) -> status_t;
+    pub fn _get_thread_info(id: thread_id, info: *mut thread_info, size: ::size_t) -> status_t;
     pub fn _get_next_thread_info(
         team: team_id,
         cookie: *mut i32,
@@ -848,20 +789,13 @@ extern "C" {
     // TODO: cpuid_info struct and the get_cpuid() function
 
     pub fn get_system_info(info: *mut system_info) -> status_t;
-    pub fn get_cpu_info(
-        firstCPU: u32,
-        cpuCount: u32,
-        info: *mut cpu_info,
-    ) -> status_t;
+    pub fn get_cpu_info(firstCPU: u32, cpuCount: u32, info: *mut cpu_info) -> status_t;
     pub fn is_computer_on() -> i32;
     pub fn is_computer_on_fire() -> ::c_double;
     pub fn send_signal(threadID: thread_id, signal: ::c_uint) -> ::c_int;
     pub fn set_signal_stack(base: *mut ::c_void, size: ::size_t);
 
-    pub fn wait_for_objects(
-        infos: *mut object_wait_info,
-        numInfos: ::c_int,
-    ) -> ::ssize_t;
+    pub fn wait_for_objects(infos: *mut object_wait_info, numInfos: ::c_int) -> ::ssize_t;
     pub fn wait_for_objects_etc(
         infos: *mut object_wait_info,
         numInfos: ::c_int,
@@ -939,11 +873,7 @@ extern "C" {
     pub fn fs_stat_dev(dev: ::dev_t, info: *mut fs_info) -> ::c_int;
 
     // kernel/fs_query.h
-    pub fn fs_open_query(
-        device: ::dev_t,
-        query: *const ::c_char,
-        flags: u32,
-    ) -> *mut ::DIR;
+    pub fn fs_open_query(device: ::dev_t, query: *const ::c_char, flags: u32) -> *mut ::DIR;
     pub fn fs_open_live_query(
         device: ::dev_t,
         query: *const ::c_char,
@@ -953,11 +883,7 @@ extern "C" {
     ) -> *mut ::DIR;
     pub fn fs_close_query(d: *mut ::DIR) -> ::c_int;
     pub fn fs_read_query(d: *mut ::DIR) -> *mut ::dirent;
-    pub fn get_path_for_dirent(
-        dent: *mut ::dirent,
-        buf: *mut ::c_char,
-        len: ::size_t,
-    ) -> status_t;
+    pub fn get_path_for_dirent(dent: *mut ::dirent, buf: *mut ::c_char, len: ::size_t) -> status_t;
 
     // kernel/fs_volume.h
     pub fn fs_mount_volume(
@@ -992,11 +918,7 @@ extern "C" {
         symbolLocation: *mut *mut ::c_void,
     ) -> status_t;
     pub fn clear_caches(address: *mut ::c_void, length: ::size_t, flags: u32);
-    pub fn _get_image_info(
-        image: image_id,
-        info: *mut image_info,
-        size: ::size_t,
-    ) -> status_t;
+    pub fn _get_image_info(image: image_id, info: *mut image_info, size: ::size_t) -> status_t;
     pub fn _get_next_image_info(
         team: team_id,
         cookie: *mut i32,
@@ -1059,11 +981,7 @@ pub unsafe fn get_sem_info(id: sem_id, info: *mut sem_info) -> status_t {
     _get_sem_info(id, info, core::mem::size_of::<sem_info>() as ::size_t)
 }
 
-pub unsafe fn get_next_sem_info(
-    team: team_id,
-    cookie: *mut i32,
-    info: *mut sem_info,
-) -> status_t {
+pub unsafe fn get_next_sem_info(team: team_id, cookie: *mut i32, info: *mut sem_info) -> status_t {
     _get_next_sem_info(
         team,
         cookie,
@@ -1076,22 +994,11 @@ pub unsafe fn get_team_info(team: team_id, info: *mut team_info) -> status_t {
     _get_team_info(team, info, core::mem::size_of::<team_info>() as ::size_t)
 }
 
-pub unsafe fn get_next_team_info(
-    cookie: *mut i32,
-    info: *mut team_info,
-) -> status_t {
-    _get_next_team_info(
-        cookie,
-        info,
-        core::mem::size_of::<team_info>() as ::size_t,
-    )
+pub unsafe fn get_next_team_info(cookie: *mut i32, info: *mut team_info) -> status_t {
+    _get_next_team_info(cookie, info, core::mem::size_of::<team_info>() as ::size_t)
 }
 
-pub unsafe fn get_team_usage_info(
-    team: team_id,
-    who: i32,
-    info: *mut team_usage_info,
-) -> status_t {
+pub unsafe fn get_team_usage_info(team: team_id, who: i32, info: *mut team_usage_info) -> status_t {
     _get_team_usage_info(
         team,
         who,
@@ -1100,10 +1007,7 @@ pub unsafe fn get_team_usage_info(
     )
 }
 
-pub unsafe fn get_thread_info(
-    id: thread_id,
-    info: *mut thread_info,
-) -> status_t {
+pub unsafe fn get_thread_info(id: thread_id, info: *mut thread_info) -> status_t {
     _get_thread_info(id, info, core::mem::size_of::<thread_info>() as ::size_t)
 }
 
@@ -1121,15 +1025,8 @@ pub unsafe fn get_next_thread_info(
 }
 
 // kernel/image.h
-pub unsafe fn get_image_info(
-    image: image_id,
-    info: *mut image_info,
-) -> status_t {
-    _get_image_info(
-        image,
-        info,
-        core::mem::size_of::<image_info>() as ::size_t,
-    )
+pub unsafe fn get_image_info(image: image_id, info: *mut image_info) -> status_t {
+    _get_image_info(image, info, core::mem::size_of::<image_info>() as ::size_t)
 }
 
 pub unsafe fn get_next_image_info(

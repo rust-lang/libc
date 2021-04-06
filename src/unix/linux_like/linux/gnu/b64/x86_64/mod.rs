@@ -920,22 +920,10 @@ pub const REG_CR2: ::c_int = 22;
 extern "C" {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
-    pub fn makecontext(
-        ucp: *mut ucontext_t,
-        func: extern "C" fn(),
-        argc: ::c_int,
-        ...
-    );
-    pub fn swapcontext(
-        uocp: *mut ucontext_t,
-        ucp: *const ucontext_t,
-    ) -> ::c_int;
+    pub fn makecontext(ucp: *mut ucontext_t, func: extern "C" fn(), argc: ::c_int, ...);
+    pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> ::c_int;
     pub fn iopl(level: ::c_int) -> ::c_int;
-    pub fn ioperm(
-        from: ::c_ulong,
-        num: ::c_ulong,
-        turn_on: ::c_int,
-    ) -> ::c_int;
+    pub fn ioperm(from: ::c_ulong, num: ::c_ulong, turn_on: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

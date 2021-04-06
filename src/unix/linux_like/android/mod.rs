@@ -1259,11 +1259,8 @@ pub const AI_PASSIVE: ::c_int = 0x00000001;
 pub const AI_CANONNAME: ::c_int = 0x00000002;
 pub const AI_NUMERICHOST: ::c_int = 0x00000004;
 pub const AI_NUMERICSERV: ::c_int = 0x00000008;
-pub const AI_MASK: ::c_int = AI_PASSIVE
-    | AI_CANONNAME
-    | AI_NUMERICHOST
-    | AI_NUMERICSERV
-    | AI_ADDRCONFIG;
+pub const AI_MASK: ::c_int =
+    AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST | AI_NUMERICSERV | AI_ADDRCONFIG;
 pub const AI_ALL: ::c_int = 0x00000100;
 pub const AI_V4MAPPED_CFG: ::c_int = 0x00000200;
 pub const AI_ADDRCONFIG: ::c_int = 0x00000400;
@@ -2219,8 +2216,7 @@ pub const FUTEX_CMP_REQUEUE_PI: ::c_int = 12;
 
 pub const FUTEX_PRIVATE_FLAG: ::c_int = 128;
 pub const FUTEX_CLOCK_REALTIME: ::c_int = 256;
-pub const FUTEX_CMD_MASK: ::c_int =
-    !(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME);
+pub const FUTEX_CMD_MASK: ::c_int = !(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME);
 
 // linux/errqueue.h
 pub const SO_EE_ORIGIN_NONE: u8 = 0;
@@ -2371,29 +2367,13 @@ extern "C" {
         new_limit: *const ::rlimit64,
         old_limit: *mut ::rlimit64,
     ) -> ::c_int;
-    pub fn strerror_r(
-        errnum: ::c_int,
-        buf: *mut c_char,
-        buflen: ::size_t,
-    ) -> ::c_int;
+    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
 
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
-    pub fn madvise(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        advice: ::c_int,
-    ) -> ::c_int;
+    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn msync(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn recvfrom(
         socket: ::c_int,
         buf: *mut ::c_void,
@@ -2411,18 +2391,8 @@ extern "C" {
         sevlen: ::size_t,
         flags: ::c_int,
     ) -> ::c_int;
-    pub fn preadv(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        count: ::c_int,
-        offset: ::off_t,
-    ) -> ::ssize_t;
-    pub fn pwritev(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        count: ::c_int,
-        offset: ::off_t,
-    ) -> ::ssize_t;
+    pub fn preadv(fd: ::c_int, iov: *const ::iovec, count: ::c_int, offset: ::off_t) -> ::ssize_t;
+    pub fn pwritev(fd: ::c_int, iov: *const ::iovec, count: ::c_int, offset: ::off_t) -> ::ssize_t;
     pub fn process_vm_readv(
         pid: ::pid_t,
         local_iov: *const ::iovec,
@@ -2444,10 +2414,7 @@ extern "C" {
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
     pub fn __sched_cpualloc(count: ::size_t) -> *mut ::cpu_set_t;
     pub fn __sched_cpufree(set: *mut ::cpu_set_t);
-    pub fn __sched_cpucount(
-        setsize: ::size_t,
-        set: *const cpu_set_t,
-    ) -> ::c_int;
+    pub fn __sched_cpucount(setsize: ::size_t, set: *const cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
 
     pub fn utmpname(name: *const ::c_char) -> ::c_int;
@@ -2456,28 +2423,10 @@ extern "C" {
 
     pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
     pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
-    pub fn fallocate(
-        fd: ::c_int,
-        mode: ::c_int,
-        offset: ::off_t,
-        len: ::off_t,
-    ) -> ::c_int;
-    pub fn fallocate64(
-        fd: ::c_int,
-        mode: ::c_int,
-        offset: ::off64_t,
-        len: ::off64_t,
-    ) -> ::c_int;
-    pub fn posix_fallocate(
-        fd: ::c_int,
-        offset: ::off_t,
-        len: ::off_t,
-    ) -> ::c_int;
-    pub fn posix_fallocate64(
-        fd: ::c_int,
-        offset: ::off64_t,
-        len: ::off64_t,
-    ) -> ::c_int;
+    pub fn fallocate(fd: ::c_int, mode: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
+    pub fn fallocate64(fd: ::c_int, mode: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
+    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
+    pub fn posix_fallocate64(fd: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
     pub fn getxattr(
         path: *const c_char,
         name: *const c_char,
@@ -2517,34 +2466,15 @@ extern "C" {
         size: ::size_t,
         flags: ::c_int,
     ) -> ::c_int;
-    pub fn listxattr(
-        path: *const c_char,
-        list: *mut c_char,
-        size: ::size_t,
-    ) -> ::ssize_t;
-    pub fn llistxattr(
-        path: *const c_char,
-        list: *mut c_char,
-        size: ::size_t,
-    ) -> ::ssize_t;
-    pub fn flistxattr(
-        filedes: ::c_int,
-        list: *mut c_char,
-        size: ::size_t,
-    ) -> ::ssize_t;
+    pub fn listxattr(path: *const c_char, list: *mut c_char, size: ::size_t) -> ::ssize_t;
+    pub fn llistxattr(path: *const c_char, list: *mut c_char, size: ::size_t) -> ::ssize_t;
+    pub fn flistxattr(filedes: ::c_int, list: *mut c_char, size: ::size_t) -> ::ssize_t;
     pub fn removexattr(path: *const c_char, name: *const c_char) -> ::c_int;
     pub fn lremovexattr(path: *const c_char, name: *const c_char) -> ::c_int;
     pub fn fremovexattr(filedes: ::c_int, name: *const c_char) -> ::c_int;
-    pub fn signalfd(
-        fd: ::c_int,
-        mask: *const ::sigset_t,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn signalfd(fd: ::c_int, mask: *const ::sigset_t, flags: ::c_int) -> ::c_int;
     pub fn timerfd_create(clock: ::clockid_t, flags: ::c_int) -> ::c_int;
-    pub fn timerfd_gettime(
-        fd: ::c_int,
-        current_value: *mut itimerspec,
-    ) -> ::c_int;
+    pub fn timerfd_gettime(fd: ::c_int, current_value: *mut itimerspec) -> ::c_int;
     pub fn timerfd_settime(
         fd: ::c_int,
         flags: ::c_int,
@@ -2552,11 +2482,8 @@ extern "C" {
         old_value: *mut itimerspec,
     ) -> ::c_int;
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
-    pub fn sched_getaffinity(
-        pid: ::pid_t,
-        cpusetsize: ::size_t,
-        cpuset: *mut cpu_set_t,
-    ) -> ::c_int;
+    pub fn sched_getaffinity(pid: ::pid_t, cpusetsize: ::size_t, cpuset: *mut cpu_set_t)
+        -> ::c_int;
     pub fn sched_setaffinity(
         pid: ::pid_t,
         cpusetsize: ::size_t,
@@ -2570,12 +2497,8 @@ extern "C" {
         maxevents: ::c_int,
         timeout: ::c_int,
     ) -> ::c_int;
-    pub fn epoll_ctl(
-        epfd: ::c_int,
-        op: ::c_int,
-        fd: ::c_int,
-        event: *mut ::epoll_event,
-    ) -> ::c_int;
+    pub fn epoll_ctl(epfd: ::c_int, op: ::c_int, fd: ::c_int, event: *mut ::epoll_event)
+        -> ::c_int;
     pub fn pthread_getschedparam(
         native: ::pthread_t,
         policy: *mut ::c_int,
@@ -2584,16 +2507,8 @@ extern "C" {
     pub fn unshare(flags: ::c_int) -> ::c_int;
     pub fn umount(target: *const ::c_char) -> ::c_int;
     pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
-    pub fn tee(
-        fd_in: ::c_int,
-        fd_out: ::c_int,
-        len: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
-    pub fn settimeofday(
-        tv: *const ::timeval,
-        tz: *const ::timezone,
-    ) -> ::c_int;
+    pub fn tee(fd_in: ::c_int, fd_out: ::c_int, len: ::size_t, flags: ::c_uint) -> ::ssize_t;
+    pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
     pub fn splice(
         fd_in: ::c_int,
         off_in: *mut ::loff_t,
@@ -2603,17 +2518,10 @@ extern "C" {
         flags: ::c_uint,
     ) -> ::ssize_t;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
-    pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec)
-        -> ::c_int;
-    pub fn sem_timedwait(
-        sem: *mut sem_t,
-        abstime: *const ::timespec,
-    ) -> ::c_int;
+    pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn sem_timedwait(sem: *mut sem_t, abstime: *const ::timespec) -> ::c_int;
     pub fn sem_getvalue(sem: *mut sem_t, sval: *mut ::c_int) -> ::c_int;
-    pub fn sched_setparam(
-        pid: ::pid_t,
-        param: *const ::sched_param,
-    ) -> ::c_int;
+    pub fn sched_setparam(pid: ::pid_t, param: *const ::sched_param) -> ::c_int;
     pub fn setns(fd: ::c_int, nstype: ::c_int) -> ::c_int;
     pub fn swapoff(puath: *const ::c_char) -> ::c_int;
     pub fn vmsplice(
@@ -2704,11 +2612,7 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
-    pub fn pthread_sigmask(
-        how: ::c_int,
-        set: *const sigset_t,
-        oldset: *mut sigset_t,
-    ) -> ::c_int;
+    pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t, oldset: *mut sigset_t) -> ::c_int;
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
@@ -2781,17 +2685,9 @@ extern "C" {
     ) -> ::c_int;
     pub fn inotify_init() -> ::c_int;
     pub fn inotify_init1(flags: ::c_int) -> ::c_int;
-    pub fn inotify_add_watch(
-        fd: ::c_int,
-        path: *const ::c_char,
-        mask: u32,
-    ) -> ::c_int;
+    pub fn inotify_add_watch(fd: ::c_int, path: *const ::c_char, mask: u32) -> ::c_int;
 
-    pub fn regcomp(
-        preg: *mut ::regex_t,
-        pattern: *const ::c_char,
-        cflags: ::c_int,
-    ) -> ::c_int;
+    pub fn regcomp(preg: *mut ::regex_t, pattern: *const ::c_char, cflags: ::c_int) -> ::c_int;
 
     pub fn regexec(
         preg: *const ::regex_t,

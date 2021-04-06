@@ -771,10 +771,7 @@ pub const IFF_PROMISC: ::c_int = 0x100; // (n) receive all packets
 pub const IFF_ALLMULTI: ::c_int = 0x200; // (n) receive all multicast packets
 pub const IFF_OACTIVE: ::c_int = 0x400; // (d) tx hardware queue is full
 #[doc(hidden)]
-#[deprecated(
-    since = "0.2.54",
-    note = "Use the portable `IFF_OACTIVE` instead"
-)]
+#[deprecated(since = "0.2.54", note = "Use the portable `IFF_OACTIVE` instead")]
 pub const IFF_DRV_OACTIVE: ::c_int = 0x400;
 pub const IFF_SIMPLEX: ::c_int = 0x800; // (i) can't hear own transmissions
 pub const IFF_LINK0: ::c_int = 0x1000; // per link layer defined bit
@@ -1369,16 +1366,8 @@ extern "C" {
     pub fn jail(jail: *mut ::jail) -> ::c_int;
     pub fn jail_attach(jid: ::c_int) -> ::c_int;
     pub fn jail_remove(jid: ::c_int) -> ::c_int;
-    pub fn jail_get(
-        iov: *mut ::iovec,
-        niov: ::c_uint,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn jail_set(
-        iov: *mut ::iovec,
-        niov: ::c_uint,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn jail_get(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn jail_set(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int) -> ::c_int;
 
     pub fn lio_listio(
         mode: ::c_int,
@@ -1387,31 +1376,15 @@ extern "C" {
         sevp: *mut sigevent,
     ) -> ::c_int;
 
-    pub fn posix_fallocate(
-        fd: ::c_int,
-        offset: ::off_t,
-        len: ::off_t,
-    ) -> ::c_int;
-    pub fn posix_fadvise(
-        fd: ::c_int,
-        offset: ::off_t,
-        len: ::off_t,
-        advise: ::c_int,
-    ) -> ::c_int;
+    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, advise: ::c_int) -> ::c_int;
     pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
-    pub fn mkostemps(
-        template: *mut ::c_char,
-        suffixlen: ::c_int,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn mkostemps(template: *mut ::c_char, suffixlen: ::c_int, flags: ::c_int) -> ::c_int;
 
     pub fn getutxuser(user: *const ::c_char) -> *mut utmpx;
     pub fn setutxdb(_type: ::c_int, file: *const ::c_char) -> ::c_int;
 
-    pub fn aio_waitcomplete(
-        iocbp: *mut *mut aiocb,
-        timeout: *mut ::timespec,
-    ) -> ::ssize_t;
+    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb, timeout: *mut ::timespec) -> ::ssize_t;
     pub fn mq_getfd_np(mqd: ::mqd_t) -> ::c_int;
 
     pub fn waitid(
@@ -1423,22 +1396,10 @@ extern "C" {
 
     pub fn ftok(pathname: *const ::c_char, proj_id: ::c_int) -> ::key_t;
     pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
-    pub fn shmat(
-        shmid: ::c_int,
-        shmaddr: *const ::c_void,
-        shmflg: ::c_int,
-    ) -> *mut ::c_void;
+    pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
-    pub fn shmctl(
-        shmid: ::c_int,
-        cmd: ::c_int,
-        buf: *mut ::shmid_ds,
-    ) -> ::c_int;
-    pub fn msgctl(
-        msqid: ::c_int,
-        cmd: ::c_int,
-        buf: *mut ::msqid_ds,
-    ) -> ::c_int;
+    pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
+    pub fn msgctl(msqid: ::c_int, cmd: ::c_int, buf: *mut ::msqid_ds) -> ::c_int;
     pub fn msgget(key: ::key_t, msgflg: ::c_int) -> ::c_int;
     pub fn msgsnd(
         msqid: ::c_int,
@@ -1457,11 +1418,7 @@ extern "C" {
     pub fn pdgetpid(fd: ::c_int, pidp: *mut ::pid_t) -> ::c_int;
     pub fn pdkill(fd: ::c_int, signum: ::c_int) -> ::c_int;
 
-    pub fn rtprio_thread(
-        function: ::c_int,
-        lwpid: ::lwpid_t,
-        rtp: *mut super::rtprio,
-    ) -> ::c_int;
+    pub fn rtprio_thread(function: ::c_int, lwpid: ::lwpid_t, rtp: *mut super::rtprio) -> ::c_int;
 
     pub fn posix_spawn(
         pid: *mut ::pid_t,
@@ -1501,26 +1458,17 @@ extern "C" {
         attr: *const posix_spawnattr_t,
         flags: *mut ::c_short,
     ) -> ::c_int;
-    pub fn posix_spawnattr_setflags(
-        attr: *mut posix_spawnattr_t,
-        flags: ::c_short,
-    ) -> ::c_int;
+    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: ::c_short) -> ::c_int;
     pub fn posix_spawnattr_getpgroup(
         attr: *const posix_spawnattr_t,
         flags: *mut ::pid_t,
     ) -> ::c_int;
-    pub fn posix_spawnattr_setpgroup(
-        attr: *mut posix_spawnattr_t,
-        flags: ::pid_t,
-    ) -> ::c_int;
+    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: ::pid_t) -> ::c_int;
     pub fn posix_spawnattr_getschedpolicy(
         attr: *const posix_spawnattr_t,
         flags: *mut ::c_int,
     ) -> ::c_int;
-    pub fn posix_spawnattr_setschedpolicy(
-        attr: *mut posix_spawnattr_t,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn posix_spawnattr_setschedpolicy(attr: *mut posix_spawnattr_t, flags: ::c_int) -> ::c_int;
     pub fn posix_spawnattr_getschedparam(
         attr: *const posix_spawnattr_t,
         param: *mut ::sched_param,
@@ -1530,12 +1478,8 @@ extern "C" {
         param: *const ::sched_param,
     ) -> ::c_int;
 
-    pub fn posix_spawn_file_actions_init(
-        actions: *mut posix_spawn_file_actions_t,
-    ) -> ::c_int;
-    pub fn posix_spawn_file_actions_destroy(
-        actions: *mut posix_spawn_file_actions_t,
-    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
+    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
     pub fn posix_spawn_file_actions_addopen(
         actions: *mut posix_spawn_file_actions_t,
         fd: ::c_int,
@@ -1553,15 +1497,9 @@ extern "C" {
         newfd: ::c_int,
     ) -> ::c_int;
 
-    #[cfg_attr(
-        all(target_os = "freebsd", freebsd11),
-        link_name = "statfs@FBSD_1.0"
-    )]
+    #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "statfs@FBSD_1.0")]
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
-    #[cfg_attr(
-        all(target_os = "freebsd", freebsd11),
-        link_name = "fstatfs@FBSD_1.0"
-    )]
+    #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "fstatfs@FBSD_1.0")]
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
@@ -1587,11 +1525,7 @@ extern "C" {
         needlelen: ::size_t,
     ) -> *mut ::c_void;
 
-    pub fn nmount(
-        iov: *mut ::iovec,
-        niov: ::c_uint,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn nmount(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int) -> ::c_int;
 }
 
 #[link(name = "util")]

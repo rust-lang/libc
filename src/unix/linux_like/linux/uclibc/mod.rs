@@ -147,8 +147,7 @@ pub const LC_ALL: ::c_int = 6;
 // end different section
 
 // MS_ flags for mount(2)
-pub const MS_RMT_MASK: ::c_ulong =
-    ::MS_RDONLY | ::MS_SYNCHRONOUS | ::MS_MANDLOCK | ::MS_I_VERSION;
+pub const MS_RMT_MASK: ::c_ulong = ::MS_RDONLY | ::MS_SYNCHRONOUS | ::MS_MANDLOCK | ::MS_I_VERSION;
 
 pub const ENOTSUP: ::c_int = EOPNOTSUPP;
 

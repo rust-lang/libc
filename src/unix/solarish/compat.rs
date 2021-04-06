@@ -7,15 +7,8 @@ const PTEM: &[u8] = b"ptem\0";
 const LDTERM: &[u8] = b"ldterm\0";
 
 pub unsafe fn cfmakeraw(termios: *mut ::termios) {
-    (*termios).c_iflag &= !(IMAXBEL
-        | IGNBRK
-        | BRKINT
-        | PARMRK
-        | ISTRIP
-        | INLCR
-        | IGNCR
-        | ICRNL
-        | IXON);
+    (*termios).c_iflag &=
+        !(IMAXBEL | IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
     (*termios).c_oflag &= !OPOST;
     (*termios).c_lflag &= !(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
     (*termios).c_cflag &= !(CSIZE | PARENB);
@@ -38,10 +31,7 @@ pub unsafe fn cfmakeraw(termios: *mut ::termios) {
     (*termios).c_cc[VTIME] = 0;
 }
 
-pub unsafe fn cfsetspeed(
-    termios: *mut ::termios,
-    speed: ::speed_t,
-) -> ::c_int {
+pub unsafe fn cfsetspeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
     // Neither of these functions on illumos or Solaris actually ever
     // return an error
     ::cfsetispeed(termios, speed);
@@ -100,9 +90,7 @@ pub unsafe fn openpty(
     } else if setup == 0 {
         // The line discipline is not present, so push the appropriate STREAMS
         // modules for the subordinate device:
-        if ::ioctl(fds, I_PUSH, PTEM.as_ptr()) < 0
-            || ::ioctl(fds, I_PUSH, LDTERM.as_ptr()) < 0
-        {
+        if ::ioctl(fds, I_PUSH, PTEM.as_ptr()) < 0 || ::ioctl(fds, I_PUSH, LDTERM.as_ptr()) < 0 {
             return bail(fdm, fds);
         }
     }

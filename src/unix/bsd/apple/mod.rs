@@ -3039,11 +3039,8 @@ pub const AI_PASSIVE: ::c_int = 0x00000001;
 pub const AI_CANONNAME: ::c_int = 0x00000002;
 pub const AI_NUMERICHOST: ::c_int = 0x00000004;
 pub const AI_NUMERICSERV: ::c_int = 0x00001000;
-pub const AI_MASK: ::c_int = AI_PASSIVE
-    | AI_CANONNAME
-    | AI_NUMERICHOST
-    | AI_NUMERICSERV
-    | AI_ADDRCONFIG;
+pub const AI_MASK: ::c_int =
+    AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST | AI_NUMERICSERV | AI_ADDRCONFIG;
 pub const AI_ALL: ::c_int = 0x00000100;
 pub const AI_V4MAPPED_CFG: ::c_int = 0x00000200;
 pub const AI_ADDRCONFIG: ::c_int = 0x00000400;
@@ -3451,11 +3448,7 @@ extern "C" {
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     #[doc(hidden)]
     #[deprecated(since = "0.2.49", note = "Deprecated in MacOSX 10.10")]
-    pub fn sem_init(
-        sem: *mut sem_t,
-        pshared: ::c_int,
-        value: ::c_uint,
-    ) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
@@ -3504,11 +3497,7 @@ extern "C" {
         sevlen: ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
-    pub fn mincore(
-        addr: *const ::c_void,
-        len: ::size_t,
-        vec: *mut ::c_char,
-    ) -> ::c_int;
+    pub fn mincore(addr: *const ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
     pub fn sysctlnametomib(
         name: *const ::c_char,
         mibp: *mut ::c_int,
@@ -3518,44 +3507,23 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "mprotect$UNIX2003"
     )]
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn semget(key: key_t, nsems: ::c_int, semflg: ::c_int) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "semctl$UNIX2003"
     )]
-    pub fn semctl(
-        semid: ::c_int,
-        semnum: ::c_int,
-        cmd: ::c_int,
-        ...
-    ) -> ::c_int;
-    pub fn semop(
-        semid: ::c_int,
-        sops: *mut sembuf,
-        nsops: ::size_t,
-    ) -> ::c_int;
+    pub fn semctl(semid: ::c_int, semnum: ::c_int, cmd: ::c_int, ...) -> ::c_int;
+    pub fn semop(semid: ::c_int, sops: *mut sembuf, nsops: ::size_t) -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
     pub fn ftok(pathname: *const c_char, proj_id: ::c_int) -> key_t;
-    pub fn shmat(
-        shmid: ::c_int,
-        shmaddr: *const ::c_void,
-        shmflg: ::c_int,
-    ) -> *mut ::c_void;
+    pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "shmctl$UNIX2003"
     )]
-    pub fn shmctl(
-        shmid: ::c_int,
-        cmd: ::c_int,
-        buf: *mut ::shmid_ds,
-    ) -> ::c_int;
+    pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
     pub fn shmget(key: key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
     pub fn sysctl(
         name: *mut ::c_int,
@@ -3578,18 +3546,11 @@ extern "C" {
     #[allow(deprecated)]
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
-    pub fn pthread_getname_np(
-        thread: ::pthread_t,
-        name: *mut ::c_char,
-        len: ::size_t,
-    ) -> ::c_int;
+    pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn pthread_from_mach_thread_np(port: ::mach_port_t) -> ::pthread_t;
     pub fn pthread_get_stackaddr_np(thread: ::pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: ::pthread_t) -> ::size_t;
-    pub fn pthread_condattr_setpshared(
-        attr: *mut pthread_condattr_t,
-        pshared: ::c_int,
-    ) -> ::c_int;
+    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t, pshared: ::c_int) -> ::c_int;
     pub fn pthread_condattr_getpshared(
         attr: *const pthread_condattr_t,
         pshared: *mut ::c_int,
@@ -3606,10 +3567,7 @@ extern "C" {
         attr: *const pthread_rwlockattr_t,
         val: *mut ::c_int,
     ) -> ::c_int;
-    pub fn pthread_rwlockattr_setpshared(
-        attr: *mut pthread_rwlockattr_t,
-        val: ::c_int,
-    ) -> ::c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t, val: ::c_int) -> ::c_int;
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
     #[cfg_attr(
@@ -3645,12 +3603,7 @@ extern "C" {
         flags: ::c_int,
         data: *mut ::c_void,
     ) -> ::c_int;
-    pub fn ptrace(
-        request: ::c_int,
-        pid: ::pid_t,
-        addr: *mut ::c_char,
-        data: ::c_int,
-    ) -> ::c_int;
+    pub fn ptrace(request: ::c_int, pid: ::pid_t, addr: *mut ::c_char, data: ::c_int) -> ::c_int;
     pub fn quotactl(
         special: *const ::c_char,
         cmd: ::c_int,
@@ -3690,29 +3643,16 @@ extern "C" {
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn freelocale(loc: ::locale_t) -> ::c_int;
     pub fn localeconv_l(loc: ::locale_t) -> *mut lconv;
-    pub fn newlocale(
-        mask: ::c_int,
-        locale: *const ::c_char,
-        base: ::locale_t,
-    ) -> ::locale_t;
+    pub fn newlocale(mask: ::c_int, locale: *const ::c_char, base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
     pub fn getdomainname(name: *mut ::c_char, len: ::c_int) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::c_int) -> ::c_int;
-    pub fn preadv(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off_t,
-    ) -> ::ssize_t;
-    pub fn pwritev(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off_t,
-    ) -> ::ssize_t;
+    pub fn preadv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int, offset: ::off_t) -> ::ssize_t;
+    pub fn pwritev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int, offset: ::off_t)
+        -> ::ssize_t;
     pub fn getxattr(
         path: *const ::c_char,
         name: *const ::c_char,
@@ -3757,16 +3697,8 @@ extern "C" {
         size: ::size_t,
         flags: ::c_int,
     ) -> ::ssize_t;
-    pub fn removexattr(
-        path: *const ::c_char,
-        name: *const ::c_char,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn renamex_np(
-        from: *const ::c_char,
-        to: *const ::c_char,
-        flags: ::c_uint,
-    ) -> ::c_int;
+    pub fn removexattr(path: *const ::c_char, name: *const ::c_char, flags: ::c_int) -> ::c_int;
+    pub fn renamex_np(from: *const ::c_char, to: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn renameatx_np(
         fromfd: ::c_int,
         from: *const ::c_char,
@@ -3774,11 +3706,7 @@ extern "C" {
         to: *const ::c_char,
         flags: ::c_uint,
     ) -> ::c_int;
-    pub fn fremovexattr(
-        filedes: ::c_int,
-        name: *const ::c_char,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char, flags: ::c_int) -> ::c_int;
 
     pub fn getgrouplist(
         name: *const ::c_char,
@@ -3792,18 +3720,11 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "waitid$UNIX2003"
     )]
-    pub fn waitid(
-        idtype: idtype_t,
-        id: id_t,
-        infop: *mut ::siginfo_t,
-        options: ::c_int,
-    ) -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
+        -> ::c_int;
     pub fn brk(addr: *const ::c_void) -> *mut ::c_void;
     pub fn sbrk(increment: ::c_int) -> *mut ::c_void;
-    pub fn settimeofday(
-        tv: *const ::timeval,
-        tz: *const ::timezone,
-    ) -> ::c_int;
+    pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
     #[deprecated(since = "0.2.55", note = "Use the mach crate")]
     pub fn _dyld_image_count() -> u32;
     #[deprecated(since = "0.2.55", note = "Use the mach crate")]
@@ -3852,25 +3773,15 @@ extern "C" {
         attr: *const posix_spawnattr_t,
         flags: *mut ::c_short,
     ) -> ::c_int;
-    pub fn posix_spawnattr_setflags(
-        attr: *mut posix_spawnattr_t,
-        flags: ::c_short,
-    ) -> ::c_int;
+    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: ::c_short) -> ::c_int;
     pub fn posix_spawnattr_getpgroup(
         attr: *const posix_spawnattr_t,
         flags: *mut ::pid_t,
     ) -> ::c_int;
-    pub fn posix_spawnattr_setpgroup(
-        attr: *mut posix_spawnattr_t,
-        flags: ::pid_t,
-    ) -> ::c_int;
+    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: ::pid_t) -> ::c_int;
 
-    pub fn posix_spawn_file_actions_init(
-        actions: *mut posix_spawn_file_actions_t,
-    ) -> ::c_int;
-    pub fn posix_spawn_file_actions_destroy(
-        actions: *mut posix_spawn_file_actions_t,
-    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
+    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
     pub fn posix_spawn_file_actions_addopen(
         actions: *mut posix_spawn_file_actions_t,
         fd: ::c_int,
@@ -3899,11 +3810,7 @@ extern "C" {
         len: *mut ::size_t,
         connid: *mut sae_connid_t,
     ) -> ::c_int;
-    pub fn disconnectx(
-        socket: ::c_int,
-        associd: sae_associd_t,
-        connid: sae_connid_t,
-    ) -> ::c_int;
+    pub fn disconnectx(socket: ::c_int, associd: sae_associd_t, connid: sae_connid_t) -> ::c_int;
 
     pub fn ntp_adjtime(buf: *mut timex) -> ::c_int;
     pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
@@ -3917,16 +3824,9 @@ extern "C" {
         all(target_os = "macos", not(target_arch = "aarch64")),
         link_name = "getfsstat$INODE64"
     )]
-    pub fn getfsstat(
-        mntbufp: *mut statfs,
-        bufsize: ::c_int,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn getfsstat(mntbufp: *mut statfs, bufsize: ::c_int, flags: ::c_int) -> ::c_int;
 
-    pub fn iconv_open(
-        tocode: *const ::c_char,
-        fromcode: *const ::c_char,
-    ) -> iconv_t;
+    pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
     pub fn iconv(
         cd: iconv_t,
         inbuf: *mut *mut ::c_char,

@@ -78,8 +78,7 @@ fn do_semver() {
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap();
 
     // `libc-test/semver` dir.
-    let mut semver_root =
-        PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    let mut semver_root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     semver_root.push("semver");
 
     // NOTE: Windows has the same `family` as `os`, no point in including it
@@ -103,11 +102,7 @@ fn do_semver() {
     }
 }
 
-fn process_semver_file<W: Write, P: AsRef<Path>>(
-    output: &mut W,
-    path: &mut PathBuf,
-    file: P,
-) {
+fn process_semver_file<W: Write, P: AsRef<Path>>(output: &mut W, path: &mut PathBuf, file: P) {
     // NOTE: `path` is reused between calls, so always remove the file again.
     path.push(file);
     path.set_extension("txt");
@@ -321,9 +316,7 @@ fn test_apple(target: &str) {
     cfg.volatile_item(|i| {
         use ctest::VolatileItemKind::*;
         match i {
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => {
-                true
-            }
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
             _ => false,
         }
     });
@@ -351,9 +344,7 @@ fn test_apple(target: &str) {
             // FIXME: sigaction actually contains a union with two variants:
             // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
             // a sa_handler with type sig_t
-            "sa_sigaction" if struct_ == "sigaction" => {
-                "sa_handler".to_string()
-            }
+            "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
             s => s.to_string(),
         }
     });
@@ -475,9 +466,7 @@ fn test_openbsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "DIR" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => {
-                ty.to_string()
-            }
+            "FILE" | "DIR" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
 
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
@@ -490,15 +479,9 @@ fn test_openbsd(target: &str) {
     });
 
     cfg.field_name(move |struct_, field| match field {
-        "st_birthtime" if struct_.starts_with("stat") => {
-            "__st_birthtime".to_string()
-        }
-        "st_birthtime_nsec" if struct_.starts_with("stat") => {
-            "__st_birthtimensec".to_string()
-        }
-        s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-            s.replace("e_nsec", ".tv_nsec")
-        }
+        "st_birthtime" if struct_.starts_with("stat") => "__st_birthtime".to_string(),
+        "st_birthtime_nsec" if struct_.starts_with("stat") => "__st_birthtimensec".to_string(),
+        s if s.ends_with("_nsec") && struct_.starts_with("stat") => s.replace("e_nsec", ".tv_nsec"),
         "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
         s => s.to_string(),
     });
@@ -788,18 +771,17 @@ fn test_solarish(target: &str) {
     });
 
     cfg.skip_const(move |name| match name {
-        "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK"
-        | "DT_SOCK" | "USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX" => {
-            true
-        }
+        "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" | "DT_SOCK"
+        | "USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX" => true,
 
         // skip sighandler_t assignments
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
         "DT_UNKNOWN" => true,
 
-        "_UTX_LINESIZE" | "_UTX_USERSIZE" | "_UTX_PADSIZE" | "_UTX_IDSIZE"
-        | "_UTX_HOSTSIZE" => true,
+        "_UTX_LINESIZE" | "_UTX_USERSIZE" | "_UTX_PADSIZE" | "_UTX_IDSIZE" | "_UTX_HOSTSIZE" => {
+            true
+        }
 
         "EADI" | "EXTPROC" | "IPC_SEAT" => true,
 
@@ -872,9 +854,7 @@ fn test_solarish(target: &str) {
             "cfmakeraw" | "cfsetspeed" => true,
 
             // const-ness issues
-            "execv" | "execve" | "execvp" | "settimeofday" | "sethostname" => {
-                true
-            }
+            "execv" | "execve" | "execvp" | "settimeofday" | "sethostname" => true,
 
             // Solaris-different
             "getpwent_r" | "getgrent_r" | "updwtmpx" if is_illumos => true,
@@ -979,10 +959,9 @@ fn test_netbsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
-            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
-            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
-            | "Elf64_Chdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
+            | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
+            | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
 
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
@@ -1187,10 +1166,9 @@ fn test_dragonflybsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
-            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
-            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
-            | "Elf64_Chdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
+            | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
+            | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
 
             // FIXME: OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
@@ -1269,10 +1247,7 @@ fn test_dragonflybsd(target: &str) {
 
             // These are defined for Solaris 11, but the crate is tested on
             // illumos, where they are currently not defined
-            "EADI"
-            | "PORT_SOURCE_POSTWAIT"
-            | "PORT_SOURCE_SIGNAL"
-            | "PTHREAD_STACK_MIN" => true,
+            "EADI" | "PORT_SOURCE_POSTWAIT" | "PORT_SOURCE_SIGNAL" | "PTHREAD_STACK_MIN" => true,
 
             _ => false,
         }
@@ -1551,9 +1526,7 @@ fn test_android(target: &str) {
         match field {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.to_string()
-            }
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => s.to_string(),
             // FIXME: appears that `epoll_event.data` is an union
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
@@ -1767,8 +1740,7 @@ fn test_freebsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
-            | "Elf64_Phdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
 
             // FIXME: https://github.com/rust-lang/libc/issues/1273
             "sighandler_t" => "sig_t".to_string(),
@@ -1804,8 +1776,8 @@ fn test_freebsd(target: &str) {
     cfg.skip_const(move |name| {
         match name {
             // These constants are to be introduced in yet-unreleased FreeBSD 12.2.
-            "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL"
-            | "F_SEAL_SHRINK" | "F_SEAL_GROW" | "F_SEAL_WRITE"
+            "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
+            | "F_SEAL_WRITE"
                 if Some(12) <= freebsd_ver =>
             {
                 true
@@ -1921,9 +1893,7 @@ fn test_freebsd(target: &str) {
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
             // These functions were added in FreeBSD 11:
-            "fdatasync" | "mq_getfd_np" | "sendmmsg" | "recvmmsg"
-                if Some(10) == freebsd_ver =>
-            {
+            "fdatasync" | "mq_getfd_np" | "sendmmsg" | "recvmmsg" if Some(10) == freebsd_ver => {
                 true
             }
 
@@ -1959,9 +1929,7 @@ fn test_freebsd(target: &str) {
         match i {
             // aio_buf is a volatile void** but since we cannot express that in
             // Rust types, we have to explicitly tell the checker about it here:
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => {
-                true
-            }
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
             _ => false,
         }
     });
@@ -2288,9 +2256,7 @@ fn test_vxworks(target: &str) {
     });
 
     cfg.skip_field_type(move |struct_, field| match (struct_, field) {
-        ("siginfo_t", "si_value")
-        | ("stat", "st_size")
-        | ("sigaction", "sa_u") => true,
+        ("siginfo_t", "si_value") | ("stat", "st_size") | ("sigaction", "sa_u") => true,
         _ => false,
     });
 
@@ -2525,10 +2491,9 @@ fn test_linux(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr"
-            | "Elf64_Phdr" | "Elf32_Shdr" | "Elf64_Shdr" | "Elf32_Sym"
-            | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
-            | "Elf64_Chdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
+            | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
+            | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
 
             t if is_union => format!("union {}", t),
 
@@ -2861,9 +2826,7 @@ fn test_linux(target: &str) {
         match i {
             // aio_buf is a volatile void** but since we cannot express that in
             // Rust types, we have to explicitly tell the checker about it here:
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => {
-                true
-            }
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
             _ => false,
         }
     });
@@ -2911,11 +2874,7 @@ fn test_linux(target: &str) {
         // FIXME: This is actually a union.
         "fpreg_t" if s390x => true,
 
-        "sockaddr_un" | "sembuf" | "ff_constant_effect"
-            if mips32 && (gnu || musl) =>
-        {
-            true
-        }
+        "sockaddr_un" | "sembuf" | "ff_constant_effect" if mips32 && (gnu || musl) => true,
         "ipv6_mreq"
         | "ip_mreq_source"
         | "sockaddr_in6"
@@ -2991,9 +2950,8 @@ fn test_linux_like_apis(target: &str) {
             .skip_fn(|_| true)
             .skip_const(move |name| match name {
                 // test fcntl constants:
-                "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS"
-                | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
-                | "F_SEAL_WRITE" => false,
+                "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK"
+                | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
                 _ => true,
             })
             .type_name(move |ty, is_struct, is_union| match ty {
@@ -3285,12 +3243,12 @@ fn test_haiku(target: &str) {
     cfg.skip_const(move |name| {
         match name {
             // FIXME: these constants do not exist on Haiku
-            "DT_UNKNOWN" | "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK"
-            | "DT_REG" | "DT_LNK" | "DT_SOCK" => true,
+            "DT_UNKNOWN" | "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK"
+            | "DT_SOCK" => true,
             "USRQUOTA" | "GRPQUOTA" => true,
             "SIGIOT" => true,
-            "ARPOP_REQUEST" | "ARPOP_REPLY" | "ATF_COM" | "ATF_PERM"
-            | "ATF_PUBL" | "ATF_USETRAILERS" => true,
+            "ARPOP_REQUEST" | "ARPOP_REPLY" | "ATF_COM" | "ATF_PERM" | "ATF_PUBL"
+            | "ATF_USETRAILERS" => true,
             // Haiku does not have MAP_FILE, but rustc requires it
             "MAP_FILE" => true,
             // The following does not exist on Haiku but is required by
@@ -3343,11 +3301,10 @@ fn test_haiku(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "area_info" | "port_info" | "port_message_info" | "team_info"
-            | "sem_info" | "team_usage_info" | "thread_info" | "cpu_info"
-            | "system_info" | "object_wait_info" | "image_info"
-            | "attr_info" | "index_info" | "fs_info" | "FILE" | "DIR"
-            | "Dl_info" => ty.to_string(),
+            "area_info" | "port_info" | "port_message_info" | "team_info" | "sem_info"
+            | "team_usage_info" | "thread_info" | "cpu_info" | "system_info"
+            | "object_wait_info" | "image_info" | "attr_info" | "index_info" | "fs_info"
+            | "FILE" | "DIR" | "Dl_info" => ty.to_string(),
 
             // is actually a union
             "sigval" => format!("union sigval"),

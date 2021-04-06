@@ -197,10 +197,8 @@ pub const PTRACE_SETFPREGS: ::c_int = 15;
 pub const PTRACE_GETREGS: ::c_int = 12;
 pub const PTRACE_SETREGS: ::c_int = 13;
 
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t =
-    pthread_mutex_t { value: 0 };
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t =
-    pthread_cond_t { value: 0 };
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t { value: 0 };
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t { value: 0 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     lock: PTHREAD_MUTEX_INITIALIZER,
     cond: PTHREAD_COND_INITIALIZER,

@@ -212,11 +212,7 @@ extern "C" {
     pub fn aio_readv(aiocbp: *mut ::aiocb) -> ::c_int;
     pub fn aio_writev(aiocbp: *mut ::aiocb) -> ::c_int;
     pub fn setgrent();
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn freelocale(loc: ::locale_t);
     pub fn msgrcv(
         msqid: ::c_int,
@@ -234,11 +230,7 @@ extern "C" {
 
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
 
-    pub fn getrandom(
-        buf: *mut ::c_void,
-        buflen: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 }
 
 cfg_if! {

@@ -1438,35 +1438,18 @@ safe_f! {
 
 extern "C" {
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_init(
-        sem: *mut sem_t,
-        pshared: ::c_int,
-        value: ::c_uint,
-    ) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
-    pub fn mincore(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        vec: *mut ::c_uchar,
-    ) -> ::c_int;
+    pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar) -> ::c_int;
 
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_settime(
-        clk_id: ::clockid_t,
-        tp: *const ::timespec,
-    ) -> ::c_int;
-    pub fn clock_getcpuclockid(
-        pid: ::pid_t,
-        clk_id: *mut ::clockid_t,
-    ) -> ::c_int;
+    pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn clock_getcpuclockid(pid: ::pid_t, clk_id: *mut ::clockid_t) -> ::c_int;
 
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
 
-    pub fn pthread_getattr_np(
-        native: ::pthread_t,
-        attr: *mut ::pthread_attr_t,
-    ) -> ::c_int;
+    pub fn pthread_getattr_np(native: ::pthread_t, attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_getstack(
         attr: *const ::pthread_attr_t,
         stackaddr: *mut *mut ::c_void,
@@ -1481,18 +1464,9 @@ extern "C" {
     pub fn fstatfs64(fd: ::c_int, buf: *mut statfs64) -> ::c_int;
     pub fn statvfs64(path: *const ::c_char, buf: *mut statvfs64) -> ::c_int;
     pub fn fstatvfs64(fd: ::c_int, buf: *mut statvfs64) -> ::c_int;
-    pub fn memrchr(
-        cx: *const ::c_void,
-        c: ::c_int,
-        n: ::size_t,
-    ) -> *mut ::c_void;
+    pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
 
-    pub fn posix_fadvise(
-        fd: ::c_int,
-        offset: ::off_t,
-        len: ::off_t,
-        advise: ::c_int,
-    ) -> ::c_int;
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, advise: ::c_int) -> ::c_int;
     pub fn posix_fadvise64(
         fd: ::c_int,
         offset: ::off64_t,
@@ -1508,11 +1482,7 @@ extern "C" {
     ) -> ::c_int;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn freelocale(loc: ::locale_t);
-    pub fn newlocale(
-        mask: ::c_int,
-        locale: *const ::c_char,
-        base: ::locale_t,
-    ) -> ::locale_t;
+    pub fn newlocale(mask: ::c_int, locale: *const ::c_char, base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
     pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
@@ -1534,18 +1504,8 @@ extern "C" {
         offset: off64_t,
     ) -> *mut ::c_void;
     pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
-    pub fn openat64(
-        fd: ::c_int,
-        path: *const c_char,
-        oflag: ::c_int,
-        ...
-    ) -> ::c_int;
-    pub fn pread64(
-        fd: ::c_int,
-        buf: *mut ::c_void,
-        count: ::size_t,
-        offset: off64_t,
-    ) -> ::ssize_t;
+    pub fn openat64(fd: ::c_int, path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t, offset: off64_t) -> ::ssize_t;
     pub fn pwrite64(
         fd: ::c_int,
         buf: *const ::c_void,
@@ -1575,10 +1535,7 @@ extern "C" {
         attr: *mut pthread_condattr_t,
         clock_id: ::clockid_t,
     ) -> ::c_int;
-    pub fn pthread_condattr_setpshared(
-        attr: *mut pthread_condattr_t,
-        pshared: ::c_int,
-    ) -> ::c_int;
+    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t, pshared: ::c_int) -> ::c_int;
     pub fn pthread_mutexattr_setpshared(
         attr: *mut pthread_mutexattr_t,
         pshared: ::c_int,
@@ -1587,34 +1544,15 @@ extern "C" {
         attr: *const pthread_rwlockattr_t,
         val: *mut ::c_int,
     ) -> ::c_int;
-    pub fn pthread_rwlockattr_setpshared(
-        attr: *mut pthread_rwlockattr_t,
-        val: ::c_int,
-    ) -> ::c_int;
-    pub fn ptsname_r(
-        fd: ::c_int,
-        buf: *mut ::c_char,
-        buflen: ::size_t,
-    ) -> ::c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t, val: ::c_int) -> ::c_int;
+    pub fn ptsname_r(fd: ::c_int, buf: *mut ::c_char, buflen: ::size_t) -> ::c_int;
     pub fn clearenv() -> ::c_int;
-    pub fn waitid(
-        idtype: idtype_t,
-        id: id_t,
-        infop: *mut ::siginfo_t,
-        options: ::c_int,
-    ) -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
+        -> ::c_int;
     pub fn setreuid(ruid: ::uid_t, euid: ::uid_t) -> ::c_int;
     pub fn setregid(rgid: ::gid_t, egid: ::gid_t) -> ::c_int;
-    pub fn getresuid(
-        ruid: *mut ::uid_t,
-        euid: *mut ::uid_t,
-        suid: *mut ::uid_t,
-    ) -> ::c_int;
-    pub fn getresgid(
-        rgid: *mut ::gid_t,
-        egid: *mut ::gid_t,
-        sgid: *mut ::gid_t,
-    ) -> ::c_int;
+    pub fn getresuid(ruid: *mut ::uid_t, euid: *mut ::uid_t, suid: *mut ::uid_t) -> ::c_int;
+    pub fn getresgid(rgid: *mut ::gid_t, egid: *mut ::gid_t, sgid: *mut ::gid_t) -> ::c_int;
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
@@ -1644,33 +1582,13 @@ extern "C" {
     ) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
-    pub fn bind(
-        socket: ::c_int,
-        address: *const ::sockaddr,
-        address_len: ::socklen_t,
-    ) -> ::c_int;
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
 
-    pub fn writev(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-    ) -> ::ssize_t;
-    pub fn readv(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-    ) -> ::ssize_t;
+    pub fn writev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
+    pub fn readv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
 
-    pub fn sendmsg(
-        fd: ::c_int,
-        msg: *const ::msghdr,
-        flags: ::c_int,
-    ) -> ::ssize_t;
-    pub fn recvmsg(
-        fd: ::c_int,
-        msg: *mut ::msghdr,
-        flags: ::c_int,
-    ) -> ::ssize_t;
+    pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
 

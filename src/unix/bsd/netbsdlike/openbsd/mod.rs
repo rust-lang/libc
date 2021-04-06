@@ -1457,19 +1457,13 @@ safe_f! {
 
 extern "C" {
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
-    pub fn settimeofday(
-        tp: *const ::timeval,
-        tz: *const ::timezone,
-    ) -> ::c_int;
+    pub fn settimeofday(tp: *const ::timeval, tz: *const ::timezone) -> ::c_int;
     pub fn execvpe(
         file: *const ::c_char,
         argv: *const *const ::c_char,
         envp: *const *const ::c_char,
     ) -> ::c_int;
-    pub fn pledge(
-        promises: *const ::c_char,
-        execpromises: *const ::c_char,
-    ) -> ::c_int;
+    pub fn pledge(promises: *const ::c_char, execpromises: *const ::c_char) -> ::c_int;
     pub fn strtonum(
         nptr: *const ::c_char,
         minval: ::c_longlong,
@@ -1503,11 +1497,7 @@ extern "C" {
         nevents: ::c_int,
         timeout: *const ::timespec,
     ) -> ::c_int;
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn pthread_attr_getguardsize(
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,
@@ -1519,10 +1509,7 @@ extern "C" {
     ) -> ::c_int;
     pub fn pthread_main_np() -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
-    pub fn pthread_stackseg_np(
-        thread: ::pthread_t,
-        sinfo: *mut ::stack_t,
-    ) -> ::c_int;
+    pub fn pthread_stackseg_np(thread: ::pthread_t, sinfo: *mut ::stack_t) -> ::c_int;
     pub fn sysctl(
         name: *const ::c_int,
         namelen: ::c_uint,
@@ -1534,12 +1521,7 @@ extern "C" {
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
-    pub fn ptrace(
-        request: ::c_int,
-        pid: ::pid_t,
-        addr: caddr_t,
-        data: ::c_int,
-    ) -> ::c_int;
+    pub fn ptrace(request: ::c_int, pid: ::pid_t, addr: caddr_t, data: ::c_int) -> ::c_int;
     pub fn memmem(
         haystack: *const ::c_void,
         haystacklen: ::size_t,
