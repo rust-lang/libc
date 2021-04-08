@@ -821,6 +821,7 @@ pub const MAP_HUGETLB: ::c_int = 0x040000;
 pub const MAP_SYNC: ::c_int = 0x080000;
 
 pub const RLIMIT_NLIMITS: ::c_int = 15;
+pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
 pub const TIOCINQ: ::c_int = ::FIONREAD;
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;

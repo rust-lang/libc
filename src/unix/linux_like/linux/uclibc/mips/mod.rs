@@ -49,6 +49,7 @@ pub const RLIMIT_RSS: ::c_int = 7;
 pub const RLIMIT_NPROC: ::c_int = 8;
 pub const RLIMIT_MEMLOCK: ::c_int = 9;
 pub const RLIMIT_NLIMITS: ::c_int = 15;
+pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
 
 pub const O_APPEND: ::c_int = 8;
 pub const O_CREAT: ::c_int = 256;

@@ -541,6 +541,7 @@ pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
 pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
 pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
 pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = 16;
+pub const RLIM_NLIMITS: ::__rlimit_resource_t = RLIMIT_NLIMITS;
 
 pub const PRIO_PROCESS: ::__priority_which_t = 0;
 pub const PRIO_PGRP: ::__priority_which_t = 1;
