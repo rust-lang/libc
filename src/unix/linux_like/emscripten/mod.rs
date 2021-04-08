@@ -899,8 +899,6 @@ pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
 pub const RTLD_NODELETE: ::c_int = 0x1000;
 pub const RTLD_NOW: ::c_int = 0x2;
 
-pub const TCP_MD5SIG: ::c_int = 14;
-
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
         size: [0; __SIZEOF_PTHREAD_MUTEX_T],
@@ -1339,16 +1337,6 @@ pub const RLIM_INFINITY: ::rlim_t = !0;
 pub const RLIMIT_NLIMITS: ::c_int = 15;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
-
-pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
-pub const TCP_THIN_DUPACK: ::c_int = 17;
-pub const TCP_USER_TIMEOUT: ::c_int = 18;
-pub const TCP_REPAIR: ::c_int = 19;
-pub const TCP_REPAIR_QUEUE: ::c_int = 20;
-pub const TCP_QUEUE_SEQ: ::c_int = 21;
-pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
-pub const TCP_FASTOPEN: ::c_int = 23;
-pub const TCP_TIMESTAMP: ::c_int = 24;
 
 #[doc(hidden)]
 #[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]

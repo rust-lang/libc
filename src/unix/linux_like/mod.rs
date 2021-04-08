@@ -957,6 +957,43 @@ pub const TCP_WINDOW_CLAMP: ::c_int = 10;
 pub const TCP_INFO: ::c_int = 11;
 pub const TCP_QUICKACK: ::c_int = 12;
 pub const TCP_CONGESTION: ::c_int = 13;
+pub const TCP_MD5SIG: ::c_int = 14;
+cfg_if! {
+    if #[cfg(all(target_os = "linux", any(target_env = "gnu", target_env = "musl")))] {
+        // WARN: deprecated
+        pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
+    }
+}
+pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
+pub const TCP_THIN_DUPACK: ::c_int = 17;
+pub const TCP_USER_TIMEOUT: ::c_int = 18;
+pub const TCP_REPAIR: ::c_int = 19;
+pub const TCP_REPAIR_QUEUE: ::c_int = 20;
+pub const TCP_QUEUE_SEQ: ::c_int = 21;
+pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
+pub const TCP_FASTOPEN: ::c_int = 23;
+pub const TCP_TIMESTAMP: ::c_int = 24;
+pub const TCP_NOTSENT_LOWAT: ::c_int = 25;
+pub const TCP_CC_INFO: ::c_int = 26;
+pub const TCP_SAVE_SYN: ::c_int = 27;
+pub const TCP_SAVED_SYN: ::c_int = 28;
+cfg_if! {
+    if #[cfg(not(target_os = "emscripten"))] {
+        // NOTE: emscripten doesn't support these options yet.
+
+        pub const TCP_REPAIR_WINDOW: ::c_int = 29;
+        pub const TCP_FASTOPEN_CONNECT: ::c_int = 30;
+        pub const TCP_ULP: ::c_int = 31;
+        pub const TCP_MD5SIG_EXT: ::c_int = 32;
+        pub const TCP_FASTOPEN_KEY: ::c_int = 33;
+        pub const TCP_FASTOPEN_NO_COOKIE: ::c_int = 34;
+        pub const TCP_ZEROCOPY_RECEIVE: ::c_int = 35;
+        pub const TCP_INQ: ::c_int = 36;
+        pub const TCP_CM_INQ: ::c_int = TCP_INQ;
+        // NOTE: Some CI images doesn't have this option yet.
+        // pub const TCP_TX_DELAY: ::c_int = 37;
+    }
+}
 
 pub const SO_DEBUG: ::c_int = 1;
 

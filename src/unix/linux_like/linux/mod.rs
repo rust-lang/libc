@@ -1423,8 +1423,6 @@ pub const RTLD_NOW: ::c_int = 0x2;
 
 pub const AT_EACCESS: ::c_int = 0x200;
 
-pub const TCP_MD5SIG: ::c_int = 14;
-
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
         size: [0; __SIZEOF_PTHREAD_MUTEX_T],
@@ -1565,7 +1563,6 @@ cfg_if! {
         pub const LIO_WAIT: ::c_int = 0;
         pub const LIO_NOWAIT: ::c_int = 1;
         pub const RUSAGE_THREAD: ::c_int = 1;
-        pub const TCP_ULP: ::c_int = 31;
         pub const MSG_COPY: ::c_int = 0o40000;
         pub const SHM_EXEC: ::c_int = 0o100000;
         pub const IPV6_MULTICAST_ALL: ::c_int = 29;
