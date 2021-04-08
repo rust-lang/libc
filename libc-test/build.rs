@@ -1438,6 +1438,7 @@ fn test_android(target: &str) {
                "sys/swap.h",
                "sys/syscall.h",
                "sys/sysinfo.h",
+               "sys/system_properties.h",
                "sys/time.h",
                "sys/timerfd.h",
                "sys/times.h",
