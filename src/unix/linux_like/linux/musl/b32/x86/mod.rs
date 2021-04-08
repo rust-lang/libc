@@ -231,6 +231,7 @@ pub const RLIMIT_AS: ::c_int = 9;
 pub const RLIMIT_NPROC: ::c_int = 6;
 pub const RLIMIT_MEMLOCK: ::c_int = 8;
 pub const RLIMIT_NLIMITS: ::c_int = 15;
+pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
 
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MCL_CURRENT: ::c_int = 0x0001;
