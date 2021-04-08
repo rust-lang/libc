@@ -26,6 +26,36 @@ pub type loff_t = ::c_longlong;
 pub type __kernel_loff_t = ::c_longlong;
 pub type __kernel_pid_t = ::c_int;
 
+// elf.h
+
+pub type Elf32_Addr = u32;
+pub type Elf32_Half = u16;
+pub type Elf32_Lword = u64;
+pub type Elf32_Off = u32;
+pub type Elf32_Sword = i32;
+pub type Elf32_Word = u32;
+
+pub type Elf64_Addr = u64;
+pub type Elf64_Half = u16;
+pub type Elf64_Lword = u64;
+pub type Elf64_Off = u64;
+pub type Elf64_Sword = i32;
+pub type Elf64_Sxword = i64;
+pub type Elf64_Word = u32;
+pub type Elf64_Xword = u64;
+
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        type Elf_Addr = Elf64_Addr;
+        type Elf_Half = Elf64_Half;
+        type Elf_Phdr = Elf64_Phdr;
+    } else if #[cfg(target_pointer_width = "32")] {
+        type Elf_Addr = Elf32_Addr;
+        type Elf_Half = Elf32_Half;
+        type Elf_Phdr = Elf32_Phdr;
+    }
+}
+
 s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
@@ -243,6 +273,43 @@ s! {
         pub svm_port: ::c_uint,
         pub svm_cid: ::c_uint,
         pub svm_zero: [u8; 4]
+    }
+
+    // elf.h
+
+    pub struct Elf32_Phdr {
+        pub p_type: Elf32_Word,
+        pub p_offset: Elf32_Off,
+        pub p_vaddr: Elf32_Addr,
+        pub p_paddr: Elf32_Addr,
+        pub p_filesz: Elf32_Word,
+        pub p_memsz: Elf32_Word,
+        pub p_flags: Elf32_Word,
+        pub p_align: Elf32_Word,
+    }
+
+    pub struct Elf64_Phdr {
+        pub p_type: Elf64_Word,
+        pub p_flags: Elf64_Word,
+        pub p_offset: Elf64_Off,
+        pub p_vaddr: Elf64_Addr,
+        pub p_paddr: Elf64_Addr,
+        pub p_filesz: Elf64_Xword,
+        pub p_memsz: Elf64_Xword,
+        pub p_align: Elf64_Xword,
+    }
+
+    // link.h
+
+    pub struct dl_phdr_info {
+        pub dlpi_addr: Elf_Addr,
+        pub dlpi_name: *const ::c_char,
+        pub dlpi_phdr: *const Elf_Phdr,
+        pub dlpi_phnum: Elf_Half,
+        pub dlpi_adds: ::c_ulonglong,
+        pub dlpi_subs: ::c_ulonglong,
+        pub dlpi_tls_modid: usize,
+        pub dlpi_tls_data: *mut ::c_void,
     }
 }
 
@@ -2715,6 +2782,19 @@ extern "C" {
 
     pub fn __system_property_set(__name: *const ::c_char, __value: *const ::c_char) -> ::c_int;
     pub fn __system_property_get(__name: *const ::c_char, __value: *mut ::c_char) -> ::c_int;
+
+    // #include <link.h>
+    /// Only available in API Version 21+
+    pub fn dl_iterate_phdr(
+        callback: ::Option<
+            unsafe extern "C" fn(
+                info: *mut dl_phdr_info,
+                size: usize,
+                data: *mut ::c_void,
+            ) -> ::c_int,
+        >,
+        data: *mut ::c_void,
+    ) -> ::c_int;
 }
 
 cfg_if! {

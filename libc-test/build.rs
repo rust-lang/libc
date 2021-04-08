@@ -1384,11 +1384,13 @@ fn test_android(target: &str) {
                "ctype.h",
                "dirent.h",
                "dlfcn.h",
+               "elf.h",
                "errno.h",
                "fcntl.h",
                "grp.h",
                "ifaddrs.h",
                "limits.h",
+               "link.h",
                "locale.h",
                "malloc.h",
                "net/ethernet.h",
@@ -1507,7 +1509,7 @@ fn test_android(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
 
             t if is_union => format!("union {}", t),
 
