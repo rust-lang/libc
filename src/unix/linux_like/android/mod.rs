@@ -26,35 +26,18 @@ pub type loff_t = ::c_longlong;
 pub type __kernel_loff_t = ::c_longlong;
 pub type __kernel_pid_t = ::c_int;
 
-// elf.h
+// linux/elf.h
 
 pub type Elf32_Addr = u32;
 pub type Elf32_Half = u16;
-pub type Elf32_Lword = u64;
 pub type Elf32_Off = u32;
-pub type Elf32_Sword = i32;
 pub type Elf32_Word = u32;
 
 pub type Elf64_Addr = u64;
 pub type Elf64_Half = u16;
-pub type Elf64_Lword = u64;
 pub type Elf64_Off = u64;
-pub type Elf64_Sword = i32;
-pub type Elf64_Sxword = i64;
 pub type Elf64_Word = u32;
 pub type Elf64_Xword = u64;
-
-cfg_if! {
-    if #[cfg(target_pointer_width = "64")] {
-        type Elf_Addr = Elf64_Addr;
-        type Elf_Half = Elf64_Half;
-        type Elf_Phdr = Elf64_Phdr;
-    } else if #[cfg(target_pointer_width = "32")] {
-        type Elf_Addr = Elf32_Addr;
-        type Elf_Half = Elf32_Half;
-        type Elf_Phdr = Elf32_Phdr;
-    }
-}
 
 s! {
     pub struct stack_t {
@@ -275,7 +258,7 @@ s! {
         pub svm_zero: [u8; 4]
     }
 
-    // elf.h
+    // linux/elf.h
 
     pub struct Elf32_Phdr {
         pub p_type: Elf32_Word,
@@ -302,13 +285,27 @@ s! {
     // link.h
 
     pub struct dl_phdr_info {
-        pub dlpi_addr: Elf_Addr,
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_addr: Elf64_Addr,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_addr: Elf32_Addr,
+
         pub dlpi_name: *const ::c_char,
-        pub dlpi_phdr: *const Elf_Phdr,
-        pub dlpi_phnum: Elf_Half,
+
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_phdr: *const Elf64_Phdr,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_phdr: *const Elf32_Phdr,
+
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_phnum: Elf64_Half,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_phnum: Elf32_Half,
+
+        // These fields were added in Android R
         pub dlpi_adds: ::c_ulonglong,
         pub dlpi_subs: ::c_ulonglong,
-        pub dlpi_tls_modid: usize,
+        pub dlpi_tls_modid: ::size_t,
         pub dlpi_tls_data: *mut ::c_void,
     }
 }
