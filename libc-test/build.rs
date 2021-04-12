@@ -1384,11 +1384,13 @@ fn test_android(target: &str) {
                "ctype.h",
                "dirent.h",
                "dlfcn.h",
+               "elf.h",
                "errno.h",
                "fcntl.h",
                "grp.h",
                "ifaddrs.h",
                "limits.h",
+               "link.h",
                "locale.h",
                "malloc.h",
                "net/ethernet.h",
@@ -1469,6 +1471,7 @@ fn test_android(target: &str) {
                 "asm/mman.h",
                 "linux/auxvec.h",
                 "linux/dccp.h",
+                "linux/elf.h",
                 "linux/errqueue.h",
                 "linux/falloc.h",
                 "linux/futex.h",
@@ -1507,7 +1510,7 @@ fn test_android(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
 
             t if is_union => format!("union {}", t),
 
@@ -1610,7 +1613,12 @@ fn test_android(target: &str) {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value")
+        (struct_ == "sigevent" && field == "sigev_value") ||
+        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
+        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
+        (struct_ == "signalfd_siginfo" && field == "ssi_call_addr")
     });
 
     cfg.skip_field(move |struct_, field| {
@@ -1626,6 +1634,20 @@ fn test_android(target: &str) {
         (struct_ == "signalfd_siginfo" && (field == "ssi_syscall" ||
                                            field == "ssi_call_addr" ||
                                            field == "ssi_arch"))
+    });
+
+    cfg.skip_field(|struct_, field| {
+        match (struct_, field) {
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") => true,
+            ("Elf64_Phdr", "p_type") => true,
+
+            // this is actually a union on linux, so we can't represent it well and
+            // just insert some padding.
+            ("siginfo_t", "_pad") => true,
+
+            _ => false,
+        }
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
