@@ -1153,8 +1153,6 @@ pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
 
-pub const TCP_ULP: ::c_int = 31;
-
 pub const IPTOS_ECN_NOTECT: u8 = 0x00;
 
 pub const O_ACCMODE: ::c_int = 3;
