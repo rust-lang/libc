@@ -2037,6 +2037,8 @@ extern "C" {
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
 
+    pub fn kqueue1(flags: ::c_int) -> ::c_int;
+
     pub fn sendmmsg(
         sockfd: ::c_int,
         msgvec: *mut ::mmsghdr,

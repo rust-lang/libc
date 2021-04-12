@@ -1110,6 +1110,7 @@ kevent
 key_t
 killpg
 kqueue
+kqueue1
 labs
 lastlog
 lastlogx
