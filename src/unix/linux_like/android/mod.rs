@@ -1267,6 +1267,7 @@ pub const RLIMIT_MSGQUEUE: ::c_int = 12;
 pub const RLIMIT_NICE: ::c_int = 13;
 pub const RLIMIT_RTPRIO: ::c_int = 14;
 
+pub const RLIM_NLIMITS: ::c_int = 16;
 pub const RLIM_INFINITY: ::rlim_t = !0;
 
 pub const TCGETS: ::c_int = 0x5401;
