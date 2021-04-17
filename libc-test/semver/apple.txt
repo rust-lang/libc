@@ -1514,6 +1514,8 @@ chflags
 chroot
 clearerr
 clock_getres
+clonefile
+clonefileat
 cmsghdr
 connectx
 cpu_subtype_t
@@ -1531,6 +1533,7 @@ exchangedata
 faccessat
 fchdir
 fchflags
+fclonefileat
 fdopendir
 fgetxattr
 flistxattr
