@@ -3835,6 +3835,24 @@ extern "C" {
         outbytesleft: *mut ::size_t,
     ) -> ::size_t;
     pub fn iconv_close(cd: iconv_t) -> ::c_int;
+
+    // Copy-on-write functions.
+    // According to the man page `flags` is an `int` but in the header
+    // this is a `uint32_t`.
+    pub fn clonefile(src: *const ::c_char, dst: *const ::c_char, flags: u32) -> ::c_int;
+    pub fn clonefileat(
+        src_dirfd: ::c_int,
+        src: *const ::c_char,
+        dst_dirfd: ::c_int,
+        dst: *const ::c_char,
+        flags: u32,
+    ) -> ::c_int;
+    pub fn fclonefileat(
+        srcfd: ::c_int,
+        dst_dirfd: ::c_int,
+        dst: *const ::c_char,
+        flags: u32,
+    ) -> ::c_int;
 }
 
 cfg_if! {
