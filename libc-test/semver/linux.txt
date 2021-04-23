@@ -3007,6 +3007,7 @@ swapoff
 swapon
 sync
 sync_file_range
+syncfs
 syscall
 sysinfo
 tee
