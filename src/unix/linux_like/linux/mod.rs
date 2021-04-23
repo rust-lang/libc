@@ -3257,6 +3257,7 @@ extern "C" {
     pub fn setdomainname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn vhangup() -> ::c_int;
     pub fn sync();
+    pub fn syncfs(fd: ::c_int) -> ::c_int;
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
     pub fn sched_getaffinity(pid: ::pid_t, cpusetsize: ::size_t, cpuset: *mut cpu_set_t)
         -> ::c_int;
