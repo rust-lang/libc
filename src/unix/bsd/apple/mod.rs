@@ -3826,16 +3826,6 @@ extern "C" {
     )]
     pub fn getfsstat(mntbufp: *mut statfs, bufsize: ::c_int, flags: ::c_int) -> ::c_int;
 
-    pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
-    pub fn iconv(
-        cd: iconv_t,
-        inbuf: *mut *mut ::c_char,
-        inbytesleft: *mut ::size_t,
-        outbuf: *mut *mut ::c_char,
-        outbytesleft: *mut ::size_t,
-    ) -> ::size_t;
-    pub fn iconv_close(cd: iconv_t) -> ::c_int;
-
     // Copy-on-write functions.
     // According to the man page `flags` is an `int` but in the header
     // this is a `uint32_t`.
@@ -3853,6 +3843,19 @@ extern "C" {
         dst: *const ::c_char,
         flags: u32,
     ) -> ::c_int;
+}
+
+#[link(name = "iconv")]
+extern "C" {
+    pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
+    pub fn iconv(
+        cd: iconv_t,
+        inbuf: *mut *mut ::c_char,
+        inbytesleft: *mut ::size_t,
+        outbuf: *mut *mut ::c_char,
+        outbytesleft: *mut ::size_t,
+    ) -> ::size_t;
+    pub fn iconv_close(cd: iconv_t) -> ::c_int;
 }
 
 cfg_if! {

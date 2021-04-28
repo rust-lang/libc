@@ -11,7 +11,6 @@ fn main() {
     let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
     let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
-    let target = env::var("TARGET").unwrap();
 
     if env::var("CARGO_FEATURE_USE_STD").is_ok() {
         println!(
@@ -83,12 +82,6 @@ fn main() {
             panic!("const-extern-fn requires a nightly compiler >= 1.40")
         }
         println!("cargo:rustc-cfg=libc_const_extern_fn");
-    }
-
-    // For unknown reason, libiconv can't be linked by adding #[link(name = iconv)] to
-    // a macOS-specific struct, so we do the linking here.
-    if target.contains("-apple-") {
-        println!("cargo:rustc-link-lib=iconv");
     }
 }
 
