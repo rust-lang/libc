@@ -1,0 +1,14 @@
+version: 2
+updates:
+- package-ecosystem: cargo
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: cc
+    versions:
+    - "> 1.0.52"
+  - dependency-name: ctest2
+    versions:
+    - "> 0.3"
