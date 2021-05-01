@@ -1539,6 +1539,10 @@ extern "C" {
         >,
         data: *mut ::c_void,
     ) -> ::c_int;
+    pub fn uselocale(loc: ::locale_t) -> ::locale_t;
+    pub fn freelocale(loc: ::locale_t);
+    pub fn newlocale(mask: ::c_int, locale: *const ::c_char, base: ::locale_t) -> ::locale_t;
+    pub fn duplocale(base: ::locale_t) -> ::locale_t;
 }
 
 cfg_if! {
