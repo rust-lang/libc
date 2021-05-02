@@ -2085,6 +2085,11 @@ extern "C" {
     pub fn iconv_close(cd: iconv_t) -> ::c_int;
 }
 
+extern "C" {
+    // Added in `NetBSD` 7.0
+    pub fn explicit_memset(b: *mut ::c_void, c: ::c_int, len: ::size_t);
+}
+
 #[link(name = "util")]
 extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]

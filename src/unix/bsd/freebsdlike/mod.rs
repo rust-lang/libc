@@ -1593,6 +1593,14 @@ extern "C" {
     pub fn iconv_close(cd: iconv_t) -> ::c_int;
 }
 
+extern "C" {
+    // Added in `FreeBSD` 11.0
+    // Added in `DragonFly BSD` 5.4
+    pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
+    // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
+    pub fn memset_s(s: *mut ::c_void, smax: ::rsize_t, c: ::c_int, n: ::rsize_t) -> ::errno_t;
+}
+
 #[link(name = "rt")]
 extern "C" {
     pub fn mq_close(mqd: ::mqd_t) -> ::c_int;

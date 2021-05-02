@@ -1034,6 +1034,7 @@ endpwent
 endservent
 endutent
 endutxent
+explicit_memset
 extattr_delete_fd
 extattr_delete_file
 extattr_delete_link

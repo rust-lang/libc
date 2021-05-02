@@ -1174,6 +1174,7 @@ endpwent
 endservent
 endutxent
 exit_status
+explicit_bzero
 faccessat
 fchdir
 fchflags
@@ -1243,6 +1244,7 @@ lwpid_t
 madvise
 memmem
 memrchr
+memset_s
 mincore
 mkdirat
 mkfifoat

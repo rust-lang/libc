@@ -1300,6 +1300,11 @@ extern "C" {
     pub fn dlinfo(handle: *mut ::c_void, request: ::c_int, info: *mut ::c_void) -> ::c_int;
 }
 
+extern "C" {
+    // Added in `glibc` 2.25
+    pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
+}
+
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
                  target_arch = "arm",

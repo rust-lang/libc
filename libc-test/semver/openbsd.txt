@@ -897,6 +897,7 @@ endgrent
 endpwent
 endservent
 execvpe
+explicit_bzero
 export_args
 faccessat
 fchdir

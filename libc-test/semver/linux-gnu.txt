@@ -529,6 +529,7 @@ copy_file_range
 dlinfo
 dlmopen
 endutxent
+explicit_bzero
 fgetspent_r
 getgrent_r
 getpt
