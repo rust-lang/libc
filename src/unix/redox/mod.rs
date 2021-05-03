@@ -963,6 +963,17 @@ extern "C" {
     // malloc.h
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
 
+    // netdb.h
+    pub fn getnameinfo(
+        addr: *const ::sockaddr,
+        addrlen: ::socklen_t,
+        host: *mut ::c_char,
+        hostlen: ::socklen_t,
+        serv: *mut ::c_char,
+        servlen: ::socklen_t,
+        flags: ::c_int,
+    ) -> ::c_int;
+
     // pthread.h
     pub fn pthread_atfork(
         prepare: ::Option<unsafe extern "C" fn()>,
