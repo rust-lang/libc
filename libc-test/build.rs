@@ -939,6 +939,7 @@ fn test_netbsd(target: &str) {
         "sys/time.h",
         "sys/times.h",
         "sys/timex.h",
+        "sys/ucontext.h",
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
