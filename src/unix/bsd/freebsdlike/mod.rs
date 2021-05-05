@@ -1598,7 +1598,7 @@ extern "C" {
     // Added in `DragonFly BSD` 5.4
     pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
-    pub fn memset_s(s: *mut ::c_void, smax: ::rsize_t, c: ::c_int, n: ::rsize_t) -> ::errno_t;
+    pub fn memset_s(s: *mut ::c_void, smax: ::size_t, c: ::c_int, n: ::size_t) -> ::c_int;
 }
 
 #[link(name = "rt")]
