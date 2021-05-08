@@ -1543,9 +1543,7 @@ extern "C" {
     pub fn freelocale(loc: ::locale_t);
     pub fn newlocale(mask: ::c_int, locale: *const ::c_char, base: ::locale_t) -> ::locale_t;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
-}
 
-extern "C" {
     // Added in `OpenBSD` 5.5
     pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
 }
