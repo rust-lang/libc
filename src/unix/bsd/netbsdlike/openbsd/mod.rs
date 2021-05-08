@@ -1360,6 +1360,7 @@ pub const NTFS_MFLAG_ALLNAMES: ::c_int = 0x2;
 pub const TMPFS_ARGS_VERSION: ::c_int = 1;
 
 pub const MAP_STACK: ::c_int = 0x4000;
+pub const MAP_CONCEAL: ::c_int = 0x8000;
 
 // https://github.com/openbsd/src/blob/master/sys/net/if.h#L187
 pub const IFF_UP: ::c_int = 0x1; // interface is up
