@@ -68,6 +68,23 @@ impl ::Clone for timezone {
     }
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[repr(u32)]
+pub enum qos_class_t {
+    QOS_CLASS_USER_INTERACTIVE = 0x21,
+    QOS_CLASS_USER_INITIATED = 0x19,
+    QOS_CLASS_DEFAULT = 0x15,
+    QOS_CLASS_UTILITY = 0x11,
+    QOS_CLASS_BACKGROUND = 0x09,
+    QOS_CLASS_UNSPECIFIED = 0x00,
+}
+impl ::Copy for qos_class_t {}
+impl ::Clone for qos_class_t {
+    fn clone(&self) -> qos_class_t {
+        *self
+    }
+}
+
 s! {
     pub struct ip_mreq {
         pub imr_multiaddr: in_addr,
@@ -3568,6 +3585,23 @@ extern "C" {
         val: *mut ::c_int,
     ) -> ::c_int;
     pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t, val: ::c_int) -> ::c_int;
+    pub fn pthread_threadid_np(thread: ::pthread_t, thread_id: *mut u64) -> ::c_int;
+    pub fn pthread_attr_set_qos_class_np(
+        attr: *mut pthread_attr_t,
+        class: qos_class_t,
+        priority: ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_get_qos_class_np(
+        attr: *mut pthread_attr_t,
+        class: *mut qos_class_t,
+        priority: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_set_qos_class_self_np(class: qos_class_t, priority: ::c_int) -> ::c_int;
+    pub fn pthread_get_qos_class_np(
+        thread: ::pthread_t,
+        class: *mut qos_class_t,
+        priority: *mut ::c_int,
+    ) -> ::c_int;
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
     #[cfg_attr(
