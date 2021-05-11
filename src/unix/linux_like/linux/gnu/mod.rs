@@ -1233,6 +1233,9 @@ extern "C" {
         newpath: *const ::c_char,
         flags: ::c_uint,
     ) -> ::c_int;
+
+    // Added in `glibc` 2.25
+    pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
 }
 
 extern "C" {

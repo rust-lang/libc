@@ -697,6 +697,9 @@ extern "C" {
         path: *const ::c_char,
     ) -> ::c_int;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
+
+    // Added in `musl` 1.1.20
+    pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
 }
 
 cfg_if! {

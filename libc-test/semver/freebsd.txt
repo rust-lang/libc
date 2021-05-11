@@ -1350,6 +1350,7 @@ endgrent
 endpwent
 endservent
 endutxent
+explicit_bzero
 extattr_delete_fd
 extattr_delete_file
 extattr_delete_link
@@ -1442,6 +1443,7 @@ lwpid_t
 madvise
 memmem
 memrchr
+memset_s
 mincore
 mkdirat
 mkfifoat
