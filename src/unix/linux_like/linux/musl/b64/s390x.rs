@@ -752,3 +752,7 @@ pub const SYS_faccessat2: ::c_long = 439;
 pub const SYS_process_madvise: ::c_long = 440;
 pub const SYS_epoll_pwait2: ::c_long = 441;
 pub const SYS_mount_setattr: ::c_long = 442;
+
+extern "C" {
+    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+}
