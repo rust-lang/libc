@@ -1724,6 +1724,7 @@ fn test_freebsd(target: &str) {
                 "stdio.h",
                 "stdlib.h",
                 "string.h",
+                "sys/cpuset.h",
                 "sys/event.h",
                 "sys/extattr.h",
                 "sys/file.h",

@@ -14,6 +14,9 @@ pub type key_t = ::c_long;
 pub type msglen_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 
+pub type cpulevel_t = ::c_int;
+pub type cpuwhich_t = ::c_int;
+
 pub type mqd_t = *mut ::c_void;
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
@@ -120,6 +123,13 @@ s! {
         pub pve_fileid: ::c_long,
         pub pve_fsid: u32,
         pub pve_path: *mut ::c_char,
+    }
+
+    pub struct cpuset_t {
+        #[cfg(target_pointer_width = "64")]
+        __bits: [::c_long; 4],
+        #[cfg(target_pointer_width = "32")]
+        __bits: [::c_long; 8],
     }
 }
 
@@ -1265,6 +1275,38 @@ f! {
     pub fn uname(buf: *mut ::utsname) -> ::c_int {
         __xuname(256, buf as *mut ::c_void)
     }
+
+    pub fn CPU_ZERO(cpuset: &mut cpuset_t) -> () {
+        for slot in cpuset.__bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn CPU_FILL(cpuset: &mut cpuset_t) -> () {
+        for slot in cpuset.__bits.iter_mut() {
+            *slot = !0;
+        }
+    }
+
+    pub fn CPU_SET(cpu: usize, cpuset: &mut cpuset_t) -> () {
+        let bitset_bits = ::mem::size_of::<::c_long>();
+        let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
+        cpuset.__bits[idx] |= 1 << offset;
+        ()
+    }
+
+    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpuset_t) -> () {
+        let bitset_bits = ::mem::size_of::<::c_long>();
+        let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
+        cpuset.__bits[idx] &= !(1 << offset);
+        ()
+    }
+
+    pub fn CPU_ISSET(cpu: usize, cpuset: &mut cpuset_t) -> bool {
+        let bitset_bits = ::mem::size_of::<::c_long>();
+        let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
+        0 != cpuset.__bits[idx] & (1 << offset)
+    }
 }
 
 safe_f! {
@@ -1527,6 +1569,20 @@ extern "C" {
     ) -> *mut ::c_void;
 
     pub fn nmount(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn cpuset_getaffinity(
+        level: cpulevel_t,
+        which: cpuwhich_t,
+        id: ::id_t,
+        setsize: ::size_t,
+        mask: *mut cpuset_t,
+    ) -> ::c_int;
+    pub fn cpuset_setaffinity(
+        level: cpulevel_t,
+        which: cpuwhich_t,
+        id: ::id_t,
+        setsize: ::size_t,
+        mask: *const cpuset_t,
+    ) -> ::c_int;
 }
 
 #[link(name = "util")]
