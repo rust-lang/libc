@@ -61,6 +61,12 @@ e! {
         B_ADD_ON_IMAGE,
         B_SYSTEM_IMAGE
     }
+
+    // kernel/scheduler.h
+    pub enum schduler_mode {
+        SCHEDULER_MODE_LOW_LATENCY,
+        SCHEDULER_MODE_POWER_SAVING,
+    }
 }
 
 s! {
@@ -743,6 +749,9 @@ extern "C" {
     pub fn on_exit_thread(callback: extern "C" fn(*mut ::c_void), data: *mut ::c_void) -> status_t;
 
     pub fn find_thread(name: *const ::c_char) -> thread_id;
+
+    pub fn get_scheduler_mode() -> i32;
+    pub fn set_scheduler_mode(mode: i32) -> status_t;
 
     pub fn send_data(
         thread: thread_id,
