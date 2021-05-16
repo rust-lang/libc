@@ -1228,6 +1228,12 @@ pub const F_READAHEAD: ::c_int = 15;
 pub const F_RDAHEAD: ::c_int = 16;
 pub const F_DUP2FD_CLOEXEC: ::c_int = 18;
 
+// For realhostname* api
+pub const HOSTNAME_FOUND: ::c_int = 0;
+pub const HOSTNAME_INCORRECTNAME: ::c_int = 1;
+pub const HOSTNAME_INVALIDADDR: ::c_int = 2;
+pub const HOSTNAME_INVALIDNAME: ::c_int = 3;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -1611,6 +1617,13 @@ extern "C" {
     pub fn extattr_string_to_namespace(
         string: *const ::c_char,
         attrnamespace: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn realhostname(host: *mut ::c_char, hsize: ::size_t, ip: *const ::in_addr) -> ::c_int;
+    pub fn realhostname_sa(
+        host: *mut ::c_char,
+        hsize: ::size_t,
+        addr: *mut ::sockaddr,
+        addrlen: ::c_int,
     ) -> ::c_int;
 }
 
