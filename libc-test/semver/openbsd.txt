@@ -1071,6 +1071,7 @@ ttyname_r
 udf_args
 ufs_args
 unmount
+unveil
 useconds_t
 uselocale
 utimensat
