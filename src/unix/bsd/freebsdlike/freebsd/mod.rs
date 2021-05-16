@@ -131,6 +131,10 @@ s! {
         #[cfg(target_pointer_width = "32")]
         __bits: [::c_long; 8],
     }
+
+    pub struct cap_rights_t {
+        cr_rights: [u64; 2],
+    }
 }
 
 s_no_extra_traits! {
@@ -1583,6 +1587,19 @@ extern "C" {
         setsize: ::size_t,
         mask: *const cpuset_t,
     ) -> ::c_int;
+    pub fn cap_enter() -> ::c_int;
+    pub fn cap_getmode(modep: *mut ::c_uint) -> ::c_int;
+    pub fn __cap_rights_init(version: ::c_int, rights: *mut cap_rights_t, ...)
+        -> *mut cap_rights_t;
+    pub fn __cap_rights_set(rights: *mut cap_rights_t, ...) -> *mut cap_rights_t;
+    pub fn __cap_rights_clear(rights: *mut cap_rights_t, ...) -> *mut cap_rights_t;
+    pub fn __cap_rights_is_set(rights: *const cap_rights_t, ...) -> bool;
+    pub fn cap_rights_is_valid(rights: *const cap_rights_t) -> bool;
+    pub fn cap_rights_limit(fd: ::c_int, rights: *const cap_rights_t) -> ::c_int;
+    pub fn cap_rights_merge(dst: *mut cap_rights_t, src: *const cap_rights_t) -> *mut cap_rights_t;
+    pub fn cap_rights_remove(dst: *mut cap_rights_t, src: *const cap_rights_t)
+        -> *mut cap_rights_t;
+    pub fn cap_rights_contains(big: *const cap_rights_t, little: *const cap_rights_t) -> bool;
 }
 
 #[link(name = "util")]
