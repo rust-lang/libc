@@ -1,0 +1,5 @@
+__darwin_mmst_reg
+__darwin_x86_exception_state64
+__darwin_x86_float_state64
+__darwin_x86_thread_state64
+__darwin_xmm_reg
