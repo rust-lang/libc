@@ -1679,6 +1679,11 @@ fn test_freebsd(target: &str) {
         _ => cfg.define("_WANT_FREEBSD11_STAT", None),
     };
 
+    let freebsdlast = match freebsd_ver {
+        Some(12) | Some(13) => true,
+        _ => false,
+    };
+
     headers! { cfg:
                 "aio.h",
                 "arpa/inet.h",
@@ -1725,6 +1730,7 @@ fn test_freebsd(target: &str) {
                 "stdlib.h",
                 "string.h",
                 "sys/capsicum.h",
+                [freebsdlast]:"sys/auxv.h",
                 "sys/cpuset.h",
                 "sys/event.h",
                 "sys/extattr.h",
