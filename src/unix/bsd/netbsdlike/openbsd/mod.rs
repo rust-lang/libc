@@ -1465,6 +1465,7 @@ extern "C" {
         envp: *const *const ::c_char,
     ) -> ::c_int;
     pub fn pledge(promises: *const ::c_char, execpromises: *const ::c_char) -> ::c_int;
+    pub fn unveil(path: *const ::c_char, permissions: *const ::c_char) -> ::c_int;
     pub fn strtonum(
         nptr: *const ::c_char,
         minval: ::c_longlong,
