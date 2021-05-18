@@ -1142,6 +1142,7 @@ fn test_dragonflybsd(target: &str) {
         "sys/ptrace.h",
         "sys/resource.h",
         "sys/rtprio.h",
+        "sys/sched.h",
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",

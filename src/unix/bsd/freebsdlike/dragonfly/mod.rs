@@ -22,6 +22,9 @@ pub type idtype_t = ::c_uint;
 pub type mqd_t = ::c_int;
 pub type sem_t = *mut sem;
 
+pub type cpuset_t = cpumask_t;
+pub type cpu_set_t = cpumask_t;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
 impl ::Copy for sem {}
@@ -183,6 +186,10 @@ s! {
         pub ss_sp: *mut ::c_char,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
+    }
+
+    pub struct cpumask_t {
+        ary: [u64; 4],
     }
 }
 
@@ -1056,6 +1063,29 @@ f! {
         (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
             _CMSG_ALIGN(length as usize)) as ::c_uint
     }
+
+    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
+        for slot in cpuset.ary.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
+        cpuset.ary[idx] |= 1 << offset;
+        ()
+    }
+
+    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
+        cpuset.ary[idx] &= !(1 << offset);
+        ()
+    }
+
+    pub fn CPU_ISSET(cpu: usize, cpuset: &mut cpu_set_t) -> bool {
+        let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
+        0 != cpuset.ary[idx] & (1 << offset)
+    }
 }
 
 safe_f! {
@@ -1098,6 +1128,9 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+    pub fn sched_getaffinity(pid: ::pid_t, cpusetsize: ::size_t, mask: *mut cpu_set_t) -> ::c_int;
+    pub fn sched_setaffinity(pid: ::pid_t, cpusetsize: ::size_t, mask: *const cpu_set_t)
+        -> ::c_int;
 }
 
 #[link(name = "rt")]
