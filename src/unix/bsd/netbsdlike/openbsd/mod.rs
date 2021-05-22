@@ -936,6 +936,10 @@ pub const NET_RT_STATS: ::c_int = 4;
 pub const NET_RT_TABLE: ::c_int = 5;
 pub const NET_RT_IFNAMES: ::c_int = 6;
 #[doc(hidden)]
+#[deprecated(
+    since = "0.2.95",
+    note = "Possibly increasing over the releases and might not be so used in the field"
+)]
 pub const NET_RT_MAXID: ::c_int = 7;
 
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
@@ -1272,6 +1276,10 @@ pub const KERN_AUDIO: ::c_int = 84;
 pub const KERN_CPUSTATS: ::c_int = 85;
 pub const KERN_PFSTATUS: ::c_int = 86;
 pub const KERN_TIMEOUT_STATS: ::c_int = 87;
+#[deprecated(
+    since = "0.2.95",
+    note = "Possibly increasing over the releases and might not be so used in the field"
+)]
 pub const KERN_MAXID: ::c_int = 88;
 
 pub const KERN_PROC_ALL: ::c_int = 0;
