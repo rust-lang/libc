@@ -1,3 +1,7 @@
+env:
+  # Temporary fix for https://github.com/rust-lang/rustup/issues/2774.
+  RUSTUP_IO_THREADS: "1"
+
 task:
   name: stable x86_64-unknown-freebsd-11
   freebsd_instance:
