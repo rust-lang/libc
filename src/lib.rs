@@ -42,6 +42,8 @@ cfg_if! {
         use core::ops;
         #[allow(unused_imports)]
         use core::option;
+        #[allow(unused_imports)]
+        use core::ptr;
     }
 }
 
@@ -89,6 +91,15 @@ cfg_if! {
         #[doc(hidden)]
         #[allow(unused_imports)]
         pub use core::option::Option;
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_addr_of, std)] {
+        #[doc(hidden)]
+        extern crate std;
+        #[allow(unused_imports)]
+        use std::ptr;
     }
 }
 
