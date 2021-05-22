@@ -907,6 +907,7 @@ fn test_netbsd(target: &str) {
         "grp.h",
         "ifaddrs.h",
         "langinfo.h",
+        "net/bpf.h",
         "net/if.h",
         "net/if_arp.h",
         "net/if_dl.h",

@@ -7,7 +7,7 @@ pub type fsfilcnt_t = u64;
 pub type idtype_t = ::c_int;
 pub type mqd_t = ::c_int;
 type __pthread_spin_t = __cpu_simple_lock_nv_t;
-pub type vm_size_t = ::uintptr_t;
+pub type vm_size_t = ::uintptr_t; // FIXME: deprecated since long time
 pub type lwpid_t = ::c_uint;
 pub type shmatt_t = ::c_uint;
 
@@ -427,7 +427,7 @@ s_no_extra_traits! {
         pub ut_session: u16,
         pub ut_type: u16,
         pub ut_pid: ::pid_t,
-        pub ut_exit: __exit_status,
+        pub ut_exit: __exit_status, // FIXME: when anonymous struct are supported
         pub ut_ss: sockaddr_storage,
         pub ut_tv: ::timeval,
         pub ut_pad: [u8; _UTX_PADSIZE],
