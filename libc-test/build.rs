@@ -184,6 +184,7 @@ fn test_apple(target: &str) {
         "iconv.h",
         "ifaddrs.h",
         "langinfo.h",
+        "libproc.h",
         "limits.h",
         "locale.h",
         "mach-o/dyld.h",
