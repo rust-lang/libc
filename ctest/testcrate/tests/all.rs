@@ -15,22 +15,22 @@ fn cmd(name: &str) -> Command {
 #[test]
 fn t1() {
     let (o, status) = output(&mut cmd("t1"));
-    assert!(status.success(), o);
-    assert!(!o.contains("bad "), o);
+    assert!(status.success(), "{}", o);
+    assert!(!o.contains("bad "), "{}", o);
     eprintln!("o: {}", o);
 }
 
 #[test]
 fn t1_cxx() {
     let (o, status) = output(&mut cmd("t1_cxx"));
-    assert!(status.success(), o);
-    assert!(!o.contains("bad "), o);
+    assert!(status.success(), "{}", o);
+    assert!(!o.contains("bad "), "{}", o);
 }
 
 #[test]
 fn t2() {
     let (o, status) = output(&mut cmd("t2"));
-    assert!(!status.success(), o);
+    assert!(!status.success(), "{}", o);
     let errors = [
         "bad T2Foo signed",
         "bad T2TypedefFoo signed",
@@ -74,7 +74,7 @@ fn t2() {
 #[test]
 fn t2_cxx() {
     let (o, status) = output(&mut cmd("t2_cxx"));
-    assert!(!status.success(), o);
+    assert!(!status.success(), "{}", o);
     let errors = [
         "bad T2Foo signed",
         "bad T2TypedefFoo signed",
