@@ -4049,6 +4049,22 @@ extern "C" {
     // Added in macOS 10.13
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
     pub fn memset_s(s: *mut ::c_void, smax: ::size_t, c: ::c_int, n: ::size_t) -> ::c_int;
+    pub fn proc_pidinfo(
+        pid: ::c_int,
+        flavor: ::c_int,
+        arg: u64,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_pidfdinfo(
+        pid: ::c_int,
+        fd: ::c_int,
+        flavor: ::c_int,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_pidpath(pid: ::c_int, buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
+    pub fn proc_name(pid: ::c_int, buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
 }
 
 #[link(name = "iconv")]

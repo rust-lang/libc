@@ -1726,6 +1726,10 @@ posix_spawnattr_t
 posix_spawnp
 preadv
 proc_bsdinfo
+proc_name
+proc_pidinfo
+proc_pidfdinfo
+proc_pidpath
 proc_taskallinfo
 proc_taskinfo
 proc_threadinfo
