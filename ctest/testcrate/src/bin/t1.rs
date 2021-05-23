@@ -1,5 +1,6 @@
 #![cfg(not(test))]
 #![deny(warnings)]
+#![allow(unaligned_references)]
 
 use libc::*;
 use testcrate::t1::*;
