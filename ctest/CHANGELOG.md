@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.4.1
+
+* Fix the `deref_nullptr` warning. [#24]
+* Fix unaligned_references warning. [#25]
+
+[#24]: https://github.com/JohnTitor/ctest2/pull/24
+[#25]: https://github.com/JohnTitor/ctest2/pull/25
 
 ## 0.4.0
 
