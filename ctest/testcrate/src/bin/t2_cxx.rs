@@ -1,6 +1,5 @@
 #![cfg(not(test))]
 #![deny(warnings)]
-#![allow(unaligned_references)]
 
 use testcrate::t2::*;
 

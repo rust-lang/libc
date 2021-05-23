@@ -1276,11 +1276,13 @@ impl<'a> Generator<'a> {
                     fn __test_fsize_{ty}_{field}() -> u64;
                 }}
                 unsafe {{
-                    let foo = 0 as *mut {ty};
+                    let zeroed_ty = std::mem::zeroed::<{ty}>();
+                    let ty_ptr = std::ptr::addr_of!((zeroed_ty).{field});
+                    let val = ty_ptr.read_unaligned();
                     same(offset_of!({ty}, {field}),
                          __test_offset_{ty}_{field}(),
                          "field offset {field} of {ty}");
-                    same(mem::size_of_val(&(*foo).{field}) as u64,
+                    same(mem::size_of_val(&val) as u64,
                          __test_fsize_{ty}_{field}(),
                          "field size {field} of {ty}");
                 }}
@@ -1325,10 +1327,13 @@ impl<'a> Generator<'a> {
                                                       -> *mut u8;
                 }}
                 unsafe {{
-                    let foo = 0 as *mut {ty};
-                    same(&(*foo).{field} as *const _ as *mut _,
-                         __test_field_type_{ty}_{field}(foo),
+                    let mut zeroed_ty = mem::zeroed::<{ty}>();
+                    let ty_ptr_mut = std::ptr::addr_of_mut!(zeroed_ty);
+                    let field_ptr = std::ptr::addr_of!(zeroed_ty.{field});
+                    same(field_ptr as *mut _,
+                         __test_field_type_{ty}_{field}(ty_ptr_mut),
                          "field type {field} of {ty}");
+                    mem::forget(zeroed_ty);
                 }}
             "#,
                 ty = ty,
@@ -1850,9 +1855,11 @@ impl<'a> Generator<'a> {
                     self.rust,
                     r#"
                     unsafe {{
-                      let size = mem::size_of_val(&(*foo).{field});
-                      let off = offset_of!({ty}, {field}) as usize;
-                      v.push((off, size));
+                        let ty_ptr = std::ptr::addr_of!((*foo).{field});
+                        let val = ty_ptr.read_unaligned();
+                        let size = mem::size_of_val(&val);
+                        let off = offset_of!({ty}, {field}) as usize;
+                        v.push((off, size));
                     }}
                     "#,
                     ty = rust,
