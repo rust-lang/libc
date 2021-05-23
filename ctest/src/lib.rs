@@ -1019,9 +1019,15 @@ impl TestGenerator {
             }
 
             macro_rules! offset_of {
-                ($ty:ident, $field:ident) => (
-                    (&((*(0 as *const $ty)).$field)) as *const _ as u64
-                )
+                ($ty:ident, $field:ident) => ({
+                    let zeroed_ty = std::mem::zeroed::<$ty>();
+                    let ty_ptr = &zeroed_ty as *const $ty;
+                    let field_ptr = std::ptr::addr_of!(zeroed_ty.$field);
+                    let ty_address = ty_ptr as u64;
+                    let field_address = field_ptr as u64;
+                    std::mem::forget(zeroed_ty);
+                    field_address.checked_sub(ty_address).unwrap()
+                })
             }
 
         "#
