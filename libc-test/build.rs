@@ -579,6 +579,8 @@ fn test_windows(target: &str) {
             // FIXME: API error:
             // SIG_ERR type is "void (*)(int)", not "int"
             "SIG_ERR" => true,
+            // FIXME: newer windows-gnu environment on CI?
+            "_O_OBTAIN_DIR" if gnu => true,
             _ => false,
         }
     });
