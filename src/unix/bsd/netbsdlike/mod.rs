@@ -72,8 +72,14 @@ s! {
         pub uid: ::uid_t,
         pub gid: ::gid_t,
         pub mode: ::mode_t,
+        #[cfg(target_os = "openbsd")]
         pub seq: ::c_ushort,
+        #[cfg(target_os = "netbsd")]
+        pub _seq: ::c_ushort,
+        #[cfg(target_os = "openbsd")]
         pub key: ::key_t,
+        #[cfg(target_os = "netbsd")]
+        pub _key: ::key_t,
     }
 
     pub struct ptrace_io_desc {
