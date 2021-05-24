@@ -403,6 +403,16 @@ s! {
         pub p_align: Elf64_Xword,
     }
 
+    pub struct Aux32Info {
+        pub a_type: Elf32_Word,
+        pub a_v: Elf32_Word,
+    }
+
+    pub struct Aux64Info {
+        pub a_type: Elf64_Word,
+        pub a_v: Elf64_Xword,
+    }
+
     // link.h
 
     pub struct dl_phdr_info {
@@ -2073,6 +2083,10 @@ extern "C" {
         >,
         data: *mut ::c_void,
     ) -> ::c_int;
+
+    // dlfcn.h
+
+    pub fn _dlauxinfo() -> *mut ::c_void;
 
     pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
     pub fn iconv(
