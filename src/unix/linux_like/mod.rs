@@ -1357,6 +1357,15 @@ cfg_if! {
     }
 }
 
+safe_f! {
+    pub fn SIGRTMIN() -> ::c_int {
+        unsafe { __libc_current_sigrtmin() }
+    }
+    pub fn SIGRTMAX() -> ::c_int {
+        unsafe { __libc_current_sigrtmax() }
+    }
+}
+
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
         len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
@@ -1472,6 +1481,12 @@ safe_f! {
     pub {const} fn IPTOS_ECN(x: u8) -> u8 {
         x & ::IPTOS_ECN_MASK
     }
+}
+
+// private API; used by SIGRTMIN and SIGRTMAX
+extern "C" {
+    fn __libc_current_sigrtmin() -> ::c_int;
+    fn __libc_current_sigrtmax() -> ::c_int;
 }
 
 extern "C" {
