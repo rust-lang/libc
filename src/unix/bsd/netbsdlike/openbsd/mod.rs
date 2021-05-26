@@ -386,6 +386,10 @@ s! {
 }
 
 impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut ::c_char {
+        self.si_addr
+    }
+
     pub unsafe fn si_value(&self) -> ::sigval {
         #[repr(C)]
         struct siginfo_timer {
