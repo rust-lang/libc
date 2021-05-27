@@ -244,7 +244,13 @@ pub const SIGSEGV: ::c_int = 11;
 pub const SIGTERM: ::c_int = 15;
 pub const SIGABRT: ::c_int = 22;
 pub const NSIG: ::c_int = 23;
+
 pub const SIG_ERR: ::c_int = -1;
+pub const SIG_DFL: ::sighandler_t = 0;
+pub const SIG_IGN: ::sighandler_t = 1;
+pub const SIG_GET: ::sighandler_t = 2;
+pub const SIG_SGE: ::sighandler_t = 3;
+pub const SIG_ACK: ::sighandler_t = 4;
 
 // inline comment below appeases style checker
 #[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))] // " if "
