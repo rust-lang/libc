@@ -4049,6 +4049,20 @@ extern "C" {
     // Added in macOS 10.13
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
     pub fn memset_s(s: *mut ::c_void, smax: ::size_t, c: ::c_int, n: ::size_t) -> ::c_int;
+    pub fn proc_listpids(
+        t: u32,
+        typeinfo: u32,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_listallpids(buffer: *mut ::c_void, buffersize: ::c_int) -> ::c_int;
+    pub fn proc_listpgrppids(
+        pgrpid: ::pid_t,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_listchildpids(ppid: ::pid_t, buffer: *mut ::c_void, buffersize: ::c_int)
+        -> ::c_int;
     pub fn proc_pidinfo(
         pid: ::c_int,
         flavor: ::c_int,
@@ -4063,8 +4077,22 @@ extern "C" {
         buffer: *mut ::c_void,
         buffersize: ::c_int,
     ) -> ::c_int;
+    pub fn proc_pidfileportinfo(
+        pid: ::c_int,
+        fileport: u32,
+        flavor: ::c_int,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
     pub fn proc_pidpath(pid: ::c_int, buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
     pub fn proc_name(pid: ::c_int, buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
+    pub fn proc_regionfilename(
+        pid: ::c_int,
+        address: u64,
+        buffer: *mut ::c_void,
+        buffersize: u32,
+    ) -> ::c_int;
+    pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
 }
 
 #[link(name = "iconv")]
