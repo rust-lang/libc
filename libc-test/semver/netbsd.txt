@@ -1038,6 +1038,16 @@ dl_phdr_info
 dqblk
 dup3
 duplocale
+easprintf
+efopen
+emalloc
+erealloc
+esetfunc
+estrdup
+estrndup
+estrlcat
+estrlcpy
+evasprintf
 endgrent
 endpwent
 endservent

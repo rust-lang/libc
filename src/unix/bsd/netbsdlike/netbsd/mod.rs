@@ -2149,6 +2149,20 @@ extern "C" {
     pub fn setutent();
     pub fn endutent();
     pub fn getutent() -> *mut utmp;
+
+    pub fn efopen(p: *const ::c_char, m: *const ::c_char) -> ::FILE;
+    pub fn emalloc(n: ::size_t) -> *mut ::c_void;
+    pub fn ecalloc(n: ::size_t, c: ::size_t) -> *mut ::c_void;
+    pub fn erealloc(p: *mut ::c_void, n: ::size_t) -> *mut ::c_void;
+    pub fn estrdup(s: *const ::c_char) -> *mut ::c_char;
+    pub fn estrndup(s: *const ::c_char, len: ::size_t) -> *mut ::c_char;
+    pub fn estrlcpy(dst: *mut ::c_char, src: *const ::c_char, len: ::size_t) -> ::size_t;
+    pub fn estrlcat(dst: *mut ::c_char, src: *const ::c_char, len: ::size_t) -> ::size_t;
+    pub fn easprintf(string: *mut *mut ::c_char, fmt: *const ::c_char, ...) -> ::c_int;
+    pub fn evasprintf(string: *mut *mut ::c_char, fmt: *const ::c_char, ...) -> ::c_int;
+    pub fn esetfunc(
+        cb: ::Option<unsafe extern "C" fn(::c_int, *const ::c_char, ...)>,
+    ) -> ::Option<unsafe extern "C" fn(::c_int, *const ::c_char, ...)>;
 }
 
 cfg_if! {
