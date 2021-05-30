@@ -1506,6 +1506,15 @@ pub const NOTE_CHILD: u32 = 0x00000004;
 pub const TMP_MAX: ::c_uint = 308915776;
 
 pub const NI_MAXHOST: ::socklen_t = 1025;
+pub const NI_MAXSERV: ::socklen_t = 32;
+
+pub const NI_NOFQDN: ::c_int = 0x00000001;
+pub const NI_NUMERICHOST: ::c_int = 0x000000002;
+pub const NI_NAMEREQD: ::c_int = 0x000000004;
+pub const NI_NUMERICSERV: ::c_int = 0x000000008;
+pub const NI_DGRAM: ::c_int = 0x00000010;
+pub const NI_WITHSCOPEID: ::c_int = 0x00000020;
+pub const NI_NUMERICSCOPE: ::c_int = 0x00000040;
 
 pub const RTLD_NOLOAD: ::c_int = 0x2000;
 pub const RTLD_LOCAL: ::c_int = 0x200;
