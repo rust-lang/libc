@@ -1153,9 +1153,6 @@ pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
 pub const ITIMER_PROF: ::c_int = 2;
 
-pub const XATTR_CREATE: ::c_int = 0x1;
-pub const XATTR_REPLACE: ::c_int = 0x2;
-
 pub const _POSIX_VDISABLE: ::cc_t = 0;
 
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
