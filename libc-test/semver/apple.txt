@@ -1727,9 +1727,16 @@ posix_spawnp
 preadv
 proc_bsdinfo
 proc_name
+proc_listallpids
+proc_listchildpids
+proc_listpgrppids
+proc_listpids
+proc_libversion
 proc_pidinfo
 proc_pidfdinfo
+proc_pidfileportinfo
 proc_pidpath
+proc_regionfilename
 proc_taskallinfo
 proc_taskinfo
 proc_threadinfo
