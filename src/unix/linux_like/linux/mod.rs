@@ -1712,9 +1712,6 @@ pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const TFD_NONBLOCK: ::c_int = O_NONBLOCK;
 pub const TFD_TIMER_ABSTIME: ::c_int = 1;
 
-pub const XATTR_CREATE: ::c_int = 0x1;
-pub const XATTR_REPLACE: ::c_int = 0x2;
-
 pub const _POSIX_VDISABLE: ::cc_t = 0;
 
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
