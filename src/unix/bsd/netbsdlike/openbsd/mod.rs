@@ -1566,6 +1566,8 @@ extern "C" {
 
     // Added in `OpenBSD` 5.5
     pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
+
+    pub fn setproctitle(fmt: *const ::c_char, ...);
 }
 
 cfg_if! {

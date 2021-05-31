@@ -1579,6 +1579,7 @@ extern "C" {
     ) -> *mut ::c_void;
 
     pub fn nmount(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn setproctitle(fmt: *const ::c_char, ...);
     pub fn cpuset_getaffinity(
         level: cpulevel_t,
         which: cpuwhich_t,

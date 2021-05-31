@@ -1040,6 +1040,7 @@ setgroups
 sethostname
 setitimer
 setpriority
+setproctitle
 setprogname
 setpwent
 setresgid
