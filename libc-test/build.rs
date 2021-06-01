@@ -273,14 +273,16 @@ fn test_apple(target: &str) {
     });
 
     cfg.skip_const(move |name| {
+        // They're declared via `deprecated_mach` and we don't support it anymore.
+        if name.starts_with("VM_FLAGS_") {
+            return true;
+        }
         match name {
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
             // FIXME: the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
             "SF_SETTABLE" => true,
-            // FIXME: the value has been changed since Catalina (VM_FLAGS_RESILIENT_MEDIA is also contained now).
-            "VM_FLAGS_USER_REMAP" => true,
             // FIXME: the values have been changed since Big Sur
             "HW_TARGET" | "HW_PRODUCT" | "HW_MAXID" => true,
             _ => false,
