@@ -1685,6 +1685,9 @@ mach_timebase_info_data_t
 madvise
 max_align_t
 mcontext_t
+memset_pattern4
+memset_pattern8
+memset_pattern16
 memset_s
 mincore
 mkdirat
