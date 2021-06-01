@@ -4049,6 +4049,11 @@ extern "C" {
     // Added in macOS 10.13
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
     pub fn memset_s(s: *mut ::c_void, smax: ::size_t, c: ::c_int, n: ::size_t) -> ::c_int;
+    // Added in macOS 10.5
+    pub fn memset_pattern4(b: *mut ::c_void, pattern4: *const ::c_void, len: ::size_t);
+    pub fn memset_pattern8(b: *mut ::c_void, pattern8: *const ::c_void, len: ::size_t);
+    pub fn memset_pattern16(b: *mut ::c_void, pattern16: *const ::c_void, len: ::size_t);
+
     pub fn proc_listpids(
         t: u32,
         typeinfo: u32,
