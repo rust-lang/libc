@@ -4095,6 +4095,19 @@ extern "C" {
     pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
 }
 
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        extern "C" {
+            pub fn memmem(
+                haystack: *const ::c_void,
+                haystacklen: ::size_t,
+                needle: *const ::c_void,
+                needlelen: ::size_t,
+            ) -> *mut ::c_void;
+        }
+    }
+}
+
 #[link(name = "iconv")]
 extern "C" {
     pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
