@@ -201,6 +201,7 @@ pub const O_EXEC: c_int = 0x02000000;
 pub const O_RDONLY: c_int = 0x04000000;
 pub const O_SEARCH: c_int = 0x08000000;
 pub const O_WRONLY: c_int = 0x10000000;
+pub const O_CLOEXEC: c_int = 0x0;
 pub const O_RDWR: c_int = O_WRONLY | O_RDONLY;
 pub const O_ACCMODE: c_int = O_EXEC | O_RDWR | O_SEARCH;
 pub const O_NOCTTY: c_int = 0x0;
