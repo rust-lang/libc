@@ -1,6 +1,6 @@
 env:
   # Temporary fix for https://github.com/rust-lang/rustup/issues/2774.
-  RUSTUP_IO_THREADS: "1"
+  RUSTUP_UPDATE_ROOT: "https://dev-static.rust-lang.org/rustup"
 
 task:
   name: stable x86_64-unknown-freebsd-11
@@ -11,7 +11,7 @@ task:
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh -y --profile=minimal
     - . $HOME/.cargo/env
-    - rustup default stable
+    - rustup --version
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
@@ -26,7 +26,6 @@ task:
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh --default-toolchain nightly -y --profile=minimal
     - . $HOME/.cargo/env
-    - rustup default nightly
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
@@ -39,9 +38,8 @@ task:
   setup_script:
     - pkg install -y curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh -y --profile=minimal
+    - sh rustup.sh -y --default-toolchain nightly --profile=minimal
     - . $HOME/.cargo/env
-    - rustup default nightly
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
