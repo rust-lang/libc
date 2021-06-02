@@ -1234,6 +1234,17 @@ pub const HOSTNAME_INCORRECTNAME: ::c_int = 1;
 pub const HOSTNAME_INVALIDADDR: ::c_int = 2;
 pub const HOSTNAME_INVALIDNAME: ::c_int = 3;
 
+// For rfork
+pub const RFFDG: ::c_int = 4;
+pub const RFPROC: ::c_int = 16;
+pub const RFMEM: ::c_int = 32;
+pub const RFNOWAIT: ::c_int = 64;
+pub const RFCFDG: ::c_int = 4096;
+pub const RFTHREAD: ::c_int = 8192;
+pub const RFLINUXTHPN: ::c_int = 65536;
+pub const RFTSIGZMB: ::c_int = 524288;
+pub const RFSPAWN: ::c_int = 2147483648;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -1580,6 +1591,7 @@ extern "C" {
 
     pub fn nmount(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int) -> ::c_int;
     pub fn setproctitle(fmt: *const ::c_char, ...);
+    pub fn rfork(flags: ::c_int) -> ::c_int;
     pub fn cpuset_getaffinity(
         level: cpulevel_t,
         which: cpuwhich_t,
