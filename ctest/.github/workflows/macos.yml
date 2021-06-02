@@ -25,20 +25,13 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install ${{ matrix.version }}
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.version }}-${{ matrix.target }}
-          profile: minimal
-          override: true
+        run: TOOLCHAIN=${{ matrix.version }} TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+
 
       - name: Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --all -- --nocapture
+        run: cargo test --all -- --nocapture
 
       - name: Run libc tests
         env:
           TARGET: ${{ matrix.target }}
-        run: |
-          sh ./ci/run.sh ${{ matrix.target }}
+        run: sh ./ci/run.sh ${{ matrix.target }}
