@@ -2113,6 +2113,7 @@ extern "C" {
 
     // Added in `NetBSD` 7.0
     pub fn explicit_memset(b: *mut ::c_void, c: ::c_int, len: ::size_t);
+    pub fn consttime_memequal(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn setproctitle(fmt: *const ::c_char, ...);
 }
