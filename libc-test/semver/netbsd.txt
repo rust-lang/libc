@@ -1030,6 +1030,7 @@ clock_getres
 clock_nanosleep
 clock_settime
 cmsghdr
+consttime_memequal
 daemon
 difftime
 dirfd
