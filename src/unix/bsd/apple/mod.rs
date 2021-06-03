@@ -29,6 +29,7 @@ pub type cpu_subtype_t = integer_t;
 pub type natural_t = u32;
 pub type mach_msg_type_number_t = natural_t;
 pub type kern_return_t = ::c_int;
+pub type uuid_t = [u8; 16];
 
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
@@ -4098,6 +4099,10 @@ extern "C" {
         buffersize: u32,
     ) -> ::c_int;
     pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
+    /// # Notes
+    ///
+    /// `id` is of type [`uuid_t`].
+    pub fn gethostuuid(id: *mut u8, timeout: *const ::timespec) -> ::c_int;
 }
 
 #[link(name = "iconv")]
