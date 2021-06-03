@@ -2703,6 +2703,9 @@ fn test_linux(target: &str) {
             | "F_SEAL_SHRINK"
             | "F_SEAL_GROW"
             | "F_SEAL_WRITE" => true,
+            // The `ARPHRD_CAN` is tested in the `linux_if_arp.rs` tests
+            // because including `linux/if_arp.h` causes some conflicts:
+            "ARPHRD_CAN" => true,
 
             // Require Linux kernel 5.1:
             "F_SEAL_FUTURE_WRITE" => true,
@@ -3064,7 +3067,6 @@ fn test_linux_like_apis(target: &str) {
         cfg.header("elf.h");
         cfg.skip_fn(|_| true)
             .skip_static(|_| true)
-            .skip_fn(|_| true)
             .skip_const(|_| true)
             .type_name(move |ty, _is_struct, _is_union| ty.to_string())
             .skip_struct(move |ty| match ty {
@@ -3076,6 +3078,21 @@ fn test_linux_like_apis(target: &str) {
                 _ => true,
             });
         cfg.generate("../src/lib.rs", "linux_elf.rs");
+    }
+
+    if linux || android {
+        // Test `ARPHRD_CAN`.
+        let mut cfg = ctest_cfg();
+        cfg.header("linux/if_arp.h");
+        cfg.skip_fn(|_| true)
+            .skip_static(|_| true)
+            .skip_const(move |name| match name {
+                "ARPHRD_CAN" => false,
+                _ => true,
+            })
+            .skip_struct(|_| true)
+            .skip_type(|_| true);
+        cfg.generate("../src/lib.rs", "linux_if_arp.rs");
     }
 }
 

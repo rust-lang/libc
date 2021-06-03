@@ -37,6 +37,11 @@ path = "test/linux_fcntl.rs"
 harness = false
 
 [[test]]
+name = "linux-if-arp"
+path = "test/linux_if_arp.rs"
+harness = false
+
+[[test]]
 name = "linux-ipv6"
 path = "test/linux_ipv6.rs"
 harness = false
