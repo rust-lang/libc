@@ -435,6 +435,11 @@ s! {
     pub struct _cpuset {
         bits: [u32; 0]
     }
+
+    pub struct accept_filter_arg {
+        pub af_name: [::c_char; 16],
+        af_arg: [[::c_char; 10]; 24],
+    }
 }
 
 s_no_extra_traits! {
