@@ -25,6 +25,8 @@ pub type sem_t = *mut sem;
 pub type cpuset_t = cpumask_t;
 pub type cpu_set_t = cpumask_t;
 
+pub type register_t = ::c_long;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
 impl ::Copy for sem {}
@@ -253,6 +255,51 @@ s_no_extra_traits! {
         pub sigev_value: ::sigval,
         __unused3: *mut ::c_void        //actually a function pointer
     }
+
+    pub struct mcontext_t {
+        pub mc_onstack: register_t,
+        pub mc_rdi: register_t,
+        pub mc_rsi: register_t,
+        pub mc_rdx: register_t,
+        pub mc_rcx: register_t,
+        pub mc_r8: register_t,
+        pub mc_r9: register_t,
+        pub mc_rax: register_t,
+        pub mc_rbx: register_t,
+        pub mc_rbp: register_t,
+        pub mc_r10: register_t,
+        pub mc_r11: register_t,
+        pub mc_r12: register_t,
+        pub mc_r13: register_t,
+        pub mc_r14: register_t,
+        pub mc_r15: register_t,
+        pub mc_xflags: register_t,
+        pub mc_trapno: register_t,
+        pub mc_addr: register_t,
+        pub mc_flags: register_t,
+        pub mc_err: register_t,
+        pub mc_rip: register_t,
+        pub mc_cs: register_t,
+        pub mc_rflags: register_t,
+        pub mc_rsp: register_t,
+        pub mc_ss: register_t,
+        pub mc_len: ::c_uint,
+        pub mc_fpformat: ::c_uint,
+        pub mc_ownedfp: ::c_uint,
+        __reserved: ::c_uint,
+        __unused: [::c_uint; 8],
+        pub mc_fpregs: [[::c_uint; 8]; 32],
+    }
+
+    pub struct ucontext_t {
+        pub uc_sigmask: ::sigset_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: stack_t,
+        pub uc_cofunc: ::Option<unsafe extern "C" fn(uc: *mut ucontext_t, arg: *mut ::c_void)>,
+        pub uc_arg: *mut ::c_void,
+        __pad: [::c_int; 4],
+    }
 }
 
 cfg_if! {
@@ -450,6 +497,100 @@ cfg_if! {
                 self.sigev_notify.hash(state);
                 self.sigev_signo.hash(state);
                 self.sigev_value.hash(state);
+            }
+        }
+        impl PartialEq for mcontext_t {
+            fn eq(&self, other: &mcontext_t) -> bool {
+                self.mc_onstack == other.mc_onstack &&
+                self.mc_rdi == other.mc_rdi &&
+                self.mc_rsi == other.mc_rsi &&
+                self.mc_rdx == other.mc_rdx &&
+                self.mc_rcx == other.mc_rcx &&
+                self.mc_r8 == other.mc_r8 &&
+                self.mc_r9 == other.mc_r9 &&
+                self.mc_rax == other.mc_rax &&
+                self.mc_rbx == other.mc_rbx &&
+                self.mc_rbp == other.mc_rbp &&
+                self.mc_r10 == other.mc_r10 &&
+                self.mc_r11 == other.mc_r11 &&
+                self.mc_r12 == other.mc_r12 &&
+                self.mc_r13 == other.mc_r13 &&
+                self.mc_r14 == other.mc_r14 &&
+                self.mc_r15 == other.mc_r15 &&
+                self.mc_xflags == other.mc_xflags &&
+                self.mc_trapno == other.mc_trapno &&
+                self.mc_addr == other.mc_addr &&
+                self.mc_flags == other.mc_flags &&
+                self.mc_err == other.mc_err &&
+                self.mc_rip == other.mc_rip &&
+                self.mc_cs == other.mc_cs &&
+                self.mc_rflags == other.mc_rflags &&
+                self.mc_rsp == other.mc_rsp &&
+                self.mc_ss == other.mc_ss &&
+                self.mc_len == other.mc_len &&
+                self.mc_fpformat == other.mc_fpformat &&
+                self.mc_ownedfp == other.mc_ownedfp
+                // FIXME: self.mc_fpregs == other.mc_fpregs
+            }
+        }
+        impl Eq for mcontext_t {}
+        impl ::fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("mcontext_t")
+                    .field("mc_onstack", &self.mc_onstack)
+                    .field("mc_rdi", &self.mc_rdi)
+                    .field("mc_rsi", &self.mc_rsi)
+                    .field("mc_rdx", &self.mc_rdx)
+                    .field("mc_rcx", &self.mc_rcx)
+                    .field("mc_r8", &self.mc_r8)
+                    .field("mc_r9", &self.mc_r9)
+                    .field("mc_rax", &self.mc_rax)
+                    .field("mc_rbx", &self.mc_rbx)
+                    .field("mc_rbp", &self.mc_rbp)
+                    .field("mc_r10", &self.mc_r10)
+                    .field("mc_r11", &self.mc_r11)
+                    .field("mc_r12", &self.mc_r12)
+                    .field("mc_r13", &self.mc_r13)
+                    .field("mc_r14", &self.mc_r14)
+                    .field("mc_r15", &self.mc_r15)
+                    .field("mc_xflags", &self.mc_xflags)
+                    .field("mc_trapno", &self.mc_trapno)
+                    .field("mc_addr", &self.mc_addr)
+                    .field("mc_flags", &self.mc_flags)
+                    .field("mc_err", &self.mc_err)
+                    .field("mc_rip", &self.mc_rip)
+                    .field("mc_cs", &self.mc_cs)
+                    .field("mc_rflags", &self.mc_rflags)
+                    .field("mc_rsp", &self.mc_rsp)
+                    .field("mc_ss", &self.mc_ss)
+                    .field("mc_len", &self.mc_len)
+                    .field("mc_fpformat", &self.mc_fpformat)
+                    .field("mc_ownedfp", &self.mc_ownedfp)
+                    // FIXME: .field("mc_fpregs", &self.mc_fpregs)
+                    .finish()
+            }
+        }
+        impl PartialEq for ucontext_t {
+            fn eq(&self, other: &ucontext_t) -> bool {
+                self.uc_sigmask == other.uc_sigmask
+                    && self.uc_mcontext == other.uc_mcontext
+                    && self.uc_link == other.uc_link
+                    && self.uc_stack == other.uc_stack
+                    && self.uc_cofunc == other.uc_cofunc
+                    && self.uc_arg == other.uc_arg
+            }
+        }
+        impl Eq for ucontext_t {}
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_sigmask", &self.uc_sigmask)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_cofunc", &self.uc_cofunc)
+                    .field("uc_arg", &self.uc_arg)
+                    .finish()
             }
         }
     }

@@ -1172,6 +1172,7 @@ fn test_dragonflybsd(target: &str) {
         "syslog.h",
         "termios.h",
         "time.h",
+        "ucontext.h",
         "ufs/ufs/quota.h",
         "unistd.h",
         "util.h",
