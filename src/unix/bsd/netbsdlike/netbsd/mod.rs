@@ -213,7 +213,7 @@ s! {
         pub flags: u32,
         pub fflags: u32,
         pub data: i64,
-        pub udata: ::intptr_t,
+        pub udata: ::intptr_t, /* FIXME: NetBSD 10.0 will finally have same layout as other BSD */
     }
 
     pub struct dqblk {
@@ -1204,6 +1204,8 @@ pub const MAP_RENAME: ::c_int = 0x20;
 pub const MAP_NORESERVE: ::c_int = 0x40;
 pub const MAP_HASSEMAPHORE: ::c_int = 0x200;
 pub const MAP_WIRED: ::c_int = 0x800;
+// mremap flag
+pub const MAP_REMAPDUP: ::c_int = 0x004;
 
 pub const DCCP_TYPE_REQUEST: ::c_int = 0;
 pub const DCCP_TYPE_RESPONSE: ::c_int = 1;
@@ -2116,6 +2118,13 @@ extern "C" {
     pub fn consttime_memequal(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn setproctitle(fmt: *const ::c_char, ...);
+    pub fn mremap(
+        oldp: *mut ::c_void,
+        oldsize: ::size_t,
+        newp: *mut ::c_void,
+        newsize: ::size_t,
+        flags: ::c_int,
+    ) -> *mut ::c_void;
 }
 
 #[link(name = "util")]
