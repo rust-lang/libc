@@ -1561,6 +1561,8 @@ extern "C" {
         newfd: ::c_int,
     ) -> ::c_int;
 
+    pub fn pthread_getthreadid_np() -> ::c_int;
+
     #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "statfs@FBSD_1.0")]
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
     #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "fstatfs@FBSD_1.0")]
