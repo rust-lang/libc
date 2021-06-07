@@ -10,6 +10,8 @@ type __pthread_spin_t = __cpu_simple_lock_nv_t;
 pub type vm_size_t = ::uintptr_t; // FIXME: deprecated since long time
 pub type lwpid_t = ::c_uint;
 pub type shmatt_t = ::c_uint;
+pub type cpuid_t = u64;
+pub type cpuset_t = _cpuset;
 
 // elf.h
 
@@ -428,6 +430,10 @@ s! {
         pub dlpi_subs: ::c_ulonglong,
         pub dlpi_tls_modid: usize,
         pub dlpi_tls_data: *mut ::c_void,
+    }
+
+    pub struct _cpuset {
+        bits: [u32; 0]
     }
 }
 
@@ -2046,6 +2052,23 @@ extern "C" {
         stackaddr: *mut *mut ::c_void,
         stacksize: *mut ::size_t,
     ) -> ::c_int;
+    pub fn pthread_getaffinity_np(
+        thread: ::pthread_t,
+        size: ::size_t,
+        set: *mut cpuset_t,
+    ) -> ::c_int;
+    pub fn pthread_setaffinity_np(
+        thread: ::pthread_t,
+        size: ::size_t,
+        set: *mut cpuset_t,
+    ) -> ::c_int;
+    pub fn _cpuset_create() -> *mut cpuset_t;
+    pub fn _cpuset_destroy(set: *mut cpuset_t);
+    pub fn _cpuset_clr(cpu: cpuid_t, set: *mut cpuset_t) -> ::c_int;
+    pub fn _cpuset_set(cpu: cpuid_t, set: *mut cpuset_t) -> ::c_int;
+    pub fn _cpuset_isset(cpu: cpuid_t, set: *const cpuset_t) -> ::c_int;
+    pub fn _cpuset_size(set: *const cpuset_t) -> ::size_t;
+    pub fn _cpuset_zero(set: *mut cpuset_t);
     #[link_name = "__sigtimedwait50"]
     pub fn sigtimedwait(
         set: *const sigset_t,
