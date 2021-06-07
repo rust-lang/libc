@@ -1246,6 +1246,7 @@ lutimes
 lwp_rtprio
 lwpid_t
 madvise
+mcontext_t
 memmem
 memrchr
 memset_s
@@ -1379,6 +1380,7 @@ telldir
 timex
 truncate
 ttyname_r
+ucontext_t
 unmount
 useconds_t
 uselocale
