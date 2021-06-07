@@ -1546,6 +1546,7 @@ pthread_condattr_getclock
 pthread_condattr_getpshared
 pthread_condattr_setclock
 pthread_condattr_setpshared
+pthread_getthreadid_np
 pthread_kill
 pthread_main_np
 pthread_mutex_timedlock
