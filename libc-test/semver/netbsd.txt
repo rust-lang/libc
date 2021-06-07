@@ -1009,6 +1009,12 @@ _UTX_USERSIZE
 __cpu_simple_lock_nv_t
 __errno
 __exit_status
+_cpuset_clr
+_cpuset_create
+_cpuset_destroy
+_cpuset_isset
+_cpuset_set
+_cpuset_zero
 _lwp_self
 abs
 accept4
@@ -1195,8 +1201,10 @@ pthread_attr_getstack
 pthread_cancel
 pthread_condattr_setclock
 pthread_getattr_np
+pthread_getaffinity_np
 pthread_kill
 pthread_mutex_timedlock
+pthread_setaffinity_np
 pthread_setname_np
 ptrace
 ptrace_io_desc
