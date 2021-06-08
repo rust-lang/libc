@@ -10,7 +10,7 @@ if [ -n "$TOOLCHAIN" ]; then
 else
   toolchain=nightly
 fi
-if [ "$OS" = "windows" ]; then
+if [ "$OS" = "Windows_NT" ]; then
   : "${TARGET?The TARGET environment variable must be set.}"
   rustup self update
   rustup set profile minimal
@@ -27,7 +27,7 @@ if [ -n "$TARGET" ]; then
   rustup target add "$TARGET"
 fi
 
-if [ "$OS" = "windows" ]; then
+if [ "$OS" = "Windows_NT" ]; then
   if [ "$ARCH_BITS" = "i686" ]; then
     echo "Install MinGW32"
     choco install mingw --x86 --force
