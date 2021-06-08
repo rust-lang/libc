@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Update `rustc_version` to 0.4.
+
 ## 0.4.1
 
 * Fix the `deref_nullptr` warning. [#24]
