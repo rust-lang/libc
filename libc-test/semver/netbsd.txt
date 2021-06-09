@@ -1018,6 +1018,7 @@ _cpuset_zero
 _lwp_self
 abs
 accept4
+accept_filter_arg
 acct
 aio_cancel
 aio_error

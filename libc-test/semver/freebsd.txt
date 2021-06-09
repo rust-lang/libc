@@ -1323,6 +1323,7 @@ __xuname
 _sem
 abs
 accept4
+accept_filter_arg
 acct
 aio_cancel
 aio_error
