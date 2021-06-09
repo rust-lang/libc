@@ -72,6 +72,9 @@ jobs:
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v2
+      - name: Self-update rustup
+        run: rustup self update
+        shell: bash
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
         shell: bash
