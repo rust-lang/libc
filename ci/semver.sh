@@ -16,10 +16,8 @@ fi
 rustup component add rustc-dev llvm-tools-preview
 
 # Should update the nightly version in bors CI config if we touch this.
-cargo install --locked --git https://github.com/rust-lang/rust-semverver --rev 71c340ff867d2f79613cfe02c6714f1d2ef00bc4
+cargo install --locked --git https://github.com/rust-lang/rust-semverver --rev 6d2403c219834d3a6c44cec093db820a0dbe5d21
 
-# FIXME: Replace `x86_64-sun-solaris` with `x86_64-pc-solaris`
-# when we update the nightly date for semverver to nightly-2021-03-02 or later.
 TARGETS=
 case "${OS}" in
     *linux*)
@@ -41,7 +39,7 @@ x86_64-unknown-freebsd \
 x86_64-unknown-linux-gnu \
 x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
-x86_64-sun-solaris \
+x86_64-pc-solaris \
 x86_64-fuchsia \
 x86_64-pc-windows-gnu \
 x86_64-unknown-linux-gnux32 \
