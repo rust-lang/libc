@@ -65,8 +65,6 @@ pub const O_NDELAY: ::c_int = 0x80;
 
 pub const SOCK_NONBLOCK: ::c_int = 128;
 
-pub const AF_VSOCK: ::c_int = 40;
-
 pub const EDEADLK: ::c_int = 45;
 pub const ENAMETOOLONG: ::c_int = 78;
 pub const ENOLCK: ::c_int = 46;
