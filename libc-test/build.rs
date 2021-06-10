@@ -2650,6 +2650,9 @@ fn test_linux(target: &str) {
             // FIXME: CI's kernel header version is old.
             "sockaddr_can" => true,
 
+            // Requires glibc 2.33 or newer.
+            "mallinfo2" => true,
+
             _ => false,
         }
     });
@@ -2852,6 +2855,9 @@ fn test_linux(target: &str) {
 
             // FIXME: This needs musl 1.2.2 or later.
             "gettid" if musl => true,
+
+            // Needs glibc 2.33 or later.
+            "mallinfo2" => true,
 
             _ => false,
         }
