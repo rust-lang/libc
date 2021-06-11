@@ -86,6 +86,19 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 
+    pub struct mallinfo {
+        pub arena: ::size_t,
+        pub ordblks: ::size_t,
+        pub smblks: ::size_t,
+        pub hblks: ::size_t,
+        pub hblkhd: ::size_t,
+        pub usmblks: ::size_t,
+        pub fsmblks: ::size_t,
+        pub uordblks: ::size_t,
+        pub fordblks: ::size_t,
+        pub keepcost: ::size_t,
+    }
+
     pub struct flock {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
@@ -2482,6 +2495,8 @@ extern "C" {
     pub fn __sched_cpufree(set: *mut ::cpu_set_t);
     pub fn __sched_cpucount(setsize: ::size_t, set: *const cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
+    pub fn mallinfo() -> ::mallinfo;
+    pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
 
     pub fn utmpname(name: *const ::c_char) -> ::c_int;
     pub fn setutent();
