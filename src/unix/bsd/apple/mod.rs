@@ -629,6 +629,22 @@ s! {
     pub struct thread_throughput_qos_policy {
         pub thread_throughput_qos_tier: thread_throughput_qos_t,
     }
+
+    // malloc/malloc.h
+    pub struct malloc_statistics_t {
+        pub blocks_in_use: ::c_uint,
+        pub size_in_use: ::size_t,
+        pub max_size_in_use: ::size_t,
+        pub size_allocated: ::size_t,
+    }
+
+    pub struct mstats {
+        pub bytes_total: ::size_t,
+        pub chunks_used: ::size_t,
+        pub bytes_used: ::size_t,
+        pub chunks_free: ::size_t,
+        pub bytes_free: ::size_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -4054,6 +4070,8 @@ extern "C" {
     pub fn memset_pattern4(b: *mut ::c_void, pattern4: *const ::c_void, len: ::size_t);
     pub fn memset_pattern8(b: *mut ::c_void, pattern8: *const ::c_void, len: ::size_t);
     pub fn memset_pattern16(b: *mut ::c_void, pattern16: *const ::c_void, len: ::size_t);
+
+    pub fn mstats() -> mstats;
 
     pub fn proc_listpids(
         t: u32,
