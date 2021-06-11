@@ -2835,7 +2835,9 @@ lstat64
 madvise
 major
 makedev
+mallinfo
 malloc
+malloc_usable_size
 mcontext_t
 memalign
 memchr
