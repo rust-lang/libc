@@ -25,6 +25,8 @@ pub type wchar_t = ::c_int;
 pub type nfds_t = ::c_ulong;
 pub type projid_t = ::c_int;
 pub type zoneid_t = ::c_int;
+pub type psetid_t = ::c_int;
+pub type processorid_t = ::c_int;
 
 pub type suseconds_t = ::c_long;
 pub type off_t = ::c_long;
@@ -988,6 +990,9 @@ pub const FILENAME_MAX: ::c_uint = 1024;
 pub const L_tmpnam: ::c_uint = 25;
 pub const TMP_MAX: ::c_uint = 17576;
 
+pub const GRND_NONBLOCK: ::c_int = 0x0001;
+pub const GRND_RANDOM: ::c_int = 0x0002;
+
 pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
@@ -1111,6 +1116,15 @@ pub const P_ZONEID: idtype_t = 12;
 pub const P_CTID: idtype_t = 13;
 pub const P_CPUID: idtype_t = 14;
 pub const P_PSETID: idtype_t = 15;
+
+pub const PS_NONE: ::c_int = -1;
+pub const PS_QUERY: ::c_int = -2;
+pub const PS_MYID: ::c_int = -3;
+pub const PS_SOFT: ::c_int = -4;
+pub const PS_HARD: ::c_int = -5;
+pub const PS_QUERY_TIME: ::c_int = -6;
+pub const PS_SYSTEM: ::c_int = 1;
+pub const PS_PRIVATE: ::c_int = 2;
 
 pub const UTIME_OMIT: c_long = -2;
 pub const UTIME_NOW: c_long = -1;
@@ -2227,6 +2241,8 @@ extern "C" {
     pub fn labs(i: ::c_long) -> ::c_long;
     pub fn rand() -> ::c_int;
     pub fn srand(seed: ::c_uint);
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
+    pub fn getrandom(bbuf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn settimeofday(tp: *const ::timeval, tz: *const ::c_void) -> ::c_int;
@@ -2607,6 +2623,25 @@ extern "C" {
     pub fn ucred_getpflags(ucred: *const ucred_t, flags: ::c_uint) -> ::c_uint;
 
     pub fn ucred_size() -> ::size_t;
+
+    pub fn pset_create(newpset: *mut ::psetid_t) -> ::c_int;
+    pub fn pset_destroy(pset: ::psetid_t) -> ::c_int;
+    pub fn pset_assign(pset: ::psetid_t, cpu: ::processorid_t, opset: *mut psetid_t) -> ::c_int;
+    pub fn pset_info(
+        pset: ::psetid_t,
+        tpe: *mut ::c_int,
+        numcpus: *mut ::c_uint,
+        cpulist: *mut processorid_t,
+    ) -> ::c_int;
+    pub fn pset_bind(
+        pset: ::psetid_t,
+        idtype: ::idtype_t,
+        id: ::id_t,
+        opset: *mut psetid_t,
+    ) -> ::c_int;
+    pub fn pset_list(pset: *mut psetid_t, numpsets: *mut ::c_uint) -> ::c_int;
+    pub fn pset_setattr(pset: psetid_t, attr: ::c_uint) -> ::c_int;
+    pub fn pset_getattr(pset: psetid_t, attr: *mut ::c_uint) -> ::c_int;
 }
 
 mod compat;
