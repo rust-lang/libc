@@ -39,5 +39,5 @@ chmod a+rxw -R /emsdk-portable
 # node 8 is required to run wasm
 # NOTE: Do not forget to sync Node.js version with `emscripten-entry.sh`!
 cd /
-curl --retry 5 -L https://nodejs.org/dist/v12.18.3/node-v12.18.3-linux-x64.tar.xz | \
+curl --retry 5 -L https://nodejs.org/dist/v14.17.0/node-v14.17.0-linux-x64.tar.xz | \
     tar -xJ
