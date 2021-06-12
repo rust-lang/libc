@@ -1766,6 +1766,9 @@ pub const PT_LOOS: u32 = 0x60000000;
 pub const PT_GNU_EH_FRAME: u32 = 0x6474e550;
 pub const PT_GNU_STACK: u32 = 0x6474e551;
 pub const PT_GNU_RELRO: u32 = 0x6474e552;
+pub const PT_HIOS: u32 = 0x6fffffff;
+pub const PT_LOPROC: u32 = 0x70000000;
+pub const PT_HIPROC: u32 = 0x7fffffff;
 
 // linux/if_ether.h
 pub const ETH_ALEN: ::c_int = 6;
