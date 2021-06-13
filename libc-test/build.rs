@@ -2577,7 +2577,8 @@ fn test_linux(target: &str) {
             "type_"
                 if struct_ == "input_event"
                     || struct_ == "input_mask"
-                    || struct_ == "ff_effect" =>
+                    || struct_ == "ff_effect"
+                    || struct_ == "f_owner_ex" =>
             {
                 "type".to_string()
             }

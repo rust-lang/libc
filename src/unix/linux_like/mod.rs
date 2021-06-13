@@ -476,6 +476,10 @@ pub const F_SEAL_WRITE: ::c_int = 0x0008;
 
 // FIXME(#235): Include file sealing fcntls once we have a way to verify them.
 
+pub const F_OWNER_PGRP: ::c_int = 2;
+pub const F_OWNER_PID: ::c_int = 1;
+pub const F_OWNER_TID: ::c_int = 0;
+
 pub const SIGTRAP: ::c_int = 5;
 
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
