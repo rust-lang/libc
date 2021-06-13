@@ -712,6 +712,16 @@ pub const JAIL_SYS_DISABLE: ::c_int = 0;
 pub const JAIL_SYS_NEW: ::c_int = 1;
 pub const JAIL_SYS_INHERIT: ::c_int = 2;
 
+pub const MNT_ACLS: ::c_int = 0x08000000;
+pub const MNT_BYFSID: ::c_int = 0x08000000;
+pub const MNT_GJOURNAL: ::c_int = 0x02000000;
+pub const MNT_MULTILABEL: ::c_int = 0x04000000;
+pub const MNT_NFS4ACLS: ::c_int = 0x00000010;
+pub const MNT_SNAPSHOT: ::c_int = 0x01000000;
+pub const MNT_UNION: ::c_int = 0x00000020;
+pub const MNT_EXPUBLIC: ::c_int = 0x20000000;
+pub const MNT_NONBUSY: ::c_int = 0x04000000;
+
 pub const SO_BINTIME: ::c_int = 0x2000;
 pub const SO_NO_OFFLOAD: ::c_int = 0x4000;
 pub const SO_NO_DDP: ::c_int = 0x8000;

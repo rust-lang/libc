@@ -592,6 +592,18 @@ pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
+pub const MNT_NOATIME: ::c_int = 0x10000000;
+pub const MNT_NOCLUSTERR: ::c_int = 0x40000000;
+pub const MNT_NOCLUSTERW: ::c_int = 0x80000000;
+pub const MNT_NOSYMFOLLOW: ::c_int = 0x00400000;
+pub const MNT_SOFTDEP: ::c_int = 0x00200000;
+pub const MNT_SUIDDIR: ::c_int = 0x00100000;
+pub const MNT_EXRDONLY: ::c_int = 0x00000080;
+pub const MNT_DEFEXPORTED: ::c_int = 0x00000200;
+pub const MNT_EXPORTANON: ::c_int = 0x00000400;
+pub const MNT_EXKERB: ::c_int = 0x00000800;
+pub const MNT_DELEXPORT: ::c_int = 0x00020000;
+
 pub const MS_SYNC: ::c_int = 0x0000;
 pub const MS_ASYNC: ::c_int = 0x0001;
 pub const MS_INVALIDATE: ::c_int = 0x0002;
