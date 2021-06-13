@@ -1547,6 +1547,7 @@ pthread_condattr_getclock
 pthread_condattr_getpshared
 pthread_condattr_setclock
 pthread_condattr_setpshared
+pthread_getaffinity_np
 pthread_getthreadid_np
 pthread_kill
 pthread_main_np
@@ -1555,6 +1556,7 @@ pthread_mutexattr_getpshared
 pthread_mutexattr_setpshared
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setpshared
+pthread_setaffinity_np
 pthread_set_name_np
 ptrace
 ptrace_io_desc
