@@ -2642,6 +2642,13 @@ extern "C" {
     pub fn pset_list(pset: *mut psetid_t, numpsets: *mut ::c_uint) -> ::c_int;
     pub fn pset_setattr(pset: psetid_t, attr: ::c_uint) -> ::c_int;
     pub fn pset_getattr(pset: psetid_t, attr: *mut ::c_uint) -> ::c_int;
+    pub fn processor_bind(
+        idtype: ::idtype_t,
+        id: ::id_t,
+        new_binding: ::processorid_t,
+        old_binding: *mut processorid_t,
+    ) -> ::c_int;
+    pub fn p_online(processorid: ::processorid_t, flag: ::c_int) -> ::c_int;
 }
 
 mod compat;
