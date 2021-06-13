@@ -8,6 +8,7 @@ pub type off64_t = ::c_longlong;
 pub type sigset_t = ::c_ulong;
 pub type socklen_t = i32;
 pub type time64_t = i64;
+pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct sigaction {
