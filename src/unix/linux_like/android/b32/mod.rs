@@ -120,6 +120,10 @@ s! {
         __reserved: [::c_char; 12],
     }
 
+    pub struct pthread_spinlock_t {
+        __private: [i32; 2],
+    }
+
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,

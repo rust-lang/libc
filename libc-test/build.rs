@@ -2600,6 +2600,8 @@ fn test_linux(target: &str) {
             // (`c_uint`) and this clashes with the type of the `rlimit` APIs
             // which expect a `c_int` even though both are ABI compatible.
             "__rlimit_resource_t" => true,
+            // on Linux, this is a volatile int
+            "pthread_spinlock_t" => true,
 
             _ => false,
         }
