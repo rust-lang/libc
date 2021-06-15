@@ -105,6 +105,10 @@ s! {
         pub f_namemax: ::c_ulong,
         __f_spare: [::c_int; 6],
     }
+
+    pub struct pthread_spinlock_t {
+        __private: i64,
+    }
 }
 
 s_no_extra_traits! {
