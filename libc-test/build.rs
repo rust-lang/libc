@@ -2002,6 +2002,9 @@ fn test_freebsd(target: &str) {
             // not available until FreeBSD 12, and is an anonymous union there.
             ("xucred", "cr_pid__c_anonymous_union") => true,
 
+            // m_owner field is a volatile __lwpid_t
+            ("umutex", "m_owner") => true,
+
             _ => false,
         }
     });
