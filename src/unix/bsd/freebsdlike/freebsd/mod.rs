@@ -21,6 +21,8 @@ pub type mqd_t = *mut ::c_void;
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
 
+pub type pthread_spinlock_t = *mut __c_anonymous_pthread_spinlock;
+
 s! {
     pub struct aiocb {
         pub aio_fildes: ::c_int,
@@ -139,6 +141,21 @@ s! {
 
     pub struct cap_rights_t {
         cr_rights: [u64; 2],
+    }
+
+    pub struct umutex {
+        m_owner: ::lwpid_t,
+        m_flags: u32,
+        m_ceilings: [u32; 2],
+        m_rb_link: ::uintptr_t,
+        #[cfg(target_pointer_width = "32")]
+        m_pad: u32,
+        m_spare: [u32; 2],
+
+    }
+
+    pub struct __c_anonymous_pthread_spinlock {
+        s_clock: umutex,
     }
 }
 
@@ -1587,6 +1604,12 @@ extern "C" {
         cpusetsize: ::size_t,
         cpusetp: *const cpuset_t,
     ) -> ::c_int;
+
+    pub fn pthread_spin_init(lock: *mut pthread_spinlock_t, pshared: ::c_int) -> ::c_int;
+    pub fn pthread_spin_destroy(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_lock(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> ::c_int;
 
     #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "statfs@FBSD_1.0")]
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
