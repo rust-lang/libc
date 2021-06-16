@@ -1307,6 +1307,12 @@ pthread_mutexattr_setpshared
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setpshared
 pthread_set_name_np
+pthread_spin_destroy
+pthread_spin_init
+pthread_spin_lock
+pthread_spin_trylock
+pthread_spin_unlock
+pthread_spinlock_t
 ptrace
 ptrace_io_desc
 pututxline

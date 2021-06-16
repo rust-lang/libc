@@ -1099,6 +1099,8 @@ fn test_netbsd(target: &str) {
             // conflicting with `p_type` macro from <resolve.h>.
             ("Elf32_Phdr", "p_type") => true,
             ("Elf64_Phdr", "p_type") => true,
+            // pthread_spin_t is a volatile uchar
+            ("pthread_spinlock_t", "pts_spin") => true,
             _ => false,
         }
     });

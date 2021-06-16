@@ -12,6 +12,7 @@ pub type lwpid_t = ::c_uint;
 pub type shmatt_t = ::c_uint;
 pub type cpuid_t = u64;
 pub type cpuset_t = _cpuset;
+pub type pthread_spin_t = ::c_uchar;
 
 // elf.h
 
@@ -207,6 +208,12 @@ s! {
         ptr_nreaders: ::c_uint,
         ptr_owner: ::pthread_t,
         ptr_private: *mut ::c_void,
+    }
+
+    pub struct pthread_spinlock_t {
+        pts_magic: ::c_uint,
+        pts_spin: ::pthread_spin_t,
+        pts_flags: ::c_int,
     }
 
     pub struct kevent {
@@ -2067,6 +2074,7 @@ extern "C" {
         size: ::size_t,
         set: *mut cpuset_t,
     ) -> ::c_int;
+
     pub fn _cpuset_create() -> *mut cpuset_t;
     pub fn _cpuset_destroy(set: *mut cpuset_t);
     pub fn _cpuset_clr(cpu: cpuid_t, set: *mut cpuset_t) -> ::c_int;

@@ -26,6 +26,8 @@ pub type cpuset_t = cpumask_t;
 pub type cpu_set_t = cpumask_t;
 
 pub type register_t = ::c_long;
+pub type umtx_t = ::c_int;
+pub type pthread_spinlock_t = ::uintptr_t;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
@@ -1269,6 +1271,12 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+    pub fn pthread_spin_init(lock: *mut pthread_spinlock_t, pshared: ::c_int) -> ::c_int;
+    pub fn pthread_spin_destroy(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_lock(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> ::c_int;
+
     pub fn sched_getaffinity(pid: ::pid_t, cpusetsize: ::size_t, mask: *mut cpu_set_t) -> ::c_int;
     pub fn sched_setaffinity(pid: ::pid_t, cpusetsize: ::size_t, mask: *const cpu_set_t)
         -> ::c_int;
