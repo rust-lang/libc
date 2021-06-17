@@ -1172,9 +1172,9 @@ s_no_extra_traits! {
         pub ifi_noproto: u64,
         pub ifi_recvtiming: u32,
         pub ifi_xmittiming: u32,
-        #[cfg(any(target_arch = "arm", target_arch = "x86"))]
+        #[cfg(any(target_arch = "arm", target_arch = "x86", target_pointer_width = "32"))]
         pub ifi_lastchange: ::timeval,
-        #[cfg(not(any(target_arch = "arm", target_arch = "x86")))]
+        #[cfg(not(any(target_arch = "arm", target_arch = "x86", target_pointer_width = "32")))]
         pub ifi_lastchange: timeval32,
     }
 
@@ -5522,7 +5522,7 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "arm", target_arch = "x86"))] {
+    if #[cfg(any(target_arch = "arm", target_arch = "x86", target_pointer_width = "32"))] {
         mod b32;
         pub use self::b32::*;
     } else if #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
