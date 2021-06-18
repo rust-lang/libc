@@ -14,6 +14,7 @@ pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_condattr_t = *mut ::c_void;
 pub type pthread_rwlock_t = *mut ::c_void;
 pub type pthread_rwlockattr_t = *mut ::c_void;
+pub type pthread_spinlock_t = ::uintptr_t;
 pub type caddr_t = *mut ::c_char;
 
 // elf.h
@@ -1530,6 +1531,7 @@ extern "C" {
     pub fn pthread_main_np() -> ::c_int;
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn pthread_stackseg_np(thread: ::pthread_t, sinfo: *mut ::stack_t) -> ::c_int;
+
     pub fn sysctl(
         name: *const ::c_int,
         namelen: ::c_uint,
