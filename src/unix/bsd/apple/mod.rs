@@ -645,6 +645,10 @@ s! {
         pub chunks_free: ::size_t,
         pub bytes_free: ::size_t,
     }
+
+    pub struct malloc_zone_t {
+        __private: [::uintptr_t; 18], // FIXME: keeping private for now
+    }
 }
 
 s_no_extra_traits! {
@@ -4062,6 +4066,11 @@ extern "C" {
     pub fn memset_pattern16(b: *mut ::c_void, pattern16: *const ::c_void, len: ::size_t);
 
     pub fn mstats() -> mstats;
+    pub fn malloc_zone_check(zone: *mut ::malloc_zone_t) -> ::boolean_t;
+    pub fn malloc_zone_print(zone: *mut ::malloc_zone_t, verbose: ::boolean_t);
+    pub fn malloc_zone_statistics(zone: *mut ::malloc_zone_t, stats: *mut malloc_statistics_t);
+    pub fn malloc_zone_log(zone: *mut ::malloc_zone_t, address: *mut ::c_void);
+    pub fn malloc_zone_print_ptr_info(ptr: *mut ::c_void);
 
     pub fn proc_listpids(
         t: u32,
