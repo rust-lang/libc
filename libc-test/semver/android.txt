@@ -2946,6 +2946,15 @@ pthread_attr_init
 pthread_attr_setdetachstate
 pthread_attr_setstacksize
 pthread_attr_t
+pthread_barrierattr_destroy
+pthread_barrierattr_getpshared
+pthread_barrierattr_init
+pthread_barrierattr_setpshared
+pthread_barrierattr_t
+pthread_barrier_destroy
+pthread_barrier_init
+pthread_barrier_wait
+pthread_barrier_t
 pthread_cond_broadcast
 pthread_cond_destroy
 pthread_cond_init

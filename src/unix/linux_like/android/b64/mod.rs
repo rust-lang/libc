@@ -106,6 +106,10 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
+    pub struct pthread_barrier_t {
+        __private: [i64; 4],
+    }
+
     pub struct pthread_spinlock_t {
         __private: i64,
     }
