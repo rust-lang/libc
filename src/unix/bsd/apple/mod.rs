@@ -3590,6 +3590,10 @@ f! {
         (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) + length as usize)
             as ::c_uint
     }
+
+    pub {const} fn VM_MAKE_TAG(id: u8) -> u32 {
+        (id as u32) << 24u32
+    }
 }
 
 safe_f! {
