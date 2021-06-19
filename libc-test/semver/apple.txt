@@ -1684,6 +1684,13 @@ mach_thread_self
 mach_timebase_info
 mach_timebase_info_data_t
 madvise
+malloc_statistics_t
+malloc_zone_check
+malloc_zone_log
+malloc_zone_print
+malloc_zone_print_ptr_info
+malloc_zone_statistics
+malloc_zone_t
 max_align_t
 mcontext_t
 memset_pattern4
@@ -1695,6 +1702,7 @@ mkdirat
 mkstemps
 mount
 msghdr
+mstats
 newlocale
 nice
 nl_item
