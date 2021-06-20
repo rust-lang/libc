@@ -3361,7 +3361,7 @@ extern "C" {
     pub fn lremovexattr(path: *const c_char, name: *const c_char) -> ::c_int;
     pub fn fremovexattr(filedes: ::c_int, name: *const c_char) -> ::c_int;
     pub fn signalfd(fd: ::c_int, mask: *const ::sigset_t, flags: ::c_int) -> ::c_int;
-    pub fn timerfd_create(clockid: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn timerfd_create(clockid: ::clockid_t, flags: ::c_int) -> ::c_int;
     pub fn timerfd_gettime(fd: ::c_int, curr_value: *mut itimerspec) -> ::c_int;
     pub fn timerfd_settime(
         fd: ::c_int,
@@ -3822,6 +3822,24 @@ extern "C" {
     pub fn iconv_close(cd: iconv_t) -> ::c_int;
 
     pub fn gettid() -> ::pid_t;
+}
+
+#[link(name = "rt")]
+extern "C" {
+    pub fn timer_create(
+        clockid: ::clockid_t,
+        sevp: *mut ::sigevent,
+        timerid: *mut ::timer_t,
+    ) -> ::c_int;
+    pub fn timer_delete(timerid: ::timer_t) -> ::c_int;
+    pub fn timer_getoverrun(timerid: ::timer_t) -> ::c_int;
+    pub fn timer_gettime(timerid: ::timer_t, curr_value: *mut ::itimerspec) -> ::c_int;
+    pub fn timer_settime(
+        timerid: ::timer_t,
+        flags: ::c_int,
+        new_value: *const ::itimerspec,
+        old_value: *mut ::itimerspec,
+    ) -> ::c_int;
 }
 
 cfg_if! {
