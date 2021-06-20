@@ -566,6 +566,8 @@ pthread_setname_np
 pututxline
 pwritev2
 qsort_r
+semid_ds
+seminfo
 setutxent
 setxattr
 sgetspent_r
