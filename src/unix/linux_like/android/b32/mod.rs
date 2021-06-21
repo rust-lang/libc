@@ -120,6 +120,10 @@ s! {
         __reserved: [::c_char; 12],
     }
 
+    pub struct pthread_barrier_t {
+        __private: [i32; 8],
+    }
+
     pub struct pthread_spinlock_t {
         __private: [i32; 2],
     }
