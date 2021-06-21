@@ -3043,6 +3043,11 @@ telldir
 timerfd_create
 timerfd_gettime
 timerfd_settime
+timer_create
+timer_delete
+timer_getoverrun
+timer_gettime
+timer_settime
 tmpfile64
 truncate
 truncate64
