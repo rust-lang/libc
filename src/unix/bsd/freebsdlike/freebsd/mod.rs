@@ -22,6 +22,8 @@ pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
 
 pub type pthread_spinlock_t = *mut __c_anonymous_pthread_spinlock;
+pub type pthread_barrierattr_t = *mut __c_anonymous_pthread_barrierattr;
+pub type pthread_barrier_t = *mut __c_anonymous_pthread_barrier;
 
 s! {
     pub struct aiocb {
@@ -154,8 +156,29 @@ s! {
 
     }
 
+    pub struct ucond {
+        c_has_waiters: u32,
+        c_flags: u32,
+        c_clockid: u32,
+        c_spare: [u32; 1],
+    }
+
     pub struct __c_anonymous_pthread_spinlock {
         s_clock: umutex,
+    }
+
+    pub struct __c_anonymous_pthread_barrierattr {
+        pshared: ::c_int,
+    }
+
+    pub struct __c_anonymous_pthread_barrier {
+        b_lock: umutex,
+        b_cv: ucond,
+        b_cycle: i64,
+        b_count: ::c_int,
+        b_waiters: ::c_int,
+        b_refcount: ::c_int,
+        b_destroying: ::c_int,
     }
 }
 
