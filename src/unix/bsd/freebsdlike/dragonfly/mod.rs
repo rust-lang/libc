@@ -27,6 +27,8 @@ pub type cpu_set_t = cpumask_t;
 
 pub type register_t = ::c_long;
 pub type umtx_t = ::c_int;
+pub type pthread_barrierattr_t = ::c_int;
+pub type pthread_barrier_t = ::uintptr_t;
 pub type pthread_spinlock_t = ::uintptr_t;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]

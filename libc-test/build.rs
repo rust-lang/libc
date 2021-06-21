@@ -2006,6 +2006,8 @@ fn test_freebsd(target: &str) {
 
             // m_owner field is a volatile __lwpid_t
             ("umutex", "m_owner") => true,
+            // c_has_waiters field is a volatile int32_t
+            ("ucond", "c_has_waiters") => true,
 
             _ => false,
         }

@@ -1294,6 +1294,13 @@ pseudo_AF_XTP
 pthread_attr_get_np
 pthread_attr_getguardsize
 pthread_attr_getstack
+pthread_barrierattr_destroy
+pthread_barrierattr_getpshared
+pthread_barrierattr_init
+pthread_barrierattr_setpshared
+pthread_barrierattr_t
+pthread_barrier_destroy
+pthread_barrier_init
 pthread_cancel
 pthread_condattr_getclock
 pthread_condattr_getpshared
