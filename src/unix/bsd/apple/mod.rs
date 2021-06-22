@@ -4075,6 +4075,21 @@ extern "C" {
     pub fn malloc_zone_statistics(zone: *mut ::malloc_zone_t, stats: *mut malloc_statistics_t);
     pub fn malloc_zone_log(zone: *mut ::malloc_zone_t, address: *mut ::c_void);
     pub fn malloc_zone_print_ptr_info(ptr: *mut ::c_void);
+    pub fn malloc_default_zone() -> *mut ::malloc_zone_t;
+    pub fn malloc_zone_from_ptr(ptr: *const ::c_void) -> *mut ::malloc_zone_t;
+    pub fn malloc_zone_malloc(zone: *mut ::malloc_zone_t, size: ::size_t) -> *mut ::c_void;
+    pub fn malloc_zone_valloc(zone: *mut ::malloc_zone_t, size: ::size_t) -> *mut ::c_void;
+    pub fn malloc_zone_calloc(
+        zone: *mut ::malloc_zone_t,
+        num_items: ::size_t,
+        size: ::size_t,
+    ) -> *mut ::c_void;
+    pub fn malloc_zone_realloc(
+        zone: *mut ::malloc_zone_t,
+        ptr: *mut ::c_void,
+        size: ::size_t,
+    ) -> *mut ::c_void;
+    pub fn malloc_zone_free(zone: *mut ::malloc_zone_t, ptr: *mut ::c_void);
 
     pub fn proc_listpids(
         t: u32,
