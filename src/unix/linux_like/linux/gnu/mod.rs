@@ -1239,6 +1239,20 @@ extern "C" {
         offset: ::off_t,
         flags: ::c_int,
     ) -> ::ssize_t;
+    pub fn preadv64v2(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        offset: ::off64_t,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    pub fn pwritev64v2(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        offset: ::off64_t,
+        flags: ::c_int,
+    ) -> ::ssize_t;
     pub fn renameat2(
         olddirfd: ::c_int,
         oldpath: *const ::c_char,
