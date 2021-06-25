@@ -77,6 +77,10 @@ pub type thread_latency_qos_policy_t = *mut thread_latency_qos_policy;
 pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
 pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
 
+pub type CCStatus = i32;
+pub type CCCryptorStatus = i32;
+pub type CCRNGStatus = ::CCCryptorStatus;
+
 deprecated_mach! {
     pub type vm_prot_t = ::c_int;
     pub type vm_size_t = ::uintptr_t;
@@ -3515,6 +3519,21 @@ pub const THREAD_BACKGROUND_POLICY_DARWIN_BG: ::c_int = 0x1000;
 pub const THREAD_LATENCY_QOS_POLICY: ::c_int = 7;
 pub const THREAD_THROUGHPUT_QOS_POLICY: ::c_int = 8;
 
+// CommonCrypto/CommonCryptoError.h
+pub const kCCSuccess: i32 = 0;
+pub const kCCParamError: i32 = -4300;
+pub const kCCBufferTooSmall: i32 = -4301;
+pub const kCCMemoryFailure: i32 = -4302;
+pub const kCCAlignmentError: i32 = -4303;
+pub const kCCDecodeError: i32 = -4304;
+pub const kCCUnimplemented: i32 = -4305;
+pub const kCCOverflow: i32 = -4306;
+pub const kCCRNGFailure: i32 = -4307;
+pub const kCCUnspecifiedError: i32 = -4308;
+pub const kCCCallSequenceError: i32 = -4309;
+pub const kCCKeySizeError: i32 = -4310;
+pub const kCCInvalidKey: i32 = -4311;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         const fn __DARWIN_ALIGN32(p: usize) -> usize {
@@ -4139,6 +4158,8 @@ extern "C" {
     ///
     /// `id` is of type [`uuid_t`].
     pub fn gethostuuid(id: *mut u8, timeout: *const ::timespec) -> ::c_int;
+
+    pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
 }
 
 cfg_if! {

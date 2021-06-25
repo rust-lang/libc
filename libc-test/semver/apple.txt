@@ -108,6 +108,10 @@ BS0
 BS1
 BSDLY
 BUFSIZ
+CCStatus
+CCCryptorStatus
+CCRandomGenerateBytes
+CCRNGStatus
 CIGNORE
 CLD_CONTINUED
 CLD_DUMPED
