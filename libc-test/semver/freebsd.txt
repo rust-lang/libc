@@ -1584,6 +1584,7 @@ readdir_r
 readlinkat
 realhostname
 realhostname_sa
+reallocarray
 recvmmsg
 recvmsg
 regcomp

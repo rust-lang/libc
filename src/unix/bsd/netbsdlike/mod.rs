@@ -736,6 +736,10 @@ extern "C" {
     pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
 }
 
+extern "C" {
+    pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
+}
+
 cfg_if! {
     if #[cfg(target_os = "netbsd")] {
         mod netbsd;

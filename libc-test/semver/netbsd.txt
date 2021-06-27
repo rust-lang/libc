@@ -1221,6 +1221,8 @@ qsort
 rand
 readdir_r
 readlinkat
+reallocarr
+reallocarray
 recvmmsg
 recvmsg
 regcomp
