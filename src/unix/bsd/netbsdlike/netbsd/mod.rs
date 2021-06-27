@@ -2210,6 +2210,20 @@ extern "C" {
     pub fn esetfunc(
         cb: ::Option<unsafe extern "C" fn(::c_int, *const ::c_char, ...)>,
     ) -> ::Option<unsafe extern "C" fn(::c_int, *const ::c_char, ...)>;
+    pub fn secure_path(path: *const ::c_char) -> ::c_int;
+    pub fn snprintb(
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        fmt: *const ::c_char,
+        val: u64,
+    ) -> ::c_int;
+    pub fn snprintb_m(
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        fmt: *const ::c_char,
+        val: u64,
+        max: ::size_t,
+    ) -> ::c_int;
 }
 
 cfg_if! {

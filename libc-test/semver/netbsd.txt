@@ -1224,6 +1224,7 @@ regexec
 regfree
 regmatch_t
 regoff_t
+secure_path
 seekdir
 sem
 sem_close
@@ -1261,6 +1262,8 @@ siginfo_t
 sigtimedwait
 sigwait
 sigwaitinfo
+snprintb
+snprintb_m
 sockaddr_dl
 sockcred
 srand
