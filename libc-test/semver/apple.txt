@@ -1768,6 +1768,10 @@ pseudo_AF_KEY
 pseudo_AF_PIP
 pseudo_AF_RTIP
 pseudo_AF_XTP
+pthread_attr_getschedparam
+pthread_attr_setschedparam
+pthread_getschedparam
+pthread_setschedparam
 pthread_cancel
 pthread_condattr_getpshared
 pthread_condattr_setpshared
@@ -1806,6 +1810,9 @@ sa_endpoints_t
 sae_associd_t
 sae_connid_t
 sbrk
+sched_get_priority_max
+sched_get_priority_min
+sched_param
 seekdir
 segment_command
 segment_command_64
