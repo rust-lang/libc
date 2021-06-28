@@ -313,6 +313,19 @@ s! {
         pub ch_size: ::Elf32_Word,
         pub ch_addralign: ::Elf32_Word,
     }
+
+    pub struct seminfo {
+        pub semmap: ::c_int,
+        pub semmni: ::c_int,
+        pub semmns: ::c_int,
+        pub semmnu: ::c_int,
+        pub semmsl: ::c_int,
+        pub semopm: ::c_int,
+        pub semume: ::c_int,
+        pub semusz: ::c_int,
+        pub semvmx: ::c_int,
+        pub semaem: ::c_int,
+    }
 }
 
 impl siginfo_t {
