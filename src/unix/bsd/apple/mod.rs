@@ -653,6 +653,12 @@ s! {
     pub struct malloc_zone_t {
         __private: [::uintptr_t; 18], // FIXME: keeping private for now
     }
+
+    // sched.h
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+        __opaque: [::c_char; 4],
+    }
 }
 
 s_no_extra_traits! {
@@ -3791,6 +3797,26 @@ extern "C" {
         class: *mut qos_class_t,
         priority: *mut ::c_int,
     ) -> ::c_int;
+    pub fn pthread_attr_getschedparam(
+        attr: *const ::pthread_attr_t,
+        param: *mut sched_param,
+    ) -> ::c_int;
+    pub fn pthread_attr_setschedparam(
+        attr: *mut ::pthread_attr_t,
+        param: *const sched_param,
+    ) -> ::c_int;
+    pub fn pthread_getschedparam(
+        thread: ::pthread_t,
+        policy: *mut ::c_int,
+        param: *mut sched_param,
+    ) -> ::c_int;
+    pub fn pthread_setschedparam(
+        thread: ::pthread_t,
+        policy: ::c_int,
+        param: *const sched_param,
+    ) -> ::c_int;
+    pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
+    pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
     pub fn thread_policy_set(
         thread: thread_t,
         flavor: thread_policy_flavor_t,
