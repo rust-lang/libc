@@ -2572,6 +2572,9 @@ addrinfo
 af_alg_iv
 alarm
 android_set_abort_message
+arc4random
+arc4random_buf
+arc4random_uniform
 arphdr
 arpreq
 arpreq_old
