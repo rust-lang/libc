@@ -1232,6 +1232,9 @@ regexec
 regfree
 regmatch_t
 regoff_t
+sched_getparam
+sched_param
+sched_setparam
 secure_path
 seekdir
 sem

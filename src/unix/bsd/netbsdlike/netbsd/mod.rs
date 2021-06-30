@@ -447,6 +447,10 @@ s! {
         pub af_name: [::c_char; 16],
         af_arg: [[::c_char; 10]; 24],
     }
+
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
@@ -2170,6 +2174,9 @@ extern "C" {
         newsize: ::size_t,
         flags: ::c_int,
     ) -> *mut ::c_void;
+
+    pub fn sched_setparam(pid: ::pid_t, param: *const sched_param) -> ::c_int;
+    pub fn sched_getparam(pid: ::pid_t, param: *mut sched_param) -> ::c_int;
 }
 
 #[link(name = "util")]
