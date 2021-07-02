@@ -1028,6 +1028,9 @@ aio_return
 aio_suspend
 aio_write
 aiocb
+arc4random
+arc4random_buf
+arc4random_uniform
 arphdr
 atof
 bsearch
