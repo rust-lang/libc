@@ -4115,6 +4115,7 @@ extern "C" {
     pub fn memset_pattern16(b: *mut ::c_void, pattern16: *const ::c_void, len: ::size_t);
 
     pub fn mstats() -> mstats;
+    pub fn malloc_printf(format: *const ::c_char, ...);
     pub fn malloc_zone_check(zone: *mut ::malloc_zone_t) -> ::boolean_t;
     pub fn malloc_zone_print(zone: *mut ::malloc_zone_t, verbose: ::boolean_t);
     pub fn malloc_zone_statistics(zone: *mut ::malloc_zone_t, stats: *mut malloc_statistics_t);

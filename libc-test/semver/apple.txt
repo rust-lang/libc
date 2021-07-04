@@ -1693,6 +1693,7 @@ mach_timebase_info
 mach_timebase_info_data_t
 madvise
 malloc_default_zone
+malloc_printf
 malloc_statistics_t
 malloc_zone_calloc
 malloc_zone_check
