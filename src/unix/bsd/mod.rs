@@ -860,6 +860,10 @@ extern "C" {
     ) -> ::size_t;
 
     pub fn regfree(preg: *mut regex_t);
+
+    pub fn arc4random() -> u32;
+    pub fn arc4random_buf(buf: *mut ::c_void, size: ::size_t);
+    pub fn arc4random_uniform(l: u32) -> u32;
 }
 
 cfg_if! {
