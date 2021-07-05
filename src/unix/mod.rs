@@ -305,21 +305,21 @@ cfg_if! {
     } else if #[cfg(all(target_os = "linux",
                         any(target_env = "gnu", target_env = "uclibc"),
                         feature = "rustc-dep-of-std"))] {
-        #[link(name = "util", kind = "static-nobundle",
+        #[link(name = "util", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
-        #[link(name = "rt", kind = "static-nobundle",
+        #[link(name = "rt", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
-        #[link(name = "pthread", kind = "static-nobundle",
+        #[link(name = "pthread", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
-        #[link(name = "m", kind = "static-nobundle",
+        #[link(name = "m", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
-        #[link(name = "dl", kind = "static-nobundle",
+        #[link(name = "dl", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
-        #[link(name = "c", kind = "static-nobundle",
+        #[link(name = "c", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
-        #[link(name = "gcc_eh", kind = "static-nobundle",
+        #[link(name = "gcc_eh", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
-        #[link(name = "gcc", kind = "static-nobundle",
+        #[link(name = "gcc", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
         #[link(name = "util", cfg(not(target_feature = "crt-static")))]
         #[link(name = "rt", cfg(not(target_feature = "crt-static")))]
@@ -330,7 +330,7 @@ cfg_if! {
         extern {}
     } else if #[cfg(target_env = "musl")] {
         #[cfg_attr(feature = "rustc-dep-of-std",
-                   link(name = "c", kind = "static",
+                   link(name = "c", kind = "static", modifiers = "-bundle",
                         cfg(target_feature = "crt-static")))]
         #[cfg_attr(feature = "rustc-dep-of-std",
                    link(name = "c", cfg(not(target_feature = "crt-static"))))]
@@ -372,7 +372,7 @@ cfg_if! {
         extern {}
     } else if #[cfg(target_os = "redox")] {
         #[cfg_attr(feature = "rustc-dep-of-std",
-                   link(name = "c", kind = "static-nobundle",
+                   link(name = "c", kind = "static", modifiers = "-bundle",
                         cfg(target_feature = "crt-static")))]
         #[cfg_attr(feature = "rustc-dep-of-std",
                    link(name = "c", cfg(not(target_feature = "crt-static"))))]

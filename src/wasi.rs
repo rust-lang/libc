@@ -344,7 +344,12 @@ pub const _SC_SYMLOOP_MAX: c_int = 173;
 
 #[cfg_attr(
     feature = "rustc-dep-of-std",
-    link(name = "c", kind = "static", cfg(target_feature = "crt-static"))
+    link(
+        name = "c",
+        kind = "static",
+        modifiers = "-bundle",
+        cfg(target_feature = "crt-static")
+    )
 )]
 #[cfg_attr(
     feature = "rustc-dep-of-std",
