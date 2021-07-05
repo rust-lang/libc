@@ -3822,10 +3822,7 @@ extern "C" {
     pub fn iconv_close(cd: iconv_t) -> ::c_int;
 
     pub fn gettid() -> ::pid_t;
-}
 
-#[link(name = "rt")]
-extern "C" {
     pub fn timer_create(
         clockid: ::clockid_t,
         sevp: *mut ::sigevent,
