@@ -13,13 +13,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Rust toolchain
         run: TARGET=x86_64-unknown-linux-gnu sh ./ci/install-rust.sh
       - name: Generate documentation
         run: LIBC_CI=1 sh ci/dox.sh
-      - name: Upload documentation to GitHub Pages
-        uses: rust-lang/simpleinfra/github-actions/static-websites@master
-        with:
-          deploy_dir: target/doc
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
-        if: github.ref == 'refs/heads/master'
+      - name: Deploy GitHub Pages
+        run: |
+          git worktree add gh-pages gh-pages
+          git config user.name "Deploy from CI"
+          git config user.email ""
+          cd gh-pages
+          # Delete the ref to avoid keeping history.
+          git update-ref -d refs/heads/gh-pages
+          rm -rf *
+          mv ../target/doc/* .
+          git add .
+          git commit -m "Deploy $GITHUB_SHA to gh-pages"
+          git push --force
