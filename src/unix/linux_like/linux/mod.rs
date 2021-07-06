@@ -3824,7 +3824,6 @@ extern "C" {
     pub fn gettid() -> ::pid_t;
 }
 
-#[link(name = "rt")]
 extern "C" {
     pub fn timer_create(
         clockid: ::clockid_t,
