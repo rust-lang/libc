@@ -64,6 +64,23 @@ impl siginfo_t {
         }
         (*(self as *const siginfo_t as *const siginfo_timer)).value
     }
+
+    pub unsafe fn si_status(&self) -> ::c_int {
+        #[repr(C)]
+        struct siginfo_timer {
+            _si_signo: ::c_int,
+            _si_errno: ::c_int,
+            _si_code: ::c_int,
+            __pad1: ::c_int,
+            _pid: ::pid_t,
+            _uid: ::uid_t,
+            _value: ::sigval,
+            _cpid: ::pid_t,
+            _cuid: ::uid_t,
+            status: ::c_int,
+        }
+        (*(self as *const siginfo_t as *const siginfo_timer)).status
+    }
 }
 
 s! {
