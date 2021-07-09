@@ -80,8 +80,8 @@ cfg_if! {
     // Some of these platforms in CI already have these constants.
     // But they may still not have those _OLD ones.
     if #[cfg(all(any(target_arch = "x86",
-                     target_arch = "x86_64",
-                     target_arch = "aarch64"),
+                     target_arch = "x86_64"),
+                     // target_arch = "aarch64"), FIXME: raspb. 5.10 miss them
                  not(target_env = "musl")))] {
         pub const SO_TIMESTAMP_NEW: ::c_int = 63;
         pub const SO_TIMESTAMPNS_NEW: ::c_int = 64;
