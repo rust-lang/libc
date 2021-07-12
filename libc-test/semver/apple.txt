@@ -729,6 +729,7 @@ MAXTHREADNAMESIZE
 MCL_CURRENT
 MCL_FUTURE
 MDMBUF
+MEMORY_OBJECT_NULL
 MH_MAGIC
 MH_MAGIC_64
 MINCORE_INCORE
@@ -1414,6 +1415,10 @@ VM_MEMORY_TCMALLOC
 VM_MEMORY_UNSHARED_PMAP
 VM_MEMORY_WEBCORE_PURGEABLE_BUFFERS
 VM_METER
+VM_PROT_EXECUTE
+VM_PROT_NONE
+VM_PROT_READ
+VM_PROT_WRITE
 VM_SWAPUSAGE
 VSTATUS
 VT0
@@ -1700,6 +1705,10 @@ mach_port_t
 mach_thread_self
 mach_timebase_info
 mach_timebase_info_data_t
+mach_vm_address_t
+mach_vm_map
+mach_vm_offset_t
+mach_vm_size_t
 madvise
 malloc_default_zone
 malloc_printf
@@ -1718,10 +1727,13 @@ malloc_zone_t
 malloc_zone_valloc
 max_align_t
 mcontext_t
+memory_object_t
+memory_object_offset_t
 memset_pattern4
 memset_pattern8
 memset_pattern16
 memset_s
+mem_entry_name_port_t
 mincore
 mkdirat
 mkstemps
@@ -1902,6 +1914,8 @@ uselocale
 utimensat
 utmpx
 utmpxname
+vm_inherit_t
+vm_map_t
 vm_prot_t
 vm_size_t
 wait4
