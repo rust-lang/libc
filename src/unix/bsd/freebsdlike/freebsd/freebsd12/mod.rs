@@ -204,7 +204,8 @@ pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 
 pub const SO_DOMAIN: ::c_int = 0x1019;
 
-pub const ELAST: ::c_int = 96;
+pub const EINTEGRITY: ::c_int = 97;
+pub const ELAST: ::c_int = 97;
 
 extern "C" {
     pub fn setgrent();
