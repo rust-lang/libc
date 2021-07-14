@@ -77,8 +77,6 @@ jobs:
   style_check:
     name: Style check
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
