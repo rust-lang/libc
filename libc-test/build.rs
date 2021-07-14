@@ -1715,6 +1715,7 @@ fn test_freebsd(target: &str) {
                 "dlfcn.h",
                 "elf.h",
                 "errno.h",
+                "execinfo.h",
                 "fcntl.h",
                 "glob.h",
                 "grp.h",
