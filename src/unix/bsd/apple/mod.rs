@@ -44,6 +44,15 @@ pub type processor_flavor_t = ::c_int;
 pub type thread_flavor_t = natural_t;
 pub type thread_inspect_t = mach_port_t;
 pub type policy_t = ::c_int;
+pub type mach_vm_address_t = u64;
+pub type mach_vm_offset_t = u64;
+pub type mach_vm_size_t = u64;
+pub type vm_map_t = ::mach_port_t;
+pub type mem_entry_name_port_t = ::mach_port_t;
+pub type memory_object_t = ::mach_port_t;
+pub type memory_object_offset_t = ::c_ulonglong;
+pub type vm_inherit_t = ::c_uint;
+pub type vm_prot_t = ::c_int;
 
 pub type iconv_t = *mut ::c_void;
 
@@ -93,7 +102,6 @@ pub type CCCryptorStatus = i32;
 pub type CCRNGStatus = ::CCCryptorStatus;
 
 deprecated_mach! {
-    pub type vm_prot_t = ::c_int;
     pub type vm_size_t = ::uintptr_t;
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
@@ -3318,6 +3326,11 @@ pub const VM_LOADAVG: ::c_int = 2;
 pub const VM_MACHFACTOR: ::c_int = 4;
 pub const VM_SWAPUSAGE: ::c_int = 5;
 pub const VM_MAXID: ::c_int = 6;
+pub const VM_PROT_NONE: ::vm_prot_t = 0x00;
+pub const VM_PROT_READ: ::vm_prot_t = 0x01;
+pub const VM_PROT_WRITE: ::vm_prot_t = 0x02;
+pub const VM_PROT_EXECUTE: ::vm_prot_t = 0x04;
+pub const MEMORY_OBJECT_NULL: ::memory_object_t = 0;
 pub const HW_MACHINE: ::c_int = 1;
 pub const HW_MODEL: ::c_int = 2;
 pub const HW_NCPU: ::c_int = 3;
@@ -4403,6 +4416,20 @@ extern "C" {
     pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
 
     pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;
+
+    pub fn mach_vm_map(
+        target_task: ::vm_map_t,
+        address: *mut ::mach_vm_address_t,
+        size: ::mach_vm_size_t,
+        mask: ::mach_vm_offset_t,
+        flags: ::c_int,
+        object: ::mem_entry_name_port_t,
+        offset: ::memory_object_offset_t,
+        copy: ::boolean_t,
+        cur_protection: ::vm_prot_t,
+        max_protection: ::vm_prot_t,
+        inheritance: ::vm_inherit_t,
+    ) -> ::kern_return_t;
 }
 
 cfg_if! {

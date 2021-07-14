@@ -193,6 +193,7 @@ fn test_apple(target: &str) {
         "mach/mach_init.h",
         "mach/mach_time.h",
         "mach/mach_types.h",
+        "mach/mach_vm.h",
         "mach/thread_act.h",
         "mach/thread_policy.h",
         "malloc/malloc.h",
