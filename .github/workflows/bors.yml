@@ -85,8 +85,6 @@ jobs:
   style_check:
     name: Style check
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: true
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
@@ -155,8 +153,6 @@ jobs:
     name: Docker Switch
     needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: true
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
@@ -232,8 +228,6 @@ jobs:
     needs: build_channels_linux
     runs-on: ubuntu-20.04
     continue-on-error: true
-    strategy:
-      fail-fast: true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
@@ -247,8 +241,6 @@ jobs:
     needs: build_channels_macos
     runs-on: macos-10.15
     continue-on-error: true
-    strategy:
-      fail-fast: true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
@@ -261,8 +253,6 @@ jobs:
     name: Generate documentation
     runs-on: ubuntu-20.04
     needs: docker_linux_tier2
-    strategy:
-      fail-fast: true
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
