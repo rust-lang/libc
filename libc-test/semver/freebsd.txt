@@ -1454,6 +1454,8 @@ kevent
 key_t
 killpg
 kqueue
+kld_isloaded
+kld_load
 labs
 lchflags
 lio_listio
