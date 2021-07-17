@@ -566,6 +566,7 @@ pthread_setname_np
 pututxline
 pwritev2
 qsort_r
+reallocarray
 semid_ds
 seminfo
 setutxent

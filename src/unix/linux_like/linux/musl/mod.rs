@@ -700,6 +700,8 @@ extern "C" {
 
     // Added in `musl` 1.1.20
     pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
+    // Added in `musl` 1.2.2
+    pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
 
 cfg_if! {
