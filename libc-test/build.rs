@@ -943,6 +943,7 @@ fn test_netbsd(target: &str) {
         "semaphore.h",
         "signal.h",
         "string.h",
+        "sys/endian.h",
         "sys/extattr.h",
         "sys/file.h",
         "sys/ioctl.h",

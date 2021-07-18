@@ -1453,6 +1453,9 @@ pub const TIME_OOP: ::c_int = 3;
 pub const TIME_WAIT: ::c_int = 4;
 pub const TIME_ERROR: ::c_int = 5;
 
+pub const LITTLE_ENDIAN: ::c_int = 1234;
+pub const BIG_ENDIAN: ::c_int = 4321;
+
 cfg_if! {
     if #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
                  target_arch = "x86", target_arch = "x86_64"))] {
@@ -2258,6 +2261,24 @@ extern "C" {
         val: u64,
         max: ::size_t,
     ) -> ::c_int;
+
+    pub fn getbootfile() -> *const ::c_char;
+    pub fn getbyteorder() -> ::c_int;
+    pub fn getdiskrawname(
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        name: *const ::c_char,
+    ) -> *const ::c_char;
+    pub fn getdiskcookedname(
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        name: *const ::c_char,
+    ) -> *const ::c_char;
+    pub fn getfsspecname(
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        spec: *const ::c_char,
+    ) -> *const ::c_char;
 }
 
 cfg_if! {

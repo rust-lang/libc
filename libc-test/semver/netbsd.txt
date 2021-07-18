@@ -1088,8 +1088,13 @@ freeifaddrs
 freelocale
 fsid_t
 futimes
+getbootfile
+getbyteorder
+getdiskrawname
+getdistcookedname
 getdomainname
 getdtablesize
+getfsspecname
 getgrent
 getgrent_r
 getgrgid
