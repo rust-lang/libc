@@ -422,6 +422,12 @@ s_no_extra_traits! {
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
     }
+
+    pub struct prop_info {
+        pub name: [::c_char; PROP_NAME_MAX],
+        pub serial: ::c_uint,
+        pub value: [::c_char; PROP_VALUE_MAX],
+    }
 }
 
 cfg_if! {
@@ -2409,7 +2415,8 @@ pub const PF_NFC: ::c_int = AF_NFC;
 pub const PF_VSOCK: ::c_int = AF_VSOCK;
 
 // sys/system_properties.h
-pub const PROP_VALUE_MAX: ::c_int = 92;
+pub const PROP_VALUE_MAX: ::size_t = 92;
+pub const PROP_NAME_MAX: ::size_t = 32;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
@@ -2862,6 +2869,12 @@ extern "C" {
 
     pub fn __system_property_set(__name: *const ::c_char, __value: *const ::c_char) -> ::c_int;
     pub fn __system_property_get(__name: *const ::c_char, __value: *mut ::c_char) -> ::c_int;
+    pub fn __system_property_find(__name: *const ::c_char) -> *const prop_info;
+    pub fn __system_property_find_nth(__n: ::c_uint) -> *const prop_info;
+    pub fn __system_property_foreach(
+        __callback: unsafe extern "C" fn(__pi: *const prop_info, __cookie: *mut ::c_void),
+        __cookie: *mut ::c_void,
+    ) -> ::c_int;
 
     // #include <link.h>
     /// Only available in API Version 21+

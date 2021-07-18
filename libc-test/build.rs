@@ -1658,7 +1658,9 @@ fn test_android(target: &str) {
         // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_syscall" ||
                                            field == "ssi_call_addr" ||
-                                           field == "ssi_arch"))
+                                           field == "ssi_arch")) ||
+        // serial field is a volatile.
+        (struct_ == "prop_info" && field == "serial")
     });
 
     cfg.skip_field(|struct_, field| {
