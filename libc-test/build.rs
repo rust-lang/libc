@@ -1889,16 +1889,6 @@ fn test_freebsd(target: &str) {
             // still be accepted and ignored at runtime.
             "MAP_RENAME" | "MAP_NORESERVE" if Some(10) != freebsd_ver => true,
 
-            // FIXME: There are deprecated - remove in a couple of releases.
-            // These constants were removed in FreeBSD 11 (svn r262489),
-            // and they've never had any legitimate use outside of the
-            // base system anyway.
-            "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "USER_MAXID" => true,
-
-            // This constant was removed in FreeBSD 13 (svn r363622), and never
-            // had any legitimate use outside of the base system anyway.
-            "CTL_P1003_1B_MAXID" => true,
-
             // This was renamed in FreeBSD 12.2 and 13 (r352486).
             "CTL_UNSPEC" | "CTL_SYSCTL" => true,
 
