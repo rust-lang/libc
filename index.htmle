@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <title>libc - Raw FFI bindings to platforms&#39; system libraries</title>
+<link rel="stylesheet" type="text/css" href="normalize.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+    <h1 class="title">libc - Raw FFI bindings to platforms&#39; system libraries</h1>
+    <nav id="TOC"><ul>
+<li><a href="#usage">0.1 Usage</a><ul></ul></li>
+<li><a href="#features">0.2 Features</a><ul></ul></li>
+<li><a href="#rust-version-support">0.3 Rust version support</a><ul></ul></li>
+<li><a href="#platform-support">0.4 Platform support</a><ul>
+<li><a href="#platform-specific-documentation">0.4.1 Platform-specific documentation</a><ul></ul></li></ul></li>
+<li><a href="#license">0.5 License</a><ul></ul></li>
+<li><a href="#contributing">0.6 Contributing</a><ul></ul></li></ul></nav><p><a href="https://github.com/rust-lang/libc/actions"><img src="https://github.com/rust-lang/libc/workflows/CI/badge.svg" alt="GHA Status" /></a> <a href="https://cirrus-ci.com/github/rust-lang/libc"><img src="https://api.cirrus-ci.com/github/rust-lang/libc.svg" alt="Cirrus CI Status" /></a> <a href="https://crates.io/crates/libc"><img src="https://img.shields.io/crates/v/libc.svg" alt="Latest Version" /></a> <a href="https://docs.rs/libc"><img src="https://docs.rs/libc/badge.svg" alt="Documentation" /></a> <img src="https://img.shields.io/crates/l/libc.svg" alt="License" /></p>
+<p><code>libc</code> provides all of the definitions necessary to easily interoperate with C
+code (or “C-like” code) on each of the platforms that Rust supports. This
+includes type definitions (e.g. <code>c_int</code>), constants (e.g. <code>EINVAL</code>) as well as
+function headers (e.g. <code>malloc</code>).</p>
+<p>This crate exports all underlying platform types, functions, and constants under
+the crate root, so all items are accessible as <code>libc::foo</code>. The types and values
+of all the exported APIs match the platform that libc is compiled for.</p>
+<p>More detailed information about the design of this library can be found in its
+<a href="https://github.com/rust-lang/rfcs/blob/master/text/1291-promote-libc.md">associated RFC</a>.</p>
+<h2 id="usage" class="section-header"><a href="#usage">0.1 Usage</a></h2>
+<p>Add the following to your <code>Cargo.toml</code>:</p>
+<div class="example-wrap"><pre class="language-toml">[dependencies]
+libc = &quot;0.2&quot;</pre></div><h2 id="features" class="section-header"><a href="#features">0.2 Features</a></h2>
+<ul>
+<li>
+<p><code>std</code>: by default <code>libc</code> links to the standard library. Disable this
+feature to remove this dependency and be able to use <code>libc</code> in <code>#![no_std]</code>
+crates.</p>
+</li>
+<li>
+<p><code>extra_traits</code>: all <code>struct</code>s implemented in <code>libc</code> are <code>Copy</code> and <code>Clone</code>.
+This feature derives <code>Debug</code>, <code>Eq</code>, <code>Hash</code>, and <code>PartialEq</code>.</p>
+</li>
+<li>
+<p><code>const-extern-fn</code>: Changes some <code>extern fn</code>s into <code>const extern fn</code>s.
+This feature requires a nightly rustc.</p>
+</li>
+<li>
+<p><strong>deprecated</strong>: <code>use_std</code> is deprecated, and is equivalent to <code>std</code>.</p>
+</li>
+</ul>
+<h2 id="rust-version-support" class="section-header"><a href="#rust-version-support">0.3 Rust version support</a></h2>
+<p>The minimum supported Rust toolchain version is <strong>Rust 1.13.0</strong> . APIs requiring
+newer Rust features are only available on newer Rust toolchains:</p>
+<table><thead><tr><th>Feature</th><th>Version</th></tr></thead><tbody>
+<tr><td><code>union</code></td><td>1.19.0</td></tr>
+<tr><td><code>const mem::size_of</code></td><td>1.24.0</td></tr>
+<tr><td><code>repr(align)</code></td><td>1.25.0</td></tr>
+<tr><td><code>extra_traits</code></td><td>1.25.0</td></tr>
+<tr><td><code>core::ffi::c_void</code></td><td>1.30.0</td></tr>
+<tr><td><code>repr(packed(N))</code></td><td>1.33.0</td></tr>
+<tr><td><code>cfg(target_vendor)</code></td><td>1.33.0</td></tr>
+</tbody></table>
+<h2 id="platform-support" class="section-header"><a href="#platform-support">0.4 Platform support</a></h2>
+<p><a href="https://rust-lang.github.io/libc/#platform-specific-documentation">Platform-specific documentation (master branch)</a>.</p>
+<p>See
+<a href="https://github.com/rust-lang/libc/blob/master/ci/build.sh"><code>ci/build.sh</code></a>
+for the platforms on which <code>libc</code> is guaranteed to build for each Rust
+toolchain. The test-matrix at <a href="https://github.com/rust-lang/libc/actions">GitHub Actions</a> and <a href="https://cirrus-ci.com/github/rust-lang/libc">Cirrus CI</a> show the
+platforms in which <code>libc</code> tests are run.</p>
+<h3 id="platform-specific-documentation" class="section-header"><a href="#platform-specific-documentation">0.4.1 Platform-specific documentation</a></h3>
+<ul>
+<li><a href="aarch64-fuchsia/doc/libc/index.html">aarch64-fuchsia</a></li>
+<li><a href="aarch64-linux-android/doc/libc/index.html">aarch64-linux-android</a></li>
+<li><a href="aarch64-pc-windows-msvc/doc/libc/index.html">aarch64-pc-windows-msvc</a></li>
+<li><a href="aarch64-unknown-freebsd/doc/libc/index.html">aarch64-unknown-freebsd</a></li>
+<li><a href="aarch64-unknown-hermit/doc/libc/index.html">aarch64-unknown-hermit</a></li>
+<li><a href="aarch64-unknown-linux-gnu/doc/libc/index.html">aarch64-unknown-linux-gnu</a></li>
+<li><a href="aarch64-unknown-linux-musl/doc/libc/index.html">aarch64-unknown-linux-musl</a></li>
+<li><a href="aarch64-unknown-netbsd/doc/libc/index.html">aarch64-unknown-netbsd</a></li>
+<li><a href="aarch64-unknown-openbsd/doc/libc/index.html">aarch64-unknown-openbsd</a></li>
+<li><a href="aarch64-wrs-vxworks/doc/libc/index.html">aarch64-wrs-vxworks</a></li>
+<li><a href="arm-linux-androideabi/doc/libc/index.html">arm-linux-androideabi</a></li>
+<li><a href="arm-unknown-linux-gnueabi/doc/libc/index.html">arm-unknown-linux-gnueabi</a></li>
+<li><a href="arm-unknown-linux-gnueabihf/doc/libc/index.html">arm-unknown-linux-gnueabihf</a></li>
+<li><a href="arm-unknown-linux-musleabi/doc/libc/index.html">arm-unknown-linux-musleabi</a></li>
+<li><a href="arm-unknown-linux-musleabihf/doc/libc/index.html">arm-unknown-linux-musleabihf</a></li>
+<li><a href="armebv7r-none-eabi/doc/libc/index.html">armebv7r-none-eabi</a></li>
+<li><a href="armebv7r-none-eabihf/doc/libc/index.html">armebv7r-none-eabihf</a></li>
+<li><a href="armv5te-unknown-linux-gnueabi/doc/libc/index.html">armv5te-unknown-linux-gnueabi</a></li>
+<li><a href="armv5te-unknown-linux-musleabi/doc/libc/index.html">armv5te-unknown-linux-musleabi</a></li>
+<li><a href="armv7-linux-androideabi/doc/libc/index.html">armv7-linux-androideabi</a></li>
+<li><a href="armv7-unknown-linux-gnueabihf/doc/libc/index.html">armv7-unknown-linux-gnueabihf</a></li>
+<li><a href="armv7-unknown-linux-musleabihf/doc/libc/index.html">armv7-unknown-linux-musleabihf</a></li>
+<li><a href="armv7-wrs-vxworks-eabihf/doc/libc/index.html">armv7-wrs-vxworks-eabihf</a></li>
+<li><a href="armv7r-none-eabi/doc/libc/index.html">armv7r-none-eabi</a></li>
+<li><a href="armv7r-none-eabihf/doc/libc/index.html">armv7r-none-eabihf</a></li>
+<li><a href="hexagon-unknown-linux-musl/doc/libc/index.html">hexagon-unknown-linux-musl</a></li>
+<li><a href="i586-pc-windows-msvc/doc/libc/index.html">i586-pc-windows-msvc</a></li>
+<li><a href="i586-unknown-linux-gnu/doc/libc/index.html">i586-unknown-linux-gnu</a></li>
+<li><a href="i586-unknown-linux-musl/doc/libc/index.html">i586-unknown-linux-musl</a></li>
+<li><a href="i686-linux-android/doc/libc/index.html">i686-linux-android</a></li>
+<li><a href="i686-pc-windows-gnu/doc/libc/index.html">i686-pc-windows-gnu</a></li>
+<li><a href="i686-pc-windows-msvc/doc/libc/index.html">i686-pc-windows-msvc</a></li>
+<li><a href="i686-unknown-freebsd/doc/libc/index.html">i686-unknown-freebsd</a></li>
+<li><a href="i686-unknown-haiku/doc/libc/index.html">i686-unknown-haiku</a></li>
+<li><a href="i686-unknown-linux-gnu/doc/libc/index.html">i686-unknown-linux-gnu</a></li>
+<li><a href="i686-unknown-linux-musl/doc/libc/index.html">i686-unknown-linux-musl</a></li>
+<li><a href="i686-unknown-netbsd/doc/libc/index.html">i686-unknown-netbsd</a></li>
+<li><a href="i686-unknown-openbsd/doc/libc/index.html">i686-unknown-openbsd</a></li>
+<li><a href="i686-wrs-vxworks/doc/libc/index.html">i686-wrs-vxworks</a></li>
+<li><a href="mips-unknown-linux-gnu/doc/libc/index.html">mips-unknown-linux-gnu</a></li>
+<li><a href="mips-unknown-linux-musl/doc/libc/index.html">mips-unknown-linux-musl</a></li>
+<li><a href="mips-unknown-linux-uclibc/doc/libc/index.html">mips-unknown-linux-uclibc</a></li>
+<li><a href="mips64-unknown-linux-gnuabi64/doc/libc/index.html">mips64-unknown-linux-gnuabi64</a></li>
+<li><a href="mips64-unknown-linux-muslabi64/doc/libc/index.html">mips64-unknown-linux-muslabi64</a></li>
+<li><a href="mips64el-unknown-linux-gnuabi64/doc/libc/index.html">mips64el-unknown-linux-gnuabi64</a></li>
+<li><a href="mips64el-unknown-linux-muslabi64/doc/libc/index.html">mips64el-unknown-linux-muslabi64</a></li>
+<li><a href="mipsel-sony-psp/doc/libc/index.html">mipsel-sony-psp</a></li>
+<li><a href="mipsel-unknown-linux-gnu/doc/libc/index.html">mipsel-unknown-linux-gnu</a></li>
+<li><a href="mipsel-unknown-linux-musl/doc/libc/index.html">mipsel-unknown-linux-musl</a></li>
+<li><a href="mipsel-unknown-linux-uclibc/doc/libc/index.html">mipsel-unknown-linux-uclibc</a></li>
+<li><a href="nvptx64-nvidia-cuda/doc/libc/index.html">nvptx64-nvidia-cuda</a></li>
+<li><a href="powerpc-unknown-linux-gnu/doc/libc/index.html">powerpc-unknown-linux-gnu</a></li>
+<li><a href="powerpc-unknown-linux-gnuspe/doc/libc/index.html">powerpc-unknown-linux-gnuspe</a></li>
+<li><a href="powerpc-unknown-netbsd/doc/libc/index.html">powerpc-unknown-netbsd</a></li>
+<li><a href="powerpc-wrs-vxworks/doc/libc/index.html">powerpc-wrs-vxworks</a></li>
+<li><a href="powerpc-wrs-vxworks-spe/doc/libc/index.html">powerpc-wrs-vxworks-spe</a></li>
+<li><a href="powerpc64-unknown-freebsd/doc/libc/index.html">powerpc64-unknown-freebsd</a></li>
+<li><a href="powerpc64-unknown-linux-gnu/doc/libc/index.html">powerpc64-unknown-linux-gnu</a></li>
+<li><a href="powerpc64-wrs-vxworks/doc/libc/index.html">powerpc64-wrs-vxworks</a></li>
+<li><a href="powerpc64le-unknown-linux-gnu/doc/libc/index.html">powerpc64le-unknown-linux-gnu</a></li>
+<li><a href="riscv32gc-unknown-linux-gnu/doc/libc/index.html">riscv32gc-unknown-linux-gnu</a></li>
+<li><a href="riscv32i-unknown-none-elf/doc/libc/index.html">riscv32i-unknown-none-elf</a></li>
+<li><a href="riscv32imac-unknown-none-elf/doc/libc/index.html">riscv32imac-unknown-none-elf</a></li>
+<li><a href="riscv32imc-unknown-none-elf/doc/libc/index.html">riscv32imc-unknown-none-elf</a></li>
+<li><a href="riscv64gc-unknown-linux-gnu/doc/libc/index.html">riscv64gc-unknown-linux-gnu</a></li>
+<li><a href="riscv64gc-unknown-none-elf/doc/libc/index.html">riscv64gc-unknown-none-elf</a></li>
+<li><a href="riscv64imac-unknown-none-elf/doc/libc/index.html">riscv64imac-unknown-none-elf</a></li>
+<li><a href="s390x-unknown-linux-gnu/doc/libc/index.html">s390x-unknown-linux-gnu</a></li>
+<li><a href="s390x-unknown-linux-musl/doc/libc/index.html">s390x-unknown-linux-musl</a></li>
+<li><a href="sparc-unknown-linux-gnu/doc/libc/index.html">sparc-unknown-linux-gnu</a></li>
+<li><a href="sparc64-unknown-linux-gnu/doc/libc/index.html">sparc64-unknown-linux-gnu</a></li>
+<li><a href="sparc64-unknown-netbsd/doc/libc/index.html">sparc64-unknown-netbsd</a></li>
+<li><a href="sparcv9-sun-solaris/doc/libc/index.html">sparcv9-sun-solaris</a></li>
+<li><a href="thumbv6m-none-eabi/doc/libc/index.html">thumbv6m-none-eabi</a></li>
+<li><a href="thumbv7em-none-eabi/doc/libc/index.html">thumbv7em-none-eabi</a></li>
+<li><a href="thumbv7em-none-eabihf/doc/libc/index.html">thumbv7em-none-eabihf</a></li>
+<li><a href="thumbv7m-none-eabi/doc/libc/index.html">thumbv7m-none-eabi</a></li>
+<li><a href="thumbv7neon-linux-androideabi/doc/libc/index.html">thumbv7neon-linux-androideabi</a></li>
+<li><a href="thumbv7neon-unknown-linux-gnueabihf/doc/libc/index.html">thumbv7neon-unknown-linux-gnueabihf</a></li>
+<li><a href="wasm32-unknown-emscripten/doc/libc/index.html">wasm32-unknown-emscripten</a></li>
+<li><a href="wasm32-unknown-unknown/doc/libc/index.html">wasm32-unknown-unknown</a></li>
+<li><a href="wasm32-wasi/doc/libc/index.html">wasm32-wasi</a></li>
+<li><a href="x86_64-fortanix-unknown-sgx/doc/libc/index.html">x86_64-fortanix-unknown-sgx</a></li>
+<li><a href="x86_64-fuchsia/doc/libc/index.html">x86_64-fuchsia</a></li>
+<li><a href="x86_64-linux-android/doc/libc/index.html">x86_64-linux-android</a></li>
+<li><a href="x86_64-pc-solaris/doc/libc/index.html">x86_64-pc-solaris</a></li>
+<li><a href="x86_64-pc-windows-gnu/doc/libc/index.html">x86_64-pc-windows-gnu</a></li>
+<li><a href="x86_64-pc-windows-msvc/doc/libc/index.html">x86_64-pc-windows-msvc</a></li>
+<li><a href="x86_64-unknown-dragonfly/doc/libc/index.html">x86_64-unknown-dragonfly</a></li>
+<li><a href="x86_64-unknown-freebsd/doc/libc/index.html">x86_64-unknown-freebsd</a></li>
+<li><a href="x86_64-unknown-haiku/doc/libc/index.html">x86_64-unknown-haiku</a></li>
+<li><a href="x86_64-unknown-hermit/doc/libc/index.html">x86_64-unknown-hermit</a></li>
+<li><a href="x86_64-unknown-illumos/doc/libc/index.html">x86_64-unknown-illumos</a></li>
+<li><a href="x86_64-unknown-l4re-uclibc/doc/libc/index.html">x86_64-unknown-l4re-uclibc</a></li>
+<li><a href="x86_64-unknown-linux-gnu/doc/libc/index.html">x86_64-unknown-linux-gnu</a></li>
+<li><a href="x86_64-unknown-linux-gnux32/doc/libc/index.html">x86_64-unknown-linux-gnux32</a></li>
+<li><a href="x86_64-unknown-linux-musl/doc/libc/index.html">x86_64-unknown-linux-musl</a></li>
+<li><a href="x86_64-unknown-netbsd/doc/libc/index.html">x86_64-unknown-netbsd</a></li>
+<li><a href="x86_64-unknown-openbsd/doc/libc/index.html">x86_64-unknown-openbsd</a></li>
+<li><a href="x86_64-unknown-redox/doc/libc/index.html">x86_64-unknown-redox</a></li>
+<li><a href="x86_64-wrs-vxworks/doc/libc/index.html">x86_64-wrs-vxworks</a></li>
+</ul>
+<h2 id="license" class="section-header"><a href="#license">0.5 License</a></h2>
+<p>This project is licensed under either of</p>
+<ul>
+<li>
+<p><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>
+(<a href="https://github.com/rust-lang/libc/blob/master/LICENSE-APACHE">LICENSE-APACHE</a>)</p>
+</li>
+<li>
+<p><a href="https://opensource.org/licenses/MIT">MIT License</a>
+(<a href="https://github.com/rust-lang/libc/blob/master/LICENSE-MIT">LICENSE-MIT</a>)</p>
+</li>
+</ul>
+<p>at your option.</p>
+<h2 id="contributing" class="section-header"><a href="#contributing">0.6 Contributing</a></h2>
+<p>We welcome all people who want to contribute. Please see the <a href="https://github.com/rust-lang/libc/blob/master/CONTRIBUTING.md">contributing
+instructions</a> for more information.</p>
+<p>Contributions in any form (issues, pull requests, etc.) to this project
+must adhere to Rust’s <a href="https://www.rust-lang.org/policies/code-of-conduct">Code of Conduct</a>.</p>
+<p>Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in <code>libc</code> by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.</p>
+
+    
+</body>
+</html>

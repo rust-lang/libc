@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;unix&#x2F;linux_like&#x2F;linux&#x2F;uclibc&#x2F;x86_64&#x2F;l4re.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>l4re.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../../../../../storage.js"></script><script src="../../../../../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../../../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../../../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../../../../libc/index.html'><div class='logo-container rust-logo'><img src='../../../../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+</pre><pre class="rust">
+<span class="doccomment">/// L4Re specifics</span>
+<span class="doccomment">/// This module contains definitions required by various L4Re libc backends.</span>
+<span class="doccomment">/// Some of them are formally not part of the libc, but are a dependency of the</span>
+<span class="doccomment">/// libc and hence we should provide them here.</span>
+
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">l4_umword_t</span> <span class="op">=</span> <span class="ident">::c_ulong</span>; <span class="comment">// Unsigned machine word.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">pthread_t</span> <span class="op">=</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">::c_void</span>;
+
+<span class="macro">s!</span> {
+    <span class="doccomment">/// CPU sets.</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">l4_sched_cpu_set_t</span> {
+        <span class="comment">// from the L4Re docs</span>
+        <span class="doccomment">/// Combination of granularity and offset.</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// The granularity defines how many CPUs each bit in map describes.</span>
+        <span class="doccomment">/// The offset is the numer of the first CPU described by the first</span>
+        <span class="doccomment">/// bit in the bitmap.</span>
+        <span class="doccomment">/// offset must be a multiple of 2^graularity.</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// | MSB              |                 LSB |</span>
+        <span class="doccomment">/// | ---------------- | ------------------- |</span>
+        <span class="doccomment">/// | 8bit granularity | 24bit offset ..     |</span>
+        <span class="ident">gran_offset</span>: <span class="ident">l4_umword_t</span> ,
+        <span class="doccomment">/// Bitmap of CPUs.</span>
+        <span class="ident">map</span>: <span class="ident">l4_umword_t</span> ,
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;l4re&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_debug_implementations</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">pthread_attr_t</span> {
+    <span class="kw">pub</span> <span class="ident">__detachstate</span>: <span class="ident">::c_int</span>,
+    <span class="kw">pub</span> <span class="ident">__schedpolicy</span>: <span class="ident">::c_int</span>,
+    <span class="kw">pub</span> <span class="ident">__schedparam</span>: <span class="kw">super</span><span class="ident">::__sched_param</span>,
+    <span class="kw">pub</span> <span class="ident">__inheritsched</span>: <span class="ident">::c_int</span>,
+    <span class="kw">pub</span> <span class="ident">__scope</span>: <span class="ident">::c_int</span>,
+    <span class="kw">pub</span> <span class="ident">__guardsize</span>: <span class="ident">::size_t</span>,
+    <span class="kw">pub</span> <span class="ident">__stackaddr_set</span>: <span class="ident">::c_int</span>,
+    <span class="kw">pub</span> <span class="ident">__stackaddr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">::c_void</span>, <span class="comment">// better don&#39;t use it</span>
+    <span class="kw">pub</span> <span class="ident">__stacksize</span>: <span class="ident">::size_t</span>,
+    <span class="comment">// L4Re specifics</span>
+    <span class="kw">pub</span> <span class="ident">affinity</span>: <span class="ident">l4_sched_cpu_set_t</span>,
+    <span class="kw">pub</span> <span class="ident">create_flags</span>: <span class="ident">::c_uint</span>,
+}
+
+<span class="comment">// L4Re requires a min stack size of 64k; that isn&#39;t defined in uClibc, but</span>
+<span class="comment">// somewhere in the core libraries. uClibc wants 16k, but that&#39;s not enough.</span>
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PTHREAD_STACK_MIN</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">65536</span>;
+</pre></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../../../../" data-current-crate="libc" data-search-index-js="../../../../../../../search-index.js" data-search-js="../../../../../../../search.js"></div>
+    <script src="../../../../../../../main.js"></script><script src="../../../../../../../source-script.js"></script><script src="../../../../../../../source-files.js"></script>
+</body></html>
