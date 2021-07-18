@@ -377,6 +377,10 @@ cfg_if! {
         #[cfg_attr(feature = "rustc-dep-of-std",
                    link(name = "c", cfg(not(target_feature = "crt-static"))))]
         extern {}
+    } else if #[cfg(target_env = "aix")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -1459,6 +1463,9 @@ cfg_if! {
     } else if #[cfg(target_os = "redox")] {
         mod redox;
         pub use self::redox::*;
+    } else if #[cfg(target_os = "aix")] {
+        mod aix;
+        pub use self::aix::*;
     } else {
         // Unknown target_os
     }
