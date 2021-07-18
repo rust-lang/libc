@@ -645,6 +645,10 @@ MADV_PROTECT
 MADV_RANDOM
 MADV_SEQUENTIAL
 MADV_WILLNEED
+MALLOCX_ARENA
+MALLOCX_ALIGN
+MALLOCX_TCACHE
+MALLOCX_ZERO
 MAP_COPY
 MAP_EXCL
 MAP_FILE
@@ -1361,6 +1365,7 @@ clock_settime
 cmsgcred
 cmsghdr
 daemon
+dallocx
 difftime
 dirfd
 dl_iterate_phdr
@@ -1393,6 +1398,12 @@ fdatasync
 fdopendir
 fexecve
 fflags_t
+ffs
+ffsl
+ffsll
+fls
+flsl
+flsll
 fmemopen
 forkpty
 freeifaddrs
@@ -1462,6 +1473,10 @@ login_tty
 lutimes
 lwpid_t
 madvise
+mallctl
+mallctlbymib
+mallctlnametomib
+mallocx
 memmem
 memrchr
 memset_s
@@ -1494,6 +1509,7 @@ msgqnum_t
 msgrcv
 msgsnd
 msqid_ds
+nallocx
 newlocale
 nice
 nl_item
@@ -1586,6 +1602,7 @@ pututxline
 pwritev
 qsort
 querylocale
+rallocx
 rand
 readdir_r
 readlinkat
@@ -1604,9 +1621,11 @@ regmatch_t
 regoff_t
 rtprio
 rtprio_thread
+sallocx
 sched_getscheduler
 sched_param
 sched_setscheduler
+sdallocx
 seekdir
 sem_close
 sem_destroy
@@ -1673,4 +1692,5 @@ utmpx
 vm_size_t
 wait4
 waitid
+xallocx
 xucred
