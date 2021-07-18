@@ -1,3 +1,10 @@
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        use core::cmp::{Eq, PartialEq};
+        use core::iter::Iterator;
+    }
+}
+
 pub type pthread_t = c_ulong;
 pub type __priority_which_t = ::c_uint;
 pub type __rlimit_resource_t = ::c_uint;
@@ -479,7 +486,7 @@ cfg_if! {
         impl Eq for utmpx {}
 
         impl ::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt<'a>(&self, f: &mut ::fmt::Formatter<'a>) -> ::fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_type", &self.ut_type)
                     .field("ut_pid", &self.ut_pid)

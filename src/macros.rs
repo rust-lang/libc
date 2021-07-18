@@ -73,7 +73,7 @@ macro_rules! s {
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            #[cfg_attr(feature = "extra_traits", derive(core::fmt::Debug, core::cmp::Eq, core::hash::Hash, core::cmp::PartialEq))]
             #[allow(deprecated)]
             $(#[$attr])*
             pub struct $i { $($field)* }
@@ -127,7 +127,7 @@ macro_rules! s_no_extra_traits {
 macro_rules! e {
     ($($(#[$attr:meta])* pub enum $i:ident { $($field:tt)* })*) => ($(
         __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            #[cfg_attr(feature = "extra_traits", derive(core::fmt::Debug, core::cmp::Eq, core::hash::Hash, core::cmp::PartialEq))]
             $(#[$attr])*
             pub enum $i { $($field)* }
         }
@@ -142,7 +142,7 @@ macro_rules! e {
 macro_rules! s_paren {
     ($($(#[$attr:meta])* pub struct $i:ident ( $($field:tt)* ); )* ) => ($(
         __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            #[cfg_attr(feature = "extra_traits", derive(core::fmt::Debug, core::cmp::Eq, core::hash::Hash, core::cmp::PartialEq))]
             $(#[$attr])*
             pub struct $i ( $($field)* );
         }

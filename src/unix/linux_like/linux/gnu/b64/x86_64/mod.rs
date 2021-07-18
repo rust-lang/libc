@@ -1,5 +1,12 @@
 //! x86_64-specific definitions for 64-bit linux-like values
 
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        use core::cmp::{Eq, PartialEq};
+        use core::iter::Iterator;
+    }
+}
+
 pub type c_char = i8;
 pub type wchar_t = i32;
 pub type nlink_t = u64;
@@ -332,7 +339,7 @@ cfg_if! {
         impl Eq for user_fpregs_struct {}
 
         impl ::fmt::Debug for user_fpregs_struct {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt<'a>(&self, f: &mut ::fmt::Formatter<'a>) -> ::fmt::Result {
                 f.debug_struct("user_fpregs_struct")
                     .field("cwd", &self.cwd)
                     .field("ftw", &self.ftw)
@@ -377,7 +384,7 @@ cfg_if! {
         impl Eq for ucontext_t {}
 
         impl ::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt<'a>(&self, f: &mut ::fmt::Formatter<'a>) -> ::fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_flags", &self.uc_flags)
                     .field("uc_link", &self.uc_link)
