@@ -331,6 +331,12 @@ f! {
 
 extern "C" {
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
+    pub fn __system_property_wait(
+        pi: *const ::prop_info,
+        __old_serial: u32,
+        __new_serial_ptr: *mut u32,
+        __relative_timeout: *const ::timespec,
+    ) -> bool;
 }
 
 cfg_if! {

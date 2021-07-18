@@ -1621,6 +1621,8 @@ PRIO_PGRP
 PRIO_PROCESS
 PRIO_USER
 PROC_SUPER_MAGIC
+PROP_NAME_MAX
+PROP_VALUE_MAX
 PROT_EXEC
 PROT_GROWSDOWN
 PROT_GROWSUP
@@ -2562,6 +2564,11 @@ __kernel_pid_t
 __sched_cpualloc
 __sched_cpucount
 __sched_cpufree
+__system_property_find
+__system_property_find_nth
+__system_property_foreach
+__system_property_get
+__system_property_set
 _exit
 abort
 accept
@@ -2939,6 +2946,7 @@ prlimit
 prlimit64
 process_vm_readv
 process_vm_writev
+prop_info
 protoent
 pselect
 pthread_atfork
