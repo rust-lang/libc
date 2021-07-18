@@ -1714,6 +1714,9 @@ extern "C" {
         addr: *mut ::sockaddr,
         addrlen: ::c_int,
     ) -> ::c_int;
+
+    pub fn kld_isloaded(name: *const ::c_char) -> ::c_int;
+    pub fn kld_load(name: *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {
