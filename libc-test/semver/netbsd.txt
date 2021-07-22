@@ -1291,7 +1291,9 @@ strcasecmp
 strcasestr
 strncasecmp
 strndup
+strpct
 strsignal
+strspct
 sync
 syscall
 sysctl
