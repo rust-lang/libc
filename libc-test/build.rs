@@ -1630,6 +1630,7 @@ fn test_android(target: &str) {
             // We skip the test here since here _GNU_SOURCE is defined, and
             // test the XSI version below.
             "strerror_r" => true,
+            "reallocarray" => true,
 
             _ => false,
         }
@@ -2874,6 +2875,8 @@ fn test_linux(target: &str) {
 
             // Needs glibc 2.33 or later.
             "mallinfo2" => true,
+
+            "reallocarray" if musl => true,
 
             _ => false,
         }

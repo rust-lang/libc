@@ -3044,6 +3044,7 @@ readlink
 readlinkat
 readv
 realloc
+reallocarray
 realpath
 recv
 recvfrom
