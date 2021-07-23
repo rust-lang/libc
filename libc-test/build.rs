@@ -1728,6 +1728,7 @@ fn test_freebsd(target: &str) {
                 "link.h",
                 "locale.h",
                 "machine/reg.h",
+                "malloc_np.h",
                 "mqueue.h",
                 "net/bpf.h",
                 "net/if.h",

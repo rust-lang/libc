@@ -1301,6 +1301,8 @@ pub const RFLINUXTHPN: ::c_int = 65536;
 pub const RFTSIGZMB: ::c_int = 524288;
 pub const RFSPAWN: ::c_int = 2147483648;
 
+pub const MALLOCX_ZERO: ::c_int = 0x40;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -1338,6 +1340,18 @@ f! {
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
             as ::c_uint
+    }
+
+    pub fn MALLOCX_ALIGN(lg: ::c_uint) -> ::c_int {
+        ffsl(lg as ::c_long - 1)
+    }
+
+    pub {const} fn MALLOCX_TCACHE(tc: ::c_int) -> ::c_int {
+        (tc + 2) << 8 as ::c_int
+    }
+
+    pub {const} fn MALLOCX_ARENA(a: ::c_int) -> ::c_int {
+        (a + 1) << 20 as ::c_int
     }
 
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
@@ -1695,6 +1709,47 @@ extern "C" {
     pub fn cap_rights_contains(big: *const cap_rights_t, little: *const cap_rights_t) -> bool;
 
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
+
+    pub fn ffs(value: ::c_int) -> ::c_int;
+    pub fn ffsl(value: ::c_long) -> ::c_int;
+    pub fn ffsll(value: ::c_longlong) -> ::c_int;
+    pub fn fls(value: ::c_int) -> ::c_int;
+    pub fn flsl(value: ::c_long) -> ::c_int;
+    pub fn flsll(value: ::c_longlong) -> ::c_int;
+    pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
+    pub fn malloc_stats_print(
+        write_cb: unsafe extern "C" fn(*mut ::c_void, *const ::c_char),
+        cbopaque: *mut ::c_void,
+        opt: *const ::c_char,
+    );
+    pub fn mallctl(
+        name: *const ::c_char,
+        oldp: *mut ::c_void,
+        oldlenp: *mut ::size_t,
+        newp: *mut ::c_void,
+        newlen: ::size_t,
+    ) -> ::c_int;
+    pub fn mallctlnametomib(
+        name: *const ::c_char,
+        mibp: *mut ::size_t,
+        miplen: *mut ::size_t,
+    ) -> ::c_int;
+    pub fn mallctlbymib(
+        mib: *const ::size_t,
+        mible: ::size_t,
+        oldp: *mut ::c_void,
+        oldlenp: *mut ::size_t,
+        newp: *mut ::c_void,
+        newlen: ::size_t,
+    ) -> ::c_int;
+    pub fn mallocx(size: ::size_t, flags: ::c_int) -> *mut ::c_void;
+    pub fn rallocx(ptr: *mut ::c_void, size: ::size_t, flags: ::c_int) -> *mut ::c_void;
+    pub fn xallocx(ptr: *mut ::c_void, size: ::size_t, extra: ::size_t, flags: ::c_int)
+        -> ::size_t;
+    pub fn sallocx(ptr: *const ::c_void, flags: ::c_int) -> ::size_t;
+    pub fn dallocx(ptr: *mut ::c_void, flags: ::c_int);
+    pub fn sdallocx(ptr: *mut ::c_void, size: ::size_t, flags: ::c_int);
+    pub fn nallocx(size: ::size_t, flags: ::c_int) -> ::size_t;
 }
 
 #[link(name = "util")]
