@@ -2294,6 +2294,10 @@ extern "C" {
         denominator: ::intmax_t,
         precision: ::size_t,
     ) -> *mut ::c_char;
+    #[link_name = "__login50"]
+    pub fn login(ut: *const utmp);
+    pub fn logout(line: *const ::c_char);
+    pub fn logwtmp(line: *const ::c_char, name: *const ::c_char, host: *const ::c_char);
 }
 
 cfg_if! {
