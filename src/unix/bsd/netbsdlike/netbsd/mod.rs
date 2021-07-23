@@ -2279,6 +2279,21 @@ extern "C" {
         buflen: ::size_t,
         spec: *const ::c_char,
     ) -> *const ::c_char;
+
+    pub fn strpct(
+        buf: *mut ::c_char,
+        bufsiz: ::size_t,
+        numerator: ::uintmax_t,
+        denominator: ::uintmax_t,
+        precision: ::size_t,
+    ) -> *mut ::c_char;
+    pub fn strspct(
+        buf: *mut ::c_char,
+        bufsiz: ::size_t,
+        numerator: ::intmax_t,
+        denominator: ::intmax_t,
+        precision: ::size_t,
+    ) -> *mut ::c_char;
 }
 
 cfg_if! {
