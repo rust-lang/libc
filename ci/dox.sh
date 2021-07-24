@@ -51,10 +51,10 @@ while read -r target; do
 
     # If cargo doc fails, then try with unstable feature:
     if ! cargo doc --target "${target}" \
-        --no-default-features --features extra_traits ; then
+        --no-default-features --features const-extern-fn,extra_traits ; then
         cargo doc --target "${target}" \
         -Z build-std=core,alloc \
-        --no-default-features --features extra_traits
+        --no-default-features --features const-extern-fn,extra_traits
     fi
 
     mkdir -p "${TARGET_DOC_DIR}/${target}"
