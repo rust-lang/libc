@@ -1155,6 +1155,9 @@ lchflags
 lio_listio
 localeconv_l
 lockf
+login
+logout
+logwtmp
 login_tty
 lutimes
 lwpid_t
