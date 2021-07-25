@@ -4416,6 +4416,7 @@ extern "C" {
     pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
 
     pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;
+    pub fn _NSGetEnviron() -> *mut *mut *mut ::c_char;
 
     pub fn mach_vm_map(
         target_task: ::vm_map_t,
