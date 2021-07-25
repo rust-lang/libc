@@ -468,6 +468,29 @@ s! {
     pub struct sched_param {
         pub sched_priority: ::c_int,
     }
+
+    pub struct kinfo_vmentry {
+        pub kve_start: u64,
+        pub kve_end: u64,
+        pub kve_offset: u64,
+        pub kve_type: u32,
+        pub kve_flags: u32,
+        pub kve_count: u32,
+        pub kve_wired_count: u32,
+        pub kve_advice: u32,
+        pub kve_attributes: u32,
+        pub kve_protection: u32,
+        pub kve_max_protection: u32,
+        pub kve_ref_count: u32,
+        pub kve_inheritance: u32,
+        pub kve_vn_fileid: u64,
+        pub kve_vn_size: u64,
+        pub kve_vn_fsid: u64,
+        pub kve_vn_rdev: u64,
+        pub kve_vn_type: u32,
+        pub kve_vn_mode: u32,
+        pub kve_path: [[::c_char; 32]; 32],
+    }
 }
 
 s_no_extra_traits! {
@@ -2298,6 +2321,8 @@ extern "C" {
     pub fn login(ut: *const utmp);
     pub fn logout(line: *const ::c_char);
     pub fn logwtmp(line: *const ::c_char, name: *const ::c_char, host: *const ::c_char);
+
+    pub fn kinfo_getvmmap(pid: ::pid_t, cntp: *mut ::size_t) -> *mut kinfo_vmentry;
 }
 
 cfg_if! {
