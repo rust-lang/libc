@@ -384,6 +384,23 @@ s! {
         pub dlpi_phdr: *const Elf_Phdr,
         pub dlpi_phnum: Elf_Half,
     }
+
+    // sys/sysctl.h
+    pub struct kinfo_vmentry {
+        pub kve_start: ::c_ulong,
+        pub kve_end: ::c_ulong,
+        pub kve_guard: ::c_ulong,
+        pub kve_fspace: ::c_ulong,
+        pub kve_fspace_augment: ::c_ulong,
+        pub kve_offset: u64,
+        pub kve_wired_count: ::c_int,
+        pub kve_etype: ::c_int,
+        pub kve_protection: ::c_int,
+        pub kve_max_protection: ::c_int,
+        pub kve_advice: ::c_int,
+        pub kve_inheritance: ::c_int,
+        pub kve_flags: u8,
+    }
 }
 
 impl siginfo_t {
