@@ -1146,6 +1146,8 @@ ipc_perm
 kevent
 key_t
 killpg
+kinfo_vmentry
+kinfo_getvmmap
 kqueue
 kqueue1
 labs
