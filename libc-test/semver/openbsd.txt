@@ -962,6 +962,7 @@ iso_args
 kevent
 key_t
 killpg
+kinfo_vmentry
 kqueue
 labs
 lastlog
