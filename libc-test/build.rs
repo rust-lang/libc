@@ -26,6 +26,13 @@ fn do_cc() {
     if target.contains("android") || target.contains("linux") {
         cc::Build::new().file("src/errqueue.c").compile("errqueue");
     }
+    if target.contains("linux")
+        || target.contains("l4re")
+        || target.contains("android")
+        || target.contains("emscripten")
+    {
+        cc::Build::new().file("src/sigrt.c").compile("sigrt");
+    }
 }
 
 fn do_ctest() {
