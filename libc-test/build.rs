@@ -1786,6 +1786,7 @@ fn test_freebsd(target: &str) {
                 "sys/ucontext.h",
                 "sys/uio.h",
                 "sys/un.h",
+                "sys/user.h",
                 "sys/utsname.h",
                 "sys/wait.h",
                 "syslog.h",
@@ -2016,6 +2017,8 @@ fn test_freebsd(target: &str) {
             ("umutex", "m_owner") => true,
             // c_has_waiters field is a volatile int32_t
             ("ucond", "c_has_waiters") => true,
+            // is PATH_MAX long but tests can't accept multi array as equivalent.
+            ("kinfo_vmentry", "kve_path") => true,
 
             _ => false,
         }

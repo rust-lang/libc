@@ -1464,6 +1464,7 @@ jail_set
 kevent
 key_t
 killpg
+kinfo_getvmmap
 kqueue
 kld_isloaded
 kld_load

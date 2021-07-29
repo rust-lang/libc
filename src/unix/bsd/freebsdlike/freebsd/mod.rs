@@ -180,6 +180,42 @@ s! {
         b_refcount: ::c_int,
         b_destroying: ::c_int,
     }
+
+    pub struct kinfo_vmentry {
+        pub kve_structsize: ::c_int,
+        pub kve_type: ::c_int,
+        pub kve_start: u64,
+        pub kve_end: u64,
+        pub kve_offset: u64,
+        pub kve_vn_fileid: u64,
+        #[cfg(not(freebsd11))]
+        pub kve_vn_fsid_freebsd11: u32,
+        #[cfg(freebsd11)]
+        pub kve_vn_fsid: u32,
+        pub kve_flags: ::c_int,
+        pub kve_resident: ::c_int,
+        pub kve_private_resident: ::c_int,
+        pub kve_protection: ::c_int,
+        pub kve_ref_count: ::c_int,
+        pub kve_shadow_count: ::c_int,
+        pub kve_vn_type: ::c_int,
+        pub kve_vn_size: u64,
+        #[cfg(not(freebsd11))]
+        pub kve_vn_rdev_freebsd11: u32,
+        #[cfg(freebsd11)]
+        pub kve_vn_rdev: u32,
+        pub kve_vn_mode: u16,
+        pub kve_status: u16,
+        #[cfg(not(freebsd11))]
+        pub kve_vn_fsid: u64,
+        #[cfg(not(freebsd11))]
+        pub kve_vn_rdev: u64,
+        #[cfg(not(freebsd11))]
+        _kve_is_spare: [::c_int; 8],
+        #[cfg(freebsd11)]
+        _kve_is_spare: [::c_int; 12],
+        pub kve_path: [[::c_char; 32]; 32],
+    }
 }
 
 s_no_extra_traits! {
@@ -1772,6 +1808,8 @@ extern "C" {
 
     pub fn kld_isloaded(name: *const ::c_char) -> ::c_int;
     pub fn kld_load(name: *const ::c_char) -> ::c_int;
+
+    pub fn kinfo_getvmmap(pid: ::pid_t, cntp: *mut ::c_int) -> *mut kinfo_vmentry;
 }
 
 cfg_if! {
