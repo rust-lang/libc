@@ -228,27 +228,25 @@ jobs:
 
   semver_linux:
     name: Semver Linux
-    needs: build_channels_linux
     runs-on: ubuntu-20.04
     continue-on-error: true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
         # Should update the semverver revision in semver.sh if we touch nightly ver.
-        run: TOOLCHAIN=nightly-2021-05-21 sh ./ci/install-rust.sh
+        run: TOOLCHAIN=nightly-2021-07-23 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh linux
 
   semver_macos:
     name: Semver macOS
-    needs: build_channels_macos
     runs-on: macos-10.15
     continue-on-error: true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        # FIXME: Pin nightly version to make semverver compilable.
-        run: TOOLCHAIN=nightly-2021-05-21 sh ./ci/install-rust.sh
+        # Pin nightly version to make semverver compilable.
+        run: TOOLCHAIN=nightly-2021-07-23 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh macos
 
