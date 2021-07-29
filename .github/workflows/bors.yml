@@ -235,7 +235,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
         # Should update the semverver revision in semver.sh if we touch nightly ver.
-        run: TOOLCHAIN=nightly-2021-05-21 sh ./ci/install-rust.sh
+        run: TOOLCHAIN=nightly-2021-07-23 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh linux
 
@@ -247,8 +247,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Rust toolchain
-        # FIXME: Pin nightly version to make semverver compilable.
-        run: TOOLCHAIN=nightly-2021-05-21 sh ./ci/install-rust.sh
+        # Pin nightly version to make semverver compilable.
+        run: TOOLCHAIN=nightly-2021-07-23 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh macos
 
