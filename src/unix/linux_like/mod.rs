@@ -1418,6 +1418,14 @@ f! {
 }
 
 safe_f! {
+    pub fn SIGRTMAX() -> ::c_int {
+        unsafe { __libc_current_sigrtmax() }
+    }
+
+    pub fn SIGRTMIN() -> ::c_int {
+        unsafe { __libc_current_sigrtmin() }
+    }
+
     pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0xff) == 0x7f
     }
@@ -1480,6 +1488,11 @@ safe_f! {
 }
 
 extern "C" {
+    #[doc(hidden)]
+    pub fn __libc_current_sigrtmax() -> ::c_int;
+    #[doc(hidden)]
+    pub fn __libc_current_sigrtmin() -> ::c_int;
+
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;

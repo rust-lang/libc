@@ -72,6 +72,11 @@ path = "test/errqueue.rs"
 harness = true
 
 [[test]]
+name = "sigrt"
+path = "test/sigrt.rs"
+harness = true
+
+[[test]]
 name = "semver"
 path = "test/semver.rs"
 harness = false
