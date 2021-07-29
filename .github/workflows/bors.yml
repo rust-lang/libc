@@ -228,7 +228,6 @@ jobs:
 
   semver_linux:
     name: Semver Linux
-    needs: build_channels_linux
     runs-on: ubuntu-20.04
     continue-on-error: true
     steps:
@@ -241,7 +240,6 @@ jobs:
 
   semver_macos:
     name: Semver macOS
-    needs: build_channels_macos
     runs-on: macos-10.15
     continue-on-error: true
     steps:
