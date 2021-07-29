@@ -33,16 +33,14 @@ s! {
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
 
-        #[cfg(not(all(libc_cfg_target_vendor, target_arch = "powerpc",
-              target_vendor = "nintendo")))]
-        #[cfg(target_arch = "xtensa")]
+        #[cfg(target_os = "espidf")]
         pub ai_addr: *mut sockaddr,
 
         pub ai_canonname: *mut ::c_char,
 
-        #[cfg(not(all(libc_cfg_target_vendor, target_arch = "powerpc",
-              target_vendor = "nintendo")))]
-        #[cfg(not(target_arch = "xtensa"))]
+        #[cfg(not(any(
+            target_os = "espidf",
+            all(libc_cfg_target_vendor, target_arch = "powerpc", target_vendor = "nintendo"))))]
         pub ai_addr: *mut sockaddr,
 
         pub ai_next: *mut addrinfo,
@@ -232,23 +230,37 @@ s! {
 // unverified constants
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-        size: [0; __SIZEOF_PTHREAD_MUTEX_T],
+        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_MUTEX_T],
     };
     pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-        size: [0; __SIZEOF_PTHREAD_COND_T],
+        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_COND_T],
     };
     pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-        size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
+        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_RWLOCK_T],
     };
 }
 pub const NCCS: usize = 32;
-pub const __SIZEOF_PTHREAD_ATTR_T: usize = 56;
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
-pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
-pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
-pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
-pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
-pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        const __PTHREAD_INITIALIZER_BYTE: u8 = 0xff;
+        pub const __SIZEOF_PTHREAD_ATTR_T: usize = 32;
+        pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 12;
+        pub const __SIZEOF_PTHREAD_COND_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 8;
+        pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 12;
+    } else {
+        const __PTHREAD_INITIALIZER_BYTE: u8 = 0;
+        pub const __SIZEOF_PTHREAD_ATTR_T: usize = 56;
+        pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
+        pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
+        pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
+    }
+}
 pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 pub const __PTHREAD_MUTEX_HAVE_PREV: usize = 1;
@@ -688,15 +700,15 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(target_arch = "arm")] {
+    if #[cfg(target_os = "espidf")] {
+        mod espidf;
+        pub use self::espidf::*;
+    } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
     } else if #[cfg(target_arch = "aarch64")] {
         mod aarch64;
         pub use self::aarch64::*;
-    } else if #[cfg(target_arch = "xtensa")] {
-        mod xtensa;
-        pub use self::xtensa::*;
     } else if #[cfg(target_arch = "powerpc")] {
         mod powerpc;
         pub use self::powerpc::*;
