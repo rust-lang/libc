@@ -1735,6 +1735,8 @@ pub const KERN_PROC_NARGV: ::c_int = 2;
 pub const KERN_PROC_ENV: ::c_int = 3;
 pub const KERN_PROC_NENV: ::c_int = 4;
 pub const KERN_PROC_PATHNAME: ::c_int = 5;
+pub const VM_PROC: ::c_int = 16;
+pub const VM_PROC_MAP: ::c_int = 1;
 
 pub const EAI_AGAIN: ::c_int = 2;
 pub const EAI_BADFLAGS: ::c_int = 3;
@@ -1835,6 +1837,18 @@ pub const PT_FIRSTMACH: ::c_int = 32;
 pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
 pub const SF_LOG: ::c_ulong = 0x00400000;
 pub const SF_SNAPINVAL: ::c_ulong = 0x00800000;
+
+// sys/sysctl.h
+pub const KVME_PROT_READ: ::c_int = 0x00000001;
+pub const KVME_PROT_WRITE: ::c_int = 0x00000002;
+pub const KVME_PROT_EXEC: ::c_int = 0x00000004;
+
+pub const KVME_FLAG_COW: ::c_int = 0x00000001;
+pub const KVME_FLAG_NEEDS_COPY: ::c_int = 0x00000002;
+pub const KVME_FLAG_NOCOREDUMP: ::c_int = 0x000000004;
+pub const KVME_FLAG_PAGEABLE: ::c_int = 0x000000008;
+pub const KVME_FLAG_GROWS_UP: ::c_int = 0x000000010;
+pub const KVME_FLAG_GROWS_DOWN: ::c_int = 0x000000020;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
