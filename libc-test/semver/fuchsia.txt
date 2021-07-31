@@ -1370,3 +1370,6 @@ utimensat
 vhangup
 vmsplice
 waitid
+zx_cprng_add_entropy
+zx_cprng_draw
+zx_status_t
