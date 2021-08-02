@@ -1787,6 +1787,7 @@ fn test_freebsd(target: &str) {
                 "sys/procctl.h",
                 "sys/procdesc.h",
                 "sys/ptrace.h",
+                "sys/queue.h",
                 "sys/random.h",
                 "sys/resource.h",
                 "sys/rtprio.h",
@@ -1805,6 +1806,7 @@ fn test_freebsd(target: &str) {
                 "sys/user.h",
                 "sys/utsname.h",
                 "sys/wait.h",
+                "libprocstat.h",
                 "syslog.h",
                 "termios.h",
                 "time.h",
@@ -1959,6 +1961,9 @@ fn test_freebsd(target: &str) {
 
             // `max_align_t` is not available in FreeBSD 10
             "max_align_t" if Some(10) == freebsd_ver => true,
+
+            // `procstat` is a private struct
+            "procstat" => true,
 
             _ => false,
         }

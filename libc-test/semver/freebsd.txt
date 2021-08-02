@@ -1414,6 +1414,8 @@ fflags_t
 ffs
 ffsl
 ffsll
+filestat
+filestat_list
 fls
 flsl
 flsll
@@ -1479,6 +1481,8 @@ kevent
 key_t
 killpg
 kinfo_getvmmap
+kinfo_proc
+kinfo_vmentry
 kqueue
 kld_isloaded
 kld_load
@@ -1575,6 +1579,15 @@ posix_spawnp
 ppoll
 preadv
 procctl
+procstat
+procstat_close
+procstat_freefiles
+procstat_freeprocs
+procstat_freevmmap
+procstat_getfiles
+procstat_getprocs
+procstat_getvmmap
+procstat_open_sysctl
 pseudo_AF_HDRCMPLT
 pseudo_AF_KEY
 pseudo_AF_PIP

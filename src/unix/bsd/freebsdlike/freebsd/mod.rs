@@ -205,6 +205,39 @@ s! {
         _kve_is_spare: [::c_int; 12],
         pub kve_path: [[::c_char; 32]; 32],
     }
+
+    pub struct kinfo_proc {
+        __pad0: [[::uintptr_t; 17]; 8],
+    }
+
+    pub struct filestat {
+        fs_type: ::c_int,
+        fs_flags: ::c_int,
+        fs_fflags: ::c_int,
+        fs_uflags: ::c_int,
+        fs_fd: ::c_int,
+        fs_ref_count: ::c_int,
+        fs_offset: ::off_t,
+        fs_typedep: *mut ::c_void,
+        fs_path: *mut ::c_char,
+        next: *mut filestat,
+        fs_cap_rights: cap_rights_t,
+    }
+
+    pub struct filestat_list {
+        stqh_first: *mut filestat,
+        stqh_last: *mut *mut filestat,
+    }
+
+    pub struct procstat {
+        tpe: ::c_int,
+        kd: ::uintptr_t,
+        vmentries: *mut ::c_void,
+        files: *mut ::c_void,
+        argv: *mut ::c_void,
+        envv: *mut ::c_void,
+        core: ::uintptr_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -1802,6 +1835,31 @@ extern "C" {
     pub fn kld_load(name: *const ::c_char) -> ::c_int;
 
     pub fn kinfo_getvmmap(pid: ::pid_t, cntp: *mut ::c_int) -> *mut kinfo_vmentry;
+}
+
+#[link(name = "procstat")]
+extern "C" {
+    pub fn procstat_open_sysctl() -> *mut procstat;
+    pub fn procstat_getfiles(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        mmapped: ::c_int,
+    ) -> *mut filestat_list;
+    pub fn procstat_freefiles(procstat: *mut procstat, head: *mut filestat_list);
+    pub fn procstat_getprocs(
+        procstat: *mut procstat,
+        what: ::c_int,
+        arg: ::c_int,
+        count: *mut ::c_uint,
+    ) -> *mut kinfo_proc;
+    pub fn procstat_freeprocs(procstat: *mut procstat, p: *mut kinfo_proc);
+    pub fn procstat_getvmmap(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        count: *mut ::c_uint,
+    ) -> *mut kinfo_vmentry;
+    pub fn procstat_freevmmap(procstat: *mut procstat, vmmap: *mut kinfo_vmentry);
+    pub fn procstat_close(procstat: *mut procstat);
 }
 
 cfg_if! {
