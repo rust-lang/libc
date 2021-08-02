@@ -297,8 +297,8 @@ pub const ATF_PUBL: ::c_int = 0x08;
 pub const ATF_USETRAILERS: ::c_int = 0x10;
 
 cfg_if! {
-    if #[cfg(target_os = "l4re")] {
-        // required libraries for L4Re are linked externally, ATM
+    if #[cfg(any(target_os = "l4re", target_os = "espidf"))] {
+        // required libraries for L4Re and the ESP-IDF framework are linked externally, ATM
     } else if #[cfg(feature = "std")] {
         // cargo build, don't pull in anything extra as the libstd dep
         // already pulls in all libs.
@@ -576,6 +576,7 @@ extern "C" {
     )))]
     #[cfg_attr(target_os = "netbsd", link_name = "__socket30")]
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_socket")]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_socket")]
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
     #[cfg(not(all(
         libc_cfg_target_vendor,
@@ -587,11 +588,13 @@ extern "C" {
         link_name = "connect$UNIX2003"
     )]
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_connect")]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_connect")]
     pub fn connect(socket: ::c_int, address: *const sockaddr, len: socklen_t) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "listen$UNIX2003"
     )]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_listen")]
     pub fn listen(socket: ::c_int, backlog: ::c_int) -> ::c_int;
     #[cfg(not(all(
         libc_cfg_target_vendor,
@@ -602,6 +605,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "accept$UNIX2003"
     )]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_accept")]
     pub fn accept(socket: ::c_int, address: *mut sockaddr, address_len: *mut socklen_t) -> ::c_int;
     #[cfg(not(all(
         libc_cfg_target_vendor,
@@ -612,6 +616,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getpeername$UNIX2003"
     )]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_getpeername")]
     pub fn getpeername(
         socket: ::c_int,
         address: *mut sockaddr,
@@ -626,11 +631,13 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getsockname$UNIX2003"
     )]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_getsockname")]
     pub fn getsockname(
         socket: ::c_int,
         address: *mut sockaddr,
         address_len: *mut socklen_t,
     ) -> ::c_int;
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_setsockopt")]
     pub fn setsockopt(
         socket: ::c_int,
         level: ::c_int,
@@ -659,6 +666,7 @@ extern "C" {
         link_name = "sendto$UNIX2003"
     )]
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_sendto")]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_sendto")]
     pub fn sendto(
         socket: ::c_int,
         buf: *const ::c_void,
@@ -667,6 +675,7 @@ extern "C" {
         addr: *const sockaddr,
         addrlen: socklen_t,
     ) -> ::ssize_t;
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_shutdown")]
     pub fn shutdown(socket: ::c_int, how: ::c_int) -> ::c_int;
 
     #[cfg_attr(
@@ -1122,6 +1131,7 @@ extern "C" {
     pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t) -> ::c_int;
 
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_getsockopt")]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_getsockopt")]
     pub fn getsockopt(
         sockfd: ::c_int,
         level: ::c_int,
@@ -1147,6 +1157,7 @@ extern "C" {
         target_vendor = "nintendo"
     )))]
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_getaddrinfo")]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_getaddrinfo")]
     pub fn getaddrinfo(
         node: *const c_char,
         service: *const c_char,
@@ -1158,6 +1169,7 @@ extern "C" {
         target_arch = "powerpc",
         target_vendor = "nintendo"
     )))]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_freeaddrinfo")]
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
     #[cfg_attr(
@@ -1233,11 +1245,13 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "send$UNIX2003"
     )]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_send")]
     pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "recv$UNIX2003"
     )]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_recv")]
     pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
