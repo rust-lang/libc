@@ -2319,8 +2319,18 @@ extern "C" {
     ) -> *mut ::c_char;
     #[link_name = "__login50"]
     pub fn login(ut: *const utmp);
+    #[link_name = "__loginx50"]
+    pub fn loginx(ut: *const utmpx);
     pub fn logout(line: *const ::c_char);
+    pub fn logoutx(line: *const ::c_char, status: ::c_int, tpe: ::c_int);
     pub fn logwtmp(line: *const ::c_char, name: *const ::c_char, host: *const ::c_char);
+    pub fn logwtmpx(
+        line: *const ::c_char,
+        name: *const ::c_char,
+        host: *const ::c_char,
+        status: ::c_int,
+        tpe: ::c_int,
+    );
 
     pub fn kinfo_getvmmap(pid: ::pid_t, cntp: *mut ::size_t) -> *mut kinfo_vmentry;
 }

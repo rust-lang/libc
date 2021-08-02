@@ -1158,8 +1158,11 @@ lio_listio
 localeconv_l
 lockf
 login
+loginx
 logout
+logoutx
 logwtmp
+logwtmpx
 login_tty
 lutimes
 lwpid_t
