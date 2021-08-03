@@ -2649,6 +2649,8 @@ extern "C" {
         old_binding: *mut processorid_t,
     ) -> ::c_int;
     pub fn p_online(processorid: ::processorid_t, flag: ::c_int) -> ::c_int;
+
+    pub fn getexecname() -> *const ::c_char;
 }
 
 mod compat;
