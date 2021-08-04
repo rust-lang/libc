@@ -315,6 +315,12 @@ s! {
         pub named_sem_id: i32, // actually a union with unnamed_sem (i32)
         pub padding: [i32; 2],
     }
+
+    pub struct ucred {
+        pub pid: ::pid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+    }
 }
 
 s_no_extra_traits! {
