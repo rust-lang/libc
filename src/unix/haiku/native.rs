@@ -753,6 +753,10 @@ extern "C" {
     pub fn get_scheduler_mode() -> i32;
     pub fn set_scheduler_mode(mode: i32) -> status_t;
 
+    pub fn fast_random_value() -> ::c_uint;
+    pub fn random_value() -> ::c_uint;
+    pub fn secure_random_value() -> ::c_uint;
+
     pub fn send_data(
         thread: thread_id,
         code: i32,
