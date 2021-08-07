@@ -26,6 +26,17 @@ s! {
         pub udata: *mut ::c_void,
         pub ext: [u64; 4],
     }
+
+    pub struct sockcred2 {
+        pub sc_version: ::c_int,
+        pub sc_pid: ::pid_t,
+        pub sc_uid: ::uid_t,
+        pub sc_euid: ::uid_t,
+        pub sc_gid: ::gid_t,
+        pub sc_egid: ::gid_t,
+        pub sc_ngroups: ::c_int,
+        pub sc_groups: [::gid_t; 1],
+    }
 }
 
 s_no_extra_traits! {
@@ -207,6 +218,20 @@ pub const SO_DOMAIN: ::c_int = 0x1019;
 pub const EINTEGRITY: ::c_int = 97;
 pub const ELAST: ::c_int = 97;
 pub const GRND_INSECURE: ::c_uint = 0x4;
+
+pub const LOCAL_CREDS_PERSISTENT: ::c_int = 3;
+pub const SCM_CREDS2: ::c_int = 0x08;
+
+f! {
+    pub fn SOCKCRED2SIZE(ngrps: usize) -> usize {
+        let ngrps = if ngrps > 0 {
+            ngrps - 1
+        } else {
+            0
+        };
+        ::mem::size_of::<sockcred2>() + ::mem::size_of::<::gid_t>() * ngrps
+    }
+}
 
 extern "C" {
     pub fn aio_readv(aiocbp: *mut ::aiocb) -> ::c_int;
