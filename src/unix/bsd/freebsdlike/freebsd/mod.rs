@@ -10,7 +10,6 @@ pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type idtype_t = ::c_uint;
 
-pub type key_t = ::c_long;
 pub type msglen_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 
@@ -1176,22 +1175,8 @@ pub const NET_RT_IFMALIST: ::c_int = 4;
 pub const NET_RT_IFLISTL: ::c_int = 5;
 
 // System V IPC
-pub const IPC_PRIVATE: ::key_t = 0;
-pub const IPC_CREAT: ::c_int = 0o1000;
-pub const IPC_EXCL: ::c_int = 0o2000;
-pub const IPC_NOWAIT: ::c_int = 0o4000;
-pub const IPC_RMID: ::c_int = 0;
-pub const IPC_SET: ::c_int = 1;
-pub const IPC_STAT: ::c_int = 2;
 pub const IPC_INFO: ::c_int = 3;
-pub const IPC_R: ::c_int = 0o400;
-pub const IPC_W: ::c_int = 0o200;
-pub const IPC_M: ::c_int = 0o10000;
 pub const MSG_NOERROR: ::c_int = 0o10000;
-pub const SHM_RDONLY: ::c_int = 0o10000;
-pub const SHM_RND: ::c_int = 0o20000;
-pub const SHM_R: ::c_int = 0o400;
-pub const SHM_W: ::c_int = 0o200;
 pub const SHM_LOCK: ::c_int = 11;
 pub const SHM_UNLOCK: ::c_int = 12;
 pub const SHM_STAT: ::c_int = 13;

@@ -238,6 +238,13 @@ pub const IPC_RMID: ::c_int = 0;
 pub const IPC_SET: ::c_int = 1;
 pub const IPC_STAT: ::c_int = 2;
 
+pub const IPC_R: ::c_int = 0o000400;
+pub const IPC_W: ::c_int = 0o000200;
+pub const IPC_M: ::c_int = 0o010000;
+
+pub const SHM_R: ::c_int = IPC_R;
+pub const SHM_W: ::c_int = IPC_W;
+
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
