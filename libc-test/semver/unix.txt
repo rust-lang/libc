@@ -594,6 +594,7 @@ gmtime_r
 grantpt
 group
 hostent
+hstrerror
 if_indextoname
 if_nametoindex
 in6_addr

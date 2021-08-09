@@ -1171,6 +1171,7 @@ extern "C" {
     )))]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_freeaddrinfo")]
     pub fn freeaddrinfo(res: *mut addrinfo);
+    pub fn hstrerror(errcode: ::c_int) -> *const ::c_char;
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
     #[cfg_attr(
         any(
