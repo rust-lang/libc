@@ -3286,6 +3286,7 @@ fn test_haiku(target: &str) {
                "kernel/fs_volume.h",
                "kernel/image.h",
                "kernel/scheduler.h",
+               "storage/FindDirectory.h",
                "storage/StorageDefs.h",
                "support/Errors.h",
                "support/SupportDefs.h",

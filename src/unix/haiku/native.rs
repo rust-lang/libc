@@ -67,6 +67,36 @@ e! {
         SCHEDULER_MODE_LOW_LATENCY,
         SCHEDULER_MODE_POWER_SAVING,
     }
+
+    // FindDirectory.h
+    pub enum path_base_directory {
+        B_FIND_PATH_INSTALLATION_LOCATION_DIRECTORY,
+        B_FIND_PATH_ADD_ONS_DIRECTORY,
+        B_FIND_PATH_APPS_DIRECTORY,
+        B_FIND_PATH_BIN_DIRECTORY,
+        B_FIND_PATH_BOOT_DIRECTORY,
+        B_FIND_PATH_CACHE_DIRECTORY,
+        B_FIND_PATH_DATA_DIRECTORY,
+        B_FIND_PATH_DEVELOP_DIRECTORY,
+        B_FIND_PATH_DEVELOP_LIB_DIRECTORY,
+        B_FIND_PATH_DOCUMENTATION_DIRECTORY,
+        B_FIND_PATH_ETC_DIRECTORY,
+        B_FIND_PATH_FONTS_DIRECTORY,
+        B_FIND_PATH_HEADERS_DIRECTORY,
+        B_FIND_PATH_LIB_DIRECTORY,
+        B_FIND_PATH_LOG_DIRECTORY,
+        B_FIND_PATH_MEDIA_NODES_DIRECTORY,
+        B_FIND_PATH_PACKAGES_DIRECTORY,
+        B_FIND_PATH_PREFERENCES_DIRECTORY,
+        B_FIND_PATH_SERVERS_DIRECTORY,
+        B_FIND_PATH_SETTINGS_DIRECTORY,
+        B_FIND_PATH_SOUNDS_DIRECTORY,
+        B_FIND_PATH_SPOOL_DIRECTORY,
+        B_FIND_PATH_TRANSLATORS_DIRECTORY,
+        B_FIND_PATH_VAR_DIRECTORY,
+        B_FIND_PATH_IMAGE_PATH = 1000,
+        B_FIND_PATH_PACKAGE_PATH,
+    }
 }
 
 s! {
@@ -933,6 +963,13 @@ extern "C" {
         cookie: *mut i32,
         info: *mut image_info,
         size: ::size_t,
+    ) -> status_t;
+    pub fn find_path(
+        codePointer: *const ::c_void,
+        baseDirectory: path_base_directory,
+        subPath: *const ::c_char,
+        pathBuffer: *mut ::c_char,
+        bufferSize: usize,
     ) -> status_t;
 }
 
