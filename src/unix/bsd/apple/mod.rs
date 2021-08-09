@@ -3980,6 +3980,7 @@ extern "C" {
     pub fn mach_thread_self() -> mach_port_t;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
     pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn pthread_mach_thread_np(thread: ::pthread_t) -> ::mach_port_t;
     pub fn pthread_from_mach_thread_np(port: ::mach_port_t) -> ::pthread_t;
     pub fn pthread_get_stackaddr_np(thread: ::pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: ::pthread_t) -> ::size_t;
