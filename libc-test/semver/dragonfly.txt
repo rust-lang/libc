@@ -1219,6 +1219,7 @@ getgrgid_r
 getgrnam
 getgrnam_r
 getgrouplist
+gethostid
 getifaddrs
 getitimer
 getline
@@ -1375,6 +1376,7 @@ sendmsg
 setdomainname
 setgrent
 setgroups
+sethostid
 sethostname
 setitimer
 setpriority

@@ -1643,6 +1643,8 @@ extern "C" {
     pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
     pub fn memset_s(s: *mut ::c_void, smax: ::size_t, c: ::c_int, n: ::size_t) -> ::c_int;
+    pub fn gethostid() -> ::c_long;
+    pub fn sethostid(hostid: ::c_long);
 }
 
 #[link(name = "rt")]

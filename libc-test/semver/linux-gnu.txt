@@ -569,6 +569,7 @@ qsort_r
 reallocarray
 semid_ds
 seminfo
+sethostid
 setutxent
 setxattr
 sgetspent_r
