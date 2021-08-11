@@ -1587,7 +1587,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("time_value_t")
                     .field("seconds", &self.seconds)
-                    .field("microseconds", &self.seconds)
+                    .field("microseconds", &self.microseconds)
                     .finish()
             }
         }
@@ -1699,7 +1699,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("thread_identifier_info")
                     .field("thread_id", &self.thread_id)
-                    .field("thread_handlee", &self.thread_handle)
+                    .field("thread_handle", &self.thread_handle)
                     .field("dispatch_qaddr", &self.dispatch_qaddr)
                     .finish()
             }
