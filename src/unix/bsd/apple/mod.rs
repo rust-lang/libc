@@ -4037,8 +4037,6 @@ extern "C" {
         policy: ::c_int,
         param: *const sched_param,
     ) -> ::c_int;
-    pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
-    pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
     pub fn thread_policy_set(
         thread: thread_t,
         flavor: thread_policy_flavor_t,

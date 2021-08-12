@@ -1040,6 +1040,8 @@ regexec
 regfree
 regmatch_t
 regoff_t
+sched_get_priority_max
+sched_get_priority_min
 seekdir
 sem
 sem_close
