@@ -321,6 +321,8 @@ fn test_apple(target: &str) {
             // FIXME: the array size has been changed since macOS 10.15 ([8] -> [7]).
             ("statfs", "f_reserved") => true,
             ("__darwin_arm_neon_state64", "__v") => true,
+            // MAXPATHLEN is too big for auto-derive traits on arrays.
+            ("vnode_info_path", "vip_path") => true,
             _ => false,
         }
     });
