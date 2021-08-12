@@ -253,6 +253,7 @@ pub const FIOSETOWN: ::c_ulong = 0x8004667c;
 pub const FIOGETOWN: ::c_ulong = 0x4004667b;
 
 pub const PATH_MAX: ::c_int = 1024;
+pub const MAXPATHLEN: ::c_int = PATH_MAX;
 
 pub const IOV_MAX: ::c_int = 1024;
 
