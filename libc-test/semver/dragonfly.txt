@@ -1359,6 +1359,8 @@ regmatch_t
 regoff_t
 rtprio
 sched_getscheduler
+sched_get_priority_max
+sched_get_priority_min
 sched_param
 sched_setscheduler
 seekdir
