@@ -525,6 +525,7 @@ __rlimit_resource_t
 __timeval
 adjtimex
 backtrace
+clock_adjtime
 copy_file_range
 dlinfo
 dlmopen
