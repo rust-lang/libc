@@ -1532,6 +1532,11 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
+pub const SCHED_NONE: ::c_int = -1;
+pub const SCHED_OTHER: ::c_int = 0;
+pub const SCHED_FIFO: ::c_int = 1;
+pub const SCHED_RR: ::c_int = 2;
+
 pub const EVFILT_AIO: u32 = 2;
 pub const EVFILT_PROC: u32 = 4;
 pub const EVFILT_READ: u32 = 0;
