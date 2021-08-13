@@ -202,6 +202,9 @@ pub const GRND_RANDOM: ::c_uint = 0x2;
 
 pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 
+pub const PROC_ASLR_CTL: ::c_int = 13;
+pub const PROC_ASLR_STATUS: ::c_int = 14;
+
 pub const SO_DOMAIN: ::c_int = 0x1019;
 
 pub const EINTEGRITY: ::c_int = 97;
