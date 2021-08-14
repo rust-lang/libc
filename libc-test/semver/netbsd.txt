@@ -1269,10 +1269,12 @@ regfree
 regmatch_t
 regoff_t
 sched_getparam
+sched_getscheduler
 sched_get_priority_max
 sched_get_priority_min
 sched_param
 sched_setparam
+sched_setscheduler
 secure_path
 seekdir
 sem
