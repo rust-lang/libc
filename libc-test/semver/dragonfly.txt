@@ -1391,6 +1391,10 @@ settimeofday
 setutxdb
 setutxent
 sf_hdtr
+shmat
+shmctl
+shmdt
+shmget
 sigaltstack
 sigevent
 siginfo_t

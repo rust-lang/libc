@@ -345,6 +345,16 @@ s! {
         pub dlpi_tls_modid: usize,
         pub dlpi_tls_data: *mut ::c_void,
     }
+
+    pub struct ipc_perm {
+        pub cuid: ::uid_t,
+        pub cgid: ::gid_t,
+        pub uid: ::uid_t,
+        pub gid: ::gid_t,
+        pub mode: ::mode_t,
+        pub seq: ::c_ushort,
+        pub key: ::key_t,
+    }
 }
 
 s_no_extra_traits! {
