@@ -4452,6 +4452,7 @@ extern "C" {
         buffer: *mut ::c_void,
         buffersize: u32,
     ) -> ::c_int;
+    pub fn proc_kmsgbuf(buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
     pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
     /// # Notes
     ///
