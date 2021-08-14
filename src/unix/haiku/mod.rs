@@ -680,6 +680,7 @@ pub const MAP_SHARED: ::c_int = 0x01;
 pub const MAP_PRIVATE: ::c_int = 0x02;
 pub const MAP_FIXED: ::c_int = 0x04;
 pub const MAP_ANONYMOUS: ::c_int = 0x08;
+pub const MAP_NORESERVE: ::c_int = 0x10;
 pub const MAP_ANON: ::c_int = MAP_ANONYMOUS;
 
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
@@ -786,6 +787,7 @@ pub const MADV_SEQUENTIAL: ::c_int = 2;
 pub const MADV_RANDOM: ::c_int = 3;
 pub const MADV_WILLNEED: ::c_int = 4;
 pub const MADV_DONTNEED: ::c_int = 5;
+pub const MADV_FREE: ::c_int = 6;
 
 // https://github.com/haiku/haiku/blob/master/headers/posix/net/if.h#L80
 pub const IFF_UP: ::c_int = 0x0001;
