@@ -1789,6 +1789,7 @@ pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_ADD_MEMBERSHIP: ::c_int = 20;
 pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
 pub const IPV6_V6ONLY: ::c_int = 26;
+pub const IPV6_FREEBIND: ::c_int = 78;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
