@@ -1441,6 +1441,8 @@ extern "C" {
     pub fn globfree(pglob: *mut ::glob_t);
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, advice: ::c_int) -> ::c_int;
+    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
 
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t) -> ::c_int;
     pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
