@@ -2738,6 +2738,7 @@ getgrgid_r
 getgrnam
 getgrnam_r
 getgrouplist
+gethostid
 getifaddrs
 getline
 getloadavg

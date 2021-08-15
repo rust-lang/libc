@@ -4458,6 +4458,9 @@ extern "C" {
     /// `id` is of type [`uuid_t`].
     pub fn gethostuuid(id: *mut u8, timeout: *const ::timespec) -> ::c_int;
 
+    pub fn gethostid() -> ::c_long;
+    pub fn sethostid(hostid: ::c_long);
+
     pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
 
     pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;

@@ -2659,6 +2659,9 @@ extern "C" {
     pub fn p_online(processorid: ::processorid_t, flag: ::c_int) -> ::c_int;
 
     pub fn getexecname() -> *const ::c_char;
+
+    pub fn gethostid() -> ::c_long;
+    pub fn sethostid(hostid: ::c_long) -> ::c_int;
 }
 
 mod compat;
