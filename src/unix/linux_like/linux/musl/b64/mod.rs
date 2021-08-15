@@ -94,16 +94,16 @@ s! {
         pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
         #[cfg(target_endian = "big")]
-        __pad1: ::c_int,
+        pub __pad1: ::c_int,
         pub msg_iovlen: ::c_int,
         #[cfg(target_endian = "little")]
-        __pad1: ::c_int,
+        pub __pad1: ::c_int,
         pub msg_control: *mut ::c_void,
         #[cfg(target_endian = "big")]
-        __pad2: ::c_int,
+        pub __pad2: ::c_int,
         pub msg_controllen: ::socklen_t,
         #[cfg(target_endian = "little")]
-        __pad2: ::c_int,
+        pub __pad2: ::c_int,
         pub msg_flags: ::c_int,
     }
 
