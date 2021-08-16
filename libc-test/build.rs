@@ -956,6 +956,7 @@ fn test_netbsd(target: &str) {
         "signal.h",
         "string.h",
         "sys/endian.h",
+        "sys/exec_elf.h",
         "sys/extattr.h",
         "sys/file.h",
         "sys/ioctl.h",
