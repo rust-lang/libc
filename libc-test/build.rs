@@ -1783,6 +1783,7 @@ fn test_freebsd(target: &str) {
                 "sys/mman.h",
                 "sys/mount.h",
                 "sys/msg.h",
+                "sys/procctl.h",
                 "sys/procdesc.h",
                 "sys/ptrace.h",
                 "sys/random.h",

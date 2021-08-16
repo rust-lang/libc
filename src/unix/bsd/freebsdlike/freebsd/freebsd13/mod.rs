@@ -219,6 +219,11 @@ pub const EINTEGRITY: ::c_int = 97;
 pub const ELAST: ::c_int = 97;
 pub const GRND_INSECURE: ::c_uint = 0x4;
 
+pub const PROC_ASLR_CTL: ::c_int = 13;
+pub const PROC_ASLR_STATUS: ::c_int = 14;
+pub const PROC_PROTMAX_CTL: ::c_int = 15;
+pub const PROC_PROTMAX_STATUS: ::c_int = 16;
+
 pub const LOCAL_CREDS_PERSISTENT: ::c_int = 3;
 pub const SCM_CREDS2: ::c_int = 0x08;
 

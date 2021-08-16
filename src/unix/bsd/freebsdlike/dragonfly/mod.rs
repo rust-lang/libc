@@ -820,6 +820,12 @@ pub const SO_CPUHINT: ::c_int = 0x1030;
 
 pub const PT_FIRSTMACH: ::c_int = 32;
 
+pub const PROC_REAP_ACQUIRE: ::c_int = 0x0001;
+pub const PROC_REAP_RELEASE: ::c_int = 0x0002;
+pub const PROC_REAP_STATUS: ::c_int = 0x0003;
+pub const PROC_PDEATHSIG_CTL: ::c_int = 0x0004;
+pub const PROC_PDEATHSIG_STATUS: ::c_int = 0x0005;
+
 // https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/sys/net/if.h#L101
 pub const IFF_UP: ::c_int = 0x1; // interface is up
 pub const IFF_BROADCAST: ::c_int = 0x2; // broadcast address valid
@@ -1301,6 +1307,7 @@ extern "C" {
     pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
     pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
+    pub fn procctl(idtype: ::idtype_t, id: ::id_t, cmd: ::c_int, data: *mut ::c_void) -> ::c_int;
 }
 
 #[link(name = "rt")]

@@ -840,6 +840,21 @@ pub const PTRACE_LWP: ::c_int = 0x0010;
 pub const PTRACE_VFORK: ::c_int = 0x0020;
 pub const PTRACE_DEFAULT: ::c_int = PTRACE_EXEC;
 
+pub const PROC_SPROTECT: ::c_int = 1;
+pub const PROC_REAP_ACQUIRE: ::c_int = 2;
+pub const PROC_REAP_RELEASE: ::c_int = 3;
+pub const PROC_REAP_STATUS: ::c_int = 4;
+pub const PROC_REAP_GETPIDS: ::c_int = 5;
+pub const PROC_REAP_KILL: ::c_int = 6;
+pub const PROC_TRACE_CTL: ::c_int = 7;
+pub const PROC_TRACE_STATUS: ::c_int = 8;
+pub const PROC_TRAPCAP_CTL: ::c_int = 9;
+pub const PROC_TRAPCAP_STATUS: ::c_int = 10;
+pub const PROC_PDEATHSIG_CTL: ::c_int = 11;
+pub const PROC_PDEATHSIG_STATUS: ::c_int = 12;
+pub const PROC_STACKGAP_CTL: ::c_int = 17;
+pub const PROC_STACKGAP_STATUS: ::c_int = 18;
+
 pub const AF_SLOW: ::c_int = 33;
 pub const AF_SCLUSTER: ::c_int = 34;
 pub const AF_ARP: ::c_int = 35;
@@ -1761,6 +1776,8 @@ extern "C" {
     pub fn dallocx(ptr: *mut ::c_void, flags: ::c_int);
     pub fn sdallocx(ptr: *mut ::c_void, size: ::size_t, flags: ::c_int);
     pub fn nallocx(size: ::size_t, flags: ::c_int) -> ::size_t;
+
+    pub fn procctl(idtype: ::idtype_t, id: ::id_t, cmd: ::c_int, data: *mut ::c_void) -> ::c_int;
 }
 
 #[link(name = "util")]
