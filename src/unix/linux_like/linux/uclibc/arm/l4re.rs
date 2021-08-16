@@ -29,15 +29,9 @@ s! {
 #[cfg(target_os = "l4re")]
 #[allow(missing_debug_implementations)]
 pub struct pthread_attr_t {
-    pub __detachstate: ::c_int,
-    pub __schedpolicy: ::c_int,
-    pub __schedparam: super::__sched_param,
-    pub __inheritsched: ::c_int,
-    pub __scope: ::c_int,
-    pub __guardsize: ::size_t,
-    pub __stackaddr_set: ::c_int,
-    pub __stackaddr: *mut ::c_void, // better don't use it
-    pub __stacksize: ::size_t,
+    //including additional l4re members
+    __size: [::c_long; 11],
+
     // L4Re specifics
     pub affinity: l4_sched_cpu_set_t,
     pub create_flags: ::c_uint,

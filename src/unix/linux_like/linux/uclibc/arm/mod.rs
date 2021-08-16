@@ -9,7 +9,6 @@ pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
 pub type ino_t = ::c_ulong;
 pub type off_t = ::c_long;
-pub type pthread_t = ::c_ulong;
 pub type rlim_t = ::c_ulong;
 pub type suseconds_t = ::c_long;
 
@@ -38,6 +37,7 @@ s! {
         pub msg_flags: ::c_int,
     }
 
+    #[cfg(not(target_os = "l4re"))]
     pub struct pthread_attr_t {
         __size: [::c_long; 9],
     }
@@ -468,7 +468,6 @@ pub const PARODD: ::tcflag_t = 0x200;
 pub const PENDIN: ::tcflag_t = 0x4000;
 pub const POLLWRBAND: ::c_short = 0x200;
 pub const POLLWRNORM: ::c_short = 0x100;
-pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 
 // These are typed unsigned to match sigaction
 pub const SA_NOCLDSTOP: ::c_ulong = 0x1;
@@ -898,5 +897,15 @@ cfg_if! {
     } else {
         mod no_align;
         pub use self::no_align::*;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_os = "l4re")] {
+        mod l4re;
+        pub use self::l4re::*;
+    } else {
+        mod other;
+        pub use other::*;
     }
 }
