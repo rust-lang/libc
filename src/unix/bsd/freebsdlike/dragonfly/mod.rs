@@ -18,6 +18,7 @@ pub type uuid_t = ::uuid;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type idtype_t = ::c_uint;
+pub type shmatt_t = ::c_uint;
 
 pub type mqd_t = ::c_int;
 pub type sem_t = *mut sem;
@@ -196,6 +197,18 @@ s! {
 
     pub struct cpumask_t {
         ary: [u64; 4],
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        shm_internal: *mut ::c_void,
     }
 }
 
@@ -1283,6 +1296,11 @@ extern "C" {
     pub fn sched_setaffinity(pid: ::pid_t, cpusetsize: ::size_t, mask: *const cpu_set_t)
         -> ::c_int;
     pub fn setproctitle(fmt: *const ::c_char, ...);
+
+    pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
+    pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
+    pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
+    pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
 }
 
 #[link(name = "rt")]

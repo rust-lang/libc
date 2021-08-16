@@ -71,16 +71,6 @@ s! {
         data: [u32; 4],
     }
 
-    pub struct ipc_perm {
-        pub cuid: ::uid_t,
-        pub cgid: ::gid_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-        pub mode: ::mode_t,
-        pub seq: ::c_ushort,
-        pub key: ::key_t,
-    }
-
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         __unused1: *mut ::c_void,
