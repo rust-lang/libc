@@ -249,6 +249,36 @@ s! {
         pub ch_size: ::Elf32_Word,
         pub ch_addralign: ::Elf32_Word,
     }
+
+    pub struct timex {
+        pub modes: ::c_uint,
+        pub offset: ::c_long,
+        pub freq: ::c_long,
+        pub maxerror: ::c_long,
+        pub esterror: ::c_long,
+        pub status: ::c_int,
+        pub constant: ::c_long,
+        pub precision: ::c_long,
+        pub tolerance: ::c_long,
+        pub time: ::timeval,
+        pub tick: ::c_long,
+        pub ppsfreq: ::c_long,
+        pub jitter: ::c_long,
+        pub shift: ::c_int,
+        pub stabil: ::c_long,
+        pub jitcnt: ::c_long,
+        pub calcnt: ::c_long,
+        pub errcnt: ::c_long,
+        pub stbcnt: ::c_long,
+        pub tai: ::c_int,
+        pub __padding: [::c_int; 11],
+    }
+
+    pub struct ntptimeval {
+        pub time: ::timeval,
+        pub maxerror: ::c_long,
+        pub esterror: ::c_long,
+    }
 }
 
 s_no_extra_traits! {
@@ -623,6 +653,64 @@ pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
 
+pub const ADJ_OFFSET: ::c_uint = 0x0001;
+pub const ADJ_FREQUENCY: ::c_uint = 0x0002;
+pub const ADJ_MAXERROR: ::c_uint = 0x0004;
+pub const ADJ_ESTERROR: ::c_uint = 0x0008;
+pub const ADJ_STATUS: ::c_uint = 0x0010;
+pub const ADJ_TIMECONST: ::c_uint = 0x0020;
+pub const ADJ_TAI: ::c_uint = 0x0080;
+pub const ADJ_SETOFFSET: ::c_uint = 0x0100;
+pub const ADJ_MICRO: ::c_uint = 0x1000;
+pub const ADJ_NANO: ::c_uint = 0x2000;
+pub const ADJ_TICK: ::c_uint = 0x4000;
+pub const ADJ_OFFSET_SINGLESHOT: ::c_uint = 0x8001;
+pub const ADJ_OFFSET_SS_READ: ::c_uint = 0xa001;
+pub const MOD_OFFSET: ::c_uint = ADJ_OFFSET;
+pub const MOD_FREQUENCY: ::c_uint = ADJ_FREQUENCY;
+pub const MOD_MAXERROR: ::c_uint = ADJ_MAXERROR;
+pub const MOD_ESTERROR: ::c_uint = ADJ_ESTERROR;
+pub const MOD_STATUS: ::c_uint = ADJ_STATUS;
+pub const MOD_TIMECONST: ::c_uint = ADJ_TIMECONST;
+pub const MOD_CLKB: ::c_uint = ADJ_TICK;
+pub const MOD_CLKA: ::c_uint = ADJ_OFFSET_SINGLESHOT;
+pub const MOD_TAI: ::c_uint = ADJ_TAI;
+pub const MOD_MICRO: ::c_uint = ADJ_MICRO;
+pub const MOD_NANO: ::c_uint = ADJ_NANO;
+pub const STA_PLL: ::c_int = 0x0001;
+pub const STA_PPSFREQ: ::c_int = 0x0002;
+pub const STA_PPSTIME: ::c_int = 0x0004;
+pub const STA_FLL: ::c_int = 0x0008;
+pub const STA_INS: ::c_int = 0x0010;
+pub const STA_DEL: ::c_int = 0x0020;
+pub const STA_UNSYNC: ::c_int = 0x0040;
+pub const STA_FREQHOLD: ::c_int = 0x0080;
+pub const STA_PPSSIGNAL: ::c_int = 0x0100;
+pub const STA_PPSJITTER: ::c_int = 0x0200;
+pub const STA_PPSWANDER: ::c_int = 0x0400;
+pub const STA_PPSERROR: ::c_int = 0x0800;
+pub const STA_CLOCKERR: ::c_int = 0x1000;
+pub const STA_NANO: ::c_int = 0x2000;
+pub const STA_MODE: ::c_int = 0x4000;
+pub const STA_CLK: ::c_int = 0x8000;
+pub const STA_RONLY: ::c_int = STA_PPSSIGNAL
+    | STA_PPSJITTER
+    | STA_PPSWANDER
+    | STA_PPSERROR
+    | STA_CLOCKERR
+    | STA_NANO
+    | STA_MODE
+    | STA_CLK;
+
+pub const TIME_OK: ::c_int = 0;
+pub const TIME_INS: ::c_int = 1;
+pub const TIME_DEL: ::c_int = 2;
+pub const TIME_OOP: ::c_int = 3;
+pub const TIME_WAIT: ::c_int = 4;
+pub const TIME_ERROR: ::c_int = 5;
+pub const TIME_BAD: ::c_int = TIME_ERROR;
+pub const MAXTC: ::c_long = 6;
+
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
         pub const POSIX_FADV_DONTNEED: ::c_int = 6;
@@ -702,6 +790,9 @@ extern "C" {
     pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
     // Added in `musl` 1.2.2
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
+
+    pub fn adjtimex(buf: *mut ::timex) -> ::c_int;
+    pub fn clock_adjtime(clk_id: ::clockid_t, buf: *mut ::timex) -> ::c_int;
 }
 
 cfg_if! {
