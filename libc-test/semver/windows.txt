@@ -148,6 +148,7 @@ abs
 accept
 access
 aligned_malloc
+aligned_free
 atexit
 atof
 atoi
