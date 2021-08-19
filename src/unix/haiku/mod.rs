@@ -817,6 +817,15 @@ pub const AF_LOCAL: ::c_int = 9;
 pub const AF_UNIX: ::c_int = AF_LOCAL;
 pub const AF_BLUETOOTH: ::c_int = 10;
 
+pub const PF_UNSPEC: ::c_int = AF_UNSPEC;
+pub const PF_INET: ::c_int = AF_INET;
+pub const PF_ROUTE: ::c_int = AF_ROUTE;
+pub const PF_LINK: ::c_int = AF_LINK;
+pub const PF_INET6: ::c_int = AF_INET6;
+pub const PF_LOCAL: ::c_int = AF_LOCAL;
+pub const PF_UNIX: ::c_int = AF_UNIX;
+pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
+
 pub const IP_OPTIONS: ::c_int = 1;
 pub const IP_HDRINCL: ::c_int = 2;
 pub const IP_TOS: ::c_int = 3;
@@ -987,6 +996,7 @@ pub const _SC_HOST_NAME_MAX: ::c_int = 61;
 pub const _SC_REGEXP: ::c_int = 62;
 pub const _SC_SYMLOOP_MAX: ::c_int = 63;
 pub const _SC_SHELL: ::c_int = 64;
+pub const _SC_TTY_NAME_MAX: ::c_int = 65;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 8192;
 
