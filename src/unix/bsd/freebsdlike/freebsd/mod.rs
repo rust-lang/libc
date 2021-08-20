@@ -299,6 +299,17 @@ s_no_extra_traits! {
         __unused1: ::c_int,
         __unused2: [::c_long; 7]
     }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_elf32_auxv_union {
+        pub a_val: ::c_int,
+    }
+
+    pub struct Elf32_Auxinfo {
+        pub a_type: ::c_int,
+        #[cfg(libc_union)]
+        pub a_un: __c_anonymous_elf32_auxv_union,
+    }
 }
 
 cfg_if! {
@@ -517,6 +528,53 @@ cfg_if! {
                 self.sigev_signo.hash(state);
                 self.sigev_value.hash(state);
                 self.sigev_notify_thread_id.hash(state);
+            }
+        }
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_elf32_auxv_union {
+            fn eq(&self, other: &__c_anonymous_elf32_auxv_union) -> bool {
+                unsafe { self.a_val == other.a_val}
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_elf32_auxv_union {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_elf32_auxv_union {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("a_val")
+                    .field("a_val", unsafe { &self.a_val })
+                    .finish()
+            }
+        }
+        #[cfg(not(libc_union))]
+        impl PartialEq for Elf32_Auxinfo {
+            fn eq(&self, other: &Elf32_Auxinfo) -> bool {
+                self.a_type == other.a_type
+            }
+        }
+        #[cfg(libc_union)]
+        impl PartialEq for Elf32_Auxinfo {
+            fn eq(&self, other: &Elf32_Auxinfo) -> bool {
+                self.a_type == other.a_type
+                    && self.a_un == other.a_un
+            }
+        }
+        impl Eq for Elf32_Auxinfo {}
+        #[cfg(not(libc_union))]
+        impl ::fmt::Debug for Elf32_Auxinfo {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("Elf32_Auxinfo")
+                    .field("a_type", &self.a_type)
+                    .finish()
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for Elf32_Auxinfo {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("Elf32_Auxinfo")
+                    .field("a_type", &self.a_type)
+                    .field("a_un", &self.a_un)
+                    .finish()
             }
         }
     }
@@ -1298,6 +1356,23 @@ pub const AT_EACCESS: ::c_int = 0x100;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
 pub const AT_REMOVEDIR: ::c_int = 0x800;
+
+pub const AT_NULL: ::c_int = 0;
+pub const AT_IGNORE: ::c_int = 1;
+pub const AT_EXECFD: ::c_int = 2;
+pub const AT_PHDR: ::c_int = 3;
+pub const AT_PHENT: ::c_int = 4;
+pub const AT_PHNUM: ::c_int = 5;
+pub const AT_PAGESZ: ::c_int = 6;
+pub const AT_BASE: ::c_int = 7;
+pub const AT_FLAGS: ::c_int = 8;
+pub const AT_ENTRY: ::c_int = 9;
+pub const AT_NOTELF: ::c_int = 10;
+pub const AT_UID: ::c_int = 11;
+pub const AT_EUID: ::c_int = 12;
+pub const AT_GID: ::c_int = 13;
+pub const AT_EGID: ::c_int = 14;
+pub const AT_EXECPATH: ::c_int = 15;
 
 pub const TABDLY: ::tcflag_t = 0x00000004;
 pub const TAB0: ::tcflag_t = 0x00000000;

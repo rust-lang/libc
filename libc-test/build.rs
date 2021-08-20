@@ -1747,6 +1747,7 @@ fn test_freebsd(target: &str) {
                 "limits.h",
                 "link.h",
                 "locale.h",
+                "machine/elf.h",
                 "machine/reg.h",
                 "malloc_np.h",
                 "mqueue.h",
@@ -1823,7 +1824,8 @@ fn test_freebsd(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr"
+            | "Elf32_Auxinfo" | "Elf64_Auxinfo" => ty.to_string(),
 
             // FIXME: https://github.com/rust-lang/libc/issues/1273
             "sighandler_t" => "sig_t".to_string(),
@@ -2044,6 +2046,9 @@ fn test_freebsd(target: &str) {
             // is PATH_MAX long but tests can't accept multi array as equivalent.
             ("kinfo_vmentry", "kve_path") => true,
 
+            // a_un field is a union
+            ("Elf32_Auxinfo", "a_un") => true,
+            ("Elf64_Auxinfo", "a_un") => true,
             _ => false,
         }
     });
