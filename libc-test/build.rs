@@ -1598,6 +1598,8 @@ fn test_android(target: &str) {
             "termios2" => true,
             // uc_sigmask and uc_sigmask64 of ucontext_t are an anonymous union
             "ucontext_t" => true,
+            // 'private' type
+            "prop_info" => true,
 
             _ => false,
         }
@@ -1647,6 +1649,7 @@ fn test_android(target: &str) {
             // test the XSI version below.
             "strerror_r" => true,
             "reallocarray" => true,
+            "__system_property_wait" => true,
 
             _ => false,
         }
