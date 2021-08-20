@@ -3321,6 +3321,9 @@ fn test_haiku(target: &str) {
             // is sized as the _POSIX_MAX_PATH, so that path names will fit in
             // newly allocated dirent objects. This breaks the automated tests.
             "dirent" => true,
+            // The following structs contain function pointers, which cannot be initialized
+            // with mem::zeroed(), so skip the automated test
+            "image_info" | "thread_info" => true,
 
             _ => false,
         }
@@ -3354,6 +3357,9 @@ fn test_haiku(target: &str) {
             "mlock" | "munlock" => true,
             // returns const char * on Haiku
             "strsignal" => true,
+            // uses an enum as a parameter argument, which is incorrectly
+            // translated into a struct argument
+            "find_path" => true,
 
             _ => false,
         }
