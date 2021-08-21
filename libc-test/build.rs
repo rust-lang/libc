@@ -387,6 +387,8 @@ fn test_openbsd(target: &str) {
     let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
+    let x86_64 = target.contains("x86_64");
+
     headers! { cfg:
         "elf.h",
         "errno.h",
@@ -405,6 +407,7 @@ fn test_openbsd(target: &str) {
         "ctype.h",
         "dirent.h",
         "sys/socket.h",
+        [x86_64]:"machine/fpu.h",
         "net/if.h",
         "net/route.h",
         "net/if_arp.h",
