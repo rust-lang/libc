@@ -3420,6 +3420,10 @@ fn test_haiku(target: &str) {
             ("sem_t", "named_sem_id") => true,
             ("sigaction", "sa_sigaction") => true,
             ("sigevent", "sigev_value") => true,
+            ("fpu_state", "_fpreg") => true,
+            // these fields have a simplified data definition in libc
+            ("fpu_state", "_xmm") => true,
+            ("savefpu", "_fp_ymm") => true,
 
             // skip these enum-type fields
             ("thread_info", "state") => true,
