@@ -259,6 +259,93 @@ s! {
         pub api_version: i32,
         pub abi: i32
     }
+
+    pub struct __c_anonymous_eax_0 {
+        pub max_eax: u32,
+        pub vendor_id: [::c_char; 12],
+    }
+
+    pub struct __c_anonymous_eax_1 {
+        pub stepping: u32,
+        pub model: u32,
+        pub family: u32,
+        pub tpe: u32,
+        __reserved_0: u32,
+        pub extended_model: u32,
+        pub extended_family: u32,
+        __reserved_1: u32,
+        pub brand_index: u32,
+        pub clflush: u32,
+        pub logical_cpus: u32,
+        pub apic_id: u32,
+        pub features: u32,
+        pub extended_features: u32,
+    }
+
+    pub struct __c_anonymous_eax_2 {
+        pub call_num: u8,
+        pub cache_descriptors: [u8; 15],
+    }
+
+    pub struct __c_anonymous_eax_3 {
+        __reserved: [u32; 2],
+        pub serial_number_high: u32,
+        pub serial_number_low: u32,
+    }
+
+    pub struct __c_anonymous_regs {
+        pub eax: u32,
+        pub ebx: u32,
+        pub edx: u32,
+        pub ecx: u32,
+    }
+}
+
+s_no_extra_traits! {
+    #[cfg(libc_union)]
+    pub union cpuid_info {
+        pub eax_0: __c_anonymous_eax_0,
+        pub eax_1: __c_anonymous_eax_1,
+        pub eax_2: __c_anonymous_eax_2,
+        pub eax_3: __c_anonymous_eax_3,
+        pub as_chars: [::c_char; 16],
+        pub regs: __c_anonymous_regs,
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        #[cfg(libc_union)]
+        impl PartialEq for cpuid_info {
+            fn eq(&self, other: &cpuid_info) -> bool {
+                unsafe {
+                self.eax_0 == other.eax_0
+                    || self.eax_1 == other.eax_1
+                    || self.eax_2 == other.eax_2
+                    || self.eax_3 == other.eax_3
+                    || self.as_chars == other.as_chars
+                    || self.regs == other.regs
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for cpuid_info {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for cpuid_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                unsafe {
+                f.debug_struct("cpuid_info")
+                    .field("eax_0", &self.eax_0)
+                    .field("eax_1", &self.eax_1)
+                    .field("eax_2", &self.eax_2)
+                    .field("eax_3", &self.eax_3)
+                    .field("as_chars", &self.as_chars)
+                    .field("regs", &self.regs)
+                    .finish()
+                }
+            }
+        }
+    }
 }
 
 // kernel/OS.h
@@ -825,7 +912,7 @@ extern "C" {
     pub fn debugger(message: *const ::c_char);
     pub fn disable_debugger(state: ::c_int) -> ::c_int;
 
-    // TODO: cpuid_info struct and the get_cpuid() function
+    pub fn get_cpuid(info: *mut cpuid_info, eaxRegister: u32, cpuNum: u32) -> status_t;
 
     pub fn get_system_info(info: *mut system_info) -> status_t;
     pub fn get_cpu_info(firstCPU: u32, cpuCount: u32, info: *mut cpu_info) -> status_t;
