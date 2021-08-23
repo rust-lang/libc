@@ -1199,11 +1199,11 @@ fn test_dragonflybsd(target: &str) {
         "termios.h",
         "time.h",
         "ucontext.h",
-        "ufs/ufs/quota.h",
         "unistd.h",
         "util.h",
         "utime.h",
         "utmpx.h",
+        "vfs/ufs/quota.h",
         "wchar.h",
         "iconv.h",
     }

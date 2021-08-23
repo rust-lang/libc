@@ -546,8 +546,9 @@ cfg_if! {
                 self.mc_ss == other.mc_ss &&
                 self.mc_len == other.mc_len &&
                 self.mc_fpformat == other.mc_fpformat &&
-                self.mc_ownedfp == other.mc_ownedfp
-                // FIXME: self.mc_fpregs == other.mc_fpregs
+                self.mc_ownedfp == other.mc_ownedfp &&
+                self.mc_fpregs.iter().zip(other.mc_fpregs.iter()).
+                all(|(a, b)| a == b)
             }
         }
         impl Eq for mcontext_t {}
@@ -583,8 +584,44 @@ cfg_if! {
                     .field("mc_len", &self.mc_len)
                     .field("mc_fpformat", &self.mc_fpformat)
                     .field("mc_ownedfp", &self.mc_ownedfp)
-                    // FIXME: .field("mc_fpregs", &self.mc_fpregs)
+                    .field("mc_fpregs", &self.mc_fpregs)
                     .finish()
+            }
+        }
+        impl ::hash::Hash for mcontext_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.mc_onstack.hash(state);
+                self.mc_rdi.hash(state);
+                self.mc_rsi.hash(state);
+                self.mc_rdx.hash(state);
+                self.mc_rcx.hash(state);
+                self.mc_r8.hash(state);
+                self.mc_r9.hash(state);
+                self.mc_rax.hash(state);
+                self.mc_rbx.hash(state);
+                self.mc_rbp.hash(state);
+                self.mc_r10.hash(state);
+                self.mc_r11.hash(state);
+                self.mc_r10.hash(state);
+                self.mc_r11.hash(state);
+                self.mc_r12.hash(state);
+                self.mc_r13.hash(state);
+                self.mc_r14.hash(state);
+                self.mc_r15.hash(state);
+                self.mc_xflags.hash(state);
+                self.mc_trapno.hash(state);
+                self.mc_addr.hash(state);
+                self.mc_flags.hash(state);
+                self.mc_err.hash(state);
+                self.mc_rip.hash(state);
+                self.mc_cs.hash(state);
+                self.mc_rflags.hash(state);
+                self.mc_rsp.hash(state);
+                self.mc_ss.hash(state);
+                self.mc_len.hash(state);
+                self.mc_fpformat.hash(state);
+                self.mc_ownedfp.hash(state);
+                self.mc_fpregs.hash(state);
             }
         }
         impl PartialEq for ucontext_t {
@@ -608,6 +645,16 @@ cfg_if! {
                     .field("uc_cofunc", &self.uc_cofunc)
                     .field("uc_arg", &self.uc_arg)
                     .finish()
+            }
+        }
+        impl ::hash::Hash for ucontext_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.uc_sigmask.hash(state);
+                self.uc_mcontext.hash(state);
+                self.uc_link.hash(state);
+                self.uc_stack.hash(state);
+                self.uc_cofunc.hash(state);
+                self.uc_arg.hash(state);
             }
         }
     }
