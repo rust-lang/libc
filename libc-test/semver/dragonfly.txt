@@ -1169,6 +1169,10 @@ _SC_XOPEN_STREAMS
 _SC_XOPEN_UNIX
 _SC_XOPEN_VERSION
 _SC_XOPEN_XCU_VERSION
+_UTX_HOSTSIZE
+_UTX_IDSIZE
+_UTX_LINESIZE
+_UTX_USERSIZE
 __errno_location
 abs
 accept4
@@ -1241,6 +1245,7 @@ getgrouplist
 gethostid
 getifaddrs
 getitimer
+getlastlogx
 getline
 getloadavg
 getnameinfo
@@ -1255,6 +1260,7 @@ getrusage
 getservbyport
 getservent
 getsid
+getutxuser
 getutxent
 getutxid
 getutxline
@@ -1278,6 +1284,7 @@ kevent
 killpg
 kqueue
 labs
+lastlog
 lchflags
 lio_listio
 lockf
@@ -1445,10 +1452,13 @@ truncate
 ttyname_r
 ucontext_t
 unmount
+updatelastlogx
+updwtmpx
 useconds_t
 uselocale
 utimensat
 utmpx
+utmpxname
 uuid
 uuid_t
 vm_size_t
