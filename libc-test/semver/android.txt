@@ -3215,6 +3215,7 @@ strsignal
 strspn
 strstr
 strtod
+strtof
 strtok
 strtol
 strtoul

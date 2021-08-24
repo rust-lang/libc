@@ -814,6 +814,7 @@ strrchr
 strspn
 strstr
 strtod
+strtof
 strtok
 strtol
 strtoul
