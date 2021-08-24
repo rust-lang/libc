@@ -230,6 +230,13 @@ s_no_extra_traits! {
         pub ut_unused2: [u8; 16],
     }
 
+    pub struct lastlogx {
+        pub ll_tv: ::timeval,
+        pub ll_line: [::c_char; _UTX_LINESIZE],
+        pub ll_host: [::c_char; _UTX_HOSTSIZE],
+        pub ll_ss: ::sockaddr_storage,
+    }
+
     pub struct dirent {
         pub d_fileno: ::ino_t,
         pub d_namlen: u16,
@@ -374,6 +381,33 @@ cfg_if! {
                 self.ut_ss.hash(state);
                 self.ut_tv.hash(state);
                 self.ut_unused2.hash(state);
+            }
+        }
+        impl PartialEq for lastlogx {
+            fn eq(&self, other: &lastlogx) -> bool {
+                self.ll_tv == other.ll_tv
+                    && self.ll_line == other.ll_line
+                    && self.ll_host == other.ll_host
+                    && self.ll_ss == other.ll_ss
+            }
+        }
+        impl Eq for lastlogx {}
+        impl ::fmt::Debug for lastlogx {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("lastlogx")
+                    .field("ll_tv", &self.ll_tv)
+                    .field("ll_line", &self.ll_line)
+                    .field("ll_host", &self.ll_host)
+                    .field("ll_ss", &self.ll_ss)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for lastlogx {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ll_tv.hash(state);
+                self.ll_line.hash(state);
+                self.ll_host.hash(state);
+                self.ll_ss.hash(state);
             }
         }
 
@@ -1120,6 +1154,10 @@ pub const DOWNTIME: ::c_short = 11;
 pub const UTX_DB_UTMPX: ::c_uint = 0;
 pub const UTX_DB_WTMPX: ::c_uint = 1;
 pub const UTX_DB_LASTLOG: ::c_uint = 2;
+pub const _UTX_LINESIZE: usize = 32;
+pub const _UTX_USERSIZE: usize = 32;
+pub const _UTX_IDSIZE: usize = 4;
+pub const _UTX_HOSTSIZE: usize = 256;
 
 pub const LC_COLLATE_MASK: ::c_int = 1 << 0;
 pub const LC_CTYPE_MASK: ::c_int = 1 << 1;
@@ -1308,6 +1346,12 @@ extern "C" {
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
     pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
     pub fn procctl(idtype: ::idtype_t, id: ::id_t, cmd: ::c_int, data: *mut ::c_void) -> ::c_int;
+
+    pub fn updwtmpx(file: *const ::c_char, ut: *const utmpx) -> ::c_int;
+    pub fn getlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> *mut lastlogx;
+    pub fn updlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> ::c_int;
+    pub fn getutxuser(name: *const ::c_char) -> utmpx;
+    pub fn utmpxname(file: *const ::c_char) -> ::c_int;
 }
 
 #[link(name = "rt")]
