@@ -247,6 +247,7 @@ s_no_extra_traits! {
     }
 
     pub struct statfs {
+        __spare2: ::c_long,
         pub f_bsize: ::c_long,
         pub f_iosize: ::c_long,
         pub f_blocks: ::c_long,
@@ -256,15 +257,18 @@ s_no_extra_traits! {
         pub f_ffree: ::c_long,
         pub f_fsid: ::fsid_t,
         pub f_owner: ::uid_t,
-        pub f_type: i32,
-        pub f_flags: i32,
+        pub f_type: ::c_int,
+        pub f_flags: ::c_int,
         pub f_syncwrites: ::c_long,
         pub f_asyncwrites: ::c_long,
         pub f_fstypename: [::c_char; 16],
-        pub f_mntonname: [::c_char; 90],
+        pub f_mntonname: [::c_char; 80],
         pub f_syncreads: ::c_long,
         pub f_asyncreads: ::c_long,
-        pub f_mntfromname: [::c_char; 90],
+        __spares1: ::c_short,
+        pub f_mntfromname: [::c_char; 80],
+        __spares2: ::c_short,
+        __spare: [::c_long; 2],
     }
 
     pub struct sigevent {
