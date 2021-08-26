@@ -40,6 +40,9 @@ pub type sae_associd_t = u32;
 pub type sae_connid_t = u32;
 
 pub type mach_port_t = ::c_uint;
+pub type host_t = ::c_uint;
+pub type host_flavor_t = integer_t;
+pub type host_info64_t = *mut integer_t;
 pub type processor_flavor_t = ::c_int;
 pub type thread_flavor_t = natural_t;
 pub type thread_inspect_t = mach_port_t;
@@ -96,6 +99,11 @@ pub type thread_latency_qos_policy_data_t = thread_latency_qos_policy;
 pub type thread_latency_qos_policy_t = *mut thread_latency_qos_policy;
 pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
 pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
+
+pub type vm_statistics_t = *mut vm_statistics;
+pub type vm_statistics_data_t = vm_statistics;
+pub type vm_statistics64_t = *mut vm_statistics64;
+pub type vm_statistics64_data_t = vm_statistics64;
 
 pub type CCStatus = i32;
 pub type CCCryptorStatus = i32;
@@ -721,6 +729,24 @@ s! {
         pub pvi_cdir: vnode_info_path,
         pub pvi_rdir: vnode_info_path,
     }
+
+    pub struct vm_statistics {
+        pub free_count: natural_t,
+        pub active_count: natural_t,
+        pub inactive_count: natural_t,
+        pub wire_count: natural_t,
+        pub zero_fill_count: natural_t,
+        pub reactivations: natural_t,
+        pub pageins: natural_t,
+        pub pageouts: natural_t,
+        pub faults: natural_t,
+        pub cow_faults: natural_t,
+        pub lookups: natural_t,
+        pub hits: natural_t,
+        pub purgeable_count: natural_t,
+        pub purges: natural_t,
+        pub speculative_count: natural_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -903,6 +929,81 @@ s_no_extra_traits! {
         pub pth_priority: i32,
         pub pth_maxpriority: i32,
         pub pth_name: [::c_char; MAXTHREADNAMESIZE],
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct if_data64 {
+        pub ifi_type: ::c_uchar,
+        pub ifi_typelen: ::c_uchar,
+        pub ifi_physical: ::c_uchar,
+        pub ifi_addrlen: ::c_uchar,
+        pub ifi_hdrlen: ::c_uchar,
+        pub ifi_recvquota: ::c_uchar,
+        pub ifi_xmitquota: ::c_uchar,
+        pub ifi_unused1: ::c_uchar,
+        pub ifi_mtu: u32,
+        pub ifi_metric: u32,
+        pub ifi_baudrate: u64,
+        pub ifi_ipackets: u64,
+        pub ifi_ierrors: u64,
+        pub ifi_opackets: u64,
+        pub ifi_oerrors: u64,
+        pub ifi_collisions: u64,
+        pub ifi_ibytes: u64,
+        pub ifi_obytes: u64,
+        pub ifi_imcasts: u64,
+        pub ifi_omcasts: u64,
+        pub ifi_iqdrops: u64,
+        pub ifi_noproto: u64,
+        pub ifi_recvtiming: u32,
+        pub ifi_xmittiming: u32,
+        #[cfg(any(target_arch = "arm", target_arch = "x86"))]
+        pub ifi_lastchange: ::timeval,
+        #[cfg(not(any(target_arch = "arm", target_arch = "x86")))]
+        pub ifi_lastchange: timeval32,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct if_msghdr2 {
+        pub ifm_msglen: ::c_ushort,
+        pub ifm_version: ::c_uchar,
+        pub ifm_type: ::c_uchar,
+        pub ifm_addrs: ::c_int,
+        pub ifm_flags: ::c_int,
+        pub ifm_index: ::c_ushort,
+        pub ifm_snd_len: ::c_int,
+        pub ifm_snd_maxlen: ::c_int,
+        pub ifm_snd_drops: ::c_int,
+        pub ifm_timer: ::c_int,
+        pub ifm_data: if_data64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(8)))]
+    pub struct vm_statistics64 {
+        pub free_count: natural_t,
+        pub active_count: natural_t,
+        pub inactive_count: natural_t,
+        pub wire_count: natural_t,
+        pub zero_fill_count: u64,
+        pub reactivations: u64,
+        pub pageins: u64,
+        pub pageouts: u64,
+        pub faults: u64,
+        pub cow_faults: u64,
+        pub lookups: u64,
+        pub hits: u64,
+        pub purges: u64,
+        pub purgeable_count: natural_t,
+        pub speculative_count: natural_t,
+        pub decompressions: u64,
+        pub compressions: u64,
+        pub swapins: u64,
+        pub swapouts: u64,
+        pub compressor_page_count: natural_t,
+        pub throttled_count: natural_t,
+        pub external_page_count: natural_t,
+        pub internal_page_count: natural_t,
+        pub total_uncompressed_pages_in_compressor: u64,
     }
 }
 
@@ -1752,6 +1853,355 @@ cfg_if! {
                 self.thread_id.hash(state);
                 self.thread_handle.hash(state);
                 self.dispatch_qaddr.hash(state);
+            }
+        }
+        impl PartialEq for if_data64 {
+            fn eq(&self, other: &if_data64) -> bool {
+                self.ifi_type == other.ifi_type &&
+                self.ifi_typelen == other.ifi_typelen &&
+                self.ifi_physical == other.ifi_physical &&
+                self.ifi_addrlen == other.ifi_addrlen &&
+                self.ifi_hdrlen == other.ifi_hdrlen &&
+                self.ifi_recvquota == other.ifi_recvquota &&
+                self.ifi_xmitquota == other.ifi_xmitquota &&
+                self.ifi_unused1 == other.ifi_unused1 &&
+                self.ifi_mtu == other.ifi_mtu &&
+                self.ifi_metric == other.ifi_metric &&
+                self.ifi_baudrate == other.ifi_baudrate &&
+                self.ifi_ipackets == other.ifi_ipackets &&
+                self.ifi_ierrors == other.ifi_ierrors &&
+                self.ifi_opackets == other.ifi_opackets &&
+                self.ifi_oerrors == other.ifi_oerrors &&
+                self.ifi_collisions == other.ifi_collisions &&
+                self.ifi_ibytes == other.ifi_ibytes &&
+                self.ifi_obytes == other.ifi_obytes &&
+                self.ifi_imcasts == other.ifi_imcasts &&
+                self.ifi_omcasts == other.ifi_omcasts &&
+                self.ifi_iqdrops == other.ifi_iqdrops &&
+                self.ifi_noproto == other.ifi_noproto &&
+                self.ifi_recvtiming == other.ifi_recvtiming &&
+                self.ifi_xmittiming == other.ifi_xmittiming &&
+                self.ifi_lastchange == other.ifi_lastchange
+            }
+        }
+        impl Eq for if_data64 {}
+        impl ::fmt::Debug for if_data64 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ifi_type = self.ifi_type;
+                let ifi_typelen = self.ifi_typelen;
+                let ifi_physical = self.ifi_physical;
+                let ifi_addrlen = self.ifi_addrlen;
+                let ifi_hdrlen = self.ifi_hdrlen;
+                let ifi_recvquota = self.ifi_recvquota;
+                let ifi_xmitquota = self.ifi_xmitquota;
+                let ifi_unused1 = self.ifi_unused1;
+                let ifi_mtu = self.ifi_mtu;
+                let ifi_metric = self.ifi_metric;
+                let ifi_baudrate = self.ifi_baudrate;
+                let ifi_ipackets = self.ifi_ipackets;
+                let ifi_ierrors = self.ifi_ierrors;
+                let ifi_opackets = self.ifi_opackets;
+                let ifi_oerrors = self.ifi_oerrors;
+                let ifi_collisions = self.ifi_collisions;
+                let ifi_ibytes = self.ifi_ibytes;
+                let ifi_obytes = self.ifi_obytes;
+                let ifi_imcasts = self.ifi_imcasts;
+                let ifi_omcasts = self.ifi_omcasts;
+                let ifi_iqdrops = self.ifi_iqdrops;
+                let ifi_noproto = self.ifi_noproto;
+                let ifi_recvtiming = self.ifi_recvtiming;
+                let ifi_xmittiming = self.ifi_xmittiming;
+                let ifi_lastchange = self.ifi_lastchange;
+                f.debug_struct("if_data64")
+                    .field("ifi_type", &ifi_type)
+                    .field("ifi_typelen", &ifi_typelen)
+                    .field("ifi_physical", &ifi_physical)
+                    .field("ifi_addrlen", &ifi_addrlen)
+                    .field("ifi_hdrlen", &ifi_hdrlen)
+                    .field("ifi_recvquota", &ifi_recvquota)
+                    .field("ifi_xmitquota", &ifi_xmitquota)
+                    .field("ifi_unused1", &ifi_unused1)
+                    .field("ifi_mtu", &ifi_mtu)
+                    .field("ifi_metric", &ifi_metric)
+                    .field("ifi_baudrate", &ifi_baudrate)
+                    .field("ifi_ipackets", &ifi_ipackets)
+                    .field("ifi_ierrors", &ifi_ierrors)
+                    .field("ifi_opackets", &ifi_opackets)
+                    .field("ifi_oerrors", &ifi_oerrors)
+                    .field("ifi_collisions", &ifi_collisions)
+                    .field("ifi_ibytes", &ifi_ibytes)
+                    .field("ifi_obytes", &ifi_obytes)
+                    .field("ifi_imcasts", &ifi_imcasts)
+                    .field("ifi_omcasts", &ifi_omcasts)
+                    .field("ifi_iqdrops", &ifi_iqdrops)
+                    .field("ifi_noproto", &ifi_noproto)
+                    .field("ifi_recvtiming", &ifi_recvtiming)
+                    .field("ifi_xmittiming", &ifi_xmittiming)
+                    .field("ifi_lastchange", &ifi_lastchange)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for if_data64 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let ifi_type = self.ifi_type;
+                let ifi_typelen = self.ifi_typelen;
+                let ifi_physical = self.ifi_physical;
+                let ifi_addrlen = self.ifi_addrlen;
+                let ifi_hdrlen = self.ifi_hdrlen;
+                let ifi_recvquota = self.ifi_recvquota;
+                let ifi_xmitquota = self.ifi_xmitquota;
+                let ifi_unused1 = self.ifi_unused1;
+                let ifi_mtu = self.ifi_mtu;
+                let ifi_metric = self.ifi_metric;
+                let ifi_baudrate = self.ifi_baudrate;
+                let ifi_ipackets = self.ifi_ipackets;
+                let ifi_ierrors = self.ifi_ierrors;
+                let ifi_opackets = self.ifi_opackets;
+                let ifi_oerrors = self.ifi_oerrors;
+                let ifi_collisions = self.ifi_collisions;
+                let ifi_ibytes = self.ifi_ibytes;
+                let ifi_obytes = self.ifi_obytes;
+                let ifi_imcasts = self.ifi_imcasts;
+                let ifi_omcasts = self.ifi_omcasts;
+                let ifi_iqdrops = self.ifi_iqdrops;
+                let ifi_noproto = self.ifi_noproto;
+                let ifi_recvtiming = self.ifi_recvtiming;
+                let ifi_xmittiming = self.ifi_xmittiming;
+                let ifi_lastchange = self.ifi_lastchange;
+                ifi_type.hash(state);
+                ifi_typelen.hash(state);
+                ifi_physical.hash(state);
+                ifi_addrlen.hash(state);
+                ifi_hdrlen.hash(state);
+                ifi_recvquota.hash(state);
+                ifi_xmitquota.hash(state);
+                ifi_unused1.hash(state);
+                ifi_mtu.hash(state);
+                ifi_metric.hash(state);
+                ifi_baudrate.hash(state);
+                ifi_ipackets.hash(state);
+                ifi_ierrors.hash(state);
+                ifi_opackets.hash(state);
+                ifi_oerrors.hash(state);
+                ifi_collisions.hash(state);
+                ifi_ibytes.hash(state);
+                ifi_obytes.hash(state);
+                ifi_imcasts.hash(state);
+                ifi_omcasts.hash(state);
+                ifi_iqdrops.hash(state);
+                ifi_noproto.hash(state);
+                ifi_recvtiming.hash(state);
+                ifi_xmittiming.hash(state);
+                ifi_lastchange.hash(state);
+            }
+        }
+        impl PartialEq for if_msghdr2 {
+            fn eq(&self, other: &if_msghdr2) -> bool {
+                self.ifm_msglen == other.ifm_msglen &&
+                self.ifm_version == other.ifm_version &&
+                self.ifm_type == other.ifm_type &&
+                self.ifm_addrs == other.ifm_addrs &&
+                self.ifm_flags == other.ifm_flags &&
+                self.ifm_index == other.ifm_index &&
+                self.ifm_snd_len == other.ifm_snd_len &&
+                self.ifm_snd_maxlen == other.ifm_snd_maxlen &&
+                self.ifm_snd_drops == other.ifm_snd_drops &&
+                self.ifm_timer == other.ifm_timer &&
+                self.ifm_data == other.ifm_data
+            }
+        }
+        impl Eq for if_msghdr2 {}
+        impl ::fmt::Debug for if_msghdr2 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ifm_msglen = self.ifm_msglen;
+                let ifm_version = self.ifm_version;
+                let ifm_type = self.ifm_type;
+                let ifm_addrs = self.ifm_addrs;
+                let ifm_flags = self.ifm_flags;
+                let ifm_index = self.ifm_index;
+                let ifm_snd_len = self.ifm_snd_len;
+                let ifm_snd_maxlen = self.ifm_snd_maxlen;
+                let ifm_snd_drops = self.ifm_snd_drops;
+                let ifm_timer = self.ifm_timer;
+                let ifm_data = self.ifm_data;
+                f.debug_struct("if_msghdr2")
+                    .field("ifm_msglen", &ifm_msglen)
+                    .field("ifm_version", &ifm_version)
+                    .field("ifm_type", &ifm_type)
+                    .field("ifm_addrs", &ifm_addrs)
+                    .field("ifm_flags", &ifm_flags)
+                    .field("ifm_index", &ifm_index)
+                    .field("ifm_snd_len", &ifm_snd_len)
+                    .field("ifm_snd_maxlen", &ifm_snd_maxlen)
+                    .field("ifm_snd_drops", &ifm_snd_drops)
+                    .field("ifm_timer", &ifm_timer)
+                    .field("ifm_data", &ifm_data)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for if_msghdr2 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let ifm_msglen = self.ifm_msglen;
+                let ifm_version = self.ifm_version;
+                let ifm_type = self.ifm_type;
+                let ifm_addrs = self.ifm_addrs;
+                let ifm_flags = self.ifm_flags;
+                let ifm_index = self.ifm_index;
+                let ifm_snd_len = self.ifm_snd_len;
+                let ifm_snd_maxlen = self.ifm_snd_maxlen;
+                let ifm_snd_drops = self.ifm_snd_drops;
+                let ifm_timer = self.ifm_timer;
+                let ifm_data = self.ifm_data;
+                ifm_msglen.hash(state);
+                ifm_version.hash(state);
+                ifm_type.hash(state);
+                ifm_addrs.hash(state);
+                ifm_flags.hash(state);
+                ifm_index.hash(state);
+                ifm_snd_len.hash(state);
+                ifm_snd_maxlen.hash(state);
+                ifm_snd_drops.hash(state);
+                ifm_timer.hash(state);
+                ifm_data.hash(state);
+            }
+        }
+        impl PartialEq for vm_statistics64 {
+            fn eq(&self, other: &vm_statistics64) -> bool {
+                // Otherwise rustfmt crashes...
+                let total_uncompressed = self.total_uncompressed_pages_in_compressor;
+                self.free_count == other.free_count &&
+                self.active_count == other.active_count &&
+                self.inactive_count == other.inactive_count &&
+                self.wire_count == other.wire_count &&
+                self.zero_fill_count == other.zero_fill_count &&
+                self.reactivations == other.reactivations &&
+                self.pageins == other.pageins &&
+                self.pageouts == other.pageouts &&
+                self.faults == other.faults &&
+                self.cow_faults == other.cow_faults &&
+                self.lookups == other.lookups &&
+                self.hits == other.hits &&
+                self.purges == other.purges &&
+                self.purgeable_count == other.purgeable_count &&
+                self.speculative_count == other.speculative_count &&
+                self.decompressions == other.decompressions &&
+                self.compressions == other.compressions &&
+                self.swapins == other.swapins &&
+                self.swapouts == other.swapouts &&
+                self.compressor_page_count == other.compressor_page_count &&
+                self.throttled_count == other.throttled_count &&
+                self.external_page_count == other.external_page_count &&
+                self.internal_page_count == other.internal_page_count &&
+                total_uncompressed == other.total_uncompressed_pages_in_compressor
+            }
+        }
+        impl Eq for vm_statistics64 {}
+        impl ::fmt::Debug for vm_statistics64 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let free_count = self.free_count;
+                let active_count = self.active_count;
+                let inactive_count = self.inactive_count;
+                let wire_count = self.wire_count;
+                let zero_fill_count = self.zero_fill_count;
+                let reactivations = self.reactivations;
+                let pageins = self.pageins;
+                let pageouts = self.pageouts;
+                let faults = self.faults;
+                let cow_faults = self.cow_faults;
+                let lookups = self.lookups;
+                let hits = self.hits;
+                let purges = self.purges;
+                let purgeable_count = self.purgeable_count;
+                let speculative_count = self.speculative_count;
+                let decompressions = self.decompressions;
+                let compressions = self.compressions;
+                let swapins = self.swapins;
+                let swapouts = self.swapouts;
+                let compressor_page_count = self.compressor_page_count;
+                let throttled_count = self.throttled_count;
+                let external_page_count = self.external_page_count;
+                let internal_page_count = self.internal_page_count;
+                // Otherwise rustfmt crashes...
+                let total_uncompressed = self.total_uncompressed_pages_in_compressor;
+                f.debug_struct("vm_statistics64")
+                    .field("free_count", &free_count)
+                    .field("active_count", &active_count)
+                    .field("inactive_count", &inactive_count)
+                    .field("wire_count", &wire_count)
+                    .field("zero_fill_count", &zero_fill_count)
+                    .field("reactivations", &reactivations)
+                    .field("pageins", &pageins)
+                    .field("pageouts", &pageouts)
+                    .field("faults", &faults)
+                    .field("cow_faults", &cow_faults)
+                    .field("lookups", &lookups)
+                    .field("hits", &hits)
+                    .field("purges", &purges)
+                    .field("purgeable_count", &purgeable_count)
+                    .field("speculative_count", &speculative_count)
+                    .field("decompressions", &decompressions)
+                    .field("compressions", &compressions)
+                    .field("swapins", &swapins)
+                    .field("swapouts", &swapouts)
+                    .field("compressor_page_count", &compressor_page_count)
+                    .field("throttled_count", &throttled_count)
+                    .field("external_page_count", &external_page_count)
+                    .field("internal_page_count", &internal_page_count)
+                    .field("total_uncompressed_pages_in_compressor", &total_uncompressed)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for vm_statistics64 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let free_count = self.free_count;
+                let active_count = self.active_count;
+                let inactive_count = self.inactive_count;
+                let wire_count = self.wire_count;
+                let zero_fill_count = self.zero_fill_count;
+                let reactivations = self.reactivations;
+                let pageins = self.pageins;
+                let pageouts = self.pageouts;
+                let faults = self.faults;
+                let cow_faults = self.cow_faults;
+                let lookups = self.lookups;
+                let hits = self.hits;
+                let purges = self.purges;
+                let purgeable_count = self.purgeable_count;
+                let speculative_count = self.speculative_count;
+                let decompressions = self.decompressions;
+                let compressions = self.compressions;
+                let swapins = self.swapins;
+                let swapouts = self.swapouts;
+                let compressor_page_count = self.compressor_page_count;
+                let throttled_count = self.throttled_count;
+                let external_page_count = self.external_page_count;
+                let internal_page_count = self.internal_page_count;
+                // Otherwise rustfmt crashes...
+                let total_uncompressed = self.total_uncompressed_pages_in_compressor;
+                free_count.hash(state);
+                active_count.hash(state);
+                inactive_count.hash(state);
+                wire_count.hash(state);
+                zero_fill_count.hash(state);
+                reactivations.hash(state);
+                pageins.hash(state);
+                pageouts.hash(state);
+                faults.hash(state);
+                cow_faults.hash(state);
+                lookups.hash(state);
+                hits.hash(state);
+                purges.hash(state);
+                purgeable_count.hash(state);
+                speculative_count.hash(state);
+                decompressions.hash(state);
+                compressions.hash(state);
+                swapins.hash(state);
+                swapouts.hash(state);
+                compressor_page_count.hash(state);
+                throttled_count.hash(state);
+                external_page_count.hash(state);
+                internal_page_count.hash(state);
+                total_uncompressed.hash(state);
             }
         }
     }
@@ -4500,6 +4950,20 @@ extern "C" {
         cur_protection: ::vm_prot_t,
         max_protection: ::vm_prot_t,
         inheritance: ::vm_inherit_t,
+    ) -> ::kern_return_t;
+
+    pub fn host_statistics64(
+        host_priv: host_t,
+        flavor: host_flavor_t,
+        host_info64_out: host_info64_t,
+        host_info64_outCnt: *mut mach_msg_type_number_t,
+    ) -> ::kern_return_t;
+    pub fn host_processor_info(
+        host: host_t,
+        flavor: processor_flavor_t,
+        out_processor_count: *mut natural_t,
+        out_processor_info: *mut processor_info_array_t,
+        out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
 
     pub static mut mach_task_self_: mach_port_t;
