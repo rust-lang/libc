@@ -3795,6 +3795,27 @@ pub const kCCCallSequenceError: i32 = -4309;
 pub const kCCKeySizeError: i32 = -4310;
 pub const kCCInvalidKey: i32 = -4311;
 
+// mach/host_info.h
+pub const HOST_LOAD_INFO: i32 = 1;
+pub const HOST_VM_INFO: i32 = 2;
+pub const HOST_CPU_LOAD_INFO: i32 = 3;
+pub const HOST_VM_INFO64: i32 = 4;
+pub const HOST_EXTMOD_INFO64: i32 = 5;
+pub const HOST_EXPIRED_TASK_INFO: i32 = 6;
+
+// mach/vm_statistics.h
+pub const VM_PAGE_QUERY_PAGE_PRESENT: i32 = 0x1;
+pub const VM_PAGE_QUERY_PAGE_FICTITIOUS: i32 = 0x2;
+pub const VM_PAGE_QUERY_PAGE_REF: i32 = 0x4;
+pub const VM_PAGE_QUERY_PAGE_DIRTY: i32 = 0x8;
+pub const VM_PAGE_QUERY_PAGE_PAGED_OUT: i32 = 0x10;
+pub const VM_PAGE_QUERY_PAGE_COPIED: i32 = 0x20;
+pub const VM_PAGE_QUERY_PAGE_SPECULATIVE: i32 = 0x40;
+pub const VM_PAGE_QUERY_PAGE_EXTERNAL: i32 = 0x80;
+pub const VM_PAGE_QUERY_PAGE_CS_VALIDATED: i32 = 0x100;
+pub const VM_PAGE_QUERY_PAGE_CS_TAINTED: i32 = 0x200;
+pub const VM_PAGE_QUERY_PAGE_CS_NX: i32 = 0x400;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         const fn __DARWIN_ALIGN32(p: usize) -> usize {
