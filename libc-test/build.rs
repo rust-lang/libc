@@ -2795,6 +2795,9 @@ fn test_linux(target: &str) {
             // Require Linux kernel 5.6:
             "VMADDR_CID_LOCAL" => true,
 
+            // Requires Linux kernel 5.7:
+            "MREMAP_DONTUNMAP" => true,
+
             // IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
             | "IPPROTO_MAX"
             | "IPPROTO_MPTCP" => true,
