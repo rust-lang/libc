@@ -1421,6 +1421,8 @@ extern "C" {
         attr: *mut pthread_condattr_t,
         clock_id: ::clockid_t,
     ) -> ::c_int;
+    pub fn valloc(numBytes: ::size_t) -> *mut ::c_void;
+    pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
