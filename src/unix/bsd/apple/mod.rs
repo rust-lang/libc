@@ -4480,6 +4480,12 @@ extern "C" {
         max_protection: ::vm_prot_t,
         inheritance: ::vm_inherit_t,
     ) -> ::kern_return_t;
+
+    pub static mut mach_task_self_: mach_port_t;
+}
+
+pub unsafe fn mach_task_self() -> mach_port_t {
+    mach_task_self_
 }
 
 cfg_if! {
