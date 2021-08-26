@@ -1598,6 +1598,7 @@ cfg_if! {
 
 pub const MREMAP_MAYMOVE: ::c_int = 1;
 pub const MREMAP_FIXED: ::c_int = 2;
+pub const MREMAP_DONTUNMAP: ::c_int = 4;
 
 pub const PR_SET_PDEATHSIG: ::c_int = 1;
 pub const PR_GET_PDEATHSIG: ::c_int = 2;
