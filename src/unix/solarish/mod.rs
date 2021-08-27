@@ -417,7 +417,6 @@ s! {
         pub maxerror: i32,
         pub esterror: i32,
     }
-
 }
 
 s_no_extra_traits! {
@@ -501,6 +500,18 @@ s_no_extra_traits! {
         pub ss_sp: *mut ::c_void,
         pub sigev_notify_attributes: *const ::pthread_attr_t,
         __sigev_pad2: ::c_int,
+    }
+
+    #[cfg(libc_union)]
+    pub union pad128_t {
+        pub _q: ::c_double,
+        pub _l: [i32; 4],
+    }
+
+    #[cfg(libc_union)]
+    pub union upad128_t {
+        pub _q: ::c_double,
+        pub _l: [u32; 4],
     }
 }
 
@@ -827,6 +838,68 @@ cfg_if! {
             }
         }
 
+        #[cfg(libc_union)]
+        impl PartialEq for pad128_t {
+            fn eq(&self, other: &pad128_t) -> bool {
+                unsafe {
+                self._q == other._q ||
+                    self._l == other._l
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for pad128_t {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for pad128_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                unsafe {
+                f.debug_struct("pad128_t")
+                    .field("_q", &{self._q})
+                    .field("_l", &{self._l})
+                    .finish()
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for pad128_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                state.write_i64(self._q as i64);
+                self._l.hash(state);
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl PartialEq for upad128_t {
+            fn eq(&self, other: &upad128_t) -> bool {
+                unsafe {
+                self._q == other._q ||
+                    self._l == other._l
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for upad128_t {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for upad128_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                unsafe {
+                f.debug_struct("upad128_t")
+                    .field("_q", &{self._q})
+                    .field("_l", &{self._l})
+                    .finish()
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for upad128_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                state.write_i64(self._q as i64);
+                self._l.hash(state);
+                }
+            }
+        }
     }
 }
 
@@ -2692,5 +2765,12 @@ cfg_if! {
         pub use self::solaris::*;
     } else {
         // Unknown target_os
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_arch = "x86_64")] {
+        mod x86_64;
+        pub use self::x86_64::*;
     }
 }
