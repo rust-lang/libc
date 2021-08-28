@@ -831,6 +831,9 @@ fn test_solarish(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         // the union handling is a mess
         if ty.contains("door_desc_t_") {
             return true;
@@ -1378,9 +1381,7 @@ fn test_wasi(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| match ty {
         "FILE" | "fd_set" | "DIR" => ty.to_string(),
         t if is_union => format!("union {}", t),
-        t if t.starts_with("__wasi") && t.ends_with("_u") => {
-            format!("union {}", t)
-        }
+        t if t.starts_with("__wasi") && t.ends_with("_u") => format!("union {}", t),
         t if t.starts_with("__wasi") && is_struct => format!("struct {}", t),
         t if t.ends_with("_t") => t.to_string(),
         t if is_struct => format!("struct {}", t),
