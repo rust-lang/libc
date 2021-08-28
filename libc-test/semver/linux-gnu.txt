@@ -548,6 +548,7 @@ globfree
 globfree64
 mallinfo
 mallinfo2
+malloc_info
 malloc_usable_size
 mallopt
 nl_mmap_hdr

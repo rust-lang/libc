@@ -2570,6 +2570,9 @@ extern "C" {
     pub fn __sched_cpucount(setsize: ::size_t, set: *const cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
+    // available from API 23
+    pub fn malloc_info(options: ::c_int, stream: *mut ::FILE) -> ::c_int;
+
     pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
 
     pub fn utmpname(name: *const ::c_char) -> ::c_int;
