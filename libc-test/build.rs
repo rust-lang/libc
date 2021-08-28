@@ -1032,6 +1032,9 @@ fn test_netbsd(target: &str) {
     });
 
     cfg.skip_type(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // FIXME: sighandler_t is crazy across platforms
             "sighandler_t" => true,
