@@ -1326,6 +1326,7 @@ extern "C" {
     pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn mallinfo2() -> ::mallinfo2;
+    pub fn malloc_info(options: ::c_int, stream: *mut ::FILE) -> ::c_int;
     pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
     pub fn getpwent_r(
         pwd: *mut ::passwd,
