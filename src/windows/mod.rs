@@ -497,7 +497,7 @@ extern "C" {
     pub fn aligned_free(ptr: *mut ::c_void);
 }
 
-extern "system" {
+extern "stdcall" {
     pub fn listen(s: SOCKET, backlog: ::c_int) -> ::c_int;
     pub fn accept(s: SOCKET, addr: *mut ::sockaddr, addrlen: *mut ::c_int) -> SOCKET;
     pub fn bind(s: SOCKET, name: *const ::sockaddr, namelen: ::c_int) -> ::c_int;

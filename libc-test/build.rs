@@ -540,6 +540,7 @@ fn test_openbsd(target: &str) {
 fn test_windows(target: &str) {
     assert!(target.contains("windows"));
     let gnu = target.contains("gnu");
+    let msvc = target.contains("msvc");
 
     let mut cfg = ctest_cfg();
     if target.contains("msvc") {
@@ -565,6 +566,8 @@ fn test_windows(target: &str) {
         "sys/utime.h",
         "time.h",
         "wchar.h",
+        [msvc]: "winsock2.h",
+        [msvc]: "bcrypt.h",
         [gnu]: "ws2tcpip.h",
         [!gnu]: "Winsock2.h",
     }

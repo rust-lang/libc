@@ -1,3 +1,6 @@
+BCryptCloseAlgorithmProvider
+BCryptGenRandom
+BCryptOpenAlgorithmProvider
 EOTHER
 stricmp
 strnicmp
