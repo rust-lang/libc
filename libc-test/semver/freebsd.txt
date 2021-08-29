@@ -1639,6 +1639,7 @@ pthread_condattr_getpshared
 pthread_condattr_setclock
 pthread_condattr_setpshared
 pthread_getaffinity_np
+pthread_getcpuclockid
 pthread_getthreadid_np
 pthread_kill
 pthread_main_np

@@ -2921,6 +2921,7 @@ pthread_condattr_setclock
 pthread_condattr_setpshared
 pthread_getaffinity_np
 pthread_getattr_np
+pthread_getcpuclockid
 pthread_getschedparam
 pthread_kill
 pthread_mutex_timedlock

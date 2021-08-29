@@ -1430,6 +1430,8 @@ extern "C" {
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
     pub fn clock_getcpuclockid(pid: ::pid_t, clk_id: *mut ::clockid_t) -> ::c_int;
 
+    pub fn pthread_getcpuclockid(thread: ::pthread_t, clk_id: *mut ::clockid_t) -> ::c_int;
+
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn endutxent();

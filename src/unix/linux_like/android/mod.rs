@@ -2917,6 +2917,8 @@ extern "C" {
     pub fn arc4random_buf(__buf: *mut ::c_void, __n: ::size_t);
 
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
+
+    pub fn pthread_getcpuclockid(thread: ::pthread_t, clk_id: *mut ::clockid_t) -> ::c_int;
 }
 
 cfg_if! {
