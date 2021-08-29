@@ -3840,6 +3840,8 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn gethostid() -> ::c_long;
+
+    pub fn pthread_getcpuclockid(thread: ::pthread_t, clk_id: *mut ::clockid_t) -> ::c_int;
 }
 
 cfg_if! {

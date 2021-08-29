@@ -2984,6 +2984,7 @@ pthread_create
 pthread_detach
 pthread_exit
 pthread_getattr_np
+pthread_getcpuclockid
 pthread_getschedparam
 pthread_getspecific
 pthread_join
