@@ -199,6 +199,7 @@ fn test_apple(target: &str) {
         "locale.h",
         "mach-o/dyld.h",
         "mach/mach_init.h",
+        "mach/mach.h",
         "mach/mach_time.h",
         "mach/mach_types.h",
         "mach/mach_vm.h",
