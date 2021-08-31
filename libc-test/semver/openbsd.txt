@@ -908,6 +908,7 @@ arphdr
 atof
 bsearch
 caddr_t
+calloc_conceal
 chflags
 chflagsat
 chroot
@@ -937,6 +938,7 @@ fmemopen
 forkpty
 freeifaddrs
 freelocale
+freezero
 fsid_t
 fstatfs
 fusefs_args
@@ -989,6 +991,7 @@ lastlog
 lockf
 login_tty
 madvise
+malloc_conceal
 memmem
 memrchr
 mfs_args
