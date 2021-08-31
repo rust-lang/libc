@@ -1424,6 +1424,9 @@ extern "C" {
         nitems: ::c_int,
         sevp: *mut sigevent,
     ) -> ::c_int;
+
+    pub fn reallocf(ptr: *mut ::c_void, size: ::size_t) -> *mut ::c_void;
+    pub fn freezero(ptr: *mut ::c_void, size: ::size_t);
 }
 
 cfg_if! {

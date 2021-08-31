@@ -1230,6 +1230,7 @@ fmemopen
 forkpty
 freeifaddrs
 freelocale
+freezero
 fsid_t
 fstatfs
 futimes
@@ -1378,6 +1379,7 @@ querylocale
 rand
 readdir_r
 readlinkat
+reallocf
 recvmsg
 regcomp
 regerror
