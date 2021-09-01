@@ -1587,6 +1587,10 @@ extern "C" {
     pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
 
     pub fn setproctitle(fmt: *const ::c_char, ...);
+
+    pub fn freezero(ptr: *mut ::c_void, size: ::size_t);
+    pub fn malloc_conceal(size: ::size_t) -> *mut ::c_void;
+    pub fn calloc_conceal(nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
 
 cfg_if! {
