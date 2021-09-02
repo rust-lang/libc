@@ -1190,6 +1190,11 @@ pub const P_CTID: idtype_t = 13;
 pub const P_CPUID: idtype_t = 14;
 pub const P_PSETID: idtype_t = 15;
 
+pub const PBIND_NONE: ::processorid_t = -1;
+pub const PBIND_QUERY: ::processorid_t = -2;
+pub const PBIND_HARD: ::processorid_t = -3;
+pub const PBIND_SOFT: ::processorid_t = -4;
+
 pub const PS_NONE: ::c_int = -1;
 pub const PS_QUERY: ::c_int = -2;
 pub const PS_MYID: ::c_int = -3;
