@@ -89,8 +89,6 @@ pub type rlim_t = ::c_ulonglong;
 pub type c_long = i64;
 pub type c_ulong = u64;
 
-pub type zx_status_t = i32;
-
 // FIXME: why are these uninhabited types? that seems... wrong?
 // Presumably these should be `()` or an `extern type` (when that stabilizes).
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
@@ -4231,9 +4229,6 @@ extern "C" {
         >,
         data: *mut ::c_void,
     ) -> ::c_int;
-
-    pub fn zx_cprng_draw(buffer: *mut ::c_void, buffer_size: ::size_t);
-    pub fn zx_cprng_add_entropy(buffer: *const ::c_void, buffer_size: ::size_t) -> ::zx_status_t;
 }
 
 cfg_if! {
