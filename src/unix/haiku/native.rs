@@ -63,6 +63,23 @@ e! {
     }
 
     // kernel/scheduler.h
+
+    pub enum be_task_flags {
+        B_DEFAULT_MEDIA_PRIORITY = 0x000,
+        B_OFFLINE_PROCESSING = 0x001,
+        B_STATUS_RENDERING = 0x002,
+        B_USER_INPUT_HANDLING = 0x004,
+        B_LIVE_VIDEO_MANIPULATION = 0x008,
+        B_VIDEO_PLAYBACK = 0x010,
+        B_VIDEO_RECORDING = 0x020,
+        B_LIVE_AUDIO_MANIPULATION = 0x040,
+        B_AUDIO_PLAYBACK = 0x080,
+        B_AUDIO_RECORDING = 0x100,
+        B_LIVE_3D_RENDERING = 0x200,
+        B_NUMBER_CRUNCHING = 0x400,
+        B_MIDI_PROCESSING = 0x800,
+    }
+
     pub enum schduler_mode {
         SCHEDULER_MODE_LOW_LATENCY,
         SCHEDULER_MODE_POWER_SAVING,
@@ -861,6 +878,13 @@ extern "C" {
 
     pub fn rename_thread(thread: thread_id, newName: *const ::c_char) -> status_t;
     pub fn set_thread_priority(thread: thread_id, newPriority: i32) -> status_t;
+    pub fn suggest_thread_priority(
+        task_flags: be_task_flags,
+        period: i32,
+        jitter: ::bigtime_t,
+        length: ::bigtime_t,
+    ) -> i32;
+    pub fn estimate_max_scheduling_latency(th: ::thread_id) -> ::bigtime_t;
     pub fn exit_thread(status: status_t);
     pub fn wait_for_thread(thread: thread_id, returnValue: *mut status_t) -> status_t;
     pub fn on_exit_thread(callback: extern "C" fn(*mut ::c_void), data: *mut ::c_void) -> status_t;
