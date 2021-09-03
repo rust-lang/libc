@@ -3471,6 +3471,10 @@ pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
+pub const SCHED_OTHER: ::c_int = 1;
+pub const SCHED_FIFO: ::c_int = 4;
+pub const SCHED_RR: ::c_int = 2;
+
 pub const EVFILT_READ: i16 = -1;
 pub const EVFILT_WRITE: i16 = -2;
 pub const EVFILT_AIO: i16 = -3;
