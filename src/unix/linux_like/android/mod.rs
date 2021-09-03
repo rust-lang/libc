@@ -2438,6 +2438,10 @@ pub const PF_VSOCK: ::c_int = AF_VSOCK;
 pub const PROP_VALUE_MAX: ::c_int = 92;
 pub const PROP_NAME_MAX: ::c_int = 32;
 
+// sys/prctl.h
+pub const PR_SET_VMA: ::c_int = 0x53564d41;
+pub const PR_SET_VMA_ANON_NAME: ::c_int = 0;
+
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
                        cmsg: *const cmsghdr) -> *mut cmsghdr {
