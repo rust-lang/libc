@@ -3088,19 +3088,6 @@ pub const CAN_RAW_RECV_OWN_MSGS: ::c_int = 4;
 pub const CAN_RAW_FD_FRAMES: ::c_int = 5;
 pub const CAN_RAW_JOIN_FILTERS: ::c_int = 6;
 
-#[deprecated(
-    since = "0.2.102",
-    note = "Errnoeously uses c_int; should use c_short."
-)]
-#[cfg(not(any(target_arch = "sparc", target_arch = "sparc64")))]
-pub const POLLRDHUP: ::c_int = 0x2000;
-#[deprecated(
-    since = "0.2.102",
-    note = "Errnoeously uses c_int; should use c_short."
-)]
-#[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
-pub const POLLRDHUP: ::c_int = 0x800;
-
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
