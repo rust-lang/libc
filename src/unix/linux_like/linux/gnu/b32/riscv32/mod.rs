@@ -221,6 +221,7 @@ pub const O_SYNC: ::c_int = 1052672;
 pub const O_RSYNC: ::c_int = 1052672;
 pub const O_DSYNC: ::c_int = 4096;
 pub const O_FSYNC: ::c_int = 1052672;
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MAP_GROWSDOWN: ::c_int = 256;
 pub const EDEADLK: ::c_int = 35;
 pub const ENAMETOOLONG: ::c_int = 36;
