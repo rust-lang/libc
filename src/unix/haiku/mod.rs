@@ -321,6 +321,18 @@ s! {
         pub uid: ::uid_t,
         pub gid: ::gid_t,
     }
+
+    pub struct sockaddr_dl {
+        pub sdl_len: u8,
+        pub sdl_family: u8,
+        pub sdl_e_type: u16,
+        pub sdl_index: u32,
+        pub sdl_type: u8,
+        pub sdl_nlen: u8,
+        pub sdl_alen: u8,
+        pub sdl_slen: u8,
+        pub sdl_data: [u8; 46],
+    }
 }
 
 s_no_extra_traits! {
