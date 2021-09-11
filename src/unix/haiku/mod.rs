@@ -549,6 +549,7 @@ pub const RLIMIT_FSIZE: ::c_int = 3;
 pub const RLIMIT_NOFILE: ::c_int = 4;
 pub const RLIMIT_STACK: ::c_int = 5;
 pub const RLIMIT_AS: ::c_int = 6;
+pub const RLIM_INFINITY: ::c_ulong = 0xffffffff;
 // Haiku specific
 pub const RLIMIT_NOVMON: ::c_int = 7;
 pub const RLIM_NLIMITS: ::c_int = 8;
