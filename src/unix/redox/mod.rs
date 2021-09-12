@@ -819,6 +819,8 @@ pub const __WCLONE: ::c_int = 0x8000_0000;
 // time.h
 pub const CLOCK_REALTIME: ::c_int = 1;
 pub const CLOCK_MONOTONIC: ::c_int = 4;
+pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 2;
+pub const CLOCKS_PER_SEC: ::clock_t = 1_000_000;
 
 // unistd.h
 // POSIX.1 {
