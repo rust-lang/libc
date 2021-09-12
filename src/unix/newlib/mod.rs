@@ -611,10 +611,12 @@ extern "C" {
         target_arch = "powerpc",
         target_vendor = "nintendo"
     )))]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_bind")]
     pub fn bind(fd: ::c_int, addr: *const sockaddr, len: socklen_t) -> ::c_int;
     pub fn clock_settime(clock_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
     pub fn clock_gettime(clock_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_getres(clock_id: ::clockid_t, res: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_close")]
     pub fn closesocket(sockfd: ::c_int) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     #[cfg(not(all(
@@ -622,6 +624,7 @@ extern "C" {
         target_arch = "powerpc",
         target_vendor = "nintendo"
     )))]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_recvfrom")]
     pub fn recvfrom(
         fd: ::c_int,
         buf: *mut ::c_void,
