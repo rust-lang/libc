@@ -3037,8 +3037,16 @@ pub const SOL_CAN_BASE: ::c_int = 100;
 pub const CAN_INV_FILTER: canid_t = 0x20000000;
 pub const CAN_RAW_FILTER_MAX: ::c_int = 512;
 
+#[deprecated(
+    since = "0.2.102",
+    note = "Errnoeously uses c_int; should use c_short."
+)]
 #[cfg(not(any(target_arch = "sparc", target_arch = "sparc64")))]
 pub const POLLRDHUP: ::c_int = 0x2000;
+#[deprecated(
+    since = "0.2.102",
+    note = "Errnoeously uses c_int; should use c_short."
+)]
 #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
 pub const POLLRDHUP: ::c_int = 0x800;
 
