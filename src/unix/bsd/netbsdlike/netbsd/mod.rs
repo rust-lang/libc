@@ -1296,6 +1296,7 @@ pub const MAP_RENAME: ::c_int = 0x20;
 pub const MAP_NORESERVE: ::c_int = 0x40;
 pub const MAP_HASSEMAPHORE: ::c_int = 0x200;
 pub const MAP_WIRED: ::c_int = 0x800;
+pub const MAP_STACK: ::c_int = 0x2000;
 // mremap flag
 pub const MAP_REMAPDUP: ::c_int = 0x004;
 
