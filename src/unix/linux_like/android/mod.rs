@@ -18,7 +18,6 @@ pub type fsfilcnt_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulong;
 pub type nfds_t = ::c_uint;
 pub type rlim_t = ::c_ulong;
-pub type dev_t = ::c_ulong;
 pub type ino_t = ::c_ulong;
 pub type ino64_t = u64;
 pub type __CPU_BITTYPE = ::c_ulong;
