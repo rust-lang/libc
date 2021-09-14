@@ -2424,6 +2424,8 @@ pub const SCHED_BATCH: ::c_int = 3;
 pub const SCHED_IDLE: ::c_int = 5;
 pub const SCHED_DEADLINE: ::c_int = 6;
 
+pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
+
 // bits/seek_constants.h
 pub const SEEK_DATA: ::c_int = 3;
 pub const SEEK_HOLE: ::c_int = 4;
