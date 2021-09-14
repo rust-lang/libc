@@ -706,6 +706,9 @@ cfg_if! {
     if #[cfg(target_os = "espidf")] {
         mod espidf;
         pub use self::espidf::*;
+    } else if #[cfg(target_os = "horizon")] {
+        mod horizon;
+        pub use self::horizon::*;
     } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
