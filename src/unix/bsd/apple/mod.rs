@@ -105,6 +105,8 @@ pub type vm_statistics_data_t = vm_statistics;
 pub type vm_statistics64_t = *mut vm_statistics64;
 pub type vm_statistics64_data_t = vm_statistics64;
 
+pub type sysdir_search_path_enumeration_state = ::c_uint;
+
 pub type CCStatus = i32;
 pub type CCCryptorStatus = i32;
 pub type CCRNGStatus = ::CCCryptorStatus;
@@ -136,6 +138,57 @@ pub enum qos_class_t {
 impl ::Copy for qos_class_t {}
 impl ::Clone for qos_class_t {
     fn clone(&self) -> qos_class_t {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[repr(u32)]
+pub enum sysdir_search_path_directory_t {
+    SYSDIR_DIRECTORY_APPLICATION = 1,
+    SYSDIR_DIRECTORY_DEMO_APPLICATION = 2,
+    SYSDIR_DIRECTORY_DEVELOPER_APPLICATION = 3,
+    SYSDIR_DIRECTORY_ADMIN_APPLICATION = 4,
+    SYSDIR_DIRECTORY_LIBRARY = 5,
+    SYSDIR_DIRECTORY_DEVELOPER = 6,
+    SYSDIR_DIRECTORY_USER = 7,
+    SYSDIR_DIRECTORY_DOCUMENTATION = 8,
+    SYSDIR_DIRECTORY_DOCUMENT = 9,
+    SYSDIR_DIRECTORY_CORESERVICE = 10,
+    SYSDIR_DIRECTORY_AUTOSAVED_INFORMATION = 11,
+    SYSDIR_DIRECTORY_DESKTOP = 12,
+    SYSDIR_DIRECTORY_CACHES = 13,
+    SYSDIR_DIRECTORY_APPLICATION_SUPPORT = 14,
+    SYSDIR_DIRECTORY_DOWNLOADS = 15,
+    SYSDIR_DIRECTORY_INPUT_METHODS = 16,
+    SYSDIR_DIRECTORY_MOVIES = 17,
+    SYSDIR_DIRECTORY_MUSIC = 18,
+    SYSDIR_DIRECTORY_PICTURES = 19,
+    SYSDIR_DIRECTORY_PRINTER_DESCRIPTION = 20,
+    SYSDIR_DIRECTORY_SHARED_PUBLIC = 21,
+    SYSDIR_DIRECTORY_PREFERENCE_PANES = 22,
+    SYSDIR_DIRECTORY_ALL_APPLICATIONS = 100,
+    SYSDIR_DIRECTORY_ALL_LIBRARIES = 101,
+}
+impl ::Copy for sysdir_search_path_directory_t {}
+impl ::Clone for sysdir_search_path_directory_t {
+    fn clone(&self) -> sysdir_search_path_directory_t {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[repr(u32)]
+pub enum sysdir_search_path_domain_mask_t {
+    SYSDIR_DOMAIN_MASK_USER = (1 << 0),
+    SYSDIR_DOMAIN_MASK_LOCAL = (1 << 1),
+    SYSDIR_DOMAIN_MASK_NETWORK = (1 << 2),
+    SYSDIR_DOMAIN_MASK_SYSTEM = (1 << 3),
+    SYSDIR_DOMAIN_MASK_ALL = 0x0ffff,
+}
+impl ::Copy for sysdir_search_path_domain_mask_t {}
+impl ::Clone for sysdir_search_path_domain_mask_t {
+    fn clone(&self) -> sysdir_search_path_domain_mask_t {
         *self
     }
 }
@@ -4971,6 +5024,16 @@ extern "C" {
     ) -> ::kern_return_t;
 
     pub static mut mach_task_self_: mach_port_t;
+
+    // sysdir.h
+    pub fn sysdir_start_search_path_enumeration(
+        dir: sysdir_search_path_directory_t,
+        domainMask: sysdir_search_path_domain_mask_t,
+    ) -> ::sysdir_search_path_enumeration_state;
+    pub fn sysdir_get_next_search_path_enumeration(
+        state: ::sysdir_search_path_enumeration_state,
+        path: *mut ::c_char,
+    ) -> ::sysdir_search_path_enumeration_state;
 }
 
 pub unsafe fn mach_task_self() -> mach_port_t {

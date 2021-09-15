@@ -234,6 +234,7 @@ fn test_apple(target: &str) {
         "stdio.h",
         "stdlib.h",
         "string.h",
+        "sysdir.h",
         "sys/attr.h",
         "sys/clonefile.h",
         "sys/event.h",

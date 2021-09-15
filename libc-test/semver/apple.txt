@@ -1920,6 +1920,10 @@ syscall
 sysctl
 sysctlbyname
 sysctlnametomib
+sysdir_get_next_search_path_enumeration
+sysdir_search_path_directory_t
+sysdir_search_path_domain_mask_t
+sysdir_start_search_path_enumeration
 telldir
 thread_basic_info_t
 thread_extended_info_t
