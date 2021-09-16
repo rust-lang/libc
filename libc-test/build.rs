@@ -2846,6 +2846,21 @@ fn test_linux(target: &str) {
             | "SW_CNT"
                 if mips || ppc64 || riscv64 || sparc64 => true,
 
+            // kernel constants not available in uclibc 1.0.34
+            | "IPPROTO_BEETPH"
+            | "IPPROTO_MPLS"
+            | "PTRACE_O_SUSPEND_SECCOMP"
+            | "IPV6_HDRINCL"
+            | "IPV6_PMTUDISC_INTERFACE"
+            | "IPV6_PMTUDISC_OMIT"
+            | "CLONE_NEWCGROUP"
+            | "ADDR_NO_RANDOMIZE"
+            | "ADDR_COMPAT_LAYOUT"
+            | "READ_IMPLIES_EXEC"
+            | "ADDR_LIMIT_3GB"
+            | "PTRACE_O_EXITKILL"
+            | "PTRACE_O_SUSPEND_SECCOM" if uclibc => true,
+
             _ => false,
         }
     });
@@ -2922,6 +2937,9 @@ fn test_linux(target: &str) {
             "mallinfo2" => true,
 
             "reallocarray" if musl => true,
+
+            // Not defined in uclibc as of 1.0.34
+            "gettid" if uclibc => true,
 
             _ => false,
         }
