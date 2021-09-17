@@ -30,6 +30,13 @@ pub type natural_t = u32;
 pub type mach_msg_type_number_t = natural_t;
 pub type kern_return_t = ::c_int;
 pub type uuid_t = [u8; 16];
+pub type task_info_t = *mut integer_t;
+pub type host_info_t = *mut integer_t;
+pub type task_flavor_t = natural_t;
+pub type rusage_info_t = *mut ::c_void;
+pub type vm_offset_t = ::uintptr_t;
+pub type vm_size_t = ::uintptr_t;
+pub type vm_address_t = vm_offset_t;
 
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
@@ -69,6 +76,11 @@ pub type processor_set_load_info_data_t = processor_set_load_info;
 pub type processor_set_load_info_t = *mut processor_set_load_info;
 pub type processor_info_t = *mut integer_t;
 pub type processor_info_array_t = *mut integer_t;
+
+pub type mach_task_basic_info_data_t = mach_task_basic_info;
+pub type mach_task_basic_info_t = *mut mach_task_basic_info;
+pub type task_thread_times_info_data_t = task_thread_times_info;
+pub type task_thread_times_info_t = *mut task_thread_times_info;
 
 pub type thread_info_t = *mut integer_t;
 pub type thread_basic_info_t = *mut thread_basic_info;
@@ -112,7 +124,6 @@ pub type CCCryptorStatus = i32;
 pub type CCRNGStatus = ::CCCryptorStatus;
 
 deprecated_mach! {
-    pub type vm_size_t = ::uintptr_t;
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
 
@@ -800,6 +811,137 @@ s! {
         pub purges: natural_t,
         pub speculative_count: natural_t,
     }
+
+    pub struct task_thread_times_info {
+        pub user_time: time_value_t,
+        pub system_time: time_value_t,
+    }
+
+    pub struct rusage_info_v0 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+    }
+
+    pub struct rusage_info_v1 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+        pub ri_child_user_time: u64,
+        pub ri_child_system_time: u64,
+        pub ri_child_pkg_idle_wkups: u64,
+        pub ri_child_interrupt_wkups: u64,
+        pub ri_child_pageins: u64,
+        pub ri_child_elapsed_abstime: u64,
+    }
+
+    pub struct rusage_info_v2 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+        pub ri_child_user_time: u64,
+        pub ri_child_system_time: u64,
+        pub ri_child_pkg_idle_wkups: u64,
+        pub ri_child_interrupt_wkups: u64,
+        pub ri_child_pageins: u64,
+        pub ri_child_elapsed_abstime: u64,
+        pub ri_diskio_bytesread: u64,
+        pub ri_diskio_byteswritten: u64,
+    }
+
+    pub struct rusage_info_v3 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+        pub ri_child_user_time: u64,
+        pub ri_child_system_time: u64,
+        pub ri_child_pkg_idle_wkups: u64,
+        pub ri_child_interrupt_wkups: u64,
+        pub ri_child_pageins: u64,
+        pub ri_child_elapsed_abstime: u64,
+        pub ri_diskio_bytesread: u64,
+        pub ri_diskio_byteswritten: u64,
+        pub ri_cpu_time_qos_default: u64,
+        pub ri_cpu_time_qos_maintenance: u64,
+        pub ri_cpu_time_qos_background: u64,
+        pub ri_cpu_time_qos_utility: u64,
+        pub ri_cpu_time_qos_legacy: u64,
+        pub ri_cpu_time_qos_user_initiated: u64,
+        pub ri_cpu_time_qos_user_interactive: u64,
+        pub ri_billed_system_time: u64,
+        pub ri_serviced_system_time: u64,
+    }
+
+    pub struct rusage_info_v4 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+        pub ri_child_user_time: u64,
+        pub ri_child_system_time: u64,
+        pub ri_child_pkg_idle_wkups: u64,
+        pub ri_child_interrupt_wkups: u64,
+        pub ri_child_pageins: u64,
+        pub ri_child_elapsed_abstime: u64,
+        pub ri_diskio_bytesread: u64,
+        pub ri_diskio_byteswritten: u64,
+        pub ri_cpu_time_qos_default: u64,
+        pub ri_cpu_time_qos_maintenance: u64,
+        pub ri_cpu_time_qos_background: u64,
+        pub ri_cpu_time_qos_utility: u64,
+        pub ri_cpu_time_qos_legacy: u64,
+        pub ri_cpu_time_qos_user_initiated: u64,
+        pub ri_cpu_time_qos_user_interactive: u64,
+        pub ri_billed_system_time: u64,
+        pub ri_serviced_system_time: u64,
+        pub ri_logical_writes: u64,
+        pub ri_lifetime_max_phys_footprint: u64,
+        pub ri_instructions: u64,
+        pub ri_cycles: u64,
+        pub ri_billed_energy: u64,
+        pub ri_serviced_energy: u64,
+        pub ri_interval_max_phys_footprint: u64,
+        pub ri_runnable_time: u64,
+    }
 }
 
 s_no_extra_traits! {
@@ -1057,6 +1199,17 @@ s_no_extra_traits! {
         pub external_page_count: natural_t,
         pub internal_page_count: natural_t,
         pub total_uncompressed_pages_in_compressor: u64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct mach_task_basic_info {
+        pub virtual_size: mach_vm_size_t,
+        pub resident_size: mach_vm_size_t,
+        pub resident_size_max: mach_vm_size_t,
+        pub user_time: time_value_t,
+        pub system_time: time_value_t,
+        pub policy: ::policy_t,
+        pub suspend_count: integer_t,
     }
 }
 
@@ -2255,6 +2408,57 @@ cfg_if! {
                 external_page_count.hash(state);
                 internal_page_count.hash(state);
                 total_uncompressed.hash(state);
+            }
+        }
+
+        impl PartialEq for mach_task_basic_info {
+            fn eq(&self, other: &mach_task_basic_info) -> bool {
+                self.virtual_size == other.virtual_size
+                    && self.resident_size == other.resident_size
+                    && self.resident_size_max == other.resident_size_max
+                    && self.user_time == other.user_time
+                    && self.system_time == other.system_time
+                    && self.policy == other.policy
+                    && self.suspend_count == other.suspend_count
+            }
+        }
+        impl Eq for mach_task_basic_info {}
+        impl ::fmt::Debug for mach_task_basic_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let virtual_size = self.virtual_size;
+                let resident_size = self.resident_size;
+                let resident_size_max = self.resident_size_max;
+                let user_time = self.user_time;
+                let system_time = self.system_time;
+                let policy = self.policy;
+                let suspend_count = self.suspend_count;
+                f.debug_struct("mach_task_basic_info")
+                    .field("virtual_size", &virtual_size)
+                    .field("resident_size", &resident_size)
+                    .field("resident_size_max", &resident_size_max)
+                    .field("user_time", &user_time)
+                    .field("system_time", &system_time)
+                    .field("policy", &policy)
+                    .field("suspend_count", &suspend_count)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for mach_task_basic_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let virtual_size = self.virtual_size;
+                let resident_size = self.resident_size;
+                let resident_size_max = self.resident_size_max;
+                let user_time = self.user_time;
+                let system_time = self.system_time;
+                let policy = self.policy;
+                let suspend_count = self.suspend_count;
+                virtual_size.hash(state);
+                resident_size.hash(state);
+                resident_size_max.hash(state);
+                user_time.hash(state);
+                system_time.hash(state);
+                policy.hash(state);
+                suspend_count.hash(state);
             }
         }
     }
@@ -4323,6 +4527,19 @@ pub const VM_PAGE_QUERY_PAGE_CS_VALIDATED: i32 = 0x100;
 pub const VM_PAGE_QUERY_PAGE_CS_TAINTED: i32 = 0x200;
 pub const VM_PAGE_QUERY_PAGE_CS_NX: i32 = 0x400;
 
+// mach/task_info.h
+pub const TASK_THREAD_TIMES_INFO: u32 = 3;
+pub const HOST_CPU_LOAD_INFO_COUNT: u32 = 4;
+pub const MACH_TASK_BASIC_INFO: u32 = 20;
+
+pub const MACH_PORT_NULL: i32 = 0;
+
+pub const RUSAGE_INFO_V0: ::c_int = 0;
+pub const RUSAGE_INFO_V1: ::c_int = 1;
+pub const RUSAGE_INFO_V2: ::c_int = 2;
+pub const RUSAGE_INFO_V3: ::c_int = 3;
+pub const RUSAGE_INFO_V4: ::c_int = 4;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         const fn __DARWIN_ALIGN32(p: usize) -> usize {
@@ -4364,6 +4581,15 @@ cfg_if! {
         pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
             (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
             as mach_msg_type_number_t;
+
+        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
+            (::mem::size_of::<task_thread_times_info_data_t>()
+            / ::mem::size_of::<natural_t>()) as u32;
+        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = (::mem::size_of::<mach_task_basic_info_data_t>()
+            / ::mem::size_of::<natural_t>()) as u32;
+        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
     } else {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
             let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
@@ -4379,6 +4605,9 @@ cfg_if! {
         pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t = 10;
         pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t = 6;
         pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t = 28;
+        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 = 4;
+        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = 12;
+        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t = 38;
     }
 }
 
@@ -4982,6 +5211,7 @@ extern "C" {
     ) -> ::c_int;
     pub fn proc_kmsgbuf(buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
     pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
+    pub fn proc_pid_rusage(pid: ::c_int, flavor: ::c_int, buffer: *mut rusage_info_t) -> ::c_int;
     /// # Notes
     ///
     /// `id` is of type [`uuid_t`].
@@ -5009,6 +5239,12 @@ extern "C" {
         inheritance: ::vm_inherit_t,
     ) -> ::kern_return_t;
 
+    pub fn vm_deallocate(
+        target_task: vm_map_t,
+        address: vm_address_t,
+        size: vm_size_t,
+    ) -> ::kern_return_t;
+
     pub fn host_statistics64(
         host_priv: host_t,
         flavor: host_flavor_t,
@@ -5024,6 +5260,20 @@ extern "C" {
     ) -> ::kern_return_t;
 
     pub static mut mach_task_self_: mach_port_t;
+    pub fn task_for_pid(host: mach_port_t, pid: ::pid_t, task: *mut mach_port_t)
+        -> ::kern_return_t;
+    pub fn task_info(
+        host: mach_port_t,
+        flavor: task_flavor_t,
+        task_info_out: task_info_t,
+        task_info_count: *mut mach_msg_type_number_t,
+    ) -> ::kern_return_t;
+    pub fn host_statistics(
+        host_priv: host_t,
+        flavor: host_flavor_t,
+        host_info_out: host_info_t,
+        host_info_outCnt: *mut mach_msg_type_number_t,
+    ) -> ::kern_return_t;
 
     // sysdir.h
     pub fn sysdir_start_search_path_enumeration(
@@ -5034,6 +5284,8 @@ extern "C" {
         state: ::sysdir_search_path_enumeration_state,
         path: *mut ::c_char,
     ) -> ::sysdir_search_path_enumeration_state;
+
+    pub static vm_page_size: vm_size_t;
 }
 
 pub unsafe fn mach_task_self() -> mach_port_t {
