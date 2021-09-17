@@ -4513,8 +4513,6 @@ pub const HOST_CPU_LOAD_INFO: i32 = 3;
 pub const HOST_VM_INFO64: i32 = 4;
 pub const HOST_EXTMOD_INFO64: i32 = 5;
 pub const HOST_EXPIRED_TASK_INFO: i32 = 6;
-pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
-    (::core::mem::size_of::<vm_statistics64_data_t>() / ::core::mem::size_of::<integer_t>()) as _;
 
 // mach/vm_statistics.h
 pub const VM_PAGE_QUERY_PAGE_PRESENT: i32 = 0x1;
@@ -4533,11 +4531,6 @@ pub const VM_PAGE_QUERY_PAGE_CS_NX: i32 = 0x400;
 pub const TASK_THREAD_TIMES_INFO: u32 = 3;
 pub const HOST_CPU_LOAD_INFO_COUNT: u32 = 4;
 pub const MACH_TASK_BASIC_INFO: u32 = 20;
-pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
-    (::core::mem::size_of::<task_thread_times_info_data_t>() / ::core::mem::size_of::<natural_t>())
-        as _;
-pub const MACH_TASK_BASIC_INFO_COUNT: u32 = (::core::mem::size_of::<mach_task_basic_info_data_t>()
-    / ::core::mem::size_of::<natural_t>()) as _;
 
 pub const MACH_PORT_NULL: i32 = 0;
 
@@ -4588,6 +4581,15 @@ cfg_if! {
         pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
             (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
             as mach_msg_type_number_t;
+
+        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
+            (::mem::size_of::<task_thread_times_info_data_t>()
+            / ::mem::size_of::<natural_t>()) as u32;
+        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = (::mem::size_of::<mach_task_basic_info_data_t>()
+            / ::mem::size_of::<natural_t>()) as u32;
+        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
     } else {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
             let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
@@ -4603,6 +4605,9 @@ cfg_if! {
         pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t = 10;
         pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t = 6;
         pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t = 28;
+        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 = 4;
+        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = 12;
+        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t = 38;
     }
 }
 
