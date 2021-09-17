@@ -41,7 +41,6 @@ pub const O_ACCMODE: ::c_int = 3;
 pub const O_DIRECT: ::c_int = 0x8000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
-pub const NI_MAXHOST: ::socklen_t = 1025;
 
 pub const RLIMIT_NOFILE: ::c_int = 5;
 pub const RLIMIT_AS: ::c_int = 6;
