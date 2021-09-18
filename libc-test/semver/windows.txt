@@ -178,6 +178,7 @@ creat
 dev_t
 dup
 dup2
+errno_t
 execl
 execle
 execlp
@@ -239,6 +240,7 @@ isupper
 isxdigit
 labs
 listen
+localtime_s
 lseek
 lseek64
 malloc
