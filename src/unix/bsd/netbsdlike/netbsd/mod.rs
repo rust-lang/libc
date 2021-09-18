@@ -2388,6 +2388,13 @@ extern "C" {
         tpe: ::c_int,
     );
 
+    pub fn string_to_flags(
+        string_p: *mut *mut ::c_char,
+        setp: *mut ::c_ulong,
+        clrp: *mut ::c_ulong,
+    ) -> ::c_int;
+    pub fn flags_to_string(flags: ::c_ulong, def: *const ::c_char) -> ::c_int;
+
     pub fn kinfo_getvmmap(pid: ::pid_t, cntp: *mut ::size_t) -> *mut kinfo_vmentry;
 }
 

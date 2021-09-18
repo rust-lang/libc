@@ -1146,6 +1146,7 @@ fchdir
 fchflags
 fdatasync
 fdopendir
+flags_to_string
 fmemopen
 forkpty
 freeifaddrs
@@ -1367,6 +1368,7 @@ srand
 stack_t
 strcasecmp
 strcasestr
+string_to_flags
 strncasecmp
 strndup
 strpct
