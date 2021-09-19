@@ -1818,6 +1818,7 @@ fn test_freebsd(target: &str) {
                 "sys/un.h",
                 "sys/user.h",
                 "sys/utsname.h",
+                "sys/uuid.h",
                 "sys/wait.h",
                 "libprocstat.h",
                 "syslog.h",

@@ -24,6 +24,8 @@ pub type pthread_spinlock_t = *mut __c_anonymous_pthread_spinlock;
 pub type pthread_barrierattr_t = *mut __c_anonymous_pthread_barrierattr;
 pub type pthread_barrier_t = *mut __c_anonymous_pthread_barrier;
 
+pub type uuid_t = ::uuid;
+
 s! {
     pub struct aiocb {
         pub aio_fildes: ::c_int,
@@ -150,6 +152,15 @@ s! {
         c_flags: u32,
         c_clockid: u32,
         c_spare: [u32; 1],
+    }
+
+    pub struct uuid {
+        pub time_low: u32,
+        pub time_mid: u16,
+        pub time_hi_and_version: u16,
+        pub clock_seq_hi_and_reserved: u8,
+        pub clock_seq_low: u8,
+        pub node: [u8; _UUID_NODE_LEN],
     }
 
     pub struct __c_anonymous_pthread_spinlock {
@@ -1383,6 +1394,8 @@ pub const _PC_ACL_NFS4: ::c_int = 64;
 
 pub const _SC_CPUSET_SIZE: ::c_int = 122;
 
+pub const _UUID_NODE_LEN: usize = 6;
+
 // Flags which can be passed to pdfork(2)
 pub const PD_DAEMON: ::c_int = 0x00000001;
 pub const PD_CLOEXEC: ::c_int = 0x00000002;
@@ -1765,6 +1778,8 @@ extern "C" {
         fd: ::c_int,
         newfd: ::c_int,
     ) -> ::c_int;
+
+    pub fn uuidgen(store: *mut uuid, count: ::c_int) -> ::c_int;
 
     pub fn pthread_getthreadid_np() -> ::c_int;
     pub fn pthread_getaffinity_np(
