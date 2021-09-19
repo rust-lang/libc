@@ -1392,6 +1392,7 @@ utmp
 utmpx
 utmpxname
 utpname
+utrace
 vm_size_t
 wait4
 waitid

@@ -1462,6 +1462,7 @@ uselocale
 utimensat
 utmpx
 utmpxname
+utrace
 uuid
 uuid_t
 vm_size_t
