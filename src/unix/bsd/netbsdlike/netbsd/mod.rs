@@ -2276,6 +2276,14 @@ extern "C" {
         policy: ::c_int,
         param: *const ::sched_param,
     ) -> ::c_int;
+
+    #[link_name = "__pollts50"]
+    pub fn pollts(
+        fds: *mut ::pollfd,
+        nfds: ::nfds_t,
+        ts: *const ::timespec,
+        sigmask: *const ::sigset_t,
+    ) -> ::c_int;
 }
 
 #[link(name = "util")]

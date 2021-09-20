@@ -1270,6 +1270,7 @@ openat
 openpty
 pause
 pipe2
+pollts
 popen
 posix_madvise
 preadv
