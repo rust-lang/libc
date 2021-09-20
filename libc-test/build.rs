@@ -2865,7 +2865,6 @@ fn test_linux(target: &str) {
             | "PACKET_MR_UNICAST"
             | "PTRACE_EVENT_STOP"
             | "PTRACE_O_EXITKILL"
-            | "PTRACE_O_SUSPEND_SECCOM"
             | "PTRACE_O_SUSPEND_SECCOMP"
             | "PTRACE_PEEKSIGINFO"
             | "READ_IMPLIES_EXEC"
