@@ -671,6 +671,19 @@ s_no_extra_traits! {
 }
 
 cfg_if! {
+    if #[cfg(not(all(target_env = "musl", target_arch = "mips")))] {
+        s_no_extra_traits! {
+            // linux/net_tstamp.h
+            #[allow(missing_debug_implementations)]
+            pub struct sock_txtime {
+                pub clockid: ::clockid_t,
+                pub flags: ::__u32,
+            }
+        }
+    }
+}
+
+cfg_if! {
     if #[cfg(libc_union)] {
         s_no_extra_traits! {
             // linux/can.h
@@ -2528,6 +2541,12 @@ pub const SOF_TIMESTAMPING_RX_SOFTWARE: ::c_uint = 1 << 3;
 pub const SOF_TIMESTAMPING_SOFTWARE: ::c_uint = 1 << 4;
 pub const SOF_TIMESTAMPING_SYS_HARDWARE: ::c_uint = 1 << 5;
 pub const SOF_TIMESTAMPING_RAW_HARDWARE: ::c_uint = 1 << 6;
+cfg_if! {
+    if #[cfg(not(all(target_env = "musl", target_arch = "mips")))] {
+        pub const SOF_TXTIME_DEADLINE_MODE: u32 = 1 << 0;
+        pub const SOF_TXTIME_REPORT_ERRORS: u32 = 1 << 1;
+    }
+}
 
 // linux/if_alg.h
 pub const ALG_SET_KEY: ::c_int = 1;
