@@ -1119,5 +1119,6 @@ useconds_t
 uselocale
 utimensat
 utmp
+utrace
 wait4
 xucred

@@ -2147,6 +2147,7 @@ extern "C" {
     ) -> ::c_int;
     pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
     pub fn ptrace(request: ::c_int, pid: ::pid_t, addr: *mut ::c_void, data: ::c_int) -> ::c_int;
+    pub fn utrace(label: *const ::c_char, addr: *mut ::c_void, len: ::size_t) -> ::c_int;
     pub fn pthread_setname_np(
         t: ::pthread_t,
         name: *const ::c_char,
