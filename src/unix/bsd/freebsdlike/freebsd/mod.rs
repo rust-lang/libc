@@ -1528,7 +1528,7 @@ f! {
         ()
     }
 
-    pub fn CPU_ISSET(cpu: usize, cpuset: &mut cpuset_t) -> bool {
+    pub fn CPU_ISSET(cpu: usize, cpuset: &cpuset_t) -> bool {
         let bitset_bits = ::mem::size_of::<::c_long>();
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         0 != cpuset.__bits[idx] & (1 << offset)

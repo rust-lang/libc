@@ -1335,7 +1335,7 @@ f! {
         ()
     }
 
-    pub fn CPU_ISSET(cpu: usize, cpuset: &mut cpu_set_t) -> bool {
+    pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
         let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
         0 != cpuset.ary[idx] & (1 << offset)
     }
