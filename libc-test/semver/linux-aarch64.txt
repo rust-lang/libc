@@ -37,3 +37,4 @@ ip_mreqn
 max_align_t
 mcontext_t
 ucontext_t
+user_regs_struct

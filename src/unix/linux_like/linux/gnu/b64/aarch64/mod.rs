@@ -142,6 +142,13 @@ s! {
         __size: [usize; 8]
     }
 
+    pub struct user_regs_struct {
+        pub regs: [::c_ulonglong; 31],
+        pub sp: ::c_ulonglong,
+        pub pc: ::c_ulonglong,
+        pub pstate: ::c_ulonglong,
+    }
+
     pub struct ipc_perm {
         pub __key: ::key_t,
         pub uid: ::uid_t,
