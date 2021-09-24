@@ -1365,6 +1365,7 @@ _SC_XOPEN_STREAMS
 _SC_XOPEN_UNIX
 _SC_XOPEN_VERSION
 _SC_XOPEN_XCU_VERSION
+_UUID_NODE_LEN
 __c_anonymous_cr_pid
 __error
 __xuname
@@ -1751,6 +1752,7 @@ telldir
 timex
 truncate
 ttyname_r
+uuidgen
 unmount
 useconds_t
 uselocale
