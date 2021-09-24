@@ -1209,6 +1209,7 @@ in6_pktinfo
 in_pktinfo
 initgroups
 ipc_perm
+itimerspec
 kevent
 key_t
 killpg
@@ -1380,6 +1381,12 @@ syscall
 sysctl
 sysctlbyname
 telldir
+timer_create
+timer_delete
+timer_getoverrun
+timer_gettime
+timer_settime
+timer_t
 timex
 truncate
 ttyname_r
