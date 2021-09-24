@@ -141,19 +141,6 @@ s! {
         pub keepcost: ::size_t,
     }
 
-    pub struct nlmsghdr {
-        pub nlmsg_len: u32,
-        pub nlmsg_type: u16,
-        pub nlmsg_flags: u16,
-        pub nlmsg_seq: u32,
-        pub nlmsg_pid: u32,
-    }
-
-    pub struct nlmsgerr {
-        pub error: ::c_int,
-        pub msg: nlmsghdr,
-    }
-
     pub struct nl_pktinfo {
         pub group: u32,
     }
@@ -172,11 +159,6 @@ s! {
         pub nm_pid: u32,
         pub nm_uid: u32,
         pub nm_gid: u32,
-    }
-
-    pub struct nlattr {
-        pub nla_len: u16,
-        pub nla_type: u16,
     }
 
     pub struct rtentry {
@@ -1210,13 +1192,6 @@ extern "C" {
         statxbuf: *mut statx,
     ) -> ::c_int;
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
-
-    pub fn memmem(
-        haystack: *const ::c_void,
-        haystacklen: ::size_t,
-        needle: *const ::c_void,
-        needlelen: ::size_t,
-    ) -> *mut ::c_void;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 
     pub fn adjtimex(buf: *mut timex) -> ::c_int;
@@ -1305,16 +1280,6 @@ extern "C" {
     ) -> ::c_int;
     pub fn getpriority(which: ::__priority_which_t, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::__priority_which_t, who: ::id_t, prio: ::c_int) -> ::c_int;
-    pub fn pthread_getaffinity_np(
-        thread: ::pthread_t,
-        cpusetsize: ::size_t,
-        cpuset: *mut ::cpu_set_t,
-    ) -> ::c_int;
-    pub fn pthread_setaffinity_np(
-        thread: ::pthread_t,
-        cpusetsize: ::size_t,
-        cpuset: *const ::cpu_set_t,
-    ) -> ::c_int;
     pub fn pthread_rwlockattr_getkind_np(
         attr: *const ::pthread_rwlockattr_t,
         val: *mut ::c_int,
@@ -1323,7 +1288,6 @@ extern "C" {
         attr: *mut ::pthread_rwlockattr_t,
         val: ::c_int,
     ) -> ::c_int;
-    pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn mallinfo2() -> ::mallinfo2;
     pub fn malloc_info(options: ::c_int, stream: *mut ::FILE) -> ::c_int;

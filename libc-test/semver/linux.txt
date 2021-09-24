@@ -35,7 +35,6 @@ AF_CAIF
 AF_CAN
 AF_DECnet
 AF_ECONET
-AF_IB
 AF_IEEE802154
 AF_IPX
 AF_IRDA
@@ -44,7 +43,6 @@ AF_IUCV
 AF_KEY
 AF_LLC
 AF_LOCAL
-AF_MPLS
 AF_NETBEUI
 AF_NETLINK
 AF_NETROM
@@ -62,10 +60,6 @@ AF_TIPC
 AF_VSOCK
 AF_WANPIPE
 AF_X25
-AF_XDP
-AIO_ALLDONE
-AIO_CANCELED
-AIO_NOTCANCELED
 AI_ADDRCONFIG
 AI_ALL
 AI_CANONNAME
@@ -513,7 +507,6 @@ EXTA
 EXTB
 EXTPROC
 Elf32_Addr
-Elf32_Chdr
 Elf32_Ehdr
 Elf32_Half
 Elf32_Off
@@ -523,7 +516,6 @@ Elf32_Shdr
 Elf32_Sym
 Elf32_Word
 Elf64_Addr
-Elf64_Chdr
 Elf64_Ehdr
 Elf64_Half
 Elf64_Off
@@ -1050,11 +1042,6 @@ LINUX_REBOOT_MAGIC2
 LINUX_REBOOT_MAGIC2A
 LINUX_REBOOT_MAGIC2B
 LINUX_REBOOT_MAGIC2C
-LIO_NOP
-LIO_NOWAIT
-LIO_READ
-LIO_WAIT
-LIO_WRITE
 LOG_AUTHPRIV
 LOG_CRON
 LOG_FTP
@@ -1483,7 +1470,6 @@ PF_CAIF
 PF_CAN
 PF_DECnet
 PF_ECONET
-PF_IB
 PF_IEEE802154
 PF_IPX
 PF_IRDA
@@ -1492,7 +1478,6 @@ PF_IUCV
 PF_KEY
 PF_LLC
 PF_LOCAL
-PF_MPLS
 PF_NETBEUI
 PF_NETLINK
 PF_NETROM
@@ -1510,7 +1495,6 @@ PF_TIPC
 PF_VSOCK
 PF_WANPIPE
 PF_X25
-PF_XDP
 PIPE_BUF
 PM_STR
 POLLRDBAND
@@ -2643,14 +2627,6 @@ accept4
 acct
 addmntent
 af_alg_iv
-aio_cancel
-aio_error
-aio_fsync
-aio_read
-aio_return
-aio_suspend
-aio_write
-aiocb
 arpd_request
 arphdr
 arpreq
@@ -2741,9 +2717,7 @@ fstatvfs64
 ftello64
 ftok
 ftruncate64
-futimes
 genlmsghdr
-getauxval
 getdomainname
 getdtablesize
 getgrent
@@ -2755,7 +2729,6 @@ getgrouplist
 gethostid
 getifaddrs
 getline
-getloadavg
 getmntent
 getnameinfo
 getpriority
@@ -2805,7 +2778,6 @@ key_t
 killpg
 labs
 lgetxattr
-lio_listio
 listxattr
 llistxattr
 lockf
@@ -2866,7 +2838,6 @@ nlmsghdr
 off64_t
 open64
 open_memstream
-open_wmemstream
 openat
 openat64
 openpty
@@ -2907,11 +2878,6 @@ ppoll
 prctl
 pread64
 preadv
-preadv64
-prlimit
-prlimit64
-process_vm_readv
-process_vm_writev
 pthread_attr_getguardsize
 pthread_attr_getstack
 pthread_cancel
@@ -2941,7 +2907,6 @@ ptrace
 ptsname_r
 pwrite64
 pwritev
-pwritev64
 qsort
 quotactl
 rand

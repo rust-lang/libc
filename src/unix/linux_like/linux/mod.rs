@@ -563,6 +563,24 @@ s! {
         pub instruction_pointer: ::__u64,
         pub args: [::__u64; 6],
     }
+
+    pub struct nlmsghdr {
+        pub nlmsg_len: u32,
+        pub nlmsg_type: u16,
+        pub nlmsg_flags: u16,
+        pub nlmsg_seq: u32,
+        pub nlmsg_pid: u32,
+    }
+
+    pub struct nlmsgerr {
+        pub error: ::c_int,
+        pub msg: nlmsghdr,
+    }
+
+    pub struct nlattr {
+        pub nla_len: u16,
+        pub nla_type: u16,
+    }
 }
 
 s_no_extra_traits! {
@@ -3438,6 +3456,16 @@ extern "C" {
         len: *mut ::socklen_t,
         flg: ::c_int,
     ) -> ::c_int;
+    pub fn pthread_getaffinity_np(
+        thread: ::pthread_t,
+        cpusetsize: ::size_t,
+        cpuset: *mut ::cpu_set_t,
+    ) -> ::c_int;
+    pub fn pthread_setaffinity_np(
+        thread: ::pthread_t,
+        cpusetsize: ::size_t,
+        cpuset: *const ::cpu_set_t,
+    ) -> ::c_int;
     pub fn pthread_setschedprio(native: ::pthread_t, priority: ::c_int) -> ::c_int;
     pub fn reboot(how_to: ::c_int) -> ::c_int;
     pub fn setfsgid(gid: ::gid_t) -> ::c_int;
@@ -3850,6 +3878,13 @@ extern "C" {
     pub fn gethostid() -> ::c_long;
 
     pub fn pthread_getcpuclockid(thread: ::pthread_t, clk_id: *mut ::clockid_t) -> ::c_int;
+    pub fn memmem(
+        haystack: *const ::c_void,
+        haystacklen: ::size_t,
+        needle: *const ::c_void,
+        needlelen: ::size_t,
+    ) -> *mut ::c_void;
+    pub fn sched_getcpu() -> ::c_int;
 }
 
 cfg_if! {

@@ -877,6 +877,8 @@ pub const IPPROTO_MH: ::c_int = 135;
 pub const IPPROTO_UDPLITE: ::c_int = 136;
 /// raw IP packet
 pub const IPPROTO_RAW: ::c_int = 255;
+pub const IPPROTO_BEETPH: ::c_int = 94;
+pub const IPPROTO_MPLS: ::c_int = 137;
 
 pub const MCAST_EXCLUDE: ::c_int = 0;
 pub const MCAST_INCLUDE: ::c_int = 1;
@@ -913,6 +915,7 @@ pub const IPV6_JOIN_ANYCAST: ::c_int = 27;
 pub const IPV6_LEAVE_ANYCAST: ::c_int = 28;
 pub const IPV6_IPSEC_POLICY: ::c_int = 34;
 pub const IPV6_XFRM_POLICY: ::c_int = 35;
+pub const IPV6_HDRINCL: ::c_int = 36;
 pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
 pub const IPV6_RECVHOPLIMIT: ::c_int = 51;
@@ -948,6 +951,8 @@ pub const IPV6_PMTUDISC_DONT: ::c_int = 0;
 pub const IPV6_PMTUDISC_WANT: ::c_int = 1;
 pub const IPV6_PMTUDISC_DO: ::c_int = 2;
 pub const IPV6_PMTUDISC_PROBE: ::c_int = 3;
+pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
+pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
@@ -1117,6 +1122,7 @@ pub const CLONE_CHILD_CLEARTID: ::c_int = 0x200000;
 pub const CLONE_DETACHED: ::c_int = 0x400000;
 pub const CLONE_UNTRACED: ::c_int = 0x800000;
 pub const CLONE_CHILD_SETTID: ::c_int = 0x01000000;
+pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 pub const CLONE_NEWUTS: ::c_int = 0x04000000;
 pub const CLONE_NEWIPC: ::c_int = 0x08000000;
 pub const CLONE_NEWUSER: ::c_int = 0x10000000;
@@ -1132,11 +1138,15 @@ pub const WCONTINUED: ::c_int = 0x00000008;
 pub const WNOWAIT: ::c_int = 0x01000000;
 
 // Options for personality(2).
+pub const ADDR_NO_RANDOMIZE: ::c_int = 0x0040000;
 pub const MMAP_PAGE_ZERO: ::c_int = 0x0100000;
+pub const ADDR_COMPAT_LAYOUT: ::c_int = 0x0200000;
+pub const READ_IMPLIES_EXEC: ::c_int = 0x0400000;
 pub const ADDR_LIMIT_32BIT: ::c_int = 0x0800000;
 pub const SHORT_INODE: ::c_int = 0x1000000;
 pub const WHOLE_SECONDS: ::c_int = 0x2000000;
 pub const STICKY_TIMEOUTS: ::c_int = 0x4000000;
+pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
 
 // Options set using PTRACE_SETOPTIONS.
 pub const PTRACE_O_TRACESYSGOOD: ::c_int = 0x00000001;
@@ -1147,6 +1157,8 @@ pub const PTRACE_O_TRACEEXEC: ::c_int = 0x00000010;
 pub const PTRACE_O_TRACEVFORKDONE: ::c_int = 0x00000020;
 pub const PTRACE_O_TRACEEXIT: ::c_int = 0x00000040;
 pub const PTRACE_O_TRACESECCOMP: ::c_int = 0x00000080;
+pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 0x00200000;
+pub const PTRACE_O_EXITKILL: ::c_int = 0x00100000;
 
 // Wait extended result codes for the above trace options.
 pub const PTRACE_EVENT_FORK: ::c_int = 1;
@@ -1346,18 +1358,6 @@ pub const ARPHRD_NONE: u16 = 0xFFFE;
 
 cfg_if! {
     if #[cfg(not(target_env = "uclibc"))] {
-        pub const IPPROTO_BEETPH: ::c_int = 94;
-        pub const IPPROTO_MPLS: ::c_int = 137;
-        pub const IPV6_HDRINCL: ::c_int = 36;
-        pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
-        pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
-        pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
-        pub const ADDR_NO_RANDOMIZE: ::c_int = 0x0040000;
-        pub const ADDR_COMPAT_LAYOUT: ::c_int = 0x0200000;
-        pub const READ_IMPLIES_EXEC: ::c_int = 0x0400000;
-        pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
-        pub const PTRACE_O_EXITKILL: ::c_int = 0x00100000;
-        pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 0x00200000;
         pub const PTRACE_O_MASK: ::c_int = 0x003000ff;
     }
 }
