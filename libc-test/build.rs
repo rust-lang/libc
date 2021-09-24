@@ -542,6 +542,9 @@ fn test_windows(target: &str) {
     let gnu = target.contains("gnu");
 
     let mut cfg = ctest_cfg();
+    if target.contains("msvc") {
+        cfg.flag("/wd4324");
+    }
     cfg.define("_WIN32_WINNT", Some("0x8000"));
 
     headers! { cfg:
@@ -606,6 +609,13 @@ fn test_windows(target: &str) {
         _ => false,
     });
 
+    cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
+        return false;
+    });
+
     cfg.skip_const(move |name| {
         match name {
             // FIXME: API error:
@@ -619,6 +629,10 @@ fn test_windows(target: &str) {
         }
     });
 
+    cfg.skip_field(move |s, field| match s {
+        "CONTEXT" if field == "Fp" => true,
+        _ => false,
+    });
     // FIXME: All functions point to the wrong addresses?
     cfg.skip_fn_ptrcheck(|_| true);
 
