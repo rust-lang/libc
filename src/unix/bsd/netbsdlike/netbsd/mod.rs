@@ -13,6 +13,7 @@ pub type shmatt_t = ::c_uint;
 pub type cpuid_t = u64;
 pub type cpuset_t = _cpuset;
 pub type pthread_spin_t = ::c_uchar;
+pub type timer_t = ::c_int;
 
 // elf.h
 
@@ -118,6 +119,11 @@ s! {
         pub mq_maxmsg: ::c_long,
         pub mq_msgsize: ::c_long,
         pub mq_curmsgs: ::c_long,
+    }
+
+    pub struct itimerspec {
+        pub it_interval: ::timespec,
+        pub it_value: ::timespec,
     }
 
     pub struct sigset_t {
@@ -2255,6 +2261,21 @@ extern "C" {
         outbytesleft: *mut ::size_t,
     ) -> ::size_t;
     pub fn iconv_close(cd: iconv_t) -> ::c_int;
+
+    pub fn timer_create(
+        clockid: ::clockid_t,
+        sevp: *mut ::sigevent,
+        timerid: *mut ::timer_t,
+    ) -> ::c_int;
+    pub fn timer_delete(timerid: ::timer_t) -> ::c_int;
+    pub fn timer_getoverrun(timerid: ::timer_t) -> ::c_int;
+    pub fn timer_gettime(timerid: ::timer_t, curr_value: *mut ::itimerspec) -> ::c_int;
+    pub fn timer_settime(
+        timerid: ::timer_t,
+        flags: ::c_int,
+        new_value: *const ::itimerspec,
+        old_value: *mut ::itimerspec,
+    ) -> ::c_int;
 
     // Added in `NetBSD` 7.0
     pub fn explicit_memset(b: *mut ::c_void, c: ::c_int, len: ::size_t);
