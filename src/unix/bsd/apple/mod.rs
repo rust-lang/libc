@@ -117,6 +117,8 @@ pub type vm_statistics_data_t = vm_statistics;
 pub type vm_statistics64_t = *mut vm_statistics64;
 pub type vm_statistics64_data_t = vm_statistics64;
 
+pub type task_t = mach_port_t;
+
 pub type sysdir_search_path_enumeration_state = ::c_uint;
 
 pub type CCStatus = i32;
@@ -741,8 +743,9 @@ s! {
         pub bytes_free: ::size_t,
     }
 
-    pub struct malloc_zone_t {
-        __private: [::uintptr_t; 18], // FIXME: keeping private for now
+    pub struct vm_range_t {
+        pub address: ::vm_address_t,
+        pub size: ::vm_size_t,
     }
 
     // sched.h
