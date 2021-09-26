@@ -1031,6 +1031,7 @@ pthread_attr_getguardsize
 pthread_attr_getstack
 pthread_cancel
 pthread_condattr_setclock
+pthread_get_name_np
 pthread_kill
 pthread_main_np
 pthread_mutex_timedlock
