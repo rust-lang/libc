@@ -1750,6 +1750,12 @@ sysctl
 sysctlbyname
 sysctlnametomib
 telldir
+timer_create
+timer_delete
+timer_getoverrun
+timer_gettime
+timer_settime
+timer_t
 timex
 truncate
 ttyname_r

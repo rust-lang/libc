@@ -5,6 +5,7 @@ pub type lwpid_t = i32;
 pub type blksize_t = i32;
 pub type clockid_t = ::c_int;
 pub type sem_t = _sem;
+pub type timer_t = *mut __c_anonymous__timer;
 
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
@@ -248,6 +249,15 @@ s! {
         argv: *mut ::c_void,
         envv: *mut ::c_void,
         core: ::uintptr_t,
+    }
+
+    pub struct itimerspec {
+        pub it_interval: ::timespec,
+        pub it_value: ::timespec,
+    }
+
+    pub struct __c_anonymous__timer {
+        _priv: [::c_int; 3],
     }
 }
 
@@ -1951,6 +1961,20 @@ extern "C" {
     ) -> *mut kinfo_vmentry;
     pub fn procstat_freevmmap(procstat: *mut procstat, vmmap: *mut kinfo_vmentry);
     pub fn procstat_close(procstat: *mut procstat);
+}
+
+#[link(name = "rt")]
+extern "C" {
+    pub fn timer_create(clock_id: clockid_t, evp: *mut sigevent, timerid: *mut timer_t) -> ::c_int;
+    pub fn timer_delete(timerid: timer_t) -> ::c_int;
+    pub fn timer_getoverrun(timerid: timer_t) -> ::c_int;
+    pub fn timer_gettime(timerid: timer_t, value: *mut itimerspec) -> ::c_int;
+    pub fn timer_settime(
+        timerid: timer_t,
+        flags: ::c_int,
+        value: *const itimerspec,
+        ovalue: *mut itimerspec,
+    ) -> ::c_int;
 }
 
 cfg_if! {
