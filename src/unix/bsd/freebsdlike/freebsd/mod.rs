@@ -1936,6 +1936,16 @@ extern "C" {
     pub fn kld_load(name: *const ::c_char) -> ::c_int;
 
     pub fn kinfo_getvmmap(pid: ::pid_t, cntp: *mut ::c_int) -> *mut kinfo_vmentry;
+
+    pub fn hexdump(ptr: *const ::c_void, length: ::c_int, hdr: *const ::c_char, flags: ::c_int);
+    pub fn humanize_number(
+        buf: *mut ::c_char,
+        len: ::size_t,
+        number: i64,
+        suffix: *const ::c_char,
+        scale: ::c_int,
+        flags: ::c_int,
+    ) -> ::c_int;
 }
 
 #[link(name = "procstat")]
