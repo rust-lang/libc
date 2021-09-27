@@ -1261,7 +1261,7 @@ pub const IPOPT_CONTROL: u8 = 0x00;
 pub const IPOPT_RESERVED1: u8 = 0x20;
 pub const IPOPT_MEASUREMENT: u8 = 0x40;
 pub const IPOPT_RESERVED2: u8 = 0x60;
-pub const IPOPT_END: u8 = 0 | IPOPT_CONTROL;
+pub const IPOPT_END: u8 = IPOPT_CONTROL;
 pub const IPOPT_NOOP: u8 = 1 | IPOPT_CONTROL;
 pub const IPOPT_SEC: u8 = 2 | IPOPT_CONTROL | IPOPT_COPY;
 pub const IPOPT_LSRR: u8 = 3 | IPOPT_CONTROL | IPOPT_COPY;
@@ -1364,7 +1364,7 @@ cfg_if! {
 
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
-        len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
+        (len + ::mem::size_of::<usize>() - 1) & !(::mem::size_of::<usize>() - 1)
     }
 }
 
@@ -1400,7 +1400,7 @@ f! {
     pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+        ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {

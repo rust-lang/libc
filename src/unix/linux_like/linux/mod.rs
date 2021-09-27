@@ -3070,7 +3070,7 @@ pub const POLLRDHUP: ::c_int = 0x800;
 
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
-        return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
+        ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
@@ -3152,7 +3152,7 @@ f! {
 
     pub fn minor(dev: ::dev_t) -> ::c_uint {
         let mut minor = 0;
-        minor |= (dev & 0x00000000000000ff) >> 0;
+        minor |= dev & 0x00000000000000ff;
         minor |= (dev & 0x00000ffffff00000) >> 12;
         minor as ::c_uint
     }
@@ -3163,7 +3163,7 @@ f! {
         let mut dev = 0;
         dev |= (major & 0x00000fff) << 8;
         dev |= (major & 0xfffff000) << 32;
-        dev |= (minor & 0x000000ff) << 0;
+        dev |= minor & 0x000000ff;
         dev |= (minor & 0xffffff00) << 12;
         dev
     }

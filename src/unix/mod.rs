@@ -198,8 +198,8 @@ s! {
 pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
 
-pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
-pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
+pub const SIG_DFL: sighandler_t = 0_usize;
+pub const SIG_IGN: sighandler_t = 1_usize;
 pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
 
 pub const DT_UNKNOWN: u8 = 0;
