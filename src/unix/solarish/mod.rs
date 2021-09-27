@@ -2415,6 +2415,8 @@ extern "C" {
         lock: *mut pthread_mutex_t,
         abstime: *const ::timespec,
     ) -> ::c_int;
+    pub fn pthread_getname_np(tid: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn pthread_setname_np(tid: ::pthread_t, name: *const ::c_char) -> ::c_int;
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
         -> ::c_int;
 
