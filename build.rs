@@ -122,14 +122,18 @@ fn rustc_minor_nightly() -> Option<(u32, bool)> {
 
 fn which_freebsd() -> Option<i32> {
     let output = std::process::Command::new("freebsd-version").output().ok();
-    output.as_ref()?;
+    if output.is_none() {
+        return None;
+    }
     let output = output.unwrap();
     if !output.status.success() {
         return None;
     }
 
     let stdout = String::from_utf8(output.stdout).ok();
-    stdout.as_ref()?;
+    if stdout.is_none() {
+        return None;
+    }
     let stdout = stdout.unwrap();
 
     match &stdout {
