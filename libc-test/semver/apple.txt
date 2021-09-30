@@ -1822,6 +1822,7 @@ pseudo_AF_RTIP
 pseudo_AF_XTP
 pthread_attr_getschedparam
 pthread_attr_setschedparam
+pthread_create_from_mach_thread
 pthread_getschedparam
 pthread_setschedparam
 pthread_cancel
