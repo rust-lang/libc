@@ -1216,7 +1216,38 @@ pub const CTL_DDB: ::c_int = 9;
 pub const CTL_VFS: ::c_int = 10;
 pub const CTL_MAXID: ::c_int = 11;
 
+pub const HW_MACHINE: ::c_int = 1;
+pub const HW_MODEL: ::c_int = 2;
+pub const HW_BYTEORDER: ::c_int = 4;
+pub const HW_PAGESIZE: ::c_int = 7;
+pub const HW_DISKNAMES: ::c_int = 8;
+pub const HW_DISKSTATS: ::c_int = 9;
+pub const HW_DISKCOUNT: ::c_int = 10;
+pub const HW_SENSORS: ::c_int = 11;
+pub const HW_CPUSPEED: ::c_int = 12;
+pub const HW_SETPERF: ::c_int = 13;
+pub const HW_VENDOR: ::c_int = 14;
+pub const HW_PRODUCT: ::c_int = 15;
+pub const HW_VERSION: ::c_int = 16;
+pub const HW_SERIALNO: ::c_int = 17;
+pub const HW_UUID: ::c_int = 18;
+pub const HW_PHYSMEM64: ::c_int = 19;
+pub const HW_USERMEM64: ::c_int = 20;
+pub const HW_NCPUFOUND: ::c_int = 21;
+pub const HW_ALLOWPOWERDOWN: ::c_int = 22;
+pub const HW_PERFPOLICY: ::c_int = 23;
+pub const HW_SMT: ::c_int = 24;
 pub const HW_NCPUONLINE: ::c_int = 25;
+
+pub const DBCTL_RADIX: ::c_int = 1;
+pub const DBCTL_MAXWIDTH: ::c_int = 2;
+pub const DBCTL_MAXLINE: ::c_int = 3;
+pub const DBCTL_TABSTOP: ::c_int = 4;
+pub const DBCTL_PANIC: ::c_int = 5;
+pub const DBCTL_CONSOLE: ::c_int = 6;
+pub const DBCTL_LOG: ::c_int = 7;
+pub const DBCTL_TRIGGER: ::c_int = 8;
+pub const DBCTL_PROFILE: ::c_int = 9;
 
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
@@ -1267,16 +1298,20 @@ pub const KERN_MSGBUF: ::c_int = 48;
 pub const KERN_POOL: ::c_int = 49;
 pub const KERN_STACKGAPRANDOM: ::c_int = 50;
 pub const KERN_SYSVIPC_INFO: ::c_int = 51;
+pub const KERN_ALLOWKMEM: ::c_int = 52;
+pub const KERN_WITNESSWATCH: ::c_int = 53;
 pub const KERN_SPLASSERT: ::c_int = 54;
 pub const KERN_PROC_ARGS: ::c_int = 55;
 pub const KERN_NFILES: ::c_int = 56;
 pub const KERN_TTYCOUNT: ::c_int = 57;
 pub const KERN_NUMVNODES: ::c_int = 58;
 pub const KERN_MBSTAT: ::c_int = 59;
+pub const KERN_WITNESS: ::c_int = 60;
 pub const KERN_SEMINFO: ::c_int = 61;
 pub const KERN_SHMINFO: ::c_int = 62;
 pub const KERN_INTRCNT: ::c_int = 63;
 pub const KERN_WATCHDOG: ::c_int = 64;
+pub const KERN_ALLOWDT: ::c_int = 65;
 pub const KERN_PROC: ::c_int = 66;
 pub const KERN_MAXCLUSTERS: ::c_int = 67;
 pub const KERN_EVCOUNT: ::c_int = 68;
@@ -1285,6 +1320,7 @@ pub const KERN_MAXLOCKSPERUID: ::c_int = 70;
 pub const KERN_CPTIME2: ::c_int = 71;
 pub const KERN_CACHEPCT: ::c_int = 72;
 pub const KERN_FILE: ::c_int = 73;
+pub const KERN_WXABORT: ::c_int = 74;
 pub const KERN_CONSDEV: ::c_int = 75;
 pub const KERN_NETLIVELOCKS: ::c_int = 76;
 pub const KERN_POOL_DEBUG: ::c_int = 77;
@@ -1298,6 +1334,8 @@ pub const KERN_AUDIO: ::c_int = 84;
 pub const KERN_CPUSTATS: ::c_int = 85;
 pub const KERN_PFSTATUS: ::c_int = 86;
 pub const KERN_TIMEOUT_STATS: ::c_int = 87;
+pub const KERN_UTC_OFFSET: ::c_int = 88;
+pub const KERN_VIDEO: ::c_int = 89;
 #[deprecated(
     since = "0.2.95",
     note = "Possibly increasing over the releases and might not be so used in the field"
@@ -1318,10 +1356,246 @@ pub const KERN_SYSVIPC_MSG_INFO: ::c_int = 1;
 pub const KERN_SYSVIPC_SEM_INFO: ::c_int = 2;
 pub const KERN_SYSVIPC_SHM_INFO: ::c_int = 3;
 
+pub const KERN_SEMINFO_SEMMNI: ::c_int = 1;
+pub const KERN_SEMINFO_SEMMNS: ::c_int = 2;
+pub const KERN_SEMINFO_SEMMNU: ::c_int = 3;
+pub const KERN_SEMINFO_SEMMSL: ::c_int = 4;
+pub const KERN_SEMINFO_SEMOPM: ::c_int = 5;
+pub const KERN_SEMINFO_SEMUME: ::c_int = 6;
+pub const KERN_SEMINFO_SEMUSZ: ::c_int = 7;
+pub const KERN_SEMINFO_SEMVMX: ::c_int = 8;
+pub const KERN_SEMINFO_SEMAEM: ::c_int = 9;
+
+pub const KERN_SHMINFO_SHMMAX: ::c_int = 1;
+pub const KERN_SHMINFO_SHMMIN: ::c_int = 2;
+pub const KERN_SHMINFO_SHMMNI: ::c_int = 3;
+pub const KERN_SHMINFO_SHMSEG: ::c_int = 4;
+pub const KERN_SHMINFO_SHMALL: ::c_int = 5;
+
+pub const KERN_WATCHDOG_PERIOD: ::c_int = 1;
+pub const KERN_WATCHDOG_AUTO: ::c_int = 2;
+
+pub const KERN_TIMECOUNTER_TICK: ::c_int = 1;
+pub const KERN_TIMECOUNTER_TIMESTEPWARNINGS: ::c_int = 2;
+pub const KERN_TIMECOUNTER_HARDWARE: ::c_int = 3;
+pub const KERN_TIMECOUNTER_CHOICE: ::c_int = 4;
+
 pub const KERN_PROC_ARGV: ::c_int = 1;
 pub const KERN_PROC_NARGV: ::c_int = 2;
 pub const KERN_PROC_ENV: ::c_int = 3;
 pub const KERN_PROC_NENV: ::c_int = 4;
+
+pub const KERN_MALLOC_BUCKETS: ::c_int = 1;
+pub const KERN_MALLOC_BUCKET: ::c_int = 2;
+pub const KERN_MALLOC_KMEMNAMES: ::c_int = 3;
+pub const KERN_MALLOC_KMEMSTATS: ::c_int = 4;
+
+pub const KERN_TTY_TKNIN: ::c_int = 1;
+pub const KERN_TTY_TKNOUT: ::c_int = 2;
+pub const KERN_TTY_TKRAWCC: ::c_int = 3;
+pub const KERN_TTY_TKCANCC: ::c_int = 4;
+pub const KERN_TTY_INFO: ::c_int = 5;
+
+pub const KERN_WITNESS_WATCH: ::c_int = 1;
+pub const KERN_WITNESS_LOCKTRACE: ::c_int = 2;
+
+pub const KERN_AUDIO_RECORD: ::c_int = 1;
+
+pub const KERN_VIDEO_RECORD: ::c_int = 1;
+
+pub const VM_METER: ::c_int = 1;
+pub const VM_LOADAVG: ::c_int = 2;
+pub const VM_PSSTRINGS: ::c_int = 3;
+pub const VM_UVMEXP: ::c_int = 4;
+pub const VM_SWAPENCRYPT: ::c_int = 5;
+pub const VM_NKMEMPAGES: ::c_int = 6;
+pub const VM_ANONMIN: ::c_int = 7;
+pub const VM_VTEXTMIN: ::c_int = 8;
+pub const VM_VNODEMIN: ::c_int = 9;
+pub const VM_MAXSLP: ::c_int = 10;
+pub const VM_USPACE: ::c_int = 11;
+pub const VM_MALLOC_CONF: ::c_int = 12;
+
+pub const SWPENC_ENABLE: ::c_int = 0;
+pub const SWPENC_CREATED: ::c_int = 1;
+pub const SWPENC_DELETED: ::c_int = 2;
+
+pub const FS_POSIX: ::c_int = 1;
+
+pub const FS_POSIX_SETUID: ::c_int = 1;
+
+pub const VFS_GENERIC: ::c_int = 0;
+
+pub const MFSNAMELEN: usize = 16;
+
+pub const VFS_MAXTYPENUM: ::c_int = 1;
+pub const VFS_CONF: ::c_int = 2;
+pub const VFS_BCACHESTAT: ::c_int = 3;
+
+pub const IPCTL_FORWARDING: ::c_int = 1;
+pub const IPCTL_SENDREDIRECTS: ::c_int = 2;
+pub const IPCTL_DEFTTL: ::c_int = 3;
+pub const IPCTL_SOURCEROUTE: ::c_int = 5;
+pub const IPCTL_DIRECTEDBCAST: ::c_int = 6;
+pub const IPCTL_IPPORT_FIRSTAUTO: ::c_int = 7;
+pub const IPCTL_IPPORT_LASTAUTO: ::c_int = 8;
+pub const IPCTL_IPPORT_HIFIRSTAUTO: ::c_int = 9;
+pub const IPCTL_IPPORT_HILASTAUTO: ::c_int = 10;
+pub const IPCTL_IPPORT_MAXQUEUE: ::c_int = 11;
+pub const IPCTL_ENCDEBUG: ::c_int = 12;
+pub const IPCTL_IPSEC_STATS: ::c_int = 13;
+pub const IPCTL_IPSEC_EXPIRE_ACQUIRE: ::c_int = 14;
+pub const IPCTL_IPSEC_EMBRYONIC_SA_TIMEOUT: ::c_int = 15;
+pub const IPCTL_IPSEC_REQUIRE_PFS: ::c_int = 16;
+pub const IPCTL_IPSEC_SOFT_ALLOCATIONS: ::c_int = 17;
+pub const IPCTL_IPSEC_ALLOCATIONS: ::c_int = 18;
+pub const IPCTL_IPSEC_SOFT_BYTES: ::c_int = 19;
+pub const IPCTL_IPSEC_BYTES: ::c_int = 20;
+pub const IPCTL_IPSEC_TIMEOUT: ::c_int = 21;
+pub const IPCTL_IPSEC_SOFT_TIMEOUT: ::c_int = 22;
+pub const IPCTL_IPSEC_SOFT_FIRSTUSE: ::c_int = 23;
+pub const IPCTL_IPSEC_FIRSTUSE: ::c_int = 24;
+pub const IPCTL_IPSEC_ENC_ALGORITHM: ::c_int = 25;
+pub const IPCTL_IPSEC_AUTH_ALGORITHM: ::c_int = 26;
+pub const IPCTL_MTUDISC: ::c_int = 27;
+pub const IPCTL_MTUDISCTIMEOUT: ::c_int = 28;
+pub const IPCTL_IPSEC_IPCOMP_ALGORITHM: ::c_int = 29;
+pub const IPCTL_IFQUEUE: ::c_int = 30;
+pub const IPCTL_MFORWARDING: ::c_int = 31;
+pub const IPCTL_MULTIPATH: ::c_int = 32;
+pub const IPCTL_STATS: ::c_int = 33;
+pub const IPCTL_MRTPROTO: ::c_int = 34;
+pub const IPCTL_MRTSTATS: ::c_int = 35;
+pub const IPCTL_ARPQUEUED: ::c_int = 36;
+pub const IPCTL_MRTMFC: ::c_int = 37;
+pub const IPCTL_MRTVIF: ::c_int = 38;
+pub const IPCTL_ARPTIMEOUT: ::c_int = 39;
+pub const IPCTL_ARPDOWN: ::c_int = 40;
+pub const IPCTL_ARPQUEUE: ::c_int = 41;
+
+pub const ICMPCTL_MASKREPL: ::c_int = 1;
+pub const ICMPCTL_BMCASTECHO: ::c_int = 2;
+pub const ICMPCTL_ERRPPSLIMIT: ::c_int = 3;
+pub const ICMPCTL_REDIRACCEPT: ::c_int = 4;
+pub const ICMPCTL_REDIRTIMEOUT: ::c_int = 5;
+pub const ICMPCTL_TSTAMPREPL: ::c_int = 6;
+pub const ICMPCTL_STATS: ::c_int = 7;
+
+pub const IGMPCTL_STATS: ::c_int = 1;
+
+pub const IPIPCTL_ALLOW: ::c_int = 1;
+pub const IPIPCTL_STATS: ::c_int = 2;
+
+pub const TCPCTL_RFC1323: ::c_int = 1;
+pub const TCPCTL_KEEPINITTIME: ::c_int = 2;
+pub const TCPCTL_KEEPIDLE: ::c_int = 3;
+pub const TCPCTL_KEEPINTVL: ::c_int = 4;
+pub const TCPCTL_SLOWHZ: ::c_int = 5;
+pub const TCPCTL_BADDYNAMIC: ::c_int = 6;
+pub const TCPCTL_IDENT: ::c_int = 9;
+pub const TCPCTL_SACK: ::c_int = 10;
+pub const TCPCTL_MSSDFLT: ::c_int = 11;
+pub const TCPCTL_RSTPPSLIMIT: ::c_int = 12;
+pub const TCPCTL_ACK_ON_PUSH: ::c_int = 13;
+pub const TCPCTL_ECN: ::c_int = 14;
+pub const TCPCTL_SYN_CACHE_LIMIT: ::c_int = 15;
+pub const TCPCTL_SYN_BUCKET_LIMIT: ::c_int = 16;
+pub const TCPCTL_RFC3390: ::c_int = 17;
+pub const TCPCTL_REASS_LIMIT: ::c_int = 18;
+pub const TCPCTL_DROP: ::c_int = 19;
+pub const TCPCTL_SACKHOLE_LIMIT: ::c_int = 20;
+pub const TCPCTL_STATS: ::c_int = 21;
+pub const TCPCTL_ALWAYS_KEEPALIVE: ::c_int = 22;
+pub const TCPCTL_SYN_USE_LIMIT: ::c_int = 23;
+pub const TCPCTL_ROOTONLY: ::c_int = 24;
+pub const TCPCTL_SYN_HASH_SIZE: ::c_int = 25;
+
+pub const UDPCTL_CHECKSUM: ::c_int = 1;
+pub const UDPCTL_BADDYNAMIC: ::c_int = 2;
+pub const UDPCTL_RECVSPACE: ::c_int = 3;
+pub const UDPCTL_SENDSPACE: ::c_int = 4;
+pub const UDPCTL_STATS: ::c_int = 5;
+pub const UDPCTL_ROOTONLY: ::c_int = 6;
+
+pub const GRECTL_ALLOW: ::c_int = 1;
+pub const GRECTL_WCCP: ::c_int = 2;
+
+pub const ESPCTL_ENABLE: ::c_int = 1;
+pub const ESPCTL_UDPENCAP_ENABLE: ::c_int = 2;
+pub const ESPCTL_UDPENCAP_PORT: ::c_int = 3;
+pub const ESPCTL_STATS: ::c_int = 4;
+
+pub const AHCTL_ENABLE: ::c_int = 1;
+pub const AHCTL_STATS: ::c_int = 2;
+
+pub const ETHERIPCTL_ALLOW: ::c_int = 1;
+pub const ETHERIPCTL_STATS: ::c_int = 2;
+
+pub const IPCOMPCTL_ENABLE: ::c_int = 1;
+pub const IPCOMPCTL_STATS: ::c_int = 2;
+
+pub const CARPCTL_ALLOW: ::c_int = 1;
+pub const CARPCTL_PREEMPT: ::c_int = 2;
+pub const CARPCTL_LOG: ::c_int = 3;
+pub const CARPCTL_STATS: ::c_int = 4;
+
+pub const DIVERTCTL_RECVSPACE: ::c_int = 1;
+pub const DIVERTCTL_SENDSPACE: ::c_int = 2;
+pub const DIVERTCTL_STATS: ::c_int = 3;
+
+pub const IPV6CTL_FORWARDING: ::c_int = 1;
+pub const IPV6CTL_SENDREDIRECTS: ::c_int = 2;
+pub const IPV6CTL_DEFHLIM: ::c_int = 3;
+pub const IPV6CTL_FORWSRCRT: ::c_int = 5;
+pub const IPV6CTL_MRTPROTO: ::c_int = 8;
+pub const IPV6CTL_MAXFRAGPACKETS: ::c_int = 9;
+pub const IPV6CTL_SOURCECHECK: ::c_int = 10;
+pub const IPV6CTL_SOURCECHECK_LOGINT: ::c_int = 11;
+pub const IPV6CTL_LOG_INTERVAL: ::c_int = 14;
+pub const IPV6CTL_HDRNESTLIMIT: ::c_int = 15;
+pub const IPV6CTL_DAD_COUNT: ::c_int = 16;
+pub const IPV6CTL_AUTO_FLOWLABEL: ::c_int = 17;
+pub const IPV6CTL_DEFMCASTHLIM: ::c_int = 18;
+pub const IPV6CTL_USE_DEPRECATED: ::c_int = 21;
+pub const IPV6CTL_MAXFRAGS: ::c_int = 41;
+pub const IPV6CTL_MFORWARDING: ::c_int = 42;
+pub const IPV6CTL_MULTIPATH: ::c_int = 43;
+pub const IPV6CTL_MCAST_PMTU: ::c_int = 44;
+pub const IPV6CTL_NEIGHBORGCTHRESH: ::c_int = 45;
+pub const IPV6CTL_MAXDYNROUTES: ::c_int = 48;
+pub const IPV6CTL_DAD_PENDING: ::c_int = 49;
+pub const IPV6CTL_MTUDISCTIMEOUT: ::c_int = 50;
+pub const IPV6CTL_IFQUEUE: ::c_int = 51;
+pub const IPV6CTL_MRTMIF: ::c_int = 52;
+pub const IPV6CTL_MRTMFC: ::c_int = 53;
+pub const IPV6CTL_SOIIKEY: ::c_int = 54;
+
+pub const ICMPV6CTL_REDIRTIMEOUT: ::c_int = 3;
+pub const ICMPV6CTL_ND6_DELAY: ::c_int = 8;
+pub const ICMPV6CTL_ND6_UMAXTRIES: ::c_int = 9;
+pub const ICMPV6CTL_ND6_MMAXTRIES: ::c_int = 10;
+pub const ICMPV6CTL_ERRPPSLIMIT: ::c_int = 14;
+pub const ICMPV6CTL_ND6_MAXNUDHINT: ::c_int = 15;
+pub const ICMPV6CTL_MTUDISC_HIWAT: ::c_int = 16;
+pub const ICMPV6CTL_MTUDISC_LOWAT: ::c_int = 17;
+pub const ICMPV6CTL_ND6_DEBUG: ::c_int = 18;
+
+pub const NET_BPF_BUFSIZE: ::c_int = 1;
+pub const NET_BPF_MAXBUFSIZE: ::c_int = 2;
+
+pub const NET_KEY_SADB_DUMP: ::c_int = 1;
+pub const NET_KEY_SPD_DUMP: ::c_int = 2;
+
+pub const MPLSCTL_DEFTTL: ::c_int = 2;
+pub const MPLSCTL_MAPTTL_IP: ::c_int = 5;
+pub const MPLSCTL_MAPTTL_IP6: ::c_int = 6;
+
+pub const PIPEXCTL_ENABLE: ::c_int = 1;
+
+pub const IFQCTL_LEN: ::c_int = 1;
+pub const IFQCTL_MAXLEN: ::c_int = 2;
+pub const IFQCTL_DROPS: ::c_int = 3;
+pub const IFQCTL_CONGESTION: ::c_int = 4;
 
 pub const KI_NGROUPS: ::c_int = 16;
 pub const KI_MAXCOMLEN: ::c_int = 24;
