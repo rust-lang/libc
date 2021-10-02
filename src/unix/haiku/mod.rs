@@ -1510,6 +1510,12 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
+    pub fn getgrouplist(
+        user: *const ::c_char,
+        basegroup: ::gid_t,
+        grouplist: *mut ::gid_t,
+        groupcount: *mut ::c_int,
+    ) -> ::c_int;
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
