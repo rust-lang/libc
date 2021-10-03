@@ -35,6 +35,7 @@ pub type socklen_t = ::c_uint;
 pub type sa_family_t = u16;
 pub type pthread_t = ::c_uint;
 pub type pthread_key_t = ::c_uint;
+pub type thread_t = ::c_uint;
 pub type blksize_t = ::c_int;
 pub type nl_item = ::c_int;
 pub type mqd_t = *mut ::c_void;
@@ -2594,6 +2595,7 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
+    pub fn thr_self() -> ::thread_t;
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t, oldset: *mut sigset_t) -> ::c_int;
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const ::c_char) -> *mut ::group;

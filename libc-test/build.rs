@@ -784,6 +784,7 @@ fn test_solarish(target: &str) {
         "sys/wait.h",
         "syslog.h",
         "termios.h",
+        "thread.h",
         "time.h",
         "ucontext.h",
         "unistd.h",
