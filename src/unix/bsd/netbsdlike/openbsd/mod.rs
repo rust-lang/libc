@@ -1536,6 +1536,7 @@ extern "C" {
         timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
+    pub fn getthrid() -> ::pid_t;
     pub fn pthread_attr_getguardsize(
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,

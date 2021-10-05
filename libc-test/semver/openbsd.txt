@@ -968,6 +968,7 @@ getrusage
 getservbyport
 getservent
 getsid
+getthrid
 glob
 glob_t
 globfree
