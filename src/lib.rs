@@ -123,6 +123,12 @@ cfg_if! {
 
         mod vxworks;
         pub use vxworks::*;
+    } else if #[cfg(target_os = "solid_asp3")] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
+        mod solid;
+        pub use solid::*;
     } else if #[cfg(unix)] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
