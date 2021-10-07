@@ -1791,6 +1791,9 @@ extern "C" {
 
     pub fn uuidgen(store: *mut uuid, count: ::c_int) -> ::c_int;
 
+    pub fn thr_kill(id: ::c_long, sig: ::c_int) -> ::c_int;
+    pub fn thr_kill2(pid: ::pid_t, id: ::c_long, sig: ::c_int) -> ::c_int;
+    pub fn thr_self(tid: *mut ::c_long) -> ::c_int;
     pub fn pthread_getthreadid_np() -> ::c_int;
     pub fn pthread_getaffinity_np(
         td: ::pthread_t,

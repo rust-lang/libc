@@ -1752,6 +1752,9 @@ sysctl
 sysctlbyname
 sysctlnametomib
 telldir
+thr_kill
+thr_kill2
+thr_self
 timer_create
 timer_delete
 timer_getoverrun

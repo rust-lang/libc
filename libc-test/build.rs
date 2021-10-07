@@ -1830,6 +1830,7 @@ fn test_freebsd(target: &str) {
                 "sys/stat.h",
                 "sys/statvfs.h",
                 "sys/sysctl.h",
+                "sys/thr.h",
                 "sys/time.h",
                 "sys/times.h",
                 "sys/timex.h",
