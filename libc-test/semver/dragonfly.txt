@@ -1211,6 +1211,7 @@ clock_settime
 cmsgcred
 cmsghdr
 daemon
+devname_r
 difftime
 dirfd
 dl_iterate_phdr

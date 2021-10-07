@@ -1410,6 +1410,7 @@ cmsgcred
 cmsghdr
 daemon
 dallocx
+devname_r
 difftime
 dirfd
 dl_iterate_phdr
