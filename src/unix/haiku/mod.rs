@@ -364,10 +364,63 @@ s_no_extra_traits! {
         __unused1: *mut ::c_void, // actually a function pointer
         pub sigev_notify_attributes: *mut ::pthread_attr_t,
     }
+
+    pub struct utmpx {
+        pub ut_type: ::c_short,
+        pub ut_tv: ::timeval,
+        pub ut_id: [::c_char; 8],
+        pub ut_pid: ::pid_t,
+        pub ut_user: [::c_char; 32],
+        pub ut_line: [::c_char; 16],
+        pub ut_host: [::c_char; 128],
+        __ut_reserved: [::c_char; 64],
+    }
 }
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for utmpx {
+            fn eq(&self, other: &utmpx) -> bool {
+                self.ut_type == other.ut_type
+                    && self.ut_tv == other.ut_tv
+                    && self.ut_id == other.ut_id
+                    && self.ut_pid == other.ut_pid
+                    && self.ut_user == other.ut_user
+                    && self.ut_line == other.ut_line
+                    && self.ut_host.iter().zip(other.ut_host.iter()).all(|(a,b)| a == b)
+                    && self.__ut_reserved == other.__ut_reserved
+            }
+        }
+
+        impl Eq for utmpx {}
+
+        impl ::fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("utmpx")
+                    .field("ut_type", &self.ut_type)
+                    .field("ut_tv", &self.ut_tv)
+                    .field("ut_id", &self.ut_id)
+                    .field("ut_pid", &self.ut_pid)
+                    .field("ut_user", &self.ut_user)
+                    .field("ut_line", &self.ut_line)
+                    .field("ut_host", &self.ut_host)
+                    .field("__ut_reserved", &self.__ut_reserved)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for utmpx {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ut_type.hash(state);
+                self.ut_tv.hash(state);
+                self.ut_id.hash(state);
+                self.ut_pid.hash(state);
+                self.ut_user.hash(state);
+                self.ut_line.hash(state);
+                self.ut_host.hash(state);
+                self.__ut_reserved.hash(state);
+            }
+        }
         impl PartialEq for sockaddr_un {
             fn eq(&self, other: &sockaddr_un) -> bool {
                 self.sun_len == other.sun_len
