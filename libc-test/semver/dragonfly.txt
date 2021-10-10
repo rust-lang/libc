@@ -1229,6 +1229,7 @@ fchflags
 fdopendir
 fmemopen
 forkpty
+fparseln
 freeifaddrs
 freelocale
 freezero

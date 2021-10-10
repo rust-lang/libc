@@ -1727,6 +1727,13 @@ extern "C" {
         winp: *mut ::winsize,
     ) -> ::pid_t;
     pub fn login_tty(fd: ::c_int) -> ::c_int;
+    pub fn fparseln(
+        stream: *mut ::FILE,
+        len: *mut ::size_t,
+        lineno: *mut ::size_t,
+        delim: *const ::c_char,
+        flags: ::c_int,
+    ) -> *mut ::c_char;
 }
 
 #[link(name = "execinfo")]
