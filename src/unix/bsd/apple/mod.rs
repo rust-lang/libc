@@ -4229,6 +4229,8 @@ pub const RTF_CONDEMNED: ::c_int = 0x2000000;
 pub const RTF_IFREF: ::c_int = 0x4000000;
 pub const RTF_PROXY: ::c_int = 0x8000000;
 pub const RTF_ROUTER: ::c_int = 0x10000000;
+pub const RTF_DEAD: ::c_int = 0x20000000;
+pub const RTF_GLOBAL: ::c_int = 0x40000000;
 
 pub const RTM_VERSION: ::c_int = 5;
 
