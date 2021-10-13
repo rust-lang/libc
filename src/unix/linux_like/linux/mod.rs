@@ -3074,6 +3074,15 @@ pub const SOL_CAN_BASE: ::c_int = 100;
 pub const CAN_INV_FILTER: canid_t = 0x20000000;
 pub const CAN_RAW_FILTER_MAX: ::c_int = 512;
 
+// linux/can/raw.h
+pub const SOL_CAN_RAW: ::c_int = SOL_CAN_BASE + CAN_RAW;
+pub const CAN_RAW_FILTER: ::c_int = 1;
+pub const CAN_RAW_ERR_FILTER: ::c_int = 2;
+pub const CAN_RAW_LOOPBACK: ::c_int = 3;
+pub const CAN_RAW_RECV_OWN_MSGS: ::c_int = 4;
+pub const CAN_RAW_FD_FRAMES: ::c_int = 5;
+pub const CAN_RAW_JOIN_FILTERS: ::c_int = 6;
+
 #[deprecated(
     since = "0.2.102",
     note = "Errnoeously uses c_int; should use c_short."
