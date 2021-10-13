@@ -138,3 +138,8 @@ s! {
         pub LastExceptionFromRip: u64,
     }
 }
+
+extern "system" {
+    pub fn GetThreadContext(hThread: *mut ::c_void, lpContext: *mut CONTEXT) -> ::c_int;
+    pub fn SetThreadContext(hThread: *mut ::c_void, lpContext: *const CONTEXT) -> ::c_int;
+}
