@@ -226,6 +226,30 @@ jobs:
       - name: Execute build.sh
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
+  build_channels_windows:
+    name: Build Channels Windows
+    runs-on: windows-2019
+    env:
+      OS: windows
+    strategy:
+      fail-fast: true
+      matrix:
+        toolchain: [
+          1.19.0,
+          1.24.0,
+          1.25.0,
+          1.30.0,
+          stable,
+        ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Self-update rustup
+        run: rustup self update
+        shell: bash
+      - name: Execute build.sh
+        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} WIN_TARGET=${{ matrix.target }} sh ./ci/build.sh
+        shell: bash
+
   semver_linux:
     name: Semver Linux
     runs-on: ubuntu-20.04
@@ -283,6 +307,7 @@ jobs:
       docker_switch,
       build_channels_linux,
       build_channels_macos,
+      build_channels_windows,
       docs,
     ]
 
@@ -303,6 +328,7 @@ jobs:
       docker_switch,
       build_channels_linux,
       build_channels_macos,
+      build_channels_windows,
       docs,
     ]
 
