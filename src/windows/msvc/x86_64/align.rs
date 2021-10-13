@@ -63,7 +63,7 @@ s! {
         pub MxCsr_Mask: ::c_ulong,
         pub FloatRegisters: [M128A; 8],
         pub XmmRegisters: [M128A; 16],
-        _Reserved4: [::c_uchar; 96],
+        _Reserved4: [[::c_uchar; 16]; 6],
     }
 
     #[repr(align(16))]
