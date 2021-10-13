@@ -265,7 +265,7 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     done
 fi
 
-RUST_OSX_NO_CORE_TARGETS="\
+RUST_APPLE_NO_CORE_TARGETS="\
 armv7-apple-ios \
 armv7s-apple-ios \
 i686-apple-darwin \
@@ -273,7 +273,7 @@ i386-apple-ios \
 "
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "macos" ]; then
-    for TARGET in $RUST_OSX_NO_CORE_TARGETS; do
+    for TARGET in $RUST_APPLE_NO_CORE_TARGETS; do
         if echo "$TARGET" | grep -q "$FILTER"; then
             test_target build "$TARGET" 1
         fi
