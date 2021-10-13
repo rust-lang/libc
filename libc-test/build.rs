@@ -297,6 +297,8 @@ fn test_apple(target: &str) {
             "SF_SETTABLE" => true,
             // FIXME: the values have been changed since Big Sur
             "HW_TARGET" | "HW_PRODUCT" | "HW_MAXID" => true,
+            // this const requires macOS 11.0 or higher
+            "RTF_GLOBAL" => true,
             _ => false,
         }
     });
