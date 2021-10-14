@@ -1035,6 +1035,9 @@ pub const EPOLLRDBAND: ::c_int = 0x80;
 pub const EPOLLWRNORM: ::c_int = 0x100;
 pub const EPOLLWRBAND: ::c_int = 0x200;
 pub const EPOLLMSG: ::c_int = 0x400;
+pub const EPOLLRDHUP: ::c_int = 0x2000;
+pub const EPOLLWAKEUP: ::c_int = 0x20000000;
+pub const EPOLLONESHOT: ::c_int = 0x40000000;
 pub const EPOLLET: ::c_int = 0x80000000;
 
 pub const EPOLL_CTL_ADD: ::c_int = 1;

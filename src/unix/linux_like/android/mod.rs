@@ -792,9 +792,6 @@ pub const EPROTO: ::c_int = 71;
 pub const EDOTDOT: ::c_int = 73;
 
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
-pub const EPOLLONESHOT: ::c_int = 0x40000000;
-pub const EPOLLRDHUP: ::c_int = 0x00002000;
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
 
 // sys/eventfd.h
 pub const EFD_SEMAPHORE: ::c_int = 0x1;

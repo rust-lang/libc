@@ -1551,10 +1551,7 @@ pub const SHM_HUGETLB: ::c_int = 0o4000;
 #[cfg(not(all(target_env = "uclibc", target_arch = "mips")))]
 pub const SHM_NORESERVE: ::c_int = 0o10000;
 
-pub const EPOLLRDHUP: ::c_int = 0x2000;
 pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
-pub const EPOLLONESHOT: ::c_int = 0x40000000;
 
 pub const QFMT_VFS_OLD: ::c_int = 1;
 pub const QFMT_VFS_V0: ::c_int = 2;
