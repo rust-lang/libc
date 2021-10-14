@@ -508,7 +508,8 @@ s! {
         pub svm_reserved1: ::c_ushort,
         pub svm_port: ::c_uint,
         pub svm_cid: ::c_uint,
-        pub svm_zero: [u8; 4]
+        pub svm_flags: u8,
+        pub svm_zero: [u8; 3]
     }
 
     pub struct regmatch_t {
@@ -2581,6 +2582,7 @@ pub const VMADDR_CID_HYPERVISOR: ::c_uint = 0;
 pub const VMADDR_CID_RESERVED: ::c_uint = 1;
 pub const VMADDR_CID_LOCAL: ::c_uint = 1;
 pub const VMADDR_CID_HOST: ::c_uint = 2;
+pub const VMADDR_FLAG_TO_HOST: ::c_uint = 0x01;
 pub const VMADDR_PORT_ANY: ::c_uint = 0xFFFFFFFF;
 
 // uapi/linux/inotify.h
