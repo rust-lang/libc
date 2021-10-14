@@ -481,6 +481,8 @@ fn test_openbsd(target: &str) {
         match name {
             // Removed in OpenBSD 6.0
             "KERN_USERMOUNT" | "KERN_ARND" => true,
+            // Good chance it's going to be wrong depending on the host release
+            "KERN_MAXID" | "NET_RT_MAXID" => true,
             _ => false,
         }
     });
