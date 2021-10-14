@@ -35,6 +35,14 @@ pub type Elf64_Xword = u64;
 
 pub type iconv_t = *mut ::c_void;
 
+e! {
+    pub enum fae_action {
+        FAE_OPEN,
+        FAE_DUP2,
+        FAE_CLOSE,
+    }
+}
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         type Elf_Addr = Elf64_Addr;
@@ -497,6 +505,39 @@ s! {
         pub kve_vn_mode: u32,
         pub kve_path: [[::c_char; 32]; 32],
     }
+
+    pub struct __c_anonymous_posix_spawn_fae_open {
+        pub path: *mut ::c_char,
+        pub oflag: ::c_int,
+        pub mode: ::mode_t,
+    }
+
+    pub struct __c_anonymous_posix_spawn_fae_dup2 {
+        pub newfildes: ::c_int,
+    }
+
+    pub struct posix_spawnattr_t {
+        pub sa_flags: ::c_short,
+        pub sa_pgroup: ::pid_t,
+        pub sa_schedparam: sched_param,
+        pub sa_schedpolicy: ::c_int,
+        pub sa_sigdefault: sigset_t,
+        pub sa_sigmask: sigset_t,
+    }
+
+    pub struct posix_spawn_file_actions_entry_t {
+        pub fae_action: fae_action,
+        pub fae_fildes: ::c_int,
+        #[cfg(libc_union)]
+        pub fae_data: __c_anonymous_posix_spawn_fae,
+    }
+
+    pub struct posix_spawn_file_actions_t {
+        pub size: ::c_uint,
+        pub len: ::c_uint,
+        #[cfg(libc_union)]
+        pub fae: *mut posix_spawn_file_actions_entry_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -608,6 +649,12 @@ s_no_extra_traits! {
         pub sigev_value: ::sigval,
         __unused1: *mut ::c_void,       //actually a function pointer
         pub sigev_notify_attributes: *mut ::c_void
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_posix_spawn_fae {
+        pub open: __c_anonymous_posix_spawn_fae_open,
+        pub dup2: __c_anonymous_posix_spawn_fae_dup2,
     }
 }
 
@@ -1034,6 +1081,41 @@ cfg_if! {
                 self.sigev_signo.hash(state);
                 self.sigev_value.hash(state);
                 self.sigev_notify_attributes.hash(state);
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_posix_spawn_fae {}
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_posix_spawn_fae {
+            fn eq(&self, other: &__c_anonymous_posix_spawn_fae) -> bool {
+                unsafe {
+                    self.open == other.open
+                        || self.dup2 == other.dup2
+                }
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_posix_spawn_fae {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                unsafe {
+                    f.debug_struct("__c_anonymous_posix_fae")
+                        .field("open", &self.open)
+                        .field("dup2", &self.dup2)
+                        .finish()
+                }
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_posix_spawn_fae {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.open.hash(state);
+                    self.dup2.hash(state);
+                }
             }
         }
     }
@@ -2306,6 +2388,83 @@ extern "C" {
         nfds: ::nfds_t,
         ts: *const ::timespec,
         sigmask: *const ::sigset_t,
+    ) -> ::c_int;
+
+    pub fn posix_spawn(
+        pid: *mut ::pid_t,
+        path: *const ::c_char,
+        file_actions: *const ::posix_spawn_file_actions_t,
+        attrp: *const ::posix_spawnattr_t,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+    pub fn posix_spawnp(
+        pid: *mut ::pid_t,
+        file: *const ::c_char,
+        file_actions: *const ::posix_spawn_file_actions_t,
+        attrp: *const ::posix_spawnattr_t,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_init(attr: *mut posix_spawnattr_t) -> ::c_int;
+    pub fn posix_spawnattr_destroy(attr: *mut posix_spawnattr_t) -> ::c_int;
+    pub fn posix_spawnattr_getsigdefault(
+        attr: *const posix_spawnattr_t,
+        default: *mut ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setsigdefault(
+        attr: *mut posix_spawnattr_t,
+        default: *const ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_getsigmask(
+        attr: *const posix_spawnattr_t,
+        default: *mut ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setsigmask(
+        attr: *mut posix_spawnattr_t,
+        default: *const ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_getflags(
+        attr: *const posix_spawnattr_t,
+        flags: *mut ::c_short,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: ::c_short) -> ::c_int;
+    pub fn posix_spawnattr_getpgroup(
+        attr: *const posix_spawnattr_t,
+        flags: *mut ::pid_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: ::pid_t) -> ::c_int;
+    pub fn posix_spawnattr_getschedpolicy(
+        attr: *const posix_spawnattr_t,
+        flags: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setschedpolicy(attr: *mut posix_spawnattr_t, flags: ::c_int) -> ::c_int;
+    pub fn posix_spawnattr_getschedparam(
+        attr: *const posix_spawnattr_t,
+        param: *mut ::sched_param,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setschedparam(
+        attr: *mut posix_spawnattr_t,
+        param: *const ::sched_param,
+    ) -> ::c_int;
+
+    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
+    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
+    pub fn posix_spawn_file_actions_addopen(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: ::c_int,
+        path: *const ::c_char,
+        oflag: ::c_int,
+        mode: ::mode_t,
+    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_addclose(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: ::c_int,
+    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_adddup2(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: ::c_int,
+        newfd: ::c_int,
     ) -> ::c_int;
 }
 
