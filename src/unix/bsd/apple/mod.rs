@@ -112,6 +112,9 @@ pub type thread_latency_qos_policy_t = *mut thread_latency_qos_policy;
 pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
 pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
 
+pub type pthread_introspection_hook_t =
+    extern "C" fn(event: ::c_uint, thread: ::pthread_t, addr: *mut ::c_void, size: ::size_t);
+
 pub type vm_statistics_t = *mut vm_statistics;
 pub type vm_statistics_data_t = vm_statistics;
 pub type vm_statistics64_t = *mut vm_statistics64;
@@ -2959,6 +2962,11 @@ pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x0020;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x0040;
 pub const AT_REMOVEDIR: ::c_int = 0x0080;
 
+pub const PTHREAD_INTROSPECTION_THREAD_CREATE: ::c_uint = 1;
+pub const PTHREAD_INTROSPECTION_THREAD_START: ::c_uint = 2;
+pub const PTHREAD_INTROSPECTION_THREAD_TERMINATE: ::c_uint = 3;
+pub const PTHREAD_INTROSPECTION_THREAD_DESTROY: ::c_uint = 4;
+
 pub const TIOCMODG: ::c_ulong = 0x40047403;
 pub const TIOCMODS: ::c_ulong = 0x80047404;
 pub const TIOCM_LE: ::c_int = 0x1;
@@ -4851,6 +4859,21 @@ extern "C" {
         policy: ::c_int,
         param: *const sched_param,
     ) -> ::c_int;
+
+    // Available from Big Sur
+    pub fn pthread_introspection_hook_install(
+        hook: ::pthread_introspection_hook_t,
+    ) -> ::pthread_introspection_hook_t;
+    pub fn pthread_introspection_setspecific_np(
+        thread: ::pthread_t,
+        key: ::pthread_key_t,
+        value: *const ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_introspection_getspecific_np(
+        thread: ::pthread_t,
+        key: ::pthread_key_t,
+    ) -> *mut ::c_void;
+
     pub fn thread_policy_set(
         thread: thread_t,
         flavor: thread_policy_flavor_t,
