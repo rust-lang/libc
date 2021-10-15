@@ -31,19 +31,15 @@ pub type pthread_spinlock_t = *mut __c_anonymous_pthread_spinlock;
 pub type pthread_barrierattr_t = *mut __c_anonymous_pthread_barrierattr;
 pub type pthread_barrier_t = *mut __c_anonymous_pthread_barrier;
 
-<<<<<<< HEAD
 pub type uuid_t = ::uuid;
-=======
 pub type u_int = ::c_uint;
 pub type u_char = ::c_uchar;
 pub type u_long = ::c_ulong;
 pub type u_short = ::c_ushort;
 
-
 // It's an alias over "struct __kvm_t". However, its fields aren't supposed to be used directly,
 // making the type definition system dependent. Better not bind it exactly.
 pub type kvm_t = ::c_void;
->>>>>>> 08bfa53ee (Add more freebsd items)
 
 s! {
     pub struct aiocb {

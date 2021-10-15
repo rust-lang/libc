@@ -1837,6 +1837,7 @@ fn test_freebsd(target: &str) {
                 "sys/times.h",
                 "sys/timex.h",
                 "sys/types.h",
+                "kvm.h", // must be after "sys/types.h"
                 "sys/ucontext.h",
                 "sys/uio.h",
                 "sys/ktrace.h",
