@@ -52,7 +52,7 @@ pub type host_flavor_t = integer_t;
 pub type host_info64_t = *mut integer_t;
 pub type processor_flavor_t = ::c_int;
 pub type thread_flavor_t = natural_t;
-pub type thread_inspect_t = mach_port_t;
+pub type thread_inspect_t = ::mach_port_t;
 pub type policy_t = ::c_int;
 pub type mach_vm_address_t = u64;
 pub type mach_vm_offset_t = u64;
@@ -90,7 +90,7 @@ pub type thread_identifier_info_data_t = thread_identifier_info;
 pub type thread_extended_info_t = *mut thread_extended_info;
 pub type thread_extended_info_data_t = thread_extended_info;
 
-pub type thread_t = mach_port_t;
+pub type thread_t = ::mach_port_t;
 pub type thread_policy_flavor_t = natural_t;
 pub type thread_policy_t = *mut integer_t;
 pub type thread_latency_qos_t = integer_t;
@@ -117,7 +117,7 @@ pub type vm_statistics_data_t = vm_statistics;
 pub type vm_statistics64_t = *mut vm_statistics64;
 pub type vm_statistics64_data_t = vm_statistics64;
 
-pub type task_t = mach_port_t;
+pub type task_t = ::mach_port_t;
 
 pub type sysdir_search_path_enumeration_state = ::c_uint;
 
@@ -5270,11 +5270,14 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
 
-    pub static mut mach_task_self_: mach_port_t;
-    pub fn task_for_pid(host: mach_port_t, pid: ::pid_t, task: *mut mach_port_t)
-        -> ::kern_return_t;
+    pub static mut mach_task_self_: ::mach_port_t;
+    pub fn task_for_pid(
+        host: ::mach_port_t,
+        pid: ::pid_t,
+        task: *mut ::mach_port_t,
+    ) -> ::kern_return_t;
     pub fn task_info(
-        host: mach_port_t,
+        host: ::mach_port_t,
         flavor: task_flavor_t,
         task_info_out: task_info_t,
         task_info_count: *mut mach_msg_type_number_t,
@@ -5299,7 +5302,7 @@ extern "C" {
     pub static vm_page_size: vm_size_t;
 }
 
-pub unsafe fn mach_task_self() -> mach_port_t {
+pub unsafe fn mach_task_self() -> ::mach_port_t {
     mach_task_self_
 }
 

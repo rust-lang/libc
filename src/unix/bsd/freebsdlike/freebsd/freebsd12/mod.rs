@@ -26,6 +26,16 @@ s! {
         pub udata: *mut ::c_void,
         pub ext: [u64; 4],
     }
+
+    pub struct kvm_page {
+        pub version: ::c_uint,
+        pub paddr: ::c_ulong,
+        pub kmap_vaddr: ::c_ulong,
+        pub dmap_vaddr: ::c_ulong,
+        pub prot: ::vm_prot_t,
+        pub offset: ::u_long,
+        pub len: ::size_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -211,6 +221,10 @@ pub const SO_DOMAIN: ::c_int = 0x1019;
 
 pub const EINTEGRITY: ::c_int = 97;
 pub const ELAST: ::c_int = 97;
+
+/// max length of devicename
+pub const SPECNAMELEN: ::c_int = 63;
+pub const KI_NSPARE_PTR: usize = 6;
 
 extern "C" {
     pub fn setgrent();
