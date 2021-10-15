@@ -284,6 +284,14 @@ fn test_apple(target: &str) {
         }
     });
 
+    cfg.skip_type(move |ty| {
+        match ty {
+            // requires macOs 11.0 or higher
+            "pthread_introspection_hook_t" => true,
+            _ => false,
+        }
+    });
+
     cfg.skip_const(move |name| {
         // They're declared via `deprecated_mach` and we don't support it anymore.
         if name.starts_with("VM_FLAGS_") {
@@ -297,8 +305,12 @@ fn test_apple(target: &str) {
             "SF_SETTABLE" => true,
             // FIXME: the values have been changed since Big Sur
             "HW_TARGET" | "HW_PRODUCT" | "HW_MAXID" => true,
-            // this const requires macOS 11.0 or higher
-            "RTF_GLOBAL" => true,
+            // these consts requires macOS 11.0 or higher
+            "PTHREAD_INTROSPECTION_THREAD_CREATE"
+            | "PTHREAD_INTROSPECTION_THREAD_DESTROY"
+            | "PTHREAD_INTROSPECTION_THREAD_START"
+            | "PTHREAD_INTROSPECTION_THREAD_TERMINATE"
+            | "RTF_GLOBAL" => true,
             _ => false,
         }
     });
@@ -313,7 +325,11 @@ fn test_apple(target: &str) {
             "close" => true,
 
             // these calls require macOS 11.0 or higher
-            "preadv" | "pwritev" => true,
+            "pthread_introspection_hook_install"
+            | "pthread_introspection_getspecific_np"
+            | "pthread_introspection_setspecific_np"
+            | "preadv"
+            | "pwritev" => true,
 
             _ => false,
         }
