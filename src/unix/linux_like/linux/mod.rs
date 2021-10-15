@@ -2394,6 +2394,8 @@ pub const NETLINK_TX_RING: ::c_int = 7;
 pub const NETLINK_LISTEN_ALL_NSID: ::c_int = 8;
 pub const NETLINK_LIST_MEMBERSHIPS: ::c_int = 9;
 pub const NETLINK_CAP_ACK: ::c_int = 10;
+pub const NETLINK_EXT_ACK: ::c_int = 11;
+pub const NETLINK_GET_STRICT_CHK: ::c_int = 12;
 
 pub const NLA_F_NESTED: ::c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: ::c_int = 1 << 14;
