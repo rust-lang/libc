@@ -1,3 +1,4 @@
+#[allow(deprecated)]
 pub type XMM_SAVE_AREA32 = XSAVE_FORMAT;
 
 s_no_extra_traits! {
@@ -40,12 +41,18 @@ cfg_if! {
 }
 
 s! {
+    #[doc(hidden)]
+    #[deprecated(since = "0.2.104", note = "use the `winapi` crate instead; we're going to
+remove it in a future release")]
     #[repr(align(16))]
     pub struct M128A {
         pub Low: ::c_ulonglong,
         pub High: ::c_longlong,
     }
 
+    #[doc(hidden)]
+    #[deprecated(since = "0.2.104", note = "use the `winapi` crate instead; we're going to
+remove it in a future release")]
     #[repr(align(16))]
     pub struct XSAVE_FORMAT {
         pub ControlWord: ::c_ushort,
@@ -88,6 +95,9 @@ s! {
         pub Xmm15: M128A,
     }
 
+    #[doc(hidden)]
+    #[deprecated(since = "0.2.104", note = "use the `winapi` crate instead; we're going to
+remove it in a future release")]
     #[repr(align(16))]
     pub struct CONTEXT {
         pub P1Home: u64,
