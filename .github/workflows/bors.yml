@@ -29,7 +29,7 @@ jobs:
 
   macos:
     name: macOS
-    runs-on: macos-10.15
+    runs-on: macos-11
     strategy:
       fail-fast: true
       matrix:
@@ -199,7 +199,7 @@ jobs:
   build_channels_macos:
     name: Build Channels macOS
     needs: macos
-    runs-on: macos-10.15
+    runs-on: macos-11
     env:
       OS: macos
     strategy:
@@ -264,7 +264,7 @@ jobs:
 
   semver_macos:
     name: Semver macOS
-    runs-on: macos-10.15
+    runs-on: macos-11
     continue-on-error: true
     steps:
       - uses: actions/checkout@v2

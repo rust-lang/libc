@@ -221,6 +221,7 @@ fn test_apple(target: &str) {
         "poll.h",
         "pthread.h",
         "pthread_spis.h",
+        "pthread/introspection.h",
         "pwd.h",
         "regex.h",
         "resolv.h",
@@ -284,12 +285,8 @@ fn test_apple(target: &str) {
         }
     });
 
-    cfg.skip_type(move |ty| {
-        match ty {
-            // requires macOs 11.0 or higher
-            "pthread_introspection_hook_t" => true,
-            _ => false,
-        }
+    cfg.skip_type(move |ty| match ty {
+        _ => false,
     });
 
     cfg.skip_const(move |name| {
@@ -303,14 +300,6 @@ fn test_apple(target: &str) {
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
             // FIXME: the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
             "SF_SETTABLE" => true,
-            // FIXME: the values have been changed since Big Sur
-            "HW_TARGET" | "HW_PRODUCT" | "HW_MAXID" => true,
-            // these consts requires macOS 11.0 or higher
-            "PTHREAD_INTROSPECTION_THREAD_CREATE"
-            | "PTHREAD_INTROSPECTION_THREAD_DESTROY"
-            | "PTHREAD_INTROSPECTION_THREAD_START"
-            | "PTHREAD_INTROSPECTION_THREAD_TERMINATE"
-            | "RTF_GLOBAL" => true,
             _ => false,
         }
     });
@@ -323,13 +312,6 @@ fn test_apple(target: &str) {
 
             // close calls the close_nocancel system call
             "close" => true,
-
-            // these calls require macOS 11.0 or higher
-            "pthread_introspection_hook_install"
-            | "pthread_introspection_getspecific_np"
-            | "pthread_introspection_setspecific_np"
-            | "preadv"
-            | "pwritev" => true,
 
             _ => false,
         }
