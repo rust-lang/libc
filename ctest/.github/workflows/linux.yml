@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - 1.34.0 # MSRV
+          - 1.46.0 # MSRV
           - stable
           - beta
           - nightly
@@ -29,13 +29,13 @@ jobs:
         run: TOOLCHAIN=${{ matrix.version }} TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
 
       - name: Check MSRV
-        if: matrix.version == '1.34.0'
+        if: matrix.version == '1.46.0'
         run: cargo check
 
       - name: Run tests
-        if: matrix.version != '1.34.0'
+        if: matrix.version != '1.46.0'
         run: cargo test --all -- --nocapture
 
       - name: Run libc tests
-        if: matrix.version != '1.34.0'
+        if: matrix.version != '1.46.0'
         run: sh ./ci/run-docker.sh ${{ matrix.target }}
