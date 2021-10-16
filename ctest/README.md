@@ -14,7 +14,8 @@ APIs in Rust match the APIs defined in C.
 
 ## MSRV (Minimum Supported Rust Version)
 
-The MSRV is 1.34.0 since our dependency uses `str::split_ascii_whitespace`.
+The MSRV is 1.46.0 because of the `bitflags` dependency.
+Note that MSRV may be changed anytime by dependencies.
 
 ## Example
 
