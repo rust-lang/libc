@@ -2208,6 +2208,7 @@ impl<'a> Generator<'a> {
                 let e2 = self.expr2str(e2);
                 match op.node {
                     ast::BinOpKind::Add => format!("{} + {}", e1, e2),
+                    ast::BinOpKind::Sub => format!("{} - {}", e1, e2),
                     _ => panic!("unknown op: {:?}", op),
                 }
             }
