@@ -2,7 +2,12 @@
 
 ## Unreleased
 
+## 0.4.2
+
+* Allow to subtract in constants [#28]
 * Update `rustc_version` to 0.4.
+
+[#28]: https://github.com/JohnTitor/ctest2/pull/28
 
 ## 0.4.1
 
