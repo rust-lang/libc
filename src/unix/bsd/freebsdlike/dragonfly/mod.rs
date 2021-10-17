@@ -715,6 +715,9 @@ pub const RLIMIT_POSIXLOCKS: ::c_int = 11;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::rlim_t = 12;
 
+#[deprecated(since = "0.2.105", note = "Only exists on FreeBSD, not DragonFly BSD")]
+pub const XU_NGROUPS: ::c_int = 16;
+
 pub const Q_GETQUOTA: ::c_int = 0x300;
 pub const Q_SETQUOTA: ::c_int = 0x400;
 

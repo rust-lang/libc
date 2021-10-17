@@ -1167,7 +1167,6 @@ pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const NI_MAXHOST: ::size_t = 1025;
 
-pub const XU_NGROUPS: ::c_int = 16;
 pub const XUCRED_VERSION: ::c_uint = 0;
 
 pub const RTLD_LOCAL: ::c_int = 0;
