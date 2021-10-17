@@ -640,6 +640,8 @@ pub const NI_NUMERICSERV: ::c_int = 0x00000008;
 pub const NI_DGRAM: ::c_int = 0x00000010;
 pub const NI_NUMERICSCOPE: ::c_int = 0x00000020;
 
+pub const XU_NGROUPS: ::c_int = 16;
+
 pub const Q_GETQUOTA: ::c_int = 0x700;
 pub const Q_SETQUOTA: ::c_int = 0x800;
 
