@@ -1176,8 +1176,10 @@ fn test_dragonflybsd(target: &str) {
         "ifaddrs.h",
         "langinfo.h",
         "limits.h",
+        "link.h",
         "locale.h",
         "mqueue.h",
+        "net/bpf.h",
         "net/if.h",
         "net/if_arp.h",
         "net/if_dl.h",
@@ -1206,8 +1208,10 @@ fn test_dragonflybsd(target: &str) {
         "sys/ioctl.h",
         "sys/ipc.h",
         "sys/ktrace.h",
+        "sys/malloc.h",
         "sys/mman.h",
         "sys/mount.h",
+        "sys/procctl.h",
         "sys/ptrace.h",
         "sys/resource.h",
         "sys/rtprio.h",
@@ -1219,6 +1223,7 @@ fn test_dragonflybsd(target: &str) {
         "sys/sysctl.h",
         "sys/time.h",
         "sys/times.h",
+        "sys/timex.h",
         "sys/types.h",
         "sys/uio.h",
         "sys/un.h",
@@ -1250,6 +1255,9 @@ fn test_dragonflybsd(target: &str) {
             t if is_union => format!("union {}", t),
 
             t if t.ends_with("_t") => t.to_string(),
+
+            // sigval is a struct in Rust, but a union in C:
+            "sigval" => format!("union sigval"),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
@@ -1284,9 +1292,6 @@ fn test_dragonflybsd(target: &str) {
 
     cfg.skip_struct(move |ty| {
         match ty {
-            // This is actually a union, not a struct
-            "sigval" => true,
-
             // FIXME: These are tested as part of the linux_fcntl tests since
             // there are header conflicts when including them with all the other
             // structs.
