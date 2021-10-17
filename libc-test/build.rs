@@ -1256,6 +1256,9 @@ fn test_dragonflybsd(target: &str) {
 
             t if t.ends_with("_t") => t.to_string(),
 
+            // sigval is a struct in Rust, but a union in C:
+            "sigval" => format!("union sigval"),
+
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
 
@@ -1289,9 +1292,6 @@ fn test_dragonflybsd(target: &str) {
 
     cfg.skip_struct(move |ty| {
         match ty {
-            // This is actually a union, not a struct
-            "sigval" => true,
-
             // FIXME: These are tested as part of the linux_fcntl tests since
             // there are header conflicts when including them with all the other
             // structs.
