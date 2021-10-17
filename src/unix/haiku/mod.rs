@@ -1318,6 +1318,16 @@ pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
 
+// utmpx entry types
+pub const EMPTY: ::c_short = 0;
+pub const BOOT_TIME: ::c_short = 1;
+pub const OLD_TIME: ::c_short = 2;
+pub const NEW_TIME: ::c_short = 3;
+pub const USER_PROCESS: ::c_short = 4;
+pub const INIT_PROCESS: ::c_short = 5;
+pub const LOGIN_PROCESS: ::c_short = 6;
+pub const DEAD_PROCESS: ::c_short = 7;
+
 pub const LOG_PID: ::c_int = 1 << 12;
 pub const LOG_CONS: ::c_int = 2 << 12;
 pub const LOG_ODELAY: ::c_int = 4 << 12;
@@ -1622,6 +1632,12 @@ extern "C" {
     ) -> ::pid_t;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn endutxent();
 }
 
 cfg_if! {
