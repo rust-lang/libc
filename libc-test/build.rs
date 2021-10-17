@@ -1898,10 +1898,10 @@ fn test_freebsd(target: &str) {
 
     cfg.skip_const(move |name| {
         match name {
-            // These constants are to be introduced in yet-unreleased FreeBSD 12.2.
+            // These constants were introduced in FreeBSD 13:
             "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
             | "F_SEAL_WRITE"
-                if Some(12) <= freebsd_ver =>
+                if Some(13) > freebsd_ver =>
             {
                 true
             }
@@ -1915,6 +1915,7 @@ fn test_freebsd(target: &str) {
             | "IPV6_ORIGDSTADDR"
             | "IPV6_RECVORIGDSTADDR"
             | "NI_NUMERICSCOPE"
+            | "SO_DOMAIN"
                 if Some(11) == freebsd_ver =>
             {
                 true
@@ -1985,10 +1986,31 @@ fn test_freebsd(target: &str) {
             // commit/06b00ceaa914a3907e4e27bad924f44612bae1d7
             "MINCORE_SUPER" if Some(13) == freebsd_ver => true,
 
+            // Added in FreeBSD 12.0
+            "EINTEGRITY" if Some(11) == freebsd_ver => true,
+
             // This was increased to 97 in FreeBSD 12.2 and 13.
             // https://github.com/freebsd/freebsd/
             // commit/72a21ba0f62da5e86a1c0b462aeb3f5ff849a1b7
             "ELAST" if Some(12) == freebsd_ver => true,
+
+            // Added in FreeBSD 12.0 (r331279)
+            "GRND_NONBLOCK" | "GRND_RANDOM" if Some(11) == freebsd_ver => true,
+            // Added in FreeBSD 13.0 (r356667)
+            "GRND_INSECURE" if Some(13) > freebsd_ver => true,
+
+            // Added in FreeBSD 12.1 (r343964 and r345228)
+            "PROC_ASLR_CTL" | "PROC_ASLR_STATUS" | "PROC_PROCCTL_MD_MIN"
+                if Some(11) == freebsd_ver =>
+            {
+                true
+            }
+
+            // Added in FreeBSD 13.0 (r349609)
+            "PROC_PROTMAX_CTL" | "PROC_PROTMAX_STATUS" if Some(13) > freebsd_ver => true,
+
+            // Added in in FreeBSD 13.0 (r367776 and r367287)
+            "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
 
             _ => false,
         }
