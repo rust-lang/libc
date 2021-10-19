@@ -609,6 +609,8 @@ pub const EXTATTR_NAMESPACE_SYSTEM: ::c_int = 2;
 
 pub const PTHREAD_STACK_MIN: ::size_t = MINSIGSTKSZ;
 pub const PTHREAD_MUTEX_ADAPTIVE_NP: ::c_int = 4;
+pub const PTHREAD_MUTEX_STALLED: ::c_int = 0;
+pub const PTHREAD_MUTEX_ROBUST: ::c_int = 1;
 pub const SIGSTKSZ: ::size_t = MINSIGSTKSZ + 32768;
 pub const SF_NODISKIO: ::c_int = 0x00000001;
 pub const SF_MNOWAIT: ::c_int = 0x00000002;
@@ -1806,6 +1808,17 @@ extern "C" {
         td: ::pthread_t,
         cpusetsize: ::size_t,
         cpusetp: *const cpuset_t,
+    ) -> ::c_int;
+
+    pub fn pthread_mutex_consistent(mutex: *mut ::pthread_mutex_t) -> ::c_int;
+
+    pub fn pthread_mutexattr_getrobust(
+        attr: *mut ::pthread_mutexattr_t,
+        robust: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_mutexattr_setrobust(
+        attr: *mut ::pthread_mutexattr_t,
+        robust: ::c_int,
     ) -> ::c_int;
 
     pub fn pthread_spin_init(lock: *mut pthread_spinlock_t, pshared: ::c_int) -> ::c_int;
