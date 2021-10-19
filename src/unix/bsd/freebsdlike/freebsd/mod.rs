@@ -1702,11 +1702,6 @@ extern "C" {
         msgflg: ::c_int,
     ) -> ::c_int;
     pub fn cfmakesane(termios: *mut ::termios);
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
 
     pub fn pdfork(fdp: *mut ::c_int, flags: ::c_int) -> ::pid_t;
     pub fn pdgetpid(fd: ::c_int, pidp: *mut ::pid_t) -> ::c_int;

@@ -1336,7 +1336,7 @@ fn test_dragonflybsd(target: &str) {
         // skip those that are manually verified
         match name {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" => true,
+            "execv" | "execve" | "execvp" | "fexecve" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
