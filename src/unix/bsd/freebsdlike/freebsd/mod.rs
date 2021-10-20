@@ -796,6 +796,7 @@ pub const ENOTCAPABLE: ::c_int = 93;
 pub const ECAPMODE: ::c_int = 94;
 pub const ENOTRECOVERABLE: ::c_int = 95;
 pub const EOWNERDEAD: ::c_int = 96;
+pub const EINTEGRITY: ::c_int = 97;
 pub const RLIMIT_NPTS: ::c_int = 11;
 pub const RLIMIT_SWAP: ::c_int = 12;
 pub const RLIMIT_KQUEUES: ::c_int = 13;
@@ -1072,6 +1073,8 @@ pub const MNT_UNION: ::c_int = 0x00000020;
 pub const MNT_EXPUBLIC: ::c_int = 0x20000000;
 pub const MNT_NONBUSY: ::c_int = 0x04000000;
 
+pub const SCM_CREDS2: ::c_int = 0x08;
+
 pub const SO_BINTIME: ::c_int = 0x2000;
 pub const SO_NO_OFFLOAD: ::c_int = 0x4000;
 pub const SO_NO_DDP: ::c_int = 0x8000;
@@ -1085,9 +1088,11 @@ pub const SO_SETFIB: ::c_int = 0x1014;
 pub const SO_USER_COOKIE: ::c_int = 0x1015;
 pub const SO_PROTOCOL: ::c_int = 0x1016;
 pub const SO_PROTOTYPE: ::c_int = SO_PROTOCOL;
+pub const SO_DOMAIN: ::c_int = 0x1019;
 pub const SO_VENDOR: ::c_int = 0x80000000;
 
 pub const LOCAL_CREDS: ::c_int = 2;
+pub const LOCAL_CREDS_PERSISTENT: ::c_int = 3;
 pub const LOCAL_CONNWAIT: ::c_int = 4;
 pub const LOCAL_VENDOR: ::c_int = SO_VENDOR;
 
@@ -1136,8 +1141,13 @@ pub const PROC_TRAPCAP_CTL: ::c_int = 9;
 pub const PROC_TRAPCAP_STATUS: ::c_int = 10;
 pub const PROC_PDEATHSIG_CTL: ::c_int = 11;
 pub const PROC_PDEATHSIG_STATUS: ::c_int = 12;
+pub const PROC_ASLR_CTL: ::c_int = 13;
+pub const PROC_ASLR_STATUS: ::c_int = 14;
+pub const PROC_PROTMAX_CTL: ::c_int = 15;
+pub const PROC_PROTMAX_STATUS: ::c_int = 16;
 pub const PROC_STACKGAP_CTL: ::c_int = 17;
 pub const PROC_STACKGAP_STATUS: ::c_int = 18;
+pub const PROC_PROCCTL_MD_MIN: ::c_int = 0x10000000;
 
 pub const AF_SLOW: ::c_int = 33;
 pub const AF_SCLUSTER: ::c_int = 34;
@@ -1604,14 +1614,28 @@ pub const UF_READONLY: ::c_ulong = 0x00001000;
 pub const UF_HIDDEN: ::c_ulong = 0x00008000;
 pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
 
+// fcntl commands
+pub const F_ADD_SEALS: ::c_int = 19;
+pub const F_DUP2FD: ::c_int = 10;
+pub const F_DUP2FD_CLOEXEC: ::c_int = 18;
+pub const F_GET_SEALS: ::c_int = 20;
 pub const F_OGETLK: ::c_int = 7;
 pub const F_OSETLK: ::c_int = 8;
 pub const F_OSETLKW: ::c_int = 9;
-pub const F_DUP2FD: ::c_int = 10;
-pub const F_SETLK_REMOTE: ::c_int = 14;
-pub const F_READAHEAD: ::c_int = 15;
 pub const F_RDAHEAD: ::c_int = 16;
-pub const F_DUP2FD_CLOEXEC: ::c_int = 18;
+pub const F_READAHEAD: ::c_int = 15;
+pub const F_SETLK_REMOTE: ::c_int = 14;
+
+// for use with F_ADD_SEALS
+pub const F_SEAL_GROW: ::c_int = 4;
+pub const F_SEAL_SEAL: ::c_int = 1;
+pub const F_SEAL_SHRINK: ::c_int = 2;
+pub const F_SEAL_WRITE: ::c_int = 8;
+
+// For getrandom()
+pub const GRND_NONBLOCK: ::c_uint = 0x1;
+pub const GRND_RANDOM: ::c_uint = 0x2;
+pub const GRND_INSECURE: ::c_uint = 0x4;
 
 // For realhostname* api
 pub const HOSTNAME_FOUND: ::c_int = 0;
