@@ -1764,8 +1764,13 @@ fn test_freebsd(target: &str) {
         _ => cfg.define("_WANT_FREEBSD11_STAT", None),
     };
 
-    let freebsdlast = match freebsd_ver {
-        Some(12) | Some(13) => true,
+    let freebsd12 = match freebsd_ver {
+        Some(n) if n >= 12 => true,
+        _ => false,
+    };
+
+    let freebsd13 = match freebsd_ver {
+        Some(n) if n >= 13 => true,
         _ => false,
     };
 
@@ -1818,10 +1823,11 @@ fn test_freebsd(target: &str) {
                 "stdlib.h",
                 "string.h",
                 "sys/capsicum.h",
-                [freebsdlast]:"sys/auxv.h",
+                [freebsd12]:"sys/auxv.h",
                 "sys/cpuset.h",
-                [freebsdlast]:"sys/domainset.h",
+                [freebsd12]:"sys/domainset.h",
                 "sys/event.h",
+                [freebsd13]:"sys/eventfd.h",
                 "sys/extattr.h",
                 "sys/file.h",
                 "sys/ioctl.h",
@@ -1913,6 +1919,9 @@ fn test_freebsd(target: &str) {
             {
                 true
             }
+
+            // These constants were introduced in FreeBSD 13:
+            "EFD_CLOEXEC" | "EFD_NONBLOCK" | "EFD_SEMAPHORE" if Some(13) > freebsd_ver => true,
 
             // These constants were introduced in FreeBSD 12:
             "SF_USER_READAHEAD"
