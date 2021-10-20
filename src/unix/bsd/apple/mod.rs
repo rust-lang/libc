@@ -4873,6 +4873,9 @@ extern "C" {
         thread: ::pthread_t,
         key: ::pthread_key_t,
     ) -> *mut ::c_void;
+    pub fn pthread_jit_write_protect_np(enabled: ::c_int);
+    pub fn pthread_jit_write_protect_supported_np() -> ::c_int;
+    pub fn pthread_cpu_number_np(cpu_number_out: *mut ::size_t) -> ::c_int;
 
     pub fn thread_policy_set(
         thread: thread_t,
