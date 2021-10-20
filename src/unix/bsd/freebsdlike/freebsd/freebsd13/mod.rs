@@ -4,6 +4,8 @@ pub type nlink_t = u64;
 pub type dev_t = u64;
 pub type ino_t = ::c_ulong;
 pub type shmatt_t = ::c_uint;
+pub type kpaddr_t = u64;
+pub type kssize_t = i64;
 
 s! {
     pub struct shmid_ds {
@@ -36,6 +38,16 @@ s! {
         pub sc_egid: ::gid_t,
         pub sc_ngroups: ::c_int,
         pub sc_groups: [::gid_t; 1],
+    }
+
+    pub struct kvm_page {
+        pub kp_version: ::u_int,
+        pub kp_paddr: ::kpaddr_t,
+        pub kp_kmap_vaddr: ::kvaddr_t,
+        pub kp_dmap_vaddr: ::kvaddr_t,
+        pub kp_prot: ::vm_prot_t,
+        pub kp_offset: ::off_t,
+        pub kp_len: ::size_t,
     }
 }
 
@@ -228,6 +240,12 @@ pub const PROC_PROCCTL_MD_MIN: ::c_int = 0x10000000;
 pub const LOCAL_CREDS_PERSISTENT: ::c_int = 3;
 pub const SCM_CREDS2: ::c_int = 0x08;
 
+pub const KF_TYPE_EVENTFD: ::c_int = 13;
+
+/// max length of devicename
+pub const SPECNAMELEN: ::c_int = 255;
+pub const KI_NSPARE_PTR: usize = 5;
+
 f! {
     pub fn SOCKCRED2SIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 {
@@ -267,6 +285,11 @@ extern "C" {
     pub fn setproctitle_fast(fmt: *const ::c_char, ...);
     pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
     pub fn timingsafe_memcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
+}
+
+#[link(name = "kvm")]
+extern "C" {
+    pub fn kvm_kerndisp(kd: *mut ::kvm_t) -> ::kssize_t;
 }
 
 cfg_if! {

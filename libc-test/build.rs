@@ -1840,6 +1840,7 @@ fn test_freebsd(target: &str) {
                 "sys/times.h",
                 "sys/timex.h",
                 "sys/types.h",
+                "kvm.h", // must be after "sys/types.h"
                 "sys/ucontext.h",
                 "sys/uio.h",
                 "sys/ktrace.h",
@@ -1994,6 +1995,16 @@ fn test_freebsd(target: &str) {
         }
     });
 
+    cfg.skip_type(move |ty| {
+        match ty {
+            // the struct "__kvm" is quite tricky to bind so since we only use a pointer to it
+            // for now, it doesn't matter too much...
+            "kvm_t" => true,
+
+            _ => false,
+        }
+    });
+
     cfg.skip_struct(move |ty| {
         if ty.starts_with("__c_anonymous_") {
             return true;
@@ -2087,6 +2098,21 @@ fn test_freebsd(target: &str) {
             // a_un field is a union
             ("Elf32_Auxinfo", "a_un") => true,
             ("Elf64_Auxinfo", "a_un") => true,
+
+            // FIXME: structs too complicated to bind for now...
+            ("kinfo_proc", "ki_paddr") => true,
+            ("kinfo_proc", "ki_addr") => true,
+            ("kinfo_proc", "ki_tracep") => true,
+            ("kinfo_proc", "ki_textvp") => true,
+            ("kinfo_proc", "ki_fd") => true,
+            ("kinfo_proc", "ki_vmspace") => true,
+            ("kinfo_proc", "ki_pcb") => true,
+            ("kinfo_proc", "ki_tdaddr") => true,
+            ("kinfo_proc", "ki_pd") => true,
+
+            // We ignore this field because we needed to use a hack in order to make rust 1.19
+            // happy...
+            ("kinfo_proc", "ki_sparestrings") => true,
             _ => false,
         }
     });

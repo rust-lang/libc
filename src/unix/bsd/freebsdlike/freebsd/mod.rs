@@ -1,7 +1,13 @@
 pub type fflags_t = u32;
 pub type clock_t = i32;
 
-pub type lwpid_t = i32;
+pub type vm_prot_t = u_char;
+pub type kvaddr_t = u64;
+pub type segsz_t = isize;
+pub type __fixpt_t = u32;
+pub type fixpt_t = __fixpt_t;
+pub type __lwpid_t = i32;
+pub type lwpid_t = __lwpid_t;
 pub type blksize_t = i32;
 pub type clockid_t = ::c_int;
 pub type sem_t = _sem;
@@ -26,6 +32,14 @@ pub type pthread_barrierattr_t = *mut __c_anonymous_pthread_barrierattr;
 pub type pthread_barrier_t = *mut __c_anonymous_pthread_barrier;
 
 pub type uuid_t = ::uuid;
+pub type u_int = ::c_uint;
+pub type u_char = ::c_uchar;
+pub type u_long = ::c_ulong;
+pub type u_short = ::c_ushort;
+
+// It's an alias over "struct __kvm_t". However, its fields aren't supposed to be used directly,
+// making the type definition system dependent. Better not bind it exactly.
+pub type kvm_t = ::c_void;
 
 s! {
     pub struct aiocb {
@@ -218,10 +232,6 @@ s! {
         pub kve_path: [[::c_char; 32]; 32],
     }
 
-    pub struct kinfo_proc {
-        __pad0: [[::uintptr_t; 17]; 8],
-    }
-
     pub struct filestat {
         fs_type: ::c_int,
         fs_flags: ::c_int,
@@ -258,6 +268,164 @@ s! {
 
     pub struct __c_anonymous__timer {
         _priv: [::c_int; 3],
+    }
+
+    /// Used to hold a copy of the command line, if it had a sane length.
+    pub struct pargs {
+        /// Reference count.
+        pub ar_ref: u_int,
+        /// Length.
+        pub ar_length: u_int,
+        /// Arguments.
+        pub ar_args: [::c_uchar; 1],
+    }
+
+    pub struct priority {
+        /// Scheduling class.
+        pub pri_class: u_char,
+        /// Normal priority level.
+        pub pri_level: u_char,
+        /// Priority before propagation.
+        pub pri_native: u_char,
+        /// User priority based on p_cpu and p_nice.
+        pub pri_user: u_char,
+    }
+
+    pub struct kinfo_proc {
+        pub ki_structsize: ::c_int,
+        pub ki_layout: ::c_int,
+        pub ki_args: *mut pargs,
+        // This is normally "struct proc".
+        pub ki_paddr: *mut ::c_void,
+        // This is normally "struct user".
+        pub ki_addr: *mut ::c_void,
+        // This is normally "struct vnode".
+        pub ki_tracep: *mut ::c_void,
+        // This is normally "struct vnode".
+        pub ki_textvp: *mut ::c_void,
+        // This is normally "struct filedesc".
+        pub ki_fd: *mut ::c_void,
+        // This is normally "struct vmspace".
+        pub ki_vmspace: *mut ::c_void,
+        #[cfg(freebsd13)]
+        pub ki_wchan: *const ::c_void,
+        #[cfg(not(freebsd13))]
+        pub ki_wchan: *mut ::c_void,
+        pub ki_pid: ::pid_t,
+        pub ki_ppid: ::pid_t,
+        pub ki_pgid: ::pid_t,
+        pub ki_tpgid: ::pid_t,
+        pub ki_sid: ::pid_t,
+        pub ki_tsid: ::pid_t,
+        pub ki_jobc: ::c_short,
+        pub ki_spare_short1: ::c_short,
+        #[cfg(any(freebsd12, freebsd13))]
+        pub ki_tdev_freebsd11: u32,
+        #[cfg(freebsd11)]
+        pub ki_tdev: ::dev_t,
+        pub ki_siglist: ::sigset_t,
+        pub ki_sigmask: ::sigset_t,
+        pub ki_sigignore: ::sigset_t,
+        pub ki_sigcatch: ::sigset_t,
+        pub ki_uid: ::uid_t,
+        pub ki_ruid: ::uid_t,
+        pub ki_svuid: ::uid_t,
+        pub ki_rgid: ::gid_t,
+        pub ki_svgid: ::gid_t,
+        pub ki_ngroups: ::c_short,
+        pub ki_spare_short2: ::c_short,
+        pub ki_groups: [::gid_t; ::KI_NGROUPS],
+        pub ki_size: ::vm_size_t,
+        pub ki_rssize: segsz_t,
+        pub ki_swrss: segsz_t,
+        pub ki_tsize: segsz_t,
+        pub ki_dsize: segsz_t,
+        pub ki_ssize: segsz_t,
+        pub ki_xstat: ::u_short,
+        pub ki_acflag: ::u_short,
+        pub ki_pctcpu: fixpt_t,
+        pub ki_estcpu: u_int,
+        pub ki_slptime: u_int,
+        pub ki_swtime: u_int,
+        pub ki_cow: u_int,
+        pub ki_runtime: u64,
+        pub ki_start: ::timeval,
+        pub ki_childtime: ::timeval,
+        pub ki_flag: ::c_long,
+        pub ki_kiflag: ::c_long,
+        pub ki_traceflag: ::c_int,
+        pub ki_stat: ::c_char,
+        pub ki_nice: i8, // signed char
+        pub ki_lock: ::c_char,
+        pub ki_rqindex: ::c_char,
+        pub ki_oncpu_old: ::c_uchar,
+        pub ki_lastcpu_old: ::c_uchar,
+        pub ki_tdname: [::c_char; TDNAMLEN + 1],
+        pub ki_wmesg: [::c_char; ::WMESGLEN + 1],
+        pub ki_login: [::c_char; ::LOGNAMELEN + 1],
+        pub ki_lockname: [::c_char; ::LOCKNAMELEN + 1],
+        pub ki_comm: [::c_char; ::COMMLEN + 1],
+        pub ki_emul: [::c_char; ::KI_EMULNAMELEN + 1],
+        pub ki_loginclass: [::c_char; ::LOGINCLASSLEN + 1],
+        pub ki_moretdname: [::c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
+        pub ki_sparestrings: [[::c_char; 23]; 2], // little hack to allow PartialEq
+        pub ki_spareints: [::c_int; ::KI_NSPARE_INT],
+        #[cfg(freebsd13)]
+        pub ki_tdev: u64,
+        #[cfg(freebsd12)]
+        pub ki_tdev: ::dev_t,
+        pub ki_oncpu: ::c_int,
+        pub ki_lastcpu: ::c_int,
+        pub ki_tracer: ::c_int,
+        pub ki_flag2: ::c_int,
+        pub ki_fibnum: ::c_int,
+        pub ki_cr_flags: u_int,
+        pub ki_jid: ::c_int,
+        pub ki_numthreads: ::c_int,
+        pub ki_tid: lwpid_t,
+        pub ki_pri: priority,
+        pub ki_rusage: ::rusage,
+        pub ki_rusage_ch: ::rusage,
+        // This is normally "struct pcb".
+        pub ki_pcb: *mut ::c_void,
+        pub ki_kstack: *mut ::c_void,
+        pub ki_udata: *mut ::c_void,
+        // This is normally "struct thread".
+        pub ki_tdaddr: *mut ::c_void,
+        // This is normally "struct pwddesc".
+        #[cfg(freebsd13)]
+        pub ki_pd: *mut ::c_void,
+        pub ki_spareptrs: [*mut ::c_void; ::KI_NSPARE_PTR],
+        pub ki_sparelongs: [::c_long; ::KI_NSPARE_LONG],
+        pub ki_sflag: ::c_long,
+        pub ki_tdflags: ::c_long,
+    }
+
+    pub struct kvm_swap {
+        pub ksw_devname: [::c_char; 32],
+        pub ksw_used: u_int,
+        pub ksw_total: u_int,
+        pub ksw_flags: ::c_int,
+        pub ksw_reserved1: u_int,
+        pub ksw_reserved2: u_int,
+    }
+
+    pub struct nlist {
+        /// symbol name (in memory)
+        pub n_name: *const ::c_char,
+        /// type defines
+        pub n_type: ::c_uchar,
+        /// "type" and binding information
+        pub n_other: ::c_char,
+        /// used by stab entries
+        pub n_desc: ::c_short,
+        pub n_value: ::c_ulong,
+    }
+
+    pub struct kvm_nlist {
+        pub n_name: *const ::c_char,
+        pub n_type: ::c_uchar,
+        pub n_value: ::kvaddr_t,
     }
 }
 
@@ -718,7 +886,6 @@ pub const NOTE_USECONDS: u32 = 0x00000004;
 pub const NOTE_NSECONDS: u32 = 0x00000008;
 
 pub const MADV_PROTECT: ::c_int = 10;
-pub const RUSAGE_THREAD: ::c_int = 1;
 
 #[doc(hidden)]
 #[deprecated(
@@ -1465,6 +1632,241 @@ pub const RFSPAWN: ::c_int = 2147483648;
 
 pub const MALLOCX_ZERO: ::c_int = 0x40;
 
+/// size of returned wchan message
+pub const WMESGLEN: usize = 8;
+/// size of returned lock name
+pub const LOCKNAMELEN: usize = 8;
+/// size of returned thread name
+pub const TDNAMLEN: usize = 16;
+/// size of returned ki_comm name
+pub const COMMLEN: usize = 19;
+/// size of returned ki_emul
+pub const KI_EMULNAMELEN: usize = 16;
+/// number of groups in ki_groups
+pub const KI_NGROUPS: usize = 16;
+cfg_if! {
+    if #[cfg(freebsd11)] {
+        pub const KI_NSPARE_INT: usize = 4;
+    } else {
+        pub const KI_NSPARE_INT: usize = 2;
+    }
+}
+pub const KI_NSPARE_LONG: usize = 12;
+/// Flags for the process credential.
+pub const KI_CRF_CAPABILITY_MODE: usize = 0x00000001;
+/// Steal a bit from ki_cr_flags to indicate that the cred had more than
+/// KI_NGROUPS groups.
+pub const KI_CRF_GRP_OVERFLOW: usize = 0x80000000;
+/// controlling tty vnode active
+pub const KI_CTTY: usize = 0x00000001;
+/// session leader
+pub const KI_SLEADER: usize = 0x00000002;
+/// proc blocked on lock ki_lockname
+pub const KI_LOCKBLOCK: usize = 0x00000004;
+/// size of returned ki_login
+pub const LOGNAMELEN: usize = 17;
+/// size of returned ki_loginclass
+pub const LOGINCLASSLEN: usize = 17;
+
+pub const KF_ATTR_VALID: ::c_int = 0x0001;
+pub const KF_TYPE_NONE: ::c_int = 0;
+pub const KF_TYPE_VNODE: ::c_int = 1;
+pub const KF_TYPE_SOCKET: ::c_int = 2;
+pub const KF_TYPE_PIPE: ::c_int = 3;
+pub const KF_TYPE_FIFO: ::c_int = 4;
+pub const KF_TYPE_KQUEUE: ::c_int = 5;
+pub const KF_TYPE_MQUEUE: ::c_int = 7;
+pub const KF_TYPE_SHM: ::c_int = 8;
+pub const KF_TYPE_SEM: ::c_int = 9;
+pub const KF_TYPE_PTS: ::c_int = 10;
+pub const KF_TYPE_PROCDESC: ::c_int = 11;
+pub const KF_TYPE_DEV: ::c_int = 12;
+pub const KF_TYPE_UNKNOWN: ::c_int = 255;
+
+pub const KF_VTYPE_VNON: ::c_int = 0;
+pub const KF_VTYPE_VREG: ::c_int = 1;
+pub const KF_VTYPE_VDIR: ::c_int = 2;
+pub const KF_VTYPE_VBLK: ::c_int = 3;
+pub const KF_VTYPE_VCHR: ::c_int = 4;
+pub const KF_VTYPE_VLNK: ::c_int = 5;
+pub const KF_VTYPE_VSOCK: ::c_int = 6;
+pub const KF_VTYPE_VFIFO: ::c_int = 7;
+pub const KF_VTYPE_VBAD: ::c_int = 8;
+pub const KF_VTYPE_UNKNOWN: ::c_int = 255;
+
+/// Current working directory
+pub const KF_FD_TYPE_CWD: ::c_int = -1;
+/// Root directory
+pub const KF_FD_TYPE_ROOT: ::c_int = -2;
+/// Jail directory
+pub const KF_FD_TYPE_JAIL: ::c_int = -3;
+/// Ktrace vnode
+pub const KF_FD_TYPE_TRACE: ::c_int = -4;
+pub const KF_FD_TYPE_TEXT: ::c_int = -5;
+/// Controlling terminal
+pub const KF_FD_TYPE_CTTY: ::c_int = -6;
+pub const KF_FLAG_READ: ::c_int = 0x00000001;
+pub const KF_FLAG_WRITE: ::c_int = 0x00000002;
+pub const KF_FLAG_APPEND: ::c_int = 0x00000004;
+pub const KF_FLAG_ASYNC: ::c_int = 0x00000008;
+pub const KF_FLAG_FSYNC: ::c_int = 0x00000010;
+pub const KF_FLAG_NONBLOCK: ::c_int = 0x00000020;
+pub const KF_FLAG_DIRECT: ::c_int = 0x00000040;
+pub const KF_FLAG_HASLOCK: ::c_int = 0x00000080;
+pub const KF_FLAG_SHLOCK: ::c_int = 0x00000100;
+pub const KF_FLAG_EXLOCK: ::c_int = 0x00000200;
+pub const KF_FLAG_NOFOLLOW: ::c_int = 0x00000400;
+pub const KF_FLAG_CREAT: ::c_int = 0x00000800;
+pub const KF_FLAG_TRUNC: ::c_int = 0x00001000;
+pub const KF_FLAG_EXCL: ::c_int = 0x00002000;
+pub const KF_FLAG_EXEC: ::c_int = 0x00004000;
+
+pub const KVME_TYPE_NONE: ::c_int = 0;
+pub const KVME_TYPE_DEFAULT: ::c_int = 1;
+pub const KVME_TYPE_VNODE: ::c_int = 2;
+pub const KVME_TYPE_SWAP: ::c_int = 3;
+pub const KVME_TYPE_DEVICE: ::c_int = 4;
+pub const KVME_TYPE_PHYS: ::c_int = 5;
+pub const KVME_TYPE_DEAD: ::c_int = 6;
+pub const KVME_TYPE_SG: ::c_int = 7;
+pub const KVME_TYPE_MGTDEVICE: ::c_int = 8;
+// Present in `sys/user.h` but is undefined for whatever reason...
+// pub const KVME_TYPE_GUARD: ::c_int = 9;
+pub const KVME_TYPE_UNKNOWN: ::c_int = 255;
+pub const KVME_PROT_READ: ::c_int = 0x00000001;
+pub const KVME_PROT_WRITE: ::c_int = 0x00000002;
+pub const KVME_PROT_EXEC: ::c_int = 0x00000004;
+pub const KVME_FLAG_COW: ::c_int = 0x00000001;
+pub const KVME_FLAG_NEEDS_COPY: ::c_int = 0x00000002;
+pub const KVME_FLAG_NOCOREDUMP: ::c_int = 0x00000004;
+pub const KVME_FLAG_SUPER: ::c_int = 0x00000008;
+pub const KVME_FLAG_GROWS_UP: ::c_int = 0x00000010;
+pub const KVME_FLAG_GROWS_DOWN: ::c_int = 0x00000020;
+cfg_if! {
+    if #[cfg(any(freebsd12, freebsd13))] {
+        pub const KVME_FLAG_USER_WIRED: ::c_int = 0x00000040;
+    }
+}
+
+pub const KKST_MAXLEN: ::c_int = 1024;
+/// Stack is valid.
+pub const KKST_STATE_STACKOK: ::c_int = 0;
+/// Stack swapped out.
+pub const KKST_STATE_SWAPPED: ::c_int = 1;
+pub const KKST_STATE_RUNNING: ::c_int = 2;
+
+// Constants about priority.
+pub const PRI_MIN: ::c_int = 0;
+pub const PRI_MAX: ::c_int = 255;
+pub const PRI_MIN_ITHD: ::c_int = PRI_MIN;
+pub const PRI_MAX_ITHD: ::c_int = PRI_MIN_REALTIME - 1;
+pub const PI_REALTIME: ::c_int = PRI_MIN_ITHD + 0;
+pub const PI_AV: ::c_int = PRI_MIN_ITHD + 4;
+pub const PI_NET: ::c_int = PRI_MIN_ITHD + 8;
+pub const PI_DISK: ::c_int = PRI_MIN_ITHD + 12;
+pub const PI_TTY: ::c_int = PRI_MIN_ITHD + 16;
+pub const PI_DULL: ::c_int = PRI_MIN_ITHD + 20;
+pub const PI_SOFT: ::c_int = PRI_MIN_ITHD + 24;
+pub const PRI_MIN_REALTIME: ::c_int = 48;
+pub const PRI_MAX_REALTIME: ::c_int = PRI_MIN_KERN - 1;
+pub const PRI_MIN_KERN: ::c_int = 80;
+pub const PRI_MAX_KERN: ::c_int = PRI_MIN_TIMESHARE - 1;
+pub const PSWP: ::c_int = PRI_MIN_KERN + 0;
+pub const PVM: ::c_int = PRI_MIN_KERN + 4;
+pub const PINOD: ::c_int = PRI_MIN_KERN + 8;
+pub const PRIBIO: ::c_int = PRI_MIN_KERN + 12;
+pub const PVFS: ::c_int = PRI_MIN_KERN + 16;
+pub const PZERO: ::c_int = PRI_MIN_KERN + 20;
+pub const PSOCK: ::c_int = PRI_MIN_KERN + 24;
+pub const PWAIT: ::c_int = PRI_MIN_KERN + 28;
+pub const PLOCK: ::c_int = PRI_MIN_KERN + 32;
+pub const PPAUSE: ::c_int = PRI_MIN_KERN + 36;
+pub const PRI_MIN_TIMESHARE: ::c_int = 120;
+pub const PRI_MAX_TIMESHARE: ::c_int = PRI_MIN_IDLE - 1;
+pub const PUSER: ::c_int = PRI_MIN_TIMESHARE;
+pub const PRI_MIN_IDLE: ::c_int = 224;
+pub const PRI_MAX_IDLE: ::c_int = PRI_MAX;
+
+// Resource utilization information.
+pub const RUSAGE_THREAD: ::c_int = 1;
+
+cfg_if! {
+    if #[cfg(any(freebsd11, target_pointer_width = "32"))] {
+        pub const ARG_MAX: ::c_int = 256 * 1024;
+    } else {
+        pub const ARG_MAX: ::c_int = 2 * 256 * 1024;
+    }
+}
+pub const CHILD_MAX: ::c_int = 40;
+/// max command name remembered
+pub const MAXCOMLEN: usize = 19;
+/// max interpreter file name length
+pub const MAXINTERP: ::c_int = ::PATH_MAX;
+/// max login name length (incl. NUL)
+pub const MAXLOGNAME: ::c_int = 33;
+/// max simultaneous processes
+pub const MAXUPRC: ::c_int = CHILD_MAX;
+/// max bytes for an exec function
+pub const NCARGS: ::c_int = ARG_MAX;
+///  /* max number groups
+pub const NGROUPS: ::c_int = NGROUPS_MAX + 1;
+/// max open files per process
+pub const NOFILE: ::c_int = OPEN_MAX;
+/// marker for empty group set member
+pub const NOGROUP: ::c_int = 65535;
+/// max hostname size
+pub const MAXHOSTNAMELEN: ::c_int = 256;
+/// max bytes in term canon input line
+pub const MAX_CANON: ::c_int = 255;
+/// max bytes in terminal input
+pub const MAX_INPUT: ::c_int = 255;
+/// max bytes in a file name
+pub const NAME_MAX: ::c_int = 255;
+pub const MAXSYMLINKS: ::c_int = 32;
+/// max supplemental group id's
+pub const NGROUPS_MAX: ::c_int = 1023;
+/// max open files per process
+pub const OPEN_MAX: ::c_int = 64;
+
+pub const _POSIX_ARG_MAX: ::c_int = 4096;
+pub const _POSIX_LINK_MAX: ::c_int = 8;
+pub const _POSIX_MAX_CANON: ::c_int = 255;
+pub const _POSIX_MAX_INPUT: ::c_int = 255;
+pub const _POSIX_NAME_MAX: ::c_int = 14;
+pub const _POSIX_PIPE_BUF: ::c_int = 512;
+pub const _POSIX_SSIZE_MAX: ::c_int = 32767;
+pub const _POSIX_STREAM_MAX: ::c_int = 8;
+
+/// max ibase/obase values in bc(1)
+pub const BC_BASE_MAX: ::c_int = 99;
+/// max array elements in bc(1)
+pub const BC_DIM_MAX: ::c_int = 2048;
+/// max scale value in bc(1)
+pub const BC_SCALE_MAX: ::c_int = 99;
+/// max const string length in bc(1)
+pub const BC_STRING_MAX: ::c_int = 1000;
+/// max character class name size
+pub const CHARCLASS_NAME_MAX: ::c_int = 14;
+/// max weights for order keyword
+pub const COLL_WEIGHTS_MAX: ::c_int = 10;
+/// max expressions nested in expr(1)
+pub const EXPR_NEST_MAX: ::c_int = 32;
+/// max bytes in an input line
+pub const LINE_MAX: ::c_int = 2048;
+/// max RE's in interval notation
+pub const RE_DUP_MAX: ::c_int = 255;
+
+pub const _POSIX2_BC_BASE_MAX: ::c_int = 99;
+pub const _POSIX2_BC_DIM_MAX: ::c_int = 2048;
+pub const _POSIX2_BC_SCALE_MAX: ::c_int = 99;
+pub const _POSIX2_BC_STRING_MAX: ::c_int = 1000;
+pub const _POSIX2_CHARCLASS_NAME_MAX: ::c_int = 14;
+pub const _POSIX2_COLL_WEIGHTS_MAX: ::c_int = 2;
+pub const _POSIX2_EQUIV_CLASS_MAX: ::c_int = 2;
+pub const _POSIX2_EXPR_NEST_MAX: ::c_int = 32;
+pub const _POSIX2_LINE_MAX: ::c_int = 2048;
+pub const _POSIX2_RE_DUP_MAX: ::c_int = 255;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -1930,6 +2332,77 @@ extern "C" {
     pub fn nallocx(size: ::size_t, flags: ::c_int) -> ::size_t;
 
     pub fn procctl(idtype: ::idtype_t, id: ::id_t, cmd: ::c_int, data: *mut ::c_void) -> ::c_int;
+
+    pub fn getpagesize() -> ::c_int;
+}
+
+#[link(name = "kvm")]
+extern "C" {
+    pub fn kvm_open(
+        execfile: *const ::c_char,
+        corefile: *const ::c_char,
+        swapfile: *const ::c_char,
+        flags: ::c_int,
+        errstr: *const ::c_char,
+    ) -> *mut kvm_t;
+    pub fn kvm_close(kd: *mut kvm_t) -> ::c_int;
+    pub fn kvm_dpcpu_setcpu(kd: *mut kvm_t, cpu: ::c_uint) -> ::c_int;
+    pub fn kvm_getargv(kd: *mut kvm_t, p: *const kinfo_proc, nchr: ::c_int) -> *mut *mut ::c_char;
+    pub fn kvm_getcptime(kd: *mut kvm_t, cp_time: *mut ::c_long) -> ::c_int;
+    pub fn kvm_getenvv(kd: *mut kvm_t, p: *const kinfo_proc, nchr: ::c_int) -> *mut *mut ::c_char;
+    pub fn kvm_geterr(kd: *mut kvm_t) -> *mut ::c_char;
+    pub fn kvm_getloadavg(kd: *mut kvm_t, loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
+    pub fn kvm_getmaxcpu(kd: *mut kvm_t) -> ::c_int;
+    pub fn kvm_getncpus(kd: *mut kvm_t) -> ::c_int;
+    pub fn kvm_getpcpu(kd: *mut kvm_t, cpu: ::c_int) -> *mut ::c_void;
+    pub fn kvm_counter_u64_fetch(kd: *mut kvm_t, base: ::c_ulong) -> u64;
+    pub fn kvm_getprocs(
+        kd: *mut kvm_t,
+        op: ::c_int,
+        arg: ::c_int,
+        cnt: *mut ::c_int,
+    ) -> *mut kinfo_proc;
+    pub fn kvm_getswapinfo(
+        kd: *mut kvm_t,
+        info: *mut kvm_swap,
+        maxswap: ::c_int,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn kvm_native(kd: *mut kvm_t) -> ::c_int;
+    pub fn kvm_nlist(kd: *mut kvm_t, nl: *mut nlist) -> ::c_int;
+    pub fn kvm_nlist2(kd: *mut kvm_t, nl: *mut kvm_nlist) -> ::c_int;
+    pub fn kvm_openfiles(
+        execfile: *const ::c_char,
+        corefile: *const ::c_char,
+        swapfile: *const ::c_char,
+        flags: ::c_int,
+        errbuf: *mut ::c_char,
+    ) -> *mut kvm_t;
+    pub fn kvm_read(
+        kd: *mut kvm_t,
+        addr: ::c_ulong,
+        buf: *mut ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
+    pub fn kvm_read_zpcpu(
+        kd: *mut kvm_t,
+        base: ::c_ulong,
+        buf: *mut ::c_void,
+        size: ::size_t,
+        cpu: ::c_int,
+    ) -> ::ssize_t;
+    pub fn kvm_read2(
+        kd: *mut kvm_t,
+        addr: kvaddr_t,
+        buf: *mut ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
+    pub fn kvm_write(
+        kd: *mut kvm_t,
+        addr: ::c_ulong,
+        buf: *const ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
 }
 
 #[link(name = "util")]
