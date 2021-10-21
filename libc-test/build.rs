@@ -2924,6 +2924,10 @@ fn test_linux(target: &str) {
             | "SW_CNT"
                 if mips || ppc64 || riscv64 || sparc64 => true,
 
+            // FIXME: Requires more recent kernel headers (5.9 / 5.11):
+            | "CLOSE_RANGE_UNSHARE"
+            | "CLOSE_RANGE_CLOEXEC" => true,
+
             // kernel constants not available in uclibc 1.0.34
             | "ADDR_COMPAT_LAYOUT"
             | "ADDR_LIMIT_3GB"
