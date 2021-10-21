@@ -4302,6 +4302,9 @@ pub const PROC_PIDTASKINFO: ::c_int = 4;
 pub const PROC_PIDTHREADINFO: ::c_int = 5;
 pub const PROC_PIDVNODEPATHINFO: ::c_int = 9;
 pub const PROC_PIDPATHINFO_MAXSIZE: ::c_int = 4096;
+pub const PROC_CSM_ALL: ::c_uint = 0x0001;
+pub const PROC_CSM_NOSMT: ::c_uint = 0x0002;
+pub const PROC_CSM_TECS: ::c_uint = 0x0004;
 pub const MAXCOMLEN: usize = 16;
 pub const MAXTHREADNAMESIZE: usize = 64;
 
@@ -5249,6 +5252,12 @@ extern "C" {
     pub fn proc_kmsgbuf(buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
     pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
     pub fn proc_pid_rusage(pid: ::c_int, flavor: ::c_int, buffer: *mut rusage_info_t) -> ::c_int;
+
+    // Available from Big Sur
+    pub fn proc_set_no_smt() -> ::c_int;
+    pub fn proc_setthread_no_smt() -> ::c_int;
+    pub fn proc_set_csm(flags: u32) -> ::c_int;
+    pub fn proc_setthread_csm(flags: u32) -> ::c_int;
     /// # Notes
     ///
     /// `id` is of type [`uuid_t`].
