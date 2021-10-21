@@ -2928,6 +2928,9 @@ fn test_linux(target: &str) {
             | "CLOSE_RANGE_UNSHARE"
             | "CLOSE_RANGE_CLOEXEC" => true,
 
+            // FIXME: Not currently available in headers on ARM, MIPS and musl.
+            "NETLINK_GET_STRICT_CHK" if arm || mips || musl => true,
+
             // kernel constants not available in uclibc 1.0.34
             | "ADDR_COMPAT_LAYOUT"
             | "ADDR_LIMIT_3GB"
