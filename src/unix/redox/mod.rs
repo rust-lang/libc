@@ -1001,6 +1001,8 @@ extern "C" {
         set: *const ::sigset_t,
         oldset: *mut ::sigset_t,
     ) -> ::c_int;
+    pub fn pthread_cancel(thread: ::pthread_t) -> ::c_int;
+    pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
 
     // sys/epoll.h
     pub fn epoll_create(size: ::c_int) -> ::c_int;
