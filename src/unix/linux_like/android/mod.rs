@@ -2447,6 +2447,8 @@ pub const SCHED_DEADLINE: ::c_int = 6;
 
 pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
 
+pub const CLONE_PIDFD: ::c_int = 0x1000;
+
 // bits/seek_constants.h
 pub const SEEK_DATA: ::c_int = 3;
 pub const SEEK_HOLE: ::c_int = 4;
