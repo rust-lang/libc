@@ -937,6 +937,9 @@ PRIO_DARWIN_BG
 PRIO_DARWIN_NONUI
 PRIO_DARWIN_PROCESS
 PRIO_DARWIN_THREAD
+PROC_CSM_ALL
+PROC_CSM_NOSMT
+PROC_CSM_TECS
 PROC_PIDTASKALLINFO
 PROC_PIDTASKINFO
 PROC_PIDTHREADINFO
@@ -1818,6 +1821,10 @@ proc_pidfdinfo
 proc_pidfileportinfo
 proc_pidpath
 proc_regionfilename
+proc_set_no_smt
+proc_setthread_no_smt
+proc_set_csm
+proc_setthread_csm
 proc_taskallinfo
 proc_taskinfo
 proc_threadinfo
