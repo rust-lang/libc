@@ -1814,6 +1814,7 @@ fn test_freebsd(target: &str) {
                 "sys/capsicum.h",
                 [freebsdlast]:"sys/auxv.h",
                 "sys/cpuset.h",
+                [freebsdlast]:"sys/domainset.h",
                 "sys/event.h",
                 "sys/extattr.h",
                 "sys/file.h",
