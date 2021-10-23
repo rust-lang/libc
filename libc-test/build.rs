@@ -2654,6 +2654,7 @@ fn test_linux(target: &str) {
         "linux/random.h",
         "linux/reboot.h",
         "linux/rtnetlink.h",
+        "linux/sched.h",
         "linux/seccomp.h",
         "linux/sockios.h",
         "linux/uinput.h",
