@@ -1509,6 +1509,8 @@ pub const SCHED_IDLE: ::c_int = 5;
 
 pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
 
+pub const CLONE_PIDFD: ::c_int = 0x1000;
+
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
 
