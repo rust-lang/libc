@@ -89,6 +89,36 @@ impl siginfo_t {
         }
         (*(self as *const siginfo_t as *const siginfo_child)).status
     }
+
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        #[repr(C)]
+        struct siginfo_child {
+            _si_signo: ::c_int,
+            _si_code: ::c_int,
+            _si_errno: ::c_int,
+            #[cfg(target_pointer_width = "64")]
+            __pad1: ::c_int,
+            _pid: ::pid_t,
+            uid: ::uid_t,
+            _status: ::c_int,
+        }
+        (*(self as *const siginfo_t as *const siginfo_child)).uid
+    }
+
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        #[repr(C)]
+        struct siginfo_child {
+            _si_signo: ::c_int,
+            _si_code: ::c_int,
+            _si_errno: ::c_int,
+            #[cfg(target_pointer_width = "64")]
+            __pad1: ::c_int,
+            pid: ::pid_t,
+            _uid: ::uid_t,
+            _status: ::c_int,
+        }
+        (*(self as *const siginfo_t as *const siginfo_child)).pid
+    }
 }
 
 s! {
