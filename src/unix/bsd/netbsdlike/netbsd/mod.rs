@@ -62,33 +62,32 @@ impl siginfo_t {
 
     pub unsafe fn si_value(&self) -> ::sigval {
         #[repr(C)]
-        struct siginfo_timer {
+        struct siginfo_rt {
             _si_signo: ::c_int,
-            _si_errno: ::c_int,
             _si_code: ::c_int,
+            _si_errno: ::c_int,
+            #[cfg(target_pointer_width = "64")]
             __pad1: ::c_int,
             _pid: ::pid_t,
             _uid: ::uid_t,
             value: ::sigval,
         }
-        (*(self as *const siginfo_t as *const siginfo_timer)).value
+        (*(self as *const siginfo_t as *const siginfo_rt)).value
     }
 
     pub unsafe fn si_status(&self) -> ::c_int {
         #[repr(C)]
-        struct siginfo_timer {
+        struct siginfo_child {
             _si_signo: ::c_int,
-            _si_errno: ::c_int,
             _si_code: ::c_int,
+            _si_errno: ::c_int,
+            #[cfg(target_pointer_width = "64")]
             __pad1: ::c_int,
             _pid: ::pid_t,
             _uid: ::uid_t,
-            _value: ::sigval,
-            _cpid: ::pid_t,
-            _cuid: ::uid_t,
             status: ::c_int,
         }
-        (*(self as *const siginfo_t as *const siginfo_timer)).status
+        (*(self as *const siginfo_t as *const siginfo_child)).status
     }
 }
 
@@ -177,8 +176,12 @@ s! {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
+        #[cfg(target_pointer_width = "64")]
         __pad1: ::c_int,
         pub si_addr: *mut ::c_void,
+        #[cfg(target_pointer_width = "32")]
+        __pad2: [u32; 28],
+        #[cfg(target_pointer_width = "64")]
         __pad2: [u64; 13],
     }
 
