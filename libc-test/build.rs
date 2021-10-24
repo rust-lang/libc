@@ -2653,6 +2653,8 @@ fn test_linux(target: &str) {
         "linux/netfilter_ipv6.h",
         "linux/netfilter_ipv6/ip6_tables.h",
         "linux/netlink.h",
+        // FIXME: requires more recent kernel headers:
+        // "linux/openat2.h",
         "linux/quota.h",
         "linux/random.h",
         "linux/reboot.h",
@@ -2794,6 +2796,9 @@ fn test_linux(target: &str) {
             // Requires glibc 2.33 or newer.
             "mallinfo2" => true,
 
+            // Might differ between kernel versions
+            "open_how" => true,
+
             _ => false,
         }
     });
@@ -2931,6 +2936,14 @@ fn test_linux(target: &str) {
             // FIXME: Requires more recent kernel headers (5.9 / 5.11):
             | "CLOSE_RANGE_UNSHARE"
             | "CLOSE_RANGE_CLOEXEC" => true,
+
+            // FIXME: requires more recent kernel headers:
+            | "RESOLVE_BENEATH"
+            | "RESOLVE_CACHED"
+            | "RESOLVE_IN_ROOT"
+            | "RESOLVE_NO_MAGICLINKS"
+            | "RESOLVE_NO_SYMLINKS"
+            | "RESOLVE_NO_XDEV" => true,
 
             // FIXME: Not currently available in headers on ARM, MIPS and musl.
             "NETLINK_GET_STRICT_CHK" if arm || mips || musl => true,

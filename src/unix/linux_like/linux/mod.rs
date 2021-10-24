@@ -1824,6 +1824,14 @@ pub const MFD_HUGETLB: ::c_uint = 0x0004;
 pub const CLOSE_RANGE_UNSHARE: ::c_uint = 1 << 1;
 pub const CLOSE_RANGE_CLOEXEC: ::c_uint = 1 << 2;
 
+// linux/openat2.h
+pub const RESOLVE_NO_XDEV: ::__u64 = 0x01;
+pub const RESOLVE_NO_MAGICLINKS: ::__u64 = 0x02;
+pub const RESOLVE_NO_SYMLINKS: ::__u64 = 0x04;
+pub const RESOLVE_BENEATH: ::__u64 = 0x08;
+pub const RESOLVE_IN_ROOT: ::__u64 = 0x10;
+pub const RESOLVE_CACHED: ::__u64 = 0x20;
+
 // these are used in the p_type field of Elf32_Phdr and Elf64_Phdr, which has
 // the type Elf32Word and Elf64Word respectively. Luckily, both of those are u32
 // so we can use that type here to avoid having to cast.
@@ -3942,3 +3950,10 @@ cfg_if! {
     }
 }
 expand_align!();
+
+cfg_if! {
+    if #[cfg(libc_non_exhaustive)] {
+        mod non_exhaustive;
+        pub use self::non_exhaustive::*;
+    }
+}
