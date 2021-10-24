@@ -20,6 +20,40 @@ pub type daddr_t = c_long;
 pub type caddr_t = *mut c_char;
 pub type sbintime_t = ::c_longlong;
 
+// External implementations are needed to use networking and threading.
+s! {
+    pub struct sockaddr {
+        pub sa_family: ::sa_family_t,
+        pub sa_data: [::c_char; 14],
+    }
+
+    pub struct sockaddr_storage {
+        pub ss_family: ::sa_family_t,
+        pub __ss_padding: [c_char; 26usize],
+    }
+
+    pub struct sockaddr_in {
+        pub sin_family: ::sa_family_t,
+        pub sin_port: in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [::c_uchar; 8usize],
+    }
+
+    pub struct sockaddr_in6 {
+        pub sin6_family: ::sa_family_t,
+        pub sin6_port: ::in_port_t,
+        pub sin6_flowinfo: u32,
+        pub sin6_addr: ::in6_addr,
+        pub sin6_scope_id: u32,
+    }
+
+    pub struct sockaddr_un {
+        pub sun_len: ::c_uchar,
+        pub sun_family: ::sa_family_t,
+        pub sun_path: [::c_char; 104usize],
+    }
+}
+
 pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_SIGNAL: ::c_int = 2;
 pub const SIGEV_THREAD: ::c_int = 3;
@@ -113,40 +147,6 @@ pub const AF_INET6: ::c_int = 23;
 pub const FIONBIO: ::c_ulong = 1;
 
 pub const RTLD_DEFAULT: *mut ::c_void = 0 as *mut ::c_void;
-
-// External implementations are needed to use networking and threading.
-s! {
-    pub struct sockaddr {
-        pub sa_family: ::sa_family_t,
-        pub sa_data: [::c_char; 14],
-    }
-
-    pub struct sockaddr_storage {
-        pub ss_family: ::sa_family_t,
-        pub __ss_padding: [c_char; 26usize],
-    }
-
-    pub struct sockaddr_in {
-        pub sin_family: ::sa_family_t,
-        pub sin_port: in_port_t,
-        pub sin_addr: ::in_addr,
-        pub sin_zero: [::c_uchar; 8usize],
-    }
-
-    pub struct sockaddr_in6 {
-        pub sin6_family: ::sa_family_t,
-        pub sin6_port: ::in_port_t,
-        pub sin6_flowinfo: u32,
-        pub sin6_addr: ::in6_addr,
-        pub sin6_scope_id: u32,
-    }
-
-    pub struct sockaddr_un {
-        pub sun_len: ::c_uchar,
-        pub sun_family: ::sa_family_t,
-        pub sun_path: [::c_char; 104usize],
-    }
-}
 
 // Horizon OS works doesn't or can't hold any of this information
 safe_f! {
