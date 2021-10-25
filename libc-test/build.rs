@@ -768,6 +768,7 @@ fn test_solarish(target: &str) {
         "sys/loadavg.h",
         "sys/mman.h",
         "sys/mount.h",
+        "sys/priv.h",
         "sys/pset.h",
         "sys/resource.h",
         "sys/socket.h",
