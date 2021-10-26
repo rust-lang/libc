@@ -4934,6 +4934,12 @@ extern "C" {
         flags: ::c_int,
         data: *mut ::c_void,
     ) -> ::c_int;
+    pub fn fmount(
+        src: *const ::c_char,
+        fd: ::c_int,
+        flags: ::c_int,
+        data: *mut ::c_void,
+    ) -> ::c_int;
     pub fn ptrace(request: ::c_int, pid: ::pid_t, addr: *mut ::c_char, data: ::c_int) -> ::c_int;
     pub fn quotactl(
         special: *const ::c_char,
@@ -5110,6 +5116,20 @@ extern "C" {
         flags: *mut ::pid_t,
     ) -> ::c_int;
     pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: ::pid_t) -> ::c_int;
+    pub fn posix_spawnattr_setarchpref_np(
+        attr: *mut posix_spawnattr_t,
+        count: ::size_t,
+        pref: *mut ::cpu_type_t,
+        subpref: *mut ::cpu_subtype_t,
+        ocount: *mut ::size_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_getarchpref_np(
+        attr: *const posix_spawnattr_t,
+        count: ::size_t,
+        pref: *mut ::cpu_type_t,
+        subpref: *mut ::cpu_subtype_t,
+        ocount: *mut ::size_t,
+    ) -> ::c_int;
 
     pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
     pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
