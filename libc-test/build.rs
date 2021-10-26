@@ -1225,6 +1225,7 @@ fn test_dragonflybsd(target: &str) {
         "sys/times.h",
         "sys/timex.h",
         "sys/types.h",
+        "sys/checkpoint.h",
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
