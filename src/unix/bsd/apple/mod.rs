@@ -5203,6 +5203,14 @@ extern "C" {
     pub fn memset_pattern8(b: *mut ::c_void, pattern8: *const ::c_void, len: ::size_t);
     pub fn memset_pattern16(b: *mut ::c_void, pattern16: *const ::c_void, len: ::size_t);
 
+    // Inherited from BSD but available from Big Sur only
+    pub fn strtonum(
+        __numstr: *const ::c_char,
+        __minval: ::c_longlong,
+        __maxval: ::c_longlong,
+        errstrp: *mut *const ::c_char,
+    ) -> ::c_longlong;
+
     pub fn mstats() -> mstats;
     pub fn malloc_printf(format: *const ::c_char, ...);
     pub fn malloc_zone_check(zone: *mut ::malloc_zone_t) -> ::boolean_t;
