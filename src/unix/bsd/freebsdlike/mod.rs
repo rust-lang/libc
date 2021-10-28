@@ -724,6 +724,14 @@ pub const POLLSTANDARD: ::c_short = ::POLLIN
     | ::POLLHUP
     | ::POLLNVAL;
 
+pub const AI_PASSIVE: ::c_int = 0x00000001;
+pub const AI_CANONNAME: ::c_int = 0x00000002;
+pub const AI_NUMERICHOST: ::c_int = 0x00000004;
+pub const AI_NUMERICSERV: ::c_int = 0x00000008;
+pub const AI_ALL: ::c_int = 0x00000100;
+pub const AI_ADDRCONFIG: ::c_int = 0x00000400;
+pub const AI_V4MAPPED: ::c_int = 0x00000800;
+
 pub const EAI_AGAIN: ::c_int = 2;
 pub const EAI_BADFLAGS: ::c_int = 3;
 pub const EAI_FAIL: ::c_int = 4;
