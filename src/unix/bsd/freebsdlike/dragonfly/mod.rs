@@ -882,6 +882,13 @@ pub const EV_ERROR: u16 = 0x4000;
 pub const EV_EOF: u16 = 0x8000;
 pub const EV_SYSFLAGS: u16 = 0xf000;
 
+pub const FIODNAME: ::c_ulong = 0x80106678;
+#[deprecated(
+    since = "0.2.106",
+    note = "FIODGNAME is not defined on DragonFly BSD. See FIODNAME."
+)]
+pub const FIODGNAME: ::c_ulong = 0x80106678;
+
 pub const NOTE_TRIGGER: u32 = 0x01000000;
 pub const NOTE_FFNOP: u32 = 0x00000000;
 pub const NOTE_FFAND: u32 = 0x40000000;

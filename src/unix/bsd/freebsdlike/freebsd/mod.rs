@@ -1047,6 +1047,7 @@ pub const H4DISC: ::c_int = 0x7;
 
 pub const BIOCSETFNR: ::c_ulong = 0x80104282;
 
+pub const FIODGNAME: ::c_ulong = 0x80106678;
 pub const FIONWRITE: ::c_ulong = 0x40046677;
 pub const FIONSPACE: ::c_ulong = 0x40046676;
 pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;
