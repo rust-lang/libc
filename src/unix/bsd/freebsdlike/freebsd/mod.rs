@@ -2009,6 +2009,13 @@ extern "C" {
     ) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
 
+    pub fn devname_r(
+        dev: ::dev_t,
+        mode: ::mode_t,
+        buf: *mut ::c_char,
+        len: ::c_int,
+    ) -> *mut ::c_char;
+
     pub fn extattr_delete_fd(
         fd: ::c_int,
         attrnamespace: ::c_int,
