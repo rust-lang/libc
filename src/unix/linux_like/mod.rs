@@ -1237,6 +1237,10 @@ pub const POLLHUP: ::c_short = 0x10;
 pub const POLLNVAL: ::c_short = 0x20;
 pub const POLLRDNORM: ::c_short = 0x040;
 pub const POLLRDBAND: ::c_short = 0x080;
+#[cfg(not(any(target_arch = "sparc", target_arch = "sparc64")))]
+pub const POLLRDHUP: ::c_short = 0x2000;
+#[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
+pub const POLLRDHUP: ::c_short = 0x800;
 
 pub const IPTOS_LOWDELAY: u8 = 0x10;
 pub const IPTOS_THROUGHPUT: u8 = 0x08;
