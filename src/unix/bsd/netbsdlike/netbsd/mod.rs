@@ -538,6 +538,16 @@ s! {
         #[cfg(libc_union)]
         pub fae: *mut posix_spawn_file_actions_entry_t,
     }
+
+    pub struct ptrace_lwpinfo {
+        pub pl_lwpid: lwpid_t,
+        pub pl_event: ::c_int,
+    }
+
+    pub struct ptrace_siginfo {
+        pub psi_siginfo: siginfo_t,
+        pub psi_lwpid: lwpid_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -1597,6 +1607,10 @@ pub const TIME_ERROR: ::c_int = 5;
 
 pub const LITTLE_ENDIAN: ::c_int = 1234;
 pub const BIG_ENDIAN: ::c_int = 4321;
+
+pub const PL_EVENT_NONE: ::c_int = 0;
+pub const PL_EVENT_SIGNAL: ::c_int = 1;
+pub const PL_EVENT_SUSPENDED: ::c_int = 2;
 
 cfg_if! {
     if #[cfg(any(target_arch = "sparc", target_arch = "sparc64",

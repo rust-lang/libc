@@ -730,6 +730,9 @@ PIOD_READ_I
 PIOD_WRITE_D
 PIOD_WRITE_I
 PIPE_BUF
+PL_EVENT_NONE
+PL_EVENT_SIGNAL
+PL_EVENT_SUSPENDED
 PM_STR
 POLLRDBAND
 POLLRDNORM
@@ -1330,6 +1333,8 @@ pthread_setaffinity_np
 pthread_setname_np
 ptrace
 ptrace_io_desc
+ptrace_lwpinfo
+ptrace_siginfo
 pututxline
 pwritev
 qsort
