@@ -140,6 +140,19 @@ s! {
         pub pve_path: *mut ::c_char,
     }
 
+    pub struct ptrace_lwpinfo {
+        pub pl_lwpid: lwpid_t,
+        pub pl_event: ::c_int,
+        pub pl_flags: ::c_int,
+        pub pl_sigmask: ::sigset_t,
+        pub pl_siglist: ::sigset_t,
+        pub pl_siginfo: ::siginfo_t,
+        pub pl_tdname: [::c_char; ::MAXCOMLEN as usize + 1],
+        pub pl_child_pid: ::pid_t,
+        pub pl_syscall_code: ::c_uint,
+        pub pl_syscall_narg: ::c_uint,
+    }
+
     pub struct cpuset_t {
         #[cfg(target_pointer_width = "64")]
         __bits: [::c_long; 4],
@@ -1095,6 +1108,21 @@ pub const LOCAL_CREDS: ::c_int = 2;
 pub const LOCAL_CREDS_PERSISTENT: ::c_int = 3;
 pub const LOCAL_CONNWAIT: ::c_int = 4;
 pub const LOCAL_VENDOR: ::c_int = SO_VENDOR;
+
+pub const PL_EVENT_NONE: ::c_int = 0;
+pub const PL_EVENT_SIGNAL: ::c_int = 1;
+pub const PL_FLAG_SA: ::c_int = 0x01;
+pub const PL_FLAG_BOUND: ::c_int = 0x02;
+pub const PL_FLAG_SCE: ::c_int = 0x04;
+pub const PL_FLAG_SCX: ::c_int = 0x08;
+pub const PL_FLAG_EXEC: ::c_int = 0x10;
+pub const PL_FLAG_SI: ::c_int = 0x20;
+pub const PL_FLAG_FORKED: ::c_int = 0x40;
+pub const PL_FLAG_CHILD: ::c_int = 0x80;
+pub const PL_FLAG_BORN: ::c_int = 0x100;
+pub const PL_FLAG_EXITED: ::c_int = 0x200;
+pub const PL_FLAG_VFORKED: ::c_int = 0x400;
+pub const PL_FLAG_VFORK_DONE: ::c_int = 0x800;
 
 pub const PT_LWPINFO: ::c_int = 13;
 pub const PT_GETNUMLWPS: ::c_int = 14;
