@@ -267,6 +267,13 @@ s! {
         pub f_fstr: [::c_char; 32]
     }
 
+    pub struct sendfilevec_t {
+        pub sfv_fd: ::c_int,
+        pub sfv_flag: ::c_uint,
+        pub sfv_off: ::off_t,
+        pub sfv_len: ::size_t,
+    }
+
     pub struct sched_param {
         pub sched_priority: ::c_int,
         sched_pad: [::c_int; 8]
@@ -2775,6 +2782,12 @@ extern "C" {
 
     pub fn sendfile(out_fd: ::c_int, in_fd: ::c_int, off: *mut ::off_t, len: ::size_t)
         -> ::ssize_t;
+    pub fn sendfilev(
+        fildes: ::c_int,
+        vec: *const sendfilevec_t,
+        sfvcnt: ::c_int,
+        xferred: *mut ::size_t,
+    ) -> ::ssize_t;
 }
 
 mod compat;
