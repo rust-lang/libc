@@ -1710,6 +1710,13 @@ pub const NOTE_CHILD: u32 = 0x00000004;
 
 pub const TMP_MAX: ::c_uint = 308915776;
 
+pub const AI_PASSIVE: ::c_int = 0x00000001;
+pub const AI_CANONNAME: ::c_int = 0x00000002;
+pub const AI_NUMERICHOST: ::c_int = 0x00000004;
+pub const AI_NUMERICSERV: ::c_int = 0x00000008;
+pub const AI_ADDRCONFIG: ::c_int = 0x00000400;
+pub const AI_SRV: ::c_int = 0x00000800;
+
 pub const NI_MAXHOST: ::socklen_t = 1025;
 pub const NI_MAXSERV: ::socklen_t = 32;
 
