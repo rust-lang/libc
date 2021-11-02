@@ -5372,6 +5372,7 @@ pub unsafe fn mach_task_self() -> ::mach_port_t {
 cfg_if! {
     if #[cfg(target_os = "macos")] {
         extern "C" {
+            pub fn clock_settime(clock_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
             pub fn memmem(
                 haystack: *const ::c_void,
                 haystacklen: ::size_t,
