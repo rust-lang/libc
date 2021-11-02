@@ -51,6 +51,16 @@ pub enum __locale_struct {}
 
 pub type locale_t = *mut __locale_struct;
 
+s_paren! {
+    // in wasi-libc clockid_t is const struct __clockid* (where __clockid is an opaque struct),
+    // but that's an implementation detail that we don't want to have to deal with
+    #[repr(transparent)]
+    pub struct clockid_t(*const u8);
+}
+
+unsafe impl Send for clockid_t {}
+unsafe impl Sync for clockid_t {}
+
 s! {
     #[repr(align(8))]
     pub struct fpos_t {
@@ -342,6 +352,11 @@ pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_IOV_MAX: c_int = 60;
 pub const _SC_SYMLOOP_MAX: c_int = 173;
 
+pub static CLOCK_MONOTONIC: clockid_t = unsafe { clockid_t(&_CLOCK_MONOTONIC) };
+pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t = unsafe { clockid_t(&_CLOCK_PROCESS_CPUTIME_ID) };
+pub static CLOCK_REALTIME: clockid_t = unsafe { clockid_t(&_CLOCK_REALTIME) };
+pub static CLOCK_THREAD_CPUTIME_ID: clockid_t = unsafe { clockid_t(&_CLOCK_THREAD_CPUTIME_ID) };
+
 #[cfg_attr(
     feature = "rustc-dep-of-std",
     link(name = "c", kind = "static", cfg(target_feature = "crt-static"))
@@ -417,15 +432,14 @@ extern "C" {
     pub fn asctime_r(a: *const tm, b: *mut c_char) -> *mut c_char;
     pub fn ctime_r(a: *const time_t, b: *mut c_char) -> *mut c_char;
 
+    static _CLOCK_MONOTONIC: u8;
+    static _CLOCK_PROCESS_CPUTIME_ID: u8;
+    static _CLOCK_REALTIME: u8;
+    static _CLOCK_THREAD_CPUTIME_ID: u8;
     pub fn nanosleep(a: *const timespec, b: *mut timespec) -> c_int;
-    // pub fn clock_getres(a: clockid_t, b: *mut timespec) -> c_int;
-    // pub fn clock_gettime(a: clockid_t, b: *mut timespec) -> c_int;
-    // pub fn clock_nanosleep(
-    //     a: clockid_t,
-    //     a2: c_int,
-    //     b: *const timespec,
-    //     c: *mut timespec,
-    // ) -> c_int;
+    pub fn clock_getres(a: clockid_t, b: *mut timespec) -> c_int;
+    pub fn clock_gettime(a: clockid_t, b: *mut timespec) -> c_int;
+    pub fn clock_nanosleep(a: clockid_t, a2: c_int, b: *const timespec, c: *mut timespec) -> c_int;
 
     pub fn isalnum(c: c_int) -> c_int;
     pub fn isalpha(c: c_int) -> c_int;
