@@ -1370,6 +1370,14 @@ extern "C" {
 
     pub fn aio_waitcomplete(iocbp: *mut *mut aiocb, timeout: *mut ::timespec) -> ::c_int;
 
+    #[deprecated(since = "0.2.107", note = "len should be of type size_t")]
+    pub fn devname_r(
+        dev: ::dev_t,
+        mode: ::mode_t,
+        buf: *mut ::c_char,
+        len: ::c_int,
+    ) -> *mut ::c_char;
+
     pub fn waitid(
         idtype: idtype_t,
         id: ::id_t,
