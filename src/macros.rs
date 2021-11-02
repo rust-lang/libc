@@ -341,3 +341,19 @@ macro_rules! deprecated_mach {
         )*
     }
 }
+
+#[allow(unused_macros)]
+#[cfg(not(libc_ptr_addr_of))]
+macro_rules! ptr_addr_of {
+    ($place:expr) => {
+        &$place
+    };
+}
+
+#[allow(unused_macros)]
+#[cfg(libc_ptr_addr_of)]
+macro_rules! ptr_addr_of {
+    ($place:expr) => {
+        ::core::ptr::addr_of!($place)
+    };
+}

@@ -352,10 +352,12 @@ pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_IOV_MAX: c_int = 60;
 pub const _SC_SYMLOOP_MAX: c_int = 173;
 
-pub static CLOCK_MONOTONIC: clockid_t = unsafe { clockid_t(&_CLOCK_MONOTONIC) };
-pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t = unsafe { clockid_t(&_CLOCK_PROCESS_CPUTIME_ID) };
-pub static CLOCK_REALTIME: clockid_t = unsafe { clockid_t(&_CLOCK_REALTIME) };
-pub static CLOCK_THREAD_CPUTIME_ID: clockid_t = unsafe { clockid_t(&_CLOCK_THREAD_CPUTIME_ID) };
+pub static CLOCK_MONOTONIC: clockid_t = unsafe { clockid_t(ptr_addr_of!(_CLOCK_MONOTONIC)) };
+pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
+    unsafe { clockid_t(ptr_addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
+pub static CLOCK_REALTIME: clockid_t = unsafe { clockid_t(ptr_addr_of!(_CLOCK_REALTIME)) };
+pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
+    unsafe { clockid_t(ptr_addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
 
 #[cfg_attr(
     feature = "rustc-dep-of-std",

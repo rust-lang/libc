@@ -72,6 +72,10 @@ fn main() {
         println!("cargo:rustc-cfg=libc_cfg_target_vendor");
     }
 
+    if rustc_minor_ver >= 51 || rustc_dep_of_std {
+        println!("cargo:rustc-cfg=libc_ptr_addr_of");
+    }
+
     // #[thread_local] is currently unstable
     if rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_thread_local");
