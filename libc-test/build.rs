@@ -1659,6 +1659,10 @@ fn test_android(target: &str) {
             // Requires Linux kernel 5.6
             "VMADDR_CID_LOCAL" => true,
 
+            // FIXME: conflicts with standard C headers and is tested in
+            // `linux_termios.rs` below:
+            "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => true,
+
             _ => false,
         }
     });
@@ -2867,7 +2871,11 @@ fn test_linux(target: &str) {
 
             // FIXME: conflicts with glibc headers and is tested in
             // `linux_termios.rs` below:
-            "BOTHER" => true,
+            | "BOTHER"
+            | "TCGETS2"
+            | "TCSETS2"
+            | "TCSETSW2"
+            | "TCSETSF2" => true,
 
             // FIXME: on musl the pthread types are defined a little differently
             // - these constants are used by the glibc implementation.
@@ -3210,10 +3218,15 @@ fn test_linux_like_apis(target: &str) {
         // test termios
         let mut cfg = ctest_cfg();
         cfg.header("asm/termbits.h");
+        cfg.header("linux/termios.h");
         cfg.skip_type(|_| true)
             .skip_static(|_| true)
             .skip_fn(|_| true)
-            .skip_const(|c| c != "BOTHER")
+            .skip_const(|c| match c {
+                "BOTHER" => false,
+                "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => false,
+                _ => true,
+            })
             .skip_struct(|s| s != "termios2")
             .type_name(move |ty, is_struct, is_union| match ty {
                 t if is_struct => format!("struct {}", t),
