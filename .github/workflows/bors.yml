@@ -132,8 +132,7 @@ jobs:
           # See this comment for more details:
           # https://github.com/rust-lang/libc/pull/2225#issuecomment-880696737
           #wasm32-wasi,
-          # FIXME: Recent nightly causes a segfault on libc-test
-          #sparc64-unknown-linux-gnu,
+          sparc64-unknown-linux-gnu,
           wasm32-unknown-emscripten,
           x86_64-linux-android,
           x86_64-unknown-linux-gnux32,
