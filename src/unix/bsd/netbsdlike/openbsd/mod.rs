@@ -1186,6 +1186,14 @@ pub const NOTE_CHILD: u32 = 0x00000004;
 
 pub const TMP_MAX: ::c_uint = 0x7fffffff;
 
+pub const AI_PASSIVE: ::c_int = 1;
+pub const AI_CANONNAME: ::c_int = 2;
+pub const AI_NUMERICHOST: ::c_int = 4;
+pub const AI_EXT: ::c_int = 8;
+pub const AI_NUMERICSERV: ::c_int = 16;
+pub const AI_FQDN: ::c_int = 32;
+pub const AI_ADDRCONFIG: ::c_int = 64;
+
 pub const NI_NUMERICHOST: ::c_int = 1;
 pub const NI_NUMERICSERV: ::c_int = 2;
 pub const NI_NOFQDN: ::c_int = 4;
