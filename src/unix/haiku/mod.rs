@@ -102,6 +102,16 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
+    pub struct ifaddrs {
+        pub ifa_next: *mut ifaddrs,
+        pub ifa_name: *mut ::c_char,
+        pub ifa_flags: ::c_uint,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifa_dstaddr: *mut ::sockaddr,
+        pub ida_data: *mut ::c_void,
+    }
+
     pub struct fd_set {
         // size for 1024 bits, and a fd_mask with size u32
         fds_bits: [fd_mask; 32],
@@ -1465,6 +1475,8 @@ extern "C" {
     pub fn labs(i: ::c_long) -> ::c_long;
     pub fn rand() -> ::c_int;
     pub fn srand(seed: ::c_uint);
+    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
+    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
 }
 
 #[link(name = "bsd")]
