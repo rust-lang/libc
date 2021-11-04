@@ -2003,15 +2003,32 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 13.0 (r356667)
             "GRND_INSECURE" if Some(13) > freebsd_ver => true,
 
-            // Added in FreeBSD 12.1 (r343964 and r345228)
-            "PROC_ASLR_CTL" | "PROC_ASLR_STATUS" | "PROC_PROCCTL_MD_MIN"
+            // Added in FreeBSD 12.1 (r343964)
+            "PROC_ASLR_CTL"
+            | "PROC_ASLR_STATUS"
+            | "PROC_ASLR_FORCE_ENABLE"
+            | "PROC_ASLR_FORCE_DISABLE"
+            | "PROC_ASLR_NOFORCE"
+            | "PROC_ASLR_ACTIVE"
                 if Some(11) == freebsd_ver =>
             {
                 true
             }
 
+            // Added in FreeBSD 12.1 (r345228)
+            "PROC_PROCCTL_MD_MIN" if Some(11) == freebsd_ver => true,
+
             // Added in FreeBSD 13.0 (r349609)
-            "PROC_PROTMAX_CTL" | "PROC_PROTMAX_STATUS" if Some(13) > freebsd_ver => true,
+            "PROC_PROTMAX_CTL"
+            | "PROC_PROTMAX_STATUS"
+            | "PROC_PROTMAX_FORCE_ENABLE"
+            | "PROC_PROTMAX_FORCE_DISABLE"
+            | "PROC_PROTMAX_NOFORCE"
+            | "PROC_PROTMAX_ACTIVE"
+                if Some(13) > freebsd_ver =>
+            {
+                true
+            }
 
             // Added in in FreeBSD 13.0 (r367776 and r367287)
             "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
