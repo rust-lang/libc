@@ -1501,6 +1501,8 @@ getprogname
 getpwent
 getpwent_r
 getpwnam_r
+getresgid
+getresuid
 getrlimit
 getrusage
 getservbyport
