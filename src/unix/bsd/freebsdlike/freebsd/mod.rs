@@ -1178,6 +1178,33 @@ pub const PROC_STACKGAP_CTL: ::c_int = 17;
 pub const PROC_STACKGAP_STATUS: ::c_int = 18;
 pub const PROC_PROCCTL_MD_MIN: ::c_int = 0x10000000;
 
+pub const PPROT_SET: ::c_int = 1;
+pub const PPROT_CLEAR: ::c_int = 2;
+pub const PPROT_DESCEND: ::c_int = 0x10;
+pub const PPROT_INHERIT: ::c_int = 0x20;
+
+pub const PROC_TRACE_CTL_ENABLE: ::c_int = 1;
+pub const PROC_TRACE_CTL_DISABLE: ::c_int = 2;
+pub const PROC_TRACE_CTL_DISABLE_EXEC: ::c_int = 3;
+
+pub const PROC_TRAPCAP_CTL_ENABLE: ::c_int = 1;
+pub const PROC_TRAPCAP_CTL_DISABLE: ::c_int = 2;
+
+pub const PROC_ASLR_FORCE_ENABLE: ::c_int = 1;
+pub const PROC_ASLR_FORCE_DISABLE: ::c_int = 2;
+pub const PROC_ASLR_NOFORCE: ::c_int = 3;
+pub const PROC_ASLR_ACTIVE: ::c_int = 0x80000000;
+
+pub const PROC_PROTMAX_FORCE_ENABLE: ::c_int = 1;
+pub const PROC_PROTMAX_FORCE_DISABLE: ::c_int = 2;
+pub const PROC_PROTMAX_NOFORCE: ::c_int = 3;
+pub const PROC_PROTMAX_ACTIVE: ::c_int = 0x80000000;
+
+pub const PROC_STACKGAP_ENABLE: ::c_int = 0x0001;
+pub const PROC_STACKGAP_DISABLE: ::c_int = 0x0002;
+pub const PROC_STACKGAP_ENABLE_EXEC: ::c_int = 0x0004;
+pub const PROC_STACKGAP_DISABLE_EXEC: ::c_int = 0x0008;
+
 pub const AF_SLOW: ::c_int = 33;
 pub const AF_SCLUSTER: ::c_int = 34;
 pub const AF_ARP: ::c_int = 35;
