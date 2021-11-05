@@ -1134,11 +1134,14 @@ easprintf
 efopen
 emalloc
 erealloc
+ereallocarr
 esetfunc
 estrdup
 estrndup
 estrlcat
 estrlcpy
+estrtoi
+estrtou
 evasprintf
 endgrent
 endpwent

@@ -2536,10 +2536,23 @@ extern "C" {
     pub fn emalloc(n: ::size_t) -> *mut ::c_void;
     pub fn ecalloc(n: ::size_t, c: ::size_t) -> *mut ::c_void;
     pub fn erealloc(p: *mut ::c_void, n: ::size_t) -> *mut ::c_void;
+    pub fn ereallocarr(p: *mut ::c_void, n: ::size_t, s: ::size_t);
     pub fn estrdup(s: *const ::c_char) -> *mut ::c_char;
     pub fn estrndup(s: *const ::c_char, len: ::size_t) -> *mut ::c_char;
     pub fn estrlcpy(dst: *mut ::c_char, src: *const ::c_char, len: ::size_t) -> ::size_t;
     pub fn estrlcat(dst: *mut ::c_char, src: *const ::c_char, len: ::size_t) -> ::size_t;
+    pub fn estrtoi(
+        nptr: *const ::c_char,
+        base: ::c_int,
+        lo: ::intmax_t,
+        hi: ::intmax_t,
+    ) -> ::intmax_t;
+    pub fn estrtou(
+        nptr: *const ::c_char,
+        base: ::c_int,
+        lo: ::uintmax_t,
+        hi: ::uintmax_t,
+    ) -> ::uintmax_t;
     pub fn easprintf(string: *mut *mut ::c_char, fmt: *const ::c_char, ...) -> ::c_int;
     pub fn evasprintf(string: *mut *mut ::c_char, fmt: *const ::c_char, ...) -> ::c_int;
     pub fn esetfunc(
