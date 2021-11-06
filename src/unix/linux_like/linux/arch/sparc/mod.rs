@@ -1,3 +1,16 @@
+s! {
+    pub struct termios2 {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_line: ::cc_t,
+        pub c_cc: [::cc_t; 19],
+        pub c_ispeed: ::speed_t,
+        pub c_ospeed: ::speed_t,
+    }
+}
+
 // arch/sparc/include/uapi/asm/socket.h
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
@@ -86,3 +99,8 @@ pub const SO_TIMESTAMPING: ::c_int = 0x0023;
 // pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
 pub const SCM_TIMESTAMPNS: ::c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
+
+pub const TCGETS2: ::c_ulong = 0x402c540c;
+pub const TCSETS2: ::c_ulong = 0x802c540d;
+pub const TCSETSW2: ::c_ulong = 0x802c540e;
+pub const TCSETSF2: ::c_ulong = 0x802c540f;

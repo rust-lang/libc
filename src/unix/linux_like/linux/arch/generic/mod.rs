@@ -1,3 +1,16 @@
+s! {
+    pub struct termios2 {
+        pub c_iflag: ::tcflag_t,
+        pub c_oflag: ::tcflag_t,
+        pub c_cflag: ::tcflag_t,
+        pub c_lflag: ::tcflag_t,
+        pub c_line: ::cc_t,
+        pub c_cc: [::cc_t; 19],
+        pub c_ispeed: ::speed_t,
+        pub c_ospeed: ::speed_t,
+    }
+}
+
 // include/uapi/asm-generic/socket.h
 // arch/alpha/include/uapi/asm/socket.h
 // tools/include/uapi/asm-generic/socket.h
@@ -98,3 +111,8 @@ cfg_if! {
 // pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
 pub const SCM_TIMESTAMPNS: ::c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
+
+pub const TCGETS2: ::c_ulong = 0x802c542a;
+pub const TCSETS2: ::c_ulong = 0x402c542b;
+pub const TCSETSW2: ::c_ulong = 0x402c542c;
+pub const TCSETSF2: ::c_ulong = 0x402c542d;

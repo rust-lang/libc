@@ -193,17 +193,6 @@ s! {
         __reserved1: ::c_ulong,
         __reserved2: ::c_ulong
     }
-
-    pub struct termios2 {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_line: ::cc_t,
-        pub c_cc: [::cc_t; 19],
-        pub c_ispeed: ::speed_t,
-        pub c_ospeed: ::speed_t,
-    }
 }
 
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
@@ -587,10 +576,6 @@ pub const TCGETS: ::c_ulong = 0x40245408;
 pub const TCSETS: ::c_ulong = 0x80245409;
 pub const TCSETSW: ::c_ulong = 0x8024540a;
 pub const TCSETSF: ::c_ulong = 0x8024540b;
-pub const TCGETS2: ::c_ulong = 0x402c540c;
-pub const TCSETS2: ::c_ulong = 0x802c540d;
-pub const TCSETSW2: ::c_ulong = 0x802c540e;
-pub const TCSETSF2: ::c_ulong = 0x802c540f;
 pub const TCGETA: ::c_ulong = 0x40125401;
 pub const TCSETA: ::c_ulong = 0x80125402;
 pub const TCSETAW: ::c_ulong = 0x80125403;

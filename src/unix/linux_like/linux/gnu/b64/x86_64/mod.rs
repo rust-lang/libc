@@ -259,17 +259,6 @@ s! {
         __unused5: u64
     }
 
-    pub struct termios2 {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_line: ::cc_t,
-        pub c_cc: [::cc_t; 19],
-        pub c_ispeed: ::speed_t,
-        pub c_ospeed: ::speed_t,
-    }
-
     pub struct ip_mreqn {
         pub imr_multiaddr: ::in_addr,
         pub imr_address: ::in_addr,
@@ -772,10 +761,6 @@ pub const TCGETS: ::c_ulong = 0x5401;
 pub const TCSETS: ::c_ulong = 0x5402;
 pub const TCSETSW: ::c_ulong = 0x5403;
 pub const TCSETSF: ::c_ulong = 0x5404;
-pub const TCGETS2: ::c_ulong = 0x802c542a;
-pub const TCSETS2: ::c_ulong = 0x402c542b;
-pub const TCSETSW2: ::c_ulong = 0x402c542c;
-pub const TCSETSF2: ::c_ulong = 0x402c542d;
 pub const TCGETA: ::c_ulong = 0x5405;
 pub const TCSETA: ::c_ulong = 0x5406;
 pub const TCSETAW: ::c_ulong = 0x5407;
