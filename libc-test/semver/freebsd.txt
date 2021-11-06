@@ -916,6 +916,8 @@ PT_GETLWPLIST
 PT_GETNUMLWPS
 PT_GETREGS
 PT_GET_EVENT_MASK
+PT_GET_SC_ARGS
+PT_GET_SC_RET
 PT_IO
 PT_KILL
 PT_LWPINFO
@@ -1691,6 +1693,7 @@ pthread_spinlock_t
 ptrace
 ptrace_io_desc
 ptrace_lwpinfo
+ptrace_sc_ret
 ptrace_vm_entry
 pututxline
 pwritev

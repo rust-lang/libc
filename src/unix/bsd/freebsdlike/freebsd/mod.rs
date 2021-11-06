@@ -153,6 +153,11 @@ s! {
         pub pl_syscall_narg: ::c_uint,
     }
 
+    pub struct ptrace_sc_ret {
+        pub sr_retval: [::register_t; 2],
+        pub sr_error: ::c_int,
+    }
+
     pub struct cpuset_t {
         #[cfg(target_pointer_width = "64")]
         __bits: [::c_long; 4],
@@ -1139,6 +1144,8 @@ pub const PT_FOLLOW_FORK: ::c_int = 23;
 pub const PT_LWP_EVENTS: ::c_int = 24;
 pub const PT_GET_EVENT_MASK: ::c_int = 25;
 pub const PT_SET_EVENT_MASK: ::c_int = 26;
+pub const PT_GET_SC_ARGS: ::c_int = 27;
+pub const PT_GET_SC_RET: ::c_int = 28;
 pub const PT_GETREGS: ::c_int = 33;
 pub const PT_SETREGS: ::c_int = 34;
 pub const PT_GETFPREGS: ::c_int = 35;
