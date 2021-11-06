@@ -1395,6 +1395,15 @@ pub const MAP_NORESERVE: ::c_int = 0x40;
 pub const MAP_HASSEMAPHORE: ::c_int = 0x200;
 pub const MAP_WIRED: ::c_int = 0x800;
 pub const MAP_STACK: ::c_int = 0x2000;
+// map alignment aliases for MAP_ALIGNED
+pub const MAP_ALIGNMENT_SHIFT: ::c_int = 24;
+pub const MAP_ALIGNMENT_MASK: ::c_int = 0xff << MAP_ALIGNMENT_SHIFT;
+pub const MAP_ALIGNMENT_64KB: ::c_int = 16 << MAP_ALIGNMENT_SHIFT;
+pub const MAP_ALIGNMENT_16MB: ::c_int = 24 << MAP_ALIGNMENT_SHIFT;
+pub const MAP_ALIGNMENT_4GB: ::c_int = 32 << MAP_ALIGNMENT_SHIFT;
+pub const MAP_ALIGNMENT_1TB: ::c_int = 40 << MAP_ALIGNMENT_SHIFT;
+pub const MAP_ALIGNMENT_256TB: ::c_int = 48 << MAP_ALIGNMENT_SHIFT;
+pub const MAP_ALIGNMENT_64PB: ::c_int = 56 << MAP_ALIGNMENT_SHIFT;
 // mremap flag
 pub const MAP_REMAPDUP: ::c_int = 0x004;
 
