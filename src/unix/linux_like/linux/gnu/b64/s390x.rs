@@ -153,17 +153,6 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
-    pub struct termios2 {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_line: ::cc_t,
-        pub c_cc: [::cc_t; 19],
-        pub c_ispeed: ::speed_t,
-        pub c_ospeed: ::speed_t,
-    }
-
     pub struct __psw_t {
         pub mask: u64,
         pub addr: u64,
