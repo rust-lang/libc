@@ -3914,6 +3914,8 @@ extern "C" {
         needlelen: ::size_t,
     ) -> *mut ::c_void;
     pub fn sched_getcpu() -> ::c_int;
+
+    pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {
