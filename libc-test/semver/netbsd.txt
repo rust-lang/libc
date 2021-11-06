@@ -1173,6 +1173,10 @@ fchdir
 fchflags
 fdatasync
 fdopendir
+fgetxattr
+flistxattr
+fremovexattr
+fsetxattr
 flags_to_string
 fmemopen
 forkpty
@@ -1218,6 +1222,7 @@ getutmpx
 getutxent
 getutxid
 getutxline
+getxattr
 glob
 glob_t
 globfree
@@ -1248,7 +1253,10 @@ labs
 lastlog
 lastlogx
 lchflags
+lgetxattr
 lio_listio
+listxattr
+llistxaatr
 localeconv_l
 lockf
 login
@@ -1258,6 +1266,8 @@ logoutx
 logwtmp
 logwtmpx
 login_tty
+lremovexattr
+lsetxattr
 lutimes
 lwpid_t
 madvise
@@ -1369,6 +1379,7 @@ regexec
 regfree
 regmatch_t
 regoff_t
+removexattr
 sched_getparam
 sched_getscheduler
 sched_get_priority_max
@@ -1403,6 +1414,7 @@ setservent
 settimeofday
 setutent
 setutxent
+setxattr
 shmat
 shmatt_t
 shmctl
