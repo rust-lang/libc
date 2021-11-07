@@ -265,6 +265,8 @@ extern "C" {
         rmtp: *mut ::timespec,
     ) -> ::c_int;
 
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
 
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;

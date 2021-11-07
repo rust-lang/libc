@@ -1717,6 +1717,11 @@ pub const RFLINUXTHPN: ::c_int = 65536;
 pub const RFTSIGZMB: ::c_int = 524288;
 pub const RFSPAWN: ::c_int = 2147483648;
 
+// For eventfd
+pub const EFD_SEMAPHORE: ::c_int = 0x1;
+pub const EFD_NONBLOCK: ::c_int = 0x4;
+pub const EFD_CLOEXEC: ::c_int = 0x100000;
+
 pub const MALLOCX_ZERO: ::c_int = 0x40;
 
 /// size of returned wchan message
