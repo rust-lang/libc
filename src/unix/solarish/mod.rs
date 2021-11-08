@@ -1981,6 +1981,18 @@ pub const TIOCMGET: ::c_int = tIOC | 29;
 pub const TIOCREMOTE: ::c_int = tIOC | 30;
 pub const TIOCSIGNAL: ::c_int = tIOC | 31;
 
+pub const TIOCM_LE: ::c_int = 0o0001;
+pub const TIOCM_DTR: ::c_int = 0o0002;
+pub const TIOCM_RTS: ::c_int = 0o0004;
+pub const TIOCM_ST: ::c_int = 0o0010;
+pub const TIOCM_SR: ::c_int = 0o0020;
+pub const TIOCM_CTS: ::c_int = 0o0040;
+pub const TIOCM_CAR: ::c_int = 0o0100;
+pub const TIOCM_CD: ::c_int = TIOCM_CAR;
+pub const TIOCM_RNG: ::c_int = 0o0200;
+pub const TIOCM_RI: ::c_int = TIOCM_RNG;
+pub const TIOCM_DSR: ::c_int = 0o0400;
+
 pub const EPOLLIN: ::c_int = 0x1;
 pub const EPOLLPRI: ::c_int = 0x2;
 pub const EPOLLOUT: ::c_int = 0x4;
