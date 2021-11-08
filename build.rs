@@ -72,6 +72,11 @@ fn main() {
         println!("cargo:rustc-cfg=libc_cfg_target_vendor");
     }
 
+    // Rust >= 1.40 supports #[non_exhaustive].
+    if rustc_minor_ver >= 40 || rustc_dep_of_std {
+        println!("cargo:rustc-cfg=libc_non_exhaustive");
+    }
+
     if rustc_minor_ver >= 51 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_ptr_addr_of");
     }
