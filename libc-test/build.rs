@@ -393,6 +393,7 @@ fn test_openbsd(target: &str) {
     headers! { cfg:
         "elf.h",
         "errno.h",
+        "execinfo.h",
         "fcntl.h",
         "limits.h",
         "link.h",
