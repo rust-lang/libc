@@ -87,6 +87,11 @@ s! {
     pub struct _sem {
         data: [u32; 4],
     }
+    pub struct sembuf {
+        pub sem_num: ::c_ushort,
+        pub sem_op: ::c_short,
+        pub sem_flg: ::c_short,
+    }
 
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
@@ -444,6 +449,18 @@ s! {
         pub n_name: *const ::c_char,
         pub n_type: ::c_uchar,
         pub n_value: ::kvaddr_t,
+    }
+
+    pub struct __c_anonymous_sem {
+        _priv: ::uintptr_t,
+    }
+
+    pub struct semid_ds {
+        pub sem_perm: ::ipc_perm,
+        pub __sem_base: *mut __c_anonymous_sem,
+        pub sem_nsems: ::c_ushort,
+        pub sem_otime: ::time_t,
+        pub sem_ctime: ::time_t,
     }
 }
 
@@ -2196,6 +2213,9 @@ extern "C" {
     pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
     pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
+    pub fn semget(key: ::key_t, nsems: ::c_int, semflg: ::c_int) -> ::c_int;
+    pub fn semctl(semid: ::c_int, semnum: ::c_int, cmd: ::c_int, ...) -> ::c_int;
+    pub fn semop(semid: ::c_int, sops: *mut sembuf, nsops: ::size_t) -> ::c_int;
     pub fn msgctl(msqid: ::c_int, cmd: ::c_int, buf: *mut ::msqid_ds) -> ::c_int;
     pub fn msgget(key: ::key_t, msgflg: ::c_int) -> ::c_int;
     pub fn msgsnd(

@@ -1845,6 +1845,7 @@ fn test_freebsd(target: &str) {
                 "sys/random.h",
                 "sys/resource.h",
                 "sys/rtprio.h",
+                "sys/sem.h",
                 "sys/shm.h",
                 "sys/socket.h",
                 "sys/stat.h",
@@ -2176,6 +2177,9 @@ fn test_freebsd(target: &str) {
             // We ignore this field because we needed to use a hack in order to make rust 1.19
             // happy...
             ("kinfo_proc", "ki_sparestrings") => true,
+
+            // `__sem_base` is a private struct field
+            ("semid_ds", "__sem_base") => true,
             _ => false,
         }
     });
