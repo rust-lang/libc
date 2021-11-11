@@ -588,7 +588,6 @@ pub const B2500000: ::speed_t = 0o0033;
 pub const B3000000: ::speed_t = 0o0034;
 pub const B3500000: ::speed_t = 0o0035;
 pub const B4000000: ::speed_t = 0o0036;
-pub const BOTHER: ::speed_t = 0o0037;
 
 pub const VEOL: usize = 6;
 pub const VEOL2: usize = 8;

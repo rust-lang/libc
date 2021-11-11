@@ -1,6 +1,5 @@
 # The following symbols are not not available in some combinations of
 # musl/gnu/android and/or architecture.
-BOTHER
 KEYCTL_CAPABILITIES
 KEYCTL_CAPS0_BIG_KEY
 KEYCTL_CAPS0_CAPABILITIES

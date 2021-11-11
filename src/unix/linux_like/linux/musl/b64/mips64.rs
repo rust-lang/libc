@@ -692,7 +692,6 @@ pub const FFDLY: ::tcflag_t = 0o100000;
 pub const VTDLY: ::tcflag_t = 0o040000;
 pub const XTABS: ::tcflag_t = 0o014000;
 
-pub const BOTHER: ::speed_t = 0o010000;
 pub const B57600: ::speed_t = 0o010001;
 pub const B115200: ::speed_t = 0o010002;
 pub const B230400: ::speed_t = 0o010003;

@@ -128,3 +128,5 @@ pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RNG: ::c_int = 0x200;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 pub const TIOCM_DSR: ::c_int = 0x400;
+
+pub const BOTHER: ::speed_t = 0o010000;

@@ -458,7 +458,6 @@ pub const B19200: ::speed_t = 0o000016;
 pub const B38400: ::speed_t = 0o000017;
 pub const EXTA: ::speed_t = B19200;
 pub const EXTB: ::speed_t = B38400;
-pub const BOTHER: ::speed_t = 0x1000;
 pub const B57600: ::speed_t = 0x1001;
 pub const B115200: ::speed_t = 0x1002;
 pub const B230400: ::speed_t = 0x1003;
