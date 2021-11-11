@@ -462,6 +462,24 @@ s! {
         pub sem_otime: ::time_t,
         pub sem_ctime: ::time_t,
     }
+
+    pub struct vmtotal {
+        pub t_vm: u64,
+        pub t_avm: u64,
+        pub t_rm: u64,
+        pub t_arm: u64,
+        pub t_vmshr: u64,
+        pub t_avmshr: u64,
+        pub t_rmshr: u64,
+        pub t_armshr: u64,
+        pub t_free: u64,
+        pub t_rq: i16,
+        pub t_dw: i16,
+        pub t_pw: i16,
+        pub t_sl: i16,
+        pub t_sw: i16,
+        pub t_pad: [u16; 3],
+    }
 }
 
 s_no_extra_traits! {
@@ -1079,6 +1097,8 @@ pub const TIOCPTMASTER: ::c_uint = 0x2000741c;
 pub const TIOCSIG: ::c_uint = 0x2004745f;
 pub const TIOCM_DCD: ::c_int = 0x40;
 pub const H4DISC: ::c_int = 0x7;
+
+pub const VM_TOTAL: ::c_int = 1;
 
 pub const BIOCSETFNR: ::c_ulong = 0x80104282;
 

@@ -1249,6 +1249,7 @@ VDISCARD
 VDSUSP
 VERASE2
 VLNEXT
+VM_TOTAL
 VSTATUS
 VREPRINT
 VWERASE
@@ -1808,6 +1809,7 @@ utimensat
 utmpx
 utrace
 vm_size_t
+vmtotal
 wait4
 waitid
 xallocx
