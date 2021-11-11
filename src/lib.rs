@@ -63,7 +63,7 @@ cfg_if! {
         use core::clone::Clone;
         #[doc(hidden)]
         #[allow(unused_imports)]
-        use core::marker::Copy;
+        use core::marker::{Copy, Send, Sync};
         #[doc(hidden)]
         #[allow(unused_imports)]
         use core::option::Option;
@@ -85,7 +85,7 @@ cfg_if! {
         pub use core::clone::Clone;
         #[doc(hidden)]
         #[allow(unused_imports)]
-        pub use core::marker::Copy;
+        pub use core::marker::{Copy, Send, Sync};
         #[doc(hidden)]
         #[allow(unused_imports)]
         pub use core::option::Option;
