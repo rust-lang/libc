@@ -362,18 +362,7 @@ pub const TIOCEXCL: ::c_ulong = 0x2000740d;
 pub const TIOCNXCL: ::c_ulong = 0x2000740e;
 pub const TIOCSCTTY: ::c_ulong = 0x20007484;
 pub const TIOCSTI: ::c_ulong = 0x80017472;
-pub const TIOCMGET: ::c_ulong = 0x4004746a;
-pub const TIOCMBIS: ::c_ulong = 0x8004746c;
-pub const TIOCMBIC: ::c_ulong = 0x8004746b;
-pub const TIOCMSET: ::c_ulong = 0x8004746d;
 pub const TIOCCONS: ::c_ulong = 0x20007424;
-
-pub const TIOCM_ST: ::c_int = 0x008;
-pub const TIOCM_SR: ::c_int = 0x010;
-pub const TIOCM_CTS: ::c_int = 0x020;
-pub const TIOCM_CAR: ::c_int = 0x040;
-pub const TIOCM_RNG: ::c_int = 0x080;
-pub const TIOCM_DSR: ::c_int = 0x100;
 
 pub const O_DIRECTORY: ::c_int = 0o200000;
 pub const O_NOFOLLOW: ::c_int = 0o400000;

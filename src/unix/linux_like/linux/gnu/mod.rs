@@ -950,12 +950,6 @@ pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
 pub const GENL_ID_VFS_DQUOT: ::c_int = ::NLMSG_MIN_TYPE + 1;
 pub const GENL_ID_PMCRAID: ::c_int = ::NLMSG_MIN_TYPE + 2;
 
-pub const TIOCM_LE: ::c_int = 0x001;
-pub const TIOCM_DTR: ::c_int = 0x002;
-pub const TIOCM_RTS: ::c_int = 0x004;
-pub const TIOCM_CD: ::c_int = TIOCM_CAR;
-pub const TIOCM_RI: ::c_int = TIOCM_RNG;
-
 // elf.h
 pub const NT_PRSTATUS: ::c_int = 1;
 pub const NT_PRFPREG: ::c_int = 2;
