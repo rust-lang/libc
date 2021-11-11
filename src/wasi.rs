@@ -1,3 +1,5 @@
+use super::{Send, Sync};
+
 pub use ffi::c_void;
 
 pub type c_char = i8;
