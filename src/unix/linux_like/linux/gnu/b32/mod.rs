@@ -11,6 +11,7 @@ pub type msgqnum_t = ::c_ulong;
 pub type msglen_t = ::c_ulong;
 pub type nlink_t = u32;
 pub type __u64 = ::c_ulonglong;
+pub type __s64 = ::c_longlong;
 pub type __fsword_t = i32;
 pub type fsblkcnt64_t = u64;
 pub type fsfilcnt64_t = u64;

@@ -2698,6 +2698,7 @@ fn test_linux(target: &str) {
         "linux/netlink.h",
         // FIXME: requires more recent kernel headers:
         // "linux/openat2.h",
+        [gnu]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
         "linux/reboot.h",
@@ -3167,7 +3168,9 @@ fn test_linux(target: &str) {
         // FIXME: It now takes mode_t since glibc 2.31 on some targets.
         (struct_ == "ipc_perm" && field == "mode"
             && ((x86_64 || i686 || arm || riscv64) && gnu || x86_64_gnux32)
-        )
+        ) ||
+        // the `u` field is in fact an anonymous union
+        (gnu && struct_ == "ptrace_syscall_info" && (field == "u" || field == "pad"))
     });
 
     cfg.skip_roundtrip(move |s| match s {

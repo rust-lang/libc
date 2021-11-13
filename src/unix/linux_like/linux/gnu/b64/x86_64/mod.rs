@@ -7,6 +7,7 @@ pub type blksize_t = i64;
 pub type greg_t = i64;
 pub type suseconds_t = i64;
 pub type __u64 = ::c_ulonglong;
+pub type __s64 = ::c_longlong;
 
 s! {
     pub struct sigaction {
