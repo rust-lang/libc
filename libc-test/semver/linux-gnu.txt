@@ -567,6 +567,7 @@ aiocb
 backtrace
 clock_adjtime
 copy_file_range
+ctermid
 dlinfo
 dlmopen
 endutxent

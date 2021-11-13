@@ -758,6 +758,8 @@ extern "C" {
 
     pub fn adjtimex(buf: *mut ::timex) -> ::c_int;
     pub fn clock_adjtime(clk_id: ::clockid_t, buf: *mut ::timex) -> ::c_int;
+
+    pub fn ctermid(s: *mut ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {
