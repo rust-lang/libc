@@ -199,6 +199,7 @@ fgets
 fileno
 fopen
 fpos_t
+fprintf
 fputc
 fputs
 fread
@@ -257,6 +258,7 @@ pclose
 perror
 pipe
 popen
+printf
 ptrdiff_t
 putchar
 puts
