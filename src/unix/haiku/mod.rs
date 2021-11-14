@@ -31,6 +31,22 @@ pub type id_t = i32;
 pub type idtype_t = ::c_uint;
 pub type fd_mask = u32;
 
+pub type Elf32_Addr = u32;
+pub type Elf32_Half = u16;
+pub type Elf32_Lword = u64;
+pub type Elf32_Off = u32;
+pub type Elf32_Sword = i32;
+pub type Elf32_Word = u32;
+
+pub type Elf64_Addr = u64;
+pub type Elf64_Half = u16;
+pub type Elf64_Lword = u64;
+pub type Elf64_Off = u64;
+pub type Elf64_Sword = i32;
+pub type Elf64_Sxword = i64;
+pub type Elf64_Word = u32;
+pub type Elf64_Xword = u64;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 impl ::Copy for timezone {}
@@ -342,6 +358,17 @@ s! {
         pub sdl_alen: u8,
         pub sdl_slen: u8,
         pub sdl_data: [u8; 46],
+    }
+
+    pub struct dl_phdr_info {
+        pub dlpi_addr: Elf_Addr,
+        pub dlpi_name: *const ::c_char,
+        pub dlpi_phdr: *const Elf_Phdr,
+        pub dlpi_phnum: Elf_Half,
+        pub dlpi_adds: ::c_ulonglong,
+        pub dlpi_subs: ::c_ulonglong,
+        pub dlpi_tls_modid: usize,
+        pub dlpi_tls_data: *mut ::c_void,
     }
 }
 
@@ -1650,6 +1677,17 @@ extern "C" {
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
     pub fn setutxent();
     pub fn endutxent();
+
+    pub fn dl_iterate_phdr(
+        callback: ::Option<
+            unsafe extern "C" fn(
+                info: *mut dl_phdr_info,
+                size: usize,
+                data: *mut ::c_void,
+            ) -> ::c_int,
+        >,
+        data: *mut ::c_void,
+    ) -> ::c_int;
 }
 
 cfg_if! {
