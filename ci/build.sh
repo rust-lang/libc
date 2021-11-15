@@ -251,6 +251,7 @@ riscv32i-unknown-none-elf \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 riscv32gc-unknown-linux-gnu \
+riscv64gc-unknown-linux-musl \
 riscv64gc-unknown-none-elf \
 riscv64imac-unknown-none-elf \
 s390x-unknown-linux-musl \
