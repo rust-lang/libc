@@ -838,6 +838,15 @@ pub const RLIMIT_KQUEUES: ::c_int = 13;
 pub const RLIMIT_UMTXP: ::c_int = 14;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::rlim_t = 15;
+pub const RLIM_SAVED_MAX: ::rlim_t = ::RLIM_INFINITY;
+pub const RLIM_SAVED_CUR: ::rlim_t = ::RLIM_INFINITY;
+
+pub const CP_USER: ::c_int = 0;
+pub const CP_NICE: ::c_int = 1;
+pub const CP_SYS: ::c_int = 2;
+pub const CP_INTR: ::c_int = 3;
+pub const CP_IDLE: ::c_int = 4;
+pub const CPUSTATES: ::c_int = 5;
 
 pub const NI_NOFQDN: ::c_int = 0x00000001;
 pub const NI_NUMERICHOST: ::c_int = 0x00000002;
@@ -1895,6 +1904,8 @@ pub const PRI_MAX_TIMESHARE: ::c_int = PRI_MIN_IDLE - 1;
 pub const PUSER: ::c_int = PRI_MIN_TIMESHARE;
 pub const PRI_MIN_IDLE: ::c_int = 224;
 pub const PRI_MAX_IDLE: ::c_int = PRI_MAX;
+
+pub const NZERO: ::c_int = 0;
 
 // Resource utilization information.
 pub const RUSAGE_THREAD: ::c_int = 1;
