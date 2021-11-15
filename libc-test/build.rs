@@ -1663,6 +1663,7 @@ fn test_android(target: &str) {
 
             // FIXME: conflicts with standard C headers and is tested in
             // `linux_termios.rs` below:
+            "IBSHIFT" => true,
             "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => true,
 
             _ => false,
@@ -2915,6 +2916,7 @@ fn test_linux(target: &str) {
             // FIXME: conflicts with glibc headers and is tested in
             // `linux_termios.rs` below:
             | "BOTHER"
+            | "IBSHIFT"
             | "TCGETS2"
             | "TCSETS2"
             | "TCSETSW2"
@@ -3274,7 +3276,7 @@ fn test_linux_like_apis(target: &str) {
             .skip_static(|_| true)
             .skip_fn(|_| true)
             .skip_const(|c| match c {
-                "BOTHER" => false,
+                "BOTHER" | "IBSHIFT" => false,
                 "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => false,
                 _ => true,
             })
