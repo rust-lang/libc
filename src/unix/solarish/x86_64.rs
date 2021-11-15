@@ -1,5 +1,23 @@
 pub type greg_t = ::c_long;
 
+pub type Elf64_Addr = ::c_ulong;
+pub type Elf64_Half = ::c_ushort;
+pub type Elf64_Off = ::c_ulong;
+pub type Elf64_Sword = ::c_int;
+pub type Elf64_Sxword = ::c_long;
+pub type Elf64_Word = ::c_uint;
+pub type Elf64_Xword = ::c_ulong;
+pub type Elf64_Lword = ::c_ulong;
+
+pub type Elf_Addr = ::Elf64_Addr;
+pub type Elf_Half = ::Elf64_Half;
+pub type Elf_Off = ::Elf64_Off;
+pub type Elf_Sword = ::Elf64_Sword;
+pub type Elf_Word = ::Elf64_Word;
+pub type Elf_Lword = ::Elf64_Lword;
+
+pub type Elf_Phdr = ::Elf64_Phdr;
+
 s! {
     pub struct __c_anonymous_fpchip_state {
         pub cw: u16,
@@ -16,6 +34,17 @@ s! {
         pub __fx_ign: [::upad128_t; 6],
         pub status: u32,
         pub xstatus: u32,
+    }
+
+    pub struct Elf64_Phdr {
+        pub p_type: ::Elf64_Word,
+        pub p_flags: ::Elf64_Word,
+        pub p_offset: ::Elf64_Off,
+        pub p_vaddr: ::Elf64_Addr,
+        pub p_paddr: ::Elf64_Addr,
+        pub p_filesz: ::Elf64_Xword,
+        pub p_memsz: ::Elf64_Xword,
+        pub p_align: ::Elf64_Xword,
     }
 }
 
