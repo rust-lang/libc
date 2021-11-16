@@ -1,15 +1,12 @@
 //! RISC-V-specific definitions for 64-bit linux-like values
 
 pub type c_char = u8;
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type wchar_t = ::c_int;
 
 pub type nlink_t = ::c_uint;
 pub type blksize_t = ::c_int;
 pub type fsblkcnt64_t = ::c_ulong;
 pub type fsfilcnt64_t = ::c_ulong;
-pub type suseconds_t = i64;
 pub type __u64 = ::c_ulonglong;
 
 s! {
@@ -611,26 +608,6 @@ pub const POLLWRBAND: ::c_short = 0x200;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
-pub const SOL_SOCKET: ::c_int = 1;
-pub const SO_REUSEADDR: ::c_int = 2;
-pub const SO_TYPE: ::c_int = 3;
-pub const SO_ERROR: ::c_int = 4;
-pub const SO_DONTROUTE: ::c_int = 5;
-pub const SO_BROADCAST: ::c_int = 6;
-pub const SO_SNDBUF: ::c_int = 7;
-pub const SO_RCVBUF: ::c_int = 8;
-pub const SO_KEEPALIVE: ::c_int = 9;
-pub const SO_OOBINLINE: ::c_int = 10;
-pub const SO_NO_CHECK: ::c_int = 11;
-pub const SO_PRIORITY: ::c_int = 12;
-pub const SO_LINGER: ::c_int = 13;
-pub const SO_BSDCOMPAT: ::c_int = 14;
-pub const SO_REUSEPORT: ::c_int = 15;
-pub const SO_ACCEPTCONN: ::c_int = 30;
-pub const SO_SNDBUFFORCE: ::c_int = 32;
-pub const SO_RCVBUFFORCE: ::c_int = 33;
-pub const SO_PROTOCOL: ::c_int = 38;
-pub const SO_DOMAIN: ::c_int = 39;
 
 pub const MAP_ANON: ::c_int = 0x0020;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
@@ -720,12 +697,6 @@ pub const FIONCLEX: ::c_int = 0x5450;
 pub const FIONBIO: ::c_int = 0x5421;
 pub const EDEADLK: ::c_int = 35;
 pub const EDEADLOCK: ::c_int = EDEADLK;
-pub const SO_PASSCRED: ::c_int = 16;
-pub const SO_PEERCRED: ::c_int = 17;
-pub const SO_RCVLOWAT: ::c_int = 18;
-pub const SO_SNDLOWAT: ::c_int = 19;
-pub const SO_RCVTIMEO: ::c_int = 20;
-pub const SO_SNDTIMEO: ::c_int = 21;
 pub const EXTPROC: ::tcflag_t = 0x00010000;
 pub const VEOL: usize = 11;
 pub const VEOL2: usize = 16;
@@ -757,24 +728,8 @@ pub const TIOCOUTQ: ::c_int = 0x5411;
 pub const TIOCSTI: ::c_int = 0x5412;
 pub const TIOCGWINSZ: ::c_int = 0x5413;
 pub const TIOCSWINSZ: ::c_int = 0x5414;
-pub const TIOCMGET: ::c_int = 0x5415;
-pub const TIOCMBIS: ::c_int = 0x5416;
-pub const TIOCMBIC: ::c_int = 0x5417;
-pub const TIOCMSET: ::c_int = 0x5418;
 pub const FIONREAD: ::c_int = 0x541B;
 pub const TIOCCONS: ::c_int = 0x541D;
-
-pub const TIOCM_LE: ::c_int = 0x001;
-pub const TIOCM_DTR: ::c_int = 0x002;
-pub const TIOCM_RTS: ::c_int = 0x004;
-pub const TIOCM_ST: ::c_int = 0x008;
-pub const TIOCM_SR: ::c_int = 0x010;
-pub const TIOCM_CTS: ::c_int = 0x020;
-pub const TIOCM_CAR: ::c_int = 0x040;
-pub const TIOCM_RNG: ::c_int = 0x080;
-pub const TIOCM_DSR: ::c_int = 0x100;
-pub const TIOCM_CD: ::c_int = TIOCM_CAR;
-pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
 extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
