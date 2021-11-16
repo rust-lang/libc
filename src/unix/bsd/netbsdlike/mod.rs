@@ -747,6 +747,7 @@ extern "C" {
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn gethostid() -> ::c_long;
     pub fn sethostid(hostid: ::c_long) -> ::c_int;
+    pub fn ftok(path: *const ::c_char, id: ::c_int) -> ::key_t;
 }
 
 cfg_if! {
