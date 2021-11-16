@@ -254,7 +254,7 @@ s! {
 
     #[deprecated(
         since = "0.2.55",
-        note = "Use the `mach` crate instead",
+        note = "Use the `mach2` crate instead",
     )]
     pub struct mach_timebase_info {
         pub numer: u32,
@@ -522,7 +522,7 @@ s! {
 
     #[deprecated(
         since = "0.2.55",
-        note = "Use the `mach` crate instead",
+        note = "Use the `mach2` crate instead",
     )]
     pub struct mach_header {
         pub magic: u32,
@@ -536,7 +536,7 @@ s! {
 
     #[deprecated(
         since = "0.2.55",
-        note = "Use the `mach` crate instead",
+        note = "Use the `mach2` crate instead",
     )]
     pub struct mach_header_64 {
         pub magic: u32,
@@ -4790,9 +4790,9 @@ extern "C" {
         newp: *mut ::c_void,
         newlen: ::size_t,
     ) -> ::c_int;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_absolute_time() -> u64;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
     pub fn mach_host_self() -> mach_port_t;
@@ -5062,14 +5062,14 @@ extern "C" {
     pub fn brk(addr: *const ::c_void) -> *mut ::c_void;
     pub fn sbrk(increment: ::c_int) -> *mut ::c_void;
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_image_count() -> u32;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn _dyld_get_image_header(image_index: u32) -> *const mach_header;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_get_image_vmaddr_slide(image_index: u32) -> ::intptr_t;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_get_image_name(image_index: u32) -> *const ::c_char;
 
     pub fn posix_spawn(
