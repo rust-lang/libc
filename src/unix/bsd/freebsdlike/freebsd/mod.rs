@@ -600,6 +600,11 @@ s! {
         pub mode: u16,
     }
 
+    pub struct spacectl_range {
+        pub r_offset: ::off_t,
+        pub r_len: ::off_t
+    }
+
     pub struct rusage_ext {
         pub rux_runtime: u64,
         pub rux_uticks: u64,
@@ -2978,6 +2983,9 @@ pub const F_SEAL_SEAL: ::c_int = 1;
 pub const F_SEAL_SHRINK: ::c_int = 2;
 pub const F_SEAL_WRITE: ::c_int = 8;
 
+// for use with fspacectl
+pub const SPACECTL_DEALLOC: ::c_int = 1;
+
 // For getrandom()
 pub const GRND_NONBLOCK: ::c_uint = 0x1;
 pub const GRND_RANDOM: ::c_uint = 0x2;
@@ -3804,6 +3812,14 @@ extern "C" {
         data: *const ::c_void,
         nbytes: ::size_t,
     ) -> ::ssize_t;
+
+    pub fn fspacectl(
+        fd: ::c_int,
+        cmd: ::c_int,
+        rqsr: *const spacectl_range,
+        flags: ::c_int,
+        rmsr: *mut spacectl_range,
+    ) -> ::c_int;
 
     pub fn jail(jail: *mut ::jail) -> ::c_int;
     pub fn jail_attach(jid: ::c_int) -> ::c_int;

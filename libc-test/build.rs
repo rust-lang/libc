@@ -2041,7 +2041,7 @@ fn test_freebsd(target: &str) {
             // This was changed to 96(0x60) in FreeBSD 13:
             // https://github.com/freebsd/freebsd/
             // commit/06b00ceaa914a3907e4e27bad924f44612bae1d7
-            "MINCORE_SUPER" if Some(13) == freebsd_ver => true,
+            "MINCORE_SUPER" if Some(13) <= freebsd_ver => true,
 
             // Added in FreeBSD 12.0
             "EINTEGRITY" if Some(11) == freebsd_ver => true,
@@ -2088,6 +2088,9 @@ fn test_freebsd(target: &str) {
 
             // Added in in FreeBSD 13.0 (r367776 and r367287)
             "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
+
+            // Added in FreeBSD 14
+            "SPACECTL_DEALLOC" if Some(14) > freebsd_ver => true,
 
             "VM_TOTAL" if Some(11) == freebsd_ver => true,
 
@@ -2193,6 +2196,9 @@ fn test_freebsd(target: &str) {
             // `ptrace_sc_ret` is not available in FreeBSD 11
             "ptrace_sc_ret" if Some(11) == freebsd_ver => true,
 
+            // `spacectl_range` was introduced in FreeBSD 14
+            "spacectl_range" if Some(14) > freebsd_ver => true,
+
             // obsolete version
             "vmtotal" if Some(11) == freebsd_ver => true,
 
@@ -2220,6 +2226,9 @@ fn test_freebsd(target: &str) {
             // This function changed its return type from `int` in FreeBSD10 to
             // `ssize_t` in FreeBSD11:
             "aio_waitcomplete" if Some(10) == freebsd_ver => true,
+
+            // `fspacectl` was introduced in FreeBSD 14
+            "fspacectl" if Some(14) > freebsd_ver => true,
 
             // The `uname` function in the `utsname.h` FreeBSD header is a C
             // inline function (has no symbol) that calls the `__xuname` symbol.
