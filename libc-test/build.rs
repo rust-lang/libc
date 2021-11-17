@@ -300,6 +300,9 @@ fn test_apple(target: &str) {
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
             // FIXME: the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
             "SF_SETTABLE" => true,
+
+            // FIXME: XCode 13.1 doesn't have it.
+            "TIOCREMOTE" => true,
             _ => false,
         }
     });
