@@ -556,6 +556,13 @@ s! {
         pub psi_siginfo: siginfo_t,
         pub psi_lwpid: lwpid_t,
     }
+
+    pub struct sysctldesc {
+        pub descr_num: i32,
+        pub descr_ver: u32,
+        pub descr_len: u32,
+        pub descr_str: [::c_char; 1],
+    }
 }
 
 s_no_extra_traits! {
