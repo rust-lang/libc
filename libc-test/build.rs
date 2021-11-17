@@ -2740,6 +2740,9 @@ fn test_linux(target: &str) {
             | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
             | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
 
+            "Ioctl" if gnu => "unsigned long".to_string(),
+            "Ioctl" => "int".to_string(),
+
             t if is_union => format!("union {}", t),
 
             t if t.ends_with("_t") => t.to_string(),
@@ -2796,6 +2799,9 @@ fn test_linux(target: &str) {
             "__rlimit_resource_t" => true,
             // on Linux, this is a volatile int
             "pthread_spinlock_t" => true,
+
+            // For internal use only, to define architecture specific ioctl constants with a libc specific type.
+            "Ioctl" => true,
 
             _ => false,
         }
@@ -3227,6 +3233,7 @@ fn test_linux(target: &str) {
 // This function tests APIs that are incompatible to test when other APIs
 // are included (e.g. because including both sets of headers clashes)
 fn test_linux_like_apis(target: &str) {
+    let gnu = target.contains("gnu");
     let musl = target.contains("musl");
     let linux = target.contains("linux");
     let emscripten = target.contains("emscripten");
@@ -3293,6 +3300,8 @@ fn test_linux_like_apis(target: &str) {
             })
             .skip_struct(|s| s != "termios2")
             .type_name(move |ty, is_struct, is_union| match ty {
+                "Ioctl" if gnu => "unsigned long".to_string(),
+                "Ioctl" => "int".to_string(),
                 t if is_struct => format!("struct {}", t),
                 t if is_union => format!("union {}", t),
                 t => t.to_string(),

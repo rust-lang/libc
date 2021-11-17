@@ -100,14 +100,14 @@ pub const SO_TIMESTAMPING: ::c_int = 0x0023;
 pub const SCM_TIMESTAMPNS: ::c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
 
-pub const TIOCMGET: ::c_ulong = 0x4004746a;
-pub const TIOCMBIS: ::c_ulong = 0x8004746c;
-pub const TIOCMBIC: ::c_ulong = 0x8004746b;
-pub const TIOCMSET: ::c_ulong = 0x8004746d;
-pub const TCGETS2: ::c_ulong = 0x402c540c;
-pub const TCSETS2: ::c_ulong = 0x802c540d;
-pub const TCSETSW2: ::c_ulong = 0x802c540e;
-pub const TCSETSF2: ::c_ulong = 0x802c540f;
+pub const TIOCMGET: ::Ioctl = 0x4004746a;
+pub const TIOCMBIS: ::Ioctl = 0x8004746c;
+pub const TIOCMBIC: ::Ioctl = 0x8004746b;
+pub const TIOCMSET: ::Ioctl = 0x8004746d;
+pub const TCGETS2: ::Ioctl = 0x402c540c;
+pub const TCSETS2: ::Ioctl = 0x802c540d;
+pub const TCSETSW2: ::Ioctl = 0x802c540e;
+pub const TCSETSF2: ::Ioctl = 0x802c540f;
 
 pub const TIOCM_LE: ::c_int = 0x001;
 pub const TIOCM_DTR: ::c_int = 0x002;

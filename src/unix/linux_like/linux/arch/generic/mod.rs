@@ -112,14 +112,14 @@ cfg_if! {
 pub const SCM_TIMESTAMPNS: ::c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
 
-pub const TIOCMGET: ::c_ulong = 0x5415;
-pub const TIOCMBIS: ::c_ulong = 0x5416;
-pub const TIOCMBIC: ::c_ulong = 0x5417;
-pub const TIOCMSET: ::c_ulong = 0x5418;
-pub const TCGETS2: ::c_ulong = 0x802c542a;
-pub const TCSETS2: ::c_ulong = 0x402c542b;
-pub const TCSETSW2: ::c_ulong = 0x402c542c;
-pub const TCSETSF2: ::c_ulong = 0x402c542d;
+pub const TIOCMGET: ::Ioctl = 0x5415;
+pub const TIOCMBIS: ::Ioctl = 0x5416;
+pub const TIOCMBIC: ::Ioctl = 0x5417;
+pub const TIOCMSET: ::Ioctl = 0x5418;
+pub const TCGETS2: ::Ioctl = 0x802c542a;
+pub const TCSETS2: ::Ioctl = 0x402c542b;
+pub const TCSETSW2: ::Ioctl = 0x402c542c;
+pub const TCSETSF2: ::Ioctl = 0x402c542d;
 
 pub const TIOCM_LE: ::c_int = 0x001;
 pub const TIOCM_DTR: ::c_int = 0x002;

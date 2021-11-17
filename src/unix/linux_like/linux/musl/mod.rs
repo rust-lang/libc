@@ -24,6 +24,16 @@ pub type rlim_t = ::c_ulonglong;
 
 pub type flock64 = flock;
 
+cfg_if! {
+    if #[cfg(doc)] {
+        // Used in `linux::arch` to define ioctl constants.
+        pub(crate) type Ioctl = ::c_int;
+    } else {
+        #[doc(hidden)]
+        pub type Ioctl = ::c_int;
+    }
+}
+
 impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut ::c_void {
         #[repr(C)]

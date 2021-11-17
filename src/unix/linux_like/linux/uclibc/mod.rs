@@ -5,6 +5,16 @@ pub type regoff_t = ::c_int;
 pub type __rlimit_resource_t = ::c_uint;
 pub type __priority_which_t = ::c_uint;
 
+cfg_if! {
+    if #[cfg(doc)] {
+        // Used in `linux::arch` to define ioctl constants.
+        pub(crate) type Ioctl = ::c_int;
+    } else {
+        #[doc(hidden)]
+        pub type Ioctl = ::c_int;
+    }
+}
+
 s! {
     pub struct statvfs {  // Different than GNU!
         pub f_bsize: ::c_ulong,

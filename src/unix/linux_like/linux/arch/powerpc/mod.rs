@@ -90,10 +90,10 @@ pub const SO_BINDTOIFINDEX: ::c_int = 62;
 pub const SCM_TIMESTAMPNS: ::c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
 
-pub const TIOCMGET: ::c_int = 0x5415;
-pub const TIOCMBIS: ::c_int = 0x5416;
-pub const TIOCMBIC: ::c_int = 0x5417;
-pub const TIOCMSET: ::c_int = 0x5418;
+pub const TIOCMGET: ::Ioctl = 0x5415;
+pub const TIOCMBIS: ::Ioctl = 0x5416;
+pub const TIOCMBIC: ::Ioctl = 0x5417;
+pub const TIOCMSET: ::Ioctl = 0x5418;
 
 pub const TIOCM_LE: ::c_int = 0x001;
 pub const TIOCM_DTR: ::c_int = 0x002;
