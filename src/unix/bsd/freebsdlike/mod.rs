@@ -822,7 +822,6 @@ pub const MINCORE_REFERENCED: ::c_int = 0x2;
 pub const MINCORE_MODIFIED: ::c_int = 0x4;
 pub const MINCORE_REFERENCED_OTHER: ::c_int = 0x8;
 pub const MINCORE_MODIFIED_OTHER: ::c_int = 0x10;
-pub const MINCORE_SUPER: ::c_int = 0x20;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_LOCAL: ::c_int = 1;

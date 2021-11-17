@@ -305,6 +305,8 @@ pub const ELAST: ::c_int = 97;
 pub const SPECNAMELEN: ::c_int = 63;
 pub const KI_NSPARE_PTR: usize = 6;
 
+pub const MINCORE_SUPER: ::c_int = 0x20;
+
 extern "C" {
     pub fn setgrent();
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;

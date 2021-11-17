@@ -3377,6 +3377,7 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),
+        s if s.starts_with("14") => Some(14),
         _ => None,
     }
 }

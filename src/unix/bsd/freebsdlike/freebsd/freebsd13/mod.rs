@@ -1,4 +1,4 @@
-// APIs in FreeBSD 13 that have changed since 11.
+// APIs in FreeBSD 14 that have changed since 11.
 
 pub type nlink_t = u64;
 pub type dev_t = u64;
@@ -333,6 +333,8 @@ pub const DOMAINSET_POLICY_ROUNDROBIN: ::c_int = 1;
 pub const DOMAINSET_POLICY_FIRSTTOUCH: ::c_int = 2;
 pub const DOMAINSET_POLICY_PREFER: ::c_int = 3;
 pub const DOMAINSET_POLICY_INTERLEAVE: ::c_int = 4;
+
+pub const MINCORE_SUPER: ::c_int = 0x20;
 
 f! {
     pub fn SOCKCRED2SIZE(ngrps: usize) -> usize {

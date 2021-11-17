@@ -1299,6 +1299,8 @@ pub const SF_XLINK: ::c_ulong = 0x01000000;
 pub const UTIME_OMIT: c_long = -2;
 pub const UTIME_NOW: c_long = -1;
 
+pub const MINCORE_SUPER: ::c_int = 0x20;
+
 const_fn! {
     {const} fn _CMSG_ALIGN(n: usize) -> usize {
         (n + 3) & !3
