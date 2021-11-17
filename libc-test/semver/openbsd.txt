@@ -952,6 +952,7 @@ freelocale
 freezero
 fsid_t
 fstatfs
+ftok
 fusefs_args
 futimes
 getdomainname

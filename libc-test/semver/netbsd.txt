@@ -1183,6 +1183,7 @@ forkpty
 freeifaddrs
 freelocale
 fsid_t
+ftok
 futimes
 getbootfile
 getbyteorder
