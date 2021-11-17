@@ -2624,7 +2624,7 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(freebsd13)] {
+    if #[cfg(any(freebsd13, freebsd14))] {
         mod freebsd13;
         pub use self::freebsd13::*;
     } else if #[cfg(freebsd12)] {

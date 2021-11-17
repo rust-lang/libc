@@ -1756,6 +1756,7 @@ fn test_freebsd(target: &str) {
         Some(11) => cfg.cfg("freebsd11", None),
         Some(12) => cfg.cfg("freebsd12", None),
         Some(13) => cfg.cfg("freebsd13", None),
+        Some(14) => cfg.cfg("freebsd14", None),
         _ => &mut cfg,
     };
 
