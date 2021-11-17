@@ -370,6 +370,16 @@ s! {
         pub t_sw: i16,
         pub t_pad: [u16; 3],
     }
+
+    pub struct rusage_ext {
+        pub rux_runtime: u64,
+        pub rux_uticks: u64,
+        pub rux_sticks: u64,
+        pub rux_iticks: u64,
+        pub rux_uu: u64,
+        pub rux_su: u64,
+        pub rux_tu: u64,
+    }
 }
 
 s_no_extra_traits! {
@@ -1896,6 +1906,164 @@ pub const _POSIX2_EQUIV_CLASS_MAX: ::c_int = 2;
 pub const _POSIX2_EXPR_NEST_MAX: ::c_int = 32;
 pub const _POSIX2_LINE_MAX: ::c_int = 2048;
 pub const _POSIX2_RE_DUP_MAX: ::c_int = 255;
+
+// sys/proc.h
+pub const TDF_BORROWING: ::c_int = 0x00000001;
+pub const TDF_INPANIC: ::c_int = 0x00000002;
+pub const TDF_INMEM: ::c_int = 0x00000004;
+pub const TDF_SINTR: ::c_int = 0x00000008;
+pub const TDF_TIMEOUT: ::c_int = 0x00000010;
+pub const TDF_IDLETD: ::c_int = 0x00000020;
+pub const TDF_CANSWAP: ::c_int = 0x00000040;
+pub const TDF_KTH_SUSP: ::c_int = 0x00000100;
+pub const TDF_ALLPROCSUSP: ::c_int = 0x00000200;
+pub const TDF_BOUNDARY: ::c_int = 0x00000400;
+pub const TDF_ASTPENDING: ::c_int = 0x00000800;
+pub const TDF_SBDRY: ::c_int = 0x00002000;
+pub const TDF_UPIBLOCKED: ::c_int = 0x00004000;
+pub const TDF_NEEDSUSPCHK: ::c_int = 0x00008000;
+pub const TDF_NEEDRESCHED: ::c_int = 0x00010000;
+pub const TDF_NEEDSIGCHK: ::c_int = 0x00020000;
+pub const TDF_NOLOAD: ::c_int = 0x00040000;
+pub const TDF_SERESTART: ::c_int = 0x00080000;
+pub const TDF_THRWAKEUP: ::c_int = 0x00100000;
+pub const TDF_SEINTR: ::c_int = 0x00200000;
+pub const TDF_SWAPINREQ: ::c_int = 0x00400000;
+pub const TDF_UNUSED23: ::c_int = 0x00800000;
+pub const TDF_SCHED0: ::c_int = 0x01000000;
+pub const TDF_SCHED1: ::c_int = 0x02000000;
+pub const TDF_SCHED2: ::c_int = 0x04000000;
+pub const TDF_SCHED3: ::c_int = 0x08000000;
+pub const TDF_ALRMPEND: ::c_int = 0x10000000;
+pub const TDF_PROFPEND: ::c_int = 0x20000000;
+pub const TDF_MACPEND: ::c_int = 0x40000000;
+
+pub const TDB_SUSPEND: ::c_int = 0x00000001;
+pub const TDB_XSIG: ::c_int = 0x00000002;
+pub const TDB_USERWR: ::c_int = 0x00000004;
+pub const TDB_SCE: ::c_int = 0x00000008;
+pub const TDB_SCX: ::c_int = 0x00000010;
+pub const TDB_EXEC: ::c_int = 0x00000020;
+pub const TDB_FORK: ::c_int = 0x00000040;
+pub const TDB_STOPATFORK: ::c_int = 0x00000080;
+pub const TDB_CHILD: ::c_int = 0x00000100;
+pub const TDB_BORN: ::c_int = 0x00000200;
+pub const TDB_EXIT: ::c_int = 0x00000400;
+pub const TDB_VFORK: ::c_int = 0x00000800;
+pub const TDB_FSTP: ::c_int = 0x00001000;
+pub const TDB_STEP: ::c_int = 0x00002000;
+
+pub const TDP_OLDMASK: ::c_int = 0x00000001;
+pub const TDP_INKTR: ::c_int = 0x00000002;
+pub const TDP_INKTRACE: ::c_int = 0x00000004;
+pub const TDP_BUFNEED: ::c_int = 0x00000008;
+pub const TDP_COWINPROGRESS: ::c_int = 0x00000010;
+pub const TDP_ALTSTACK: ::c_int = 0x00000020;
+pub const TDP_DEADLKTREAT: ::c_int = 0x00000040;
+pub const TDP_NOFAULTING: ::c_int = 0x00000080;
+pub const TDP_OWEUPC: ::c_int = 0x00000200;
+pub const TDP_ITHREAD: ::c_int = 0x00000400;
+pub const TDP_SYNCIO: ::c_int = 0x00000800;
+pub const TDP_SCHED1: ::c_int = 0x00001000;
+pub const TDP_SCHED2: ::c_int = 0x00002000;
+pub const TDP_SCHED3: ::c_int = 0x00004000;
+pub const TDP_SCHED4: ::c_int = 0x00008000;
+pub const TDP_GEOM: ::c_int = 0x00010000;
+pub const TDP_SOFTDEP: ::c_int = 0x00020000;
+pub const TDP_NORUNNINGBUF: ::c_int = 0x00040000;
+pub const TDP_WAKEUP: ::c_int = 0x00080000;
+pub const TDP_INBDFLUSH: ::c_int = 0x00100000;
+pub const TDP_KTHREAD: ::c_int = 0x00200000;
+pub const TDP_CALLCHAIN: ::c_int = 0x00400000;
+pub const TDP_IGNSUSP: ::c_int = 0x00800000;
+pub const TDP_AUDITREC: ::c_int = 0x01000000;
+pub const TDP_RFPPWAIT: ::c_int = 0x02000000;
+pub const TDP_RESETSPUR: ::c_int = 0x04000000;
+pub const TDP_NERRNO: ::c_int = 0x08000000;
+pub const TDP_EXECVMSPC: ::c_int = 0x40000000;
+
+pub const TDI_SUSPENDED: ::c_int = 0x0001;
+pub const TDI_SLEEPING: ::c_int = 0x0002;
+pub const TDI_SWAPPED: ::c_int = 0x0004;
+pub const TDI_LOCK: ::c_int = 0x0008;
+pub const TDI_IWAIT: ::c_int = 0x0010;
+
+pub const P_ADVLOCK: ::c_int = 0x00000001;
+pub const P_CONTROLT: ::c_int = 0x00000002;
+pub const P_KPROC: ::c_int = 0x00000004;
+pub const P_UNUSED3: ::c_int = 0x00000008;
+pub const P_PPWAIT: ::c_int = 0x00000010;
+pub const P_PROFIL: ::c_int = 0x00000020;
+pub const P_STOPPROF: ::c_int = 0x00000040;
+pub const P_HADTHREADS: ::c_int = 0x00000080;
+pub const P_SUGID: ::c_int = 0x00000100;
+pub const P_SYSTEM: ::c_int = 0x00000200;
+pub const P_SINGLE_EXIT: ::c_int = 0x00000400;
+pub const P_TRACED: ::c_int = 0x00000800;
+pub const P_WAITED: ::c_int = 0x00001000;
+pub const P_WEXIT: ::c_int = 0x00002000;
+pub const P_EXEC: ::c_int = 0x00004000;
+pub const P_WKILLED: ::c_int = 0x00008000;
+pub const P_CONTINUED: ::c_int = 0x00010000;
+pub const P_STOPPED_SIG: ::c_int = 0x00020000;
+pub const P_STOPPED_TRACE: ::c_int = 0x00040000;
+pub const P_STOPPED_SINGLE: ::c_int = 0x00080000;
+pub const P_PROTECTED: ::c_int = 0x00100000;
+pub const P_SIGEVENT: ::c_int = 0x00200000;
+pub const P_SINGLE_BOUNDARY: ::c_int = 0x00400000;
+pub const P_HWPMC: ::c_int = 0x00800000;
+pub const P_JAILED: ::c_int = 0x01000000;
+pub const P_TOTAL_STOP: ::c_int = 0x02000000;
+pub const P_INEXEC: ::c_int = 0x04000000;
+pub const P_STATCHILD: ::c_int = 0x08000000;
+pub const P_INMEM: ::c_int = 0x10000000;
+pub const P_SWAPPINGOUT: ::c_int = 0x20000000;
+pub const P_SWAPPINGIN: ::c_int = 0x40000000;
+pub const P_PPTRACE: ::c_int = 0x80000000;
+pub const P_STOPPED: ::c_int = P_STOPPED_SIG | P_STOPPED_SINGLE | P_STOPPED_TRACE;
+
+pub const P2_INHERIT_PROTECTED: ::c_int = 0x00000001;
+pub const P2_NOTRACE: ::c_int = 0x00000002;
+pub const P2_NOTRACE_EXEC: ::c_int = 0x00000004;
+pub const P2_AST_SU: ::c_int = 0x00000008;
+pub const P2_PTRACE_FSTP: ::c_int = 0x00000010;
+pub const P2_TRAPCAP: ::c_int = 0x00000020;
+pub const P2_STKGAP_DISABLE: ::c_int = 0x00000800;
+pub const P2_STKGAP_DISABLE_EXEC: ::c_int = 0x00001000;
+
+pub const P_TREE_ORPHANED: ::c_int = 0x00000001;
+pub const P_TREE_FIRST_ORPHAN: ::c_int = 0x00000002;
+pub const P_TREE_REAPER: ::c_int = 0x00000004;
+
+pub const SIDL: ::c_char = 1;
+pub const SRUN: ::c_char = 2;
+pub const SSLEEP: ::c_char = 3;
+pub const SSTOP: ::c_char = 4;
+pub const SZOMB: ::c_char = 5;
+pub const SWAIT: ::c_char = 6;
+pub const SLOCK: ::c_char = 7;
+
+pub const P_MAGIC: ::c_int = 0xbeefface;
+
+cfg_if! {
+    if #[cfg(freebsd13)] {
+        pub const TDP_SIGFASTBLOCK: ::c_int = 0x00000100;
+        pub const TDP_UIOHELD: ::c_int = 0x10000000;
+        pub const TDP_SIGFASTPENDING: ::c_int = 0x80000000;
+        pub const TDP2_COMPAT32RB: ::c_int = 0x00000002;
+        pub const P2_PROTMAX_ENABLE: ::c_int = 0x00000200;
+        pub const P2_PROTMAX_DISABLE: ::c_int = 0x00000400;
+    }
+}
+cfg_if! {
+    if #[cfg(any(freebsd12, freebsd13))] {
+        pub const TDP2_SBPAGES: ::c_int = 0x00000001;
+        pub const P2_ASLR_ENABLE: ::c_int = 0x00000040;
+        pub const P2_ASLR_DISABLE: ::c_int = 0x00000080;
+        pub const P2_ASLR_IGNSTART: ::c_int = 0x00000100;
+        pub const P_TREE_GRPEXITED: ::c_int = 0x00000008;
+    }
+}
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
