@@ -910,7 +910,7 @@ pub const CTLFLAG_STATS: ::c_int = 0x00002000;
 pub const CTLFLAG_NOFETCH: ::c_int = 0x00001000;
 pub const CTLFLAG_CAPRW: ::c_int = CTLFLAG_CAPRD | CTLFLAG_CAPWR;
 cfg_if! {
-    if #[cfg(freebsd13)] {
+    if #[cfg(any(freebsd13, freebsd14))] {
         pub const CTLFLAG_NEEDGIANT: ::c_int = 0x00000800;
     }
 }
@@ -930,7 +930,7 @@ pub const CTL_SYSCTL_OIDFMT: ::c_int = 4;
 pub const CTL_SYSCTL_OIDDESCR: ::c_int = 5;
 pub const CTL_SYSCTL_OIDLABEL: ::c_int = 6;
 cfg_if! {
-    if #[cfg(freebsd13)] {
+    if #[cfg(any(freebsd13, freebsd14))] {
         pub const CTL_SYSCTL_NEXTNOSKIP: ::c_int = 7;
     }
 }
@@ -972,11 +972,8 @@ pub const KERN_LOGSIGEXIT: ::c_int = 34;
 pub const KERN_IOV_MAX: ::c_int = 35;
 pub const KERN_HOSTUUID: ::c_int = 36;
 pub const KERN_ARND: ::c_int = 37;
-cfg_if! {
-    if #[cfg(any(freebsd12, freebsd13))] {
-        pub const KERN_MAXPHYS: ::c_int = 38;
-    }
-}
+pub const KERN_MAXPHYS: ::c_int = 38;
+pub const KERN_STACKTOP: ::c_int = 39;
 
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
@@ -1008,7 +1005,7 @@ pub const KERN_PROC_SIGTRAMP: ::c_int = 41;
 pub const KERN_PROC_CWD: ::c_int = 42;
 pub const KERN_PROC_NFDS: ::c_int = 43;
 cfg_if! {
-    if #[cfg(freebsd13)] {
+    if #[cfg(any(freebsd13, freebsd14))] {
         pub const KERN_PROC_SIGFASTBLK: ::c_int = 44;
     }
 }
@@ -1055,7 +1052,7 @@ pub const USER_POSIX2_UPE: ::c_int = 18;
 pub const USER_STREAM_MAX: ::c_int = 19;
 pub const USER_TZNAME_MAX: ::c_int = 20;
 cfg_if! {
-    if #[cfg(freebsd13)] {
+    if #[cfg(any(freebsd13, freebsd14))] {
         pub const USER_LOCALBASE: ::c_int = 21;
     }
 }
@@ -2131,7 +2128,7 @@ pub const SLOCK: ::c_char = 7;
 pub const P_MAGIC: ::c_int = 0xbeefface;
 
 cfg_if! {
-    if #[cfg(freebsd13)] {
+    if #[cfg(any(freebsd13, freebsd14))] {
         pub const TDP_SIGFASTBLOCK: ::c_int = 0x00000100;
         pub const TDP_UIOHELD: ::c_int = 0x10000000;
         pub const TDP_SIGFASTPENDING: ::c_int = 0x80000000;
@@ -2141,7 +2138,7 @@ cfg_if! {
     }
 }
 cfg_if! {
-    if #[cfg(any(freebsd12, freebsd13))] {
+    if #[cfg(any(freebsd12, freebsd13, freebsd14))] {
         pub const TDP2_SBPAGES: ::c_int = 0x00000001;
         pub const P2_ASLR_ENABLE: ::c_int = 0x00000040;
         pub const P2_ASLR_DISABLE: ::c_int = 0x00000080;
