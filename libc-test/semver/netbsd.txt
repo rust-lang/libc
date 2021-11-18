@@ -1446,6 +1446,7 @@ sync
 syscall
 sysctl
 sysctlbyname
+sysctldesc
 telldir
 timer_create
 timer_delete
