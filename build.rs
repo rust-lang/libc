@@ -31,6 +31,7 @@ fn main() {
         Some(11) if libc_ci => println!("cargo:rustc-cfg=freebsd11"),
         Some(12) if libc_ci => println!("cargo:rustc-cfg=freebsd12"),
         Some(13) if libc_ci => println!("cargo:rustc-cfg=freebsd13"),
+        Some(14) if libc_ci => println!("cargo:rustc-cfg=freebsd14"),
         Some(_) | None => println!("cargo:rustc-cfg=freebsd11"),
     }
 
@@ -150,6 +151,7 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),
+        s if s.starts_with("14") => Some(14),
         _ => None,
     }
 }

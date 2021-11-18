@@ -1761,6 +1761,7 @@ fn test_freebsd(target: &str) {
         Some(11) => cfg.cfg("freebsd11", None),
         Some(12) => cfg.cfg("freebsd12", None),
         Some(13) => cfg.cfg("freebsd13", None),
+        Some(14) => cfg.cfg("freebsd14", None),
         _ => &mut cfg,
     };
 
@@ -3381,6 +3382,7 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),
+        s if s.starts_with("14") => Some(14),
         _ => None,
     }
 }

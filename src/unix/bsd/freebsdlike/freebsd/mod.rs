@@ -314,116 +314,6 @@ s! {
         pub pri_user: u_char,
     }
 
-    pub struct kinfo_proc {
-        pub ki_structsize: ::c_int,
-        pub ki_layout: ::c_int,
-        pub ki_args: *mut pargs,
-        // This is normally "struct proc".
-        pub ki_paddr: *mut ::c_void,
-        // This is normally "struct user".
-        pub ki_addr: *mut ::c_void,
-        // This is normally "struct vnode".
-        pub ki_tracep: *mut ::c_void,
-        // This is normally "struct vnode".
-        pub ki_textvp: *mut ::c_void,
-        // This is normally "struct filedesc".
-        pub ki_fd: *mut ::c_void,
-        // This is normally "struct vmspace".
-        pub ki_vmspace: *mut ::c_void,
-        #[cfg(freebsd13)]
-        pub ki_wchan: *const ::c_void,
-        #[cfg(not(freebsd13))]
-        pub ki_wchan: *mut ::c_void,
-        pub ki_pid: ::pid_t,
-        pub ki_ppid: ::pid_t,
-        pub ki_pgid: ::pid_t,
-        pub ki_tpgid: ::pid_t,
-        pub ki_sid: ::pid_t,
-        pub ki_tsid: ::pid_t,
-        pub ki_jobc: ::c_short,
-        pub ki_spare_short1: ::c_short,
-        #[cfg(any(freebsd12, freebsd13))]
-        pub ki_tdev_freebsd11: u32,
-        #[cfg(freebsd11)]
-        pub ki_tdev: ::dev_t,
-        pub ki_siglist: ::sigset_t,
-        pub ki_sigmask: ::sigset_t,
-        pub ki_sigignore: ::sigset_t,
-        pub ki_sigcatch: ::sigset_t,
-        pub ki_uid: ::uid_t,
-        pub ki_ruid: ::uid_t,
-        pub ki_svuid: ::uid_t,
-        pub ki_rgid: ::gid_t,
-        pub ki_svgid: ::gid_t,
-        pub ki_ngroups: ::c_short,
-        pub ki_spare_short2: ::c_short,
-        pub ki_groups: [::gid_t; ::KI_NGROUPS],
-        pub ki_size: ::vm_size_t,
-        pub ki_rssize: segsz_t,
-        pub ki_swrss: segsz_t,
-        pub ki_tsize: segsz_t,
-        pub ki_dsize: segsz_t,
-        pub ki_ssize: segsz_t,
-        pub ki_xstat: ::u_short,
-        pub ki_acflag: ::u_short,
-        pub ki_pctcpu: fixpt_t,
-        pub ki_estcpu: u_int,
-        pub ki_slptime: u_int,
-        pub ki_swtime: u_int,
-        pub ki_cow: u_int,
-        pub ki_runtime: u64,
-        pub ki_start: ::timeval,
-        pub ki_childtime: ::timeval,
-        pub ki_flag: ::c_long,
-        pub ki_kiflag: ::c_long,
-        pub ki_traceflag: ::c_int,
-        pub ki_stat: ::c_char,
-        pub ki_nice: i8, // signed char
-        pub ki_lock: ::c_char,
-        pub ki_rqindex: ::c_char,
-        pub ki_oncpu_old: ::c_uchar,
-        pub ki_lastcpu_old: ::c_uchar,
-        pub ki_tdname: [::c_char; TDNAMLEN + 1],
-        pub ki_wmesg: [::c_char; ::WMESGLEN + 1],
-        pub ki_login: [::c_char; ::LOGNAMELEN + 1],
-        pub ki_lockname: [::c_char; ::LOCKNAMELEN + 1],
-        pub ki_comm: [::c_char; ::COMMLEN + 1],
-        pub ki_emul: [::c_char; ::KI_EMULNAMELEN + 1],
-        pub ki_loginclass: [::c_char; ::LOGINCLASSLEN + 1],
-        pub ki_moretdname: [::c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
-        pub ki_sparestrings: [[::c_char; 23]; 2], // little hack to allow PartialEq
-        pub ki_spareints: [::c_int; ::KI_NSPARE_INT],
-        #[cfg(freebsd13)]
-        pub ki_tdev: u64,
-        #[cfg(freebsd12)]
-        pub ki_tdev: ::dev_t,
-        pub ki_oncpu: ::c_int,
-        pub ki_lastcpu: ::c_int,
-        pub ki_tracer: ::c_int,
-        pub ki_flag2: ::c_int,
-        pub ki_fibnum: ::c_int,
-        pub ki_cr_flags: u_int,
-        pub ki_jid: ::c_int,
-        pub ki_numthreads: ::c_int,
-        pub ki_tid: lwpid_t,
-        pub ki_pri: priority,
-        pub ki_rusage: ::rusage,
-        pub ki_rusage_ch: ::rusage,
-        // This is normally "struct pcb".
-        pub ki_pcb: *mut ::c_void,
-        pub ki_kstack: *mut ::c_void,
-        pub ki_udata: *mut ::c_void,
-        // This is normally "struct thread".
-        pub ki_tdaddr: *mut ::c_void,
-        // This is normally "struct pwddesc".
-        #[cfg(freebsd13)]
-        pub ki_pd: *mut ::c_void,
-        pub ki_spareptrs: [*mut ::c_void; ::KI_NSPARE_PTR],
-        pub ki_sparelongs: [::c_long; ::KI_NSPARE_LONG],
-        pub ki_sflag: ::c_long,
-        pub ki_tdflags: ::c_long,
-    }
-
     pub struct kvm_swap {
         pub ksw_devname: [::c_char; 32],
         pub ksw_used: u_int,
@@ -1881,7 +1771,7 @@ pub const KVME_FLAG_SUPER: ::c_int = 0x00000008;
 pub const KVME_FLAG_GROWS_UP: ::c_int = 0x00000010;
 pub const KVME_FLAG_GROWS_DOWN: ::c_int = 0x00000020;
 cfg_if! {
-    if #[cfg(any(freebsd12, freebsd13))] {
+    if #[cfg(any(freebsd12, freebsd13, freebsd14))] {
         pub const KVME_FLAG_USER_WIRED: ::c_int = 0x00000040;
     }
 }
@@ -2624,7 +2514,10 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(freebsd13)] {
+    if #[cfg(freebsd14)] {
+        mod freebsd14;
+        pub use self::freebsd14::*;
+    } else if #[cfg(freebsd13)] {
         mod freebsd13;
         pub use self::freebsd13::*;
     } else if #[cfg(freebsd12)] {

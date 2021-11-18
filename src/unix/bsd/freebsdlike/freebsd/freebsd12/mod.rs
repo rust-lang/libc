@@ -36,6 +36,104 @@ s! {
         pub offset: ::u_long,
         pub len: ::size_t,
     }
+
+    pub struct kinfo_proc {
+        pub ki_structsize: ::c_int,
+        pub ki_layout: ::c_int,
+        pub ki_args: *mut ::pargs,
+        // This is normally "struct proc".
+        pub ki_paddr: *mut ::c_void,
+        // This is normally "struct user".
+        pub ki_addr: *mut ::c_void,
+        // This is normally "struct vnode".
+        pub ki_tracep: *mut ::c_void,
+        // This is normally "struct vnode".
+        pub ki_textvp: *mut ::c_void,
+        // This is normally "struct filedesc".
+        pub ki_fd: *mut ::c_void,
+        // This is normally "struct vmspace".
+        pub ki_vmspace: *mut ::c_void,
+        pub ki_wchan: *mut ::c_void,
+        pub ki_pid: ::pid_t,
+        pub ki_ppid: ::pid_t,
+        pub ki_pgid: ::pid_t,
+        pub ki_tpgid: ::pid_t,
+        pub ki_sid: ::pid_t,
+        pub ki_tsid: ::pid_t,
+        pub ki_jobc: ::c_short,
+        pub ki_spare_short1: ::c_short,
+        pub ki_tdev_freebsd11: u32,
+        pub ki_siglist: ::sigset_t,
+        pub ki_sigmask: ::sigset_t,
+        pub ki_sigignore: ::sigset_t,
+        pub ki_sigcatch: ::sigset_t,
+        pub ki_uid: ::uid_t,
+        pub ki_ruid: ::uid_t,
+        pub ki_svuid: ::uid_t,
+        pub ki_rgid: ::gid_t,
+        pub ki_svgid: ::gid_t,
+        pub ki_ngroups: ::c_short,
+        pub ki_spare_short2: ::c_short,
+        pub ki_groups: [::gid_t; ::KI_NGROUPS],
+        pub ki_size: ::vm_size_t,
+        pub ki_rssize: ::segsz_t,
+        pub ki_swrss: ::segsz_t,
+        pub ki_tsize: ::segsz_t,
+        pub ki_dsize: ::segsz_t,
+        pub ki_ssize: ::segsz_t,
+        pub ki_xstat: ::u_short,
+        pub ki_acflag: ::u_short,
+        pub ki_pctcpu: ::fixpt_t,
+        pub ki_estcpu: ::u_int,
+        pub ki_slptime: ::u_int,
+        pub ki_swtime: ::u_int,
+        pub ki_cow: ::u_int,
+        pub ki_runtime: u64,
+        pub ki_start: ::timeval,
+        pub ki_childtime: ::timeval,
+        pub ki_flag: ::c_long,
+        pub ki_kiflag: ::c_long,
+        pub ki_traceflag: ::c_int,
+        pub ki_stat: ::c_char,
+        pub ki_nice: i8, // signed char
+        pub ki_lock: ::c_char,
+        pub ki_rqindex: ::c_char,
+        pub ki_oncpu_old: ::c_uchar,
+        pub ki_lastcpu_old: ::c_uchar,
+        pub ki_tdname: [::c_char; ::TDNAMLEN + 1],
+        pub ki_wmesg: [::c_char; ::WMESGLEN + 1],
+        pub ki_login: [::c_char; ::LOGNAMELEN + 1],
+        pub ki_lockname: [::c_char; ::LOCKNAMELEN + 1],
+        pub ki_comm: [::c_char; ::COMMLEN + 1],
+        pub ki_emul: [::c_char; ::KI_EMULNAMELEN + 1],
+        pub ki_loginclass: [::c_char; ::LOGINCLASSLEN + 1],
+        pub ki_moretdname: [::c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
+        pub ki_sparestrings: [[::c_char; 23]; 2], // little hack to allow PartialEq
+        pub ki_spareints: [::c_int; ::KI_NSPARE_INT],
+        pub ki_tdev: ::dev_t,
+        pub ki_oncpu: ::c_int,
+        pub ki_lastcpu: ::c_int,
+        pub ki_tracer: ::c_int,
+        pub ki_flag2: ::c_int,
+        pub ki_fibnum: ::c_int,
+        pub ki_cr_flags: ::u_int,
+        pub ki_jid: ::c_int,
+        pub ki_numthreads: ::c_int,
+        pub ki_tid: ::lwpid_t,
+        pub ki_pri: ::priority,
+        pub ki_rusage: ::rusage,
+        pub ki_rusage_ch: ::rusage,
+        // This is normally "struct pcb".
+        pub ki_pcb: *mut ::c_void,
+        pub ki_kstack: *mut ::c_void,
+        pub ki_udata: *mut ::c_void,
+        // This is normally "struct thread".
+        pub ki_tdaddr: *mut ::c_void,
+        pub ki_spareptrs: [*mut ::c_void; ::KI_NSPARE_PTR],
+        pub ki_sparelongs: [::c_long; ::KI_NSPARE_LONG],
+        pub ki_sflag: ::c_long,
+        pub ki_tdflags: ::c_long,
+    }
 }
 
 s_no_extra_traits! {
@@ -206,6 +304,8 @@ pub const ELAST: ::c_int = 97;
 /// max length of devicename
 pub const SPECNAMELEN: ::c_int = 63;
 pub const KI_NSPARE_PTR: usize = 6;
+
+pub const MINCORE_SUPER: ::c_int = 0x20;
 
 extern "C" {
     pub fn setgrent();
