@@ -4,6 +4,16 @@ pub type __rlimit_resource_t = ::c_uint;
 pub type Lmid_t = ::c_long;
 pub type regoff_t = ::c_int;
 
+cfg_if! {
+    if #[cfg(doc)] {
+        // Used in `linux::arch` to define ioctl constants.
+        pub(crate) type Ioctl = ::c_ulong;
+    } else {
+        #[doc(hidden)]
+        pub type Ioctl = ::c_ulong;
+    }
+}
+
 s! {
     pub struct statx {
         pub stx_mask: u32,
