@@ -866,6 +866,62 @@ pub const CTL_HW: ::c_int = 6;
 pub const CTL_MACHDEP: ::c_int = 7;
 pub const CTL_USER: ::c_int = 8;
 pub const CTL_P1003_1B: ::c_int = 9;
+
+// sys/sysctl.h
+pub const CTL_MAXNAME: ::c_int = 24;
+
+pub const CTLTYPE: ::c_int = 0xf;
+pub const CTLTYPE_NODE: ::c_int = 1;
+pub const CTLTYPE_INT: ::c_int = 2;
+pub const CTLTYPE_STRING: ::c_int = 3;
+pub const CTLTYPE_S64: ::c_int = 4;
+pub const CTLTYPE_OPAQUE: ::c_int = 5;
+pub const CTLTYPE_STRUCT: ::c_int = CTLTYPE_OPAQUE;
+pub const CTLTYPE_UINT: ::c_int = 6;
+pub const CTLTYPE_LONG: ::c_int = 7;
+pub const CTLTYPE_ULONG: ::c_int = 8;
+pub const CTLTYPE_U64: ::c_int = 9;
+pub const CTLTYPE_U8: ::c_int = 0xa;
+pub const CTLTYPE_U16: ::c_int = 0xb;
+pub const CTLTYPE_S8: ::c_int = 0xc;
+pub const CTLTYPE_S16: ::c_int = 0xd;
+pub const CTLTYPE_S32: ::c_int = 0xe;
+pub const CTLTYPE_U32: ::c_int = 0xf;
+
+pub const CTLFLAG_RD: ::c_int = 0x80000000;
+pub const CTLFLAG_WR: ::c_int = 0x40000000;
+pub const CTLFLAG_RW: ::c_int = CTLFLAG_RD | CTLFLAG_WR;
+pub const CTLFLAG_DORMANT: ::c_int = 0x20000000;
+pub const CTLFLAG_ANYBODY: ::c_int = 0x10000000;
+pub const CTLFLAG_SECURE: ::c_int = 0x08000000;
+pub const CTLFLAG_PRISON: ::c_int = 0x04000000;
+pub const CTLFLAG_DYN: ::c_int = 0x02000000;
+pub const CTLFLAG_SKIP: ::c_int = 0x01000000;
+pub const CTLMASK_SECURE: ::c_int = 0x00F00000;
+pub const CTLFLAG_TUN: ::c_int = 0x00080000;
+pub const CTLFLAG_RDTUN: ::c_int = CTLFLAG_RD | CTLFLAG_TUN;
+pub const CTLFLAG_RWTUN: ::c_int = CTLFLAG_RW | CTLFLAG_TUN;
+pub const CTLFLAG_MPSAFE: ::c_int = 0x00040000;
+pub const CTLFLAG_VNET: ::c_int = 0x00020000;
+pub const CTLFLAG_DYING: ::c_int = 0x00010000;
+pub const CTLFLAG_CAPRD: ::c_int = 0x00008000;
+pub const CTLFLAG_CAPWR: ::c_int = 0x00004000;
+pub const CTLFLAG_STATS: ::c_int = 0x00002000;
+pub const CTLFLAG_NOFETCH: ::c_int = 0x00001000;
+pub const CTLFLAG_CAPRW: ::c_int = CTLFLAG_CAPRD | CTLFLAG_CAPWR;
+cfg_if! {
+    if #[cfg(freebsd13)] {
+        pub const CTLFLAG_NEEDGIANT: ::c_int = 0x00000800;
+    }
+}
+
+pub const CTLSHIFT_SECURE: ::c_int = 20;
+pub const CTLFLAG_SECURE1: ::c_int = CTLFLAG_SECURE | (0 << CTLSHIFT_SECURE);
+pub const CTLFLAG_SECURE2: ::c_int = CTLFLAG_SECURE | (1 << CTLSHIFT_SECURE);
+pub const CTLFLAG_SECURE3: ::c_int = CTLFLAG_SECURE | (2 << CTLSHIFT_SECURE);
+
+pub const OID_AUTO: ::c_int = -1;
+
 pub const CTL_SYSCTL_DEBUG: ::c_int = 0;
 pub const CTL_SYSCTL_NAME: ::c_int = 1;
 pub const CTL_SYSCTL_NEXT: ::c_int = 2;
@@ -873,6 +929,12 @@ pub const CTL_SYSCTL_NAME2OID: ::c_int = 3;
 pub const CTL_SYSCTL_OIDFMT: ::c_int = 4;
 pub const CTL_SYSCTL_OIDDESCR: ::c_int = 5;
 pub const CTL_SYSCTL_OIDLABEL: ::c_int = 6;
+cfg_if! {
+    if #[cfg(freebsd13)] {
+        pub const CTL_SYSCTL_NEXTNOSKIP: ::c_int = 7;
+    }
+}
+
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
 pub const KERN_OSREV: ::c_int = 3;
@@ -910,6 +972,12 @@ pub const KERN_LOGSIGEXIT: ::c_int = 34;
 pub const KERN_IOV_MAX: ::c_int = 35;
 pub const KERN_HOSTUUID: ::c_int = 36;
 pub const KERN_ARND: ::c_int = 37;
+cfg_if! {
+    if #[cfg(any(freebsd12, freebsd13))] {
+        pub const KERN_MAXPHYS: ::c_int = 38;
+    }
+}
+
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
 pub const KERN_PROC_PGRP: ::c_int = 2;
@@ -937,6 +1005,14 @@ pub const KERN_PROC_PS_STRINGS: ::c_int = 38;
 pub const KERN_PROC_UMASK: ::c_int = 39;
 pub const KERN_PROC_OSREL: ::c_int = 40;
 pub const KERN_PROC_SIGTRAMP: ::c_int = 41;
+pub const KERN_PROC_CWD: ::c_int = 42;
+pub const KERN_PROC_NFDS: ::c_int = 43;
+cfg_if! {
+    if #[cfg(freebsd13)] {
+        pub const KERN_PROC_SIGFASTBLK: ::c_int = 44;
+    }
+}
+
 pub const KIPC_MAXSOCKBUF: ::c_int = 1;
 pub const KIPC_SOCKBUF_WASTE: ::c_int = 2;
 pub const KIPC_SOMAXCONN: ::c_int = 3;
@@ -944,6 +1020,7 @@ pub const KIPC_MAX_LINKHDR: ::c_int = 4;
 pub const KIPC_MAX_PROTOHDR: ::c_int = 5;
 pub const KIPC_MAX_HDR: ::c_int = 6;
 pub const KIPC_MAX_DATALEN: ::c_int = 7;
+
 pub const HW_MACHINE: ::c_int = 1;
 pub const HW_MODEL: ::c_int = 2;
 pub const HW_NCPU: ::c_int = 3;
@@ -956,6 +1033,7 @@ pub const HW_DISKSTATS: ::c_int = 9;
 pub const HW_FLOATINGPT: ::c_int = 10;
 pub const HW_MACHINE_ARCH: ::c_int = 11;
 pub const HW_REALMEM: ::c_int = 12;
+
 pub const USER_CS_PATH: ::c_int = 1;
 pub const USER_BC_BASE_MAX: ::c_int = 2;
 pub const USER_BC_DIM_MAX: ::c_int = 3;
@@ -976,6 +1054,12 @@ pub const USER_POSIX2_SW_DEV: ::c_int = 17;
 pub const USER_POSIX2_UPE: ::c_int = 18;
 pub const USER_STREAM_MAX: ::c_int = 19;
 pub const USER_TZNAME_MAX: ::c_int = 20;
+cfg_if! {
+    if #[cfg(freebsd13)] {
+        pub const USER_LOCALBASE: ::c_int = 21;
+    }
+}
+
 pub const CTL_P1003_1B_ASYNCHRONOUS_IO: ::c_int = 1;
 pub const CTL_P1003_1B_MAPPED_FILES: ::c_int = 2;
 pub const CTL_P1003_1B_MEMLOCK: ::c_int = 3;
@@ -1001,6 +1085,7 @@ pub const CTL_P1003_1B_SEM_NSEMS_MAX: ::c_int = 22;
 pub const CTL_P1003_1B_SEM_VALUE_MAX: ::c_int = 23;
 pub const CTL_P1003_1B_SIGQUEUE_MAX: ::c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: ::c_int = 25;
+
 pub const TIOCGPTN: ::c_uint = 0x4004740f;
 pub const TIOCPTMASTER: ::c_uint = 0x2000741c;
 pub const TIOCSIG: ::c_uint = 0x2004745f;
