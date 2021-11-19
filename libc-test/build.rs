@@ -1863,6 +1863,7 @@ fn test_freebsd(target: &str) {
                 "sys/times.h",
                 "sys/timex.h",
                 "sys/types.h",
+                "sys/proc.h",
                 "kvm.h", // must be after "sys/types.h"
                 "sys/ucontext.h",
                 "sys/uio.h",
@@ -2061,6 +2062,36 @@ fn test_freebsd(target: &str) {
             "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
 
             "VM_TOTAL" if Some(11) == freebsd_ver => true,
+
+            // Added in FreeBSD 14.
+            "KERN_STACKTOP" if Some(14) > freebsd_ver => true,
+            // Added in FreeBSD 13.
+            "KERN_PROC_SIGFASTBLK"
+            | "USER_LOCALBASE"
+            | "TDP_SIGFASTBLOCK"
+            | "TDP_UIOHELD"
+            | "TDP_SIGFASTPENDING"
+            | "TDP2_COMPAT32RB"
+            | "P2_PROTMAX_ENABLE"
+            | "P2_PROTMAX_DISABLE"
+            | "CTLFLAG_NEEDGIANT"
+            | "CTL_SYSCTL_NEXTNOSKIP"
+                if Some(13) > freebsd_ver =>
+            {
+                true
+            }
+            // Added in FreeBSD 12.
+            "KERN_MAXPHYS"
+            | "KVME_FLAG_USER_WIRED"
+            | "TDP2_SBPAGES"
+            | "P2_ASLR_ENABLE"
+            | "P2_ASLR_DISABLE"
+            | "P2_ASLR_IGNSTART"
+            | "P_TREE_GRPEXITED"
+                if Some(12) > freebsd_ver =>
+            {
+                true
+            }
 
             _ => false,
         }

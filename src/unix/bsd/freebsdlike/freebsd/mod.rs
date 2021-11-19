@@ -370,6 +370,16 @@ s! {
         pub t_sw: i16,
         pub t_pad: [u16; 3],
     }
+
+    pub struct rusage_ext {
+        pub rux_runtime: u64,
+        pub rux_uticks: u64,
+        pub rux_sticks: u64,
+        pub rux_iticks: u64,
+        pub rux_uu: u64,
+        pub rux_su: u64,
+        pub rux_tu: u64,
+    }
 }
 
 s_no_extra_traits! {
@@ -856,6 +866,58 @@ pub const CTL_HW: ::c_int = 6;
 pub const CTL_MACHDEP: ::c_int = 7;
 pub const CTL_USER: ::c_int = 8;
 pub const CTL_P1003_1B: ::c_int = 9;
+
+// sys/sysctl.h
+pub const CTL_MAXNAME: ::c_int = 24;
+
+pub const CTLTYPE: ::c_int = 0xf;
+pub const CTLTYPE_NODE: ::c_int = 1;
+pub const CTLTYPE_INT: ::c_int = 2;
+pub const CTLTYPE_STRING: ::c_int = 3;
+pub const CTLTYPE_S64: ::c_int = 4;
+pub const CTLTYPE_OPAQUE: ::c_int = 5;
+pub const CTLTYPE_STRUCT: ::c_int = CTLTYPE_OPAQUE;
+pub const CTLTYPE_UINT: ::c_int = 6;
+pub const CTLTYPE_LONG: ::c_int = 7;
+pub const CTLTYPE_ULONG: ::c_int = 8;
+pub const CTLTYPE_U64: ::c_int = 9;
+pub const CTLTYPE_U8: ::c_int = 0xa;
+pub const CTLTYPE_U16: ::c_int = 0xb;
+pub const CTLTYPE_S8: ::c_int = 0xc;
+pub const CTLTYPE_S16: ::c_int = 0xd;
+pub const CTLTYPE_S32: ::c_int = 0xe;
+pub const CTLTYPE_U32: ::c_int = 0xf;
+
+pub const CTLFLAG_RD: ::c_int = 0x80000000;
+pub const CTLFLAG_WR: ::c_int = 0x40000000;
+pub const CTLFLAG_RW: ::c_int = CTLFLAG_RD | CTLFLAG_WR;
+pub const CTLFLAG_DORMANT: ::c_int = 0x20000000;
+pub const CTLFLAG_ANYBODY: ::c_int = 0x10000000;
+pub const CTLFLAG_SECURE: ::c_int = 0x08000000;
+pub const CTLFLAG_PRISON: ::c_int = 0x04000000;
+pub const CTLFLAG_DYN: ::c_int = 0x02000000;
+pub const CTLFLAG_SKIP: ::c_int = 0x01000000;
+pub const CTLMASK_SECURE: ::c_int = 0x00F00000;
+pub const CTLFLAG_TUN: ::c_int = 0x00080000;
+pub const CTLFLAG_RDTUN: ::c_int = CTLFLAG_RD | CTLFLAG_TUN;
+pub const CTLFLAG_RWTUN: ::c_int = CTLFLAG_RW | CTLFLAG_TUN;
+pub const CTLFLAG_MPSAFE: ::c_int = 0x00040000;
+pub const CTLFLAG_VNET: ::c_int = 0x00020000;
+pub const CTLFLAG_DYING: ::c_int = 0x00010000;
+pub const CTLFLAG_CAPRD: ::c_int = 0x00008000;
+pub const CTLFLAG_CAPWR: ::c_int = 0x00004000;
+pub const CTLFLAG_STATS: ::c_int = 0x00002000;
+pub const CTLFLAG_NOFETCH: ::c_int = 0x00001000;
+pub const CTLFLAG_CAPRW: ::c_int = CTLFLAG_CAPRD | CTLFLAG_CAPWR;
+pub const CTLFLAG_NEEDGIANT: ::c_int = 0x00000800;
+
+pub const CTLSHIFT_SECURE: ::c_int = 20;
+pub const CTLFLAG_SECURE1: ::c_int = CTLFLAG_SECURE | (0 << CTLSHIFT_SECURE);
+pub const CTLFLAG_SECURE2: ::c_int = CTLFLAG_SECURE | (1 << CTLSHIFT_SECURE);
+pub const CTLFLAG_SECURE3: ::c_int = CTLFLAG_SECURE | (2 << CTLSHIFT_SECURE);
+
+pub const OID_AUTO: ::c_int = -1;
+
 pub const CTL_SYSCTL_DEBUG: ::c_int = 0;
 pub const CTL_SYSCTL_NAME: ::c_int = 1;
 pub const CTL_SYSCTL_NEXT: ::c_int = 2;
@@ -863,6 +925,8 @@ pub const CTL_SYSCTL_NAME2OID: ::c_int = 3;
 pub const CTL_SYSCTL_OIDFMT: ::c_int = 4;
 pub const CTL_SYSCTL_OIDDESCR: ::c_int = 5;
 pub const CTL_SYSCTL_OIDLABEL: ::c_int = 6;
+pub const CTL_SYSCTL_NEXTNOSKIP: ::c_int = 7;
+
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
 pub const KERN_OSREV: ::c_int = 3;
@@ -900,6 +964,9 @@ pub const KERN_LOGSIGEXIT: ::c_int = 34;
 pub const KERN_IOV_MAX: ::c_int = 35;
 pub const KERN_HOSTUUID: ::c_int = 36;
 pub const KERN_ARND: ::c_int = 37;
+pub const KERN_MAXPHYS: ::c_int = 38;
+pub const KERN_STACKTOP: ::c_int = 39;
+
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
 pub const KERN_PROC_PGRP: ::c_int = 2;
@@ -927,6 +994,10 @@ pub const KERN_PROC_PS_STRINGS: ::c_int = 38;
 pub const KERN_PROC_UMASK: ::c_int = 39;
 pub const KERN_PROC_OSREL: ::c_int = 40;
 pub const KERN_PROC_SIGTRAMP: ::c_int = 41;
+pub const KERN_PROC_CWD: ::c_int = 42;
+pub const KERN_PROC_NFDS: ::c_int = 43;
+pub const KERN_PROC_SIGFASTBLK: ::c_int = 44;
+
 pub const KIPC_MAXSOCKBUF: ::c_int = 1;
 pub const KIPC_SOCKBUF_WASTE: ::c_int = 2;
 pub const KIPC_SOMAXCONN: ::c_int = 3;
@@ -934,6 +1005,7 @@ pub const KIPC_MAX_LINKHDR: ::c_int = 4;
 pub const KIPC_MAX_PROTOHDR: ::c_int = 5;
 pub const KIPC_MAX_HDR: ::c_int = 6;
 pub const KIPC_MAX_DATALEN: ::c_int = 7;
+
 pub const HW_MACHINE: ::c_int = 1;
 pub const HW_MODEL: ::c_int = 2;
 pub const HW_NCPU: ::c_int = 3;
@@ -946,6 +1018,7 @@ pub const HW_DISKSTATS: ::c_int = 9;
 pub const HW_FLOATINGPT: ::c_int = 10;
 pub const HW_MACHINE_ARCH: ::c_int = 11;
 pub const HW_REALMEM: ::c_int = 12;
+
 pub const USER_CS_PATH: ::c_int = 1;
 pub const USER_BC_BASE_MAX: ::c_int = 2;
 pub const USER_BC_DIM_MAX: ::c_int = 3;
@@ -966,6 +1039,8 @@ pub const USER_POSIX2_SW_DEV: ::c_int = 17;
 pub const USER_POSIX2_UPE: ::c_int = 18;
 pub const USER_STREAM_MAX: ::c_int = 19;
 pub const USER_TZNAME_MAX: ::c_int = 20;
+pub const USER_LOCALBASE: ::c_int = 21;
+
 pub const CTL_P1003_1B_ASYNCHRONOUS_IO: ::c_int = 1;
 pub const CTL_P1003_1B_MAPPED_FILES: ::c_int = 2;
 pub const CTL_P1003_1B_MEMLOCK: ::c_int = 3;
@@ -991,6 +1066,7 @@ pub const CTL_P1003_1B_SEM_NSEMS_MAX: ::c_int = 22;
 pub const CTL_P1003_1B_SEM_VALUE_MAX: ::c_int = 23;
 pub const CTL_P1003_1B_SIGQUEUE_MAX: ::c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: ::c_int = 25;
+
 pub const TIOCGPTN: ::c_uint = 0x4004740f;
 pub const TIOCPTMASTER: ::c_uint = 0x2000741c;
 pub const TIOCSIG: ::c_uint = 0x2004745f;
@@ -1770,11 +1846,7 @@ pub const KVME_FLAG_NOCOREDUMP: ::c_int = 0x00000004;
 pub const KVME_FLAG_SUPER: ::c_int = 0x00000008;
 pub const KVME_FLAG_GROWS_UP: ::c_int = 0x00000010;
 pub const KVME_FLAG_GROWS_DOWN: ::c_int = 0x00000020;
-cfg_if! {
-    if #[cfg(any(freebsd12, freebsd13, freebsd14))] {
-        pub const KVME_FLAG_USER_WIRED: ::c_int = 0x00000040;
-    }
-}
+pub const KVME_FLAG_USER_WIRED: ::c_int = 0x00000040;
 
 pub const KKST_MAXLEN: ::c_int = 1024;
 /// Stack is valid.
@@ -1896,6 +1968,156 @@ pub const _POSIX2_EQUIV_CLASS_MAX: ::c_int = 2;
 pub const _POSIX2_EXPR_NEST_MAX: ::c_int = 32;
 pub const _POSIX2_LINE_MAX: ::c_int = 2048;
 pub const _POSIX2_RE_DUP_MAX: ::c_int = 255;
+
+// sys/proc.h
+pub const TDF_BORROWING: ::c_int = 0x00000001;
+pub const TDF_INPANIC: ::c_int = 0x00000002;
+pub const TDF_INMEM: ::c_int = 0x00000004;
+pub const TDF_SINTR: ::c_int = 0x00000008;
+pub const TDF_TIMEOUT: ::c_int = 0x00000010;
+pub const TDF_IDLETD: ::c_int = 0x00000020;
+pub const TDF_CANSWAP: ::c_int = 0x00000040;
+pub const TDF_KTH_SUSP: ::c_int = 0x00000100;
+pub const TDF_ALLPROCSUSP: ::c_int = 0x00000200;
+pub const TDF_BOUNDARY: ::c_int = 0x00000400;
+pub const TDF_ASTPENDING: ::c_int = 0x00000800;
+pub const TDF_SBDRY: ::c_int = 0x00002000;
+pub const TDF_UPIBLOCKED: ::c_int = 0x00004000;
+pub const TDF_NEEDSUSPCHK: ::c_int = 0x00008000;
+pub const TDF_NEEDRESCHED: ::c_int = 0x00010000;
+pub const TDF_NEEDSIGCHK: ::c_int = 0x00020000;
+pub const TDF_NOLOAD: ::c_int = 0x00040000;
+pub const TDF_SERESTART: ::c_int = 0x00080000;
+pub const TDF_THRWAKEUP: ::c_int = 0x00100000;
+pub const TDF_SEINTR: ::c_int = 0x00200000;
+pub const TDF_SWAPINREQ: ::c_int = 0x00400000;
+pub const TDF_UNUSED23: ::c_int = 0x00800000;
+pub const TDF_SCHED0: ::c_int = 0x01000000;
+pub const TDF_SCHED1: ::c_int = 0x02000000;
+pub const TDF_SCHED2: ::c_int = 0x04000000;
+pub const TDF_SCHED3: ::c_int = 0x08000000;
+pub const TDF_ALRMPEND: ::c_int = 0x10000000;
+pub const TDF_PROFPEND: ::c_int = 0x20000000;
+pub const TDF_MACPEND: ::c_int = 0x40000000;
+
+pub const TDB_SUSPEND: ::c_int = 0x00000001;
+pub const TDB_XSIG: ::c_int = 0x00000002;
+pub const TDB_USERWR: ::c_int = 0x00000004;
+pub const TDB_SCE: ::c_int = 0x00000008;
+pub const TDB_SCX: ::c_int = 0x00000010;
+pub const TDB_EXEC: ::c_int = 0x00000020;
+pub const TDB_FORK: ::c_int = 0x00000040;
+pub const TDB_STOPATFORK: ::c_int = 0x00000080;
+pub const TDB_CHILD: ::c_int = 0x00000100;
+pub const TDB_BORN: ::c_int = 0x00000200;
+pub const TDB_EXIT: ::c_int = 0x00000400;
+pub const TDB_VFORK: ::c_int = 0x00000800;
+pub const TDB_FSTP: ::c_int = 0x00001000;
+pub const TDB_STEP: ::c_int = 0x00002000;
+
+pub const TDP_OLDMASK: ::c_int = 0x00000001;
+pub const TDP_INKTR: ::c_int = 0x00000002;
+pub const TDP_INKTRACE: ::c_int = 0x00000004;
+pub const TDP_BUFNEED: ::c_int = 0x00000008;
+pub const TDP_COWINPROGRESS: ::c_int = 0x00000010;
+pub const TDP_ALTSTACK: ::c_int = 0x00000020;
+pub const TDP_DEADLKTREAT: ::c_int = 0x00000040;
+pub const TDP_NOFAULTING: ::c_int = 0x00000080;
+pub const TDP_OWEUPC: ::c_int = 0x00000200;
+pub const TDP_ITHREAD: ::c_int = 0x00000400;
+pub const TDP_SYNCIO: ::c_int = 0x00000800;
+pub const TDP_SCHED1: ::c_int = 0x00001000;
+pub const TDP_SCHED2: ::c_int = 0x00002000;
+pub const TDP_SCHED3: ::c_int = 0x00004000;
+pub const TDP_SCHED4: ::c_int = 0x00008000;
+pub const TDP_GEOM: ::c_int = 0x00010000;
+pub const TDP_SOFTDEP: ::c_int = 0x00020000;
+pub const TDP_NORUNNINGBUF: ::c_int = 0x00040000;
+pub const TDP_WAKEUP: ::c_int = 0x00080000;
+pub const TDP_INBDFLUSH: ::c_int = 0x00100000;
+pub const TDP_KTHREAD: ::c_int = 0x00200000;
+pub const TDP_CALLCHAIN: ::c_int = 0x00400000;
+pub const TDP_IGNSUSP: ::c_int = 0x00800000;
+pub const TDP_AUDITREC: ::c_int = 0x01000000;
+pub const TDP_RFPPWAIT: ::c_int = 0x02000000;
+pub const TDP_RESETSPUR: ::c_int = 0x04000000;
+pub const TDP_NERRNO: ::c_int = 0x08000000;
+pub const TDP_EXECVMSPC: ::c_int = 0x40000000;
+
+pub const TDI_SUSPENDED: ::c_int = 0x0001;
+pub const TDI_SLEEPING: ::c_int = 0x0002;
+pub const TDI_SWAPPED: ::c_int = 0x0004;
+pub const TDI_LOCK: ::c_int = 0x0008;
+pub const TDI_IWAIT: ::c_int = 0x0010;
+
+pub const P_ADVLOCK: ::c_int = 0x00000001;
+pub const P_CONTROLT: ::c_int = 0x00000002;
+pub const P_KPROC: ::c_int = 0x00000004;
+pub const P_UNUSED3: ::c_int = 0x00000008;
+pub const P_PPWAIT: ::c_int = 0x00000010;
+pub const P_PROFIL: ::c_int = 0x00000020;
+pub const P_STOPPROF: ::c_int = 0x00000040;
+pub const P_HADTHREADS: ::c_int = 0x00000080;
+pub const P_SUGID: ::c_int = 0x00000100;
+pub const P_SYSTEM: ::c_int = 0x00000200;
+pub const P_SINGLE_EXIT: ::c_int = 0x00000400;
+pub const P_TRACED: ::c_int = 0x00000800;
+pub const P_WAITED: ::c_int = 0x00001000;
+pub const P_WEXIT: ::c_int = 0x00002000;
+pub const P_EXEC: ::c_int = 0x00004000;
+pub const P_WKILLED: ::c_int = 0x00008000;
+pub const P_CONTINUED: ::c_int = 0x00010000;
+pub const P_STOPPED_SIG: ::c_int = 0x00020000;
+pub const P_STOPPED_TRACE: ::c_int = 0x00040000;
+pub const P_STOPPED_SINGLE: ::c_int = 0x00080000;
+pub const P_PROTECTED: ::c_int = 0x00100000;
+pub const P_SIGEVENT: ::c_int = 0x00200000;
+pub const P_SINGLE_BOUNDARY: ::c_int = 0x00400000;
+pub const P_HWPMC: ::c_int = 0x00800000;
+pub const P_JAILED: ::c_int = 0x01000000;
+pub const P_TOTAL_STOP: ::c_int = 0x02000000;
+pub const P_INEXEC: ::c_int = 0x04000000;
+pub const P_STATCHILD: ::c_int = 0x08000000;
+pub const P_INMEM: ::c_int = 0x10000000;
+pub const P_SWAPPINGOUT: ::c_int = 0x20000000;
+pub const P_SWAPPINGIN: ::c_int = 0x40000000;
+pub const P_PPTRACE: ::c_int = 0x80000000;
+pub const P_STOPPED: ::c_int = P_STOPPED_SIG | P_STOPPED_SINGLE | P_STOPPED_TRACE;
+
+pub const P2_INHERIT_PROTECTED: ::c_int = 0x00000001;
+pub const P2_NOTRACE: ::c_int = 0x00000002;
+pub const P2_NOTRACE_EXEC: ::c_int = 0x00000004;
+pub const P2_AST_SU: ::c_int = 0x00000008;
+pub const P2_PTRACE_FSTP: ::c_int = 0x00000010;
+pub const P2_TRAPCAP: ::c_int = 0x00000020;
+pub const P2_STKGAP_DISABLE: ::c_int = 0x00000800;
+pub const P2_STKGAP_DISABLE_EXEC: ::c_int = 0x00001000;
+
+pub const P_TREE_ORPHANED: ::c_int = 0x00000001;
+pub const P_TREE_FIRST_ORPHAN: ::c_int = 0x00000002;
+pub const P_TREE_REAPER: ::c_int = 0x00000004;
+
+pub const SIDL: ::c_char = 1;
+pub const SRUN: ::c_char = 2;
+pub const SSLEEP: ::c_char = 3;
+pub const SSTOP: ::c_char = 4;
+pub const SZOMB: ::c_char = 5;
+pub const SWAIT: ::c_char = 6;
+pub const SLOCK: ::c_char = 7;
+
+pub const P_MAGIC: ::c_int = 0xbeefface;
+
+pub const TDP_SIGFASTBLOCK: ::c_int = 0x00000100;
+pub const TDP_UIOHELD: ::c_int = 0x10000000;
+pub const TDP_SIGFASTPENDING: ::c_int = 0x80000000;
+pub const TDP2_COMPAT32RB: ::c_int = 0x00000002;
+pub const P2_PROTMAX_ENABLE: ::c_int = 0x00000200;
+pub const P2_PROTMAX_DISABLE: ::c_int = 0x00000400;
+pub const TDP2_SBPAGES: ::c_int = 0x00000001;
+pub const P2_ASLR_ENABLE: ::c_int = 0x00000040;
+pub const P2_ASLR_DISABLE: ::c_int = 0x00000080;
+pub const P2_ASLR_IGNSTART: ::c_int = 0x00000100;
+pub const P_TREE_GRPEXITED: ::c_int = 0x00000008;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
