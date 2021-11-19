@@ -31,99 +31,182 @@ s! {
     }
 
     pub struct kinfo_proc {
+        /// Size of this structure.
         pub ki_structsize: ::c_int,
+        /// Reserved: layout identifier.
         pub ki_layout: ::c_int,
+        /// Address of command arguments.
         pub ki_args: *mut ::pargs,
         // This is normally "struct proc".
+        /// Address of proc.
         pub ki_paddr: *mut ::c_void,
         // This is normally "struct user".
+        /// Kernel virtual address of u-area.
         pub ki_addr: *mut ::c_void,
         // This is normally "struct vnode".
+        /// Pointer to trace file.
         pub ki_tracep: *mut ::c_void,
         // This is normally "struct vnode".
+        /// Pointer to executable file.
         pub ki_textvp: *mut ::c_void,
         // This is normally "struct filedesc".
+        /// Pointer to open file info.
         pub ki_fd: *mut ::c_void,
         // This is normally "struct vmspace".
+        /// Pointer to kernel vmspace struct.
         pub ki_vmspace: *mut ::c_void,
+        /// Sleep address.
         pub ki_wchan: *mut ::c_void,
+        /// Process identifier.
         pub ki_pid: ::pid_t,
+        /// Parent process ID.
         pub ki_ppid: ::pid_t,
+        /// Process group ID.
         pub ki_pgid: ::pid_t,
+        /// tty process group ID.
         pub ki_tpgid: ::pid_t,
+        /// Process session ID.
         pub ki_sid: ::pid_t,
+        /// Terminal session ID.
         pub ki_tsid: ::pid_t,
+        /// Job control counter.
         pub ki_jobc: ::c_short,
+        /// Unused (just here for alignment).
         pub ki_spare_short1: ::c_short,
+        /// Controlling tty dev.
         pub ki_tdev: ::dev_t,
+        /// Signals arrived but not delivered.
         pub ki_siglist: ::sigset_t,
+        /// Current signal mask.
         pub ki_sigmask: ::sigset_t,
+        /// Signals being ignored.
         pub ki_sigignore: ::sigset_t,
+        /// Signals being caught by user.
         pub ki_sigcatch: ::sigset_t,
+        /// Effective user ID.
         pub ki_uid: ::uid_t,
+        /// Real user ID.
         pub ki_ruid: ::uid_t,
+        /// Saved effective user ID.
         pub ki_svuid: ::uid_t,
+        /// Real group ID.
         pub ki_rgid: ::gid_t,
+        /// Saved effective group ID.
         pub ki_svgid: ::gid_t,
+        /// Number of groups.
         pub ki_ngroups: ::c_short,
+        /// Unused (just here for alignment).
         pub ki_spare_short2: ::c_short,
+        /// Groups.
         pub ki_groups: [::gid_t; ::KI_NGROUPS],
+        /// Virtual size.
         pub ki_size: ::vm_size_t,
+        /// Current resident set size in pages.
         pub ki_rssize: ::segsz_t,
+        /// Resident set size before last swap.
         pub ki_swrss: ::segsz_t,
+        /// Text size (pages) XXX.
         pub ki_tsize: ::segsz_t,
+        /// Data size (pages) XXX.
         pub ki_dsize: ::segsz_t,
+        /// Stack size (pages).
         pub ki_ssize: ::segsz_t,
+        /// Exit status for wait & stop signal.
         pub ki_xstat: ::u_short,
+        /// Accounting flags.
         pub ki_acflag: ::u_short,
+        /// %cpu for process during `ki_swtime`.
         pub ki_pctcpu: ::fixpt_t,
+        /// Time averaged value of `ki_cpticks`.
         pub ki_estcpu: ::u_int,
+        /// Time since last blocked.
         pub ki_slptime: ::u_int,
+        /// Time swapped in or out.
         pub ki_swtime: ::u_int,
+        /// Number of copy-on-write faults.
         pub ki_cow: ::u_int,
+        /// Real time in microsec.
         pub ki_runtime: u64,
+        /// Starting time.
         pub ki_start: ::timeval,
+        /// Time used by process children.
         pub ki_childtime: ::timeval,
+        /// P_* flags.
         pub ki_flag: ::c_long,
+        /// KI_* flags (below).
         pub ki_kiflag: ::c_long,
+        /// Kernel trace points.
         pub ki_traceflag: ::c_int,
+        /// S* process status.
         pub ki_stat: ::c_char,
+        /// Process "nice" value.
         pub ki_nice: i8, // signed char
+        /// Process lock (prevent swap) count.
         pub ki_lock: ::c_char,
+        /// Run queue index.
         pub ki_rqindex: ::c_char,
+        /// Which cpu we are on.
         pub ki_oncpu_old: ::c_uchar,
+        /// Last cpu we were on.
         pub ki_lastcpu_old: ::c_uchar,
+        /// Thread name.
         pub ki_tdname: [::c_char; ::TDNAMLEN + 1],
+        /// Wchan message.
         pub ki_wmesg: [::c_char; ::WMESGLEN + 1],
+        /// Setlogin name.
         pub ki_login: [::c_char; ::LOGNAMELEN + 1],
+        /// Lock name.
         pub ki_lockname: [::c_char; ::LOCKNAMELEN + 1],
+        /// Command name.
         pub ki_comm: [::c_char; ::COMMLEN + 1],
+        /// Emulation name.
         pub ki_emul: [::c_char; ::KI_EMULNAMELEN + 1],
+        /// Login class.
         pub ki_loginclass: [::c_char; ::LOGINCLASSLEN + 1],
+        /// More thread name.
         pub ki_moretdname: [::c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
+        /// Spare string space.
         pub ki_sparestrings: [[::c_char; 23]; 2], // little hack to allow PartialEq
+        /// Spare room for growth.
         pub ki_spareints: [::c_int; ::KI_NSPARE_INT],
+        /// Which cpu we are on.
         pub ki_oncpu: ::c_int,
+        /// Last cpu we were on.
         pub ki_lastcpu: ::c_int,
+        /// PID of tracing process.
         pub ki_tracer: ::c_int,
+        /// P2_* flags.
         pub ki_flag2: ::c_int,
+        /// Default FIB number.
         pub ki_fibnum: ::c_int,
+        /// Credential flags.
         pub ki_cr_flags: ::u_int,
+        /// Process jail ID.
         pub ki_jid: ::c_int,
+        /// Number of threads in total.
         pub ki_numthreads: ::c_int,
+        // Thread ID.
         pub ki_tid: ::lwpid_t,
+        /// Process priority.
         pub ki_pri: ::priority,
+        /// Process rusage statistics.
         pub ki_rusage: ::rusage,
+        /// rusage of children processes.
         pub ki_rusage_ch: ::rusage,
         // This is normally "struct pcb".
+        /// Kernel virtual addr of pcb.
         pub ki_pcb: *mut ::c_void,
+        /// Kernel virtual addr of stack.
         pub ki_kstack: *mut ::c_void,
+        /// User convenience pointer.
         pub ki_udata: *mut ::c_void,
         // This is normally "struct thread".
         pub ki_tdaddr: *mut ::c_void,
         pub ki_spareptrs: [*mut ::c_void; ::KI_NSPARE_PTR],
         pub ki_sparelongs: [::c_long; ::KI_NSPARE_LONG],
+        /// PS_* flags.
         pub ki_sflag: ::c_long,
+        /// kthread flag.
         pub ki_tdflags: ::c_long,
     }
 }
