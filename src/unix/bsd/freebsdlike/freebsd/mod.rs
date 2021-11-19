@@ -909,11 +909,7 @@ pub const CTLFLAG_CAPWR: ::c_int = 0x00004000;
 pub const CTLFLAG_STATS: ::c_int = 0x00002000;
 pub const CTLFLAG_NOFETCH: ::c_int = 0x00001000;
 pub const CTLFLAG_CAPRW: ::c_int = CTLFLAG_CAPRD | CTLFLAG_CAPWR;
-cfg_if! {
-    if #[cfg(any(freebsd13, freebsd14))] {
-        pub const CTLFLAG_NEEDGIANT: ::c_int = 0x00000800;
-    }
-}
+pub const CTLFLAG_NEEDGIANT: ::c_int = 0x00000800;
 
 pub const CTLSHIFT_SECURE: ::c_int = 20;
 pub const CTLFLAG_SECURE1: ::c_int = CTLFLAG_SECURE | (0 << CTLSHIFT_SECURE);
@@ -929,11 +925,7 @@ pub const CTL_SYSCTL_NAME2OID: ::c_int = 3;
 pub const CTL_SYSCTL_OIDFMT: ::c_int = 4;
 pub const CTL_SYSCTL_OIDDESCR: ::c_int = 5;
 pub const CTL_SYSCTL_OIDLABEL: ::c_int = 6;
-cfg_if! {
-    if #[cfg(any(freebsd13, freebsd14))] {
-        pub const CTL_SYSCTL_NEXTNOSKIP: ::c_int = 7;
-    }
-}
+pub const CTL_SYSCTL_NEXTNOSKIP: ::c_int = 7;
 
 pub const KERN_OSTYPE: ::c_int = 1;
 pub const KERN_OSRELEASE: ::c_int = 2;
@@ -1004,11 +996,7 @@ pub const KERN_PROC_OSREL: ::c_int = 40;
 pub const KERN_PROC_SIGTRAMP: ::c_int = 41;
 pub const KERN_PROC_CWD: ::c_int = 42;
 pub const KERN_PROC_NFDS: ::c_int = 43;
-cfg_if! {
-    if #[cfg(any(freebsd13, freebsd14))] {
-        pub const KERN_PROC_SIGFASTBLK: ::c_int = 44;
-    }
-}
+pub const KERN_PROC_SIGFASTBLK: ::c_int = 44;
 
 pub const KIPC_MAXSOCKBUF: ::c_int = 1;
 pub const KIPC_SOCKBUF_WASTE: ::c_int = 2;
@@ -1051,11 +1039,7 @@ pub const USER_POSIX2_SW_DEV: ::c_int = 17;
 pub const USER_POSIX2_UPE: ::c_int = 18;
 pub const USER_STREAM_MAX: ::c_int = 19;
 pub const USER_TZNAME_MAX: ::c_int = 20;
-cfg_if! {
-    if #[cfg(any(freebsd13, freebsd14))] {
-        pub const USER_LOCALBASE: ::c_int = 21;
-    }
-}
+pub const USER_LOCALBASE: ::c_int = 21;
 
 pub const CTL_P1003_1B_ASYNCHRONOUS_IO: ::c_int = 1;
 pub const CTL_P1003_1B_MAPPED_FILES: ::c_int = 2;
@@ -1862,11 +1846,7 @@ pub const KVME_FLAG_NOCOREDUMP: ::c_int = 0x00000004;
 pub const KVME_FLAG_SUPER: ::c_int = 0x00000008;
 pub const KVME_FLAG_GROWS_UP: ::c_int = 0x00000010;
 pub const KVME_FLAG_GROWS_DOWN: ::c_int = 0x00000020;
-cfg_if! {
-    if #[cfg(any(freebsd12, freebsd13, freebsd14))] {
-        pub const KVME_FLAG_USER_WIRED: ::c_int = 0x00000040;
-    }
-}
+pub const KVME_FLAG_USER_WIRED: ::c_int = 0x00000040;
 
 pub const KKST_MAXLEN: ::c_int = 1024;
 /// Stack is valid.
@@ -2127,25 +2107,17 @@ pub const SLOCK: ::c_char = 7;
 
 pub const P_MAGIC: ::c_int = 0xbeefface;
 
-cfg_if! {
-    if #[cfg(any(freebsd13, freebsd14))] {
-        pub const TDP_SIGFASTBLOCK: ::c_int = 0x00000100;
-        pub const TDP_UIOHELD: ::c_int = 0x10000000;
-        pub const TDP_SIGFASTPENDING: ::c_int = 0x80000000;
-        pub const TDP2_COMPAT32RB: ::c_int = 0x00000002;
-        pub const P2_PROTMAX_ENABLE: ::c_int = 0x00000200;
-        pub const P2_PROTMAX_DISABLE: ::c_int = 0x00000400;
-    }
-}
-cfg_if! {
-    if #[cfg(any(freebsd12, freebsd13, freebsd14))] {
-        pub const TDP2_SBPAGES: ::c_int = 0x00000001;
-        pub const P2_ASLR_ENABLE: ::c_int = 0x00000040;
-        pub const P2_ASLR_DISABLE: ::c_int = 0x00000080;
-        pub const P2_ASLR_IGNSTART: ::c_int = 0x00000100;
-        pub const P_TREE_GRPEXITED: ::c_int = 0x00000008;
-    }
-}
+pub const TDP_SIGFASTBLOCK: ::c_int = 0x00000100;
+pub const TDP_UIOHELD: ::c_int = 0x10000000;
+pub const TDP_SIGFASTPENDING: ::c_int = 0x80000000;
+pub const TDP2_COMPAT32RB: ::c_int = 0x00000002;
+pub const P2_PROTMAX_ENABLE: ::c_int = 0x00000200;
+pub const P2_PROTMAX_DISABLE: ::c_int = 0x00000400;
+pub const TDP2_SBPAGES: ::c_int = 0x00000001;
+pub const P2_ASLR_ENABLE: ::c_int = 0x00000040;
+pub const P2_ASLR_DISABLE: ::c_int = 0x00000080;
+pub const P2_ASLR_IGNSTART: ::c_int = 0x00000100;
+pub const P_TREE_GRPEXITED: ::c_int = 0x00000008;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
