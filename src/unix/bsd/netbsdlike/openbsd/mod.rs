@@ -401,6 +401,16 @@ s! {
         pub kve_inheritance: ::c_int,
         pub kve_flags: u8,
     }
+
+    pub struct ptrace_state {
+        pub pe_report_event: ::c_int,
+        pub pe_other_pid: ::pid_t,
+        pub pe_tid: ::pid_t,
+    }
+
+    pub struct ptrace_thread_state {
+        pub pts_tid: ::pid_t,
+    }
 }
 
 impl siginfo_t {
@@ -1428,6 +1438,11 @@ pub const PTHREAD_STACK_MIN: ::size_t = 1_usize << _MAX_PAGE_SHIFT;
 pub const MINSIGSTKSZ: ::size_t = 3_usize << _MAX_PAGE_SHIFT;
 pub const SIGSTKSZ: ::size_t = MINSIGSTKSZ + (1_usize << _MAX_PAGE_SHIFT) * 4;
 
+pub const PT_SET_EVENT_MASK: ::c_int = 12;
+pub const PT_GET_EVENT_MASK: ::c_int = 13;
+pub const PT_GET_PROCESS_STATE: ::c_int = 14;
+pub const PT_GET_THREAD_FIRST: ::c_int = 15;
+pub const PT_GET_THREAD_NEXT: ::c_int = 16;
 pub const PT_FIRSTMACH: ::c_int = 32;
 
 pub const SOCK_CLOEXEC: ::c_int = 0x8000;
