@@ -1688,6 +1688,9 @@ extern "C" {
         >,
         data: *mut ::c_void,
     ) -> ::c_int;
+
+    pub fn strsep(string: *mut *mut ::c_char, delimiters: *const ::c_char) -> *mut ::c_char;
+    pub fn explicit_bzero(buf: *mut ::c_void, len: ::size_t);
 }
 
 cfg_if! {
