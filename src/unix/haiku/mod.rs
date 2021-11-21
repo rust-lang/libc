@@ -1487,6 +1487,12 @@ extern "C" {
     pub fn getpriority(which: ::c_int, who: id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: id_t, priority: ::c_int) -> ::c_int;
 
+    pub fn endusershell();
+    pub fn getpass(prompt: *const ::c_char) -> *mut ::c_char;
+    pub fn getusershell() -> *mut ::c_char;
+    pub fn issetugid() -> ::c_int;
+    pub fn setusershell();
+
     pub fn utimensat(
         fd: ::c_int,
         path: *const ::c_char,
