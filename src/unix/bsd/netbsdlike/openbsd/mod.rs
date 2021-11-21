@@ -411,6 +411,15 @@ s! {
     pub struct ptrace_thread_state {
         pub pts_tid: ::pid_t,
     }
+
+    pub struct ktr_header {
+        pub ktr_type: ::c_uint,
+        pub ktr_pid: ::pid_t,
+        pub ktr_tid: ::pid_t,
+        pub ktr_time: ::timespec,
+        pub ktr_comm: [::c_char; ::MAXCOMLEN as usize + 1],
+        pub ktr_len: ::size_t,
+    }
 }
 
 impl siginfo_t {
@@ -1175,6 +1184,23 @@ pub const EV_ERROR: u16 = 0x4000;
 pub const EV_EOF: u16 = 0x8000;
 pub const EV_SYSFLAGS: u16 = 0xf000;
 
+pub const KTROP_SET: ::c_int = 0;
+pub const KTROP_CLEAR: ::c_int = 1;
+pub const KTROP_CLEARFILE: ::c_int = 2;
+pub const KTRFLAG_DESCEND: ::c_int = 4;
+pub const KTRFAC_MASK: ::c_int = 0x00ffffff;
+pub const KTRFAC_SYSCALL: ::c_int = 1 << 1;
+pub const KTRFAC_SYSRET: ::c_int = 1 << 2;
+pub const KTRFAC_NAMEI: ::c_int = 1 << 3;
+pub const KTRFAC_GENIO: ::c_int = 1 << 4;
+pub const KTRFAC_PSIG: ::c_int = 1 << 5;
+pub const KTRFAC_STRUCT: ::c_int = 1 << 8;
+pub const KTRFAC_USER: ::c_int = 1 << 9;
+pub const KTRFAC_EXECARGS: ::c_int = 1 << 10;
+pub const KTRFAC_EXECENV: ::c_int = 1 << 11;
+pub const KTRFAC_PLEDGE: ::c_int = 1 << 12;
+pub const KTRFAC_INHERIT: ::c_uint = 0x80000000;
+
 pub const NOTE_LOWAT: u32 = 0x00000001;
 pub const NOTE_EOF: u32 = 0x00000002;
 pub const NOTE_DELETE: u32 = 0x00000001;
@@ -1352,6 +1378,8 @@ pub const OLCUC: ::tcflag_t = 0x20;
 pub const ONOCR: ::tcflag_t = 0x40;
 pub const ONLRET: ::tcflag_t = 0x80;
 
+pub const MAXCOMLEN: ::c_int = 16;
+
 //https://github.com/openbsd/src/blob/master/sys/sys/mount.h
 pub const ISOFSMNT_NORRIP: ::c_int = 0x1; // disable Rock Ridge Ext
 pub const ISOFSMNT_GENS: ::c_int = 0x2; // enable generation numbers
@@ -1513,6 +1541,10 @@ safe_f! {
     pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         (status & 0o177777) == 0o177777
     }
+
+    pub {const} fn KTROP(o: ::c_int) -> ::c_int {
+        o & 3
+    }
 }
 
 extern "C" {
@@ -1589,6 +1621,12 @@ extern "C" {
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
     pub fn ptrace(request: ::c_int, pid: ::pid_t, addr: caddr_t, data: ::c_int) -> ::c_int;
     pub fn utrace(label: *const ::c_char, addr: *const ::c_void, len: ::size_t) -> ::c_int;
+    pub fn ktrace(
+        tracefile: *const ::c_char,
+        ops: ::c_int,
+        trpoints: ::c_int,
+        pid: ::pid_t,
+    ) -> ::c_int;
     pub fn memmem(
         haystack: *const ::c_void,
         haystacklen: ::size_t,
