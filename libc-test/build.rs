@@ -1811,6 +1811,7 @@ fn test_freebsd(target: &str) {
                 "net/if.h",
                 "net/if_arp.h",
                 "net/if_dl.h",
+                "net/if_mib.h",
                 "net/route.h",
                 "netdb.h",
                 "netinet/ip.h",
@@ -2094,6 +2095,18 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // Added in freebsd 14.
+            "IFCAP_MEXTPG" if Some(14) > freebsd_ver => true,
+            // Added in freebsd 13.
+            "IFF_KNOWSEPOCH" | "IFCAP_TXTLS4" | "IFCAP_TXTLS6" | "IFCAP_VXLAN_HWCSUM"
+            | "IFCAP_VXLAN_HWTSO" | "IFCAP_TXTLS_RTLMT" | "IFCAP_TXTLS"
+                if Some(13) > freebsd_ver =>
+            {
+                true
+            }
+            // Added in freebsd 12.
+            "IFF_NOGROUP" | "IFCAP_TXRTLMT" | "IFCAP_HWRXTSTMP" if Some(12) > freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -2207,6 +2220,11 @@ fn test_freebsd(target: &str) {
             // a_un field is a union
             ("Elf32_Auxinfo", "a_un") => true,
             ("Elf64_Auxinfo", "a_un") => true,
+
+            // union fields
+            ("if_data", "__ifi_epoch") => true,
+            ("if_data", "__ifi_lastchange") => true,
+            ("ifreq", "ifr_ifru") => true,
 
             // FIXME: structs too complicated to bind for now...
             ("kinfo_proc", "ki_paddr") => true,
