@@ -37,6 +37,8 @@ pub type u_char = ::c_uchar;
 pub type u_long = ::c_ulong;
 pub type u_short = ::c_ushort;
 
+pub type caddr_t = *mut ::c_char;
+
 // It's an alias over "struct __kvm_t". However, its fields aren't supposed to be used directly,
 // making the type definition system dependent. Better not bind it exactly.
 pub type kvm_t = ::c_void;
@@ -380,6 +382,243 @@ s! {
         pub rux_su: u64,
         pub rux_tu: u64,
     }
+
+    pub struct if_clonereq {
+        pub ifcr_total: ::c_int,
+        pub ifcr_count: ::c_int,
+        pub ifcr_buffer: *mut ::c_char,
+    }
+
+    pub struct if_msghdr {
+        /// to skip over non-understood messages
+        pub ifm_msglen: ::c_ushort,
+        /// future binary compatibility
+        pub ifm_version: ::c_uchar,
+        /// message type
+        pub ifm_type: ::c_uchar,
+        /// like rtm_addrs
+        pub ifm_addrs: ::c_int,
+        /// value of if_flags
+        pub ifm_flags: ::c_int,
+        /// index for associated ifp
+        pub ifm_index: ::c_ushort,
+        pub _ifm_spare1: ::c_ushort,
+        /// statistics and other data about if
+        pub ifm_data: if_data,
+    }
+
+    pub struct if_msghdrl {
+        /// to skip over non-understood messages
+        pub ifm_msglen: ::c_ushort,
+        /// future binary compatibility
+        pub ifm_version: ::c_uchar,
+        /// message type
+        pub ifm_type: ::c_uchar,
+        /// like rtm_addrs
+        pub ifm_addrs: ::c_int,
+        /// value of if_flags
+        pub ifm_flags: ::c_int,
+        /// index for associated ifp
+        pub ifm_index: ::c_ushort,
+        /// spare space to grow if_index, see if_var.h
+        pub _ifm_spare1: ::c_ushort,
+        /// length of if_msghdrl incl. if_data
+        pub ifm_len: ::c_ushort,
+        /// offset of if_data from beginning
+        pub ifm_data_off: ::c_ushort,
+        pub _ifm_spare2: ::c_int,
+        /// statistics and other data about if
+        pub ifm_data: if_data,
+    }
+
+    pub struct ifa_msghdr {
+        /// to skip over non-understood messages
+        pub ifam_msglen: ::c_ushort,
+        /// future binary compatibility
+        pub ifam_version: ::c_uchar,
+        /// message type
+        pub ifam_type: ::c_uchar,
+        /// like rtm_addrs
+        pub ifam_addrs: ::c_int,
+        /// value of ifa_flags
+        pub ifam_flags: ::c_int,
+        /// index for associated ifp
+        pub ifam_index: ::c_ushort,
+        pub _ifam_spare1: ::c_ushort,
+        /// value of ifa_ifp->if_metric
+        pub ifam_metric: ::c_int,
+    }
+
+    pub struct ifa_msghdrl {
+        /// to skip over non-understood messages
+        pub ifam_msglen: ::c_ushort,
+        /// future binary compatibility
+        pub ifam_version: ::c_uchar,
+        /// message type
+        pub ifam_type: ::c_uchar,
+        /// like rtm_addrs
+        pub ifam_addrs: ::c_int,
+        /// value of ifa_flags
+        pub ifam_flags: ::c_int,
+        /// index for associated ifp
+        pub ifam_index: ::c_ushort,
+        /// spare space to grow if_index, see if_var.h
+        pub _ifam_spare1: ::c_ushort,
+        /// length of ifa_msghdrl incl. if_data
+        pub ifam_len: ::c_ushort,
+        /// offset of if_data from beginning
+        pub ifam_data_off: ::c_ushort,
+        /// value of ifa_ifp->if_metric
+        pub ifam_metric: ::c_int,
+        /// statistics and other data about if or address
+        pub ifam_data: if_data,
+    }
+
+    pub struct ifma_msghdr {
+        /// to skip over non-understood messages
+        pub ifmam_msglen: ::c_ushort,
+        /// future binary compatibility
+        pub ifmam_version: ::c_uchar,
+        /// message type
+        pub ifmam_type: ::c_uchar,
+        /// like rtm_addrs
+        pub ifmam_addrs: ::c_int,
+        /// value of ifa_flags
+        pub ifmam_flags: ::c_int,
+        /// index for associated ifp
+        pub ifmam_index: ::c_ushort,
+        pub _ifmam_spare1: ::c_ushort,
+    }
+
+    pub struct if_announcemsghdr {
+        /// to skip over non-understood messages
+        pub ifan_msglen: ::c_ushort,
+        /// future binary compatibility
+        pub ifan_version: ::c_uchar,
+        /// message type
+        pub ifan_type: ::c_uchar,
+        /// index for associated ifp
+        pub ifan_index: ::c_ushort,
+        /// if name, e.g. "en0"
+        pub ifan_name: [::c_char; ::IFNAMSIZ as usize],
+        /// what type of announcement
+        pub ifan_what: ::c_ushort,
+    }
+
+    pub struct ifreq_buffer {
+        pub length: ::size_t,
+        pub buffer: *mut ::c_void,
+    }
+
+    pub struct ifaliasreq {
+        /// if name, e.g. "en0"
+        pub ifra_name: [::c_char; ::IFNAMSIZ as usize],
+        pub ifra_addr: ::sockaddr,
+        pub ifra_broadaddr: ::sockaddr,
+        pub ifra_mask: ::sockaddr,
+        pub ifra_vhid: ::c_int,
+    }
+
+    /// 9.x compat
+    pub struct oifaliasreq {
+        /// if name, e.g. "en0"
+        pub ifra_name: [::c_char; ::IFNAMSIZ as usize],
+        pub ifra_addr: ::sockaddr,
+        pub ifra_broadaddr: ::sockaddr,
+        pub ifra_mask: ::sockaddr,
+    }
+
+    pub struct ifmediareq {
+        /// if name, e.g. "en0"
+        pub ifm_name: [::c_char; ::IFNAMSIZ as usize],
+        /// current media options
+        pub ifm_current: ::c_int,
+        /// don't care mask
+        pub ifm_mask: ::c_int,
+        /// media status
+        pub ifm_status: ::c_int,
+        /// active options
+        pub ifm_active: ::c_int,
+        /// # entries in ifm_ulist array
+        pub ifm_count: ::c_int,
+        /// media words
+        pub ifm_ulist: *mut ::c_int,
+    }
+
+    pub struct ifdrv {
+        /// if name, e.g. "en0"
+        pub ifd_name: [::c_char; ::IFNAMSIZ as usize],
+        pub ifd_cmd: ::c_ulong,
+        pub ifd_len: ::size_t,
+        pub ifd_data: *mut ::c_void,
+    }
+
+    pub struct ifi2creq {
+        /// i2c address (0xA0, 0xA2)
+        pub dev_addr: u8,
+        /// read offset
+        pub offset: u8,
+        /// read length
+        pub len: u8,
+        pub spare0: u8,
+        pub spare1: u32,
+        /// read buffer
+        pub data: [u8; 8],
+    }
+
+    pub struct ifrsshash {
+        /// if name, e.g. "en0"
+        pub ifrh_name: [::c_char; ::IFNAMSIZ as usize],
+        /// RSS_FUNC_
+        pub ifrh_func: u8,
+        pub ifrh_spare0: u8,
+        pub ifrh_spare1: u16,
+        /// RSS_TYPE_
+        pub ifrh_types: u32,
+    }
+
+    pub struct ifmibdata {
+        /// name of interface
+        pub ifmd_name: [::c_char; ::IFNAMSIZ as usize],
+        /// number of promiscuous listeners
+        pub ifmd_pcount: ::c_int,
+        /// interface flags
+        pub ifmd_flags: ::c_int,
+        /// instantaneous length of send queue
+        pub ifmd_snd_len: ::c_int,
+        /// maximum length of send queue
+        pub ifmd_snd_maxlen: ::c_int,
+        /// number of drops in send queue
+        pub ifmd_snd_drops: ::c_int,
+        /// for future expansion
+        pub ifmd_filler: [::c_int; 4],
+        /// generic information and statistics
+        pub ifmd_data: if_data,
+    }
+
+    pub struct ifmib_iso_8802_3 {
+        pub dot3StatsAlignmentErrors: u32,
+        pub dot3StatsFCSErrors: u32,
+        pub dot3StatsSingleCollisionFrames: u32,
+        pub dot3StatsMultipleCollisionFrames: u32,
+        pub dot3StatsSQETestErrors: u32,
+        pub dot3StatsDeferredTransmissions: u32,
+        pub dot3StatsLateCollisions: u32,
+        pub dot3StatsExcessiveCollisions: u32,
+        pub dot3StatsInternalMacTransmitErrors: u32,
+        pub dot3StatsCarrierSenseErrors: u32,
+        pub dot3StatsFrameTooLongs: u32,
+        pub dot3StatsInternalMacReceiveErrors: u32,
+        pub dot3StatsEtherChipSet: u32,
+        pub dot3StatsMissedFrames: u32,
+        pub dot3StatsCollFrequencies: [u32; 16],
+        pub dot3Compliance: u32,
+    }
+
+    pub struct __c_anonymous_ph {
+        pub ph1: u64,
+        pub ph2: u64,
+    }
 }
 
 s_no_extra_traits! {
@@ -451,6 +690,130 @@ s_no_extra_traits! {
         pub a_type: ::c_int,
         #[cfg(libc_union)]
         pub a_un: __c_anonymous_elf32_auxv_union,
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_ifi_epoch {
+        pub tt: ::time_t,
+        pub ph: u64,
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_ifi_lastchange {
+        pub tv: ::timeval,
+        pub ph: __c_anonymous_ph,
+    }
+
+    pub struct if_data {
+        /// ethernet, tokenring, etc
+        pub ifi_type: u8,
+        /// e.g., AUI, Thinnet, 10base-T, etc
+        pub ifi_physical: u8,
+        /// media address length
+        pub ifi_addrlen: u8,
+        /// media header length
+        pub ifi_hdrlen: u8,
+        /// current link state
+        pub ifi_link_state: u8,
+        /// carp vhid
+        pub ifi_vhid: u8,
+        /// length of this data struct
+        pub ifi_datalen: u16,
+        /// maximum transmission unit
+        pub ifi_mtu: u32,
+        /// routing metric (external only)
+        pub ifi_metric: u32,
+        /// linespeed
+        pub ifi_baudrate: u64,
+        /// packets received on interface
+        pub ifi_ipackets: u64,
+        /// input errors on interface
+        pub ifi_ierrors: u64,
+        /// packets sent on interface
+        pub ifi_opackets: u64,
+        /// output errors on interface
+        pub ifi_oerrors: u64,
+        /// collisions on csma interfaces
+        pub ifi_collisions: u64,
+        /// total number of octets received
+        pub ifi_ibytes: u64,
+        /// total number of octets sent
+        pub ifi_obytes: u64,
+        /// packets received via multicast
+        pub ifi_imcasts: u64,
+        /// packets sent via multicast
+        pub ifi_omcasts: u64,
+        /// dropped on input
+        pub ifi_iqdrops: u64,
+        /// dropped on output
+        pub ifi_oqdrops: u64,
+        /// destined for unsupported protocol
+        pub ifi_noproto: u64,
+        /// HW offload capabilities, see IFCAP
+        pub ifi_hwassist: u64,
+        /// uptime at attach or stat reset
+        #[cfg(libc_union)]
+        pub __ifi_epoch: __c_anonymous_ifi_epoch,
+        /// uptime at attach or stat reset
+        #[cfg(not(libc_union))]
+        pub __ifi_epoch: u64,
+        /// time of last administrative change
+        #[cfg(libc_union)]
+        pub __ifi_lastchange: __c_anonymous_ifi_lastchange,
+        /// time of last administrative change
+        #[cfg(not(libc_union))]
+        pub __ifi_lastchange: ::timeval,
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_ifr_ifru {
+        pub ifru_addr: ::sockaddr,
+        pub ifru_dstaddr: ::sockaddr,
+        pub ifru_broadaddr: ::sockaddr,
+        pub ifru_buffer: ifreq_buffer,
+        pub ifru_flags: [::c_short; 2],
+        pub ifru_index: ::c_short,
+        pub ifru_jid: ::c_int,
+        pub ifru_metric: ::c_int,
+        pub ifru_mtu: ::c_int,
+        pub ifru_phys: ::c_int,
+        pub ifru_media: ::c_int,
+        pub ifru_data: ::caddr_t,
+        pub ifru_cap: [::c_int; 2],
+        pub ifru_fib: ::c_uint,
+        pub ifru_vlan_pcp: ::c_uchar,
+    }
+
+    pub struct ifreq {
+        /// if name, e.g. "en0"
+        pub ifr_name: [::c_char; ::IFNAMSIZ],
+        #[cfg(libc_union)]
+        pub ifr_ifru: __c_anonymous_ifr_ifru,
+        #[cfg(not(libc_union))]
+        pub ifr_ifru: ::sockaddr,
+    }
+
+    pub struct ifstat {
+        /// if name, e.g. "en0"
+        pub ifs_name: [::c_char; ::IFNAMSIZ as usize],
+        pub ascii: [::c_char; ::IFSTATMAX as usize + 1],
+    }
+
+    pub struct ifrsskey {
+        /// if name, e.g. "en0"
+        pub ifrk_name: [::c_char; ::IFNAMSIZ as usize],
+        /// RSS_FUNC_
+        pub ifrk_func: u8,
+        pub ifrk_spare0: u8,
+        pub ifrk_keylen: u16,
+        pub ifrk_key: [u8; ::RSS_KEYLEN as usize],
+    }
+
+    pub struct ifdownreason {
+        pub ifdr_name: [::c_char; ::IFNAMSIZ as usize],
+        pub ifdr_reason: u32,
+        pub ifdr_vendor: u32,
+        pub ifdr_msg: [::c_char; ::IFDR_MSG_SIZE as usize],
     }
 }
 
@@ -719,6 +1082,357 @@ cfg_if! {
                     .finish()
             }
         }
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_ifr_ifru {
+            fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
+                unsafe {
+                    self.ifru_addr == other.ifru_addr &&
+                    self.ifru_dstaddr == other.ifru_dstaddr &&
+                    self.ifru_broadaddr == other.ifru_broadaddr &&
+                    self.ifru_buffer == other.ifru_buffer &&
+                    self.ifru_flags == other.ifru_flags &&
+                    self.ifru_index == other.ifru_index &&
+                    self.ifru_jid == other.ifru_jid &&
+                    self.ifru_metric == other.ifru_metric &&
+                    self.ifru_mtu == other.ifru_mtu &&
+                    self.ifru_phys == other.ifru_phys &&
+                    self.ifru_media == other.ifru_media &&
+                    self.ifru_data == other.ifru_data &&
+                    self.ifru_cap == other.ifru_cap &&
+                    self.ifru_fib == other.ifru_fib &&
+                    self.ifru_vlan_pcp == other.ifru_vlan_pcp
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_ifr_ifru {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_ifr_ifru {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifr_ifru")
+                    .field("ifru_addr", unsafe { &self.ifru_addr })
+                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
+                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
+                    .field("ifru_buffer", unsafe { &self.ifru_buffer })
+                    .field("ifru_flags", unsafe { &self.ifru_flags })
+                    .field("ifru_index", unsafe { &self.ifru_index })
+                    .field("ifru_jid", unsafe { &self.ifru_jid })
+                    .field("ifru_metric", unsafe { &self.ifru_metric })
+                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
+                    .field("ifru_phys", unsafe { &self.ifru_phys })
+                    .field("ifru_media", unsafe { &self.ifru_media })
+                    .field("ifru_data", unsafe { &self.ifru_data })
+                    .field("ifru_cap", unsafe { &self.ifru_cap })
+                    .field("ifru_fib", unsafe { &self.ifru_fib })
+                    .field("ifru_vlan_pcp", unsafe { &self.ifru_vlan_pcp })
+                    .finish()
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_ifr_ifru {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.ifru_addr.hash(state) };
+                unsafe { self.ifru_dstaddr.hash(state) };
+                unsafe { self.ifru_broadaddr.hash(state) };
+                unsafe { self.ifru_buffer.hash(state) };
+                unsafe { self.ifru_flags.hash(state) };
+                unsafe { self.ifru_index.hash(state) };
+                unsafe { self.ifru_jid.hash(state) };
+                unsafe { self.ifru_metric.hash(state) };
+                unsafe { self.ifru_mtu.hash(state) };
+                unsafe { self.ifru_phys.hash(state) };
+                unsafe { self.ifru_media.hash(state) };
+                unsafe { self.ifru_data.hash(state) };
+                unsafe { self.ifru_cap.hash(state) };
+                unsafe { self.ifru_fib.hash(state) };
+                unsafe { self.ifru_vlan_pcp.hash(state) };
+            }
+        }
+
+        impl PartialEq for ifreq {
+            fn eq(&self, other: &ifreq) -> bool {
+                self.ifr_name == other.ifr_name && self.ifr_ifru == other.ifr_ifru
+            }
+        }
+        impl Eq for ifreq {}
+        impl ::fmt::Debug for ifreq {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifreq")
+                    .field("ifr_name", &self.ifr_name)
+                    .field("ifr_ifru", &self.ifr_ifru)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ifreq {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ifr_name.hash(state);
+                self.ifr_ifru.hash(state);
+            }
+        }
+
+        impl PartialEq for ifstat {
+            fn eq(&self, other: &ifstat) -> bool {
+                let self_ascii: &[::c_char] = &self.ascii;
+                let other_ascii: &[::c_char] = &other.ascii;
+
+                self.ifs_name == other.ifs_name && self_ascii == other_ascii
+            }
+        }
+        impl Eq for ifstat {}
+        impl ::fmt::Debug for ifstat {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ascii: &[::c_char] = &self.ascii;
+
+                f.debug_struct("ifstat")
+                    .field("ifs_name", &self.ifs_name)
+                    .field("ascii", &ascii)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ifstat {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ifs_name.hash(state);
+                self.ascii.hash(state);
+            }
+        }
+
+        impl PartialEq for ifrsskey {
+            fn eq(&self, other: &ifrsskey) -> bool {
+                let self_ifrk_key: &[u8] = &self.ifrk_key;
+                let other_ifrk_key: &[u8] = &other.ifrk_key;
+
+                self.ifrk_name == other.ifrk_name &&
+                self.ifrk_func == other.ifrk_func &&
+                self.ifrk_spare0 == other.ifrk_spare0 &&
+                self.ifrk_keylen == other.ifrk_keylen &&
+                self_ifrk_key == other_ifrk_key
+            }
+        }
+        impl Eq for ifrsskey {}
+        impl ::fmt::Debug for ifrsskey {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ifrk_key: &[u8] = &self.ifrk_key;
+
+                f.debug_struct("ifrsskey")
+                    .field("ifrk_name", &self.ifrk_name)
+                    .field("ifrk_func", &self.ifrk_func)
+                    .field("ifrk_spare0", &self.ifrk_spare0)
+                    .field("ifrk_keylen", &self.ifrk_keylen)
+                    .field("ifrk_key", &ifrk_key)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ifrsskey {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ifrk_name.hash(state);
+                self.ifrk_func.hash(state);
+                self.ifrk_spare0.hash(state);
+                self.ifrk_keylen.hash(state);
+                self.ifrk_key.hash(state);
+            }
+        }
+
+        impl PartialEq for ifdownreason {
+            fn eq(&self, other: &ifdownreason) -> bool {
+                let self_ifdr_msg: &[::c_char] = &self.ifdr_msg;
+                let other_ifdr_msg: &[::c_char] = &other.ifdr_msg;
+
+                self.ifdr_name == other.ifdr_name &&
+                self.ifdr_reason == other.ifdr_reason &&
+                self.ifdr_vendor == other.ifdr_vendor &&
+                self_ifdr_msg == other_ifdr_msg
+            }
+        }
+        impl Eq for ifdownreason {}
+        impl ::fmt::Debug for ifdownreason {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ifdr_msg: &[::c_char] = &self.ifdr_msg;
+
+                f.debug_struct("ifdownreason")
+                    .field("ifdr_name", &self.ifdr_name)
+                    .field("ifdr_reason", &self.ifdr_reason)
+                    .field("ifdr_vendor", &self.ifdr_vendor)
+                    .field("ifdr_msg", &ifdr_msg)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ifdownreason {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ifdr_name.hash(state);
+                self.ifdr_reason.hash(state);
+                self.ifdr_vendor.hash(state);
+                self.ifdr_msg.hash(state);
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_ifi_epoch {
+            fn eq(&self, other: &__c_anonymous_ifi_epoch) -> bool {
+                unsafe {
+                    self.tt == other.tt &&
+                    self.ph == other.ph
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_ifi_epoch {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_ifi_epoch {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("__c_anonymous_ifi_epoch")
+                    .field("tt", unsafe { &self.tt })
+                    .field("ph", unsafe { &self.ph })
+                    .finish()
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_ifi_epoch {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.tt.hash(state);
+                    self.ph.hash(state);
+                }
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_ifi_lastchange {
+            fn eq(&self, other: &__c_anonymous_ifi_lastchange) -> bool {
+                unsafe {
+                    self.tv == other.tv &&
+                    self.ph == other.ph
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_ifi_lastchange {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_ifi_lastchange {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("__c_anonymous_ifi_lastchange")
+                    .field("tv", unsafe { &self.tv })
+                    .field("ph", unsafe { &self.ph })
+                    .finish()
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_ifi_lastchange {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.tv.hash(state);
+                    self.ph.hash(state);
+                }
+            }
+        }
+
+        impl PartialEq for if_data {
+            fn eq(&self, other: &if_data) -> bool {
+                self.ifi_type == other.ifi_type &&
+                self.ifi_physical == other.ifi_physical &&
+                self.ifi_addrlen == other.ifi_addrlen &&
+                self.ifi_hdrlen == other.ifi_hdrlen &&
+                self.ifi_link_state == other.ifi_link_state &&
+                self.ifi_vhid == other.ifi_vhid &&
+                self.ifi_datalen == other.ifi_datalen &&
+                self.ifi_mtu == other.ifi_mtu &&
+                self.ifi_metric == other.ifi_metric &&
+                self.ifi_baudrate == other.ifi_baudrate &&
+                self.ifi_ipackets == other.ifi_ipackets &&
+                self.ifi_ierrors == other.ifi_ierrors &&
+                self.ifi_opackets == other.ifi_opackets &&
+                self.ifi_oerrors == other.ifi_oerrors &&
+                self.ifi_collisions == other.ifi_collisions &&
+                self.ifi_ibytes == other.ifi_ibytes &&
+                self.ifi_obytes == other.ifi_obytes &&
+                self.ifi_imcasts == other.ifi_imcasts &&
+                self.ifi_omcasts == other.ifi_omcasts &&
+                self.ifi_iqdrops == other.ifi_iqdrops &&
+                self.ifi_oqdrops == other.ifi_oqdrops &&
+                self.ifi_noproto == other.ifi_noproto &&
+                self.ifi_hwassist == other.ifi_hwassist &&
+                self.__ifi_epoch == other.__ifi_epoch &&
+                self.__ifi_lastchange == other.__ifi_lastchange
+            }
+        }
+        impl Eq for if_data {}
+        impl ::fmt::Debug for if_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("if_data")
+                    .field("ifi_type", &self.ifi_type)
+                    .field("ifi_physical", &self.ifi_physical)
+                    .field("ifi_addrlen", &self.ifi_addrlen)
+                    .field("ifi_hdrlen", &self.ifi_hdrlen)
+                    .field("ifi_link_state", &self.ifi_link_state)
+                    .field("ifi_vhid", &self.ifi_vhid)
+                    .field("ifi_datalen", &self.ifi_datalen)
+                    .field("ifi_mtu", &self.ifi_mtu)
+                    .field("ifi_metric", &self.ifi_metric)
+                    .field("ifi_baudrate", &self.ifi_baudrate)
+                    .field("ifi_ipackets", &self.ifi_ipackets)
+                    .field("ifi_ierrors", &self.ifi_ierrors)
+                    .field("ifi_opackets", &self.ifi_opackets)
+                    .field("ifi_oerrors", &self.ifi_oerrors)
+                    .field("ifi_collisions", &self.ifi_collisions)
+                    .field("ifi_ibytes", &self.ifi_ibytes)
+                    .field("ifi_obytes", &self.ifi_obytes)
+                    .field("ifi_imcasts", &self.ifi_imcasts)
+                    .field("ifi_omcasts", &self.ifi_omcasts)
+                    .field("ifi_iqdrops", &self.ifi_iqdrops)
+                    .field("ifi_oqdrops", &self.ifi_oqdrops)
+                    .field("ifi_noproto", &self.ifi_noproto)
+                    .field("ifi_hwassist", &self.ifi_hwassist)
+                    .field("__ifi_epoch", &self.__ifi_epoch)
+                    .field("__ifi_lastchange", &self.__ifi_lastchange)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for if_data {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ifi_type.hash(state);
+                self.ifi_physical.hash(state);
+                self.ifi_addrlen.hash(state);
+                self.ifi_hdrlen.hash(state);
+                self.ifi_link_state.hash(state);
+                self.ifi_vhid.hash(state);
+                self.ifi_datalen.hash(state);
+                self.ifi_mtu.hash(state);
+                self.ifi_metric.hash(state);
+                self.ifi_baudrate.hash(state);
+                self.ifi_ipackets.hash(state);
+                self.ifi_ierrors.hash(state);
+                self.ifi_opackets.hash(state);
+                self.ifi_oerrors.hash(state);
+                self.ifi_collisions.hash(state);
+                self.ifi_ibytes.hash(state);
+                self.ifi_obytes.hash(state);
+                self.ifi_imcasts.hash(state);
+                self.ifi_omcasts.hash(state);
+                self.ifi_iqdrops.hash(state);
+                self.ifi_oqdrops.hash(state);
+                self.ifi_noproto.hash(state);
+                self.ifi_hwassist.hash(state);
+                self.__ifi_epoch.hash(state);
+                self.__ifi_lastchange.hash(state);
+            }
+        }
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[repr(u32)]
+pub enum dot3Vendors {
+    dot3VendorAMD = 1,
+    dot3VendorIntel = 2,
+    dot3VendorNational = 4,
+    dot3VendorFujitsu = 5,
+    dot3VendorDigital = 6,
+    dot3VendorWesternDigital = 7,
+}
+impl ::Copy for dot3Vendors {}
+impl ::Clone for dot3Vendors {
+    fn clone(&self) -> dot3Vendors {
+        *self
     }
 }
 
@@ -1232,40 +1946,218 @@ pub const AF_IEEE80211: ::c_int = 37;
 pub const AF_INET_SDP: ::c_int = 40;
 pub const AF_INET6_SDP: ::c_int = 42;
 
-// https://github.com/freebsd/freebsd/blob/master/sys/net/if.h#L140
-pub const IFF_UP: ::c_int = 0x1; // (n) interface is up
-pub const IFF_BROADCAST: ::c_int = 0x2; // (i) broadcast address valid
-pub const IFF_DEBUG: ::c_int = 0x4; // (n) turn on debugging
-pub const IFF_LOOPBACK: ::c_int = 0x8; // (i) is a loopback net
-pub const IFF_POINTOPOINT: ::c_int = 0x10; // (i) is a point-to-point link
-                                           // 0x20           was IFF_SMART
-pub const IFF_RUNNING: ::c_int = 0x40; // (d) resources allocated
+// sys/net/if.h
+pub const IF_MAXUNIT: ::c_int = 0x7fff;
+/// (n) interface is up
+pub const IFF_UP: ::c_int = 0x1;
+/// (i) broadcast address valid
+pub const IFF_BROADCAST: ::c_int = 0x2;
+/// (n) turn on debugging
+pub const IFF_DEBUG: ::c_int = 0x4;
+/// (i) is a loopback net
+pub const IFF_LOOPBACK: ::c_int = 0x8;
+/// (i) is a point-to-point link
+pub const IFF_POINTOPOINT: ::c_int = 0x10;
+/// (i) calls if_input in net epoch
+pub const IFF_KNOWSEPOCH: ::c_int = 0x20;
+/// (d) resources allocated
+pub const IFF_RUNNING: ::c_int = 0x40;
 #[doc(hidden)]
 #[deprecated(
     since = "0.2.54",
     note = "IFF_DRV_RUNNING is deprecated. Use the portable IFF_RUNNING instead"
 )]
+/// (d) resources allocate
 pub const IFF_DRV_RUNNING: ::c_int = 0x40;
-pub const IFF_NOARP: ::c_int = 0x80; // (n) no address resolution protocol
-pub const IFF_PROMISC: ::c_int = 0x100; // (n) receive all packets
-pub const IFF_ALLMULTI: ::c_int = 0x200; // (n) receive all multicast packets
-pub const IFF_OACTIVE: ::c_int = 0x400; // (d) tx hardware queue is full
+/// (n) no address resolution protocol
+pub const IFF_NOARP: ::c_int = 0x80;
+/// (n) receive all packets
+pub const IFF_PROMISC: ::c_int = 0x100;
+/// (n) receive all multicast packets
+pub const IFF_ALLMULTI: ::c_int = 0x200;
+/// (d) tx hardware queue is full
+pub const IFF_OACTIVE: ::c_int = 0x400;
 #[doc(hidden)]
 #[deprecated(since = "0.2.54", note = "Use the portable `IFF_OACTIVE` instead")]
+/// (d) tx hardware queue is full
 pub const IFF_DRV_OACTIVE: ::c_int = 0x400;
-pub const IFF_SIMPLEX: ::c_int = 0x800; // (i) can't hear own transmissions
-pub const IFF_LINK0: ::c_int = 0x1000; // per link layer defined bit
-pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
-pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
-pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
-pub const IFF_MULTICAST: ::c_int = 0x8000; // (i) supports multicast
-                                           // (i) unconfigurable using ioctl(2)
+/// (i) can't hear own transmissions
+pub const IFF_SIMPLEX: ::c_int = 0x800;
+/// per link layer defined bit
+pub const IFF_LINK0: ::c_int = 0x1000;
+/// per link layer defined bit
+pub const IFF_LINK1: ::c_int = 0x2000;
+/// per link layer defined bit
+pub const IFF_LINK2: ::c_int = 0x4000;
+/// use alternate physical connection
+pub const IFF_ALTPHYS: ::c_int = IFF_LINK2;
+/// (i) supports multicast
+pub const IFF_MULTICAST: ::c_int = 0x8000;
+/// (i) unconfigurable using ioctl(2)
 pub const IFF_CANTCONFIG: ::c_int = 0x10000;
-pub const IFF_PPROMISC: ::c_int = 0x20000; // (n) user-requested promisc mode
-pub const IFF_MONITOR: ::c_int = 0x40000; // (n) user-requested monitor mode
-pub const IFF_STATICARP: ::c_int = 0x80000; // (n) static ARP
-pub const IFF_DYING: ::c_int = 0x200000; // (n) interface is winding down
-pub const IFF_RENAMING: ::c_int = 0x400000; // (n) interface is being renamed
+/// (n) user-requested promisc mode
+pub const IFF_PPROMISC: ::c_int = 0x20000;
+/// (n) user-requested monitor mode
+pub const IFF_MONITOR: ::c_int = 0x40000;
+/// (n) static ARP
+pub const IFF_STATICARP: ::c_int = 0x80000;
+/// (n) interface is winding down
+pub const IFF_DYING: ::c_int = 0x200000;
+/// (n) interface is being renamed
+pub const IFF_RENAMING: ::c_int = 0x400000;
+/// interface is not part of any groups
+pub const IFF_NOGROUP: ::c_int = 0x800000;
+
+/// link invalid/unknown
+pub const LINK_STATE_UNKNOWN: ::c_int = 0;
+/// link is down
+pub const LINK_STATE_DOWN: ::c_int = 1;
+/// link is up
+pub const LINK_STATE_UP: ::c_int = 2;
+
+/// can offload checksum on RX
+pub const IFCAP_RXCSUM: ::c_int = 0x00001;
+/// can offload checksum on TX
+pub const IFCAP_TXCSUM: ::c_int = 0x00002;
+/// can be a network console
+pub const IFCAP_NETCONS: ::c_int = 0x00004;
+/// VLAN-compatible MTU
+pub const IFCAP_VLAN_MTU: ::c_int = 0x00008;
+/// hardware VLAN tag support
+pub const IFCAP_VLAN_HWTAGGING: ::c_int = 0x00010;
+/// 9000 byte MTU supported
+pub const IFCAP_JUMBO_MTU: ::c_int = 0x00020;
+/// driver supports polling
+pub const IFCAP_POLLING: ::c_int = 0x00040;
+/// can do IFCAP_HWCSUM on VLANs
+pub const IFCAP_VLAN_HWCSUM: ::c_int = 0x00080;
+/// can do TCP Segmentation Offload
+pub const IFCAP_TSO4: ::c_int = 0x00100;
+/// can do TCP6 Segmentation Offload
+pub const IFCAP_TSO6: ::c_int = 0x00200;
+/// can do Large Receive Offload
+pub const IFCAP_LRO: ::c_int = 0x00400;
+/// wake on any unicast frame
+pub const IFCAP_WOL_UCAST: ::c_int = 0x00800;
+/// wake on any multicast frame
+pub const IFCAP_WOL_MCAST: ::c_int = 0x01000;
+/// wake on any Magic Packet
+pub const IFCAP_WOL_MAGIC: ::c_int = 0x02000;
+/// interface can offload TCP
+pub const IFCAP_TOE4: ::c_int = 0x04000;
+/// interface can offload TCP6
+pub const IFCAP_TOE6: ::c_int = 0x08000;
+/// interface hw can filter vlan tag
+pub const IFCAP_VLAN_HWFILTER: ::c_int = 0x10000;
+/// can do IFCAP_TSO on VLANs
+pub const IFCAP_VLAN_HWTSO: ::c_int = 0x40000;
+/// the runtime link state is dynamic
+pub const IFCAP_LINKSTATE: ::c_int = 0x80000;
+/// netmap mode supported/enabled
+pub const IFCAP_NETMAP: ::c_int = 0x100000;
+/// can offload checksum on IPv6 RX
+pub const IFCAP_RXCSUM_IPV6: ::c_int = 0x200000;
+/// can offload checksum on IPv6 TX
+pub const IFCAP_TXCSUM_IPV6: ::c_int = 0x400000;
+/// manages counters internally
+pub const IFCAP_HWSTATS: ::c_int = 0x800000;
+/// hardware supports TX rate limiting
+pub const IFCAP_TXRTLMT: ::c_int = 0x1000000;
+/// hardware rx timestamping
+pub const IFCAP_HWRXTSTMP: ::c_int = 0x2000000;
+/// understands M_EXTPG mbufs
+pub const IFCAP_MEXTPG: ::c_int = 0x4000000;
+/// can do TLS encryption and segmentation for TCP
+pub const IFCAP_TXTLS4: ::c_int = 0x8000000;
+/// can do TLS encryption and segmentation for TCP6
+pub const IFCAP_TXTLS6: ::c_int = 0x10000000;
+/// can do IFCAN_HWCSUM on VXLANs
+pub const IFCAP_VXLAN_HWCSUM: ::c_int = 0x20000000;
+/// can do IFCAP_TSO on VXLANs
+pub const IFCAP_VXLAN_HWTSO: ::c_int = 0x40000000;
+/// can do TLS with rate limiting
+pub const IFCAP_TXTLS_RTLMT: ::c_int = 0x80000000;
+
+pub const IFCAP_HWCSUM_IPV6: ::c_int = IFCAP_RXCSUM_IPV6 | IFCAP_TXCSUM_IPV6;
+pub const IFCAP_HWCSUM: ::c_int = IFCAP_RXCSUM | IFCAP_TXCSUM;
+pub const IFCAP_TSO: ::c_int = IFCAP_TSO4 | IFCAP_TSO6;
+pub const IFCAP_WOL: ::c_int = IFCAP_WOL_UCAST | IFCAP_WOL_MCAST | IFCAP_WOL_MAGIC;
+pub const IFCAP_TOE: ::c_int = IFCAP_TOE4 | IFCAP_TOE6;
+pub const IFCAP_TXTLS: ::c_int = IFCAP_TXTLS4 | IFCAP_TXTLS6;
+pub const IFCAP_CANTCHANGE: ::c_int = IFCAP_NETMAP;
+
+pub const IFQ_MAXLEN: ::c_int = 50;
+pub const IFNET_SLOWHZ: ::c_int = 1;
+
+pub const IFAN_ARRIVAL: ::c_int = 0;
+pub const IFAN_DEPARTURE: ::c_int = 1;
+
+pub const IFSTATMAX: ::c_int = 800;
+
+pub const RSS_FUNC_NONE: ::c_int = 0;
+pub const RSS_FUNC_PRIVATE: ::c_int = 1;
+pub const RSS_FUNC_TOEPLITZ: ::c_int = 2;
+
+pub const RSS_TYPE_IPV4: ::c_int = 0x00000001;
+pub const RSS_TYPE_TCP_IPV4: ::c_int = 0x00000002;
+pub const RSS_TYPE_IPV6: ::c_int = 0x00000004;
+pub const RSS_TYPE_IPV6_EX: ::c_int = 0x00000008;
+pub const RSS_TYPE_TCP_IPV6: ::c_int = 0x00000010;
+pub const RSS_TYPE_TCP_IPV6_EX: ::c_int = 0x00000020;
+pub const RSS_TYPE_UDP_IPV4: ::c_int = 0x00000040;
+pub const RSS_TYPE_UDP_IPV6: ::c_int = 0x00000080;
+pub const RSS_TYPE_UDP_IPV6_EX: ::c_int = 0x00000100;
+pub const RSS_KEYLEN: ::c_int = 128;
+
+pub const IFNET_PCP_NONE: ::c_int = 0xff;
+pub const IFDR_MSG_SIZE: ::c_int = 64;
+pub const IFDR_REASON_MSG: ::c_int = 1;
+pub const IFDR_REASON_VENDOR: ::c_int = 2;
+
+// sys/net/if_mib.h
+
+/// non-interface-specific
+pub const IFMIB_SYSTEM: ::c_int = 1;
+/// per-interface data table
+pub const IFMIB_IFDATA: ::c_int = 2;
+
+/// generic stats for all kinds of ifaces
+pub const IFDATA_GENERAL: ::c_int = 1;
+/// specific to the type of interface
+pub const IFDATA_LINKSPECIFIC: ::c_int = 2;
+/// driver name and unit
+pub const IFDATA_DRIVERNAME: ::c_int = 3;
+
+/// number of interfaces configured
+pub const IFMIB_IFCOUNT: ::c_int = 1;
+
+/// functions not specific to a type of iface
+pub const NETLINK_GENERIC: ::c_int = 0;
+
+pub const DOT3COMPLIANCE_STATS: ::c_int = 1;
+pub const DOT3COMPLIANCE_COLLS: ::c_int = 2;
+
+pub const dot3ChipSetAMD7990: ::c_int = 1;
+pub const dot3ChipSetAMD79900: ::c_int = 2;
+pub const dot3ChipSetAMD79C940: ::c_int = 3;
+
+pub const dot3ChipSetIntel82586: ::c_int = 1;
+pub const dot3ChipSetIntel82596: ::c_int = 2;
+pub const dot3ChipSetIntel82557: ::c_int = 3;
+
+pub const dot3ChipSetNational8390: ::c_int = 1;
+pub const dot3ChipSetNationalSonic: ::c_int = 2;
+
+pub const dot3ChipSetFujitsu86950: ::c_int = 1;
+
+pub const dot3ChipSetDigitalDC21040: ::c_int = 1;
+pub const dot3ChipSetDigitalDC21140: ::c_int = 2;
+pub const dot3ChipSetDigitalDC21041: ::c_int = 3;
+pub const dot3ChipSetDigitalDC21140A: ::c_int = 4;
+pub const dot3ChipSetDigitalDC21142: ::c_int = 5;
+
+pub const dot3ChipSetWesternDigital83C690: ::c_int = 1;
+pub const dot3ChipSetWesternDigital83C790: ::c_int = 2;
 
 // sys/netinet/in.h
 // Protocols (RFC 1700)
