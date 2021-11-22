@@ -373,6 +373,32 @@ s! {
         pub t_pad: [u16; 3],
     }
 
+    pub struct sockstat {
+        pub inp_ppcb: u64,
+        pub so_addr: u64,
+        pub so_pcb: u64,
+        pub unp_conn: u64,
+        pub dom_family: ::c_int,
+        pub proto: ::c_int,
+        pub so_rcv_sb_state: ::c_int,
+        pub so_snd_sb_state: ::c_int,
+        /// Socket address.
+        pub sa_local: ::sockaddr_storage,
+        /// Peer address.
+        pub sa_peer: ::sockaddr_storage,
+        pub type_: ::c_int,
+        pub dname: [::c_char; 32],
+        #[cfg(any(freebsd12, freebsd13, freebsd14))]
+        pub sendq: ::c_uint,
+        #[cfg(any(freebsd12, freebsd13, freebsd14))]
+        pub recvq: ::c_uint,
+    }
+
+    pub struct shmstat {
+        pub size: u64,
+        pub mode: u16,
+    }
+
     pub struct rusage_ext {
         pub rux_runtime: u64,
         pub rux_uticks: u64,
@@ -679,6 +705,14 @@ s_no_extra_traits! {
         #[cfg(target_pointer_width = "64")]
         __unused1: ::c_int,
         __unused2: [::c_long; 7]
+    }
+
+    pub struct ptsstat {
+        #[cfg(any(freebsd12, freebsd13, freebsd14))]
+        pub dev: u64,
+        #[cfg(not(any(freebsd12, freebsd13, freebsd14)))]
+        pub dev: u32,
+        pub devname: [::c_char; SPECNAMELEN as usize + 1],
     }
 
     #[cfg(libc_union)]
@@ -1035,6 +1069,35 @@ cfg_if! {
                 self.sigev_notify_thread_id.hash(state);
             }
         }
+
+        impl PartialEq for ptsstat {
+            fn eq(&self, other: &ptsstat) -> bool {
+                let self_devname: &[::c_char] = &self.devname;
+                let other_devname: &[::c_char] = &other.devname;
+
+                self.dev == other.dev && self_devname == other_devname
+            }
+        }
+        impl Eq for ptsstat {}
+        impl ::fmt::Debug for ptsstat {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let self_devname: &[::c_char] = &self.devname;
+
+                f.debug_struct("ptsstat")
+                    .field("dev", &self.dev)
+                    .field("devname", &self_devname)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ptsstat {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let self_devname: &[::c_char] = &self.devname;
+
+                self.dev.hash(state);
+                self_devname.hash(state);
+            }
+        }
+
         #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_elf32_auxv_union {
             fn eq(&self, other: &__c_anonymous_elf32_auxv_union) -> bool {
@@ -3011,6 +3074,57 @@ pub const P2_ASLR_DISABLE: ::c_int = 0x00000080;
 pub const P2_ASLR_IGNSTART: ::c_int = 0x00000100;
 pub const P_TREE_GRPEXITED: ::c_int = 0x00000008;
 
+// libprocstat.h
+pub const PS_FST_VTYPE_VNON: ::c_int = 1;
+pub const PS_FST_VTYPE_VREG: ::c_int = 2;
+pub const PS_FST_VTYPE_VDIR: ::c_int = 3;
+pub const PS_FST_VTYPE_VBLK: ::c_int = 4;
+pub const PS_FST_VTYPE_VCHR: ::c_int = 5;
+pub const PS_FST_VTYPE_VLNK: ::c_int = 6;
+pub const PS_FST_VTYPE_VSOCK: ::c_int = 7;
+pub const PS_FST_VTYPE_VFIFO: ::c_int = 8;
+pub const PS_FST_VTYPE_VBAD: ::c_int = 9;
+pub const PS_FST_VTYPE_UNKNOWN: ::c_int = 255;
+
+pub const PS_FST_TYPE_VNODE: ::c_int = 1;
+pub const PS_FST_TYPE_FIFO: ::c_int = 2;
+pub const PS_FST_TYPE_SOCKET: ::c_int = 3;
+pub const PS_FST_TYPE_PIPE: ::c_int = 4;
+pub const PS_FST_TYPE_PTS: ::c_int = 5;
+pub const PS_FST_TYPE_KQUEUE: ::c_int = 6;
+pub const PS_FST_TYPE_MQUEUE: ::c_int = 8;
+pub const PS_FST_TYPE_SHM: ::c_int = 9;
+pub const PS_FST_TYPE_SEM: ::c_int = 10;
+pub const PS_FST_TYPE_UNKNOWN: ::c_int = 11;
+pub const PS_FST_TYPE_NONE: ::c_int = 12;
+pub const PS_FST_TYPE_PROCDESC: ::c_int = 13;
+pub const PS_FST_TYPE_DEV: ::c_int = 14;
+pub const PS_FST_TYPE_EVENTFD: ::c_int = 15;
+
+pub const PS_FST_UFLAG_RDIR: ::c_int = 0x0001;
+pub const PS_FST_UFLAG_CDIR: ::c_int = 0x0002;
+pub const PS_FST_UFLAG_JAIL: ::c_int = 0x0004;
+pub const PS_FST_UFLAG_TRACE: ::c_int = 0x0008;
+pub const PS_FST_UFLAG_TEXT: ::c_int = 0x0010;
+pub const PS_FST_UFLAG_MMAP: ::c_int = 0x0020;
+pub const PS_FST_UFLAG_CTTY: ::c_int = 0x0040;
+
+pub const PS_FST_FFLAG_READ: ::c_int = 0x0001;
+pub const PS_FST_FFLAG_WRITE: ::c_int = 0x0002;
+pub const PS_FST_FFLAG_NONBLOCK: ::c_int = 0x0004;
+pub const PS_FST_FFLAG_APPEND: ::c_int = 0x0008;
+pub const PS_FST_FFLAG_SHLOCK: ::c_int = 0x0010;
+pub const PS_FST_FFLAG_EXLOCK: ::c_int = 0x0020;
+pub const PS_FST_FFLAG_ASYNC: ::c_int = 0x0040;
+pub const PS_FST_FFLAG_SYNC: ::c_int = 0x0080;
+pub const PS_FST_FFLAG_NOFOLLOW: ::c_int = 0x0100;
+pub const PS_FST_FFLAG_CREAT: ::c_int = 0x0200;
+pub const PS_FST_FFLAG_TRUNC: ::c_int = 0x0400;
+pub const PS_FST_FFLAG_EXCL: ::c_int = 0x0800;
+pub const PS_FST_FFLAG_DIRECT: ::c_int = 0x1000;
+pub const PS_FST_FFLAG_EXEC: ::c_int = 0x2000;
+pub const PS_FST_FFLAG_HASLOCK: ::c_int = 0x4000;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -3611,6 +3725,73 @@ extern "C" {
     ) -> *mut kinfo_vmentry;
     pub fn procstat_freevmmap(procstat: *mut procstat, vmmap: *mut kinfo_vmentry);
     pub fn procstat_close(procstat: *mut procstat);
+    pub fn procstat_freeargv(procstat: *mut procstat);
+    pub fn procstat_freeenvv(procstat: *mut procstat);
+    pub fn procstat_freegroups(procstat: *mut procstat, groups: *mut ::gid_t);
+    pub fn procstat_freeptlwpinfo(procstat: *mut procstat, pl: *mut ptrace_lwpinfo);
+    pub fn procstat_getargv(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        nchr: ::size_t,
+    ) -> *mut *mut ::c_char;
+    pub fn procstat_getenvv(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        nchr: ::size_t,
+    ) -> *mut *mut ::c_char;
+    pub fn procstat_getgroups(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        count: *mut ::c_uint,
+    ) -> *mut ::gid_t;
+    pub fn procstat_getosrel(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        osrelp: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn procstat_getpathname(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        pathname: *mut ::c_char,
+        maxlen: ::size_t,
+    ) -> ::c_int;
+    pub fn procstat_getrlimit(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        which: ::c_int,
+        rlimit: *mut ::rlimit,
+    ) -> ::c_int;
+    pub fn procstat_getumask(
+        procstat: *mut procstat,
+        kp: *mut kinfo_proc,
+        maskp: *mut ::c_ushort,
+    ) -> ::c_int;
+    pub fn procstat_open_core(filename: *const ::c_char) -> *mut procstat;
+    pub fn procstat_open_kvm(nlistf: *const ::c_char, memf: *const ::c_char) -> *mut procstat;
+    pub fn procstat_get_socket_info(
+        proc_: *mut procstat,
+        fst: *mut filestat,
+        sock: *mut sockstat,
+        errbuf: *mut ::c_char,
+    ) -> ::c_int;
+    pub fn procstat_get_vnode_info(
+        proc_: *mut procstat,
+        fst: *mut filestat,
+        vn: *mut vnstat,
+        errbuf: *mut ::c_char,
+    ) -> ::c_int;
+    pub fn procstat_get_pts_info(
+        proc_: *mut procstat,
+        fst: *mut filestat,
+        pts: *mut ptsstat,
+        errbuf: *mut ::c_char,
+    ) -> ::c_int;
+    pub fn procstat_get_shm_info(
+        proc_: *mut procstat,
+        fst: *mut filestat,
+        shm: *mut shmstat,
+        errbuf: *mut ::c_char,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]
