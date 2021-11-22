@@ -33,11 +33,14 @@ pub const TCP_KEEPCNT: ::c_int = 35;
 pub const TCP_KEEPINTVL: ::c_int = 36;
 pub const TCP_CONGESTION: ::c_int = 37;
 
-pub const F_OFD_GETLK: ::c_int = 50;
-pub const F_OFD_SETLKL: ::c_int = 51;
-pub const F_OFD_SETLKW: ::c_int = 52;
-pub const F_FLOCK: ::c_int = 55;
-pub const F_FLOCKW: ::c_int = 56;
+// These constants are correct for 64-bit programs or 32-bit programs that are
+// not using large-file mode.  If Rust ever supports anything other than 64-bit
+// compilation on illumos, this may require adjustment:
+pub const F_OFD_GETLK: ::c_int = 47;
+pub const F_OFD_SETLK: ::c_int = 48;
+pub const F_OFD_SETLKW: ::c_int = 49;
+pub const F_FLOCK: ::c_int = 53;
+pub const F_FLOCKW: ::c_int = 54;
 
 pub const FIL_ATTACH: ::c_int = 0x1;
 pub const FIL_DETACH: ::c_int = 0x2;
