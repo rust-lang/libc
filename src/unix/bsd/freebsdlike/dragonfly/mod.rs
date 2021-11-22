@@ -215,6 +215,33 @@ s! {
         pub shm_ctime: ::time_t,
         shm_internal: *mut ::c_void,
     }
+
+    pub struct kinfo_file {
+        pub f_size: ::size_t,
+        pub f_pid: ::pid_t,
+        pub f_uid: ::uid_t,
+        pub f_fd: ::c_int,
+        pub f_file: *mut ::c_void,
+        pub f_type: ::c_short,
+        pub f_count: ::c_int,
+        pub f_msgcount: ::c_int,
+        pub f_offset: ::off_t,
+        pub f_data: *mut ::c_void,
+        pub f_flag: ::c_uint,
+    }
+
+    pub struct kinfo_cputime {
+        pub cp_user: u64,
+        pub cp_nice: u64,
+        pub cp_sys: u64,
+        pub cp_intr: u64,
+        pub cp_idel: u64,
+        cp_unused01: u64,
+        cp_unused02: u64,
+        pub cp_sample_pc: u64,
+        pub cp_sample_sp: u64,
+        pub cp_msg: [::c_char; 32],
+    }
 }
 
 s_no_extra_traits! {
