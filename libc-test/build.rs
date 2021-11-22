@@ -1215,6 +1215,7 @@ fn test_dragonflybsd(target: &str) {
         "sys/file.h",
         "sys/ioctl.h",
         "sys/ipc.h",
+        "sys/kinfo.h",
         "sys/ktrace.h",
         "sys/malloc.h",
         "sys/mman.h",

@@ -1292,6 +1292,8 @@ in6_pktinfo
 initgroups
 kevent
 killpg
+kinfo_cputime
+kinfo_file
 kqueue
 labs
 lastlog
