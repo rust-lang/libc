@@ -196,3 +196,14 @@ struct log_record_t {
     tv: timeval,
     message: [c_char; LOG_MAX_LINE_LENGTH],
 }
+
+#[cfg(not(any(target_pointer_width = "16", target_pointer_width = "32")))]
+#[repr(C, align(16))]
+struct LongDoubleWrap {
+    inner: u128,
+}
+#[cfg(any(target_pointer_width = "16", target_pointer_width = "32"))]
+#[repr(C)]
+struct LongDoubleWrap {
+    inner: c_double,
+}
