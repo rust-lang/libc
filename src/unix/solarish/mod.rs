@@ -1219,7 +1219,7 @@ pub const PS_QUERY: ::c_int = -2;
 pub const PS_MYID: ::c_int = -3;
 pub const PS_SOFT: ::c_int = -4;
 pub const PS_HARD: ::c_int = -5;
-pub const PS_QUERY_TIME: ::c_int = -6;
+pub const PS_QUERY_TYPE: ::c_int = -6;
 pub const PS_SYSTEM: ::c_int = 1;
 pub const PS_PRIVATE: ::c_int = 2;
 
@@ -1512,6 +1512,42 @@ pub const AF_POLICY: ::c_int = 29;
 pub const AF_INET_OFFLOAD: ::c_int = 30;
 pub const AF_TRILL: ::c_int = 31;
 pub const AF_PACKET: ::c_int = 32;
+
+pub const PF_UNSPEC: ::c_int = AF_UNSPEC;
+pub const PF_UNIX: ::c_int = AF_UNIX;
+pub const PF_LOCAL: ::c_int = PF_UNIX;
+pub const PF_FILE: ::c_int = PF_UNIX;
+pub const PF_INET: ::c_int = AF_INET;
+pub const PF_IMPLINK: ::c_int = AF_IMPLINK;
+pub const PF_PUP: ::c_int = AF_PUP;
+pub const PF_CHAOS: ::c_int = AF_CHAOS;
+pub const PF_NS: ::c_int = AF_NS;
+pub const PF_NBS: ::c_int = AF_NBS;
+pub const PF_ECMA: ::c_int = AF_ECMA;
+pub const PF_DATAKIT: ::c_int = AF_DATAKIT;
+pub const PF_CCITT: ::c_int = AF_CCITT;
+pub const PF_SNA: ::c_int = AF_SNA;
+pub const PF_DECnet: ::c_int = AF_DECnet;
+pub const PF_DLI: ::c_int = AF_DLI;
+pub const PF_LAT: ::c_int = AF_LAT;
+pub const PF_HYLINK: ::c_int = AF_HYLINK;
+pub const PF_APPLETALK: ::c_int = AF_APPLETALK;
+pub const PF_NIT: ::c_int = AF_NIT;
+pub const PF_802: ::c_int = AF_802;
+pub const PF_OSI: ::c_int = AF_OSI;
+pub const PF_X25: ::c_int = AF_X25;
+pub const PF_OSINET: ::c_int = AF_OSINET;
+pub const PF_GOSIP: ::c_int = AF_GOSIP;
+pub const PF_IPX: ::c_int = AF_IPX;
+pub const PF_ROUTE: ::c_int = AF_ROUTE;
+pub const PF_LINK: ::c_int = AF_LINK;
+pub const PF_INET6: ::c_int = AF_INET6;
+pub const PF_KEY: ::c_int = AF_KEY;
+pub const PF_NCA: ::c_int = AF_NCA;
+pub const PF_POLICY: ::c_int = AF_POLICY;
+pub const PF_INET_OFFLOAD: ::c_int = AF_INET_OFFLOAD;
+pub const PF_TRILL: ::c_int = AF_TRILL;
+pub const PF_PACKET: ::c_int = AF_PACKET;
 
 pub const SOCK_DGRAM: ::c_int = 1;
 pub const SOCK_STREAM: ::c_int = 2;
@@ -2815,7 +2851,6 @@ extern "C" {
     pub fn getexecname() -> *const ::c_char;
 
     pub fn gethostid() -> ::c_long;
-    pub fn sethostid(hostid: ::c_long) -> ::c_int;
 
     pub fn getpflags(flags: ::c_uint) -> ::c_uint;
     pub fn setpflags(flags: ::c_uint, value: ::c_uint) -> ::c_int;
