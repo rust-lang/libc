@@ -53,6 +53,15 @@ pub const SOL_FILTER: ::c_int = 0xfffc;
 
 pub const MR_HDR_AOUT: ::c_uint = 0x3;
 
+pub const B1000000: ::speed_t = 24;
+pub const B1152000: ::speed_t = 25;
+pub const B1500000: ::speed_t = 26;
+pub const B2000000: ::speed_t = 27;
+pub const B2500000: ::speed_t = 28;
+pub const B3000000: ::speed_t = 29;
+pub const B3500000: ::speed_t = 30;
+pub const B4000000: ::speed_t = 31;
+
 extern "C" {
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
 
