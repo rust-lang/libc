@@ -2817,7 +2817,10 @@ extern "C" {
 
     pub fn getpflags(flags: ::c_uint) -> ::c_uint;
     pub fn setpflags(flags: ::c_uint, value: ::c_uint) -> ::c_int;
+}
 
+#[link(name = "sendfile")]
+extern "C" {
     pub fn sendfile(out_fd: ::c_int, in_fd: ::c_int, off: *mut ::off_t, len: ::size_t)
         -> ::ssize_t;
     pub fn sendfilev(
