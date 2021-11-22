@@ -899,6 +899,9 @@ fn test_solarish(target: &str) {
             "door_arg_t" if field.ends_with("_ptr") => true,
             "door_arg_t" if field.ends_with("rbuf") => true,
 
+            // anonymous union challenges
+            "fpregset_t" if field == "fp_reg_set" => true,
+
             _ => false,
         }
     });

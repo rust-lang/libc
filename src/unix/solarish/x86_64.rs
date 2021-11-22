@@ -32,7 +32,7 @@ s_no_extra_traits! {
 
     pub struct mcontext_t {
         pub gregs: [::greg_t; 28],
-        pub fpgregs: fpregset_t,
+        pub fpregs: fpregset_t,
     }
 
     pub struct ucontext_t {
@@ -89,7 +89,7 @@ cfg_if! {
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
                 self.gregs == other.gregs &&
-                    self.fpgregs == other.fpgregs
+                    self.fpregs == other.fpregs
             }
         }
         impl Eq for mcontext_t {}
@@ -97,7 +97,7 @@ cfg_if! {
             fn fmt(&self, f:&mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("gregs", &self.gregs)
-                    .field("fpgregs", &self.fpgregs)
+                    .field("fpregs", &self.fpregs)
                     .finish()
             }
         }
