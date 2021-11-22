@@ -139,6 +139,7 @@ RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
+armv7-unknown-linux-uclibceabihf \
 i686-pc-windows-gnu \
 riscv64gc-unknown-linux-gnu \
 wasm32-wasi \
