@@ -172,3 +172,8 @@ typedef struct
   timeval tv;
   char message[LOG_MAX_LINE_LENGTH];
 } log_record_t;
+
+typedef struct
+{
+  long double inner;
+} LongDoubleWrap;
