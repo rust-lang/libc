@@ -1333,6 +1333,8 @@ extern "C" {
     pub fn pthread_setname_np(thread: ::pthread_t, name: *const ::c_char) -> ::c_int;
 
     pub fn sethostid(hostid: ::c_long) -> ::c_int;
+
+    pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
 }
 
 extern "C" {

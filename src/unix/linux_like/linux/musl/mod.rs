@@ -770,6 +770,8 @@ extern "C" {
     pub fn clock_adjtime(clk_id: ::clockid_t, buf: *mut ::timex) -> ::c_int;
 
     pub fn ctermid(s: *mut ::c_char) -> *mut ::c_char;
+
+    pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {
