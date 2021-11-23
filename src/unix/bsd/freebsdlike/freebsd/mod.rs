@@ -1962,11 +1962,6 @@ pub const IFF_POINTOPOINT: ::c_int = 0x10;
 pub const IFF_KNOWSEPOCH: ::c_int = 0x20;
 /// (d) resources allocated
 pub const IFF_RUNNING: ::c_int = 0x40;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.54",
-    note = "IFF_DRV_RUNNING is deprecated. Use the portable IFF_RUNNING instead"
-)]
 /// (d) resources allocate
 pub const IFF_DRV_RUNNING: ::c_int = 0x40;
 /// (n) no address resolution protocol
@@ -1977,8 +1972,6 @@ pub const IFF_PROMISC: ::c_int = 0x100;
 pub const IFF_ALLMULTI: ::c_int = 0x200;
 /// (d) tx hardware queue is full
 pub const IFF_OACTIVE: ::c_int = 0x400;
-#[doc(hidden)]
-#[deprecated(since = "0.2.54", note = "Use the portable `IFF_OACTIVE` instead")]
 /// (d) tx hardware queue is full
 pub const IFF_DRV_OACTIVE: ::c_int = 0x400;
 /// (i) can't hear own transmissions
