@@ -18,7 +18,7 @@ default-features = false
 [build-dependencies]
 cc = "1.0.61"
 # FIXME: Use fork ctest until the maintainer gets back.
-ctest2 = "0.4.2"
+ctest2 = "0.4.3"
 
 [features]
 default = [ "std" ]
