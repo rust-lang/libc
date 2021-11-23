@@ -139,7 +139,6 @@ RUST_NIGHTLY_LINUX_TARGETS="\
 aarch64-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
-armv7-unknown-linux-uclibceabihf \
 i686-pc-windows-gnu \
 riscv64gc-unknown-linux-gnu \
 wasm32-wasi \
@@ -217,6 +216,7 @@ for TARGET in $TARGETS; do
     fi
 done
 
+# Targets which are not available via rustup and must be built with -Zbuild-std
 RUST_LINUX_NO_CORE_TARGETS="\
 aarch64-pc-windows-msvc \
 aarch64-unknown-freebsd \
@@ -226,6 +226,7 @@ aarch64-unknown-openbsd \
 aarch64-wrs-vxworks \
 armebv7r-none-eabi \
 armebv7r-none-eabihf \
+armv7-unknown-linux-uclibceabihf \
 armv7-wrs-vxworks-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
