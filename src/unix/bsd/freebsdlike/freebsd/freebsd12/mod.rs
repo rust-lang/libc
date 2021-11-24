@@ -194,7 +194,7 @@ s! {
         pub ki_jid: ::c_int,
         /// Number of threads in total.
         pub ki_numthreads: ::c_int,
-        // Thread ID.
+        /// Thread ID.
         pub ki_tid: ::lwpid_t,
         /// Process priority.
         pub ki_pri: ::priority,
