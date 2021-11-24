@@ -247,6 +247,17 @@ s_no_extra_traits! {
         // Array length changed from 88 to 1024 in FreeBSD 12:
         pub f_mntonname: [::c_char; 88],
     }
+
+    pub struct vnstat {
+        pub vn_fileid: u64,
+        pub vn_size: u64,
+        pub vn_mntdir: *mut ::c_char,
+        pub vn_dev: u32,
+        pub vn_fsid: u32,
+        pub vn_type: ::c_int,
+        pub vn_mode: u16,
+        pub vn_devname: [::c_char; ::SPECNAMELEN as usize + 1],
+    }
 }
 
 cfg_if! {
@@ -366,6 +377,53 @@ cfg_if! {
                 self.d_name[..self.d_namlen as _].hash(state);
             }
         }
+
+        impl PartialEq for vnstat {
+            fn eq(&self, other: &vnstat) -> bool {
+                let self_vn_devname: &[::c_char] = &self.vn_devname;
+                let other_vn_devname: &[::c_char] = &other.vn_devname;
+
+                self.vn_fileid == other.vn_fileid &&
+                self.vn_size == other.vn_size &&
+                self.vn_mntdir == other.vn_mntdir &&
+                self.vn_dev == other.vn_dev &&
+                self.vn_fsid == other.vn_fsid &&
+                self.vn_type == other.vn_type &&
+                self.vn_mode == other.vn_mode &&
+                self_vn_devname == other_vn_devname
+            }
+        }
+        impl Eq for vnstat {}
+        impl ::fmt::Debug for vnstat {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let self_vn_devname: &[::c_char] = &self.vn_devname;
+
+                f.debug_struct("vnstat")
+                    .field("vn_fileid", &self.vn_fileid)
+                    .field("vn_size", &self.vn_size)
+                    .field("vn_mntdir", &self.vn_mntdir)
+                    .field("vn_dev", &self.vn_dev)
+                    .field("vn_fsid", &self.vn_fsid)
+                    .field("vn_type", &self.vn_type)
+                    .field("vn_mode", &self.vn_mode)
+                    .field("vn_devname", &self_vn_devname)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for vnstat {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let self_vn_devname: &[::c_char] = &self.vn_devname;
+
+                self.vn_fileid.hash(state);
+                self.vn_size.hash(state);
+                self.vn_mntdir.hash(state);
+                self.vn_dev.hash(state);
+                self.vn_fsid.hash(state);
+                self.vn_type.hash(state);
+                self.vn_mode.hash(state);
+                self_vn_devname.hash(state);
+            }
+        }
     }
 }
 
@@ -373,6 +431,8 @@ pub const ELAST: ::c_int = 96;
 pub const RAND_MAX: ::c_int = 0x7fff_fffd;
 pub const KI_NSPARE_PTR: usize = 6;
 pub const MINCORE_SUPER: ::c_int = 0x20;
+/// max length of devicename
+pub const SPECNAMELEN: ::c_int = 63;
 
 extern "C" {
     // Return type ::c_int was removed in FreeBSD 12

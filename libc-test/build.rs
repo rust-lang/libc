@@ -1918,7 +1918,7 @@ fn test_freebsd(target: &str) {
             }
             // Field is named `type` in C but that is a Rust keyword,
             // so these fields are translated to `type_` in the bindings.
-            "type_" if struct_ == "rtprio" => "type".to_string(),
+            "type_" if struct_ == "rtprio" || struct_ == "sockstat" => "type".to_string(),
             s => s.to_string(),
         }
     });
@@ -2105,6 +2105,8 @@ fn test_freebsd(target: &str) {
             }
             // Added in freebsd 12.
             "IFF_NOGROUP" | "IFCAP_TXRTLMT" | "IFCAP_HWRXTSTMP" if Some(12) > freebsd_ver => true,
+            // Added in FreeBSD 13.
+            "PS_FST_TYPE_EVENTFD" if Some(13) > freebsd_ver => true,
 
             _ => false,
         }
