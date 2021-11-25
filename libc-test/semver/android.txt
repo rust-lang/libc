@@ -3056,6 +3056,7 @@ pthread_spin_unlock
 pthread_spinlock_t
 pthread_t
 ptrace
+ptrace_peeksiginfo_args
 ptrdiff_t
 ptsname
 ptsname_r

@@ -349,6 +349,12 @@ s! {
         pub instruction_pointer: ::__u64,
         pub args: [::__u64; 6],
     }
+
+    pub struct ptrace_peeksiginfo_args {
+        pub off: ::__u64,
+        pub flags: ::__u32,
+        pub nr: ::__s32,
+    }
 }
 
 s_no_extra_traits! {
