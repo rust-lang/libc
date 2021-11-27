@@ -1697,6 +1697,9 @@ extern "C" {
 
     pub fn strsep(string: *mut *mut ::c_char, delimiters: *const ::c_char) -> *mut ::c_char;
     pub fn explicit_bzero(buf: *mut ::c_void, len: ::size_t);
+
+    pub fn login_tty(_fd: ::c_int) -> ::c_int;
+    pub fn fgetln(stream: *mut ::FILE, _length: *mut ::size_t) -> *mut ::c_char;
 }
 
 cfg_if! {
