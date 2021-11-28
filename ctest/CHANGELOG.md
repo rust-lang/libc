@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.4.3
+
+* Add support for long double [#30]
+
+[#30]: https://github.com/JohnTitor/ctest2/pull/30
+
 ## 0.4.2
 
 * Allow to subtract in constants [#28]
