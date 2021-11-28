@@ -1168,6 +1168,7 @@ impl<'a> Generator<'a> {
 
     fn rust2c(&self, ty: &str) -> String {
         match ty {
+            "c_longdouble" | "c_long_double" => format!("long double"),
             t if t.starts_with("c_") => match &ty[2..].replace("long", " long")[..] {
                 s if s.starts_with('u') => format!("unsigned {}", &s[1..]),
                 "short" => "short".to_string(),
