@@ -39,6 +39,8 @@ pub type u_short = ::c_ushort;
 
 pub type caddr_t = *mut ::c_char;
 
+pub type fhandle_t = fhandle;
+
 // It's an alias over "struct __kvm_t". However, its fields aren't supposed to be used directly,
 // making the type definition system dependent. Better not bind it exactly.
 pub type kvm_t = ::c_void;
@@ -644,6 +646,17 @@ s! {
     pub struct __c_anonymous_ph {
         pub ph1: u64,
         pub ph2: u64,
+    }
+
+    pub struct fid {
+        pub fid_len: ::c_ushort,
+        pub fid_data0: ::c_ushort,
+        pub fid_data: [::c_char; ::MAXFIDSZ as usize],
+    }
+
+    pub struct fhandle {
+        pub fh_fsid: ::fsid_t,
+        pub fh_fid: fid,
     }
 }
 
@@ -3125,6 +3138,159 @@ pub const PS_FST_FFLAG_DIRECT: ::c_int = 0x1000;
 pub const PS_FST_FFLAG_EXEC: ::c_int = 0x2000;
 pub const PS_FST_FFLAG_HASLOCK: ::c_int = 0x4000;
 
+// sys/mount.h
+
+/// File identifier.
+/// These are unique per filesystem on a single machine.
+///
+/// Note that the offset of fid_data is 4 bytes, so care must be taken to avoid
+/// undefined behavior accessing unaligned fields within an embedded struct.
+pub const MAXFIDSZ: ::c_int = 16;
+/// Length of type name including null.
+pub const MFSNAMELEN: ::c_int = 16;
+cfg_if! {
+    if #[cfg(any(freebsd10, freebsd11))] {
+        /// Size of on/from name bufs.
+        pub const MNAMELEN: ::c_int = 88;
+    } else {
+        /// Size of on/from name bufs.
+        pub const MNAMELEN: ::c_int = 1024;
+    }
+}
+
+/// Using journaled soft updates.
+pub const MNT_SUJ: u64 = 0x100000000;
+/// Mounted by automountd(8).
+pub const MNT_AUTOMOUNTED: u64 = 0x200000000;
+/// Filesys metadata untrusted.
+pub const MNT_UNTRUSTED: u64 = 0x800000000;
+
+/// Require TLS.
+pub const MNT_EXTLS: u64 = 0x4000000000;
+/// Require TLS with client cert.
+pub const MNT_EXTLSCERT: u64 = 0x8000000000;
+/// Require TLS with user cert.
+pub const MNT_EXTLSCERTUSER: u64 = 0x10000000000;
+
+/// Filesystem is stored locally.
+pub const MNT_LOCAL: u64 = 0x000001000;
+/// Quotas are enabled on fs.
+pub const MNT_QUOTA: u64 = 0x000002000;
+/// Identifies the root fs.
+pub const MNT_ROOTFS: u64 = 0x000004000;
+/// Mounted by a user.
+pub const MNT_USER: u64 = 0x000008000;
+/// Do not show entry in df.
+pub const MNT_IGNORE: u64 = 0x000800000;
+/// Filesystem is verified.
+pub const MNT_VERIFIED: u64 = 0x400000000;
+
+/// Do not cover a mount point.
+pub const MNT_NOCOVER: u64 = 0x001000000000;
+/// Only mount on empty dir.
+pub const MNT_EMPTYDIR: u64 = 0x002000000000;
+/// Recursively unmount uppers.
+pub const MNT_RECURSE: u64 = 0x100000000000;
+/// Unmount in async context.
+pub const MNT_DEFERRED: u64 = 0x200000000000;
+
+/// Forced unmount in progress.
+pub const MNTK_UNMOUNTF: u32 = 0x00000001;
+/// Filtered async flag.
+pub const MNTK_ASYNC: u32 = 0x00000002;
+/// Async disabled by softdep.
+pub const MNTK_SOFTDEP: u32 = 0x00000004;
+/// Don't do msync.
+pub const MNTK_NOMSYNC: u32 = 0x00000008;
+/// Lock draining is happening.
+pub const MNTK_DRAINING: u32 = 0x00000010;
+/// Refcount expiring is happening.
+pub const MNTK_REFEXPIRE: u32 = 0x00000020;
+/// Allow shared locking for more ops.
+pub const MNTK_EXTENDED_SHARED: u32 = 0x00000040;
+/// Allow shared locking for writes.
+pub const MNTK_SHARED_WRITES: u32 = 0x00000080;
+/// Disallow page faults during reads and writes. Filesystem shall properly handle i/o
+/// state on EFAULT.
+pub const MNTK_NO_IOPF: u32 = 0x00000100;
+/// Pending recursive unmount.
+pub const MNTK_RECURSE: u32 = 0x00000200;
+/// Waiting to drain MNTK_UPPER_PENDING.
+pub const MNTK_UPPER_WAITER: u32 = 0x00000400;
+pub const MNTK_LOOKUP_EXCL_DOTDOT: u32 = 0x00000800;
+pub const MNTK_UNMAPPED_BUFS: u32 = 0x00002000;
+/// FS uses the buffer cache.
+pub const MNTK_USES_BCACHE: u32 = 0x00004000;
+/// Keep use ref for text.
+pub const MNTK_TEXT_REFS: u32 = 0x00008000;
+pub const MNTK_VMSETSIZE_BUG: u32 = 0x00010000;
+/// A hack for F_ISUNIONSTACK.
+pub const MNTK_UNIONFS: u32 = 0x00020000;
+/// fast path lookup is supported.
+pub const MNTK_FPLOOKUP: u32 = 0x00040000;
+/// Suspended by all-fs suspension.
+pub const MNTK_SUSPEND_ALL: u32 = 0x00080000;
+/// Waiting on unmount taskqueue.
+pub const MNTK_TASKQUEUE_WAITER: u32 = 0x00100000;
+/// Disable async.
+pub const MNTK_NOASYNC: u32 = 0x00800000;
+/// Unmount in progress.
+pub const MNTK_UNMOUNT: u32 = 0x01000000;
+/// Waiting for unmount to finish.
+pub const MNTK_MWAIT: u32 = 0x02000000;
+/// Request write suspension.
+pub const MNTK_SUSPEND: u32 = 0x08000000;
+/// Block secondary writes.
+pub const MNTK_SUSPEND2: u32 = 0x04000000;
+/// Write operations are suspended.
+pub const MNTK_SUSPENDED: u32 = 0x10000000;
+/// auto disable cache for nullfs mounts over this fs.
+pub const MNTK_NULL_NOCACHE: u32 = 0x20000000;
+/// FS supports shared lock lookups.
+pub const MNTK_LOOKUP_SHARED: u32 = 0x40000000;
+/// Don't send KNOTEs from VOP hooks.
+pub const MNTK_NOKNOTE: u32 = 0x80000000;
+
+/// Get configured filesystems.
+pub const VFS_VFSCONF: ::c_int = 0;
+/// Generic filesystem information.
+pub const VFS_GENERIC: ::c_int = 0;
+
+/// int: highest defined filesystem type.
+pub const VFS_MAXTYPENUM: ::c_int = 1;
+/// struct: vfsconf for filesystem given as next argument.
+pub const VFS_CONF: ::c_int = 2;
+
+/// Synchronously wait for I/O to complete.
+pub const MNT_WAIT: ::c_int = 1;
+/// Start all I/O, but do not wait for it.
+pub const MNT_NOWAIT: ::c_int = 2;
+/// Push data not written by filesystem syncer.
+pub const MNT_LAZY: ::c_int = 3;
+/// Suspend file system after sync.
+pub const MNT_SUSPEND: ::c_int = 4;
+
+pub const MAXSECFLAVORS: ::c_int = 5;
+
+/// Statically compiled into kernel.
+pub const VFCF_STATIC: ::c_int = 0x00010000;
+/// May get data over the network.
+pub const VFCF_NETWORK: ::c_int = 0x00020000;
+/// Writes are not implemented.
+pub const VFCF_READONLY: ::c_int = 0x00040000;
+/// Data does not represent real files.
+pub const VFCF_SYNTHETIC: ::c_int = 0x00080000;
+/// Aliases some other mounted FS.
+pub const VFCF_LOOPBACK: ::c_int = 0x00100000;
+/// Stores file names as Unicode.
+pub const VFCF_UNICODE: ::c_int = 0x00200000;
+/// Can be mounted from within a jail.
+pub const VFCF_JAIL: ::c_int = 0x00400000;
+/// Supports delegated administration.
+pub const VFCF_DELEGADMIN: ::c_int = 0x00800000;
+/// Stop at Boundary: defer stop requests to kernel->user (AST) transition.
+pub const VFCF_SBDRY: ::c_int = 0x01000000;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -3225,6 +3391,26 @@ f! {
 safe_f! {
     pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0 && status != 0x13
+    }
+}
+
+cfg_if! {
+    if #[cfg(not(any(freebsd10, freebsd11)))] {
+        extern "C" {
+            pub fn fhlink(fhp: *mut fhandle_t, to: *const ::c_char) -> ::c_int;
+            pub fn fhlinkat(fhp: *mut fhandle_t, tofd: ::c_int, to: *const ::c_char) -> ::c_int;
+            pub fn fhreadlink(
+                fhp: *mut fhandle_t,
+                buf: *mut ::c_char,
+                bufsize: ::size_t,
+            ) -> ::c_int;
+            pub fn getfhat(
+                fd: ::c_int,
+                path: *mut ::c_char,
+                fhp: *mut fhandle,
+                flag: ::c_int,
+            ) -> ::c_int;
+        }
     }
 }
 
@@ -3520,7 +3706,21 @@ extern "C" {
         needlelen: ::size_t,
     ) -> *mut ::c_void;
 
+    pub fn fhopen(fhp: *const fhandle_t, flags: ::c_int) -> ::c_int;
+    pub fn fhstat(fhp: *const fhandle, buf: *mut ::stat) -> ::c_int;
+    pub fn fhstatfs(fhp: *const fhandle_t, buf: *mut ::statfs) -> ::c_int;
+    pub fn getfh(path: *const ::c_char, fhp: *mut fhandle_t) -> ::c_int;
+    pub fn lgetfh(path: *const ::c_char, fhp: *mut fhandle_t) -> ::c_int;
+    pub fn getfsstat(buf: *mut ::statfs, bufsize: ::c_long, mode: ::c_int) -> ::c_int;
+    pub fn getmntinfo(mntbufp: *mut *mut ::statfs, mode: ::c_int) -> ::c_int;
+    pub fn mount(
+        type_: *const ::c_char,
+        dir: *const ::c_char,
+        flags: ::c_int,
+        data: *mut ::c_void,
+    ) -> ::c_int;
     pub fn nmount(iov: *mut ::iovec, niov: ::c_uint, flags: ::c_int) -> ::c_int;
+
     pub fn setproctitle(fmt: *const ::c_char, ...);
     pub fn rfork(flags: ::c_int) -> ::c_int;
     pub fn cpuset_getaffinity(
