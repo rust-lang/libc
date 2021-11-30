@@ -235,6 +235,12 @@ s! {
         pub ss_flags: ::c_int,
         pub ss_size: ::size_t
     }
+
+    pub struct seccomp_notif_sizes {
+        pub seccomp_notif: ::__u16,
+        pub seccomp_notif_resp: ::__u16,
+        pub seccomp_data: ::__u16,
+    }
 }
 
 s_no_extra_traits! {
@@ -1114,6 +1120,11 @@ pub const REG_CS: ::c_int = 15;
 pub const REG_EFL: ::c_int = 16;
 pub const REG_UESP: ::c_int = 17;
 pub const REG_SS: ::c_int = 18;
+
+pub const SECCOMP_SET_MODE_STRICT: ::c_uint = 0;
+pub const SECCOMP_SET_MODE_FILTER: ::c_uint = 1;
+pub const SECCOMP_GET_ACTION_AVAIL: ::c_uint = 2;
+pub const SECCOMP_GET_NOTIF_SIZES: ::c_uint = 3;
 
 extern "C" {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
