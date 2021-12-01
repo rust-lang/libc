@@ -2136,6 +2136,9 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // Added in FreeBSD 14.
+            "PT_COREDUMP" | "PC_ALL" | "PC_COMPRESS" if Some(14) > freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -2169,6 +2172,9 @@ fn test_freebsd(target: &str) {
 
             // obsolete version
             "vmtotal" if Some(11) == freebsd_ver => true,
+
+            // `ptrace_coredump` introduced in FreeBSD 14.
+            "ptrace_coredump" if Some(14) > freebsd_ver => true,
 
             _ => false,
         }
