@@ -167,6 +167,12 @@ s! {
         pub sr_error: ::c_int,
     }
 
+    pub struct ptrace_coredump {
+        pub pc_fd: ::c_int,
+        pub pc_flags: u32,
+        pub pc_limit: ::off_t,
+    }
+
     pub struct cpuset_t {
         #[cfg(target_pointer_width = "64")]
         __bits: [::c_long; 4],
@@ -1948,6 +1954,7 @@ pub const PT_GET_EVENT_MASK: ::c_int = 25;
 pub const PT_SET_EVENT_MASK: ::c_int = 26;
 pub const PT_GET_SC_ARGS: ::c_int = 27;
 pub const PT_GET_SC_RET: ::c_int = 28;
+pub const PT_COREDUMP: ::c_int = 29;
 pub const PT_GETREGS: ::c_int = 33;
 pub const PT_SETREGS: ::c_int = 34;
 pub const PT_GETFPREGS: ::c_int = 35;
@@ -1966,6 +1973,9 @@ pub const PTRACE_FORK: ::c_int = 0x0008;
 pub const PTRACE_LWP: ::c_int = 0x0010;
 pub const PTRACE_VFORK: ::c_int = 0x0020;
 pub const PTRACE_DEFAULT: ::c_int = PTRACE_EXEC;
+
+pub const PC_COMPRESS: u32 = 0x00000001;
+pub const PC_ALL: u32 = 0x00000002;
 
 pub const PROC_SPROTECT: ::c_int = 1;
 pub const PROC_REAP_ACQUIRE: ::c_int = 2;
