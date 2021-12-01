@@ -2109,6 +2109,33 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 13.
             "PS_FST_TYPE_EVENTFD" if Some(13) > freebsd_ver => true,
 
+            // Added in FreeBSD 14.
+            "MNT_RECURSE"
+            | "MNT_DEFERRED"
+            | "MNTK_RECURSE"
+            | "MNTK_UPPER_WAITER"
+            | "MNTK_TASKQUEUE_WAITER"
+                if Some(14) > freebsd_ver =>
+            {
+                true
+            }
+
+            // Added in FreeBSD 13.
+            "MNT_EXTLS" | "MNT_EXTLSCERT" | "MNT_EXTLSCERTUSER" | "MNT_NOCOVER"
+            | "MNT_EMPTYDIR" | "MNTK_NOMSYNC" | "MNTK_UNIONFS" | "MNTK_FPLOOKUP"
+            | "MNTK_SUSPEND_ALL"
+                if Some(13) > freebsd_ver =>
+            {
+                true
+            }
+
+            // Added in FreeBSD 12.
+            "MNT_UNTRUSTED" | "MNT_VERIFIED" | "MNTK_TEXT_REFS" | "MNTK_VMSETSIZE_BUG"
+                if Some(12) > freebsd_ver =>
+            {
+                true
+            }
+
             _ => false,
         }
     });
