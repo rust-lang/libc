@@ -39,6 +39,13 @@ pub type blkcnt_t = i64;
 pub type nfds_t = c_ulong;
 pub type wchar_t = i32;
 
+s_no_extra_traits! {
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
+    }
+}
+
 pub type __wasi_rights_t = u64;
 
 #[allow(missing_copy_implementations)]
