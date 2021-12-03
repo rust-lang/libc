@@ -45,6 +45,200 @@ pub type fhandle_t = fhandle;
 // making the type definition system dependent. Better not bind it exactly.
 pub type kvm_t = ::c_void;
 
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
+#[derive(PartialEq, Eq)]
+#[repr(u32)]
+pub enum devstat_support_flags {
+    DEVSTAT_ALL_SUPPORTED = 0x00,
+    DEVSTAT_NO_BLOCKSIZE = 0x01,
+    DEVSTAT_NO_ORDERED_TAGS = 0x02,
+    DEVSTAT_BS_UNAVAILABLE = 0x04,
+}
+impl ::Copy for devstat_support_flags {}
+impl ::Clone for devstat_support_flags {
+    fn clone(&self) -> devstat_support_flags {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
+#[derive(PartialEq, Eq)]
+#[repr(u32)]
+pub enum devstat_trans_flags {
+    DEVSTAT_NO_DATA = 0x00,
+    DEVSTAT_READ = 0x01,
+    DEVSTAT_WRITE = 0x02,
+    DEVSTAT_FREE = 0x03,
+}
+
+impl ::Copy for devstat_trans_flags {}
+impl ::Clone for devstat_trans_flags {
+    fn clone(&self) -> devstat_trans_flags {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
+#[derive(PartialEq, Eq)]
+#[repr(u32)]
+pub enum devstat_tag_type {
+    DEVSTAT_TAG_SIMPLE = 0x00,
+    DEVSTAT_TAG_HEAD = 0x01,
+    DEVSTAT_TAG_ORDERED = 0x02,
+    DEVSTAT_TAG_NONE = 0x03,
+}
+impl ::Copy for devstat_tag_type {}
+impl ::Clone for devstat_tag_type {
+    fn clone(&self) -> devstat_tag_type {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
+#[derive(PartialEq, Eq)]
+#[repr(u32)]
+pub enum devstat_match_flags {
+    DEVSTAT_MATCH_NONE = 0x00,
+    DEVSTAT_MATCH_TYPE = 0x01,
+    DEVSTAT_MATCH_IF = 0x02,
+    DEVSTAT_MATCH_PASS = 0x04,
+}
+impl ::Copy for devstat_match_flags {}
+impl ::Clone for devstat_match_flags {
+    fn clone(&self) -> devstat_match_flags {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
+#[derive(PartialEq, Eq)]
+#[repr(u32)]
+pub enum devstat_priority {
+    DEVSTAT_PRIORITY_MIN = 0x000,
+    DEVSTAT_PRIORITY_OTHER = 0x020,
+    DEVSTAT_PRIORITY_PASS = 0x030,
+    DEVSTAT_PRIORITY_FD = 0x040,
+    DEVSTAT_PRIORITY_WFD = 0x050,
+    DEVSTAT_PRIORITY_TAPE = 0x060,
+    DEVSTAT_PRIORITY_CD = 0x090,
+    DEVSTAT_PRIORITY_DISK = 0x110,
+    DEVSTAT_PRIORITY_ARRAY = 0x120,
+    DEVSTAT_PRIORITY_MAX = 0xfff,
+}
+impl ::Copy for devstat_priority {}
+impl ::Clone for devstat_priority {
+    fn clone(&self) -> devstat_priority {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
+#[derive(PartialEq, Eq)]
+#[repr(u32)]
+pub enum devstat_type_flags {
+    DEVSTAT_TYPE_DIRECT = 0x000,
+    DEVSTAT_TYPE_SEQUENTIAL = 0x001,
+    DEVSTAT_TYPE_PRINTER = 0x002,
+    DEVSTAT_TYPE_PROCESSOR = 0x003,
+    DEVSTAT_TYPE_WORM = 0x004,
+    DEVSTAT_TYPE_CDROM = 0x005,
+    DEVSTAT_TYPE_SCANNER = 0x006,
+    DEVSTAT_TYPE_OPTICAL = 0x007,
+    DEVSTAT_TYPE_CHANGER = 0x008,
+    DEVSTAT_TYPE_COMM = 0x009,
+    DEVSTAT_TYPE_ASC0 = 0x00a,
+    DEVSTAT_TYPE_ASC1 = 0x00b,
+    DEVSTAT_TYPE_STORARRAY = 0x00c,
+    DEVSTAT_TYPE_ENCLOSURE = 0x00d,
+    DEVSTAT_TYPE_FLOPPY = 0x00e,
+    DEVSTAT_TYPE_MASK = 0x00f,
+    DEVSTAT_TYPE_IF_SCSI = 0x010,
+    DEVSTAT_TYPE_IF_IDE = 0x020,
+    DEVSTAT_TYPE_IF_OTHER = 0x030,
+    DEVSTAT_TYPE_IF_MASK = 0x0f0,
+    DEVSTAT_TYPE_PASS = 0x100,
+}
+impl ::Copy for devstat_type_flags {}
+impl ::Clone for devstat_type_flags {
+    fn clone(&self) -> devstat_type_flags {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
+#[derive(PartialEq, Eq)]
+#[repr(u32)]
+pub enum devstat_metric {
+    DSM_NONE,
+    DSM_TOTAL_BYTES,
+    DSM_TOTAL_BYTES_READ,
+    DSM_TOTAL_BYTES_WRITE,
+    DSM_TOTAL_TRANSFERS,
+    DSM_TOTAL_TRANSFERS_READ,
+    DSM_TOTAL_TRANSFERS_WRITE,
+    DSM_TOTAL_TRANSFERS_OTHER,
+    DSM_TOTAL_BLOCKS,
+    DSM_TOTAL_BLOCKS_READ,
+    DSM_TOTAL_BLOCKS_WRITE,
+    DSM_KB_PER_TRANSFER,
+    DSM_KB_PER_TRANSFER_READ,
+    DSM_KB_PER_TRANSFER_WRITE,
+    DSM_TRANSFERS_PER_SECOND,
+    DSM_TRANSFERS_PER_SECOND_READ,
+    DSM_TRANSFERS_PER_SECOND_WRITE,
+    DSM_TRANSFERS_PER_SECOND_OTHER,
+    DSM_MB_PER_SECOND,
+    DSM_MB_PER_SECOND_READ,
+    DSM_MB_PER_SECOND_WRITE,
+    DSM_BLOCKS_PER_SECOND,
+    DSM_BLOCKS_PER_SECOND_READ,
+    DSM_BLOCKS_PER_SECOND_WRITE,
+    DSM_MS_PER_TRANSACTION,
+    DSM_MS_PER_TRANSACTION_READ,
+    DSM_MS_PER_TRANSACTION_WRITE,
+    DSM_SKIP,
+    DSM_TOTAL_BYTES_FREE,
+    DSM_TOTAL_TRANSFERS_FREE,
+    DSM_TOTAL_BLOCKS_FREE,
+    DSM_KB_PER_TRANSFER_FREE,
+    DSM_MB_PER_SECOND_FREE,
+    DSM_TRANSFERS_PER_SECOND_FREE,
+    DSM_BLOCKS_PER_SECOND_FREE,
+    DSM_MS_PER_TRANSACTION_OTHER,
+    DSM_MS_PER_TRANSACTION_FREE,
+    DSM_BUSY_PCT,
+    DSM_QUEUE_LENGTH,
+    DSM_TOTAL_DURATION,
+    DSM_TOTAL_DURATION_READ,
+    DSM_TOTAL_DURATION_WRITE,
+    DSM_TOTAL_DURATION_FREE,
+    DSM_TOTAL_DURATION_OTHER,
+    DSM_TOTAL_BUSY_TIME,
+    DSM_MAX,
+}
+impl ::Copy for devstat_metric {}
+impl ::Clone for devstat_metric {
+    fn clone(&self) -> devstat_metric {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
+#[derive(PartialEq, Eq)]
+#[repr(u32)]
+pub enum devstat_select_mode {
+    DS_SELECT_ADD,
+    DS_SELECT_ONLY,
+    DS_SELECT_REMOVE,
+    DS_SELECT_ADDONLY,
+}
+impl ::Copy for devstat_select_mode {}
+impl ::Clone for devstat_select_mode {
+    fn clone(&self) -> devstat_select_mode {
+        *self
+    }
+}
+
 s! {
     pub struct aiocb {
         pub aio_fildes: ::c_int,
@@ -663,6 +857,93 @@ s! {
     pub struct fhandle {
         pub fh_fsid: ::fsid_t,
         pub fh_fid: fid,
+    }
+
+    pub struct bintime {
+        pub sec: ::time_t,
+        pub frac: u64,
+    }
+
+    pub struct clockinfo {
+        /// clock frequency
+        pub hz: ::c_int,
+        /// micro-seconds per hz tick
+        pub tick: ::c_int,
+        pub spare: ::c_int,
+        /// statistics clock frequency
+        pub stathz: ::c_int,
+        /// profiling clock frequency
+        pub profhz: ::c_int,
+    }
+
+    pub struct __c_anonymous_stailq_entry_devstat {
+        pub stqe_next: *mut devstat,
+    }
+
+    pub struct devstat {
+        /// Update sequence
+        pub sequence0: ::u_int,
+        /// Allocated entry
+        pub allocated: ::c_int,
+        /// started ops
+        pub start_count: ::u_int,
+        /// completed ops
+        pub end_count: ::u_int,
+        /// busy time unaccounted for since this time
+        pub busy_from: bintime,
+        pub dev_links: __c_anonymous_stailq_entry_devstat,
+        /// Devstat device number.
+        pub device_number: u32,
+        pub device_name: [::c_char; DEVSTAT_NAME_LEN as usize],
+        pub unit_number: ::c_int,
+        pub bytes: [u64; DEVSTAT_N_TRANS_FLAGS as usize],
+        pub operations: [u64; DEVSTAT_N_TRANS_FLAGS as usize],
+        pub duration: [bintime; DEVSTAT_N_TRANS_FLAGS as usize],
+        pub busy_time: bintime,
+        /// Time the device was created.
+        pub creation_time: bintime,
+        /// Block size, bytes
+        pub block_size: u32,
+        /// The number of simple, ordered, and head of queue tags sent.
+        pub tag_types: [u64; 3],
+        /// Which statistics are supported by a given device.
+        pub flags: devstat_support_flags,
+        /// Device type
+        pub device_type: devstat_type_flags,
+        /// Controls list pos.
+        pub priority: devstat_priority,
+        /// Identification for GEOM nodes
+        pub id: *const ::c_void,
+        /// Update sequence
+        pub sequence1: ::u_int,
+    }
+
+    pub struct devstat_match {
+        pub match_fields: devstat_match_flags,
+        pub device_type: devstat_type_flags,
+        pub num_match_categories: ::c_int,
+    }
+
+    pub struct devstat_match_table {
+        pub match_str: *const ::c_char,
+        pub type_: devstat_type_flags,
+        pub match_field: devstat_match_flags,
+    }
+
+    pub struct device_selection {
+        pub device_number: u32,
+        pub device_name: [::c_char; DEVSTAT_NAME_LEN as usize],
+        pub unit_number: ::c_int,
+        pub selected: ::c_int,
+        pub bytes: u64,
+        pub position: ::c_int,
+    }
+
+    pub struct devinfo {
+        pub devices: *mut devstat,
+        pub mem_ptr: *mut u8,
+        pub generation: ::c_long,
+        pub numdevs: ::c_int,
     }
 }
 
@@ -1517,6 +1798,10 @@ impl ::Clone for dot3Vendors {
         *self
     }
 }
+
+// sys/devicestat.h
+pub const DEVSTAT_N_TRANS_FLAGS: ::c_int = 4;
+pub const DEVSTAT_NAME_LEN: ::c_int = 16;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
@@ -3301,6 +3586,26 @@ pub const VFCF_DELEGADMIN: ::c_int = 0x00800000;
 /// Stop at Boundary: defer stop requests to kernel->user (AST) transition.
 pub const VFCF_SBDRY: ::c_int = 0x01000000;
 
+// time.h
+
+/// not on dst
+pub const DST_NONE: ::c_int = 0;
+/// USA style dst
+pub const DST_USA: ::c_int = 1;
+/// Australian style dst
+pub const DST_AUST: ::c_int = 2;
+/// Western European dst
+pub const DST_WET: ::c_int = 3;
+/// Middle European dst
+pub const DST_MET: ::c_int = 4;
+/// Eastern European dst
+pub const DST_EET: ::c_int = 5;
+/// Canada
+pub const DST_CAN: ::c_int = 6;
+
+pub const CPUCLOCK_WHICH_PID: ::c_int = 0;
+pub const CPUCLOCK_WHICH_TID: ::c_int = 1;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -3807,6 +4112,9 @@ extern "C" {
     pub fn procctl(idtype: ::idtype_t, id: ::id_t, cmd: ::c_int, data: *mut ::c_void) -> ::c_int;
 
     pub fn getpagesize() -> ::c_int;
+
+    pub fn adjtime(arg1: *const ::timeval, arg2: *mut ::timeval) -> ::c_int;
+    pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
 }
 
 #[link(name = "kvm")]
@@ -4015,6 +4323,35 @@ extern "C" {
         flags: ::c_int,
         value: *const itimerspec,
         ovalue: *mut itimerspec,
+    ) -> ::c_int;
+}
+
+#[link(name = "devstat")]
+extern "C" {
+    pub fn devstat_getnumdevs(kd: *mut kvm_t) -> ::c_int;
+    pub fn devstat_getgeneration(kd: *mut kvm_t) -> ::c_long;
+    pub fn devstat_getversion(kd: *mut kvm_t) -> ::c_int;
+    pub fn devstat_checkversion(kd: *mut kvm_t) -> ::c_int;
+    pub fn devstat_selectdevs(
+        dev_select: *mut *mut device_selection,
+        num_selected: *mut ::c_int,
+        num_selections: *mut ::c_int,
+        select_generation: *mut ::c_long,
+        current_generation: ::c_long,
+        devices: *mut devstat,
+        numdevs: ::c_int,
+        matches: *mut devstat_match,
+        num_matches: ::c_int,
+        dev_selections: *mut *mut ::c_char,
+        num_dev_selections: ::c_int,
+        select_mode: devstat_select_mode,
+        maxshowdevs: ::c_int,
+        perf_select: ::c_int,
+    ) -> ::c_int;
+    pub fn devstat_buildmatch(
+        match_str: *mut ::c_char,
+        matches: *mut *mut devstat_match,
+        num_matches: *mut ::c_int,
     ) -> ::c_int;
 }
 
