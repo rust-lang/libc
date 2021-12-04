@@ -110,12 +110,5 @@ pub const TIOCM_DSR: ::c_int = 0x100;
 pub const BOTHER: ::speed_t = 0o0037;
 pub const IBSHIFT: ::tcflag_t = 16;
 
-cfg_if! {
-    if #[cfg(target_endian = "little")] {
-        pub const BLKSSZGET: ::c_int = 0x1268;
-        pub const BLKPBSZGET: ::c_int = 0x127B;
-    } else if #[cfg(target_endian = "big")] {
-        pub const BLKSSZGET: ::c_int = 0x6812;
-        pub const BLKPBSZGET: ::c_int = 0x7B12;
-    }
-}
+pub const BLKSSZGET: ::c_int = 0x20001268;
+pub const BLKPBSZGET: ::c_int = 0x2000127B;
