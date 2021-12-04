@@ -1214,6 +1214,7 @@ fn test_dragonflybsd(target: &str) {
         "sys/event.h",
         "sys/file.h",
         "sys/ioctl.h",
+        "sys/cpuctl.h",
         "sys/ipc.h",
         "sys/kinfo.h",
         "sys/ktrace.h",

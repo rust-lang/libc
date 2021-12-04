@@ -143,6 +143,13 @@ CPU_CLR
 CPU_ISSET
 CPU_SET
 CPU_ZERO
+CPUCTL_RSMSR
+CPUCTL_WRMSR
+CPUCTL_CPUID
+CPUCTL_UPDATE
+CPUCTL_MSRSBIT
+CPUCTL_MSRCBIT
+CPUCTL_CPUID_COUNT
 CRNCYSTR
 CRTSCTS
 CRTS_IFLOW
@@ -1214,6 +1221,10 @@ clock_getres
 clock_settime
 cmsgcred
 cmsghdr
+cpuctl_cpuid_args_t
+cpuctl_cpuid_count_args_t
+cpuctl_msr_args_t
+cpuctl_update_args_t
 daemon
 devname_r
 difftime
