@@ -137,7 +137,7 @@ cfg_if! {
         pub const BLKSSZGET: ::c_int = 0x1268;
         pub const BLKPBSZGET: ::c_int = 0x127B;
     } else if #[cfg(target_endian = "big")] {
-        pub const BLKSSZGET: ::c_int = 0x6812;
-        pub const BLKPBSZGET: ::c_int = 0x7B12;
+        pub const BLKSSZGET: ::c_int = 0x20001268;
+        pub const BLKPBSZGET: ::c_int = 0x2000127B;
     }
 }
