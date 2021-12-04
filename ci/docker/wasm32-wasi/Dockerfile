@@ -16,7 +16,7 @@ RUN apt-get update && \
 # those breaking changes on `libc`'s own CI
 RUN git clone https://github.com/WebAssembly/wasi-libc && \
   cd wasi-libc && \
-  git reset --hard f2e779e5f1ba4a539937cedeeaa762c1e0c162df
+  git reset --hard ad5133410f66b93a2381db5b542aad5e0964db96
 RUN apt-get install -y --no-install-recommends llvm
 RUN make -C wasi-libc install -j $(nproc) INSTALL_DIR=/wasi-libc
 
