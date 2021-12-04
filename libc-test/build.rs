@@ -1767,6 +1767,8 @@ fn test_freebsd(target: &str) {
         _ => &mut cfg,
     };
 
+    // For sched linux compat fn
+    cfg.define("_WITH_CPU_SET_T", None);
     // Required for `getline`:
     cfg.define("_WITH_GETLINE", None);
     // Required for making freebsd11_stat available in the headers
@@ -2220,6 +2222,13 @@ fn test_freebsd(target: &str) {
             // We should probably be at least using `&`/`&mut` here, see:
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" => true,
+
+            // Those are introduced in FreeBSD 14.
+            "sched_getaffinity" | "sched_setaffinity" | "sched_getcpu"
+                if Some(14) > freebsd_ver =>
+            {
+                true
+            }
 
             _ => false,
         }
