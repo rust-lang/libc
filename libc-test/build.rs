@@ -3150,6 +3150,9 @@ fn test_linux(target: &str) {
             | "UDP_SEGMENT"
                 if uclibc => true,
 
+            // headers conflicts with linux/pidfd.h
+            "PIDFD_NONBLOCK" => true,
+
             _ => false,
         }
     });
