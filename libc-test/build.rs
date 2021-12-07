@@ -1693,6 +1693,9 @@ fn test_android(target: &str) {
             "reallocarray" => true,
             "__system_property_wait" => true,
 
+            // Added in API level 30, but tests use level 28.
+            "mlock2" => true,
+
             _ => false,
         }
     });
