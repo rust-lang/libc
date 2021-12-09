@@ -3976,6 +3976,16 @@ extern "C" {
         cpusetp: *const cpuset_t,
     ) -> ::c_int;
 
+    // sched.h linux compatibility api
+    pub fn sched_getaffinity(pid: ::pid_t, cpusetsz: ::size_t, cpuset: *mut ::cpuset_t) -> ::c_int;
+    // FIXME: the first argument's type might not be correct, fix later if that changes.
+    pub fn sched_setaffinity(
+        pid: ::c_int,
+        cpusetsz: ::size_t,
+        cpuset: *const ::cpuset_t,
+    ) -> ::c_int;
+    pub fn sched_getcpu() -> ::c_int;
+
     pub fn pthread_mutex_consistent(mutex: *mut ::pthread_mutex_t) -> ::c_int;
 
     pub fn pthread_mutexattr_getrobust(
