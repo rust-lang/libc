@@ -4037,6 +4037,10 @@ extern "C" {
     pub fn getfh(path: *const ::c_char, fhp: *mut fhandle_t) -> ::c_int;
     pub fn lgetfh(path: *const ::c_char, fhp: *mut fhandle_t) -> ::c_int;
     pub fn getfsstat(buf: *mut ::statfs, bufsize: ::c_long, mode: ::c_int) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "freebsd", freebsd11),
+        link_name = "getmntinfo@FBSD_1.0"
+    )]
     pub fn getmntinfo(mntbufp: *mut *mut ::statfs, mode: ::c_int) -> ::c_int;
     pub fn mount(
         type_: *const ::c_char,
