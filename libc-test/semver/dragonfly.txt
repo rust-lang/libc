@@ -1352,6 +1352,8 @@ openpty
 pause
 pipe2
 popen
+posix_fadvise
+posix_fallocate
 posix_madvise
 ppoll
 preadv
