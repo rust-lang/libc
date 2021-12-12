@@ -2302,6 +2302,9 @@ fn test_freebsd(target: &str) {
             ("kinfo_proc", "ki_tdaddr") => true,
             ("kinfo_proc", "ki_pd") => true,
 
+            // Anonymous type.
+            ("filestat", "next") => true,
+
             // We ignore this field because we needed to use a hack in order to make rust 1.19
             // happy...
             ("kinfo_proc", "ki_sparestrings") => true,
