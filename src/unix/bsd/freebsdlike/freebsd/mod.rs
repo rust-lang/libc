@@ -945,6 +945,17 @@ s! {
         pub generation: ::c_long,
         pub numdevs: ::c_int,
     }
+
+    pub struct sockcred2 {
+        pub sc_version: ::c_int,
+        pub sc_pid: ::pid_t,
+        pub sc_uid: ::uid_t,
+        pub sc_euid: ::uid_t,
+        pub sc_gid: ::gid_t,
+        pub sc_egid: ::gid_t,
+        pub sc_ngroups: ::c_int,
+        pub sc_groups: [::gid_t; 1],
+    }
 }
 
 s_no_extra_traits! {
@@ -3700,6 +3711,15 @@ f! {
         let bitset_bits = ::mem::size_of::<::c_long>();
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         0 != cpuset.__bits[idx] & (1 << offset)
+    }
+
+    pub fn SOCKCRED2SIZE(ngrps: usize) -> usize {
+        let ngrps = if ngrps > 0 {
+            ngrps - 1
+        } else {
+            0
+        };
+        ::mem::size_of::<sockcred2>() + ::mem::size_of::<::gid_t>() * ngrps
     }
 }
 
