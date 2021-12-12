@@ -30,17 +30,6 @@ s! {
         pub ext: [u64; 4],
     }
 
-    pub struct sockcred2 {
-        pub sc_version: ::c_int,
-        pub sc_pid: ::pid_t,
-        pub sc_uid: ::uid_t,
-        pub sc_euid: ::uid_t,
-        pub sc_gid: ::gid_t,
-        pub sc_egid: ::gid_t,
-        pub sc_ngroups: ::c_int,
-        pub sc_groups: [::gid_t; 1],
-    }
-
     pub struct kvm_page {
         pub kp_version: ::u_int,
         pub kp_paddr: ::kpaddr_t,
@@ -478,17 +467,6 @@ pub const DOMAINSET_POLICY_PREFER: ::c_int = 3;
 pub const DOMAINSET_POLICY_INTERLEAVE: ::c_int = 4;
 
 pub const MINCORE_SUPER: ::c_int = 0x60;
-
-f! {
-    pub fn SOCKCRED2SIZE(ngrps: usize) -> usize {
-        let ngrps = if ngrps > 0 {
-            ngrps - 1
-        } else {
-            0
-        };
-        ::mem::size_of::<sockcred2>() + ::mem::size_of::<::gid_t>() * ngrps
-    }
-}
 
 extern "C" {
     pub fn aio_readv(aiocbp: *mut ::aiocb) -> ::c_int;

@@ -2196,6 +2196,9 @@ fn test_freebsd(target: &str) {
             // `ptrace_coredump` introduced in FreeBSD 14.
             "ptrace_coredump" if Some(14) > freebsd_ver => true,
 
+            // `sockcred2` is not available in FreeBSD 12.
+            "sockcred2" if Some(13) > freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -2232,6 +2235,9 @@ fn test_freebsd(target: &str) {
             {
                 true
             }
+
+            // This is not available in FreeBSD 12.
+            "SOCKCRED2SIZE" if Some(13) > freebsd_ver => true,
 
             _ => false,
         }
