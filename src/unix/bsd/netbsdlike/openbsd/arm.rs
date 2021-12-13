@@ -1,5 +1,5 @@
-pub type c_long = i64;
-pub type c_ulong = u64;
+pub type c_long = i32;
+pub type c_ulong = u32;
 pub type c_char = u8;
 
 // should be pub(crate), but that requires Rust 1.18.0
