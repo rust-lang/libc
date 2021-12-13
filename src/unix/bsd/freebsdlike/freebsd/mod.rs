@@ -459,33 +459,37 @@ s! {
         pub kve_path: [[::c_char; 32]; 32],
     }
 
+    pub struct __c_anonymous_filestat {
+        pub stqe_next: *mut filestat,
+    }
+
     pub struct filestat {
-        fs_type: ::c_int,
-        fs_flags: ::c_int,
-        fs_fflags: ::c_int,
-        fs_uflags: ::c_int,
-        fs_fd: ::c_int,
-        fs_ref_count: ::c_int,
-        fs_offset: ::off_t,
-        fs_typedep: *mut ::c_void,
-        fs_path: *mut ::c_char,
-        next: *mut filestat,
-        fs_cap_rights: cap_rights_t,
+        pub fs_type: ::c_int,
+        pub fs_flags: ::c_int,
+        pub fs_fflags: ::c_int,
+        pub fs_uflags: ::c_int,
+        pub fs_fd: ::c_int,
+        pub fs_ref_count: ::c_int,
+        pub fs_offset: ::off_t,
+        pub fs_typedep: *mut ::c_void,
+        pub fs_path: *mut ::c_char,
+        pub next: __c_anonymous_filestat,
+        pub fs_cap_rights: cap_rights_t,
     }
 
     pub struct filestat_list {
-        stqh_first: *mut filestat,
-        stqh_last: *mut *mut filestat,
+        pub stqh_first: *mut filestat,
+        pub stqh_last: *mut *mut filestat,
     }
 
     pub struct procstat {
-        tpe: ::c_int,
-        kd: ::uintptr_t,
-        vmentries: *mut ::c_void,
-        files: *mut ::c_void,
-        argv: *mut ::c_void,
-        envv: *mut ::c_void,
-        core: ::uintptr_t,
+        pub tpe: ::c_int,
+        pub kd: ::uintptr_t,
+        pub vmentries: *mut ::c_void,
+        pub files: *mut ::c_void,
+        pub argv: *mut ::c_void,
+        pub envv: *mut ::c_void,
+        pub core: ::uintptr_t,
     }
 
     pub struct itimerspec {
