@@ -772,6 +772,7 @@ extern "C" {
     pub fn ctermid(s: *mut ::c_char) -> *mut ::c_char;
 
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
 }
 
 cfg_if! {

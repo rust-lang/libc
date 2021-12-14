@@ -3534,7 +3534,6 @@ extern "C" {
     pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
 
     pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
-    pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
     pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
 
     pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;

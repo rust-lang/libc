@@ -1336,6 +1336,7 @@ extern "C" {
     pub fn sethostid(hostid: ::c_long) -> ::c_int;
 
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
 }
 
 extern "C" {
