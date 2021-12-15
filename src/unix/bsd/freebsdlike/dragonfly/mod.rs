@@ -964,6 +964,7 @@ pub const NOTE_CHILD: u32 = 0x00000004;
 
 pub const SO_SNDSPACE: ::c_int = 0x100a;
 pub const SO_CPUHINT: ::c_int = 0x1030;
+pub const SO_PASSCRED: ::c_int = 0x4000;
 
 pub const PT_FIRSTMACH: ::c_int = 32;
 
