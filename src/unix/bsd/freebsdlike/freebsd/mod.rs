@@ -4000,9 +4000,8 @@ extern "C" {
 
     // sched.h linux compatibility api
     pub fn sched_getaffinity(pid: ::pid_t, cpusetsz: ::size_t, cpuset: *mut ::cpuset_t) -> ::c_int;
-    // FIXME: the first argument's type might not be correct, fix later if that changes.
     pub fn sched_setaffinity(
-        pid: ::c_int,
+        pid: ::pid_t,
         cpusetsz: ::size_t,
         cpuset: *const ::cpuset_t,
     ) -> ::c_int;
