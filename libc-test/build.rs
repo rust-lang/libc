@@ -486,6 +486,7 @@ fn test_openbsd(target: &str) {
             "KERN_USERMOUNT" | "KERN_ARND" => true,
             // Good chance it's going to be wrong depending on the host release
             "KERN_MAXID" | "NET_RT_MAXID" => true,
+            "EV_SYSFLAGS" => true,
             _ => false,
         }
     });
