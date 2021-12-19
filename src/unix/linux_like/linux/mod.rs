@@ -1825,6 +1825,69 @@ pub const MFD_HUGETLB: ::c_uint = 0x0004;
 pub const CLOSE_RANGE_UNSHARE: ::c_uint = 1 << 1;
 pub const CLOSE_RANGE_CLOEXEC: ::c_uint = 1 << 2;
 
+// linux/filter.h
+pub const SKF_AD_OFF: ::c_int = -0x1000;
+pub const SKF_AD_PROTOCOL: ::c_int = 0;
+pub const SKF_AD_PKTTYPE: ::c_int = 4;
+pub const SKF_AD_IFINDEX: ::c_int = 8;
+pub const SKF_AD_NLATTR: ::c_int = 12;
+pub const SKF_AD_NLATTR_NEST: ::c_int = 16;
+pub const SKF_AD_MARK: ::c_int = 20;
+pub const SKF_AD_QUEUE: ::c_int = 24;
+pub const SKF_AD_HATYPE: ::c_int = 28;
+pub const SKF_AD_RXHASH: ::c_int = 32;
+pub const SKF_AD_CPU: ::c_int = 36;
+pub const SKF_AD_ALU_XOR_X: ::c_int = 40;
+pub const SKF_AD_VLAN_TAG: ::c_int = 44;
+pub const SKF_AD_VLAN_TAG_PRESENT: ::c_int = 48;
+pub const SKF_AD_PAY_OFFSET: ::c_int = 52;
+pub const SKF_AD_RANDOM: ::c_int = 56;
+pub const SKF_AD_VLAN_TPID: ::c_int = 60;
+pub const SKF_AD_MAX: ::c_int = 64;
+pub const SKF_NET_OFF: ::c_int = -0x100000;
+pub const SKF_LL_OFF: ::c_int = -0x200000;
+pub const BPF_NET_OFF: ::c_int = SKF_NET_OFF;
+pub const BPF_LL_OFF: ::c_int = SKF_LL_OFF;
+pub const BPF_MEMWORDS: ::c_int = 16;
+pub const BPF_MAXINSNS: ::c_int = 4096;
+
+// linux/bpf_common.h
+pub const BPF_LD: ::__u32 = 0x00;
+pub const BPF_LDX: ::__u32 = 0x01;
+pub const BPF_ST: ::__u32 = 0x02;
+pub const BPF_STX: ::__u32 = 0x03;
+pub const BPF_ALU: ::__u32 = 0x04;
+pub const BPF_JMP: ::__u32 = 0x05;
+pub const BPF_RET: ::__u32 = 0x06;
+pub const BPF_MISC: ::__u32 = 0x07;
+pub const BPF_W: ::__u32 = 0x00;
+pub const BPF_H: ::__u32 = 0x08;
+pub const BPF_B: ::__u32 = 0x10;
+pub const BPF_IMM: ::__u32 = 0x00;
+pub const BPF_ABS: ::__u32 = 0x20;
+pub const BPF_IND: ::__u32 = 0x40;
+pub const BPF_MEM: ::__u32 = 0x60;
+pub const BPF_LEN: ::__u32 = 0x80;
+pub const BPF_MSH: ::__u32 = 0xa0;
+pub const BPF_ADD: ::__u32 = 0x00;
+pub const BPF_SUB: ::__u32 = 0x10;
+pub const BPF_MUL: ::__u32 = 0x20;
+pub const BPF_DIV: ::__u32 = 0x30;
+pub const BPF_OR: ::__u32 = 0x40;
+pub const BPF_AND: ::__u32 = 0x50;
+pub const BPF_LSH: ::__u32 = 0x60;
+pub const BPF_RSH: ::__u32 = 0x70;
+pub const BPF_NEG: ::__u32 = 0x80;
+pub const BPF_MOD: ::__u32 = 0x90;
+pub const BPF_XOR: ::__u32 = 0xa0;
+pub const BPF_JA: ::__u32 = 0x00;
+pub const BPF_JEQ: ::__u32 = 0x10;
+pub const BPF_JGT: ::__u32 = 0x20;
+pub const BPF_JGE: ::__u32 = 0x30;
+pub const BPF_JSET: ::__u32 = 0x40;
+pub const BPF_K: ::__u32 = 0x00;
+pub const BPF_X: ::__u32 = 0x08;
+
 // linux/openat2.h
 pub const RESOLVE_NO_XDEV: ::__u64 = 0x01;
 pub const RESOLVE_NO_MAGICLINKS: ::__u64 = 0x02;
@@ -3220,6 +3283,22 @@ f! {
 
     pub fn SO_EE_OFFENDER(ee: *const ::sock_extended_err) -> *mut ::sockaddr {
         ee.offset(1) as *mut ::sockaddr
+    }
+
+    pub fn BPF_RVAL(code: ::__u32) -> ::__u32 {
+        code & 0x18
+    }
+
+    pub fn BPF_MISCOP(code: ::__u32) -> ::__u32 {
+        code & 0xf8
+    }
+
+    pub fn BPF_STMT(code: ::__u16, k: ::__u32) -> sock_filter {
+        sock_filter{code: code, jt: 0, jf: 0, k: k}
+    }
+
+    pub fn BPF_JUMP(code: ::__u16, k: ::__u32, jt: ::__u8, jf: ::__u8) -> sock_filter {
+        sock_filter{code: code, jt: jt, jf: jf, k: k}
     }
 }
 
