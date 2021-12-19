@@ -2978,6 +2978,7 @@ pub const F_OSETLKW: ::c_int = 9;
 pub const F_RDAHEAD: ::c_int = 16;
 pub const F_READAHEAD: ::c_int = 15;
 pub const F_SETLK_REMOTE: ::c_int = 14;
+pub const F_KINFO: ::c_int = 22;
 
 // for use with F_ADD_SEALS
 pub const F_SEAL_GROW: ::c_int = 4;

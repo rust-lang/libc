@@ -2161,6 +2161,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14.
             "PT_COREDUMP" | "PC_ALL" | "PC_COMPRESS" if Some(14) > freebsd_ver => true,
 
+            // Added in FreeBSD 14.
+            "F_KINFO" => true, // FIXME: depends how frequent freebsd 14 is updated on CI, this addition went this week only.
+
             _ => false,
         }
     });
