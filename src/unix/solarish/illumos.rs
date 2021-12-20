@@ -33,6 +33,8 @@ pub const F_OFD_SETLKW: ::c_int = 52;
 pub const F_FLOCK: ::c_int = 55;
 pub const F_FLOCKW: ::c_int = 56;
 
+pub const MR_HDR_AOUT: ::c_uint = 0x3;
+
 extern "C" {
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
 
@@ -49,4 +51,5 @@ extern "C" {
     pub fn preadv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int, offset: ::off_t) -> ::ssize_t;
     pub fn pwritev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int, offset: ::off_t)
         -> ::ssize_t;
+    pub fn getpagesizes2(pagesize: *mut ::size_t, nelem: ::c_int) -> ::c_int;
 }
