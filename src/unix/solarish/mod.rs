@@ -2827,6 +2827,14 @@ extern "C" {
         elements: *mut ::c_uint,
         arg: *mut ::c_void,
     ) -> ::c_int;
+    pub fn meminfo(
+        inaddr: *const u64,
+        addr_count: ::c_int,
+        info_req: *const ::c_uint,
+        info_count: ::c_int,
+        outdata: *mut u64,
+        validity: *mut ::c_uint,
+    ) -> ::c_int;
 }
 
 mod compat;
