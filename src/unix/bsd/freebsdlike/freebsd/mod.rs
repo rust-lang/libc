@@ -2969,8 +2969,6 @@ pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
 
 // fcntl commands
 pub const F_ADD_SEALS: ::c_int = 19;
-pub const F_DUP2FD: ::c_int = 10;
-pub const F_DUP2FD_CLOEXEC: ::c_int = 18;
 pub const F_GET_SEALS: ::c_int = 20;
 pub const F_OGETLK: ::c_int = 7;
 pub const F_OSETLK: ::c_int = 8;

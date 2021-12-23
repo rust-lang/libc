@@ -760,6 +760,7 @@ pub const O_DIRECTORY: ::c_int = 0x08000000;
 pub const F_GETLK: ::c_int = 7;
 pub const F_SETLK: ::c_int = 8;
 pub const F_SETLKW: ::c_int = 9;
+pub const F_GETPATH: ::c_int = 19;
 pub const ENOMEDIUM: ::c_int = 93;
 pub const EASYNC: ::c_int = 99;
 pub const ELAST: ::c_int = 99;

@@ -1253,6 +1253,7 @@ pub const F_CLOSEM: ::c_int = 10;
 pub const F_GETNOSIGPIPE: ::c_int = 13;
 pub const F_SETNOSIGPIPE: ::c_int = 14;
 pub const F_MAXFD: ::c_int = 11;
+pub const F_GETPATH: ::c_int = 15;
 
 pub const IP_RECVDSTADDR: ::c_int = 7;
 pub const IP_SENDSRCADDR: ::c_int = IP_RECVDSTADDR;
