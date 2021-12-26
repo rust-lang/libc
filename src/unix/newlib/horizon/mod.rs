@@ -24,7 +24,7 @@ pub type sbintime_t = ::c_longlong;
 s! {
     pub struct sockaddr {
         pub sa_family: ::sa_family_t,
-        pub sa_data: [::c_char; 14],
+        pub sa_data: *const c_char,
     }
 
     pub struct sockaddr_storage {
