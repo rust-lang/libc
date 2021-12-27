@@ -15,10 +15,15 @@ pub type off_t = i64;
 pub type pthread_t = ::c_ulong;
 pub type pthread_key_t = ::c_uint;
 pub type rlim_t = u32;
-#[cfg(not(target_os = "horizon"))]
-pub type sa_family_t = u8;
-#[cfg(target_os = "horizon")]
-pub type sa_family_t = u16;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type sa_family_t = u16;
+    } else {
+        pub type sa_family_t = u8;
+    }
+}
+
 pub type socklen_t = u32;
 pub type speed_t = u32;
 pub type suseconds_t = i32;
@@ -480,10 +485,13 @@ pub const SO_SNDLOWAT: ::c_int = 0x1003;
 pub const SO_RCVLOWAT: ::c_int = 0x1004;
 pub const SO_SNDTIMEO: ::c_int = 0x1005;
 pub const SO_RCVTIMEO: ::c_int = 0x1006;
-#[cfg(not(target_os = "horizon"))]
-pub const SO_ERROR: ::c_int = 0x1007;
-#[cfg(target_os = "horizon")]
-pub const SO_ERROR: ::c_int = 0x1009;
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub const SO_ERROR: ::c_int = 0x1009;
+    } else {
+        pub const SO_ERROR: ::c_int = 0x1007;
+    }
+}
 pub const SO_TYPE: ::c_int = 0x1008;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
@@ -518,10 +526,13 @@ pub const TCP_KEEPIDLE: ::c_int = 256;
 pub const TCP_KEEPINTVL: ::c_int = 512;
 pub const TCP_KEEPCNT: ::c_int = 1024;
 
-#[cfg(not(target_os = "horizon"))]
-pub const IP_TOS: ::c_int = 3;
-#[cfg(target_os = "horizon")]
-pub const IP_TOS: ::c_int = 7;
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub const IP_TOS: ::c_int = 7;
+    } else {
+        pub const IP_TOS: ::c_int = 3;
+    }
+}
 pub const IP_TTL: ::c_int = 8;
 pub const IP_MULTICAST_IF: ::c_int = 9;
 pub const IP_MULTICAST_TTL: ::c_int = 10;

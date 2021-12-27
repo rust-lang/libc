@@ -29,14 +29,13 @@ s! {
 
     pub struct sockaddr_storage {
         pub ss_family: ::sa_family_t,
-        pub __ss_padding: [c_char; 26usize],
+        pub __ss_padding: [::c_char; 26usize],
     }
 
     pub struct sockaddr_in {
         pub sin_family: ::sa_family_t,
         pub sin_port: in_port_t,
         pub sin_addr: ::in_addr,
-        pub sin_zero: [::c_uchar; 8usize],
     }
 
     pub struct sockaddr_in6 {
@@ -190,4 +189,6 @@ extern "C" {
         f: extern "C" fn(_: *mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
+
+    pub fn gethostid() -> ::c_long;
 }
