@@ -318,6 +318,12 @@ s! {
         pub semvmx: ::c_int,
         pub semaem: ::c_int,
     }
+
+    pub struct ptrace_peeksiginfo_args {
+        pub off: ::__u64,
+        pub flags: ::__u32,
+        pub nr: ::__s32,
+    }
 }
 
 impl siginfo_t {

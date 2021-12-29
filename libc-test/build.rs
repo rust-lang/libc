@@ -2846,6 +2846,7 @@ fn test_linux(target: &str) {
         "linux/netlink.h",
         // FIXME: requires more recent kernel headers:
         // "linux/openat2.h",
+        [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
         "linux/reboot.h",

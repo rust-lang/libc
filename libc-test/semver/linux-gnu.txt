@@ -616,6 +616,7 @@ pthread_rwlockattr_getkind_np
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setkind_np
 pthread_setname_np
+ptrace_peeksiginfo_args
 pututxline
 pwritev2
 pwritev64

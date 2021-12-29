@@ -72,6 +72,12 @@ s! {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
     }
+
+    pub struct ptrace_peeksiginfo_args {
+        pub off: ::__u64,
+        pub flags: ::__u32,
+        pub nr: ::__s32,
+    }
 }
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
