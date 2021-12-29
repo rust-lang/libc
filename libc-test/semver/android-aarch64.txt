@@ -11,3 +11,4 @@ SYS_arch_specific_syscall
 SYS_syscalls
 SYS_fcntl
 __system_property_wait
+user_regs_struct

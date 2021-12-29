@@ -1537,6 +1537,7 @@ fn test_android(target: &str) {
                "sys/ucontext.h",
                "sys/uio.h",
                "sys/un.h",
+               "sys/user.h",
                "sys/utsname.h",
                "sys/vfs.h",
                "sys/xattr.h",
