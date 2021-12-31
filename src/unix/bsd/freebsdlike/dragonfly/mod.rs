@@ -1348,7 +1348,7 @@ pub const MINCORE_SUPER: ::c_int = 0x20;
 
 const_fn! {
     {const} fn _CMSG_ALIGN(n: usize) -> usize {
-        (n + 3) & !3
+        (n + ::mem::size_of::<::c_long>()) & !::mem::size_of::<::c_long>()
     }
 }
 
