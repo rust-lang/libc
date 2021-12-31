@@ -266,6 +266,11 @@ s! {
         pub time_state: ::c_int,
     }
 
+    pub struct accept_filter_arg {
+        pub af_name: [::c_char; 16],
+        af_arg: [[::c_char; 10]; 24],
+    }
+
     pub struct ptrace_io_desc {
         pub piod_op: ::c_int,
         pub piod_offs: *mut ::c_void,
