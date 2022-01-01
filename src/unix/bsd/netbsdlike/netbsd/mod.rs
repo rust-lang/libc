@@ -2165,6 +2165,12 @@ extern "C" {
     pub fn fchflags(fd: ::c_int, flags: ::c_ulong) -> ::c_int;
     pub fn lchflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
 
+    pub fn execvpe(
+        file: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+    ) -> ::c_int;
+
     pub fn extattr_delete_fd(
         fd: ::c_int,
         attrnamespace: ::c_int,
