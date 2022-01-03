@@ -324,6 +324,32 @@ s! {
         pub flags: ::__u32,
         pub nr: ::__s32,
     }
+
+    pub struct __c_anonymous_ptrace_syscall_info_entry {
+        pub nr: ::__u64,
+        pub args: [::__u64; 6],
+    }
+
+    pub struct __c_anonymous_ptrace_syscall_info_exit {
+        pub sval: ::__s64,
+        pub is_error: ::__u8,
+    }
+
+    pub struct __c_anonymous_ptrace_syscall_info_seccomp {
+        pub nr: ::__u64,
+        pub args: [::__u64; 6],
+        pub ret_data: ::__u32,
+    }
+
+    pub struct ptrace_syscall_info {
+        pub op: ::__u8,
+        pub pad: [::__u8; 3],
+        pub arch: ::__u32,
+        pub instruction_pointer: ::__u64,
+        pub stack_pointer: ::__u64,
+        #[cfg(libc_union)]
+        pub u: __c_anonymous_ptrace_syscall_info_data,
+    }
 }
 
 impl siginfo_t {
@@ -409,6 +435,18 @@ cfg_if! {
 
             pub unsafe fn si_stime(&self) -> ::c_long {
                 self.sifields().sigchld.si_stime
+            }
+        }
+
+        pub union __c_anonymous_ptrace_syscall_info_data {
+            pub entry: __c_anonymous_ptrace_syscall_info_entry,
+            pub exit: __c_anonymous_ptrace_syscall_info_exit,
+            pub seccomp: __c_anonymous_ptrace_syscall_info_seccomp,
+        }
+        impl ::Copy for __c_anonymous_ptrace_syscall_info_data {}
+        impl ::Clone for __c_anonymous_ptrace_syscall_info_data {
+            fn clone(&self) -> __c_anonymous_ptrace_syscall_info_data {
+                *self
             }
         }
     }
@@ -507,6 +545,44 @@ cfg_if! {
                 self.ut_tv.hash(state);
                 self.ut_addr_v6.hash(state);
                 self.__glibc_reserved.hash(state);
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_ptrace_syscall_info_data {
+            fn eq(&self, other: &__c_anonymous_ptrace_syscall_info_data) -> bool {
+                unsafe {
+                self.entry == other.entry ||
+                    self.exit == other.exit ||
+                    self.seccomp == other.seccomp
+                }
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_ptrace_syscall_info_data {}
+
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_ptrace_syscall_info_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                unsafe {
+                f.debug_struct("__c_anonymous_ptrace_syscall_info_data")
+                    .field("entry", &self.entry)
+                    .field("exit", &self.exit)
+                    .field("seccomp", &self.seccomp)
+                    .finish()
+                }
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_ptrace_syscall_info_data {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                self.entry.hash(state);
+                self.exit.hash(state);
+                self.seccomp.hash(state);
+                }
             }
         }
     }
@@ -906,6 +982,7 @@ pub const PTRACE_SEIZE: ::c_uint = 0x4206;
 pub const PTRACE_INTERRUPT: ::c_uint = 0x4207;
 pub const PTRACE_LISTEN: ::c_uint = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_uint = 0x4209;
+pub const PTRACE_GET_SYSCALL_INFO: ::c_uint = 0x420e;
 
 // linux/fs.h
 

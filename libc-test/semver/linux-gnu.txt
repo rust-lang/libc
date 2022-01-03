@@ -350,6 +350,7 @@ PF_MPLS
 PF_XDP
 PROC_SUPER_MAGIC
 PTHREAD_MUTEX_ADAPTIVE_NP
+PTRACE_GET_SYSCALL_INFO
 QNX4_SUPER_MAGIC
 QNX6_SUPER_MAGIC
 RDTGROUP_SUPER_MAGIC
@@ -617,6 +618,7 @@ pthread_rwlockattr_getpshared
 pthread_rwlockattr_setkind_np
 pthread_setname_np
 ptrace_peeksiginfo_args
+ptrace_syscall_info
 pututxline
 pwritev2
 pwritev64
