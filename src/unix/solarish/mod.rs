@@ -2835,6 +2835,15 @@ extern "C" {
         outdata: *mut u64,
         validity: *mut ::c_uint,
     ) -> ::c_int;
+
+    pub fn strcasecmp_l(s1: *const ::c_char, s2: *const ::c_char, loc: ::locale_t) -> ::c_int;
+    pub fn strncasecmp_l(
+        s1: *const ::c_char,
+        s2: *const ::c_char,
+        n: ::size_t,
+        loc: ::locale_t,
+    ) -> ::c_int;
+    pub fn strsep(string: *mut *mut ::c_char, delim: *const ::c_char) -> *mut ::c_char;
 }
 
 mod compat;
