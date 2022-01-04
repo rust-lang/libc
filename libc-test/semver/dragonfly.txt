@@ -1189,6 +1189,7 @@ _UTX_LINESIZE
 _UTX_USERSIZE
 __errno_location
 abs
+accept_filter_arg
 accept4
 acct
 aio_cancel
