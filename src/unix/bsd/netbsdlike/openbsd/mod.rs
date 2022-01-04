@@ -209,6 +209,12 @@ s! {
         pub sin_zero: [i8; 8],
     }
 
+    pub struct splice {
+        pub sp_fd: ::c_int,
+        pub sp_max: ::off_t,
+        pub sp_idle: ::timeval,
+    }
+
     pub struct kevent {
         pub ident: ::uintptr_t,
         pub filter: ::c_short,

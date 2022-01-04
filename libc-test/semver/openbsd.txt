@@ -1118,6 +1118,7 @@ siginfo_t
 sigwait
 sockaddr_dl
 sockpeercred
+splice
 srand
 stack_t
 statfs
