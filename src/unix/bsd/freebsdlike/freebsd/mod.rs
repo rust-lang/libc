@@ -2158,9 +2158,9 @@ pub const CTL_P1003_1B_SEM_VALUE_MAX: ::c_int = 23;
 pub const CTL_P1003_1B_SIGQUEUE_MAX: ::c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: ::c_int = 25;
 
-pub const TIOCGPTN: ::c_uint = 0x4004740f;
-pub const TIOCPTMASTER: ::c_uint = 0x2000741c;
-pub const TIOCSIG: ::c_uint = 0x2004745f;
+pub const TIOCGPTN: ::c_ulong = 0x4004740f;
+pub const TIOCPTMASTER: ::c_ulong = 0x2000741c;
+pub const TIOCSIG: ::c_ulong = 0x2004745f;
 pub const TIOCM_DCD: ::c_int = 0x40;
 pub const H4DISC: ::c_int = 0x7;
 
