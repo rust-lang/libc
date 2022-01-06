@@ -3711,6 +3711,17 @@ f! {
         0 != cpuset.__bits[idx] & (1 << offset)
     }
 
+    pub fn CPU_COUNT(cpuset: &cpuset_t) -> ::c_int {
+        let mut s: u32 = 0;
+        let cpuset_size = ::mem::size_of::<cpuset_t>();
+        let bitset_bits = ::mem::size_of::<::c_long>();
+
+        for i in cpuset.__bits[..(cpuset_size / bitset_bits)].iter() {
+            s += i.count_ones();
+        };
+        s as ::c_int
+    }
+
     pub fn SOCKCRED2SIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 {
             ngrps - 1
