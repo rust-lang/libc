@@ -1431,6 +1431,7 @@ extern "C" {
         extra_info: *mut *mut ::c_void,
         flags: ::c_int,
     ) -> ::c_int;
+    pub fn malloc_trim(__pad: ::size_t) -> ::c_int;
 }
 
 cfg_if! {
