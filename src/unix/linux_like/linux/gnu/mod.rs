@@ -867,6 +867,7 @@ cfg_if! {
         pub const EXT3_SUPER_MAGIC: ::c_long = 0x0000ef53;
         pub const EXT4_SUPER_MAGIC: ::c_long = 0x0000ef53;
         pub const F2FS_SUPER_MAGIC: ::c_long = 0xf2f52010;
+        pub const FUSE_SUPER_MAGIC: ::c_long = 0x65735546;
         pub const FUTEXFS_SUPER_MAGIC: ::c_long = 0xbad1dea;
         pub const HOSTFS_SUPER_MAGIC: ::c_long = 0x00c0ffee;
         pub const HPFS_SUPER_MAGIC: ::c_long = 0xf995e849;
@@ -921,6 +922,7 @@ cfg_if! {
         pub const EXT3_SUPER_MAGIC: ::c_uint = 0x0000ef53;
         pub const EXT4_SUPER_MAGIC: ::c_uint = 0x0000ef53;
         pub const F2FS_SUPER_MAGIC: ::c_uint = 0xf2f52010;
+        pub const FUSE_SUPER_MAGIC: ::c_uint = 0x65735546;
         pub const FUTEXFS_SUPER_MAGIC: ::c_uint = 0xbad1dea;
         pub const HOSTFS_SUPER_MAGIC: ::c_uint = 0x00c0ffee;
         pub const HPFS_SUPER_MAGIC: ::c_uint = 0xf995e849;

@@ -3182,6 +3182,9 @@ fn test_linux(target: &str) {
             // headers conflicts with linux/pidfd.h
             "PIDFD_NONBLOCK" => true,
 
+            // is a private value for kernel usage normally
+            "FUSE_SUPER_MAGIC" => true,
+
             _ => false,
         }
     });
