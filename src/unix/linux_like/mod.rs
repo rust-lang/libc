@@ -1045,8 +1045,10 @@ pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
 pub const EPOLL_CTL_DEL: ::c_int = 2;
 
+pub const MNT_FORCE: ::c_int = 0x1;
 pub const MNT_DETACH: ::c_int = 0x2;
 pub const MNT_EXPIRE: ::c_int = 0x4;
+pub const UMOUNT_NOFOLLOW: ::c_int = 0x8;
 
 pub const Q_GETFMT: ::c_int = 0x800004;
 pub const Q_GETINFO: ::c_int = 0x800005;
@@ -1061,8 +1063,6 @@ pub const QIF_LIMITS: u32 = 5;
 pub const QIF_USAGE: u32 = 10;
 pub const QIF_TIMES: u32 = 48;
 pub const QIF_ALL: u32 = 63;
-
-pub const MNT_FORCE: ::c_int = 0x1;
 
 pub const Q_SYNC: ::c_int = 0x800001;
 pub const Q_QUOTAON: ::c_int = 0x800002;
