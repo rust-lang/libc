@@ -1548,6 +1548,9 @@ pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
 pub const IBSHIFT: ::tcflag_t = 16;
 
+pub const BLKSSZGET: ::c_int = 0x1268;
+pub const BLKPBSZGET: ::c_int = 0x127B;
+
 pub const EAI_AGAIN: ::c_int = 2;
 pub const EAI_BADFLAGS: ::c_int = 3;
 pub const EAI_FAIL: ::c_int = 4;
