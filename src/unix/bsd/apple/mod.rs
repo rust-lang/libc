@@ -948,6 +948,11 @@ s! {
         pub ri_interval_max_phys_footprint: u64,
         pub ri_runnable_time: u64,
     }
+
+    pub struct image_offset {
+        pub uuid: ::uuid_t,
+        pub offset: u32,
+    }
 }
 
 s_no_extra_traits! {
@@ -4945,6 +4950,23 @@ extern "C" {
     ) -> kern_return_t;
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
+    pub fn backtrace_symbols(addrs: *const *mut ::c_void, sz: ::c_int) -> *mut *mut ::c_char;
+    pub fn backtrace_symbols_fd(addrs: *const *mut ::c_void, sz: ::c_int, fd: ::c_int);
+    pub fn backtrace_from_fp(
+        startfp: *mut ::c_void,
+        array: *mut *mut ::c_void,
+        size: ::c_int,
+    ) -> ::c_int;
+    pub fn backtrace_image_offsets(
+        array: *const *mut ::c_void,
+        image_offsets: *mut image_offset,
+        size: ::c_int,
+    );
+    pub fn backtrace_async(
+        array: *mut *mut ::c_void,
+        length: ::size_t,
+        task_id: *mut u32,
+    ) -> ::size_t;
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
         link_name = "statfs$INODE64"
