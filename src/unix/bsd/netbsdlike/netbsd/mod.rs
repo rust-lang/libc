@@ -2105,6 +2105,14 @@ f! {
         };
         ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
+
+    pub fn PROT_MPROTECT(x: ::c_int) -> ::c_int {
+        x << 3
+    }
+
+    pub fn PROT_MPROTECT_EXTRACT(x: ::c_int) -> ::c_int {
+        (x >> 3) & 0x7
+    }
 }
 
 safe_f! {
