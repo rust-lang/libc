@@ -3615,6 +3615,13 @@ pub const DST_CAN: ::c_int = 6;
 pub const CPUCLOCK_WHICH_PID: ::c_int = 0;
 pub const CPUCLOCK_WHICH_TID: ::c_int = 1;
 
+pub const MFD_CLOEXEC: ::c_uint = 0x00000001;
+pub const MFD_ALLOW_SEALING: ::c_uint = 0x00000002;
+pub const MFD_HUGETLB: ::c_uint = 0x00000004;
+
+pub const SHM_RENAME_NOREPLACE: ::c_int = 1 << 0;
+pub const SHM_RENAME_EXCHANGE: ::c_int = 1 << 1;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -4155,6 +4162,13 @@ extern "C" {
 
     pub fn adjtime(arg1: *const ::timeval, arg2: *mut ::timeval) -> ::c_int;
     pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
+
+    pub fn shm_rename(
+        path_from: *const ::c_char,
+        path_to: *const ::c_char,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
 }
 
 #[link(name = "kvm")]

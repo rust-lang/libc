@@ -2164,6 +2164,15 @@ fn test_freebsd(target: &str) {
 
             // Added in FreeBSD 14.
             "F_KINFO" => true, // FIXME: depends how frequent freebsd 14 is updated on CI, this addition went this week only.
+            "SHM_RENAME_NOREPLACE"
+            | "SHM_RENAME_EXCHANGE"
+            | "MFD_CLOEXEC"
+            | "MFD_ALLOW_SEALING"
+            | "MFD_HUGETLB"
+                if Some(13) > freebsd_ver =>
+            {
+                true
+            }
 
             _ => false,
         }
@@ -2244,6 +2253,9 @@ fn test_freebsd(target: &str) {
 
             // This is not available in FreeBSD 12.
             "SOCKCRED2SIZE" if Some(13) > freebsd_ver => true,
+
+            // Those are not available in FreeBSD 12.
+            "memfd_create" | "shm_rename" if Some(13) > freebsd_ver => true,
 
             _ => false,
         }
