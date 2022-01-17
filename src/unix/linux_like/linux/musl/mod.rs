@@ -638,9 +638,6 @@ pub const RLIMIT_RTPRIO: ::c_int = 14;
 
 pub const REG_OK: ::c_int = 0;
 
-pub const TIOCSBRK: ::c_int = 0x5427;
-pub const TIOCCBRK: ::c_int = 0x5428;
-
 pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
@@ -745,6 +742,7 @@ extern "C" {
         old_limit: *mut ::rlimit64,
     ) -> ::c_int;
 
+    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;

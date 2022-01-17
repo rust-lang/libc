@@ -8,10 +8,10 @@ pub type __priority_which_t = ::c_uint;
 cfg_if! {
     if #[cfg(doc)] {
         // Used in `linux::arch` to define ioctl constants.
-        pub(crate) type Ioctl = ::c_int;
+        pub(crate) type Ioctl = ::c_ulong;
     } else {
         #[doc(hidden)]
-        pub type Ioctl = ::c_int;
+        pub type Ioctl = ::c_ulong;
     }
 }
 
@@ -276,7 +276,6 @@ pub const EXTPROC: ::tcflag_t = 0200000;
 pub const FAN_MARK_FILESYSTEM: ::c_int = 0x00000100;
 pub const FAN_MARK_INODE: ::c_int = 0x00000000;
 pub const FAN_MARK_MOUNT: ::c_int = 0x10;
-pub const FIONREAD: ::c_int = 0x541B;
 pub const FOPEN_MAX: ::c_int = 16;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_OFD_GETLK: ::c_int = 36;
@@ -325,36 +324,13 @@ pub const SHM_EXEC: ::c_int = 0100000;
 pub const SIGPOLL: ::c_int = SIGIO;
 pub const SOCK_DCCP: ::c_int = 6;
 pub const SOCK_PACKET: ::c_int = 10;
-pub const TCFLSH: ::c_int = 0x540B;
-pub const TCGETA: ::c_int = 0x5405;
-pub const TCGETS: ::c_int = 0x5401;
 pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
-pub const TCSBRK: ::c_int = 0x5409;
-pub const TCSETA: ::c_int = 0x5406;
-pub const TCSETAF: ::c_int = 0x5408;
-pub const TCSETAW: ::c_int = 0x5407;
-pub const TCSETS: ::c_int = 0x5402;
-pub const TCSETSF: ::c_int = 0x5404;
-pub const TCSETSW: ::c_int = 0x5403;
-pub const TCXONC: ::c_int = 0x540A;
-pub const TIOCCONS: ::c_int = 0x541D;
-pub const TIOCEXCL: ::c_int = 0x540C;
-pub const TIOCGPGRP: ::c_int = 0x540F;
-pub const TIOCGSERIAL: ::c_int = 0x541E;
-pub const TIOCGSOFTCAR: ::c_int = 0x5419;
-pub const TIOCINQ: ::c_int = FIONREAD;
-pub const TIOCLINUX: ::c_int = 0x541C;
-pub const TIOCNXCL: ::c_int = 0x540D;
-pub const TIOCOUTQ: ::c_int = 0x5411;
-pub const TIOCSCTTY: ::c_int = 0x540E;
-pub const TIOCSPGRP: ::c_int = 0x5410;
-pub const TIOCSSOFTCAR: ::c_int = 0x541A;
-pub const TIOCSTI: ::c_int = 0x5412;
 pub const UDP_GRO: ::c_int = 104;
 pub const UDP_SEGMENT: ::c_int = 103;
 pub const YESEXPR: ::c_int = ((5) << 8) | (0);
 
 extern "C" {
+    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
 
     pub fn pthread_rwlockattr_getkind_np(

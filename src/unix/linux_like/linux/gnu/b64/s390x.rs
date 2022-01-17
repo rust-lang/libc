@@ -330,9 +330,6 @@ pub const EDEADLK: ::c_int = 35;
 pub const ENOSYS: ::c_int = 38;
 pub const ENOTCONN: ::c_int = 107;
 pub const ETIMEDOUT: ::c_int = 110;
-pub const FIOCLEX: ::c_ulong = 0x5451;
-pub const FIONCLEX: ::c_ulong = 0x5450;
-pub const FIONBIO: ::c_ulong = 0x5421;
 pub const O_APPEND: ::c_int = 1024;
 pub const O_CREAT: ::c_int = 64;
 pub const O_EXCL: ::c_int = 128;
@@ -505,40 +502,9 @@ pub const F_OFD_SETLKW: ::c_int = 38;
 
 pub const SFD_NONBLOCK: ::c_int = 0x0800;
 
-pub const TCGETS: ::c_ulong = 0x5401;
-pub const TCSETS: ::c_ulong = 0x5402;
-pub const TCSETSW: ::c_ulong = 0x5403;
-pub const TCSETSF: ::c_ulong = 0x5404;
-pub const TCGETA: ::c_ulong = 0x5405;
-pub const TCSETA: ::c_ulong = 0x5406;
-pub const TCSETAW: ::c_ulong = 0x5407;
-pub const TCSETAF: ::c_ulong = 0x5408;
-pub const TCSBRK: ::c_ulong = 0x5409;
-pub const TCXONC: ::c_ulong = 0x540A;
-pub const TCFLSH: ::c_ulong = 0x540B;
-pub const TIOCGSOFTCAR: ::c_ulong = 0x5419;
-pub const TIOCSSOFTCAR: ::c_ulong = 0x541A;
-pub const TIOCINQ: ::c_ulong = 0x541B;
-pub const TIOCEXCL: ::c_ulong = 0x540C;
-pub const TIOCNXCL: ::c_ulong = 0x540D;
-pub const TIOCSCTTY: ::c_ulong = 0x540E;
-pub const TIOCGPGRP: ::c_ulong = 0x540F;
-pub const TIOCSPGRP: ::c_ulong = 0x5410;
-pub const TIOCOUTQ: ::c_ulong = 0x5411;
-pub const TIOCSTI: ::c_ulong = 0x5412;
-pub const TIOCGWINSZ: ::c_ulong = 0x5413;
-pub const TIOCSWINSZ: ::c_ulong = 0x5414;
-pub const FIONREAD: ::c_ulong = 0x541B;
-pub const TIOCCONS: ::c_ulong = 0x541D;
-pub const TIOCSBRK: ::c_ulong = 0x5427;
-pub const TIOCCBRK: ::c_ulong = 0x5428;
-
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
 pub const TCSAFLUSH: ::c_int = 2;
-
-pub const TIOCLINUX: ::c_ulong = 0x541C;
-pub const TIOCGSERIAL: ::c_ulong = 0x541E;
 
 pub const VTIME: usize = 5;
 pub const VSWTC: usize = 7;

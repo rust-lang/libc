@@ -506,10 +506,6 @@ pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
 
-pub const FIOCLEX: ::c_ulong = 0x5451;
-pub const FIONCLEX: ::c_ulong = 0x5450;
-pub const FIONBIO: ::c_ulong = 0x5421;
-
 pub const PTRACE_GETFPXREGS: ::c_uint = 18;
 pub const PTRACE_SETFPXREGS: ::c_uint = 19;
 pub const PTRACE_SYSEMU: ::c_uint = 31;
@@ -603,14 +599,6 @@ pub const FFDLY: ::tcflag_t = 0o100000;
 pub const VTDLY: ::tcflag_t = 0o040000;
 pub const XTABS: ::tcflag_t = 0o014000;
 
-pub const TIOCGSOFTCAR: ::c_ulong = 0x5419;
-pub const TIOCSSOFTCAR: ::c_ulong = 0x541A;
-pub const TIOCEXCL: ::c_ulong = 0x540C;
-pub const TIOCNXCL: ::c_ulong = 0x540D;
-pub const TIOCSCTTY: ::c_ulong = 0x540E;
-pub const TIOCSTI: ::c_ulong = 0x5412;
-pub const TIOCCONS: ::c_ulong = 0x541D;
-
 pub const B0: ::speed_t = 0o000000;
 pub const B50: ::speed_t = 0o000001;
 pub const B75: ::speed_t = 0o000002;
@@ -652,33 +640,10 @@ pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
 pub const EXTPROC: ::tcflag_t = 0x00010000;
-pub const TCGETS: ::c_ulong = 0x5401;
-pub const TCSETS: ::c_ulong = 0x5402;
-pub const TCSETSW: ::c_ulong = 0x5403;
-pub const TCSETSF: ::c_ulong = 0x5404;
-pub const TCGETA: ::c_ulong = 0x5405;
-pub const TCSETA: ::c_ulong = 0x5406;
-pub const TCSETAW: ::c_ulong = 0x5407;
-pub const TCSETAF: ::c_ulong = 0x5408;
-pub const TCSBRK: ::c_ulong = 0x5409;
-pub const TCXONC: ::c_ulong = 0x540A;
-pub const TCFLSH: ::c_ulong = 0x540B;
-pub const TIOCINQ: ::c_ulong = 0x541B;
-pub const TIOCGPGRP: ::c_ulong = 0x540F;
-pub const TIOCSPGRP: ::c_ulong = 0x5410;
-pub const TIOCOUTQ: ::c_ulong = 0x5411;
-pub const TIOCGWINSZ: ::c_ulong = 0x5413;
-pub const TIOCSWINSZ: ::c_ulong = 0x5414;
-pub const TIOCGRS485: ::c_int = 0x542E;
-pub const TIOCSRS485: ::c_int = 0x542F;
-pub const FIONREAD: ::c_ulong = 0x541B;
 
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
 pub const TCSAFLUSH: ::c_int = 2;
-
-pub const TIOCLINUX: ::c_ulong = 0x541C;
-pub const TIOCGSERIAL: ::c_ulong = 0x541E;
 
 // Syscall table
 pub const SYS_restart_syscall: ::c_long = 0;

@@ -197,11 +197,6 @@ pub const RLIM_INFINITY: ::rlim_t = 0xffff_ffff_ffff_ffff;
 
 pub const SYS_gettid: ::c_long = 5178; // Valid for n64
 
-#[link(name = "util")]
-extern "C" {
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-}
-
 cfg_if! {
     if #[cfg(libc_align)] {
         mod align;
