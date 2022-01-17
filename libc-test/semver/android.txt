@@ -2844,6 +2844,7 @@ intptr_t
 ioctl
 iovec
 ip_mreq
+ip_mreqn
 ip_mreq_source
 ipv6_mreq
 isalnum

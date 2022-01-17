@@ -215,6 +215,12 @@ s! {
         pub imr_interface: in_addr,
     }
 
+    pub struct ip_mreqn {
+        pub imr_multiaddr: in_addr,
+        pub imr_address: in_addr,
+        pub imr_ifindex: ::c_int,
+    }
+
     pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_offset: ::off_t,

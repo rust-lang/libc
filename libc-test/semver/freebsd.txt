@@ -1536,6 +1536,7 @@ if_nameindex
 ifaddrs
 in6_pktinfo
 initgroups
+ip_mreqn
 ipc_perm
 jail
 jail_attach

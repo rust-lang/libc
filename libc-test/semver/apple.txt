@@ -1724,6 +1724,7 @@ in6_pktinfo
 in_pktinfo
 initgroups
 integer_t
+ip_mreqn
 ipc_perm
 kern_return_t
 kevent
