@@ -1628,6 +1628,10 @@ arc4random_uniform
 arphdr
 atof
 backtrace
+backtrace_from_fp
+backtrace_image_offsets
+backtrace_symbols
+backtrace_symbols_fd
 boolean_t
 bpf_hdr
 brk
@@ -1715,6 +1719,7 @@ if_freenameindex
 if_msghdr
 if_nameindex
 ifaddrs
+image_offset
 in6_pktinfo
 in_pktinfo
 initgroups
