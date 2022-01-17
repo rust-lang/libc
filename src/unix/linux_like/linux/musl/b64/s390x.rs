@@ -141,9 +141,9 @@ pub const EDEADLK: ::c_int = 35;
 pub const ENOSYS: ::c_int = 38;
 pub const ENOTCONN: ::c_int = 107;
 pub const ETIMEDOUT: ::c_int = 110;
-pub const FIOCLEX: ::c_ulong = 0x5451;
-pub const FIONCLEX: ::c_ulong = 0x5450;
-pub const FIONBIO: ::c_ulong = 0x5421;
+pub const FIOCLEX: ::c_int = 0x5451;
+pub const FIONCLEX: ::c_int = 0x5450;
+pub const FIONBIO: ::c_int = 0x5421;
 pub const O_APPEND: ::c_int = 1024;
 pub const O_CREAT: ::c_int = 64;
 pub const O_EXCL: ::c_int = 128;
@@ -743,5 +743,5 @@ pub const SYS_epoll_pwait2: ::c_long = 441;
 pub const SYS_mount_setattr: ::c_long = 442;
 
 extern "C" {
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 }
