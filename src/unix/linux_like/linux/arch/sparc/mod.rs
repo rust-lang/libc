@@ -158,7 +158,6 @@ pub const TIOCGEXCL: ::Ioctl = 0x40045440;
 pub const TIOCGPTPEER: ::Ioctl = 0x20007489;
 pub const FIONCLEX: ::Ioctl = 0x20006602;
 pub const FIOCLEX: ::Ioctl = 0x20006601;
-pub const FIOASYNC: ::Ioctl = 0x4004667d;
 pub const TIOCSERCONFIG: ::Ioctl = 0x5453;
 pub const TIOCSERGWILD: ::Ioctl = 0x5454;
 pub const TIOCSERSWILD: ::Ioctl = 0x5455;
@@ -173,6 +172,7 @@ pub const TIOCGICOUNT: ::Ioctl = 0x545D;
 pub const TIOCSTART: ::Ioctl = 0x2000746e;
 pub const TIOCSTOP: ::Ioctl = 0x2000746f;
 
+//pub const FIOASYNC: ::Ioctl = 0x4004667d;
 //pub const FIOQSIZE: ::Ioctl = ;
 //pub const TIOCGISO7816: ::Ioctl = 0x40285443;
 //pub const TIOCSISO7816: ::Ioctl = 0xc0285444;
