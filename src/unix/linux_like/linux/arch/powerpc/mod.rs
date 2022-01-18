@@ -90,10 +90,87 @@ pub const SO_BINDTOIFINDEX: ::c_int = 62;
 pub const SCM_TIMESTAMPNS: ::c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
 
+// Ioctl Constants
+
+cfg_if! {
+    if #[cfg(target_env = "musl")] {
+        pub const TCGETS: ::Ioctl = 0x402c7413;
+        pub const TCSETS: ::Ioctl = 0x802c7414;
+        pub const TCSETSW: ::Ioctl = 0x802c7415;
+        pub const TCSETSF: ::Ioctl = 0x802c7416;
+    } else {
+        pub const TCGETS: ::Ioctl = 0x403c7413;
+        pub const TCSETS: ::Ioctl = 0x803c7414;
+        pub const TCSETSW: ::Ioctl = 0x803c7415;
+        pub const TCSETSF: ::Ioctl = 0x803c7416;
+    }
+}
+
+pub const TCGETA: ::Ioctl = 0x40147417;
+pub const TCSETA: ::Ioctl = 0x80147418;
+pub const TCSETAW: ::Ioctl = 0x80147419;
+pub const TCSETAF: ::Ioctl = 0x8014741C;
+pub const TCSBRK: ::Ioctl = 0x2000741D;
+pub const TCXONC: ::Ioctl = 0x2000741E;
+pub const TCFLSH: ::Ioctl = 0x2000741F;
+pub const TIOCEXCL: ::Ioctl = 0x540C;
+pub const TIOCNXCL: ::Ioctl = 0x540D;
+pub const TIOCSCTTY: ::Ioctl = 0x540E;
+pub const TIOCGPGRP: ::Ioctl = 0x40047477;
+pub const TIOCSPGRP: ::Ioctl = 0x80047476;
+pub const TIOCOUTQ: ::Ioctl = 0x40047473;
+pub const TIOCSTI: ::Ioctl = 0x5412;
+pub const TIOCGWINSZ: ::Ioctl = 0x40087468;
+pub const TIOCSWINSZ: ::Ioctl = 0x80087467;
 pub const TIOCMGET: ::Ioctl = 0x5415;
 pub const TIOCMBIS: ::Ioctl = 0x5416;
 pub const TIOCMBIC: ::Ioctl = 0x5417;
 pub const TIOCMSET: ::Ioctl = 0x5418;
+pub const TIOCGSOFTCAR: ::Ioctl = 0x5419;
+pub const TIOCSSOFTCAR: ::Ioctl = 0x541A;
+pub const FIONREAD: ::Ioctl = 0x4004667F;
+pub const TIOCINQ: ::Ioctl = FIONREAD;
+pub const TIOCLINUX: ::Ioctl = 0x541C;
+pub const TIOCCONS: ::Ioctl = 0x541D;
+pub const TIOCGSERIAL: ::Ioctl = 0x541E;
+pub const TIOCSSERIAL: ::Ioctl = 0x541F;
+pub const TIOCPKT: ::Ioctl = 0x5420;
+pub const FIONBIO: ::Ioctl = 0x8004667e;
+pub const TIOCNOTTY: ::Ioctl = 0x5422;
+pub const TIOCSETD: ::Ioctl = 0x5423;
+pub const TIOCGETD: ::Ioctl = 0x5424;
+pub const TCSBRKP: ::Ioctl = 0x5425;
+pub const TIOCSBRK: ::Ioctl = 0x5427;
+pub const TIOCCBRK: ::Ioctl = 0x5428;
+pub const TIOCGSID: ::Ioctl = 0x5429;
+pub const TIOCGRS485: ::Ioctl = 0x542e;
+pub const TIOCSRS485: ::Ioctl = 0x542f;
+pub const TIOCGPTN: ::Ioctl = 0x40045430;
+pub const TIOCSPTLCK: ::Ioctl = 0x80045431;
+pub const TIOCGDEV: ::Ioctl = 0x40045432;
+pub const TIOCSIG: ::Ioctl = 0x80045436;
+pub const TIOCVHANGUP: ::Ioctl = 0x5437;
+pub const TIOCGPKT: ::Ioctl = 0x40045438;
+pub const TIOCGPTLCK: ::Ioctl = 0x40045439;
+pub const TIOCGEXCL: ::Ioctl = 0x40045440;
+pub const TIOCGPTPEER: ::Ioctl = 0x20005441;
+//pub const TIOCGISO7816: ::Ioctl = 0x40285442;
+//pub const TIOCSISO7816: ::Ioctl = 0xc0285443;
+pub const FIONCLEX: ::Ioctl = 0x20006602;
+pub const FIOCLEX: ::Ioctl = 0x20006601;
+pub const FIOASYNC: ::Ioctl = 0x8004667d;
+pub const TIOCSERCONFIG: ::Ioctl = 0x5453;
+pub const TIOCSERGWILD: ::Ioctl = 0x5454;
+pub const TIOCSERSWILD: ::Ioctl = 0x5455;
+pub const TIOCGLCKTRMIOS: ::Ioctl = 0x5456;
+pub const TIOCSLCKTRMIOS: ::Ioctl = 0x5457;
+pub const TIOCSERGSTRUCT: ::Ioctl = 0x5458;
+pub const TIOCSERGETLSR: ::Ioctl = 0x5459;
+pub const TIOCSERGETMULTI: ::Ioctl = 0x545A;
+pub const TIOCSERSETMULTI: ::Ioctl = 0x545B;
+pub const TIOCMIWAIT: ::Ioctl = 0x545C;
+pub const TIOCGICOUNT: ::Ioctl = 0x545D;
+//pub const FIOQSIZE: ::Ioctl = 0x40086680;
 
 pub const TIOCM_LE: ::c_int = 0x001;
 pub const TIOCM_DTR: ::c_int = 0x002;

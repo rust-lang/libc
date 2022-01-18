@@ -417,9 +417,6 @@ pub const EUSERS: ::c_int = 0x57;
 pub const EXFULL: ::c_int = 0x36;
 pub const FF1: ::c_int = 0x8000;
 pub const FFDLY: ::c_int = 0x8000;
-pub const FIONBIO: ::c_ulong = 0x5421;
-pub const FIOCLEX: ::c_ulong = 0x5451;
-pub const FIONCLEX: ::c_ulong = 0x5450;
 pub const FLUSHO: ::tcflag_t = 0x1000;
 pub const F_GETLK: ::c_int = 0x5;
 pub const F_SETLK: ::c_int = 0x6;
@@ -517,8 +514,6 @@ pub const TABDLY: ::c_int = 0x1800;
 pub const TCSADRAIN: ::c_int = 0x1;
 pub const TCSAFLUSH: ::c_int = 0x2;
 pub const TCSANOW: ::c_int = 0;
-pub const TIOCGWINSZ: ::c_int = 0x5413;
-pub const TIOCSWINSZ: ::c_int = 0x5414;
 pub const TOSTOP: ::tcflag_t = 0x100;
 pub const VDISCARD: usize = 0xd;
 pub const VEOF: usize = 0x4;
@@ -892,10 +887,6 @@ pub const SYS_pkey_free: ::c_long = 396;
 pub const SYS_statx: ::c_int = 397;
 pub const SYS_pidfd_open: ::c_long = 434;
 pub const SYS_clone3: ::c_long = 435;
-
-extern "C" {
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-}
 
 cfg_if! {
     if #[cfg(libc_align)] {
