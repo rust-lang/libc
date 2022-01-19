@@ -166,7 +166,6 @@ pub const PTRACE_SETREGSET: ::c_int = 0x4205;
 pub const PTRACE_SEIZE: ::c_int = 0x4206;
 pub const PTRACE_INTERRUPT: ::c_int = 0x4207;
 pub const PTRACE_LISTEN: ::c_int = 0x4208;
-pub const PTRACE_O_MASK: ::c_int = 0x000000ff;
 
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
