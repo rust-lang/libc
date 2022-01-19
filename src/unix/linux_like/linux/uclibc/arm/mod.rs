@@ -44,14 +44,14 @@ s! {
 
     pub struct stat {
         pub st_dev: ::c_ulonglong,
-        pub __pad1: ::c_ushort,
+        __pad1: ::c_ushort,
         pub st_ino: ::ino_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
         pub st_rdev: ::c_ulonglong,
-        pub __pad2: ::c_ushort,
+        __pad2: ::c_ushort,
         pub st_size: ::off_t,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
@@ -61,8 +61,8 @@ s! {
         pub st_mtime_nsec: ::c_long,
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
-        pub __unused4: ::c_ulong,
-        pub __unused5: ::c_ulong,
+        __unused4: ::c_ulong,
+        __unused5: ::c_ulong,
     }
 
     pub struct stat64
@@ -202,44 +202,44 @@ s! {
         pub cuid: ::uid_t,
         pub cgid: ::gid_t,
         pub mode: ::c_ushort,
-        pub __pad1: ::c_ushort,
+        __pad1: ::c_ushort,
         pub __seq: ::c_ushort,
-        pub __pad2: ::c_ushort,
-        pub __unused1: ::c_ulong,
-        pub __unused2: ::c_ulong,
+        __pad2: ::c_ushort,
+        __unused1: ::c_ulong,
+        __unused2: ::c_ulong,
     }
 
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         pub msg_stime: ::time_t,
-        pub __unused1: ::c_ulong,
+        __unused1: ::c_ulong,
         pub msg_rtime: ::time_t,
-        pub __unused2: ::c_ulong,
+        __unused2: ::c_ulong,
         pub msg_ctime: ::time_t,
-        pub __unused3: ::c_ulong,
-        pub __msg_cbytes: ::c_ulong,
+        __unused3: ::c_ulong,
+        __msg_cbytes: ::c_ulong,
         pub msg_qnum: ::msgqnum_t,
         pub msg_qbytes: ::msglen_t,
         pub msg_lspid: ::pid_t,
         pub msg_lrpid: ::pid_t,
-        pub __unused4: ::c_ulong,
-        pub __unused5: ::c_ulong,
+        __unused4: ::c_ulong,
+        __unused5: ::c_ulong,
     }
 
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
         pub shm_atime: ::time_t,
-        pub __unused1: ::c_ulong,
+        __unused1: ::c_ulong,
         pub shm_dtime: ::time_t,
-        pub __unused2: ::c_ulong,
+        __unused2: ::c_ulong,
         pub shm_ctime: ::time_t,
-        pub __unused3: ::c_ulong,
+        __unused3: ::c_ulong,
         pub shm_cpid: ::pid_t,
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
-        pub __unused4: ::c_ulong,
-        pub __unused5: ::c_ulong,
+        __unused4: ::c_ulong,
+        __unused5: ::c_ulong,
     }
 }
 

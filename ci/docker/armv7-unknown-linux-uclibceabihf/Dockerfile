@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir /toolchain
 
-RUN curl --retry 5 -L https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/armv7-eabihf--uclibc--bleeding-edge-2020.08-1.tar.bz2 | \
+RUN curl --retry 5 -L https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/armv7-eabihf--uclibc--bleeding-edge-2021.11-1.tar.bz2 | \
     tar xjf - -C /toolchain --strip-components=1
 RUN /toolchain/relocate-sdk.sh
 

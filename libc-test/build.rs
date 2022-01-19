@@ -3167,10 +3167,6 @@ fn test_linux(target: &str) {
             "NETLINK_GET_STRICT_CHK" if arm || mips || musl => true,
 
             // kernel constants not available in uclibc 1.0.34
-            | "ADDR_COMPAT_LAYOUT"
-            | "ADDR_LIMIT_3GB"
-            | "ADDR_NO_RANDOMIZE"
-            | "CLONE_NEWCGROUP"
             | "EXTPROC"
             | "FAN_MARK_FILESYSTEM"
             | "FAN_MARK_INODE"
@@ -3181,13 +3177,7 @@ fn test_linux(target: &str) {
             | "IPV6_PMTUDISC_INTERFACE"
             | "IPV6_PMTUDISC_OMIT"
             | "IPV6_ROUTER_ALERT_ISOLATE"
-            | "O_TMPFILE"
             | "PACKET_MR_UNICAST"
-            | "PTRACE_EVENT_STOP"
-            | "PTRACE_O_EXITKILL"
-            | "PTRACE_O_SUSPEND_SECCOMP"
-            | "PTRACE_PEEKSIGINFO"
-            | "READ_IMPLIES_EXEC"
             | "RUSAGE_THREAD"
             | "SHM_EXEC"
             | "UDP_GRO"
