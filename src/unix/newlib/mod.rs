@@ -28,8 +28,15 @@ pub type socklen_t = u32;
 pub type speed_t = u32;
 pub type suseconds_t = i32;
 pub type tcflag_t = ::c_uint;
-pub type time_t = i32;
 pub type useconds_t = u32;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type time_t = ::c_longlong;
+    } else {
+        pub type time_t = i32;
+    }
+}
 
 s! {
     // The order of the `ai_addr` field in this struct is crucial
