@@ -2091,8 +2091,6 @@ fn test_freebsd(target: &str) {
 
             "VM_TOTAL" if Some(11) == freebsd_ver => true,
 
-            // Added in FreeBSD 14.
-            "KERN_STACKTOP" if Some(14) > freebsd_ver => true,
             // Added in FreeBSD 13.
             "KERN_PROC_SIGFASTBLK"
             | "USER_LOCALBASE"
@@ -2136,31 +2134,18 @@ fn test_freebsd(target: &str) {
             "PS_FST_TYPE_EVENTFD" if Some(13) > freebsd_ver => true,
 
             // Added in FreeBSD 14.
-            "MNT_RECURSE"
-            | "MNT_DEFERRED"
-            | "MNTK_RECURSE"
-            | "MNTK_UPPER_WAITER"
-            | "MNTK_TASKQUEUE_WAITER"
-                if Some(14) > freebsd_ver =>
-            {
-                true
-            }
+            "MNT_RECURSE" | "MNT_DEFERRED" if Some(14) > freebsd_ver => true,
 
             // Added in FreeBSD 13.
             "MNT_EXTLS" | "MNT_EXTLSCERT" | "MNT_EXTLSCERTUSER" | "MNT_NOCOVER"
-            | "MNT_EMPTYDIR" | "MNTK_NOMSYNC" | "MNTK_UNIONFS" | "MNTK_FPLOOKUP"
-            | "MNTK_SUSPEND_ALL"
+            | "MNT_EMPTYDIR"
                 if Some(13) > freebsd_ver =>
             {
                 true
             }
 
             // Added in FreeBSD 12.
-            "MNT_UNTRUSTED" | "MNT_VERIFIED" | "MNTK_TEXT_REFS" | "MNTK_VMSETSIZE_BUG"
-                if Some(12) > freebsd_ver =>
-            {
-                true
-            }
+            "MNT_UNTRUSTED" | "MNT_VERIFIED" if Some(12) > freebsd_ver => true,
 
             // Added in FreeBSD 14.
             "PT_COREDUMP" | "PC_ALL" | "PC_COMPRESS" if Some(14) > freebsd_ver => true,
