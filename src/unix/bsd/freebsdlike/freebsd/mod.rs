@@ -3497,63 +3497,6 @@ pub const MNT_RECURSE: u64 = 0x100000000000;
 /// Unmount in async context.
 pub const MNT_DEFERRED: u64 = 0x200000000000;
 
-/// Forced unmount in progress.
-pub const MNTK_UNMOUNTF: u32 = 0x00000001;
-/// Filtered async flag.
-pub const MNTK_ASYNC: u32 = 0x00000002;
-/// Async disabled by softdep.
-pub const MNTK_SOFTDEP: u32 = 0x00000004;
-/// Don't do msync.
-pub const MNTK_NOMSYNC: u32 = 0x00000008;
-/// Lock draining is happening.
-pub const MNTK_DRAINING: u32 = 0x00000010;
-/// Refcount expiring is happening.
-pub const MNTK_REFEXPIRE: u32 = 0x00000020;
-/// Allow shared locking for more ops.
-pub const MNTK_EXTENDED_SHARED: u32 = 0x00000040;
-/// Allow shared locking for writes.
-pub const MNTK_SHARED_WRITES: u32 = 0x00000080;
-/// Disallow page faults during reads and writes. Filesystem shall properly handle i/o
-/// state on EFAULT.
-pub const MNTK_NO_IOPF: u32 = 0x00000100;
-/// Pending recursive unmount.
-pub const MNTK_RECURSE: u32 = 0x00000200;
-/// Waiting to drain MNTK_UPPER_PENDING.
-pub const MNTK_UPPER_WAITER: u32 = 0x00000400;
-pub const MNTK_LOOKUP_EXCL_DOTDOT: u32 = 0x00000800;
-pub const MNTK_UNMAPPED_BUFS: u32 = 0x00002000;
-/// FS uses the buffer cache.
-pub const MNTK_USES_BCACHE: u32 = 0x00004000;
-/// Keep use ref for text.
-pub const MNTK_TEXT_REFS: u32 = 0x00008000;
-pub const MNTK_VMSETSIZE_BUG: u32 = 0x00010000;
-/// A hack for F_ISUNIONSTACK.
-pub const MNTK_UNIONFS: u32 = 0x00020000;
-/// fast path lookup is supported.
-pub const MNTK_FPLOOKUP: u32 = 0x00040000;
-/// Suspended by all-fs suspension.
-pub const MNTK_SUSPEND_ALL: u32 = 0x00080000;
-/// Waiting on unmount taskqueue.
-pub const MNTK_TASKQUEUE_WAITER: u32 = 0x00100000;
-/// Disable async.
-pub const MNTK_NOASYNC: u32 = 0x00800000;
-/// Unmount in progress.
-pub const MNTK_UNMOUNT: u32 = 0x01000000;
-/// Waiting for unmount to finish.
-pub const MNTK_MWAIT: u32 = 0x02000000;
-/// Request write suspension.
-pub const MNTK_SUSPEND: u32 = 0x08000000;
-/// Block secondary writes.
-pub const MNTK_SUSPEND2: u32 = 0x04000000;
-/// Write operations are suspended.
-pub const MNTK_SUSPENDED: u32 = 0x10000000;
-/// auto disable cache for nullfs mounts over this fs.
-pub const MNTK_NULL_NOCACHE: u32 = 0x20000000;
-/// FS supports shared lock lookups.
-pub const MNTK_LOOKUP_SHARED: u32 = 0x40000000;
-/// Don't send KNOTEs from VOP hooks.
-pub const MNTK_NOKNOTE: u32 = 0x80000000;
-
 /// Get configured filesystems.
 pub const VFS_VFSCONF: ::c_int = 0;
 /// Generic filesystem information.
