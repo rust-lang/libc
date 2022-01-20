@@ -2056,7 +2056,6 @@ pub const KERN_IOV_MAX: ::c_int = 35;
 pub const KERN_HOSTUUID: ::c_int = 36;
 pub const KERN_ARND: ::c_int = 37;
 pub const KERN_MAXPHYS: ::c_int = 38;
-pub const KERN_STACKTOP: ::c_int = 39;
 
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;

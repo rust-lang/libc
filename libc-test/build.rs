@@ -2091,8 +2091,6 @@ fn test_freebsd(target: &str) {
 
             "VM_TOTAL" if Some(11) == freebsd_ver => true,
 
-            // Added in FreeBSD 14.
-            "KERN_STACKTOP" if Some(14) > freebsd_ver => true,
             // Added in FreeBSD 13.
             "KERN_PROC_SIGFASTBLK"
             | "USER_LOCALBASE"
