@@ -3561,6 +3561,9 @@ pub const MFD_CLOEXEC: ::c_uint = 0x00000001;
 pub const MFD_ALLOW_SEALING: ::c_uint = 0x00000002;
 pub const MFD_HUGETLB: ::c_uint = 0x00000004;
 
+pub const SHM_LARGEPAGE_ALLOC_DEFAULT: ::c_int = 0;
+pub const SHM_LARGEPAGE_ALLOC_NOWAIT: ::c_int = 1;
+pub const SHM_LARGEPAGE_ALLOC_HARD: ::c_int = 2;
 pub const SHM_RENAME_NOREPLACE: ::c_int = 1 << 0;
 pub const SHM_RENAME_EXCHANGE: ::c_int = 1 << 1;
 
@@ -4105,6 +4108,13 @@ extern "C" {
     pub fn adjtime(arg1: *const ::timeval, arg2: *mut ::timeval) -> ::c_int;
     pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
 
+    pub fn shm_create_largepage(
+        path: *const ::c_char,
+        flags: ::c_int,
+        psind: ::c_int,
+        alloc_policy: ::c_int,
+        mode: ::mode_t,
+    ) -> ::c_int;
     pub fn shm_rename(
         path_from: *const ::c_char,
         path_to: *const ::c_char,
