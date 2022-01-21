@@ -26,6 +26,11 @@ if [ -n "$TARGET" ]; then
   rustup target add "$TARGET"
 fi
 
+if [ -n "$INSTALL_RUST_SRC" ]; then
+  echo "Install rust-src"
+  rustup component add rust-src
+fi
+
 if [ "$OS" = "windows" ]; then
   if [ "$ARCH_BITS" = "i686" ]; then
     echo "Install MinGW32"
