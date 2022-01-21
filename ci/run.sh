@@ -53,7 +53,7 @@ if [ "$QEMU" != "" ]; then
   cargo build \
     --manifest-path libc-test/Cargo.toml \
     --target "${TARGET}" \
-    --test main
+    --test main ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
   rm "${CARGO_TARGET_DIR}/${TARGET}"/debug/main-*.d
   cp "${CARGO_TARGET_DIR}/${TARGET}"/debug/main-* "${tmpdir}"/mount/libc-test
   # shellcheck disable=SC2016
@@ -91,17 +91,17 @@ if [ "$TARGET" = "s390x-unknown-linux-gnu" ]; then
   until [ $n -ge $N ]
   do
     if [ "$passed" = "0" ]; then
-      if cargo test --no-default-features --manifest-path libc-test/Cargo.toml --target "${TARGET}" ; then
+      if cargo test --no-default-features --manifest-path libc-test/Cargo.toml --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"} ; then
         passed=$((passed+1))
         continue
       fi
     elif [ "$passed" = "1" ]; then
-      if cargo test --manifest-path libc-test/Cargo.toml --target "${TARGET}" ; then
+      if cargo test --manifest-path libc-test/Cargo.toml --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"} ; then
         passed=$((passed+1))
         continue
       fi
     elif [ "$passed" = "2" ]; then
-      if cargo test --features extra_traits --manifest-path libc-test/Cargo.toml --target "${TARGET}"; then
+      if cargo test --features extra_traits --manifest-path libc-test/Cargo.toml --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}; then
         break
       fi
     fi
@@ -110,10 +110,10 @@ if [ "$TARGET" = "s390x-unknown-linux-gnu" ]; then
   done
 else
   cargo test --no-default-features --manifest-path libc-test/Cargo.toml \
-    --target "${TARGET}"
+    --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
 
-  cargo test --manifest-path libc-test/Cargo.toml --target "${TARGET}"
+  cargo test --manifest-path libc-test/Cargo.toml --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
 
   RUST_BACKTRACE=1 cargo test --features extra_traits --manifest-path libc-test/Cargo.toml \
-    --target "${TARGET}"
+    --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
 fi

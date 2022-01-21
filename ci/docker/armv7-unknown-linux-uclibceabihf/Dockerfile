@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         gcc libc6-dev qemu-user ca-certificates qemu-system-arm curl \
-        xz-utils patch
+        xz-utils patch file
 
 RUN mkdir /toolchain
 
@@ -12,6 +12,6 @@ RUN /toolchain/relocate-sdk.sh
 
 ENV PATH=$PATH:/rust/bin:/toolchain/bin \
     STAGING_DIR=/toolchain/armv7-buildroot-linux-uclibceabihf/sysroot \
-    CC_armv7_unknown_linux_uclibc=armv7-buildroot-linux-uclibc-gcc \
-    CARGO_TARGET_ARMV7_UNKNOWN_LINUX_UCLIBCEABIHF_LINKER=armv7-buildroot-linux-uclibc-gcc \
+    CC_armv7_unknown_linux_uclibceabihf=arm-buildroot-linux-uclibcgnueabihf-gcc \
+    CARGO_TARGET_ARMV7_UNKNOWN_LINUX_UCLIBCEABIHF_LINKER=arm-buildroot-linux-uclibcgnueabihf-gcc \
     CARGO_TARGET_ARMV7_UNKNOWN_LINUX_UCLIBCEABIHF_RUNNER="qemu-arm -L /toolchain/arm-buildroot-linux-uclibcgnueabihf/sysroot/"
