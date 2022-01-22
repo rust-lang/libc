@@ -139,6 +139,12 @@ s! {
         __unused5: ::c_ulong
     }
 
+    pub struct ip_mreqn {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_address: ::in_addr,
+        pub imr_ifindex: ::c_int,
+    }
+
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
