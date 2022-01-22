@@ -2967,6 +2967,11 @@ fn test_linux(target: &str) {
         if (musl || sparc64) && ty.starts_with("uinput_") {
             return true;
         }
+        // FIXME(https://github.com/rust-lang/libc/issues/1558): passing by
+        // value corrupts the value for reasons not understood.
+        if (gnu && sparc64) && ty == "ip_mreqn" {
+            return true;
+        }
         match ty {
             // These cannot be tested when "resolv.h" is included and are tested
             // in the `linux_elf.rs` file.

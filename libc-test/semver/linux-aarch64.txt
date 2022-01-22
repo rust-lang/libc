@@ -87,7 +87,6 @@ TIOCGRS485
 TIOCSBRK
 TIOCSRS485
 flock64
-ip_mreqn
 max_align_t
 mcontext_t
 ucontext_t

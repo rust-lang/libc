@@ -2794,6 +2794,7 @@ input_event
 input_id
 input_keymap_entry
 input_mask
+ip_mreqn
 ip_mreq_source
 ipc_perm
 itimerspec

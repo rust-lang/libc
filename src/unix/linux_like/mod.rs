@@ -25,6 +25,12 @@ s! {
         pub imr_interface: in_addr,
     }
 
+    pub struct ip_mreqn {
+        pub imr_multiaddr: in_addr,
+        pub imr_address: in_addr,
+        pub imr_ifindex: ::c_int,
+    }
+
     pub struct ip_mreq_source {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,

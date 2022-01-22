@@ -73,12 +73,6 @@ s! {
         pub cmsg_type: ::c_int,
     }
 
-    pub struct ip_mreqn {
-        pub imr_multiaddr: ::in_addr,
-        pub imr_address: ::in_addr,
-        pub imr_ifindex: ::c_int,
-    }
-
     pub struct termios {
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,

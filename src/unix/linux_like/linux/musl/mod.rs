@@ -218,12 +218,6 @@ s! {
         pub rt_irtt: ::c_ushort,
     }
 
-    pub struct ip_mreqn {
-        pub imr_multiaddr: ::in_addr,
-        pub imr_address: ::in_addr,
-        pub imr_ifindex: ::c_int,
-    }
-
     pub struct __exit_status {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
