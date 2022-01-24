@@ -1371,7 +1371,6 @@ cfg_if! {
         pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
         pub const AFS_SUPER_MAGIC: ::c_long = 0x5346414f;
         pub const AUTOFS_SUPER_MAGIC: ::c_long = 0x0187;
-        pub const BINDERFS_SUPER_MAGIC: ::c_long = 0x6c6f6f70;
         pub const BPF_FS_MAGIC: ::c_long = 0xcafe4a11;
         pub const BTRFS_SUPER_MAGIC: ::c_long = 0x9123683e;
         pub const CGROUP2_SUPER_MAGIC: ::c_long = 0x63677270;
@@ -1420,13 +1419,11 @@ cfg_if! {
         pub const UDF_SUPER_MAGIC: ::c_long = 0x15013346;
         pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
         pub const XENFS_SUPER_MAGIC: ::c_long = 0xabba1974;
-        pub const XFS_SUPER_MAGIC: ::c_long = 0x58465342;
     } else if #[cfg(target_arch = "s390x")] {
         pub const ADFS_SUPER_MAGIC: ::c_uint = 0x0000adf5;
         pub const AFFS_SUPER_MAGIC: ::c_uint = 0x0000adff;
         pub const AFS_SUPER_MAGIC: ::c_uint = 0x5346414f;
         pub const AUTOFS_SUPER_MAGIC: ::c_uint = 0x0187;
-        pub const BINDERFS_SUPER_MAGIC: ::c_uint = 0x6c6f6f70;
         pub const BPF_FS_MAGIC: ::c_uint = 0xcafe4a11;
         pub const BTRFS_SUPER_MAGIC: ::c_uint = 0x9123683e;
         pub const CGROUP2_SUPER_MAGIC: ::c_uint = 0x63677270;
@@ -1475,7 +1472,6 @@ cfg_if! {
         pub const UDF_SUPER_MAGIC: ::c_uint = 0x15013346;
         pub const USBDEVICE_SUPER_MAGIC: ::c_uint = 0x00009fa2;
         pub const XENFS_SUPER_MAGIC: ::c_uint = 0xabba1974;
-        pub const XFS_SUPER_MAGIC: ::c_uint = 0x58465342;
     }
 }
 

@@ -846,6 +846,19 @@ pub const O_ACCMODE: ::c_int = 3;
 pub const ST_RELATIME: ::c_ulong = 4096;
 pub const NI_MAXHOST: ::socklen_t = 1025;
 
+// Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
+// following are only available on newer Linux versions than the versions
+// currently used in CI in some configurations, so we define them here.
+cfg_if! {
+    if #[cfg(not(target_arch = "s390x"))] {
+        pub const BINDERFS_SUPER_MAGIC: ::c_long = 0x6c6f6f70;
+        pub const XFS_SUPER_MAGIC: ::c_long = 0x58465342;
+    } else if #[cfg(target_arch = "s390x")] {
+        pub const BINDERFS_SUPER_MAGIC: ::c_uint = 0x6c6f6f70;
+        pub const XFS_SUPER_MAGIC: ::c_uint = 0x58465342;
+    }
+}
+
 pub const CPU_SETSIZE: ::c_int = 0x400;
 
 pub const PTRACE_TRACEME: ::c_uint = 0;
