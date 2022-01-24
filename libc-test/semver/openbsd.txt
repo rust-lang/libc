@@ -999,6 +999,7 @@ if_nameindex
 ifaddrs
 in6_pktinfo
 initgroups
+ip_mreqn
 ipc_perm
 iso_args
 kevent
