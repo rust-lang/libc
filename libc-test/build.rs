@@ -1679,6 +1679,9 @@ fn test_android(target: &str) {
             "IBSHIFT" => true,
             "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => true,
 
+            // is a private value for kernel usage normally
+            "FUSE_SUPER_MAGIC" => true,
+
             _ => false,
         }
     });
