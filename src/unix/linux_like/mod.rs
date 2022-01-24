@@ -1366,7 +1366,9 @@ pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
 cfg_if! {
-    if #[cfg(not(target_arch = "s390x"))] {
+    if #[cfg(target_os = "emscripten")] {
+        // Emscripten does not define any `*_SUPER_MAGIC` constants.
+    } else if #[cfg(not(target_arch = "s390x"))] {
         pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
         pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
         pub const AFS_SUPER_MAGIC: ::c_long = 0x5346414f;
