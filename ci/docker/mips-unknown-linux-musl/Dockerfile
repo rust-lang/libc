@@ -6,11 +6,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir /toolchain
 
-# Linux kernel version: 4.14.151
-# See build_dir/target-mips_24kc_musl/linux-ar71xx_generic/linux-4.14.151
+# Linux kernel version: 5.4.154
+# See build_dir/target-mips_24kc_musl/linux-ath79_generic/linux-5.4.154
 # Musl version: 1.1.24
-# See staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/info.mk
-RUN curl --retry 5 -L https://downloads.openwrt.org/releases/19.07.0-rc1/targets/ar71xx/generic/openwrt-sdk-19.07.0-rc1-ar71xx-generic_gcc-7.4.0_musl.Linux-x86_64.tar.xz | \
+# See staging_dir/toolchain-mips_24kc_gcc-8.4.0_musl/info.mk
+RUN curl --retry 5 -L https://downloads.openwrt.org/releases/21.02.1/targets/ath79/generic/openwrt-sdk-21.02.1-ath79-generic_gcc-8.4.0_musl.Linux-x86_64.tar.xz | \
     tar xJf - -C /toolchain --strip-components=1
 
 # See https://lkml.org/lkml/2014/3/14/269
