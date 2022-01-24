@@ -112,5 +112,4 @@ SYS_vserver
 SYS_waitpid
 TIOCCBRK
 TIOCSBRK
-ip_mreqn
 max_align_t

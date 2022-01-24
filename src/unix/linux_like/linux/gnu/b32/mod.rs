@@ -135,12 +135,6 @@ s! {
         pub _f: [::c_char; 8],
     }
 
-    pub struct ip_mreqn {
-        pub imr_multiaddr: ::in_addr,
-        pub imr_address: ::in_addr,
-        pub imr_ifindex: ::c_int,
-    }
-
     pub struct semid_ds {
         pub sem_perm: ipc_perm,
         #[cfg(target_arch = "powerpc")]

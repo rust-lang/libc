@@ -191,12 +191,6 @@ s! {
         pub ss_flags: ::c_int,
         pub ss_size: ::size_t
     }
-
-    pub struct ip_mreqn {
-        pub imr_multiaddr: ::in_addr,
-        pub imr_address: ::in_addr,
-        pub imr_ifindex: ::c_int,
-    }
 }
 
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;

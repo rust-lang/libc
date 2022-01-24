@@ -211,7 +211,6 @@ fsblkcnt64_t
 fsfilcnt64_t
 getcontext
 greg_t
-ip_mreqn
 makecontext
 max_align_t
 mcontext_t

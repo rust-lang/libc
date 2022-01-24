@@ -69,4 +69,3 @@ TIOCSRS485
 flock64
 fsblkcnt64_t
 fsfilcnt64_t
-ip_mreqn
