@@ -2233,6 +2233,14 @@ pub const __PROC_PROTECT: ::c_uint = 0x0008;
 pub const NET_MAC_AWARE: ::c_uint = 0x0010;
 pub const NET_MAC_AWARE_INHERIT: ::c_uint = 0x0020;
 pub const PRIV_AWARE_RESET: ::c_uint = 0x0040;
+pub const PRIV_XPOLICY: ::c_uint = 0x0080;
+pub const PRIV_PFEXEC: ::c_uint = 0x0100;
+pub const PRIV_USER: ::c_uint = PRIV_DEBUG
+    | NET_MAC_AWARE
+    | NET_MAC_AWARE_INHERIT
+    | PRIV_XPOLICY
+    | PRIV_AWARE_RESET
+    | PRIV_PFEXEC;
 
 // As per sys/socket.h, header alignment must be 8 bytes on SPARC
 // and 4 bytes everywhere else:
