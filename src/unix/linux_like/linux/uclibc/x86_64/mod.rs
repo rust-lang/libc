@@ -317,6 +317,7 @@ pub const O_CLOEXEC: ::c_int = 0x80000;
 pub const O_CREAT: ::c_int = 0100;
 pub const O_DIRECTORY: ::c_int = 0200000;
 pub const O_EXCL: ::c_int = 0200;
+pub const O_NOFOLLOW: ::c_int = 0x20000;
 pub const O_NONBLOCK: ::c_int = 04000;
 pub const O_TRUNC: ::c_int = 01000;
 pub const NCCS: usize = 32;
