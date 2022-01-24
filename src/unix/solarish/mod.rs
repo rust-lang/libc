@@ -429,7 +429,7 @@ s! {
     pub struct mmapobj_result_t {
         pub mr_addr: ::caddr_t,
         pub mr_msize: ::size_t,
-        pub mr_fize: ::size_t,
+        pub mr_fsize: ::size_t,
         pub mr_offset: ::size_t,
         pub mr_prot: ::c_uint,
         pub mr_flags: ::c_uint,
