@@ -48,6 +48,12 @@ cfg_if! {
 }
 
 s! {
+    pub struct ip_mreqn {
+        pub imr_multiaddr: in_addr,
+        pub imr_address: in_addr,
+        pub imr_ifindex: ::c_int,
+    }
+
     pub struct glob_t {
         pub gl_pathc:   ::size_t,
         pub gl_matchc:  ::size_t,
