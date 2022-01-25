@@ -1503,6 +1503,8 @@ getitimer
 getline
 getloadavg
 getnameinfo
+getpagesize
+getpagesizes
 getpeereid
 getpriority
 getprogname
