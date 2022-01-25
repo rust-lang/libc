@@ -2316,6 +2316,7 @@ fn test_freebsd(target: &str) {
             ("if_data", "__ifi_epoch") => true,
             ("if_data", "__ifi_lastchange") => true,
             ("ifreq", "ifr_ifru") => true,
+            ("ifconf", "ifc_ifcu") => true,
 
             // anonymous struct
             ("devstat", "dev_links") => true,
