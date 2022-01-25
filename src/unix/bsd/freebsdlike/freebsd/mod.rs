@@ -4120,6 +4120,7 @@ extern "C" {
     pub fn procctl(idtype: ::idtype_t, id: ::id_t, cmd: ::c_int, data: *mut ::c_void) -> ::c_int;
 
     pub fn getpagesize() -> ::c_int;
+    pub fn getpagesizes(pagesize: *mut ::size_t, nelem: ::c_int) -> ::c_int;
 
     pub fn adjtime(arg1: *const ::timeval, arg2: *mut ::timeval) -> ::c_int;
     pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
