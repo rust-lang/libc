@@ -1820,6 +1820,20 @@ pub const CMSPAR: ::tcflag_t = 0o10000000000;
 pub const MFD_CLOEXEC: ::c_uint = 0x0001;
 pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
 pub const MFD_HUGETLB: ::c_uint = 0x0004;
+pub const MFD_HUGE_64KB: ::c_uint = 0x40000000;
+pub const MFD_HUGE_512KB: ::c_uint = 0x4c000000;
+pub const MFD_HUGE_1MB: ::c_uint = 0x50000000;
+pub const MFD_HUGE_2MB: ::c_uint = 0x54000000;
+pub const MFD_HUGE_8MB: ::c_uint = 0x5c000000;
+pub const MFD_HUGE_16MB: ::c_uint = 0x60000000;
+pub const MFD_HUGE_32MB: ::c_uint = 0x64000000;
+pub const MFD_HUGE_256MB: ::c_uint = 0x70000000;
+pub const MFD_HUGE_512MB: ::c_uint = 0x74000000;
+pub const MFD_HUGE_1GB: ::c_uint = 0x78000000;
+pub const MFD_HUGE_2GB: ::c_uint = 0x7c000000;
+pub const MFD_HUGE_16GB: ::c_uint = 0x88000000;
+pub const MFD_HUGE_MASK: ::c_uint = 63;
+pub const MFD_HUGE_SHIFT: ::c_uint = 26;
 
 // linux/close_range.h
 pub const CLOSE_RANGE_UNSHARE: ::c_uint = 1 << 1;
