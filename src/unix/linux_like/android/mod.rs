@@ -1263,33 +1263,6 @@ pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
 pub const EXTPROC: ::tcflag_t = 0o200000;
 
-pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
-pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
-pub const CODA_SUPER_MAGIC: ::c_long = 0x73757245;
-pub const CRAMFS_MAGIC: ::c_long = 0x28cd3d45;
-pub const EFS_SUPER_MAGIC: ::c_long = 0x00414a53;
-pub const EXT2_SUPER_MAGIC: ::c_long = 0x0000ef53;
-pub const EXT3_SUPER_MAGIC: ::c_long = 0x0000ef53;
-pub const EXT4_SUPER_MAGIC: ::c_long = 0x0000ef53;
-pub const HPFS_SUPER_MAGIC: ::c_long = 0xf995e849;
-pub const HUGETLBFS_MAGIC: ::c_long = 0x958458f6;
-pub const ISOFS_SUPER_MAGIC: ::c_long = 0x00009660;
-pub const JFFS2_SUPER_MAGIC: ::c_long = 0x000072b6;
-pub const MINIX_SUPER_MAGIC: ::c_long = 0x0000137f;
-pub const MINIX_SUPER_MAGIC2: ::c_long = 0x0000138f;
-pub const MINIX2_SUPER_MAGIC: ::c_long = 0x00002468;
-pub const MINIX2_SUPER_MAGIC2: ::c_long = 0x00002478;
-pub const MSDOS_SUPER_MAGIC: ::c_long = 0x00004d44;
-pub const NCP_SUPER_MAGIC: ::c_long = 0x0000564c;
-pub const NFS_SUPER_MAGIC: ::c_long = 0x00006969;
-pub const OPENPROM_SUPER_MAGIC: ::c_long = 0x00009fa1;
-pub const PROC_SUPER_MAGIC: ::c_long = 0x00009fa0;
-pub const QNX4_SUPER_MAGIC: ::c_long = 0x0000002f;
-pub const REISERFS_SUPER_MAGIC: ::c_long = 0x52654973;
-pub const SMB_SUPER_MAGIC: ::c_long = 0x0000517b;
-pub const TMPFS_MAGIC: ::c_long = 0x01021994;
-pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
-
 pub const MAP_HUGETLB: ::c_int = 0x040000;
 
 pub const PTRACE_TRACEME: ::c_int = 0;
