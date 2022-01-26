@@ -41,6 +41,9 @@ pub type caddr_t = *mut ::c_char;
 
 pub type fhandle_t = fhandle;
 
+pub type au_id_t = ::uid_t;
+pub type au_asid_t = ::pid_t;
+
 // It's an alias over "struct __kvm_t". However, its fields aren't supposed to be used directly,
 // making the type definition system dependent. Better not bind it exactly.
 pub type kvm_t = ::c_void;
@@ -967,6 +970,22 @@ s! {
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
 
+    pub struct au_mask_t {
+        pub am_success: ::c_uint,
+        pub am_failure: ::c_uint,
+    }
+
+    pub struct au_tid_t {
+        pub port: u32,
+        pub machine: u32,
+    }
+
+    pub struct auditinfo_t {
+        pub ai_auid: ::au_id_t,
+        pub ai_mask: ::au_mask_t,
+        pub ai_termid: au_tid_t,
+        pub ai_asid: ::au_asid_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -4182,6 +4201,7 @@ extern "C" {
         flags: ::c_int,
     ) -> ::c_int;
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn setaudit(auditinfo: *const auditinfo_t) -> ::c_int;
 }
 
 #[link(name = "kvm")]

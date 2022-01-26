@@ -1416,6 +1416,11 @@ arc4random_buf
 arc4random_uniform
 arphdr
 atof
+au_asid_t
+au_id_t
+au_mask_t
+au_tid_t
+auditinfo_t
 backtrace
 backtrace_symbols
 backtrace_symbols_fd
@@ -1754,6 +1759,7 @@ semop
 sendfile
 sendmmsg
 sendmsg
+setaudit
 setdomainname
 setgrent
 setgroups

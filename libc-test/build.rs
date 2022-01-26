@@ -1802,6 +1802,7 @@ fn test_freebsd(target: &str) {
     headers! { cfg:
                 "aio.h",
                 "arpa/inet.h",
+                "bsm/audit.h",
                 "ctype.h",
                 "dirent.h",
                 "dlfcn.h",
