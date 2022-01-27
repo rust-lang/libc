@@ -1,6 +1,11 @@
 pub const L_tmpnam: ::c_uint = 260;
 pub const TMP_MAX: ::c_uint = 0x7fff_ffff;
 
+// stdio file descriptor numbers
+pub const STDIN_FILENO: ::c_int = 0;
+pub const STDOUT_FILENO: ::c_int = 1;
+pub const STDERR_FILENO: ::c_int = 2;
+
 // POSIX Supplement (from errno.h)
 // This particular error code is only currently available in msvc toolchain
 pub const EOTHER: ::c_int = 131;
