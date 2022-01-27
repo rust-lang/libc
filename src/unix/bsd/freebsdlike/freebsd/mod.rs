@@ -2317,6 +2317,8 @@ pub const PT_GETDBREGS: ::c_int = 37;
 pub const PT_SETDBREGS: ::c_int = 38;
 pub const PT_VM_TIMESTAMP: ::c_int = 40;
 pub const PT_VM_ENTRY: ::c_int = 41;
+pub const PT_GETREGSET: ::c_int = 42;
+pub const PT_SETREGSET: ::c_int = 43;
 pub const PT_FIRSTMACH: ::c_int = 64;
 
 pub const PTRACE_EXEC: ::c_int = 0x0001;
