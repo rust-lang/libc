@@ -48,8 +48,7 @@ pub type au_asid_t = ::pid_t;
 // making the type definition system dependent. Better not bind it exactly.
 pub type kvm_t = ::c_void;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
-#[derive(PartialEq, Eq)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_support_flags {
     DEVSTAT_ALL_SUPPORTED = 0x00,
@@ -64,8 +63,7 @@ impl ::Clone for devstat_support_flags {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
-#[derive(PartialEq, Eq)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_trans_flags {
     DEVSTAT_NO_DATA = 0x00,
@@ -81,8 +79,7 @@ impl ::Clone for devstat_trans_flags {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
-#[derive(PartialEq, Eq)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_tag_type {
     DEVSTAT_TAG_SIMPLE = 0x00,
@@ -97,8 +94,7 @@ impl ::Clone for devstat_tag_type {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
-#[derive(PartialEq, Eq)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_match_flags {
     DEVSTAT_MATCH_NONE = 0x00,
@@ -113,8 +109,7 @@ impl ::Clone for devstat_match_flags {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
-#[derive(PartialEq, Eq)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_priority {
     DEVSTAT_PRIORITY_MIN = 0x000,
@@ -135,8 +130,7 @@ impl ::Clone for devstat_priority {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
-#[derive(PartialEq, Eq)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_type_flags {
     DEVSTAT_TYPE_DIRECT = 0x000,
@@ -168,8 +162,7 @@ impl ::Clone for devstat_type_flags {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
-#[derive(PartialEq, Eq)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_metric {
     DSM_NONE,
@@ -226,8 +219,7 @@ impl ::Clone for devstat_metric {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash))]
-#[derive(PartialEq, Eq)]
+#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_select_mode {
     DS_SELECT_ADD,
