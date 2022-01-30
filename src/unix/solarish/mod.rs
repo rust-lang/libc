@@ -43,6 +43,16 @@ pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type shmatt_t = ::c_ulong;
 
+pub type lgrp_rsrc_t = ::c_int;
+pub type lgrp_affinity_t = ::c_int;
+pub type lgrp_id_t = ::id_t;
+pub type lgrp_mem_size_t = ::c_longlong;
+pub type lgrp_cookie_t = ::uintptr_t;
+pub type lgrp_content_t = ::c_uint;
+pub type lgrp_lat_between_t = ::c_uint;
+pub type lgrp_mem_size_flag_t = ::c_uint;
+pub type lgrp_view_t = ::c_uint;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 impl ::Copy for timezone {}
@@ -433,6 +443,13 @@ s! {
         pub mr_offset: ::size_t,
         pub mr_prot: ::c_uint,
         pub mr_flags: ::c_uint,
+    }
+
+    pub struct lgrp_affinity_args {
+        pub idtype: ::idtype_t,
+        pub id: ::id_t,
+        pub lgrp: ::lgrp_id_t,
+        pub aff: ::lgrp_affinity_t,
     }
 }
 
@@ -2309,6 +2326,23 @@ pub const SI_ARCHITECTURE_64: ::c_int = 517;
 pub const SI_ARCHITECTURE_K: ::c_int = 518;
 pub const SI_ARCHITECTURE_NATIVE: ::c_int = 519;
 
+// sys/lgrp_user.h
+pub const LGRP_COOKIE_NONE: ::lgrp_cookie_t = 0;
+pub const LGRP_AFF_NONE: ::lgrp_affinity_t = 0x0;
+pub const LGRP_AFF_WEAK: ::lgrp_affinity_t = 0x10;
+pub const LGRP_AFF_STRONG: ::lgrp_affinity_t = 0x100;
+pub const LGRP_RSRC_COUNT: ::lgrp_rsrc_t = 2;
+pub const LGRP_RSRC_CPU: ::lgrp_rsrc_t = 0;
+pub const LGRP_RSRC_MEM: ::lgrp_rsrc_t = 1;
+pub const LGRP_CONTENT_ALL: ::lgrp_content_t = 0;
+pub const LGRP_CONTENT_HIERARCHY: ::lgrp_content_t = LGRP_CONTENT_ALL;
+pub const LGRP_CONTENT_DIRECT: ::lgrp_content_t = 1;
+pub const LGRP_LAT_CPU_TO_MEM: ::lgrp_lat_between_t = 0;
+pub const LGRP_MEM_SZ_FREE: ::lgrp_mem_size_flag_t = 0;
+pub const LGRP_MEM_SZ_INSTALLED: ::lgrp_mem_size_flag_t = 1;
+pub const LGRP_VIEW_CALLER: ::lgrp_view_t = 0;
+pub const LGRP_VIEW_OS: ::lgrp_view_t = 1;
+
 // As per sys/socket.h, header alignment must be 8 bytes on SPARC
 // and 4 bytes everywhere else:
 #[cfg(target_arch = "sparc64")]
@@ -2923,6 +2957,38 @@ extern "C" {
         loc: ::locale_t,
     ) -> ::c_int;
     pub fn strsep(string: *mut *mut ::c_char, delim: *const ::c_char) -> *mut ::c_char;
+}
+
+#[link(name = "lgrp")]
+extern "C" {
+    pub fn lgrp_init(view: lgrp_view_t) -> lgrp_cookie_t;
+    pub fn lgrp_fini(cookie: lgrp_cookie_t) -> ::c_int;
+    pub fn lgrp_affinity_get(
+        idtype: ::idtype_t,
+        id: ::id_t,
+        lgrp: ::lgrp_id_t,
+    ) -> ::lgrp_affinity_t;
+    pub fn lgrp_affinity_set(
+        idtype: ::idtype_t,
+        id: ::id_t,
+        lgrp: ::lgrp_id_t,
+        aff: lgrp_affinity_t,
+    ) -> ::lgrp_affinity_t;
+    pub fn lgrp_cpus(
+        cookie: ::lgrp_cookie_t,
+        lgrp: ::lgrp_id_t,
+        cpuids: *mut ::processorid_t,
+        count: ::c_uint,
+        content: ::lgrp_content_t,
+    ) -> ::c_int;
+    pub fn lgrp_mem_size(
+        cookie: ::lgrp_cookie_t,
+        lgrp: ::lgrp_id_t,
+        tpe: ::lgrp_mem_size_flag_t,
+        content: ::lgrp_content_t,
+    ) -> ::lgrp_mem_size_t;
+    pub fn lgrp_nlgrps(cookie: ::lgrp_cookie_t) -> ::c_int;
+    pub fn lgrp_view(cookie: ::lgrp_cookie_t) -> ::lgrp_view_t;
 }
 
 mod compat;
