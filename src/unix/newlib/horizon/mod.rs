@@ -190,5 +190,7 @@ extern "C" {
         value: *mut ::c_void,
     ) -> ::c_int;
 
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+
     pub fn gethostid() -> ::c_long;
 }
