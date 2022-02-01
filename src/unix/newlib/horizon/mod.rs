@@ -147,6 +147,10 @@ pub const FIONBIO: ::c_ulong = 1;
 
 pub const RTLD_DEFAULT: *mut ::c_void = 0 as *mut ::c_void;
 
+// For getrandom()
+pub const GRND_NONBLOCK: ::c_uint = 0x1;
+pub const GRND_RANDOM: ::c_uint = 0x2;
+
 // Horizon OS works doesn't or can't hold any of this information
 safe_f! {
     pub {const} fn WIFSTOPPED(_status: ::c_int) -> bool {
