@@ -182,6 +182,7 @@ fn test_apple(target: &str) {
         "aio.h",
         "CommonCrypto/CommonCrypto.h",
         "CommonCrypto/CommonRandom.h",
+        "copyfile.h",
         "crt_externs.h",
         "ctype.h",
         "dirent.h",
