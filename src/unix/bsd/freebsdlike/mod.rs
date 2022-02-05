@@ -1601,6 +1601,7 @@ extern "C" {
         -> ::ssize_t;
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
     pub fn rtprio(function: ::c_int, pid: ::pid_t, rtp: *mut rtprio) -> ::c_int;
+    pub fn sched_rr_get_interval(pid: ::pid_t, t: *mut ::timespec) -> ::c_int;
     pub fn sched_getparam(pid: ::pid_t, param: *mut sched_param) -> ::c_int;
     pub fn sched_setparam(pid: ::pid_t, param: *const sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
