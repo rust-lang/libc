@@ -338,6 +338,9 @@ cfg_if! {
     } else if #[cfg(target_arch = "mips")] {
         mod mips;
         pub use self::mips::*;
+    } else if #[cfg(target_arch = "m68k")] {
+        mod m68k;
+        pub use self::m68k::*;
     } else if #[cfg(target_arch = "powerpc")] {
         mod powerpc;
         pub use self::powerpc::*;
