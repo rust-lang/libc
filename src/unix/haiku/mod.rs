@@ -1510,6 +1510,12 @@ extern "C" {
     pub fn srand(seed: ::c_uint);
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
+    pub fn ppoll(
+        fds: *mut ::pollfd,
+        numfds: ::nfds_t,
+        timeout: *const ::timespec,
+        sigMask: *const sigset_t,
+    ) -> ::c_int;
 }
 
 #[link(name = "bsd")]
