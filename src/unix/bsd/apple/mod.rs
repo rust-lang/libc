@@ -128,6 +128,9 @@ pub type CCStatus = i32;
 pub type CCCryptorStatus = i32;
 pub type CCRNGStatus = ::CCCryptorStatus;
 
+pub type copyfile_state_t = *mut ::c_void;
+pub type copyfile_flags_t = u32;
+
 deprecated_mach! {
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
@@ -4611,6 +4614,43 @@ pub const RUSAGE_INFO_V2: ::c_int = 2;
 pub const RUSAGE_INFO_V3: ::c_int = 3;
 pub const RUSAGE_INFO_V4: ::c_int = 4;
 
+// copyfile.h
+pub const COPYFILE_ACL: ::copyfile_flags_t = 1 << 0;
+pub const COPYFILE_STAT: ::copyfile_flags_t = 1 << 1;
+pub const COPYFILE_XATTR: ::copyfile_flags_t = 1 << 2;
+pub const COPYFILE_DATA: ::copyfile_flags_t = 1 << 3;
+pub const COPYFILE_SECURITY: ::copyfile_flags_t = COPYFILE_STAT | COPYFILE_ACL;
+pub const COPYFILE_METADATA: ::copyfile_flags_t = COPYFILE_SECURITY | COPYFILE_XATTR;
+pub const COPYFILE_RECURSIVE: ::copyfile_flags_t = 1 << 15;
+pub const COPYFILE_CHECK: ::copyfile_flags_t = 1 << 16;
+pub const COPYFILE_EXCL: ::copyfile_flags_t = 1 << 17;
+pub const COPYFILE_NOFOLLOW_SRC: ::copyfile_flags_t = 1 << 18;
+pub const COPYFILE_NOFOLLOW_DST: ::copyfile_flags_t = 1 << 19;
+pub const COPYFILE_MOVE: ::copyfile_flags_t = 1 << 20;
+pub const COPYFILE_UNLINK: ::copyfile_flags_t = 1 << 21;
+pub const COPYFILE_NOFOLLOW: ::copyfile_flags_t = COPYFILE_NOFOLLOW_SRC | COPYFILE_NOFOLLOW_DST;
+pub const COPYFILE_PACK: ::copyfile_flags_t = 1 << 22;
+pub const COPYFILE_UNPACK: ::copyfile_flags_t = 1 << 23;
+pub const COPYFILE_CLONE: ::copyfile_flags_t = 1 << 24;
+pub const COPYFILE_CLONE_FORCE: ::copyfile_flags_t = 1 << 25;
+pub const COPYFILE_RUN_IN_PLACE: ::copyfile_flags_t = 1 << 26;
+pub const COPYFILE_DATA_SPARSE: ::copyfile_flags_t = 1 << 27;
+pub const COPYFILE_PRESERVE_DST_TRACKED: ::copyfile_flags_t = 1 << 28;
+pub const COPYFILE_VERBOSE: ::copyfile_flags_t = 1 << 30;
+pub const COPYFILE_RECURSE_ERROR: ::c_int = 0;
+pub const COPYFILE_RECURSE_FILE: ::c_int = 1;
+pub const COPYFILE_RECURSE_DIR: ::c_int = 2;
+pub const COPYFILE_RECURSE_DIR_CLEANUP: ::c_int = 3;
+pub const COPYFILE_COPY_DATA: ::c_int = 4;
+pub const COPYFILE_COPY_XATTR: ::c_int = 5;
+pub const COPYFILE_START: ::c_int = 1;
+pub const COPYFILE_FINISH: ::c_int = 2;
+pub const COPYFILE_ERR: ::c_int = 3;
+pub const COPYFILE_PROGRESS: ::c_int = 4;
+pub const COPYFILE_CONTINUE: ::c_int = 0;
+pub const COPYFILE_SKIP: ::c_int = 1;
+pub const COPYFILE_QUIT: ::c_int = 2;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         const fn __DARWIN_ALIGN32(p: usize) -> usize {
@@ -5265,6 +5305,19 @@ extern "C" {
         dst_dirfd: ::c_int,
         dst: *const ::c_char,
         flags: u32,
+    ) -> ::c_int;
+
+    pub fn copyfile(
+        from: *const ::c_char,
+        to: *const ::c_char,
+        state: copyfile_state_t,
+        flags: copyfile_flags_t,
+    ) -> ::c_int;
+    pub fn fcopyfile(
+        from: ::c_int,
+        to: ::c_int,
+        state: copyfile_state_t,
+        flags: copyfile_flags_t,
     ) -> ::c_int;
 
     // Added in macOS 10.13
