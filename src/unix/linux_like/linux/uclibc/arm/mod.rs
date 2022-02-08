@@ -10,7 +10,6 @@ pub type fsfilcnt_t = ::c_ulong;
 pub type ino_t = ::c_ulong;
 pub type off_t = ::c_long;
 pub type pthread_t = ::c_ulong;
-pub type rlim_t = ::c_ulong;
 pub type suseconds_t = ::c_long;
 
 pub type nlink_t = ::c_uint;
@@ -244,7 +243,6 @@ s! {
 }
 
 pub const O_CLOEXEC: ::c_int = 0o2000000;
-pub const RLIM_INFINITY: rlim_t = !0;
 pub const __SIZEOF_PTHREAD_ATTR_T: usize = 36;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;

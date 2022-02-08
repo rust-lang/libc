@@ -93,16 +93,16 @@ pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
 // Ioctl Constants
 
 cfg_if! {
-    if #[cfg(target_env = "musl")] {
-        pub const TCGETS: ::Ioctl = 0x402c7413;
-        pub const TCSETS: ::Ioctl = 0x802c7414;
-        pub const TCSETSW: ::Ioctl = 0x802c7415;
-        pub const TCSETSF: ::Ioctl = 0x802c7416;
-    } else {
+    if #[cfg(target_env = "gnu")] {
         pub const TCGETS: ::Ioctl = 0x403c7413;
         pub const TCSETS: ::Ioctl = 0x803c7414;
         pub const TCSETSW: ::Ioctl = 0x803c7415;
         pub const TCSETSF: ::Ioctl = 0x803c7416;
+    } else if #[cfg(target_env = "musl")] {
+        pub const TCGETS: ::Ioctl = 0x402c7413;
+        pub const TCSETS: ::Ioctl = 0x802c7414;
+        pub const TCSETSW: ::Ioctl = 0x802c7415;
+        pub const TCSETSF: ::Ioctl = 0x802c7416;
     }
 }
 
@@ -170,6 +170,8 @@ pub const TIOCSERGETMULTI: ::Ioctl = 0x545A;
 pub const TIOCSERSETMULTI: ::Ioctl = 0x545B;
 pub const TIOCMIWAIT: ::Ioctl = 0x545C;
 pub const TIOCGICOUNT: ::Ioctl = 0x545D;
+pub const BLKSSZGET: ::Ioctl = 0x20001268;
+pub const BLKPBSZGET: ::Ioctl = 0x2000127B;
 //pub const FIOQSIZE: ::Ioctl = 0x40086680;
 
 pub const TIOCM_LE: ::c_int = 0x001;
@@ -187,5 +189,50 @@ pub const TIOCM_DSR: ::c_int = 0x100;
 pub const BOTHER: ::speed_t = 0o0037;
 pub const IBSHIFT: ::tcflag_t = 16;
 
-pub const BLKSSZGET: ::Ioctl = 0x20001268;
-pub const BLKPBSZGET: ::Ioctl = 0x2000127B;
+// RLIMIT Constants
+
+cfg_if! {
+    if #[cfg(target_env = "gnu")] {
+
+        pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
+        pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
+        pub const RLIMIT_DATA: ::__rlimit_resource_t = 2;
+        pub const RLIMIT_STACK: ::__rlimit_resource_t = 3;
+        pub const RLIMIT_CORE: ::__rlimit_resource_t = 4;
+        pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
+        pub const RLIMIT_NPROC: ::__rlimit_resource_t = 6;
+        pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 7;
+        pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
+        pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
+        pub const RLIMIT_LOCKS: ::__rlimit_resource_t = 10;
+        pub const RLIMIT_SIGPENDING: ::__rlimit_resource_t = 11;
+        pub const RLIMIT_MSGQUEUE: ::__rlimit_resource_t = 12;
+        pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
+        pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
+        pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
+        pub const RLIM_NLIMITS: ::__rlimit_resource_t = 16;
+        pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = RLIM_NLIMITS;
+
+    } else if #[cfg(target_env = "musl")] {
+
+        pub const RLIMIT_CPU: ::c_int = 0;
+        pub const RLIMIT_FSIZE: ::c_int = 1;
+        pub const RLIMIT_DATA: ::c_int = 2;
+        pub const RLIMIT_STACK: ::c_int = 3;
+        pub const RLIMIT_CORE: ::c_int = 4;
+        pub const RLIMIT_RSS: ::c_int = 5;
+        pub const RLIMIT_NPROC: ::c_int = 6;
+        pub const RLIMIT_NOFILE: ::c_int = 7;
+        pub const RLIMIT_MEMLOCK: ::c_int = 8;
+        pub const RLIMIT_AS: ::c_int = 9;
+        pub const RLIMIT_LOCKS: ::c_int = 10;
+        pub const RLIMIT_SIGPENDING: ::c_int = 11;
+        pub const RLIMIT_MSGQUEUE: ::c_int = 12;
+        pub const RLIMIT_NICE: ::c_int = 13;
+        pub const RLIMIT_RTPRIO: ::c_int = 14;
+        pub const RLIMIT_RTTIME: ::c_int = 15;
+        pub const RLIM_NLIMITS: ::c_int = 15;
+        pub const RLIMIT_NLIMITS: ::c_int = RLIM_NLIMITS;
+    }
+}
+pub const RLIM_INFINITY: ::rlim_t = !0;

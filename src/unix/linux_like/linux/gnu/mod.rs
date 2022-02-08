@@ -629,20 +629,6 @@ pub const MAP_HUGE_1GB: ::c_int = HUGETLB_FLAG_ENCODE_1GB;
 pub const MAP_HUGE_2GB: ::c_int = HUGETLB_FLAG_ENCODE_2GB;
 pub const MAP_HUGE_16GB: ::c_int = HUGETLB_FLAG_ENCODE_16GB;
 
-pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
-pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
-pub const RLIMIT_DATA: ::__rlimit_resource_t = 2;
-pub const RLIMIT_STACK: ::__rlimit_resource_t = 3;
-pub const RLIMIT_CORE: ::__rlimit_resource_t = 4;
-pub const RLIMIT_LOCKS: ::__rlimit_resource_t = 10;
-pub const RLIMIT_SIGPENDING: ::__rlimit_resource_t = 11;
-pub const RLIMIT_MSGQUEUE: ::__rlimit_resource_t = 12;
-pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
-pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
-pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
-pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = 16;
-pub const RLIM_NLIMITS: ::__rlimit_resource_t = RLIMIT_NLIMITS;
-
 pub const PRIO_PROCESS: ::__priority_which_t = 0;
 pub const PRIO_PGRP: ::__priority_which_t = 1;
 pub const PRIO_USER: ::__priority_which_t = 2;

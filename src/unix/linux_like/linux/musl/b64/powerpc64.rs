@@ -612,8 +612,6 @@ pub const IEXTEN: ::tcflag_t = 0x00000400;
 pub const TOSTOP: ::tcflag_t = 0x00400000;
 pub const FLUSHO: ::tcflag_t = 0x00800000;
 
-pub const RLIMIT_NLIMITS: ::c_int = 15;
-pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
 pub const MCL_CURRENT: ::c_int = 0x2000;
 pub const MCL_FUTURE: ::c_int = 0x4000;
 pub const CBAUD: ::tcflag_t = 0xff;
