@@ -2178,6 +2178,9 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // Those were introduced in FreeBSD 12.
+            "TCP_FUNCTION_NAME_LEN_MAX" | "TCP_FASTOPEN_PSK_LEN" if Some(11) == freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -2220,6 +2223,11 @@ fn test_freebsd(target: &str) {
 
             // `sockcred2` is not available in FreeBSD 12.
             "sockcred2" if Some(13) > freebsd_ver => true,
+
+            // `tcp_fastopen` introduced in FreeBSD 12.
+            "tcp_fastopen" if Some(11) == freebsd_ver => true,
+            // `tcp_function_set` introduced in FreeBSD 12.
+            "tcp_function_set" if Some(11) == freebsd_ver => true,
 
             _ => false,
         }

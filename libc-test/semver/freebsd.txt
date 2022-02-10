@@ -1128,6 +1128,8 @@ TABDLY
 TCP_CCALGOOPT
 TCP_CONGESTION
 TCP_FASTOPEN
+TCP_FASTOPEN_PSK_LEN
+TCP_FUNCTION_NAME_LEN_MAX
 TCP_INFO
 TCP_KEEPCNT
 TCP_KEEPIDLE
@@ -1805,6 +1807,8 @@ syscall
 sysctl
 sysctlbyname
 sysctlnametomib
+tcp_fastopen
+tcp_function_set
 telldir
 thr_kill
 thr_kill2

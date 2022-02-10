@@ -978,6 +978,16 @@ s! {
         pub ai_termid: au_tid_t,
         pub ai_asid: ::au_asid_t,
     }
+
+    pub struct tcp_fastopen {
+        pub enable: ::c_int,
+        pub psk: [u8; ::TCP_FASTOPEN_PSK_LEN as usize],
+    }
+
+    pub struct tcp_function_set {
+        pub function_set_name: [::c_char; ::TCP_FUNCTION_NAME_LEN_MAX as usize],
+        pub pcbcnt: u32,
+    }
 }
 
 s_no_extra_traits! {
@@ -2855,6 +2865,8 @@ pub const TCP_KEEPINIT: ::c_int = 128;
 pub const TCP_FASTOPEN: ::c_int = 1025;
 pub const TCP_PCAP_OUT: ::c_int = 2048;
 pub const TCP_PCAP_IN: ::c_int = 4096;
+pub const TCP_FASTOPEN_PSK_LEN: ::c_int = 16;
+pub const TCP_FUNCTION_NAME_LEN_MAX: ::c_int = 32;
 
 pub const IP_BINDANY: ::c_int = 24;
 pub const IP_BINDMULTI: ::c_int = 25;
