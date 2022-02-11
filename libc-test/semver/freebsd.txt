@@ -1484,6 +1484,8 @@ ffsl
 ffsll
 filestat
 filestat_list
+flopen
+flopenat
 fls
 flsl
 flsll
