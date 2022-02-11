@@ -2196,6 +2196,24 @@ fn test_freebsd(target: &str) {
             // Those were introduced in FreeBSD 12.
             "TCP_FUNCTION_NAME_LEN_MAX" | "TCP_FASTOPEN_PSK_LEN" if Some(11) == freebsd_ver => true,
 
+            // Flags introduced in FreeBSD 14.
+            "TCP_MAXUNACKTIME"
+            | "TCP_MAXPEAKRATE"
+            | "TCP_IDLE_REDUCE"
+            | "TCP_REMOTE_UDP_ENCAPS_PORT"
+            | "TCP_DELACK"
+            | "TCP_FIN_IS_RST"
+            | "TCP_LOG_LIMIT"
+            | "TCP_SHARED_CWND_ALLOWED"
+            | "TCP_PROC_ACCOUNTING"
+            | "TCP_USE_CMP_ACKS"
+            | "TCP_PERF_INFO"
+            | "TCP_LRD"
+                if Some(14) > freebsd_ver =>
+            {
+                true
+            }
+
             _ => false,
         }
     });
