@@ -62,6 +62,9 @@ pub const B3000000: ::speed_t = 29;
 pub const B3500000: ::speed_t = 30;
 pub const B4000000: ::speed_t = 31;
 
+// sys/systeminfo.h
+pub const SI_ADDRESS_WIDTH: ::c_int = 520;
+
 extern "C" {
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
 
