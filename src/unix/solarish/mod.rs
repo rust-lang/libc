@@ -429,7 +429,7 @@ s! {
     pub struct mmapobj_result_t {
         pub mr_addr: ::caddr_t,
         pub mr_msize: ::size_t,
-        pub mr_fize: ::size_t,
+        pub mr_fsize: ::size_t,
         pub mr_offset: ::size_t,
         pub mr_prot: ::c_uint,
         pub mr_flags: ::c_uint,
@@ -520,14 +520,16 @@ s_no_extra_traits! {
     }
 
     #[cfg(libc_union)]
+    #[cfg_attr(libc_align, repr(align(16)))]
     pub union pad128_t {
-        pub _q: ::c_double,
+        // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [i32; 4],
     }
 
     #[cfg(libc_union)]
+    #[cfg_attr(libc_align, repr(align(16)))]
     pub union upad128_t {
-        pub _q: ::c_double,
+        // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [u32; 4],
     }
 }
@@ -859,7 +861,7 @@ cfg_if! {
         impl PartialEq for pad128_t {
             fn eq(&self, other: &pad128_t) -> bool {
                 unsafe {
-                self._q == other._q ||
+                // FIXME: self._q == other._q ||
                     self._l == other._l
                 }
             }
@@ -871,7 +873,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
                 f.debug_struct("pad128_t")
-                    .field("_q", &{self._q})
+                    // FIXME: .field("_q", &{self._q})
                     .field("_l", &{self._l})
                     .finish()
                 }
@@ -881,7 +883,7 @@ cfg_if! {
         impl ::hash::Hash for pad128_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
-                state.write_i64(self._q as i64);
+                // FIXME: state.write_i64(self._q as i64);
                 self._l.hash(state);
                 }
             }
@@ -890,7 +892,7 @@ cfg_if! {
         impl PartialEq for upad128_t {
             fn eq(&self, other: &upad128_t) -> bool {
                 unsafe {
-                self._q == other._q ||
+                // FIXME: self._q == other._q ||
                     self._l == other._l
                 }
             }
@@ -902,7 +904,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
                 f.debug_struct("upad128_t")
-                    .field("_q", &{self._q})
+                    // FIXME: .field("_q", &{self._q})
                     .field("_l", &{self._l})
                     .finish()
                 }
@@ -912,7 +914,7 @@ cfg_if! {
         impl ::hash::Hash for upad128_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
-                state.write_i64(self._q as i64);
+                // FIXME: state.write_i64(self._q as i64);
                 self._l.hash(state);
                 }
             }
@@ -1217,7 +1219,7 @@ pub const PS_QUERY: ::c_int = -2;
 pub const PS_MYID: ::c_int = -3;
 pub const PS_SOFT: ::c_int = -4;
 pub const PS_HARD: ::c_int = -5;
-pub const PS_QUERY_TIME: ::c_int = -6;
+pub const PS_QUERY_TYPE: ::c_int = -6;
 pub const PS_SYSTEM: ::c_int = 1;
 pub const PS_PRIVATE: ::c_int = 2;
 
@@ -1510,6 +1512,42 @@ pub const AF_POLICY: ::c_int = 29;
 pub const AF_INET_OFFLOAD: ::c_int = 30;
 pub const AF_TRILL: ::c_int = 31;
 pub const AF_PACKET: ::c_int = 32;
+
+pub const PF_UNSPEC: ::c_int = AF_UNSPEC;
+pub const PF_UNIX: ::c_int = AF_UNIX;
+pub const PF_LOCAL: ::c_int = PF_UNIX;
+pub const PF_FILE: ::c_int = PF_UNIX;
+pub const PF_INET: ::c_int = AF_INET;
+pub const PF_IMPLINK: ::c_int = AF_IMPLINK;
+pub const PF_PUP: ::c_int = AF_PUP;
+pub const PF_CHAOS: ::c_int = AF_CHAOS;
+pub const PF_NS: ::c_int = AF_NS;
+pub const PF_NBS: ::c_int = AF_NBS;
+pub const PF_ECMA: ::c_int = AF_ECMA;
+pub const PF_DATAKIT: ::c_int = AF_DATAKIT;
+pub const PF_CCITT: ::c_int = AF_CCITT;
+pub const PF_SNA: ::c_int = AF_SNA;
+pub const PF_DECnet: ::c_int = AF_DECnet;
+pub const PF_DLI: ::c_int = AF_DLI;
+pub const PF_LAT: ::c_int = AF_LAT;
+pub const PF_HYLINK: ::c_int = AF_HYLINK;
+pub const PF_APPLETALK: ::c_int = AF_APPLETALK;
+pub const PF_NIT: ::c_int = AF_NIT;
+pub const PF_802: ::c_int = AF_802;
+pub const PF_OSI: ::c_int = AF_OSI;
+pub const PF_X25: ::c_int = AF_X25;
+pub const PF_OSINET: ::c_int = AF_OSINET;
+pub const PF_GOSIP: ::c_int = AF_GOSIP;
+pub const PF_IPX: ::c_int = AF_IPX;
+pub const PF_ROUTE: ::c_int = AF_ROUTE;
+pub const PF_LINK: ::c_int = AF_LINK;
+pub const PF_INET6: ::c_int = AF_INET6;
+pub const PF_KEY: ::c_int = AF_KEY;
+pub const PF_NCA: ::c_int = AF_NCA;
+pub const PF_POLICY: ::c_int = AF_POLICY;
+pub const PF_INET_OFFLOAD: ::c_int = AF_INET_OFFLOAD;
+pub const PF_TRILL: ::c_int = AF_TRILL;
+pub const PF_PACKET: ::c_int = AF_PACKET;
 
 pub const SOCK_DGRAM: ::c_int = 1;
 pub const SOCK_STREAM: ::c_int = 2;
@@ -2055,6 +2093,10 @@ pub const B921600: speed_t = 23;
 pub const CSTART: ::tcflag_t = 0o21;
 pub const CSTOP: ::tcflag_t = 0o23;
 pub const CSWTCH: ::tcflag_t = 0o32;
+pub const CBAUD: ::tcflag_t = 0o17;
+pub const CIBAUD: ::tcflag_t = 0o3600000;
+pub const CBAUDEXT: ::tcflag_t = 0o10000000;
+pub const CIBAUDEXT: ::tcflag_t = 0o20000000;
 pub const CSIZE: ::tcflag_t = 0o000060;
 pub const CS5: ::tcflag_t = 0;
 pub const CS6: ::tcflag_t = 0o000020;
@@ -2078,20 +2120,26 @@ pub const ISTRIP: ::tcflag_t = 0o000040;
 pub const INLCR: ::tcflag_t = 0o000100;
 pub const IGNCR: ::tcflag_t = 0o000200;
 pub const ICRNL: ::tcflag_t = 0o000400;
+pub const IUCLC: ::tcflag_t = 0o001000;
 pub const IXON: ::tcflag_t = 0o002000;
 pub const IXOFF: ::tcflag_t = 0o010000;
 pub const IXANY: ::tcflag_t = 0o004000;
 pub const IMAXBEL: ::tcflag_t = 0o020000;
+pub const DOSMODE: ::tcflag_t = 0o100000;
 pub const OPOST: ::tcflag_t = 0o000001;
+pub const OLCUC: ::tcflag_t = 0o000002;
 pub const ONLCR: ::tcflag_t = 0o000004;
 pub const OCRNL: ::tcflag_t = 0o000010;
 pub const ONOCR: ::tcflag_t = 0o000020;
 pub const ONLRET: ::tcflag_t = 0o000040;
+pub const OFILL: ::tcflag_t = 0o0000100;
+pub const OFDEL: ::tcflag_t = 0o0000200;
 pub const CREAD: ::tcflag_t = 0o000200;
 pub const PARENB: ::tcflag_t = 0o000400;
 pub const PARODD: ::tcflag_t = 0o001000;
 pub const HUPCL: ::tcflag_t = 0o002000;
 pub const CLOCAL: ::tcflag_t = 0o004000;
+pub const CRTSXOFF: ::tcflag_t = 0o10000000000;
 pub const CRTSCTS: ::tcflag_t = 0o20000000000;
 pub const ISIG: ::tcflag_t = 0o000001;
 pub const ICANON: ::tcflag_t = 0o000002;
@@ -2813,11 +2861,13 @@ extern "C" {
     pub fn getexecname() -> *const ::c_char;
 
     pub fn gethostid() -> ::c_long;
-    pub fn sethostid(hostid: ::c_long) -> ::c_int;
 
     pub fn getpflags(flags: ::c_uint) -> ::c_uint;
     pub fn setpflags(flags: ::c_uint, value: ::c_uint) -> ::c_int;
+}
 
+#[link(name = "sendfile")]
+extern "C" {
     pub fn sendfile(out_fd: ::c_int, in_fd: ::c_int, off: *mut ::off_t, len: ::size_t)
         -> ::ssize_t;
     pub fn sendfilev(

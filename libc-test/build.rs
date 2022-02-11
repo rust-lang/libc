@@ -780,7 +780,9 @@ fn test_solarish(target: &str) {
         "sys/mount.h",
         "sys/priv.h",
         "sys/pset.h",
+        "sys/random.h",
         "sys/resource.h",
+        "sys/sendfile.h",
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",
@@ -798,6 +800,7 @@ fn test_solarish(target: &str) {
         "termios.h",
         "thread.h",
         "time.h",
+        "priv.h",
         "ucontext.h",
         "unistd.h",
         "utime.h",
@@ -898,6 +901,15 @@ fn test_solarish(target: &str) {
             "door_arg_t" if field.ends_with("_ptr") => true,
             "door_arg_t" if field.ends_with("rbuf") => true,
 
+            // anonymous union challenges
+            "fpregset_t" if field == "fp_reg_set" => true,
+
+            // The LX brand (integrated into some illumos distros) commandeered several of the
+            // `uc_filler` fields to use for brand-specific state.
+            "ucontext_t" if is_illumos && (field == "uc_filler" || field == "uc_brand_data") => {
+                true
+            }
+
             _ => false,
         }
     });
@@ -929,6 +941,9 @@ fn test_solarish(target: &str) {
             "getpwent_r" | "getgrent_r" | "updwtmpx" if is_illumos => true,
             "madvise" | "mprotect" if is_illumos => true,
             "door_call" | "door_return" | "door_create" if is_illumos => true,
+
+            // Not visible when build with _XOPEN_SOURCE=700
+            "mmapobj" | "mmap64" | "meminfo" | "getpagesizes" | "getpagesizes2" => true,
 
             // These functions may return int or void depending on the exact
             // configuration of the compilation environment, but the return
