@@ -58,7 +58,7 @@ s! {
     pub struct stat64 {
         pub st_dev: ::dev_t,
         __pad1: ::c_ushort,
-        pub st_ino: ::ino64_t,
+        pub __st_ino: ::ino_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
