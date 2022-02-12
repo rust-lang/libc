@@ -775,6 +775,7 @@ fn test_solarish(target: &str) {
         "sys/file.h",
         "sys/filio.h",
         "sys/ioctl.h",
+        "sys/lgrp_user.h",
         "sys/loadavg.h",
         "sys/mman.h",
         "sys/mount.h",
@@ -809,12 +810,9 @@ fn test_solarish(target: &str) {
         "wchar.h",
     }
 
-    cfg.skip_type(move |ty| {
-        match ty {
-            // sighandler_t is not present here
-            "sighandler_t" => true,
-            _ => false,
-        }
+    cfg.skip_type(move |ty| match ty {
+        "sighandler_t" => true,
+        _ => false,
     });
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
