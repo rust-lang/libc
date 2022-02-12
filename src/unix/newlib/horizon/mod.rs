@@ -51,6 +51,10 @@ s! {
         pub sun_family: ::sa_family_t,
         pub sun_path: [::c_char; 104usize],
     }
+
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+    }
 }
 
 pub const SIGEV_NONE: ::c_int = 1;
@@ -190,7 +194,15 @@ extern "C" {
         value: *mut ::c_void,
     ) -> ::c_int;
 
-    pub fn pthread_attr_setpriority(attr: *mut ::pthread_attr_t, priority: ::c_int) -> ::c_int;
+    pub fn pthread_attr_getschedparam(
+        attr: *const ::pthread_attr_t,
+        param: *mut sched_param,
+    ) -> ::c_int;
+
+    pub fn pthread_attr_setschedparam(
+        attr: *mut ::pthread_attr_t,
+        param: *const sched_param,
+    ) -> ::c_int;
 
     pub fn pthread_attr_setaffinity(attr: *mut ::pthread_attr_t, affinity: ::c_int) -> ::c_int;
 
