@@ -2290,6 +2290,25 @@ pub const PRIV_USER: ::c_uint = PRIV_DEBUG
     | PRIV_AWARE_RESET
     | PRIV_PFEXEC;
 
+// sys/systeminfo.h
+pub const SI_SYSNAME: ::c_int = 1;
+pub const SI_HOSTNAME: ::c_int = 2;
+pub const SI_RELEASE: ::c_int = 3;
+pub const SI_VERSION: ::c_int = 4;
+pub const SI_MACHINE: ::c_int = 5;
+pub const SI_ARCHITECTURE: ::c_int = 6;
+pub const SI_HW_SERIAL: ::c_int = 7;
+pub const SI_HW_PROVIDER: ::c_int = 8;
+pub const SI_SET_HOSTNAME: ::c_int = 258;
+pub const SI_SET_SRPC_DOMAIN: ::c_int = 265;
+pub const SI_PLATFORM: ::c_int = 513;
+pub const SI_ISALIST: ::c_int = 514;
+pub const SI_DHCP_CACHE: ::c_int = 515;
+pub const SI_ARCHITECTURE_32: ::c_int = 516;
+pub const SI_ARCHITECTURE_64: ::c_int = 517;
+pub const SI_ARCHITECTURE_K: ::c_int = 518;
+pub const SI_ARCHITECTURE_NATIVE: ::c_int = 519;
+
 // As per sys/socket.h, header alignment must be 8 bytes on SPARC
 // and 4 bytes everywhere else:
 #[cfg(target_arch = "sparc64")]
@@ -2864,6 +2883,8 @@ extern "C" {
 
     pub fn getpflags(flags: ::c_uint) -> ::c_uint;
     pub fn setpflags(flags: ::c_uint, value: ::c_uint) -> ::c_int;
+
+    pub fn sysinfo(command: ::c_int, buf: *mut ::c_char, count: ::c_long) -> ::c_int;
 }
 
 #[link(name = "sendfile")]
