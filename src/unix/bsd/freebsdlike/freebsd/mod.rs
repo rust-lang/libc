@@ -4311,6 +4311,9 @@ extern "C" {
         scale: ::c_int,
         flags: ::c_int,
     ) -> ::c_int;
+
+    pub fn flopen(path: *const ::c_char, flags: ::c_int, ...) -> ::c_int;
+    pub fn flopenat(fd: ::c_int, path: *const ::c_char, flags: ::c_int, ...) -> ::c_int;
 }
 
 #[link(name = "procstat")]

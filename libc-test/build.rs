@@ -2293,6 +2293,9 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // Those were introduced in FreeBSD 12.
+            "flopen" | "flopenat" if Some(12) > freebsd_ver => true,
+
             _ => false,
         }
     });
