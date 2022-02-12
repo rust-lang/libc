@@ -27,6 +27,7 @@ pub type projid_t = ::c_int;
 pub type zoneid_t = ::c_int;
 pub type psetid_t = ::c_int;
 pub type processorid_t = ::c_int;
+pub type chipid_t = ::c_int;
 
 pub type suseconds_t = ::c_long;
 pub type off_t = ::c_long;
@@ -450,6 +451,13 @@ s! {
         pub id: ::id_t,
         pub lgrp: ::lgrp_id_t,
         pub aff: ::lgrp_affinity_t,
+    }
+
+    pub struct processor_info_t {
+        pub pi_state: ::c_int,
+        pub pi_processor_type: [::c_char; PI_TYPELEN as usize],
+        pub pi_fputypes: [::c_char; PI_FPUTYPE as usize],
+        pub pi_clock: ::c_int,
     }
 }
 
@@ -2343,6 +2351,20 @@ pub const LGRP_MEM_SZ_INSTALLED: ::lgrp_mem_size_flag_t = 1;
 pub const LGRP_VIEW_CALLER: ::lgrp_view_t = 0;
 pub const LGRP_VIEW_OS: ::lgrp_view_t = 1;
 
+// sys/processor.h
+
+pub const P_OFFLINE: ::c_int = 0x001;
+pub const P_ONLINE: ::c_int = 0x002;
+pub const P_STATUS: ::c_int = 0x003;
+pub const P_FAULTED: ::c_int = 0x004;
+pub const P_POWEROFF: ::c_int = 0x005;
+pub const P_NOINTR: ::c_int = 0x006;
+pub const P_SPARE: ::c_int = 0x007;
+pub const P_DISABLED: ::c_int = 0x008;
+pub const P_FORCED: ::c_int = 0x10000000;
+pub const PI_TYPELEN: ::c_int = 16;
+pub const PI_FPUTYPE: ::c_int = 32;
+
 // As per sys/socket.h, header alignment must be 8 bytes on SPARC
 // and 4 bytes everywhere else:
 #[cfg(target_arch = "sparc64")]
@@ -2910,6 +2932,7 @@ extern "C" {
         old_binding: *mut processorid_t,
     ) -> ::c_int;
     pub fn p_online(processorid: ::processorid_t, flag: ::c_int) -> ::c_int;
+    pub fn processor_info(processorid: ::processorid_t, infop: *mut processor_info_t) -> ::c_int;
 
     pub fn getexecname() -> *const ::c_char;
 
