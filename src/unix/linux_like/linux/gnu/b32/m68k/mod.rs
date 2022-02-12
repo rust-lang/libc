@@ -49,22 +49,22 @@ s! {
         pub cuid: ::uid_t,
         pub cgid: ::gid_t,
         pub mode: ::mode_t,
-        __seq: c_ushort,
-        __pad1: c_ushort,
-        __glibc_reserved1: c_ulong,
-        __glibc_reserved2: c_ulong,
+        __seq: ::c_ushort,
+        __pad1: ::c_ushort,
+        __glibc_reserved1: ::c_ulong,
+        __glibc_reserved2: ::c_ulong,
     }
 
     pub struct stat64 {
         pub st_dev: ::dev_t,
-        __pad1: c_ushort,
-        pub st_ino: ::ino64_t,
+        __pad1: ::c_ushort,
+        pub __st_ino: ::ino_t,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
         pub st_rdev: ::dev_t,
-        __pad2: c_ushort,
+        __pad2: ::c_ushort,
         pub st_size: ::off64_t,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt64_t,
@@ -543,14 +543,14 @@ pub const SYS_cacheflush: ::c_long = 123;
 pub const SYS_adjtimex_time32: ::c_long = 124;
 pub const SYS_mprotect: ::c_long = 125;
 pub const SYS_sigprocmask: ::c_long = 126;
-pub const SYS_ni_syscall: ::c_long = 127;
+pub const SYS_create_module: ::c_long = 127;
 pub const SYS_init_module: ::c_long = 128;
 pub const SYS_delete_module: ::c_long = 129;
-pub const SYS_ni_syscall: ::c_long = 130;
+pub const SYS_get_kernel_syms: ::c_long = 130;
 pub const SYS_quotactl: ::c_long = 131;
 pub const SYS_getpgid: ::c_long = 132;
 pub const SYS_fchdir: ::c_long = 133;
-pub const SYS_ni_syscall: ::c_long = 134;
+pub const SYS_bdflush: ::c_long = 134;
 pub const SYS_sysfs: ::c_long = 135;
 pub const SYS_personality: ::c_long = 136;
 pub const SYS_setfsuid16: ::c_long = 138;
@@ -564,7 +564,7 @@ pub const SYS_readv: ::c_long = 145;
 pub const SYS_writev: ::c_long = 146;
 pub const SYS_getsid: ::c_long = 147;
 pub const SYS_fdatasync: ::c_long = 148;
-pub const SYS_ni_syscall: ::c_long = 149;
+pub const SYS__sysctl: ::c_long = 149;
 pub const SYS_mlock: ::c_long = 150;
 pub const SYS_munlock: ::c_long = 151;
 pub const SYS_mlockall: ::c_long = 152;
@@ -582,9 +582,9 @@ pub const SYS_mremap: ::c_long = 163;
 pub const SYS_setresuid16: ::c_long = 164;
 pub const SYS_getresuid16: ::c_long = 165;
 pub const SYS_getpagesize: ::c_long = 166;
-pub const SYS_ni_syscall: ::c_long = 167;
+pub const SYS_query_module: ::c_long = 167;
 pub const SYS_poll: ::c_long = 168;
-pub const SYS_ni_syscall: ::c_long = 169;
+pub const SYS_nfsservctl: ::c_long = 169;
 pub const SYS_setresgid16: ::c_long = 170;
 pub const SYS_getresgid16: ::c_long = 171;
 pub const SYS_prctl: ::c_long = 172;
@@ -603,8 +603,8 @@ pub const SYS_capget: ::c_long = 184;
 pub const SYS_capset: ::c_long = 185;
 pub const SYS_sigaltstack: ::c_long = 186;
 pub const SYS_sendfile: ::c_long = 187;
-pub const SYS_ni_syscall: ::c_long = 188;
-pub const SYS_ni_syscall: ::c_long = 189;
+pub const SYS_getpmsg: ::c_long = 188;
+pub const SYS_putpmsg: ::c_long = 189;
 pub const SYS_vfork: ::c_long = 190;
 pub const SYS_getrlimit: ::c_long = 191;
 pub const SYS_mmap2: ::c_long = 192;
