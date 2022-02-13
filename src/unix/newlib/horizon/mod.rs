@@ -151,6 +151,10 @@ pub const FIONBIO: ::c_ulong = 1;
 
 pub const RTLD_DEFAULT: *mut ::c_void = 0 as *mut ::c_void;
 
+// For pthread get/setschedparam
+pub const SCHED_FIFO: ::c_int = 1;
+pub const SCHED_RR: ::c_int = 2;
+
 // Horizon OS works doesn't or can't hold any of this information
 safe_f! {
     pub {const} fn WIFSTOPPED(_status: ::c_int) -> bool {
@@ -214,7 +218,17 @@ extern "C" {
         ideal_processor: ::c_int,
     ) -> ::c_int;
 
-    pub fn pthread_getpriority() -> ::c_int;
+    pub fn pthread_getschedparam(
+        native: ::pthread_t,
+        policy: *mut ::c_int,
+        param: *mut ::sched_param,
+    ) -> ::c_int;
+
+    pub fn pthread_setschedparam(
+        native: ::pthread_t,
+        policy: ::c_int,
+        param: *const ::sched_param,
+    ) -> ::c_int;
 
     pub fn gethostid() -> ::c_long;
 }
