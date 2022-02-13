@@ -23,12 +23,20 @@ pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
 pub type pid_t = i32;
-pub type uid_t = u32;
-pub type gid_t = u32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
 pub type sighandler_t = ::size_t;
 pub type cc_t = ::c_uchar;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type uid_t = ::c_ushort;
+        pub type gid_t = ::c_ushort;
+    } else {
+        pub type uid_t = u32;
+        pub type gid_t = u32;
+    }
+}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
