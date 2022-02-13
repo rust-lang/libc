@@ -6,7 +6,6 @@ pub type c_ulong = u32;
 
 pub type wchar_t = ::c_uint;
 
-pub type in_port_t = ::c_ushort;
 pub type u_register_t = ::c_uint;
 pub type u_char = ::c_uchar;
 pub type u_short = ::c_ushort;
@@ -34,8 +33,9 @@ s! {
 
     pub struct sockaddr_in {
         pub sin_family: ::sa_family_t,
-        pub sin_port: in_port_t,
+        pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
+        pub sin_zero: [::c_uchar; 8],
     }
 
     pub struct sockaddr_in6 {

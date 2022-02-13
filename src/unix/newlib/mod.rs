@@ -129,25 +129,6 @@ s! {
         pub tm_isdst: ::c_int,
     }
 
-    pub struct stat {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: dev_t,
-        pub st_size: off_t,
-        pub st_atime: time_t,
-        pub st_spare1: ::c_long,
-        pub st_mtime: time_t,
-        pub st_spare2: ::c_long,
-        pub st_ctime: time_t,
-        pub st_spare3: ::c_long,
-        pub st_blksize: blksize_t,
-        pub st_blocks: blkcnt_t,
-        pub st_spare4: [::c_long; 2usize],
-    }
 
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
@@ -161,10 +142,6 @@ s! {
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
-    }
-
-    pub struct sigset_t {
-        __val: [::c_ulong; 16],
     }
 
     pub struct sigaction {
@@ -242,6 +219,57 @@ s! {
     }
 }
 
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type sigset_t = ::c_ulong;
+
+        s! {
+            pub struct stat {
+                pub st_dev: ::dev_t,
+                pub st_ino: ::ino_t,
+                pub st_mode: ::mode_t,
+                pub st_nlink: ::nlink_t,
+                pub st_uid: ::uid_t,
+                pub st_gid: ::gid_t,
+                pub st_rdev: dev_t,
+                pub st_size: off_t,
+                pub st_atim: ::timespec,
+                pub st_mtim: ::timespec,
+                pub st_ctim: ::timespec,
+                pub st_blksize: blksize_t,
+                pub st_blocks: blkcnt_t,
+                pub st_spare4: [::c_long; 2usize],
+            }
+        }
+    } else {
+        s! {
+            pub struct sigset_t {
+                __val: [::c_ulong; 16],
+            }
+
+            pub struct stat {
+                pub st_dev: ::dev_t,
+                pub st_ino: ::ino_t,
+                pub st_mode: ::mode_t,
+                pub st_nlink: ::nlink_t,
+                pub st_uid: ::uid_t,
+                pub st_gid: ::gid_t,
+                pub st_rdev: dev_t,
+                pub st_size: off_t,
+                pub st_atime: time_t,
+                pub st_spare1: ::c_long,
+                pub st_mtime: time_t,
+                pub st_spare2: ::c_long,
+                pub st_ctime: time_t,
+                pub st_spare3: ::c_long,
+                pub st_blksize: blksize_t,
+                pub st_blocks: blkcnt_t,
+                pub st_spare4: [::c_long; 2usize],
+            }
+        }
+    }
+}
+
 // unverified constants
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
@@ -283,7 +311,14 @@ pub const __PTHREAD_RWLOCK_INT_FLAGS_SHARED: usize = 1;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
-pub const FD_SETSIZE: usize = 1024;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub const FD_SETSIZE: usize = 64;
+    } else {
+        pub const FD_SETSIZE: usize = 1024;
+    }
+}
 // intentionally not public, only used for fd_set
 const ULONG_SIZE: usize = 32;
 
