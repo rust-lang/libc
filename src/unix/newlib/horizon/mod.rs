@@ -204,7 +204,15 @@ extern "C" {
         param: *const sched_param,
     ) -> ::c_int;
 
-    pub fn pthread_attr_setaffinity(attr: *mut ::pthread_attr_t, affinity: ::c_int) -> ::c_int;
+    pub fn pthread_attr_getidealprocessor_np(
+        attr: *const ::pthread_attr_t,
+        ideal_processor: *mut ::c_int,
+    ) -> ::c_int;
+
+    pub fn pthread_attr_setidealprocessor_np(
+        attr: *mut ::pthread_attr_t,
+        ideal_processor: ::c_int,
+    ) -> ::c_int;
 
     pub fn pthread_getpriority() -> ::c_int;
 
