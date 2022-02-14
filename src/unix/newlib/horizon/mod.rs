@@ -229,6 +229,8 @@ extern "C" {
         policy: ::c_int,
         param: *const ::sched_param,
     ) -> ::c_int;
+    
+    pub fn pthread_getprocessorid_np() -> ::c_int;
 
     pub fn gethostid() -> ::c_long;
 }
