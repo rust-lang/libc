@@ -721,3 +721,21 @@ pub const VMIN: usize = 6;
 pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
+
+pub const NGREG: usize = 32;
+pub const REG_PC: usize = 0;
+pub const REG_RA: usize = 1;
+pub const REG_SP: usize = 2;
+pub const REG_TP: usize = 4;
+pub const REG_S0: usize = 8;
+pub const REG_S1: usize = 9;
+pub const REG_A0: usize = 10;
+pub const REG_S2: usize = 18;
+pub const REG_NARGS: usize = 8;
+
+cfg_if! {
+    if #[cfg(libc_align)] {
+        mod align;
+        pub use self::align::*;
+    }
+}
