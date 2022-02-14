@@ -1237,6 +1237,8 @@ difftime
 dirfd
 dl_iterate_phdr
 dl_phdr_info
+drand48
+erand48
 duplocale
 endgrent
 endpwent
@@ -1307,6 +1309,7 @@ if_nameindex
 ifaddrs
 in6_pktinfo
 initgroups
+jrand48
 kevent
 killpg
 kinfo_cputime
@@ -1315,9 +1318,11 @@ kqueue
 labs
 lastlog
 lchflags
+lcong48
 lio_listio
 lockf
 login_tty
+lrand48
 lutimes
 lwp_rtprio
 lwpid_t
@@ -1343,12 +1348,14 @@ mq_timedreceive
 mq_timedsend
 mq_unlink
 mqd_t
+mrand48
 msghdr
 newlocale
 nice
 nl_item
 nl_langinfo
 nl_langinfo_l
+nrand48
 ntp_adjtime
 ntp_gettime
 ntptimeval
@@ -1428,6 +1435,7 @@ sched_param
 sched_rr_get_interval
 sched_setparam
 sched_setscheduler
+seed48
 seekdir
 sem
 sem_close
@@ -1469,6 +1477,7 @@ sigwait
 sigwaitinfo
 sockaddr_dl
 srand
+srand48
 stack_t
 statfs
 strcasecmp

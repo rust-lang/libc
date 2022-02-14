@@ -937,11 +937,13 @@ difftime
 dirfd
 dl_iterate_phdr
 dl_phdr_info
+drand48
 dup3
 duplocale
 endgrent
 endpwent
 endservent
+erand48
 execvpe
 explicit_bzero
 export_args
@@ -1002,6 +1004,7 @@ initgroups
 ip_mreqn
 ipc_perm
 iso_args
+jrand48
 kevent
 key_t
 killpg
@@ -1009,8 +1012,11 @@ kinfo_vmentry
 kqueue
 labs
 lastlog
+lcong48
+lcong48_deterministic
 lockf
 login_tty
+lrand48
 madvise
 malloc_conceal
 memmem
@@ -1024,6 +1030,7 @@ mkostemp
 mkostemps
 mkstemps
 mount_info
+mrand48
 msdosfs_args
 msghdr
 newlocale
@@ -1031,6 +1038,7 @@ nfs_args
 nice
 nl_item
 nl_langinfo
+nrand48
 ntfs_args
 open_memstream
 open_wmemstream
@@ -1084,6 +1092,8 @@ regmatch_t
 regoff_t
 sched_get_priority_max
 sched_get_priority_min
+seed48
+seed48_deterministic
 seekdir
 sem
 sem_close
@@ -1121,6 +1131,8 @@ sockaddr_dl
 sockpeercred
 splice
 srand
+srand48
+srand48_deterministic
 stack_t
 statfs
 strcasecmp
