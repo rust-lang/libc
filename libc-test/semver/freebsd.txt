@@ -1462,12 +1462,14 @@ difftime
 dirfd
 dl_iterate_phdr
 dl_phdr_info
+drand48
 dup3
 duplocale
 endgrent
 endpwent
 endservent
 endutxent
+erand48
 explicit_bzero
 extattr_delete_fd
 extattr_delete_file
@@ -1568,6 +1570,7 @@ jail_attach
 jail_get
 jail_remove
 jail_set
+jrand48
 kevent
 key_t
 killpg
@@ -1579,9 +1582,11 @@ kld_isloaded
 kld_load
 labs
 lchflags
+lcong48
 lio_listio
 lockf
 login_tty
+lrand48
 lutimes
 lwpid_t
 madvise
@@ -1613,6 +1618,7 @@ mq_timedreceive
 mq_timedsend
 mq_unlink
 mqd_t
+mrand48
 msgctl
 msgget
 msghdr
@@ -1628,6 +1634,7 @@ nl_item
 nl_langinfo
 nl_langinfo_l
 nmount
+nrand48
 ntp_adjtime
 ntp_gettime
 ntptimeval
@@ -1760,6 +1767,7 @@ sched_rr_get_interval
 sched_setparam
 sched_setscheduler
 sdallocx
+seed48
 seekdir
 sem_close
 sem_destroy
@@ -1809,6 +1817,7 @@ sigwaitinfo
 sockaddr_dl
 sockcred
 srand
+srand48
 stack_t
 statfs
 strcasecmp

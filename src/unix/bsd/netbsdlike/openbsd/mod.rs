@@ -1633,6 +1633,10 @@ extern "C" {
     pub fn freezero(ptr: *mut ::c_void, size: ::size_t);
     pub fn malloc_conceal(size: ::size_t) -> *mut ::c_void;
     pub fn calloc_conceal(nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
+
+    pub fn srand48_deterministic(seed: ::c_long);
+    pub fn seed48_deterministic(xseed: *mut ::c_ushort) -> *mut ::c_ushort;
+    pub fn lcong48_deterministic(p: *mut ::c_ushort);
 }
 
 #[link(name = "execinfo")]

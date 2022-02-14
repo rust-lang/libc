@@ -1139,11 +1139,13 @@ dirfd
 dl_iterate_phdr
 dl_phdr_info
 dqblk
+drand48
 dup3
 duplocale
 easprintf
 efopen
 emalloc
+erand48
 erealloc
 ereallocarr
 esetfunc
@@ -1247,6 +1249,7 @@ in_pktinfo
 initgroups
 ipc_perm
 itimerspec
+jrand48
 kevent
 key_t
 killpg
@@ -1258,6 +1261,7 @@ labs
 lastlog
 lastlogx
 lchflags
+lcong48
 lgetxattr
 lio_listio
 listxattr
@@ -1271,6 +1275,7 @@ logoutx
 logwtmp
 logwtmpx
 login_tty
+lrand48
 lremovexattr
 lsetxattr
 lutimes
@@ -1299,11 +1304,13 @@ mq_timedreceive
 mq_timedsend
 mq_unlink
 mqd_t
+mrand48
 msghdr
 newlocale
 nice
 nl_item
 nl_langinfo
+nrand48
 ntp_adjtime
 ntp_gettime
 ntptimeval
@@ -1394,6 +1401,7 @@ sched_rr_get_interval
 sched_setparam
 sched_setscheduler
 secure_path
+seed48
 seekdir
 sem
 sem_close
@@ -1438,6 +1446,7 @@ snprintb_m
 sockaddr_dl
 sockcred
 srand
+srand48
 stack_t
 strcasecmp
 strcasestr
