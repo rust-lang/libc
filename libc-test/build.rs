@@ -1638,6 +1638,9 @@ fn test_android(target: &str) {
             // FIXME: `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
+
+            // These are tested in the `linux_elf.rs` file.
+            "Elf64_Phdr" | "Elf32_Phdr" => true,
             _ => false,
         }
     });
@@ -1655,12 +1658,33 @@ fn test_android(target: &str) {
             // 'private' type
             "prop_info" => true,
 
+            // These are tested in the `linux_elf.rs` file.
+            "Elf64_Phdr" | "Elf32_Phdr" => true,
+
             _ => false,
         }
     });
 
     cfg.skip_const(move |name| {
         match name {
+            // The IPV6 constants are tested in the `linux_ipv6.rs` tests:
+            | "IPV6_FLOWINFO"
+            | "IPV6_FLOWLABEL_MGR"
+            | "IPV6_FLOWINFO_SEND"
+            | "IPV6_FLOWINFO_FLOWLABEL"
+            | "IPV6_FLOWINFO_PRIORITY"
+            // The F_ fnctl constants are tested in the `linux_fnctl.rs` tests:
+            | "F_CANCELLK"
+            | "F_ADD_SEALS"
+            | "F_GET_SEALS"
+            | "F_SEAL_SEAL"
+            | "F_SEAL_SHRINK"
+            | "F_SEAL_GROW"
+            | "F_SEAL_WRITE" => true,
+
+            // The `ARPHRD_CAN` is tested in the `linux_if_arp.rs` tests:
+            "ARPHRD_CAN" => true,
+
             // FIXME: deprecated: not available in any header
             // See: https://github.com/rust-lang/libc/issues/1356
             "ENOATTR" => true,
@@ -1678,6 +1702,7 @@ fn test_android(target: &str) {
 
             // FIXME: conflicts with standard C headers and is tested in
             // `linux_termios.rs` below:
+            "BOTHER" => true,
             "IBSHIFT" => true,
             "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => true,
 
