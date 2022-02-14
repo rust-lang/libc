@@ -747,6 +747,7 @@ fn test_solarish(target: &str) {
         "ifaddrs.h",
         "langinfo.h",
         "limits.h",
+        "link.h",
         "locale.h",
         "mqueue.h",
         "net/if.h",
