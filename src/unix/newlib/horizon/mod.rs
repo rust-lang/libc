@@ -208,14 +208,14 @@ extern "C" {
         param: *const sched_param,
     ) -> ::c_int;
 
-    pub fn pthread_attr_getidealprocessor_np(
+    pub fn pthread_attr_getprocessorid_np(
         attr: *const ::pthread_attr_t,
-        ideal_processor: *mut ::c_int,
+        processor_id: *mut ::c_int,
     ) -> ::c_int;
 
-    pub fn pthread_attr_setidealprocessor_np(
+    pub fn pthread_attr_setprocessorid_np(
         attr: *mut ::pthread_attr_t,
-        ideal_processor: ::c_int,
+        processor_id: ::c_int,
     ) -> ::c_int;
 
     pub fn pthread_getschedparam(
@@ -229,7 +229,7 @@ extern "C" {
         policy: ::c_int,
         param: *const ::sched_param,
     ) -> ::c_int;
-    
+
     pub fn pthread_getprocessorid_np() -> ::c_int;
 
     pub fn gethostid() -> ::c_long;
