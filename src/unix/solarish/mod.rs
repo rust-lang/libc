@@ -3024,6 +3024,16 @@ extern "C" {
     ) -> ::lgrp_mem_size_t;
     pub fn lgrp_nlgrps(cookie: ::lgrp_cookie_t) -> ::c_int;
     pub fn lgrp_view(cookie: ::lgrp_cookie_t) -> ::lgrp_view_t;
+    pub fn lgrp_home(idtype: ::idtype_t, id: ::id_t) -> ::lgrp_id_t;
+    pub fn lgrp_version(version: ::c_int) -> ::c_int;
+    pub fn lgrp_resources(
+        cookie: ::lgrp_cookie_t,
+        lgrp: ::lgrp_id_t,
+        lgrps: *mut ::lgrp_id_t,
+        count: ::c_uint,
+        tpe: ::lgrp_rsrc_t,
+    ) -> ::c_int;
+    pub fn lgrp_root(cookie: ::lgrp_cookie_t) -> ::lgrp_id_t;
 }
 
 mod compat;
