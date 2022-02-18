@@ -12,7 +12,7 @@ A test crate for the libc crate.
 
 [dependencies.libc]
 path = ".."
-version = "0.2.118"
+version = "0.2.119"
 default-features = false
 
 [build-dependencies]
