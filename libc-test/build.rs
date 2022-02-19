@@ -1723,6 +1723,8 @@ fn test_android(target: &str) {
 
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
+            // linux 5.12 min
+            "MPOL_F_NUMA_BALANCING" => true,
 
             _ => false,
         }
@@ -3274,6 +3276,8 @@ fn test_linux(target: &str) {
 
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
+            // linux 5.12 min
+            "MPOL_F_NUMA_BALANCING" => true,
 
             _ => false,
         }
