@@ -2365,6 +2365,11 @@ pub const P_FORCED: ::c_int = 0x10000000;
 pub const PI_TYPELEN: ::c_int = 16;
 pub const PI_FPUTYPE: ::c_int = 32;
 
+// sys/auxv.h
+pub const AT_SUN_HWCAP: ::c_uint = 2009;
+pub const AT_SUN_HWCAP2: ::c_uint = 2023;
+pub const AT_SUN_FPTYPE: ::c_uint = 2027;
+
 // As per sys/socket.h, header alignment must be 8 bytes on SPARC
 // and 4 bytes everywhere else:
 #[cfg(target_arch = "sparc64")]
@@ -2992,6 +2997,8 @@ extern "C" {
         loc: ::locale_t,
     ) -> ::c_int;
     pub fn strsep(string: *mut *mut ::c_char, delim: *const ::c_char) -> *mut ::c_char;
+
+    pub fn getisax(array: *mut u32, n: ::c_uint) -> ::c_uint;
 }
 
 #[link(name = "lgrp")]
@@ -3054,9 +3061,13 @@ cfg_if! {
 cfg_if! {
     if #[cfg(target_arch = "x86_64")] {
         mod x86_64;
+        mod x86_common;
         pub use self::x86_64::*;
+        pub use self::x86_common::*;
     } else if #[cfg(target_arch = "x86")] {
         mod x86;
+        mod x86_common;
         pub use self::x86::*;
+        pub use self::x86_common::*;
     }
 }
