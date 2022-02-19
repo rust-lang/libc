@@ -1483,6 +1483,9 @@ pub const MPOL_PREFERRED: ::c_int = 1;
 pub const MPOL_BIND: ::c_int = 2;
 pub const MPOL_INTERLEAVE: ::c_int = 3;
 pub const MPOL_LOCAL: ::c_int = 4;
+pub const MPOL_F_NUMA_BALANCING: ::c_int = 1 << 13;
+pub const MPOL_F_RELATIVE_NODES: ::c_int = 1 << 14;
+pub const MPOL_F_STATIC_NODES: ::c_int = 1 << 15;
 
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
