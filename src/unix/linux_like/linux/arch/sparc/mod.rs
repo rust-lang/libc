@@ -171,6 +171,8 @@ pub const TIOCMIWAIT: ::Ioctl = 0x545C;
 pub const TIOCGICOUNT: ::Ioctl = 0x545D;
 pub const TIOCSTART: ::Ioctl = 0x2000746e;
 pub const TIOCSTOP: ::Ioctl = 0x2000746f;
+pub const BLKSSZGET: ::Ioctl = 0x20001268;
+pub const BLKPBSZGET: ::Ioctl = 0x2000127B;
 
 //pub const FIOASYNC: ::Ioctl = 0x4004667d;
 //pub const FIOQSIZE: ::Ioctl = ;
@@ -194,5 +196,31 @@ pub const TIOCM_DSR: ::c_int = 0x100;
 pub const BOTHER: ::speed_t = 0x1000;
 pub const IBSHIFT: ::tcflag_t = 16;
 
-pub const BLKSSZGET: ::Ioctl = 0x20001268;
-pub const BLKPBSZGET: ::Ioctl = 0x2000127B;
+// RLIMIT Constants
+
+pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
+pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
+pub const RLIMIT_DATA: ::__rlimit_resource_t = 2;
+pub const RLIMIT_STACK: ::__rlimit_resource_t = 3;
+pub const RLIMIT_CORE: ::__rlimit_resource_t = 4;
+pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
+pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 6;
+pub const RLIMIT_NPROC: ::__rlimit_resource_t = 7;
+pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
+pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
+pub const RLIMIT_LOCKS: ::__rlimit_resource_t = 10;
+pub const RLIMIT_SIGPENDING: ::__rlimit_resource_t = 11;
+pub const RLIMIT_MSGQUEUE: ::__rlimit_resource_t = 12;
+pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
+pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
+pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
+pub const RLIM_NLIMITS: ::__rlimit_resource_t = 16;
+pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = RLIM_NLIMITS;
+
+cfg_if! {
+    if #[cfg(target_arch = "sparc64")] {
+        pub const RLIM_INFINITY: ::rlim_t = !0;
+    } else if #[cfg(target_arch = "sparc")] {
+        pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
+    }
+}

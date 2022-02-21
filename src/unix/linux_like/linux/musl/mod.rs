@@ -524,9 +524,6 @@ pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
-pub const RLIM_INFINITY: ::rlim_t = !0;
-pub const RLIMIT_RTTIME: ::c_int = 15;
-
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
 pub const SOCK_DCCP: ::c_int = 6;
@@ -618,17 +615,6 @@ pub const B19200: ::speed_t = 0o000016;
 pub const B38400: ::speed_t = 0o000017;
 pub const EXTA: ::speed_t = B19200;
 pub const EXTB: ::speed_t = B38400;
-
-pub const RLIMIT_CPU: ::c_int = 0;
-pub const RLIMIT_FSIZE: ::c_int = 1;
-pub const RLIMIT_DATA: ::c_int = 2;
-pub const RLIMIT_STACK: ::c_int = 3;
-pub const RLIMIT_CORE: ::c_int = 4;
-pub const RLIMIT_LOCKS: ::c_int = 10;
-pub const RLIMIT_SIGPENDING: ::c_int = 11;
-pub const RLIMIT_MSGQUEUE: ::c_int = 12;
-pub const RLIMIT_NICE: ::c_int = 13;
-pub const RLIMIT_RTPRIO: ::c_int = 14;
 
 pub const REG_OK: ::c_int = 0;
 

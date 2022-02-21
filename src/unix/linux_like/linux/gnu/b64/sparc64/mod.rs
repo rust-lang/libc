@@ -205,12 +205,6 @@ pub const RTLD_GLOBAL: ::c_int = 0x100;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 
-pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
-pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
-pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
-pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 6;
-pub const RLIMIT_NPROC: ::__rlimit_resource_t = 7;
-
 pub const O_APPEND: ::c_int = 0x8;
 pub const O_CREAT: ::c_int = 0x200;
 pub const O_EXCL: ::c_int = 0x800;

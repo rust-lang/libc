@@ -185,6 +185,8 @@ pub const TIOCSLTC: ::Ioctl = 0x7475;
 pub const TIOCGETP: ::Ioctl = 0x7408;
 pub const TIOCSETP: ::Ioctl = 0x7409;
 pub const TIOCSETN: ::Ioctl = 0x740a;
+pub const BLKSSZGET: ::Ioctl = 0x20001268;
+pub const BLKPBSZGET: ::Ioctl = 0x2000127B;
 
 cfg_if! {
     if #[cfg(target_env = "musl")] {
@@ -208,5 +210,74 @@ pub const TIOCM_DSR: ::c_int = 0x400;
 pub const BOTHER: ::speed_t = 0o010000;
 pub const IBSHIFT: ::tcflag_t = 16;
 
-pub const BLKSSZGET: ::Ioctl = 0x20001268;
-pub const BLKPBSZGET: ::Ioctl = 0x2000127B;
+// RLIMIT Constants
+
+cfg_if! {
+    if #[cfg(any(target_env = "gnu",
+                 target_env = "uclibc"))] {
+
+        pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
+        pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
+        pub const RLIMIT_DATA: ::__rlimit_resource_t = 2;
+        pub const RLIMIT_STACK: ::__rlimit_resource_t = 3;
+        pub const RLIMIT_CORE: ::__rlimit_resource_t = 4;
+        pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 5;
+        pub const RLIMIT_AS: ::__rlimit_resource_t = 6;
+        pub const RLIMIT_RSS: ::__rlimit_resource_t = 7;
+        pub const RLIMIT_NPROC: ::__rlimit_resource_t = 8;
+        pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 9;
+        pub const RLIMIT_LOCKS: ::__rlimit_resource_t = 10;
+        pub const RLIMIT_SIGPENDING: ::__rlimit_resource_t = 11;
+        pub const RLIMIT_MSGQUEUE: ::__rlimit_resource_t = 12;
+        pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
+        pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
+        pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
+        pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = RLIM_NLIMITS;
+
+    } else if #[cfg(target_env = "musl")] {
+
+        pub const RLIMIT_CPU: ::c_int = 0;
+        pub const RLIMIT_FSIZE: ::c_int = 1;
+        pub const RLIMIT_DATA: ::c_int = 2;
+        pub const RLIMIT_STACK: ::c_int = 3;
+        pub const RLIMIT_CORE: ::c_int = 4;
+        pub const RLIMIT_NOFILE: ::c_int = 5;
+        pub const RLIMIT_AS: ::c_int = 6;
+        pub const RLIMIT_RSS: ::c_int = 7;
+        pub const RLIMIT_NPROC: ::c_int = 8;
+        pub const RLIMIT_MEMLOCK: ::c_int = 9;
+        pub const RLIMIT_LOCKS: ::c_int = 10;
+        pub const RLIMIT_SIGPENDING: ::c_int = 11;
+        pub const RLIMIT_MSGQUEUE: ::c_int = 12;
+        pub const RLIMIT_NICE: ::c_int = 13;
+        pub const RLIMIT_RTPRIO: ::c_int = 14;
+        pub const RLIMIT_RTTIME: ::c_int = 15;
+        pub const RLIM_NLIMITS: ::c_int = 15;
+        pub const RLIMIT_NLIMITS: ::c_int = RLIM_NLIMITS;
+        pub const RLIM_INFINITY: ::rlim_t = !0;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_env = "gnu")] {
+        pub const RLIM_NLIMITS: ::__rlimit_resource_t = 16;
+    } else if #[cfg(target_env = "uclibc")] {
+        pub const RLIM_NLIMITS: ::__rlimit_resource_t = 15;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_arch = "mips64",
+         any(target_env = "gnu",
+             target_env = "uclibc"))] {
+        pub const RLIM_INFINITY: ::rlim_t = !0;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_arch = "mips",
+         any(target_env = "gnu",
+             target_env = "uclibc"))] {
+        pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
+    }
+}
