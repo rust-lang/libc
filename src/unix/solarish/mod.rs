@@ -2999,6 +2999,10 @@ extern "C" {
     pub fn strsep(string: *mut *mut ::c_char, delim: *const ::c_char) -> *mut ::c_char;
 
     pub fn getisax(array: *mut u32, n: ::c_uint) -> ::c_uint;
+
+    pub fn backtrace(buffer: *mut *mut ::c_void, size: ::c_int) -> ::c_int;
+    pub fn backtrace_symbols(buffer: *const *mut ::c_void, size: ::c_int) -> *mut *mut ::c_char;
+    pub fn backtrace_symbols_fd(buffer: *const *mut ::c_void, size: ::c_int, fd: ::c_int);
 }
 
 #[link(name = "lgrp")]
