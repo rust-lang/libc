@@ -21,6 +21,45 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[cfg_attr(all(
+            any(target_arch = "x86", target_arch = "x86_64"),
+            libc_packedN
+        ), repr(packed(4)))]
+    #[cfg_attr(all(
+            any(target_arch = "x86", target_arch = "x86_64"),
+            not(libc_packedN)
+        ), repr(packed))]
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        si_pid: ::pid_t,
+        si_uid: ::uid_t,
+        si_status: ::c_int,
+        pub si_addr: *mut ::c_void,
+        __pad: [u8; 36],
+    }
+
+    impl siginfo_t {
+        pub unsafe fn si_addr(&self) -> *mut ::c_void {
+            self.si_addr
+        }
+
+        pub unsafe fn si_pid(&self) -> ::pid_t {
+            self.si_pid
+        }
+
+        pub unsafe fn si_uid(&self) -> ::uid_t {
+            self.si_uid
+        }
+
+        pub unsafe fn si_status(&self) -> ::c_int {
+            self.si_status
+        }
+    }
+}
+
 pub const AF_LOCAL: ::c_int = 1; // AF_UNIX
 pub const AF_FILE: ::c_int = 1; // AF_UNIX
 
@@ -64,6 +103,14 @@ pub const B4000000: ::speed_t = 31;
 
 // sys/systeminfo.h
 pub const SI_ADDRESS_WIDTH: ::c_int = 520;
+
+// sys/siginfo.h
+pub const CLD_EXITED: c_int = 1;
+pub const CLD_KILLED: c_int = 2;
+pub const CLD_DUMPED: c_int = 3;
+pub const CLD_TRAPPED: c_int = 4;
+pub const CLD_STOPPED: c_int = 5;
+pub const CLD_CONTINUED: c_int = 6;
 
 extern "C" {
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;

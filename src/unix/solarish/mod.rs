@@ -516,6 +516,7 @@ s_no_extra_traits! {
         __ss_pad2: [u8; 240],
     }
 
+    #[cfg(not(target_os = "illumos"))]
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
