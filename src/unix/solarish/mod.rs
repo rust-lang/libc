@@ -28,6 +28,7 @@ pub type zoneid_t = ::c_int;
 pub type psetid_t = ::c_int;
 pub type processorid_t = ::c_int;
 pub type chipid_t = ::c_int;
+pub type ctid_t = ::id_t;
 
 pub type suseconds_t = ::c_long;
 pub type off_t = ::c_long;
@@ -516,13 +517,15 @@ s_no_extra_traits! {
         __ss_pad2: [u8; 240],
     }
 
+    #[cfg_attr(all(target_pointer_width = "64", libc_align), repr(align(8)))]
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
+        #[cfg(target_pointer_width = "64")]
         pub si_pad: ::c_int,
-        pub si_addr: *mut ::c_void,
-        __pad: [u8; 232],
+
+        __data_pad: [::c_int; SIGINFO_DATA_SIZE],
     }
 
     pub struct sockaddr_dl {
@@ -773,17 +776,52 @@ cfg_if! {
             }
         }
 
+        impl siginfo_t {
+            /// The siginfo_t will have differing contents based on the delivered signal.  Based on
+            /// `si_signo`, this determines how many of the `c_int` pad fields contain valid data
+            /// exposed by the C unions.
+            ///
+            /// It is not yet exhausitive for the OS-defined types, and defaults to assuming the
+            /// entire data pad area is "valid" for otherwise unrecognized signal numbers.
+            fn data_field_count(&self) -> usize {
+                match self.si_signo {
+                    ::SIGSEGV | ::SIGBUS | ::SIGILL | ::SIGTRAP | ::SIGFPE => {
+                        ::mem::size_of::<siginfo_fault>() / ::mem::size_of::<::c_int>()
+                    }
+                    ::SIGCLD => ::mem::size_of::<siginfo_sigcld>() / ::mem::size_of::<::c_int>(),
+                    ::SIGHUP
+                    | ::SIGINT
+                    | ::SIGQUIT
+                    | ::SIGABRT
+                    | ::SIGSYS
+                    | ::SIGPIPE
+                    | ::SIGALRM
+                    | ::SIGTERM
+                    | ::SIGUSR1
+                    | ::SIGUSR2
+                    | ::SIGPWR
+                    | ::SIGWINCH
+                    | ::SIGURG => ::mem::size_of::<siginfo_kill>() / ::mem::size_of::<::c_int>(),
+                    _ => SIGINFO_DATA_SIZE,
+                }
+            }
+        }
         impl PartialEq for siginfo_t {
             fn eq(&self, other: &siginfo_t) -> bool {
-                self.si_signo == other.si_signo
+                if self.si_signo == other.si_signo
                     && self.si_code == other.si_code
-                    && self.si_errno == other.si_errno
-                    && self.si_addr == other.si_addr
-                    && self
-                    .__pad
-                    .iter()
-                    .zip(other.__pad.iter())
-                    .all(|(a, b)| a == b)
+                    && self.si_errno == other.si_errno {
+                        // FIXME: The `si_pad` field in the 64-bit version of the struct is ignored
+                        // (for now) when doing comparisons.
+
+                        let field_count = self.data_field_count();
+                        self.__data_pad[..field_count]
+                            .iter()
+                            .zip(other.__data_pad[..field_count].iter())
+                            .all(|(a, b)| a == b)
+                } else {
+                    false
+                }
             }
         }
         impl Eq for siginfo_t {}
@@ -793,7 +831,6 @@ cfg_if! {
                     .field("si_signo", &self.si_signo)
                     .field("si_code", &self.si_code)
                     .field("si_errno", &self.si_errno)
-                    .field("si_addr", &self.si_addr)
                     // FIXME: .field("__pad", &self.__pad)
                     .finish()
             }
@@ -803,8 +840,12 @@ cfg_if! {
                 self.si_signo.hash(state);
                 self.si_code.hash(state);
                 self.si_errno.hash(state);
-                self.si_addr.hash(state);
-                self.__pad.hash(state);
+
+                // FIXME: The `si_pad` field in the 64-bit version of the struct is ignored
+                // (for now) when doing hashing.
+
+                let field_count = self.data_field_count();
+                self.__data_pad[..field_count].hash(state)
             }
         }
 
@@ -947,6 +988,116 @@ cfg_if! {
     }
 }
 
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        const SIGINFO_DATA_SIZE: usize = 60;
+    } else {
+        const SIGINFO_DATA_SIZE: usize = 29;
+    }
+}
+
+#[repr(C)]
+struct siginfo_fault {
+    addr: *mut ::c_void,
+    trapno: ::c_int,
+    pc: *mut ::caddr_t,
+}
+impl Copy for siginfo_fault {}
+impl Clone for siginfo_fault {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+#[repr(C)]
+struct siginfo_cldval {
+    utime: ::clock_t,
+    status: ::c_int,
+    stime: ::clock_t,
+}
+impl Copy for siginfo_cldval {}
+impl Clone for siginfo_cldval {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+#[repr(C)]
+struct siginfo_killval {
+    uid: ::uid_t,
+    value: ::sigval,
+    // Pad out to match the SIGCLD value size
+    _pad: *mut ::c_void,
+}
+impl Copy for siginfo_killval {}
+impl Clone for siginfo_killval {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+#[repr(C)]
+struct siginfo_sigcld {
+    pid: ::pid_t,
+    val: siginfo_cldval,
+    ctid: ::ctid_t,
+    zoneid: ::zoneid_t,
+}
+impl Copy for siginfo_sigcld {}
+impl Clone for siginfo_sigcld {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+#[repr(C)]
+struct siginfo_kill {
+    pid: ::pid_t,
+    val: siginfo_killval,
+    ctid: ::ctid_t,
+    zoneid: ::zoneid_t,
+}
+impl Copy for siginfo_kill {}
+impl Clone for siginfo_kill {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+impl siginfo_t {
+    unsafe fn sidata<T: Copy>(&self) -> T {
+        *((&self.__data_pad) as *const ::c_int as *const T)
+    }
+    pub unsafe fn si_addr(&self) -> *mut ::c_void {
+        let sifault: siginfo_fault = self.sidata();
+        sifault.addr
+    }
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        let kill: siginfo_kill = self.sidata();
+        kill.val.uid
+    }
+    pub unsafe fn si_value(&self) -> ::sigval {
+        let kill: siginfo_kill = self.sidata();
+        kill.val.value
+    }
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        let sigcld: siginfo_sigcld = self.sidata();
+        sigcld.pid
+    }
+    pub unsafe fn si_status(&self) -> ::c_int {
+        let sigcld: siginfo_sigcld = self.sidata();
+        sigcld.val.status
+    }
+    pub unsafe fn si_utime(&self) -> ::c_long {
+        let sigcld: siginfo_sigcld = self.sidata();
+        sigcld.val.utime
+    }
+    pub unsafe fn si_stime(&self) -> ::c_long {
+        let sigcld: siginfo_sigcld = self.sidata();
+        sigcld.val.stime
+    }
+}
+
 pub const LC_CTYPE: ::c_int = 0;
 pub const LC_NUMERIC: ::c_int = 1;
 pub const LC_TIME: ::c_int = 2;
@@ -1055,6 +1206,7 @@ pub const FIOSETOWN: ::c_int = 0x8004667c;
 pub const FIOGETOWN: ::c_int = 0x4004667b;
 
 pub const SIGCHLD: ::c_int = 18;
+pub const SIGCLD: ::c_int = ::SIGCHLD;
 pub const SIGBUS: ::c_int = 10;
 pub const SIGINFO: ::c_int = 41;
 pub const SIG_BLOCK: ::c_int = 1;
@@ -1064,6 +1216,13 @@ pub const SIG_SETMASK: ::c_int = 3;
 pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_SIGNAL: ::c_int = 2;
 pub const SIGEV_THREAD: ::c_int = 3;
+
+pub const CLD_EXITED: ::c_int = 1;
+pub const CLD_KILLED: ::c_int = 2;
+pub const CLD_DUMPED: ::c_int = 3;
+pub const CLD_TRAPPED: ::c_int = 4;
+pub const CLD_STOPPED: ::c_int = 5;
+pub const CLD_CONTINUED: ::c_int = 6;
 
 pub const IP_RECVDSTADDR: ::c_int = 0x7;
 pub const IP_SEC_OPT: ::c_int = 0x22;
