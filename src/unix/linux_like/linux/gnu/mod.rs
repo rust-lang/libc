@@ -1185,6 +1185,7 @@ extern "C" {
         mask: ::c_uint,
         statxbuf: *mut statx,
     ) -> ::c_int;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 

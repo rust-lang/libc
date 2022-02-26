@@ -1759,6 +1759,9 @@ fn test_android(target: &str) {
             // Added in API level 30, but tests use level 28.
             "mlock2" => true,
 
+            // Added in glibc 2.25.
+            "getentropy" => true,
+
             _ => false,
         }
     });

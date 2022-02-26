@@ -584,6 +584,7 @@ explicit_bzero
 fgetspent_r
 futimes
 getauxval
+getentropy
 getgrent_r
 getloadavg
 getpt
