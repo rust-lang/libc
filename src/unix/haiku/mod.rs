@@ -370,6 +370,18 @@ s! {
         pub dlpi_tls_modid: usize,
         pub dlpi_tls_data: *mut ::c_void,
     }
+
+    pub struct spwd {
+        pub sp_namp: *mut ::c_char,
+        pub sp_pwdp: *mut ::c_char,
+        pub sp_lstchg: ::c_int,
+        pub sp_min: ::c_int,
+        pub sp_max: ::c_int,
+        pub sp_warn: ::c_int,
+        pub sp_inact: ::c_int,
+        pub sp_expire: ::c_int,
+        pub sp_flag: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
@@ -1515,6 +1527,35 @@ extern "C" {
         numfds: ::nfds_t,
         timeout: *const ::timespec,
         sigMask: *const sigset_t,
+    ) -> ::c_int;
+
+    pub fn getspent() -> *mut spwd;
+    pub fn getspent_r(pwd: *mut spwd, buf: *mut ::c_char, bufferSize: ::size_t) -> ::c_int;
+    pub fn setspent();
+    pub fn endspent();
+    pub fn getspnam(name: *const ::c_char) -> *mut spwd;
+    pub fn getspnam_r(
+        name: *const ::c_char,
+        spwd: *mut spwd,
+        buffer: *mut ::c_char,
+        bufferSize: ::size_t,
+        res: *mut *mut spwd,
+    ) -> ::c_int;
+    pub fn sgetspent(line: *const ::c_char) -> *mut spwd;
+    pub fn sgetspent_r(
+        line: *const ::c_char,
+        spwd: *mut spwd,
+        buffer: *mut ::c_char,
+        bufferSize: ::size_t,
+        res: *mut *mut spwd,
+    ) -> ::c_int;
+    pub fn fgetspent(file: *mut ::FILE) -> *mut spwd;
+    pub fn fgetspent_r(
+        file: *mut ::FILE,
+        spwd: *mut spwd,
+        buffer: *mut ::c_char,
+        bufferSize: ::size_t,
+        res: *mut *mut spwd,
     ) -> ::c_int;
 }
 
