@@ -171,6 +171,8 @@ pub const TIOCMIWAIT: ::Ioctl = 0x545C;
 pub const TIOCGICOUNT: ::Ioctl = 0x545D;
 pub const TIOCSTART: ::Ioctl = 0x2000746e;
 pub const TIOCSTOP: ::Ioctl = 0x2000746f;
+pub const BLKIOMIN: ::Ioctl = 0x20001278;
+pub const BLKIOOPT: ::Ioctl = 0x20001279;
 pub const BLKSSZGET: ::Ioctl = 0x20001268;
 pub const BLKPBSZGET: ::Ioctl = 0x2000127B;
 

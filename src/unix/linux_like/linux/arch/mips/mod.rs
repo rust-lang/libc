@@ -185,6 +185,8 @@ pub const TIOCSLTC: ::Ioctl = 0x7475;
 pub const TIOCGETP: ::Ioctl = 0x7408;
 pub const TIOCSETP: ::Ioctl = 0x7409;
 pub const TIOCSETN: ::Ioctl = 0x740a;
+pub const BLKIOMIN: ::Ioctl = 0x20001278;
+pub const BLKIOOPT: ::Ioctl = 0x20001279;
 pub const BLKSSZGET: ::Ioctl = 0x20001268;
 pub const BLKPBSZGET: ::Ioctl = 0x2000127B;
 
