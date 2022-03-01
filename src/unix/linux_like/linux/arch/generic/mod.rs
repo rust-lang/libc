@@ -190,6 +190,8 @@ pub const TIOCSERGETMULTI: ::Ioctl = 0x545A;
 pub const TIOCSERSETMULTI: ::Ioctl = 0x545B;
 pub const TIOCMIWAIT: ::Ioctl = 0x545C;
 pub const TIOCGICOUNT: ::Ioctl = 0x545D;
+pub const BLKIOMIN: ::Ioctl = 0x1278;
+pub const BLKIOOPT: ::Ioctl = 0x1279;
 pub const BLKSSZGET: ::Ioctl = 0x1268;
 pub const BLKPBSZGET: ::Ioctl = 0x127B;
 

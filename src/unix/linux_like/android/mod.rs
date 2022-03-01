@@ -1527,6 +1527,8 @@ pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
 pub const IBSHIFT: ::tcflag_t = 16;
 
+pub const BLKIOMIN: ::c_int = 0x1278;
+pub const BLKIOOPT: ::c_int = 0x1279;
 pub const BLKSSZGET: ::c_int = 0x1268;
 pub const BLKPBSZGET: ::c_int = 0x127B;
 
