@@ -1747,6 +1747,14 @@ extern "C" {
 
     pub fn login_tty(_fd: ::c_int) -> ::c_int;
     pub fn fgetln(stream: *mut ::FILE, _length: *mut ::size_t) -> *mut ::c_char;
+
+    pub fn realhostname(host: *mut ::c_char, hsize: ::size_t, ip: *const in_addr) -> ::c_int;
+    pub fn realhostname_sa(
+        host: *mut ::c_char,
+        hsize: ::size_t,
+        addr: *mut sockaddr,
+        addrlen: ::c_int,
+    ) -> ::c_int;
 }
 
 cfg_if! {
