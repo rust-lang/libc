@@ -1525,6 +1525,7 @@ getifaddrs
 getitimer
 getline
 getloadavg
+getlocalbase
 getnameinfo
 getpagesize
 getpagesizes

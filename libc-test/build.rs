@@ -2344,6 +2344,9 @@ fn test_freebsd(target: &str) {
             // Those were introduced in FreeBSD 12.
             "flopen" | "flopenat" if Some(12) > freebsd_ver => true,
 
+            // Added in FreeBSD 13.
+            "getlocalbase" if Some(13) > freebsd_ver => true,
+
             _ => false,
         }
     });
