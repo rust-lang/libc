@@ -4326,6 +4326,8 @@ extern "C" {
 
     pub fn flopen(path: *const ::c_char, flags: ::c_int, ...) -> ::c_int;
     pub fn flopenat(fd: ::c_int, path: *const ::c_char, flags: ::c_int, ...) -> ::c_int;
+
+    pub fn getlocalbase() -> *const ::c_char;
 }
 
 #[link(name = "procstat")]
