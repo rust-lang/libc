@@ -1014,9 +1014,11 @@ labs
 lastlog
 lcong48
 lcong48_deterministic
+lfind
 lockf
 login_tty
 lrand48
+lsearch
 madvise
 malloc_conceal
 memmem
