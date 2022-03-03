@@ -1637,6 +1637,21 @@ extern "C" {
     pub fn srand48_deterministic(seed: ::c_long);
     pub fn seed48_deterministic(xseed: *mut ::c_ushort) -> *mut ::c_ushort;
     pub fn lcong48_deterministic(p: *mut ::c_ushort);
+
+    pub fn lsearch(
+        key: *const ::c_void,
+        base: *mut ::c_void,
+        nelp: *mut ::size_t,
+        width: ::size_t,
+        compar: ::Option<unsafe extern "C" fn(*const ::c_void, *const ::c_void) -> ::c_int>,
+    ) -> *mut ::c_void;
+    pub fn lfind(
+        key: *const ::c_void,
+        base: *const ::c_void,
+        nelp: *mut ::size_t,
+        width: ::size_t,
+        compar: ::Option<unsafe extern "C" fn(*const ::c_void, *const ::c_void) -> ::c_int>,
+    ) -> *mut ::c_void;
 }
 
 #[link(name = "execinfo")]

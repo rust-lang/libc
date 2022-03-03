@@ -430,6 +430,7 @@ fn test_openbsd(target: &str) {
         "resolv.h",
         "pthread.h",
         "dlfcn.h",
+        "search.h",
         "signal.h",
         "string.h",
         "sys/file.h",
