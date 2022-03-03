@@ -1247,6 +1247,7 @@ pub const ST_RDONLY: ::c_ulong = 1;
 pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const NI_MAXHOST: ::socklen_t = 1025;
+pub const NI_MAXSERV: ::socklen_t = 32;
 
 pub const EXIT_FAILURE: ::c_int = 1;
 pub const EXIT_SUCCESS: ::c_int = 0;
@@ -1583,6 +1584,14 @@ pub const EAI_SERVICE: ::c_int = 9;
 pub const EAI_SOCKTYPE: ::c_int = 10;
 pub const EAI_SYSTEM: ::c_int = 11;
 pub const EAI_OVERFLOW: ::c_int = 12;
+
+pub const NI_NOFQDN: ::c_uint = 0x0001;
+pub const NI_NUMERICHOST: ::c_uint = 0x0002;
+pub const NI_NAMEREQD: ::c_uint = 0x0004;
+pub const NI_NUMERICSERV: ::c_uint = 0x0008;
+pub const NI_DGRAM: ::c_uint = 0x0010;
+pub const NI_WITHSCOPEID: ::c_uint = 0x0020;
+pub const NI_NUMERICSCOPE: ::c_uint = 0x0040;
 
 pub const F_DUPFD: ::c_int = 0;
 pub const F_DUP2FD: ::c_int = 9;
