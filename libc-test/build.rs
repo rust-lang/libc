@@ -2917,6 +2917,7 @@ fn test_linux(target: &str) {
         "asm/mman.h",
         "linux/can.h",
         "linux/can/raw.h",
+        "linux/can/j1939.h",
         "linux/dccp.h",
         "linux/errqueue.h",
         "linux/falloc.h",
