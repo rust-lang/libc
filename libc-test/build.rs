@@ -3229,6 +3229,11 @@ fn test_linux(target: &str) {
             | "IFLA_PERM_ADDRESS"
             | "IFLA_PROTO_DOWN_REASON" => true,
 
+            // FIXME: They require recent kernel header:
+            | "CAN_J1939"
+            | "CAN_RAW_FILTER_MAX"
+            | "CAN_NPROTO" => true,
+
             // FIXME: Requires recent kernel headers (5.15)
             | "J1939_NLA_TOTAL_SIZE"
             | "J1939_NLA_PGN"
