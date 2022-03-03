@@ -3205,7 +3205,7 @@ pub const SOL_CAN_J1939: ::c_int = SOL_CAN_BASE + CAN_J1939;
 
 pub const J1939_MAX_UNICAST_ADDR: ::c_uchar = 0xfd;
 pub const J1939_IDLE_ADDR: ::c_uchar = 0xfe;
-pub const J1939_NO_ADDR: ::c_uchar = 0;
+pub const J1939_NO_ADDR: ::c_uchar = 0xff;
 pub const J1939_NO_NAME: ::c_ulong = 0;
 pub const J1939_PGN_REQUEST: ::c_uint = 0x0ea00;
 pub const J1939_PGN_ADDRESS_CLAIMED: ::c_uint = 0x0ee00;
