@@ -33,14 +33,12 @@ pub type fd_mask = u32;
 
 pub type Elf32_Addr = u32;
 pub type Elf32_Half = u16;
-pub type Elf32_Lword = u64;
 pub type Elf32_Off = u32;
 pub type Elf32_Sword = i32;
 pub type Elf32_Word = u32;
 
 pub type Elf64_Addr = u64;
 pub type Elf64_Half = u16;
-pub type Elf64_Lword = u64;
 pub type Elf64_Off = u64;
 pub type Elf64_Sword = i32;
 pub type Elf64_Sxword = i64;
@@ -120,12 +118,12 @@ s! {
 
     pub struct ifaddrs {
         pub ifa_next: *mut ifaddrs,
-        pub ifa_name: *mut ::c_char,
+        pub ifa_name: *const ::c_char,
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
         pub ifa_dstaddr: *mut ::sockaddr,
-        pub ida_data: *mut ::c_void,
+        pub ifa_data: *mut ::c_void,
     }
 
     pub struct fd_set {
@@ -1530,7 +1528,12 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn getspent() -> *mut spwd;
-    pub fn getspent_r(pwd: *mut spwd, buf: *mut ::c_char, bufferSize: ::size_t) -> ::c_int;
+    pub fn getspent_r(
+        pwd: *mut spwd,
+        buf: *mut ::c_char,
+        bufferSize: ::size_t,
+        res: *mut *mut spwd,
+    ) -> ::c_int;
     pub fn setspent();
     pub fn endspent();
     pub fn getspnam(name: *const ::c_char) -> *mut spwd;

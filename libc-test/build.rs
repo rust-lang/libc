@@ -3649,6 +3649,7 @@ fn test_haiku(target: &str) {
     let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__USE_GNU", Some("1"));
+    cfg.define("_GNU_SOURCE", None);
 
     // POSIX API
     headers! { cfg:
@@ -3751,6 +3752,7 @@ fn test_haiku(target: &str) {
                "uchar.h",
                "unistd.h",
                "utime.h",
+               "utmpx.h",
                "wchar.h",
                "wchar_t.h",
                "wctype.h"
@@ -3758,6 +3760,9 @@ fn test_haiku(target: &str) {
 
     // BSD Extensions
     headers! { cfg:
+               "ifaddrs.h",
+               "libutil.h",
+               "link.h",
                "pty.h",
     }
 
@@ -3803,6 +3808,11 @@ fn test_haiku(target: &str) {
             // with mem::zeroed(), so skip the automated test
             "image_info" | "thread_info" => true,
 
+            "Elf64_Phdr" => true,
+
+            // is an union
+            "cpuid_info" => true,
+
             _ => false,
         }
     });
@@ -3838,6 +3848,8 @@ fn test_haiku(target: &str) {
             // uses an enum as a parameter argument, which is incorrectly
             // translated into a struct argument
             "find_path" => true,
+
+            "get_cpuid" => true,
 
             _ => false,
         }
