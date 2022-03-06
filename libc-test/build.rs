@@ -177,6 +177,7 @@ fn test_apple(target: &str) {
     let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__APPLE_USE_RFC_3542", None);
+    cfg.define("_XOPEN_SOURCE", None);
 
     headers! { cfg:
         "aio.h",
@@ -274,6 +275,7 @@ fn test_apple(target: &str) {
         "utmpx.h",
         "wchar.h",
         "xlocale.h",
+        "ucontext.h",
         [x86_64]: "crt_externs.h",
     }
 

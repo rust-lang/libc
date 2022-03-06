@@ -1,2 +1,4 @@
 clock_settime
 memmem
+getcontext
+setcontext

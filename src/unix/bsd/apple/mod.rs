@@ -5488,6 +5488,9 @@ extern "C" {
     ) -> ::sysdir_search_path_enumeration_state;
 
     pub static vm_page_size: vm_size_t;
+
+    pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
+    pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {
