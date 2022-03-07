@@ -156,6 +156,7 @@ ENOTBLK
 ENOMEDIUM
 ENOTRECOVERABLE
 ENOTSUP
+ENTER
 EOF
 EOWNERDEAD
 EPROCLIM
@@ -189,6 +190,7 @@ EV_SYSFLAGS
 EXTA
 EXTB
 EXTPROC
+FIND
 Elf32_Addr
 Elf32_Half
 Elf32_Lword
@@ -993,6 +995,9 @@ getthrid
 glob
 glob_t
 globfree
+hcreate
+hdestroy
+hsearch
 id_t
 if_data
 if_freenameindex

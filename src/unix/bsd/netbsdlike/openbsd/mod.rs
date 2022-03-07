@@ -35,6 +35,11 @@ pub type Elf64_Sxword = i64;
 pub type Elf64_Word = u32;
 pub type Elf64_Xword = u64;
 
+// search.h
+
+pub type ENTRY = entry;
+pub type ACTION = ::c_uint;
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         type Elf_Addr = Elf64_Addr;
@@ -422,6 +427,12 @@ s! {
 
     pub struct ptrace_thread_state {
         pub pts_tid: ::pid_t,
+    }
+
+    // search.h
+    pub struct entry {
+        pub key: *mut ::c_char,
+        pub data: *mut ::c_void,
     }
 }
 
@@ -1471,6 +1482,10 @@ pub const PTRACE_FORK: ::c_int = 0x0002;
 
 pub const WCONTINUED: ::c_int = 8;
 
+// search.h
+pub const FIND: ::ACTION = 0;
+pub const ENTER: ::ACTION = 1;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -1652,6 +1667,9 @@ extern "C" {
         width: ::size_t,
         compar: ::Option<unsafe extern "C" fn(*const ::c_void, *const ::c_void) -> ::c_int>,
     ) -> *mut ::c_void;
+    pub fn hcreate(nelt: ::size_t) -> ::c_int;
+    pub fn hdestroy();
+    pub fn hsearch(entry: ::ENTRY, action: ::ACTION) -> *mut ::ENTRY;
 }
 
 #[link(name = "execinfo")]
