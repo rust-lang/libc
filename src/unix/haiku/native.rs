@@ -879,7 +879,7 @@ extern "C" {
     pub fn rename_thread(thread: thread_id, newName: *const ::c_char) -> status_t;
     pub fn set_thread_priority(thread: thread_id, newPriority: i32) -> status_t;
     pub fn suggest_thread_priority(
-        task_flags: be_task_flags,
+        what: u32,
         period: i32,
         jitter: ::bigtime_t,
         length: ::bigtime_t,
@@ -935,8 +935,6 @@ extern "C" {
     pub fn set_alarm(when: bigtime_t, flags: u32) -> bigtime_t;
     pub fn debugger(message: *const ::c_char);
     pub fn disable_debugger(state: ::c_int) -> ::c_int;
-
-    pub fn get_cpuid(info: *mut cpuid_info, eaxRegister: u32, cpuNum: u32) -> status_t;
 
     pub fn get_system_info(info: *mut system_info) -> status_t;
     pub fn get_cpu_info(firstCPU: u32, cpuCount: u32, info: *mut cpu_info) -> status_t;
@@ -1082,6 +1080,14 @@ extern "C" {
         pathBuffer: *mut ::c_char,
         bufferSize: usize,
     ) -> status_t;
+}
+
+cfg_if! {
+    if #[cfg(libc_union)] {
+        extern "C" {
+            pub fn get_cpuid(info: *mut cpuid_info, eaxRegister: u32, cpuNum: u32) -> status_t;
+        }
+    }
 }
 
 // The following functions are defined as macros in C/C++
