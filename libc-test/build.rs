@@ -761,6 +761,7 @@ fn test_solarish(target: &str) {
         "netinet/udp.h",
         "poll.h",
         "port.h",
+        "procfs.h",
         "pthread.h",
         "pwd.h",
         "resolv.h",

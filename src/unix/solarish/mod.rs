@@ -44,6 +44,8 @@ pub type mqd_t = *mut ::c_void;
 pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type shmatt_t = ::c_ulong;
+pub type offset_t = ::c_longlong;
+pub type ulong_t = ::c_ulong;
 
 pub type lgrp_rsrc_t = ::c_int;
 pub type lgrp_affinity_t = ::c_int;
@@ -560,6 +562,38 @@ s_no_extra_traits! {
         // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [u32; 4],
     }
+
+    pub struct prmap_t {
+        pub pr_vaddr: ::uintptr_t,
+        pub pr_size: ::size_t,
+        pub pr_mapname: [::c_char; PRMAPSZ as usize],
+        pub pr_offset: ::offset_t,
+        pub pr_mflags: ::c_int,
+        pub pr_pagesize: ::c_int,
+        pub pr_shmid: ::c_int,
+        pub pr_filler: [::c_int; 1],
+    }
+
+    pub struct prxmap_t {
+        pub pr_vaddr: ::uintptr_t,
+        pub pr_size: ::size_t,
+        pub pr_mapname: [::c_char; PRMAPSZ as usize],
+        pub pr_offset: ::offset_t,
+        pub pr_mflags: ::c_int,
+        pub pr_pagesize: ::c_int,
+        pub pr_shmid: ::c_int,
+        pub pr_dev: ::dev_t,
+        pub pr_ino: u64,
+        pub pr_rss: ::size_t,
+        pub pr_anon: ::size_t,
+        pub pr_locked: ::size_t,
+        pub pr_pad: ::size_t,
+        pub pr_hatpagesize: u64,
+        #[cfg(target_pointer_width = "64")]
+        pub pr_filler: [::ulong_t; 7],
+        #[cfg(target_pointer_width = "32")]
+        pub pr_filler: [::ulong_t; 6],
+    }
 }
 
 cfg_if! {
@@ -983,6 +1017,107 @@ cfg_if! {
                 // FIXME: state.write_i64(self._q as i64);
                 self._l.hash(state);
                 }
+            }
+        }
+
+        impl PartialEq for prmap_t {
+            fn eq(&self, other: &prmap_t) -> bool {
+                self.pr_vaddr == other.pr_vaddr &&
+                self.pr_size == other.pr_size &&
+                self.pr_mapname
+                    .iter()
+                    .zip(other.pr_mapname.iter())
+                    .all(|(a,b)| a == b) &&
+                self.pr_offset == other.pr_offset &&
+                self.pr_mflags == other.pr_mflags &&
+                self.pr_pagesize == other.pr_pagesize &&
+                self.pr_shmid == other.pr_shmid
+            }
+        }
+        impl Eq for prmap_t {}
+        impl ::fmt::Debug for prmap_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("prmap_t")
+                    .field("pr_vaddr", &self.pr_vaddr)
+                    .field("pr_size", &self.pr_size)
+                    .field("pr_mapname", &self.pr_mapname)
+                    .field("pr_offset", &self.pr_offset)
+                    .field("pr_mflags", &self.pr_mflags)
+                    .field("pr_pagesize", &self.pr_pagesize)
+                    .field("pr_shmid", &self.pr_shmid)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for prmap_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.pr_vaddr.hash(state);
+                self.pr_size.hash(state);
+                self.pr_mapname.hash(state);
+                self.pr_offset.hash(state);
+                self.pr_mflags.hash(state);
+                self.pr_pagesize.hash(state);
+                self.pr_shmid.hash(state);
+            }
+        }
+
+        impl PartialEq for prxmap_t {
+            fn eq(&self, other: &prxmap_t) -> bool {
+                self.pr_vaddr == other.pr_vaddr &&
+                self.pr_size == other.pr_size &&
+                self.pr_mapname
+                    .iter()
+                    .zip(other.pr_mapname.iter())
+                    .all(|(a,b)| a == b) &&
+                self.pr_offset == other.pr_offset &&
+                self.pr_mflags == other.pr_mflags &&
+                self.pr_pagesize == other.pr_pagesize &&
+                self.pr_shmid == other.pr_shmid &&
+                self.pr_dev == other.pr_dev &&
+                self.pr_ino == other.pr_ino &&
+                self.pr_rss == other.pr_rss &&
+                self.pr_anon == other.pr_anon &&
+                self.pr_locked == other.pr_locked &&
+                self.pr_pad == other.pr_pad &&
+                self.pr_hatpagesize == other.pr_hatpagesize
+            }
+        }
+        impl Eq for prxmap_t {}
+        impl ::fmt::Debug for prxmap_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("prxmap_t")
+                    .field("pr_vaddr", &self.pr_vaddr)
+                    .field("pr_size", &self.pr_size)
+                    .field("pr_mapname", &self.pr_mapname)
+                    .field("pr_offset", &self.pr_offset)
+                    .field("pr_mflags", &self.pr_mflags)
+                    .field("pr_pagesize", &self.pr_pagesize)
+                    .field("pr_shmid", &self.pr_shmid)
+                    .field("pr_dev", &self.pr_dev)
+                    .field("pr_ino", &self.pr_ino)
+                    .field("pr_rss", &self.pr_rss)
+                    .field("pr_anon", &self.pr_anon)
+                    .field("pr_locked", &self.pr_locked)
+                    .field("pr_pad", &self.pr_pad)
+                    .field("pr_hatpagesize", &self.pr_hatpagesize)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for prxmap_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.pr_vaddr.hash(state);
+                self.pr_size.hash(state);
+                self.pr_mapname.hash(state);
+                self.pr_offset.hash(state);
+                self.pr_mflags.hash(state);
+                self.pr_pagesize.hash(state);
+                self.pr_shmid.hash(state);
+                self.pr_dev.hash(state);
+                self.pr_ino.hash(state);
+                self.pr_rss.hash(state);
+                self.pr_anon.hash(state);
+                self.pr_locked.hash(state);
+                self.pr_pad.hash(state);
+                self.pr_hatpagesize.hash(state);
             }
         }
     }
@@ -2540,6 +2675,18 @@ pub const P_DISABLED: ::c_int = 0x008;
 pub const P_FORCED: ::c_int = 0x10000000;
 pub const PI_TYPELEN: ::c_int = 16;
 pub const PI_FPUTYPE: ::c_int = 32;
+
+// sys/procfs.h
+
+pub const PRMAPSZ: ::c_int = 64;
+pub const MA_READ: ::c_int = 0x04;
+pub const MA_WRITE: ::c_int = 0x02;
+pub const MA_EXEC: ::c_int = 0x01;
+pub const MA_SHARED: ::c_int = 0x08;
+pub const MA_ANON: ::c_int = 0x40;
+pub const MA_ISM: ::c_int = 0x80;
+pub const MA_NORESERVE: ::c_int = 0x100;
+pub const MA_SHM: ::c_int = 0x200;
 
 // sys/auxv.h
 pub const AT_SUN_HWCAP: ::c_uint = 2009;
