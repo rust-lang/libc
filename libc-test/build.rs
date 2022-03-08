@@ -3044,6 +3044,11 @@ fn test_linux(target: &str) {
             // For internal use only, to define architecture specific ioctl constants with a libc specific type.
             "Ioctl" => true,
 
+            // FIXME: requires >= 5.4.1 kernel headers
+            "pgn_t" if musl => true,
+            "priority_t" if musl => true,
+            "name_t" if musl => true,
+
             _ => false,
         }
     });
@@ -3107,9 +3112,6 @@ fn test_linux(target: &str) {
 
             // FIXME: requires >= 5.4.1 kernel headers
             "j1939_filter" if musl => true,
-            "pgn_t" if musl => true,
-            "priority_t" if musl => true,
-            "name_t" if musl => true,
 
             _ => false,
         }
@@ -3145,6 +3147,12 @@ fn test_linux(target: &str) {
                 || name.starts_with("TCP_")
                 || name.starts_with("UINPUT_")
                 || name.starts_with("VMADDR_")
+                // FIXME: Requires >= 5.4.1 kernel headers
+                || name.starts_with("J1939")
+                // FIXME: Requires >= 5.4.1 kernel headers
+                || name.starts_with("SO_J1939")
+                // FIXME: Requires >= 5.4.1 kernel headers
+                || name.starts_with("SCM_J1939")
             {
                 return true;
             }
@@ -3241,42 +3249,6 @@ fn test_linux(target: &str) {
             | "CAN_RAW_FILTER_MAX"
             | "CAN_NPROTO" => true,
 
-            // FIXME: Requires >= 5.4.1 kernel headers
-            | "J1939_FILTER_MAX"
-            | "J1939_MAX_UNICAST_ADDR"
-            | "J1939_IDLE_ADDR"
-            | "J1939_NO_ADDR"
-            | "J1939_NO_NAME"
-            | "J1939_PGN_REQUEST"
-            | "J1939_PGN_ADDRESS_CLAIMED"
-            | "J1939_PGN_ADDRESS_COMMANDED"
-            | "J1939_PGN_PDU1_MAX"
-            | "J1939_PGN_MAX"
-            | "J1939_NO_PGN"
-            | "SOL_CAN_J1939"
-            | "SO_J1939_FILTER"
-            | "SO_J1939_PROMISC"
-            | "SO_J1939_SEND_PRIO"
-            | "SO_J1939_ERRQUEUE"
-            | "SCM_J1939_DEST_ADDR"
-            | "SCM_J1939_DEST_NAME"
-            | "SCM_J1939_PRIO"
-            | "SCM_J1939_ERRQUEUE"
-            | "J1939_NLA_PAD"
-            | "J1939_NLA_BYTES_ACKED"
-            | "J1939_NLA_TOTAL_SIZE"
-            | "J1939_NLA_PGN"
-            | "J1939_NLA_SRC_NAME"
-            | "J1939_NLA_DEST_NAME"
-            | "J1939_NLA_SRC_ADDR"
-            | "J1939_NLA_DEST_ADDR"
-            | "J1939_EE_INFO_NONE"
-            | "J1939_EE_INFO_TX_ABORT"
-            | "J1939_EE_INFO_RX_RTS"
-            | "J1939_EE_INFO_RX_DPO"
-            | "J1939_EE_INFO_RX_ABORT"
-                if musl => true,
-
             // FIXME: Requires recent kernel headers (5.15)
             | "J1939_NLA_TOTAL_SIZE"
             | "J1939_NLA_PGN"
@@ -3286,7 +3258,8 @@ fn test_linux(target: &str) {
             | "J1939_NLA_DEST_ADDR"
             | "J1939_EE_INFO_RX_RTS"
             | "J1939_EE_INFO_RX_DPO"
-            | "J1939_EE_INFO_RX_ABORT" => true,
+            | "J1939_EE_INFO_RX_ABORT"
+            | "SOL_CAN_J1939" => true,
 
             // FIXME: Requires recent kernel headers (5.8):
             "STATX_MNT_ID" => true,
