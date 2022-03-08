@@ -1184,7 +1184,10 @@ extern "C" {
         ),
         link_name = "__res_init"
     )]
-    #[cfg_attr(any(target_os = "macos", target_os = "ios", target_os = "watchos"), link_name = "res_9_init")]
+    #[cfg_attr(
+        any(target_os = "macos", target_os = "ios", target_os = "watchos"),
+        link_name = "res_9_init"
+    )]
     pub fn res_init() -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
