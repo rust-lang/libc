@@ -896,3 +896,10 @@ cfg_if! {
         pub use self::align::*;
     }
 }
+
+cfg_if! {
+    if #[cfg(libc_int128)] {
+        mod int128;
+        pub use self::int128::*;
+    }
+}
