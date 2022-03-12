@@ -23,8 +23,15 @@ pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
 pub type pid_t = i32;
-pub type uid_t = u32;
-pub type gid_t = u32;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub type uid_t = ::c_ushort;
+        pub type gid_t = ::c_ushort;
+    } else {
+        pub type uid_t = u32;
+        pub type gid_t = u32;
+    }
+}
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
 pub type sighandler_t = ::size_t;
