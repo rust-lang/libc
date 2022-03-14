@@ -1,17 +1,27 @@
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type clockid_t = ::c_ulong;
-pub type dev_t = u32;
+
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub type dev_t = ::c_short;
+        pub type ino_t = ::c_ushort;
+        pub type off_t = ::c_long;
+    } else {
+        pub type dev_t = u32;
+        pub type ino_t = u32;
+        pub type off_t = i64;
+    }
+}
+
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u32;
 pub type id_t = u32;
-pub type ino_t = u32;
 pub type key_t = ::c_int;
 pub type loff_t = ::c_longlong;
 pub type mode_t = ::c_uint;
 pub type nfds_t = u32;
 pub type nlink_t = ::c_ushort;
-pub type off_t = i64;
 pub type pthread_t = ::c_ulong;
 pub type pthread_key_t = ::c_uint;
 pub type rlim_t = u32;

@@ -51,6 +51,10 @@ s! {
         pub sun_family: ::sa_family_t,
         pub sun_path: [::c_char; 104usize],
     }
+
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+    }
 }
 
 pub const SIGEV_NONE: ::c_int = 1;
@@ -147,6 +151,10 @@ pub const FIONBIO: ::c_ulong = 1;
 
 pub const RTLD_DEFAULT: *mut ::c_void = 0 as *mut ::c_void;
 
+// For pthread get/setschedparam
+pub const SCHED_FIFO: ::c_int = 1;
+pub const SCHED_RR: ::c_int = 2;
+
 // For getrandom()
 pub const GRND_NONBLOCK: ::c_uint = 0x1;
 pub const GRND_RANDOM: ::c_uint = 0x2;
@@ -193,6 +201,40 @@ extern "C" {
         f: extern "C" fn(_: *mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
+
+    pub fn pthread_attr_getschedparam(
+        attr: *const ::pthread_attr_t,
+        param: *mut sched_param,
+    ) -> ::c_int;
+
+    pub fn pthread_attr_setschedparam(
+        attr: *mut ::pthread_attr_t,
+        param: *const sched_param,
+    ) -> ::c_int;
+
+    pub fn pthread_attr_getprocessorid_np(
+        attr: *const ::pthread_attr_t,
+        processor_id: *mut ::c_int,
+    ) -> ::c_int;
+
+    pub fn pthread_attr_setprocessorid_np(
+        attr: *mut ::pthread_attr_t,
+        processor_id: ::c_int,
+    ) -> ::c_int;
+
+    pub fn pthread_getschedparam(
+        native: ::pthread_t,
+        policy: *mut ::c_int,
+        param: *mut ::sched_param,
+    ) -> ::c_int;
+
+    pub fn pthread_setschedparam(
+        native: ::pthread_t,
+        policy: ::c_int,
+        param: *const ::sched_param,
+    ) -> ::c_int;
+
+    pub fn pthread_getprocessorid_np() -> ::c_int;
 
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 

@@ -29,7 +29,7 @@ pub type sighandler_t = ::size_t;
 pub type cc_t = ::c_uchar;
 
 cfg_if! {
-    if #[cfg(target_os = "horizon")] {
+    if #[cfg(any(target_os = "espidf", target_os = "horizon"))] {
         pub type uid_t = ::c_ushort;
         pub type gid_t = ::c_ushort;
     } else {

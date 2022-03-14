@@ -198,6 +198,7 @@ s! {
     }
 }
 
+pub const O_LARGEFILE: ::c_int = 0;
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: ::c_int = 0x8;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
@@ -737,6 +738,7 @@ pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
 pub const SYS_statx: ::c_long = 291;
+pub const SYS_rseq: ::c_long = 293;
 pub const SYS_pidfd_send_signal: ::c_long = 424;
 pub const SYS_io_uring_setup: ::c_long = 425;
 pub const SYS_io_uring_enter: ::c_long = 426;
