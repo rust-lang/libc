@@ -6,7 +6,6 @@ pub type c_ulong = u32;
 
 pub type wchar_t = ::c_uint;
 
-pub type in_port_t = ::c_ushort;
 pub type u_register_t = ::c_uint;
 pub type u_char = ::c_uchar;
 pub type u_short = ::c_ushort;
@@ -19,8 +18,8 @@ pub type clock_t = c_ulong;
 pub type daddr_t = c_long;
 pub type caddr_t = *mut c_char;
 pub type sbintime_t = ::c_longlong;
+pub type sigset_t = ::c_ulong;
 
-// External implementations are needed to use networking and threading.
 s! {
     pub struct sockaddr {
         pub sa_family: ::sa_family_t,
@@ -34,8 +33,9 @@ s! {
 
     pub struct sockaddr_in {
         pub sin_family: ::sa_family_t,
-        pub sin_port: in_port_t,
+        pub sin_port: ::in_port_t,
         pub sin_addr: ::in_addr,
+        pub sin_zero: [::c_uchar; 8],
     }
 
     pub struct sockaddr_in6 {
@@ -54,6 +54,23 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
+    }
+
+    pub struct stat {
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_atim: ::timespec,
+        pub st_mtim: ::timespec,
+        pub st_ctim: ::timespec,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_spare4: [::c_long; 2usize],
     }
 }
 
@@ -155,6 +172,10 @@ pub const RTLD_DEFAULT: *mut ::c_void = 0 as *mut ::c_void;
 pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_RR: ::c_int = 2;
 
+// For getrandom()
+pub const GRND_NONBLOCK: ::c_uint = 0x1;
+pub const GRND_RANDOM: ::c_uint = 0x2;
+
 // Horizon OS works doesn't or can't hold any of this information
 safe_f! {
     pub {const} fn WIFSTOPPED(_status: ::c_int) -> bool {
@@ -231,6 +252,8 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn pthread_getprocessorid_np() -> ::c_int;
+
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 
     pub fn gethostid() -> ::c_long;
 }
