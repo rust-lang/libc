@@ -1,5 +1,3 @@
-pub use crate::unix::newlib::generic::{sigset_t, stat};
-
 pub type clock_t = ::c_ulong;
 pub type c_char = i8;
 pub type wchar_t = u32;
@@ -103,3 +101,5 @@ extern "C" {
     #[link_name = "lwip_recvmsg"]
     pub fn recvmsg(s: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
 }
+
+pub use crate::unix::newlib::generic::{sigset_t, stat};

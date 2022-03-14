@@ -139,7 +139,6 @@ s! {
         pub tm_isdst: ::c_int,
     }
 
-
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
