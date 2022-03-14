@@ -1,3 +1,5 @@
+pub use crate::unix::newlib::generic::{sigset_t, stat};
+
 pub type clock_t = ::c_ulong;
 pub type c_char = u8;
 pub type wchar_t = ::c_int;

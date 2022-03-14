@@ -18,8 +18,8 @@ pub type clock_t = c_ulong;
 pub type daddr_t = c_long;
 pub type caddr_t = *mut c_char;
 pub type sbintime_t = ::c_longlong;
+pub type sigset_t = ::c_ulong;
 
-// External implementations are needed to use networking and threading.
 s! {
     pub struct sockaddr {
         pub sa_family: ::sa_family_t,
@@ -54,6 +54,23 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
+    }
+
+    pub struct stat {
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_atim: ::timespec,
+        pub st_mtim: ::timespec,
+        pub st_ctim: ::timespec,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_spare4: [::c_long; 2usize],
     }
 }
 

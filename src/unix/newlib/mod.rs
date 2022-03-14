@@ -229,57 +229,6 @@ s! {
     }
 }
 
-cfg_if! {
-    if #[cfg(target_os = "horizon")] {
-        pub type sigset_t = ::c_ulong;
-
-        s! {
-            pub struct stat {
-                pub st_dev: ::dev_t,
-                pub st_ino: ::ino_t,
-                pub st_mode: ::mode_t,
-                pub st_nlink: ::nlink_t,
-                pub st_uid: ::uid_t,
-                pub st_gid: ::gid_t,
-                pub st_rdev: dev_t,
-                pub st_size: off_t,
-                pub st_atim: ::timespec,
-                pub st_mtim: ::timespec,
-                pub st_ctim: ::timespec,
-                pub st_blksize: blksize_t,
-                pub st_blocks: blkcnt_t,
-                pub st_spare4: [::c_long; 2usize],
-            }
-        }
-    } else {
-        s! {
-            pub struct sigset_t {
-                __val: [::c_ulong; 16],
-            }
-
-            pub struct stat {
-                pub st_dev: ::dev_t,
-                pub st_ino: ::ino_t,
-                pub st_mode: ::mode_t,
-                pub st_nlink: ::nlink_t,
-                pub st_uid: ::uid_t,
-                pub st_gid: ::gid_t,
-                pub st_rdev: dev_t,
-                pub st_size: off_t,
-                pub st_atime: time_t,
-                pub st_spare1: ::c_long,
-                pub st_mtime: time_t,
-                pub st_spare2: ::c_long,
-                pub st_ctime: time_t,
-                pub st_spare3: ::c_long,
-                pub st_blksize: blksize_t,
-                pub st_blocks: blkcnt_t,
-                pub st_spare4: [::c_long; 2usize],
-            }
-        }
-    }
-}
-
 // unverified constants
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
@@ -773,6 +722,8 @@ extern "C" {
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut ::FILE;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
+
+mod generic;
 
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
