@@ -37,6 +37,7 @@ s! {
 
         #[cfg(not(any(target_os = "macos",
                       target_os = "ios",
+                      target_os = "watchos",
                       target_os = "netbsd",
                       target_os = "openbsd")))]
         pub pw_fields: ::c_int,
@@ -880,7 +881,7 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
+    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "watchos"))] {
         mod apple;
         pub use self::apple::*;
     } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd"))] {
