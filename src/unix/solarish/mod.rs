@@ -1002,8 +1002,8 @@ struct siginfo_fault {
     trapno: ::c_int,
     pc: *mut ::caddr_t,
 }
-impl Copy for siginfo_fault {}
-impl Clone for siginfo_fault {
+impl ::Copy for siginfo_fault {}
+impl ::Clone for siginfo_fault {
     fn clone(&self) -> Self {
         *self
     }
@@ -1015,8 +1015,8 @@ struct siginfo_cldval {
     status: ::c_int,
     stime: ::clock_t,
 }
-impl Copy for siginfo_cldval {}
-impl Clone for siginfo_cldval {
+impl ::Copy for siginfo_cldval {}
+impl ::Clone for siginfo_cldval {
     fn clone(&self) -> Self {
         *self
     }
@@ -1029,8 +1029,8 @@ struct siginfo_killval {
     // Pad out to match the SIGCLD value size
     _pad: *mut ::c_void,
 }
-impl Copy for siginfo_killval {}
-impl Clone for siginfo_killval {
+impl ::Copy for siginfo_killval {}
+impl ::Clone for siginfo_killval {
     fn clone(&self) -> Self {
         *self
     }
@@ -1043,8 +1043,8 @@ struct siginfo_sigcld {
     ctid: ::ctid_t,
     zoneid: ::zoneid_t,
 }
-impl Copy for siginfo_sigcld {}
-impl Clone for siginfo_sigcld {
+impl ::Copy for siginfo_sigcld {}
+impl ::Clone for siginfo_sigcld {
     fn clone(&self) -> Self {
         *self
     }
@@ -1057,15 +1057,15 @@ struct siginfo_kill {
     ctid: ::ctid_t,
     zoneid: ::zoneid_t,
 }
-impl Copy for siginfo_kill {}
-impl Clone for siginfo_kill {
+impl ::Copy for siginfo_kill {}
+impl ::Clone for siginfo_kill {
     fn clone(&self) -> Self {
         *self
     }
 }
 
 impl siginfo_t {
-    unsafe fn sidata<T: Copy>(&self) -> T {
+    unsafe fn sidata<T: ::Copy>(&self) -> T {
         *((&self.__data_pad) as *const ::c_int as *const T)
     }
     pub unsafe fn si_addr(&self) -> *mut ::c_void {
