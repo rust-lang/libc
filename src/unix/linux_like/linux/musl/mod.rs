@@ -687,6 +687,7 @@ extern "C" {
         vlen: ::c_uint,
         flags: ::c_uint,
     ) -> ::c_int;
+    #[cfg_attr(target_pointer_width = "32", link_name = "__recvmmsg_time64")]
     pub fn recvmmsg(
         sockfd: ::c_int,
         msgvec: *mut ::mmsghdr,
@@ -713,6 +714,7 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
+    #[cfg_attr(target_pointer_width = "32", link_name = "__gettimeofday_time64")]
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
@@ -734,7 +736,9 @@ extern "C" {
     // Added in `musl` 1.2.2
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 
+    #[cfg_attr(target_pointer_width = "32", link_name = "__adjtimex_time64")]
     pub fn adjtimex(buf: *mut ::timex) -> ::c_int;
+    #[cfg_attr(target_pointer_width = "32", link_name = "__clock_adjtime64")]
     pub fn clock_adjtime(clk_id: ::clockid_t, buf: *mut ::timex) -> ::c_int;
 
     pub fn ctermid(s: *mut ::c_char) -> *mut ::c_char;

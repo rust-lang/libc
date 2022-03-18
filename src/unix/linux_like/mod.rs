@@ -1637,8 +1637,20 @@ extern "C" {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar) -> ::c_int;
 
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__clock_getres_time64"
+    )]
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__clock_gettime64"
+    )]
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__clock_settime64"
+    )]
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
     pub fn clock_getcpuclockid(pid: ::pid_t, clk_id: *mut ::clockid_t) -> ::c_int;
 
@@ -1668,7 +1680,15 @@ extern "C" {
         len: ::off64_t,
         advise: ::c_int,
     ) -> ::c_int;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__futimens_time64"
+    )]
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__utimensat_time64"
+    )]
     pub fn utimensat(
         dirfd: ::c_int,
         path: *const ::c_char,
@@ -1756,6 +1776,10 @@ extern "C" {
     pub fn vfork() -> ::pid_t;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__wait4_time64"
+    )]
     pub fn wait4(
         pid: ::pid_t,
         status: *mut ::c_int,
