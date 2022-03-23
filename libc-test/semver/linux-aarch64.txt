@@ -91,3 +91,4 @@ max_align_t
 mcontext_t
 ucontext_t
 user_regs_struct
+user_fpsimd_struct

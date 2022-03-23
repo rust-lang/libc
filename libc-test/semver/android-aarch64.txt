@@ -12,3 +12,4 @@ SYS_syscalls
 SYS_fcntl
 __system_property_wait
 user_regs_struct
+user_fpsimd_struct
