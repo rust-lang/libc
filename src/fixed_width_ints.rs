@@ -44,7 +44,7 @@ cfg_if! {
         // until the upstream rust issue is resolved, but this at least lets us make
         // progress on platforms where this type is important.
         //
-        // The supported architectures and OSes is intentionally very restricted,
+        // The list of supported architectures and OSes is intentionally very restricted,
         // as careful work needs to be done to verify that a particular platform
         // has a conformant ABI.
         //
