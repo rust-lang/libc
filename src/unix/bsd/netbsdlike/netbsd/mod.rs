@@ -487,10 +487,6 @@ s! {
         af_arg: [[::c_char; 10]; 24],
     }
 
-    pub struct sched_param {
-        pub sched_priority: ::c_int,
-    }
-
     pub struct kinfo_vmentry {
         pub kve_start: u64,
         pub kve_end: u64,
@@ -527,7 +523,7 @@ s! {
     pub struct posix_spawnattr_t {
         pub sa_flags: ::c_short,
         pub sa_pgroup: ::pid_t,
-        pub sa_schedparam: sched_param,
+        pub sa_schedparam: ::sched_param,
         pub sa_schedpolicy: ::c_int,
         pub sa_sigdefault: sigset_t,
         pub sa_sigmask: sigset_t,
@@ -2516,8 +2512,8 @@ extern "C" {
     ) -> *mut ::c_void;
 
     pub fn sched_rr_get_interval(pid: ::pid_t, t: *mut ::timespec) -> ::c_int;
-    pub fn sched_setparam(pid: ::pid_t, param: *const sched_param) -> ::c_int;
-    pub fn sched_getparam(pid: ::pid_t, param: *mut sched_param) -> ::c_int;
+    pub fn sched_setparam(pid: ::pid_t, param: *const ::sched_param) -> ::c_int;
+    pub fn sched_getparam(pid: ::pid_t, param: *mut ::sched_param) -> ::c_int;
     pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
     pub fn sched_setscheduler(
         pid: ::pid_t,

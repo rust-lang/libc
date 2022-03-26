@@ -1360,6 +1360,7 @@ pthread_condattr_setclock
 pthread_getattr_np
 pthread_getaffinity_np
 pthread_getname_np
+pthread_getschedparam
 pthread_kill
 pthread_mutex_timedlock
 pthread_spin_destroy
@@ -1370,6 +1371,7 @@ pthread_spin_unlock
 pthread_spinlock_t
 pthread_setaffinity_np
 pthread_setname_np
+pthread_setschedparam
 ptrace
 ptrace_io_desc
 ptrace_lwpinfo
