@@ -87,9 +87,9 @@ fn main() {
         println!("cargo:rustc-cfg=libc_ptr_addr_of");
     }
 
-    // Rust >= 1.57.0 allows assert! (and panics in general) in constants.
-    if rustc_minor_ver >= 57 || rustc_dep_of_std {
-        println!("cargo:rustc-cfg=libc_const_assert");
+    // Rust >= 1.37.0 allows underscores as anonymous constant names.
+    if rustc_minor_ver >= 37 || rustc_dep_of_std {
+        println!("cargo:rustc-cfg=libc_underscore_const_names");
     }
 
     // #[thread_local] is currently unstable
