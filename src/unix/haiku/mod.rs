@@ -285,6 +285,10 @@ s! {
         waiters: [*mut ::c_void; 2],
     }
 
+    pub struct pthread_spinlock_t {
+        lock: u32,
+    }
+
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,
@@ -1612,6 +1616,11 @@ extern "C" {
         lock: *mut pthread_mutex_t,
         abstime: *const ::timespec,
     ) -> ::c_int;
+    pub fn pthread_spin_init(lock: *mut ::pthread_spinlock_t, pshared: ::c_int) -> ::c_int;
+    pub fn pthread_spin_destroy(lock: *mut ::pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_lock(lock: *mut ::pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_trylock(lock: *mut ::pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_unlock(lock: *mut ::pthread_spinlock_t) -> ::c_int;
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
         -> ::c_int;
 
