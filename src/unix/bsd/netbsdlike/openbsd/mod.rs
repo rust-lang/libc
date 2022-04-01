@@ -1372,10 +1372,34 @@ pub const KI_WMESGLEN: ::c_int = 8;
 pub const KI_MAXLOGNAME: ::c_int = 32;
 pub const KI_EMULNAMELEN: ::c_int = 8;
 
+pub const KVE_ET_OBJ: ::c_int = 0x00000001;
+pub const KVE_ET_SUBMAP: ::c_int = 0x00000002;
+pub const KVE_ET_COPYONWRITE: ::c_int = 0x00000004;
+pub const KVE_ET_NEEDSCOPY: ::c_int = 0x00000008;
+pub const KVE_ET_HOLE: ::c_int = 0x00000010;
+pub const KVE_ET_NOFAULT: ::c_int = 0x00000020;
+pub const KVE_ET_STACK: ::c_int = 0x00000040;
+pub const KVE_ET_WC: ::c_int = 0x000000080;
+pub const KVE_ET_CONCEAL: ::c_int = 0x000000100;
+pub const KVE_ET_SYSCALL: ::c_int = 0x000000200;
+pub const KVE_ET_FREEMAPPED: ::c_int = 0x000000800;
+
 pub const KVE_PROT_NONE: ::c_int = 0x00000000;
 pub const KVE_PROT_READ: ::c_int = 0x00000001;
 pub const KVE_PROT_WRITE: ::c_int = 0x00000002;
 pub const KVE_PROT_EXEC: ::c_int = 0x00000004;
+
+pub const KVE_ADV_NORMAL: ::c_int = 0x00000000;
+pub const KVE_ADV_RANDOM: ::c_int = 0x00000001;
+pub const KVE_ADV_SEQUENTIAL: ::c_int = 0x00000002;
+
+pub const KVE_INH_SHARE: ::c_int = 0x00000000;
+pub const KVE_INH_COPY: ::c_int = 0x00000010;
+pub const KVE_INH_NONE: ::c_int = 0x00000020;
+pub const KVE_INH_ZERO: ::c_int = 0x00000030;
+
+pub const KVE_F_STATIC: ::c_int = 0x1;
+pub const KVE_F_KMEM: ::c_int = 0x2;
 
 pub const CHWFLOW: ::tcflag_t = ::MDMBUF | ::CRTSCTS;
 pub const OLCUC: ::tcflag_t = 0x20;
