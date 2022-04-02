@@ -1089,10 +1089,12 @@ pthread_attr_getstack
 pthread_cancel
 pthread_condattr_setclock
 pthread_get_name_np
+pthread_getschedparam
 pthread_kill
 pthread_main_np
 pthread_mutex_timedlock
 pthread_set_name_np
+pthread_setschedparam
 pthread_spin_destroy
 pthread_spin_init
 pthread_spin_lock
@@ -1120,6 +1122,7 @@ regmatch_t
 regoff_t
 sched_get_priority_max
 sched_get_priority_min
+sched_param
 seed48
 seed48_deterministic
 seekdir

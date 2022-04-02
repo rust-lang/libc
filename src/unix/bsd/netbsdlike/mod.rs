@@ -31,6 +31,10 @@ impl ::Clone for sem {
 }
 
 s! {
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+    }
+
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
@@ -724,6 +728,16 @@ extern "C" {
     pub fn pthread_spin_lock(lock: *mut pthread_spinlock_t) -> ::c_int;
     pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> ::c_int;
     pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_setschedparam(
+        native: ::pthread_t,
+        policy: ::c_int,
+        param: *const sched_param,
+    ) -> ::c_int;
+    pub fn pthread_getschedparam(
+        native: ::pthread_t,
+        policy: *mut ::c_int,
+        param: *mut sched_param,
+    ) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
 
     pub fn getgrouplist(
