@@ -20,6 +20,8 @@ LIO_WRITE
 PF_IB
 PF_MPLS
 PF_XDP
+PR_SET_VMA
+PR_SET_VMA_ANON_NAME
 adjtimex
 aio_cancel
 aio_error
