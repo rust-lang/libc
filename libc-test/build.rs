@@ -3314,6 +3314,8 @@ fn test_linux(target: &str) {
             "FUSE_SUPER_MAGIC" => true,
             // linux 5.12 min
             "MPOL_F_NUMA_BALANCING" => true,
+            // linux 5.17 min
+            "PR_SET_VMA" | "PR_SET_VMA_ANON_NAME" => true,
 
             _ => false,
         }
