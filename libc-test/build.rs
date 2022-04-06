@@ -557,6 +557,7 @@ fn test_windows(target: &str) {
         "direct.h",
         "errno.h",
         "fcntl.h",
+        "in6addr.h",
         "io.h",
         "limits.h",
         "locale.h",
@@ -612,6 +613,7 @@ fn test_windows(target: &str) {
     cfg.skip_type(move |name| match name {
         "SSIZE_T" if !gnu => true,
         "ssize_t" if !gnu => true,
+        "SCOPE_ID" => true,
         _ => false,
     });
 
