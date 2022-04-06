@@ -51,6 +51,17 @@ impl ::Clone for timezone {
 pub type time64_t = i64;
 
 pub type SOCKET = ::uintptr_t;
+pub type IN6_ADDR = in6_addr;
+pub type PIN6_ADDR = *mut in6_addr;
+pub type LPIN6_ADDR = *mut in6_addr;
+pub type ADDRESS_FAMILY = ::c_ushort;
+pub type PSCOPE_ID = *mut SCOPE_ID;
+pub type SOCKADDR_IN6 = sockaddr_in6;
+pub type PSOCKADDR_IN6 = *mut sockaddr_in6;
+pub type LPSOCKADDR_IN6 = *mut sockaddr_in6;
+
+pub type ULONG = c_ulong;
+pub type USHORT = c_ushort;
 
 s! {
     // note this is the struct called stat64 in Windows. Not stat, nor stati64.
@@ -99,6 +110,233 @@ s! {
     pub struct sockaddr {
         pub sa_family: c_ushort,
         pub sa_data: [c_char; 14],
+    }
+
+    pub struct SCOPE_ID {
+        pub Value: ::c_ulong,
+    }
+
+    pub struct __c_anonymous_S_un_b {
+        pub s_b1: ::c_uchar,
+        pub s_b2: ::c_uchar,
+        pub s_b3: ::c_uchar,
+        pub s_b4: ::c_uchar,
+    }
+
+    pub struct __c_anonymous_S_un_w {
+        pub s_b1: ::c_ushort,
+        pub s_b2: ::c_ushort,
+    }
+}
+
+s_no_extra_traits! {
+    #[cfg(libc_union)]
+    pub union S_un {
+        pub S_un_b: __c_anonymous_S_un_b,
+        pub S_un_w: __c_anonymous_S_un_w,
+        pub S_addr: ::c_ulong,
+    }
+
+    pub struct in_addr {
+        #[cfg(libc_union)]
+        pub S_un: S_un,
+        #[cfg(not(libc_union))]
+        pub S_un: ::c_ulong,
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_u {
+        pub Byte: [::c_uchar; 16],
+        pub Word: [::c_ushort; 8],
+    }
+
+    pub struct in6_addr {
+        #[cfg(libc_union)]
+        pub u: __c_anonymous_u,
+        #[cfg(not(libc_union))]
+        pub u: [::c_uchar; 16],
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_sockaddr_in6 {
+        pub sin6_scope_id: ULONG,
+        pub sin6_scope_struct: SCOPE_ID,
+    }
+
+    pub struct sockaddr_in6 {
+        pub sin6_family: ADDRESS_FAMILY,
+        pub sin6_port: USHORT,
+        pub sin6_flowinfo: ULONG,
+        pub sin6_addr: IN6_ADDR,
+        #[cfg(libc_union)]
+        pub un: __c_anonymous_sockaddr_in6,
+        #[cfg(not(libc_union))]
+        pub un: SCOPE_ID,
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        #[cfg(libc_union)]
+        impl PartialEq for S_un {
+            fn eq(&self, other: &S_un) -> bool {
+                unsafe {
+                    self.S_un_b == other.S_un_b &&
+                        self.S_un_w == other.S_un_w &&
+                        self.S_addr == other.S_addr
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for S_un {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for S_un {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("S_un")
+                    .field("S_un_b", unsafe { &self.S_un_b })
+                    .field("S_un_w", unsafe { &self.S_un_w })
+                    .field("S_addr", unsafe { &self.S_addr })
+                    .finish()
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for S_un {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.S_un_b.hash(state);
+                    self.S_un_w.hash(state);
+                    self.S_addr.hash(state);
+                }
+            }
+        }
+
+        impl PartialEq for in_addr {
+            fn eq(&self, other: &in_addr) -> bool {
+                self.S_un == other.S_un
+            }
+        }
+        impl Eq for in_addr {}
+        impl ::fmt::Debug for in_addr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("in_addr")
+                    .field("S_un", &self.S_un)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for in_addr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.S_un.hash(state);
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_u {
+            fn eq(&self, other: &__c_anonymous_u) -> bool {
+                unsafe {
+                    self.Byte == other.Byte && self.Word == other.Word
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_u {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_u {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("__c_anonymous_u")
+                    .field("Byte", unsafe { &self.Byte })
+                    .field("Word", unsafe { &self.Word })
+                    .finish()
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_u {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.Byte.hash(state);
+                    self.Word.hash(state);
+                }
+            }
+        }
+
+        impl PartialEq for in6_addr {
+            fn eq(&self, other: &in6_addr) -> bool {
+                self.u == other.u
+            }
+        }
+        impl Eq for in6_addr {}
+        impl ::fmt::Debug for in6_addr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("in6_addr")
+                    .field("u", &self.u)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for in6_addr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.u.hash(state);
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_sockaddr_in6 {
+            fn eq(&self, other: &__c_anonymous_u) -> bool {
+                unsafe {
+                    self.sin6_scope_id == other.sin6_scope_id &&
+                        self.sin6_scope_struct == other.sin6_scope_struct
+                }
+            }
+        }
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_sockaddr_in6 {}
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_sockaddr_in6 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("__c_anonymous_sockaddr_in6")
+                    .field("sin6_scope_id", unsafe { &self.sin6_scope_id })
+                    .field("sin6_scope_struct", unsafe { &self.sin6_scope_struct })
+                    .finish()
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_sockaddr_in6 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.sin6_scope_id.hash(state);
+                    self.sin6_scope_struct.hash(state);
+                }
+            }
+        }
+
+        impl PartialEq for sockaddr_in6 {
+            fn eq(&self, other: &sockaddr_in6) -> bool {
+                self.sin6_family == other.sin6_family &&
+                    self.sin6_port == other.sin6_port &&
+                    self.sin6_flowinfo == other.sin6_flowinfo &&
+                    self.sin6_addr == other.sin6_addr &&
+                    self.un == other.un
+            }
+        }
+        impl Eq for sockaddr_in6 {}
+        impl ::fmt::Debug for sockaddr_in6 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_in6")
+                    .field("sin6_family", &self.sin6_family)
+                    .field("sin6_port", &self.sin6_port)
+                    .field("sin6_flowinfo", &self.sin6_flowinfo)
+                    .field("sin6_addr", &self.sin6_addr)
+                    .field("un", &self.un)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_in6 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sin6_family.hash(state);
+                self.sin6_port.hash(state);
+                self.sin6_flowinfo.hash(state);
+                self.sin6_addr.hash(state);
+                self.un.hash(state);
+            }
+        }
     }
 }
 
