@@ -1792,6 +1792,7 @@ pub const NETLINK_GET_STRICT_CHK: ::c_int = 12;
 
 pub const GRND_NONBLOCK: ::c_uint = 0x0001;
 pub const GRND_RANDOM: ::c_uint = 0x0002;
+pub const GRND_INSECURE: ::c_uint = 0x0004;
 
 pub const SECCOMP_MODE_DISABLED: ::c_uint = 0;
 pub const SECCOMP_MODE_STRICT: ::c_uint = 1;

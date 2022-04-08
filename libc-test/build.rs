@@ -1728,6 +1728,9 @@ fn test_android(target: &str) {
             // linux 5.12 min
             "MPOL_F_NUMA_BALANCING" => true,
 
+            // GRND_INSECURE was added in platform-tools-30.0.0
+            "GRND_INSECURE" => true,
+
             _ => false,
         }
     });
@@ -3316,6 +3319,9 @@ fn test_linux(target: &str) {
             "MPOL_F_NUMA_BALANCING" => true,
             // linux 5.17 min
             "PR_SET_VMA" | "PR_SET_VMA_ANON_NAME" => true,
+
+            // GRND_INSECURE was added in glibc-2.32
+            "GRND_INSECURE" => true,
 
             _ => false,
         }
