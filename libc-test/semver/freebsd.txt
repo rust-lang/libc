@@ -1724,6 +1724,8 @@ pthread_rwlockattr_getpshared
 pthread_rwlockattr_setpshared
 pthread_setaffinity_np
 pthread_set_name_np
+pthread_getschedparam
+pthread_setschedparam
 pthread_spin_destroy
 pthread_spin_init
 pthread_spin_lock
