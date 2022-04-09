@@ -1165,6 +1165,10 @@ pub const _SC_NPROCESSORS_ONLN: ::c_int = 503;
 
 pub const FD_SETSIZE: usize = 1024;
 
+pub const SCHED_FIFO: ::c_int = 1;
+pub const SCHED_OTHER: ::c_int = 2;
+pub const SCHED_RR: ::c_int = 3;
+
 pub const ST_NOSUID: ::c_ulong = 2;
 
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0 as *mut _;
