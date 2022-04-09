@@ -274,6 +274,7 @@ jobs:
         shell: bash
 
   semver_linux:
+    if: ${{ false }} # This is currently broken
     name: Semver Linux
     runs-on: ubuntu-20.04
     continue-on-error: true
@@ -286,6 +287,7 @@ jobs:
         run: sh ci/semver.sh linux
 
   semver_macos:
+    if: ${{ false }} # This is currently broken
     name: Semver macOS
     runs-on: macos-11
     continue-on-error: true
