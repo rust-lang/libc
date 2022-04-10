@@ -226,7 +226,6 @@ aarch64-unknown-openbsd \
 aarch64-wrs-vxworks \
 armebv7r-none-eabi \
 armebv7r-none-eabihf \
-armv7-unknown-linux-uclibceabihf \
 armv7-wrs-vxworks-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
@@ -237,9 +236,7 @@ i686-unknown-haiku \
 i686-unknown-netbsd \
 i686-unknown-openbsd \
 i686-wrs-vxworks \
-mips-unknown-linux-uclibc \
 mipsel-sony-psp \
-mipsel-unknown-linux-uclibc \
 mips64-unknown-linux-muslabi64 \
 mips64el-unknown-linux-muslabi64 \
 nvptx64-nvidia-cuda \
