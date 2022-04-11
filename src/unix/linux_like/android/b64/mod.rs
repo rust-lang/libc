@@ -317,6 +317,60 @@ cfg_if! {
                     .finish()
             }
         }
+
+        impl PartialEq for user_fpregs_struct {
+            fn eq(&self, other: &user_fpregs_struct) -> bool {
+                self.cwd == other.cwd
+                    && self.swd == other.swd
+                    && self.ftw == other.ftw
+                    && self.fop == other.fop
+                    && self.rip == other.rip
+                    && self.rdp == other.rdp
+                    && self.mxcsr == other.mxcsr
+                    && self.mxcr_mask == other.mxcr_mask
+                    && self.st_space == other.st_space
+                    && self
+                    .xmm_space
+                    .iter()
+                    .zip(other.xmm_space.iter())
+                    .all(|(a,b)| a == b)
+                // Ignore padding field
+            }
+        }
+
+        impl Eq for user_fpregs_struct {}
+
+        impl ::fmt::Debug for user_fpregs_struct {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("user_fpregs_struct")
+                    .field("cwd", &self.cwd)
+                    .field("ftw", &self.ftw)
+                    .field("fop", &self.fop)
+                    .field("rip", &self.rip)
+                    .field("rdp", &self.rdp)
+                    .field("mxcsr", &self.mxcsr)
+                    .field("mxcr_mask", &self.mxcr_mask)
+                    .field("st_space", &self.st_space)
+                // FIXME: .field("xmm_space", &self.xmm_space)
+                // Ignore padding field
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for user_fpregs_struct {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cwd.hash(state);
+                self.ftw.hash(state);
+                self.fop.hash(state);
+                self.rip.hash(state);
+                self.rdp.hash(state);
+                self.mxcsr.hash(state);
+                self.mxcr_mask.hash(state);
+                self.st_space.hash(state);
+                self.xmm_space.hash(state);
+                // Ignore padding field
+            }
+        }
     }
 }
 
