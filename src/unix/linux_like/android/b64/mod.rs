@@ -113,6 +113,61 @@ s! {
     pub struct pthread_spinlock_t {
         __private: i64,
     }
+
+    pub struct user_regs_struct {
+        pub r15: ::c_ulonglong,
+        pub r14: ::c_ulonglong,
+        pub r13: ::c_ulonglong,
+        pub r12: ::c_ulonglong,
+        pub rbp: ::c_ulonglong,
+        pub rbx: ::c_ulonglong,
+        pub r11: ::c_ulonglong,
+        pub r10: ::c_ulonglong,
+        pub r9: ::c_ulonglong,
+        pub r8: ::c_ulonglong,
+        pub rax: ::c_ulonglong,
+        pub rcx: ::c_ulonglong,
+        pub rdx: ::c_ulonglong,
+        pub rsi: ::c_ulonglong,
+        pub rdi: ::c_ulonglong,
+        pub orig_rax: ::c_ulonglong,
+        pub rip: ::c_ulonglong,
+        pub cs: ::c_ulonglong,
+        pub eflags: ::c_ulonglong,
+        pub rsp: ::c_ulonglong,
+        pub ss: ::c_ulonglong,
+        pub fs_base: ::c_ulonglong,
+        pub gs_base: ::c_ulonglong,
+        pub ds: ::c_ulonglong,
+        pub es: ::c_ulonglong,
+        pub fs: ::c_ulonglong,
+        pub gs: ::c_ulonglong,
+    }
+
+    pub struct user {
+        pub regs: user_regs_struct,
+        pub u_fpvalid: ::c_int,
+        pub i387: user_fpregs_struct,
+        pub u_tsize: ::c_ulonglong,
+        pub u_dsize: ::c_ulonglong,
+        pub u_ssize: ::c_ulonglong,
+        pub start_code: ::c_ulonglong,
+        pub start_stack: ::c_ulonglong,
+        pub signal: ::c_longlong,
+        __reserved: ::c_int,
+        #[cfg(target_pointer_width = "32")]
+        __pad1: u32,
+        pub u_ar0: *mut user_regs_struct,
+        #[cfg(target_pointer_width = "32")]
+        __pad2: u32,
+        pub u_fpstate: *mut user_fpregs_struct,
+        pub magic: ::c_ulonglong,
+        pub u_comm: [::c_char; 32],
+        pub u_debugreg: [::c_ulonglong; 8],
+        pub error_code: ::c_ulonglong,
+        pub fault_address: ::c_ulonglong,
+    }
+
 }
 
 s_no_extra_traits! {
@@ -137,6 +192,20 @@ s_no_extra_traits! {
 
     pub struct sigset64_t {
         __bits: [::c_ulong; 1]
+    }
+
+    pub struct user_fpregs_struct {
+        pub cwd: ::c_ushort,
+        pub swd: ::c_ushort,
+        pub ftw: ::c_ushort,
+        pub fop: ::c_ushort,
+        pub rip: ::c_ulonglong,
+        pub rdp: ::c_ulonglong,
+        pub mxcsr: ::c_uint,
+        pub mxcr_mask: ::c_uint,
+        pub st_space: [::c_uint; 32],
+        pub xmm_space: [::c_uint; 64],
+        padding: [::c_uint; 24],
     }
 }
 
