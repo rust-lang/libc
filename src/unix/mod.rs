@@ -1389,6 +1389,8 @@ extern "C" {
     pub fn getline(lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
 
     pub fn lockf(fd: ::c_int, cmd: ::c_int, len: ::off_t) -> ::c_int;
+
+    pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> ::c_int;
 }
 
 cfg_if! {
