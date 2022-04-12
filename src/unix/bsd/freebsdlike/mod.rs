@@ -96,6 +96,12 @@ s! {
         pub imr_ifindex: ::c_int,
     }
 
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+        pub imr_sourceaddr: in_addr,
+    }
+
     pub struct glob_t {
         pub gl_pathc:  ::size_t,
         pub gl_matchc: ::size_t,
@@ -964,6 +970,10 @@ pub const IPV6_HOPLIMIT: ::c_int = 47;
 pub const IPV6_RECVTCLASS: ::c_int = 57;
 pub const IPV6_TCLASS: ::c_int = 61;
 pub const IPV6_DONTFRAG: ::c_int = 62;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 70;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 71;
+pub const IP_BLOCK_SOURCE: ::c_int = 72;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 73;
 
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;

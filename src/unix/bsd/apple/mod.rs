@@ -224,6 +224,12 @@ s! {
         pub imr_ifindex: ::c_int,
     }
 
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: in_addr,
+        pub imr_sourceaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_offset: ::off_t,
@@ -3542,6 +3548,10 @@ pub const IPV6_PKTINFO: ::c_int = 46;
 pub const IPV6_HOPLIMIT: ::c_int = 47;
 pub const IPV6_RECVPKTINFO: ::c_int = 61;
 pub const IPV6_DONTFRAG: ::c_int = 62;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 70;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 71;
+pub const IP_BLOCK_SOURCE: ::c_int = 72;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 73;
 
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
