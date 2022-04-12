@@ -81,6 +81,32 @@ s! {
     }
 }
 
+impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut ::c_void {
+        #[repr(C)]
+        struct siginfo_sigfault {
+            _si_signo: ::c_int,
+            _si_errno: ::c_int,
+            _si_code: ::c_int,
+            si_addr: *mut ::c_void,
+        }
+        (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
+    }
+
+    pub unsafe fn si_value(&self) -> ::sigval {
+        #[repr(C)]
+        struct siginfo_si_value {
+            _si_signo: ::c_int,
+            _si_errno: ::c_int,
+            _si_code: ::c_int,
+            _si_timerid: ::c_int,
+            _si_overrun: ::c_int,
+            si_value: ::sigval,
+        }
+        (*(self as *const siginfo_t as *const siginfo_si_value)).si_value
+    }
+}
+
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
