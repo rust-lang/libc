@@ -98,8 +98,8 @@ s! {
 
     pub struct ip_mreq_source {
         pub imr_multiaddr: in_addr,
-        pub imr_interface: in_addr,
         pub imr_sourceaddr: in_addr,
+        pub imr_interface: in_addr,
     }
 
     pub struct glob_t {
