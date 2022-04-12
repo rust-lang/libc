@@ -83,6 +83,12 @@ s! {
         pub imr_interface: in_addr,
     }
 
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: in_addr,
+        pub imr_sourceaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
     pub struct ipc_perm {
         pub uid: ::uid_t,
         pub gid: ::gid_t,
@@ -1764,6 +1770,10 @@ pub const IP_ADD_MEMBERSHIP: ::c_int = 19;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 20;
 pub const IPV6_JOIN_GROUP: ::c_int = 9;
 pub const IPV6_LEAVE_GROUP: ::c_int = 10;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 23;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 24;
+pub const IP_BLOCK_SOURCE: ::c_int = 21;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 22;
 
 // These TCP socket options are common between illumos and Solaris, while higher
 // numbers have generally diverged:
