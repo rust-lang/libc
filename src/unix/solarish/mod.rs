@@ -1770,10 +1770,10 @@ pub const IP_ADD_MEMBERSHIP: ::c_int = 19;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 20;
 pub const IPV6_JOIN_GROUP: ::c_int = 9;
 pub const IPV6_LEAVE_GROUP: ::c_int = 10;
-pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 70;
-pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 71;
-pub const IP_BLOCK_SOURCE: ::c_int = 72;
-pub const IP_UNBLOCK_SOURCE: ::c_int = 73;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 23;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 24;
+pub const IP_BLOCK_SOURCE: ::c_int = 21;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 22;
 
 // These TCP socket options are common between illumos and Solaris, while higher
 // numbers have generally diverged:
