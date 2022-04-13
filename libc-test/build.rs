@@ -1803,6 +1803,9 @@ fn test_android(target: &str) {
             // Added in glibc 2.25.
             "getentropy" => true,
 
+            // Added in API level 28, but some tests use level 24.
+            "getrandom" => true,
+
             _ => false,
         }
     });
