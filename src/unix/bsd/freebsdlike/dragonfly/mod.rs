@@ -1481,6 +1481,9 @@ extern "C" {
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
 
     pub fn sys_checkpoint(tpe: ::c_int, fd: ::c_int, pid: ::pid_t, retval: ::c_int) -> ::c_int;
+
+    pub fn umtx_sleep(ptr: *const ::c_int, value: ::c_int, timeout: ::c_int) -> ::c_int;
+    pub fn umtx_wakeup(ptr: *const ::c_int, count: ::c_int) -> ::c_int;
 }
 
 #[link(name = "rt")]
