@@ -434,6 +434,7 @@ fn test_openbsd(target: &str) {
         "signal.h",
         "string.h",
         "sys/file.h",
+        "sys/futex.h",
         "sys/ioctl.h",
         "sys/ipc.h",
         "sys/mman.h",

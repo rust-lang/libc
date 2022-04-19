@@ -1519,6 +1519,12 @@ pub const WCONTINUED: ::c_int = 8;
 pub const FIND: ::ACTION = 0;
 pub const ENTER: ::ACTION = 1;
 
+// futex.h
+pub const FUTEX_WAIT: ::c_int = 1;
+pub const FUTEX_WAKE: ::c_int = 2;
+pub const FUTEX_REQUEUE: ::c_int = 3;
+pub const FUTEX_PRIVATE_FLAG: ::c_int = 128;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -1703,6 +1709,15 @@ extern "C" {
     pub fn hcreate(nelt: ::size_t) -> ::c_int;
     pub fn hdestroy();
     pub fn hsearch(entry: ::ENTRY, action: ::ACTION) -> *mut ::ENTRY;
+
+    // futex.h
+    pub fn futex(
+        uaddr: *mut u32,
+        op: ::c_int,
+        val: ::c_int,
+        timeout: *const ::timespec,
+        uaddr2: *mut u32,
+    ) -> ::c_int;
 }
 
 #[link(name = "execinfo")]
