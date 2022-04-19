@@ -506,7 +506,7 @@ fn test_openbsd(target: &str) {
             // https://marc.info/?l=openbsd-cvs&m=154723400730318
             "mincore" => true,
 
-            // futex() has volative arguments, but that doesn't exist in Rust.
+            // futex() has volatile arguments, but that doesn't exist in Rust.
             "futex" => true,
 
             _ => false,
