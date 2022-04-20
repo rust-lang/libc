@@ -434,6 +434,7 @@ fn test_openbsd(target: &str) {
         "signal.h",
         "string.h",
         "sys/file.h",
+        "sys/futex.h",
         "sys/ioctl.h",
         "sys/ipc.h",
         "sys/mman.h",
@@ -504,6 +505,9 @@ fn test_openbsd(target: &str) {
             // Removed in OpenBSD 6.5
             // https://marc.info/?l=openbsd-cvs&m=154723400730318
             "mincore" => true,
+
+            // futex() has volatile arguments, but that doesn't exist in Rust.
+            "futex" => true,
 
             _ => false,
         }

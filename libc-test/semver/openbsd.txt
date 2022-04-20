@@ -215,6 +215,10 @@ FIONREAD
 FIOSETOWN
 FLUSHO
 FOPEN_MAX
+FUTEX_WAIT
+FUTEX_WAKE
+FUTEX_REQUEUE
+FUTEX_PRIVATE_FLAG
 F_GETOWN
 F_LOCK
 F_RDLCK
@@ -987,6 +991,7 @@ fsid_t
 fstatfs
 ftok
 fusefs_args
+futex
 futimes
 getdomainname
 getdtablesize
