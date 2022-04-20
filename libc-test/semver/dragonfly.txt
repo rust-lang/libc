@@ -1497,6 +1497,8 @@ timex
 truncate
 ttyname_r
 ucontext_t
+umtx_sleep
+umtx_wakeup
 unmount
 updatelastlogx
 updwtmpx
