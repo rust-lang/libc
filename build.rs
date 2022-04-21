@@ -92,6 +92,11 @@ fn main() {
         println!("cargo:rustc-cfg=libc_underscore_const_names");
     }
 
+    // Rust >= 1.47.0 allows traits with array > 32.
+    if rustc_minor_ver >= 47 || rustc_dep_of_std {
+        println!("cargo:rustc-cfg=libc_large_array");
+    }
+
     // #[thread_local] is currently unstable
     if rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_thread_local");

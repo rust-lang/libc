@@ -447,6 +447,12 @@ s! {
         pub kve_path: [[::c_char; 32]; 32],
     }
 
+    pub struct kinfo_sigtramp {
+        pub ksigtramp_start: *mut ::c_void,
+        pub ksigtramp_end: *mut ::c_void,
+        pub ksigtramp_spare: [*mut ::c_void; 4],
+    }
+
     pub struct __c_anonymous_filestat {
         pub stqe_next: *mut filestat,
     }
@@ -1208,6 +1214,15 @@ s_no_extra_traits! {
         pub ifdr_vendor: u32,
         pub ifdr_msg: [::c_char; ::IFDR_MSG_SIZE as usize],
     }
+
+    #[cfg(libc_large_array)]
+    pub struct kinfo_kstack {
+        pub kkst_tid: ::lwpid_t,
+        pub kkst_state: ::c_int,
+        pub kkst_trace: [::c_char; KKST_MAXLEN as usize],
+        pub _kkst_ispare: [::c_int; 16],
+    }
+
 }
 
 cfg_if! {
@@ -1716,6 +1731,41 @@ cfg_if! {
                 self.ifdr_reason.hash(state);
                 self.ifdr_vendor.hash(state);
                 self.ifdr_msg.hash(state);
+            }
+        }
+
+        #[cfg(libc_large_array)]
+        impl PartialEq for kinfo_kstack {
+            fn eq(&self, other: &kinfo_kstack) -> bool {
+                self.kkst_tid == other.kkst_tid &&
+                self.kkst_state == other.kkst_state &&
+                self.kkst_trace
+                    .iter()
+                    .zip(other.kkst_trace.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        #[cfg(libc_large_array)]
+        impl Eq for kinfo_kstack {}
+
+        #[cfg(libc_large_array)]
+        impl ::fmt::Debug for kinfo_kstack {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("kinfo_kstack")
+                    .field("kkst_tid", &self.kkst_tid)
+                    .field("kkst_state", &self.kkst_state)
+                    .field("kkst_trace", &&self.kkst_trace[..])
+                    .finish()
+            }
+        }
+
+        #[cfg(libc_large_array)]
+        impl ::hash::Hash for kinfo_kstack {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.kkst_tid.hash(state);
+                self.kkst_state.hash(state);
+                self.kkst_trace.hash(state);
             }
         }
 

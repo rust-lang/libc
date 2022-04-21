@@ -1639,7 +1639,9 @@ kevent
 key_t
 killpg
 kinfo_getvmmap
+kinfo_kstack
 kinfo_proc
+kinfo_sigtramp
 kinfo_vmentry
 kqueue
 kld_isloaded
