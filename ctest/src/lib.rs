@@ -1617,7 +1617,7 @@ impl<'a> Generator<'a> {
         t!(writeln!(
             self.c,
             r#"
-            {ret} ({abi}*__test_fn_{name}(void))({args}) {{
+            {linkage} {ret} ({abi}*__test_fn_{name}(void))({args}) {{
                 return {c_name};
             }}
         "#,
@@ -1625,7 +1625,8 @@ impl<'a> Generator<'a> {
             c_name = c_name,
             args = args,
             ret = c_ret,
-            abi = abi
+            abi = abi,
+            linkage = linkage(&self.opts.lang)
         ));
         t!(writeln!(
             self.rust,
