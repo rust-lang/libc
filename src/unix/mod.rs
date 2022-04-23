@@ -1392,7 +1392,8 @@ extern "C" {
 
 }
 cfg_if! {
-    if #[cfg(not(target_os = "emscripten"))] {
+    if #[cfg(not(any(target_os = "emscripten",
+                     target_os = "android")))] {
         extern "C" {
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> ::c_int;
         }
