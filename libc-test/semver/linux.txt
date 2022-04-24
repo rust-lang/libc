@@ -1653,6 +1653,9 @@ PTHREAD_CREATE_DETACHED
 PTHREAD_CREATE_JOINABLE
 PTHREAD_MUTEX_DEFAULT
 PTHREAD_MUTEX_ERRORCHECK
+PTHREAD_PRIO_NONE
+PTHREAD_PRIO_INHERIT
+PTHREAD_PRIO_PROTECT
 PTHREAD_PROCESS_PRIVATE
 PTHREAD_PROCESS_SHARED
 PTHREAD_STACK_MIN
@@ -2951,7 +2954,9 @@ pthread_getschedparam
 pthread_kill
 pthread_mutex_consistent
 pthread_mutex_timedlock
+pthread_mutexattr_getprotocol
 pthread_mutexattr_getpshared
+pthread_mutexattr_setprotocol
 pthread_mutexattr_setpshared
 pthread_mutexattr_getrobust
 pthread_mutexattr_setrobust
