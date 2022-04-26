@@ -4097,6 +4097,9 @@ extern "C" {
         needlelen: ::size_t,
     ) -> *mut ::c_void;
     pub fn sched_getcpu() -> ::c_int;
+
+    pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn pthread_setname_np(thread: ::pthread_t, name: *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {

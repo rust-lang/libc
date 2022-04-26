@@ -2950,6 +2950,7 @@ pthread_condattr_setpshared
 pthread_getaffinity_np
 pthread_getattr_np
 pthread_getcpuclockid
+pthread_getname_np
 pthread_getschedparam
 pthread_kill
 pthread_mutex_consistent
@@ -2962,6 +2963,7 @@ pthread_mutexattr_getrobust
 pthread_mutexattr_setrobust
 pthread_rwlockattr_setpshared
 pthread_setaffinity_np
+pthread_setname_np
 pthread_setschedparam
 pthread_setschedprio
 pthread_spin_destroy

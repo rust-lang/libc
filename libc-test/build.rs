@@ -3401,6 +3401,9 @@ fn test_linux(target: &str) {
             // Not defined in uclibc as of 1.0.34
             "gettid" if uclibc => true,
 
+            // Needs musl 1.2.3 or later.
+            "pthread_getname_np" if musl => true,
+
             _ => false,
         }
     });
