@@ -1939,6 +1939,7 @@ fn test_freebsd(target: &str) {
                 "sys/ucontext.h",
                 "sys/uio.h",
                 "sys/ktrace.h",
+                "sys/umtx.h",
                 "sys/un.h",
                 "sys/user.h",
                 "sys/utsname.h",
