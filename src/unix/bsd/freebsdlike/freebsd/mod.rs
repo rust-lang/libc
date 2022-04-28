@@ -988,6 +988,12 @@ s! {
         pub function_set_name: [::c_char; ::TCP_FUNCTION_NAME_LEN_MAX as usize],
         pub pcbcnt: u32,
     }
+
+    pub struct _umtx_time {
+        pub _timeout: ::timespec,
+        pub _flags: u32,
+        pub _clockid: u32,
+    }
 }
 
 s_no_extra_traits! {
@@ -3681,6 +3687,8 @@ pub const UMTX_OP_SEM2_WAIT: ::c_int = 23;
 pub const UMTX_OP_SEM2_WAKE: ::c_int = 24;
 pub const UMTX_OP_SHM: ::c_int = 25;
 pub const UMTX_OP_ROBUST_LISTS: ::c_int = 26;
+
+pub const UMTX_ABSTIME: u32 = 1;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
