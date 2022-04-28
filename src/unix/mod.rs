@@ -1389,6 +1389,15 @@ extern "C" {
     pub fn getline(lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
 
     pub fn lockf(fd: ::c_int, cmd: ::c_int, len: ::off_t) -> ::c_int;
+
+}
+cfg_if! {
+    if #[cfg(not(any(target_os = "emscripten",
+                     target_os = "android")))] {
+        extern "C" {
+            pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> ::c_int;
+        }
+    }
 }
 
 cfg_if! {
