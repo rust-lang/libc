@@ -3657,6 +3657,31 @@ pub const SHM_LARGEPAGE_ALLOC_HARD: ::c_int = 2;
 pub const SHM_RENAME_NOREPLACE: ::c_int = 1 << 0;
 pub const SHM_RENAME_EXCHANGE: ::c_int = 1 << 1;
 
+// sys/umtx.h
+
+pub const UMTX_OP_WAIT: ::c_int = 2;
+pub const UMTX_OP_WAKE: ::c_int = 3;
+pub const UMTX_OP_MUTEX_TRYLOCK: ::c_int = 4;
+pub const UMTX_OP_MUTEX_LOCK: ::c_int = 5;
+pub const UMTX_OP_MUTEX_UNLOCK: ::c_int = 6;
+pub const UMTX_OP_SET_CEILING: ::c_int = 7;
+pub const UMTX_OP_CV_WAIT: ::c_int = 8;
+pub const UMTX_OP_CV_SIGNAL: ::c_int = 9;
+pub const UMTX_OP_CV_BROADCAST: ::c_int = 10;
+pub const UMTX_OP_WAIT_UINT: ::c_int = 11;
+pub const UMTX_OP_RW_RDLOCK: ::c_int = 12;
+pub const UMTX_OP_RW_WRLOCK: ::c_int = 13;
+pub const UMTX_OP_RW_UNLOCK: ::c_int = 14;
+pub const UMTX_OP_WAIT_UINT_PRIVATE: ::c_int = 15;
+pub const UMTX_OP_WAKE_PRIVATE: ::c_int = 16;
+pub const UMTX_OP_MUTEX_WAIT: ::c_int = 17;
+pub const UMTX_OP_NWAKE_PRIVATE: ::c_int = 21;
+pub const UMTX_OP_MUTEX_WAKE2: ::c_int = 22;
+pub const UMTX_OP_SEM2_WAIT: ::c_int = 23;
+pub const UMTX_OP_SEM2_WAKE: ::c_int = 24;
+pub const UMTX_OP_SHM: ::c_int = 25;
+pub const UMTX_OP_ROBUST_LISTS: ::c_int = 26;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -4221,6 +4246,14 @@ extern "C" {
     ) -> ::c_int;
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn setaudit(auditinfo: *const auditinfo_t) -> ::c_int;
+
+    pub fn _umtx_op(
+        obj: *mut ::c_void,
+        op: ::c_int,
+        val: ::c_ulong,
+        uaddr: *mut ::c_void,
+        uaddr2: *mut ::c_void,
+    ) -> ::c_int;
 }
 
 #[link(name = "kvm")]
