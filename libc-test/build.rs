@@ -2454,10 +2454,6 @@ fn test_emscripten(target: &str) {
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None); // FIXME: ??
-    cfg.flag("-pthread");
-    cfg.flag("-mbulk-memory");
-    cfg.flag("-matomics");
-    cfg.flag("-Wl,--shared-memory");
 
     headers! { cfg:
                "aio.h",
