@@ -9,7 +9,8 @@ macro_rules! expand_align {
                            target_arch = "sparc64",
                            target_arch = "aarch64",
                            target_arch = "riscv64",
-                           target_arch = "riscv32"),
+                           target_arch = "riscv32",
+                           target_arch = "loongarch64"),
                        repr(align(4)))]
             #[cfg_attr(not(any(target_pointer_width = "32",
                                target_arch = "x86_64",
@@ -19,7 +20,8 @@ macro_rules! expand_align {
                                target_arch = "sparc64",
                                target_arch = "aarch64",
                                target_arch = "riscv64",
-                               target_arch = "riscv32")),
+                               target_arch = "riscv32",
+                               target_arch = "loongarch64")),
                        repr(align(8)))]
             pub struct pthread_mutexattr_t {
                 #[doc(hidden)]
