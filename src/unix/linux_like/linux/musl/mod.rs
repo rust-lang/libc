@@ -766,6 +766,7 @@ cfg_if! {
                         target_arch = "mips",
                         target_arch = "powerpc",
                         target_arch = "hexagon",
+                        target_arch = "riscv32",
                         target_arch = "arm"))] {
         mod b32;
         pub use self::b32::*;

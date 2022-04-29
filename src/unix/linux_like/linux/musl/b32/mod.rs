@@ -54,6 +54,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "hexagon"))] {
         mod hexagon;
         pub use self::hexagon::*;
+    } else if #[cfg(any(target_arch = "riscv32"))] {
+        mod riscv32;
+        pub use self::riscv32::*;
     } else {
         // Unknown target_arch
     }
