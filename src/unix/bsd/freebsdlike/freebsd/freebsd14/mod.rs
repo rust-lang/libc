@@ -469,8 +469,6 @@ pub const DOMAINSET_POLICY_INTERLEAVE: ::c_int = 4;
 pub const MINCORE_SUPER: ::c_int = 0x60;
 
 extern "C" {
-    pub fn aio_readv(aiocbp: *mut ::aiocb) -> ::c_int;
-    pub fn aio_writev(aiocbp: *mut ::aiocb) -> ::c_int;
     pub fn setgrent();
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn freelocale(loc: ::locale_t);
