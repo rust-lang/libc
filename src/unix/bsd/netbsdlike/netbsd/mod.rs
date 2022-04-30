@@ -2315,6 +2315,20 @@ extern "C" {
         attrnamespace: *mut ::c_int,
     ) -> ::c_int;
 
+    pub fn openpty(
+        amaster: *mut ::c_int,
+        aslave: *mut ::c_int,
+        name: *mut ::c_char,
+        termp: *mut ::termios,
+        winp: *mut ::winsize,
+    ) -> ::c_int;
+    pub fn forkpty(
+        amaster: *mut ::c_int,
+        name: *mut ::c_char,
+        termp: *mut ::termios,
+        winp: *mut ::winsize,
+    ) -> ::pid_t;
+
     #[link_name = "__lutimes50"]
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     #[link_name = "__gettimeofday50"]

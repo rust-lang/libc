@@ -688,19 +688,6 @@ extern "C" {
         flag: ::c_int,
     ) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
-    pub fn openpty(
-        amaster: *mut ::c_int,
-        aslave: *mut ::c_int,
-        name: *mut ::c_char,
-        termp: *mut termios,
-        winp: *mut ::winsize,
-    ) -> ::c_int;
-    pub fn forkpty(
-        amaster: *mut ::c_int,
-        name: *mut ::c_char,
-        termp: *mut termios,
-        winp: *mut ::winsize,
-    ) -> ::pid_t;
     pub fn login_tty(fd: ::c_int) -> ::c_int;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
