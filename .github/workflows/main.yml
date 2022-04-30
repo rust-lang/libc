@@ -19,7 +19,7 @@ jobs:
           x86_64-unknown-linux-gnu,
         ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
@@ -35,7 +35,7 @@ jobs:
           x86_64-apple-darwin,
         ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run.sh
@@ -63,7 +63,7 @@ jobs:
           #    ARCH: i686
           - target: i686-pc-windows-msvc
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Self-update rustup
         run: rustup self update
         shell: bash
@@ -78,7 +78,7 @@ jobs:
     name: Style check
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: sh ./ci/install-rust.sh
       - name: Check style
