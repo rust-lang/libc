@@ -3840,6 +3840,7 @@ extern "C" {
     pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
     pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_readv(aiocbp: *mut ::aiocb) -> ::c_int;
     pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
     pub fn aio_suspend(
         aiocb_list: *const *const aiocb,
@@ -3847,6 +3848,7 @@ extern "C" {
         timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_writev(aiocbp: *mut ::aiocb) -> ::c_int;
 
     pub fn devname_r(
         dev: ::dev_t,

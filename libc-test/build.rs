@@ -2355,6 +2355,8 @@ fn test_freebsd(target: &str) {
 
             // Added in FreeBSD 13.
             "getlocalbase" if Some(13) > freebsd_ver => true,
+            "aio_readv" if Some(13) > freebsd_ver => true,
+            "aio_writev" if Some(13) > freebsd_ver => true,
 
             _ => false,
         }
