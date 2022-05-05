@@ -516,7 +516,6 @@ extern "C" {
     pub fn strcpy(dst: *mut c_char, src: *const c_char) -> *mut c_char;
     pub fn strncpy(dst: *mut c_char, src: *const c_char, n: size_t) -> *mut c_char;
     pub fn stpcpy(dst: *mut c_char, src: *const c_char) -> *mut c_char;
-    pub fn stpncpy(dst: *mut c_char, src: *const c_char, n: size_t) -> *mut c_char;
     pub fn strcat(s: *mut c_char, ct: *const c_char) -> *mut c_char;
     pub fn strncat(s: *mut c_char, ct: *const c_char, n: size_t) -> *mut c_char;
     pub fn strcmp(cs: *const c_char, ct: *const c_char) -> c_int;
@@ -1396,9 +1395,11 @@ extern "C" {
 }
 cfg_if! {
     if #[cfg(not(any(target_os = "emscripten",
-                     target_os = "android")))] {
+                     target_os = "android",
+                     target_os = "haiku")))] {
         extern "C" {
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> ::c_int;
+            pub fn stpncpy(dst: *mut c_char, src: *const c_char, n: size_t) -> *mut c_char;
         }
     }
 }
