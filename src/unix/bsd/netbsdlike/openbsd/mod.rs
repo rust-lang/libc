@@ -1644,6 +1644,20 @@ extern "C" {
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
     pub fn pthread_stackseg_np(thread: ::pthread_t, sinfo: *mut ::stack_t) -> ::c_int;
 
+    pub fn openpty(
+        amaster: *mut ::c_int,
+        aslave: *mut ::c_int,
+        name: *mut ::c_char,
+        termp: *const ::termios,
+        winp: *const ::winsize,
+    ) -> ::c_int;
+    pub fn forkpty(
+        amaster: *mut ::c_int,
+        name: *mut ::c_char,
+        termp: *const ::termios,
+        winp: *const ::winsize,
+    ) -> ::pid_t;
+
     pub fn sysctl(
         name: *const ::c_int,
         namelen: ::c_uint,
