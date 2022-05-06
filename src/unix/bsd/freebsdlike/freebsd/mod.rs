@@ -1885,6 +1885,11 @@ impl ::Clone for dot3Vendors {
     }
 }
 
+// aio.h
+pub const LIO_VECTORED: ::c_int = 4;
+pub const LIO_WRITEV: ::c_int = 5;
+pub const LIO_READV: ::c_int = 6;
+
 // sys/devicestat.h
 pub const DEVSTAT_N_TRANS_FLAGS: ::c_int = 4;
 pub const DEVSTAT_NAME_LEN: ::c_int = 16;
