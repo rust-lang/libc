@@ -1732,6 +1732,59 @@ extern "C" {
     pub fn freelocale(loc: ::locale_t);
     pub fn newlocale(mask: ::c_int, locale: *const ::c_char, base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
+    pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__fstat_time64"
+    )]
+    pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__fstatat_time64"
+    )]
+    pub fn fstatat64(
+        dirfd: ::c_int,
+        pathname: *const c_char,
+        buf: *mut stat64,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
+    pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__lstat_time64"
+    )]
+    pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn mmap64(
+        addr: *mut ::c_void,
+        len: ::size_t,
+        prot: ::c_int,
+        flags: ::c_int,
+        fd: ::c_int,
+        offset: off64_t,
+    ) -> *mut ::c_void;
+    pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn openat64(fd: ::c_int, path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t, offset: off64_t) -> ::ssize_t;
+    pub fn pwrite64(
+        fd: ::c_int,
+        buf: *const ::c_void,
+        count: ::size_t,
+        offset: off64_t,
+    ) -> ::ssize_t;
+    pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
+    pub fn readdir64_r(
+        dirp: *mut ::DIR,
+        entry: *mut ::dirent64,
+        result: *mut *mut ::dirent64,
+    ) -> ::c_int;
+    #[cfg_attr(
+        all(target_env = "musl", target_pointer_width = "32"),
+        link_name = "__stat_time64"
+    )]
+    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
+
     pub fn mknodat(
         dirfd: ::c_int,
         pathname: *const ::c_char,
@@ -1809,47 +1862,6 @@ cfg_if! {
             pub fn statvfs64(path: *const ::c_char, buf: *mut statvfs64) -> ::c_int;
             pub fn fstatvfs64(fd: ::c_int, buf: *mut statvfs64) -> ::c_int;
             pub fn statfs64(path: *const ::c_char, buf: *mut statfs64) -> ::c_int;
-            pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
-            pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
-            pub fn fstatat64(
-                dirfd: ::c_int,
-                pathname: *const c_char,
-                buf: *mut stat64,
-                flags: ::c_int,
-            ) -> ::c_int;
-            pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
-            pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
-            pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-            pub fn mmap64(
-                addr: *mut ::c_void,
-                len: ::size_t,
-                prot: ::c_int,
-                flags: ::c_int,
-                fd: ::c_int,
-                offset: off64_t,
-            ) -> *mut ::c_void;
-            pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
-            pub fn openat64(fd: ::c_int, path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
-            pub fn pread64(
-                fd: ::c_int,
-                buf: *mut ::c_void,
-                count: ::size_t,
-                offset: off64_t
-            ) -> ::ssize_t;
-            pub fn pwrite64(
-                fd: ::c_int,
-                buf: *const ::c_void,
-                count: ::size_t,
-                offset: off64_t,
-            ) -> ::ssize_t;
-            pub fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64;
-            pub fn readdir64_r(
-                dirp: *mut ::DIR,
-                entry: *mut ::dirent64,
-                result: *mut *mut ::dirent64,
-            ) -> ::c_int;
-            pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
-            pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
         }
     }
 }

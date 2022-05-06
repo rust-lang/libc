@@ -4,33 +4,10 @@ pub type __u64 = ::c_ulong;
 pub type __s64 = ::c_long;
 pub type nlink_t = u64;
 pub type blksize_t = i64;
+pub type stat64 = ::stat;
 
 s! {
     pub struct stat {
-        pub st_dev: ::dev_t,
-        __pad1: [::c_int; 3],
-        pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __pad2: [::c_uint; 2],
-        pub st_size: ::off_t,
-        __pad3: ::c_int,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        pub st_blksize: ::blksize_t,
-        __pad4: ::c_uint,
-        pub st_blocks: ::blkcnt_t,
-        __pad5: [::c_int; 14],
-    }
-
-    pub struct stat64 {
         pub st_dev: ::dev_t,
         __pad1: [::c_int; 3],
         pub st_ino: ::ino_t,
