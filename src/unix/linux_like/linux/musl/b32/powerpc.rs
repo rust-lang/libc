@@ -1,5 +1,6 @@
 pub type c_char = u8;
 pub type wchar_t = i32;
+pub type stat64 = ::stat;
 
 s! {
     pub struct stat {
@@ -14,34 +15,22 @@ s! {
         pub st_size: ::off_t,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
+        __st_atime32: ::c_long,
+        __st_atime32_nsec: ::c_long,
+        __st_mtime32: ::c_long,
+        __st_mtime32_nsec: ::c_long,
+        __st_ctime32: ::c_long,
+        __st_ctime32_nsec: ::c_long,
+        __unused: [::c_long; 2],
         pub st_atime: ::time_t,
         pub st_atime_nsec: ::c_long,
+        __st_atime_nsec_padding: ::c_long,
         pub st_mtime: ::time_t,
         pub st_mtime_nsec: ::c_long,
+        __st_mtime_nsec_padding: ::c_long,
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
-        __unused: [::c_long; 2],
-    }
-
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __st_rdev_padding: ::c_short,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __unused: [::c_long; 2],
+        __st_ctime_nsec_padding: ::c_long,
     }
 
     pub struct stack_t {
