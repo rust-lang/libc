@@ -1315,6 +1315,8 @@ kevent
 killpg
 kinfo_cputime
 kinfo_file
+kinfo_lwp
+kinfo_proc
 kqueue
 labs
 lastlog
