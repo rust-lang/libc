@@ -2254,6 +2254,9 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // Added in FreeBSD 14
+            "LIO_READV" | "LIO_WRITEV" | "LIO_VECTORED" if Some(14) > freebsd_ver => true,
+
             _ => false,
         }
     });
