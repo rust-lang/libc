@@ -6,7 +6,8 @@ fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
 
-    let (rustc_minor_ver, is_nightly) = rustc_minor_nightly().expect("Failed to get rustc version");
+    let (rustc_minor_ver, _is_nightly) =
+        rustc_minor_nightly().expect("Failed to get rustc version");
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
     let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
@@ -97,10 +98,8 @@ fn main() {
         println!("cargo:rustc-cfg=libc_thread_local");
     }
 
-    if const_extern_fn_cargo_feature {
-        if !is_nightly || rustc_minor_ver < 40 {
-            panic!("const-extern-fn requires a nightly compiler >= 1.40")
-        }
+    // Rust >= 1.62.0 allows `const extern "C" fn`
+    if const_extern_fn_cargo_feature || rustc_minor_ver >= 62 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_const_extern_fn");
     }
 }
