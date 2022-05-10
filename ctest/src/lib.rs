@@ -1020,13 +1020,10 @@ impl TestGenerator {
 
             macro_rules! offset_of {
                 ($ty:ident, $field:ident) => ({
-                    let zeroed_ty = std::mem::zeroed::<$ty>();
-                    let ty_ptr = &zeroed_ty as *const $ty;
-                    let field_ptr = std::ptr::addr_of!(zeroed_ty.$field);
-                    let ty_address = ty_ptr as u64;
-                    let field_address = field_ptr as u64;
-                    std::mem::forget(zeroed_ty);
-                    field_address.checked_sub(ty_address).unwrap()
+                    let value = std::mem::MaybeUninit::<$ty>::uninit();
+                    let base_pointer = value.as_ptr();
+                    let offset_pointer = std::ptr::addr_of!((*base_pointer).$field);
+                    (offset_pointer as u64) - (base_pointer as u64)
                 })
             }
 
@@ -1277,8 +1274,9 @@ impl<'a> Generator<'a> {
                     fn __test_fsize_{ty}_{field}() -> u64;
                 }}
                 unsafe {{
-                    let zeroed_ty = std::mem::zeroed::<{ty}>();
-                    let ty_ptr = std::ptr::addr_of!((zeroed_ty).{field});
+                    let uninit_ty = std::mem::MaybeUninit::<{ty}>::uninit();
+                    let uninit_ty = uninit_ty.as_ptr();
+                    let ty_ptr = std::ptr::addr_of!((*uninit_ty).{field});
                     let val = ty_ptr.read_unaligned();
                     same(offset_of!({ty}, {field}),
                          __test_offset_{ty}_{field}(),
@@ -1328,13 +1326,14 @@ impl<'a> Generator<'a> {
                                                       -> *mut u8;
                 }}
                 unsafe {{
-                    let mut zeroed_ty = mem::zeroed::<{ty}>();
-                    let ty_ptr_mut = std::ptr::addr_of_mut!(zeroed_ty);
-                    let field_ptr = std::ptr::addr_of!(zeroed_ty.{field});
+                    let mut uninit_ty = std::mem::MaybeUninit::<{ty}>::uninit();
+                    let uninit_ty = uninit_ty.as_mut_ptr();
+                    let ty_ptr_mut = std::ptr::addr_of_mut!(*uninit_ty);
+                    let field_ptr = std::ptr::addr_of!((*uninit_ty).{field});
                     same(field_ptr as *mut _,
                          __test_field_type_{ty}_{field}(ty_ptr_mut),
                          "field type {field} of {ty}");
-                    mem::forget(zeroed_ty);
+                    mem::forget(uninit_ty);
                 }}
             "#,
                 ty = ty,
