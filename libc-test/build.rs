@@ -3101,6 +3101,7 @@ fn test_linux(target: &str) {
         ),
     }
 
+    let aarch64 = target.contains("aarch64");
     let arm = target.contains("arm");
     let i686 = target.contains("i686");
     let mips = target.contains("mips");
@@ -3113,7 +3114,7 @@ fn test_linux(target: &str) {
     let x32 = target.contains("x32");
     let x86_32 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
-    let aarch64_musl = target.contains("aarch64") && musl;
+    let aarch64_musl = aarch64 && musl;
     let gnueabihf = target.contains("gnueabihf");
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
@@ -3292,6 +3293,7 @@ fn test_linux(target: &str) {
         "linux/vm_sockets.h",
         "linux/wait.h",
         "sys/fanotify.h",
+        [!aarch64 && !mips && !i686 && !arm && musl]: "asm/sigcontext.h",
         // <sys/auxv.h> is not present on uclibc
         [!uclibc]: "sys/auxv.h",
     }

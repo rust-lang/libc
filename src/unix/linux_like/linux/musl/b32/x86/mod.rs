@@ -1,5 +1,6 @@
 pub type c_char = i8;
 pub type wchar_t = i32;
+pub type greg_t = i32;
 
 s! {
     pub struct stat {
@@ -49,7 +50,7 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 
     pub struct ipc_perm {
@@ -61,7 +62,7 @@ s! {
         pub mode: ::mode_t,
         pub __seq: ::c_int,
         __unused1: ::c_long,
-        __unused2: ::c_long
+        __unused2: ::c_long,
     }
 
     pub struct shmid_ds {
@@ -112,8 +113,23 @@ s! {
         pub f_spare: [::c_ulong; 4],
     }
 
+    pub struct _fpstate {
+        pub cw: ::c_ulong,
+        pub sw: ::c_ulong,
+        pub tag: ::c_ulong,
+        pub ipoff: ::c_ulong,
+        pub cssel: ::c_ulong,
+        pub dataoff: ::c_ulong,
+        pub datasel: ::c_ulong,
+        pub _st: [u16; 40], // anonymous struct replaced by a placeholder
+        pub status: ::c_ulong,
+    }
+
     pub struct mcontext_t {
-        __private: [u32; 22]
+        pub gregs: [greg_t; 19],
+        pub fpregs: *mut _fpstate,
+        pub oldmask: ::c_ulong,
+        pub cr2: ::c_ulong,
     }
 
     pub struct siginfo_t {
@@ -122,6 +138,10 @@ s! {
         pub si_code: ::c_int,
         pub _pad: [::c_int; 29],
         _align: [usize; 0],
+    }
+
+    pub struct sigset_t {
+        pub sig: [::c_ulong; 2]
     }
 
     pub struct statfs64 {
@@ -163,7 +183,7 @@ s_no_extra_traits! {
         pub uc_stack: ::stack_t,
         pub uc_mcontext: mcontext_t,
         pub uc_sigmask: ::sigset_t,
-        __private: [u8; 112],
+        pub __fpregs_mem: [::c_ulong; 28],
     }
 }
 
@@ -883,6 +903,27 @@ pub const CS: ::c_int = 13;
 pub const EFL: ::c_int = 14;
 pub const UESP: ::c_int = 15;
 pub const SS: ::c_int = 16;
+
+// offsets in mcontext_t.gregs from sys/ucontext.h
+pub const REG_GS: ::c_int = 0;
+pub const REG_FS: ::c_int = 1;
+pub const REG_ES: ::c_int = 2;
+pub const REG_DS: ::c_int = 3;
+pub const REG_EDI: ::c_int = 4;
+pub const REG_ESI: ::c_int = 5;
+pub const REG_EBP: ::c_int = 6;
+pub const REG_ESP: ::c_int = 7;
+pub const REG_EBX: ::c_int = 8;
+pub const REG_EDX: ::c_int = 9;
+pub const REG_ECX: ::c_int = 10;
+pub const REG_EAX: ::c_int = 11;
+pub const REG_TRAPNO: ::c_int = 12;
+pub const REG_ERR: ::c_int = 13;
+pub const REG_EIP: ::c_int = 14;
+pub const REG_CS: ::c_int = 15;
+pub const REG_EFL: ::c_int = 16;
+pub const REG_UESP: ::c_int = 17;
+pub const REG_SS: ::c_int = 18;
 
 extern "C" {
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
