@@ -1042,6 +1042,7 @@ jrand48
 kevent
 key_t
 killpg
+kinfo_proc
 kinfo_vmentry
 kqueue
 labs
