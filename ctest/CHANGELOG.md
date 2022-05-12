@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.4.4
+
+* Specify linkage for `__test_fn...()` [#33]
+* Remove the use of `mem::zeroed()` from generated code [#35]
+
+[#33]: https://github.com/JohnTitor/ctest2/pull/33
+[#35]: https://github.com/JohnTitor/ctest2/pull/35
+
 ## 0.4.3
 
 * Add support for long double [#30]
