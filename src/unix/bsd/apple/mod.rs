@@ -672,6 +672,13 @@ s! {
         pub s_addr: ::in_addr_t,
     }
 
+    // net/ndrv.h
+    pub struct sockaddr_ndrv {
+        pub snd_len: ::c_uchar,
+        pub snd_family: ::c_uchar,
+        pub snd_name: [::c_uchar; 16]      // IFNAMSIZ from if.h
+    }
+
     // sys/socket.h
 
     pub struct sa_endpoints_t {
