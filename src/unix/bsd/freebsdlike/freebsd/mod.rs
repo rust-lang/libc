@@ -44,10 +44,6 @@ pub type fhandle_t = fhandle;
 pub type au_id_t = ::uid_t;
 pub type au_asid_t = ::pid_t;
 
-// It's an alias over "struct __kvm_t". However, its fields aren't supposed to be used directly,
-// making the type definition system dependent. Better not bind it exactly.
-pub type kvm_t = ::c_void;
-
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_support_flags {
@@ -4272,69 +4268,37 @@ extern "C" {
 
 #[link(name = "kvm")]
 extern "C" {
-    pub fn kvm_open(
-        execfile: *const ::c_char,
-        corefile: *const ::c_char,
-        swapfile: *const ::c_char,
-        flags: ::c_int,
-        errstr: *const ::c_char,
-    ) -> *mut kvm_t;
-    pub fn kvm_close(kd: *mut kvm_t) -> ::c_int;
-    pub fn kvm_dpcpu_setcpu(kd: *mut kvm_t, cpu: ::c_uint) -> ::c_int;
-    pub fn kvm_getargv(kd: *mut kvm_t, p: *const kinfo_proc, nchr: ::c_int) -> *mut *mut ::c_char;
-    pub fn kvm_getcptime(kd: *mut kvm_t, cp_time: *mut ::c_long) -> ::c_int;
-    pub fn kvm_getenvv(kd: *mut kvm_t, p: *const kinfo_proc, nchr: ::c_int) -> *mut *mut ::c_char;
-    pub fn kvm_geterr(kd: *mut kvm_t) -> *mut ::c_char;
-    pub fn kvm_getloadavg(kd: *mut kvm_t, loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
-    pub fn kvm_getmaxcpu(kd: *mut kvm_t) -> ::c_int;
-    pub fn kvm_getncpus(kd: *mut kvm_t) -> ::c_int;
-    pub fn kvm_getpcpu(kd: *mut kvm_t, cpu: ::c_int) -> *mut ::c_void;
-    pub fn kvm_counter_u64_fetch(kd: *mut kvm_t, base: ::c_ulong) -> u64;
-    pub fn kvm_getprocs(
-        kd: *mut kvm_t,
-        op: ::c_int,
-        arg: ::c_int,
-        cnt: *mut ::c_int,
-    ) -> *mut kinfo_proc;
+    pub fn kvm_dpcpu_setcpu(kd: *mut ::kvm_t, cpu: ::c_uint) -> ::c_int;
+    pub fn kvm_getargv(kd: *mut ::kvm_t, p: *const kinfo_proc, nchr: ::c_int)
+        -> *mut *mut ::c_char;
+    pub fn kvm_getcptime(kd: *mut ::kvm_t, cp_time: *mut ::c_long) -> ::c_int;
+    pub fn kvm_getenvv(kd: *mut ::kvm_t, p: *const kinfo_proc, nchr: ::c_int)
+        -> *mut *mut ::c_char;
+    pub fn kvm_geterr(kd: *mut ::kvm_t) -> *mut ::c_char;
+    pub fn kvm_getmaxcpu(kd: *mut ::kvm_t) -> ::c_int;
+    pub fn kvm_getncpus(kd: *mut ::kvm_t) -> ::c_int;
+    pub fn kvm_getpcpu(kd: *mut ::kvm_t, cpu: ::c_int) -> *mut ::c_void;
+    pub fn kvm_counter_u64_fetch(kd: *mut ::kvm_t, base: ::c_ulong) -> u64;
     pub fn kvm_getswapinfo(
-        kd: *mut kvm_t,
+        kd: *mut ::kvm_t,
         info: *mut kvm_swap,
         maxswap: ::c_int,
         flags: ::c_int,
     ) -> ::c_int;
-    pub fn kvm_native(kd: *mut kvm_t) -> ::c_int;
-    pub fn kvm_nlist(kd: *mut kvm_t, nl: *mut nlist) -> ::c_int;
-    pub fn kvm_nlist2(kd: *mut kvm_t, nl: *mut kvm_nlist) -> ::c_int;
-    pub fn kvm_openfiles(
-        execfile: *const ::c_char,
-        corefile: *const ::c_char,
-        swapfile: *const ::c_char,
-        flags: ::c_int,
-        errbuf: *mut ::c_char,
-    ) -> *mut kvm_t;
-    pub fn kvm_read(
-        kd: *mut kvm_t,
-        addr: ::c_ulong,
-        buf: *mut ::c_void,
-        nbytes: ::size_t,
-    ) -> ::ssize_t;
+    pub fn kvm_native(kd: *mut ::kvm_t) -> ::c_int;
+    pub fn kvm_nlist(kd: *mut ::kvm_t, nl: *mut nlist) -> ::c_int;
+    pub fn kvm_nlist2(kd: *mut ::kvm_t, nl: *mut kvm_nlist) -> ::c_int;
     pub fn kvm_read_zpcpu(
-        kd: *mut kvm_t,
+        kd: *mut ::kvm_t,
         base: ::c_ulong,
         buf: *mut ::c_void,
         size: ::size_t,
         cpu: ::c_int,
     ) -> ::ssize_t;
     pub fn kvm_read2(
-        kd: *mut kvm_t,
+        kd: *mut ::kvm_t,
         addr: kvaddr_t,
         buf: *mut ::c_void,
-        nbytes: ::size_t,
-    ) -> ::ssize_t;
-    pub fn kvm_write(
-        kd: *mut kvm_t,
-        addr: ::c_ulong,
-        buf: *const ::c_void,
         nbytes: ::size_t,
     ) -> ::ssize_t;
 }
@@ -4486,10 +4450,10 @@ extern "C" {
 
 #[link(name = "devstat")]
 extern "C" {
-    pub fn devstat_getnumdevs(kd: *mut kvm_t) -> ::c_int;
-    pub fn devstat_getgeneration(kd: *mut kvm_t) -> ::c_long;
-    pub fn devstat_getversion(kd: *mut kvm_t) -> ::c_int;
-    pub fn devstat_checkversion(kd: *mut kvm_t) -> ::c_int;
+    pub fn devstat_getnumdevs(kd: *mut ::kvm_t) -> ::c_int;
+    pub fn devstat_getgeneration(kd: *mut ::kvm_t) -> ::c_long;
+    pub fn devstat_getversion(kd: *mut ::kvm_t) -> ::c_int;
+    pub fn devstat_checkversion(kd: *mut ::kvm_t) -> ::c_int;
     pub fn devstat_selectdevs(
         dev_select: *mut *mut device_selection,
         num_selected: *mut ::c_int,

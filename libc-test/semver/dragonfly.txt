@@ -1317,6 +1317,16 @@ kinfo_cputime
 kinfo_file
 kinfo_lwp
 kinfo_proc
+kvm_close
+kvm_getloadavg
+kvm_getprocs
+kvm_open
+kvm_openfiles
+kvm_read
+kvm_t
+kvm_vm_map_entry_first
+kvm_vm_map_entry_next
+kvm_write
 kqueue
 labs
 lastlog
@@ -1512,6 +1522,7 @@ utmpxname
 utrace
 uuid
 uuid_t
+vm_map_entry_t
 vm_size_t
 wait4
 waitid
