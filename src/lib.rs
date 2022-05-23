@@ -13,7 +13,9 @@
     improper_ctypes,
     // This lint is renamed but we run CI for old stable rustc so should be here.
     redundant_semicolon,
-    redundant_semicolons
+    redundant_semicolons,
+    unused_macros,
+    unused_macro_rules,
 )]
 #![cfg_attr(libc_deny_warnings, deny(warnings))]
 // Attributes needed when building as part of the standard library
