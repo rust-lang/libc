@@ -1208,6 +1208,7 @@ fn test_dragonflybsd(target: &str) {
         "glob.h",
         "grp.h",
         "ifaddrs.h",
+        "kvm.h",
         "langinfo.h",
         "limits.h",
         "link.h",
@@ -1275,6 +1276,7 @@ fn test_dragonflybsd(target: &str) {
         "utime.h",
         "utmpx.h",
         "vfs/ufs/quota.h",
+        "vm/vm_map.h",
         "wchar.h",
         "iconv.h",
     }
@@ -1328,6 +1330,9 @@ fn test_dragonflybsd(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // FIXME: These are tested as part of the linux_fcntl tests since
             // there are header conflicts when including them with all the other

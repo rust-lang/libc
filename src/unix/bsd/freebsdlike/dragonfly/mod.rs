@@ -34,6 +34,15 @@ pub type pthread_spinlock_t = ::uintptr_t;
 
 pub type segsz_t = usize;
 
+pub type vm_prot_t = u8;
+pub type vm_maptype_t = u8;
+pub type vm_inherit_t = i8;
+pub type vm_subsys_t = ::c_int;
+pub type vm_eflags_t = ::c_uint;
+
+pub type vm_map_t = *mut __c_anonymous_vm_map;
+pub type vm_map_entry_t = *mut vm_map_entry;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
 impl ::Copy for sem {}
@@ -334,6 +343,21 @@ s! {
         pub kp_lwp: ::kinfo_lwp,
         pub kp_ktaddr: ::uintptr_t,
         kp_spare: [::c_int; 2],
+    }
+
+    pub struct __c_anonymous_vm_map {
+        _priv: [::uintptr_t; 36],
+    }
+
+    pub struct vm_map_entry {
+        _priv: [::uintptr_t; 15],
+        pub eflags: ::vm_eflags_t,
+        pub maptype: ::vm_maptype_t,
+        pub protection: ::vm_prot_t,
+        pub max_protection: ::vm_prot_t,
+        pub inheritance: ::vm_inherit_t,
+        pub wired_count: ::c_int,
+        pub id: ::vm_subsys_t,
     }
 
     pub struct cpuctl_msr_args_t {
@@ -1611,6 +1635,20 @@ extern "C" {
 
     pub fn reallocf(ptr: *mut ::c_void, size: ::size_t) -> *mut ::c_void;
     pub fn freezero(ptr: *mut ::c_void, size: ::size_t);
+}
+
+#[link(name = "kvm")]
+extern "C" {
+    pub fn kvm_vm_map_entry_first(
+        kvm: *mut ::kvm_t,
+        map: vm_map_t,
+        entry: vm_map_entry_t,
+    ) -> vm_map_entry_t;
+    pub fn kvm_vm_map_entry_next(
+        kvm: *mut ::kvm_t,
+        map: vm_map_entry_t,
+        entry: vm_map_entry_t,
+    ) -> vm_map_entry_t;
 }
 
 cfg_if! {
