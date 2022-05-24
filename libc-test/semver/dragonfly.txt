@@ -1524,6 +1524,7 @@ uuid
 uuid_t
 vm_map_entry_t
 vm_size_t
+vmspace
 wait4
 waitid
 xucred
