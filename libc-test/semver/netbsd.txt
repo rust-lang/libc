@@ -1275,8 +1275,10 @@ jrand48
 kevent
 key_t
 killpg
-kinfo_vmentry
 kinfo_getvmmap
+kinfo_lwp
+kinfo_proc2
+kinfo_vmentry
 kqueue
 kqueue1
 labs
