@@ -113,7 +113,7 @@ pub const PF_INET6: ::sa_family_t = AF_INET6;
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const SOCK_DGRAM: ::sa_type_t = 0;
 pub const SOCK_STREAM: ::sa_type_t = 1;
-pub const SOCK_SEQPACKET: ::sa_type_t = 2;
+pub const SOCK_RAW: ::sa_type_t = 2;
 
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_HOPOPTS: ::c_int = 0;
