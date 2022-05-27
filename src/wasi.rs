@@ -344,6 +344,15 @@ pub const AF_IEEE802154: ::c_int = 36;
 pub const AF_CAIF: ::c_int = 37;
 pub const AF_ALG: ::c_int = 38;
 
+pub const AF_IB: ::c_int = 27;
+pub const AF_MPLS: ::c_int = 28;
+pub const AF_NFC: ::c_int = 39;
+pub const AF_VSOCK: ::c_int = 40;
+pub const PF_IB: ::c_int = AF_IB;
+pub const PF_MPLS: ::c_int = AF_MPLS;
+pub const PF_NFC: ::c_int = AF_NFC;
+pub const PF_VSOCK: ::c_int = AF_VSOCK;
+
 pub const PF_UNSPEC: ::c_int = AF_UNSPEC;
 pub const PF_UNIX: ::c_int = AF_UNIX;
 pub const PF_LOCAL: ::c_int = AF_LOCAL;
@@ -622,6 +631,16 @@ pub const TCP_FASTOPEN_NO_COOKIE: ::c_int = 34;
 pub const TCP_ZEROCOPY_RECEIVE: ::c_int = 35;
 pub const TCP_INQ: ::c_int = 36;
 pub const TCP_CM_INQ: ::c_int = TCP_INQ;
+
+pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
+
+pub const SOCK_STREAM: ::c_int = 1;
+pub const SOCK_DGRAM: ::c_int = 2;
+pub const SOCK_SEQPACKET: ::c_int = 5;
+
+pub const IPPROTO_MAX: ::c_int = 256;
+
+pub const SOL_SOCKET: ::c_int = 1;
 
 pub const SO_DEBUG: ::c_int = 1;
 pub const SO_REUSEADDR: ::c_int = 2;
