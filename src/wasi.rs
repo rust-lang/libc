@@ -102,6 +102,15 @@ s! {
         pub sll_halen: ::c_uchar,
         pub sll_addr: [::c_uchar; 8]
     }
+
+    pub struct sockaddr_storage {
+        pub ss_family: sa_family_t,
+        __ss_align: ::size_t,
+        #[cfg(target_pointer_width = "32")]
+        __ss_pad2: [u8; 128 - 2 * 4],
+        #[cfg(target_pointer_width = "64")]
+        __ss_pad2: [u8; 128 - 2 * 8],
+    }
 }
 
 pub const AF_INET: ::sa_family_t = 0;
