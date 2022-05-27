@@ -46,6 +46,746 @@ pub type nfds_t = c_ulong;
 pub type wchar_t = i32;
 pub type nl_item = c_int;
 
+pub type socklen_t = u32;
+pub type in_addr_t = u32;
+pub type in_port_t = u16;
+pub type sa_family_t = u16;
+
+s! {
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+    
+    #[repr(align(4))]
+    pub struct in6_addr {
+        pub s6_addr: [u8; 16],
+    }
+
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
+    pub struct ip_mreqn {
+        pub imr_multiaddr: in_addr,
+        pub imr_address: in_addr,
+        pub imr_ifindex: ::c_int,
+    }
+
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+        pub imr_sourceaddr: in_addr,
+    }
+
+    pub struct sockaddr {
+        pub sa_family: sa_family_t,
+        pub sa_data: [::c_char; 14],
+    }
+
+    pub struct sockaddr_in {
+        pub sin_family: sa_family_t,
+        pub sin_port: ::in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [u8; 8],
+    }
+
+    pub struct sockaddr_in6 {
+        pub sin6_family: sa_family_t,
+        pub sin6_port: ::in_port_t,
+        pub sin6_flowinfo: u32,
+        pub sin6_addr: ::in6_addr,
+        pub sin6_scope_id: u32,
+    }
+
+    pub struct addrinfo {
+        pub ai_flags: ::c_int,
+        pub ai_family: ::c_int,
+        pub ai_socktype: ::c_int,
+        pub ai_protocol: ::c_int,
+        pub ai_addrlen: socklen_t,
+        pub ai_addr: *mut ::sockaddr,
+        pub ai_canonname: *mut c_char,
+        pub ai_next: *mut addrinfo,
+    }
+
+    pub struct sockaddr_ll {
+        pub sll_family: ::c_ushort,
+        pub sll_protocol: ::c_ushort,
+        pub sll_ifindex: ::c_int,
+        pub sll_hatype: ::c_ushort,
+        pub sll_pkttype: ::c_uchar,
+        pub sll_halen: ::c_uchar,
+        pub sll_addr: [::c_uchar; 8]
+    }
+
+    pub struct in_pktinfo {
+        pub ipi_ifindex: ::c_int,
+        pub ipi_spec_dst: ::in_addr,
+        pub ipi_addr: ::in_addr,
+    }
+
+    pub struct ifaddrs {
+        pub ifa_next: *mut ifaddrs,
+        pub ifa_name: *mut c_char,
+        pub ifa_flags: ::c_uint,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifa_ifu: *mut ::sockaddr,
+        pub ifa_data: *mut ::c_void
+    }
+
+    pub struct in6_rtmsg {
+        rtmsg_dst: ::in6_addr,
+        rtmsg_src: ::in6_addr,
+        rtmsg_gateway: ::in6_addr,
+        rtmsg_type: u32,
+        rtmsg_dst_len: u16,
+        rtmsg_src_len: u16,
+        rtmsg_metric: u32,
+        rtmsg_info: ::c_ulong,
+        rtmsg_flags: u32,
+        rtmsg_ifindex: ::c_int,
+    }
+
+    pub struct arpreq {
+        pub arp_pa: ::sockaddr,
+        pub arp_ha: ::sockaddr,
+        pub arp_flags: ::c_int,
+        pub arp_netmask: ::sockaddr,
+        pub arp_dev: [::c_char; 16],
+    }
+
+    pub struct arpreq_old {
+        pub arp_pa: ::sockaddr,
+        pub arp_ha: ::sockaddr,
+        pub arp_flags: ::c_int,
+        pub arp_netmask: ::sockaddr,
+    }
+
+    pub struct arphdr {
+        pub ar_hrd: u16,
+        pub ar_pro: u16,
+        pub ar_hln: u8,
+        pub ar_pln: u8,
+        pub ar_op: u16,
+    }
+
+    pub struct msghdr {
+        pub msg_name: *mut ::c_void,
+        pub msg_namelen: ::socklen_t,
+        pub msg_iov: *mut ::iovec,
+        pub msg_iovlen: ::c_int,
+        pub msg_control: *mut ::c_void,
+        pub msg_controllen: ::socklen_t,
+        pub msg_flags: ::c_int,
+    }
+
+    pub struct cmsghdr {
+        pub cmsg_len: ::socklen_t,
+        pub cmsg_level: ::c_int,
+        pub cmsg_type: ::c_int,
+    }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
+}
+
+s_no_extra_traits! {
+    pub struct sockaddr_un {
+        pub sun_family: sa_family_t,
+        pub sun_path: [::c_char; 108]
+    }
+
+    pub struct sockaddr_storage {
+        pub ss_family: sa_family_t,
+        __ss_align: ::size_t,
+        #[cfg(target_pointer_width = "32")]
+        __ss_pad2: [u8; 128 - 2 * 4],
+        #[cfg(target_pointer_width = "64")]
+        __ss_pad2: [u8; 128 - 2 * 8],
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for sockaddr_un {
+            fn eq(&self, other: &sockaddr_un) -> bool {
+                self.sun_family == other.sun_family
+                    && self
+                    .sun_path
+                    .iter()
+                    .zip(other.sun_path.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_un {}
+        impl ::fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_un")
+                    .field("sun_family", &self.sun_family)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_un {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.sun_family.hash(state);
+                self.sun_path.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_family == other.ss_family
+                    && self
+                    .__ss_pad2
+                    .iter()
+                    .zip(other.__ss_pad2.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for sockaddr_storage {}
+
+        impl ::fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_family", &self.ss_family)
+                    .field("__ss_align", &self.__ss_align)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for sockaddr_storage {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ss_family.hash(state);
+                self.__ss_pad2.hash(state);
+            }
+        }
+    }
+}
+
+pub const IFF_UP: ::c_int = 0x1;
+pub const IFF_BROADCAST: ::c_int = 0x2;
+pub const IFF_DEBUG: ::c_int = 0x4;
+pub const IFF_LOOPBACK: ::c_int = 0x8;
+pub const IFF_POINTOPOINT: ::c_int = 0x10;
+pub const IFF_NOTRAILERS: ::c_int = 0x20;
+pub const IFF_RUNNING: ::c_int = 0x40;
+pub const IFF_NOARP: ::c_int = 0x80;
+pub const IFF_PROMISC: ::c_int = 0x100;
+pub const IFF_ALLMULTI: ::c_int = 0x200;
+pub const IFF_MASTER: ::c_int = 0x400;
+pub const IFF_SLAVE: ::c_int = 0x800;
+pub const IFF_MULTICAST: ::c_int = 0x1000;
+pub const IFF_PORTSEL: ::c_int = 0x2000;
+pub const IFF_AUTOMEDIA: ::c_int = 0x4000;
+pub const IFF_DYNAMIC: ::c_int = 0x8000;
+
+pub const SOL_IP: ::c_int = 0;
+pub const SOL_TCP: ::c_int = 6;
+pub const SOL_UDP: ::c_int = 17;
+pub const SOL_IPV6: ::c_int = 41;
+pub const SOL_ICMPV6: ::c_int = 58;
+pub const SOL_RAW: ::c_int = 255;
+pub const SOL_DECNET: ::c_int = 261;
+pub const SOL_X25: ::c_int = 262;
+pub const SOL_PACKET: ::c_int = 263;
+pub const SOL_ATM: ::c_int = 264;
+pub const SOL_AAL: ::c_int = 265;
+pub const SOL_IRDA: ::c_int = 266;
+pub const SOL_NETBEUI: ::c_int = 267;
+pub const SOL_LLC: ::c_int = 268;
+pub const SOL_DCCP: ::c_int = 269;
+pub const SOL_NETLINK: ::c_int = 270;
+pub const SOL_TIPC: ::c_int = 271;
+pub const SOL_BLUETOOTH: ::c_int = 274;
+pub const SOL_ALG: ::c_int = 279;
+
+pub const AF_UNSPEC: ::c_int = 0;
+pub const AF_UNIX: ::c_int = 1;
+pub const AF_LOCAL: ::c_int = 1;
+pub const AF_INET: ::c_int = 2;
+pub const AF_AX25: ::c_int = 3;
+pub const AF_IPX: ::c_int = 4;
+pub const AF_APPLETALK: ::c_int = 5;
+pub const AF_NETROM: ::c_int = 6;
+pub const AF_BRIDGE: ::c_int = 7;
+pub const AF_ATMPVC: ::c_int = 8;
+pub const AF_X25: ::c_int = 9;
+pub const AF_INET6: ::c_int = 10;
+pub const AF_ROSE: ::c_int = 11;
+pub const AF_DECnet: ::c_int = 12;
+pub const AF_NETBEUI: ::c_int = 13;
+pub const AF_SECURITY: ::c_int = 14;
+pub const AF_KEY: ::c_int = 15;
+pub const AF_NETLINK: ::c_int = 16;
+pub const AF_ROUTE: ::c_int = AF_NETLINK;
+pub const AF_PACKET: ::c_int = 17;
+pub const AF_ASH: ::c_int = 18;
+pub const AF_ECONET: ::c_int = 19;
+pub const AF_ATMSVC: ::c_int = 20;
+pub const AF_RDS: ::c_int = 21;
+pub const AF_SNA: ::c_int = 22;
+pub const AF_IRDA: ::c_int = 23;
+pub const AF_PPPOX: ::c_int = 24;
+pub const AF_WANPIPE: ::c_int = 25;
+pub const AF_LLC: ::c_int = 26;
+pub const AF_CAN: ::c_int = 29;
+pub const AF_TIPC: ::c_int = 30;
+pub const AF_BLUETOOTH: ::c_int = 31;
+pub const AF_IUCV: ::c_int = 32;
+pub const AF_RXRPC: ::c_int = 33;
+pub const AF_ISDN: ::c_int = 34;
+pub const AF_PHONET: ::c_int = 35;
+pub const AF_IEEE802154: ::c_int = 36;
+pub const AF_CAIF: ::c_int = 37;
+pub const AF_ALG: ::c_int = 38;
+
+pub const PF_UNSPEC: ::c_int = AF_UNSPEC;
+pub const PF_UNIX: ::c_int = AF_UNIX;
+pub const PF_LOCAL: ::c_int = AF_LOCAL;
+pub const PF_INET: ::c_int = AF_INET;
+pub const PF_AX25: ::c_int = AF_AX25;
+pub const PF_IPX: ::c_int = AF_IPX;
+pub const PF_APPLETALK: ::c_int = AF_APPLETALK;
+pub const PF_NETROM: ::c_int = AF_NETROM;
+pub const PF_BRIDGE: ::c_int = AF_BRIDGE;
+pub const PF_ATMPVC: ::c_int = AF_ATMPVC;
+pub const PF_X25: ::c_int = AF_X25;
+pub const PF_INET6: ::c_int = AF_INET6;
+pub const PF_ROSE: ::c_int = AF_ROSE;
+pub const PF_DECnet: ::c_int = AF_DECnet;
+pub const PF_NETBEUI: ::c_int = AF_NETBEUI;
+pub const PF_SECURITY: ::c_int = AF_SECURITY;
+pub const PF_KEY: ::c_int = AF_KEY;
+pub const PF_NETLINK: ::c_int = AF_NETLINK;
+pub const PF_ROUTE: ::c_int = AF_ROUTE;
+pub const PF_PACKET: ::c_int = AF_PACKET;
+pub const PF_ASH: ::c_int = AF_ASH;
+pub const PF_ECONET: ::c_int = AF_ECONET;
+pub const PF_ATMSVC: ::c_int = AF_ATMSVC;
+pub const PF_RDS: ::c_int = AF_RDS;
+pub const PF_SNA: ::c_int = AF_SNA;
+pub const PF_IRDA: ::c_int = AF_IRDA;
+pub const PF_PPPOX: ::c_int = AF_PPPOX;
+pub const PF_WANPIPE: ::c_int = AF_WANPIPE;
+pub const PF_LLC: ::c_int = AF_LLC;
+pub const PF_CAN: ::c_int = AF_CAN;
+pub const PF_TIPC: ::c_int = AF_TIPC;
+pub const PF_BLUETOOTH: ::c_int = AF_BLUETOOTH;
+pub const PF_IUCV: ::c_int = AF_IUCV;
+pub const PF_RXRPC: ::c_int = AF_RXRPC;
+pub const PF_ISDN: ::c_int = AF_ISDN;
+pub const PF_PHONET: ::c_int = AF_PHONET;
+pub const PF_IEEE802154: ::c_int = AF_IEEE802154;
+pub const PF_CAIF: ::c_int = AF_CAIF;
+pub const PF_ALG: ::c_int = AF_ALG;
+
+pub const SOMAXCONN: ::c_int = 128;
+
+pub const MSG_OOB: ::c_int = 1;
+pub const MSG_PEEK: ::c_int = 2;
+pub const MSG_DONTROUTE: ::c_int = 4;
+pub const MSG_CTRUNC: ::c_int = 8;
+pub const MSG_TRUNC: ::c_int = 0x20;
+pub const MSG_DONTWAIT: ::c_int = 0x40;
+pub const MSG_EOR: ::c_int = 0x80;
+pub const MSG_WAITALL: ::c_int = 0x100;
+pub const MSG_FIN: ::c_int = 0x200;
+pub const MSG_SYN: ::c_int = 0x400;
+pub const MSG_CONFIRM: ::c_int = 0x800;
+pub const MSG_RST: ::c_int = 0x1000;
+pub const MSG_ERRQUEUE: ::c_int = 0x2000;
+pub const MSG_NOSIGNAL: ::c_int = 0x4000;
+pub const MSG_MORE: ::c_int = 0x8000;
+pub const MSG_WAITFORONE: ::c_int = 0x10000;
+pub const MSG_FASTOPEN: ::c_int = 0x20000000;
+pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
+
+pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
+
+pub const SOCK_RAW: ::c_int = 3;
+pub const SOCK_RDM: ::c_int = 4;
+pub const IP_TOS: ::c_int = 1;
+pub const IP_TTL: ::c_int = 2;
+pub const IP_HDRINCL: ::c_int = 3;
+pub const IP_OPTIONS: ::c_int = 4;
+pub const IP_ROUTER_ALERT: ::c_int = 5;
+pub const IP_RECVOPTS: ::c_int = 6;
+pub const IP_RETOPTS: ::c_int = 7;
+pub const IP_PKTINFO: ::c_int = 8;
+pub const IP_PKTOPTIONS: ::c_int = 9;
+pub const IP_MTU_DISCOVER: ::c_int = 10;
+pub const IP_RECVERR: ::c_int = 11;
+pub const IP_RECVTTL: ::c_int = 12;
+pub const IP_RECVTOS: ::c_int = 13;
+pub const IP_MTU: ::c_int = 14;
+pub const IP_FREEBIND: ::c_int = 15;
+pub const IP_IPSEC_POLICY: ::c_int = 16;
+pub const IP_XFRM_POLICY: ::c_int = 17;
+pub const IP_PASSSEC: ::c_int = 18;
+pub const IP_TRANSPARENT: ::c_int = 19;
+pub const IP_ORIGDSTADDR: ::c_int = 20;
+pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
+pub const IP_MINTTL: ::c_int = 21;
+pub const IP_NODEFRAG: ::c_int = 22;
+pub const IP_CHECKSUM: ::c_int = 23;
+pub const IP_BIND_ADDRESS_NO_PORT: ::c_int = 24;
+pub const IP_MULTICAST_IF: ::c_int = 32;
+pub const IP_MULTICAST_TTL: ::c_int = 33;
+pub const IP_MULTICAST_LOOP: ::c_int = 34;
+pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
+pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 37;
+pub const IP_BLOCK_SOURCE: ::c_int = 38;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 39;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 40;
+pub const IP_MSFILTER: ::c_int = 41;
+pub const IP_MULTICAST_ALL: ::c_int = 49;
+pub const IP_UNICAST_IF: ::c_int = 50;
+
+pub const IP_DEFAULT_MULTICAST_TTL: ::c_int = 1;
+pub const IP_DEFAULT_MULTICAST_LOOP: ::c_int = 1;
+
+pub const IP_PMTUDISC_DONT: ::c_int = 0;
+pub const IP_PMTUDISC_WANT: ::c_int = 1;
+pub const IP_PMTUDISC_DO: ::c_int = 2;
+pub const IP_PMTUDISC_PROBE: ::c_int = 3;
+pub const IP_PMTUDISC_INTERFACE: ::c_int = 4;
+pub const IP_PMTUDISC_OMIT: ::c_int = 5;
+
+// IPPROTO_IP defined in src/unix/mod.rs
+/// Hop-by-hop option header
+pub const IPPROTO_HOPOPTS: ::c_int = 0;
+// IPPROTO_ICMP defined in src/unix/mod.rs
+/// group mgmt protocol
+pub const IPPROTO_IGMP: ::c_int = 2;
+/// for compatibility
+pub const IPPROTO_IPIP: ::c_int = 4;
+// IPPROTO_TCP defined in src/unix/mod.rs
+/// exterior gateway protocol
+pub const IPPROTO_EGP: ::c_int = 8;
+/// pup
+pub const IPPROTO_PUP: ::c_int = 12;
+// IPPROTO_UDP defined in src/unix/mod.rs
+/// xns idp
+pub const IPPROTO_IDP: ::c_int = 22;
+/// tp-4 w/ class negotiation
+pub const IPPROTO_TP: ::c_int = 29;
+/// DCCP
+pub const IPPROTO_DCCP: ::c_int = 33;
+// IPPROTO_IPV6 defined in src/unix/mod.rs
+/// IP6 routing header
+pub const IPPROTO_ROUTING: ::c_int = 43;
+/// IP6 fragmentation header
+pub const IPPROTO_FRAGMENT: ::c_int = 44;
+/// resource reservation
+pub const IPPROTO_RSVP: ::c_int = 46;
+/// General Routing Encap.
+pub const IPPROTO_GRE: ::c_int = 47;
+/// IP6 Encap Sec. Payload
+pub const IPPROTO_ESP: ::c_int = 50;
+/// IP6 Auth Header
+pub const IPPROTO_AH: ::c_int = 51;
+// IPPROTO_ICMPV6 defined in src/unix/mod.rs
+/// IP6 no next header
+pub const IPPROTO_NONE: ::c_int = 59;
+/// IP6 destination option
+pub const IPPROTO_DSTOPTS: ::c_int = 60;
+pub const IPPROTO_MTP: ::c_int = 92;
+/// encapsulation header
+pub const IPPROTO_ENCAP: ::c_int = 98;
+/// Protocol indep. multicast
+pub const IPPROTO_PIM: ::c_int = 103;
+/// IP Payload Comp. Protocol
+pub const IPPROTO_COMP: ::c_int = 108;
+/// SCTP
+pub const IPPROTO_SCTP: ::c_int = 132;
+pub const IPPROTO_MH: ::c_int = 135;
+pub const IPPROTO_UDPLITE: ::c_int = 136;
+/// raw IP packet
+pub const IPPROTO_RAW: ::c_int = 255;
+pub const IPPROTO_BEETPH: ::c_int = 94;
+pub const IPPROTO_MPLS: ::c_int = 137;
+
+pub const MCAST_EXCLUDE: ::c_int = 0;
+pub const MCAST_INCLUDE: ::c_int = 1;
+pub const MCAST_JOIN_GROUP: ::c_int = 42;
+pub const MCAST_BLOCK_SOURCE: ::c_int = 43;
+pub const MCAST_UNBLOCK_SOURCE: ::c_int = 44;
+pub const MCAST_LEAVE_GROUP: ::c_int = 45;
+pub const MCAST_JOIN_SOURCE_GROUP: ::c_int = 46;
+pub const MCAST_LEAVE_SOURCE_GROUP: ::c_int = 47;
+pub const MCAST_MSFILTER: ::c_int = 48;
+
+pub const IPV6_ADDRFORM: ::c_int = 1;
+pub const IPV6_2292PKTINFO: ::c_int = 2;
+pub const IPV6_2292HOPOPTS: ::c_int = 3;
+pub const IPV6_2292DSTOPTS: ::c_int = 4;
+pub const IPV6_2292RTHDR: ::c_int = 5;
+pub const IPV6_2292PKTOPTIONS: ::c_int = 6;
+pub const IPV6_CHECKSUM: ::c_int = 7;
+pub const IPV6_2292HOPLIMIT: ::c_int = 8;
+pub const IPV6_NEXTHOP: ::c_int = 9;
+pub const IPV6_AUTHHDR: ::c_int = 10;
+pub const IPV6_UNICAST_HOPS: ::c_int = 16;
+pub const IPV6_MULTICAST_IF: ::c_int = 17;
+pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
+pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
+pub const IPV6_ADD_MEMBERSHIP: ::c_int = 20;
+pub const IPV6_DROP_MEMBERSHIP: ::c_int = 21;
+pub const IPV6_ROUTER_ALERT: ::c_int = 22;
+pub const IPV6_MTU_DISCOVER: ::c_int = 23;
+pub const IPV6_MTU: ::c_int = 24;
+pub const IPV6_RECVERR: ::c_int = 25;
+pub const IPV6_V6ONLY: ::c_int = 26;
+pub const IPV6_JOIN_ANYCAST: ::c_int = 27;
+pub const IPV6_LEAVE_ANYCAST: ::c_int = 28;
+pub const IPV6_IPSEC_POLICY: ::c_int = 34;
+pub const IPV6_XFRM_POLICY: ::c_int = 35;
+pub const IPV6_HDRINCL: ::c_int = 36;
+pub const IPV6_RECVPKTINFO: ::c_int = 49;
+pub const IPV6_PKTINFO: ::c_int = 50;
+pub const IPV6_RECVHOPLIMIT: ::c_int = 51;
+pub const IPV6_HOPLIMIT: ::c_int = 52;
+pub const IPV6_RECVHOPOPTS: ::c_int = 53;
+pub const IPV6_HOPOPTS: ::c_int = 54;
+pub const IPV6_RTHDRDSTOPTS: ::c_int = 55;
+pub const IPV6_RECVRTHDR: ::c_int = 56;
+pub const IPV6_RTHDR: ::c_int = 57;
+pub const IPV6_RECVDSTOPTS: ::c_int = 58;
+pub const IPV6_DSTOPTS: ::c_int = 59;
+pub const IPV6_RECVPATHMTU: ::c_int = 60;
+pub const IPV6_PATHMTU: ::c_int = 61;
+pub const IPV6_DONTFRAG: ::c_int = 62;
+pub const IPV6_RECVTCLASS: ::c_int = 66;
+pub const IPV6_TCLASS: ::c_int = 67;
+pub const IPV6_AUTOFLOWLABEL: ::c_int = 70;
+pub const IPV6_ADDR_PREFERENCES: ::c_int = 72;
+pub const IPV6_MINHOPCOUNT: ::c_int = 73;
+pub const IPV6_ORIGDSTADDR: ::c_int = 74;
+pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
+pub const IPV6_TRANSPARENT: ::c_int = 75;
+pub const IPV6_UNICAST_IF: ::c_int = 76;
+pub const IPV6_PREFER_SRC_TMP: ::c_int = 0x0001;
+pub const IPV6_PREFER_SRC_PUBLIC: ::c_int = 0x0002;
+pub const IPV6_PREFER_SRC_PUBTMP_DEFAULT: ::c_int = 0x0100;
+pub const IPV6_PREFER_SRC_COA: ::c_int = 0x0004;
+pub const IPV6_PREFER_SRC_HOME: ::c_int = 0x0400;
+pub const IPV6_PREFER_SRC_CGA: ::c_int = 0x0008;
+pub const IPV6_PREFER_SRC_NONCGA: ::c_int = 0x0800;
+
+pub const IPV6_PMTUDISC_DONT: ::c_int = 0;
+pub const IPV6_PMTUDISC_WANT: ::c_int = 1;
+pub const IPV6_PMTUDISC_DO: ::c_int = 2;
+pub const IPV6_PMTUDISC_PROBE: ::c_int = 3;
+pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
+pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
+
+pub const TCP_NODELAY: ::c_int = 1;
+pub const TCP_MAXSEG: ::c_int = 2;
+pub const TCP_CORK: ::c_int = 3;
+pub const TCP_KEEPIDLE: ::c_int = 4;
+pub const TCP_KEEPINTVL: ::c_int = 5;
+pub const TCP_KEEPCNT: ::c_int = 6;
+pub const TCP_SYNCNT: ::c_int = 7;
+pub const TCP_LINGER2: ::c_int = 8;
+pub const TCP_DEFER_ACCEPT: ::c_int = 9;
+pub const TCP_WINDOW_CLAMP: ::c_int = 10;
+pub const TCP_INFO: ::c_int = 11;
+pub const TCP_QUICKACK: ::c_int = 12;
+pub const TCP_CONGESTION: ::c_int = 13;
+pub const TCP_MD5SIG: ::c_int = 14;
+pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
+pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
+pub const TCP_THIN_DUPACK: ::c_int = 17;
+pub const TCP_USER_TIMEOUT: ::c_int = 18;
+pub const TCP_REPAIR: ::c_int = 19;
+pub const TCP_REPAIR_QUEUE: ::c_int = 20;
+pub const TCP_QUEUE_SEQ: ::c_int = 21;
+pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
+pub const TCP_FASTOPEN: ::c_int = 23;
+pub const TCP_TIMESTAMP: ::c_int = 24;
+pub const TCP_NOTSENT_LOWAT: ::c_int = 25;
+pub const TCP_CC_INFO: ::c_int = 26;
+pub const TCP_SAVE_SYN: ::c_int = 27;
+pub const TCP_SAVED_SYN: ::c_int = 28;
+pub const TCP_REPAIR_WINDOW: ::c_int = 29;
+pub const TCP_FASTOPEN_CONNECT: ::c_int = 30;
+pub const TCP_ULP: ::c_int = 31;
+pub const TCP_MD5SIG_EXT: ::c_int = 32;
+pub const TCP_FASTOPEN_KEY: ::c_int = 33;
+pub const TCP_FASTOPEN_NO_COOKIE: ::c_int = 34;
+pub const TCP_ZEROCOPY_RECEIVE: ::c_int = 35;
+pub const TCP_INQ: ::c_int = 36;
+pub const TCP_CM_INQ: ::c_int = TCP_INQ;
+
+pub const SO_DEBUG: ::c_int = 1;
+pub const SO_REUSEADDR: ::c_int = 2;
+pub const SO_TYPE: ::c_int = 3;
+pub const SO_ERROR: ::c_int = 4;
+pub const SO_DONTROUTE: ::c_int = 5;
+pub const SO_BROADCAST: ::c_int = 6;
+pub const SO_SNDBUF: ::c_int = 7;
+pub const SO_RCVBUF: ::c_int = 8;
+pub const SO_KEEPALIVE: ::c_int = 9;
+pub const SO_OOBINLINE: ::c_int = 10;
+pub const SO_PRIORITY: ::c_int = 12;
+pub const SO_LINGER: ::c_int = 13;
+pub const SO_BSDCOMPAT: ::c_int = 14;
+pub const SO_REUSEPORT: ::c_int = 15;
+pub const SO_PASSCRED: ::c_int = 16;
+pub const SO_PEERCRED: ::c_int = 17;
+pub const SO_RCVLOWAT: ::c_int = 18;
+pub const SO_SNDLOWAT: ::c_int = 19;
+pub const SO_RCVTIMEO: ::c_int = 20;
+pub const SO_SNDTIMEO: ::c_int = 21;
+pub const SO_BINDTODEVICE: ::c_int = 25;
+pub const SO_ATTACH_FILTER: ::c_int = 26;
+pub const SO_DETACH_FILTER: ::c_int = 27;
+pub const SO_GET_FILTER: ::c_int = SO_ATTACH_FILTER;
+pub const SO_TIMESTAMP: ::c_int = 29;
+pub const SO_ACCEPTCONN: ::c_int = 30;
+pub const SO_PEERSEC: ::c_int = 31;
+pub const SO_SNDBUFFORCE: ::c_int = 32;
+pub const SO_RCVBUFFORCE: ::c_int = 33;
+pub const SO_PASSSEC: ::c_int = 34;
+pub const SO_MARK: ::c_int = 36;
+pub const SO_PROTOCOL: ::c_int = 38;
+pub const SO_DOMAIN: ::c_int = 39;
+pub const SO_RXQ_OVFL: ::c_int = 40;
+pub const SO_PEEK_OFF: ::c_int = 42;
+pub const SO_BUSY_POLL: ::c_int = 46;
+
+pub const SHUT_RD: ::c_int = 0;
+pub const SHUT_WR: ::c_int = 1;
+pub const SHUT_RDWR: ::c_int = 2;
+
+pub const IPTOS_LOWDELAY: u8 = 0x10;
+pub const IPTOS_THROUGHPUT: u8 = 0x08;
+pub const IPTOS_RELIABILITY: u8 = 0x04;
+pub const IPTOS_MINCOST: u8 = 0x02;
+
+pub const IPTOS_PREC_NETCONTROL: u8 = 0xe0;
+pub const IPTOS_PREC_INTERNETCONTROL: u8 = 0xc0;
+pub const IPTOS_PREC_CRITIC_ECP: u8 = 0xa0;
+pub const IPTOS_PREC_FLASHOVERRIDE: u8 = 0x80;
+pub const IPTOS_PREC_FLASH: u8 = 0x60;
+pub const IPTOS_PREC_IMMEDIATE: u8 = 0x40;
+pub const IPTOS_PREC_PRIORITY: u8 = 0x20;
+pub const IPTOS_PREC_ROUTINE: u8 = 0x00;
+
+pub const IPTOS_ECN_MASK: u8 = 0x03;
+pub const IPTOS_ECN_ECT1: u8 = 0x01;
+pub const IPTOS_ECN_ECT0: u8 = 0x02;
+pub const IPTOS_ECN_CE: u8 = 0x03;
+
+pub const IPOPT_COPY: u8 = 0x80;
+pub const IPOPT_CLASS_MASK: u8 = 0x60;
+pub const IPOPT_NUMBER_MASK: u8 = 0x1f;
+
+pub const IPOPT_CONTROL: u8 = 0x00;
+pub const IPOPT_RESERVED1: u8 = 0x20;
+pub const IPOPT_MEASUREMENT: u8 = 0x40;
+pub const IPOPT_RESERVED2: u8 = 0x60;
+pub const IPOPT_END: u8 = 0 | IPOPT_CONTROL;
+pub const IPOPT_NOOP: u8 = 1 | IPOPT_CONTROL;
+pub const IPOPT_SEC: u8 = 2 | IPOPT_CONTROL | IPOPT_COPY;
+pub const IPOPT_LSRR: u8 = 3 | IPOPT_CONTROL | IPOPT_COPY;
+pub const IPOPT_TIMESTAMP: u8 = 4 | IPOPT_MEASUREMENT;
+pub const IPOPT_RR: u8 = 7 | IPOPT_CONTROL;
+pub const IPOPT_SID: u8 = 8 | IPOPT_CONTROL | IPOPT_COPY;
+pub const IPOPT_SSRR: u8 = 9 | IPOPT_CONTROL | IPOPT_COPY;
+pub const IPOPT_RA: u8 = 20 | IPOPT_CONTROL | IPOPT_COPY;
+pub const IPVERSION: u8 = 4;
+pub const MAXTTL: u8 = 255;
+pub const IPDEFTTL: u8 = 64;
+pub const IPOPT_OPTVAL: u8 = 0;
+pub const IPOPT_OLEN: u8 = 1;
+pub const IPOPT_OFFSET: u8 = 2;
+pub const IPOPT_MINOFF: u8 = 4;
+pub const MAX_IPOPTLEN: u8 = 40;
+pub const IPOPT_NOP: u8 = IPOPT_NOOP;
+pub const IPOPT_EOL: u8 = IPOPT_END;
+pub const IPOPT_TS: u8 = IPOPT_TIMESTAMP;
+pub const IPOPT_TS_TSONLY: u8 = 0;
+pub const IPOPT_TS_TSANDADDR: u8 = 1;
+pub const IPOPT_TS_PRESPEC: u8 = 3;
+
+pub const ARPOP_RREQUEST: u16 = 3;
+pub const ARPOP_RREPLY: u16 = 4;
+pub const ARPOP_InREQUEST: u16 = 8;
+pub const ARPOP_InREPLY: u16 = 9;
+pub const ARPOP_NAK: u16 = 10;
+
+pub const ATF_NETMASK: ::c_int = 0x20;
+pub const ATF_DONTPUB: ::c_int = 0x40;
+
+pub const ARPHRD_NETROM: u16 = 0;
+pub const ARPHRD_ETHER: u16 = 1;
+pub const ARPHRD_EETHER: u16 = 2;
+pub const ARPHRD_AX25: u16 = 3;
+pub const ARPHRD_PRONET: u16 = 4;
+pub const ARPHRD_CHAOS: u16 = 5;
+pub const ARPHRD_IEEE802: u16 = 6;
+pub const ARPHRD_ARCNET: u16 = 7;
+pub const ARPHRD_APPLETLK: u16 = 8;
+pub const ARPHRD_DLCI: u16 = 15;
+pub const ARPHRD_ATM: u16 = 19;
+pub const ARPHRD_METRICOM: u16 = 23;
+pub const ARPHRD_IEEE1394: u16 = 24;
+pub const ARPHRD_EUI64: u16 = 27;
+pub const ARPHRD_INFINIBAND: u16 = 32;
+
+pub const ARPHRD_SLIP: u16 = 256;
+pub const ARPHRD_CSLIP: u16 = 257;
+pub const ARPHRD_SLIP6: u16 = 258;
+pub const ARPHRD_CSLIP6: u16 = 259;
+pub const ARPHRD_RSRVD: u16 = 260;
+pub const ARPHRD_ADAPT: u16 = 264;
+pub const ARPHRD_ROSE: u16 = 270;
+pub const ARPHRD_X25: u16 = 271;
+pub const ARPHRD_HWX25: u16 = 272;
+pub const ARPHRD_CAN: u16 = 280;
+pub const ARPHRD_PPP: u16 = 512;
+pub const ARPHRD_CISCO: u16 = 513;
+pub const ARPHRD_HDLC: u16 = ARPHRD_CISCO;
+pub const ARPHRD_LAPB: u16 = 516;
+pub const ARPHRD_DDCMP: u16 = 517;
+pub const ARPHRD_RAWHDLC: u16 = 518;
+
+pub const ARPHRD_TUNNEL: u16 = 768;
+pub const ARPHRD_TUNNEL6: u16 = 769;
+pub const ARPHRD_FRAD: u16 = 770;
+pub const ARPHRD_SKIP: u16 = 771;
+pub const ARPHRD_LOOPBACK: u16 = 772;
+pub const ARPHRD_LOCALTLK: u16 = 773;
+pub const ARPHRD_FDDI: u16 = 774;
+pub const ARPHRD_BIF: u16 = 775;
+pub const ARPHRD_SIT: u16 = 776;
+pub const ARPHRD_IPDDP: u16 = 777;
+pub const ARPHRD_IPGRE: u16 = 778;
+pub const ARPHRD_PIMREG: u16 = 779;
+pub const ARPHRD_HIPPI: u16 = 780;
+pub const ARPHRD_ASH: u16 = 781;
+pub const ARPHRD_ECONET: u16 = 782;
+pub const ARPHRD_IRDA: u16 = 783;
+pub const ARPHRD_FCPP: u16 = 784;
+pub const ARPHRD_FCAL: u16 = 785;
+pub const ARPHRD_FCPL: u16 = 786;
+pub const ARPHRD_FCFABRIC: u16 = 787;
+pub const ARPHRD_IEEE802_TR: u16 = 800;
+pub const ARPHRD_IEEE80211: u16 = 801;
+pub const ARPHRD_IEEE80211_PRISM: u16 = 802;
+pub const ARPHRD_IEEE80211_RADIOTAP: u16 = 803;
+pub const ARPHRD_IEEE802154: u16 = 804;
+
+pub const ARPHRD_VOID: u16 = 0xFFFF;
+pub const ARPHRD_NONE: u16 = 0xFFFE;
+
 s_no_extra_traits! {
     #[repr(align(16))]
     #[allow(missing_debug_implementations)]
@@ -121,6 +861,11 @@ s! {
         pub it_value: timespec,
     }
 
+    pub struct ipv6_mreq {
+        pub ipv6mr_multiaddr: in6_addr,
+        pub ipv6mr_interface: c_uint,
+    }
+
     pub struct iovec {
         pub iov_base: *mut c_void,
         pub iov_len: size_t,
@@ -157,6 +902,16 @@ s! {
         pub fd: c_int,
         pub events: c_short,
         pub revents: c_short,
+    }
+
+    pub struct linger {
+        pub l_onoff: c_int,
+        pub l_linger: c_int,
+    }
+
+    pub struct itimerval {
+        pub it_interval: timeval,
+        pub it_value: timeval,
     }
 
     pub struct rusage {
@@ -196,6 +951,9 @@ pub struct dirent {
     /// declare it as a zero-length array instead.
     pub d_name: [c_char; 0],
 }
+
+pub const INT_MIN: c_int = -2147483648;
+pub const INT_MAX: c_int = 2147483647;
 
 pub const EXIT_SUCCESS: c_int = 0;
 pub const EXIT_FAILURE: c_int = 1;
@@ -440,6 +1198,24 @@ pub const YESEXPR: ::nl_item = 0x50000;
 pub const NOEXPR: ::nl_item = 0x50001;
 pub const YESSTR: ::nl_item = 0x50002;
 pub const NOSTR: ::nl_item = 0x50003;
+
+pub const PRIO_MIN: ::c_int = -20;
+pub const PRIO_MAX: ::c_int = 20;
+
+pub const IPPROTO_ICMP: ::c_int = 1;
+pub const IPPROTO_ICMPV6: ::c_int = 58;
+pub const IPPROTO_TCP: ::c_int = 6;
+pub const IPPROTO_UDP: ::c_int = 17;
+pub const IPPROTO_IP: ::c_int = 0;
+pub const IPPROTO_IPV6: ::c_int = 41;
+
+pub const INADDR_LOOPBACK: in_addr_t = 2130706433;
+pub const INADDR_ANY: in_addr_t = 0;
+pub const INADDR_BROADCAST: in_addr_t = 4294967295;
+pub const INADDR_NONE: in_addr_t = 4294967295;
+
+pub const ARPOP_REQUEST: u16 = 1;
+pub const ARPOP_REPLY: u16 = 2;
 
 #[cfg_attr(
     feature = "rustc-dep-of-std",
