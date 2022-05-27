@@ -1333,10 +1333,8 @@ setfsuid
 setgroups
 sethostname
 setpwent
-setregid
 setresgid
 setresuid
-setreuid
 settimeofday
 shmat
 shmatt_t
