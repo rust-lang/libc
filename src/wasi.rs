@@ -129,7 +129,7 @@ pub const SO_PROMISCUOUS: ::c_int = 7;
 pub const SO_TIMEOUT_READ: ::c_int = 0;
 pub const SO_TIMEOUT_WRITE: ::c_int = 0;
 pub const SO_TIMEOUT_CONNECT: ::c_int = 0;
-pub const SO_TIMEOUT_ACCE{T}: ::c_int = 0;
+pub const SO_TIMEOUT_ACCEPT: ::c_int = 0;
 
 pub const SHUT_RD: ::c_int = 1;
 pub const SHUT_WR: ::c_int = 2;
