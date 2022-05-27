@@ -113,11 +113,11 @@ s! {
     }
 }
 
-pub const AF_INET: ::sa_family_t = 0;
-pub const AF_INET6: ::sa_family_t = 1;
+pub const AF_INET: ::c_int = 0;
+pub const AF_INET6: ::c_int = 1;
 
-pub const PF_INET: ::sa_family_t = AF_INET;
-pub const PF_INET6: ::sa_family_t = AF_INET6;
+pub const PF_INET: ::sa_family_t = AF_INET as sa_family_t;
+pub const PF_INET6: ::sa_family_t = AF_INET6 as sa_family_t;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const SOCK_DGRAM: ::sa_type_t = 0;
