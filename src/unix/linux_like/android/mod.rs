@@ -2489,6 +2489,8 @@ pub const AF_VSOCK: ::c_int = 40;
 pub const PF_NFC: ::c_int = AF_NFC;
 pub const PF_VSOCK: ::c_int = AF_VSOCK;
 
+pub const SOMAXCONN: ::c_int = 128;
+
 // sys/system_properties.h
 pub const PROP_VALUE_MAX: ::c_int = 92;
 pub const PROP_NAME_MAX: ::c_int = 32;
