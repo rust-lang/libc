@@ -389,8 +389,8 @@ pub const AF_INET: ::c_int = 1;
 pub const AF_INET6: ::c_int = 2;
 pub const AF_UNIX: ::c_int = 3;
 
-pub const IF_NAMESIZE: ::c_int = 16;
-pub const IFNAMSIZ: ::c_int = IF_NAMESIZE;
+pub const IF_NAMESIZE: ::size_t = 16;
+pub const IFNAMSIZ: ::size_t = IF_NAMESIZE;
 
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_HOPOPTS: ::c_int = 0;
