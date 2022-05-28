@@ -3490,7 +3490,9 @@ fn test_linux(target: &str) {
             && ((x86_64 || i686 || arm || riscv64) && gnu || x86_64_gnux32)
         ) ||
         // the `u` field is in fact an anonymous union
-        (gnu && struct_ == "ptrace_syscall_info" && (field == "u" || field == "pad"))
+        (gnu && struct_ == "ptrace_syscall_info" && (field == "u" || field == "pad")) ||
+        // the vregs field is a `__uint128_t` C's type.
+        (struct_ == "user_fpsimd_struct" && field == "vregs")
     });
 
     cfg.skip_roundtrip(move |s| match s {

@@ -26,4 +26,12 @@ s! {
         // auto-derive traits like Debug
         __reserved: [[u64; 32]; 16],
     }
+
+    #[repr(align(16))]
+    pub struct user_fpsimd_struct {
+        pub vregs: [[u64; 2]; 32],
+        pub fpsr: ::c_uint,
+        pub fpcr: ::c_uint,
+    }
+
 }
