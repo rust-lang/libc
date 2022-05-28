@@ -353,6 +353,71 @@ pub const IPPROTO_RAW: ::c_int = 255;
 pub const IPPROTO_MPTCP: ::c_int = 262;
 pub const IPPROTO_MAX: ::c_int = 263;
 
+pub const IP_TOS: ::c_int = 1;
+pub const IP_TTL: ::c_int = 2;
+pub const IP_HDRINCL: ::c_int = 3;
+pub const IP_OPTIONS: ::c_int = 4;
+pub const IP_ROUTER_ALERT: ::c_int = 5;
+pub const IP_RECVOPTS: ::c_int = 6;
+pub const IP_RETOPTS: ::c_int = 7;
+pub const IP_PKTINFO: ::c_int = 8;
+pub const IP_PKTOPTIONS: ::c_int = 9;
+pub const IP_PMTUDISC: ::c_int = 10;
+pub const IP_MTU_DISCOVER: ::c_int = 10;
+pub const IP_RECVERR: ::c_int = 11;
+pub const IP_RECVTTL: ::c_int = 12;
+pub const IP_RECVTOS: ::c_int = 13;
+pub const IP_MTU: ::c_int = 14;
+pub const IP_FREEBIND: ::c_int = 15;
+pub const IP_IPSEC_POLICY: ::c_int = 16;
+pub const IP_XFRM_POLICY: ::c_int = 17;
+pub const IP_PASSSEC: ::c_int = 18;
+pub const IP_TRANSPARENT: ::c_int = 19;
+pub const IP_ORIGDSTADDR: ::c_int = 20;
+pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
+pub const IP_MINTTL: ::c_int = 21;
+pub const IP_NODEFRAG: ::c_int = 22;
+pub const IP_CHECKSUM: ::c_int = 23;
+pub const IP_BIND_ADDRESS_NO_PORT: ::c_int = 24;
+pub const IP_RECVFRAGSIZE: ::c_int = 25;
+pub const IP_RECVERR_RFC4884: ::c_int = 26;
+pub const IP_MULTICAST_IF: ::c_int = 32;
+pub const IP_MULTICAST_TTL: ::c_int = 33;
+pub const IP_MULTICAST_LOOP: ::c_int = 34;
+pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
+pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 37;
+pub const IP_BLOCK_SOURCE: ::c_int = 38;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 39;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 40;
+pub const IP_MSFILTER: ::c_int = 41;
+pub const IP_MULTICAST_ALL: ::c_int = 49;
+pub const IP_UNICAST_IF: ::c_int = 50;
+
+pub const IP_RECVRETOPTS: ::c_int = IP_RETOPTS;
+
+pub const IP_PMTUDISC_DONT: ::c_int = 0;
+pub const IP_PMTUDISC_WANT: ::c_int = 1;
+pub const IP_PMTUDISC_DO: ::c_int = 2;
+pub const IP_PMTUDISC_PROBE: ::c_int = 3;
+pub const IP_PMTUDISC_INTERFACE: ::c_int = 4;
+pub const IP_PMTUDISC_OMIT: ::c_int = 5;
+
+pub const IP_DEFAULT_MULTICAST_TTL: ::c_int = 1;
+pub const IP_DEFAULT_MULTICAST_LOOP: ::c_int = 1;
+pub const IP_MAX_MEMBERSHIPS: ::c_int = 20;
+
+pub const MCAST_JOIN_GROUP: ::c_int = 42;
+pub const MCAST_BLOCK_SOURCE: ::c_int = 43;
+pub const MCAST_UNBLOCK_SOURCE: ::c_int = 44;
+pub const MCAST_LEAVE_GROUP: ::c_int = 45;
+pub const MCAST_JOIN_SOURCE_GROUP: ::c_int = 46;
+pub const MCAST_LEAVE_SOURCE_GROUP: ::c_int = 47;
+pub const MCAST_MSFILTER: ::c_int = 48;
+
+pub const MCAST_EXCLUDE: ::c_int = 0;
+pub const MCAST_INCLUDE: ::c_int = 1;
+
 pub const IPV6_ADDRFORM: ::c_int = 1;
 pub const IPV6_2292PKTINFO: ::c_int = 2;
 pub const IPV6_2292HOPOPTS: ::c_int = 3;
@@ -838,6 +903,12 @@ pub const INADDR_LOOPBACK: in_addr_t = 2130706433;
 pub const INADDR_ANY: in_addr_t = 0;
 pub const INADDR_BROADCAST: in_addr_t = 4294967295;
 pub const INADDR_NONE: in_addr_t = 4294967295;
+
+pub const INADDR_UNSPEC_GROUP: in_addr_t = 0xe0000000;
+pub const INADDR_ALLHOSTS_GROUP: in_addr_t = 0xe0000001;
+pub const INADDR_ALLRTRS_GROUP: in_addr_t = 0xe0000002;
+pub const INADDR_ALLSNOOPERS_GROUP: in_addr_t = 0xe000006a;
+pub const INADDR_MAX_LOCAL_GROUP: in_addr_t = 0xe00000ff;
 
 pub const ARPOP_REQUEST: u16 = 1;
 pub const ARPOP_REPLY: u16 = 2;
