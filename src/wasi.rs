@@ -334,6 +334,11 @@ s! {
         pub tv_nsec: c_long,
     }
 
+    pub struct linger {
+        pub l_onoff: c_int;
+        pub l_linger: c_int;
+    };
+
     pub struct tms {
         pub tms_utime: clock_t,
         pub tms_stime: clock_t,
