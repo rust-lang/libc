@@ -143,6 +143,88 @@ s! {
         pub msg_controllen: ::socklen_t,
         pub msg_flags: ::c_int,
     }
+
+    #[repr(C)]
+    pub struct group_filter {
+        pub gf_interface: u32,
+        pub gf_group: ::sockaddr_storage,
+        pub gf_fmode: u32,
+        pub gf_numsrc: u32,
+        pub gf_slist: [::sockaddr_storage; 1],
+    }
+
+    #[repr(C)]
+    pub struct group_req {
+        pub gr_interface: u32,
+        pub gr_group: ::sockaddr_storage,
+    }
+
+    #[repr(C)]
+    pub struct group_source_req {
+        pub gsr_interface: u32,
+        pub gsr_group: ::sockaddr_storage,
+        pub gsr_source: ::sockaddr_storage,
+    }
+
+    #[repr(C)]
+    pub struct in_pktinfo {
+        pub ipi_ifindex: ::c_int,
+        pub ipi_spec_dst: ::in_addr,
+        pub ipi_addr: ::in_addr,
+    }
+
+    #[repr(C)]
+    pub struct ip6_mtuinfo {
+        pub ip6m_addr: ::sockaddr_in6,
+        pub ip6m_mtu: u32,
+    }
+
+    #[repr(C)]
+    pub struct in6_pktinfo {
+        pub ipi6_addr: ::in6_addr,
+        pub ipi6_ifindex: ::c_uint,
+    }
+
+    #[repr(C)]
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_interface: ::in_addr,
+        pub imr_sourceaddr: ::in_addr,
+    }
+
+    #[repr(C)]
+    pub struct ip_mreq {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_interface: ::in_addr,
+    }
+
+    #[repr(C)]
+    pub struct ip_mreqn {
+        pub imr_multiaddr: ::in_addr,
+        pub imr_address: ::in_addr,
+        pub imr_ifindex: ::c_int,
+    }
+
+    #[repr(C)]
+    pub struct ip_msfilter {
+        pub imsf_multiaddr: ::in_addr,
+        pub imsf_interface: ::in_addr,
+        pub imsf_fmode: u32,
+        pub imsf_numsrc: u32,
+        pub imsf_slist: [::in_addr; 1],
+    }
+
+    #[repr(C)]
+    pub struct ip_opts {
+        pub ip_dst: ::in_addr,
+        pub ip_opts: [::c_char; 40],
+    }
+
+    #[repr(C)]
+    pub struct ipv6_mreq {
+        pub ipv6mr_multiaddr: ::in6_addr,
+        pub ipv6mr_interface: ::c_uint,
+    }
 }
 
 pub const __WASI_SDFLAGS_RD: ::c_int = 1;
