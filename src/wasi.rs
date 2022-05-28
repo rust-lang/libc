@@ -53,20 +53,24 @@ pub type sa_family_t = u16;
 pub type sa_type_t = u16;
 
 s! {
+    #[repr(C)]
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
     }
     
+    #[repr(C)]
     #[repr(align(4))]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
     }
 
+    #[repr(C)]
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
     }
 
+    #[repr(C)]
     pub struct sockaddr_in {
         pub sin_family: sa_family_t,
         pub sin_port: ::in_port_t,
@@ -74,6 +78,7 @@ s! {
         pub sin_zero: [u8; 8],
     }
 
+    #[repr(C)]
     pub struct sockaddr_in6 {
         pub sin6_family: sa_family_t,
         pub sin6_port: ::in_port_t,
@@ -82,6 +87,7 @@ s! {
         pub sin6_scope_id: u32,
     }
 
+    #[repr(C)]
     pub struct addrinfo {
         pub ai_flags: ::c_int,
         pub ai_family: ::c_int,
@@ -93,6 +99,7 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
+    #[repr(C)]
     pub struct sockaddr_ll {
         pub sll_family: ::c_ushort,
         pub sll_protocol: ::c_ushort,
@@ -103,6 +110,7 @@ s! {
         pub sll_addr: [::c_uchar; 8]
     }
 
+    #[repr(C)]
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
         __ss_align: ::size_t,
@@ -111,24 +119,119 @@ s! {
         #[cfg(target_pointer_width = "64")]
         __ss_pad2: [u8; 128 - 2 * 8],
     }
+
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct ifaddrs {
+        pub ifa_next: *mut ifaddrs,
+        pub ifa_name: *mut c_char,
+        pub ifa_flags: ::c_int,
+        pub ifa_addr: *mut ::sockaddr,
+        pub ifa_netmask: *mut ::sockaddr,
+        pub ifu_broadaddr_or_dstaddr: *mut ::sockaddr,
+        pub ifa_data: *mut ::c_uchar,
+    }
+
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct msghdr {
+        pub msg_name: *mut ::c_uchar,
+        pub msg_namelen: ::socklen_t,
+        pub msg_iov: *mut ::iovec,
+        pub msg_iovlen: ::c_int,
+        pub msg_control: *mut ::c_uchar,
+        pub msg_controllen: ::socklen_t,
+        pub msg_flags: ::c_int,
+    }
 }
 
-pub const AF_INET: ::c_int = 0;
-pub const AF_INET6: ::c_int = 1;
+pub const __WASI_SDFLAGS_RD: ::c_int = 1;
+pub const __WASI_SDFLAGS_WR: ::c_int = 2;
 
-pub const PF_INET: ::sa_family_t = AF_INET as sa_family_t;
-pub const PF_INET6: ::sa_family_t = AF_INET6 as sa_family_t;
+pub const SHUT_RD: ::c_int = __WASI_SDFLAGS_RD;
+pub const SHUT_WR: ::c_int = __WASI_SDFLAGS_WR;
+pub const SHUT_RDWR: ::c_int = SHUT_RD | SHUT_WR;
 
-pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
-pub const SOCK_DGRAM: ::sa_type_t = 0;
-pub const SOCK_STREAM: ::sa_type_t = 1;
-pub const SOCK_RAW: ::sa_type_t = 2;
+pub const __WASI_RIFLAGS_RECV_PEEK: ::c_int = 1;
+pub const __WASI_RIFLAGS_RECV_WAITALL: ::c_int = 2;
+pub const __WASI_RIFLAGS_RECV_DATA_TRUNCATED: ::c_int = 4;
 
-pub const RECV_FLAGS_PEEK: ::c_int = 0;
-pub const RECV_FLAGS_WAITALL: ::c_int = 1;
-pub const RECV_FLAGS_TRUNC: ::c_int = 2;
+pub const MSG_PEEK: ::c_int = __WASI_RIFLAGS_RECV_PEEK;
+pub const MSG_WAITALL: ::c_int = __WASI_RIFLAGS_RECV_WAITALL;
+pub const MSG_TRUNC: ::c_int = __WASI_RIFLAGS_RECV_DATA_TRUNCATED;
 
-pub const MSG_TRUNC: ::c_int = RECV_FLAGS_TRUNC;
+pub const __WASI_FILETYPE_UNKNOWN: ::c_int = 0;
+pub const __WASI_FILETYPE_BLOCK_DEVICE: ::c_int = 1;
+pub const __WASI_FILETYPE_CHARACTER_DEVICE: ::c_int = 2;
+pub const __WASI_FILETYPE_DIRECTORY: ::c_int = 3;
+pub const __WASI_FILETYPE_REGULAR_FILE: ::c_int = 4;
+pub const __WASI_FILETYPE_SOCKET_DGRAM: ::c_int = 5;
+pub const __WASI_FILETYPE_SOCKET_STREAM: ::c_int = 6;
+pub const __WASI_FILETYPE_SYMBOLIC_LINK: ::c_int = 7;
+
+pub const SOCK_DGRAM: ::c_int = __WASI_FILETYPE_SOCKET_DGRAM;
+pub const SOCK_STREAM: ::c_int = __WASI_FILETYPE_SOCKET_STREAM;
+
+pub const SOCK_NONBLOCK: ::c_int = 0x00004000;
+pub const SOCK_CLOEXEC: ::c_int = 0x00002000;
+
+pub const SOL_SOCKET: ::c_int = 0x7fffffff;
+
+pub const __WASI_SOCK_OPTION_REUSE_PORT: ::c_int = 0;
+pub const __WASI_SOCK_OPTION_REUSE_ADDR: ::c_int = 1;
+pub const __WASI_SOCK_OPTION_NO_DELAY: ::c_int = 2;
+pub const __WASI_SOCK_OPTION_DONT_ROUTE: ::c_int = 3;
+pub const __WASI_SOCK_OPTION_ONLY_V6: ::c_int = 4;
+pub const __WASI_SOCK_OPTION_BROADCAST: ::c_int = 5;
+pub const __WASI_SOCK_OPTION_MULTICAST_LOOP_V4: ::c_int = 6;
+pub const __WASI_SOCK_OPTION_MULTICAST_LOOP_V6: ::c_int = 7;
+pub const __WASI_SOCK_OPTION_PROMISCUOUS: ::c_int = 8;
+pub const __WASI_SOCK_OPTION_LISTENING: ::c_int = 9;
+pub const __WASI_SOCK_OPTION_LAST_ERROR: ::c_int = 10;
+pub const __WASI_SOCK_OPTION_KEEP_ALIVE: ::c_int = 11;
+pub const __WASI_SOCK_OPTION_LINGER: ::c_int = 12;
+pub const __WASI_SOCK_OPTION_OOB_INLINE: ::c_int = 13;
+pub const __WASI_SOCK_OPTION_RECV_BUF_SIZE: ::c_int = 14;
+pub const __WASI_SOCK_OPTION_SEND_BUF_SIZE: ::c_int = 15;
+pub const __WASI_SOCK_OPTION_RECV_LOWAT: ::c_int = 16;
+pub const __WASI_SOCK_OPTION_SEND_LOWAT: ::c_int = 17;
+pub const __WASI_SOCK_OPTION_RECV_TIMEOUT: ::c_int = 18;
+pub const __WASI_SOCK_OPTION_SEND_TIMEOUT: ::c_int = 19;
+pub const __WASI_SOCK_OPTION_CONNECT_TIMEOUT: ::c_int = 20;
+pub const __WASI_SOCK_OPTION_ACCEPT_TIMEOUT: ::c_int = 21;
+pub const __WASI_SOCK_OPTION_TTL: ::c_int = 22;
+pub const __WASI_SOCK_OPTION_MULTICAST_TTL_V4: ::c_int = 23;
+pub const __WASI_SOCK_OPTION_TYPE: ::c_int = 24;
+
+pub const SO_ACCEPTCONN: ::c_int = __WASI_SOCK_OPTION_LISTENING;
+pub const SO_BROADCAST: ::c_int = __WASI_SOCK_OPTION_BROADCAST;
+pub const SO_DONTROUTE: ::c_int = __WASI_SOCK_OPTION_DONT_ROUTE;
+pub const SO_NODELAY: ::c_int = __WASI_SOCK_OPTION_NO_DELAY;
+pub const SO_ERROR: ::c_int = __WASI_SOCK_OPTION_LAST_ERROR;
+pub const SO_KEEPALIVE: ::c_int = __WASI_SOCK_OPTION_KEEP_ALIVE;
+pub const SO_LINGER: ::c_int = __WASI_SOCK_OPTION_LINGER;
+pub const SO_OOBINLINE: ::c_int = __WASI_SOCK_OPTION_OOB_INLINE;
+pub const SO_ONLYV6: ::c_int = __WASI_SOCK_OPTION_ONLY_V6;
+pub const SO_RCVBUF: ::c_int = __WASI_SOCK_OPTION_RECV_BUF_SIZE;
+pub const SO_RCVLOWAT: ::c_int = __WASI_SOCK_OPTION_RECV_LOWAT;
+pub const SO_RCVTIMEO: ::c_int = __WASI_SOCK_OPTION_RECV_TIMEOUT;
+pub const SO_REUSEPORT: ::c_int = __WASI_SOCK_OPTION_REUSE_PORT;
+pub const SO_REUSEADDR: ::c_int = __WASI_SOCK_OPTION_REUSE_ADDR;
+pub const SO_SNDBUF: ::c_int = __WASI_SOCK_OPTION_SEND_BUF_SIZE;
+pub const SO_SNDLOWAT: ::c_int = __WASI_SOCK_OPTION_SEND_LOWAT;
+pub const SO_SNDTIMEO: ::c_int = __WASI_SOCK_OPTION_SEND_TIMEOUT;
+pub const SO_MCASTLOOPV4: ::c_int = __WASI_SOCK_OPTION_MULTICAST_LOOP_V4;
+pub const SO_MCASTLOOPV6: ::c_int = __WASI_SOCK_OPTION_MULTICAST_LOOP_V6;
+pub const SO_CONNTIMEO: ::c_int = __WASI_SOCK_OPTION_CONNECT_TIMEOUT;
+pub const SO_ACCPTIMEO: ::c_int = __WASI_SOCK_OPTION_ACCEPT_TIMEOUT;
+pub const SO_TTL: ::c_int = __WASI_SOCK_OPTION_TTL;
+pub const SO_MCASTTTLV4: ::c_int = __WASI_SOCK_OPTION_MULTICAST_TTL_V4;
+pub const SO_TYPE: ::c_int = __WASI_SOCK_OPTION_TYPE;
+
+pub const AF_UNSPEC: ::c_int = 0;
+pub const AF_INET: ::c_int = 1;
+pub const AF_INET6: ::c_int = 2;
+pub const AF_UNIX: ::c_int = 3;
 
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_HOPOPTS: ::c_int = 0;
@@ -165,24 +268,6 @@ pub const IPPROTO_ETHERNET: ::c_int = 143;
 pub const IPPROTO_RAW: ::c_int = 255;
 pub const IPPROTO_MPTCP: ::c_int = 262;
 pub const IPPROTO_MAX: ::c_int = 263;
-
-pub const SO_REUSEPORT: ::c_int = 0;
-pub const SO_REUSEADDR: ::c_int = 1;
-pub const SO_NODELAY: ::c_int = 2;
-pub const SO_ONLY_V6: ::c_int = 3;
-pub const SO_BROADCAST: ::c_int = 4;
-pub const SO_MCAST_LOOP_V4: ::c_int = 5;
-pub const SO_MCAST_LOOP_V6: ::c_int = 6;
-pub const SO_PROMISCUOUS: ::c_int = 7;
-
-pub const SO_TIMEOUT_READ: ::c_int = 0;
-pub const SO_TIMEOUT_WRITE: ::c_int = 0;
-pub const SO_TIMEOUT_CONNECT: ::c_int = 0;
-pub const SO_TIMEOUT_ACCEPT: ::c_int = 0;
-
-pub const SHUT_RD: ::c_int = 1;
-pub const SHUT_WR: ::c_int = 2;
-pub const SHUT_RDWR: ::c_int = 3;
 
 s_no_extra_traits! {
     #[repr(align(16))]
@@ -740,7 +825,6 @@ extern "C" {
     pub fn getchar_unlocked() -> ::c_int;
     pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
 
-    pub fn shutdown(socket: ::c_int, how: ::c_int) -> ::c_int;
     pub fn fstat(fildes: ::c_int, buf: *mut stat) -> ::c_int;
     pub fn mkdir(path: *const c_char, mode: mode_t) -> ::c_int;
     pub fn stat(path: *const c_char, buf: *mut stat) -> ::c_int;
@@ -824,12 +908,31 @@ extern "C" {
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
 
     pub fn usleep(secs: ::c_uint) -> ::c_int;
-    pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
-    pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
     pub fn setlocale(category: ::c_int, locale: *const ::c_char) -> *mut ::c_char;
     pub fn localeconv() -> *mut lconv;
 
+    pub fn accept(socket: ::c_int, addr: *mut sockaddr, addrlen: *mut socklen_t) -> ::c_int;
+    pub fn accept4(socket: ::c_int, addr: *mut sockaddr, addrlen: *mut socklen_t, flags: ::c_int) -> ::c_int;
+    pub fn bind(socket: ::c_int, addr: *const ::sockaddr, addrlen: ::socklen_t) -> ::c_int;
+    pub fn connect(socket: ::c_int, addr: *const sockaddr, addrlen: socklen_t) -> ::c_int;
+    pub fn freeifaddrs(ifa: *mut ::ifaddrs);
+    pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
+    pub fn getpeername(socket: ::c_int, addr: *mut sockaddr, addrlen: *mut socklen_t) -> ::c_int;
+    pub fn getsockname(socket: ::c_int, addr: *mut sockaddr, addrlen: *mut socklen_t) -> ::c_int;
+    pub fn getsockopt(sockfd: ::c_int, level: ::c_int, option_name: ::c_int, option_value: *mut ::c_void, option_len: *mut ::socklen_t) -> ::c_int;
+    pub fn listen(socket: ::c_int, backlog: ::c_int) -> ::c_int;
+    pub fn recv(socket: ::c_int, buffer: *mut ::c_void, length: ::size_t, flags: ::c_int) -> ::ssize_t;
+    pub fn recvfrom(socket: ::c_int, buffer: *mut ::c_void, length: ::size_t, flags: ::c_int, addr: *mut ::sockaddr, addrlen: *mut ::socklen_t) -> ::ssize_t;
+    pub fn recvmsg(socket: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
+    pub fn send(socket: ::c_int, buffer: *const ::c_void, length: ::size_t, flags: ::c_int) -> ::ssize_t;
+    pub fn sendmsg(socket: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
+    pub fn sendto(socket: ::c_int, buffer: *const ::c_void, length: ::size_t, flags: ::c_int, addr: *const sockaddr, addrlen: socklen_t) -> ::ssize_t;
+    pub fn setsockopt(socket: ::c_int, level: ::c_int, option_name: ::c_int, option_value: *const ::c_void, option_len: socklen_t) -> ::c_int;
+    pub fn shutdown(socket: ::c_int, how: ::c_int) -> ::c_int;
+    pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
+    pub fn socketpair(domain: ::c_int, ty: ::c_int, protocol: ::c_int, socket_vector: *mut ::c_int) -> ::c_int;
+    
     pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: ::size_t) -> ::ssize_t;
 
     pub fn timegm(tm: *mut ::tm) -> time_t;
