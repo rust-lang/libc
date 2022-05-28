@@ -901,6 +901,8 @@ extern "C" {
     pub fn setpgid(pid: pid_t, pgid: pid_t) -> ::c_int;
     pub fn setsid() -> pid_t;
     pub fn setuid(uid: uid_t) -> ::c_int;
+    pub fn setreuid(ruid: uid_t, euid: uid_t) -> ::c_int;
+    pub fn setregid(rgid: gid_t, egid: gid_t) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "sleep$UNIX2003"

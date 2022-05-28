@@ -1768,8 +1768,6 @@ extern "C" {
     pub fn endgrent();
     pub fn getgrent() -> *mut ::group;
     pub fn setgrent();
-    pub fn setreuid(ruid: ::uid_t, euid: ::uid_t) -> ::c_int;
-    pub fn setregid(rgid: ::gid_t, egid: ::gid_t) -> ::c_int;
     pub fn sigwait(set: *const sigset_t, sig: *mut ::c_int) -> ::c_int;
     pub fn pthread_atfork(
         prepare: ::Option<unsafe extern "C" fn()>,

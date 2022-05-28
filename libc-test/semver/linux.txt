@@ -3041,10 +3041,8 @@ setmntent
 setns
 setpriority
 setpwent
-setregid
 setresgid
 setresuid
-setreuid
 setrlimit
 setrlimit64
 setservent
