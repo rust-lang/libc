@@ -516,6 +516,57 @@ pub const IPV6_RTHDR_STRICT: ::c_int = 1;
 
 pub const IPV6_RTHDR_TYPE_0: ::c_int = 0;
 
+pub const TCP_NODELAY: ::c_int = 1;
+pub const TCP_MAXSEG: ::c_int = 2;
+pub const TCP_CORK: ::c_int = 3;
+pub const TCP_KEEPIDLE: ::c_int = 4;
+pub const TCP_KEEPINTVL: ::c_int = 5;
+pub const TCP_KEEPCNT: ::c_int = 6;
+pub const TCP_SYNCNT: ::c_int = 7;
+pub const TCP_LINGER2: ::c_int = 8;
+pub const TCP_DEFER_ACCEPT: ::c_int = 9;
+pub const TCP_WINDOW_CLAMP: ::c_int = 10;
+pub const TCP_INFO: ::c_int = 11;
+pub const TCP_QUICKACK: ::c_int = 12;
+pub const TCP_CONGESTION: ::c_int = 13;
+pub const TCP_MD5SIG: ::c_int = 14;
+pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
+pub const TCP_THIN_DUPACK: ::c_int = 17;
+pub const TCP_USER_TIMEOUT: ::c_int = 18;
+pub const TCP_REPAIR: ::c_int = 19;
+pub const TCP_REPAIR_QUEUE: ::c_int = 20;
+pub const TCP_QUEUE_SEQ: ::c_int = 21;
+pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
+pub const TCP_FASTOPEN: ::c_int = 23;
+pub const TCP_TIMESTAMP: ::c_int = 24;
+pub const TCP_NOTSENT_LOWAT: ::c_int = 25;
+pub const TCP_CC_INFO: ::c_int = 26;
+pub const TCP_SAVE_SYN: ::c_int = 27;
+pub const TCP_SAVED_SYN: ::c_int = 28;
+pub const TCP_REPAIR_WINDOW: ::c_int = 29;
+pub const TCP_FASTOPEN_CONNECT: ::c_int = 30;
+pub const TCP_ULP: ::c_int = 31;
+pub const TCP_MD5SIG_EXT: ::c_int = 32;
+pub const TCP_FASTOPEN_KEY: ::c_int = 33;
+pub const TCP_FASTOPEN_NO_COOKIE: ::c_int = 34;
+pub const TCP_ZEROCOPY_RECEIVE: ::c_int = 35;
+pub const TCP_INQ: ::c_int = 36;
+pub const TCP_TX_DELAY: ::c_int = 37;
+
+pub const TCP_CM_INQ: ::c_int = TCP_INQ;
+
+pub const TCP_ESTABLISHED: ::c_int = 1;
+pub const TCP_SYN_SENT: ::c_int = 2;
+pub const TCP_SYN_RECV: ::c_int = 3;
+pub const TCP_FIN_WAIT1: ::c_int = 4;
+pub const TCP_FIN_WAIT2: ::c_int = 5;
+pub const TCP_TIME_WAIT: ::c_int = 6;
+pub const TCP_CLOSE: ::c_int = 7;
+pub const TCP_CLOSE_WAIT: ::c_int = 8;
+pub const TCP_LAST_ACK: ::c_int = 9;
+pub const TCP_LISTEN: ::c_int = 10;
+pub const TCP_CLOSING: ::c_int = 11;
+
 s_no_extra_traits! {
     #[repr(align(16))]
     #[allow(missing_debug_implementations)]
