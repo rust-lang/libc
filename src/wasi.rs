@@ -928,7 +928,7 @@ extern "C" {
     pub fn recvfrom(socket: ::c_int, buffer: *mut ::c_void, length: ::size_t, flags: ::c_int, addr: *mut ::sockaddr, addrlen: *mut ::socklen_t) -> ::ssize_t;
     pub fn recvmsg(socket: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn send(socket: ::c_int, buffer: *const ::c_void, length: ::size_t, flags: ::c_int) -> ::ssize_t;
-    pub fn sendfile(socket: ::c_int, in_fd: ::c_int, ofs: ::off_t, count: ::size_t) -> ::ssize_t;
+    pub fn sendfile(socket: ::c_int, in_fd: ::c_int, ofs: *const ::off_t, count: ::size_t) -> ::ssize_t;
     pub fn sendmsg(socket: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn sendto(socket: ::c_int, buffer: *const ::c_void, length: ::size_t, flags: ::c_int, addr: *const sockaddr, addrlen: socklen_t) -> ::ssize_t;
     pub fn setsockopt(socket: ::c_int, level: ::c_int, option_name: ::c_int, option_value: *const ::c_void, option_len: socklen_t) -> ::c_int;
