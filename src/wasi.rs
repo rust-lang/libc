@@ -168,9 +168,11 @@ pub const __WASI_FILETYPE_REGULAR_FILE: ::c_int = 4;
 pub const __WASI_FILETYPE_SOCKET_DGRAM: ::c_int = 5;
 pub const __WASI_FILETYPE_SOCKET_STREAM: ::c_int = 6;
 pub const __WASI_FILETYPE_SYMBOLIC_LINK: ::c_int = 7;
+pub const __WASI_FILETYPE_SOCKET_RAW: ::c_int = 8;
 
 pub const SOCK_DGRAM: ::c_int = __WASI_FILETYPE_SOCKET_DGRAM;
 pub const SOCK_STREAM: ::c_int = __WASI_FILETYPE_SOCKET_STREAM;
+pub const SOCK_RAW: ::c_int = __WASI_FILETYPE_SOCKET_RAW;
 
 pub const SOCK_NONBLOCK: ::c_int = 0x00004000;
 pub const SOCK_CLOEXEC: ::c_int = 0x00002000;
