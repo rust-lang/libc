@@ -304,6 +304,7 @@ pub const __WASI_SOCK_OPTION_ACCEPT_TIMEOUT: ::c_int = 21;
 pub const __WASI_SOCK_OPTION_TTL: ::c_int = 22;
 pub const __WASI_SOCK_OPTION_MULTICAST_TTL_V4: ::c_int = 23;
 pub const __WASI_SOCK_OPTION_TYPE: ::c_int = 24;
+pub const __WASI_SOCK_OPTION_PROTO: ::c_int = 25;
 
 pub const SO_ACCEPTCONN: ::c_int = __WASI_SOCK_OPTION_LISTENING;
 pub const SO_BROADCAST: ::c_int = __WASI_SOCK_OPTION_BROADCAST;
@@ -329,6 +330,7 @@ pub const SO_ACCPTIMEO: ::c_int = __WASI_SOCK_OPTION_ACCEPT_TIMEOUT;
 pub const SO_TTL: ::c_int = __WASI_SOCK_OPTION_TTL;
 pub const SO_MCASTTTLV4: ::c_int = __WASI_SOCK_OPTION_MULTICAST_TTL_V4;
 pub const SO_TYPE: ::c_int = __WASI_SOCK_OPTION_TYPE;
+pub const SO_PROTOCOL: ::c_int = __WASI_SOCK_OPTION_PROTO;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_INET: ::c_int = 1;
