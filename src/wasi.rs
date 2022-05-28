@@ -138,7 +138,7 @@ s! {
         pub msg_name: *mut ::c_uchar,
         pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
-        pub msg_iovlen: ::c_int,
+        pub msg_iovlen: size_t,
         pub msg_control: *mut ::c_uchar,
         pub msg_controllen: ::socklen_t,
         pub msg_flags: ::c_int,
@@ -225,6 +225,20 @@ s! {
         pub ipv6mr_multiaddr: ::in6_addr,
         pub ipv6mr_interface: ::c_uint,
     }
+
+    #[repr(C)]
+    pub struct sock_filter {
+        pub code: u16,
+        pub jt: u8,
+        pub jf: u8,
+        pub k: u32,
+    }
+
+    #[repr(C)]
+    pub struct sock_fprog {
+        pub len: ::c_ushort,
+        pub filter: *mut sock_filter,
+    }
 }
 
 pub const __WASI_SDFLAGS_RD: ::c_int = 1;
@@ -278,33 +292,66 @@ pub const SOCK_NONBLOCK: ::c_int = 0x00004000;
 pub const SOCK_CLOEXEC: ::c_int = 0x00002000;
 
 pub const SOL_SOCKET: ::c_int = 0x7fffffff;
+pub const SOL_IP: ::c_int = __WASI_SOCK_PROTO_IP;
+pub const SOL_ICMP: ::c_int = __WASI_SOCK_PROTO_ICMP;
+pub const SOL_IGMP: ::c_int = __WASI_SOCK_PROTO_IGMP;
+pub const SOL_IPIP: ::c_int = __WASI_SOCK_PROTO_IPIP;
+pub const SOL_TCP: ::c_int = __WASI_SOCK_PROTO_TCP;
+pub const SOL_EGP: ::c_int = __WASI_SOCK_PROTO_EGP;
+pub const SOL_PUP: ::c_int = __WASI_SOCK_PROTO_PUP;
+pub const SOL_UDP: ::c_int = __WASI_SOCK_PROTO_UDP;
+pub const SOL_IDP: ::c_int = __WASI_SOCK_PROTO_IDP;
+pub const SOL_TP: ::c_int = __WASI_SOCK_PROTO_TP;
+pub const SOL_DCCP: ::c_int = __WASI_SOCK_PROTO_DCCP;
+pub const SOL_IPV6: ::c_int = __WASI_SOCK_PROTO_IPV6;
+pub const SOL_ROUTING: ::c_int = __WASI_SOCK_PROTO_ROUTING;
+pub const SOL_FRAGMENT: ::c_int = __WASI_SOCK_PROTO_FRAGMENT;
+pub const SOL_RSVP: ::c_int = __WASI_SOCK_PROTO_RSVP;
+pub const SOL_GRE: ::c_int = __WASI_SOCK_PROTO_GRE;
+pub const SOL_ESP: ::c_int = __WASI_SOCK_PROTO_ESP;
+pub const SOL_AH: ::c_int = __WASI_SOCK_PROTO_AH;
+pub const SOL_ICMPV6: ::c_int = __WASI_SOCK_PROTO_ICMPV6;
+pub const SOL_NONE: ::c_int = __WASI_SOCK_PROTO_NONE;
+pub const SOL_DSTOPTS: ::c_int = __WASI_SOCK_PROTO_DSTOPTS;
+pub const SOL_MTP: ::c_int = __WASI_SOCK_PROTO_MTP;
+pub const SOL_BEETPH: ::c_int = __WASI_SOCK_PROTO_BEETPH;
+pub const SOL_ENCAP: ::c_int = __WASI_SOCK_PROTO_ENCAP;
+pub const SOL_PIM: ::c_int = __WASI_SOCK_PROTO_PIM;
+pub const SOL_COMP: ::c_int = __WASI_SOCK_PROTO_COMP;
+pub const SOL_SCTP: ::c_int = __WASI_SOCK_PROTO_SCTP;
+pub const SOL_MH: ::c_int = __WASI_SOCK_PROTO_MH;
+pub const SOL_UDPLITE: ::c_int = __WASI_SOCK_PROTO_UDPLITE;
+pub const SOL_MPLS: ::c_int = __WASI_SOCK_PROTO_MPLS;
+pub const SOL_ETHERNET: ::c_int = __WASI_SOCK_PROTO_ETHERNET;
+pub const SOL_MPTCP: ::c_int = __WASI_SOCK_PROTO_MPTCP;
 
-pub const __WASI_SOCK_OPTION_REUSE_PORT: ::c_int = 0;
-pub const __WASI_SOCK_OPTION_REUSE_ADDR: ::c_int = 1;
-pub const __WASI_SOCK_OPTION_NO_DELAY: ::c_int = 2;
-pub const __WASI_SOCK_OPTION_DONT_ROUTE: ::c_int = 3;
-pub const __WASI_SOCK_OPTION_ONLY_V6: ::c_int = 4;
-pub const __WASI_SOCK_OPTION_BROADCAST: ::c_int = 5;
-pub const __WASI_SOCK_OPTION_MULTICAST_LOOP_V4: ::c_int = 6;
-pub const __WASI_SOCK_OPTION_MULTICAST_LOOP_V6: ::c_int = 7;
-pub const __WASI_SOCK_OPTION_PROMISCUOUS: ::c_int = 8;
-pub const __WASI_SOCK_OPTION_LISTENING: ::c_int = 9;
-pub const __WASI_SOCK_OPTION_LAST_ERROR: ::c_int = 10;
-pub const __WASI_SOCK_OPTION_KEEP_ALIVE: ::c_int = 11;
-pub const __WASI_SOCK_OPTION_LINGER: ::c_int = 12;
-pub const __WASI_SOCK_OPTION_OOB_INLINE: ::c_int = 13;
-pub const __WASI_SOCK_OPTION_RECV_BUF_SIZE: ::c_int = 14;
-pub const __WASI_SOCK_OPTION_SEND_BUF_SIZE: ::c_int = 15;
-pub const __WASI_SOCK_OPTION_RECV_LOWAT: ::c_int = 16;
-pub const __WASI_SOCK_OPTION_SEND_LOWAT: ::c_int = 17;
-pub const __WASI_SOCK_OPTION_RECV_TIMEOUT: ::c_int = 18;
-pub const __WASI_SOCK_OPTION_SEND_TIMEOUT: ::c_int = 19;
-pub const __WASI_SOCK_OPTION_CONNECT_TIMEOUT: ::c_int = 20;
-pub const __WASI_SOCK_OPTION_ACCEPT_TIMEOUT: ::c_int = 21;
-pub const __WASI_SOCK_OPTION_TTL: ::c_int = 22;
-pub const __WASI_SOCK_OPTION_MULTICAST_TTL_V4: ::c_int = 23;
-pub const __WASI_SOCK_OPTION_TYPE: ::c_int = 24;
-pub const __WASI_SOCK_OPTION_PROTO: ::c_int = 25;
+pub const __WASI_SOCK_OPTION_NOOP: ::c_int = 0;
+pub const __WASI_SOCK_OPTION_REUSE_PORT: ::c_int = 1;
+pub const __WASI_SOCK_OPTION_REUSE_ADDR: ::c_int = 2;
+pub const __WASI_SOCK_OPTION_NO_DELAY: ::c_int = 3;
+pub const __WASI_SOCK_OPTION_DONT_ROUTE: ::c_int = 4;
+pub const __WASI_SOCK_OPTION_ONLY_V6: ::c_int = 5;
+pub const __WASI_SOCK_OPTION_BROADCAST: ::c_int = 6;
+pub const __WASI_SOCK_OPTION_MULTICAST_LOOP_V4: ::c_int = 7;
+pub const __WASI_SOCK_OPTION_MULTICAST_LOOP_V6: ::c_int = 8;
+pub const __WASI_SOCK_OPTION_PROMISCUOUS: ::c_int = 9;
+pub const __WASI_SOCK_OPTION_LISTENING: ::c_int = 10;
+pub const __WASI_SOCK_OPTION_LAST_ERROR: ::c_int = 11;
+pub const __WASI_SOCK_OPTION_KEEP_ALIVE: ::c_int = 12;
+pub const __WASI_SOCK_OPTION_LINGER: ::c_int = 13;
+pub const __WASI_SOCK_OPTION_OOB_INLINE: ::c_int = 14;
+pub const __WASI_SOCK_OPTION_RECV_BUF_SIZE: ::c_int = 15;
+pub const __WASI_SOCK_OPTION_SEND_BUF_SIZE: ::c_int = 16;
+pub const __WASI_SOCK_OPTION_RECV_LOWAT: ::c_int = 17;
+pub const __WASI_SOCK_OPTION_SEND_LOWAT: ::c_int = 18;
+pub const __WASI_SOCK_OPTION_RECV_TIMEOUT: ::c_int = 19;
+pub const __WASI_SOCK_OPTION_SEND_TIMEOUT: ::c_int = 20;
+pub const __WASI_SOCK_OPTION_CONNECT_TIMEOUT: ::c_int = 21;
+pub const __WASI_SOCK_OPTION_ACCEPT_TIMEOUT: ::c_int = 22;
+pub const __WASI_SOCK_OPTION_TTL: ::c_int = 23;
+pub const __WASI_SOCK_OPTION_MULTICAST_TTL_V4: ::c_int = 24;
+pub const __WASI_SOCK_OPTION_TYPE: ::c_int = 25;
+pub const __WASI_SOCK_OPTION_PROTO: ::c_int = 26;
 
 pub const SO_ACCEPTCONN: ::c_int = __WASI_SOCK_OPTION_LISTENING;
 pub const SO_BROADCAST: ::c_int = __WASI_SOCK_OPTION_BROADCAST;
@@ -331,11 +378,19 @@ pub const SO_TTL: ::c_int = __WASI_SOCK_OPTION_TTL;
 pub const SO_MCASTTTLV4: ::c_int = __WASI_SOCK_OPTION_MULTICAST_TTL_V4;
 pub const SO_TYPE: ::c_int = __WASI_SOCK_OPTION_TYPE;
 pub const SO_PROTOCOL: ::c_int = __WASI_SOCK_OPTION_PROTO;
+pub const SO_MARK: ::c_int = __WASI_SOCK_OPTION_NOOP;
+pub const SO_BINDTODEVICE: ::c_int = __WASI_SOCK_OPTION_NOOP;
+pub const SO_INCOMING_CPU: ::c_int = __WASI_SOCK_OPTION_NOOP;
+pub const SO_ATTACH_FILTER: ::c_int = __WASI_SOCK_OPTION_NOOP;
+pub const SO_DETACH_FILTER: ::c_int = __WASI_SOCK_OPTION_NOOP;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_INET: ::c_int = 1;
 pub const AF_INET6: ::c_int = 2;
 pub const AF_UNIX: ::c_int = 3;
+
+pub const IF_NAMESIZE: ::c_int = 16;
+pub const IFNAMSIZ: ::c_int = IF_NAMESIZE;
 
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_HOPOPTS: ::c_int = 0;
