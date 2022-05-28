@@ -353,6 +353,86 @@ pub const IPPROTO_RAW: ::c_int = 255;
 pub const IPPROTO_MPTCP: ::c_int = 262;
 pub const IPPROTO_MAX: ::c_int = 263;
 
+pub const IPV6_ADDRFORM: ::c_int = 1;
+pub const IPV6_2292PKTINFO: ::c_int = 2;
+pub const IPV6_2292HOPOPTS: ::c_int = 3;
+pub const IPV6_2292DSTOPTS: ::c_int = 4;
+pub const IPV6_2292RTHDR: ::c_int = 5;
+pub const IPV6_2292PKTOPTIONS: ::c_int = 6;
+pub const IPV6_CHECKSUM: ::c_int = 7;
+pub const IPV6_2292HOPLIMIT: ::c_int = 8;
+pub const IPV6_NEXTHOP: ::c_int = 9;
+pub const IPV6_AUTHHDR: ::c_int = 10;
+pub const IPV6_UNICAST_HOPS: ::c_int = 16;
+pub const IPV6_MULTICAST_IF: ::c_int = 17;
+pub const IPV6_MULTICAST_HOPS: ::c_int = 18;
+pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
+pub const IPV6_JOIN_GROUP: ::c_int = 20;
+pub const IPV6_LEAVE_GROUP: ::c_int = 21;
+pub const IPV6_ROUTER_ALERT: ::c_int = 22;
+pub const IPV6_MTU_DISCOVER: ::c_int = 23;
+pub const IPV6_MTU: ::c_int = 24;
+pub const IPV6_RECVERR: ::c_int = 25;
+pub const IPV6_V6ONLY: ::c_int = 26;
+pub const IPV6_JOIN_ANYCAST: ::c_int = 27;
+pub const IPV6_LEAVE_ANYCAST: ::c_int = 28;
+pub const IPV6_MULTICAST_ALL: ::c_int = 29;
+pub const IPV6_ROUTER_ALERT_ISOLATE: ::c_int = 30;
+pub const IPV6_IPSEC_POLICY: ::c_int = 34;
+pub const IPV6_XFRM_POLICY: ::c_int = 35;
+pub const IPV6_HDRINCL: ::c_int = 36;
+
+pub const IPV6_RECVPKTINFO: ::c_int = 49;
+pub const IPV6_PKTINFO: ::c_int = 50;
+pub const IPV6_RECVHOPLIMIT: ::c_int = 51;
+pub const IPV6_HOPLIMIT: ::c_int = 52;
+pub const IPV6_RECVHOPOPTS: ::c_int = 53;
+pub const IPV6_HOPOPTS: ::c_int = 54;
+pub const IPV6_RTHDRDSTOPTS: ::c_int = 55;
+pub const IPV6_RECVRTHDR: ::c_int = 56;
+pub const IPV6_RTHDR: ::c_int = 57;
+pub const IPV6_RECVDSTOPTS: ::c_int = 58;
+pub const IPV6_DSTOPTS: ::c_int = 59;
+pub const IPV6_RECVPATHMTU: ::c_int = 60;
+pub const IPV6_PATHMTU: ::c_int = 61;
+pub const IPV6_DONTFRAG: ::c_int = 62;
+pub const IPV6_RECVTCLASS: ::c_int = 66;
+pub const IPV6_TCLASS: ::c_int = 67;
+pub const IPV6_AUTOFLOWLABEL: ::c_int = 70;
+pub const IPV6_ADDR_PREFERENCES: ::c_int = 72;
+pub const IPV6_MINHOPCOUNT: ::c_int = 73;
+pub const IPV6_ORIGDSTADDR: ::c_int = 74;
+pub const IPV6_RECVORIGDSTADDR: ::c_int = IPV6_ORIGDSTADDR;
+pub const IPV6_TRANSPARENT: ::c_int = 75;
+pub const IPV6_UNICAST_IF: ::c_int = 76;
+pub const IPV6_RECVFRAGSIZE: ::c_int = 77;
+pub const IPV6_FREEBIND: ::c_int = 78;
+
+pub const IPV6_ADD_MEMBERSHIP: ::c_int = IPV6_JOIN_GROUP;
+pub const IPV6_DROP_MEMBERSHIP: ::c_int = IPV6_LEAVE_GROUP;
+pub const IPV6_RXHOPOPTS: ::c_int = IPV6_HOPOPTS;
+pub const IPV6_RXDSTOPTS: ::c_int = IPV6_DSTOPTS;
+
+pub const IPV6_PMTUDISC_DONT: ::c_int = 0;
+pub const IPV6_PMTUDISC_WANT: ::c_int = 1;
+pub const IPV6_PMTUDISC_DO: ::c_int = 2;
+pub const IPV6_PMTUDISC_PROBE: ::c_int = 3;
+pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
+pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
+
+pub const IPV6_PREFER_SRC_TMP: ::c_int = 0x0001;
+pub const IPV6_PREFER_SRC_PUBLIC: ::c_int = 0x0002;
+pub const IPV6_PREFER_SRC_PUBTMP_DEFAULT: ::c_int = 0x0100;
+pub const IPV6_PREFER_SRC_COA: ::c_int = 0x0004;
+pub const IPV6_PREFER_SRC_HOME: ::c_int = 0x0400;
+pub const IPV6_PREFER_SRC_CGA: ::c_int = 0x0008;
+pub const IPV6_PREFER_SRC_NONCGA: ::c_int = 0x0800;
+
+pub const IPV6_RTHDR_LOOSE: ::c_int = 0;
+pub const IPV6_RTHDR_STRICT: ::c_int = 1;
+
+pub const IPV6_RTHDR_TYPE_0: ::c_int = 0;
+
 s_no_extra_traits! {
     #[repr(align(16))]
     #[allow(missing_debug_implementations)]
