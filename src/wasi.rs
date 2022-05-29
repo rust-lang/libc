@@ -65,6 +65,11 @@ s! {
     }
 
     #[repr(C)]
+    pub struct sockaddr_un {
+        pub sun_family: : sa_family_t,
+    };
+
+    #[repr(C)]
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
