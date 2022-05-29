@@ -155,6 +155,11 @@ cfg_if! {
 
         mod wasi;
         pub use wasi::*;
+
+        // for backwards compatibility
+        pub mod unix {
+            pub use super::wasi::*;
+        }
     } else {
         // non-supported targets: empty...
     }
