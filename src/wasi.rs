@@ -1309,6 +1309,8 @@ extern "C" {
     pub fn shutdown(socket: ::c_int, how: ::c_int) -> ::c_int;
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
     pub fn socketpair(domain: ::c_int, ty: ::c_int, protocol: ::c_int, socket_vector: *mut ::c_int) -> ::c_int;
+
+    pub fn getpid() -> ::pid_t;
     
     pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: ::size_t) -> ::ssize_t;
 
