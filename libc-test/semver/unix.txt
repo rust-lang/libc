@@ -758,11 +758,11 @@ setgid
 setlocale
 setlogmask
 setpgid
+setregid
+setreuid
 setsid
 setsockopt
 setuid
-setreuid
-setregid
 setvbuf
 shm_open
 shm_unlink
