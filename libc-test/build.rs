@@ -2827,6 +2827,7 @@ fn test_linux(target: &str) {
         "linux/rtnetlink.h",
         "linux/sched.h",
         "linux/seccomp.h",
+        "linux/sched.h",
         "linux/sockios.h",
         "linux/uinput.h",
         "linux/vm_sockets.h",
@@ -2977,6 +2978,8 @@ fn test_linux(target: &str) {
 
             // Requires glibc 2.33 or newer.
             "mallinfo2" => true,
+            // clone_args might differ b/w libc versions
+            "clone_args" => true,
 
             // Might differ between kernel versions
             "open_how" => true,
