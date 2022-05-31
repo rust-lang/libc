@@ -48,7 +48,7 @@ jobs:
 
   windows:
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OS: windows
     strategy:
@@ -252,7 +252,7 @@ jobs:
 
   build_channels_windows:
     name: Build Channels Windows
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OS: windows
     strategy:
