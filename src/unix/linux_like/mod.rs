@@ -759,8 +759,6 @@ pub const PF_IEEE802154: ::c_int = AF_IEEE802154;
 pub const PF_CAIF: ::c_int = AF_CAIF;
 pub const PF_ALG: ::c_int = AF_ALG;
 
-pub const SOMAXCONN: ::c_int = 128;
-
 pub const MSG_OOB: ::c_int = 1;
 pub const MSG_PEEK: ::c_int = 2;
 pub const MSG_DONTROUTE: ::c_int = 4;
