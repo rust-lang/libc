@@ -1225,6 +1225,8 @@ pub const SO_PEERCRED: ::c_int = 0x4000000b;
 
 pub const SCM_RIGHTS: ::c_int = 0x01;
 
+pub const SOMAXCONN: ::c_int = 32;
+
 pub const NI_MAXHOST: ::size_t = 1025;
 
 pub const WNOHANG: ::c_int = 0x01;
