@@ -12,6 +12,12 @@ missing! {
 }
 
 s! {
+    #[cfg(libc_union)]
+    pub struct __c_anonymous_sigev_thread {
+        pub _function: *mut ::c_void,   // Actually a function pointer
+        pub _attribute: *mut ::pthread_attr_t,
+    }
+
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
     }
@@ -204,6 +210,22 @@ s! {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
     }
+
+    // When sigevent was first added to libc, Rust still didn't support unions.
+    // So the definition only included one of the union's member.  This
+    // structure exists for backwards-compatibility with consumers that still
+    // try to access that one member.
+    #[doc(hidden)]
+    pub struct sigevent_0_2_126 {
+        pub sigev_value: ::sigval,
+        pub sigev_signo: ::c_int,
+        pub sigev_notify: ::c_int,
+        pub sigev_notify_thread_id: ::c_int,
+        #[cfg(target_pointer_width = "64")]
+        __unused1: [::c_int; 11],
+        #[cfg(target_pointer_width = "32")]
+        __unused1: [::c_int; 12]
+    }
 }
 
 s_no_extra_traits! {
@@ -243,17 +265,38 @@ s_no_extra_traits! {
         pub domainname: [::c_char; 65]
     }
 
+    // Can't correctly impl Debug for unions
+    #[allow(missing_debug_implementations)]
+    #[cfg(libc_union)]
+    pub union __c_anonymous_sigev_un {
+        #[cfg(target_pointer_width = "64")]
+        _pad: [::c_int; (64 - 2 * 4 - 8) / 4],
+        #[cfg(target_pointer_width = "32")]
+        _pad: [::c_int; (64 - 2 * 4 - 4) / 4],
+        pub _tid: ::c_int,
+        pub _sigev_thread: __c_anonymous_sigev_thread,
+    }
+
+    #[cfg(libc_union)]
     pub struct sigevent {
         pub sigev_value: ::sigval,
         pub sigev_signo: ::c_int,
         pub sigev_notify: ::c_int,
-        // Actually a union.  We only expose sigev_notify_thread_id because it's
-        // the most useful member
-        pub sigev_notify_thread_id: ::c_int,
-        #[cfg(target_pointer_width = "64")]
-        __unused1: [::c_int; 11],
-        #[cfg(target_pointer_width = "32")]
-        __unused1: [::c_int; 12]
+        pub _sigev_un: __c_anonymous_sigev_un,
+    }
+}
+
+impl ::core::ops::Deref for sigevent {
+    type Target = sigevent_0_2_126;
+
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*(self as *const Self as *const sigevent_0_2_126) }
+    }
+}
+
+impl ::core::ops::DerefMut for sigevent {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { &mut *(self as *mut Self as *mut sigevent_0_2_126) }
     }
 }
 
@@ -406,20 +449,49 @@ cfg_if! {
                 self.sigev_value == other.sigev_value
                     && self.sigev_signo == other.sigev_signo
                     && self.sigev_notify == other.sigev_notify
-                    && self.sigev_notify_thread_id
-                        == other.sigev_notify_thread_id
+                    // sigev_notify indicates which union fields are valid
+                    && match self.sigev_notify {
+                        ::SIGEV_NONE => true,
+                        ::SIGEV_SIGNAL => true,
+                        ::SIGEV_THREAD => unsafe {
+                            self._sigev_un._sigev_thread
+                                == other._sigev_un._sigev_thread
+                        },
+                        #[cfg(any(
+                                target_os = "android",
+                                target_env = "gnu",
+                                target_env = "uclibc",
+                        ))]
+                        ::SIGEV_THREAD_ID => unsafe {
+                            self._sigev_un._tid == other._sigev_un._tid
+                        },
+                        _ => false
+                    }
             }
         }
         impl Eq for sigevent {}
         impl ::fmt::Debug for sigevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_value", &self.sigev_value)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_notify_thread_id",
-                           &self.sigev_notify_thread_id)
-                    .finish()
+                let mut ds = f.debug_struct("sigevent");
+                ds.field("sigev_value", &self.sigev_value);
+                ds.field("sigev_signo", &self.sigev_signo);
+                ds.field("sigev_notify", &self.sigev_notify);
+                // The sigev_notify field indicates which union fields are valid
+                unsafe {
+                    match self.sigev_notify {
+                        ::SIGEV_THREAD => ds.field("_sigev_thread",
+                            &self._sigev_un._sigev_thread),
+                        #[cfg(any(
+                                target_os = "android",
+                                target_env = "gnu",
+                                target_env = "uclibc",
+                        ))]
+                        ::SIGEV_THREAD_ID => ds.field("_tid",
+                            &self._sigev_un._tid),
+                        _ => &mut ds
+                    }
+                };
+                ds.finish()
             }
         }
         impl ::hash::Hash for sigevent {
@@ -427,7 +499,19 @@ cfg_if! {
                 self.sigev_value.hash(state);
                 self.sigev_signo.hash(state);
                 self.sigev_notify.hash(state);
-                self.sigev_notify_thread_id.hash(state);
+                // The sigev_notify field indicates which union fields are valid
+                unsafe {
+                    match self.sigev_notify {
+                        ::SIGEV_THREAD => self._sigev_un._sigev_thread.hash(state),
+                        #[cfg(any(
+                                target_os = "android",
+                                target_env = "gnu",
+                                target_env = "uclibc",
+                        ))]
+                        ::SIGEV_THREAD_ID => self._sigev_un._tid.hash(state),
+                        _ => ()
+                    };
+                }
             }
         }
     }

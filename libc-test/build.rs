@@ -1477,7 +1477,7 @@ fn test_dragonflybsd(target: &str) {
         // just insert some padding.
         (struct_ == "siginfo_t" && field == "_pad") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
+        (struct_ == "sigevent_0_2_126" && field == "sigev_notify_thread_id")
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -1723,6 +1723,8 @@ fn test_android(target: &str) {
 
             // sigval is a struct in Rust, but a union in C:
             "sigval" => format!("union sigval"),
+
+            "sigevent_0_2_126" => "struct sigevent".to_string(),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
@@ -1970,6 +1972,8 @@ fn test_android(target: &str) {
         (struct_ == "sigevent" && field == "sigev_value") ||
         // this one is an anonymous union
         (struct_ == "ff_effect" && field == "u") ||
+        (struct_ == "sigevent_0_2_126" && field == "sigev_value") ||
+        (struct_ == "sigevent" && field == "_sigev_un") ||
         // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
         // incorrect, see: https://github.com/rust-lang/libc/issues/1359
         (struct_ == "sigaction" && field == "sa_sigaction") ||
@@ -2162,6 +2166,8 @@ fn test_freebsd(target: &str) {
 
             // FIXME: https://github.com/rust-lang/libc/issues/1273
             "sighandler_t" => "sig_t".to_string(),
+
+            "sigevent_0_2_126" => "struct sigevent".to_string(),
 
             t if is_union => format!("union {}", t),
 
@@ -2574,6 +2580,7 @@ fn test_freebsd(target: &str) {
             ("if_data", "__ifi_lastchange") => true,
             ("ifreq", "ifr_ifru") => true,
             ("ifconf", "ifc_ifcu") => true,
+            ("sigevent", "_sigev_un") => true,
 
             // anonymous struct
             ("devstat", "dev_links") => true,
@@ -2722,6 +2729,8 @@ fn test_emscripten(target: &str) {
             // typedefs don't need any keywords
             t if t.ends_with("_t") => t.to_string(),
 
+            "sigevent_0_2_126" => "struct sigevent".to_string(),
+
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
 
@@ -2761,6 +2770,9 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // This is actually a union, not a struct
             // FIXME: is this necessary?
@@ -2847,6 +2859,7 @@ fn test_emscripten(target: &str) {
         // sigval is actually a union, but we pretend it's a struct
         // FIXME: is this necessary?
         (struct_ == "sigevent" && field == "sigev_value") ||
+        (struct_ == "sigevent_0_2_126" && field == "sigev_value") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
         // FIXME: is this necessary?
         (struct_ == "aiocb" && field == "aio_buf")
@@ -2863,8 +2876,10 @@ fn test_emscripten(target: &str) {
         // musl seems to define this as an *anonymous* bitfield
         // FIXME: is this necessary?
         (struct_ == "statvfs" && field == "__f_unused") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+        // union field
+        (struct_ == "sigevent" && field == "_sigev_un") ||
+        // union field on the backwards-compat struct definition
+        (struct_ == "sigevent_0_2_126" && field == "sigev_notify_thread_id") ||
         // signalfd had SIGSYS fields added in Linux 4.18, but no libc release has them yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
                                            field == "_pad2" ||
@@ -3486,6 +3501,9 @@ fn test_linux(target: &str) {
 
             // typedefs don't need any keywords
             t if t.ends_with("_t") => t.to_string(),
+
+            "sigevent_0_2_126" => "struct sigevent".to_string(),
+
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
             // put `union` in front of all unions:
@@ -4178,6 +4196,7 @@ fn test_linux(target: &str) {
         (struct_ == "utmpx" && field == "ut_tv") ||
         // sigval is actually a union, but we pretend it's a struct
         (struct_ == "sigevent" && field == "sigev_value") ||
+        (struct_ == "sigevent_0_2_126" && field == "sigev_value") ||
         // this one is an anonymous union
         (struct_ == "ff_effect" && field == "u") ||
         // `__exit_status` type is a patch which is absent in musl
@@ -4204,8 +4223,10 @@ fn test_linux(target: &str) {
         (musl && struct_ == "glob_t" && field == "gl_flags") ||
         // musl seems to define this as an *anonymous* bitfield
         (musl && struct_ == "statvfs" && field == "__f_unused") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+        // union field
+        (struct_ == "sigevent" && field == "_sigev_un") ||
+        // union field on the backwards-compat struct definition
+        (struct_ == "sigevent_0_2_126" && field == "sigev_notify_thread_id") ||
         // signalfd had SIGSYS fields added in Linux 4.18, but no libc release
         // has them yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
@@ -4717,6 +4738,7 @@ fn test_haiku(target: &str) {
             ("sem_t", "named_sem_id") => true,
             ("sigaction", "sa_sigaction") => true,
             ("sigevent", "sigev_value") => true,
+            ("sigevent_0_2_126", "sigev_value") => true,
             ("fpu_state", "_fpreg") => true,
             ("cpu_topology_node_info", "data") => true,
             // these fields have a simplified data definition in libc
