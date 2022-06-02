@@ -2498,6 +2498,10 @@ pub const PROP_NAME_MAX: ::c_int = 32;
 // sys/prctl.h
 pub const PR_SET_VMA: ::c_int = 0x53564d41;
 pub const PR_SET_VMA_ANON_NAME: ::c_int = 0;
+pub const PR_SET_NO_NEW_PRIVS: ::c_int = 38;
+pub const PR_GET_NO_NEW_PRIVS: ::c_int = 39;
+pub const PR_GET_SECCOMP: ::c_int = 21;
+pub const PR_SET_SECCOMP: ::c_int = 22;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
