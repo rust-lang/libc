@@ -552,6 +552,16 @@ pub const PROT_NONE: ::c_int = 0;
 pub const PROT_READ: ::c_int = 1;
 pub const PROT_WRITE: ::c_int = 2;
 pub const PROT_EXEC: ::c_int = 4;
+#[cfg(all(
+    any(target_os = "linux", target_os = "android"),
+    target_arch = "aarch64"
+))]
+pub const PROT_BTI: ::c_int = 16;
+#[cfg(all(
+    any(target_os = "linux", target_os = "android"),
+    target_arch = "aarch64"
+))]
+pub const PROT_MTE: ::c_int = 32;
 
 pub const XATTR_CREATE: ::c_int = 0x1;
 pub const XATTR_REPLACE: ::c_int = 0x2;
