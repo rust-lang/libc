@@ -640,6 +640,13 @@ pub const MADV_HUGEPAGE: ::c_int = 14;
 pub const MADV_NOHUGEPAGE: ::c_int = 15;
 pub const MADV_DONTDUMP: ::c_int = 16;
 pub const MADV_DODUMP: ::c_int = 17;
+pub const MADV_WIPEONFORK: ::c_int = 18;
+pub const MADV_KEEPONFORK: ::c_int = 19;
+pub const MADV_COLD: ::c_int = 20;
+pub const MADV_PAGEOUT: ::c_int = 21;
+pub const MADV_POPULATE_READ: ::c_int = 22;
+pub const MADV_POPULATE_WRITE: ::c_int = 23;
+pub const MADV_DONTNEED_LOCKED: ::c_int = 24;
 pub const MADV_HWPOISON: ::c_int = 100;
 
 pub const IFF_UP: ::c_int = 0x1;
