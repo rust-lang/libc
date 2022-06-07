@@ -111,7 +111,8 @@ if [ "$TARGET" = "s390x-unknown-linux-gnu" ]; then
 else
   if [ "$TARGET" = "asmjs-unknown-emscripten" ]; then
       # Rust uses -g4 by default what causes link issues.
-      export EMCC_CFLAGS="-g3"
+      # This should disable the -g4 option.
+      export RUSTFLAGS="-Cdebuginfo=0"
   fi
   cargo test --no-default-features --manifest-path libc-test/Cargo.toml \
     --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
