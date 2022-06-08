@@ -30,7 +30,7 @@
     feature = "rustc-dep-of-std",
     feature(native_link_modifiers, native_link_modifiers_bundle)
 )]
-#![cfg_attr(libc_const_extern_fn, feature(const_extern_fn))]
+#![cfg_attr(libc_const_extern_fn_unstable, feature(const_extern_fn))]
 
 #[macro_use]
 mod macros;
