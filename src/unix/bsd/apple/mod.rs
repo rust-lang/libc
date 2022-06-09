@@ -4682,6 +4682,16 @@ cfg_if! {
             const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
         }
+    } else {
+        fn __DARWIN_ALIGN32(p: usize) -> usize {
+            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
+            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+        }
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_const_size_of)] {
         pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
             (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
             as mach_msg_type_number_t;
@@ -4722,10 +4732,6 @@ cfg_if! {
             (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
             as mach_msg_type_number_t;
     } else {
-        fn __DARWIN_ALIGN32(p: usize) -> usize {
-            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
         pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t = 1;
         pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t = 4;
         pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t = 1;
