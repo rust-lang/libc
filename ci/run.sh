@@ -113,6 +113,8 @@ else
       # Rust uses -g4 by default what causes link issues.
       # This should disable the -g4 option.
       export RUSTFLAGS="-Cdebuginfo=0"
+      export EMCC_FLAGS="-s USE_PTHREADS=1 -s SHARED_MEMORY"
+      export EMCC_CFLAGS="-s USE_PTHREADS=1 -s SHARED_MEMORY"
   fi
   cargo test --no-default-features --manifest-path libc-test/Cargo.toml \
     --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
