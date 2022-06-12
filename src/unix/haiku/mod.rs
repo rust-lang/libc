@@ -1051,6 +1051,7 @@ pub const LOCK_EX: ::c_int = 0x02;
 pub const LOCK_NB: ::c_int = 0x04;
 pub const LOCK_UN: ::c_int = 0x08;
 
+pub const MINSIGSTKSZ: ::size_t = 8192;
 pub const SIGSTKSZ: ::size_t = 16384;
 
 pub const IOV_MAX: ::c_int = 1024;
@@ -1066,6 +1067,9 @@ pub const SA_SIGINFO: ::c_int = 0x40;
 pub const SA_NOMASK: ::c_int = SA_NODEFER;
 pub const SA_STACK: ::c_int = SA_ONSTACK;
 pub const SA_ONESHOT: ::c_int = SA_RESETHAND;
+
+pub const SS_ONSTACK: ::c_int = 0x1;
+pub const SS_DISABLE: ::c_int = 0x2;
 
 pub const FD_SETSIZE: usize = 1024;
 
