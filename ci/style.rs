@@ -14,9 +14,6 @@
 //!
 //! The current style is:
 //!
-//! * No trailing whitespace
-//! * No tabs
-//! * 100-character lines
 //! * Specific module layout:
 //!     1. use directives
 //!     2. typedefs
@@ -29,7 +26,6 @@
 //! Things not verified:
 //!
 //! * alignment
-//! * 4-space tabs
 //! * leading colons on paths
 
 use std::env;
@@ -69,10 +65,7 @@ fn walk(path: &Path, err: &mut Errors) {
         match &name[..] {
             n if !n.ends_with(".rs") => continue,
 
-            "dox.rs" |
             "lib.rs" |
-            "ctypes.rs" |
-            "libc.rs" |
             "macros.rs" => continue,
 
             _ => {}
@@ -105,26 +98,9 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
     let mut state = State::Start;
     let mut s_macros = 0;
     let mut f_macros = 0;
-    let mut prev_blank = false;
+    let mut in_impl = false;
 
     for (i, line) in file.lines().enumerate() {
-        if line == "" {
-            if prev_blank {
-                err.error(path, i, "double blank line");
-            }
-            prev_blank = true;
-        } else {
-            prev_blank = false;
-        }
-        if line != line.trim_end() {
-            err.error(path, i, "trailing whitespace");
-        }
-        if line.contains("\t") {
-            err.error(path, i, "tab character");
-        }
-        if line.len() > 100 && !(line.contains("https://") || line.contains("http://")) {
-            err.error(path, i, "line longer than 100 chars");
-        }
         if line.contains("#[cfg(") && line.contains(']') && !line.contains(" if ")
             && !(line.contains("target_endian") ||
                  line.contains("target_arch"))
@@ -136,6 +112,12 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         }
         if line.contains("#[derive(") && (line.contains("Copy") || line.contains("Clone")) {
             err.error(path, i, "impl ::Copy and ::Clone manually");
+        }
+        if line.contains("impl") {
+            in_impl = true;
+        }
+        if in_impl && line.starts_with('}') {
+            in_impl = false;
         }
 
         let orig_line = line;
@@ -154,7 +136,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
             }
         } else if line.starts_with("const ") {
             State::Constants
-        } else if line.starts_with("type ") {
+        } else if line.starts_with("type ") && !in_impl {
             State::Typedefs
         } else if line.starts_with("s! {") {
             s_macros += 1;
