@@ -5020,6 +5020,8 @@ extern "C" {
         thread_info_out: thread_info_t,
         thread_info_outCnt: *mut mach_msg_type_number_t,
     ) -> kern_return_t;
+    #[cfg_attr(doc, doc(alias = "__errno_location"))]
+    #[cfg_attr(doc, doc(alias = "errno"))]
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
     pub fn backtrace_symbols(addrs: *const *mut ::c_void, sz: ::c_int) -> *mut *mut ::c_char;
