@@ -977,7 +977,7 @@ s_no_extra_traits! {
 
     pub struct in6_pktinfo {
         pub ipi6_addr: ::in6_addr,
-        pub ipi6_ifindex: ::c_int,
+        pub ipi6_ifindex: ::c_uint,
     }
 }
 
