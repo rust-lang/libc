@@ -1997,6 +1997,10 @@ sysdir_get_next_search_path_enumeration
 sysdir_search_path_directory_t
 sysdir_search_path_domain_mask_t
 sysdir_start_search_path_enumeration
+task_create
+task_for_pid
+task_info
+task_terminate
 telldir
 thread_basic_info_t
 thread_extended_info_t

@@ -64,6 +64,9 @@ pub type memory_object_offset_t = ::c_ulonglong;
 pub type vm_inherit_t = ::c_uint;
 pub type vm_prot_t = ::c_int;
 
+pub type ledger_t = ::mach_port_t;
+pub type ledger_array_t = *mut ::ledger_t;
+
 pub type iconv_t = *mut ::c_void;
 
 pub type processor_cpu_load_info_t = *mut processor_cpu_load_info;
@@ -5498,6 +5501,14 @@ extern "C" {
         task_info_out: task_info_t,
         task_info_count: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
+    pub fn task_create(
+        target_task: ::task_t,
+        ledgers: ::ledger_array_t,
+        ledgersCnt: ::mach_msg_type_number_t,
+        inherit_memory: ::boolean_t,
+        child_task: *mut ::task_t,
+    ) -> ::kern_return_t;
+    pub fn task_terminate(target_task: ::task_t) -> ::kern_return_t;
     pub fn host_statistics(
         host_priv: host_t,
         flavor: host_flavor_t,
