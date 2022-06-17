@@ -2000,7 +2000,9 @@ sysdir_start_search_path_enumeration
 task_create
 task_for_pid
 task_info
+task_inspect_t
 task_terminate
+task_threads
 telldir
 thread_basic_info_t
 thread_extended_info_t
