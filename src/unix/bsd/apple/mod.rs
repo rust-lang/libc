@@ -53,6 +53,8 @@ pub type host_info64_t = *mut integer_t;
 pub type processor_flavor_t = ::c_int;
 pub type thread_flavor_t = natural_t;
 pub type thread_inspect_t = ::mach_port_t;
+pub type thread_act_t = ::mach_port_t;
+pub type thread_act_array_t = *mut ::thread_act_t;
 pub type policy_t = ::c_int;
 pub type mach_vm_address_t = u64;
 pub type mach_vm_offset_t = u64;
@@ -124,6 +126,7 @@ pub type vm_statistics64_t = *mut vm_statistics64;
 pub type vm_statistics64_data_t = vm_statistics64;
 
 pub type task_t = ::mach_port_t;
+pub type task_inspect_t = ::mach_port_t;
 
 pub type sysdir_search_path_enumeration_state = ::c_uint;
 
@@ -5509,6 +5512,11 @@ extern "C" {
         child_task: *mut ::task_t,
     ) -> ::kern_return_t;
     pub fn task_terminate(target_task: ::task_t) -> ::kern_return_t;
+    pub fn task_threads(
+        target_task: ::task_inspect_t,
+        act_list: *mut ::thread_act_array_t,
+        act_listCnt: *mut ::mach_msg_type_number_t,
+    ) -> ::kern_return_t;
     pub fn host_statistics(
         host_priv: host_t,
         flavor: host_flavor_t,
