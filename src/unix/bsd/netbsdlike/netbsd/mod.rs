@@ -1568,10 +1568,7 @@ pub const IPPROTO_VRRP: ::c_int = 112;
 /// Common Address Resolution Protocol
 pub const IPPROTO_CARP: ::c_int = 112;
 /// L2TPv3
-// TEMP: Disabled for now; this constant was added to NetBSD on 2017-02-16,
-// but isn't yet supported by the NetBSD rumprun kernel image used for
-// libc testing.
-//pub const IPPROTO_L2TP: ::c_int = 115;
+pub const IPPROTO_L2TP: ::c_int = 115;
 /// SCTP
 pub const IPPROTO_SCTP: ::c_int = 132;
 /// PFSYNC

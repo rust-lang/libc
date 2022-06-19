@@ -969,7 +969,6 @@ fn test_solarish(target: &str) {
 
 fn test_netbsd(target: &str) {
     assert!(target.contains("netbsd"));
-    let rumprun = target.contains("rumprun");
     let mut cfg = ctest_cfg();
 
     cfg.flag("-Wno-deprecated-declarations");
@@ -1145,26 +1144,6 @@ fn test_netbsd(target: &str) {
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
             "prlimit" | "prlimit64" |        // non-int in 2nd arg
-
-            // These functions presumably exist on netbsd but don't look like
-            // they're implemented on rumprun yet, just let them slide for now.
-            // Some of them look like they have headers but then don't have
-            // corresponding actual definitions either...
-            "shm_open" |
-            "shm_unlink" |
-            "syscall" |
-            "mq_open" |
-            "mq_close" |
-            "mq_getattr" |
-            "mq_notify" |
-            "mq_receive" |
-            "mq_send" |
-            "mq_setattr" |
-            "mq_timedreceive" |
-            "mq_timedsend" |
-            "mq_unlink" |
-            "ptrace" |
-            "sigaltstack" if rumprun => true,
 
             _ => false,
         }
