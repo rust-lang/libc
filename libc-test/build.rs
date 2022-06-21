@@ -321,9 +321,6 @@ fn test_apple(target: &str) {
             // close calls the close_nocancel system call
             "close" => true,
 
-            // macOs 12 minimum
-            "backtrace_async" => true,
-
             _ => false,
         }
     });
