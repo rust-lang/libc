@@ -377,6 +377,9 @@ IPPROTO_TP
 IPPROTO_UDPLITE
 IPV6_ADD_MEMBERSHIP
 IPV6_DROP_MEMBERSHIP
+IPV6_RECVPKTINFO
+IPV6_RECVTCLASS
+IPV6_TCLASS
 IP_FREEBIND
 IP_TOS
 IP_RECVTOS
@@ -1228,6 +1231,7 @@ idtype_t
 if_freenameindex
 if_nameindex
 ifaddrs
+in6_pktinfo
 initgroups
 ino64_t
 input_absinfo
