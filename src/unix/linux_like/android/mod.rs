@@ -2503,6 +2503,26 @@ pub const PR_GET_NO_NEW_PRIVS: ::c_int = 39;
 pub const PR_GET_SECCOMP: ::c_int = 21;
 pub const PR_SET_SECCOMP: ::c_int = 22;
 
+// linux/if_addr.h
+pub const IFA_UNSPEC: ::c_ushort = 0;
+pub const IFA_ADDRESS: ::c_ushort = 1;
+pub const IFA_LOCAL: ::c_ushort = 2;
+pub const IFA_LABEL: ::c_ushort = 3;
+pub const IFA_BROADCAST: ::c_ushort = 4;
+pub const IFA_ANYCAST: ::c_ushort = 5;
+pub const IFA_CACHEINFO: ::c_ushort = 6;
+pub const IFA_MULTICAST: ::c_ushort = 7;
+
+pub const IFA_F_SECONDARY: u32 = 0x01;
+pub const IFA_F_TEMPORARY: u32 = 0x01;
+pub const IFA_F_NODAD: u32 = 0x02;
+pub const IFA_F_OPTIMISTIC: u32 = 0x04;
+pub const IFA_F_DADFAILED: u32 = 0x08;
+pub const IFA_F_HOMEADDRESS: u32 = 0x10;
+pub const IFA_F_DEPRECATED: u32 = 0x20;
+pub const IFA_F_TENTATIVE: u32 = 0x40;
+pub const IFA_F_PERMANENT: u32 = 0x80;
+
 // linux/if_link.h
 pub const IFLA_UNSPEC: ::c_ushort = 0;
 pub const IFLA_ADDRESS: ::c_ushort = 1;
@@ -2680,21 +2700,10 @@ pub const RT_TABLE_DEFAULT: ::c_uchar = 253;
 pub const RT_TABLE_MAIN: ::c_uchar = 254;
 pub const RT_TABLE_LOCAL: ::c_uchar = 255;
 
-pub const RTMSG_OVERRUN: u32 = ::NLMSG_OVERRUN as u32;
 pub const RTMSG_NEWDEVICE: u32 = 0x11;
 pub const RTMSG_DELDEVICE: u32 = 0x12;
 pub const RTMSG_NEWROUTE: u32 = 0x21;
 pub const RTMSG_DELROUTE: u32 = 0x22;
-pub const RTMSG_NEWRULE: u32 = 0x31;
-pub const RTMSG_DELRULE: u32 = 0x32;
-pub const RTMSG_CONTROL: u32 = 0x40;
-pub const RTMSG_AR_FAILED: u32 = 0x51;
-
-pub const MAX_ADDR_LEN: usize = 7;
-pub const ARPD_UPDATE: ::c_ushort = 0x01;
-pub const ARPD_LOOKUP: ::c_ushort = 0x02;
-pub const ARPD_FLUSH: ::c_ushort = 0x03;
-pub const ATF_MAGIC: ::c_int = 0x80;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
