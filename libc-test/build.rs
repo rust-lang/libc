@@ -1771,7 +1771,10 @@ fn test_android(target: &str) {
         // incorrect, see: https://github.com/rust-lang/libc/issues/1359
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
-        (struct_ == "signalfd_siginfo" && field == "ssi_call_addr")
+        (struct_ == "signalfd_siginfo" && field == "ssi_call_addr") ||
+        // FIXME: svm_zero of sockaddr_vm has been changed in ndk r23c
+        // see: https://github.com/rust-lang/libc/pull/2832
+        (struct_ == "sockaddr_vm" && field == "svm_zero")
     });
 
     cfg.skip_field(move |struct_, field| {
@@ -1786,7 +1789,10 @@ fn test_android(target: &str) {
         // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_syscall" ||
                                            field == "ssi_call_addr" ||
-                                           field == "ssi_arch"))
+                                           field == "ssi_arch")) ||
+        // FIXME: svm_zero of sockaddr_vm has been changed in ndk r23c
+        // see: https://github.com/rust-lang/libc/pull/2832
+        (struct_ == "sockaddr_vm" && field == "svm_zero")
     });
 
     cfg.skip_field(|struct_, field| {
