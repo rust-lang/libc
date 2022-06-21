@@ -877,6 +877,11 @@ s! {
         pub c_ispeed: ::speed_t,
         pub c_ospeed: ::speed_t,
     }
+
+    pub struct in6_pktinfo {
+        pub ipi6_addr: ::in6_addr,
+        pub ipi6_ifindex: ::c_uint,
+    }
 }
 
 s_no_extra_traits! {
@@ -973,11 +978,6 @@ s_no_extra_traits! {
         pub sigev_notify_function: fn(::sigval),
         pub sigev_notify_attributes: *mut pthread_attr_t,
         pub __pad: [::c_char; 56 - 3 * 8 /* 8 == sizeof(long) */],
-    }
-
-    pub struct in6_pktinfo {
-        pub ipi6_addr: ::in6_addr,
-        pub ipi6_ifindex: ::c_uint,
     }
 }
 
