@@ -5551,6 +5551,11 @@ cfg_if! {
                 needle: *const ::c_void,
                 needlelen: ::size_t,
             ) -> *mut ::c_void;
+            pub fn task_set_info(target_task: ::task_t,
+                                 flavor: ::task_flavor_t,
+                                 task_info_in: ::task_info_t,
+                                 task_info_inCnt: ::mach_msg_type_number_t
+            ) -> ::kern_return_t;
         }
     }
 }

@@ -1,2 +1,3 @@
 clock_settime
 memmem
+task_set_info
