@@ -1355,6 +1355,10 @@ s! {
     // structure exists for backwards-compatibility with consumers that still
     // try to access that one member.
     #[doc(hidden)]
+    #[deprecated(
+        since = "0.2.127",
+        note = "Use sigevent instead"
+    )]
     pub struct sigevent_0_2_126 {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
@@ -1664,6 +1668,7 @@ s_no_extra_traits! {
     }
 }
 
+#[allow(deprecated)]
 impl ::core::ops::Deref for sigevent {
     type Target = sigevent_0_2_126;
 
@@ -1672,6 +1677,7 @@ impl ::core::ops::Deref for sigevent {
     }
 }
 
+#[allow(deprecated)]
 impl ::core::ops::DerefMut for sigevent {
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self as *mut sigevent_0_2_126) }
