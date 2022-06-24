@@ -12,12 +12,6 @@ missing! {
 }
 
 s! {
-    #[cfg(libc_union)]
-    pub struct __c_anonymous_sigev_thread {
-        pub _function: *mut ::c_void,   // Actually a function pointer
-        pub _attribute: *mut ::pthread_attr_t,
-    }
-
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
     }
@@ -210,26 +204,6 @@ s! {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
     }
-
-    // When sigevent was first added to libc, Rust still didn't support unions.
-    // So the definition only included one of the union's member.  This
-    // structure exists for backwards-compatibility with consumers that still
-    // try to access that one member.
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.2.127",
-        note = "Use sigevent instead"
-    )]
-    pub struct sigevent_0_2_126 {
-        pub sigev_value: ::sigval,
-        pub sigev_signo: ::c_int,
-        pub sigev_notify: ::c_int,
-        pub sigev_notify_thread_id: ::c_int,
-        #[cfg(target_pointer_width = "64")]
-        __unused1: [::c_int; 11],
-        #[cfg(target_pointer_width = "32")]
-        __unused1: [::c_int; 12]
-    }
 }
 
 s_no_extra_traits! {
@@ -269,6 +243,39 @@ s_no_extra_traits! {
         pub domainname: [::c_char; 65]
     }
 
+}
+
+#[cfg(libc_union)]
+s! {
+    pub struct __c_anonymous_sigev_thread {
+        pub _function: *mut ::c_void,   // Actually a function pointer
+        pub _attribute: *mut ::pthread_attr_t,
+    }
+
+    // When sigevent was first added to libc, Rust still didn't support unions.
+    // So the definition only included one of the union's member.  This
+    // structure exists for backwards-compatibility with consumers that still
+    // try to access that one member.
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.2.127",
+        note = "Use sigevent instead"
+    )]
+    #[cfg(libc_union)]
+    pub struct sigevent_0_2_126 {
+        pub sigev_value: ::sigval,
+        pub sigev_signo: ::c_int,
+        pub sigev_notify: ::c_int,
+        pub sigev_notify_thread_id: ::c_int,
+        #[cfg(target_pointer_width = "64")]
+        __unused1: [::c_int; 11],
+        #[cfg(target_pointer_width = "32")]
+        __unused1: [::c_int; 12]
+    }
+}
+
+#[cfg(libc_union)]
+s_no_extra_traits!{
     // Can't correctly impl Debug for unions
     #[allow(missing_debug_implementations)]
     #[cfg(libc_union)]
@@ -281,7 +288,6 @@ s_no_extra_traits! {
         pub _sigev_thread: __c_anonymous_sigev_thread,
     }
 
-    #[cfg(libc_union)]
     pub struct sigevent {
         pub sigev_value: ::sigval,
         pub sigev_signo: ::c_int,
@@ -289,7 +295,27 @@ s_no_extra_traits! {
         pub _sigev_un: __c_anonymous_sigev_un,
         /// Exists just to prevent the struct from being safely constructed,
         /// because the Debug, Hash, PartialImpl, and
-        /// Deref<Target=sigevent_0_2_0126> trait impls might read uninitialized
+        /// Deref<Target=sigevent_0_2_126> trait impls might read uninitialized
+        /// fields of _sigev_un.  This field may be removed once those trait
+        /// impls are.
+        _private: ()
+    }
+}
+
+#[cfg(not(libc_union))]
+s_no_extra_traits!{
+    pub struct sigevent {
+        pub sigev_value: ::sigval,
+        pub sigev_signo: ::c_int,
+        pub sigev_notify: ::c_int,
+        __unused0: ::c_int,
+        #[cfg(target_pointer_width = "64")]
+        __unused1: [::c_int; 11],
+        #[cfg(target_pointer_width = "32")]
+        __unused1: [::c_int; 12],
+        /// Exists just to prevent the struct from being safely constructed,
+        /// because the Debug, Hash, PartialImpl, and
+        /// Deref<Target=sigevent_0_2_126> trait impls might read uninitialized
         /// fields of _sigev_un.  This field may be removed once those trait
         /// impls are.
         _private: ()
@@ -297,6 +323,7 @@ s_no_extra_traits! {
 }
 
 #[allow(deprecated)]
+#[cfg(libc_union)]
 impl ::core::ops::Deref for sigevent {
     type Target = sigevent_0_2_126;
 
@@ -306,6 +333,7 @@ impl ::core::ops::Deref for sigevent {
 }
 
 #[allow(deprecated)]
+#[cfg(libc_union)]
 impl ::core::ops::DerefMut for sigevent {
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { &mut *(self as *mut Self as *mut sigevent_0_2_126) }
@@ -456,6 +484,7 @@ cfg_if! {
             }
         }
 
+        #[cfg(libc_union)]
         impl PartialEq for sigevent {
             fn eq(&self, other: &sigevent) -> bool {
                 self.sigev_value == other.sigev_value
@@ -481,6 +510,14 @@ cfg_if! {
                     }
             }
         }
+        #[cfg(not(libc_union))]
+        impl PartialEq for sigevent {
+            fn eq(&self, other: &sigevent) -> bool {
+                self.sigev_value == other.sigev_value
+                    && self.sigev_signo == other.sigev_signo
+                    && self.sigev_notify == other.sigev_notify
+            }
+        }
         impl Eq for sigevent {}
         impl ::fmt::Debug for sigevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
@@ -488,6 +525,7 @@ cfg_if! {
                 ds.field("sigev_value", &self.sigev_value);
                 ds.field("sigev_signo", &self.sigev_signo);
                 ds.field("sigev_notify", &self.sigev_notify);
+                #[cfg(libc_union)]
                 // The sigev_notify field indicates which union fields are valid
                 unsafe {
                     match self.sigev_notify {
@@ -511,6 +549,7 @@ cfg_if! {
                 self.sigev_value.hash(state);
                 self.sigev_signo.hash(state);
                 self.sigev_notify.hash(state);
+                #[cfg(libc_union)]
                 // The sigev_notify field indicates which union fields are valid
                 unsafe {
                     match self.sigev_notify {
