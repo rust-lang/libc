@@ -1434,6 +1434,12 @@ s_no_extra_traits! {
         pub sigev_signo: ::c_int,
         pub sigev_value: ::sigval,
         pub _sigev_un: __c_anonymous_sigev_un,
+        /// Exists just to prevent the struct from being safely constructed,
+        /// because the Debug, Hash, PartialImpl, and
+        /// Deref<Target=sigevent_0_2_0126> trait impls might read uninitialized
+        /// fields of _sigev_un.  This field may be removed once those trait
+        /// impls are.
+        _private: ()
     }
 
     pub struct ptsstat {
