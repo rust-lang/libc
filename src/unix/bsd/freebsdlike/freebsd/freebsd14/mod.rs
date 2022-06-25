@@ -468,6 +468,8 @@ pub const DOMAINSET_POLICY_INTERLEAVE: ::c_int = 4;
 
 pub const MINCORE_SUPER: ::c_int = 0x60;
 
+pub const MAP_GUARD: ::c_int = 0x00002000;
+
 extern "C" {
     pub fn setgrent();
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
