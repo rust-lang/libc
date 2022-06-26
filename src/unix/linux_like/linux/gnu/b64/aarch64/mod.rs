@@ -573,6 +573,12 @@ pub const HWCAP_PACG: ::c_ulong = 1 << 31;
 //pub const HWCAP2_SVESM4: ::c_ulong = 1 << 6;
 //pub const HWCAP2_FLAGM2: ::c_ulong = 1 << 7;
 //pub const HWCAP2_FRINT: ::c_ulong = 1 << 8;
+//pub const HWCAP2_MTE: ::c_ulong = 1 << 18;
+
+// linux/prctl.h
+pub const PR_SET_TAGGED_ADDR_CTRL: ::c_int = 55;
+pub const PR_GET_TAGGED_ADDR_CTRL: ::c_int = 56;
+pub const PR_TAGGED_ADDR_ENABLE: ::c_ulong = 1;
 
 // Syscall table
 pub const SYS_io_setup: ::c_long = 0;
