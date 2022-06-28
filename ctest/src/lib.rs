@@ -1123,6 +1123,15 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("vxworks", "unix", "")
     } else if target.contains("haiku") {
         ("haiku", "unix", "")
+    } else if target.contains("qnx") {
+        // Set an environment string if provided, empty str otherwise
+        let before_env = "-qnx-";
+        let env = target
+            .rfind(before_env)
+            .map(|i| &target[i + before_env.len()..])
+            .or(Some(""))
+            .unwrap();
+        ("qnx", "unix", env)
     } else {
         panic!("unknown os/family: {}", target)
     };
