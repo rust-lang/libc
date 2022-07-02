@@ -3182,6 +3182,9 @@ fn test_linux(target: &str) {
             // GRND_INSECURE was added in glibc-2.32
             "GRND_INSECURE" => true,
 
+            // present in recent kernels only
+            "PR_PAC_SET_ENABLED_KEYS" | "PR_PAC_GET_ENABLED_KEYS" => true,
+
             _ => false,
         }
     });
