@@ -2502,6 +2502,10 @@ pub const PR_SET_NO_NEW_PRIVS: ::c_int = 38;
 pub const PR_GET_NO_NEW_PRIVS: ::c_int = 39;
 pub const PR_GET_SECCOMP: ::c_int = 21;
 pub const PR_SET_SECCOMP: ::c_int = 22;
+pub const PR_GET_TIMING: ::c_int = 13;
+pub const PR_SET_TIMING: ::c_int = 14;
+pub const PR_TIMING_STATISTICAL: ::c_int = 0;
+pub const PR_TIMING_TIMESTAMP: ::c_int = 1;
 
 // linux/if_addr.h
 pub const IFA_UNSPEC: ::c_ushort = 0;
