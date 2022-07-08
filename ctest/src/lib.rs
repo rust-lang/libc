@@ -975,12 +975,12 @@ impl TestGenerator {
             use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
             fn main() {
-                println!("RUNNING ALL TESTS");
+                eprintln!("RUNNING ALL TESTS");
                 run_all();
                 if FAILED.load(Ordering::SeqCst) {
                     panic!("some tests failed");
                 } else {
-                    println!("PASSED {} tests", NTESTS.load(Ordering::SeqCst));
+                    eprintln!("PASSED {} tests", NTESTS.load(Ordering::SeqCst));
                 }
             }
 
@@ -1010,7 +1010,7 @@ impl TestGenerator {
 
             fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
                 if rust != c {
-                    println!("bad {}: rust: {} != c {}", attr, rust.pretty(),
+                    eprintln!("bad {}: rust: {} != c {}", attr, rust.pretty(),
                              c.pretty());
                     FAILED.store(true, Ordering::SeqCst);
                 } else {
