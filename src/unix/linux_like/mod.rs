@@ -275,7 +275,7 @@ s! {
 }
 
 #[cfg(libc_union)]
-s_no_extra_traits!{
+s_no_extra_traits! {
     // Can't correctly impl Debug for unions
     #[allow(missing_debug_implementations)]
     #[cfg(libc_union)]
@@ -303,7 +303,7 @@ s_no_extra_traits!{
 }
 
 #[cfg(not(libc_union))]
-s_no_extra_traits!{
+s_no_extra_traits! {
     pub struct sigevent {
         pub sigev_value: ::sigval,
         pub sigev_signo: ::c_int,
