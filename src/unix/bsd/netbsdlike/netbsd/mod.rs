@@ -2228,9 +2228,18 @@ pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
 pub const POSIX_SPAWN_RETURNERROR: ::c_int = 0x40;
 
 // Flags for chflags(2)
-pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
+pub const SF_APPEND: ::c_ulong = 0x00040000;
+pub const SF_ARCHIVED: ::c_ulong = 0x00010000;
+pub const SF_IMMUTABLE: ::c_ulong = 0x00020000;
 pub const SF_LOG: ::c_ulong = 0x00400000;
+pub const SF_SETTABLE: ::c_ulong = 0xffff0000;
 pub const SF_SNAPINVAL: ::c_ulong = 0x00800000;
+pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
+pub const UF_APPEND: ::c_ulong = 0x00000004;
+pub const UF_IMMUTABLE: ::c_ulong = 0x00000002;
+pub const UF_NODUMP: ::c_ulong = 0x00000001;
+pub const UF_OPAQUE: ::c_ulong = 0x00000008;
+pub const UF_SETTABLE: ::c_ulong = 0x0000ffff;
 
 // sys/sysctl.h
 pub const KVME_PROT_READ: ::c_int = 0x00000001;
