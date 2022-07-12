@@ -41,11 +41,6 @@ fn main() {
         println!("cargo:rustc-cfg=libc_ptr_addr_of");
     }
 
-    // Rust >= 1.37.0 allows underscores as anonymous constant names.
-    if rustc_minor_ver >= 37 || rustc_dep_of_std {
-        println!("cargo:rustc-cfg=libc_underscore_const_names");
-    }
-
     // #[thread_local] is currently unstable
     if rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_thread_local");
