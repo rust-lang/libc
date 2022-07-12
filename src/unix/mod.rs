@@ -642,21 +642,13 @@ extern "C" {
     pub fn getchar_unlocked() -> ::c_int;
     pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
 
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(target_os = "netbsd", link_name = "__socket30")]
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_socket")]
     #[cfg_attr(target_os = "solaris", link_name = "__xnet7_socket")]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_socket")]
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "connect$UNIX2003"
@@ -673,22 +665,14 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_listen")]
     pub fn listen(socket: ::c_int, backlog: ::c_int) -> ::c_int;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "accept$UNIX2003"
     )]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_accept")]
     pub fn accept(socket: ::c_int, address: *mut sockaddr, address_len: *mut socklen_t) -> ::c_int;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getpeername$UNIX2003"
@@ -699,11 +683,7 @@ extern "C" {
         address: *mut sockaddr,
         address_len: *mut socklen_t,
     ) -> ::c_int;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getsockname$UNIX2003"
@@ -736,11 +716,7 @@ extern "C" {
         protocol: ::c_int,
         socket_vector: *mut ::c_int,
     ) -> ::c_int;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "sendto$UNIX2003"
@@ -1250,11 +1226,7 @@ extern "C" {
     pub fn dlsym(handle: *mut ::c_void, symbol: *const ::c_char) -> *mut ::c_void;
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
 
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(
         any(target_os = "illumos", target_os = "solaris"),
         link_name = "__xnet_getaddrinfo"
@@ -1266,11 +1238,7 @@ extern "C" {
         hints: *const addrinfo,
         res: *mut *mut addrinfo,
     ) -> ::c_int;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_freeaddrinfo")]
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn hstrerror(errcode: ::c_int) -> *const ::c_char;

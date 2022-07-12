@@ -14,7 +14,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
-    "libc_cfg_target_vendor",
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
@@ -82,11 +81,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.33 supports cfg(target_vendor).
-    if rustc_minor_ver >= 33 || rustc_dep_of_std {
-        set_cfg("libc_cfg_target_vendor");
     }
 
     // Rust >= 1.40 supports #[non_exhaustive].
