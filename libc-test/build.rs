@@ -327,6 +327,9 @@ fn test_apple(target: &str) {
             // FIXME: Requires the macOS 14.4 SDK.
             "os_sync_wake_by_address_flags_t" | "os_sync_wait_on_address_flags_t" => true,
 
+            // FIXME: "'__uint128' undeclared" in C
+            "__uint128" => true,
+
             _ => false,
         }
     });
@@ -1858,6 +1861,10 @@ fn test_android(target: &str) {
             // These are intended to be opaque
             "posix_spawn_file_actions_t" => true,
             "posix_spawnattr_t" => true,
+
+            // FIXME: "'__uint128' undeclared" in C
+            "__uint128" => true,
+
             _ => false,
         }
     });
@@ -3701,6 +3708,9 @@ fn test_linux(target: &str) {
             "pgn_t" if musl => true,
             "priority_t" if musl => true,
             "name_t" if musl => true,
+
+            // FIXME: "'__uint128' undeclared" in C
+            "__uint128" => true,
 
             t => {
                 if musl {

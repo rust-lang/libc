@@ -19,7 +19,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_const_extern_fn_unstable",
     "libc_core_cvoid",
     "libc_deny_warnings",
-    "libc_int128",
     "libc_long_array",
     "libc_non_exhaustive",
     "libc_packedN",
@@ -85,11 +84,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.26 supports i128 and u128:
-    if rustc_minor_ver >= 26 || rustc_dep_of_std {
-        set_cfg("libc_int128");
     }
 
     // Rust >= 1.30 supports `core::ffi::c_void`, so libc can just re-export it.
