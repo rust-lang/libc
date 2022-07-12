@@ -32,11 +32,6 @@ fn main() {
         println!("cargo:rustc-cfg=libc_deny_warnings");
     }
 
-    // Rust >= 1.33 supports cfg(target_vendor).
-    if rustc_minor_ver >= 33 || rustc_dep_of_std {
-        println!("cargo:rustc-cfg=libc_cfg_target_vendor");
-    }
-
     // Rust >= 1.40 supports #[non_exhaustive].
     if rustc_minor_ver >= 40 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_non_exhaustive");
