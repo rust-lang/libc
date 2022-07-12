@@ -953,6 +953,14 @@ s! {
         pub pid: ::c_int,
     }
 
+    // linux/openat2.h
+    #[non_exhaustive]
+    pub struct open_how {
+        pub flags: ::__u64,
+        pub mode: ::__u64,
+        pub resolve: ::__u64,
+    }
+
     #[repr(align(8))]
     pub struct tpacket_rollover_stats {
         pub tp_all: ::__u64,
@@ -6183,10 +6191,3 @@ cfg_if! {
 
 mod arch;
 pub use self::arch::*;
-
-cfg_if! {
-    if #[cfg(libc_non_exhaustive)] {
-        mod non_exhaustive;
-        pub use self::non_exhaustive::*;
-    }
-}

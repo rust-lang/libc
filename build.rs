@@ -18,7 +18,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
     "libc_long_array",
-    "libc_non_exhaustive",
     "libc_ptr_addr_of",
     "libc_thread_local",
     "libc_underscore_const_names",
@@ -81,11 +80,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.40 supports #[non_exhaustive].
-    if rustc_minor_ver >= 40 || rustc_dep_of_std {
-        set_cfg("libc_non_exhaustive");
     }
 
     // Rust >= 1.47 supports long array:
