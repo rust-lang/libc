@@ -14,7 +14,7 @@ exclude = ["/ci/*", "/.github/*", "/.cirrus.yml", "/triagebot.toml"]
 description = """
 Raw FFI bindings to platform libraries like libc.
 """
-rust-version = "1.37"
+rust-version = "1.40"
 
 [package.metadata.docs.rs]
 features = ["const-extern-fn", "extra_traits"]
