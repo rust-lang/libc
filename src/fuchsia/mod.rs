@@ -3,6 +3,8 @@
 //! More functions and definitions can be found in the more specific modules
 //! according to the platform in question.
 
+use c_void;
+
 // PUB_TYPE
 
 pub type c_schar = i8;
@@ -4486,5 +4488,3 @@ cfg_if! {
         // Unknown target_arch
     }
 }
-
-pub use ffi::c_void;

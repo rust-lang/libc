@@ -1,5 +1,7 @@
 //! Windows CRT definitions
 
+use c_void;
+
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;
@@ -564,8 +566,6 @@ extern "system" {
     ) -> ::c_int;
     pub fn socket(af: ::c_int, socket_type: ::c_int, protocol: ::c_int) -> SOCKET;
 }
-
-pub use ffi::c_void;
 
 cfg_if! {
     if #[cfg(all(target_env = "gnu"))] {

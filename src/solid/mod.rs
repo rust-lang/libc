@@ -2,6 +2,8 @@
 //!
 //! [SOLID]: https://solid.kmckk.com/
 
+use c_void;
+
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;
@@ -870,8 +872,6 @@ extern "C" {
     // sys/types.h
     pub fn lseek(arg1: c_int, arg2: __off_t, arg3: c_int) -> __off_t;
 }
-
-pub use ffi::c_void;
 
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
