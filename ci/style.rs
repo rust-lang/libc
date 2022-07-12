@@ -196,6 +196,6 @@ impl State {
 impl Errors {
     fn error(&mut self, path: &Path, line: usize, msg: &str) {
         self.errs = true;
-        println!("{}:{} - {}", path.display(), line + 1, msg);
+        println!("{}:{}: {}", path.display(), line + 1, msg);
     }
 }
