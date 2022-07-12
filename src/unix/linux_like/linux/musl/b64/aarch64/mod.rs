@@ -100,6 +100,12 @@ s! {
         pub set_tid_size: ::c_ulonglong,
         pub cgroup: ::c_ulonglong,
     }
+
+    pub struct user_fpsimd_struct {
+        pub vregs: [::__uint128_t; 32],
+        pub fpsr: u32,
+        pub fpcr: u32,
+    }
 }
 
 s_no_extra_traits! {
@@ -676,10 +682,3 @@ pub const VMIN: usize = 6;
 pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
-
-cfg_if! {
-    if #[cfg(libc_int128)] {
-        mod int128;
-        pub use self::int128::*;
-    }
-}

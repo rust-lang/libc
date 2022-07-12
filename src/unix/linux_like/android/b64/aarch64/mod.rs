@@ -75,6 +75,12 @@ s! {
         // auto-derive traits like Debug
         __reserved: [[u64; 32]; 16],
     }
+
+    pub struct user_fpsimd_struct {
+        pub vregs: [::__uint128_t; 32],
+        pub fpsr: u32,
+        pub fpcr: u32,
+    }
 }
 
 s_no_extra_traits! {
@@ -403,10 +409,3 @@ pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
 pub const SYS_syscalls: ::c_long = 436;
-
-cfg_if! {
-    if #[cfg(libc_int128)] {
-        mod int128;
-        pub use self::int128::*;
-    }
-}

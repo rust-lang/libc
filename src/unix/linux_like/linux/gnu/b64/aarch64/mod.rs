@@ -223,9 +223,8 @@ s! {
         __reserved: [[u64; 32]; 16],
     }
 
-    #[repr(align(16))]
     pub struct user_fpsimd_struct {
-        pub vregs: [[u64; 2]; 32],
+        pub vregs: [::__uint128_t; 32],
         pub fpsr: ::c_uint,
         pub fpcr: ::c_uint,
     }
@@ -954,12 +953,5 @@ cfg_if! {
     } else {
         mod lp64;
         pub use self::lp64::*;
-    }
-}
-
-cfg_if! {
-    if #[cfg(libc_int128)] {
-        mod int128;
-        pub use self::int128::*;
     }
 }
