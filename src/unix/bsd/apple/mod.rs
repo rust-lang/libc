@@ -946,9 +946,7 @@ s! {
 
     pub struct vnode_info_path {
         pub vip_vi: vnode_info,
-        // Normally it's `vip_path: [::c_char; MAXPATHLEN]` but because libc supports an old rustc
-        // version, we go around this limitation like this.
-        pub vip_path: [[::c_char; 32]; 32],
+        pub vip_path: [::c_char; ::MAXPATHLEN as usize],
     }
 
     pub struct proc_vnodepathinfo {
