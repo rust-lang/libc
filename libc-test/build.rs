@@ -68,7 +68,6 @@ fn do_ctest() {
 fn ctest_cfg() -> ctest::TestGenerator {
     let mut cfg = ctest::TestGenerator::new();
     let libc_cfgs = [
-        "libc_priv_mod_use",
         "libc_union",
         "libc_const_size_of",
         "libc_align",
