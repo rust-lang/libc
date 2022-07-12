@@ -185,6 +185,15 @@ s! {
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 0],
     }
+
+    // FIXME this is actually a union
+    #[cfg_attr(target_pointer_width = "32",
+               repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64",
+               repr(align(8)))]
+    pub struct sem_t {
+        __size: [::c_char; 32],
+    }
 }
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -193,13 +202,3 @@ pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 
 pub const SYS_gettid: ::c_long = 5178; // Valid for n64
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    } else {
-        mod no_align;
-        pub use self::no_align::*;
-    }
-}

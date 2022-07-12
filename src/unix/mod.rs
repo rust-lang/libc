@@ -201,6 +201,11 @@ s! {
         pub p_aliases: *mut *mut ::c_char,
         pub p_proto: ::c_int,
     }
+
+    #[repr(align(4))]
+    pub struct in6_addr {
+        pub s6_addr: [u8; 16],
+    }
 }
 
 pub const INT_MIN: c_int = -2147483648;
@@ -1517,15 +1522,5 @@ cfg_if! {
             #[doc(hidden)]
             __variant2,
         }
-    }
-}
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    } else {
-        mod no_align;
-        pub use self::no_align::*;
     }
 }

@@ -272,24 +272,6 @@ macro_rules! __item {
     };
 }
 
-macro_rules! align_const {
-    ($($(#[$attr:meta])*
-       pub const $name:ident : $t1:ty
-       = $t2:ident { $($field:tt)* };)*) => ($(
-        #[cfg(libc_align)]
-        $(#[$attr])*
-        pub const $name : $t1 = $t2 {
-            $($field)*
-        };
-        #[cfg(not(libc_align))]
-        $(#[$attr])*
-        pub const $name : $t1 = $t2 {
-            $($field)*
-            __align: [],
-        };
-    )*)
-}
-
 // This macro is used to deprecate items that should be accessed via the mach2 crate
 macro_rules! deprecated_mach {
     (pub const $id:ident: $ty:ty = $expr:expr;) => {

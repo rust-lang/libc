@@ -802,9 +802,10 @@ pub const B4000000: ::speed_t = 0o010017;
 
 pub const EHWPOISON: ::c_int = 168;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(8))]
+    pub struct max_align_t {
+        priv_: [f32; 4]
     }
 }

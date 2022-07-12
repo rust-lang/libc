@@ -67,6 +67,47 @@ s! {
         __unused1: ::c_ulong,
         __unused2: ::c_ulong,
     }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_sigmask: ::sigset_t,
+        pub uc_mcontext: mcontext_t,
+    }
+
+    #[repr(align(16))]
+    pub struct mcontext_t {
+        pub fault_address: ::c_ulong,
+        pub regs: [::c_ulong; 31],
+        pub sp: ::c_ulong,
+        pub pc: ::c_ulong,
+        pub pstate: ::c_ulong,
+        __reserved: [[u64; 32]; 16],
+    }
+
+    #[repr(align(8))]
+    pub struct clone_args {
+        pub flags: ::c_ulonglong,
+        pub pidfd: ::c_ulonglong,
+        pub child_tid: ::c_ulonglong,
+        pub parent_tid: ::c_ulonglong,
+        pub exit_signal: ::c_ulonglong,
+        pub stack: ::c_ulonglong,
+        pub stack_size: ::c_ulonglong,
+        pub tls: ::c_ulonglong,
+        pub set_tid: ::c_ulonglong,
+        pub set_tid_size: ::c_ulonglong,
+        pub cgroup: ::c_ulonglong,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f32; 8]
+    }
 }
 
 pub const O_APPEND: ::c_int = 1024;
@@ -635,13 +676,6 @@ pub const VMIN: usize = 6;
 pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
 
 cfg_if! {
     if #[cfg(libc_int128)] {

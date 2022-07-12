@@ -240,6 +240,18 @@ s! {
         __unused4: ::c_ulong,
         __unused5: ::c_ulong,
     }
+
+    // FIXME this is actually a union
+    #[cfg_attr(target_pointer_width = "32",
+               repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64",
+               repr(align(8)))]
+    pub struct sem_t {
+        #[cfg(target_pointer_width = "32")]
+        __size: [::c_char; 16],
+        #[cfg(target_pointer_width = "64")]
+        __size: [::c_char; 32],
+    }
 }
 
 pub const O_CLOEXEC: ::c_int = 0o2000000;
@@ -885,13 +897,3 @@ pub const SYS_pkey_free: ::c_long = 396;
 pub const SYS_statx: ::c_int = 397;
 pub const SYS_pidfd_open: ::c_long = 434;
 pub const SYS_clone3: ::c_long = 435;
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    } else {
-        mod no_align;
-        pub use self::no_align::*;
-    }
-}

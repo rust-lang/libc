@@ -116,8 +116,6 @@ s! {
 //
 //    pub struct in6_addr {
 //        pub s6_addr: [u8; 16],
-//        #[cfg(not(libc_align))]
-//        __align: [u32; 0],
 //    }
 
     pub struct stat {

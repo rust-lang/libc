@@ -779,9 +779,10 @@ pub const REG_TRAPNO: ::c_int = 20;
 pub const REG_OLDMASK: ::c_int = 21;
 pub const REG_CR2: ::c_int = 22;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
     }
 }

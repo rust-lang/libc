@@ -8,7 +8,6 @@ fn main() {
 
     let (rustc_minor_ver, is_nightly) = rustc_minor_nightly().expect("Failed to get rustc version");
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
-    let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
     let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
 
@@ -17,6 +16,9 @@ fn main() {
             "cargo:warning=\"libc's use_std cargo feature is deprecated since libc 0.2.55; \
              please consider using the `std` cargo feature instead\""
         );
+    }
+    if env::var("CARGO_FEATURE_ALIGN").is_ok() {
+        println!("cargo:warning=\"libc's align cargo feature is deprecated (and always available)");
     }
 
     // The ABI of libc used by libstd is backward compatible with FreeBSD 10.
@@ -38,11 +40,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         println!("cargo:rustc-cfg=libc_deny_warnings");
-    }
-
-    // Rust >= 1.25 supports repr(align):
-    if rustc_minor_ver >= 25 || rustc_dep_of_std || align_cargo_feature {
-        println!("cargo:rustc-cfg=libc_align");
     }
 
     // Rust >= 1.26 supports i128 and u128:

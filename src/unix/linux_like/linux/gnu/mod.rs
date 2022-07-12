@@ -349,6 +349,18 @@ s! {
         pub stack_pointer: ::__u64,
         pub u: __c_anonymous_ptrace_syscall_info_data,
     }
+
+    // FIXME this is actually a union
+    #[cfg_attr(target_pointer_width = "32",
+               repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64",
+               repr(align(8)))]
+    pub struct sem_t {
+        #[cfg(target_pointer_width = "32")]
+        __size: [::c_char; 16],
+        #[cfg(target_pointer_width = "64")]
+        __size: [::c_char; 32],
+    }
 }
 
 impl siginfo_t {
@@ -1339,15 +1351,5 @@ cfg_if! {
         pub use self::b64::*;
     } else {
         // Unknown target_arch
-    }
-}
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    } else {
-        mod no_align;
-        pub use self::no_align::*;
     }
 }

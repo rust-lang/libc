@@ -119,6 +119,21 @@ s! {
         __unused1: ::c_long,
         __unused2: ::c_long
     }
+
+    #[repr(align(8))]
+    pub struct clone_args {
+        pub flags: ::c_ulonglong,
+        pub pidfd: ::c_ulonglong,
+        pub child_tid: ::c_ulonglong,
+        pub parent_tid: ::c_ulonglong,
+        pub exit_signal: ::c_ulonglong,
+        pub stack: ::c_ulonglong,
+        pub stack_size: ::c_ulonglong,
+        pub tls: ::c_ulonglong,
+        pub set_tid: ::c_ulonglong,
+        pub set_tid_size: ::c_ulonglong,
+        pub cgroup: ::c_ulonglong,
+    }
 }
 
 s_no_extra_traits! {
@@ -143,6 +158,12 @@ s_no_extra_traits! {
         pub uc_mcontext: mcontext_t,
         pub uc_sigmask: ::sigset_t,
         __private: [u8; 512],
+    }
+
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
     }
 }
 
@@ -896,10 +917,3 @@ pub const VMIN: usize = 6;
 pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
