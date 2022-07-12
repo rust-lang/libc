@@ -821,6 +821,14 @@ s! {
         pub val: ::c_int,
     }
 
+    // linux/openat2.h
+    #[non_exhaustive]
+    pub struct open_how {
+        pub flags: ::__u64,
+        pub mode: ::__u64,
+        pub resolve: ::__u64,
+    }
+
     // linux/sctp.h
 
     pub struct sctp_initmsg {
@@ -6461,6 +6469,3 @@ cfg_if! {
 
 mod arch;
 pub use self::arch::*;
-
-mod non_exhaustive;
-pub use self::non_exhaustive::*;
