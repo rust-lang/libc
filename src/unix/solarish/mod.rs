@@ -469,14 +469,7 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(all(
-            any(target_arch = "x86", target_arch = "x86_64"),
-            libc_packedN
-        ), repr(packed(4)))]
-    #[cfg_attr(all(
-            any(target_arch = "x86", target_arch = "x86_64"),
-            not(libc_packedN)
-        ), repr(packed))]
+    #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed(4)))]
     pub struct epoll_event {
         pub events: u32,
         pub u64: u64,
