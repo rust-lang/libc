@@ -969,7 +969,6 @@ s_no_extra_traits! {
         pad: [::c_long; 4],
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifr_ifru {
         pub ifru_addr: ::sockaddr,
         pub ifru_dstaddr: ::sockaddr,
@@ -989,13 +988,9 @@ s_no_extra_traits! {
     pub struct ifreq {
         /// interface name, e.g. "en0"
         pub ifr_name: [::c_char; ::IFNAMSIZ],
-        #[cfg(libc_union)]
         pub ifr_ifru: __c_anonymous_ifr_ifru,
-        #[cfg(not(libc_union))]
-        pub ifr_ifru: ::sockaddr,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut ::c_char,
         pub ifcu_req: *mut ::ifreq,
@@ -1006,10 +1001,7 @@ s_no_extra_traits! {
     networks accessible).  */
     pub struct ifconf {
         pub ifc_len: ::c_int,       /* Size of buffer.  */
-        #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-        #[cfg(not(libc_union))]
-        pub ifc_ifcu: *mut ::ifreq,
     }
 
     pub struct hwtstamp_config {
@@ -1037,20 +1029,17 @@ s_no_extra_traits! {
         pub sched_period: ::__u64,
     }
 
-    #[cfg(libc_union)]
     #[allow(missing_debug_implementations)]
     pub union tpacket_req_u {
         pub req: ::tpacket_req,
         pub req3: ::tpacket_req3,
     }
 
-    #[cfg(libc_union)]
     #[allow(missing_debug_implementations)]
     pub union tpacket_bd_header_u {
         pub bh1: ::tpacket_hdr_v1,
     }
 
-    #[cfg(libc_union)]
     #[allow(missing_debug_implementations)]
     pub struct tpacket_block_desc {
         pub version: ::__u32,
@@ -1068,23 +1057,19 @@ s_no_extra_traits! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        s_no_extra_traits! {
-            // linux/can.h
-            #[allow(missing_debug_implementations)]
-            pub union __c_anonymous_sockaddr_can_can_addr {
-                pub tp: __c_anonymous_sockaddr_can_tp,
-                pub j1939: __c_anonymous_sockaddr_can_j1939,
-            }
+s_no_extra_traits! {
+    // linux/can.h
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_sockaddr_can_can_addr {
+        pub tp: __c_anonymous_sockaddr_can_tp,
+        pub j1939: __c_anonymous_sockaddr_can_j1939,
+    }
 
-            #[allow(missing_debug_implementations)]
-            pub struct sockaddr_can {
-                pub can_family: ::sa_family_t,
-                pub can_ifindex: ::c_int,
-                pub can_addr: __c_anonymous_sockaddr_can_can_addr,
-            }
-        }
+    #[allow(missing_debug_implementations)]
+    pub struct sockaddr_can {
+        pub can_family: ::sa_family_t,
+        pub can_ifindex: ::c_int,
+        pub can_addr: __c_anonymous_sockaddr_can_can_addr,
     }
 }
 
@@ -1452,7 +1437,6 @@ cfg_if! {
                 self.mq_curmsgs.hash(state);
             }
         }
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifr_ifru {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifr_ifru")
@@ -1481,7 +1465,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifr_ifru")

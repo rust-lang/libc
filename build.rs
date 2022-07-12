@@ -28,7 +28,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_ptr_addr_of",
     "libc_thread_local",
     "libc_underscore_const_names",
-    "libc_union",
     "libc_ctest",
 ];
 
@@ -96,11 +95,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.19 supports unions:
-    if rustc_minor_ver >= 19 || rustc_dep_of_std {
-        set_cfg("libc_union");
     }
 
     // Rust >= 1.24 supports const mem::size_of:

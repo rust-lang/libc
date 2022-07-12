@@ -688,14 +688,12 @@ s! {
     pub struct posix_spawn_file_actions_entry_t {
         pub fae_action: fae_action,
         pub fae_fildes: ::c_int,
-        #[cfg(libc_union)]
         pub fae_data: __c_anonymous_posix_spawn_fae,
     }
 
     pub struct posix_spawn_file_actions_t {
         pub size: ::c_uint,
         pub len: ::c_uint,
-        #[cfg(libc_union)]
         pub fae: *mut posix_spawn_file_actions_entry_t,
     }
 
@@ -734,7 +732,6 @@ s! {
 
     pub struct ifconf {
         pub ifc_len: ::c_int,
-        #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
 
@@ -893,13 +890,11 @@ s_no_extra_traits! {
         pub sigev_notify_attributes: *mut ::c_void
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_posix_spawn_fae {
         pub open: __c_anonymous_posix_spawn_fae_open,
         pub dup2: __c_anonymous_posix_spawn_fae_dup2,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut ::c_void,
         pub ifcu_req: *mut ifreq,
@@ -1332,10 +1327,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_posix_spawn_fae {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_posix_spawn_fae {
             fn eq(&self, other: &__c_anonymous_posix_spawn_fae) -> bool {
                 unsafe {
@@ -1345,7 +1338,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_posix_spawn_fae {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -1357,7 +1349,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_posix_spawn_fae {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -1367,10 +1358,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifc_ifcu {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
                 unsafe {
@@ -1380,7 +1369,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -1392,7 +1380,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifc_ifcu {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -2915,6 +2902,9 @@ extern "C" {
         ntargets: ::size_t,
         hint: *const ::c_void,
     ) -> ::c_int;
+
+    pub fn getmntinfo(mntbufp: *mut *mut ::statvfs, flags: ::c_int) -> ::c_int;
+    pub fn getvfsstat(buf: *mut statvfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
 }
 
 #[link(name = "rt")]
@@ -3136,16 +3126,6 @@ extern "C" {
         fd: ::c_int,
         fmt: *const ::c_char,
     ) -> ::c_int;
-}
-
-cfg_if! {
-    if #[cfg(libc_union)] {
-        extern {
-            // these functions use statvfs:
-            pub fn getmntinfo(mntbufp: *mut *mut ::statvfs, flags: ::c_int) -> ::c_int;
-            pub fn getvfsstat(buf: *mut statvfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
-        }
-    }
 }
 
 cfg_if! {

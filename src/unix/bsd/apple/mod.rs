@@ -1196,10 +1196,7 @@ s_no_extra_traits! {
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct ifconf {
         pub ifc_len: ::c_int,
-        #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-        #[cfg(not(libc_union))]
-        pub ifc_ifcu: *mut ifreq,
     }
 
     #[cfg_attr(libc_packedN, repr(packed(4)))]
@@ -1496,7 +1493,6 @@ s_no_extra_traits! {
         pub ifdm_max: ::c_int,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifk_data {
         pub ifk_ptr: *mut ::c_void,
         pub ifk_value: ::c_int,
@@ -1506,11 +1502,9 @@ s_no_extra_traits! {
     pub struct ifkpi {
         pub ifk_module_id: ::c_uint,
         pub ifk_type: ::c_uint,
-        #[cfg(libc_union)]
         pub ifk_data: __c_anonymous_ifk_data,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifr_ifru {
         pub ifru_addr: ::sockaddr,
         pub ifru_dstaddr: ::sockaddr,
@@ -1532,13 +1526,9 @@ s_no_extra_traits! {
 
     pub struct ifreq {
         pub ifr_name: [::c_char; ::IFNAMSIZ],
-        #[cfg(libc_union)]
         pub ifr_ifru: __c_anonymous_ifr_ifru,
-        #[cfg(not(libc_union))]
-        pub ifr_ifru: ::sockaddr,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut ::c_char,
         pub ifcu_req: *mut ifreq,
@@ -1579,37 +1569,33 @@ impl siginfo_t {
     }
 }
 
+s_no_extra_traits! {
+    pub union semun {
+        pub val: ::c_int,
+        pub buf: *mut semid_ds,
+        pub array: *mut ::c_ushort,
+    }
+}
+
 cfg_if! {
-    if #[cfg(libc_union)] {
-        s_no_extra_traits! {
-            pub union semun {
-                pub val: ::c_int,
-                pub buf: *mut semid_ds,
-                pub array: *mut ::c_ushort,
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for semun {
+            fn eq(&self, other: &semun) -> bool {
+                unsafe { self.val == other.val }
             }
         }
-
-        cfg_if! {
-            if #[cfg(feature = "extra_traits")] {
-                impl PartialEq for semun {
-                    fn eq(&self, other: &semun) -> bool {
-                        unsafe { self.val == other.val }
-                    }
-                }
-                impl Eq for semun {}
-                impl ::fmt::Debug for semun {
-                    fn fmt(&self, f: &mut ::fmt::Formatter)
-                           -> ::fmt::Result {
-                        f.debug_struct("semun")
-                            .field("val", unsafe { &self.val })
-                            .finish()
-                    }
-                }
-                impl ::hash::Hash for semun {
-                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                        unsafe { self.val.hash(state) };
-                    }
-                }
+        impl Eq for semun {}
+        impl ::fmt::Debug for semun {
+            fn fmt(&self, f: &mut ::fmt::Formatter)
+                   -> ::fmt::Result {
+                f.debug_struct("semun")
+                    .field("val", unsafe { &self.val })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for semun {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.val.hash(state) };
             }
         }
     }
@@ -2947,7 +2933,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifk_data {
             fn eq(&self, other: &__c_anonymous_ifk_data) -> bool {
                 unsafe {
@@ -2957,10 +2942,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifk_data {}
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifk_data {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifk_data")
@@ -2969,7 +2952,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifk_data {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -3004,7 +2986,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifr_ifru {
             fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
                 unsafe {
@@ -3028,10 +3009,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifr_ifru {}
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifr_ifru {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifr_ifru")
@@ -3055,7 +3034,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifr_ifru {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -3104,10 +3082,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifc_ifcu {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
                 unsafe {
@@ -3117,7 +3093,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifc_ifcu")
@@ -3127,7 +3102,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifc_ifcu {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifcu_buf.hash(state) };
