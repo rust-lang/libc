@@ -25,7 +25,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_long_array",
     "libc_non_exhaustive",
     "libc_packedN",
-    "libc_priv_mod_use",
     "libc_ptr_addr_of",
     "libc_thread_local",
     "libc_underscore_const_names",
@@ -97,11 +96,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.15 supports private module use:
-    if rustc_minor_ver >= 15 || rustc_dep_of_std {
-        set_cfg("libc_priv_mod_use");
     }
 
     // Rust >= 1.19 supports unions:
