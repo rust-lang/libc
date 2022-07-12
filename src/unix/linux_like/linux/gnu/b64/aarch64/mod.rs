@@ -217,6 +217,12 @@ s! {
         __reserved: [[u64; 32]; 16],
     }
 
+    pub struct user_fpsimd_struct {
+        pub vregs: [::__uint128_t; 32],
+        pub fpsr: ::c_uint,
+        pub fpcr: ::c_uint,
+    }
+
     #[repr(align(8))]
     pub struct clone_args {
         pub flags: ::c_ulonglong,
@@ -964,6 +970,3 @@ cfg_if! {
         pub use self::lp64::*;
     }
 }
-
-mod int128;
-pub use self::int128::*;
