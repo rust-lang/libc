@@ -3084,22 +3084,15 @@ pub const TP_FT_REQ_FILL_RXHASH: ::__u32 = 1;
 
 pub const TPACKET_ALIGNMENT: usize = 16;
 
-cfg_if! {
-    if #[cfg(libc_const_size_of)] {
-        pub const TPACKET_HDRLEN: usize = (
-            (::mem::size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
-            & !(TPACKET_ALIGNMENT - 1)
-        ) + ::mem::size_of::<::sockaddr_ll>();
-        pub const TPACKET2_HDRLEN: usize = (
-            (::mem::size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1)
-            & !(TPACKET_ALIGNMENT - 1)
-        ) + ::mem::size_of::<::sockaddr_ll>();
-        pub const TPACKET3_HDRLEN: usize = (
-            (::mem::size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1)
-            & !(TPACKET_ALIGNMENT - 1)
-        ) + ::mem::size_of::<::sockaddr_ll>();
-    }
-}
+pub const TPACKET_HDRLEN: usize = ((::mem::size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
+    & !(TPACKET_ALIGNMENT - 1))
+    + ::mem::size_of::<::sockaddr_ll>();
+pub const TPACKET2_HDRLEN: usize = ((::mem::size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1)
+    & !(TPACKET_ALIGNMENT - 1))
+    + ::mem::size_of::<::sockaddr_ll>();
+pub const TPACKET3_HDRLEN: usize = ((::mem::size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1)
+    & !(TPACKET_ALIGNMENT - 1))
+    + ::mem::size_of::<::sockaddr_ll>();
 
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;
