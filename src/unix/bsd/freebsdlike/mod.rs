@@ -428,15 +428,7 @@ cfg_if! {
 }
 
 // Non-public helper constant
-cfg_if! {
-    if #[cfg(all(not(libc_const_size_of), target_pointer_width = "32"))] {
-        const SIZEOF_LONG: usize = 4;
-    } else if #[cfg(all(not(libc_const_size_of), target_pointer_width = "64"))] {
-        const SIZEOF_LONG: usize = 8;
-    } else if #[cfg(libc_const_size_of)] {
-        const SIZEOF_LONG: usize = ::mem::size_of::<::c_long>();
-    }
-}
+const SIZEOF_LONG: usize = ::mem::size_of::<::c_long>();
 
 #[deprecated(
     since = "0.2.64",

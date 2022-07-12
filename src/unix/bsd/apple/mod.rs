@@ -4679,76 +4679,52 @@ cfg_if! {
             const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
         }
-    } else if #[cfg(libc_const_size_of)] {
+    } else {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
             const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
         }
-    } else {
-        fn __DARWIN_ALIGN32(p: usize) -> usize {
-            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_const_size_of)] {
-        pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_time_constraint_policy_data_t>() /
-             ::mem::size_of::<integer_t>()) as mach_msg_type_number_t;
-        pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_precedence_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_affinity_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_background_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_latency_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_throughput_qos_policy_data_t>() /
-             ::mem::size_of::<integer_t>()) as mach_msg_type_number_t;
-        pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_basic_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_identifier_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
+pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_time_constraint_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_precedence_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_affinity_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_background_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_latency_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_throughput_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_basic_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_identifier_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
 
-        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
-            (::mem::size_of::<task_thread_times_info_data_t>()
-            / ::mem::size_of::<natural_t>()) as u32;
-        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = (::mem::size_of::<mach_task_basic_info_data_t>()
-            / ::mem::size_of::<natural_t>()) as u32;
-        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-    } else {
-        pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t = 4;
-        pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t = 10;
-        pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t = 6;
-        pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t = 28;
-        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 = 4;
-        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = 12;
-        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t = 38;
-    }
-}
+pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
+    (::mem::size_of::<task_thread_times_info_data_t>() / ::mem::size_of::<natural_t>()) as u32;
+pub const MACH_TASK_BASIC_INFO_COUNT: u32 =
+    (::mem::size_of::<mach_task_basic_info_data_t>() / ::mem::size_of::<natural_t>()) as u32;
+pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
