@@ -32,13 +32,6 @@ fn main() {
         println!("cargo:rustc-cfg=libc_deny_warnings");
     }
 
-    // Rust >= 1.30 supports `core::ffi::c_void`, so libc can just re-export it.
-    // Otherwise, it defines an incompatible type to retaining
-    // backwards-compatibility.
-    if rustc_minor_ver >= 30 || rustc_dep_of_std {
-        println!("cargo:rustc-cfg=libc_core_cvoid");
-    }
-
     // Rust >= 1.33 supports repr(packed(N)) and cfg(target_vendor).
     if rustc_minor_ver >= 33 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_packedN");

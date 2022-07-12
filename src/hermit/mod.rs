@@ -3,6 +3,8 @@
 // Ported by Colin Fink <colin.finck@rwth-aachen.de>
 //       and Stefan Lankes <slankes@eonerc.rwth-aachen.de>
 
+use c_void;
+
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;
@@ -40,25 +42,5 @@ cfg_if! {
         pub use self::x86_64::*;
     } else {
         // Unknown target_arch
-    }
-}
-
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
     }
 }
