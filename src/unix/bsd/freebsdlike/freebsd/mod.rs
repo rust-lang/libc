@@ -954,7 +954,6 @@ s! {
 
     pub struct ifconf {
         pub ifc_len: ::c_int,
-        #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
 
@@ -1004,7 +1003,6 @@ s_no_extra_traits! {
         pub __ut_spare: [::c_char; 64],
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_cr_pid {
         __cr_unused: *mut ::c_void,
         pub cr_pid: ::pid_t,
@@ -1015,10 +1013,7 @@ s_no_extra_traits! {
         pub cr_uid: ::uid_t,
         pub cr_ngroups: ::c_short,
         pub cr_groups: [::gid_t; 16],
-        #[cfg(libc_union)]
         pub cr_pid__c_anonymous_union: __c_anonymous_cr_pid,
-        #[cfg(not(libc_union))]
-        __cr_unused1: *mut ::c_void,
     }
 
     pub struct sockaddr_dl {
@@ -1060,24 +1055,20 @@ s_no_extra_traits! {
         pub devname: [::c_char; SPECNAMELEN as usize + 1],
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_elf32_auxv_union {
         pub a_val: ::c_int,
     }
 
     pub struct Elf32_Auxinfo {
         pub a_type: ::c_int,
-        #[cfg(libc_union)]
         pub a_un: __c_anonymous_elf32_auxv_union,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifi_epoch {
         pub tt: ::time_t,
         pub ph: u64,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifi_lastchange {
         pub tv: ::timeval,
         pub ph: __c_anonymous_ph,
@@ -1131,20 +1122,11 @@ s_no_extra_traits! {
         /// HW offload capabilities, see IFCAP
         pub ifi_hwassist: u64,
         /// uptime at attach or stat reset
-        #[cfg(libc_union)]
         pub __ifi_epoch: __c_anonymous_ifi_epoch,
-        /// uptime at attach or stat reset
-        #[cfg(not(libc_union))]
-        pub __ifi_epoch: u64,
         /// time of last administrative change
-        #[cfg(libc_union)]
         pub __ifi_lastchange: __c_anonymous_ifi_lastchange,
-        /// time of last administrative change
-        #[cfg(not(libc_union))]
-        pub __ifi_lastchange: ::timeval,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifr_ifru {
         pub ifru_addr: ::sockaddr,
         pub ifru_dstaddr: ::sockaddr,
@@ -1166,13 +1148,9 @@ s_no_extra_traits! {
     pub struct ifreq {
         /// if name, e.g. "en0"
         pub ifr_name: [::c_char; ::IFNAMSIZ],
-        #[cfg(libc_union)]
         pub ifr_ifru: __c_anonymous_ifr_ifru,
-        #[cfg(not(libc_union))]
-        pub ifr_ifru: ::sockaddr,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: ::caddr_t,
         pub ifcu_req: *mut ifreq,
@@ -1252,15 +1230,12 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_cr_pid {
             fn eq(&self, other: &__c_anonymous_cr_pid) -> bool {
                 unsafe { self.cr_pid == other.cr_pid}
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_cr_pid {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_cr_pid {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("cr_pid")
@@ -1268,7 +1243,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_cr_pid {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.cr_pid.hash(state) };
@@ -1277,11 +1251,8 @@ cfg_if! {
 
         impl PartialEq for xucred {
             fn eq(&self, other: &xucred) -> bool {
-                #[cfg(libc_union)]
                 let equal_cr_pid = self.cr_pid__c_anonymous_union
                     == other.cr_pid__c_anonymous_union;
-                #[cfg(not(libc_union))]
-                let equal_cr_pid = self.__cr_unused1 == other.__cr_unused1;
 
                 self.cr_version == other.cr_version
                     && self.cr_uid == other.cr_uid
@@ -1298,7 +1269,6 @@ cfg_if! {
                 struct_formatter.field("cr_uid", &self.cr_uid);
                 struct_formatter.field("cr_ngroups", &self.cr_ngroups);
                 struct_formatter.field("cr_groups", &self.cr_groups);
-                #[cfg(libc_union)]
                 struct_formatter.field(
                     "cr_pid__c_anonymous_union",
                     &self.cr_pid__c_anonymous_union
@@ -1312,10 +1282,7 @@ cfg_if! {
                 self.cr_uid.hash(state);
                 self.cr_ngroups.hash(state);
                 self.cr_groups.hash(state);
-                #[cfg(libc_union)]
                 self.cr_pid__c_anonymous_union.hash(state);
-                #[cfg(not(libc_union))]
-                self.__cr_unused1.hash(state);
             }
         }
 
@@ -1449,15 +1416,12 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_elf32_auxv_union {
             fn eq(&self, other: &__c_anonymous_elf32_auxv_union) -> bool {
                 unsafe { self.a_val == other.a_val}
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_elf32_auxv_union {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_elf32_auxv_union {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("a_val")
@@ -1465,13 +1429,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(not(libc_union))]
-        impl PartialEq for Elf32_Auxinfo {
-            fn eq(&self, other: &Elf32_Auxinfo) -> bool {
-                self.a_type == other.a_type
-            }
-        }
-        #[cfg(libc_union)]
         impl PartialEq for Elf32_Auxinfo {
             fn eq(&self, other: &Elf32_Auxinfo) -> bool {
                 self.a_type == other.a_type
@@ -1479,15 +1436,6 @@ cfg_if! {
             }
         }
         impl Eq for Elf32_Auxinfo {}
-        #[cfg(not(libc_union))]
-        impl ::fmt::Debug for Elf32_Auxinfo {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("Elf32_Auxinfo")
-                    .field("a_type", &self.a_type)
-                    .finish()
-            }
-        }
-        #[cfg(libc_union)]
         impl ::fmt::Debug for Elf32_Auxinfo {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("Elf32_Auxinfo")
@@ -1497,7 +1445,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifr_ifru {
             fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
                 unsafe {
@@ -1519,9 +1466,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifr_ifru {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifr_ifru {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifr_ifru")
@@ -1543,7 +1488,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifr_ifru {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifru_addr.hash(state) };
@@ -1585,10 +1529,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifc_ifcu {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
                 unsafe {
@@ -1598,7 +1540,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifc_ifcu")
@@ -1608,7 +1549,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifc_ifcu {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifcu_buf.hash(state) };
@@ -1711,7 +1651,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifi_epoch {
             fn eq(&self, other: &__c_anonymous_ifi_epoch) -> bool {
                 unsafe {
@@ -1720,9 +1659,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifi_epoch {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifi_epoch {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifi_epoch")
@@ -1731,7 +1668,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifi_epoch {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -1741,7 +1677,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifi_lastchange {
             fn eq(&self, other: &__c_anonymous_ifi_lastchange) -> bool {
                 unsafe {
@@ -1750,9 +1685,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifi_lastchange {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifi_lastchange {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifi_lastchange")
@@ -1761,7 +1694,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifi_lastchange {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {

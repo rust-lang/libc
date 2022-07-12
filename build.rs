@@ -40,11 +40,6 @@ fn main() {
         println!("cargo:rustc-cfg=libc_deny_warnings");
     }
 
-    // Rust >= 1.19 supports unions:
-    if rustc_minor_ver >= 19 || rustc_dep_of_std {
-        println!("cargo:rustc-cfg=libc_union");
-    }
-
     // Rust >= 1.24 supports const mem::size_of:
     if rustc_minor_ver >= 24 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_const_size_of");

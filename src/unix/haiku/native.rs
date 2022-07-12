@@ -403,7 +403,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg(libc_union)]
     pub union cpuid_info {
         pub eax_0: __c_anonymous_eax_0,
         pub eax_1: __c_anonymous_eax_1,
@@ -416,7 +415,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[cfg(libc_union)]
         impl PartialEq for cpuid_info {
             fn eq(&self, other: &cpuid_info) -> bool {
                 unsafe {
@@ -429,9 +427,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for cpuid_info {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for cpuid_info {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -1218,12 +1214,8 @@ extern "C" {
     ) -> status_t;
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        extern "C" {
-            pub fn get_cpuid(info: *mut cpuid_info, eaxRegister: u32, cpuNum: u32) -> status_t;
-        }
-    }
+extern "C" {
+    pub fn get_cpuid(info: *mut cpuid_info, eaxRegister: u32, cpuNum: u32) -> status_t;
 }
 
 // The following functions are defined as macros in C/C++
