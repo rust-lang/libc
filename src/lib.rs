@@ -46,9 +46,6 @@ cfg_if! {
 #[doc(hidden)]
 #[allow(unused_imports)]
 use core::clone::Clone;
-#[cfg(libc_core_cvoid)]
-#[allow(unused_imports)]
-use core::ffi;
 #[allow(unused_imports)]
 use core::fmt;
 #[allow(unused_imports)]
@@ -63,6 +60,8 @@ use core::num;
 #[doc(hidden)]
 #[allow(unused_imports)]
 use core::option::Option;
+
+pub use core::ffi::c_void;
 
 cfg_if! {
     if #[cfg(windows)] {

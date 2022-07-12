@@ -17,7 +17,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_cfg_target_vendor",
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
-    "libc_core_cvoid",
     "libc_deny_warnings",
     "libc_long_array",
     "libc_non_exhaustive",
@@ -84,13 +83,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.30 supports `core::ffi::c_void`, so libc can just re-export it.
-    // Otherwise, it defines an incompatible type to retaining
-    // backwards-compatibility.
-    if rustc_minor_ver >= 30 || rustc_dep_of_std {
-        set_cfg("libc_core_cvoid");
     }
 
     // Rust >= 1.33 supports repr(packed(N)) and cfg(target_vendor).

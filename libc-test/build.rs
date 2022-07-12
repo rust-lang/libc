@@ -67,7 +67,7 @@ fn do_ctest() {
 
 fn ctest_cfg() -> ctest::TestGenerator {
     let mut cfg = ctest::TestGenerator::new();
-    let libc_cfgs = ["libc_core_cvoid", "libc_packedN", "libc_thread_local"];
+    let libc_cfgs = ["libc_packedN", "libc_thread_local"];
     for f in &libc_cfgs {
         cfg.cfg(f, None);
     }
