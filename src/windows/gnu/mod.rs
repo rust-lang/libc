@@ -1,3 +1,23 @@
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        s_no_extra_traits! {
+            #[allow(missing_debug_implementations)]
+            #[repr(align(16))]
+            pub struct max_align_t {
+                priv_: [f64; 4]
+            }
+        }
+    } else if #[cfg(target_pointer_width = "32")] {
+        s_no_extra_traits! {
+            #[allow(missing_debug_implementations)]
+            #[repr(align(16))]
+            pub struct max_align_t {
+                priv_: [i64; 6]
+            }
+        }
+    }
+}
+
 pub const L_tmpnam: ::c_uint = 14;
 pub const TMP_MAX: ::c_uint = 0x7fff;
 
@@ -14,6 +34,3 @@ extern "C" {
     //      header file. We cannot find a way to link to that symbol from Rust.
     pub fn wmemchr(cx: *const ::wchar_t, c: ::wchar_t, n: ::size_t) -> *mut ::wchar_t;
 }
-
-mod align;
-pub use self::align::*;

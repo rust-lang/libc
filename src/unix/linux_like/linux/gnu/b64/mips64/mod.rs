@@ -186,6 +186,14 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
+    }
+}
+
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
@@ -917,6 +925,3 @@ extern "C" {
         newlen: ::size_t,
     ) -> ::c_int;
 }
-
-mod align;
-pub use self::align::*;

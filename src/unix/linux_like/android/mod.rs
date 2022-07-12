@@ -468,7 +468,7 @@ s! {
         pub direction: ::__u16,
         pub trigger: ff_trigger,
         pub replay: ff_replay,
-        // FIXME this is actually a union
+        // FIXME(1.0): this is actually a union
         #[cfg(target_pointer_width = "64")]
         pub u: [u64; 4],
         #[cfg(target_pointer_width = "32")]

@@ -254,6 +254,18 @@ s! {
         pub mem_unit: ::c_uint,
         pub _f: [::c_char; 8],
     }
+
+    // FIXME(1.0): this is actually a union
+    #[cfg_attr(target_pointer_width = "32",
+               repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64",
+               repr(align(8)))]
+    pub struct sem_t {
+        #[cfg(target_pointer_width = "32")]
+        __size: [::c_char; 16],
+        #[cfg(target_pointer_width = "64")]
+        __size: [::c_char; 32],
+    }
 }
 
 pub const __SIZEOF_PTHREAD_ATTR_T: usize = 36;
@@ -680,6 +692,3 @@ extern "C" {
         cpuset: *const ::cpu_set_t,
     ) -> ::c_int;
 }
-
-mod align;
-pub use self::align::*;

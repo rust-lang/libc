@@ -59,6 +59,12 @@ s_no_extra_traits! {
         __sig: c_long,
         __opaque: [::c_char; ::__PTHREAD_ONCE_SIZE__],
     }
+
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 2]
+    }
 }
 
 cfg_if! {
@@ -145,6 +151,3 @@ extern "C" {
         options: ::c_ulong,
     ) -> ::c_int;
 }
-
-mod align;
-pub use self::align::*;

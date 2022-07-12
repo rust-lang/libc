@@ -502,6 +502,18 @@ s! {
         pub error: ::__s32,
         pub error_count: ::__u32,
     }
+
+    // FIXME(1.0) this is actually a union
+    #[cfg_attr(target_pointer_width = "32",
+               repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64",
+               repr(align(8)))]
+    pub struct sem_t {
+        #[cfg(target_pointer_width = "32")]
+        __size: [::c_char; 16],
+        #[cfg(target_pointer_width = "64")]
+        __size: [::c_char; 32],
+    }
 }
 
 impl siginfo_t {
@@ -1624,6 +1636,3 @@ cfg_if! {
         // Unknown target_arch
     }
 }
-
-mod align;
-pub use self::align::*;

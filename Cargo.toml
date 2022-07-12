@@ -139,8 +139,7 @@ rustc-std-workspace-core = { version = "1.0.0", optional = true }
 [features]
 default = ["std"]
 std = []
-align = []
-rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
+rustc-dep-of-std = ["rustc-std-workspace-core"]
 extra_traits = []
 const-extern-fn = []
 

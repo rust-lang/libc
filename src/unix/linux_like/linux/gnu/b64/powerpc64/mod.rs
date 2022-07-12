@@ -193,6 +193,14 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [i64; 4]
+    }
+}
+
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
@@ -962,6 +970,3 @@ extern "C" {
         newlen: ::size_t,
     ) -> ::c_int;
 }
-
-mod align;
-pub use self::align::*;

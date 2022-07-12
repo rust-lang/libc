@@ -252,7 +252,7 @@ s! {
         __val: [::c_int; 2],
     }
 
-    // FIXME this is actually a union
+    // FIXME(1.0): this is actually a union
     pub struct sem_t {
         #[cfg(target_pointer_width = "32")]
         __size: [::c_char; 16],
