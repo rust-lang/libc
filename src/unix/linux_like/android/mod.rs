@@ -432,7 +432,7 @@ s_no_extra_traits! {
     pub struct prop_info {
         __name: [::c_char; 32],
         __serial: ::c_uint,
-        __value: [[::c_char; 4]; 23],
+        __value: [::c_char; 92],
     }
 }
 
