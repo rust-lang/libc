@@ -3213,6 +3213,8 @@ extern "C" {
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 
     pub fn pthread_getcpuclockid(thread: ::pthread_t, clk_id: *mut ::clockid_t) -> ::c_int;
+
+    pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
 }
 
 cfg_if! {

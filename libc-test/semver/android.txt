@@ -2962,6 +2962,7 @@ ftello
 ftruncate
 ftruncate64
 futimens
+futimes
 fwrite
 gai_strerror
 genlmsghdr
