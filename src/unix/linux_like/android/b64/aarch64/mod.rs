@@ -72,9 +72,7 @@ s! {
         pub sp: ::c_ulonglong,
         pub pc: ::c_ulonglong,
         pub pstate: ::c_ulonglong,
-        // nested arrays to get the right size/length while being able to
-        // auto-derive traits like Debug
-        __reserved: [[u64; 32]; 16],
+        __reserved: [u64; 512],
     }
 
     pub struct user_fpsimd_struct {
