@@ -20,7 +20,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_deny_warnings",
     "libc_long_array",
     "libc_non_exhaustive",
-    "libc_packedN",
     "libc_ptr_addr_of",
     "libc_thread_local",
     "libc_underscore_const_names",
@@ -85,9 +84,8 @@ fn main() {
         set_cfg("libc_deny_warnings");
     }
 
-    // Rust >= 1.33 supports repr(packed(N)) and cfg(target_vendor).
+    // Rust >= 1.33 supports cfg(target_vendor).
     if rustc_minor_ver >= 33 || rustc_dep_of_std {
-        set_cfg("libc_packedN");
         set_cfg("libc_cfg_target_vendor");
     }
 
