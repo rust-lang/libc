@@ -264,6 +264,12 @@ s_no_extra_traits! {
         __private: [u8; 112],
         __ssp: [::c_ulong; 4],
     }
+
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 6]
+    }
 }
 
 cfg_if! {
@@ -1092,11 +1098,4 @@ extern "C" {
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
     pub fn makecontext(ucp: *mut ucontext_t, func: extern "C" fn(), argc: ::c_int, ...);
     pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> ::c_int;
-}
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
 }

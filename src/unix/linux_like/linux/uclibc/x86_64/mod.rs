@@ -109,16 +109,16 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    // ------------------------------------------------------------
-    // definitions below are *unverified* and might **break** the software
+    /* ------------------------------------------------------------
+     * definitions below are *unverified* and might **break** the software
+     */
+
 //    pub struct in_addr {
 //        pub s_addr: in_addr_t,
 //    }
 //
 //    pub struct in6_addr {
 //        pub s6_addr: [u8; 16],
-//        #[cfg(not(libc_align))]
-//        __align: [u32; 0],
 //    }
 
     pub struct stat {
@@ -264,7 +264,7 @@ s! {
         __val: [::c_int; 2],
     }
 
-    // FIXME this is actually a union
+    // FIXME(1.0): this is actually a union
     pub struct sem_t {
         #[cfg(target_pointer_width = "32")]
         __size: [::c_char; 16],

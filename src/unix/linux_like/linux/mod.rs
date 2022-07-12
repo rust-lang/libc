@@ -390,7 +390,7 @@ s! {
         pub direction: ::__u16,
         pub trigger: ff_trigger,
         pub replay: ff_replay,
-        // FIXME this is actually a union
+        // FIXME(1.0): this is actually a union
         #[cfg(target_pointer_width = "64")]
         pub u: [u64; 4],
         #[cfg(target_pointer_width = "32")]
@@ -889,6 +889,87 @@ s! {
         pub prefer_busy_poll: u8,
         pub __pad: u8, // Must be zero
     }
+
+    #[cfg_attr(any(target_pointer_width = "32",
+                   target_arch = "x86_64",
+                   target_arch = "powerpc64",
+                   target_arch = "mips64",
+                   target_arch = "mips64r6",
+                   target_arch = "s390x",
+                   target_arch = "sparc64",
+                   target_arch = "aarch64",
+                   target_arch = "riscv64",
+                   target_arch = "riscv32",
+                   target_arch = "loongarch64"),
+               repr(align(4)))]
+    #[cfg_attr(not(any(target_pointer_width = "32",
+                       target_arch = "x86_64",
+                       target_arch = "powerpc64",
+                       target_arch = "mips64",
+                       target_arch = "mips64r6",
+                       target_arch = "s390x",
+                       target_arch = "sparc64",
+                       target_arch = "aarch64",
+                       target_arch = "riscv64",
+                       target_arch = "riscv32",
+                       target_arch = "loongarch64")),
+               repr(align(8)))]
+    pub struct pthread_mutexattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
+    }
+
+    #[cfg_attr(any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
+               repr(align(4)))]
+    #[cfg_attr(all(not(target_env = "musl"),
+                   not(target_env = "ohos"),
+                   target_pointer_width = "64"),
+               repr(align(8)))]
+    pub struct pthread_rwlockattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
+    }
+
+    #[repr(align(4))]
+    pub struct pthread_condattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
+    }
+
+    #[repr(align(4))]
+    pub struct pthread_barrierattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_BARRIERATTR_T],
+    }
+
+    #[repr(align(8))]
+    pub struct fanotify_event_metadata {
+        pub event_len: __u32,
+        pub vers: __u8,
+        pub reserved: __u8,
+        pub metadata_len: __u16,
+        pub mask: __u64,
+        pub fd: ::c_int,
+        pub pid: ::c_int,
+    }
+
+    #[repr(align(8))]
+    pub struct tpacket_rollover_stats {
+        pub tp_all: ::__u64,
+        pub tp_huge: ::__u64,
+        pub tp_failed: ::__u64,
+    }
+
+    #[repr(align(8))]
+    pub struct tpacket_hdr_v1 {
+        pub block_status: ::__u32,
+        pub num_pkts: ::__u32,
+        pub offset_to_first_pkt: ::__u32,
+        pub blk_len: ::__u32,
+        pub seq_num: ::__u64,
+        pub ts_first_pkt: ::tpacket_bd_ts,
+        pub ts_last_pkt: ::tpacket_bd_ts,
+    }
 }
 
 s_no_extra_traits! {
@@ -1046,19 +1127,149 @@ s_no_extra_traits! {
         pub offset_to_priv: ::__u32,
         pub hdr: ::tpacket_bd_header_u,
     }
-}
 
-s_no_extra_traits! {
+    #[cfg_attr(all(any(target_env = "musl", target_env = "ohos"),
+                   target_pointer_width = "32"),
+               repr(align(4)))]
+    #[cfg_attr(all(any(target_env = "musl", target_env = "ohos"),
+                   target_pointer_width = "64"),
+               repr(align(8)))]
+    #[cfg_attr(all(not(any(target_env = "musl", target_env = "ohos")),
+                   target_arch = "x86"),
+               repr(align(4)))]
+    #[cfg_attr(all(not(any(target_env = "musl", target_env = "ohos")),
+                   not(target_arch = "x86")),
+               repr(align(8)))]
+    pub struct pthread_cond_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_COND_T],
+    }
+
+    #[cfg_attr(all(target_pointer_width = "32",
+                   any(target_arch = "mips",
+                       target_arch = "mips32r6",
+                       target_arch = "arm",
+                       target_arch = "hexagon",
+                       target_arch = "m68k",
+                       target_arch = "csky",
+                       target_arch = "powerpc",
+                       target_arch = "sparc",
+                       target_arch = "x86_64",
+                       target_arch = "x86")),
+               repr(align(4)))]
+    #[cfg_attr(any(target_pointer_width = "64",
+                   not(any(target_arch = "mips",
+                           target_arch = "mips32r6",
+                           target_arch = "arm",
+                           target_arch = "hexagon",
+                           target_arch = "m68k",
+                           target_arch = "csky",
+                           target_arch = "powerpc",
+                           target_arch = "sparc",
+                           target_arch = "x86_64",
+                           target_arch = "x86"))),
+               repr(align(8)))]
+    pub struct pthread_mutex_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
+    }
+
+    #[cfg_attr(all(target_pointer_width = "32",
+                   any(target_arch = "mips",
+                       target_arch = "mips32r6",
+                       target_arch = "arm",
+                       target_arch = "hexagon",
+                       target_arch = "m68k",
+                       target_arch = "csky",
+                       target_arch = "powerpc",
+                       target_arch = "sparc",
+                       target_arch = "x86_64",
+                       target_arch = "x86")),
+               repr(align(4)))]
+    #[cfg_attr(any(target_pointer_width = "64",
+                   not(any(target_arch = "mips",
+                           target_arch = "mips32r6",
+                           target_arch = "arm",
+                           target_arch = "hexagon",
+                           target_arch = "m68k",
+                           target_arch = "powerpc",
+                           target_arch = "sparc",
+                           target_arch = "x86_64",
+                           target_arch = "x86"))),
+               repr(align(8)))]
+    pub struct pthread_rwlock_t {
+        size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
+    }
+
+    #[cfg_attr(all(target_pointer_width = "32",
+                   any(target_arch = "mips",
+                       target_arch = "mips32r6",
+                       target_arch = "arm",
+                       target_arch = "hexagon",
+                       target_arch = "m68k",
+                       target_arch = "csky",
+                       target_arch = "powerpc",
+                       target_arch = "sparc",
+                       target_arch = "x86_64",
+                       target_arch = "x86")),
+               repr(align(4)))]
+    #[cfg_attr(any(target_pointer_width = "64",
+                   not(any(target_arch = "mips",
+                           target_arch = "mips32r6",
+                           target_arch = "arm",
+                           target_arch = "hexagon",
+                           target_arch = "m68k",
+                           target_arch = "csky",
+                           target_arch = "powerpc",
+                           target_arch = "sparc",
+                           target_arch = "x86_64",
+                           target_arch = "x86"))),
+               repr(align(8)))]
+    pub struct pthread_barrier_t {
+        size: [u8; ::__SIZEOF_PTHREAD_BARRIER_T],
+    }
+
     // linux/net_tstamp.h
     #[allow(missing_debug_implementations)]
     pub struct sock_txtime {
         pub clockid: ::clockid_t,
         pub flags: ::__u32,
     }
-}
 
-s_no_extra_traits! {
     // linux/can.h
+    #[repr(align(8))]
+    #[allow(missing_debug_implementations)]
+    pub struct can_frame {
+        pub can_id: canid_t,
+        pub can_dlc: u8,
+        __pad: u8,
+        __res0: u8,
+        __res1: u8,
+        pub data: [u8; CAN_MAX_DLEN],
+    }
+
+    #[repr(align(8))]
+    #[allow(missing_debug_implementations)]
+    pub struct canfd_frame {
+        pub can_id: canid_t,
+        pub len: u8,
+        pub flags: u8,
+        __res0: u8,
+        __res1: u8,
+        pub data: [u8; CANFD_MAX_DLEN],
+    }
+
+    #[repr(align(8))]
+    #[allow(missing_debug_implementations)]
+    pub struct canxl_frame {
+        pub prio: canid_t,
+        pub flags: u8,
+        pub sdt: u8,
+        pub len: u16,
+        pub af: u32,
+        pub data: [u8; CANXL_MAX_DLEN],
+    }
+
     #[allow(missing_debug_implementations)]
     pub union __c_anonymous_sockaddr_can_can_addr {
         pub tp: __c_anonymous_sockaddr_can_tp,
@@ -2252,17 +2463,16 @@ pub const MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE: ::c_int = 1 << 6;
 pub const MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ: ::c_int = 1 << 7;
 pub const MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ: ::c_int = 1 << 8;
 
-align_const! {
-    pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-        size: [0; __SIZEOF_PTHREAD_MUTEX_T],
-    };
-    pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-        size: [0; __SIZEOF_PTHREAD_COND_T],
-    };
-    pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-        size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
-    };
-}
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    size: [0; __SIZEOF_PTHREAD_MUTEX_T],
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    size: [0; __SIZEOF_PTHREAD_COND_T],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
+};
+
 pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
@@ -4572,19 +4782,15 @@ pub const CANXL_MAX_DLEN: usize = 2048;
 pub const CANXL_XLF: ::c_int = 0x80;
 pub const CANXL_SEC: ::c_int = 0x01;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        pub const CAN_MTU: usize = ::mem::size_of::<can_frame>();
-        pub const CANFD_MTU: usize = ::mem::size_of::<canfd_frame>();
-        pub const CANXL_MTU: usize = ::mem::size_of::<canxl_frame>();
-        // FIXME: use `core::mem::offset_of!` once that is available
-        // https://github.com/rust-lang/rfcs/pull/3308
-        // pub const CANXL_HDR_SIZE: usize = core::mem::offset_of!(canxl_frame, data);
-        pub const CANXL_HDR_SIZE: usize = 12;
-        pub const CANXL_MIN_MTU: usize = CANXL_HDR_SIZE + 64;
-        pub const CANXL_MAX_MTU: usize = CANXL_MTU;
-    }
-}
+pub const CAN_MTU: usize = ::mem::size_of::<can_frame>();
+pub const CANFD_MTU: usize = ::mem::size_of::<canfd_frame>();
+pub const CANXL_MTU: usize = ::mem::size_of::<canxl_frame>();
+// FIXME(offset_of): use `core::mem::offset_of!` once that is available
+// https://github.com/rust-lang/rfcs/pull/3308
+// pub const CANXL_HDR_SIZE: usize = core::mem::offset_of!(canxl_frame, data);
+pub const CANXL_HDR_SIZE: usize = 12;
+pub const CANXL_MIN_MTU: usize = CANXL_HDR_SIZE + 64;
+pub const CANXL_MAX_MTU: usize = CANXL_MTU;
 
 pub const CAN_RAW: ::c_int = 1;
 pub const CAN_BCM: ::c_int = 2;
@@ -5977,17 +6183,6 @@ cfg_if! {
 
 mod arch;
 pub use self::arch::*;
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        #[macro_use]
-        mod align;
-    } else {
-        #[macro_use]
-        mod no_align;
-    }
-}
-expand_align!();
 
 cfg_if! {
     if #[cfg(libc_non_exhaustive)] {

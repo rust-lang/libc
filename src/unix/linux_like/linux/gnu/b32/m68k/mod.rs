@@ -156,6 +156,14 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(2))]
+    pub struct max_align_t {
+        priv_: [i8; 20]
+    }
+}
+
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: ::c_int = 0x8;
 pub const RTLD_GLOBAL: ::c_int = 0x100;

@@ -267,6 +267,21 @@ s! {
         pub flags: ::__u32,
         pub pad: ::__u32,
     }
+
+    #[repr(align(8))]
+    pub struct clone_args {
+        pub flags: ::c_ulonglong,
+        pub pidfd: ::c_ulonglong,
+        pub child_tid: ::c_ulonglong,
+        pub parent_tid: ::c_ulonglong,
+        pub exit_signal: ::c_ulonglong,
+        pub stack: ::c_ulonglong,
+        pub stack_size: ::c_ulonglong,
+        pub tls: ::c_ulonglong,
+        pub set_tid: ::c_ulonglong,
+        pub set_tid_size: ::c_ulonglong,
+        pub cgroup: ::c_ulonglong,
+    }
 }
 
 s_no_extra_traits! {
@@ -296,6 +311,12 @@ s_no_extra_traits! {
         // 2.28.
         //
         // __ssp: [::c_ulonglong; 4],
+    }
+
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
     }
 }
 
@@ -811,12 +832,5 @@ cfg_if! {
     } else {
         mod not_x32;
         pub use self::not_x32::*;
-    }
-}
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
     }
 }

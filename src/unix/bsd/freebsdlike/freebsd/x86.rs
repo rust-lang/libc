@@ -7,48 +7,44 @@ pub type time_t = i32;
 pub type suseconds_t = i32;
 pub type register_t = i32;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        s_no_extra_traits! {
-            #[repr(align(16))]
-            pub struct mcontext_t {
-                pub mc_onstack: register_t,
-                pub mc_gs: register_t,
-                pub mc_fs: register_t,
-                pub mc_es: register_t,
-                pub mc_ds: register_t,
-                pub mc_edi: register_t,
-                pub mc_esi: register_t,
-                pub mc_ebp: register_t,
-                pub mc_isp: register_t,
-                pub mc_ebx: register_t,
-                pub mc_edx: register_t,
-                pub mc_ecx: register_t,
-                pub mc_eax: register_t,
-                pub mc_trapno: register_t,
-                pub mc_err: register_t,
-                pub mc_eip: register_t,
-                pub mc_cs: register_t,
-                pub mc_eflags: register_t,
-                pub mc_esp: register_t,
-                pub mc_ss: register_t,
-                pub mc_len: ::c_int,
-                pub mc_fpformat: ::c_int,
-                pub mc_ownedfp: ::c_int,
-                pub mc_flags: register_t,
-                pub mc_fpstate: [::c_int; 128],
-                pub mc_fsbase: register_t,
-                pub mc_gsbase: register_t,
-                pub mc_xfpustate: register_t,
-                pub mc_xfpustate_len: register_t,
-                pub mc_spare2: [::c_int; 4],
-            }
-        }
+s_no_extra_traits! {
+    #[repr(align(16))]
+    pub struct mcontext_t {
+        pub mc_onstack: register_t,
+        pub mc_gs: register_t,
+        pub mc_fs: register_t,
+        pub mc_es: register_t,
+        pub mc_ds: register_t,
+        pub mc_edi: register_t,
+        pub mc_esi: register_t,
+        pub mc_ebp: register_t,
+        pub mc_isp: register_t,
+        pub mc_ebx: register_t,
+        pub mc_edx: register_t,
+        pub mc_ecx: register_t,
+        pub mc_eax: register_t,
+        pub mc_trapno: register_t,
+        pub mc_err: register_t,
+        pub mc_eip: register_t,
+        pub mc_cs: register_t,
+        pub mc_eflags: register_t,
+        pub mc_esp: register_t,
+        pub mc_ss: register_t,
+        pub mc_len: ::c_int,
+        pub mc_fpformat: ::c_int,
+        pub mc_ownedfp: ::c_int,
+        pub mc_flags: register_t,
+        pub mc_fpstate: [::c_int; 128],
+        pub mc_fsbase: register_t,
+        pub mc_gsbase: register_t,
+        pub mc_xfpustate: register_t,
+        pub mc_xfpustate_len: register_t,
+        pub mc_spare2: [::c_int; 4],
     }
 }
 
 cfg_if! {
-    if #[cfg(all(libc_align, feature = "extra_traits"))] {
+    if #[cfg(feature = "extra_traits")] {
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
                 self.mc_onstack == other.mc_onstack &&
