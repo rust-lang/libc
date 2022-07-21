@@ -2820,6 +2820,7 @@ fn test_linux(target: &str) {
         "linux/sched.h",
         "linux/seccomp.h",
         "linux/sched.h",
+        "linux/sock_diag.h",
         "linux/sockios.h",
         "linux/uinput.h",
         "linux/vm_sockets.h",
