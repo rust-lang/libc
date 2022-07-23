@@ -27,6 +27,8 @@ pub type loff_t = ::c_longlong;
 pub type __kernel_loff_t = ::c_longlong;
 pub type __kernel_pid_t = ::c_int;
 
+pub enum prop_info {}
+
 pub type __u8 = ::c_uchar;
 pub type __u16 = ::c_ushort;
 pub type __s16 = ::c_short;
@@ -428,12 +430,6 @@ s_no_extra_traits! {
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
     }
-
-    pub struct prop_info {
-        __name: [::c_char; 32],
-        __serial: ::c_uint,
-        __value: [[::c_char; 4]; 23],
-    }
 }
 
 cfg_if! {
@@ -750,24 +746,6 @@ cfg_if! {
         impl ::hash::Hash for af_alg_iv {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.as_slice().hash(state);
-            }
-        }
-
-        impl PartialEq for prop_info {
-            fn eq(&self, other: &prop_info) -> bool {
-                self.__name == other.__name &&
-                    self.__serial == other.__serial &&
-                    self.__value == other.__value
-            }
-        }
-        impl Eq for prop_info {}
-        impl ::fmt::Debug for prop_info {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("prop_info")
-                    .field("__name", &self.__name)
-                    .field("__serial", &self.__serial)
-                    .field("__value", &self.__value)
-                    .finish()
             }
         }
     }

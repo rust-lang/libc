@@ -1664,9 +1664,6 @@ fn test_android(target: &str) {
             "termios2" => true,
             // uc_sigmask and uc_sigmask64 of ucontext_t are an anonymous union
             "ucontext_t" => true,
-            // 'private' type
-            "prop_info" => true,
-
             // These are tested in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
 
