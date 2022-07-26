@@ -42,7 +42,9 @@ libc = "0.2"
 
 ## Rust version support
 
-The minimum supported Rust toolchain version is **Rust 1.13.0** . APIs requiring
+The minimum supported Rust toolchain version is currently **Rust 1.13.0**.
+(libc does not currently have any policy regarding changes to the minimum
+supported Rust version; such policy is a work in progress.) APIs requiring
 newer Rust features are only available on newer Rust toolchains:
 
 | Feature              | Version |
