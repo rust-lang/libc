@@ -11,16 +11,6 @@ fn main() {
     let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
 
-    if env::var("CARGO_FEATURE_USE_STD").is_ok() {
-        println!(
-            "cargo:warning=\"libc's use_std cargo feature is deprecated since libc 0.2.55; \
-             please consider using the `std` cargo feature instead\""
-        );
-    }
-    if env::var("CARGO_FEATURE_ALIGN").is_ok() {
-        println!("cargo:warning=\"libc's align cargo feature is deprecated (and always available)");
-    }
-
     // The ABI of libc used by libstd is backward compatible with FreeBSD 10.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
     //
