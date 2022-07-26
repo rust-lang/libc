@@ -54,13 +54,6 @@ fn main() {
     let libc_ci = env::var("LIBC_CI").is_ok();
     let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok() || rustc_minor_ver >= 80;
 
-    if env::var("CARGO_FEATURE_USE_STD").is_ok() {
-        println!(
-            "cargo:warning=\"libc's use_std cargo feature is deprecated since libc 0.2.55; \
-             please consider using the `std` cargo feature instead\""
-        );
-    }
-
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
     //
