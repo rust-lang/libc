@@ -5545,6 +5545,12 @@ cfg_if! {
     if #[cfg(target_os = "macos")] {
         extern "C" {
             pub fn clock_settime(clock_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
+        }
+    }
+}
+cfg_if! {
+    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
+        extern "C" {
             pub fn memmem(
                 haystack: *const ::c_void,
                 haystacklen: ::size_t,
