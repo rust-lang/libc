@@ -1811,6 +1811,7 @@ pub const ITIMER_PROF: ::c_int = 2;
 pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const TFD_NONBLOCK: ::c_int = O_NONBLOCK;
 pub const TFD_TIMER_ABSTIME: ::c_int = 1;
+pub const TFD_TIMER_CANCEL_ON_SET: ::c_int = 2;
 
 pub const _POSIX_VDISABLE: ::cc_t = 0;
 
