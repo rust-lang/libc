@@ -108,6 +108,9 @@ BS0
 BS1
 BSDLY
 BUFSIZ
+BUS_ADRALN
+BUS_ADRERR
+BUS_OBJERR
 CCStatus
 CCCryptorStatus
 CCRandomGenerateBytes

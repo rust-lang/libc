@@ -1243,6 +1243,12 @@ pub const WEXITED: ::c_int = 0x08;
 pub const WSTOPPED: ::c_int = 0x10;
 pub const WNOWAIT: ::c_int = 0x20;
 
+// si_code values for SIGBUS signal
+pub const BUS_ADRALN: ::c_int = 40;
+pub const BUS_ADRERR: ::c_int = 41;
+pub const BUS_OBJERR: ::c_int = 42;
+
+// si_code values for SIGCHLD signal
 pub const CLD_EXITED: ::c_int = 60;
 pub const CLD_KILLED: ::c_int = 61;
 pub const CLD_DUMPED: ::c_int = 62;
