@@ -1051,7 +1051,8 @@ s_no_extra_traits! {
         pub f_fstypename: [::c_char; 16],
         pub f_mntonname: [::c_char; 1024],
         pub f_mntfromname: [::c_char; 1024],
-        pub f_reserved: [u32; 8],
+        pub f_flags_ext: u32,
+        pub f_reserved: [u32; 7],
     }
 
     pub struct dirent {
