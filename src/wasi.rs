@@ -1374,6 +1374,8 @@ extern "C" {
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
     pub fn nl_langinfo_l(item: ::nl_item, loc: ::locale_t) -> *mut ::c_char;
 
+    pub fn __wasilibc_initialize_environ();
+
     pub fn __wasilibc_register_preopened_fd(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_fd_renumber(fd: c_int, newfd: c_int) -> c_int;
     pub fn __wasilibc_unlinkat(fd: c_int, path: *const c_char) -> c_int;
