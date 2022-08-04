@@ -204,11 +204,6 @@ jobs:
           stable,
           beta,
           nightly,
-          1.13.0,
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
         ]
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
@@ -234,11 +229,6 @@ jobs:
           stable,
           beta,
           nightly,
-          1.13.0,
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
         ]
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
@@ -259,10 +249,6 @@ jobs:
       fail-fast: true
       matrix:
         toolchain: [
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
           stable,
         ]
     steps:
