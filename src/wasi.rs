@@ -52,6 +52,17 @@ pub type in_port_t = u16;
 pub type sa_family_t = u16;
 pub type sa_type_t = u16;
 
+#[cfg(target_vendor = "wasmer")]
+pub type pthread_t = c_ulong;
+
+#[cfg(target_vendor = "wasmer")]
+pub struct pthread_attr_t {
+    #[cfg(target_pointer_width = "32")]
+    __size: [u32; 8],
+    #[cfg(target_pointer_width = "64")]
+    __size: [u64; 7]
+}
+
 s! {
     #[repr(C)]
     pub struct in_addr {
@@ -1454,4 +1465,28 @@ extern "C" {
     pub fn arc4random() -> u32;
     pub fn arc4random_buf(a: *mut c_void, b: size_t);
     pub fn arc4random_uniform(a: u32) -> u32;
+
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_self() -> ::pthread_t;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_join(native: ::pthread_t, value: *mut *mut ::c_void) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_exit(value: *mut ::c_void) -> !;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_attr_setstacksize(attr: *mut ::pthread_attr_t, stack_size: ::size_t) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_attr_setdetachstate(attr: *mut ::pthread_attr_t, state: ::c_int) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_create(
+        native: *mut ::pthread_t,
+        attr: *const ::pthread_attr_t,
+        f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
+        value: *mut ::c_void,
+    ) -> ::c_int;
 }
