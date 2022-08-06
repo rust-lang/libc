@@ -1377,6 +1377,9 @@ extern "C" {
     pub fn __wasilibc_initialize_environ();
     pub fn __wasilibc_get_stack_pointer() -> *mut ::c_void;
     pub fn __wasilibc_set_stack_pointer(val: *mut ::c_void);
+    pub fn __wasilibc_get_pthread_self() -> *mut ::c_void;
+    pub fn __wasilibc_set_pthread_self(val: *mut ::c_void);
+    pub fn __wasilibc_init_tls(val: *mut ::c_void);
 
     pub fn __wasilibc_register_preopened_fd(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_fd_renumber(fd: c_int, newfd: c_int) -> c_int;
