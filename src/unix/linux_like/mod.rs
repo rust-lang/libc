@@ -1211,6 +1211,15 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: ::c_uint = 16;
 
+// si_code values for SIGBUS signal
+pub const BUS_ADRALN: ::c_int = 1;
+pub const BUS_ADRERR: ::c_int = 2;
+pub const BUS_OBJERR: ::c_int = 3;
+// Linux-specific si_code values for SIGBUS signal
+pub const BUS_MCEERR_AR: ::c_int = 4;
+pub const BUS_MCEERR_AO: ::c_int = 5;
+
+// si_code values for SIGCHLD signal
 pub const CLD_EXITED: ::c_int = 1;
 pub const CLD_KILLED: ::c_int = 2;
 pub const CLD_DUMPED: ::c_int = 3;
