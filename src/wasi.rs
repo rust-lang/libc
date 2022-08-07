@@ -1382,6 +1382,8 @@ extern "C" {
     pub fn __wasilibc_init_tls(val: *mut ::c_void);
     pub fn __wasilibc_tls_size() -> u64;
     pub fn __wasilibc_tls_align() -> u64;
+    pub fn __wasilibc_get_tls_base() -> *mut ::c_void;
+    pub fn __wasilibc_set_tls_base(val: *mut ::c_void);
 
     pub fn __wasilibc_register_preopened_fd(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_fd_renumber(fd: c_int, newfd: c_int) -> c_int;
