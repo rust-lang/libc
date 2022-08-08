@@ -392,6 +392,7 @@ impl TestGenerator {
     ///         ty.to_string()
     ///     }
     /// });
+    /// ```
     pub fn type_name<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str, bool, bool) -> String + 'static,
@@ -418,6 +419,7 @@ impl TestGenerator {
     /// cfg.field_name(|_s, field| {
     ///     field.replace("foo", "bar")
     /// });
+    /// ```
     pub fn field_name<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str, &str) -> String + 'static,
@@ -493,6 +495,7 @@ impl TestGenerator {
     /// cfg.const_cname(|c| {
     ///     c.replace("FOO", "foo")
     /// });
+    /// ```
     pub fn const_cname<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str) -> String + 'static,
@@ -518,6 +521,7 @@ impl TestGenerator {
     /// cfg.skip_field(|s, field| {
     ///     s == "foo_t" || (s == "bar_t" && field == "bar")
     /// });
+    /// ```
     pub fn skip_field<F>(&mut self, f: F) -> &mut Self
     where
         F: Fn(&str, &str) -> bool + 'static,
