@@ -19,7 +19,7 @@ jobs:
           - x86_64-apple-darwin
 
     name: ${{ matrix.version }} - ${{ matrix.target }}
-    runs-on: macos-11
+    runs-on: macos-12
 
     steps:
       - uses: actions/checkout@v3
