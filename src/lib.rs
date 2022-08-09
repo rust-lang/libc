@@ -26,10 +26,6 @@
 #![deny(missing_copy_implementations, safe_packed_borrows)]
 #![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
-#![cfg_attr(
-    feature = "rustc-dep-of-std",
-    feature(native_link_modifiers, native_link_modifiers_bundle)
-)]
 #![cfg_attr(libc_const_extern_fn_unstable, feature(const_extern_fn))]
 
 #[macro_use]

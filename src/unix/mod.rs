@@ -346,6 +346,14 @@ cfg_if! {
     } else if #[cfg(target_os = "emscripten")] {
         #[link(name = "c")]
         extern {}
+    } else if #[cfg(all(target_os = "android", feature = "rustc-dep-of-std"))] {
+        #[link(name = "c", kind = "static", modifiers = "-bundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "m", kind = "static", modifiers = "-bundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "m", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "c", cfg(not(target_feature = "crt-static")))]
+        extern {}
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
                         target_os = "watchos",
