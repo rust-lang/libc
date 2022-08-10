@@ -85,7 +85,7 @@ pub const MSG_MORE: ::c_int = 0x10;
 pub const MSG_NOSIGNAL: ::c_int = 0x20;
 pub const MSG_TRUNC: ::c_int = 0x04;
 pub const MSG_CTRUNC: ::c_int = 0x08;
-pub const MSG_EOR: c_int = 0x08;
+pub const MSG_EOR: ::c_int = 0x08;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 768;
 
