@@ -2675,6 +2675,7 @@ fn test_linux(target: &str) {
                "elf.h",
                "fcntl.h",
                "glob.h",
+               [gnu]: "gnu/libc-version.h",
                "grp.h",
                "iconv.h",
                "ifaddrs.h",

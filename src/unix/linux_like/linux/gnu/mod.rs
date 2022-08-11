@@ -1326,6 +1326,11 @@ extern "C" {
     pub fn malloc_trim(__pad: ::size_t) -> ::c_int;
 }
 
+extern "C" {
+    pub fn gnu_get_libc_release() -> *const ::c_char;
+    pub fn gnu_get_libc_version() -> *const ::c_char;
+}
+
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
                  target_arch = "arm",
