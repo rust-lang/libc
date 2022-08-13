@@ -3270,6 +3270,12 @@ fn test_linux(target: &str) {
             // Needs musl 1.2.3 or later.
             "pthread_getname_np" if musl => true,
 
+            // pthread_sigqueue uses sigval, which was initially declared
+            // as a struct but should be defined as a union. However due
+            // to the issues described here: https://github.com/rust-lang/libc/issues/2816
+            // it can't be changed from struct.
+            "pthread_sigqueue" => true,
+
             _ => false,
         }
     });
