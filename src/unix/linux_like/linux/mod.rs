@@ -3074,6 +3074,7 @@ pub const FUTEX_WAIT_BITSET: ::c_int = 9;
 pub const FUTEX_WAKE_BITSET: ::c_int = 10;
 pub const FUTEX_WAIT_REQUEUE_PI: ::c_int = 11;
 pub const FUTEX_CMP_REQUEUE_PI: ::c_int = 12;
+pub const FUTEX_LOCK_PI2: ::c_int = 13;
 
 pub const FUTEX_PRIVATE_FLAG: ::c_int = 128;
 pub const FUTEX_CLOCK_REALTIME: ::c_int = 256;
