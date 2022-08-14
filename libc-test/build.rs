@@ -3187,6 +3187,9 @@ fn test_linux(target: &str) {
             // present in recent kernels only
             "PR_PAC_SET_ENABLED_KEYS" | "PR_PAC_GET_ENABLED_KEYS" => true,
 
+            // Added in Linux 5.14
+            "FUTEX_LOCK_PI2" => true,
+
             _ => false,
         }
     });
