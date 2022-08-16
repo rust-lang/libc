@@ -1782,6 +1782,7 @@ ptrace_io_desc
 ptrace_lwpinfo
 ptrace_sc_ret
 ptrace_vm_entry
+ptsname_r
 pututxline
 pwritev
 qsort

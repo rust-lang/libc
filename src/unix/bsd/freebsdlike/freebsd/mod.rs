@@ -3985,6 +3985,7 @@ extern "C" {
         infop: *mut ::siginfo_t,
         options: ::c_int,
     ) -> ::c_int;
+    pub fn ptsname_r(fd: ::c_int, buf: *mut ::c_char, buflen: ::size_t) -> ::c_int;
 
     pub fn ftok(pathname: *const ::c_char, proj_id: ::c_int) -> ::key_t;
     pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
