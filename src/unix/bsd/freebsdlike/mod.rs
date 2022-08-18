@@ -376,6 +376,10 @@ s! {
         pub seq: ::c_ushort,
         pub key: ::key_t,
     }
+
+    pub struct eui64 {
+        pub octet: [u8; EUI64_LEN],
+    }
 }
 
 s_no_extra_traits! {
@@ -1329,6 +1333,8 @@ pub const ONLRET: ::tcflag_t = 0x40;
 
 pub const CMGROUP_MAX: usize = 16;
 
+pub const EUI64_LEN: usize = 8;
+
 // https://github.com/freebsd/freebsd/blob/master/sys/net/bpf.h
 pub const BPF_ALIGNMENT: usize = SIZEOF_LONG;
 
@@ -1720,6 +1726,11 @@ extern "C" {
     pub fn memset_s(s: *mut ::c_void, smax: ::size_t, c: ::c_int, n: ::size_t) -> ::c_int;
     pub fn gethostid() -> ::c_long;
     pub fn sethostid(hostid: ::c_long);
+
+    pub fn eui64_aton(a: *const ::c_char, e: *mut eui64) -> ::c_int;
+    pub fn eui64_ntoa(id: *const eui64, a: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn eui64_ntohost(hostname: *mut ::c_char, len: ::size_t, id: *const eui64) -> ::c_int;
+    pub fn eui64_hostton(hostname: *const ::c_char, id: *mut eui64) -> ::c_int;
 }
 
 #[link(name = "rt")]
