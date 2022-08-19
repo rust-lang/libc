@@ -1507,6 +1507,10 @@ XATTR_SHOWCOMPRESSION
 XUCRED_VERSION
 YESEXPR
 YESSTR
+_CS_PATH
+_CS_DARWIN_USER_DIR
+_CS_DARWIN_USER_TEMP_DIR
+_CS_DARWIN_USER_CACHE_DIR
 _IOFBF
 _IOLBF
 _IONBF
@@ -1681,6 +1685,7 @@ clock_getres
 clonefile
 clonefileat
 cmsghdr
+confstr
 connectx
 copyfile
 copyfile_flags_t
