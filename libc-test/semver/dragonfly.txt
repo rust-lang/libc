@@ -1248,6 +1248,10 @@ endgrent
 endpwent
 endservent
 endutxent
+eui64_aton
+eui64_hostton
+eui64_ntoa
+eui64_ntohost
 exit_status
 explicit_bzero
 faccessat

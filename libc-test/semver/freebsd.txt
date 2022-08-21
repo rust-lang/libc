@@ -1523,6 +1523,10 @@ endpwent
 endservent
 endutxent
 erand48
+eui64_aton
+eui64_hostton
+eui64_ntoa
+eui64_ntohost
 explicit_bzero
 extattr_delete_fd
 extattr_delete_file
