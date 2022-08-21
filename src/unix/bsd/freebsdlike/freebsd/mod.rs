@@ -3704,6 +3704,16 @@ pub const UMTX_OP_ROBUST_LISTS: ::c_int = 26;
 
 pub const UMTX_ABSTIME: u32 = 1;
 
+pub const CPU_LEVEL_ROOT: ::c_int = 1;
+pub const CPU_LEVEL_CPUSET: ::c_int = 2;
+pub const CPU_LEVEL_WHICH: ::c_int = 3;
+
+pub const CPU_WHICH_TID: ::c_int = 1;
+pub const CPU_WHICH_PID: ::c_int = 2;
+pub const CPU_WHICH_CPUSET: ::c_int = 3;
+pub const CPU_WHICH_IRQ: ::c_int = 4;
+pub const CPU_WHICH_JAIL: ::c_int = 5;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
