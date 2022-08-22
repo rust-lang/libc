@@ -1508,6 +1508,10 @@ clock_getres
 clock_settime
 cmsgcred
 cmsghdr
+cpuset
+cpuset_getid
+cpuset_setid
+cpusetid_t
 daemon
 dallocx
 devname_r

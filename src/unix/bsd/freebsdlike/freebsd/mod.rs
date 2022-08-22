@@ -44,6 +44,8 @@ pub type fhandle_t = fhandle;
 pub type au_id_t = ::uid_t;
 pub type au_asid_t = ::pid_t;
 
+pub type cpusetid_t = ::c_int;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_support_flags {
@@ -4204,6 +4206,14 @@ extern "C" {
         setsize: ::size_t,
         mask: *const cpuset_t,
     ) -> ::c_int;
+    pub fn cpuset(setid: *mut ::cpusetid_t) -> ::c_int;
+    pub fn cpuset_getid(
+        level: cpulevel_t,
+        which: cpuwhich_t,
+        id: ::id_t,
+        setid: *mut ::cpusetid_t,
+    ) -> ::c_int;
+    pub fn cpuset_setid(which: cpuwhich_t, id: ::id_t, setid: ::cpusetid_t) -> ::c_int;
     pub fn cap_enter() -> ::c_int;
     pub fn cap_getmode(modep: *mut ::c_uint) -> ::c_int;
     pub fn __cap_rights_init(version: ::c_int, rights: *mut cap_rights_t, ...)
