@@ -3800,6 +3800,11 @@ pub const _SC_TRACE_NAME_MAX: ::c_int = 128;
 pub const _SC_TRACE_SYS_MAX: ::c_int = 129;
 pub const _SC_TRACE_USER_EVENT_MAX: ::c_int = 130;
 pub const _SC_PASS_MAX: ::c_int = 131;
+// `confstr` keys (only the values guaranteed by `man confstr`).
+pub const _CS_PATH: ::c_int = 1;
+pub const _CS_DARWIN_USER_DIR: ::c_int = 65536;
+pub const _CS_DARWIN_USER_TEMP_DIR: ::c_int = 65537;
+pub const _CS_DARWIN_USER_CACHE_DIR: ::c_int = 65538;
 
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
@@ -4850,6 +4855,11 @@ extern "C" {
     pub fn fchflags(fd: ::c_int, flags: ::c_uint) -> ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "confstr$UNIX2003"
+    )]
+    pub fn confstr(name: ::c_int, buf: *mut ::c_char, len: ::size_t) -> ::size_t;
     pub fn lio_listio(
         mode: ::c_int,
         aiocb_list: *const *mut aiocb,
