@@ -1890,6 +1890,9 @@ pub const LIO_READV: ::c_int = 6;
 pub const DEVSTAT_N_TRANS_FLAGS: ::c_int = 4;
 pub const DEVSTAT_NAME_LEN: ::c_int = 16;
 
+// sys/cpuset.h
+pub const CPU_SETSIZE: ::c_int = 256;
+
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
