@@ -2669,6 +2669,62 @@ pub const ARPD_LOOKUP: ::c_ushort = 0x02;
 pub const ARPD_FLUSH: ::c_ushort = 0x03;
 pub const ATF_MAGIC: ::c_int = 0x80;
 
+// userspace compat definitions for RTNLGRP_*
+pub const RTMGRP_LINK: ::c_int = 0x00001;
+pub const RTMGRP_NOTIFY: ::c_int = 0x00002;
+pub const RTMGRP_NEIGH: ::c_int = 0x00004;
+pub const RTMGRP_TC: ::c_int = 0x00008;
+pub const RTMGRP_IPV4_IFADDR: ::c_int = 0x00010;
+pub const RTMGRP_IPV4_MROUTE: ::c_int = 0x00020;
+pub const RTMGRP_IPV4_ROUTE: ::c_int = 0x00040;
+pub const RTMGRP_IPV4_RULE: ::c_int = 0x00080;
+pub const RTMGRP_IPV6_IFADDR: ::c_int = 0x00100;
+pub const RTMGRP_IPV6_MROUTE: ::c_int = 0x00200;
+pub const RTMGRP_IPV6_ROUTE: ::c_int = 0x00400;
+pub const RTMGRP_IPV6_IFINFO: ::c_int = 0x00800;
+pub const RTMGRP_DECnet_IFADDR: ::c_int = 0x01000;
+pub const RTMGRP_DECnet_ROUTE: ::c_int = 0x04000;
+pub const RTMGRP_IPV6_PREFIX: ::c_int = 0x20000;
+
+// enum rtnetlink_groups
+pub const RTNLGRP_NONE: ::c_uint = 0x00;
+pub const RTNLGRP_LINK: ::c_uint = 0x01;
+pub const RTNLGRP_NOTIFY: ::c_uint = 0x02;
+pub const RTNLGRP_NEIGH: ::c_uint = 0x03;
+pub const RTNLGRP_TC: ::c_uint = 0x04;
+pub const RTNLGRP_IPV4_IFADDR: ::c_uint = 0x05;
+pub const RTNLGRP_IPV4_MROUTE: ::c_uint = 0x06;
+pub const RTNLGRP_IPV4_ROUTE: ::c_uint = 0x07;
+pub const RTNLGRP_IPV4_RULE: ::c_uint = 0x08;
+pub const RTNLGRP_IPV6_IFADDR: ::c_uint = 0x09;
+pub const RTNLGRP_IPV6_MROUTE: ::c_uint = 0x0a;
+pub const RTNLGRP_IPV6_ROUTE: ::c_uint = 0x0b;
+pub const RTNLGRP_IPV6_IFINFO: ::c_uint = 0x0c;
+pub const RTNLGRP_DECnet_IFADDR: ::c_uint = 0x0d;
+pub const RTNLGRP_NOP2: ::c_uint = 0x0e;
+pub const RTNLGRP_DECnet_ROUTE: ::c_uint = 0x0f;
+pub const RTNLGRP_DECnet_RULE: ::c_uint = 0x10;
+pub const RTNLGRP_NOP4: ::c_uint = 0x11;
+pub const RTNLGRP_IPV6_PREFIX: ::c_uint = 0x12;
+pub const RTNLGRP_IPV6_RULE: ::c_uint = 0x13;
+pub const RTNLGRP_ND_USEROPT: ::c_uint = 0x14;
+pub const RTNLGRP_PHONET_IFADDR: ::c_uint = 0x15;
+pub const RTNLGRP_PHONET_ROUTE: ::c_uint = 0x16;
+pub const RTNLGRP_DCB: ::c_uint = 0x17;
+pub const RTNLGRP_IPV4_NETCONF: ::c_uint = 0x18;
+pub const RTNLGRP_IPV6_NETCONF: ::c_uint = 0x19;
+pub const RTNLGRP_MDB: ::c_uint = 0x1a;
+pub const RTNLGRP_MPLS_ROUTE: ::c_uint = 0x1b;
+pub const RTNLGRP_NSID: ::c_uint = 0x1c;
+pub const RTNLGRP_MPLS_NETCONF: ::c_uint = 0x1d;
+pub const RTNLGRP_IPV4_MROUTE_R: ::c_uint = 0x1e;
+pub const RTNLGRP_IPV6_MROUTE_R: ::c_uint = 0x1f;
+pub const RTNLGRP_NEXTHOP: ::c_uint = 0x20;
+pub const RTNLGRP_BRVLAN: ::c_uint = 0x21;
+pub const RTNLGRP_MCTP_IFADDR: ::c_uint = 0x22;
+pub const RTNLGRP_TUNNEL: ::c_uint = 0x23;
+pub const RTNLGRP_STATS: ::c_uint = 0x24;
+
 // linux/module.h
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
