@@ -3194,6 +3194,21 @@ fn test_linux(target: &str) {
             // Added in Linux 5.14
             "FUTEX_LOCK_PI2" => true,
 
+            // FIXME: Parts of netfilter/nfnetlink*.h require more recent kernel headers:
+            | "NFNL_SUBSYS_HOOK" // v5.14+
+            | "NFNL_SUBSYS_COUNT" // bumped in v5.14
+            | "NFQA_VLAN" // v4.7+
+            | "NFQA_L2HDR" // v4.7+
+            | "NFQA_PRIORITY" // v5.18+
+            | "NFQA_VLAN_UNSPEC" // v4.7+
+            | "NFQA_VLAN_PROTO" // v4.7+
+            | "NFQA_VLAN_TCI" // v4.7+
+            | "NFULA_VLAN" // v5.4+
+            | "NFULA_L2HDR" // v5.4+
+            | "NFULA_VLAN_UNSPEC" // v5.4+
+            | "NFULA_VLAN_PROTO" // v5.4+
+            | "NFULA_VLAN_TCI" => true, // v5.4+
+
             _ => false,
         }
     });

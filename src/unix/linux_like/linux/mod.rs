@@ -2086,6 +2086,7 @@ pub const NFNLGRP_CONNTRACK_EXP_UPDATE: ::c_int = 5;
 pub const NFNLGRP_CONNTRACK_EXP_DESTROY: ::c_int = 6;
 pub const NFNLGRP_NFTABLES: ::c_int = 7;
 pub const NFNLGRP_ACCT_QUOTA: ::c_int = 8;
+pub const NFNLGRP_NFTRACE: ::c_int = 9;
 
 pub const NFNETLINK_V0: ::c_int = 0;
 
@@ -2101,14 +2102,22 @@ pub const NFNL_SUBSYS_CTNETLINK_TIMEOUT: ::c_int = 8;
 pub const NFNL_SUBSYS_CTHELPER: ::c_int = 9;
 pub const NFNL_SUBSYS_NFTABLES: ::c_int = 10;
 pub const NFNL_SUBSYS_NFT_COMPAT: ::c_int = 11;
-pub const NFNL_SUBSYS_COUNT: ::c_int = 12;
+pub const NFNL_SUBSYS_HOOK: ::c_int = 12;
+pub const NFNL_SUBSYS_COUNT: ::c_int = 13;
 
 pub const NFNL_MSG_BATCH_BEGIN: ::c_int = NLMSG_MIN_TYPE;
 pub const NFNL_MSG_BATCH_END: ::c_int = NLMSG_MIN_TYPE + 1;
 
+pub const NFNL_BATCH_UNSPEC: ::c_int = 0;
+pub const NFNL_BATCH_GENID: ::c_int = 1;
+
 // linux/netfilter/nfnetlink_log.h
 pub const NFULNL_MSG_PACKET: ::c_int = 0;
 pub const NFULNL_MSG_CONFIG: ::c_int = 1;
+
+pub const NFULA_VLAN_UNSPEC: ::c_int = 0;
+pub const NFULA_VLAN_PROTO: ::c_int = 1;
+pub const NFULA_VLAN_TCI: ::c_int = 2;
 
 pub const NFULA_UNSPEC: ::c_int = 0;
 pub const NFULA_PACKET_HDR: ::c_int = 1;
@@ -2130,6 +2139,8 @@ pub const NFULA_HWHEADER: ::c_int = 16;
 pub const NFULA_HWLEN: ::c_int = 17;
 pub const NFULA_CT: ::c_int = 18;
 pub const NFULA_CT_INFO: ::c_int = 19;
+pub const NFULA_VLAN: ::c_int = 20;
+pub const NFULA_L2HDR: ::c_int = 21;
 
 pub const NFULNL_CFG_CMD_NONE: ::c_int = 0;
 pub const NFULNL_CFG_CMD_BIND: ::c_int = 1;
@@ -2153,7 +2164,7 @@ pub const NFULNL_CFG_F_SEQ: ::c_int = 0x0001;
 pub const NFULNL_CFG_F_SEQ_GLOBAL: ::c_int = 0x0002;
 pub const NFULNL_CFG_F_CONNTRACK: ::c_int = 0x0004;
 
-// linux/netfilter/nfnetlink_log.h
+// linux/netfilter/nfnetlink_queue.h
 pub const NFQNL_MSG_PACKET: ::c_int = 0;
 pub const NFQNL_MSG_VERDICT: ::c_int = 1;
 pub const NFQNL_MSG_CONFIG: ::c_int = 2;
@@ -2178,18 +2189,13 @@ pub const NFQA_EXP: ::c_int = 15;
 pub const NFQA_UID: ::c_int = 16;
 pub const NFQA_GID: ::c_int = 17;
 pub const NFQA_SECCTX: ::c_int = 18;
-/*
- FIXME: These are not yet available in musl sanitized kernel headers and
- make the tests fail. Enable them once musl has them.
-
- See https://github.com/rust-lang/libc/pull/1628 for more details.
 pub const NFQA_VLAN: ::c_int = 19;
 pub const NFQA_L2HDR: ::c_int = 20;
+pub const NFQA_PRIORITY: ::c_int = 21;
 
 pub const NFQA_VLAN_UNSPEC: ::c_int = 0;
 pub const NFQA_VLAN_PROTO: ::c_int = 1;
 pub const NFQA_VLAN_TCI: ::c_int = 2;
-*/
 
 pub const NFQNL_CFG_CMD_NONE: ::c_int = 0;
 pub const NFQNL_CFG_CMD_BIND: ::c_int = 1;
@@ -2218,6 +2224,8 @@ pub const NFQA_CFG_F_MAX: ::c_int = 0x0020;
 pub const NFQA_SKB_CSUMNOTREADY: ::c_int = 0x0001;
 pub const NFQA_SKB_GSO: ::c_int = 0x0002;
 pub const NFQA_SKB_CSUM_NOTVERIFIED: ::c_int = 0x0004;
+
+// linux/genetlink.h
 
 pub const GENL_NAMSIZ: ::c_int = 16;
 
