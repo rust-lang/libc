@@ -35,6 +35,12 @@ fn main() {
         Some(_) | None => println!("cargo:rustc-cfg=freebsd11"),
     }
 
+    // Some ABIs need to redirect time related symbols to their time64
+    // equivalents. See #2088 and #1848 for more information.
+    if is_musl_time64_abi() {
+        println!("cargo:rustc-cfg=musl_time64_abi");
+    }
+
     // On CI: deny all warnings
     if libc_ci {
         println!("cargo:rustc-cfg=libc_deny_warnings");
@@ -174,5 +180,24 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("13") => Some(13),
         s if s.starts_with("14") => Some(14),
         _ => None,
+    }
+}
+
+fn is_musl_time64_abi() -> bool {
+    match env::var("TARGET") {
+        Ok(target) => match &target[..] {
+            "arm-unknown-linux-musleabi"
+            | "arm-unknown-linux-musleabihf"
+            | "armv5te-unknown-linux-musleabi"
+            | "armv7-unknown-linux-musleabi"
+            | "armv7-unknown-linux-musleabihf"
+            | "i586-unknown-linux-musl"
+            | "i686-unknown-linux-musl"
+            | "mips-unknown-linux-musl"
+            | "mipsel-unknown-linux-musl"
+            | "powerpc-unknown-linux-musl" => true,
+            _ => false,
+        },
+        Err(_) => false,
     }
 }

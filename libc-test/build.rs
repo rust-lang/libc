@@ -3063,6 +3063,23 @@ fn test_linux(target: &str) {
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
     // glibc versions older than 2.29.
     cfg.define("__GLIBC_USE_DEPRECATED_SCANF", None);
+    // Some targets use time64 symbols so set the musl_time64_abi appropriately.
+    // See #2088 and #1848 for more information.
+    match target {
+        "arm-unknown-linux-musleabi"
+        | "arm-unknown-linux-musleabihf"
+        | "armv5te-unknown-linux-musleabi"
+        | "armv7-unknown-linux-musleabi"
+        | "armv7-unknown-linux-musleabihf"
+        | "i586-unknown-linux-musl"
+        | "i686-unknown-linux-musl"
+        | "mips-unknown-linux-musl"
+        | "mipsel-unknown-linux-musl"
+        | "powerpc-unknown-linux-musl" => {
+            cfg.cfg("musl_time64_abi", None);
+        }
+        _ => {}
+    }
 
     headers! { cfg:
                "ctype.h",
