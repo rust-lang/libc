@@ -1695,6 +1695,16 @@ safe_f! {
     pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         (status & 0o177777) == 0o177777
     }
+
+    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+        let major = major as ::dev_t;
+        let minor = minor as ::dev_t;
+        let mut dev = 0;
+        dev |= (major & 0xff) << 8;
+        dev |= minor & 0xff;
+        dev |= (minor & 0xffff00) << 8;
+        dev
+    }
 }
 
 extern "C" {

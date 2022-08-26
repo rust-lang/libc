@@ -3235,17 +3235,6 @@ f! {
         minor as ::c_uint
     }
 
-    pub fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
-        let major = major as ::dev_t;
-        let minor = minor as ::dev_t;
-        let mut dev = 0;
-        dev |= (major & 0x00000fff) << 8;
-        dev |= (major & 0xfffff000) << 32;
-        dev |= (minor & 0x000000ff) << 0;
-        dev |= (minor & 0xffffff00) << 12;
-        dev
-    }
-
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         cmsg.offset(1) as *mut c_uchar
     }
@@ -3321,6 +3310,17 @@ safe_f! {
 
     pub {const} fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
+    }
+
+    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+        let major = major as ::dev_t;
+        let minor = minor as ::dev_t;
+        let mut dev = 0;
+        dev |= (major & 0x00000fff) << 8;
+        dev |= (major & 0xfffff000) << 32;
+        dev |= (minor & 0x000000ff) << 0;
+        dev |= (minor & 0xffffff00) << 12;
+        dev
     }
 }
 
