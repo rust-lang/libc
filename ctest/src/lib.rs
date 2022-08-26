@@ -1913,7 +1913,7 @@ impl<'a> Generator<'a> {
             #  pragma warning(disable:4365)
             #endif
             {linkage} {cty} __test_roundtrip_{ty}(
-                 {cty} value, int32_t rust_size, int* error, unsigned char* pad
+                 int32_t rust_size, {cty} value, int* error, unsigned char* pad
             ) {{
                 volatile unsigned char* p = (volatile unsigned char*)&value;
                 int size = (int)sizeof({cty});
@@ -1967,7 +1967,7 @@ impl<'a> Generator<'a> {
                 extern {{
                     #[allow(non_snake_case)]
                     fn __test_roundtrip_{ty}(
-                        x: U, size: i32, e: *mut c_int, pad: *const u8
+                        size: i32, x: U, e: *mut c_int, pad: *const u8
                     ) -> U;
                 }}
                 let pad = roundtrip_padding_{ty}();
@@ -1987,7 +1987,7 @@ impl<'a> Generator<'a> {
                       x_ptr.add(i).write_volatile(c);
                       y_ptr.add(i).write_volatile(d);
                   }}
-                  let r: U = __test_roundtrip_{ty}(x.assume_init(), sz as i32, &mut error, pad.as_ptr());
+                  let r: U = __test_roundtrip_{ty}(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
                   if error == 1 {{
                       FAILED.store(true, Ordering::SeqCst);
                       return;
