@@ -23,15 +23,9 @@ s! {
         pub st_blksize: ::blksize_t,
         __st_padding3: ::c_long,
         pub st_blocks: ::blkcnt_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        __st_atime_nsec_padding: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        __st_mtime_nsec_padding: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __st_ctime_nsec_padding: ::c_long,
+        pub st_atim: ::timespec,
+        pub st_mtim: ::timespec,
+        pub st_ctim: ::timespec,
         __st_padding4: [::c_long; 2],
     }
 
@@ -56,40 +50,32 @@ s! {
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
-        pub shm_atime: ::time_t,
-        pub shm_dtime: ::time_t,
-        pub shm_ctime: ::time_t,
+        __shm_atime_lo: ::c_ulong,
+        __shm_dtime_lo: ::c_ulong,
+        __shm_ctime_lo: ::c_ulong,
         pub shm_cpid: ::pid_t,
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::c_ulong,
-        __pad1: ::c_ulong,
-        __pad2: ::c_ulong,
+        __shm_atime_hi: ::c_ushort,
+        __shm_dtime_hi: ::c_ushort,
+        __shm_ctime_hi: ::c_ushort,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
     }
 
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
-        #[cfg(target_endian = "big")]
-        __unused1: ::c_int,
-        pub msg_stime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __unused1: ::c_int,
-        #[cfg(target_endian = "big")]
-        __unused2: ::c_int,
-        pub msg_rtime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __unused2: ::c_int,
-        #[cfg(target_endian = "big")]
-        __unused3: ::c_int,
-        pub msg_ctime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __unused3: ::c_int,
-        __msg_cbytes: ::c_ulong,
+        __unused_msg_time: [::c_ulong; 6],
+        pub msg_cbytes: ::c_ulong,
         pub msg_qnum: ::msgqnum_t,
         pub msg_qbytes: ::msglen_t,
         pub msg_lspid: ::pid_t,
         pub msg_lrpid: ::pid_t,
-        __pad1: ::c_ulong,
-        __pad2: ::c_ulong,
+        __unused: [::c_ulong; 2],
+        pub msg_stime: ::time_t,
+        pub msg_rtime: ::time_t,
+        pub msg_ctime: ::time_t,
     }
 
     pub struct statfs {
@@ -360,7 +346,7 @@ pub const SIGTSTP: ::c_int = 24;
 pub const SIGURG: ::c_int = 21;
 pub const SIGIO: ::c_int = 22;
 pub const SIGSYS: ::c_int = 12;
-pub const SIGSTKFLT: ::c_int = 7;
+//pub const SIGSTKFLT: ::c_int = 7;
 pub const SIGPOLL: ::c_int = ::SIGIO;
 pub const SIGPWR: ::c_int = 19;
 pub const SIG_SETMASK: ::c_int = 3;
