@@ -3523,6 +3523,10 @@ fn test_linux(target: &str) {
 
             // typedefs don't need any keywords
             t if t.ends_with("_t") => t.to_string(),
+
+            // In MUSL, `flock64` is a typedef to `flock` and `stat64` is a typedef to `stat`.
+            "flock64" | "stat64" if musl => format!("struct {}", ty),
+
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
             // put `union` in front of all unions:
@@ -3878,6 +3882,9 @@ fn test_linux(target: &str) {
             // FIXME: on musl the pthread types are defined a little differently
             // - these constants are used by the glibc implementation.
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
+
+            // FIXME: ctest reports incorrect values for both Rust/libc and C/musl.
+            "IPC_STAT" if musl => true,
 
             // FIXME: It was extended to 4096 since glibc 2.31 (Linux 5.4).
             // We should do so after a while.
