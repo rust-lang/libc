@@ -104,14 +104,28 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
+        #[cfg(target_env = "musl")]
+        __reserved1: ::c_int,
+        #[cfg(target_os = "emscripten")]
         pub sched_ss_low_priority: ::c_int,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
+        #[cfg(target_os = "emscripten")]
         pub sched_ss_repl_period: ::timespec,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
+        #[cfg(target_os = "emscripten")]
         pub sched_ss_init_budget: ::timespec,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
+        #[cfg(target_os = "emscripten")]
         pub sched_ss_max_repl: ::c_int,
+        #[cfg(musl_time64_abi)]
+        __reserved2: [::c_long; 4],
+        #[cfg(all(target_env = "musl", not(musl_time64_abi)))]
+        __reserved2_1: time_t,
+        #[cfg(all(target_env = "musl", not(musl_time64_abi)))]
+        __reserved2_2: ::c_long,
+        #[cfg(all(target_env = "musl", not(musl_time64_abi)))]
+        __reserved2_3: time_t,
+        #[cfg(all(target_env = "musl", not(musl_time64_abi)))]
+        __reserved2_4: ::c_long,
+        #[cfg(target_env = "musl")]
+        __reserved3: ::c_int,
     }
 
     pub struct Dl_info {
