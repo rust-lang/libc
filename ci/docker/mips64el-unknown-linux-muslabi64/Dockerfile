@@ -10,6 +10,6 @@ RUN sh /install-musl.sh mips64el
 # FIXME: shouldn't need the `-lgcc` here, shouldn't that be in libstd?
 ENV PATH=$PATH:/musl-mips64el/bin:/rust/bin \
     CC_mips64el_unknown_linux_muslabi64=musl-gcc \
-    RUSTFLAGS='-Clink-args=-lgcc' \
+    RUSTFLAGS='-Clink-args=-lgcc -L /musl-mips64el/lib' \
     CARGO_TARGET_MIPS64EL_UNKNOWN_LINUX_MUSLABI64_LINKER=musl-gcc \
     CARGO_TARGET_MIPS64EL_UNKNOWN_LINUX_MUSLABI64_RUNNER="qemu-mips64el -L /musl-mips64el"

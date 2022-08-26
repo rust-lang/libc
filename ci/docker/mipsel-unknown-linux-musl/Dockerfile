@@ -21,4 +21,5 @@ ENV PATH=$PATH:/rust/bin:/toolchain/staging_dir/toolchain-mipsel_mips32_gcc-8.4.
     STAGING_DIR=/toolchain/staging_dir \
     CC_mipsel_unknown_linux_musl=mipsel-openwrt-linux-musl-gcc \
     CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_LINKER=mipsel-openwrt-linux-musl-gcc \
-    CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_RUNNER="qemu-mipsel -L /toolchain/staging_dir/toolchain-mipsel_mips32_gcc-8.4.0_musl"
+    CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_RUNNER="qemu-mipsel -L /toolchain/staging_dir/toolchain-mipsel_mips32_gcc-8.4.0_musl" \
+    RUSTFLAGS="-L /toolchain/staging_dir/toolchain-mipsel_mips32_gcc-8.4.0_musl/lib"
