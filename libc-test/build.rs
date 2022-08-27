@@ -2148,6 +2148,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14
             "LIO_READV" | "LIO_WRITEV" | "LIO_VECTORED" if Some(14) > freebsd_ver => true,
 
+            // Added in FreeBSD 13
+            "FIOSSHMLPGCNF" if Some(13) > freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -2178,6 +2181,8 @@ fn test_freebsd(target: &str) {
 
             // `sockcred2` is not available in FreeBSD 12.
             "sockcred2" if Some(13) > freebsd_ver => true,
+            // `shm_largepage_conf` was introduced in FreeBSD 13.
+            "shm_largepage_conf" if Some(13) > freebsd_ver => true,
 
             _ => false,
         }
