@@ -992,6 +992,12 @@ s! {
         pub _flags: u32,
         pub _clockid: u32,
     }
+
+    pub struct shm_largepage_conf {
+        pub psind: ::c_int,
+        pub alloc_policy: ::c_int,
+        __pad: [::c_int; 10],
+    }
 }
 
 s_no_extra_traits! {
@@ -2254,6 +2260,7 @@ pub const FIONWRITE: ::c_ulong = 0x40046677;
 pub const FIONSPACE: ::c_ulong = 0x40046676;
 pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;
 pub const FIOSEEKHOLE: ::c_ulong = 0xc0086662;
+pub const FIOSSHMLPGCNF: ::c_ulong = 0x80306664;
 
 pub const JAIL_API_VERSION: u32 = 2;
 pub const JAIL_CREATE: ::c_int = 0x01;
