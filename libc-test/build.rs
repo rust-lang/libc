@@ -321,6 +321,9 @@ fn test_apple(target: &str) {
             // close calls the close_nocancel system call
             "close" => true,
 
+            // FIXME: remove once the target in CI is updated
+            "pthread_jit_write_freeze_callbacks_np" => true,
+
             _ => false,
         }
     });

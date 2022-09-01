@@ -119,6 +119,7 @@ pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
 
 pub type pthread_introspection_hook_t =
     extern "C" fn(event: ::c_uint, thread: ::pthread_t, addr: *mut ::c_void, size: ::size_t);
+pub type pthread_jit_write_callback_t = Option<extern "C" fn(ctx: *mut ::c_void) -> ::c_int>;
 
 pub type vm_statistics_t = *mut vm_statistics;
 pub type vm_statistics_data_t = vm_statistics;
@@ -5020,6 +5021,17 @@ extern "C" {
     ) -> *mut ::c_void;
     pub fn pthread_jit_write_protect_np(enabled: ::c_int);
     pub fn pthread_jit_write_protect_supported_np() -> ::c_int;
+    // An array of pthread_jit_write_with_callback_np must declare
+    // the list of callbacks e.g.
+    // #[link_section = "__DATA_CONST,__pth_jit_func"]
+    // static callbacks: [libc::pthread_jit_write_callback_t; 2] = [native_jit_write_cb,
+    // std::mem::transmute::<libc::pthread_jit_write_callback_t>(std::ptr::null())];
+    // (a handy PTHREAD_JIT_WRITE_CALLBACK_NP macro for other languages).
+    pub fn pthread_jit_write_with_callback_np(
+        callback: ::pthread_jit_write_callback_t,
+        ctx: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_jit_write_freeze_callbacks_np();
     pub fn pthread_cpu_number_np(cpu_number_out: *mut ::size_t) -> ::c_int;
 
     pub fn thread_policy_set(
