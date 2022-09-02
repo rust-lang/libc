@@ -3213,6 +3213,12 @@ fn test_linux(target: &str) {
             | "NFULA_VLAN_UNSPEC" // v5.4+
             | "NFULA_VLAN_PROTO" // v5.4+
             | "NFULA_VLAN_TCI" => true, // v5.4+
+            | "RTNLGRP_NEXTHOP" // linux v5.3+
+            | "RTNLGRP_BRVLAN" // linux v5.6+
+            | "RTNLGRP_MCTP_IFADDR" // linux v5.17+
+            | "RTNLGRP_TUNNEL" // linux v5.18+
+            | "RTNLGRP_STATS" // linux v5.18+
+                => true,
 
             _ => false,
         }
