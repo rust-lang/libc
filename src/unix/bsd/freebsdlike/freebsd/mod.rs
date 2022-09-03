@@ -2520,6 +2520,8 @@ pub const IFCAP_TOE4: ::c_int = 0x04000;
 pub const IFCAP_TOE6: ::c_int = 0x08000;
 /// interface hw can filter vlan tag
 pub const IFCAP_VLAN_HWFILTER: ::c_int = 0x10000;
+/// can do SIOCGIFCAPNV/SIOCSIFCAPNV
+pub const IFCAP_NV: ::c_int = 0x20000;
 /// can do IFCAP_TSO on VLANs
 pub const IFCAP_VLAN_HWTSO: ::c_int = 0x40000;
 /// the runtime link state is dynamic
@@ -2555,7 +2557,7 @@ pub const IFCAP_TSO: ::c_int = IFCAP_TSO4 | IFCAP_TSO6;
 pub const IFCAP_WOL: ::c_int = IFCAP_WOL_UCAST | IFCAP_WOL_MCAST | IFCAP_WOL_MAGIC;
 pub const IFCAP_TOE: ::c_int = IFCAP_TOE4 | IFCAP_TOE6;
 pub const IFCAP_TXTLS: ::c_int = IFCAP_TXTLS4 | IFCAP_TXTLS6;
-pub const IFCAP_CANTCHANGE: ::c_int = IFCAP_NETMAP;
+pub const IFCAP_CANTCHANGE: ::c_int = IFCAP_NETMAP | IFCAP_NV;
 
 pub const IFQ_MAXLEN: ::c_int = 50;
 pub const IFNET_SLOWHZ: ::c_int = 1;
@@ -3239,30 +3241,67 @@ pub const KKST_STATE_RUNNING: ::c_int = 2;
 pub const PRI_MIN: ::c_int = 0;
 pub const PRI_MAX: ::c_int = 255;
 pub const PRI_MIN_ITHD: ::c_int = PRI_MIN;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PRI_MAX_ITHD: ::c_int = PRI_MIN_REALTIME - 1;
 pub const PI_REALTIME: ::c_int = PRI_MIN_ITHD + 0;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PI_AV: ::c_int = PRI_MIN_ITHD + 4;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PI_NET: ::c_int = PRI_MIN_ITHD + 8;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PI_DISK: ::c_int = PRI_MIN_ITHD + 12;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PI_TTY: ::c_int = PRI_MIN_ITHD + 16;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PI_DULL: ::c_int = PRI_MIN_ITHD + 20;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PI_SOFT: ::c_int = PRI_MIN_ITHD + 24;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PRI_MIN_REALTIME: ::c_int = 48;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PRI_MAX_REALTIME: ::c_int = PRI_MIN_KERN - 1;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PRI_MIN_KERN: ::c_int = 80;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PRI_MAX_KERN: ::c_int = PRI_MIN_TIMESHARE - 1;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PSWP: ::c_int = PRI_MIN_KERN + 0;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PVM: ::c_int = PRI_MIN_KERN + 4;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PINOD: ::c_int = PRI_MIN_KERN + 8;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PRIBIO: ::c_int = PRI_MIN_KERN + 12;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PVFS: ::c_int = PRI_MIN_KERN + 16;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PZERO: ::c_int = PRI_MIN_KERN + 20;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PSOCK: ::c_int = PRI_MIN_KERN + 24;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PWAIT: ::c_int = PRI_MIN_KERN + 28;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PLOCK: ::c_int = PRI_MIN_KERN + 32;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PPAUSE: ::c_int = PRI_MIN_KERN + 36;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const PRI_MIN_TIMESHARE: ::c_int = 120;
 pub const PRI_MAX_TIMESHARE: ::c_int = PRI_MIN_IDLE - 1;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
+#[allow(deprecated)]
 pub const PUSER: ::c_int = PRI_MIN_TIMESHARE;
 pub const PRI_MIN_IDLE: ::c_int = 224;
 pub const PRI_MAX_IDLE: ::c_int = PRI_MAX;
@@ -3360,24 +3399,32 @@ pub const TDF_CANSWAP: ::c_int = 0x00000040;
 pub const TDF_KTH_SUSP: ::c_int = 0x00000100;
 pub const TDF_ALLPROCSUSP: ::c_int = 0x00000200;
 pub const TDF_BOUNDARY: ::c_int = 0x00000400;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const TDF_ASTPENDING: ::c_int = 0x00000800;
 pub const TDF_SBDRY: ::c_int = 0x00002000;
 pub const TDF_UPIBLOCKED: ::c_int = 0x00004000;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const TDF_NEEDSUSPCHK: ::c_int = 0x00008000;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const TDF_NEEDRESCHED: ::c_int = 0x00010000;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const TDF_NEEDSIGCHK: ::c_int = 0x00020000;
 pub const TDF_NOLOAD: ::c_int = 0x00040000;
 pub const TDF_SERESTART: ::c_int = 0x00080000;
 pub const TDF_THRWAKEUP: ::c_int = 0x00100000;
 pub const TDF_SEINTR: ::c_int = 0x00200000;
 pub const TDF_SWAPINREQ: ::c_int = 0x00400000;
+#[deprecated(since = "0.2.133", note = "Removed in FreeBSD 14")]
 pub const TDF_UNUSED23: ::c_int = 0x00800000;
 pub const TDF_SCHED0: ::c_int = 0x01000000;
 pub const TDF_SCHED1: ::c_int = 0x02000000;
 pub const TDF_SCHED2: ::c_int = 0x04000000;
 pub const TDF_SCHED3: ::c_int = 0x08000000;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const TDF_ALRMPEND: ::c_int = 0x10000000;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const TDF_PROFPEND: ::c_int = 0x20000000;
+#[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 pub const TDF_MACPEND: ::c_int = 0x40000000;
 
 pub const TDB_SUSPEND: ::c_int = 0x00000001;

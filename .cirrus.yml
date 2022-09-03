@@ -29,7 +29,7 @@ task:
 task:
   name: nightly x86_64-unknown-freebsd-14
   freebsd_instance:
-    image: freebsd-14-0-current-amd64-v20220203
+    image: freebsd-14-0-current-amd64-v20220902
   setup_script:
     - pkg install -y curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
