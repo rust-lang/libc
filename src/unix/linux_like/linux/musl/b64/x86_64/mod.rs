@@ -3,6 +3,7 @@ pub type wchar_t = i32;
 pub type nlink_t = u64;
 pub type blksize_t = ::c_long;
 pub type __u64 = ::c_ulonglong;
+pub type __s64 = ::c_longlong;
 pub type greg_t = i64;
 
 s! {

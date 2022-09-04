@@ -596,6 +596,13 @@ s! {
         pub nla_len: u16,
         pub nla_type: u16,
     }
+
+    pub struct file_clone_range {
+        pub src_fd: ::__s64,
+        pub src_offset: ::__u64,
+        pub src_length: ::__u64,
+        pub dest_offset: ::__u64,
+    }
 }
 
 s_no_extra_traits! {

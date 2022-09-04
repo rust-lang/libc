@@ -4,6 +4,7 @@ pub type nlink_t = u64;
 pub type wchar_t = i32;
 pub type greg_t = u64;
 pub type __u64 = u64;
+pub type __s64 = i64;
 
 s! {
     pub struct ipc_perm {
