@@ -387,7 +387,7 @@ fn test_apple(target: &str) {
         // FIXME: this type has the wrong ABI
         "max_align_t" if i686 => true,
         // Can't return an array from a C function.
-        "uuid_t" => true,
+        "uuid_t" | "vol_capabilities_set_t" => true,
         _ => false,
     });
     cfg.generate("../src/lib.rs", "main.rs");
