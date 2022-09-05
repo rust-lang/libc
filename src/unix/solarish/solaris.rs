@@ -36,6 +36,11 @@ pub const TCP_KEEPIDLE: ::c_int = 0x1d;
 pub const TCP_KEEPCNT: ::c_int = 0x1e;
 pub const TCP_KEEPINTVL: ::c_int = 0x1f;
 
+pub const F_DUPFD_CLOEXEC: ::c_int = 47;
+pub const F_DUPFD_CLOFORK: ::c_int = 49;
+pub const F_DUP2FD_CLOEXEC: ::c_int = 48;
+pub const F_DUP2FD_CLOFORK: ::c_int = 50;
+
 extern "C" {
     pub fn fexecve(
         fd: ::c_int,
