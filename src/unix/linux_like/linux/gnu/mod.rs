@@ -954,6 +954,8 @@ pub const NT_LWPSTATUS: ::c_int = 16;
 pub const NT_LWPSINFO: ::c_int = 17;
 pub const NT_PRFPXREG: ::c_int = 20;
 
+pub const ELFOSABI_ARM_AEABI: u8 = 64;
+
 // linux/keyctl.h
 pub const KEYCTL_DH_COMPUTE: u32 = 23;
 pub const KEYCTL_PKEY_QUERY: u32 = 24;

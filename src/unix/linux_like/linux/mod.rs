@@ -1299,6 +1299,181 @@ pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 248;
 pub const RLIM_SAVED_MAX: ::rlim_t = RLIM_INFINITY;
 pub const RLIM_SAVED_CUR: ::rlim_t = RLIM_INFINITY;
 
+// elf.h - Fields in the e_ident array.
+pub const EI_NIDENT: usize = 16;
+
+pub const EI_MAG0: usize = 0;
+pub const ELFMAG0: u8 = 0x7f;
+pub const EI_MAG1: usize = 1;
+pub const ELFMAG1: u8 = b'E';
+pub const EI_MAG2: usize = 2;
+pub const ELFMAG2: u8 = b'L';
+pub const EI_MAG3: usize = 3;
+pub const ELFMAG3: u8 = b'F';
+pub const SELFMAG: usize = 4;
+
+pub const EI_CLASS: usize = 4;
+pub const ELFCLASSNONE: u8 = 0;
+pub const ELFCLASS32: u8 = 1;
+pub const ELFCLASS64: u8 = 2;
+pub const ELFCLASSNUM: usize = 3;
+
+pub const EI_DATA: usize = 5;
+pub const ELFDATANONE: u8 = 0;
+pub const ELFDATA2LSB: u8 = 1;
+pub const ELFDATA2MSB: u8 = 2;
+pub const ELFDATANUM: usize = 3;
+
+pub const EI_VERSION: usize = 6;
+
+pub const EI_OSABI: usize = 7;
+pub const ELFOSABI_NONE: u8 = 0;
+pub const ELFOSABI_SYSV: u8 = 0;
+pub const ELFOSABI_HPUX: u8 = 1;
+pub const ELFOSABI_NETBSD: u8 = 2;
+pub const ELFOSABI_GNU: u8 = 3;
+pub const ELFOSABI_LINUX: u8 = ELFOSABI_GNU;
+pub const ELFOSABI_SOLARIS: u8 = 6;
+pub const ELFOSABI_AIX: u8 = 7;
+pub const ELFOSABI_IRIX: u8 = 8;
+pub const ELFOSABI_FREEBSD: u8 = 9;
+pub const ELFOSABI_TRU64: u8 = 10;
+pub const ELFOSABI_MODESTO: u8 = 11;
+pub const ELFOSABI_OPENBSD: u8 = 12;
+pub const ELFOSABI_ARM: u8 = 97;
+pub const ELFOSABI_STANDALONE: u8 = 255;
+
+pub const EI_ABIVERSION: usize = 8;
+
+pub const EI_PAD: usize = 9;
+
+// elf.h - Legal values for e_type (object file type).
+pub const ET_NONE: u16 = 0;
+pub const ET_REL: u16 = 1;
+pub const ET_EXEC: u16 = 2;
+pub const ET_DYN: u16 = 3;
+pub const ET_CORE: u16 = 4;
+pub const ET_NUM: u16 = 5;
+pub const ET_LOOS: u16 = 0xfe00;
+pub const ET_HIOS: u16 = 0xfeff;
+pub const ET_LOPROC: u16 = 0xff00;
+pub const ET_HIPROC: u16 = 0xffff;
+
+// elf.h - Legal values for e_machine (architecture).
+pub const EM_NONE: u16 = 0;
+pub const EM_M32: u16 = 1;
+pub const EM_SPARC: u16 = 2;
+pub const EM_386: u16 = 3;
+pub const EM_68K: u16 = 4;
+pub const EM_88K: u16 = 5;
+pub const EM_860: u16 = 7;
+pub const EM_MIPS: u16 = 8;
+pub const EM_S370: u16 = 9;
+pub const EM_MIPS_RS3_LE: u16 = 10;
+pub const EM_PARISC: u16 = 15;
+pub const EM_VPP500: u16 = 17;
+pub const EM_SPARC32PLUS: u16 = 18;
+pub const EM_960: u16 = 19;
+pub const EM_PPC: u16 = 20;
+pub const EM_PPC64: u16 = 21;
+pub const EM_S390: u16 = 22;
+pub const EM_V800: u16 = 36;
+pub const EM_FR20: u16 = 37;
+pub const EM_RH32: u16 = 38;
+pub const EM_RCE: u16 = 39;
+pub const EM_ARM: u16 = 40;
+pub const EM_FAKE_ALPHA: u16 = 41;
+pub const EM_SH: u16 = 42;
+pub const EM_SPARCV9: u16 = 43;
+pub const EM_TRICORE: u16 = 44;
+pub const EM_ARC: u16 = 45;
+pub const EM_H8_300: u16 = 46;
+pub const EM_H8_300H: u16 = 47;
+pub const EM_H8S: u16 = 48;
+pub const EM_H8_500: u16 = 49;
+pub const EM_IA_64: u16 = 50;
+pub const EM_MIPS_X: u16 = 51;
+pub const EM_COLDFIRE: u16 = 52;
+pub const EM_68HC12: u16 = 53;
+pub const EM_MMA: u16 = 54;
+pub const EM_PCP: u16 = 55;
+pub const EM_NCPU: u16 = 56;
+pub const EM_NDR1: u16 = 57;
+pub const EM_STARCORE: u16 = 58;
+pub const EM_ME16: u16 = 59;
+pub const EM_ST100: u16 = 60;
+pub const EM_TINYJ: u16 = 61;
+pub const EM_X86_64: u16 = 62;
+pub const EM_PDSP: u16 = 63;
+pub const EM_FX66: u16 = 66;
+pub const EM_ST9PLUS: u16 = 67;
+pub const EM_ST7: u16 = 68;
+pub const EM_68HC16: u16 = 69;
+pub const EM_68HC11: u16 = 70;
+pub const EM_68HC08: u16 = 71;
+pub const EM_68HC05: u16 = 72;
+pub const EM_SVX: u16 = 73;
+pub const EM_ST19: u16 = 74;
+pub const EM_VAX: u16 = 75;
+pub const EM_CRIS: u16 = 76;
+pub const EM_JAVELIN: u16 = 77;
+pub const EM_FIREPATH: u16 = 78;
+pub const EM_ZSP: u16 = 79;
+pub const EM_MMIX: u16 = 80;
+pub const EM_HUANY: u16 = 81;
+pub const EM_PRISM: u16 = 82;
+pub const EM_AVR: u16 = 83;
+pub const EM_FR30: u16 = 84;
+pub const EM_D10V: u16 = 85;
+pub const EM_D30V: u16 = 86;
+pub const EM_V850: u16 = 87;
+pub const EM_M32R: u16 = 88;
+pub const EM_MN10300: u16 = 89;
+pub const EM_MN10200: u16 = 90;
+pub const EM_PJ: u16 = 91;
+pub const EM_OPENRISC: u16 = 92;
+pub const EM_ARC_A5: u16 = 93;
+pub const EM_XTENSA: u16 = 94;
+pub const EM_AARCH64: u16 = 183;
+pub const EM_TILEPRO: u16 = 188;
+pub const EM_TILEGX: u16 = 191;
+pub const EM_ALPHA: u16 = 0x9026;
+
+// elf.h - Legal values for e_version (version).
+pub const EV_NONE: u32 = 0;
+pub const EV_CURRENT: u32 = 1;
+pub const EV_NUM: u32 = 2;
+
+// elf.h - Legal values for p_type (segment type).
+pub const PT_NULL: u32 = 0;
+pub const PT_LOAD: u32 = 1;
+pub const PT_DYNAMIC: u32 = 2;
+pub const PT_INTERP: u32 = 3;
+pub const PT_NOTE: u32 = 4;
+pub const PT_SHLIB: u32 = 5;
+pub const PT_PHDR: u32 = 6;
+pub const PT_TLS: u32 = 7;
+pub const PT_NUM: u32 = 8;
+pub const PT_LOOS: u32 = 0x60000000;
+pub const PT_GNU_EH_FRAME: u32 = 0x6474e550;
+pub const PT_GNU_STACK: u32 = 0x6474e551;
+pub const PT_GNU_RELRO: u32 = 0x6474e552;
+pub const PT_LOSUNW: u32 = 0x6ffffffa;
+pub const PT_SUNWBSS: u32 = 0x6ffffffa;
+pub const PT_SUNWSTACK: u32 = 0x6ffffffb;
+pub const PT_HISUNW: u32 = 0x6fffffff;
+pub const PT_HIOS: u32 = 0x6fffffff;
+pub const PT_LOPROC: u32 = 0x70000000;
+pub const PT_HIPROC: u32 = 0x7fffffff;
+
+// Legal values for p_flags (segment flags).
+pub const PF_X: u32 = 1 << 0;
+pub const PF_W: u32 = 1 << 1;
+pub const PF_R: u32 = 1 << 2;
+pub const PF_MASKOS: u32 = 0x0ff00000;
+pub const PF_MASKPROC: u32 = 0xf0000000;
+
+// elf.h - Legal values for a_type (entry type).
 pub const AT_NULL: ::c_ulong = 0;
 pub const AT_IGNORE: ::c_ulong = 1;
 pub const AT_EXECFD: ::c_ulong = 2;
@@ -1950,26 +2125,6 @@ pub const RESOLVE_NO_SYMLINKS: ::__u64 = 0x04;
 pub const RESOLVE_BENEATH: ::__u64 = 0x08;
 pub const RESOLVE_IN_ROOT: ::__u64 = 0x10;
 pub const RESOLVE_CACHED: ::__u64 = 0x20;
-
-// these are used in the p_type field of Elf32_Phdr and Elf64_Phdr, which has
-// the type Elf32Word and Elf64Word respectively. Luckily, both of those are u32
-// so we can use that type here to avoid having to cast.
-pub const PT_NULL: u32 = 0;
-pub const PT_LOAD: u32 = 1;
-pub const PT_DYNAMIC: u32 = 2;
-pub const PT_INTERP: u32 = 3;
-pub const PT_NOTE: u32 = 4;
-pub const PT_SHLIB: u32 = 5;
-pub const PT_PHDR: u32 = 6;
-pub const PT_TLS: u32 = 7;
-pub const PT_NUM: u32 = 8;
-pub const PT_LOOS: u32 = 0x60000000;
-pub const PT_GNU_EH_FRAME: u32 = 0x6474e550;
-pub const PT_GNU_STACK: u32 = 0x6474e551;
-pub const PT_GNU_RELRO: u32 = 0x6474e552;
-pub const PT_HIOS: u32 = 0x6fffffff;
-pub const PT_LOPROC: u32 = 0x70000000;
-pub const PT_HIPROC: u32 = 0x7fffffff;
 
 // linux/if_ether.h
 pub const ETH_ALEN: ::c_int = 6;
