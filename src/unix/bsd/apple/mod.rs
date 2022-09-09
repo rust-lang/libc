@@ -138,6 +138,9 @@ pub type CCRNGStatus = ::CCCryptorStatus;
 pub type copyfile_state_t = *mut ::c_void;
 pub type copyfile_flags_t = u32;
 
+pub type attrgroup_t = u32;
+pub type vol_capabilities_set_t = [u32; 4];
+
 deprecated_mach! {
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
@@ -981,6 +984,39 @@ s! {
     pub struct image_offset {
         pub uuid: ::uuid_t,
         pub offset: u32,
+    }
+
+    pub struct attrlist {
+        pub bitmapcount: ::c_ushort,
+        pub reserved: u16,
+        pub commonattr: attrgroup_t,
+        pub volattr: attrgroup_t,
+        pub dirattr: attrgroup_t,
+        pub fileattr: attrgroup_t,
+        pub forkattr: attrgroup_t,
+    }
+
+    pub struct attrreference_t {
+        pub attr_dataoffset: i32,
+        pub attr_length: u32,
+    }
+
+    pub struct vol_capabilities_attr_t {
+        pub capabilities: vol_capabilities_set_t,
+        pub valid: vol_capabilities_set_t,
+    }
+
+    pub struct attribute_set_t {
+        pub commonattr: attrgroup_t,
+        pub volattr: attrgroup_t,
+        pub dirattr: attrgroup_t,
+        pub fileattr: attrgroup_t,
+        pub forkattr: attrgroup_t,
+    }
+
+    pub struct vol_attributes_attr_t {
+        pub validattr: attribute_set_t,
+        pub nativeattr: attribute_set_t,
     }
 }
 
@@ -4688,6 +4724,145 @@ pub const COPYFILE_CONTINUE: ::c_int = 0;
 pub const COPYFILE_SKIP: ::c_int = 1;
 pub const COPYFILE_QUIT: ::c_int = 2;
 
+// <sys/attr.h>
+pub const ATTR_BIT_MAP_COUNT: ::c_ushort = 5;
+pub const FSOPT_NOFOLLOW: u32 = 0x1;
+pub const FSOPT_NOFOLLOW_ANY: u32 = 0x800;
+pub const FSOPT_REPORT_FULLSIZE: u32 = 0x4;
+pub const FSOPT_PACK_INVAL_ATTRS: u32 = 0x8;
+pub const FSOPT_ATTR_CMN_EXTENDED: u32 = 0x20;
+pub const FSOPT_RETURN_REALDEV: u32 = 0x200;
+pub const ATTR_CMN_NAME: attrgroup_t = 0x00000001;
+pub const ATTR_CMN_DEVID: attrgroup_t = 0x00000002;
+pub const ATTR_CMN_FSID: attrgroup_t = 0x00000004;
+pub const ATTR_CMN_OBJTYPE: attrgroup_t = 0x00000008;
+pub const ATTR_CMN_OBJTAG: attrgroup_t = 0x00000010;
+pub const ATTR_CMN_OBJID: attrgroup_t = 0x00000020;
+pub const ATTR_CMN_OBJPERMANENTID: attrgroup_t = 0x00000040;
+pub const ATTR_CMN_PAROBJID: attrgroup_t = 0x00000080;
+pub const ATTR_CMN_SCRIPT: attrgroup_t = 0x00000100;
+pub const ATTR_CMN_CRTIME: attrgroup_t = 0x00000200;
+pub const ATTR_CMN_MODTIME: attrgroup_t = 0x00000400;
+pub const ATTR_CMN_CHGTIME: attrgroup_t = 0x00000800;
+pub const ATTR_CMN_ACCTIME: attrgroup_t = 0x00001000;
+pub const ATTR_CMN_BKUPTIME: attrgroup_t = 0x00002000;
+pub const ATTR_CMN_FNDRINFO: attrgroup_t = 0x00004000;
+pub const ATTR_CMN_OWNERID: attrgroup_t = 0x00008000;
+pub const ATTR_CMN_GRPID: attrgroup_t = 0x00010000;
+pub const ATTR_CMN_ACCESSMASK: attrgroup_t = 0x00020000;
+pub const ATTR_CMN_FLAGS: attrgroup_t = 0x00040000;
+pub const ATTR_CMN_GEN_COUNT: attrgroup_t = 0x00080000;
+pub const ATTR_CMN_DOCUMENT_ID: attrgroup_t = 0x00100000;
+pub const ATTR_CMN_USERACCESS: attrgroup_t = 0x00200000;
+pub const ATTR_CMN_EXTENDED_SECURITY: attrgroup_t = 0x00400000;
+pub const ATTR_CMN_UUID: attrgroup_t = 0x00800000;
+pub const ATTR_CMN_GRPUUID: attrgroup_t = 0x01000000;
+pub const ATTR_CMN_FILEID: attrgroup_t = 0x02000000;
+pub const ATTR_CMN_PARENTID: attrgroup_t = 0x04000000;
+pub const ATTR_CMN_FULLPATH: attrgroup_t = 0x08000000;
+pub const ATTR_CMN_ADDEDTIME: attrgroup_t = 0x10000000;
+pub const ATTR_CMN_DATA_PROTECT_FLAGS: attrgroup_t = 0x40000000;
+pub const ATTR_CMN_RETURNED_ATTRS: attrgroup_t = 0x80000000;
+pub const ATTR_VOL_FSTYPE: attrgroup_t = 0x00000001;
+pub const ATTR_VOL_SIGNATURE: attrgroup_t = 0x00000002;
+pub const ATTR_VOL_SIZE: attrgroup_t = 0x00000004;
+pub const ATTR_VOL_SPACEFREE: attrgroup_t = 0x00000008;
+pub const ATTR_VOL_SPACEAVAIL: attrgroup_t = 0x00000010;
+pub const ATTR_VOL_MINALLOCATION: attrgroup_t = 0x00000020;
+pub const ATTR_VOL_ALLOCATIONCLUMP: attrgroup_t = 0x00000040;
+pub const ATTR_VOL_IOBLOCKSIZE: attrgroup_t = 0x00000080;
+pub const ATTR_VOL_OBJCOUNT: attrgroup_t = 0x00000100;
+pub const ATTR_VOL_FILECOUNT: attrgroup_t = 0x00000200;
+pub const ATTR_VOL_DIRCOUNT: attrgroup_t = 0x00000400;
+pub const ATTR_VOL_MAXOBJCOUNT: attrgroup_t = 0x00000800;
+pub const ATTR_VOL_MOUNTPOINT: attrgroup_t = 0x00001000;
+pub const ATTR_VOL_NAME: attrgroup_t = 0x00002000;
+pub const ATTR_VOL_MOUNTFLAGS: attrgroup_t = 0x00004000;
+pub const ATTR_VOL_MOUNTEDDEVICE: attrgroup_t = 0x00008000;
+pub const ATTR_VOL_ENCODINGSUSED: attrgroup_t = 0x00010000;
+pub const ATTR_VOL_CAPABILITIES: attrgroup_t = 0x00020000;
+pub const ATTR_VOL_UUID: attrgroup_t = 0x00040000;
+pub const ATTR_VOL_SPACEUSED: attrgroup_t = 0x00800000;
+pub const ATTR_VOL_QUOTA_SIZE: attrgroup_t = 0x10000000;
+pub const ATTR_VOL_RESERVED_SIZE: attrgroup_t = 0x20000000;
+pub const ATTR_VOL_ATTRIBUTES: attrgroup_t = 0x40000000;
+pub const ATTR_VOL_INFO: attrgroup_t = 0x80000000;
+pub const ATTR_DIR_LINKCOUNT: attrgroup_t = 0x00000001;
+pub const ATTR_DIR_ENTRYCOUNT: attrgroup_t = 0x00000002;
+pub const ATTR_DIR_MOUNTSTATUS: attrgroup_t = 0x00000004;
+pub const ATTR_DIR_ALLOCSIZE: attrgroup_t = 0x00000008;
+pub const ATTR_DIR_IOBLOCKSIZE: attrgroup_t = 0x00000010;
+pub const ATTR_DIR_DATALENGTH: attrgroup_t = 0x00000020;
+pub const ATTR_FILE_LINKCOUNT: attrgroup_t = 0x00000001;
+pub const ATTR_FILE_TOTALSIZE: attrgroup_t = 0x00000002;
+pub const ATTR_FILE_ALLOCSIZE: attrgroup_t = 0x00000004;
+pub const ATTR_FILE_IOBLOCKSIZE: attrgroup_t = 0x00000008;
+pub const ATTR_FILE_DEVTYPE: attrgroup_t = 0x00000020;
+pub const ATTR_FILE_FORKCOUNT: attrgroup_t = 0x00000080;
+pub const ATTR_FILE_FORKLIST: attrgroup_t = 0x00000100;
+pub const ATTR_FILE_DATALENGTH: attrgroup_t = 0x00000200;
+pub const ATTR_FILE_DATAALLOCSIZE: attrgroup_t = 0x00000400;
+pub const ATTR_FILE_RSRCLENGTH: attrgroup_t = 0x00001000;
+pub const ATTR_FILE_RSRCALLOCSIZE: attrgroup_t = 0x00002000;
+pub const ATTR_CMNEXT_RELPATH: attrgroup_t = 0x00000004;
+pub const ATTR_CMNEXT_PRIVATESIZE: attrgroup_t = 0x00000008;
+pub const ATTR_CMNEXT_LINKID: attrgroup_t = 0x00000010;
+pub const ATTR_CMNEXT_NOFIRMLINKPATH: attrgroup_t = 0x00000020;
+pub const ATTR_CMNEXT_REALDEVID: attrgroup_t = 0x00000040;
+pub const ATTR_CMNEXT_REALFSID: attrgroup_t = 0x00000080;
+pub const ATTR_CMNEXT_CLONEID: attrgroup_t = 0x00000100;
+pub const ATTR_CMNEXT_EXT_FLAGS: attrgroup_t = 0x00000200;
+pub const ATTR_CMNEXT_RECURSIVE_GENCOUNT: attrgroup_t = 0x00000400;
+pub const DIR_MNTSTATUS_MNTPOINT: u32 = 0x1;
+pub const VOL_CAPABILITIES_FORMAT: usize = 0;
+pub const VOL_CAPABILITIES_INTERFACES: usize = 1;
+pub const VOL_CAP_FMT_PERSISTENTOBJECTIDS: attrgroup_t = 0x00000001;
+pub const VOL_CAP_FMT_SYMBOLICLINKS: attrgroup_t = 0x00000002;
+pub const VOL_CAP_FMT_HARDLINKS: attrgroup_t = 0x00000004;
+pub const VOL_CAP_FMT_JOURNAL: attrgroup_t = 0x00000008;
+pub const VOL_CAP_FMT_JOURNAL_ACTIVE: attrgroup_t = 0x00000010;
+pub const VOL_CAP_FMT_NO_ROOT_TIMES: attrgroup_t = 0x00000020;
+pub const VOL_CAP_FMT_SPARSE_FILES: attrgroup_t = 0x00000040;
+pub const VOL_CAP_FMT_ZERO_RUNS: attrgroup_t = 0x00000080;
+pub const VOL_CAP_FMT_CASE_SENSITIVE: attrgroup_t = 0x00000100;
+pub const VOL_CAP_FMT_CASE_PRESERVING: attrgroup_t = 0x00000200;
+pub const VOL_CAP_FMT_FAST_STATFS: attrgroup_t = 0x00000400;
+pub const VOL_CAP_FMT_2TB_FILESIZE: attrgroup_t = 0x00000800;
+pub const VOL_CAP_FMT_OPENDENYMODES: attrgroup_t = 0x00001000;
+pub const VOL_CAP_FMT_HIDDEN_FILES: attrgroup_t = 0x00002000;
+pub const VOL_CAP_FMT_PATH_FROM_ID: attrgroup_t = 0x00004000;
+pub const VOL_CAP_FMT_NO_VOLUME_SIZES: attrgroup_t = 0x00008000;
+pub const VOL_CAP_FMT_DECMPFS_COMPRESSION: attrgroup_t = 0x00010000;
+pub const VOL_CAP_FMT_64BIT_OBJECT_IDS: attrgroup_t = 0x00020000;
+pub const VOL_CAP_FMT_DIR_HARDLINKS: attrgroup_t = 0x00040000;
+pub const VOL_CAP_FMT_DOCUMENT_ID: attrgroup_t = 0x00080000;
+pub const VOL_CAP_FMT_WRITE_GENERATION_COUNT: attrgroup_t = 0x00100000;
+pub const VOL_CAP_FMT_NO_IMMUTABLE_FILES: attrgroup_t = 0x00200000;
+pub const VOL_CAP_FMT_NO_PERMISSIONS: attrgroup_t = 0x00400000;
+pub const VOL_CAP_FMT_SHARED_SPACE: attrgroup_t = 0x00800000;
+pub const VOL_CAP_FMT_VOL_GROUPS: attrgroup_t = 0x01000000;
+pub const VOL_CAP_FMT_SEALED: attrgroup_t = 0x02000000;
+pub const VOL_CAP_INT_SEARCHFS: attrgroup_t = 0x00000001;
+pub const VOL_CAP_INT_ATTRLIST: attrgroup_t = 0x00000002;
+pub const VOL_CAP_INT_NFSEXPORT: attrgroup_t = 0x00000004;
+pub const VOL_CAP_INT_READDIRATTR: attrgroup_t = 0x00000008;
+pub const VOL_CAP_INT_EXCHANGEDATA: attrgroup_t = 0x00000010;
+pub const VOL_CAP_INT_COPYFILE: attrgroup_t = 0x00000020;
+pub const VOL_CAP_INT_ALLOCATE: attrgroup_t = 0x00000040;
+pub const VOL_CAP_INT_VOL_RENAME: attrgroup_t = 0x00000080;
+pub const VOL_CAP_INT_ADVLOCK: attrgroup_t = 0x00000100;
+pub const VOL_CAP_INT_FLOCK: attrgroup_t = 0x00000200;
+pub const VOL_CAP_INT_EXTENDED_SECURITY: attrgroup_t = 0x00000400;
+pub const VOL_CAP_INT_USERACCESS: attrgroup_t = 0x00000800;
+pub const VOL_CAP_INT_MANLOCK: attrgroup_t = 0x00001000;
+pub const VOL_CAP_INT_NAMEDSTREAMS: attrgroup_t = 0x00002000;
+pub const VOL_CAP_INT_EXTENDED_ATTR: attrgroup_t = 0x00004000;
+pub const VOL_CAP_INT_CLONE: attrgroup_t = 0x00010000;
+pub const VOL_CAP_INT_SNAPSHOT: attrgroup_t = 0x00020000;
+pub const VOL_CAP_INT_RENAME_SWAP: attrgroup_t = 0x00040000;
+pub const VOL_CAP_INT_RENAME_EXCL: attrgroup_t = 0x00080000;
+pub const VOL_CAP_INT_RENAME_OPENFAIL: attrgroup_t = 0x00100000;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         const fn __DARWIN_ALIGN32(p: usize) -> usize {
@@ -5562,6 +5737,58 @@ extern "C" {
     ) -> ::sysdir_search_path_enumeration_state;
 
     pub static vm_page_size: vm_size_t;
+
+    pub fn getattrlist(
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn fgetattrlist(
+        fd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn getattrlistat(
+        fd: ::c_int,
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: ::c_ulong,
+    ) -> ::c_int;
+    pub fn setattrlist(
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn fsetattrlist(
+        fd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn setattrlistat(
+        dir_fd: ::c_int,
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn getattrlistbulk(
+        dirfd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u64,
+    ) -> ::c_int;
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {
