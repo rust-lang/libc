@@ -22,6 +22,15 @@ fn do_cc() {
             }
             cmsg.compile("cmsg");
         }
+
+        if target.contains("linux")
+            || target.contains("android")
+            || target.contains("emscripten")
+            || target.contains("fuchsia")
+            || target.contains("bsd")
+        {
+            cc::Build::new().file("src/makedev.c").compile("makedev");
+        }
     }
     if target.contains("android") || target.contains("linux") {
         cc::Build::new().file("src/errqueue.c").compile("errqueue");

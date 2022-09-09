@@ -2781,12 +2781,6 @@ f! {
     pub fn minor(dev: ::dev_t) -> ::c_int {
         ((dev & 0xff) | ((dev >> 12) & 0xfff00)) as ::c_int
     }
-    pub fn makedev(ma: ::c_int, mi: ::c_int) -> ::dev_t {
-        let ma = ma as ::dev_t;
-        let mi = mi as ::dev_t;
-        ((ma & 0xfff) << 8) | (mi & 0xff) | ((mi & 0xfff00) << 12)
-    }
-
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
     }
@@ -2794,6 +2788,15 @@ f! {
     pub fn SO_EE_OFFENDER(ee: *const ::sock_extended_err) -> *mut ::sockaddr {
         ee.offset(1) as *mut ::sockaddr
     }
+}
+
+safe_f! {
+    pub {const} fn makedev(ma: ::c_uint, mi: ::c_uint) -> ::dev_t {
+        let ma = ma as ::dev_t;
+        let mi = mi as ::dev_t;
+        ((ma & 0xfff) << 8) | (mi & 0xff) | ((mi & 0xfff00) << 12)
+    }
+
 }
 
 extern "C" {

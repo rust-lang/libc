@@ -3570,17 +3570,6 @@ f! {
         minor as ::c_uint
     }
 
-    pub fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
-        let major = major as ::dev_t;
-        let minor = minor as ::dev_t;
-        let mut dev = 0;
-        dev |= (major & 0x00000fff) << 8;
-        dev |= (major & 0xfffff000) << 32;
-        dev |= (minor & 0x000000ff) << 0;
-        dev |= (minor & 0xffffff00) << 12;
-        dev
-    }
-
     pub fn IPTOS_TOS(tos: u8) -> u8 {
         tos & IPTOS_TOS_MASK
     }
@@ -3619,6 +3608,19 @@ f! {
 
     pub fn BPF_JUMP(code: ::__u16, k: ::__u32, jt: ::__u8, jf: ::__u8) -> sock_filter {
         sock_filter{code: code, jt: jt, jf: jf, k: k}
+    }
+}
+
+safe_f! {
+    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+        let major = major as ::dev_t;
+        let minor = minor as ::dev_t;
+        let mut dev = 0;
+        dev |= (major & 0x00000fff) << 8;
+        dev |= (major & 0xfffff000) << 32;
+        dev |= (minor & 0x000000ff) << 0;
+        dev |= (minor & 0xffffff00) << 12;
+        dev
     }
 }
 

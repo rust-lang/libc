@@ -67,6 +67,11 @@ path = "test/cmsg.rs"
 harness = true
 
 [[test]]
+name = "makedev"
+path = "test/makedev.rs"
+harness = true
+
+[[test]]
 name = "errqueue"
 path = "test/errqueue.rs"
 harness = true
