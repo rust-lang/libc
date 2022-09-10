@@ -42,6 +42,9 @@ pub const F_OFD_SETLKW: ::c_int = 49;
 pub const F_FLOCK: ::c_int = 53;
 pub const F_FLOCKW: ::c_int = 54;
 
+pub const F_DUPFD_CLOEXEC: ::c_int = 37;
+pub const F_DUP2FD_CLOEXEC: ::c_int = 36;
+
 pub const FIL_ATTACH: ::c_int = 0x1;
 pub const FIL_DETACH: ::c_int = 0x2;
 pub const FIL_LIST: ::c_int = 0x3;
