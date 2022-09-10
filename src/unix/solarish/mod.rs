@@ -1894,6 +1894,14 @@ pub const IPC_RMID: ::c_int = 10;
 pub const IPC_SET: ::c_int = 11;
 pub const IPC_SEAT: ::c_int = 12;
 
+// sys/shm.h
+pub const SHM_R: ::c_int = 0o400;
+pub const SHM_W: ::c_int = 0o200;
+pub const SHM_RDONLY: ::c_int = 0o10000;
+pub const SHM_RND: ::c_int = 0o20000;
+pub const SHM_SHARE_MMU: ::c_int = 0o40000;
+pub const SHM_PAGEABLE: ::c_int = 0o100000;
+
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
