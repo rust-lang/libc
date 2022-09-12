@@ -1,6 +1,5 @@
 use super::{Send, Sync};
-
-pub use ffi::c_void;
+use c_void;
 
 pub type c_char = i8;
 pub type c_uchar = u8;

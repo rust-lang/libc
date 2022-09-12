@@ -55,6 +55,38 @@ s! {
         pub pc: u64,
         pub pstate: u64,
     }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_sigmask: ::sigset_t,
+        pub uc_mcontext: mcontext_t,
+    }
+
+    #[repr(align(16))]
+    pub struct mcontext_t {
+        pub fault_address: ::c_ulonglong,
+        pub regs: [::c_ulonglong; 31],
+        pub sp: ::c_ulonglong,
+        pub pc: ::c_ulonglong,
+        pub pstate: ::c_ulonglong,
+        __reserved: [u64; 512],
+    }
+
+    pub struct user_fpsimd_struct {
+        pub vregs: [::__uint128_t; 32],
+        pub fpsr: u32,
+        pub fpcr: u32,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f32; 8]
+    }
 }
 
 pub const O_DIRECT: ::c_int = 0x10000;
@@ -375,17 +407,3 @@ pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
 pub const SYS_syscalls: ::c_long = 436;
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
-
-cfg_if! {
-    if #[cfg(libc_int128)] {
-        mod int128;
-        pub use self::int128::*;
-    }
-}

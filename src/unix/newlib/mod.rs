@@ -65,7 +65,7 @@ s! {
 
         #[cfg(not(any(
             target_os = "espidf",
-            all(libc_cfg_target_vendor, target_arch = "powerpc", target_vendor = "nintendo"))))]
+            all(target_arch = "powerpc", target_vendor = "nintendo"))))]
         pub ai_addr: *mut sockaddr,
 
         pub ai_next: *mut addrinfo,
@@ -226,20 +226,74 @@ s! {
         __lockkind: ::c_int,
         __pshared: ::c_int,
     }
+
+    #[cfg_attr(all(target_pointer_width = "32",
+                   any(target_arch = "mips",
+                       target_arch = "arm",
+                       target_arch = "powerpc")),
+               repr(align(4)))]
+    #[cfg_attr(any(target_pointer_width = "64",
+                   not(any(target_arch = "mips",
+                           target_arch = "arm",
+                           target_arch = "powerpc"))),
+               repr(align(8)))]
+    pub struct pthread_mutex_t { // Unverified
+        size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
+    }
+
+    #[cfg_attr(all(target_pointer_width = "32",
+                   any(target_arch = "mips",
+                       target_arch = "arm",
+                       target_arch = "powerpc")),
+               repr(align(4)))]
+    #[cfg_attr(any(target_pointer_width = "64",
+                   not(any(target_arch = "mips",
+                           target_arch = "arm",
+                           target_arch = "powerpc"))),
+               repr(align(8)))]
+    pub struct pthread_rwlock_t { // Unverified
+        size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
+    }
+
+    #[cfg_attr(any(target_pointer_width = "32",
+                   target_arch = "x86_64",
+                   target_arch = "powerpc64",
+                   target_arch = "mips64",
+                   target_arch = "s390x",
+                   target_arch = "sparc64"),
+               repr(align(4)))]
+    #[cfg_attr(not(any(target_pointer_width = "32",
+                       target_arch = "x86_64",
+                       target_arch = "powerpc64",
+                       target_arch = "mips64",
+                       target_arch = "s390x",
+                       target_arch = "sparc64")),
+               repr(align(8)))]
+    pub struct pthread_mutexattr_t { // Unverified
+        size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
+    }
+
+    #[repr(align(8))]
+    pub struct pthread_cond_t { // Unverified
+        size: [u8; ::__SIZEOF_PTHREAD_COND_T],
+    }
+
+    #[repr(align(4))]
+    pub struct pthread_condattr_t { // Unverified
+        size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
+    }
 }
 
 // unverified constants
-align_const! {
-    pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_MUTEX_T],
-    };
-    pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_COND_T],
-    };
-    pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_RWLOCK_T],
-    };
-}
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_MUTEX_T],
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_COND_T],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_RWLOCK_T],
+};
 pub const NCCS: usize = 32;
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
@@ -626,11 +680,7 @@ extern "C" {
     pub fn rand() -> ::c_int;
     pub fn srand(seed: ::c_uint);
 
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_bind")]
     pub fn bind(fd: ::c_int, addr: *const sockaddr, len: socklen_t) -> ::c_int;
     pub fn clock_settime(clock_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
@@ -639,11 +689,7 @@ extern "C" {
     #[cfg_attr(target_os = "espidf", link_name = "lwip_close")]
     pub fn closesocket(sockfd: ::c_int) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_recvfrom")]
     pub fn recvfrom(
         fd: ::c_int,
@@ -653,11 +699,7 @@ extern "C" {
         addr: *mut sockaddr,
         addr_len: *mut socklen_t,
     ) -> isize;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     pub fn getnameinfo(
         sa: *const sockaddr,
         salen: socklen_t,
@@ -746,14 +788,3 @@ cfg_if! {
         pub use target_arch_not_implemented;
     }
 }
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        #[macro_use]
-        mod align;
-    } else {
-        #[macro_use]
-        mod no_align;
-    }
-}
-expand_align!();

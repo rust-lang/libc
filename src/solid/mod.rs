@@ -2,6 +2,8 @@
 //!
 //! [SOLID]: https://solid.kmckk.com/
 
+use c_void;
+
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;
@@ -869,26 +871,6 @@ extern "C" {
 
     // sys/types.h
     pub fn lseek(arg1: c_int, arg2: __off_t, arg3: c_int) -> __off_t;
-}
-
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
-    }
 }
 
 cfg_if! {

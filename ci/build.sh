@@ -116,22 +116,15 @@ x86_64-unknown-freebsd \
 x86_64-unknown-linux-gnu \
 x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
-"
-
-RUST_GT_1_13_LINUX_TARGETS="\
 arm-unknown-linux-musleabi \
 arm-unknown-linux-musleabihf \
 armv7-unknown-linux-musleabihf \
 sparc64-unknown-linux-gnu \
 wasm32-unknown-emscripten \
 x86_64-linux-android \
-"
-RUST_GT_1_19_LINUX_TARGETS="\
 aarch64-unknown-linux-musl \
 sparcv9-sun-solaris \
 wasm32-unknown-unknown \
-"
-RUST_GT_1_24_LINUX_TARGETS="\
 i586-unknown-linux-musl \
 "
 
@@ -173,16 +166,6 @@ TARGETS=""
 case "${OS}" in
     linux*)
         TARGETS="${RUST_LINUX_TARGETS}"
-
-        if [ "${RUST}" != "1.13.0" ]; then
-            TARGETS="${TARGETS} ${RUST_GT_1_13_LINUX_TARGETS}"
-            if [ "${RUST}" != "1.19.0" ]; then
-                TARGETS="${TARGETS} ${RUST_GT_1_19_LINUX_TARGETS}"
-                if [ "${RUST}" != "1.24.0" ]; then
-                    TARGETS="${TARGETS} ${RUST_GT_1_24_LINUX_TARGETS}"
-                fi
-            fi
-        fi
 
         if [ "${RUST}" = "nightly" ]; then
             TARGETS="${TARGETS} ${RUST_NIGHTLY_LINUX_TARGETS}"
