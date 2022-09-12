@@ -3152,6 +3152,17 @@ fn test_linux(target: &str) {
             | "SYS_epoll_pwait2"
             | "SYS_mount_setattr" => true,
 
+            // FIXME: these syscalls were added in Linux 5.13 or later
+            // and are currently not included in the glibc headers.
+            | "SYS_quotactl_fd"
+            | "SYS_landlock_create_ruleset"
+            | "SYS_landlock_add_rule"
+            | "SYS_landlock_restrict_self"
+            | "SYS_memfd_secret"
+            | "SYS_process_mrelease"
+            | "SYS_futex_waitv"
+            | "SYS_set_mempolicy_home_node" => true,
+
             // Requires more recent kernel headers:
             | "IFLA_PROP_LIST"
             | "IFLA_ALT_IFNAME"
