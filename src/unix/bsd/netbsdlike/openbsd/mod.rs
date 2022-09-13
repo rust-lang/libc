@@ -1639,6 +1639,10 @@ pub const SF_ARCHIVED: ::c_uint = 0x00010000;
 pub const SF_IMMUTABLE: ::c_uint = 0x00020000;
 pub const SF_APPEND: ::c_uint = 0x00040000;
 
+pub const MNT_WAIT: ::c_int = 1;
+pub const MNT_NOWAIT: ::c_int = 2;
+pub const MNT_LAZY: ::c_int = 3;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -1880,6 +1884,8 @@ cfg_if! {
             // these functions use statfs which uses the union mount_info:
             pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
             pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
+            pub fn getmntinfo(mntbufp: *mut *mut ::statfs, flags: ::c_int) -> ::c_int;
+            pub fn getfsstat(buf: *mut statfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
         }
     }
 }

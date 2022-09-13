@@ -497,6 +497,9 @@ MSG_CMSG_CLOEXEC
 MSG_DONTWAIT
 MSG_MCAST
 MSG_NOSIGNAL
+MNT_LAZY
+MNT_NOWAIT
+MNT_WAIT
 NET_RT_DUMP
 NET_RT_FLAGS
 NET_RT_IFLIST
@@ -999,6 +1002,7 @@ futimes
 getdomainname
 getdtablesize
 getentropy
+getfsstat
 getgrent
 getgrgid
 getgrgid_r
@@ -1010,6 +1014,7 @@ getifaddrs
 getitimer
 getline
 getloadavg
+getmntinfo
 getnameinfo
 getpeereid
 getpriority
