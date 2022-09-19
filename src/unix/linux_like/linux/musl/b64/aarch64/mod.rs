@@ -1,5 +1,6 @@
 pub type c_char = u8;
 pub type __u64 = ::c_ulonglong;
+pub type __s64 = ::c_longlong;
 pub type wchar_t = u32;
 pub type nlink_t = u32;
 pub type blksize_t = ::c_int;

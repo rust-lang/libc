@@ -2909,6 +2909,7 @@ ff_rumble_effect
 ff_trigger
 fgetpos64
 fgetxattr
+file_clone_range
 flistxattr
 fmemopen
 fopen64
