@@ -2857,8 +2857,7 @@ fn test_linux(target: &str) {
         "linux/netfilter_ipv6.h",
         "linux/netfilter_ipv6/ip6_tables.h",
         "linux/netlink.h",
-        // FIXME: requires more recent kernel headers:
-        // "linux/openat2.h",
+        "linux/openat2.h",
         [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
@@ -2956,11 +2955,6 @@ fn test_linux(target: &str) {
             // For internal use only, to define architecture specific ioctl constants with a libc specific type.
             "Ioctl" => true,
 
-            // FIXME: requires >= 5.4.1 kernel headers
-            "pgn_t" if musl => true,
-            "priority_t" if musl => true,
-            "name_t" if musl => true,
-
             _ => false,
         }
     });
@@ -3013,11 +3007,6 @@ fn test_linux(target: &str) {
             // which is absent in musl, has to be defined.
             "__exit_status" if musl => true,
 
-            // FIXME: CI's kernel header version is old.
-            "sockaddr_can" => true,
-
-            // Requires glibc 2.33 or newer.
-            "mallinfo2" => true,
             // clone_args might differ b/w libc versions
             "clone_args" => true,
 
@@ -3061,12 +3050,6 @@ fn test_linux(target: &str) {
                 || name.starts_with("TCP_")
                 || name.starts_with("UINPUT_")
                 || name.starts_with("VMADDR_")
-                // FIXME: Requires >= 5.4.1 kernel headers
-                || name.starts_with("J1939")
-                // FIXME: Requires >= 5.4.1 kernel headers
-                || name.starts_with("SO_J1939")
-                // FIXME: Requires >= 5.4.1 kernel headers
-                || name.starts_with("SCM_J1939")
             {
                 return true;
             }
@@ -3092,9 +3075,6 @@ fn test_linux(target: &str) {
             // The `ARPHRD_CAN` is tested in the `linux_if_arp.rs` tests
             // because including `linux/if_arp.h` causes some conflicts:
             "ARPHRD_CAN" => true,
-
-            // Require Linux kernel 5.1:
-            "F_SEAL_FUTURE_WRITE" => true,
 
             // FIXME: deprecated: not available in any header
             // See: https://github.com/rust-lang/libc/issues/1356
@@ -3124,12 +3104,6 @@ fn test_linux(target: &str) {
             // deprecated: not available from Linux kernel 5.6:
             "VMADDR_CID_RESERVED" => true,
 
-            // Require Linux kernel 5.6:
-            "VMADDR_CID_LOCAL" => true,
-
-            // Requires Linux kernel 5.7:
-            "MREMAP_DONTUNMAP" => true,
-
             // IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
             | "IPPROTO_MAX"
             | "IPPROTO_MPTCP" => true,
@@ -3142,70 +3116,23 @@ fn test_linux(target: &str) {
             // Not yet implemented on sparc64
             "SYS_clone3" if mips | sparc64 => true,
 
-            // FIXME: these syscalls were added in Linux 5.9 or later
-            // and are currently not included in the glibc headers.
-            | "SYS_close_range"
-            | "SYS_openat2"
-            | "SYS_pidfd_getfd"
-            | "SYS_faccessat2"
-            | "SYS_process_madvise"
-            | "SYS_epoll_pwait2"
-            | "SYS_mount_setattr" => true,
+            // FIXME: Added in Linux 5.16
+            // https://github.com/torvalds/linux/commit/039c0ec9bb77446d7ada7f55f90af9299b28ca49
+            "SYS_futex_waitv" => true,
 
-            // FIXME: these syscalls were added in Linux 5.13 or later
-            // and are currently not included in the glibc headers.
-            | "SYS_quotactl_fd"
-            | "SYS_landlock_create_ruleset"
-            | "SYS_landlock_add_rule"
-            | "SYS_landlock_restrict_self"
-            | "SYS_memfd_secret"
-            | "SYS_process_mrelease"
-            | "SYS_futex_waitv"
-            | "SYS_set_mempolicy_home_node" => true,
+            // FIXME: Added in Linux 5.17
+            // https://github.com/torvalds/linux/commit/c6018b4b254971863bd0ad36bb5e7d0fa0f0ddb0
+            "SYS_set_mempolicy_home_node" => true,
 
-            // Requires more recent kernel headers:
-            | "IFLA_PROP_LIST"
-            | "IFLA_ALT_IFNAME"
-            | "IFLA_PERM_ADDRESS"
-            | "IFLA_PROTO_DOWN_REASON" => true,
-
-            // FIXME: They require recent kernel header:
-            | "CAN_J1939"
-            | "CAN_RAW_FILTER_MAX"
-            | "CAN_NPROTO" => true,
-
-            // FIXME: Requires recent kernel headers (5.15)
-            | "J1939_NLA_TOTAL_SIZE"
-            | "J1939_NLA_PGN"
-            | "J1939_NLA_SRC_NAME"
-            | "J1939_NLA_DEST_NAME"
-            | "J1939_NLA_SRC_ADDR"
-            | "J1939_NLA_DEST_ADDR"
-            | "J1939_EE_INFO_RX_RTS"
-            | "J1939_EE_INFO_RX_DPO"
-            | "J1939_EE_INFO_RX_ABORT"
-            | "SOL_CAN_J1939" => true,
-
-            // FIXME: Requires recent kernel headers (5.8):
-            "STATX_MNT_ID" => true,
+            // FIXME: Added in Linux 5.18
+            // https://github.com/torvalds/linux/commit/8b5413647262dda8d8d0e07e14ea1de9ac7cf0b2
+            "NFQA_PRIORITY" => true,
 
             // FIXME: requires more recent kernel headers on CI
             | "UINPUT_VERSION"
             | "SW_MAX"
             | "SW_CNT"
                 if mips || ppc64 || riscv64 || sparc64 => true,
-
-            // FIXME: Requires more recent kernel headers (5.9 / 5.11):
-            | "CLOSE_RANGE_UNSHARE"
-            | "CLOSE_RANGE_CLOEXEC" => true,
-
-            // FIXME: requires more recent kernel headers:
-            | "RESOLVE_BENEATH"
-            | "RESOLVE_CACHED"
-            | "RESOLVE_IN_ROOT"
-            | "RESOLVE_NO_MAGICLINKS"
-            | "RESOLVE_NO_SYMLINKS"
-            | "RESOLVE_NO_XDEV" => true,
 
             // FIXME: Not currently available in headers on ARM, MIPS and musl.
             "NETLINK_GET_STRICT_CHK" if arm || mips || musl => true,
@@ -3233,13 +3160,9 @@ fn test_linux(target: &str) {
 
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
-            // linux 5.12 min
-            "MPOL_F_NUMA_BALANCING" => true,
+
             // linux 5.17 min
             "PR_SET_VMA" | "PR_SET_VMA_ANON_NAME" => true,
-
-            // GRND_INSECURE was added in glibc-2.32
-            "GRND_INSECURE" => true,
 
             // present in recent kernels only
             "PR_PAC_SET_ENABLED_KEYS" | "PR_PAC_GET_ENABLED_KEYS" => true,
@@ -3248,21 +3171,6 @@ fn test_linux(target: &str) {
             "FUTEX_LOCK_PI2" => true,
 
             // FIXME: Parts of netfilter/nfnetlink*.h require more recent kernel headers:
-            | "NFNL_SUBSYS_HOOK" // v5.14+
-            | "NFNL_SUBSYS_COUNT" // bumped in v5.14
-            | "NFQA_VLAN" // v4.7+
-            | "NFQA_L2HDR" // v4.7+
-            | "NFQA_PRIORITY" // v5.18+
-            | "NFQA_VLAN_UNSPEC" // v4.7+
-            | "NFQA_VLAN_PROTO" // v4.7+
-            | "NFQA_VLAN_TCI" // v4.7+
-            | "NFULA_VLAN" // v5.4+
-            | "NFULA_L2HDR" // v5.4+
-            | "NFULA_VLAN_UNSPEC" // v5.4+
-            | "NFULA_VLAN_PROTO" // v5.4+
-            | "NFULA_VLAN_TCI" => true, // v5.4+
-            | "RTNLGRP_NEXTHOP" // linux v5.3+
-            | "RTNLGRP_BRVLAN" // linux v5.6+
             | "RTNLGRP_MCTP_IFADDR" // linux v5.17+
             | "RTNLGRP_TUNNEL" // linux v5.18+
             | "RTNLGRP_STATS" // linux v5.18+
