@@ -3268,6 +3268,17 @@ fn test_linux(target: &str) {
             | "RTNLGRP_STATS" // linux v5.18+
                 => true,
 
+            // FIXME: The below is no longer const in glibc 2.34:
+            // https://github.com/bminor/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
+            | "PTHREAD_STACK_MIN"
+            | "SIGSTKSZ"
+            | "MINSIGSTKSZ"
+                if gnu => true,
+
+            // FIXME: Linux >= 5.16 changed its value:
+            // https://github.com/torvalds/linux/commit/42df6e1d221dddc0f2acf2be37e68d553ad65f96
+            "NF_NETDEV_NUMHOOKS" => true,
+
             _ => false,
         }
     });
@@ -3424,7 +3435,10 @@ fn test_linux(target: &str) {
         // the `u` field is in fact an anonymous union
         (gnu && struct_ == "ptrace_syscall_info" && (field == "u" || field == "pad")) ||
         // the vregs field is a `__uint128_t` C's type.
-        (struct_ == "user_fpsimd_struct" && field == "vregs")
+        (struct_ == "user_fpsimd_struct" && field == "vregs") ||
+        // Linux >= 5.11 tweaked the `svm_zero` field of the `sockaddr_vm` struct.
+        // https://github.com/torvalds/linux/commit/dc8eeef73b63ed8988224ba6b5ed19a615163a7f
+        (struct_ == "sockaddr_vm" && field == "svm_zero")
     });
 
     cfg.skip_roundtrip(move |s| match s {
