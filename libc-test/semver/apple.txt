@@ -1003,6 +1003,7 @@ OFDEL
 OFILL
 OLD_TIME
 ONOEOT
+OS_UNFAIR_LOCK_INIT
 OXTABS
 O_ASYNC
 O_DSYNC
@@ -1993,6 +1994,14 @@ open_memstream
 open_wmemstream
 openat
 openpty
+os_unfair_lock
+os_unfair_lock_s
+os_unfair_lock_t
+os_unfair_lock_lock
+os_unfair_lock_trylock
+os_unfair_lock_unlock
+os_unfair_lock_assert_owner
+os_unfair_lock_assert_not_owner
 pause
 policy_t
 popen
