@@ -121,6 +121,8 @@ pub type pthread_introspection_hook_t =
     extern "C" fn(event: ::c_uint, thread: ::pthread_t, addr: *mut ::c_void, size: ::size_t);
 pub type pthread_jit_write_callback_t = Option<extern "C" fn(ctx: *mut ::c_void) -> ::c_int>;
 
+pub type os_unfair_lock_t = *mut os_unfair_lock;
+
 pub type vm_statistics_t = *mut vm_statistics;
 pub type vm_statistics_data_t = vm_statistics;
 pub type vm_statistics64_t = *mut vm_statistics64;
@@ -1294,6 +1296,10 @@ s_no_extra_traits! {
         pub l2p_flags: ::c_uint,
         pub l2p_contigbytes: ::off_t,
         pub l2p_devoffset: ::off_t,
+    }
+
+    pub struct os_unfair_lock {
+        _os_unfair_lock_opaque: u32,
     }
 }
 
@@ -3863,6 +3869,10 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __opaque: [0; __PTHREAD_RWLOCK_SIZE__],
 };
 
+pub const OS_UNFAIR_LOCK_INIT: os_unfair_lock = os_unfair_lock {
+    _os_unfair_lock_opaque: 0,
+};
+
 pub const MINSIGSTKSZ: ::size_t = 32768;
 pub const SIGSTKSZ: ::size_t = 131072;
 
@@ -5208,6 +5218,12 @@ extern "C" {
     ) -> ::c_int;
     pub fn pthread_jit_write_freeze_callbacks_np();
     pub fn pthread_cpu_number_np(cpu_number_out: *mut ::size_t) -> ::c_int;
+
+    pub fn os_unfair_lock_lock(lock: os_unfair_lock_t);
+    pub fn os_unfair_lock_trylock(lock: os_unfair_lock_t) -> ::c_int;
+    pub fn os_unfair_lock_unlock(lock: os_unfair_lock_t);
+    pub fn os_unfair_lock_assert_owner(lock: *const os_unfair_lock);
+    pub fn os_unfair_lock_assert_not_owner(lock: *const os_unfair_lock);
 
     pub fn thread_policy_set(
         thread: thread_t,
