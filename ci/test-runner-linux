@@ -20,6 +20,6 @@ timeout 30s qemu-system-$arch \
   -append init=/run_prog.sh > output || true
 
 # remove kernel messages
-tr -d '\r' < output | egrep -v '^\['
+tr -d '\r' < output | grep -Ev '^\['
 
-egrep "(PASSED)|(test result: ok)" output > /dev/null
+grep -E "(PASSED)|(test result: ok)" output > /dev/null
