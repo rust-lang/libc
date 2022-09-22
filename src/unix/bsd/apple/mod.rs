@@ -141,6 +141,9 @@ pub type copyfile_flags_t = u32;
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
 
+pub type os_unfair_lock = os_unfair_lock_s;
+pub type os_unfair_lock_t = *mut os_unfair_lock;
+
 deprecated_mach! {
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
@@ -1017,6 +1020,10 @@ s! {
     pub struct vol_attributes_attr_t {
         pub validattr: attribute_set_t,
         pub nativeattr: attribute_set_t,
+    }
+
+    pub struct os_unfair_lock_s {
+        _os_unfair_lock_opaque: u32,
     }
 }
 
@@ -3239,6 +3246,10 @@ pub const PTHREAD_CREATE_DETACHED: ::c_int = 2;
 pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 #[cfg(not(target_arch = "aarch64"))]
 pub const PTHREAD_STACK_MIN: ::size_t = 8192;
+
+pub const OS_UNFAIR_LOCK_INIT: os_unfair_lock = os_unfair_lock {
+    _os_unfair_lock_opaque: 0,
+};
 
 pub const RLIMIT_CPU: ::c_int = 0;
 pub const RLIMIT_FSIZE: ::c_int = 1;
@@ -5789,6 +5800,12 @@ extern "C" {
         attrBufSize: ::size_t,
         options: u64,
     ) -> ::c_int;
+
+    pub fn os_unfair_lock_lock(lock: ::os_unfair_lock_t);
+    pub fn os_unfair_lock_trylock(lock: ::os_unfair_lock_t) -> bool;
+    pub fn os_unfair_lock_unlock(lock: ::os_unfair_lock_t);
+    pub fn os_unfair_lock_assert_owner(lock: ::os_unfair_lock_t);
+    pub fn os_unfair_lock_assert_not_owner(lock: ::os_unfair_lock_t);
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {

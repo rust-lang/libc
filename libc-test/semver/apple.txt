@@ -1991,6 +1991,13 @@ open_memstream
 open_wmemstream
 openat
 openpty
+os_unfair_lock
+os_unfair_lock_assert_owner
+os_unfair_lock_assert_not_owner
+os_unfair_lock_lock
+os_unfair_lock_t
+os_unfair_lock_trylock
+os_unfair_lock_unlock
 pause
 policy_t
 popen
