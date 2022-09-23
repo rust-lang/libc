@@ -1,6 +1,10 @@
 pub type boolean_t = ::c_uint;
 pub type mcontext_t = *mut __darwin_mcontext64;
 
+extern "C" {
+    pub fn malloc_size(ptr: *mut ::c_void) -> ::size_t;
+}
+
 s! {
     pub struct ucontext_t {
         pub uc_onstack: ::c_int,

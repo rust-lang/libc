@@ -8,6 +8,10 @@ s! {
 
 pub const CLOCK_UPTIME_RAW: ::clockid_t = 8;
 
+extern "C" {
+    pub fn malloc_size(ptr: *mut ::c_void) -> ::size_t;
+}
+
 cfg_if! {
     if #[cfg(libc_align)] {
         mod align;
