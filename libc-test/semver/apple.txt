@@ -1951,7 +1951,9 @@ mach_vm_offset_t
 mach_vm_size_t
 madvise
 malloc_default_zone
+malloc_good_size
 malloc_printf
+malloc_size
 malloc_statistics_t
 malloc_zone_calloc
 malloc_zone_check

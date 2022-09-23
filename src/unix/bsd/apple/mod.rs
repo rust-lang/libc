@@ -5789,6 +5789,9 @@ extern "C" {
         attrBufSize: ::size_t,
         options: u64,
     ) -> ::c_int;
+
+    pub fn malloc_size(ptr: *const ::c_void) -> ::size_t;
+    pub fn malloc_good_size(size: ::size_t) -> ::size_t;
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {
