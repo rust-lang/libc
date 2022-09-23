@@ -54,6 +54,8 @@ pub const FILF_AUTO: ::c_int = 0x2;
 pub const FILF_BYPASS: ::c_int = 0x4;
 pub const SOL_FILTER: ::c_int = 0xfffc;
 
+pub const MADV_PURGE: ::c_int = 9;
+
 pub const MR_HDR_AOUT: ::c_uint = 0x3;
 
 pub const B1000000: ::speed_t = 24;

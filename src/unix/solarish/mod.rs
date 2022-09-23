@@ -1440,6 +1440,7 @@ pub const MAP_RENAME: ::c_int = 0x20;
 pub const MAP_ALIGN: ::c_int = 0x200;
 pub const MAP_TEXT: ::c_int = 0x400;
 pub const MAP_INITDATA: ::c_int = 0x800;
+pub const MAP_32BIT: ::c_int = 0x80;
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
@@ -1683,6 +1684,9 @@ pub const MADV_SEQUENTIAL: ::c_int = 2;
 pub const MADV_WILLNEED: ::c_int = 3;
 pub const MADV_DONTNEED: ::c_int = 4;
 pub const MADV_FREE: ::c_int = 5;
+pub const MADV_ACCESS_DEFAULT: ::c_int = 6;
+pub const MADV_ACCESS_LWP: ::c_int = 7;
+pub const MADV_ACCESS_MANY: ::c_int = 8;
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_UNIX: ::c_int = 1;
