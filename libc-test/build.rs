@@ -2473,6 +2473,9 @@ fn test_emscripten(target: &str) {
             // FIXME: is this necessary?
             "sighandler_t" => true,
 
+            // FIXME: The size has been changed due to musl's time64
+            "time_t" => true,
+
             _ => false,
         }
     });
@@ -2491,6 +2494,16 @@ fn test_emscripten(target: &str) {
             // Skip for now to unblock CI.
             "pthread_condattr_t" => true,
 
+            // FIXME: The size has been changed when upgraded to musl 1.2.2
+            "pthread_mutex_t" => true,
+
+            // FIXME: The size has been changed
+            "max_align_t" => true,
+
+            // FIXME: The size has been changed due to time64
+            "utimbuf" | "timeval" | "timespec" | "rusage" | "itimerval" | "sched_param"
+            | "stat" | "stat64" | "shmid_ds" | "msqid_ds" => true,
+
             _ => false,
         }
     });
@@ -2502,6 +2515,14 @@ fn test_emscripten(target: &str) {
 
             // FIXME: Investigate why CI is missing it.
             "clearenv" => true,
+
+            // FIXME: Somehow the ctest cannot find it on emscripten:
+            //  = note: error: undefined symbol: wait4 (referenced by top-level compiled C/C++ code)
+            //  warning: Link with `-sLLD_REPORT_UNDEFINED` to get more information on undefined symbols
+            //  warning: To disable errors for undefined symbols use `-sERROR_ON_UNDEFINED_SYMBOLS=0`
+            //  warning: _wait4 may need to be added to EXPORTED_FUNCTIONS if it arrives from a system library
+            //  Error: Aborting compilation due to previous errors
+            "wait4" => true,
 
             _ => false,
         }
@@ -2519,6 +2540,18 @@ fn test_emscripten(target: &str) {
             // FIXME: `SYS_gettid` was removed in
             // emscripten-core/emscripten@6d6474e
             "SYS_gettid" => true,
+
+            // FIXME: These values have been changed
+            | "POSIX_MADV_DONTNEED" // to 4
+            | "RLIMIT_NLIMITS" // to 16
+            | "RLIM_NLIMITS" // to 16
+            | "IPPROTO_MAX" // to 263
+            | "F_GETLK" // to 5
+            | "F_SETLK" // to 6
+            | "F_SETLKW" // to 7
+            | "O_TMPFILE" // to 65
+            | "SIG_IGN" // -1
+                => true,
 
             _ => false,
         }
@@ -2703,6 +2736,7 @@ fn test_linux(target: &str) {
     let mips = target.contains("mips");
     let mips32 = mips && !target.contains("64");
     let mips64 = mips && target.contains("64");
+    let ppc = target.contains("powerpc");
     let ppc64 = target.contains("powerpc64");
     let s390x = target.contains("s390x");
     let sparc64 = target.contains("sparc64");
@@ -2710,7 +2744,7 @@ fn test_linux(target: &str) {
     let x86_32 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
     let aarch64_musl = target.contains("aarch64") && musl;
-    let gnuabihf = target.contains("gnueabihf");
+    let gnueabihf = target.contains("gnueabihf");
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
     let uclibc = target.contains("uclibc");
@@ -2815,9 +2849,9 @@ fn test_linux(target: &str) {
                "errno.h",
                // `sys/io.h` is only available on x86*, Alpha, IA64, and 32-bit
                // ARM: https://bugzilla.redhat.com/show_bug.cgi?id=1116162
-               // Also unavailable on gnuabihf with glibc 2.30.
+               // Also unavailable on gnueabihf with glibc 2.30.
                // https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=6b33f373c7b9199e00ba5fbafd94ac9bfb4337b1
-               [(x86_64 || x86_32 || arm) && !gnuabihf]: "sys/io.h",
+               [(x86_64 || x86_32 || arm) && !gnueabihf]: "sys/io.h",
                // `sys/reg.h` is only available on x86 and x86_64
                [x86_64 || x86_32]: "sys/reg.h",
                // sysctl system call is deprecated and not available on musl
@@ -2865,7 +2899,8 @@ fn test_linux(target: &str) {
         "linux/netfilter_ipv6.h",
         "linux/netfilter_ipv6/ip6_tables.h",
         "linux/netlink.h",
-        "linux/openat2.h",
+        // FIXME: requires Linux >= 5.6:
+        [!musl && !sparc64]: "linux/openat2.h",
         [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
@@ -2963,6 +2998,11 @@ fn test_linux(target: &str) {
             // For internal use only, to define architecture specific ioctl constants with a libc specific type.
             "Ioctl" => true,
 
+            // FIXME: requires >= 5.4.1 kernel headers
+            "pgn_t" if musl => true,
+            "priority_t" if musl => true,
+            "name_t" if musl => true,
+
             _ => false,
         }
     });
@@ -3024,6 +3064,12 @@ fn test_linux(target: &str) {
             // FIXME: requires >= 5.4.1 kernel headers
             "j1939_filter" if musl => true,
 
+            // FIXME: requires >= 5.4 kernel headers
+            "sockaddr_can" if musl => true,
+
+            // FIXME: Unignore once we update Ubuntu to 22.04
+            "mallinfo2" if sparc64 => true,
+
             _ => false,
         }
     });
@@ -3058,6 +3104,15 @@ fn test_linux(target: &str) {
                 || name.starts_with("TCP_")
                 || name.starts_with("UINPUT_")
                 || name.starts_with("VMADDR_")
+            {
+                return true;
+            }
+        }
+        if musl || sparc64 {
+            // FIXME: Requires >= 5.4.1 kernel headers
+            if name.starts_with("J1939")
+                || name.starts_with("SO_J1939")
+                || name.starts_with("SCM_J1939")
             {
                 return true;
             }
@@ -3123,6 +3178,9 @@ fn test_linux(target: &str) {
             // FIXME: Not currently available in headers on MIPS
             // Not yet implemented on sparc64
             "SYS_clone3" if mips | sparc64 => true,
+
+            // FIXME: Not defined on ARM, gnueabihf, MIPS, musl, PowerPC, riscv64, s390x, and sparc64.
+            "SYS_memfd_secret" if arm | gnueabihf | mips | musl | ppc | riscv64 | s390x | sparc64 => true,
 
             // FIXME: Added in Linux 5.16
             // https://github.com/torvalds/linux/commit/039c0ec9bb77446d7ada7f55f90af9299b28ca49
@@ -3194,6 +3252,64 @@ fn test_linux(target: &str) {
             // FIXME: Linux >= 5.16 changed its value:
             // https://github.com/torvalds/linux/commit/42df6e1d221dddc0f2acf2be37e68d553ad65f96
             "NF_NETDEV_NUMHOOKS" => true,
+
+            // FIXME: requires Linux >= 5.6:
+            | "RESOLVE_BENEATH"
+            | "RESOLVE_CACHED"
+            | "RESOLVE_IN_ROOT"
+            | "RESOLVE_NO_MAGICLINKS"
+            | "RESOLVE_NO_SYMLINKS"
+            | "RESOLVE_NO_XDEV" if musl || sparc64 => true,
+
+            // FIXME: requires Linux >= 5.4:
+            | "CAN_J1939"
+            | "CAN_NPROTO" if musl || sparc64 => true,
+
+            // FIXME: requires Linux >= 5.6
+            "GRND_INSECURE" if musl || sparc64 => true,
+
+            // FIXME: requires Linux >= 5.7:
+            "MREMAP_DONTUNMAP" if musl || sparc64 => true,
+
+            // FIXME: Requires more recent kernel headers (5.9 / 5.11):
+            | "CLOSE_RANGE_UNSHARE"
+            | "CLOSE_RANGE_CLOEXEC" if musl || sparc64 => true,
+
+            // FIXME: requires Linux >= 5.12:
+            "MPOL_F_NUMA_BALANCING" if musl || sparc64 => true,
+
+            // FIXME: Requires more recent kernel headers
+            | "NFNL_SUBSYS_COUNT" // bumped in v5.14
+            | "NFNL_SUBSYS_HOOK" // v5.14+
+            | "NFULA_VLAN" // v5.4+
+            | "NFULA_L2HDR" // v5.4+
+            | "NFULA_VLAN_PROTO" // v5.4+
+            | "NFULA_VLAN_TCI" // v5.4+
+            | "NFULA_VLAN_UNSPEC" // v5.4+
+            | "RTNLGRP_NEXTHOP" // linux v5.3+
+            | "RTNLGRP_BRVLAN" // linux v5.6+
+            if musl || sparc64 => true,
+
+            // FIXME: Unignore once we update Ubuntu to 22.04
+            | "VMADDR_CID_LOCAL"
+            | "STATX_MNT_ID"
+            | "SYS_close_range"
+            | "SYS_openat2"
+            | "SYS_pidfd_getfd"
+            | "SYS_faccessat2"
+            | "SYS_process_madvise"
+            | "SYS_epoll_pwait2"
+            | "SYS_mount_setattr"
+            | "SYS_quotactl_fd"
+            | "SYS_landlock_create_ruleset"
+            | "SYS_landlock_add_rule"
+            | "SYS_landlock_restrict_self"
+            | "SYS_process_mrelease"
+            | "IFLA_PROP_LIST"
+            | "IFLA_ALT_IFNAME"
+            | "IFLA_PERM_ADDRESS"
+            | "IFLA_PROTO_DOWN_REASON"
+            if sparc64 => true,
 
             _ => false,
         }
