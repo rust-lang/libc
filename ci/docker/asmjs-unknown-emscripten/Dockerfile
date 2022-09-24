@@ -15,7 +15,8 @@ RUN apt-get install -y --no-install-recommends \
     libxml2 \
     python3 \
     python3-distutils \
-    xz-utils
+    xz-utils \
+    bzip2
 
 COPY emscripten.sh /
 RUN bash /emscripten.sh

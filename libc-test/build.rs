@@ -2557,7 +2557,15 @@ fn test_emscripten(target: &str) {
                                            field == "_pad2" ||
                                            field == "ssi_syscall" ||
                                            field == "ssi_call_addr" ||
-                                           field == "ssi_arch"))
+                                           field == "ssi_arch")) ||
+        // FIXME: After musl 1.1.24, it have only one field `sched_priority`,
+        // while other fields become reserved.
+        (struct_ == "sched_param" && [
+            "sched_ss_low_priority",
+            "sched_ss_repl_period",
+            "sched_ss_init_budget",
+            "sched_ss_max_repl",
+        ].contains(&field))
     });
 
     // FIXME: test linux like
