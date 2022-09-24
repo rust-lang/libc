@@ -3068,6 +3068,7 @@ fn test_linux(target: &str) {
 
             // FIXME: Unignore once we update Ubuntu to 22.04
             "mallinfo2" if sparc64 => true,
+            "ptrace_rseq_configuration" if sparc64 => true,
 
             _ => false,
         }
@@ -3309,6 +3310,8 @@ fn test_linux(target: &str) {
             | "IFLA_PERM_ADDRESS"
             | "IFLA_PROTO_DOWN_REASON"
             if sparc64 => true,
+            // Added in Linux 5.13
+            "PTRACE_GET_RSEQ_CONFIGURATION" if sparc64 => true,
 
             _ => false,
         }
