@@ -2406,7 +2406,6 @@ fn test_emscripten(target: &str) {
                "sys/reboot.h",
                "sys/resource.h",
                "sys/sem.h",
-               "sys/sendfile.h",
                "sys/shm.h",
                "sys/signalfd.h",
                "sys/socket.h",
