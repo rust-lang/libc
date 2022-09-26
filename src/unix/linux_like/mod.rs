@@ -1434,6 +1434,7 @@ cfg_if! {
         pub const UDF_SUPER_MAGIC: ::c_long = 0x15013346;
         pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
         pub const XENFS_SUPER_MAGIC: ::c_long = 0xabba1974;
+        pub const NSFS_MAGIC: ::c_long = 0x6e736673;
     } else if #[cfg(target_arch = "s390x")] {
         pub const ADFS_SUPER_MAGIC: ::c_uint = 0x0000adf5;
         pub const AFFS_SUPER_MAGIC: ::c_uint = 0x0000adff;
@@ -1487,6 +1488,7 @@ cfg_if! {
         pub const UDF_SUPER_MAGIC: ::c_uint = 0x15013346;
         pub const USBDEVICE_SUPER_MAGIC: ::c_uint = 0x00009fa2;
         pub const XENFS_SUPER_MAGIC: ::c_uint = 0xabba1974;
+        pub const NSFS_MAGIC: ::c_uint = 0x6e736673;
     }
 }
 
