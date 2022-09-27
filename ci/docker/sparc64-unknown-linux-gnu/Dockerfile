@@ -1,4 +1,5 @@
-FROM ubuntu:22.04
+# FIXME: Update to 22.04 once Debian image of sparc64 has a newer glibc.
+FROM ubuntu:20.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
