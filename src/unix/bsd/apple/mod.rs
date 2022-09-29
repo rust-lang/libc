@@ -119,7 +119,7 @@ pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
 
 pub type pthread_introspection_hook_t =
     extern "C" fn(event: ::c_uint, thread: ::pthread_t, addr: *mut ::c_void, size: ::size_t);
-pub type pthread_jit_write_callback_t = Option<extern "C" fn(ctx: *mut ::c_void) -> ::c_int>;
+pub type pthread_jit_write_callback_t = ::Option<extern "C" fn(ctx: *mut ::c_void) -> ::c_int>;
 
 pub type vm_statistics_t = *mut vm_statistics;
 pub type vm_statistics_data_t = vm_statistics;
