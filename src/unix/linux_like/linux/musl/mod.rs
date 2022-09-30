@@ -784,6 +784,35 @@ extern "C" {
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
+pub use tmpfile as tmpfile64;
+pub use fallocate as fallocate64;
+pub use fgetpos as fgetpos64;
+pub use fopen as fopen64;
+pub use freopen as freopen64;
+pub use fseeko as fseeko64;
+pub use fsetpos as fsetpos64;
+pub use ftello as ftello64;
+pub use posix_fallocate as posix_fallocate64;
+pub use sendfile as sendfile64;
+pub use statfs as statfs64;
+pub use fstatfs as fstatfs64;
+pub use statvfs as statvfs64;
+pub use fstatvfs as fstatvfs64;
+pub use creat as creat64;
+pub use fstat as fstat64;
+pub use fstatat as fstatat64;
+pub use ftruncate as ftruncate64;
+pub use lseek as lseek64;
+pub use lstat as lstat64;
+pub use open as open64;
+pub use openat as openat64;
+pub use pread as pread64;
+pub use pwrite as pwrite64;
+pub use readdir as readdir64;
+pub use readdir_r as readdir64_r;
+pub use stat as stat64;
+pub use truncate as truncate64;
+
 cfg_if! {
     if #[cfg(any(target_arch = "x86_64",
                  target_arch = "aarch64",
