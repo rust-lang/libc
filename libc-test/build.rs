@@ -3319,8 +3319,11 @@ fn test_linux(target: &str) {
 
             t if t.ends_with("_t") => t.to_string(),
 
-            // In MUSL `flock64` is a typedef to `flock`.
+            // In MUSL `xxx64` is a typedef to `xxx`.
             "flock64" if musl => format!("struct {}", ty),
+            "dirent64" if musl => format!("struct {}", ty),
+            "rlimit64" if musl => format!("struct {}", ty),
+            "fpos64_t" if musl => format!("struct {}", ty),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),

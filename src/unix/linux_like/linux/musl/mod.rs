@@ -22,8 +22,6 @@ pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
 
-pub type flock64 = flock;
-
 cfg_if! {
     if #[cfg(doc)] {
         // Used in `linux::arch` to define ioctl constants.
@@ -719,8 +717,6 @@ extern "C" {
         timeout: *mut ::timespec,
     ) -> ::c_int;
 
-    pub fn getrlimit64(resource: ::c_int, rlim: *mut ::rlimit64) -> ::c_int;
-    pub fn setrlimit64(resource: ::c_int, rlim: *const ::rlimit64) -> ::c_int;
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
     pub fn prlimit(
@@ -729,13 +725,6 @@ extern "C" {
         new_limit: *const ::rlimit,
         old_limit: *mut ::rlimit,
     ) -> ::c_int;
-    pub fn prlimit64(
-        pid: ::pid_t,
-        resource: ::c_int,
-        new_limit: *const ::rlimit64,
-        old_limit: *mut ::rlimit64,
-    ) -> ::c_int;
-
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
@@ -784,33 +773,71 @@ extern "C" {
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
-pub use tmpfile as tmpfile64;
+// Musl's standard entrypoints are already LFS64 compatible, historically the library aliased
+// these together in header files (as `#define`s) _and_ in the library with weak symbol aliases.
+//
+// Since <version> these aliases were removed from the library (both in the API and the ABI) so we
+// alias them here to keep the crate API stable.
+#[allow(dead_code)]
+fn check_type_aliases(
+    dirent: ::dirent,
+    ino: ::ino_t,
+    flock: ::flock,
+    off: ::off_t,
+    pos: ::fpos_t,
+    rlimit: ::rlimit,
+    stat: ::stat,
+    statfs: ::statfs,
+    statvfs: ::statvfs,
+) {
+    let _dirent: ::dirent64 = dirent;
+    let _ino: ::ino64_t = ino;
+    let _flock: ::flock64 = flock;
+    let _off: ::off64_t = off;
+    let _pos: ::fpos64_t = pos;
+    let _rlimit: ::rlimit64 = rlimit;
+    let _stat: ::stat64 = stat;
+    let _statfs: ::statfs64 = statfs;
+    let _statvfs: ::statvfs64 = statvfs;
+}
+pub type dirent64 = ::dirent;
+pub type fpos64_t = ::fpos_t;
+pub type rlimit64 = ::rlimit;
+pub type flock64 = ::flock;
+pub use creat as creat64;
 pub use fallocate as fallocate64;
 pub use fgetpos as fgetpos64;
 pub use fopen as fopen64;
 pub use freopen as freopen64;
 pub use fseeko as fseeko64;
 pub use fsetpos as fsetpos64;
-pub use ftello as ftello64;
-pub use posix_fallocate as posix_fallocate64;
-pub use sendfile as sendfile64;
-pub use statfs as statfs64;
-pub use fstatfs as fstatfs64;
-pub use statvfs as statvfs64;
-pub use fstatvfs as fstatvfs64;
-pub use creat as creat64;
 pub use fstat as fstat64;
 pub use fstatat as fstatat64;
+pub use fstatfs as fstatfs64;
+pub use fstatvfs as fstatvfs64;
+pub use ftello as ftello64;
 pub use ftruncate as ftruncate64;
+pub use getrlimit as getrlimit64;
 pub use lseek as lseek64;
 pub use lstat as lstat64;
+pub use mmap as mmap64;
 pub use open as open64;
 pub use openat as openat64;
+pub use posix_fadvise as posix_fadvise64;
+pub use posix_fallocate as posix_fallocate64;
 pub use pread as pread64;
+pub use preadv as preadv64;
+pub use prlimit as prlimit64;
 pub use pwrite as pwrite64;
+pub use pwritev as pwritev64;
 pub use readdir as readdir64;
 pub use readdir_r as readdir64_r;
+pub use sendfile as sendfile64;
+pub use setrlimit as setrlimit64;
 pub use stat as stat64;
+pub use statfs as statfs64;
+pub use statvfs as statvfs64;
+pub use tmpfile as tmpfile64;
 pub use truncate as truncate64;
 
 cfg_if! {
