@@ -3016,24 +3016,14 @@ extern "C" {
     ) -> ::c_int;
     #[cfg_attr(
         any(target_os = "solaris", target_os = "illumos"),
-        link_name = "__posix_getpwent_r"
+        link_name = "getpwent_r"
     )]
-    pub fn getpwent_r(
-        pwd: *mut passwd,
-        buf: *mut ::c_char,
-        buflen: ::size_t,
-        result: *mut *mut passwd,
-    ) -> ::c_int;
+    fn native_getpwent_r(pwd: *mut passwd, buf: *mut ::c_char, buflen: ::c_int) -> *mut passwd;
     #[cfg_attr(
         any(target_os = "solaris", target_os = "illumos"),
-        link_name = "__posix_getgrent_r"
+        link_name = "getgrent_r"
     )]
-    pub fn getgrent_r(
-        grp: *mut ::group,
-        buf: *mut ::c_char,
-        buflen: ::size_t,
-        result: *mut *mut ::group,
-    ) -> ::c_int;
+    fn native_getgrent_r(grp: *mut ::group, buf: *mut ::c_char, buflen: ::c_int) -> *mut ::group;
     #[cfg_attr(
         any(target_os = "solaris", target_os = "illumos"),
         link_name = "__posix_sigwait"
