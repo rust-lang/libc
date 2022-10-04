@@ -6,8 +6,13 @@ on:
       - auto-libc
       - try
 
+permissions: {}
 jobs:
   docker_linux_tier1:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Docker Linux Tier1
     runs-on: ubuntu-22.04
     strategy:
@@ -28,6 +33,10 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
   macos:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: macOS
     runs-on: macos-12
     strategy:
@@ -47,6 +56,10 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Windows
     runs-on: windows-2022
     env:
@@ -83,6 +96,10 @@ jobs:
         shell: bash
 
   style_check:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Style check
     runs-on: ubuntu-22.04
     steps:
@@ -96,6 +113,10 @@ jobs:
         run: sh ci/style.sh
 
   docker_linux_tier2:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Docker Linux Tier2
     needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-22.04
@@ -154,6 +175,10 @@ jobs:
   # These targets are tier 3 or otherwise need to have CI build std via -Zbuild-std.
   # Because of this, only the nightly compiler can be used on these targets.
   docker_linux_build_std:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     if: ${{ false }} # This is currently broken
     name: Docker Linux Build-Std Targets
     needs: [docker_linux_tier1, style_check]
@@ -177,6 +202,10 @@ jobs:
 
   # devkitpro's pacman needs to be connected from Docker.
   docker_switch:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Docker Switch
     needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-22.04
@@ -191,6 +220,10 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh switch
 
   build_channels_linux:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Build Channels Linux
     needs: docker_linux_tier2
     runs-on: ubuntu-22.04
@@ -221,6 +254,9 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_macos:
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+
     name: Build Channels macOS
     needs: macos
     runs-on: macos-12
@@ -251,6 +287,9 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_windows:
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+
     name: Build Channels Windows
     runs-on: windows-2022
     env:
@@ -301,6 +340,10 @@ jobs:
         run: sh ci/semver.sh macos
 
   docs:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Generate documentation
     runs-on: ubuntu-22.04
     needs: docker_linux_tier2
