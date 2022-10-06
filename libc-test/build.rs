@@ -231,6 +231,7 @@ fn test_apple(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "os/lock.h",
         "poll.h",
         "pthread.h",
         "pthread_spis.h",
@@ -2441,6 +2442,8 @@ fn test_emscripten(target: &str) {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "fd_set" | "Dl_info" | "DIR" => ty.to_string(),
+
+            "os_unfair_lock" => "struct os_unfair_lock_s".to_string(),
 
             t if is_union => format!("union {}", t),
 
