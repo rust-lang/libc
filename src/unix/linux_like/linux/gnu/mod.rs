@@ -1310,6 +1310,20 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
+    pub fn fgetpwent_r(
+        stream: *mut ::FILE,
+        pwd: *mut ::passwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut ::passwd,
+    ) -> ::c_int;
+    pub fn fgetgrent_r(
+        stream: *mut ::FILE,
+        grp: *mut ::group,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut ::group,
+    ) -> ::c_int;
 
     pub fn sethostid(hostid: ::c_long) -> ::c_int;
 
