@@ -647,3 +647,5 @@ timex
 utmpname
 utmpx
 utmpxname
+euidaccess
+eaccess

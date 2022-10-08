@@ -48,3 +48,5 @@ process_vm_writev
 pwritev64
 reallocarray
 timex
+euidaccess
+eaccess

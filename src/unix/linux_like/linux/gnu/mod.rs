@@ -1315,6 +1315,9 @@ extern "C" {
 
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
+
+    pub fn euidaccess(pathname: *const ::c_char, mode: ::c_int) -> ::c_int;
+    pub fn eaccess(pathname: *const ::c_char, mode: ::c_int) -> ::c_int;
 }
 
 extern "C" {
