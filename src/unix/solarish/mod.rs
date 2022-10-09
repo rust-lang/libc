@@ -3145,6 +3145,8 @@ extern "C" {
     pub fn setpflags(flags: ::c_uint, value: ::c_uint) -> ::c_int;
 
     pub fn sysinfo(command: ::c_int, buf: *mut ::c_char, count: ::c_long) -> ::c_int;
+
+    pub fn faccessat(fd: ::c_int, path: *const ::c_char, amode: ::c_int, flag: ::c_int) -> ::c_int;
 }
 
 #[link(name = "sendfile")]
