@@ -3312,6 +3312,9 @@ fn test_linux(target: &str) {
             | "IFLA_ALT_IFNAME"
             | "IFLA_PERM_ADDRESS"
             | "IFLA_PROTO_DOWN_REASON"
+            | "STATX_ATTR_MOUNT_ROOT"
+            | "STATX_ATTR_VERITY"
+            | "STATX_ATTR_DAX"
             if sparc64 => true,
             // Added in Linux 5.13
             "PTRACE_GET_RSEQ_CONFIGURATION" if sparc64 => true,

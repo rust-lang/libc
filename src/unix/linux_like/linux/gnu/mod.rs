@@ -1026,6 +1026,9 @@ pub const STATX_ATTR_APPEND: ::c_int = 0x0020;
 pub const STATX_ATTR_NODUMP: ::c_int = 0x0040;
 pub const STATX_ATTR_ENCRYPTED: ::c_int = 0x0800;
 pub const STATX_ATTR_AUTOMOUNT: ::c_int = 0x1000;
+pub const STATX_ATTR_MOUNT_ROOT: ::c_int = 0x2000;
+pub const STATX_ATTR_VERITY: ::c_int = 0x00100000;
+pub const STATX_ATTR_DAX: ::c_int = 0x00200000;
 
 pub const SOMAXCONN: ::c_int = 4096;
 
