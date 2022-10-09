@@ -589,9 +589,11 @@ futimes
 getauxval
 getentropy
 getgrent_r
+fgetgrent_r
 getloadavg
 getpt
 getpwent_r
+fgetpwent_r
 getpwnam_r
 getspent_r
 getutxent
