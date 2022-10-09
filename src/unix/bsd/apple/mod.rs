@@ -124,6 +124,11 @@ pub type pthread_jit_write_callback_t = ::Option<extern "C" fn(ctx: *mut ::c_voi
 pub type os_unfair_lock = os_unfair_lock_s;
 pub type os_unfair_lock_t = *mut os_unfair_lock;
 
+pub type os_log_t = *mut ::c_void;
+pub type os_log_type_t = u8;
+pub type os_signpost_id_t = u64;
+pub type os_signpost_type_t = u8;
+
 pub type vm_statistics_t = *mut vm_statistics;
 pub type vm_statistics_data_t = vm_statistics;
 pub type vm_statistics64_t = *mut vm_statistics64;
@@ -3895,6 +3900,16 @@ pub const OS_UNFAIR_LOCK_INIT: os_unfair_lock = os_unfair_lock {
     _os_unfair_lock_opaque: 0,
 };
 
+pub const OS_LOG_TYPE_DEFAULT: ::os_log_type_t = 0x00;
+pub const OS_LOG_TYPE_INFO: ::os_log_type_t = 0x01;
+pub const OS_LOG_TYPE_DEBUG: ::os_log_type_t = 0x02;
+pub const OS_LOG_TYPE_ERROR: ::os_log_type_t = 0x10;
+pub const OS_LOG_TYPE_FAULT: ::os_log_type_t = 0x11;
+
+pub const OS_SIGNPOST_EVENT: ::os_signpost_type_t = 0x00;
+pub const OS_SIGNPOST_INTERVAL_BEGIN: ::os_signpost_type_t = 0x01;
+pub const OS_SIGNPOST_INTERVAL_END: ::os_signpost_type_t = 0x02;
+
 pub const MINSIGSTKSZ: ::size_t = 32768;
 pub const SIGSTKSZ: ::size_t = 131072;
 
@@ -5258,6 +5273,15 @@ extern "C" {
     pub fn os_unfair_lock_unlock(lock: os_unfair_lock_t);
     pub fn os_unfair_lock_assert_owner(lock: os_unfair_lock_t);
     pub fn os_unfair_lock_assert_not_owner(lock: os_unfair_lock_t);
+
+    pub fn os_log_create(subsystem: *const ::c_char, category: *const ::c_char) -> ::os_log_t;
+    pub fn os_log_type_enabled(oslog: ::os_log_t, tpe: ::os_log_type_t) -> bool;
+    pub fn os_signpost_id_make_with_pointer(
+        log: ::os_log_t,
+        ptr: *const ::c_void,
+    ) -> ::os_signpost_id_t;
+    pub fn os_signpost_id_generate(log: ::os_log_t) -> ::os_signpost_id_t;
+    pub fn os_signpost_enabled(log: ::os_log_t) -> bool;
 
     pub fn thread_policy_set(
         thread: thread_t,

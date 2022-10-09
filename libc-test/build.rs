@@ -232,6 +232,7 @@ fn test_apple(target: &str) {
         "netinet/tcp.h",
         "netinet/udp.h",
         "os/lock.h",
+        "os/signpost.h",
         "poll.h",
         "pthread.h",
         "pthread_spis.h",
