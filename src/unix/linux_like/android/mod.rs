@@ -2709,6 +2709,17 @@ pub const RTMSG_DELDEVICE: u32 = 0x12;
 pub const RTMSG_NEWROUTE: u32 = 0x21;
 pub const RTMSG_DELROUTE: u32 = 0x22;
 
+// Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
+// following are only available on newer Linux versions than the versions
+// currently used in CI in some configurations, so we define them here.
+cfg_if! {
+    if #[cfg(not(target_arch = "s390x"))] {
+        pub const XFS_SUPER_MAGIC: ::c_long = 0x58465342;
+    } else if #[cfg(target_arch = "s390x")] {
+        pub const XFS_SUPER_MAGIC: ::c_uint = 0x58465342;
+    }
+}
+
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr,
                        cmsg: *const cmsghdr) -> *mut cmsghdr {
