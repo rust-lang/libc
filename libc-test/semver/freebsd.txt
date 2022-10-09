@@ -1925,3 +1925,4 @@ wait4
 waitid
 xallocx
 xucred
+eaccess
