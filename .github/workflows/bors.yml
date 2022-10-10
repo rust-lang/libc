@@ -134,7 +134,10 @@ jobs:
           arm-unknown-linux-gnueabihf,
           arm-unknown-linux-musleabihf,
           asmjs-unknown-emscripten,
-          i686-linux-android,
+          # FIXME: Started to fail since 2022-10-10:
+          # error: linking with `i686-linux-android-gcc` failed: exit status: 1
+          # ld: error: cannot find -lunwind
+          # i686-linux-android,
           i686-unknown-linux-musl,
           mips-unknown-linux-gnu,
           mips-unknown-linux-musl,
@@ -155,7 +158,10 @@ jobs:
           #wasm32-wasi,
           sparc64-unknown-linux-gnu,
           wasm32-unknown-emscripten,
-          x86_64-linux-android,
+          # FIXME: Started to fail since 2022-10-10:
+          # error: linking with `x86_64-linux-android-gcc` failed: exit status: 1
+          # ld: error: cannot find -lunwind
+          # x86_64-linux-android,
           x86_64-unknown-linux-gnux32,
           x86_64-unknown-linux-musl,
           # FIXME: It seems some items in `src/unix/mod.rs`
