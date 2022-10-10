@@ -1731,6 +1731,8 @@ extern "C" {
     pub fn eui64_ntoa(id: *const eui64, a: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn eui64_ntohost(hostname: *mut ::c_char, len: ::size_t, id: *const eui64) -> ::c_int;
     pub fn eui64_hostton(hostname: *const ::c_char, id: *mut eui64) -> ::c_int;
+
+    pub fn eaccess(path: *const ::c_char, mode: ::c_int) -> ::c_int;
 }
 
 #[link(name = "rt")]

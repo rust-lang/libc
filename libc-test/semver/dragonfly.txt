@@ -1536,3 +1536,4 @@ vmspace
 wait4
 waitid
 xucred
+eaccess
