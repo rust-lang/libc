@@ -130,7 +130,8 @@ jobs:
           # aarch64-linux-android,
           aarch64-unknown-linux-gnu,
           aarch64-unknown-linux-musl,
-          arm-linux-androideabi,
+          # FIXME: The emulator gets stuck.
+          # arm-linux-androideabi,
           arm-unknown-linux-gnueabihf,
           arm-unknown-linux-musleabihf,
           asmjs-unknown-emscripten,
