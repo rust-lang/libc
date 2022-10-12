@@ -356,6 +356,7 @@ cfg_if! {
         extern {}
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
+                        target_os = "tvos",
                         target_os = "watchos",
                         target_os = "android",
                         target_os = "openbsd"))] {
@@ -1030,7 +1031,12 @@ extern "C" {
     pub fn getrusage(resource: ::c_int, usage: *mut rusage) -> ::c_int;
 
     #[cfg_attr(
-        any(target_os = "macos", target_os = "ios", target_os = "watchos"),
+        any(
+            target_os = "macos",
+            target_os = "ios",
+            target_os = "tvos",
+            target_os = "watchos"
+        ),
         link_name = "realpath$DARWIN_EXTSN"
     )]
     pub fn realpath(pathname: *const ::c_char, resolved: *mut ::c_char) -> *mut ::c_char;
@@ -1197,7 +1203,12 @@ extern "C" {
         link_name = "__res_init"
     )]
     #[cfg_attr(
-        any(target_os = "macos", target_os = "ios", target_os = "watchos"),
+        any(
+            target_os = "macos",
+            target_os = "ios",
+            target_os = "tvos",
+            target_os = "watchos"
+        ),
         link_name = "res_9_init"
     )]
     pub fn res_init() -> ::c_int;
@@ -1483,6 +1494,7 @@ cfg_if! {
         pub use self::linux_like::*;
     } else if #[cfg(any(target_os = "macos",
                         target_os = "ios",
+                        target_os = "tvos",
                         target_os = "watchos",
                         target_os = "freebsd",
                         target_os = "dragonfly",
