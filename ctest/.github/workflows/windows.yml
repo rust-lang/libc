@@ -14,17 +14,17 @@ jobs:
         version:
           - nightly
         target:
-          - x86_64-pc-windows-gnu
+          #- x86_64-pc-windows-gnu
           - x86_64-pc-windows-msvc
-          - i686-pc-windows-gnu
+          #- i686-pc-windows-gnu
           - i686-pc-windows-msvc
         include:
-          - target: x86_64-pc-windows-gnu
-            arch: x86_64
+          #- target: x86_64-pc-windows-gnu
+          #  arch: x86_64
           - target: x86_64-pc-windows-msvc
             arch: x86_64
-          - target: i686-pc-windows-gnu
-            arch: i686
+          #- target: i686-pc-windows-gnu
+          #  arch: i686
           - target: i686-pc-windows-msvc
             arch: i686
 
