@@ -372,7 +372,7 @@ impl TestGenerator {
     /// Configures how a Rust type name is translated to a C type name.
     ///
     /// The closure is given a Rust type name as well as a boolean indicating
-    /// wehther it's a struct or not.
+    /// whether it's a struct or not.
     ///
     /// The default behavior is that `struct foo` in Rust is translated to
     /// `struct foo` in C, and `type foo` in Rust is translated to `foo` in C.
@@ -640,7 +640,7 @@ impl TestGenerator {
     ///
     /// By default generated tests will ensure that the function pointer in C
     /// corresponds to the same function pointer in Rust. This can often
-    /// unconver subtle symbol naming issues where a header file is referenced
+    /// uncover subtle symbol naming issues where a header file is referenced
     /// through the C identifier `foo` but the underlying symbol is mapped to
     /// something like `__foo_compat`.
     pub fn skip_fn_ptrcheck<F>(&mut self, f: F) -> &mut Self
@@ -1994,7 +1994,7 @@ impl<'a> Generator<'a> {
                   }}
                   for i in 0..size_of::<U>() {{
                       if pad[i] == 1 {{ continue; }}
-                      // eprintln!("Rusta testing byte {{}} of {{}} of {ty}", i, size_of::<U>());
+                      // eprintln!("Rust testing byte {{}} of {{}} of {ty}", i, size_of::<U>());
                       let rust = (*y_ptr.add(i)) as usize;
                       let c = (&r as *const _ as *const u8)
                                  .add(i).read_volatile() as usize;
@@ -2342,7 +2342,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 for arg in &decl.inputs {
                     if let ast::TyKind::Array(_, _) = arg.ty.node {
                         panic!(
-                            "Foreing Function decl `{}` uses array in C FFI",
+                            "Foreign Function decl `{}` uses array in C FFI",
                             &i.ident.to_string()
                         );
                     }
