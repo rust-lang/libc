@@ -50,3 +50,6 @@ reallocarray
 timex
 euidaccess
 eaccess
+asctime_r
+strftime
+strptime

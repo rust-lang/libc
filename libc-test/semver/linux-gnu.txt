@@ -654,3 +654,7 @@ utmpx
 utmpxname
 euidaccess
 eaccess
+asctime_r
+ctime_r
+strftime
+strptime
