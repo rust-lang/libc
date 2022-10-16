@@ -19,7 +19,7 @@ WORKDIR /android/
 COPY android* /android/
 
 ENV ANDROID_ARCH=i686
-ENV PATH=$PATH:/android/ndk-$ANDROID_ARCH/bin:/android/sdk/cmdline-tools/tools:/android/sdk/platform-tools
+ENV PATH=$PATH:/android/ndk-$ANDROID_ARCH/toolchains/llvm/prebuilt/linux-x86_64/bin:/android/sdk/cmdline-tools/tools:/android/sdk/platform-tools
 
 RUN sh /android/android-install-ndk.sh $ANDROID_ARCH
 RUN sh /android/android-install-sdk.sh $ANDROID_ARCH
