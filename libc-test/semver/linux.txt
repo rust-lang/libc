@@ -2971,6 +2971,8 @@ idtype_t
 if_freenameindex
 if_nameindex
 ifaddrs
+ifreq
+in6_ifreq
 in6_pktinfo
 in6_rtmsg
 in_pktinfo

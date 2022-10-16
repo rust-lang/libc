@@ -2887,6 +2887,7 @@ fn test_linux(target: &str) {
         "linux/if_ether.h",
         "linux/if_tun.h",
         "linux/input.h",
+        "linux/ipv6.h",
         "linux/keyctl.h",
         "linux/magic.h",
         "linux/memfd.h",
@@ -3479,7 +3480,9 @@ fn test_linux(target: &str) {
         (struct_ == "user_fpsimd_struct" && field == "vregs") ||
         // Linux >= 5.11 tweaked the `svm_zero` field of the `sockaddr_vm` struct.
         // https://github.com/torvalds/linux/commit/dc8eeef73b63ed8988224ba6b5ed19a615163a7f
-        (struct_ == "sockaddr_vm" && field == "svm_zero")
+        (struct_ == "sockaddr_vm" && field == "svm_zero") ||
+        // the `ifr_ifru` field is an anonymous union
+        (struct_ == "ifreq" && field == "ifr_ifru")
     });
 
     cfg.skip_roundtrip(move |s| match s {

@@ -603,6 +603,21 @@ s! {
         pub src_length: ::__u64,
         pub dest_offset: ::__u64,
     }
+
+    pub struct __c_anonymous_ifru_map {
+        pub mem_start: ::c_ulong,
+        pub mem_end: ::c_ulong,
+        pub base_addr: ::c_ushort,
+        pub irq: ::c_uchar,
+        pub dma: ::c_uchar,
+        pub port: ::c_uchar,
+    }
+
+   pub struct in6_ifreq {
+       pub ifr6_addr: ::in6_addr,
+       pub ifr6_prefixlen: u32,
+       pub ifr6_ifindex: ::c_int,
+   }
 }
 
 s_no_extra_traits! {
@@ -689,6 +704,32 @@ s_no_extra_traits! {
         pub mq_curmsgs: ::c_long,
         #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
         pad: [::c_long; 4],
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_ifr_ifru {
+        pub ifru_addr: ::sockaddr,
+        pub ifru_dstaddr: ::sockaddr,
+        pub ifru_broadaddr: ::sockaddr,
+        pub ifru_netmask: ::sockaddr,
+        pub ifru_hwaddr: ::sockaddr,
+        pub ifru_flags: ::c_short,
+        pub ifru_ifindex: ::c_int,
+        pub ifru_metric: ::c_int,
+        pub ifru_mtu: ::c_int,
+        pub ifru_map: __c_anonymous_ifru_map,
+        pub ifru_slave: [::c_char; ::IFNAMSIZ],
+        pub ifru_newname: [::c_char; ::IFNAMSIZ],
+        pub ifru_data: *mut ::c_char,
+    }
+
+    pub struct ifreq {
+        /// interface name, e.g. "en0"
+        pub ifr_name: [::c_char; ::IFNAMSIZ],
+        #[cfg(libc_union)]
+        pub ifr_ifru: __c_anonymous_ifr_ifru,
+        #[cfg(not(libc_union))]
+        pub ifr_ifru: ::sockaddr,
     }
 }
 
@@ -1061,6 +1102,34 @@ cfg_if! {
                 self.mq_maxmsg.hash(state);
                 self.mq_msgsize.hash(state);
                 self.mq_curmsgs.hash(state);
+            }
+        }
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_ifr_ifru {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifr_ifru")
+                    .field("ifru_addr", unsafe { &self.ifru_addr })
+                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
+                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
+                    .field("ifru_netmask", unsafe { &self.ifru_netmask })
+                    .field("ifru_hwaddr", unsafe { &self.ifru_hwaddr })
+                    .field("ifru_flags", unsafe { &self.ifru_flags })
+                    .field("ifru_ifindex", unsafe { &self.ifru_ifindex })
+                    .field("ifru_metric", unsafe { &self.ifru_metric })
+                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
+                    .field("ifru_map", unsafe { &self.ifru_map })
+                    .field("ifru_slave", unsafe { &self.ifru_slave })
+                    .field("ifru_newname", unsafe { &self.ifru_newname })
+                    .field("ifru_data", unsafe { &self.ifru_data })
+                    .finish()
+            }
+        }
+        impl ::fmt::Debug for ifreq {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifreq")
+                    .field("ifr_name", &self.ifr_name)
+                    .field("ifr_ifru", &self.ifr_ifru)
+                    .finish()
             }
         }
     }
