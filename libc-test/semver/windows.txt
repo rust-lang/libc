@@ -261,6 +261,8 @@ popen
 printf
 ptrdiff_t
 putchar
+putenv
+putenv_s
 puts
 raise
 rand
@@ -340,6 +342,8 @@ wexecve
 wexecvp
 wexecvpe
 wopen
+wputenv
+wputenv_s
 write
 wrmdir
 wsetlocale
