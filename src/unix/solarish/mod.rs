@@ -3147,18 +3147,7 @@ extern "C" {
     pub fn sysinfo(command: ::c_int, buf: *mut ::c_char, count: ::c_long) -> ::c_int;
 
     pub fn faccessat(fd: ::c_int, path: *const ::c_char, amode: ::c_int, flag: ::c_int) -> ::c_int;
-}
 
-#[link(name = "sendfile")]
-extern "C" {
-    pub fn sendfile(out_fd: ::c_int, in_fd: ::c_int, off: *mut ::off_t, len: ::size_t)
-        -> ::ssize_t;
-    pub fn sendfilev(
-        fildes: ::c_int,
-        vec: *const sendfilevec_t,
-        sfvcnt: ::c_int,
-        xferred: *mut ::size_t,
-    ) -> ::ssize_t;
     // #include <link.h>
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     pub fn dl_iterate_phdr(
@@ -3203,6 +3192,18 @@ extern "C" {
     pub fn backtrace(buffer: *mut *mut ::c_void, size: ::c_int) -> ::c_int;
     pub fn backtrace_symbols(buffer: *const *mut ::c_void, size: ::c_int) -> *mut *mut ::c_char;
     pub fn backtrace_symbols_fd(buffer: *const *mut ::c_void, size: ::c_int, fd: ::c_int);
+}
+
+#[link(name = "sendfile")]
+extern "C" {
+    pub fn sendfile(out_fd: ::c_int, in_fd: ::c_int, off: *mut ::off_t, len: ::size_t)
+        -> ::ssize_t;
+    pub fn sendfilev(
+        fildes: ::c_int,
+        vec: *const sendfilevec_t,
+        sfvcnt: ::c_int,
+        xferred: *mut ::size_t,
+    ) -> ::ssize_t;
 }
 
 #[link(name = "lgrp")]
