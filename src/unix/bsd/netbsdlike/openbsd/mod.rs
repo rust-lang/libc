@@ -1643,6 +1643,18 @@ pub const MNT_WAIT: ::c_int = 1;
 pub const MNT_NOWAIT: ::c_int = 2;
 pub const MNT_LAZY: ::c_int = 3;
 
+pub const LC_COLLATE_MASK: ::c_int = 1 << ::LC_COLLATE;
+pub const LC_CTYPE_MASK: ::c_int = 1 << ::LC_CTYPE;
+pub const LC_MONETARY_MASK: ::c_int = 1 << ::LC_MONETARY;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << ::LC_NUMERIC;
+pub const LC_TIME_MASK: ::c_int = 1 << ::LC_TIME;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << ::LC_MESSAGES;
+
+const _LC_LAST: ::c_int = 7;
+pub const LC_ALL_MASK: ::c_int = (1 << _LC_LAST) - 2;
+
+pub const LC_GLOBAL_LOCALE: ::locale_t = -1isize as ::locale_t;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
