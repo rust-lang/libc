@@ -375,6 +375,7 @@ pub const EPROTONOSUPPORT: ::c_int = 93; /* Protocol not supported */
 pub const ESOCKTNOSUPPORT: ::c_int = 94; /* Socket type not supported */
 /* Operation not supported on transport endpoint */
 pub const EOPNOTSUPP: ::c_int = 95;
+pub const ENOTSUP: ::c_int = EOPNOTSUPP;
 pub const EPFNOSUPPORT: ::c_int = 96; /* Protocol family not supported */
 /* Address family not supported by protocol */
 pub const EAFNOSUPPORT: ::c_int = 97;
@@ -615,6 +616,7 @@ pub const EXIT_FAILURE: ::c_int = 1;
 
 // sys/ioctl.h
 // FIXME: relibc {
+pub const FIONREAD: ::c_ulong = 0x541B;
 pub const FIONBIO: ::c_ulong = 0x5421;
 pub const FIOCLEX: ::c_ulong = 0x5451;
 // }
@@ -661,6 +663,7 @@ pub const MSG_EOR: ::c_int = 128;
 pub const MSG_OOB: ::c_int = 1;
 pub const MSG_PEEK: ::c_int = 2;
 pub const MSG_TRUNC: ::c_int = 32;
+pub const MSG_DONTWAIT: ::c_int = 64;
 pub const MSG_WAITALL: ::c_int = 256;
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -1028,6 +1031,7 @@ extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
 
     // sys/mman.h
+    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
     pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
