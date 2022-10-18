@@ -11,7 +11,7 @@ RUN apt-get install -y --no-install-recommends \
   python3-distutils \
   unzip \
   expect \
-  openjdk-8-jre \
+  openjdk-18-jre \
   libstdc++6:i386 \
   libpulse0
 
