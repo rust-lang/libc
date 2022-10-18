@@ -22,7 +22,7 @@ fn main() {
         .arg(&test)
         .arg(&dst)
         .status()
-        .expect("failed to run: adb pushr");
+        .expect("failed to run: adb push");
     assert!(status.success());
 
     let output = Command::new("adb")

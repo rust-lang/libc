@@ -8,7 +8,7 @@ toolchain=
 if [ -n "$TOOLCHAIN" ]; then
   toolchain=$TOOLCHAIN
 else
-  toolchain=nightly-2022-10-09
+  toolchain=nightly
 fi
 if [ "$OS" = "windows" ]; then
   : "${TARGET?The TARGET environment variable must be set.}"
