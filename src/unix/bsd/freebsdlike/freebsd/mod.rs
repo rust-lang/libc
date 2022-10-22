@@ -2280,7 +2280,6 @@ pub const MNT_MULTILABEL: ::c_int = 0x04000000;
 pub const MNT_NFS4ACLS: ::c_int = 0x00000010;
 pub const MNT_SNAPSHOT: ::c_int = 0x01000000;
 pub const MNT_UNION: ::c_int = 0x00000020;
-pub const MNT_EXPUBLIC: ::c_int = 0x20000000;
 pub const MNT_NONBUSY: ::c_int = 0x04000000;
 
 pub const SCM_CREDS2: ::c_int = 0x08;
