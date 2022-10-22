@@ -424,7 +424,6 @@ pub const MNT_NODEV: ::c_int = 0x00000010;
 pub const MNT_LOCAL: ::c_int = 0x00001000;
 pub const MNT_QUOTA: ::c_int = 0x00002000;
 
-
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_LOCAL: ::c_int = 1;
 pub const AF_UNIX: ::c_int = AF_LOCAL;

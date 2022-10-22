@@ -1643,19 +1643,15 @@ pub const SF_APPEND: ::c_uint = 0x00040000;
 pub const MNT_NOPERM: ::c_int = 0x00000020;
 pub const MNT_WXALLOWED: ::c_int = 0x00000800;
 pub const MNT_EXRDONLY: ::c_int = 0x00000080;
-pub const MNT_EXPORTED: ::c_int = 0x00000100;
 pub const MNT_DEFEXPORTED: ::c_int = 0x00000200;
 pub const MNT_EXPORTANON: ::c_int = 0x00000400;
 pub const MNT_ROOTFS: ::c_int = 0x00004000;
 pub const MNT_NOATIME: ::c_int = 0x00008000;
-pub const MNT_UPDATE: ::c_int = 0x00010000;
 pub const MNT_DELEXPORT: ::c_int = 0x00020000;
-pub const MNT_RELOAD: ::c_int = 0x00040000;
-pub const MNT_FORCE: ::c_int = 0x00080000;
 pub const MNT_STALLED: ::c_int = 0x00100000;
 pub const MNT_SWAPPABLE: ::c_int = 0x00200000;
 pub const MNT_WANTRDWR: ::c_int = 0x02000000;
-pub const MNT_SOFTDEP: ::c_int =     0x04000000;
+pub const MNT_SOFTDEP: ::c_int = 0x04000000;
 pub const MNT_DOOMED: ::c_int = 0x08000000;
 
 // For use with vfs_fsync and getfsstat
