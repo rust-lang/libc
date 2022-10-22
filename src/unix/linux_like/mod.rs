@@ -759,23 +759,95 @@ pub const PF_IEEE802154: ::c_int = AF_IEEE802154;
 pub const PF_CAIF: ::c_int = AF_CAIF;
 pub const PF_ALG: ::c_int = AF_ALG;
 
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_OOB: ::c_int = 1;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_PEEK: ::c_int = 2;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_DONTROUTE: ::c_int = 4;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_CTRUNC: ::c_int = 8;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_TRUNC: ::c_int = 0x20;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_DONTWAIT: ::c_int = 0x40;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_EOR: ::c_int = 0x80;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_WAITALL: ::c_int = 0x100;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_FIN: ::c_int = 0x200;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_SYN: ::c_int = 0x400;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_CONFIRM: ::c_int = 0x800;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_RST: ::c_int = 0x1000;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_ERRQUEUE: ::c_int = 0x2000;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_NOSIGNAL: ::c_int = 0x4000;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_MORE: ::c_int = 0x8000;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_WAITFORONE: ::c_int = 0x10000;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_FASTOPEN: ::c_int = 0x20000000;
+#[deprecated(
+    since = "0.2.136",
+    note = "recvmmsg call expects an unsigned type on musl/emscripten"
+)]
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x40000000;
 
 pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
