@@ -1409,6 +1409,16 @@ pub const MSG_FBLOCKING: ::c_int = 0x00010000;
 pub const MSG_FNONBLOCKING: ::c_int = 0x00020000;
 pub const MSG_FMASK: ::c_int = 0xFFFF0000;
 
+// sys/mount.h
+pub const MNT_NODEV: ::c_int = 0x00000010;
+pub const MNT_AUTOMOUNTED: ::c_int = 0x00000020;
+pub const MNT_TRIM: ::c_int = 0x01000000;
+pub const MNT_LOCAL: ::c_int = 0x00001000;
+pub const MNT_QUOTA: ::c_int = 0x00002000;
+pub const MNT_ROOTFS: ::c_int = 0x00004000;
+pub const MNT_USER: ::c_int = 0x00008000;
+pub const MNT_IGNORE: ::c_int = 0x00800000;
+
 // utmpx entry types
 pub const EMPTY: ::c_short = 0;
 pub const RUN_LVL: ::c_short = 1;
