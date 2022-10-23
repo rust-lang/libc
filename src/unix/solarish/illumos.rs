@@ -56,8 +56,6 @@ pub const SOL_FILTER: ::c_int = 0xfffc;
 
 pub const MADV_PURGE: ::c_int = 9;
 
-pub const MR_HDR_AOUT: ::c_uint = 0x3;
-
 pub const B1000000: ::speed_t = 24;
 pub const B1152000: ::speed_t = 25;
 pub const B1500000: ::speed_t = 26;
