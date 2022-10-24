@@ -71,7 +71,7 @@ macro_rules! s {
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq, Default))]
             #[allow(deprecated)]
             $(#[$attr])*
             pub struct $i { $($field)* }
