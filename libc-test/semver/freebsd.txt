@@ -1926,3 +1926,5 @@ waitid
 xallocx
 xucred
 eaccess
+dirname
+basename

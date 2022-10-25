@@ -463,6 +463,9 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
+
+    pub fn dirname(path: *const ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *const ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {

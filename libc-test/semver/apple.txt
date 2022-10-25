@@ -2227,3 +2227,5 @@ wait4
 waitid
 xsw_usage
 xucred
+dirname
+basename

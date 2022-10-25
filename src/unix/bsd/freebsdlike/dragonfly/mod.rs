@@ -1663,6 +1663,9 @@ extern "C" {
 
     pub fn umtx_sleep(ptr: *const ::c_int, value: ::c_int, timeout: ::c_int) -> ::c_int;
     pub fn umtx_wakeup(ptr: *const ::c_int, count: ::c_int) -> ::c_int;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
 #[link(name = "rt")]

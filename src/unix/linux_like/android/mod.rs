@@ -3227,6 +3227,9 @@ extern "C" {
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 
     pub fn pthread_getcpuclockid(thread: ::pthread_t, clk_id: *mut ::clockid_t) -> ::c_int;
+
+    pub fn dirname(path: *const ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *const ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {

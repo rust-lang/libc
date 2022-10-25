@@ -743,6 +743,9 @@ extern "C" {
     pub fn gethostid() -> ::c_long;
     pub fn sethostid(hostid: ::c_long) -> ::c_int;
     pub fn ftok(path: *const ::c_char, id: ::c_int) -> ::key_t;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {
