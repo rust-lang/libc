@@ -1346,6 +1346,14 @@ extern "C" {
         tm: *const ::tm,
     ) -> ::size_t;
     pub fn strptime(s: *const ::c_char, format: *const ::c_char, tm: *mut ::tm) -> *mut ::c_char;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    /// POSIX version of `basename(3)`, defined in `libgen.h`.
+    #[link_name = "__xpg_basename"]
+    pub fn posix_basename(path: *mut ::c_char) -> *mut ::c_char;
+    /// GNU version of `basename(3)`, defined in `string.h`.
+    #[link_name = "basename"]
+    pub fn gnu_basename(path: *const ::c_char) -> *mut ::c_char;
 }
 
 extern "C" {

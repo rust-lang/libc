@@ -204,6 +204,7 @@ fn test_apple(target: &str) {
         "iconv.h",
         "ifaddrs.h",
         "langinfo.h",
+        "libgen.h",
         "libproc.h",
         "limits.h",
         "locale.h",
@@ -420,6 +421,7 @@ fn test_openbsd(target: &str) {
         "errno.h",
         "execinfo.h",
         "fcntl.h",
+        "libgen.h",
         "limits.h",
         "link.h",
         "locale.h",
@@ -995,6 +997,7 @@ fn test_netbsd(target: &str) {
         "elf.h",
         "errno.h",
         "fcntl.h",
+        "libgen.h",
         "limits.h",
         "link.h",
         "locale.h",
@@ -1209,6 +1212,7 @@ fn test_dragonflybsd(target: &str) {
         "ifaddrs.h",
         "kvm.h",
         "langinfo.h",
+        "libgen.h",
         "limits.h",
         "link.h",
         "locale.h",
@@ -1508,6 +1512,7 @@ fn test_android(target: &str) {
                "fcntl.h",
                "grp.h",
                "ifaddrs.h",
+               "libgen.h",
                "limits.h",
                "link.h",
                "locale.h",
@@ -1869,6 +1874,7 @@ fn test_freebsd(target: &str) {
                 "iconv.h",
                 "ifaddrs.h",
                 "langinfo.h",
+                "libgen.h",
                 "libutil.h",
                 "limits.h",
                 "link.h",
@@ -2774,6 +2780,7 @@ fn test_linux(target: &str) {
                "iconv.h",
                "ifaddrs.h",
                "langinfo.h",
+               "libgen.h",
                "limits.h",
                "link.h",
                "locale.h",
@@ -3412,6 +3419,22 @@ fn test_linux(target: &str) {
             // to the issues described here: https://github.com/rust-lang/libc/issues/2816
             // it can't be changed from struct.
             "pthread_sigqueue" => true,
+
+            // There are two versions of basename(3) on Linux with glibc, see
+            //
+            // https://man7.org/linux/man-pages/man3/basename.3.html
+            //
+            // If libgen.h is included, then the POSIX version will be available;
+            // If _GNU_SOURCE is defined and string.h is included, then the GNU one
+            // will be used.
+            //
+            // libc exposes both of them, providing a prefix to differentiate between
+            // them.
+            //
+            // Because the name with prefix is not a valid symbol in C, we have to
+            // skip the tests.
+            "posix_basename" if gnu => true,
+            "gnu_basename" if gnu => true,
 
             _ => false,
         }

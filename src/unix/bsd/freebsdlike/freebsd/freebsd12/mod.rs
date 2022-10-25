@@ -487,6 +487,9 @@ extern "C" {
     pub fn setproctitle_fast(fmt: *const ::c_char, ...);
     pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
     pub fn timingsafe_memcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {

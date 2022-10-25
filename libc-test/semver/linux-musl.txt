@@ -53,3 +53,5 @@ eaccess
 asctime_r
 strftime
 strptime
+dirname
+basename

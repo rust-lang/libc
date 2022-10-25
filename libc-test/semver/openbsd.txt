@@ -1231,3 +1231,5 @@ utmp
 utrace
 wait4
 xucred
+dirname
+basename

@@ -658,3 +658,6 @@ asctime_r
 ctime_r
 strftime
 strptime
+dirname
+posix_basename
+gnu_basename

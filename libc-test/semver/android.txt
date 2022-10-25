@@ -3548,3 +3548,5 @@ winsize
 wmemchr
 write
 writev
+dirname
+basename
