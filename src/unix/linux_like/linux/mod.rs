@@ -1593,6 +1593,7 @@ pub const POSIX_MADV_RANDOM: ::c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 pub const POSIX_SPAWN_USEVFORK: ::c_int = 64;
+pub const POSIX_SPAWN_SETSID: ::c_int = 128;
 
 pub const S_IEXEC: mode_t = 64;
 pub const S_IWRITE: mode_t = 128;
