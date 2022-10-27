@@ -3780,7 +3780,7 @@ extern "C" {
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
     pub fn select(
         nfds: ::c_int,
-        readfs: *mut fd_set,
+        readfds: *mut fd_set,
         writefds: *mut fd_set,
         errorfds: *mut fd_set,
         timeout: *mut timeval,
@@ -3817,7 +3817,7 @@ extern "C" {
 
     pub fn pselect(
         nfds: ::c_int,
-        readfs: *mut fd_set,
+        readfds: *mut fd_set,
         writefds: *mut fd_set,
         errorfds: *mut fd_set,
         timeout: *const timespec,
