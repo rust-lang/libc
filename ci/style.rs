@@ -142,6 +142,12 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         } else if line.starts_with("s! {") {
             s_macros += 1;
             State::Structs
+        } else if line.starts_with("s_no_extra_traits! {") {
+            // multiple macros of this type are allowed
+            State::Structs
+        } else if line.starts_with("s_paren! {") {
+            // multiple macros of this type are allowed
+            State::Structs
         } else if line.starts_with("f! {") {
             f_macros += 1;
             State::FunctionDefinitions
