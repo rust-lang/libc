@@ -106,7 +106,9 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "x86", target_arch = "x86_64"))] {
+    if #[cfg(any(target_arch = "x86",
+                 target_arch = "x86_64",
+                 target_arch = "aarch64"))] {
         pub const FICLONE: ::c_ulong = 0x40049409;
         pub const FICLONERANGE: ::c_ulong = 0x4020940D;
     }
