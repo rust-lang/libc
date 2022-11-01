@@ -1695,10 +1695,6 @@ fn test_android(target: &str) {
             // These are tested in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
 
-            // Linux >= 5.11 tweaked the `svm_zero` field of the `sockaddr_vm` struct.
-            // https://github.com/torvalds/linux/commit/dc8eeef73b63ed8988224ba6b5ed19a615163a7f
-            "sockaddr_vm" => true,
-
             _ => false,
         }
     });

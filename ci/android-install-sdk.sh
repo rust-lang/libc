@@ -9,10 +9,10 @@ set -ex
 # located in https://github.com/appunite/docker by just wrapping it in a script
 # which apparently magically accepts the licenses.
 
-SDK=8512546 # Grabbed from https://developer.android.com/studio#command-tools
-mkdir sdk
+SDK=6609375
+mkdir -p sdk/cmdline-tools
 wget -q --tries=20 https://dl.google.com/android/repository/commandlinetools-linux-${SDK}_latest.zip
-unzip -q -d sdk commandlinetools-linux-${SDK}_latest.zip
+unzip -q -d sdk/cmdline-tools commandlinetools-linux-${SDK}_latest.zip
 
 case "$1" in
   arm | armv7)
@@ -44,21 +44,21 @@ echo '### User Sources for Android SDK Manager' >> /root/.android/repositories.c
 echo '#Fri Nov 03 10:11:27 CET 2017 count=0' >> /root/.android/repositories.cfg
 
 # Print all available packages
-yes | ./sdk/cmdline-tools/bin/sdkmanager --list --verbose --sdk_root="${ANDROID_SDK_ROOT}"
+# yes | ./sdk/tools/bin/sdkmanager --list --verbose
 
 # --no_https avoids
 # javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: No trusted certificate found
 #
 # | grep -v = || true    removes the progress bar output from the sdkmanager
 # which produces an insane amount of output.
-yes | ./sdk/cmdline-tools/bin/sdkmanager --licenses --no_https --sdk_root="${ANDROID_SDK_ROOT}" | grep -v = || true
-yes | ./sdk/cmdline-tools/bin/sdkmanager --no_https --sdk_root="${ANDROID_SDK_ROOT}" \
+yes | ./sdk/cmdline-tools/tools/bin/sdkmanager --licenses --no_https | grep -v = || true
+yes | ./sdk/cmdline-tools/tools/bin/sdkmanager --no_https \
         "emulator" \
         "platform-tools" \
         "platforms;android-${api}" \
         "${image}" | grep -v = || true
 
 echo "no" |
-    ./sdk/cmdline-tools/bin/avdmanager create avd \
+    ./sdk/cmdline-tools/tools/bin/avdmanager create avd \
         --name "${1}" \
-        --package "${image}"
+        --package "${image}" | grep -v = || true
