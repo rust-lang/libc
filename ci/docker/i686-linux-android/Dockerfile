@@ -11,21 +11,26 @@ RUN apt-get install -y --no-install-recommends \
   python3-distutils \
   unzip \
   expect \
-  openjdk-8-jre \
+  openjdk-11-jre \
   libstdc++6:i386 \
-  libpulse0
+  libpulse0 \
+  android-sdk
 
 WORKDIR /android/
 COPY android* /android/
 
-ENV ANDROID_ARCH=i686
-ENV PATH=$PATH:/android/ndk-$ANDROID_ARCH/bin:/android/sdk/cmdline-tools/tools:/android/sdk/platform-tools
+ENV ANDROID_ARCH=i686 \
+  ANDROID_HOME=/usr/lib/android-sdk \
+  ANDROID_SDK_ROOT=/usr/lib/android-sdk
+ENV PATH=$PATH:/android/ndk-$ANDROID_ARCH/bin:/usr/lib/android-sdk/cmdline-tools:/usr/lib/android-sdk/platform-tools
 
 RUN sh /android/android-install-ndk.sh $ANDROID_ARCH
 RUN sh /android/android-install-sdk.sh $ANDROID_ARCH
-RUN mv /root/.android /tmp
+RUN cp -r /root/.android /tmp
+RUN chmod 777 -R /root/.android
 RUN chmod 777 -R /tmp/.android
-RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
+RUN chmod 777 -R /usr/lib/android-sdk
+RUN chmod 755 /usr/lib/android-sdk/cmdline-tools/* /usr/lib/android-sdk/emulator/qemu/linux-x86_64/*
 
 ENV PATH=$PATH:/rust/bin \
     CARGO_TARGET_I686_LINUX_ANDROID_LINKER=i686-linux-android-gcc \
@@ -39,7 +44,7 @@ ENTRYPOINT [ \
   "-c", \
   # set SHELL so android can detect a 64bits system, see
   # http://stackoverflow.com/a/41789144
-  "SHELL=/bin/dash /android/sdk/emulator/emulator @i686 -no-window -no-accel & \
+  "SHELL=/bin/dash /usr/lib/android-sdk/emulator/emulator @i686 -no-window -no-accel & \
    rustc /tmp/runtest.rs -o /tmp/runtest && \
    exec \"$@\"", \
   "--" \
