@@ -26,6 +26,30 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
+    pub union door_desc_t__d_data {
+        pub d_desc: door_desc_t__d_data__d_desc,
+        d_resv: [::c_int; 5], /* Check out /usr/include/sys/door.h */
+    }
+
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
+    pub struct door_desc_t {
+        pub d_attributes: door_attr_t,
+        pub d_data: door_desc_t__d_data,
+    }
+
+    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
+    pub struct door_arg_t {
+        pub data_ptr: *const ::c_char,
+        pub data_size: ::size_t,
+        pub desc_ptr: *const door_desc_t,
+        pub dec_num: ::c_uint,
+        pub rbuf: *const ::c_char,
+        pub rsize: ::size_t,
+    }
+}
+
 pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
 pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
 
@@ -74,28 +98,4 @@ extern "C" {
     pub fn pthread_getattr_np(thread: ::pthread_t, attr: *mut ::pthread_attr_t) -> ::c_int;
 
     pub fn euidaccess(path: *const ::c_char, amode: ::c_int) -> ::c_int;
-}
-
-s_no_extra_traits! {
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
-    pub union door_desc_t__d_data {
-        pub d_desc: door_desc_t__d_data__d_desc,
-        d_resv: [::c_int; 5], /* Check out /usr/include/sys/door.h */
-    }
-
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
-    pub struct door_desc_t {
-        pub d_attributes: door_attr_t,
-        pub d_data: door_desc_t__d_data,
-    }
-
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
-    pub struct door_arg_t {
-        pub data_ptr: *const ::c_char,
-        pub data_size: ::size_t,
-        pub desc_ptr: *const door_desc_t,
-        pub dec_num: ::c_uint,
-        pub rbuf: *const ::c_char,
-        pub rsize: ::size_t,
-    }
 }
