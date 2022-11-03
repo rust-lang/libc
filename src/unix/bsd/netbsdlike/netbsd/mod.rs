@@ -2315,6 +2315,12 @@ pub const _REG_RFLAGS: ::c_int = 23;
 pub const _REG_RSP: ::c_int = 24;
 pub const _REG_SS: ::c_int = 25;
 
+// sys/xattr.h
+pub const XATTR_CREATE: ::c_int = 0x01;
+pub const XATTR_REPLACE: ::c_int = 0x02;
+// sys/extattr.h
+pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
