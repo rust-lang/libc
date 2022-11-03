@@ -53,12 +53,20 @@ echo '#Fri Nov 03 10:11:27 CET 2017 count=0' >> /root/.android/repositories.cfg
 # which produces an insane amount of output.
 yes | ./sdk/cmdline-tools/tools/bin/sdkmanager --licenses --no_https | grep -v = || true
 yes | ./sdk/cmdline-tools/tools/bin/sdkmanager --no_https \
-        "emulator" \
         "platform-tools" \
         "platforms;android-${api}" \
         "${image}" | grep -v = || true
+
+# The newer emulator versions (31.3.12 or higher) fail to a valid AVD and the test gets stuck.
+# Until we figure out why, we use the older version (31.3.11).
+wget -q --tries=20 https://redirector.gvt1.com/edgedl/android/repository/emulator-linux_x64-9058569.zip
+unzip -q -d sdk emulator-linux_x64-9058569.zip
+
+cp /android/android-emulator-package.xml /android/sdk/emulator/package.xml
 
 echo "no" |
     ./sdk/cmdline-tools/tools/bin/avdmanager create avd \
         --name "${1}" \
         --package "${image}" | grep -v = || true
+
+rm -rf commandlinetools-linux-${SDK}_latest.zip emulator-linux_x64-9058569.zip
