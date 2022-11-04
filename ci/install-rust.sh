@@ -10,11 +10,10 @@ if [ -n "$TOOLCHAIN" ]; then
 else
   # Pin the nightly version as newer nightly versions break CI,
   # https://github.com/rust-lang/rust/issues/103673 contains related information.
-  if [ "$TARGET" = "x86_64-linux-android" ]; then
-    toolchain=nightly-2022-10-09
-  else
-    toolchain=nightly
-  fi
+  case "$TARGET" in
+    *android*) toolchain=nightly-2022-10-09;;
+    *) toolchain=nightly;;
+  esac
 fi
 if [ "$OS" = "windows" ]; then
   : "${TARGET?The TARGET environment variable must be set.}"
