@@ -130,15 +130,11 @@ jobs:
           # aarch64-linux-android,
           aarch64-unknown-linux-gnu,
           aarch64-unknown-linux-musl,
-          # FIXME: The emulator gets stuck.
-          # arm-linux-androideabi,
+          arm-linux-androideabi,
           arm-unknown-linux-gnueabihf,
           arm-unknown-linux-musleabihf,
           asmjs-unknown-emscripten,
-          # FIXME: Started to fail since 2022-10-10:
-          # error: linking with `i686-linux-android-gcc` failed: exit status: 1
-          # ld: error: cannot find -lunwind
-          # i686-linux-android,
+          i686-linux-android,
           i686-unknown-linux-musl,
           mips-unknown-linux-gnu,
           mips-unknown-linux-musl,
