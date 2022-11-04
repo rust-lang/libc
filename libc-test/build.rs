@@ -2088,6 +2088,15 @@ fn test_freebsd(target: &str) {
             | "PROC_PROTMAX_FORCE_DISABLE"
             | "PROC_PROTMAX_NOFORCE"
             | "PROC_PROTMAX_ACTIVE"
+            | "PROC_NO_NEW_PRIVS_CTL"
+            | "PROC_NO_NEW_PRIVS_STATUS"
+            | "PROC_NO_NEW_PRIVS_ENABLE"
+            | "PROC_NO_NEW_PRIVS_DISABLE"
+            | "PROC_WXMAP_CTL"
+            | "PROC_WXMAP_STATUS"
+            | "PROC_WX_MAPPINGS_PERMIT"
+            | "PROC_WX_MAPPINGS_DISALLOW_EXEC"
+            | "PROC_WXORX_ENFORCE"
                 if Some(13) > freebsd_ver =>
             {
                 true
