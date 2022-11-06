@@ -3100,7 +3100,9 @@ priority_t
 pread64
 preadv
 pthread_attr_getguardsize
+pthread_attr_setguardsize
 pthread_attr_getstack
+pthread_attr_setstack
 pthread_cancel
 pthread_condattr_getclock
 pthread_condattr_getpshared
