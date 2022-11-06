@@ -3710,6 +3710,16 @@ extern "C" {
     pub fn rand() -> ::c_int;
     pub fn srand(seed: ::c_uint);
 
+    pub fn drand48() -> ::c_double;
+    pub fn erand48(xseed: *mut ::c_ushort) -> ::c_double;
+    pub fn lrand48() -> ::c_long;
+    pub fn nrand48(xseed: *mut ::c_ushort) -> ::c_long;
+    pub fn mrand48() -> ::c_long;
+    pub fn jrand48(xseed: *mut ::c_ushort) -> ::c_long;
+    pub fn srand48(seed: ::c_long);
+    pub fn seed48(xseed: *mut ::c_ushort) -> *mut ::c_ushort;
+    pub fn lcong48(p: *mut ::c_ushort);
+
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
 
     pub fn setpwent();
