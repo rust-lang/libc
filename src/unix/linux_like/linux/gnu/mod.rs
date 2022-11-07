@@ -882,16 +882,6 @@ pub const RTM_NEWCACHEREPORT: u16 = 96;
 pub const RTM_F_LOOKUP_TABLE: ::c_uint = 0x1000;
 pub const RTM_F_FIB_MATCH: ::c_uint = 0x2000;
 
-pub const RTA_VIA: ::c_ushort = 18;
-pub const RTA_NEWDST: ::c_ushort = 19;
-pub const RTA_PREF: ::c_ushort = 20;
-pub const RTA_ENCAP_TYPE: ::c_ushort = 21;
-pub const RTA_ENCAP: ::c_ushort = 22;
-pub const RTA_EXPIRES: ::c_ushort = 23;
-pub const RTA_PAD: ::c_ushort = 24;
-pub const RTA_UID: ::c_ushort = 25;
-pub const RTA_TTL_PROPAGATE: ::c_ushort = 26;
-
 // linux/neighbor.h
 pub const NTF_EXT_LEARNED: u8 = 0x10;
 pub const NTF_OFFLOADED: u8 = 0x20;
