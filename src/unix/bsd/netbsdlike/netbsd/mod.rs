@@ -2459,6 +2459,24 @@ extern "C" {
         envp: *const *const ::c_char,
     ) -> ::c_int;
 
+    pub fn extattr_list_fd(
+        fd: ::c_int,
+        attrnamespace: ::c_int,
+        data: *mut ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
+    pub fn extattr_list_file(
+        path: *const ::c_char,
+        attrnamespace: ::c_int,
+        data: *mut ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
+    pub fn extattr_list_link(
+        path: *const ::c_char,
+        attrnamespace: ::c_int,
+        data: *mut ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
     pub fn extattr_delete_fd(
         fd: ::c_int,
         attrnamespace: ::c_int,
