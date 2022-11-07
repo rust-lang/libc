@@ -355,6 +355,133 @@ s! {
         pub flags: ::__u32,
         pub nr: ::__s32,
     }
+
+    // linux/input.h
+    pub struct input_event {
+        pub time: ::timeval,
+        pub type_: ::__u16,
+        pub code: ::__u16,
+        pub value: ::__s32,
+    }
+
+    pub struct input_id {
+        pub bustype: ::__u16,
+        pub vendor: ::__u16,
+        pub product: ::__u16,
+        pub version: ::__u16,
+    }
+
+    pub struct input_absinfo {
+        pub value: ::__s32,
+        pub minimum: ::__s32,
+        pub maximum: ::__s32,
+        pub fuzz: ::__s32,
+        pub flat: ::__s32,
+        pub resolution: ::__s32,
+    }
+
+    pub struct input_keymap_entry {
+        pub flags: ::__u8,
+        pub len: ::__u8,
+        pub index: ::__u16,
+        pub keycode: ::__u32,
+        pub scancode: [::__u8; 32],
+    }
+
+    pub struct input_mask {
+        pub type_: ::__u32,
+        pub codes_size: ::__u32,
+        pub codes_ptr: ::__u64,
+    }
+
+    pub struct ff_replay {
+        pub length: ::__u16,
+        pub delay: ::__u16,
+    }
+
+    pub struct ff_trigger {
+        pub button: ::__u16,
+        pub interval: ::__u16,
+    }
+
+    pub struct ff_envelope {
+        pub attack_length: ::__u16,
+        pub attack_level: ::__u16,
+        pub fade_length: ::__u16,
+        pub fade_level: ::__u16,
+    }
+
+    pub struct ff_constant_effect {
+        pub level: ::__s16,
+        pub envelope: ff_envelope,
+    }
+
+    pub struct ff_ramp_effect {
+        pub start_level: ::__s16,
+        pub end_level: ::__s16,
+        pub envelope: ff_envelope,
+    }
+
+    pub struct ff_condition_effect {
+        pub right_saturation: ::__u16,
+        pub left_saturation: ::__u16,
+
+        pub right_coeff: ::__s16,
+        pub left_coeff: ::__s16,
+
+        pub deadband: ::__u16,
+        pub center: ::__s16,
+    }
+
+    pub struct ff_periodic_effect {
+        pub waveform: ::__u16,
+        pub period: ::__u16,
+        pub magnitude: ::__s16,
+        pub offset: ::__s16,
+        pub phase: ::__u16,
+
+        pub envelope: ff_envelope,
+
+        pub custom_len: ::__u32,
+        pub custom_data: *mut ::__s16,
+    }
+
+    pub struct ff_rumble_effect {
+        pub strong_magnitude: ::__u16,
+        pub weak_magnitude: ::__u16,
+    }
+
+    pub struct ff_effect {
+        pub type_: ::__u16,
+        pub id: ::__s16,
+        pub direction: ::__u16,
+        pub trigger: ff_trigger,
+        pub replay: ff_replay,
+        // FIXME this is actually a union
+        #[cfg(target_pointer_width = "64")]
+        pub u: [u64; 4],
+        #[cfg(target_pointer_width = "32")]
+        pub u: [u32; 7],
+    }
+
+    // linux/uinput.h
+    pub struct uinput_ff_upload {
+        pub request_id: ::__u32,
+        pub retval: ::__s32,
+        pub effect: ff_effect,
+        pub old: ff_effect,
+    }
+
+    pub struct uinput_ff_erase {
+        pub request_id: ::__u32,
+        pub retval: ::__s32,
+        pub effect_id: ::__u32,
+    }
+
+    pub struct uinput_abs_setup {
+        pub code: ::__u16,
+        pub absinfo: input_absinfo,
+    }
 }
 
 s_no_extra_traits! {
@@ -415,6 +542,22 @@ s_no_extra_traits! {
         pub salg_feat: u32,
         pub salg_mask: u32,
         pub salg_name: [::c_uchar; 64],
+    }
+
+    pub struct uinput_setup {
+        pub id: input_id,
+        pub name: [::c_char; UINPUT_MAX_NAME_SIZE],
+        pub ff_effects_max: ::__u32,
+    }
+
+    pub struct uinput_user_dev {
+        pub name: [::c_char; UINPUT_MAX_NAME_SIZE],
+        pub id: input_id,
+        pub ff_effects_max: ::__u32,
+        pub absmax: [::__s32; ABS_CNT],
+        pub absmin: [::__s32; ABS_CNT],
+        pub absfuzz: [::__s32; ABS_CNT],
+        pub absflat: [::__s32; ABS_CNT],
     }
 
     /// WARNING: The `PartialEq`, `Eq` and `Hash` implementations of this
@@ -712,6 +855,72 @@ cfg_if! {
                 self.salg_feat.hash(state);
                 self.salg_mask.hash(state);
                 self.salg_name.hash(state);
+            }
+        }
+
+        impl PartialEq for uinput_setup {
+            fn eq(&self, other: &uinput_setup) -> bool {
+                self.id == other.id
+                    && self.name[..] == other.name[..]
+                    && self.ff_effects_max == other.ff_effects_max
+           }
+        }
+        impl Eq for uinput_setup {}
+
+        impl ::fmt::Debug for uinput_setup {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("uinput_setup")
+                    .field("id", &self.id)
+                    .field("name", &&self.name[..])
+                    .field("ff_effects_max", &self.ff_effects_max)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for uinput_setup {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.id.hash(state);
+                self.name.hash(state);
+                self.ff_effects_max.hash(state);
+            }
+        }
+
+        impl PartialEq for uinput_user_dev {
+            fn eq(&self, other: &uinput_user_dev) -> bool {
+                 self.name[..] == other.name[..]
+                    && self.id == other.id
+                    && self.ff_effects_max == other.ff_effects_max
+                    && self.absmax[..] == other.absmax[..]
+                    && self.absmin[..] == other.absmin[..]
+                    && self.absfuzz[..] == other.absfuzz[..]
+                    && self.absflat[..] == other.absflat[..]
+           }
+        }
+        impl Eq for uinput_user_dev {}
+
+        impl ::fmt::Debug for uinput_user_dev {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("uinput_setup")
+                    .field("name", &&self.name[..])
+                    .field("id", &self.id)
+                    .field("ff_effects_max", &self.ff_effects_max)
+                    .field("absmax", &&self.absmax[..])
+                    .field("absmin", &&self.absmin[..])
+                    .field("absfuzz", &&self.absfuzz[..])
+                    .field("absflat", &&self.absflat[..])
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for uinput_user_dev {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.name.hash(state);
+                self.id.hash(state);
+                self.ff_effects_max.hash(state);
+                self.absmax.hash(state);
+                self.absmin.hash(state);
+                self.absfuzz.hash(state);
+                self.absflat.hash(state);
             }
         }
 
@@ -2172,6 +2381,38 @@ pub const NFT_TRACETYPE_RULE: ::c_int = 3;
 
 pub const NFT_NG_INCREMENTAL: ::c_int = 0;
 pub const NFT_NG_RANDOM: ::c_int = 1;
+
+// linux/input.h
+pub const FF_MAX: ::__u16 = 0x7f;
+pub const FF_CNT: usize = FF_MAX as usize + 1;
+
+// linux/input-event-codes.h
+pub const INPUT_PROP_MAX: ::__u16 = 0x1f;
+pub const INPUT_PROP_CNT: usize = INPUT_PROP_MAX as usize + 1;
+pub const EV_MAX: ::__u16 = 0x1f;
+pub const EV_CNT: usize = EV_MAX as usize + 1;
+pub const SYN_MAX: ::__u16 = 0xf;
+pub const SYN_CNT: usize = SYN_MAX as usize + 1;
+pub const KEY_MAX: ::__u16 = 0x2ff;
+pub const KEY_CNT: usize = KEY_MAX as usize + 1;
+pub const REL_MAX: ::__u16 = 0x0f;
+pub const REL_CNT: usize = REL_MAX as usize + 1;
+pub const ABS_MAX: ::__u16 = 0x3f;
+pub const ABS_CNT: usize = ABS_MAX as usize + 1;
+pub const SW_MAX: ::__u16 = 0x0f;
+pub const SW_CNT: usize = SW_MAX as usize + 1;
+pub const MSC_MAX: ::__u16 = 0x07;
+pub const MSC_CNT: usize = MSC_MAX as usize + 1;
+pub const LED_MAX: ::__u16 = 0x0f;
+pub const LED_CNT: usize = LED_MAX as usize + 1;
+pub const REP_MAX: ::__u16 = 0x01;
+pub const REP_CNT: usize = REP_MAX as usize + 1;
+pub const SND_MAX: ::__u16 = 0x07;
+pub const SND_CNT: usize = SND_MAX as usize + 1;
+
+// linux/uinput.h
+pub const UINPUT_VERSION: ::c_uint = 5;
+pub const UINPUT_MAX_NAME_SIZE: usize = 80;
 
 pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;

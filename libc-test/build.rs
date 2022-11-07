@@ -1628,6 +1628,7 @@ fn test_android(target: &str) {
                 "linux/seccomp.h",
                 "linux/sched.h",
                 "linux/sockios.h",
+                "linux/uinput.h",
                 "linux/vm_sockets.h",
                 "linux/wait.h",
 
@@ -1664,6 +1665,17 @@ fn test_android(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => s.to_string(),
             // FIXME: appears that `epoll_event.data` is an union
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
+            // The following structs have a field called `type` in C,
+            // but `type` is a Rust keyword, so these fields are translated
+            // to `type_` in Rust.
+            "type_"
+                if struct_ == "input_event"
+                    || struct_ == "input_mask"
+                    || struct_ == "ff_effect" =>
+            {
+                "type".to_string()
+            }
+
             s => s.to_string(),
         }
     });
@@ -1793,6 +1805,8 @@ fn test_android(target: &str) {
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sigval is actually a union, but we pretend it's a struct
         (struct_ == "sigevent" && field == "sigev_value") ||
+        // this one is an anonymous union
+        (struct_ == "ff_effect" && field == "u") ||
         // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
         // incorrect, see: https://github.com/rust-lang/libc/issues/1359
         (struct_ == "sigaction" && field == "sa_sigaction") ||
