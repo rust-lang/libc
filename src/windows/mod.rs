@@ -256,8 +256,10 @@ pub const SIG_ACK: ::sighandler_t = 4;
 
 // inline comment below appeases style checker
 #[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))] // " if "
-#[link(name = "msvcrt", cfg(not(target_feature = "crt-static")))]
-#[link(name = "libcmt", cfg(target_feature = "crt-static"))]
+#[link(name = "msvcrt", cfg(all(not(target_feature = "crt-static"), not(target_feature = "crt-debug"))))]
+#[link(name = "msvcrtd", cfg(all(not(target_feature = "crt-static"), target_feature = "crt-debug")))]
+#[link(name = "libcmt", cfg(all(target_feature = "crt-static", not(target_feature = "crt-debug"))))]
+#[link(name = "libcmtd", cfg(all(target_feature = "crt-static", target_feature = "crt-debug")))]
 extern "C" {}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
