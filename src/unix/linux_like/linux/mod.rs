@@ -471,9 +471,9 @@ s! {
         __pgrp: ::pid_t,
         __sd: ::sigset_t,
         __ss: ::sigset_t,
-        #[cfg(target_env = "musl")]
+        #[cfg(any(target_env = "musl", target_env = "ohos"))]
         __prio: ::c_int,
-        #[cfg(not(target_env = "musl"))]
+        #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
         __sp: ::sched_param,
         __policy: ::c_int,
         __pad: [::c_int; 16],
@@ -1225,7 +1225,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_env = "gnu", target_env = "musl"))] {
+    if #[cfg(any(target_env = "gnu", target_env = "musl", target_env = "ohos"))] {
         pub const ABDAY_1: ::nl_item = 0x20000;
         pub const ABDAY_2: ::nl_item = 0x20001;
         pub const ABDAY_3: ::nl_item = 0x20002;
@@ -3970,7 +3970,7 @@ safe_f! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
+    if #[cfg(all(not(target_env = "uclibc"), not(target_env = "ohos")))] {
         extern "C" {
             pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
             pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
@@ -3989,6 +3989,13 @@ cfg_if! {
                 nitems: ::c_int,
                 sevp: *mut ::sigevent,
             ) -> ::c_int;
+        }
+    }
+}
+
+cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        extern "C" {
             pub fn pwritev(
                 fd: ::c_int,
                 iov: *const ::iovec,
@@ -4038,8 +4045,79 @@ cfg_if! {
     }
 }
 
+// These functions are not available on OpenHarmony
+cfg_if! {
+    if #[cfg(not(target_env = "ohos"))] {
+        extern "C" {
+            // Only `getspnam_r` is implemented for musl, out of all of the reenterant
+            // functions from `shadow.h`.
+            // https://git.musl-libc.org/cgit/musl/tree/include/shadow.h
+            pub fn getspnam_r(
+                name: *const ::c_char,
+                spbuf: *mut spwd,
+                buf: *mut ::c_char,
+                buflen: ::size_t,
+                spbufp: *mut *mut spwd,
+            ) -> ::c_int;
+
+            pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
+            pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
+
+            pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
+            pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
+            pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
+            pub fn mq_receive(
+                mqd: ::mqd_t,
+                msg_ptr: *mut ::c_char,
+                msg_len: ::size_t,
+                msg_prio: *mut ::c_uint,
+            ) -> ::ssize_t;
+            pub fn mq_timedreceive(
+                mqd: ::mqd_t,
+                msg_ptr: *mut ::c_char,
+                msg_len: ::size_t,
+                msg_prio: *mut ::c_uint,
+                abs_timeout: *const ::timespec,
+            ) -> ::ssize_t;
+            pub fn mq_send(
+                mqd: ::mqd_t,
+                msg_ptr: *const ::c_char,
+                msg_len: ::size_t,
+                msg_prio: ::c_uint,
+            ) -> ::c_int;
+            pub fn mq_timedsend(
+                mqd: ::mqd_t,
+                msg_ptr: *const ::c_char,
+                msg_len: ::size_t,
+                msg_prio: ::c_uint,
+                abs_timeout: *const ::timespec,
+            ) -> ::c_int;
+            pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
+            pub fn mq_setattr(
+                mqd: ::mqd_t,
+                newattr: *const ::mq_attr,
+                oldattr: *mut ::mq_attr
+            ) -> ::c_int;
+
+            pub fn pthread_mutex_consistent(mutex: *mut pthread_mutex_t) -> ::c_int;
+            pub fn pthread_cancel(thread: ::pthread_t) -> ::c_int;
+            pub fn pthread_mutexattr_getrobust(
+                attr: *const pthread_mutexattr_t,
+                robustness: *mut ::c_int,
+            ) -> ::c_int;
+            pub fn pthread_mutexattr_setrobust(
+                attr: *mut pthread_mutexattr_t,
+                robustness: ::c_int,
+            ) -> ::c_int;
+        }
+    }
+}
+
 extern "C" {
-    #[cfg_attr(not(target_env = "musl"), link_name = "__xpg_strerror_r")]
+    #[cfg_attr(
+        not(any(target_env = "musl", target_env = "ohos")),
+        link_name = "__xpg_strerror_r"
+    )]
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
 
     pub fn abs(i: ::c_int) -> ::c_int;
@@ -4070,18 +4148,6 @@ extern "C" {
     pub fn getspent() -> *mut spwd;
 
     pub fn getspnam(name: *const ::c_char) -> *mut spwd;
-    // Only `getspnam_r` is implemented for musl, out of all of the reenterant
-    // functions from `shadow.h`.
-    // https://git.musl-libc.org/cgit/musl/tree/include/shadow.h
-    pub fn getspnam_r(
-        name: *const ::c_char,
-        spbuf: *mut spwd,
-        buf: *mut ::c_char,
-        buflen: ::size_t,
-        spbufp: *mut *mut spwd,
-    ) -> ::c_int;
-
-    pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
 
     // System V IPC
     pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
@@ -4187,37 +4253,6 @@ extern "C" {
         id: ::c_int,
         data: *mut ::c_char,
     ) -> ::c_int;
-    pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
-    pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
-    pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
-    pub fn mq_receive(
-        mqd: ::mqd_t,
-        msg_ptr: *mut ::c_char,
-        msg_len: ::size_t,
-        msg_prio: *mut ::c_uint,
-    ) -> ::ssize_t;
-    pub fn mq_timedreceive(
-        mqd: ::mqd_t,
-        msg_ptr: *mut ::c_char,
-        msg_len: ::size_t,
-        msg_prio: *mut ::c_uint,
-        abs_timeout: *const ::timespec,
-    ) -> ::ssize_t;
-    pub fn mq_send(
-        mqd: ::mqd_t,
-        msg_ptr: *const ::c_char,
-        msg_len: ::size_t,
-        msg_prio: ::c_uint,
-    ) -> ::c_int;
-    pub fn mq_timedsend(
-        mqd: ::mqd_t,
-        msg_ptr: *const ::c_char,
-        msg_len: ::size_t,
-        msg_prio: ::c_uint,
-        abs_timeout: *const ::timespec,
-    ) -> ::c_int;
-    pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
-    pub fn mq_setattr(mqd: ::mqd_t, newattr: *const ::mq_attr, oldattr: *mut ::mq_attr) -> ::c_int;
     pub fn epoll_pwait(
         epfd: ::c_int,
         events: *mut ::epoll_event,
@@ -4283,8 +4318,6 @@ extern "C" {
     pub fn globfree(pglob: *mut ::glob_t);
 
     pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
-
-    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 
     pub fn seekdir(dirp: *mut ::DIR, loc: ::c_long);
 
@@ -4389,7 +4422,7 @@ extern "C" {
         attr: *mut pthread_mutexattr_t,
         protocol: ::c_int,
     ) -> ::c_int;
-    pub fn pthread_mutex_consistent(mutex: *mut pthread_mutex_t) -> ::c_int;
+
     pub fn pthread_mutex_timedlock(
         lock: *mut pthread_mutex_t,
         abstime: *const ::timespec,
@@ -4487,7 +4520,6 @@ extern "C" {
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t, oldset: *mut sigset_t) -> ::c_int;
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
-    pub fn pthread_cancel(thread: ::pthread_t) -> ::c_int;
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
     pub fn sem_unlink(name: *const ::c_char) -> ::c_int;
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
@@ -4521,14 +4553,6 @@ extern "C" {
     pub fn pthread_mutexattr_getpshared(
         attr: *const pthread_mutexattr_t,
         pshared: *mut ::c_int,
-    ) -> ::c_int;
-    pub fn pthread_mutexattr_getrobust(
-        attr: *const pthread_mutexattr_t,
-        robustness: *mut ::c_int,
-    ) -> ::c_int;
-    pub fn pthread_mutexattr_setrobust(
-        attr: *mut pthread_mutexattr_t,
-        robustness: ::c_int,
     ) -> ::c_int;
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut ::FILE;
     pub fn faccessat(
@@ -4729,7 +4753,7 @@ cfg_if! {
     if #[cfg(target_env = "uclibc")] {
         mod uclibc;
         pub use self::uclibc::*;
-    } else if #[cfg(target_env = "musl")] {
+    } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
         mod musl;
         pub use self::musl::*;
     } else if #[cfg(target_env = "gnu")] {
