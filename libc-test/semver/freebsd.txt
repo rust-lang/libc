@@ -1670,6 +1670,14 @@ mallocx
 memmem
 memrchr
 memset_s
+memstat_get_name
+memstat_mtl_alloc
+memstat_mtl_find
+memstat_mtl_first
+memstat_mtl_free
+memstat_mtl_geterror
+memstat_mtl_next
+memstat_strerror
 mincore
 mkdirat
 mkfifoat

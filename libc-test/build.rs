@@ -1897,6 +1897,7 @@ fn test_freebsd(target: &str) {
                 "machine/elf.h",
                 "machine/reg.h",
                 "malloc_np.h",
+                "memstat.h",
                 "mqueue.h",
                 "net/bpf.h",
                 "net/if.h",
@@ -2255,6 +2256,10 @@ fn test_freebsd(target: &str) {
             "sockcred2" if Some(13) > freebsd_ver => true,
             // `shm_largepage_conf` was introduced in FreeBSD 13.
             "shm_largepage_conf" if Some(13) > freebsd_ver => true,
+
+            // Those are private types
+            "memory_type" => true,
+            "memory_type_list" => true,
 
             _ => false,
         }

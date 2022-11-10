@@ -998,6 +998,15 @@ s! {
         pub alloc_policy: ::c_int,
         __pad: [::c_int; 10],
     }
+
+    pub struct memory_type {
+        __priva: [::uintptr_t; 32],
+        __privb: [::uintptr_t; 26],
+    }
+
+    pub struct memory_type_list {
+        __priv: [::uintptr_t; 2],
+    }
 }
 
 s_no_extra_traits! {
@@ -4367,6 +4376,22 @@ extern "C" {
         uaddr: *mut ::c_void,
         uaddr2: *mut ::c_void,
     ) -> ::c_int;
+}
+
+#[link(name = "memstat")]
+extern "C" {
+    pub fn memstat_strerror(error: ::c_int) -> *const ::c_char;
+    pub fn memstat_mtl_alloc() -> *mut memory_type_list;
+    pub fn memstat_mtl_first(list: *mut memory_type_list) -> *mut memory_type;
+    pub fn memstat_mtl_next(mtp: *mut memory_type) -> *mut memory_type;
+    pub fn memstat_mtl_find(
+        list: *mut memory_type_list,
+        allocator: ::c_int,
+        name: *const ::c_char,
+    ) -> *mut memory_type;
+    pub fn memstat_mtl_free(list: *mut memory_type_list);
+    pub fn memstat_mtl_geterror(list: *mut memory_type_list) -> ::c_int;
+    pub fn memstat_get_name(mtp: *const memory_type) -> *const ::c_char;
 }
 
 #[link(name = "kvm")]
