@@ -2379,6 +2379,10 @@ pub const PROC_PROTMAX_CTL: ::c_int = 15;
 pub const PROC_PROTMAX_STATUS: ::c_int = 16;
 pub const PROC_STACKGAP_CTL: ::c_int = 17;
 pub const PROC_STACKGAP_STATUS: ::c_int = 18;
+pub const PROC_NO_NEW_PRIVS_CTL: ::c_int = 19;
+pub const PROC_NO_NEW_PRIVS_STATUS: ::c_int = 20;
+pub const PROC_WXMAP_CTL: ::c_int = 21;
+pub const PROC_WXMAP_STATUS: ::c_int = 22;
 pub const PROC_PROCCTL_MD_MIN: ::c_int = 0x10000000;
 
 pub const PPROT_SET: ::c_int = 1;
@@ -2407,6 +2411,13 @@ pub const PROC_STACKGAP_ENABLE: ::c_int = 0x0001;
 pub const PROC_STACKGAP_DISABLE: ::c_int = 0x0002;
 pub const PROC_STACKGAP_ENABLE_EXEC: ::c_int = 0x0004;
 pub const PROC_STACKGAP_DISABLE_EXEC: ::c_int = 0x0008;
+
+pub const PROC_NO_NEW_PRIVS_ENABLE: ::c_int = 1;
+pub const PROC_NO_NEW_PRIVS_DISABLE: ::c_int = 2;
+
+pub const PROC_WX_MAPPINGS_PERMIT: ::c_int = 0x0001;
+pub const PROC_WX_MAPPINGS_DISALLOW_EXEC: ::c_int = 0x0002;
+pub const PROC_WXORX_ENFORCE: ::c_int = 0x80000000;
 
 pub const AF_SLOW: ::c_int = 33;
 pub const AF_SCLUSTER: ::c_int = 34;
