@@ -1,15 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.4.5 (2022-11-19)
 
 ### Commit Statistics
 
 <csr-read-only-do-not-edit/>
 
- - 2 commits contributed to the release over the course of 31 calendar days.
- - 88 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 12 commits contributed to the release over the course of 131 calendar days.
+ - 189 days passed between releases.
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -18,7 +18,17 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #46 from flba-eb/add_nto_support ([`6287035`](https://github.com/JohnTitor/ctest2/commit/6287035dd465536f7799516f6954bc454d1d0f17))
+    - Fix QNX/nto support of 7.1 ([`494273a`](https://github.com/JohnTitor/ctest2/commit/494273ae59a776f8bf771778232290c6fa3e3116))
+    - Merge pull request #41 from wesleywiser/master ([`f419830`](https://github.com/JohnTitor/ctest2/commit/f419830d09cefb31e2b076039b47b925e53ce6b9))
+    - Merge pull request #42 from flba-eb/add_qnx_support ([`0db6046`](https://github.com/JohnTitor/ctest2/commit/0db6046dd6c5cf816d8cdc5aec5415e535ea4db9))
+    - Add basic QNX support ([`3d3a0b1`](https://github.com/JohnTitor/ctest2/commit/3d3a0b19a7312f6557a32b80f68981d2092aa198))
+    - Merge pull request #44 from JohnTitor/fix-typos ([`2c609e2`](https://github.com/JohnTitor/ctest2/commit/2c609e285c16fdc8dde02509c82786c4c48a959f))
+    - Fix some typos ([`1fa9856`](https://github.com/JohnTitor/ctest2/commit/1fa985693300df5597b7e333f293e4660dd02593))
+    - Swap size and value args in roundtrip tests ([`ed9b5d6`](https://github.com/JohnTitor/ctest2/commit/ed9b5d675545dcafe5f13f95f2dada2812932cf2))
+    - Merge pull request #39 from joshtriplett/code-block-terminators ([`ce8fc54`](https://github.com/JohnTitor/ctest2/commit/ce8fc54e5f1b0a0fc2356601acdc8cdc56a22b76))
     - Fix missing code block terminators in docstrings ([`3ea3965`](https://github.com/JohnTitor/ctest2/commit/3ea396523425e5f3948146bde869f5d0ccd0e2ca))
+    - Merge pull request #37 from flba-eb/master ([`ec09955`](https://github.com/JohnTitor/ctest2/commit/ec09955c349bb6a999ecf1ce4492d7284c024b98))
     - Print out errors to stderr ([`aacc9e6`](https://github.com/JohnTitor/ctest2/commit/aacc9e64d2a372e74d7d8e9066881645bb444827))
 </details>
 
@@ -28,10 +38,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 2 commits contributed to the release over the course of 15 calendar days.
+ - 4 commits contributed to the release over the course of 15 calendar days.
  - 164 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -40,7 +50,9 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #35 from JohnTitor/fix-offset-of-again ([`6d2dd7d`](https://github.com/JohnTitor/ctest2/commit/6d2dd7dbfda82207ba151ab277af38cae585cf45))
     - Remove the use of `mem::zeroed()` on generated code ([`e8b215c`](https://github.com/JohnTitor/ctest2/commit/e8b215c54a6c2784e475790a0c1bda18cab4169c))
+    - Merge pull request #33 from jessicah/cpp-linkage ([`2054b80`](https://github.com/JohnTitor/ctest2/commit/2054b803d038916abc834856cbe177ffa18e8455))
     - Specify linkage for `__test_fn...()`. ([`5684414`](https://github.com/JohnTitor/ctest2/commit/5684414735b58683451e8a364c7ede94f101969e))
 </details>
 
@@ -50,10 +62,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 1 commit contributed to the release.
+ - 2 commits contributed to the release.
  - 42 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -62,6 +74,7 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #30 from GuillaumeGomez/long-double ([`1769ea1`](https://github.com/JohnTitor/ctest2/commit/1769ea1772db11147b8cfcc1c0b9095865d2d1de))
     - Add support for long double ([`76bcbd5`](https://github.com/JohnTitor/ctest2/commit/76bcbd5fa20e86d7d39ecf8300744b4e008f5f18))
 </details>
 
@@ -71,10 +84,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 1 commit contributed to the release.
+ - 2 commits contributed to the release.
  - 146 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -83,6 +96,7 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #28 from GuillaumeGomez/subtract ([`aaf6759`](https://github.com/JohnTitor/ctest2/commit/aaf6759f061a398b59bd2abca59ce8ba7414e3d4))
     - Allow to subtract in constants ([`17df391`](https://github.com/JohnTitor/ctest2/commit/17df3916cd84b0ba626b438e18eb3812ba7340ec))
 </details>
 
@@ -92,10 +106,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 2 commits contributed to the release.
+ - 4 commits contributed to the release.
  - 115 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -104,7 +118,9 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #25 from JohnTitor/fix-unaligned-references ([`aab0ed6`](https://github.com/JohnTitor/ctest2/commit/aab0ed632207eb984b33d8ff9585d504ff22b9d7))
     - Fix `unaligned_references` warning ([`58fe3e5`](https://github.com/JohnTitor/ctest2/commit/58fe3e5dc1fec08d067cc41149bb7d75048077eb))
+    - Merge pull request #24 from JohnTitor/fix-dereference-null-ptr ([`64fc427`](https://github.com/JohnTitor/ctest2/commit/64fc4270a50427f322351543fbf6f0fc151586d6))
     - Fix the `deref_nullptr` warning ([`5d5b425`](https://github.com/JohnTitor/ctest2/commit/5d5b425979b49e37d4ee5629caf2723b10886679))
 </details>
 
@@ -114,10 +130,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 4 commits contributed to the release over the course of 159 calendar days.
+ - 7 commits contributed to the release over the course of 159 calendar days.
  - 240 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -126,13 +142,18 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #20 from nielx/master ([`f2842c7`](https://github.com/JohnTitor/ctest2/commit/f2842c73a6c04476701a88ad1edc8b0e943634b8))
     - Add support for the Haiku target ([`193a72f`](https://github.com/JohnTitor/ctest2/commit/193a72fb5beb8008bb2256709bac8c240685d079))
+    - Merge pull request #16 from JohnTitor/edition-2018 ([`82ef3da`](https://github.com/JohnTitor/ctest2/commit/82ef3da023da04a5f9ed401e3671a881b8db6d07))
     - Fix Clippy warnings ([`4aafd94`](https://github.com/JohnTitor/ctest2/commit/4aafd946470e016fff02af26bb6dba2c49d1c683))
     - Update crate to edition 2018 ([`1de5a4c`](https://github.com/JohnTitor/ctest2/commit/1de5a4cac5a33921135a0e7503240299bcc9f295))
+    - Merge pull request #13 from JohnTitor/use-or ([`bb83079`](https://github.com/JohnTitor/ctest2/commit/bb830791b08edd5589874f70cb3bab4cf551e307))
     - Use `OR` keyword instead of deprecated `/` ([`76dab1c`](https://github.com/JohnTitor/ctest2/commit/76dab1cef5d4dbb81147f9ea3a45b0b2c3ce7354))
 </details>
 
 ## v0.3.0 (2020-06-01)
+
+<csr-id-0bbbc85fbd211f33815b39d9f472cf22d088846f/>
 
 ### Other
 
@@ -142,10 +163,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 39 commits contributed to the release over the course of 551 calendar days.
+ - 45 commits contributed to the release over the course of 551 calendar days.
  - 553 days passed between releases.
- - 1 commit where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -154,18 +175,23 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #11 from JohnTitor/garando ([`fc6621f`](https://github.com/JohnTitor/ctest2/commit/fc6621f5199a45108af5035eda86996ef88aaeaf))
     - Use garando_syntax ([`732c7b5`](https://github.com/JohnTitor/ctest2/commit/732c7b531073a57f186321c7799d3b4cda639856))
+    - Merge pull request #8 from JohnTitor/ctest2 ([`1432332`](https://github.com/JohnTitor/ctest2/commit/1432332bdeda9e64c519ce72734170af2bb61d96))
     - Rename to ctest2 ([`bdadd0b`](https://github.com/JohnTitor/ctest2/commit/bdadd0b4c0c6db84abcb856cfa6267ecdfca8bf9))
     - Merge pull request #5 from JohnTitor/riscv64gc ([`8ac57fb`](https://github.com/JohnTitor/ctest2/commit/8ac57fb0dfb90b12f41d598449adc80dd7a00156))
     - Add `riscv64gc` arch support ([`fd7bfb2`](https://github.com/JohnTitor/ctest2/commit/fd7bfb29820fcbe6457c97cb4ae761e6fb02d56e))
+    - Merge pull request #4 from JohnTitor/maybe-uninit ([`4787a04`](https://github.com/JohnTitor/ctest2/commit/4787a04dacf80ea7d59e89d2414daef9cea5f4d8))
     - Use MaybeUninit instead of uninitialized ([`f8ada39`](https://github.com/JohnTitor/ctest2/commit/f8ada39ce4e8c596650bcaa184d83fae488f2b2c))
     - Merge pull request #2 from pfmooney/target-error ([`466af76`](https://github.com/JohnTitor/ctest2/commit/466af761070a82f97ccec6c6f2d36ab84462eb6f))
+    - Merge pull request #1 from pfmooney/illumos-target ([`3c1bb06`](https://github.com/JohnTitor/ctest2/commit/3c1bb06272e4797a8d1ed86c08a0008c88f0eb7d))
     - Fix typo in "unknown target" error message ([`04bac2c`](https://github.com/JohnTitor/ctest2/commit/04bac2c7c25bbeea0f05b78e11c39c904d4a2005))
     - Add illumos target ([`1b4efff`](https://github.com/JohnTitor/ctest2/commit/1b4efff47d23624bbad42a5741e4cc4476560e8e))
     - add supporting for vxWorks ([`570e058`](https://github.com/JohnTitor/ctest2/commit/570e0584f0dc4aeab6ff4e9c07190c346a45beeb))
     - Improve error output ([`cf096e1`](https://github.com/JohnTitor/ctest2/commit/cf096e1a0f24072c8016dd649f1349a6785aa15b))
     - Improve errors of roundtrip tests ([`ddf07ea`](https://github.com/JohnTitor/ctest2/commit/ddf07ea5759f9605da968c391007117847553a0a))
     - fix roundtrip tests for structs larger than 252 bytes ([`2d3be56`](https://github.com/JohnTitor/ctest2/commit/2d3be569b07f413a7639419d84391d1d04f4d6fe))
+    - Merge pull request #78 from gnzlbg/unknown_warning ([`e9b8697`](https://github.com/JohnTitor/ctest2/commit/e9b8697b4eceae69712dda6e4c55c9c42971b887))
     - :uninitialized is deprecated ([`0bbbc85`](https://github.com/JohnTitor/ctest2/commit/0bbbc85fbd211f33815b39d9f472cf22d088846f))
     - Avoid errors on unknown warnings ([`57da2c3`](https://github.com/JohnTitor/ctest2/commit/57da2c3b2e74a2ff135d0369647c1fe2a3b3bf96))
     - Fix alignment computation once and for all ([`c870733`](https://github.com/JohnTitor/ctest2/commit/c87073322872c61371997666752e159f5e582d11))
@@ -189,6 +215,7 @@
     - Add wasi definitions ([`c908271`](https://github.com/JohnTitor/ctest2/commit/c9082716c4438c9b71438ec8da8f604f53695bd2))
     - Add an option to print skipped items ([`9b8a31e`](https://github.com/JohnTitor/ctest2/commit/9b8a31e78884255476a37b3de7c504b8427ab579))
     - Check that the tests do not emit warnings ([`af6d9a3`](https://github.com/JohnTitor/ctest2/commit/af6d9a3edc798336dc7cf9e10e24cfc6c0d07de1))
+    - Merge pull request #58 from gnzlbg/const_name ([`8111142`](https://github.com/JohnTitor/ctest2/commit/8111142a7226e20821e73b4685cb5f86b7b39932))
     - Fix clippy and formatting ([`3548657`](https://github.com/JohnTitor/ctest2/commit/3548657cd38e0b947ca2bc62cff201ded098fa70))
     - Add C++ support ([`413f843`](https://github.com/JohnTitor/ctest2/commit/413f8439166979e8884065dee0ec157036e08820))
     - Add const_cname API to map Rust const names to C names ([`75722df`](https://github.com/JohnTitor/ctest2/commit/75722dfbceb8d5cd3a1aa7135ec2aa5282598869))
@@ -203,8 +230,8 @@
 
  - 5 commits contributed to the release over the course of 27 calendar days.
  - 27 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -226,10 +253,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 4 commits contributed to the release over the course of 8 calendar days.
+ - 3 commits contributed to the release over the course of 8 calendar days.
  - 9 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -238,8 +265,7 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
-    - Merge pull request #49 from gnzlbg/bv ([`4aea5ed`](https://github.com/JohnTitor/ctest2/commit/4aea5ede350b240b5bb1ccd0b13b0f0abaf97f68))
-    - Merge pull request #48 from gnzlbg/linux-libc ([`432677c`](https://github.com/JohnTitor/ctest2/commit/432677ca8da277462385d68b035a3e5748e1c619))
+    - Merge pull request #46 from gnzlbg/fb2 ([`dae2780`](https://github.com/JohnTitor/ctest2/commit/dae27809d8f2abf692d8d6b8a7885b2ab9ff77b4))
     - add support for extern static references and optional references ([`07c96c6`](https://github.com/JohnTitor/ctest2/commit/07c96c674233970eaf1e8674039b07b4c8a9645b))
     - Merge pull request #43 from johnschug/skip-sign ([`9480ee3`](https://github.com/JohnTitor/ctest2/commit/9480ee376ef3b24567ca0b208b7e9b9faa19f82b))
 </details>
@@ -250,10 +276,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 4 commits contributed to the release over the course of 3 calendar days.
+ - 6 commits contributed to the release over the course of 3 calendar days.
  - 37 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -262,8 +288,10 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #42 from gnzlbg/arrs ([`f0fea68`](https://github.com/JohnTitor/ctest2/commit/f0fea68bf69c27e5e08b5a10528387ba367fa254))
     - Skip signedness checks for non-integer type aliases ([`2099f61`](https://github.com/JohnTitor/ctest2/commit/2099f6179f476aef903ca6a3131e043e75c06cec))
     - Add support for arrays in extern statics ([`d389610`](https://github.com/JohnTitor/ctest2/commit/d389610b9ece689a2b3e602eacb9cd19af8af50f))
+    - Merge pull request #39 from gnzlbg/rs2c ([`f8bd332`](https://github.com/JohnTitor/ctest2/commit/f8bd33266921636ce99c1026ddb429095b896921))
     - add support for nested functions ([`30f5187`](https://github.com/JohnTitor/ctest2/commit/30f5187a6a456942015f6361bae045ff06736dca))
     - Minimal support for fn types in extern statics ([`9375d57`](https://github.com/JohnTitor/ctest2/commit/9375d57cf2151069306ea04222bcad2d61862e9c))
 </details>
@@ -274,10 +302,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 1 commit contributed to the release.
+ - 2 commits contributed to the release.
  - 8 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -286,6 +314,7 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #37 from tbu-/pr_test_statics2 ([`5daab1d`](https://github.com/JohnTitor/ctest2/commit/5daab1daf0a361f81f83d98b7def856ff289b01b))
     - Revert bump in the minimum supported Rust version ([`92bc00e`](https://github.com/JohnTitor/ctest2/commit/92bc00eecc1b8725ecaa318df860664a91846fe4))
 </details>
 
@@ -297,8 +326,8 @@
 
  - 2 commits contributed to the release over the course of 22 calendar days.
  - 22 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -317,10 +346,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 5 commits contributed to the release over the course of 190 calendar days.
+ - 9 commits contributed to the release over the course of 190 calendar days.
  - 192 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -330,9 +359,13 @@
 
  * **Uncategorized**
     - improve docs of cfg method ([`e9355e7`](https://github.com/JohnTitor/ctest2/commit/e9355e738e3e25c5b51114f9bc7974da83040c6c))
+    - Merge pull request #34 from afdw/master ([`bf780a0`](https://github.com/JohnTitor/ctest2/commit/bf780a0e62caf4fb4747bd683713864b444bd6fb))
     - Add support for unions without typedefs ([`8078823`](https://github.com/JohnTitor/ctest2/commit/80788238ecaca2a610efea3f5c46ea9f23f88121))
+    - Merge pull request #29 from glandium/target_endian ([`94815ca`](https://github.com/JohnTitor/ctest2/commit/94815cadb00ab7bcee8b2f9b903c4db7f14c6fa1))
     - Add target_endian to the set of #[cfg()] items that are considered. ([`25b5b64`](https://github.com/JohnTitor/ctest2/commit/25b5b64e36147aab36a83cb1ffd5432c09a317ce))
+    - Merge pull request #28 from gnzlbg/deprecated ([`954f493`](https://github.com/JohnTitor/ctest2/commit/954f493d482a0873866ba335bee75ce2936e5415))
     - allow deprecated declarations on non-msvc targets ([`a24ccd2`](https://github.com/JohnTitor/ctest2/commit/a24ccd2ad9995915f6be99dcf6e548f2bdfafe14))
+    - Merge pull request #27 from gnzlbg/fix_bug ([`d3a5248`](https://github.com/JohnTitor/ctest2/commit/d3a5248c49ced9e5d42ebd74ee494db2988e7bad))
     - panic on non-repr(C) structs only if the struct should not be skipped ([`c79cfd9`](https://github.com/JohnTitor/ctest2/commit/c79cfd9d02aa6e5f6026e79df8b47bcdd34ec597))
 </details>
 
@@ -342,10 +375,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 3 commits contributed to the release over the course of 106 calendar days.
+ - 5 commits contributed to the release over the course of 106 calendar days.
  - 134 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -355,7 +388,9 @@
 
  * **Uncategorized**
     - Fix checking structs with `#[derive]` ([`b590c29`](https://github.com/JohnTitor/ctest2/commit/b590c2958b010d0a2512b5b81abccd8879f65604))
+    - Merge pull request #25 from bgermann/master ([`29d33e2`](https://github.com/JohnTitor/ctest2/commit/29d33e26d8f1297736c3716f4f2495dd068849ef))
     - Solaris support ([`8182b0c`](https://github.com/JohnTitor/ctest2/commit/8182b0cb0e73cc5b314886adeed9ebdf32d6e769))
+    - Merge pull request #22 from malbarbo/x32 ([`621f64e`](https://github.com/JohnTitor/ctest2/commit/621f64e78e25e71aca65f023591508dec188ae92))
     - Add support for linux x32 ([`8739c4b`](https://github.com/JohnTitor/ctest2/commit/8739c4bfe720e994184a95c7ebec773183f255f9))
 </details>
 
@@ -366,8 +401,8 @@
 <csr-read-only-do-not-edit/>
 
  - 1 commit contributed to the release.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -387,8 +422,8 @@
 
  - 9 commits contributed to the release over the course of 76 calendar days.
  - 88 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -414,10 +449,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 3 commits contributed to the release over the course of 15 calendar days.
+ - 5 commits contributed to the release over the course of 15 calendar days.
  - 28 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -426,8 +461,10 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #19 from sfackler/master ([`08db942`](https://github.com/JohnTitor/ctest2/commit/08db9429293a53c2fa8d39f0cc43a04add955100))
     - extern blocks can't be public ([`1254f45`](https://github.com/JohnTitor/ctest2/commit/1254f45225d62d6699bd56e40c3d3aaacdd9c2b6))
     - Handle ABIs in fields ([`73b72c1`](https://github.com/JohnTitor/ctest2/commit/73b72c1fa6b07f6da95fb035b1e92f82fc149236))
+    - Merge pull request #18 from malbarbo/emscripten ([`f4835aa`](https://github.com/JohnTitor/ctest2/commit/f4835aa2a14411beebc67e9a900858978d03cc92))
     - Add support emscripten targets ([`514a2f2`](https://github.com/JohnTitor/ctest2/commit/514a2f21990d83aa6fb4186a7220bf073558d87d))
 </details>
 
@@ -437,10 +474,10 @@
 
 <csr-read-only-do-not-edit/>
 
- - 4 commits contributed to the release over the course of 145 calendar days.
+ - 7 commits contributed to the release over the course of 145 calendar days.
  - 189 days passed between releases.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -449,9 +486,12 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #17 from petrochenkov/master ([`ae0bbf4`](https://github.com/JohnTitor/ctest2/commit/ae0bbf4e89de49b588d251769a5af8adcceb00b4))
     - Bump syntex_syntax to 0.27.0 to fix build on nightly rustc ([`9c81b92`](https://github.com/JohnTitor/ctest2/commit/9c81b927f3e1400f6558a65eeaffa126940ecf8c))
+    - Merge pull request #16 from cactorium/master ([`0b7f7b7`](https://github.com/JohnTitor/ctest2/commit/0b7f7b707add9d10c85bd3911030f7a739c349fa))
     - Add -uknown-linux-uclibc as target ([`376f59a`](https://github.com/JohnTitor/ctest2/commit/376f59a67cdae9d0f162f03b25c3b39f138b5eb3))
     - Support cast expressions in array lengths ([`80c0e5d`](https://github.com/JohnTitor/ctest2/commit/80c0e5d8dfa6d95c1b1fd7a313ba08ece18fac2f))
+    - Merge pull request #13 from japaric/sparc64 ([`b703b23`](https://github.com/JohnTitor/ctest2/commit/b703b23c69afe0f4939e0c7f6540e40e2f4a12e0))
     - sparc64 support ([`6d24033`](https://github.com/JohnTitor/ctest2/commit/6d24033d97a8b559245397102a3d751168050672))
 </details>
 
@@ -461,9 +501,9 @@
 
 <csr-read-only-do-not-edit/>
 
- - 36 commits contributed to the release over the course of 427 calendar days.
- - 0 commits where understood as [conventional](https://www.conventionalcommits.org).
- - 0 issues like '(#ID)' where seen in commit messages
+ - 43 commits contributed to the release over the course of 427 calendar days.
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
 
 ### Commit Details
 
@@ -473,9 +513,13 @@
 
  * **Uncategorized**
     - Fix powerpc64le target_arch ([`d5aac51`](https://github.com/JohnTitor/ctest2/commit/d5aac516d895556d652c15134ba1ad6cec5e38be))
+    - Merge pull request #10 from japaric/i586 ([`2839e49`](https://github.com/JohnTitor/ctest2/commit/2839e49847a6adca6e96cc81c46a1f03f8562ac0))
     - add support for i586 targets ([`723f739`](https://github.com/JohnTitor/ctest2/commit/723f73993f5b70e12f48d26ffde1659b2b7dbd7a))
+    - Merge pull request #9 from japaric/s390x ([`b7e6a3b`](https://github.com/JohnTitor/ctest2/commit/b7e6a3bca9ffe26b3c026e1255b3d4f0467485b2))
     - add support for s390x ([`bf56085`](https://github.com/JohnTitor/ctest2/commit/bf560858ef6f199b953d0d7a5568124908742057))
+    - Merge pull request #8 from japaric/mips64 ([`f3e6b73`](https://github.com/JohnTitor/ctest2/commit/f3e6b73310165a39cb4f463f3a66d4f98d243ffa))
     - add support for mips64 ([`9109572`](https://github.com/JohnTitor/ctest2/commit/910957269ba81f096ef60727ed104436557bec85))
+    - Merge pull request #7 from polachok/flags ([`a6becb6`](https://github.com/JohnTitor/ctest2/commit/a6becb6d7fd23d9863cba86eac31d1ffc4082734))
     - Allow user-specified flags override default ([`ff477ba`](https://github.com/JohnTitor/ctest2/commit/ff477ba55454af2b9837b9a60ad036912c1d57d2))
     - Add custom flags ([`965d657`](https://github.com/JohnTitor/ctest2/commit/965d6571ef4cfa0a911e89cee11e2f3cb211d6f0))
     - Print out rerun-if-changed keys to properly recompile ([`a2cf6be`](https://github.com/JohnTitor/ctest2/commit/a2cf6bec049efcaaee820631bd652c6fe52dfc1e))
@@ -486,8 +530,11 @@
     - Revert "Correct test names" ([`7703b51`](https://github.com/JohnTitor/ctest2/commit/7703b51086cce2d9a703b103d0695b36653b8cab))
     - Separate a function for compiling and generating ([`4b8a0cb`](https://github.com/JohnTitor/ctest2/commit/4b8a0cb2907eb006a138fb3d7e0f03eafaf86921))
     - Correct test names ([`2fa4c8b`](https://github.com/JohnTitor/ctest2/commit/2fa4c8b17551af7a4ebd799ca6332ef2cace8213))
+    - Merge pull request #4 from antonblanchard/powerpc64_merge ([`903b7f1`](https://github.com/JohnTitor/ctest2/commit/903b7f130e954d8583777255850d433b36f61f00))
     - Add powerpc, powerpc64 and powerpc64le support ([`7058f68`](https://github.com/JohnTitor/ctest2/commit/7058f6898a428589520803b4d1e3d24887698284))
+    - Merge pull request #3 from mneumann/dragonfly ([`2a0524d`](https://github.com/JohnTitor/ctest2/commit/2a0524de7542aebdb7d6a2f104780c0bdfaa3b56))
     - Fix for DragonFly ([`ea100e2`](https://github.com/JohnTitor/ctest2/commit/ea100e21377055b7fe4f032d9868c21cf97d06a6))
+    - Merge pull request #2 from semarie/openbsd ([`30ccebc`](https://github.com/JohnTitor/ctest2/commit/30ccebc2565e7325a045afa6189e00223471c421))
     - add openbsd support ([`702791e`](https://github.com/JohnTitor/ctest2/commit/702791e663dbd783d23e9f3e2acc78ae853766d0))
     - Don't use link_name in C by default ([`4b29e7d`](https://github.com/JohnTitor/ctest2/commit/4b29e7d8cf64370a3e38c9a2f31fc577a953689b))
     - Add os detection for netbsd ([`c78f4af`](https://github.com/JohnTitor/ctest2/commit/c78f4af3206d420bac0b88abab8b5d51bf4c8084))
