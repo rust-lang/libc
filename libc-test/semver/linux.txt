@@ -2891,6 +2891,7 @@ dirfd
 dl_iterate_phdr
 dl_phdr_info
 dqblk
+drand48
 dup3
 duplocale
 endgrent
@@ -2904,6 +2905,7 @@ epoll_ctl
 epoll_event
 epoll_pwait
 epoll_wait
+erand48
 eventfd
 execvpe
 faccessat
@@ -3012,15 +3014,18 @@ ip_mreq_source
 ipc_perm
 itimerspec
 j1939_filter
+jrand48
 key_t
 killpg
 labs
+lcong48
 lgetxattr
 listxattr
 llistxattr
 lockf
 loff_t
 login_tty
+lrand48
 lremovexattr
 lseek64
 lsetxattr
@@ -3055,6 +3060,7 @@ mq_timedreceive
 mq_timedsend
 mq_unlink
 mqd_t
+mrand48
 mremap
 msgctl
 msgget
@@ -3074,6 +3080,7 @@ nl_langinfo_l
 nlattr
 nlmsgerr
 nlmsghdr
+nrand48
 off64_t
 open64
 open_how
@@ -3192,6 +3199,7 @@ sched_setaffinity
 sched_setparam
 sched_setscheduler
 seccomp_data
+seed48
 seekdir
 sem_close
 sem_destroy
@@ -3252,6 +3260,7 @@ sockaddr_vm
 splice
 spwd
 srand
+srand48
 stack_t
 stat64
 statfs
