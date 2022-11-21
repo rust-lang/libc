@@ -884,8 +884,10 @@ pub const SYS_pkey_mprotect: ::c_long = 394;
 pub const SYS_pkey_alloc: ::c_long = 395;
 pub const SYS_pkey_free: ::c_long = 396;
 pub const SYS_statx: ::c_int = 397;
+pub const SYS_pidfd_send_signal: ::c_long = 424;
 pub const SYS_pidfd_open: ::c_long = 434;
 pub const SYS_clone3: ::c_long = 435;
+pub const SYS_pidfd_getfd: ::c_long = 438;
 
 cfg_if! {
     if #[cfg(libc_align)] {
