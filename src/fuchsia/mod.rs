@@ -909,8 +909,8 @@ s_no_extra_traits! {
 
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
+        __ss_pad2: [u8; 128 - 2 - 8],
         __ss_align: ::size_t,
-        __ss_pad2: [u8; 128 - 2 * 8],
     }
 
     pub struct utsname {
