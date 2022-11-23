@@ -1503,3 +1503,17 @@ extern "C" {
         value: *mut ::c_void,
     ) -> ::c_int;
 }
+
+/// mocked functions that dont do anything in WASI land
+pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int {
+    0
+}
+pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int {
+    0
+}
+pub fn mlockall(flags: ::c_int) -> ::c_int {
+    0
+}
+pub fn munlockall() -> ::c_int {
+    0
+}
