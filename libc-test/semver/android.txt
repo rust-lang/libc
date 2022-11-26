@@ -2915,6 +2915,7 @@ dlsym
 dup
 dup2
 duplocale
+endgrent
 endservent
 epoll_create
 epoll_create1
@@ -3014,6 +3015,7 @@ getegid
 getenv
 geteuid
 getgid
+getgrent
 getgrgid
 getgrgid_r
 getgrnam
@@ -3036,6 +3038,7 @@ getprotobyname
 getprotobynumber
 getpwnam
 getpwnam_r
+getpwent
 getpwuid
 getpwuid_r
 getresgid
@@ -3400,6 +3403,7 @@ seteuid
 setfsgid
 setfsuid
 setgid
+setgrent
 setgroups
 sethostname
 setlocale
@@ -3407,6 +3411,7 @@ setlogmask
 setns
 setpgid
 setpriority
+setpwent
 setregid
 setresgid
 setresuid
