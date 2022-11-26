@@ -3471,6 +3471,10 @@ extern "C" {
 
     pub fn dirname(path: *const ::c_char) -> *mut ::c_char;
     pub fn basename(path: *const ::c_char) -> *mut ::c_char;
+
+    pub fn setpwent();
+    pub fn endpwent();
+    pub fn getpwent() -> *mut passwd;
 }
 
 cfg_if! {

@@ -3595,3 +3595,6 @@ write
 writev
 dirname
 basename
+setpwent
+endpwent
+getpwent
