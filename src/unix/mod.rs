@@ -329,6 +329,8 @@ cfg_if! {
             cfg(target_feature = "crt-static"))]
         #[link(name = "gcc", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
+        #[link(name = "c", kind = "static", modifiers = "-bundle",
+            cfg(target_feature = "crt-static"))]
         #[link(name = "util", cfg(not(target_feature = "crt-static")))]
         #[link(name = "rt", cfg(not(target_feature = "crt-static")))]
         #[link(name = "pthread", cfg(not(target_feature = "crt-static")))]
