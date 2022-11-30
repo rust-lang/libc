@@ -1534,6 +1534,7 @@ clearerr
 clock_getcpuclockid
 clock_getres
 clock_settime
+copy_file_range
 cmsgcred
 cmsghdr
 cpuset

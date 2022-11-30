@@ -3954,6 +3954,15 @@ extern "C" {
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_writev(aiocbp: *mut ::aiocb) -> ::c_int;
 
+    pub fn copy_file_range(
+        infd: ::c_int,
+        inoffp: *mut ::off_t,
+        outfd: ::c_int,
+        outoffp: *mut ::off_t,
+        len: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
+
     pub fn devname_r(
         dev: ::dev_t,
         mode: ::mode_t,

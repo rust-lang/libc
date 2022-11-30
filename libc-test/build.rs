@@ -2304,6 +2304,7 @@ fn test_freebsd(target: &str) {
             "getlocalbase" if Some(13) > freebsd_ver => true,
             "aio_readv" if Some(13) > freebsd_ver => true,
             "aio_writev" if Some(13) > freebsd_ver => true,
+            "copy_file_range" if Some(13) > freebsd_ver => true,
 
             _ => false,
         }
