@@ -527,15 +527,6 @@ extern "C" {
         policy: ::c_int,
     ) -> ::c_int;
 
-    pub fn copy_file_range(
-        infd: ::c_int,
-        inoffp: *mut ::off_t,
-        outfd: ::c_int,
-        outoffp: *mut ::off_t,
-        len: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
-
     pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
