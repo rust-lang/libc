@@ -1294,6 +1294,7 @@ getlastlogx
 getline
 getloadavg
 getnameinfo
+getopt_long
 getpeereid
 getpriority
 getprogname

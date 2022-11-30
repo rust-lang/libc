@@ -618,6 +618,13 @@ s! {
        pub ifr6_prefixlen: u32,
        pub ifr6_ifindex: ::c_int,
    }
+
+    pub struct option {
+        pub name: *const ::c_char,
+        pub has_arg: ::c_int,
+        pub flag: *mut ::c_int,
+        pub val: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
@@ -4441,6 +4448,13 @@ extern "C" {
 
     pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn pthread_setname_np(thread: ::pthread_t, name: *const ::c_char) -> ::c_int;
+    pub fn getopt_long(
+        argc: ::c_int,
+        argv: *const *mut c_char,
+        optstring: *const c_char,
+        longopts: *const option,
+        longindex: *mut ::c_int,
+    ) -> ::c_int;
 }
 
 cfg_if! {

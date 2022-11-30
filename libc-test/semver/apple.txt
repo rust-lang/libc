@@ -1895,6 +1895,7 @@ getline
 getloadavg
 getmntinfo
 getnameinfo
+getopt_long
 getpeereid
 getpriority
 getprogname

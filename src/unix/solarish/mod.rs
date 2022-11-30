@@ -466,6 +466,13 @@ s! {
         pub pi_fputypes: [::c_char; PI_FPUTYPE as usize],
         pub pi_clock: ::c_int,
     }
+
+    pub struct option {
+        pub name: *const ::c_char,
+        pub has_arg: ::c_int,
+        pub flag: *mut ::c_int,
+        pub val: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
@@ -3182,6 +3189,14 @@ extern "C" {
     pub fn backtrace(buffer: *mut *mut ::c_void, size: ::c_int) -> ::c_int;
     pub fn backtrace_symbols(buffer: *const *mut ::c_void, size: ::c_int) -> *mut *mut ::c_char;
     pub fn backtrace_symbols_fd(buffer: *const *mut ::c_void, size: ::c_int, fd: ::c_int);
+
+    pub fn getopt_long(
+        argc: ::c_int,
+        argv: *const *mut c_char,
+        optstring: *const c_char,
+        longopts: *const option,
+        longindex: *mut ::c_int,
+    ) -> ::c_int;
 }
 
 #[link(name = "sendfile")]

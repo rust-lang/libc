@@ -1599,6 +1599,7 @@ getline
 getloadavg
 getlocalbase
 getnameinfo
+getopt_long
 getpagesize
 getpagesizes
 getpeereid

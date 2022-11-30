@@ -482,6 +482,13 @@ s! {
         pub code: ::__u16,
         pub absinfo: input_absinfo,
     }
+
+    pub struct option {
+        pub name: *const ::c_char,
+        pub has_arg: ::c_int,
+        pub flag: *mut ::c_int,
+        pub val: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
@@ -3471,6 +3478,13 @@ extern "C" {
 
     pub fn dirname(path: *const ::c_char) -> *mut ::c_char;
     pub fn basename(path: *const ::c_char) -> *mut ::c_char;
+    pub fn getopt_long(
+        argc: ::c_int,
+        argv: *const *mut c_char,
+        optstring: *const c_char,
+        longopts: *const option,
+        longindex: *mut ::c_int,
+    ) -> ::c_int;
 }
 
 cfg_if! {
