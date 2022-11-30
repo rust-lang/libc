@@ -4292,8 +4292,13 @@ extern "C" {
     pub fn cpuset_setid(which: cpuwhich_t, id: ::id_t, setid: ::cpusetid_t) -> ::c_int;
     pub fn cap_enter() -> ::c_int;
     pub fn cap_getmode(modep: *mut ::c_uint) -> ::c_int;
+    pub fn cap_fcntls_get(fd: ::c_int, fcntlrightsp: *mut u32) -> ::c_int;
+    pub fn cap_fcntls_limit(fd: ::c_int, fcntlrights: u32) -> ::c_int;
+    pub fn cap_ioctls_get(fd: ::c_int, cmds: *mut u_long, maxcmds: usize) -> isize;
+    pub fn cap_ioctls_limit(fd: ::c_int, cmds: *const u_long, ncmds: usize) -> ::c_int;
     pub fn __cap_rights_init(version: ::c_int, rights: *mut cap_rights_t, ...)
         -> *mut cap_rights_t;
+    pub fn __cap_rights_get(version: ::c_int, fd: ::c_int, rightsp: *mut cap_rights_t) -> ::c_int;
     pub fn __cap_rights_set(rights: *mut cap_rights_t, ...) -> *mut cap_rights_t;
     pub fn __cap_rights_clear(rights: *mut cap_rights_t, ...) -> *mut cap_rights_t;
     pub fn __cap_rights_is_set(rights: *const cap_rights_t, ...) -> bool;
@@ -4303,6 +4308,7 @@ extern "C" {
     pub fn cap_rights_remove(dst: *mut cap_rights_t, src: *const cap_rights_t)
         -> *mut cap_rights_t;
     pub fn cap_rights_contains(big: *const cap_rights_t, little: *const cap_rights_t) -> bool;
+    pub fn cap_sandboxed() -> bool;
 
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 
