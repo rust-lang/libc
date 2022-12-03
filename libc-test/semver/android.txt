@@ -3026,6 +3026,7 @@ getline
 getlogin
 getnameinfo
 getopt
+getopt_long
 getpeername
 getpgid
 getpgrp

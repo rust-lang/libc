@@ -115,6 +115,13 @@ s! {
         pub rm_so: regoff_t,
         pub rm_eo: regoff_t,
     }
+
+    pub struct option {
+        pub name: *const ::c_char,
+        pub has_arg: ::c_int,
+        pub flag: *mut ::c_int,
+        pub val: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
@@ -885,6 +892,13 @@ extern "C" {
     pub fn srand48(seed: ::c_long);
     pub fn seed48(xseed: *mut ::c_ushort) -> *mut ::c_ushort;
     pub fn lcong48(p: *mut ::c_ushort);
+    pub fn getopt_long(
+        argc: ::c_int,
+        argv: *const *mut c_char,
+        optstring: *const c_char,
+        longopts: *const option,
+        longindex: *mut ::c_int,
+    ) -> ::c_int;
 }
 
 cfg_if! {

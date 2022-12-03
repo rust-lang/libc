@@ -2967,6 +2967,7 @@ getifaddrs
 getline
 getmntent
 getnameinfo
+getopt_long
 getpriority
 getpwent
 getresgid
