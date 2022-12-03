@@ -1,7 +1,19 @@
 pub type c_char = i8;
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type wchar_t = i32;
+
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        pub type c_long = i32;
+        pub type c_ulong = u32;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub type c_long = i64;
+        pub type c_ulong = u64;
+    }
+}
 
 pub type blkcnt_t = ::c_ulong;
 pub type blksize_t = ::c_long;
@@ -14,7 +26,7 @@ pub type ino_t = ::c_ulong;
 pub type mode_t = ::c_int;
 pub type nfds_t = ::c_ulong;
 pub type nlink_t = ::c_ulong;
-pub type off_t = ::c_long;
+pub type off_t = ::c_longlong;
 pub type pthread_t = *mut ::c_void;
 pub type pthread_attr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
@@ -34,7 +46,7 @@ pub type socklen_t = u32;
 pub type speed_t = u32;
 pub type suseconds_t = ::c_int;
 pub type tcflag_t = u32;
-pub type time_t = ::c_long;
+pub type time_t = ::c_longlong;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
