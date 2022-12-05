@@ -1583,6 +1583,10 @@ pub const AT_HWCAP2: ::c_ulong = 26;
 
 pub const AT_EXECFN: ::c_ulong = 31;
 
+// defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
+// wherever it is defined.
+pub const AT_SYSINFO_EHDR: ::c_ulong = 33;
+
 pub const GLOB_ERR: ::c_int = 1 << 0;
 pub const GLOB_MARK: ::c_int = 1 << 1;
 pub const GLOB_NOSORT: ::c_int = 1 << 2;
