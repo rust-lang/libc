@@ -1130,8 +1130,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
             .map(|i| &target[i + before_env.len()..])
             .unwrap();
         let env = match version {
-            "7.1.0" => "nto71",
-            _ => panic!("Uknown version"),
+            "710" => "nto71",
+            _ => panic!("Unknown version"),
         };
         ("nto", "unix", env)
     } else {
