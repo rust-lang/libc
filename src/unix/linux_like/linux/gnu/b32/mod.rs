@@ -326,6 +326,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))] {
         mod mips;
         pub use self::mips::*;
+    } else if #[cfg(target_arch = "hppa")] {
+        mod hppa;
+        pub use self::hppa::*;
     } else if #[cfg(target_arch = "m68k")] {
         mod m68k;
         pub use self::m68k::*;
