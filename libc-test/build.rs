@@ -3841,6 +3841,7 @@ fn test_linux(target: &str) {
             | "MADV_POPULATE_READ"
             | "MADV_POPULATE_WRITE"
             if musl => true,
+            "CLONE_CLEAR_SIGHAND" | "CLONE_INTO_CGROUP" => true,
 
             // kernel 6.1 minimum
             "MADV_COLLAPSE" => true,
