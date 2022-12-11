@@ -2615,10 +2615,10 @@ pub const IN_Q_OVERFLOW: u32 = 0x0000_4000;
 pub const IN_IGNORED: u32 = 0x0000_8000;
 pub const IN_ONLYDIR: u32 = 0x0100_0000;
 pub const IN_DONT_FOLLOW: u32 = 0x0200_0000;
-// pub const IN_EXCL_UNLINK:   u32 = 0x0400_0000;
+pub const IN_EXCL_UNLINK: u32 = 0x0400_0000;
 
-// pub const IN_MASK_CREATE:   u32 = 0x1000_0000;
-// pub const IN_MASK_ADD:      u32 = 0x2000_0000;
+pub const IN_MASK_CREATE: u32 = 0x1000_0000;
+pub const IN_MASK_ADD: u32 = 0x2000_0000;
 pub const IN_ISDIR: u32 = 0x4000_0000;
 pub const IN_ONESHOT: u32 = 0x8000_0000;
 
