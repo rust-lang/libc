@@ -27,7 +27,7 @@ pub type pthread_key_t = ::c_uint;
 pub type rlim_t = u32;
 
 cfg_if! {
-    if #[cfg(target_os = "horizon")] {
+    if #[cfg(any(target_os = "horizon", target_os = "zephyr"))] {
         pub type sa_family_t = u16;
     } else {
         pub type sa_family_t = u8;
@@ -730,6 +730,9 @@ cfg_if! {
     } else if #[cfg(target_os = "horizon")] {
         mod horizon;
         pub use self::horizon::*;
+    } else if #[cfg(target_os = "zephyr")] {
+        mod zephyr;
+        pub use self::zephyr::*;
     } else if #[cfg(target_os = "vita")] {
         mod vita;
         pub use self::vita::*;
