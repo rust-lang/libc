@@ -2854,7 +2854,10 @@ arphdr
 arpreq
 arpreq_old
 atexit
+atof
 atoi
+atol
+atoll
 bind
 blkcnt_t
 blksize_t
@@ -3504,7 +3507,9 @@ strtod
 strtof
 strtok
 strtol
+strtoll
 strtoul
+strtoull
 strxfrm
 suseconds_t
 swapoff
