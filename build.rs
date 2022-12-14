@@ -29,6 +29,13 @@ const ALLOWED_CFGS: &[&str] = &[
     "libc_union",
 ];
 
+// Extra values to allow for check-cfg.
+const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
+    ("target_os", &["switch", "aix", "ohos"]),
+    ("target_env", &["illumos", "wasi", "aix", "ohos"]),
+    ("target_arch", &["loongarch64"]),
+];
+
 fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
@@ -150,6 +157,10 @@ fn main() {
     if libc_check_cfg {
         for cfg in ALLOWED_CFGS {
             println!("cargo:rustc-check-cfg=values({})", cfg);
+        }
+        for (name, values) in CHECK_CFG_EXTRA {
+            let values = values.join("\",\"");
+            println!("cargo:rustc-check-cfg=values({},\"{}\")", name, values);
         }
     }
 }
