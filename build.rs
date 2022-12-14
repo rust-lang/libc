@@ -2,6 +2,33 @@ use std::env;
 use std::process::Command;
 use std::str;
 
+// List of cfgs this build script is allowed to set. The list is needed to support check-cfg, as we
+// need to know all the possible cfgs that this script will set. If you need to set another cfg
+// make sure to add it to this list as well.
+const ALLOWED_CFGS: &[&str] = &[
+    "freebsd10",
+    "freebsd11",
+    "freebsd12",
+    "freebsd13",
+    "freebsd14",
+    "libc_align",
+    "libc_cfg_target_vendor",
+    "libc_const_extern_fn",
+    "libc_const_extern_fn_unstable",
+    "libc_const_size_of",
+    "libc_core_cvoid",
+    "libc_deny_warnings",
+    "libc_int128",
+    "libc_long_array",
+    "libc_non_exhaustive",
+    "libc_packedN",
+    "libc_priv_mod_use",
+    "libc_ptr_addr_of",
+    "libc_thread_local",
+    "libc_underscore_const_names",
+    "libc_union",
+];
+
 fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
@@ -181,5 +208,8 @@ fn which_freebsd() -> Option<i32> {
 }
 
 fn set_cfg(cfg: &str) {
+    if !ALLOWED_CFGS.contains(&cfg) {
+        panic!("trying to set cfg {}, but it is not in ALLOWED_CFGS", cfg);
+    }
     println!("cargo:rustc-cfg={}", cfg);
 }
