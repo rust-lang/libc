@@ -63,40 +63,40 @@ s! {
     }
 }
 
-pub const NET_SOCKADDR_MAX_SIZE: size_t = crate::mem::size_of::<sockaddr_in6>();
+pub const NET_SOCKADDR_MAX_SIZE: ::size_t = crate::mem::size_of::<sockaddr_in6>();
 
-pub const PF_UNSPEC: ::c_long = 0;
+pub const PF_UNSPEC: c_long = 0;
 /**< Unspecified protocol family.  */
-pub const PF_INET: ::c_long = 1;
+pub const PF_INET: c_long = 1;
 /**< IP protocol family version 4. */
-pub const PF_INET6: ::c_long = 2;
+pub const PF_INET6: c_long = 2;
 /**< IP protocol family version 6. */
-pub const PF_PACKET: ::c_long = 3;
+pub const PF_PACKET: c_long = 3;
 /**< Packet family.                */
-pub const PF_CAN: ::c_long = 4;
+pub const PF_CAN: c_long = 4;
 /**< Controller Area Network.      */
-pub const PF_NET_MGMT: ::c_long = 5;
+pub const PF_NET_MGMT: c_long = 5;
 /**< Network management info.      */
-pub const PF_LOCAL: ::c_long = 6;
+pub const PF_LOCAL: c_long = 6;
 /**< Inter-process communication   */
-pub const PF_UNIX: ::c_long = PF_LOCAL;
+pub const PF_UNIX: c_long = PF_LOCAL;
 /**< Inter-process communication   */
 
-pub const AF_UNSPEC: ::c_long = PF_UNSPEC;
+pub const AF_UNSPEC: c_long = PF_UNSPEC;
 /**< Unspecified address family.   */
-pub const AF_INET: ::c_long = PF_INET;
+pub const AF_INET: c_long = PF_INET;
 /**< IP protocol family version 4. */
-pub const AF_INET6: ::c_long = PF_INET6;
+pub const AF_INET6: c_long = PF_INET6;
 /**< IP protocol family version 6. */
-pub const AF_PACKET: ::c_long = PF_PACKET;
+pub const AF_PACKET: c_long = PF_PACKET;
 /**< Packet family.                */
-pub const AF_CAN: ::c_long = PF_CAN;
+pub const AF_CAN: c_long = PF_CAN;
 /**< Controller Area Network.      */
-pub const AF_NET_MGMT: ::c_long = PF_NET_MGMT;
+pub const AF_NET_MGMT: c_long = PF_NET_MGMT;
 /**< Network management info.      */
-pub const AF_LOCAL: ::c_long = PF_LOCAL;
+pub const AF_LOCAL: c_long = PF_LOCAL;
 /**< Inter-process communication   */
-pub const AF_UNIX: ::c_long = PF_UNIX;
+pub const AF_UNIX: c_long = PF_UNIX;
 /**< Inter-process communication   */
 
 pub const FIONBIO: ::c_ulong = 2147772030;
@@ -136,15 +136,15 @@ pub const SIGALRM: ::c_int = 14; /* alarm clock */
 pub const SIGTERM: ::c_int = 15; /* software termination signal from kill */
 pub const SOL_SOCKET: ::c_int = 0xfff;
 
-pub const ZSOCK_MSG_PEEK: ::c_long = 0x02;
-pub const ZSOCK_MSG_TRUNC: ::c_long = 0x20;
-pub const ZSOCK_MSG_DONTWAIT: ::c_long = 0x40;
-pub const ZSOCK_MSG_WAITALL: ::c_long = 0x100;
+pub const ZSOCK_MSG_PEEK: c_long = 0x02;
+pub const ZSOCK_MSG_TRUNC: c_long = 0x20;
+pub const ZSOCK_MSG_DONTWAIT: c_long = 0x40;
+pub const ZSOCK_MSG_WAITALL: c_long = 0x100;
 
-pub const MSG_PEEK: ::c_long = ZSOCK_MSG_PEEK;
-pub const MSG_TRUNC: ::c_long = ZSOCK_MSG_TRUNC;
-pub const MSG_DONTWAIT: ::c_long = ZSOCK_MSG_DONTWAIT;
-pub const MSG_WAITALL: ::c_long = ZSOCK_MSG_WAITALL;
+pub const MSG_PEEK: c_long = ZSOCK_MSG_PEEK;
+pub const MSG_TRUNC: c_long = ZSOCK_MSG_TRUNC;
+pub const MSG_DONTWAIT: c_long = ZSOCK_MSG_DONTWAIT;
+pub const MSG_WAITALL: c_long = ZSOCK_MSG_WAITALL;
 
 pub const DNS_EAI_BADFLAGS: ::c_int = -1;
 pub const DNS_EAI_NONAME: ::c_int = -2;
@@ -208,4 +208,3 @@ extern "C" {
 }
 
 pub use crate::unix::newlib::generic::{sigset_t, stat};
-use size_t;
