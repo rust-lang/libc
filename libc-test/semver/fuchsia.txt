@@ -1168,6 +1168,9 @@ accept4
 acct
 aiocb
 atof
+atoi
+atol
+atoll
 blkcnt64_t
 brk
 clearenv
@@ -1366,6 +1369,8 @@ stat64
 statfs
 statfs64
 statvfs64
+strtoll
+strtoull
 swapoff
 swapon
 sync

@@ -492,7 +492,10 @@ extern "C" {
     pub fn ferror(stream: *mut FILE) -> c_int;
     pub fn clearerr(stream: *mut FILE);
     pub fn perror(s: *const c_char);
+    pub fn atof(s: *const c_char) -> c_double;
     pub fn atoi(s: *const c_char) -> c_int;
+    pub fn atol(s: *const c_char) -> c_long;
+    pub fn atoll(s: *const c_char) -> c_longlong;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "strtod$UNIX2003"
@@ -500,7 +503,9 @@ extern "C" {
     pub fn strtod(s: *const c_char, endp: *mut *mut c_char) -> c_double;
     pub fn strtof(s: *const c_char, endp: *mut *mut c_char) -> c_float;
     pub fn strtol(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_long;
+    pub fn strtoll(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_longlong;
     pub fn strtoul(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_ulong;
+    pub fn strtoull(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_ulonglong;
     pub fn calloc(nobj: size_t, size: size_t) -> *mut c_void;
     pub fn malloc(size: size_t) -> *mut c_void;
     pub fn realloc(p: *mut c_void, size: size_t) -> *mut c_void;

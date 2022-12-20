@@ -152,6 +152,8 @@ aligned_free
 atexit
 atof
 atoi
+atol
+atoll
 bind
 c_char
 c_double
@@ -307,7 +309,9 @@ strtod
 strtof
 strtok
 strtol
+strtoll
 strtoul
+strtoull
 strxfrm
 system
 time

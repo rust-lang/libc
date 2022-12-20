@@ -1221,7 +1221,6 @@ arc4random
 arc4random_buf
 arc4random_uniform
 arphdr
-atof
 backtrace
 backtrace_symbols
 backtrace_symbols_fd

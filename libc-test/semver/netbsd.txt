@@ -1166,7 +1166,6 @@ arc4random
 arc4random_buf
 arc4random_uniform
 arphdr
-atof
 bsearch
 chflags
 chroot
