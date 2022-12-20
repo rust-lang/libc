@@ -61,6 +61,7 @@ fn do_ctest() {
         t if t.contains("wasi") => return test_wasi(t),
         t if t.contains("windows") => return test_windows(t),
         t if t.contains("vxworks") => return test_vxworks(t),
+        t if t.contains("nto-qnx") => return test_neutrino(t),
         t => panic!("unknown target {}", t),
     }
 }
@@ -2651,6 +2652,257 @@ fn test_emscripten(target: &str) {
     });
 
     // FIXME: test linux like
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_neutrino(target: &str) {
+    assert!(target.contains("nto-qnx"));
+
+    let mut cfg = ctest_cfg();
+
+    headers! { cfg:
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "sys/elf.h",
+        "fcntl.h",
+        "glob.h",
+        "grp.h",
+        "iconv.h",
+        "ifaddrs.h",
+        "limits.h",
+        "sys/link.h",
+        "locale.h",
+        "sys/malloc.h",
+        "rcheck/malloc.h",
+        "malloc.h",
+        "mqueue.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "netinet/ip_var.h",
+        "sys/poll.h",
+        "pthread.h",
+        "pwd.h",
+        "regex.h",
+        "resolv.h",
+        "sys/sched.h",
+        "sched.h",
+        "semaphore.h",
+        "shadow.h",
+        "signal.h",
+        "spawn.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "sys/sysctl.h",
+        "sys/file.h",
+        "sys/inotify.h",
+        "sys/ioctl.h",
+        "sys/ipc.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/msg.h",
+        "sys/resource.h",
+        "sys/sem.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/swap.h",
+        "sys/termio.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "sys/time.h",
+        "ucontext.h",
+        "unistd.h",
+        "utime.h",
+        "utmp.h",
+        "wchar.h",
+        "aio.h",
+        "nl_types.h",
+        "langinfo.h",
+        "unix.h",
+        "nbutil.h",
+        "aio.h",
+        "net/bpf.h",
+        "net/if_dl.h",
+        "sys/syspage.h",
+
+        // TODO: The following header file doesn't appear as part of the default headers
+        //       found in a standard installation of Neutrino 7.1 SDP.  The structures/
+        //       functions dependent on it are currently commented out.
+        //"sys/asyncmsg.h",
+    }
+
+    // Create and include a header file containing
+    // items which are not included in any official
+    // header file.
+    let internal_header = "internal.h";
+    let out_dir = env::var("OUT_DIR").unwrap();
+    cfg.header(internal_header);
+    cfg.include(&out_dir);
+    std::fs::write(
+        out_dir.to_owned() + "/" + internal_header,
+        "#ifndef __internal_h__
+        #define __internal_h__
+        void __my_thread_exit(const void **);
+        #endif",
+    )
+    .unwrap();
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
+            | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
+            | "Elf32_Chdr" | "Elf64_Chdr" | "aarch64_qreg_t" | "syspage_entry_info"
+            | "syspage_array_info" => ty.to_string(),
+
+            "Ioctl" => "int".to_string(),
+
+            t if is_union => format!("union {}", t),
+
+            t if t.ends_with("_t") => t.to_string(),
+
+            // put `struct` in front of all structs:.
+            t if is_struct => format!("struct {}", t),
+
+            t => t.to_string(),
+        }
+    });
+
+    cfg.field_name(move |_struct_, field| match field {
+        "type_" => "type".to_string(),
+
+        s => s.to_string(),
+    });
+
+    cfg.volatile_item(|i| {
+        use ctest::VolatileItemKind::*;
+        match i {
+            // The following fields are volatie but since we cannot express that in
+            // Rust types, we have to explicitly tell the checker about it here:
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
+            StructField(ref n, ref f) if n == "qtime_entry" && f == "nsec_tod_adjust" => true,
+            StructField(ref n, ref f) if n == "qtime_entry" && f == "nsec" => true,
+            StructField(ref n, ref f) if n == "qtime_entry" && f == "nsec_stable" => true,
+            StructField(ref n, ref f) if n == "intrspin" && f == "value" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_type(move |ty| {
+        match ty {
+            // FIXME: `sighandler_t` type is incorrect, see:
+            // https://github.com/rust-lang/libc/issues/1359
+            "sighandler_t" => true,
+
+            // Does not exist in Neutrino
+            "locale_t" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
+        match ty {
+            "Elf64_Phdr" | "Elf32_Phdr" => true,
+
+            // FIXME: This is actually a union, not a struct
+            "sigval" => true,
+
+            // union
+            "_channel_connect_attr" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // These signal "functions" are actually integer values that are casted to a fn ptr
+            // This causes the compiler to err because of "illegal cast of int to ptr".
+            "SIG_DFL" => true,
+            "SIG_IGN" => true,
+            "SIG_ERR" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verified
+        match name {
+            // FIXME: https://github.com/rust-lang/libc/issues/1272
+            "execv" | "execve" | "execvp" | "execvpe" => true,
+
+            // wrong signature
+            "signal" => true,
+
+            // wrong signature of callback ptr
+            "__cxa_atexit" => true,
+
+            // FIXME: Our API is unsound. The Rust API allows aliasing
+            // pointers, but the C API requires pointers not to alias.
+            // We should probably be at least using `&`/`&mut` here, see:
+            // https://github.com/gnzlbg/ctest/issues/68
+            "lio_listio" => true,
+
+            // 2 fields are actually unions which we're simply representing
+            // as structures.
+            "ChannelConnectAttr" => true,
+
+            // fields contains unions
+            "SignalKillSigval" => true,
+            "SignalKillSigval_r" => true,
+
+            // Not defined in any headers.  Defined to work around a
+            // stack unwinding bug.
+            "__my_thread_exit" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        // sigval is actually a union, but we pretend it's a struct
+        struct_ == "sigevent" && field == "sigev_value" ||
+        // Anonymous structures
+        struct_ == "_idle_hook" && field == "time"
+    });
+
+    cfg.skip_field(move |struct_, field| {
+        (struct_ == "__sched_param" && field == "reserved") ||
+        (struct_ == "sched_param" && field == "reserved") ||
+        (struct_ == "sigevent" && field == "__sigev_un1") || // union
+        (struct_ == "sigevent" && field == "__sigev_un2") || // union
+        // sighandler_t type is super weird
+        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        // does not exist
+        (struct_ == "syspage_entry" && field == "__reserved") ||
+        false // keep me for smaller diffs when something is added above
+    });
+
+    cfg.skip_static(move |name| (name == "__dso_handle"));
+
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
