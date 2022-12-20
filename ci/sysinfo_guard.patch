@@ -5,6 +5,6 @@
 +#ifdef __GLIBC__
  #include <linux/sysinfo.h>
 +#endif
+ #include <linux/const.h>
  
- /*
-  * 'kernel.h' contains some often-used function prototypes etc
+ #endif /* _LINUX_KERNEL_H */

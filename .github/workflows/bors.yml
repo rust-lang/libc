@@ -6,10 +6,15 @@ on:
       - auto-libc
       - try
 
+permissions: {}
 jobs:
   docker_linux_tier1:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Docker Linux Tier1
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
       matrix:
@@ -21,15 +26,19 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
   macos:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: macOS
-    runs-on: macos-10.15
+    runs-on: macos-12
     strategy:
       fail-fast: true
       matrix:
@@ -40,15 +49,19 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run.sh
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OS: windows
     strategy:
@@ -71,7 +84,10 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Self-update rustup
+        run: rustup self update
+        shell: bash
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
         shell: bash
@@ -80,24 +96,30 @@ jobs:
         shell: bash
 
   style_check:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Style check
-    runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: true
+    runs-on: ubuntu-22.04
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: sh ./ci/install-rust.sh
       - name: Check style
         run: sh ci/style.sh
 
   docker_linux_tier2:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Docker Linux Tier2
     needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
       max-parallel: 12
@@ -126,7 +148,10 @@ jobs:
           powerpc64le-unknown-linux-gnu,
           s390x-unknown-linux-gnu,
           riscv64gc-unknown-linux-gnu,
-          # FIXME: Figure out why this is disabled.
+          # FIXME: A recent nightly causes a linker failure:
+          # https://github.com/rust-lang/rust/issues/76679
+          # See this comment for more details:
+          # https://github.com/rust-lang/libc/pull/2225#issuecomment-880696737
           #wasm32-wasi,
           sparc64-unknown-linux-gnu,
           wasm32-unknown-emscripten,
@@ -141,33 +166,67 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
-  # devkitpro's pacman needs to be connected from Docker.
-  docker_switch:
-    name: Docker Switch
+  # These targets are tier 3 or otherwise need to have CI build std via -Zbuild-std.
+  # Because of this, only the nightly compiler can be used on these targets.
+  docker_linux_build_std:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
+    if: ${{ false }} # This is currently broken
+    name: Docker Linux Build-Std Targets
     needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
+      max-parallel: 12
+      matrix:
+        target: [
+          armv7-unknown-linux-uclibceabihf
+        ]
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Setup Rust toolchain
+        run: TOOLCHAIN=nightly INSTALL_RUST_SRC=1 sh ./ci/install-rust.sh
+      - name: Execute run-docker.sh
+        run: LIBC_CI=1 TOOLCHAIN=nightly LIBC_CI_ZBUILD_STD=1 sh ./ci/run-docker.sh ${{ matrix.target }}
+
+  # devkitpro's pacman needs to be connected from Docker.
+  docker_switch:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
+    name: Docker Switch
+    needs: [docker_linux_tier1, style_check]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh switch
 
   build_channels_linux:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Build Channels Linux
     needs: docker_linux_tier2
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       OS: linux
     strategy:
@@ -188,16 +247,23 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
       - name: Execute build.sh
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_macos:
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+
     name: Build Channels macOS
     needs: macos
-    runs-on: macos-10.15
+    # FIXME: Use macOS 11 for now as CI failed with a linker error on macOS 12 image:
+    # ld: in /.../x86_64-apple-darwin/lib/libstd-a4729905.rlib(rust.metadata.bin),
+    # archive member 'rust.metadata.bin' with length 2958149 is not mach-o or llvm bitcode file '/.../x86_64-apple-darwin/lib/libstd-a4729905.rlib'
+    # Possibly related: https://github.com/actions/runner-images/issues/6350
+    runs-on: macos-11
     env:
       OS: macos
     strategy:
@@ -218,53 +284,78 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
       - name: Execute build.sh
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
-  semver_linux:
-    name: Semver Linux
-    needs: build_channels_linux
-    runs-on: ubuntu-20.04
-    continue-on-error: true
+  build_channels_windows:
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+
+    name: Build Channels Windows
+    runs-on: windows-2022
+    env:
+      OS: windows
     strategy:
       fail-fast: true
+      matrix:
+        toolchain: [
+          1.19.0,
+          1.24.0,
+          1.25.0,
+          1.30.0,
+          stable,
+        ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Self-update rustup
+        run: rustup self update
+        shell: bash
+      - name: Execute build.sh
+        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} WIN_TARGET=${{ matrix.target }} sh ./ci/build.sh
+        shell: bash
+
+  semver_linux:
+    if: ${{ false }} # This is currently broken
+    name: Semver Linux
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         # Should update the semverver revision in semver.sh if we touch nightly ver.
-        run: TOOLCHAIN=nightly-2020-11-19 sh ./ci/install-rust.sh
+        run: TOOLCHAIN=nightly-2022-05-23 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh linux
 
   semver_macos:
+    if: ${{ false }} # This is currently broken
     name: Semver macOS
-    needs: build_channels_macos
-    runs-on: macos-10.15
+    runs-on: macos-12
     continue-on-error: true
-    strategy:
-      fail-fast: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
-        # FIXME: Pin nightly version to make semverver compilable.
-        run: TOOLCHAIN=nightly-2020-11-19 sh ./ci/install-rust.sh
+        # Pin nightly version to make semverver compilable.
+        run: TOOLCHAIN=nightly-2022-05-23 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh macos
 
   docs:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Generate documentation
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: docker_linux_tier2
-    strategy:
-      fail-fast: true
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         run: sh ./ci/install-rust.sh
       - name: Generate documentation
@@ -279,16 +370,18 @@ jobs:
   end_success:
     name: bors build finished
     if: github.event.pusher.name == 'bors' && success()
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [
       docker_linux_tier1,
       docker_linux_tier2,
+      #docker_linux_build_std,
       macos,
       windows,
       style_check,
       docker_switch,
       build_channels_linux,
       build_channels_macos,
+      build_channels_windows,
       docs,
     ]
 
@@ -299,16 +392,18 @@ jobs:
   end_failure:
     name: bors build finished
     if: github.event.pusher.name == 'bors' && (failure() || cancelled())
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [
       docker_linux_tier1,
       docker_linux_tier2,
+      #docker_linux_build_std,
       macos,
       windows,
       style_check,
       docker_switch,
       build_channels_linux,
       build_channels_macos,
+      build_channels_windows,
       docs,
     ]
 

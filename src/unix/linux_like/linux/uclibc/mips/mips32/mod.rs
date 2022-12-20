@@ -12,8 +12,8 @@ pub type blksize_t = i32;
 pub type nlink_t = u32;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
-pub type rlim_t = ::c_ulong;
 pub type __u64 = ::c_ulonglong;
+pub type __s64 = ::c_longlong;
 pub type fsblkcnt64_t = u64;
 pub type fsfilcnt64_t = u64;
 
@@ -264,8 +264,6 @@ pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 20;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
-
-pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
 
 pub const SYS_syscall: ::c_long = 4000 + 0;
 pub const SYS_exit: ::c_long = 4000 + 1;
@@ -625,6 +623,7 @@ pub const SYS_pwritev2: ::c_long = 4000 + 362;
 pub const SYS_pkey_mprotect: ::c_long = 4000 + 363;
 pub const SYS_pkey_alloc: ::c_long = 4000 + 364;
 pub const SYS_pkey_free: ::c_long = 4000 + 365;
+pub const SYS_clone3: ::c_long = 4000 + 435;
 
 #[link(name = "util")]
 extern "C" {
@@ -636,13 +635,10 @@ extern "C" {
         newp: *mut ::c_void,
         newlen: ::size_t,
     ) -> ::c_int;
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn glob64(
         pattern: *const ::c_char,
         flags: ::c_int,
-        errfunc: ::Option<
-            extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int,
-        >,
+        errfunc: ::Option<extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int>,
         pglob: *mut glob64_t,
     ) -> ::c_int;
     pub fn globfree64(pglob: *mut glob64_t);

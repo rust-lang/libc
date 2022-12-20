@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+# Disable SC2086 as it confuses the docker command.
+# shellcheck disable=SC2086
+
 # Small script to run tests for a target (or all targets) inside all the
 # respective docker images.
 
@@ -37,6 +40,7 @@ run() {
       --rm \
       --user "$(id -u)":"$(id -g)" \
       --env LIBC_CI \
+      --env LIBC_CI_ZBUILD_STD \
       --env CARGO_HOME=/cargo \
       --env CARGO_TARGET_DIR=/checkout/target \
       --volume "$CARGO_HOME":/cargo \

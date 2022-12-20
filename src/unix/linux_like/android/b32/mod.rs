@@ -8,6 +8,7 @@ pub type off64_t = ::c_longlong;
 pub type sigset_t = ::c_ulong;
 pub type socklen_t = i32;
 pub type time64_t = i64;
+pub type __u64 = ::c_ulonglong;
 
 s! {
     pub struct sigaction {
@@ -27,7 +28,7 @@ s! {
         __pad0: [::c_uchar; 4],
         __st_ino: ::ino_t,
         pub st_mode: ::c_uint,
-        pub st_nlink: ::c_uint,
+        pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
         pub st_rdev: ::c_ulonglong,
@@ -49,7 +50,7 @@ s! {
         __pad0: [::c_uchar; 4],
         __st_ino: ::ino_t,
         pub st_mode: ::c_uint,
-        pub st_nlink: ::c_uint,
+        pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
         pub st_rdev: ::c_ulonglong,
@@ -117,6 +118,14 @@ s! {
         pendingWriters: ::c_int,
         attr: i32,
         __reserved: [::c_char; 12],
+    }
+
+    pub struct pthread_barrier_t {
+        __private: [i32; 8],
+    }
+
+    pub struct pthread_spinlock_t {
+        __private: [i32; 2],
     }
 
     pub struct passwd {
@@ -194,13 +203,9 @@ pub const RTLD_DEFAULT: *mut ::c_void = -1isize as *mut ::c_void;
 
 pub const PTRACE_GETFPREGS: ::c_int = 14;
 pub const PTRACE_SETFPREGS: ::c_int = 15;
-pub const PTRACE_GETREGS: ::c_int = 12;
-pub const PTRACE_SETREGS: ::c_int = 13;
 
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t =
-    pthread_mutex_t { value: 0 };
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t =
-    pthread_cond_t { value: 0 };
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t { value: 0 };
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t { value: 0 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     lock: PTHREAD_MUTEX_INITIALIZER,
     cond: PTHREAD_COND_INITIALIZER,

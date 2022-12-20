@@ -6,6 +6,7 @@ pub type nlink_t = u32;
 pub type blksize_t = i32;
 pub type suseconds_t = i64;
 pub type __u64 = ::c_ulonglong;
+pub type __s64 = ::c_longlong;
 
 s! {
     pub struct sigaction {
@@ -142,6 +143,13 @@ s! {
         __size: [usize; 8]
     }
 
+    pub struct user_regs_struct {
+        pub regs: [::c_ulonglong; 31],
+        pub sp: ::c_ulonglong,
+        pub pc: ::c_ulonglong,
+        pub pstate: ::c_ulonglong,
+    }
+
     pub struct ipc_perm {
         pub __key: ::key_t,
         pub uid: ::uid_t,
@@ -168,17 +176,6 @@ s! {
         __unused5: ::c_ulong
     }
 
-    pub struct termios2 {
-        pub c_iflag: ::tcflag_t,
-        pub c_oflag: ::tcflag_t,
-        pub c_cflag: ::tcflag_t,
-        pub c_lflag: ::tcflag_t,
-        pub c_line: ::cc_t,
-        pub c_cc: [::cc_t; 19],
-        pub c_ispeed: ::speed_t,
-        pub c_ospeed: ::speed_t,
-    }
-
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
@@ -200,10 +197,10 @@ s! {
         pub ss_size: ::size_t
     }
 
-    pub struct ip_mreqn {
-        pub imr_multiaddr: ::in_addr,
-        pub imr_address: ::in_addr,
-        pub imr_ifindex: ::c_int,
+    pub struct seccomp_notif_sizes {
+        pub seccomp_notif: ::__u16,
+        pub seccomp_notif_resp: ::__u16,
+        pub seccomp_data: ::__u16,
     }
 }
 
@@ -212,12 +209,6 @@ pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: ::c_int = 0x8;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
 pub const RTLD_NOLOAD: ::c_int = 0x4;
-
-pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
-pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
-pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
-pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 7;
-pub const RLIMIT_NPROC: ::__rlimit_resource_t = 6;
 
 pub const O_APPEND: ::c_int = 1024;
 pub const O_CREAT: ::c_int = 64;
@@ -322,80 +313,6 @@ pub const ERFKILL: ::c_int = 132;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
-pub const SOL_SOCKET: ::c_int = 1;
-
-pub const SO_REUSEADDR: ::c_int = 2;
-pub const SO_TYPE: ::c_int = 3;
-pub const SO_ERROR: ::c_int = 4;
-pub const SO_DONTROUTE: ::c_int = 5;
-pub const SO_BROADCAST: ::c_int = 6;
-pub const SO_SNDBUF: ::c_int = 7;
-pub const SO_RCVBUF: ::c_int = 8;
-pub const SO_SNDBUFFORCE: ::c_int = 32;
-pub const SO_RCVBUFFORCE: ::c_int = 33;
-pub const SO_KEEPALIVE: ::c_int = 9;
-pub const SO_OOBINLINE: ::c_int = 10;
-pub const SO_NO_CHECK: ::c_int = 11;
-pub const SO_PRIORITY: ::c_int = 12;
-pub const SO_LINGER: ::c_int = 13;
-pub const SO_BSDCOMPAT: ::c_int = 14;
-pub const SO_REUSEPORT: ::c_int = 15;
-pub const SO_PASSCRED: ::c_int = 16;
-pub const SO_PEERCRED: ::c_int = 17;
-pub const SO_RCVLOWAT: ::c_int = 18;
-pub const SO_SNDLOWAT: ::c_int = 19;
-pub const SO_RCVTIMEO: ::c_int = 20;
-pub const SO_SNDTIMEO: ::c_int = 21;
-pub const SO_SECURITY_AUTHENTICATION: ::c_int = 22;
-pub const SO_SECURITY_ENCRYPTION_TRANSPORT: ::c_int = 23;
-pub const SO_SECURITY_ENCRYPTION_NETWORK: ::c_int = 24;
-pub const SO_BINDTODEVICE: ::c_int = 25;
-pub const SO_ATTACH_FILTER: ::c_int = 26;
-pub const SO_DETACH_FILTER: ::c_int = 27;
-pub const SO_GET_FILTER: ::c_int = SO_ATTACH_FILTER;
-pub const SO_PEERNAME: ::c_int = 28;
-pub const SO_TIMESTAMP: ::c_int = 29;
-pub const SO_ACCEPTCONN: ::c_int = 30;
-pub const SO_PEERSEC: ::c_int = 31;
-pub const SO_PASSSEC: ::c_int = 34;
-pub const SO_TIMESTAMPNS: ::c_int = 35;
-pub const SCM_TIMESTAMPNS: ::c_int = SO_TIMESTAMPNS;
-pub const SO_MARK: ::c_int = 36;
-pub const SO_PROTOCOL: ::c_int = 38;
-pub const SO_DOMAIN: ::c_int = 39;
-pub const SO_RXQ_OVFL: ::c_int = 40;
-pub const SO_WIFI_STATUS: ::c_int = 41;
-pub const SCM_WIFI_STATUS: ::c_int = SO_WIFI_STATUS;
-pub const SO_PEEK_OFF: ::c_int = 42;
-pub const SO_NOFCS: ::c_int = 43;
-pub const SO_LOCK_FILTER: ::c_int = 44;
-pub const SO_SELECT_ERR_QUEUE: ::c_int = 45;
-pub const SO_BUSY_POLL: ::c_int = 46;
-pub const SO_MAX_PACING_RATE: ::c_int = 47;
-pub const SO_BPF_EXTENSIONS: ::c_int = 48;
-pub const SO_INCOMING_CPU: ::c_int = 49;
-pub const SO_ATTACH_BPF: ::c_int = 50;
-pub const SO_DETACH_BPF: ::c_int = SO_DETACH_FILTER;
-pub const SO_ATTACH_REUSEPORT_CBPF: ::c_int = 51;
-pub const SO_ATTACH_REUSEPORT_EBPF: ::c_int = 52;
-pub const SO_CNX_ADVICE: ::c_int = 53;
-pub const SCM_TIMESTAMPING_OPT_STATS: ::c_int = 54;
-pub const SO_MEMINFO: ::c_int = 55;
-pub const SO_INCOMING_NAPI_ID: ::c_int = 56;
-pub const SO_COOKIE: ::c_int = 57;
-pub const SCM_TIMESTAMPING_PKTINFO: ::c_int = 58;
-pub const SO_PEERGROUPS: ::c_int = 59;
-pub const SO_ZEROCOPY: ::c_int = 60;
-pub const SO_TXTIME: ::c_int = 61;
-pub const SCM_TXTIME: ::c_int = SO_TXTIME;
-pub const SO_BINDTOIFINDEX: ::c_int = 62;
-pub const SO_TIMESTAMP_NEW: ::c_int = 63;
-pub const SO_TIMESTAMPNS_NEW: ::c_int = 64;
-pub const SO_TIMESTAMPING_NEW: ::c_int = 65;
-pub const SO_RCVTIMEO_NEW: ::c_int = 66;
-pub const SO_SNDTIMEO_NEW: ::c_int = 67;
-pub const SO_DETACH_REUSEPORT_BPF: ::c_int = 68;
-
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 
@@ -454,29 +371,6 @@ pub const F_UNLCK: ::c_int = 2;
 
 pub const SFD_NONBLOCK: ::c_int = 0x0800;
 
-pub const TIOCEXCL: ::c_ulong = 0x540C;
-pub const TIOCNXCL: ::c_ulong = 0x540D;
-pub const TIOCSCTTY: ::c_ulong = 0x540E;
-pub const TIOCSTI: ::c_ulong = 0x5412;
-pub const TIOCMGET: ::c_ulong = 0x5415;
-pub const TIOCMBIS: ::c_ulong = 0x5416;
-pub const TIOCMBIC: ::c_ulong = 0x5417;
-pub const TIOCMSET: ::c_ulong = 0x5418;
-pub const TIOCGSOFTCAR: ::c_ulong = 0x5419;
-pub const TIOCSSOFTCAR: ::c_ulong = 0x541A;
-pub const TIOCCONS: ::c_ulong = 0x541D;
-pub const TIOCSBRK: ::c_ulong = 0x5427;
-pub const TIOCCBRK: ::c_ulong = 0x5428;
-pub const TIOCGRS485: ::c_int = 0x542E;
-pub const TIOCSRS485: ::c_int = 0x542F;
-
-pub const TIOCM_ST: ::c_int = 0x008;
-pub const TIOCM_SR: ::c_int = 0x010;
-pub const TIOCM_CTS: ::c_int = 0x020;
-pub const TIOCM_CAR: ::c_int = 0x040;
-pub const TIOCM_RNG: ::c_int = 0x080;
-pub const TIOCM_DSR: ::c_int = 0x100;
-
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
@@ -526,10 +420,6 @@ pub const MAP_HUGETLB: ::c_int = 0x040000;
 pub const MAP_SYNC: ::c_int = 0x080000;
 
 pub const EDEADLOCK: ::c_int = 35;
-
-pub const FIOCLEX: ::c_ulong = 0x5451;
-pub const FIONCLEX: ::c_ulong = 0x5450;
-pub const FIONBIO: ::c_ulong = 0x5421;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
@@ -606,7 +496,6 @@ pub const B19200: ::speed_t = 0o000016;
 pub const B38400: ::speed_t = 0o000017;
 pub const EXTA: ::speed_t = B19200;
 pub const EXTB: ::speed_t = B38400;
-pub const BOTHER: ::speed_t = 0o010000;
 pub const B57600: ::speed_t = 0o010001;
 pub const B115200: ::speed_t = 0o010002;
 pub const B230400: ::speed_t = 0o010003;
@@ -623,6 +512,11 @@ pub const B3000000: ::speed_t = 0o010015;
 pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
 
+pub const SECCOMP_SET_MODE_STRICT: ::c_uint = 0;
+pub const SECCOMP_SET_MODE_FILTER: ::c_uint = 1;
+pub const SECCOMP_GET_ACTION_AVAIL: ::c_uint = 2;
+pub const SECCOMP_GET_NOTIF_SIZES: ::c_uint = 3;
+
 pub const VEOL: usize = 11;
 pub const VEOL2: usize = 16;
 pub const VMIN: usize = 6;
@@ -630,31 +524,10 @@ pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
 pub const EXTPROC: ::tcflag_t = 0x00010000;
-pub const TCGETS: ::c_ulong = 0x5401;
-pub const TCSETS: ::c_ulong = 0x5402;
-pub const TCSETSW: ::c_ulong = 0x5403;
-pub const TCSETSF: ::c_ulong = 0x5404;
-pub const TCGETA: ::c_ulong = 0x5405;
-pub const TCSETA: ::c_ulong = 0x5406;
-pub const TCSETAW: ::c_ulong = 0x5407;
-pub const TCSETAF: ::c_ulong = 0x5408;
-pub const TCSBRK: ::c_ulong = 0x5409;
-pub const TCXONC: ::c_ulong = 0x540A;
-pub const TCFLSH: ::c_ulong = 0x540B;
-pub const TIOCINQ: ::c_ulong = 0x541B;
-pub const TIOCGPGRP: ::c_ulong = 0x540F;
-pub const TIOCSPGRP: ::c_ulong = 0x5410;
-pub const TIOCOUTQ: ::c_ulong = 0x5411;
-pub const TIOCGWINSZ: ::c_ulong = 0x5413;
-pub const TIOCSWINSZ: ::c_ulong = 0x5414;
-pub const FIONREAD: ::c_ulong = 0x541B;
 
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
 pub const TCSAFLUSH: ::c_int = 2;
-
-pub const TIOCLINUX: ::c_ulong = 0x541C;
-pub const TIOCGSERIAL: ::c_ulong = 0x541E;
 
 // sys/auxv.h
 pub const HWCAP_FP: ::c_ulong = 1 << 0;
@@ -700,6 +573,22 @@ pub const HWCAP_PACG: ::c_ulong = 1 << 31;
 //pub const HWCAP2_SVESM4: ::c_ulong = 1 << 6;
 //pub const HWCAP2_FLAGM2: ::c_ulong = 1 << 7;
 //pub const HWCAP2_FRINT: ::c_ulong = 1 << 8;
+//pub const HWCAP2_MTE: ::c_ulong = 1 << 18;
+
+// linux/prctl.h
+pub const PR_PAC_RESET_KEYS: ::c_int = 54;
+pub const PR_SET_TAGGED_ADDR_CTRL: ::c_int = 55;
+pub const PR_GET_TAGGED_ADDR_CTRL: ::c_int = 56;
+pub const PR_PAC_SET_ENABLED_KEYS: ::c_int = 60;
+pub const PR_PAC_GET_ENABLED_KEYS: ::c_int = 61;
+
+pub const PR_TAGGED_ADDR_ENABLE: ::c_ulong = 1;
+
+pub const PR_PAC_APIAKEY: ::c_ulong = 1 << 0;
+pub const PR_PAC_APIBKEY: ::c_ulong = 1 << 1;
+pub const PR_PAC_APDAKEY: ::c_ulong = 1 << 2;
+pub const PR_PAC_APDBKEY: ::c_ulong = 1 << 3;
+pub const PR_PAC_APGAKEY: ::c_ulong = 1 << 4;
 
 // Syscall table
 pub const SYS_io_setup: ::c_long = 0;
@@ -976,8 +865,35 @@ pub const SYS_pkey_mprotect: ::c_long = 288;
 pub const SYS_pkey_alloc: ::c_long = 289;
 pub const SYS_pkey_free: ::c_long = 290;
 pub const SYS_statx: ::c_long = 291;
+pub const SYS_rseq: ::c_long = 293;
+pub const SYS_kexec_file_load: ::c_long = 294;
+pub const SYS_pidfd_send_signal: ::c_long = 424;
+pub const SYS_io_uring_setup: ::c_long = 425;
+pub const SYS_io_uring_enter: ::c_long = 426;
+pub const SYS_io_uring_register: ::c_long = 427;
+pub const SYS_open_tree: ::c_long = 428;
+pub const SYS_move_mount: ::c_long = 429;
+pub const SYS_fsopen: ::c_long = 430;
+pub const SYS_fsconfig: ::c_long = 431;
+pub const SYS_fsmount: ::c_long = 432;
+pub const SYS_fspick: ::c_long = 433;
 pub const SYS_pidfd_open: ::c_long = 434;
 pub const SYS_clone3: ::c_long = 435;
+pub const SYS_close_range: ::c_long = 436;
+pub const SYS_openat2: ::c_long = 437;
+pub const SYS_pidfd_getfd: ::c_long = 438;
+pub const SYS_faccessat2: ::c_long = 439;
+pub const SYS_process_madvise: ::c_long = 440;
+pub const SYS_epoll_pwait2: ::c_long = 441;
+pub const SYS_mount_setattr: ::c_long = 442;
+pub const SYS_quotactl_fd: ::c_long = 443;
+pub const SYS_landlock_create_ruleset: ::c_long = 444;
+pub const SYS_landlock_add_rule: ::c_long = 445;
+pub const SYS_landlock_restrict_self: ::c_long = 446;
+pub const SYS_memfd_secret: ::c_long = 447;
+pub const SYS_process_mrelease: ::c_long = 448;
+pub const SYS_futex_waitv: ::c_long = 449;
+pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
 extern "C" {
     pub fn sysctl(
@@ -1004,5 +920,12 @@ cfg_if! {
     if #[cfg(libc_align)] {
         mod align;
         pub use self::align::*;
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_int128)] {
+        mod int128;
+        pub use self::int128::*;
     }
 }

@@ -79,7 +79,7 @@ cd ..
 rm -rf $MUSL
 
 # Download, configure, build, and install musl-sanitized kernel headers:
-KERNEL_HEADER_VER="4.4.2-2"
+KERNEL_HEADER_VER="4.19.88"
 curl --retry 5 -L \
      "https://github.com/sabotage-linux/kernel-headers/archive/v${KERNEL_HEADER_VER}.tar.gz" | \
     tar xzf -

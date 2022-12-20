@@ -161,6 +161,13 @@ RUST_NIGHTLY_APPLE_TARGETS="\
 aarch64-apple-darwin \
 "
 
+# Must start with `x86_64-pc-windows-msvc` first.
+RUST_NIGHTLY_WINDOWS_TARGETS="\
+x86_64-pc-windows-msvc \
+x86_64-pc-windows-gnu \
+i686-pc-windows-msvc \
+"
+
 # The targets are listed here alphabetically
 TARGETS=""
 case "${OS}" in
@@ -190,16 +197,26 @@ case "${OS}" in
         fi
 
         ;;
+    windows*)
+        TARGETS=${RUST_NIGHTLY_WINDOWS_TARGETS}
+
+        ;;
     *)
         ;;
 esac
 
 for TARGET in $TARGETS; do
     if echo "$TARGET"|grep -q "$FILTER"; then
-        test_target build "$TARGET"
+        if [ "${OS}" = "windows" ]; then
+            TARGET="$TARGET" sh ./ci/install-rust.sh
+            test_target build "$TARGET"
+        else
+            test_target build "$TARGET"
+        fi
     fi
 done
 
+# Targets which are not available via rustup and must be built with -Zbuild-std
 RUST_LINUX_NO_CORE_TARGETS="\
 aarch64-pc-windows-msvc \
 aarch64-unknown-freebsd \
@@ -219,9 +236,7 @@ i686-unknown-haiku \
 i686-unknown-netbsd \
 i686-unknown-openbsd \
 i686-wrs-vxworks \
-mips-unknown-linux-uclibc \
 mipsel-sony-psp \
-mipsel-unknown-linux-uclibc \
 mips64-unknown-linux-muslabi64 \
 mips64el-unknown-linux-muslabi64 \
 nvptx64-nvidia-cuda \
@@ -235,6 +250,8 @@ riscv32i-unknown-none-elf \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 riscv32gc-unknown-linux-gnu \
+riscv64gc-unknown-freebsd \
+riscv64gc-unknown-linux-musl \
 riscv64gc-unknown-none-elf \
 riscv64imac-unknown-none-elf \
 s390x-unknown-linux-musl \
@@ -265,7 +282,7 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     done
 fi
 
-RUST_OSX_NO_CORE_TARGETS="\
+RUST_APPLE_NO_CORE_TARGETS="\
 armv7-apple-ios \
 armv7s-apple-ios \
 i686-apple-darwin \
@@ -273,7 +290,7 @@ i386-apple-ios \
 "
 
 if [ "${RUST}" = "nightly" ] && [ "${OS}" = "macos" ]; then
-    for TARGET in $RUST_OSX_NO_CORE_TARGETS; do
+    for TARGET in $RUST_APPLE_NO_CORE_TARGETS; do
         if echo "$TARGET" | grep -q "$FILTER"; then
             test_target build "$TARGET" 1
         fi

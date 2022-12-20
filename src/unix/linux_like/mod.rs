@@ -2,6 +2,7 @@ pub type sa_family_t = u16;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type clockid_t = ::c_int;
+pub type timer_t = *mut ::c_void;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
@@ -22,6 +23,12 @@ s! {
     pub struct ip_mreq {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
+    }
+
+    pub struct ip_mreqn {
+        pub imr_multiaddr: in_addr,
+        pub imr_address: in_addr,
+        pub imr_ifindex: ::c_int,
     }
 
     pub struct ip_mreq_source {
@@ -224,11 +231,11 @@ s_no_extra_traits! {
 
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
-        __ss_align: ::size_t,
         #[cfg(target_pointer_width = "32")]
-        __ss_pad2: [u8; 128 - 2 * 4],
+        __ss_pad2: [u8; 128 - 2 - 4],
         #[cfg(target_pointer_width = "64")]
-        __ss_pad2: [u8; 128 - 2 * 8],
+        __ss_pad2: [u8; 128 - 2 - 8],
+        __ss_align: ::size_t,
     }
 
     pub struct utsname {
@@ -546,6 +553,9 @@ pub const PROT_READ: ::c_int = 1;
 pub const PROT_WRITE: ::c_int = 2;
 pub const PROT_EXEC: ::c_int = 4;
 
+pub const XATTR_CREATE: ::c_int = 0x1;
+pub const XATTR_REPLACE: ::c_int = 0x2;
+
 cfg_if! {
     if #[cfg(not(target_env = "uclibc"))] {
         pub const LC_CTYPE: ::c_int = 0;
@@ -602,6 +612,7 @@ pub const MS_RELATIME: ::c_ulong = 0x200000;
 pub const MS_KERNMOUNT: ::c_ulong = 0x400000;
 pub const MS_I_VERSION: ::c_ulong = 0x800000;
 pub const MS_STRICTATIME: ::c_ulong = 0x1000000;
+pub const MS_LAZYTIME: ::c_ulong = 0x2000000;
 pub const MS_ACTIVE: ::c_ulong = 0x40000000;
 pub const MS_MGC_VAL: ::c_ulong = 0xc0ed0000;
 pub const MS_MGC_MSK: ::c_ulong = 0xffff0000;
@@ -748,8 +759,6 @@ pub const PF_IEEE802154: ::c_int = AF_IEEE802154;
 pub const PF_CAIF: ::c_int = AF_CAIF;
 pub const PF_ALG: ::c_int = AF_ALG;
 
-pub const SOMAXCONN: ::c_int = 128;
-
 pub const MSG_OOB: ::c_int = 1;
 pub const MSG_PEEK: ::c_int = 2;
 pub const MSG_DONTROUTE: ::c_int = 4;
@@ -872,6 +881,8 @@ pub const IPPROTO_MH: ::c_int = 135;
 pub const IPPROTO_UDPLITE: ::c_int = 136;
 /// raw IP packet
 pub const IPPROTO_RAW: ::c_int = 255;
+pub const IPPROTO_BEETPH: ::c_int = 94;
+pub const IPPROTO_MPLS: ::c_int = 137;
 
 pub const MCAST_EXCLUDE: ::c_int = 0;
 pub const MCAST_INCLUDE: ::c_int = 1;
@@ -908,6 +919,7 @@ pub const IPV6_JOIN_ANYCAST: ::c_int = 27;
 pub const IPV6_LEAVE_ANYCAST: ::c_int = 28;
 pub const IPV6_IPSEC_POLICY: ::c_int = 34;
 pub const IPV6_XFRM_POLICY: ::c_int = 35;
+pub const IPV6_HDRINCL: ::c_int = 36;
 pub const IPV6_RECVPKTINFO: ::c_int = 49;
 pub const IPV6_PKTINFO: ::c_int = 50;
 pub const IPV6_RECVHOPLIMIT: ::c_int = 51;
@@ -943,6 +955,8 @@ pub const IPV6_PMTUDISC_DONT: ::c_int = 0;
 pub const IPV6_PMTUDISC_WANT: ::c_int = 1;
 pub const IPV6_PMTUDISC_DO: ::c_int = 2;
 pub const IPV6_PMTUDISC_PROBE: ::c_int = 3;
+pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
+pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
 
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
@@ -957,6 +971,43 @@ pub const TCP_WINDOW_CLAMP: ::c_int = 10;
 pub const TCP_INFO: ::c_int = 11;
 pub const TCP_QUICKACK: ::c_int = 12;
 pub const TCP_CONGESTION: ::c_int = 13;
+pub const TCP_MD5SIG: ::c_int = 14;
+cfg_if! {
+    if #[cfg(all(target_os = "linux", any(target_env = "gnu", target_env = "musl")))] {
+        // WARN: deprecated
+        pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
+    }
+}
+pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
+pub const TCP_THIN_DUPACK: ::c_int = 17;
+pub const TCP_USER_TIMEOUT: ::c_int = 18;
+pub const TCP_REPAIR: ::c_int = 19;
+pub const TCP_REPAIR_QUEUE: ::c_int = 20;
+pub const TCP_QUEUE_SEQ: ::c_int = 21;
+pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
+pub const TCP_FASTOPEN: ::c_int = 23;
+pub const TCP_TIMESTAMP: ::c_int = 24;
+pub const TCP_NOTSENT_LOWAT: ::c_int = 25;
+pub const TCP_CC_INFO: ::c_int = 26;
+pub const TCP_SAVE_SYN: ::c_int = 27;
+pub const TCP_SAVED_SYN: ::c_int = 28;
+cfg_if! {
+    if #[cfg(not(target_os = "emscripten"))] {
+        // NOTE: emscripten doesn't support these options yet.
+
+        pub const TCP_REPAIR_WINDOW: ::c_int = 29;
+        pub const TCP_FASTOPEN_CONNECT: ::c_int = 30;
+        pub const TCP_ULP: ::c_int = 31;
+        pub const TCP_MD5SIG_EXT: ::c_int = 32;
+        pub const TCP_FASTOPEN_KEY: ::c_int = 33;
+        pub const TCP_FASTOPEN_NO_COOKIE: ::c_int = 34;
+        pub const TCP_ZEROCOPY_RECEIVE: ::c_int = 35;
+        pub const TCP_INQ: ::c_int = 36;
+        pub const TCP_CM_INQ: ::c_int = TCP_INQ;
+        // NOTE: Some CI images doesn't have this option yet.
+        // pub const TCP_TX_DELAY: ::c_int = 37;
+    }
+}
 
 pub const SO_DEBUG: ::c_int = 1;
 
@@ -981,21 +1032,27 @@ pub const FD_SETSIZE: usize = 1024;
 pub const EPOLLIN: ::c_int = 0x1;
 pub const EPOLLPRI: ::c_int = 0x2;
 pub const EPOLLOUT: ::c_int = 0x4;
+pub const EPOLLERR: ::c_int = 0x8;
+pub const EPOLLHUP: ::c_int = 0x10;
 pub const EPOLLRDNORM: ::c_int = 0x40;
 pub const EPOLLRDBAND: ::c_int = 0x80;
 pub const EPOLLWRNORM: ::c_int = 0x100;
 pub const EPOLLWRBAND: ::c_int = 0x200;
 pub const EPOLLMSG: ::c_int = 0x400;
-pub const EPOLLERR: ::c_int = 0x8;
-pub const EPOLLHUP: ::c_int = 0x10;
+pub const EPOLLRDHUP: ::c_int = 0x2000;
+pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
+pub const EPOLLWAKEUP: ::c_int = 0x20000000;
+pub const EPOLLONESHOT: ::c_int = 0x40000000;
 pub const EPOLLET: ::c_int = 0x80000000;
 
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
 pub const EPOLL_CTL_DEL: ::c_int = 2;
 
+pub const MNT_FORCE: ::c_int = 0x1;
 pub const MNT_DETACH: ::c_int = 0x2;
 pub const MNT_EXPIRE: ::c_int = 0x4;
+pub const UMOUNT_NOFOLLOW: ::c_int = 0x8;
 
 pub const Q_GETFMT: ::c_int = 0x800004;
 pub const Q_GETINFO: ::c_int = 0x800005;
@@ -1010,8 +1067,6 @@ pub const QIF_LIMITS: u32 = 5;
 pub const QIF_USAGE: u32 = 10;
 pub const QIF_TIMES: u32 = 48;
 pub const QIF_ALL: u32 = 63;
-
-pub const MNT_FORCE: ::c_int = 0x1;
 
 pub const Q_SYNC: ::c_int = 0x800001;
 pub const Q_QUOTAON: ::c_int = 0x800002;
@@ -1075,6 +1130,7 @@ pub const CLONE_CHILD_CLEARTID: ::c_int = 0x200000;
 pub const CLONE_DETACHED: ::c_int = 0x400000;
 pub const CLONE_UNTRACED: ::c_int = 0x800000;
 pub const CLONE_CHILD_SETTID: ::c_int = 0x01000000;
+pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
 pub const CLONE_NEWUTS: ::c_int = 0x04000000;
 pub const CLONE_NEWIPC: ::c_int = 0x08000000;
 pub const CLONE_NEWUSER: ::c_int = 0x10000000;
@@ -1090,11 +1146,15 @@ pub const WCONTINUED: ::c_int = 0x00000008;
 pub const WNOWAIT: ::c_int = 0x01000000;
 
 // Options for personality(2).
+pub const ADDR_NO_RANDOMIZE: ::c_int = 0x0040000;
 pub const MMAP_PAGE_ZERO: ::c_int = 0x0100000;
+pub const ADDR_COMPAT_LAYOUT: ::c_int = 0x0200000;
+pub const READ_IMPLIES_EXEC: ::c_int = 0x0400000;
 pub const ADDR_LIMIT_32BIT: ::c_int = 0x0800000;
 pub const SHORT_INODE: ::c_int = 0x1000000;
 pub const WHOLE_SECONDS: ::c_int = 0x2000000;
 pub const STICKY_TIMEOUTS: ::c_int = 0x4000000;
+pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
 
 // Options set using PTRACE_SETOPTIONS.
 pub const PTRACE_O_TRACESYSGOOD: ::c_int = 0x00000001;
@@ -1105,6 +1165,9 @@ pub const PTRACE_O_TRACEEXEC: ::c_int = 0x00000010;
 pub const PTRACE_O_TRACEVFORKDONE: ::c_int = 0x00000020;
 pub const PTRACE_O_TRACEEXIT: ::c_int = 0x00000040;
 pub const PTRACE_O_TRACESECCOMP: ::c_int = 0x00000080;
+pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 0x00200000;
+pub const PTRACE_O_EXITKILL: ::c_int = 0x00100000;
+pub const PTRACE_O_MASK: ::c_int = 0x003000ff;
 
 // Wait extended result codes for the above trace options.
 pub const PTRACE_EVENT_FORK: ::c_int = 1;
@@ -1148,6 +1211,15 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: ::c_uint = 16;
 
+// si_code values for SIGBUS signal
+pub const BUS_ADRALN: ::c_int = 1;
+pub const BUS_ADRERR: ::c_int = 2;
+pub const BUS_OBJERR: ::c_int = 3;
+// Linux-specific si_code values for SIGBUS signal
+pub const BUS_MCEERR_AR: ::c_int = 4;
+pub const BUS_MCEERR_AO: ::c_int = 5;
+
+// si_code values for SIGCHLD signal
 pub const CLD_EXITED: ::c_int = 1;
 pub const CLD_KILLED: ::c_int = 2;
 pub const CLD_DUMPED: ::c_int = 3;
@@ -1179,6 +1251,10 @@ pub const POLLHUP: ::c_short = 0x10;
 pub const POLLNVAL: ::c_short = 0x20;
 pub const POLLRDNORM: ::c_short = 0x040;
 pub const POLLRDBAND: ::c_short = 0x080;
+#[cfg(not(any(target_arch = "sparc", target_arch = "sparc64")))]
+pub const POLLRDHUP: ::c_short = 0x2000;
+#[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
+pub const POLLRDHUP: ::c_short = 0x800;
 
 pub const IPTOS_LOWDELAY: u8 = 0x10;
 pub const IPTOS_THROUGHPUT: u8 = 0x08;
@@ -1265,6 +1341,7 @@ pub const ARPHRD_ADAPT: u16 = 264;
 pub const ARPHRD_ROSE: u16 = 270;
 pub const ARPHRD_X25: u16 = 271;
 pub const ARPHRD_HWX25: u16 = 272;
+pub const ARPHRD_CAN: u16 = 280;
 pub const ARPHRD_PPP: u16 = 512;
 pub const ARPHRD_CISCO: u16 = 513;
 pub const ARPHRD_HDLC: u16 = ARPHRD_CISCO;
@@ -1302,20 +1379,116 @@ pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
 cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
-        pub const IPPROTO_BEETPH: ::c_int = 94;
-        pub const IPPROTO_MPLS: ::c_int = 137;
-        pub const IPV6_HDRINCL: ::c_int = 36;
-        pub const IPV6_PMTUDISC_INTERFACE: ::c_int = 4;
-        pub const IPV6_PMTUDISC_OMIT: ::c_int = 5;
-        pub const CLONE_NEWCGROUP: ::c_int = 0x02000000;
-        pub const ADDR_NO_RANDOMIZE: ::c_int = 0x0040000;
-        pub const ADDR_COMPAT_LAYOUT: ::c_int = 0x0200000;
-        pub const READ_IMPLIES_EXEC: ::c_int = 0x0400000;
-        pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
-        pub const PTRACE_O_EXITKILL: ::c_int = 0x00100000;
-        pub const PTRACE_O_SUSPEND_SECCOMP: ::c_int = 0x00200000;
-        pub const PTRACE_O_MASK: ::c_int = 0x003000ff;
+    if #[cfg(target_os = "emscripten")] {
+        // Emscripten does not define any `*_SUPER_MAGIC` constants.
+    } else if #[cfg(not(target_arch = "s390x"))] {
+        pub const ADFS_SUPER_MAGIC: ::c_long = 0x0000adf5;
+        pub const AFFS_SUPER_MAGIC: ::c_long = 0x0000adff;
+        pub const AFS_SUPER_MAGIC: ::c_long = 0x5346414f;
+        pub const AUTOFS_SUPER_MAGIC: ::c_long = 0x0187;
+        pub const BPF_FS_MAGIC: ::c_long = 0xcafe4a11;
+        pub const BTRFS_SUPER_MAGIC: ::c_long = 0x9123683e;
+        pub const CGROUP2_SUPER_MAGIC: ::c_long = 0x63677270;
+        pub const CGROUP_SUPER_MAGIC: ::c_long = 0x27e0eb;
+        pub const CODA_SUPER_MAGIC: ::c_long = 0x73757245;
+        pub const CRAMFS_MAGIC: ::c_long = 0x28cd3d45;
+        pub const DEBUGFS_MAGIC: ::c_long = 0x64626720;
+        pub const DEVPTS_SUPER_MAGIC: ::c_long = 0x1cd1;
+        pub const ECRYPTFS_SUPER_MAGIC: ::c_long = 0xf15f;
+        pub const EFS_SUPER_MAGIC: ::c_long = 0x00414a53;
+        pub const EXT2_SUPER_MAGIC: ::c_long = 0x0000ef53;
+        pub const EXT3_SUPER_MAGIC: ::c_long = 0x0000ef53;
+        pub const EXT4_SUPER_MAGIC: ::c_long = 0x0000ef53;
+        pub const F2FS_SUPER_MAGIC: ::c_long = 0xf2f52010;
+        pub const FUSE_SUPER_MAGIC: ::c_long = 0x65735546;
+        pub const FUTEXFS_SUPER_MAGIC: ::c_long = 0xbad1dea;
+        pub const HOSTFS_SUPER_MAGIC: ::c_long = 0x00c0ffee;
+        pub const HPFS_SUPER_MAGIC: ::c_long = 0xf995e849;
+        pub const HUGETLBFS_MAGIC: ::c_long = 0x958458f6;
+        pub const ISOFS_SUPER_MAGIC: ::c_long = 0x00009660;
+        pub const JFFS2_SUPER_MAGIC: ::c_long = 0x000072b6;
+        pub const MINIX2_SUPER_MAGIC2: ::c_long = 0x00002478;
+        pub const MINIX2_SUPER_MAGIC: ::c_long = 0x00002468;
+        pub const MINIX3_SUPER_MAGIC: ::c_long = 0x4d5a;
+        pub const MINIX_SUPER_MAGIC2: ::c_long = 0x0000138f;
+        pub const MINIX_SUPER_MAGIC: ::c_long = 0x0000137f;
+        pub const MSDOS_SUPER_MAGIC: ::c_long = 0x00004d44;
+        pub const NCP_SUPER_MAGIC: ::c_long = 0x0000564c;
+        pub const NFS_SUPER_MAGIC: ::c_long = 0x00006969;
+        pub const NILFS_SUPER_MAGIC: ::c_long = 0x3434;
+        pub const OCFS2_SUPER_MAGIC: ::c_long = 0x7461636f;
+        pub const OPENPROM_SUPER_MAGIC: ::c_long = 0x00009fa1;
+        pub const OVERLAYFS_SUPER_MAGIC: ::c_long = 0x794c7630;
+        pub const PROC_SUPER_MAGIC: ::c_long = 0x00009fa0;
+        pub const QNX4_SUPER_MAGIC: ::c_long = 0x0000002f;
+        pub const QNX6_SUPER_MAGIC: ::c_long = 0x68191122;
+        pub const RDTGROUP_SUPER_MAGIC: ::c_long = 0x7655821;
+        pub const REISERFS_SUPER_MAGIC: ::c_long = 0x52654973;
+        pub const SECURITYFS_MAGIC: ::c_long = 0x73636673;
+        pub const SELINUX_MAGIC: ::c_long = 0xf97cff8c;
+        pub const SMACK_MAGIC: ::c_long = 0x43415d53;
+        pub const SMB_SUPER_MAGIC: ::c_long = 0x0000517b;
+        pub const SYSFS_MAGIC: ::c_long = 0x62656572;
+        pub const TMPFS_MAGIC: ::c_long = 0x01021994;
+        pub const TRACEFS_MAGIC: ::c_long = 0x74726163;
+        pub const UDF_SUPER_MAGIC: ::c_long = 0x15013346;
+        pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
+        pub const XENFS_SUPER_MAGIC: ::c_long = 0xabba1974;
+        pub const NSFS_MAGIC: ::c_long = 0x6e736673;
+    } else if #[cfg(target_arch = "s390x")] {
+        pub const ADFS_SUPER_MAGIC: ::c_uint = 0x0000adf5;
+        pub const AFFS_SUPER_MAGIC: ::c_uint = 0x0000adff;
+        pub const AFS_SUPER_MAGIC: ::c_uint = 0x5346414f;
+        pub const AUTOFS_SUPER_MAGIC: ::c_uint = 0x0187;
+        pub const BPF_FS_MAGIC: ::c_uint = 0xcafe4a11;
+        pub const BTRFS_SUPER_MAGIC: ::c_uint = 0x9123683e;
+        pub const CGROUP2_SUPER_MAGIC: ::c_uint = 0x63677270;
+        pub const CGROUP_SUPER_MAGIC: ::c_uint = 0x27e0eb;
+        pub const CODA_SUPER_MAGIC: ::c_uint = 0x73757245;
+        pub const CRAMFS_MAGIC: ::c_uint = 0x28cd3d45;
+        pub const DEBUGFS_MAGIC: ::c_uint = 0x64626720;
+        pub const DEVPTS_SUPER_MAGIC: ::c_uint = 0x1cd1;
+        pub const ECRYPTFS_SUPER_MAGIC: ::c_uint = 0xf15f;
+        pub const EFS_SUPER_MAGIC: ::c_uint = 0x00414a53;
+        pub const EXT2_SUPER_MAGIC: ::c_uint = 0x0000ef53;
+        pub const EXT3_SUPER_MAGIC: ::c_uint = 0x0000ef53;
+        pub const EXT4_SUPER_MAGIC: ::c_uint = 0x0000ef53;
+        pub const F2FS_SUPER_MAGIC: ::c_uint = 0xf2f52010;
+        pub const FUSE_SUPER_MAGIC: ::c_uint = 0x65735546;
+        pub const FUTEXFS_SUPER_MAGIC: ::c_uint = 0xbad1dea;
+        pub const HOSTFS_SUPER_MAGIC: ::c_uint = 0x00c0ffee;
+        pub const HPFS_SUPER_MAGIC: ::c_uint = 0xf995e849;
+        pub const HUGETLBFS_MAGIC: ::c_uint = 0x958458f6;
+        pub const ISOFS_SUPER_MAGIC: ::c_uint = 0x00009660;
+        pub const JFFS2_SUPER_MAGIC: ::c_uint = 0x000072b6;
+        pub const MINIX2_SUPER_MAGIC2: ::c_uint = 0x00002478;
+        pub const MINIX2_SUPER_MAGIC: ::c_uint = 0x00002468;
+        pub const MINIX3_SUPER_MAGIC: ::c_uint = 0x4d5a;
+        pub const MINIX_SUPER_MAGIC2: ::c_uint = 0x0000138f;
+        pub const MINIX_SUPER_MAGIC: ::c_uint = 0x0000137f;
+        pub const MSDOS_SUPER_MAGIC: ::c_uint = 0x00004d44;
+        pub const NCP_SUPER_MAGIC: ::c_uint = 0x0000564c;
+        pub const NFS_SUPER_MAGIC: ::c_uint = 0x00006969;
+        pub const NILFS_SUPER_MAGIC: ::c_uint = 0x3434;
+        pub const OCFS2_SUPER_MAGIC: ::c_uint = 0x7461636f;
+        pub const OPENPROM_SUPER_MAGIC: ::c_uint = 0x00009fa1;
+        pub const OVERLAYFS_SUPER_MAGIC: ::c_uint = 0x794c7630;
+        pub const PROC_SUPER_MAGIC: ::c_uint = 0x00009fa0;
+        pub const QNX4_SUPER_MAGIC: ::c_uint = 0x0000002f;
+        pub const QNX6_SUPER_MAGIC: ::c_uint = 0x68191122;
+        pub const RDTGROUP_SUPER_MAGIC: ::c_uint = 0x7655821;
+        pub const REISERFS_SUPER_MAGIC: ::c_uint = 0x52654973;
+        pub const SECURITYFS_MAGIC: ::c_uint = 0x73636673;
+        pub const SELINUX_MAGIC: ::c_uint = 0xf97cff8c;
+        pub const SMACK_MAGIC: ::c_uint = 0x43415d53;
+        pub const SMB_SUPER_MAGIC: ::c_uint = 0x0000517b;
+        pub const SYSFS_MAGIC: ::c_uint = 0x62656572;
+        pub const TMPFS_MAGIC: ::c_uint = 0x01021994;
+        pub const TRACEFS_MAGIC: ::c_uint = 0x74726163;
+        pub const UDF_SUPER_MAGIC: ::c_uint = 0x15013346;
+        pub const USBDEVICE_SUPER_MAGIC: ::c_uint = 0x00009fa2;
+        pub const XENFS_SUPER_MAGIC: ::c_uint = 0xabba1974;
+        pub const NSFS_MAGIC: ::c_uint = 0x6e736673;
     }
 }
 
@@ -1354,7 +1527,7 @@ f! {
         return
     }
 
-    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+    pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
@@ -1375,6 +1548,14 @@ f! {
 }
 
 safe_f! {
+    pub fn SIGRTMAX() -> ::c_int {
+        unsafe { __libc_current_sigrtmax() }
+    }
+
+    pub fn SIGRTMIN() -> ::c_int {
+        unsafe { __libc_current_sigrtmin() }
+    }
+
     pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0xff) == 0x7f
     }
@@ -1437,36 +1618,24 @@ safe_f! {
 }
 
 extern "C" {
+    #[doc(hidden)]
+    pub fn __libc_current_sigrtmax() -> ::c_int;
+    #[doc(hidden)]
+    pub fn __libc_current_sigrtmin() -> ::c_int;
+
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_init(
-        sem: *mut sem_t,
-        pshared: ::c_int,
-        value: ::c_uint,
-    ) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
-    pub fn mincore(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        vec: *mut ::c_uchar,
-    ) -> ::c_int;
+    pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar) -> ::c_int;
 
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    pub fn clock_settime(
-        clk_id: ::clockid_t,
-        tp: *const ::timespec,
-    ) -> ::c_int;
-    pub fn clock_getcpuclockid(
-        pid: ::pid_t,
-        clk_id: *mut ::clockid_t,
-    ) -> ::c_int;
+    pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn clock_getcpuclockid(pid: ::pid_t, clk_id: *mut ::clockid_t) -> ::c_int;
 
     pub fn dirfd(dirp: *mut ::DIR) -> ::c_int;
 
-    pub fn pthread_getattr_np(
-        native: ::pthread_t,
-        attr: *mut ::pthread_attr_t,
-    ) -> ::c_int;
+    pub fn pthread_getattr_np(native: ::pthread_t, attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_getstack(
         attr: *const ::pthread_attr_t,
         stackaddr: *mut *mut ::c_void,
@@ -1481,18 +1650,9 @@ extern "C" {
     pub fn fstatfs64(fd: ::c_int, buf: *mut statfs64) -> ::c_int;
     pub fn statvfs64(path: *const ::c_char, buf: *mut statvfs64) -> ::c_int;
     pub fn fstatvfs64(fd: ::c_int, buf: *mut statvfs64) -> ::c_int;
-    pub fn memrchr(
-        cx: *const ::c_void,
-        c: ::c_int,
-        n: ::size_t,
-    ) -> *mut ::c_void;
+    pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
 
-    pub fn posix_fadvise(
-        fd: ::c_int,
-        offset: ::off_t,
-        len: ::off_t,
-        advise: ::c_int,
-    ) -> ::c_int;
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, advise: ::c_int) -> ::c_int;
     pub fn posix_fadvise64(
         fd: ::c_int,
         offset: ::off64_t,
@@ -1508,11 +1668,7 @@ extern "C" {
     ) -> ::c_int;
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn freelocale(loc: ::locale_t);
-    pub fn newlocale(
-        mask: ::c_int,
-        locale: *const ::c_char,
-        base: ::locale_t,
-    ) -> ::locale_t;
+    pub fn newlocale(mask: ::c_int, locale: *const ::c_char, base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
     pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
@@ -1534,15 +1690,11 @@ extern "C" {
         offset: off64_t,
     ) -> *mut ::c_void;
     pub fn open64(path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
-    pub fn openat64(
+    pub fn openat64(fd: ::c_int, path: *const c_char, oflag: ::c_int, ...) -> ::c_int;
+    pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t, offset: off64_t) -> ::ssize_t;
+    pub fn pwrite64(
         fd: ::c_int,
-        path: *const c_char,
-        oflag: ::c_int,
-        ...
-    ) -> ::c_int;
-    pub fn pread64(
-        fd: ::c_int,
-        buf: *mut ::c_void,
+        buf: *const ::c_void,
         count: ::size_t,
         offset: off64_t,
     ) -> ::ssize_t;
@@ -1569,10 +1721,7 @@ extern "C" {
         attr: *mut pthread_condattr_t,
         clock_id: ::clockid_t,
     ) -> ::c_int;
-    pub fn pthread_condattr_setpshared(
-        attr: *mut pthread_condattr_t,
-        pshared: ::c_int,
-    ) -> ::c_int;
+    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t, pshared: ::c_int) -> ::c_int;
     pub fn pthread_mutexattr_setpshared(
         attr: *mut pthread_mutexattr_t,
         pshared: ::c_int,
@@ -1581,34 +1730,13 @@ extern "C" {
         attr: *const pthread_rwlockattr_t,
         val: *mut ::c_int,
     ) -> ::c_int;
-    pub fn pthread_rwlockattr_setpshared(
-        attr: *mut pthread_rwlockattr_t,
-        val: ::c_int,
-    ) -> ::c_int;
-    pub fn ptsname_r(
-        fd: ::c_int,
-        buf: *mut ::c_char,
-        buflen: ::size_t,
-    ) -> ::c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t, val: ::c_int) -> ::c_int;
+    pub fn ptsname_r(fd: ::c_int, buf: *mut ::c_char, buflen: ::size_t) -> ::c_int;
     pub fn clearenv() -> ::c_int;
-    pub fn waitid(
-        idtype: idtype_t,
-        id: id_t,
-        infop: *mut ::siginfo_t,
-        options: ::c_int,
-    ) -> ::c_int;
-    pub fn setreuid(ruid: ::uid_t, euid: ::uid_t) -> ::c_int;
-    pub fn setregid(rgid: ::gid_t, egid: ::gid_t) -> ::c_int;
-    pub fn getresuid(
-        ruid: *mut ::uid_t,
-        euid: *mut ::uid_t,
-        suid: *mut ::uid_t,
-    ) -> ::c_int;
-    pub fn getresgid(
-        rgid: *mut ::gid_t,
-        egid: *mut ::gid_t,
-        sgid: *mut ::gid_t,
-    ) -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
+        -> ::c_int;
+    pub fn getresuid(ruid: *mut ::uid_t, euid: *mut ::uid_t, suid: *mut ::uid_t) -> ::c_int;
+    pub fn getresgid(rgid: *mut ::gid_t, egid: *mut ::gid_t, sgid: *mut ::gid_t) -> ::c_int;
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
@@ -1638,33 +1766,13 @@ extern "C" {
     ) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
-    pub fn bind(
-        socket: ::c_int,
-        address: *const ::sockaddr,
-        address_len: ::socklen_t,
-    ) -> ::c_int;
+    pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
 
-    pub fn writev(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-    ) -> ::ssize_t;
-    pub fn readv(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-    ) -> ::ssize_t;
+    pub fn writev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
+    pub fn readv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
 
-    pub fn sendmsg(
-        fd: ::c_int,
-        msg: *const ::msghdr,
-        flags: ::c_int,
-    ) -> ::ssize_t;
-    pub fn recvmsg(
-        fd: ::c_int,
-        msg: *mut ::msghdr,
-        flags: ::c_int,
-    ) -> ::ssize_t;
+    pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
+    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
 
@@ -1676,12 +1784,6 @@ cfg_if! {
                 iov: *const ::iovec,
                 iovcnt: ::c_int,
                 offset: ::off64_t,
-            ) -> ::ssize_t;
-            pub fn pwrite64(
-                fd: ::c_int,
-                buf: *const ::c_void,
-                count: ::size_t,
-                offset: off64_t,
             ) -> ::ssize_t;
             pub fn pwritev64(
                 fd: ::c_int,

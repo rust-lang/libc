@@ -28,13 +28,23 @@ at, fear not! This crate has CI support which tests any binding against all
 platforms supported, so you'll see failures if an API is added at the wrong
 level or has different signatures across platforms.
 
+New symbol(s) (i.e. functions, constants etc.) should also be added to the
+symbols list(s) found in the `libc-test/semver` directory. These lists keep
+track of what symbols are public in the libc crate and ensures they remain
+available between changes to the crate. If the new symbol(s) are available on
+all supported Unixes it should be added to `unix.txt` list<sup>1</sup>,
+otherwise they should be added to the OS specific list(s).
+
 With that in mind, the steps for adding a new API are:
 
 1. Determine where in the module hierarchy your API should be added.
-2. Add the API.
+2. Add the API, including adding new symbol(s) to the semver lists.
 3. Send a PR to this repo.
 4. Wait for CI to pass, fixing errors.
 5. Wait for a merge!
+
+<sup>1</sup>: Note that this list has nothing to do with any Unix or Posix
+standard, it's just a list shared between all OSs that declare `#[cfg(unix)]`.
 
 ## Test before you commit
 
@@ -62,6 +72,10 @@ after a certain period. The steps are:
     If you're using it, please comment on #XXX").
 2. If we don't see any concerns for a while, do the change actually.
 
+## Supported target policy
+
+When Rust removes a support for a target, the libc crate also may remove the support anytime.
+
 ## Releasing your change to crates.io
 
 Now that you've done the amazing job of landing your new API or your new
@@ -69,11 +83,11 @@ platform in this crate, the next step is to get that sweet, sweet usage from
 crates.io! The only next step is to bump the version of libc and then publish
 it. If you'd like to get a release out ASAP you can follow these steps:
 
-1. Increment the patch version number in `Cargo.toml`.
-1. Send a PR to this repository. It should [look like this][example], but it'd
+1. Increment the patch version number in `Cargo.toml` and `libc-test/Cargo.toml`.
+1. Send a PR to this repository. It should [look like this][example-pr], but it'd
    also be nice to fill out the description with a small rationale for the
-   release (any rationale is ok though!)
+   release (any rationale is ok though!).
 1. Once merged, the release will be tagged and published by one of the libc crate
    maintainers.
 
-[example]: https://github.com/rust-lang/libc/pull/583
+[example-pr]: https://github.com/rust-lang/libc/pull/2120

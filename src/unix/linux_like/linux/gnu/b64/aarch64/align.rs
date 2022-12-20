@@ -26,4 +26,33 @@ s! {
         // auto-derive traits like Debug
         __reserved: [[u64; 32]; 16],
     }
+
+    #[repr(align(16))]
+    pub struct user_fpsimd_struct {
+        pub vregs: [[u64; 2]; 32],
+        pub fpsr: ::c_uint,
+        pub fpcr: ::c_uint,
+    }
+
+    #[repr(align(8))]
+    pub struct clone_args {
+        pub flags: ::c_ulonglong,
+        pub pidfd: ::c_ulonglong,
+        pub child_tid: ::c_ulonglong,
+        pub parent_tid: ::c_ulonglong,
+        pub exit_signal: ::c_ulonglong,
+        pub stack: ::c_ulonglong,
+        pub stack_size: ::c_ulonglong,
+        pub tls: ::c_ulonglong,
+        pub set_tid: ::c_ulonglong,
+        pub set_tid_size: ::c_ulonglong,
+        pub cgroup: ::c_ulonglong,
+    }
+}
+
+extern "C" {
+    pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
+    pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
+    pub fn makecontext(ucp: *mut ucontext_t, func: extern "C" fn(), argc: ::c_int, ...);
+    pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> ::c_int;
 }

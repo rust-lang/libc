@@ -1,27 +1,52 @@
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type clockid_t = ::c_ulong;
-pub type dev_t = u32;
+
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub type dev_t = ::c_short;
+        pub type ino_t = ::c_ushort;
+        pub type off_t = ::c_long;
+    } else {
+        pub type dev_t = u32;
+        pub type ino_t = u32;
+        pub type off_t = i64;
+    }
+}
+
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u32;
 pub type id_t = u32;
-pub type ino_t = u32;
 pub type key_t = ::c_int;
 pub type loff_t = ::c_longlong;
 pub type mode_t = ::c_uint;
 pub type nfds_t = u32;
 pub type nlink_t = ::c_ushort;
-pub type off_t = i64;
 pub type pthread_t = ::c_ulong;
 pub type pthread_key_t = ::c_uint;
 pub type rlim_t = u32;
-pub type sa_family_t = u8;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type sa_family_t = u16;
+    } else {
+        pub type sa_family_t = u8;
+    }
+}
+
 pub type socklen_t = u32;
 pub type speed_t = u32;
 pub type suseconds_t = i32;
 pub type tcflag_t = ::c_uint;
-pub type time_t = i32;
 pub type useconds_t = u32;
+
+cfg_if! {
+    if #[cfg(any(target_os = "horizon", all(target_os = "espidf", espidf_time64)))] {
+        pub type time_t = ::c_longlong;
+    } else {
+        pub type time_t = i32;
+    }
+}
 
 s! {
     // The order of the `ai_addr` field in this struct is crucial
@@ -33,16 +58,14 @@ s! {
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
 
-        #[cfg(not(all(libc_cfg_target_vendor, target_arch = "powerpc",
-              target_vendor = "nintendo")))]
-        #[cfg(target_arch = "xtensa")]
+        #[cfg(target_os = "espidf")]
         pub ai_addr: *mut sockaddr,
 
         pub ai_canonname: *mut ::c_char,
 
-        #[cfg(not(all(libc_cfg_target_vendor, target_arch = "powerpc",
-              target_vendor = "nintendo")))]
-        #[cfg(not(target_arch = "xtensa"))]
+        #[cfg(not(any(
+            target_os = "espidf",
+            all(libc_cfg_target_vendor, target_arch = "powerpc", target_vendor = "nintendo"))))]
         pub ai_addr: *mut sockaddr,
 
         pub ai_next: *mut addrinfo,
@@ -116,26 +139,6 @@ s! {
         pub tm_isdst: ::c_int,
     }
 
-    pub struct stat {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: dev_t,
-        pub st_size: off_t,
-        pub st_atime: time_t,
-        pub st_spare1: ::c_long,
-        pub st_mtime: time_t,
-        pub st_spare2: ::c_long,
-        pub st_ctime: time_t,
-        pub st_spare3: ::c_long,
-        pub st_blksize: blksize_t,
-        pub st_blocks: blkcnt_t,
-        pub st_spare4: [::c_long; 2usize],
-    }
-
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -148,10 +151,6 @@ s! {
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
-    }
-
-    pub struct sigset_t {
-        __val: [::c_ulong; 16],
     }
 
     pub struct sigaction {
@@ -232,23 +231,37 @@ s! {
 // unverified constants
 align_const! {
     pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-        size: [0; __SIZEOF_PTHREAD_MUTEX_T],
+        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_MUTEX_T],
     };
     pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-        size: [0; __SIZEOF_PTHREAD_COND_T],
+        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_COND_T],
     };
     pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-        size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
+        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_RWLOCK_T],
     };
 }
 pub const NCCS: usize = 32;
-pub const __SIZEOF_PTHREAD_ATTR_T: usize = 56;
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
-pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
-pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
-pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
-pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
-pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        const __PTHREAD_INITIALIZER_BYTE: u8 = 0xff;
+        pub const __SIZEOF_PTHREAD_ATTR_T: usize = 32;
+        pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 12;
+        pub const __SIZEOF_PTHREAD_COND_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 8;
+        pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 12;
+    } else {
+        const __PTHREAD_INITIALIZER_BYTE: u8 = 0;
+        pub const __SIZEOF_PTHREAD_ATTR_T: usize = 56;
+        pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
+        pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
+        pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
+    }
+}
 pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 pub const __PTHREAD_MUTEX_HAVE_PREV: usize = 1;
@@ -256,7 +269,14 @@ pub const __PTHREAD_RWLOCK_INT_FLAGS_SHARED: usize = 1;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
-pub const FD_SETSIZE: usize = 1024;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub const FD_SETSIZE: usize = 64;
+    } else {
+        pub const FD_SETSIZE: usize = 1024;
+    }
+}
 // intentionally not public, only used for fd_set
 const ULONG_SIZE: usize = 32;
 
@@ -465,7 +485,13 @@ pub const SO_SNDLOWAT: ::c_int = 0x1003;
 pub const SO_RCVLOWAT: ::c_int = 0x1004;
 pub const SO_SNDTIMEO: ::c_int = 0x1005;
 pub const SO_RCVTIMEO: ::c_int = 0x1006;
-pub const SO_ERROR: ::c_int = 0x1007;
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub const SO_ERROR: ::c_int = 0x1009;
+    } else {
+        pub const SO_ERROR: ::c_int = 0x1007;
+    }
+}
 pub const SO_TYPE: ::c_int = 0x1008;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
@@ -500,7 +526,13 @@ pub const TCP_KEEPIDLE: ::c_int = 256;
 pub const TCP_KEEPINTVL: ::c_int = 512;
 pub const TCP_KEEPCNT: ::c_int = 1024;
 
-pub const IP_TOS: ::c_int = 3;
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub const IP_TOS: ::c_int = 7;
+    } else {
+        pub const IP_TOS: ::c_int = 3;
+    }
+}
 pub const IP_TTL: ::c_int = 8;
 pub const IP_MULTICAST_IF: ::c_int = 9;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
@@ -558,7 +590,7 @@ f! {
         return
     }
 
-    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
+    pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0
@@ -583,21 +615,12 @@ extern "C" {
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
 
     #[cfg_attr(target_os = "linux", link_name = "__xpg_strerror_r")]
-    pub fn strerror_r(
-        errnum: ::c_int,
-        buf: *mut c_char,
-        buflen: ::size_t,
-    ) -> ::c_int;
+    pub fn strerror_r(errnum: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
 
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_init(
-        sem: *mut sem_t,
-        pshared: ::c_int,
-        value: ::c_uint,
-    ) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
 
     pub fn abs(i: ::c_int) -> ::c_int;
-    pub fn atof(s: *const ::c_char) -> ::c_double;
     pub fn labs(i: ::c_long) -> ::c_long;
     pub fn rand() -> ::c_int;
     pub fn srand(seed: ::c_uint);
@@ -607,20 +630,12 @@ extern "C" {
         target_arch = "powerpc",
         target_vendor = "nintendo"
     )))]
-    pub fn bind(fd: ::c_int, addr: *const sockaddr, len: socklen_t)
-        -> ::c_int;
-    pub fn clock_settime(
-        clock_id: ::clockid_t,
-        tp: *const ::timespec,
-    ) -> ::c_int;
-    pub fn clock_gettime(
-        clock_id: ::clockid_t,
-        tp: *mut ::timespec,
-    ) -> ::c_int;
-    pub fn clock_getres(
-        clock_id: ::clockid_t,
-        res: *mut ::timespec,
-    ) -> ::c_int;
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_bind")]
+    pub fn bind(fd: ::c_int, addr: *const sockaddr, len: socklen_t) -> ::c_int;
+    pub fn clock_settime(clock_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
+    pub fn clock_gettime(clock_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    pub fn clock_getres(clock_id: ::clockid_t, res: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_close")]
     pub fn closesocket(sockfd: ::c_int) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     #[cfg(not(all(
@@ -628,6 +643,7 @@ extern "C" {
         target_arch = "powerpc",
         target_vendor = "nintendo"
     )))]
+    #[cfg_attr(target_os = "espidf", link_name = "lwip_recvfrom")]
     pub fn recvfrom(
         fd: ::c_int,
         buf: *mut ::c_void,
@@ -674,11 +690,7 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
-    pub fn pthread_sigmask(
-        how: ::c_int,
-        set: *const sigset_t,
-        oldset: *mut sigset_t,
-    ) -> ::c_int;
+    pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t, oldset: *mut sigset_t) -> ::c_int;
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
@@ -709,16 +721,21 @@ extern "C" {
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
 }
 
+mod generic;
+
 cfg_if! {
-    if #[cfg(target_arch = "arm")] {
+    if #[cfg(target_os = "espidf")] {
+        mod espidf;
+        pub use self::espidf::*;
+    } else if #[cfg(target_os = "horizon")] {
+        mod horizon;
+        pub use self::horizon::*;
+    } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
     } else if #[cfg(target_arch = "aarch64")] {
         mod aarch64;
         pub use self::aarch64::*;
-    } else if #[cfg(target_arch = "xtensa")] {
-        mod xtensa;
-        pub use self::xtensa::*;
     } else if #[cfg(target_arch = "powerpc")] {
         mod powerpc;
         pub use self::powerpc::*;

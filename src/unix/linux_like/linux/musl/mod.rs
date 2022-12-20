@@ -24,6 +24,16 @@ pub type rlim_t = ::c_ulonglong;
 
 pub type flock64 = flock;
 
+cfg_if! {
+    if #[cfg(doc)] {
+        // Used in `linux::arch` to define ioctl constants.
+        pub(crate) type Ioctl = ::c_int;
+    } else {
+        #[doc(hidden)]
+        pub type Ioctl = ::c_int;
+    }
+}
+
 impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut ::c_void {
         #[repr(C)]
@@ -133,24 +143,6 @@ s! {
         __dummy4: [::c_char; 16],
     }
 
-    pub struct nlmsghdr {
-        pub nlmsg_len: u32,
-        pub nlmsg_type: u16,
-        pub nlmsg_flags: u16,
-        pub nlmsg_seq: u32,
-        pub nlmsg_pid: u32,
-    }
-
-    pub struct nlmsgerr {
-        pub error: ::c_int,
-        pub msg: nlmsghdr,
-    }
-
-    pub struct nlattr {
-        pub nla_len: u16,
-        pub nla_type: u16,
-    }
-
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
@@ -226,12 +218,6 @@ s! {
         pub rt_irtt: ::c_ushort,
     }
 
-    pub struct ip_mreqn {
-        pub imr_multiaddr: ::in_addr,
-        pub imr_address: ::in_addr,
-        pub imr_ifindex: ::c_int,
-    }
-
     pub struct __exit_status {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
@@ -248,6 +234,36 @@ s! {
         pub ch_type: ::Elf32_Word,
         pub ch_size: ::Elf32_Word,
         pub ch_addralign: ::Elf32_Word,
+    }
+
+    pub struct timex {
+        pub modes: ::c_uint,
+        pub offset: ::c_long,
+        pub freq: ::c_long,
+        pub maxerror: ::c_long,
+        pub esterror: ::c_long,
+        pub status: ::c_int,
+        pub constant: ::c_long,
+        pub precision: ::c_long,
+        pub tolerance: ::c_long,
+        pub time: ::timeval,
+        pub tick: ::c_long,
+        pub ppsfreq: ::c_long,
+        pub jitter: ::c_long,
+        pub shift: ::c_int,
+        pub stabil: ::c_long,
+        pub jitcnt: ::c_long,
+        pub calcnt: ::c_long,
+        pub errcnt: ::c_long,
+        pub stbcnt: ::c_long,
+        pub tai: ::c_int,
+        pub __padding: [::c_int; 11],
+    }
+
+    pub struct ntptimeval {
+        pub time: ::timeval,
+        pub maxerror: ::c_long,
+        pub esterror: ::c_long,
     }
 }
 
@@ -508,25 +524,12 @@ pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
-pub const RLIM_INFINITY: ::rlim_t = !0;
-pub const RLIMIT_RTTIME: ::c_int = 15;
-
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
 pub const SOCK_DCCP: ::c_int = 6;
 pub const SOCK_PACKET: ::c_int = 10;
 
-pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
-pub const TCP_THIN_LINEAR_TIMEOUTS: ::c_int = 16;
-pub const TCP_THIN_DUPACK: ::c_int = 17;
-pub const TCP_USER_TIMEOUT: ::c_int = 18;
-pub const TCP_REPAIR: ::c_int = 19;
-pub const TCP_REPAIR_QUEUE: ::c_int = 20;
-pub const TCP_QUEUE_SEQ: ::c_int = 21;
-pub const TCP_REPAIR_OPTIONS: ::c_int = 22;
-pub const TCP_FASTOPEN: ::c_int = 23;
-pub const TCP_TIMESTAMP: ::c_int = 24;
-pub const TCP_FASTOPEN_CONNECT: ::c_int = 30;
+pub const SOMAXCONN: ::c_int = 128;
 
 #[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
 pub const SIGUNUSED: ::c_int = ::SIGSYS;
@@ -587,6 +590,8 @@ pub const EFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
 
 pub const SFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
 
+pub const PIDFD_NONBLOCK: ::c_uint = O_NONBLOCK as ::c_uint;
+
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
 pub const TCSAFLUSH: ::c_int = 2;
@@ -615,32 +620,69 @@ pub const B38400: ::speed_t = 0o000017;
 pub const EXTA: ::speed_t = B19200;
 pub const EXTB: ::speed_t = B38400;
 
-pub const SO_BINDTODEVICE: ::c_int = 25;
-pub const SO_TIMESTAMP: ::c_int = 29;
-pub const SO_MARK: ::c_int = 36;
-pub const SO_RXQ_OVFL: ::c_int = 40;
-pub const SO_PEEK_OFF: ::c_int = 42;
-pub const SO_BUSY_POLL: ::c_int = 46;
-
-pub const RLIMIT_CPU: ::c_int = 0;
-pub const RLIMIT_FSIZE: ::c_int = 1;
-pub const RLIMIT_DATA: ::c_int = 2;
-pub const RLIMIT_STACK: ::c_int = 3;
-pub const RLIMIT_CORE: ::c_int = 4;
-pub const RLIMIT_LOCKS: ::c_int = 10;
-pub const RLIMIT_SIGPENDING: ::c_int = 11;
-pub const RLIMIT_MSGQUEUE: ::c_int = 12;
-pub const RLIMIT_NICE: ::c_int = 13;
-pub const RLIMIT_RTPRIO: ::c_int = 14;
-
 pub const REG_OK: ::c_int = 0;
-
-pub const TIOCSBRK: ::c_int = 0x5427;
-pub const TIOCCBRK: ::c_int = 0x5428;
 
 pub const PRIO_PROCESS: ::c_int = 0;
 pub const PRIO_PGRP: ::c_int = 1;
 pub const PRIO_USER: ::c_int = 2;
+
+pub const ADJ_OFFSET: ::c_uint = 0x0001;
+pub const ADJ_FREQUENCY: ::c_uint = 0x0002;
+pub const ADJ_MAXERROR: ::c_uint = 0x0004;
+pub const ADJ_ESTERROR: ::c_uint = 0x0008;
+pub const ADJ_STATUS: ::c_uint = 0x0010;
+pub const ADJ_TIMECONST: ::c_uint = 0x0020;
+pub const ADJ_TAI: ::c_uint = 0x0080;
+pub const ADJ_SETOFFSET: ::c_uint = 0x0100;
+pub const ADJ_MICRO: ::c_uint = 0x1000;
+pub const ADJ_NANO: ::c_uint = 0x2000;
+pub const ADJ_TICK: ::c_uint = 0x4000;
+pub const ADJ_OFFSET_SINGLESHOT: ::c_uint = 0x8001;
+pub const ADJ_OFFSET_SS_READ: ::c_uint = 0xa001;
+pub const MOD_OFFSET: ::c_uint = ADJ_OFFSET;
+pub const MOD_FREQUENCY: ::c_uint = ADJ_FREQUENCY;
+pub const MOD_MAXERROR: ::c_uint = ADJ_MAXERROR;
+pub const MOD_ESTERROR: ::c_uint = ADJ_ESTERROR;
+pub const MOD_STATUS: ::c_uint = ADJ_STATUS;
+pub const MOD_TIMECONST: ::c_uint = ADJ_TIMECONST;
+pub const MOD_CLKB: ::c_uint = ADJ_TICK;
+pub const MOD_CLKA: ::c_uint = ADJ_OFFSET_SINGLESHOT;
+pub const MOD_TAI: ::c_uint = ADJ_TAI;
+pub const MOD_MICRO: ::c_uint = ADJ_MICRO;
+pub const MOD_NANO: ::c_uint = ADJ_NANO;
+pub const STA_PLL: ::c_int = 0x0001;
+pub const STA_PPSFREQ: ::c_int = 0x0002;
+pub const STA_PPSTIME: ::c_int = 0x0004;
+pub const STA_FLL: ::c_int = 0x0008;
+pub const STA_INS: ::c_int = 0x0010;
+pub const STA_DEL: ::c_int = 0x0020;
+pub const STA_UNSYNC: ::c_int = 0x0040;
+pub const STA_FREQHOLD: ::c_int = 0x0080;
+pub const STA_PPSSIGNAL: ::c_int = 0x0100;
+pub const STA_PPSJITTER: ::c_int = 0x0200;
+pub const STA_PPSWANDER: ::c_int = 0x0400;
+pub const STA_PPSERROR: ::c_int = 0x0800;
+pub const STA_CLOCKERR: ::c_int = 0x1000;
+pub const STA_NANO: ::c_int = 0x2000;
+pub const STA_MODE: ::c_int = 0x4000;
+pub const STA_CLK: ::c_int = 0x8000;
+pub const STA_RONLY: ::c_int = STA_PPSSIGNAL
+    | STA_PPSJITTER
+    | STA_PPSWANDER
+    | STA_PPSERROR
+    | STA_CLOCKERR
+    | STA_NANO
+    | STA_MODE
+    | STA_CLK;
+
+pub const TIME_OK: ::c_int = 0;
+pub const TIME_INS: ::c_int = 1;
+pub const TIME_DEL: ::c_int = 2;
+pub const TIME_OOP: ::c_int = 3;
+pub const TIME_WAIT: ::c_int = 4;
+pub const TIME_ERROR: ::c_int = 5;
+pub const TIME_BAD: ::c_int = TIME_ERROR;
+pub const MAXTC: ::c_long = 6;
 
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
@@ -684,27 +726,11 @@ extern "C" {
         old_limit: *mut ::rlimit64,
     ) -> ::c_int;
 
+    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
-    pub fn pthread_getaffinity_np(
-        thread: ::pthread_t,
-        cpusetsize: ::size_t,
-        cpuset: *mut ::cpu_set_t,
-    ) -> ::c_int;
-    pub fn pthread_setaffinity_np(
-        thread: ::pthread_t,
-        cpusetsize: ::size_t,
-        cpuset: *const ::cpu_set_t,
-    ) -> ::c_int;
-    pub fn sched_getcpu() -> ::c_int;
-    pub fn memmem(
-        haystack: *const ::c_void,
-        haystacklen: ::size_t,
-        needle: *const ::c_void,
-        needlelen: ::size_t,
-    ) -> *mut ::c_void;
     // Musl targets need the `mask` argument of `fanotify_mark` be specified
     // `::c_ulonglong` instead of `u64` or there will be a type mismatch between
     // `long long unsigned int` and the expected `uint64_t`.
@@ -715,6 +741,37 @@ extern "C" {
         dirfd: ::c_int,
         path: *const ::c_char,
     ) -> ::c_int;
+    pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
+
+    // Added in `musl` 1.1.20
+    pub fn explicit_bzero(s: *mut ::c_void, len: ::size_t);
+    // Added in `musl` 1.2.2
+    pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
+
+    pub fn adjtimex(buf: *mut ::timex) -> ::c_int;
+    pub fn clock_adjtime(clk_id: ::clockid_t, buf: *mut ::timex) -> ::c_int;
+
+    pub fn ctermid(s: *mut ::c_char) -> *mut ::c_char;
+
+    pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
+    pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
+
+    pub fn euidaccess(pathname: *const ::c_char, mode: ::c_int) -> ::c_int;
+    pub fn eaccess(pathname: *const ::c_char, mode: ::c_int) -> ::c_int;
+
+    pub fn asctime_r(tm: *const ::tm, buf: *mut ::c_char) -> *mut ::c_char;
+
+    pub fn strftime(
+        s: *mut ::c_char,
+        max: ::size_t,
+        format: *const ::c_char,
+        tm: *const ::tm,
+    ) -> ::size_t;
+    pub fn strptime(s: *const ::c_char, format: *const ::c_char, tm: *mut ::tm) -> *mut ::c_char;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {
@@ -722,13 +779,15 @@ cfg_if! {
                  target_arch = "aarch64",
                  target_arch = "mips64",
                  target_arch = "powerpc64",
-                 target_arch = "s390x"))] {
+                 target_arch = "s390x",
+                 target_arch = "riscv64"))] {
         mod b64;
         pub use self::b64::*;
     } else if #[cfg(any(target_arch = "x86",
                         target_arch = "mips",
                         target_arch = "powerpc",
                         target_arch = "hexagon",
+                        target_arch = "riscv32",
                         target_arch = "arm"))] {
         mod b32;
         pub use self::b32::*;

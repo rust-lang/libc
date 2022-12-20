@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
@@ -7,4 +7,5 @@ RUN apt-get install -y --no-install-recommends \
 COPY install-musl.sh /
 RUN sh /install-musl.sh x86_64
 
-ENV PATH=$PATH:/musl-x86_64/bin:/rust/bin
+ENV PATH=$PATH:/musl-x86_64/bin:/rust/bin \
+    RUSTFLAGS="-L /musl-x86_64/lib"

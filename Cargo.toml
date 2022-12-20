@@ -1,6 +1,6 @@
 [package]
 name = "libc"
-version = "0.2.88"
+version = "0.2.138"
 authors = ["The Rust Project Developers"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
@@ -14,6 +14,9 @@ exclude = ["/ci/*", "/.github/*", "/.cirrus.yml", "/triagebot.toml"]
 description = """
 Raw FFI bindings to platform libraries like libc.
 """
+
+[package.metadata.docs.rs]
+features = ["const-extern-fn", "extra_traits"]
 
 [dependencies]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }

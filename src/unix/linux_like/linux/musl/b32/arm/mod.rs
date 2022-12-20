@@ -150,6 +150,77 @@ s! {
         pub f_namemax: ::c_ulong,
         __f_spare: [::c_int; 6],
     }
+
+    pub struct mcontext_t {
+        pub trap_no: ::c_ulong,
+        pub error_code: ::c_ulong,
+        pub oldmask: ::c_ulong,
+        pub arm_r0: ::c_ulong,
+        pub arm_r1: ::c_ulong,
+        pub arm_r2: ::c_ulong,
+        pub arm_r3: ::c_ulong,
+        pub arm_r4: ::c_ulong,
+        pub arm_r5: ::c_ulong,
+        pub arm_r6: ::c_ulong,
+        pub arm_r7: ::c_ulong,
+        pub arm_r8: ::c_ulong,
+        pub arm_r9: ::c_ulong,
+        pub arm_r10: ::c_ulong,
+        pub arm_fp: ::c_ulong,
+        pub arm_ip: ::c_ulong,
+        pub arm_sp: ::c_ulong,
+        pub arm_lr: ::c_ulong,
+        pub arm_pc: ::c_ulong,
+        pub arm_cpsr: ::c_ulong,
+        pub fault_address: ::c_ulong,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask: ::sigset_t,
+        pub uc_regspace: [::c_ulonglong; 64],
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for ucontext_t {
+            fn eq(&self, other: &ucontext_t) -> bool {
+                self.uc_flags == other.uc_flags
+                    && self.uc_link == other.uc_link
+                    && self.uc_stack == other.uc_stack
+                    && self.uc_mcontext == other.uc_mcontext
+                    && self.uc_sigmask == other.uc_sigmask
+            }
+        }
+        impl Eq for ucontext_t {}
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_flags", &self.uc_link)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_sigmask", &self.uc_sigmask)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ucontext_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.uc_flags.hash(state);
+                self.uc_link.hash(state);
+                self.uc_stack.hash(state);
+                self.uc_mcontext.hash(state);
+                self.uc_sigmask.hash(state);
+            }
+        }
+    }
 }
 
 pub const SIGSTKSZ: ::size_t = 8192;
@@ -160,17 +231,6 @@ pub const O_DIRECTORY: ::c_int = 0x4000;
 pub const O_NOFOLLOW: ::c_int = 0x8000;
 pub const O_ASYNC: ::c_int = 0x2000;
 pub const O_LARGEFILE: ::c_int = 0o400000;
-
-pub const FIOCLEX: ::c_int = 0x5451;
-pub const FIONCLEX: ::c_int = 0x5450;
-pub const FIONBIO: ::c_int = 0x5421;
-
-pub const RLIMIT_RSS: ::c_int = 5;
-pub const RLIMIT_NOFILE: ::c_int = 7;
-pub const RLIMIT_AS: ::c_int = 9;
-pub const RLIMIT_NPROC: ::c_int = 6;
-pub const RLIMIT_MEMLOCK: ::c_int = 8;
-pub const RLIMIT_NLIMITS: ::c_int = 15;
 
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MCL_CURRENT: ::c_int = 0x0001;
@@ -268,8 +328,6 @@ pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
-pub const SOL_SOCKET: ::c_int = 1;
-
 pub const EDEADLK: ::c_int = 35;
 pub const ENAMETOOLONG: ::c_int = 36;
 pub const ENOLCK: ::c_int = 37;
@@ -356,34 +414,6 @@ pub const ENOTRECOVERABLE: ::c_int = 131;
 pub const ERFKILL: ::c_int = 132;
 pub const EHWPOISON: ::c_int = 133;
 
-pub const SO_REUSEADDR: ::c_int = 2;
-pub const SO_TYPE: ::c_int = 3;
-pub const SO_ERROR: ::c_int = 4;
-pub const SO_DONTROUTE: ::c_int = 5;
-pub const SO_BROADCAST: ::c_int = 6;
-pub const SO_SNDBUF: ::c_int = 7;
-pub const SO_RCVBUF: ::c_int = 8;
-pub const SO_KEEPALIVE: ::c_int = 9;
-pub const SO_OOBINLINE: ::c_int = 10;
-pub const SO_NO_CHECK: ::c_int = 11;
-pub const SO_PRIORITY: ::c_int = 12;
-pub const SO_LINGER: ::c_int = 13;
-pub const SO_BSDCOMPAT: ::c_int = 14;
-pub const SO_REUSEPORT: ::c_int = 15;
-pub const SO_PASSCRED: ::c_int = 16;
-pub const SO_PEERCRED: ::c_int = 17;
-pub const SO_RCVLOWAT: ::c_int = 18;
-pub const SO_SNDLOWAT: ::c_int = 19;
-pub const SO_RCVTIMEO: ::c_int = 20;
-pub const SO_SNDTIMEO: ::c_int = 21;
-pub const SO_ACCEPTCONN: ::c_int = 30;
-pub const SO_PEERSEC: ::c_int = 31;
-pub const SO_SNDBUFFORCE: ::c_int = 32;
-pub const SO_RCVBUFFORCE: ::c_int = 33;
-pub const SO_PASSSEC: ::c_int = 34;
-pub const SO_PROTOCOL: ::c_int = 38;
-pub const SO_DOMAIN: ::c_int = 39;
-
 pub const SA_ONSTACK: ::c_int = 0x08000000;
 pub const SA_SIGINFO: ::c_int = 0x00000004;
 pub const SA_NOCLDWAIT: ::c_int = 0x00000002;
@@ -433,54 +463,8 @@ pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
 
-pub const TCGETS: ::c_int = 0x5401;
-pub const TCSETS: ::c_int = 0x5402;
-pub const TCSETSW: ::c_int = 0x5403;
-pub const TCSETSF: ::c_int = 0x5404;
-pub const TCGETA: ::c_int = 0x5405;
-pub const TCSETA: ::c_int = 0x5406;
-pub const TCSETAW: ::c_int = 0x5407;
-pub const TCSETAF: ::c_int = 0x5408;
-pub const TCSBRK: ::c_int = 0x5409;
-pub const TCXONC: ::c_int = 0x540A;
-pub const TCFLSH: ::c_int = 0x540B;
-pub const TIOCGSOFTCAR: ::c_int = 0x5419;
-pub const TIOCSSOFTCAR: ::c_int = 0x541A;
-pub const TIOCLINUX: ::c_int = 0x541C;
-pub const TIOCGSERIAL: ::c_int = 0x541E;
-pub const TIOCEXCL: ::c_int = 0x540C;
-pub const TIOCNXCL: ::c_int = 0x540D;
-pub const TIOCSCTTY: ::c_int = 0x540E;
-pub const TIOCGPGRP: ::c_int = 0x540F;
-pub const TIOCSPGRP: ::c_int = 0x5410;
-pub const TIOCOUTQ: ::c_int = 0x5411;
-pub const TIOCSTI: ::c_int = 0x5412;
-pub const TIOCGWINSZ: ::c_int = 0x5413;
-pub const TIOCSWINSZ: ::c_int = 0x5414;
-pub const TIOCMGET: ::c_int = 0x5415;
-pub const TIOCMBIS: ::c_int = 0x5416;
-pub const TIOCMBIC: ::c_int = 0x5417;
-pub const TIOCMSET: ::c_int = 0x5418;
-pub const FIONREAD: ::c_int = 0x541B;
-pub const TIOCCONS: ::c_int = 0x541D;
-
-pub const TIOCGRS485: ::c_int = 0x542E;
-pub const TIOCSRS485: ::c_int = 0x542F;
-
 pub const POLLWRNORM: ::c_short = 0x100;
 pub const POLLWRBAND: ::c_short = 0x200;
-
-pub const TIOCM_LE: ::c_int = 0x001;
-pub const TIOCM_DTR: ::c_int = 0x002;
-pub const TIOCM_RTS: ::c_int = 0x004;
-pub const TIOCM_ST: ::c_int = 0x008;
-pub const TIOCM_SR: ::c_int = 0x010;
-pub const TIOCM_CTS: ::c_int = 0x020;
-pub const TIOCM_CAR: ::c_int = 0x040;
-pub const TIOCM_RNG: ::c_int = 0x080;
-pub const TIOCM_DSR: ::c_int = 0x100;
-pub const TIOCM_CD: ::c_int = TIOCM_CAR;
-pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
 // Syscall table
 pub const SYS_restart_syscall: ::c_long = 0;
@@ -834,13 +818,36 @@ pub const SYS_pkey_mprotect: ::c_long = 394;
 pub const SYS_pkey_alloc: ::c_long = 395;
 pub const SYS_pkey_free: ::c_long = 396;
 pub const SYS_statx: ::c_long = 397;
+pub const SYS_pidfd_send_signal: ::c_long = 424;
+pub const SYS_io_uring_setup: ::c_long = 425;
+pub const SYS_io_uring_enter: ::c_long = 426;
+pub const SYS_io_uring_register: ::c_long = 427;
+pub const SYS_open_tree: ::c_long = 428;
+pub const SYS_move_mount: ::c_long = 429;
+pub const SYS_fsopen: ::c_long = 430;
+pub const SYS_fsconfig: ::c_long = 431;
+pub const SYS_fsmount: ::c_long = 432;
+pub const SYS_fspick: ::c_long = 433;
+pub const SYS_pidfd_open: ::c_long = 434;
+pub const SYS_clone3: ::c_long = 435;
+pub const SYS_close_range: ::c_long = 436;
+pub const SYS_openat2: ::c_long = 437;
+pub const SYS_pidfd_getfd: ::c_long = 438;
+pub const SYS_faccessat2: ::c_long = 439;
+pub const SYS_process_madvise: ::c_long = 440;
+pub const SYS_epoll_pwait2: ::c_long = 441;
+pub const SYS_mount_setattr: ::c_long = 442;
+pub const SYS_quotactl_fd: ::c_long = 443;
+pub const SYS_landlock_create_ruleset: ::c_long = 444;
+pub const SYS_landlock_add_rule: ::c_long = 445;
+pub const SYS_landlock_restrict_self: ::c_long = 446;
+pub const SYS_memfd_secret: ::c_long = 447;
+pub const SYS_process_mrelease: ::c_long = 448;
+pub const SYS_futex_waitv: ::c_long = 449;
+pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
 extern "C" {
-    pub fn getrandom(
-        buf: *mut ::c_void,
-        buflen: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 }
 
 cfg_if! {

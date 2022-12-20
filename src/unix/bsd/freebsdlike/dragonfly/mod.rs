@@ -18,9 +18,32 @@ pub type uuid_t = ::uuid;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type idtype_t = ::c_uint;
+pub type shmatt_t = ::c_uint;
 
 pub type mqd_t = ::c_int;
 pub type sem_t = *mut sem;
+
+pub type cpuset_t = cpumask_t;
+pub type cpu_set_t = cpumask_t;
+
+pub type register_t = ::c_long;
+pub type umtx_t = ::c_int;
+pub type pthread_barrierattr_t = ::c_int;
+pub type pthread_barrier_t = ::uintptr_t;
+pub type pthread_spinlock_t = ::uintptr_t;
+
+pub type segsz_t = usize;
+
+pub type vm_prot_t = u8;
+pub type vm_maptype_t = u8;
+pub type vm_inherit_t = i8;
+pub type vm_subsys_t = ::c_int;
+pub type vm_eflags_t = ::c_uint;
+
+pub type vm_map_t = *mut __c_anonymous_vm_map;
+pub type vm_map_entry_t = *mut vm_map_entry;
+
+pub type pmap = __c_anonymous_pmap;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
@@ -28,6 +51,24 @@ impl ::Copy for sem {}
 impl ::Clone for sem {
     fn clone(&self) -> sem {
         *self
+    }
+}
+
+e! {
+    #[repr(u32)]
+    pub enum lwpstat {
+        LSRUN = 1,
+        LSSTOP = 2,
+        LSSLEEP = 3,
+    }
+
+    #[repr(u32)]
+    pub enum procstat {
+        SIDL = 1,
+        SACTIVE = 2,
+        SSTOP = 3,
+        SZOMB = 4,
+        SCORE = 5,
     }
 }
 
@@ -113,11 +154,11 @@ s! {
         pub st_ctime_nsec: ::c_long,
         pub st_size: ::off_t,
         pub st_blocks: i64,
-        pub st_blksize: u32,
+        pub __old_st_blksize: u32,
         pub st_flags: u32,
         pub st_gen: u32,
         pub st_lspare: i32,
-        pub st_qspare1: i64,
+        pub st_blksize: i64,
         pub st_qspare2: i64,
     }
 
@@ -180,9 +221,195 @@ s! {
     }
 
     pub struct stack_t {
-        pub ss_sp: *mut ::c_char,
+        pub ss_sp: *mut ::c_void,
         pub ss_size: ::size_t,
         pub ss_flags: ::c_int,
+    }
+
+    pub struct cpumask_t {
+        ary: [u64; 4],
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: ::ipc_perm,
+        pub shm_segsz: ::size_t,
+        pub shm_lpid: ::pid_t,
+        pub shm_cpid: ::pid_t,
+        pub shm_nattch: ::shmatt_t,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
+        shm_internal: *mut ::c_void,
+    }
+
+    pub struct kinfo_file {
+        pub f_size: ::size_t,
+        pub f_pid: ::pid_t,
+        pub f_uid: ::uid_t,
+        pub f_fd: ::c_int,
+        pub f_file: *mut ::c_void,
+        pub f_type: ::c_short,
+        pub f_count: ::c_int,
+        pub f_msgcount: ::c_int,
+        pub f_offset: ::off_t,
+        pub f_data: *mut ::c_void,
+        pub f_flag: ::c_uint,
+    }
+
+    pub struct kinfo_cputime {
+        pub cp_user: u64,
+        pub cp_nice: u64,
+        pub cp_sys: u64,
+        pub cp_intr: u64,
+        pub cp_idel: u64,
+        cp_unused01: u64,
+        cp_unused02: u64,
+        pub cp_sample_pc: u64,
+        pub cp_sample_sp: u64,
+        pub cp_msg: [::c_char; 32],
+    }
+
+    pub struct kinfo_lwp {
+        pub kl_pid: ::pid_t,
+        pub kl_tid: ::lwpid_t,
+        pub kl_flags: ::c_int,
+        pub kl_stat: ::lwpstat,
+        pub kl_lock: ::c_int,
+        pub kl_tdflags: ::c_int,
+        pub kl_mpcount: ::c_int,
+        pub kl_prio: ::c_int,
+        pub kl_tdprio: ::c_int,
+        pub kl_rtprio: ::rtprio,
+        pub kl_uticks: u64,
+        pub kl_sticks: u64,
+        pub kl_iticks: u64,
+        pub kl_cpticks: u64,
+        pub kl_pctcpu: ::c_uint,
+        pub kl_slptime: ::c_uint,
+        pub kl_origcpu: ::c_int,
+        pub kl_estcpu: ::c_int,
+        pub kl_cpuid: ::c_int,
+        pub kl_ru: ::rusage,
+        pub kl_siglist: ::sigset_t,
+        pub kl_sigmask: ::sigset_t,
+        pub kl_wchan: ::uintptr_t,
+        pub kl_wmesg: [::c_char; 9],
+        pub kl_comm: [::c_char; MAXCOMLEN+1],
+    }
+
+    pub struct kinfo_proc {
+        pub kp_paddr: ::uintptr_t,
+        pub kp_flags: ::c_int,
+        pub kp_stat: ::procstat,
+        pub kp_lock: ::c_int,
+        pub kp_acflag: ::c_int,
+        pub kp_traceflag: ::c_int,
+        pub kp_fd: ::uintptr_t,
+        pub kp_siglist: ::sigset_t,
+        pub kp_sigignore: ::sigset_t,
+        pub kp_sigcatch: ::sigset_t,
+        pub kp_sigflag: ::c_int,
+        pub kp_start: ::timeval,
+        pub kp_comm: [::c_char; MAXCOMLEN+1],
+        pub kp_uid: ::uid_t,
+        pub kp_ngroups: ::c_short,
+        pub kp_groups: [::gid_t; NGROUPS],
+        pub kp_ruid: ::uid_t,
+        pub kp_svuid: ::uid_t,
+        pub kp_rgid: ::gid_t,
+        pub kp_svgid: ::gid_t,
+        pub kp_pid: ::pid_t,
+        pub kp_ppid: ::pid_t,
+        pub kp_pgid: ::pid_t,
+        pub kp_jobc: ::c_int,
+        pub kp_sid: ::pid_t,
+        pub kp_login: [::c_char; 40], // MAXNAMELEN rounded up to the nearest sizeof(long)
+        pub kp_tdev: ::dev_t,
+        pub kp_tpgid: ::pid_t,
+        pub kp_tsid: ::pid_t,
+        pub kp_exitstat: ::c_ushort,
+        pub kp_nthreads: ::c_int,
+        pub kp_nice: ::c_int,
+        pub kp_swtime: ::c_uint,
+        pub kp_vm_map_size: ::size_t,
+        pub kp_vm_rssize: ::segsz_t,
+        pub kp_vm_swrss: ::segsz_t,
+        pub kp_vm_tsize: ::segsz_t,
+        pub kp_vm_dsize: ::segsz_t,
+        pub kp_vm_ssize: ::segsz_t,
+        pub kp_vm_prssize: ::c_uint,
+        pub kp_jailid: ::c_int,
+        pub kp_ru: ::rusage,
+        pub kp_cru: ::rusage,
+        pub kp_auxflags: ::c_int,
+        pub kp_lwp: ::kinfo_lwp,
+        pub kp_ktaddr: ::uintptr_t,
+        kp_spare: [::c_int; 2],
+    }
+
+    pub struct __c_anonymous_vm_map {
+        _priv: [::uintptr_t; 36],
+    }
+
+    pub struct vm_map_entry {
+        _priv: [::uintptr_t; 15],
+        pub eflags: ::vm_eflags_t,
+        pub maptype: ::vm_maptype_t,
+        pub protection: ::vm_prot_t,
+        pub max_protection: ::vm_prot_t,
+        pub inheritance: ::vm_inherit_t,
+        pub wired_count: ::c_int,
+        pub id: ::vm_subsys_t,
+    }
+
+    pub struct __c_anonymous_pmap {
+        _priv1: [::uintptr_t; 32],
+        _priv2: [::uintptr_t; 32],
+        _priv3: [::uintptr_t; 32],
+        _priv4: [::uintptr_t; 32],
+        _priv5: [::uintptr_t; 8],
+    }
+
+    pub struct vmspace {
+        vm_map: __c_anonymous_vm_map,
+        vm_pmap: __c_anonymous_pmap,
+        pub vm_flags: ::c_int,
+        pub vm_shm: *mut ::c_char,
+        pub vm_rssize: ::segsz_t,
+        pub vm_swrss: ::segsz_t,
+        pub vm_tsize: ::segsz_t,
+        pub vm_dsize: ::segsz_t,
+        pub vm_ssize: ::segsz_t,
+        pub vm_taddr: *mut ::c_char,
+        pub vm_daddr: *mut ::c_char,
+        pub vm_maxsaddr: *mut ::c_char,
+        pub vm_minsaddr: *mut ::c_char,
+        _unused1: ::c_int,
+        _unused2: ::c_int,
+        pub vm_pagesupply: ::c_int,
+        pub vm_holdcnt: ::c_uint,
+        pub vm_refcnt: ::c_uint,
+    }
+
+    pub struct cpuctl_msr_args_t {
+        pub msr: ::c_int,
+        pub data: u64,
+    }
+
+    pub struct cpuctl_cpuid_args_t {
+        pub level: ::c_int,
+        pub data: [u32; 4],
+    }
+
+    pub struct cpuctl_cpuid_count_args_t {
+        pub level: ::c_int,
+        pub level_type: ::c_int,
+        pub data: [u32; 4],
+    }
+
+    pub struct cpuctl_update_args_t {
+        pub data: *mut ::c_void,
+        pub size: ::size_t,
     }
 }
 
@@ -204,6 +431,13 @@ s_no_extra_traits! {
         pub ut_unused2: [u8; 16],
     }
 
+    pub struct lastlogx {
+        pub ll_tv: ::timeval,
+        pub ll_line: [::c_char; _UTX_LINESIZE],
+        pub ll_host: [::c_char; _UTX_HOSTSIZE],
+        pub ll_ss: ::sockaddr_storage,
+    }
+
     pub struct dirent {
         pub d_fileno: ::ino_t,
         pub d_namlen: u16,
@@ -214,6 +448,7 @@ s_no_extra_traits! {
     }
 
     pub struct statfs {
+        __spare2: ::c_long,
         pub f_bsize: ::c_long,
         pub f_iosize: ::c_long,
         pub f_blocks: ::c_long,
@@ -223,15 +458,18 @@ s_no_extra_traits! {
         pub f_ffree: ::c_long,
         pub f_fsid: ::fsid_t,
         pub f_owner: ::uid_t,
-        pub f_type: i32,
-        pub f_flags: i32,
+        pub f_type: ::c_int,
+        pub f_flags: ::c_int,
         pub f_syncwrites: ::c_long,
         pub f_asyncwrites: ::c_long,
         pub f_fstypename: [::c_char; 16],
-        pub f_mntonname: [::c_char; 90],
+        pub f_mntonname: [::c_char; 80],
         pub f_syncreads: ::c_long,
         pub f_asyncreads: ::c_long,
-        pub f_mntfromname: [::c_char; 90],
+        __spares1: ::c_short,
+        pub f_mntfromname: [::c_char; 80],
+        __spares2: ::c_short,
+        __spare: [::c_long; 2],
     }
 
     pub struct sigevent {
@@ -245,6 +483,51 @@ s_no_extra_traits! {
         __unused2: ::c_int,
         pub sigev_value: ::sigval,
         __unused3: *mut ::c_void        //actually a function pointer
+    }
+
+    pub struct mcontext_t {
+        pub mc_onstack: register_t,
+        pub mc_rdi: register_t,
+        pub mc_rsi: register_t,
+        pub mc_rdx: register_t,
+        pub mc_rcx: register_t,
+        pub mc_r8: register_t,
+        pub mc_r9: register_t,
+        pub mc_rax: register_t,
+        pub mc_rbx: register_t,
+        pub mc_rbp: register_t,
+        pub mc_r10: register_t,
+        pub mc_r11: register_t,
+        pub mc_r12: register_t,
+        pub mc_r13: register_t,
+        pub mc_r14: register_t,
+        pub mc_r15: register_t,
+        pub mc_xflags: register_t,
+        pub mc_trapno: register_t,
+        pub mc_addr: register_t,
+        pub mc_flags: register_t,
+        pub mc_err: register_t,
+        pub mc_rip: register_t,
+        pub mc_cs: register_t,
+        pub mc_rflags: register_t,
+        pub mc_rsp: register_t,
+        pub mc_ss: register_t,
+        pub mc_len: ::c_uint,
+        pub mc_fpformat: ::c_uint,
+        pub mc_ownedfp: ::c_uint,
+        __reserved: ::c_uint,
+        __unused: [::c_uint; 8],
+        pub mc_fpregs: [[::c_uint; 8]; 32],
+    }
+
+    pub struct ucontext_t {
+        pub uc_sigmask: ::sigset_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: stack_t,
+        pub uc_cofunc: ::Option<unsafe extern "C" fn(uc: *mut ucontext_t, arg: *mut ::c_void)>,
+        pub uc_arg: *mut ::c_void,
+        __pad: [::c_int; 4],
     }
 }
 
@@ -303,6 +586,33 @@ cfg_if! {
                 self.ut_ss.hash(state);
                 self.ut_tv.hash(state);
                 self.ut_unused2.hash(state);
+            }
+        }
+        impl PartialEq for lastlogx {
+            fn eq(&self, other: &lastlogx) -> bool {
+                self.ll_tv == other.ll_tv
+                    && self.ll_line == other.ll_line
+                    && self.ll_host == other.ll_host
+                    && self.ll_ss == other.ll_ss
+            }
+        }
+        impl Eq for lastlogx {}
+        impl ::fmt::Debug for lastlogx {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("lastlogx")
+                    .field("ll_tv", &self.ll_tv)
+                    .field("ll_line", &self.ll_line)
+                    .field("ll_host", &self.ll_host)
+                    .field("ll_ss", &self.ll_ss)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for lastlogx {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ll_tv.hash(state);
+                self.ll_line.hash(state);
+                self.ll_host.hash(state);
+                self.ll_ss.hash(state);
             }
         }
 
@@ -445,12 +755,157 @@ cfg_if! {
                 self.sigev_value.hash(state);
             }
         }
+        impl PartialEq for mcontext_t {
+            fn eq(&self, other: &mcontext_t) -> bool {
+                self.mc_onstack == other.mc_onstack &&
+                self.mc_rdi == other.mc_rdi &&
+                self.mc_rsi == other.mc_rsi &&
+                self.mc_rdx == other.mc_rdx &&
+                self.mc_rcx == other.mc_rcx &&
+                self.mc_r8 == other.mc_r8 &&
+                self.mc_r9 == other.mc_r9 &&
+                self.mc_rax == other.mc_rax &&
+                self.mc_rbx == other.mc_rbx &&
+                self.mc_rbp == other.mc_rbp &&
+                self.mc_r10 == other.mc_r10 &&
+                self.mc_r11 == other.mc_r11 &&
+                self.mc_r12 == other.mc_r12 &&
+                self.mc_r13 == other.mc_r13 &&
+                self.mc_r14 == other.mc_r14 &&
+                self.mc_r15 == other.mc_r15 &&
+                self.mc_xflags == other.mc_xflags &&
+                self.mc_trapno == other.mc_trapno &&
+                self.mc_addr == other.mc_addr &&
+                self.mc_flags == other.mc_flags &&
+                self.mc_err == other.mc_err &&
+                self.mc_rip == other.mc_rip &&
+                self.mc_cs == other.mc_cs &&
+                self.mc_rflags == other.mc_rflags &&
+                self.mc_rsp == other.mc_rsp &&
+                self.mc_ss == other.mc_ss &&
+                self.mc_len == other.mc_len &&
+                self.mc_fpformat == other.mc_fpformat &&
+                self.mc_ownedfp == other.mc_ownedfp &&
+                self.mc_fpregs.iter().zip(other.mc_fpregs.iter()).
+                all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for mcontext_t {}
+        impl ::fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("mcontext_t")
+                    .field("mc_onstack", &self.mc_onstack)
+                    .field("mc_rdi", &self.mc_rdi)
+                    .field("mc_rsi", &self.mc_rsi)
+                    .field("mc_rdx", &self.mc_rdx)
+                    .field("mc_rcx", &self.mc_rcx)
+                    .field("mc_r8", &self.mc_r8)
+                    .field("mc_r9", &self.mc_r9)
+                    .field("mc_rax", &self.mc_rax)
+                    .field("mc_rbx", &self.mc_rbx)
+                    .field("mc_rbp", &self.mc_rbp)
+                    .field("mc_r10", &self.mc_r10)
+                    .field("mc_r11", &self.mc_r11)
+                    .field("mc_r12", &self.mc_r12)
+                    .field("mc_r13", &self.mc_r13)
+                    .field("mc_r14", &self.mc_r14)
+                    .field("mc_r15", &self.mc_r15)
+                    .field("mc_xflags", &self.mc_xflags)
+                    .field("mc_trapno", &self.mc_trapno)
+                    .field("mc_addr", &self.mc_addr)
+                    .field("mc_flags", &self.mc_flags)
+                    .field("mc_err", &self.mc_err)
+                    .field("mc_rip", &self.mc_rip)
+                    .field("mc_cs", &self.mc_cs)
+                    .field("mc_rflags", &self.mc_rflags)
+                    .field("mc_rsp", &self.mc_rsp)
+                    .field("mc_ss", &self.mc_ss)
+                    .field("mc_len", &self.mc_len)
+                    .field("mc_fpformat", &self.mc_fpformat)
+                    .field("mc_ownedfp", &self.mc_ownedfp)
+                    .field("mc_fpregs", &self.mc_fpregs)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for mcontext_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.mc_onstack.hash(state);
+                self.mc_rdi.hash(state);
+                self.mc_rsi.hash(state);
+                self.mc_rdx.hash(state);
+                self.mc_rcx.hash(state);
+                self.mc_r8.hash(state);
+                self.mc_r9.hash(state);
+                self.mc_rax.hash(state);
+                self.mc_rbx.hash(state);
+                self.mc_rbp.hash(state);
+                self.mc_r10.hash(state);
+                self.mc_r11.hash(state);
+                self.mc_r10.hash(state);
+                self.mc_r11.hash(state);
+                self.mc_r12.hash(state);
+                self.mc_r13.hash(state);
+                self.mc_r14.hash(state);
+                self.mc_r15.hash(state);
+                self.mc_xflags.hash(state);
+                self.mc_trapno.hash(state);
+                self.mc_addr.hash(state);
+                self.mc_flags.hash(state);
+                self.mc_err.hash(state);
+                self.mc_rip.hash(state);
+                self.mc_cs.hash(state);
+                self.mc_rflags.hash(state);
+                self.mc_rsp.hash(state);
+                self.mc_ss.hash(state);
+                self.mc_len.hash(state);
+                self.mc_fpformat.hash(state);
+                self.mc_ownedfp.hash(state);
+                self.mc_fpregs.hash(state);
+            }
+        }
+        impl PartialEq for ucontext_t {
+            fn eq(&self, other: &ucontext_t) -> bool {
+                self.uc_sigmask == other.uc_sigmask
+                    && self.uc_mcontext == other.uc_mcontext
+                    && self.uc_link == other.uc_link
+                    && self.uc_stack == other.uc_stack
+                    && self.uc_cofunc == other.uc_cofunc
+                    && self.uc_arg == other.uc_arg
+            }
+        }
+        impl Eq for ucontext_t {}
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_sigmask", &self.uc_sigmask)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_cofunc", &self.uc_cofunc)
+                    .field("uc_arg", &self.uc_arg)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ucontext_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.uc_sigmask.hash(state);
+                self.uc_mcontext.hash(state);
+                self.uc_link.hash(state);
+                self.uc_stack.hash(state);
+                self.uc_cofunc.hash(state);
+                self.uc_arg.hash(state);
+            }
+        }
     }
 }
 
 pub const RAND_MAX: ::c_int = 0x7fff_ffff;
 pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 pub const SIGSTKSZ: ::size_t = 40960;
+pub const SIGCKPT: ::c_int = 33;
+pub const SIGCKPTEXIT: ::c_int = 34;
+pub const CKPT_FREEZE: ::c_int = 0x1;
+pub const CKPT_THAW: ::c_int = 0x2;
 pub const MADV_INVAL: ::c_int = 10;
 pub const MADV_SETMAP: ::c_int = 11;
 pub const O_CLOEXEC: ::c_int = 0x00020000;
@@ -458,7 +913,10 @@ pub const O_DIRECTORY: ::c_int = 0x08000000;
 pub const F_GETLK: ::c_int = 7;
 pub const F_SETLK: ::c_int = 8;
 pub const F_SETLKW: ::c_int = 9;
+pub const F_GETPATH: ::c_int = 19;
 pub const ENOMEDIUM: ::c_int = 93;
+pub const ENOTRECOVERABLE: ::c_int = 94;
+pub const EOWNERDEAD: ::c_int = 95;
 pub const EASYNC: ::c_int = 99;
 pub const ELAST: ::c_int = 99;
 pub const RLIMIT_POSIXLOCKS: ::c_int = 11;
@@ -600,6 +1058,16 @@ pub const CTL_P1003_1B_SIGQUEUE_MAX: ::c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: ::c_int = 25;
 pub const CTL_P1003_1B_MAXID: ::c_int = 26;
 
+pub const CPUCTL_RSMSR: ::c_int = 0xc0106301;
+pub const CPUCTL_WRMSR: ::c_int = 0xc0106302;
+pub const CPUCTL_CPUID: ::c_int = 0xc0106303;
+pub const CPUCTL_UPDATE: ::c_int = 0xc0106304;
+pub const CPUCTL_MSRSBIT: ::c_int = 0xc0106305;
+pub const CPUCTL_MSRCBIT: ::c_int = 0xc0106306;
+pub const CPUCTL_CPUID_COUNT: ::c_int = 0xc0106307;
+
+pub const CPU_SETSIZE: ::size_t = ::mem::size_of::<::cpumask_t>() * 8;
+
 pub const EVFILT_READ: i16 = -1;
 pub const EVFILT_WRITE: i16 = -2;
 pub const EVFILT_AIO: i16 = -3;
@@ -624,6 +1092,8 @@ pub const EV_FLAG1: u16 = 0x2000;
 pub const EV_ERROR: u16 = 0x4000;
 pub const EV_EOF: u16 = 0x8000;
 pub const EV_SYSFLAGS: u16 = 0xf000;
+
+pub const FIODNAME: ::c_ulong = 0x80106678;
 
 pub const NOTE_TRIGGER: u32 = 0x01000000;
 pub const NOTE_FFNOP: u32 = 0x00000000;
@@ -652,8 +1122,15 @@ pub const NOTE_CHILD: u32 = 0x00000004;
 
 pub const SO_SNDSPACE: ::c_int = 0x100a;
 pub const SO_CPUHINT: ::c_int = 0x1030;
+pub const SO_PASSCRED: ::c_int = 0x4000;
 
 pub const PT_FIRSTMACH: ::c_int = 32;
+
+pub const PROC_REAP_ACQUIRE: ::c_int = 0x0001;
+pub const PROC_REAP_RELEASE: ::c_int = 0x0002;
+pub const PROC_REAP_STATUS: ::c_int = 0x0003;
+pub const PROC_PDEATHSIG_CTL: ::c_int = 0x0004;
+pub const PROC_PDEATHSIG_STATUS: ::c_int = 0x0005;
 
 // https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/sys/net/if.h#L101
 pub const IFF_UP: ::c_int = 0x1; // interface is up
@@ -932,6 +1409,16 @@ pub const MSG_FBLOCKING: ::c_int = 0x00010000;
 pub const MSG_FNONBLOCKING: ::c_int = 0x00020000;
 pub const MSG_FMASK: ::c_int = 0xFFFF0000;
 
+// sys/mount.h
+pub const MNT_NODEV: ::c_int = 0x00000010;
+pub const MNT_AUTOMOUNTED: ::c_int = 0x00000020;
+pub const MNT_TRIM: ::c_int = 0x01000000;
+pub const MNT_LOCAL: ::c_int = 0x00001000;
+pub const MNT_QUOTA: ::c_int = 0x00002000;
+pub const MNT_ROOTFS: ::c_int = 0x00004000;
+pub const MNT_USER: ::c_int = 0x00008000;
+pub const MNT_IGNORE: ::c_int = 0x00800000;
+
 // utmpx entry types
 pub const EMPTY: ::c_short = 0;
 pub const RUN_LVL: ::c_short = 1;
@@ -949,6 +1436,10 @@ pub const DOWNTIME: ::c_short = 11;
 pub const UTX_DB_UTMPX: ::c_uint = 0;
 pub const UTX_DB_WTMPX: ::c_uint = 1;
 pub const UTX_DB_LASTLOG: ::c_uint = 2;
+pub const _UTX_LINESIZE: usize = 32;
+pub const _UTX_USERSIZE: usize = 32;
+pub const _UTX_IDSIZE: usize = 4;
+pub const _UTX_HOSTSIZE: usize = 256;
 
 pub const LC_COLLATE_MASK: ::c_int = 1 << 0;
 pub const LC_CTYPE_MASK: ::c_int = 1 << 1;
@@ -963,11 +1454,11 @@ pub const LC_ALL_MASK: ::c_int = LC_COLLATE_MASK
     | LC_NUMERIC_MASK
     | LC_TIME_MASK;
 
-pub const TIOCSIG: ::c_uint = 0x2000745f;
+pub const TIOCSIG: ::c_ulong = 0x2000745f;
 pub const BTUARTDISC: ::c_int = 0x7;
-pub const TIOCDCDTIMESTAMP: ::c_uint = 0x40107458;
-pub const TIOCISPTMASTER: ::c_uint = 0x20007455;
-pub const TIOCMODG: ::c_uint = 0x40047403;
+pub const TIOCDCDTIMESTAMP: ::c_ulong = 0x40107458;
+pub const TIOCISPTMASTER: ::c_ulong = 0x20007455;
+pub const TIOCMODG: ::c_ulong = 0x40047403;
 pub const TIOCMODS: ::c_ulong = 0x80047404;
 pub const TIOCREMOTE: ::c_ulong = 0x80047469;
 
@@ -1020,8 +1511,17 @@ pub const SF_XLINK: ::c_ulong = 0x01000000;
 pub const UTIME_OMIT: c_long = -2;
 pub const UTIME_NOW: c_long = -1;
 
-fn _CMSG_ALIGN(n: usize) -> usize {
-    (n + 3) & !3
+pub const MINCORE_SUPER: ::c_int = 0x20;
+
+// kinfo_proc constants
+pub const MAXCOMLEN: usize = 16;
+pub const MAXLOGNAME: usize = 33;
+pub const NGROUPS: usize = 16;
+
+const_fn! {
+    {const} fn _CMSG_ALIGN(n: usize) -> usize {
+        (n + (::mem::size_of::<::c_long>() - 1)) & !(::mem::size_of::<::c_long>() - 1)
+    }
 }
 
 f! {
@@ -1050,9 +1550,32 @@ f! {
         }
     }
 
-    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
             _CMSG_ALIGN(length as usize)) as ::c_uint
+    }
+
+    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
+        for slot in cpuset.ary.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
+        cpuset.ary[idx] |= 1 << offset;
+        ()
+    }
+
+    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
+        cpuset.ary[idx] &= !(1 << offset);
+        ()
+    }
+
+    pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
+        let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
+        0 != cpuset.ary[idx] & (1 << offset)
     }
 }
 
@@ -1060,23 +1583,32 @@ safe_f! {
     pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0
     }
+
+    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+        let major = major as ::dev_t;
+        let minor = minor as ::dev_t;
+        let mut dev = 0;
+        dev |= major << 8;
+        dev |= minor;
+        dev
+    }
 }
 
 extern "C" {
     pub fn __errno_location() -> *mut ::c_int;
     pub fn setgrent();
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
 
     pub fn setutxdb(_type: ::c_uint, file: *mut ::c_char) -> ::c_int;
 
-    pub fn aio_waitcomplete(
-        iocbp: *mut *mut aiocb,
-        timeout: *mut ::timespec,
-    ) -> ::c_int;
+    pub fn aio_waitcomplete(iocbp: *mut *mut aiocb, timeout: *mut ::timespec) -> ::c_int;
+
+    pub fn devname_r(
+        dev: ::dev_t,
+        mode: ::mode_t,
+        buf: *mut ::c_char,
+        len: ::size_t,
+    ) -> *mut ::c_char;
 
     pub fn waitid(
         idtype: idtype_t,
@@ -1103,6 +1635,37 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+    pub fn pthread_spin_init(lock: *mut pthread_spinlock_t, pshared: ::c_int) -> ::c_int;
+    pub fn pthread_spin_destroy(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_lock(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> ::c_int;
+    pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> ::c_int;
+
+    pub fn sched_getaffinity(pid: ::pid_t, cpusetsize: ::size_t, mask: *mut cpu_set_t) -> ::c_int;
+    pub fn sched_setaffinity(pid: ::pid_t, cpusetsize: ::size_t, mask: *const cpu_set_t)
+        -> ::c_int;
+    pub fn sched_getcpu() -> ::c_int;
+    pub fn setproctitle(fmt: *const ::c_char, ...);
+
+    pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
+    pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
+    pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
+    pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
+    pub fn procctl(idtype: ::idtype_t, id: ::id_t, cmd: ::c_int, data: *mut ::c_void) -> ::c_int;
+
+    pub fn updwtmpx(file: *const ::c_char, ut: *const utmpx) -> ::c_int;
+    pub fn getlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> *mut lastlogx;
+    pub fn updlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> ::c_int;
+    pub fn getutxuser(name: *const ::c_char) -> utmpx;
+    pub fn utmpxname(file: *const ::c_char) -> ::c_int;
+
+    pub fn sys_checkpoint(tpe: ::c_int, fd: ::c_int, pid: ::pid_t, retval: ::c_int) -> ::c_int;
+
+    pub fn umtx_sleep(ptr: *const ::c_int, value: ::c_int, timeout: ::c_int) -> ::c_int;
+    pub fn umtx_wakeup(ptr: *const ::c_int, count: ::c_int) -> ::c_int;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
 #[link(name = "rt")]
@@ -1124,6 +1687,23 @@ extern "C" {
         nitems: ::c_int,
         sevp: *mut sigevent,
     ) -> ::c_int;
+
+    pub fn reallocf(ptr: *mut ::c_void, size: ::size_t) -> *mut ::c_void;
+    pub fn freezero(ptr: *mut ::c_void, size: ::size_t);
+}
+
+#[link(name = "kvm")]
+extern "C" {
+    pub fn kvm_vm_map_entry_first(
+        kvm: *mut ::kvm_t,
+        map: vm_map_t,
+        entry: vm_map_entry_t,
+    ) -> vm_map_entry_t;
+    pub fn kvm_vm_map_entry_next(
+        kvm: *mut ::kvm_t,
+        map: vm_map_entry_t,
+        entry: vm_map_entry_t,
+    ) -> vm_map_entry_t;
 }
 
 cfg_if! {

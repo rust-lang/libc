@@ -1,0 +1,7 @@
+PT_GETFPREGS
+PT_GETREGS
+PT_SETFPREGS
+PT_SETREGS
+__fregset
+mcontext_t
+ucontext_t

@@ -26,6 +26,17 @@ pub type idtype_t = ::c_uint;
 pub type integer_t = ::c_int;
 pub type cpu_type_t = integer_t;
 pub type cpu_subtype_t = integer_t;
+pub type natural_t = u32;
+pub type mach_msg_type_number_t = natural_t;
+pub type kern_return_t = ::c_int;
+pub type uuid_t = [u8; 16];
+pub type task_info_t = *mut integer_t;
+pub type host_info_t = *mut integer_t;
+pub type task_flavor_t = natural_t;
+pub type rusage_info_t = *mut ::c_void;
+pub type vm_offset_t = ::uintptr_t;
+pub type vm_size_t = ::uintptr_t;
+pub type vm_address_t = vm_offset_t;
 
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
@@ -36,12 +47,109 @@ pub type sae_associd_t = u32;
 pub type sae_connid_t = u32;
 
 pub type mach_port_t = ::c_uint;
+pub type host_t = ::c_uint;
+pub type host_flavor_t = integer_t;
+pub type host_info64_t = *mut integer_t;
+pub type processor_flavor_t = ::c_int;
+pub type thread_flavor_t = natural_t;
+pub type thread_inspect_t = ::mach_port_t;
+pub type thread_act_t = ::mach_port_t;
+pub type thread_act_array_t = *mut ::thread_act_t;
+pub type policy_t = ::c_int;
+pub type mach_vm_address_t = u64;
+pub type mach_vm_offset_t = u64;
+pub type mach_vm_size_t = u64;
+pub type vm_map_t = ::mach_port_t;
+pub type mem_entry_name_port_t = ::mach_port_t;
+pub type memory_object_t = ::mach_port_t;
+pub type memory_object_offset_t = ::c_ulonglong;
+pub type vm_inherit_t = ::c_uint;
+pub type vm_prot_t = ::c_int;
+
+pub type ledger_t = ::mach_port_t;
+pub type ledger_array_t = *mut ::ledger_t;
 
 pub type iconv_t = *mut ::c_void;
 
+pub type processor_cpu_load_info_t = *mut processor_cpu_load_info;
+pub type processor_cpu_load_info_data_t = processor_cpu_load_info;
+pub type processor_basic_info_t = *mut processor_basic_info;
+pub type processor_basic_info_data_t = processor_basic_info;
+pub type processor_set_basic_info_data_t = processor_set_basic_info;
+pub type processor_set_basic_info_t = *mut processor_set_basic_info;
+pub type processor_set_load_info_data_t = processor_set_load_info;
+pub type processor_set_load_info_t = *mut processor_set_load_info;
+pub type processor_info_t = *mut integer_t;
+pub type processor_info_array_t = *mut integer_t;
+
+pub type mach_task_basic_info_data_t = mach_task_basic_info;
+pub type mach_task_basic_info_t = *mut mach_task_basic_info;
+pub type task_thread_times_info_data_t = task_thread_times_info;
+pub type task_thread_times_info_t = *mut task_thread_times_info;
+
+pub type thread_info_t = *mut integer_t;
+pub type thread_basic_info_t = *mut thread_basic_info;
+pub type thread_basic_info_data_t = thread_basic_info;
+pub type thread_identifier_info_t = *mut thread_identifier_info;
+pub type thread_identifier_info_data_t = thread_identifier_info;
+pub type thread_extended_info_t = *mut thread_extended_info;
+pub type thread_extended_info_data_t = thread_extended_info;
+
+pub type thread_t = ::mach_port_t;
+pub type thread_policy_flavor_t = natural_t;
+pub type thread_policy_t = *mut integer_t;
+pub type thread_latency_qos_t = integer_t;
+pub type thread_throughput_qos_t = integer_t;
+pub type thread_standard_policy_data_t = thread_standard_policy;
+pub type thread_standard_policy_t = *mut thread_standard_policy;
+pub type thread_extended_policy_data_t = thread_extended_policy;
+pub type thread_extended_policy_t = *mut thread_extended_policy;
+pub type thread_time_constraint_policy_data_t = thread_time_constraint_policy;
+pub type thread_time_constraint_policy_t = *mut thread_time_constraint_policy;
+pub type thread_precedence_policy_data_t = thread_precedence_policy;
+pub type thread_precedence_policy_t = *mut thread_precedence_policy;
+pub type thread_affinity_policy_data_t = thread_affinity_policy;
+pub type thread_affinity_policy_t = *mut thread_affinity_policy;
+pub type thread_background_policy_data_t = thread_background_policy;
+pub type thread_background_policy_t = *mut thread_background_policy;
+pub type thread_latency_qos_policy_data_t = thread_latency_qos_policy;
+pub type thread_latency_qos_policy_t = *mut thread_latency_qos_policy;
+pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
+pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
+
+pub type pthread_introspection_hook_t =
+    extern "C" fn(event: ::c_uint, thread: ::pthread_t, addr: *mut ::c_void, size: ::size_t);
+pub type pthread_jit_write_callback_t = ::Option<extern "C" fn(ctx: *mut ::c_void) -> ::c_int>;
+
+pub type os_unfair_lock = os_unfair_lock_s;
+pub type os_unfair_lock_t = *mut os_unfair_lock;
+
+pub type os_log_t = *mut ::c_void;
+pub type os_log_type_t = u8;
+pub type os_signpost_id_t = u64;
+pub type os_signpost_type_t = u8;
+
+pub type vm_statistics_t = *mut vm_statistics;
+pub type vm_statistics_data_t = vm_statistics;
+pub type vm_statistics64_t = *mut vm_statistics64;
+pub type vm_statistics64_data_t = vm_statistics64;
+
+pub type task_t = ::mach_port_t;
+pub type task_inspect_t = ::mach_port_t;
+
+pub type sysdir_search_path_enumeration_state = ::c_uint;
+
+pub type CCStatus = i32;
+pub type CCCryptorStatus = i32;
+pub type CCRNGStatus = ::CCCryptorStatus;
+
+pub type copyfile_state_t = *mut ::c_void;
+pub type copyfile_flags_t = u32;
+
+pub type attrgroup_t = u32;
+pub type vol_capabilities_set_t = [u32; 4];
+
 deprecated_mach! {
-    pub type vm_prot_t = ::c_int;
-    pub type vm_size_t = ::uintptr_t;
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
 
@@ -54,9 +162,89 @@ impl ::Clone for timezone {
     }
 }
 
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[repr(u32)]
+pub enum qos_class_t {
+    QOS_CLASS_USER_INTERACTIVE = 0x21,
+    QOS_CLASS_USER_INITIATED = 0x19,
+    QOS_CLASS_DEFAULT = 0x15,
+    QOS_CLASS_UTILITY = 0x11,
+    QOS_CLASS_BACKGROUND = 0x09,
+    QOS_CLASS_UNSPECIFIED = 0x00,
+}
+impl ::Copy for qos_class_t {}
+impl ::Clone for qos_class_t {
+    fn clone(&self) -> qos_class_t {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[repr(u32)]
+pub enum sysdir_search_path_directory_t {
+    SYSDIR_DIRECTORY_APPLICATION = 1,
+    SYSDIR_DIRECTORY_DEMO_APPLICATION = 2,
+    SYSDIR_DIRECTORY_DEVELOPER_APPLICATION = 3,
+    SYSDIR_DIRECTORY_ADMIN_APPLICATION = 4,
+    SYSDIR_DIRECTORY_LIBRARY = 5,
+    SYSDIR_DIRECTORY_DEVELOPER = 6,
+    SYSDIR_DIRECTORY_USER = 7,
+    SYSDIR_DIRECTORY_DOCUMENTATION = 8,
+    SYSDIR_DIRECTORY_DOCUMENT = 9,
+    SYSDIR_DIRECTORY_CORESERVICE = 10,
+    SYSDIR_DIRECTORY_AUTOSAVED_INFORMATION = 11,
+    SYSDIR_DIRECTORY_DESKTOP = 12,
+    SYSDIR_DIRECTORY_CACHES = 13,
+    SYSDIR_DIRECTORY_APPLICATION_SUPPORT = 14,
+    SYSDIR_DIRECTORY_DOWNLOADS = 15,
+    SYSDIR_DIRECTORY_INPUT_METHODS = 16,
+    SYSDIR_DIRECTORY_MOVIES = 17,
+    SYSDIR_DIRECTORY_MUSIC = 18,
+    SYSDIR_DIRECTORY_PICTURES = 19,
+    SYSDIR_DIRECTORY_PRINTER_DESCRIPTION = 20,
+    SYSDIR_DIRECTORY_SHARED_PUBLIC = 21,
+    SYSDIR_DIRECTORY_PREFERENCE_PANES = 22,
+    SYSDIR_DIRECTORY_ALL_APPLICATIONS = 100,
+    SYSDIR_DIRECTORY_ALL_LIBRARIES = 101,
+}
+impl ::Copy for sysdir_search_path_directory_t {}
+impl ::Clone for sysdir_search_path_directory_t {
+    fn clone(&self) -> sysdir_search_path_directory_t {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[repr(u32)]
+pub enum sysdir_search_path_domain_mask_t {
+    SYSDIR_DOMAIN_MASK_USER = (1 << 0),
+    SYSDIR_DOMAIN_MASK_LOCAL = (1 << 1),
+    SYSDIR_DOMAIN_MASK_NETWORK = (1 << 2),
+    SYSDIR_DOMAIN_MASK_SYSTEM = (1 << 3),
+    SYSDIR_DOMAIN_MASK_ALL = 0x0ffff,
+}
+impl ::Copy for sysdir_search_path_domain_mask_t {}
+impl ::Clone for sysdir_search_path_domain_mask_t {
+    fn clone(&self) -> sysdir_search_path_domain_mask_t {
+        *self
+    }
+}
+
 s! {
     pub struct ip_mreq {
         pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
+    pub struct ip_mreqn {
+        pub imr_multiaddr: in_addr,
+        pub imr_address: in_addr,
+        pub imr_ifindex: ::c_int,
+    }
+
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: in_addr,
+        pub imr_sourceaddr: in_addr,
         pub imr_interface: in_addr,
     }
 
@@ -99,7 +287,7 @@ s! {
 
     #[deprecated(
         since = "0.2.55",
-        note = "Use the `mach` crate instead",
+        note = "Use the `mach2` crate instead",
     )]
     pub struct mach_timebase_info {
         pub numer: u32,
@@ -367,7 +555,7 @@ s! {
 
     #[deprecated(
         since = "0.2.55",
-        note = "Use the `mach` crate instead",
+        note = "Use the `mach2` crate instead",
     )]
     pub struct mach_header {
         pub magic: u32,
@@ -381,7 +569,7 @@ s! {
 
     #[deprecated(
         since = "0.2.55",
-        note = "Use the `mach` crate instead",
+        note = "Use the `mach2` crate instead",
     )]
     pub struct mach_header_64 {
         pub magic: u32,
@@ -502,6 +690,13 @@ s! {
         pub s_addr: ::in_addr_t,
     }
 
+    // net/ndrv.h
+    pub struct sockaddr_ndrv {
+        pub snd_len: ::c_uchar,
+        pub snd_family: ::c_uchar,
+        pub snd_name: [::c_uchar; 16]      // IFNAMSIZ from if.h
+    }
+
     // sys/socket.h
 
     pub struct sa_endpoints_t {
@@ -538,6 +733,298 @@ s! {
         pub esterror: ::c_long,
         pub tai: ::c_long,
         pub time_state: ::c_int,
+    }
+
+    pub struct thread_standard_policy {
+        pub no_data: natural_t,
+    }
+
+    pub struct thread_extended_policy {
+        pub timeshare: boolean_t,
+    }
+
+    pub struct thread_time_constraint_policy {
+        pub period: u32,
+        pub computation: u32,
+        pub constraint: u32,
+        pub preemptible: boolean_t,
+    }
+
+    pub struct thread_precedence_policy {
+        pub importance: integer_t,
+    }
+
+    pub struct thread_affinity_policy {
+        pub affinity_tag: integer_t,
+    }
+
+    pub struct thread_background_policy {
+        pub priority: integer_t,
+    }
+
+    pub struct thread_latency_qos_policy {
+        pub thread_latency_qos_tier: thread_latency_qos_t,
+    }
+
+    pub struct thread_throughput_qos_policy {
+        pub thread_throughput_qos_tier: thread_throughput_qos_t,
+    }
+
+    // malloc/malloc.h
+    pub struct malloc_statistics_t {
+        pub blocks_in_use: ::c_uint,
+        pub size_in_use: ::size_t,
+        pub max_size_in_use: ::size_t,
+        pub size_allocated: ::size_t,
+    }
+
+    pub struct mstats {
+        pub bytes_total: ::size_t,
+        pub chunks_used: ::size_t,
+        pub bytes_used: ::size_t,
+        pub chunks_free: ::size_t,
+        pub bytes_free: ::size_t,
+    }
+
+    pub struct vm_range_t {
+        pub address: ::vm_address_t,
+        pub size: ::vm_size_t,
+    }
+
+    // sched.h
+    pub struct sched_param {
+        pub sched_priority: ::c_int,
+        __opaque: [::c_char; 4],
+    }
+
+    pub struct vinfo_stat {
+        pub vst_dev: u32,
+        pub vst_mode: u16,
+        pub vst_nlink: u16,
+        pub vst_ino: u64,
+        pub vst_uid: ::uid_t,
+        pub vst_gid: ::gid_t,
+        pub vst_atime: i64,
+        pub vst_atimensec: i64,
+        pub vst_mtime: i64,
+        pub vst_mtimensec: i64,
+        pub vst_ctime: i64,
+        pub vst_ctimensec: i64,
+        pub vst_birthtime: i64,
+        pub vst_birthtimensec: i64,
+        pub vst_size: ::off_t,
+        pub vst_blocks: i64,
+        pub vst_blksize: i32,
+        pub vst_flags: u32,
+        pub vst_gen: u32,
+        pub vst_rdev: u32,
+        pub vst_qspare: [i64; 2],
+    }
+
+    pub struct vnode_info {
+        pub vi_stat: vinfo_stat,
+        pub vi_type: ::c_int,
+        pub vi_pad: ::c_int,
+        pub vi_fsid: ::fsid_t,
+    }
+
+    pub struct vnode_info_path {
+        pub vip_vi: vnode_info,
+        // Normally it's `vip_path: [::c_char; MAXPATHLEN]` but because libc supports an old rustc
+        // version, we go around this limitation like this.
+        pub vip_path: [[::c_char; 32]; 32],
+    }
+
+    pub struct proc_vnodepathinfo {
+        pub pvi_cdir: vnode_info_path,
+        pub pvi_rdir: vnode_info_path,
+    }
+
+    pub struct vm_statistics {
+        pub free_count: natural_t,
+        pub active_count: natural_t,
+        pub inactive_count: natural_t,
+        pub wire_count: natural_t,
+        pub zero_fill_count: natural_t,
+        pub reactivations: natural_t,
+        pub pageins: natural_t,
+        pub pageouts: natural_t,
+        pub faults: natural_t,
+        pub cow_faults: natural_t,
+        pub lookups: natural_t,
+        pub hits: natural_t,
+        pub purgeable_count: natural_t,
+        pub purges: natural_t,
+        pub speculative_count: natural_t,
+    }
+
+    pub struct task_thread_times_info {
+        pub user_time: time_value_t,
+        pub system_time: time_value_t,
+    }
+
+    pub struct rusage_info_v0 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+    }
+
+    pub struct rusage_info_v1 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+        pub ri_child_user_time: u64,
+        pub ri_child_system_time: u64,
+        pub ri_child_pkg_idle_wkups: u64,
+        pub ri_child_interrupt_wkups: u64,
+        pub ri_child_pageins: u64,
+        pub ri_child_elapsed_abstime: u64,
+    }
+
+    pub struct rusage_info_v2 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+        pub ri_child_user_time: u64,
+        pub ri_child_system_time: u64,
+        pub ri_child_pkg_idle_wkups: u64,
+        pub ri_child_interrupt_wkups: u64,
+        pub ri_child_pageins: u64,
+        pub ri_child_elapsed_abstime: u64,
+        pub ri_diskio_bytesread: u64,
+        pub ri_diskio_byteswritten: u64,
+    }
+
+    pub struct rusage_info_v3 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+        pub ri_child_user_time: u64,
+        pub ri_child_system_time: u64,
+        pub ri_child_pkg_idle_wkups: u64,
+        pub ri_child_interrupt_wkups: u64,
+        pub ri_child_pageins: u64,
+        pub ri_child_elapsed_abstime: u64,
+        pub ri_diskio_bytesread: u64,
+        pub ri_diskio_byteswritten: u64,
+        pub ri_cpu_time_qos_default: u64,
+        pub ri_cpu_time_qos_maintenance: u64,
+        pub ri_cpu_time_qos_background: u64,
+        pub ri_cpu_time_qos_utility: u64,
+        pub ri_cpu_time_qos_legacy: u64,
+        pub ri_cpu_time_qos_user_initiated: u64,
+        pub ri_cpu_time_qos_user_interactive: u64,
+        pub ri_billed_system_time: u64,
+        pub ri_serviced_system_time: u64,
+    }
+
+    pub struct rusage_info_v4 {
+        pub ri_uuid: [u8; 16],
+        pub ri_user_time: u64,
+        pub ri_system_time: u64,
+        pub ri_pkg_idle_wkups: u64,
+        pub ri_interrupt_wkups: u64,
+        pub ri_pageins: u64,
+        pub ri_wired_size: u64,
+        pub ri_resident_size: u64,
+        pub ri_phys_footprint: u64,
+        pub ri_proc_start_abstime: u64,
+        pub ri_proc_exit_abstime: u64,
+        pub ri_child_user_time: u64,
+        pub ri_child_system_time: u64,
+        pub ri_child_pkg_idle_wkups: u64,
+        pub ri_child_interrupt_wkups: u64,
+        pub ri_child_pageins: u64,
+        pub ri_child_elapsed_abstime: u64,
+        pub ri_diskio_bytesread: u64,
+        pub ri_diskio_byteswritten: u64,
+        pub ri_cpu_time_qos_default: u64,
+        pub ri_cpu_time_qos_maintenance: u64,
+        pub ri_cpu_time_qos_background: u64,
+        pub ri_cpu_time_qos_utility: u64,
+        pub ri_cpu_time_qos_legacy: u64,
+        pub ri_cpu_time_qos_user_initiated: u64,
+        pub ri_cpu_time_qos_user_interactive: u64,
+        pub ri_billed_system_time: u64,
+        pub ri_serviced_system_time: u64,
+        pub ri_logical_writes: u64,
+        pub ri_lifetime_max_phys_footprint: u64,
+        pub ri_instructions: u64,
+        pub ri_cycles: u64,
+        pub ri_billed_energy: u64,
+        pub ri_serviced_energy: u64,
+        pub ri_interval_max_phys_footprint: u64,
+        pub ri_runnable_time: u64,
+    }
+
+    pub struct image_offset {
+        pub uuid: ::uuid_t,
+        pub offset: u32,
+    }
+
+    pub struct attrlist {
+        pub bitmapcount: ::c_ushort,
+        pub reserved: u16,
+        pub commonattr: attrgroup_t,
+        pub volattr: attrgroup_t,
+        pub dirattr: attrgroup_t,
+        pub fileattr: attrgroup_t,
+        pub forkattr: attrgroup_t,
+    }
+
+    pub struct attrreference_t {
+        pub attr_dataoffset: i32,
+        pub attr_length: u32,
+    }
+
+    pub struct vol_capabilities_attr_t {
+        pub capabilities: vol_capabilities_set_t,
+        pub valid: vol_capabilities_set_t,
+    }
+
+    pub struct attribute_set_t {
+        pub commonattr: attrgroup_t,
+        pub volattr: attrgroup_t,
+        pub dirattr: attrgroup_t,
+        pub fileattr: attrgroup_t,
+        pub forkattr: attrgroup_t,
+    }
+
+    pub struct vol_attributes_attr_t {
+        pub validattr: attribute_set_t,
+        pub nativeattr: attribute_set_t,
     }
 }
 
@@ -609,7 +1096,8 @@ s_no_extra_traits! {
         pub f_fstypename: [::c_char; 16],
         pub f_mntonname: [::c_char; 1024],
         pub f_mntfromname: [::c_char; 1024],
-        pub f_reserved: [u32; 8],
+        pub f_flags_ext: u32,
+        pub f_reserved: [u32; 7],
     }
 
     pub struct dirent {
@@ -661,6 +1149,163 @@ s_no_extra_traits! {
         pub sigev_value: ::sigval,
         __unused1: *mut ::c_void,       //actually a function pointer
         pub sigev_notify_attributes: *mut ::pthread_attr_t
+    }
+
+    pub struct processor_cpu_load_info {
+        pub cpu_ticks: [::c_uint; CPU_STATE_MAX as usize],
+    }
+
+    pub struct processor_basic_info {
+        pub cpu_type: cpu_type_t,
+        pub cpu_subtype: cpu_subtype_t,
+        pub running: ::boolean_t,
+        pub slot_num: ::c_int,
+        pub is_master: ::boolean_t,
+    }
+
+    pub struct processor_set_basic_info {
+        pub processor_count: ::c_int,
+        pub default_policy: ::c_int,
+    }
+
+    pub struct processor_set_load_info {
+        pub task_count: ::c_int,
+        pub thread_count: ::c_int,
+        pub load_average: integer_t,
+        pub mach_factor: integer_t,
+    }
+
+    pub struct time_value_t {
+        pub seconds: integer_t,
+        pub microseconds: integer_t,
+    }
+
+    pub struct thread_basic_info {
+        pub user_time: time_value_t,
+        pub system_time: time_value_t,
+        pub cpu_usage: ::integer_t,
+        pub policy: ::policy_t,
+        pub run_state: ::integer_t,
+        pub flags: ::integer_t,
+        pub suspend_count: ::integer_t,
+        pub sleep_time: ::integer_t,
+    }
+
+    pub struct thread_identifier_info {
+        pub thread_id: u64,
+        pub thread_handle: u64,
+        pub dispatch_qaddr: u64,
+    }
+
+    pub struct thread_extended_info {
+        pub pth_user_time: u64,
+        pub pth_system_time: u64,
+        pub pth_cpu_usage: i32,
+        pub pth_policy: i32,
+        pub pth_run_state: i32,
+        pub pth_flags: i32,
+        pub pth_sleep_time: i32,
+        pub pth_curpri: i32,
+        pub pth_priority: i32,
+        pub pth_maxpriority: i32,
+        pub pth_name: [::c_char; MAXTHREADNAMESIZE],
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct if_data64 {
+        pub ifi_type: ::c_uchar,
+        pub ifi_typelen: ::c_uchar,
+        pub ifi_physical: ::c_uchar,
+        pub ifi_addrlen: ::c_uchar,
+        pub ifi_hdrlen: ::c_uchar,
+        pub ifi_recvquota: ::c_uchar,
+        pub ifi_xmitquota: ::c_uchar,
+        pub ifi_unused1: ::c_uchar,
+        pub ifi_mtu: u32,
+        pub ifi_metric: u32,
+        pub ifi_baudrate: u64,
+        pub ifi_ipackets: u64,
+        pub ifi_ierrors: u64,
+        pub ifi_opackets: u64,
+        pub ifi_oerrors: u64,
+        pub ifi_collisions: u64,
+        pub ifi_ibytes: u64,
+        pub ifi_obytes: u64,
+        pub ifi_imcasts: u64,
+        pub ifi_omcasts: u64,
+        pub ifi_iqdrops: u64,
+        pub ifi_noproto: u64,
+        pub ifi_recvtiming: u32,
+        pub ifi_xmittiming: u32,
+        #[cfg(target_pointer_width = "32")]
+        pub ifi_lastchange: ::timeval,
+        #[cfg(not(target_pointer_width = "32"))]
+        pub ifi_lastchange: timeval32,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct if_msghdr2 {
+        pub ifm_msglen: ::c_ushort,
+        pub ifm_version: ::c_uchar,
+        pub ifm_type: ::c_uchar,
+        pub ifm_addrs: ::c_int,
+        pub ifm_flags: ::c_int,
+        pub ifm_index: ::c_ushort,
+        pub ifm_snd_len: ::c_int,
+        pub ifm_snd_maxlen: ::c_int,
+        pub ifm_snd_drops: ::c_int,
+        pub ifm_timer: ::c_int,
+        pub ifm_data: if_data64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(8)))]
+    pub struct vm_statistics64 {
+        pub free_count: natural_t,
+        pub active_count: natural_t,
+        pub inactive_count: natural_t,
+        pub wire_count: natural_t,
+        pub zero_fill_count: u64,
+        pub reactivations: u64,
+        pub pageins: u64,
+        pub pageouts: u64,
+        pub faults: u64,
+        pub cow_faults: u64,
+        pub lookups: u64,
+        pub hits: u64,
+        pub purges: u64,
+        pub purgeable_count: natural_t,
+        pub speculative_count: natural_t,
+        pub decompressions: u64,
+        pub compressions: u64,
+        pub swapins: u64,
+        pub swapouts: u64,
+        pub compressor_page_count: natural_t,
+        pub throttled_count: natural_t,
+        pub external_page_count: natural_t,
+        pub internal_page_count: natural_t,
+        pub total_uncompressed_pages_in_compressor: u64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct mach_task_basic_info {
+        pub virtual_size: mach_vm_size_t,
+        pub resident_size: mach_vm_size_t,
+        pub resident_size_max: mach_vm_size_t,
+        pub user_time: time_value_t,
+        pub system_time: time_value_t,
+        pub policy: ::policy_t,
+        pub suspend_count: integer_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct log2phys {
+        pub l2p_flags: ::c_uint,
+        pub l2p_contigbytes: ::off_t,
+        pub l2p_devoffset: ::off_t,
+    }
+
+    pub struct os_unfair_lock_s {
+        _os_unfair_lock_opaque: u32,
     }
 }
 
@@ -1276,6 +1921,694 @@ cfg_if! {
                 self.sigev_notify_attributes.hash(state);
             }
         }
+
+        impl PartialEq for processor_cpu_load_info {
+            fn eq(&self, other: &processor_cpu_load_info) -> bool {
+                self.cpu_ticks == other.cpu_ticks
+            }
+        }
+        impl Eq for processor_cpu_load_info {}
+        impl ::fmt::Debug for processor_cpu_load_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("processor_cpu_load_info")
+                    .field("cpu_ticks", &self.cpu_ticks)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for processor_cpu_load_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cpu_ticks.hash(state);
+            }
+        }
+
+        impl PartialEq for processor_basic_info {
+            fn eq(&self, other: &processor_basic_info) -> bool {
+                self.cpu_type == other.cpu_type
+                    && self.cpu_subtype == other.cpu_subtype
+                    && self.running == other.running
+                    && self.slot_num == other.slot_num
+                    && self.is_master == other.is_master
+            }
+        }
+        impl Eq for processor_basic_info {}
+        impl ::fmt::Debug for processor_basic_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("processor_basic_info")
+                    .field("cpu_type", &self.cpu_type)
+                    .field("cpu_subtype", &self.cpu_subtype)
+                    .field("running", &self.running)
+                    .field("slot_num", &self.slot_num)
+                    .field("is_master", &self.is_master)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for processor_basic_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cpu_type.hash(state);
+                self.cpu_subtype.hash(state);
+                self.running.hash(state);
+                self.slot_num.hash(state);
+                self.is_master.hash(state);
+            }
+        }
+
+        impl PartialEq for processor_set_basic_info {
+            fn eq(&self, other: &processor_set_basic_info) -> bool {
+                self.processor_count == other.processor_count
+                    && self.default_policy == other.default_policy
+            }
+        }
+        impl Eq for processor_set_basic_info {}
+        impl ::fmt::Debug for processor_set_basic_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("processor_set_basic_info")
+                    .field("processor_count", &self.processor_count)
+                    .field("default_policy", &self.default_policy)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for processor_set_basic_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.processor_count.hash(state);
+                self.default_policy.hash(state);
+            }
+        }
+
+        impl PartialEq for processor_set_load_info {
+            fn eq(&self, other: &processor_set_load_info) -> bool {
+                self.task_count == other.task_count
+                    && self.thread_count == other.thread_count
+                    && self.load_average == other.load_average
+                    && self.mach_factor == other.mach_factor
+            }
+        }
+        impl Eq for processor_set_load_info {}
+        impl ::fmt::Debug for processor_set_load_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("processor_set_load_info")
+                    .field("task_count", &self.task_count)
+                    .field("thread_count", &self.thread_count)
+                    .field("load_average", &self.load_average)
+                    .field("mach_factor", &self.mach_factor)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for processor_set_load_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.task_count.hash(state);
+                self.thread_count.hash(state);
+                self.load_average.hash(state);
+                self.mach_factor.hash(state);
+            }
+        }
+
+        impl PartialEq for time_value_t {
+            fn eq(&self, other: &time_value_t) -> bool {
+                self.seconds == other.seconds
+                    && self.microseconds == other.microseconds
+            }
+        }
+        impl Eq for time_value_t {}
+        impl ::fmt::Debug for time_value_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("time_value_t")
+                    .field("seconds", &self.seconds)
+                    .field("microseconds", &self.microseconds)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for time_value_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.seconds.hash(state);
+                self.microseconds.hash(state);
+            }
+        }
+        impl PartialEq for thread_basic_info {
+            fn eq(&self, other: &thread_basic_info) -> bool {
+                self.user_time == other.user_time
+                    && self.system_time == other.system_time
+                    && self.cpu_usage == other.cpu_usage
+                    && self.policy == other.policy
+                    && self.run_state == other.run_state
+                    && self.flags == other.flags
+                    && self.suspend_count == other.suspend_count
+                    && self.sleep_time == other.sleep_time
+            }
+        }
+        impl Eq for thread_basic_info {}
+        impl ::fmt::Debug for thread_basic_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("thread_basic_info")
+                    .field("user_time", &self.user_time)
+                    .field("system_time", &self.system_time)
+                    .field("cpu_usage", &self.cpu_usage)
+                    .field("policy", &self.policy)
+                    .field("run_state", &self.run_state)
+                    .field("flags", &self.flags)
+                    .field("suspend_count", &self.suspend_count)
+                    .field("sleep_time", &self.sleep_time)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for thread_basic_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.user_time.hash(state);
+                self.system_time.hash(state);
+                self.cpu_usage.hash(state);
+                self.policy.hash(state);
+                self.run_state.hash(state);
+                self.flags.hash(state);
+                self.suspend_count.hash(state);
+                self.sleep_time.hash(state);
+            }
+        }
+        impl PartialEq for thread_extended_info {
+            fn eq(&self, other: &thread_extended_info) -> bool {
+                self.pth_user_time == other.pth_user_time
+                    && self.pth_system_time == other.pth_system_time
+                    && self.pth_cpu_usage == other.pth_cpu_usage
+                    && self.pth_policy == other.pth_policy
+                    && self.pth_run_state == other.pth_run_state
+                    && self.pth_flags == other.pth_flags
+                    && self.pth_sleep_time == other.pth_sleep_time
+                    && self.pth_curpri == other.pth_curpri
+                    && self.pth_priority == other.pth_priority
+                    && self.pth_maxpriority == other.pth_maxpriority
+                    && self.pth_name
+                           .iter()
+                           .zip(other.pth_name.iter())
+                           .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for thread_extended_info {}
+        impl ::fmt::Debug for thread_extended_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("proc_threadinfo")
+                    .field("pth_user_time", &self.pth_user_time)
+                    .field("pth_system_time", &self.pth_system_time)
+                    .field("pth_cpu_usage", &self.pth_cpu_usage)
+                    .field("pth_policy", &self.pth_policy)
+                    .field("pth_run_state", &self.pth_run_state)
+                    .field("pth_flags", &self.pth_flags)
+                    .field("pth_sleep_time", &self.pth_sleep_time)
+                    .field("pth_curpri", &self.pth_curpri)
+                    .field("pth_priority", &self.pth_priority)
+                    .field("pth_maxpriority", &self.pth_maxpriority)
+                      // FIXME: .field("pth_name", &self.pth_name)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for thread_extended_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.pth_user_time.hash(state);
+                self.pth_system_time.hash(state);
+                self.pth_cpu_usage.hash(state);
+                self.pth_policy.hash(state);
+                self.pth_run_state.hash(state);
+                self.pth_flags.hash(state);
+                self.pth_sleep_time.hash(state);
+                self.pth_curpri.hash(state);
+                self.pth_priority.hash(state);
+                self.pth_maxpriority.hash(state);
+                self.pth_name.hash(state);
+            }
+        }
+        impl PartialEq for thread_identifier_info {
+            fn eq(&self, other: &thread_identifier_info) -> bool {
+                self.thread_id == other.thread_id
+                    && self.thread_handle == other.thread_handle
+                    && self.dispatch_qaddr == other.dispatch_qaddr
+            }
+        }
+        impl Eq for thread_identifier_info {}
+        impl ::fmt::Debug for thread_identifier_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("thread_identifier_info")
+                    .field("thread_id", &self.thread_id)
+                    .field("thread_handle", &self.thread_handle)
+                    .field("dispatch_qaddr", &self.dispatch_qaddr)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for thread_identifier_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.thread_id.hash(state);
+                self.thread_handle.hash(state);
+                self.dispatch_qaddr.hash(state);
+            }
+        }
+        impl PartialEq for if_data64 {
+            fn eq(&self, other: &if_data64) -> bool {
+                self.ifi_type == other.ifi_type &&
+                self.ifi_typelen == other.ifi_typelen &&
+                self.ifi_physical == other.ifi_physical &&
+                self.ifi_addrlen == other.ifi_addrlen &&
+                self.ifi_hdrlen == other.ifi_hdrlen &&
+                self.ifi_recvquota == other.ifi_recvquota &&
+                self.ifi_xmitquota == other.ifi_xmitquota &&
+                self.ifi_unused1 == other.ifi_unused1 &&
+                self.ifi_mtu == other.ifi_mtu &&
+                self.ifi_metric == other.ifi_metric &&
+                self.ifi_baudrate == other.ifi_baudrate &&
+                self.ifi_ipackets == other.ifi_ipackets &&
+                self.ifi_ierrors == other.ifi_ierrors &&
+                self.ifi_opackets == other.ifi_opackets &&
+                self.ifi_oerrors == other.ifi_oerrors &&
+                self.ifi_collisions == other.ifi_collisions &&
+                self.ifi_ibytes == other.ifi_ibytes &&
+                self.ifi_obytes == other.ifi_obytes &&
+                self.ifi_imcasts == other.ifi_imcasts &&
+                self.ifi_omcasts == other.ifi_omcasts &&
+                self.ifi_iqdrops == other.ifi_iqdrops &&
+                self.ifi_noproto == other.ifi_noproto &&
+                self.ifi_recvtiming == other.ifi_recvtiming &&
+                self.ifi_xmittiming == other.ifi_xmittiming &&
+                self.ifi_lastchange == other.ifi_lastchange
+            }
+        }
+        impl Eq for if_data64 {}
+        impl ::fmt::Debug for if_data64 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ifi_type = self.ifi_type;
+                let ifi_typelen = self.ifi_typelen;
+                let ifi_physical = self.ifi_physical;
+                let ifi_addrlen = self.ifi_addrlen;
+                let ifi_hdrlen = self.ifi_hdrlen;
+                let ifi_recvquota = self.ifi_recvquota;
+                let ifi_xmitquota = self.ifi_xmitquota;
+                let ifi_unused1 = self.ifi_unused1;
+                let ifi_mtu = self.ifi_mtu;
+                let ifi_metric = self.ifi_metric;
+                let ifi_baudrate = self.ifi_baudrate;
+                let ifi_ipackets = self.ifi_ipackets;
+                let ifi_ierrors = self.ifi_ierrors;
+                let ifi_opackets = self.ifi_opackets;
+                let ifi_oerrors = self.ifi_oerrors;
+                let ifi_collisions = self.ifi_collisions;
+                let ifi_ibytes = self.ifi_ibytes;
+                let ifi_obytes = self.ifi_obytes;
+                let ifi_imcasts = self.ifi_imcasts;
+                let ifi_omcasts = self.ifi_omcasts;
+                let ifi_iqdrops = self.ifi_iqdrops;
+                let ifi_noproto = self.ifi_noproto;
+                let ifi_recvtiming = self.ifi_recvtiming;
+                let ifi_xmittiming = self.ifi_xmittiming;
+                let ifi_lastchange = self.ifi_lastchange;
+                f.debug_struct("if_data64")
+                    .field("ifi_type", &ifi_type)
+                    .field("ifi_typelen", &ifi_typelen)
+                    .field("ifi_physical", &ifi_physical)
+                    .field("ifi_addrlen", &ifi_addrlen)
+                    .field("ifi_hdrlen", &ifi_hdrlen)
+                    .field("ifi_recvquota", &ifi_recvquota)
+                    .field("ifi_xmitquota", &ifi_xmitquota)
+                    .field("ifi_unused1", &ifi_unused1)
+                    .field("ifi_mtu", &ifi_mtu)
+                    .field("ifi_metric", &ifi_metric)
+                    .field("ifi_baudrate", &ifi_baudrate)
+                    .field("ifi_ipackets", &ifi_ipackets)
+                    .field("ifi_ierrors", &ifi_ierrors)
+                    .field("ifi_opackets", &ifi_opackets)
+                    .field("ifi_oerrors", &ifi_oerrors)
+                    .field("ifi_collisions", &ifi_collisions)
+                    .field("ifi_ibytes", &ifi_ibytes)
+                    .field("ifi_obytes", &ifi_obytes)
+                    .field("ifi_imcasts", &ifi_imcasts)
+                    .field("ifi_omcasts", &ifi_omcasts)
+                    .field("ifi_iqdrops", &ifi_iqdrops)
+                    .field("ifi_noproto", &ifi_noproto)
+                    .field("ifi_recvtiming", &ifi_recvtiming)
+                    .field("ifi_xmittiming", &ifi_xmittiming)
+                    .field("ifi_lastchange", &ifi_lastchange)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for if_data64 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let ifi_type = self.ifi_type;
+                let ifi_typelen = self.ifi_typelen;
+                let ifi_physical = self.ifi_physical;
+                let ifi_addrlen = self.ifi_addrlen;
+                let ifi_hdrlen = self.ifi_hdrlen;
+                let ifi_recvquota = self.ifi_recvquota;
+                let ifi_xmitquota = self.ifi_xmitquota;
+                let ifi_unused1 = self.ifi_unused1;
+                let ifi_mtu = self.ifi_mtu;
+                let ifi_metric = self.ifi_metric;
+                let ifi_baudrate = self.ifi_baudrate;
+                let ifi_ipackets = self.ifi_ipackets;
+                let ifi_ierrors = self.ifi_ierrors;
+                let ifi_opackets = self.ifi_opackets;
+                let ifi_oerrors = self.ifi_oerrors;
+                let ifi_collisions = self.ifi_collisions;
+                let ifi_ibytes = self.ifi_ibytes;
+                let ifi_obytes = self.ifi_obytes;
+                let ifi_imcasts = self.ifi_imcasts;
+                let ifi_omcasts = self.ifi_omcasts;
+                let ifi_iqdrops = self.ifi_iqdrops;
+                let ifi_noproto = self.ifi_noproto;
+                let ifi_recvtiming = self.ifi_recvtiming;
+                let ifi_xmittiming = self.ifi_xmittiming;
+                let ifi_lastchange = self.ifi_lastchange;
+                ifi_type.hash(state);
+                ifi_typelen.hash(state);
+                ifi_physical.hash(state);
+                ifi_addrlen.hash(state);
+                ifi_hdrlen.hash(state);
+                ifi_recvquota.hash(state);
+                ifi_xmitquota.hash(state);
+                ifi_unused1.hash(state);
+                ifi_mtu.hash(state);
+                ifi_metric.hash(state);
+                ifi_baudrate.hash(state);
+                ifi_ipackets.hash(state);
+                ifi_ierrors.hash(state);
+                ifi_opackets.hash(state);
+                ifi_oerrors.hash(state);
+                ifi_collisions.hash(state);
+                ifi_ibytes.hash(state);
+                ifi_obytes.hash(state);
+                ifi_imcasts.hash(state);
+                ifi_omcasts.hash(state);
+                ifi_iqdrops.hash(state);
+                ifi_noproto.hash(state);
+                ifi_recvtiming.hash(state);
+                ifi_xmittiming.hash(state);
+                ifi_lastchange.hash(state);
+            }
+        }
+        impl PartialEq for if_msghdr2 {
+            fn eq(&self, other: &if_msghdr2) -> bool {
+                self.ifm_msglen == other.ifm_msglen &&
+                self.ifm_version == other.ifm_version &&
+                self.ifm_type == other.ifm_type &&
+                self.ifm_addrs == other.ifm_addrs &&
+                self.ifm_flags == other.ifm_flags &&
+                self.ifm_index == other.ifm_index &&
+                self.ifm_snd_len == other.ifm_snd_len &&
+                self.ifm_snd_maxlen == other.ifm_snd_maxlen &&
+                self.ifm_snd_drops == other.ifm_snd_drops &&
+                self.ifm_timer == other.ifm_timer &&
+                self.ifm_data == other.ifm_data
+            }
+        }
+        impl Eq for if_msghdr2 {}
+        impl ::fmt::Debug for if_msghdr2 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let ifm_msglen = self.ifm_msglen;
+                let ifm_version = self.ifm_version;
+                let ifm_type = self.ifm_type;
+                let ifm_addrs = self.ifm_addrs;
+                let ifm_flags = self.ifm_flags;
+                let ifm_index = self.ifm_index;
+                let ifm_snd_len = self.ifm_snd_len;
+                let ifm_snd_maxlen = self.ifm_snd_maxlen;
+                let ifm_snd_drops = self.ifm_snd_drops;
+                let ifm_timer = self.ifm_timer;
+                let ifm_data = self.ifm_data;
+                f.debug_struct("if_msghdr2")
+                    .field("ifm_msglen", &ifm_msglen)
+                    .field("ifm_version", &ifm_version)
+                    .field("ifm_type", &ifm_type)
+                    .field("ifm_addrs", &ifm_addrs)
+                    .field("ifm_flags", &ifm_flags)
+                    .field("ifm_index", &ifm_index)
+                    .field("ifm_snd_len", &ifm_snd_len)
+                    .field("ifm_snd_maxlen", &ifm_snd_maxlen)
+                    .field("ifm_snd_drops", &ifm_snd_drops)
+                    .field("ifm_timer", &ifm_timer)
+                    .field("ifm_data", &ifm_data)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for if_msghdr2 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let ifm_msglen = self.ifm_msglen;
+                let ifm_version = self.ifm_version;
+                let ifm_type = self.ifm_type;
+                let ifm_addrs = self.ifm_addrs;
+                let ifm_flags = self.ifm_flags;
+                let ifm_index = self.ifm_index;
+                let ifm_snd_len = self.ifm_snd_len;
+                let ifm_snd_maxlen = self.ifm_snd_maxlen;
+                let ifm_snd_drops = self.ifm_snd_drops;
+                let ifm_timer = self.ifm_timer;
+                let ifm_data = self.ifm_data;
+                ifm_msglen.hash(state);
+                ifm_version.hash(state);
+                ifm_type.hash(state);
+                ifm_addrs.hash(state);
+                ifm_flags.hash(state);
+                ifm_index.hash(state);
+                ifm_snd_len.hash(state);
+                ifm_snd_maxlen.hash(state);
+                ifm_snd_drops.hash(state);
+                ifm_timer.hash(state);
+                ifm_data.hash(state);
+            }
+        }
+        impl PartialEq for vm_statistics64 {
+            fn eq(&self, other: &vm_statistics64) -> bool {
+                // Otherwise rustfmt crashes...
+                let total_uncompressed = self.total_uncompressed_pages_in_compressor;
+                self.free_count == other.free_count &&
+                self.active_count == other.active_count &&
+                self.inactive_count == other.inactive_count &&
+                self.wire_count == other.wire_count &&
+                self.zero_fill_count == other.zero_fill_count &&
+                self.reactivations == other.reactivations &&
+                self.pageins == other.pageins &&
+                self.pageouts == other.pageouts &&
+                self.faults == other.faults &&
+                self.cow_faults == other.cow_faults &&
+                self.lookups == other.lookups &&
+                self.hits == other.hits &&
+                self.purges == other.purges &&
+                self.purgeable_count == other.purgeable_count &&
+                self.speculative_count == other.speculative_count &&
+                self.decompressions == other.decompressions &&
+                self.compressions == other.compressions &&
+                self.swapins == other.swapins &&
+                self.swapouts == other.swapouts &&
+                self.compressor_page_count == other.compressor_page_count &&
+                self.throttled_count == other.throttled_count &&
+                self.external_page_count == other.external_page_count &&
+                self.internal_page_count == other.internal_page_count &&
+                total_uncompressed == other.total_uncompressed_pages_in_compressor
+            }
+        }
+        impl Eq for vm_statistics64 {}
+        impl ::fmt::Debug for vm_statistics64 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let free_count = self.free_count;
+                let active_count = self.active_count;
+                let inactive_count = self.inactive_count;
+                let wire_count = self.wire_count;
+                let zero_fill_count = self.zero_fill_count;
+                let reactivations = self.reactivations;
+                let pageins = self.pageins;
+                let pageouts = self.pageouts;
+                let faults = self.faults;
+                let cow_faults = self.cow_faults;
+                let lookups = self.lookups;
+                let hits = self.hits;
+                let purges = self.purges;
+                let purgeable_count = self.purgeable_count;
+                let speculative_count = self.speculative_count;
+                let decompressions = self.decompressions;
+                let compressions = self.compressions;
+                let swapins = self.swapins;
+                let swapouts = self.swapouts;
+                let compressor_page_count = self.compressor_page_count;
+                let throttled_count = self.throttled_count;
+                let external_page_count = self.external_page_count;
+                let internal_page_count = self.internal_page_count;
+                // Otherwise rustfmt crashes...
+                let total_uncompressed = self.total_uncompressed_pages_in_compressor;
+                f.debug_struct("vm_statistics64")
+                    .field("free_count", &free_count)
+                    .field("active_count", &active_count)
+                    .field("inactive_count", &inactive_count)
+                    .field("wire_count", &wire_count)
+                    .field("zero_fill_count", &zero_fill_count)
+                    .field("reactivations", &reactivations)
+                    .field("pageins", &pageins)
+                    .field("pageouts", &pageouts)
+                    .field("faults", &faults)
+                    .field("cow_faults", &cow_faults)
+                    .field("lookups", &lookups)
+                    .field("hits", &hits)
+                    .field("purges", &purges)
+                    .field("purgeable_count", &purgeable_count)
+                    .field("speculative_count", &speculative_count)
+                    .field("decompressions", &decompressions)
+                    .field("compressions", &compressions)
+                    .field("swapins", &swapins)
+                    .field("swapouts", &swapouts)
+                    .field("compressor_page_count", &compressor_page_count)
+                    .field("throttled_count", &throttled_count)
+                    .field("external_page_count", &external_page_count)
+                    .field("internal_page_count", &internal_page_count)
+                    .field("total_uncompressed_pages_in_compressor", &total_uncompressed)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for vm_statistics64 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let free_count = self.free_count;
+                let active_count = self.active_count;
+                let inactive_count = self.inactive_count;
+                let wire_count = self.wire_count;
+                let zero_fill_count = self.zero_fill_count;
+                let reactivations = self.reactivations;
+                let pageins = self.pageins;
+                let pageouts = self.pageouts;
+                let faults = self.faults;
+                let cow_faults = self.cow_faults;
+                let lookups = self.lookups;
+                let hits = self.hits;
+                let purges = self.purges;
+                let purgeable_count = self.purgeable_count;
+                let speculative_count = self.speculative_count;
+                let decompressions = self.decompressions;
+                let compressions = self.compressions;
+                let swapins = self.swapins;
+                let swapouts = self.swapouts;
+                let compressor_page_count = self.compressor_page_count;
+                let throttled_count = self.throttled_count;
+                let external_page_count = self.external_page_count;
+                let internal_page_count = self.internal_page_count;
+                // Otherwise rustfmt crashes...
+                let total_uncompressed = self.total_uncompressed_pages_in_compressor;
+                free_count.hash(state);
+                active_count.hash(state);
+                inactive_count.hash(state);
+                wire_count.hash(state);
+                zero_fill_count.hash(state);
+                reactivations.hash(state);
+                pageins.hash(state);
+                pageouts.hash(state);
+                faults.hash(state);
+                cow_faults.hash(state);
+                lookups.hash(state);
+                hits.hash(state);
+                purges.hash(state);
+                purgeable_count.hash(state);
+                speculative_count.hash(state);
+                decompressions.hash(state);
+                compressions.hash(state);
+                swapins.hash(state);
+                swapouts.hash(state);
+                compressor_page_count.hash(state);
+                throttled_count.hash(state);
+                external_page_count.hash(state);
+                internal_page_count.hash(state);
+                total_uncompressed.hash(state);
+            }
+        }
+
+        impl PartialEq for mach_task_basic_info {
+            fn eq(&self, other: &mach_task_basic_info) -> bool {
+                self.virtual_size == other.virtual_size
+                    && self.resident_size == other.resident_size
+                    && self.resident_size_max == other.resident_size_max
+                    && self.user_time == other.user_time
+                    && self.system_time == other.system_time
+                    && self.policy == other.policy
+                    && self.suspend_count == other.suspend_count
+            }
+        }
+        impl Eq for mach_task_basic_info {}
+        impl ::fmt::Debug for mach_task_basic_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let virtual_size = self.virtual_size;
+                let resident_size = self.resident_size;
+                let resident_size_max = self.resident_size_max;
+                let user_time = self.user_time;
+                let system_time = self.system_time;
+                let policy = self.policy;
+                let suspend_count = self.suspend_count;
+                f.debug_struct("mach_task_basic_info")
+                    .field("virtual_size", &virtual_size)
+                    .field("resident_size", &resident_size)
+                    .field("resident_size_max", &resident_size_max)
+                    .field("user_time", &user_time)
+                    .field("system_time", &system_time)
+                    .field("policy", &policy)
+                    .field("suspend_count", &suspend_count)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for mach_task_basic_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let virtual_size = self.virtual_size;
+                let resident_size = self.resident_size;
+                let resident_size_max = self.resident_size_max;
+                let user_time = self.user_time;
+                let system_time = self.system_time;
+                let policy = self.policy;
+                let suspend_count = self.suspend_count;
+                virtual_size.hash(state);
+                resident_size.hash(state);
+                resident_size_max.hash(state);
+                user_time.hash(state);
+                system_time.hash(state);
+                policy.hash(state);
+                suspend_count.hash(state);
+            }
+        }
+
+        impl PartialEq for log2phys {
+            fn eq(&self, other: &log2phys) -> bool {
+                self.l2p_flags == other.l2p_flags
+                    && self.l2p_contigbytes == other.l2p_contigbytes
+                    && self.l2p_devoffset == other.l2p_devoffset
+            }
+        }
+        impl Eq for log2phys {}
+        impl ::fmt::Debug for log2phys {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let l2p_flags = self.l2p_flags;
+                let l2p_contigbytes = self.l2p_contigbytes;
+                let l2p_devoffset = self.l2p_devoffset;
+                f.debug_struct("log2phys")
+                    .field("l2p_flags", &l2p_flags)
+                    .field("l2p_contigbytes", &l2p_contigbytes)
+                    .field("l2p_devoffset", &l2p_devoffset)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for log2phys {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let l2p_flags = self.l2p_flags;
+                let l2p_contigbytes = self.l2p_contigbytes;
+                let l2p_devoffset = self.l2p_devoffset;
+                l2p_flags.hash(state);
+                l2p_contigbytes.hash(state);
+                l2p_devoffset.hash(state);
+            }
+        }
+        impl PartialEq for os_unfair_lock {
+            fn eq(&self, other: &os_unfair_lock) -> bool {
+                self._os_unfair_lock_opaque == other._os_unfair_lock_opaque
+            }
+        }
+
+        impl Eq for os_unfair_lock {}
+
+        impl ::fmt::Debug for os_unfair_lock {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("os_unfair_lock")
+                    .field("_os_unfair_lock_opaque", &self._os_unfair_lock_opaque)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for os_unfair_lock {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self._os_unfair_lock_opaque.hash(state);
+            }
+        }
     }
 }
 
@@ -1361,7 +2694,11 @@ pub const ABMON_11: ::nl_item = 43;
 pub const ABMON_12: ::nl_item = 44;
 
 pub const CLOCK_REALTIME: ::clockid_t = 0;
+pub const CLOCK_MONOTONIC_RAW: ::clockid_t = 4;
+pub const CLOCK_MONOTONIC_RAW_APPROX: ::clockid_t = 5;
 pub const CLOCK_MONOTONIC: ::clockid_t = 6;
+pub const CLOCK_UPTIME_RAW: ::clockid_t = 8;
+pub const CLOCK_UPTIME_RAW_APPROX: ::clockid_t = 9;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 12;
 pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 16;
 
@@ -1391,6 +2728,8 @@ pub const EOF: ::c_int = -1;
 pub const SEEK_SET: ::c_int = 0;
 pub const SEEK_CUR: ::c_int = 1;
 pub const SEEK_END: ::c_int = 2;
+pub const SEEK_HOLE: ::c_int = 3;
+pub const SEEK_DATA: ::c_int = 4;
 pub const _IOFBF: ::c_int = 0;
 pub const _IONBF: ::c_int = 2;
 pub const _IOLBF: ::c_int = 1;
@@ -1408,11 +2747,13 @@ pub const _PC_PIPE_BUF: ::c_int = 6;
 pub const _PC_CHOWN_RESTRICTED: ::c_int = 7;
 pub const _PC_NO_TRUNC: ::c_int = 8;
 pub const _PC_VDISABLE: ::c_int = 9;
-pub const O_DSYNC: ::c_int = 0x400000;
-pub const O_NOCTTY: ::c_int = 0x20000;
-pub const O_CLOEXEC: ::c_int = 0x1000000;
-pub const O_DIRECTORY: ::c_int = 0x100000;
-pub const O_SYMLINK: ::c_int = 0x200000;
+pub const O_EVTONLY: ::c_int = 0x00008000;
+pub const O_NOCTTY: ::c_int = 0x00020000;
+pub const O_DIRECTORY: ::c_int = 0x00100000;
+pub const O_SYMLINK: ::c_int = 0x00200000;
+pub const O_DSYNC: ::c_int = 0x00400000;
+pub const O_CLOEXEC: ::c_int = 0x01000000;
+pub const O_NOFOLLOW_ANY: ::c_int = 0x20000000;
 pub const S_IFIFO: mode_t = 4096;
 pub const S_IFCHR: mode_t = 8192;
 pub const S_IFBLK: mode_t = 24576;
@@ -1494,6 +2835,19 @@ pub const MAP_PRIVATE: ::c_int = 0x0002;
 pub const MAP_FIXED: ::c_int = 0x0010;
 pub const MAP_ANON: ::c_int = 0x1000;
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
+
+pub const CPU_STATE_USER: ::c_int = 0;
+pub const CPU_STATE_SYSTEM: ::c_int = 1;
+pub const CPU_STATE_IDLE: ::c_int = 2;
+pub const CPU_STATE_NICE: ::c_int = 3;
+pub const CPU_STATE_MAX: ::c_int = 4;
+
+pub const PROCESSOR_BASIC_INFO: ::c_int = 1;
+pub const PROCESSOR_CPU_LOAD_INFO: ::c_int = 2;
+pub const PROCESSOR_PM_REGS_INFO: ::c_int = 0x10000001;
+pub const PROCESSOR_TEMPERATURE: ::c_int = 0x10000002;
+pub const PROCESSOR_SET_LOAD_INFO: ::c_int = 4;
+pub const PROCESSOR_SET_BASIC_INFO: ::c_int = 5;
 
 deprecated_mach! {
     pub const VM_FLAGS_FIXED: ::c_int = 0x0000;
@@ -1739,12 +3093,16 @@ pub const F_PREALLOCATE: ::c_int = 42;
 pub const F_RDADVISE: ::c_int = 44;
 pub const F_RDAHEAD: ::c_int = 45;
 pub const F_NOCACHE: ::c_int = 48;
+pub const F_LOG2PHYS: ::c_int = 49;
 pub const F_GETPATH: ::c_int = 50;
 pub const F_FULLFSYNC: ::c_int = 51;
 pub const F_FREEZE_FS: ::c_int = 53;
 pub const F_THAW_FS: ::c_int = 54;
 pub const F_GLOBAL_NOCACHE: ::c_int = 55;
 pub const F_NODIRECT: ::c_int = 62;
+pub const F_LOG2PHYS_EXT: ::c_int = 65;
+pub const F_BARRIERFSYNC: ::c_int = 85;
+pub const F_GETPATH_NOFIRMLINK: ::c_int = 102;
 
 pub const F_ALLOCATECONTIG: ::c_uint = 0x02;
 pub const F_ALLOCATEALL: ::c_uint = 0x04;
@@ -1757,6 +3115,11 @@ pub const AT_EACCESS: ::c_int = 0x0010;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x0020;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x0040;
 pub const AT_REMOVEDIR: ::c_int = 0x0080;
+
+pub const PTHREAD_INTROSPECTION_THREAD_CREATE: ::c_uint = 1;
+pub const PTHREAD_INTROSPECTION_THREAD_START: ::c_uint = 2;
+pub const PTHREAD_INTROSPECTION_THREAD_TERMINATE: ::c_uint = 3;
+pub const PTHREAD_INTROSPECTION_THREAD_DESTROY: ::c_uint = 4;
 
 pub const TIOCMODG: ::c_ulong = 0x40047403;
 pub const TIOCMODS: ::c_ulong = 0x80047404;
@@ -2195,6 +3558,7 @@ pub const pseudo_AF_RTIP: ::c_int = 22;
 pub const AF_IPX: ::c_int = 23;
 pub const AF_SIP: ::c_int = 24;
 pub const pseudo_AF_PIP: ::c_int = 25;
+pub const AF_NDRV: ::c_int = 27;
 pub const AF_ISDN: ::c_int = 28;
 pub const AF_E164: ::c_int = AF_ISDN;
 pub const pseudo_AF_KEY: ::c_int = 29;
@@ -2237,6 +3601,7 @@ pub const PF_SIP: ::c_int = AF_SIP;
 pub const PF_IPX: ::c_int = AF_IPX;
 pub const PF_RTIP: ::c_int = pseudo_AF_RTIP;
 pub const PF_PIP: ::c_int = pseudo_AF_PIP;
+pub const PF_NDRV: ::c_int = AF_NDRV;
 pub const PF_ISDN: ::c_int = AF_ISDN;
 pub const PF_KEY: ::c_int = pseudo_AF_KEY;
 pub const PF_INET6: ::c_int = AF_INET6;
@@ -2264,8 +3629,10 @@ pub const IP_RECVDSTADDR: ::c_int = 7;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
 pub const IP_RECVIF: ::c_int = 20;
+pub const IP_BOUND_IF: ::c_int = 25;
 pub const IP_PKTINFO: ::c_int = 26;
 pub const IP_RECVTOS: ::c_int = 27;
+pub const IP_DONTFRAG: ::c_int = 28;
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 pub const IPV6_CHECKSUM: ::c_int = 26;
@@ -2274,6 +3641,12 @@ pub const IPV6_TCLASS: ::c_int = 36;
 pub const IPV6_PKTINFO: ::c_int = 46;
 pub const IPV6_HOPLIMIT: ::c_int = 47;
 pub const IPV6_RECVPKTINFO: ::c_int = 61;
+pub const IPV6_DONTFRAG: ::c_int = 62;
+pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 70;
+pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 71;
+pub const IP_BLOCK_SOURCE: ::c_int = 72;
+pub const IP_UNBLOCK_SOURCE: ::c_int = 73;
+pub const IPV6_BOUND_IF: ::c_int = 125;
 
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
@@ -2501,6 +3874,11 @@ pub const _SC_TRACE_NAME_MAX: ::c_int = 128;
 pub const _SC_TRACE_SYS_MAX: ::c_int = 129;
 pub const _SC_TRACE_USER_EVENT_MAX: ::c_int = 130;
 pub const _SC_PASS_MAX: ::c_int = 131;
+// `confstr` keys (only the values guaranteed by `man confstr`).
+pub const _CS_PATH: ::c_int = 1;
+pub const _CS_DARWIN_USER_DIR: ::c_int = 65536;
+pub const _CS_DARWIN_USER_TEMP_DIR: ::c_int = 65537;
+pub const _CS_DARWIN_USER_CACHE_DIR: ::c_int = 65538;
 
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
@@ -2522,12 +3900,30 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __opaque: [0; __PTHREAD_RWLOCK_SIZE__],
 };
 
+pub const OS_UNFAIR_LOCK_INIT: os_unfair_lock = os_unfair_lock {
+    _os_unfair_lock_opaque: 0,
+};
+
+pub const OS_LOG_TYPE_DEFAULT: ::os_log_type_t = 0x00;
+pub const OS_LOG_TYPE_INFO: ::os_log_type_t = 0x01;
+pub const OS_LOG_TYPE_DEBUG: ::os_log_type_t = 0x02;
+pub const OS_LOG_TYPE_ERROR: ::os_log_type_t = 0x10;
+pub const OS_LOG_TYPE_FAULT: ::os_log_type_t = 0x11;
+
+pub const OS_SIGNPOST_EVENT: ::os_signpost_type_t = 0x00;
+pub const OS_SIGNPOST_INTERVAL_BEGIN: ::os_signpost_type_t = 0x01;
+pub const OS_SIGNPOST_INTERVAL_END: ::os_signpost_type_t = 0x02;
+
 pub const MINSIGSTKSZ: ::size_t = 32768;
 pub const SIGSTKSZ: ::size_t = 131072;
 
 pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
+
+pub const SCHED_OTHER: ::c_int = 1;
+pub const SCHED_FIFO: ::c_int = 4;
+pub const SCHED_RR: ::c_int = 2;
 
 pub const EVFILT_READ: i16 = -1;
 pub const EVFILT_WRITE: i16 = -2;
@@ -2809,6 +4205,59 @@ pub const KERN_PROC_TTY: ::c_int = 4;
 pub const KERN_PROC_UID: ::c_int = 5;
 pub const KERN_PROC_RUID: ::c_int = 6;
 pub const KERN_PROC_LCID: ::c_int = 7;
+pub const KERN_SUCCESS: ::c_int = 0;
+pub const KERN_INVALID_ADDRESS: ::c_int = 1;
+pub const KERN_PROTECTION_FAILURE: ::c_int = 2;
+pub const KERN_NO_SPACE: ::c_int = 3;
+pub const KERN_INVALID_ARGUMENT: ::c_int = 4;
+pub const KERN_FAILURE: ::c_int = 5;
+pub const KERN_RESOURCE_SHORTAGE: ::c_int = 6;
+pub const KERN_NOT_RECEIVER: ::c_int = 7;
+pub const KERN_NO_ACCESS: ::c_int = 8;
+pub const KERN_MEMORY_FAILURE: ::c_int = 9;
+pub const KERN_MEMORY_ERROR: ::c_int = 10;
+pub const KERN_ALREADY_IN_SET: ::c_int = 11;
+pub const KERN_NOT_IN_SET: ::c_int = 12;
+pub const KERN_NAME_EXISTS: ::c_int = 13;
+pub const KERN_ABORTED: ::c_int = 14;
+pub const KERN_INVALID_NAME: ::c_int = 15;
+pub const KERN_INVALID_TASK: ::c_int = 16;
+pub const KERN_INVALID_RIGHT: ::c_int = 17;
+pub const KERN_INVALID_VALUE: ::c_int = 18;
+pub const KERN_UREFS_OVERFLOW: ::c_int = 19;
+pub const KERN_INVALID_CAPABILITY: ::c_int = 20;
+pub const KERN_RIGHT_EXISTS: ::c_int = 21;
+pub const KERN_INVALID_HOST: ::c_int = 22;
+pub const KERN_MEMORY_PRESENT: ::c_int = 23;
+pub const KERN_MEMORY_DATA_MOVED: ::c_int = 24;
+pub const KERN_MEMORY_RESTART_COPY: ::c_int = 25;
+pub const KERN_INVALID_PROCESSOR_SET: ::c_int = 26;
+pub const KERN_POLICY_LIMIT: ::c_int = 27;
+pub const KERN_INVALID_POLICY: ::c_int = 28;
+pub const KERN_INVALID_OBJECT: ::c_int = 29;
+pub const KERN_ALREADY_WAITING: ::c_int = 30;
+pub const KERN_DEFAULT_SET: ::c_int = 31;
+pub const KERN_EXCEPTION_PROTECTED: ::c_int = 32;
+pub const KERN_INVALID_LEDGER: ::c_int = 33;
+pub const KERN_INVALID_MEMORY_CONTROL: ::c_int = 34;
+pub const KERN_INVALID_SECURITY: ::c_int = 35;
+pub const KERN_NOT_DEPRESSED: ::c_int = 36;
+pub const KERN_TERMINATED: ::c_int = 37;
+pub const KERN_LOCK_SET_DESTROYED: ::c_int = 38;
+pub const KERN_LOCK_UNSTABLE: ::c_int = 39;
+pub const KERN_LOCK_OWNED: ::c_int = 40;
+pub const KERN_LOCK_OWNED_SELF: ::c_int = 41;
+pub const KERN_SEMAPHORE_DESTROYED: ::c_int = 42;
+pub const KERN_RPC_SERVER_TERMINATED: ::c_int = 43;
+pub const KERN_RPC_TERMINATE_ORPHAN: ::c_int = 44;
+pub const KERN_RPC_CONTINUE_ORPHAN: ::c_int = 45;
+pub const KERN_NOT_SUPPORTED: ::c_int = 46;
+pub const KERN_NODE_DOWN: ::c_int = 47;
+pub const KERN_NOT_WAITING: ::c_int = 48;
+pub const KERN_OPERATION_TIMED_OUT: ::c_int = 49;
+pub const KERN_CODESIGN_ERROR: ::c_int = 50;
+pub const KERN_POLICY_STATIC: ::c_int = 51;
+pub const KERN_INSUFFICIENT_BUFFER_SIZE: ::c_int = 52;
 pub const KIPC_MAXSOCKBUF: ::c_int = 1;
 pub const KIPC_SOCKBUF_WASTE: ::c_int = 2;
 pub const KIPC_SOMAXCONN: ::c_int = 3;
@@ -2824,6 +4273,11 @@ pub const VM_LOADAVG: ::c_int = 2;
 pub const VM_MACHFACTOR: ::c_int = 4;
 pub const VM_SWAPUSAGE: ::c_int = 5;
 pub const VM_MAXID: ::c_int = 6;
+pub const VM_PROT_NONE: ::vm_prot_t = 0x00;
+pub const VM_PROT_READ: ::vm_prot_t = 0x01;
+pub const VM_PROT_WRITE: ::vm_prot_t = 0x02;
+pub const VM_PROT_EXECUTE: ::vm_prot_t = 0x04;
+pub const MEMORY_OBJECT_NULL: ::memory_object_t = 0;
 pub const HW_MACHINE: ::c_int = 1;
 pub const HW_MODEL: ::c_int = 2;
 pub const HW_NCPU: ::c_int = 3;
@@ -2888,11 +4342,8 @@ pub const AI_PASSIVE: ::c_int = 0x00000001;
 pub const AI_CANONNAME: ::c_int = 0x00000002;
 pub const AI_NUMERICHOST: ::c_int = 0x00000004;
 pub const AI_NUMERICSERV: ::c_int = 0x00001000;
-pub const AI_MASK: ::c_int = AI_PASSIVE
-    | AI_CANONNAME
-    | AI_NUMERICHOST
-    | AI_NUMERICSERV
-    | AI_ADDRCONFIG;
+pub const AI_MASK: ::c_int =
+    AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST | AI_NUMERICSERV | AI_ADDRCONFIG;
 pub const AI_ALL: ::c_int = 0x00000100;
 pub const AI_V4MAPPED_CFG: ::c_int = 0x00000200;
 pub const AI_ADDRCONFIG: ::c_int = 0x00000400;
@@ -2968,6 +4419,8 @@ pub const RTF_CONDEMNED: ::c_int = 0x2000000;
 pub const RTF_IFREF: ::c_int = 0x4000000;
 pub const RTF_PROXY: ::c_int = 0x8000000;
 pub const RTF_ROUTER: ::c_int = 0x10000000;
+pub const RTF_DEAD: ::c_int = 0x20000000;
+pub const RTF_GLOBAL: ::c_int = 0x40000000;
 
 pub const RTM_VERSION: ::c_int = 5;
 
@@ -3026,8 +4479,14 @@ pub const RTAX_MAX: ::c_int = 8;
 pub const KERN_PROCARGS2: ::c_int = 49;
 
 pub const PROC_PIDTASKALLINFO: ::c_int = 2;
+pub const PROC_PIDTBSDINFO: ::c_int = 3;
 pub const PROC_PIDTASKINFO: ::c_int = 4;
 pub const PROC_PIDTHREADINFO: ::c_int = 5;
+pub const PROC_PIDVNODEPATHINFO: ::c_int = 9;
+pub const PROC_PIDPATHINFO_MAXSIZE: ::c_int = 4096;
+pub const PROC_CSM_ALL: ::c_uint = 0x0001;
+pub const PROC_CSM_NOSMT: ::c_uint = 0x0002;
+pub const PROC_CSM_TECS: ::c_uint = 0x0004;
 pub const MAXCOMLEN: usize = 16;
 pub const MAXTHREADNAMESIZE: usize = 64;
 
@@ -3064,17 +4523,9 @@ pub const DLT_LOOP: ::c_uint = 108;
 pub const BPF_ALIGNMENT: ::c_int = 4;
 
 // sys/mount.h
-pub const MNT_RDONLY: ::c_int = 0x00000001;
-pub const MNT_SYNCHRONOUS: ::c_int = 0x00000002;
-pub const MNT_NOEXEC: ::c_int = 0x00000004;
-pub const MNT_NOSUID: ::c_int = 0x00000008;
 pub const MNT_NODEV: ::c_int = 0x00000010;
 pub const MNT_UNION: ::c_int = 0x00000020;
-pub const MNT_ASYNC: ::c_int = 0x00000040;
 pub const MNT_CPROTECT: ::c_int = 0x00000080;
-
-// NFS export related mount flags.
-pub const MNT_EXPORTED: ::c_int = 0x00000100;
 
 // MAC labeled / "quarantined" flag
 pub const MNT_QUARANTINE: ::c_int = 0x00000400;
@@ -3096,9 +4547,7 @@ pub const MNT_NOATIME: ::c_int = 0x10000000;
 pub const MNT_SNAPSHOT: ::c_int = 0x40000000;
 
 // External filesystem command modifier flags.
-pub const MNT_UPDATE: ::c_int = 0x00010000;
 pub const MNT_NOBLOCK: ::c_int = 0x00020000;
-pub const MNT_RELOAD: ::c_int = 0x00040000;
 
 // sys/spawn.h:
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
@@ -3214,8 +4663,264 @@ pub const TIME_ERROR: ::c_int = 5;
 pub const MNT_WAIT: ::c_int = 1;
 pub const MNT_NOWAIT: ::c_int = 2;
 
+// <mach/thread_policy.h>
+pub const THREAD_STANDARD_POLICY: ::c_int = 1;
+pub const THREAD_STANDARD_POLICY_COUNT: ::c_int = 0;
+pub const THREAD_EXTENDED_POLICY: ::c_int = 1;
+pub const THREAD_TIME_CONSTRAINT_POLICY: ::c_int = 2;
+pub const THREAD_PRECEDENCE_POLICY: ::c_int = 3;
+pub const THREAD_AFFINITY_POLICY: ::c_int = 4;
+pub const THREAD_AFFINITY_TAG_NULL: ::c_int = 0;
+pub const THREAD_BACKGROUND_POLICY: ::c_int = 5;
+pub const THREAD_BACKGROUND_POLICY_DARWIN_BG: ::c_int = 0x1000;
+pub const THREAD_LATENCY_QOS_POLICY: ::c_int = 7;
+pub const THREAD_THROUGHPUT_QOS_POLICY: ::c_int = 8;
+
+// <mach/thread_info.h>
+pub const TH_STATE_RUNNING: ::c_int = 1;
+pub const TH_STATE_STOPPED: ::c_int = 2;
+pub const TH_STATE_WAITING: ::c_int = 3;
+pub const TH_STATE_UNINTERRUPTIBLE: ::c_int = 4;
+pub const TH_STATE_HALTED: ::c_int = 5;
+pub const TH_FLAGS_SWAPPED: ::c_int = 0x1;
+pub const TH_FLAGS_IDLE: ::c_int = 0x2;
+pub const TH_FLAGS_GLOBAL_FORCED_IDLE: ::c_int = 0x4;
+pub const THREAD_BASIC_INFO: ::c_int = 3;
+pub const THREAD_IDENTIFIER_INFO: ::c_int = 4;
+pub const THREAD_EXTENDED_INFO: ::c_int = 5;
+
+// CommonCrypto/CommonCryptoError.h
+pub const kCCSuccess: i32 = 0;
+pub const kCCParamError: i32 = -4300;
+pub const kCCBufferTooSmall: i32 = -4301;
+pub const kCCMemoryFailure: i32 = -4302;
+pub const kCCAlignmentError: i32 = -4303;
+pub const kCCDecodeError: i32 = -4304;
+pub const kCCUnimplemented: i32 = -4305;
+pub const kCCOverflow: i32 = -4306;
+pub const kCCRNGFailure: i32 = -4307;
+pub const kCCUnspecifiedError: i32 = -4308;
+pub const kCCCallSequenceError: i32 = -4309;
+pub const kCCKeySizeError: i32 = -4310;
+pub const kCCInvalidKey: i32 = -4311;
+
+// mach/host_info.h
+pub const HOST_LOAD_INFO: i32 = 1;
+pub const HOST_VM_INFO: i32 = 2;
+pub const HOST_CPU_LOAD_INFO: i32 = 3;
+pub const HOST_VM_INFO64: i32 = 4;
+pub const HOST_EXTMOD_INFO64: i32 = 5;
+pub const HOST_EXPIRED_TASK_INFO: i32 = 6;
+
+// mach/vm_statistics.h
+pub const VM_PAGE_QUERY_PAGE_PRESENT: i32 = 0x1;
+pub const VM_PAGE_QUERY_PAGE_FICTITIOUS: i32 = 0x2;
+pub const VM_PAGE_QUERY_PAGE_REF: i32 = 0x4;
+pub const VM_PAGE_QUERY_PAGE_DIRTY: i32 = 0x8;
+pub const VM_PAGE_QUERY_PAGE_PAGED_OUT: i32 = 0x10;
+pub const VM_PAGE_QUERY_PAGE_COPIED: i32 = 0x20;
+pub const VM_PAGE_QUERY_PAGE_SPECULATIVE: i32 = 0x40;
+pub const VM_PAGE_QUERY_PAGE_EXTERNAL: i32 = 0x80;
+pub const VM_PAGE_QUERY_PAGE_CS_VALIDATED: i32 = 0x100;
+pub const VM_PAGE_QUERY_PAGE_CS_TAINTED: i32 = 0x200;
+pub const VM_PAGE_QUERY_PAGE_CS_NX: i32 = 0x400;
+
+// mach/task_info.h
+pub const TASK_THREAD_TIMES_INFO: u32 = 3;
+pub const HOST_CPU_LOAD_INFO_COUNT: u32 = 4;
+pub const MACH_TASK_BASIC_INFO: u32 = 20;
+
+pub const MACH_PORT_NULL: i32 = 0;
+
+pub const RUSAGE_INFO_V0: ::c_int = 0;
+pub const RUSAGE_INFO_V1: ::c_int = 1;
+pub const RUSAGE_INFO_V2: ::c_int = 2;
+pub const RUSAGE_INFO_V3: ::c_int = 3;
+pub const RUSAGE_INFO_V4: ::c_int = 4;
+
+// copyfile.h
+pub const COPYFILE_ACL: ::copyfile_flags_t = 1 << 0;
+pub const COPYFILE_STAT: ::copyfile_flags_t = 1 << 1;
+pub const COPYFILE_XATTR: ::copyfile_flags_t = 1 << 2;
+pub const COPYFILE_DATA: ::copyfile_flags_t = 1 << 3;
+pub const COPYFILE_SECURITY: ::copyfile_flags_t = COPYFILE_STAT | COPYFILE_ACL;
+pub const COPYFILE_METADATA: ::copyfile_flags_t = COPYFILE_SECURITY | COPYFILE_XATTR;
+pub const COPYFILE_RECURSIVE: ::copyfile_flags_t = 1 << 15;
+pub const COPYFILE_CHECK: ::copyfile_flags_t = 1 << 16;
+pub const COPYFILE_EXCL: ::copyfile_flags_t = 1 << 17;
+pub const COPYFILE_NOFOLLOW_SRC: ::copyfile_flags_t = 1 << 18;
+pub const COPYFILE_NOFOLLOW_DST: ::copyfile_flags_t = 1 << 19;
+pub const COPYFILE_MOVE: ::copyfile_flags_t = 1 << 20;
+pub const COPYFILE_UNLINK: ::copyfile_flags_t = 1 << 21;
+pub const COPYFILE_NOFOLLOW: ::copyfile_flags_t = COPYFILE_NOFOLLOW_SRC | COPYFILE_NOFOLLOW_DST;
+pub const COPYFILE_PACK: ::copyfile_flags_t = 1 << 22;
+pub const COPYFILE_UNPACK: ::copyfile_flags_t = 1 << 23;
+pub const COPYFILE_CLONE: ::copyfile_flags_t = 1 << 24;
+pub const COPYFILE_CLONE_FORCE: ::copyfile_flags_t = 1 << 25;
+pub const COPYFILE_RUN_IN_PLACE: ::copyfile_flags_t = 1 << 26;
+pub const COPYFILE_DATA_SPARSE: ::copyfile_flags_t = 1 << 27;
+pub const COPYFILE_PRESERVE_DST_TRACKED: ::copyfile_flags_t = 1 << 28;
+pub const COPYFILE_VERBOSE: ::copyfile_flags_t = 1 << 30;
+pub const COPYFILE_RECURSE_ERROR: ::c_int = 0;
+pub const COPYFILE_RECURSE_FILE: ::c_int = 1;
+pub const COPYFILE_RECURSE_DIR: ::c_int = 2;
+pub const COPYFILE_RECURSE_DIR_CLEANUP: ::c_int = 3;
+pub const COPYFILE_COPY_DATA: ::c_int = 4;
+pub const COPYFILE_COPY_XATTR: ::c_int = 5;
+pub const COPYFILE_START: ::c_int = 1;
+pub const COPYFILE_FINISH: ::c_int = 2;
+pub const COPYFILE_ERR: ::c_int = 3;
+pub const COPYFILE_PROGRESS: ::c_int = 4;
+pub const COPYFILE_CONTINUE: ::c_int = 0;
+pub const COPYFILE_SKIP: ::c_int = 1;
+pub const COPYFILE_QUIT: ::c_int = 2;
+
+// <sys/attr.h>
+pub const ATTR_BIT_MAP_COUNT: ::c_ushort = 5;
+pub const FSOPT_NOFOLLOW: u32 = 0x1;
+pub const FSOPT_NOFOLLOW_ANY: u32 = 0x800;
+pub const FSOPT_REPORT_FULLSIZE: u32 = 0x4;
+pub const FSOPT_PACK_INVAL_ATTRS: u32 = 0x8;
+pub const FSOPT_ATTR_CMN_EXTENDED: u32 = 0x20;
+pub const FSOPT_RETURN_REALDEV: u32 = 0x200;
+pub const ATTR_CMN_NAME: attrgroup_t = 0x00000001;
+pub const ATTR_CMN_DEVID: attrgroup_t = 0x00000002;
+pub const ATTR_CMN_FSID: attrgroup_t = 0x00000004;
+pub const ATTR_CMN_OBJTYPE: attrgroup_t = 0x00000008;
+pub const ATTR_CMN_OBJTAG: attrgroup_t = 0x00000010;
+pub const ATTR_CMN_OBJID: attrgroup_t = 0x00000020;
+pub const ATTR_CMN_OBJPERMANENTID: attrgroup_t = 0x00000040;
+pub const ATTR_CMN_PAROBJID: attrgroup_t = 0x00000080;
+pub const ATTR_CMN_SCRIPT: attrgroup_t = 0x00000100;
+pub const ATTR_CMN_CRTIME: attrgroup_t = 0x00000200;
+pub const ATTR_CMN_MODTIME: attrgroup_t = 0x00000400;
+pub const ATTR_CMN_CHGTIME: attrgroup_t = 0x00000800;
+pub const ATTR_CMN_ACCTIME: attrgroup_t = 0x00001000;
+pub const ATTR_CMN_BKUPTIME: attrgroup_t = 0x00002000;
+pub const ATTR_CMN_FNDRINFO: attrgroup_t = 0x00004000;
+pub const ATTR_CMN_OWNERID: attrgroup_t = 0x00008000;
+pub const ATTR_CMN_GRPID: attrgroup_t = 0x00010000;
+pub const ATTR_CMN_ACCESSMASK: attrgroup_t = 0x00020000;
+pub const ATTR_CMN_FLAGS: attrgroup_t = 0x00040000;
+pub const ATTR_CMN_GEN_COUNT: attrgroup_t = 0x00080000;
+pub const ATTR_CMN_DOCUMENT_ID: attrgroup_t = 0x00100000;
+pub const ATTR_CMN_USERACCESS: attrgroup_t = 0x00200000;
+pub const ATTR_CMN_EXTENDED_SECURITY: attrgroup_t = 0x00400000;
+pub const ATTR_CMN_UUID: attrgroup_t = 0x00800000;
+pub const ATTR_CMN_GRPUUID: attrgroup_t = 0x01000000;
+pub const ATTR_CMN_FILEID: attrgroup_t = 0x02000000;
+pub const ATTR_CMN_PARENTID: attrgroup_t = 0x04000000;
+pub const ATTR_CMN_FULLPATH: attrgroup_t = 0x08000000;
+pub const ATTR_CMN_ADDEDTIME: attrgroup_t = 0x10000000;
+pub const ATTR_CMN_DATA_PROTECT_FLAGS: attrgroup_t = 0x40000000;
+pub const ATTR_CMN_RETURNED_ATTRS: attrgroup_t = 0x80000000;
+pub const ATTR_VOL_FSTYPE: attrgroup_t = 0x00000001;
+pub const ATTR_VOL_SIGNATURE: attrgroup_t = 0x00000002;
+pub const ATTR_VOL_SIZE: attrgroup_t = 0x00000004;
+pub const ATTR_VOL_SPACEFREE: attrgroup_t = 0x00000008;
+pub const ATTR_VOL_SPACEAVAIL: attrgroup_t = 0x00000010;
+pub const ATTR_VOL_MINALLOCATION: attrgroup_t = 0x00000020;
+pub const ATTR_VOL_ALLOCATIONCLUMP: attrgroup_t = 0x00000040;
+pub const ATTR_VOL_IOBLOCKSIZE: attrgroup_t = 0x00000080;
+pub const ATTR_VOL_OBJCOUNT: attrgroup_t = 0x00000100;
+pub const ATTR_VOL_FILECOUNT: attrgroup_t = 0x00000200;
+pub const ATTR_VOL_DIRCOUNT: attrgroup_t = 0x00000400;
+pub const ATTR_VOL_MAXOBJCOUNT: attrgroup_t = 0x00000800;
+pub const ATTR_VOL_MOUNTPOINT: attrgroup_t = 0x00001000;
+pub const ATTR_VOL_NAME: attrgroup_t = 0x00002000;
+pub const ATTR_VOL_MOUNTFLAGS: attrgroup_t = 0x00004000;
+pub const ATTR_VOL_MOUNTEDDEVICE: attrgroup_t = 0x00008000;
+pub const ATTR_VOL_ENCODINGSUSED: attrgroup_t = 0x00010000;
+pub const ATTR_VOL_CAPABILITIES: attrgroup_t = 0x00020000;
+pub const ATTR_VOL_UUID: attrgroup_t = 0x00040000;
+pub const ATTR_VOL_SPACEUSED: attrgroup_t = 0x00800000;
+pub const ATTR_VOL_QUOTA_SIZE: attrgroup_t = 0x10000000;
+pub const ATTR_VOL_RESERVED_SIZE: attrgroup_t = 0x20000000;
+pub const ATTR_VOL_ATTRIBUTES: attrgroup_t = 0x40000000;
+pub const ATTR_VOL_INFO: attrgroup_t = 0x80000000;
+pub const ATTR_DIR_LINKCOUNT: attrgroup_t = 0x00000001;
+pub const ATTR_DIR_ENTRYCOUNT: attrgroup_t = 0x00000002;
+pub const ATTR_DIR_MOUNTSTATUS: attrgroup_t = 0x00000004;
+pub const ATTR_DIR_ALLOCSIZE: attrgroup_t = 0x00000008;
+pub const ATTR_DIR_IOBLOCKSIZE: attrgroup_t = 0x00000010;
+pub const ATTR_DIR_DATALENGTH: attrgroup_t = 0x00000020;
+pub const ATTR_FILE_LINKCOUNT: attrgroup_t = 0x00000001;
+pub const ATTR_FILE_TOTALSIZE: attrgroup_t = 0x00000002;
+pub const ATTR_FILE_ALLOCSIZE: attrgroup_t = 0x00000004;
+pub const ATTR_FILE_IOBLOCKSIZE: attrgroup_t = 0x00000008;
+pub const ATTR_FILE_DEVTYPE: attrgroup_t = 0x00000020;
+pub const ATTR_FILE_FORKCOUNT: attrgroup_t = 0x00000080;
+pub const ATTR_FILE_FORKLIST: attrgroup_t = 0x00000100;
+pub const ATTR_FILE_DATALENGTH: attrgroup_t = 0x00000200;
+pub const ATTR_FILE_DATAALLOCSIZE: attrgroup_t = 0x00000400;
+pub const ATTR_FILE_RSRCLENGTH: attrgroup_t = 0x00001000;
+pub const ATTR_FILE_RSRCALLOCSIZE: attrgroup_t = 0x00002000;
+pub const ATTR_CMNEXT_RELPATH: attrgroup_t = 0x00000004;
+pub const ATTR_CMNEXT_PRIVATESIZE: attrgroup_t = 0x00000008;
+pub const ATTR_CMNEXT_LINKID: attrgroup_t = 0x00000010;
+pub const ATTR_CMNEXT_NOFIRMLINKPATH: attrgroup_t = 0x00000020;
+pub const ATTR_CMNEXT_REALDEVID: attrgroup_t = 0x00000040;
+pub const ATTR_CMNEXT_REALFSID: attrgroup_t = 0x00000080;
+pub const ATTR_CMNEXT_CLONEID: attrgroup_t = 0x00000100;
+pub const ATTR_CMNEXT_EXT_FLAGS: attrgroup_t = 0x00000200;
+pub const ATTR_CMNEXT_RECURSIVE_GENCOUNT: attrgroup_t = 0x00000400;
+pub const DIR_MNTSTATUS_MNTPOINT: u32 = 0x1;
+pub const VOL_CAPABILITIES_FORMAT: usize = 0;
+pub const VOL_CAPABILITIES_INTERFACES: usize = 1;
+pub const VOL_CAP_FMT_PERSISTENTOBJECTIDS: attrgroup_t = 0x00000001;
+pub const VOL_CAP_FMT_SYMBOLICLINKS: attrgroup_t = 0x00000002;
+pub const VOL_CAP_FMT_HARDLINKS: attrgroup_t = 0x00000004;
+pub const VOL_CAP_FMT_JOURNAL: attrgroup_t = 0x00000008;
+pub const VOL_CAP_FMT_JOURNAL_ACTIVE: attrgroup_t = 0x00000010;
+pub const VOL_CAP_FMT_NO_ROOT_TIMES: attrgroup_t = 0x00000020;
+pub const VOL_CAP_FMT_SPARSE_FILES: attrgroup_t = 0x00000040;
+pub const VOL_CAP_FMT_ZERO_RUNS: attrgroup_t = 0x00000080;
+pub const VOL_CAP_FMT_CASE_SENSITIVE: attrgroup_t = 0x00000100;
+pub const VOL_CAP_FMT_CASE_PRESERVING: attrgroup_t = 0x00000200;
+pub const VOL_CAP_FMT_FAST_STATFS: attrgroup_t = 0x00000400;
+pub const VOL_CAP_FMT_2TB_FILESIZE: attrgroup_t = 0x00000800;
+pub const VOL_CAP_FMT_OPENDENYMODES: attrgroup_t = 0x00001000;
+pub const VOL_CAP_FMT_HIDDEN_FILES: attrgroup_t = 0x00002000;
+pub const VOL_CAP_FMT_PATH_FROM_ID: attrgroup_t = 0x00004000;
+pub const VOL_CAP_FMT_NO_VOLUME_SIZES: attrgroup_t = 0x00008000;
+pub const VOL_CAP_FMT_DECMPFS_COMPRESSION: attrgroup_t = 0x00010000;
+pub const VOL_CAP_FMT_64BIT_OBJECT_IDS: attrgroup_t = 0x00020000;
+pub const VOL_CAP_FMT_DIR_HARDLINKS: attrgroup_t = 0x00040000;
+pub const VOL_CAP_FMT_DOCUMENT_ID: attrgroup_t = 0x00080000;
+pub const VOL_CAP_FMT_WRITE_GENERATION_COUNT: attrgroup_t = 0x00100000;
+pub const VOL_CAP_FMT_NO_IMMUTABLE_FILES: attrgroup_t = 0x00200000;
+pub const VOL_CAP_FMT_NO_PERMISSIONS: attrgroup_t = 0x00400000;
+pub const VOL_CAP_FMT_SHARED_SPACE: attrgroup_t = 0x00800000;
+pub const VOL_CAP_FMT_VOL_GROUPS: attrgroup_t = 0x01000000;
+pub const VOL_CAP_FMT_SEALED: attrgroup_t = 0x02000000;
+pub const VOL_CAP_INT_SEARCHFS: attrgroup_t = 0x00000001;
+pub const VOL_CAP_INT_ATTRLIST: attrgroup_t = 0x00000002;
+pub const VOL_CAP_INT_NFSEXPORT: attrgroup_t = 0x00000004;
+pub const VOL_CAP_INT_READDIRATTR: attrgroup_t = 0x00000008;
+pub const VOL_CAP_INT_EXCHANGEDATA: attrgroup_t = 0x00000010;
+pub const VOL_CAP_INT_COPYFILE: attrgroup_t = 0x00000020;
+pub const VOL_CAP_INT_ALLOCATE: attrgroup_t = 0x00000040;
+pub const VOL_CAP_INT_VOL_RENAME: attrgroup_t = 0x00000080;
+pub const VOL_CAP_INT_ADVLOCK: attrgroup_t = 0x00000100;
+pub const VOL_CAP_INT_FLOCK: attrgroup_t = 0x00000200;
+pub const VOL_CAP_INT_EXTENDED_SECURITY: attrgroup_t = 0x00000400;
+pub const VOL_CAP_INT_USERACCESS: attrgroup_t = 0x00000800;
+pub const VOL_CAP_INT_MANLOCK: attrgroup_t = 0x00001000;
+pub const VOL_CAP_INT_NAMEDSTREAMS: attrgroup_t = 0x00002000;
+pub const VOL_CAP_INT_EXTENDED_ATTR: attrgroup_t = 0x00004000;
+pub const VOL_CAP_INT_CLONE: attrgroup_t = 0x00010000;
+pub const VOL_CAP_INT_SNAPSHOT: attrgroup_t = 0x00020000;
+pub const VOL_CAP_INT_RENAME_SWAP: attrgroup_t = 0x00040000;
+pub const VOL_CAP_INT_RENAME_EXCL: attrgroup_t = 0x00080000;
+pub const VOL_CAP_INT_RENAME_OPENFAIL: attrgroup_t = 0x00100000;
+
 cfg_if! {
-    if #[cfg(libc_const_size_of)] {
+    if #[cfg(libc_const_extern_fn)] {
+        const fn __DARWIN_ALIGN32(p: usize) -> usize {
+            const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
+            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+        }
+    } else if #[cfg(libc_const_size_of)] {
         fn __DARWIN_ALIGN32(p: usize) -> usize {
             const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
@@ -3228,6 +4933,64 @@ cfg_if! {
     }
 }
 
+cfg_if! {
+    if #[cfg(libc_const_size_of)] {
+        pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+        pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_time_constraint_policy_data_t>() /
+             ::mem::size_of::<integer_t>()) as mach_msg_type_number_t;
+        pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_precedence_policy_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+        pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_affinity_policy_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+        pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_background_policy_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+        pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_latency_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+        pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_throughput_qos_policy_data_t>() /
+             ::mem::size_of::<integer_t>()) as mach_msg_type_number_t;
+        pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_basic_info_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+        pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_identifier_info_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+        pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+
+        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
+            (::mem::size_of::<task_thread_times_info_data_t>()
+            / ::mem::size_of::<natural_t>()) as u32;
+        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = (::mem::size_of::<mach_task_basic_info_data_t>()
+            / ::mem::size_of::<natural_t>()) as u32;
+        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
+            as mach_msg_type_number_t;
+    } else {
+        pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t = 1;
+        pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t = 4;
+        pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t = 1;
+        pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t = 1;
+        pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t = 1;
+        pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t = 1;
+        pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t = 1;
+        pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t = 10;
+        pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t = 6;
+        pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t = 28;
+        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 = 4;
+        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = 12;
+        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t = 38;
+    }
+}
+
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
                        cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
@@ -3237,7 +5000,7 @@ f! {
         let cmsg_len = (*cmsg).cmsg_len as usize;
         let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize);
         let max = (*mhdr).msg_control as usize
-                   + (*mhdr).msg_controllen as usize;
+                    + (*mhdr).msg_controllen as usize;
         if next + __DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) > max {
             0 as *mut ::cmsghdr
         } else {
@@ -3250,7 +5013,7 @@ f! {
             .offset(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
-    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>())
             + __DARWIN_ALIGN32(length as usize))
             as ::c_uint
@@ -3259,6 +5022,22 @@ f! {
     pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
         (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) + length as usize)
             as ::c_uint
+    }
+
+    pub {const} fn VM_MAKE_TAG(id: u8) -> u32 {
+        (id as u32) << 24u32
+    }
+
+    pub fn major(dev: dev_t) -> i32 {
+        (dev >> 24) & 0xff
+    }
+
+    pub fn minor(dev: dev_t) -> i32 {
+        dev & 0xffffff
+    }
+
+    pub fn makedev(major: i32, minor: i32) -> dev_t {
+        (major << 24) | minor
     }
 }
 
@@ -3295,11 +5074,7 @@ extern "C" {
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     #[doc(hidden)]
     #[deprecated(since = "0.2.49", note = "Deprecated in MacOSX 10.10")]
-    pub fn sem_init(
-        sem: *mut sem_t,
-        pshared: ::c_int,
-        value: ::c_uint,
-    ) -> ::c_int;
+    pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
     pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
     pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
@@ -3319,6 +5094,11 @@ extern "C" {
     pub fn fchflags(fd: ::c_int, flags: ::c_uint) -> ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "confstr$UNIX2003"
+    )]
+    pub fn confstr(name: ::c_int, buf: *mut ::c_char, len: ::size_t) -> ::size_t;
     pub fn lio_listio(
         mode: ::c_int,
         aiocb_list: *const *mut aiocb,
@@ -3348,11 +5128,7 @@ extern "C" {
         sevlen: ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
-    pub fn mincore(
-        addr: *const ::c_void,
-        len: ::size_t,
-        vec: *mut ::c_char,
-    ) -> ::c_int;
+    pub fn mincore(addr: *const ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
     pub fn sysctlnametomib(
         name: *const ::c_char,
         mibp: *mut ::c_int,
@@ -3362,44 +5138,23 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "mprotect$UNIX2003"
     )]
-    pub fn mprotect(
-        addr: *mut ::c_void,
-        len: ::size_t,
-        prot: ::c_int,
-    ) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn semget(key: key_t, nsems: ::c_int, semflg: ::c_int) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "semctl$UNIX2003"
     )]
-    pub fn semctl(
-        semid: ::c_int,
-        semnum: ::c_int,
-        cmd: ::c_int,
-        ...
-    ) -> ::c_int;
-    pub fn semop(
-        semid: ::c_int,
-        sops: *mut sembuf,
-        nsops: ::size_t,
-    ) -> ::c_int;
+    pub fn semctl(semid: ::c_int, semnum: ::c_int, cmd: ::c_int, ...) -> ::c_int;
+    pub fn semop(semid: ::c_int, sops: *mut sembuf, nsops: ::size_t) -> ::c_int;
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::c_int;
     pub fn ftok(pathname: *const c_char, proj_id: ::c_int) -> key_t;
-    pub fn shmat(
-        shmid: ::c_int,
-        shmaddr: *const ::c_void,
-        shmflg: ::c_int,
-    ) -> *mut ::c_void;
+    pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "shmctl$UNIX2003"
     )]
-    pub fn shmctl(
-        shmid: ::c_int,
-        cmd: ::c_int,
-        buf: *mut ::shmid_ds,
-    ) -> ::c_int;
+    pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
     pub fn shmget(key: key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
     pub fn sysctl(
         name: *mut ::c_int,
@@ -3416,24 +5171,26 @@ extern "C" {
         newp: *mut ::c_void,
         newlen: ::size_t,
     ) -> ::c_int;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_absolute_time() -> u64;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
+    pub fn mach_host_self() -> mach_port_t;
+    pub fn mach_thread_self() -> mach_port_t;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
-    pub fn pthread_getname_np(
-        thread: ::pthread_t,
-        name: *mut ::c_char,
-        len: ::size_t,
-    ) -> ::c_int;
+    pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn pthread_mach_thread_np(thread: ::pthread_t) -> ::mach_port_t;
     pub fn pthread_from_mach_thread_np(port: ::mach_port_t) -> ::pthread_t;
+    pub fn pthread_create_from_mach_thread(
+        thread: *mut ::pthread_t,
+        attr: *const ::pthread_attr_t,
+        f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
+        value: *mut ::c_void,
+    ) -> ::c_int;
     pub fn pthread_get_stackaddr_np(thread: ::pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: ::pthread_t) -> ::size_t;
-    pub fn pthread_condattr_setpshared(
-        attr: *mut pthread_condattr_t,
-        pshared: ::c_int,
-    ) -> ::c_int;
+    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t, pshared: ::c_int) -> ::c_int;
     pub fn pthread_condattr_getpshared(
         attr: *const pthread_condattr_t,
         pshared: *mut ::c_int,
@@ -3450,12 +5207,126 @@ extern "C" {
         attr: *const pthread_rwlockattr_t,
         val: *mut ::c_int,
     ) -> ::c_int;
-    pub fn pthread_rwlockattr_setpshared(
-        attr: *mut pthread_rwlockattr_t,
-        val: ::c_int,
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t, val: ::c_int) -> ::c_int;
+    pub fn pthread_threadid_np(thread: ::pthread_t, thread_id: *mut u64) -> ::c_int;
+    pub fn pthread_attr_set_qos_class_np(
+        attr: *mut pthread_attr_t,
+        class: qos_class_t,
+        priority: ::c_int,
     ) -> ::c_int;
+    pub fn pthread_attr_get_qos_class_np(
+        attr: *mut pthread_attr_t,
+        class: *mut qos_class_t,
+        priority: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_set_qos_class_self_np(class: qos_class_t, priority: ::c_int) -> ::c_int;
+    pub fn pthread_get_qos_class_np(
+        thread: ::pthread_t,
+        class: *mut qos_class_t,
+        priority: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_getschedparam(
+        attr: *const ::pthread_attr_t,
+        param: *mut sched_param,
+    ) -> ::c_int;
+    pub fn pthread_attr_setschedparam(
+        attr: *mut ::pthread_attr_t,
+        param: *const sched_param,
+    ) -> ::c_int;
+    pub fn pthread_getschedparam(
+        thread: ::pthread_t,
+        policy: *mut ::c_int,
+        param: *mut sched_param,
+    ) -> ::c_int;
+    pub fn pthread_setschedparam(
+        thread: ::pthread_t,
+        policy: ::c_int,
+        param: *const sched_param,
+    ) -> ::c_int;
+
+    // Available from Big Sur
+    pub fn pthread_introspection_hook_install(
+        hook: ::pthread_introspection_hook_t,
+    ) -> ::pthread_introspection_hook_t;
+    pub fn pthread_introspection_setspecific_np(
+        thread: ::pthread_t,
+        key: ::pthread_key_t,
+        value: *const ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_introspection_getspecific_np(
+        thread: ::pthread_t,
+        key: ::pthread_key_t,
+    ) -> *mut ::c_void;
+    pub fn pthread_jit_write_protect_np(enabled: ::c_int);
+    pub fn pthread_jit_write_protect_supported_np() -> ::c_int;
+    // An array of pthread_jit_write_with_callback_np must declare
+    // the list of callbacks e.g.
+    // #[link_section = "__DATA_CONST,__pth_jit_func"]
+    // static callbacks: [libc::pthread_jit_write_callback_t; 2] = [native_jit_write_cb,
+    // std::mem::transmute::<libc::pthread_jit_write_callback_t>(std::ptr::null())];
+    // (a handy PTHREAD_JIT_WRITE_CALLBACK_NP macro for other languages).
+    pub fn pthread_jit_write_with_callback_np(
+        callback: ::pthread_jit_write_callback_t,
+        ctx: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_jit_write_freeze_callbacks_np();
+    pub fn pthread_cpu_number_np(cpu_number_out: *mut ::size_t) -> ::c_int;
+
+    pub fn os_unfair_lock_lock(lock: os_unfair_lock_t);
+    pub fn os_unfair_lock_trylock(lock: os_unfair_lock_t) -> bool;
+    pub fn os_unfair_lock_unlock(lock: os_unfair_lock_t);
+    pub fn os_unfair_lock_assert_owner(lock: os_unfair_lock_t);
+    pub fn os_unfair_lock_assert_not_owner(lock: os_unfair_lock_t);
+
+    pub fn os_log_create(subsystem: *const ::c_char, category: *const ::c_char) -> ::os_log_t;
+    pub fn os_log_type_enabled(oslog: ::os_log_t, tpe: ::os_log_type_t) -> bool;
+    pub fn os_signpost_id_make_with_pointer(
+        log: ::os_log_t,
+        ptr: *const ::c_void,
+    ) -> ::os_signpost_id_t;
+    pub fn os_signpost_id_generate(log: ::os_log_t) -> ::os_signpost_id_t;
+    pub fn os_signpost_enabled(log: ::os_log_t) -> bool;
+
+    pub fn thread_policy_set(
+        thread: thread_t,
+        flavor: thread_policy_flavor_t,
+        policy_info: thread_policy_t,
+        count: mach_msg_type_number_t,
+    ) -> kern_return_t;
+    pub fn thread_policy_get(
+        thread: thread_t,
+        flavor: thread_policy_flavor_t,
+        policy_info: thread_policy_t,
+        count: *mut mach_msg_type_number_t,
+        get_default: *mut boolean_t,
+    ) -> kern_return_t;
+    pub fn thread_info(
+        target_act: thread_inspect_t,
+        flavor: thread_flavor_t,
+        thread_info_out: thread_info_t,
+        thread_info_outCnt: *mut mach_msg_type_number_t,
+    ) -> kern_return_t;
+    #[cfg_attr(doc, doc(alias = "__errno_location"))]
+    #[cfg_attr(doc, doc(alias = "errno"))]
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
+    pub fn backtrace_symbols(addrs: *const *mut ::c_void, sz: ::c_int) -> *mut *mut ::c_char;
+    pub fn backtrace_symbols_fd(addrs: *const *mut ::c_void, sz: ::c_int, fd: ::c_int);
+    pub fn backtrace_from_fp(
+        startfp: *mut ::c_void,
+        array: *mut *mut ::c_void,
+        size: ::c_int,
+    ) -> ::c_int;
+    pub fn backtrace_image_offsets(
+        array: *const *mut ::c_void,
+        image_offsets: *mut image_offset,
+        size: ::c_int,
+    );
+    pub fn backtrace_async(
+        array: *mut *mut ::c_void,
+        length: ::size_t,
+        task_id: *mut u32,
+    ) -> ::size_t;
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
         link_name = "statfs$INODE64"
@@ -3489,12 +5360,13 @@ extern "C" {
         flags: ::c_int,
         data: *mut ::c_void,
     ) -> ::c_int;
-    pub fn ptrace(
-        request: ::c_int,
-        pid: ::pid_t,
-        addr: *mut ::c_char,
-        data: ::c_int,
+    pub fn fmount(
+        src: *const ::c_char,
+        fd: ::c_int,
+        flags: ::c_int,
+        data: *mut ::c_void,
     ) -> ::c_int;
+    pub fn ptrace(request: ::c_int, pid: ::pid_t, addr: *mut ::c_char, data: ::c_int) -> ::c_int;
     pub fn quotactl(
         special: *const ::c_char,
         cmd: ::c_int,
@@ -3534,29 +5406,16 @@ extern "C" {
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn freelocale(loc: ::locale_t) -> ::c_int;
     pub fn localeconv_l(loc: ::locale_t) -> *mut lconv;
-    pub fn newlocale(
-        mask: ::c_int,
-        locale: *const ::c_char,
-        base: ::locale_t,
-    ) -> ::locale_t;
+    pub fn newlocale(mask: ::c_int, locale: *const ::c_char, base: ::locale_t) -> ::locale_t;
     pub fn uselocale(loc: ::locale_t) -> ::locale_t;
     pub fn querylocale(mask: ::c_int, loc: ::locale_t) -> *const ::c_char;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
     pub fn getdomainname(name: *mut ::c_char, len: ::c_int) -> ::c_int;
     pub fn setdomainname(name: *const ::c_char, len: ::c_int) -> ::c_int;
-    pub fn preadv(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off_t,
-    ) -> ::ssize_t;
-    pub fn pwritev(
-        fd: ::c_int,
-        iov: *const ::iovec,
-        iovcnt: ::c_int,
-        offset: ::off_t,
-    ) -> ::ssize_t;
+    pub fn preadv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int, offset: ::off_t) -> ::ssize_t;
+    pub fn pwritev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int, offset: ::off_t)
+        -> ::ssize_t;
     pub fn getxattr(
         path: *const ::c_char,
         name: *const ::c_char,
@@ -3601,16 +5460,8 @@ extern "C" {
         size: ::size_t,
         flags: ::c_int,
     ) -> ::ssize_t;
-    pub fn removexattr(
-        path: *const ::c_char,
-        name: *const ::c_char,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn renamex_np(
-        from: *const ::c_char,
-        to: *const ::c_char,
-        flags: ::c_uint,
-    ) -> ::c_int;
+    pub fn removexattr(path: *const ::c_char, name: *const ::c_char, flags: ::c_int) -> ::c_int;
+    pub fn renamex_np(from: *const ::c_char, to: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn renameatx_np(
         fromfd: ::c_int,
         from: *const ::c_char,
@@ -3618,11 +5469,7 @@ extern "C" {
         to: *const ::c_char,
         flags: ::c_uint,
     ) -> ::c_int;
-    pub fn fremovexattr(
-        filedes: ::c_int,
-        name: *const ::c_char,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn fremovexattr(filedes: ::c_int, name: *const ::c_char, flags: ::c_int) -> ::c_int;
 
     pub fn getgrouplist(
         name: *const ::c_char,
@@ -3636,26 +5483,19 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "waitid$UNIX2003"
     )]
-    pub fn waitid(
-        idtype: idtype_t,
-        id: id_t,
-        infop: *mut ::siginfo_t,
-        options: ::c_int,
-    ) -> ::c_int;
+    pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
+        -> ::c_int;
     pub fn brk(addr: *const ::c_void) -> *mut ::c_void;
     pub fn sbrk(increment: ::c_int) -> *mut ::c_void;
-    pub fn settimeofday(
-        tv: *const ::timeval,
-        tz: *const ::timezone,
-    ) -> ::c_int;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_image_count() -> u32;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn _dyld_get_image_header(image_index: u32) -> *const mach_header;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_get_image_vmaddr_slide(image_index: u32) -> ::intptr_t;
-    #[deprecated(since = "0.2.55", note = "Use the mach crate")]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_get_image_name(image_index: u32) -> *const ::c_char;
 
     pub fn posix_spawn(
@@ -3696,25 +5536,29 @@ extern "C" {
         attr: *const posix_spawnattr_t,
         flags: *mut ::c_short,
     ) -> ::c_int;
-    pub fn posix_spawnattr_setflags(
-        attr: *mut posix_spawnattr_t,
-        flags: ::c_short,
-    ) -> ::c_int;
+    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: ::c_short) -> ::c_int;
     pub fn posix_spawnattr_getpgroup(
         attr: *const posix_spawnattr_t,
         flags: *mut ::pid_t,
     ) -> ::c_int;
-    pub fn posix_spawnattr_setpgroup(
+    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: ::pid_t) -> ::c_int;
+    pub fn posix_spawnattr_setarchpref_np(
         attr: *mut posix_spawnattr_t,
-        flags: ::pid_t,
+        count: ::size_t,
+        pref: *mut ::cpu_type_t,
+        subpref: *mut ::cpu_subtype_t,
+        ocount: *mut ::size_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_getarchpref_np(
+        attr: *const posix_spawnattr_t,
+        count: ::size_t,
+        pref: *mut ::cpu_type_t,
+        subpref: *mut ::cpu_subtype_t,
+        ocount: *mut ::size_t,
     ) -> ::c_int;
 
-    pub fn posix_spawn_file_actions_init(
-        actions: *mut posix_spawn_file_actions_t,
-    ) -> ::c_int;
-    pub fn posix_spawn_file_actions_destroy(
-        actions: *mut posix_spawn_file_actions_t,
-    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
+    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
     pub fn posix_spawn_file_actions_addopen(
         actions: *mut posix_spawn_file_actions_t,
         fd: ::c_int,
@@ -3743,11 +5587,7 @@ extern "C" {
         len: *mut ::size_t,
         connid: *mut sae_connid_t,
     ) -> ::c_int;
-    pub fn disconnectx(
-        socket: ::c_int,
-        associd: sae_associd_t,
-        connid: sae_connid_t,
-    ) -> ::c_int;
+    pub fn disconnectx(socket: ::c_int, associd: sae_associd_t, connid: sae_connid_t) -> ::c_int;
 
     pub fn ntp_adjtime(buf: *mut timex) -> ::c_int;
     pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
@@ -3761,16 +5601,315 @@ extern "C" {
         all(target_os = "macos", not(target_arch = "aarch64")),
         link_name = "getfsstat$INODE64"
     )]
-    pub fn getfsstat(
-        mntbufp: *mut statfs,
-        bufsize: ::c_int,
-        flags: ::c_int,
+    pub fn getfsstat(mntbufp: *mut statfs, bufsize: ::c_int, flags: ::c_int) -> ::c_int;
+
+    // Copy-on-write functions.
+    // According to the man page `flags` is an `int` but in the header
+    // this is a `uint32_t`.
+    pub fn clonefile(src: *const ::c_char, dst: *const ::c_char, flags: u32) -> ::c_int;
+    pub fn clonefileat(
+        src_dirfd: ::c_int,
+        src: *const ::c_char,
+        dst_dirfd: ::c_int,
+        dst: *const ::c_char,
+        flags: u32,
+    ) -> ::c_int;
+    pub fn fclonefileat(
+        srcfd: ::c_int,
+        dst_dirfd: ::c_int,
+        dst: *const ::c_char,
+        flags: u32,
     ) -> ::c_int;
 
-    pub fn iconv_open(
-        tocode: *const ::c_char,
-        fromcode: *const ::c_char,
-    ) -> iconv_t;
+    pub fn copyfile(
+        from: *const ::c_char,
+        to: *const ::c_char,
+        state: copyfile_state_t,
+        flags: copyfile_flags_t,
+    ) -> ::c_int;
+    pub fn fcopyfile(
+        from: ::c_int,
+        to: ::c_int,
+        state: copyfile_state_t,
+        flags: copyfile_flags_t,
+    ) -> ::c_int;
+
+    // Added in macOS 10.13
+    // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
+    pub fn memset_s(s: *mut ::c_void, smax: ::size_t, c: ::c_int, n: ::size_t) -> ::c_int;
+    // Added in macOS 10.5
+    pub fn memset_pattern4(b: *mut ::c_void, pattern4: *const ::c_void, len: ::size_t);
+    pub fn memset_pattern8(b: *mut ::c_void, pattern8: *const ::c_void, len: ::size_t);
+    pub fn memset_pattern16(b: *mut ::c_void, pattern16: *const ::c_void, len: ::size_t);
+
+    // Inherited from BSD but available from Big Sur only
+    pub fn strtonum(
+        __numstr: *const ::c_char,
+        __minval: ::c_longlong,
+        __maxval: ::c_longlong,
+        errstrp: *mut *const ::c_char,
+    ) -> ::c_longlong;
+
+    pub fn mstats() -> mstats;
+    pub fn malloc_printf(format: *const ::c_char, ...);
+    pub fn malloc_zone_check(zone: *mut ::malloc_zone_t) -> ::boolean_t;
+    pub fn malloc_zone_print(zone: *mut ::malloc_zone_t, verbose: ::boolean_t);
+    pub fn malloc_zone_statistics(zone: *mut ::malloc_zone_t, stats: *mut malloc_statistics_t);
+    pub fn malloc_zone_log(zone: *mut ::malloc_zone_t, address: *mut ::c_void);
+    pub fn malloc_zone_print_ptr_info(ptr: *mut ::c_void);
+    pub fn malloc_default_zone() -> *mut ::malloc_zone_t;
+    pub fn malloc_zone_from_ptr(ptr: *const ::c_void) -> *mut ::malloc_zone_t;
+    pub fn malloc_zone_malloc(zone: *mut ::malloc_zone_t, size: ::size_t) -> *mut ::c_void;
+    pub fn malloc_zone_valloc(zone: *mut ::malloc_zone_t, size: ::size_t) -> *mut ::c_void;
+    pub fn malloc_zone_calloc(
+        zone: *mut ::malloc_zone_t,
+        num_items: ::size_t,
+        size: ::size_t,
+    ) -> *mut ::c_void;
+    pub fn malloc_zone_realloc(
+        zone: *mut ::malloc_zone_t,
+        ptr: *mut ::c_void,
+        size: ::size_t,
+    ) -> *mut ::c_void;
+    pub fn malloc_zone_free(zone: *mut ::malloc_zone_t, ptr: *mut ::c_void);
+
+    pub fn proc_listpids(
+        t: u32,
+        typeinfo: u32,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_listallpids(buffer: *mut ::c_void, buffersize: ::c_int) -> ::c_int;
+    pub fn proc_listpgrppids(
+        pgrpid: ::pid_t,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_listchildpids(ppid: ::pid_t, buffer: *mut ::c_void, buffersize: ::c_int)
+        -> ::c_int;
+    pub fn proc_pidinfo(
+        pid: ::c_int,
+        flavor: ::c_int,
+        arg: u64,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_pidfdinfo(
+        pid: ::c_int,
+        fd: ::c_int,
+        flavor: ::c_int,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_pidfileportinfo(
+        pid: ::c_int,
+        fileport: u32,
+        flavor: ::c_int,
+        buffer: *mut ::c_void,
+        buffersize: ::c_int,
+    ) -> ::c_int;
+    pub fn proc_pidpath(pid: ::c_int, buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
+    pub fn proc_name(pid: ::c_int, buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
+    pub fn proc_regionfilename(
+        pid: ::c_int,
+        address: u64,
+        buffer: *mut ::c_void,
+        buffersize: u32,
+    ) -> ::c_int;
+    pub fn proc_kmsgbuf(buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
+    pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
+    pub fn proc_pid_rusage(pid: ::c_int, flavor: ::c_int, buffer: *mut rusage_info_t) -> ::c_int;
+
+    // Available from Big Sur
+    pub fn proc_set_no_smt() -> ::c_int;
+    pub fn proc_setthread_no_smt() -> ::c_int;
+    pub fn proc_set_csm(flags: u32) -> ::c_int;
+    pub fn proc_setthread_csm(flags: u32) -> ::c_int;
+    /// # Notes
+    ///
+    /// `id` is of type [`uuid_t`].
+    pub fn gethostuuid(id: *mut u8, timeout: *const ::timespec) -> ::c_int;
+
+    pub fn gethostid() -> ::c_long;
+    pub fn sethostid(hostid: ::c_long);
+
+    pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
+
+    pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;
+    pub fn _NSGetEnviron() -> *mut *mut *mut ::c_char;
+
+    pub fn mach_vm_map(
+        target_task: ::vm_map_t,
+        address: *mut ::mach_vm_address_t,
+        size: ::mach_vm_size_t,
+        mask: ::mach_vm_offset_t,
+        flags: ::c_int,
+        object: ::mem_entry_name_port_t,
+        offset: ::memory_object_offset_t,
+        copy: ::boolean_t,
+        cur_protection: ::vm_prot_t,
+        max_protection: ::vm_prot_t,
+        inheritance: ::vm_inherit_t,
+    ) -> ::kern_return_t;
+
+    pub fn vm_deallocate(
+        target_task: vm_map_t,
+        address: vm_address_t,
+        size: vm_size_t,
+    ) -> ::kern_return_t;
+
+    pub fn host_statistics64(
+        host_priv: host_t,
+        flavor: host_flavor_t,
+        host_info64_out: host_info64_t,
+        host_info64_outCnt: *mut mach_msg_type_number_t,
+    ) -> ::kern_return_t;
+    pub fn host_processor_info(
+        host: host_t,
+        flavor: processor_flavor_t,
+        out_processor_count: *mut natural_t,
+        out_processor_info: *mut processor_info_array_t,
+        out_processor_infoCnt: *mut mach_msg_type_number_t,
+    ) -> ::kern_return_t;
+
+    pub static mut mach_task_self_: ::mach_port_t;
+    pub fn task_for_pid(
+        host: ::mach_port_t,
+        pid: ::pid_t,
+        task: *mut ::mach_port_t,
+    ) -> ::kern_return_t;
+    pub fn task_info(
+        host: ::mach_port_t,
+        flavor: task_flavor_t,
+        task_info_out: task_info_t,
+        task_info_count: *mut mach_msg_type_number_t,
+    ) -> ::kern_return_t;
+    pub fn task_create(
+        target_task: ::task_t,
+        ledgers: ::ledger_array_t,
+        ledgersCnt: ::mach_msg_type_number_t,
+        inherit_memory: ::boolean_t,
+        child_task: *mut ::task_t,
+    ) -> ::kern_return_t;
+    pub fn task_terminate(target_task: ::task_t) -> ::kern_return_t;
+    pub fn task_threads(
+        target_task: ::task_inspect_t,
+        act_list: *mut ::thread_act_array_t,
+        act_listCnt: *mut ::mach_msg_type_number_t,
+    ) -> ::kern_return_t;
+    pub fn host_statistics(
+        host_priv: host_t,
+        flavor: host_flavor_t,
+        host_info_out: host_info_t,
+        host_info_outCnt: *mut mach_msg_type_number_t,
+    ) -> ::kern_return_t;
+
+    // sysdir.h
+    pub fn sysdir_start_search_path_enumeration(
+        dir: sysdir_search_path_directory_t,
+        domainMask: sysdir_search_path_domain_mask_t,
+    ) -> ::sysdir_search_path_enumeration_state;
+    pub fn sysdir_get_next_search_path_enumeration(
+        state: ::sysdir_search_path_enumeration_state,
+        path: *mut ::c_char,
+    ) -> ::sysdir_search_path_enumeration_state;
+
+    pub static vm_page_size: vm_size_t;
+
+    pub fn getattrlist(
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn fgetattrlist(
+        fd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn getattrlistat(
+        fd: ::c_int,
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: ::c_ulong,
+    ) -> ::c_int;
+    pub fn setattrlist(
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn fsetattrlist(
+        fd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn setattrlistat(
+        dir_fd: ::c_int,
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn getattrlistbulk(
+        dirfd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u64,
+    ) -> ::c_int;
+
+    pub fn malloc_size(ptr: *const ::c_void) -> ::size_t;
+    pub fn malloc_good_size(size: ::size_t) -> ::size_t;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
+}
+
+pub unsafe fn mach_task_self() -> ::mach_port_t {
+    mach_task_self_
+}
+
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        extern "C" {
+            pub fn clock_settime(clock_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
+        }
+    }
+}
+cfg_if! {
+    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
+        extern "C" {
+            pub fn memmem(
+                haystack: *const ::c_void,
+                haystacklen: ::size_t,
+                needle: *const ::c_void,
+                needlelen: ::size_t,
+            ) -> *mut ::c_void;
+            pub fn task_set_info(target_task: ::task_t,
+                                 flavor: ::task_flavor_t,
+                                 task_info_in: ::task_info_t,
+                                 task_info_inCnt: ::mach_msg_type_number_t
+            ) -> ::kern_return_t;
+        }
+    }
+}
+
+// These require a dependency on `libiconv`, and including this when built as
+// part of `std` means every Rust program gets it. Ideally we would have a link
+// modifier to only include these if they are used, but we do not.
+#[cfg_attr(not(feature = "rustc-dep-of-std"), link(name = "iconv"))]
+extern "C" {
+    pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
     pub fn iconv(
         cd: iconv_t,
         inbuf: *mut *mut ::c_char,
@@ -3782,10 +5921,10 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "arm", target_arch = "x86"))] {
+    if #[cfg(target_pointer_width = "32")] {
         mod b32;
         pub use self::b32::*;
-    } else if #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
+    } else if #[cfg(target_pointer_width = "64")] {
         mod b64;
         pub use self::b64::*;
     } else {

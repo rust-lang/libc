@@ -1,21 +1,15 @@
 // Common functions that are unfortunately missing on illumos and
 // Solaris, but often needed by other crates.
 
+use core::cmp::min;
 use unix::solarish::*;
 
 const PTEM: &[u8] = b"ptem\0";
 const LDTERM: &[u8] = b"ldterm\0";
 
 pub unsafe fn cfmakeraw(termios: *mut ::termios) {
-    (*termios).c_iflag &= !(IMAXBEL
-        | IGNBRK
-        | BRKINT
-        | PARMRK
-        | ISTRIP
-        | INLCR
-        | IGNCR
-        | ICRNL
-        | IXON);
+    (*termios).c_iflag &=
+        !(IMAXBEL | IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
     (*termios).c_oflag &= !OPOST;
     (*termios).c_lflag &= !(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
     (*termios).c_cflag &= !(CSIZE | PARENB);
@@ -38,10 +32,7 @@ pub unsafe fn cfmakeraw(termios: *mut ::termios) {
     (*termios).c_cc[VTIME] = 0;
 }
 
-pub unsafe fn cfsetspeed(
-    termios: *mut ::termios,
-    speed: ::speed_t,
-) -> ::c_int {
+pub unsafe fn cfsetspeed(termios: *mut ::termios, speed: ::speed_t) -> ::c_int {
     // Neither of these functions on illumos or Solaris actually ever
     // return an error
     ::cfsetispeed(termios, speed);
@@ -100,9 +91,7 @@ pub unsafe fn openpty(
     } else if setup == 0 {
         // The line discipline is not present, so push the appropriate STREAMS
         // modules for the subordinate device:
-        if ::ioctl(fds, I_PUSH, PTEM.as_ptr()) < 0
-            || ::ioctl(fds, I_PUSH, LDTERM.as_ptr()) < 0
-        {
+        if ::ioctl(fds, I_PUSH, PTEM.as_ptr()) < 0 || ::ioctl(fds, I_PUSH, LDTERM.as_ptr()) < 0 {
             return bail(fdm, fds);
         }
     }
@@ -180,4 +169,52 @@ pub unsafe fn forkpty(
     }
 
     0
+}
+
+pub unsafe fn getpwent_r(
+    pwd: *mut passwd,
+    buf: *mut ::c_char,
+    buflen: ::size_t,
+    result: *mut *mut passwd,
+) -> ::c_int {
+    let old_errno = *::___errno();
+    *::___errno() = 0;
+    *result = native_getpwent_r(
+        pwd,
+        buf,
+        min(buflen, ::c_int::max_value() as ::size_t) as ::c_int,
+    );
+
+    let ret = if (*result).is_null() {
+        *::___errno()
+    } else {
+        0
+    };
+    *::___errno() = old_errno;
+
+    ret
+}
+
+pub unsafe fn getgrent_r(
+    grp: *mut ::group,
+    buf: *mut ::c_char,
+    buflen: ::size_t,
+    result: *mut *mut ::group,
+) -> ::c_int {
+    let old_errno = *::___errno();
+    *::___errno() = 0;
+    *result = native_getgrent_r(
+        grp,
+        buf,
+        min(buflen, ::c_int::max_value() as ::size_t) as ::c_int,
+    );
+
+    let ret = if (*result).is_null() {
+        *::___errno()
+    } else {
+        0
+    };
+    *::___errno() = old_errno;
+
+    ret
 }

@@ -26,56 +26,6 @@ s! {
     }
 }
 
-pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
-pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
-
-pub const AF_LOCAL: ::c_int = 0;
-pub const AF_FILE: ::c_int = 0;
-
-pub const TCP_KEEPIDLE: ::c_int = 0x1d;
-pub const TCP_KEEPCNT: ::c_int = 0x1e;
-pub const TCP_KEEPINTVL: ::c_int = 0x1f;
-
-extern "C" {
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
-
-    pub fn mincore(
-        addr: *const ::c_void,
-        len: ::size_t,
-        vec: *mut ::c_char,
-    ) -> ::c_int;
-
-    pub fn door_call(d: ::c_int, params: *const door_arg_t) -> ::c_int;
-    pub fn door_return(
-        data_ptr: *const ::c_char,
-        data_size: ::size_t,
-        desc_ptr: *const door_desc_t,
-        num_desc: ::c_uint,
-    );
-    pub fn door_create(
-        server_procedure: extern "C" fn(
-            cookie: *const ::c_void,
-            argp: *const ::c_char,
-            arg_size: ::size_t,
-            dp: *const door_desc_t,
-            n_desc: ::c_uint,
-        ),
-        cookie: *const ::c_void,
-        attributes: door_attr_t,
-    ) -> ::c_int;
-
-    pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
-
-    pub fn pthread_getattr_np(
-        thread: ::pthread_t,
-        attr: *mut ::pthread_attr_t,
-    ) -> ::c_int;
-}
-
 s_no_extra_traits! {
     #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub union door_desc_t__d_data {
@@ -98,4 +48,54 @@ s_no_extra_traits! {
         pub rbuf: *const ::c_char,
         pub rsize: ::size_t,
     }
+}
+
+pub const PORT_SOURCE_POSTWAIT: ::c_int = 8;
+pub const PORT_SOURCE_SIGNAL: ::c_int = 9;
+
+pub const AF_LOCAL: ::c_int = 0;
+pub const AF_FILE: ::c_int = 0;
+
+pub const TCP_KEEPIDLE: ::c_int = 0x1d;
+pub const TCP_KEEPINTVL: ::c_int = 0x1e;
+pub const TCP_KEEPCNT: ::c_int = 0x1f;
+
+pub const F_DUPFD_CLOEXEC: ::c_int = 47;
+pub const F_DUPFD_CLOFORK: ::c_int = 49;
+pub const F_DUP2FD_CLOEXEC: ::c_int = 48;
+pub const F_DUP2FD_CLOFORK: ::c_int = 50;
+
+extern "C" {
+    pub fn fexecve(
+        fd: ::c_int,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+    ) -> ::c_int;
+
+    pub fn mincore(addr: *const ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
+
+    pub fn door_call(d: ::c_int, params: *const door_arg_t) -> ::c_int;
+    pub fn door_return(
+        data_ptr: *const ::c_char,
+        data_size: ::size_t,
+        desc_ptr: *const door_desc_t,
+        num_desc: ::c_uint,
+    );
+    pub fn door_create(
+        server_procedure: extern "C" fn(
+            cookie: *const ::c_void,
+            argp: *const ::c_char,
+            arg_size: ::size_t,
+            dp: *const door_desc_t,
+            n_desc: ::c_uint,
+        ),
+        cookie: *const ::c_void,
+        attributes: door_attr_t,
+    ) -> ::c_int;
+
+    pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
+
+    pub fn pthread_getattr_np(thread: ::pthread_t, attr: *mut ::pthread_attr_t) -> ::c_int;
+
+    pub fn euidaccess(path: *const ::c_char, amode: ::c_int) -> ::c_int;
 }

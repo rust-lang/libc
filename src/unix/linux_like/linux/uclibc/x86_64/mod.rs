@@ -11,7 +11,6 @@ pub type fsword_t = ::c_long;
 pub type ino_t = ::c_ulong;
 pub type nlink_t = ::c_uint;
 pub type off_t = ::c_long;
-pub type rlim_t = c_ulong;
 // [uClibc docs] Note stat64 has the same shape as stat for x86-64.
 pub type stat64 = stat;
 pub type suseconds_t = ::c_long;
@@ -21,6 +20,7 @@ pub type wchar_t = ::c_int;
 pub type fsblkcnt64_t = u64;
 pub type fsfilcnt64_t = u64;
 pub type __u64 = ::c_ulong;
+pub type __s64 = ::c_long;
 
 s! {
     pub struct ipc_perm {
@@ -292,8 +292,13 @@ s_no_extra_traits! {
 }
 
 // constants
+pub const ENAMETOOLONG: ::c_int = 36; // File name too long
+pub const ENOTEMPTY: ::c_int = 39; // Directory not empty
+pub const ELOOP: ::c_int = 40; // Too many symbolic links encountered
 pub const EADDRINUSE: ::c_int = 98; // Address already in use
 pub const EADDRNOTAVAIL: ::c_int = 99; // Cannot assign requested address
+pub const ENETDOWN: ::c_int = 100; // Network is down
+pub const ENETUNREACH: ::c_int = 101; // Network is unreachable
 pub const ECONNABORTED: ::c_int = 103; // Software caused connection abort
 pub const ECONNREFUSED: ::c_int = 111; // Connection refused
 pub const ECONNRESET: ::c_int = 104; // Connection reset by peer
@@ -301,6 +306,9 @@ pub const EDEADLK: ::c_int = 35; // Resource deadlock would occur
 pub const ENOSYS: ::c_int = 38; // Function not implemented
 pub const ENOTCONN: ::c_int = 107; // Transport endpoint is not connected
 pub const ETIMEDOUT: ::c_int = 110; // connection timed out
+pub const ESTALE: ::c_int = 116; // Stale file handle
+pub const EHOSTUNREACH: ::c_int = 113; // No route to host
+pub const EDQUOT: ::c_int = 122; // Quota exceeded
 pub const EOPNOTSUPP: ::c_int = 0x5f;
 pub const ENODATA: ::c_int = 0x3d;
 pub const O_APPEND: ::c_int = 02000;
@@ -309,24 +317,15 @@ pub const O_CLOEXEC: ::c_int = 0x80000;
 pub const O_CREAT: ::c_int = 0100;
 pub const O_DIRECTORY: ::c_int = 0200000;
 pub const O_EXCL: ::c_int = 0200;
+pub const O_NOFOLLOW: ::c_int = 0x20000;
 pub const O_NONBLOCK: ::c_int = 04000;
 pub const O_TRUNC: ::c_int = 01000;
 pub const NCCS: usize = 32;
 pub const SIG_SETMASK: ::c_int = 2; // Set the set of blocked signals
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
-pub const SO_BROADCAST: ::c_int = 6;
 pub const SOCK_DGRAM: ::c_int = 2; // connectionless, unreliable datagrams
 pub const SOCK_STREAM: ::c_int = 1; // …/common/bits/socket_type.h
-pub const SO_ERROR: ::c_int = 4;
-pub const SOL_SOCKET: ::c_int = 1;
-pub const SO_RCVTIMEO: ::c_int = 20;
-pub const SO_REUSEADDR: ::c_int = 2;
-pub const SO_SNDTIMEO: ::c_int = 21;
-pub const SO_TIMESTAMP: ::c_int = 0x1d;
-pub const SO_PEERSEC: ::c_int = 31;
-pub const SO_PASSSEC: ::c_int = 34;
-pub const RLIM_INFINITY: u64 = 0xffffffffffffffff;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
