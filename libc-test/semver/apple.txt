@@ -266,6 +266,7 @@ CTLFLAG_RD
 CTLFLAG_RW
 CTLFLAG_SECURE
 CTLFLAG_WR
+CTLIOCGINFO
 CTLTYPE
 CTLTYPE_INT
 CTLTYPE_NODE
@@ -1844,6 +1845,7 @@ copyfile
 copyfile_flags_t
 cpu_subtype_t
 cpu_type_t
+ctl_info
 difftime
 dirfd
 disconnectx

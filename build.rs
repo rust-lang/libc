@@ -83,6 +83,11 @@ fn main() {
         println!("cargo:rustc-cfg=libc_non_exhaustive");
     }
 
+    // Rust >= 1.47 supports long array:
+    if rustc_minor_ver >= 47 || rustc_dep_of_std {
+        println!("cargo:rustc-cfg=libc_long_array");
+    }
+
     if rustc_minor_ver >= 51 || rustc_dep_of_std {
         println!("cargo:rustc-cfg=libc_ptr_addr_of");
     }
