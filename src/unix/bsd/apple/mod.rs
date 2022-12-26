@@ -1026,6 +1026,11 @@ s! {
         pub validattr: attribute_set_t,
         pub nativeattr: attribute_set_t,
     }
+
+    pub struct ctl_info {
+        pub ctl_id: u32,
+        pub ctl_name: [::c_char; MAX_KCTL_NAME],
+    }
 }
 
 s_no_extra_traits! {
@@ -3313,6 +3318,9 @@ pub const MINCORE_MODIFIED: ::c_int = 0x4;
 pub const MINCORE_REFERENCED_OTHER: ::c_int = 0x8;
 pub const MINCORE_MODIFIED_OTHER: ::c_int = 0x10;
 
+pub const CTLIOCGINFO: ::c_uint = 0xC0644E03;
+pub const CTLIOCGCOUNT: ::c_uint = 0x40044E02;
+
 //
 // sys/netinet/in.h
 // Protocols (RFC 1700)
@@ -4489,6 +4497,7 @@ pub const PROC_CSM_NOSMT: ::c_uint = 0x0002;
 pub const PROC_CSM_TECS: ::c_uint = 0x0004;
 pub const MAXCOMLEN: usize = 16;
 pub const MAXTHREADNAMESIZE: usize = 64;
+pub const MAX_KCTL_NAME: usize = 96;
 
 pub const XUCRED_VERSION: ::c_uint = 0;
 
