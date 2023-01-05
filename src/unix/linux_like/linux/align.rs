@@ -44,6 +44,12 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
             }
 
+            #[repr(align(4))]
+            pub struct pthread_barrierattr_t {
+                #[doc(hidden)]
+                size: [u8; ::__SIZEOF_PTHREAD_BARRIERATTR_T],
+            }
+
             #[repr(align(8))]
             pub struct fanotify_event_metadata {
                 pub event_len: __u32,
@@ -121,6 +127,30 @@ macro_rules! expand_align {
                        repr(align(8)))]
             pub struct pthread_rwlock_t {
                 size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
+            }
+
+            #[cfg_attr(all(target_pointer_width = "32",
+                           any(target_arch = "mips",
+                               target_arch = "arm",
+                               target_arch = "hexagon",
+                               target_arch = "m68k",
+                               target_arch = "powerpc",
+                               target_arch = "sparc",
+                               target_arch = "x86_64",
+                               target_arch = "x86")),
+                       repr(align(4)))]
+            #[cfg_attr(any(target_pointer_width = "64",
+                           not(any(target_arch = "mips",
+                                   target_arch = "arm",
+                                   target_arch = "hexagon",
+                                   target_arch = "m68k",
+                                   target_arch = "powerpc",
+                                   target_arch = "sparc",
+                                   target_arch = "x86_64",
+                                   target_arch = "x86"))),
+                       repr(align(8)))]
+            pub struct pthread_barrier_t {
+                size: [u8; ::__SIZEOF_PTHREAD_BARRIER_T],
             }
 
             // linux/can.h
