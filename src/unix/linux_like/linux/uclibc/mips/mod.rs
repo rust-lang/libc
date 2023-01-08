@@ -38,6 +38,8 @@ pub const O_ACCMODE: ::c_int = 3;
 pub const O_DIRECT: ::c_int = 0x8000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
+pub const O_NOATIME: ::c_int = 0x40000;
+pub const O_PATH: ::c_int = 0o010000000;
 
 pub const O_APPEND: ::c_int = 8;
 pub const O_CREAT: ::c_int = 256;
