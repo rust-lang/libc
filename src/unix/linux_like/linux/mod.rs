@@ -2042,6 +2042,16 @@ pub const PR_CAP_AMBIENT_CLEAR_ALL: ::c_int = 4;
 pub const PR_SET_VMA: ::c_int = 0x53564d41;
 pub const PR_SET_VMA_ANON_NAME: ::c_int = 0;
 
+pub const PR_SCHED_CORE: ::c_int = 62;
+pub const PR_SCHED_CORE_GET: ::c_int = 0;
+pub const PR_SCHED_CORE_CREATE: ::c_int = 1;
+pub const PR_SCHED_CORE_SHARE_TO: ::c_int = 2;
+pub const PR_SCHED_CORE_SHARE_FROM: ::c_int = 3;
+pub const PR_SCHED_CORE_MAX: ::c_int = 4;
+pub const PR_SCHED_CORE_SCOPE_THREAD: ::c_int = 0;
+pub const PR_SCHED_CORE_SCOPE_THREAD_GROUP: ::c_int = 1;
+pub const PR_SCHED_CORE_SCOPE_PROCESS_GROUP: ::c_int = 2;
+
 pub const GRND_NONBLOCK: ::c_uint = 0x0001;
 pub const GRND_RANDOM: ::c_uint = 0x0002;
 pub const GRND_INSECURE: ::c_uint = 0x0004;
