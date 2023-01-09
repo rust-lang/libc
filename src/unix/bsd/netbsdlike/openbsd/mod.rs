@@ -1888,6 +1888,8 @@ extern "C" {
         timeout: *const ::timespec,
         uaddr2: *mut u32,
     ) -> ::c_int;
+
+    pub fn mimmutable(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 }
 
 #[link(name = "execinfo")]

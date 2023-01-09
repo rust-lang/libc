@@ -1091,6 +1091,7 @@ malloc_conceal
 memmem
 memrchr
 mfs_args
+mimmutable
 mincore
 mkdirat
 mkfifoat
