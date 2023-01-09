@@ -2121,6 +2121,10 @@ pub const PT_HIOS: u32 = 0x6fffffff;
 pub const PT_LOPROC: u32 = 0x70000000;
 pub const PT_HIPROC: u32 = 0x7fffffff;
 
+// uapi/linux/mount.h
+pub const OPEN_TREE_CLONE: ::c_uint = 0x01;
+pub const OPEN_TREE_CLOEXEC: ::c_uint = O_CLOEXEC as ::c_uint;
+
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;
 pub const NF_ACCEPT: ::c_int = 1;

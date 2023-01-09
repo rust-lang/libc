@@ -1621,6 +1621,7 @@ fn test_android(target: &str) {
                 "linux/memfd.h",
                 "linux/mempolicy.h",
                 "linux/module.h",
+                "linux/mount.h",
                 "linux/net_tstamp.h",
                 "linux/netfilter/nfnetlink.h",
                 "linux/netfilter/nfnetlink_log.h",
@@ -3197,6 +3198,8 @@ fn test_linux(target: &str) {
         "linux/mempolicy.h",
         "linux/mman.h",
         "linux/module.h",
+        // FIXME: requires kernel headers >= 5.1.
+        [!musl]: "linux/mount.h",
         "linux/net_tstamp.h",
         "linux/netfilter/nfnetlink.h",
         "linux/netfilter/nfnetlink_log.h",
@@ -3402,6 +3405,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("IFLA_")
                 || name.starts_with("MS_")
                 || name.starts_with("MSG_")
+                || name.starts_with("OPEN_TREE_")
                 || name.starts_with("P_")
                 || name.starts_with("PF_")
                 || name.starts_with("RLIMIT_")
