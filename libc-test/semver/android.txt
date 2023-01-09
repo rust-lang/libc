@@ -2303,7 +2303,11 @@ SYS_finit_module
 SYS_flistxattr
 SYS_flock
 SYS_fremovexattr
+SYS_fsconfig
 SYS_fsetxattr
+SYS_fsmount
+SYS_fsopen
+SYS_fspick
 SYS_fsync
 SYS_futex
 SYS_get_mempolicy
@@ -2341,6 +2345,9 @@ SYS_io_destroy
 SYS_io_getevents
 SYS_io_setup
 SYS_io_submit
+SYS_io_uring_enter
+SYS_io_uring_register
+SYS_io_uring_setup
 SYS_ioctl
 SYS_ioprio_get
 SYS_ioprio_set
@@ -2367,6 +2374,7 @@ SYS_mlock
 SYS_mlock2
 SYS_mlockall
 SYS_mount
+SYS_move_mount
 SYS_move_pages
 SYS_mprotect
 SYS_mq_getsetattr
@@ -2384,9 +2392,11 @@ SYS_name_to_handle_at
 SYS_nanosleep
 SYS_nfsservctl
 SYS_open_by_handle_at
+SYS_open_tree
 SYS_openat
 SYS_perf_event_open
 SYS_personality
+SYS_pidfd_send_signal
 SYS_pipe2
 SYS_pivot_root
 SYS_pkey_alloc
@@ -2473,6 +2483,7 @@ SYS_signalfd4
 SYS_socket
 SYS_socketpair
 SYS_splice
+SYS_statx
 SYS_swapoff
 SYS_swapon
 SYS_symlinkat
