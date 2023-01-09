@@ -3517,6 +3517,7 @@ swapoff
 swapon
 symlink
 symlinkat
+syncfs
 syscall
 sysconf
 sysinfo

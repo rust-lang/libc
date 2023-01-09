@@ -1806,6 +1806,9 @@ fn test_android(target: &str) {
             // Added in API level 28, but some tests use level 24.
             "getrandom" => true,
 
+            // Added in API level 28, but some tests use level 24.
+            "syncfs" => true,
+
             _ => false,
         }
     });
