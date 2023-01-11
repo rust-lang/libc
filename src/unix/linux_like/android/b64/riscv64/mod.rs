@@ -60,12 +60,12 @@ pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
 // From NDK's asm/hwcap.h
-pub const COMPAT_HWCAP_ISA_I: ::c_ulong = 1 << ('I' - 'A');
-pub const COMPAT_HWCAP_ISA_M: ::c_ulong = 1 << ('M' - 'A');
-pub const COMPAT_HWCAP_ISA_A: ::c_ulong = 1 << ('A' - 'A');
-pub const COMPAT_HWCAP_ISA_F: ::c_ulong = 1 << ('F' - 'A');
-pub const COMPAT_HWCAP_ISA_D: ::c_ulong = 1 << ('D' - 'A');
-pub const COMPAT_HWCAP_ISA_C: ::c_ulong = 1 << ('C' - 'A');
+pub const COMPAT_HWCAP_ISA_I: ::c_ulong = 1 << (b'I' - b'A');
+pub const COMPAT_HWCAP_ISA_M: ::c_ulong = 1 << (b'M' - b'A');
+pub const COMPAT_HWCAP_ISA_A: ::c_ulong = 1 << (b'A' - b'A');
+pub const COMPAT_HWCAP_ISA_F: ::c_ulong = 1 << (b'F' - b'A');
+pub const COMPAT_HWCAP_ISA_D: ::c_ulong = 1 << (b'D' - b'A');
+pub const COMPAT_HWCAP_ISA_C: ::c_ulong = 1 << (b'C' - b'A');
 
 pub const SYS_io_setup: ::c_long = 0;
 pub const SYS_io_destroy: ::c_long = 1;
