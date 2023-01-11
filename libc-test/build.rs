@@ -534,6 +534,9 @@ fn test_openbsd(target: &str) {
             // futex() has volatile arguments, but that doesn't exist in Rust.
             "futex" => true,
 
+            // Available for openBSD 7.3
+            "mimmutable" => true,
+
             _ => false,
         }
     });
