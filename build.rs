@@ -97,7 +97,7 @@ fn main() {
         println!("cargo:rustc-cfg=libc_thread_local");
     }
 
-    // Rust > 1.62.0 allows to use `const_extern_fn` for "Rust" and "C".
+    // Rust >= 1.62.0 allows to use `const_extern_fn` for "Rust" and "C".
     // Nightlies before 2022-04-18 (partly through 1.62 nightlies) don't
     // have the feature, so we require 1.63.
     if (!is_nightly && rustc_minor_ver >= 62) || (is_nightly && rustc_minor_ver >= 63) {
