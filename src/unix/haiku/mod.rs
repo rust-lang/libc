@@ -1984,6 +1984,17 @@ extern "C" {
         longopts: *const option,
         longindex: *mut ::c_int,
     ) -> ::c_int;
+    pub fn strcasecmp_l(
+        string1: *const ::c_char,
+        string2: *const ::c_char,
+        locale: ::locale_t,
+    ) -> ::c_int;
+    pub fn strncasecmp_l(
+        string1: *const ::c_char,
+        string2: *const ::c_char,
+        length: ::size_t,
+        locale: ::locale_t,
+    ) -> ::c_int;
 }
 
 #[link(name = "bsd")]
