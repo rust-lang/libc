@@ -396,6 +396,9 @@ GLOB_NOMATCH
 GLOB_NOSORT
 GLOB_NOSPACE
 GLOB_NOSYS
+GRND_INSECURE
+GRND_NONBLOCK
+GRND_RANDOM
 HW_NCPU
 IFF_ALLMULTI
 IFF_BROADCAST
@@ -1238,6 +1241,7 @@ getdiskrawname
 getdistcookedname
 getdomainname
 getdtablesize
+getentropy
 getfsspecname
 getgrent
 getgrent_r
@@ -1260,6 +1264,7 @@ getprogname
 getpwent
 getpwent_r
 getpwnam_r
+getrandom
 getrlimit
 getrusage
 getservbyport
