@@ -1814,7 +1814,6 @@ extern "C" {
     ) -> ::c_int;
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
 
-    // Not available now on Android
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char, mode: ::mode_t) -> ::c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
@@ -1882,6 +1881,8 @@ extern "C" {
         f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
+
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }
 
 cfg_if! {
