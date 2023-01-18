@@ -40,6 +40,11 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
             }
 
+            pub struct pthread_barrierattr_t {
+                __align: [::c_int; 0],
+                size: [u8; ::__SIZEOF_PTHREAD_BARRIERATTR_T],
+            }
+
             pub struct fanotify_event_metadata {
                 __align: [::c_long; 0],
                 pub event_len: __u32,
@@ -99,6 +104,26 @@ macro_rules! expand_align {
                                   target_pointer_width = "32"))))]
                 __align: [::c_longlong; 0],
                 size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
+            }
+
+            pub struct pthread_barrier_t {
+                #[cfg(any(target_arch = "mips",
+                          target_arch = "arm",
+                          target_arch = "m68k",
+                          target_arch = "powerpc",
+                          target_arch = "sparc",
+                          all(target_arch = "x86_64",
+                              target_pointer_width = "32")))]
+                __align: [::c_long; 0],
+                #[cfg(not(any(target_arch = "mips",
+                              target_arch = "arm",
+                              target_arch = "m68k",
+                              target_arch = "powerpc",
+                              target_arch = "sparc",
+                              all(target_arch = "x86_64",
+                                  target_pointer_width = "32"))))]
+                __align: [::c_longlong; 0],
+                size: [u8; ::__SIZEOF_PTHREAD_BARRIER_T],
             }
         }
     };

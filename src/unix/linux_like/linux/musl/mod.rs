@@ -537,6 +537,7 @@ pub const SIGUNUSED: ::c_int = ::SIGSYS;
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
+pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 
 pub const CPU_SETSIZE: ::c_int = 128;
 

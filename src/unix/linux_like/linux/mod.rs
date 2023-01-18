@@ -938,6 +938,28 @@ cfg_if! {
             }
         }
 
+        impl PartialEq for pthread_barrier_t {
+            fn eq(&self, other: &pthread_barrier_t) -> bool {
+                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for pthread_barrier_t {}
+
+        impl ::fmt::Debug for pthread_barrier_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("pthread_barrier_t")
+                    .field("size", &self.size)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for pthread_barrier_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.size.hash(state);
+            }
+        }
+
         impl PartialEq for sockaddr_alg {
             fn eq(&self, other: &sockaddr_alg) -> bool {
                 self.salg_family == other.salg_family
@@ -4169,6 +4191,23 @@ extern "C" {
         lock: *mut pthread_mutex_t,
         abstime: *const ::timespec,
     ) -> ::c_int;
+    pub fn pthread_barrierattr_init(attr: *mut ::pthread_barrierattr_t) -> ::c_int;
+    pub fn pthread_barrierattr_destroy(attr: *mut ::pthread_barrierattr_t) -> ::c_int;
+    pub fn pthread_barrierattr_getpshared(
+        attr: *const ::pthread_barrierattr_t,
+        shared: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_barrierattr_setpshared(
+        attr: *mut ::pthread_barrierattr_t,
+        shared: ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_barrier_init(
+        barrier: *mut pthread_barrier_t,
+        attr: *const ::pthread_barrierattr_t,
+        count: ::c_uint,
+    ) -> ::c_int;
+    pub fn pthread_barrier_destroy(barrier: *mut pthread_barrier_t) -> ::c_int;
+    pub fn pthread_barrier_wait(barrier: *mut pthread_barrier_t) -> ::c_int;
     pub fn pthread_spin_init(lock: *mut ::pthread_spinlock_t, pshared: ::c_int) -> ::c_int;
     pub fn pthread_spin_destroy(lock: *mut ::pthread_spinlock_t) -> ::c_int;
     pub fn pthread_spin_lock(lock: *mut ::pthread_spinlock_t) -> ::c_int;

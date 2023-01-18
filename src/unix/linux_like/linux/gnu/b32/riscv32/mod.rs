@@ -335,6 +335,7 @@ pub const TCSAFLUSH: ::c_int = 2;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 pub const O_DIRECT: ::c_int = 16384;
 pub const O_DIRECTORY: ::c_int = 65536;
 pub const O_NOFOLLOW: ::c_int = 131072;
@@ -452,6 +453,7 @@ pub const FLUSHO: ::tcflag_t = 4096;
 pub const EXTPROC: ::tcflag_t = 65536;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
 pub const NGREG: usize = 32;
 pub const REG_PC: usize = 0;
 pub const REG_RA: usize = 1;
