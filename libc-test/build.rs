@@ -1887,7 +1887,6 @@ fn test_freebsd(target: &str) {
         _ => false,
     };
 
-
     let freebsd14 = match freebsd_ver {
         Some(n) if n >= 14 => true,
         _ => false,
@@ -2004,6 +2003,7 @@ fn test_freebsd(target: &str) {
                 "utime.h",
                 "utmpx.h",
                 "wchar.h",
+
     }
 
     cfg.type_name(move |ty, is_struct, is_union| {

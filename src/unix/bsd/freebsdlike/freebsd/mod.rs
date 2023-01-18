@@ -2623,9 +2623,6 @@ pub const IFDATA_DRIVERNAME: ::c_int = 3;
 /// number of interfaces configured
 pub const IFMIB_IFCOUNT: ::c_int = 1;
 
-/// functions not specific to a type of iface
-pub const NETLINK_GENERIC: ::c_int = 0;
-
 pub const DOT3COMPLIANCE_STATS: ::c_int = 1;
 pub const DOT3COMPLIANCE_COLLS: ::c_int = 2;
 
