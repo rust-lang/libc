@@ -2182,6 +2182,7 @@ fn test_freebsd(target: &str) {
 
             // Added in FreeBSD 14.
             "PT_COREDUMP" | "PC_ALL" | "PC_COMPRESS" | "PT_GETREGSET" | "PT_SETREGSET"
+            | "PT_SC_REMOTE"
                 if Some(14) > freebsd_ver =>
             {
                 true
@@ -2269,6 +2270,8 @@ fn test_freebsd(target: &str) {
 
             // `ptrace_coredump` introduced in FreeBSD 14.
             "ptrace_coredump" if Some(14) > freebsd_ver => true,
+            // `ptrace_sc_remote` introduced in FreeBSD 14.
+            "ptrace_sc_remote" if Some(14) > freebsd_ver => true,
 
             // `sockcred2` is not available in FreeBSD 12.
             "sockcred2" if Some(13) > freebsd_ver => true,

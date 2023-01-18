@@ -355,6 +355,13 @@ s! {
         pub pc_limit: ::off_t,
     }
 
+    pub struct ptrace_sc_remote {
+        pub pscr_ret: ptrace_sc_ret,
+        pub pscr_syscall: ::c_uint,
+        pub pscr_nargs: ::c_uint,
+        pub pscr_args: *mut ::register_t,
+    }
+
     pub struct cpuset_t {
         #[cfg(target_pointer_width = "64")]
         __bits: [::c_long; 4],
@@ -2356,6 +2363,7 @@ pub const PT_VM_TIMESTAMP: ::c_int = 40;
 pub const PT_VM_ENTRY: ::c_int = 41;
 pub const PT_GETREGSET: ::c_int = 42;
 pub const PT_SETREGSET: ::c_int = 43;
+pub const PT_SC_REMOTE: ::c_int = 44;
 pub const PT_FIRSTMACH: ::c_int = 64;
 
 pub const PTRACE_EXEC: ::c_int = 0x0001;

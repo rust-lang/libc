@@ -970,6 +970,7 @@ PT_LWP_EVENTS
 PT_READ_D
 PT_READ_I
 PT_RESUME
+PT_SC_REMOTE
 PT_SETDBREGS
 PT_SETFPREGS
 PT_SETREGS
@@ -1833,6 +1834,7 @@ pthread_spinlock_t
 ptrace
 ptrace_io_desc
 ptrace_lwpinfo
+ptrace_sc_remote
 ptrace_sc_ret
 ptrace_vm_entry
 ptsname_r
