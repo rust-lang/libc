@@ -1159,6 +1159,7 @@ fn test_netbsd(target: &str) {
             "MS_NOUSER" => true,
             "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
             "BOTHER" => true,
+            "GRND_RANDOM" | "GRND_INSECURE" | "GRND_NONBLOCK" => true, // netbsd 10 minimum
 
             _ => false,
         }
@@ -1168,6 +1169,8 @@ fn test_netbsd(target: &str) {
         match name {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" => true,
+            // FIXME: netbsd 10 minimum
+            "getentropy" | "getrandom" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg

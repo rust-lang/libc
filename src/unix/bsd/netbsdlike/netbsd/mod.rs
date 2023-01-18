@@ -2321,6 +2321,11 @@ pub const XATTR_REPLACE: ::c_int = 0x02;
 // sys/extattr.h
 pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
 
+// For getrandom()
+pub const GRND_NONBLOCK: ::c_uint = 0x1;
+pub const GRND_RANDOM: ::c_uint = 0x2;
+pub const GRND_INSECURE: ::c_uint = 0x4;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -2870,6 +2875,7 @@ extern "C" {
         fd: ::c_int,
         newfd: ::c_int,
     ) -> ::c_int;
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 }
 
 #[link(name = "util")]
