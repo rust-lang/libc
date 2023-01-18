@@ -3811,7 +3811,9 @@ fn test_linux(target: &str) {
         // https://github.com/torvalds/linux/commit/dc8eeef73b63ed8988224ba6b5ed19a615163a7f
         (struct_ == "sockaddr_vm" && field == "svm_zero") ||
         // the `ifr_ifru` field is an anonymous union
-        (struct_ == "ifreq" && field == "ifr_ifru")
+        (struct_ == "ifreq" && field == "ifr_ifru") ||
+        // glibc uses a single array `uregs` instead of individual fields.
+        (struct_ == "user_regs" && arm)
     });
 
     cfg.skip_roundtrip(move |s| match s {
