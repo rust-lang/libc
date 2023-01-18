@@ -637,6 +637,166 @@ pub const NETLINK_EXT_ACK: ::c_int = 11;
 pub const NETLINK_GET_STRICT_CHK: ::c_int = 12;
 
 
+/// NETLINK_ROUTE message: creates new interface
+pub const NL_RTM_NEWLINK: u16      = 16;
+/// NETLINK_ROUTE message: deletes matching interface
+pub const NL_RTM_DELLINK: u16      = 17;
+/// NETLINK_ROUTE message: lists matching interfaces
+pub const NL_RTM_GETLINK: u16      = 18;
+/// not supported
+pub const NL_RTM_SETLINK: u16      = 19;
+/// not supported
+pub const NL_RTM_NEWADDR: u16      = 20;
+/// not supported
+pub const NL_RTM_DELADDR: u16      = 21;
+/// NETLINK_ROUTE message: lists matching ifaddrs
+pub const NL_RTM_GETADDR: u16      = 22;
+/// NETLINK_ROUTE message: adds or changes a route
+pub const NL_RTM_NEWROUTE: u16     = 24;
+/// NETLINK_ROUTE message: deletes matching route
+pub const NL_RTM_DELROUTE: u16     = 25;
+/// NETLINK_ROUTE message: lists matching routes
+pub const NL_RTM_GETROUTE: u16     = 26;
+/// NETLINK_ROUTE message: creates new arp/ndp entry
+pub const NL_RTM_NEWNEIGH: u16     = 28;
+/// NETLINK_ROUTE message: deletes matching arp/ndp entry
+pub const NL_RTM_DELNEIGH: u16     = 29;
+/// NETLINK_ROUTE message: lists matching arp/ndp entry
+pub const NL_RTM_GETNEIGH: u16     = 30;
+/// not supported
+pub const NL_RTM_NEWRULE: u16      = 32;
+/// not supported
+pub const NL_RTM_DELRULE: u16      = 33;
+/// not supported
+pub const NL_RTM_GETRULE: u16      = 34;
+/// not supported
+pub const NL_RTM_NEWQDISC: u16     = 36;
+/// not supported
+pub const NL_RTM_DELQDISC: u16     = 37;
+/// not supported
+pub const NL_RTM_GETQDISC: u16     = 38;
+/// not supported
+pub const NL_RTM_NEWTCLASS: u16    = 40;
+/// not supported
+pub const NL_RTM_DELTCLASS: u16    = 41;
+/// not supported
+pub const NL_RTM_GETTCLASS: u16    = 42;
+/// not supported
+pub const NL_RTM_NEWTFILTER: u16   = 44;
+/// not supported
+pub const NL_RTM_DELTFILTER: u16   = 45;
+/// not supported
+pub const NL_RTM_GETTFILTER: u16   = 46;
+/// not supported
+pub const NL_RTM_NEWACTION: u16    = 48;
+/// not supported
+pub const NL_RTM_DELACTION: u16    = 49;
+/// not supported
+pub const NL_RTM_GETACTION: u16    = 50;
+/// not supported
+pub const NL_RTM_NEWPREFIX: u16    = 52;
+/// not supported
+pub const NL_RTM_GETMULTICAST: u16 = 58;
+/// not supported
+pub const NL_RTM_GETANYCAST: u16   = 62;
+/// not supported
+pub const NL_RTM_NEWNEIGHTBL: u16  = 64;
+/// not supported
+pub const NL_RTM_GETNEIGHTBL: u16  = 66;
+/// not supported
+pub const NL_RTM_SETNEIGHTBL: u16  = 67;
+/// not supported
+pub const NL_RTM_NEWNDUSEROPT: u16 = 68;
+/// not supported
+pub const NL_RTM_NEWADDRLABEL: u16 = 72;
+/// not supported
+pub const NL_RTM_DELADDRLABEL: u16 = 73;
+/// not supported
+pub const NL_RTM_GETADDRLABEL: u16 = 74;
+/// not supported
+pub const NL_RTM_GETDCB: u16       = 78;
+/// not supported
+pub const NL_RTM_SETDCB: u16       = 79;
+/// not supported
+pub const NL_RTM_NEWNETCONF: u16   = 80;
+/// not supported
+pub const NL_RTM_GETNETCONF: u16   = 82;
+/// not supported
+pub const NL_RTM_NEWMDB: u16       = 84;
+/// not supported
+pub const NL_RTM_DELMDB: u16       = 85;
+/// not supported
+pub const NL_RTM_GETMDB: u16       = 86;
+/// not supported
+pub const NL_RTM_NEWNSID: u16      = 88;
+/// not supported
+pub const NL_RTM_DELNSID: u16      = 89;
+/// not supported
+pub const NL_RTM_GETNSID: u16      = 90;
+/// not supported
+pub const NL_RTM_NEWSTATS: u16	   = 92;
+/// not supported
+pub const NL_RTM_GETSTATS: u16	   = 94;
+/// NETLINK_ROUTE message: creates new user nexhtop
+pub const NL_RTM_NEWNEXTHOP: u16   = 104;
+/// NETLINK_ROUTE message: deletes matching nexthop
+pub const NL_RTM_DELNEXTHOP: u16   = 105;
+/// NETLINK_ROUTE message: lists created user nexthops
+pub const NL_RTM_GETNEXTHOP: u16   = 106;
+
+// userspace compat definitions for RTNLGRP_*
+pub const RTMGRP_LINK: ::c_int = 0x00001;
+pub const RTMGRP_NOTIFY: ::c_int = 0x00002;
+pub const RTMGRP_NEIGH: ::c_int = 0x00004;
+pub const RTMGRP_TC: ::c_int = 0x00008;
+pub const RTMGRP_IPV4_IFADDR: ::c_int = 0x00010;
+pub const RTMGRP_IPV4_MROUTE: ::c_int = 0x00020;
+pub const RTMGRP_IPV4_ROUTE: ::c_int = 0x00040;
+pub const RTMGRP_IPV4_RULE: ::c_int = 0x00080;
+pub const RTMGRP_IPV6_IFADDR: ::c_int = 0x00100;
+pub const RTMGRP_IPV6_MROUTE: ::c_int = 0x00200;
+pub const RTMGRP_IPV6_ROUTE: ::c_int = 0x00400;
+pub const RTMGRP_IPV6_IFINFO: ::c_int = 0x00800;
+pub const RTMGRP_DECnet_IFADDR: ::c_int = 0x01000;
+pub const RTMGRP_DECnet_ROUTE: ::c_int = 0x04000;
+pub const RTMGRP_IPV6_PREFIX: ::c_int = 0x20000;
+
+// enum rtnetlink_groups
+pub const RTNLGRP_NONE: ::c_uint = 0x00;
+pub const RTNLGRP_LINK: ::c_uint = 0x01;
+pub const RTNLGRP_NOTIFY: ::c_uint = 0x02;
+pub const RTNLGRP_NEIGH: ::c_uint = 0x03;
+pub const RTNLGRP_TC: ::c_uint = 0x04;
+pub const RTNLGRP_IPV4_IFADDR: ::c_uint = 0x05;
+pub const RTNLGRP_IPV4_MROUTE: ::c_uint = 0x06;
+pub const RTNLGRP_IPV4_ROUTE: ::c_uint = 0x07;
+pub const RTNLGRP_IPV4_RULE: ::c_uint = 0x08;
+pub const RTNLGRP_IPV6_IFADDR: ::c_uint = 0x09;
+pub const RTNLGRP_IPV6_MROUTE: ::c_uint = 0x0a;
+pub const RTNLGRP_IPV6_ROUTE: ::c_uint = 0x0b;
+pub const RTNLGRP_IPV6_IFINFO: ::c_uint = 0x0c;
+pub const RTNLGRP_DECnet_IFADDR: ::c_uint = 0x0d;
+pub const RTNLGRP_NOP2: ::c_uint = 0x0e;
+pub const RTNLGRP_DECnet_ROUTE: ::c_uint = 0x0f;
+pub const RTNLGRP_DECnet_RULE: ::c_uint = 0x10;
+pub const RTNLGRP_NOP4: ::c_uint = 0x11;
+pub const RTNLGRP_IPV6_PREFIX: ::c_uint = 0x12;
+pub const RTNLGRP_IPV6_RULE: ::c_uint = 0x13;
+pub const RTNLGRP_ND_USEROPT: ::c_uint = 0x14;
+pub const RTNLGRP_PHONET_IFADDR: ::c_uint = 0x15;
+pub const RTNLGRP_PHONET_ROUTE: ::c_uint = 0x16;
+pub const RTNLGRP_DCB: ::c_uint = 0x17;
+pub const RTNLGRP_IPV4_NETCONF: ::c_uint = 0x18;
+pub const RTNLGRP_IPV6_NETCONF: ::c_uint = 0x19;
+pub const RTNLGRP_MDB: ::c_uint = 0x1a;
+pub const RTNLGRP_MPLS_ROUTE: ::c_uint = 0x1b;
+pub const RTNLGRP_NSID: ::c_uint = 0x1c;
+pub const RTNLGRP_MPLS_NETCONF: ::c_uint = 0x1d;
+pub const RTNLGRP_IPV4_MROUTE_R: ::c_uint = 0x1e;
+pub const RTNLGRP_IPV6_MROUTE_R: ::c_uint = 0x1f;
+pub const RTNLGRP_NEXTHOP: ::c_uint = 0x20;
+pub const RTNLGRP_BRVLAN: ::c_uint = 0x21;
+
 pub const RAND_MAX: ::c_int = 0x7fff_ffff;
 pub const ELAST: ::c_int = 97;
 
