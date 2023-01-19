@@ -874,6 +874,10 @@ pub const PTRACE_INTERRUPT: ::c_uint = 0x4207;
 pub const PTRACE_LISTEN: ::c_uint = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_uint = 0x4209;
 pub const PTRACE_GET_SYSCALL_INFO: ::c_uint = 0x420e;
+pub const PTRACE_SYSCALL_INFO_NONE: ::__u8 = 0;
+pub const PTRACE_SYSCALL_INFO_ENTRY: ::__u8 = 1;
+pub const PTRACE_SYSCALL_INFO_EXIT: ::__u8 = 2;
+pub const PTRACE_SYSCALL_INFO_SECCOMP: ::__u8 = 3;
 
 // linux/fs.h
 
