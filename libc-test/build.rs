@@ -300,6 +300,9 @@ fn test_apple(target: &str) {
             // FIXME: actually a union
             "sigval" => true,
 
+            // FIXME: The size is changed in recent macOSes.
+            "malloc_zone_t" => true,
+
             _ => false,
         }
     });
@@ -340,6 +343,9 @@ fn test_apple(target: &str) {
 
             // FIXME: remove once the target in CI is updated
             "pthread_jit_write_freeze_callbacks_np" => true,
+
+            // FIXME: ABI has been changed on recent macOSes.
+            "os_unfair_lock_assert_owner" | "os_unfair_lock_assert_not_owner" => true,
 
             _ => false,
         }
