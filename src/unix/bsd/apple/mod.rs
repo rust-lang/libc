@@ -3313,6 +3313,8 @@ pub const MINCORE_MODIFIED: ::c_int = 0x4;
 pub const MINCORE_REFERENCED_OTHER: ::c_int = 0x8;
 pub const MINCORE_MODIFIED_OTHER: ::c_int = 0x10;
 
+pub const CTLIOCGINFO: c_ulong = 0xc0644e03;
+
 //
 // sys/netinet/in.h
 // Protocols (RFC 1700)
@@ -5929,5 +5931,12 @@ cfg_if! {
         pub use self::b64::*;
     } else {
         // Unknown target_arch
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_long_array)] {
+        mod long_array;
+        pub use self::long_array::*;
     }
 }
