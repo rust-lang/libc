@@ -229,34 +229,6 @@ s! {
         pub ki_tdflags: ::c_long,
     }
 
-    /// Netlink Message Header
-    pub struct nlmsghdr {
-	    /// Length of message including header
-        pub nlmsg_len: u32,
-    	/// Message type identifier
-        pub nlmsg_type: u16,
-	    /// Flags (NLM_F_)
-        pub nlmsg_flags: u16,
-    	/// Sequence number
-        pub nlmsg_seq: u32,
-	    /// Sending process port ID
-        pub nlmsg_pid: u32,
-    }
-
-
-    /// Netlink ACK Message
-    pub struct nlmsgerr {
-        pub error: ::c_int,
-        pub msg: nlmsghdr,
-    }
-
-    /// Base netlink attribute TLV header
-    pub struct nlattr {
-        /// Total attribute length
-        pub nla_len: u16,
-        /// Attribute type
-        pub nla_type: u16,
-    }
 }
 
 s_no_extra_traits! {
@@ -305,33 +277,6 @@ s_no_extra_traits! {
         pub vn_type: ::c_int,
         pub vn_mode: u16,
         pub vn_devname: [::c_char; ::SPECNAMELEN as usize + 1],
-    }
-
-    pub struct sockaddr_nl {
-        /// sizeof (sockaddr_nl)
-        pub nl_len: u8,
-        /// netlink family
-        pub nl_family: ::sa_family_t,
-        /// reserved, set to 0
-        nl_pad: ::c_ushort,
-        /// desired port ID, 0 for auto-select
-        pub nl_pid: u32,
-        /// multicast groups mask to bind to
-        pub nl_groups: u32
-    }
-}
-
-e! {
-    #[repr(u32)]
-    pub enum nlmsgerr_attrs {
-        /// string, error message
-        NLMSGERR_ATTR_MSG = 1,
-        /// u32, offset of the invalid attr from nl header
-        NLMSGERR_ATTR_OFFS	= 2,
-        /// binary, data to pass to userland
-        NLMSGERR_ATTR_COOKIE = 3,
-        // not supported
-        NLMSGERR_ATTR_POLICY = 4,
     }
 }
 
@@ -505,63 +450,157 @@ cfg_if! {
         }
     }
 }
-// Netlink
-// sys/socket.h
+
+pub const RAND_MAX: ::c_int = 0x7fff_ffff;
+pub const ELAST: ::c_int = 97;
+
+pub const KF_TYPE_EVENTFD: ::c_int = 13;
+
+/// max length of devicename
+pub const SPECNAMELEN: ::c_int = 255;
+pub const KI_NSPARE_PTR: usize = 5;
+
+/// domainset policies
+pub const DOMAINSET_POLICY_INVALID: ::c_int = 0;
+pub const DOMAINSET_POLICY_ROUNDROBIN: ::c_int = 1;
+pub const DOMAINSET_POLICY_FIRSTTOUCH: ::c_int = 2;
+pub const DOMAINSET_POLICY_PREFER: ::c_int = 3;
+pub const DOMAINSET_POLICY_INTERLEAVE: ::c_int = 4;
+
+pub const MINCORE_SUPER: ::c_int = 0x60;
+
+safe_f! {
+    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+        let major = major as ::dev_t;
+        let minor = minor as ::dev_t;
+        let mut dev = 0;
+        dev |= ((major & 0xffffff00) as dev_t) << 32;
+        dev |= ((major & 0x000000ff) as dev_t) << 8;
+        dev |= ((minor & 0x0000ff00) as dev_t) << 24;
+        dev |= ((minor & 0xffff00ff) as dev_t) << 0;
+        dev
+    }
+}
+
+extern "C" {
+    pub fn setgrent();
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
+    pub fn freelocale(loc: ::locale_t);
+    pub fn msgrcv(
+        msqid: ::c_int,
+        msgp: *mut ::c_void,
+        msgsz: ::size_t,
+        msgtyp: ::c_long,
+        msgflg: ::c_int,
+    ) -> ::ssize_t;
+    pub fn clock_nanosleep(
+        clk_id: ::clockid_t,
+        flags: ::c_int,
+        rqtp: *const ::timespec,
+        rmtp: *mut ::timespec,
+    ) -> ::c_int;
+
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
+
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
+    pub fn elf_aux_info(aux: ::c_int, buf: *mut ::c_void, buflen: ::c_int) -> ::c_int;
+    pub fn setproctitle_fast(fmt: *const ::c_char, ...);
+    pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
+    pub fn timingsafe_memcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
+
+    pub fn cpuset_getdomain(
+        level: ::cpulevel_t,
+        which: ::cpuwhich_t,
+        id: ::id_t,
+        setsize: ::size_t,
+        mask: *mut ::domainset_t,
+        policy: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn cpuset_setdomain(
+        level: ::cpulevel_t,
+        which: ::cpuwhich_t,
+        id: ::id_t,
+        setsize: ::size_t,
+        mask: *const ::domainset_t,
+        policy: ::c_int,
+    ) -> ::c_int;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
+}
+
+#[link(name = "kvm")]
+extern "C" {
+    pub fn kvm_kerndisp(kd: *mut ::kvm_t) -> ::kssize_t;
+}
+
+cfg_if! {
+    if #[cfg(any(target_arch = "x86_64",
+                 target_arch = "aarch64",
+                 target_arch = "riscv64"))] {
+        mod b64;
+        pub use self::b64::*;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_arch = "x86_64")] {
+        mod x86_64;
+        pub use self::x86_64::*;
+    }
+}
+
+
+
+
 pub const AF_NETLINK: ::c_int = 38;
 pub const PF_NETLINK: ::c_int = AF_NETLINK;
-
 pub const SOL_NETLINK: ::c_int = 270;
 
-// RFC 3549, 2.3.2 standard flag bits (nlmsg_flags)
-
-/// Indicateds request to kernel
+/// nlmsg_flags: Indicateds request to kernel
 pub const NLM_F_REQUEST: ::c_int = 1;
-/// Message is part of a group terminated by NLMSG_DONE msg
+/// nlmsg_flags: Message is part of a group terminated by NLMSG_DONE msg
 pub const NLM_F_MULTI: ::c_int = 2;
-/// Reply with ack message containing resulting error code
+/// nlmsg_flags: Reply with ack message containing resulting error code
 pub const NLM_F_ACK: ::c_int = 4;
-/// (not supported) Echo this request back
+/// nlmsg_flags: (not supported) Echo this request back
 pub const NLM_F_ECHO: ::c_int = 8;
-/// Dump was inconsistent due to sequence change
+/// nlmsg_flags: Dump was inconsistent due to sequence change
 pub const NLM_F_DUMP_INTR: ::c_int = 16;
-/// Dump was filtered as requested
+/// nlmsg_flags: Dump was filtered as requested
 pub const NLM_F_DUMP_FILTERED: ::c_int = 32;
 
-// RFC 3549, 2.3.2 Additional flag bits for GET requests
-//
-/// Return the complete table
+/// GET message flag: Return the complete table
 pub const NLM_F_ROOT: ::c_int = 0x100;
-/// Return all entries matching criteria
+/// GET message flag: Return all entries matching criteria
 pub const NLM_F_MATCH: ::c_int = 0x200;
-/// Return an atomic snapshot (ignored)
+/// GET message flag: Return an atomic snapshot (ignored)
 pub const NLM_F_ATOMIC: ::c_int = 0x400;
 pub const NLM_F_DUMP: ::c_int = NLM_F_ROOT | NLM_F_MATCH;
 
-// RFC 3549, 2.3.2 Additional flag bits for NEW requests
-
-/// Replace existing matching config object
+/// NEW request flag: Replace existing matching config object
 pub const NLM_F_REPLACE: ::c_int = 0x100;
-/// Don't replace the object if exists
+/// NEW request flag: Don't replace the object if exists
 pub const NLM_F_EXCL: ::c_int = 0x200;
-/// Create if it does not exist
+/// NEW request flag: Create if it does not exist
 pub const NLM_F_CREATE: ::c_int = 0x400;
-/// Add to end of list
+/// NEW request flag: Add to end of list
 pub const NLM_F_APPEND: ::c_int = 0x800;
 
-// Modifiers to DELETE requests
 
-/// Do not delete recursively
+/// DELETE message flag: Do not delete recursively
 pub const NLM_F_NONREC: ::c_int = 0x100;
 
-// Flags for ACK Message
-/// request was capped
+/// ACK Message flag: request was capped
 pub const NLM_F_CAPPED: ::c_int = 0x100;
-/// extended ACK TVLs were included
+/// ACK Message flag: extended ACK TVLs were included
 pub const NLM_F_ACK_TLVS: ::c_int = 0x200;
 
-// RFC 3549, 2.3.2 standard message types (nlmsg_type)
 
-/// Message is ignored
+/// standard message type (nlmsg_type): Message is ignored
 pub const NLMSG_NOOP: ::c_int = 0x1;
 /// reply error code reporting
 pub const NLMSG_ERROR: ::c_int = 0x2;
@@ -635,7 +674,6 @@ pub const NETLINK_CAP_ACK: ::c_int = 10;
 pub const NETLINK_EXT_ACK: ::c_int = 11;
 /// Strick header checking
 pub const NETLINK_GET_STRICT_CHK: ::c_int = 12;
-
 
 /// NETLINK_ROUTE message: creates new interface
 pub const NL_RTM_NEWLINK: u16      = 16;
@@ -797,105 +835,62 @@ pub const RTNLGRP_IPV6_MROUTE_R: ::c_uint = 0x1f;
 pub const RTNLGRP_NEXTHOP: ::c_uint = 0x20;
 pub const RTNLGRP_BRVLAN: ::c_uint = 0x21;
 
-pub const RAND_MAX: ::c_int = 0x7fff_ffff;
-pub const ELAST: ::c_int = 97;
 
-pub const KF_TYPE_EVENTFD: ::c_int = 13;
-
-/// max length of devicename
-pub const SPECNAMELEN: ::c_int = 255;
-pub const KI_NSPARE_PTR: usize = 5;
-
-/// domainset policies
-pub const DOMAINSET_POLICY_INVALID: ::c_int = 0;
-pub const DOMAINSET_POLICY_ROUNDROBIN: ::c_int = 1;
-pub const DOMAINSET_POLICY_FIRSTTOUCH: ::c_int = 2;
-pub const DOMAINSET_POLICY_PREFER: ::c_int = 3;
-pub const DOMAINSET_POLICY_INTERLEAVE: ::c_int = 4;
-
-pub const MINCORE_SUPER: ::c_int = 0x60;
-
-safe_f! {
-    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
-        let major = major as ::dev_t;
-        let minor = minor as ::dev_t;
-        let mut dev = 0;
-        dev |= ((major & 0xffffff00) as dev_t) << 32;
-        dev |= ((major & 0x000000ff) as dev_t) << 8;
-        dev |= ((minor & 0x0000ff00) as dev_t) << 24;
-        dev |= ((minor & 0xffff00ff) as dev_t) << 0;
-        dev
+e! {
+    #[repr(u32)]
+    pub enum nlmsgerr_attrs {
+        /// string, error message
+        NLMSGERR_ATTR_MSG = 1,
+        /// u32, offset of the invalid attr from nl header
+        NLMSGERR_ATTR_OFFS	= 2,
+        /// binary, data to pass to userland
+        NLMSGERR_ATTR_COOKIE = 3,
+        // not supported
+        NLMSGERR_ATTR_POLICY = 4,
     }
 }
 
-extern "C" {
-    pub fn setgrent();
-    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
-    pub fn freelocale(loc: ::locale_t);
-    pub fn msgrcv(
-        msqid: ::c_int,
-        msgp: *mut ::c_void,
-        msgsz: ::size_t,
-        msgtyp: ::c_long,
-        msgflg: ::c_int,
-    ) -> ::ssize_t;
-    pub fn clock_nanosleep(
-        clk_id: ::clockid_t,
-        flags: ::c_int,
-        rqtp: *const ::timespec,
-        rmtp: *mut ::timespec,
-    ) -> ::c_int;
-
-    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
-
-    pub fn fdatasync(fd: ::c_int) -> ::c_int;
-
-    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
-    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
-    pub fn elf_aux_info(aux: ::c_int, buf: *mut ::c_void, buflen: ::c_int) -> ::c_int;
-    pub fn setproctitle_fast(fmt: *const ::c_char, ...);
-    pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
-    pub fn timingsafe_memcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
-
-    pub fn cpuset_getdomain(
-        level: ::cpulevel_t,
-        which: ::cpuwhich_t,
-        id: ::id_t,
-        setsize: ::size_t,
-        mask: *mut ::domainset_t,
-        policy: *mut ::c_int,
-    ) -> ::c_int;
-    pub fn cpuset_setdomain(
-        level: ::cpulevel_t,
-        which: ::cpuwhich_t,
-        id: ::id_t,
-        setsize: ::size_t,
-        mask: *const ::domainset_t,
-        policy: ::c_int,
-    ) -> ::c_int;
-
-    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
-    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
-}
-
-#[link(name = "kvm")]
-extern "C" {
-    pub fn kvm_kerndisp(kd: *mut ::kvm_t) -> ::kssize_t;
-}
-
-cfg_if! {
-    if #[cfg(any(target_arch = "x86_64",
-                 target_arch = "aarch64",
-                 target_arch = "riscv64"))] {
-        mod b64;
-        pub use self::b64::*;
+s_no_extra_traits! {
+    pub struct sockaddr_nl {
+        /// sizeof (sockaddr_nl)
+        pub nl_len: u8,
+        /// netlink family
+        pub nl_family: ::sa_family_t,
+        /// reserved, set to 0
+        nl_pad: ::c_ushort,
+        /// desired port ID, 0 for auto-select
+        pub nl_pid: u32,
+        /// multicast groups mask to bind to
+        pub nl_groups: u32
     }
 }
 
-cfg_if! {
-    if #[cfg(target_arch = "x86_64")] {
-        mod x86_64;
-        pub use self::x86_64::*;
+s! {
+    /// Netlink Message Header
+    pub struct nlmsghdr {
+	    /// Length of message including header
+        pub nlmsg_len: u32,
+    	/// Message type identifier
+        pub nlmsg_type: u16,
+	    /// Flags (NLM_F_)
+        pub nlmsg_flags: u16,
+    	/// Sequence number
+        pub nlmsg_seq: u32,
+	    /// Sending process port ID
+        pub nlmsg_pid: u32,
+    }
+
+    /// Netlink ACK Message
+    pub struct nlmsgerr {
+        pub error: ::c_int,
+        pub msg: nlmsghdr,
+    }
+
+    /// Base netlink attribute TLV header
+    pub struct nlattr {
+        /// Total attribute length
+        pub nla_len: u16,
+        /// Attribute type
+        pub nla_type: u16,
     }
 }
-
