@@ -2798,7 +2798,12 @@ extern "C" {
         ts: *const ::timespec,
         sigmask: *const ::sigset_t,
     ) -> ::c_int;
-
+    pub fn ppoll(
+        fds: *mut ::pollfd,
+        nfds: ::nfds_t,
+        ts: *const ::timespec,
+        sigmask: *const ::sigset_t,
+    ) -> ::c_int;
     pub fn posix_spawn(
         pid: *mut ::pid_t,
         path: *const ::c_char,
