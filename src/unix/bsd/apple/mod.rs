@@ -5197,6 +5197,7 @@ extern "C" {
         attr: *const pthread_condattr_t,
         pshared: *mut ::c_int,
     ) -> ::c_int;
+    pub fn pthread_main_np() -> ::c_int;
     pub fn pthread_mutexattr_setpshared(
         attr: *mut pthread_mutexattr_t,
         pshared: ::c_int,
