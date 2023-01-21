@@ -3792,6 +3792,11 @@ pub const CPU_WHICH_CPUSET: ::c_int = 3;
 pub const CPU_WHICH_IRQ: ::c_int = 4;
 pub const CPU_WHICH_JAIL: ::c_int = 5;
 
+// sys/signal.h
+pub const SIGTHR: ::c_int = 32;
+pub const SIGLWP: ::c_int = SIGTHR;
+pub const SIGLIBRT: ::c_int = 33;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
