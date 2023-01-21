@@ -3635,10 +3635,12 @@ fn test_linux(target: &str) {
             "PTRACE_GET_RSEQ_CONFIGURATION" if sparc64 => true,
 
             // FIXME: Requires more recent kernel headers
-            | "IFLA_GRO_MAX_SIZE" // linux v5.16+
-            | "IFLA_TSO_MAX_SIZE" // linux v5.18+
-            | "IFLA_TSO_MAX_SEGS" // linux v5.18+
-            | "IFLA_ALLMULTI"     // linux v6.0+
+            | "IFLA_PARENT_DEV_NAME"     // linux v5.13+
+            | "IFLA_PARENT_DEV_BUS_NAME" // linux v5.13+
+            | "IFLA_GRO_MAX_SIZE"        // linux v5.16+
+            | "IFLA_TSO_MAX_SIZE"        // linux v5.18+
+            | "IFLA_TSO_MAX_SEGS"        // linux v5.18+
+            | "IFLA_ALLMULTI"            // linux v6.0+
                 => true,
 
             _ => false,
