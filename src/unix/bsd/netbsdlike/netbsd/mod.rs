@@ -1926,6 +1926,9 @@ pub const EVFILT_SIGNAL: u32 = 5;
 pub const EVFILT_TIMER: u32 = 6;
 pub const EVFILT_VNODE: u32 = 3;
 pub const EVFILT_WRITE: u32 = 1;
+pub const EVFILT_FS: u32 = 7;
+pub const EVFILT_USER: u32 = 8;
+pub const EVFILT_EMPTY: u32 = 9;
 
 pub const EV_ADD: u32 = 0x1;
 pub const EV_DELETE: u32 = 0x2;
@@ -1956,6 +1959,11 @@ pub const NOTE_PCTRLMASK: u32 = 0xf0000000;
 pub const NOTE_TRACK: u32 = 0x00000001;
 pub const NOTE_TRACKERR: u32 = 0x00000002;
 pub const NOTE_CHILD: u32 = 0x00000004;
+pub const NOTE_MSECONDS: u32 = 0x00000000;
+pub const NOTE_SECONDS: u32 = 0x00000001;
+pub const NOTE_USECONDS: u32 = 0x00000002;
+pub const NOTE_NSECONDS: u32 = 0x00000003;
+pub const NOTE_ABSTIME: u32 = 0x000000010;
 
 pub const TMP_MAX: ::c_uint = 308915776;
 
