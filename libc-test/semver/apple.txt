@@ -2100,6 +2100,7 @@ pthread_mutexattr_setpshared
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setpshared
 pthread_setname_np
+pthread_main_np
 ptrace
 pututxline
 pwritev
