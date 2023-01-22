@@ -3460,6 +3460,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("P_")
                 || name.starts_with("PF_")
                 || name.starts_with("RLIMIT_")
+                || name.starts_with("RTEXT_FILTER_")
                 || name.starts_with("SOL_")
                 || name.starts_with("STATX_")
                 || name.starts_with("SW_")
@@ -3474,6 +3475,7 @@ fn test_linux(target: &str) {
         if musl || sparc64 {
             // FIXME: Requires >= 5.4.1 kernel headers
             if name.starts_with("J1939")
+                || name.starts_with("RTEXT_FILTER_")
                 || name.starts_with("SO_J1939")
                 || name.starts_with("SCM_J1939")
             {
