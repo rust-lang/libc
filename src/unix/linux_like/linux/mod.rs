@@ -1721,6 +1721,12 @@ pub const IFLA_PROP_LIST: ::c_ushort = 52;
 pub const IFLA_ALT_IFNAME: ::c_ushort = 53;
 pub const IFLA_PERM_ADDRESS: ::c_ushort = 54;
 pub const IFLA_PROTO_DOWN_REASON: ::c_ushort = 55;
+pub const IFLA_PARENT_DEV_NAME: ::c_ushort = 56;
+pub const IFLA_PARENT_DEV_BUS_NAME: ::c_ushort = 57;
+pub const IFLA_GRO_MAX_SIZE: ::c_ushort = 58;
+pub const IFLA_TSO_MAX_SIZE: ::c_ushort = 59;
+pub const IFLA_TSO_MAX_SEGS: ::c_ushort = 60;
+pub const IFLA_ALLMULTI: ::c_ushort = 61;
 
 pub const IFLA_INFO_UNSPEC: ::c_ushort = 0;
 pub const IFLA_INFO_KIND: ::c_ushort = 1;
