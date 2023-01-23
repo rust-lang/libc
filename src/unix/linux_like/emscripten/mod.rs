@@ -1724,7 +1724,7 @@ f! {
     pub fn major(dev: ::dev_t) -> ::c_uint {
         // see
         // https://github.com/emscripten-core/emscripten/blob/
-        // master/system/include/libc/sys/sysmacros.h
+        // main/system/lib/libc/musl/include/sys/sysmacros.h
         let mut major = 0;
         major |= (dev & 0x00000fff) >> 8;
         major |= (dev & 0xfffff000) >> 31 >> 1;
@@ -1734,7 +1734,7 @@ f! {
     pub fn minor(dev: ::dev_t) -> ::c_uint {
         // see
         // https://github.com/emscripten-core/emscripten/blob/
-        // master/system/include/libc/sys/sysmacros.h
+        // main/system/lib/libc/musl/include/sys/sysmacros.h
         let mut minor = 0;
         minor |= (dev & 0x000000ff) >> 0;
         minor |= (dev & 0xffffff00) >> 12;
