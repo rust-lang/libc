@@ -51,6 +51,7 @@ pub const O_RSYNC: ::c_int = 0x10;
 pub const O_DSYNC: ::c_int = 0x10;
 pub const O_FSYNC: ::c_int = 0x10;
 pub const O_ASYNC: ::c_int = 0x1000;
+pub const O_LARGEFILE: ::c_int = 0x2000;
 pub const O_NDELAY: ::c_int = 0x80;
 
 pub const SOCK_NONBLOCK: ::c_int = 128;
