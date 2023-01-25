@@ -2566,7 +2566,8 @@ fn test_emscripten(target: &str) {
             // FIXME: The size has been changed when upgraded to musl 1.2.2
             "pthread_mutex_t" => true,
 
-            // FIXME: The size has been changed
+            // FIXME: Lowered from 16 to 8 bytes in
+            // llvm/llvm-project@d1a96e9
             "max_align_t" => true,
 
             // FIXME: The size has been changed due to time64
@@ -2579,19 +2580,12 @@ fn test_emscripten(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
+            // Emscripten does not support fork/exec/wait or any kind of multi-process support
+            // https://github.com/emscripten-core/emscripten/blob/3.1.30/tools/system_libs.py#L973
+            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" | "wait4" => true,
 
-            // FIXME: Investigate why CI is missing it.
+            // FIXME: Remove after emscripten-core/emscripten#18492 is released (> 3.1.30).
             "clearenv" => true,
-
-            // FIXME: Somehow the ctest cannot find it on emscripten:
-            //  = note: error: undefined symbol: wait4 (referenced by top-level compiled C/C++ code)
-            //  warning: Link with `-sLLD_REPORT_UNDEFINED` to get more information on undefined symbols
-            //  warning: To disable errors for undefined symbols use `-sERROR_ON_UNDEFINED_SYMBOLS=0`
-            //  warning: _wait4 may need to be added to EXPORTED_FUNCTIONS if it arrives from a system library
-            //  Error: Aborting compilation due to previous errors
-            "wait4" => true,
 
             _ => false,
         }
