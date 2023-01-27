@@ -437,7 +437,6 @@ pub const NOSTR: ::nl_item = 0x50003;
 cfg_if! {
     if #[cfg(feature = "wasi-emulated-mman")] {
         // wasi-libc @ 5d8a140, musl 1.2.3: libc-top-half/musl/include/sys/mman.h
-        // TODO we need to check types on everything below
 
         // FIXME MAP_FAILED in C is #define MAP_FAILED ((void *) -1)
         pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
@@ -476,7 +475,7 @@ cfg_if! {
         pub const MAP_HUGE_512MB: ::c_int = 29 << MAP_HUGE_SHIFT;
         pub const MAP_HUGE_1GB: ::c_int = 30 << MAP_HUGE_SHIFT;
         pub const MAP_HUGE_2GB: ::c_int = 31 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_16GB: ::c_int = 34 << MAP_HUGE_SHIFT; // FIXME type? this was 34U in C
+        pub const MAP_HUGE_16GB: ::c_int = 34 << MAP_HUGE_SHIFT;
 
         pub const PROT_NONE: ::c_int = 0;
         pub const PROT_READ: ::c_int = 1;
@@ -528,7 +527,7 @@ cfg_if! {
         pub const MREMAP_FIXED: ::c_int = 2;
         pub const MREMAP_DONTUNMAP: ::c_int = 4;
 
-        pub const MLOCK_ONFAULT: ::c_uint = 0x01; // FIXME type? shouldn't this be c_int
+        pub const MLOCK_ONFAULT: ::c_uint = 0x01;
 
         pub const MFD_CLOEXEC: ::c_uint = 0x0001;
         pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
