@@ -76,6 +76,7 @@ pub const EL2HLT: ::c_int = 44;
 pub const EBADE: ::c_int = 50;
 pub const EBADR: ::c_int = 51;
 pub const EXFULL: ::c_int = 52;
+pub const FFDLY: ::c_int = 0o0100000;
 pub const ENOANO: ::c_int = 53;
 pub const EBADRQC: ::c_int = 54;
 pub const EBADSLT: ::c_int = 55;
@@ -151,6 +152,8 @@ pub const MAP_POPULATE: ::c_int = 0x10000;
 pub const MAP_NONBLOCK: ::c_int = 0x20000;
 pub const MAP_STACK: ::c_int = 0x40000;
 
+pub const NLDLY: ::tcflag_t = 0o0000400;
+
 pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_DGRAM: ::c_int = 1;
 pub const SOCK_SEQPACKET: ::c_int = 5;
@@ -211,6 +214,8 @@ pub const RTLD_GLOBAL: ::c_int = 0x4;
 
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const CBAUD: ::tcflag_t = 0o0010017;
+pub const CBAUDEX: ::tcflag_t = 0o0010000;
+pub const CIBAUD: ::tcflag_t = 0o002003600000;
 pub const TAB1: ::tcflag_t = 0x00000800;
 pub const TAB2: ::tcflag_t = 0x00001000;
 pub const TAB3: ::tcflag_t = 0x00001800;
