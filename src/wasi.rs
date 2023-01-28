@@ -438,7 +438,6 @@ cfg_if! {
     if #[cfg(feature = "wasi-emulated-mman")] {
         // wasi-libc @ 5d8a140, musl 1.2.3: libc-top-half/musl/include/sys/mman.h
 
-        // FIXME MAP_FAILED in C is #define MAP_FAILED ((void *) -1)
         pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
         pub const MAP_SHARED: ::c_int = 0x01;
@@ -537,7 +536,70 @@ cfg_if! {
         // Included for future reference (for mmap64):
         // #if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
         // #define off64_t off_t
+        // #define mmap64 mmap
         // #endif
+
+        #[cfg_attr(
+            feature = "rustc-dep-of-std",
+            link(
+                name = "c",
+                kind = "static",
+                modifiers = "-bundle",
+                cfg(target_feature = "crt-static")
+            )
+        )]
+        #[cfg_attr(
+            feature = "rustc-dep-of-std",
+            link(name = "c", cfg(not(target_feature = "crt-static")))
+        )]
+        extern "C" {
+            pub fn mmap(
+                addr: *mut ::c_void,
+                len: ::size_t,
+                prot: ::c_int,
+                flags: ::c_int,
+                fd: ::c_int,
+                offset: off_t,
+            ) -> *mut ::c_void;
+            pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
+
+            pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
+            pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
+
+            pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
+
+            pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
+            pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
+            pub fn mlockall(flags: ::c_int) -> ::c_int;
+            pub fn munlockall() -> ::c_int;
+
+            // #ifdef _GNU_SOURCE
+            pub fn mremap(
+                addr: *mut ::c_void,
+                len: ::size_t,
+                new_len: ::size_t,
+                flags: ::c_int,
+                ...
+            ) -> *mut ::c_void;
+            pub fn remap_file_pages(
+                addr: *mut ::c_void,
+                size: ::size_t,
+                prot: ::c_int,
+                pgoff: ::size_t,
+                flags: ::c_int,
+            ) -> ::c_int;
+            pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
+            pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
+            // #endif
+
+            // #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
+            pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
+            pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar) -> ::c_int;
+            // #endif
+
+            pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
+            pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
+        }
     }
 }
 
@@ -686,64 +748,6 @@ extern "C" {
     pub fn memcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
     pub fn memmove(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
     pub fn memset(dest: *mut c_void, c: c_int, n: size_t) -> *mut c_void;
-
-    cfg_if! {
-        if #[cfg(feature = "wasi-emulated-mman")] {
-            // wasi-libc @ 5d8a140, musl 1.2.3: libc-top-half/musl/include/sys/mman.h
-
-            pub fn mmap(
-                addr: *mut ::c_void,
-                len: ::size_t,
-                prot: ::c_int,
-                flags: ::c_int,
-                fd: ::c_int,
-                offset: off_t,
-            ) -> *mut ::c_void;
-            pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
-
-            pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
-            pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
-
-            pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
-
-            pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
-            pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
-            pub fn mlockall(flags: ::c_int) -> ::c_int;
-            pub fn munlockall() -> ::c_int;
-
-            // #ifdef _GNU_SOURCE
-            pub fn mremap(
-                addr: *mut ::c_void,
-                len: ::size_t,
-                new_len: ::size_t,
-                flags: ::c_int,
-                ...
-            ) -> *mut ::c_void;
-            pub fn remap_file_pages(
-                addr: *mut ::c_void,
-                size: ::size_t,
-                prot: ::c_int,
-                pgoff: ::size_t,
-                flags: ::c_int,
-            ) -> ::c_int;
-            pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
-            pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
-            // #endif
-
-            // #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
-            pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
-            pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar) -> ::c_int;
-            // #endif
-
-            pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
-            pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
-
-            // Included for future reference (for mmap64):
-            // #if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
-            // #define mmap64 mmap
-            // #endif
-        }
-    }
 
     pub fn fprintf(stream: *mut ::FILE, format: *const ::c_char, ...) -> ::c_int;
     pub fn printf(format: *const ::c_char, ...) -> ::c_int;
