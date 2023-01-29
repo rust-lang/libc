@@ -3230,6 +3230,7 @@ fn test_linux(target: &str) {
         "linux/sched.h",
         "linux/sock_diag.h",
         "linux/sockios.h",
+        "linux/sctp.h",
         "linux/uinput.h",
         "linux/vm_sockets.h",
         "linux/wait.h",
@@ -3648,6 +3649,7 @@ fn test_linux(target: &str) {
             | "IFLA_TSO_MAX_SEGS"        // linux v5.18+
             | "IFLA_ALLMULTI"            // linux v6.0+
                 => true,
+            "SCTP_NXTINFO" => true,
 
             _ => false,
         }
