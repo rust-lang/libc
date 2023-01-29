@@ -3235,8 +3235,8 @@ fn test_linux(target: &str) {
         "linux/reboot.h",
         "linux/rtnetlink.h",
         "linux/sched.h",
+        "linux/sctp.h",
         "linux/seccomp.h",
-        "linux/sched.h",
         "linux/sock_diag.h",
         "linux/sockios.h",
         "linux/uinput.h",
@@ -3398,6 +3398,8 @@ fn test_linux(target: &str) {
             // FIXME: Unignore once we update Ubuntu to 22.04
             "mallinfo2" if sparc64 => true,
             "ptrace_rseq_configuration" if sparc64 => true,
+            "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
+            | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
             _ => false,
         }
@@ -3657,6 +3659,7 @@ fn test_linux(target: &str) {
             | "IFLA_TSO_MAX_SEGS"        // linux v5.18+
             | "IFLA_ALLMULTI"            // linux v6.0+
                 => true,
+            "SCTP_FUTURE_ASSOC" | "SCTP_CURRENT_ASSOC" | "SCTP_ALL_ASSOC" | "SCTP_PEER_ADDR_THLDS_V2" => true, // linux 5.5+
 
             _ => false,
         }
