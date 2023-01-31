@@ -3510,6 +3510,8 @@ extern "C" {
         longopts: *const option,
         longindex: *mut ::c_int,
     ) -> ::c_int;
+
+    pub fn syncfs(fd: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
