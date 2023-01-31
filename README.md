@@ -38,6 +38,8 @@ libc = "0.2"
   If you use Rust >= 1.62, this feature is implicitly enabled.
   Otherwise it requires a nightly rustc.
 
+* `iconv-apple`: Enables usage of `iconv_open`, `iconv`, and `iconv_close` on Apple devices.
+
 * **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
 
 ## Rust version support

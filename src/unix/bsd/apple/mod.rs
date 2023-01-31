@@ -5908,19 +5908,19 @@ cfg_if! {
 }
 
 // These require a dependency on `libiconv`, and including this when built as
-// part of `std` means every Rust program gets it. Ideally we would have a link
-// modifier to only include these if they are used, but we do not.
-#[cfg_attr(not(feature = "rustc-dep-of-std"), link(name = "iconv"))]
-extern "C" {
-    pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
-    pub fn iconv(
-        cd: iconv_t,
-        inbuf: *mut *mut ::c_char,
-        inbytesleft: *mut ::size_t,
-        outbuf: *mut *mut ::c_char,
-        outbytesleft: *mut ::size_t,
-    ) -> ::size_t;
-    pub fn iconv_close(cd: iconv_t) -> ::c_int;
+// part of `std` means every Rust program gets it. Additionally, when not built
+// as part of `std`, merely using `libc` on an Apple target will pull in `libiconv`.
+//
+// Therefore, due to these functions very low usage numbers on the platform, we hide it
+// behind a feature flag.
+//
+// Ideally we would have a link modifier to only include these if they are used, but we do not.
+cfg_if! {
+    if #[cfg(feature = "iconv-apple")] {
+        #[link(name = "iconv")]
+        mod iconv;
+        pub use self::iconv::*;
+    }
 }
 
 cfg_if! {

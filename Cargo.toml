@@ -28,6 +28,7 @@ align = []
 rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
 extra_traits = []
 const-extern-fn = []
+iconv-apple = []
 # use_std is deprecated, use `std` instead
 use_std = [ 'std' ]
 
