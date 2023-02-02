@@ -2290,6 +2290,7 @@ fn test_freebsd(target: &str) {
             // Those are private types
             "memory_type" => true,
             "memory_type_list" => true,
+            "pidfh" => true,
 
             _ => false,
         }

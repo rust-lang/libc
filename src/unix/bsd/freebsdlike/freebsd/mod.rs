@@ -1014,6 +1014,11 @@ s! {
     pub struct memory_type_list {
         __priv: [::uintptr_t; 2],
     }
+
+    pub struct pidfh {
+        __priva: [[::uintptr_t; 32]; 8],
+        __privb: [::uintptr_t; 2],
+    }
 }
 
 s_no_extra_traits! {
@@ -4496,6 +4501,17 @@ extern "C" {
     pub fn flopenat(fd: ::c_int, path: *const ::c_char, flags: ::c_int, ...) -> ::c_int;
 
     pub fn getlocalbase() -> *const ::c_char;
+
+    pub fn pidfile_open(
+        path: *const ::c_char,
+        mode: ::mode_t,
+        pidptr: *mut ::pid_t,
+    ) -> *mut ::pidfh;
+    pub fn pidfile_write(path: *mut ::pidfh) -> ::c_int;
+    pub fn pidfile_close(path: *mut ::pidfh) -> ::c_int;
+    pub fn pidfile_remove(path: *mut ::pidfh) -> ::c_int;
+    pub fn pidfile_fileno(path: *const ::pidfh) -> ::c_int;
+    // FIXME: pidfile_signal in due time (both manpage present and updated image snapshot)
 }
 
 #[link(name = "procstat")]
