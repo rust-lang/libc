@@ -1756,6 +1756,12 @@ pause
 pdfork
 pdgetpid
 pdkill
+pidfh
+pidfile_close
+pidfile_fileno
+pidfile_open
+pidfile_remove
+pidfile_write
 pipe2
 popen
 posix_fadvise
