@@ -46,6 +46,8 @@ pub type au_asid_t = ::pid_t;
 
 pub type cpusetid_t = ::c_int;
 
+pub type sctp_assoc_t = u32;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_support_flags {
@@ -1019,6 +1021,110 @@ s! {
         __priva: [[::uintptr_t; 32]; 8],
         __privb: [::uintptr_t; 2],
     }
+
+    pub struct sctp_event {
+        pub se_assoc_id: ::sctp_assoc_t,
+        pub se_type: u16,
+        pub se_on: u8,
+    }
+
+    pub struct sctp_event_subscribe {
+        pub sctp_data_io_event: u8,
+        pub sctp_association_event: u8,
+        pub sctp_address_event: u8,
+        pub sctp_send_failure_event: u8,
+        pub sctp_peer_error_event: u8,
+        pub sctp_shutdown_event: u8,
+        pub sctp_partial_delivery_event: u8,
+        pub sctp_adaptation_layer_event: u8,
+        pub sctp_authentication_event: u8,
+        pub sctp_sender_dry_event: u8,
+        pub sctp_stream_reset_event: u8,
+    }
+
+    pub struct sctp_initmsg {
+        pub sinit_num_ostreams: u16,
+        pub sinit_max_instreams: u16,
+        pub sinit_max_attempts: u16,
+        pub sinit_max_init_timeo: u16,
+    }
+
+    pub struct sctp_sndrcvinfo {
+        pub sinfo_stream: u16,
+        pub sinfo_ssn: u16,
+        pub sinfo_flags: u16,
+        pub sinfo_ppid: u32,
+        pub sinfo_context: u32,
+        pub sinfo_timetolive: u32,
+        pub sinfo_tsn: u32,
+        pub sinfo_cumtsn: u32,
+        pub sinfo_assoc_id: ::sctp_assoc_t,
+        pub sinfo_keynumber: u16,
+        pub sinfo_keynumber_valid: u16,
+        pub __reserve_pad: [[u8; 23]; 4],
+    }
+
+    pub struct sctp_extrcvinfo {
+        pub sinfo_stream: u16,
+        pub sinfo_ssn: u16,
+        pub sinfo_flags: u16,
+        pub sinfo_ppid: u32,
+        pub sinfo_context: u32,
+        pub sinfo_timetolive: u32,
+        pub sinfo_tsn: u32,
+        pub sinfo_cumtsn: u32,
+        pub sinfo_assoc_id: ::sctp_assoc_t,
+        pub serinfo_next_flags: u16,
+        pub serinfo_next_stream: u16,
+        pub serinfo_next_aid: u32,
+        pub serinfo_next_length: u32,
+        pub serinfo_next_ppid: u32,
+        pub sinfo_keynumber: u16,
+        pub sinfo_keynumber_valid: u16,
+        pub __reserve_pad: [[u8; 19]; 4],
+    }
+
+    pub struct sctp_sndinfo {
+        pub snd_sid: u16,
+        pub snd_flags: u16,
+        pub snd_ppid: u32,
+        pub snd_context: u32,
+        pub snd_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_prinfo {
+        pub pr_policy: u16,
+        pub pr_value: u32,
+    }
+
+    pub struct sctp_default_prinfo {
+        pub pr_policy: u16,
+        pub pr_value: u32,
+        pub pr_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_authinfo {
+        pub auth_keynumber: u16,
+    }
+
+    pub struct sctp_rcvinfo {
+        pub rcv_sid: u16,
+        pub rcv_ssn: u16,
+        pub rcv_flags: u16,
+        pub rcv_ppid: u32,
+        pub rcv_tsn: u32,
+        pub rcv_cumtsn: u32,
+        pub rcv_context: u32,
+        pub rcv_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_nxtinfo {
+        pub nxt_sid: u16,
+        pub nxt_flags: u16,
+        pub nxt_ppid: u32,
+        pub nxt_length: u32,
+        pub nxt_assoc_id: ::sctp_assoc_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -1228,6 +1334,27 @@ s_no_extra_traits! {
         pub ifdr_reason: u32,
         pub ifdr_vendor: u32,
         pub ifdr_msg: [::c_char; ::IFDR_MSG_SIZE as usize],
+    }
+
+    #[repr(packed)]
+    pub struct sctphdr {
+        pub src_port: u16,
+        pub dest_port: u16,
+        pub v_tag: u32,
+        pub checksum: u32,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_chunkhdr {
+        pub chunk_type: u8,
+        pub chunk_flags: u8,
+        pub chunk_length: u16,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_paramhdr {
+        pub param_type: u16,
+        pub param_length: u16,
     }
 }
 
@@ -1888,6 +2015,81 @@ cfg_if! {
                 self.ifi_hwassist.hash(state);
                 self.__ifi_epoch.hash(state);
                 self.__ifi_lastchange.hash(state);
+            }
+        }
+
+        impl PartialEq for sctphdr {
+            fn eq(&self, other: &sctphdr) -> bool {
+                return {self.src_port} == {other.src_port} &&
+                {self.dest_port} == {other.dest_port} &&
+                {self.v_tag} == {other.v_tag} &&
+                {self.checksum} == {other.checksum}
+            }
+        }
+        impl Eq for sctphdr {}
+        impl ::fmt::Debug for sctphdr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctphdr")
+                    .field("src_port", &{self.src_port})
+                    .field("dest_port", &{self.dest_port})
+                    .field("v_tag", &{self.v_tag})
+                    .field("checksum", &{self.checksum})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctphdr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.src_port}.hash(state);
+                {self.dest_port}.hash(state);
+                {self.v_tag}.hash(state);
+                {self.checksum}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_chunkhdr {
+            fn eq(&self, other: &sctp_chunkhdr) -> bool {
+                return {self.chunk_type} == {other.chunk_type} &&
+                {self.chunk_flags} == {other.chunk_flags} &&
+                {self.chunk_length} == {other.chunk_length}
+            }
+        }
+        impl Eq for sctp_chunkhdr {}
+        impl ::fmt::Debug for sctp_chunkhdr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_chunkhdr")
+                    .field("chunk_type", &{self.chunk_type})
+                    .field("chunk_flags", &{self.chunk_flags})
+                    .field("chunk_length", &{self.chunk_length})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_chunkhdr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.chunk_type}.hash(state);
+                {self.chunk_flags}.hash(state);
+                {self.chunk_length}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_paramhdr {
+            fn eq(&self, other: &sctp_paramhdr) -> bool {
+                return {self.param_type} == {other.param_type} &&
+                {self.param_length} == {other.param_length}
+            }
+        }
+        impl Eq for sctp_paramhdr {}
+        impl ::fmt::Debug for sctp_paramhdr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_paramhdr")
+                    .field("param_type", &{self.param_type})
+                    .field("param_length", &{self.param_length})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_paramhdr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.param_type}.hash(state);
+                {self.param_length}.hash(state);
             }
         }
     }
@@ -3817,6 +4019,54 @@ pub const CPU_WHICH_JAIL: ::c_int = 5;
 pub const SIGTHR: ::c_int = 32;
 pub const SIGLWP: ::c_int = SIGTHR;
 pub const SIGLIBRT: ::c_int = 33;
+
+// netinet/sctp.h
+pub const SCTP_FUTURE_ASSOC: ::c_int = 0;
+pub const SCTP_CURRENT_ASSOC: ::c_int = 1;
+pub const SCTP_ALL_ASSOC: ::c_int = 2;
+
+pub const SCTP_INIT: ::c_int = 0x0001;
+pub const SCTP_SNDRCV: ::c_int = 0x0002;
+pub const SCTP_EXTRCV: ::c_int = 0x0003;
+pub const SCTP_SNDINFO: ::c_int = 0x0004;
+pub const SCTP_RCVINFO: ::c_int = 0x0005;
+pub const SCTP_NXTINFO: ::c_int = 0x0006;
+pub const SCTP_PRINFO: ::c_int = 0x0007;
+pub const SCTP_AUTHINFO: ::c_int = 0x0008;
+pub const SCTP_DSTADDRV4: ::c_int = 0x0009;
+pub const SCTP_DSTADDRV6: ::c_int = 0x000a;
+
+pub const SCTP_RTOINFO: ::c_int = 0x00000001;
+pub const SCTP_ASSOCINFO: ::c_int = 0x00000002;
+pub const SCTP_INITMSG: ::c_int = 0x00000003;
+pub const SCTP_NODELAY: ::c_int = 0x00000004;
+pub const SCTP_AUTOCLOSE: ::c_int = 0x00000005;
+pub const SCTP_SET_PEER_PRIMARY_ADDR: ::c_int = 0x00000006;
+pub const SCTP_PRIMARY_ADDR: ::c_int = 0x00000007;
+pub const SCTP_ADAPTATION_LAYER: ::c_int = 0x00000008;
+pub const SCTP_ADAPTION_LAYER: ::c_int = 0x00000008;
+pub const SCTP_DISABLE_FRAGMENTS: ::c_int = 0x00000009;
+pub const SCTP_PEER_ADDR_PARAMS: ::c_int = 0x0000000a;
+pub const SCTP_DEFAULT_SEND_PARAM: ::c_int = 0x0000000b;
+pub const SCTP_EVENTS: ::c_int = 0x0000000c;
+pub const SCTP_I_WANT_MAPPED_V4_ADDR: ::c_int = 0x0000000d;
+pub const SCTP_MAXSEG: ::c_int = 0x0000000e;
+pub const SCTP_DELAYED_SACK: ::c_int = 0x0000000f;
+pub const SCTP_FRAGMENT_INTERLEAVE: ::c_int = 0x00000010;
+pub const SCTP_PARTIAL_DELIVERY_POINT: ::c_int = 0x00000011;
+pub const SCTP_AUTH_CHUNK: ::c_int = 0x00000012;
+pub const SCTP_AUTH_KEY: ::c_int = 0x00000013;
+pub const SCTP_HMAC_IDENT: ::c_int = 0x00000014;
+pub const SCTP_AUTH_ACTIVE_KEY: ::c_int = 0x00000015;
+pub const SCTP_AUTH_DELETE_KEY: ::c_int = 0x00000016;
+pub const SCTP_USE_EXT_RCVINFO: ::c_int = 0x00000017;
+pub const SCTP_AUTO_ASCONF: ::c_int = 0x00000018;
+pub const SCTP_MAXBURST: ::c_int = 0x00000019;
+pub const SCTP_MAX_BURST: ::c_int = 0x00000019;
+pub const SCTP_CONTEXT: ::c_int = 0x0000001a;
+pub const SCTP_EXPLICIT_EOR: ::c_int = 0x00000001b;
+pub const SCTP_REUSE_PORT: ::c_int = 0x00000001c;
+pub const SCTP_AUTH_DEACTIVATE_KEY: ::c_int = 0x00000001d;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
