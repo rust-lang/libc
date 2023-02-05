@@ -1125,6 +1125,44 @@ s! {
         pub nxt_length: u32,
         pub nxt_assoc_id: ::sctp_assoc_t,
     }
+
+    pub struct sctp_recvv_rn {
+        pub recvv_rcvinfo: sctp_rcvinfo,
+        pub recvv_nxtinfo: sctp_nxtinfo,
+    }
+
+    pub struct sctp_sendv_spa {
+        pub sendv_flags: u32,
+        pub sendv_sndinfo: sctp_sndinfo,
+        pub sendv_prinfo: sctp_prinfo,
+        pub sendv_authinfo: sctp_authinfo,
+    }
+
+    pub struct sctp_snd_all_completes {
+        pub sall_stream: u16,
+        pub sall_flags: u16,
+        pub sall_ppid: u32,
+        pub sall_context: u32,
+        pub sall_num_sent: u32,
+        pub sall_num_failed: u32,
+    }
+
+    pub struct sctp_pcbinfo {
+        pub ep_count: u32,
+        pub asoc_count: u32,
+        pub laddr_count: u32,
+        pub raddr_count: u32,
+        pub chk_count: u32,
+        pub readq_count: u32,
+        pub free_chunks: u32,
+        pub stream_oque: u32,
+    }
+
+    pub struct sctp_sockstat {
+        pub ss_assoc_id: ::sctp_assoc_t,
+        pub ss_total_sndbuf: u32,
+        pub ss_total_recv_buf: u32,
+    }
 }
 
 s_no_extra_traits! {
@@ -1355,6 +1393,67 @@ s_no_extra_traits! {
     pub struct sctp_paramhdr {
         pub param_type: u16,
         pub param_length: u16,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_gen_error_cause {
+        pub code: u16,
+        pub length: u16,
+        pub info: [u8; 0],
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_cause {
+        pub code: u16,
+        pub length: u16,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_invalid_stream {
+        pub cause: sctp_error_cause,
+        pub stream_id: u16,
+        __reserved: u16,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_missing_param {
+        pub cause: sctp_error_cause,
+        pub num_missing_params: u32,
+        pub tpe: [u8; 0],
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_stale_cookie {
+        pub cause: sctp_error_cause,
+        pub stale_time: u32,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_out_of_resource {
+        pub cause: sctp_error_cause,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_unresolv_addr {
+        pub cause: sctp_error_cause,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_unrecognized_chunk {
+        pub cause: sctp_error_cause,
+        pub ch: sctp_chunkhdr,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_no_user_data {
+        pub cause: sctp_error_cause,
+        pub tsn: u32,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_auth_invalid_hmac {
+        pub cause: sctp_error_cause,
+        pub hmac_id: u16,
     }
 }
 
@@ -2090,6 +2189,226 @@ cfg_if! {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 {self.param_type}.hash(state);
                 {self.param_length}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_gen_error_cause {
+            fn eq(&self, other: &sctp_gen_error_cause) -> bool {
+                return {self.code} == {other.code} &&
+                {self.length} == {other.length} &&
+                {self.info}.iter().zip({other.info}.iter()).all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sctp_gen_error_cause {}
+        impl ::fmt::Debug for sctp_gen_error_cause {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_gen_error_cause")
+                    .field("code", &{self.code})
+                    .field("length", &{self.length})
+                    // FIXME: .field("info", &{self.info})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_gen_error_cause {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.code}.hash(state);
+                {self.length}.hash(state);
+                {self.info}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_cause {
+            fn eq(&self, other: &sctp_error_cause) -> bool {
+                return {self.code} == {other.code} &&
+                {self.length} == {other.length}
+            }
+        }
+        impl Eq for sctp_error_cause {}
+        impl ::fmt::Debug for sctp_error_cause {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_cause")
+                    .field("code", &{self.code})
+                    .field("length", &{self.length})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_cause {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.code}.hash(state);
+                {self.length}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_invalid_stream {
+            fn eq(&self, other: &sctp_error_invalid_stream) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.stream_id} == {other.stream_id}
+            }
+        }
+        impl Eq for sctp_error_invalid_stream {}
+        impl ::fmt::Debug for sctp_error_invalid_stream {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_invalid_stream")
+                    .field("cause", &{self.cause})
+                    .field("stream_id", &{self.stream_id})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_invalid_stream {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.stream_id}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_missing_param {
+            fn eq(&self, other: &sctp_error_missing_param) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.num_missing_params} == {other.num_missing_params} &&
+                {self.tpe}.iter().zip({other.tpe}.iter()).all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sctp_error_missing_param {}
+        impl ::fmt::Debug for sctp_error_missing_param {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_missing_param")
+                    .field("cause", &{self.cause})
+                    .field("num_missing_params", &{self.num_missing_params})
+                    // FIXME: .field("tpe", &{self.tpe})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_missing_param {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.num_missing_params}.hash(state);
+                {self.tpe}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_stale_cookie {
+            fn eq(&self, other: &sctp_error_stale_cookie) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.stale_time} == {other.stale_time}
+            }
+        }
+        impl Eq for sctp_error_stale_cookie {}
+        impl ::fmt::Debug for sctp_error_stale_cookie {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_stale_cookie")
+                    .field("cause", &{self.cause})
+                    .field("stale_time", &{self.stale_time})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_stale_cookie {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.stale_time}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_out_of_resource {
+            fn eq(&self, other: &sctp_error_out_of_resource) -> bool {
+                return {self.cause} == {other.cause}
+            }
+        }
+        impl Eq for sctp_error_out_of_resource {}
+        impl ::fmt::Debug for sctp_error_out_of_resource {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_out_of_resource")
+                    .field("cause", &{self.cause})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_out_of_resource {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_unresolv_addr {
+            fn eq(&self, other: &sctp_error_unresolv_addr) -> bool {
+                return {self.cause} == {other.cause}
+            }
+        }
+        impl Eq for sctp_error_unresolv_addr {}
+        impl ::fmt::Debug for sctp_error_unresolv_addr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_unresolv_addr")
+                    .field("cause", &{self.cause})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_unresolv_addr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_unrecognized_chunk {
+            fn eq(&self, other: &sctp_error_unrecognized_chunk) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.ch} == {other.ch}
+            }
+        }
+        impl Eq for sctp_error_unrecognized_chunk {}
+        impl ::fmt::Debug for sctp_error_unrecognized_chunk {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_unrecognized_chunk")
+                    .field("cause", &{self.cause})
+                    .field("ch", &{self.ch})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_unrecognized_chunk {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.ch}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_no_user_data {
+            fn eq(&self, other: &sctp_error_no_user_data) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.tsn} == {other.tsn}
+            }
+        }
+        impl Eq for sctp_error_no_user_data {}
+        impl ::fmt::Debug for sctp_error_no_user_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_no_user_data")
+                    .field("cause", &{self.cause})
+                    .field("tsn", &{self.tsn})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_no_user_data {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.tsn}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_auth_invalid_hmac {
+            fn eq(&self, other: &sctp_error_auth_invalid_hmac) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.hmac_id} == {other.hmac_id}
+            }
+        }
+        impl Eq for sctp_error_auth_invalid_hmac {}
+        impl ::fmt::Debug for sctp_error_auth_invalid_hmac {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_invalid_hmac")
+                    .field("cause", &{self.cause})
+                    .field("hmac_id", &{self.hmac_id})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_auth_invalid_hmac {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.hmac_id}.hash(state);
             }
         }
     }
@@ -4025,6 +4344,44 @@ pub const SCTP_FUTURE_ASSOC: ::c_int = 0;
 pub const SCTP_CURRENT_ASSOC: ::c_int = 1;
 pub const SCTP_ALL_ASSOC: ::c_int = 2;
 
+pub const SCTP_NO_NEXT_MSG: ::c_int = 0x0000;
+pub const SCTP_NEXT_MSG_AVAIL: ::c_int = 0x0001;
+pub const SCTP_NEXT_MSG_ISCOMPLETE: ::c_int = 0x0002;
+pub const SCTP_NEXT_MSG_IS_UNORDERED: ::c_int = 0x0004;
+pub const SCTP_NEXT_MSG_IS_NOTIFICATION: ::c_int = 0x0008;
+
+pub const SCTP_RECVV_NOINFO: ::c_int = 0;
+pub const SCTP_RECVV_RCVINFO: ::c_int = 1;
+pub const SCTP_RECVV_NXTINFO: ::c_int = 2;
+pub const SCTP_RECVV_RN: ::c_int = 3;
+
+pub const SCTP_SENDV_NOINFO: ::c_int = 0;
+pub const SCTP_SENDV_SNDINFO: ::c_int = 1;
+pub const SCTP_SENDV_PRINFO: ::c_int = 2;
+pub const SCTP_SENDV_AUTHINFO: ::c_int = 3;
+pub const SCTP_SENDV_SPA: ::c_int = 4;
+
+pub const SCTP_SEND_SNDINFO_VALID: ::c_int = 0x00000001;
+pub const SCTP_SEND_PRINFO_VALID: ::c_int = 0x00000002;
+pub const SCTP_SEND_AUTHINFO_VALID: ::c_int = 0x00000004;
+
+pub const SCTP_NOTIFICATION: ::c_int = 0x0010;
+pub const SCTP_COMPLETE: ::c_int = 0x0020;
+pub const SCTP_EOF: ::c_int = 0x0100;
+pub const SCTP_ABORT: ::c_int = 0x0200;
+pub const SCTP_UNORDERED: ::c_int = 0x0400;
+pub const SCTP_ADDR_OVER: ::c_int = 0x0800;
+pub const SCTP_SENDALL: ::c_int = 0x1000;
+pub const SCTP_EOR: ::c_int = 0x2000;
+pub const SCTP_SACK_IMMEDIATELY: ::c_int = 0x4000;
+pub const SCTP_PR_SCTP_NONE: ::c_int = 0x0000;
+pub const SCTP_PR_SCTP_TTL: ::c_int = 0x0001;
+pub const SCTP_PR_SCTP_PRIO: ::c_int = 0x0002;
+pub const SCTP_PR_SCTP_BUF: ::c_int = SCTP_PR_SCTP_PRIO;
+pub const SCTP_PR_SCTP_RTX: ::c_int = 0x0003;
+pub const SCTP_PR_SCTP_MAX: ::c_int = SCTP_PR_SCTP_RTX;
+pub const SCTP_PR_SCTP_ALL: ::c_int = 0x000f;
+
 pub const SCTP_INIT: ::c_int = 0x0001;
 pub const SCTP_SNDRCV: ::c_int = 0x0002;
 pub const SCTP_EXTRCV: ::c_int = 0x0003;
@@ -4188,6 +4545,39 @@ f! {
 safe_f! {
     pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0 && status != 0x13
+    }
+
+    pub {const} fn INVALID_SINFO_FLAG(x: ::c_int) -> bool {
+        (x) & 0xfffffff0 & !(SCTP_EOF | SCTP_ABORT | SCTP_UNORDERED |
+        SCTP_ADDR_OVER | SCTP_SENDALL | SCTP_EOR | SCTP_SACK_IMMEDIATELY) != 0
+    }
+
+    pub {const} fn PR_SCTP_POLICY(x: ::c_int) -> ::c_int {
+        x & 0x0f
+    }
+
+    pub {const} fn PR_SCTP_ENABLED(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) != SCTP_PR_SCTP_NONE && PR_SCTP_POLICY(x) != SCTP_PR_SCTP_ALL
+    }
+
+    pub {const} fn PR_SCTP_TTL_ENABLED(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) == SCTP_PR_SCTP_TTL
+    }
+
+    pub {const} fn PR_SCTP_BUF_ENABLED(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) == SCTP_PR_SCTP_BUF
+    }
+
+    pub {const} fn PR_SCTP_RTX_ENABLED(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) == SCTP_PR_SCTP_RTX
+    }
+
+    pub {const} fn PR_SCTP_INVALID_POLICY(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) > SCTP_PR_SCTP_MAX
+    }
+
+    pub {const} fn PR_SCTP_VALID_POLICY(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) <= SCTP_PR_SCTP_MAX
     }
 }
 
@@ -4666,6 +5056,35 @@ extern "C" {
         val: ::c_ulong,
         uaddr: *mut ::c_void,
         uaddr2: *mut ::c_void,
+    ) -> ::c_int;
+
+    pub fn sctp_peeloff(s: ::c_int, id: ::sctp_assoc_t) -> ::c_int;
+    pub fn sctp_bindx(s: ::c_int, addrs: *mut ::sockaddr, num: ::c_int, tpe: ::c_int) -> ::c_int;
+    pub fn sctp_connectx(
+        s: ::c_int,
+        addrs: *const ::sockaddr,
+        addrcnt: ::c_int,
+        id: *mut ::sctp_assoc_t,
+    ) -> ::c_int;
+    pub fn sctp_getaddrlen(family: ::sa_family_t) -> ::c_int;
+    pub fn sctp_getpaddrs(
+        s: ::c_int,
+        asocid: ::sctp_assoc_t,
+        addrs: *mut *mut ::sockaddr,
+    ) -> ::c_int;
+    pub fn sctp_freepaddrs(addrs: *mut ::sockaddr);
+    pub fn sctp_getladdrs(
+        s: ::c_int,
+        asocid: ::sctp_assoc_t,
+        addrs: *mut *mut ::sockaddr,
+    ) -> ::c_int;
+    pub fn sctp_freeladdrs(addrs: *mut ::sockaddr);
+    pub fn sctp_opt_info(
+        s: ::c_int,
+        id: ::sctp_assoc_t,
+        opt: ::c_int,
+        arg: *mut ::c_void,
+        size: *mut ::socklen_t,
     ) -> ::c_int;
 }
 
