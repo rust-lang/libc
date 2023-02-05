@@ -263,6 +263,8 @@ pub const ICANON: ::tcflag_t = 0x00000002;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
 
+pub const MAP_HUGETLB: ::c_int = 0x80000;
+
 pub const B0: ::speed_t = 0o000000;
 pub const B50: ::speed_t = 0o000001;
 pub const B75: ::speed_t = 0o000002;
