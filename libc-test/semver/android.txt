@@ -3498,6 +3498,7 @@ strcasecmp
 strcasestr
 strcat
 strchr
+strchrnul
 strcmp
 strcoll
 strcpy

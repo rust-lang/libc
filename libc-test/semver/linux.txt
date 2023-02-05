@@ -3383,6 +3383,7 @@ statfs64
 statvfs64
 strcasecmp
 strcasestr
+ctrchrnul
 strncasecmp
 strndup
 strsignal
