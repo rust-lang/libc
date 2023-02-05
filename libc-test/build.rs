@@ -240,6 +240,7 @@ fn test_apple(target: &str) {
         "pthread.h",
         "pthread_spis.h",
         "pthread/introspection.h",
+        "pthread/stack_np.h",
         "pwd.h",
         "regex.h",
         "resolv.h",

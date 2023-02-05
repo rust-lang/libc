@@ -2095,12 +2095,13 @@ pthread_get_stackaddr_np
 pthread_get_stacksize_np
 pthread_getname_np
 pthread_kill
+pthread_main_np
 pthread_mutexattr_getpshared
 pthread_mutexattr_setpshared
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setpshared
 pthread_setname_np
-pthread_main_np
+pthread_stack_frame_decode_np
 ptrace
 pututxline
 pwritev
