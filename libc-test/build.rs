@@ -1935,6 +1935,7 @@ fn test_freebsd(target: &str) {
                 "netdb.h",
                 "netinet/ip.h",
                 "netinet/in.h",
+                "netinet/sctp.h",
                 "netinet/tcp.h",
                 "netinet/udp.h",
                 "poll.h",
@@ -2408,6 +2409,8 @@ fn test_freebsd(target: &str) {
             // `snap_time` is a `long double`, but it's a nightmare to bind correctly in rust
             // for the moment, so it's a best effort thing...
             ("statinfo", "snap_time") => true,
+            ("sctp_sndrcvinfo", "__reserve_pad") => true,
+            ("sctp_extrcvinfo", "__reserve_pad") => true,
 
             _ => false,
         }
