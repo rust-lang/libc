@@ -1006,6 +1006,7 @@ cfg_if! {
         pub const TCP_CM_INQ: ::c_int = TCP_INQ;
         // NOTE: Some CI images doesn't have this option yet.
         // pub const TCP_TX_DELAY: ::c_int = 37;
+        pub const TCP_MD5SIG_MAXKEYLEN: usize = 80;
     }
 }
 
