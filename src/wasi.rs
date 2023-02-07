@@ -434,174 +434,106 @@ pub const NOEXPR: ::nl_item = 0x50001;
 pub const YESSTR: ::nl_item = 0x50002;
 pub const NOSTR: ::nl_item = 0x50003;
 
-cfg_if! {
-    if #[cfg(feature = "wasi-emulated-mman")] {
-        // wasi-libc @ 5d8a140, musl 1.2.3: libc-top-half/musl/include/sys/mman.h
+pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
-        pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
+pub const MAP_SHARED: ::c_int = 0x01;
+pub const MAP_PRIVATE: ::c_int = 0x02;
+pub const MAP_SHARED_VALIDATE: ::c_int = 0x03;
+pub const MAP_TYPE: ::c_int = 0x0f;
+pub const MAP_FIXED: ::c_int = 0x10;
+pub const MAP_ANON: ::c_int = 0x20;
+pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
+pub const MAP_NORESERVE: ::c_int = 0x4000;
+pub const MAP_GROWSDOWN: ::c_int = 0x0100;
+pub const MAP_DENYWRITE: ::c_int = 0x0800;
+pub const MAP_EXECUTABLE: ::c_int = 0x1000;
+pub const MAP_LOCKED: ::c_int = 0x2000;
+pub const MAP_POPULATE: ::c_int = 0x8000;
+pub const MAP_NONBLOCK: ::c_int = 0x10000;
+pub const MAP_STACK: ::c_int = 0x20000;
+pub const MAP_HUGETLB: ::c_int = 0x40000;
+pub const MAP_SYNC: ::c_int = 0x80000;
+pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
+pub const MAP_FILE: ::c_int = 0;
 
-        pub const MAP_SHARED: ::c_int = 0x01;
-        pub const MAP_PRIVATE: ::c_int = 0x02;
-        pub const MAP_SHARED_VALIDATE: ::c_int = 0x03;
-        pub const MAP_TYPE: ::c_int = 0x0f;
-        pub const MAP_FIXED: ::c_int = 0x10;
-        pub const MAP_ANON: ::c_int = 0x20;
-        pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
-        pub const MAP_NORESERVE: ::c_int = 0x4000;
-        pub const MAP_GROWSDOWN: ::c_int = 0x0100;
-        pub const MAP_DENYWRITE: ::c_int = 0x0800;
-        pub const MAP_EXECUTABLE: ::c_int = 0x1000;
-        pub const MAP_LOCKED: ::c_int = 0x2000;
-        pub const MAP_POPULATE: ::c_int = 0x8000;
-        pub const MAP_NONBLOCK: ::c_int = 0x10000;
-        pub const MAP_STACK: ::c_int = 0x20000;
-        pub const MAP_HUGETLB: ::c_int = 0x40000;
-        pub const MAP_SYNC: ::c_int = 0x80000;
-        pub const MAP_FIXED_NOREPLACE: ::c_int = 0x100000;
-        pub const MAP_FILE: ::c_int = 0;
+pub const MAP_HUGE_SHIFT: ::c_int = 26;
+pub const MAP_HUGE_MASK: ::c_int = 0x3f;
+pub const MAP_HUGE_16KB: ::c_int = 14 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_64KB: ::c_int = 16 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_512KB: ::c_int = 19 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_1MB: ::c_int = 20 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_2MB: ::c_int = 21 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_8MB: ::c_int = 23 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_16MB: ::c_int = 24 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_32MB: ::c_int = 25 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_256MB: ::c_int = 28 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_512MB: ::c_int = 29 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_1GB: ::c_int = 30 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_2GB: ::c_int = 31 << MAP_HUGE_SHIFT;
+pub const MAP_HUGE_16GB: ::c_int = 34 << MAP_HUGE_SHIFT;
 
-        pub const MAP_HUGE_SHIFT: ::c_int = 26;
-        pub const MAP_HUGE_MASK: ::c_int = 0x3f;
-        pub const MAP_HUGE_16KB: ::c_int = 14 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_64KB: ::c_int = 16 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_512KB: ::c_int = 19 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_1MB: ::c_int = 20 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_2MB: ::c_int = 21 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_8MB: ::c_int = 23 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_16MB: ::c_int = 24 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_32MB: ::c_int = 25 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_256MB: ::c_int = 28 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_512MB: ::c_int = 29 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_1GB: ::c_int = 30 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_2GB: ::c_int = 31 << MAP_HUGE_SHIFT;
-        pub const MAP_HUGE_16GB: ::c_int = 34 << MAP_HUGE_SHIFT;
+pub const PROT_NONE: ::c_int = 0;
+pub const PROT_READ: ::c_int = 1;
+pub const PROT_WRITE: ::c_int = 2;
+pub const PROT_EXEC: ::c_int = 4;
+pub const PROT_GROWSDOWN: ::c_int = 0x01000000;
+pub const PROT_GROWSUP: ::c_int = 0x02000000;
 
-        pub const PROT_NONE: ::c_int = 0;
-        pub const PROT_READ: ::c_int = 1;
-        pub const PROT_WRITE: ::c_int = 2;
-        pub const PROT_EXEC: ::c_int = 4;
-        pub const PROT_GROWSDOWN: ::c_int = 0x01000000;
-        pub const PROT_GROWSUP: ::c_int = 0x02000000;
+pub const MS_ASYNC: ::c_int = 1;
+pub const MS_INVALIDATE: ::c_int = 2;
+pub const MS_SYNC: ::c_int = 4;
 
-        pub const MS_ASYNC: ::c_int = 1;
-        pub const MS_INVALIDATE: ::c_int = 2;
-        pub const MS_SYNC: ::c_int = 4;
+pub const MCL_CURRENT: ::c_int = 1;
+pub const MCL_FUTURE: ::c_int = 2;
+pub const MCL_ONFAULT: ::c_int = 4;
 
-        pub const MCL_CURRENT: ::c_int = 1;
-        pub const MCL_FUTURE: ::c_int = 2;
-        pub const MCL_ONFAULT: ::c_int = 4;
+pub const POSIX_MADV_NORMAL: ::c_int = 0;
+pub const POSIX_MADV_RANDOM: ::c_int = 1;
+pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
+pub const POSIX_MADV_WILLNEED: ::c_int = 3;
+pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
-        pub const POSIX_MADV_NORMAL: ::c_int = 0;
-        pub const POSIX_MADV_RANDOM: ::c_int = 1;
-        pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
-        pub const POSIX_MADV_WILLNEED: ::c_int = 3;
-        pub const POSIX_MADV_DONTNEED: ::c_int = 4;
+// #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
+pub const MADV_NORMAL: ::c_int = 0;
+pub const MADV_RANDOM: ::c_int = 1;
+pub const MADV_SEQUENTIAL: ::c_int = 2;
+pub const MADV_WILLNEED: ::c_int = 3;
+pub const MADV_DONTNEED: ::c_int = 4;
+pub const MADV_FREE: ::c_int = 8;
+pub const MADV_REMOVE: ::c_int = 9;
+pub const MADV_DONTFORK: ::c_int = 10;
+pub const MADV_DOFORK: ::c_int = 11;
+pub const MADV_MERGEABLE: ::c_int = 12;
+pub const MADV_UNMERGEABLE: ::c_int = 13;
+pub const MADV_HUGEPAGE: ::c_int = 14;
+pub const MADV_NOHUGEPAGE: ::c_int = 15;
+pub const MADV_DONTDUMP: ::c_int = 16;
+pub const MADV_DODUMP: ::c_int = 17;
+pub const MADV_WIPEONFORK: ::c_int = 18;
+pub const MADV_KEEPONFORK: ::c_int = 19;
+pub const MADV_COLD: ::c_int = 20;
+pub const MADV_PAGEOUT: ::c_int = 21;
+pub const MADV_HWPOISON: ::c_int = 100;
+pub const MADV_SOFT_OFFLINE: ::c_int = 101;
+// #endif
 
-        // #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
-        pub const MADV_NORMAL: ::c_int = 0;
-        pub const MADV_RANDOM: ::c_int = 1;
-        pub const MADV_SEQUENTIAL: ::c_int = 2;
-        pub const MADV_WILLNEED: ::c_int = 3;
-        pub const MADV_DONTNEED: ::c_int = 4;
-        pub const MADV_FREE: ::c_int = 8;
-        pub const MADV_REMOVE: ::c_int = 9;
-        pub const MADV_DONTFORK: ::c_int = 10;
-        pub const MADV_DOFORK: ::c_int = 11;
-        pub const MADV_MERGEABLE: ::c_int = 12;
-        pub const MADV_UNMERGEABLE: ::c_int = 13;
-        pub const MADV_HUGEPAGE: ::c_int = 14;
-        pub const MADV_NOHUGEPAGE: ::c_int = 15;
-        pub const MADV_DONTDUMP: ::c_int = 16;
-        pub const MADV_DODUMP: ::c_int = 17;
-        pub const MADV_WIPEONFORK: ::c_int = 18;
-        pub const MADV_KEEPONFORK: ::c_int = 19;
-        pub const MADV_COLD: ::c_int = 20;
-        pub const MADV_PAGEOUT: ::c_int = 21;
-        pub const MADV_HWPOISON: ::c_int = 100;
-        pub const MADV_SOFT_OFFLINE: ::c_int = 101;
-        // #endif
+// #ifdef _GNU_SOURCE
+pub const MREMAP_MAYMOVE: ::c_int = 1;
+pub const MREMAP_FIXED: ::c_int = 2;
+pub const MREMAP_DONTUNMAP: ::c_int = 4;
 
-        // #ifdef _GNU_SOURCE
-        pub const MREMAP_MAYMOVE: ::c_int = 1;
-        pub const MREMAP_FIXED: ::c_int = 2;
-        pub const MREMAP_DONTUNMAP: ::c_int = 4;
+pub const MLOCK_ONFAULT: ::c_uint = 0x01;
 
-        pub const MLOCK_ONFAULT: ::c_uint = 0x01;
+pub const MFD_CLOEXEC: ::c_uint = 0x0001;
+pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
+pub const MFD_HUGETLB: ::c_uint = 0x0004;
+// #endif
 
-        pub const MFD_CLOEXEC: ::c_uint = 0x0001;
-        pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
-        pub const MFD_HUGETLB: ::c_uint = 0x0004;
-        // #endif
-
-        // Included for future reference (for mmap64):
-        // #if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
-        // #define off64_t off_t
-        // #define mmap64 mmap
-        // #endif
-
-        #[cfg_attr(
-            feature = "rustc-dep-of-std",
-            link(
-                name = "c",
-                kind = "static",
-                modifiers = "-bundle",
-                cfg(target_feature = "crt-static")
-            )
-        )]
-        #[cfg_attr(
-            feature = "rustc-dep-of-std",
-            link(name = "c", cfg(not(target_feature = "crt-static")))
-        )]
-        extern "C" {
-            pub fn mmap(
-                addr: *mut ::c_void,
-                len: ::size_t,
-                prot: ::c_int,
-                flags: ::c_int,
-                fd: ::c_int,
-                offset: off_t,
-            ) -> *mut ::c_void;
-            pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
-
-            pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
-            pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
-
-            pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
-
-            pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
-            pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
-            pub fn mlockall(flags: ::c_int) -> ::c_int;
-            pub fn munlockall() -> ::c_int;
-
-            // #ifdef _GNU_SOURCE
-            pub fn mremap(
-                addr: *mut ::c_void,
-                len: ::size_t,
-                new_len: ::size_t,
-                flags: ::c_int,
-                ...
-            ) -> *mut ::c_void;
-            pub fn remap_file_pages(
-                addr: *mut ::c_void,
-                size: ::size_t,
-                prot: ::c_int,
-                pgoff: ::size_t,
-                flags: ::c_int,
-            ) -> ::c_int;
-            pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
-            pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
-            // #endif
-
-            // #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
-            pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
-            pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar) -> ::c_int;
-            // #endif
-
-            pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
-            pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
-        }
-    }
-}
+// Included for future reference (for mmap64):
+// #if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
+// #define off64_t off_t
+// #define mmap64 mmap
+// #endif
 
 #[cfg_attr(
     feature = "rustc-dep-of-std",
@@ -991,4 +923,51 @@ extern "C" {
     pub fn arc4random() -> u32;
     pub fn arc4random_buf(a: *mut c_void, b: size_t);
     pub fn arc4random_uniform(a: u32) -> u32;
+
+    pub fn mmap(
+        addr: *mut ::c_void,
+        len: ::size_t,
+        prot: ::c_int,
+        flags: ::c_int,
+        fd: ::c_int,
+        offset: off_t,
+    ) -> *mut ::c_void;
+    pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
+
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
+    pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
+
+    pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
+
+    pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
+    pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
+    pub fn mlockall(flags: ::c_int) -> ::c_int;
+    pub fn munlockall() -> ::c_int;
+
+    // #ifdef _GNU_SOURCE
+    pub fn mremap(
+        addr: *mut ::c_void,
+        len: ::size_t,
+        new_len: ::size_t,
+        flags: ::c_int,
+        ...
+    ) -> *mut ::c_void;
+    pub fn remap_file_pages(
+        addr: *mut ::c_void,
+        size: ::size_t,
+        prot: ::c_int,
+        pgoff: ::size_t,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn mlock2(addr: *const ::c_void, len: ::size_t, flags: ::c_uint) -> ::c_int;
+    // #endif
+
+    // #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
+    pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
+    pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar) -> ::c_int;
+    // #endif
+
+    pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
+    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 }
