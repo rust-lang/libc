@@ -3473,7 +3473,7 @@ pub const FUTEX_OP_CMP_LE: ::c_int = 3;
 pub const FUTEX_OP_CMP_GT: ::c_int = 4;
 pub const FUTEX_OP_CMP_GE: ::c_int = 5;
 
-pub const fn FUTEX_OP(op: ::c_int, oparg: ::c_int, cmp: ::c_int, cmparg: ::c_int) -> ::c_int {
+pub fn FUTEX_OP(op: ::c_int, oparg: ::c_int, cmp: ::c_int, cmparg: ::c_int) -> ::c_int {
     ((op & 0xf) << 28) | ((cmp & 0xf) << 24) | ((oparg & 0xfff) << 12) | (cmparg & 0xfff)
 }
 
