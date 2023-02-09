@@ -2292,6 +2292,7 @@ fn test_freebsd(target: &str) {
             "memory_type" => true,
             "memory_type_list" => true,
             "pidfh" => true,
+            "sctp_gen_error_cause" | "sctp_error_missing_param" => true,
 
             _ => false,
         }
