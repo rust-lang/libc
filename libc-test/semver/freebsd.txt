@@ -2066,6 +2066,7 @@ sysctlbyname
 sysctlnametomib
 tcp_fastopen
 tcp_function_set
+tcp_info
 telldir
 thr_kill
 thr_kill2

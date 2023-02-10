@@ -996,6 +996,68 @@ s! {
         pub pcbcnt: u32,
     }
 
+    pub struct tcp_info {
+        pub tcpi_state: u8,
+        pub __tcpi_ca_state: u8,
+        pub __tcpi_retransmits: u8,
+        pub __tcpi_probes: u8,
+        pub __tcpi_backoff: u8,
+        pub tcpi_options: u8,
+        pub tcp_snd_wscale: u8,
+        pub tcp_rcv_wscale: u8,
+        pub tcpi_rto: u32,
+        pub __tcpi_ato: u32,
+        pub tcpi_snd_mss: u32,
+        pub tcpi_rcv_mss: u32,
+        pub __tcpi_unacked: u32,
+        pub __tcpi_sacked: u32,
+        pub __tcpi_lost: u32,
+        pub __tcpi_retrans: u32,
+        pub __tcpi_fackets: u32,
+        pub __tcpi_last_data_sent: u32,
+        pub __tcpi_last_ack_sent: u32,
+        pub tcpi_last_data_recv: u32,
+        pub __tcpi_last_ack_recv: u32,
+        pub __tcpi_pmtu: u32,
+        pub __tcpi_rcv_ssthresh: u32,
+        pub tcpi_rtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub __tcpi_advmss: u32,
+        pub __tcpi_reordering: u32,
+        pub __tcpi_rcv_rtt: u32,
+        pub tcpi_rcv_space: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_snd_bwnd: u32,
+        pub tcpi_snd_nxt: u32,
+        pub tcpi_rcv_nxt: u32,
+        pub tcpi_toe_tid: u32,
+        pub tcpi_snd_rexmitpack: u32,
+        pub tcpi_rcv_ooopack: u32,
+        pub tcpi_snd_zerowin: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_delivered_ce: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_received_ce: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_e1_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_e0_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_ce_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_e1_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_e0_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_ce_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_pad: [u32; 19],
+        #[cfg(not(freebsd14))]
+        pub __tcpi_pad: [u32; 26],
+    }
+
     pub struct _umtx_time {
         pub _timeout: ::timespec,
         pub _flags: u32,
