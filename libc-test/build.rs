@@ -2325,6 +2325,14 @@ fn test_freebsd(target: &str) {
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" => true,
 
+            // Those introduced in FreeBSD 12.
+            "clock_nanosleep" | "getrandom" | "elf_aux_info" | "setproctitle_fast"
+            | "timingsafe_bcmp" | "timingsafe_memcmp"
+                if Some(12) > freebsd_ver =>
+            {
+                true
+            }
+
             // Those are introduced in FreeBSD 14.
             "sched_getaffinity" | "sched_setaffinity" | "sched_getcpu"
                 if Some(14) > freebsd_ver =>
@@ -2336,7 +2344,9 @@ fn test_freebsd(target: &str) {
             "SOCKCRED2SIZE" if Some(13) > freebsd_ver => true,
 
             // Those are not available in FreeBSD 12.
-            "memfd_create" | "shm_create_largepage" | "shm_rename" if Some(13) > freebsd_ver => {
+            "memfd_create" | "shm_create_largepage" | "shm_rename" | "getentropy" | "eventfd"
+                if Some(13) > freebsd_ver =>
+            {
                 true
             }
 
