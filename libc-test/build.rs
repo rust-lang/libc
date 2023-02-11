@@ -2074,6 +2074,12 @@ fn test_freebsd(target: &str) {
             // These constants were introduced in FreeBSD 13:
             "EFD_CLOEXEC" | "EFD_NONBLOCK" | "EFD_SEMAPHORE" if Some(13) > freebsd_ver => true,
 
+            // This constant was introduced in FreeBSD 12:
+            "O_RESOLVE_BENEATH" if Some(12) > freebsd_ver => true,
+
+            // These constants were introduced in FreeBSD 13:
+            "O_DSYNC" | "O_PATH" | "O_EMPTY_PATH" if Some(13) > freebsd_ver => true,
+
             // FIXME: These are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
