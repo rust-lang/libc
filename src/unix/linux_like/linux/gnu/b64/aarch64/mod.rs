@@ -590,6 +590,13 @@ pub const PR_PAC_APDAKEY: ::c_ulong = 1 << 2;
 pub const PR_PAC_APDBKEY: ::c_ulong = 1 << 3;
 pub const PR_PAC_APGAKEY: ::c_ulong = 1 << 4;
 
+pub const PR_SME_SET_VL: ::c_int = 63;
+pub const PR_SME_GET_VL: ::c_int = 64;
+pub const PR_SME_VL_LEN_MAX: ::c_int = 0xffff;
+
+pub const PR_SME_SET_VL_INHERIT: ::c_ulong = 1 << 17;
+pub const PR_SME_SET_VL_ONE_EXEC: ::c_ulong = 1 << 18;
+
 // Syscall table
 pub const SYS_io_setup: ::c_long = 0;
 pub const SYS_io_destroy: ::c_long = 1;
