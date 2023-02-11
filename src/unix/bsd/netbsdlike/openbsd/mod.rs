@@ -1628,6 +1628,49 @@ pub const EPROC_SLEADER: i32 = 0x02; // session leader
 pub const EPROC_UNVEIL: i32 = 0x04; // has unveil settings
 pub const EPROC_LKUNVEIL: i32 = 0x08; // unveil is locked
 
+// Flags for chflags(2)
+pub const UF_SETTABLE: ::c_uint = 0x0000ffff;
+pub const UF_NODUMP: ::c_uint = 0x00000001;
+pub const UF_IMMUTABLE: ::c_uint = 0x00000002;
+pub const UF_APPEND: ::c_uint = 0x00000004;
+pub const UF_OPAQUE: ::c_uint = 0x00000008;
+pub const SF_SETTABLE: ::c_uint = 0xffff0000;
+pub const SF_ARCHIVED: ::c_uint = 0x00010000;
+pub const SF_IMMUTABLE: ::c_uint = 0x00020000;
+pub const SF_APPEND: ::c_uint = 0x00040000;
+
+// sys/mount.h
+pub const MNT_NOPERM: ::c_int = 0x00000020;
+pub const MNT_WXALLOWED: ::c_int = 0x00000800;
+pub const MNT_EXRDONLY: ::c_int = 0x00000080;
+pub const MNT_DEFEXPORTED: ::c_int = 0x00000200;
+pub const MNT_EXPORTANON: ::c_int = 0x00000400;
+pub const MNT_ROOTFS: ::c_int = 0x00004000;
+pub const MNT_NOATIME: ::c_int = 0x00008000;
+pub const MNT_DELEXPORT: ::c_int = 0x00020000;
+pub const MNT_STALLED: ::c_int = 0x00100000;
+pub const MNT_SWAPPABLE: ::c_int = 0x00200000;
+pub const MNT_WANTRDWR: ::c_int = 0x02000000;
+pub const MNT_SOFTDEP: ::c_int = 0x04000000;
+pub const MNT_DOOMED: ::c_int = 0x08000000;
+
+// For use with vfs_fsync and getfsstat
+pub const MNT_WAIT: ::c_int = 1;
+pub const MNT_NOWAIT: ::c_int = 2;
+pub const MNT_LAZY: ::c_int = 3;
+
+pub const LC_COLLATE_MASK: ::c_int = 1 << ::LC_COLLATE;
+pub const LC_CTYPE_MASK: ::c_int = 1 << ::LC_CTYPE;
+pub const LC_MONETARY_MASK: ::c_int = 1 << ::LC_MONETARY;
+pub const LC_NUMERIC_MASK: ::c_int = 1 << ::LC_NUMERIC;
+pub const LC_TIME_MASK: ::c_int = 1 << ::LC_TIME;
+pub const LC_MESSAGES_MASK: ::c_int = 1 << ::LC_MESSAGES;
+
+const _LC_LAST: ::c_int = 7;
+pub const LC_ALL_MASK: ::c_int = (1 << _LC_LAST) - 2;
+
+pub const LC_GLOBAL_LOCALE: ::locale_t = -1isize as ::locale_t;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -1683,6 +1726,16 @@ safe_f! {
 
     pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         (status & 0o177777) == 0o177777
+    }
+
+    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+        let major = major as ::dev_t;
+        let minor = minor as ::dev_t;
+        let mut dev = 0;
+        dev |= (major & 0xff) << 8;
+        dev |= minor & 0xff;
+        dev |= (minor & 0xffff00) << 8;
+        dev
     }
 }
 
@@ -1769,7 +1822,6 @@ extern "C" {
         newp: *mut ::c_void,
         newlen: ::size_t,
     ) -> ::c_int;
-    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
     pub fn ptrace(request: ::c_int, pid: ::pid_t, addr: caddr_t, data: ::c_int) -> ::c_int;
@@ -1835,6 +1887,8 @@ extern "C" {
         timeout: *const ::timespec,
         uaddr2: *mut u32,
     ) -> ::c_int;
+
+    pub fn mimmutable(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 }
 
 #[link(name = "execinfo")]
@@ -1859,6 +1913,8 @@ cfg_if! {
             // these functions use statfs which uses the union mount_info:
             pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
             pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
+            pub fn getmntinfo(mntbufp: *mut *mut ::statfs, flags: ::c_int) -> ::c_int;
+            pub fn getfsstat(buf: *mut statfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
         }
     }
 }

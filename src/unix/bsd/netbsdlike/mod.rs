@@ -419,6 +419,11 @@ pub const MADV_WILLNEED: ::c_int = 3;
 pub const MADV_DONTNEED: ::c_int = 4;
 pub const MADV_FREE: ::c_int = 6;
 
+// sys/fstypes.h in NetBSD, or sys/mount.h in OpenBSD
+pub const MNT_NODEV: ::c_int = 0x00000010;
+pub const MNT_LOCAL: ::c_int = 0x00001000;
+pub const MNT_QUOTA: ::c_int = 0x00002000;
+
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_LOCAL: ::c_int = 1;
 pub const AF_UNIX: ::c_int = AF_LOCAL;
@@ -639,17 +644,6 @@ pub const TIOCM_DSR: ::c_int = 0o0400;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
-// Flags for chflags(2)
-pub const UF_SETTABLE: ::c_ulong = 0x0000ffff;
-pub const UF_NODUMP: ::c_ulong = 0x00000001;
-pub const UF_IMMUTABLE: ::c_ulong = 0x00000002;
-pub const UF_APPEND: ::c_ulong = 0x00000004;
-pub const UF_OPAQUE: ::c_ulong = 0x00000008;
-pub const SF_SETTABLE: ::c_ulong = 0xffff0000;
-pub const SF_ARCHIVED: ::c_ulong = 0x00010000;
-pub const SF_IMMUTABLE: ::c_ulong = 0x00020000;
-pub const SF_APPEND: ::c_ulong = 0x00040000;
-
 pub const TIMER_ABSTIME: ::c_int = 1;
 
 #[link(name = "util")]
@@ -749,6 +743,10 @@ extern "C" {
     pub fn gethostid() -> ::c_long;
     pub fn sethostid(hostid: ::c_long) -> ::c_int;
     pub fn ftok(path: *const ::c_char, id: ::c_int) -> ::key_t;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }
 
 cfg_if! {

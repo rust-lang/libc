@@ -152,6 +152,8 @@ aligned_free
 atexit
 atof
 atoi
+atol
+atoll
 bind
 c_char
 c_double
@@ -261,6 +263,8 @@ popen
 printf
 ptrdiff_t
 putchar
+putenv
+putenv_s
 puts
 raise
 rand
@@ -305,7 +309,9 @@ strtod
 strtof
 strtok
 strtol
+strtoll
 strtoul
+strtoull
 strxfrm
 system
 time
@@ -340,6 +346,8 @@ wexecve
 wexecvp
 wexecvpe
 wopen
+wputenv
+wputenv_s
 write
 wrmdir
 wsetlocale

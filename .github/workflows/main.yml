@@ -7,10 +7,13 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   docker_linux_tier1:
     name: Docker Linux Tier1
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
       matrix:
@@ -27,7 +30,7 @@ jobs:
 
   macos:
     name: macOS
-    runs-on: macos-11
+    runs-on: macos-12
     strategy:
       fail-fast: true
       matrix:
@@ -43,7 +46,7 @@ jobs:
 
   windows:
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OS: windows
     strategy:
@@ -76,7 +79,7 @@ jobs:
 
   style_check:
     name: Style check
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Setup Rust toolchain

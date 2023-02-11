@@ -20,6 +20,7 @@ LIO_WRITE
 PF_IB
 PF_MPLS
 PF_XDP
+PIDFD_NONBLOCK
 PR_SET_VMA
 PR_SET_VMA_ANON_NAME
 adjtimex
@@ -48,3 +49,10 @@ process_vm_writev
 pwritev64
 reallocarray
 timex
+euidaccess
+eaccess
+asctime_r
+strftime
+strptime
+dirname
+basename

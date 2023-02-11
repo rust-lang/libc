@@ -16,13 +16,13 @@ fi
 rustup component add rustc-dev llvm-tools-preview
 
 # Should update the nightly version in bors CI config if we touch this.
-cargo install semverver --version=0.1.48
+cargo install semverver --version=0.1.50
 
 TARGETS=
 case "${OS}" in
     *linux*)
         TARGETS="\
-aarch64-fuchsia \
+aarch64-unknown-fuchsia \
 aarch64-linux-android \
 aarch64-unknown-linux-gnu \
 aarch64-unknown-linux-musl \
@@ -40,7 +40,7 @@ x86_64-unknown-linux-gnu \
 x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
 x86_64-pc-solaris \
-x86_64-fuchsia \
+x86_64-unknown-fuchsia \
 x86_64-pc-windows-gnu \
 x86_64-unknown-linux-gnux32 \
 x86_64-unknown-redox \

@@ -53,6 +53,8 @@ pub type host_info64_t = *mut integer_t;
 pub type processor_flavor_t = ::c_int;
 pub type thread_flavor_t = natural_t;
 pub type thread_inspect_t = ::mach_port_t;
+pub type thread_act_t = ::mach_port_t;
+pub type thread_act_array_t = *mut ::thread_act_t;
 pub type policy_t = ::c_int;
 pub type mach_vm_address_t = u64;
 pub type mach_vm_offset_t = u64;
@@ -63,6 +65,9 @@ pub type memory_object_t = ::mach_port_t;
 pub type memory_object_offset_t = ::c_ulonglong;
 pub type vm_inherit_t = ::c_uint;
 pub type vm_prot_t = ::c_int;
+
+pub type ledger_t = ::mach_port_t;
+pub type ledger_array_t = *mut ::ledger_t;
 
 pub type iconv_t = *mut ::c_void;
 
@@ -114,6 +119,15 @@ pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
 
 pub type pthread_introspection_hook_t =
     extern "C" fn(event: ::c_uint, thread: ::pthread_t, addr: *mut ::c_void, size: ::size_t);
+pub type pthread_jit_write_callback_t = ::Option<extern "C" fn(ctx: *mut ::c_void) -> ::c_int>;
+
+pub type os_unfair_lock = os_unfair_lock_s;
+pub type os_unfair_lock_t = *mut os_unfair_lock;
+
+pub type os_log_t = *mut ::c_void;
+pub type os_log_type_t = u8;
+pub type os_signpost_id_t = u64;
+pub type os_signpost_type_t = u8;
 
 pub type vm_statistics_t = *mut vm_statistics;
 pub type vm_statistics_data_t = vm_statistics;
@@ -121,6 +135,7 @@ pub type vm_statistics64_t = *mut vm_statistics64;
 pub type vm_statistics64_data_t = vm_statistics64;
 
 pub type task_t = ::mach_port_t;
+pub type task_inspect_t = ::mach_port_t;
 
 pub type sysdir_search_path_enumeration_state = ::c_uint;
 
@@ -130,6 +145,9 @@ pub type CCRNGStatus = ::CCCryptorStatus;
 
 pub type copyfile_state_t = *mut ::c_void;
 pub type copyfile_flags_t = u32;
+
+pub type attrgroup_t = u32;
+pub type vol_capabilities_set_t = [u32; 4];
 
 deprecated_mach! {
     pub type mach_timebase_info_data_t = mach_timebase_info;
@@ -975,6 +993,39 @@ s! {
         pub uuid: ::uuid_t,
         pub offset: u32,
     }
+
+    pub struct attrlist {
+        pub bitmapcount: ::c_ushort,
+        pub reserved: u16,
+        pub commonattr: attrgroup_t,
+        pub volattr: attrgroup_t,
+        pub dirattr: attrgroup_t,
+        pub fileattr: attrgroup_t,
+        pub forkattr: attrgroup_t,
+    }
+
+    pub struct attrreference_t {
+        pub attr_dataoffset: i32,
+        pub attr_length: u32,
+    }
+
+    pub struct vol_capabilities_attr_t {
+        pub capabilities: vol_capabilities_set_t,
+        pub valid: vol_capabilities_set_t,
+    }
+
+    pub struct attribute_set_t {
+        pub commonattr: attrgroup_t,
+        pub volattr: attrgroup_t,
+        pub dirattr: attrgroup_t,
+        pub fileattr: attrgroup_t,
+        pub forkattr: attrgroup_t,
+    }
+
+    pub struct vol_attributes_attr_t {
+        pub validattr: attribute_set_t,
+        pub nativeattr: attribute_set_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -1045,7 +1096,8 @@ s_no_extra_traits! {
         pub f_fstypename: [::c_char; 16],
         pub f_mntonname: [::c_char; 1024],
         pub f_mntfromname: [::c_char; 1024],
-        pub f_reserved: [u32; 8],
+        pub f_flags_ext: u32,
+        pub f_reserved: [u32; 7],
     }
 
     pub struct dirent {
@@ -1250,6 +1302,10 @@ s_no_extra_traits! {
         pub l2p_flags: ::c_uint,
         pub l2p_contigbytes: ::off_t,
         pub l2p_devoffset: ::off_t,
+    }
+
+    pub struct os_unfair_lock_s {
+        _os_unfair_lock_opaque: u32,
     }
 }
 
@@ -2532,6 +2588,27 @@ cfg_if! {
                 l2p_devoffset.hash(state);
             }
         }
+        impl PartialEq for os_unfair_lock {
+            fn eq(&self, other: &os_unfair_lock) -> bool {
+                self._os_unfair_lock_opaque == other._os_unfair_lock_opaque
+            }
+        }
+
+        impl Eq for os_unfair_lock {}
+
+        impl ::fmt::Debug for os_unfair_lock {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("os_unfair_lock")
+                    .field("_os_unfair_lock_opaque", &self._os_unfair_lock_opaque)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for os_unfair_lock {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self._os_unfair_lock_opaque.hash(state);
+            }
+        }
     }
 }
 
@@ -2617,7 +2694,11 @@ pub const ABMON_11: ::nl_item = 43;
 pub const ABMON_12: ::nl_item = 44;
 
 pub const CLOCK_REALTIME: ::clockid_t = 0;
+pub const CLOCK_MONOTONIC_RAW: ::clockid_t = 4;
+pub const CLOCK_MONOTONIC_RAW_APPROX: ::clockid_t = 5;
 pub const CLOCK_MONOTONIC: ::clockid_t = 6;
+pub const CLOCK_UPTIME_RAW: ::clockid_t = 8;
+pub const CLOCK_UPTIME_RAW_APPROX: ::clockid_t = 9;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 12;
 pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 16;
 
@@ -2647,6 +2728,8 @@ pub const EOF: ::c_int = -1;
 pub const SEEK_SET: ::c_int = 0;
 pub const SEEK_CUR: ::c_int = 1;
 pub const SEEK_END: ::c_int = 2;
+pub const SEEK_HOLE: ::c_int = 3;
+pub const SEEK_DATA: ::c_int = 4;
 pub const _IOFBF: ::c_int = 0;
 pub const _IONBF: ::c_int = 2;
 pub const _IOLBF: ::c_int = 1;
@@ -2664,11 +2747,13 @@ pub const _PC_PIPE_BUF: ::c_int = 6;
 pub const _PC_CHOWN_RESTRICTED: ::c_int = 7;
 pub const _PC_NO_TRUNC: ::c_int = 8;
 pub const _PC_VDISABLE: ::c_int = 9;
-pub const O_DSYNC: ::c_int = 0x400000;
-pub const O_NOCTTY: ::c_int = 0x20000;
-pub const O_CLOEXEC: ::c_int = 0x1000000;
-pub const O_DIRECTORY: ::c_int = 0x100000;
-pub const O_SYMLINK: ::c_int = 0x200000;
+pub const O_EVTONLY: ::c_int = 0x00008000;
+pub const O_NOCTTY: ::c_int = 0x00020000;
+pub const O_DIRECTORY: ::c_int = 0x00100000;
+pub const O_SYMLINK: ::c_int = 0x00200000;
+pub const O_DSYNC: ::c_int = 0x00400000;
+pub const O_CLOEXEC: ::c_int = 0x01000000;
+pub const O_NOFOLLOW_ANY: ::c_int = 0x20000000;
 pub const S_IFIFO: mode_t = 4096;
 pub const S_IFCHR: mode_t = 8192;
 pub const S_IFBLK: mode_t = 24576;
@@ -3228,6 +3313,8 @@ pub const MINCORE_MODIFIED: ::c_int = 0x4;
 pub const MINCORE_REFERENCED_OTHER: ::c_int = 0x8;
 pub const MINCORE_MODIFIED_OTHER: ::c_int = 0x10;
 
+pub const CTLIOCGINFO: c_ulong = 0xc0644e03;
+
 //
 // sys/netinet/in.h
 // Protocols (RFC 1700)
@@ -3561,6 +3648,7 @@ pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 70;
 pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 71;
 pub const IP_BLOCK_SOURCE: ::c_int = 72;
 pub const IP_UNBLOCK_SOURCE: ::c_int = 73;
+pub const IPV6_BOUND_IF: ::c_int = 125;
 
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
@@ -3788,6 +3876,11 @@ pub const _SC_TRACE_NAME_MAX: ::c_int = 128;
 pub const _SC_TRACE_SYS_MAX: ::c_int = 129;
 pub const _SC_TRACE_USER_EVENT_MAX: ::c_int = 130;
 pub const _SC_PASS_MAX: ::c_int = 131;
+// `confstr` keys (only the values guaranteed by `man confstr`).
+pub const _CS_PATH: ::c_int = 1;
+pub const _CS_DARWIN_USER_DIR: ::c_int = 65536;
+pub const _CS_DARWIN_USER_TEMP_DIR: ::c_int = 65537;
+pub const _CS_DARWIN_USER_CACHE_DIR: ::c_int = 65538;
 
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 1;
@@ -3808,6 +3901,20 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __sig: _PTHREAD_RWLOCK_SIG_init,
     __opaque: [0; __PTHREAD_RWLOCK_SIZE__],
 };
+
+pub const OS_UNFAIR_LOCK_INIT: os_unfair_lock = os_unfair_lock {
+    _os_unfair_lock_opaque: 0,
+};
+
+pub const OS_LOG_TYPE_DEFAULT: ::os_log_type_t = 0x00;
+pub const OS_LOG_TYPE_INFO: ::os_log_type_t = 0x01;
+pub const OS_LOG_TYPE_DEBUG: ::os_log_type_t = 0x02;
+pub const OS_LOG_TYPE_ERROR: ::os_log_type_t = 0x10;
+pub const OS_LOG_TYPE_FAULT: ::os_log_type_t = 0x11;
+
+pub const OS_SIGNPOST_EVENT: ::os_signpost_type_t = 0x00;
+pub const OS_SIGNPOST_INTERVAL_BEGIN: ::os_signpost_type_t = 0x01;
+pub const OS_SIGNPOST_INTERVAL_END: ::os_signpost_type_t = 0x02;
 
 pub const MINSIGSTKSZ: ::size_t = 32768;
 pub const SIGSTKSZ: ::size_t = 131072;
@@ -4670,6 +4777,145 @@ pub const COPYFILE_CONTINUE: ::c_int = 0;
 pub const COPYFILE_SKIP: ::c_int = 1;
 pub const COPYFILE_QUIT: ::c_int = 2;
 
+// <sys/attr.h>
+pub const ATTR_BIT_MAP_COUNT: ::c_ushort = 5;
+pub const FSOPT_NOFOLLOW: u32 = 0x1;
+pub const FSOPT_NOFOLLOW_ANY: u32 = 0x800;
+pub const FSOPT_REPORT_FULLSIZE: u32 = 0x4;
+pub const FSOPT_PACK_INVAL_ATTRS: u32 = 0x8;
+pub const FSOPT_ATTR_CMN_EXTENDED: u32 = 0x20;
+pub const FSOPT_RETURN_REALDEV: u32 = 0x200;
+pub const ATTR_CMN_NAME: attrgroup_t = 0x00000001;
+pub const ATTR_CMN_DEVID: attrgroup_t = 0x00000002;
+pub const ATTR_CMN_FSID: attrgroup_t = 0x00000004;
+pub const ATTR_CMN_OBJTYPE: attrgroup_t = 0x00000008;
+pub const ATTR_CMN_OBJTAG: attrgroup_t = 0x00000010;
+pub const ATTR_CMN_OBJID: attrgroup_t = 0x00000020;
+pub const ATTR_CMN_OBJPERMANENTID: attrgroup_t = 0x00000040;
+pub const ATTR_CMN_PAROBJID: attrgroup_t = 0x00000080;
+pub const ATTR_CMN_SCRIPT: attrgroup_t = 0x00000100;
+pub const ATTR_CMN_CRTIME: attrgroup_t = 0x00000200;
+pub const ATTR_CMN_MODTIME: attrgroup_t = 0x00000400;
+pub const ATTR_CMN_CHGTIME: attrgroup_t = 0x00000800;
+pub const ATTR_CMN_ACCTIME: attrgroup_t = 0x00001000;
+pub const ATTR_CMN_BKUPTIME: attrgroup_t = 0x00002000;
+pub const ATTR_CMN_FNDRINFO: attrgroup_t = 0x00004000;
+pub const ATTR_CMN_OWNERID: attrgroup_t = 0x00008000;
+pub const ATTR_CMN_GRPID: attrgroup_t = 0x00010000;
+pub const ATTR_CMN_ACCESSMASK: attrgroup_t = 0x00020000;
+pub const ATTR_CMN_FLAGS: attrgroup_t = 0x00040000;
+pub const ATTR_CMN_GEN_COUNT: attrgroup_t = 0x00080000;
+pub const ATTR_CMN_DOCUMENT_ID: attrgroup_t = 0x00100000;
+pub const ATTR_CMN_USERACCESS: attrgroup_t = 0x00200000;
+pub const ATTR_CMN_EXTENDED_SECURITY: attrgroup_t = 0x00400000;
+pub const ATTR_CMN_UUID: attrgroup_t = 0x00800000;
+pub const ATTR_CMN_GRPUUID: attrgroup_t = 0x01000000;
+pub const ATTR_CMN_FILEID: attrgroup_t = 0x02000000;
+pub const ATTR_CMN_PARENTID: attrgroup_t = 0x04000000;
+pub const ATTR_CMN_FULLPATH: attrgroup_t = 0x08000000;
+pub const ATTR_CMN_ADDEDTIME: attrgroup_t = 0x10000000;
+pub const ATTR_CMN_DATA_PROTECT_FLAGS: attrgroup_t = 0x40000000;
+pub const ATTR_CMN_RETURNED_ATTRS: attrgroup_t = 0x80000000;
+pub const ATTR_VOL_FSTYPE: attrgroup_t = 0x00000001;
+pub const ATTR_VOL_SIGNATURE: attrgroup_t = 0x00000002;
+pub const ATTR_VOL_SIZE: attrgroup_t = 0x00000004;
+pub const ATTR_VOL_SPACEFREE: attrgroup_t = 0x00000008;
+pub const ATTR_VOL_SPACEAVAIL: attrgroup_t = 0x00000010;
+pub const ATTR_VOL_MINALLOCATION: attrgroup_t = 0x00000020;
+pub const ATTR_VOL_ALLOCATIONCLUMP: attrgroup_t = 0x00000040;
+pub const ATTR_VOL_IOBLOCKSIZE: attrgroup_t = 0x00000080;
+pub const ATTR_VOL_OBJCOUNT: attrgroup_t = 0x00000100;
+pub const ATTR_VOL_FILECOUNT: attrgroup_t = 0x00000200;
+pub const ATTR_VOL_DIRCOUNT: attrgroup_t = 0x00000400;
+pub const ATTR_VOL_MAXOBJCOUNT: attrgroup_t = 0x00000800;
+pub const ATTR_VOL_MOUNTPOINT: attrgroup_t = 0x00001000;
+pub const ATTR_VOL_NAME: attrgroup_t = 0x00002000;
+pub const ATTR_VOL_MOUNTFLAGS: attrgroup_t = 0x00004000;
+pub const ATTR_VOL_MOUNTEDDEVICE: attrgroup_t = 0x00008000;
+pub const ATTR_VOL_ENCODINGSUSED: attrgroup_t = 0x00010000;
+pub const ATTR_VOL_CAPABILITIES: attrgroup_t = 0x00020000;
+pub const ATTR_VOL_UUID: attrgroup_t = 0x00040000;
+pub const ATTR_VOL_SPACEUSED: attrgroup_t = 0x00800000;
+pub const ATTR_VOL_QUOTA_SIZE: attrgroup_t = 0x10000000;
+pub const ATTR_VOL_RESERVED_SIZE: attrgroup_t = 0x20000000;
+pub const ATTR_VOL_ATTRIBUTES: attrgroup_t = 0x40000000;
+pub const ATTR_VOL_INFO: attrgroup_t = 0x80000000;
+pub const ATTR_DIR_LINKCOUNT: attrgroup_t = 0x00000001;
+pub const ATTR_DIR_ENTRYCOUNT: attrgroup_t = 0x00000002;
+pub const ATTR_DIR_MOUNTSTATUS: attrgroup_t = 0x00000004;
+pub const ATTR_DIR_ALLOCSIZE: attrgroup_t = 0x00000008;
+pub const ATTR_DIR_IOBLOCKSIZE: attrgroup_t = 0x00000010;
+pub const ATTR_DIR_DATALENGTH: attrgroup_t = 0x00000020;
+pub const ATTR_FILE_LINKCOUNT: attrgroup_t = 0x00000001;
+pub const ATTR_FILE_TOTALSIZE: attrgroup_t = 0x00000002;
+pub const ATTR_FILE_ALLOCSIZE: attrgroup_t = 0x00000004;
+pub const ATTR_FILE_IOBLOCKSIZE: attrgroup_t = 0x00000008;
+pub const ATTR_FILE_DEVTYPE: attrgroup_t = 0x00000020;
+pub const ATTR_FILE_FORKCOUNT: attrgroup_t = 0x00000080;
+pub const ATTR_FILE_FORKLIST: attrgroup_t = 0x00000100;
+pub const ATTR_FILE_DATALENGTH: attrgroup_t = 0x00000200;
+pub const ATTR_FILE_DATAALLOCSIZE: attrgroup_t = 0x00000400;
+pub const ATTR_FILE_RSRCLENGTH: attrgroup_t = 0x00001000;
+pub const ATTR_FILE_RSRCALLOCSIZE: attrgroup_t = 0x00002000;
+pub const ATTR_CMNEXT_RELPATH: attrgroup_t = 0x00000004;
+pub const ATTR_CMNEXT_PRIVATESIZE: attrgroup_t = 0x00000008;
+pub const ATTR_CMNEXT_LINKID: attrgroup_t = 0x00000010;
+pub const ATTR_CMNEXT_NOFIRMLINKPATH: attrgroup_t = 0x00000020;
+pub const ATTR_CMNEXT_REALDEVID: attrgroup_t = 0x00000040;
+pub const ATTR_CMNEXT_REALFSID: attrgroup_t = 0x00000080;
+pub const ATTR_CMNEXT_CLONEID: attrgroup_t = 0x00000100;
+pub const ATTR_CMNEXT_EXT_FLAGS: attrgroup_t = 0x00000200;
+pub const ATTR_CMNEXT_RECURSIVE_GENCOUNT: attrgroup_t = 0x00000400;
+pub const DIR_MNTSTATUS_MNTPOINT: u32 = 0x1;
+pub const VOL_CAPABILITIES_FORMAT: usize = 0;
+pub const VOL_CAPABILITIES_INTERFACES: usize = 1;
+pub const VOL_CAP_FMT_PERSISTENTOBJECTIDS: attrgroup_t = 0x00000001;
+pub const VOL_CAP_FMT_SYMBOLICLINKS: attrgroup_t = 0x00000002;
+pub const VOL_CAP_FMT_HARDLINKS: attrgroup_t = 0x00000004;
+pub const VOL_CAP_FMT_JOURNAL: attrgroup_t = 0x00000008;
+pub const VOL_CAP_FMT_JOURNAL_ACTIVE: attrgroup_t = 0x00000010;
+pub const VOL_CAP_FMT_NO_ROOT_TIMES: attrgroup_t = 0x00000020;
+pub const VOL_CAP_FMT_SPARSE_FILES: attrgroup_t = 0x00000040;
+pub const VOL_CAP_FMT_ZERO_RUNS: attrgroup_t = 0x00000080;
+pub const VOL_CAP_FMT_CASE_SENSITIVE: attrgroup_t = 0x00000100;
+pub const VOL_CAP_FMT_CASE_PRESERVING: attrgroup_t = 0x00000200;
+pub const VOL_CAP_FMT_FAST_STATFS: attrgroup_t = 0x00000400;
+pub const VOL_CAP_FMT_2TB_FILESIZE: attrgroup_t = 0x00000800;
+pub const VOL_CAP_FMT_OPENDENYMODES: attrgroup_t = 0x00001000;
+pub const VOL_CAP_FMT_HIDDEN_FILES: attrgroup_t = 0x00002000;
+pub const VOL_CAP_FMT_PATH_FROM_ID: attrgroup_t = 0x00004000;
+pub const VOL_CAP_FMT_NO_VOLUME_SIZES: attrgroup_t = 0x00008000;
+pub const VOL_CAP_FMT_DECMPFS_COMPRESSION: attrgroup_t = 0x00010000;
+pub const VOL_CAP_FMT_64BIT_OBJECT_IDS: attrgroup_t = 0x00020000;
+pub const VOL_CAP_FMT_DIR_HARDLINKS: attrgroup_t = 0x00040000;
+pub const VOL_CAP_FMT_DOCUMENT_ID: attrgroup_t = 0x00080000;
+pub const VOL_CAP_FMT_WRITE_GENERATION_COUNT: attrgroup_t = 0x00100000;
+pub const VOL_CAP_FMT_NO_IMMUTABLE_FILES: attrgroup_t = 0x00200000;
+pub const VOL_CAP_FMT_NO_PERMISSIONS: attrgroup_t = 0x00400000;
+pub const VOL_CAP_FMT_SHARED_SPACE: attrgroup_t = 0x00800000;
+pub const VOL_CAP_FMT_VOL_GROUPS: attrgroup_t = 0x01000000;
+pub const VOL_CAP_FMT_SEALED: attrgroup_t = 0x02000000;
+pub const VOL_CAP_INT_SEARCHFS: attrgroup_t = 0x00000001;
+pub const VOL_CAP_INT_ATTRLIST: attrgroup_t = 0x00000002;
+pub const VOL_CAP_INT_NFSEXPORT: attrgroup_t = 0x00000004;
+pub const VOL_CAP_INT_READDIRATTR: attrgroup_t = 0x00000008;
+pub const VOL_CAP_INT_EXCHANGEDATA: attrgroup_t = 0x00000010;
+pub const VOL_CAP_INT_COPYFILE: attrgroup_t = 0x00000020;
+pub const VOL_CAP_INT_ALLOCATE: attrgroup_t = 0x00000040;
+pub const VOL_CAP_INT_VOL_RENAME: attrgroup_t = 0x00000080;
+pub const VOL_CAP_INT_ADVLOCK: attrgroup_t = 0x00000100;
+pub const VOL_CAP_INT_FLOCK: attrgroup_t = 0x00000200;
+pub const VOL_CAP_INT_EXTENDED_SECURITY: attrgroup_t = 0x00000400;
+pub const VOL_CAP_INT_USERACCESS: attrgroup_t = 0x00000800;
+pub const VOL_CAP_INT_MANLOCK: attrgroup_t = 0x00001000;
+pub const VOL_CAP_INT_NAMEDSTREAMS: attrgroup_t = 0x00002000;
+pub const VOL_CAP_INT_EXTENDED_ATTR: attrgroup_t = 0x00004000;
+pub const VOL_CAP_INT_CLONE: attrgroup_t = 0x00010000;
+pub const VOL_CAP_INT_SNAPSHOT: attrgroup_t = 0x00020000;
+pub const VOL_CAP_INT_RENAME_SWAP: attrgroup_t = 0x00040000;
+pub const VOL_CAP_INT_RENAME_EXCL: attrgroup_t = 0x00080000;
+pub const VOL_CAP_INT_RENAME_OPENFAIL: attrgroup_t = 0x00100000;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         const fn __DARWIN_ALIGN32(p: usize) -> usize {
@@ -4681,6 +4927,16 @@ cfg_if! {
             const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
             p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
         }
+    } else {
+        fn __DARWIN_ALIGN32(p: usize) -> usize {
+            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
+            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+        }
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_const_size_of)] {
         pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
             (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
             as mach_msg_type_number_t;
@@ -4721,10 +4977,6 @@ cfg_if! {
             (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
             as mach_msg_type_number_t;
     } else {
-        fn __DARWIN_ALIGN32(p: usize) -> usize {
-            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
         pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t = 1;
         pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t = 4;
         pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t = 1;
@@ -4776,6 +5028,18 @@ f! {
 
     pub {const} fn VM_MAKE_TAG(id: u8) -> u32 {
         (id as u32) << 24u32
+    }
+
+    pub fn major(dev: dev_t) -> i32 {
+        (dev >> 24) & 0xff
+    }
+
+    pub fn minor(dev: dev_t) -> i32 {
+        dev & 0xffffff
+    }
+
+    pub fn makedev(major: i32, minor: i32) -> dev_t {
+        (major << 24) | minor
     }
 }
 
@@ -4832,6 +5096,11 @@ extern "C" {
     pub fn fchflags(fd: ::c_int, flags: ::c_uint) -> ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "confstr$UNIX2003"
+    )]
+    pub fn confstr(name: ::c_int, buf: *mut ::c_char, len: ::size_t) -> ::size_t;
     pub fn lio_listio(
         mode: ::c_int,
         aiocb_list: *const *mut aiocb,
@@ -4921,6 +5190,10 @@ extern "C" {
         f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
+    pub fn pthread_stack_frame_decode_np(
+        frame_addr: ::uintptr_t,
+        return_addr: *mut ::uintptr_t,
+    ) -> ::uintptr_t;
     pub fn pthread_get_stackaddr_np(thread: ::pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: ::pthread_t) -> ::size_t;
     pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t, pshared: ::c_int) -> ::c_int;
@@ -4928,6 +5201,7 @@ extern "C" {
         attr: *const pthread_condattr_t,
         pshared: *mut ::c_int,
     ) -> ::c_int;
+    pub fn pthread_main_np() -> ::c_int;
     pub fn pthread_mutexattr_setpshared(
         attr: *mut pthread_mutexattr_t,
         pshared: ::c_int,
@@ -4992,7 +5266,33 @@ extern "C" {
     ) -> *mut ::c_void;
     pub fn pthread_jit_write_protect_np(enabled: ::c_int);
     pub fn pthread_jit_write_protect_supported_np() -> ::c_int;
+    // An array of pthread_jit_write_with_callback_np must declare
+    // the list of callbacks e.g.
+    // #[link_section = "__DATA_CONST,__pth_jit_func"]
+    // static callbacks: [libc::pthread_jit_write_callback_t; 2] = [native_jit_write_cb,
+    // std::mem::transmute::<libc::pthread_jit_write_callback_t>(std::ptr::null())];
+    // (a handy PTHREAD_JIT_WRITE_CALLBACK_NP macro for other languages).
+    pub fn pthread_jit_write_with_callback_np(
+        callback: ::pthread_jit_write_callback_t,
+        ctx: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_jit_write_freeze_callbacks_np();
     pub fn pthread_cpu_number_np(cpu_number_out: *mut ::size_t) -> ::c_int;
+
+    pub fn os_unfair_lock_lock(lock: os_unfair_lock_t);
+    pub fn os_unfair_lock_trylock(lock: os_unfair_lock_t) -> bool;
+    pub fn os_unfair_lock_unlock(lock: os_unfair_lock_t);
+    pub fn os_unfair_lock_assert_owner(lock: os_unfair_lock_t);
+    pub fn os_unfair_lock_assert_not_owner(lock: os_unfair_lock_t);
+
+    pub fn os_log_create(subsystem: *const ::c_char, category: *const ::c_char) -> ::os_log_t;
+    pub fn os_log_type_enabled(oslog: ::os_log_t, tpe: ::os_log_type_t) -> bool;
+    pub fn os_signpost_id_make_with_pointer(
+        log: ::os_log_t,
+        ptr: *const ::c_void,
+    ) -> ::os_signpost_id_t;
+    pub fn os_signpost_id_generate(log: ::os_log_t) -> ::os_signpost_id_t;
+    pub fn os_signpost_enabled(log: ::os_log_t) -> bool;
 
     pub fn thread_policy_set(
         thread: thread_t,
@@ -5013,6 +5313,8 @@ extern "C" {
         thread_info_out: thread_info_t,
         thread_info_outCnt: *mut mach_msg_type_number_t,
     ) -> kern_return_t;
+    #[cfg_attr(doc, doc(alias = "__errno_location"))]
+    #[cfg_attr(doc, doc(alias = "errno"))]
     pub fn __error() -> *mut ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
     pub fn backtrace_symbols(addrs: *const *mut ::c_void, sz: ::c_int) -> *mut *mut ::c_char;
@@ -5489,6 +5791,19 @@ extern "C" {
         task_info_out: task_info_t,
         task_info_count: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
+    pub fn task_create(
+        target_task: ::task_t,
+        ledgers: ::ledger_array_t,
+        ledgersCnt: ::mach_msg_type_number_t,
+        inherit_memory: ::boolean_t,
+        child_task: *mut ::task_t,
+    ) -> ::kern_return_t;
+    pub fn task_terminate(target_task: ::task_t) -> ::kern_return_t;
+    pub fn task_threads(
+        target_task: ::task_inspect_t,
+        act_list: *mut ::thread_act_array_t,
+        act_listCnt: *mut ::mach_msg_type_number_t,
+    ) -> ::kern_return_t;
     pub fn host_statistics(
         host_priv: host_t,
         flavor: host_flavor_t,
@@ -5507,6 +5822,64 @@ extern "C" {
     ) -> ::sysdir_search_path_enumeration_state;
 
     pub static vm_page_size: vm_size_t;
+
+    pub fn getattrlist(
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn fgetattrlist(
+        fd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn getattrlistat(
+        fd: ::c_int,
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: ::c_ulong,
+    ) -> ::c_int;
+    pub fn setattrlist(
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn fsetattrlist(
+        fd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn setattrlistat(
+        dir_fd: ::c_int,
+        path: *const ::c_char,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u32,
+    ) -> ::c_int;
+    pub fn getattrlistbulk(
+        dirfd: ::c_int,
+        attrList: *mut ::c_void,
+        attrBuf: *mut ::c_void,
+        attrBufSize: ::size_t,
+        options: u64,
+    ) -> ::c_int;
+
+    pub fn malloc_size(ptr: *const ::c_void) -> ::size_t;
+    pub fn malloc_good_size(size: ::size_t) -> ::size_t;
+
+    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {
@@ -5517,17 +5890,31 @@ cfg_if! {
     if #[cfg(target_os = "macos")] {
         extern "C" {
             pub fn clock_settime(clock_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
+        }
+    }
+}
+cfg_if! {
+    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
+        extern "C" {
             pub fn memmem(
                 haystack: *const ::c_void,
                 haystacklen: ::size_t,
                 needle: *const ::c_void,
                 needlelen: ::size_t,
             ) -> *mut ::c_void;
+            pub fn task_set_info(target_task: ::task_t,
+                                 flavor: ::task_flavor_t,
+                                 task_info_in: ::task_info_t,
+                                 task_info_inCnt: ::mach_msg_type_number_t
+            ) -> ::kern_return_t;
         }
     }
 }
 
-#[link(name = "iconv")]
+// These require a dependency on `libiconv`, and including this when built as
+// part of `std` means every Rust program gets it. Ideally we would have a link
+// modifier to only include these if they are used, but we do not.
+#[cfg_attr(not(feature = "rustc-dep-of-std"), link(name = "iconv"))]
 extern "C" {
     pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
     pub fn iconv(
@@ -5549,5 +5936,12 @@ cfg_if! {
         pub use self::b64::*;
     } else {
         // Unknown target_arch
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_long_array)] {
+        mod long_array;
+        pub use self::long_array::*;
     }
 }

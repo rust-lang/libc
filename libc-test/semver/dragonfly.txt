@@ -107,6 +107,9 @@ BOOT_TIME
 BPF_ALIGNMENT
 BTUARTDISC
 BUFSIZ
+BUS_ADRALN
+BUS_ADRERR
+BUS_OBJERR
 CCAR_OFLOW
 CCTS_OFLOW
 CDSR_OFLOW
@@ -142,6 +145,7 @@ CODESET
 CPU_CLR
 CPU_ISSET
 CPU_SET
+CPU_SETSIZE
 CPU_ZERO
 CPUCTL_RSMSR
 CPUCTL_WRMSR
@@ -618,7 +622,16 @@ MINCORE_REFERENCED
 MINCORE_REFERENCED_OTHER
 MINCORE_SUPER
 MINSEC
+MNT_AUTOMOUNTED
+MNT_EXPUBLIC
 MNT_FORCE
+MNT_IGNORE
+MNT_LOCAL
+MNT_NODEV
+MNT_QUOTA
+MNT_ROOTFS
+MNT_TRIM
+MNT_USER
 MOD_CLKA
 MOD_CLKB
 MOD_ESTERROR
@@ -1208,7 +1221,6 @@ arc4random
 arc4random_buf
 arc4random_uniform
 arphdr
-atof
 backtrace
 backtrace_symbols
 backtrace_symbols_fd
@@ -1245,6 +1257,10 @@ endgrent
 endpwent
 endservent
 endutxent
+eui64_aton
+eui64_hostton
+eui64_ntoa
+eui64_ntohost
 exit_status
 explicit_bzero
 faccessat
@@ -1277,6 +1293,7 @@ getlastlogx
 getline
 getloadavg
 getnameinfo
+getopt_long
 getpeereid
 getpriority
 getprogname
@@ -1528,3 +1545,6 @@ vmspace
 wait4
 waitid
 xucred
+eaccess
+dirname
+basename

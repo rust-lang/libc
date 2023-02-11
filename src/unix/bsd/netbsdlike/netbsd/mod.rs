@@ -1568,10 +1568,7 @@ pub const IPPROTO_VRRP: ::c_int = 112;
 /// Common Address Resolution Protocol
 pub const IPPROTO_CARP: ::c_int = 112;
 /// L2TPv3
-// TEMP: Disabled for now; this constant was added to NetBSD on 2017-02-16,
-// but isn't yet supported by the NetBSD rumprun kernel image used for
-// libc testing.
-//pub const IPPROTO_L2TP: ::c_int = 115;
+pub const IPPROTO_L2TP: ::c_int = 115;
 /// SCTP
 pub const IPPROTO_SCTP: ::c_int = 132;
 /// PFSYNC
@@ -1788,6 +1785,23 @@ pub const BIOCSDLT: ::c_ulong = 0x80044278;
 pub const BIOCGSEESENT: ::c_ulong = 0x40044276;
 pub const BIOCSSEESENT: ::c_ulong = 0x80044277;
 
+// <sys/fstypes.h>
+pub const MNT_UNION: ::c_int = 0x00000020;
+pub const MNT_NOCOREDUMP: ::c_int = 0x00008000;
+pub const MNT_RELATIME: ::c_int = 0x00020000;
+pub const MNT_IGNORE: ::c_int = 0x00100000;
+pub const MNT_NFS4ACLS: ::c_int = 0x00200000;
+pub const MNT_DISCARD: ::c_int = 0x00800000;
+pub const MNT_EXTATTR: ::c_int = 0x01000000;
+pub const MNT_LOG: ::c_int = 0x02000000;
+pub const MNT_NOATIME: ::c_int = 0x04000000;
+pub const MNT_AUTOMOUNTED: ::c_int = 0x10000000;
+pub const MNT_SYMPERM: ::c_int = 0x20000000;
+pub const MNT_NODEVMTIME: ::c_int = 0x40000000;
+pub const MNT_SOFTDEP: ::c_int = 0x80000000;
+pub const MNT_POSIX1EACLS: ::c_int = 0x00000800;
+pub const MNT_ACLS: ::c_int = MNT_POSIX1EACLS;
+
 //<sys/timex.h>
 pub const NTP_API: ::c_int = 4;
 pub const MAXPHASE: ::c_long = 500000000;
@@ -1912,6 +1926,9 @@ pub const EVFILT_SIGNAL: u32 = 5;
 pub const EVFILT_TIMER: u32 = 6;
 pub const EVFILT_VNODE: u32 = 3;
 pub const EVFILT_WRITE: u32 = 1;
+pub const EVFILT_FS: u32 = 7;
+pub const EVFILT_USER: u32 = 8;
+pub const EVFILT_EMPTY: u32 = 9;
 
 pub const EV_ADD: u32 = 0x1;
 pub const EV_DELETE: u32 = 0x2;
@@ -1942,6 +1959,11 @@ pub const NOTE_PCTRLMASK: u32 = 0xf0000000;
 pub const NOTE_TRACK: u32 = 0x00000001;
 pub const NOTE_TRACKERR: u32 = 0x00000002;
 pub const NOTE_CHILD: u32 = 0x00000004;
+pub const NOTE_MSECONDS: u32 = 0x00000000;
+pub const NOTE_SECONDS: u32 = 0x00000001;
+pub const NOTE_USECONDS: u32 = 0x00000002;
+pub const NOTE_NSECONDS: u32 = 0x00000003;
+pub const NOTE_ABSTIME: u32 = 0x000000010;
 
 pub const TMP_MAX: ::c_uint = 308915776;
 
@@ -2231,9 +2253,18 @@ pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
 pub const POSIX_SPAWN_RETURNERROR: ::c_int = 0x40;
 
 // Flags for chflags(2)
-pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
+pub const SF_APPEND: ::c_ulong = 0x00040000;
+pub const SF_ARCHIVED: ::c_ulong = 0x00010000;
+pub const SF_IMMUTABLE: ::c_ulong = 0x00020000;
 pub const SF_LOG: ::c_ulong = 0x00400000;
+pub const SF_SETTABLE: ::c_ulong = 0xffff0000;
 pub const SF_SNAPINVAL: ::c_ulong = 0x00800000;
+pub const SF_SNAPSHOT: ::c_ulong = 0x00200000;
+pub const UF_APPEND: ::c_ulong = 0x00000004;
+pub const UF_IMMUTABLE: ::c_ulong = 0x00000002;
+pub const UF_NODUMP: ::c_ulong = 0x00000001;
+pub const UF_OPAQUE: ::c_ulong = 0x00000008;
+pub const UF_SETTABLE: ::c_ulong = 0x0000ffff;
 
 // sys/sysctl.h
 pub const KVME_PROT_READ: ::c_int = 0x00000001;
@@ -2264,6 +2295,44 @@ pub const LSSTOP: ::c_int = 4;
 pub const LSZOMB: ::c_int = 5;
 pub const LSONPROC: ::c_int = 7;
 pub const LSSUSPENDED: ::c_int = 8;
+
+pub const _REG_RDI: ::c_int = 0;
+pub const _REG_RSI: ::c_int = 1;
+pub const _REG_RDX: ::c_int = 2;
+pub const _REG_RCX: ::c_int = 3;
+pub const _REG_R8: ::c_int = 4;
+pub const _REG_R9: ::c_int = 5;
+pub const _REG_R10: ::c_int = 6;
+pub const _REG_R11: ::c_int = 7;
+pub const _REG_R12: ::c_int = 8;
+pub const _REG_R13: ::c_int = 9;
+pub const _REG_R14: ::c_int = 10;
+pub const _REG_R15: ::c_int = 11;
+pub const _REG_RBP: ::c_int = 12;
+pub const _REG_RBX: ::c_int = 13;
+pub const _REG_RAX: ::c_int = 14;
+pub const _REG_GS: ::c_int = 15;
+pub const _REG_FS: ::c_int = 16;
+pub const _REG_ES: ::c_int = 17;
+pub const _REG_DS: ::c_int = 18;
+pub const _REG_TRAPNO: ::c_int = 19;
+pub const _REG_ERR: ::c_int = 20;
+pub const _REG_RIP: ::c_int = 21;
+pub const _REG_CS: ::c_int = 22;
+pub const _REG_RFLAGS: ::c_int = 23;
+pub const _REG_RSP: ::c_int = 24;
+pub const _REG_SS: ::c_int = 25;
+
+// sys/xattr.h
+pub const XATTR_CREATE: ::c_int = 0x01;
+pub const XATTR_REPLACE: ::c_int = 0x02;
+// sys/extattr.h
+pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
+
+// For getrandom()
+pub const GRND_NONBLOCK: ::c_uint = 0x1;
+pub const GRND_RANDOM: ::c_uint = 0x2;
+pub const GRND_INSECURE: ::c_uint = 0x4;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
@@ -2345,6 +2414,16 @@ safe_f! {
     pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0xffff
     }
+
+    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+        let major = major as ::dev_t;
+        let minor = minor as ::dev_t;
+        let mut dev = 0;
+        dev |= (major << 8) & 0x000ff00;
+        dev |= (minor << 12) & 0xfff00000;
+        dev |= minor & 0xff;
+        dev
+    }
 }
 
 extern "C" {
@@ -2393,6 +2472,24 @@ extern "C" {
         envp: *const *const ::c_char,
     ) -> ::c_int;
 
+    pub fn extattr_list_fd(
+        fd: ::c_int,
+        attrnamespace: ::c_int,
+        data: *mut ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
+    pub fn extattr_list_file(
+        path: *const ::c_char,
+        attrnamespace: ::c_int,
+        data: *mut ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
+    pub fn extattr_list_link(
+        path: *const ::c_char,
+        attrnamespace: ::c_int,
+        data: *mut ::c_void,
+        nbytes: ::size_t,
+    ) -> ::ssize_t;
     pub fn extattr_delete_fd(
         fd: ::c_int,
         attrnamespace: ::c_int,
@@ -2709,7 +2806,12 @@ extern "C" {
         ts: *const ::timespec,
         sigmask: *const ::sigset_t,
     ) -> ::c_int;
-
+    pub fn ppoll(
+        fds: *mut ::pollfd,
+        nfds: ::nfds_t,
+        ts: *const ::timespec,
+        sigmask: *const ::sigset_t,
+    ) -> ::c_int;
     pub fn posix_spawn(
         pid: *mut ::pid_t,
         path: *const ::c_char,
@@ -2786,6 +2888,7 @@ extern "C" {
         fd: ::c_int,
         newfd: ::c_int,
     ) -> ::c_int;
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 }
 
 #[link(name = "util")]

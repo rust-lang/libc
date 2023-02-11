@@ -6,10 +6,15 @@ on:
       - auto-libc
       - try
 
+permissions: {}
 jobs:
   docker_linux_tier1:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Docker Linux Tier1
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
       matrix:
@@ -28,8 +33,12 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
   macos:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: macOS
-    runs-on: macos-11
+    runs-on: macos-12
     strategy:
       fail-fast: true
       matrix:
@@ -47,8 +56,12 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OS: windows
     strategy:
@@ -83,8 +96,12 @@ jobs:
         shell: bash
 
   style_check:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Style check
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
@@ -96,9 +113,13 @@ jobs:
         run: sh ci/style.sh
 
   docker_linux_tier2:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Docker Linux Tier2
     needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
       max-parallel: 12
@@ -154,10 +175,14 @@ jobs:
   # These targets are tier 3 or otherwise need to have CI build std via -Zbuild-std.
   # Because of this, only the nightly compiler can be used on these targets.
   docker_linux_build_std:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     if: ${{ false }} # This is currently broken
     name: Docker Linux Build-Std Targets
     needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
       max-parallel: 12
@@ -177,9 +202,13 @@ jobs:
 
   # devkitpro's pacman needs to be connected from Docker.
   docker_switch:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Docker Switch
     needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
@@ -191,9 +220,13 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh switch
 
   build_channels_linux:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Build Channels Linux
     needs: docker_linux_tier2
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       OS: linux
     strategy:
@@ -221,8 +254,15 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_macos:
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+
     name: Build Channels macOS
     needs: macos
+    # FIXME: Use macOS 11 for now as CI failed with a linker error on macOS 12 image:
+    # ld: in /.../x86_64-apple-darwin/lib/libstd-a4729905.rlib(rust.metadata.bin),
+    # archive member 'rust.metadata.bin' with length 2958149 is not mach-o or llvm bitcode file '/.../x86_64-apple-darwin/lib/libstd-a4729905.rlib'
+    # Possibly related: https://github.com/actions/runner-images/issues/6350
     runs-on: macos-11
     env:
       OS: macos
@@ -251,8 +291,11 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_windows:
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+
     name: Build Channels Windows
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OS: windows
     strategy:
@@ -277,32 +320,36 @@ jobs:
   semver_linux:
     if: ${{ false }} # This is currently broken
     name: Semver Linux
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     continue-on-error: true
     steps:
       - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         # Should update the semverver revision in semver.sh if we touch nightly ver.
-        run: TOOLCHAIN=nightly-2021-09-30 sh ./ci/install-rust.sh
+        run: TOOLCHAIN=nightly-2022-05-23 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh linux
 
   semver_macos:
     if: ${{ false }} # This is currently broken
     name: Semver macOS
-    runs-on: macos-11
+    runs-on: macos-12
     continue-on-error: true
     steps:
       - uses: actions/checkout@v3
       - name: Setup Rust toolchain
         # Pin nightly version to make semverver compilable.
-        run: TOOLCHAIN=nightly-2021-09-30 sh ./ci/install-rust.sh
+        run: TOOLCHAIN=nightly-2022-05-23 sh ./ci/install-rust.sh
       - name: Check breaking changes
         run: sh ci/semver.sh macos
 
   docs:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
     name: Generate documentation
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: docker_linux_tier2
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
@@ -323,7 +370,7 @@ jobs:
   end_success:
     name: bors build finished
     if: github.event.pusher.name == 'bors' && success()
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [
       docker_linux_tier1,
       docker_linux_tier2,
@@ -345,7 +392,7 @@ jobs:
   end_failure:
     name: bors build finished
     if: github.event.pusher.name == 'bors' && (failure() || cancelled())
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [
       docker_linux_tier1,
       docker_linux_tier2,

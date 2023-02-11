@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # This is a workaround to avoid the interaction with tzdata.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -21,7 +21,8 @@ RUN apt-get install -y --no-install-recommends \
     cmake \
     sudo \
     gdb \
-    xz-utils
+    xz-utils \
+    bzip2
 
 RUN ln -s /usr/bin/python3 /usr/bin/python & \
     ln -s /usr/bin/pip3 /usr/bin/pip

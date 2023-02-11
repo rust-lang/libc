@@ -52,6 +52,9 @@ pub type Elf64_Xword = u64;
 pub type ENTRY = entry;
 pub type ACTION = ::c_int;
 
+pub type posix_spawnattr_t = *mut ::c_void;
+pub type posix_spawn_file_actions_t = *mut ::c_void;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 impl ::Copy for timezone {}
@@ -426,6 +429,13 @@ s! {
     pub struct entry {
         pub key: *mut ::c_char,
         pub data: *mut ::c_void,
+    }
+
+    pub struct option {
+        pub name: *const ::c_char,
+        pub has_arg: ::c_int,
+        pub flag: *mut ::c_int,
+        pub val: ::c_int,
     }
 }
 
@@ -1051,6 +1061,7 @@ pub const LOCK_EX: ::c_int = 0x02;
 pub const LOCK_NB: ::c_int = 0x04;
 pub const LOCK_UN: ::c_int = 0x08;
 
+pub const MINSIGSTKSZ: ::size_t = 8192;
 pub const SIGSTKSZ: ::size_t = 16384;
 
 pub const IOV_MAX: ::c_int = 1024;
@@ -1066,6 +1077,9 @@ pub const SA_SIGINFO: ::c_int = 0x40;
 pub const SA_NOMASK: ::c_int = SA_NODEFER;
 pub const SA_STACK: ::c_int = SA_ONSTACK;
 pub const SA_ONESHOT: ::c_int = SA_RESETHAND;
+
+pub const SS_ONSTACK: ::c_int = 0x1;
+pub const SS_DISABLE: ::c_int = 0x2;
 
 pub const FD_SETSIZE: usize = 1024;
 
@@ -1225,6 +1239,8 @@ pub const SO_PEERCRED: ::c_int = 0x4000000b;
 
 pub const SCM_RIGHTS: ::c_int = 0x01;
 
+pub const SOMAXCONN: ::c_int = 32;
+
 pub const NI_MAXHOST: ::size_t = 1025;
 
 pub const WNOHANG: ::c_int = 0x01;
@@ -1234,6 +1250,12 @@ pub const WEXITED: ::c_int = 0x08;
 pub const WSTOPPED: ::c_int = 0x10;
 pub const WNOWAIT: ::c_int = 0x20;
 
+// si_code values for SIGBUS signal
+pub const BUS_ADRALN: ::c_int = 40;
+pub const BUS_ADRERR: ::c_int = 41;
+pub const BUS_OBJERR: ::c_int = 42;
+
+// si_code values for SIGCHLD signal
 pub const CLD_EXITED: ::c_int = 60;
 pub const CLD_KILLED: ::c_int = 61;
 pub const CLD_DUMPED: ::c_int = 62;
@@ -1432,6 +1454,13 @@ pub const LOG_SERIAL: ::c_int = 16 << 12;
 pub const LOG_PERROR: ::c_int = 32 << 12;
 pub const LOG_NOWAIT: ::c_int = 64 << 12;
 
+// spawn.h
+pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
+pub const POSIX_SPAWN_SETSID: ::c_int = 0x40;
+
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
         len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
@@ -1563,7 +1592,6 @@ extern "C" {
     pub fn _errnop() -> *mut ::c_int;
 
     pub fn abs(i: ::c_int) -> ::c_int;
-    pub fn atof(s: *const ::c_char) -> ::c_double;
     pub fn labs(i: ::c_long) -> ::c_long;
     pub fn rand() -> ::c_int;
     pub fn srand(seed: ::c_uint);
@@ -1768,8 +1796,6 @@ extern "C" {
     pub fn endgrent();
     pub fn getgrent() -> *mut ::group;
     pub fn setgrent();
-    pub fn setreuid(ruid: ::uid_t, euid: ::uid_t) -> ::c_int;
-    pub fn setregid(rgid: ::gid_t, egid: ::gid_t) -> ::c_int;
     pub fn sigwait(set: *const sigset_t, sig: *mut ::c_int) -> ::c_int;
     pub fn pthread_atfork(
         prepare: ::Option<unsafe extern "C" fn()>,
@@ -1884,6 +1910,91 @@ extern "C" {
 
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
+
+    pub fn posix_spawn(
+        pid: *mut ::pid_t,
+        path: *const ::c_char,
+        file_actions: *const ::posix_spawn_file_actions_t,
+        attrp: *const ::posix_spawnattr_t,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+    pub fn posix_spawnp(
+        pid: *mut ::pid_t,
+        file: *const ::c_char,
+        file_actions: *const ::posix_spawn_file_actions_t,
+        attrp: *const ::posix_spawnattr_t,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+
+    pub fn posix_spawn_file_actions_init(file_actions: *mut posix_spawn_file_actions_t) -> ::c_int;
+    pub fn posix_spawn_file_actions_destroy(
+        file_actions: *mut posix_spawn_file_actions_t,
+    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_addopen(
+        file_actions: *mut posix_spawn_file_actions_t,
+        fildes: ::c_int,
+        path: *const ::c_char,
+        oflag: ::c_int,
+        mode: ::mode_t,
+    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_addclose(
+        file_actions: *mut posix_spawn_file_actions_t,
+        fildes: ::c_int,
+    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_adddup2(
+        file_actions: *mut posix_spawn_file_actions_t,
+        fildes: ::c_int,
+        newfildes: ::c_int,
+    ) -> ::c_int;
+
+    pub fn posix_spawnattr_init(attr: *mut posix_spawnattr_t) -> ::c_int;
+    pub fn posix_spawnattr_destroy(attr: *mut posix_spawnattr_t) -> ::c_int;
+    pub fn posix_spawnattr_getflags(
+        attr: *const posix_spawnattr_t,
+        _flags: *mut ::c_short,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: ::c_short) -> ::c_int;
+    pub fn posix_spawnattr_getpgroup(
+        attr: *const posix_spawnattr_t,
+        _pgroup: *mut ::pid_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, pgroup: ::pid_t) -> ::c_int;
+    pub fn posix_spawnattr_getsigdefault(
+        attr: *const posix_spawnattr_t,
+        sigdefault: *mut ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setsigdefault(
+        attr: *mut posix_spawnattr_t,
+        sigdefault: *const ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_getsigmask(
+        attr: *const posix_spawnattr_t,
+        _sigmask: *mut ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setsigmask(
+        attr: *mut posix_spawnattr_t,
+        sigmask: *const ::sigset_t,
+    ) -> ::c_int;
+    pub fn getopt_long(
+        argc: ::c_int,
+        argv: *const *mut c_char,
+        optstring: *const c_char,
+        longopts: *const option,
+        longindex: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn strcasecmp_l(
+        string1: *const ::c_char,
+        string2: *const ::c_char,
+        locale: ::locale_t,
+    ) -> ::c_int;
+    pub fn strncasecmp_l(
+        string1: *const ::c_char,
+        string2: *const ::c_char,
+        length: ::size_t,
+        locale: ::locale_t,
+    ) -> ::c_int;
 }
 
 #[link(name = "bsd")]

@@ -136,14 +136,14 @@ i586-unknown-linux-musl \
 "
 
 RUST_NIGHTLY_LINUX_TARGETS="\
-aarch64-fuchsia \
+aarch64-unknown-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
 riscv64gc-unknown-linux-gnu \
 wasm32-wasi \
 x86_64-fortanix-unknown-sgx \
-x86_64-fuchsia \
+x86_64-unknown-fuchsia \
 x86_64-pc-solaris \
 x86_64-pc-windows-gnu \
 x86_64-unknown-illumos \

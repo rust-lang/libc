@@ -451,7 +451,10 @@ access
 addrinfo
 alarm
 atexit
+atof
 atoi
+atol
+atoll
 bind
 blkcnt_t
 blksize_t
@@ -758,6 +761,8 @@ setgid
 setlocale
 setlogmask
 setpgid
+setregid
+setreuid
 setsid
 setsockopt
 setuid
@@ -816,7 +821,9 @@ strtod
 strtof
 strtok
 strtol
+strtoll
 strtoul
+strtoull
 strxfrm
 suseconds_t
 symlink

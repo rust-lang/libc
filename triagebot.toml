@@ -3,4 +3,23 @@ allow-unauthenticated = [
     "C-*", "O-*", "S-*"
 ]
 
+[autolabel."S-waiting-on-review"]
+new_pr = true
+
 [assign]
+contributing_url = "https://github.com/rust-lang/libc/blob/master/CONTRIBUTING.md"
+
+[assign.owners]
+"*" = ["@JohnTitor"]
+
+[mentions."src/unix/bsd/netbsdlike/openbsd"]
+message = "Some changes occurred in OpenBSD module"
+cc = ["@semarie"]
+
+[mentions."src/unix/bsd/netbsdlike/mod.rs"]
+message = "Some changes occurred in OpenBSD module"
+cc = ["@semarie"]
+
+[mentions."src/unix/solarish"]
+message = "Some changes occurred in solarish module"
+cc = ["@jclulow", "@pfmooney"]

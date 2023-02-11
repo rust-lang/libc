@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+# Disable SC2086 as it confuses the docker command.
+# shellcheck disable=SC2086
+
 # Small script to run tests for a target (or all targets) inside all the
 # respective docker images.
 

@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
   gcc-multilib libc6-dev ca-certificates

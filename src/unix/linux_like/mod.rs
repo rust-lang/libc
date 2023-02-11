@@ -231,11 +231,11 @@ s_no_extra_traits! {
 
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
-        __ss_align: ::size_t,
         #[cfg(target_pointer_width = "32")]
-        __ss_pad2: [u8; 128 - 2 * 4],
+        __ss_pad2: [u8; 128 - 2 - 4],
         #[cfg(target_pointer_width = "64")]
-        __ss_pad2: [u8; 128 - 2 * 8],
+        __ss_pad2: [u8; 128 - 2 - 8],
+        __ss_align: ::size_t,
     }
 
     pub struct utsname {
@@ -759,8 +759,6 @@ pub const PF_IEEE802154: ::c_int = AF_IEEE802154;
 pub const PF_CAIF: ::c_int = AF_CAIF;
 pub const PF_ALG: ::c_int = AF_ALG;
 
-pub const SOMAXCONN: ::c_int = 128;
-
 pub const MSG_OOB: ::c_int = 1;
 pub const MSG_PEEK: ::c_int = 2;
 pub const MSG_DONTROUTE: ::c_int = 4;
@@ -1008,6 +1006,7 @@ cfg_if! {
         pub const TCP_CM_INQ: ::c_int = TCP_INQ;
         // NOTE: Some CI images doesn't have this option yet.
         // pub const TCP_TX_DELAY: ::c_int = 37;
+        pub const TCP_MD5SIG_MAXKEYLEN: usize = 80;
     }
 }
 
@@ -1203,6 +1202,7 @@ pub const AT_REMOVEDIR: ::c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
 pub const AT_NO_AUTOMOUNT: ::c_int = 0x800;
 pub const AT_EMPTY_PATH: ::c_int = 0x1000;
+pub const AT_RECURSIVE: ::c_int = 0x8000;
 
 pub const LOG_CRON: ::c_int = 9 << 3;
 pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
@@ -1213,6 +1213,15 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: ::c_uint = 16;
 
+// si_code values for SIGBUS signal
+pub const BUS_ADRALN: ::c_int = 1;
+pub const BUS_ADRERR: ::c_int = 2;
+pub const BUS_OBJERR: ::c_int = 3;
+// Linux-specific si_code values for SIGBUS signal
+pub const BUS_MCEERR_AR: ::c_int = 4;
+pub const BUS_MCEERR_AO: ::c_int = 5;
+
+// si_code values for SIGCHLD signal
 pub const CLD_EXITED: ::c_int = 1;
 pub const CLD_KILLED: ::c_int = 2;
 pub const CLD_DUMPED: ::c_int = 3;
@@ -1427,6 +1436,7 @@ cfg_if! {
         pub const UDF_SUPER_MAGIC: ::c_long = 0x15013346;
         pub const USBDEVICE_SUPER_MAGIC: ::c_long = 0x00009fa2;
         pub const XENFS_SUPER_MAGIC: ::c_long = 0xabba1974;
+        pub const NSFS_MAGIC: ::c_long = 0x6e736673;
     } else if #[cfg(target_arch = "s390x")] {
         pub const ADFS_SUPER_MAGIC: ::c_uint = 0x0000adf5;
         pub const AFFS_SUPER_MAGIC: ::c_uint = 0x0000adff;
@@ -1480,6 +1490,7 @@ cfg_if! {
         pub const UDF_SUPER_MAGIC: ::c_uint = 0x15013346;
         pub const USBDEVICE_SUPER_MAGIC: ::c_uint = 0x00009fa2;
         pub const XENFS_SUPER_MAGIC: ::c_uint = 0xabba1974;
+        pub const NSFS_MAGIC: ::c_uint = 0x6e736673;
     }
 }
 
@@ -1606,6 +1617,14 @@ safe_f! {
     pub {const} fn IPTOS_ECN(x: u8) -> u8 {
         x & ::IPTOS_ECN_MASK
     }
+
+    #[allow(ellipsis_inclusive_range_patterns)]
+    pub {const} fn KERNEL_VERSION(a: u32, b: u32, c: u32) -> u32 {
+        ((a << 16) + (b << 8)) + match c {
+            0 ... 255 => c,
+            _ => 255,
+        }
+    }
 }
 
 extern "C" {
@@ -1726,8 +1745,6 @@ extern "C" {
     pub fn clearenv() -> ::c_int;
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
         -> ::c_int;
-    pub fn setreuid(ruid: ::uid_t, euid: ::uid_t) -> ::c_int;
-    pub fn setregid(rgid: ::gid_t, egid: ::gid_t) -> ::c_int;
     pub fn getresuid(ruid: *mut ::uid_t, euid: *mut ::uid_t, suid: *mut ::uid_t) -> ::c_int;
     pub fn getresgid(rgid: *mut ::gid_t, egid: *mut ::gid_t, sgid: *mut ::gid_t) -> ::c_int;
     pub fn acct(filename: *const ::c_char) -> ::c_int;

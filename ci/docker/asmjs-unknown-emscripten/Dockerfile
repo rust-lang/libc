@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # This is a workaround to avoid the interaction with tzdata.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,7 +15,8 @@ RUN apt-get install -y --no-install-recommends \
     libxml2 \
     python3 \
     python3-distutils \
-    xz-utils
+    xz-utils \
+    bzip2
 
 COPY emscripten.sh /
 RUN bash /emscripten.sh

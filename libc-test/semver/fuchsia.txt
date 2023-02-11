@@ -256,6 +256,7 @@ ERFKILL
 ESOCKTNOSUPPORT
 ESRMNT
 ESTRPIPE
+ETH_P_IP
 ETIME
 ETOOMANYREFS
 EUCLEAN
@@ -377,6 +378,9 @@ IPPROTO_TP
 IPPROTO_UDPLITE
 IPV6_ADD_MEMBERSHIP
 IPV6_DROP_MEMBERSHIP
+IPV6_RECVPKTINFO
+IPV6_RECVTCLASS
+IPV6_TCLASS
 IP_FREEBIND
 IP_TOS
 IP_RECVTOS
@@ -667,6 +671,7 @@ PR_SET_NAME
 PR_SET_NO_NEW_PRIVS
 PR_SET_PDEATHSIG
 PR_SET_PTRACER
+PR_SET_PTRACER_ANY
 PR_SET_SECCOMP
 PR_SET_SECUREBITS
 PR_SET_THP_DISABLE
@@ -1164,6 +1169,9 @@ accept4
 acct
 aiocb
 atof
+atoi
+atol
+atoll
 blkcnt64_t
 brk
 clearenv
@@ -1228,6 +1236,7 @@ idtype_t
 if_freenameindex
 if_nameindex
 ifaddrs
+in6_pktinfo
 initgroups
 ino64_t
 input_absinfo
@@ -1333,10 +1342,8 @@ setfsuid
 setgroups
 sethostname
 setpwent
-setregid
 setresgid
 setresuid
-setreuid
 settimeofday
 shmat
 shmatt_t
@@ -1363,6 +1370,8 @@ stat64
 statfs
 statfs64
 statvfs64
+strtoll
+strtoull
 swapoff
 swapon
 sync
