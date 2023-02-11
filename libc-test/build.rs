@@ -2311,9 +2311,6 @@ fn test_freebsd(target: &str) {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
-            // `fspacectl` was introduced in FreeBSD 14
-            "fspacectl" if Some(14) > freebsd_ver => true,
-
             // The `uname` function in the `utsname.h` FreeBSD header is a C
             // inline function (has no symbol) that calls the `__xuname` symbol.
             // Therefore the function pointer comparison does not make sense for it.
@@ -2325,7 +2322,7 @@ fn test_freebsd(target: &str) {
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" => true,
 
-            // Those introduced in FreeBSD 12.
+            // Those are introduced in FreeBSD 12.
             "clock_nanosleep" | "getrandom" | "elf_aux_info" | "setproctitle_fast"
             | "timingsafe_bcmp" | "timingsafe_memcmp"
                 if Some(12) > freebsd_ver =>
@@ -2333,28 +2330,28 @@ fn test_freebsd(target: &str) {
                 true
             }
 
-            // Those are introduced in FreeBSD 14.
-            "sched_getaffinity" | "sched_setaffinity" | "sched_getcpu"
-                if Some(14) > freebsd_ver =>
-            {
-                true
-            }
-
-            // This is not available in FreeBSD 12.
-            "SOCKCRED2SIZE" if Some(13) > freebsd_ver => true,
-
-            // Those are not available in FreeBSD 12.
-            "memfd_create" | "shm_create_largepage" | "shm_rename" | "getentropy" | "eventfd"
+            // Those are introduced in FreeBSD 13.
+            "memfd_create"
+            | "shm_create_largepage"
+            | "shm_rename"
+            | "getentropy"
+            | "eventfd"
+            | "SOCKCRED2SIZE"
+            | "getlocalbase"
+            | "aio_readv"
+            | "aio_writev"
+            | "copy_file_range"
                 if Some(13) > freebsd_ver =>
             {
                 true
             }
 
-            // Added in FreeBSD 13.
-            "getlocalbase" if Some(13) > freebsd_ver => true,
-            "aio_readv" if Some(13) > freebsd_ver => true,
-            "aio_writev" if Some(13) > freebsd_ver => true,
-            "copy_file_range" if Some(13) > freebsd_ver => true,
+            // Those are introduced in FreeBSD 14.
+            "sched_getaffinity" | "sched_setaffinity" | "sched_getcpu" | "fspacectl"
+                if Some(14) > freebsd_ver =>
+            {
+                true
+            }
 
             _ => false,
         }
