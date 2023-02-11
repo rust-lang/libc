@@ -3018,6 +3018,7 @@ idtype_t
 if_freenameindex
 if_nameindex
 ifaddrs
+ifconf
 ifreq
 in6_ifreq
 in6_pktinfo
