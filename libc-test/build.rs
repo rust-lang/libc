@@ -2299,7 +2299,12 @@ fn test_freebsd(target: &str) {
             "memory_type" => true,
             "memory_type_list" => true,
             "pidfh" => true,
-            "sctp_gen_error_cause" | "sctp_error_missing_param" => true,
+            "sctp_gen_error_cause"
+            | "sctp_error_missing_param"
+            | "sctp_remote_error"
+            | "sctp_assoc_change"
+            | "sctp_send_failed_event"
+            | "sctp_stream_reset_event" => true,
 
             _ => false,
         }

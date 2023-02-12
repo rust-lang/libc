@@ -1225,6 +1225,100 @@ s! {
         pub ss_total_sndbuf: u32,
         pub ss_total_recv_buf: u32,
     }
+
+    pub struct sctp_assoc_change {
+        pub sac_type: u16,
+        pub sac_flags: u16,
+        pub sac_length: u32,
+        pub sac_state: u16,
+        pub sac_error: u16,
+        pub sac_outbound_streams: u16,
+        pub sac_inbound_streams: u16,
+        pub sac_assoc_id: ::sctp_assoc_t,
+        pub sac_info: [u8; 0],
+    }
+
+    pub struct sctp_paddr_change {
+        pub spc_type: u16,
+        pub spc_flags: u16,
+        pub spc_length: u32,
+        pub spc_aaddr: ::sockaddr_storage,
+        pub spc_state: u32,
+        pub spc_error: u32,
+        pub spc_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_remote_error {
+        pub sre_type: u16,
+        pub sre_flags: u16,
+        pub sre_length: u32,
+        pub sre_error: u16,
+        pub sre_assoc_id: ::sctp_assoc_t,
+        pub sre_data: [u8; 0],
+    }
+
+    pub struct sctp_send_failed_event {
+        pub ssfe_type: u16,
+        pub ssfe_flags: u16,
+        pub ssfe_length: u32,
+        pub ssfe_error: u32,
+        pub ssfe_info: sctp_sndinfo,
+        pub ssfe_assoc_id: ::sctp_assoc_t,
+        pub ssfe_data: [u8; 0],
+    }
+
+    pub struct sctp_shutdown_event {
+        pub sse_type: u16,
+        pub sse_flags: u16,
+        pub sse_length: u32,
+        pub sse_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_adaptation_event {
+        pub sai_type: u16,
+        pub sai_flags: u16,
+        pub sai_length: u32,
+        pub sai_adaptation_ind: u32,
+        pub sai_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_setadaptation {
+        pub ssb_adaptation_ind: u32,
+    }
+
+    pub struct sctp_pdapi_event {
+        pub pdapi_type: u16,
+        pub pdapi_flags: u16,
+        pub pdapi_length: u32,
+        pub pdapi_indication: u32,
+        pub pdapi_stream: u16,
+        pub pdapi_seq: u16,
+        pub pdapi_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_sender_dry_event {
+        pub sender_dry_type: u16,
+        pub sender_dry_flags: u16,
+        pub sender_dry_length: u32,
+        pub sender_dry_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_stream_reset_event {
+        pub strreset_type: u16,
+        pub strreset_flags: u16,
+        pub strreset_length: u32,
+        pub strreset_assoc_id: ::sctp_assoc_t,
+        pub strreset_stream_list: [u16; 0],
+    }
+
+    pub struct sctp_stream_change_event {
+        pub strchange_type: u16,
+        pub strchange_flags: u16,
+        pub strchange_length: u32,
+        pub strchange_assoc_id: ::sctp_assoc_t,
+        pub strchange_instrms: u16,
+        pub strchange_outstrms: u16,
+    }
 }
 
 s_no_extra_traits! {
@@ -4492,6 +4586,52 @@ pub const SCTP_CONTEXT: ::c_int = 0x0000001a;
 pub const SCTP_EXPLICIT_EOR: ::c_int = 0x00000001b;
 pub const SCTP_REUSE_PORT: ::c_int = 0x00000001c;
 pub const SCTP_AUTH_DEACTIVATE_KEY: ::c_int = 0x00000001d;
+
+pub const SCTP_COMM_UP: ::c_int = 0x0001;
+pub const SCTP_COMM_LOST: ::c_int = 0x0002;
+pub const SCTP_RESTART: ::c_int = 0x0003;
+pub const SCTP_SHUTDOWN_COMP: ::c_int = 0x0004;
+pub const SCTP_CANT_STR_ASSOC: ::c_int = 0x0005;
+
+pub const SCTP_ASSOC_SUPPORTS_PR: ::c_int = 0x01;
+pub const SCTP_ASSOC_SUPPORTS_AUTH: ::c_int = 0x02;
+pub const SCTP_ASSOC_SUPPORTS_ASCONF: ::c_int = 0x03;
+pub const SCTP_ASSOC_SUPPORTS_MULTIBUF: ::c_int = 0x04;
+pub const SCTP_ASSOC_SUPPORTS_RE_CONFIG: ::c_int = 0x05;
+pub const SCTP_ASSOC_SUPPORTS_INTERLEAVING: ::c_int = 0x06;
+pub const SCTP_ASSOC_SUPPORTS_MAX: ::c_int = 0x06;
+
+pub const SCTP_ADDR_AVAILABLE: ::c_int = 0x0001;
+pub const SCTP_ADDR_UNREACHABLE: ::c_int = 0x0002;
+pub const SCTP_ADDR_REMOVED: ::c_int = 0x0003;
+pub const SCTP_ADDR_ADDED: ::c_int = 0x0004;
+pub const SCTP_ADDR_MADE_PRIM: ::c_int = 0x0005;
+pub const SCTP_ADDR_CONFIRMED: ::c_int = 0x0006;
+
+pub const SCTP_ACTIVE: ::c_int = 0x0001;
+pub const SCTP_INACTIVE: ::c_int = 0x0002;
+pub const SCTP_UNCONFIRMED: ::c_int = 0x0200;
+
+pub const SCTP_DATA_UNSENT: ::c_int = 0x0001;
+pub const SCTP_DATA_SENT: ::c_int = 0x0002;
+
+pub const SCTP_PARTIAL_DELIVERY_ABORTED: ::c_int = 0x0001;
+
+pub const SCTP_AUTH_NEW_KEY: ::c_int = 0x0001;
+pub const SCTP_AUTH_NEWKEY: ::c_int = SCTP_AUTH_NEW_KEY;
+pub const SCTP_AUTH_NO_AUTH: ::c_int = 0x0002;
+pub const SCTP_AUTH_FREE_KEY: ::c_int = 0x0003;
+
+pub const SCTP_STREAM_RESET_INCOMING_SSN: ::c_int = 0x0001;
+pub const SCTP_STREAM_RESET_OUTGOING_SSN: ::c_int = 0x0002;
+pub const SCTP_STREAM_RESET_DENIED: ::c_int = 0x0004;
+pub const SCTP_STREAM_RESET_FAILED: ::c_int = 0x0008;
+
+pub const SCTP_ASSOC_RESET_DENIED: ::c_int = 0x0004;
+pub const SCTP_ASSOC_RESET_FAILED: ::c_int = 0x0008;
+
+pub const SCTP_STREAM_CHANGE_DENIED: ::c_int = 0x0004;
+pub const SCTP_STREAM_CHANGE_FAILED: ::c_int = 0x0008;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
