@@ -1521,6 +1521,7 @@ syscall
 sysctl
 sysctlbyname
 sysctldesc
+tcp_info
 telldir
 timer_create
 timer_delete
