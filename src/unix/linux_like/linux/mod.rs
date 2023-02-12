@@ -28,6 +28,7 @@ pub type __u16 = c_ushort;
 pub type __s16 = c_short;
 pub type __u32 = c_uint;
 pub type __s32 = c_int;
+pub type __be16 = __u16;
 
 pub type Elf32_Half = u16;
 pub type Elf32_Word = u32;
@@ -937,6 +938,132 @@ s! {
         pub auth_keynumber: __u16,
     }
 
+    pub struct sctp_assoc_change {
+        pub sac_type: __u16,
+        pub sac_flags: __u16,
+        pub sac_length: __u32,
+        pub sac_state: __u16,
+        pub sac_error: __u16,
+        pub sac_outbound_streams: __u16,
+        pub sac_inbound_streams: __u16,
+        pub sac_assoc_id: crate::sctp_assoc_t,
+        pub sac_info: [__u8; 0],
+    }
+
+    pub struct sctp_remote_error {
+        pub sre_type: __u16,
+        pub sre_flags: __u16,
+        pub sre_length: __u32,
+        pub sre_error: __be16,
+        pub sre_assoc_id: crate::sctp_assoc_t,
+        pub sre_data: [__u8; 0],
+    }
+
+    pub struct sctp_send_failed {
+        pub ssf_type: __u16,
+        pub ssf_flags: __u16,
+        pub ssf_length: __u32,
+        pub ssf_error: __u32,
+        pub ssf_info: sctp_sndrcvinfo,
+        pub ssf_assoc_id: crate::sctp_assoc_t,
+        pub ssf_data: [__u8; 0],
+    }
+
+    pub struct sctp_send_failed_event {
+        pub ssf_type: __u16,
+        pub ssf_flags: __u16,
+        pub ssf_length: __u32,
+        pub ssf_error: __u32,
+        pub ssfe_info: sctp_sndinfo,
+        pub ssf_assoc_id: crate::sctp_assoc_t,
+        pub ssf_data: [__u8; 0],
+    }
+
+    pub struct sctp_shutdown_event {
+        pub sse_type: __u16,
+        pub sse_flags: __u16,
+        pub sse_length: __u32,
+        pub sse_assoc_id: crate::sctp_assoc_t,
+    }
+
+    pub struct sctp_adaptation_event {
+        pub sai_type: __u16,
+        pub sai_flags: __u16,
+        pub sai_length: __u32,
+        pub sai_adaptation_ind: __u32,
+        pub sai_assoc_id: crate::sctp_assoc_t,
+    }
+
+    pub struct sctp_pdapi_event {
+        pub pdapi_type: __u16,
+        pub pdapi_flags: __u16,
+        pub pdapi_length: __u32,
+        pub pdapi_indication: __u32,
+        pub pdapi_assoc_id: crate::sctp_assoc_t,
+        pub pdapi_stream: __u32,
+        pub pdapi_seq: __u32,
+    }
+
+    pub struct sctp_authkey_event {
+        pub auth_type: __u16,
+        pub auth_flags: __u16,
+        pub auth_length: __u32,
+        pub auth_keynumber: __u16,
+        pub auth_altkeynumber: __u16,
+        pub auth_indication: __u32,
+        pub auth_assoc_id: crate::sctp_assoc_t,
+    }
+
+    pub struct sctp_sender_dry_event {
+        pub sender_dry_type: __u16,
+        pub sender_dry_flags: __u16,
+        pub sender_dry_length: __u32,
+        pub sender_dry_assoc_id: crate::sctp_assoc_t,
+    }
+
+    pub struct sctp_stream_reset_event {
+        pub strreset_type: __u16,
+        pub strreset_flags: __u16,
+        pub strreset_length: __u32,
+        pub strreset_assoc_id: crate::sctp_assoc_t,
+        pub strreset_stream_list: [__u16; 0],
+    }
+
+    pub struct sctp_assoc_reset_event {
+        pub assocreset_type: __u16,
+        pub assocreset_flags: __u16,
+        pub assocreset_length: __u32,
+        pub assocreset_assoc_id: crate::sctp_assoc_t,
+        pub assocreset_local_tsn: __u32,
+        pub assocreset_remote_tsn: __u32,
+    }
+
+    pub struct sctp_stream_change_event {
+        pub strchange_type: __u16,
+        pub strchange_flags: __u16,
+        pub strchange_length: __u32,
+        pub strchange_assoc_id: crate::sctp_assoc_t,
+        pub strchange_instrms: __u16,
+        pub strchange_outstrms: __u16,
+    }
+
+    pub struct sctp_event_subscribe {
+        pub sctp_data_io_event: __u8,
+        pub sctp_association_event: __u8,
+        pub sctp_address_event: __u8,
+        pub sctp_send_failure_event: __u8,
+        pub sctp_peer_error_event: __u8,
+        pub sctp_shutdown_event: __u8,
+        pub sctp_partial_delivery_event: __u8,
+        pub sctp_adaptation_layer_event: __u8,
+        pub sctp_authentication_event: __u8,
+        pub sctp_sender_dry_event: __u8,
+        pub sctp_stream_reset_event: __u8,
+        pub sctp_assoc_reset_event: __u8,
+        pub sctp_stream_change_event: __u8,
+        pub sctp_send_failure_event_event: __u8,
+    }
+
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -1469,6 +1596,17 @@ s_no_extra_traits! {
         pub flags: c_int,
         pub tx_type: c_int,
         pub rx_filter: c_int,
+    }
+
+    #[repr(packed(4))]
+    pub struct sctp_paddr_change {
+        pub spc_type: __u16,
+        pub spc_flags: __u16,
+        pub spc_length: __u32,
+        pub spc_aaddr: crate::sockaddr_storage,
+        pub spc_state: c_int,
+        pub spc_error: c_int,
+        pub spc_assoc_id: crate::sctp_assoc_t,
     }
 
     pub struct dirent64 {
@@ -2208,6 +2346,19 @@ cfg_if! {
                 f.debug_struct("iwreq")
                     .field("ifr_ifrn", &self.ifr_ifrn)
                     .field("u", &self.u)
+                    .finish()
+            }
+        }
+
+        impl fmt::Debug for sctp_paddr_change {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("sctp_paddr_change")
+                    .field("spc_type", &{ self.spc_type })
+                    .field("spc_flags", &{ self.spc_flags })
+                    .field("spc_aaddr", &{ self.spc_aaddr })
+                    .field("spc_state", &{ self.spc_state })
+                    .field("spc_error", &{ self.spc_error })
+                    .field("spc_assoc_id", &{ self.spc_assoc_id })
                     .finish()
             }
         }
@@ -5885,6 +6036,28 @@ pub(crate) const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
 pub(crate) const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_READ | _IOC_WRITE, ty, nr, size_of::<T>())
 }
+
+pub const SCTP_COMM_UP: c_int = 0;
+pub const SCTP_COMM_LOST: c_int = 1;
+pub const SCTP_RESTART: c_int = 2;
+pub const SCTP_SHUTDOWN_COMP: c_int = 3;
+pub const SCTP_CANT_STR_ASSOC: c_int = 4;
+
+pub const SCTP_ADDR_AVAILABLE: c_int = 0;
+pub const SCTP_ADDR_UNREACHABLE: c_int = 1;
+pub const SCTP_ADDR_REMOVED: c_int = 2;
+pub const SCTP_ADDR_ADDED: c_int = 3;
+pub const SCTP_ADDR_MADE_PRIM: c_int = 4;
+pub const SCTP_ADDR_CONFIRMED: c_int = 5;
+
+pub const SCTP_DATA_UNSENT: c_int = 0;
+pub const SCTP_DATA_SENT: c_int = 1;
+
+pub const SCTP_PARTIAL_DELIVERY_ABORTED: c_int = 0;
+
+pub const SCTP_AUTH_NEW_KEY: c_int = 0;
+pub const SCTP_AUTH_FREE_KEY: c_int = 1;
+pub const SCTP_AUTH_NO_AUTH: c_int = 2;
 
 f! {
     pub fn NLA_ALIGN(len: c_int) -> c_int {

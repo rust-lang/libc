@@ -3835,6 +3835,12 @@ fn test_linux(target: &str) {
 
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
+            "sctp_stream_reset_event"
+            | "sctp_assoc_change"
+            | "sctp_remote_error"
+            | "sctp_event_subscribe"
+            | "sctp_send_failed"
+            | "sctp_send_failed_event" => true,
 
             // FIXME: requires >= 6.1 kernel headers
             "canxl_frame" => true,
