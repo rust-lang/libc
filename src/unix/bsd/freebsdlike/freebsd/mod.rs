@@ -2523,8 +2523,14 @@ pub const SF_USER_READAHEAD: ::c_int = 0x00000008;
 pub const SF_NOCACHE: ::c_int = 0x00000010;
 pub const O_CLOEXEC: ::c_int = 0x00100000;
 pub const O_DIRECTORY: ::c_int = 0x00020000;
+pub const O_DSYNC: ::c_int = 0x01000000;
+pub const O_EMPTY_PATH: ::c_int = 0x02000000;
 pub const O_EXEC: ::c_int = 0x00040000;
+pub const O_PATH: ::c_int = 0x00400000;
+pub const O_RESOLVE_BENEATH: ::c_int = 0x00800000;
+pub const O_SEARCH: ::c_int = O_EXEC;
 pub const O_TTY_INIT: ::c_int = 0x00080000;
+pub const O_VERIFY: ::c_int = 0x00200000;
 pub const F_GETLK: ::c_int = 11;
 pub const F_SETLK: ::c_int = 12;
 pub const F_SETLKW: ::c_int = 13;
@@ -5096,6 +5102,12 @@ extern "C" {
     pub fn getpagesizes(pagesize: *mut ::size_t, nelem: ::c_int) -> ::c_int;
 
     pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
+    pub fn clock_nanosleep(
+        clk_id: ::clockid_t,
+        flags: ::c_int,
+        rqtp: *const ::timespec,
+        rmtp: *mut ::timespec,
+    ) -> ::c_int;
 
     pub fn shm_create_largepage(
         path: *const ::c_char,
@@ -5111,6 +5123,17 @@ extern "C" {
     ) -> ::c_int;
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn setaudit(auditinfo: *const auditinfo_t) -> ::c_int;
+
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
+
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
+    pub fn elf_aux_info(aux: ::c_int, buf: *mut ::c_void, buflen: ::c_int) -> ::c_int;
+    pub fn setproctitle_fast(fmt: *const ::c_char, ...);
+    pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
+    pub fn timingsafe_memcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn _umtx_op(
         obj: *mut ::c_void,
