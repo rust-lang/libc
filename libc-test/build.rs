@@ -2413,6 +2413,9 @@ fn test_freebsd(target: &str) {
             ("statinfo", "snap_time") => true,
             ("sctp_sndrcvinfo", "__reserve_pad") => true,
             ("sctp_extrcvinfo", "__reserve_pad") => true,
+            // `tcp_snd_wscale` and `tcp_rcv_wscale` are bitfields
+            ("tcp_info", "tcp_snd_wscale") => true,
+            ("tcp_info", "tcp_rcv_wscale") => true,
 
             _ => false,
         }
