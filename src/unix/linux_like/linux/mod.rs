@@ -47,7 +47,7 @@ pub type priority_t = u8;
 pub type name_t = u64;
 
 // sys/types.h
-pub type __caddr_t = *mut ::c_char;
+pub type caddr_t = *mut ::c_char;
 
 pub type iconv_t = *mut ::c_void;
 
@@ -724,7 +724,7 @@ s_no_extra_traits! {
 
     #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
-        pub ifcu_buf: ::__caddr_t,
+        pub ifcu_buf: ::caddr_t,
         pub ifcu_req: *mut ifreq,
     }
 
