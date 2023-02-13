@@ -51,6 +51,9 @@ pub type caddr_t = *mut ::c_char;
 
 pub type iconv_t = *mut ::c_void;
 
+// linux/sctp.h
+pub type sctp_assoc_t = ::__s32;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos64_t {}
@@ -633,6 +636,63 @@ s! {
         pub has_arg: ::c_int,
         pub flag: *mut ::c_int,
         pub val: ::c_int,
+    }
+
+    // linux/sctp.h
+
+    pub struct sctp_initmsg {
+        pub sinit_num_ostreams: ::__u16,
+        pub sinit_max_instreams: ::__u16,
+        pub sinit_max_attempts: ::__u16,
+        pub sinit_max_init_timeo: ::__u16,
+    }
+
+    pub struct sctp_sndrcvinfo {
+        pub sinfo_stream: ::__u16,
+        pub sinfo_ssn: ::__u16,
+        pub sinfo_flags: ::__u16,
+        pub sinfo_ppid: ::__u32,
+        pub sinfo_context: ::__u32,
+        pub sinfo_timetolive: ::__u32,
+        pub sinfo_tsn: ::__u32,
+        pub sinfo_cumtsn: ::__u32,
+        pub sinfo_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_sndinfo {
+        pub snd_sid: ::__u16,
+        pub snd_flags: ::__u16,
+        pub snd_ppid: ::__u32,
+        pub snd_context: ::__u32,
+        pub snd_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_rcvinfo {
+        pub rcv_sid: ::__u16,
+        pub rcv_ssn: ::__u16,
+        pub rcv_flags: ::__u16,
+        pub rcv_ppid: ::__u32,
+        pub rcv_tsn: ::__u32,
+        pub rcv_cumtsn: ::__u32,
+        pub rcv_context: ::__u32,
+        pub rcv_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_nxtinfo {
+        pub nxt_sid: ::__u16,
+        pub nxt_flags: ::__u16,
+        pub nxt_ppid: ::__u32,
+        pub nxt_length: ::__u32,
+        pub nxt_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_prinfo {
+        pub pr_policy: ::__u16,
+        pub pr_value: ::__u32,
+    }
+
+    pub struct sctp_authinfo {
+        pub auth_keynumber: ::__u16,
     }
 }
 
@@ -1899,6 +1959,7 @@ pub const IPC_STAT: ::c_int = 2;
 pub const IPC_INFO: ::c_int = 3;
 pub const MSG_STAT: ::c_int = 11;
 pub const MSG_INFO: ::c_int = 12;
+pub const MSG_NOTIFICATION: ::c_int = 0x8000;
 
 pub const MSG_NOERROR: ::c_int = 0o10000;
 pub const MSG_EXCEPT: ::c_int = 0o20000;
@@ -3502,6 +3563,27 @@ pub const FUTEX_PRIVATE_FLAG: ::c_int = 128;
 pub const FUTEX_CLOCK_REALTIME: ::c_int = 256;
 pub const FUTEX_CMD_MASK: ::c_int = !(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME);
 
+pub const FUTEX_BITSET_MATCH_ANY: ::c_int = 0xffffffff;
+
+pub const FUTEX_OP_SET: ::c_int = 0;
+pub const FUTEX_OP_ADD: ::c_int = 1;
+pub const FUTEX_OP_OR: ::c_int = 2;
+pub const FUTEX_OP_ANDN: ::c_int = 3;
+pub const FUTEX_OP_XOR: ::c_int = 4;
+
+pub const FUTEX_OP_OPARG_SHIFT: ::c_int = 8;
+
+pub const FUTEX_OP_CMP_EQ: ::c_int = 0;
+pub const FUTEX_OP_CMP_NE: ::c_int = 1;
+pub const FUTEX_OP_CMP_LT: ::c_int = 2;
+pub const FUTEX_OP_CMP_LE: ::c_int = 3;
+pub const FUTEX_OP_CMP_GT: ::c_int = 4;
+pub const FUTEX_OP_CMP_GE: ::c_int = 5;
+
+pub fn FUTEX_OP(op: ::c_int, oparg: ::c_int, cmp: ::c_int, cmparg: ::c_int) -> ::c_int {
+    ((op & 0xf) << 28) | ((cmp & 0xf) << 24) | ((oparg & 0xfff) << 12) | (cmparg & 0xfff)
+}
+
 // linux/reboot.h
 pub const LINUX_REBOOT_MAGIC1: ::c_int = 0xfee1dead;
 pub const LINUX_REBOOT_MAGIC2: ::c_int = 672274793;
@@ -3676,6 +3758,82 @@ pub const J1939_EE_INFO_RX_ABORT: ::c_int = 4;
 
 pub const J1939_FILTER_MAX: ::c_int = 512;
 
+// linux/sctp.h
+pub const SCTP_FUTURE_ASSOC: ::c_int = 0;
+pub const SCTP_CURRENT_ASSOC: ::c_int = 1;
+pub const SCTP_ALL_ASSOC: ::c_int = 2;
+pub const SCTP_RTOINFO: ::c_int = 0;
+pub const SCTP_ASSOCINFO: ::c_int = 1;
+pub const SCTP_INITMSG: ::c_int = 2;
+pub const SCTP_NODELAY: ::c_int = 3;
+pub const SCTP_AUTOCLOSE: ::c_int = 4;
+pub const SCTP_SET_PEER_PRIMARY_ADDR: ::c_int = 5;
+pub const SCTP_PRIMARY_ADDR: ::c_int = 6;
+pub const SCTP_ADAPTATION_LAYER: ::c_int = 7;
+pub const SCTP_DISABLE_FRAGMENTS: ::c_int = 8;
+pub const SCTP_PEER_ADDR_PARAMS: ::c_int = 9;
+pub const SCTP_DEFAULT_SEND_PARAM: ::c_int = 10;
+pub const SCTP_EVENTS: ::c_int = 11;
+pub const SCTP_I_WANT_MAPPED_V4_ADDR: ::c_int = 12;
+pub const SCTP_MAXSEG: ::c_int = 13;
+pub const SCTP_STATUS: ::c_int = 14;
+pub const SCTP_GET_PEER_ADDR_INFO: ::c_int = 15;
+pub const SCTP_DELAYED_ACK_TIME: ::c_int = 16;
+pub const SCTP_DELAYED_ACK: ::c_int = SCTP_DELAYED_ACK_TIME;
+pub const SCTP_DELAYED_SACK: ::c_int = SCTP_DELAYED_ACK_TIME;
+pub const SCTP_CONTEXT: ::c_int = 17;
+pub const SCTP_FRAGMENT_INTERLEAVE: ::c_int = 18;
+pub const SCTP_PARTIAL_DELIVERY_POINT: ::c_int = 19;
+pub const SCTP_MAX_BURST: ::c_int = 20;
+pub const SCTP_AUTH_CHUNK: ::c_int = 21;
+pub const SCTP_HMAC_IDENT: ::c_int = 22;
+pub const SCTP_AUTH_KEY: ::c_int = 23;
+pub const SCTP_AUTH_ACTIVE_KEY: ::c_int = 24;
+pub const SCTP_AUTH_DELETE_KEY: ::c_int = 25;
+pub const SCTP_PEER_AUTH_CHUNKS: ::c_int = 26;
+pub const SCTP_LOCAL_AUTH_CHUNKS: ::c_int = 27;
+pub const SCTP_GET_ASSOC_NUMBER: ::c_int = 28;
+pub const SCTP_GET_ASSOC_ID_LIST: ::c_int = 29;
+pub const SCTP_AUTO_ASCONF: ::c_int = 30;
+pub const SCTP_PEER_ADDR_THLDS: ::c_int = 31;
+pub const SCTP_RECVRCVINFO: ::c_int = 32;
+pub const SCTP_RECVNXTINFO: ::c_int = 33;
+pub const SCTP_DEFAULT_SNDINFO: ::c_int = 34;
+pub const SCTP_AUTH_DEACTIVATE_KEY: ::c_int = 35;
+pub const SCTP_REUSE_PORT: ::c_int = 36;
+pub const SCTP_PEER_ADDR_THLDS_V2: ::c_int = 37;
+pub const SCTP_PR_SCTP_NONE: ::c_int = 0x0000;
+pub const SCTP_PR_SCTP_TTL: ::c_int = 0x0010;
+pub const SCTP_PR_SCTP_RTX: ::c_int = 0x0020;
+pub const SCTP_PR_SCTP_PRIO: ::c_int = 0x0030;
+pub const SCTP_PR_SCTP_MAX: ::c_int = SCTP_PR_SCTP_PRIO;
+pub const SCTP_PR_SCTP_MASK: ::c_int = 0x0030;
+pub const SCTP_ENABLE_RESET_STREAM_REQ: ::c_int = 0x01;
+pub const SCTP_ENABLE_RESET_ASSOC_REQ: ::c_int = 0x02;
+pub const SCTP_ENABLE_CHANGE_ASSOC_REQ: ::c_int = 0x04;
+pub const SCTP_ENABLE_STRRESET_MASK: ::c_int = 0x07;
+pub const SCTP_STREAM_RESET_INCOMING: ::c_int = 0x01;
+pub const SCTP_STREAM_RESET_OUTGOING: ::c_int = 0x02;
+
+pub const SCTP_INIT: ::c_int = 0;
+pub const SCTP_SNDRCV: ::c_int = 1;
+pub const SCTP_SNDINFO: ::c_int = 2;
+pub const SCTP_RCVINFO: ::c_int = 3;
+pub const SCTP_NXTINFO: ::c_int = 4;
+pub const SCTP_PRINFO: ::c_int = 5;
+pub const SCTP_AUTHINFO: ::c_int = 6;
+pub const SCTP_DSTADDRV4: ::c_int = 7;
+pub const SCTP_DSTADDRV6: ::c_int = 8;
+
+pub const SCTP_UNORDERED: ::c_int = 1 << 0;
+pub const SCTP_ADDR_OVER: ::c_int = 1 << 1;
+pub const SCTP_ABORT: ::c_int = 1 << 2;
+pub const SCTP_SACK_IMMEDIATELY: ::c_int = 1 << 3;
+pub const SCTP_SENDALL: ::c_int = 1 << 6;
+pub const SCTP_PR_SCTP_ALL: ::c_int = 1 << 7;
+pub const SCTP_NOTIFICATION: ::c_int = MSG_NOTIFICATION;
+pub const SCTP_EOF: ::c_int = ::MSG_FIN;
+
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
@@ -3751,6 +3909,20 @@ f! {
         set1.bits == set2.bits
     }
 
+    pub fn SCTP_PR_INDEX(policy: ::c_int) -> ::c_int {
+        policy >> 4 - 1
+    }
+
+    pub fn SCTP_PR_POLICY(policy: ::c_int) -> ::c_int {
+        policy & SCTP_PR_SCTP_MASK
+    }
+
+    pub fn SCTP_PR_SET_POLICY(flags: &mut ::c_int, policy: ::c_int) -> () {
+        *flags &= !SCTP_PR_SCTP_MASK;
+        *flags |= policy;
+        ()
+    }
+
     pub fn major(dev: ::dev_t) -> ::c_uint {
         let mut major = 0;
         major |= (dev & 0x00000000000fff00) >> 8;
@@ -3816,6 +3988,18 @@ safe_f! {
         dev |= (minor & 0x000000ff) << 0;
         dev |= (minor & 0xffffff00) << 12;
         dev
+    }
+
+    pub {const} fn SCTP_PR_TTL_ENABLED(policy: ::c_int) -> bool {
+        policy == SCTP_PR_SCTP_TTL
+    }
+
+    pub {const} fn SCTP_PR_RTX_ENABLED(policy: ::c_int) -> bool {
+        policy == SCTP_PR_SCTP_RTX
+    }
+
+    pub {const} fn SCTP_PR_PRIO_ENABLED(policy: ::c_int) -> bool {
+        policy == SCTP_PR_SCTP_PRIO
     }
 }
 

@@ -996,6 +996,68 @@ s! {
         pub pcbcnt: u32,
     }
 
+    pub struct tcp_info {
+        pub tcpi_state: u8,
+        pub __tcpi_ca_state: u8,
+        pub __tcpi_retransmits: u8,
+        pub __tcpi_probes: u8,
+        pub __tcpi_backoff: u8,
+        pub tcpi_options: u8,
+        pub tcp_snd_wscale: u8,
+        pub tcp_rcv_wscale: u8,
+        pub tcpi_rto: u32,
+        pub __tcpi_ato: u32,
+        pub tcpi_snd_mss: u32,
+        pub tcpi_rcv_mss: u32,
+        pub __tcpi_unacked: u32,
+        pub __tcpi_sacked: u32,
+        pub __tcpi_lost: u32,
+        pub __tcpi_retrans: u32,
+        pub __tcpi_fackets: u32,
+        pub __tcpi_last_data_sent: u32,
+        pub __tcpi_last_ack_sent: u32,
+        pub tcpi_last_data_recv: u32,
+        pub __tcpi_last_ack_recv: u32,
+        pub __tcpi_pmtu: u32,
+        pub __tcpi_rcv_ssthresh: u32,
+        pub tcpi_rtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub __tcpi_advmss: u32,
+        pub __tcpi_reordering: u32,
+        pub __tcpi_rcv_rtt: u32,
+        pub tcpi_rcv_space: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_snd_bwnd: u32,
+        pub tcpi_snd_nxt: u32,
+        pub tcpi_rcv_nxt: u32,
+        pub tcpi_toe_tid: u32,
+        pub tcpi_snd_rexmitpack: u32,
+        pub tcpi_rcv_ooopack: u32,
+        pub tcpi_snd_zerowin: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_delivered_ce: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_received_ce: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_e1_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_e0_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_ce_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_e1_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_e0_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_ce_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_pad: [u32; 19],
+        #[cfg(not(freebsd14))]
+        pub __tcpi_pad: [u32; 26],
+    }
+
     pub struct _umtx_time {
         pub _timeout: ::timespec,
         pub _flags: u32,
@@ -2461,8 +2523,14 @@ pub const SF_USER_READAHEAD: ::c_int = 0x00000008;
 pub const SF_NOCACHE: ::c_int = 0x00000010;
 pub const O_CLOEXEC: ::c_int = 0x00100000;
 pub const O_DIRECTORY: ::c_int = 0x00020000;
+pub const O_DSYNC: ::c_int = 0x01000000;
+pub const O_EMPTY_PATH: ::c_int = 0x02000000;
 pub const O_EXEC: ::c_int = 0x00040000;
+pub const O_PATH: ::c_int = 0x00400000;
+pub const O_RESOLVE_BENEATH: ::c_int = 0x00800000;
+pub const O_SEARCH: ::c_int = O_EXEC;
 pub const O_TTY_INIT: ::c_int = 0x00080000;
+pub const O_VERIFY: ::c_int = 0x00200000;
 pub const F_GETLK: ::c_int = 11;
 pub const F_SETLK: ::c_int = 12;
 pub const F_SETLKW: ::c_int = 13;
@@ -5034,6 +5102,12 @@ extern "C" {
     pub fn getpagesizes(pagesize: *mut ::size_t, nelem: ::c_int) -> ::c_int;
 
     pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
+    pub fn clock_nanosleep(
+        clk_id: ::clockid_t,
+        flags: ::c_int,
+        rqtp: *const ::timespec,
+        rmtp: *mut ::timespec,
+    ) -> ::c_int;
 
     pub fn shm_create_largepage(
         path: *const ::c_char,
@@ -5049,6 +5123,17 @@ extern "C" {
     ) -> ::c_int;
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn setaudit(auditinfo: *const auditinfo_t) -> ::c_int;
+
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
+
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
+    pub fn elf_aux_info(aux: ::c_int, buf: *mut ::c_void, buflen: ::c_int) -> ::c_int;
+    pub fn setproctitle_fast(fmt: *const ::c_char, ...);
+    pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
+    pub fn timingsafe_memcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn _umtx_op(
         obj: *mut ::c_void,
