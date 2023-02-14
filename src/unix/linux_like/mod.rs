@@ -1784,6 +1784,8 @@ extern "C" {
     pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
+
+    pub fn strchrnul(s: *const ::c_char, c: ::c_int) -> *mut ::c_char;
 }
 
 cfg_if! {
