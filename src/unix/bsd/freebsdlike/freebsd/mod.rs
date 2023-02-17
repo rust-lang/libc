@@ -4586,6 +4586,30 @@ pub const SCTP_CONTEXT: ::c_int = 0x0000001a;
 pub const SCTP_EXPLICIT_EOR: ::c_int = 0x00000001b;
 pub const SCTP_REUSE_PORT: ::c_int = 0x00000001c;
 pub const SCTP_AUTH_DEACTIVATE_KEY: ::c_int = 0x00000001d;
+pub const SCTP_EVENT: ::c_int = 0x0000001e;
+pub const SCTP_RECVRCVINFO: ::c_int = 0x0000001f;
+pub const SCTP_RECVNXTINFO: ::c_int = 0x00000020;
+pub const SCTP_DEFAULT_SNDINFO: ::c_int = 0x00000021;
+pub const SCTP_DEFAULT_PRINFO: ::c_int = 0x00000022;
+pub const SCTP_PEER_ADDR_THLDS: ::c_int = 0x00000023;
+pub const SCTP_REMOTE_UDP_ENCAPS_PORT: ::c_int = 0x00000024;
+pub const SCTP_ECN_SUPPORTED: ::c_int = 0x00000025;
+pub const SCTP_AUTH_SUPPORTED: ::c_int = 0x00000027;
+pub const SCTP_ASCONF_SUPPORTED: ::c_int = 0x00000028;
+pub const SCTP_RECONFIG_SUPPORTED: ::c_int = 0x00000029;
+pub const SCTP_NRSACK_SUPPORTED: ::c_int = 0x00000030;
+pub const SCTP_PKTDROP_SUPPORTED: ::c_int = 0x00000031;
+pub const SCTP_MAX_CWND: ::c_int = 0x00000032;
+
+pub const SCTP_STATUS: ::c_int = 0x00000100;
+pub const SCTP_GET_PEER_ADDR_INFO: ::c_int = 0x00000101;
+pub const SCTP_PEER_AUTH_CHUNKS: ::c_int = 0x00000102;
+pub const SCTP_LOCAL_AUTH_CHUNKS: ::c_int = 0x00000103;
+pub const SCTP_GET_ASSOC_NUMBER: ::c_int = 0x00000104;
+pub const SCTP_GET_ASSOC_ID_LIST: ::c_int = 0x00000105;
+pub const SCTP_TIMEOUTS: ::c_int = 0x00000106;
+pub const SCTP_PR_STREAM_STATUS: ::c_int = 0x00000107;
+pub const SCTP_PR_ASSOC_STATUS: ::c_int = 0x00000108;
 
 pub const SCTP_COMM_UP: ::c_int = 0x0001;
 pub const SCTP_COMM_LOST: ::c_int = 0x0002;
@@ -5311,6 +5335,28 @@ extern "C" {
         arg: *mut ::c_void,
         size: *mut ::socklen_t,
     ) -> ::c_int;
+    pub fn sctp_sendv(
+        sd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        addrs: *mut ::sockaddr,
+        addrcnt: ::c_int,
+        info: *mut ::c_void,
+        infolen: ::socklen_t,
+        infotype: ::c_uint,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    pub fn sctp_recvv(
+        sd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        from: *mut ::sockaddr,
+        fromlen: *mut ::socklen_t,
+        info: *mut ::c_void,
+        infolen: *mut ::socklen_t,
+        infotype: *mut ::c_uint,
+        flags: *mut ::c_int,
+    ) -> ::ssize_t;
 }
 
 #[link(name = "memstat")]
