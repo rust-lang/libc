@@ -2110,6 +2110,7 @@ stack_t
 statfs
 strcasecmp
 strcasestr
+strchrnul
 strncasecmp
 strndup
 strsignal

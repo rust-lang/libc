@@ -5250,6 +5250,8 @@ extern "C" {
         rmtp: *mut ::timespec,
     ) -> ::c_int;
 
+    pub fn strchrnul(s: *const ::c_char, c: ::c_int) -> *mut ::c_char;
+
     pub fn shm_create_largepage(
         path: *const ::c_char,
         flags: ::c_int,
