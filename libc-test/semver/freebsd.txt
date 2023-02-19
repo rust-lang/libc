@@ -86,6 +86,7 @@ ATF_USETRAILERS
 AT_BASE
 AT_EACCESS
 AT_EGID
+AT_EMPTY_PATH
 AT_ENTRY
 AT_EUID
 AT_EXECPATH
@@ -2109,6 +2110,7 @@ stack_t
 statfs
 strcasecmp
 strcasestr
+strchrnul
 strncasecmp
 strndup
 strsignal

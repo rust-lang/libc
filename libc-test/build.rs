@@ -2078,7 +2078,9 @@ fn test_freebsd(target: &str) {
             "O_RESOLVE_BENEATH" if Some(12) > freebsd_ver => true,
 
             // These constants were introduced in FreeBSD 13:
-            "O_DSYNC" | "O_PATH" | "O_EMPTY_PATH" if Some(13) > freebsd_ver => true,
+            "O_DSYNC" | "O_PATH" | "O_EMPTY_PATH" | "AT_EMPTY_PATH" if Some(13) > freebsd_ver => {
+                true
+            }
 
             // FIXME: These are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r273250) but will
