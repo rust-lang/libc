@@ -856,6 +856,8 @@ pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 
+pub const RNDADDENTROPY: ::c_ulong = 0x40085203;
+
 cfg_if! {
     if #[cfg(libc_align)] {
         mod align;

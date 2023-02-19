@@ -807,6 +807,8 @@ pub const SECCOMP_SET_MODE_FILTER: ::c_uint = 1;
 pub const SECCOMP_GET_ACTION_AVAIL: ::c_uint = 2;
 pub const SECCOMP_GET_NOTIF_SIZES: ::c_uint = 3;
 
+pub const RNDADDENTROPY: ::c_ulong = 0x40085203;
+
 extern "C" {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;

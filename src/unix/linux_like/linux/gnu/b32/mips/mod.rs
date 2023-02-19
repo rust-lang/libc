@@ -810,6 +810,8 @@ pub const B4000000: ::speed_t = 0o010017;
 
 pub const EHWPOISON: ::c_int = 168;
 
+pub const RNDADDENTROPY: ::c_ulong = 0x80085203;
+
 cfg_if! {
     if #[cfg(libc_align)] {
         mod align;

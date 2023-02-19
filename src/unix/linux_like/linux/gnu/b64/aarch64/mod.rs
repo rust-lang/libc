@@ -902,6 +902,8 @@ pub const SYS_process_mrelease: ::c_long = 448;
 pub const SYS_futex_waitv: ::c_long = 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
+pub const RNDADDENTROPY: ::c_ulong = 0x40085203;
+
 extern "C" {
     pub fn sysctl(
         name: *mut ::c_int,

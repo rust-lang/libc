@@ -357,6 +357,7 @@ REG_ERPAREN
 REG_ESIZE
 REG_STARTEND
 REISERFS_SUPER_MAGIC
+RNDADDENTROPY
 RTA_NEWDST
 RTA_OIF
 RTA_PAD
@@ -631,6 +632,7 @@ pututxline
 pwritev2
 pwritev64
 qsort_r
+rand_pool_info
 reallocarray
 semid_ds
 seminfo

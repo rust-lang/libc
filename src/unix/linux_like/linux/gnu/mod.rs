@@ -351,6 +351,12 @@ s! {
         #[cfg(libc_union)]
         pub u: __c_anonymous_ptrace_syscall_info_data,
     }
+
+    pub struct rand_pool_info {
+        pub entropy_count: ::c_int,
+        pub buf_size: ::c_int,
+        pub buf: [::__u32; 0],
+    }
 }
 
 impl siginfo_t {

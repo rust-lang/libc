@@ -3905,7 +3905,9 @@ fn test_linux(target: &str) {
         // the `ifr_ifru` field is an anonymous union
         (struct_ == "ifreq" && field == "ifr_ifru") ||
         // glibc uses a single array `uregs` instead of individual fields.
-        (struct_ == "user_regs" && arm)
+        (struct_ == "user_regs" && arm) ||
+        // rand_pool_info buf field change 0 sized array to real flexible array in last kernels
+        (struct_ == "rand_pool_info" && field == "buf")
     });
 
     cfg.skip_roundtrip(move |s| match s {
