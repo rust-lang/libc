@@ -2082,6 +2082,14 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // These aliases were introduced in FreeBSD 13:
+            // (note however that the constants themselves work on any version)
+            "CLOCK_BOOTTIME" | "CLOCK_REALTIME_COARSE" | "CLOCK_MONOTONIC_COARSE"
+                if Some(13) > freebsd_ver =>
+            {
+                true
+            }
+
             // FIXME: These are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
