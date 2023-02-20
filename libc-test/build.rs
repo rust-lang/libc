@@ -3596,6 +3596,9 @@ fn test_linux(target: &str) {
             // Added in Linux 5.14
             "FUTEX_LOCK_PI2" => true,
 
+            // Added in  linux 6.1
+            "STATX_DIOALIGN" => true,
+
             // FIXME: Parts of netfilter/nfnetlink*.h require more recent kernel headers:
             | "RTNLGRP_MCTP_IFADDR" // linux v5.17+
             | "RTNLGRP_TUNNEL" // linux v5.18+
