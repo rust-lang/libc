@@ -3737,6 +3737,7 @@ pub const AT_EACCESS: ::c_int = 0x100;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
 pub const AT_REMOVEDIR: ::c_int = 0x800;
+pub const AT_RESOLVE_BENEATH: ::c_int = 0x2000;
 pub const AT_EMPTY_PATH: ::c_int = 0x4000;
 
 pub const AT_NULL: ::c_int = 0;
