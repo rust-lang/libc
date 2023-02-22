@@ -404,6 +404,12 @@ cfg_if! {
         #[cfg_attr(feature = "rustc-dep-of-std",
                    link(name = "c", cfg(not(target_feature = "crt-static"))))]
         extern {}
+    } else if #[cfg(target_env = "aix")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
+        #[link(name = "bsd")]
+        #[link(name = "pthread")]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -1186,7 +1192,6 @@ extern "C" {
     pub fn dlerror() -> *mut ::c_char;
     pub fn dlsym(handle: *mut ::c_void, symbol: *const ::c_char) -> *mut ::c_void;
     pub fn dlclose(handle: *mut ::c_void) -> ::c_int;
-    pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
 
     #[cfg(not(all(
         libc_cfg_target_vendor,
@@ -1417,6 +1422,14 @@ cfg_if! {
 }
 
 cfg_if! {
+    if #[cfg(not(target_os = "aix"))] {
+        extern "C" {
+            pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
+        }
+    }
+}
+
+cfg_if! {
     if #[cfg(not(any(target_env = "uclibc", target_os = "nto")))] {
         extern "C" {
             pub fn open_wmemstream(
@@ -1570,6 +1583,9 @@ cfg_if! {
     } else if #[cfg(target_os = "nto")] {
         mod nto;
         pub use self::nto::*;
+    } else if #[cfg(target_os = "aix")] {
+        mod aix;
+        pub use self::aix::*;
     } else {
         // Unknown target_os
     }
