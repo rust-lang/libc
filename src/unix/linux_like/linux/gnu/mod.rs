@@ -1379,6 +1379,30 @@ extern "C" {
     pub fn gnu_get_libc_version() -> *const ::c_char;
 }
 
+// posix/spawn.h
+extern "C" {
+    // Added in `glibc` 2.29
+    pub fn posix_spawn_file_actions_addchdir_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        path: *const ::c_char,
+    ) -> ::c_int;
+    // Added in `glibc` 2.29
+    pub fn posix_spawn_file_actions_addfchdir_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        fd: ::c_int,
+    ) -> ::c_int;
+    // Added in `glibc` 2.34
+    pub fn posix_spawn_file_actions_addclosefrom_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        from: ::c_int,
+    ) -> ::c_int;
+    // Added in `glibc` 2.35
+    pub fn posix_spawn_file_actions_addtcsetpgrp_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        tcfd: ::c_int,
+    ) -> ::c_int;
+}
+
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
                  target_arch = "arm",
