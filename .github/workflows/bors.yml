@@ -317,32 +317,6 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} WIN_TARGET=${{ matrix.target }} sh ./ci/build.sh
         shell: bash
 
-  semver_linux:
-    if: ${{ false }} # This is currently broken
-    name: Semver Linux
-    runs-on: ubuntu-22.04
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Rust toolchain
-        # Should update the semverver revision in semver.sh if we touch nightly ver.
-        run: TOOLCHAIN=nightly-2022-05-23 sh ./ci/install-rust.sh
-      - name: Check breaking changes
-        run: sh ci/semver.sh linux
-
-  semver_macos:
-    if: ${{ false }} # This is currently broken
-    name: Semver macOS
-    runs-on: macos-12
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Rust toolchain
-        # Pin nightly version to make semverver compilable.
-        run: TOOLCHAIN=nightly-2022-05-23 sh ./ci/install-rust.sh
-      - name: Check breaking changes
-        run: sh ci/semver.sh macos
-
   docs:
     permissions:
       actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
