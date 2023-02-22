@@ -498,6 +498,7 @@ s! {
         pub p_tid: i32,
         pub p_rtableid: u32,
         pub p_pledge: u64,
+        pub p_name: [::c_char; KI_MAXCOMLEN as usize],
     }
 
     pub struct kinfo_vmentry {
