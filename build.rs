@@ -38,6 +38,7 @@ fn main() {
     let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
     let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
+    let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok();
 
     if env::var("CARGO_FEATURE_USE_STD").is_ok() {
         println!(
@@ -138,6 +139,17 @@ fn main() {
             }
             set_cfg("libc_const_extern_fn_unstable");
             set_cfg("libc_const_extern_fn");
+        }
+    }
+
+    // check-cfg is a nightly cargo/rustc feature to warn when unknown cfgs are used across the
+    // codebase. libc can configure it if the appropriate environment variable is passed. Since
+    // rust-lang/rust enforces it, this is useful when using a custom libc fork there.
+    //
+    // https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#check-cfg
+    if libc_check_cfg {
+        for cfg in ALLOWED_CFGS {
+            println!("cargo:rustc-check-cfg=values({})", cfg);
         }
     }
 }
