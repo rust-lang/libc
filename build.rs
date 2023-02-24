@@ -40,6 +40,9 @@ fn main() {
     let libc_ci = env::var("LIBC_CI").is_ok();
     let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok();
 
+    println!("cargo:rerun-if-env-changed=LIBC_CI");
+    println!("cargo:rerun-if-env-changed=LIBC_CHECK_CFG");
+
     if env::var("CARGO_FEATURE_USE_STD").is_ok() {
         println!(
             "cargo:warning=\"libc's use_std cargo feature is deprecated since libc 0.2.55; \
