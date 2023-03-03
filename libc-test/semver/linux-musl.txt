@@ -33,6 +33,7 @@ aio_suspend
 aio_write
 aiocb
 clock_adjtime
+copy_file_range
 ctermid
 explicit_bzero
 futimes

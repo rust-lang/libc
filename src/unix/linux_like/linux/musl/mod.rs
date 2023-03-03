@@ -773,6 +773,15 @@ extern "C" {
 
     pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
+
+    pub fn copy_file_range(
+        fd_in: ::c_int,
+        off_in: *mut ::off64_t,
+        fd_out: ::c_int,
+        off_out: *mut ::off64_t,
+        len: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
 }
 
 cfg_if! {
