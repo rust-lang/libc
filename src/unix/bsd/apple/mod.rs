@@ -3657,6 +3657,8 @@ pub const TCP_KEEPINTVL: ::c_int = 0x101;
 pub const TCP_KEEPCNT: ::c_int = 0x102;
 /// Enable/Disable TCP Fastopen on this socket
 pub const TCP_FASTOPEN: ::c_int = 0x105;
+/// Disable/Enable TCP Fastopen backoff mechanism.
+pub const TCP_FASTOPEN_FORCE_ENABLE: ::c_int = 0x218;
 
 pub const SOL_LOCAL: ::c_int = 0;
 
