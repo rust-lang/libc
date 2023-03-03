@@ -4702,6 +4702,15 @@ extern "C" {
         longopts: *const option,
         longindex: *mut ::c_int,
     ) -> ::c_int;
+
+    pub fn copy_file_range(
+        fd_in: ::c_int,
+        off_in: *mut ::off64_t,
+        fd_out: ::c_int,
+        off_out: *mut ::off64_t,
+        len: ::size_t,
+        flags: ::c_uint,
+    ) -> ::ssize_t;
 }
 
 cfg_if! {

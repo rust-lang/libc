@@ -1212,14 +1212,6 @@ extern "C" {
     pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
     pub fn clock_adjtime(clk_id: ::clockid_t, buf: *mut ::timex) -> ::c_int;
 
-    pub fn copy_file_range(
-        fd_in: ::c_int,
-        off_in: *mut ::off64_t,
-        fd_out: ::c_int,
-        off_out: *mut ::off64_t,
-        len: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
     pub fn fanotify_mark(
         fd: ::c_int,
         flags: ::c_uint,
