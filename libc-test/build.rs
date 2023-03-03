@@ -1632,6 +1632,7 @@ fn test_android(target: &str) {
                 "linux/rtnetlink.h",
                 "linux/if_tun.h",
                 "linux/magic.h",
+                "linux/membarrier.h",
                 "linux/memfd.h",
                 "linux/mempolicy.h",
                 "linux/module.h",
@@ -1782,6 +1783,9 @@ fn test_android(target: &str) {
 
             // GRND_INSECURE was added in platform-tools-30.0.0
             "GRND_INSECURE" => true,
+
+            // kernel 5.10 minimum required
+            "MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ" | "MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ" => true,
 
             _ => false,
         }
@@ -3249,6 +3253,7 @@ fn test_linux(target: &str) {
         "linux/keyctl.h",
         "linux/magic.h",
         "linux/memfd.h",
+        "linux/membarrier.h",
         "linux/mempolicy.h",
         "linux/mman.h",
         "linux/module.h",
@@ -3481,6 +3486,12 @@ fn test_linux(target: &str) {
             if name.starts_with("J1939")
                 || name.starts_with("SO_J1939")
                 || name.starts_with("SCM_J1939")
+            {
+                return true;
+            }
+            // FIXME: Requires >= 5.10 kernel headers
+            if name.starts_with("MEMBARRIER_CMD_REGISTER")
+                || name.starts_with("MEMBARRIER_CMD_PRIVATE")
             {
                 return true;
             }
