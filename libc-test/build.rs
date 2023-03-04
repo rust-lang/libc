@@ -3081,7 +3081,7 @@ fn test_linux(target: &str) {
 
     // target_env
     let gnu = target.contains("gnu");
-    let musl = target.contains("musl");
+    let musl = target.contains("musl") || target.contains("ohos");
     let uclibc = target.contains("uclibc");
 
     match (gnu, musl, uclibc) {
@@ -3946,7 +3946,7 @@ fn test_linux(target: &str) {
 // are included (e.g. because including both sets of headers clashes)
 fn test_linux_like_apis(target: &str) {
     let gnu = target.contains("gnu");
-    let musl = target.contains("musl");
+    let musl = target.contains("musl") || target.contains("ohos");
     let linux = target.contains("linux");
     let emscripten = target.contains("emscripten");
     let android = target.contains("android");

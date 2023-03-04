@@ -108,13 +108,13 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: ::c_int,
-        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
         pub sched_ss_low_priority: ::c_int,
-        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
         pub sched_ss_repl_period: ::timespec,
-        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
         pub sched_ss_init_budget: ::timespec,
-        #[cfg(any(target_env = "musl", target_os = "emscripten"))]
+        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
         pub sched_ss_max_repl: ::c_int,
     }
 
@@ -557,7 +557,21 @@ pub const XATTR_CREATE: ::c_int = 0x1;
 pub const XATTR_REPLACE: ::c_int = 0x2;
 
 cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
+    if #[cfg(target_env = "ohos")] {
+        pub const LC_CTYPE: ::c_int = 0;
+        pub const LC_NUMERIC: ::c_int = 1;
+        pub const LC_TIME: ::c_int = 2;
+        pub const LC_COLLATE: ::c_int = 3;
+        pub const LC_MONETARY: ::c_int = 4;
+        pub const LC_MESSAGES: ::c_int = 5;
+        pub const LC_PAPER: ::c_int = 6;
+        pub const LC_NAME: ::c_int = 7;
+        pub const LC_ADDRESS: ::c_int = 8;
+        pub const LC_TELEPHONE: ::c_int = 9;
+        pub const LC_MEASUREMENT: ::c_int = 10;
+        pub const LC_IDENTIFICATION: ::c_int = 11;
+        pub const LC_ALL: ::c_int = 12;
+    } else if #[cfg(not(target_env = "uclibc"))] {
         pub const LC_CTYPE: ::c_int = 0;
         pub const LC_NUMERIC: ::c_int = 1;
         pub const LC_TIME: ::c_int = 2;
@@ -973,7 +987,11 @@ pub const TCP_QUICKACK: ::c_int = 12;
 pub const TCP_CONGESTION: ::c_int = 13;
 pub const TCP_MD5SIG: ::c_int = 14;
 cfg_if! {
-    if #[cfg(all(target_os = "linux", any(target_env = "gnu", target_env = "musl")))] {
+    if #[cfg(all(target_os = "linux", any(
+            target_env = "gnu",
+            target_env = "musl",
+            target_env = "ohos"
+        )))] {
         // WARN: deprecated
         pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
     }

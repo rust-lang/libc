@@ -11,7 +11,7 @@ macro_rules! expand_align {
                           target_arch = "riscv32",
                           target_arch = "loongarch64",
                           all(target_arch = "aarch64",
-                              target_env = "musl")))]
+                              any(target_env = "musl", target_env = "ohos"))))]
                 __align: [::c_int; 0],
                 #[cfg(not(any(target_arch = "x86_64",
                               target_arch = "powerpc64",
@@ -22,15 +22,15 @@ macro_rules! expand_align {
                               target_arch = "riscv32",
                               target_arch = "loongarch64",
                               all(target_arch = "aarch64",
-                                  target_env = "musl"))))]
+                                  any(target_env = "musl", target_env = "ohos")))))]
                 __align: [::c_long; 0],
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
             }
 
             pub struct pthread_rwlockattr_t {
-                #[cfg(target_env = "musl")]
+                #[cfg(any(target_env = "musl", target_env = "ohos"))]
                 __align: [::c_int; 0],
-                #[cfg(not(target_env = "musl"))]
+                #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
                 __align: [::c_long; 0],
                 size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
             }
@@ -59,9 +59,9 @@ macro_rules! expand_align {
 
         s_no_extra_traits! {
             pub struct pthread_cond_t {
-                #[cfg(target_env = "musl")]
+                #[cfg(any(target_env = "musl", target_env = "ohos"))]
                 __align: [*const ::c_void; 0],
-                #[cfg(not(target_env = "musl"))]
+                #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
                 __align: [::c_longlong; 0],
                 size: [u8; ::__SIZEOF_PTHREAD_COND_T],
             }

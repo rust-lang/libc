@@ -28,9 +28,10 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
             }
 
-            #[cfg_attr(any(target_env = "musl", target_pointer_width = "32"),
+            #[cfg_attr(any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
                        repr(align(4)))]
             #[cfg_attr(all(not(target_env = "musl"),
+                           not(target_env = "ohos"),
                            target_pointer_width = "64"),
                        repr(align(8)))]
             pub struct pthread_rwlockattr_t {
@@ -63,16 +64,16 @@ macro_rules! expand_align {
         }
 
         s_no_extra_traits! {
-            #[cfg_attr(all(target_env = "musl",
+            #[cfg_attr(all(any(target_env = "musl", target_env = "ohos"),
                            target_pointer_width = "32"),
                        repr(align(4)))]
-            #[cfg_attr(all(target_env = "musl",
+            #[cfg_attr(all(any(target_env = "musl", target_env = "ohos"),
                            target_pointer_width = "64"),
                        repr(align(8)))]
-            #[cfg_attr(all(not(target_env = "musl"),
+            #[cfg_attr(all(not(any(target_env = "musl", target_env = "ohos")),
                            target_arch = "x86"),
                        repr(align(4)))]
-            #[cfg_attr(all(not(target_env = "musl"),
+            #[cfg_attr(all(not(any(target_env = "musl", target_env = "ohos")),
                            not(target_arch = "x86")),
                        repr(align(8)))]
             pub struct pthread_cond_t {
