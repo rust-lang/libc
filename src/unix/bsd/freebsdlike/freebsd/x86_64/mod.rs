@@ -98,7 +98,7 @@ s_no_extra_traits! {
     }
 
     #[repr(align(16))]
-    #[cfg_attr(not(any(freebsd11, freebsd12, freebsd13, freebsd14)), non_exhaustive)]
+    #[cfg_attr(not(any(freebsd12, freebsd13, freebsd14)), non_exhaustive)]
     pub struct mcontext_t {
         pub mc_onstack: register_t,
         pub mc_rdi: register_t,
@@ -137,13 +137,11 @@ s_no_extra_traits! {
         pub mc_gsbase: register_t,
         pub mc_xfpustate: register_t,
         pub mc_xfpustate_len: register_t,
-        // freebsd < 15
-        #[cfg(any(freebsd11, freebsd12, freebsd13, freebsd14))]
-        pub mc_spare: [c_long; 4],
-        // freebsd >= 15
-        #[cfg(not(any(freebsd11, freebsd12, freebsd13, freebsd14)))]
+        #[cfg(freebsd15)]
         pub mc_tlsbase: register_t,
-        #[cfg(not(any(freebsd11, freebsd12, freebsd13, freebsd14)))]
+        #[cfg(any(freebsd12, freebsd13, freebsd14))]
+        pub mc_spare: [c_long; 4],
+        #[cfg(freebsd15)]
         pub mc_spare: [c_long; 3],
     }
 }
