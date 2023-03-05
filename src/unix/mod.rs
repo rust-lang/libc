@@ -867,10 +867,6 @@ extern "C" {
         link_name = "fstat$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__fstat50")]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "fstat@FBSD_1.0"
-    )]
     #[cfg_attr(gnu_time_bits64, link_name = "__fstat64_time64")]
     #[cfg_attr(
         all(not(gnu_time_bits64), gnu_file_offset_bits64),
@@ -885,10 +881,6 @@ extern "C" {
         link_name = "stat$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__stat50")]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "stat@FBSD_1.0"
-    )]
     #[cfg_attr(gnu_time_bits64, link_name = "__stat64_time64")]
     #[cfg_attr(
         all(not(gnu_time_bits64), gnu_file_offset_bits64),
@@ -943,10 +935,6 @@ extern "C" {
         link_name = "readdir$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "readdir@FBSD_1.0"
-    )]
     #[cfg_attr(gnu_file_offset_bits64, link_name = "readdir64")]
     pub fn readdir(dirp: *mut crate::DIR) -> *mut crate::dirent;
     #[cfg_attr(
@@ -976,10 +964,6 @@ extern "C" {
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
         link_name = "fstatat$INODE64"
-    )]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "fstatat@FBSD_1.1"
     )]
     #[cfg_attr(gnu_time_bits64, link_name = "__fstatat64_time64")]
     #[cfg_attr(
@@ -1176,10 +1160,6 @@ extern "C" {
         link_name = "lstat$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "lstat@FBSD_1.0"
-    )]
     #[cfg_attr(gnu_time_bits64, link_name = "__lstat64_time64")]
     #[cfg_attr(
         all(not(gnu_time_bits64), gnu_file_offset_bits64),
@@ -1456,10 +1436,6 @@ extern "C" {
     pub fn timegm(tm: *mut crate::tm) -> time_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "mknod@FBSD_1.0"
-    )]
     pub fn mknod(pathname: *const c_char, mode: mode_t, dev: crate::dev_t) -> c_int;
     pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn endservent();
@@ -1722,10 +1698,6 @@ cfg_if! {
                 link_name = "readdir_r$INODE64"
             )]
             #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
-            #[cfg_attr(
-                all(target_os = "freebsd", any(freebsd11, freebsd10)),
-                link_name = "readdir_r@FBSD_1.0"
-            )]
             #[allow(non_autolinks)] // FIXME(docs): `<>` breaks line length limit.
             /// The 64-bit libc on Solaris and illumos only has readdir_r. If a
             /// 32-bit Solaris or illumos target is ever created, it should use
