@@ -1134,6 +1134,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
             _ => panic!("Unknown version"),
         };
         ("nto", "unix", env)
+    } else if target.contains("linux-ohos") {
+        ("linux", "unix", "ohos")
     } else {
         panic!("unknown os/family: {}", target)
     };
