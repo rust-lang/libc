@@ -825,4 +825,6 @@ extern "C" {
     pub fn arc4random() -> u32;
     pub fn arc4random_buf(a: *mut c_void, b: size_t);
     pub fn arc4random_uniform(a: u32) -> u32;
+
+    pub fn __errno_location() -> *mut ::c_int;
 }
