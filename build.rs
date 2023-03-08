@@ -5,7 +5,7 @@ use std::str;
 // List of cfgs this build script is allowed to set. The list is needed to support check-cfg, as we
 // need to know all the possible cfgs that this script will set. If you need to set another cfg
 // make sure to add it to this list as well.
-const ALLOWED_CFGS: &[&str] = &[
+const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd10",
     "freebsd11",
     "freebsd12",
@@ -30,7 +30,7 @@ const ALLOWED_CFGS: &[&str] = &[
 ];
 
 // Extra values to allow for check-cfg.
-const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
+const CHECK_CFG_EXTRA: &'static [(&'static str, &'static [&'static str])] = &[
     ("target_os", &["switch", "aix", "ohos"]),
     ("target_env", &["illumos", "wasi", "aix", "ohos"]),
     ("target_arch", &["loongarch64"]),
@@ -158,7 +158,7 @@ fn main() {
         for cfg in ALLOWED_CFGS {
             println!("cargo:rustc-check-cfg=values({})", cfg);
         }
-        for (name, values) in CHECK_CFG_EXTRA {
+        for &(name, values) in CHECK_CFG_EXTRA {
             let values = values.join("\",\"");
             println!("cargo:rustc-check-cfg=values({},\"{}\")", name, values);
         }
