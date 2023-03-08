@@ -317,6 +317,23 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} WIN_TARGET=${{ matrix.target }} sh ./ci/build.sh
         shell: bash
 
+  check_cfg:
+    permissions:
+      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
+      contents: read # to fetch code (actions/checkout)
+
+    name: "Check #[cfg]s"
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v3
+      - name: Setup Rust toolchain
+        run: TOOLCHAIN=nightly sh ./ci/install-rust.sh
+      - name: Build with check-cfg
+        run: LIBC_CI=1 LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg=features,names,values,output
+
   docs:
     permissions:
       actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
