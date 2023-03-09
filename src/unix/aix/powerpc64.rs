@@ -93,6 +93,95 @@ s! {
         pub f_fpack: [::c_char; 32],
         pub f_name_max: ::c_int,
     }
+
+    pub struct aiocb {
+        pub aio_lio_opcode: ::c_int,
+        pub aio_fildes: ::c_int,
+        pub aio_word1: ::c_int,
+        pub aio_offset: ::off_t,
+        pub aio_buf: *mut ::c_void,
+        pub aio_return: ::ssize_t,
+        pub aio_errno: ::c_int,
+        pub aio_nbytes: ::size_t,
+        pub aio_reqprio: ::c_int,
+        pub aio_sigevent: ::sigevent,
+        pub aio_word2: ::c_int,
+        pub aio_fp: ::c_int,
+        pub aio_handle: *mut aiocb,
+        pub aio_reserved: [::c_uint; 2],
+        pub aio_sigev_tid: c_long,
+    }
+
+    pub struct ucontext_t {
+        pub __sc_onstack: ::c_int,
+        pub uc_sigmask: ::sigset_t,
+        pub __sc_uerror: ::c_int,
+        pub uc_mcontext: ::mcontext_t,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        // Should be pointer to __extctx_t
+        pub __extctx: *mut ::c_void,
+        pub __extctx_magic: ::c_int,
+        pub __pad: [::c_int; 1],
+    }
+
+    pub struct mcontext_t {
+        pub gpr: [::c_ulonglong; 32],
+        pub msr: ::c_ulonglong,
+        pub iar: ::c_ulonglong,
+        pub lr: ::c_ulonglong,
+        pub ctr: ::c_ulonglong,
+        pub cr: ::c_uint,
+        pub xer: ::c_uint,
+        pub fpscr: ::c_uint,
+        pub fpscrx: ::c_uint,
+        pub except: [::c_ulonglong; 1],
+        // Should be array of double type
+        pub fpr: [::uint64_t; 32],
+        pub fpeu: ::c_char,
+        pub fpinfo: ::c_char,
+        pub fpscr24_31: ::c_char,
+        pub pad: [::c_char; 1],
+        pub excp_type: ::c_int,
+    }
+
+    pub struct utmpx {
+        pub ut_user: [::c_char; 256],
+        pub ut_id: [::c_char; 14],
+        pub ut_line: [::c_char; 64],
+        pub ut_pid: ::pid_t,
+        pub ut_type: ::c_short,
+        pub ut_tv: ::timeval,
+        pub ut_host: [::c_char; 256],
+        pub __dbl_word_pad: ::c_int,
+        pub __reservedA: [::c_int; 2],
+        pub __reservedV: [::c_int; 6],
+    }
+
+    pub struct pthread_spinlock_t {
+        pub __sp_word: [::c_long; 3],
+    }
+
+    pub struct pthread_barrier_t {
+        pub __br_word: [::c_long; 5],
+    }
+
+    pub struct msqid_ds {
+        pub msg_perm: ::ipc_perm,
+        pub msg_first: ::c_uint,
+        pub msg_last: ::c_uint,
+        pub msg_cbytes: ::c_uint,
+        pub msg_qnum: ::c_uint,
+        pub msg_qbytes: ::c_ulong,
+        pub msg_lspid: ::pid_t,
+        pub msg_lrpid: ::pid_t,
+        pub msg_stime: ::time_t,
+        pub msg_rtime: ::time_t,
+        pub msg_ctime: ::time_t,
+        pub msg_rwait: ::c_int,
+        pub msg_wwait: ::c_int,
+        pub msg_reqevents: ::c_ushort,
+    }
 }
 
 s_no_extra_traits! {
