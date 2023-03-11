@@ -4123,7 +4123,6 @@ fn test_haiku(target: &str) {
                "arpa/nameser.h",
                "arpa/nameser_compat.h",
                "assert.h",
-               "bsd_mem.h",
                "complex.h",
                "ctype.h",
                "dirent.h",
@@ -4228,6 +4227,7 @@ fn test_haiku(target: &str) {
                "libutil.h",
                "link.h",
                "pty.h",
+               "stringlist.h",
     }
 
     // Native API
