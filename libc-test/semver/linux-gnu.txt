@@ -670,3 +670,4 @@ strptime
 dirname
 posix_basename
 gnu_basename
+getmntent_r

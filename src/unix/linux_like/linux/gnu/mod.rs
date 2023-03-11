@@ -1395,6 +1395,16 @@ extern "C" {
     ) -> ::c_int;
 }
 
+// mntent.h
+extern "C" {
+    pub fn getmntent_r(
+        stream: *mut ::FILE,
+        mntbuf: *mut ::mntent,
+        buf: *mut ::c_char,
+        buflen: ::c_int,
+    ) -> *mut ::mntent;
+}
+
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
                  target_arch = "arm",
