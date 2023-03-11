@@ -1048,6 +1048,7 @@ extern "C" {
 
     pub fn symlink(path1: *const c_char, path2: *const c_char) -> ::c_int;
 
+    pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
     pub fn ftruncate(fd: ::c_int, length: off_t) -> ::c_int;
 
     pub fn signal(signum: ::c_int, handler: sighandler_t) -> sighandler_t;
@@ -1447,7 +1448,6 @@ cfg_if! {
     if #[cfg(not(target_os = "redox"))] {
         extern {
             pub fn getsid(pid: pid_t) -> pid_t;
-            pub fn truncate(path: *const c_char, length: off_t) -> ::c_int;
             #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                        link_name = "pause$UNIX2003")]
             pub fn pause() -> ::c_int;
