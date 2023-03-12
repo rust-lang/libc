@@ -3800,6 +3800,27 @@ pub const SCTP_PR_SCTP_ALL: ::c_int = 1 << 7;
 pub const SCTP_NOTIFICATION: ::c_int = MSG_NOTIFICATION;
 pub const SCTP_EOF: ::c_int = ::MSG_FIN;
 
+/* DCCP socket options */
+pub const DCCP_SOCKOPT_PACKET_SIZE: ::c_int = 1;
+pub const DCCP_SOCKOPT_SERVICE: ::c_int = 2;
+pub const DCCP_SOCKOPT_CHANGE_L: ::c_int = 3;
+pub const DCCP_SOCKOPT_CHANGE_R: ::c_int = 4;
+pub const DCCP_SOCKOPT_GET_CUR_MPS: ::c_int = 5;
+pub const DCCP_SOCKOPT_SERVER_TIMEWAIT: ::c_int = 6;
+pub const DCCP_SOCKOPT_SEND_CSCOV: ::c_int = 10;
+pub const DCCP_SOCKOPT_RECV_CSCOV: ::c_int = 11;
+pub const DCCP_SOCKOPT_AVAILABLE_CCIDS: ::c_int = 12;
+pub const DCCP_SOCKOPT_CCID: ::c_int = 13;
+pub const DCCP_SOCKOPT_TX_CCID: ::c_int = 14;
+pub const DCCP_SOCKOPT_RX_CCID: ::c_int = 15;
+pub const DCCP_SOCKOPT_QPOLICY_ID: ::c_int = 16;
+pub const DCCP_SOCKOPT_QPOLICY_TXQLEN: ::c_int = 17;
+pub const DCCP_SOCKOPT_CCID_RX_INFO: ::c_int = 128;
+pub const DCCP_SOCKOPT_CCID_TX_INFO: ::c_int = 192;
+
+/// maximum number of services provided on the same listening port
+pub const DCCP_SERVICE_LIST_MAX_LEN: ::c_int = 32;
+
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
