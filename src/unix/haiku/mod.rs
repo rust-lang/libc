@@ -55,6 +55,8 @@ pub type ACTION = ::c_int;
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
 
+pub type StringList = _stringlist;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 impl ::Copy for timezone {}
@@ -436,6 +438,12 @@ s! {
         pub has_arg: ::c_int,
         pub flag: *mut ::c_int,
         pub val: ::c_int,
+    }
+
+    pub struct _stringlist {
+        pub sl_str: *mut *mut ::c_char,
+        pub sl_max: ::size_t,
+        pub sl_cur: ::size_t,
     }
 }
 
@@ -2017,6 +2025,11 @@ extern "C" {
     pub fn strsep(string: *mut *mut ::c_char, delimiters: *const ::c_char) -> *mut ::c_char;
     pub fn explicit_bzero(buf: *mut ::c_void, len: ::size_t);
     pub fn login_tty(_fd: ::c_int) -> ::c_int;
+
+    pub fn sl_init() -> *mut StringList;
+    pub fn sl_add(sl: *mut StringList, n: *mut ::c_char) -> ::c_int;
+    pub fn sl_free(sl: *mut StringList, i: ::c_int);
+    pub fn sl_find(sl: *mut StringList, n: *mut ::c_char) -> *mut ::c_char;
 }
 
 cfg_if! {
