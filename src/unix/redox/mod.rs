@@ -459,6 +459,15 @@ pub const O_SYMLINK: ::c_int = 0x4000_0000;
 // FIXME: Fix negative values missing from includes
 pub const O_NOFOLLOW: ::c_int = -0x8000_0000;
 
+// locale.h
+pub const LC_ALL: ::c_int = 0;
+pub const LC_COLLATE: ::c_int = 1;
+pub const LC_CTYPE: ::c_int = 2;
+pub const LC_MESSAGES: ::c_int = 3;
+pub const LC_MONETARY: ::c_int = 4;
+pub const LC_NUMERIC: ::c_int = 5;
+pub const LC_TIME: ::c_int = 6;
+
 // netdb.h
 pub const AI_PASSIVE: ::c_int = 0x0001;
 pub const AI_CANONNAME: ::c_int = 0x0002;
@@ -502,6 +511,7 @@ pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+pub const IPPROTO_RAW: ::c_int = 255;
 // }
 
 // netinet/tcp.h
