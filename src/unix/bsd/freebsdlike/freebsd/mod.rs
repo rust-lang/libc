@@ -2693,15 +2693,20 @@ pub const EV_ADD: u16 = 0x1;
 pub const EV_DELETE: u16 = 0x2;
 pub const EV_ENABLE: u16 = 0x4;
 pub const EV_DISABLE: u16 = 0x8;
+pub const EV_FORCEONESHOT: u16 = 0x100;
+pub const EV_KEEPUDATA: u16 = 0x200;
+
 pub const EV_ONESHOT: u16 = 0x10;
 pub const EV_CLEAR: u16 = 0x20;
 pub const EV_RECEIPT: u16 = 0x40;
 pub const EV_DISPATCH: u16 = 0x80;
+pub const EV_SYSFLAGS: u16 = 0xf000;
 pub const EV_DROP: u16 = 0x1000;
 pub const EV_FLAG1: u16 = 0x2000;
-pub const EV_ERROR: u16 = 0x4000;
+pub const EV_FLAG2: u16 = 0x4000;
+
 pub const EV_EOF: u16 = 0x8000;
-pub const EV_SYSFLAGS: u16 = 0xf000;
+pub const EV_ERROR: u16 = 0x4000;
 
 pub const NOTE_TRIGGER: u32 = 0x01000000;
 pub const NOTE_FFNOP: u32 = 0x00000000;
@@ -2711,6 +2716,7 @@ pub const NOTE_FFCOPY: u32 = 0xc0000000;
 pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
 pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
 pub const NOTE_LOWAT: u32 = 0x00000001;
+pub const NOTE_FILE_POLL: u32 = 0x00000002;
 pub const NOTE_DELETE: u32 = 0x00000001;
 pub const NOTE_WRITE: u32 = 0x00000002;
 pub const NOTE_EXTEND: u32 = 0x00000004;
@@ -2718,6 +2724,10 @@ pub const NOTE_ATTRIB: u32 = 0x00000008;
 pub const NOTE_LINK: u32 = 0x00000010;
 pub const NOTE_RENAME: u32 = 0x00000020;
 pub const NOTE_REVOKE: u32 = 0x00000040;
+pub const NOTE_OPEN: u32 = 0x00000080;
+pub const NOTE_CLOSE: u32 = 0x00000100;
+pub const NOTE_CLOSE_WRITE: u32 = 0x00000200;
+pub const NOTE_READ: u32 = 0x00000400;
 pub const NOTE_EXIT: u32 = 0x80000000;
 pub const NOTE_FORK: u32 = 0x40000000;
 pub const NOTE_EXEC: u32 = 0x20000000;
@@ -2730,6 +2740,7 @@ pub const NOTE_SECONDS: u32 = 0x00000001;
 pub const NOTE_MSECONDS: u32 = 0x00000002;
 pub const NOTE_USECONDS: u32 = 0x00000004;
 pub const NOTE_NSECONDS: u32 = 0x00000008;
+pub const NOTE_ABSTIME: u32 = 0x00000010;
 
 pub const MADV_PROTECT: ::c_int = 10;
 

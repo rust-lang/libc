@@ -1986,6 +1986,13 @@ pub const EV_ERROR: u32 = 0x4000;
 pub const EV_EOF: u32 = 0x8000;
 pub const EV_SYSFLAGS: u32 = 0xf000;
 
+pub const NOTE_TRIGGER: u32 = 0x01000000;
+pub const NOTE_FFNOP: u32 = 0x00000000;
+pub const NOTE_FFAND: u32 = 0x40000000;
+pub const NOTE_FFOR: u32 = 0x80000000;
+pub const NOTE_FFCOPY: u32 = 0xc0000000;
+pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
+pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
 pub const NOTE_LOWAT: u32 = 0x00000001;
 pub const NOTE_DELETE: u32 = 0x00000001;
 pub const NOTE_WRITE: u32 = 0x00000002;
