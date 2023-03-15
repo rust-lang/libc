@@ -1660,6 +1660,12 @@ pub const MNT_WAIT: ::c_int = 1;
 pub const MNT_NOWAIT: ::c_int = 2;
 pub const MNT_LAZY: ::c_int = 3;
 
+// sys/_time.h
+pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 2;
+pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 4;
+pub const CLOCK_UPTIME: ::clockid_t = 5;
+pub const CLOCK_BOOTTIME: ::clockid_t = 6;
+
 pub const LC_COLLATE_MASK: ::c_int = 1 << ::LC_COLLATE;
 pub const LC_CTYPE_MASK: ::c_int = 1 << ::LC_CTYPE;
 pub const LC_MONETARY_MASK: ::c_int = 1 << ::LC_MONETARY;
