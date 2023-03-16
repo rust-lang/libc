@@ -1819,6 +1819,8 @@ arc4random
 arc4random_buf
 arc4random_uniform
 arphdr
+asctime
+asctime_r
 attrgroup_t
 attribute_set_t
 attrlist
@@ -1845,6 +1847,8 @@ copyfile
 copyfile_flags_t
 cpu_subtype_t
 cpu_type_t
+ctime
+ctime_r
 ctl_info
 difftime
 dirfd
@@ -1880,6 +1884,7 @@ futimes
 getattrlist
 getattrlistat
 getattrlistbulk
+getdate
 getdomainname
 getdtablesize
 getfsstat
@@ -2181,8 +2186,10 @@ stack_t
 statfs
 strcasecmp
 strcasestr
+strftime
 strncasecmp
 strndup
+strptime
 strsignal
 strtonum
 sync

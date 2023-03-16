@@ -5121,6 +5121,23 @@ extern "C" {
     pub fn endutxent();
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
 
+    pub fn asctime(tm: *const ::tm) -> *mut ::c_char;
+    pub fn ctime(clock: *const time_t) -> *mut ::c_char;
+    pub fn getdate(datestr: *const ::c_char) -> *mut ::tm;
+    pub fn strftime(
+        buf: *mut ::c_char,
+        maxsize: ::size_t,
+        format: *const ::c_char,
+        timeptr: *const ::tm,
+    ) -> ::size_t;
+    pub fn strptime(
+        buf: *const ::c_char,
+        format: *const ::c_char,
+        timeptr: *mut ::tm,
+    ) -> *mut ::c_char;
+    pub fn asctime_r(tm: *const ::tm, result: *mut ::c_char) -> *mut ::c_char;
+    pub fn ctime_r(clock: *const time_t, result: *mut ::c_char) -> *mut ::c_char;
+
     pub fn getnameinfo(
         sa: *const ::sockaddr,
         salen: ::socklen_t,
