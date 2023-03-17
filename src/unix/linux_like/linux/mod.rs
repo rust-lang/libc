@@ -224,18 +224,17 @@ s! {
     }
 
     pub struct input_event {
-        // FIXME(1.0): Change to the commented variant, see https://github.com/rust-lang/libc/pull/4148#discussion_r1857511742
+        // input_event_sec and input_event_usec are preprocessor macros in C.
+        // On all variants _except_ 32-bit long and 64-bit time_t they actually
+        // refer to members of input_event.time, a timeval struct.
+        // The timeval struct has two members of type time_t and suseconds_t.
         #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
-        pub time: crate::timeval,
-        // #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
-        // pub input_event_sec: time_t,
-        // #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
-        // pub input_event_usec: suseconds_t,
-        // #[cfg(target_arch = "sparc64")]
-        // _pad1: c_int,
+        pub input_event_sec: crate::time_t,
         #[cfg(all(target_pointer_width = "32", linux_time_bits64))]
         pub input_event_sec: c_ulong,
 
+        #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
+        pub input_event_usec: crate::suseconds_t,
         #[cfg(all(target_pointer_width = "32", linux_time_bits64))]
         pub input_event_usec: c_ulong,
 
