@@ -16,6 +16,7 @@ pub type __fsword_t = i32;
 pub type fsblkcnt64_t = u64;
 pub type fsfilcnt64_t = u64;
 pub type __syscall_ulong_t = ::c_ulong;
+pub type __syscall_slong_t = ::c_long;
 
 cfg_if! {
     if #[cfg(target_arch = "riscv32")] {
@@ -381,5 +382,17 @@ cfg_if! {
         pub use self::csky::*;
     } else {
         // Unknown target_arch
+    }
+}
+
+cfg_if! {
+    if #[cfg(any(target_arch = "riscv32", target_arch = "sparc"))] {
+        // use the defs in self::riscv32 or self::sparc
+    } else if #[cfg(gnu_time64_abi)] {
+        mod time64;
+        pub use self::time64::*;
+    } else {
+        mod time32;
+        pub use self::time32::*;
     }
 }
