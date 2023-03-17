@@ -56,10 +56,14 @@ s! {
         pub modtime: time_t,
     }
 
-    // FIXME(time): Needs updates at least for glibc _TIME_BITS=64
     pub struct timeval {
         pub tv_sec: time_t,
+        #[cfg(not(gnu_time_bits64))]
         pub tv_usec: suseconds_t,
+        // For 64 bit time on 32 bit linux glibc, suseconds_t is still
+        // a 32 bit type.  Use __suseconds64_t instead
+        #[cfg(gnu_time_bits64)]
+        pub tv_usec: __suseconds64_t,
     }
 
     // linux x32 compatibility
