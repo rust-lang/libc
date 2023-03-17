@@ -9,11 +9,16 @@ pub type msglen_t = u64;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type rlim_t = u64;
-#[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-pub type __syscall_ulong_t = ::c_ulonglong;
-#[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-pub type __syscall_ulong_t = ::c_ulong;
 
+cfg_if! {
+    if #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))] {
+        pub type __syscall_ulong_t = ::c_ulonglong;
+        pub type __syscall_slong_t = ::c_longlong;
+    } else {
+        pub type __syscall_ulong_t = ::c_ulong;
+        pub type __syscall_slong_t = ::c_long;
+    }
+}
 cfg_if! {
     if #[cfg(all(target_arch = "aarch64", target_pointer_width = "32"))] {
         pub type clock_t = i32;
@@ -90,6 +95,46 @@ s! {
         pub sem_nsems: ::__syscall_ulong_t,
         __glibc_reserved3: ::__syscall_ulong_t,
         __glibc_reserved4: ::__syscall_ulong_t,
+    }
+
+    pub struct timex {
+        pub modes: ::c_uint,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub __unused_pad1: i32,
+        pub offset: ::__syscall_slong_t,
+        pub freq: ::__syscall_slong_t,
+        pub maxerror: ::__syscall_slong_t,
+        pub esterror: ::__syscall_slong_t,
+        pub status: ::c_int,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub __unused_pad2: i32,
+        pub constant: ::__syscall_slong_t,
+        pub precision: ::__syscall_slong_t,
+        pub tolerance: ::__syscall_slong_t,
+        pub time: ::timeval,
+        pub tick: ::__syscall_slong_t,
+        pub ppsfreq: ::__syscall_slong_t,
+        pub jitter: ::__syscall_slong_t,
+        pub shift: ::c_int,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub __unused_pad3: i32,
+        pub stabil: ::__syscall_slong_t,
+        pub jitcnt: ::__syscall_slong_t,
+        pub calcnt: ::__syscall_slong_t,
+        pub errcnt: ::__syscall_slong_t,
+        pub stbcnt: ::__syscall_slong_t,
+        pub tai: ::c_int,
+        pub __unused1: i32,
+        pub __unused2: i32,
+        pub __unused3: i32,
+        pub __unused4: i32,
+        pub __unused5: i32,
+        pub __unused6: i32,
+        pub __unused7: i32,
+        pub __unused8: i32,
+        pub __unused9: i32,
+        pub __unused10: i32,
+        pub __unused11: i32,
     }
 }
 
