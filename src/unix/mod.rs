@@ -62,7 +62,12 @@ s! {
 
     pub struct timeval {
         pub tv_sec: time_t,
+        #[cfg(not(gnu_time64_abi))]
         pub tv_usec: suseconds_t,
+        // For 64 bit time on 32 bit linux glibc, suseconds_t is still
+        // a 32 bit type.  Using suseconds_t here will break the tests, use i64 instead
+        #[cfg(gnu_time64_abi)]
+        pub tv_usec: i64
     }
 
     // linux x32 compatibility
