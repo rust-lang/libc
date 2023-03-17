@@ -15,6 +15,7 @@ pub type __fsword_t = i32;
 pub type fsblkcnt64_t = u64;
 pub type fsfilcnt64_t = u64;
 pub type __syscall_ulong_t = c_ulong;
+pub type __suseconds64_t = i64;
 
 cfg_if! {
     if #[cfg(target_arch = "riscv32")] {
