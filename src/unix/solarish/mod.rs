@@ -54,6 +54,8 @@ pub type lgrp_content_t = ::c_uint;
 pub type lgrp_lat_between_t = ::c_uint;
 pub type lgrp_mem_size_flag_t = ::c_uint;
 pub type lgrp_view_t = ::c_uint;
+pub type timestruc_t = ::timespec;
+pub type lwpid_t = ::c_uint;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -472,6 +474,12 @@ s! {
         pub has_arg: ::c_int,
         pub flag: *mut ::c_int,
         pub val: ::c_int,
+    }
+
+    pub struct lwpinfo {
+        pub lwp_utime: ::timestruc_t,
+        pub lwp_stime: ::timestruc_t,
+        lwpinfo_pad: [::c_long; 64],
     }
 }
 
@@ -3196,6 +3204,12 @@ extern "C" {
         longopts: *const option,
         longindex: *mut ::c_int,
     ) -> ::c_int;
+
+    pub fn _lwp_kill(p: ::lwpid_t, s: ::c_int) -> ::c_int;
+    pub fn _lwp_info(l: *mut lwpinfo) -> ::c_int;
+    pub fn _lwp_self() -> ::lwpid_t;
+    pub fn _lwp_suspend(p: ::lwpid_t) -> ::c_int;
+    pub fn _lwp_continue(p: ::lwpid_t) -> ::c_int;
 }
 
 #[link(name = "sendfile")]
