@@ -322,7 +322,19 @@ s! {
     }
 
     pub struct input_event {
-        pub time: ::timeval,
+        #[cfg(any(target_pointer_width = "64", not(gnu_time64_abi)))]
+        pub input_event_sec: ::time_t,
+        #[cfg(all(target_pointer_width = "32", gnu_time64_abi))]
+        pub input_event_sec: ::c_ulong,
+
+        #[cfg(any(target_pointer_width = "64", not(gnu_time64_abi)))]
+        pub input_event_usec: ::suseconds_t,
+        #[cfg(all(target_pointer_width = "32", gnu_time64_abi))]
+        pub input_event_usec: ::c_ulong,
+
+        #[cfg(target_arch = "sparc64")]
+        _pad1: ::c_int,
+
         pub type_: ::__u16,
         pub code: ::__u16,
         pub value: ::__s32,
