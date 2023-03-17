@@ -4231,6 +4231,7 @@ fn test_haiku(target: &str) {
                "link.h",
                "pty.h",
                "stringlist.h",
+               "sys/link_elf.h",
     }
 
     // Native API
