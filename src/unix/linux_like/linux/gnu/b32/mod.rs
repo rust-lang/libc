@@ -166,25 +166,38 @@ s! {
 
     pub struct semid_ds {
         pub sem_perm: ipc_perm,
-        #[cfg(target_arch = "powerpc")]
+        #[cfg(all(not(gnu_time_bits64), target_arch = "powerpc"))]
         __reserved: crate::__syscall_ulong_t,
         pub sem_otime: crate::time_t,
         #[cfg(not(any(
+            gnu_time_bits64,
             target_arch = "mips",
             target_arch = "mips32r6",
             target_arch = "powerpc"
         )))]
         __reserved: crate::__syscall_ulong_t,
-        #[cfg(target_arch = "powerpc")]
+        #[cfg(all(not(gnu_time_bits64), target_arch = "powerpc"))]
         __reserved2: crate::__syscall_ulong_t,
         pub sem_ctime: crate::time_t,
         #[cfg(not(any(
+            gnu_time_bits64,
             target_arch = "mips",
             target_arch = "mips32r6",
             target_arch = "powerpc"
         )))]
         __reserved2: crate::__syscall_ulong_t,
         pub sem_nsems: crate::__syscall_ulong_t,
+        #[cfg(all(
+            gnu_time_bits64,
+            not(any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "powerpc",
+                target_arch = "arm",
+                target_arch = "x86"
+            ))
+        ))]
+        __reserved2: crate::__syscall_ulong_t,
         __glibc_reserved3: crate::__syscall_ulong_t,
         __glibc_reserved4: crate::__syscall_ulong_t,
     }
