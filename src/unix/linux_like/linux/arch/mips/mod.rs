@@ -33,8 +33,15 @@ pub const SO_RCVLOWAT: ::c_int = 0x1004;
 // NOTE: These definitions are now being renamed with _OLD postfix,
 // but CI haven't support them yet.
 // Some related consts could be found in b32.rs and b64.rs
-pub const SO_SNDTIMEO: ::c_int = 0x1005;
-pub const SO_RCVTIMEO: ::c_int = 0x1006;
+cfg_if! {
+    if #[cfg(gnu_time64_abi)] {
+        pub const SO_SNDTIMEO: ::c_int = 67;
+        pub const SO_RCVTIMEO: ::c_int = 66;
+    } else {
+        pub const SO_SNDTIMEO: ::c_int = 0x1005;
+        pub const SO_RCVTIMEO: ::c_int = 0x1006;
+    }
+}
 // pub const SO_SNDTIMEO_OLD: ::c_int = 0x1005;
 // pub const SO_RCVTIMEO_OLD: ::c_int = 0x1006;
 pub const SO_ACCEPTCONN: ::c_int = 0x1009;
@@ -88,9 +95,17 @@ pub const SO_BINDTOIFINDEX: ::c_int = 62;
 // NOTE: These definitions are now being renamed with _OLD postfix,
 // but CI haven't support them yet.
 // Some related consts could be found in b32.rs and b64.rs
-pub const SO_TIMESTAMP: ::c_int = 29;
-pub const SO_TIMESTAMPNS: ::c_int = 35;
-pub const SO_TIMESTAMPING: ::c_int = 37;
+cfg_if! {
+    if #[cfg(gnu_time64_abi)] {
+        pub const SO_TIMESTAMP: ::c_int = 63;
+        pub const SO_TIMESTAMPNS: ::c_int = 64;
+        pub const SO_TIMESTAMPING: ::c_int = 65;
+    } else {
+        pub const SO_TIMESTAMP: ::c_int = 29;
+        pub const SO_TIMESTAMPNS: ::c_int = 35;
+        pub const SO_TIMESTAMPING: ::c_int = 37;
+    }
+}
 // pub const SO_TIMESTAMP_OLD: ::c_int = 29;
 // pub const SO_TIMESTAMPNS_OLD: ::c_int = 35;
 // pub const SO_TIMESTAMPING_OLD: ::c_int = 37;
