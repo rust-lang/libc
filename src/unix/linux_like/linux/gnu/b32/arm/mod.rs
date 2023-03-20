@@ -397,7 +397,13 @@ pub const MCL_ONFAULT: c_int = 0x0004;
 pub const POLLWRNORM: c_short = 0x100;
 pub const POLLWRBAND: c_short = 0x200;
 
-pub const F_GETLK: c_int = 5;
+cfg_if! {
+    if #[cfg(gnu_file_offset_bits64)] {
+        pub const F_GETLK: c_int = 12;
+    } else {
+        pub const F_GETLK: c_int = 5;
+    }
+}
 pub const F_GETOWN: c_int = 9;
 pub const F_SETOWN: c_int = 8;
 
