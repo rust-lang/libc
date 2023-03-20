@@ -62,7 +62,7 @@ s! {
         __error_code: ::c_int,
         __return_value: ::ssize_t,
         pub aio_offset: off_t,
-        #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
+        #[cfg(all(not(gnu_time64_abi), not(target_arch = "x86_64"), target_pointer_width = "32"))]
         __unused1: [::c_char; 4],
         __glibc_reserved: [::c_char; 32]
     }
