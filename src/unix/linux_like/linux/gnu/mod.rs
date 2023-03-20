@@ -451,7 +451,11 @@ s_no_extra_traits! {
         __return_value: ssize_t,
         // FIXME(off64): visible fields depend on __USE_FILE_OFFSET64
         pub aio_offset: off_t,
-        #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
+        #[cfg(all(
+            not(gnu_file_offset_bits64),
+            not(target_arch = "x86_64"),
+            target_pointer_width = "32"
+        ))]
         __pad: [c_char; 4],
         __glibc_reserved: [c_char; 32],
     }
