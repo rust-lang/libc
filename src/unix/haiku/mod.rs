@@ -2030,6 +2030,9 @@ extern "C" {
     pub fn sl_add(sl: *mut StringList, n: *mut ::c_char) -> ::c_int;
     pub fn sl_free(sl: *mut StringList, i: ::c_int);
     pub fn sl_find(sl: *mut StringList, n: *mut ::c_char) -> *mut ::c_char;
+
+    pub fn getprogname() -> *const ::c_char;
+    pub fn setprogname(progname: *const ::c_char);
 }
 
 cfg_if! {
