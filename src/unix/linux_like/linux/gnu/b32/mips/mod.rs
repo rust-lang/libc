@@ -745,7 +745,13 @@ pub const MAP_HUGETLB: c_int = 0x080000;
 
 pub const EFD_NONBLOCK: c_int = 0x80;
 
-pub const F_GETLK: c_int = 14;
+cfg_if! {
+    if #[cfg(gnu_file_offset_bits64)] {
+        pub const F_GETLK: c_int = 33;
+    } else {
+        pub const F_GETLK: c_int = 14;
+    }
+}
 pub const F_GETOWN: c_int = 23;
 pub const F_SETOWN: c_int = 24;
 
