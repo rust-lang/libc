@@ -177,9 +177,6 @@ cfg_if! {
 
         pub const PTRACE_DETACH: c_uint = 11;
 
-        pub const F_SETLK: c_int = 8;
-        pub const F_SETLKW: c_int = 9;
-
         pub const F_RDLCK: c_int = 1;
         pub const F_WRLCK: c_int = 2;
         pub const F_UNLCK: c_int = 3;
@@ -223,9 +220,6 @@ cfg_if! {
 
         pub const PTRACE_DETACH: c_uint = 17;
 
-        pub const F_SETLK: c_int = 6;
-        pub const F_SETLKW: c_int = 7;
-
         pub const F_RDLCK: c_int = 0;
         pub const F_WRLCK: c_int = 1;
         pub const F_UNLCK: c_int = 2;
@@ -259,6 +253,24 @@ cfg_if! {
         pub const EPOLL_CLOEXEC: c_int = 0x80000;
 
         pub const EFD_CLOEXEC: c_int = 0x80000;
+    }
+}
+cfg_if! {
+    if #[cfg(target_arch = "sparc")] {
+        pub const F_SETLK: c_int = 8;
+        pub const F_SETLKW: c_int = 9;
+    } else if #[cfg(all(
+        gnu_file_offset_bits64,
+        any(target_arch = "mips", target_arch = "mips32r6")
+    ))] {
+        pub const F_SETLK: c_int = 34;
+        pub const F_SETLKW: c_int = 35;
+    } else if #[cfg(gnu_file_offset_bits64)] {
+        pub const F_SETLK: c_int = 13;
+        pub const F_SETLKW: c_int = 14;
+    } else {
+        pub const F_SETLK: c_int = 6;
+        pub const F_SETLKW: c_int = 7;
     }
 }
 
