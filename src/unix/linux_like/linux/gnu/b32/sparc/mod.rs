@@ -154,12 +154,18 @@ s! {
 
     pub struct shmid_ds {
         pub shm_perm: crate::ipc_perm,
+        #[cfg(gnu_time_bits64)]
+        pub shm_segsz: size_t,
+        #[cfg(not(gnu_time_bits64))]
         __pad1: c_uint,
         pub shm_atime: crate::time_t,
+        #[cfg(not(gnu_time_bits64))]
         __pad2: c_uint,
         pub shm_dtime: crate::time_t,
+        #[cfg(not(gnu_time_bits64))]
         __pad3: c_uint,
         pub shm_ctime: crate::time_t,
+        #[cfg(not(gnu_time_bits64))]
         pub shm_segsz: size_t,
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
