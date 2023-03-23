@@ -798,6 +798,12 @@ s_no_extra_traits! {
         #[cfg(not(libc_union))]
         pub ifr_ifru: ::sockaddr,
     }
+
+    pub struct hwtstamp_config {
+        pub flags: ::c_int,
+        pub tx_type: ::c_int,
+        pub rx_filter: ::c_int,
+    }
 }
 
 s_no_extra_traits! {
@@ -1219,6 +1225,31 @@ cfg_if! {
                     .field("ifr_name", &self.ifr_name)
                     .field("ifr_ifru", &self.ifr_ifru)
                     .finish()
+            }
+        }
+
+        impl ::fmt::Debug for hwtstamp_config {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("hwtstamp_config")
+                    .field("flags", &self.flags)
+                    .field("tx_type", &self.tx_type)
+                    .field("rx_filter", &self.rx_filter)
+                    .finish()
+            }
+        }
+        impl PartialEq for hwtstamp_config {
+            fn eq(&self, other: &hwtstamp_config) -> bool {
+                self.flags == other.flags &&
+                self.tx_type == other.tx_type &&
+                self.rx_filter == other.rx_filter
+            }
+        }
+        impl Eq for hwtstamp_config {}
+        impl ::hash::Hash for hwtstamp_config {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.flags.hash(state);
+                self.tx_type.hash(state);
+                self.rx_filter.hash(state);
             }
         }
     }
@@ -2771,6 +2802,8 @@ pub const SIOCGRARP: ::c_ulong = 0x00008961;
 pub const SIOCSRARP: ::c_ulong = 0x00008962;
 pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
 pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
+pub const SIOCSHWTSTAMP: ::c_ulong = 0x000089b0;
+pub const SIOCGHWTSTAMP: ::c_ulong = 0x000089b1;
 
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
 pub const IPTOS_PREC_MASK: u8 = 0xE0;
@@ -3128,6 +3161,28 @@ pub const SOF_TIMESTAMPING_OPT_PKTINFO: ::c_uint = 1 << 13;
 pub const SOF_TIMESTAMPING_OPT_TX_SWHW: ::c_uint = 1 << 14;
 pub const SOF_TXTIME_DEADLINE_MODE: u32 = 1 << 0;
 pub const SOF_TXTIME_REPORT_ERRORS: u32 = 1 << 1;
+
+pub const HWTSTAMP_TX_OFF: ::c_uint = 0;
+pub const HWTSTAMP_TX_ON: ::c_uint = 1;
+pub const HWTSTAMP_TX_ONESTEP_SYNC: ::c_uint = 2;
+pub const HWTSTAMP_TX_ONESTEP_P2P: ::c_uint = 3;
+
+pub const HWTSTAMP_FILTER_NONE: ::c_uint = 0;
+pub const HWTSTAMP_FILTER_ALL: ::c_uint = 1;
+pub const HWTSTAMP_FILTER_SOME: ::c_uint = 2;
+pub const HWTSTAMP_FILTER_PTP_V1_L4_EVENT: ::c_uint = 3;
+pub const HWTSTAMP_FILTER_PTP_V1_L4_SYNC: ::c_uint = 4;
+pub const HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ: ::c_uint = 5;
+pub const HWTSTAMP_FILTER_PTP_V2_L4_EVENT: ::c_uint = 6;
+pub const HWTSTAMP_FILTER_PTP_V2_L4_SYNC: ::c_uint = 7;
+pub const HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ: ::c_uint = 8;
+pub const HWTSTAMP_FILTER_PTP_V2_L2_EVENT: ::c_uint = 9;
+pub const HWTSTAMP_FILTER_PTP_V2_L2_SYNC: ::c_uint = 10;
+pub const HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ: ::c_uint = 11;
+pub const HWTSTAMP_FILTER_PTP_V2_EVENT: ::c_uint = 12;
+pub const HWTSTAMP_FILTER_PTP_V2_SYNC: ::c_uint = 13;
+pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
+pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 
 // linux/if_alg.h
 pub const ALG_SET_KEY: ::c_int = 1;
