@@ -1631,6 +1631,7 @@ fn test_android(target: &str) {
                 "linux/if_link.h",
                 "linux/rtnetlink.h",
                 "linux/if_tun.h",
+                "linux/kexec.h",
                 "linux/magic.h",
                 "linux/membarrier.h",
                 "linux/memfd.h",
@@ -3250,6 +3251,7 @@ fn test_linux(target: &str) {
         "linux/if_tun.h",
         "linux/input.h",
         "linux/ipv6.h",
+        "linux/kexec.h",
         "linux/keyctl.h",
         "linux/magic.h",
         "linux/memfd.h",
@@ -3464,6 +3466,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("F_")
                 || name.starts_with("FALLOC_FL_")
                 || name.starts_with("IFLA_")
+                || name.starts_with("KEXEC_")
                 || name.starts_with("MS_")
                 || name.starts_with("MSG_")
                 || name.starts_with("OPEN_TREE_")
