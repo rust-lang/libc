@@ -23,3 +23,5 @@ cc = ["@semarie"]
 [mentions."src/unix/solarish"]
 message = "Some changes occurred in solarish module"
 cc = ["@jclulow", "@pfmooney"]
+
+[shortcut]
