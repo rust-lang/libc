@@ -1499,6 +1499,11 @@ cfg_if! {
                 timeout: *mut timespec,
                 sigmask: *const sigset_t,
             ) -> ::c_int;
+            pub fn sigaction(
+                signum: ::c_int,
+                act: *const sigaction,
+                oldact: *mut sigaction
+            ) -> ::c_int;
         }
     } else {
         extern {
