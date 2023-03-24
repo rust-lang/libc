@@ -2035,6 +2035,16 @@ extern "C" {
     pub fn setprogname(progname: *const ::c_char);
 }
 
+#[link(name = "unix")]
+extern "C" {
+    pub fn memmem(
+        source: *const ::c_void,
+        sourceLength: ::size_t,
+        search: *const ::c_void,
+        searchLength: ::size_t,
+    ) -> *mut ::c_void;
+}
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         mod b64;
