@@ -1093,6 +1093,9 @@ extern "C" {
     // time.h
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+
+    // strings.h
+    pub fn explicit_bzero(p: *mut ::c_void, len: ::size_t);
 }
 
 cfg_if! {
