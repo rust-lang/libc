@@ -2809,6 +2809,14 @@ f! {
         };
         ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
+
+    pub fn major(dev: ::dev_t) -> ::c_uint {
+        ((dev as ::c_uint) >> 10) & 0x3f
+    }
+
+    pub fn minor(dev: ::dev_t) -> ::c_uint {
+        (dev as ::c_uint) & 0x3ff
+    }
 }
 
 safe_f! {
@@ -2846,6 +2854,10 @@ safe_f! {
 
     pub {const} fn IPTOS_ECN(x: u8) -> u8 {
         x & ::IPTOS_ECN_MASK
+    }
+
+    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+        ((major << 10) | (minor)) as ::dev_t
     }
 }
 
