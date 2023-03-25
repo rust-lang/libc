@@ -4670,6 +4670,18 @@ pub const SCTP_ASSOC_RESET_FAILED: ::c_int = 0x0008;
 pub const SCTP_STREAM_CHANGE_DENIED: ::c_int = 0x0004;
 pub const SCTP_STREAM_CHANGE_FAILED: ::c_int = 0x0008;
 
+cfg_if! {
+    if #[cfg(libc_const_extern_fn)] {
+        pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
+            a << 24
+        }
+    } else {
+        pub fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
+            a << 24
+        }
+    }
+}
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
