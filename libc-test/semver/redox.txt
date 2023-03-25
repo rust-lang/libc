@@ -207,6 +207,8 @@ setrlimit
 setservent
 strcasecmp
 strcasestr
+strlcat
+strlcpy
 strncasecmp
 strndup
 strsignal

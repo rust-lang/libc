@@ -1043,6 +1043,10 @@ extern "C" {
     pub fn pthread_cancel(thread: ::pthread_t) -> ::c_int;
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
 
+    // string.h
+    pub fn strlcat(dst: *mut ::c_char, src: *const ::c_char, siz: ::size_t) -> ::size_t;
+    pub fn strlcpy(dst: *mut ::c_char, src: *const ::c_char, siz: ::size_t) -> ::size_t;
+
     // sys/epoll.h
     pub fn epoll_create(size: ::c_int) -> ::c_int;
     pub fn epoll_create1(flags: ::c_int) -> ::c_int;
