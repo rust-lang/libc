@@ -3571,6 +3571,10 @@ pub const AF_NETBIOS: ::c_int = 33;
 pub const AF_PPP: ::c_int = 34;
 pub const pseudo_AF_HDRCMPLT: ::c_int = 35;
 pub const AF_SYS_CONTROL: ::c_int = 2;
+pub const AF_AFP: ::c_int = 36;
+pub const AF_IEEE80211: ::c_int = 37;
+pub const AF_UTUN: ::c_int = 38;
+pub const AF_MULTIPATH: ::c_int = 39;
 
 pub const SYSPROTO_EVENT: ::c_int = 1;
 pub const SYSPROTO_CONTROL: ::c_int = 2;
