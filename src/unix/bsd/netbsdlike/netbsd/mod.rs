@@ -2384,6 +2384,19 @@ pub const GRND_NONBLOCK: ::c_uint = 0x1;
 pub const GRND_RANDOM: ::c_uint = 0x2;
 pub const GRND_INSECURE: ::c_uint = 0x4;
 
+cfg_if! {
+
+    if #[cfg(libc_const_extern_fn)] {
+        pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
+            alignment << MAP_ALIGNMENT_SHIFT
+        }
+    } else {
+        pub fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
+            alignment << MAP_ALIGNMENT_SHIFT
+        }
+    }
+}
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
