@@ -110,10 +110,13 @@ s! {
 
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
+        #[cfg(not(gnu_time64_abi))]
         __glibc_reserved1: ::c_uint,
         pub msg_stime: ::time_t,
+        #[cfg(not(gnu_time64_abi))]
         __glibc_reserved2: ::c_uint,
         pub msg_rtime: ::time_t,
+        #[cfg(not(gnu_time64_abi))]
         __glibc_reserved3: ::c_uint,
         pub msg_ctime: ::time_t,
         __msg_cbytes: ::c_ulong,
