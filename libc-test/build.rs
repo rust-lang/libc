@@ -2276,9 +2276,12 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14
             "IFCAP_NV" if Some(14) > freebsd_ver => true,
 
-            // Removed in https://reviews.freebsd.org/D38574 and https://reviews.freebsd.org/D38822
+            // FIXME: Removed in https://reviews.freebsd.org/D38574 and https://reviews.freebsd.org/D38822
             // We maybe should deprecate them once a stable release ships them.
             "IP_BINDMULTI" | "IP_RSS_LISTEN_BUCKET" => true,
+
+            // FIXME: Removed in https://reviews.freebsd.org/D39127.
+            "KERN_VNODE" => true,
 
             _ => false,
         }
