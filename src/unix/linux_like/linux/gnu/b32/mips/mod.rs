@@ -121,21 +121,9 @@ s! {
 
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
-        #[cfg(target_endian = "big")]
-        __glibc_reserved1: ::c_ulong,
         pub msg_stime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __glibc_reserved1: ::c_ulong,
-        #[cfg(target_endian = "big")]
-        __glibc_reserved2: ::c_ulong,
         pub msg_rtime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __glibc_reserved2: ::c_ulong,
-        #[cfg(target_endian = "big")]
-        __glibc_reserved3: ::c_ulong,
         pub msg_ctime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __glibc_reserved3: ::c_ulong,
         __msg_cbytes: ::c_ulong,
         pub msg_qnum: ::msgqnum_t,
         pub msg_qbytes: ::msglen_t,
