@@ -436,6 +436,18 @@ s! {
         __pos: off64_t,
         __state: crate::mbstate_t,
     }
+
+    // linux x32 compatibility
+    // See https://sourceware.org/bugzilla/show_bug.cgi?id=16437
+    pub struct timespec {
+        pub tv_sec: time_t,
+        #[cfg(all(gnu_time_bits64, target_endian = "big"))]
+        __pad: i32,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        pub tv_nsec: c_long,
+        #[cfg(all(gnu_time_bits64, target_endian = "little"))]
+        __pad: i32,
+    }
 }
 
 impl siginfo_t {
