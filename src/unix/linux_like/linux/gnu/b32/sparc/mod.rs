@@ -176,19 +176,22 @@ s! {
 
     pub struct msqid_ds {
         pub msg_perm: crate::ipc_perm,
+        #[cfg(not(gnu_time_bits64))]
         __pad1: c_uint,
         pub msg_stime: crate::time_t,
+        #[cfg(not(gnu_time_bits64))]
         __pad2: c_uint,
         pub msg_rtime: crate::time_t,
+        #[cfg(not(gnu_time_bits64))]
         __pad3: c_uint,
         pub msg_ctime: crate::time_t,
-        pub __msg_cbytes: c_ushort,
+        pub __msg_cbytes: c_ulong,
         pub msg_qnum: crate::msgqnum_t,
         pub msg_qbytes: crate::msglen_t,
         pub msg_lspid: crate::pid_t,
         pub msg_lrpid: crate::pid_t,
-        __glibc_reserved1: c_ulong,
-        __glibc_reserved2: c_ulong,
+        __glibc_reserved4: c_ulong,
+        __glibc_reserved5: c_ulong,
     }
 }
 
