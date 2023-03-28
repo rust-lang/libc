@@ -186,6 +186,7 @@ epoll_create1
 epoll_ctl
 epoll_event
 epoll_wait
+explicit_bzero
 fchdir
 fmemopen
 getline
