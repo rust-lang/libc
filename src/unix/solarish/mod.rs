@@ -3196,6 +3196,8 @@ extern "C" {
         longopts: *const option,
         longindex: *mut ::c_int,
     ) -> ::c_int;
+
+    pub fn sync();
 }
 
 #[link(name = "sendfile")]
