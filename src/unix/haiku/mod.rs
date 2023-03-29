@@ -445,6 +445,13 @@ s! {
         pub sl_max: ::size_t,
         pub sl_cur: ::size_t,
     }
+
+    pub struct dl_phdr_info {
+        pub dlpi_addr: ::Elf_Addr,
+        pub dlpi_name: *const ::c_char,
+        pub dlpi_phdr: *const ::Elf_Phdr,
+        pub dlpi_phnum: ::Elf_Half,
+    }
 }
 
 s_no_extra_traits! {
@@ -2033,6 +2040,16 @@ extern "C" {
 
     pub fn getprogname() -> *const ::c_char;
     pub fn setprogname(progname: *const ::c_char);
+    pub fn dl_iterate_phdr(
+        callback: ::Option<
+            unsafe extern "C" fn(
+                info: *mut dl_phdr_info,
+                size: usize,
+                data: *mut ::c_void,
+            ) -> ::c_int,
+        >,
+        data: *mut ::c_void,
+    ) -> ::c_int;
 }
 
 #[link(name = "unix")]
