@@ -266,7 +266,9 @@ pub const SIG_ACK: ::sighandler_t = 4;
 // * `nocrt`: do not link the crt. This makes other options be no-ops.
 // * `debug`: use the debug crt libraries
 // * `dynamic-ucrt`: link the ucrt dynamically even if using the static C runtime
-#[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))]
+//
+// note: inline comment below appeases style checker
+#[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))] // " if "
 #[link(
     // MSVC dynamic crt (release)
     name = "msvcrt",
