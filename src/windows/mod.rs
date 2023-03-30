@@ -254,10 +254,97 @@ pub const SIG_GET: ::sighandler_t = 2;
 pub const SIG_SGE: ::sighandler_t = 3;
 pub const SIG_ACK: ::sighandler_t = 4;
 
-// inline comment below appeases style checker
-#[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))] // " if "
-#[link(name = "msvcrt", cfg(not(target_feature = "crt-static")))]
-#[link(name = "libcmt", cfg(target_feature = "crt-static"))]
+// MSVC C RunTime (CRT) link options.
+//
+// If `target_feature = "crt-static" then use the static CRT. Otherwise use the
+// dll.
+//
+// Linking the CRT can be further configured using the `msvc_crt_link` cfg.
+// It can be set in rustflags with `--cfg msvc_crt_link=option` where "option"
+// can be:
+//
+// * `nocrt`: do not link the crt. This makes other options be no-ops.
+// * `debug`: use the debug crt libraries
+// * `dynamic-ucrt`: link the ucrt dynamically even if using the static C runtime
+#[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))]
+#[link(
+    // MSVC dynamic crt (release)
+    name = "msvcrt",
+    cfg(all(
+        not(target_feature = "crt-static"),
+        not(msvc_crt_link = "debug"),
+        not(msvc_crt_link = "nocrt")
+    ))
+)]
+#[link(
+    // MSVC dynamic crt (debug)
+    name = "msvcrtd",
+    cfg(all(
+        not(target_feature = "crt-static"),
+        msvc_crt_link = "debug",
+        not(msvc_crt_link = "nocrt")
+    ))
+)]
+#[link(
+    // MSVC static crt (release)
+    name = "libcmt",
+    cfg(all(
+        target_feature = "crt-static",
+        not(msvc_crt_link = "debug"),
+        not(msvc_crt_link = "nocrt")
+    ))
+)]
+#[link(
+    // MSVC static crt (debug)
+    name = "libcmtd",
+    cfg(all(
+        target_feature = "crt-static",
+        msvc_crt_link = "debug",
+        not(msvc_crt_link = "nocrt")
+    ))
+)]
+#[link(
+    // Link the ucrt dynamically (release)
+    name = "ucrt",
+    cfg(all(
+        target_feature = "crt-static",
+        msvc_crt_link = "dynamic-ucrt",
+        not(msvc_crt_link = "debug"),
+        not(msvc_crt_link = "nocrt")
+    ))
+)]
+#[link(
+    // Disable the static ucrt (release)
+    name = "/nodefaultlib:libucrt",
+    cfg(all(
+        target_feature = "crt-static",
+        msvc_crt_link = "dynamic-ucrt",
+        not(msvc_crt_link = "debug"),
+        not(msvc_crt_link = "nocrt")
+    )),
+    modifiers = "+verbatim"
+)]
+#[link(
+    // Link the ucrt dynamically (debug)
+    name = "ucrtd",
+    cfg(all(
+        target_feature = "crt-static",
+        msvc_crt_link = "dynamic-ucrt",
+        msvc_crt_link = "debug",
+        not(msvc_crt_link = "nocrt")
+    ))
+)]
+#[link(
+    // Disable the static ucrt (debug)
+    name = "/nodefaultlib:libucrtd",
+    cfg(all(
+        target_feature = "crt-static",
+        msvc_crt_link = "dynamic-ucrt",
+        msvc_crt_link = "debug",
+        not(msvc_crt_link = "nocrt")
+    )),
+    modifiers = "+verbatim"
+)]
 extern "C" {}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
