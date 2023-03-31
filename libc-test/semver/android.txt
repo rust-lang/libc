@@ -2290,7 +2290,9 @@ SYS_clock_gettime
 SYS_clock_nanosleep
 SYS_clock_settime
 SYS_clone
+SYS_clone3
 SYS_close
+SYS_close_range
 SYS_connect
 SYS_copy_file_range
 SYS_delete_module
@@ -2299,12 +2301,14 @@ SYS_dup3
 SYS_epoll_create1
 SYS_epoll_ctl
 SYS_epoll_pwait
+SYS_epoll_pwait2
 SYS_eventfd2
 SYS_execve
 SYS_execveat
 SYS_exit
 SYS_exit_group
 SYS_faccessat
+SYS_faccessat2
 SYS_fallocate
 SYS_fanotify_init
 SYS_fanotify_mark
@@ -2326,7 +2330,9 @@ SYS_fsopen
 SYS_fspick
 SYS_fsync
 SYS_futex
+SYS_futex_waitv
 SYS_get_mempolicy
+SYS_set_mempolicy_home_node
 SYS_get_robust_list
 SYS_getcpu
 SYS_getcwd
@@ -2371,6 +2377,9 @@ SYS_kcmp
 SYS_kexec_load
 SYS_keyctl
 SYS_kill
+SYS_landlock_add_rule
+SYS_landlock_create_ruleset
+SYS_landlock_restrict_self
 SYS_lgetxattr
 SYS_linkat
 SYS_listen
@@ -2383,6 +2392,7 @@ SYS_madvise
 SYS_mbind
 SYS_membarrier
 SYS_memfd_create
+SYS_memfd_secret
 SYS_mincore
 SYS_mkdirat
 SYS_mknodat
@@ -2390,6 +2400,7 @@ SYS_mlock
 SYS_mlock2
 SYS_mlockall
 SYS_mount
+SYS_mount_setattr
 SYS_move_mount
 SYS_move_pages
 SYS_mprotect
@@ -2410,8 +2421,11 @@ SYS_nfsservctl
 SYS_open_by_handle_at
 SYS_open_tree
 SYS_openat
+SYS_openat2
 SYS_perf_event_open
 SYS_personality
+SYS_pidfd_open
+SYS_pidfd_getfd
 SYS_pidfd_send_signal
 SYS_pipe2
 SYS_pivot_root
@@ -2424,6 +2438,8 @@ SYS_pread64
 SYS_preadv
 SYS_preadv2
 SYS_prlimit64
+SYS_process_madvise
+SYS_process_mrelease
 SYS_process_vm_readv
 SYS_process_vm_writev
 SYS_pselect6
@@ -2432,6 +2448,7 @@ SYS_pwrite64
 SYS_pwritev
 SYS_pwritev2
 SYS_quotactl
+SYS_quotactl_fd
 SYS_read
 SYS_readahead
 SYS_readlinkat
