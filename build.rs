@@ -1,6 +1,7 @@
 use std::env;
 use std::process::Command;
 use std::str;
+use std::string::String;
 
 // List of cfgs this build script is allowed to set. The list is needed to support check-cfg, as we
 // need to know all the possible cfgs that this script will set. If you need to set another cfg
@@ -181,6 +182,13 @@ fn rustc_minor_nightly() -> (u32, bool) {
         .output()
         .ok()
         .expect("Failed to get rustc version");
+    if !output.status.success() {
+        panic!(
+            "failed to run rustc: {}",
+            String::from_utf8_lossy(output.stderr.as_slice())
+        );
+    }
+
     let version = otry!(str::from_utf8(&output.stdout).ok());
     let mut pieces = version.split('.');
 
