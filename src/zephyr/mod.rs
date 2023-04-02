@@ -12,24 +12,28 @@ pub type uint16_t = u16;
 pub type uint32_t = u32;
 pub type uint64_t = u64;
 
-#[cfg(target_arch = "aarch64")]
-pub type c_char = u8;
-#[cfg(not(target_arch = "aarch64"))]
-pub type c_char = i8;
+cfg_if::cfg_if! {
+    if #[cfg(target_arch = "aarch64")] {
+        pub type c_char = u8;
+    } else {
+        pub type c_char = i8;
+    }
+}
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;
 pub type c_ushort = u16;
 pub type c_int = i32;
 pub type c_uint = u32;
-#[cfg(target_pointer_width = "32")]
-pub type c_long = i32;
-#[cfg(target_pointer_width = "32")]
-pub type c_ulong = u32;
-#[cfg(target_pointer_width = "64")]
-pub type c_long = i64;
-#[cfg(target_pointer_width = "64")]
-pub type c_ulong = u64;
+cfg_if::cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        pub type c_long = i32;
+        pub type c_ulong = u32;
+    } else if #[cfg(target_pointer_width = "64")] {
+        pub type c_long = i64;
+        pub type c_ulong = u64;
+    }
+}
 pub type c_longlong = i64;
 pub type c_ulonglong = u64;
 pub type intmax_t = i64;
@@ -63,14 +67,12 @@ cfg_if! {
     }
 }
 
-extern {
+extern "C" {
     pub fn strlen(cs: *const c_char) -> size_t;
 
     pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
     pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
-    pub fn memcpy(dest: *mut c_void, src: *const c_void,
-                  n: size_t) -> *mut c_void;
-    pub fn memmove(dest: *mut c_void, src: *const c_void,
-                   n: size_t) -> *mut c_void;
+    pub fn memcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
+    pub fn memmove(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
     pub fn memset(dest: *mut c_void, c: c_int, n: size_t) -> *mut c_void;
 }
