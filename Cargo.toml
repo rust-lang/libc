@@ -31,5 +31,5 @@ const-extern-fn = []
 # use_std is deprecated, use `std` instead
 use_std = ['std']
 
-#[workspace]
-#members = ["libc-test"]
+[workspace]
+members = ["libc-test"]
