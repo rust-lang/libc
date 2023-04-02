@@ -55,6 +55,9 @@ mod t {
     // https://github.com/rust-lang/libc/issues/1239
     #[cfg(not(target_arch = "sparc64"))]
     #[test]
+    // FIXME: This triggers alignment checks for pointer dereferences:
+    // https://github.com/rust-lang/libc/issues/3181
+    #[ignore]
     fn test_cmsg_nxthdr() {
         use std::ptr;
 
