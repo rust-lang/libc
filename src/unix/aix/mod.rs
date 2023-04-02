@@ -2054,7 +2054,7 @@ f! {
         ::mem::size_of::<::cmsghdr>() as ::c_uint + length
     }
 
-    pub fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         ::mem::size_of::<::cmsghdr>() as ::c_uint + length
     }
 
