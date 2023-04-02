@@ -3042,6 +3042,14 @@ pub const ARPD_LOOKUP: ::c_ushort = 0x02;
 pub const ARPD_FLUSH: ::c_ushort = 0x03;
 pub const ATF_MAGIC: ::c_int = 0x80;
 
+pub const RTEXT_FILTER_VF: ::c_int = 1 << 0;
+pub const RTEXT_FILTER_BRVLAN: ::c_int = 1 << 1;
+pub const RTEXT_FILTER_BRVLAN_COMPRESSED: ::c_int = 1 << 2;
+pub const RTEXT_FILTER_SKIP_STATS: ::c_int = 1 << 3;
+pub const RTEXT_FILTER_MRP: ::c_int = 1 << 4;
+pub const RTEXT_FILTER_CFM_CONFIG: ::c_int = 1 << 5;
+pub const RTEXT_FILTER_CFM_STATUS: ::c_int = 1 << 6;
+
 // userspace compat definitions for RTNLGRP_*
 pub const RTMGRP_LINK: ::c_int = 0x00001;
 pub const RTMGRP_NOTIFY: ::c_int = 0x00002;
