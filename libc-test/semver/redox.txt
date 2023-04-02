@@ -204,6 +204,7 @@ open_wmemstream
 pipe2
 pthread_condattr_setclock
 qsort
+reallocarray
 setrlimit
 setservent
 strcasecmp
