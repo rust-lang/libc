@@ -2283,6 +2283,9 @@ fn test_freebsd(target: &str) {
             // FIXME: Removed in https://reviews.freebsd.org/D39127.
             "KERN_VNODE" => true,
 
+            // Added in FreeBSD 14
+            "EV_KEEPUDATA" if Some(14) > freebsd_ver => true,
+
             _ => false,
         }
     });
