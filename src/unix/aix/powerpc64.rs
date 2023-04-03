@@ -192,6 +192,29 @@ s_no_extra_traits! {
     }
 }
 
+impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut ::c_void {
+        self.si_addr
+    }
+
+    #[cfg(libc_union)]
+    pub unsafe fn si_value(&self) -> ::sigval {
+        self.si_value
+    }
+
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.si_pid
+    }
+
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.si_uid
+    }
+
+    pub unsafe fn si_status(&self) -> ::c_int {
+        self.si_status
+    }
+}
+
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         #[cfg(libc_union)]
