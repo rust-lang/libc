@@ -3394,7 +3394,7 @@ fn test_linux(target: &str) {
         }
         // FIXME(https://github.com/rust-lang/libc/issues/1558): passing by
         // value corrupts the value for reasons not understood.
-        if (gnu && sparc64) && ty == "ip_mreqn" {
+        if (gnu && sparc64) && (ty == "ip_mreqn" || ty == "hwtstamp_config") {
             return true;
         }
         match ty {
@@ -3723,6 +3723,9 @@ fn test_linux(target: &str) {
             | "IFLA_ALLMULTI"            // linux v6.0+
                 => true,
             "SCTP_FUTURE_ASSOC" | "SCTP_CURRENT_ASSOC" | "SCTP_ALL_ASSOC" | "SCTP_PEER_ADDR_THLDS_V2" => true, // linux 5.5+
+
+            // FIXME: Requires more recent kernel headers
+            "HWTSTAMP_TX_ONESTEP_P2P" if sparc64 || musl => true, // linux v5.6+
 
             _ => false,
         }
