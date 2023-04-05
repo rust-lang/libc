@@ -7,6 +7,7 @@ pub type sigset_t = ::c_uint;
 pub type blksize_t = i32;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
+pub type idtype_t = ::c_uint;
 pub type pthread_attr_t = *mut ::c_void;
 pub type pthread_mutex_t = *mut ::c_void;
 pub type pthread_mutexattr_t = *mut ::c_void;
@@ -1615,7 +1616,15 @@ pub const BIOCSDLT: ::c_ulong = 0x8004427a;
 
 pub const PTRACE_FORK: ::c_int = 0x0002;
 
-pub const WCONTINUED: ::c_int = 8;
+pub const WCONTINUED: ::c_int = 0x08;
+pub const WEXITED: ::c_int = 0x04;
+pub const WSTOPPED: ::c_int = 0x02; // same as WUNTRACED
+pub const WNOWAIT: ::c_int = 0x10;
+pub const WTRAPPED: ::c_int = 0x20;
+
+pub const P_ALL: ::idtype_t = 0;
+pub const P_PGID: ::idtype_t = 1;
+pub const P_PID: ::idtype_t = 2;
 
 // search.h
 pub const FIND: ::ACTION = 0;
