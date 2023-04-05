@@ -55,6 +55,8 @@ pub type sa_type_t = u16;
 
 #[cfg(target_vendor = "wasmer")]
 pub type pthread_t = c_ulong;
+#[cfg(target_vendor = "wasmer")]
+pub type pthread_key_t = ::c_uint;
 
 #[cfg(target_vendor = "wasmer")]
 pub struct pthread_attr_t {
@@ -1505,6 +1507,17 @@ extern "C" {
         f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_key_create(
+        key: *mut pthread_key_t,
+        dtor: ::Option<unsafe extern "C" fn(*mut ::c_void)>,
+    ) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_key_delete(key: pthread_key_t) -> ::c_int;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_getspecific(key: pthread_key_t) -> *mut ::c_void;
+    #[cfg(target_vendor = "wasmer")]
+    pub fn pthread_setspecific(key: pthread_key_t, value: *const ::c_void) -> ::c_int;
 }
 
 /// mocked functions that dont do anything in WASI land
