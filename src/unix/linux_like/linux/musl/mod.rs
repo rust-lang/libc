@@ -536,6 +536,7 @@ pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
 pub const SOCK_DCCP: ::c_int = 6;
+pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 pub const SOCK_PACKET: ::c_int = 10;
 
 pub const SOMAXCONN: ::c_int = 128;

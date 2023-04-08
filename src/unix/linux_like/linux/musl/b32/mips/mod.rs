@@ -250,8 +250,6 @@ pub const O_SYNC: ::c_int = 0o40020;
 pub const O_RSYNC: ::c_int = 0o40020;
 pub const O_DSYNC: ::c_int = 0o020;
 
-pub const SOCK_NONBLOCK: ::c_int = 0o200;
-
 pub const MAP_ANON: ::c_int = 0x800;
 pub const MAP_GROWSDOWN: ::c_int = 0x1000;
 pub const MAP_DENYWRITE: ::c_int = 0x2000;
