@@ -350,7 +350,6 @@ pub const ERFKILL: ::c_int = 167;
 
 pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_DGRAM: ::c_int = 1;
-pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const SA_ONSTACK: ::c_int = 0x08000000;
 pub const SA_SIGINFO: ::c_int = 8;
