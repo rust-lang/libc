@@ -294,7 +294,6 @@ pub const SIG_SETMASK: ::c_int = 2; // FIXME check these
 pub const SIG_BLOCK: ::c_int = 0x000000;
 pub const SIG_UNBLOCK: ::c_int = 0x01;
 pub const SOCK_DGRAM: ::c_int = 2;
-pub const SOCK_NONBLOCK: ::c_int = 2048;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOL_CAIF: ::c_int = 278;
