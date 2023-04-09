@@ -3,7 +3,7 @@ task:
   freebsd_instance:
     image_family: freebsd-12-4
   setup_script:
-    - pkg install -y curl
+    - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh --default-toolchain nightly -y --profile=minimal
     - . $HOME/.cargo/env
@@ -17,7 +17,7 @@ task:
   freebsd_instance:
     image_family: freebsd-13-1
   setup_script:
-    - pkg install -y curl
+    - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh -y --default-toolchain nightly --profile=minimal
     - . $HOME/.cargo/env
