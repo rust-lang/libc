@@ -185,12 +185,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg(libc_union)]
-    pub union sigval {
-        pub sival_ptr: *mut ::c_void,
-        pub sival_int: ::c_int,
-    }
-
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
@@ -200,8 +194,7 @@ s_no_extra_traits! {
         pub si_status: ::c_int,
         pub si_addr: *mut ::c_void,
         pub si_band: ::c_long,
-        #[cfg(libc_union)]
-        pub si_value: sigval,
+        pub si_value: ::sigval,
         pub __si_flags: ::c_int,
         pub __pad: [::c_int; 3],
     }
@@ -286,7 +279,6 @@ impl siginfo_t {
         self.si_addr
     }
 
-    #[cfg(libc_union)]
     pub unsafe fn si_value(&self) -> ::sigval {
         self.si_value
     }
@@ -306,36 +298,6 @@ impl siginfo_t {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[cfg(libc_union)]
-        impl PartialEq for sigval {
-            fn eq(&self, other: &sigval) -> bool {
-                unsafe {
-                    self.sival_ptr == other.sival_ptr
-                        && self.sival_int == other.sival_int
-                }
-            }
-        }
-        #[cfg(libc_union)]
-        impl Eq for sigval {}
-        #[cfg(libc_union)]
-        impl ::fmt::Debug for sigval {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sigval")
-                    .field("sival_ptr", unsafe { &self.sival_ptr })
-                    .field("sival_int", unsafe { &self.sival_int })
-                    .finish()
-            }
-        }
-        #[cfg(libc_union)]
-        impl ::hash::Hash for sigval {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe {
-                    self.sival_ptr.hash(state);
-                    self.sival_int.hash(state);
-                }
-            }
-        }
-
         impl PartialEq for siginfo_t {
             fn eq(&self, other: &siginfo_t) -> bool {
                 #[cfg(libc_union)]
@@ -402,7 +364,7 @@ cfg_if! {
         #[cfg(libc_union)]
         impl ::fmt::Debug for _kernel_simple_lock {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sigval")
+                f.debug_struct("_kernel_simple_lock")
                     .field("_slock", unsafe { &self._slock })
                     .field("_slockp", unsafe { &self._slockp })
                     .finish()

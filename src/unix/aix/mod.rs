@@ -313,7 +313,7 @@ s! {
         pub sigev_value: ::sigval,
         pub sigev_signo: ::c_int,
         pub sigev_notify: ::c_int,
-        pub sigev_notify_function: extern fn(val: sigval),
+        pub sigev_notify_function: extern fn(val: ::sigval),
         pub sigev_notify_attributes: *mut pthread_attr_t,
     }
 
