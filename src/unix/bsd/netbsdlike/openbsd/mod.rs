@@ -1900,6 +1900,9 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn mimmutable(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
+
+    pub fn getthrname(tid: ::pid_t, name: *mut ::c_char, namelen: ::size_t) -> ::c_int;
+    pub fn setthrname(tid: ::pid_t, name: *const ::c_char) -> ::c_int;
 }
 
 #[link(name = "execinfo")]

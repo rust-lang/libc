@@ -1061,6 +1061,7 @@ getservbyport
 getservent
 getsid
 getthrid
+getthrname
 glob
 glob_t
 globfree
@@ -1199,6 +1200,7 @@ setresgid
 setresuid
 setrlimit
 setservent
+setthrname
 settimeofday
 shmat
 shmctl
