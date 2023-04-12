@@ -2220,6 +2220,11 @@ pub const WCONTINUED: ::c_int = 0x00000010;
 pub const WEXITED: ::c_int = 0x000000020;
 pub const WNOWAIT: ::c_int = 0x00010000;
 
+pub const WALTSIG: ::c_int = 0x00000004;
+pub const WALLSIG: ::c_int = 0x00000008;
+pub const WTRAPPED: ::c_int = 0x00000040;
+pub const WNOZOMBIE: ::c_int = 0x00020000;
+
 pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 4;
