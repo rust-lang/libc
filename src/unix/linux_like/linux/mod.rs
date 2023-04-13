@@ -916,6 +916,7 @@ cfg_if! {
             }
         }
 
+        #[cfg(not(target_env = "musl"))]
         impl PartialEq for dirent64 {
             fn eq(&self, other: &dirent64) -> bool {
                 self.d_ino == other.d_ino
@@ -930,8 +931,10 @@ cfg_if! {
             }
         }
 
+        #[cfg(not(target_env = "musl"))]
         impl Eq for dirent64 {}
 
+        #[cfg(not(target_env = "musl"))]
         impl ::fmt::Debug for dirent64 {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("dirent64")
@@ -944,6 +947,7 @@ cfg_if! {
             }
         }
 
+        #[cfg(not(target_env = "musl"))]
         impl ::hash::Hash for dirent64 {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
