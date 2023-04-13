@@ -194,6 +194,7 @@ getrlimit
 getrusage
 getservbyport
 getservent
+getdtablesize
 killpg
 lockf
 madvise
