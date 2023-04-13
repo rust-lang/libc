@@ -37,7 +37,8 @@ s! {
         pub stx_dev_major: u32,
         pub stx_dev_minor: u32,
         pub stx_mnt_id: u64,
-        __statx_pad2: u64,
+        pub stx_dio_mem_align: u32,
+        pub stx_dio_offset_align: u32,
         __statx_pad3: [u64; 12],
     }
 
@@ -729,27 +730,6 @@ pub const PF_NFC: ::c_int = AF_NFC;
 pub const PF_VSOCK: ::c_int = AF_VSOCK;
 pub const PF_XDP: ::c_int = AF_XDP;
 
-/* DCCP socket options */
-pub const DCCP_SOCKOPT_PACKET_SIZE: ::c_int = 1;
-pub const DCCP_SOCKOPT_SERVICE: ::c_int = 2;
-pub const DCCP_SOCKOPT_CHANGE_L: ::c_int = 3;
-pub const DCCP_SOCKOPT_CHANGE_R: ::c_int = 4;
-pub const DCCP_SOCKOPT_GET_CUR_MPS: ::c_int = 5;
-pub const DCCP_SOCKOPT_SERVER_TIMEWAIT: ::c_int = 6;
-pub const DCCP_SOCKOPT_SEND_CSCOV: ::c_int = 10;
-pub const DCCP_SOCKOPT_RECV_CSCOV: ::c_int = 11;
-pub const DCCP_SOCKOPT_AVAILABLE_CCIDS: ::c_int = 12;
-pub const DCCP_SOCKOPT_CCID: ::c_int = 13;
-pub const DCCP_SOCKOPT_TX_CCID: ::c_int = 14;
-pub const DCCP_SOCKOPT_RX_CCID: ::c_int = 15;
-pub const DCCP_SOCKOPT_QPOLICY_ID: ::c_int = 16;
-pub const DCCP_SOCKOPT_QPOLICY_TXQLEN: ::c_int = 17;
-pub const DCCP_SOCKOPT_CCID_RX_INFO: ::c_int = 128;
-pub const DCCP_SOCKOPT_CCID_TX_INFO: ::c_int = 192;
-
-/// maximum number of services provided on the same listening port
-pub const DCCP_SERVICE_LIST_MAX_LEN: ::c_int = 32;
-
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
 pub const BUFSIZ: ::c_uint = 8192;
@@ -1022,6 +1002,7 @@ pub const STATX_BLOCKS: ::c_uint = 0x0400;
 pub const STATX_BASIC_STATS: ::c_uint = 0x07ff;
 pub const STATX_BTIME: ::c_uint = 0x0800;
 pub const STATX_MNT_ID: ::c_uint = 0x1000;
+pub const STATX_DIOALIGN: ::c_uint = 0x2000;
 pub const STATX_ALL: ::c_uint = 0x0fff;
 pub const STATX__RESERVED: ::c_int = 0x80000000;
 pub const STATX_ATTR_COMPRESSED: ::c_int = 0x0004;
@@ -1210,14 +1191,6 @@ extern "C" {
     pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
     pub fn clock_adjtime(clk_id: ::clockid_t, buf: *mut ::timex) -> ::c_int;
 
-    pub fn copy_file_range(
-        fd_in: ::c_int,
-        off_in: *mut ::off64_t,
-        fd_out: ::c_int,
-        off_out: *mut ::off64_t,
-        len: ::size_t,
-        flags: ::c_uint,
-    ) -> ::ssize_t;
     pub fn fanotify_mark(
         fd: ::c_int,
         flags: ::c_uint,
@@ -1375,6 +1348,40 @@ extern "C" {
 extern "C" {
     pub fn gnu_get_libc_release() -> *const ::c_char;
     pub fn gnu_get_libc_version() -> *const ::c_char;
+}
+
+// posix/spawn.h
+extern "C" {
+    // Added in `glibc` 2.29
+    pub fn posix_spawn_file_actions_addchdir_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        path: *const ::c_char,
+    ) -> ::c_int;
+    // Added in `glibc` 2.29
+    pub fn posix_spawn_file_actions_addfchdir_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        fd: ::c_int,
+    ) -> ::c_int;
+    // Added in `glibc` 2.34
+    pub fn posix_spawn_file_actions_addclosefrom_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        from: ::c_int,
+    ) -> ::c_int;
+    // Added in `glibc` 2.35
+    pub fn posix_spawn_file_actions_addtcsetpgrp_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        tcfd: ::c_int,
+    ) -> ::c_int;
+}
+
+// mntent.h
+extern "C" {
+    pub fn getmntent_r(
+        stream: *mut ::FILE,
+        mntbuf: *mut ::mntent,
+        buf: *mut ::c_char,
+        buflen: ::c_int,
+    ) -> *mut ::mntent;
 }
 
 cfg_if! {

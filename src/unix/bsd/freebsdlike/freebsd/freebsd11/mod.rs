@@ -462,8 +462,8 @@ extern "C" {
         msgflg: ::c_int,
     ) -> ::c_int;
 
-    pub fn fdatasync(fd: ::c_int) -> ::c_int;
-
+    // Type of `path` argument changed from `const void*` to `void*`
+    // in FreeBSD 12
     pub fn dirname(path: *const ::c_char) -> *mut ::c_char;
     pub fn basename(path: *const ::c_char) -> *mut ::c_char;
 }

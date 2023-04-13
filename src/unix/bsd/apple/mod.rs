@@ -5121,6 +5121,23 @@ extern "C" {
     pub fn endutxent();
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
 
+    pub fn asctime(tm: *const ::tm) -> *mut ::c_char;
+    pub fn ctime(clock: *const time_t) -> *mut ::c_char;
+    pub fn getdate(datestr: *const ::c_char) -> *mut ::tm;
+    pub fn strftime(
+        buf: *mut ::c_char,
+        maxsize: ::size_t,
+        format: *const ::c_char,
+        timeptr: *const ::tm,
+    ) -> ::size_t;
+    pub fn strptime(
+        buf: *const ::c_char,
+        format: *const ::c_char,
+        timeptr: *mut ::tm,
+    ) -> *mut ::c_char;
+    pub fn asctime_r(tm: *const ::tm, result: *mut ::c_char) -> *mut ::c_char;
+    pub fn ctime_r(clock: *const time_t, result: *mut ::c_char) -> *mut ::c_char;
+
     pub fn getnameinfo(
         sa: *const ::sockaddr,
         salen: ::socklen_t,
@@ -5190,6 +5207,10 @@ extern "C" {
         f: extern "C" fn(*mut ::c_void) -> *mut ::c_void,
         value: *mut ::c_void,
     ) -> ::c_int;
+    pub fn pthread_stack_frame_decode_np(
+        frame_addr: ::uintptr_t,
+        return_addr: *mut ::uintptr_t,
+    ) -> ::uintptr_t;
     pub fn pthread_get_stackaddr_np(thread: ::pthread_t) -> *mut ::c_void;
     pub fn pthread_get_stacksize_np(thread: ::pthread_t) -> ::size_t;
     pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t, pshared: ::c_int) -> ::c_int;
@@ -5558,6 +5579,14 @@ extern "C" {
         pref: *mut ::cpu_type_t,
         subpref: *mut ::cpu_subtype_t,
         ocount: *mut ::size_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_set_qos_class_np(
+        attr: *mut posix_spawnattr_t,
+        qos_class: ::qos_class_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_get_qos_class_np(
+        attr: *const posix_spawnattr_t,
+        qos_class: *mut ::qos_class_t,
     ) -> ::c_int;
 
     pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> ::c_int;

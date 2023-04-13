@@ -996,6 +996,68 @@ s! {
         pub pcbcnt: u32,
     }
 
+    pub struct tcp_info {
+        pub tcpi_state: u8,
+        pub __tcpi_ca_state: u8,
+        pub __tcpi_retransmits: u8,
+        pub __tcpi_probes: u8,
+        pub __tcpi_backoff: u8,
+        pub tcpi_options: u8,
+        pub tcp_snd_wscale: u8,
+        pub tcp_rcv_wscale: u8,
+        pub tcpi_rto: u32,
+        pub __tcpi_ato: u32,
+        pub tcpi_snd_mss: u32,
+        pub tcpi_rcv_mss: u32,
+        pub __tcpi_unacked: u32,
+        pub __tcpi_sacked: u32,
+        pub __tcpi_lost: u32,
+        pub __tcpi_retrans: u32,
+        pub __tcpi_fackets: u32,
+        pub __tcpi_last_data_sent: u32,
+        pub __tcpi_last_ack_sent: u32,
+        pub tcpi_last_data_recv: u32,
+        pub __tcpi_last_ack_recv: u32,
+        pub __tcpi_pmtu: u32,
+        pub __tcpi_rcv_ssthresh: u32,
+        pub tcpi_rtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub __tcpi_advmss: u32,
+        pub __tcpi_reordering: u32,
+        pub __tcpi_rcv_rtt: u32,
+        pub tcpi_rcv_space: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_snd_bwnd: u32,
+        pub tcpi_snd_nxt: u32,
+        pub tcpi_rcv_nxt: u32,
+        pub tcpi_toe_tid: u32,
+        pub tcpi_snd_rexmitpack: u32,
+        pub tcpi_rcv_ooopack: u32,
+        pub tcpi_snd_zerowin: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_delivered_ce: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_received_ce: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_e1_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_e0_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_delivered_ce_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_e1_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_e0_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_received_ce_bytes: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_pad: [u32; 19],
+        #[cfg(not(freebsd14))]
+        pub __tcpi_pad: [u32; 26],
+    }
+
     pub struct _umtx_time {
         pub _timeout: ::timespec,
         pub _flags: u32,
@@ -1124,6 +1186,138 @@ s! {
         pub nxt_ppid: u32,
         pub nxt_length: u32,
         pub nxt_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_recvv_rn {
+        pub recvv_rcvinfo: sctp_rcvinfo,
+        pub recvv_nxtinfo: sctp_nxtinfo,
+    }
+
+    pub struct sctp_sendv_spa {
+        pub sendv_flags: u32,
+        pub sendv_sndinfo: sctp_sndinfo,
+        pub sendv_prinfo: sctp_prinfo,
+        pub sendv_authinfo: sctp_authinfo,
+    }
+
+    pub struct sctp_snd_all_completes {
+        pub sall_stream: u16,
+        pub sall_flags: u16,
+        pub sall_ppid: u32,
+        pub sall_context: u32,
+        pub sall_num_sent: u32,
+        pub sall_num_failed: u32,
+    }
+
+    pub struct sctp_pcbinfo {
+        pub ep_count: u32,
+        pub asoc_count: u32,
+        pub laddr_count: u32,
+        pub raddr_count: u32,
+        pub chk_count: u32,
+        pub readq_count: u32,
+        pub free_chunks: u32,
+        pub stream_oque: u32,
+    }
+
+    pub struct sctp_sockstat {
+        pub ss_assoc_id: ::sctp_assoc_t,
+        pub ss_total_sndbuf: u32,
+        pub ss_total_recv_buf: u32,
+    }
+
+    pub struct sctp_assoc_change {
+        pub sac_type: u16,
+        pub sac_flags: u16,
+        pub sac_length: u32,
+        pub sac_state: u16,
+        pub sac_error: u16,
+        pub sac_outbound_streams: u16,
+        pub sac_inbound_streams: u16,
+        pub sac_assoc_id: ::sctp_assoc_t,
+        pub sac_info: [u8; 0],
+    }
+
+    pub struct sctp_paddr_change {
+        pub spc_type: u16,
+        pub spc_flags: u16,
+        pub spc_length: u32,
+        pub spc_aaddr: ::sockaddr_storage,
+        pub spc_state: u32,
+        pub spc_error: u32,
+        pub spc_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_remote_error {
+        pub sre_type: u16,
+        pub sre_flags: u16,
+        pub sre_length: u32,
+        pub sre_error: u16,
+        pub sre_assoc_id: ::sctp_assoc_t,
+        pub sre_data: [u8; 0],
+    }
+
+    pub struct sctp_send_failed_event {
+        pub ssfe_type: u16,
+        pub ssfe_flags: u16,
+        pub ssfe_length: u32,
+        pub ssfe_error: u32,
+        pub ssfe_info: sctp_sndinfo,
+        pub ssfe_assoc_id: ::sctp_assoc_t,
+        pub ssfe_data: [u8; 0],
+    }
+
+    pub struct sctp_shutdown_event {
+        pub sse_type: u16,
+        pub sse_flags: u16,
+        pub sse_length: u32,
+        pub sse_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_adaptation_event {
+        pub sai_type: u16,
+        pub sai_flags: u16,
+        pub sai_length: u32,
+        pub sai_adaptation_ind: u32,
+        pub sai_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_setadaptation {
+        pub ssb_adaptation_ind: u32,
+    }
+
+    pub struct sctp_pdapi_event {
+        pub pdapi_type: u16,
+        pub pdapi_flags: u16,
+        pub pdapi_length: u32,
+        pub pdapi_indication: u32,
+        pub pdapi_stream: u16,
+        pub pdapi_seq: u16,
+        pub pdapi_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_sender_dry_event {
+        pub sender_dry_type: u16,
+        pub sender_dry_flags: u16,
+        pub sender_dry_length: u32,
+        pub sender_dry_assoc_id: ::sctp_assoc_t,
+    }
+
+    pub struct sctp_stream_reset_event {
+        pub strreset_type: u16,
+        pub strreset_flags: u16,
+        pub strreset_length: u32,
+        pub strreset_assoc_id: ::sctp_assoc_t,
+        pub strreset_stream_list: [u16; 0],
+    }
+
+    pub struct sctp_stream_change_event {
+        pub strchange_type: u16,
+        pub strchange_flags: u16,
+        pub strchange_length: u32,
+        pub strchange_assoc_id: ::sctp_assoc_t,
+        pub strchange_instrms: u16,
+        pub strchange_outstrms: u16,
     }
 }
 
@@ -1355,6 +1549,67 @@ s_no_extra_traits! {
     pub struct sctp_paramhdr {
         pub param_type: u16,
         pub param_length: u16,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_gen_error_cause {
+        pub code: u16,
+        pub length: u16,
+        pub info: [u8; 0],
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_cause {
+        pub code: u16,
+        pub length: u16,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_invalid_stream {
+        pub cause: sctp_error_cause,
+        pub stream_id: u16,
+        __reserved: u16,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_missing_param {
+        pub cause: sctp_error_cause,
+        pub num_missing_params: u32,
+        pub tpe: [u8; 0],
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_stale_cookie {
+        pub cause: sctp_error_cause,
+        pub stale_time: u32,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_out_of_resource {
+        pub cause: sctp_error_cause,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_unresolv_addr {
+        pub cause: sctp_error_cause,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_unrecognized_chunk {
+        pub cause: sctp_error_cause,
+        pub ch: sctp_chunkhdr,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_no_user_data {
+        pub cause: sctp_error_cause,
+        pub tsn: u32,
+    }
+
+    #[repr(packed)]
+    pub struct sctp_error_auth_invalid_hmac {
+        pub cause: sctp_error_cause,
+        pub hmac_id: u16,
     }
 }
 
@@ -2092,6 +2347,226 @@ cfg_if! {
                 {self.param_length}.hash(state);
             }
         }
+
+        impl PartialEq for sctp_gen_error_cause {
+            fn eq(&self, other: &sctp_gen_error_cause) -> bool {
+                return {self.code} == {other.code} &&
+                {self.length} == {other.length} &&
+                {self.info}.iter().zip({other.info}.iter()).all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sctp_gen_error_cause {}
+        impl ::fmt::Debug for sctp_gen_error_cause {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_gen_error_cause")
+                    .field("code", &{self.code})
+                    .field("length", &{self.length})
+                    // FIXME: .field("info", &{self.info})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_gen_error_cause {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.code}.hash(state);
+                {self.length}.hash(state);
+                {self.info}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_cause {
+            fn eq(&self, other: &sctp_error_cause) -> bool {
+                return {self.code} == {other.code} &&
+                {self.length} == {other.length}
+            }
+        }
+        impl Eq for sctp_error_cause {}
+        impl ::fmt::Debug for sctp_error_cause {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_cause")
+                    .field("code", &{self.code})
+                    .field("length", &{self.length})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_cause {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.code}.hash(state);
+                {self.length}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_invalid_stream {
+            fn eq(&self, other: &sctp_error_invalid_stream) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.stream_id} == {other.stream_id}
+            }
+        }
+        impl Eq for sctp_error_invalid_stream {}
+        impl ::fmt::Debug for sctp_error_invalid_stream {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_invalid_stream")
+                    .field("cause", &{self.cause})
+                    .field("stream_id", &{self.stream_id})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_invalid_stream {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.stream_id}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_missing_param {
+            fn eq(&self, other: &sctp_error_missing_param) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.num_missing_params} == {other.num_missing_params} &&
+                {self.tpe}.iter().zip({other.tpe}.iter()).all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for sctp_error_missing_param {}
+        impl ::fmt::Debug for sctp_error_missing_param {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_missing_param")
+                    .field("cause", &{self.cause})
+                    .field("num_missing_params", &{self.num_missing_params})
+                    // FIXME: .field("tpe", &{self.tpe})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_missing_param {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.num_missing_params}.hash(state);
+                {self.tpe}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_stale_cookie {
+            fn eq(&self, other: &sctp_error_stale_cookie) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.stale_time} == {other.stale_time}
+            }
+        }
+        impl Eq for sctp_error_stale_cookie {}
+        impl ::fmt::Debug for sctp_error_stale_cookie {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_stale_cookie")
+                    .field("cause", &{self.cause})
+                    .field("stale_time", &{self.stale_time})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_stale_cookie {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.stale_time}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_out_of_resource {
+            fn eq(&self, other: &sctp_error_out_of_resource) -> bool {
+                return {self.cause} == {other.cause}
+            }
+        }
+        impl Eq for sctp_error_out_of_resource {}
+        impl ::fmt::Debug for sctp_error_out_of_resource {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_out_of_resource")
+                    .field("cause", &{self.cause})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_out_of_resource {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_unresolv_addr {
+            fn eq(&self, other: &sctp_error_unresolv_addr) -> bool {
+                return {self.cause} == {other.cause}
+            }
+        }
+        impl Eq for sctp_error_unresolv_addr {}
+        impl ::fmt::Debug for sctp_error_unresolv_addr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_unresolv_addr")
+                    .field("cause", &{self.cause})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_unresolv_addr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_unrecognized_chunk {
+            fn eq(&self, other: &sctp_error_unrecognized_chunk) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.ch} == {other.ch}
+            }
+        }
+        impl Eq for sctp_error_unrecognized_chunk {}
+        impl ::fmt::Debug for sctp_error_unrecognized_chunk {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_unrecognized_chunk")
+                    .field("cause", &{self.cause})
+                    .field("ch", &{self.ch})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_unrecognized_chunk {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.ch}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_no_user_data {
+            fn eq(&self, other: &sctp_error_no_user_data) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.tsn} == {other.tsn}
+            }
+        }
+        impl Eq for sctp_error_no_user_data {}
+        impl ::fmt::Debug for sctp_error_no_user_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_no_user_data")
+                    .field("cause", &{self.cause})
+                    .field("tsn", &{self.tsn})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_no_user_data {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.tsn}.hash(state);
+            }
+        }
+
+        impl PartialEq for sctp_error_auth_invalid_hmac {
+            fn eq(&self, other: &sctp_error_auth_invalid_hmac) -> bool {
+                return {self.cause} == {other.cause} &&
+                {self.hmac_id} == {other.hmac_id}
+            }
+        }
+        impl Eq for sctp_error_auth_invalid_hmac {}
+        impl ::fmt::Debug for sctp_error_auth_invalid_hmac {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sctp_error_invalid_hmac")
+                    .field("cause", &{self.cause})
+                    .field("hmac_id", &{self.hmac_id})
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sctp_error_auth_invalid_hmac {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                {self.cause}.hash(state);
+                {self.hmac_id}.hash(state);
+            }
+        }
     }
 }
 
@@ -2142,8 +2617,14 @@ pub const SF_USER_READAHEAD: ::c_int = 0x00000008;
 pub const SF_NOCACHE: ::c_int = 0x00000010;
 pub const O_CLOEXEC: ::c_int = 0x00100000;
 pub const O_DIRECTORY: ::c_int = 0x00020000;
+pub const O_DSYNC: ::c_int = 0x01000000;
+pub const O_EMPTY_PATH: ::c_int = 0x02000000;
 pub const O_EXEC: ::c_int = 0x00040000;
+pub const O_PATH: ::c_int = 0x00400000;
+pub const O_RESOLVE_BENEATH: ::c_int = 0x00800000;
+pub const O_SEARCH: ::c_int = O_EXEC;
 pub const O_TTY_INIT: ::c_int = 0x00080000;
+pub const O_VERIFY: ::c_int = 0x00200000;
 pub const F_GETLK: ::c_int = 11;
 pub const F_SETLK: ::c_int = 12;
 pub const F_SETLKW: ::c_int = 13;
@@ -2212,15 +2693,20 @@ pub const EV_ADD: u16 = 0x1;
 pub const EV_DELETE: u16 = 0x2;
 pub const EV_ENABLE: u16 = 0x4;
 pub const EV_DISABLE: u16 = 0x8;
+pub const EV_FORCEONESHOT: u16 = 0x100;
+pub const EV_KEEPUDATA: u16 = 0x200;
+
 pub const EV_ONESHOT: u16 = 0x10;
 pub const EV_CLEAR: u16 = 0x20;
 pub const EV_RECEIPT: u16 = 0x40;
 pub const EV_DISPATCH: u16 = 0x80;
+pub const EV_SYSFLAGS: u16 = 0xf000;
 pub const EV_DROP: u16 = 0x1000;
 pub const EV_FLAG1: u16 = 0x2000;
-pub const EV_ERROR: u16 = 0x4000;
+pub const EV_FLAG2: u16 = 0x4000;
+
 pub const EV_EOF: u16 = 0x8000;
-pub const EV_SYSFLAGS: u16 = 0xf000;
+pub const EV_ERROR: u16 = 0x4000;
 
 pub const NOTE_TRIGGER: u32 = 0x01000000;
 pub const NOTE_FFNOP: u32 = 0x00000000;
@@ -2230,6 +2716,7 @@ pub const NOTE_FFCOPY: u32 = 0xc0000000;
 pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
 pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
 pub const NOTE_LOWAT: u32 = 0x00000001;
+pub const NOTE_FILE_POLL: u32 = 0x00000002;
 pub const NOTE_DELETE: u32 = 0x00000001;
 pub const NOTE_WRITE: u32 = 0x00000002;
 pub const NOTE_EXTEND: u32 = 0x00000004;
@@ -2237,6 +2724,10 @@ pub const NOTE_ATTRIB: u32 = 0x00000008;
 pub const NOTE_LINK: u32 = 0x00000010;
 pub const NOTE_RENAME: u32 = 0x00000020;
 pub const NOTE_REVOKE: u32 = 0x00000040;
+pub const NOTE_OPEN: u32 = 0x00000080;
+pub const NOTE_CLOSE: u32 = 0x00000100;
+pub const NOTE_CLOSE_WRITE: u32 = 0x00000200;
+pub const NOTE_READ: u32 = 0x00000400;
 pub const NOTE_EXIT: u32 = 0x80000000;
 pub const NOTE_FORK: u32 = 0x40000000;
 pub const NOTE_EXEC: u32 = 0x20000000;
@@ -2249,6 +2740,7 @@ pub const NOTE_SECONDS: u32 = 0x00000001;
 pub const NOTE_MSECONDS: u32 = 0x00000002;
 pub const NOTE_USECONDS: u32 = 0x00000004;
 pub const NOTE_NSECONDS: u32 = 0x00000008;
+pub const NOTE_ABSTIME: u32 = 0x00000010;
 
 pub const MADV_PROTECT: ::c_int = 10;
 
@@ -3256,6 +3748,8 @@ pub const AT_EACCESS: ::c_int = 0x100;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
 pub const AT_REMOVEDIR: ::c_int = 0x800;
+pub const AT_RESOLVE_BENEATH: ::c_int = 0x2000;
+pub const AT_EMPTY_PATH: ::c_int = 0x4000;
 
 pub const AT_NULL: ::c_int = 0;
 pub const AT_IGNORE: ::c_int = 1;
@@ -4025,6 +4519,44 @@ pub const SCTP_FUTURE_ASSOC: ::c_int = 0;
 pub const SCTP_CURRENT_ASSOC: ::c_int = 1;
 pub const SCTP_ALL_ASSOC: ::c_int = 2;
 
+pub const SCTP_NO_NEXT_MSG: ::c_int = 0x0000;
+pub const SCTP_NEXT_MSG_AVAIL: ::c_int = 0x0001;
+pub const SCTP_NEXT_MSG_ISCOMPLETE: ::c_int = 0x0002;
+pub const SCTP_NEXT_MSG_IS_UNORDERED: ::c_int = 0x0004;
+pub const SCTP_NEXT_MSG_IS_NOTIFICATION: ::c_int = 0x0008;
+
+pub const SCTP_RECVV_NOINFO: ::c_int = 0;
+pub const SCTP_RECVV_RCVINFO: ::c_int = 1;
+pub const SCTP_RECVV_NXTINFO: ::c_int = 2;
+pub const SCTP_RECVV_RN: ::c_int = 3;
+
+pub const SCTP_SENDV_NOINFO: ::c_int = 0;
+pub const SCTP_SENDV_SNDINFO: ::c_int = 1;
+pub const SCTP_SENDV_PRINFO: ::c_int = 2;
+pub const SCTP_SENDV_AUTHINFO: ::c_int = 3;
+pub const SCTP_SENDV_SPA: ::c_int = 4;
+
+pub const SCTP_SEND_SNDINFO_VALID: ::c_int = 0x00000001;
+pub const SCTP_SEND_PRINFO_VALID: ::c_int = 0x00000002;
+pub const SCTP_SEND_AUTHINFO_VALID: ::c_int = 0x00000004;
+
+pub const SCTP_NOTIFICATION: ::c_int = 0x0010;
+pub const SCTP_COMPLETE: ::c_int = 0x0020;
+pub const SCTP_EOF: ::c_int = 0x0100;
+pub const SCTP_ABORT: ::c_int = 0x0200;
+pub const SCTP_UNORDERED: ::c_int = 0x0400;
+pub const SCTP_ADDR_OVER: ::c_int = 0x0800;
+pub const SCTP_SENDALL: ::c_int = 0x1000;
+pub const SCTP_EOR: ::c_int = 0x2000;
+pub const SCTP_SACK_IMMEDIATELY: ::c_int = 0x4000;
+pub const SCTP_PR_SCTP_NONE: ::c_int = 0x0000;
+pub const SCTP_PR_SCTP_TTL: ::c_int = 0x0001;
+pub const SCTP_PR_SCTP_PRIO: ::c_int = 0x0002;
+pub const SCTP_PR_SCTP_BUF: ::c_int = SCTP_PR_SCTP_PRIO;
+pub const SCTP_PR_SCTP_RTX: ::c_int = 0x0003;
+pub const SCTP_PR_SCTP_MAX: ::c_int = SCTP_PR_SCTP_RTX;
+pub const SCTP_PR_SCTP_ALL: ::c_int = 0x000f;
+
 pub const SCTP_INIT: ::c_int = 0x0001;
 pub const SCTP_SNDRCV: ::c_int = 0x0002;
 pub const SCTP_EXTRCV: ::c_int = 0x0003;
@@ -4067,6 +4599,88 @@ pub const SCTP_CONTEXT: ::c_int = 0x0000001a;
 pub const SCTP_EXPLICIT_EOR: ::c_int = 0x00000001b;
 pub const SCTP_REUSE_PORT: ::c_int = 0x00000001c;
 pub const SCTP_AUTH_DEACTIVATE_KEY: ::c_int = 0x00000001d;
+pub const SCTP_EVENT: ::c_int = 0x0000001e;
+pub const SCTP_RECVRCVINFO: ::c_int = 0x0000001f;
+pub const SCTP_RECVNXTINFO: ::c_int = 0x00000020;
+pub const SCTP_DEFAULT_SNDINFO: ::c_int = 0x00000021;
+pub const SCTP_DEFAULT_PRINFO: ::c_int = 0x00000022;
+pub const SCTP_PEER_ADDR_THLDS: ::c_int = 0x00000023;
+pub const SCTP_REMOTE_UDP_ENCAPS_PORT: ::c_int = 0x00000024;
+pub const SCTP_ECN_SUPPORTED: ::c_int = 0x00000025;
+pub const SCTP_AUTH_SUPPORTED: ::c_int = 0x00000027;
+pub const SCTP_ASCONF_SUPPORTED: ::c_int = 0x00000028;
+pub const SCTP_RECONFIG_SUPPORTED: ::c_int = 0x00000029;
+pub const SCTP_NRSACK_SUPPORTED: ::c_int = 0x00000030;
+pub const SCTP_PKTDROP_SUPPORTED: ::c_int = 0x00000031;
+pub const SCTP_MAX_CWND: ::c_int = 0x00000032;
+
+pub const SCTP_STATUS: ::c_int = 0x00000100;
+pub const SCTP_GET_PEER_ADDR_INFO: ::c_int = 0x00000101;
+pub const SCTP_PEER_AUTH_CHUNKS: ::c_int = 0x00000102;
+pub const SCTP_LOCAL_AUTH_CHUNKS: ::c_int = 0x00000103;
+pub const SCTP_GET_ASSOC_NUMBER: ::c_int = 0x00000104;
+pub const SCTP_GET_ASSOC_ID_LIST: ::c_int = 0x00000105;
+pub const SCTP_TIMEOUTS: ::c_int = 0x00000106;
+pub const SCTP_PR_STREAM_STATUS: ::c_int = 0x00000107;
+pub const SCTP_PR_ASSOC_STATUS: ::c_int = 0x00000108;
+
+pub const SCTP_COMM_UP: ::c_int = 0x0001;
+pub const SCTP_COMM_LOST: ::c_int = 0x0002;
+pub const SCTP_RESTART: ::c_int = 0x0003;
+pub const SCTP_SHUTDOWN_COMP: ::c_int = 0x0004;
+pub const SCTP_CANT_STR_ASSOC: ::c_int = 0x0005;
+
+pub const SCTP_ASSOC_SUPPORTS_PR: ::c_int = 0x01;
+pub const SCTP_ASSOC_SUPPORTS_AUTH: ::c_int = 0x02;
+pub const SCTP_ASSOC_SUPPORTS_ASCONF: ::c_int = 0x03;
+pub const SCTP_ASSOC_SUPPORTS_MULTIBUF: ::c_int = 0x04;
+pub const SCTP_ASSOC_SUPPORTS_RE_CONFIG: ::c_int = 0x05;
+pub const SCTP_ASSOC_SUPPORTS_INTERLEAVING: ::c_int = 0x06;
+pub const SCTP_ASSOC_SUPPORTS_MAX: ::c_int = 0x06;
+
+pub const SCTP_ADDR_AVAILABLE: ::c_int = 0x0001;
+pub const SCTP_ADDR_UNREACHABLE: ::c_int = 0x0002;
+pub const SCTP_ADDR_REMOVED: ::c_int = 0x0003;
+pub const SCTP_ADDR_ADDED: ::c_int = 0x0004;
+pub const SCTP_ADDR_MADE_PRIM: ::c_int = 0x0005;
+pub const SCTP_ADDR_CONFIRMED: ::c_int = 0x0006;
+
+pub const SCTP_ACTIVE: ::c_int = 0x0001;
+pub const SCTP_INACTIVE: ::c_int = 0x0002;
+pub const SCTP_UNCONFIRMED: ::c_int = 0x0200;
+
+pub const SCTP_DATA_UNSENT: ::c_int = 0x0001;
+pub const SCTP_DATA_SENT: ::c_int = 0x0002;
+
+pub const SCTP_PARTIAL_DELIVERY_ABORTED: ::c_int = 0x0001;
+
+pub const SCTP_AUTH_NEW_KEY: ::c_int = 0x0001;
+pub const SCTP_AUTH_NEWKEY: ::c_int = SCTP_AUTH_NEW_KEY;
+pub const SCTP_AUTH_NO_AUTH: ::c_int = 0x0002;
+pub const SCTP_AUTH_FREE_KEY: ::c_int = 0x0003;
+
+pub const SCTP_STREAM_RESET_INCOMING_SSN: ::c_int = 0x0001;
+pub const SCTP_STREAM_RESET_OUTGOING_SSN: ::c_int = 0x0002;
+pub const SCTP_STREAM_RESET_DENIED: ::c_int = 0x0004;
+pub const SCTP_STREAM_RESET_FAILED: ::c_int = 0x0008;
+
+pub const SCTP_ASSOC_RESET_DENIED: ::c_int = 0x0004;
+pub const SCTP_ASSOC_RESET_FAILED: ::c_int = 0x0008;
+
+pub const SCTP_STREAM_CHANGE_DENIED: ::c_int = 0x0004;
+pub const SCTP_STREAM_CHANGE_FAILED: ::c_int = 0x0008;
+
+cfg_if! {
+    if #[cfg(libc_const_extern_fn)] {
+        pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
+            a << 24
+        }
+    } else {
+        pub fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
+            a << 24
+        }
+    }
+}
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
@@ -4188,6 +4802,39 @@ f! {
 safe_f! {
     pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0 && status != 0x13
+    }
+
+    pub {const} fn INVALID_SINFO_FLAG(x: ::c_int) -> bool {
+        (x) & 0xfffffff0 & !(SCTP_EOF | SCTP_ABORT | SCTP_UNORDERED |
+        SCTP_ADDR_OVER | SCTP_SENDALL | SCTP_EOR | SCTP_SACK_IMMEDIATELY) != 0
+    }
+
+    pub {const} fn PR_SCTP_POLICY(x: ::c_int) -> ::c_int {
+        x & 0x0f
+    }
+
+    pub {const} fn PR_SCTP_ENABLED(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) != SCTP_PR_SCTP_NONE && PR_SCTP_POLICY(x) != SCTP_PR_SCTP_ALL
+    }
+
+    pub {const} fn PR_SCTP_TTL_ENABLED(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) == SCTP_PR_SCTP_TTL
+    }
+
+    pub {const} fn PR_SCTP_BUF_ENABLED(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) == SCTP_PR_SCTP_BUF
+    }
+
+    pub {const} fn PR_SCTP_RTX_ENABLED(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) == SCTP_PR_SCTP_RTX
+    }
+
+    pub {const} fn PR_SCTP_INVALID_POLICY(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) > SCTP_PR_SCTP_MAX
+    }
+
+    pub {const} fn PR_SCTP_VALID_POLICY(x: ::c_int) -> bool {
+        PR_SCTP_POLICY(x) <= SCTP_PR_SCTP_MAX
     }
 }
 
@@ -4644,6 +5291,14 @@ extern "C" {
     pub fn getpagesizes(pagesize: *mut ::size_t, nelem: ::c_int) -> ::c_int;
 
     pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
+    pub fn clock_nanosleep(
+        clk_id: ::clockid_t,
+        flags: ::c_int,
+        rqtp: *const ::timespec,
+        rmtp: *mut ::timespec,
+    ) -> ::c_int;
+
+    pub fn strchrnul(s: *const ::c_char, c: ::c_int) -> *mut ::c_char;
 
     pub fn shm_create_largepage(
         path: *const ::c_char,
@@ -4660,6 +5315,17 @@ extern "C" {
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn setaudit(auditinfo: *const auditinfo_t) -> ::c_int;
 
+    pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn fdatasync(fd: ::c_int) -> ::c_int;
+
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
+    pub fn elf_aux_info(aux: ::c_int, buf: *mut ::c_void, buflen: ::c_int) -> ::c_int;
+    pub fn setproctitle_fast(fmt: *const ::c_char, ...);
+    pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
+    pub fn timingsafe_memcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
+
     pub fn _umtx_op(
         obj: *mut ::c_void,
         op: ::c_int,
@@ -4667,6 +5333,57 @@ extern "C" {
         uaddr: *mut ::c_void,
         uaddr2: *mut ::c_void,
     ) -> ::c_int;
+
+    pub fn sctp_peeloff(s: ::c_int, id: ::sctp_assoc_t) -> ::c_int;
+    pub fn sctp_bindx(s: ::c_int, addrs: *mut ::sockaddr, num: ::c_int, tpe: ::c_int) -> ::c_int;
+    pub fn sctp_connectx(
+        s: ::c_int,
+        addrs: *const ::sockaddr,
+        addrcnt: ::c_int,
+        id: *mut ::sctp_assoc_t,
+    ) -> ::c_int;
+    pub fn sctp_getaddrlen(family: ::sa_family_t) -> ::c_int;
+    pub fn sctp_getpaddrs(
+        s: ::c_int,
+        asocid: ::sctp_assoc_t,
+        addrs: *mut *mut ::sockaddr,
+    ) -> ::c_int;
+    pub fn sctp_freepaddrs(addrs: *mut ::sockaddr);
+    pub fn sctp_getladdrs(
+        s: ::c_int,
+        asocid: ::sctp_assoc_t,
+        addrs: *mut *mut ::sockaddr,
+    ) -> ::c_int;
+    pub fn sctp_freeladdrs(addrs: *mut ::sockaddr);
+    pub fn sctp_opt_info(
+        s: ::c_int,
+        id: ::sctp_assoc_t,
+        opt: ::c_int,
+        arg: *mut ::c_void,
+        size: *mut ::socklen_t,
+    ) -> ::c_int;
+    pub fn sctp_sendv(
+        sd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        addrs: *mut ::sockaddr,
+        addrcnt: ::c_int,
+        info: *mut ::c_void,
+        infolen: ::socklen_t,
+        infotype: ::c_uint,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    pub fn sctp_recvv(
+        sd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        from: *mut ::sockaddr,
+        fromlen: *mut ::socklen_t,
+        info: *mut ::c_void,
+        infolen: *mut ::socklen_t,
+        infotype: *mut ::c_uint,
+        flags: *mut ::c_int,
+    ) -> ::ssize_t;
 }
 
 #[link(name = "memstat")]

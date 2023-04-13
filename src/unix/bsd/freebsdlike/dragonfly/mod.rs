@@ -1091,6 +1091,7 @@ pub const EV_NODATA: u16 = 0x1000;
 pub const EV_FLAG1: u16 = 0x2000;
 pub const EV_ERROR: u16 = 0x4000;
 pub const EV_EOF: u16 = 0x8000;
+pub const EV_HUP: u16 = 0x8000;
 pub const EV_SYSFLAGS: u16 = 0xf000;
 
 pub const FIODNAME: ::c_ulong = 0x80106678;

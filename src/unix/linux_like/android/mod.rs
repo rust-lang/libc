@@ -1606,6 +1606,14 @@ pub const AI_ADDRCONFIG: ::c_int = 0x00000400;
 pub const AI_V4MAPPED: ::c_int = 0x00000800;
 pub const AI_DEFAULT: ::c_int = AI_V4MAPPED_CFG | AI_ADDRCONFIG;
 
+// linux/kexec.h
+pub const KEXEC_ON_CRASH: ::c_int = 0x00000001;
+pub const KEXEC_PRESERVE_CONTEXT: ::c_int = 0x00000002;
+pub const KEXEC_ARCH_MASK: ::c_int = 0xffff0000;
+pub const KEXEC_FILE_UNLOAD: ::c_int = 0x00000001;
+pub const KEXEC_FILE_ON_CRASH: ::c_int = 0x00000002;
+pub const KEXEC_FILE_NO_INITRAMFS: ::c_int = 0x00000004;
+
 pub const LINUX_REBOOT_MAGIC1: ::c_int = 0xfee1dead;
 pub const LINUX_REBOOT_MAGIC2: ::c_int = 672274793;
 pub const LINUX_REBOOT_MAGIC2A: ::c_int = 85072278;
@@ -2731,6 +2739,18 @@ pub const SCHED_DEADLINE: ::c_int = 6;
 pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
 
 pub const CLONE_PIDFD: ::c_int = 0x1000;
+
+// linux/membarrier.h
+pub const MEMBARRIER_CMD_QUERY: ::c_int = 0;
+pub const MEMBARRIER_CMD_GLOBAL: ::c_int = 1 << 0;
+pub const MEMBARRIER_CMD_GLOBAL_EXPEDITED: ::c_int = 1 << 1;
+pub const MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED: ::c_int = 1 << 2;
+pub const MEMBARRIER_CMD_PRIVATE_EXPEDITED: ::c_int = 1 << 3;
+pub const MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED: ::c_int = 1 << 4;
+pub const MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE: ::c_int = 1 << 5;
+pub const MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE: ::c_int = 1 << 6;
+pub const MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ: ::c_int = 1 << 7;
+pub const MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ: ::c_int = 1 << 8;
 
 // linux/mempolicy.h
 pub const MPOL_DEFAULT: ::c_int = 0;

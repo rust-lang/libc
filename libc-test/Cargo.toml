@@ -1,6 +1,6 @@
 [package]
 name = "libc-test"
-version = "0.2.139"
+version = "0.2.141"
 authors = ["The Rust Project Developers"]
 license = "MIT OR Apache-2.0"
 build = "build.rs"
@@ -12,7 +12,7 @@ A test crate for the libc crate.
 
 [dependencies.libc]
 path = ".."
-version = "0.2.139"
+version = "0.2.141"
 default-features = false
 
 [build-dependencies]
@@ -21,10 +21,10 @@ cc = "1.0.61"
 ctest2 = "0.4.3"
 
 [features]
-default = [ "std" ]
-std = [ "libc/std" ]
-align = [ "libc/align" ]
-extra_traits = [ "libc/extra_traits" ]
+default = ["std"]
+std = ["libc/std"]
+align = ["libc/align"]
+extra_traits = ["libc/extra_traits"]
 
 [[test]]
 name = "main"

@@ -186,6 +186,7 @@ epoll_create1
 epoll_ctl
 epoll_event
 epoll_wait
+explicit_bzero
 fchdir
 fmemopen
 getline
@@ -203,10 +204,13 @@ open_wmemstream
 pipe2
 pthread_condattr_setclock
 qsort
+reallocarray
 setrlimit
 setservent
 strcasecmp
 strcasestr
+strlcat
+strlcpy
 strncasecmp
 strndup
 strsignal

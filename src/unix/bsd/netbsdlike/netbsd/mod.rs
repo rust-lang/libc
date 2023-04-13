@@ -709,6 +709,49 @@ s! {
         #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
+
+    pub struct tcp_info {
+        pub tcpi_state: u8,
+        pub __tcpi_ca_state: u8,
+        pub __tcpi_retransmits: u8,
+        pub __tcpi_probes: u8,
+        pub __tcpi_backoff: u8,
+        pub tcpi_options: u8,
+        pub tcp_snd_wscale: u8,
+        pub tcp_rcv_wscale: u8,
+        pub tcpi_rto: u32,
+        pub __tcpi_ato: u32,
+        pub tcpi_snd_mss: u32,
+        pub tcpi_rcv_mss: u32,
+        pub __tcpi_unacked: u32,
+        pub __tcpi_sacked: u32,
+        pub __tcpi_lost: u32,
+        pub __tcpi_retrans: u32,
+        pub __tcpi_fackets: u32,
+        pub __tcpi_last_data_sent: u32,
+        pub __tcpi_last_ack_sent: u32,
+        pub tcpi_last_data_recv: u32,
+        pub __tcpi_last_ack_recv: u32,
+        pub __tcpi_pmtu: u32,
+        pub __tcpi_rcv_ssthresh: u32,
+        pub tcpi_rtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub __tcpi_advmss: u32,
+        pub __tcpi_reordering: u32,
+        pub __tcpi_rcv_rtt: u32,
+        pub tcpi_rcv_space: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_snd_bwnd: u32,
+        pub tcpi_snd_nxt: u32,
+        pub tcpi_rcv_nxt: u32,
+        pub tcpi_toe_tid: u32,
+        pub tcpi_snd_rexmitpack: u32,
+        pub tcpi_rcv_ooopack: u32,
+        pub tcpi_snd_zerowin: u32,
+        pub __tcpi_pad: [u32; 26],
+    }
 }
 
 s_no_extra_traits! {
@@ -1943,6 +1986,13 @@ pub const EV_ERROR: u32 = 0x4000;
 pub const EV_EOF: u32 = 0x8000;
 pub const EV_SYSFLAGS: u32 = 0xf000;
 
+pub const NOTE_TRIGGER: u32 = 0x01000000;
+pub const NOTE_FFNOP: u32 = 0x00000000;
+pub const NOTE_FFAND: u32 = 0x40000000;
+pub const NOTE_FFOR: u32 = 0x80000000;
+pub const NOTE_FFCOPY: u32 = 0xc0000000;
+pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
+pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
 pub const NOTE_LOWAT: u32 = 0x00000001;
 pub const NOTE_DELETE: u32 = 0x00000001;
 pub const NOTE_WRITE: u32 = 0x00000002;
@@ -2170,6 +2220,11 @@ pub const WCONTINUED: ::c_int = 0x00000010;
 pub const WEXITED: ::c_int = 0x000000020;
 pub const WNOWAIT: ::c_int = 0x00010000;
 
+pub const WALTSIG: ::c_int = 0x00000004;
+pub const WALLSIG: ::c_int = 0x00000008;
+pub const WTRAPPED: ::c_int = 0x00000040;
+pub const WNOZOMBIE: ::c_int = 0x00020000;
+
 pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
 pub const P_PGID: idtype_t = 4;
@@ -2333,6 +2388,19 @@ pub const EXTATTR_NAMESPACE_EMPTY: ::c_int = 0;
 pub const GRND_NONBLOCK: ::c_uint = 0x1;
 pub const GRND_RANDOM: ::c_uint = 0x2;
 pub const GRND_INSECURE: ::c_uint = 0x4;
+
+cfg_if! {
+
+    if #[cfg(libc_const_extern_fn)] {
+        pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
+            alignment << MAP_ALIGNMENT_SHIFT
+        }
+    } else {
+        pub fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
+            alignment << MAP_ALIGNMENT_SHIFT
+        }
+    }
+}
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
