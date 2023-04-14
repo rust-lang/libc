@@ -5,5 +5,6 @@
 
 pub(crate) mod net;
 pub(crate) mod netinet6;
+pub mod netlink;
 pub(crate) mod sys;
 pub(crate) mod unistd;
