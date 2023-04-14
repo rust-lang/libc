@@ -837,6 +837,7 @@ pub const SYS_pkey_alloc: ::c_long = 395;
 pub const SYS_pkey_free: ::c_long = 396;
 pub const SYS_statx: ::c_long = 397;
 pub const SYS_rseq: ::c_long = 398;
+pub const SYS_kexec_file_load: ::c_long = 401;
 pub const SYS_pidfd_send_signal: ::c_long = 424;
 pub const SYS_io_uring_setup: ::c_long = 425;
 pub const SYS_io_uring_enter: ::c_long = 426;
