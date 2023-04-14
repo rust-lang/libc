@@ -2112,6 +2112,8 @@ fn test_freebsd(target: &str) {
                 "netinet/sctp.h",
                 "netinet/tcp.h",
                 "netinet/udp.h",
+                [freebsd13]:"netlink/netlink.h",
+                [freebsd13]:"netlink/netlink_generic.h",
                 "poll.h",
                 "pthread.h",
                 "pthread_np.h",
@@ -2346,6 +2348,91 @@ fn test_freebsd(target: &str) {
             // Added in in FreeBSD 13.0 (r367776 and r367287)
             "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
 
+            // Added in FreeBSD 13.2
+            "AF_NETLINK"
+            | "PF_NETLINK"
+            | "SOL_NETLINK"
+            | "NETLINK_ADD_MEMBERSHIP"
+            | "NETLINK_DROP_MEMBERSHIP"
+            | "NETLINK_PKTINFO"
+            | "NETLINK_BROADCAST_ERROR"
+            | "NETLINK_NO_ENOBUFS"
+            | "NETLINK_RX_RING"
+            | "NETLINK_TX_RING"
+            | "NETLINK_LISTEN_ALL_NSID"
+            | "NETLINK_LIST_MEMBERSHIPS"
+            | "NETLINK_CAP_ACK"
+            | "NETLINK_EXT_ACK"
+            | "NETLINK_GET_STRICT_CHK"
+            | "NLM_F_REQUEST"
+            | "NLM_F_MULTI"
+            | "NLM_F_ACK"
+            | "NLM_F_ECHO"
+            | "NLM_F_DUMP_INTR"
+            | "NLM_F_DUMP_FILTERED"
+            | "NLM_F_ROOT"
+            | "NLM_F_MATCH"
+            | "NLM_F_ATOMIC"
+            | "NLM_F_DUMP"
+            | "NLM_F_REPLACE"
+            | "NLM_F_EXCL"
+            | "NLM_F_CREATE"
+            | "NLM_F_APPEND"
+            | "NLM_F_NONREC"
+            | "NLM_F_CAPPED"
+            | "NLM_F_ACK_TLVS"
+            | "NLMSG_NOOP"
+            | "NLMSG_ERROR"
+            | "NLMSG_DONE"
+            | "NLMSG_OVERRUN"
+            | "NETLINK_ROUTE"
+            | "NETLINK_UNUSED"
+            | "NETLINK_USERSOCK"
+            | "NETLINK_FIREWALL"
+            | "NETLINK_SOCK_DIAG"
+            | "NETLINK_NFLOG"
+            | "NETLINK_XFRM"
+            | "NETLINK_SELINUX"
+            | "NETLINK_ISCSI"
+            | "NETLINK_AUDIT"
+            | "NETLINK_FIB_LOOKUP"
+            | "NETLINK_CONNECTOR"
+            | "NETLINK_NETFILTER"
+            | "NETLINK_IP6_FW"
+            | "NETLINK_DNRTMSG"
+            | "NETLINK_KOBJECT_UEVENT"
+            | "NETLINK_GENERIC"
+            | "NLMSG_ALIGNTO"
+            | "CTRL_CMD_UNSPEC"
+            | "CTRL_CMD_NEWFAMILY"
+            | "CTRL_CMD_DELFAMILY"
+            | "CTRL_CMD_GETFAMILY"
+            | "CTRL_CMD_NEWOPS"
+            | "CTRL_CMD_DELOPS"
+            | "CTRL_CMD_GETOPS"
+            | "CTRL_CMD_NEWMCAST_GRP"
+            | "CTRL_CMD_DELMCAST_GRP"
+            | "CTRL_CMD_GETMCAST_GRP"
+            | "CTRL_CMD_GETPOLICY"
+            | "CTRL_ATTR_UNSPEC"
+            | "CTRL_ATTR_FAMILY_ID"
+            | "CTRL_ATTR_FAMILY_NAME"
+            | "CTRL_ATTR_VERSION"
+            | "CTRL_ATTR_HDRSIZE"
+            | "CTRL_ATTR_MAXATTR"
+            | "CTRL_ATTR_OPS"
+            | "CTRL_ATTR_MCAST_GROUPS"
+            | "CTRL_ATTR_POLICY"
+            | "CTRL_ATTR_OP_POLICY"
+            | "CTRL_ATTR_OP"
+            | "CTRL_ATTR_MCAST_GRP_UNSPEC"
+            | "CTRL_ATTR_MCAST_GRP_NAME"
+            | "CTRL_ATTR_MCAST_GRP_ID"
+                if Some(13) > freebsd_ver =>
+            {
+                true
+            }
+
             // Added in FreeBSD 14
             "SPACECTL_DEALLOC" if Some(14) > freebsd_ver => true,
 
@@ -2540,6 +2627,9 @@ fn test_freebsd(target: &str) {
             "sockcred2" if Some(13) > freebsd_ver => true,
             // `shm_largepage_conf` was introduced in FreeBSD 13.
             "shm_largepage_conf" if Some(13) > freebsd_ver => true,
+
+            // `sockaddr_nl` introduced in FreeBSD 13.2
+            "sockaddr_nl" if Some(13) > freebsd_ver => true,
 
             // Those are private types
             "memory_type" => true,
