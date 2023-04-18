@@ -1579,6 +1579,23 @@ pub const FIONREAD: ::c_int = 0x541B;
 pub const TIOCCONS: ::c_int = 0x541D;
 pub const TIOCSBRK: ::c_int = 0x5427;
 pub const TIOCCBRK: ::c_int = 0x5428;
+cfg_if! {
+    if #[cfg(any(target_arch = "x86",
+                 target_arch = "x86_64",
+                 target_arch = "arm",
+                 target_arch = "aarch64",
+                 target_arch = "riscv64",
+                 target_arch = "s390x"))] {
+        pub const FICLONE: ::c_int = 0x40049409;
+        pub const FICLONERANGE: ::c_int = 0x4020940D;
+    } else if #[cfg(any(target_arch = "mips",
+                        target_arch = "mips64",
+                        target_arch = "powerpc",
+                        target_arch = "powerpc64"))] {
+        pub const FICLONE: ::c_int = 0x80049409;
+        pub const FICLONERANGE: ::c_int = 0x8020940D;
+    }
+}
 
 pub const ST_RDONLY: ::c_ulong = 1;
 pub const ST_NOSUID: ::c_ulong = 2;
@@ -3531,6 +3548,7 @@ extern "C" {
         longindex: *mut ::c_int,
     ) -> ::c_int;
 
+    pub fn sync();
     pub fn syncfs(fd: ::c_int) -> ::c_int;
 }
 

@@ -557,6 +557,14 @@ pub const XATTR_CREATE: ::c_int = 0x1;
 pub const XATTR_REPLACE: ::c_int = 0x2;
 
 cfg_if! {
+    if #[cfg(target_os = "android")] {
+        pub const RLIM64_INFINITY: ::c_ulonglong = !0;
+    } else {
+        pub const RLIM64_INFINITY: ::rlim64_t = !0;
+    }
+}
+
+cfg_if! {
     if #[cfg(target_env = "ohos")] {
         pub const LC_CTYPE: ::c_int = 0;
         pub const LC_NUMERIC: ::c_int = 1;
