@@ -23,9 +23,25 @@ pub const ECOMM: ::c_int = 70;
 pub const EPROTO: ::c_int = 71;
 pub const EDOTDOT: ::c_int = 73;
 
+#[deprecated(
+    since = "0.2.143",
+    note = "we 're going to change its type to `c_ulong` in a future release"
+)]
 pub const SA_NODEFER: ::c_int = 0x40000000;
+#[deprecated(
+    since = "0.2.143",
+    note = "we 're going to change its type to `c_ulong` in a future release"
+)]
 pub const SA_RESETHAND: ::c_int = 0x80000000;
+#[deprecated(
+    since = "0.2.143",
+    note = "we 're going to change its type to `c_ulong` in a future release"
+)]
 pub const SA_RESTART: ::c_int = 0x10000000;
+#[deprecated(
+    since = "0.2.143",
+    note = "we 're going to change its type to `c_ulong` in a future release"
+)]
 pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
 
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
@@ -158,8 +174,20 @@ pub const SOCK_STREAM: ::c_int = 2;
 pub const SOCK_DGRAM: ::c_int = 1;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
+#[deprecated(
+    since = "0.2.143",
+    note = "we are going to change its type to `c_ulong` in a future release"
+)]
 pub const SA_ONSTACK: ::c_uint = 0x08000000;
+#[deprecated(
+    since = "0.2.143",
+    note = "we are going to change its type to `c_ulong` in a future release"
+)]
 pub const SA_SIGINFO: ::c_uint = 0x00000008;
+#[deprecated(
+    since = "0.2.143",
+    note = "we are going to change its type to `c_ulong` in a future release"
+)]
 pub const SA_NOCLDWAIT: ::c_int = 0x00010000;
 
 pub const SIGCHLD: ::c_int = 18;
