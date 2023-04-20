@@ -3767,6 +3767,15 @@ pub const AT_EUID: ::c_int = 12;
 pub const AT_GID: ::c_int = 13;
 pub const AT_EGID: ::c_int = 14;
 pub const AT_EXECPATH: ::c_int = 15;
+pub const AT_CANARY: ::c_int = 16;
+pub const AT_OSRELDATE: ::c_int = 18;
+pub const AT_NCPUS: ::c_int = 19;
+pub const AT_PAGESIZES: ::c_int = 20;
+pub const AT_TIMEKEEP: ::c_int = 22;
+pub const AT_HWCAP: ::c_int = 25;
+pub const AT_HWCAP2: ::c_int = 26;
+pub const AT_USRSTACKBASE: ::c_int = 35;
+pub const AT_USRSTACKLIM: ::c_int = 36;
 
 pub const TABDLY: ::tcflag_t = 0x00000004;
 pub const TAB0: ::tcflag_t = 0x00000000;
