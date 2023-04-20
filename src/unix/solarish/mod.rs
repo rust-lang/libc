@@ -2579,7 +2579,7 @@ pub const AT_SUN_FPTYPE: ::c_uint = 2027;
 // and 4 bytes everywhere else:
 #[cfg(target_arch = "sparc64")]
 const _CMSG_HDR_ALIGNMENT: usize = 8;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+#[cfg(not(target_arch = "sparc64"))]
 const _CMSG_HDR_ALIGNMENT: usize = 4;
 
 const _CMSG_DATA_ALIGNMENT: usize = ::mem::size_of::<::c_int>();
