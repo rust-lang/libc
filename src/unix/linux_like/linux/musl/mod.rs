@@ -993,6 +993,13 @@ extern "C" {
         actions: *mut ::posix_spawn_file_actions_t,
         fd: ::c_int,
     ) -> ::c_int;
+
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn endutxent();
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
