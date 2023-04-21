@@ -47,6 +47,7 @@ pub type speed_t = u32;
 pub type suseconds_t = ::c_int;
 pub type tcflag_t = u32;
 pub type time_t = ::c_longlong;
+pub type id_t = ::c_uint;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -1104,6 +1105,15 @@ extern "C" {
 
     // strings.h
     pub fn explicit_bzero(p: *mut ::c_void, len: ::size_t);
+
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
+
+    pub fn getsubopt(
+        optionp: *mut *mut c_char,
+        tokens: *const *mut c_char,
+        valuep: *mut *mut c_char,
+    ) -> ::c_int;
 }
 
 cfg_if! {
