@@ -1795,6 +1795,8 @@ fn test_android(target: &str) {
             | "MADV_POPULATE_READ"
             | "MADV_POPULATE_WRITE" => true,
 
+            // kernel 5.6 minimum required
+            "IPPROTO_MPTCP" => true,
 
             _ => false,
         }
