@@ -1464,7 +1464,15 @@ pub const ENOATTR: ::c_int = 93;
 pub const EMULTIHOP: ::c_int = 94;
 pub const ENOLINK: ::c_int = 95;
 pub const EPROTO: ::c_int = 96;
-pub const ELAST: ::c_int = 96;
+pub const EOWNERDEAD: ::c_int = 97;
+pub const ENOTRECOVERABLE: ::c_int = 98;
+#[deprecated(
+    since = "0.2.143",
+    note = "This value will always match the highest defined error number \
+            and thus is not stable. \
+            See #3040 for more info."
+)]
+pub const ELAST: ::c_int = 98;
 
 pub const F_DUPFD_CLOEXEC: ::c_int = 12;
 pub const F_CLOSEM: ::c_int = 10;
