@@ -3163,8 +3163,15 @@ pub const IFF_DEBUG: ::c_int = 0x4;
 pub const IFF_LOOPBACK: ::c_int = 0x8;
 /// (i) is a point-to-point link
 pub const IFF_POINTOPOINT: ::c_int = 0x10;
-/// (i) calls if_input in net epoch
-pub const IFF_KNOWSEPOCH: ::c_int = 0x20;
+cfg_if! {
+    if #[cfg(not(freebsd14))] {
+        /// (i) calls if_input in net epoch
+        pub const IFF_KNOWSEPOCH: ::c_int = 0x20;
+    } else {
+        /// (i) calls if_input in net epoch
+        pub const IFF_NEEDSEPOCH: ::c_int = 0x20;
+    }
+}
 /// (d) resources allocated
 pub const IFF_RUNNING: ::c_int = 0x40;
 #[doc(hidden)]
