@@ -3726,7 +3726,7 @@ fn test_linux(target: &str) {
             | "MADV_PAGEOUT"
             | "MADV_POPULATE_READ"
             | "MADV_POPULATE_WRITE"
-            if musl => true,
+            if sparc64 || musl => true,
 
             // FIXME: Requires more recent kernel headers
             | "IFLA_PARENT_DEV_NAME"     // linux v5.13+
