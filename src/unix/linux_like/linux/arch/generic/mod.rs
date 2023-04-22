@@ -104,6 +104,8 @@ cfg_if! {
         pub const SO_DETACH_REUSEPORT_BPF: ::c_int = 68;
     }
 }
+// pub const SO_PREFER_BUSY_POLL: ::c_int = 69;
+// pub const SO_BUSY_POLL_BUDGET: ::c_int = 70;
 
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
@@ -114,16 +116,8 @@ cfg_if! {
                  target_arch = "s390x"))] {
         pub const FICLONE: ::c_ulong = 0x40049409;
         pub const FICLONERANGE: ::c_ulong = 0x4020940D;
-    } else if #[cfg(any(target_arch = "mips",
-                        target_arch = "mips64",
-                        target_arch = "powerpc",
-                        target_arch = "powerpc64"))] {
-        pub const FICLONE: ::c_ulong = 0x80049409;
-        pub const FICLONERANGE: ::c_ulong = 0x8020940D;
     }
 }
-// pub const SO_PREFER_BUSY_POLL: ::c_int = 69;
-// pub const SO_BUSY_POLL_BUDGET: ::c_int = 70;
 
 // Defined in unix/linux_like/mod.rs
 // pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
