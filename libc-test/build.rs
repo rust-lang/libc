@@ -1788,6 +1788,14 @@ fn test_android(target: &str) {
             // kernel 5.10 minimum required
             "MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ" | "MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ" => true,
 
+            // kernel 5.18 minimum
+            | "MADV_COLD"
+            | "MADV_DONTNEED_LOCKED"
+            | "MADV_PAGEOUT"
+            | "MADV_POPULATE_READ"
+            | "MADV_POPULATE_WRITE" => true,
+
+
             _ => false,
         }
     });
@@ -3714,6 +3722,12 @@ fn test_linux(target: &str) {
             // Added in Linux 5.13
             "PTRACE_GET_RSEQ_CONFIGURATION" if sparc64 => true,
 
+            | "MADV_COLD"
+            | "MADV_PAGEOUT"
+            | "MADV_POPULATE_READ"
+            | "MADV_POPULATE_WRITE"
+            if sparc64 || musl => true,
+
             // FIXME: Requires more recent kernel headers
             | "IFLA_PARENT_DEV_NAME"     // linux v5.13+
             | "IFLA_PARENT_DEV_BUS_NAME" // linux v5.13+
@@ -3721,6 +3735,7 @@ fn test_linux(target: &str) {
             | "IFLA_TSO_MAX_SIZE"        // linux v5.18+
             | "IFLA_TSO_MAX_SEGS"        // linux v5.18+
             | "IFLA_ALLMULTI"            // linux v6.0+
+            | "MADV_DONTNEED_LOCKED"     // linux v5.18+
                 => true,
             "SCTP_FUTURE_ASSOC" | "SCTP_CURRENT_ASSOC" | "SCTP_ALL_ASSOC" | "SCTP_PEER_ADDR_THLDS_V2" => true, // linux 5.5+
 
