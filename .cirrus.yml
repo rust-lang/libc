@@ -29,7 +29,7 @@ task:
 task:
   name: nightly x86_64-unknown-freebsd-14
   freebsd_instance:
-    image: freebsd-14-0-current-amd64-v20230330
+    image: freebsd-14-0-current-amd64-v20230420
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
