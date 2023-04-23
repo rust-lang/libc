@@ -916,6 +916,8 @@ pub const IPPROTO_UDPLITE: ::c_int = 136;
 pub const IPPROTO_RAW: ::c_int = 255;
 pub const IPPROTO_BEETPH: ::c_int = 94;
 pub const IPPROTO_MPLS: ::c_int = 137;
+/// Multipath TCP
+pub const IPPROTO_MPTCP: ::c_int = 262;
 
 pub const MCAST_EXCLUDE: ::c_int = 0;
 pub const MCAST_INCLUDE: ::c_int = 1;

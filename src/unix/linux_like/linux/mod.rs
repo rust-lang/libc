@@ -1933,8 +1933,6 @@ pub const CLONE_PIDFD: ::c_int = 0x1000;
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
 
-/// Multipath TCP
-pub const IPPROTO_MPTCP: ::c_int = 262;
 #[deprecated(
     since = "0.2.80",
     note = "This value was increased in the newer kernel \
