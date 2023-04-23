@@ -259,11 +259,7 @@ jobs:
 
     name: Build Channels macOS
     needs: macos
-    # FIXME: Use macOS 11 for now as CI failed with a linker error on macOS 12 image:
-    # ld: in /.../x86_64-apple-darwin/lib/libstd-a4729905.rlib(rust.metadata.bin),
-    # archive member 'rust.metadata.bin' with length 2958149 is not mach-o or llvm bitcode file '/.../x86_64-apple-darwin/lib/libstd-a4729905.rlib'
-    # Possibly related: https://github.com/actions/runner-images/issues/6350
-    runs-on: macos-11
+    runs-on: macos-12
     env:
       OS: macos
     strategy:
