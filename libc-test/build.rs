@@ -2296,6 +2296,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14
             "EV_KEEPUDATA" if Some(14) > freebsd_ver => true,
 
+            // Added in FreeBSD 13.2
+            "AT_USRSTACKBASE" | "AT_USRSTACKLIM" if Some(13) > freebsd_ver => true,
+
             _ => false,
         }
     });
