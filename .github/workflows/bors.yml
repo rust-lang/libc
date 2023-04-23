@@ -314,7 +314,7 @@ jobs:
         run: rustup self update
         shell: bash
       - name: Execute build.sh
-        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} WIN_TARGET=${{ matrix.target }} sh ./ci/build.sh
+        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
         shell: bash
 
   check_cfg:

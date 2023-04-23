@@ -2513,31 +2513,7 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn reallocarr(ptr: *mut ::c_void, number: ::size_t, size: ::size_t) -> ::c_int;
-}
 
-#[link(name = "rt")]
-extern "C" {
-    pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
-    pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
-    pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
-    #[link_name = "__aio_suspend50"]
-    pub fn aio_suspend(
-        aiocb_list: *const *const aiocb,
-        nitems: ::c_int,
-        timeout: *const ::timespec,
-    ) -> ::c_int;
-    pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
-    pub fn lio_listio(
-        mode: ::c_int,
-        aiocb_list: *const *mut aiocb,
-        nitems: ::c_int,
-        sevp: *mut sigevent,
-    ) -> ::c_int;
-}
-
-extern "C" {
     pub fn chflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
     pub fn fchflags(fd: ::c_int, flags: ::c_ulong) -> ::c_int;
     pub fn lchflags(path: *const ::c_char, flags: ::c_ulong) -> ::c_int;
@@ -2965,6 +2941,28 @@ extern "C" {
         newfd: ::c_int,
     ) -> ::c_int;
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+}
+
+#[link(name = "rt")]
+extern "C" {
+    pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
+    pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
+    #[link_name = "__aio_suspend50"]
+    pub fn aio_suspend(
+        aiocb_list: *const *const aiocb,
+        nitems: ::c_int,
+        timeout: *const ::timespec,
+    ) -> ::c_int;
+    pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn lio_listio(
+        mode: ::c_int,
+        aiocb_list: *const *mut aiocb,
+        nitems: ::c_int,
+        sevp: *mut sigevent,
+    ) -> ::c_int;
 }
 
 #[link(name = "util")]
