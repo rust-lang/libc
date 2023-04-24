@@ -3781,9 +3781,6 @@ fn test_linux(target: &str) {
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" if musl => true,
 
-            // FIXME: the glibc version used by the Sparc64 build jobs
-            // which use Debian 10.0 is too old.
-            "statx" if sparc64 => true,
             // Needs glibc 2.34 or later.
             "posix_spawn_file_actions_addclosefrom_np" if gnu && sparc64 => true,
             // Needs glibc 2.35 or later.
