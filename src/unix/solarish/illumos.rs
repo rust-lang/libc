@@ -33,8 +33,6 @@ pub const TCP_KEEPCNT: ::c_int = 35;
 pub const TCP_KEEPINTVL: ::c_int = 36;
 pub const TCP_CONGESTION: ::c_int = 37;
 
-pub const MSG_WAITFORONE: ::c_int = 0x80000;
-
 // These constants are correct for 64-bit programs or 32-bit programs that are
 // not using large-file mode.  If Rust ever supports anything other than 64-bit
 // compilation on illumos, this may require adjustment:
