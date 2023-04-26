@@ -996,6 +996,28 @@ extern "C" {
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
 
+    // grp.h
+    pub fn getgrgid_r(
+        gid: ::gid_t,
+        grp: *mut ::group,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut ::group,
+    ) -> ::c_int;
+    pub fn getgrnam_r(
+        name: *const ::c_char,
+        grp: *mut ::group,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut ::group,
+    ) -> ::c_int;
+    pub fn getgrouplist(
+        user: *const ::c_char,
+        group: ::gid_t,
+        groups: *mut ::gid_t,
+        ngroups: *mut ::c_int,
+    ) -> ::c_int;
+
     // malloc.h
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
 
@@ -1028,6 +1050,16 @@ extern "C" {
     ) -> ::c_int;
 
     // pwd.h
+    pub fn getpwent() -> *mut passwd;
+    pub fn setpwent();
+    pub fn endpwent();
+    pub fn getpwnam_r(
+        name: *const ::c_char,
+        pwd: *mut passwd,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut passwd,
+    ) -> ::c_int;
     pub fn getpwuid_r(
         uid: ::uid_t,
         pwd: *mut passwd,
