@@ -3290,7 +3290,7 @@ fn test_linux(target: &str) {
         "linux/netfilter_ipv6/ip6_tables.h",
         "linux/netlink.h",
         // FIXME: requires Linux >= 5.6:
-        [!musl && !sparc64]: "linux/openat2.h",
+        [!musl]: "linux/openat2.h",
         [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
@@ -3402,7 +3402,11 @@ fn test_linux(target: &str) {
             return true;
         }
         // FIXME: musl CI has old headers
-        if (musl || sparc64) && ty.starts_with("uinput_") {
+        if musl && ty.starts_with("uinput_") {
+            return true;
+        }
+        // FIXME: sparc64 CI has old headers
+        if sparc64 && (ty == "uinput_ff_erase" || ty == "uinput_abs_setup") {
             return true;
         }
         // FIXME(https://github.com/rust-lang/libc/issues/1558): passing by
@@ -3457,9 +3461,6 @@ fn test_linux(target: &str) {
             // FIXME: requires >= 5.4 kernel headers
             "sockaddr_can" if musl => true,
 
-            // FIXME: Unignore once we update Ubuntu to 22.04
-            "mallinfo2" if sparc64 => true,
-            "ptrace_rseq_configuration" if sparc64 => true,
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
@@ -3504,7 +3505,7 @@ fn test_linux(target: &str) {
                 return true;
             }
         }
-        if musl || sparc64 {
+        if musl {
             // FIXME: Requires >= 5.4.1 kernel headers
             if name.starts_with("J1939")
                 || name.starts_with("RTEXT_FILTER_")
@@ -3601,7 +3602,7 @@ fn test_linux(target: &str) {
             | "UINPUT_VERSION"
             | "SW_MAX"
             | "SW_CNT"
-                if mips || ppc64 || riscv64 || sparc64 => true,
+                if mips || ppc64 || riscv64 => true,
 
             // FIXME: Not currently available in headers on ARM, MIPS and musl.
             "NETLINK_GET_STRICT_CHK" if arm || mips || musl => true,
@@ -3670,24 +3671,24 @@ fn test_linux(target: &str) {
             | "RESOLVE_IN_ROOT"
             | "RESOLVE_NO_MAGICLINKS"
             | "RESOLVE_NO_SYMLINKS"
-            | "RESOLVE_NO_XDEV" if musl || sparc64 => true,
+            | "RESOLVE_NO_XDEV" if musl => true,
 
             // FIXME: requires Linux >= 5.4:
             | "CAN_J1939"
-            | "CAN_NPROTO" if musl || sparc64 => true,
+            | "CAN_NPROTO" if musl => true,
 
             // FIXME: requires Linux >= 5.6
-            "GRND_INSECURE" if musl || sparc64 => true,
+            "GRND_INSECURE" if musl => true,
 
             // FIXME: requires Linux >= 5.7:
-            "MREMAP_DONTUNMAP" if musl || sparc64 => true,
+            "MREMAP_DONTUNMAP" if musl => true,
 
             // FIXME: Requires more recent kernel headers (5.9 / 5.11):
             | "CLOSE_RANGE_UNSHARE"
-            | "CLOSE_RANGE_CLOEXEC" if musl || sparc64 => true,
+            | "CLOSE_RANGE_CLOEXEC" if musl => true,
 
             // FIXME: requires Linux >= 5.12:
-            "MPOL_F_NUMA_BALANCING" if musl || sparc64 => true,
+            "MPOL_F_NUMA_BALANCING" if musl => true,
 
             // FIXME: Requires more recent kernel headers
             | "NFNL_SUBSYS_COUNT" // bumped in v5.14
@@ -3699,39 +3700,13 @@ fn test_linux(target: &str) {
             | "NFULA_VLAN_UNSPEC" // v5.4+
             | "RTNLGRP_NEXTHOP" // linux v5.3+
             | "RTNLGRP_BRVLAN" // linux v5.6+
-            if musl || sparc64 => true,
-
-            // FIXME: Unignore once we update Ubuntu to 22.04
-            | "VMADDR_CID_LOCAL"
-            | "STATX_MNT_ID"
-            | "SYS_close_range"
-            | "SYS_openat2"
-            | "SYS_pidfd_getfd"
-            | "SYS_faccessat2"
-            | "SYS_process_madvise"
-            | "SYS_epoll_pwait2"
-            | "SYS_mount_setattr"
-            | "SYS_quotactl_fd"
-            | "SYS_landlock_create_ruleset"
-            | "SYS_landlock_add_rule"
-            | "SYS_landlock_restrict_self"
-            | "SYS_process_mrelease"
-            | "IFLA_PROP_LIST"
-            | "IFLA_ALT_IFNAME"
-            | "IFLA_PERM_ADDRESS"
-            | "IFLA_PROTO_DOWN_REASON"
-            | "STATX_ATTR_MOUNT_ROOT"
-            | "STATX_ATTR_VERITY"
-            | "STATX_ATTR_DAX"
-            if sparc64 => true,
-            // Added in Linux 5.13
-            "PTRACE_GET_RSEQ_CONFIGURATION" if sparc64 => true,
+            if musl => true,
 
             | "MADV_COLD"
             | "MADV_PAGEOUT"
             | "MADV_POPULATE_READ"
             | "MADV_POPULATE_WRITE"
-            if sparc64 || musl => true,
+            if musl => true,
 
             // FIXME: Requires more recent kernel headers
             | "IFLA_PARENT_DEV_NAME"     // linux v5.13+
@@ -3745,7 +3720,7 @@ fn test_linux(target: &str) {
             "SCTP_FUTURE_ASSOC" | "SCTP_CURRENT_ASSOC" | "SCTP_ALL_ASSOC" | "SCTP_PEER_ADDR_THLDS_V2" => true, // linux 5.5+
 
             // FIXME: Requires more recent kernel headers
-            "HWTSTAMP_TX_ONESTEP_P2P" if sparc64 || musl => true, // linux v5.6+
+            "HWTSTAMP_TX_ONESTEP_P2P" if musl => true, // linux v5.6+
 
             _ => false,
         }
@@ -3939,6 +3914,8 @@ fn test_linux(target: &str) {
         "fpreg_t" if s390x => true,
 
         "sockaddr_un" | "sembuf" | "ff_constant_effect" if mips32 && (gnu || musl) => true,
+
+        // The test doesn't work on some env:
         "ipv6_mreq"
         | "ip_mreq_source"
         | "sockaddr_in6"
