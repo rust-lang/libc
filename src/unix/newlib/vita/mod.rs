@@ -168,6 +168,8 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn pthread_getprocessorid_np() -> ::c_int;
+
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }
 
 pub use crate::unix::newlib::generic::{sigset_t, stat};
