@@ -3168,7 +3168,6 @@ fn test_linux(target: &str) {
                "netinet/ip.h",
                "netinet/tcp.h",
                "netinet/udp.h",
-               "netpacket/packet.h",
                "poll.h",
                "pthread.h",
                "pty.h",
@@ -3267,6 +3266,7 @@ fn test_linux(target: &str) {
         "linux/if_addr.h",
         "linux/if_alg.h",
         "linux/if_ether.h",
+        "linux/if_packet.h",
         "linux/if_tun.h",
         "linux/input.h",
         "linux/ipv6.h",
@@ -3405,6 +3405,42 @@ fn test_linux(target: &str) {
         if (musl || sparc64) && ty.starts_with("uinput_") {
             return true;
         }
+
+        // FIXME: mips/musl/sparc64 CI images are big endian, which doesn't play well with structs that are not multiples of 32 or 64 bits
+        if (mips || musl || sparc64) && ty == "sockaddr_pkt" {
+            return true;
+        }
+
+        // FIXME: sparc64 is 64-bit big endian, which doesn't play well with structs that are not multiples of 64 bits
+        if sparc64 && ty == "tpacket_auxdata" {
+            return true;
+        }
+
+        // FIXME: sparc64 is 64-bit big endian, which doesn't play well with structs that are not multiples of 64 bits
+        if sparc64 && ty == "tpacket_hdr_variant1" {
+            return true;
+        }
+
+        // FIXME: sparc64 is 64-bit big endian, which doesn't play well with structs that are not multiples of 64 bits
+        if sparc64 && ty == "tpacket_req3" {
+            return true;
+        }
+
+        // FIXME: sparc64 is 64-bit big endian, which doesn't play well with structs that are not multiples of 64 bits
+        if sparc64 && ty == "tpacket_stats_v3" {
+            return true;
+        }
+
+        // FIXME: sparc64 is 64-bit big endian, which doesn't play well with structs that are not multiples of 64 bits
+        if sparc64 && ty == "tpacket_req_u" {
+            return true;
+        }
+
+        // FIXME: sparc64 is 64-bit big endian, which doesn't play well with structs that are not multiples of 64 bits
+        if sparc64 && ty == "tpacket3_hdr" {
+            return true;
+        }
+
         // FIXME(https://github.com/rust-lang/libc/issues/1558): passing by
         // value corrupts the value for reasons not understood.
         if (gnu && sparc64) && (ty == "ip_mreqn" || ty == "hwtstamp_config") {
@@ -3422,6 +3458,9 @@ fn test_linux(target: &str) {
 
             // FIXME: This is actually a union, not a struct
             "sigval" => true,
+
+            // FIXME: remove these once musl/sparc64 CI versions are upgraded (currently not a recognized struct)
+            "fanout_args" if musl || sparc64 => true,
 
             // This type is tested in the `linux_termios.rs` file since there
             // are header conflicts when including them with all the other
@@ -3640,6 +3679,9 @@ fn test_linux(target: &str) {
             "PR_PAC_SET_ENABLED_KEYS" | "PR_PAC_GET_ENABLED_KEYS" => true,
             // present in recent kernels only >= 5.19
             "PR_SME_SET_VL" | "PR_SME_GET_VL" | "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" => true,
+
+            // FIXME: Alignment issues with tpacket3_hdr struct
+            "TPACKET3_HDRLEN" if sparc64 => true,
 
             // Added in Linux 5.14
             "FUTEX_LOCK_PI2" => true,
@@ -3929,6 +3971,10 @@ fn test_linux(target: &str) {
         (struct_ == "sockaddr_vm" && field == "svm_zero") ||
         // the `ifr_ifru` field is an anonymous union
         (struct_ == "ifreq" && field == "ifr_ifru") ||
+        // the `hdr_variant` field is an anonymous union
+        (struct_ == "tpacket3_hdr" && field == "hdr_variant") ||
+        // the `ts_subsec` field is an anonymous union
+        (struct_ == "tpacket_bd_ts" && field == "ts_subsec") ||
         // glibc uses a single array `uregs` instead of individual fields.
         (struct_ == "user_regs" && arm)
     });

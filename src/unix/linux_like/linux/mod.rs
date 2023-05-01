@@ -60,6 +60,14 @@ impl ::Clone for fpos64_t {
     }
 }
 
+e! {
+    pub enum tpacket_versions {
+        TPACKET_V1,
+        TPACKET_V2,
+        TPACKET_V3,
+    }
+}
+
 s! {
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
@@ -147,11 +155,110 @@ s! {
         __val: [::c_int; 2],
     }
 
+    // linux/if_packet.h
+    pub struct fanout_args {
+        #[cfg(target_endian = "little")]
+        pub id: ::__u16,
+        pub type_flags: ::__u16,
+        #[cfg(target_endian = "big")]
+        pub id: ::__u16,
+        pub max_num_members: ::__u32,
+    }
+
     pub struct packet_mreq {
         pub mr_ifindex: ::c_int,
         pub mr_type: ::c_ushort,
         pub mr_alen: ::c_ushort,
         pub mr_address: [::c_uchar; 8],
+    }
+
+    pub struct sockaddr_pkt {
+        pub spkt_family: ::c_ushort,
+        pub spkt_device: [::c_uchar; 14],
+        pub spkt_protocol: ::c_ushort,
+    }
+
+    pub struct tpacket_auxdata {
+        pub tp_status: ::__u32,
+        pub tp_len: ::__u32,
+        pub tp_snaplen: ::__u32,
+        pub tp_mac: ::__u16,
+        pub tp_net: ::__u16,
+        #[cfg(all(target_endian = "big", target_pointer_width = "64"))]
+        __pad: ::__u32, // Architectures like sparc64 pad the last bits weirdly here (probably because of the endianness)
+        pub tp_vlan_tci: ::__u16,
+        pub tp_vlan_tpid: ::__u16,
+    }
+
+    pub struct tpacket_hdr {
+        pub tp_status: ::c_ulong,
+        pub tp_len: ::c_uint,
+        pub tp_snaplen: ::c_uint,
+        pub tp_mac: ::c_ushort,
+        pub tp_net: ::c_ushort,
+        pub tp_sec: ::c_uint,
+        pub tp_usec: ::c_uint,
+    }
+
+    pub struct tpacket_hdr_variant1 {
+        pub tp_rxhash: ::__u32,
+        pub tp_vlan_tci: ::__u32,
+        #[cfg(all(target_endian = "big", target_pointer_width = "64"))]
+        __pad: ::__u32, // Architectures like sparc64 pad the last bits weirdly here (probably because of the endianness)
+        pub tp_vlan_tpid: ::__u16,
+        pub tp_padding: ::__u16,
+    }
+
+    pub struct tpacket2_hdr {
+        pub tp_status: ::__u32,
+        pub tp_len: ::__u32,
+        pub tp_snaplen: ::__u32,
+        pub tp_mac: ::__u16,
+        pub tp_net: ::__u16,
+        pub tp_sec: ::__u32,
+        pub tp_nsec: ::__u32,
+        pub tp_vlan_tci: ::__u16,
+        pub tp_vlan_tpid: ::__u16,
+        pub tp_padding: [::__u8; 4],
+    }
+
+    pub struct tpacket_req {
+        pub tp_block_size: ::c_uint,
+        pub tp_block_nr: ::c_uint,
+        pub tp_frame_size: ::c_uint,
+        pub tp_frame_nr: ::c_uint,
+    }
+
+    pub struct tpacket_req3 {
+        pub tp_block_size: ::c_uint,
+        pub tp_block_nr: ::c_uint,
+        pub tp_frame_size: ::c_uint,
+        pub tp_frame_nr: ::c_uint,
+        pub tp_retire_blk_tov: ::c_uint,
+        pub tp_sizeof_priv: ::c_uint,
+        #[cfg(all(target_endian = "big", target_pointer_width = "64"))]
+        __pad: ::__u32, // Architectures like sparc64 pad the last bits weirdly here (probably because of the endianness)
+        pub tp_feature_req_word: ::c_uint,
+    }
+
+    #[repr(align(8))]
+    pub struct tpacket_rollover_stats {
+        pub tp_all: ::__u64,
+        pub tp_huge: ::__u64,
+        pub tp_failed: ::__u64,
+    }
+
+    pub struct tpacket_stats {
+        pub tp_packets: ::c_uint,
+        pub tp_drops: ::c_uint,
+    }
+
+    pub struct tpacket_stats_v3 {
+        pub tp_packets: ::c_uint,
+        pub tp_drops: ::c_uint,
+        #[cfg(all(target_endian = "big", target_pointer_width = "64"))]
+        __pad: ::__u32, // Architectures like sparc64 pad the last bits weirdly here (probably because of the endianness)
+        pub tp_freeze_q_cnt: ::c_uint,
     }
 
     pub struct cpu_set_t {
@@ -804,6 +911,69 @@ s_no_extra_traits! {
         pub tx_type: ::c_int,
         pub rx_filter: ::c_int,
     }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_hdr_variant {
+        pub hv1: ::tpacket_hdr_variant1,
+    }
+
+    pub struct tpacket3_hdr {
+        pub tp_next_offset: ::__u32,
+        pub tp_sec: ::__u32,
+        pub tp_nsec: ::__u32,
+        pub tp_snaplen: ::__u32,
+        pub tp_len: ::__u32,
+        pub tp_status: ::__u32,
+        pub tp_mac: ::__u16,
+        pub tp_net: ::__u16,
+        #[cfg(libc_union)]
+        pub hdr_variant: ::__c_anonymous_hdr_variant,
+        #[cfg(not(libc_union))]
+        pub hdr_variant: ::tpacket_hdr_variant1,
+        pub tp_padding: [::__u8; 8],
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_ts_subsec {
+        pub ts_usec: ::c_uint,
+        pub ts_nsec: ::c_uint,
+    }
+
+    pub struct tpacket_bd_ts {
+        pub ts_sec: ::c_uint,
+        #[cfg(libc_union)]
+        pub ts_subsec: ::__c_anonymous_ts_subsec,
+        #[cfg(not(libc_union))]
+        pub ts_subsec: ::c_uint,
+    }
+
+    #[repr(align(8))]
+    pub struct tpacket_hdr_v1 {
+        pub block_status: ::__u32,
+        pub num_pkts: ::__u32,
+        pub offset_to_first_pkt: ::__u32,
+        pub blk_len: ::__u32,
+        pub seq_num: ::__u64,
+        pub ts_first_pkt: ::tpacket_bd_ts,
+        pub ts_last_pkt: ::tpacket_bd_ts,
+    }
+
+    #[cfg(libc_union)]
+    pub union tpacket_req_u {
+        pub req: ::tpacket_req,
+        pub req3: ::tpacket_req3,
+    }
+
+    #[cfg(libc_union)]
+    pub union tpacket_bd_header_u {
+        pub bh1: ::tpacket_hdr_v1,
+    }
+
+    pub struct tpacket_block_desc {
+        pub version: ::__u32,
+        pub offset_to_priv: ::__u32,
+        pub hdr: ::tpacket_bd_header_u,
+    }
 }
 
 s_no_extra_traits! {
@@ -1180,7 +1350,9 @@ cfg_if! {
                 self.mq_curmsgs == other.mq_curmsgs
             }
         }
+
         impl Eq for mq_attr {}
+
         impl ::fmt::Debug for mq_attr {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("mq_attr")
@@ -1191,6 +1363,7 @@ cfg_if! {
                     .finish()
             }
         }
+
         impl ::hash::Hash for mq_attr {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.mq_flags.hash(state);
@@ -1199,6 +1372,7 @@ cfg_if! {
                 self.mq_curmsgs.hash(state);
             }
         }
+
         #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifr_ifru {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
@@ -1219,6 +1393,7 @@ cfg_if! {
                     .finish()
             }
         }
+
         impl ::fmt::Debug for ifreq {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifreq")
@@ -1250,6 +1425,88 @@ cfg_if! {
                 self.flags.hash(state);
                 self.tx_type.hash(state);
                 self.rx_filter.hash(state);
+            }
+        }
+
+        impl ::fmt::Debug for __c_anonymous_hdr_variant {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("hdr_variant")
+                    .field("hv1", unsafe { &self.hv1 })
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for tpacket3_hdr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("tpacket3_hdr")
+                    .field("tp_next_offset", &self.tp_next_offset)
+                    .field("tp_sec", &self.tp_sec)
+                    .field("tp_nsec", &self.tp_nsec)
+                    .field("tp_snaplen", &self.tp_snaplen)
+                    .field("tp_len", &self.tp_len)
+                    .field("tp_status", &self.tp_status)
+                    .field("tp_mac", &self.tp_mac)
+                    .field("tp_net", &self.tp_net)
+                    .field("hdr_variant", &self.hdr_variant)
+                    .field("tp_padding", &self.tp_padding)
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for __c_anonymous_ts_subsec {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ts_subsec")
+                    .field("val", unsafe { &self.ts_usec })
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for tpacket_bd_ts {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("tpacket_bd_ts")
+                    .field("ts_sec", &self.ts_sec)
+                    .field("tsubsec", &self.ts_subsec)
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for tpacket_hdr_v1 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("tpacket_hdr_v1")
+                    .field("block_status", &self.block_status)
+                    .field("num_pkts", &self.num_pkts)
+                    .field("offset_to_first_pkt", &self.offset_to_first_pkt)
+                    .field("blk_len", &self.blk_len)
+                    .field("seq_num", &self.seq_num)
+                    .field("ts_first_pkt", &self.ts_first_pkt)
+                    .field("ts_last_pkt", &self.ts_last_pkt)
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for tpacket_req_u {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("tpacket_req_u")
+                    .field("req3", unsafe { &self.req3 })
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for tpacket_bd_header_u {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("tpacket_bd_header_u")
+                    .field("bh1", unsafe { &self.bh1 })
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for tpacket_block_desc {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("tpacket_block_desc")
+                    .field("version", &self.version)
+                    .field("offset_to_priv", &self.offset_to_priv)
+                    .field("hdr", &self.hdr)
+                    .finish()
             }
         }
     }
@@ -2652,12 +2909,73 @@ pub const CTRL_ATTR_MCAST_GRP_NAME: ::c_int = 1;
 pub const CTRL_ATTR_MCAST_GRP_ID: ::c_int = 2;
 
 // linux/if_packet.h
+pub const PACKET_HOST: ::c_uchar = 0;
+pub const PACKET_BROADCAST: ::c_uchar = 1;
+pub const PACKET_MULTICAST: ::c_uchar = 2;
+pub const PACKET_OTHERHOST: ::c_uchar = 3;
+pub const PACKET_OUTGOING: ::c_uchar = 4;
+pub const PACKET_LOOPBACK: ::c_uchar = 5;
+pub const PACKET_USER: ::c_uchar = 6;
+pub const PACKET_KERNEL: ::c_uchar = 7;
+
 pub const PACKET_ADD_MEMBERSHIP: ::c_int = 1;
 pub const PACKET_DROP_MEMBERSHIP: ::c_int = 2;
+pub const PACKET_RX_RING: ::c_int = 5;
+pub const PACKET_STATISTICS: ::c_int = 6;
+pub const PACKET_AUXDATA: ::c_int = 8;
+pub const PACKET_VERSION: ::c_int = 10;
+pub const PACKET_RESERVE: ::c_int = 12;
+pub const PACKET_TX_RING: ::c_int = 13;
+pub const PACKET_LOSS: ::c_int = 14;
+pub const PACKET_TIMESTAMP: ::c_int = 17;
+pub const PACKET_FANOUT: ::c_int = 18;
+pub const PACKET_QDISC_BYPASS: ::c_int = 20;
+
+pub const PACKET_FANOUT_HASH: ::c_uint = 0;
+pub const PACKET_FANOUT_LB: ::c_uint = 1;
+pub const PACKET_FANOUT_CPU: ::c_uint = 2;
+pub const PACKET_FANOUT_ROLLOVER: ::c_uint = 3;
+pub const PACKET_FANOUT_RND: ::c_uint = 4;
+pub const PACKET_FANOUT_QM: ::c_uint = 5;
+pub const PACKET_FANOUT_CBPF: ::c_uint = 6;
+pub const PACKET_FANOUT_EBPF: ::c_uint = 7;
+pub const PACKET_FANOUT_FLAG_ROLLOVER: ::c_uint = 0x1000;
+pub const PACKET_FANOUT_FLAG_UNIQUEID: ::c_uint = 0x2000;
+pub const PACKET_FANOUT_FLAG_DEFRAG: ::c_uint = 0x8000;
 
 pub const PACKET_MR_MULTICAST: ::c_int = 0;
 pub const PACKET_MR_PROMISC: ::c_int = 1;
 pub const PACKET_MR_ALLMULTI: ::c_int = 2;
+
+pub const TP_STATUS_KERNEL: ::__u32 = 0;
+pub const TP_STATUS_USER: ::__u32 = 1 << 0;
+pub const TP_STATUS_COPY: ::__u32 = 1 << 1;
+pub const TP_STATUS_LOSING: ::__u32 = 1 << 2;
+pub const TP_STATUS_CSUMNOTREADY: ::__u32 = 1 << 3;
+pub const TP_STATUS_VLAN_VALID: ::__u32 = 1 << 4;
+pub const TP_STATUS_BLK_TMO: ::__u32 = 1 << 5;
+pub const TP_STATUS_VLAN_TPID_VALID: ::__u32 = 1 << 6;
+pub const TP_STATUS_CSUM_VALID: ::__u32 = 1 << 7;
+
+pub const TP_STATUS_AVAILABLE: ::__u32 = 0;
+pub const TP_STATUS_SEND_REQUEST: ::__u32 = 1 << 0;
+pub const TP_STATUS_SENDING: ::__u32 = 1 << 1;
+pub const TP_STATUS_WRONG_FORMAT: ::__u32 = 1 << 2;
+
+pub const TP_STATUS_TS_SOFTWARE: ::__u32 = 1 << 29;
+pub const TP_STATUS_TS_SYS_HARDWARE: ::__u32 = 1 << 30;
+pub const TP_STATUS_TS_RAW_HARDWARE: ::__u32 = 1 << 31;
+
+pub const TPACKET_ALIGNMENT: usize = 16;
+pub const TPACKET_HDRLEN: usize = ((core::mem::size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
+    & !(TPACKET_ALIGNMENT - 1))
+    + core::mem::size_of::<::sockaddr_ll>();
+pub const TPACKET2_HDRLEN: usize =
+    ((core::mem::size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1))
+        + core::mem::size_of::<::sockaddr_ll>();
+pub const TPACKET3_HDRLEN: usize =
+    ((core::mem::size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1))
+        + core::mem::size_of::<::sockaddr_ll>();
 
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;
@@ -4015,6 +4333,10 @@ f! {
 
     pub fn SO_EE_OFFENDER(ee: *const ::sock_extended_err) -> *mut ::sockaddr {
         ee.offset(1) as *mut ::sockaddr
+    }
+
+    pub fn TPACKET_ALIGN(x: usize) -> usize {
+        (x + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1)
     }
 
     pub fn BPF_RVAL(code: ::__u32) -> ::__u32 {
