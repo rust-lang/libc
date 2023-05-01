@@ -137,8 +137,8 @@ SO_PEERCRED
 SO_PEERSEC
 SO_PRIORITY
 SO_PROTOCOL
-SO_REUSEPORT
 SO_RCVBUFFORCE
+SO_REUSEPORT
 SO_SNDBUFFORCE
 TCFLSH
 TCGETS
@@ -180,6 +180,7 @@ bsearch
 chroot
 clearerr
 difftime
+endpwent
 endservent
 epoll_create
 epoll_create1
@@ -189,12 +190,17 @@ epoll_wait
 explicit_bzero
 fchdir
 fmemopen
+getdtablesize
+getgrgid_r
+getgrnam_r
+getgrouplist
 getline
+getpwent
+getpwnam_r
 getrlimit
 getrusage
 getservbyport
 getservent
-getdtablesize
 killpg
 lockf
 madvise
@@ -206,6 +212,7 @@ pipe2
 pthread_condattr_setclock
 qsort
 reallocarray
+setpwent
 setrlimit
 setservent
 strcasecmp
