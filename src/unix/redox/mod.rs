@@ -528,6 +528,10 @@ pub const POLLOUT: ::c_short = 0x004;
 pub const POLLERR: ::c_short = 0x008;
 pub const POLLHUP: ::c_short = 0x010;
 pub const POLLNVAL: ::c_short = 0x020;
+pub const POLLRDNORM: ::c_short = 0x040;
+pub const POLLRDBAND: ::c_short = 0x080;
+pub const POLLWRNORM: ::c_short = 0x100;
+pub const POLLWRBAND: ::c_short = 0x200;
 
 // pthread.h
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
