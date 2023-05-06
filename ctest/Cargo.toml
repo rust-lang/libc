@@ -10,7 +10,7 @@ description = """
 Automated tests of FFI bindings.
 """
 include = ["src/lib.rs", "LICENSE-*", "README.md"]
-edition = "2018"
+edition = "2021"
 rust-version = "1.56.0"
 
 [dependencies]
