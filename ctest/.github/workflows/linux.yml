@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - 1.46.0 # MSRV
+          - 1.56.0 # MSRV
           - stable
           - beta
           - nightly
@@ -29,7 +29,7 @@ jobs:
         run: TOOLCHAIN=${{ matrix.version }} TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
 
       - name: Check MSRV
-        if: matrix.version == '1.46.0'
+        if: matrix.version == '1.56.0'
         run: cargo check
 
       # FIXME: Some symbols cause multiple definitions error on the same line:
@@ -38,9 +38,9 @@ jobs:
       # /home/runner/work/ctest2/ctest2/target/debug/deps/libtestcrate-a072d428f9532abb.rlib(t1.o):
       # /home/runner/work/ctest2/ctest2/testcrate/src/t1.h:65: first defined here
       # - name: Run tests
-      #   if: matrix.version != '1.46.0'
+      #   if: matrix.version != '1.56.0'
       #   run: cargo test --all -- --nocapture
 
       - name: Run libc tests
-        if: matrix.version != '1.46.0'
+        if: matrix.version != '1.56.0'
         run: sh ./ci/run-docker.sh ${{ matrix.target }}
