@@ -1,13 +1,44 @@
 # Changelog
 
+## 0.4.6 (2023-05-06)
+
+### Bug Fixes
+
+ - <csr-id-7b3154cca43bb0f90a0dd7a6206559f190d625b9/> don't use periods in target names
+   See https://github.com/rust-lang/rust/pull/104523
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 6 commits contributed to the release over the course of 150 calendar days.
+ - 167 days passed between releases.
+ - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Merge pull request #32 from zhaixiaojuan/master ([`b26e82d`](https://github.com/JohnTitor/ctest2/commit/b26e82da33d004184f251a61ae1eb3de3cf75b6c))
+    - Add loongarch64 support ([`64cc233`](https://github.com/JohnTitor/ctest2/commit/64cc2337bc38b4654480a9c0adabaf67e9f6817f))
+    - Merge pull request #49 from Amanieu/ohos ([`e6b5909`](https://github.com/JohnTitor/ctest2/commit/e6b59094cd18ec6e044f3d2564044fde04c21cb7))
+    - Add support for OpenHarmony ([`1d1af22`](https://github.com/JohnTitor/ctest2/commit/1d1af22b80cb4812dbb65cedc063f234603c7553))
+    - Merge pull request #47 from flba-eb/remove_period_in_target_name ([`dbc023a`](https://github.com/JohnTitor/ctest2/commit/dbc023a7fc538eb86a62a9d282a7946a4c7312cd))
+    - Don't use periods in target names ([`7b3154c`](https://github.com/JohnTitor/ctest2/commit/7b3154cca43bb0f90a0dd7a6206559f190d625b9))
+</details>
+
 ## 0.4.5 (2022-11-19)
 
 ### Commit Statistics
 
 <csr-read-only-do-not-edit/>
 
- - 12 commits contributed to the release over the course of 131 calendar days.
- - 189 days passed between releases.
+ - 12 commits contributed to the release over the course of 133 calendar days.
+ - 190 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -187,10 +218,10 @@
     - Merge pull request #1 from pfmooney/illumos-target ([`3c1bb06`](https://github.com/JohnTitor/ctest2/commit/3c1bb06272e4797a8d1ed86c08a0008c88f0eb7d))
     - Fix typo in "unknown target" error message ([`04bac2c`](https://github.com/JohnTitor/ctest2/commit/04bac2c7c25bbeea0f05b78e11c39c904d4a2005))
     - Add illumos target ([`1b4efff`](https://github.com/JohnTitor/ctest2/commit/1b4efff47d23624bbad42a5741e4cc4476560e8e))
-    - add supporting for vxWorks ([`570e058`](https://github.com/JohnTitor/ctest2/commit/570e0584f0dc4aeab6ff4e9c07190c346a45beeb))
+    - Add supporting for vxWorks ([`570e058`](https://github.com/JohnTitor/ctest2/commit/570e0584f0dc4aeab6ff4e9c07190c346a45beeb))
     - Improve error output ([`cf096e1`](https://github.com/JohnTitor/ctest2/commit/cf096e1a0f24072c8016dd649f1349a6785aa15b))
     - Improve errors of roundtrip tests ([`ddf07ea`](https://github.com/JohnTitor/ctest2/commit/ddf07ea5759f9605da968c391007117847553a0a))
-    - fix roundtrip tests for structs larger than 252 bytes ([`2d3be56`](https://github.com/JohnTitor/ctest2/commit/2d3be569b07f413a7639419d84391d1d04f4d6fe))
+    - Fix roundtrip tests for structs larger than 252 bytes ([`2d3be56`](https://github.com/JohnTitor/ctest2/commit/2d3be569b07f413a7639419d84391d1d04f4d6fe))
     - Merge pull request #78 from gnzlbg/unknown_warning ([`e9b8697`](https://github.com/JohnTitor/ctest2/commit/e9b8697b4eceae69712dda6e4c55c9c42971b887))
     - :uninitialized is deprecated ([`0bbbc85`](https://github.com/JohnTitor/ctest2/commit/0bbbc85fbd211f33815b39d9f472cf22d088846f))
     - Avoid errors on unknown warnings ([`57da2c3`](https://github.com/JohnTitor/ctest2/commit/57da2c3b2e74a2ff135d0369647c1fe2a3b3bf96))
@@ -203,7 +234,7 @@
     - Add ABI roundtrip test ([`5ab52f3`](https://github.com/JohnTitor/ctest2/commit/5ab52f3b8f6086f23b48ae176fd42d8dd85c6f5d))
     - Add support for transparent and packed(N) types ([`6e1f066`](https://github.com/JohnTitor/ctest2/commit/6e1f066e673ef12576554016de768ae37d552e46))
     - Add a repr(packed(N)) test ([`2460886`](https://github.com/JohnTitor/ctest2/commit/24608866b5543787dddf5bdb78a1097610b51e8d))
-    - silence another msvc warning ([`99e89ab`](https://github.com/JohnTitor/ctest2/commit/99e89abd8259f836300ea4b1de3466058b6e7a6f))
+    - Silence another msvc warning ([`99e89ab`](https://github.com/JohnTitor/ctest2/commit/99e89abd8259f836300ea4b1de3466058b6e7a6f))
     - Allow taking references to packed struct fields in MSVC ([`6f1a656`](https://github.com/JohnTitor/ctest2/commit/6f1a656c1eb2c0fb864139f75b00fa308382f634))
     - Add redox target ([`835506d`](https://github.com/JohnTitor/ctest2/commit/835506db973410dfed4385be127eea1d9dcd0bea))
     - Fix build by running rustfmt ([`b645216`](https://github.com/JohnTitor/ctest2/commit/b64521631710dc950ffde055973fc92c02a3b120))
@@ -241,10 +272,10 @@
 
  * **Uncategorized**
     - Fix generates tests with C function conflict ([`96ca3fa`](https://github.com/JohnTitor/ctest2/commit/96ca3fa81605aa9a7d55a74f64c6b2df9af9ded1))
-    - support statics of Option<fn> types ([`ee2fd33`](https://github.com/JohnTitor/ctest2/commit/ee2fd33d94fd4f7640b4b989e1f3b9b876cdbbc3))
-    - support non-mut statics with Option<&T> ([`31cae7d`](https://github.com/JohnTitor/ctest2/commit/31cae7d94f86bc90015a25a4c28c4cf499b42ae6))
-    - fix clippy issues ([`e17d4ae`](https://github.com/JohnTitor/ctest2/commit/e17d4ae67c3d9b380053b20644b701bcf67dec18))
-    - re-format ([`eab052c`](https://github.com/JohnTitor/ctest2/commit/eab052cb32b6c7cfbaef3bfc48a998a26a98693a))
+    - Support statics of Option<fn> types ([`ee2fd33`](https://github.com/JohnTitor/ctest2/commit/ee2fd33d94fd4f7640b4b989e1f3b9b876cdbbc3))
+    - Support non-mut statics with Option<&T> ([`31cae7d`](https://github.com/JohnTitor/ctest2/commit/31cae7d94f86bc90015a25a4c28c4cf499b42ae6))
+    - Fix clippy issues ([`e17d4ae`](https://github.com/JohnTitor/ctest2/commit/e17d4ae67c3d9b380053b20644b701bcf67dec18))
+    - Re-format ([`eab052c`](https://github.com/JohnTitor/ctest2/commit/eab052cb32b6c7cfbaef3bfc48a998a26a98693a))
 </details>
 
 ## v0.2.4 (2018-10-29)
@@ -266,7 +297,7 @@
 
  * **Uncategorized**
     - Merge pull request #46 from gnzlbg/fb2 ([`dae2780`](https://github.com/JohnTitor/ctest2/commit/dae27809d8f2abf692d8d6b8a7885b2ab9ff77b4))
-    - add support for extern static references and optional references ([`07c96c6`](https://github.com/JohnTitor/ctest2/commit/07c96c674233970eaf1e8674039b07b4c8a9645b))
+    - Add support for extern static references and optional references ([`07c96c6`](https://github.com/JohnTitor/ctest2/commit/07c96c674233970eaf1e8674039b07b4c8a9645b))
     - Merge pull request #43 from johnschug/skip-sign ([`9480ee3`](https://github.com/JohnTitor/ctest2/commit/9480ee376ef3b24567ca0b208b7e9b9faa19f82b))
 </details>
 
@@ -292,7 +323,7 @@
     - Skip signedness checks for non-integer type aliases ([`2099f61`](https://github.com/JohnTitor/ctest2/commit/2099f6179f476aef903ca6a3131e043e75c06cec))
     - Add support for arrays in extern statics ([`d389610`](https://github.com/JohnTitor/ctest2/commit/d389610b9ece689a2b3e602eacb9cd19af8af50f))
     - Merge pull request #39 from gnzlbg/rs2c ([`f8bd332`](https://github.com/JohnTitor/ctest2/commit/f8bd33266921636ce99c1026ddb429095b896921))
-    - add support for nested functions ([`30f5187`](https://github.com/JohnTitor/ctest2/commit/30f5187a6a456942015f6361bae045ff06736dca))
+    - Add support for nested functions ([`30f5187`](https://github.com/JohnTitor/ctest2/commit/30f5187a6a456942015f6361bae045ff06736dca))
     - Minimal support for fn types in extern statics ([`9375d57`](https://github.com/JohnTitor/ctest2/commit/9375d57cf2151069306ea04222bcad2d61862e9c))
 </details>
 
@@ -358,15 +389,15 @@
 <details><summary>view details</summary>
 
  * **Uncategorized**
-    - improve docs of cfg method ([`e9355e7`](https://github.com/JohnTitor/ctest2/commit/e9355e738e3e25c5b51114f9bc7974da83040c6c))
+    - Improve docs of cfg method ([`e9355e7`](https://github.com/JohnTitor/ctest2/commit/e9355e738e3e25c5b51114f9bc7974da83040c6c))
     - Merge pull request #34 from afdw/master ([`bf780a0`](https://github.com/JohnTitor/ctest2/commit/bf780a0e62caf4fb4747bd683713864b444bd6fb))
     - Add support for unions without typedefs ([`8078823`](https://github.com/JohnTitor/ctest2/commit/80788238ecaca2a610efea3f5c46ea9f23f88121))
     - Merge pull request #29 from glandium/target_endian ([`94815ca`](https://github.com/JohnTitor/ctest2/commit/94815cadb00ab7bcee8b2f9b903c4db7f14c6fa1))
     - Add target_endian to the set of #[cfg()] items that are considered. ([`25b5b64`](https://github.com/JohnTitor/ctest2/commit/25b5b64e36147aab36a83cb1ffd5432c09a317ce))
     - Merge pull request #28 from gnzlbg/deprecated ([`954f493`](https://github.com/JohnTitor/ctest2/commit/954f493d482a0873866ba335bee75ce2936e5415))
-    - allow deprecated declarations on non-msvc targets ([`a24ccd2`](https://github.com/JohnTitor/ctest2/commit/a24ccd2ad9995915f6be99dcf6e548f2bdfafe14))
+    - Allow deprecated declarations on non-msvc targets ([`a24ccd2`](https://github.com/JohnTitor/ctest2/commit/a24ccd2ad9995915f6be99dcf6e548f2bdfafe14))
     - Merge pull request #27 from gnzlbg/fix_bug ([`d3a5248`](https://github.com/JohnTitor/ctest2/commit/d3a5248c49ced9e5d42ebd74ee494db2988e7bad))
-    - panic on non-repr(C) structs only if the struct should not be skipped ([`c79cfd9`](https://github.com/JohnTitor/ctest2/commit/c79cfd9d02aa6e5f6026e79df8b47bcdd34ec597))
+    - Panic on non-repr(C) structs only if the struct should not be skipped ([`c79cfd9`](https://github.com/JohnTitor/ctest2/commit/c79cfd9d02aa6e5f6026e79df8b47bcdd34ec597))
 </details>
 
 ## v0.1.7 (2018-02-01)
@@ -462,7 +493,7 @@
 
  * **Uncategorized**
     - Merge pull request #19 from sfackler/master ([`08db942`](https://github.com/JohnTitor/ctest2/commit/08db9429293a53c2fa8d39f0cc43a04add955100))
-    - extern blocks can't be public ([`1254f45`](https://github.com/JohnTitor/ctest2/commit/1254f45225d62d6699bd56e40c3d3aaacdd9c2b6))
+    - Extern blocks can't be public ([`1254f45`](https://github.com/JohnTitor/ctest2/commit/1254f45225d62d6699bd56e40c3d3aaacdd9c2b6))
     - Handle ABIs in fields ([`73b72c1`](https://github.com/JohnTitor/ctest2/commit/73b72c1fa6b07f6da95fb035b1e92f82fc149236))
     - Merge pull request #18 from malbarbo/emscripten ([`f4835aa`](https://github.com/JohnTitor/ctest2/commit/f4835aa2a14411beebc67e9a900858978d03cc92))
     - Add support emscripten targets ([`514a2f2`](https://github.com/JohnTitor/ctest2/commit/514a2f21990d83aa6fb4186a7220bf073558d87d))
@@ -492,7 +523,7 @@
     - Add -uknown-linux-uclibc as target ([`376f59a`](https://github.com/JohnTitor/ctest2/commit/376f59a67cdae9d0f162f03b25c3b39f138b5eb3))
     - Support cast expressions in array lengths ([`80c0e5d`](https://github.com/JohnTitor/ctest2/commit/80c0e5d8dfa6d95c1b1fd7a313ba08ece18fac2f))
     - Merge pull request #13 from japaric/sparc64 ([`b703b23`](https://github.com/JohnTitor/ctest2/commit/b703b23c69afe0f4939e0c7f6540e40e2f4a12e0))
-    - sparc64 support ([`6d24033`](https://github.com/JohnTitor/ctest2/commit/6d24033d97a8b559245397102a3d751168050672))
+    - Sparc64 support ([`6d24033`](https://github.com/JohnTitor/ctest2/commit/6d24033d97a8b559245397102a3d751168050672))
 </details>
 
 ## v0.1.1 (2016-11-16)
@@ -514,11 +545,11 @@
  * **Uncategorized**
     - Fix powerpc64le target_arch ([`d5aac51`](https://github.com/JohnTitor/ctest2/commit/d5aac516d895556d652c15134ba1ad6cec5e38be))
     - Merge pull request #10 from japaric/i586 ([`2839e49`](https://github.com/JohnTitor/ctest2/commit/2839e49847a6adca6e96cc81c46a1f03f8562ac0))
-    - add support for i586 targets ([`723f739`](https://github.com/JohnTitor/ctest2/commit/723f73993f5b70e12f48d26ffde1659b2b7dbd7a))
+    - Add support for i586 targets ([`723f739`](https://github.com/JohnTitor/ctest2/commit/723f73993f5b70e12f48d26ffde1659b2b7dbd7a))
     - Merge pull request #9 from japaric/s390x ([`b7e6a3b`](https://github.com/JohnTitor/ctest2/commit/b7e6a3bca9ffe26b3c026e1255b3d4f0467485b2))
-    - add support for s390x ([`bf56085`](https://github.com/JohnTitor/ctest2/commit/bf560858ef6f199b953d0d7a5568124908742057))
+    - Add support for s390x ([`bf56085`](https://github.com/JohnTitor/ctest2/commit/bf560858ef6f199b953d0d7a5568124908742057))
     - Merge pull request #8 from japaric/mips64 ([`f3e6b73`](https://github.com/JohnTitor/ctest2/commit/f3e6b73310165a39cb4f463f3a66d4f98d243ffa))
-    - add support for mips64 ([`9109572`](https://github.com/JohnTitor/ctest2/commit/910957269ba81f096ef60727ed104436557bec85))
+    - Add support for mips64 ([`9109572`](https://github.com/JohnTitor/ctest2/commit/910957269ba81f096ef60727ed104436557bec85))
     - Merge pull request #7 from polachok/flags ([`a6becb6`](https://github.com/JohnTitor/ctest2/commit/a6becb6d7fd23d9863cba86eac31d1ffc4082734))
     - Allow user-specified flags override default ([`ff477ba`](https://github.com/JohnTitor/ctest2/commit/ff477ba55454af2b9837b9a60ad036912c1d57d2))
     - Add custom flags ([`965d657`](https://github.com/JohnTitor/ctest2/commit/965d6571ef4cfa0a911e89cee11e2f3cb211d6f0))
@@ -535,7 +566,7 @@
     - Merge pull request #3 from mneumann/dragonfly ([`2a0524d`](https://github.com/JohnTitor/ctest2/commit/2a0524de7542aebdb7d6a2f104780c0bdfaa3b56))
     - Fix for DragonFly ([`ea100e2`](https://github.com/JohnTitor/ctest2/commit/ea100e21377055b7fe4f032d9868c21cf97d06a6))
     - Merge pull request #2 from semarie/openbsd ([`30ccebc`](https://github.com/JohnTitor/ctest2/commit/30ccebc2565e7325a045afa6189e00223471c421))
-    - add openbsd support ([`702791e`](https://github.com/JohnTitor/ctest2/commit/702791e663dbd783d23e9f3e2acc78ae853766d0))
+    - Add openbsd support ([`702791e`](https://github.com/JohnTitor/ctest2/commit/702791e663dbd783d23e9f3e2acc78ae853766d0))
     - Don't use link_name in C by default ([`4b29e7d`](https://github.com/JohnTitor/ctest2/commit/4b29e7d8cf64370a3e38c9a2f31fc577a953689b))
     - Add os detection for netbsd ([`c78f4af`](https://github.com/JohnTitor/ctest2/commit/c78f4af3206d420bac0b88abab8b5d51bf4c8084))
     - Add option to skip an entire struct ([`07fe948`](https://github.com/JohnTitor/ctest2/commit/07fe948a45d7ed665ed0b0405f7d2c4db3140e44))
