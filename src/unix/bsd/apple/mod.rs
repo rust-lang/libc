@@ -4990,6 +4990,18 @@ pub const VOL_CAP_INT_RENAME_SWAP: attrgroup_t = 0x00040000;
 pub const VOL_CAP_INT_RENAME_EXCL: attrgroup_t = 0x00080000;
 pub const VOL_CAP_INT_RENAME_OPENFAIL: attrgroup_t = 0x00100000;
 
+// <proc.h>
+/// Process being created by fork.
+pub const SIDL: u32 = 1;
+/// Currently runnable.
+pub const SRUN: u32 = 2;
+/// Sleeping on an address.
+pub const SSLEEP: u32 = 3;
+/// Process debugging or suspension.
+pub const SSTOP: u32 = 4;
+/// Awaiting collection by parent.
+pub const SZOMB: u32 = 5;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         const fn __DARWIN_ALIGN32(p: usize) -> usize {
