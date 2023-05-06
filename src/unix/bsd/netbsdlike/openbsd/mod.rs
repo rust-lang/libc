@@ -1073,6 +1073,8 @@ pub const IP_RECVIF: ::c_int = 30;
 pub const TCP_MD5SIG: ::c_int = 0x04;
 pub const TCP_NOPUSH: ::c_int = 0x10;
 
+pub const MSG_WAITFORONE: ::c_int = 0x1000;
+
 pub const AF_ECMA: ::c_int = 8;
 pub const AF_ROUTE: ::c_int = 17;
 pub const AF_ENCAP: ::c_int = 28;

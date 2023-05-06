@@ -3696,6 +3696,7 @@ pub const MSG_NBIO: ::c_int = 0x00004000;
 pub const MSG_COMPAT: ::c_int = 0x00008000;
 pub const MSG_CMSG_CLOEXEC: ::c_int = 0x00040000;
 pub const MSG_NOSIGNAL: ::c_int = 0x20000;
+pub const MSG_WAITFORONE: ::c_int = 0x00080000;
 
 // utmpx entry types
 pub const EMPTY: ::c_short = 0;
