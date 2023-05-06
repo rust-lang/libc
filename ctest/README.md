@@ -14,7 +14,7 @@ APIs in Rust match the APIs defined in C.
 
 ## MSRV (Minimum Supported Rust Version)
 
-The MSRV is 1.46.0 because of the `bitflags` dependency.
+The MSRV is 1.56.0 because of the transitive dependencies.
 Note that MSRV may be changed anytime by dependencies.
 
 ## Example
@@ -91,17 +91,17 @@ you can browse [the documentation][dox].
 
 ## Projects using ctest2
 
-* [libc](https://github.com/rust-lang/libc)
-* [libz-sys](https://github.com/rust-lang/libz-sys)
+- [libc](https://github.com/rust-lang/libc)
+- [libz-sys](https://github.com/rust-lang/libz-sys)
 
 ## License
 
 This project is licensed under either of
 
- * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or
-   https://www.apache.org/licenses/LICENSE-2.0)
- * MIT license ([LICENSE-MIT](LICENSE-MIT) or
-   https://opensource.org/licenses/MIT)
+- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or
+  https://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or
+  https://opensource.org/licenses/MIT)
 
 at your option.
 
