@@ -821,6 +821,7 @@ fn test_solarish(target: &str) {
         "sys/ioctl.h",
         "sys/lgrp_user.h",
         "sys/loadavg.h",
+        "sys/mkdev.h",
         "sys/mman.h",
         "sys/mount.h",
         "sys/priv.h",

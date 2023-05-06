@@ -1731,6 +1731,19 @@ f! {
         (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
             as ::c_uint
     }
+
+    pub fn major(dev: ::dev_t) -> ::c_uint{
+        ((dev as ::c_uint) >> 8) & 0xff
+    }
+
+    pub fn minor(dev: ::dev_t) -> ::c_uint {
+        let dev = dev as ::c_uint;
+        let mut res = 0;
+        res |= (dev) & 0xff;
+        res |= ((dev) & 0xffff0000) >> 8;
+
+        res
+    }
 }
 
 safe_f! {
