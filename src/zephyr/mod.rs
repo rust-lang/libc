@@ -12,7 +12,7 @@ pub type uint16_t = u16;
 pub type uint32_t = u32;
 pub type uint64_t = u64;
 
-cfg_if::cfg_if! {
+cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
         pub type c_char = u8;
     } else {
@@ -25,7 +25,7 @@ pub type c_short = i16;
 pub type c_ushort = u16;
 pub type c_int = i32;
 pub type c_uint = u32;
-cfg_if::cfg_if! {
+cfg_if! {
     if #[cfg(target_pointer_width = "32")] {
         pub type c_long = i32;
         pub type c_ulong = u32;
