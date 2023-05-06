@@ -1578,6 +1578,14 @@ f! {
         let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
         0 != cpuset.ary[idx] & (1 << offset)
     }
+
+    pub fn major(dev: ::dev_t) -> ::c_int {
+         ((dev >> 8) & 0xff) as ::c_int
+    }
+
+    pub fn minor(dev: ::dev_t) -> ::c_int {
+        (dev & 0xffff00ff) as ::c_int
+    }
 }
 
 safe_f! {
