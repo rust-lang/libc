@@ -3683,6 +3683,9 @@ fn test_linux(target: &str) {
             // FIXME: requires Linux >= 5.7:
             "MREMAP_DONTUNMAP" if musl => true,
 
+            // FIXME: requires Linux >= v5.8
+            "IF_LINK_MODE_TESTING" if musl || sparc64 => true,
+
             // FIXME: Requires more recent kernel headers (5.9 / 5.11):
             | "CLOSE_RANGE_UNSHARE"
             | "CLOSE_RANGE_CLOEXEC" if musl => true,
