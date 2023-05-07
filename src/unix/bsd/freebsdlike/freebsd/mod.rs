@@ -2997,6 +2997,10 @@ pub const MNT_SNAPSHOT: ::c_int = 0x01000000;
 pub const MNT_UNION: ::c_int = 0x00000020;
 pub const MNT_NONBUSY: ::c_int = 0x04000000;
 
+pub const SCM_BINTIME: ::c_int = 0x04;
+pub const SCM_REALTIME: ::c_int = 0x05;
+pub const SCM_MONOTONIC: ::c_int = 0x06;
+pub const SCM_TIME_INFO: ::c_int = 0x07;
 pub const SCM_CREDS2: ::c_int = 0x08;
 
 pub const SO_BINTIME: ::c_int = 0x2000;
