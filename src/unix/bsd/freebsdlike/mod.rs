@@ -1434,6 +1434,13 @@ pub const SHM_RND: ::c_int = 0o20000;
 pub const SHM_R: ::c_int = 0o400;
 pub const SHM_W: ::c_int = 0o200;
 
+pub const KENV_GET: ::c_int = 0;
+pub const KENV_SET: ::c_int = 1;
+pub const KENV_UNSET: ::c_int = 2;
+pub const KENV_DUMP: ::c_int = 3;
+pub const KENV_MNAMELEN: ::c_int = 128;
+pub const KENV_MVALLEN: ::c_int = 128;
+
 safe_f! {
     pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
@@ -1737,6 +1744,13 @@ extern "C" {
     pub fn eui64_hostton(hostname: *const ::c_char, id: *mut eui64) -> ::c_int;
 
     pub fn eaccess(path: *const ::c_char, mode: ::c_int) -> ::c_int;
+
+    pub fn kenv(
+        action: ::c_int,
+        name: *const ::c_char,
+        value: *mut ::c_char,
+        len: ::c_int,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]
