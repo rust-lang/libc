@@ -1199,6 +1199,7 @@ setgroups
 sethostid
 sethostname
 setitimer
+setlogin
 setpriority
 setproctitle
 setprogname

@@ -1519,6 +1519,9 @@ pub const MAXCOMLEN: usize = 16;
 pub const MAXLOGNAME: usize = 33;
 pub const NGROUPS: usize = 16;
 
+pub const RB_PAUSE: ::c_int = 0x40000;
+pub const RB_VIDEO: ::c_int = 0x20000000;
+
 const_fn! {
     {const} fn _CMSG_ALIGN(n: usize) -> usize {
         (n + (::mem::size_of::<::c_long>() - 1)) & !(::mem::size_of::<::c_long>() - 1)

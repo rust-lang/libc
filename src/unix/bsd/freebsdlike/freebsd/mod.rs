@@ -2997,6 +2997,10 @@ pub const MNT_SNAPSHOT: ::c_int = 0x01000000;
 pub const MNT_UNION: ::c_int = 0x00000020;
 pub const MNT_NONBUSY: ::c_int = 0x04000000;
 
+pub const SCM_BINTIME: ::c_int = 0x04;
+pub const SCM_REALTIME: ::c_int = 0x05;
+pub const SCM_MONOTONIC: ::c_int = 0x06;
+pub const SCM_TIME_INFO: ::c_int = 0x07;
 pub const SCM_CREDS2: ::c_int = 0x08;
 
 pub const SO_BINTIME: ::c_int = 0x2000;
@@ -4679,6 +4683,15 @@ pub const SCTP_ASSOC_RESET_FAILED: ::c_int = 0x0008;
 
 pub const SCTP_STREAM_CHANGE_DENIED: ::c_int = 0x0004;
 pub const SCTP_STREAM_CHANGE_FAILED: ::c_int = 0x0008;
+
+pub const KENV_DUMP_LOADER: ::c_int = 4;
+pub const KENV_DUMP_STATIC: ::c_int = 5;
+
+pub const RB_PAUSE: ::c_int = 0x100000;
+pub const RB_REROOT: ::c_int = 0x200000;
+pub const RB_POWERCYCLE: ::c_int = 0x400000;
+pub const RB_PROBE: ::c_int = 0x10000000;
+pub const RB_MULTIPLE: ::c_int = 0x20000000;
 
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
