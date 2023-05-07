@@ -4683,6 +4683,12 @@ pub const SCTP_STREAM_CHANGE_FAILED: ::c_int = 0x0008;
 pub const KENV_DUMP_LOADER: ::c_int = 4;
 pub const KENV_DUMP_STATIC: ::c_int = 5;
 
+pub const RB_PAUSE: ::c_int = 0x100000;
+pub const RB_REROOT: ::c_int = 0x200000;
+pub const RB_POWERCYCLE: ::c_int = 0x400000;
+pub const RB_PROBE: ::c_int = 0x10000000;
+pub const RB_MULTIPLE: ::c_int = 0x20000000;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
