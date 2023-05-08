@@ -5107,7 +5107,7 @@ f! {
             as ::c_uint
     }
 
-    pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
         (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) + length as usize)
             as ::c_uint
     }
