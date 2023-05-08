@@ -2601,7 +2601,7 @@ f! {
         _CMSG_DATA_ALIGN(cmsg.offset(1) as usize) as *mut ::c_uchar
     }
 
-    pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
         _CMSG_DATA_ALIGN(::mem::size_of::<::cmsghdr>()) as ::c_uint + length
     }
 
