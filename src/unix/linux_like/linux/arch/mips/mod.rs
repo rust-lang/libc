@@ -272,7 +272,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(target_arch = "mips64",
+    if #[cfg(any(target_arch = "mips64", target_arch = "mips64r6"),
          any(target_env = "gnu",
              target_env = "uclibc"))] {
         pub const RLIM_INFINITY: ::rlim_t = !0;

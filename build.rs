@@ -35,7 +35,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
 const CHECK_CFG_EXTRA: &'static [(&'static str, &'static [&'static str])] = &[
     ("target_os", &["switch", "aix", "ohos"]),
     ("target_env", &["illumos", "wasi", "aix", "ohos"]),
-    ("target_arch", &["loongarch64"]),
+    ("target_arch", &["loongarch64", "mips64r6"]),
 ];
 
 fn main() {
