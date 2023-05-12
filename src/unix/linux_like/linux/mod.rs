@@ -3782,6 +3782,7 @@ pub const CAN_RAW_LOOPBACK: ::c_int = 3;
 pub const CAN_RAW_RECV_OWN_MSGS: ::c_int = 4;
 pub const CAN_RAW_FD_FRAMES: ::c_int = 5;
 pub const CAN_RAW_JOIN_FILTERS: ::c_int = 6;
+pub const CAN_RAW_XL_FRAMES: ::c_int = 7;
 
 // linux/can/j1939.h
 pub const SOL_CAN_J1939: ::c_int = SOL_CAN_BASE + CAN_J1939;
