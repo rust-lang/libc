@@ -179,6 +179,9 @@ pub const MAP_STACK: ::c_int = 0x020000;
 pub const MAP_HUGETLB: ::c_int = 0x040000;
 pub const MAP_SYNC: ::c_int = 0x080000;
 
+pub const PTRACE_SYSEMU: ::c_int = 31;
+pub const PTRACE_SYSEMU_SINGLESTEP: ::c_int = 32;
+
 pub const EDEADLOCK: ::c_int = 35;
 pub const ENAMETOOLONG: ::c_int = 36;
 pub const ENOLCK: ::c_int = 37;
