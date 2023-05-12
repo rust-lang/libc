@@ -215,6 +215,8 @@ reallocarray
 setpwent
 setrlimit
 setservent
+sigtimedwait
+sigwait
 strcasecmp
 strcasestr
 strlcat
