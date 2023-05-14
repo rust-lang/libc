@@ -176,6 +176,17 @@ macro_rules! expand_align {
                 __res1: u8,
                 pub data: [u8; CANFD_MAX_DLEN],
             }
+
+            #[repr(align(8))]
+            #[allow(missing_debug_implementations)]
+            pub struct canxl_frame {
+                pub prio: canid_t,
+                pub flags: u8,
+                pub sdt: u8,
+                pub len: u16,
+                pub af: u32,
+                pub data: [u8; CANXL_MAX_DLEN],
+            }
         }
     };
 }

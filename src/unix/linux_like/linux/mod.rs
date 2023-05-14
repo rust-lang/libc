@@ -3723,9 +3723,11 @@ pub const CAN_ERR_FLAG: canid_t = 0x20000000;
 pub const CAN_SFF_MASK: canid_t = 0x000007FF;
 pub const CAN_EFF_MASK: canid_t = 0x1FFFFFFF;
 pub const CAN_ERR_MASK: canid_t = 0x1FFFFFFF;
+pub const CANXL_PRIO_MASK: ::canid_t = CAN_SFF_MASK;
 
 pub const CAN_SFF_ID_BITS: ::c_int = 11;
 pub const CAN_EFF_ID_BITS: ::c_int = 29;
+pub const CANXL_PRIO_BITS: ::c_int = CAN_SFF_ID_BITS;
 
 pub const CAN_MAX_DLC: ::c_int = 8;
 pub const CAN_MAX_DLEN: usize = 8;
@@ -3735,10 +3737,26 @@ pub const CANFD_MAX_DLEN: usize = 64;
 pub const CANFD_BRS: ::c_int = 0x01;
 pub const CANFD_ESI: ::c_int = 0x02;
 
+pub const CANXL_MIN_DLC: ::c_int = 0;
+pub const CANXL_MAX_DLC: ::c_int = 2047;
+pub const CANXL_MAX_DLC_MASK: ::c_int = 0x07FF;
+pub const CANXL_MIN_DLEN: usize = 1;
+pub const CANXL_MAX_DLEN: usize = 2048;
+
+pub const CANXL_XLF: ::c_int = 0x80;
+pub const CANXL_SEC: ::c_int = 0x01;
+
 cfg_if! {
     if #[cfg(libc_align)] {
         pub const CAN_MTU: usize = ::mem::size_of::<can_frame>();
         pub const CANFD_MTU: usize = ::mem::size_of::<canfd_frame>();
+        pub const CANXL_MTU: usize = ::mem::size_of::<canxl_frame>();
+        // FIXME: use `core::mem::offset_of!` once that is available
+        // https://github.com/rust-lang/rfcs/pull/3308
+        // pub const CANXL_HDR_SIZE: usize = core::mem::offset_of!(canxl_frame, data);
+        pub const CANXL_HDR_SIZE: usize = 12;
+        pub const CANXL_MIN_MTU: usize = CANXL_HDR_SIZE + 64;
+        pub const CANXL_MAX_MTU: usize = CANXL_MTU;
     }
 }
 
@@ -3764,6 +3782,7 @@ pub const CAN_RAW_LOOPBACK: ::c_int = 3;
 pub const CAN_RAW_RECV_OWN_MSGS: ::c_int = 4;
 pub const CAN_RAW_FD_FRAMES: ::c_int = 5;
 pub const CAN_RAW_JOIN_FILTERS: ::c_int = 6;
+pub const CAN_RAW_XL_FRAMES: ::c_int = 7;
 
 // linux/can/j1939.h
 pub const SOL_CAN_J1939: ::c_int = SOL_CAN_BASE + CAN_J1939;

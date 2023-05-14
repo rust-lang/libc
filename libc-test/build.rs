@@ -3469,6 +3469,8 @@ fn test_linux(target: &str) {
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
+            // FIXME: requires >= 6.1 kernel headers
+            "canxl_frame" => true,
             _ => false,
         }
     });
@@ -3651,7 +3653,22 @@ fn test_linux(target: &str) {
             "FUTEX_LOCK_PI2" => true,
 
             // Added in  linux 6.1
-            "STATX_DIOALIGN" => true,
+            "STATX_DIOALIGN"
+            | "CAN_RAW_XL_FRAMES"
+            | "CANXL_HDR_SIZE"
+            | "CANXL_MAX_DLC"
+            | "CANXL_MAX_DLC_MASK"
+            | "CANXL_MAX_DLEN"
+            | "CANXL_MAX_MTU"
+            | "CANXL_MIN_DLC"
+            | "CANXL_MIN_DLEN"
+            | "CANXL_MIN_MTU"
+            | "CANXL_MTU"
+            | "CANXL_PRIO_BITS"
+            | "CANXL_PRIO_MASK"
+            | "CANXL_SEC"
+            | "CANXL_XLF"
+             => true,
 
             // FIXME: Parts of netfilter/nfnetlink*.h require more recent kernel headers:
             | "RTNLGRP_MCTP_IFADDR" // linux v5.17+
