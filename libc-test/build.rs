@@ -3469,6 +3469,8 @@ fn test_linux(target: &str) {
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
+            // FIXME: requires >= 6.1 kernel headers
+            "canxl_frame" => true,
             _ => false,
         }
     });
