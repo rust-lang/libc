@@ -23,7 +23,7 @@ jobs:
           x86_64-unknown-linux-gnu,
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -46,7 +46,7 @@ jobs:
           x86_64-apple-darwin,
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -81,7 +81,7 @@ jobs:
           #    ARCH: i686
           - target: i686-pc-windows-msvc
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -103,7 +103,7 @@ jobs:
     name: Style check
     runs-on: ubuntu-22.04
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -163,7 +163,7 @@ jobs:
           # x86_64-unknown-redox,
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -191,7 +191,7 @@ jobs:
           armv7-unknown-linux-uclibceabihf
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -210,7 +210,7 @@ jobs:
     needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-22.04
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -244,7 +244,7 @@ jobs:
           1.30.0,
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -277,7 +277,7 @@ jobs:
           - { toolchain: 1.30.0, os: macos-11 }
     runs-on: ${{ matrix.target.os }}
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -321,7 +321,7 @@ jobs:
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3
@@ -339,7 +339,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: docker_linux_tier2
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v3

@@ -42,9 +42,9 @@ The remaining architectures look like:
 * The BSD builds, currently OpenBSD and FreeBSD, use QEMU to boot up a system
   and compile/run tests. More information on that below.
 
-[Actions config]: https://github.com/rust-lang/libc/tree/master/.github/workflows
-[Cirrus config]: https://github.com/rust-lang/libc/blob/master/.cirrus.yml
-[android-docker]: https://github.com/rust-lang/libc/blob/master/ci/docker/x86_64-linux-android/Dockerfile
+[Actions config]: https://github.com/rust-lang/libc/tree/HEAD/.github/workflows
+[Cirrus config]: https://github.com/rust-lang/libc/blob/HEAD/.cirrus.yml
+[android-docker]: https://github.com/rust-lang/libc/blob/HEAD/ci/docker/x86_64-linux-android/Dockerfile
 
 ## QEMU
 

@@ -1339,7 +1339,7 @@ pub const CMGROUP_MAX: usize = 16;
 
 pub const EUI64_LEN: usize = 8;
 
-// https://github.com/freebsd/freebsd/blob/master/sys/net/bpf.h
+// https://github.com/freebsd/freebsd/blob/HEAD/sys/net/bpf.h
 pub const BPF_ALIGNMENT: usize = SIZEOF_LONG;
 
 // Values for rtprio struct (prio field) and syscall (function argument)

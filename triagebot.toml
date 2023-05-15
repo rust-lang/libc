@@ -7,7 +7,7 @@ allow-unauthenticated = [
 new_pr = true
 
 [assign]
-contributing_url = "https://github.com/rust-lang/libc/blob/master/CONTRIBUTING.md"
+contributing_url = "https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md"
 
 [assign.owners]
 "*" = ["@JohnTitor"]
