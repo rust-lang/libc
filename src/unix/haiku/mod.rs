@@ -979,7 +979,7 @@ pub const MADV_WILLNEED: ::c_int = 4;
 pub const MADV_DONTNEED: ::c_int = 5;
 pub const MADV_FREE: ::c_int = 6;
 
-// https://github.com/haiku/haiku/blob/master/headers/posix/net/if.h#L80
+// https://github.com/haiku/haiku/blob/HEAD/headers/posix/net/if.h#L80
 pub const IFF_UP: ::c_int = 0x0001;
 pub const IFF_BROADCAST: ::c_int = 0x0002; // valid broadcast address
 pub const IFF_LOOPBACK: ::c_int = 0x0008;

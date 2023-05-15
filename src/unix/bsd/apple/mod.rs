@@ -3797,7 +3797,7 @@ pub const MSG_RCVMORE: ::c_int = 0x4000;
 pub const SCM_TIMESTAMP: ::c_int = 0x02;
 pub const SCM_CREDS: ::c_int = 0x03;
 
-// https://github.com/aosm/xnu/blob/master/bsd/net/if.h#L140-L156
+// https://github.com/aosm/xnu/blob/HEAD/bsd/net/if.h#L140-L156
 pub const IFF_UP: ::c_int = 0x1; // interface is up
 pub const IFF_BROADCAST: ::c_int = 0x2; // broadcast address valid
 pub const IFF_DEBUG: ::c_int = 0x4; // turn on debugging
@@ -4594,7 +4594,7 @@ pub const DLT_ATM_RFC1483: ::c_uint = 11; // LLC/SNAP encapsulated atm
 pub const DLT_RAW: ::c_uint = 12; // raw IP
 pub const DLT_LOOP: ::c_uint = 108;
 
-// https://github.com/apple/darwin-xnu/blob/master/bsd/net/bpf.h#L100
+// https://github.com/apple/darwin-xnu/blob/HEAD/bsd/net/bpf.h#L100
 // sizeof(i32)
 pub const BPF_ALIGNMENT: ::c_int = 4;
 

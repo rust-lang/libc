@@ -1441,7 +1441,7 @@ pub const MS_SYNC: ::c_int = 0x4;
 pub const MS_INVALIDATE: ::c_int = 0x2;
 
 // Here because they are not present on OpenBSD
-// (https://github.com/openbsd/src/blob/master/sys/sys/resource.h)
+// (https://github.com/openbsd/src/blob/HEAD/sys/sys/resource.h)
 pub const RLIMIT_SBSIZE: ::c_int = 9;
 pub const RLIMIT_AS: ::c_int = 10;
 pub const RLIMIT_NTHR: ::c_int = 11;

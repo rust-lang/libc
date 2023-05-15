@@ -2466,8 +2466,7 @@ pub const IFF_PERSIST: ::c_int = 0x0800;
 pub const IFF_NOFILTER: ::c_int = 0x1000;
 
 // start android/platform/bionic/libc/kernel/uapi/linux/if_ether.h
-// from https://android.googlesource.com/
-// platform/bionic/+/master/libc/kernel/uapi/linux/if_ether.h
+// from https://android.googlesource.com/platform/bionic/+/HEAD/libc/kernel/uapi/linux/if_ether.h
 pub const ETH_ALEN: ::c_int = 6;
 pub const ETH_HLEN: ::c_int = 14;
 pub const ETH_ZLEN: ::c_int = 60;
