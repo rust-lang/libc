@@ -256,6 +256,12 @@ s! {
         pub tm_gmtoff: ::c_long,
         pub tm_zone: *const ::c_char,
     }
+
+    pub struct ucred {
+        pub pid: i32,
+        pub uid: i32,
+        pub gid: i32,
+    }
 }
 
 pub const UTSLENGTH: usize = 65;
