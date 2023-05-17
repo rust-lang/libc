@@ -3549,6 +3549,13 @@ extern "C" {
 
     pub fn sync();
     pub fn syncfs(fd: ::c_int) -> ::c_int;
+
+    pub fn memmem(
+        haystack: *const ::c_void,
+        haystacklen: ::size_t,
+        needle: *const ::c_void,
+        needlelen: ::size_t,
+    ) -> *mut ::c_void;
 }
 
 cfg_if! {
