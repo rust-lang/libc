@@ -278,6 +278,10 @@ pub const PATH_MAX: ::c_int = 4096;
 pub const F_GETLK: ::c_int = 5;
 pub const F_SETLK: ::c_int = 6;
 pub const F_SETLKW: ::c_int = 7;
+pub const F_ULOCK: ::c_int = 0;
+pub const F_LOCK: ::c_int = 1;
+pub const F_TLOCK: ::c_int = 2;
+pub const F_TEST: ::c_int = 3;
 
 // FIXME: relibc {
 pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
