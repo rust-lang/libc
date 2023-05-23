@@ -3186,6 +3186,7 @@ memalign
 memchr
 memcmp
 memcpy
+memmem
 memmove
 memrchr
 memset
