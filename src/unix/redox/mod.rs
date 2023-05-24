@@ -48,6 +48,9 @@ pub type suseconds_t = ::c_int;
 pub type tcflag_t = u32;
 pub type time_t = ::c_longlong;
 pub type id_t = ::c_uint;
+pub type pid_t = usize;
+pub type uid_t = u32;
+pub type gid_t = u32;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -255,6 +258,12 @@ s! {
         pub tm_isdst: ::c_int,
         pub tm_gmtoff: ::c_long,
         pub tm_zone: *const ::c_char,
+    }
+
+    pub struct ucred {
+        pub pid: pid_t,
+        pub uid: uid_t,
+        pub gid: gid_t,
     }
 }
 
