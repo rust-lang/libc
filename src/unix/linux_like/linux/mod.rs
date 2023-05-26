@@ -51,16 +51,12 @@ pub type iconv_t = *mut ::c_void;
 // linux/sctp.h
 pub type sctp_assoc_t = ::__s32;
 
-cfg_if! {
-    if #[cfg(not(target_env = "musl"))] {
-        #[cfg_attr(feature = "extra_traits", derive(Debug))]
-        pub enum fpos64_t {} // FIXME: fill this out with a struct
-        impl ::Copy for fpos64_t {}
-        impl ::Clone for fpos64_t {
-            fn clone(&self) -> fpos64_t {
-                *self
-            }
-        }
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum fpos64_t {} // FIXME: fill this out with a struct
+impl ::Copy for fpos64_t {}
+impl ::Clone for fpos64_t {
+    fn clone(&self) -> fpos64_t {
+        *self
     }
 }
 
@@ -684,16 +680,10 @@ s! {
     pub struct sctp_authinfo {
         pub auth_keynumber: ::__u16,
     }
-}
 
-cfg_if! {
-    if #[cfg(not(target_env = "musl"))] {
-        s! {
-            pub struct rlimit64 {
-                pub rlim_cur: rlim64_t,
-                pub rlim_max: rlim64_t,
-            }
-        }
+    pub struct rlimit64 {
+        pub rlim_cur: rlim64_t,
+        pub rlim_max: rlim64_t,
     }
 }
 
@@ -806,19 +796,13 @@ s_no_extra_traits! {
         pub tx_type: ::c_int,
         pub rx_filter: ::c_int,
     }
-}
 
-cfg_if! {
-    if #[cfg(not(target_env = "musl"))] {
-        s_no_extra_traits! {
-            pub struct dirent64 {
-                pub d_ino: ::ino64_t,
-                pub d_off: ::off64_t,
-                pub d_reclen: ::c_ushort,
-                pub d_type: ::c_uchar,
-                pub d_name: [::c_char; 256],
-            }
-        }
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
     }
 }
 
