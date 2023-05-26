@@ -110,7 +110,7 @@ s! {
     pub struct mfs_args {
         pub fspec: *mut ::c_char,
         pub export_info: export_args,
-        // https://github.com/openbsd/src/blob/master/sys/sys/types.h#L134
+        // https://github.com/openbsd/src/blob/HEAD/sys/sys/types.h#L134
         pub base: *mut ::c_char,
         pub size: ::c_ulong,
     }
@@ -190,7 +190,7 @@ s! {
         pub cr_uid: ::uid_t,
         pub cr_gid: ::gid_t,
         pub cr_ngroups: ::c_short,
-        //https://github.com/openbsd/src/blob/master/sys/sys/syslimits.h#L44
+        //https://github.com/openbsd/src/blob/HEAD/sys/sys/syslimits.h#L44
         pub cr_groups: [::gid_t; 16],
     }
 
@@ -1073,6 +1073,8 @@ pub const IP_RECVIF: ::c_int = 30;
 pub const TCP_MD5SIG: ::c_int = 0x04;
 pub const TCP_NOPUSH: ::c_int = 0x10;
 
+pub const MSG_WAITFORONE: ::c_int = 0x1000;
+
 pub const AF_ECMA: ::c_int = 8;
 pub const AF_ROUTE: ::c_int = 17;
 pub const AF_ENCAP: ::c_int = 28;
@@ -1513,7 +1515,7 @@ pub const OLCUC: ::tcflag_t = 0x20;
 pub const ONOCR: ::tcflag_t = 0x40;
 pub const ONLRET: ::tcflag_t = 0x80;
 
-//https://github.com/openbsd/src/blob/master/sys/sys/mount.h
+//https://github.com/openbsd/src/blob/HEAD/sys/sys/mount.h
 pub const ISOFSMNT_NORRIP: ::c_int = 0x1; // disable Rock Ridge Ext
 pub const ISOFSMNT_GENS: ::c_int = 0x2; // enable generation numbers
 pub const ISOFSMNT_EXTATT: ::c_int = 0x4; // enable extended attr
@@ -1577,7 +1579,7 @@ pub const TMPFS_ARGS_VERSION: ::c_int = 1;
 pub const MAP_STACK: ::c_int = 0x4000;
 pub const MAP_CONCEAL: ::c_int = 0x8000;
 
-// https://github.com/openbsd/src/blob/master/sys/net/if.h#L187
+// https://github.com/openbsd/src/blob/HEAD/sys/net/if.h#L187
 pub const IFF_UP: ::c_int = 0x1; // interface is up
 pub const IFF_BROADCAST: ::c_int = 0x2; // broadcast address valid
 pub const IFF_DEBUG: ::c_int = 0x4; // turn on debugging
@@ -1703,7 +1705,7 @@ f! {
             .offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
-    pub fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
         _ALIGN(::mem::size_of::<::cmsghdr>()) as ::c_uint + length
     }
 
@@ -1728,6 +1730,19 @@ f! {
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
         (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
             as ::c_uint
+    }
+
+    pub fn major(dev: ::dev_t) -> ::c_uint{
+        ((dev as ::c_uint) >> 8) & 0xff
+    }
+
+    pub fn minor(dev: ::dev_t) -> ::c_uint {
+        let dev = dev as ::c_uint;
+        let mut res = 0;
+        res |= (dev) & 0xff;
+        res |= ((dev) & 0xffff0000) >> 8;
+
+        res
     }
 }
 

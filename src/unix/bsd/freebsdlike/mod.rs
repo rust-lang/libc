@@ -1339,7 +1339,7 @@ pub const CMGROUP_MAX: usize = 16;
 
 pub const EUI64_LEN: usize = 8;
 
-// https://github.com/freebsd/freebsd/blob/master/sys/net/bpf.h
+// https://github.com/freebsd/freebsd/blob/HEAD/sys/net/bpf.h
 pub const BPF_ALIGNMENT: usize = SIZEOF_LONG;
 
 // Values for rtprio struct (prio field) and syscall (function argument)
@@ -1433,6 +1433,31 @@ pub const SHM_RDONLY: ::c_int = 0o10000;
 pub const SHM_RND: ::c_int = 0o20000;
 pub const SHM_R: ::c_int = 0o400;
 pub const SHM_W: ::c_int = 0o200;
+
+pub const KENV_GET: ::c_int = 0;
+pub const KENV_SET: ::c_int = 1;
+pub const KENV_UNSET: ::c_int = 2;
+pub const KENV_DUMP: ::c_int = 3;
+pub const KENV_MNAMELEN: ::c_int = 128;
+pub const KENV_MVALLEN: ::c_int = 128;
+
+pub const RB_ASKNAME: ::c_int = 0x001;
+pub const RB_SINGLE: ::c_int = 0x002;
+pub const RB_NOSYNC: ::c_int = 0x004;
+pub const RB_HALT: ::c_int = 0x008;
+pub const RB_INITNAME: ::c_int = 0x010;
+pub const RB_DFLTROOT: ::c_int = 0x020;
+pub const RB_KDB: ::c_int = 0x040;
+pub const RB_RDONLY: ::c_int = 0x080;
+pub const RB_DUMP: ::c_int = 0x100;
+pub const RB_MINIROOT: ::c_int = 0x200;
+pub const RB_VERBOSE: ::c_int = 0x800;
+pub const RB_SERIAL: ::c_int = 0x1000;
+pub const RB_CDROM: ::c_int = 0x2000;
+pub const RB_POWEROFF: ::c_int = 0x4000;
+pub const RB_GDB: ::c_int = 0x8000;
+pub const RB_MUTE: ::c_int = 0x10000;
+pub const RB_SELFTEST: ::c_int = 0x20000;
 
 safe_f! {
     pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
@@ -1737,6 +1762,14 @@ extern "C" {
     pub fn eui64_hostton(hostname: *const ::c_char, id: *mut eui64) -> ::c_int;
 
     pub fn eaccess(path: *const ::c_char, mode: ::c_int) -> ::c_int;
+
+    pub fn kenv(
+        action: ::c_int,
+        name: *const ::c_char,
+        value: *mut ::c_char,
+        len: ::c_int,
+    ) -> ::c_int;
+    pub fn reboot(howto: ::c_int) -> ::c_int;
 }
 
 #[link(name = "rt")]

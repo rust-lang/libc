@@ -3271,7 +3271,7 @@ f! {
             as ::c_uint
     }
 
-    pub fn CMSG_LEN(len: ::c_uint) -> ::c_uint {
+    pub {const} fn CMSG_LEN(len: ::c_uint) -> ::c_uint {
         (CMSG_ALIGN(::mem::size_of::<cmsghdr>()) + len as ::size_t) as ::c_uint
     }
 }
@@ -4260,6 +4260,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "x86_64"))] {
         mod x86_64;
         pub use self::x86_64::*;
+    } else if #[cfg(any(target_arch = "riscv64"))] {
+        mod riscv64;
+        pub use self::riscv64::*;
     } else {
         // Unknown target_arch
     }

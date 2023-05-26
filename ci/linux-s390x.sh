@@ -5,7 +5,7 @@ set -ex
 mkdir -m 777 /qemu
 cd /qemu
 
-curl --retry 5 -LO https://github.com/qemu/qemu/raw/master/pc-bios/s390-ccw.img
+curl --retry 5 -LO https://github.com/qemu/qemu/raw/HEAD/pc-bios/s390-ccw.img
 curl --retry 5 -LO http://ftp.debian.org/debian/dists/testing/main/installer-s390x/20220914/images/generic/kernel.debian
 curl --retry 5 -LO http://ftp.debian.org/debian/dists/testing/main/installer-s390x/20220914/images/generic/initrd.debian
 
