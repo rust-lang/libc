@@ -3333,15 +3333,15 @@ fn test_linux(target: &str) {
             "Ioctl" if gnu => "unsigned long".to_string(),
             "Ioctl" => "int".to_string(),
 
-            t if is_union => format!("union {}", t),
-
-            t if t.ends_with("_t") => t.to_string(),
-
             // In MUSL `flock64` is a typedef to `flock`.
             "flock64" if musl => format!("struct {}", ty),
 
+            // typedefs don't need any keywords
+            t if t.ends_with("_t") => t.to_string(),
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
+            // put `union` in front of all unions:
+            t if is_union => format!("union {}", t),
 
             t => t.to_string(),
         }
@@ -3390,7 +3390,8 @@ fn test_linux(target: &str) {
             // on Linux, this is a volatile int
             "pthread_spinlock_t" => true,
 
-            // For internal use only, to define architecture specific ioctl constants with a libc specific type.
+            // For internal use only, to define architecture specific ioctl constants with a libc
+            // specific type.
             "Ioctl" => true,
 
             // FIXME: requires >= 5.4.1 kernel headers
@@ -3963,6 +3964,13 @@ fn test_linux(target: &str) {
         {
             true
         }
+
+        // The `inotify_event` and `cmsghdr` types contain Flexible Array Member fields (the
+        // `name` and `data` fields respectively) which have unspecified calling convention.
+        // The roundtripping tests deliberately pass the structs by value to check "by value"
+        // layout consistency, but this would be UB for the these types.
+        "inotify_event" => true,
+        "cmsghdr" => true,
 
         // FIXME: the call ABI of max_align_t is incorrect on these platforms:
         "max_align_t" if i686 || mips64 || ppc64 => true,
