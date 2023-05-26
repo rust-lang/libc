@@ -1,12 +1,23 @@
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
-pub type clockid_t = ::c_ulong;
 
 cfg_if! {
-    if #[cfg(target_os = "espidf")] {
+    if #[cfg(target_os = "vita")] {
+        pub type clockid_t = ::c_uint;
+    } else {
+        pub type clockid_t = ::c_ulong;
+    }
+}
+
+cfg_if! {
+    if #[cfg(any(target_os = "espidf"))] {
         pub type dev_t = ::c_short;
         pub type ino_t = ::c_ushort;
         pub type off_t = ::c_long;
+    } else if #[cfg(any(target_os = "vita"))] {
+        pub type dev_t = ::c_short;
+        pub type ino_t = ::c_ushort;
+        pub type off_t = ::c_int;
     } else {
         pub type dev_t = u32;
         pub type ino_t = u32;
@@ -160,8 +171,12 @@ s! {
     }
 
     pub struct dirent {
+        #[cfg(not(target_os = "vita"))]
         pub d_ino: ino_t,
+        #[cfg(not(target_os = "vita"))]
         pub d_type: ::c_uchar,
+        #[cfg(target_os = "vita")]
+        __offset: [u8; 88],
         pub d_name: [::c_char; 256usize],
     }
 
@@ -219,12 +234,11 @@ s! {
     }
 
     pub struct pthread_attr_t { // Unverified
-        __size: [u64; 7]
+        __size: [u64; __SIZEOF_PTHREAD_ATTR_T]
     }
 
     pub struct pthread_rwlockattr_t { // Unverified
-        __lockkind: ::c_int,
-        __pshared: ::c_int,
+        __size: [u64; __SIZEOF_PTHREAD_RWLOCKATTR_T]
     }
 }
 
@@ -241,6 +255,7 @@ align_const! {
     };
 }
 pub const NCCS: usize = 32;
+
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
         const __PTHREAD_INITIALIZER_BYTE: u8 = 0xff;
@@ -251,6 +266,17 @@ cfg_if! {
         pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 8;
         pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 4;
         pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 12;
+        pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
+    } else if #[cfg(target_os = "vita")] {
+        const __PTHREAD_INITIALIZER_BYTE: u8 = 0xff;
+        pub const __SIZEOF_PTHREAD_ATTR_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_COND_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 4;
+        pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 4;
     } else {
         const __PTHREAD_INITIALIZER_BYTE: u8 = 0;
         pub const __SIZEOF_PTHREAD_ATTR_T: usize = 56;
@@ -260,9 +286,10 @@ cfg_if! {
         pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
         pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
         pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
+        pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
     }
 }
-pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
+
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 pub const __PTHREAD_MUTEX_HAVE_PREV: usize = 1;
 pub const __PTHREAD_RWLOCK_INT_FLAGS_SHARED: usize = 1;
@@ -273,6 +300,8 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 cfg_if! {
     if #[cfg(any(target_os = "horizon", target_os = "espidf"))] {
         pub const FD_SETSIZE: usize = 64;
+    } else if #[cfg(target_os = "vita")] {
+        pub const FD_SETSIZE: usize = 256;
     } else {
         pub const FD_SETSIZE: usize = 1024;
     }
