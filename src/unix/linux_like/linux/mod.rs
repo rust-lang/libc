@@ -4858,7 +4858,12 @@ extern "C" {
 cfg_if! {
     if #[cfg(not(target_env = "musl"))] {
         extern "C" {
-            pub fn fallocate64(fd: ::c_int, mode: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
+            pub fn fallocate64(
+                fd: ::c_int,
+                mode: ::c_int,
+                offset: ::off64_t,
+                len: ::off64_t
+            ) -> ::c_int;
             pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
             pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut ::FILE;
             pub fn freopen64(

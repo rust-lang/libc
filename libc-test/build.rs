@@ -3399,11 +3399,13 @@ fn test_linux(target: &str) {
             "priority_t" if musl => true,
             "name_t" if musl => true,
 
-            t => if musl {
-                // LFS64 types have been removed in musl 1.2.4+
-                t.ends_with("64") || t.ends_with("64_t")
-            } else {
-                false
+            t => {
+                if musl {
+                    // LFS64 types have been removed in musl 1.2.4+
+                    t.ends_with("64") || t.ends_with("64_t")
+                } else {
+                    false
+                }
             }
         }
     });

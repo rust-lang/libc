@@ -1817,7 +1817,12 @@ cfg_if! {
                 len: ::off64_t,
                 advise: ::c_int,
             ) -> ::c_int;
-            pub fn pread64(fd: ::c_int, buf: *mut ::c_void, count: ::size_t, offset: off64_t) -> ::ssize_t;
+            pub fn pread64(
+                fd: ::c_int,
+                buf: *mut ::c_void,
+                count: ::size_t,
+                offset: off64_t
+            ) -> ::ssize_t;
             pub fn pwrite64(
                 fd: ::c_int,
                 buf: *const ::c_void,
