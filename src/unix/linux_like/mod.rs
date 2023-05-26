@@ -1782,7 +1782,7 @@ extern "C" {
 // LFS64 extensions
 //
 // * musl has 64-bit versions only so aliases the LFS64 symbols to the standard ones
-// * ulibc doesn't have preadv64/pwritev64 (TODO: Or does it?!)
+// * ulibc doesn't have preadv64/pwritev64
 cfg_if! {
     if #[cfg(not(target_env = "musl"))] {
         extern "C" {
