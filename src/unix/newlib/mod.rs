@@ -234,11 +234,11 @@ s! {
     }
 
     pub struct pthread_attr_t { // Unverified
-        __size: [u64; __SIZEOF_PTHREAD_ATTR_T]
+        __size: [u8; __SIZEOF_PTHREAD_ATTR_T]
     }
 
     pub struct pthread_rwlockattr_t { // Unverified
-        __size: [u64; __SIZEOF_PTHREAD_RWLOCKATTR_T]
+        __size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T]
     }
 }
 
