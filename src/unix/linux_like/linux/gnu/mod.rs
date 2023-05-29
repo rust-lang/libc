@@ -1302,6 +1302,9 @@ extern "C" {
         result: *mut *mut ::group,
     ) -> ::c_int;
 
+    pub fn putpwent(p: *const ::passwd, stream: *mut ::FILE) -> ::c_int;
+    pub fn putgrent(grp: *const ::group, stream: *mut ::FILE) -> ::c_int;
+
     pub fn sethostid(hostid: ::c_long) -> ::c_int;
 
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
