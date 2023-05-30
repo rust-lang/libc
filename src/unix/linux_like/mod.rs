@@ -1842,7 +1842,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(target_env = "ulibc", target_env = "musl")))] {
+    if #[cfg(not(any(target_env = "uclibc", target_env = "musl")))] {
         extern "C" {
             pub fn preadv64(
                 fd: ::c_int,
