@@ -15,7 +15,7 @@ pub unsafe extern "C" fn fallocate64(
 
 #[inline]
 pub unsafe extern "C" fn fgetpos64(stream: *mut ::FILE, pos: *mut ::fpos64_t) -> ::c_int {
-    ::fgetpos(stream, pos.cast())
+    ::fgetpos(stream, pos as *mut _)
 }
 
 #[inline]
@@ -43,12 +43,12 @@ pub unsafe extern "C" fn fseeko64(
 
 #[inline]
 pub unsafe extern "C" fn fsetpos64(stream: *mut ::FILE, pos: *const ::fpos64_t) -> ::c_int {
-    ::fsetpos(stream, pos.cast())
+    ::fsetpos(stream, pos as *mut _)
 }
 
 #[inline]
 pub unsafe extern "C" fn fstat64(fildes: ::c_int, buf: *mut ::stat64) -> ::c_int {
-    ::fstat(fildes, buf.cast())
+    ::fstat(fildes, buf as *mut _)
 }
 
 #[inline]
@@ -58,17 +58,17 @@ pub unsafe extern "C" fn fstatat64(
     buf: *mut ::stat64,
     flag: ::c_int,
 ) -> ::c_int {
-    ::fstatat(fd, path, buf.cast(), flag)
+    ::fstatat(fd, path, buf as *mut _, flag)
 }
 
 #[inline]
 pub unsafe extern "C" fn fstatfs64(fd: ::c_int, buf: *mut ::statfs64) -> ::c_int {
-    ::fstatfs(fd, buf.cast())
+    ::fstatfs(fd, buf as *mut _)
 }
 
 #[inline]
 pub unsafe extern "C" fn fstatvfs64(fd: ::c_int, buf: *mut ::statvfs64) -> ::c_int {
-    ::fstatvfs(fd, buf.cast())
+    ::fstatvfs(fd, buf as *mut _)
 }
 
 #[inline]
@@ -83,7 +83,7 @@ pub unsafe extern "C" fn ftruncate64(fd: ::c_int, length: ::off64_t) -> ::c_int 
 
 #[inline]
 pub unsafe extern "C" fn getrlimit64(resource: ::c_int, rlim: *mut ::rlimit64) -> ::c_int {
-    ::getrlimit(resource, rlim.cast())
+    ::getrlimit(resource, rlim as *mut _)
 }
 
 #[inline]
@@ -93,7 +93,7 @@ pub unsafe extern "C" fn lseek64(fd: ::c_int, offset: ::off64_t, whence: ::c_int
 
 #[inline]
 pub unsafe extern "C" fn lstat64(path: *const ::c_char, buf: *mut ::stat64) -> ::c_int {
-    ::lstat(path, buf.cast())
+    ::lstat(path, buf as *mut _)
 }
 
 #[inline]
@@ -173,7 +173,7 @@ pub unsafe extern "C" fn prlimit64(
     new_limit: *const ::rlimit64,
     old_limit: *mut ::rlimit64,
 ) -> ::c_int {
-    ::prlimit(pid, resource, new_limit.cast(), old_limit.cast())
+    ::prlimit(pid, resource, new_limit as *mut _, old_limit as *mut _)
 }
 
 #[inline]
@@ -198,7 +198,7 @@ pub unsafe extern "C" fn pwritev64(
 
 #[inline]
 pub unsafe extern "C" fn readdir64(dirp: *mut ::DIR) -> *mut ::dirent64 {
-    ::readdir(dirp).cast()
+    ::readdir(dirp) as *mut _
 }
 
 #[inline]
@@ -207,7 +207,7 @@ pub unsafe extern "C" fn readdir64_r(
     entry: *mut ::dirent64,
     result: *mut *mut ::dirent64,
 ) -> ::c_int {
-    ::readdir_r(dirp, entry.cast(), result.cast())
+    ::readdir_r(dirp, entry as *mut _, result as *mut _)
 }
 
 #[inline]
@@ -222,22 +222,22 @@ pub unsafe extern "C" fn sendfile64(
 
 #[inline]
 pub unsafe extern "C" fn setrlimit64(resource: ::c_int, rlim: *const ::rlimit64) -> ::c_int {
-    ::setrlimit(resource, rlim.cast())
+    ::setrlimit(resource, rlim as *mut _)
 }
 
 #[inline]
 pub unsafe extern "C" fn stat64(pathname: *const ::c_char, statbuf: *mut ::stat64) -> ::c_int {
-    ::stat(pathname, statbuf.cast())
+    ::stat(pathname, statbuf as *mut _)
 }
 
 #[inline]
 pub unsafe extern "C" fn statfs64(pathname: *const ::c_char, buf: *mut ::statfs64) -> ::c_int {
-    ::statfs(pathname, buf.cast())
+    ::statfs(pathname, buf as *mut _)
 }
 
 #[inline]
 pub unsafe extern "C" fn statvfs64(path: *const ::c_char, buf: *mut ::statvfs64) -> ::c_int {
-    ::statvfs(path, buf.cast())
+    ::statvfs(path, buf as *mut _)
 }
 
 #[inline]
