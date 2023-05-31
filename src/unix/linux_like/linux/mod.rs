@@ -61,11 +61,6 @@ impl ::Clone for fpos64_t {
 }
 
 s! {
-    pub struct rlimit64 {
-        pub rlim_cur: rlim64_t,
-        pub rlim_max: rlim64_t,
-    }
-
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         pub gl_pathv: *mut *mut c_char,
@@ -685,6 +680,11 @@ s! {
     pub struct sctp_authinfo {
         pub auth_keynumber: ::__u16,
     }
+
+    pub struct rlimit64 {
+        pub rlim_cur: rlim64_t,
+        pub rlim_max: rlim64_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -698,14 +698,6 @@ s_no_extra_traits! {
     pub struct dirent {
         pub d_ino: ::ino_t,
         pub d_off: ::off_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
         pub d_reclen: ::c_ushort,
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
@@ -803,6 +795,14 @@ s_no_extra_traits! {
         pub flags: ::c_int,
         pub tx_type: ::c_int,
         pub rx_filter: ::c_int,
+    }
+
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
     }
 }
 
@@ -4299,21 +4299,8 @@ extern "C" {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;
 
-    pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut ::FILE;
-    pub fn freopen64(
-        filename: *const c_char,
-        mode: *const c_char,
-        file: *mut ::FILE,
-    ) -> *mut ::FILE;
-    pub fn tmpfile64() -> *mut ::FILE;
-    pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
-    pub fn fsetpos64(stream: *mut ::FILE, ptr: *const fpos64_t) -> ::c_int;
-    pub fn fseeko64(stream: *mut ::FILE, offset: ::off64_t, whence: ::c_int) -> ::c_int;
-    pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
     pub fn fallocate(fd: ::c_int, mode: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
-    pub fn fallocate64(fd: ::c_int, mode: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
-    pub fn posix_fallocate64(fd: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
     pub fn readahead(fd: ::c_int, offset: ::off64_t, count: ::size_t) -> ::ssize_t;
     pub fn getxattr(
         path: *const c_char,
@@ -4614,12 +4601,6 @@ extern "C" {
         offset: *mut off_t,
         count: ::size_t,
     ) -> ::ssize_t;
-    pub fn sendfile64(
-        out_fd: ::c_int,
-        in_fd: ::c_int,
-        offset: *mut off64_t,
-        count: ::size_t,
-    ) -> ::ssize_t;
     pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     pub fn getgrgid_r(
         gid: ::gid_t,
@@ -4869,6 +4850,40 @@ extern "C" {
         len: ::size_t,
         flags: ::c_uint,
     ) -> ::ssize_t;
+}
+
+// LFS64 extensions
+//
+// * musl has 64-bit versions only so aliases the LFS64 symbols to the standard ones
+cfg_if! {
+    if #[cfg(not(target_env = "musl"))] {
+        extern "C" {
+            pub fn fallocate64(
+                fd: ::c_int,
+                mode: ::c_int,
+                offset: ::off64_t,
+                len: ::off64_t
+            ) -> ::c_int;
+            pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
+            pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut ::FILE;
+            pub fn freopen64(
+                filename: *const c_char,
+                mode: *const c_char,
+                file: *mut ::FILE,
+            ) -> *mut ::FILE;
+            pub fn fseeko64(stream: *mut ::FILE, offset: ::off64_t, whence: ::c_int) -> ::c_int;
+            pub fn fsetpos64(stream: *mut ::FILE, ptr: *const fpos64_t) -> ::c_int;
+            pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
+            pub fn posix_fallocate64(fd: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
+            pub fn sendfile64(
+                out_fd: ::c_int,
+                in_fd: ::c_int,
+                offset: *mut off64_t,
+                count: ::size_t,
+            ) -> ::ssize_t;
+            pub fn tmpfile64() -> *mut ::FILE;
+        }
+    }
 }
 
 cfg_if! {

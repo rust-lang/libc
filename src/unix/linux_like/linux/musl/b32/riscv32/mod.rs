@@ -184,22 +184,6 @@ s! {
         __pad1: ::c_ulong,
         __pad2: ::c_ulong,
     }
-
-    pub struct flock {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off_t,
-        pub l_len: ::off_t,
-        pub l_pid: ::pid_t,
-    }
-
-    pub struct flock64 {
-        pub l_type: ::c_short,
-        pub l_whence: ::c_short,
-        pub l_start: ::off64_t,
-        pub l_len: ::off64_t,
-        pub l_pid: ::pid_t,
-    }
 }
 
 //pub const RLIM_INFINITY: ::rlim_t = !0;
