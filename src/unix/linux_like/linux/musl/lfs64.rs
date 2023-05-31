@@ -114,7 +114,7 @@ pub unsafe extern "C" fn open64(
     flags: ::c_int,
     mode: ::mode_t,
 ) -> ::c_int {
-    ::open(pathname, flags | ::O_LARGEFILE, mode)
+    ::open(pathname, flags, mode)
 }
 
 #[inline]
@@ -124,7 +124,7 @@ pub unsafe extern "C" fn openat64(
     flags: ::c_int,
     mode: ::mode_t,
 ) -> ::c_int {
-    ::openat(dirfd, pathname, flags | ::O_LARGEFILE, mode)
+    ::openat(dirfd, pathname, flags, mode)
 }
 
 #[inline]
