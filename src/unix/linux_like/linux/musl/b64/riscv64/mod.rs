@@ -9,10 +9,6 @@ pub type __u64 = ::c_ulonglong;
 pub type __s64 = ::c_longlong;
 
 s! {
-    pub struct pthread_attr_t {
-        __size: [::c_ulong; 7],
-    }
-
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -57,19 +53,6 @@ s! {
         __unused: [::c_int; 2],
     }
 
-    pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_flags: ::c_int,
-        pub ss_size: ::size_t,
-    }
-
-    pub struct sigaction {
-        pub sa_sigaction: ::sighandler_t,
-        pub sa_mask: ::sigset_t,
-        pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<unsafe extern "C" fn()>,
-    }
-
     pub struct ipc_perm {
         pub __key: ::key_t,
         pub uid: ::uid_t,
@@ -82,19 +65,6 @@ s! {
         __pad2: ::c_ushort,
         __unused1: ::c_ulong,
         __unused2: ::c_ulong,
-    }
-
-    pub struct shmid_ds {
-        pub shm_perm: ::ipc_perm,
-        pub shm_segsz: ::size_t,
-        pub shm_atime: ::time_t,
-        pub shm_dtime: ::time_t,
-        pub shm_ctime: ::time_t,
-        pub shm_cpid: ::pid_t,
-        pub shm_lpid: ::pid_t,
-        pub shm_nattch: ::shmatt_t,
-        __unused5: ::c_ulong,
-        __unused6: ::c_ulong,
     }
 
     #[repr(align(8))]
