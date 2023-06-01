@@ -5,8 +5,6 @@ pub type wchar_t = ::c_int;
 
 pub type nlink_t = ::c_uint;
 pub type blksize_t = ::c_int;
-pub type fsblkcnt64_t = ::c_ulong;
-pub type fsfilcnt64_t = ::c_ulong;
 pub type __u64 = ::c_ulonglong;
 pub type __s64 = ::c_longlong;
 
@@ -57,66 +55,6 @@ s! {
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
         __unused: [::c_int; 2],
-    }
-
-    pub struct statfs {
-        pub f_type: ::c_long,
-        pub f_bsize: ::c_long,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_long,
-        pub f_frsize: ::c_long,
-        pub f_flags: ::c_long,
-        pub f_spare: [::c_long; 4],
-    }
-
-    pub struct statfs64 {
-        pub f_type: ::c_long,
-        pub f_bsize: ::c_long,
-        pub f_blocks: ::fsblkcnt64_t,
-        pub f_bfree: ::fsblkcnt64_t,
-        pub f_bavail: ::fsblkcnt64_t,
-        pub f_files: ::fsfilcnt64_t,
-        pub f_ffree: ::fsfilcnt64_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_long,
-        pub f_frsize: ::c_long,
-        pub f_flags: ::c_long,
-        pub f_spare: [::c_long; 4],
-    }
-
-    pub struct statvfs {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_favail: ::fsfilcnt_t,
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        pub __f_spare: [::c_int; 6],
-    }
-
-    pub struct statvfs64 {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: ::fsblkcnt64_t,
-        pub f_bfree: ::fsblkcnt64_t,
-        pub f_bavail: ::fsblkcnt64_t,
-        pub f_files: ::fsfilcnt64_t,
-        pub f_ffree: ::fsfilcnt64_t,
-        pub f_favail: ::fsfilcnt64_t,
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        pub __f_spare: [::c_int; 6],
     }
 
     pub struct siginfo_t {
