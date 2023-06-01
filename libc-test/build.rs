@@ -283,6 +283,7 @@ fn test_apple(target: &str) {
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
+        "sys/vsock.h",
         "sys/wait.h",
         "sys/xattr.h",
         "syslog.h",
