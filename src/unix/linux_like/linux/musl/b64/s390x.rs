@@ -145,6 +145,7 @@ pub const ETIMEDOUT: ::c_int = 110;
 pub const O_APPEND: ::c_int = 1024;
 pub const O_CREAT: ::c_int = 64;
 pub const O_EXCL: ::c_int = 128;
+pub const O_LARGEFILE: ::c_int = 0x8000;
 pub const O_NONBLOCK: ::c_int = 2048;
 pub const SA_NOCLDWAIT: ::c_int = 2;
 pub const SA_ONSTACK: ::c_int = 0x08000000;
