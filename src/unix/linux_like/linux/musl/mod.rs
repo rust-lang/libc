@@ -19,7 +19,9 @@ pub type shmatt_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 pub type msglen_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulonglong;
+pub type fsblkcnt64_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
+pub type fsfilcnt64_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
 
 cfg_if! {
@@ -173,6 +175,26 @@ s! {
         pub f_files: ::fsfilcnt_t,
         pub f_ffree: ::fsfilcnt_t,
         pub f_favail: ::fsfilcnt_t,
+        #[cfg(target_endian = "little")]
+        pub f_fsid: ::c_ulong,
+        #[cfg(target_pointer_width = "32")]
+        __f_unused: ::c_int,
+        #[cfg(target_endian = "big")]
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        __f_spare: [::c_int; 6],
+    }
+
+    pub struct statvfs64 {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt64_t,
+        pub f_bfree: ::fsblkcnt64_t,
+        pub f_bavail: ::fsblkcnt64_t,
+        pub f_files: ::fsfilcnt64_t,
+        pub f_ffree: ::fsfilcnt64_t,
+        pub f_favail: ::fsfilcnt64_t,
         #[cfg(target_endian = "little")]
         pub f_fsid: ::c_ulong,
         #[cfg(target_pointer_width = "32")]
