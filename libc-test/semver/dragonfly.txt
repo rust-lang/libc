@@ -1383,6 +1383,7 @@ lutimes
 lwp_rtprio
 lwpid_t
 madvise
+malloc_usable_size
 mcontext_t
 memmem
 memrchr

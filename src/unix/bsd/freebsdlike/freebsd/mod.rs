@@ -5273,7 +5273,6 @@ extern "C" {
     pub fn fls(value: ::c_int) -> ::c_int;
     pub fn flsl(value: ::c_long) -> ::c_int;
     pub fn flsll(value: ::c_longlong) -> ::c_int;
-    pub fn malloc_usable_size(ptr: *const ::c_void) -> ::size_t;
     pub fn malloc_stats_print(
         write_cb: unsafe extern "C" fn(*mut ::c_void, *const ::c_char),
         cbopaque: *mut ::c_void,
