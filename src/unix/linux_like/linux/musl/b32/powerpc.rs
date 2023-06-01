@@ -112,14 +112,6 @@ s! {
         pub f_spare: [::c_ulong; 4],
     }
 
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_errno: ::c_int,
-        pub si_code: ::c_int,
-        pub _pad: [::c_int; 29],
-        _align: [usize; 0],
-    }
-
     pub struct statfs64 {
         pub f_type: ::c_ulong,
         pub f_bsize: ::c_ulong,
