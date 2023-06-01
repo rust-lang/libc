@@ -1381,6 +1381,15 @@ s_no_extra_traits! {
     pub struct os_unfair_lock_s {
         _os_unfair_lock_opaque: u32,
     }
+
+   #[cfg_attr(libc_packedN, repr(packed(1)))]
+    pub struct sockaddr_vm {
+        pub svm_len: ::c_uchar,
+        pub svm_family: ::sa_family_t,
+        pub svm_reserved1: ::c_ushort,
+        pub svm_port: ::c_uint,
+        pub svm_cid: ::c_uint,
+    }
 }
 
 impl siginfo_t {
@@ -2683,6 +2692,52 @@ cfg_if! {
                 self._os_unfair_lock_opaque.hash(state);
             }
         }
+
+        impl PartialEq for sockaddr_vm {
+            fn eq(&self, other: &sockaddr_vm) -> bool {
+                self.svm_len == other.svm_len
+                    && self.svm_family == other.svm_family
+                    && self.svm_reserved1 == other.svm_reserved1
+                    && self.svm_port == other.svm_port
+                    && self.svm_cid == other.svm_cid
+            }
+        }
+
+        impl Eq for sockaddr_vm {}
+
+        impl ::fmt::Debug for sockaddr_vm {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let svm_len = self.svm_len;
+                let svm_family = self.svm_family;
+                let svm_reserved1 = self.svm_reserved1;
+                let svm_port = self.svm_port;
+                let svm_cid = self.svm_cid;
+
+                f.debug_struct("sockaddr_vm")
+                    .field("svm_len",&svm_len)
+                    .field("svm_family",&svm_family)
+                    .field("svm_reserved1",&svm_reserved1)
+                    .field("svm_port",&svm_port)
+                    .field("svm_cid",&svm_cid)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for sockaddr_vm {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let svm_len = self.svm_len;
+                let svm_family = self.svm_family;
+                let svm_reserved1 = self.svm_reserved1;
+                let svm_port = self.svm_port;
+                let svm_cid = self.svm_cid;
+
+                svm_len.hash(state);
+                svm_family.hash(state);
+                svm_reserved1.hash(state);
+                svm_port.hash(state);
+                svm_cid.hash(state);
+            }
+        }
     }
 }
 
@@ -3644,6 +3699,9 @@ pub const AF_SYSTEM: ::c_int = 32;
 pub const AF_NETBIOS: ::c_int = 33;
 pub const AF_PPP: ::c_int = 34;
 pub const pseudo_AF_HDRCMPLT: ::c_int = 35;
+pub const AF_IEEE80211: ::c_int = 37;
+pub const AF_UTUN: ::c_int = 38;
+pub const AF_VSOCK: ::c_int = 40;
 pub const AF_SYS_CONTROL: ::c_int = 2;
 
 pub const SYSPROTO_EVENT: ::c_int = 1;
@@ -3685,6 +3743,7 @@ pub const PF_NATM: ::c_int = AF_NATM;
 pub const PF_SYSTEM: ::c_int = AF_SYSTEM;
 pub const PF_NETBIOS: ::c_int = AF_NETBIOS;
 pub const PF_PPP: ::c_int = AF_PPP;
+pub const PF_VSOCK: ::c_int = AF_VSOCK;
 
 pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
@@ -5001,6 +5060,13 @@ pub const SSLEEP: u32 = 3;
 pub const SSTOP: u32 = 4;
 /// Awaiting collection by parent.
 pub const SZOMB: u32 = 5;
+
+// sys/vsock.h
+pub const VMADDR_CID_ANY: ::c_uint = 0xFFFFFFFF;
+pub const VMADDR_CID_HYPERVISOR: ::c_uint = 0;
+pub const VMADDR_CID_RESERVED: ::c_uint = 1;
+pub const VMADDR_CID_HOST: ::c_uint = 2;
+pub const VMADDR_PORT_ANY: ::c_uint = 0xFFFFFFFF;
 
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
