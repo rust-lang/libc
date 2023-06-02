@@ -3851,7 +3851,8 @@ pub const MSG_HOLD: ::c_int = 0x800;
 pub const MSG_SEND: ::c_int = 0x1000;
 pub const MSG_HAVEMORE: ::c_int = 0x2000;
 pub const MSG_RCVMORE: ::c_int = 0x4000;
-// pub const MSG_COMPAT: ::c_int = 0x8000;
+pub const MSG_NEEDSA: ::c_int = 0x10000;
+pub const MSG_NOSIGNAL: ::c_int = 0x80000;
 
 pub const SCM_TIMESTAMP: ::c_int = 0x02;
 pub const SCM_CREDS: ::c_int = 0x03;
