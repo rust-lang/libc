@@ -108,24 +108,14 @@ pub unsafe extern "C" fn mmap64(
     ::mmap(addr, length, prot, flags, fd, offset)
 }
 
-#[inline]
-pub unsafe extern "C" fn open64(
-    pathname: *const ::c_char,
-    flags: ::c_int,
-    mode: ::mode_t,
-) -> ::c_int {
-    ::open(pathname, flags, mode)
-}
-
-#[inline]
-pub unsafe extern "C" fn openat64(
-    dirfd: ::c_int,
-    pathname: *const ::c_char,
-    flags: ::c_int,
-    mode: ::mode_t,
-) -> ::c_int {
-    ::openat(dirfd, pathname, flags, mode)
-}
+// These functions are variadic in the C ABI since the `mode` argument is "optional".  Variadic
+// `extern "C"` functions are unstable in Rust so we cannot write a shim function for these
+// entrypoints.  See https://github.com/rust-lang/rust/issues/44930.
+//
+// These aliases are mostly fine though, neither function takes a LFS64-namespaced type as an
+// argument, nor do their names clash with any declared types.
+pub use open as open64;
+pub use openat as openat64;
 
 #[inline]
 pub unsafe extern "C" fn posix_fadvise64(
