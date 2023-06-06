@@ -455,6 +455,42 @@ s! {
     }
 }
 
+cfg_if! {
+    if #[cfg(not(target_arch = "mips"))] {
+        s! {
+            pub struct statfs {
+                pub f_type: ::c_ulong,
+                pub f_bsize: ::c_ulong,
+                pub f_blocks: ::fsblkcnt_t,
+                pub f_bfree: ::fsblkcnt_t,
+                pub f_bavail: ::fsblkcnt_t,
+                pub f_files: ::fsfilcnt_t,
+                pub f_ffree: ::fsfilcnt_t,
+                pub f_fsid: ::fsid_t,
+                pub f_namelen: ::c_ulong,
+                pub f_frsize: ::c_ulong,
+                pub f_flags: ::c_ulong,
+                pub f_spare: [::c_ulong; 4],
+            }
+
+            pub struct statfs64 {
+                pub f_type: ::c_ulong,
+                pub f_bsize: ::c_ulong,
+                pub f_blocks: ::fsblkcnt64_t,
+                pub f_bfree: ::fsblkcnt64_t,
+                pub f_bavail: ::fsblkcnt64_t,
+                pub f_files: ::fsfilcnt64_t,
+                pub f_ffree: ::fsfilcnt64_t,
+                pub f_fsid: ::fsid_t,
+                pub f_namelen: ::c_ulong,
+                pub f_frsize: ::c_ulong,
+                pub f_flags: ::c_ulong,
+                pub f_spare: [::c_ulong; 4],
+            }
+        }
+    }
+}
+
 s_no_extra_traits! {
     pub struct sysinfo {
         pub uptime: ::c_ulong,
