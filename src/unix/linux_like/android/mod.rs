@@ -1441,12 +1441,26 @@ pub const SO_PEERSEC: ::c_int = 31;
 pub const SO_SNDBUFFORCE: ::c_int = 32;
 pub const SO_RCVBUFFORCE: ::c_int = 33;
 pub const SO_PASSSEC: ::c_int = 34;
+pub const SO_TIMESTAMPNS: ::c_int = 35;
+// pub const SO_TIMESTAMPNS_OLD: ::c_int = 35;
 pub const SO_MARK: ::c_int = 36;
+pub const SO_TIMESTAMPING: ::c_int = 37;
+// pub const SO_TIMESTAMPING_OLD: ::c_int = 37;
 pub const SO_PROTOCOL: ::c_int = 38;
 pub const SO_DOMAIN: ::c_int = 39;
 pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
+pub const SCM_TIMESTAMPING_OPT_STATS: ::c_int = 54;
+pub const SCM_TIMESTAMPING_PKTINFO: ::c_int = 58;
+pub const SO_TIMESTAMP_NEW: ::c_int = 63;
+pub const SO_TIMESTAMPNS_NEW: ::c_int = 64;
+pub const SO_TIMESTAMPING_NEW: ::c_int = 65;
+
+// Defined in unix/linux_like/mod.rs
+// pub const SCM_TIMESTAMP: ::c_int = SO_TIMESTAMP;
+pub const SCM_TIMESTAMPNS: ::c_int = SO_TIMESTAMPNS;
+pub const SCM_TIMESTAMPING: ::c_int = SO_TIMESTAMPING;
 
 pub const IPTOS_ECN_NOTECT: u8 = 0x00;
 
@@ -2607,6 +2621,23 @@ pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 // linux/module.h
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
+
+// linux/net_tstamp.h
+pub const SOF_TIMESTAMPING_TX_HARDWARE: ::c_uint = 1 << 0;
+pub const SOF_TIMESTAMPING_TX_SOFTWARE: ::c_uint = 1 << 1;
+pub const SOF_TIMESTAMPING_RX_HARDWARE: ::c_uint = 1 << 2;
+pub const SOF_TIMESTAMPING_RX_SOFTWARE: ::c_uint = 1 << 3;
+pub const SOF_TIMESTAMPING_SOFTWARE: ::c_uint = 1 << 4;
+pub const SOF_TIMESTAMPING_SYS_HARDWARE: ::c_uint = 1 << 5;
+pub const SOF_TIMESTAMPING_RAW_HARDWARE: ::c_uint = 1 << 6;
+pub const SOF_TIMESTAMPING_OPT_ID: ::c_uint = 1 << 7;
+pub const SOF_TIMESTAMPING_TX_SCHED: ::c_uint = 1 << 8;
+pub const SOF_TIMESTAMPING_TX_ACK: ::c_uint = 1 << 9;
+pub const SOF_TIMESTAMPING_OPT_CMSG: ::c_uint = 1 << 10;
+pub const SOF_TIMESTAMPING_OPT_TSONLY: ::c_uint = 1 << 11;
+pub const SOF_TIMESTAMPING_OPT_STATS: ::c_uint = 1 << 12;
+pub const SOF_TIMESTAMPING_OPT_PKTINFO: ::c_uint = 1 << 13;
+pub const SOF_TIMESTAMPING_OPT_TX_SWHW: ::c_uint = 1 << 14;
 
 #[deprecated(
     since = "0.2.55",
