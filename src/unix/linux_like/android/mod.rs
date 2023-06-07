@@ -1831,6 +1831,7 @@ pub const NLM_F_MULTI: ::c_int = 2;
 pub const NLM_F_ACK: ::c_int = 4;
 pub const NLM_F_ECHO: ::c_int = 8;
 pub const NLM_F_DUMP_INTR: ::c_int = 16;
+pub const NLM_F_DUMP_FILTERED: ::c_int = 32;
 
 pub const NLM_F_ROOT: ::c_int = 0x100;
 pub const NLM_F_MATCH: ::c_int = 0x200;
