@@ -2580,6 +2580,88 @@ pub const ETH_P_XDSA: ::c_int = 0x00F8;
 /* see rust-lang/libc#924 pub const ETH_P_MAP: ::c_int = 0x00F9;*/
 // end android/platform/bionic/libc/kernel/uapi/linux/if_ether.h
 
+// start android/platform/bionic/libc/kernel/uapi/linux/neighbour.h
+pub const NDA_UNSPEC: ::c_ushort = 0;
+pub const NDA_DST: ::c_ushort = 1;
+pub const NDA_LLADDR: ::c_ushort = 2;
+pub const NDA_CACHEINFO: ::c_ushort = 3;
+pub const NDA_PROBES: ::c_ushort = 4;
+pub const NDA_VLAN: ::c_ushort = 5;
+pub const NDA_PORT: ::c_ushort = 6;
+pub const NDA_VNI: ::c_ushort = 7;
+pub const NDA_IFINDEX: ::c_ushort = 8;
+pub const NDA_MASTER: ::c_ushort = 9;
+pub const NDA_LINK_NETNSID: ::c_ushort = 10;
+pub const NDA_SRC_VNI: ::c_ushort = 11;
+pub const NDA_PROTOCOL: ::c_ushort = 12;
+pub const NDA_NH_ID: ::c_ushort = 13;
+pub const NDA_FDB_EXT_ATTRS: ::c_ushort = 14;
+pub const NDA_FLAGS_EXT: ::c_ushort = 15;
+pub const NDA_NDM_STATE_MASK: ::c_ushort = 16;
+pub const NDA_NDM_FLAGS_MASK: ::c_ushort = 17;
+
+pub const NTF_USE: u8 = 0x01;
+pub const NTF_SELF: u8 = 0x02;
+pub const NTF_MASTER: u8 = 0x04;
+pub const NTF_PROXY: u8 = 0x08;
+pub const NTF_EXT_LEARNED: u8 = 0x10;
+pub const NTF_OFFLOADED: u8 = 0x20;
+pub const NTF_STICKY: u8 = 0x40;
+pub const NTF_ROUTER: u8 = 0x80;
+
+pub const NTF_EXT_MANAGED: u8 = 0x01;
+pub const NTF_EXT_LOCKED: u8 = 0x02;
+
+pub const NUD_NONE: u16 = 0x00;
+pub const NUD_INCOMPLETE: u16 = 0x01;
+pub const NUD_REACHABLE: u16 = 0x02;
+pub const NUD_STALE: u16 = 0x04;
+pub const NUD_DELAY: u16 = 0x08;
+pub const NUD_PROBE: u16 = 0x10;
+pub const NUD_FAILED: u16 = 0x20;
+pub const NUD_NOARP: u16 = 0x40;
+pub const NUD_PERMANENT: u16 = 0x80;
+
+pub const NDTPA_UNSPEC: ::c_ushort = 0;
+pub const NDTPA_IFINDEX: ::c_ushort = 1;
+pub const NDTPA_REFCNT: ::c_ushort = 2;
+pub const NDTPA_REACHABLE_TIME: ::c_ushort = 3;
+pub const NDTPA_BASE_REACHABLE_TIME: ::c_ushort = 4;
+pub const NDTPA_RETRANS_TIME: ::c_ushort = 5;
+pub const NDTPA_GC_STALETIME: ::c_ushort = 6;
+pub const NDTPA_DELAY_PROBE_TIME: ::c_ushort = 7;
+pub const NDTPA_QUEUE_LEN: ::c_ushort = 8;
+pub const NDTPA_APP_PROBES: ::c_ushort = 9;
+pub const NDTPA_UCAST_PROBES: ::c_ushort = 10;
+pub const NDTPA_MCAST_PROBES: ::c_ushort = 11;
+pub const NDTPA_ANYCAST_DELAY: ::c_ushort = 12;
+pub const NDTPA_PROXY_DELAY: ::c_ushort = 13;
+pub const NDTPA_PROXY_QLEN: ::c_ushort = 14;
+pub const NDTPA_LOCKTIME: ::c_ushort = 15;
+pub const NDTPA_QUEUE_LENBYTES: ::c_ushort = 16;
+pub const NDTPA_MCAST_REPROBES: ::c_ushort = 17;
+pub const NDTPA_PAD: ::c_ushort = 18;
+pub const NDTPA_INTERVAL_PROBE_TIME_MS: ::c_ushort = 19;
+
+pub const NDTA_UNSPEC: ::c_ushort = 0;
+pub const NDTA_NAME: ::c_ushort = 1;
+pub const NDTA_THRESH1: ::c_ushort = 2;
+pub const NDTA_THRESH2: ::c_ushort = 3;
+pub const NDTA_THRESH3: ::c_ushort = 4;
+pub const NDTA_CONFIG: ::c_ushort = 5;
+pub const NDTA_PARMS: ::c_ushort = 6;
+pub const NDTA_STATS: ::c_ushort = 7;
+pub const NDTA_GC_INTERVAL: ::c_ushort = 8;
+pub const NDTA_PAD: ::c_ushort = 9;
+
+pub const FDB_NOTIFY_BIT: u16 = 0x01;
+pub const FDB_NOTIFY_INACTIVE_BIT: u16 = 0x02;
+
+pub const NFEA_UNSPEC: ::c_ushort = 0;
+pub const NFEA_ACTIVITY_NOTIFY: ::c_ushort = 1;
+pub const NFEA_DONT_REFRESH: ::c_ushort = 2;
+// end android/platform/bionic/libc/kernel/uapi/linux/neighbour.h
+
 pub const SIOCADDRT: ::c_ulong = 0x0000890B;
 pub const SIOCDELRT: ::c_ulong = 0x0000890C;
 pub const SIOCGIFNAME: ::c_ulong = 0x00008910;
