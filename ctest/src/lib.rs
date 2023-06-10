@@ -1353,6 +1353,7 @@ impl<'a> Generator<'a> {
                     same(field_ptr as *mut _,
                          __test_field_type_{ty}_{field}(ty_ptr_mut),
                          "field type {field} of {ty}");
+                    #[allow(unknown_lints, forgetting_copy_types)]
                     mem::forget(uninit_ty);
                 }}
             "#,
