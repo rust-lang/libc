@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.4.7 (2023-06-10)
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 4 commits contributed to the release over the course of 7 calendar days.
+ - 35 days passed between releases.
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Merge pull request #53 from JohnTitor/forgetting_copy_types ([`4c5c32f`](https://github.com/JohnTitor/ctest2/commit/4c5c32fcde07c3ccaed61f42dc434f0f90682a3f))
+    - Address `forgetting_copy_types` lint ([`adcc889`](https://github.com/JohnTitor/ctest2/commit/adcc889d30550c92e135d74820477f022ddb5bbd))
+    - Merge pull request #52 from samkearney/add-x86-qnx-support ([`a40b8af`](https://github.com/JohnTitor/ctest2/commit/a40b8afcbd55fbca30911f07b406157c848cdaeb))
+    - Add a config default for QNX 7.0 ([`2af1537`](https://github.com/JohnTitor/ctest2/commit/2af153709b41386aa664ef78d1d9acb35455880b))
+</details>
+
+
 ## 0.4.6 (2023-05-06)
 
 ### Bug Fixes
