@@ -3414,7 +3414,13 @@ extern "C" {
     pub fn sendfile(
         out_fd: ::c_int,
         in_fd: ::c_int,
-        offset: *mut off_t,
+        offset: *mut ::off_t,
+        count: ::size_t,
+    ) -> ::ssize_t;
+    pub fn sendfile64(
+        out_fd: ::c_int,
+        in_fd: ::c_int,
+        offset: *mut ::off64_t,
         count: ::size_t,
     ) -> ::ssize_t;
     pub fn setfsgid(gid: ::gid_t) -> ::c_int;
