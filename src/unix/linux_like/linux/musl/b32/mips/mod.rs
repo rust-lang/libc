@@ -262,6 +262,7 @@ pub const MAP_POPULATE: ::c_int = 0x10000;
 pub const MAP_NONBLOCK: ::c_int = 0x20000;
 pub const MAP_STACK: ::c_int = 0x40000;
 pub const MAP_HUGETLB: ::c_int = 0x80000;
+pub const MAP_UNINITIALIZED: ::c_int = 0x4000000;
 
 pub const EDEADLK: ::c_int = 45;
 pub const ENAMETOOLONG: ::c_int = 78;

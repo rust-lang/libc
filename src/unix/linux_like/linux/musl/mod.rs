@@ -486,6 +486,8 @@ pub const MAP_HUGE_1GB: ::c_int = 30 << MAP_HUGE_SHIFT;
 pub const MAP_HUGE_2GB: ::c_int = 31 << MAP_HUGE_SHIFT;
 pub const MAP_HUGE_16GB: ::c_int = 34 << MAP_HUGE_SHIFT;
 
+pub const MAP_UNINITIALIZED: ::c_int = 0x4000000;
+
 pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
 pub const SFD_CLOEXEC: ::c_int = 0x080000;

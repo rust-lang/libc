@@ -172,6 +172,7 @@ pub const MAP_NONBLOCK: ::c_int = 0x010000;
 pub const MAP_STACK: ::c_int = 0x020000;
 pub const MAP_HUGETLB: ::c_int = 0x040000;
 pub const MAP_SYNC: ::c_int = 0x080000;
+pub const MAP_UNINITIALIZED: ::c_int = 0x4000000;
 
 pub const PTRACE_SYSEMU: ::c_int = 0x1d;
 pub const PTRACE_SYSEMU_SINGLESTEP: ::c_int = 0x1e;

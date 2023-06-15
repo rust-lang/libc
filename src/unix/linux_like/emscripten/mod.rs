@@ -1332,6 +1332,7 @@ pub const RLIMIT_NLIMITS: ::c_int = 15;
 pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
+pub const MAP_UNINITIALIZED: ::c_int = 0x4000000;
 
 #[doc(hidden)]
 #[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
@@ -1533,6 +1534,7 @@ pub const MAP_NORESERVE: ::c_int = 0x04000;
 pub const MAP_POPULATE: ::c_int = 0x08000;
 pub const MAP_NONBLOCK: ::c_int = 0x010000;
 pub const MAP_STACK: ::c_int = 0x020000;
+pub const MAP_UNINITIALIZED: ::c_int = 0x4000000;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;

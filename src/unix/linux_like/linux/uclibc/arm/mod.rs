@@ -436,6 +436,7 @@ pub const MAP_NONBLOCK: ::c_int = 0x10000;
 pub const MAP_NORESERVE: ::c_int = 0x4000;
 pub const MAP_POPULATE: ::c_int = 0x8000;
 pub const MAP_STACK: ::c_int = 0x20000;
+pub const MAP_UNINITIALIZED: ::c_int = 0x4000000;
 pub const NLDLY: ::tcflag_t = 0x100;
 pub const NOFLSH: ::tcflag_t = 0x80;
 pub const OLCUC: ::tcflag_t = 0x2;

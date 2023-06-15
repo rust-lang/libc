@@ -199,6 +199,7 @@ pub const MAP_STACK: ::c_int = 0x020000;
 pub const MAP_HUGETLB: ::c_int = 0x040000;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
 pub const MAP_SYNC: ::c_int = 0x080000;
+pub const MAP_UNINITIALIZED: ::c_int = 0x4000000;
 
 pub const EDEADLOCK: ::c_int = 58;
 pub const EUCLEAN: ::c_int = 117;
