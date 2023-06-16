@@ -494,6 +494,9 @@ pub const BIOCVERSION: ::c_ulong = 0x40044271;
 pub const BIOCGHDRCMPLT: ::c_ulong = 0x40044274;
 pub const BIOCSHDRCMPLT: ::c_ulong = 0x80044275;
 pub const SIOCGIFADDR: ::c_ulong = 0xc0206921;
+pub const SIOCATMARK: ::c_ulong = 0x40047307;
+pub const SIOCSPGRP: ::c_ulong = 0x80047308;
+pub const SIOCGPGRP: ::c_ulong = 0x40047309;
 
 pub const REG_BASIC: ::c_int = 0o0000;
 pub const REG_EXTENDED: ::c_int = 0o0001;

@@ -2580,6 +2580,13 @@ pub const ETH_P_XDSA: ::c_int = 0x00F8;
 /* see rust-lang/libc#924 pub const ETH_P_MAP: ::c_int = 0x00F9;*/
 // end android/platform/bionic/libc/kernel/uapi/linux/if_ether.h
 
+pub const FIOSETOWN: ::c_ulong = 0x00008901;
+pub const SIOCSPGRP: ::c_ulong = 0x00008902;
+pub const FIOGETOWN: ::c_ulong = 0x00008903;
+pub const SIOCGPGRP: ::c_ulong = 0x00008904;
+pub const SIOCATMARK: ::c_ulong = 0x00008905;
+pub const SIOCGSTAMP_OLD: ::c_ulong = 0x00008906;
+pub const SIOCGSTAMPNS_OLD: ::c_ulong = 0x00008907;
 pub const SIOCADDRT: ::c_ulong = 0x0000890B;
 pub const SIOCDELRT: ::c_ulong = 0x0000890C;
 pub const SIOCGIFNAME: ::c_ulong = 0x00008910;
