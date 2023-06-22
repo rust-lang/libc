@@ -117,6 +117,9 @@ pub type thread_latency_qos_policy_t = *mut thread_latency_qos_policy;
 pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
 pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
 
+// mach/time_value.h
+pub type time_value_t = time_value;
+
 pub type pthread_introspection_hook_t =
     extern "C" fn(event: ::c_uint, thread: ::pthread_t, addr: *mut ::c_void, size: ::size_t);
 pub type pthread_jit_write_callback_t = ::Option<extern "C" fn(ctx: *mut ::c_void) -> ::c_int>;
@@ -1276,7 +1279,8 @@ s_no_extra_traits! {
         pub mach_factor: integer_t,
     }
 
-    pub struct time_value_t {
+    // time_value.h
+    pub struct time_value {
         pub seconds: integer_t,
         pub microseconds: integer_t,
     }
@@ -5101,6 +5105,9 @@ pub const VMADDR_CID_HYPERVISOR: ::c_uint = 0;
 pub const VMADDR_CID_RESERVED: ::c_uint = 1;
 pub const VMADDR_CID_HOST: ::c_uint = 2;
 pub const VMADDR_PORT_ANY: ::c_uint = 0xFFFFFFFF;
+
+// mach/time_value.h
+pub const TIME_MICROS_MAX: integer_t = 1000000;
 
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
