@@ -129,10 +129,16 @@ pub type os_log_type_t = u8;
 pub type os_signpost_id_t = u64;
 pub type os_signpost_type_t = u8;
 
+// vm_statistics.h
 pub type vm_statistics_t = *mut vm_statistics;
 pub type vm_statistics_data_t = vm_statistics;
 pub type vm_statistics64_t = *mut vm_statistics64;
 pub type vm_statistics64_data_t = vm_statistics64;
+pub type vm_extmod_statistics_t = *mut vm_extmod_statistics;
+pub type vm_extmod_statistics_data_t = vm_extmod_statistics;
+pub type vm_purgeable_stat_t = vm_purgeable_stat;
+pub type vm_purgeable_info_t = *mut vm_purgeable_info;
+pub type virtual_memory_guard_exception_codes = ::c_uint;
 
 pub type task_t = ::mach_port_t;
 pub type task_inspect_t = ::mach_port_t;
@@ -914,6 +920,7 @@ s! {
         pub pvi_rdir: vnode_info_path,
     }
 
+    // vm_statistics.h
     pub struct vm_statistics {
         pub free_count: natural_t,
         pub active_count: natural_t,
@@ -930,6 +937,26 @@ s! {
         pub purgeable_count: natural_t,
         pub purges: natural_t,
         pub speculative_count: natural_t,
+    }
+
+    pub struct vm_extmod_statistics {
+        pub task_for_pid_count: i64,
+        pub task_for_pid_caller_count: i64,
+        pub thread_creation_count: i64,
+        pub thread_creation_caller_count: i64,
+        pub thread_set_state_count: i64,
+        pub thread_set_state_caller_count: i64,
+    }
+
+    pub struct vm_purgeable_stat {
+        pub count: u64,
+        pub size: u64,
+    }
+
+    pub struct vm_purgeable_info {
+        pub fifo_data: [vm_purgeable_stat_t; 8usize],
+        pub obsolete_data: vm_purgeable_stat_t,
+        pub lifo_data: [vm_purgeable_stat_t; 8usize],
     }
 
     pub struct task_thread_times_info {
@@ -3078,6 +3105,12 @@ deprecated_mach! {
     pub const VM_MEMORY_APPLICATION_SPECIFIC_1: ::c_int = 240;
     pub const VM_MEMORY_APPLICATION_SPECIFIC_16: ::c_int = 255;
 }
+
+// vm_statistics.h
+pub const kGUARD_EXC_DEALLOC_GAP: virtual_memory_guard_exception_codes = 1;
+pub const kGUARD_EXC_RECLAIM_COPYIO_FAILURE: virtual_memory_guard_exception_codes = 2;
+pub const kGUARD_EXC_RECLAIM_INDEX_FAILURE: virtual_memory_guard_exception_codes = 4;
+pub const kGUARD_EXC_RECLAIM_DEALLOCATE_FAILURE: virtual_memory_guard_exception_codes = 8;
 
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
@@ -5942,6 +5975,9 @@ extern "C" {
         address: vm_address_t,
         size: vm_size_t,
     ) -> ::kern_return_t;
+
+    // vm_statistics.h
+    pub fn vm_stats(info: *mut ::c_void, count: *mut ::c_uint) -> ::kern_return_t;
 
     pub fn host_statistics64(
         host_priv: host_t,
