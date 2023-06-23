@@ -180,7 +180,6 @@ pub type vm_extmod_statistics_t = *mut vm_extmod_statistics;
 pub type vm_extmod_statistics_data_t = vm_extmod_statistics;
 pub type vm_purgeable_stat_t = vm_purgeable_stat;
 pub type vm_purgeable_info_t = *mut vm_purgeable_info;
-pub type virtual_memory_guard_exception_codes = ::c_uint;
 
 pub type task_t = ::mach_port_t;
 pub type task_inspect_t = ::mach_port_t;
@@ -5109,10 +5108,6 @@ pub const VM_PAGE_QUERY_PAGE_EXTERNAL: i32 = 0x80;
 pub const VM_PAGE_QUERY_PAGE_CS_VALIDATED: i32 = 0x100;
 pub const VM_PAGE_QUERY_PAGE_CS_TAINTED: i32 = 0x200;
 pub const VM_PAGE_QUERY_PAGE_CS_NX: i32 = 0x400;
-pub const kGUARD_EXC_DEALLOC_GAP: virtual_memory_guard_exception_codes = 1;
-pub const kGUARD_EXC_RECLAIM_COPYIO_FAILURE: virtual_memory_guard_exception_codes = 2;
-pub const kGUARD_EXC_RECLAIM_INDEX_FAILURE: virtual_memory_guard_exception_codes = 4;
-pub const kGUARD_EXC_RECLAIM_DEALLOCATE_FAILURE: virtual_memory_guard_exception_codes = 8;
 
 // mach/task_info.h
 pub const TASK_INFO_MAX: usize = 1024;
