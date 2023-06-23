@@ -118,9 +118,6 @@ pub type task_trace_memory_info_data_t = task_trace_memory_info;
 pub type task_trace_memory_info_t = *mut task_trace_memory_info;
 pub type task_wait_state_info_data_t = task_wait_state_info;
 pub type task_wait_state_info_t = *mut task_wait_state_info;
-pub type gpu_energy_data_t = *mut gpu_energy_data;
-pub type task_power_info_v2_data_t = task_power_info_v2;
-pub type task_power_info_v2_t = *mut task_power_info_v2;
 pub type task_flags_info_data_t = task_flags_info;
 pub type task_flags_info_t = *mut task_flags_info;
 pub type task_exc_guard_behavior_t = u32;
@@ -1158,24 +1155,6 @@ s! {
         pub total_wait_state_time: u64,
         pub total_wait_sfi_state_time: u64,
         pub _reserved: [u32; 4usize],
-    }
-
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
-    pub struct gpu_energy_data {
-        pub task_gpu_utilisation: u64,
-        pub task_gpu_stat_reserved0: u64,
-        pub task_gpu_stat_reserved1: u64,
-        pub task_gpu_stat_reserved2: u64,
-    }
-
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
-    pub struct task_power_info_v2 {
-        pub cpu_energy: task_power_info_data_t,
-        pub gpu_energy: gpu_energy_data,
-        #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
-        pub task_energy: u64,
-        pub task_ptime: u64,
-        pub task_pset_switches: u64,
     }
 
     #[cfg_attr(libc_packedN, repr(packed(4)))]
@@ -5482,13 +5461,6 @@ cfg_if! {
         pub const TASK_WAIT_STATE_INFO_COUNT: mach_msg_type_number_t =
             (::mem::size_of::<task_wait_state_info_data_t>() / ::mem::size_of::<natural_t>())
             as mach_msg_type_number_t;
-        pub const TASK_POWER_INFO_V2_COUNT_OLD: mach_msg_type_number_t =
-            ((::mem::size_of::<task_power_info_v2_data_t>() - ::mem::size_of::<u64>() * 2)
-             / ::mem::size_of::<natural_t>())
-            as mach_msg_type_number_t;
-        pub const TASK_POWER_INFO_V2_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<task_power_info_v2_data_t>() / ::mem::size_of::<natural_t>())
-            as mach_msg_type_number_t;
         pub const TASK_FLAGS_INFO_COUNT: mach_msg_type_number_t =
             (::mem::size_of::<task_flags_info_data_t>() / ::mem::size_of::<natural_t>())
             as mach_msg_type_number_t;
@@ -6343,9 +6315,6 @@ extern "C" {
         address: vm_address_t,
         size: vm_size_t,
     ) -> ::kern_return_t;
-
-    // mach/vm_statistics.h
-    pub fn vm_stats(info: *mut ::c_void, count: *mut ::c_uint) -> ::kern_return_t;
 
     pub fn host_statistics64(
         host_priv: host_t,
