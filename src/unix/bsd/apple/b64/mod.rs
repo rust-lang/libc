@@ -1,4 +1,5 @@
 //! 64-bit specific Apple (ios/darwin) definitions
+use super::*;
 
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -42,7 +43,7 @@ s! {
     }
 
     pub struct bpf_hdr {
-        pub bh_tstamp: ::timeval32,
+        pub bh_tstamp: timeval32,
         pub bh_caplen: u32,
         pub bh_datalen: u32,
         pub bh_hdrlen: ::c_ushort,
@@ -102,6 +103,9 @@ pub const BIOCSETF: ::c_ulong = 0x80104267;
 pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
 pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
 pub const BIOCSETFNR: ::c_ulong = 0x8010427e;
+
+// mach/task_info.h
+pub const TASK_BASIC_INFO: task_flavor_t = TASK_BASIC_INFO_64;
 
 extern "C" {
     pub fn exchangedata(

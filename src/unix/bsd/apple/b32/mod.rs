@@ -103,6 +103,9 @@ pub const BIOCSRTIMEOUT: ::c_ulong = 0x8008426d;
 pub const BIOCGRTIMEOUT: ::c_ulong = 0x4008426e;
 pub const BIOCSETFNR: ::c_ulong = 0x8008427e;
 
+// mach/task_info.h
+pub const TASK_BASIC_INFO: task_flavor_t = TASK_BASIC_INFO_32;
+
 extern "C" {
     pub fn exchangedata(
         path1: *const ::c_char,

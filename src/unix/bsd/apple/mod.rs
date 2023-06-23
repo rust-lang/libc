@@ -31,6 +31,7 @@ pub type mach_msg_type_number_t = natural_t;
 pub type kern_return_t = ::c_int;
 pub type uuid_t = [u8; 16];
 pub type task_info_t = *mut integer_t;
+pub type task_info_data_t = [integer_t; TASK_INFO_MAX];
 pub type host_info_t = *mut integer_t;
 pub type task_flavor_t = natural_t;
 pub type rusage_info_t = *mut ::c_void;
@@ -82,10 +83,49 @@ pub type processor_set_load_info_t = *mut processor_set_load_info;
 pub type processor_info_t = *mut integer_t;
 pub type processor_info_array_t = *mut integer_t;
 
+// mach/task_info.h
 pub type mach_task_basic_info_data_t = mach_task_basic_info;
 pub type mach_task_basic_info_t = *mut mach_task_basic_info;
+pub type task_basic_info_32_data_t = task_basic_info_32;
+pub type task_basic_info_32_t = *mut task_basic_info_32;
+pub type task_basic_info_64_data_t = task_basic_info_64;
+pub type task_basic_info_64_t = *mut task_basic_info_64;
+pub type task_basic_info_data_t = task_basic_info;
+pub type task_basic_info_t = *mut task_basic_info;
+pub type task_events_info_data_t = task_events_info;
+pub type task_events_info_t = *mut task_events_info;
 pub type task_thread_times_info_data_t = task_thread_times_info;
 pub type task_thread_times_info_t = *mut task_thread_times_info;
+pub type task_absolutetime_info_data_t = task_absolutetime_info;
+pub type task_absolutetime_info_t = *mut task_absolutetime_info;
+pub type task_kernelmemory_info_data_t = task_kernelmemory_info;
+pub type task_kernelmemory_info_t = *mut task_kernelmemory_info;
+pub type task_affinity_tag_info_data_t = task_affinity_tag_info;
+pub type task_affinity_tag_info_t = *mut task_affinity_tag_info;
+pub type task_dyld_info_data_t = task_dyld_info;
+pub type task_dyld_info_t = *mut task_dyld_info;
+#[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+pub type task_basic_info_64_2_data_t = task_basic_info_64_2;
+#[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+pub type task_basic_info_64_2_t = *mut task_basic_info_64_2;
+pub type task_extmod_info_data_t = task_extmod_info;
+pub type task_extmod_info_t = *mut task_extmod_info;
+pub type task_power_info_data_t = task_power_info;
+pub type task_power_info_t = *mut task_power_info;
+pub type task_vm_info_data_t = task_vm_info;
+pub type task_vm_info_t = *mut task_vm_info;
+pub type task_purgable_info_t = vm_purgeable_info;
+pub type task_trace_memory_info_data_t = task_trace_memory_info;
+pub type task_trace_memory_info_t = *mut task_trace_memory_info;
+pub type task_wait_state_info_data_t = task_wait_state_info;
+pub type task_wait_state_info_t = *mut task_wait_state_info;
+pub type gpu_energy_data_t = *mut gpu_energy_data;
+pub type task_power_info_v2_data_t = task_power_info_v2;
+pub type task_power_info_v2_t = *mut task_power_info_v2;
+pub type task_flags_info_data_t = task_flags_info;
+pub type task_flags_info_t = *mut task_flags_info;
+pub type task_exc_guard_behavior_t = u32;
+pub type task_corpse_forking_behavior_t = u32;
 
 pub type thread_info_t = *mut integer_t;
 pub type thread_basic_info_t = *mut thread_basic_info;
@@ -132,7 +172,7 @@ pub type os_log_type_t = u8;
 pub type os_signpost_id_t = u64;
 pub type os_signpost_type_t = u8;
 
-// vm_statistics.h
+// mach/vm_statistics.h
 pub type vm_statistics_t = *mut vm_statistics;
 pub type vm_statistics_data_t = vm_statistics;
 pub type vm_statistics64_t = *mut vm_statistics64;
@@ -923,7 +963,7 @@ s! {
         pub pvi_rdir: vnode_info_path,
     }
 
-    // vm_statistics.h
+    // mach/vm_statistics.h
     pub struct vm_statistics {
         pub free_count: natural_t,
         pub active_count: natural_t,
@@ -962,9 +1002,187 @@ s! {
         pub lifo_data: [vm_purgeable_stat_t; 8usize],
     }
 
+    // task_info.h
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_basic_info_32 {
+        pub suspend_count: integer_t,
+        pub virtual_size: natural_t,
+        pub resident_size: natural_t,
+        pub user_time: time_value_t,
+        pub system_time: time_value_t,
+        pub policy: policy_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_basic_info_64 {
+        pub suspend_count: integer_t,
+        pub virtual_size: mach_vm_size_t,
+        pub resident_size: mach_vm_size_t,
+        pub user_time: time_value_t,
+        pub system_time: time_value_t,
+        pub policy: policy_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_basic_info {
+        pub suspend_count: integer_t,
+        pub virtual_size: vm_size_t,
+        pub resident_size: vm_size_t,
+        pub user_time: time_value_t,
+        pub system_time: time_value_t,
+        pub policy: policy_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_events_info {
+        pub faults: integer_t,
+        pub pageins: integer_t,
+        pub cow_faults: integer_t,
+        pub messages_sent: integer_t,
+        pub messages_received: integer_t,
+        pub syscalls_mach: integer_t,
+        pub syscalls_unix: integer_t,
+        pub csw: integer_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct task_thread_times_info {
         pub user_time: time_value_t,
         pub system_time: time_value_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_absolutetime_info {
+        pub total_user: u64,
+        pub total_system: u64,
+        pub threads_user: u64,
+        pub threads_system: u64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_kernelmemory_info {
+        pub total_palloc: u64,
+        pub total_pfree: u64,
+        pub total_salloc: u64,
+        pub total_sfree: u64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_affinity_tag_info {
+        pub set_count: integer_t,
+        pub min: integer_t,
+        pub max: integer_t,
+        pub task_count: integer_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_dyld_info {
+        pub all_image_info_addr: mach_vm_address_t,
+        pub all_image_info_size: mach_vm_size_t,
+        pub all_image_info_format: integer_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_extmod_info {
+        pub task_uuid: [::c_uchar; 16usize],
+        pub extmod_statistics: vm_extmod_statistics_data_t,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_power_info {
+        pub total_user: u64,
+        pub total_system: u64,
+        pub task_interrupt_wakeups: u64,
+        pub task_platform_idle_wakeups: u64,
+        pub task_timer_wakeups_bin_1: u64,
+        pub task_timer_wakeups_bin_2: u64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_vm_info {
+        pub virtual_size: mach_vm_size_t,
+        pub region_count: integer_t,
+        pub page_size: integer_t,
+        pub resident_size: mach_vm_size_t,
+        pub resident_size_peak: mach_vm_size_t,
+        pub device: mach_vm_size_t,
+        pub device_peak: mach_vm_size_t,
+        pub internal: mach_vm_size_t,
+        pub internal_peak: mach_vm_size_t,
+        pub external: mach_vm_size_t,
+        pub external_peak: mach_vm_size_t,
+        pub reusable: mach_vm_size_t,
+        pub reusable_peak: mach_vm_size_t,
+        pub purgeable_volatile_pmap: mach_vm_size_t,
+        pub purgeable_volatile_resident: mach_vm_size_t,
+        pub purgeable_volatile_virtual: mach_vm_size_t,
+        pub compressed: mach_vm_size_t,
+        pub compressed_peak: mach_vm_size_t,
+        pub compressed_lifetime: mach_vm_size_t,
+        pub phys_footprint: mach_vm_size_t,
+        pub min_address: mach_vm_address_t,
+        pub max_address: mach_vm_address_t,
+        pub ledger_phys_footprint_peak: i64,
+        pub ledger_purgeable_nonvolatile: i64,
+        pub ledger_purgeable_novolatile_compressed: i64,
+        pub ledger_purgeable_volatile: i64,
+        pub ledger_purgeable_volatile_compressed: i64,
+        pub ledger_tag_network_nonvolatile: i64,
+        pub ledger_tag_network_nonvolatile_compressed: i64,
+        pub ledger_tag_network_volatile: i64,
+        pub ledger_tag_network_volatile_compressed: i64,
+        pub ledger_tag_media_footprint: i64,
+        pub ledger_tag_media_footprint_compressed: i64,
+        pub ledger_tag_media_nofootprint: i64,
+        pub ledger_tag_media_nofootprint_compressed: i64,
+        pub ledger_tag_graphics_footprint: i64,
+        pub ledger_tag_graphics_footprint_compressed: i64,
+        pub ledger_tag_graphics_nofootprint: i64,
+        pub ledger_tag_graphics_nofootprint_compressed: i64,
+        pub ledger_tag_neural_footprint: i64,
+        pub ledger_tag_neural_footprint_compressed: i64,
+        pub ledger_tag_neural_nofootprint: i64,
+        pub ledger_tag_neural_nofootprint_compressed: i64,
+        pub limit_bytes_remaining: u64,
+        pub decompressions: integer_t,
+        pub ledger_swapins: i64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_trace_memory_info {
+        pub user_memory_address: u64,
+        pub buffer_size: u64,
+        pub mailbox_array_size: u64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_wait_state_info {
+        pub total_wait_state_time: u64,
+        pub total_wait_sfi_state_time: u64,
+        pub _reserved: [u32; 4usize],
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct gpu_energy_data {
+        pub task_gpu_utilisation: u64,
+        pub task_gpu_stat_reserved0: u64,
+        pub task_gpu_stat_reserved1: u64,
+        pub task_gpu_stat_reserved2: u64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_power_info_v2 {
+        pub cpu_energy: task_power_info_data_t,
+        pub gpu_energy: gpu_energy_data,
+        #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+        pub task_energy: u64,
+        pub task_ptime: u64,
+        pub task_pset_switches: u64,
+    }
+
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct task_flags_info {
+        pub flags: u32,
     }
 
     pub struct rusage_info_v0 {
@@ -3110,12 +3328,6 @@ deprecated_mach! {
     pub const VM_MEMORY_APPLICATION_SPECIFIC_16: ::c_int = 255;
 }
 
-// vm_statistics.h
-pub const kGUARD_EXC_DEALLOC_GAP: virtual_memory_guard_exception_codes = 1;
-pub const kGUARD_EXC_RECLAIM_COPYIO_FAILURE: virtual_memory_guard_exception_codes = 2;
-pub const kGUARD_EXC_RECLAIM_INDEX_FAILURE: virtual_memory_guard_exception_codes = 4;
-pub const kGUARD_EXC_RECLAIM_DEALLOCATE_FAILURE: virtual_memory_guard_exception_codes = 8;
-
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
@@ -4884,6 +5096,7 @@ pub const HOST_CPU_LOAD_INFO: i32 = 3;
 pub const HOST_VM_INFO64: i32 = 4;
 pub const HOST_EXTMOD_INFO64: i32 = 5;
 pub const HOST_EXPIRED_TASK_INFO: i32 = 6;
+pub const HOST_CPU_LOAD_INFO_COUNT: u32 = 4;
 
 // mach/vm_statistics.h
 pub const VM_PAGE_QUERY_PAGE_PRESENT: i32 = 0x1;
@@ -4897,11 +5110,61 @@ pub const VM_PAGE_QUERY_PAGE_EXTERNAL: i32 = 0x80;
 pub const VM_PAGE_QUERY_PAGE_CS_VALIDATED: i32 = 0x100;
 pub const VM_PAGE_QUERY_PAGE_CS_TAINTED: i32 = 0x200;
 pub const VM_PAGE_QUERY_PAGE_CS_NX: i32 = 0x400;
+pub const kGUARD_EXC_DEALLOC_GAP: virtual_memory_guard_exception_codes = 1;
+pub const kGUARD_EXC_RECLAIM_COPYIO_FAILURE: virtual_memory_guard_exception_codes = 2;
+pub const kGUARD_EXC_RECLAIM_INDEX_FAILURE: virtual_memory_guard_exception_codes = 4;
+pub const kGUARD_EXC_RECLAIM_DEALLOCATE_FAILURE: virtual_memory_guard_exception_codes = 8;
 
 // mach/task_info.h
-pub const TASK_THREAD_TIMES_INFO: u32 = 3;
-pub const HOST_CPU_LOAD_INFO_COUNT: u32 = 4;
-pub const MACH_TASK_BASIC_INFO: u32 = 20;
+pub const TASK_INFO_MAX: usize = 1024;
+pub const TASK_BASIC_INFO_32: task_flavor_t = 4;
+pub const TASK_BASIC2_INFO_32: task_flavor_t = 6;
+// FIXME: If cfg(arm) && __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_5_0,
+// TASK_BASIC_INFO_64 should be 5. However there is no legit way to
+// detect such C definition.
+#[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+pub const TASK_BASIC_INFO_64: task_flavor_t = TASK_BASIC_INFO_64_2;
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
+pub const TASK_BASIC_INFO_64: task_flavor_t = 5;
+
+pub const TASK_EVENTS_INFO: task_flavor_t = 2;
+pub const TASK_THREAD_TIMES_INFO: task_flavor_t = 3;
+pub const TASK_ABSOLUTETIME_INFO: task_flavor_t = 1;
+pub const TASK_KERNELMEMORY_INFO: task_flavor_t = 7;
+pub const TASK_SECURITY_TOKEN: task_flavor_t = 13;
+pub const TASK_AUDIT_TOKEN: task_flavor_t = 15;
+pub const TASK_AFFINITY_TAG_INFO: task_flavor_t = 16;
+pub const TASK_DYLD_INFO: task_flavor_t = 17;
+#[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+pub const TASK_BASIC_INFO_64_2: task_flavor_t = 18;
+pub const TASK_EXTMOD_INFO: task_flavor_t = 19;
+pub const MACH_TASK_BASIC_INFO: task_flavor_t = 20;
+pub const TASK_POWER_INFO: task_flavor_t = 21;
+pub const TASK_VM_INFO: task_flavor_t = 22;
+pub const TASK_VM_INFO_PURGEABLE: task_flavor_t = 23;
+pub const TASK_TRACE_MEMORY_INFO: task_flavor_t = 24;
+pub const TASK_WAIT_STATE_INFO: task_flavor_t = 25;
+pub const TASK_POWER_INFO_V2: task_flavor_t = 26;
+pub const TASK_VM_INFO_PURGEABLE_ACCOUNT: task_flavor_t = 27;
+pub const TASK_FLAGS_INFO: task_flavor_t = 28;
+pub const TASK_DEBUG_INFO_INTERNAL: task_flavor_t = 29;
+pub const TASK_EXC_GUARD_NONE: task_exc_guard_behavior_t = 0x00;
+pub const TASK_EXC_GUARD_VM_DELIVER: task_exc_guard_behavior_t = 0x01;
+pub const TASK_EXC_GUARD_VM_ONCE: task_exc_guard_behavior_t = 0x02;
+pub const TASK_EXC_GUARD_VM_CORPSE: task_exc_guard_behavior_t = 0x04;
+pub const TASK_EXC_GUARD_VM_FATAL: task_exc_guard_behavior_t = 0x08;
+pub const TASK_EXC_GUARD_VM_ALL: task_exc_guard_behavior_t = 0x0f;
+pub const TASK_EXC_GUARD_MP_DELIVER: task_exc_guard_behavior_t = 0x10;
+pub const TASK_EXC_GUARD_MP_ONCE: task_exc_guard_behavior_t = 0x20;
+pub const TASK_EXC_GUARD_MP_CORPSE: task_exc_guard_behavior_t = 0x40;
+pub const TASK_EXC_GUARD_MP_FATAL: task_exc_guard_behavior_t = 0x80;
+pub const TASK_EXC_GUARD_MP_ALL: task_exc_guard_behavior_t = 0xf0;
+pub const TASK_EXC_GUARD_ALL: task_exc_guard_behavior_t = 0xff;
+pub const TASK_CORPSE_FORKING_DISABLED_MEM_DIAG: task_corpse_forking_behavior_t = 0x01;
+pub const TASK_SCHED_TIMESHARE_INFO: task_flavor_t = 10;
+pub const TASK_SCHED_RR_INFO: task_flavor_t = 11;
+pub const TASK_SCHED_FIFO_INFO: task_flavor_t = 12;
+pub const TASK_SCHED_INFO: task_flavor_t = 14;
 
 pub const MACH_PORT_NULL: i32 = 0;
 
@@ -5161,11 +5424,82 @@ cfg_if! {
             (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
             as mach_msg_type_number_t;
 
-        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
-            (::mem::size_of::<task_thread_times_info_data_t>()
-            / ::mem::size_of::<natural_t>()) as u32;
-        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = (::mem::size_of::<mach_task_basic_info_data_t>()
-            / ::mem::size_of::<natural_t>()) as u32;
+        // mach/task_info.h
+        pub const TASK_BASIC_INFO_32_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_basic_info_32_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        // FIXME: If cfg(arm) && __IPHONE_OS_VERSION_MIN_REQUIRED <
+        // __IPHONE_5_0, TASK_BASIC_INFO_64_COUNT should be
+        // `size_of(task_basic_info_64_data_t) / sizeof(natural_t)`. However
+        // there is no legit way to detect such C definition.
+        #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+        pub const TASK_BASIC_INFO_64_COUNT: mach_msg_type_number_t = TASK_BASIC_INFO_64_2_COUNT;
+        #[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
+        pub const TASK_BASIC_INFO_64_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_basic_info_64_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_BASIC_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_basic_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_EVENTS_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_events_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_THREAD_TIMES_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_thread_times_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_ABSOLUTETIME_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_absolutetime_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_KERNELMEMORY_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_kernelmemory_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_AFFINITY_TAG_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_affinity_tag_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_DYLD_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_dyld_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+        pub const TASK_BASIC_INFO_64_2_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_basic_info_64_2_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_EXTMOD_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_extmod_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const MACH_TASK_BASIC_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<mach_task_basic_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_POWER_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_power_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_VM_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_vm_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_VM_INFO_REV6_COUNT: mach_msg_type_number_t = TASK_VM_INFO_COUNT;
+        pub const TASK_VM_INFO_REV5_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV6_COUNT - 2;
+        pub const TASK_VM_INFO_REV4_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV5_COUNT - 1;
+        pub const TASK_VM_INFO_REV3_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV4_COUNT - 2;
+        pub const TASK_VM_INFO_REV2_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV3_COUNT - 42;
+        pub const TASK_VM_INFO_REV1_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV2_COUNT - 4;
+        pub const TASK_VM_INFO_REV0_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV1_COUNT - 2;
+        pub const TASK_TRACE_MEMORY_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_trace_memory_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_WAIT_STATE_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_wait_state_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_POWER_INFO_V2_COUNT_OLD: mach_msg_type_number_t =
+            ((::mem::size_of::<task_power_info_v2_data_t>() - ::mem::size_of::<u64>() * 2)
+             / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_POWER_INFO_V2_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_power_info_v2_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+        pub const TASK_FLAGS_INFO_COUNT: mach_msg_type_number_t =
+            (::mem::size_of::<task_flags_info_data_t>() / ::mem::size_of::<natural_t>())
+            as mach_msg_type_number_t;
+
+        // mach/host_info.h
         pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
             (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
             as mach_msg_type_number_t;
@@ -5180,8 +5514,41 @@ cfg_if! {
         pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t = 10;
         pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t = 6;
         pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t = 28;
-        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 = 4;
-        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = 12;
+
+        // mach/task_info.h
+        pub const TASK_BASIC_INFO_32_COUNT: u32 = 8;
+        // FIXME: See above
+        #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+        pub const TASK_BASIC_INFO_64_COUNT: mach_msg_type_number_t = TASK_BASIC_INFO_64_2_COUNT;
+        #[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
+        pub const TASK_BASIC_INFO_64_COUNT: mach_msg_type_number_t = 12;
+        pub const TASK_BASIC_INFO_COUNT: mach_msg_type_number_t = 12;
+        pub const TASK_EVENTS_INFO_COUNT: mach_msg_type_number_t = 8;
+        pub const TASK_THREAD_TIMES_INFO_COUNT: mach_msg_type_number_t = 4;
+        pub const TASK_ABSOLUTETIME_INFO_COUNT: mach_msg_type_number_t = 8;
+        pub const TASK_KERNELMEMORY_INFO_COUNT: mach_msg_type_number_t = 8;
+        pub const TASK_AFFINITY_TAG_INFO_COUNT: mach_msg_type_number_t = 4;
+        pub const TASK_DYLD_INFO_COUNT: mach_msg_type_number_t = 6;
+        #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+        pub const TASK_BASIC_INFO_64_2_COUNT: mach_msg_type_number_t = 12;
+        pub const TASK_EXTMOD_INFO_COUNT: mach_msg_type_number_t = 16;
+        pub const MACH_TASK_BASIC_INFO_COUNT: mach_msg_type_number_t = 12;
+        pub const TASK_POWER_INFO_COUNT: mach_msg_type_number_t = 12;
+        pub const TASK_VM_INFO_COUNT: mach_msg_type_number_t = 90;
+        pub const TASK_VM_INFO_REV6_COUNT: mach_msg_type_number_t = TASK_VM_INFO_COUNT;
+        pub const TASK_VM_INFO_REV5_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV6_COUNT - 2;
+        pub const TASK_VM_INFO_REV4_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV5_COUNT - 1;
+        pub const TASK_VM_INFO_REV3_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV4_COUNT - 2;
+        pub const TASK_VM_INFO_REV2_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV3_COUNT - 42;
+        pub const TASK_VM_INFO_REV1_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV2_COUNT - 4;
+        pub const TASK_VM_INFO_REV0_COUNT: mach_msg_type_number_t = TASK_VM_INFO_REV1_COUNT - 2;
+        pub const TASK_TRACE_MEMORY_INFO_COUNT: mach_msg_type_number_t = 6;
+        pub const TASK_WAIT_STATE_INFO_COUNT: mach_msg_type_number_t = 8;
+        pub const TASK_POWER_INFO_V2_COUNT_OLD: mach_msg_type_number_t = 22;
+        pub const TASK_POWER_INFO_V2_COUNT: mach_msg_type_number_t = 26;
+        pub const TASK_FLAGS_INFO_COUNT: mach_msg_type_number_t = 1;
+
+        // mach/host_info.h
         pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t = 38;
     }
 }
@@ -5983,7 +6350,7 @@ extern "C" {
         size: vm_size_t,
     ) -> ::kern_return_t;
 
-    // vm_statistics.h
+    // mach/vm_statistics.h
     pub fn vm_stats(info: *mut ::c_void, count: *mut ::c_uint) -> ::kern_return_t;
 
     pub fn host_statistics64(
@@ -6164,5 +6531,12 @@ cfg_if! {
     if #[cfg(libc_long_array)] {
         mod long_array;
         pub use self::long_array::*;
+    }
+}
+
+cfg_if! {
+    if #[cfg(any(target_arch = "arm", target_arch = "aarch64"))] {
+        mod arm;
+        pub use self::arm::*;
     }
 }
