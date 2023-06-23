@@ -31,7 +31,6 @@ pub type mach_msg_type_number_t = natural_t;
 pub type kern_return_t = ::c_int;
 pub type uuid_t = [u8; 16];
 pub type task_info_t = *mut integer_t;
-pub type task_info_data_t = [integer_t; TASK_INFO_MAX];
 pub type host_info_t = *mut integer_t;
 pub type task_flavor_t = natural_t;
 pub type rusage_info_t = *mut ::c_void;
