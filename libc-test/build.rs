@@ -1800,7 +1800,7 @@ fn test_android(target: &str) {
             | "MADV_POPULATE_WRITE" => true,
 
             // kernel 5.6 minimum required
-            "IPPROTO_MPTCP" => true,
+            "IPPROTO_MPTCP" | "IPPROTO_ETHERNET" => true,
 
             _ => false,
         }
@@ -3597,6 +3597,7 @@ fn test_linux(target: &str) {
 
             // IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
             | "IPPROTO_MAX"
+            | "IPPROTO_ETHERNET"
             | "IPPROTO_MPTCP" => true,
 
             // FIXME: Not currently available in headers

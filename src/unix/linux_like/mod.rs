@@ -918,6 +918,8 @@ pub const IPPROTO_BEETPH: ::c_int = 94;
 pub const IPPROTO_MPLS: ::c_int = 137;
 /// Multipath TCP
 pub const IPPROTO_MPTCP: ::c_int = 262;
+/// Ethernet-within-IPv6 encapsulation.
+pub const IPPROTO_ETHERNET: ::c_int = 143;
 
 pub const MCAST_EXCLUDE: ::c_int = 0;
 pub const MCAST_INCLUDE: ::c_int = 1;
