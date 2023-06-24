@@ -2980,7 +2980,8 @@ fn test_neutrino(target: &str) {
     cfg.skip_field(move |struct_, field| {
         (struct_ == "__sched_param" && field == "reserved") ||
         (struct_ == "sched_param" && field == "reserved") ||
-        (struct_ == "sigevent" && field == "__sigev_un1") || // union
+        (struct_ == "sigevent" && field == "__padding1") || // ensure alignment
+        (struct_ == "sigevent" && field == "__padding2") || // union
         (struct_ == "sigevent" && field == "__sigev_un2") || // union
         // sighandler_t type is super weird
         (struct_ == "sigaction" && field == "sa_sigaction") ||
