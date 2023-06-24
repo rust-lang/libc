@@ -213,9 +213,6 @@ s! {
 
 s_no_extra_traits! {
 
-
-
-
     #[repr(align(8))]
     pub struct syspage_entry {
         pub size: u16,
