@@ -70,6 +70,7 @@ macro_rules! expand_align {
 
             pub struct pthread_mutex_t {
                 #[cfg(any(target_arch = "mips",
+                          target_arch = "mips32r6",
                           target_arch = "arm",
                           target_arch = "m68k",
                           target_arch = "powerpc",
@@ -78,6 +79,7 @@ macro_rules! expand_align {
                               target_pointer_width = "32")))]
                 __align: [::c_long; 0],
                 #[cfg(not(any(target_arch = "mips",
+                              target_arch = "mips32r6",
                               target_arch = "arm",
                               target_arch = "m68k",
                               target_arch = "powerpc",
@@ -90,6 +92,7 @@ macro_rules! expand_align {
 
             pub struct pthread_rwlock_t {
                 #[cfg(any(target_arch = "mips",
+                          target_arch = "mips32r6",
                           target_arch = "arm",
                           target_arch = "m68k",
                           target_arch = "powerpc",
@@ -98,6 +101,7 @@ macro_rules! expand_align {
                               target_pointer_width = "32")))]
                 __align: [::c_long; 0],
                 #[cfg(not(any(target_arch = "mips",
+                              target_arch = "mips32r6",
                               target_arch = "arm",
                               target_arch = "m68k",
                               target_arch = "powerpc",
@@ -110,6 +114,7 @@ macro_rules! expand_align {
 
             pub struct pthread_barrier_t {
                 #[cfg(any(target_arch = "mips",
+                          target_arch = "mips32r6",
                           target_arch = "arm",
                           target_arch = "m68k",
                           target_arch = "powerpc",
@@ -118,6 +123,7 @@ macro_rules! expand_align {
                               target_pointer_width = "32")))]
                 __align: [::c_long; 0],
                 #[cfg(not(any(target_arch = "mips",
+                              target_arch = "mips32r6",
                               target_arch = "arm",
                               target_arch = "m68k",
                               target_arch = "powerpc",

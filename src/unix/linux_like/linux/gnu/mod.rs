@@ -116,6 +116,7 @@ s! {
             target_arch = "sparc",
             target_arch = "sparc64",
             target_arch = "mips",
+            target_arch = "mips32r6",
             target_arch = "mips64",
             target_arch = "mips64r6")))]
         pub c_ispeed: ::speed_t,
@@ -123,6 +124,7 @@ s! {
             target_arch = "sparc",
             target_arch = "sparc64",
             target_arch = "mips",
+            target_arch = "mips32r6",
             target_arch = "mips64",
             target_arch = "mips64r6")))]
         pub c_ospeed: ::speed_t,
@@ -956,7 +958,10 @@ pub const KEYCTL_SUPPORTS_DECRYPT: u32 = 0x02;
 pub const KEYCTL_SUPPORTS_SIGN: u32 = 0x04;
 pub const KEYCTL_SUPPORTS_VERIFY: u32 = 0x08;
 cfg_if! {
-    if #[cfg(not(any(target_arch="mips", target_arch="mips64", target_arch = "mips64r6")))] {
+    if #[cfg(not(any(target_arch="mips",
+                     target_arch="mips32r6",
+                     target_arch="mips64",
+                     target_arch = "mips64r6")))] {
         pub const KEYCTL_MOVE: u32 = 30;
         pub const KEYCTL_CAPABILITIES: u32 = 31;
 
@@ -1381,6 +1386,7 @@ cfg_if! {
                  target_arch = "arm",
                  target_arch = "m68k",
                  target_arch = "mips",
+                 target_arch = "mips32r6",
                  target_arch = "powerpc",
                  target_arch = "sparc",
                  target_arch = "riscv32"))] {
