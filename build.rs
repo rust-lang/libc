@@ -70,14 +70,8 @@ fn main() {
         Some(_) | None => set_cfg("freebsd11"),
     }
 
-    match emcc_version() {
-        Some((major, minor, patch))
-            if (major > 3)
-                || (major == 3 && minor > 1)
-                || (major == 3 && minor == 1 && patch >= 42) =>
-        {
-            set_cfg("emscripten_new_stat_abi")
-        }
+    match emcc_version_code() {
+        Some(v) if (v >= 30142) => set_cfg("emscripten_new_stat_abi"),
         // Non-Emscripten or version < 3.1.42.
         Some(_) | None => (),
     }
@@ -251,7 +245,7 @@ fn which_freebsd() -> Option<i32> {
     }
 }
 
-fn emcc_version() -> Option<(u32, u32, u32)> {
+fn emcc_version_code() -> Option<u64> {
     let output = std::process::Command::new("emcc")
         .arg("-dumpversion")
         .output()
@@ -271,11 +265,11 @@ fn emcc_version() -> Option<(u32, u32, u32)> {
     let version = stdout.unwrap();
     let mut pieces = version.trim().split('.');
 
-    let major = pieces.next()?.parse().unwrap();
-    let minor = pieces.next()?.parse().unwrap();
-    let patch = pieces.next()?.parse().unwrap();
+    let major = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
+    let minor = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
+    let patch = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
 
-    Some((major, minor, patch))
+    Some(major * 10000 + minor * 100 + patch)
 }
 
 fn set_cfg(cfg: &str) {
