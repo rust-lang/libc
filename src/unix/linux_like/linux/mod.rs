@@ -3182,6 +3182,11 @@ pub const HWTSTAMP_FILTER_PTP_V2_SYNC: ::c_uint = 13;
 pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 
+// linux/tls.h
+pub const TLS_GET_RECORD_TYPE: ::c_int = 2;
+
+pub const SOL_TLS: ::c_int = 282;
+
 // linux/if_alg.h
 pub const ALG_SET_KEY: ::c_int = 1;
 pub const ALG_SET_IV: ::c_int = 2;
