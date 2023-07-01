@@ -1881,6 +1881,9 @@ fn test_android(target: &str) {
             // Added in API level 28, but some tests use level 24.
             "syncfs" => true,
 
+            // Added in API level 28, but some tests use level 24.
+            "pthread_attr_getinheritsched" | "pthread_attr_setinheritsched" => true,
+
             _ => false,
         }
     });
