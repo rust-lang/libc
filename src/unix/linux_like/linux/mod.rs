@@ -22,6 +22,8 @@ pub type __s16 = ::c_short;
 pub type __u32 = ::c_uint;
 pub type __s32 = ::c_int;
 
+// elf.h
+
 pub type Elf32_Half = u16;
 pub type Elf32_Word = u32;
 pub type Elf32_Off = u32;
@@ -1638,7 +1640,8 @@ pub const PF_R: u32 = 1 << 2;
 pub const PF_MASKOS: u32 = 0x0ff00000;
 pub const PF_MASKPROC: u32 = 0xf0000000;
 
-// elf.h - Legal values for a_type (entry type).
+// keys to the values in the ELF auxiliary vector, usable with getauxval
+// found at uapi/linux/auxvec.h in the kernel and elf/elf.h in musl and glibc
 pub const AT_NULL: ::c_ulong = 0;
 pub const AT_IGNORE: ::c_ulong = 1;
 pub const AT_EXECFD: ::c_ulong = 2;
@@ -1666,8 +1669,12 @@ pub const AT_HWCAP2: ::c_ulong = 26;
 pub const AT_EXECFN: ::c_ulong = 31;
 
 // defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
-// wherever it is defined.
+// wherever it is defined, and explicitly stated by glibc and musl
 pub const AT_SYSINFO_EHDR: ::c_ulong = 33;
+
+pub const AT_MINSIGSTKSZ: ::c_ulong = 51;
+// getauxval AT_* values should be current for all "architecture-neutral" ones as of
+// Linux headers: include/uapi/linux/auxvec.h    kernel 6.1
 
 pub const GLOB_ERR: ::c_int = 1 << 0;
 pub const GLOB_MARK: ::c_int = 1 << 1;
