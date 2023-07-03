@@ -1196,13 +1196,14 @@ pub const POSIX_FADV_RANDOM: ::c_int = 1;
 pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_FADV_WILLNEED: ::c_int = 3;
 
-pub const AT_FDCWD: ::c_int = -100;
-pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100;
-pub const AT_REMOVEDIR: ::c_int = 0x200;
-pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400;
-pub const AT_NO_AUTOMOUNT: ::c_int = 0x800;
-pub const AT_EMPTY_PATH: ::c_int = 0x1000;
-pub const AT_RECURSIVE: ::c_int = 0x8000;
+// flags for "at"-suffixed file operations, e.g. execveat, openat
+pub const AT_FDCWD: ::c_int = -100; // used instead of dirfd
+pub const AT_REMOVEDIR: ::c_int = 0x200; // unlinkat
+pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x100; // fstatat
+pub const AT_NO_AUTOMOUNT: ::c_int = 0x800; // fstatat
+pub const AT_SYMLINK_FOLLOW: ::c_int = 0x400; // linkat
+pub const AT_EMPTY_PATH: ::c_int = 0x1000; // linkat
+pub const AT_RECURSIVE: ::c_int = 0x8000; // mount_setattr
 
 pub const LOG_CRON: ::c_int = 9 << 3;
 pub const LOG_AUTHPRIV: ::c_int = 10 << 3;
