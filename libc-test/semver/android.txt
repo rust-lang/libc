@@ -3101,6 +3101,7 @@ ff_trigger
 fgetc
 fgetpos
 fgets
+fgets_unlocked
 fgetxattr
 fileno
 flistxattr
@@ -3116,6 +3117,7 @@ fprintf
 fputc
 fputs
 fread
+fread_unlocked
 free
 freeaddrinfo
 freeifaddrs
@@ -3144,6 +3146,7 @@ ftruncate
 ftruncate64
 futimens
 fwrite
+fwrite_unlocked
 gai_strerror
 genlmsghdr
 getaddrinfo
