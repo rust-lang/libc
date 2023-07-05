@@ -124,7 +124,7 @@ targets = [
     "x86_64-unknown-redox",
     "x86_64-wrs-vxworks"
 ]
-cargo-args = ["-Zbuild-std"]
+cargo-args = ["-Zbuild-std=core"]
 
 [dependencies]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
