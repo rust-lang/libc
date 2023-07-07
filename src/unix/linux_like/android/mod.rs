@@ -350,6 +350,11 @@ s! {
         pub args: [::__u64; 6],
     }
 
+    pub struct seccomp_metadata {
+        pub filter_off: ::__u64,
+        pub flags: ::__u64,
+    }
+
     pub struct ptrace_peeksiginfo_args {
         pub off: ::__u64,
         pub flags: ::__u32,
@@ -1522,6 +1527,7 @@ pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
 pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
 pub const PTRACE_GETREGSET: ::c_int = 0x4204;
 pub const PTRACE_SETREGSET: ::c_int = 0x4205;
+pub const PTRACE_SECCOMP_GET_METADATA: ::c_int = 0x420d;
 
 pub const PTRACE_EVENT_STOP: ::c_int = 128;
 
