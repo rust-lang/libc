@@ -29,7 +29,9 @@ task:
 task:
   name: nightly x86_64-unknown-freebsd-14
   freebsd_instance:
-    image: freebsd-14-0-current-amd64-v20230330
+    # FIXME: FreeBSD 14 CI fails due to pkg installation.
+    # Use 14 again once a new image is available on Cirrus CI.
+    image_family: freebsd-13-2
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
