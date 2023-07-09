@@ -380,8 +380,6 @@ pub const SIG_UNBLOCK: ::c_int = 0x01;
 
 pub const EXTPROC: ::tcflag_t = 0x10000000;
 
-pub const MAP_HUGETLB: ::c_int = 0x040000;
-
 pub const F_GETLK: ::c_int = 12;
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETLK: ::c_int = 13;
