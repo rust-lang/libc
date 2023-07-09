@@ -349,6 +349,9 @@ fn test_apple(target: &str) {
             // FIXME: ABI has been changed on recent macOSes.
             "os_unfair_lock_assert_owner" | "os_unfair_lock_assert_not_owner" => true,
 
+            // FIXME: Once the SDK get updated to Ventura's level
+            "freadlink" | "mknodat" | "mkfifoat" => true,
+
             _ => false,
         }
     });

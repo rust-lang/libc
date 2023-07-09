@@ -1871,6 +1871,7 @@ flistxattr
 fmemopen
 fmount
 forkpty
+freadlink
 freeifaddrs
 freelocale
 fremovexattr
@@ -1994,6 +1995,8 @@ memset_s
 mem_entry_name_port_t
 mincore
 mkdirat
+mkfifoat
+mknodat
 mkstemps
 mount
 msghdr
