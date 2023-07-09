@@ -1890,6 +1890,7 @@ PTRACE_PEEKUSER
 PTRACE_POKEDATA
 PTRACE_POKETEXT
 PTRACE_POKEUSER
+PTRACE_SECCOMP_GET_METADATA
 PTRACE_SETOPTIONS
 PTRACE_SETSIGINFO
 PTRACE_SINGLESTEP
@@ -3502,6 +3503,7 @@ sched_setparam
 sched_setscheduler
 sched_yield
 seccomp_data
+seccomp_metadata
 seekdir
 select
 sem_close
