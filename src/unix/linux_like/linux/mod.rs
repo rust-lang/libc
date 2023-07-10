@@ -1642,35 +1642,37 @@ pub const PF_MASKPROC: u32 = 0xf0000000;
 
 // keys to the values in the ELF auxiliary vector, usable with getauxval
 // found at uapi/linux/auxvec.h in the kernel and elf/elf.h in musl and glibc
+// `man getauxval` for docs. briefly: returns a c_ulong but some are meant as addresses
+// a return of 0 can mean "no entry", in which case musl and glibc set errno = ENOENT
 pub const AT_NULL: ::c_ulong = 0;
 pub const AT_IGNORE: ::c_ulong = 1;
 pub const AT_EXECFD: ::c_ulong = 2;
-pub const AT_PHDR: ::c_ulong = 3;
+pub const AT_PHDR: ::c_ulong = 3; // address of ELF's program headers
 pub const AT_PHENT: ::c_ulong = 4;
 pub const AT_PHNUM: ::c_ulong = 5;
 pub const AT_PAGESZ: ::c_ulong = 6;
-pub const AT_BASE: ::c_ulong = 7;
+pub const AT_BASE: ::c_ulong = 7; // address of ld.so
 pub const AT_FLAGS: ::c_ulong = 8;
-pub const AT_ENTRY: ::c_ulong = 9;
+pub const AT_ENTRY: ::c_ulong = 9; // address of _start
 pub const AT_NOTELF: ::c_ulong = 10;
 pub const AT_UID: ::c_ulong = 11;
 pub const AT_EUID: ::c_ulong = 12;
 pub const AT_GID: ::c_ulong = 13;
 pub const AT_EGID: ::c_ulong = 14;
-pub const AT_PLATFORM: ::c_ulong = 15;
-pub const AT_HWCAP: ::c_ulong = 16;
+pub const AT_PLATFORM: ::c_ulong = 15; // address of a cstr naming the hardware
+pub const AT_HWCAP: ::c_ulong = 16; // arch/ABI-specific bitmask
 pub const AT_CLKTCK: ::c_ulong = 17;
 
 pub const AT_SECURE: ::c_ulong = 23;
-pub const AT_BASE_PLATFORM: ::c_ulong = 24;
-pub const AT_RANDOM: ::c_ulong = 25;
-pub const AT_HWCAP2: ::c_ulong = 26;
+pub const AT_BASE_PLATFORM: ::c_ulong = 24; // address of a cstr, arch-specific meaning
+pub const AT_RANDOM: ::c_ulong = 25; // address of [u8; 16]
+pub const AT_HWCAP2: ::c_ulong = 26; // AT_HWCAP ran out of bits
 
-pub const AT_EXECFN: ::c_ulong = 31;
+pub const AT_EXECFN: ::c_ulong = 31; // address of executable path name
 
 // defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
 // wherever it is defined, and explicitly stated by glibc and musl
-pub const AT_SYSINFO_EHDR: ::c_ulong = 33;
+pub const AT_SYSINFO_EHDR: ::c_ulong = 33; // address of vDSO page
 
 pub const AT_MINSIGSTKSZ: ::c_ulong = 51;
 // getauxval AT_* values should be current for all "architecture-neutral" ones as of
