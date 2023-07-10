@@ -5,6 +5,7 @@ macro_rules! expand_align {
                            target_arch = "x86_64",
                            target_arch = "powerpc64",
                            target_arch = "mips64",
+                           target_arch = "mips64r6",
                            target_arch = "s390x",
                            target_arch = "sparc64",
                            target_arch = "aarch64",
@@ -16,6 +17,7 @@ macro_rules! expand_align {
                                target_arch = "x86_64",
                                target_arch = "powerpc64",
                                target_arch = "mips64",
+                               target_arch = "mips64r6",
                                target_arch = "s390x",
                                target_arch = "sparc64",
                                target_arch = "aarch64",
@@ -83,6 +85,7 @@ macro_rules! expand_align {
 
             #[cfg_attr(all(target_pointer_width = "32",
                            any(target_arch = "mips",
+                               target_arch = "mips32r6",
                                target_arch = "arm",
                                target_arch = "hexagon",
                                target_arch = "m68k",
@@ -93,6 +96,7 @@ macro_rules! expand_align {
                        repr(align(4)))]
             #[cfg_attr(any(target_pointer_width = "64",
                            not(any(target_arch = "mips",
+                                   target_arch = "mips32r6",
                                    target_arch = "arm",
                                    target_arch = "hexagon",
                                    target_arch = "m68k",
@@ -108,6 +112,7 @@ macro_rules! expand_align {
 
             #[cfg_attr(all(target_pointer_width = "32",
                            any(target_arch = "mips",
+                               target_arch = "mips32r6",
                                target_arch = "arm",
                                target_arch = "hexagon",
                                target_arch = "m68k",
@@ -118,6 +123,7 @@ macro_rules! expand_align {
                        repr(align(4)))]
             #[cfg_attr(any(target_pointer_width = "64",
                            not(any(target_arch = "mips",
+                                   target_arch = "mips32r6",
                                    target_arch = "arm",
                                    target_arch = "hexagon",
                                    target_arch = "m68k",
@@ -132,6 +138,7 @@ macro_rules! expand_align {
 
             #[cfg_attr(all(target_pointer_width = "32",
                            any(target_arch = "mips",
+                               target_arch = "mips32r6",
                                target_arch = "arm",
                                target_arch = "hexagon",
                                target_arch = "m68k",
@@ -142,6 +149,7 @@ macro_rules! expand_align {
                        repr(align(4)))]
             #[cfg_attr(any(target_pointer_width = "64",
                            not(any(target_arch = "mips",
+                                   target_arch = "mips32r6",
                                    target_arch = "arm",
                                    target_arch = "hexagon",
                                    target_arch = "m68k",
