@@ -1591,6 +1591,9 @@ cfg_if! {
     } else if #[cfg(target_os = "aix")] {
         mod aix;
         pub use self::aix::*;
+    } else if #[cfg(target_os = "hurd")] {
+        mod hurd;
+        pub use self::hurd::*;
     } else {
         // Unknown target_os
     }
