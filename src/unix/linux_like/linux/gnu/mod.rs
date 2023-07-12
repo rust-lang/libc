@@ -958,9 +958,9 @@ pub const KEYCTL_SUPPORTS_DECRYPT: u32 = 0x02;
 pub const KEYCTL_SUPPORTS_SIGN: u32 = 0x04;
 pub const KEYCTL_SUPPORTS_VERIFY: u32 = 0x08;
 cfg_if! {
-    if #[cfg(not(any(target_arch="mips",
-                     target_arch="mips32r6",
-                     target_arch="mips64",
+    if #[cfg(not(any(target_arch = "mips",
+                     target_arch = "mips32r6",
+                     target_arch = "mips64",
                      target_arch = "mips64r6")))] {
         pub const KEYCTL_MOVE: u32 = 30;
         pub const KEYCTL_CAPABILITIES: u32 = 31;
