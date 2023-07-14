@@ -1083,6 +1083,16 @@ pub const TIME_ERROR: ::c_int = 5;
 pub const TIME_BAD: ::c_int = TIME_ERROR;
 pub const MAXTC: ::c_long = 6;
 
+// Portable GLOB_* flags are defined at the `linux_like` level.
+// The following are GNU extensions.
+pub const GLOB_PERIOD: ::c_int = 1 << 7;
+pub const GLOB_ALTDIRFUNC: ::c_int = 1 << 9;
+pub const GLOB_BRACE: ::c_int = 1 << 10;
+pub const GLOB_NOMAGIC: ::c_int = 1 << 11;
+pub const GLOB_TILDE: ::c_int = 1 << 12;
+pub const GLOB_ONLYDIR: ::c_int = 1 << 13;
+pub const GLOB_TILDE_CHECK: ::c_int = 1 << 14;
+
 cfg_if! {
     if #[cfg(any(
         target_arch = "arm",
