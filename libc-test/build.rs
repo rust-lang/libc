@@ -3346,6 +3346,7 @@ fn test_linux(target: &str) {
         "linux/seccomp.h",
         "linux/sock_diag.h",
         "linux/sockios.h",
+        "linux/tls.h",
         "linux/uinput.h",
         "linux/vm_sockets.h",
         "linux/wait.h",
