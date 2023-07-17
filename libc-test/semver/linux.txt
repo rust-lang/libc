@@ -3413,6 +3413,7 @@ sched_setparam
 sched_setscheduler
 sctp_assoc_t
 seccomp_data
+secure_getenv
 seed48
 seekdir
 sem_close

@@ -1736,6 +1736,7 @@ extern "C" {
     pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t, val: ::c_int) -> ::c_int;
     pub fn ptsname_r(fd: ::c_int, buf: *mut ::c_char, buflen: ::size_t) -> ::c_int;
     pub fn clearenv() -> ::c_int;
+    pub fn secure_getenv(name: *const ::c_char) -> *mut ::c_char;
     pub fn waitid(idtype: idtype_t, id: id_t, infop: *mut ::siginfo_t, options: ::c_int)
         -> ::c_int;
     pub fn getresuid(ruid: *mut ::uid_t, euid: *mut ::uid_t, suid: *mut ::uid_t) -> ::c_int;
