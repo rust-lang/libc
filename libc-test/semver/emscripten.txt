@@ -1,2 +1,1 @@
 getentropy
-clock_gettime
