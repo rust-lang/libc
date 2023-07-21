@@ -2532,7 +2532,6 @@ fn test_emscripten(target: &str) {
     cfg.define("_GNU_SOURCE", None); // FIXME: ??
 
     headers! { cfg:
-               "aio.h",
                "ctype.h",
                "dirent.h",
                "dlfcn.h",
@@ -2572,32 +2571,21 @@ fn test_emscripten(target: &str) {
                "stdio.h",
                "stdlib.h",
                "string.h",
-               "sys/epoll.h",
-               "sys/eventfd.h",
                "sys/file.h",
                "sys/ioctl.h",
                "sys/ipc.h",
                "sys/mman.h",
                "sys/mount.h",
                "sys/msg.h",
-               "sys/personality.h",
-               "sys/prctl.h",
-               "sys/ptrace.h",
-               "sys/quota.h",
-               "sys/reboot.h",
                "sys/resource.h",
                "sys/sem.h",
                "sys/shm.h",
-               "sys/signalfd.h",
                "sys/socket.h",
                "sys/stat.h",
                "sys/statvfs.h",
-               "sys/swap.h",
                "sys/syscall.h",
-               "sys/sysctl.h",
                "sys/sysinfo.h",
                "sys/time.h",
-               "sys/timerfd.h",
                "sys/times.h",
                "sys/types.h",
                "sys/uio.h",
@@ -2655,8 +2643,9 @@ fn test_emscripten(target: &str) {
             // FIXME: is this necessary?
             "sighandler_t" => true,
 
-            // FIXME: The size has been changed due to musl's time64
-            "time_t" => true,
+            // No epoll support
+            // https://github.com/emscripten-core/emscripten/issues/5033
+            ty if ty.starts_with("epoll") => true,
 
             _ => false,
         }
@@ -2683,9 +2672,16 @@ fn test_emscripten(target: &str) {
             // llvm/llvm-project@d1a96e9
             "max_align_t" => true,
 
-            // FIXME: The size has been changed due to time64
-            "utimbuf" | "timeval" | "timespec" | "rusage" | "itimerval" | "sched_param"
-            | "stat" | "stat64" | "shmid_ds" | "msqid_ds" => true,
+            // No quota.h
+            "dqblk" => true,
+
+            // No aio.h
+            "aiocb" => true,
+
+            // No epoll support
+            // https://github.com/emscripten-core/emscripten/issues/5033
+            ty if ty.starts_with("epoll") => true,
+            ty if ty.starts_with("signalfd") => true,
 
             _ => false,
         }
@@ -2696,9 +2692,6 @@ fn test_emscripten(target: &str) {
             // Emscripten does not support fork/exec/wait or any kind of multi-process support
             // https://github.com/emscripten-core/emscripten/blob/3.1.30/tools/system_libs.py#L973
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" | "wait4" => true,
-
-            // FIXME: Remove after emscripten-core/emscripten#18492 is released (> 3.1.30).
-            "clearenv" => true,
 
             _ => false,
         }
@@ -2713,9 +2706,58 @@ fn test_emscripten(target: &str) {
             // FIXME: emscripten uses different constants to constructs these
             n if n.contains("__SIZEOF_PTHREAD") => true,
 
+            // No epoll support
+            // https://github.com/emscripten-core/emscripten/issues/5033
+            n if n.starts_with("EPOLL") => true,
+            n if n.starts_with("EFD_") => true,
+            n if n.starts_with("SFD_") => true,
+
+            // No reboot.h
+            n if n.starts_with("RB_") => true,
+
+            // No aio.h
+            n if n.starts_with("AIO_") => true,
+            n if n.starts_with("LIO_") => true,
+
+            // No prctrl.h
+            n if n.starts_with("PR_") => true,
+
+            // No quota.h
+            n if n.starts_with("QFMT_") => true,
+
             // FIXME: `SYS_gettid` was removed in
             // emscripten-core/emscripten@6d6474e
             "SYS_gettid" => true,
+
+            // No personality.h etc.: https://github.com/emscripten-core/emscripten/pull/17704
+            // No sysctl.h: https://github.com/emscripten-core/emscripten/pull/18863
+            n if n.starts_with("PTRACE_") => true,
+            n if n.starts_with("QIF_") => true,
+
+            | "ADDR_NO_RANDOMIZE"
+            | "MMAP_PAGE_ZERO"
+            | "ADDR_COMPAT_LAYOUT"
+            | "READ_IMPLIES_EXEC"
+            | "ADDR_LIMIT_32BIT"
+            | "SHORT_INODE"
+            | "WHOLE_SECONDS"
+            | "STICKY_TIMEOUTS"
+            | "ADDR_LIMIT_3GB"
+                => true,
+
+            | "USRQUOTA"
+            | "GRPQUOTA"
+                => true,
+
+            | "Q_GETFMT"
+            | "Q_GETINFO"
+            | "Q_SETINFO"
+            | "Q_SYNC"
+            | "Q_QUOTAON"
+            | "Q_QUOTAOFF"
+            | "Q_GETQUOTA"
+            | "Q_SETQUOTA"
+                => true,
 
             // FIXME: These values have been changed
             | "POSIX_MADV_DONTNEED" // to 4
@@ -3700,7 +3742,7 @@ fn test_linux(target: &str) {
             "PR_SET_VMA" | "PR_SET_VMA_ANON_NAME" => true,
 
             // present in recent kernels only
-            "PR_SCHED_CORE" | "PR_SCHED_CORE_CREATE" | "PR_SCHED_CORE_GET" | "PR_SCHED_CORE_MAX" | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP" | "PR_SCHED_CORE_SCOPE_THREAD" | "PR_SCHED_CORE_SCOPE_THREAD_GROUP" | "PR_SCHED_CORE_SHARE_FROM" | "PR_SCHED_CORE_SHARE_TO" => true, 
+            "PR_SCHED_CORE" | "PR_SCHED_CORE_CREATE" | "PR_SCHED_CORE_GET" | "PR_SCHED_CORE_MAX" | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP" | "PR_SCHED_CORE_SCOPE_THREAD" | "PR_SCHED_CORE_SCOPE_THREAD_GROUP" | "PR_SCHED_CORE_SHARE_FROM" | "PR_SCHED_CORE_SHARE_TO" => true,
 
             // present in recent kernels only >= 5.13
             "PR_PAC_SET_ENABLED_KEYS" | "PR_PAC_GET_ENABLED_KEYS" => true,
