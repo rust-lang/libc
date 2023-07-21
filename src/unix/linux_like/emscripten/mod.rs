@@ -20,7 +20,7 @@ pub type loff_t = i64;
 pub type pthread_key_t = ::c_uint;
 
 pub type clock_t = c_long;
-// https://github.com/emscripten-core/emscripten/pull/17401
+// 64-bit time_t since July 2022: https://github.com/emscripten-core/emscripten/pull/17401
 pub type time_t = i64;
 pub type suseconds_t = c_long;
 pub type ino_t = u64;
@@ -1326,10 +1326,10 @@ pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
-pub const POSIX_MADV_DONTNEED: ::c_int = 0;
+pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const RLIM_INFINITY: ::rlim_t = !0;
-pub const RLIMIT_NLIMITS: ::c_int = 15;
+pub const RLIMIT_NLIMITS: ::c_int = 16;
 pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
@@ -1539,7 +1539,7 @@ pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
-pub const IPPROTO_MAX: ::c_int = 256;
+pub const IPPROTO_MAX: ::c_int = 263;
 
 pub const SOL_SOCKET: ::c_int = 1;
 
@@ -1595,10 +1595,10 @@ pub const EXTPROC: ::tcflag_t = 0x00010000;
 
 pub const MAP_HUGETLB: ::c_int = 0x040000;
 
-pub const F_GETLK: ::c_int = 12;
+pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;
-pub const F_SETLK: ::c_int = 13;
-pub const F_SETLKW: ::c_int = 14;
+pub const F_SETLK: ::c_int = 6;
+pub const F_SETLKW: ::c_int = 7;
 pub const F_SETOWN: ::c_int = 8;
 pub const F_OFD_GETLK: ::c_int = 36;
 pub const F_OFD_SETLK: ::c_int = 37;
@@ -1659,7 +1659,7 @@ pub const TIOCM_RNG: ::c_int = 0x080;
 pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
-pub const O_TMPFILE: ::c_int = 0x400000;
+pub const O_TMPFILE: ::c_int = 0x410000;
 
 pub const MAX_ADDR_LEN: usize = 7;
 pub const ARPD_UPDATE: ::c_ushort = 0x01;

@@ -2759,17 +2759,8 @@ fn test_emscripten(target: &str) {
             | "Q_SETQUOTA"
                 => true,
 
-            // FIXME: These values have been changed
-            | "POSIX_MADV_DONTNEED" // to 4
-            | "RLIMIT_NLIMITS" // to 16
-            | "RLIM_NLIMITS" // to 16
-            | "IPPROTO_MAX" // to 263
-            | "F_GETLK" // to 5
-            | "F_SETLK" // to 6
-            | "F_SETLKW" // to 7
-            | "O_TMPFILE" // to 65
-            | "SIG_IGN" // -1
-                => true,
+            // FIXME: https://github.com/emscripten-core/emscripten/pull/14883
+            "SIG_IGN" => true,
 
             _ => false,
         }
