@@ -2734,30 +2734,14 @@ fn test_emscripten(target: &str) {
             n if n.starts_with("PTRACE_") => true,
             n if n.starts_with("QIF_") => true,
 
-            | "ADDR_NO_RANDOMIZE"
-            | "MMAP_PAGE_ZERO"
-            | "ADDR_COMPAT_LAYOUT"
-            | "READ_IMPLIES_EXEC"
-            | "ADDR_LIMIT_32BIT"
-            | "SHORT_INODE"
-            | "WHOLE_SECONDS"
-            | "STICKY_TIMEOUTS"
-            | "ADDR_LIMIT_3GB"
-                => true,
+            "ADDR_NO_RANDOMIZE" | "MMAP_PAGE_ZERO" | "ADDR_COMPAT_LAYOUT" | "READ_IMPLIES_EXEC"
+            | "ADDR_LIMIT_32BIT" | "SHORT_INODE" | "WHOLE_SECONDS" | "STICKY_TIMEOUTS"
+            | "ADDR_LIMIT_3GB" => true,
 
-            | "USRQUOTA"
-            | "GRPQUOTA"
-                => true,
+            "USRQUOTA" | "GRPQUOTA" => true,
 
-            | "Q_GETFMT"
-            | "Q_GETINFO"
-            | "Q_SETINFO"
-            | "Q_SYNC"
-            | "Q_QUOTAON"
-            | "Q_QUOTAOFF"
-            | "Q_GETQUOTA"
-            | "Q_SETQUOTA"
-                => true,
+            "Q_GETFMT" | "Q_GETINFO" | "Q_SETINFO" | "Q_SYNC" | "Q_QUOTAON" | "Q_QUOTAOFF"
+            | "Q_GETQUOTA" | "Q_SETQUOTA" => true,
 
             // FIXME: https://github.com/emscripten-core/emscripten/pull/14883
             "SIG_IGN" => true,
