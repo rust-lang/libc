@@ -1915,17 +1915,6 @@ pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
 
-// These don't exist on Solaris, but do on OpenSolaris derivatives
-// e.g. https://illumos.org/man/3C/flock
-cfg_if! {
-    if #[cfg(not(target_os = "solaris"))] {
-        pub const LOCK_SH: ::c_int = 1;
-        pub const LOCK_EX: ::c_int = 2;
-        pub const LOCK_NB: ::c_int = 4;
-        pub const LOCK_UN: ::c_int = 8;
-    }
-}
-
 pub const F_RDLCK: ::c_short = 1;
 pub const F_WRLCK: ::c_short = 2;
 pub const F_UNLCK: ::c_short = 3;
