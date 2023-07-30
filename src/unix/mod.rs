@@ -1067,7 +1067,11 @@ extern "C" {
     )]
     pub fn realpath(pathname: *const ::c_char, resolved: *mut ::c_char) -> *mut ::c_char;
 
-    pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
+    cfg_if! {
+        if #[cfg(not(target_os = "solaris"))] {
+            pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
+        }
+    }
 
     #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
     pub fn times(buf: *mut ::tms) -> ::clock_t;
