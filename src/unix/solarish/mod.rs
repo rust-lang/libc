@@ -3203,9 +3203,9 @@ extern "C" {
 
     pub fn sync();
 
-    fn __major(version: ::c_int, devnum: ::dev_t) -> ::major_t;
-    fn __minor(version: ::c_int, devnum: ::dev_t) -> ::minor_t;
-    fn __makedev(version: ::c_int, majdev: ::major_t, mindev: ::minor_t) -> ::dev_t;
+    pub fn __major(version: ::c_int, devnum: ::dev_t) -> ::major_t;
+    pub fn __minor(version: ::c_int, devnum: ::dev_t) -> ::minor_t;
+    pub fn __makedev(version: ::c_int, majdev: ::major_t, mindev: ::minor_t) -> ::dev_t;
 }
 
 #[link(name = "sendfile")]

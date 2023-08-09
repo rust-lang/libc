@@ -1008,6 +1008,10 @@ fn test_solarish(target: &str) {
             "madvise" | "mprotect" if is_illumos => true,
             "door_call" | "door_return" | "door_create" if is_illumos => true,
 
+            // The compat functions use these "native" functions linked to their
+            // non-prefixed implementations in libc.
+            "native_getpwent_r" | "native_getgrent_r" => true,
+
             // Not visible when build with _XOPEN_SOURCE=700
             "mmapobj" | "mmap64" | "meminfo" | "getpagesizes" | "getpagesizes2" => true,
 
@@ -1015,6 +1019,12 @@ fn test_solarish(target: &str) {
             // configuration of the compilation environment, but the return
             // value is not useful (always 0) so we can ignore it:
             "setservent" | "endservent" if is_illumos => true,
+
+            // Following illumos#3729, getifaddrs was changed to a
+            // redefine_extname symbol in order to preserve compatibility.
+            // Until better symbol binding story is figured out, it must be
+            // excluded from the tests.
+            "getifaddrs" if is_illumos => true,
 
             _ => false,
         }
