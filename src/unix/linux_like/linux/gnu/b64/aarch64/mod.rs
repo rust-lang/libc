@@ -934,5 +934,8 @@ cfg_if! {
     if #[cfg(libc_int128)] {
         mod int128;
         pub use self::int128::*;
+    } else {
+        mod fallback;
+        pub use self::fallback::*;
     }
 }
