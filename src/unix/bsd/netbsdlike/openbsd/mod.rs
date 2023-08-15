@@ -999,6 +999,8 @@ pub const SO_NETPROC: ::c_int = 0x1020;
 pub const SO_RTABLE: ::c_int = 0x1021;
 pub const SO_PEERCRED: ::c_int = 0x1022;
 pub const SO_SPLICE: ::c_int = 0x1023;
+pub const SO_DOMAIN: ::c_int = 0x1024;
+pub const SO_PROTOCOL: ::c_int = 0x1025;
 
 // sys/netinet/in.h
 // Protocols (RFC 1700)
