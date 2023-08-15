@@ -928,13 +928,15 @@ cfg_if! {
         mod align;
         pub use self::align::*;
     }
+
+
 }
 
 cfg_if! {
     if #[cfg(libc_int128)] {
         mod int128;
         pub use self::int128::*;
-    } else {
+    } else if #[cfg(libc_align)] {
         mod fallback;
         pub use self::fallback::*;
     }
