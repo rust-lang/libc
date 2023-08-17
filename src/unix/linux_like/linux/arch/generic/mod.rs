@@ -95,6 +95,7 @@ cfg_if! {
     if #[cfg(all(any(target_arch = "x86",
                      target_arch = "x86_64",
                      target_arch = "aarch64",
+                     target_arch = "csky",
                      target_arch = "loongarch64"),
                  not(any(target_env = "musl", target_env = "ohos"))))] {
         pub const SO_TIMESTAMP_NEW: ::c_int = 63;
@@ -115,6 +116,7 @@ cfg_if! {
                  target_arch = "aarch64",
                  target_arch = "riscv64",
                  target_arch = "s390x",
+                 target_arch = "csky",
                  target_arch = "loongarch64"))] {
         pub const FICLONE: ::c_ulong = 0x40049409;
         pub const FICLONERANGE: ::c_ulong = 0x4020940D;

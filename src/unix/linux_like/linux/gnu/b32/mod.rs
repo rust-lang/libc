@@ -352,6 +352,9 @@ cfg_if! {
     } else if #[cfg(target_arch = "riscv32")] {
         mod riscv32;
         pub use self::riscv32::*;
+    } else if #[cfg(target_arch = "csky")] {
+        mod csky;
+        pub use self::csky::*;
     } else {
         // Unknown target_arch
     }
