@@ -261,6 +261,16 @@ cfg_if! {
         pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 4;
         pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 4;
         pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 4;
+    } else if #[cfg(target_os = "rtems")] {
+        const __PTHREAD_INITIALIZER_BYTE: u8 = 0x00;
+        pub const __SIZEOF_PTHREAD_ATTR_T: usize = 96;
+        pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 64;
+        pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 24;
+        pub const __SIZEOF_PTHREAD_COND_T: usize = 28;
+        pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 24;
+        pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
+        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
+        pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
     } else {
         const __PTHREAD_INITIALIZER_BYTE: u8 = 0;
         pub const __SIZEOF_PTHREAD_ATTR_T: usize = 56;
@@ -783,6 +793,13 @@ cfg_if! {
         // Only tested on ARM so far. Other platforms might have different
         // definitions for types and constants.
         pub use target_arch_not_implemented;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_os = "rtems")] {
+        mod rtems;
+        pub use self::rtems::*;
     }
 }
 
