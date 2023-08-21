@@ -18,9 +18,3 @@ rm -f a.*
 
 # Make emsdk usable by any user
 chmod a+rxw -R /emsdk-portable
-
-# node 8 is required to run wasm
-# NOTE: Do not forget to sync Node.js version with `emscripten-entry.sh`!
-cd /
-curl --retry 5 -L https://nodejs.org/dist/v16.20.0/node-v16.20.0-linux-x64.tar.xz | \
-    tar -xJ
