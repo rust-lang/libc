@@ -336,6 +336,9 @@ fn test_apple(target: &str) {
 
             // FIXME: XCode 13.1 doesn't have it.
             "TIOCREMOTE" => true,
+
+            // Private value used by debuggers.
+            "_POSIX_SPAWN_DISABLE_ASLR" => true,
             _ => false,
         }
     });
@@ -360,6 +363,9 @@ fn test_apple(target: &str) {
 
             // FIXME: Once the SDK get updated to Ventura's level
             "freadlink" | "mknodat" | "mkfifoat" => true,
+
+            // Private functions
+            "pthread_chdir_np" | "pthread_fchdir_np" => true,
 
             _ => false,
         }
