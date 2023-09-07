@@ -14,6 +14,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
+    "gnu_time64_abi",
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
@@ -65,6 +66,11 @@ fn main() {
         Some(v) if (v >= 30142) => set_cfg("emscripten_new_stat_abi"),
         // Non-Emscripten or version < 3.1.42.
         Some(_) | None => (),
+    }
+
+    // Some ABIs need to redirect time related symbols to their time64 equivalents.
+    if is_gnu_time64_abi() {
+        set_cfg("gnu_time64_abi");
     }
 
     // On CI: deny all warnings
@@ -204,4 +210,65 @@ fn set_cfg(cfg: &str) {
         panic!("trying to set cfg {}, but it is not in ALLOWED_CFGS", cfg);
     }
     println!("cargo:rustc-cfg={}", cfg);
+}
+
+fn is_gnu_time64_abi() -> bool {
+    match env::var("CARGO_CFG_TARGET_ENV") {
+        Ok(target_env) => {
+            if target_env != "gnu" {
+                return false;
+            }
+        }
+        Err(_) => panic!("CARGO_CFG_TARGET_ENV not set"),
+    }
+    match env::var("CARGO_CFG_TARGET_OS") {
+        Ok(target_os) => {
+            if target_os != "linux" {
+                return false;
+            }
+        }
+        Err(_) => panic!("CARGO_CFG_TARGET_OS not set"),
+    }
+    match env::var("CARGO_CFG_TARGET_POINTER_WIDTH") {
+        Ok(bits) => {
+            if bits == "64" {
+                return false;
+            }
+        }
+        Err(_) => panic!("CARGO_CFG_TARGET_POINTER_WIDTH not set"),
+    }
+    match env::var("CARGO_CFG_TARGET_ARCH") {
+        Ok(bits) => {
+            if bits == "riscv32" {
+                return false;
+            }
+        }
+        Err(_) => panic!("CARGO_CFG_TARGET_ARCH not set"),
+    }
+    match env::var("RUST_LIBC_TIME_BITS") {
+        Ok(time_bits) => {
+            if time_bits == "64" {
+                return true;
+            }
+            if time_bits == "32" {
+                return false;
+            }
+            if time_bits != "default" {
+                panic!("Invalid value for RUST_LIBC_TIME_BITS");
+            }
+        }
+        Err(_) => {}
+    }
+    // At this point, we _know_ it is *-*-linux-gnu* with 32 bit
+    // pointers. Some 64 bit arch still have 32 bit pointers though.
+    match env::var("TARGET") {
+        Ok(target) => {
+            // x86_64-unknown-linux-gnux32 and similar
+            if target.contains("x86_64") && target.contains("x32") {
+                return false;
+            }
+        }
+        Err(_) => panic!("TARGET not set"),
+    }
+    return true;
 }
