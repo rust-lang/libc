@@ -108,28 +108,32 @@ fn main() {
         && target_arch != "riscv32"
         && target_arch != "x86_64"
     {
-        match env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS") {
-            Ok(val) if val == "64" => {
-                set_cfg("gnu_file_offset_bits64");
-                set_cfg("linux_time_bits64");
-                set_cfg("gnu_time_bits64");
-            }
-            Ok(val) if val != "32" => {
-                panic!("RUST_LIBC_UNSTABLE_GNU_TIME_BITS may only be set to '32' or '64'")
-            }
-            _ => {
-                match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
-                    Ok(val) if val == "64" => {
-                        set_cfg("gnu_file_offset_bits64");
-                    }
-                    Ok(val) if val != "32" => {
-                        panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
-                    }
-                    _ => {}
-                }
-            }
+        let timebits =
+            env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS").unwrap_or_else(|_| "32".to_string());
+        // If TIME_BITS is 64 and FILE_OFFSET_BITS is unset, default FILE_OFFSET_BITS to 64
+        let filebits = match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
+            Ok(val) => val,
+            Err(_) if timebits == "64" => "64".to_string(),
+            Err(_) => "32".to_string(),
+        };
+        let valid_bits = ["32", "64"];
+        assert!(
+            valid_bits.contains(&filebits.as_str()) && valid_bits.contains(&timebits.as_str()),
+            "Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS or RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32, 64 or unset"
+        );
+        assert!(
+            !(filebits == "32" && timebits == "64"),
+            "RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS must be 64 or unset if RUST_LIBC_UNSTABLE_GNU_TIME_BITS is 64"
+        );
+        if timebits == "64" {
+            set_cfg("linux_time_bits64");
+            set_cfg("gnu_time_bits64");
+        }
+        if filebits == "64" {
+            set_cfg("gnu_file_offset_bits64");
         }
     }
+
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
