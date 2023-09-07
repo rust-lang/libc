@@ -3520,6 +3520,19 @@ fn test_linux(target: &str) {
         if musl && ty.starts_with("uinput_") {
             return true;
         }
+        if musl && ty == "seccomp_notif" {
+            return true;
+        }
+        if musl && ty == "seccomp_notif_addfd" {
+            return true;
+        }
+        if musl && ty == "seccomp_notif_resp" {
+            return true;
+        }
+        if musl && ty == "seccomp_notif_sizes" {
+            return true;
+        }
+
         // LFS64 types have been removed in musl 1.2.4+
         if musl && (ty.ends_with("64") || ty.ends_with("64_t")) {
             return true;
@@ -3648,6 +3661,17 @@ fn test_linux(target: &str) {
             }
         }
         if musl {
+            // FIXME: Requires >= 5.0 kernel headers
+            if name == "SECCOMP_GET_NOTIF_SIZES"
+               || name == "SECCOMP_FILTER_FLAG_NEW_LISTENER"
+               || name == "SECCOMP_FILTER_FLAG_TSYNC_ESRCH"
+               || name == "SECCOMP_USER_NOTIF_FLAG_CONTINUE"  // requires >= 5.5
+               || name == "SECCOMP_ADDFD_FLAG_SETFD"  // requires >= 5.9
+               || name == "SECCOMP_ADDFD_FLAG_SEND"   // requires >= 5.9
+               || name == "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV"  // requires >= 5.19
+            {
+                return true;
+            }
             // FIXME: Requires >= 5.4.1 kernel headers
             if name.starts_with("J1939")
                 || name.starts_with("RTEXT_FILTER_")
