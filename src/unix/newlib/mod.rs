@@ -546,8 +546,8 @@ pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
-pub const TCP_NODELAY: ::c_int = 8193;
-pub const TCP_MAXSEG: ::c_int = 8194;
+pub const TCP_NODELAY: ::c_int = 1;
+pub const TCP_MAXSEG: ::c_int = 2;
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
 pub const TCP_KEEPIDLE: ::c_int = 256;
@@ -561,12 +561,12 @@ cfg_if! {
         pub const IP_TOS: ::c_int = 3;
     }
 }
-pub const IP_TTL: ::c_int = 8;
+pub const IP_TTL: ::c_int = 4;
 pub const IP_MULTICAST_IF: ::c_int = 9;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
-pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
-pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
+pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
+pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
 
 pub const IPV6_UNICAST_HOPS: ::c_int = 4;
 pub const IPV6_MULTICAST_IF: ::c_int = 9;
@@ -598,10 +598,19 @@ pub const NI_NAMEREQD: ::c_int = 4;
 pub const NI_NUMERICSERV: ::c_int = 0;
 pub const NI_DGRAM: ::c_int = 0;
 
-pub const EAI_FAMILY: ::c_int = -303;
-pub const EAI_MEMORY: ::c_int = -304;
-pub const EAI_NONAME: ::c_int = -305;
-pub const EAI_SOCKTYPE: ::c_int = -307;
+pub const EAI_AGAIN: ::c_int = 2;
+pub const EAI_BADFLAGS: ::c_int = 3;
+pub const EAI_FAIL: ::c_int = 4;
+pub const EAI_FAMILY: ::c_int = 5;
+pub const EAI_MEMORY: ::c_int = 6;
+pub const EAI_NONAME: ::c_int = 8;
+pub const EAI_SERVICE: ::c_int = 9;
+pub const EAI_SOCKTYPE: ::c_int = 10;
+pub const EAI_SYSTEM: ::c_int = 11;
+pub const EAI_BADHINTS: ::c_int = 12;
+pub const EAI_PROTOCOL: ::c_int = 13;
+pub const EAI_OVERFLOW: ::c_int = 14;
+pub const EAI_MAX: ::c_int = 15;
 
 pub const EXIT_SUCCESS: ::c_int = 0;
 pub const EXIT_FAILURE: ::c_int = 1;
