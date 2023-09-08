@@ -10,30 +10,58 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "espidf"))] {
-        pub type dev_t = ::c_short;
-        pub type ino_t = ::c_ushort;
-        pub type off_t = ::c_long;
-    } else if #[cfg(any(target_os = "vita"))] {
-        pub type dev_t = ::c_short;
-        pub type ino_t = ::c_ushort;
-        pub type off_t = ::c_int;
-    } else {
+    if #[cfg(target_os = "horizon")] {
         pub type dev_t = u32;
-        pub type ino_t = u32;
         pub type off_t = i64;
+    } else {
+        pub type dev_t = ::c_short;
+        pub type off_t = ::c_long;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type ino_t = u32;
+    } else if #[cfg(target_arch = "sparc")] {
+        pub type ino_t = ::c_ulong;
+    } else {
+        pub type ino_t = ::c_ushort;
     }
 }
 
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u32;
 pub type id_t = u32;
-pub type key_t = ::c_int;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type key_t = ::c_int;
+    } else {
+        pub type key_t = ::c_long;
+    }
+}
+
 pub type loff_t = ::c_longlong;
-pub type mode_t = ::c_uint;
-pub type nfds_t = u32;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type mode_t = ::c_uint;
+        pub type nfds_t = u32;
+    } else {
+        pub type mode_t = u32;
+        pub type nfds_t = ::c_uint;
+    }
+}
+
 pub type nlink_t = ::c_ushort;
-pub type pthread_t = ::c_ulong;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type pthread_t = ::c_ulong;
+    } else {
+        pub type pthread_t = u32;
+    }
+}
 pub type pthread_key_t = ::c_uint;
 pub type rlim_t = u32;
 
@@ -93,16 +121,16 @@ s! {
     }
 
     pub struct in_addr {
-            pub s_addr: ::in_addr_t,
+        pub s_addr: ::in_addr_t,
     }
 
     pub struct hostent {
-            pub h_name: *mut ::c_char,
-            pub h_aliases: *mut *mut ::c_char,
-            pub h_addrtype: ::c_int,
-            pub h_length: ::c_int,
-            pub h_addr_list: *mut *mut ::c_char,
-            pub h_addr: *mut ::c_char,
+        pub h_name: *mut ::c_char,
+        pub h_aliases: *mut *mut ::c_char,
+        pub h_addrtype: ::c_int,
+        pub h_length: ::c_int,
+        pub h_addr_list: *mut *mut ::c_char,
+        pub h_addr: *mut ::c_char,
     }
 
     pub struct pollfd {
@@ -557,16 +585,21 @@ pub const TCP_KEEPCNT: ::c_int = 1024;
 cfg_if! {
     if #[cfg(target_os = "horizon")] {
         pub const IP_TOS: ::c_int = 7;
+        pub const IP_TTL: ::c_int = 8;
+        pub const IP_MULTICAST_LOOP: ::c_int = 9;
+        pub const IP_MULTICAST_TTL: ::c_int = 10;
+        pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
+        pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
     } else {
         pub const IP_TOS: ::c_int = 3;
+        pub const IP_TTL: ::c_int = 4;
+        pub const IP_MULTICAST_IF: ::c_int = 9;
+        pub const IP_MULTICAST_TTL: ::c_int = 10;
+        pub const IP_MULTICAST_LOOP: ::c_int = 11;
+        pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
+        pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
     }
 }
-pub const IP_TTL: ::c_int = 4;
-pub const IP_MULTICAST_IF: ::c_int = 9;
-pub const IP_MULTICAST_TTL: ::c_int = 10;
-pub const IP_MULTICAST_LOOP: ::c_int = 11;
-pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
-pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
 
 pub const IPV6_UNICAST_HOPS: ::c_int = 4;
 pub const IPV6_MULTICAST_IF: ::c_int = 9;
