@@ -610,7 +610,6 @@ pub const EAI_SYSTEM: ::c_int = 11;
 pub const EAI_BADHINTS: ::c_int = 12;
 pub const EAI_PROTOCOL: ::c_int = 13;
 pub const EAI_OVERFLOW: ::c_int = 14;
-pub const EAI_MAX: ::c_int = 15;
 
 pub const EXIT_SUCCESS: ::c_int = 0;
 pub const EXIT_FAILURE: ::c_int = 1;
