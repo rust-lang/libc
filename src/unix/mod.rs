@@ -388,11 +388,6 @@ cfg_if! {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
-    } else if #[cfg(target_os = "hermit")] {
-        // no_default_libraries is set to false for HermitCore, so only a link
-        // to "pthread" needs to be added.
-        #[link(name = "pthread")]
-        extern {}
     } else if #[cfg(target_env = "illumos")] {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -1582,9 +1577,6 @@ cfg_if! {
     } else if #[cfg(target_os = "haiku")] {
         mod haiku;
         pub use self::haiku::*;
-    } else if #[cfg(target_os = "hermit")] {
-        mod hermit;
-        pub use self::hermit::*;
     } else if #[cfg(target_os = "redox")] {
         mod redox;
         pub use self::redox::*;
