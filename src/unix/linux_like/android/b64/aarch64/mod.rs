@@ -410,7 +410,9 @@ pub const SYS_fsopen: ::c_long = 430;
 pub const SYS_fsconfig: ::c_long = 431;
 pub const SYS_fsmount: ::c_long = 432;
 pub const SYS_fspick: ::c_long = 433;
+pub const SYS_pidfd_open: ::c_long = 434;
 pub const SYS_syscalls: ::c_long = 436;
+pub const SYS_pidfd_getfd: ::c_long = 438;
 
 pub const PROT_BTI: ::c_int = 0x10;
 pub const PROT_MTE: ::c_int = 0x20;

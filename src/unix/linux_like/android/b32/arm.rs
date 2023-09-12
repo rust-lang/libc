@@ -512,6 +512,8 @@ pub const SYS_fsopen: ::c_long = 430;
 pub const SYS_fsconfig: ::c_long = 431;
 pub const SYS_fsmount: ::c_long = 432;
 pub const SYS_fspick: ::c_long = 433;
+pub const SYS_pidfd_open: ::c_long = 434;
+pub const SYS_pidfd_getfd: ::c_long = 438;
 
 // offsets in mcontext_t.gregs from sys/ucontext.h
 pub const REG_R0: ::c_int = 0;
