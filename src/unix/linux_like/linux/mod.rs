@@ -651,6 +651,57 @@ s! {
         pub val: ::c_int,
     }
 
+    // linux/ptp_clock.h
+    pub struct ptp_clock_time {
+        pub sec: ::__s64,
+        pub nsec: ::__u32,
+        pub reserved: ::__u32,
+    }
+
+    pub struct ptp_clock_caps {
+        pub max_adj: ::c_int,
+        pub n_alarm: ::c_int,
+        pub n_ext_ts: ::c_int,
+        pub n_per_out: ::c_int,
+        pub pps: ::c_int,
+        pub n_pins: ::c_int,
+        pub cross_timestamping: ::c_int,
+        #[cfg(target_env = "gnu")]
+        pub adjust_phase: ::c_int,
+        #[cfg(target_env = "gnu")]
+        pub max_phase_adj: ::c_int,
+        #[cfg(target_env = "gnu")]
+        pub rsv: [::c_int; 11],
+        #[cfg(any(target_env = "musl", target_env = "ohos"))]
+        pub rsv: [::c_int; 13],
+    }
+
+    pub struct ptp_extts_request {
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub rsv: [::c_uint; 2],
+    }
+
+    pub struct ptp_sys_offset_extended {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        pub ts: [[ptp_clock_time; 3]; 25],
+    }
+
+    pub struct ptp_sys_offset_precise {
+        pub device: ptp_clock_time,
+        pub sys_realtime: ptp_clock_time,
+        pub sys_monoraw: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
+
+    pub struct ptp_extts_event {
+        pub t: ptp_clock_time,
+        index: ::c_uint,
+        flags: ::c_uint,
+        rsv: [::c_uint; 2],
+    }
+
     // linux/sctp.h
 
     pub struct sctp_initmsg {
@@ -890,6 +941,21 @@ s_no_extra_traits! {
         pub sched_deadline: ::__u64,
         pub sched_period: ::__u64,
     }
+
+    // linux/ptp_clock.h
+    pub struct ptp_sys_offset {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        pub ts: [ptp_clock_time; 51],
+    }
+
+    pub struct ptp_pin_desc {
+        pub name: [::c_char; 64],
+        pub index: ::c_uint,
+        pub func: ::c_uint,
+        pub chan: ::c_uint,
+        pub rsv: [::c_uint; 5],
+    }
 }
 
 s_no_extra_traits! {
@@ -916,6 +982,34 @@ cfg_if! {
                 pub can_family: ::sa_family_t,
                 pub can_ifindex: ::c_int,
                 pub can_addr: __c_anonymous_sockaddr_can_can_addr,
+            }
+        }
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_union)] {
+        s_no_extra_traits! {
+            // linux/ptp_clock.h
+            #[allow(missing_debug_implementations)]
+            pub union __c_anonymous_ptp_perout_request_1 {
+                pub start: ptp_clock_time,
+                pub phase: ptp_clock_time,
+            }
+
+            #[allow(missing_debug_implementations)]
+            pub union __c_anonymous_ptp_perout_request_2 {
+                pub on: ptp_clock_time,
+                pub rsv: [::c_uint; 4],
+            }
+
+            #[allow(missing_debug_implementations)]
+            pub struct ptp_perout_request {
+                pub anonymous_1: __c_anonymous_ptp_perout_request_1,
+                pub period: ptp_clock_time,
+                pub index: ::c_uint,
+                pub flags: ::c_uint,
+                pub anonymous_2: __c_anonymous_ptp_perout_request_2,
             }
         }
     }
@@ -1393,6 +1487,62 @@ cfg_if! {
                 self.sched_runtime.hash(state);
                 self.sched_deadline.hash(state);
                 self.sched_period.hash(state);
+            }
+        }
+
+        impl PartialEq for ptp_sys_offset {
+            fn eq(&self, other: &ptp_sys_offset) -> bool {
+                self.n_samples == other.n_samples &&
+                    self.rsv == other.rsv &&
+                    self.ts[..] == other.ts[..]
+            }
+        }
+        impl Eq for ptp_sys_offset {}
+        impl ::fmt::Debug for ptp_sys_offset {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ptp_sys_offset")
+                    .field("n_samples", &self.n_samples)
+                    .field("rsv", &self.rsv)
+                    .field("ts", &&self.ts[..])
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ptp_sys_offset {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.n_samples.hash(state);
+                self.rsv.hash(state);
+                self.ts[..].hash(state);
+            }
+        }
+
+        impl PartialEq for ptp_pin_desc {
+            fn eq(&self, other: &ptp_pin_desc) -> bool {
+                self.name[..] == other.name[..] &&
+                    self.index == other.index &&
+                    self.func == other.func &&
+                    self.chan == other.chan &&
+                    self.rsv == other.rsv
+            }
+        }
+        impl Eq for ptp_pin_desc {}
+        impl ::fmt::Debug for ptp_pin_desc {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ptp_pin_desc")
+                    .field("name", &&self.name[..])
+                    .field("index", &self.index)
+                    .field("func", &self.func)
+                    .field("chan", &self.chan)
+                    .field("rsv", &self.rsv)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ptp_pin_desc {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.name[..].hash(state);
+                self.index.hash(state);
+                self.func.hash(state);
+                self.chan.hash(state);
+                self.rsv.hash(state);
             }
         }
     }
@@ -3642,6 +3792,58 @@ pub const HWTSTAMP_FILTER_PTP_V2_EVENT: ::c_uint = 12;
 pub const HWTSTAMP_FILTER_PTP_V2_SYNC: ::c_uint = 13;
 pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
+
+// linux/ptp_clock.h
+pub const PTP_MAX_SAMPLES: ::c_uint = 25;
+
+cfg_if! {
+    if #[cfg(any(target_arch = "powerpc", target_arch = "powerpc64", target_arch = "sparc64"))] {
+        pub const PTP_CLOCK_GETCAPS: ::c_uint = 0x40503d01;
+        pub const PTP_EXTTS_REQUEST: ::c_uint = 0x80103d02;
+        pub const PTP_PEROUT_REQUEST: ::c_uint = 0x80383d03;
+        pub const PTP_ENABLE_PPS: ::c_uint = 0x80043d04;
+        pub const PTP_SYS_OFFSET: ::c_uint = 0x83403d05;
+        pub const PTP_PIN_GETFUNC: ::c_uint = 0xc0603d06;
+        pub const PTP_PIN_SETFUNC: ::c_uint = 0x80603d07;
+        pub const PTP_SYS_OFFSET_PRECISE: ::c_uint = 0xc0403d08;
+        pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint = 0xc4c03d09;
+
+        pub const PTP_CLOCK_GETCAPS2: ::c_uint = 0x40503d0a;
+        pub const PTP_EXTTS_REQUEST2: ::c_uint = 0x80103d0b;
+        pub const PTP_PEROUT_REQUEST2: ::c_uint = 0x80383d0c;
+        pub const PTP_ENABLE_PPS2: ::c_uint = 0x80043d0d;
+        pub const PTP_SYS_OFFSET2: ::c_uint = 0x83403d0e;
+        pub const PTP_PIN_GETFUNC2: ::c_uint = 0xc0603d0f;
+        pub const PTP_PIN_SETFUNC2: ::c_uint = 0x80603d10;
+        pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint = 0xc0403d11;
+        pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint = 0xc4c03d12;
+    } else {
+        pub const PTP_CLOCK_GETCAPS: ::c_uint = 0x80503d01;
+        pub const PTP_EXTTS_REQUEST: ::c_uint = 0x40103d02;
+        pub const PTP_PEROUT_REQUEST: ::c_uint = 0x40383d03;
+        pub const PTP_ENABLE_PPS: ::c_uint = 0x40043d04;
+        pub const PTP_SYS_OFFSET: ::c_uint = 0x43403d05;
+        pub const PTP_PIN_GETFUNC: ::c_uint = 0xc0603d06;
+        pub const PTP_PIN_SETFUNC: ::c_uint = 0x40603d07;
+        pub const PTP_SYS_OFFSET_PRECISE: ::c_uint = 0xc0403d08;
+        pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint = 0xc4c03d09;
+
+        pub const PTP_CLOCK_GETCAPS2: ::c_uint = 0x80503d0a;
+        pub const PTP_EXTTS_REQUEST2: ::c_uint = 0x40103d0b;
+        pub const PTP_PEROUT_REQUEST2: ::c_uint = 0x40383d0c;
+        pub const PTP_ENABLE_PPS2: ::c_uint = 0x40043d0d;
+        pub const PTP_SYS_OFFSET2: ::c_uint = 0x43403d0e;
+        pub const PTP_PIN_GETFUNC2: ::c_uint = 0xc0603d0f;
+        pub const PTP_PIN_SETFUNC2: ::c_uint = 0x40603d10;
+        pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint = 0xc0403d11;
+        pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint = 0xc4c03d12;
+    }
+}
+
+pub const PTP_PF_NONE: ::c_uint = 0;
+pub const PTP_PF_EXTTS: ::c_uint = 1;
+pub const PTP_PF_PEROUT: ::c_uint = 2;
+pub const PTP_PF_PHYSYNC: ::c_uint = 3;
 
 // linux/tls.h
 pub const TLS_TX: ::c_int = 1;
