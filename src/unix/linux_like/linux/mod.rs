@@ -624,6 +624,73 @@ s! {
         pub val: ::c_int,
     }
 
+    // linux/ptp_clock.h
+    pub struct ptp_clock_time {
+        pub sec: ::__s64,
+        pub nsec: ::__u32,
+        pub reserved: ::__u32,
+    }
+
+    pub struct ptp_clock_caps {
+        pub max_adj: ::c_int,
+        pub n_alarm: ::c_int,
+        pub n_ext_ts: ::c_int,
+        pub n_per_out: ::c_int,
+        pub pps: ::c_int,
+        pub n_pins: ::c_int,
+        pub cross_timestamping: ::c_int,
+        pub adjust_phase: ::c_int,
+        pub rsv: [::c_int; 12],
+    }
+
+    pub struct ptp_extts_request {
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub rsv: [::c_uint; 2],
+    }
+
+    pub struct ptp_perout_request {
+        pub anonymous_1: __c_anonymous_ptp_perout_request_1,
+        pub period: ptp_clock_time,
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub anonymous_2: __c_anonymous_ptp_perout_request_2,
+    }
+
+    pub struct ptp_sys_offset {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        pub ts: [ptp_clock_time; 51],
+    }
+
+    pub struct ptp_sys_offset_extended {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        pub ts: [[ptp_clock_time; 3]; 25],
+    }
+
+    pub struct ptp_sys_offset_precise {
+        pub device: ptp_clock_time,
+        pub sys_realtime: ptp_clock_time,
+        pub sys_monoraw: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
+
+    pub struct ptp_pin_desc {
+        pub name: [::c_char; 64],
+        pub index: ::c_uint,
+        pub func: ::c_uint,
+        pub chan: ::c_uint,
+        pub rsv: [::c_uint; 5],
+    }
+
+    pub struct ptp_extts_event {
+        pub t: ptp_clock_time,
+        index: ::c_uint,
+        flags: ::c_uint,
+        rsv: [::c_uint; 2],
+    }
+
     // linux/sctp.h
 
     pub struct sctp_initmsg {
@@ -803,6 +870,19 @@ s_no_extra_traits! {
         pub d_reclen: ::c_ushort,
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
+    }
+
+    // linux/ptp_clock.h
+    #[cfg(libc_union)]
+    pub union __c_anonymous_ptp_perout_request_1 {
+        pub start: ptp_clock_time,
+        pub phase: ptp_clock_time,
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_ptp_perout_request_2 {
+        pub on: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
     }
 }
 
@@ -3181,6 +3261,34 @@ pub const HWTSTAMP_FILTER_PTP_V2_EVENT: ::c_uint = 12;
 pub const HWTSTAMP_FILTER_PTP_V2_SYNC: ::c_uint = 13;
 pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
+
+// linux/ptp_clock.h
+pub const PTP_MAX_SAMPLES: ::c_uint = 25;
+
+pub const PTP_CLOCK_GETCAPS: ::c_uint = 0x80503d01;
+pub const PTP_EXTTS_REQUEST: ::c_uint = 0x40103d02;
+pub const PTP_PEROUT_REQUEST: ::c_uint = 0x40383d03;
+pub const PTP_ENABLE_PPS: ::c_uint = 0x40043d04;
+pub const PTP_SYS_OFFSET: ::c_uint = 0x43403d05;
+pub const PTP_PIN_GETFUNC: ::c_uint = 0xc0603d06;
+pub const PTP_PIN_SETFUNC: ::c_uint = 0x40603d07;
+pub const PTP_SYS_OFFSET_PRECISE: ::c_uint = 0xc0403d08;
+pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint = 0xc4c03d09;
+
+pub const PTP_CLOCK_GETCAPS2: ::c_uint = 0x80503d0a;
+pub const PTP_EXTTS_REQUEST2: ::c_uint = 0x40103d0b;
+pub const PTP_PEROUT_REQUEST2: ::c_uint = 0x40383d0c;
+pub const PTP_ENABLE_PPS2: ::c_uint = 0x40043d0d;
+pub const PTP_SYS_OFFSET2: ::c_uint = 0x43403d0e;
+pub const PTP_PIN_GETFUNC2: ::c_uint = 0xc0603d0f;
+pub const PTP_PIN_SETFUNC2: ::c_uint = 0x40603d10;
+pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint = 0xc0403d11;
+pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint = 0xc4c03d12;
+
+pub const PTP_PF_NONE: ::c_uint = 0;
+pub const PTP_PF_EXTTS: ::c_uint = 1;
+pub const PTP_PF_PEROUT: ::c_uint = 2;
+pub const PTP_PF_PHYSYNC: ::c_uint = 3;
 
 // linux/tls.h
 pub const TLS_GET_RECORD_TYPE: ::c_int = 2;
