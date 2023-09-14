@@ -121,7 +121,7 @@ impl ::Clone for fpos64_t {
 
 // PUB_STRUCT
 
-s! {
+fn s_fmt_tmp() {
     pub struct group {
         pub gr_name: *mut ::c_char,
         pub gr_passwd: *mut ::c_char,
@@ -907,7 +907,7 @@ s! {
     }
 }
 
-s_no_extra_traits! {
+fn s_no_extra_traits_fmt_tmp() {
     pub struct sysinfo {
         pub uptime: ::c_ulong,
         pub loads: [::c_ulong; 3],
@@ -1048,8 +1048,8 @@ s_no_extra_traits! {
     }
 }
 
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
+fn cfg_if_fmt_tmp() {
+    if cfg_tmp!([feature = "extra_traits"]) {
         impl PartialEq for sysinfo {
             fn eq(&self, other: &sysinfo) -> bool {
                 self.uptime == other.uptime
@@ -3357,10 +3357,10 @@ pub const HUGETLB_FLAG_ENCODE_SHIFT: u32 = 26;
 pub const MAP_HUGE_SHIFT: u32 = 26;
 
 // intentionally not public, only used for fd_set
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
+fn cfg_if_fmt_tmp() {
+    if cfg_tmp!([target_pointer_width = "32"]) {
         const ULONG_SIZE: usize = 32;
-    } else if #[cfg(target_pointer_width = "64")] {
+    } else if cfg_tmp!([target_pointer_width = "64"]) {
         const ULONG_SIZE: usize = 64;
     } else {
         // Unknown target_pointer_width
@@ -3369,7 +3369,7 @@ cfg_if! {
 
 // END_PUB_CONST
 
-f! {
+fn f_fmt_tmp() {
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
@@ -3462,57 +3462,70 @@ f! {
         }
     }
 
-    pub {const} fn CMSG_ALIGN(len: ::size_t) -> ::size_t {
+    /* FMT-CONST */
+    pub const fn CMSG_ALIGN(len: ::size_t) -> ::size_t {
         (len + ::mem::size_of::<::size_t>() - 1) & !(::mem::size_of::<::size_t>() - 1)
     }
 
-    pub {const} fn CMSG_SPACE(len: ::c_uint) -> ::c_uint {
+    /* FMT-CONST */
+    pub const fn CMSG_SPACE(len: ::c_uint) -> ::c_uint {
         (CMSG_ALIGN(len as ::size_t) + CMSG_ALIGN(::mem::size_of::<cmsghdr>())) as ::c_uint
     }
 
-    pub {const} fn CMSG_LEN(len: ::c_uint) -> ::c_uint {
+    /* FMT-CONST */
+    pub const fn CMSG_LEN(len: ::c_uint) -> ::c_uint {
         (CMSG_ALIGN(::mem::size_of::<cmsghdr>()) + len as ::size_t) as ::c_uint
     }
 }
 
-safe_f! {
-    pub {const} fn WIFSTOPPED(status: ::c_int) -> bool {
+fn safe_f_fmt_tmp() {
+    /* FMT-CONST */
+    pub const fn WIFSTOPPED(status: ::c_int) -> bool {
         (status & 0xff) == 0x7f
     }
 
-    pub {const} fn WSTOPSIG(status: ::c_int) -> ::c_int {
+    /* FMT-CONST */
+    pub const fn WSTOPSIG(status: ::c_int) -> ::c_int {
         (status >> 8) & 0xff
     }
 
-    pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
+    /* FMT-CONST */
+    pub const fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0xffff
     }
 
-    pub {const} fn WIFSIGNALED(status: ::c_int) -> bool {
+    /* FMT-CONST */
+    pub const fn WIFSIGNALED(status: ::c_int) -> bool {
         ((status & 0x7f) + 1) as i8 >= 2
     }
 
-    pub {const} fn WTERMSIG(status: ::c_int) -> ::c_int {
+    /* FMT-CONST */
+    pub const fn WTERMSIG(status: ::c_int) -> ::c_int {
         status & 0x7f
     }
 
-    pub {const} fn WIFEXITED(status: ::c_int) -> bool {
+    /* FMT-CONST */
+    pub const fn WIFEXITED(status: ::c_int) -> bool {
         (status & 0x7f) == 0
     }
 
-    pub {const} fn WEXITSTATUS(status: ::c_int) -> ::c_int {
+    /* FMT-CONST */
+    pub const fn WEXITSTATUS(status: ::c_int) -> ::c_int {
         (status >> 8) & 0xff
     }
 
-    pub {const} fn WCOREDUMP(status: ::c_int) -> bool {
+    /* FMT-CONST */
+    pub const fn WCOREDUMP(status: ::c_int) -> bool {
         (status & 0x80) != 0
     }
 
-    pub {const} fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
+    /* FMT-CONST */
+    pub const fn QCMD(cmd: ::c_int, type_: ::c_int) -> ::c_int {
         (cmd << 8) | (type_ & 0x00ff)
     }
 
-    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+    /* FMT-CONST */
+    pub const fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
         let major = major as ::dev_t;
         let minor = minor as ::dev_t;
         let mut dev = 0;
@@ -4455,14 +4468,14 @@ extern "C" {
     ) -> ::c_int;
 }
 
-cfg_if! {
-    if #[cfg(target_arch = "aarch64")] {
+fn cfg_if_fmt_tmp() {
+    if cfg_tmp!([target_arch = "aarch64"]) {
         mod aarch64;
         pub use self::aarch64::*;
-    } else if #[cfg(any(target_arch = "x86_64"))] {
+    } else if cfg_tmp!([any(target_arch = "x86_64")]) {
         mod x86_64;
         pub use self::x86_64::*;
-    } else if #[cfg(any(target_arch = "riscv64"))] {
+    } else if cfg_tmp!([any(target_arch = "riscv64")]) {
         mod riscv64;
         pub use self::riscv64::*;
     } else {

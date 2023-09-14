@@ -3552,6 +3552,8 @@ fn test_linux(target: &str) {
         "linux/netlink.h",
         // FIXME: requires Linux >= 5.6:
         [!musl]: "linux/openat2.h",
+        "linux/ptp_clock.h",
+        // FIXME: requires Linux >= 5.6:
         [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
@@ -3698,6 +3700,9 @@ fn test_linux(target: &str) {
             return true;
         }
         if musl && ty == "seccomp_notif_sizes" {
+            return true;
+        }
+        if musl && ty == "ptp_sys_offset_extended" {
             return true;
         }
 
@@ -3889,6 +3894,7 @@ fn test_linux(target: &str) {
             if name == "SECCOMP_GET_NOTIF_SIZES"
                || name == "SECCOMP_FILTER_FLAG_NEW_LISTENER"
                || name == "SECCOMP_FILTER_FLAG_TSYNC_ESRCH"
+               || name == "PTP_SYS_OFFSET_EXTENDED"
                || name == "SECCOMP_USER_NOTIF_FLAG_CONTINUE"  // requires >= 5.5
                || name == "SECCOMP_ADDFD_FLAG_SETFD"  // requires >= 5.9
                || name == "SECCOMP_ADDFD_FLAG_SEND"   // requires >= 5.9
@@ -3901,6 +3907,15 @@ fn test_linux(target: &str) {
                 || name.starts_with("RTEXT_FILTER_")
                 || name.starts_with("SO_J1939")
                 || name.starts_with("SCM_J1939")
+                || name == "PTP_CLOCK_GETCAPS2"
+                || name == "PTP_EXTTS_REQUEST2"
+                || name == "PTP_PEROUT_REQUEST2"
+                || name == "PTP_ENABLE_PPS2"
+                || name == "PTP_SYS_OFFSET2"
+                || name == "PTP_PIN_GETFUNC2"
+                || name == "PTP_PIN_SETFUNC2"
+                || name == "PTP_SYS_OFFSET_PRECISE2"
+                || name == "PTP_SYS_OFFSET_EXTENDED2"
             {
                 return true;
             }
@@ -4422,7 +4437,11 @@ fn test_linux(target: &str) {
         // `__exit_status` type is a patch which is absent in musl
         (struct_ == "utmpx" && field == "ut_exit" && musl) ||
         // `can_addr` is an anonymous union
-        (struct_ == "sockaddr_can" && field == "can_addr")
+        (struct_ == "sockaddr_can" && field == "can_addr") ||
+        // `anonymous_1` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
+        // `anonymous_2` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_2")
     });
 
     cfg.volatile_item(|i| {
@@ -4495,6 +4514,10 @@ fn test_linux(target: &str) {
         (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
         // `handle` is a VLA
         (struct_ == "fanotify_event_info_fid" && field == "handle") ||
+        // `anonymous_1` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
+        // `anonymous_2` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64)
     });
