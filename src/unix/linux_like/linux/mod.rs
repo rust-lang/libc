@@ -2766,6 +2766,7 @@ pub const SIOCGIFMEM: ::c_ulong = 0x0000891F;
 pub const SIOCSIFMEM: ::c_ulong = 0x00008920;
 pub const SIOCGIFMTU: ::c_ulong = 0x00008921;
 pub const SIOCSIFMTU: ::c_ulong = 0x00008922;
+pub const SIOCSIFNAME: ::c_ulong = 0x00008923;
 pub const SIOCSIFHWADDR: ::c_ulong = 0x00008924;
 pub const SIOCGIFENCAP: ::c_ulong = 0x00008925;
 pub const SIOCSIFENCAP: ::c_ulong = 0x00008926;
