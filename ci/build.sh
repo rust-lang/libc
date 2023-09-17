@@ -102,6 +102,12 @@ i686-linux-android \
 i686-unknown-freebsd \
 i686-unknown-linux-gnu \
 i686-unknown-linux-musl \
+mips-unknown-linux-gnu \
+mips-unknown-linux-musl \
+mips64-unknown-linux-gnuabi64 \
+mips64el-unknown-linux-gnuabi64 \
+mipsel-unknown-linux-gnu \
+mipsel-unknown-linux-musl \
 powerpc-unknown-linux-gnu \
 powerpc64-unknown-linux-gnu \
 powerpc64le-unknown-linux-gnu \
@@ -111,14 +117,6 @@ x86_64-unknown-linux-gnu \
 x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
 "
-
-# FIXME: builds of MIPS targets are currently broken on nightly.
-# mips-unknown-linux-gnu \
-# mips-unknown-linux-musl \
-# mips64-unknown-linux-gnuabi64 \
-# mips64el-unknown-linux-gnuabi64 \
-# mipsel-unknown-linux-gnu \
-# mipsel-unknown-linux-musl \
 
 RUST_GT_1_13_LINUX_TARGETS="\
 arm-unknown-linux-musleabi \
