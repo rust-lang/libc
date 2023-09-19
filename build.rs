@@ -7,6 +7,7 @@ use std::string::String;
 // need to know all the possible cfgs that this script will set. If you need to set another cfg
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &'static [&'static str] = &[
+    "emscripten_new_stat_abi",
     "freebsd10",
     "freebsd11",
     "freebsd12",
@@ -34,7 +35,10 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
 const CHECK_CFG_EXTRA: &'static [(&'static str, &'static [&'static str])] = &[
     ("target_os", &["switch", "aix", "ohos"]),
     ("target_env", &["illumos", "wasi", "aix", "ohos"]),
-    ("target_arch", &["loongarch64"]),
+    (
+        "target_arch",
+        &["loongarch64", "mips32r6", "mips64r6", "csky"],
+    ),
 ];
 
 fn main() {
@@ -67,6 +71,12 @@ fn main() {
         Some(13) if libc_ci => set_cfg("freebsd13"),
         Some(14) if libc_ci => set_cfg("freebsd14"),
         Some(_) | None => set_cfg("freebsd11"),
+    }
+
+    match emcc_version_code() {
+        Some(v) if (v >= 30142) => set_cfg("emscripten_new_stat_abi"),
+        // Non-Emscripten or version < 3.1.42.
+        Some(_) | None => (),
     }
 
     // On CI: deny all warnings
@@ -236,6 +246,33 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("14") => Some(14),
         _ => None,
     }
+}
+
+fn emcc_version_code() -> Option<u64> {
+    let output = std::process::Command::new("emcc")
+        .arg("-dumpversion")
+        .output()
+        .ok();
+    if output.is_none() {
+        return None;
+    }
+    let output = output.unwrap();
+    if !output.status.success() {
+        return None;
+    }
+
+    let stdout = String::from_utf8(output.stdout).ok();
+    if stdout.is_none() {
+        return None;
+    }
+    let version = stdout.unwrap();
+    let mut pieces = version.trim().split('.');
+
+    let major = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
+    let minor = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
+    let patch = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
+
+    Some(major * 10000 + minor * 100 + patch)
 }
 
 fn set_cfg(cfg: &str) {

@@ -12,6 +12,9 @@ else
   # https://github.com/rust-lang/rust/issues/103673 contains related information.
   case "$TARGET" in
     *android*) toolchain=nightly-2022-10-09;;
+    # FIXME: Unpin once mips' components are available on nightly.
+    # https://rust-lang.github.io/rustup-components-history/mips-unknown-linux-gnu.html
+    *mips*) toolchain=nightly-2023-07-04;;
     *) toolchain=nightly;;
   esac
 fi

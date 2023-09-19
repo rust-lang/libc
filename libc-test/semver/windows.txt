@@ -247,6 +247,7 @@ localtime_s
 lseek
 lseek64
 malloc
+_msize
 memchr
 memcmp
 memcpy

@@ -22,8 +22,6 @@ pub type fsblkcnt_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
 
-pub type flock64 = flock;
-
 cfg_if! {
     if #[cfg(doc)] {
         // Used in `linux::arch` to define ioctl constants.
@@ -186,6 +184,14 @@ s! {
         pub l_whence: ::c_short,
         pub l_start: ::off_t,
         pub l_len: ::off_t,
+        pub l_pid: ::pid_t,
+    }
+
+    pub struct flock64 {
+        pub l_type: ::c_short,
+        pub l_whence: ::c_short,
+        pub l_start: ::off64_t,
+        pub l_len: ::off64_t,
         pub l_pid: ::pid_t,
     }
 
@@ -719,8 +725,6 @@ extern "C" {
         timeout: *mut ::timespec,
     ) -> ::c_int;
 
-    pub fn getrlimit64(resource: ::c_int, rlim: *mut ::rlimit64) -> ::c_int;
-    pub fn setrlimit64(resource: ::c_int, rlim: *const ::rlimit64) -> ::c_int;
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
     pub fn prlimit(
@@ -729,13 +733,6 @@ extern "C" {
         new_limit: *const ::rlimit,
         old_limit: *mut ::rlimit,
     ) -> ::c_int;
-    pub fn prlimit64(
-        pid: ::pid_t,
-        resource: ::c_int,
-        new_limit: *const ::rlimit64,
-        old_limit: *mut ::rlimit64,
-    ) -> ::c_int;
-
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
@@ -783,6 +780,10 @@ extern "C" {
     pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
+
+// Alias <foo> to <foo>64 to mimic glibc's LFS64 support
+mod lfs64;
+pub use self::lfs64::*;
 
 cfg_if! {
     if #[cfg(any(target_arch = "x86_64",

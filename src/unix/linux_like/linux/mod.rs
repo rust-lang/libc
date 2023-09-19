@@ -61,11 +61,6 @@ impl ::Clone for fpos64_t {
 }
 
 s! {
-    pub struct rlimit64 {
-        pub rlim_cur: rlim64_t,
-        pub rlim_max: rlim64_t,
-    }
-
     pub struct glob_t {
         pub gl_pathc: ::size_t,
         pub gl_pathv: *mut *mut c_char,
@@ -685,6 +680,11 @@ s! {
     pub struct sctp_authinfo {
         pub auth_keynumber: ::__u16,
     }
+
+    pub struct rlimit64 {
+        pub rlim_cur: rlim64_t,
+        pub rlim_max: rlim64_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -698,14 +698,6 @@ s_no_extra_traits! {
     pub struct dirent {
         pub d_ino: ::ino_t,
         pub d_off: ::off_t,
-        pub d_reclen: ::c_ushort,
-        pub d_type: ::c_uchar,
-        pub d_name: [::c_char; 256],
-    }
-
-    pub struct dirent64 {
-        pub d_ino: ::ino64_t,
-        pub d_off: ::off64_t,
         pub d_reclen: ::c_ushort,
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
@@ -803,6 +795,14 @@ s_no_extra_traits! {
         pub flags: ::c_int,
         pub tx_type: ::c_int,
         pub rx_filter: ::c_int,
+    }
+
+    pub struct dirent64 {
+        pub d_ino: ::ino64_t,
+        pub d_off: ::off64_t,
+        pub d_reclen: ::c_ushort,
+        pub d_type: ::c_uchar,
+        pub d_name: [::c_char; 256],
     }
 }
 
@@ -1933,8 +1933,6 @@ pub const CLONE_PIDFD: ::c_int = 0x1000;
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
 
-/// Multipath TCP
-pub const IPPROTO_MPTCP: ::c_int = 262;
 #[deprecated(
     since = "0.2.80",
     note = "This value was increased in the newer kernel \
@@ -3184,6 +3182,11 @@ pub const HWTSTAMP_FILTER_PTP_V2_SYNC: ::c_uint = 13;
 pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 
+// linux/tls.h
+pub const TLS_GET_RECORD_TYPE: ::c_int = 2;
+
+pub const SOL_TLS: ::c_int = 282;
+
 // linux/if_alg.h
 pub const ALG_SET_KEY: ::c_int = 1;
 pub const ALG_SET_IV: ::c_int = 2;
@@ -3193,6 +3196,19 @@ pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
 
 pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
+
+// include/uapi/linux/if.h
+pub const IF_OPER_UNKNOWN: ::c_int = 0;
+pub const IF_OPER_NOTPRESENT: ::c_int = 1;
+pub const IF_OPER_DOWN: ::c_int = 2;
+pub const IF_OPER_LOWERLAYERDOWN: ::c_int = 3;
+pub const IF_OPER_TESTING: ::c_int = 4;
+pub const IF_OPER_DORMANT: ::c_int = 5;
+pub const IF_OPER_UP: ::c_int = 6;
+
+pub const IF_LINK_MODE_DEFAULT: ::c_int = 0;
+pub const IF_LINK_MODE_DORMANT: ::c_int = 1;
+pub const IF_LINK_MODE_TESTING: ::c_int = 2;
 
 // include/uapi/linux/udp.h
 pub const UDP_CORK: ::c_int = 1;
@@ -3712,9 +3728,11 @@ pub const CAN_ERR_FLAG: canid_t = 0x20000000;
 pub const CAN_SFF_MASK: canid_t = 0x000007FF;
 pub const CAN_EFF_MASK: canid_t = 0x1FFFFFFF;
 pub const CAN_ERR_MASK: canid_t = 0x1FFFFFFF;
+pub const CANXL_PRIO_MASK: ::canid_t = CAN_SFF_MASK;
 
 pub const CAN_SFF_ID_BITS: ::c_int = 11;
 pub const CAN_EFF_ID_BITS: ::c_int = 29;
+pub const CANXL_PRIO_BITS: ::c_int = CAN_SFF_ID_BITS;
 
 pub const CAN_MAX_DLC: ::c_int = 8;
 pub const CAN_MAX_DLEN: usize = 8;
@@ -3724,10 +3742,26 @@ pub const CANFD_MAX_DLEN: usize = 64;
 pub const CANFD_BRS: ::c_int = 0x01;
 pub const CANFD_ESI: ::c_int = 0x02;
 
+pub const CANXL_MIN_DLC: ::c_int = 0;
+pub const CANXL_MAX_DLC: ::c_int = 2047;
+pub const CANXL_MAX_DLC_MASK: ::c_int = 0x07FF;
+pub const CANXL_MIN_DLEN: usize = 1;
+pub const CANXL_MAX_DLEN: usize = 2048;
+
+pub const CANXL_XLF: ::c_int = 0x80;
+pub const CANXL_SEC: ::c_int = 0x01;
+
 cfg_if! {
     if #[cfg(libc_align)] {
         pub const CAN_MTU: usize = ::mem::size_of::<can_frame>();
         pub const CANFD_MTU: usize = ::mem::size_of::<canfd_frame>();
+        pub const CANXL_MTU: usize = ::mem::size_of::<canxl_frame>();
+        // FIXME: use `core::mem::offset_of!` once that is available
+        // https://github.com/rust-lang/rfcs/pull/3308
+        // pub const CANXL_HDR_SIZE: usize = core::mem::offset_of!(canxl_frame, data);
+        pub const CANXL_HDR_SIZE: usize = 12;
+        pub const CANXL_MIN_MTU: usize = CANXL_HDR_SIZE + 64;
+        pub const CANXL_MAX_MTU: usize = CANXL_MTU;
     }
 }
 
@@ -3753,6 +3787,7 @@ pub const CAN_RAW_LOOPBACK: ::c_int = 3;
 pub const CAN_RAW_RECV_OWN_MSGS: ::c_int = 4;
 pub const CAN_RAW_FD_FRAMES: ::c_int = 5;
 pub const CAN_RAW_JOIN_FILTERS: ::c_int = 6;
+pub const CAN_RAW_XL_FRAMES: ::c_int = 7;
 
 // linux/can/j1939.h
 pub const SOL_CAN_J1939: ::c_int = SOL_CAN_BASE + CAN_J1939;
@@ -4269,21 +4304,8 @@ extern "C" {
     pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn __errno_location() -> *mut ::c_int;
 
-    pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut ::FILE;
-    pub fn freopen64(
-        filename: *const c_char,
-        mode: *const c_char,
-        file: *mut ::FILE,
-    ) -> *mut ::FILE;
-    pub fn tmpfile64() -> *mut ::FILE;
-    pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
-    pub fn fsetpos64(stream: *mut ::FILE, ptr: *const fpos64_t) -> ::c_int;
-    pub fn fseeko64(stream: *mut ::FILE, offset: ::off64_t, whence: ::c_int) -> ::c_int;
-    pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
     pub fn fallocate(fd: ::c_int, mode: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
-    pub fn fallocate64(fd: ::c_int, mode: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
     pub fn posix_fallocate(fd: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
-    pub fn posix_fallocate64(fd: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
     pub fn readahead(fd: ::c_int, offset: ::off64_t, count: ::size_t) -> ::ssize_t;
     pub fn getxattr(
         path: *const c_char,
@@ -4584,12 +4606,6 @@ extern "C" {
         offset: *mut off_t,
         count: ::size_t,
     ) -> ::ssize_t;
-    pub fn sendfile64(
-        out_fd: ::c_int,
-        in_fd: ::c_int,
-        offset: *mut off64_t,
-        count: ::size_t,
-    ) -> ::ssize_t;
     pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     pub fn getgrgid_r(
         gid: ::gid_t,
@@ -4839,6 +4855,40 @@ extern "C" {
         len: ::size_t,
         flags: ::c_uint,
     ) -> ::ssize_t;
+}
+
+// LFS64 extensions
+//
+// * musl has 64-bit versions only so aliases the LFS64 symbols to the standard ones
+cfg_if! {
+    if #[cfg(not(target_env = "musl"))] {
+        extern "C" {
+            pub fn fallocate64(
+                fd: ::c_int,
+                mode: ::c_int,
+                offset: ::off64_t,
+                len: ::off64_t
+            ) -> ::c_int;
+            pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
+            pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut ::FILE;
+            pub fn freopen64(
+                filename: *const c_char,
+                mode: *const c_char,
+                file: *mut ::FILE,
+            ) -> *mut ::FILE;
+            pub fn fseeko64(stream: *mut ::FILE, offset: ::off64_t, whence: ::c_int) -> ::c_int;
+            pub fn fsetpos64(stream: *mut ::FILE, ptr: *const fpos64_t) -> ::c_int;
+            pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
+            pub fn posix_fallocate64(fd: ::c_int, offset: ::off64_t, len: ::off64_t) -> ::c_int;
+            pub fn sendfile64(
+                out_fd: ::c_int,
+                in_fd: ::c_int,
+                offset: *mut off64_t,
+                count: ::size_t,
+            ) -> ::ssize_t;
+            pub fn tmpfile64() -> *mut ::FILE;
+        }
+    }
 }
 
 cfg_if! {

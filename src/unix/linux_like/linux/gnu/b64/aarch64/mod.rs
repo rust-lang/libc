@@ -902,6 +902,9 @@ pub const SYS_process_mrelease: ::c_long = 448;
 pub const SYS_futex_waitv: ::c_long = 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
+pub const PROT_BTI: ::c_int = 0x10;
+pub const PROT_MTE: ::c_int = 0x20;
+
 extern "C" {
     pub fn sysctl(
         name: *mut ::c_int,
@@ -928,11 +931,16 @@ cfg_if! {
         mod align;
         pub use self::align::*;
     }
+
+
 }
 
 cfg_if! {
     if #[cfg(libc_int128)] {
         mod int128;
         pub use self::int128::*;
+    } else if #[cfg(libc_align)] {
+        mod fallback;
+        pub use self::fallback::*;
     }
 }

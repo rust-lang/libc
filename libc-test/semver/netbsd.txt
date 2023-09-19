@@ -1491,6 +1491,7 @@ setgroups
 sethostid
 sethostname
 setitimer
+setlogin
 setpriority
 setproctitle
 setprogname
@@ -1567,3 +1568,5 @@ EXTATTR_NAMESPACE_EMPTY
 extattr_list_fd
 extattr_list_file
 extattr_list_link
+EOWNERDEAD
+ENOTRECOVERABLE

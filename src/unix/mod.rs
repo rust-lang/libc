@@ -29,7 +29,7 @@ pub type sighandler_t = ::size_t;
 pub type cc_t = ::c_uchar;
 
 cfg_if! {
-    if #[cfg(any(target_os = "espidf", target_os = "horizon"))] {
+    if #[cfg(any(target_os = "espidf", target_os = "horizon", target_os = "vita"))] {
         pub type uid_t = ::c_ushort;
         pub type gid_t = ::c_ushort;
     } else if #[cfg(target_os = "nto")] {
@@ -1498,6 +1498,11 @@ cfg_if! {
                 errorfds: *mut fd_set,
                 timeout: *mut timespec,
                 sigmask: *const sigset_t,
+            ) -> ::c_int;
+            pub fn sigaction(
+                signum: ::c_int,
+                act: *const sigaction,
+                oldact: *mut sigaction
             ) -> ::c_int;
         }
     } else {
