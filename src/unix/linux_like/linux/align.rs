@@ -175,7 +175,7 @@ macro_rules! expand_align {
                 pub can_dlc: u8,
                 __pad: u8,
                 __res0: u8,
-                __res1: u8,
+                pub len8_dlc: u8,
                 pub data: [u8; CAN_MAX_DLEN],
             }
 
