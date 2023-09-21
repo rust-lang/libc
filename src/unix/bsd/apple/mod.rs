@@ -6131,7 +6131,7 @@ cfg_if! {
     }
 }
 cfg_if! {
-    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
+    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos"))] {
         extern "C" {
             pub fn memmem(
                 haystack: *const ::c_void,
