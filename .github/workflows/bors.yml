@@ -156,7 +156,8 @@ jobs:
           sparc64-unknown-linux-gnu,
           wasm32-unknown-emscripten,
           x86_64-linux-android,
-          x86_64-unknown-linux-gnux32,
+          # FIXME: Exec format error (os error 8)
+          #x86_64-unknown-linux-gnux32,
           x86_64-unknown-linux-musl,
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
