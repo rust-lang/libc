@@ -156,7 +156,8 @@ jobs:
           sparc64-unknown-linux-gnu,
           wasm32-unknown-emscripten,
           x86_64-linux-android,
-          x86_64-unknown-linux-gnux32,
+          # FIXME: Exec format error (os error 8)
+          #x86_64-unknown-linux-gnux32,
           x86_64-unknown-linux-musl,
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
@@ -237,7 +238,9 @@ jobs:
           stable,
           beta,
           nightly,
-          1.13.0,
+          # FIXME: Disabled due to:
+          # error: failed to parse registry's information for: serde
+          #1.13.0,
           1.19.0,
           1.24.0,
           1.25.0,
@@ -270,7 +273,9 @@ jobs:
           - { toolchain: beta, os: macos-12 }
           - { toolchain: nightly, os: macos-12 }
           # Use macOS 11 for older toolchains as newer Xcode donesn't work well.
-          - { toolchain: 1.13.0, os: macos-11 }
+          # FIXME: Disabled due to:
+          # error: failed to parse registry's information for: serde
+          #- { toolchain: 1.13.0, os: macos-11 }
           - { toolchain: 1.19.0, os: macos-11 }
           - { toolchain: 1.24.0, os: macos-11 }
           - { toolchain: 1.25.0, os: macos-11 }
