@@ -774,7 +774,6 @@ pub const POLLWRBAND: ::c_short = 0x200;
 
 pub const PTRACE_GETFPREGS: ::c_uint = 14;
 pub const PTRACE_SETFPREGS: ::c_uint = 15;
-pub const PTRACE_DETACH: ::c_uint = 17;
 pub const PTRACE_GETFPXREGS: ::c_uint = 18;
 pub const PTRACE_SETFPXREGS: ::c_uint = 19;
 pub const PTRACE_GETREGS: ::c_uint = 12;

@@ -346,8 +346,6 @@ pub const POLLWRBAND: ::c_short = 0x100;
 pub const O_ASYNC: ::c_int = 0x40;
 pub const O_NDELAY: ::c_int = 0x4004;
 
-pub const PTRACE_DETACH: ::c_uint = 17;
-
 pub const EFD_NONBLOCK: ::c_int = 0x4000;
 
 pub const F_GETLK: ::c_int = 7;

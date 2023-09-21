@@ -363,11 +363,6 @@ PR_SET_VMA
 PR_SET_VMA_ANON_NAME
 PROC_SUPER_MAGIC
 PTHREAD_MUTEX_ADAPTIVE_NP
-PTRACE_GET_SYSCALL_INFO
-PTRACE_SYSCALL_INFO_ENTRY
-PTRACE_SYSCALL_INFO_EXIT
-PTRACE_SYSCALL_INFO_NONE
-PTRACE_SYSCALL_INFO_SECCOMP
 QNX4_SUPER_MAGIC
 QNX6_SUPER_MAGIC
 RDTGROUP_SUPER_MAGIC
@@ -644,8 +639,6 @@ pthread_attr_setaffinity_np
 pthread_rwlockattr_getkind_np
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setkind_np
-ptrace_peeksiginfo_args
-ptrace_syscall_info
 pututxline
 pwritev2
 pwritev64
