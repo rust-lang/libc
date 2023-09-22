@@ -1,1 +1,2 @@
 getentropy
+posix_fallocate64

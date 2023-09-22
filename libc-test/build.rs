@@ -2625,12 +2625,18 @@ fn test_emscripten(target: &str) {
 
             "os_unfair_lock" => "struct os_unfair_lock_s".to_string(),
 
-            t if is_union => format!("union {}", t),
+            // LFS64 types have been removed in Emscripten 3.1.44+
+            // https://github.com/emscripten-core/emscripten/pull/19812
+            "off64_t" => "off_t".to_string(),
 
+            // typedefs don't need any keywords
             t if t.ends_with("_t") => t.to_string(),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
+
+            // put `union` in front of all unions:
+            t if is_union => format!("union {}", t),
 
             t => t.to_string(),
         }
@@ -2658,7 +2664,9 @@ fn test_emscripten(target: &str) {
             // FIXME: The size has been changed due to musl's time64
             "time_t" => true,
 
-            _ => false,
+            // LFS64 types have been removed in Emscripten 3.1.44+
+            // https://github.com/emscripten-core/emscripten/pull/19812
+            t => t.ends_with("64") || t.ends_with("64_t"),
         }
     });
 
@@ -2687,7 +2695,9 @@ fn test_emscripten(target: &str) {
             "utimbuf" | "timeval" | "timespec" | "rusage" | "itimerval" | "sched_param"
             | "stat" | "stat64" | "shmid_ds" | "msqid_ds" => true,
 
-            _ => false,
+            // LFS64 types have been removed in Emscripten 3.1.44+
+            // https://github.com/emscripten-core/emscripten/pull/19812
+            ty => ty.ends_with("64") || ty.ends_with("64_t"),
         }
     });
 
@@ -2728,6 +2738,10 @@ fn test_emscripten(target: &str) {
             | "O_TMPFILE" // to 65
             | "SIG_IGN" // -1
                 => true,
+
+            // LFS64 types have been removed in Emscripten 3.1.44+
+            // https://github.com/emscripten-core/emscripten/pull/19812
+            n if n.starts_with("RLIM64") => true,
 
             _ => false,
         }
