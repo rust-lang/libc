@@ -3498,10 +3498,6 @@ extern "C" {
         guardsize: *mut ::size_t,
     ) -> ::c_int;
     pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
-    pub fn pthread_attr_getstacksize(
-        attr: *const ::pthread_attr_t,
-        stacksize: *mut ::size_t,
-    ) -> ::c_int;
     pub fn pthread_attr_getinheritsched(
         attr: *const ::pthread_attr_t,
         flag: *mut ::c_int,
