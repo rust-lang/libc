@@ -787,13 +787,6 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_os = "vita"))] {
-        mod dirent;
-        pub use self::dirent::*;
-    }
-}
-
-cfg_if! {
     if #[cfg(libc_align)] {
         #[macro_use]
         mod align;
