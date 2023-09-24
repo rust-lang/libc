@@ -10,30 +10,58 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "espidf"))] {
-        pub type dev_t = ::c_short;
-        pub type ino_t = ::c_ushort;
-        pub type off_t = ::c_long;
-    } else if #[cfg(any(target_os = "vita"))] {
-        pub type dev_t = ::c_short;
-        pub type ino_t = ::c_ushort;
-        pub type off_t = ::c_int;
-    } else {
+    if #[cfg(target_os = "horizon")] {
         pub type dev_t = u32;
-        pub type ino_t = u32;
         pub type off_t = i64;
+    } else {
+        pub type dev_t = ::c_short;
+        pub type off_t = ::c_long;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type ino_t = u32;
+    } else if #[cfg(target_arch = "sparc")] {
+        pub type ino_t = ::c_ulong;
+    } else {
+        pub type ino_t = ::c_ushort;
     }
 }
 
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u32;
 pub type id_t = u32;
-pub type key_t = ::c_int;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type key_t = ::c_int;
+    } else {
+        pub type key_t = ::c_long;
+    }
+}
+
 pub type loff_t = ::c_longlong;
-pub type mode_t = ::c_uint;
-pub type nfds_t = u32;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type mode_t = ::c_uint;
+        pub type nfds_t = u32;
+    } else {
+        pub type mode_t = u32;
+        pub type nfds_t = ::c_uint;
+    }
+}
+
 pub type nlink_t = ::c_ushort;
-pub type pthread_t = ::c_ulong;
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
+        pub type pthread_t = ::c_ulong;
+    } else {
+        pub type pthread_t = u32;
+    }
+}
 pub type pthread_key_t = ::c_uint;
 pub type rlim_t = u32;
 
@@ -93,16 +121,16 @@ s! {
     }
 
     pub struct in_addr {
-            pub s_addr: ::in_addr_t,
+        pub s_addr: ::in_addr_t,
     }
 
     pub struct hostent {
-            pub h_name: *mut ::c_char,
-            pub h_aliases: *mut *mut ::c_char,
-            pub h_addrtype: ::c_int,
-            pub h_length: ::c_int,
-            pub h_addr_list: *mut *mut ::c_char,
-            pub h_addr: *mut ::c_char,
+        pub h_name: *mut ::c_char,
+        pub h_aliases: *mut *mut ::c_char,
+        pub h_addrtype: ::c_int,
+        pub h_length: ::c_int,
+        pub h_addr_list: *mut *mut ::c_char,
+        pub h_addr: *mut ::c_char,
     }
 
     pub struct pollfd {
@@ -546,8 +574,8 @@ pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
-pub const TCP_NODELAY: ::c_int = 8193;
-pub const TCP_MAXSEG: ::c_int = 8194;
+pub const TCP_NODELAY: ::c_int = 1;
+pub const TCP_MAXSEG: ::c_int = 2;
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
 pub const TCP_KEEPIDLE: ::c_int = 256;
@@ -557,16 +585,21 @@ pub const TCP_KEEPCNT: ::c_int = 1024;
 cfg_if! {
     if #[cfg(target_os = "horizon")] {
         pub const IP_TOS: ::c_int = 7;
+        pub const IP_TTL: ::c_int = 8;
+        pub const IP_MULTICAST_LOOP: ::c_int = 9;
+        pub const IP_MULTICAST_TTL: ::c_int = 10;
+        pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
+        pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
     } else {
         pub const IP_TOS: ::c_int = 3;
+        pub const IP_TTL: ::c_int = 4;
+        pub const IP_MULTICAST_IF: ::c_int = 9;
+        pub const IP_MULTICAST_TTL: ::c_int = 10;
+        pub const IP_MULTICAST_LOOP: ::c_int = 11;
+        pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
+        pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
     }
 }
-pub const IP_TTL: ::c_int = 8;
-pub const IP_MULTICAST_IF: ::c_int = 9;
-pub const IP_MULTICAST_TTL: ::c_int = 10;
-pub const IP_MULTICAST_LOOP: ::c_int = 11;
-pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
-pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
 
 pub const IPV6_UNICAST_HOPS: ::c_int = 4;
 pub const IPV6_MULTICAST_IF: ::c_int = 9;
@@ -598,10 +631,18 @@ pub const NI_NAMEREQD: ::c_int = 4;
 pub const NI_NUMERICSERV: ::c_int = 0;
 pub const NI_DGRAM: ::c_int = 0;
 
-pub const EAI_FAMILY: ::c_int = -303;
-pub const EAI_MEMORY: ::c_int = -304;
-pub const EAI_NONAME: ::c_int = -305;
-pub const EAI_SOCKTYPE: ::c_int = -307;
+pub const EAI_AGAIN: ::c_int = 2;
+pub const EAI_BADFLAGS: ::c_int = 3;
+pub const EAI_FAIL: ::c_int = 4;
+pub const EAI_FAMILY: ::c_int = 5;
+pub const EAI_MEMORY: ::c_int = 6;
+pub const EAI_NONAME: ::c_int = 8;
+pub const EAI_SERVICE: ::c_int = 9;
+pub const EAI_SOCKTYPE: ::c_int = 10;
+pub const EAI_SYSTEM: ::c_int = 11;
+pub const EAI_BADHINTS: ::c_int = 12;
+pub const EAI_PROTOCOL: ::c_int = 13;
+pub const EAI_OVERFLOW: ::c_int = 14;
 
 pub const EXIT_SUCCESS: ::c_int = 0;
 pub const EXIT_FAILURE: ::c_int = 1;

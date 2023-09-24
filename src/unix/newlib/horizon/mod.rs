@@ -150,16 +150,6 @@ pub const POLLERR: ::c_short = 0x0008;
 pub const POLLHUP: ::c_short = 0x0010;
 pub const POLLNVAL: ::c_short = 0x0020;
 
-pub const EAI_AGAIN: ::c_int = 2;
-pub const EAI_BADFLAGS: ::c_int = 3;
-pub const EAI_FAIL: ::c_int = 4;
-pub const EAI_SERVICE: ::c_int = 9;
-pub const EAI_SYSTEM: ::c_int = 11;
-pub const EAI_BADHINTS: ::c_int = 12;
-pub const EAI_PROTOCOL: ::c_int = 13;
-pub const EAI_OVERFLOW: ::c_int = 14;
-pub const EAI_MAX: ::c_int = 15;
-
 pub const AF_UNIX: ::c_int = 1;
 pub const AF_INET6: ::c_int = 23;
 
