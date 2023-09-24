@@ -1146,6 +1146,7 @@ pseudo_AF_RTIP
 pseudo_AF_XTP
 pthread_attr_getguardsize
 pthread_attr_getstack
+pthread_attr_setguardsize
 pthread_cancel
 pthread_condattr_setclock
 pthread_get_name_np

@@ -2010,6 +2010,7 @@ pseudo_AF_XTP
 pthread_attr_get_np
 pthread_attr_getguardsize
 pthread_attr_getstack
+pthread_attr_setguardsize
 pthread_barrierattr_destroy
 pthread_barrierattr_getpshared
 pthread_barrierattr_init

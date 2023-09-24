@@ -3687,6 +3687,10 @@ extern "C" {
     pub fn pthread_exit(value: *mut ::c_void) -> !;
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_getstacksize(
+        attr: *const ::pthread_attr_t,
+        stacksize: *mut ::size_t,
+    ) -> ::c_int;
     pub fn pthread_attr_setstacksize(attr: *mut ::pthread_attr_t, stack_size: ::size_t) -> ::c_int;
     pub fn pthread_attr_setdetachstate(attr: *mut ::pthread_attr_t, state: ::c_int) -> ::c_int;
     pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
@@ -4161,6 +4165,7 @@ extern "C" {
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,
     ) -> ::c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
     pub fn umount2(target: *const ::c_char, flags: ::c_int) -> ::c_int;
