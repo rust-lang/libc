@@ -2064,6 +2064,14 @@ extern "C" {
         search: *const ::c_void,
         searchLength: ::size_t,
     ) -> *mut ::c_void;
+
+    pub fn pthread_getattr_np(thread: ::pthread_t, attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_getname_np(
+        thread: ::pthread_t,
+        buffer: *mut ::c_char,
+        length: ::size_t,
+    ) -> ::c_int;
+    pub fn pthread_setname_np(thread: ::pthread_t, name: *const ::c_char) -> ::c_int;
 }
 
 cfg_if! {
