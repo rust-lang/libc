@@ -285,7 +285,6 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
 fi
 
 RUST_APPLE_NO_CORE_TARGETS="\
-armv7-apple-ios \
 armv7s-apple-ios \
 i686-apple-darwin \
 i386-apple-ios \
