@@ -671,6 +671,9 @@ MNT_RELATIME
 MNT_SOFTDEP
 MNT_SYMPERM
 MNT_UNION
+MNT_WAIT
+MNT_NOWAIT
+MNT_LAZY
 MOD_CLKA
 MOD_CLKB
 MOD_ESTERROR
@@ -1188,6 +1191,11 @@ arc4random
 arc4random_buf
 arc4random_uniform
 arphdr
+backtrace
+backtrace_symbols
+backtrace_symbols_fd
+backtrace_symbols_fmt
+backtrace_symbols_fd_fmt
 bsearch
 chflags
 chroot
@@ -1275,6 +1283,7 @@ getitimer
 getlastlogx
 getline
 getloadavg
+getmntinfo
 getnameinfo
 getopt_long
 getpeereid
@@ -1295,6 +1304,7 @@ getutmpx
 getutxent
 getutxid
 getutxline
+getvfsstat
 getxattr
 glob
 glob_t
