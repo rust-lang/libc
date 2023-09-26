@@ -447,9 +447,11 @@ F_RDADVISE
 F_RDAHEAD
 F_RDLCK
 F_SETOWN
+F_SPECULATIVE_READ
 F_TEST
 F_THAW_FS
 F_TLOCK
+F_TRIM_ACTIVE_FILE
 F_ULOCK
 F_UNLCK
 F_VOLPOSMODE
@@ -1900,9 +1902,11 @@ fremovexattr
 fsetattrlist
 fsetxattr
 fsid_t
+fspecread_t
 fstatfs
 fstore_t
 ftok
+ftrimactivefile_t
 futimes
 getattrlist
 getattrlistat
