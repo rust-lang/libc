@@ -229,4 +229,6 @@ extern "C" {
     pub fn pthread_getprocessorid_np() -> ::c_int;
 
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
+
+    pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
 }
