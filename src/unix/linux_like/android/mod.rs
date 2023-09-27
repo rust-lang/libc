@@ -1224,6 +1224,9 @@ pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 
+pub const PTHREAD_EXPLICIT_SCHED: ::c_int = 0;
+pub const PTHREAD_INHERIT_SCHED: ::c_int = 1;
+
 // stdio.h
 pub const RENAME_NOREPLACE: ::c_int = 1;
 pub const RENAME_EXCHANGE: ::c_int = 2;
@@ -3494,6 +3497,12 @@ extern "C" {
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,
     ) -> ::c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
+    pub fn pthread_attr_getinheritsched(
+        attr: *const ::pthread_attr_t,
+        flag: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_setinheritsched(attr: *mut ::pthread_attr_t, flag: ::c_int) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
     pub fn pthread_condattr_getpshared(

@@ -388,11 +388,6 @@ cfg_if! {
         #[link(name = "c")]
         #[link(name = "m")]
         extern {}
-    } else if #[cfg(target_os = "hermit")] {
-        // no_default_libraries is set to false for HermitCore, so only a link
-        // to "pthread" needs to be added.
-        #[link(name = "pthread")]
-        extern {}
     } else if #[cfg(target_env = "illumos")] {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -682,17 +677,6 @@ extern "C" {
         name: ::c_int,
         value: *const ::c_void,
         option_len: socklen_t,
-    ) -> ::c_int;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "socketpair$UNIX2003"
-    )]
-    #[cfg_attr(target_os = "illumos", link_name = "__xnet_socketpair")]
-    pub fn socketpair(
-        domain: ::c_int,
-        type_: ::c_int,
-        protocol: ::c_int,
-        socket_vector: *mut ::c_int,
     ) -> ::c_int;
     #[cfg(not(all(
         libc_cfg_target_vendor,
@@ -1081,6 +1065,10 @@ extern "C" {
     pub fn pthread_exit(value: *mut ::c_void) -> !;
     pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
     pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
+    pub fn pthread_attr_getstacksize(
+        attr: *const ::pthread_attr_t,
+        stacksize: *mut ::size_t,
+    ) -> ::c_int;
     pub fn pthread_attr_setstacksize(attr: *mut ::pthread_attr_t, stack_size: ::size_t) -> ::c_int;
     pub fn pthread_attr_setdetachstate(attr: *mut ::pthread_attr_t, state: ::c_int) -> ::c_int;
     pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
@@ -1413,6 +1401,25 @@ extern "C" {
     pub fn lockf(fd: ::c_int, cmd: ::c_int, len: ::off_t) -> ::c_int;
 
 }
+
+cfg_if! {
+    if #[cfg(not(target_os = "vita"))] {
+        extern "C" {
+            #[cfg_attr(
+                all(target_os = "macos", target_arch = "x86"),
+                link_name = "socketpair$UNIX2003"
+            )]
+            #[cfg_attr(target_os = "illumos", link_name = "__xnet_socketpair")]
+            pub fn socketpair(
+                domain: ::c_int,
+                type_: ::c_int,
+                protocol: ::c_int,
+                socket_vector: *mut ::c_int,
+            ) -> ::c_int;
+        }
+    }
+}
+
 cfg_if! {
     if #[cfg(not(any(target_os = "emscripten",
                      target_os = "android",
@@ -1582,9 +1589,6 @@ cfg_if! {
     } else if #[cfg(target_os = "haiku")] {
         mod haiku;
         pub use self::haiku::*;
-    } else if #[cfg(target_os = "hermit")] {
-        mod hermit;
-        pub use self::hermit::*;
     } else if #[cfg(target_os = "redox")] {
         mod redox;
         pub use self::redox::*;

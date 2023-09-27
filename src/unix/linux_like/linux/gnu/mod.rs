@@ -1093,6 +1093,8 @@ pub const GLOB_TILDE: ::c_int = 1 << 12;
 pub const GLOB_ONLYDIR: ::c_int = 1 << 13;
 pub const GLOB_TILDE_CHECK: ::c_int = 1 << 14;
 
+pub const MADV_COLLAPSE: ::c_int = 25;
+
 cfg_if! {
     if #[cfg(any(
         target_arch = "arm",

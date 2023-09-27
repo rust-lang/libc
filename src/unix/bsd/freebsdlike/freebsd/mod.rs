@@ -2664,7 +2664,9 @@ pub const Q_SETQUOTA: ::c_int = 0x800;
 pub const MAP_GUARD: ::c_int = 0x00002000;
 pub const MAP_EXCL: ::c_int = 0x00004000;
 pub const MAP_PREFAULT_READ: ::c_int = 0x00040000;
-pub const MAP_ALIGNED_SUPER: ::c_int = 1 << 24;
+pub const MAP_ALIGNMENT_SHIFT: ::c_int = 24;
+pub const MAP_ALIGNMENT_MASK: ::c_int = 0xff << MAP_ALIGNMENT_SHIFT;
+pub const MAP_ALIGNED_SUPER: ::c_int = 1 << MAP_ALIGNMENT_SHIFT;
 
 pub const POSIX_FADV_NORMAL: ::c_int = 0;
 pub const POSIX_FADV_RANDOM: ::c_int = 1;

@@ -145,6 +145,16 @@ pub type CCRNGStatus = ::CCCryptorStatus;
 
 pub type copyfile_state_t = *mut ::c_void;
 pub type copyfile_flags_t = u32;
+pub type copyfile_callback_t = ::Option<
+    extern "C" fn(
+        ::c_int,
+        ::c_int,
+        copyfile_state_t,
+        *const ::c_char,
+        *const ::c_char,
+        *mut ::c_void,
+    ) -> ::c_int,
+>;
 
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
@@ -366,6 +376,13 @@ s! {
         pub fst_offset: ::off_t,
         pub fst_length: ::off_t,
         pub fst_bytesalloc: ::off_t,
+    }
+
+    pub struct fpunchhole_t {
+        pub fp_flags: ::c_uint, /* unused */
+        pub reserved: ::c_uint, /* (to maintain 8-byte alignment) */
+        pub fp_offset: ::off_t, /* IN: start of the region */
+        pub fp_length: ::off_t, /* IN: size of the region */
     }
 
     pub struct radvisory {
@@ -3231,6 +3248,7 @@ pub const F_GLOBAL_NOCACHE: ::c_int = 55;
 pub const F_NODIRECT: ::c_int = 62;
 pub const F_LOG2PHYS_EXT: ::c_int = 65;
 pub const F_BARRIERFSYNC: ::c_int = 85;
+pub const F_PUNCHHOLE: ::c_int = 99;
 pub const F_GETPATH_NOFIRMLINK: ::c_int = 102;
 
 pub const F_ALLOCATECONTIG: ::c_uint = 0x02;
@@ -4189,6 +4207,7 @@ pub const RTLD_FIRST: ::c_int = 0x100;
 pub const RTLD_NODELETE: ::c_int = 0x80;
 pub const RTLD_NOLOAD: ::c_int = 0x10;
 pub const RTLD_GLOBAL: ::c_int = 0x8;
+pub const RTLD_MAIN_ONLY: *mut ::c_void = -5isize as *mut ::c_void;
 
 pub const _WSTOPPED: ::c_int = 0o177;
 
@@ -4910,6 +4929,19 @@ pub const COPYFILE_PROGRESS: ::c_int = 4;
 pub const COPYFILE_CONTINUE: ::c_int = 0;
 pub const COPYFILE_SKIP: ::c_int = 1;
 pub const COPYFILE_QUIT: ::c_int = 2;
+pub const COPYFILE_STATE_SRC_FD: ::c_int = 1;
+pub const COPYFILE_STATE_SRC_FILENAME: ::c_int = 2;
+pub const COPYFILE_STATE_DST_FD: ::c_int = 3;
+pub const COPYFILE_STATE_DST_FILENAME: ::c_int = 4;
+pub const COPYFILE_STATE_QUARANTINE: ::c_int = 5;
+pub const COPYFILE_STATE_STATUS_CB: ::c_int = 6;
+pub const COPYFILE_STATE_STATUS_CTX: ::c_int = 7;
+pub const COPYFILE_STATE_COPIED: ::c_int = 8;
+pub const COPYFILE_STATE_XATTRNAME: ::c_int = 9;
+pub const COPYFILE_STATE_WAS_CLONED: ::c_int = 10;
+pub const COPYFILE_STATE_SRC_BSIZE: ::c_int = 11;
+pub const COPYFILE_STATE_DST_BSIZE: ::c_int = 12;
+pub const COPYFILE_STATE_BSIZE: ::c_int = 13;
 
 // <sys/attr.h>
 pub const ATTR_BIT_MAP_COUNT: ::c_ushort = 5;
@@ -5818,6 +5850,10 @@ extern "C" {
         state: copyfile_state_t,
         flags: copyfile_flags_t,
     ) -> ::c_int;
+    pub fn copyfile_state_free(s: copyfile_state_t) -> ::c_int;
+    pub fn copyfile_state_alloc() -> copyfile_state_t;
+    pub fn copyfile_state_get(s: copyfile_state_t, flags: u32, dst: *mut ::c_void) -> ::c_int;
+    pub fn copyfile_state_set(s: copyfile_state_t, flags: u32, src: *const ::c_void) -> ::c_int;
 
     // Added in macOS 10.13
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
