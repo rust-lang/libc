@@ -678,6 +678,17 @@ extern "C" {
         value: *const ::c_void,
         option_len: socklen_t,
     ) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "socketpair$UNIX2003"
+    )]
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_socketpair")]
+    pub fn socketpair(
+        domain: ::c_int,
+        type_: ::c_int,
+        protocol: ::c_int,
+        socket_vector: *mut ::c_int,
+    ) -> ::c_int;
     #[cfg(not(all(
         libc_cfg_target_vendor,
         target_arch = "powerpc",
@@ -1400,24 +1411,6 @@ extern "C" {
 
     pub fn lockf(fd: ::c_int, cmd: ::c_int, len: ::off_t) -> ::c_int;
 
-}
-
-cfg_if! {
-    if #[cfg(not(target_os = "vita"))] {
-        extern "C" {
-            #[cfg_attr(
-                all(target_os = "macos", target_arch = "x86"),
-                link_name = "socketpair$UNIX2003"
-            )]
-            #[cfg_attr(target_os = "illumos", link_name = "__xnet_socketpair")]
-            pub fn socketpair(
-                domain: ::c_int,
-                type_: ::c_int,
-                protocol: ::c_int,
-                socket_vector: *mut ::c_int,
-            ) -> ::c_int;
-        }
-    }
 }
 
 cfg_if! {
