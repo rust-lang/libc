@@ -4695,6 +4695,11 @@ pub const RB_POWERCYCLE: ::c_int = 0x400000;
 pub const RB_PROBE: ::c_int = 0x10000000;
 pub const RB_MULTIPLE: ::c_int = 0x20000000;
 
+// sys/timerfd.h
+
+pub const TFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
+pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
@@ -5408,6 +5413,15 @@ extern "C" {
         infotype: *mut ::c_uint,
         flags: *mut ::c_int,
     ) -> ::ssize_t;
+
+    pub fn timerfd_create(clockid: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn timerfd_gettime(fd: ::c_int, curr_value: *mut itimerspec) -> ::c_int;
+    pub fn timerfd_settime(
+        fd: ::c_int,
+        flags: ::c_int,
+        new_value: *const itimerspec,
+        old_value: *mut itimerspec,
+    ) -> ::c_int;
 }
 
 #[link(name = "memstat")]

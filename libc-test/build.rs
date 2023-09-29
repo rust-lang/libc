@@ -2346,6 +2346,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 13.2
             "AT_USRSTACKBASE" | "AT_USRSTACKLIM" if Some(13) > freebsd_ver => true,
 
+            // Added in FreeBSD 14
+            "TFD_CLOEXEC" | "TFD_NONBLOCK" if Some(14) > freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -2441,6 +2444,11 @@ fn test_freebsd(target: &str) {
             "sched_getaffinity" | "sched_setaffinity" | "sched_getcpu" | "fspacectl"
                 if Some(14) > freebsd_ver =>
             {
+                true
+            }
+
+            // Those are introduced in FreeBSD 14.
+            "timerfd_create" | "timerfd_gettime" | "timerfd_settime" if Some(14) > freebsd_ver => {
                 true
             }
 
