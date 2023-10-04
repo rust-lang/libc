@@ -2196,6 +2196,12 @@ fn test_freebsd(target: &str) {
             // should've been used anywhere anyway.
             "TDF_UNUSED23" => true,
 
+            // Removed in FreeBSD 14 (git a6b55ee6be1)
+            "IFF_KNOWSEPOCH" => true,
+
+            // Removed in FreeBSD 14 (git 7ff9ae90f0b)
+            "IFF_NOGROUP" => true,
+
             // FIXME: These are deprecated - remove in a couple of releases.
             // These symbols are not stable across OS-versions.  They were
             // changed for FreeBSD 14 in git revisions b62848b0c3f and
@@ -2277,7 +2283,7 @@ fn test_freebsd(target: &str) {
             // Added in freebsd 14.
             "IFCAP_MEXTPG" if Some(14) > freebsd_ver => true,
             // Added in freebsd 13.
-            "IFF_KNOWSEPOCH" | "IFCAP_TXTLS4" | "IFCAP_TXTLS6" | "IFCAP_VXLAN_HWCSUM"
+            "IFCAP_TXTLS4" | "IFCAP_TXTLS6" | "IFCAP_VXLAN_HWCSUM"
             | "IFCAP_VXLAN_HWTSO" | "IFCAP_TXTLS_RTLMT" | "IFCAP_TXTLS"
                 if Some(13) > freebsd_ver =>
             {

@@ -3172,6 +3172,7 @@ pub const IFF_LOOPBACK: ::c_int = 0x8;
 /// (i) is a point-to-point link
 pub const IFF_POINTOPOINT: ::c_int = 0x10;
 /// (i) calls if_input in net epoch
+#[deprecated(since = "0.2.149", note = "Removed in FreeBSD 14")]
 pub const IFF_KNOWSEPOCH: ::c_int = 0x20;
 /// (d) resources allocated
 pub const IFF_RUNNING: ::c_int = 0x40;
@@ -3219,6 +3220,7 @@ pub const IFF_DYING: ::c_int = 0x200000;
 /// (n) interface is being renamed
 pub const IFF_RENAMING: ::c_int = 0x400000;
 /// interface is not part of any groups
+#[deprecated(since = "0.2.149", note = "Removed in FreeBSD 14")]
 pub const IFF_NOGROUP: ::c_int = 0x800000;
 
 /// link invalid/unknown
