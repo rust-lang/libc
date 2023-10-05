@@ -664,3 +664,4 @@ gnu_basename
 getmntent_r
 putpwent
 putgrent
+execveat

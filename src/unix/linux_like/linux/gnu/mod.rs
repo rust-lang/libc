@@ -1391,6 +1391,14 @@ extern "C" {
         buf: *mut ::c_char,
         buflen: ::c_int,
     ) -> *mut ::mntent;
+
+    pub fn execveat(
+        dirfd: ::c_int,
+        pathname: *const ::c_char,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
+        flags: ::c_int,
+    ) -> ::c_int;
 }
 
 cfg_if! {
