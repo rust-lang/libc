@@ -1401,11 +1401,7 @@ extern "C" {
     ) -> ::c_int;
 
     // Added in `glibc` 2.34
-    pub fn close_range(
-        first: ::c_uint,
-        last: ::c_uint,
-        flags: ::c_int,
-    ) -> ::c_int;
+    pub fn close_range(first: ::c_uint, last: ::c_uint, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
