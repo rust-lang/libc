@@ -665,3 +665,4 @@ getmntent_r
 putpwent
 putgrent
 execveat
+close_range

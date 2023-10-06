@@ -3378,6 +3378,7 @@ fn test_linux(target: &str) {
         "sys/fanotify.h",
         // <sys/auxv.h> is not present on uclibc
         [!uclibc]: "sys/auxv.h",
+        [gnu]: "linux/close_range.h",
     }
 
     // note: aio.h must be included before sys/mount.h
