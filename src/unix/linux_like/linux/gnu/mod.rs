@@ -1399,6 +1399,9 @@ extern "C" {
         envp: *const *mut c_char,
         flags: ::c_int,
     ) -> ::c_int;
+
+    // Added in `glibc` 2.34
+    pub fn close_range(first: ::c_uint, last: ::c_uint, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
