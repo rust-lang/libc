@@ -299,6 +299,9 @@ fn test_apple(target: &str) {
     }
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // FIXME: actually a union
             "sigval" => true,
@@ -310,8 +313,13 @@ fn test_apple(target: &str) {
         }
     });
 
-    cfg.skip_type(move |ty| match ty {
-        _ => false,
+    cfg.skip_type(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
+        match ty {
+            _ => false,
+        }
     });
 
     cfg.skip_const(move |name| {
@@ -364,6 +372,8 @@ fn test_apple(target: &str) {
             ("__darwin_arm_neon_state64", "__v") => true,
             // MAXPATHLEN is too big for auto-derive traits on arrays.
             ("vnode_info_path", "vip_path") => true,
+            ("ifreq", "ifr_ifru") => true,
+            ("ifkpi", "ifk_data") => true,
             _ => false,
         }
     });

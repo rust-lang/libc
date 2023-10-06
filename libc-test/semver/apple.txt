@@ -1957,6 +1957,8 @@ if_freenameindex
 if_msghdr
 if_nameindex
 ifaddrs
+ifkpi
+ifreq
 image_offset
 in6_pktinfo
 in_pktinfo
