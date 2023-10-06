@@ -1230,7 +1230,10 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const POSIX_MADV_DONTNEED: ::c_int = 0;
 
 pub const RLIM_INFINITY: ::rlim_t = !0;
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIMIT_NLIMITS: ::c_int = 15;
+#[allow(deprecated)]
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;

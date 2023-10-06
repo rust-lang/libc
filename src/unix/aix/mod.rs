@@ -1762,6 +1762,7 @@ pub const PRIO_USER: ::c_int = 2;
 pub const RUSAGE_THREAD: ::c_int = 1;
 pub const RLIM_SAVED_MAX: ::c_ulong = RLIM_INFINITY - 1;
 pub const RLIM_SAVED_CUR: ::c_ulong = RLIM_INFINITY - 2;
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = 10;
 
 // sys/sched.h
