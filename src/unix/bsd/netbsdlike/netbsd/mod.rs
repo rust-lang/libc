@@ -1527,6 +1527,7 @@ pub const SOCK_FLAGS_MASK: ::c_int = 0xf0000000;
 
 pub const SO_SNDTIMEO: ::c_int = 0x100b;
 pub const SO_RCVTIMEO: ::c_int = 0x100c;
+pub const SO_NOSIGPIPE: ::c_int = 0x0800;
 pub const SO_ACCEPTFILTER: ::c_int = 0x1000;
 pub const SO_TIMESTAMP: ::c_int = 0x2000;
 pub const SO_OVERFLOWED: ::c_int = 0x1009;
