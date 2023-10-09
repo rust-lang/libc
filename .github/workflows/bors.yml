@@ -335,24 +335,6 @@ jobs:
       - name: Build with check-cfg
         run: LIBC_CI=1 LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg=features,names,values,output
 
-  docs:
-    permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
-      contents: read # to fetch code (actions/checkout)
-
-    name: Generate documentation
-    runs-on: ubuntu-22.04
-    needs: docker_linux_tier2
-    steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
-      - name: Setup Rust toolchain
-        run: sh ./ci/install-rust.sh
-      - name: Generate documentation
-        run: LIBC_CI=1 sh ci/dox.sh
-
   # These jobs doesn't actually test anything, but they're only used to tell
   # bors the build completed, as there is no practical way to detect when a
   # workflow is successful listening to webhooks only.
@@ -374,7 +356,6 @@ jobs:
       build_channels_linux,
       build_channels_macos,
       build_channels_windows,
-      docs,
     ]
 
     steps:
@@ -396,7 +377,6 @@ jobs:
       build_channels_linux,
       build_channels_macos,
       build_channels_windows,
-      docs,
     ]
 
     steps:
