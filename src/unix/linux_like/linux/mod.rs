@@ -14,6 +14,7 @@ pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type loff_t = ::c_longlong;
 pub type pthread_key_t = ::c_uint;
+pub type pthread_once_t = ::c_int;
 pub type pthread_spinlock_t = ::c_int;
 
 pub type __u8 = ::c_uchar;
@@ -1903,6 +1904,7 @@ align_const! {
         size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
     };
 }
+pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
@@ -2766,6 +2768,7 @@ pub const SIOCGIFMEM: ::c_ulong = 0x0000891F;
 pub const SIOCSIFMEM: ::c_ulong = 0x00008920;
 pub const SIOCGIFMTU: ::c_ulong = 0x00008921;
 pub const SIOCSIFMTU: ::c_ulong = 0x00008922;
+pub const SIOCSIFNAME: ::c_ulong = 0x00008923;
 pub const SIOCSIFHWADDR: ::c_ulong = 0x00008924;
 pub const SIOCGIFENCAP: ::c_ulong = 0x00008925;
 pub const SIOCSIFENCAP: ::c_ulong = 0x00008926;
@@ -4581,6 +4584,7 @@ extern "C" {
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,
     ) -> ::c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
     pub fn pthread_condattr_getpshared(
@@ -4846,6 +4850,8 @@ extern "C" {
         longopts: *const option,
         longindex: *mut ::c_int,
     ) -> ::c_int;
+
+    pub fn pthread_once(control: *mut pthread_once_t, routine: extern "C" fn()) -> ::c_int;
 
     pub fn copy_file_range(
         fd_in: ::c_int,

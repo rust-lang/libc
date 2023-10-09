@@ -1926,6 +1926,7 @@ PTHREAD_PRIO_PROTECT
 PTHREAD_PROCESS_PRIVATE
 PTHREAD_PROCESS_SHARED
 PTHREAD_STACK_MIN
+PTHREAD_ONCE_INIT
 PTRACE_ATTACH
 PTRACE_CONT
 PTRACE_DETACH
@@ -3333,6 +3334,7 @@ pread64
 preadv
 pthread_attr_getguardsize
 pthread_attr_getstack
+pthread_attr_setguardsize
 pthread_cancel
 pthread_condattr_getclock
 pthread_condattr_getpshared
@@ -3372,6 +3374,8 @@ pthread_barrier_wait
 pthread_barrier_destroy
 pthread_barrierattr_t
 pthread_barrier_t
+pthread_once
+pthread_once_t
 ptrace
 ptsname_r
 pwrite64

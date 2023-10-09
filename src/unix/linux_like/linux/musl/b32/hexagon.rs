@@ -265,7 +265,6 @@ pub const PF_FILE: ::c_int = 1;
 pub const PF_KCM: ::c_int = 41;
 pub const PF_MAX: ::c_int = 43;
 pub const PF_QIPCRTR: ::c_int = 42;
-#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const SA_ONSTACK: ::c_int = 0x08000000;
 pub const SA_SIGINFO: ::c_int = 0x00000004;
 pub const SA_NOCLDWAIT: ::c_int = 0x00000002;

@@ -1093,6 +1093,8 @@ pub const GLOB_TILDE: ::c_int = 1 << 12;
 pub const GLOB_ONLYDIR: ::c_int = 1 << 13;
 pub const GLOB_TILDE_CHECK: ::c_int = 1 << 14;
 
+pub const MADV_COLLAPSE: ::c_int = 25;
+
 cfg_if! {
     if #[cfg(any(
         target_arch = "arm",
@@ -1389,6 +1391,17 @@ extern "C" {
         buf: *mut ::c_char,
         buflen: ::c_int,
     ) -> *mut ::mntent;
+
+    pub fn execveat(
+        dirfd: ::c_int,
+        pathname: *const ::c_char,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
+        flags: ::c_int,
+    ) -> ::c_int;
+
+    // Added in `glibc` 2.34
+    pub fn close_range(first: ::c_uint, last: ::c_uint, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

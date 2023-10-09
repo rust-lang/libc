@@ -2664,7 +2664,9 @@ pub const Q_SETQUOTA: ::c_int = 0x800;
 pub const MAP_GUARD: ::c_int = 0x00002000;
 pub const MAP_EXCL: ::c_int = 0x00004000;
 pub const MAP_PREFAULT_READ: ::c_int = 0x00040000;
-pub const MAP_ALIGNED_SUPER: ::c_int = 1 << 24;
+pub const MAP_ALIGNMENT_SHIFT: ::c_int = 24;
+pub const MAP_ALIGNMENT_MASK: ::c_int = 0xff << MAP_ALIGNMENT_SHIFT;
+pub const MAP_ALIGNED_SUPER: ::c_int = 1 << MAP_ALIGNMENT_SHIFT;
 
 pub const POSIX_FADV_NORMAL: ::c_int = 0;
 pub const POSIX_FADV_RANDOM: ::c_int = 1;
@@ -4693,6 +4695,11 @@ pub const RB_POWERCYCLE: ::c_int = 0x400000;
 pub const RB_PROBE: ::c_int = 0x10000000;
 pub const RB_MULTIPLE: ::c_int = 0x20000000;
 
+// sys/timerfd.h
+
+pub const TFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
+pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
+
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
         pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
@@ -5406,6 +5413,17 @@ extern "C" {
         infotype: *mut ::c_uint,
         flags: *mut ::c_int,
     ) -> ::ssize_t;
+
+    pub fn timerfd_create(clockid: ::c_int, flags: ::c_int) -> ::c_int;
+    pub fn timerfd_gettime(fd: ::c_int, curr_value: *mut itimerspec) -> ::c_int;
+    pub fn timerfd_settime(
+        fd: ::c_int,
+        flags: ::c_int,
+        new_value: *const itimerspec,
+        old_value: *mut itimerspec,
+    ) -> ::c_int;
+    pub fn closefrom(lowfd: ::c_int);
+    pub fn close_range(lowfd: ::c_uint, highfd: ::c_uint, flags: ::c_int) -> ::c_int;
 }
 
 #[link(name = "memstat")]

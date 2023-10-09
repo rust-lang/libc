@@ -253,6 +253,7 @@ riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 riscv32gc-unknown-linux-gnu \
 riscv64gc-unknown-freebsd \
+riscv64gc-unknown-hermit \
 riscv64gc-unknown-linux-musl \
 riscv64gc-unknown-none-elf \
 riscv64imac-unknown-none-elf \
@@ -285,7 +286,6 @@ if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
 fi
 
 RUST_APPLE_NO_CORE_TARGETS="\
-armv7-apple-ios \
 armv7s-apple-ios \
 i686-apple-darwin \
 i386-apple-ios \

@@ -118,6 +118,7 @@ LM_ID_BASE
 LM_ID_NEWLM
 LOGIN_PROCESS
 Lmid_t
+MADV_COLLAPSE
 MAXTC
 MAX_LINKS
 MINIX2_SUPER_MAGIC
@@ -663,3 +664,5 @@ gnu_basename
 getmntent_r
 putpwent
 putgrent
+execveat
+close_range

@@ -1762,6 +1762,7 @@ pub const PRIO_USER: ::c_int = 2;
 pub const RUSAGE_THREAD: ::c_int = 1;
 pub const RLIM_SAVED_MAX: ::c_ulong = RLIM_INFINITY - 1;
 pub const RLIM_SAVED_CUR: ::c_ulong = RLIM_INFINITY - 2;
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = 10;
 
 // sys/sched.h
@@ -2669,6 +2670,7 @@ extern "C" {
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,
     ) -> ::c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
     pub fn pthread_attr_getschedparam(
         attr: *const ::pthread_attr_t,
         param: *mut sched_param,
