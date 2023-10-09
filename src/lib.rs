@@ -1,8 +1,4 @@
 //! libc - Raw FFI bindings to platforms' system libraries
-//!
-//! [Documentation for other platforms][pd].
-//!
-//! [pd]: https://rust-lang.github.io/libc/#platform-specific-documentation
 #![crate_name = "libc"]
 #![crate_type = "rlib"]
 #![allow(
