@@ -1287,6 +1287,8 @@ eui64_aton
 eui64_hostton
 eui64_ntoa
 eui64_ntohost
+exect
+execvP
 exit_status
 explicit_bzero
 faccessat
