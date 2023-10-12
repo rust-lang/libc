@@ -6347,6 +6347,11 @@ extern "C" {
         dev: dev_t,
     ) -> ::c_int;
     pub fn freadlink(fd: ::c_int, buf: *mut ::c_char, size: ::size_t) -> ::c_int;
+    pub fn execvP(
+        file: *const ::c_char,
+        search_path: *const ::c_char,
+        argv: *const *mut ::c_char,
+    ) -> ::c_int;
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {
