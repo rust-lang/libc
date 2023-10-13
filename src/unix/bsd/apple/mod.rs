@@ -1464,6 +1464,8 @@ s_no_extra_traits! {
         pub ifr_name: [::c_char; ::IFNAMSIZ],
         #[cfg(libc_union)]
         pub ifr_ifru: __c_anonymous_ifr_ifru,
+        #[cfg(not(libc_union))]
+        pub ifr_ifru: ::sockaddr,
     }
 }
 
@@ -2977,6 +2979,7 @@ cfg_if! {
         impl PartialEq for ifreq {
             fn eq(&self, other: &ifreq) -> bool {
                 self.ifr_name == other.ifr_name
+                    && self.ifr_ifru == other.ifr_ifru
             }
         }
 
@@ -2986,6 +2989,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifreq")
                     .field("ifr_name", &self.ifr_name)
+                    .field("ifr_ifru", &self.ifr_ifru)
                     .finish()
             }
         }
@@ -2993,7 +2997,6 @@ cfg_if! {
         impl ::hash::Hash for ifreq {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.ifr_name.hash(state);
-                #[cfg(libc_union)]
                 self.ifr_ifru.hash(state);
             }
         }
