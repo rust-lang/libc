@@ -967,6 +967,8 @@ s! {
         pub ifc_len: ::c_int,
         #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+        #[cfg(not(libc_union))]
+        pub ifc_ifcu: *mut ifreq,
     }
 
     pub struct au_mask_t {
