@@ -1,0 +1,4 @@
+EOTHER
+memccpy
+stricmp
+strnicmp
