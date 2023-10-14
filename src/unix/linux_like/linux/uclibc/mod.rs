@@ -109,6 +109,7 @@ impl siginfo_t {
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
+pub const MCL_ONFAULT: ::c_int = 0x0004;
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 

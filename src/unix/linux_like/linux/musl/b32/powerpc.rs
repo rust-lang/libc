@@ -167,6 +167,7 @@ pub const O_LARGEFILE: ::c_int = 0x10000;
 
 pub const MCL_CURRENT: ::c_int = 0x2000;
 pub const MCL_FUTURE: ::c_int = 0x4000;
+pub const MCL_ONFAULT: ::c_int = 0x8000;
 pub const CBAUD: ::tcflag_t = 0o0000377;
 pub const TAB1: ::c_int = 0x00000400;
 pub const TAB2: ::c_int = 0x00000800;

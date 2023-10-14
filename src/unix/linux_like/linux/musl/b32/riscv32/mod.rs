@@ -376,6 +376,7 @@ pub const FIONCLEX: ::c_int = 21584;
 pub const FIONBIO: ::c_int = 21537;
 pub const MCL_CURRENT: ::c_int = 1;
 pub const MCL_FUTURE: ::c_int = 2;
+pub const MCL_ONFAULT: ::c_int = 4;
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 pub const CBAUD: ::tcflag_t = 4111;
