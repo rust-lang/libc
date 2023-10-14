@@ -374,6 +374,7 @@ fn test_apple(target: &str) {
             ("vnode_info_path", "vip_path") => true,
             ("ifreq", "ifr_ifru") => true,
             ("ifkpi", "ifk_data") => true,
+            ("ifconf", "ifc_ifcu") => true,
             _ => false,
         }
     });
