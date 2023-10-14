@@ -626,6 +626,7 @@ pub const FLUSHO: ::tcflag_t = 0x00800000;
 
 pub const MCL_CURRENT: ::c_int = 0x2000;
 pub const MCL_FUTURE: ::c_int = 0x4000;
+pub const MCL_ONFAULT: ::c_int = 0x8000;
 pub const CBAUD: ::tcflag_t = 0xff;
 pub const TAB1: ::c_int = 0x400;
 pub const TAB2: ::c_int = 0x800;

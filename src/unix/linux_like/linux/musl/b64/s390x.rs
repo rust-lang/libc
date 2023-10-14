@@ -290,6 +290,7 @@ pub const EXTPROC: ::tcflag_t = 0x00010000;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
+pub const MCL_ONFAULT: ::c_int = 0x0004;
 
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;

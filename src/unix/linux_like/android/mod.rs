@@ -1707,6 +1707,7 @@ pub const REG_BACKR: ::c_int = 1024;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
+pub const MCL_ONFAULT: ::c_int = 0x0004;
 
 pub const CBAUD: ::tcflag_t = 0o0010017;
 pub const TAB1: ::tcflag_t = 0x00000800;
