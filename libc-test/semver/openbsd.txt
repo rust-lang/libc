@@ -1083,6 +1083,7 @@ if_freenameindex
 if_msghdr
 if_nameindex
 ifaddrs
+ifreq
 in6_pktinfo
 initgroups
 ip_mreqn
