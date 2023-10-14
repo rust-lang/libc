@@ -1883,6 +1883,7 @@ endpwent
 endservent
 endutxent
 exchangedata
+execvP
 faccessat
 fchdir
 fchflags
