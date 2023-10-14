@@ -1772,6 +1772,17 @@ extern "C" {
         len: ::c_int,
     ) -> ::c_int;
     pub fn reboot(howto: ::c_int) -> ::c_int;
+
+    pub fn exect(
+        path: *const ::c_char,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+    pub fn execvP(
+        file: *const ::c_char,
+        search_path: *const ::c_char,
+        argv: *const *mut ::c_char,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]
