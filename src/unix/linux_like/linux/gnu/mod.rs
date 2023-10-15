@@ -944,6 +944,9 @@ pub const NT_PRFPXREG: ::c_int = 20;
 
 pub const ELFOSABI_ARM_AEABI: u8 = 64;
 
+// linux/sched.h
+pub const CLONE_NEWTIME: ::c_int = 0x80;
+
 // linux/keyctl.h
 pub const KEYCTL_DH_COMPUTE: u32 = 23;
 pub const KEYCTL_PKEY_QUERY: u32 = 24;
