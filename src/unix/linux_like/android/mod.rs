@@ -3708,6 +3708,20 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+    pub fn fread_unlocked(
+        buf: *mut ::c_void,
+        size: ::size_t,
+        nobj: ::size_t,
+        stream: *mut ::FILE,
+    ) -> ::size_t;
+    pub fn fwrite_unlocked(
+        buf: *const ::c_void,
+        size: ::size_t,
+        nobj: ::size_t,
+        stream: *mut ::FILE,
+    ) -> ::size_t;
+    pub fn fflush_unlocked(stream: *mut ::FILE) -> ::c_int;
+    pub fn fgets_unlocked(buf: *mut ::c_char, size: ::c_int, stream: *mut ::FILE) -> *mut ::c_char;
 }
 
 cfg_if! {
