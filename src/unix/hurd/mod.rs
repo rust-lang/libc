@@ -315,7 +315,7 @@ s! {
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
         pub msg_namelen: socklen_t,
-        pub msg_iov: *mut iovec,
+        pub msg_iov: *mut ::iovec,
         pub msg_iovlen: ::c_int,
         pub msg_control: *mut ::c_void,
         pub msg_controllen: socklen_t,
