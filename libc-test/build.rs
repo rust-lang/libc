@@ -523,15 +523,6 @@ fn test_openbsd(target: &str) {
         "sys/param.h",
     }
 
-    cfg.skip_type(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
-            return true;
-        }
-        match ty {
-            _ => false,
-        }
-    });
-
     cfg.skip_struct(move |ty| {
         if ty.starts_with("__c_anonymous_") {
             return true;

@@ -625,7 +625,7 @@ s_no_extra_traits! {
         pub ifru_metric: ::c_int,
         pub ifru_vnetid: i64,
         pub ifru_media: u64,
-        pub ifru_data: *mut ::c_char,
+        pub ifru_data: ::caddr_t,
         pub ifru_index: ::c_uint,
     }
 }
