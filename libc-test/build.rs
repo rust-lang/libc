@@ -3862,6 +3862,9 @@ fn test_linux(target: &str) {
             // FIXME: Requires more recent kernel headers
             "HWTSTAMP_TX_ONESTEP_P2P" if musl => true, // linux v5.6+
 
+            // kernel 6.5 minimum
+            "MOVE_MOUNT_BENEATH" => true,
+
             _ => false,
         }
     });
