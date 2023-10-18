@@ -998,6 +998,8 @@ s! {
         pub pcbcnt: u32,
     }
 
+    // Note: this structure will change in a backwards-incompatible way in
+    // FreeBSD 15.
     pub struct tcp_info {
         pub tcpi_state: u8,
         pub __tcpi_ca_state: u8,
@@ -1055,7 +1057,21 @@ s! {
         #[cfg(freebsd14)]
         pub __tcpi_received_ce_bytes: u32,
         #[cfg(freebsd14)]
-        pub __tcpi_pad: [u32; 19],
+        pub tcpi_total_tlp: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_total_tlp_bytes: u64,
+        #[cfg(freebsd14)]
+        pub tcpi_snd_una: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_snd_max: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_rcv_numsacks: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_rcv_adv: u32,
+        #[cfg(freebsd14)]
+        pub tcpi_dupacks: u32,
+        #[cfg(freebsd14)]
+        pub __tcpi_pad: [u32; 10],
         #[cfg(not(freebsd14))]
         pub __tcpi_pad: [u32; 26],
     }
