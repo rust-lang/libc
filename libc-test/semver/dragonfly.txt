@@ -1320,6 +1320,8 @@ getitimer
 getlastlogx
 getline
 getloadavg
+getmntinfo
+getmntvinfo
 getnameinfo
 getopt_long
 getpeereid
