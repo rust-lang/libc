@@ -365,9 +365,13 @@ s! {
     }
 
     pub struct cpuset_t {
-        #[cfg(target_pointer_width = "64")]
+        #[cfg(all(freebsd14, target_pointer_width = "64"))]
+        __bits: [::c_long; 16],
+        #[cfg(all(freebsd14, target_pointer_width = "32"))]
+        __bits: [::c_long; 32],
+        #[cfg(all(not(freebsd14), target_pointer_width = "64"))]
         __bits: [::c_long; 4],
-        #[cfg(target_pointer_width = "32")]
+        #[cfg(all(not(freebsd14), target_pointer_width = "32"))]
         __bits: [::c_long; 8],
     }
 
@@ -2615,7 +2619,13 @@ pub const DEVSTAT_N_TRANS_FLAGS: ::c_int = 4;
 pub const DEVSTAT_NAME_LEN: ::c_int = 16;
 
 // sys/cpuset.h
-pub const CPU_SETSIZE: ::c_int = 256;
+cfg_if! {
+    if #[cfg(freebsd14)] {
+        pub const CPU_SETSIZE: ::c_int = 1024;
+    } else {
+        pub const CPU_SETSIZE: ::c_int = 256;
+    }
+}
 
 pub const SIGEV_THREAD_ID: ::c_int = 4;
 
