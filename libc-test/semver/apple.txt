@@ -1091,7 +1091,6 @@ POSIX_SPAWN_SETPGROUP
 POSIX_SPAWN_SETSIGDEF
 POSIX_SPAWN_SETSIGMASK
 POSIX_SPAWN_START_SUSPENDED
-_POSIX_SPAWN_DISABLE_ASLR
 PRIO_DARWIN_BG
 PRIO_DARWIN_NONUI
 PRIO_DARWIN_PROCESS
@@ -2145,8 +2144,6 @@ pthread_rwlockattr_setpshared
 pthread_setname_np
 pthread_setschedparam
 pthread_stack_frame_decode_np
-pthread_chdir_np
-pthread_fchdir_np
 ptrace
 pututxline
 pwritev

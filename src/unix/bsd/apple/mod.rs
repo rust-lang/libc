@@ -5004,7 +5004,6 @@ pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x0004;
 pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x0008;
 pub const POSIX_SPAWN_SETEXEC: ::c_int = 0x0040;
 pub const POSIX_SPAWN_START_SUSPENDED: ::c_int = 0x0080;
-pub const _POSIX_SPAWN_DISABLE_ASLR: ::c_int = 0x0100;
 pub const POSIX_SPAWN_CLOEXEC_DEFAULT: ::c_int = 0x4000;
 
 // sys/ipc.h:
@@ -5746,8 +5745,6 @@ extern "C" {
         policy: ::c_int,
         param: *const sched_param,
     ) -> ::c_int;
-    pub fn pthread_chdir_np(path: *const ::c_char) -> ::c_int;
-    pub fn pthread_fchdir_np(fd: ::c_int) -> ::c_int;
 
     // Available from Big Sur
     pub fn pthread_introspection_hook_install(
