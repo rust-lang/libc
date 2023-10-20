@@ -1987,6 +1987,10 @@ fn test_freebsd(target: &str) {
         Some(n) if n >= 13 => true,
         _ => false,
     };
+    let freebsd14 = match freebsd_ver {
+        Some(n) if n >= 14 => true,
+        _ => false,
+    };
 
     headers! { cfg:
                 "aio.h",
@@ -2074,6 +2078,7 @@ fn test_freebsd(target: &str) {
                 "sys/sysctl.h",
                 "sys/thr.h",
                 "sys/time.h",
+                [freebsd14]:"sys/timerfd.h",
                 "sys/times.h",
                 "sys/timex.h",
                 "sys/types.h",
