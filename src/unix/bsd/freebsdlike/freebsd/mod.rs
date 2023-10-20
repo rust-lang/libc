@@ -4857,6 +4857,14 @@ f! {
         };
         ::mem::size_of::<sockcred2>() + ::mem::size_of::<::gid_t>() * ngrps
     }
+
+    pub fn PROT_MAX(x: ::c_int) -> ::c_int {
+        x << 16
+    }
+
+    pub fn PROT_MAX_EXTRACT(x: ::c_int) -> ::c_int {
+        (x >> 16) & (::PROT_READ | ::PROT_WRITE | ::PROT_EXEC)
+    }
 }
 
 safe_f! {
