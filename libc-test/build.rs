@@ -638,7 +638,7 @@ fn test_windows(target: &str) {
 
             // Windows uppercase structs don't have `struct` in front:
             t if is_struct => {
-                if ty.clone().chars().next().unwrap().is_uppercase() {
+                if ty.chars().next().unwrap().is_uppercase() {
                     t.to_string()
                 } else if t == "stat" {
                     "struct __stat64".to_string()

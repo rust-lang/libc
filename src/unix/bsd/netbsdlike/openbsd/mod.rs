@@ -540,12 +540,46 @@ impl siginfo_t {
         self.si_addr
     }
 
+    pub unsafe fn si_code(&self) -> ::c_int {
+        self.si_code
+    }
+
+    pub unsafe fn si_errno(&self) -> ::c_int {
+        self.si_errno
+    }
+
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        #[repr(C)]
+        struct siginfo_timer {
+            _si_signo: ::c_int,
+            _si_code: ::c_int,
+            _si_errno: ::c_int,
+            _pad: [::c_int; SI_PAD],
+            _pid: ::pid_t,
+        }
+        (*(self as *const siginfo_t as *const siginfo_timer))._pid
+    }
+
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        #[repr(C)]
+        struct siginfo_timer {
+            _si_signo: ::c_int,
+            _si_code: ::c_int,
+            _si_errno: ::c_int,
+            _pad: [::c_int; SI_PAD],
+            _pid: ::pid_t,
+            _uid: ::uid_t,
+        }
+        (*(self as *const siginfo_t as *const siginfo_timer))._uid
+    }
+
     pub unsafe fn si_value(&self) -> ::sigval {
         #[repr(C)]
         struct siginfo_timer {
             _si_signo: ::c_int,
-            _si_errno: ::c_int,
             _si_code: ::c_int,
+            _si_errno: ::c_int,
+            _pad: [::c_int; SI_PAD],
             _pid: ::pid_t,
             _uid: ::uid_t,
             value: ::sigval,
@@ -1575,6 +1609,9 @@ pub const NTFS_MFLAG_CASEINS: ::c_int = 0x1;
 pub const NTFS_MFLAG_ALLNAMES: ::c_int = 0x2;
 
 pub const TMPFS_ARGS_VERSION: ::c_int = 1;
+
+const SI_MAXSZ: ::size_t = 128;
+const SI_PAD: ::size_t = (SI_MAXSZ / ::mem::size_of::<::c_int>()) - 3;
 
 pub const MAP_STACK: ::c_int = 0x4000;
 pub const MAP_CONCEAL: ::c_int = 0x8000;
