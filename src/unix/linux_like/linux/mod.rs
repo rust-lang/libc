@@ -686,6 +686,142 @@ s! {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
     }
+    pub struct iw_param {
+        pub value: __s32,
+        pub fixed: __u8,
+        pub disabled: __u8,
+        pub flags: __u16,
+    }
+    pub struct iw_point {
+        pub pointer: *mut ::c_void,
+        pub length: __u16,
+        pub flags: __u16,
+    }
+    pub struct iw_freq {
+        pub m: __s32,
+        pub e: __s16,
+        pub i: __u8,
+        pub flags: __u8,
+    }
+    pub struct iw_quality {
+        pub qual: __u8,
+        pub level: __u8,
+        pub noise: __u8,
+        pub updated: __u8,
+    }
+    pub struct iw_discarded {
+        pub nwid: __u32,
+        pub code: __u32,
+        pub fragment: __u32,
+        pub retries: __u32,
+        pubmisc: __u32,
+    }
+    pub struct iw_missed {
+        pub beacon: __u32,
+    }
+    pub struct iw_thrspy {
+        pub addr: ::sockaddr,
+        pub qual: iw_quality,
+        pub low: iw_quality,
+        pub high: iw_quality,
+    }
+    pub struct iw_scan_req {
+        pub scan_type: __u8,
+        pub essid_len: __u8,
+        pub num_channels: __u8,
+        pub flags: __u8,
+        pub bssid: ::sockaddr,
+        pub essid: [__u8; IW_ESSID_MAX_SIZE],
+        pub min_channel_time: __u32,
+        pub max_channel_time: __u32,
+        pub channel_list: [iw_freq; IW_MAX_FREQUENCIES],
+    }
+    pub struct iw_encode_ext {
+        pub ext_flags: __u32,
+        pub tx_seq: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
+        pub rx_seq: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
+        pub addr: ::sockaddr,
+        pub alg: __u16,
+        pub key_len: __u16,
+        pub key: [__u8; 0],
+    }
+    pub struct iw_mlme {
+        pub cmd: __u16,
+        pub reason_code: __u16,
+        pub addr: ::sockaddr,
+    }
+    pub struct iw_pmksa {
+        pub cmd: __u32,
+        pub bssid: ::sockaddr,
+        pub pmkid: [__u8; IW_PMKID_LEN],
+    }
+    pub struct iw_michaelmicfailure {
+        pub flags: __u32,
+        pub src_addr: ::sockaddr,
+        pub tsc: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
+    }
+    pub struct iw_pmkid_cand {
+        pub flags: __u32,
+        pub index: __u32,
+        pub bssid: ::sockaddr,
+    }
+    pub struct iw_statistics {
+        pub status: __u16,
+        pub qual: iw_quality,
+        pub discard: iw_discarded,
+        pub miss: iw_missed,
+    }
+    pub struct iw_range {
+        pub throughput: __u32,
+        pub min_nwid: __u32,
+        pub max_nwid: __u32,
+        pub old_num_channels: __u16,
+        pub old_num_frequency: __u8,
+        pub scan_capa: __u8,
+        pub event_capa: [__u32; 6],
+        pub sensitivity: __s32,
+        pub max_qual: iw_quality,
+        pub avg_qual: iw_quality,
+        pub num_bitrates: __u8,
+        pub bitrate: [__s32; IW_MAX_BITRATES],
+        pub min_rts: __s32,
+        pub max_rts: __s32,
+        pub min_frag: __s32,
+        pub max_frag: __s32,
+        pub min_pmp: __s32,
+        pub max_pmp: __s32,
+        pub min_pmt: __s32,
+        pub max_pmt: __s32,
+        pub pmp_flags: __u16,
+        pub pmt_flags: __u16,
+        pub pm_capa: __u16,
+        pub encoding_size: [__u16; IW_MAX_ENCODING_SIZES],
+        pub num_encoding_sizes: __u8,
+        pub max_encoding_tokens: __u8,
+        pub encoding_login_index: __u8,
+        pub txpower_capa: __u16,
+        pub num_txpower: __u8,
+        pub txpower: [__s32;IW_MAX_TXPOWER],
+        pub we_version_compiled: __u8,
+        pub we_version_source: __u8,
+        pub retry_capa: __u16,
+        pub retry_flags: __u16,
+        pub r_time_flags: __u16,
+        pub min_retry: __s32,
+        pub max_retry: __s32,
+        pub min_r_time: __s32,
+        pub max_r_time: __s32,
+        pub num_channels: __u16,
+        pub num_frequency: __u8,
+        pub freq: [iw_freq; IW_MAX_FREQUENCIES],
+        pub enc_capa: __u32,
+    }
+    pub struct iw_priv_args {
+        pub cmd: __u32,
+        pub set_args: __u16,
+        pub get_args: __u16,
+        pub name: [c_char; ::IFNAMSIZ],
+    }
 }
 
 s_no_extra_traits! {
@@ -804,6 +940,45 @@ s_no_extra_traits! {
         pub d_reclen: ::c_ushort,
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
+    }
+
+    #[cfg(libc_union)]
+    pub union iwreq_data {
+            pub name: [c_char; ::IFNAMSIZ],
+            pub essid: iw_point,
+            pub nwid: iw_param,
+            pub freq: iw_freq,
+            pub sens: iw_param,
+            pub bitrate: iw_param,
+            pub txpower: iw_param,
+            pub rts: iw_param,
+            pub frag: iw_param,
+            pub mode: __u32,
+            pub retry: iw_param,
+            pub encoding: iw_point,
+            pub power: iw_param,
+            pub qual: iw_quality,
+            pub ap_addr: ::sockaddr,
+            pub addr: ::sockaddr,
+            pub param: iw_param,
+            pub data: iw_point,
+    }
+
+    pub struct iw_event {
+        pub len: __u16,
+        pub cmd: __u16,
+        pub u: iwreq_data,
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_iwreq {
+        pub ifrn_name: [c_char; ::IFNAMSIZ],
+    }
+
+    pub struct iwreq {
+        #[cfg(libc_union)]
+        pub ifr_ifrn: __c_anonymous_iwreq,
+        pub u: iwreq_data,
     }
 }
 
@@ -1251,6 +1426,60 @@ cfg_if! {
                 self.flags.hash(state);
                 self.tx_type.hash(state);
                 self.rx_filter.hash(state);
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for iwreq_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("iwreq_data")
+                    .field("name", unsafe { &self.name })
+                    .field("essid", unsafe { &self.essid })
+                    .field("nwid", unsafe { &self.nwid })
+                    .field("freq", unsafe { &self.freq })
+                    .field("sens", unsafe { &self.sens })
+                    .field("bitrate", unsafe { &self.bitrate })
+                    .field("txpower", unsafe { &self.txpower })
+                    .field("rts", unsafe { &self.rts })
+                    .field("frag", unsafe { &self.frag })
+                    .field("mode", unsafe { &self.mode })
+                    .field("retry", unsafe { &self.retry })
+                    .field("encoding", unsafe { &self.encoding })
+                    .field("power", unsafe { &self.power })
+                    .field("qual", unsafe { &self.qual })
+                    .field("ap_addr", unsafe { &self.ap_addr })
+                    .field("addr", unsafe { &self.addr })
+                    .field("param", unsafe { &self.param })
+                    .field("data", unsafe { &self.data })
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for iw_event {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("iw_event")
+                    .field("len", &self.len )
+                    .field("cmd", &self.cmd )
+                    .field("u", &self.u )
+                    .finish()
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_iwreq {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("__c_anonymous_iwreq")
+                    .field("ifrn_name", unsafe { &self.ifrn_name })
+                    .finish()
+            }
+        }
+
+        impl ::fmt::Debug for iwreq {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("iwreq")
+                    .field("ifr_ifrn", &self.ifr_ifrn )
+                    .field("u", &self.u )
+                    .finish()
             }
         }
     }
@@ -2805,6 +3034,392 @@ pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
 pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
 pub const SIOCSHWTSTAMP: ::c_ulong = 0x000089b0;
 pub const SIOCGHWTSTAMP: ::c_ulong = 0x000089b1;
+
+// wireless.h
+pub const WIRELESS_EXT: c_ulong = 0x16;
+
+pub const SIOCSIWCOMMIT: c_ulong = 0x8B00;
+pub const SIOCGIWNAME: c_ulong = 0x8B01;
+
+pub const SIOCSIWNWID: c_ulong = 0x8B02;
+pub const SIOCGIWNWID: c_ulong = 0x8B03;
+pub const SIOCSIWFREQ: c_ulong = 0x8B04;
+pub const SIOCGIWFREQ: c_ulong = 0x8B05;
+pub const SIOCSIWMODE: c_ulong = 0x8B06;
+pub const SIOCGIWMODE: c_ulong = 0x8B07;
+pub const SIOCSIWSENS: c_ulong = 0x8B08;
+pub const SIOCGIWSENS: c_ulong = 0x8B09;
+
+pub const SIOCSIWRANGE: c_ulong = 0x8B0A;
+pub const SIOCGIWRANGE: c_ulong = 0x8B0B;
+pub const SIOCSIWPRIV: c_ulong = 0x8B0C;
+pub const SIOCGIWPRIV: c_ulong = 0x8B0D;
+pub const SIOCSIWSTATS: c_ulong = 0x8B0E;
+pub const SIOCGIWSTATS: c_ulong = 0x8B0F;
+
+pub const SIOCSIWSPY: c_ulong = 0x8B10;
+pub const SIOCGIWSPY: c_ulong = 0x8B11;
+pub const SIOCSIWTHRSPY: c_ulong = 0x8B12;
+pub const SIOCGIWTHRSPY: c_ulong = 0x8B13;
+
+pub const SIOCSIWAP: c_ulong = 0x8B14;
+pub const SIOCGIWAP: c_ulong = 0x8B15;
+pub const SIOCGIWAPLIST: c_ulong = 0x8B17;
+pub const SIOCSIWSCAN: c_ulong = 0x8B18;
+pub const SIOCGIWSCAN: c_ulong = 0x8B19;
+
+pub const SIOCSIWESSID: c_ulong = 0x8B1A;
+pub const SIOCGIWESSID: c_ulong = 0x8B1B;
+pub const SIOCSIWNICKN: c_ulong = 0x8B1C;
+pub const SIOCGIWNICKN: c_ulong = 0x8B1D;
+
+pub const SIOCSIWRATE: c_ulong = 0x8B20;
+pub const SIOCGIWRATE: c_ulong = 0x8B21;
+pub const SIOCSIWRTS: c_ulong = 0x8B22;
+pub const SIOCGIWRTS: c_ulong = 0x8B23;
+pub const SIOCSIWFRAG: c_ulong = 0x8B24;
+pub const SIOCGIWFRAG: c_ulong = 0x8B25;
+pub const SIOCSIWTXPOW: c_ulong = 0x8B26;
+pub const SIOCGIWTXPOW: c_ulong = 0x8B27;
+pub const SIOCSIWRETRY: c_ulong = 0x8B28;
+pub const SIOCGIWRETRY: c_ulong = 0x8B29;
+
+pub const SIOCSIWENCODE: c_ulong = 0x8B2A;
+pub const SIOCGIWENCODE: c_ulong = 0x8B2B;
+
+pub const SIOCSIWPOWER: c_ulong = 0x8B2C;
+pub const SIOCGIWPOWER: c_ulong = 0x8B2D;
+
+pub const SIOCSIWGENIE: c_ulong = 0x8B30;
+pub const SIOCGIWGENIE: c_ulong = 0x8B31;
+
+pub const SIOCSIWMLME: c_ulong = 0x8B16;
+
+pub const SIOCSIWAUTH: c_ulong = 0x8B32;
+pub const SIOCGIWAUTH: c_ulong = 0x8B33;
+
+pub const SIOCSIWENCODEEXT: c_ulong = 0x8B34;
+pub const SIOCGIWENCODEEXT: c_ulong = 0x8B35;
+
+pub const SIOCSIWPMKSA: c_ulong = 0x8B36;
+
+pub const SIOCIWFIRSTPRIV: c_ulong = 0x8BE0;
+pub const SIOCIWLASTPRIV: c_ulong = 0x8BFF;
+
+pub const SIOCIWFIRST: c_ulong = 0x8B00;
+pub const SIOCIWLAST: c_ulong = SIOCIWLASTPRIV;
+macro_rules! IW_IOCTL_IDX {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($cmd:expr) => {
+        $cmd - SIOCIWFIRST
+    };
+}
+macro_rules! IW_HANDLER {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($id:expr,$func:expr) => {
+        [IW_IOCTL_IDX!($id)] = $func
+    };
+}
+macro_rules! IW_IS_SET {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($cmd:expr) => {
+        !($cmd & 0x1)
+    };
+}
+macro_rules! IW_IS_GET {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($cmd:expr) => {
+        $cmd & 0x1
+    };
+}
+
+pub const IWEVTXDROP: c_ulong = 0x8C00;
+pub const IWEVQUAL: c_ulong = 0x8C01;
+pub const IWEVCUSTOM: c_ulong = 0x8C02;
+pub const IWEVREGISTERED: c_ulong = 0x8C03;
+pub const IWEVEXPIRED: c_ulong = 0x8C04;
+pub const IWEVGENIE: c_ulong = 0x8C05;
+pub const IWEVMICHAELMICFAILURE: c_ulong = 0x8C06;
+pub const IWEVASSOCREQIE: c_ulong = 0x8C07;
+pub const IWEVASSOCRESPIE: c_ulong = 0x8C08;
+pub const IWEVPMKIDCAND: c_ulong = 0x8C09;
+pub const IWEVFIRST: c_ulong = 0x8C00;
+macro_rules! IW_EVENT_IDX {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($cmd:expr) => {
+        $cmd - IWEVFIRST
+    };
+}
+
+pub const IW_PRIV_TYPE_MASK: c_ulong = 0x7000;
+pub const IW_PRIV_TYPE_NONE: c_ulong = 0x0000;
+pub const IW_PRIV_TYPE_BYTE: c_ulong = 0x1000;
+pub const IW_PRIV_TYPE_CHAR: c_ulong = 0x2000;
+pub const IW_PRIV_TYPE_INT: c_ulong = 0x4000;
+pub const IW_PRIV_TYPE_FLOAT: c_ulong = 0x5000;
+pub const IW_PRIV_TYPE_ADDR: c_ulong = 0x6000;
+
+pub const IW_PRIV_SIZE_FIXED: c_ulong = 0x0800;
+
+pub const IW_PRIV_SIZE_MASK: c_ulong = 0x07FF;
+
+pub const IW_MAX_FREQUENCIES: usize = 32;
+pub const IW_MAX_BITRATES: usize = 32;
+pub const IW_MAX_TXPOWER: usize = 8;
+pub const IW_MAX_SPY: usize = 8;
+pub const IW_MAX_AP: usize = 64;
+pub const IW_ESSID_MAX_SIZE: usize = 32;
+
+pub const IW_MODE_AUTO: usize = 0;
+pub const IW_MODE_ADHOC: usize = 1;
+pub const IW_MODE_INFRA: usize = 2;
+pub const IW_MODE_MASTER: usize = 3;
+pub const IW_MODE_REPEAT: usize = 4;
+pub const IW_MODE_SECOND: usize = 5;
+pub const IW_MODE_MONITOR: usize = 6;
+pub const IW_MODE_MESH: usize = 7;
+
+pub const IW_QUAL_QUAL_UPDATED: c_ulong = 0x01;
+pub const IW_QUAL_LEVEL_UPDATED: c_ulong = 0x02;
+pub const IW_QUAL_NOISE_UPDATED: c_ulong = 0x04;
+pub const IW_QUAL_ALL_UPDATED: c_ulong = 0x07;
+pub const IW_QUAL_DBM: c_ulong = 0x08;
+pub const IW_QUAL_QUAL_INVALID: c_ulong = 0x10;
+pub const IW_QUAL_LEVEL_INVALID: c_ulong = 0x20;
+pub const IW_QUAL_NOISE_INVALID: c_ulong = 0x40;
+pub const IW_QUAL_RCPI: c_ulong = 0x80;
+pub const IW_QUAL_ALL_INVALID: c_ulong = 0x70;
+
+pub const IW_FREQ_AUTO: c_ulong = 0x00;
+pub const IW_FREQ_FIXED: c_ulong = 0x01;
+
+pub const IW_MAX_ENCODING_SIZES: usize = 8;
+pub const IW_ENCODING_TOKEN_MAX: usize = 64;
+
+pub const IW_ENCODE_INDEX: c_ulong = 0x00FF;
+pub const IW_ENCODE_FLAGS: c_ulong = 0xFF00;
+pub const IW_ENCODE_MODE: c_ulong = 0xF000;
+pub const IW_ENCODE_DISABLED: c_ulong = 0x8000;
+pub const IW_ENCODE_ENABLED: c_ulong = 0x0000;
+pub const IW_ENCODE_RESTRICTED: c_ulong = 0x4000;
+pub const IW_ENCODE_OPEN: c_ulong = 0x2000;
+pub const IW_ENCODE_NOKEY: c_ulong = 0x0800;
+pub const IW_ENCODE_TEMP: c_ulong = 0x0400;
+
+pub const IW_POWER_ON: c_ulong = 0x0000;
+pub const IW_POWER_TYPE: c_ulong = 0xF000;
+pub const IW_POWER_PERIOD: c_ulong = 0x1000;
+pub const IW_POWER_TIMEOUT: c_ulong = 0x2000;
+pub const IW_POWER_MODE: c_ulong = 0x0F00;
+pub const IW_POWER_UNICAST_R: c_ulong = 0x0100;
+pub const IW_POWER_MULTICAST_R: c_ulong = 0x0200;
+pub const IW_POWER_ALL_R: c_ulong = 0x0300;
+pub const IW_POWER_FORCE_S: c_ulong = 0x0400;
+pub const IW_POWER_REPEATER: c_ulong = 0x0800;
+pub const IW_POWER_MODIFIER: c_ulong = 0x000F;
+pub const IW_POWER_MIN: c_ulong = 0x0001;
+pub const IW_POWER_MAX: c_ulong = 0x0002;
+pub const IW_POWER_RELATIVE: c_ulong = 0x0004;
+
+pub const IW_TXPOW_TYPE: c_ulong = 0x00FF;
+pub const IW_TXPOW_DBM: c_ulong = 0x0000;
+pub const IW_TXPOW_MWATT: c_ulong = 0x0001;
+pub const IW_TXPOW_RELATIVE: c_ulong = 0x0002;
+pub const IW_TXPOW_RANGE: c_ulong = 0x1000;
+
+pub const IW_RETRY_ON: c_ulong = 0x0000;
+pub const IW_RETRY_TYPE: c_ulong = 0xF000;
+pub const IW_RETRY_LIMIT: c_ulong = 0x1000;
+pub const IW_RETRY_LIFETIME: c_ulong = 0x2000;
+pub const IW_RETRY_MODIFIER: c_ulong = 0x00FF;
+pub const IW_RETRY_MIN: c_ulong = 0x0001;
+pub const IW_RETRY_MAX: c_ulong = 0x0002;
+pub const IW_RETRY_RELATIVE: c_ulong = 0x0004;
+pub const IW_RETRY_SHORT: c_ulong = 0x0010;
+pub const IW_RETRY_LONG: c_ulong = 0x0020;
+
+pub const IW_SCAN_DEFAULT: c_ulong = 0x0000;
+pub const IW_SCAN_ALL_ESSID: c_ulong = 0x0001;
+pub const IW_SCAN_THIS_ESSID: c_ulong = 0x0002;
+pub const IW_SCAN_ALL_FREQ: c_ulong = 0x0004;
+pub const IW_SCAN_THIS_FREQ: c_ulong = 0x0008;
+pub const IW_SCAN_ALL_MODE: c_ulong = 0x0010;
+pub const IW_SCAN_THIS_MODE: c_ulong = 0x0020;
+pub const IW_SCAN_ALL_RATE: c_ulong = 0x0040;
+pub const IW_SCAN_THIS_RATE: c_ulong = 0x0080;
+
+pub const IW_SCAN_TYPE_ACTIVE: usize = 0;
+pub const IW_SCAN_TYPE_PASSIVE: usize = 1;
+
+pub const IW_SCAN_MAX_DATA: usize = 4096;
+
+pub const IW_SCAN_CAPA_NONE: c_ulong = 0x00;
+pub const IW_SCAN_CAPA_ESSID: c_ulong = 0x01;
+pub const IW_SCAN_CAPA_BSSID: c_ulong = 0x02;
+pub const IW_SCAN_CAPA_CHANNEL: c_ulong = 0x04;
+pub const IW_SCAN_CAPA_MODE: c_ulong = 0x08;
+pub const IW_SCAN_CAPA_RATE: c_ulong = 0x10;
+pub const IW_SCAN_CAPA_TYPE: c_ulong = 0x20;
+pub const IW_SCAN_CAPA_TIME: c_ulong = 0x40;
+
+pub const IW_CUSTOM_MAX: c_ulong = 256;
+
+pub const IW_GENERIC_IE_MAX: c_ulong = 1024;
+
+pub const IW_MLME_DEAUTH: c_ulong = 0;
+pub const IW_MLME_DISASSOC: c_ulong = 1;
+pub const IW_MLME_AUTH: c_ulong = 2;
+pub const IW_MLME_ASSOC: c_ulong = 3;
+
+pub const IW_AUTH_INDEX: c_ulong = 0x0FFF;
+pub const IW_AUTH_FLAGS: c_ulong = 0xF000;
+
+pub const IW_AUTH_WPA_VERSION: usize = 0;
+pub const IW_AUTH_CIPHER_PAIRWISE: usize = 1;
+pub const IW_AUTH_CIPHER_GROUP: usize = 2;
+pub const IW_AUTH_KEY_MGMT: usize = 3;
+pub const IW_AUTH_TKIP_COUNTERMEASURES: usize = 4;
+pub const IW_AUTH_DROP_UNENCRYPTED: usize = 5;
+pub const IW_AUTH_80211_AUTH_ALG: usize = 6;
+pub const IW_AUTH_WPA_ENABLED: usize = 7;
+pub const IW_AUTH_RX_UNENCRYPTED_EAPOL: usize = 8;
+pub const IW_AUTH_ROAMING_CONTROL: usize = 9;
+pub const IW_AUTH_PRIVACY_INVOKED: usize = 10;
+pub const IW_AUTH_CIPHER_GROUP_MGMT: usize = 11;
+pub const IW_AUTH_MFP: usize = 12;
+
+pub const IW_AUTH_WPA_VERSION_DISABLED: c_ulong = 0x00000001;
+pub const IW_AUTH_WPA_VERSION_WPA: c_ulong = 0x00000002;
+pub const IW_AUTH_WPA_VERSION_WPA2: c_ulong = 0x00000004;
+
+pub const IW_AUTH_CIPHER_NONE: c_ulong = 0x00000001;
+pub const IW_AUTH_CIPHER_WEP40: c_ulong = 0x00000002;
+pub const IW_AUTH_CIPHER_TKIP: c_ulong = 0x00000004;
+pub const IW_AUTH_CIPHER_CCMP: c_ulong = 0x00000008;
+pub const IW_AUTH_CIPHER_WEP104: c_ulong = 0x00000010;
+pub const IW_AUTH_CIPHER_AES_CMAC: c_ulong = 0x00000020;
+
+pub const IW_AUTH_KEY_MGMT_802_1X: usize = 1;
+pub const IW_AUTH_KEY_MGMT_PSK: usize = 2;
+
+pub const IW_AUTH_ALG_OPEN_SYSTEM: c_ulong = 0x00000001;
+pub const IW_AUTH_ALG_SHARED_KEY: c_ulong = 0x00000002;
+pub const IW_AUTH_ALG_LEAP: c_ulong = 0x00000004;
+
+pub const IW_AUTH_ROAMING_ENABLE: usize = 0;
+pub const IW_AUTH_ROAMING_DISABLE: usize = 1;
+
+pub const IW_AUTH_MFP_DISABLED: usize = 0;
+pub const IW_AUTH_MFP_OPTIONAL: usize = 1;
+pub const IW_AUTH_MFP_REQUIRED: usize = 2;
+
+pub const IW_ENCODE_SEQ_MAX_SIZE: usize = 8;
+
+pub const IW_ENCODE_ALG_NONE: usize = 0;
+pub const IW_ENCODE_ALG_WEP: usize = 1;
+pub const IW_ENCODE_ALG_TKIP: usize = 2;
+pub const IW_ENCODE_ALG_CCMP: usize = 3;
+pub const IW_ENCODE_ALG_PMK: usize = 4;
+pub const IW_ENCODE_ALG_AES_CMAC: usize = 5;
+
+pub const IW_ENCODE_EXT_TX_SEQ_VALID: c_ulong = 0x00000001;
+pub const IW_ENCODE_EXT_RX_SEQ_VALID: c_ulong = 0x00000002;
+pub const IW_ENCODE_EXT_GROUP_KEY: c_ulong = 0x00000004;
+pub const IW_ENCODE_EXT_SET_TX_KEY: c_ulong = 0x00000008;
+
+pub const IW_MICFAILURE_KEY_ID: c_ulong = 0x00000003;
+pub const IW_MICFAILURE_GROUP: c_ulong = 0x00000004;
+pub const IW_MICFAILURE_PAIRWISE: c_ulong = 0x00000008;
+pub const IW_MICFAILURE_STAKEY: c_ulong = 0x00000010;
+pub const IW_MICFAILURE_COUNT: c_ulong = 0x00000060;
+
+pub const IW_ENC_CAPA_WPA: c_ulong = 0x00000001;
+pub const IW_ENC_CAPA_WPA2: c_ulong = 0x00000002;
+pub const IW_ENC_CAPA_CIPHER_TKIP: c_ulong = 0x00000004;
+pub const IW_ENC_CAPA_CIPHER_CCMP: c_ulong = 0x00000008;
+pub const IW_ENC_CAPA_4WAY_HANDSHAKE: c_ulong = 0x00000010;
+
+macro_rules! IW_EVENT_CAPA_BASE {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($cmd:expr) => {
+        if $cmd >= SIOCIWFIRSTPRIV {
+            $cmd - SIOCIWFIRSTPRIV + 0x60
+        } else {
+            $cmd - SIOCIWFIRST
+        }
+    };
+}
+macro_rules! IW_EVENT_CAPA_INDEX {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($cmd:expr) => {
+        IW_EVENT_CAPA_BASE!($cmd) >> 5
+    };
+}
+macro_rules! IW_EVENT_CAPA_MASK {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($cmd:expr) => {
+        1 << (IW_EVENT_CAPA_BASE!($cmd) & 0x1F)
+    };
+}
+pub const IW_EVENT_CAPA_K_0: c_ulong =
+    IW_EVENT_CAPA_MASK!(0x8B04) | IW_EVENT_CAPA_MASK!(0x8B06) | IW_EVENT_CAPA_MASK!(0x8B1A);
+pub const IW_EVENT_CAPA_K_1: c_ulong = IW_EVENT_CAPA_MASK!(0x8B2A);
+macro_rules! IW_EVENT_CAPA_SET {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($event_capa:expr,$cmd:expr) => {
+        event_capa[IW_EVENT_CAPA_INDEX!(cmd)] |= IW_EVENT_CAPA_MASK!(cmd)
+    };
+}
+macro_rules! IW_EVENT_CAPA_SET_KERNEL {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    ($event_capa:expr) => {{
+        {
+            event_capa[0] |= IW_EVENT_CAPA_K_0;
+            event_capa[1] |= IW_EVENT_CAPA_K_1;
+        }
+    }};
+}
+
+pub const IW_PMKSA_ADD: usize = 1;
+pub const IW_PMKSA_REMOVE: usize = 2;
+pub const IW_PMKSA_FLUSH: usize = 3;
+
+pub const IW_PMKID_LEN: usize = 16;
+
+pub const IW_PMKID_CAND_PREAUTH: c_ulong = 0x00000001;
+
+pub const IW_EV_LCP_LEN: usize = ::mem::size_of::<iw_event>() - ::mem::size_of::<iwreq_data>();
+
+pub const IW_EV_CHAR_LEN: usize = IW_EV_LCP_LEN + ::IFNAMSIZ;
+pub const IW_EV_UINT_LEN: usize = IW_EV_LCP_LEN + ::mem::size_of::<u32>();
+pub const IW_EV_FREQ_LEN: usize = IW_EV_LCP_LEN + ::mem::size_of::<iw_freq>();
+pub const IW_EV_PARAM_LEN: usize = IW_EV_LCP_LEN + ::mem::size_of::<iw_param>();
+pub const IW_EV_ADDR_LEN: usize = IW_EV_LCP_LEN + ::mem::size_of::<::sockaddr>();
+pub const IW_EV_QUAL_LEN: usize = IW_EV_LCP_LEN + ::mem::size_of::<iw_quality>();
+
+macro_rules! IW_EV_POINT_OFF {
+    // IT IS NOT IN libc-test/semver/linux.txt
+    () => {
+        // !! NOTE: IT'S HARD CODED. IW_EV_POINT_OFF = offsetof(struct iw_point, length)
+        8
+    };
+}
+macro_rules! IW_EV_POINT_LEN { // IT IS NOT IN libc-test/semver/linux.txt
+    () => {
+        // !! NOTE: IT'S HARD CODED. IW_EV_POINT_LEN = IW_EV_LCP_LEN + sizeof(struct iw_point) - IW_EV_POINT_OFF
+        IW_EV_LCP_LEN + ::mem::size_of::<iw_point>() - IW_EV_POINT_OFF!()
+    };
+}
+
+pub const IW_EV_LCP_PK_LEN: usize = 4;
+
+pub const IW_EV_CHAR_PK_LEN: usize = IW_EV_LCP_PK_LEN + ::IFNAMSIZ;
+pub const IW_EV_UINT_PK_LEN: usize = IW_EV_LCP_PK_LEN + ::mem::size_of::<u32>();
+pub const IW_EV_FREQ_PK_LEN: usize = IW_EV_LCP_PK_LEN + ::mem::size_of::<iw_freq>();
+pub const IW_EV_PARAM_PK_LEN: usize = IW_EV_LCP_PK_LEN + ::mem::size_of::<iw_param>();
+pub const IW_EV_ADDR_PK_LEN: usize = IW_EV_LCP_PK_LEN + ::mem::size_of::<::sockaddr>();
+pub const IW_EV_QUAL_PK_LEN: usize = IW_EV_LCP_PK_LEN + ::mem::size_of::<iw_quality>();
+pub const IW_EV_POINT_PK_LEN: usize = IW_EV_LCP_PK_LEN + 4;
 
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
 pub const IPTOS_PREC_MASK: u8 = 0xE0;

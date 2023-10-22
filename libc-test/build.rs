@@ -3402,6 +3402,7 @@ fn test_linux(target: &str) {
         "linux/uinput.h",
         "linux/vm_sockets.h",
         "linux/wait.h",
+        "linux/wireless.h",
         "sys/fanotify.h",
         // <sys/auxv.h> is not present on uclibc
         [!uclibc]: "sys/auxv.h",
@@ -4041,6 +4042,8 @@ fn test_linux(target: &str) {
         (struct_ == "sockaddr_vm" && field == "svm_zero") ||
         // the `ifr_ifru` field is an anonymous union
         (struct_ == "ifreq" && field == "ifr_ifru") ||
+        // the `ifr_ifrn` field is an anonymous union
+        (struct_ == "iwreq" && field == "ifr_ifrn") ||
         // glibc uses a single array `uregs` instead of individual fields.
         (struct_ == "user_regs" && arm)
     });
