@@ -967,7 +967,10 @@ s_no_extra_traits! {
     pub struct iw_event {
         pub len: __u16,
         pub cmd: __u16,
+        #[cfg(libc_union)]
         pub u: iwreq_data,
+        #[cfg(not(libc_union))]
+        pub u: [c_char; ::IFNAMSIZ],
     }
 
     #[cfg(libc_union)]
@@ -978,6 +981,8 @@ s_no_extra_traits! {
     pub struct iwreq {
         #[cfg(libc_union)]
         pub ifr_ifrn: __c_anonymous_iwreq,
+        #[cfg(not(libc_union))]
+        pub ifr_ifrn: [c_char; ::IFNAMSIZ],
         pub u: iwreq_data,
     }
 }
