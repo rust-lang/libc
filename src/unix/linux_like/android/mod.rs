@@ -2745,6 +2745,7 @@ pub const ALG_SET_IV: ::c_int = 2;
 pub const ALG_SET_OP: ::c_int = 3;
 pub const ALG_SET_AEAD_ASSOCLEN: ::c_int = 4;
 pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
+pub const ALG_SET_DRBG_ENTROPY: ::c_int = 6;
 
 pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
