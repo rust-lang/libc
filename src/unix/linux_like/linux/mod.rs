@@ -3113,11 +3113,8 @@ pub const SIOCIWLASTPRIV: c_ulong = 0x8BFF;
 
 pub const SIOCIWFIRST: c_ulong = 0x8B00;
 pub const SIOCIWLAST: c_ulong = SIOCIWLASTPRIV;
-macro_rules! IW_IOCTL_IDX {
-    // IT IS NOT IN libc-test/semver/linux.txt
-    ($cmd:expr) => {
-        $cmd - SIOCIWFIRST
-    };
+pub const fn IW_IOCTL_IDX(cmd: ::c_ulong) -> ::c_ulong {
+    cmd - SIOCIWFIRST
 }
 macro_rules! IW_HANDLER {
     // IT IS NOT IN libc-test/semver/linux.txt
@@ -3125,17 +3122,11 @@ macro_rules! IW_HANDLER {
         [IW_IOCTL_IDX!($id)] = $func
     };
 }
-macro_rules! IW_IS_SET {
-    // IT IS NOT IN libc-test/semver/linux.txt
-    ($cmd:expr) => {
-        !($cmd & 0x1)
-    };
+pub const fn IW_IS_SET(cmd: ::c_ulong) -> ::c_ulong {
+    !(cmd & 0x1)
 }
-macro_rules! IW_IS_GET {
-    // IT IS NOT IN libc-test/semver/linux.txt
-    ($cmd:expr) => {
-        $cmd & 0x1
-    };
+pub const fn IW_IS_GET(cmd: ::c_ulong) -> ::c_ulong {
+    cmd & 0x1
 }
 
 pub const IWEVTXDROP: c_ulong = 0x8C00;
@@ -3149,11 +3140,8 @@ pub const IWEVASSOCREQIE: c_ulong = 0x8C07;
 pub const IWEVASSOCRESPIE: c_ulong = 0x8C08;
 pub const IWEVPMKIDCAND: c_ulong = 0x8C09;
 pub const IWEVFIRST: c_ulong = 0x8C00;
-macro_rules! IW_EVENT_IDX {
-    // IT IS NOT IN libc-test/semver/linux.txt
-    ($cmd:expr) => {
-        $cmd - IWEVFIRST
-    };
+pub const fn IW_EVENT_IDX(cmd: ::c_ulong) -> ::c_ulong {
+    cmd - IWEVFIRST
 }
 
 pub const IW_PRIV_TYPE_MASK: c_ulong = 0x7000;
@@ -3344,31 +3332,22 @@ pub const IW_ENC_CAPA_CIPHER_TKIP: c_ulong = 0x00000004;
 pub const IW_ENC_CAPA_CIPHER_CCMP: c_ulong = 0x00000008;
 pub const IW_ENC_CAPA_4WAY_HANDSHAKE: c_ulong = 0x00000010;
 
-macro_rules! IW_EVENT_CAPA_BASE {
-    // IT IS NOT IN libc-test/semver/linux.txt
-    ($cmd:expr) => {
-        if $cmd >= SIOCIWFIRSTPRIV {
-            $cmd - SIOCIWFIRSTPRIV + 0x60
-        } else {
-            $cmd - SIOCIWFIRST
-        }
-    };
+pub const fn IW_EVENT_CAPA_BASE(cmd: ::c_ulong) -> ::c_ulong {
+    if cmd >= SIOCIWFIRSTPRIV {
+        cmd - SIOCIWFIRSTPRIV + 0x60
+    } else {
+        cmd - SIOCIWFIRST
+    }
 }
-macro_rules! IW_EVENT_CAPA_INDEX {
-    // IT IS NOT IN libc-test/semver/linux.txt
-    ($cmd:expr) => {
-        IW_EVENT_CAPA_BASE!($cmd) >> 5
-    };
+pub const fn IW_EVENT_CAPA_INDEX(cmd: ::c_ulong) -> ::c_ulong {
+    IW_EVENT_CAPA_BASE(cmd) >> 5
 }
-macro_rules! IW_EVENT_CAPA_MASK {
-    // IT IS NOT IN libc-test/semver/linux.txt
-    ($cmd:expr) => {
-        1 << (IW_EVENT_CAPA_BASE!($cmd) & 0x1F)
-    };
+pub const fn IW_EVENT_CAPA_MASK(cmd: ::c_ulong) -> ::c_ulong {
+    1 << (IW_EVENT_CAPA_BASE(cmd) & 0x1F)
 }
 pub const IW_EVENT_CAPA_K_0: c_ulong =
-    IW_EVENT_CAPA_MASK!(0x8B04) | IW_EVENT_CAPA_MASK!(0x8B06) | IW_EVENT_CAPA_MASK!(0x8B1A);
-pub const IW_EVENT_CAPA_K_1: c_ulong = IW_EVENT_CAPA_MASK!(0x8B2A);
+    IW_EVENT_CAPA_MASK(0x8B04) | IW_EVENT_CAPA_MASK(0x8B06) | IW_EVENT_CAPA_MASK(0x8B1A);
+pub const IW_EVENT_CAPA_K_1: c_ulong = IW_EVENT_CAPA_MASK(0x8B2A);
 macro_rules! IW_EVENT_CAPA_SET {
     // IT IS NOT IN libc-test/semver/linux.txt
     ($event_capa:expr,$cmd:expr) => {
