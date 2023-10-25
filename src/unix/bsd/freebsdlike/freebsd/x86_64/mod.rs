@@ -7,6 +7,7 @@ pub type suseconds_t = i64;
 pub type register_t = i64;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct reg32 {
         pub r_fs: u32,
         pub r_es: u32,
@@ -29,6 +30,7 @@ s! {
         pub r_gs: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct reg {
         pub r_r15: i64,
         pub r_r14: i64,
@@ -60,6 +62,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fpreg32 {
         pub fpr_env: [u32; 7],
         pub fpr_acc: [[u8; 10]; 8],
@@ -67,6 +70,7 @@ s_no_extra_traits! {
         pub fpr_pad: [u8; 64],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fpreg {
         pub fpr_env: [u64; 4],
         pub fpr_acc: [[u8; 16]; 8],
@@ -74,6 +78,7 @@ s_no_extra_traits! {
         pub fpr_spare: [u64; 12],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct xmmreg {
         pub xmm_env: [u32; 8],
         pub xmm_acc: [[u8; 16]; 8],
@@ -92,6 +97,7 @@ s_no_extra_traits! {
         pub a_un: __c_anonymous_elf64_auxv_union,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct kinfo_file {
         pub kf_structsize: ::c_int,
         pub kf_type: ::c_int,

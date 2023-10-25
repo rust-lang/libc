@@ -6,6 +6,7 @@ pub type nlink_t = u32;
 pub type blksize_t = ::c_int;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -28,6 +29,7 @@ s! {
         __unused: [::c_uint; 2],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat64 {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -50,6 +52,7 @@ s! {
         __unused: [::c_uint; 2],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct user_regs_struct {
         pub regs: [::c_ulonglong; 31],
         pub sp: ::c_ulonglong,
@@ -57,6 +60,7 @@ s! {
         pub pstate: ::c_ulonglong,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,

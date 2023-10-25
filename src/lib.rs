@@ -23,6 +23,9 @@
 #![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 
+#[cfg(feature = "zerocopy")]
+extern crate zerocopy;
+
 #[macro_use]
 mod macros;
 

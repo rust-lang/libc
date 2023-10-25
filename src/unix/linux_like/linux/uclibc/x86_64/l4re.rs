@@ -8,6 +8,7 @@ pub type pthread_t = *mut ::c_void;
 
 s! {
     /// CPU sets.
+    /// #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct l4_sched_cpu_set_t {
         // from the L4Re docs
         /// Combination of granularity and offset.

@@ -5,6 +5,7 @@ pub type __u64 = ::c_ulonglong;
 pub type __s64 = ::c_longlong;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -28,6 +29,7 @@ s! {
         __unused5: ::c_uint,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat64 {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,

@@ -2,6 +2,7 @@ pub type c_char = i8;
 pub type wchar_t = i32;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::dev_t,
         __st_dev_padding: ::c_int,
@@ -24,6 +25,7 @@ s! {
         pub st_ino: ::ino_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat64 {
         pub st_dev: ::dev_t,
         __st_dev_padding: ::c_int,
@@ -52,6 +54,7 @@ s! {
         pub ss_size: ::size_t
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,
@@ -64,6 +67,7 @@ s! {
         __unused2: ::c_long
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
@@ -80,6 +84,7 @@ s! {
         __pad2: ::c_ulong,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         pub msg_stime: ::time_t,
@@ -97,6 +102,7 @@ s! {
         __pad2: ::c_ulong,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_type: ::c_ulong,
         pub f_bsize: ::c_ulong,
@@ -112,10 +118,12 @@ s! {
         pub f_spare: [::c_ulong; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mcontext_t {
         __private: [u32; 22]
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
@@ -124,6 +132,7 @@ s! {
         _align: [usize; 0],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs64 {
         pub f_type: ::c_ulong,
         pub f_bsize: ::c_ulong,
@@ -139,6 +148,7 @@ s! {
         pub f_spare: [::c_ulong; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statvfs64 {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,

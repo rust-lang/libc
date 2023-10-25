@@ -1,5 +1,6 @@
 s! {
     // FIXME this is actually a union
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[cfg_attr(target_pointer_width = "32",
                repr(align(4)))]
     #[cfg_attr(target_pointer_width = "64",

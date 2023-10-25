@@ -9,6 +9,7 @@ s_no_extra_traits! {
     }
 
     #[allow(missing_debug_implementations)]
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[repr(align(16))]
     pub struct mcontext_t {
         pub __gregs: [::c_ulong; 32],
@@ -16,6 +17,7 @@ s_no_extra_traits! {
     }
 
     #[allow(missing_debug_implementations)]
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub union __riscv_mc_fp_state {
         pub __f: __riscv_mc_f_ext_state,
         pub __d: __riscv_mc_d_ext_state,
@@ -23,18 +25,21 @@ s_no_extra_traits! {
     }
 
     #[allow(missing_debug_implementations)]
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __riscv_mc_f_ext_state {
         pub __f: [::c_uint; 32],
         pub __fcsr: ::c_uint,
     }
 
     #[allow(missing_debug_implementations)]
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __riscv_mc_d_ext_state {
         pub __f: [::c_ulonglong; 32],
         pub __fcsr: ::c_uint,
     }
 
     #[allow(missing_debug_implementations)]
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[repr(align(16))]
     pub struct __riscv_mc_q_ext_state {
         pub __f: [::c_ulonglong; 64],

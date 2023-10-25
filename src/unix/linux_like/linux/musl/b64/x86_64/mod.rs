@@ -7,6 +7,7 @@ pub type __s64 = ::c_longlong;
 pub type greg_t = i64;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -28,6 +29,7 @@ s! {
         __unused: [::c_long; 3],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat64 {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino64_t,
@@ -49,6 +51,7 @@ s! {
         __reserved: [::c_long; 3],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct user_regs_struct {
         pub r15: ::c_ulong,
         pub r14: ::c_ulong,
@@ -104,11 +107,13 @@ s! {
     // GitHub repo: ifduyue/musl/
     // commit: b4b1e10364c8737a632be61582e05a8d3acf5690
     // file: arch/x86_64/bits/signal.h#L80-L84
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mcontext_t {
         pub gregs: [greg_t; 23],
         __private: [u64; 9],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,
@@ -123,6 +128,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct user_fpregs_struct {
         pub cwd: ::c_ushort,
         pub swd: ::c_ushort,

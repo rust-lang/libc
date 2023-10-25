@@ -55,11 +55,13 @@ s! {
         pub gr_mem: *mut *mut ::c_char,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct utimbuf {
         pub actime: time_t,
         pub modtime: time_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct timeval {
         pub tv_sec: time_t,
         pub tv_usec: suseconds_t,
@@ -67,6 +69,7 @@ s! {
 
     // linux x32 compatibility
     // See https://sourceware.org/bugzilla/show_bug.cgi?id=16437
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct timespec {
         pub tv_sec: time_t,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
@@ -75,11 +78,13 @@ s! {
         pub tv_nsec: ::c_long,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct rlimit {
         pub rlim_cur: rlim_t,
         pub rlim_max: rlim_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct rusage {
         pub ru_utime: timeval,
         pub ru_stime: timeval,
@@ -130,6 +135,7 @@ s! {
         __reserved: [c_long; 16],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
         #[cfg(target_os = "android")]
@@ -151,12 +157,14 @@ s! {
         pub iov_len: ::size_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pollfd {
         pub fd: ::c_int,
         pub events: ::c_short,
         pub revents: ::c_short,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct winsize {
         pub ws_row: ::c_ushort,
         pub ws_col: ::c_ushort,
@@ -164,6 +172,7 @@ s! {
         pub ws_ypixel: ::c_ushort,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct linger {
         pub l_onoff: ::c_int,
         pub l_linger: ::c_int,
@@ -175,12 +184,14 @@ s! {
     }
 
     // <sys/time.h>
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct itimerval {
         pub it_interval: ::timeval,
         pub it_value: ::timeval,
     }
 
     // <sys/times.h>
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct tms {
         pub tms_utime: ::clock_t,
         pub tms_stime: ::clock_t,

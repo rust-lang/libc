@@ -22,6 +22,7 @@ pub type __u64 = ::c_ulonglong;
 pub type __s64 = ::c_longlong;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct cmsghdr {
         pub cmsg_len: ::size_t,
         pub cmsg_level: ::c_int,
@@ -38,10 +39,12 @@ s! {
         pub msg_flags: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_attr_t {
         __size: [::c_long; 9],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::c_ulonglong,
         __pad1: ::c_ushort,
@@ -65,6 +68,7 @@ s! {
         __unused5: ::c_ulong,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat64
     {
         pub st_dev: ::c_ulonglong,
@@ -88,6 +92,7 @@ s! {
         pub st_ino: ::ino64_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct flock {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
@@ -96,6 +101,7 @@ s! {
         pub l_pid: ::pid_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sysinfo {
         pub uptime: ::c_long,
         pub loads: [::c_ulong; 3],
@@ -113,6 +119,7 @@ s! {
         pub _f: [::c_char; 8],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_type: ::c_int,
         pub f_bsize: ::c_int,
@@ -129,6 +136,7 @@ s! {
         pub f_spare: [::c_int; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs64 {
         pub f_type: ::c_int,
         pub f_bsize: ::c_int,
@@ -144,6 +152,7 @@ s! {
         pub f_spare: [::c_int; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statvfs64 {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -160,6 +169,7 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sigset_t {
         __val: [::c_ulong; 2],
     }
@@ -171,6 +181,7 @@ s! {
         pub sa_mask: sigset_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct termios {
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,
@@ -182,6 +193,7 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_errno: ::c_int,
@@ -195,6 +207,7 @@ s! {
         pub ss_size: ::size_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ipc_perm {
         pub __key: ::key_t,
         pub uid: ::uid_t,
@@ -209,6 +222,7 @@ s! {
         __unused2: ::c_ulong,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         pub msg_stime: ::time_t,
@@ -226,6 +240,7 @@ s! {
         __unused5: ::c_ulong,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,

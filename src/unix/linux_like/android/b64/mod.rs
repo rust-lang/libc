@@ -8,6 +8,7 @@ pub type off64_t = i64;
 pub type socklen_t = u32;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sigset_t {
         __val: [::c_ulong; 1],
     }
@@ -19,6 +20,7 @@ s! {
         pub sa_restorer: ::Option<extern fn()>,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct rlimit64 {
         pub rlim_cur: ::c_ulonglong,
         pub rlim_max: ::c_ulonglong,
@@ -44,6 +46,7 @@ s! {
         pub pw_shell: *mut ::c_char,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_type: u64,
         pub f_bsize: u64,
@@ -59,6 +62,7 @@ s! {
         pub f_spare: [u64; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sysinfo {
         pub uptime: ::c_long,
         pub loads: [::c_ulong; 3],
@@ -76,6 +80,7 @@ s! {
         pub _f: [::c_char; 0],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs64 {
         pub f_type: u64,
         pub f_bsize: u64,
@@ -91,6 +96,7 @@ s! {
         pub f_spare: [u64; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statvfs64 {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -106,26 +112,31 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_barrier_t {
         __private: [i64; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_spinlock_t {
         __private: i64,
     }
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_mutex_t {
         value: ::c_int,
         __reserved: [::c_char; 36],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_cond_t {
         value: ::c_int,
         __reserved: [::c_char; 44],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_rwlock_t {
         numLocks: ::c_int,
         writerThreadId: ::c_int,
@@ -135,6 +146,7 @@ s_no_extra_traits! {
         __reserved: [::c_char; 36],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sigset64_t {
         __bits: [::c_ulong; 1]
     }

@@ -1,4 +1,5 @@
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct user_fpsimd_struct {
         pub vregs: [::__uint128_t; 32],
         pub fpsr: u32,

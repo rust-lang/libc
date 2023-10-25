@@ -17,6 +17,7 @@ s! {
         pub udata: *mut ::c_void,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
@@ -212,6 +213,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct dirent {
         pub d_fileno: ::ino_t,
         pub d_reclen: u16,
@@ -221,6 +223,7 @@ s_no_extra_traits! {
         pub d_name: [::c_char; 256],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_version: u32,
         pub f_type: u32,

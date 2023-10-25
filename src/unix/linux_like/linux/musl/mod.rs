@@ -144,6 +144,7 @@ s! {
         pub sa_restorer: ::Option<extern fn()>,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -164,6 +165,7 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct termios {
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,
@@ -175,6 +177,7 @@ s! {
         pub __c_ospeed: ::speed_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct flock {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
@@ -183,6 +186,7 @@ s! {
         pub l_pid: ::pid_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct flock64 {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
@@ -220,11 +224,13 @@ s! {
         pub rt_irtt: ::c_ushort,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __exit_status {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf64_Chdr {
         pub ch_type: ::Elf64_Word,
         pub ch_reserved: ::Elf64_Word,
@@ -232,12 +238,14 @@ s! {
         pub ch_addralign: ::Elf64_Xword,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf32_Chdr {
         pub ch_type: ::Elf32_Word,
         pub ch_size: ::Elf32_Word,
         pub ch_addralign: ::Elf32_Word,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct timex {
         pub modes: ::c_uint,
         pub offset: ::c_long,
@@ -262,6 +270,7 @@ s! {
         pub __padding: [::c_int; 11],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ntptimeval {
         pub time: ::timeval,
         pub maxerror: ::c_long,
@@ -347,6 +356,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sysinfo {
         pub uptime: ::c_ulong,
         pub loads: [::c_ulong; 3],
@@ -371,6 +381,7 @@ s_no_extra_traits! {
     // 1e7f0fcd7ff2096904fd93a2ee6d12a2392be392
     //
     // OpenHarmony uses the musl 1.2 layout.
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct utmpx {
         pub ut_type: ::c_short,
         __ut_pad1: ::c_short,

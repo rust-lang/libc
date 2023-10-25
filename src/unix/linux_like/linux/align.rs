@@ -1,6 +1,7 @@
 macro_rules! expand_align {
     () => {
         s! {
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[cfg_attr(any(target_pointer_width = "32",
                            target_arch = "x86_64",
                            target_arch = "powerpc64",
@@ -30,6 +31,7 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[cfg_attr(any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
                        repr(align(4)))]
             #[cfg_attr(all(not(target_env = "musl"),
@@ -41,18 +43,21 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[repr(align(4))]
             pub struct pthread_condattr_t {
                 #[doc(hidden)]
                 size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[repr(align(4))]
             pub struct pthread_barrierattr_t {
                 #[doc(hidden)]
                 size: [u8; ::__SIZEOF_PTHREAD_BARRIERATTR_T],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[repr(align(8))]
             pub struct fanotify_event_metadata {
                 pub event_len: __u32,
@@ -66,6 +71,7 @@ macro_rules! expand_align {
         }
 
         s_no_extra_traits! {
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[cfg_attr(all(any(target_env = "musl", target_env = "ohos"),
                            target_pointer_width = "32"),
                        repr(align(4)))]
@@ -83,6 +89,7 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_COND_T],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[cfg_attr(all(target_pointer_width = "32",
                            any(target_arch = "mips",
                                target_arch = "mips32r6",
@@ -112,6 +119,7 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[cfg_attr(all(target_pointer_width = "32",
                            any(target_arch = "mips",
                                target_arch = "mips32r6",
@@ -139,6 +147,7 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[cfg_attr(all(target_pointer_width = "32",
                            any(target_arch = "mips",
                                target_arch = "mips32r6",
@@ -168,6 +177,7 @@ macro_rules! expand_align {
             }
 
             // linux/can.h
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[repr(align(8))]
             #[allow(missing_debug_implementations)]
             pub struct can_frame {
@@ -179,6 +189,7 @@ macro_rules! expand_align {
                 pub data: [u8; CAN_MAX_DLEN],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[repr(align(8))]
             #[allow(missing_debug_implementations)]
             pub struct canfd_frame {
@@ -190,6 +201,7 @@ macro_rules! expand_align {
                 pub data: [u8; CANFD_MAX_DLEN],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
             #[repr(align(8))]
             #[allow(missing_debug_implementations)]
             pub struct canxl_frame {

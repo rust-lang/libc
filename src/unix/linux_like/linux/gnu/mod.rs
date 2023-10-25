@@ -16,6 +16,7 @@ cfg_if! {
 }
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statx {
         pub stx_mask: u32,
         pub stx_blksize: u32,
@@ -43,6 +44,7 @@ s! {
         __statx_pad3: [u64; 12],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statx_timestamp {
         pub tv_sec: i64,
         pub tv_nsec: u32,
@@ -67,11 +69,13 @@ s! {
         __glibc_reserved: [::c_char; 32]
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __exit_status {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __timeval {
         pub tv_sec: i32,
         pub tv_usec: i32,
@@ -100,12 +104,14 @@ s! {
         pub msg_flags: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct cmsghdr {
         pub cmsg_len: ::size_t,
         pub cmsg_level: ::c_int,
         pub cmsg_type: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct termios {
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,
@@ -131,6 +137,7 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mallinfo {
         pub arena: ::c_int,
         pub ordblks: ::c_int,
@@ -144,6 +151,7 @@ s! {
         pub keepcost: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mallinfo2 {
         pub arena: ::size_t,
         pub ordblks: ::size_t,
@@ -157,10 +165,12 @@ s! {
         pub keepcost: ::size_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct nl_pktinfo {
         pub group: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct nl_mmap_req {
         pub nm_block_size: ::c_uint,
         pub nm_block_nr: ::c_uint,
@@ -168,6 +178,7 @@ s! {
         pub nm_frame_nr: ::c_uint,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct nl_mmap_hdr {
         pub nm_status: ::c_uint,
         pub nm_len: ::c_uint,
@@ -198,6 +209,7 @@ s! {
         pub rt_irtt: ::c_ushort,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct timex {
         pub modes: ::c_uint,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
@@ -277,6 +289,7 @@ s! {
         pub __unused11: i32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct ntptimeval {
         pub time: ::timeval,
         pub maxerror: ::c_long,
@@ -299,6 +312,7 @@ s! {
         __bitfield: u8,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf64_Chdr {
         pub ch_type: ::Elf64_Word,
         pub ch_reserved: ::Elf64_Word,
@@ -306,12 +320,14 @@ s! {
         pub ch_addralign: ::Elf64_Xword,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf32_Chdr {
         pub ch_type: ::Elf32_Word,
         pub ch_size: ::Elf32_Word,
         pub ch_addralign: ::Elf32_Word,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct seminfo {
         pub semmap: ::c_int,
         pub semmni: ::c_int,
@@ -325,22 +341,26 @@ s! {
         pub semaem: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ptrace_peeksiginfo_args {
         pub off: ::__u64,
         pub flags: ::__u32,
         pub nr: ::__s32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __c_anonymous_ptrace_syscall_info_entry {
         pub nr: ::__u64,
         pub args: [::__u64; 6],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct __c_anonymous_ptrace_syscall_info_exit {
         pub sval: ::__s64,
         pub is_error: ::__u8,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct __c_anonymous_ptrace_syscall_info_seccomp {
         pub nr: ::__u64,
         pub args: [::__u64; 6],
@@ -552,6 +572,7 @@ impl ::Clone for __c_anonymous_ptrace_syscall_info_data {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct utmpx {
         pub ut_type: ::c_short,
         pub ut_pid: ::pid_t,

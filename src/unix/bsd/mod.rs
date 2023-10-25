@@ -8,12 +8,14 @@ pub type nfds_t = ::c_uint;
 pub type regoff_t = off_t;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_in6 {
         pub sin6_len: u8,
         pub sin6_family: sa_family_t,
@@ -89,12 +91,14 @@ s! {
         pub msg_flags: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct cmsghdr {
         pub cmsg_len: ::socklen_t,
         pub cmsg_level: ::c_int,
         pub cmsg_type: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fsid_t {
         __fsid_val: [i32; 2],
     }
@@ -111,6 +115,7 @@ s! {
         __re_g: *mut ::c_void,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct regmatch_t {
         pub rm_so: regoff_t,
         pub rm_eo: regoff_t,
@@ -125,6 +130,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,

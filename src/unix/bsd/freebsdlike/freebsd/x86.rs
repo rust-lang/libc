@@ -7,6 +7,7 @@ pub type suseconds_t = i32;
 pub type register_t = i32;
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mcontext_t {
         pub mc_onstack: register_t,
         pub mc_gs: register_t,
@@ -42,6 +43,7 @@ s_no_extra_traits! {
 }
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,

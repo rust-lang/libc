@@ -13,6 +13,7 @@ s! {
         pub __fpsr: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mcontext_t {
         pub __gregs: [::greg_t; 32],
         pub __fregs: __fregset,

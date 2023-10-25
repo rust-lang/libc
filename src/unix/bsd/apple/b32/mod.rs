@@ -5,6 +5,7 @@ pub type c_ulong = u32;
 pub type boolean_t = ::c_int;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct if_data {
         pub ifi_type: ::c_uchar,
         pub ifi_typelen: ::c_uchar,
@@ -37,6 +38,7 @@ s! {
         pub ifi_reserved2: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct bpf_hdr {
         pub bh_tstamp: ::timeval,
         pub bh_caplen: u32,
@@ -44,12 +46,14 @@ s! {
         pub bh_hdrlen: ::c_ushort,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct malloc_zone_t {
         __private: [::uintptr_t; 18], // FIXME: keeping private for now
     }
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_attr_t {
         __sig: c_long,
         __opaque: [::c_char; 36]

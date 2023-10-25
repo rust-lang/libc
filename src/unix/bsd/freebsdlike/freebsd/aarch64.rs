@@ -7,6 +7,7 @@ pub type suseconds_t = i64;
 pub type register_t = i64;
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct gpregs {
         pub gp_x: [::register_t; 30],
         pub gp_lr: ::register_t,
@@ -16,6 +17,7 @@ s_no_extra_traits! {
         pub gp_pad: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fpregs {
         pub fp_q: u128,
         pub fp_sr: u32,
@@ -24,6 +26,7 @@ s_no_extra_traits! {
         pub fp_pad: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mcontext_t {
         pub mc_gpregs: gpregs,
         pub mc_fpregs: fpregs,
