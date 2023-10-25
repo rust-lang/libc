@@ -1830,6 +1830,8 @@ pub const IFLA_INFO_SLAVE_DATA: ::c_ushort = 5;
 // linux/if_tun.h
 pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;
+pub const IFF_NAPI: ::c_int = 0x0010;
+pub const IFF_NAPI_FRAGS: ::c_int = 0x0020;
 pub const IFF_NO_PI: ::c_int = 0x1000;
 // Read queue size
 pub const TUN_READQ_SIZE: ::c_short = 500;
@@ -1847,6 +1849,18 @@ pub const IFF_DETACH_QUEUE: ::c_int = 0x0400;
 // read-only flag
 pub const IFF_PERSIST: ::c_int = 0x0800;
 pub const IFF_NOFILTER: ::c_int = 0x1000;
+// Socket options
+pub const TUN_TX_TIMESTAMP: ::c_int = 1;
+// Features for GSO (TUNSETOFFLOAD)
+pub const TUN_F_CSUM: ::c_ushort = 0x01; /* You can hand me unchecksummed packets. */
+pub const TUN_F_TSO4: ::c_ushort = 0x02; /* I can handle TSO for IPv4 packets */
+pub const TUN_F_TSO6: ::c_ushort = 0x04; /* I can handle TSO for IPv6 packets */
+pub const TUN_F_TSO_ECN: ::c_ushort = 0x08; /* I can handle TSO with ECN bits. */
+pub const TUN_F_UFO: ::c_ushort = 0x10; /* I can handle UFO packets */
+// Protocol info prepended to the packets (when IFF_NO_PI is not set)
+pub const TUN_PKT_STRIP: ::c_int = 0x0001;
+// Accept all multicast packets
+pub const TUN_FLT_ALLMULTI: ::c_int = 0x0001;
 
 // Since Linux 3.1
 pub const SEEK_DATA: ::c_int = 3;
