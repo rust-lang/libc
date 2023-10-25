@@ -2481,6 +2481,7 @@ pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;
 pub const IFF_NAPI: ::c_int = 0x0010;
 pub const IFF_NAPI_FRAGS: ::c_int = 0x0020;
+pub const IFF_NO_CARRIER: ::c_int = 0x0040;
 pub const IFF_NO_PI: ::c_int = 0x1000;
 pub const IFF_ONE_QUEUE: ::c_int = 0x2000;
 pub const IFF_VNET_HDR: ::c_int = 0x4000;
@@ -2490,6 +2491,14 @@ pub const IFF_ATTACH_QUEUE: ::c_int = 0x0200;
 pub const IFF_DETACH_QUEUE: ::c_int = 0x0400;
 pub const IFF_PERSIST: ::c_int = 0x0800;
 pub const IFF_NOFILTER: ::c_int = 0x1000;
+// Features for GSO (TUNSETOFFLOAD)
+pub const TUN_F_CSUM: ::c_uint = 0x01;
+pub const TUN_F_TSO4: ::c_uint = 0x02;
+pub const TUN_F_TSO6: ::c_uint = 0x04;
+pub const TUN_F_TSO_ECN: ::c_uint = 0x08;
+pub const TUN_F_UFO: ::c_uint = 0x10;
+pub const TUN_F_USO4: ::c_uint = 0x20;
+pub const TUN_F_USO6: ::c_uint = 0x40;
 
 // start android/platform/bionic/libc/kernel/uapi/linux/if_ether.h
 // from https://android.googlesource.com/platform/bionic/+/HEAD/libc/kernel/uapi/linux/if_ether.h
