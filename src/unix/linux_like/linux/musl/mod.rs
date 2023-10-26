@@ -592,11 +592,6 @@ pub const PTRACE_INTERRUPT: ::c_int = 0x4207;
 pub const PTRACE_LISTEN: ::c_int = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_int = 0x4209;
 
-pub const FAN_MARK_INODE: ::c_uint = 0x0000_0000;
-pub const FAN_MARK_MOUNT: ::c_uint = 0x0000_0010;
-// NOTE: FAN_MARK_FILESYSTEM requires Linux Kernel >= 4.20.0
-pub const FAN_MARK_FILESYSTEM: ::c_uint = 0x0000_0100;
-
 pub const AF_IB: ::c_int = 27;
 pub const AF_MPLS: ::c_int = 28;
 pub const AF_NFC: ::c_int = 39;
