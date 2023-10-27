@@ -1731,6 +1731,30 @@ pub const SF_ARCHIVED: ::c_uint = 0x00010000;
 pub const SF_IMMUTABLE: ::c_uint = 0x00020000;
 pub const SF_APPEND: ::c_uint = 0x00040000;
 
+// sys/exec_elf.h - Legal values for p_type (segment type).
+pub const PT_NULL: u32 = 0;
+pub const PT_LOAD: u32 = 1;
+pub const PT_DYNAMIC: u32 = 2;
+pub const PT_INTERP: u32 = 3;
+pub const PT_NOTE: u32 = 4;
+pub const PT_SHLIB: u32 = 5;
+pub const PT_PHDR: u32 = 6;
+pub const PT_TLS: u32 = 7;
+pub const PT_LOOS: u32 = 0x60000000;
+pub const PT_HIOS: u32 = 0x6fffffff;
+pub const PT_LOPROC: u32 = 0x70000000;
+pub const PT_HIPROC: u32 = 0x7fffffff;
+
+pub const PT_GNU_EH_FRAME: u32 = 0x6474e550;
+pub const PT_GNU_RELRO: u32 = 0x6474e552;
+
+// sys/exec_elf.h - Legal values for p_flags (segment flags).
+pub const PF_X: u32 = 0x1;
+pub const PF_W: u32 = 0x2;
+pub const PF_R: u32 = 0x4;
+pub const PF_MASKOS: u32 = 0x0ff00000;
+pub const PF_MASKPROC: u32 = 0xf0000000;
+
 // sys/mount.h
 pub const MNT_NOPERM: ::c_int = 0x00000020;
 pub const MNT_WXALLOWED: ::c_int = 0x00000800;
