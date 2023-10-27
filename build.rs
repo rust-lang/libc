@@ -167,11 +167,19 @@ fn main() {
     // https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#check-cfg
     if libc_check_cfg {
         for cfg in ALLOWED_CFGS {
-            println!("cargo:rustc-check-cfg=values({})", cfg);
+            if rustc_minor_ver >= 75 {
+                println!("cargo:rustc-check-cfg=cfg({})", cfg);
+            } else {
+                println!("cargo:rustc-check-cfg=values({})", cfg);
+            }
         }
         for &(name, values) in CHECK_CFG_EXTRA {
             let values = values.join("\",\"");
-            println!("cargo:rustc-check-cfg=values({},\"{}\")", name, values);
+            if rustc_minor_ver >= 75 {
+                println!("cargo:rustc-check-cfg=cfg({},values(\"{}\"))", name, values);
+            } else {
+                println!("cargo:rustc-check-cfg=values({},\"{}\")", name, values);
+            }
         }
     }
 }
