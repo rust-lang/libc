@@ -244,8 +244,6 @@ pub const O_SYNC: ::c_int = 1052672;
 pub const O_RSYNC: ::c_int = 1052672;
 pub const O_DSYNC: ::c_int = 4096;
 
-pub const SOCK_NONBLOCK: ::c_int = 2048;
-
 pub const MAP_ANON: ::c_int = 0x0020;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
 pub const MAP_DENYWRITE: ::c_int = 0x0800;
@@ -263,7 +261,6 @@ pub const PTRACE_SYSEMU_SINGLESTEP: ::c_int = 0x1e;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
-pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const EDEADLK: ::c_int = 35;
 pub const ENAMETOOLONG: ::c_int = 36;
@@ -386,9 +383,6 @@ pub const F_GETOWN: ::c_int = 9;
 pub const F_SETLK: ::c_int = 13;
 pub const F_SETLKW: ::c_int = 14;
 pub const F_SETOWN: ::c_int = 8;
-pub const F_OFD_GETLK: ::c_int = 36;
-pub const F_OFD_SETLK: ::c_int = 37;
-pub const F_OFD_SETLKW: ::c_int = 38;
 
 pub const VEOF: usize = 4;
 pub const VEOL: usize = 6;

@@ -512,6 +512,10 @@ pub const ECOMM: ::c_int = 70;
 pub const EPROTO: ::c_int = 71;
 pub const EDOTDOT: ::c_int = 73;
 
+pub const F_OFD_GETLK: ::c_int = 36;
+pub const F_OFD_SETLK: ::c_int = 37;
+pub const F_OFD_SETLKW: ::c_int = 38;
+
 pub const F_RDLCK: ::c_int = 0;
 pub const F_WRLCK: ::c_int = 1;
 pub const F_UNLCK: ::c_int = 2;
@@ -541,7 +545,9 @@ pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
+pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOCK_DCCP: ::c_int = 6;
+pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 pub const SOCK_PACKET: ::c_int = 10;
 
 pub const SOMAXCONN: ::c_int = 128;
