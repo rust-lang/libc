@@ -1029,7 +1029,17 @@ pub const STATX_ATTR_DAX: ::c_int = 0x00200000;
 
 pub const SOMAXCONN: ::c_int = 4096;
 
-//sys/timex.h
+// linux/mount.h
+pub const MOVE_MOUNT_F_SYMLINKS: ::c_uint = 0x00000001;
+pub const MOVE_MOUNT_F_AUTOMOUNTS: ::c_uint = 0x00000002;
+pub const MOVE_MOUNT_F_EMPTY_PATH: ::c_uint = 0x00000004;
+pub const MOVE_MOUNT_T_SYMLINKS: ::c_uint = 0x00000010;
+pub const MOVE_MOUNT_T_AUTOMOUNTS: ::c_uint = 0x00000020;
+pub const MOVE_MOUNT_T_EMPTY_PATH: ::c_uint = 0x00000040;
+pub const MOVE_MOUNT_SET_GROUP: ::c_uint = 0x00000100;
+pub const MOVE_MOUNT_BENEATH: ::c_uint = 0x00000200;
+
+// sys/timex.h
 pub const ADJ_OFFSET: ::c_uint = 0x0001;
 pub const ADJ_FREQUENCY: ::c_uint = 0x0002;
 pub const ADJ_MAXERROR: ::c_uint = 0x0004;
