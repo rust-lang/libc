@@ -26,7 +26,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
@@ -49,7 +49,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run.sh
@@ -84,7 +84,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Self-update rustup
         run: rustup self update
         shell: bash
@@ -106,7 +106,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: sh ./ci/install-rust.sh
       - name: Check style
@@ -167,7 +167,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
@@ -195,7 +195,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TOOLCHAIN=nightly INSTALL_RUST_SRC=1 sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
@@ -214,7 +214,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
@@ -250,7 +250,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
       - name: Execute build.sh
@@ -285,7 +285,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/install-rust.sh
       - name: Execute build.sh
@@ -310,7 +310,7 @@ jobs:
           stable,
         ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Self-update rustup
         run: rustup self update
         shell: bash
@@ -329,7 +329,7 @@ jobs:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TOOLCHAIN=nightly sh ./ci/install-rust.sh
       - name: Build with check-cfg
