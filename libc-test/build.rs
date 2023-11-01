@@ -3589,6 +3589,10 @@ fn test_linux(target: &str) {
 
             // FIXME: requires >= 6.1 kernel headers
             "canxl_frame" => true,
+
+            // FIXME: The size of `iv` has been changed since Linux v6.0
+            // https://github.com/torvalds/linux/commit/94dfc73e7cf4a31da66b8843f0b9283ddd6b8381
+            "af_alg_iv" => true,
             _ => false,
         }
     });
@@ -3907,6 +3911,9 @@ fn test_linux(target: &str) {
             | "FAN_EPIDFD"
             if musl => true,
 
+            // FIXME: Requires linux 6.5
+            "NFT_MSG_MAX" => true,
+
             _ => false,
         }
     });
@@ -4012,6 +4019,9 @@ fn test_linux(target: &str) {
             // skip the tests.
             "posix_basename" if gnu => true,
             "gnu_basename" if gnu => true,
+
+            // FIXME: function pointers changed since Ubuntu 23.10
+            "strtol" | "strtoll" | "strtoul" | "strtoull" | "fscanf" | "scanf" | "sscanf" => true,
 
             _ => false,
         }
