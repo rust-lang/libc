@@ -2084,6 +2084,8 @@ posix_spawnattr_setflags
 posix_spawnattr_setpgroup
 posix_spawnattr_setsigdefault
 posix_spawnattr_setsigmask
+posix_spawnattr_getbinpref_np
+posix_spawnattr_setbinpref_np
 posix_spawnattr_t
 posix_spawnp
 preadv
