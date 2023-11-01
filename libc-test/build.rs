@@ -1830,6 +1830,9 @@ fn test_android(target: &str) {
             // kernel 5.6 minimum required
             "IPPROTO_MPTCP" | "IPPROTO_ETHERNET" => true,
 
+            // kernel 6.2 minimum
+            "TUN_F_USO4" | "TUN_F_USO6" | "IFF_NO_CARRIER" => true,
+
             // FIXME: NDK r22 minimum required
             | "FDB_NOTIFY_BIT"
             | "FDB_NOTIFY_INACTIVE_BIT"
@@ -3861,6 +3864,9 @@ fn test_linux(target: &str) {
 
             // kernel 6.1 minimum
             "MADV_COLLAPSE" => true,
+
+            // kernel 6.2 minimum
+            "TUN_F_USO4" | "TUN_F_USO6" | "IFF_NO_CARRIER" => true,
 
             // FIXME: Requires more recent kernel headers
             | "IFLA_PARENT_DEV_NAME"     // linux v5.13+
