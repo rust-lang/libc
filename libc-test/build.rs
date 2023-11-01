@@ -3739,8 +3739,6 @@ fn test_linux(target: &str) {
 
             // kernel constants not available in uclibc 1.0.34
             | "EXTPROC"
-            | "FAN_MARK_FILESYSTEM"
-            | "FAN_MARK_INODE"
             | "IPPROTO_BEETPH"
             | "IPPROTO_MPLS"
             | "IPV6_HDRINCL"
@@ -3878,6 +3876,36 @@ fn test_linux(target: &str) {
             "MOVE_MOUNT_BENEATH" => true,
             // FIXME: Requires linux 6.1
             "ALG_SET_KEY_BY_KEY_SERIAL" | "ALG_SET_DRBG_ENTROPY" => true,
+
+            // FIXME: Requires more recent kernel headers
+            | "FAN_FS_ERROR"                      // linux v5.16+
+            | "FAN_RENAME"                        // linux v5.17+
+            | "FAN_REPORT_TARGET_FID"             // linux v5.17+
+            | "FAN_REPORT_DFID_NAME_TARGET"       // linux v5.17+
+            | "FAN_MARK_EVICTABLE"                // linux v5.19+
+            | "FAN_MARK_IGNORE"                   // linux v6.0+
+            | "FAN_MARK_IGNORE_SURV"              // linux v6.0+
+            | "FAN_EVENT_INFO_TYPE_ERROR"         // linux v5.16+
+            | "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME" // linux v5.17+
+            | "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME" // linux v5.17+
+            | "FAN_RESPONSE_INFO_NONE"            // linux v5.16+
+            | "FAN_RESPONSE_INFO_AUDIT_RULE"      // linux v5.16+
+            | "FAN_INFO"                          // linux v5.16+
+                => true,
+
+            // FIXME: Requires linux 5.15+
+            "FAN_REPORT_PIDFD" if musl => true,
+
+            // FIXME: Requires linux 5.9+
+            | "FAN_REPORT_DIR_FID"
+            | "FAN_REPORT_NAME"
+            | "FAN_REPORT_DFID_NAME"
+            | "FAN_EVENT_INFO_TYPE_DFID_NAME"
+            | "FAN_EVENT_INFO_TYPE_DFID"
+            | "FAN_EVENT_INFO_TYPE_PIDFD"
+            | "FAN_NOPIDFD"
+            | "FAN_EPIDFD"
+            if musl => true,
 
             _ => false,
         }
