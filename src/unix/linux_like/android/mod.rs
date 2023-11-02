@@ -1798,6 +1798,34 @@ pub const BLKIOOPT: ::c_int = 0x1279;
 pub const BLKSSZGET: ::c_int = 0x1268;
 pub const BLKPBSZGET: ::c_int = 0x127B;
 
+cfg_if! {
+    // Those type are constructed using the _IOC macro
+    // DD-SS_SSSS_SSSS_SSSS-TTTT_TTTT-NNNN_NNNN
+    // where D stands for direction (either None (00), Read (01) or Write (11))
+    // where S stands for size (int, long, struct...)
+    // where T stands for type ('f','v','X'...)
+    // where N stands for NR (NumbeR)
+    if #[cfg(any(target_arch = "x86", target_arch = "arm"))] {
+        pub const FS_IOC_GETFLAGS: ::c_int = 0x80046601;
+        pub const FS_IOC_SETFLAGS: ::c_int = 0x40046602;
+        pub const FS_IOC_GETVERSION: ::c_int = 0x80047601;
+        pub const FS_IOC_SETVERSION: ::c_int = 0x40047602;
+        pub const FS_IOC32_GETFLAGS: ::c_int = 0x80046601;
+        pub const FS_IOC32_SETFLAGS: ::c_int = 0x40046602;
+        pub const FS_IOC32_GETVERSION: ::c_int = 0x80047601;
+        pub const FS_IOC32_SETVERSION: ::c_int = 0x40047602;
+    } else if #[cfg(any(target_arch = "x86_64", target_arch = "riscv64", target_arch = "aarch64"))] {
+        pub const FS_IOC_GETFLAGS: ::c_int = 0x80086601;
+        pub const FS_IOC_SETFLAGS: ::c_int = 0x40086602;
+        pub const FS_IOC_GETVERSION: ::c_int = 0x80087601;
+        pub const FS_IOC_SETVERSION: ::c_int = 0x40087602;
+        pub const FS_IOC32_GETFLAGS: ::c_int = 0x80046601;
+        pub const FS_IOC32_SETFLAGS: ::c_int = 0x40046602;
+        pub const FS_IOC32_GETVERSION: ::c_int = 0x80047601;
+        pub const FS_IOC32_SETVERSION: ::c_int = 0x40047602;
+    }
+}
+
 pub const EAI_AGAIN: ::c_int = 2;
 pub const EAI_BADFLAGS: ::c_int = 3;
 pub const EAI_FAIL: ::c_int = 4;
