@@ -1080,6 +1080,10 @@ extern "C" {
     pub fn getdtablesize() -> ::c_int;
 
     // grp.h
+    pub fn getgrent() -> *mut ::group;
+    pub fn setgrent();
+    pub fn endgrent();
+    pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn getgrgid_r(
         gid: ::gid_t,
         grp: *mut ::group,
@@ -1087,6 +1091,7 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
+    pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
     pub fn getgrnam_r(
         name: *const ::c_char,
         grp: *mut ::group,
