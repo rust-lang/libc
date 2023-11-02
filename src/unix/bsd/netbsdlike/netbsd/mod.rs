@@ -60,6 +60,39 @@ impl siginfo_t {
         self.si_addr
     }
 
+    pub unsafe fn si_code(&self) -> ::c_int {
+        self.si_code
+    }
+
+    pub unsafe fn si_errno(&self) -> ::c_int {
+        self.si_errno
+    }
+
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        #[repr(C)]
+        struct siginfo_timer {
+            _si_signo: ::c_int,
+            _si_errno: ::c_int,
+            _si_code: ::c_int,
+            __pad1: ::c_int,
+            _pid: ::pid_t,
+        }
+        (*(self as *const siginfo_t as *const siginfo_timer))._pid
+    }
+
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        #[repr(C)]
+        struct siginfo_timer {
+            _si_signo: ::c_int,
+            _si_errno: ::c_int,
+            _si_code: ::c_int,
+            __pad1: ::c_int,
+            _pid: ::pid_t,
+            _uid: ::uid_t,
+        }
+        (*(self as *const siginfo_t as *const siginfo_timer))._uid
+    }
+
     pub unsafe fn si_value(&self) -> ::sigval {
         #[repr(C)]
         struct siginfo_timer {
