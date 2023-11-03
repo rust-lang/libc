@@ -686,6 +686,37 @@ s! {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
     }
+
+    // linux/tls.h
+
+    pub struct tls_crypto_info {
+        pub version: ::__u16,
+        pub cipher_type: ::__u16,
+    }
+
+    pub struct tls12_crypto_info_aes_gcm_128 {
+        pub info: tls_crypto_info,
+        pub iv: [::c_uchar; TLS_CIPHER_AES_GCM_128_IV_SIZE],
+        pub key: [::c_uchar; TLS_CIPHER_AES_GCM_128_KEY_SIZE],
+        pub salt: [::c_uchar; TLS_CIPHER_AES_GCM_128_SALT_SIZE],
+        pub rec_seq: [::c_uchar; TLS_CIPHER_AES_GCM_128_REC_SEQ_SIZE],
+    }
+
+    pub struct tls12_crypto_info_aes_gcm_256 {
+        pub info: tls_crypto_info,
+        pub iv: [::c_uchar; TLS_CIPHER_AES_GCM_256_IV_SIZE],
+        pub key: [::c_uchar; TLS_CIPHER_AES_GCM_256_KEY_SIZE],
+        pub salt: [::c_uchar; TLS_CIPHER_AES_GCM_256_SALT_SIZE],
+        pub rec_seq: [::c_uchar; TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE],
+    }
+
+    pub struct tls12_crypto_info_chacha20_poly1305 {
+        pub info: tls_crypto_info,
+        pub iv: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE],
+        pub key: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE],
+        pub salt: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE],
+        pub rec_seq: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE],
+    }
 }
 
 s_no_extra_traits! {
@@ -3238,6 +3269,41 @@ pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 
 // linux/tls.h
+pub const TLS_TX: ::c_int = 1;
+pub const TLS_RX: ::c_int = 2;
+
+pub const TLS_1_2_VERSION_MAJOR: ::__u8 = 0x3;
+pub const TLS_1_2_VERSION_MINOR: ::__u8 = 0x3;
+pub const TLS_1_2_VERSION: ::__u16 =
+    ((TLS_1_2_VERSION_MAJOR as ::__u16) << 8) | (TLS_1_2_VERSION_MINOR as ::__u16);
+
+pub const TLS_1_3_VERSION_MAJOR: ::__u8 = 0x3;
+pub const TLS_1_3_VERSION_MINOR: ::__u8 = 0x4;
+pub const TLS_1_3_VERSION: ::__u16 =
+    ((TLS_1_3_VERSION_MAJOR as ::__u16) << 8) | (TLS_1_3_VERSION_MINOR as ::__u16);
+
+pub const TLS_CIPHER_AES_GCM_128: ::__u16 = 51;
+pub const TLS_CIPHER_AES_GCM_128_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_AES_GCM_128_KEY_SIZE: usize = 16;
+pub const TLS_CIPHER_AES_GCM_128_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_AES_GCM_128_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_AES_GCM_128_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_CIPHER_AES_GCM_256: ::__u16 = 52;
+pub const TLS_CIPHER_AES_GCM_256_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_AES_GCM_256_KEY_SIZE: usize = 32;
+pub const TLS_CIPHER_AES_GCM_256_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_AES_GCM_256_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_CIPHER_CHACHA20_POLY1305: ::__u16 = 54;
+pub const TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE: usize = 12;
+pub const TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE: usize = 32;
+pub const TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE: usize = 0;
+pub const TLS_CIPHER_CHACHA20_POLY1305_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_SET_RECORD_TYPE: ::c_int = 1;
 pub const TLS_GET_RECORD_TYPE: ::c_int = 2;
 
 pub const SOL_TLS: ::c_int = 282;
