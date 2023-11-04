@@ -3177,7 +3177,6 @@ pub const KERN_SECUREMASK: ::c_int = 5;
 pub const KERN_PROF: ::c_int = 6;
 pub const KERN_NODENAME: ::c_int = 7;
 pub const KERN_DOMAINNAME: ::c_int = 8;
-pub const KERN_CAP_BSET: ::c_int = 14;
 pub const KERN_PANIC: ::c_int = 15;
 pub const KERN_REALROOTDEV: ::c_int = 16;
 pub const KERN_SPARC_REBOOT: ::c_int = 21;
