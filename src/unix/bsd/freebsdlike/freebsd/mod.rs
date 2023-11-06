@@ -5713,7 +5713,9 @@ cfg_if! {
         mod freebsd12;
         pub use self::freebsd12::*;
     } else if #[cfg(any(freebsd10, freebsd11))] {
+        #[deprecated(note = "Use freebsd12 or newer instead", since = "0.2.151")]
         mod freebsd11;
+        #[allow(deprecated)]
         pub use self::freebsd11::*;
     } else {
         // Unknown freebsd version
