@@ -1866,6 +1866,8 @@ pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;
 pub const IFF_NAPI: ::c_int = 0x0010;
 pub const IFF_NAPI_FRAGS: ::c_int = 0x0020;
+// Used in TUNSETIFF to bring up tun/tap without carrier
+pub const IFF_NO_CARRIER: ::c_int = 0x0040;
 pub const IFF_NO_PI: ::c_int = 0x1000;
 // Read queue size
 pub const TUN_READQ_SIZE: ::c_short = 500;
@@ -1886,11 +1888,13 @@ pub const IFF_NOFILTER: ::c_int = 0x1000;
 // Socket options
 pub const TUN_TX_TIMESTAMP: ::c_int = 1;
 // Features for GSO (TUNSETOFFLOAD)
-pub const TUN_F_CSUM: ::c_ushort = 0x01; /* You can hand me unchecksummed packets. */
-pub const TUN_F_TSO4: ::c_ushort = 0x02; /* I can handle TSO for IPv4 packets */
-pub const TUN_F_TSO6: ::c_ushort = 0x04; /* I can handle TSO for IPv6 packets */
-pub const TUN_F_TSO_ECN: ::c_ushort = 0x08; /* I can handle TSO with ECN bits. */
-pub const TUN_F_UFO: ::c_ushort = 0x10; /* I can handle UFO packets */
+pub const TUN_F_CSUM: ::c_uint = 0x01;
+pub const TUN_F_TSO4: ::c_uint = 0x02;
+pub const TUN_F_TSO6: ::c_uint = 0x04;
+pub const TUN_F_TSO_ECN: ::c_uint = 0x08;
+pub const TUN_F_UFO: ::c_uint = 0x10;
+pub const TUN_F_USO4: ::c_uint = 0x20;
+pub const TUN_F_USO6: ::c_uint = 0x40;
 // Protocol info prepended to the packets (when IFF_NO_PI is not set)
 pub const TUN_PKT_STRIP: ::c_int = 0x0001;
 // Accept all multicast packets
