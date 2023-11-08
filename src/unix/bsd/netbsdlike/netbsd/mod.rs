@@ -2434,6 +2434,20 @@ pub const GRND_NONBLOCK: ::c_uint = 0x1;
 pub const GRND_RANDOM: ::c_uint = 0x2;
 pub const GRND_INSECURE: ::c_uint = 0x4;
 
+// sys/reboot.h
+pub const RB_ASKNAME: ::c_int = 0x000000001;
+pub const RB_SINGLE: ::c_int = 0x000000002;
+pub const RB_NOSYNC: ::c_int = 0x000000004;
+pub const RB_HALT: ::c_int = 0x000000008;
+pub const RB_INITNAME: ::c_int = 0x000000010;
+pub const RB_KDB: ::c_int = 0x000000040;
+pub const RB_RDONLY: ::c_int = 0x000000080;
+pub const RB_DUMP: ::c_int = 0x000000100;
+pub const RB_MINIROOT: ::c_int = 0x000000200;
+pub const RB_STRING: ::c_int = 0x000000400;
+pub const RB_POWERDOWN: ::c_int = RB_HALT | 0x000000800;
+pub const RB_USERCONF: ::c_int = 0x000001000;
+
 cfg_if! {
 
     if #[cfg(libc_const_extern_fn)] {
@@ -2984,6 +2998,8 @@ extern "C" {
         newfd: ::c_int,
     ) -> ::c_int;
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+
+    pub fn reboot(mode: ::c_int, bootstr: *mut ::c_char) -> ::c_int;
 }
 
 #[link(name = "rt")]

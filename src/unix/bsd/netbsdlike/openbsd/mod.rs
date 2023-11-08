@@ -1830,6 +1830,25 @@ pub const LC_ALL_MASK: ::c_int = (1 << _LC_LAST) - 2;
 
 pub const LC_GLOBAL_LOCALE: ::locale_t = -1isize as ::locale_t;
 
+// sys/reboot.h
+pub const RB_ASKNAME: ::c_int = 0x00001;
+pub const RB_SINGLE: ::c_int = 0x00002;
+pub const RB_NOSYNC: ::c_int = 0x00004;
+pub const RB_HALT: ::c_int = 0x00008;
+pub const RB_INITNAME: ::c_int = 0x00010;
+pub const RB_KDB: ::c_int = 0x00040;
+pub const RB_RDONLY: ::c_int = 0x00080;
+pub const RB_DUMP: ::c_int = 0x00100;
+pub const RB_MINIROOT: ::c_int = 0x00200;
+pub const RB_CONFIG: ::c_int = 0x00400;
+pub const RB_TIMEBAD: ::c_int = 0x00800;
+pub const RB_POWERDOWN: ::c_int = 0x01000;
+pub const RB_SERCONS: ::c_int = 0x02000;
+pub const RB_USERREQ: ::c_int = 0x04000;
+pub const RB_RESET: ::c_int = 0x08000;
+pub const RB_GOODRANDOM: ::c_int = 0x10000;
+pub const RB_UNHIBERNATE: ::c_int = 0x20000;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -2057,6 +2076,8 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn mimmutable(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
+
+    pub fn reboot(mode: ::c_int) -> ::c_int;
 }
 
 #[link(name = "execinfo")]
