@@ -3221,6 +3221,7 @@ fn test_linux(target: &str) {
     }
 
     let arm = target.contains("arm");
+    let aarch64 = target.contains("aarch64");
     let i686 = target.contains("i686");
     let mips = target.contains("mips");
     let mips32 = mips && !target.contains("64");
@@ -3232,7 +3233,7 @@ fn test_linux(target: &str) {
     let x32 = target.contains("x32");
     let x86_32 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
-    let aarch64_musl = target.contains("aarch64") && musl;
+    let aarch64_musl = aarch64 && musl;
     let gnueabihf = target.contains("gnueabihf");
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
@@ -3591,6 +3592,25 @@ fn test_linux(target: &str) {
             // FIXME: The size of `iv` has been changed since Linux v6.0
             // https://github.com/torvalds/linux/commit/94dfc73e7cf4a31da66b8843f0b9283ddd6b8381
             "af_alg_iv" => true,
+
+            // FIXME: Requires >= 5.1 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            "tls12_crypto_info_aes_gcm_256"
+                if (aarch64 || arm || i686 || mips64 || s390x || x86_64) && musl =>
+            {
+                true
+            }
+
+            // FIXME: Requires >= 5.11 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            // mips-unknown-linux-musl and mips64-unknown-linux-musl use
+            // openwrt-sdk which has 5.4 kernel headers.
+            "tls12_crypto_info_chacha20_poly1305"
+                if (aarch64 || arm || i686 || mips || s390x || x86_64) && musl =>
+            {
+                true
+            }
+
             _ => false,
         }
     });
@@ -3914,6 +3934,37 @@ fn test_linux(target: &str) {
 
             // FIXME: Requires linux 6.5
             "NFT_MSG_MAX" => true,
+
+            // FIXME: Requires >= 5.1 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            "TLS_1_3_VERSION"
+            | "TLS_1_3_VERSION_MAJOR"
+            | "TLS_1_3_VERSION_MINOR"
+            | "TLS_CIPHER_AES_GCM_256"
+            | "TLS_CIPHER_AES_GCM_256_IV_SIZE"
+            | "TLS_CIPHER_AES_GCM_256_KEY_SIZE"
+            | "TLS_CIPHER_AES_GCM_256_SALT_SIZE"
+            | "TLS_CIPHER_AES_GCM_256_TAG_SIZE"
+            | "TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE"
+                if (aarch64 || arm || i686 || mips64 || s390x || x86_64) && musl =>
+            {
+                true
+            }
+
+            // FIXME: Requires >= 5.11 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            // mips-unknown-linux-musl and mips64-unknown-linux-musl use
+            // openwrt-sdk which has 5.4 kernel headers.
+            "TLS_CIPHER_CHACHA20_POLY1305"
+            | "TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE"
+            | "TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE"
+            | "TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE"
+            | "TLS_CIPHER_CHACHA20_POLY1305_TAG_SIZE"
+            | "TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE"
+                if (aarch64 || arm || i686 || mips || s390x || x86_64) && musl =>
+            {
+                true
+            }
 
             _ => false,
         }
