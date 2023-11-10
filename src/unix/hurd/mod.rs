@@ -164,6 +164,7 @@ pub type pthread_key_t = __pthread_key;
 pub type pthread_once_t = __pthread_once;
 
 pub type __rlimit_resource = ::c_uint;
+pub type __rlimit_resource_t = __rlimit_resource;
 pub type rlim_t = __rlim_t;
 pub type rlim64_t = __rlim64_t;
 
@@ -215,9 +216,33 @@ pub type tcp_ca_state = ::c_uint;
 
 pub type idtype_t = ::c_uint;
 
+pub type mqd_t = ::c_int;
+
+pub type Lmid_t = ::c_long;
+
 pub type regoff_t = ::c_int;
 
+pub type nl_item = ::c_int;
+
 pub type iconv_t = *mut ::c_void;
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum fpos64_t {} // FIXME: fill this out with a struct
+impl ::Copy for fpos64_t {}
+impl ::Clone for fpos64_t {
+    fn clone(&self) -> fpos64_t {
+        *self
+    }
+}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum timezone {}
+impl ::Copy for timezone {}
+impl ::Clone for timezone {
+    fn clone(&self) -> timezone {
+        *self
+    }
+}
 
 // structs
 s! {
@@ -431,7 +456,7 @@ s! {
 
     pub struct stat {
         pub st_fstype: ::c_int,
-        pub st_fsid: __fsid_t,
+        pub st_dev: __fsid_t, /* Actually st_fsid */
         pub st_ino: __ino_t,
         pub st_gen: ::c_uint,
         pub st_rdev: __dev_t,
@@ -581,6 +606,18 @@ s! {
         #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
         __unused1: [::c_char; 4],
         __glibc_reserved: [::c_char; 32]
+    }
+
+    pub struct mq_attr {
+        pub mq_flags: ::c_long,
+        pub mq_maxmsg: ::c_long,
+        pub mq_msgsize: ::c_long,
+        pub mq_curmsgs: ::c_long,
+    }
+
+    pub struct __exit_status {
+        pub e_termination: ::c_short,
+        pub e_exit: ::c_short,
     }
 
     #[cfg_attr(target_pointer_width = "32",
@@ -998,6 +1035,96 @@ s! {
 
 }
 
+s_no_extra_traits! {
+    pub struct utmpx {
+        pub ut_type: ::c_short,
+        pub ut_pid: ::pid_t,
+        pub ut_line: [::c_char; __UT_LINESIZE],
+        pub ut_id: [::c_char; 4],
+
+        pub ut_user: [::c_char; __UT_NAMESIZE],
+        pub ut_host: [::c_char; __UT_HOSTSIZE],
+        pub ut_exit: __exit_status,
+
+        #[cfg(any( all(target_pointer_width = "32",
+                      not(target_arch = "x86_64"))))]
+        pub ut_session: ::c_long,
+        #[cfg(any(all(target_pointer_width = "32",
+                      not(target_arch = "x86_64"))))]
+        pub ut_tv: ::timeval,
+
+        #[cfg(not(any(all(target_pointer_width = "32",
+                          not(target_arch = "x86_64")))))]
+        pub ut_session: i32,
+        #[cfg(not(any(all(target_pointer_width = "32",
+                          not(target_arch = "x86_64")))))]
+        pub ut_tv: __timeval,
+
+        pub ut_addr_v6: [i32; 4],
+        __glibc_reserved: [::c_char; 20],
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for utmpx {
+            fn eq(&self, other: &utmpx) -> bool {
+                self.ut_type == other.ut_type
+                    && self.ut_pid == other.ut_pid
+                    && self.ut_line == other.ut_line
+                    && self.ut_id == other.ut_id
+                    && self.ut_user == other.ut_user
+                    && self
+                    .ut_host
+                    .iter()
+                    .zip(other.ut_host.iter())
+                    .all(|(a,b)| a == b)
+                    && self.ut_exit == other.ut_exit
+                    && self.ut_session == other.ut_session
+                    && self.ut_tv == other.ut_tv
+                    && self.ut_addr_v6 == other.ut_addr_v6
+                    && self.__glibc_reserved == other.__glibc_reserved
+            }
+        }
+
+        impl Eq for utmpx {}
+
+        impl ::fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("utmpx")
+                    .field("ut_type", &self.ut_type)
+                    .field("ut_pid", &self.ut_pid)
+                    .field("ut_line", &self.ut_line)
+                    .field("ut_id", &self.ut_id)
+                    .field("ut_user", &self.ut_user)
+                // FIXME: .field("ut_host", &self.ut_host)
+                    .field("ut_exit", &self.ut_exit)
+                    .field("ut_session", &self.ut_session)
+                    .field("ut_tv", &self.ut_tv)
+                    .field("ut_addr_v6", &self.ut_addr_v6)
+                    .field("__glibc_reserved", &self.__glibc_reserved)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for utmpx {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ut_type.hash(state);
+                self.ut_pid.hash(state);
+                self.ut_line.hash(state);
+                self.ut_id.hash(state);
+                self.ut_user.hash(state);
+                self.ut_host.hash(state);
+                self.ut_exit.hash(state);
+                self.ut_session.hash(state);
+                self.ut_tv.hash(state);
+                self.ut_addr_v6.hash(state);
+                self.__glibc_reserved.hash(state);
+            }
+        }
+    }
+}
+
 impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut ::c_void {
         self.si_addr
@@ -1310,7 +1437,10 @@ pub const INET_ADDRSTRLEN: usize = 16;
 pub const INET6_ADDRSTRLEN: usize = 46;
 
 // netinet/ip.h
-pub const IPTOS_ECN_MASK: u8 = 0x03;
+pub const IPTOS_TOS_MASK: u8 = 0x1E;
+pub const IPTOS_PREC_MASK: u8 = 0xE0;
+
+pub const IPTOS_ECN_NOT_ECT: u8 = 0x00;
 
 pub const IPTOS_LOWDELAY: u8 = 0x10;
 pub const IPTOS_THROUGHPUT: u8 = 0x08;
@@ -1371,6 +1501,12 @@ pub const ARPOP_RREPLY: u16 = 4;
 pub const ARPOP_InREQUEST: u16 = 8;
 pub const ARPOP_InREPLY: u16 = 9;
 pub const ARPOP_NAK: u16 = 10;
+
+pub const MAX_ADDR_LEN: usize = 7;
+pub const ARPD_UPDATE: ::c_ushort = 0x01;
+pub const ARPD_LOOKUP: ::c_ushort = 0x02;
+pub const ARPD_FLUSH: ::c_ushort = 0x03;
+pub const ATF_MAGIC: ::c_int = 0x80;
 
 pub const ATF_NETMASK: ::c_int = 0x20;
 pub const ATF_DONTPUB: ::c_int = 0x40;
@@ -1598,6 +1734,71 @@ pub const LC_MEASUREMENT_MASK: ::c_int = 2048;
 pub const LC_IDENTIFICATION_MASK: ::c_int = 4096;
 pub const LC_ALL_MASK: ::c_int = 8127;
 
+pub const ABDAY_1: ::nl_item = 0x20000;
+pub const ABDAY_2: ::nl_item = 0x20001;
+pub const ABDAY_3: ::nl_item = 0x20002;
+pub const ABDAY_4: ::nl_item = 0x20003;
+pub const ABDAY_5: ::nl_item = 0x20004;
+pub const ABDAY_6: ::nl_item = 0x20005;
+pub const ABDAY_7: ::nl_item = 0x20006;
+
+pub const DAY_1: ::nl_item = 0x20007;
+pub const DAY_2: ::nl_item = 0x20008;
+pub const DAY_3: ::nl_item = 0x20009;
+pub const DAY_4: ::nl_item = 0x2000A;
+pub const DAY_5: ::nl_item = 0x2000B;
+pub const DAY_6: ::nl_item = 0x2000C;
+pub const DAY_7: ::nl_item = 0x2000D;
+
+pub const ABMON_1: ::nl_item = 0x2000E;
+pub const ABMON_2: ::nl_item = 0x2000F;
+pub const ABMON_3: ::nl_item = 0x20010;
+pub const ABMON_4: ::nl_item = 0x20011;
+pub const ABMON_5: ::nl_item = 0x20012;
+pub const ABMON_6: ::nl_item = 0x20013;
+pub const ABMON_7: ::nl_item = 0x20014;
+pub const ABMON_8: ::nl_item = 0x20015;
+pub const ABMON_9: ::nl_item = 0x20016;
+pub const ABMON_10: ::nl_item = 0x20017;
+pub const ABMON_11: ::nl_item = 0x20018;
+pub const ABMON_12: ::nl_item = 0x20019;
+
+pub const MON_1: ::nl_item = 0x2001A;
+pub const MON_2: ::nl_item = 0x2001B;
+pub const MON_3: ::nl_item = 0x2001C;
+pub const MON_4: ::nl_item = 0x2001D;
+pub const MON_5: ::nl_item = 0x2001E;
+pub const MON_6: ::nl_item = 0x2001F;
+pub const MON_7: ::nl_item = 0x20020;
+pub const MON_8: ::nl_item = 0x20021;
+pub const MON_9: ::nl_item = 0x20022;
+pub const MON_10: ::nl_item = 0x20023;
+pub const MON_11: ::nl_item = 0x20024;
+pub const MON_12: ::nl_item = 0x20025;
+
+pub const AM_STR: ::nl_item = 0x20026;
+pub const PM_STR: ::nl_item = 0x20027;
+
+pub const D_T_FMT: ::nl_item = 0x20028;
+pub const D_FMT: ::nl_item = 0x20029;
+pub const T_FMT: ::nl_item = 0x2002A;
+pub const T_FMT_AMPM: ::nl_item = 0x2002B;
+
+pub const ERA: ::nl_item = 0x2002C;
+pub const ERA_D_FMT: ::nl_item = 0x2002E;
+pub const ALT_DIGITS: ::nl_item = 0x2002F;
+pub const ERA_D_T_FMT: ::nl_item = 0x20030;
+pub const ERA_T_FMT: ::nl_item = 0x20031;
+
+pub const CODESET: ::nl_item = 14;
+pub const CRNCYSTR: ::nl_item = 0x4000F;
+pub const RADIXCHAR: ::nl_item = 0x10000;
+pub const THOUSEP: ::nl_item = 0x10001;
+pub const YESEXPR: ::nl_item = 0x50000;
+pub const NOEXPR: ::nl_item = 0x50001;
+pub const YESSTR: ::nl_item = 0x50002;
+pub const NOSTR: ::nl_item = 0x50003;
+
 // reboot.h
 pub const RB_AUTOBOOT: ::c_int = 0x0;
 pub const RB_ASKNAME: ::c_int = 0x1;
@@ -1785,6 +1986,7 @@ pub const CBRK: u8 = 0u8;
 
 // dlfcn.h
 pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
+pub const RTLD_NEXT: *mut ::c_void = -1i64 as *mut ::c_void;
 pub const RTLD_LAZY: ::c_int = 1;
 pub const RTLD_NOW: ::c_int = 2;
 pub const RTLD_BINDING_MASK: ::c_int = 3;
@@ -2942,6 +3144,10 @@ pub const PRIO_PROCESS: __priority_which = 0;
 pub const PRIO_PGRP: __priority_which = 1;
 pub const PRIO_USER: __priority_which = 2;
 
+pub const __UT_LINESIZE: usize = 32;
+pub const __UT_NAMESIZE: usize = 32;
+pub const __UT_HOSTSIZE: usize = 256;
+
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_RAW: ::c_int = 3;
@@ -3078,11 +3284,6 @@ pub const RTLD_DI_TLS_MODID: ::c_int = 9;
 pub const RTLD_DI_TLS_DATA: ::c_int = 10;
 pub const RTLD_DI_PHDR: ::c_int = 11;
 pub const RTLD_DI_MAX: ::c_int = 11;
-
-pub const RTLD_NEXT: *mut ::c_void = -1i64 as *mut ::c_void;
-pub const RTLD_DEFAULT: *mut ::c_void = 0i64 as *mut ::c_void;
-pub const RTLD_NODELETE: ::c_int = 0x1000;
-pub const RTLD_NOW: ::c_int = 0x2;
 
 pub const SI_ASYNCIO: ::c_int = -4;
 pub const SI_MESGQ: ::c_int = -3;
@@ -3262,12 +3463,12 @@ f! {
             return 0 as *mut cmsghdr;
         };
         let next = (cmsg as usize +
-                    super::CMSG_ALIGN((*cmsg).cmsg_len as usize))
+                    CMSG_ALIGN((*cmsg).cmsg_len as usize))
             as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize
             + (*mhdr).msg_controllen as usize;
         if (next.offset(1)) as usize > max ||
-            next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
+            next as usize + CMSG_ALIGN((*next).cmsg_len as usize) > max
         {
             0 as *mut cmsghdr
         } else {
@@ -3756,18 +3957,13 @@ extern "C" {
         __attr: *const pthread_attr_t,
         __guardsize: *mut ::size_t,
     ) -> ::c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
 
     pub fn pthread_attr_getstack(
         __attr: *const pthread_attr_t,
         __stackaddr: *mut *mut ::c_void,
         __stacksize: *mut ::size_t,
     ) -> ::c_int;
-
-    pub fn pthread_attr_getguardsize(
-        attr: *const ::pthread_attr_t,
-        guardsize: *mut ::size_t,
-    ) -> ::c_int;
-    pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
 
     pub fn pthread_mutexattr_getpshared(
         attr: *const pthread_mutexattr_t,
