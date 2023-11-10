@@ -4364,7 +4364,7 @@ pub const OS_SIGNPOST_INTERVAL_END: ::os_signpost_type_t = 0x02;
 pub const MINSIGSTKSZ: ::size_t = 32768;
 pub const SIGSTKSZ: ::size_t = 131072;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 

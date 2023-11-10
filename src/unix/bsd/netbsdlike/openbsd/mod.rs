@@ -1374,7 +1374,7 @@ pub const _SC_AVPHYS_PAGES: ::c_int = 501;
 pub const _SC_NPROCESSORS_CONF: ::c_int = 502;
 pub const _SC_NPROCESSORS_ONLN: ::c_int = 503;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_OTHER: ::c_int = 2;

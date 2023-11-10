@@ -89,7 +89,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct tm {
@@ -1069,7 +1069,7 @@ pub const PATH_MAX: ::c_int = 4096;
 
 pub const UIO_MAXIOV: ::c_int = 1024;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const EPOLLIN: ::c_int = 0x1;
 pub const EPOLLPRI: ::c_int = 0x2;
