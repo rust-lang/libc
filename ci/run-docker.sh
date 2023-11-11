@@ -8,9 +8,16 @@
 
 set -ex
 
+CARGO_BIN=$(command -v cargo)
+
+# If cargo is a symlink to rustup, ask rustup where to find the real cargo.
+if [ "$(basename "$(readlink "$CARGO_BIN")")" = "rustup" ]; then
+  CARGO_BIN="$($(readlink "$CARGO_BIN") which cargo)"
+fi
+
 # Default to assuming the CARGO_HOME is one directory up (to account for a `bin`
 # subdir) from where the `cargo` binary in `$PATH` lives.
-DEFAULT_CARGO_HOME="$(dirname "$(dirname "$(command -v cargo)")")"
+DEFAULT_CARGO_HOME="$(dirname "$(dirname "$CARGO_BIN")")"
 # If the CARGO_HOME env var is already set, use that. If it isn't set use the
 # default.
 CARGO_HOME="${CARGO_HOME:-$DEFAULT_CARGO_HOME}"
