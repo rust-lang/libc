@@ -321,7 +321,7 @@ cfg_if! {
     if #[cfg(any(target_os = "l4re", target_os = "espidf"))] {
         // required libraries for L4Re and the ESP-IDF framework are linked externally, ATM
     } else if #[cfg(feature = "std")] {
-        // cargo build, don't pull in anything extra as the libstd dep
+        // cargo build, don't pull in anything extra as the std dep
         // already pulls in all libs.
     } else if #[cfg(all(target_os = "linux",
                         any(target_env = "gnu", target_env = "uclibc"),

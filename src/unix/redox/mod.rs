@@ -28,7 +28,7 @@ pub type nfds_t = ::c_ulong;
 pub type nlink_t = ::c_ulong;
 pub type off_t = ::c_longlong;
 pub type pthread_t = *mut ::c_void;
-// Must be usize due to libstd/sys_common/thread_local.rs,
+// Must be usize due to library/std/sys_common/thread_local.rs,
 // should technically be *mut ::c_void
 pub type pthread_key_t = usize;
 pub type rlim_t = ::c_ulonglong;

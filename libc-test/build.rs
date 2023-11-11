@@ -349,7 +349,7 @@ fn test_apple(target: &str) {
             // close calls the close_nocancel system call
             "close" => true,
 
-            // FIXME: libstd removed libresolv support: https://github.com/rust-lang/rust/pull/102766
+            // FIXME: std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
             "res_init" => true,
 
             // FIXME: remove once the target in CI is updated
