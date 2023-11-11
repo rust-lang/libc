@@ -1134,6 +1134,24 @@ pub const REG_EEND: ::c_int = 14;
 pub const REG_ESIZE: ::c_int = 15;
 pub const REG_ERPAREN: ::c_int = 16;
 
+f! {
+    // Handy helper to possibly get the adjusted minimum thread stack size.
+    // ie PTHREAD_STACK_MIN + TLS stack size + page size basically.
+    // and is unique to glibc.
+    pub fn pthread_get_minstack(attr: *const ::pthread_attr_t) -> usize {
+        let symbol = ::dlsym(::RTLD_DEFAULT, "__pthread_get_minstack".as_ptr() as *const i8);
+
+        if !symbol.is_null() {
+            unsafe {
+                let call: extern "C" fn(*const ::pthread_attr_t) -> ::size_t = ::mem::transmute(symbol);
+                call(attr)
+            }
+        } else {
+            PTHREAD_STACK_MIN
+        }
+    }
+}
+
 extern "C" {
     pub fn fgetspent_r(
         fp: *mut ::FILE,

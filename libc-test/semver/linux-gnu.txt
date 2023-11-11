@@ -641,6 +641,7 @@ process_vm_readv
 process_vm_writev
 pthread_attr_getaffinity_np
 pthread_attr_setaffinity_np
+pthread_get_minstack
 pthread_rwlockattr_getkind_np
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setkind_np
