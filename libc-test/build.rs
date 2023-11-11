@@ -3671,6 +3671,10 @@ fn test_linux(target: &str) {
             if name.starts_with("RLIM64") {
                 return true;
             }
+            // CI fails because musl targets use Linux v4 kernel
+            if name.starts_with("NI_IDN") {
+                return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included

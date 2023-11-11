@@ -2103,6 +2103,7 @@ pub const NI_NUMERICSERV: ::c_int = 2;
 pub const NI_NOFQDN: ::c_int = 4;
 pub const NI_NAMEREQD: ::c_int = 8;
 pub const NI_DGRAM: ::c_int = 16;
+pub const NI_IDN: ::c_int = 32;
 
 pub const SYNC_FILE_RANGE_WAIT_BEFORE: ::c_uint = 1;
 pub const SYNC_FILE_RANGE_WRITE: ::c_uint = 2;
