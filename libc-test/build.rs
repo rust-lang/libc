@@ -3223,9 +3223,6 @@ fn test_linux(target: &str) {
     let arm = target.contains("arm");
     let aarch64 = target.contains("aarch64");
     let i686 = target.contains("i686");
-    let mips = target.contains("mips");
-    let mips32 = mips && !target.contains("64");
-    let mips64 = mips && target.contains("64");
     let ppc = target.contains("powerpc");
     let ppc64 = target.contains("powerpc64");
     let s390x = target.contains("s390x");
@@ -3596,17 +3593,15 @@ fn test_linux(target: &str) {
             // FIXME: Requires >= 5.1 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "tls12_crypto_info_aes_gcm_256"
-                if (aarch64 || arm || i686 || mips64 || s390x || x86_64) && musl =>
+                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
             {
                 true
             }
 
             // FIXME: Requires >= 5.11 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
-            // mips-unknown-linux-musl and mips64-unknown-linux-musl use
-            // openwrt-sdk which has 5.4 kernel headers.
             "tls12_crypto_info_chacha20_poly1305"
-                if (aarch64 || arm || i686 || mips || s390x || x86_64) && musl =>
+                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
             {
                 true
             }
@@ -3727,16 +3722,11 @@ fn test_linux(target: &str) {
             | "IPPROTO_ETHERNET"
             | "IPPROTO_MPTCP" => true,
 
-            // FIXME: Not currently available in headers
-            "P_PIDFD" if mips => true,
-            "SYS_pidfd_open" if mips => true,
+            // FIXME: Not yet implemented on sparc64
+            "SYS_clone3" if sparc64 => true,
 
-            // FIXME: Not currently available in headers on MIPS
-            // Not yet implemented on sparc64
-            "SYS_clone3" if mips | sparc64 => true,
-
-            // FIXME: Not defined on ARM, gnueabihf, MIPS, musl, PowerPC, riscv64, s390x, and sparc64.
-            "SYS_memfd_secret" if arm | gnueabihf | mips | musl | ppc | riscv64 | s390x | sparc64 => true,
+            // FIXME: Not defined on ARM, gnueabihf, musl, PowerPC, riscv64, s390x, and sparc64.
+            "SYS_memfd_secret" if arm | gnueabihf | musl | ppc | riscv64 | s390x | sparc64 => true,
 
             // FIXME: Added in Linux 5.16
             // https://github.com/torvalds/linux/commit/039c0ec9bb77446d7ada7f55f90af9299b28ca49
@@ -3754,10 +3744,10 @@ fn test_linux(target: &str) {
             | "UINPUT_VERSION"
             | "SW_MAX"
             | "SW_CNT"
-                if mips || ppc64 || riscv64 => true,
+                if ppc64 || riscv64 => true,
 
-            // FIXME: Not currently available in headers on ARM, MIPS and musl.
-            "NETLINK_GET_STRICT_CHK" if arm || mips || musl => true,
+            // FIXME: Not currently available in headers on ARM and musl.
+            "NETLINK_GET_STRICT_CHK" if arm || musl => true,
 
             // kernel constants not available in uclibc 1.0.34
             | "EXTPROC"
@@ -3946,22 +3936,20 @@ fn test_linux(target: &str) {
             | "TLS_CIPHER_AES_GCM_256_SALT_SIZE"
             | "TLS_CIPHER_AES_GCM_256_TAG_SIZE"
             | "TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE"
-                if (aarch64 || arm || i686 || mips64 || s390x || x86_64) && musl =>
+                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
             {
                 true
             }
 
             // FIXME: Requires >= 5.11 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
-            // mips-unknown-linux-musl and mips64-unknown-linux-musl use
-            // openwrt-sdk which has 5.4 kernel headers.
             "TLS_CIPHER_CHACHA20_POLY1305"
             | "TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE"
             | "TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE"
             | "TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE"
             | "TLS_CIPHER_CHACHA20_POLY1305_TAG_SIZE"
             | "TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE"
-                if (aarch64 || arm || i686 || mips || s390x || x86_64) && musl =>
+                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
             {
                 true
             }
@@ -4156,13 +4144,9 @@ fn test_linux(target: &str) {
 
     cfg.skip_roundtrip(move |s| match s {
         // FIXME:
-        "utsname" if mips32 || mips64 => true,
-        // FIXME:
         "mcontext_t" if s390x => true,
         // FIXME: This is actually a union.
         "fpreg_t" if s390x => true,
-
-        "sockaddr_un" | "sembuf" | "ff_constant_effect" if mips32 && (gnu || musl) => true,
 
         // The test doesn't work on some env:
         "ipv6_mreq"
@@ -4183,7 +4167,7 @@ fn test_linux(target: &str) {
         | "sockaddr_nl"
         | "termios"
         | "nlmsgerr"
-            if (mips64 || sparc64) && gnu =>
+            if sparc64 && gnu =>
         {
             true
         }
@@ -4196,7 +4180,7 @@ fn test_linux(target: &str) {
         "cmsghdr" => true,
 
         // FIXME: the call ABI of max_align_t is incorrect on these platforms:
-        "max_align_t" if i686 || mips64 || ppc64 => true,
+        "max_align_t" if i686 || ppc64 => true,
 
         _ => false,
     });
