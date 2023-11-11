@@ -60,7 +60,7 @@ fn main() {
     }
 
     // The ABI of libc used by libstd is backward compatible with FreeBSD 10.
-    // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
+    // The ABI of libc from crates.io is backward compatible with FreeBSD 12.
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
@@ -70,7 +70,7 @@ fn main() {
         Some(12) if libc_ci => set_cfg("freebsd12"),
         Some(13) if libc_ci => set_cfg("freebsd13"),
         Some(14) if libc_ci => set_cfg("freebsd14"),
-        Some(_) | None => set_cfg("freebsd11"),
+        Some(_) | None => set_cfg("freebsd12"),
     }
 
     match emcc_version_code() {
