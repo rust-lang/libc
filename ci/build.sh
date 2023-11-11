@@ -112,14 +112,6 @@ x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
 "
 
-# FIXME: builds of MIPS targets are currently broken on nightly.
-# mips-unknown-linux-gnu \
-# mips-unknown-linux-musl \
-# mips64-unknown-linux-gnuabi64 \
-# mips64el-unknown-linux-gnuabi64 \
-# mipsel-unknown-linux-gnu \
-# mipsel-unknown-linux-musl \
-
 RUST_GT_1_13_LINUX_TARGETS="\
 arm-unknown-linux-musleabi \
 arm-unknown-linux-musleabihf \
@@ -238,9 +230,15 @@ i686-unknown-haiku \
 i686-unknown-netbsd \
 i686-unknown-openbsd \
 i686-wrs-vxworks \
-mipsel-sony-psp \
+mips-unknown-linux-gnu \
+mips-unknown-linux-musl \
+mips64-unknown-linux-gnuabi64 \
 mips64-unknown-linux-muslabi64 \
+mips64el-unknown-linux-gnuabi64 \
 mips64el-unknown-linux-muslabi64 \
+mipsel-unknown-linux-gnu \
+mipsel-unknown-linux-musl \
+mipsel-sony-psp \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \
