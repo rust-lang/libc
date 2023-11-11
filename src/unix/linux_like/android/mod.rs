@@ -3431,7 +3431,7 @@ extern "C" {
         host: *mut ::c_char,
         hostlen: ::size_t,
         serv: *mut ::c_char,
-        sevlen: ::size_t,
+        servlen: ::size_t,
         flags: ::c_int,
     ) -> ::c_int;
     pub fn preadv(fd: ::c_int, iov: *const ::iovec, count: ::c_int, offset: ::off_t) -> ::ssize_t;
