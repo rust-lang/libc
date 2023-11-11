@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY install-musl.sh /
 RUN sh /install-musl.sh aarch64
 
-# FIXME: shouldn't need the `-lgcc` here, shouldn't that be in libstd?
+# FIXME: shouldn't need the `-lgcc` here, shouldn't that be in std?
 ENV PATH=$PATH:/musl-aarch64/bin:/rust/bin \
     CC_aarch64_unknown_linux_musl=musl-gcc \
     RUSTFLAGS='-Clink-args=-lgcc -L /musl-aarch64/lib' \

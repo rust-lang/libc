@@ -39,7 +39,7 @@ test_target() {
         done
     fi
 
-    # Test that libc builds without any default features (no libstd)
+    # Test that libc builds without any default features (no std)
     if [ "${NO_STD}" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}"
     else
@@ -47,8 +47,8 @@ test_target() {
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
             -Z build-std=core,alloc -vv --no-default-features --target "${TARGET}"
     fi
-    # Test that libc builds with default features (e.g. libstd)
-    # if the target supports libstd
+    # Test that libc builds with default features (e.g. std)
+    # if the target supports std
     if [ "$NO_STD" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}"
     else
