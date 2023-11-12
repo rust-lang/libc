@@ -11,7 +11,7 @@ RUN apt-get install -y --no-install-recommends \
   python3-distutils \
   unzip \
   expect \
-  openjdk-8-jre \
+  openjdk-21-jre \
   libstdc++6:i386 \
   libpulse0
 
@@ -19,13 +19,13 @@ WORKDIR /android/
 COPY android* /android/
 
 ENV ANDROID_ARCH=i686
-ENV PATH=$PATH:/android/linux-x86_64/bin:/android/sdk/cmdline-tools/tools:/android/sdk/platform-tools
+ENV PATH=$PATH:/android/linux-x86_64/bin:/android/sdk/cmdline-tools:/android/sdk/platform-tools
 
 RUN sh /android/android-install-ndk.sh
 RUN sh /android/android-install-sdk.sh $ANDROID_ARCH
 RUN mv /root/.android /tmp
 RUN chmod 777 -R /tmp/.android
-RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
+RUN chmod 755 /android/sdk/cmdline-tools/* /android/sdk/emulator/qemu/linux-x86_64/*
 
 ENV PATH=$PATH:/rust/bin \
     CARGO_TARGET_I686_LINUX_ANDROID_LINKER=i686-linux-android28-clang \
