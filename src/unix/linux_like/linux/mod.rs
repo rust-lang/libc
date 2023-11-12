@@ -52,6 +52,7 @@ pub type iconv_t = *mut ::c_void;
 // linux/sctp.h
 pub type sctp_assoc_t = ::__s32;
 
+pub type eventfd_t = u64;
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos64_t {}
@@ -4805,6 +4806,9 @@ extern "C" {
         flags: ::c_uint,
     ) -> ::ssize_t;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn eventfd_read(fd: ::c_int, value: *mut eventfd_t) -> ::c_int;
+    pub fn eventfd_write(fd: ::c_int, value: eventfd_t) -> ::c_int;
+
     pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn sem_timedwait(sem: *mut sem_t, abstime: *const ::timespec) -> ::c_int;
     pub fn sem_getvalue(sem: *mut sem_t, sval: *mut ::c_int) -> ::c_int;

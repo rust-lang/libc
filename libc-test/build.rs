@@ -2417,6 +2417,8 @@ fn test_freebsd(target: &str) {
             // the struct "__kvm" is quite tricky to bind so since we only use a pointer to it
             // for now, it doesn't matter too much...
             "kvm_t" => true,
+            // `eventfd(2)` and things come with it are added in FreeBSD 13
+            "eventfd_t" if Some(13) > freebsd_ver => true,
 
             _ => false,
         }
@@ -2494,6 +2496,8 @@ fn test_freebsd(target: &str) {
             | "aio_readv"
             | "aio_writev"
             | "copy_file_range"
+            | "eventfd_read"
+            | "eventfd_write"
                 if Some(13) > freebsd_ver =>
             {
                 true

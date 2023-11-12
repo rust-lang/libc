@@ -3756,3 +3756,5 @@ write
 writev
 dirname
 basename
+eventfd_read
+eventfd_write

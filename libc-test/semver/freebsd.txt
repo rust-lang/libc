@@ -2245,3 +2245,5 @@ dirname
 basename
 closefrom
 close_range
+eventfd_read
+eventfd_write
