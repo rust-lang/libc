@@ -180,6 +180,7 @@ bsearch
 chroot
 clearerr
 difftime
+endgrent
 endpwent
 endservent
 epoll_create
@@ -191,7 +192,10 @@ explicit_bzero
 fchdir
 fmemopen
 getdtablesize
+getgrent
+getgrgid
 getgrgid_r
+getgrnam
 getgrnam_r
 getgrouplist
 getline
@@ -212,6 +216,7 @@ pipe2
 pthread_condattr_setclock
 qsort
 reallocarray
+setgrent
 setpwent
 setrlimit
 setservent

@@ -61,6 +61,7 @@ ALG_OP_DECRYPT
 ALG_OP_ENCRYPT
 ALG_SET_AEAD_ASSOCLEN
 ALG_SET_AEAD_AUTHSIZE
+ALG_SET_DRBG_ENTROPY
 ALG_SET_IV
 ALG_SET_KEY
 ALG_SET_OP
@@ -698,6 +699,7 @@ IFF_MASTER
 IFF_MULTICAST
 IFF_NOARP
 IFF_NOTRAILERS
+IFF_NO_CARRIER
 IFF_NO_PI
 IFF_POINTOPOINT
 IFF_PORTSEL
@@ -707,6 +709,13 @@ IFF_SLAVE
 IFF_TAP
 IFF_TUN
 IFF_UP
+TUN_F_CSUM
+TUN_F_TSO4
+TUN_F_TSO6
+TUN_F_TSO_ECN
+TUN_F_UFO
+TUN_F_USO4
+TUN_F_USO6
 IFNAMSIZ
 IF_NAMESIZE
 IFA_UNSPEC
@@ -3101,6 +3110,7 @@ ff_trigger
 fgetc
 fgetpos
 fgets
+fgets_unlocked
 fgetxattr
 fileno
 flistxattr
@@ -3116,6 +3126,7 @@ fprintf
 fputc
 fputs
 fread
+fread_unlocked
 free
 freeaddrinfo
 freeifaddrs
@@ -3144,6 +3155,7 @@ ftruncate
 ftruncate64
 futimens
 fwrite
+fwrite_unlocked
 gai_strerror
 genlmsghdr
 getaddrinfo
@@ -3744,3 +3756,5 @@ write
 writev
 dirname
 basename
+eventfd_read
+eventfd_write

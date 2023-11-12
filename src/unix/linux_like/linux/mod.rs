@@ -14,6 +14,7 @@ pub type nl_item = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type loff_t = ::c_longlong;
 pub type pthread_key_t = ::c_uint;
+pub type pthread_once_t = ::c_int;
 pub type pthread_spinlock_t = ::c_int;
 
 pub type __u8 = ::c_uchar;
@@ -50,6 +51,8 @@ pub type iconv_t = *mut ::c_void;
 
 // linux/sctp.h
 pub type sctp_assoc_t = ::__s32;
+
+pub type eventfd_t = u64;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos64_t {} // FIXME: fill this out with a struct
@@ -685,6 +688,37 @@ s! {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
     }
+
+    // linux/tls.h
+
+    pub struct tls_crypto_info {
+        pub version: ::__u16,
+        pub cipher_type: ::__u16,
+    }
+
+    pub struct tls12_crypto_info_aes_gcm_128 {
+        pub info: tls_crypto_info,
+        pub iv: [::c_uchar; TLS_CIPHER_AES_GCM_128_IV_SIZE],
+        pub key: [::c_uchar; TLS_CIPHER_AES_GCM_128_KEY_SIZE],
+        pub salt: [::c_uchar; TLS_CIPHER_AES_GCM_128_SALT_SIZE],
+        pub rec_seq: [::c_uchar; TLS_CIPHER_AES_GCM_128_REC_SEQ_SIZE],
+    }
+
+    pub struct tls12_crypto_info_aes_gcm_256 {
+        pub info: tls_crypto_info,
+        pub iv: [::c_uchar; TLS_CIPHER_AES_GCM_256_IV_SIZE],
+        pub key: [::c_uchar; TLS_CIPHER_AES_GCM_256_KEY_SIZE],
+        pub salt: [::c_uchar; TLS_CIPHER_AES_GCM_256_SALT_SIZE],
+        pub rec_seq: [::c_uchar; TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE],
+    }
+
+    pub struct tls12_crypto_info_chacha20_poly1305 {
+        pub info: tls_crypto_info,
+        pub iv: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE],
+        pub key: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE],
+        pub salt: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE],
+        pub rec_seq: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE],
+    }
 }
 
 s_no_extra_traits! {
@@ -789,6 +823,23 @@ s_no_extra_traits! {
         pub ifr_ifru: __c_anonymous_ifr_ifru,
         #[cfg(not(libc_union))]
         pub ifr_ifru: ::sockaddr,
+    }
+
+    #[cfg(libc_union)]
+    pub union __c_anonymous_ifc_ifcu {
+        pub ifcu_buf: *mut ::c_char,
+        pub ifcu_req: *mut ::ifreq,
+    }
+
+    /*  Structure used in SIOCGIFCONF request.  Used to retrieve interface
+    configuration for machine (useful for programs which must know all
+    networks accessible).  */
+    pub struct ifconf {
+        pub ifc_len: ::c_int,       /* Size of buffer.  */
+        #[cfg(libc_union)]
+        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+        #[cfg(not(libc_union))]
+        pub ifc_ifcu: *mut ::ifreq,
     }
 
     pub struct hwtstamp_config {
@@ -1228,6 +1279,23 @@ cfg_if! {
             }
         }
 
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifr_ifru")
+                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
+                    .field("ifcu_req", unsafe { &self.ifcu_req })
+                    .finish()
+            }
+        }
+        impl ::fmt::Debug for ifconf {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifconf")
+                    .field("ifc_len", &self.ifc_len)
+                    .field("ifc_ifcu", &self.ifc_ifcu)
+                    .finish()
+            }
+        }
         impl ::fmt::Debug for hwtstamp_config {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("hwtstamp_config")
@@ -1829,6 +1897,10 @@ pub const IFLA_INFO_SLAVE_DATA: ::c_ushort = 5;
 // linux/if_tun.h
 pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;
+pub const IFF_NAPI: ::c_int = 0x0010;
+pub const IFF_NAPI_FRAGS: ::c_int = 0x0020;
+// Used in TUNSETIFF to bring up tun/tap without carrier
+pub const IFF_NO_CARRIER: ::c_int = 0x0040;
 pub const IFF_NO_PI: ::c_int = 0x1000;
 // Read queue size
 pub const TUN_READQ_SIZE: ::c_short = 500;
@@ -1846,6 +1918,20 @@ pub const IFF_DETACH_QUEUE: ::c_int = 0x0400;
 // read-only flag
 pub const IFF_PERSIST: ::c_int = 0x0800;
 pub const IFF_NOFILTER: ::c_int = 0x1000;
+// Socket options
+pub const TUN_TX_TIMESTAMP: ::c_int = 1;
+// Features for GSO (TUNSETOFFLOAD)
+pub const TUN_F_CSUM: ::c_uint = 0x01;
+pub const TUN_F_TSO4: ::c_uint = 0x02;
+pub const TUN_F_TSO6: ::c_uint = 0x04;
+pub const TUN_F_TSO_ECN: ::c_uint = 0x08;
+pub const TUN_F_UFO: ::c_uint = 0x10;
+pub const TUN_F_USO4: ::c_uint = 0x20;
+pub const TUN_F_USO6: ::c_uint = 0x40;
+// Protocol info prepended to the packets (when IFF_NO_PI is not set)
+pub const TUN_PKT_STRIP: ::c_int = 0x0001;
+// Accept all multicast packets
+pub const TUN_FLT_ALLMULTI: ::c_int = 0x0001;
 
 // Since Linux 3.1
 pub const SEEK_DATA: ::c_int = 3;
@@ -1903,6 +1989,7 @@ align_const! {
         size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
     };
 }
+pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
@@ -3184,6 +3271,41 @@ pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 
 // linux/tls.h
+pub const TLS_TX: ::c_int = 1;
+pub const TLS_RX: ::c_int = 2;
+
+pub const TLS_1_2_VERSION_MAJOR: ::__u8 = 0x3;
+pub const TLS_1_2_VERSION_MINOR: ::__u8 = 0x3;
+pub const TLS_1_2_VERSION: ::__u16 =
+    ((TLS_1_2_VERSION_MAJOR as ::__u16) << 8) | (TLS_1_2_VERSION_MINOR as ::__u16);
+
+pub const TLS_1_3_VERSION_MAJOR: ::__u8 = 0x3;
+pub const TLS_1_3_VERSION_MINOR: ::__u8 = 0x4;
+pub const TLS_1_3_VERSION: ::__u16 =
+    ((TLS_1_3_VERSION_MAJOR as ::__u16) << 8) | (TLS_1_3_VERSION_MINOR as ::__u16);
+
+pub const TLS_CIPHER_AES_GCM_128: ::__u16 = 51;
+pub const TLS_CIPHER_AES_GCM_128_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_AES_GCM_128_KEY_SIZE: usize = 16;
+pub const TLS_CIPHER_AES_GCM_128_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_AES_GCM_128_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_AES_GCM_128_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_CIPHER_AES_GCM_256: ::__u16 = 52;
+pub const TLS_CIPHER_AES_GCM_256_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_AES_GCM_256_KEY_SIZE: usize = 32;
+pub const TLS_CIPHER_AES_GCM_256_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_AES_GCM_256_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_CIPHER_CHACHA20_POLY1305: ::__u16 = 54;
+pub const TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE: usize = 12;
+pub const TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE: usize = 32;
+pub const TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE: usize = 0;
+pub const TLS_CIPHER_CHACHA20_POLY1305_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_SET_RECORD_TYPE: ::c_int = 1;
 pub const TLS_GET_RECORD_TYPE: ::c_int = 2;
 
 pub const SOL_TLS: ::c_int = 282;
@@ -3194,6 +3316,8 @@ pub const ALG_SET_IV: ::c_int = 2;
 pub const ALG_SET_OP: ::c_int = 3;
 pub const ALG_SET_AEAD_ASSOCLEN: ::c_int = 4;
 pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
+pub const ALG_SET_DRBG_ENTROPY: ::c_int = 6;
+pub const ALG_SET_KEY_BY_KEY_SERIAL: ::c_int = 7;
 
 pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
@@ -3550,20 +3674,33 @@ pub const UINPUT_MAX_NAME_SIZE: usize = 80;
 // uapi/linux/fanotify.h
 pub const FAN_ACCESS: u64 = 0x0000_0001;
 pub const FAN_MODIFY: u64 = 0x0000_0002;
+pub const FAN_ATTRIB: u64 = 0x0000_0004;
 pub const FAN_CLOSE_WRITE: u64 = 0x0000_0008;
 pub const FAN_CLOSE_NOWRITE: u64 = 0x0000_0010;
 pub const FAN_OPEN: u64 = 0x0000_0020;
+pub const FAN_MOVED_FROM: u64 = 0x0000_0040;
+pub const FAN_MOVED_TO: u64 = 0x0000_0080;
+pub const FAN_CREATE: u64 = 0x0000_0100;
+pub const FAN_DELETE: u64 = 0x0000_0200;
+pub const FAN_DELETE_SELF: u64 = 0x0000_0400;
+pub const FAN_MOVE_SELF: u64 = 0x0000_0800;
+pub const FAN_OPEN_EXEC: u64 = 0x0000_1000;
 
 pub const FAN_Q_OVERFLOW: u64 = 0x0000_4000;
+pub const FAN_FS_ERROR: u64 = 0x0000_8000;
 
 pub const FAN_OPEN_PERM: u64 = 0x0001_0000;
 pub const FAN_ACCESS_PERM: u64 = 0x0002_0000;
-
-pub const FAN_ONDIR: u64 = 0x4000_0000;
+pub const FAN_OPEN_EXEC_PERM: u64 = 0x0004_0000;
 
 pub const FAN_EVENT_ON_CHILD: u64 = 0x0800_0000;
 
+pub const FAN_RENAME: u64 = 0x1000_0000;
+
+pub const FAN_ONDIR: u64 = 0x4000_0000;
+
 pub const FAN_CLOSE: u64 = FAN_CLOSE_WRITE | FAN_CLOSE_NOWRITE;
+pub const FAN_MOVE: u64 = FAN_MOVED_FROM | FAN_MOVED_TO;
 
 pub const FAN_CLOEXEC: ::c_uint = 0x0000_0001;
 pub const FAN_NONBLOCK: ::c_uint = 0x0000_0002;
@@ -3574,6 +3711,18 @@ pub const FAN_CLASS_PRE_CONTENT: ::c_uint = 0x0000_0008;
 
 pub const FAN_UNLIMITED_QUEUE: ::c_uint = 0x0000_0010;
 pub const FAN_UNLIMITED_MARKS: ::c_uint = 0x0000_0020;
+pub const FAN_ENABLE_AUDIT: ::c_uint = 0x0000_0040;
+
+pub const FAN_REPORT_PIDFD: ::c_uint = 0x0000_0080;
+pub const FAN_REPORT_TID: ::c_uint = 0x0000_0100;
+pub const FAN_REPORT_FID: ::c_uint = 0x0000_0200;
+pub const FAN_REPORT_DIR_FID: ::c_uint = 0x0000_0400;
+pub const FAN_REPORT_NAME: ::c_uint = 0x0000_0800;
+pub const FAN_REPORT_TARGET_FID: ::c_uint = 0x0000_1000;
+
+pub const FAN_REPORT_DFID_NAME: ::c_uint = FAN_REPORT_DIR_FID | FAN_REPORT_NAME;
+pub const FAN_REPORT_DFID_NAME_TARGET: ::c_uint =
+    FAN_REPORT_DFID_NAME | FAN_REPORT_FID | FAN_REPORT_TARGET_FID;
 
 pub const FAN_MARK_ADD: ::c_uint = 0x0000_0001;
 pub const FAN_MARK_REMOVE: ::c_uint = 0x0000_0002;
@@ -3582,13 +3731,37 @@ pub const FAN_MARK_ONLYDIR: ::c_uint = 0x0000_0008;
 pub const FAN_MARK_IGNORED_MASK: ::c_uint = 0x0000_0020;
 pub const FAN_MARK_IGNORED_SURV_MODIFY: ::c_uint = 0x0000_0040;
 pub const FAN_MARK_FLUSH: ::c_uint = 0x0000_0080;
+pub const FAN_MARK_EVICTABLE: ::c_uint = 0x0000_0200;
+pub const FAN_MARK_IGNORE: ::c_uint = 0x0000_0100;
+
+pub const FAN_MARK_INODE: ::c_uint = 0x0000_0000;
+pub const FAN_MARK_MOUNT: ::c_uint = 0x0000_0010;
+pub const FAN_MARK_FILESYSTEM: ::c_uint = 0x0000_0100;
+
+pub const FAN_MARK_IGNORE_SURV: ::c_uint = FAN_MARK_IGNORE | FAN_MARK_IGNORED_SURV_MODIFY;
 
 pub const FANOTIFY_METADATA_VERSION: u8 = 3;
 
+pub const FAN_EVENT_INFO_TYPE_FID: u8 = 1;
+pub const FAN_EVENT_INFO_TYPE_DFID_NAME: u8 = 2;
+pub const FAN_EVENT_INFO_TYPE_DFID: u8 = 3;
+pub const FAN_EVENT_INFO_TYPE_PIDFD: u8 = 4;
+pub const FAN_EVENT_INFO_TYPE_ERROR: u8 = 5;
+
+pub const FAN_EVENT_INFO_TYPE_OLD_DFID_NAME: u8 = 10;
+pub const FAN_EVENT_INFO_TYPE_NEW_DFID_NAME: u8 = 12;
+
+pub const FAN_RESPONSE_INFO_NONE: u8 = 0;
+pub const FAN_RESPONSE_INFO_AUDIT_RULE: u8 = 1;
+
 pub const FAN_ALLOW: u32 = 0x01;
 pub const FAN_DENY: u32 = 0x02;
+pub const FAN_AUDIT: u32 = 0x10;
+pub const FAN_INFO: u32 = 0x20;
 
 pub const FAN_NOFD: ::c_int = -1;
+pub const FAN_NOPIDFD: ::c_int = FAN_NOFD;
+pub const FAN_EPIDFD: ::c_int = -2;
 
 pub const FUTEX_WAIT: ::c_int = 0;
 pub const FUTEX_WAKE: ::c_int = 1;
@@ -3928,6 +4101,139 @@ pub const DCCP_SOCKOPT_CCID_TX_INFO: ::c_int = 192;
 /// maximum number of services provided on the same listening port
 pub const DCCP_SERVICE_LIST_MAX_LEN: ::c_int = 32;
 
+pub const CTL_KERN: ::c_int = 1;
+pub const CTL_VM: ::c_int = 2;
+pub const CTL_NET: ::c_int = 3;
+pub const CTL_FS: ::c_int = 5;
+pub const CTL_DEBUG: ::c_int = 6;
+pub const CTL_DEV: ::c_int = 7;
+pub const CTL_BUS: ::c_int = 8;
+pub const CTL_ABI: ::c_int = 9;
+pub const CTL_CPU: ::c_int = 10;
+
+pub const CTL_BUS_ISA: ::c_int = 1;
+
+pub const INOTIFY_MAX_USER_INSTANCES: ::c_int = 1;
+pub const INOTIFY_MAX_USER_WATCHES: ::c_int = 2;
+pub const INOTIFY_MAX_QUEUED_EVENTS: ::c_int = 3;
+
+pub const KERN_OSTYPE: ::c_int = 1;
+pub const KERN_OSRELEASE: ::c_int = 2;
+pub const KERN_OSREV: ::c_int = 3;
+pub const KERN_VERSION: ::c_int = 4;
+pub const KERN_SECUREMASK: ::c_int = 5;
+pub const KERN_PROF: ::c_int = 6;
+pub const KERN_NODENAME: ::c_int = 7;
+pub const KERN_DOMAINNAME: ::c_int = 8;
+pub const KERN_PANIC: ::c_int = 15;
+pub const KERN_REALROOTDEV: ::c_int = 16;
+pub const KERN_SPARC_REBOOT: ::c_int = 21;
+pub const KERN_CTLALTDEL: ::c_int = 22;
+pub const KERN_PRINTK: ::c_int = 23;
+pub const KERN_NAMETRANS: ::c_int = 24;
+pub const KERN_PPC_HTABRECLAIM: ::c_int = 25;
+pub const KERN_PPC_ZEROPAGED: ::c_int = 26;
+pub const KERN_PPC_POWERSAVE_NAP: ::c_int = 27;
+pub const KERN_MODPROBE: ::c_int = 28;
+pub const KERN_SG_BIG_BUFF: ::c_int = 29;
+pub const KERN_ACCT: ::c_int = 30;
+pub const KERN_PPC_L2CR: ::c_int = 31;
+pub const KERN_RTSIGNR: ::c_int = 32;
+pub const KERN_RTSIGMAX: ::c_int = 33;
+pub const KERN_SHMMAX: ::c_int = 34;
+pub const KERN_MSGMAX: ::c_int = 35;
+pub const KERN_MSGMNB: ::c_int = 36;
+pub const KERN_MSGPOOL: ::c_int = 37;
+pub const KERN_SYSRQ: ::c_int = 38;
+pub const KERN_MAX_THREADS: ::c_int = 39;
+pub const KERN_RANDOM: ::c_int = 40;
+pub const KERN_SHMALL: ::c_int = 41;
+pub const KERN_MSGMNI: ::c_int = 42;
+pub const KERN_SEM: ::c_int = 43;
+pub const KERN_SPARC_STOP_A: ::c_int = 44;
+pub const KERN_SHMMNI: ::c_int = 45;
+pub const KERN_OVERFLOWUID: ::c_int = 46;
+pub const KERN_OVERFLOWGID: ::c_int = 47;
+pub const KERN_SHMPATH: ::c_int = 48;
+pub const KERN_HOTPLUG: ::c_int = 49;
+pub const KERN_IEEE_EMULATION_WARNINGS: ::c_int = 50;
+pub const KERN_S390_USER_DEBUG_LOGGING: ::c_int = 51;
+pub const KERN_CORE_USES_PID: ::c_int = 52;
+pub const KERN_TAINTED: ::c_int = 53;
+pub const KERN_CADPID: ::c_int = 54;
+pub const KERN_PIDMAX: ::c_int = 55;
+pub const KERN_CORE_PATTERN: ::c_int = 56;
+pub const KERN_PANIC_ON_OOPS: ::c_int = 57;
+pub const KERN_HPPA_PWRSW: ::c_int = 58;
+pub const KERN_HPPA_UNALIGNED: ::c_int = 59;
+pub const KERN_PRINTK_RATELIMIT: ::c_int = 60;
+pub const KERN_PRINTK_RATELIMIT_BURST: ::c_int = 61;
+pub const KERN_PTY: ::c_int = 62;
+pub const KERN_NGROUPS_MAX: ::c_int = 63;
+pub const KERN_SPARC_SCONS_PWROFF: ::c_int = 64;
+pub const KERN_HZ_TIMER: ::c_int = 65;
+pub const KERN_UNKNOWN_NMI_PANIC: ::c_int = 66;
+pub const KERN_BOOTLOADER_TYPE: ::c_int = 67;
+pub const KERN_RANDOMIZE: ::c_int = 68;
+pub const KERN_SETUID_DUMPABLE: ::c_int = 69;
+pub const KERN_SPIN_RETRY: ::c_int = 70;
+pub const KERN_ACPI_VIDEO_FLAGS: ::c_int = 71;
+pub const KERN_IA64_UNALIGNED: ::c_int = 72;
+pub const KERN_COMPAT_LOG: ::c_int = 73;
+pub const KERN_MAX_LOCK_DEPTH: ::c_int = 74;
+pub const KERN_NMI_WATCHDOG: ::c_int = 75;
+pub const KERN_PANIC_ON_NMI: ::c_int = 76;
+
+pub const VM_OVERCOMMIT_MEMORY: ::c_int = 5;
+pub const VM_PAGE_CLUSTER: ::c_int = 10;
+pub const VM_DIRTY_BACKGROUND: ::c_int = 11;
+pub const VM_DIRTY_RATIO: ::c_int = 12;
+pub const VM_DIRTY_WB_CS: ::c_int = 13;
+pub const VM_DIRTY_EXPIRE_CS: ::c_int = 14;
+pub const VM_NR_PDFLUSH_THREADS: ::c_int = 15;
+pub const VM_OVERCOMMIT_RATIO: ::c_int = 16;
+pub const VM_PAGEBUF: ::c_int = 17;
+pub const VM_HUGETLB_PAGES: ::c_int = 18;
+pub const VM_SWAPPINESS: ::c_int = 19;
+pub const VM_LOWMEM_RESERVE_RATIO: ::c_int = 20;
+pub const VM_MIN_FREE_KBYTES: ::c_int = 21;
+pub const VM_MAX_MAP_COUNT: ::c_int = 22;
+pub const VM_LAPTOP_MODE: ::c_int = 23;
+pub const VM_BLOCK_DUMP: ::c_int = 24;
+pub const VM_HUGETLB_GROUP: ::c_int = 25;
+pub const VM_VFS_CACHE_PRESSURE: ::c_int = 26;
+pub const VM_LEGACY_VA_LAYOUT: ::c_int = 27;
+pub const VM_SWAP_TOKEN_TIMEOUT: ::c_int = 28;
+pub const VM_DROP_PAGECACHE: ::c_int = 29;
+pub const VM_PERCPU_PAGELIST_FRACTION: ::c_int = 30;
+pub const VM_ZONE_RECLAIM_MODE: ::c_int = 31;
+pub const VM_MIN_UNMAPPED: ::c_int = 32;
+pub const VM_PANIC_ON_OOM: ::c_int = 33;
+pub const VM_VDSO_ENABLED: ::c_int = 34;
+pub const VM_MIN_SLAB: ::c_int = 35;
+
+pub const NET_CORE: ::c_int = 1;
+pub const NET_ETHER: ::c_int = 2;
+pub const NET_802: ::c_int = 3;
+pub const NET_UNIX: ::c_int = 4;
+pub const NET_IPV4: ::c_int = 5;
+pub const NET_IPX: ::c_int = 6;
+pub const NET_ATALK: ::c_int = 7;
+pub const NET_NETROM: ::c_int = 8;
+pub const NET_AX25: ::c_int = 9;
+pub const NET_BRIDGE: ::c_int = 10;
+pub const NET_ROSE: ::c_int = 11;
+pub const NET_IPV6: ::c_int = 12;
+pub const NET_X25: ::c_int = 13;
+pub const NET_TR: ::c_int = 14;
+pub const NET_DECNET: ::c_int = 15;
+pub const NET_ECONET: ::c_int = 16;
+pub const NET_SCTP: ::c_int = 17;
+pub const NET_LLC: ::c_int = 18;
+pub const NET_NETFILTER: ::c_int = 19;
+pub const NET_DCCP: ::c_int = 20;
+pub const NET_IRDA: ::c_int = 412;
+
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
@@ -4142,7 +4448,7 @@ cfg_if! {
                 host: *mut ::c_char,
                 hostlen: ::socklen_t,
                 serv: *mut ::c_char,
-                sevlen: ::socklen_t,
+                servlen: ::socklen_t,
                 flags: ::c_int,
             ) -> ::c_int;
             pub fn getloadavg(
@@ -4501,6 +4807,9 @@ extern "C" {
         flags: ::c_uint,
     ) -> ::ssize_t;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn eventfd_read(fd: ::c_int, value: *mut eventfd_t) -> ::c_int;
+    pub fn eventfd_write(fd: ::c_int, value: eventfd_t) -> ::c_int;
+
     pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn sem_timedwait(sem: *mut sem_t, abstime: *const ::timespec) -> ::c_int;
     pub fn sem_getvalue(sem: *mut sem_t, sval: *mut ::c_int) -> ::c_int;
@@ -4771,7 +5080,7 @@ extern "C" {
         newfd: ::c_int,
     ) -> ::c_int;
     pub fn fread_unlocked(
-        ptr: *mut ::c_void,
+        buf: *mut ::c_void,
         size: ::size_t,
         nobj: ::size_t,
         stream: *mut ::FILE,
@@ -4848,6 +5157,8 @@ extern "C" {
         longopts: *const option,
         longindex: *mut ::c_int,
     ) -> ::c_int;
+
+    pub fn pthread_once(control: *mut pthread_once_t, routine: extern "C" fn()) -> ::c_int;
 
     pub fn copy_file_range(
         fd_in: ::c_int,

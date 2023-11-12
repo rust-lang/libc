@@ -1230,7 +1230,10 @@ pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 pub const POSIX_MADV_DONTNEED: ::c_int = 0;
 
 pub const RLIM_INFINITY: ::rlim_t = !0;
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIMIT_NLIMITS: ::c_int = 15;
+#[allow(deprecated)]
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
@@ -1699,7 +1702,7 @@ extern "C" {
         host: *mut ::c_char,
         hostlen: ::socklen_t,
         serv: *mut ::c_char,
-        sevlen: ::socklen_t,
+        servlen: ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
     pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;

@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:23.10
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
   gcc libc6-dev ca-certificates linux-headers-generic

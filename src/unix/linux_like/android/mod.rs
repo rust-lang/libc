@@ -46,6 +46,8 @@ pub type Elf64_Off = u64;
 pub type Elf64_Word = u32;
 pub type Elf64_Xword = u64;
 
+pub type eventfd_t = u64;
+
 s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
@@ -1562,6 +1564,7 @@ pub const RLIMIT_MSGQUEUE: ::c_int = 12;
 pub const RLIMIT_NICE: ::c_int = 13;
 pub const RLIMIT_RTPRIO: ::c_int = 14;
 
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = 16;
 pub const RLIM_INFINITY: ::rlim_t = !0;
 
@@ -1706,6 +1709,7 @@ pub const REG_BACKR: ::c_int = 1024;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
+pub const MCL_ONFAULT: ::c_int = 0x0004;
 
 pub const CBAUD: ::tcflag_t = 0o0010017;
 pub const TAB1: ::tcflag_t = 0x00000800;
@@ -2479,6 +2483,7 @@ pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;
 pub const IFF_NAPI: ::c_int = 0x0010;
 pub const IFF_NAPI_FRAGS: ::c_int = 0x0020;
+pub const IFF_NO_CARRIER: ::c_int = 0x0040;
 pub const IFF_NO_PI: ::c_int = 0x1000;
 pub const IFF_ONE_QUEUE: ::c_int = 0x2000;
 pub const IFF_VNET_HDR: ::c_int = 0x4000;
@@ -2488,6 +2493,14 @@ pub const IFF_ATTACH_QUEUE: ::c_int = 0x0200;
 pub const IFF_DETACH_QUEUE: ::c_int = 0x0400;
 pub const IFF_PERSIST: ::c_int = 0x0800;
 pub const IFF_NOFILTER: ::c_int = 0x1000;
+// Features for GSO (TUNSETOFFLOAD)
+pub const TUN_F_CSUM: ::c_uint = 0x01;
+pub const TUN_F_TSO4: ::c_uint = 0x02;
+pub const TUN_F_TSO6: ::c_uint = 0x04;
+pub const TUN_F_TSO_ECN: ::c_uint = 0x08;
+pub const TUN_F_UFO: ::c_uint = 0x10;
+pub const TUN_F_USO4: ::c_uint = 0x20;
+pub const TUN_F_USO6: ::c_uint = 0x40;
 
 // start android/platform/bionic/libc/kernel/uapi/linux/if_ether.h
 // from https://android.googlesource.com/platform/bionic/+/HEAD/libc/kernel/uapi/linux/if_ether.h
@@ -2743,6 +2756,7 @@ pub const ALG_SET_IV: ::c_int = 2;
 pub const ALG_SET_OP: ::c_int = 3;
 pub const ALG_SET_AEAD_ASSOCLEN: ::c_int = 4;
 pub const ALG_SET_AEAD_AUTHSIZE: ::c_int = 5;
+pub const ALG_SET_DRBG_ENTROPY: ::c_int = 6;
 
 pub const ALG_OP_DECRYPT: ::c_int = 0;
 pub const ALG_OP_ENCRYPT: ::c_int = 1;
@@ -3150,6 +3164,135 @@ pub const RTMSG_DELDEVICE: u32 = 0x12;
 pub const RTMSG_NEWROUTE: u32 = 0x21;
 pub const RTMSG_DELROUTE: u32 = 0x22;
 
+pub const CTL_KERN: ::c_int = 1;
+pub const CTL_VM: ::c_int = 2;
+pub const CTL_NET: ::c_int = 3;
+pub const CTL_FS: ::c_int = 5;
+pub const CTL_DEBUG: ::c_int = 6;
+pub const CTL_DEV: ::c_int = 7;
+pub const CTL_BUS: ::c_int = 8;
+pub const CTL_ABI: ::c_int = 9;
+pub const CTL_CPU: ::c_int = 10;
+
+pub const CTL_BUS_ISA: ::c_int = 1;
+
+pub const INOTIFY_MAX_USER_INSTANCES: ::c_int = 1;
+pub const INOTIFY_MAX_USER_WATCHES: ::c_int = 2;
+pub const INOTIFY_MAX_QUEUED_EVENTS: ::c_int = 3;
+
+pub const KERN_OSTYPE: ::c_int = 1;
+pub const KERN_OSRELEASE: ::c_int = 2;
+pub const KERN_OSREV: ::c_int = 3;
+pub const KERN_VERSION: ::c_int = 4;
+pub const KERN_SECUREMASK: ::c_int = 5;
+pub const KERN_PROF: ::c_int = 6;
+pub const KERN_NODENAME: ::c_int = 7;
+pub const KERN_DOMAINNAME: ::c_int = 8;
+pub const KERN_PANIC: ::c_int = 15;
+pub const KERN_REALROOTDEV: ::c_int = 16;
+pub const KERN_SPARC_REBOOT: ::c_int = 21;
+pub const KERN_CTLALTDEL: ::c_int = 22;
+pub const KERN_PRINTK: ::c_int = 23;
+pub const KERN_NAMETRANS: ::c_int = 24;
+pub const KERN_PPC_HTABRECLAIM: ::c_int = 25;
+pub const KERN_PPC_ZEROPAGED: ::c_int = 26;
+pub const KERN_PPC_POWERSAVE_NAP: ::c_int = 27;
+pub const KERN_MODPROBE: ::c_int = 28;
+pub const KERN_SG_BIG_BUFF: ::c_int = 29;
+pub const KERN_ACCT: ::c_int = 30;
+pub const KERN_PPC_L2CR: ::c_int = 31;
+pub const KERN_RTSIGNR: ::c_int = 32;
+pub const KERN_RTSIGMAX: ::c_int = 33;
+pub const KERN_SHMMAX: ::c_int = 34;
+pub const KERN_MSGMAX: ::c_int = 35;
+pub const KERN_MSGMNB: ::c_int = 36;
+pub const KERN_MSGPOOL: ::c_int = 37;
+pub const KERN_SYSRQ: ::c_int = 38;
+pub const KERN_MAX_THREADS: ::c_int = 39;
+pub const KERN_RANDOM: ::c_int = 40;
+pub const KERN_SHMALL: ::c_int = 41;
+pub const KERN_MSGMNI: ::c_int = 42;
+pub const KERN_SEM: ::c_int = 43;
+pub const KERN_SPARC_STOP_A: ::c_int = 44;
+pub const KERN_SHMMNI: ::c_int = 45;
+pub const KERN_OVERFLOWUID: ::c_int = 46;
+pub const KERN_OVERFLOWGID: ::c_int = 47;
+pub const KERN_SHMPATH: ::c_int = 48;
+pub const KERN_HOTPLUG: ::c_int = 49;
+pub const KERN_IEEE_EMULATION_WARNINGS: ::c_int = 50;
+pub const KERN_S390_USER_DEBUG_LOGGING: ::c_int = 51;
+pub const KERN_CORE_USES_PID: ::c_int = 52;
+pub const KERN_TAINTED: ::c_int = 53;
+pub const KERN_CADPID: ::c_int = 54;
+pub const KERN_PIDMAX: ::c_int = 55;
+pub const KERN_CORE_PATTERN: ::c_int = 56;
+pub const KERN_PANIC_ON_OOPS: ::c_int = 57;
+pub const KERN_HPPA_PWRSW: ::c_int = 58;
+pub const KERN_HPPA_UNALIGNED: ::c_int = 59;
+pub const KERN_PRINTK_RATELIMIT: ::c_int = 60;
+pub const KERN_PRINTK_RATELIMIT_BURST: ::c_int = 61;
+pub const KERN_PTY: ::c_int = 62;
+pub const KERN_NGROUPS_MAX: ::c_int = 63;
+pub const KERN_SPARC_SCONS_PWROFF: ::c_int = 64;
+pub const KERN_HZ_TIMER: ::c_int = 65;
+pub const KERN_UNKNOWN_NMI_PANIC: ::c_int = 66;
+pub const KERN_BOOTLOADER_TYPE: ::c_int = 67;
+pub const KERN_RANDOMIZE: ::c_int = 68;
+pub const KERN_SETUID_DUMPABLE: ::c_int = 69;
+pub const KERN_SPIN_RETRY: ::c_int = 70;
+pub const KERN_ACPI_VIDEO_FLAGS: ::c_int = 71;
+pub const KERN_IA64_UNALIGNED: ::c_int = 72;
+pub const KERN_COMPAT_LOG: ::c_int = 73;
+pub const KERN_MAX_LOCK_DEPTH: ::c_int = 74;
+
+pub const VM_OVERCOMMIT_MEMORY: ::c_int = 5;
+pub const VM_PAGE_CLUSTER: ::c_int = 10;
+pub const VM_DIRTY_BACKGROUND: ::c_int = 11;
+pub const VM_DIRTY_RATIO: ::c_int = 12;
+pub const VM_DIRTY_WB_CS: ::c_int = 13;
+pub const VM_DIRTY_EXPIRE_CS: ::c_int = 14;
+pub const VM_NR_PDFLUSH_THREADS: ::c_int = 15;
+pub const VM_OVERCOMMIT_RATIO: ::c_int = 16;
+pub const VM_PAGEBUF: ::c_int = 17;
+pub const VM_HUGETLB_PAGES: ::c_int = 18;
+pub const VM_SWAPPINESS: ::c_int = 19;
+pub const VM_LOWMEM_RESERVE_RATIO: ::c_int = 20;
+pub const VM_MIN_FREE_KBYTES: ::c_int = 21;
+pub const VM_MAX_MAP_COUNT: ::c_int = 22;
+pub const VM_LAPTOP_MODE: ::c_int = 23;
+pub const VM_BLOCK_DUMP: ::c_int = 24;
+pub const VM_HUGETLB_GROUP: ::c_int = 25;
+pub const VM_VFS_CACHE_PRESSURE: ::c_int = 26;
+pub const VM_LEGACY_VA_LAYOUT: ::c_int = 27;
+pub const VM_SWAP_TOKEN_TIMEOUT: ::c_int = 28;
+pub const VM_DROP_PAGECACHE: ::c_int = 29;
+pub const VM_PERCPU_PAGELIST_FRACTION: ::c_int = 30;
+pub const VM_ZONE_RECLAIM_MODE: ::c_int = 31;
+pub const VM_MIN_UNMAPPED: ::c_int = 32;
+pub const VM_PANIC_ON_OOM: ::c_int = 33;
+pub const VM_VDSO_ENABLED: ::c_int = 34;
+
+pub const NET_CORE: ::c_int = 1;
+pub const NET_ETHER: ::c_int = 2;
+pub const NET_802: ::c_int = 3;
+pub const NET_UNIX: ::c_int = 4;
+pub const NET_IPV4: ::c_int = 5;
+pub const NET_IPX: ::c_int = 6;
+pub const NET_ATALK: ::c_int = 7;
+pub const NET_NETROM: ::c_int = 8;
+pub const NET_AX25: ::c_int = 9;
+pub const NET_BRIDGE: ::c_int = 10;
+pub const NET_ROSE: ::c_int = 11;
+pub const NET_IPV6: ::c_int = 12;
+pub const NET_X25: ::c_int = 13;
+pub const NET_TR: ::c_int = 14;
+pub const NET_DECNET: ::c_int = 15;
+pub const NET_ECONET: ::c_int = 16;
+pub const NET_SCTP: ::c_int = 17;
+pub const NET_LLC: ::c_int = 18;
+pub const NET_NETFILTER: ::c_int = 19;
+pub const NET_DCCP: ::c_int = 20;
+
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
 // currently used in CI in some configurations, so we define them here.
@@ -3290,7 +3433,7 @@ extern "C" {
         host: *mut ::c_char,
         hostlen: ::size_t,
         serv: *mut ::c_char,
-        sevlen: ::size_t,
+        servlen: ::size_t,
         flags: ::c_int,
     ) -> ::c_int;
     pub fn preadv(fd: ::c_int, iov: *const ::iovec, count: ::c_int, offset: ::off_t) -> ::ssize_t;
@@ -3425,6 +3568,8 @@ extern "C" {
         flags: ::c_uint,
     ) -> ::ssize_t;
     pub fn eventfd(init: ::c_uint, flags: ::c_int) -> ::c_int;
+    pub fn eventfd_read(fd: ::c_int, value: *mut eventfd_t) -> ::c_int;
+    pub fn eventfd_write(fd: ::c_int, value: eventfd_t) -> ::c_int;
     pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn sem_timedwait(sem: *mut sem_t, abstime: *const ::timespec) -> ::c_int;
     pub fn sem_getvalue(sem: *mut sem_t, sval: *mut ::c_int) -> ::c_int;
@@ -3706,6 +3851,20 @@ extern "C" {
         needle: *const ::c_void,
         needlelen: ::size_t,
     ) -> *mut ::c_void;
+    pub fn fread_unlocked(
+        buf: *mut ::c_void,
+        size: ::size_t,
+        nobj: ::size_t,
+        stream: *mut ::FILE,
+    ) -> ::size_t;
+    pub fn fwrite_unlocked(
+        buf: *const ::c_void,
+        size: ::size_t,
+        nobj: ::size_t,
+        stream: *mut ::FILE,
+    ) -> ::size_t;
+    pub fn fflush_unlocked(stream: *mut ::FILE) -> ::c_int;
+    pub fn fgets_unlocked(buf: *mut ::c_char, size: ::c_int, stream: *mut ::FILE) -> *mut ::c_char;
 }
 
 cfg_if! {

@@ -39,7 +39,7 @@ test_target() {
         done
     fi
 
-    # Test that libc builds without any default features (no libstd)
+    # Test that libc builds without any default features (no std)
     if [ "${NO_STD}" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}"
     else
@@ -47,8 +47,8 @@ test_target() {
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
             -Z build-std=core,alloc -vv --no-default-features --target "${TARGET}"
     fi
-    # Test that libc builds with default features (e.g. libstd)
-    # if the target supports libstd
+    # Test that libc builds with default features (e.g. std)
+    # if the target supports std
     if [ "$NO_STD" != "1" ]; then
         cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}"
     else
@@ -111,14 +111,6 @@ x86_64-unknown-linux-gnu \
 x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
 "
-
-# FIXME: builds of MIPS targets are currently broken on nightly.
-# mips-unknown-linux-gnu \
-# mips-unknown-linux-musl \
-# mips64-unknown-linux-gnuabi64 \
-# mips64el-unknown-linux-gnuabi64 \
-# mipsel-unknown-linux-gnu \
-# mipsel-unknown-linux-musl \
 
 RUST_GT_1_13_LINUX_TARGETS="\
 arm-unknown-linux-musleabi \
@@ -238,9 +230,15 @@ i686-unknown-haiku \
 i686-unknown-netbsd \
 i686-unknown-openbsd \
 i686-wrs-vxworks \
-mipsel-sony-psp \
+mips-unknown-linux-gnu \
+mips-unknown-linux-musl \
+mips64-unknown-linux-gnuabi64 \
 mips64-unknown-linux-muslabi64 \
+mips64el-unknown-linux-gnuabi64 \
 mips64el-unknown-linux-muslabi64 \
+mipsel-unknown-linux-gnu \
+mipsel-unknown-linux-musl \
+mipsel-sony-psp \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \

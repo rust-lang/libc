@@ -28,7 +28,7 @@ pub type nfds_t = ::c_ulong;
 pub type nlink_t = ::c_ulong;
 pub type off_t = ::c_longlong;
 pub type pthread_t = *mut ::c_void;
-// Must be usize due to libstd/sys_common/thread_local.rs,
+// Must be usize due to library/std/sys_common/thread_local.rs,
 // should technically be *mut ::c_void
 pub type pthread_key_t = usize;
 pub type rlim_t = ::c_ulonglong;
@@ -1080,6 +1080,10 @@ extern "C" {
     pub fn getdtablesize() -> ::c_int;
 
     // grp.h
+    pub fn getgrent() -> *mut ::group;
+    pub fn setgrent();
+    pub fn endgrent();
+    pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn getgrgid_r(
         gid: ::gid_t,
         grp: *mut ::group,
@@ -1087,6 +1091,7 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
+    pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
     pub fn getgrnam_r(
         name: *const ::c_char,
         grp: *mut ::group,

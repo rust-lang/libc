@@ -59,15 +59,15 @@ fn main() {
         );
     }
 
-    // The ABI of libc used by libstd is backward compatible with FreeBSD 10.
+    // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
     match which_freebsd() {
-        Some(10) if libc_ci || rustc_dep_of_std => set_cfg("freebsd10"),
+        Some(10) if libc_ci => set_cfg("freebsd10"),
         Some(11) if libc_ci => set_cfg("freebsd11"),
-        Some(12) if libc_ci => set_cfg("freebsd12"),
+        Some(12) if libc_ci || rustc_dep_of_std => set_cfg("freebsd12"),
         Some(13) if libc_ci => set_cfg("freebsd13"),
         Some(14) if libc_ci => set_cfg("freebsd14"),
         Some(_) | None => set_cfg("freebsd11"),
@@ -167,11 +167,19 @@ fn main() {
     // https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#check-cfg
     if libc_check_cfg {
         for cfg in ALLOWED_CFGS {
-            println!("cargo:rustc-check-cfg=values({})", cfg);
+            if rustc_minor_ver >= 75 {
+                println!("cargo:rustc-check-cfg=cfg({})", cfg);
+            } else {
+                println!("cargo:rustc-check-cfg=values({})", cfg);
+            }
         }
         for &(name, values) in CHECK_CFG_EXTRA {
             let values = values.join("\",\"");
-            println!("cargo:rustc-check-cfg=values({},\"{}\")", name, values);
+            if rustc_minor_ver >= 75 {
+                println!("cargo:rustc-check-cfg=cfg({},values(\"{}\"))", name, values);
+            } else {
+                println!("cargo:rustc-check-cfg=values({},\"{}\")", name, values);
+            }
         }
     }
 }

@@ -2557,6 +2557,7 @@ pub const RLIMIT_NPROC: ::c_int = 8;
 pub const RLIMIT_RSS: ::c_int = 6;
 pub const RLIMIT_STACK: ::c_int = 3;
 pub const RLIMIT_VMEM: ::c_int = 6;
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = 14;
 
 pub const SCHED_ADJTOHEAD: ::c_int = 5;
@@ -3282,7 +3283,7 @@ extern "C" {
         host: *mut ::c_char,
         hostlen: ::socklen_t,
         serv: *mut ::c_char,
-        sevlen: ::socklen_t,
+        servlen: ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
 

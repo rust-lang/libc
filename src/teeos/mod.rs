@@ -8,6 +8,8 @@
 // only supported on Rust > 1.59, so we can directly reexport c_void from core.
 pub use core::ffi::c_void;
 
+use Option;
+
 pub type c_schar = i8;
 
 pub type c_uchar = u8;

@@ -646,6 +646,10 @@ pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 
 pub const TIMER_ABSTIME: ::c_int = 1;
 
+// sys/reboot.h
+
+pub const RB_AUTOBOOT: ::c_int = 0;
+
 #[link(name = "util")]
 extern "C" {
     pub fn setgrent();
@@ -736,6 +740,11 @@ extern "C" {
     pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
     pub fn shmdt(shmaddr: *const ::c_void) -> ::c_int;
     pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
+    pub fn execvpe(
+        file: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+    ) -> ::c_int;
 }
 
 extern "C" {
