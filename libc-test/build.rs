@@ -1545,6 +1545,7 @@ fn test_android(target: &str) {
         t => panic!("unsupported target: {}", t),
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
+    let aarch64 = target.contains("aarch64");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -1879,6 +1880,12 @@ fn test_android(target: &str) {
             | "NFT_MSG_MAX"
             | "SW_MAX"
             | "SW_CNT" => true,
+
+            // FIXME: aarch64 env cannot find it:
+            | "PTRACE_GETREGS"
+            | "PTRACE_SETREGS" if aarch64 => true,
+            // FIXME: The value has been changed on r26b:
+            | "SYS_syscalls" if aarch64 => true,
 
             _ => false,
         }
