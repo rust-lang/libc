@@ -3433,6 +3433,7 @@ fn test_linux(target: &str) {
         "linux/uinput.h",
         "linux/vm_sockets.h",
         "linux/wait.h",
+        "linux/wireless.h",
         "sys/fanotify.h",
         // <sys/auxv.h> is not present on uclibc
         [!uclibc]: "sys/auxv.h",
