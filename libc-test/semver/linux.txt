@@ -3842,3 +3842,5 @@ vhangup
 vmsplice
 wait4
 waitid
+eventfd_read
+eventfd_write
