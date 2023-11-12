@@ -4644,6 +4644,7 @@ fn test_haiku(target: &str) {
             ("sigaction", "sa_sigaction") => true,
             ("sigevent", "sigev_value") => true,
             ("fpu_state", "_fpreg") => true,
+            ("cpu_topology_node_info", "data") => true,
             // these fields have a simplified data definition in libc
             ("fpu_state", "_xmm") => true,
             ("savefpu", "_fp_ymm") => true,
@@ -4664,13 +4665,33 @@ fn test_haiku(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "area_info" | "port_info" | "port_message_info" | "team_info" | "sem_info"
-            | "team_usage_info" | "thread_info" | "cpu_info" | "system_info"
-            | "object_wait_info" | "image_info" | "attr_info" | "index_info" | "fs_info"
-            | "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+            "area_info"
+            | "port_info"
+            | "port_message_info"
+            | "team_info"
+            | "sem_info"
+            | "team_usage_info"
+            | "thread_info"
+            | "cpu_info"
+            | "system_info"
+            | "object_wait_info"
+            | "image_info"
+            | "attr_info"
+            | "index_info"
+            | "fs_info"
+            | "FILE"
+            | "DIR"
+            | "Dl_info"
+            | "topology_level_type"
+            | "cpu_topology_node_info"
+            | "cpu_topology_root_info"
+            | "cpu_topology_package_info"
+            | "cpu_topology_core_info" => ty.to_string(),
 
             // enums don't need a prefix
-            "directory_which" | "path_base_directory" => ty.to_string(),
+            "directory_which" | "path_base_directory" | "cpu_platform" | "cpu_vendor" => {
+                ty.to_string()
+            }
 
             // is actually a union
             "sigval" => format!("union sigval"),
@@ -4689,6 +4710,7 @@ fn test_haiku(target: &str) {
             "type_" if struct_ == "sem_t" => "type".to_string(),
             "type_" if struct_ == "attr_info" => "type".to_string(),
             "type_" if struct_ == "index_info" => "type".to_string(),
+            "type_" if struct_ == "cpu_topology_node_info" => "type".to_string(),
             "image_type" if struct_ == "image_info" => "type".to_string(),
             s => s.to_string(),
         }
