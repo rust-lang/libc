@@ -268,6 +268,7 @@ fn test_apple(target: &str) {
         "sys/proc_info.h",
         "sys/ptrace.h",
         "sys/quota.h",
+        "sys/random.h",
         "sys/resource.h",
         "sys/sem.h",
         "sys/shm.h",
