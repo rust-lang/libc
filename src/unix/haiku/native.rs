@@ -80,7 +80,7 @@ e! {
         B_MIDI_PROCESSING = 0x800,
     }
 
-    pub enum schduler_mode {
+    pub enum scheduler_mode {
         SCHEDULER_MODE_LOW_LATENCY,
         SCHEDULER_MODE_POWER_SAVING,
     }
@@ -1216,6 +1216,29 @@ extern "C" {
         pathString: *mut ::c_char,
         length: i32,
     ) -> status_t;
+
+    // kernel/syscalls.h
+    pub fn _kern_open(
+        fd: ::c_int,
+        path: *const ::c_char,
+        openMode: ::c_int,
+        perms: ::c_int,
+    ) -> ::c_int;
+    pub fn _kern_read(
+        fd: ::c_int,
+        pos: ::off_t,
+        buffer: *const ::c_void,
+        bufferSize: ::size_t,
+    ) -> ::ssize_t;
+    pub fn _kern_write(
+        fd: ::c_int,
+        pos: ::off_t,
+        buffer: *const ::c_void,
+        bufferSize: ::size_t,
+    ) -> ::ssize_t;
+    pub fn _kern_seek(fd: ::c_int, pos: ::off_t, seekType: ::c_int) -> ::off_t;
+    pub fn _kern_dup(fd: ::c_int) -> ::c_int;
+    pub fn _kern_close(fd: ::c_int) -> status_t;
 }
 
 cfg_if! {

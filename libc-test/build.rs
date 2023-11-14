@@ -4578,6 +4578,10 @@ fn test_haiku(target: &str) {
     });
 
     cfg.skip_fn(move |name| {
+        // private system calls
+        if name.starts_with("_kern_") {
+            return true;
+        }
         // skip those that are manually verified
         match name {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
