@@ -1915,6 +1915,7 @@ getattrlistbulk
 getdate
 getdomainname
 getdtablesize
+getentropy
 getfsstat
 getgrent
 getgrgid

@@ -6260,6 +6260,7 @@ extern "C" {
     pub fn sethostid(hostid: ::c_long);
 
     pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 
     pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;
     pub fn _NSGetEnviron() -> *mut *mut *mut ::c_char;
