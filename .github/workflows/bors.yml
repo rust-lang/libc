@@ -38,7 +38,7 @@ jobs:
       contents: read # to fetch code (actions/checkout)
 
     name: macOS
-    runs-on: macos-12
+    runs-on: macos-13
     strategy:
       fail-fast: true
       matrix:
@@ -262,9 +262,9 @@ jobs:
       max-parallel: 4
       matrix:
         target:
-          - { toolchain: stable, os: macos-12 }
-          - { toolchain: beta, os: macos-12 }
-          - { toolchain: nightly, os: macos-12 }
+          - { toolchain: stable, os: macos-13 }
+          - { toolchain: beta, os: macos-13 }
+          - { toolchain: nightly, os: macos-13 }
           # Use macOS 11 for older toolchains as newer Xcode donesn't work well.
           # FIXME: Disabled due to:
           # error: failed to parse registry's information for: serde
