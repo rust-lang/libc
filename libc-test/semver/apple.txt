@@ -2265,6 +2265,8 @@ uselocale
 utimensat
 utmpx
 utmpxname
+vm_allocate
+vm_deallocate
 vm_inherit_t
 vm_map_t
 vm_prot_t

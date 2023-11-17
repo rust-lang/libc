@@ -6279,6 +6279,13 @@ extern "C" {
         inheritance: ::vm_inherit_t,
     ) -> ::kern_return_t;
 
+    pub fn vm_allocate(
+        target_task: vm_map_t,
+        address: *mut vm_address_t,
+        size: vm_size_t,
+        flags: ::c_int,
+    ) -> ::kern_return_t;
+
     pub fn vm_deallocate(
         target_task: vm_map_t,
         address: vm_address_t,
