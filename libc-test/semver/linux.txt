@@ -1986,6 +1986,8 @@ PTHREAD_PRIO_INHERIT
 PTHREAD_PRIO_PROTECT
 PTHREAD_PROCESS_PRIVATE
 PTHREAD_PROCESS_SHARED
+PTHREAD_INHERIT_SCHED
+PTHREAD_EXPLICIT_SCHED
 PTHREAD_STACK_MIN
 PTHREAD_ONCE_INIT
 PTRACE_ATTACH
@@ -3655,6 +3657,12 @@ priority_t
 pread64
 preadv
 pthread_attr_getguardsize
+pthread_attr_getinheritsched
+pthread_attr_setinheritsched
+pthread_attr_getschedpolicy
+pthread_attr_setschedpolicy
+pthread_attr_getschedparam
+pthread_attr_setschedparam
 pthread_attr_getstack
 pthread_attr_setguardsize
 pthread_cancel
