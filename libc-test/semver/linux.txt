@@ -1423,6 +1423,7 @@ MAP_STACK
 MAP_TYPE
 MAXTTL
 MAX_ADDR_LEN
+MAX_HANDLE_SZ
 MAX_IPOPTLEN
 MCAST_BLOCK_SOURCE
 MCAST_EXCLUDE
@@ -3435,10 +3436,16 @@ execvpe
 faccessat
 fallocate
 fallocate64
+fanotify_event_info_error
+fanotify_event_info_fid
+fanotify_event_info_header
+fanotify_event_info_pidfd
 fanotify_event_metadata
 fanotify_init
 fanotify_mark
 fanotify_response
+fanotify_response_info_header
+fanotify_response_info_audit_rule
 fchdir
 fdatasync
 fdopendir

@@ -503,9 +503,45 @@ s! {
         pub len: u32
     }
 
+    pub struct fanotify_event_info_header {
+        pub info_type: ::__u8,
+        _pad: ::__u8,
+        pub len: ::__u16,
+    }
+
+    pub struct fanotify_event_info_fid {
+        pub hdr: fanotify_event_info_header,
+        pub fsid: ::fsid_t,
+        pub handle: [::c_uchar; 0],
+    }
+
+    pub struct fanotify_event_info_pidfd {
+        pub hdr: fanotify_event_info_header,
+        pub pidfd: ::__s32,
+    }
+
+    pub struct fanotify_event_info_error {
+        pub hdr: fanotify_event_info_header,
+        pub error: ::__s32,
+        pub error_count: ::__u32,
+    }
+
     pub struct fanotify_response {
         pub fd: ::c_int,
-        pub response: __u32,
+        pub response: ::__u32,
+    }
+
+    pub struct fanotify_response_info_header {
+        pub type_: ::__u8,
+        pub pad: ::__u8,
+        pub len: ::__u16,
+    }
+
+    pub struct fanotify_response_info_audit_rule {
+        pub hdr: fanotify_response_info_header,
+        pub rule_number: ::__u32,
+        pub subj_trust: ::__u32,
+        pub obj_trust: ::__u32,
     }
 
     pub struct sockaddr_vm {
