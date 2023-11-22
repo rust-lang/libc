@@ -2000,6 +2000,8 @@ pub const PTHREAD_PRIO_INHERIT: ::c_int = 1;
 pub const PTHREAD_PRIO_PROTECT: ::c_int = 2;
 pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 0;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
+pub const PTHREAD_INHERIT_SCHED: ::c_int = 0;
+pub const PTHREAD_EXPLICIT_SCHED: ::c_int = 1;
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
 pub const RENAME_NOREPLACE: ::c_uint = 1;
@@ -5179,6 +5181,27 @@ extern "C" {
         guardsize: *mut ::size_t,
     ) -> ::c_int;
     pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
+    pub fn pthread_attr_getinheritsched(
+        attr: *const ::pthread_attr_t,
+        inheritsched: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_setinheritsched(
+        attr: *mut ::pthread_attr_t,
+        inheritsched: ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_getschedpolicy(
+        attr: *const ::pthread_attr_t,
+        policy: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_setschedpolicy(attr: *mut ::pthread_attr_t, policy: ::c_int) -> ::c_int;
+    pub fn pthread_attr_getschedparam(
+        attr: *const ::pthread_attr_t,
+        param: *mut ::sched_param,
+    ) -> ::c_int;
+    pub fn pthread_attr_setschedparam(
+        attr: *mut ::pthread_attr_t,
+        param: *const ::sched_param,
+    ) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
     pub fn pthread_condattr_getpshared(
