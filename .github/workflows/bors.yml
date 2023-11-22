@@ -133,7 +133,6 @@ jobs:
           arm-linux-androideabi,
           arm-unknown-linux-gnueabihf,
           arm-unknown-linux-musleabihf,
-          asmjs-unknown-emscripten,
           i686-linux-android,
           i686-unknown-linux-musl,
           powerpc-unknown-linux-gnu,

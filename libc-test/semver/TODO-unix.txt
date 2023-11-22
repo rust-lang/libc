@@ -1,5 +1,4 @@
 # These symbols are no-op or missing on these targets:
-# * asmjs-unknown-emscripten
 # * wasm32-unknown-emscripten
 getpwuid_r
 pthread_atfork
