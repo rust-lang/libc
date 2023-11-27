@@ -55,6 +55,7 @@ We have two automated tests running on [GitHub Actions](https://github.com/rust-
   - Use the `skip_*()` functions in `build.rs` if you really need a workaround.
 2. Style checker
   - `rustc ci/style.rs && ./style src`
+  - `cargo +nightly fmt --all -- --check`
 
 ## Breaking change policy
 
