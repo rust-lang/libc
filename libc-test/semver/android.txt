@@ -3766,3 +3766,5 @@ dirname
 basename
 eventfd_read
 eventfd_write
+HUGETLB_FLAG_ENCODE_SHIFT
+MAP_HUGE_SHIFT

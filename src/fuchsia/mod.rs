@@ -3233,6 +3233,9 @@ pub const O_DIRECT: ::c_int = 0x00000800;
 pub const O_LARGEFILE: ::c_int = 0x00001000;
 pub const O_NOFOLLOW: ::c_int = 0x00000080;
 
+pub const HUGETLB_FLAG_ENCODE_SHIFT: u32 = 26;
+pub const MAP_HUGE_SHIFT: u32 = 26;
+
 // intentionally not public, only used for fd_set
 cfg_if! {
     if #[cfg(target_pointer_width = "32")] {

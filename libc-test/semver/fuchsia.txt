@@ -1472,3 +1472,5 @@ utimensat
 vhangup
 vmsplice
 waitid
+HUGETLB_FLAG_ENCODE_SHIFT
+MAP_HUGE_SHIFT
