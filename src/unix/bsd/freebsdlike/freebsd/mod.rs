@@ -3891,6 +3891,7 @@ pub const RFMEM: ::c_int = 32;
 pub const RFNOWAIT: ::c_int = 64;
 pub const RFCFDG: ::c_int = 4096;
 pub const RFTHREAD: ::c_int = 8192;
+pub const RFSIGSHARE: ::c_int = 16384;
 pub const RFLINUXTHPN: ::c_int = 65536;
 pub const RFTSIGZMB: ::c_int = 524288;
 pub const RFSPAWN: ::c_int = 2147483648;
