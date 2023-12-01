@@ -3320,6 +3320,8 @@ pub const NET_SCTP: ::c_int = 17;
 pub const NET_LLC: ::c_int = 18;
 pub const NET_NETFILTER: ::c_int = 19;
 pub const NET_DCCP: ::c_int = 20;
+pub const HUGETLB_FLAG_ENCODE_SHIFT: ::c_int = 26;
+pub const MAP_HUGE_SHIFT: ::c_int = HUGETLB_FLAG_ENCODE_SHIFT;
 
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
