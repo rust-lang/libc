@@ -850,6 +850,7 @@ fn test_solarish(target: &str) {
         "sys/pset.h",
         "sys/random.h",
         "sys/resource.h",
+        "sys/secflags.h",
         "sys/sendfile.h",
         "sys/socket.h",
         "sys/stat.h",

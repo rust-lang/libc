@@ -55,6 +55,11 @@ pub type lgrp_lat_between_t = ::c_uint;
 pub type lgrp_mem_size_flag_t = ::c_uint;
 pub type lgrp_view_t = ::c_uint;
 
+pub type secflag_t = ::c_uint;
+pub type secflagset_t = u64;
+pub type psecflagwhich_t = ::c_uint;
+pub type boolean_t = ::c_uint;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 impl ::Copy for timezone {}
@@ -472,6 +477,20 @@ s! {
         pub has_arg: ::c_int,
         pub flag: *mut ::c_int,
         pub val: ::c_int,
+    }
+
+    pub struct psecflags_t {
+        pub psf_effective: ::secflagset_t,
+        pub psf_inherit: ::secflagset_t,
+        pub psf_lower: ::secflagset_t,
+        pub psf_upper: ::secflagset_t,
+    }
+
+    pub struct secflagdelta_t {
+        pub psd_add: ::secflagset_t,
+        pub psd_rem: ::secflagset_t,
+        pub psd_assign: ::secflagset_t,
+        pub psd_ass_active: ::boolean_t,
     }
 }
 
@@ -2591,6 +2610,19 @@ const NEWDEV: ::c_int = 1;
 // sys/sendfile.h
 pub const SFV_FD_SELF: ::c_int = -2;
 
+// sys/secflags.h
+pub const PROC_SEC_ASLR: ::secflag_t = 0;
+pub const PROC_SEC_FORBIDNULLMAP: ::secflag_t = 1;
+pub const PROC_SEC_NOEXECSTACK: ::secflag_t = 2;
+
+pub const PSF_EFFECTIVE: ::psecflagwhich_t = 0;
+pub const PSF_INHERIT: ::psecflagwhich_t = 1;
+pub const PSF_LOWER: ::psecflagwhich_t = 2;
+pub const PSF_UPPER: ::psecflagwhich_t = 3;
+
+pub const _B_FALSE: ::boolean_t = 0;
+pub const _B_TRUE: ::boolean_t = 1;
+
 const_fn! {
     {const} fn _CMSG_HDR_ALIGN(p: usize) -> usize {
         (p + _CMSG_HDR_ALIGNMENT - 1) & !(_CMSG_HDR_ALIGNMENT - 1)
@@ -3209,6 +3241,39 @@ extern "C" {
     pub fn __major(version: ::c_int, devnum: ::dev_t) -> ::major_t;
     pub fn __minor(version: ::c_int, devnum: ::dev_t) -> ::minor_t;
     pub fn __makedev(version: ::c_int, majdev: ::major_t, mindev: ::minor_t) -> ::dev_t;
+
+    pub fn secflag_to_bit(f: ::secflag_t) -> ::secflagset_t;
+    pub fn secflag_isset(s: ::secflagset_t, f: ::secflag_t) -> ::boolean_t;
+    pub fn secflag_clear(s: *mut ::secflagset_t, f: ::secflag_t);
+    pub fn secflags_isempty(s: ::secflagset_t) -> ::boolean_t;
+    pub fn secflags_zero(s: *mut ::secflagset_t);
+    pub fn secflags_fullset(s: *mut ::secflagset_t);
+    pub fn secflags_copy(dest: *mut ::secflagset_t, src: *const ::secflagset_t);
+    pub fn secflags_issubset(s: ::secflagset_t, f: ::secflagset_t) -> ::boolean_t;
+    pub fn secflags_issuperset(s: ::secflagset_t, f: ::secflagset_t) -> ::boolean_t;
+    pub fn secflags_intersection(s: ::secflagset_t, f: ::secflagset_t) -> ::boolean_t;
+    pub fn secflags_union(f: *mut ::secflagset_t, s: *const ::secflagset_t);
+    pub fn secflags_difference(f: *mut ::secflagset_t, s: *const ::secflagset_t);
+    pub fn psecflags_validate_delta(
+        p: *const ::psecflags_t,
+        s: *const secflagdelta_t,
+    ) -> ::boolean_t;
+    pub fn psecflags_validate(p: *const ::psecflags_t) -> ::boolean_t;
+    pub fn psecflags_default(sf: *mut ::psecflags_t);
+    pub fn secflag_to_str(f: ::secflag_t) -> *const ::c_char;
+    pub fn secflag_by_name(c: *const ::c_char, s: *mut ::secflag_t) -> ::boolean_t;
+    pub fn secflags_to_str(s: ::secflagset_t, buf: *mut ::c_char, size: ::size_t);
+    pub fn secflags_parse(
+        s: *const ::secflagset_t,
+        c: *const ::c_char,
+        d: *mut secflagdelta_t,
+    ) -> ::c_int;
+    pub fn psecflags(
+        id: ::idtype_t,
+        i: ::id_t,
+        w: ::psecflagwhich_t,
+        s: *mut secflagdelta_t,
+    ) -> ::c_int;
 }
 
 #[link(name = "sendfile")]
