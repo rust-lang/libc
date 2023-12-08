@@ -1067,21 +1067,21 @@ pub const UIO_MAXIOV: ::c_int = 1024;
 
 pub const FD_SETSIZE: usize = 1024;
 
-pub const EPOLLIN: ::c_int = 0x1;
-pub const EPOLLPRI: ::c_int = 0x2;
-pub const EPOLLOUT: ::c_int = 0x4;
-pub const EPOLLERR: ::c_int = 0x8;
-pub const EPOLLHUP: ::c_int = 0x10;
-pub const EPOLLRDNORM: ::c_int = 0x40;
-pub const EPOLLRDBAND: ::c_int = 0x80;
-pub const EPOLLWRNORM: ::c_int = 0x100;
-pub const EPOLLWRBAND: ::c_int = 0x200;
-pub const EPOLLMSG: ::c_int = 0x400;
-pub const EPOLLRDHUP: ::c_int = 0x2000;
-pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
-pub const EPOLLONESHOT: ::c_int = 0x40000000;
-pub const EPOLLET: ::c_int = 0x80000000;
+pub const EPOLLIN: u32 = 0x1;
+pub const EPOLLPRI: u32 = 0x2;
+pub const EPOLLOUT: u32 = 0x4;
+pub const EPOLLERR: u32 = 0x8;
+pub const EPOLLHUP: u32 = 0x10;
+pub const EPOLLRDNORM: u32 = 0x40;
+pub const EPOLLRDBAND: u32 = 0x80;
+pub const EPOLLWRNORM: u32 = 0x100;
+pub const EPOLLWRBAND: u32 = 0x200;
+pub const EPOLLMSG: u32 = 0x400;
+pub const EPOLLRDHUP: u32 = 0x2000;
+pub const EPOLLEXCLUSIVE: u32 = 0x10000000;
+pub const EPOLLWAKEUP: u32 = 0x20000000;
+pub const EPOLLONESHOT: u32 = 0x40000000;
+pub const EPOLLET: u32 = 0x80000000;
 
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
