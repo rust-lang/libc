@@ -780,6 +780,8 @@ pub const TIME_ERROR: ::c_int = 5;
 pub const TIME_BAD: ::c_int = TIME_ERROR;
 pub const MAXTC: ::c_long = 6;
 
+pub const SOL_XDP: ::c_int = 283;
+
 // linux/if_xdp.h
 pub const XDP_SHARED_UMEM: ::__u16 = 1 << 0;
 pub const XDP_COPY: ::__u16 = 1 << 1;
