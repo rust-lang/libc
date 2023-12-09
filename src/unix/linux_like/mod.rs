@@ -204,6 +204,51 @@ s! {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
     }
+
+    pub struct seccomp_metadata {
+        pub filter_off: ::__u64,
+        pub flags: ::__u64,
+    }
+
+    pub struct ptrace_peeksiginfo_args {
+        pub off: ::__u64,
+        pub flags: ::__u32,
+        pub nr: ::__s32,
+    }
+
+    pub struct ptrace_rseq_configuration {
+        pub rseq_abi_pointer: ::__u64,
+        pub rseq_abi_size: ::__u32,
+        pub signature: ::__u32,
+        pub flags: ::__u32,
+        pub pad: ::__u32,
+    }
+
+    pub struct __c_anonymous_ptrace_syscall_info_entry {
+        pub nr: ::__u64,
+        pub args: [::__u64; 6],
+    }
+
+    pub struct __c_anonymous_ptrace_syscall_info_exit {
+        pub sval: ::__s64,
+        pub is_error: ::__u8,
+    }
+
+    pub struct __c_anonymous_ptrace_syscall_info_seccomp {
+        pub nr: ::__u64,
+        pub args: [::__u64; 6],
+        pub ret_data: ::__u32,
+    }
+
+    pub struct ptrace_syscall_info {
+        pub op: ::__u8,
+        pub pad: [::__u8; 3],
+        pub arch: ::__u32,
+        pub instruction_pointer: ::__u64,
+        pub stack_pointer: ::__u64,
+        #[cfg(libc_union)]
+        pub u: __c_anonymous_ptrace_syscall_info_data,
+    }
 }
 
 s_no_extra_traits! {
@@ -254,6 +299,22 @@ s_no_extra_traits! {
         __unused1: [::c_int; 11],
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12]
+    }
+}
+
+cfg_if! {
+    if #[cfg(libc_union)] {
+        pub union __c_anonymous_ptrace_syscall_info_data {
+            pub entry: __c_anonymous_ptrace_syscall_info_entry,
+            pub exit: __c_anonymous_ptrace_syscall_info_exit,
+            pub seccomp: __c_anonymous_ptrace_syscall_info_seccomp,
+        }
+        impl ::Copy for __c_anonymous_ptrace_syscall_info_data {}
+        impl ::Clone for __c_anonymous_ptrace_syscall_info_data {
+            fn clone(&self) -> __c_anonymous_ptrace_syscall_info_data {
+                *self
+            }
+        }
     }
 }
 
@@ -428,6 +489,44 @@ cfg_if! {
                 self.sigev_signo.hash(state);
                 self.sigev_notify.hash(state);
                 self.sigev_notify_thread_id.hash(state);
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl PartialEq for __c_anonymous_ptrace_syscall_info_data {
+            fn eq(&self, other: &__c_anonymous_ptrace_syscall_info_data) -> bool {
+                unsafe {
+                self.entry == other.entry ||
+                    self.exit == other.exit ||
+                    self.seccomp == other.seccomp
+                }
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl Eq for __c_anonymous_ptrace_syscall_info_data {}
+
+        #[cfg(libc_union)]
+        impl ::fmt::Debug for __c_anonymous_ptrace_syscall_info_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                unsafe {
+                f.debug_struct("__c_anonymous_ptrace_syscall_info_data")
+                    .field("entry", &self.entry)
+                    .field("exit", &self.exit)
+                    .field("seccomp", &self.seccomp)
+                    .finish()
+                }
+            }
+        }
+
+        #[cfg(libc_union)]
+        impl ::hash::Hash for __c_anonymous_ptrace_syscall_info_data {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                self.entry.hash(state);
+                self.exit.hash(state);
+                self.seccomp.hash(state);
+                }
             }
         }
     }
@@ -1194,6 +1293,40 @@ pub const WHOLE_SECONDS: ::c_int = 0x2000000;
 pub const STICKY_TIMEOUTS: ::c_int = 0x4000000;
 pub const ADDR_LIMIT_3GB: ::c_int = 0x8000000;
 
+pub const PTRACE_TRACEME: ::c_uint = 0;
+pub const PTRACE_PEEKTEXT: ::c_uint = 1;
+pub const PTRACE_PEEKDATA: ::c_uint = 2;
+pub const PTRACE_PEEKUSER: ::c_uint = 3;
+pub const PTRACE_POKETEXT: ::c_uint = 4;
+pub const PTRACE_POKEDATA: ::c_uint = 5;
+pub const PTRACE_POKEUSER: ::c_uint = 6;
+pub const PTRACE_CONT: ::c_uint = 7;
+pub const PTRACE_KILL: ::c_uint = 8;
+pub const PTRACE_SINGLESTEP: ::c_uint = 9;
+pub const PTRACE_ATTACH: ::c_uint = 16;
+pub const PTRACE_DETACH: ::c_uint = 17;
+pub const PTRACE_SYSCALL: ::c_uint = 24;
+pub const PTRACE_SETOPTIONS: ::c_uint = 0x4200;
+pub const PTRACE_GETEVENTMSG: ::c_uint = 0x4201;
+pub const PTRACE_GETSIGINFO: ::c_uint = 0x4202;
+pub const PTRACE_SETSIGINFO: ::c_uint = 0x4203;
+pub const PTRACE_GETREGSET: ::c_uint = 0x4204;
+pub const PTRACE_SETREGSET: ::c_uint = 0x4205;
+pub const PTRACE_SEIZE: ::c_uint = 0x4206;
+pub const PTRACE_INTERRUPT: ::c_uint = 0x4207;
+pub const PTRACE_LISTEN: ::c_uint = 0x4208;
+pub const PTRACE_PEEKSIGINFO: ::c_uint = 0x4209;
+pub const PTRACE_GETSIGMASK: ::c_uint = 0x420a;
+pub const PTRACE_SETSIGMASK: ::c_uint = 0x420b;
+pub const PTRACE_SECCOMP_GET_FILTER: ::c_int = 0x420c;
+pub const PTRACE_SECCOMP_GET_METADATA: ::c_int = 0x420d;
+pub const PTRACE_GET_SYSCALL_INFO: ::c_uint = 0x420e;
+pub const PTRACE_GET_RSEQ_CONFIGURATION: ::c_uint = 0x420f;
+pub const PTRACE_SYSCALL_INFO_NONE: ::__u8 = 0;
+pub const PTRACE_SYSCALL_INFO_ENTRY: ::__u8 = 1;
+pub const PTRACE_SYSCALL_INFO_EXIT: ::__u8 = 2;
+pub const PTRACE_SYSCALL_INFO_SECCOMP: ::__u8 = 3;
+
 // Options set using PTRACE_SETOPTIONS.
 pub const PTRACE_O_TRACESYSGOOD: ::c_int = 0x00000001;
 pub const PTRACE_O_TRACEFORK: ::c_int = 0x00000002;
@@ -1215,6 +1348,7 @@ pub const PTRACE_EVENT_EXEC: ::c_int = 4;
 pub const PTRACE_EVENT_VFORK_DONE: ::c_int = 5;
 pub const PTRACE_EVENT_EXIT: ::c_int = 6;
 pub const PTRACE_EVENT_SECCOMP: ::c_int = 7;
+pub const PTRACE_EVENT_STOP: ::c_int = 128;
 
 pub const __WNOTHREAD: ::c_int = 0x20000000;
 pub const __WALL: ::c_int = 0x40000000;
