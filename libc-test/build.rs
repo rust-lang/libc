@@ -3418,6 +3418,7 @@ fn test_linux(target: &str) {
         "linux/if_alg.h",
         "linux/if_ether.h",
         "linux/if_tun.h",
+        "linux/if_xdp.h",
         "linux/input.h",
         "linux/ipv6.h",
         "linux/kexec.h",
@@ -3651,6 +3652,30 @@ fn test_linux(target: &str) {
             {
                 true
             }
+
+            // FIXME: Requires >= 5.3 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            "xdp_options" if musl => true,
+
+            // FIXME: Requires >= 5.4 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            "xdp_umem_reg" | "xdp_ring_offset" | "xdp_mmap_offsets" if musl => true,
+
+            // FIXME: Requires >= 5.9 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            "xdp_statistics" if musl => true,
+
+            // A new field was added in kernel 5.4, this is the old version for backwards compatibility.
+            // https://github.com/torvalds/linux/commit/77cd0d7b3f257fd0e3096b4fdcff1a7d38e99e10
+            "xdp_ring_offset_v1" | "xdp_mmap_offsets_v1" => true,
+
+            // Multiple new fields were added in kernel 5.9, this is the old version for backwards compatibility.
+            // https://github.com/torvalds/linux/commit/77cd0d7b3f257fd0e3096b4fdcff1a7d38e99e10
+            "xdp_statistics_v1" => true,
+
+            // A new field was added in kernel 5.4, this is the old version for backwards compatibility.
+            // https://github.com/torvalds/linux/commit/c05cd3645814724bdeb32a2b4d953b12bdea5f8c
+            "xdp_umem_reg_v1" => true,
 
             _ => false,
         }
@@ -4000,6 +4025,34 @@ fn test_linux(target: &str) {
             | "TLS_CIPHER_CHACHA20_POLY1305_TAG_SIZE"
             | "TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE"
                 if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
+            {
+                true
+            }
+
+            // FIXME: Requires >= 5.3 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            "XDP_OPTIONS_ZEROCOPY" | "XDP_OPTIONS"
+                if musl =>
+            {
+                true
+            }
+
+            // FIXME: Requires >= 5.4 kernel headers.
+            // Everything that uses install-musl.sh has 4.19 kernel headers.
+            "XSK_UNALIGNED_BUF_OFFSET_SHIFT"
+            | "XSK_UNALIGNED_BUF_ADDR_MASK"
+            | "XDP_UMEM_UNALIGNED_CHUNK_FLAG"
+            | "XDP_RING_NEED_WAKEUP"
+            | "XDP_USE_NEED_WAKEUP"
+                if musl =>
+            {
+                true
+            }
+
+            // FIXME: Requires >= 6.6 kernel headers.
+            "XDP_USE_SG"
+            | "XDP_PKT_CONTD"
+                =>
             {
                 true
             }
