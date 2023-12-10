@@ -1229,6 +1229,7 @@ pub const O_DSYNC: ::c_int = 128;
 pub const MAP_RENAME: ::c_int = 0x0000;
 pub const MAP_NORESERVE: ::c_int = 0x0000;
 pub const MAP_HASSEMAPHORE: ::c_int = 0x0000;
+pub const MAP_TRYFIXED: ::c_int = 0;
 
 pub const EIPSEC: ::c_int = 82;
 pub const ENOMEDIUM: ::c_int = 85;
