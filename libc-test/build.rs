@@ -565,6 +565,10 @@ fn test_openbsd(target: &str) {
             // Available for openBSD 7.3
             "mimmutable" => true,
 
+            // Removed in OpenBSD 7.5
+            // https://marc.info/?l=openbsd-cvs&m=170239504300386
+            "syscall" => true,
+
             _ => false,
         }
     });
