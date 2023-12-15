@@ -1549,7 +1549,6 @@ pub const TCP_KEEPIDLE: ::c_int = 3;
 pub const TCP_KEEPINTVL: ::c_int = 5;
 pub const TCP_KEEPCNT: ::c_int = 6;
 pub const TCP_KEEPINIT: ::c_int = 7;
-pub const TCP_INFO: ::c_int = 9;
 pub const TCP_MD5SIG: ::c_int = 0x10;
 pub const TCP_CONGCTL: ::c_int = 0x20;
 
