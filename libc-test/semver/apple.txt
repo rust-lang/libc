@@ -1366,6 +1366,7 @@ TAB1
 TAB2
 TAB3
 TABDLY
+TCP_CONNECTION_INFO
 TCP_FASTOPEN
 TCP_KEEPALIVE
 TCP_KEEPCNT
@@ -2246,6 +2247,7 @@ task_info
 task_inspect_t
 task_terminate
 task_threads
+tcp_connection_info
 telldir
 thread_basic_info_t
 thread_extended_info_t

@@ -309,6 +309,9 @@ fn test_apple(target: &str) {
 
             // FIXME: The size is changed in recent macOSes.
             "malloc_zone_t" => true,
+            // it is a moving target, changing through versions
+            // also contains bitfields members
+            "tcp_connection_info" => true,
 
             _ => false,
         }

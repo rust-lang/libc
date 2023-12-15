@@ -1138,6 +1138,49 @@ s! {
         #[cfg(not(libc_union))]
         pub ifc_ifcu: *mut ifreq,
     }
+
+    #[cfg_attr(libc_align, repr(align(8)))]
+    pub struct tcp_connection_info {
+        pub tcpi_state: u8,
+        pub tcpi_snd_wscale: u8,
+        pub tcpi_rcv_wscale: u8,
+        __pad1: u8,
+        pub tcpi_options: u32,
+        pub tcpi_flags: u32,
+        pub tcpi_rto: u32,
+        pub tcpi_maxseg: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_snd_sbbytes: u32,
+        pub tcpi_rcv_wnd: u32,
+        pub tcpi_rttcur: u32,
+        pub tcpi_srtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_tfo_cookie_req: u32,
+        pub tcpi_tfo_cookie_rcv: u32,
+        pub tcpi_tfo_syn_loss: u32,
+        pub tcpi_tfo_syn_data_sent: u32,
+        pub tcpi_tfo_syn_data_acked: u32,
+        pub tcpi_tfo_syn_data_rcv: u32,
+        pub tcpi_tfo_cookie_req_rcv: u32,
+        pub tcpi_tfo_cookie_sent: u32,
+        pub tcpi_tfo_cookie_invalid: u32,
+        pub tcpi_tfo_cookie_wrong: u32,
+        pub tcpi_tfo_no_cookie_rcv: u32,
+        pub tcpi_tfo_heuristics_disable: u32,
+        pub tcpi_tfo_send_blackhole: u32,
+        pub tcpi_tfo_recv_blackhole: u32,
+        pub tcpi_tfo_onebyte_proxy: u32,
+        __pad2: u32,
+        pub tcpi_txpackets: u64,
+        pub tcpi_txbytes: u64,
+        pub tcpi_txretransmitbytes: u64,
+        pub tcpi_rxpackets: u64,
+        pub tcpi_rxbytes: u64,
+        pub tcpi_rxoutoforderbytes: u64,
+        pub tcpi_rxretransmitpackets: u64,
+    }
 }
 
 s_no_extra_traits! {
@@ -4103,6 +4146,7 @@ pub const TCP_KEEPINTVL: ::c_int = 0x101;
 pub const TCP_KEEPCNT: ::c_int = 0x102;
 /// Enable/Disable TCP Fastopen on this socket
 pub const TCP_FASTOPEN: ::c_int = 0x105;
+pub const TCP_CONNECTION_INFO: ::c_int = 0x106;
 
 pub const SOL_LOCAL: ::c_int = 0;
 
