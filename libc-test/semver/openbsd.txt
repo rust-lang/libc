@@ -808,6 +808,7 @@ ST_RDONLY
 S_IEXEC
 S_IREAD
 S_IWRITE
+TCP_INFO
 TCP_MAXSEG
 TCP_MD5SIG
 TCP_NOPUSH
@@ -1014,6 +1015,7 @@ backtrace
 backtrace_symbols
 backtrace_symbols_fd
 backtrace_symbols_fmt
+basename
 bsearch
 caddr_t
 calloc_conceal
@@ -1027,6 +1029,7 @@ cmsghdr
 daemon
 difftime
 dirfd
+dirname
 dl_iterate_phdr
 dl_phdr_info
 drand48
@@ -1254,6 +1257,7 @@ strtonum
 sync
 syscall
 sysctl
+tcp_info
 telldir
 tmpfs_args
 truncate
@@ -1269,5 +1273,3 @@ utmp
 utrace
 wait4
 xucred
-dirname
-basename
