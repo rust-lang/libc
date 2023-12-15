@@ -82,3 +82,4 @@ strftime_l
 strptime
 dirname
 basename
+tcp_info

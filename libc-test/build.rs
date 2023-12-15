@@ -4308,7 +4308,15 @@ fn test_linux(target: &str) {
         // the `ifc_ifcu` field is an anonymous union
         (struct_ == "ifconf" && field == "ifc_ifcu") ||
         // glibc uses a single array `uregs` instead of individual fields.
-        (struct_ == "user_regs" && arm)
+        (struct_ == "user_regs" && arm) ||
+        // the `tcpi_snd_wscale` field is a bitfield
+        (struct_ == "tcp_info" && field == "tcpi_snd_wscale") ||
+        // the `tcpi_snd_wscale` field is a bitfield
+        (struct_ == "tcp_info" && field == "tcpi_rcv_wscale") ||
+        // the `tcpi_delivery_rate_app_limited` field is a bitfield on musl
+        (musl && struct_ == "tcp_info" && field == "tcpi_delivery_rate_app_limited") ||
+        // the `tcpi_fast_open_client_fail` field is a bitfield on musl
+        (musl && struct_ == "tcp_info" && field == "tcpi_fast_open_client_fail")
     });
 
     cfg.skip_roundtrip(move |s| match s {
