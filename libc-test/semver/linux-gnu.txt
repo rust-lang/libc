@@ -691,6 +691,7 @@ eaccess
 asctime_r
 ctime_r
 strftime
+strftime_l
 strptime
 dirname
 posix_basename
