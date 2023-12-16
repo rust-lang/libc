@@ -2204,6 +2204,8 @@ statfs
 strcasecmp
 strcasestr
 strchrnul
+strftime
+strftime_l
 strncasecmp
 strndup
 strsignal

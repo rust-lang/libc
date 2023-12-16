@@ -1547,6 +1547,8 @@ stack_t
 statfs
 strcasecmp
 strcasestr
+strftime
+strftime_l
 strncasecmp
 strndup
 strsignal
