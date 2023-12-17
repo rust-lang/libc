@@ -2225,6 +2225,7 @@ statfs
 strcasecmp
 strcasestr
 strftime
+strftime_l
 strncasecmp
 strndup
 strptime

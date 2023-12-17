@@ -5604,12 +5604,6 @@ extern "C" {
     pub fn asctime(tm: *const ::tm) -> *mut ::c_char;
     pub fn ctime(clock: *const time_t) -> *mut ::c_char;
     pub fn getdate(datestr: *const ::c_char) -> *mut ::tm;
-    pub fn strftime(
-        buf: *mut ::c_char,
-        maxsize: ::size_t,
-        format: *const ::c_char,
-        timeptr: *const ::tm,
-    ) -> ::size_t;
     pub fn strptime(
         buf: *const ::c_char,
         format: *const ::c_char,
