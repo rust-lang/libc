@@ -78,6 +78,7 @@ euidaccess
 eaccess
 asctime_r
 strftime
+strftime_l
 strptime
 dirname
 basename
