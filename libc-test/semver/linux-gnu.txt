@@ -638,6 +638,7 @@ glob64
 glob64_t
 globfree
 globfree64
+iocb
 lio_listio
 mallinfo
 mallinfo2

@@ -3406,6 +3406,7 @@ fn test_linux(target: &str) {
     headers! {
         cfg:
         "asm/mman.h",
+        [gnu]: "linux/aio_abi.h",
         "linux/can.h",
         "linux/can/raw.h",
         // FIXME: requires kernel headers >= 5.4.1.
