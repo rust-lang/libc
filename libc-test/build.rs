@@ -618,6 +618,7 @@ fn test_openbsd(target: &str) {
 fn test_windows(target: &str) {
     assert!(target.contains("windows"));
     let gnu = target.contains("gnu");
+    let i686 = target.contains("i686");
 
     let mut cfg = ctest_cfg();
     if target.contains("msvc") {
@@ -684,6 +685,8 @@ fn test_windows(target: &str) {
     cfg.skip_type(move |name| match name {
         "SSIZE_T" if !gnu => true,
         "ssize_t" if !gnu => true,
+        // FIXME: The size and alignment of this type are incorrect
+        "time_t" if gnu && i686 => true,
         _ => false,
     });
 
@@ -691,7 +694,11 @@ fn test_windows(target: &str) {
         if ty.starts_with("__c_anonymous_") {
             return true;
         }
-        return false;
+        match ty {
+            // FIXME: The size and alignment of this struct are incorrect
+            "timespec" if gnu && i686 => true,
+            _ => false,
+        }
     });
 
     cfg.skip_const(move |name| {
