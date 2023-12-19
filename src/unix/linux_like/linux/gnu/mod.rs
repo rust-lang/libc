@@ -3,6 +3,7 @@ pub type __priority_which_t = ::c_uint;
 pub type __rlimit_resource_t = ::c_uint;
 pub type Lmid_t = ::c_long;
 pub type regoff_t = ::c_int;
+pub type __kernel_rwf_t = ::c_int;
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -431,6 +432,27 @@ s! {
         pub addr: ::__u64,
         pub len: ::__u32,
         pub options: ::__u32,
+    }
+
+    pub struct iocb {
+        pub aio_data: ::__u64,
+        #[cfg(target_endian = "little")]
+        pub aio_key: ::__u32,
+        #[cfg(target_endian = "little")]
+        pub aio_rw_flags: ::__kernel_rwf_t,
+        #[cfg(target_endian = "big")]
+        pub aio_rw_flags: ::__kernel_rwf_t,
+        #[cfg(target_endian = "big")]
+        pub aio_key: ::__u32,
+        pub aio_lio_opcode: ::__u16,
+        pub aio_reqprio: ::__s16,
+        pub aio_fildes: ::__u32,
+        pub aio_buf: ::__u64,
+        pub aio_nbytes: ::__u64,
+        pub aio_offset: ::__s64,
+        aio_reserved2: ::__u64,
+        pub aio_flags: ::__u32,
+        pub aio_resfd: ::__u32,
     }
 }
 
