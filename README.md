@@ -38,6 +38,9 @@ libc = "0.2"
   If you use Rust >= 1.62, this feature is implicitly enabled.
   Otherwise it requires a nightly rustc.
 
+* `newer-api`: Opt-in the items from newer APIs.
+  This feature may introduce breaking changes on any releases.
+
 * **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
 
 ## Rust version support
