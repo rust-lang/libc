@@ -1274,4 +1274,5 @@ utimensat
 utmp
 utrace
 wait4
+waitid
 xucred
