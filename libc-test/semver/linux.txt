@@ -2475,6 +2475,7 @@ SIOCSIFMAP
 SIOCSIFMEM
 SIOCSIFMETRIC
 SIOCSIFMTU
+SIOCSIFNAME
 SIOCSIFNETMASK
 SIOCSIFPFLAGS
 SIOCSIFSLAVE
@@ -3860,3 +3861,6 @@ wait4
 waitid
 eventfd_read
 eventfd_write
+__c_anonymous_ifru_map
+__c_anonymous_ifr_ifru
+__c_anonymous_ifc_ifcu
