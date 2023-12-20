@@ -747,6 +747,12 @@ extern "C" {
         argv: *const *const ::c_char,
         envp: *const *const ::c_char,
     ) -> ::c_int;
+    pub fn waitid(
+        idtype: idtype_t,
+        id: ::id_t,
+        infop: *mut ::siginfo_t,
+        options: ::c_int,
+    ) -> ::c_int;
 }
 
 extern "C" {
