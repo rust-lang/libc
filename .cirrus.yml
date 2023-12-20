@@ -1,18 +1,4 @@
 task:
-  name: nightly x86_64-unknown-freebsd-12
-  freebsd_instance:
-    image_family: freebsd-12-4
-  setup_script:
-    - pkg install -y libnghttp2 curl
-    - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh --default-toolchain nightly -y --profile=minimal
-    - . $HOME/.cargo/env
-  test_script:
-    - . $HOME/.cargo/env
-    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
-    - sh ci/run.sh x86_64-unknown-freebsd
-
-task:
   name: nightly x86_64-unknown-freebsd-13
   freebsd_instance:
     image_family: freebsd-13-2
@@ -29,7 +15,7 @@ task:
 task:
   name: nightly x86_64-unknown-freebsd-14
   freebsd_instance:
-    image: freebsd-14-0-rc1-amd64
+    image: freebsd-14-0-release-amd64-ufs
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
