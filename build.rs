@@ -8,8 +8,6 @@ use std::string::String;
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &'static [&'static str] = &[
     "emscripten_new_stat_abi",
-    "freebsd10",
-    "freebsd11",
     "freebsd12",
     "freebsd13",
     "freebsd14",
@@ -65,12 +63,10 @@ fn main() {
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
     match which_freebsd() {
-        Some(10) if libc_ci => set_cfg("freebsd10"),
-        Some(11) if libc_ci => set_cfg("freebsd11"),
         Some(12) if libc_ci || rustc_dep_of_std => set_cfg("freebsd12"),
         Some(13) if libc_ci => set_cfg("freebsd13"),
         Some(14) if libc_ci => set_cfg("freebsd14"),
-        Some(_) | None => set_cfg("freebsd11"),
+        Some(_) | None => set_cfg("freebsd12"),
     }
 
     match emcc_version_code() {
@@ -247,8 +243,6 @@ fn which_freebsd() -> Option<i32> {
     let stdout = stdout.unwrap();
 
     match &stdout {
-        s if s.starts_with("10") => Some(10),
-        s if s.starts_with("11") => Some(11),
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),
         s if s.starts_with("14") => Some(14),

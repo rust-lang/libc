@@ -614,15 +614,9 @@ extern "C" {
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
     pub fn abs(i: ::c_int) -> ::c_int;
     pub fn labs(i: ::c_long) -> ::c_long;
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
-        link_name = "rand@FBSD_1.0"
-    )]
+    #[cfg_attr(all(target_os = "freebsd", freebsd12), link_name = "rand@FBSD_1.0")]
     pub fn rand() -> ::c_int;
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
-        link_name = "srand@FBSD_1.0"
-    )]
+    #[cfg_attr(all(target_os = "freebsd", freebsd12), link_name = "srand@FBSD_1.0")]
     pub fn srand(seed: ::c_uint);
 
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
@@ -653,10 +647,6 @@ extern "C" {
         link_name = "glob$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "glob@FBSD_1.0"
-    )]
     pub fn glob(
         pattern: *const ::c_char,
         flags: ::c_int,
@@ -664,10 +654,6 @@ extern "C" {
         pglob: *mut ::glob_t,
     ) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__globfree30")]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "globfree@FBSD_1.0"
-    )]
     pub fn globfree(pglob: *mut ::glob_t);
 
     pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
@@ -835,10 +821,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "wait4$UNIX2003"
     )]
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
-        link_name = "wait4@FBSD_1.0"
-    )]
+    #[cfg_attr(all(target_os = "freebsd", freebsd12), link_name = "wait4@FBSD_1.0")]
     pub fn wait4(
         pid: ::pid_t,
         status: *mut ::c_int,

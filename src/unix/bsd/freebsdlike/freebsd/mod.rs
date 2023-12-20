@@ -433,10 +433,7 @@ s! {
         pub kve_end: u64,
         pub kve_offset: u64,
         pub kve_vn_fileid: u64,
-        #[cfg(not(freebsd11))]
         pub kve_vn_fsid_freebsd11: u32,
-        #[cfg(freebsd11)]
-        pub kve_vn_fsid: u32,
         pub kve_flags: ::c_int,
         pub kve_resident: ::c_int,
         pub kve_private_resident: ::c_int,
@@ -445,20 +442,12 @@ s! {
         pub kve_shadow_count: ::c_int,
         pub kve_vn_type: ::c_int,
         pub kve_vn_size: u64,
-        #[cfg(not(freebsd11))]
         pub kve_vn_rdev_freebsd11: u32,
-        #[cfg(freebsd11)]
-        pub kve_vn_rdev: u32,
         pub kve_vn_mode: u16,
         pub kve_status: u16,
-        #[cfg(not(freebsd11))]
         pub kve_vn_fsid: u64,
-        #[cfg(not(freebsd11))]
         pub kve_vn_rdev: u64,
-        #[cfg(not(freebsd11))]
         _kve_is_spare: [::c_int; 8],
-        #[cfg(freebsd11)]
-        _kve_is_spare: [::c_int; 12],
         pub kve_path: [[::c_char; 32]; 32],
     }
 
@@ -3915,13 +3904,7 @@ pub const COMMLEN: usize = 19;
 pub const KI_EMULNAMELEN: usize = 16;
 /// number of groups in ki_groups
 pub const KI_NGROUPS: usize = 16;
-cfg_if! {
-    if #[cfg(freebsd11)] {
-        pub const KI_NSPARE_INT: usize = 4;
-    } else {
-        pub const KI_NSPARE_INT: usize = 2;
-    }
-}
+pub const KI_NSPARE_INT: usize = 2;
 pub const KI_NSPARE_LONG: usize = 12;
 /// Flags for the process credential.
 pub const KI_CRF_CAPABILITY_MODE: usize = 0x00000001;
@@ -4095,14 +4078,7 @@ pub const NZERO: ::c_int = 0;
 
 // Resource utilization information.
 pub const RUSAGE_THREAD: ::c_int = 1;
-
-cfg_if! {
-    if #[cfg(any(freebsd11, target_pointer_width = "32"))] {
-        pub const ARG_MAX: ::c_int = 256 * 1024;
-    } else {
-        pub const ARG_MAX: ::c_int = 2 * 256 * 1024;
-    }
-}
+pub const ARG_MAX: ::c_int = 2 * 256 * 1024;
 pub const CHILD_MAX: ::c_int = 40;
 /// max command name remembered
 pub const MAXCOMLEN: usize = 19;
@@ -4392,15 +4368,8 @@ pub const PS_FST_FFLAG_HASLOCK: ::c_int = 0x4000;
 pub const MAXFIDSZ: ::c_int = 16;
 /// Length of type name including null.
 pub const MFSNAMELEN: ::c_int = 16;
-cfg_if! {
-    if #[cfg(any(freebsd10, freebsd11))] {
-        /// Size of on/from name bufs.
-        pub const MNAMELEN: ::c_int = 88;
-    } else {
-        /// Size of on/from name bufs.
-        pub const MNAMELEN: ::c_int = 1024;
-    }
-}
+/// Size of on/from name bufs.
+pub const MNAMELEN: ::c_int = 1024;
 
 /// Using journaled soft updates.
 pub const MNT_SUJ: u64 = 0x100000000;
@@ -4909,27 +4878,11 @@ safe_f! {
     }
 }
 
-cfg_if! {
-    if #[cfg(not(any(freebsd10, freebsd11)))] {
-        extern "C" {
-            pub fn fhlink(fhp: *mut fhandle_t, to: *const ::c_char) -> ::c_int;
-            pub fn fhlinkat(fhp: *mut fhandle_t, tofd: ::c_int, to: *const ::c_char) -> ::c_int;
-            pub fn fhreadlink(
-                fhp: *mut fhandle_t,
-                buf: *mut ::c_char,
-                bufsize: ::size_t,
-            ) -> ::c_int;
-            pub fn getfhat(
-                fd: ::c_int,
-                path: *mut ::c_char,
-                fhp: *mut fhandle,
-                flag: ::c_int,
-            ) -> ::c_int;
-        }
-    }
-}
-
 extern "C" {
+    pub fn fhlink(fhp: *mut fhandle_t, to: *const ::c_char) -> ::c_int;
+    pub fn fhlinkat(fhp: *mut fhandle_t, tofd: ::c_int, to: *const ::c_char) -> ::c_int;
+    pub fn fhreadlink(fhp: *mut fhandle_t, buf: *mut ::c_char, bufsize: ::size_t) -> ::c_int;
+    pub fn getfhat(fd: ::c_int, path: *mut ::c_char, fhp: *mut fhandle, flag: ::c_int) -> ::c_int;
     #[cfg_attr(doc, doc(alias = "__errno_location"))]
     #[cfg_attr(doc, doc(alias = "errno"))]
     pub fn __error() -> *mut ::c_int;
@@ -5222,9 +5175,7 @@ extern "C" {
     pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> ::c_int;
     pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> ::c_int;
 
-    #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "statfs@FBSD_1.0")]
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
-    #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "fstatfs@FBSD_1.0")]
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
 
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
@@ -5256,10 +5207,6 @@ extern "C" {
     pub fn getfh(path: *const ::c_char, fhp: *mut fhandle_t) -> ::c_int;
     pub fn lgetfh(path: *const ::c_char, fhp: *mut fhandle_t) -> ::c_int;
     pub fn getfsstat(buf: *mut ::statfs, bufsize: ::c_long, mode: ::c_int) -> ::c_int;
-    #[cfg_attr(
-        all(target_os = "freebsd", freebsd11),
-        link_name = "getmntinfo@FBSD_1.0"
-    )]
     pub fn getmntinfo(mntbufp: *mut *mut ::statfs, mode: ::c_int) -> ::c_int;
     pub fn mount(
         type_: *const ::c_char,
@@ -5717,9 +5664,6 @@ cfg_if! {
     } else if #[cfg(freebsd12)] {
         mod freebsd12;
         pub use self::freebsd12::*;
-    } else if #[cfg(any(freebsd10, freebsd11))] {
-        mod freebsd11;
-        pub use self::freebsd11::*;
     } else {
         // Unknown freebsd version
     }

@@ -1545,10 +1545,6 @@ extern "C" {
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
     pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
     pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "kevent@FBSD_1.0"
-    )]
     pub fn kevent(
         kq: ::c_int,
         changelist: *const ::kevent,
@@ -1561,10 +1557,6 @@ extern "C" {
     pub fn lutimes(file: *const ::c_char, times: *const ::timeval) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char, mode: ::mode_t) -> ::c_int;
-    #[cfg_attr(
-        all(target_os = "freebsd", any(freebsd11, freebsd10)),
-        link_name = "mknodat@FBSD_1.1"
-    )]
     pub fn mknodat(
         dirfd: ::c_int,
         pathname: *const ::c_char,
