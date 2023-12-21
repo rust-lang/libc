@@ -3741,6 +3741,11 @@ sched_getcpu
 sched_getparam
 sched_getscheduler
 sched_param
+sched_attr
+sched_getattr
+sched_setattr
+SCHED_ATTR_SIZE_VER0
+SCHED_ATTR_SIZE_VER1
 sched_rr_get_interval
 sched_setaffinity
 sched_setparam

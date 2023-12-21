@@ -850,6 +850,19 @@ s_no_extra_traits! {
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
     }
+
+    pub struct sched_attr {
+        pub size: ::c_uint,
+        pub sched_policy: ::c_uint,
+        pub sched_flags: ::c_ulonglong,
+        pub sched_nice: ::c_int,
+        pub sched_priority: ::c_uint,
+        pub sched_runtime: ::c_ulonglong,
+        pub sched_deadline: ::c_ulonglong,
+        pub sched_period: ::c_ulonglong,
+        pub sched_util_min: ::c_uint,
+        pub sched_util_max: ::c_uint,
+    }
 }
 
 s_no_extra_traits! {
@@ -2011,6 +2024,9 @@ pub const SCHED_BATCH: ::c_int = 3;
 pub const SCHED_IDLE: ::c_int = 5;
 
 pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
+
+pub const SCHED_ATTR_SIZE_VER0: ::c_uint = 48;
+pub const SCHED_ATTR_SIZE_VER1: ::c_uint = 56;
 
 pub const CLONE_PIDFD: ::c_int = 0x1000;
 
@@ -4520,6 +4536,20 @@ pub const NET_DCCP: ::c_int = 20;
 pub const NET_IRDA: ::c_int = 412;
 
 f! {
+    // This is a workaround since glibc provides no wrappers for these syscalls.
+    // Therefore we implement them directly through `syscall`
+    pub fn sched_getattr(
+        pid: ::pid_t,
+        attr: *mut ::sched_attr,
+        size: ::c_uint,
+        flags: ::c_uint
+    ) -> ::c_int {
+        ::syscall(::SYS_sched_getattr, pid, attr, size, flags) as ::c_int
+    }
+    pub fn sched_setattr(pid: ::pid_t, attr: *mut ::sched_attr, flags: ::c_uint) -> ::c_int {
+        ::syscall(::SYS_sched_setattr, pid, attr, flags) as ::c_int
+    }
+
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
     }

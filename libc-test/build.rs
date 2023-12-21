@@ -3448,6 +3448,7 @@ fn test_linux(target: &str) {
         "linux/reboot.h",
         "linux/rtnetlink.h",
         "linux/sched.h",
+        "linux/sched/types.h",
         "linux/sctp.h",
         "linux/seccomp.h",
         "linux/sock_diag.h",
