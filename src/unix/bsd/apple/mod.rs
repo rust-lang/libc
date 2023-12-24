@@ -6239,7 +6239,7 @@ extern "C" {
         buffersize: u32,
     ) -> ::c_int;
     pub fn proc_kmsgbuf(buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
-    pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
+    pub fn proc_libversion(major: *mut ::c_int, minor: *mut ::c_int) -> ::c_int;
     pub fn proc_pid_rusage(pid: ::c_int, flavor: ::c_int, buffer: *mut rusage_info_t) -> ::c_int;
 
     // Available from Big Sur
