@@ -9,26 +9,26 @@ set -ex
 # located in https://github.com/appunite/docker by just wrapping it in a script
 # which apparently magically accepts the licenses.
 
-SDK=6609375
+SDK=10406996
 mkdir -p sdk/cmdline-tools
 wget -q --tries=20 https://dl.google.com/android/repository/commandlinetools-linux-${SDK}_latest.zip
 unzip -q -d sdk/cmdline-tools commandlinetools-linux-${SDK}_latest.zip
 
 case "$1" in
   arm | armv7)
-    api=24
+    api=34
     image="system-images;android-${api};default;armeabi-v7a"
     ;;
   aarch64)
-    api=24
+    api=34
     image="system-images;android-${api};google_apis;arm64-v8a"
     ;;
   i686)
-    api=28
+    api=34
     image="system-images;android-${api};default;x86"
     ;;
   x86_64)
-    api=28
+    api=34
     image="system-images;android-${api};default;x86_64"
     ;;
   *)
