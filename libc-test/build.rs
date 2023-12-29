@@ -2425,7 +2425,11 @@ fn test_freebsd(target: &str) {
             "AT_USRSTACKBASE" | "AT_USRSTACKLIM" if Some(13) > freebsd_ver => true,
 
             // Added in FreeBSD 14
-            "TFD_CLOEXEC" | "TFD_NONBLOCK" if Some(14) > freebsd_ver => true,
+            "TFD_CLOEXEC" | "TFD_NONBLOCK" | "TFD_TIMER_ABSTIME" | "TFD_TIMER_CANCEL_ON_SET"
+                if Some(14) > freebsd_ver =>
+            {
+                true
+            }
 
             _ => false,
         }

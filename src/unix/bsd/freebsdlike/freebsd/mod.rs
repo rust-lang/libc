@@ -4732,6 +4732,8 @@ pub const RB_MULTIPLE: ::c_int = 0x20000000;
 
 pub const TFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
 pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
+pub const TFD_TIMER_ABSTIME: ::c_int = 0x01;
+pub const TFD_TIMER_CANCEL_ON_SET: ::c_int = 0x02;
 
 cfg_if! {
     if #[cfg(libc_const_extern_fn)] {
