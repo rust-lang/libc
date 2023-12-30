@@ -25,3 +25,17 @@ task:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
     - sh ci/run.sh x86_64-unknown-freebsd
+
+task:
+  name: nightly x86_64-unknown-freebsd-15
+  freebsd_instance:
+    image_family: freebsd-15-0-snap
+  setup_script:
+    - pkg install -y libnghttp2 curl
+    - curl https://sh.rustup.rs -sSf --output rustup.sh
+    - sh rustup.sh -y --default-toolchain nightly --profile=minimal
+    - . $HOME/.cargo/env
+  test_script:
+    - . $HOME/.cargo/env
+    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
+    - sh ci/run.sh x86_64-unknown-freebsd
