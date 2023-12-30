@@ -4056,7 +4056,7 @@ fn test_linux(target: &str) {
                 true
             }
 
-            // FIXME: seems to not be available all the time (from <linux/include/sched.h>:
+            // FIXME: seems to not be available all the time (from <include/linux/sched.h>:
             "PF_VCPU"
             | "PF_IDLE"
             | "PF_EXITING"
