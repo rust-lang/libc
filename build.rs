@@ -274,7 +274,10 @@ fn emcc_version_code() -> Option<u64> {
         return None;
     }
     let version = stdout.unwrap();
-    let mut pieces = version.trim().split('.');
+
+    // Some Emscripten versions come with `-git` attached, so split the
+    // version string also on the `-` char.
+    let mut pieces = version.trim().split(|c| c == '.' || c == '-');
 
     let major = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
     let minor = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
