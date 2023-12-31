@@ -4728,6 +4728,11 @@ pub const RB_POWERCYCLE: ::c_int = 0x400000;
 pub const RB_PROBE: ::c_int = 0x10000000;
 pub const RB_MULTIPLE: ::c_int = 0x20000000;
 
+// sys/time.h
+pub const CLOCK_BOOTTIME: ::clockid_t = ::CLOCK_UPTIME;
+pub const CLOCK_REALTIME_COARSE: ::clockid_t = ::CLOCK_REALTIME_FAST;
+pub const CLOCK_MONOTONIC_COARSE: ::clockid_t = ::CLOCK_MONOTONIC_FAST;
+
 // sys/timerfd.h
 
 pub const TFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
@@ -5363,13 +5368,6 @@ extern "C" {
     pub fn getpagesizes(pagesize: *mut ::size_t, nelem: ::c_int) -> ::c_int;
 
     pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
-    pub fn clock_nanosleep(
-        clk_id: ::clockid_t,
-        flags: ::c_int,
-        rqtp: *const ::timespec,
-        rmtp: *mut ::timespec,
-    ) -> ::c_int;
-
     pub fn strchrnul(s: *const ::c_char, c: ::c_int) -> *mut ::c_char;
 
     pub fn shm_create_largepage(
