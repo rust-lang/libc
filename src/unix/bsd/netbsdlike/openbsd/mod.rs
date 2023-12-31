@@ -41,6 +41,10 @@ pub type Elf64_Xword = u64;
 pub type ENTRY = entry;
 pub type ACTION = ::c_uint;
 
+// spawn.h
+pub type posix_spawnattr_t = *mut ::c_void;
+pub type posix_spawn_file_actions_t = *mut ::c_void;
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         type Elf_Addr = Elf64_Addr;
