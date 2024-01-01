@@ -1263,6 +1263,7 @@ chroot
 clearerr
 clock_getcpuclockid
 clock_getres
+clock_nanosleep
 clock_settime
 cmsgcred
 cmsghdr
