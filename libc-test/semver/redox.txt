@@ -145,6 +145,7 @@ TCGETS
 TCP_KEEPIDLE
 TCSETS
 TIOCGPGRP
+TIOCSCTTY
 TIOCSPGRP
 UTSLENGTH
 VDISCARD
@@ -207,11 +208,13 @@ getservbyport
 getservent
 killpg
 lockf
+login_tty
 madvise
 memalign
 nice
 open_memstream
 open_wmemstream
+openpty
 pipe2
 pthread_condattr_setclock
 qsort
