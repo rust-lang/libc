@@ -13,6 +13,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd12",
     "freebsd13",
     "freebsd14",
+    "freebsd15",
     "libc_align",
     "libc_cfg_target_vendor",
     "libc_const_extern_fn",
@@ -70,6 +71,7 @@ fn main() {
         Some(12) if libc_ci || rustc_dep_of_std => set_cfg("freebsd12"),
         Some(13) if libc_ci => set_cfg("freebsd13"),
         Some(14) if libc_ci => set_cfg("freebsd14"),
+        Some(15) if libc_ci => set_cfg("freebsd15"),
         Some(_) | None => set_cfg("freebsd11"),
     }
 
@@ -252,6 +254,7 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("12") => Some(12),
         s if s.starts_with("13") => Some(13),
         s if s.starts_with("14") => Some(14),
+        s if s.starts_with("15") => Some(15),
         _ => None,
     }
 }
