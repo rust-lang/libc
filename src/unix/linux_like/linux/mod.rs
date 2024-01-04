@@ -575,6 +575,34 @@ s! {
         pub args: [::__u64; 6],
     }
 
+    pub struct seccomp_notif_sizes {
+        pub seccomp_notif: ::__u16,
+        pub seccomp_notif_resp: ::__u16,
+        pub seccomp_data: ::__u16,
+    }
+
+    pub struct seccomp_notif {
+        pub id: ::__u64,
+        pub pid: ::__u32,
+        pub flags: ::__u32,
+        pub data: seccomp_data,
+    }
+
+    pub struct seccomp_notif_resp {
+        pub id: ::__u64,
+        pub val: ::__s64,
+        pub error: ::__s32,
+        pub flags: ::__u32,
+    }
+
+    pub struct seccomp_notif_addfd {
+        pub id: ::__u64,
+        pub flags: ::__u32,
+        pub srcfd: ::__u32,
+        pub newfd: ::__u32,
+        pub newfd_flags: ::__u32,
+    }
+
     pub struct nlmsghdr {
         pub nlmsg_len: u32,
         pub nlmsg_type: u16,
@@ -2272,13 +2300,22 @@ pub const GRND_NONBLOCK: ::c_uint = 0x0001;
 pub const GRND_RANDOM: ::c_uint = 0x0002;
 pub const GRND_INSECURE: ::c_uint = 0x0004;
 
+// <linux/seccomp.h>
 pub const SECCOMP_MODE_DISABLED: ::c_uint = 0;
 pub const SECCOMP_MODE_STRICT: ::c_uint = 1;
 pub const SECCOMP_MODE_FILTER: ::c_uint = 2;
 
+pub const SECCOMP_SET_MODE_STRICT: ::c_uint = 0;
+pub const SECCOMP_SET_MODE_FILTER: ::c_uint = 1;
+pub const SECCOMP_GET_ACTION_AVAIL: ::c_uint = 2;
+pub const SECCOMP_GET_NOTIF_SIZES: ::c_uint = 3;
+
 pub const SECCOMP_FILTER_FLAG_TSYNC: ::c_ulong = 1;
 pub const SECCOMP_FILTER_FLAG_LOG: ::c_ulong = 2;
 pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: ::c_ulong = 4;
+pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: ::c_ulong = 8;
+pub const SECCOMP_FILTER_FLAG_TSYNC_ESRCH: ::c_ulong = 16;
+pub const SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV: ::c_ulong = 32;
 
 pub const SECCOMP_RET_KILL_PROCESS: ::c_uint = 0x80000000;
 pub const SECCOMP_RET_KILL_THREAD: ::c_uint = 0x00000000;
@@ -2292,6 +2329,11 @@ pub const SECCOMP_RET_ALLOW: ::c_uint = 0x7fff0000;
 pub const SECCOMP_RET_ACTION_FULL: ::c_uint = 0xffff0000;
 pub const SECCOMP_RET_ACTION: ::c_uint = 0x7fff0000;
 pub const SECCOMP_RET_DATA: ::c_uint = 0x0000ffff;
+
+pub const SECCOMP_USER_NOTIF_FLAG_CONTINUE: ::c_ulong = 1;
+
+pub const SECCOMP_ADDFD_FLAG_SETFD: ::c_ulong = 1;
+pub const SECCOMP_ADDFD_FLAG_SEND: ::c_ulong = 2;
 
 pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
