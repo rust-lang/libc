@@ -15,6 +15,16 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(target_os = "horizon")] {
+        pub type dev_t = u32;
+        pub type off_t = i64;
+    } else {
+        pub type dev_t = ::c_short;
+        pub type off_t = ::c_long;
+    }
+}
+
+cfg_if! {
+    if #[cfg(target_os = "horizon")] {
         pub type ino_t = u32;
     } else if #[cfg(target_arch = "sparc")] {
         pub type ino_t = ::c_ulong;
@@ -124,7 +134,6 @@ s! {
         pub h_addrtype: ::c_int,
         pub h_length: ::c_int,
         pub h_addr_list: *mut *mut ::c_char,
-        // pub h_addr: *mut ::c_char,
     }
 
     pub struct pollfd {
