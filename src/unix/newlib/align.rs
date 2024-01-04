@@ -47,7 +47,8 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
             }
 
-            #[repr(align(8))]
+            #[cfg_attr(not(target_os = "vita"), repr(align(8)))]
+            #[cfg_attr(target_os = "vita", repr(align(4)))]
             pub struct pthread_cond_t { // Unverified
                 size: [u8; ::__SIZEOF_PTHREAD_COND_T],
             }
@@ -55,6 +56,16 @@ macro_rules! expand_align {
             #[repr(align(4))]
             pub struct pthread_condattr_t { // Unverified
                 size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
+            }
+
+            #[cfg_attr(target_os = "vita", repr(align(4)))]
+            pub struct pthread_attr_t { // Unverified
+                size: [u8; ::__SIZEOF_PTHREAD_ATTR_T]
+            }
+
+            #[cfg_attr(target_os = "vita", repr(align(4)))]
+            pub struct pthread_rwlockattr_t { // Unverified
+                size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T]
             }
         }
     };

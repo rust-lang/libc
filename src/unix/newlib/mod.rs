@@ -1,13 +1,7 @@
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 
-cfg_if! {
-    if #[cfg(target_os = "vita")] {
-        pub type clockid_t = ::c_uint;
-    } else {
-        pub type clockid_t = ::c_ulong;
-    }
-}
+pub type clockid_t = ::c_ulong;
 
 cfg_if! {
     if #[cfg(target_os = "horizon")] {
@@ -130,7 +124,7 @@ s! {
         pub h_addrtype: ::c_int,
         pub h_length: ::c_int,
         pub h_addr_list: *mut *mut ::c_char,
-        pub h_addr: *mut ::c_char,
+        // pub h_addr: *mut ::c_char,
     }
 
     pub struct pollfd {
@@ -259,14 +253,6 @@ s! {
 
     pub struct cpu_set_t { // Unverified
         bits: [u32; 32],
-    }
-
-    pub struct pthread_attr_t { // Unverified
-        __size: [u8; __SIZEOF_PTHREAD_ATTR_T]
-    }
-
-    pub struct pthread_rwlockattr_t { // Unverified
-        __size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T]
     }
 }
 
