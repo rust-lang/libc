@@ -2,13 +2,16 @@ name: full CI
 
 on:
   merge_group:
-  push:
-    branches: ['main', 'libc-0.2']
+  pull_request:
+    branches:
+      - libc-0.2
+    types:
+      - labeled
 
 jobs:
   docker_linux_tier1:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     name: Docker Linux Tier1
@@ -21,9 +24,6 @@ jobs:
           x86_64-unknown-linux-gnu,
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
@@ -31,8 +31,8 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
   macos:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     name: macOS
@@ -44,9 +44,6 @@ jobs:
           x86_64-apple-darwin,
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
@@ -54,8 +51,8 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     name: Windows
@@ -77,9 +74,6 @@ jobs:
               ARCH: i686
           - target: i686-pc-windows-msvc
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Self-update rustup
         run: rustup self update
@@ -92,16 +86,13 @@ jobs:
         shell: bash
 
   style_check:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     name: Style check
     runs-on: ubuntu-22.04
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: sh ./ci/install-rust.sh
@@ -109,8 +100,8 @@ jobs:
         run: sh ci/style.sh
 
   docker_linux_tier2:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     name: Docker Linux Tier2
@@ -150,9 +141,6 @@ jobs:
           # x86_64-unknown-redox,
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
@@ -163,7 +151,6 @@ jobs:
   # Because of this, only the nightly compiler can be used on these targets.
   docker_linux_build_std:
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     if: ${{ false }} # This is currently broken
@@ -178,9 +165,6 @@ jobs:
           armv7-unknown-linux-uclibceabihf
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TOOLCHAIN=nightly INSTALL_RUST_SRC=1 sh ./ci/install-rust.sh
@@ -189,17 +173,14 @@ jobs:
 
   # devkitpro's pacman needs to be connected from Docker.
   docker_switch:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     name: Docker Switch
     needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-22.04
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: sh ./ci/install-rust.sh
@@ -207,8 +188,8 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh switch
 
   build_channels_linux:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     name: Build Channels Linux
@@ -233,9 +214,6 @@ jobs:
           1.30.0,
         ]
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
@@ -243,6 +221,7 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_macos:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -268,9 +247,6 @@ jobs:
           - { toolchain: 1.30.0, os: macos-11 }
     runs-on: ${{ matrix.target.os }}
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/install-rust.sh
@@ -278,6 +254,7 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/build.sh
 
   build_channels_windows:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -305,16 +282,13 @@ jobs:
         shell: bash
 
   check_cfg:
+    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
-      actions: write # to cancel workflows (rust-lang/simpleinfra/github-actions/cancel-outdated-builds)
       contents: read # to fetch code (actions/checkout)
 
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
     steps:
-      - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TOOLCHAIN=nightly sh ./ci/install-rust.sh
@@ -325,7 +299,7 @@ jobs:
   # protection, rather than having to add each job separately.
   success:
     name: Success
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [
       docker_linux_tier1,
       docker_linux_tier2,
