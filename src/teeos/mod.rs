@@ -62,7 +62,7 @@ pub struct _CLongDouble(pub u128);
 
 // long double in C means A float point value, which has 128bit length.
 // but some bit maybe not used, so the really length of long double could be 80(x86) or 128(power pc/IEEE)
-// this is different from f128(not stable and not inculded default) in Rust, so we use u128 for FFI(Rust to C).
+// this is different from f128(not stable and not included default) in Rust, so we use u128 for FFI(Rust to C).
 // this is unstable and will couse to memfault/data abort.
 pub type c_longdouble = _CLongDouble;
 
