@@ -2952,6 +2952,7 @@ extern "C" {
         result: *mut *mut ::group,
     ) -> ::c_int;
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> ::c_int;
+    pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
 
