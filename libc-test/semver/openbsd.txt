@@ -1260,6 +1260,7 @@ shmget
 shmid_ds
 sigaltstack
 siginfo_t
+sigsuspend
 sigwait
 sockaddr_dl
 sockpeercred
