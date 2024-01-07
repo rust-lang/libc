@@ -226,13 +226,7 @@ jobs:
           stable,
           beta,
           nightly,
-          # FIXME: Disabled due to:
-          # error: failed to parse registry's information for: serde
-          #1.13.0,
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
+          1.71.0,
         ]
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
@@ -260,14 +254,7 @@ jobs:
           - { toolchain: stable, os: macos-13 }
           - { toolchain: beta, os: macos-13 }
           - { toolchain: nightly, os: macos-13 }
-          # Use macOS 11 for older toolchains as newer Xcode donesn't work well.
-          # FIXME: Disabled due to:
-          # error: failed to parse registry's information for: serde
-          #- { toolchain: 1.13.0, os: macos-11 }
-          - { toolchain: 1.19.0, os: macos-11 }
-          - { toolchain: 1.24.0, os: macos-11 }
-          - { toolchain: 1.25.0, os: macos-11 }
-          - { toolchain: 1.30.0, os: macos-11 }
+          - { toolchain: 1.71.0, os: macos-13 }
     runs-on: ${{ matrix.target.os }}
     steps:
       - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@HEAD
@@ -291,10 +278,7 @@ jobs:
       fail-fast: true
       matrix:
         toolchain: [
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
+          1.71.0,
           stable,
         ]
     steps:
