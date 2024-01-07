@@ -196,12 +196,5 @@ pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
 
 pub const SYS_gettid: ::c_long = 5178; // Valid for n64
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    } else {
-        mod no_align;
-        pub use self::no_align::*;
-    }
-}
+mod align;
+pub use self::align::*;

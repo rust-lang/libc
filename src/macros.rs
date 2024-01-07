@@ -90,19 +90,15 @@ macro_rules! s_no_extra_traits {
         s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
     )*);
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
-        cfg_if! {
-            if #[cfg(libc_union)] {
-                __item! {
-                    #[repr(C)]
-                    $(#[$attr])*
-                    pub union $i { $($field)* }
-                }
+        __item! {
+            #[repr(C)]
+            $(#[$attr])*
+            pub union $i { $($field)* }
+        }
 
-                impl ::Copy for $i {}
-                impl ::Clone for $i {
-                    fn clone(&self) -> $i { *self }
-                }
-            }
+        impl ::Copy for $i {}
+        impl ::Clone for $i {
+            fn clone(&self) -> $i { *self }
         }
     );
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
@@ -154,35 +150,8 @@ macro_rules! s_paren {
     )*);
 }
 
-// This is a pretty horrible hack to allow us to conditionally mark
-// some functions as 'const', without requiring users of this macro
-// to care about the "const-extern-fn" feature.
-//
-// When 'const-extern-fn' is enabled, we emit the captured 'const' keyword
-// in the expanded function.
-//
-// When 'const-extern-fn' is disabled, we always emit a plain 'pub unsafe extern fn'.
-// Note that the expression matched by the macro is exactly the same - this allows
-// users of this macro to work whether or not 'const-extern-fn' is enabled
-//
-// Unfortunately, we need to duplicate most of this macro between the 'cfg_if' blocks.
-// This is because 'const unsafe extern fn' won't even parse on older compilers,
-// so we need to avoid emitting it at all of 'const-extern-fn'.
-//
-// Specifically, moving the 'cfg_if' into the macro body will *not* work.
-// Doing so would cause the '#[cfg(feature = "const-extern-fn")]' to be emitted
-// into user code. The 'cfg' gate will not stop Rust from trying to parse the
-// 'pub const unsafe extern fn', so users would get a compiler error even when
-// the 'const-extern-fn' feature is disabled
-//
-// Note that users of this macro need to place 'const' in a weird position
-// (after the closing ')' for the arguments, but before the return type).
-// This was the only way I could satisfy the following two requirements:
-// 1. Avoid ambiguity errors from 'macro_rules!' (which happen when writing '$foo:ident fn'
-// 2. Allow users of this macro to mix 'pub fn foo' and 'pub const fn bar' within the same
-// 'f!' block
 cfg_if! {
-    if #[cfg(libc_const_extern_fn)] {
+    if #[cfg(feature = "const-extern-fn")] {
         macro_rules! f {
             ($($(#[$attr:meta])* pub $({$constness:ident})* fn $i:ident(
                         $($arg:ident: $argty:ty),*
@@ -282,24 +251,6 @@ macro_rules! __item {
     };
 }
 
-macro_rules! align_const {
-    ($($(#[$attr:meta])*
-       pub const $name:ident : $t1:ty
-       = $t2:ident { $($field:tt)* };)*) => ($(
-        #[cfg(libc_align)]
-        $(#[$attr])*
-        pub const $name : $t1 = $t2 {
-            $($field)*
-        };
-        #[cfg(not(libc_align))]
-        $(#[$attr])*
-        pub const $name : $t1 = $t2 {
-            $($field)*
-            __align: [],
-        };
-    )*)
-}
-
 // This macro is used to deprecate items that should be accessed via the mach2 crate
 macro_rules! deprecated_mach {
     (pub const $id:ident: $ty:ty = $expr:expr;) => {
@@ -334,14 +285,6 @@ macro_rules! deprecated_mach {
     }
 }
 
-#[cfg(not(libc_ptr_addr_of))]
-macro_rules! ptr_addr_of {
-    ($place:expr) => {
-        &$place
-    };
-}
-
-#[cfg(libc_ptr_addr_of)]
 macro_rules! ptr_addr_of {
     ($place:expr) => {
         ::core::ptr::addr_of!($place)

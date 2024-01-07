@@ -22,7 +22,6 @@
 #![deny(missing_copy_implementations, safe_packed_borrows)]
 #![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
-#![cfg_attr(libc_const_extern_fn_unstable, feature(const_extern_fn))]
 
 #[macro_use]
 mod macros;
@@ -39,52 +38,25 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_priv_mod_use)] {
-        #[cfg(libc_core_cvoid)]
-        #[allow(unused_imports)]
-        use core::ffi;
-        #[allow(unused_imports)]
-        use core::fmt;
-        #[allow(unused_imports)]
-        use core::hash;
-        #[allow(unused_imports)]
-        use core::num;
-        #[allow(unused_imports)]
-        use core::mem;
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        use core::clone::Clone;
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        use core::marker::{Copy, Send, Sync};
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        use core::option::Option;
-    } else {
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        pub use core::fmt;
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        pub use core::hash;
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        pub use core::num;
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        pub use core::mem;
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        pub use core::clone::Clone;
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        pub use core::marker::{Copy, Send, Sync};
-        #[doc(hidden)]
-        #[allow(unused_imports)]
-        pub use core::option::Option;
-    }
-}
+#[doc(hidden)]
+#[allow(unused_imports)]
+use core::clone::Clone;
+#[allow(unused_imports)]
+use core::ffi;
+#[allow(unused_imports)]
+use core::fmt;
+#[allow(unused_imports)]
+use core::hash;
+#[doc(hidden)]
+#[allow(unused_imports)]
+use core::marker::{Copy, Send, Sync};
+#[allow(unused_imports)]
+use core::mem;
+#[allow(unused_imports)]
+use core::num;
+#[doc(hidden)]
+#[allow(unused_imports)]
+use core::option::Option;
 
 cfg_if! {
     if #[cfg(windows)] {

@@ -719,9 +719,5 @@ pub const REG_A0: usize = 10;
 pub const REG_S2: usize = 18;
 pub const REG_NARGS: usize = 8;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

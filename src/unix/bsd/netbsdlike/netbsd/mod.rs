@@ -286,7 +286,10 @@ s! {
         pub flags: u32,
         pub fflags: u32,
         pub data: i64,
-        pub udata: ::intptr_t, /* FIXME: NetBSD 10.0 will finally have same layout as other BSD */
+        #[cfg(netbsd10)]
+        pub udata: *mut ::c_void,
+        #[cfg(not(netbsd10))]
+        pub udata: ::intptr_t,
     }
 
     pub struct dqblk {
@@ -693,14 +696,12 @@ s! {
     pub struct posix_spawn_file_actions_entry_t {
         pub fae_action: fae_action,
         pub fae_fildes: ::c_int,
-        #[cfg(libc_union)]
         pub fae_data: __c_anonymous_posix_spawn_fae,
     }
 
     pub struct posix_spawn_file_actions_t {
         pub size: ::c_uint,
         pub len: ::c_uint,
-        #[cfg(libc_union)]
         pub fae: *mut posix_spawn_file_actions_entry_t,
     }
 
@@ -739,7 +740,6 @@ s! {
 
     pub struct ifconf {
         pub ifc_len: ::c_int,
-        #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
 
@@ -898,13 +898,11 @@ s_no_extra_traits! {
         pub sigev_notify_attributes: *mut ::c_void
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_posix_spawn_fae {
         pub open: __c_anonymous_posix_spawn_fae_open,
         pub dup2: __c_anonymous_posix_spawn_fae_dup2,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut ::c_void,
         pub ifcu_req: *mut ifreq,
@@ -1337,10 +1335,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_posix_spawn_fae {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_posix_spawn_fae {
             fn eq(&self, other: &__c_anonymous_posix_spawn_fae) -> bool {
                 unsafe {
@@ -1350,7 +1346,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_posix_spawn_fae {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -1362,7 +1357,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_posix_spawn_fae {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -1372,10 +1366,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifc_ifcu {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
                 unsafe {
@@ -1385,7 +1377,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -1397,7 +1388,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifc_ifcu {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -2414,17 +2404,8 @@ pub const RB_STRING: ::c_int = 0x000000400;
 pub const RB_POWERDOWN: ::c_int = RB_HALT | 0x000000800;
 pub const RB_USERCONF: ::c_int = 0x000001000;
 
-cfg_if! {
-
-    if #[cfg(libc_const_extern_fn)] {
-        pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
-            alignment << MAP_ALIGNMENT_SHIFT
-        }
-    } else {
-        pub fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
-            alignment << MAP_ALIGNMENT_SHIFT
-        }
-    }
+pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
+    alignment << MAP_ALIGNMENT_SHIFT
 }
 
 const_fn! {
@@ -3107,14 +3088,9 @@ extern "C" {
     ) -> ::c_int;
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        extern {
-            // these functions use statvfs:
-            pub fn getmntinfo(mntbufp: *mut *mut ::statvfs, flags: ::c_int) -> ::c_int;
-            pub fn getvfsstat(buf: *mut statvfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
-        }
-    }
+extern "C" {
+    pub fn getmntinfo(mntbufp: *mut *mut ::statvfs, flags: ::c_int) -> ::c_int;
+    pub fn getvfsstat(buf: *mut statvfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

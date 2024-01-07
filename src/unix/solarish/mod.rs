@@ -476,14 +476,10 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(all(
-            any(target_arch = "x86", target_arch = "x86_64"),
-            libc_packedN
-        ), repr(packed(4)))]
-    #[cfg_attr(all(
-            any(target_arch = "x86", target_arch = "x86_64"),
-            not(libc_packedN)
-        ), repr(packed))]
+    #[cfg_attr(any(
+        target_arch = "x86", target_arch = "x86_64"),
+        repr(packed(4))
+    )]
     pub struct epoll_event {
         pub events: u32,
         pub u64: u64,
@@ -530,7 +526,7 @@ s_no_extra_traits! {
         __ss_pad2: [u8; 240],
     }
 
-    #[cfg_attr(all(target_pointer_width = "64", libc_align), repr(align(8)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
@@ -560,15 +556,13 @@ s_no_extra_traits! {
         __sigev_pad2: ::c_int,
     }
 
-    #[cfg(libc_union)]
-    #[cfg_attr(libc_align, repr(align(16)))]
+    #[repr(align(16))]
     pub union pad128_t {
         // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [i32; 4],
     }
 
-    #[cfg(libc_union)]
-    #[cfg_attr(libc_align, repr(align(16)))]
+    #[repr(align(16))]
     pub union upad128_t {
         // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [u32; 4],
@@ -936,7 +930,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for pad128_t {
             fn eq(&self, other: &pad128_t) -> bool {
                 unsafe {
@@ -945,9 +938,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for pad128_t {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for pad128_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -958,7 +949,6 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for pad128_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -967,7 +957,6 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl PartialEq for upad128_t {
             fn eq(&self, other: &upad128_t) -> bool {
                 unsafe {
@@ -976,9 +965,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for upad128_t {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for upad128_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -989,7 +976,6 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for upad128_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {

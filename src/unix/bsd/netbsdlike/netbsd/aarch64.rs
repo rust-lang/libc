@@ -8,7 +8,6 @@ pub type __cpu_simple_lock_nv_t = ::c_uchar;
 
 s! {
     pub struct __fregset {
-        #[cfg(libc_union)]
         pub __qregs: [__c_anonymous__freg; 32],
         pub __fpcr: u32,
         pub __fpsr: u32,
@@ -30,7 +29,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg(libc_union)]
     #[repr(align(16))]
     pub union __c_anonymous__freg {
         pub __b8: [u8; 16],
@@ -43,7 +41,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous__freg {
             fn eq(&self, other: &__c_anonymous__freg) -> bool {
                 unsafe {
@@ -55,9 +52,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous__freg {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous__freg {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -71,7 +66,6 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous__freg {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -86,16 +80,7 @@ cfg_if! {
     }
 }
 
-// should be pub(crate), but that requires Rust 1.18.0
-cfg_if! {
-    if #[cfg(libc_const_size_of)] {
-        #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = ::mem::size_of::<::c_int>() - 1;
-    } else {
-        #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = 4 - 1;
-    }
-}
+pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_int>() - 1;
 
 pub const PT_GETREGS: ::c_int = PT_FIRSTMACH + 0;
 pub const PT_SETREGS: ::c_int = PT_FIRSTMACH + 1;

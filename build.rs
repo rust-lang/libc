@@ -14,22 +14,11 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
-    "libc_align",
-    "libc_cfg_target_vendor",
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
-    "libc_const_size_of",
-    "libc_core_cvoid",
     "libc_deny_warnings",
-    "libc_int128",
-    "libc_long_array",
-    "libc_non_exhaustive",
-    "libc_packedN",
-    "libc_priv_mod_use",
-    "libc_ptr_addr_of",
     "libc_thread_local",
-    "libc_underscore_const_names",
-    "libc_union",
+    "netbsd10",
 ];
 
 // Extra values to allow for check-cfg.
@@ -48,10 +37,9 @@ fn main() {
 
     let (rustc_minor_ver, is_nightly) = rustc_minor_nightly();
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
-    let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
-    let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
     let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok();
+    let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
 
     if env::var("CARGO_FEATURE_USE_STD").is_ok() {
         println!(
@@ -75,6 +63,12 @@ fn main() {
         Some(_) | None => set_cfg("freebsd11"),
     }
 
+    match which_netbsd() {
+        // TODO: to update if there is a api breaking change
+        Some(10..=99) => set_cfg("netbsd10"),
+        Some(_) | None => (),
+    }
+
     match emcc_version_code() {
         Some(v) if (v >= 30142) => set_cfg("emscripten_new_stat_abi"),
         // Non-Emscripten or version < 3.1.42.
@@ -84,63 +78,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.15 supports private module use:
-    if rustc_minor_ver >= 15 || rustc_dep_of_std {
-        set_cfg("libc_priv_mod_use");
-    }
-
-    // Rust >= 1.19 supports unions:
-    if rustc_minor_ver >= 19 || rustc_dep_of_std {
-        set_cfg("libc_union");
-    }
-
-    // Rust >= 1.24 supports const mem::size_of:
-    if rustc_minor_ver >= 24 || rustc_dep_of_std {
-        set_cfg("libc_const_size_of");
-    }
-
-    // Rust >= 1.25 supports repr(align):
-    if rustc_minor_ver >= 25 || rustc_dep_of_std || align_cargo_feature {
-        set_cfg("libc_align");
-    }
-
-    // Rust >= 1.26 supports i128 and u128:
-    if rustc_minor_ver >= 26 || rustc_dep_of_std {
-        set_cfg("libc_int128");
-    }
-
-    // Rust >= 1.30 supports `core::ffi::c_void`, so libc can just re-export it.
-    // Otherwise, it defines an incompatible type to retaining
-    // backwards-compatibility.
-    if rustc_minor_ver >= 30 || rustc_dep_of_std {
-        set_cfg("libc_core_cvoid");
-    }
-
-    // Rust >= 1.33 supports repr(packed(N)) and cfg(target_vendor).
-    if rustc_minor_ver >= 33 || rustc_dep_of_std {
-        set_cfg("libc_packedN");
-        set_cfg("libc_cfg_target_vendor");
-    }
-
-    // Rust >= 1.40 supports #[non_exhaustive].
-    if rustc_minor_ver >= 40 || rustc_dep_of_std {
-        set_cfg("libc_non_exhaustive");
-    }
-
-    // Rust >= 1.47 supports long array:
-    if rustc_minor_ver >= 47 || rustc_dep_of_std {
-        set_cfg("libc_long_array");
-    }
-
-    if rustc_minor_ver >= 51 || rustc_dep_of_std {
-        set_cfg("libc_ptr_addr_of");
-    }
-
-    // Rust >= 1.37.0 allows underscores as anonymous constant names.
-    if rustc_minor_ver >= 37 || rustc_dep_of_std {
-        set_cfg("libc_underscore_const_names");
     }
 
     // #[thread_local] is currently unstable
@@ -249,6 +186,21 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("13") => Some(13),
         s if s.starts_with("14") => Some(14),
         s if s.starts_with("15") => Some(15),
+        _ => None,
+    }
+}
+
+fn which_netbsd() -> Option<i32> {
+    let output = std::process::Command::new("uname").arg("-r").output().ok();
+    if output.is_none() {
+        return None;
+    }
+
+    let output = output.unwrap();
+    let stdout = String::from_utf8(output.stdout).ok().unwrap();
+
+    match &stdout {
+        s if s.starts_with("10") => Some(10),
         _ => None,
     }
 }

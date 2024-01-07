@@ -2315,17 +2315,15 @@ pub const RTLD_NOW: ::c_int = 0x2;
 
 pub const TCP_MD5SIG: ::c_int = 14;
 
-align_const! {
-    pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-        size: [0; __SIZEOF_PTHREAD_MUTEX_T],
-    };
-    pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-        size: [0; __SIZEOF_PTHREAD_COND_T],
-    };
-    pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-        size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
-    };
-}
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    size: [0; __SIZEOF_PTHREAD_MUTEX_T],
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    size: [0; __SIZEOF_PTHREAD_COND_T],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
+};
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
@@ -4361,33 +4359,9 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        #[macro_use]
-        mod align;
-    } else {
-        #[macro_use]
-        mod no_align;
-    }
-}
+#[macro_use]
+mod align;
+
 expand_align!();
 
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
-    }
-}
+pub use ffi::c_void;
