@@ -104,35 +104,31 @@ s! {
 
 }
 
+s_no_extra_traits! {
+    pub union __c_anonymous_uc_sigmask {
+        uc_sigmask: ::sigset_t,
+        uc_sigmask64: ::sigset64_t,
+    }
+}
+
 cfg_if! {
-    if #[cfg(libc_union)] {
-        s_no_extra_traits! {
-            pub union __c_anonymous_uc_sigmask {
-                uc_sigmask: ::sigset_t,
-                uc_sigmask64: ::sigset64_t,
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for __c_anonymous_uc_sigmask {
+            fn eq(&self, other: &__c_anonymous_uc_sigmask) -> bool {
+                unsafe { self.uc_sigmask == other.uc_sigmask }
             }
         }
-
-        cfg_if! {
-            if #[cfg(feature = "extra_traits")] {
-                impl PartialEq for __c_anonymous_uc_sigmask {
-                    fn eq(&self, other: &__c_anonymous_uc_sigmask) -> bool {
-                        unsafe { self.uc_sigmask == other.uc_sigmask }
-                    }
-                }
-                impl Eq for __c_anonymous_uc_sigmask {}
-                impl ::fmt::Debug for __c_anonymous_uc_sigmask {
-                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                        f.debug_struct("uc_sigmask")
-                            .field("uc_sigmask", unsafe { &self.uc_sigmask })
-                            .finish()
-                    }
-                }
-                impl ::hash::Hash for __c_anonymous_uc_sigmask {
-                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                        unsafe { self.uc_sigmask.hash(state) }
-                    }
-                }
+        impl Eq for __c_anonymous_uc_sigmask {}
+        impl ::fmt::Debug for __c_anonymous_uc_sigmask {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("uc_sigmask")
+                    .field("uc_sigmask", unsafe { &self.uc_sigmask })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for __c_anonymous_uc_sigmask {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.uc_sigmask.hash(state) }
             }
         }
     }
@@ -794,9 +790,5 @@ pub const REG_TRAPNO: ::c_int = 20;
 pub const REG_OLDMASK: ::c_int = 21;
 pub const REG_CR2: ::c_int = 22;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

@@ -15,9 +15,5 @@ extern "C" {
     pub fn wmemchr(cx: *const ::wchar_t, c: ::wchar_t, n: ::size_t) -> *mut ::wchar_t;
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;
