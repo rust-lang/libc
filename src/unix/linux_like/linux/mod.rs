@@ -878,6 +878,17 @@ s_no_extra_traits! {
         pub d_type: ::c_uchar,
         pub d_name: [::c_char; 256],
     }
+
+    pub struct sched_attr {
+        pub size: ::__u32,
+        pub sched_policy: ::__u32,
+        pub sched_flags: ::__u64,
+        pub sched_nice: ::__s32,
+        pub sched_priority: ::__u32,
+        pub sched_runtime: ::__u64,
+        pub sched_deadline: ::__u64,
+        pub sched_period: ::__u64,
+    }
 }
 
 s_no_extra_traits! {
@@ -1341,6 +1352,46 @@ cfg_if! {
                 self.flags.hash(state);
                 self.tx_type.hash(state);
                 self.rx_filter.hash(state);
+            }
+        }
+
+        impl ::fmt::Debug for sched_attr {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sched_attr")
+                    .field("size", &self.size)
+                    .field("sched_policy", &self.sched_policy)
+                    .field("sched_flags", &self.sched_flags)
+                    .field("sched_nice", &self.sched_nice)
+                    .field("sched_priority", &self.sched_priority)
+                    .field("sched_runtime", &self.sched_runtime)
+                    .field("sched_deadline", &self.sched_deadline)
+                    .field("sched_period", &self.sched_period)
+                    .finish()
+            }
+        }
+        impl PartialEq for sched_attr {
+            fn eq(&self, other: &sched_attr) -> bool {
+                self.size == other.size &&
+                self.sched_policy == other.sched_policy &&
+                self.sched_flags == other.sched_flags &&
+                self.sched_nice == other.sched_nice &&
+                self.sched_priority == other.sched_priority &&
+                self.sched_runtime == other.sched_runtime &&
+                self.sched_deadline == other.sched_deadline &&
+                self.sched_period == other.sched_period
+            }
+        }
+        impl Eq for sched_attr {}
+        impl ::hash::Hash for sched_attr {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.size.hash(state);
+                self.sched_policy.hash(state);
+                self.sched_flags.hash(state);
+                self.sched_nice.hash(state);
+                self.sched_priority.hash(state);
+                self.sched_runtime.hash(state);
+                self.sched_deadline.hash(state);
+                self.sched_period.hash(state);
             }
         }
     }
@@ -2031,16 +2082,6 @@ pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 pub const RENAME_NOREPLACE: ::c_uint = 1;
 pub const RENAME_EXCHANGE: ::c_uint = 2;
 pub const RENAME_WHITEOUT: ::c_uint = 4;
-
-pub const SCHED_OTHER: ::c_int = 0;
-pub const SCHED_FIFO: ::c_int = 1;
-pub const SCHED_RR: ::c_int = 2;
-pub const SCHED_BATCH: ::c_int = 3;
-pub const SCHED_IDLE: ::c_int = 5;
-
-pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
-
-pub const CLONE_PIDFD: ::c_int = 0x1000;
 
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
@@ -4587,6 +4628,38 @@ pub const PF_RANDOMIZE: ::c_int = 0x00400000;
 pub const PF_NO_SETAFFINITY: ::c_int = 0x04000000;
 pub const PF_MCE_EARLY: ::c_int = 0x08000000;
 pub const PF_MEMALLOC_PIN: ::c_int = 0x10000000;
+
+pub const CSIGNAL: ::c_int = 0x000000ff;
+
+pub const SCHED_NORMAL: ::c_int = 0;
+pub const SCHED_OTHER: ::c_int = 0;
+pub const SCHED_FIFO: ::c_int = 1;
+pub const SCHED_RR: ::c_int = 2;
+pub const SCHED_BATCH: ::c_int = 3;
+pub const SCHED_IDLE: ::c_int = 5;
+pub const SCHED_DEADLINE: ::c_int = 6;
+
+pub const SCHED_RESET_ON_FORK: ::c_int = 0x40000000;
+
+pub const CLONE_PIDFD: ::c_int = 0x1000;
+
+pub const SCHED_FLAG_RESET_ON_FORK: ::c_int = 0x01;
+pub const SCHED_FLAG_RECLAIM: ::c_int = 0x02;
+pub const SCHED_FLAG_DL_OVERRUN: ::c_int = 0x04;
+pub const SCHED_FLAG_KEEP_POLICY: ::c_int = 0x08;
+pub const SCHED_FLAG_KEEP_PARAMS: ::c_int = 0x10;
+pub const SCHED_FLAG_UTIL_CLAMP_MIN: ::c_int = 0x20;
+pub const SCHED_FLAG_UTIL_CLAMP_MAX: ::c_int = 0x40;
+
+pub const SCHED_FLAG_KEEP_ALL: ::c_int = SCHED_FLAG_KEEP_POLICY | SCHED_FLAG_KEEP_PARAMS;
+
+pub const SCHED_FLAG_UTIL_CLAMP: ::c_int = SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX;
+
+pub const SCHED_FLAG_ALL: ::c_int = SCHED_FLAG_RESET_ON_FORK
+    | SCHED_FLAG_RECLAIM
+    | SCHED_FLAG_DL_OVERRUN
+    | SCHED_FLAG_KEEP_ALL
+    | SCHED_FLAG_UTIL_CLAMP;
 
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {

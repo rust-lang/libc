@@ -761,6 +761,7 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> ::c_int;
+    pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
     pub fn getgrnam_r(

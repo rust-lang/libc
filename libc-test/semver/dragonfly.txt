@@ -1538,6 +1538,7 @@ shmget
 sigaltstack
 sigevent
 siginfo_t
+sigsuspend
 sigtimedwait
 sigwait
 sigwaitinfo
