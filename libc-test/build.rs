@@ -4317,6 +4317,8 @@ fn test_linux(target: &str) {
         // Linux >= 5.11 tweaked the `svm_zero` field of the `sockaddr_vm` struct.
         // https://github.com/torvalds/linux/commit/dc8eeef73b63ed8988224ba6b5ed19a615163a7f
         (struct_ == "sockaddr_vm" && field == "svm_zero") ||
+        // Linux >= 5.11 had added the svm_flags field to the `sockaddr_vm` struct.
+        (struct_ == "sockaddr_vm" && field == "svm_flags") ||
         // the `ifr_ifru` field is an anonymous union
         (struct_ == "ifreq" && field == "ifr_ifru") ||
         // the `ifc_ifcu` field is an anonymous union

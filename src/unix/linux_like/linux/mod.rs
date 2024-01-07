@@ -509,7 +509,8 @@ s! {
         pub svm_reserved1: ::c_ushort,
         pub svm_port: ::c_uint,
         pub svm_cid: ::c_uint,
-        pub svm_zero: [u8; 4]
+        pub svm_flags: u8,
+        pub svm_zero: [u8; 3]
     }
 
     pub struct regmatch_t {
