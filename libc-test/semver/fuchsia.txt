@@ -1377,8 +1377,10 @@ pthread_cancel
 pthread_condattr_getclock
 pthread_condattr_setclock
 pthread_getattr_np
+pthread_getname_np
 pthread_kill
 pthread_mutex_timedlock
+pthread_setname_np
 ptsname_r
 pwritev
 quotactl
