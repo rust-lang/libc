@@ -238,7 +238,6 @@ mips64el-unknown-linux-gnuabi64 \
 mips64el-unknown-linux-muslabi64 \
 mipsel-unknown-linux-gnu \
 mipsel-unknown-linux-musl \
-mipsel-sony-psp \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \

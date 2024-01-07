@@ -67,7 +67,6 @@ targets = [
     "mips64-unknown-linux-muslabi64",
     "mips64el-unknown-linux-gnuabi64",
     "mips64el-unknown-linux-muslabi64",
-    "mipsel-sony-psp",
     "mipsel-unknown-linux-gnu",
     "mipsel-unknown-linux-musl",
     "nvptx64-nvidia-cuda",
