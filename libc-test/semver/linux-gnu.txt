@@ -702,3 +702,4 @@ putpwent
 putgrent
 execveat
 close_range
+tcp_info
