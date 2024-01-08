@@ -1044,6 +1044,13 @@ fn test_netbsd(target: &str) {
     assert!(target.contains("netbsd"));
     let mut cfg = ctest_cfg();
 
+    let netbsd_ver = which_netbsd();
+
+    match netbsd_ver {
+        Some(10..=99) => cfg.cfg("netbsd10", None),
+        _ => &mut cfg,
+    };
+
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("_NETBSD_SOURCE", Some("1"));
 
@@ -4535,6 +4542,21 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("13") => Some(13),
         s if s.starts_with("14") => Some(14),
         s if s.starts_with("15") => Some(15),
+        _ => None,
+    }
+}
+
+fn which_netbsd() -> Option<i32> {
+    let output = std::process::Command::new("uname").arg("-r").output().ok();
+    if output.is_none() {
+        return None;
+    }
+
+    let output = output.unwrap();
+    let stdout = String::from_utf8(output.stdout).ok().unwrap();
+
+    match &stdout {
+        s if s.starts_with("10") => Some(10),
         _ => None,
     }
 }

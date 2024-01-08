@@ -18,6 +18,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
     "libc_thread_local",
+    "netbsd10",
 ];
 
 // Extra values to allow for check-cfg.
@@ -60,6 +61,12 @@ fn main() {
         Some(14) if libc_ci => set_cfg("freebsd14"),
         Some(15) if libc_ci => set_cfg("freebsd15"),
         Some(_) | None => set_cfg("freebsd11"),
+    }
+
+    match which_netbsd() {
+        // TODO: to update if there is a api breaking change
+        Some(10..=99) => set_cfg("netbsd10"),
+        Some(_) | None => (),
     }
 
     match emcc_version_code() {
@@ -179,6 +186,21 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("13") => Some(13),
         s if s.starts_with("14") => Some(14),
         s if s.starts_with("15") => Some(15),
+        _ => None,
+    }
+}
+
+fn which_netbsd() -> Option<i32> {
+    let output = std::process::Command::new("uname").arg("-r").output().ok();
+    if output.is_none() {
+        return None;
+    }
+
+    let output = output.unwrap();
+    let stdout = String::from_utf8(output.stdout).ok().unwrap();
+
+    match &stdout {
+        s if s.starts_with("10") => Some(10),
         _ => None,
     }
 }
