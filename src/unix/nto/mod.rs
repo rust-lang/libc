@@ -154,7 +154,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_uint; 2 * FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_uint; 2 * FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct tm {
@@ -1383,7 +1383,7 @@ pub const PATH_MAX: ::c_int = 1024;
 
 pub const UIO_MAXIOV: ::c_int = 1024;
 
-pub const FD_SETSIZE: usize = 256;
+pub const FD_SETSIZE: ::c_int = 256;
 
 pub const TCIOFF: ::c_int = 0x0002;
 pub const TCION: ::c_int = 0x0003;

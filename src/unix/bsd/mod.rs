@@ -59,10 +59,10 @@ s! {
     pub struct fd_set {
         #[cfg(all(target_pointer_width = "64",
                   any(target_os = "freebsd", target_os = "dragonfly")))]
-        fds_bits: [i64; FD_SETSIZE / 64],
+        fds_bits: [i64; FD_SETSIZE as usize / 64],
         #[cfg(not(all(target_pointer_width = "64",
                       any(target_os = "freebsd", target_os = "dragonfly"))))]
-        fds_bits: [i32; FD_SETSIZE / 32],
+        fds_bits: [i32; FD_SETSIZE as usize / 32],
     }
 
     pub struct tm {

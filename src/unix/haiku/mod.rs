@@ -1100,7 +1100,7 @@ pub const SA_ONESHOT: ::c_int = SA_RESETHAND;
 pub const SS_ONSTACK: ::c_int = 0x1;
 pub const SS_DISABLE: ::c_int = 0x2;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const RTLD_LOCAL: ::c_int = 0x0;
 pub const RTLD_NOW: ::c_int = 0x1;

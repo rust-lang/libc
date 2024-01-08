@@ -116,7 +116,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; ::FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; ::FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct in_addr {
@@ -759,7 +759,7 @@ pub const MS_INVALIDATE: ::c_int = 0x0002;
 pub const MS_SYNC: ::c_int = 0x0004;
 
 // sys/select.h
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 // sys/socket.h
 pub const AF_INET: ::c_int = 2;

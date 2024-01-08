@@ -2118,7 +2118,7 @@ pub const POWER_8: ::c_int = 0x10000;
 pub const POWER_9: ::c_int = 0x20000;
 
 // sys/time.h
-pub const FD_SETSIZE: usize = 65534;
+pub const FD_SETSIZE: ::c_int = 65534;
 pub const TIMEOFDAY: ::c_int = 9;
 pub const CLOCK_REALTIME: ::clockid_t = TIMEOFDAY as clockid_t;
 pub const CLOCK_MONOTONIC: ::clockid_t = 10;

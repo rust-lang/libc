@@ -171,7 +171,7 @@ s! {
     }
 
     pub struct fd_set { // Unverified
-        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct passwd { // Unverified
@@ -280,11 +280,11 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 
 cfg_if! {
     if #[cfg(any(target_os = "horizon", target_os = "espidf"))] {
-        pub const FD_SETSIZE: usize = 64;
+        pub const FD_SETSIZE: ::c_int = 64;
     } else if #[cfg(target_os = "vita")] {
-        pub const FD_SETSIZE: usize = 256;
+        pub const FD_SETSIZE: ::c_int = 256;
     } else {
-        pub const FD_SETSIZE: usize = 1024;
+        pub const FD_SETSIZE: ::c_int = 1024;
     }
 }
 // intentionally not public, only used for fd_set

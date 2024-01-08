@@ -1847,7 +1847,7 @@ pub const _SC_SCHED_RT_TS: ::c_int = 2001;
 pub const _SC_SCHED_PRI_MIN: ::c_int = 2002;
 pub const _SC_SCHED_PRI_MAX: ::c_int = 2003;
 
-pub const FD_SETSIZE: usize = 0x100;
+pub const FD_SETSIZE: ::c_int = 0x100;
 
 pub const ST_NOSUID: ::c_ulong = 8;
 

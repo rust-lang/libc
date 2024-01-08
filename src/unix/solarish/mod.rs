@@ -514,9 +514,9 @@ s_no_extra_traits! {
 
     pub struct fd_set {
         #[cfg(target_pointer_width = "64")]
-        fds_bits: [i64; FD_SETSIZE / 64],
+        fds_bits: [i64; FD_SETSIZE as usize / 64],
         #[cfg(target_pointer_width = "32")]
-        fds_bits: [i32; FD_SETSIZE / 32],
+        fds_bits: [i32; FD_SETSIZE as usize / 32],
     }
 
     pub struct sockaddr_storage {
@@ -1236,9 +1236,9 @@ pub const IPV6_V6ONLY: ::c_int = 0x27;
 
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
-        pub const FD_SETSIZE: usize = 65536;
+        pub const FD_SETSIZE: ::c_int = 65536;
     } else {
-        pub const FD_SETSIZE: usize = 1024;
+        pub const FD_SETSIZE: ::c_int = 1024;
     }
 }
 
