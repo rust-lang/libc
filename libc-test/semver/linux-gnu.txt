@@ -617,12 +617,12 @@ dlinfo
 dlmopen
 endutxent
 explicit_bzero
+fgetgrent_r
 fgetspent_r
 futimes
 getauxval
 getentropy
 getgrent_r
-fgetgrent_r
 getloadavg
 getpt
 getpwent_r
