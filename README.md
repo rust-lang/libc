@@ -47,8 +47,6 @@ libc = "0.2"
   If you use Rust >= 1.62, this feature is implicitly enabled.
   Otherwise it requires a nightly rustc.
 
-* **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
-
 ## Rust version support
 
 The minimum supported Rust toolchain version is currently **Rust 1.71.0**
