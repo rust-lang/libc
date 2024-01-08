@@ -917,21 +917,8 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
+mod align;
+pub use self::align::*;
 
-
-}
-
-cfg_if! {
-    if #[cfg(libc_int128)] {
-        mod int128;
-        pub use self::int128::*;
-    } else if #[cfg(libc_align)] {
-        mod fallback;
-        pub use self::fallback::*;
-    }
-}
+mod int128;
+pub use self::int128::*;
