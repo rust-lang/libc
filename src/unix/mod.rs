@@ -401,6 +401,20 @@ cfg_if! {
         #[link(name = "bsd")]
         #[link(name = "pthread")]
         extern {}
+    } else if #[cfg(target_os = "freebsd")] {
+        #[link(name = "c", kind = "static", modifiers = "-bundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "m", kind = "static", modifiers = "-bundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "rt", kind = "static", modifiers = "-bundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "pthread", kind = "static", modifiers = "-bundle",
+            cfg(target_feature = "crt-static"))]
+        #[link(name = "c", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "m", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "rt", cfg(not(target_feature = "crt-static")))]
+        #[link(name = "pthread", cfg(not(target_feature = "crt-static")))]
+        extern {}
     } else {
         #[link(name = "c")]
         #[link(name = "m")]

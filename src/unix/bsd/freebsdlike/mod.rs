@@ -1787,7 +1787,9 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "rt")]
+#[link(name = "rt", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "rt", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
     pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
@@ -1823,7 +1825,9 @@ extern "C" {
     pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
 }
 
-#[link(name = "util")]
+#[link(name = "util", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "util", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn openpty(
         amaster: *mut ::c_int,
@@ -1848,7 +1852,9 @@ extern "C" {
     ) -> *mut ::c_char;
 }
 
-#[link(name = "execinfo")]
+#[link(name = "execinfo", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "execinfo", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn backtrace(addrlist: *mut *mut ::c_void, len: ::size_t) -> ::size_t;
     pub fn backtrace_symbols(addrlist: *const *mut ::c_void, len: ::size_t) -> *mut *mut ::c_char;
@@ -1859,7 +1865,9 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "kvm")]
+#[link(name = "kvm", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "kvm", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn kvm_open(
         execfile: *const ::c_char,

@@ -5391,7 +5391,9 @@ extern "C" {
     pub fn close_range(lowfd: ::c_uint, highfd: ::c_uint, flags: ::c_int) -> ::c_int;
 }
 
-#[link(name = "memstat")]
+#[link(name = "memstat", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "memstat", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn memstat_strerror(error: ::c_int) -> *const ::c_char;
     pub fn memstat_mtl_alloc() -> *mut memory_type_list;
@@ -5407,7 +5409,9 @@ extern "C" {
     pub fn memstat_get_name(mtp: *const memory_type) -> *const ::c_char;
 }
 
-#[link(name = "kvm")]
+#[link(name = "kvm", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "kvm", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn kvm_dpcpu_setcpu(kd: *mut ::kvm_t, cpu: ::c_uint) -> ::c_int;
     pub fn kvm_getargv(kd: *mut ::kvm_t, p: *const kinfo_proc, nchr: ::c_int)
@@ -5444,7 +5448,9 @@ extern "C" {
     ) -> ::ssize_t;
 }
 
-#[link(name = "util")]
+#[link(name = "util", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "util", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn extattr_namespace_to_string(
         attrnamespace: ::c_int,
@@ -5494,7 +5500,9 @@ extern "C" {
     // FIXME: pidfile_signal in due time (both manpage present and updated image snapshot)
 }
 
-#[link(name = "procstat")]
+#[link(name = "procstat", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "procstat", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn procstat_open_sysctl() -> *mut procstat;
     pub fn procstat_getfiles(
@@ -5586,7 +5594,9 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "rt")]
+#[link(name = "rt", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "rt", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn timer_create(clock_id: clockid_t, evp: *mut sigevent, timerid: *mut timer_t) -> ::c_int;
     pub fn timer_delete(timerid: timer_t) -> ::c_int;
@@ -5600,7 +5610,9 @@ extern "C" {
     ) -> ::c_int;
 }
 
-#[link(name = "devstat")]
+#[link(name = "devstat", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "devstat", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn devstat_getnumdevs(kd: *mut ::kvm_t) -> ::c_int;
     pub fn devstat_getgeneration(kd: *mut ::kvm_t) -> ::c_long;

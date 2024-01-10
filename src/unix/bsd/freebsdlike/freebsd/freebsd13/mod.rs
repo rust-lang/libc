@@ -524,7 +524,9 @@ extern "C" {
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
 }
 
-#[link(name = "kvm")]
+#[link(name = "kvm", kind = "static", modifiers = "-bundle",
+    cfg(target_feature = "crt-static"))]
+#[link(name = "kvm", cfg(not(target_feature = "crt-static")))]
 extern "C" {
     pub fn kvm_kerndisp(kd: *mut ::kvm_t) -> ::kssize_t;
 }
