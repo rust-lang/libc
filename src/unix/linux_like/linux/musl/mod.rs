@@ -810,6 +810,11 @@ pub const XSK_UNALIGNED_BUF_ADDR_MASK: ::c_ulonglong = (1 << XSK_UNALIGNED_BUF_O
 
 pub const XDP_PKT_CONTD: ::__u32 = 1 << 0;
 
+// linux/sched.h
+pub const CLONE_NEWTIME: ::c_int = 0x80;
+pub const CLONE_CLEAR_SIGHAND: ::c_int = 0x100000000;
+pub const CLONE_INTO_CGROUP: ::c_int = 0x200000000;
+
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
         pub const POSIX_FADV_DONTNEED: ::c_int = 6;
