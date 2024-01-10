@@ -5633,6 +5633,10 @@ pub const SCHED_FLAG_KEEP_PARAMS: c_int = 0x10;
 pub const SCHED_FLAG_UTIL_CLAMP_MIN: c_int = 0x20;
 pub const SCHED_FLAG_UTIL_CLAMP_MAX: c_int = 0x40;
 
+pub const CLONE_NEWTIME: c_int = 0x80;
+pub const CLONE_CLEAR_SIGHAND: c_ulonglong = 0x100000000;
+pub const CLONE_INTO_CGROUP: c_ulonglong = 0x200000000;
+
 // linux/if_xdp.h
 pub const XDP_SHARED_UMEM: crate::__u16 = 1 << 0;
 pub const XDP_COPY: crate::__u16 = 1 << 1;
