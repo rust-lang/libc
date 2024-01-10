@@ -251,40 +251,6 @@ macro_rules! __item {
     };
 }
 
-// This macro is used to deprecate items that should be accessed via the mach2 crate
-macro_rules! deprecated_mach {
-    (pub const $id:ident: $ty:ty = $expr:expr;) => {
-        #[deprecated(
-            since = "0.2.55",
-            note = "Use the `mach2` crate instead",
-        )]
-        #[allow(deprecated)]
-        pub const $id: $ty = $expr;
-    };
-    ($(pub const $id:ident: $ty:ty = $expr:expr;)*) => {
-        $(
-            deprecated_mach!(
-                pub const $id: $ty = $expr;
-            );
-        )*
-    };
-    (pub type $id:ident = $ty:ty;) => {
-        #[deprecated(
-            since = "0.2.55",
-            note = "Use the `mach2` crate instead",
-        )]
-        #[allow(deprecated)]
-        pub type $id = $ty;
-    };
-    ($(pub type $id:ident = $ty:ty;)*) => {
-        $(
-            deprecated_mach!(
-                pub type $id = $ty;
-            );
-        )*
-    }
-}
-
 macro_rules! ptr_addr_of {
     ($place:expr) => {
         ::core::ptr::addr_of!($place)

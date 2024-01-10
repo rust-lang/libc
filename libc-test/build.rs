@@ -202,14 +202,6 @@ fn test_apple(target: &str) {
         "libproc.h",
         "limits.h",
         "locale.h",
-        "mach-o/dyld.h",
-        "mach/mach_init.h",
-        "mach/mach.h",
-        "mach/mach_time.h",
-        "mach/mach_types.h",
-        "mach/mach_vm.h",
-        "mach/thread_act.h",
-        "mach/thread_policy.h",
         "malloc/malloc.h",
         "net/bpf.h",
         "net/dlil.h",
@@ -319,10 +311,6 @@ fn test_apple(target: &str) {
     });
 
     cfg.skip_const(move |name| {
-        // They're declared via `deprecated_mach` and we don't support it anymore.
-        if name.starts_with("VM_FLAGS_") {
-            return true;
-        }
         match name {
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
