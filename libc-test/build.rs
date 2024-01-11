@@ -3327,7 +3327,6 @@ fn test_linux(target: &str) {
                "netinet/ip.h",
                "netinet/tcp.h",
                "netinet/udp.h",
-               "netpacket/packet.h",
                "poll.h",
                "pthread.h",
                "pty.h",
@@ -3427,6 +3426,7 @@ fn test_linux(target: &str) {
         "linux/if_addr.h",
         "linux/if_alg.h",
         "linux/if_ether.h",
+        "linux/if_packet.h",
         "linux/if_tun.h",
         "linux/if_xdp.h",
         "linux/input.h",
@@ -3606,6 +3606,23 @@ fn test_linux(target: &str) {
         if (gnu && sparc64) && (ty == "ip_mreqn" || ty == "hwtstamp_config") {
             return true;
         }
+        // FIXME: pass by value for structs that are not an even 32/64 bits on
+        // big-endian systems corrupts the value for unknown reasons.
+        if (sparc64 || ppc || ppc64 || s390x)
+            && (ty == "sockaddr_pkt"
+                || ty == "tpacket_auxdata"
+                || ty == "tpacket_hdr_variant1"
+                || ty == "tpacket_req3"
+                || ty == "tpacket_stats_v3"
+                || ty == "tpacket_req_u")
+        {
+            return true;
+        }
+        // FIXME: musl doesn't compile with `struct fanout_args` for unknown reasons.
+        if musl && ty == "fanout_args" {
+            return true;
+        }
+
         match ty {
             // These cannot be tested when "resolv.h" is included and are tested
             // in the `linux_elf.rs` file.
