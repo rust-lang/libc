@@ -304,8 +304,6 @@ pub const SIGURG: ::c_int = 29;
 pub const SIGIO: ::c_int = 22;
 pub const SIGSYS: ::c_int = 31;
 pub const SIGSTKFLT: ::c_int = 7;
-#[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
-pub const SIGUNUSED: ::c_int = 31;
 pub const SIGPOLL: ::c_int = 22;
 pub const SIGPWR: ::c_int = 19;
 pub const SIG_SETMASK: ::c_int = 2;
