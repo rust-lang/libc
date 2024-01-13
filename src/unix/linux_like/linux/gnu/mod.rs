@@ -1548,6 +1548,7 @@ extern "C" {
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
                  target_arch = "arm",
+                 target_arch = "hppa",
                  target_arch = "m68k",
                  target_arch = "csky",
                  target_arch = "mips",
