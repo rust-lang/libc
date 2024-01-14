@@ -2251,3 +2251,5 @@ closefrom
 close_range
 eventfd_read
 eventfd_write
+IP_RECVTTL
+IPV6_RECVHOPLIMIT

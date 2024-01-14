@@ -3609,6 +3609,8 @@ pub const IP_RSS_LISTEN_BUCKET: ::c_int = 26;
 pub const IP_ORIGDSTADDR: ::c_int = 27;
 pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
 
+pub const IP_RECVTTL: ::c_int = 65;
+pub const IPV6_RECVHOPLIMIT: ::c_int = 37;
 pub const IP_DONTFRAG: ::c_int = 67;
 pub const IP_RECVTOS: ::c_int = 68;
 
