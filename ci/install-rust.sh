@@ -8,15 +8,7 @@ toolchain=
 if [ -n "$TOOLCHAIN" ]; then
   toolchain=$TOOLCHAIN
 else
-  # Pin the nightly version as newer nightly versions break CI,
-  # https://github.com/rust-lang/rust/issues/103673 contains related information.
-  case "$TARGET" in
-    *android*) toolchain=nightly-2022-10-09;;
-    # FIXME: Unpin once mips' components are available on nightly.
-    # https://rust-lang.github.io/rustup-components-history/mips-unknown-linux-gnu.html
-    *mips*) toolchain=nightly-2023-07-04;;
-    *) toolchain=nightly;;
-  esac
+  toolchain=nightly
 fi
 if [ "$OS" = "windows" ]; then
   : "${TARGET?The TARGET environment variable must be set.}"

@@ -65,6 +65,7 @@ s_paren! {
     // in wasi-libc clockid_t is const struct __clockid* (where __clockid is an opaque struct),
     // but that's an implementation detail that we don't want to have to deal with
     #[repr(transparent)]
+    #[allow(dead_code)]
     pub struct clockid_t(*const u8);
 }
 
@@ -206,7 +207,7 @@ pub const F_SETFD: c_int = 2;
 pub const F_GETFL: c_int = 3;
 pub const F_SETFL: c_int = 4;
 pub const FD_CLOEXEC: c_int = 1;
-pub const FD_SETSIZE: size_t = 1024;
+pub const FD_SETSIZE: c_int = 1024;
 pub const O_APPEND: c_int = 0x0001;
 pub const O_DSYNC: c_int = 0x0002;
 pub const O_NONBLOCK: c_int = 0x0004;

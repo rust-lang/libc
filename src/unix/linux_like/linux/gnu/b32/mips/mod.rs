@@ -719,6 +719,7 @@ pub const RTLD_NOLOAD: ::c_int = 0x8;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
+pub const MCL_ONFAULT: ::c_int = 0x0004;
 
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
@@ -810,9 +811,5 @@ pub const B4000000: ::speed_t = 0o010017;
 
 pub const EHWPOISON: ::c_int = 168;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

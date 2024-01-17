@@ -260,12 +260,6 @@ s! {
         __unused5: u64
     }
 
-    pub struct seccomp_notif_sizes {
-        pub seccomp_notif: ::__u16,
-        pub seccomp_notif_resp: ::__u16,
-        pub seccomp_data: ::__u16,
-    }
-
     pub struct ptrace_rseq_configuration {
         pub rseq_abi_pointer: ::__u64,
         pub rseq_abi_size: ::__u32,
@@ -651,6 +645,7 @@ pub const PR_SPEC_INDIRECT_BRANCH: ::c_int = 1;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
+pub const MCL_ONFAULT: ::c_int = 0x0004;
 
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
@@ -802,11 +797,6 @@ pub const REG_TRAPNO: ::c_int = 20;
 pub const REG_OLDMASK: ::c_int = 21;
 pub const REG_CR2: ::c_int = 22;
 
-pub const SECCOMP_SET_MODE_STRICT: ::c_uint = 0;
-pub const SECCOMP_SET_MODE_FILTER: ::c_uint = 1;
-pub const SECCOMP_GET_ACTION_AVAIL: ::c_uint = 2;
-pub const SECCOMP_GET_NOTIF_SIZES: ::c_uint = 3;
-
 extern "C" {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
@@ -826,9 +816,5 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

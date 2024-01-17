@@ -58,65 +58,61 @@ impl siginfo_t {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        // Internal, for casts to access union fields
-        #[repr(C)]
-        struct sifields_sigchld {
-            si_pid: ::pid_t,
-            si_uid: ::uid_t,
-            si_status: ::c_int,
-            si_utime: ::c_long,
-            si_stime: ::c_long,
-        }
-        impl ::Copy for sifields_sigchld {}
-        impl ::Clone for sifields_sigchld {
-            fn clone(&self) -> sifields_sigchld {
-                *self
-            }
-        }
+// Internal, for casts to access union fields
+#[repr(C)]
+struct sifields_sigchld {
+    si_pid: ::pid_t,
+    si_uid: ::uid_t,
+    si_status: ::c_int,
+    si_utime: ::c_long,
+    si_stime: ::c_long,
+}
+impl ::Copy for sifields_sigchld {}
+impl ::Clone for sifields_sigchld {
+    fn clone(&self) -> sifields_sigchld {
+        *self
+    }
+}
 
-        // Internal, for casts to access union fields
-        #[repr(C)]
-        union sifields {
-            _align_pointer: *mut ::c_void,
-            sigchld: sifields_sigchld,
-        }
+// Internal, for casts to access union fields
+#[repr(C)]
+union sifields {
+    _align_pointer: *mut ::c_void,
+    sigchld: sifields_sigchld,
+}
 
-        // Internal, for casts to access union fields. Note that some variants
-        // of sifields start with a pointer, which makes the alignment of
-        // sifields vary on 32-bit and 64-bit architectures.
-        #[repr(C)]
-        struct siginfo_f {
-            _siginfo_base: [::c_int; 3],
-            sifields: sifields,
-        }
+// Internal, for casts to access union fields. Note that some variants
+// of sifields start with a pointer, which makes the alignment of
+// sifields vary on 32-bit and 64-bit architectures.
+#[repr(C)]
+struct siginfo_f {
+    _siginfo_base: [::c_int; 3],
+    sifields: sifields,
+}
 
-        impl siginfo_t {
-            unsafe fn sifields(&self) -> &sifields {
-                &(*(self as *const siginfo_t as *const siginfo_f)).sifields
-            }
+impl siginfo_t {
+    unsafe fn sifields(&self) -> &sifields {
+        &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+    }
 
-            pub unsafe fn si_pid(&self) -> ::pid_t {
-                self.sifields().sigchld.si_pid
-            }
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.sifields().sigchld.si_pid
+    }
 
-            pub unsafe fn si_uid(&self) -> ::uid_t {
-                self.sifields().sigchld.si_uid
-            }
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.sifields().sigchld.si_uid
+    }
 
-            pub unsafe fn si_status(&self) -> ::c_int {
-                self.sifields().sigchld.si_status
-            }
+    pub unsafe fn si_status(&self) -> ::c_int {
+        self.sifields().sigchld.si_status
+    }
 
-            pub unsafe fn si_utime(&self) -> ::c_long {
-                self.sifields().sigchld.si_utime
-            }
+    pub unsafe fn si_utime(&self) -> ::c_long {
+        self.sifields().sigchld.si_utime
+    }
 
-            pub unsafe fn si_stime(&self) -> ::c_long {
-                self.sifields().sigchld.si_stime
-            }
-        }
+    pub unsafe fn si_stime(&self) -> ::c_long {
+        self.sifields().sigchld.si_stime
     }
 }
 
@@ -270,6 +266,83 @@ s! {
         pub time: ::timeval,
         pub maxerror: ::c_long,
         pub esterror: ::c_long,
+    }
+
+    // linux/if_xdp.h
+
+    pub struct sockaddr_xdp {
+        pub sxdp_family: ::__u16,
+        pub sxdp_flags: ::__u16,
+        pub sxdp_ifindex: ::__u32,
+        pub sxdp_queue_id: ::__u32,
+        pub sxdp_shared_umem_fd: ::__u32,
+    }
+
+    pub struct xdp_ring_offset {
+        pub producer: ::__u64,
+        pub consumer: ::__u64,
+        pub desc: ::__u64,
+        pub flags: ::__u64,
+    }
+
+    pub struct xdp_mmap_offsets {
+        pub rx: xdp_ring_offset,
+        pub tx: xdp_ring_offset,
+        pub fr: xdp_ring_offset,
+        pub cr: xdp_ring_offset,
+    }
+
+    pub struct xdp_ring_offset_v1 {
+        pub producer: ::__u64,
+        pub consumer: ::__u64,
+        pub desc: ::__u64,
+    }
+
+    pub struct xdp_mmap_offsets_v1 {
+        pub rx: xdp_ring_offset_v1,
+        pub tx: xdp_ring_offset_v1,
+        pub fr: xdp_ring_offset_v1,
+        pub cr: xdp_ring_offset_v1,
+    }
+
+    pub struct xdp_umem_reg {
+        pub addr: ::__u64,
+        pub len: ::__u64,
+        pub chunk_size: ::__u32,
+        pub headroom: ::__u32,
+        pub flags: ::__u32,
+    }
+
+    pub struct xdp_umem_reg_v1 {
+        pub addr: ::__u64,
+        pub len: ::__u64,
+        pub chunk_size: ::__u32,
+        pub headroom: ::__u32,
+    }
+
+    pub struct xdp_statistics {
+        pub rx_dropped: ::__u64,
+        pub rx_invalid_descs: ::__u64,
+        pub tx_invalid_descs: ::__u64,
+        pub rx_ring_full: ::__u64,
+        pub rx_fill_ring_empty_descs: ::__u64,
+        pub tx_ring_empty_descs: ::__u64,
+    }
+
+    pub struct xdp_statistics_v1 {
+        pub rx_dropped: ::__u64,
+        pub rx_invalid_descs: ::__u64,
+        pub tx_invalid_descs: ::__u64,
+    }
+
+    pub struct xdp_options {
+        pub flags: ::__u32,
+    }
+
+    pub struct xdp_desc {
+        pub addr: ::__u64,
+        pub len: ::__u32,
+        pub options: ::__u32,
     }
 }
 
@@ -512,6 +585,10 @@ pub const ECOMM: ::c_int = 70;
 pub const EPROTO: ::c_int = 71;
 pub const EDOTDOT: ::c_int = 73;
 
+pub const F_OFD_GETLK: ::c_int = 36;
+pub const F_OFD_SETLK: ::c_int = 37;
+pub const F_OFD_SETLKW: ::c_int = 38;
+
 pub const F_RDLCK: ::c_int = 0;
 pub const F_WRLCK: ::c_int = 1;
 pub const F_UNLCK: ::c_int = 2;
@@ -541,7 +618,9 @@ pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const MAP_ANONYMOUS: ::c_int = MAP_ANON;
 
+pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOCK_DCCP: ::c_int = 6;
+pub const SOCK_NONBLOCK: ::c_int = O_NONBLOCK;
 pub const SOCK_PACKET: ::c_int = 10;
 
 pub const SOMAXCONN: ::c_int = 128;
@@ -585,11 +664,8 @@ pub const PTRACE_SEIZE: ::c_int = 0x4206;
 pub const PTRACE_INTERRUPT: ::c_int = 0x4207;
 pub const PTRACE_LISTEN: ::c_int = 0x4208;
 pub const PTRACE_PEEKSIGINFO: ::c_int = 0x4209;
-
-pub const FAN_MARK_INODE: ::c_uint = 0x0000_0000;
-pub const FAN_MARK_MOUNT: ::c_uint = 0x0000_0010;
-// NOTE: FAN_MARK_FILESYSTEM requires Linux Kernel >= 4.20.0
-pub const FAN_MARK_FILESYSTEM: ::c_uint = 0x0000_0100;
+pub const PTRACE_GETSIGMASK: ::c_uint = 0x420a;
+pub const PTRACE_SETSIGMASK: ::c_uint = 0x420b;
 
 pub const AF_IB: ::c_int = 27;
 pub const AF_MPLS: ::c_int = 28;
@@ -700,6 +776,40 @@ pub const TIME_ERROR: ::c_int = 5;
 pub const TIME_BAD: ::c_int = TIME_ERROR;
 pub const MAXTC: ::c_long = 6;
 
+pub const SOL_XDP: ::c_int = 283;
+
+// linux/if_xdp.h
+pub const XDP_SHARED_UMEM: ::__u16 = 1 << 0;
+pub const XDP_COPY: ::__u16 = 1 << 1;
+pub const XDP_ZEROCOPY: ::__u16 = 1 << 2;
+pub const XDP_USE_NEED_WAKEUP: ::__u16 = 1 << 3;
+pub const XDP_USE_SG: ::__u16 = 1 << 4;
+
+pub const XDP_UMEM_UNALIGNED_CHUNK_FLAG: ::__u32 = 1 << 0;
+
+pub const XDP_RING_NEED_WAKEUP: ::__u32 = 1 << 0;
+
+pub const XDP_MMAP_OFFSETS: ::c_int = 1;
+pub const XDP_RX_RING: ::c_int = 2;
+pub const XDP_TX_RING: ::c_int = 3;
+pub const XDP_UMEM_REG: ::c_int = 4;
+pub const XDP_UMEM_FILL_RING: ::c_int = 5;
+pub const XDP_UMEM_COMPLETION_RING: ::c_int = 6;
+pub const XDP_STATISTICS: ::c_int = 7;
+pub const XDP_OPTIONS: ::c_int = 8;
+
+pub const XDP_OPTIONS_ZEROCOPY: ::__u32 = 1 << 0;
+
+pub const XDP_PGOFF_RX_RING: ::off_t = 0;
+pub const XDP_PGOFF_TX_RING: ::off_t = 0x80000000;
+pub const XDP_UMEM_PGOFF_FILL_RING: ::c_ulonglong = 0x100000000;
+pub const XDP_UMEM_PGOFF_COMPLETION_RING: ::c_ulonglong = 0x180000000;
+
+pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: ::c_int = 48;
+pub const XSK_UNALIGNED_BUF_ADDR_MASK: ::c_ulonglong = (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
+
+pub const XDP_PKT_CONTD: ::__u32 = 1 << 0;
+
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
         pub const POSIX_FADV_DONTNEED: ::c_int = 6;
@@ -775,10 +885,24 @@ extern "C" {
         format: *const ::c_char,
         tm: *const ::tm,
     ) -> ::size_t;
+    pub fn strftime_l(
+        s: *mut ::c_char,
+        max: ::size_t,
+        format: *const ::c_char,
+        tm: *const ::tm,
+        locale: ::locale_t,
+    ) -> ::size_t;
     pub fn strptime(s: *const ::c_char, format: *const ::c_char, tm: *mut ::tm) -> *mut ::c_char;
 
     pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
+
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn endutxent();
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support

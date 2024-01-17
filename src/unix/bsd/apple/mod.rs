@@ -145,6 +145,16 @@ pub type CCRNGStatus = ::CCCryptorStatus;
 
 pub type copyfile_state_t = *mut ::c_void;
 pub type copyfile_flags_t = u32;
+pub type copyfile_callback_t = ::Option<
+    extern "C" fn(
+        ::c_int,
+        ::c_int,
+        copyfile_state_t,
+        *const ::c_char,
+        *const ::c_char,
+        *mut ::c_void,
+    ) -> ::c_int,
+>;
 
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
@@ -366,6 +376,25 @@ s! {
         pub fst_offset: ::off_t,
         pub fst_length: ::off_t,
         pub fst_bytesalloc: ::off_t,
+    }
+
+    pub struct fpunchhole_t {
+        pub fp_flags: ::c_uint, /* unused */
+        pub reserved: ::c_uint, /* (to maintain 8-byte alignment) */
+        pub fp_offset: ::off_t, /* IN: start of the region */
+        pub fp_length: ::off_t, /* IN: size of the region */
+    }
+
+    pub struct ftrimactivefile_t {
+        pub fta_offset: ::off_t,
+        pub fta_length: ::off_t,
+    }
+
+    pub struct fspecread_t {
+        pub fsr_flags: ::c_uint,
+        pub reserved: ::c_uint,
+        pub fsr_offset: ::off_t,
+        pub fsr_length: ::off_t,
     }
 
     pub struct radvisory {
@@ -768,7 +797,7 @@ s! {
     pub struct sockaddr_ndrv {
         pub snd_len: ::c_uchar,
         pub snd_family: ::c_uchar,
-        pub snd_name: [::c_uchar; 16]      // IFNAMSIZ from if.h
+        pub snd_name: [::c_uchar; ::IFNAMSIZ],
     }
 
     // sys/socket.h
@@ -1100,10 +1129,59 @@ s! {
         pub validattr: attribute_set_t,
         pub nativeattr: attribute_set_t,
     }
+
+    #[repr(packed(4))]
+    pub struct ifconf {
+        pub ifc_len: ::c_int,
+        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+    }
+
+    #[repr(align(8))]
+    pub struct tcp_connection_info {
+        pub tcpi_state: u8,
+        pub tcpi_snd_wscale: u8,
+        pub tcpi_rcv_wscale: u8,
+        __pad1: u8,
+        pub tcpi_options: u32,
+        pub tcpi_flags: u32,
+        pub tcpi_rto: u32,
+        pub tcpi_maxseg: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_snd_sbbytes: u32,
+        pub tcpi_rcv_wnd: u32,
+        pub tcpi_rttcur: u32,
+        pub tcpi_srtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_tfo_cookie_req: u32,
+        pub tcpi_tfo_cookie_rcv: u32,
+        pub tcpi_tfo_syn_loss: u32,
+        pub tcpi_tfo_syn_data_sent: u32,
+        pub tcpi_tfo_syn_data_acked: u32,
+        pub tcpi_tfo_syn_data_rcv: u32,
+        pub tcpi_tfo_cookie_req_rcv: u32,
+        pub tcpi_tfo_cookie_sent: u32,
+        pub tcpi_tfo_cookie_invalid: u32,
+        pub tcpi_tfo_cookie_wrong: u32,
+        pub tcpi_tfo_no_cookie_rcv: u32,
+        pub tcpi_tfo_heuristics_disable: u32,
+        pub tcpi_tfo_send_blackhole: u32,
+        pub tcpi_tfo_recv_blackhole: u32,
+        pub tcpi_tfo_onebyte_proxy: u32,
+        __pad2: u32,
+        pub tcpi_txpackets: u64,
+        pub tcpi_txbytes: u64,
+        pub tcpi_txretransmitbytes: u64,
+        pub tcpi_rxpackets: u64,
+        pub tcpi_rxbytes: u64,
+        pub tcpi_rxoutoforderbytes: u64,
+        pub tcpi_rxretransmitpackets: u64,
+    }
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct kevent {
         pub ident: ::uintptr_t,
         pub filter: i16,
@@ -1113,7 +1191,7 @@ s_no_extra_traits! {
         pub udata: *mut ::c_void,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
         pub sem_perm: ipc_perm,
@@ -1126,7 +1204,7 @@ s_no_extra_traits! {
         pub sem_pad3: [i32; 4],
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
         pub shm_segsz: ::size_t,
@@ -1285,7 +1363,7 @@ s_no_extra_traits! {
         pub pth_name: [::c_char; MAXTHREADNAMESIZE],
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct if_data64 {
         pub ifi_type: ::c_uchar,
         pub ifi_typelen: ::c_uchar,
@@ -1317,7 +1395,7 @@ s_no_extra_traits! {
         pub ifi_lastchange: timeval32,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct if_msghdr2 {
         pub ifm_msglen: ::c_ushort,
         pub ifm_version: ::c_uchar,
@@ -1332,7 +1410,7 @@ s_no_extra_traits! {
         pub ifm_data: if_data64,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(8)))]
+    #[repr(packed(8))]
     pub struct vm_statistics64 {
         pub free_count: natural_t,
         pub active_count: natural_t,
@@ -1360,7 +1438,7 @@ s_no_extra_traits! {
         pub total_uncompressed_pages_in_compressor: u64,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct mach_task_basic_info {
         pub virtual_size: mach_vm_size_t,
         pub resident_size: mach_vm_size_t,
@@ -1371,7 +1449,7 @@ s_no_extra_traits! {
         pub suspend_count: integer_t,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct log2phys {
         pub l2p_flags: ::c_uint,
         pub l2p_contigbytes: ::off_t,
@@ -1382,13 +1460,60 @@ s_no_extra_traits! {
         _os_unfair_lock_opaque: u32,
     }
 
-   #[cfg_attr(libc_packedN, repr(packed(1)))]
+    #[repr(packed(1))]
     pub struct sockaddr_vm {
         pub svm_len: ::c_uchar,
         pub svm_family: ::sa_family_t,
         pub svm_reserved1: ::c_ushort,
         pub svm_port: ::c_uint,
         pub svm_cid: ::c_uint,
+    }
+
+    pub struct ifdevmtu {
+        pub ifdm_current: ::c_int,
+        pub ifdm_min: ::c_int,
+        pub ifdm_max: ::c_int,
+    }
+
+    pub union __c_anonymous_ifk_data {
+        pub ifk_ptr: *mut ::c_void,
+        pub ifk_value: ::c_int,
+    }
+
+    #[repr(packed(4))]
+    pub struct ifkpi {
+        pub ifk_module_id: ::c_uint,
+        pub ifk_type: ::c_uint,
+        pub ifk_data: __c_anonymous_ifk_data,
+    }
+
+    pub union __c_anonymous_ifr_ifru {
+        pub ifru_addr: ::sockaddr,
+        pub ifru_dstaddr: ::sockaddr,
+        pub ifru_broadaddr: ::sockaddr,
+        pub ifru_flags: ::c_short,
+        pub ifru_metrics: ::c_int,
+        pub ifru_mtu: ::c_int,
+        pub ifru_phys: ::c_int,
+        pub ifru_media: ::c_int,
+        pub ifru_intval: ::c_int,
+        pub ifru_data: *mut ::c_char,
+        pub ifru_devmtu: ifdevmtu,
+        pub ifru_kpi: ifkpi,
+        pub ifru_wake_flags: u32,
+        pub ifru_route_refcnt: u32,
+        pub ifru_cap: [::c_int; 2],
+        pub ifru_functional_type: u32,
+    }
+
+    pub struct ifreq {
+        pub ifr_name: [::c_char; ::IFNAMSIZ],
+        pub ifr_ifru: __c_anonymous_ifr_ifru,
+    }
+
+    pub union __c_anonymous_ifc_ifcu {
+        pub ifcu_buf: *mut ::c_char,
+        pub ifcu_req: *mut ifreq,
     }
 }
 
@@ -1426,37 +1551,33 @@ impl siginfo_t {
     }
 }
 
+s_no_extra_traits! {
+    pub union semun {
+        pub val: ::c_int,
+        pub buf: *mut semid_ds,
+        pub array: *mut ::c_ushort,
+    }
+}
+
 cfg_if! {
-    if #[cfg(libc_union)] {
-        s_no_extra_traits! {
-            pub union semun {
-                pub val: ::c_int,
-                pub buf: *mut semid_ds,
-                pub array: *mut ::c_ushort,
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for semun {
+            fn eq(&self, other: &semun) -> bool {
+                unsafe { self.val == other.val }
             }
         }
-
-        cfg_if! {
-            if #[cfg(feature = "extra_traits")] {
-                impl PartialEq for semun {
-                    fn eq(&self, other: &semun) -> bool {
-                        unsafe { self.val == other.val }
-                    }
-                }
-                impl Eq for semun {}
-                impl ::fmt::Debug for semun {
-                    fn fmt(&self, f: &mut ::fmt::Formatter)
-                           -> ::fmt::Result {
-                        f.debug_struct("semun")
-                            .field("val", unsafe { &self.val })
-                            .finish()
-                    }
-                }
-                impl ::hash::Hash for semun {
-                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                        unsafe { self.val.hash(state) };
-                    }
-                }
+        impl Eq for semun {}
+        impl ::fmt::Debug for semun {
+            fn fmt(&self, f: &mut ::fmt::Formatter)
+                    -> ::fmt::Result {
+                f.debug_struct("semun")
+                    .field("val", unsafe { &self.val })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for semun {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.val.hash(state) };
             }
         }
     }
@@ -2738,6 +2859,210 @@ cfg_if! {
                 svm_cid.hash(state);
             }
         }
+
+        impl PartialEq for ifdevmtu {
+            fn eq(&self, other: &ifdevmtu) -> bool {
+                self.ifdm_current == other.ifdm_current
+                    && self.ifdm_min == other.ifdm_min
+                    && self.ifdm_max == other.ifdm_max
+            }
+        }
+
+        impl Eq for ifdevmtu {}
+
+        impl ::fmt::Debug for ifdevmtu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifdevmtu")
+                    .field("ifdm_current", &self.ifdm_current)
+                    .field("ifdm_min", &self.ifdm_min)
+                    .field("ifdm_max", &self.ifdm_max)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for ifdevmtu {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ifdm_current.hash(state);
+                self.ifdm_min.hash(state);
+                self.ifdm_max.hash(state);
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifk_data {
+            fn eq(&self, other: &__c_anonymous_ifk_data) -> bool {
+                unsafe {
+                    self.ifk_ptr == other.ifk_ptr
+                        && self.ifk_value == other.ifk_value
+                }
+            }
+        }
+
+        impl Eq for __c_anonymous_ifk_data {}
+
+        impl ::fmt::Debug for __c_anonymous_ifk_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("__c_anonymous_ifk_data")
+                    .field("ifk_ptr", unsafe { &self.ifk_ptr })
+                    .field("ifk_value", unsafe { &self.ifk_value })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for __c_anonymous_ifk_data {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.ifk_ptr.hash(state);
+                    self.ifk_value.hash(state);
+                }
+            }
+        }
+
+        impl PartialEq for ifkpi {
+            fn eq(&self, other: &ifkpi) -> bool {
+                self.ifk_module_id == other.ifk_module_id
+                    && self.ifk_type == other.ifk_type
+            }
+        }
+
+        impl Eq for ifkpi {}
+
+        impl ::fmt::Debug for ifkpi {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifkpi")
+                    .field("ifk_module_id", &self.ifk_module_id)
+                    .field("ifk_type", &self.ifk_type)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for ifkpi {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ifk_module_id.hash(state);
+                self.ifk_type.hash(state);
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifr_ifru {
+            fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
+                unsafe {
+                    self.ifru_addr == other.ifru_addr
+                        && self.ifru_dstaddr == other.ifru_dstaddr
+                        && self.ifru_broadaddr == other.ifru_broadaddr
+                        && self.ifru_flags == other.ifru_flags
+                        && self.ifru_metrics == other.ifru_metrics
+                        && self.ifru_mtu == other.ifru_mtu
+                        && self.ifru_phys == other.ifru_phys
+                        && self.ifru_media == other.ifru_media
+                        && self.ifru_intval == other.ifru_intval
+                        && self.ifru_data == other.ifru_data
+                        && self.ifru_devmtu == other.ifru_devmtu
+                        && self.ifru_kpi == other.ifru_kpi
+                        && self.ifru_wake_flags == other.ifru_wake_flags
+                        && self.ifru_route_refcnt == other.ifru_route_refcnt
+                        && self.ifru_cap.iter().zip(other.ifru_cap.iter()).all(|(a,b)| a == b)
+                        && self.ifru_functional_type == other.ifru_functional_type
+                }
+            }
+        }
+
+        impl Eq for __c_anonymous_ifr_ifru {}
+
+        impl ::fmt::Debug for __c_anonymous_ifr_ifru {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("__c_anonymous_ifr_ifru")
+                    .field("ifru_addr", unsafe { &self.ifru_addr })
+                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
+                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
+                    .field("ifru_flags", unsafe { &self.ifru_flags })
+                    .field("ifru_metrics", unsafe { &self.ifru_metrics })
+                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
+                    .field("ifru_phys", unsafe { &self.ifru_phys })
+                    .field("ifru_media", unsafe { &self.ifru_media })
+                    .field("ifru_intval", unsafe { &self.ifru_intval })
+                    .field("ifru_data", unsafe { &self.ifru_data })
+                    .field("ifru_devmtu", unsafe { &self.ifru_devmtu })
+                    .field("ifru_kpi", unsafe { &self.ifru_kpi })
+                    .field("ifru_wake_flags", unsafe { &self.ifru_wake_flags })
+                    .field("ifru_route_refcnt", unsafe { &self.ifru_route_refcnt })
+                    .field("ifru_cap", unsafe { &self.ifru_cap })
+                    .field("ifru_functional_type", unsafe { &self.ifru_functional_type })
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for __c_anonymous_ifr_ifru {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.ifru_addr.hash(state);
+                    self.ifru_dstaddr.hash(state);
+                    self.ifru_broadaddr.hash(state);
+                    self.ifru_flags.hash(state);
+                    self.ifru_metrics.hash(state);
+                    self.ifru_mtu.hash(state);
+                    self.ifru_phys.hash(state);
+                    self.ifru_media.hash(state);
+                    self.ifru_intval.hash(state);
+                    self.ifru_data.hash(state);
+                    self.ifru_devmtu.hash(state);
+                    self.ifru_kpi.hash(state);
+                    self.ifru_wake_flags.hash(state);
+                    self.ifru_route_refcnt.hash(state);
+                    self.ifru_cap.hash(state);
+                    self.ifru_functional_type.hash(state);
+                }
+            }
+        }
+
+        impl PartialEq for ifreq {
+            fn eq(&self, other: &ifreq) -> bool {
+                self.ifr_name == other.ifr_name
+                    && self.ifr_ifru == other.ifr_ifru
+            }
+        }
+
+        impl Eq for ifreq {}
+
+        impl ::fmt::Debug for ifreq {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifreq")
+                    .field("ifr_name", &self.ifr_name)
+                    .field("ifr_ifru", &self.ifr_ifru)
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for ifreq {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.ifr_name.hash(state);
+                self.ifr_ifru.hash(state);
+            }
+        }
+
+        impl Eq for __c_anonymous_ifc_ifcu {}
+
+        impl PartialEq for __c_anonymous_ifc_ifcu {
+            fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
+                unsafe {
+                    self.ifcu_buf == other.ifcu_buf &&
+                    self.ifcu_req == other.ifcu_req
+                }
+            }
+        }
+
+        impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifc_ifcu")
+                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
+                    .field("ifcu_req", unsafe { &self.ifcu_req })
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for __c_anonymous_ifc_ifcu {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.ifcu_buf.hash(state) };
+                unsafe { self.ifcu_req.hash(state) };
+            }
+        }
     }
 }
 
@@ -3231,6 +3556,9 @@ pub const F_GLOBAL_NOCACHE: ::c_int = 55;
 pub const F_NODIRECT: ::c_int = 62;
 pub const F_LOG2PHYS_EXT: ::c_int = 65;
 pub const F_BARRIERFSYNC: ::c_int = 85;
+pub const F_PUNCHHOLE: ::c_int = 99;
+pub const F_TRIM_ACTIVE_FILE: ::c_int = 100;
+pub const F_SPECULATIVE_READ: ::c_int = 101;
 pub const F_GETPATH_NOFIRMLINK: ::c_int = 102;
 
 pub const F_ALLOCATECONTIG: ::c_uint = 0x02;
@@ -3764,6 +4092,7 @@ pub const IP_RECVDSTADDR: ::c_int = 7;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
 pub const IP_RECVIF: ::c_int = 20;
+pub const IP_RECVTTL: ::c_int = 24;
 pub const IP_BOUND_IF: ::c_int = 25;
 pub const IP_PKTINFO: ::c_int = 26;
 pub const IP_RECVTOS: ::c_int = 27;
@@ -3773,6 +4102,7 @@ pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 pub const IPV6_CHECKSUM: ::c_int = 26;
 pub const IPV6_RECVTCLASS: ::c_int = 35;
 pub const IPV6_TCLASS: ::c_int = 36;
+pub const IPV6_RECVHOPLIMIT: ::c_int = 37;
 pub const IPV6_PKTINFO: ::c_int = 46;
 pub const IPV6_HOPLIMIT: ::c_int = 47;
 pub const IPV6_RECVPKTINFO: ::c_int = 61;
@@ -3790,6 +4120,7 @@ pub const TCP_KEEPINTVL: ::c_int = 0x101;
 pub const TCP_KEEPCNT: ::c_int = 0x102;
 /// Enable/Disable TCP Fastopen on this socket
 pub const TCP_FASTOPEN: ::c_int = 0x105;
+pub const TCP_CONNECTION_INFO: ::c_int = 0x106;
 
 pub const SOL_LOCAL: ::c_int = 0;
 
@@ -4053,7 +4384,7 @@ pub const OS_SIGNPOST_INTERVAL_END: ::os_signpost_type_t = 0x02;
 pub const MINSIGSTKSZ: ::size_t = 32768;
 pub const SIGSTKSZ: ::size_t = 131072;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
@@ -4687,12 +5018,12 @@ pub const MNT_SNAPSHOT: ::c_int = 0x40000000;
 pub const MNT_NOBLOCK: ::c_int = 0x00020000;
 
 // sys/spawn.h:
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x04;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x08;
-pub const POSIX_SPAWN_SETEXEC: ::c_int = 0x40;
-pub const POSIX_SPAWN_START_SUSPENDED: ::c_int = 0x80;
+pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x0001;
+pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x0002;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x0004;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x0008;
+pub const POSIX_SPAWN_SETEXEC: ::c_int = 0x0040;
+pub const POSIX_SPAWN_START_SUSPENDED: ::c_int = 0x0080;
 pub const POSIX_SPAWN_CLOEXEC_DEFAULT: ::c_int = 0x4000;
 
 // sys/ipc.h:
@@ -4911,6 +5242,19 @@ pub const COPYFILE_PROGRESS: ::c_int = 4;
 pub const COPYFILE_CONTINUE: ::c_int = 0;
 pub const COPYFILE_SKIP: ::c_int = 1;
 pub const COPYFILE_QUIT: ::c_int = 2;
+pub const COPYFILE_STATE_SRC_FD: ::c_int = 1;
+pub const COPYFILE_STATE_SRC_FILENAME: ::c_int = 2;
+pub const COPYFILE_STATE_DST_FD: ::c_int = 3;
+pub const COPYFILE_STATE_DST_FILENAME: ::c_int = 4;
+pub const COPYFILE_STATE_QUARANTINE: ::c_int = 5;
+pub const COPYFILE_STATE_STATUS_CB: ::c_int = 6;
+pub const COPYFILE_STATE_STATUS_CTX: ::c_int = 7;
+pub const COPYFILE_STATE_COPIED: ::c_int = 8;
+pub const COPYFILE_STATE_XATTRNAME: ::c_int = 9;
+pub const COPYFILE_STATE_WAS_CLONED: ::c_int = 10;
+pub const COPYFILE_STATE_SRC_BSIZE: ::c_int = 11;
+pub const COPYFILE_STATE_DST_BSIZE: ::c_int = 12;
+pub const COPYFILE_STATE_BSIZE: ::c_int = 13;
 
 // <sys/attr.h>
 pub const ATTR_BIT_MAP_COUNT: ::c_ushort = 5;
@@ -5070,82 +5414,49 @@ pub const VMADDR_CID_RESERVED: ::c_uint = 1;
 pub const VMADDR_CID_HOST: ::c_uint = 2;
 pub const VMADDR_PORT_ANY: ::c_uint = 0xFFFFFFFF;
 
-cfg_if! {
-    if #[cfg(libc_const_extern_fn)] {
-        const fn __DARWIN_ALIGN32(p: usize) -> usize {
-            const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
-    } else if #[cfg(libc_const_size_of)] {
-        fn __DARWIN_ALIGN32(p: usize) -> usize {
-            const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
-    } else {
-        fn __DARWIN_ALIGN32(p: usize) -> usize {
-            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
-    }
+const fn __DARWIN_ALIGN32(p: usize) -> usize {
+    const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
+    p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
 }
 
-cfg_if! {
-    if #[cfg(libc_const_size_of)] {
-        pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_time_constraint_policy_data_t>() /
-             ::mem::size_of::<integer_t>()) as mach_msg_type_number_t;
-        pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_precedence_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_affinity_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_background_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_latency_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_throughput_qos_policy_data_t>() /
-             ::mem::size_of::<integer_t>()) as mach_msg_type_number_t;
-        pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_basic_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_identifier_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
+pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_time_constraint_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_precedence_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_affinity_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_background_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_latency_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_throughput_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_basic_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_identifier_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
 
-        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
-            (::mem::size_of::<task_thread_times_info_data_t>()
-            / ::mem::size_of::<natural_t>()) as u32;
-        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = (::mem::size_of::<mach_task_basic_info_data_t>()
-            / ::mem::size_of::<natural_t>()) as u32;
-        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-    } else {
-        pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t = 4;
-        pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t = 10;
-        pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t = 6;
-        pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t = 28;
-        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 = 4;
-        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = 12;
-        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t = 38;
-    }
-}
+pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
+    (::mem::size_of::<task_thread_times_info_data_t>() / ::mem::size_of::<natural_t>()) as u32;
+pub const MACH_TASK_BASIC_INFO_COUNT: u32 =
+    (::mem::size_of::<mach_task_basic_info_data_t>() / ::mem::size_of::<natural_t>()) as u32;
+pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
@@ -5278,12 +5589,6 @@ extern "C" {
     pub fn asctime(tm: *const ::tm) -> *mut ::c_char;
     pub fn ctime(clock: *const time_t) -> *mut ::c_char;
     pub fn getdate(datestr: *const ::c_char) -> *mut ::tm;
-    pub fn strftime(
-        buf: *mut ::c_char,
-        maxsize: ::size_t,
-        format: *const ::c_char,
-        timeptr: *const ::tm,
-    ) -> ::size_t;
     pub fn strptime(
         buf: *const ::c_char,
         format: *const ::c_char,
@@ -5298,7 +5603,7 @@ extern "C" {
         host: *mut ::c_char,
         hostlen: ::socklen_t,
         serv: *mut ::c_char,
-        sevlen: ::socklen_t,
+        servlen: ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
     pub fn mincore(addr: *const ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
@@ -5734,6 +6039,18 @@ extern "C" {
         subpref: *mut ::cpu_subtype_t,
         ocount: *mut ::size_t,
     ) -> ::c_int;
+    pub fn posix_spawnattr_getbinpref_np(
+        attr: *const posix_spawnattr_t,
+        count: ::size_t,
+        pref: *mut ::cpu_type_t,
+        ocount: *mut ::size_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setbinpref_np(
+        attr: *mut posix_spawnattr_t,
+        count: ::size_t,
+        pref: *mut ::cpu_type_t,
+        ocount: *mut ::size_t,
+    ) -> ::c_int;
     pub fn posix_spawnattr_set_qos_class_np(
         attr: *mut posix_spawnattr_t,
         qos_class: ::qos_class_t,
@@ -5819,6 +6136,10 @@ extern "C" {
         state: copyfile_state_t,
         flags: copyfile_flags_t,
     ) -> ::c_int;
+    pub fn copyfile_state_free(s: copyfile_state_t) -> ::c_int;
+    pub fn copyfile_state_alloc() -> copyfile_state_t;
+    pub fn copyfile_state_get(s: copyfile_state_t, flags: u32, dst: *mut ::c_void) -> ::c_int;
+    pub fn copyfile_state_set(s: copyfile_state_t, flags: u32, src: *const ::c_void) -> ::c_int;
 
     // Added in macOS 10.13
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
@@ -5903,7 +6224,7 @@ extern "C" {
         buffersize: u32,
     ) -> ::c_int;
     pub fn proc_kmsgbuf(buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
-    pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
+    pub fn proc_libversion(major: *mut ::c_int, minor: *mut ::c_int) -> ::c_int;
     pub fn proc_pid_rusage(pid: ::c_int, flavor: ::c_int, buffer: *mut rusage_info_t) -> ::c_int;
 
     // Available from Big Sur
@@ -5920,6 +6241,7 @@ extern "C" {
     pub fn sethostid(hostid: ::c_long);
 
     pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 
     pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;
     pub fn _NSGetEnviron() -> *mut *mut *mut ::c_char;
@@ -5936,6 +6258,13 @@ extern "C" {
         cur_protection: ::vm_prot_t,
         max_protection: ::vm_prot_t,
         inheritance: ::vm_inherit_t,
+    ) -> ::kern_return_t;
+
+    pub fn vm_allocate(
+        target_task: vm_map_t,
+        address: *mut vm_address_t,
+        size: vm_size_t,
+        flags: ::c_int,
     ) -> ::kern_return_t;
 
     pub fn vm_deallocate(
@@ -6068,6 +6397,11 @@ extern "C" {
         dev: dev_t,
     ) -> ::c_int;
     pub fn freadlink(fd: ::c_int, buf: *mut ::c_char, size: ::size_t) -> ::c_int;
+    pub fn execvP(
+        file: *const ::c_char,
+        search_path: *const ::c_char,
+        argv: *const *mut ::c_char,
+    ) -> ::c_int;
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {
@@ -6082,7 +6416,7 @@ cfg_if! {
     }
 }
 cfg_if! {
-    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
+    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos"))] {
         extern "C" {
             pub fn memmem(
                 haystack: *const ::c_void,
@@ -6099,22 +6433,6 @@ cfg_if! {
     }
 }
 
-// These require a dependency on `libiconv`, and including this when built as
-// part of `std` means every Rust program gets it. Ideally we would have a link
-// modifier to only include these if they are used, but we do not.
-#[cfg_attr(not(feature = "rustc-dep-of-std"), link(name = "iconv"))]
-extern "C" {
-    pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
-    pub fn iconv(
-        cd: iconv_t,
-        inbuf: *mut *mut ::c_char,
-        inbytesleft: *mut ::size_t,
-        outbuf: *mut *mut ::c_char,
-        outbytesleft: *mut ::size_t,
-    ) -> ::size_t;
-    pub fn iconv_close(cd: iconv_t) -> ::c_int;
-}
-
 cfg_if! {
     if #[cfg(target_pointer_width = "32")] {
         mod b32;
@@ -6127,9 +6445,5 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_long_array)] {
-        mod long_array;
-        pub use self::long_array::*;
-    }
-}
+mod long_array;
+pub use self::long_array::*;

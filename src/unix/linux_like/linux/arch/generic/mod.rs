@@ -212,6 +212,34 @@ pub const BLKSSZGET: ::Ioctl = 0x1268;
 pub const BLKPBSZGET: ::Ioctl = 0x127B;
 
 cfg_if! {
+    // Those type are constructed using the _IOC macro
+    // DD-SS_SSSS_SSSS_SSSS-TTTT_TTTT-NNNN_NNNN
+    // where D stands for direction (either None (00), Read (01) or Write (11))
+    // where S stands for size (int, long, struct...)
+    // where T stands for type ('f','v','X'...)
+    // where N stands for NR (NumbeR)
+    if #[cfg(any(target_arch = "x86", target_arch = "arm"))] {
+        pub const FS_IOC_GETFLAGS: ::Ioctl = 0x80046601;
+        pub const FS_IOC_SETFLAGS: ::Ioctl = 0x40046602;
+        pub const FS_IOC_GETVERSION: ::Ioctl = 0x80047601;
+        pub const FS_IOC_SETVERSION: ::Ioctl = 0x40047602;
+        pub const FS_IOC32_GETFLAGS: ::Ioctl = 0x80046601;
+        pub const FS_IOC32_SETFLAGS: ::Ioctl = 0x40046602;
+        pub const FS_IOC32_GETVERSION: ::Ioctl = 0x80047601;
+        pub const FS_IOC32_SETVERSION: ::Ioctl = 0x40047602;
+    } else if #[cfg(any(target_arch = "x86_64", target_arch = "riscv64", target_arch = "aarch64", target_arch = "s390x"))] {
+        pub const FS_IOC_GETFLAGS: ::Ioctl = 0x80086601;
+        pub const FS_IOC_SETFLAGS: ::Ioctl = 0x40086602;
+        pub const FS_IOC_GETVERSION: ::Ioctl = 0x80087601;
+        pub const FS_IOC_SETVERSION: ::Ioctl = 0x40087602;
+        pub const FS_IOC32_GETFLAGS: ::Ioctl = 0x80046601;
+        pub const FS_IOC32_SETFLAGS: ::Ioctl = 0x40046602;
+        pub const FS_IOC32_GETVERSION: ::Ioctl = 0x80047601;
+        pub const FS_IOC32_SETVERSION: ::Ioctl = 0x40047602;
+    }
+}
+
+cfg_if! {
     if #[cfg(any(target_arch = "arm",
                  target_arch = "s390x"))] {
         pub const FIOQSIZE: ::Ioctl = 0x545E;
@@ -257,6 +285,8 @@ cfg_if! {
         pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
         pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
         pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
+        #[allow(deprecated)]
+        #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = RLIM_NLIMITS;
 
     } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
@@ -277,16 +307,21 @@ cfg_if! {
         pub const RLIMIT_NICE: ::c_int = 13;
         pub const RLIMIT_RTPRIO: ::c_int = 14;
         pub const RLIMIT_RTTIME: ::c_int = 15;
+        #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIM_NLIMITS: ::c_int = 15;
+        #[allow(deprecated)]
+        #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIMIT_NLIMITS: ::c_int = RLIM_NLIMITS;
     }
 }
 
 cfg_if! {
     if #[cfg(target_env = "gnu")] {
+        #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIM_NLIMITS: ::__rlimit_resource_t = 16;
     }
     else if #[cfg(target_env = "uclibc")] {
+        #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIM_NLIMITS: ::__rlimit_resource_t = 15;
     }
 }

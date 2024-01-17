@@ -16,6 +16,15 @@ More detailed information about the design of this library can be found in its
 
 [rfc]: https://github.com/rust-lang/rfcs/blob/HEAD/text/1291-promote-libc.md
 
+## v0.3 Roadmap
+
+The main branch is now for v0.3 which has some breaking changes.
+
+For v0.2, please submit PRs to the `libc-0.2` branch instead.
+We will stop making new v0.2 releases once we release v0.3 on crates.io.
+
+See the [tracking issue](https://github.com/rust-lang/libc/issues/3248) for details.
+
 ## Usage
 
 Add the following to your `Cargo.toml`:
@@ -38,29 +47,15 @@ libc = "0.2"
   If you use Rust >= 1.62, this feature is implicitly enabled.
   Otherwise it requires a nightly rustc.
 
-* **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
-
 ## Rust version support
 
-The minimum supported Rust toolchain version is currently **Rust 1.13.0**.
+The minimum supported Rust toolchain version is currently **Rust 1.71.0**
 (libc does not currently have any policy regarding changes to the minimum
-supported Rust version; such policy is a work in progress.) APIs requiring
-newer Rust features are only available on newer Rust toolchains:
-
-| Feature              | Version |
-|----------------------|---------|
-| `union`              |  1.19.0 |
-| `const mem::size_of` |  1.24.0 |
-| `repr(align)`        |  1.25.0 |
-| `extra_traits`       |  1.25.0 |
-| `core::ffi::c_void`  |  1.30.0 |
-| `repr(packed(N))`    |  1.33.0 |
-| `cfg(target_vendor)` |  1.33.0 |
-| `const-extern-fn`    |  1.62.0 |
+supported Rust version; such policy is a work in progress).
 
 ## Platform support
 
-[Platform-specific documentation (HEAD)][docs.head].
+You can see the platform(target)-specific docs on [docs.rs], select a platform you want to see.
 
 See
 [`ci/build.sh`](https://github.com/rust-lang/libc/blob/HEAD/ci/build.sh)
@@ -107,4 +102,3 @@ dual licensed as above, without any additional terms or conditions.
 [Documentation]: https://docs.rs/libc/badge.svg
 [docs.rs]: https://docs.rs/libc
 [License]: https://img.shields.io/crates/l/libc.svg
-[docs.head]: https://rust-lang.github.io/libc/#platform-specific-documentation

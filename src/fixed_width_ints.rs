@@ -20,7 +20,7 @@ pub type uint32_t = u32;
 pub type uint64_t = u64;
 
 cfg_if! {
-    if #[cfg(all(libc_int128, target_arch = "aarch64", not(target_os = "windows")))] {
+    if #[cfg(all(target_arch = "aarch64", not(target_os = "windows")))] {
         // This introduces partial support for FFI with __int128 and
         // equivalent types on platforms where Rust's definition is validated
         // to match the standard C ABI of that platform.
@@ -59,41 +59,38 @@ cfg_if! {
         /// C __uint128_t (alternate name for [__uint128][])
         pub type __uint128_t = u128;
 
-        cfg_if! {
-            if #[cfg(libc_underscore_const_names)] {
-                macro_rules! static_assert_eq {
-                    ($a:expr, $b:expr) => {
-                        const _: [(); $a] = [(); $b];
-                    };
-                }
-
-                // NOTE: if you add more platforms to here, you may need to cfg
-                // these consts. They should always match the platform's values
-                // for `sizeof(__int128)` and `_Alignof(__int128)`.
-                const _SIZE_128: usize = 16;
-                const _ALIGN_128: usize = 16;
-
-                // Since Rust doesn't officially guarantee that these types
-                // have compatible ABIs, we const assert that these values have the
-                // known size/align of the target platform's libc. If rustc ever
-                // tries to regress things, it will cause a compilation error.
-                //
-                // This isn't a bullet-proof solution because e.g. it doesn't
-                // catch the fact that llvm and gcc disagree on how x64 __int128
-                // is actually *passed* on the stack (clang underaligns it for
-                // the same reason that rustc *never* properly aligns it).
-                static_assert_eq!(core::mem::size_of::<__int128>(), _SIZE_128);
-                static_assert_eq!(core::mem::align_of::<__int128>(), _ALIGN_128);
-
-                static_assert_eq!(core::mem::size_of::<__uint128>(), _SIZE_128);
-                static_assert_eq!(core::mem::align_of::<__uint128>(), _ALIGN_128);
-
-                static_assert_eq!(core::mem::size_of::<__int128_t>(), _SIZE_128);
-                static_assert_eq!(core::mem::align_of::<__int128_t>(), _ALIGN_128);
-
-                static_assert_eq!(core::mem::size_of::<__uint128_t>(), _SIZE_128);
-                static_assert_eq!(core::mem::align_of::<__uint128_t>(), _ALIGN_128);
-            }
+        macro_rules! static_assert_eq {
+            ($a:expr, $b:expr) => {
+                const _: [(); $a] = [(); $b];
+            };
         }
+
+        // NOTE: if you add more platforms to here, you may need to cfg
+        // these consts. They should always match the platform's values
+        // for `sizeof(__int128)` and `_Alignof(__int128)`.
+        const _SIZE_128: usize = 16;
+        const _ALIGN_128: usize = 16;
+
+        // Since Rust doesn't officially guarantee that these types
+        // have compatible ABIs, we const assert that these values have the
+        // known size/align of the target platform's libc. If rustc ever
+        // tries to regress things, it will cause a compilation error.
+        //
+        // This isn't a bullet-proof solution because e.g. it doesn't
+        // catch the fact that llvm and gcc disagree on how x64 __int128
+        // is actually *passed* on the stack (clang underaligns it for
+        // the same reason that rustc *never* properly aligns it).
+        // FIXME: temporarily disabled because of a ctest2 bug.
+        // static_assert_eq!(core::mem::size_of::<__int128>(), _SIZE_128);
+        // static_assert_eq!(core::mem::align_of::<__int128>(), _ALIGN_128);
+
+        // static_assert_eq!(core::mem::size_of::<__uint128>(), _SIZE_128);
+        // static_assert_eq!(core::mem::align_of::<__uint128>(), _ALIGN_128);
+
+        // static_assert_eq!(core::mem::size_of::<__int128_t>(), _SIZE_128);
+        // static_assert_eq!(core::mem::align_of::<__int128_t>(), _ALIGN_128);
+
+        // static_assert_eq!(core::mem::size_of::<__uint128_t>(), _SIZE_128);
+        // static_assert_eq!(core::mem::align_of::<__uint128_t>(), _ALIGN_128);
     }
 }

@@ -109,18 +109,6 @@ s! {
         pub sin6_scope_id: u32,
     }
 
-    // ------------------------------------------------------------
-    // definitions below are *unverified* and might **break** the software
-//    pub struct in_addr {
-//        pub s_addr: in_addr_t,
-//    }
-//
-//    pub struct in6_addr {
-//        pub s6_addr: [u8; 16],
-//        #[cfg(not(libc_align))]
-//        __align: [u32; 0],
-//    }
-
     pub struct stat {
         pub st_dev: ::c_ulong,
         pub st_ino: ::ino_t,

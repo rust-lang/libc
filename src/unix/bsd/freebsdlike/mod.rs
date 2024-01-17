@@ -432,15 +432,7 @@ cfg_if! {
 }
 
 // Non-public helper constant
-cfg_if! {
-    if #[cfg(all(not(libc_const_size_of), target_pointer_width = "32"))] {
-        const SIZEOF_LONG: usize = 4;
-    } else if #[cfg(all(not(libc_const_size_of), target_pointer_width = "64"))] {
-        const SIZEOF_LONG: usize = 8;
-    } else if #[cfg(libc_const_size_of)] {
-        const SIZEOF_LONG: usize = ::mem::size_of::<::c_long>();
-    }
-}
+const SIZEOF_LONG: usize = ::mem::size_of::<::c_long>();
 
 #[deprecated(
     since = "0.2.64",
@@ -824,15 +816,12 @@ pub const CLOCK_VIRTUAL: ::clockid_t = 1;
 pub const CLOCK_PROF: ::clockid_t = 2;
 pub const CLOCK_MONOTONIC: ::clockid_t = 4;
 pub const CLOCK_UPTIME: ::clockid_t = 5;
-pub const CLOCK_BOOTTIME: ::clockid_t = CLOCK_UPTIME;
 pub const CLOCK_UPTIME_PRECISE: ::clockid_t = 7;
 pub const CLOCK_UPTIME_FAST: ::clockid_t = 8;
 pub const CLOCK_REALTIME_PRECISE: ::clockid_t = 9;
 pub const CLOCK_REALTIME_FAST: ::clockid_t = 10;
-pub const CLOCK_REALTIME_COARSE: ::clockid_t = CLOCK_REALTIME_FAST;
 pub const CLOCK_MONOTONIC_PRECISE: ::clockid_t = 11;
 pub const CLOCK_MONOTONIC_FAST: ::clockid_t = 12;
-pub const CLOCK_MONOTONIC_COARSE: ::clockid_t = CLOCK_MONOTONIC_FAST;
 pub const CLOCK_SECOND: ::clockid_t = 13;
 pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 14;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 15;
@@ -1204,7 +1193,7 @@ pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_OTHER: ::c_int = 2;
 pub const SCHED_RR: ::c_int = 3;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
@@ -1493,6 +1482,13 @@ extern "C" {
         atflag: ::c_int,
     ) -> ::c_int;
 
+    pub fn clock_nanosleep(
+        clk_id: ::clockid_t,
+        flags: ::c_int,
+        rqtp: *const ::timespec,
+        rmtp: *mut ::timespec,
+    ) -> ::c_int;
+
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
@@ -1590,6 +1586,7 @@ extern "C" {
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,
     ) -> ::c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
     pub fn pthread_attr_getstack(
         attr: *const ::pthread_attr_t,
         stackaddr: *mut *mut ::c_void,
@@ -1645,6 +1642,12 @@ extern "C" {
     pub fn pthread_barrier_wait(barrier: *mut pthread_barrier_t) -> ::c_int;
     pub fn pthread_get_name_np(tid: ::pthread_t, name: *mut ::c_char, len: ::size_t);
     pub fn pthread_set_name_np(tid: ::pthread_t, name: *const ::c_char);
+    pub fn pthread_getname_np(
+        thread: ::pthread_t,
+        buffer: *mut ::c_char,
+        length: ::size_t,
+    ) -> ::c_int;
+    pub fn pthread_setname_np(thread: ::pthread_t, name: *const ::c_char) -> ::c_int;
     pub fn pthread_setschedparam(
         native: ::pthread_t,
         policy: ::c_int,
@@ -1771,6 +1774,17 @@ extern "C" {
         len: ::c_int,
     ) -> ::c_int;
     pub fn reboot(howto: ::c_int) -> ::c_int;
+
+    pub fn exect(
+        path: *const ::c_char,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+    pub fn execvP(
+        file: *const ::c_char,
+        search_path: *const ::c_char,
+        argv: *const *mut ::c_char,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]

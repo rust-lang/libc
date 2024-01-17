@@ -486,6 +486,7 @@ MAP_NOEXTEND
 MAP_NORESERVE
 MAP_RENAME
 MAP_STACK
+MAP_TRYFIXED
 MCL_CURRENT
 MCL_FUTURE
 MDMBUF
@@ -704,6 +705,20 @@ Q_SETQUOTA
 Q_SYNC
 RADIXCHAR
 RAND_MAX
+RB_ASKNAME
+RB_AUTOBOOT
+RB_CONFIG
+RB_DUMP
+RB_GOODRANDOM
+RB_HALT
+RB_KDB
+RB_INITNAME
+RB_POWERDOWN
+RB_RESET
+RB_SERCONS
+RB_TIMEBAD
+RB_UNHIBERNATE
+RB_USERREQ
 REG_ASSERT
 REG_ATOI
 REG_BACKR
@@ -793,6 +808,7 @@ ST_RDONLY
 S_IEXEC
 S_IREAD
 S_IWRITE
+TCP_INFO
 TCP_MAXSEG
 TCP_MD5SIG
 TCP_NOPUSH
@@ -999,6 +1015,7 @@ backtrace
 backtrace_symbols
 backtrace_symbols_fd
 backtrace_symbols_fmt
+basename
 bsearch
 caddr_t
 calloc_conceal
@@ -1012,6 +1029,7 @@ cmsghdr
 daemon
 difftime
 dirfd
+dirname
 dl_iterate_phdr
 dl_phdr_info
 drand48
@@ -1083,6 +1101,7 @@ if_freenameindex
 if_msghdr
 if_nameindex
 ifaddrs
+ifreq
 in6_pktinfo
 initgroups
 ip_mreqn
@@ -1137,6 +1156,27 @@ pipe2
 pledge
 popen
 posix_madvise
+posix_spawn
+posix_spawn_file_actions_addclose
+posix_spawn_file_actions_adddup2
+posix_spawn_file_actions_addopen
+posix_spawn_file_actions_destroy
+posix_spawn_file_actions_init
+posix_spawnattr_destroy
+posix_spawnattr_getflags
+posix_spawnattr_getpgroup
+posix_spawnattr_getschedparam
+posix_spawnattr_getschedpolicy
+posix_spawnattr_getsigdefault
+posix_spawnattr_getsigmask
+posix_spawnattr_init
+posix_spawnattr_setflags
+posix_spawnattr_setpgroup
+posix_spawnattr_setschedparam
+posix_spawnattr_setschedpolicy
+posix_spawnattr_setsigdefault
+posix_spawnattr_setsigmask
+posix_spawnp
 preadv
 pseudo_AF_HDRCMPLT
 pseudo_AF_PFLOW
@@ -1146,6 +1186,7 @@ pseudo_AF_RTIP
 pseudo_AF_XTP
 pthread_attr_getguardsize
 pthread_attr_getstack
+pthread_attr_setguardsize
 pthread_cancel
 pthread_condattr_setclock
 pthread_get_name_np
@@ -1172,6 +1213,7 @@ rand
 readdir_r
 readlinkat
 reallocarray
+reboot
 recvmsg
 regcomp
 regerror
@@ -1218,6 +1260,7 @@ shmget
 shmid_ds
 sigaltstack
 siginfo_t
+sigsuspend
 sigwait
 sockaddr_dl
 sockpeercred
@@ -1229,6 +1272,8 @@ stack_t
 statfs
 strcasecmp
 strcasestr
+strftime
+strftime_l
 strncasecmp
 strndup
 strsignal
@@ -1236,6 +1281,7 @@ strtonum
 sync
 syscall
 sysctl
+tcp_info
 telldir
 tmpfs_args
 truncate
@@ -1250,6 +1296,5 @@ utimensat
 utmp
 utrace
 wait4
+waitid
 xucred
-dirname
-basename

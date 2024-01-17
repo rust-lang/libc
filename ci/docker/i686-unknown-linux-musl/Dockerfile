@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:23.10
 
 RUN dpkg --add-architecture i386
 RUN apt-get update

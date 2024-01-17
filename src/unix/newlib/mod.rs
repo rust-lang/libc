@@ -1,13 +1,7 @@
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 
-cfg_if! {
-    if #[cfg(target_os = "vita")] {
-        pub type clockid_t = ::c_uint;
-    } else {
-        pub type clockid_t = ::c_ulong;
-    }
-}
+pub type clockid_t = ::c_ulong;
 
 cfg_if! {
     if #[cfg(any(target_os = "espidf"))] {
@@ -76,7 +70,7 @@ s! {
 
         #[cfg(not(any(
             target_os = "espidf",
-            all(libc_cfg_target_vendor, target_arch = "powerpc", target_vendor = "nintendo"))))]
+            all(target_arch = "powerpc", target_vendor = "nintendo"))))]
         pub ai_addr: *mut sockaddr,
 
         pub ai_next: *mut addrinfo,
@@ -170,16 +164,6 @@ s! {
         pub sa_flags: ::c_int,
     }
 
-    pub struct dirent {
-        #[cfg(not(target_os = "vita"))]
-        pub d_ino: ino_t,
-        #[cfg(not(target_os = "vita"))]
-        pub d_type: ::c_uchar,
-        #[cfg(target_os = "vita")]
-        __offset: [u8; 88],
-        pub d_name: [::c_char; 256usize],
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
@@ -187,7 +171,7 @@ s! {
     }
 
     pub struct fd_set { // Unverified
-        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct passwd { // Unverified
@@ -242,18 +226,15 @@ s! {
     }
 }
 
-// unverified constants
-align_const! {
-    pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_MUTEX_T],
-    };
-    pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_COND_T],
-    };
-    pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-        size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_RWLOCK_T],
-    };
-}
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_MUTEX_T],
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_COND_T],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_RWLOCK_T],
+};
 pub const NCCS: usize = 32;
 
 cfg_if! {
@@ -299,11 +280,11 @@ pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 
 cfg_if! {
     if #[cfg(any(target_os = "horizon", target_os = "espidf"))] {
-        pub const FD_SETSIZE: usize = 64;
+        pub const FD_SETSIZE: ::c_int = 64;
     } else if #[cfg(target_os = "vita")] {
-        pub const FD_SETSIZE: usize = 256;
+        pub const FD_SETSIZE: ::c_int = 256;
     } else {
-        pub const FD_SETSIZE: usize = 1024;
+        pub const FD_SETSIZE: ::c_int = 1024;
     }
 }
 // intentionally not public, only used for fd_set
@@ -546,8 +527,16 @@ pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
 
-pub const TCP_NODELAY: ::c_int = 8193;
-pub const TCP_MAXSEG: ::c_int = 8194;
+cfg_if! {
+    if #[cfg(target_os = "vita")] {
+        pub const TCP_NODELAY: ::c_int = 1;
+        pub const TCP_MAXSEG: ::c_int = 2;
+    } else {
+        pub const TCP_NODELAY: ::c_int = 8193;
+        pub const TCP_MAXSEG: ::c_int = 8194;
+    }
+}
+
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
 pub const TCP_KEEPIDLE: ::c_int = 256;
@@ -561,13 +550,25 @@ cfg_if! {
         pub const IP_TOS: ::c_int = 3;
     }
 }
-pub const IP_TTL: ::c_int = 8;
+cfg_if! {
+    if #[cfg(target_os = "vita")] {
+        pub const IP_TTL: ::c_int = 4;
+    } else {
+        pub const IP_TTL: ::c_int = 8;
+    }
+}
 pub const IP_MULTICAST_IF: ::c_int = 9;
 pub const IP_MULTICAST_TTL: ::c_int = 10;
 pub const IP_MULTICAST_LOOP: ::c_int = 11;
-pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
-pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
-
+cfg_if! {
+    if #[cfg(target_os = "vita")] {
+        pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
+        pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
+    } else {
+        pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
+        pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
+    }
+}
 pub const IPV6_UNICAST_HOPS: ::c_int = 4;
 pub const IPV6_MULTICAST_IF: ::c_int = 9;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 10;
@@ -598,10 +599,15 @@ pub const NI_NAMEREQD: ::c_int = 4;
 pub const NI_NUMERICSERV: ::c_int = 0;
 pub const NI_DGRAM: ::c_int = 0;
 
-pub const EAI_FAMILY: ::c_int = -303;
-pub const EAI_MEMORY: ::c_int = -304;
-pub const EAI_NONAME: ::c_int = -305;
-pub const EAI_SOCKTYPE: ::c_int = -307;
+cfg_if! {
+    // Defined in vita/mod.rs for "vita"
+    if #[cfg(not(target_os = "vita"))] {
+        pub const EAI_FAMILY: ::c_int = -303;
+        pub const EAI_MEMORY: ::c_int = -304;
+        pub const EAI_NONAME: ::c_int = -305;
+        pub const EAI_SOCKTYPE: ::c_int = -307;
+    }
+}
 
 pub const EXIT_SUCCESS: ::c_int = 0;
 pub const EXIT_FAILURE: ::c_int = 1;
@@ -653,11 +659,7 @@ extern "C" {
     pub fn rand() -> ::c_int;
     pub fn srand(seed: ::c_uint);
 
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_bind")]
     pub fn bind(fd: ::c_int, addr: *const sockaddr, len: socklen_t) -> ::c_int;
     pub fn clock_settime(clock_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
@@ -666,11 +668,7 @@ extern "C" {
     #[cfg_attr(target_os = "espidf", link_name = "lwip_close")]
     pub fn closesocket(sockfd: ::c_int) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_recvfrom")]
     pub fn recvfrom(
         fd: ::c_int,
@@ -680,11 +678,7 @@ extern "C" {
         addr: *mut sockaddr,
         addr_len: *mut socklen_t,
     ) -> isize;
-    #[cfg(not(all(
-        libc_cfg_target_vendor,
-        target_arch = "powerpc",
-        target_vendor = "nintendo"
-    )))]
+    #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     pub fn getnameinfo(
         sa: *const sockaddr,
         salen: socklen_t,
@@ -777,13 +771,6 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        #[macro_use]
-        mod align;
-    } else {
-        #[macro_use]
-        mod no_align;
-    }
-}
+#[macro_use]
+mod align;
 expand_align!();

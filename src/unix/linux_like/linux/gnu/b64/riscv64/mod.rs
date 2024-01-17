@@ -432,6 +432,7 @@ pub const PTRACE_GETREGS: ::c_uint = 12;
 pub const PTRACE_SETREGS: ::c_uint = 13;
 pub const MCL_CURRENT: ::c_int = 1;
 pub const MCL_FUTURE: ::c_int = 2;
+pub const MCL_ONFAULT: ::c_int = 4;
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 pub const CBAUD: ::tcflag_t = 4111;
@@ -843,9 +844,5 @@ pub const SYS_process_mrelease: ::c_long = 448;
 pub const SYS_futex_waitv: ::c_long = 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

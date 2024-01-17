@@ -157,6 +157,22 @@ s! {
 }
 
 s_no_extra_traits! {
+    pub struct user_fpxregs_struct {
+        pub cwd: ::c_ushort,
+        pub swd: ::c_ushort,
+        pub twd: ::c_ushort,
+        pub fop: ::c_ushort,
+        pub fip: ::c_long,
+        pub fcs: ::c_long,
+        pub foo: ::c_long,
+        pub fos: ::c_long,
+        pub mxcsr: ::c_long,
+        __reserved: ::c_long,
+        pub st_space: [::c_long; 32],
+        pub xmm_space: [::c_long; 32],
+        padding: [::c_long; 56],
+    }
+
     pub struct ucontext_t {
         pub uc_flags: ::c_ulong,
         pub uc_link: *mut ucontext_t,
@@ -169,6 +185,64 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for user_fpxregs_struct {
+            fn eq(&self, other: &user_fpxregs_struct) -> bool {
+                self.cwd == other.cwd
+                    && self.swd == other.swd
+                    && self.twd == other.twd
+                    && self.fop == other.fop
+                    && self.fip == other.fip
+                    && self.fcs == other.fcs
+                    && self.foo == other.foo
+                    && self.fos == other.fos
+                    && self.mxcsr == other.mxcsr
+                // Ignore __reserved field
+                    && self.st_space == other.st_space
+                    && self.xmm_space == other.xmm_space
+                // Ignore padding field
+            }
+        }
+
+        impl Eq for user_fpxregs_struct {}
+
+        impl ::fmt::Debug for user_fpxregs_struct {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("user_fpxregs_struct")
+                    .field("cwd", &self.cwd)
+                    .field("swd", &self.swd)
+                    .field("twd", &self.twd)
+                    .field("fop", &self.fop)
+                    .field("fip", &self.fip)
+                    .field("fcs", &self.fcs)
+                    .field("foo", &self.foo)
+                    .field("fos", &self.fos)
+                    .field("mxcsr", &self.mxcsr)
+                // Ignore __reserved field
+                    .field("st_space", &self.st_space)
+                    .field("xmm_space", &self.xmm_space)
+                // Ignore padding field
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for user_fpxregs_struct {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cwd.hash(state);
+                self.swd.hash(state);
+                self.twd.hash(state);
+                self.fop.hash(state);
+                self.fip.hash(state);
+                self.fcs.hash(state);
+                self.foo.hash(state);
+                self.fos.hash(state);
+                self.mxcsr.hash(state);
+                // Ignore __reserved field
+                self.st_space.hash(state);
+                self.xmm_space.hash(state);
+                // Ignore padding field
+            }
+        }
+
         impl PartialEq for ucontext_t {
             fn eq(&self, other: &ucontext_t) -> bool {
                 self.uc_flags == other.uc_flags
@@ -224,6 +298,7 @@ pub const O_LARGEFILE: ::c_int = 0o0100000;
 pub const MADV_SOFT_OFFLINE: ::c_int = 101;
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
+pub const MCL_ONFAULT: ::c_int = 0x0004;
 pub const CBAUD: ::tcflag_t = 0o0010017;
 pub const TAB1: ::c_int = 0x00000800;
 pub const TAB2: ::c_int = 0x00001000;
@@ -300,8 +375,6 @@ pub const O_SYNC: ::c_int = 1052672;
 pub const O_RSYNC: ::c_int = 1052672;
 pub const O_DSYNC: ::c_int = 4096;
 
-pub const SOCK_NONBLOCK: ::c_int = 2048;
-
 pub const MAP_ANON: ::c_int = 0x0020;
 pub const MAP_GROWSDOWN: ::c_int = 0x0100;
 pub const MAP_DENYWRITE: ::c_int = 0x0800;
@@ -315,7 +388,6 @@ pub const MAP_SYNC: ::c_int = 0x080000;
 
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
-pub const SOCK_SEQPACKET: ::c_int = 5;
 
 pub const EDEADLK: ::c_int = 35;
 pub const ENAMETOOLONG: ::c_int = 36;
@@ -441,9 +513,6 @@ pub const F_GETOWN: ::c_int = 9;
 pub const F_SETLK: ::c_int = 13;
 pub const F_SETLKW: ::c_int = 14;
 pub const F_SETOWN: ::c_int = 8;
-pub const F_OFD_GETLK: ::c_int = 36;
-pub const F_OFD_SETLK: ::c_int = 37;
-pub const F_OFD_SETLKW: ::c_int = 38;
 
 pub const VEOF: usize = 4;
 pub const VEOL: usize = 11;
@@ -891,9 +960,5 @@ extern "C" {
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

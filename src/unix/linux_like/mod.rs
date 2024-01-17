@@ -6,13 +6,9 @@ pub type timer_t = *mut ::c_void;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum timezone {}
-impl ::Copy for timezone {}
-impl ::Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+missing! {
+    #[cfg_attr(feature = "extra_traits", derive(Debug))]
+    pub enum timezone {}
 }
 
 s! {
@@ -89,7 +85,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct tm {
@@ -1069,23 +1065,23 @@ pub const PATH_MAX: ::c_int = 4096;
 
 pub const UIO_MAXIOV: ::c_int = 1024;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
-pub const EPOLLIN: ::c_int = 0x1;
-pub const EPOLLPRI: ::c_int = 0x2;
-pub const EPOLLOUT: ::c_int = 0x4;
-pub const EPOLLERR: ::c_int = 0x8;
-pub const EPOLLHUP: ::c_int = 0x10;
-pub const EPOLLRDNORM: ::c_int = 0x40;
-pub const EPOLLRDBAND: ::c_int = 0x80;
-pub const EPOLLWRNORM: ::c_int = 0x100;
-pub const EPOLLWRBAND: ::c_int = 0x200;
-pub const EPOLLMSG: ::c_int = 0x400;
-pub const EPOLLRDHUP: ::c_int = 0x2000;
-pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
-pub const EPOLLONESHOT: ::c_int = 0x40000000;
-pub const EPOLLET: ::c_int = 0x80000000;
+pub const EPOLLIN: u32 = 0x1;
+pub const EPOLLPRI: u32 = 0x2;
+pub const EPOLLOUT: u32 = 0x4;
+pub const EPOLLERR: u32 = 0x8;
+pub const EPOLLHUP: u32 = 0x10;
+pub const EPOLLRDNORM: u32 = 0x40;
+pub const EPOLLRDBAND: u32 = 0x80;
+pub const EPOLLWRNORM: u32 = 0x100;
+pub const EPOLLWRBAND: u32 = 0x200;
+pub const EPOLLMSG: u32 = 0x400;
+pub const EPOLLRDHUP: u32 = 0x2000;
+pub const EPOLLEXCLUSIVE: u32 = 0x10000000;
+pub const EPOLLWAKEUP: u32 = 0x20000000;
+pub const EPOLLONESHOT: u32 = 0x40000000;
+pub const EPOLLET: u32 = 0x80000000;
 
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
@@ -1783,10 +1779,10 @@ extern "C" {
 
 // LFS64 extensions
 //
-// * musl has 64-bit versions only so aliases the LFS64 symbols to the standard ones
+// * musl and Emscripten has 64-bit versions only so aliases the LFS64 symbols to the standard ones
 // * ulibc doesn't have preadv64/pwritev64
 cfg_if! {
-    if #[cfg(not(target_env = "musl"))] {
+    if #[cfg(not(any(target_env = "musl", target_os = "emscripten")))] {
         extern "C" {
             pub fn fstatfs64(fd: ::c_int, buf: *mut statfs64) -> ::c_int;
             pub fn statvfs64(path: *const ::c_char, buf: *mut statvfs64) -> ::c_int;
@@ -1844,7 +1840,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(target_env = "uclibc", target_env = "musl")))] {
+    if #[cfg(not(any(target_env = "uclibc", target_env = "musl", target_os = "emscripten")))] {
         extern "C" {
             pub fn preadv64(
                 fd: ::c_int,

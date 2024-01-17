@@ -721,6 +721,8 @@ MALLOCX_TCACHE
 MALLOCX_ZERO
 MAP_ALIGNED
 MAP_ALIGNED_SUPER
+MAP_ALIGNMENT_MASK
+MAP_ALIGNMENT_SHIFT
 MAP_COPY
 MAP_EXCL
 MAP_FILE
@@ -970,6 +972,8 @@ PROC_WX_MAPPINGS_PERMIT
 PROC_WXMAP_CTL
 PROC_WXMAP_STATUS
 PROC_WXORX_ENFORCE
+PROT_MAX
+PROT_MAX_EXTRACT
 PTHREAD_CREATE_DETACHED
 PTHREAD_CREATE_JOINABLE
 PTHREAD_MUTEX_ADAPTIVE_NP
@@ -1096,6 +1100,7 @@ RFLINUXTHPN
 RFMEM
 RFNOWAIT
 RFPROC
+RFSIGSHARE
 RFSPAWN
 RFTHREAD
 RFTSIGZMB
@@ -1768,6 +1773,8 @@ eui64_aton
 eui64_hostton
 eui64_ntoa
 eui64_ntohost
+exect
+execvP
 explicit_bzero
 extattr_delete_fd
 extattr_delete_file
@@ -2008,6 +2015,7 @@ pseudo_AF_XTP
 pthread_attr_get_np
 pthread_attr_getguardsize
 pthread_attr_getstack
+pthread_attr_setguardsize
 pthread_barrierattr_destroy
 pthread_barrierattr_getpshared
 pthread_barrierattr_init
@@ -2022,6 +2030,7 @@ pthread_condattr_getpshared
 pthread_condattr_setclock
 pthread_condattr_setpshared
 pthread_get_name_np
+pthread_getname_np
 pthread_getaffinity_np
 pthread_getcpuclockid
 pthread_getthreadid_np
@@ -2037,6 +2046,7 @@ pthread_rwlockattr_getpshared
 pthread_rwlockattr_setpshared
 pthread_setaffinity_np
 pthread_set_name_np
+pthread_setname_np
 pthread_getschedparam
 pthread_setschedparam
 pthread_spin_destroy
@@ -2182,6 +2192,7 @@ shmid_ds
 sigaltstack
 sigevent
 siginfo_t
+sigsuspend
 sigtimedwait
 sigwait
 sigwaitinfo
@@ -2194,6 +2205,8 @@ statfs
 strcasecmp
 strcasestr
 strchrnul
+strftime
+strftime_l
 strncasecmp
 strndup
 strsignal
@@ -2234,3 +2247,9 @@ xucred
 eaccess
 dirname
 basename
+closefrom
+close_range
+eventfd_read
+eventfd_write
+IP_RECVTTL
+IPV6_RECVHOPLIMIT

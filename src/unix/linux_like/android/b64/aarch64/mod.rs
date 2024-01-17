@@ -415,16 +415,8 @@ pub const SYS_syscalls: ::c_long = 436;
 pub const PROT_BTI: ::c_int = 0x10;
 pub const PROT_MTE: ::c_int = 0x20;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;
 
-cfg_if! {
-    if #[cfg(libc_int128)] {
-        mod int128;
-        pub use self::int128::*;
-    }
-}
+mod int128;
+pub use self::int128::*;

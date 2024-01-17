@@ -476,14 +476,10 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(all(
-            any(target_arch = "x86", target_arch = "x86_64"),
-            libc_packedN
-        ), repr(packed(4)))]
-    #[cfg_attr(all(
-            any(target_arch = "x86", target_arch = "x86_64"),
-            not(libc_packedN)
-        ), repr(packed))]
+    #[cfg_attr(any(
+        target_arch = "x86", target_arch = "x86_64"),
+        repr(packed(4))
+    )]
     pub struct epoll_event {
         pub events: u32,
         pub u64: u64,
@@ -518,9 +514,9 @@ s_no_extra_traits! {
 
     pub struct fd_set {
         #[cfg(target_pointer_width = "64")]
-        fds_bits: [i64; FD_SETSIZE / 64],
+        fds_bits: [i64; FD_SETSIZE as usize / 64],
         #[cfg(target_pointer_width = "32")]
-        fds_bits: [i32; FD_SETSIZE / 32],
+        fds_bits: [i32; FD_SETSIZE as usize / 32],
     }
 
     pub struct sockaddr_storage {
@@ -530,7 +526,7 @@ s_no_extra_traits! {
         __ss_pad2: [u8; 240],
     }
 
-    #[cfg_attr(all(target_pointer_width = "64", libc_align), repr(align(8)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
@@ -560,15 +556,13 @@ s_no_extra_traits! {
         __sigev_pad2: ::c_int,
     }
 
-    #[cfg(libc_union)]
-    #[cfg_attr(libc_align, repr(align(16)))]
+    #[repr(align(16))]
     pub union pad128_t {
         // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [i32; 4],
     }
 
-    #[cfg(libc_union)]
-    #[cfg_attr(libc_align, repr(align(16)))]
+    #[repr(align(16))]
     pub union upad128_t {
         // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [u32; 4],
@@ -936,7 +930,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for pad128_t {
             fn eq(&self, other: &pad128_t) -> bool {
                 unsafe {
@@ -945,9 +938,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for pad128_t {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for pad128_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -958,7 +949,6 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for pad128_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -967,7 +957,6 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl PartialEq for upad128_t {
             fn eq(&self, other: &upad128_t) -> bool {
                 unsafe {
@@ -976,9 +965,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for upad128_t {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for upad128_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -989,7 +976,6 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for upad128_t {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -1250,9 +1236,9 @@ pub const IPV6_V6ONLY: ::c_int = 0x27;
 
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
-        pub const FD_SETSIZE: usize = 65536;
+        pub const FD_SETSIZE: ::c_int = 65536;
     } else {
-        pub const FD_SETSIZE: usize = 1024;
+        pub const FD_SETSIZE: ::c_int = 1024;
     }
 }
 
@@ -1294,12 +1280,13 @@ pub const O_EXCL: ::c_int = 1024;
 pub const O_NOCTTY: ::c_int = 2048;
 pub const O_TRUNC: ::c_int = 512;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
-pub const O_DIRECTORY: ::c_int = 0x1000000;
 pub const O_SEARCH: ::c_int = 0x200000;
 pub const O_EXEC: ::c_int = 0x400000;
 pub const O_CLOEXEC: ::c_int = 0x800000;
 pub const O_ACCMODE: ::c_int = 0x600003;
 pub const O_XATTR: ::c_int = 0x4000;
+pub const O_DIRECTORY: ::c_int = 0x1000000;
+pub const O_DIRECT: ::c_int = 0x2000000;
 pub const S_IFIFO: mode_t = 4096;
 pub const S_IFCHR: mode_t = 8192;
 pub const S_IFBLK: mode_t = 24576;
@@ -2588,6 +2575,9 @@ const _CMSG_DATA_ALIGNMENT: usize = ::mem::size_of::<::c_int>();
 
 const NEWDEV: ::c_int = 1;
 
+// sys/sendfile.h
+pub const SFV_FD_SELF: ::c_int = -2;
+
 const_fn! {
     {const} fn _CMSG_HDR_ALIGN(p: usize) -> usize {
         (p + _CMSG_HDR_ALIGNMENT - 1) & !(_CMSG_HDR_ALIGNMENT - 1)
@@ -2753,7 +2743,7 @@ extern "C" {
         host: *mut ::c_char,
         hostlen: ::socklen_t,
         serv: *mut ::c_char,
-        sevlen: ::socklen_t,
+        servlen: ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
     pub fn setpwent();
@@ -2948,6 +2938,7 @@ extern "C" {
         result: *mut *mut ::group,
     ) -> ::c_int;
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> ::c_int;
+    pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
 
@@ -3203,9 +3194,9 @@ extern "C" {
 
     pub fn sync();
 
-    fn __major(version: ::c_int, devnum: ::dev_t) -> ::major_t;
-    fn __minor(version: ::c_int, devnum: ::dev_t) -> ::minor_t;
-    fn __makedev(version: ::c_int, majdev: ::major_t, mindev: ::minor_t) -> ::dev_t;
+    pub fn __major(version: ::c_int, devnum: ::dev_t) -> ::major_t;
+    pub fn __minor(version: ::c_int, devnum: ::dev_t) -> ::minor_t;
+    pub fn __makedev(version: ::c_int, majdev: ::major_t, mindev: ::minor_t) -> ::dev_t;
 }
 
 #[link(name = "sendfile")]

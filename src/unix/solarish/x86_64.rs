@@ -50,7 +50,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg(libc_union)]
     pub union __c_anonymous_fp_reg_set {
         pub fpchip_state: __c_anonymous_fpchip_state,
         pub f_fpregs: [[u32; 13]; 10],
@@ -77,7 +76,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_fp_reg_set {
             fn eq(&self, other: &__c_anonymous_fp_reg_set) -> bool {
                 unsafe {
@@ -90,9 +88,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_fp_reg_set {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_fp_reg_set {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {

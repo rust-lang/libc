@@ -236,11 +236,6 @@ s! {
         pub ss_size: ::size_t
     }
 
-    pub struct seccomp_notif_sizes {
-        pub seccomp_notif: ::__u16,
-        pub seccomp_notif_resp: ::__u16,
-        pub seccomp_data: ::__u16,
-    }
 }
 
 s_no_extra_traits! {
@@ -507,6 +502,7 @@ pub const PTRACE_SYSEMU_SINGLESTEP: ::c_uint = 32;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
+pub const MCL_ONFAULT: ::c_int = 0x0004;
 
 pub const POLLWRNORM: ::c_short = 0x100;
 pub const POLLWRBAND: ::c_short = 0x200;
@@ -1089,11 +1085,6 @@ pub const REG_EFL: ::c_int = 16;
 pub const REG_UESP: ::c_int = 17;
 pub const REG_SS: ::c_int = 18;
 
-pub const SECCOMP_SET_MODE_STRICT: ::c_uint = 0;
-pub const SECCOMP_SET_MODE_FILTER: ::c_uint = 1;
-pub const SECCOMP_GET_ACTION_AVAIL: ::c_uint = 2;
-pub const SECCOMP_GET_NOTIF_SIZES: ::c_uint = 3;
-
 extern "C" {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
@@ -1101,9 +1092,5 @@ extern "C" {
     pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> ::c_int;
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

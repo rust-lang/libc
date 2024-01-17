@@ -28,20 +28,13 @@ pub type nfds_t = ::c_ulong;
 pub type nlink_t = ::c_ulong;
 pub type off_t = ::c_longlong;
 pub type pthread_t = *mut ::c_void;
-pub type pthread_attr_t = *mut ::c_void;
-pub type pthread_cond_t = *mut ::c_void;
-pub type pthread_condattr_t = *mut ::c_void;
-// Must be usize due to libstd/sys_common/thread_local.rs,
+// Must be usize due to library/std/sys_common/thread_local.rs,
 // should technically be *mut ::c_void
 pub type pthread_key_t = usize;
-pub type pthread_mutex_t = *mut ::c_void;
-pub type pthread_mutexattr_t = *mut ::c_void;
-pub type pthread_rwlock_t = *mut ::c_void;
-pub type pthread_rwlockattr_t = *mut ::c_void;
 pub type rlim_t = ::c_ulonglong;
 pub type sa_family_t = u16;
 pub type sem_t = *mut ::c_void;
-pub type sigset_t = ::c_ulong;
+pub type sigset_t = ::c_ulonglong;
 pub type socklen_t = u32;
 pub type speed_t = u32;
 pub type suseconds_t = ::c_int;
@@ -123,7 +116,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; ::FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; ::FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct in_addr {
@@ -265,7 +258,74 @@ s! {
         pub uid: uid_t,
         pub gid: gid_t,
     }
+
+    #[cfg_attr(target_pointer_width = "32", repr(C, align(4)))]
+    #[cfg_attr(target_pointer_width = "64", repr(C, align(8)))]
+    pub struct pthread_attr_t {
+        bytes: [u8; _PTHREAD_ATTR_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_barrier_t {
+        bytes: [u8; _PTHREAD_BARRIER_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_barrierattr_t {
+        bytes: [u8; _PTHREAD_BARRIERATTR_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_mutex_t {
+        bytes: [u8; _PTHREAD_MUTEX_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_rwlock_t {
+        bytes: [u8; _PTHREAD_RWLOCK_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_mutexattr_t {
+        bytes: [u8; _PTHREAD_MUTEXATTR_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(1))]
+    pub struct pthread_rwlockattr_t {
+        bytes: [u8; _PTHREAD_RWLOCKATTR_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_cond_t {
+        bytes: [u8; _PTHREAD_COND_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_condattr_t {
+        bytes: [u8; _PTHREAD_CONDATTR_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_once_t {
+        bytes: [u8; _PTHREAD_ONCE_SIZE],
+    }
+    #[repr(C)]
+    #[repr(align(4))]
+    pub struct pthread_spinlock_t {
+        bytes: [u8; _PTHREAD_SPINLOCK_SIZE],
+    }
 }
+const _PTHREAD_ATTR_SIZE: usize = 32;
+const _PTHREAD_RWLOCKATTR_SIZE: usize = 1;
+const _PTHREAD_RWLOCK_SIZE: usize = 4;
+const _PTHREAD_BARRIER_SIZE: usize = 24;
+const _PTHREAD_BARRIERATTR_SIZE: usize = 4;
+const _PTHREAD_CONDATTR_SIZE: usize = 8;
+const _PTHREAD_COND_SIZE: usize = 8;
+const _PTHREAD_MUTEX_SIZE: usize = 12;
+const _PTHREAD_MUTEXATTR_SIZE: usize = 20;
+const _PTHREAD_ONCE_SIZE: usize = 4;
+const _PTHREAD_SPINLOCK_SIZE: usize = 4;
 
 pub const UTSLENGTH: usize = 65;
 
@@ -549,9 +609,15 @@ pub const POLLWRBAND: ::c_short = 0x200;
 // pthread.h
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
-pub const PTHREAD_MUTEX_INITIALIZER: ::pthread_mutex_t = -1isize as *mut _;
-pub const PTHREAD_COND_INITIALIZER: ::pthread_cond_t = -1isize as *mut _;
-pub const PTHREAD_RWLOCK_INITIALIZER: ::pthread_rwlock_t = -1isize as *mut _;
+pub const PTHREAD_MUTEX_INITIALIZER: ::pthread_mutex_t = ::pthread_mutex_t {
+    bytes: [0; _PTHREAD_MUTEX_SIZE],
+};
+pub const PTHREAD_COND_INITIALIZER: ::pthread_cond_t = ::pthread_cond_t {
+    bytes: [0; _PTHREAD_COND_SIZE],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: ::pthread_rwlock_t = ::pthread_rwlock_t {
+    bytes: [0; _PTHREAD_RWLOCK_SIZE],
+};
 pub const PTHREAD_STACK_MIN: ::size_t = 4096;
 
 // signal.h
@@ -663,6 +729,7 @@ pub const FIOCLEX: ::c_ulong = 0x5451;
 pub const TCGETS: ::c_ulong = 0x5401;
 pub const TCSETS: ::c_ulong = 0x5402;
 pub const TCFLSH: ::c_ulong = 0x540B;
+pub const TIOCSCTTY: ::c_ulong = 0x540E;
 pub const TIOCGPGRP: ::c_ulong = 0x540F;
 pub const TIOCSPGRP: ::c_ulong = 0x5410;
 pub const TIOCGWINSZ: ::c_ulong = 0x5413;
@@ -692,7 +759,7 @@ pub const MS_INVALIDATE: ::c_int = 0x0002;
 pub const MS_SYNC: ::c_int = 0x0004;
 
 // sys/select.h
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 // sys/socket.h
 pub const AF_INET: ::c_int = 2;
@@ -747,6 +814,7 @@ pub const SOCK_NONBLOCK: ::c_int = 0o4_000;
 pub const SOCK_CLOEXEC: ::c_int = 0o2_000_000;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOL_SOCKET: ::c_int = 1;
+pub const SOMAXCONN: ::c_int = 128;
 
 // sys/termios.h
 pub const VEOF: usize = 0;
@@ -1014,6 +1082,10 @@ extern "C" {
     pub fn getdtablesize() -> ::c_int;
 
     // grp.h
+    pub fn getgrent() -> *mut ::group;
+    pub fn setgrent();
+    pub fn endgrent();
+    pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
     pub fn getgrgid_r(
         gid: ::gid_t,
         grp: *mut ::group,
@@ -1021,6 +1093,7 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
+    pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
     pub fn getgrnam_r(
         name: *const ::c_char,
         grp: *mut ::group,
@@ -1066,6 +1139,15 @@ extern "C" {
         clock_id: ::clockid_t,
     ) -> ::c_int;
 
+    //pty.h
+    pub fn openpty(
+        amaster: *mut ::c_int,
+        aslave: *mut ::c_int,
+        name: *mut ::c_char,
+        termp: *const termios,
+        winp: *const ::winsize,
+    ) -> ::c_int;
+
     // pwd.h
     pub fn getpwent() -> *mut passwd;
     pub fn setpwent();
@@ -1101,9 +1183,15 @@ extern "C" {
     pub fn sigwait(set: *const sigset_t, sig: *mut ::c_int) -> ::c_int;
 
     // stdlib.h
+    pub fn getsubopt(
+        optionp: *mut *mut c_char,
+        tokens: *const *mut c_char,
+        valuep: *mut *mut c_char,
+    ) -> ::c_int;
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 
     // string.h
+    pub fn explicit_bzero(p: *mut ::c_void, len: ::size_t);
     pub fn strlcat(dst: *mut ::c_char, src: *const ::c_char, siz: ::size_t) -> ::size_t;
     pub fn strlcpy(dst: *mut ::c_char, src: *const ::c_char, siz: ::size_t) -> ::size_t;
 
@@ -1130,6 +1218,8 @@ extern "C" {
     pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 
     // sys/resource.h
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
 
@@ -1158,17 +1248,8 @@ extern "C" {
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
 
-    // strings.h
-    pub fn explicit_bzero(p: *mut ::c_void, len: ::size_t);
-
-    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
-    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
-
-    pub fn getsubopt(
-        optionp: *mut *mut c_char,
-        tokens: *const *mut c_char,
-        valuep: *mut *mut c_char,
-    ) -> ::c_int;
+    // utmp.h
+    pub fn login_tty(fd: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

@@ -345,9 +345,5 @@ pub const SYS_fsmount: ::c_long = 432;
 pub const SYS_fspick: ::c_long = 433;
 pub const SYS_syscalls: ::c_long = 436;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

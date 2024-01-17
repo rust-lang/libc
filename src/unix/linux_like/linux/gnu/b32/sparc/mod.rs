@@ -363,6 +363,7 @@ pub const EREMOTEIO: ::c_int = 121;
 
 pub const MCL_CURRENT: ::c_int = 0x2000;
 pub const MCL_FUTURE: ::c_int = 0x4000;
+pub const MCL_ONFAULT: ::c_int = 0x8000;
 
 pub const SIGSTKSZ: ::size_t = 16384;
 pub const MINSIGSTKSZ: ::size_t = 4096;
@@ -848,9 +849,5 @@ pub const SYS_process_mrelease: ::c_long = 448;
 pub const SYS_futex_waitv: ::c_long = 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

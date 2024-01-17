@@ -1,7 +1,6 @@
 pub type c_char = i8;
 pub type caddr_t = *mut ::c_char;
-// FIXME: clockid_t must be c_long, but time.rs accepts only i32
-pub type clockid_t = ::c_int;
+pub type clockid_t = ::c_longlong;
 pub type blkcnt_t = ::c_long;
 pub type clock_t = ::c_int;
 pub type daddr_t = ::c_long;
@@ -535,20 +534,17 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg(libc_union)]
     pub union __sigaction_sa_union {
         pub __su_handler: extern fn(c: ::c_int),
         pub __su_sigaction: extern fn(c: ::c_int, info: *mut siginfo_t, ptr: *mut ::c_void),
     }
 
     pub struct sigaction {
-        #[cfg(libc_union)]
         pub sa_union: __sigaction_sa_union,
         pub sa_mask: sigset_t,
         pub sa_flags: ::c_int,
     }
 
-    #[cfg(libc_union)]
     pub union __poll_ctl_ext_u {
         pub addr: *mut ::c_void,
         pub data32: u32,
@@ -560,7 +556,6 @@ s_no_extra_traits! {
         pub command: u8,
         pub events: ::c_short,
         pub fd: ::c_int,
-        #[cfg(libc_union)]
         pub u: __poll_ctl_ext_u,
         pub reversed64: [u64; 6],
     }
@@ -568,7 +563,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[cfg(libc_union)]
         impl PartialEq for __sigaction_sa_union {
             fn eq(&self, other: &__sigaction_sa_union) -> bool {
                 unsafe {
@@ -577,9 +571,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __sigaction_sa_union {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __sigaction_sa_union {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__sigaction_sa_union")
@@ -588,7 +580,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __sigaction_sa_union {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -600,10 +591,7 @@ cfg_if! {
 
         impl PartialEq for sigaction {
             fn eq(&self, other: &sigaction) -> bool {
-                #[cfg(libc_union)]
                 let union_eq = self.sa_union == other.sa_union;
-                #[cfg(not(libc_union))]
-                let union_eq = true;
                 self.sa_mask == other.sa_mask
                     && self.sa_flags == other.sa_flags
                     && union_eq
@@ -613,7 +601,6 @@ cfg_if! {
         impl ::fmt::Debug for sigaction {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 let mut struct_formatter = f.debug_struct("sigaction");
-                #[cfg(libc_union)]
                 struct_formatter.field("sa_union", &self.sa_union);
                 struct_formatter.field("sa_mask", &self.sa_mask);
                 struct_formatter.field("sa_flags", &self.sa_flags);
@@ -622,14 +609,12 @@ cfg_if! {
         }
         impl ::hash::Hash for sigaction {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                #[cfg(libc_union)]
                 self.sa_union.hash(state);
                 self.sa_mask.hash(state);
                 self.sa_flags.hash(state);
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __poll_ctl_ext_u {
             fn eq(&self, other: &__poll_ctl_ext_u) -> bool {
                 unsafe {
@@ -639,9 +624,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __poll_ctl_ext_u {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __poll_ctl_ext_u {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__poll_ctl_ext_u")
@@ -651,7 +634,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __poll_ctl_ext_u {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -664,10 +646,7 @@ cfg_if! {
 
         impl PartialEq for poll_ctl_ext {
             fn eq(&self, other: &poll_ctl_ext) -> bool {
-                #[cfg(libc_union)]
                 let union_eq = self.u == other.u;
-                #[cfg(not(libc_union))]
-                let union_eq = true;
                 self.version == other.version
                     && self.command == other.command
                     && self.events == other.events
@@ -684,7 +663,6 @@ cfg_if! {
                 struct_formatter.field("command", &self.command);
                 struct_formatter.field("events", &self.events);
                 struct_formatter.field("fd", &self.fd);
-                #[cfg(libc_union)]
                 struct_formatter.field("u", &self.u);
                 struct_formatter.field("reversed64", &self.reversed64);
                 struct_formatter.finish()
@@ -696,7 +674,6 @@ cfg_if! {
                 self.command.hash(state);
                 self.events.hash(state);
                 self.fd.hash(state);
-                #[cfg(libc_union)]
                 self.u.hash(state);
                 self.reversed64.hash(state);
             }
@@ -1762,6 +1739,7 @@ pub const PRIO_USER: ::c_int = 2;
 pub const RUSAGE_THREAD: ::c_int = 1;
 pub const RLIM_SAVED_MAX: ::c_ulong = RLIM_INFINITY - 1;
 pub const RLIM_SAVED_CUR: ::c_ulong = RLIM_INFINITY - 2;
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = 10;
 
 // sys/sched.h
@@ -2140,7 +2118,7 @@ pub const POWER_8: ::c_int = 0x10000;
 pub const POWER_9: ::c_int = 0x20000;
 
 // sys/time.h
-pub const FD_SETSIZE: usize = 65534;
+pub const FD_SETSIZE: ::c_int = 65534;
 pub const TIMEOFDAY: ::c_int = 9;
 pub const CLOCK_REALTIME: ::clockid_t = TIMEOFDAY as clockid_t;
 pub const CLOCK_MONOTONIC: ::clockid_t = 10;
@@ -2669,6 +2647,7 @@ extern "C" {
         attr: *const ::pthread_attr_t,
         guardsize: *mut ::size_t,
     ) -> ::c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut ::pthread_attr_t, guardsize: ::size_t) -> ::c_int;
     pub fn pthread_attr_getschedparam(
         attr: *const ::pthread_attr_t,
         param: *mut sched_param,
@@ -2888,7 +2867,7 @@ extern "C" {
         host: *mut ::c_char,
         hostlen: ::size_t,
         serv: *mut ::c_char,
-        sevlen: ::size_t,
+        servlen: ::size_t,
         flags: ::c_int,
     ) -> ::c_int;
     pub fn getpagesize() -> ::c_int;
@@ -3273,7 +3252,13 @@ extern "C" {
     pub fn splice(socket1: ::c_int, socket2: ::c_int, flags: ::c_int) -> ::c_int;
     pub fn srand(seed: ::c_uint);
     pub fn srand48(seed: ::c_long);
-    pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
+    pub fn stat64(path: *const ::c_char, buf: *mut stat64) -> ::c_int;
+    pub fn stat64at(
+        dirfd: ::c_int,
+        path: *const ::c_char,
+        buf: *mut stat64,
+        flags: ::c_int,
+    ) -> ::c_int;
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
     pub fn statfs64(path: *const ::c_char, buf: *mut statfs64) -> ::c_int;
     pub fn statvfs64(path: *const ::c_char, buf: *mut statvfs64) -> ::c_int;

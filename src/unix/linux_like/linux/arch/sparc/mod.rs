@@ -216,7 +216,10 @@ pub const RLIMIT_MSGQUEUE: ::__rlimit_resource_t = 12;
 pub const RLIMIT_NICE: ::__rlimit_resource_t = 13;
 pub const RLIMIT_RTPRIO: ::__rlimit_resource_t = 14;
 pub const RLIMIT_RTTIME: ::__rlimit_resource_t = 15;
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::__rlimit_resource_t = 16;
+#[allow(deprecated)]
+#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = RLIM_NLIMITS;
 
 cfg_if! {
@@ -224,5 +227,33 @@ cfg_if! {
         pub const RLIM_INFINITY: ::rlim_t = !0;
     } else if #[cfg(target_arch = "sparc")] {
         pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
+    }
+}
+
+cfg_if! {
+    // Those type are constructed using the _IOC macro
+    // DD-SS_SSSS_SSSS_SSSS-TTTT_TTTT-NNNN_NNNN
+    // where D stands for direction (either None (00), Read (01) or Write (11))
+    // where S stands for size (int, long, struct...)
+    // where T stands for type ('f','v','X'...)
+    // where N stands for NR (NumbeR)
+    if #[cfg(target_arch = "sparc")] {
+        pub const FS_IOC_GETFLAGS: ::Ioctl = 0x40046601;
+        pub const FS_IOC_SETFLAGS: ::Ioctl = 0x80046602;
+        pub const FS_IOC_GETVERSION: ::Ioctl = 0x40047601;
+        pub const FS_IOC_SETVERSION: ::Ioctl = 0x80047602;
+        pub const FS_IOC32_GETFLAGS: ::Ioctl = 0x40046601;
+        pub const FS_IOC32_SETFLAGS: ::Ioctl = 0x80046602;
+        pub const FS_IOC32_GETVERSION: ::Ioctl = 0x40047601;
+        pub const FS_IOC32_SETVERSION: ::Ioctl = 0x80047602;
+    } else if #[cfg(target_arch = "sparc64")] {
+        pub const FS_IOC_GETFLAGS: ::Ioctl = 0x40086601;
+        pub const FS_IOC_SETFLAGS: ::Ioctl = 0x80086602;
+        pub const FS_IOC_GETVERSION: ::Ioctl = 0x40087601;
+        pub const FS_IOC_SETVERSION: ::Ioctl = 0x80087602;
+        pub const FS_IOC32_GETFLAGS: ::Ioctl = 0x40046601;
+        pub const FS_IOC32_SETFLAGS: ::Ioctl = 0x80046602;
+        pub const FS_IOC32_GETVERSION: ::Ioctl = 0x40047601;
+        pub const FS_IOC32_SETVERSION: ::Ioctl = 0x80047602;
     }
 }
