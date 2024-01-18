@@ -44,6 +44,7 @@ SYS_epoll_wait
 SYS_eventfd
 SYS_fadvise64
 SYS_fork
+SYS_fstat
 SYS_fstatfs64
 SYS_futimesat
 SYS_get_kernel_syms
@@ -76,6 +77,7 @@ SYS_s390_pci_mmio_write
 SYS_s390_runtime_instr
 SYS_select
 SYS_sendfile
+SYS_setrlimit
 SYS_sigaction
 SYS_signal
 SYS_signalfd
