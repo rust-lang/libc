@@ -96,6 +96,7 @@ SYS_fadvise64_64
 SYS_fchown32
 SYS_fcntl64
 SYS_fork
+SYS_fstat
 SYS_fstat64
 SYS_fstatat64
 SYS_fstatfs64
@@ -165,6 +166,7 @@ SYS_setregid32
 SYS_setresgid32
 SYS_setresuid32
 SYS_setreuid32
+SYS_setrlimit
 SYS_setuid32
 SYS_sgetmask
 SYS_sigaction

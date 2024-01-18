@@ -46,6 +46,7 @@ SO_TIMESTAMPNS
 SO_WIFI_STATUS
 SYS_accept
 SYS_fadvise64
+SYS_fstat
 SYS_msgctl
 SYS_msgget
 SYS_msgrcv
@@ -59,6 +60,7 @@ SYS_semget
 SYS_semop
 SYS_semtimedop
 SYS_sendfile
+SYS_setrlimit
 SYS_shmat
 SYS_shmctl
 SYS_shmdt

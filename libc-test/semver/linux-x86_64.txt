@@ -93,6 +93,7 @@ SYS_epoll_wait
 SYS_eventfd
 SYS_fadvise64
 SYS_fork
+SYS_fstat
 SYS_futimesat
 SYS_getdents
 SYS_getpgrp
@@ -120,6 +121,7 @@ SYS_renameat
 SYS_rmdir
 SYS_select
 SYS_sendfile
+SYS_setrlimit
 SYS_signalfd
 SYS_stat
 SYS_symlink

@@ -66,6 +66,7 @@ SKF_NET_OFF
 SO_PRIORITY
 SO_PROTOCOL
 SYS_accept
+SYS_fstat
 SYS_msgctl
 SYS_msgget
 SYS_msgrcv
@@ -79,6 +80,7 @@ SYS_semctl
 SYS_semget
 SYS_semop
 SYS_semtimedop
+SYS_setrlimit
 SYS_shmat
 SYS_shmctl
 SYS_shmdt
