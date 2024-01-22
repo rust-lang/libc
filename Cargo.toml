@@ -141,6 +141,9 @@ extra_traits = []
 const-extern-fn = []
 # use_std is deprecated, use `std` instead
 use_std = ['std']
+# get Netlink support on FreeBSD, but with breaking API change,
+# see https://github.com/rust-lang/libc/pull/3367
+future-freebsd-netlink = []
 
 [workspace]
 members = ["libc-test"]

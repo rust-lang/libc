@@ -2428,7 +2428,9 @@ fn test_freebsd(target: &str) {
             | "CTRL_ATTR_MCAST_GRP_UNSPEC"
             | "CTRL_ATTR_MCAST_GRP_NAME"
             | "CTRL_ATTR_MCAST_GRP_ID"
-                if Some(13) > freebsd_ver =>
+                if env!("CARGO_PKG_VERSION_MAJOR") == "0"
+                    && env!("CARGO_PKG_VERSION_MINOR") == "2"
+                    || Some(13) > freebsd_ver =>
             {
                 true
             }
