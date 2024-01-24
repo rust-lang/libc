@@ -14,6 +14,7 @@ PROT_MTE
 SYS_arch_specific_syscall
 SYS_fcntl
 SYS_lseek
+SYS_memfd_secret
 SYS_mmap
 SYS_syscalls
 __system_property_wait
