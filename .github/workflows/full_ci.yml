@@ -269,7 +269,7 @@ jobs:
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
   success:
-    name: Success
+    name: success
     runs-on: ubuntu-22.04
     needs: [
       docker_linux_tier1,
