@@ -5,12 +5,9 @@ on:
   pull_request:
     branches:
       - libc-0.2
-    types:
-      - labeled
 
 jobs:
   docker_linux_tier1:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -31,7 +28,6 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
   macos:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -51,7 +47,6 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -86,7 +81,6 @@ jobs:
         shell: bash
 
   style_check:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -100,7 +94,6 @@ jobs:
         run: sh ci/style.sh
 
   docker_linux_tier2:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -173,7 +166,6 @@ jobs:
 
   # devkitpro's pacman needs to be connected from Docker.
   docker_switch:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -188,7 +180,6 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh switch
 
   build_channels_linux:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -221,7 +212,6 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_macos:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -254,7 +244,6 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/build.sh
 
   build_channels_windows:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -282,7 +271,6 @@ jobs:
         shell: bash
 
   check_cfg:
-    if: github.event.label.name == 'libc-0.2-pre-merge-ci'
     permissions:
       contents: read # to fetch code (actions/checkout)
 
@@ -298,7 +286,7 @@ jobs:
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
   success:
-    name: Success
+    name: success
     runs-on: ubuntu-22.04
     needs: [
       docker_linux_tier1,
