@@ -521,37 +521,13 @@ fn test_openbsd(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
-            // Removed in OpenBSD 6.0
-            "KERN_USERMOUNT" | "KERN_ARND" => true,
-            // Removed in OpenBSD 7.2
-            "KERN_NSELCOLL" => true,
-            // Good chance it's going to be wrong depending on the host release
-            "KERN_MAXID" | "NET_RT_MAXID" => true,
-            "EV_SYSFLAGS" => true,
-            _ => false,
-        }
-    });
-
     cfg.skip_fn(move |name| {
         match name {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" => true,
 
-            // Removed in OpenBSD 6.5
-            // https://marc.info/?l=openbsd-cvs&m=154723400730318
-            "mincore" => true,
-
             // futex() has volatile arguments, but that doesn't exist in Rust.
             "futex" => true,
-
-            // Available for openBSD 7.3
-            "mimmutable" => true,
-
-            // Removed in OpenBSD 7.5
-            // https://marc.info/?l=openbsd-cvs&m=170239504300386
-            "syscall" => true,
 
             _ => false,
         }

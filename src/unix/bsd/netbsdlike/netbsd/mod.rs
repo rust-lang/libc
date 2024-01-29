@@ -2902,6 +2902,8 @@ extern "C" {
         result: *mut *mut ::group,
     ) -> ::c_int;
 
+    pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
+
     pub fn updwtmpx(file: *const ::c_char, ut: *const utmpx) -> ::c_int;
     pub fn getlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> *mut lastlogx;
     pub fn updlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> ::c_int;
