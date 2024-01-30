@@ -8,6 +8,7 @@ use std::string::String;
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &'static [&'static str] = &[
     "emscripten_new_stat_abi",
+    "emscripten_64_bit_time_t",
     "freebsd10",
     "freebsd11",
     "freebsd12",
@@ -56,7 +57,13 @@ fn main() {
     }
 
     match emcc_version_code() {
-        Some(v) if (v >= 30142) => set_cfg("emscripten_new_stat_abi"),
+        Some(v) if (v >= 30142) => {
+            set_cfg("emscripten_new_stat_abi");
+            set_cfg("emscripten_64_bit_time_t");
+        }
+        Some(v) if (v >= 30116) => {
+            set_cfg("emscripten_64_bit_time_t");
+        }
         // Non-Emscripten or version < 3.1.42.
         Some(_) | None => (),
     }

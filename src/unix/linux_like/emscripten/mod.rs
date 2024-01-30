@@ -16,7 +16,24 @@ pub type loff_t = i64;
 pub type pthread_key_t = ::c_uint;
 
 pub type clock_t = c_long;
-pub type time_t = c_long;
+
+// time_t was type:
+//
+//   - long   from v1.5.4  (2013/08/08)  until v3.1.11
+//   - int    from v3.1.11 (2022/05/20)  until v3.1.16
+//   - _Int64 from v3.1.16  (2022/07/14)
+//
+//  And it's still int64 today. The change from long to int was marked as a
+//  nonfunctional change since wasm64 was considered to be not working yet in
+//  v3.1.11. So it suffices to say it's 32 bit until v3.1.16 and 64 bit after.
+cfg_if! {
+    if #[cfg(emscripten_64_bit_time_t)] {
+        pub type time_t = i64;
+    } else {
+        pub type time_t = i32;
+    }
+}
+
 pub type suseconds_t = c_long;
 pub type ino_t = u64;
 pub type off_t = i64;
