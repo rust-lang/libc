@@ -1912,6 +1912,34 @@ fn test_android(target: &str) {
             // FIXME: The value has been changed on r26b:
             | "SYS_syscalls" if aarch64 => true,
 
+            // From `<include/linux/sched.h>`.
+            | "PF_VCPU"
+            | "PF_IDLE"
+            | "PF_EXITING"
+            | "PF_POSTCOREDUMP"
+            | "PF_IO_WORKER"
+            | "PF_WQ_WORKER"
+            | "PF_FORKNOEXEC"
+            | "PF_SUPERPRIV"
+            | "PF_DUMPCORE"
+            | "PF_MCE_PROCESS"
+            | "PF_SIGNALED"
+            | "PF_MEMALLOC"
+            | "PF_NPROC_EXCEEDED"
+            | "PF_USED_MATH"
+            | "PF_USER_WORKER"
+            | "PF_NOFREEZE"
+            | "PF_KSWAPD"
+            | "PF_MEMALLOC_NOFS"
+            | "PF_MEMALLOC_NOIO"
+            | "PF_LOCAL_THROTTLE"
+            | "PF_KTHREAD"
+            | "PF_RANDOMIZE"
+            | "PF_NO_SETAFFINITY"
+            | "PF_MCE_EARLY"
+            | "PF_MEMALLOC_PIN"
+            | "PF_SUSPEND_TASK" => true,
+
             _ => false,
         }
     });
