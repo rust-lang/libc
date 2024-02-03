@@ -672,7 +672,6 @@ extern "C" {
         addrlen: *mut ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
-    pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_getres50")]
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_gettime50")]
