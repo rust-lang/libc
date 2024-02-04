@@ -491,8 +491,12 @@ s! {
         pub rmx_rtt: u32,
         pub rmx_rttvar: u32,
         pub rmx_pksent: u32,
+        #[cfg(not(target_arch = "aarch64"))]
         pub rmx_state: u32,
+        #[cfg(not(target_arch = "aarch64"))]
         pub rmx_filler: [u32; 3],
+        #[cfg(target_arch = "aarch64")]
+        pub rmx_filler: [u32; 4],
     }
 
     pub struct rt_msghdr {
