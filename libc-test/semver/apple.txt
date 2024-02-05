@@ -1892,6 +1892,8 @@ lockf
 log2phys
 login_tty
 lutimes
+macho_arch_name_for_cpu_type
+macho_cpu_type_for_arch_name
 madvise
 malloc_default_zone
 malloc_good_size

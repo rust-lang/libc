@@ -203,6 +203,7 @@ fn test_apple(target: &str) {
         "limits.h",
         "locale.h",
         "malloc/malloc.h",
+        "mach-o/utils.h",
         "net/bpf.h",
         "net/dlil.h",
         "net/if.h",

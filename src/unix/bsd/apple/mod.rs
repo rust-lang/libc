@@ -6228,6 +6228,16 @@ extern "C" {
         search_path: *const ::c_char,
         argv: *const *mut ::c_char,
     ) -> ::c_int;
+
+    pub fn macho_cpu_type_for_arch_name(
+        archName: *const ::c_char,
+        tpe: *mut ::cpu_type_t,
+        subtpe: *mut ::cpu_subtype_t,
+    ) -> bool;
+    pub fn macho_arch_name_for_cpu_type(
+        tpe: ::cpu_type_t,
+        subtpe: ::cpu_subtype_t,
+    ) -> *const ::c_char;
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {
