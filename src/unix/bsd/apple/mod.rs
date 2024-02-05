@@ -6117,7 +6117,8 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
 
-    pub static mut mach_task_self_: ::mach_port_t;
+    // FIXME: 2024 edition forbids static mut, no easy fix for both nightly/stable neither
+    //pub static mut mach_task_self_: ::mach_port_t;
     pub fn task_for_pid(
         host: ::mach_port_t,
         pid: ::pid_t,
@@ -6234,9 +6235,12 @@ extern "C" {
     ) -> ::c_int;
 }
 
+// FIXME: 2024 edition forbids static mut, no easy fix for both nightly/stable neither
+/*
 pub unsafe fn mach_task_self() -> ::mach_port_t {
     mach_task_self_
 }
+*/
 
 cfg_if! {
     if #[cfg(target_os = "macos")] {
