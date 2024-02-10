@@ -5,7 +5,7 @@ use std::string::String;
 
 // List of cfgs this build script is allowed to set. The list is needed to support check-cfg, as we
 // need to know all the possible cfgs that this script will set. If you need to set another cfg
-// make sure to add it to this list as well.
+// make sure to add it to this list as wel.
 const ALLOWED_CFGS: &'static [&'static str] = &[
     "emscripten_new_stat_abi",
     "freebsd10",
