@@ -20,7 +20,7 @@ pub type uint32_t = u32;
 pub type uint64_t = u64;
 
 cfg_if! {
-    if #[cfg(all(target_arch = "aarch64", not(target_os = "windows")))] {
+    if #[cfg(all(target_arch = "aarch64", not(any(target_os = "windows", target_os = "macos", target_os = "ios", target_os = "tvos", target_os = "watchos"))))] {
         // This introduces partial support for FFI with __int128 and
         // equivalent types on platforms where Rust's definition is validated
         // to match the standard C ABI of that platform.
@@ -92,5 +92,10 @@ cfg_if! {
 
         // static_assert_eq!(core::mem::size_of::<__uint128_t>(), _SIZE_128);
         // static_assert_eq!(core::mem::align_of::<__uint128_t>(), _ALIGN_128);
+    } else if #[cfg(all(target_arch = "aarch64", any(target_os = "macos", target_os = "ios", target_os = "tvos", target_os = "watchos")))] {
+        /// C __int128_t (alternate name for [__int128][])
+        pub type __int128_t = i128;
+        /// C __uint128_t (alternate name for [__uint128][])
+        pub type __uint128_t = u128;
     }
 }
