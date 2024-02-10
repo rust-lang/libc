@@ -493,8 +493,7 @@ s! {
         pub rmx_rtt: u32,
         pub rmx_rttvar: u32,
         pub rmx_pksent: u32,
-        pub rmx_state: u32,
-        pub rmx_filler: [u32; 3],
+        pub rmx_filler: [u32; 4],
     }
 
     pub struct rt_msghdr {
@@ -6296,7 +6295,6 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
 
-    pub static mut mach_task_self_: ::mach_port_t;
     pub fn task_for_pid(
         host: ::mach_port_t,
         pid: ::pid_t,
@@ -6411,10 +6409,6 @@ extern "C" {
         search_path: *const ::c_char,
         argv: *const *mut ::c_char,
     ) -> ::c_int;
-}
-
-pub unsafe fn mach_task_self() -> ::mach_port_t {
-    mach_task_self_
 }
 
 cfg_if! {

@@ -294,6 +294,8 @@ fn test_apple(target: &str) {
             "tcp_connection_info" => true,
             // FIXME: The size is changed in recent macOSes.
             "malloc_introspection_t" => true,
+            // sonoma changes the padding `rmx_filler` field.
+            "rt_metrics" => true,
 
             _ => false,
         }
