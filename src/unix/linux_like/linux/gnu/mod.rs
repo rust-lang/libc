@@ -1065,8 +1065,8 @@ pub const ELFOSABI_ARM_AEABI: u8 = 64;
 
 // linux/sched.h
 pub const CLONE_NEWTIME: ::c_int = 0x80;
-pub const CLONE_CLEAR_SIGHAND: ::c_int = 0x100000000;
-pub const CLONE_INTO_CGROUP: ::c_int = 0x200000000;
+pub const CLONE_CLEAR_SIGHAND: ::c_ulonglong = 0x100000000;
+pub const CLONE_INTO_CGROUP: ::c_ulonglong = 0x200000000;
 
 // linux/keyctl.h
 pub const KEYCTL_DH_COMPUTE: u32 = 23;
