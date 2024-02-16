@@ -585,7 +585,13 @@ pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+pub const IP_TOS: ::c_int = 1;
+pub const IP_RECVTOS: ::c_int = 2;
+pub const IPPROTO_IGMP: ::c_int = 2;
+pub const IPPROTO_PUP: ::c_int = 12;
+pub const IPPROTO_IDP: ::c_int = 22;
 pub const IPPROTO_RAW: ::c_int = 255;
+pub const IPPROTO_MAX: ::c_int = 255;
 // }
 
 // netinet/tcp.h
@@ -810,6 +816,7 @@ pub const SO_PROTOCOL: ::c_int = 38;
 pub const SO_DOMAIN: ::c_int = 39;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
+pub const SOCK_RAW: ::c_int = 3;
 pub const SOCK_NONBLOCK: ::c_int = 0o4_000;
 pub const SOCK_CLOEXEC: ::c_int = 0o2_000_000;
 pub const SOCK_SEQPACKET: ::c_int = 5;
