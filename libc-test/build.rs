@@ -296,6 +296,8 @@ fn test_apple(target: &str) {
             // it is a moving target, changing through versions
             // also contains bitfields members
             "tcp_connection_info" => true,
+            // FIXME: The size is changed in recent macOSes.
+            "malloc_introspection_t" => true,
 
             _ => false,
         }
