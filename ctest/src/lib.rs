@@ -13,7 +13,6 @@
 
 use garando_syntax as syntax;
 
-use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
@@ -2431,11 +2430,9 @@ impl<'a> Resolver for MyResolver<'a> {
 
     fn visit_expansion(&mut self, _invoc: Mark, expansion: &Expansion, _derives: &[Mark]) {
         if let Expansion::Items(ref items) = expansion {
-            let features = RefCell::new(Features::new());
             for item in items.iter() {
                 MyVisitor {
                     parse_sess: self.parse_sess,
-                    features: &features,
                     map: &mut self.map,
                 }
                 .visit_item(item);
@@ -2517,7 +2514,6 @@ impl Folder for StripUnchecked {
 
 struct MyVisitor<'b> {
     parse_sess: &'b ParseSess,
-    features: &'b RefCell<Features>,
     map: &'b mut HashMap<Name, Rc<SyntaxExtension>>,
 }
 
@@ -2526,7 +2522,7 @@ impl<'a, 'b> Visitor<'a> for MyVisitor<'b> {
         if let ast::ItemKind::MacroDef(..) = item.node {
             self.map.insert(
                 item.ident.name,
-                Rc::new(macro_rules::compile(self.parse_sess, self.features, item)),
+                Rc::new(macro_rules::compile(self.parse_sess, item)),
             );
         }
         visit::walk_item(self, item);
