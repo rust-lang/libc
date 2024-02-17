@@ -2429,6 +2429,9 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // FIXME: Removed in FreeBSD 15:
+            "LOCAL_CONNWAIT" => true,
+
             _ => false,
         }
     });
