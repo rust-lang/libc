@@ -4210,6 +4210,9 @@ fn test_linux(target: &str) {
                 true
             }
 
+            // FIXME: Requires >= 6.6 kernel headers.
+            "SYS_fchmodat2" => true,
+
             // FIXME: seems to not be available all the time (from <include/linux/sched.h>:
             "PF_VCPU"
             | "PF_IDLE"
