@@ -518,6 +518,9 @@ extern "C" {
     pub fn aligned_malloc(size: size_t, alignment: size_t) -> *mut c_void;
     #[link_name = "_aligned_free"]
     pub fn aligned_free(ptr: *mut ::c_void);
+    #[link_name = "_aligned_realloc"]
+    pub fn aligned_realloc(memblock: *mut ::c_void, size: size_t, alignment: size_t)
+        -> *mut c_void;
     #[link_name = "_putenv"]
     pub fn putenv(envstring: *const ::c_char) -> ::c_int;
     #[link_name = "_wputenv"]
