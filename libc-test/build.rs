@@ -3407,7 +3407,7 @@ fn test_linux(target: &str) {
     // Include linux headers at the end:
     headers! {
         cfg:
-        [loongarch64]: "asm/hwcap.h",
+        [loongarch64 || riscv64]: "asm/hwcap.h",
         "asm/mman.h",
         [gnu]: "linux/aio_abi.h",
         "linux/can.h",
