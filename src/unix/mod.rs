@@ -147,7 +147,7 @@ s! {
     }
 
     pub struct iovec {
-        pub iov_base: *mut ::c_void,
+        pub iov_base: *mut u8,
         pub iov_len: ::size_t,
     }
 
@@ -475,12 +475,12 @@ extern "C" {
     pub fn fputs(s: *const c_char, stream: *mut FILE) -> c_int;
     pub fn puts(s: *const c_char) -> c_int;
     pub fn ungetc(c: c_int, stream: *mut FILE) -> c_int;
-    pub fn fread(ptr: *mut c_void, size: size_t, nobj: size_t, stream: *mut FILE) -> size_t;
+    pub fn fread(ptr: *mut u8, size: size_t, nobj: size_t, stream: *mut FILE) -> size_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "fwrite$UNIX2003"
     )]
-    pub fn fwrite(ptr: *const c_void, size: size_t, nobj: size_t, stream: *mut FILE) -> size_t;
+    pub fn fwrite(ptr: *const u8, size: size_t, nobj: size_t, stream: *mut FILE) -> size_t;
     pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
     pub fn ftell(stream: *mut FILE) -> c_long;
     pub fn rewind(stream: *mut FILE);
@@ -552,12 +552,12 @@ extern "C" {
     pub fn wcslen(buf: *const wchar_t) -> size_t;
     pub fn wcstombs(dest: *mut c_char, src: *const wchar_t, n: size_t) -> ::size_t;
 
-    pub fn memchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn memchr(cx: *const u8, c: c_int, n: size_t) -> *mut u8;
     pub fn wmemchr(cx: *const wchar_t, c: wchar_t, n: size_t) -> *mut wchar_t;
-    pub fn memcmp(cx: *const c_void, ct: *const c_void, n: size_t) -> c_int;
-    pub fn memcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
-    pub fn memmove(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
-    pub fn memset(dest: *mut c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn memcmp(cx: *const u8, ct: *const u8, n: size_t) -> c_int;
+    pub fn memcpy(dest: *mut u8, src: *const u8, n: size_t) -> *mut u8;
+    pub fn memmove(dest: *mut u8, src: *const u8, n: size_t) -> *mut u8;
+    pub fn memset(dest: *mut u8, c: c_int, n: size_t) -> *mut u8;
 }
 
 extern "C" {
@@ -641,7 +641,7 @@ extern "C" {
         socket: ::c_int,
         level: ::c_int,
         name: ::c_int,
-        value: *const ::c_void,
+        value: *const u8,
         option_len: socklen_t,
     ) -> ::c_int;
     #[cfg_attr(
@@ -664,7 +664,7 @@ extern "C" {
     #[cfg_attr(target_os = "espidf", link_name = "lwip_sendto")]
     pub fn sendto(
         socket: ::c_int,
-        buf: *const ::c_void,
+        buf: *const u8,
         len: ::size_t,
         flags: ::c_int,
         addr: *const sockaddr,
@@ -876,7 +876,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "read$UNIX2003"
     )]
-    pub fn read(fd: ::c_int, buf: *mut ::c_void, count: ::size_t) -> ::ssize_t;
+    pub fn read(fd: ::c_int, buf: *mut u8, count: ::size_t) -> ::ssize_t;
     pub fn rmdir(path: *const c_char) -> ::c_int;
     pub fn seteuid(uid: uid_t) -> ::c_int;
     pub fn setegid(gid: gid_t) -> ::c_int;
@@ -921,17 +921,17 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "write$UNIX2003"
     )]
-    pub fn write(fd: ::c_int, buf: *const ::c_void, count: ::size_t) -> ::ssize_t;
+    pub fn write(fd: ::c_int, buf: *const u8, count: ::size_t) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pread$UNIX2003"
     )]
-    pub fn pread(fd: ::c_int, buf: *mut ::c_void, count: ::size_t, offset: off_t) -> ::ssize_t;
+    pub fn pread(fd: ::c_int, buf: *mut u8, count: ::size_t, offset: off_t) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pwrite$UNIX2003"
     )]
-    pub fn pwrite(fd: ::c_int, buf: *const ::c_void, count: ::size_t, offset: off_t) -> ::ssize_t;
+    pub fn pwrite(fd: ::c_int, buf: *const u8, count: ::size_t, offset: off_t) -> ::ssize_t;
     pub fn umask(mask: mode_t) -> mode_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utime50")]
@@ -1143,7 +1143,7 @@ extern "C" {
         sockfd: ::c_int,
         level: ::c_int,
         optname: ::c_int,
-        optval: *mut ::c_void,
+        optval: *mut u8,
         optlen: *mut ::socklen_t,
     ) -> ::c_int;
     pub fn raise(signum: ::c_int) -> ::c_int;
@@ -1254,13 +1254,13 @@ extern "C" {
         link_name = "send$UNIX2003"
     )]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_send")]
-    pub fn send(socket: ::c_int, buf: *const ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
+    pub fn send(socket: ::c_int, buf: *const u8, len: ::size_t, flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "recv$UNIX2003"
     )]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_recv")]
-    pub fn recv(socket: ::c_int, buf: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::ssize_t;
+    pub fn recv(socket: ::c_int, buf: *mut u8, len: ::size_t, flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "putenv$UNIX2003"
