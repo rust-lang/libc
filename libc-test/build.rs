@@ -3532,6 +3532,13 @@ fn test_linux(target: &str) {
     });
 
     cfg.skip_type(move |ty| {
+        // FIXME: very recent additions to musl, not yet released.
+        if musl && (ty == "Elf32_Relr" || ty == "Elf64_Relr") {
+            return true;
+        }
+        if sparc64 && (ty == "Elf32_Rela" || ty == "Elf64_Rela") {
+            return true;
+        }
         match ty {
             // FIXME: `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359

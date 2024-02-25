@@ -40,6 +40,8 @@ BPF_XOR
 CIBAUD
 CS
 DS
+Elf32_Rela
+Elf64_Rela
 ES
 FS
 GS

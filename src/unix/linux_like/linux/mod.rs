@@ -27,6 +27,8 @@ pub type Elf32_Half = u16;
 pub type Elf32_Word = u32;
 pub type Elf32_Off = u32;
 pub type Elf32_Addr = u32;
+pub type Elf32_Xword = u64;
+pub type Elf32_Sword = i32;
 
 pub type Elf64_Half = u16;
 pub type Elf64_Word = u32;
@@ -34,9 +36,22 @@ pub type Elf64_Off = u64;
 pub type Elf64_Addr = u64;
 pub type Elf64_Xword = u64;
 pub type Elf64_Sxword = i64;
+pub type Elf64_Sword = i32;
 
 pub type Elf32_Section = u16;
 pub type Elf64_Section = u16;
+
+pub type Elf32_Relr = Elf32_Word;
+pub type Elf64_Relr = Elf32_Xword;
+pub type Elf32_Rel = __c_anonymous_elf32_rel;
+pub type Elf64_Rel = __c_anonymous_elf64_rel;
+
+cfg_if! {
+    if #[cfg(not(target_arch = "sparc64"))] {
+        pub type Elf32_Rela = __c_anonymous_elf32_rela;
+        pub type Elf64_Rela = __c_anonymous_elf64_rela;
+    }
+}
 
 // linux/can.h
 pub type canid_t = u32;
@@ -564,6 +579,16 @@ s! {
         pub sh_entsize: Elf64_Xword,
     }
 
+    pub struct __c_anonymous_elf32_rel {
+        pub r_offset: Elf32_Addr,
+        pub r_info: Elf32_Word,
+    }
+
+    pub struct __c_anonymous_elf64_rel {
+        pub r_offset: Elf64_Addr,
+        pub r_info: Elf64_Xword,
+    }
+
     pub struct ucred {
         pub pid: ::pid_t,
         pub uid: ::uid_t,
@@ -1013,6 +1038,17 @@ cfg_if! {
                 pub flags: __u32,
                 pub src_addr: ::sockaddr,
                 pub tsc: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
+            }
+            pub struct __c_anonymous_elf32_rela {
+                pub r_offset: Elf32_Addr,
+                pub r_info: Elf32_Word,
+                pub r_addend: Elf32_Sword,
+            }
+
+            pub struct __c_anonymous_elf64_rela {
+                pub r_offset: Elf64_Addr,
+                pub r_info: Elf64_Xword,
+                pub r_addend: Elf64_Sxword,
             }
         }
     }
@@ -5213,6 +5249,30 @@ f! {
 
     pub fn BPF_JUMP(code: ::__u16, k: ::__u32, jt: ::__u8, jf: ::__u8) -> sock_filter {
         sock_filter{code: code, jt: jt, jf: jf, k: k}
+    }
+
+    pub fn ELF32_R_SYM(val: Elf32_Word) -> Elf32_Word {
+        val >> 8
+    }
+
+    pub fn ELF32_R_TYPE(val: Elf32_Word) -> Elf32_Word {
+        val & 0xff
+    }
+
+    pub fn ELF32_R_INFO(sym: Elf32_Word, t: Elf32_Word) -> Elf32_Word {
+        sym << 8 + t & 0xff
+    }
+
+    pub fn ELF64_R_SYM(val: Elf64_Xword) -> Elf64_Xword {
+        val >> 32
+    }
+
+    pub fn ELF64_R_TYPE(val: Elf64_Xword) -> Elf64_Xword {
+        val & 0xffffffff
+    }
+
+    pub fn ELF64_R_INFO(sym: Elf64_Xword, t: Elf64_Xword) -> Elf64_Xword {
+        sym << 32 + t
     }
 }
 
