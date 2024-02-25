@@ -66,11 +66,7 @@ pub const F_DUP2FD_CLOEXEC: ::c_int = 48;
 pub const F_DUP2FD_CLOFORK: ::c_int = 50;
 
 extern "C" {
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *mut ::c_char, envp: *const *mut ::c_char) -> ::c_int;
 
     pub fn mincore(addr: *const ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
 
