@@ -102,7 +102,7 @@ jobs:
       contents: read # to fetch code (actions/checkout)
 
     name: Docker Linux Tier2
-    needs: [docker_linux_tier1, style_check]
+    needs: [docker_linux_tier1]
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
@@ -152,7 +152,7 @@ jobs:
 
     if: ${{ false }} # This is currently broken
     name: Docker Linux Build-Std Targets
-    needs: [docker_linux_tier1, style_check, build_channels_linux]
+    needs: [docker_linux_tier1, build_channels_linux]
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
@@ -174,7 +174,7 @@ jobs:
       contents: read # to fetch code (actions/checkout)
 
     name: Docker Switch
-    needs: [docker_linux_tier1, style_check]
+    needs: [docker_linux_tier1]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
