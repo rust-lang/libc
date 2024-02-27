@@ -1,6 +1,7 @@
 name: full CI
 
 on:
+  push:
   merge_group:
   pull_request:
     types: [opened, synchronize, reopened]
