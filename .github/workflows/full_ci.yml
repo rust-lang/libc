@@ -13,6 +13,7 @@ jobs:
 
     name: Docker Linux Tier1
     runs-on: ubuntu-22.04
+    needs: check_cfg
     strategy:
       fail-fast: true
       matrix:
@@ -33,6 +34,7 @@ jobs:
 
     name: macOS
     runs-on: macos-13
+    needs: [build_channels_linux, docker_linux_build_std]
     strategy:
       fail-fast: true
       matrix:
@@ -52,6 +54,7 @@ jobs:
 
     name: Windows
     runs-on: windows-2022
+    needs: [build_channels_linux, docker_linux_build_std]
     env:
       OS: windows
     strategy:
@@ -149,7 +152,7 @@ jobs:
 
     if: ${{ false }} # This is currently broken
     name: Docker Linux Build-Std Targets
-    needs: [docker_linux_tier1, style_check]
+    needs: [docker_linux_tier1, style_check, build_channels_linux]
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
@@ -237,6 +240,7 @@ jobs:
 
     name: Build Channels Windows
     runs-on: windows-2022
+    needs: [build_channels_linux, docker_linux_build_std]
     env:
       OS: windows
     strategy:
