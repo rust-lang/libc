@@ -1,7 +1,6 @@
 use std::env;
 use std::process::Command;
 use std::str;
-use std::string::String;
 
 // List of cfgs this build script is allowed to set. The list is needed to support check-cfg, as we
 // need to know all the possible cfgs that this script will set. If you need to set another cfg
