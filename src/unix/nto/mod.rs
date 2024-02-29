@@ -2935,8 +2935,8 @@ extern "C" {
     ) -> ::pid_t;
     pub fn execvpe(
         file: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
     ) -> ::c_int;
 
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;

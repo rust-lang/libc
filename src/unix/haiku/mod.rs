@@ -1765,8 +1765,8 @@ extern "C" {
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn execvpe(
         file: *const ::c_char,
-        argv: *const *const ::c_char,
-        environment: *const *const ::c_char,
+        argv: *const *mut ::c_char,
+        environment: *const *mut ::c_char,
     ) -> ::c_int;
     pub fn getgrgid_r(
         gid: ::gid_t,

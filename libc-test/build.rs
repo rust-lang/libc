@@ -329,9 +329,6 @@ fn test_apple(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" => true,
-
             // close calls the close_nocancel system call
             "close" => true,
 
@@ -525,9 +522,6 @@ fn test_openbsd(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "execvpe" => true,
-
             // futex() has volatile arguments, but that doesn't exist in Rust.
             "futex" => true,
 
@@ -694,14 +688,7 @@ fn test_windows(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
-        match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "execvpe" => true,
-
-            _ => false,
-        }
-    });
+    cfg.skip_fn(|_| false);
 
     cfg.generate("../src/lib.rs", "main.rs");
 }
@@ -974,7 +961,7 @@ fn test_solarish(target: &str) {
             "cfmakeraw" | "cfsetspeed" => true,
 
             // const-ness issues
-            "execv" | "execve" | "execvp" | "settimeofday" | "sethostname" => true,
+            "settimeofday" | "sethostname" => true,
 
             // Solaris-different
             "getpwent_r" | "getgrent_r" | "updwtmpx" if is_illumos => true,
@@ -1182,8 +1169,6 @@ fn test_netbsd(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" => true,
             // FIXME: netbsd 10 minimum
             "getentropy" | "getrandom" => true,
 
@@ -1411,9 +1396,6 @@ fn test_dragonflybsd(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "fexecve" => true,
-
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
             "prlimit" | "prlimit64"        // non-int in 2nd arg
@@ -1908,8 +1890,8 @@ fn test_android(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
+            // FIXME: for unknown reasons linker unable to find "fexecve"
+            "fexecve" => true,
 
             // There are two versions of the sterror_r function, see
             //
@@ -2487,9 +2469,6 @@ fn test_freebsd(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
-
             // The `uname` function in the `utsname.h` FreeBSD header is a C
             // inline function (has no symbol) that calls the `__xuname` symbol.
             // Therefore the function pointer comparison does not make sense for it.
@@ -3089,9 +3068,6 @@ fn test_neutrino(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "execvpe" => true,
-
             // wrong signature
             "signal" => true,
 
@@ -4168,9 +4144,6 @@ fn test_linux(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
-
             // There are two versions of the sterror_r function, see
             //
             // https://linux.die.net/man/3/strerror_r
@@ -4761,8 +4734,6 @@ fn test_haiku(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: https://github.com/rust-lang/libc/issues/1272
-            "execv" | "execve" | "execvp" | "execvpe" => true,
             // FIXME: does not exist on haiku
             "open_wmemstream" => true,
             "mlockall" | "munlockall" => true,

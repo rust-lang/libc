@@ -460,15 +460,15 @@ extern "C" {
         prog: *const c_char,
         argv: *const *const c_char,
         envp: *const *const c_char,
-    ) -> ::c_int;
+    ) -> ::intptr_t;
     #[link_name = "_execvp"]
-    pub fn execvp(c: *const c_char, argv: *const *const c_char) -> ::c_int;
+    pub fn execvp(c: *const c_char, argv: *const *const c_char) -> ::intptr_t;
     #[link_name = "_execvpe"]
     pub fn execvpe(
         c: *const c_char,
         argv: *const *const c_char,
         envp: *const *const c_char,
-    ) -> ::c_int;
+    ) -> ::intptr_t;
     #[link_name = "_wexecv"]
     pub fn wexecv(prog: *const wchar_t, argv: *const *const wchar_t) -> ::intptr_t;
     #[link_name = "_wexecve"]
