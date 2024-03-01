@@ -54,6 +54,7 @@ SYS_fadvise64
 SYS_fadvise64_64
 SYS_fcntl64
 SYS_fork
+SYS_fstat
 SYS_fstat64
 SYS_fstatat64
 SYS_fstatfs64
@@ -110,6 +111,7 @@ SYS_select
 SYS_send
 SYS_sendfile
 SYS_sendfile64
+SYS_setrlimit
 SYS_sgetmask
 SYS_sigaction
 SYS_signal

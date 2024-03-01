@@ -66,6 +66,7 @@ SYS_epoll_create
 SYS_epoll_wait
 SYS_eventfd
 SYS_fork
+SYS_fstat
 SYS_fstatfs64
 SYS_ftime
 SYS_futimesat
@@ -117,6 +118,7 @@ SYS_rtas
 SYS_select
 SYS_send
 SYS_sendfile
+SYS_setrlimit
 SYS_sgetmask
 SYS_sigaction
 SYS_signal

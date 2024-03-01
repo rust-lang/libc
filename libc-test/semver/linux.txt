@@ -2876,7 +2876,6 @@ SYS_flistxattr
 SYS_flock
 SYS_fremovexattr
 SYS_fsetxattr
-SYS_fstat
 SYS_fstatfs
 SYS_fsync
 SYS_ftruncate
@@ -3031,7 +3030,6 @@ SYS_setregid
 SYS_setresgid
 SYS_setresuid
 SYS_setreuid
-SYS_setrlimit
 SYS_setsid
 SYS_setsockopt
 SYS_settimeofday
