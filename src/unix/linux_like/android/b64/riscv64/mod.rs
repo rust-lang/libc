@@ -2,6 +2,7 @@ pub type c_char = i8;
 pub type wchar_t = u32;
 pub type greg_t = i64;
 pub type __u64 = ::c_ulonglong;
+pub type __s64 = ::c_longlong;
 
 s! {
     pub struct stat {
