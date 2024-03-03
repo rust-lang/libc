@@ -41,6 +41,7 @@ pub type Elf_Shdr = ::Elf32_Shdr;
 pub type Elf_Sym = ::Elf32_Sym;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf32_Ehdr {
         pub e_ident: [::c_uchar; 16],
         pub e_type: Elf32_Half,
@@ -58,6 +59,7 @@ s! {
         pub e_shstrndx: Elf32_Half,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf32_Shdr {
         pub sh_name: Elf32_Word,
         pub sh_type: Elf32_Word,
@@ -71,6 +73,7 @@ s! {
         pub sh_entsize: Elf32_Word,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf32_Sym {
         pub st_name: Elf32_Word,
         pub st_value: Elf32_Addr,
@@ -80,6 +83,7 @@ s! {
         pub st_shndx: Elf32_Section,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf32_Phdr {
         pub p_type: ::Elf32_Word,
         pub p_offset: ::Elf32_Off,

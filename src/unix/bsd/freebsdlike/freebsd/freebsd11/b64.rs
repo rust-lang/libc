@@ -1,4 +1,8 @@
 #[repr(C)]
+#[cfg_attr(
+    feature = "zerocopy",
+    derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes)
+)]
 #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
 pub struct stat {
     pub st_dev: ::dev_t,

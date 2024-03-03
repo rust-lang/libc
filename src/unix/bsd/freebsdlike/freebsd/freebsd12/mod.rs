@@ -6,6 +6,7 @@ pub type ino_t = ::c_ulong;
 pub type shmatt_t = ::c_uint;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
@@ -27,6 +28,7 @@ s! {
         pub ext: [u64; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct kvm_page {
         pub version: ::c_uint,
         pub paddr: ::c_ulong,
@@ -221,6 +223,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct dirent {
         pub d_fileno: ::ino_t,
         pub d_off: ::off_t,
@@ -232,6 +235,7 @@ s_no_extra_traits! {
         pub d_name: [::c_char; 256],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_version: u32,
         pub f_type: u32,
@@ -257,6 +261,7 @@ s_no_extra_traits! {
         pub f_mntonname: [::c_char; 1024],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct vnstat {
         pub vn_fileid: u64,
         pub vn_size: u64,

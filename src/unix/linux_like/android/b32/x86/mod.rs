@@ -3,11 +3,13 @@ pub type wchar_t = i32;
 pub type greg_t = i32;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct _libc_fpreg {
         pub significand: [u16; 4],
         pub exponent: u16,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct _libc_fpstate {
         pub cw: ::c_ulong,
         pub sw: ::c_ulong,

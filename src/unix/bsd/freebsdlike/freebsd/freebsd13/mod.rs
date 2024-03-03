@@ -9,6 +9,7 @@ pub type kssize_t = i64;
 pub type domainset_t = __c_anonymous_domainset;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
@@ -30,6 +31,7 @@ s! {
         pub ext: [u64; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct kvm_page {
         pub kp_version: ::u_int,
         pub kp_paddr: ::kpaddr_t,
@@ -40,6 +42,7 @@ s! {
         pub kp_len: ::size_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __c_anonymous_domainset {
         _priv: [::uintptr_t; 4],
     }
@@ -231,6 +234,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct dirent {
         pub d_fileno: ::ino_t,
         pub d_off: ::off_t,
@@ -242,6 +246,7 @@ s_no_extra_traits! {
         pub d_name: [::c_char; 256],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_version: u32,
         pub f_type: u32,

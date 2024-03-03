@@ -4,11 +4,13 @@ pub type c_long = i64;
 pub type c_ulong = u64;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct timeval32 {
         pub tv_sec: i32,
         pub tv_usec: i32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct if_data {
         pub ifi_type: ::c_uchar,
         pub ifi_typelen: ::c_uchar,
@@ -41,6 +43,7 @@ s! {
         pub ifi_reserved2: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct bpf_hdr {
         pub bh_tstamp: ::timeval32,
         pub bh_caplen: u32,
@@ -50,6 +53,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_attr_t {
         __sig: c_long,
         __opaque: [::c_char; 56]

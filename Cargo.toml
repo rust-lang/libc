@@ -132,6 +132,7 @@ cargo-args = ["-Zbuild-std=core"]
 
 [dependencies]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
+zerocopy = { version = "0.7.16", optional = true, features = ["derive"] }
 
 [features]
 default = ["std"]

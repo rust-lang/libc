@@ -7,6 +7,7 @@ pub type Elf_Half = ::Elf64_Half;
 pub type Elf_Phdr = ::Elf64_Phdr;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf64_Phdr {
         pub p_type: ::Elf64_Word,
         pub p_flags: ::Elf64_Word,

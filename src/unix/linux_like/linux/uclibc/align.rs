@@ -1,6 +1,7 @@
 macro_rules! expand_align {
     () => {
         s! {
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[cfg_attr(any(target_pointer_width = "32",
                            target_arch = "x86_64",
                            target_arch = "powerpc64",
@@ -19,6 +20,7 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
             }
 
+            #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
             #[repr(align(4))]
             pub struct pthread_condattr_t {
                 size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
