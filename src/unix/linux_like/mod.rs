@@ -6,13 +6,6 @@ pub type timer_t = *mut ::c_void;
 pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
-cfg_if! {
-    if #[cfg(not(target_os = "emscripten"))] {
-        pub type posix_spawn_file_actions_t = *mut ::c_void;
-        pub type posix_spawnattr_t = *mut ::c_void;
-    }
-}
-
 missing! {
     #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub enum timezone {}

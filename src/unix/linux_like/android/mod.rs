@@ -48,6 +48,10 @@ pub type Elf64_Xword = u64;
 
 pub type eventfd_t = u64;
 
+// these structs sit behind a heap allocation on Android
+pub type posix_spawn_file_actions_t = *mut ::c_void;
+pub type posix_spawnattr_t = *mut ::c_void;
+
 s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,

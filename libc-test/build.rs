@@ -3314,6 +3314,7 @@ fn test_vxworks(target: &str) {
 
 fn test_linux(target: &str) {
     assert!(target.contains("linux"));
+    assert!(!target.contains("android"));
 
     // target_env
     let gnu = target.contains("gnu");
@@ -3617,10 +3618,6 @@ fn test_linux(target: &str) {
             "priority_t" if musl => true,
             "name_t" if musl => true,
 
-            // These are intended to be opaque, but glibc and musl define them.
-            "posix_spawn_file_actions_t" => true,
-            "posix_spawnattr_t" => true,
-
             t => {
                 if musl {
                     // LFS64 types have been removed in musl 1.2.4+
@@ -3768,10 +3765,6 @@ fn test_linux(target: &str) {
             // fail. The problem doesn't seem to be present in more recent versions of the linux
             // kernel so we can drop this and test the type once this new version is used in CI.
             "sched_attr" => true,
-
-            // These are intended to be opaque, but glibc and musl define them.
-            "posix_spawn_file_actions_t" => true,
-            "posix_spawnattr_t" => true,
 
             _ => false,
         }
