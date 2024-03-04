@@ -742,6 +742,26 @@ s! {
         pub salt: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE],
         pub rec_seq: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE],
     }
+
+    pub struct posix_spawn_file_actions_t {
+        __allocated: ::c_int,
+        __used: ::c_int,
+        __actions: *mut ::c_int,
+        __pad: [::c_int; 16],
+    }
+
+    pub struct posix_spawnattr_t {
+        __flags: ::c_short,
+        __pgrp: ::pid_t,
+        __sd: ::sigset_t,
+        __ss: ::sigset_t,
+        #[cfg(any(target_env = "musl", target_env = "ohos"))]
+        __prio: ::c_int,
+        #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
+        __sp: ::sched_param,
+        __policy: ::c_int,
+        __pad: [::c_int; 16],
+    }
 }
 
 s_no_extra_traits! {
