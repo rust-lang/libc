@@ -3299,6 +3299,7 @@ fn test_vxworks(target: &str) {
 
 fn test_linux(target: &str) {
     assert!(target.contains("linux"));
+    assert!(!target.contains("android"));
 
     // target_env
     let gnu = target.contains("gnu");
