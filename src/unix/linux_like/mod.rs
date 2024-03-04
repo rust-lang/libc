@@ -7,9 +7,32 @@ pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
 cfg_if! {
-    if #[cfg(not(target_os = "emscripten"))] {
+    if #[cfg(target_os = "android")] {
+        // these structs sit behind a heap allocation on Android
         pub type posix_spawn_file_actions_t = *mut ::c_void;
         pub type posix_spawnattr_t = *mut ::c_void;
+    } else if #[cfg(not(target_os = "emscripten"))] {
+        s! {
+            pub struct posix_spawn_file_actions_t {
+                __allocated: ::c_int,
+                __used: ::c_int,
+                __actions: *mut ::c_int,
+                __pad: [::c_int; 16],
+            }
+
+            pub struct posix_spawnattr_t {
+                __flags: ::c_short,
+                __pgrp: ::pid_t,
+                __sd: ::sigset_t,
+                __ss: ::sigset_t,
+                #[cfg(any(target_env = "musl", target_env = "ohos"))]
+                __prio: ::c_int,
+                #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
+                __sp: ::sched_param,
+                __policy: ::c_int,
+                __pad: [::c_int; 16],
+            }
+        }
     }
 }
 
