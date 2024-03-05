@@ -859,6 +859,11 @@ extern "C" {
         link_name = "close$NOCANCEL"
     )]
     pub fn close(fd: ::c_int) -> ::c_int;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "confstr$UNIX2003"
+    )]
+    pub fn confstr(name: ::c_int, buf: *mut ::c_char, len: ::size_t) -> ::size_t;
     pub fn dup(fd: ::c_int) -> ::c_int;
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
     pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> ::c_int;
