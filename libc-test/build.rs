@@ -3271,6 +3271,12 @@ fn test_linux(target: &str) {
     // glibc versions older than 2.29.
     cfg.define("__GLIBC_USE_DEPRECATED_SCANF", None);
 
+    if gnu && &env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap() == "32" && !x32 {
+        cfg.define("_TIME_BITS", Some("64"));
+        cfg.define("_FILE_OFFSET_BITS", Some("64"));
+        cfg.cfg("gnu_time64_abi", None);
+    }
+
     headers! { cfg:
                "ctype.h",
                "dirent.h",
@@ -3469,6 +3475,8 @@ fn test_linux(target: &str) {
 
             // LFS64 types have been removed in musl 1.2.4+
             "off64_t" if musl => "off_t".to_string(),
+            // In some gnu targets `stat64` is a typedef to `stat`
+            "stat64" | "statfs64" | "statvfs64" if gnu => format!("struct {}", ty),
 
             // typedefs don't need any keywords
             t if t.ends_with("_t") => t.to_string(),

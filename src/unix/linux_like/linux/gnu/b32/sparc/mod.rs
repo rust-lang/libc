@@ -71,48 +71,19 @@ s! {
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt64_t,
         pub st_atime: ::time_t,
+        #[cfg(gnu_time64_abi)]
+        __pad3: i32,
         pub st_atime_nsec: ::c_long,
         pub st_mtime: ::time_t,
+        #[cfg(gnu_time64_abi)]
+        __pad4: i32,
         pub st_mtime_nsec: ::c_long,
         pub st_ctime: ::time_t,
+        #[cfg(gnu_time64_abi)]
+        __pad5: i32,
         pub st_ctime_nsec: ::c_long,
+        #[cfg(not(gnu_time64_abi))]
         __unused: [::c_long; 2],
-    }
-
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino64_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __pad2: ::c_ushort,
-        pub st_size: ::off64_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __reserved: [::c_long; 2],
-    }
-
-    pub struct statfs64 {
-        pub f_type: ::__fsword_t,
-        pub f_bsize: ::__fsword_t,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::__fsword_t,
-        pub f_frsize: ::__fsword_t,
-        pub f_flags: ::__fsword_t,
-        pub f_spare: [::__fsword_t; 4],
     }
 
     pub struct statvfs {
@@ -124,21 +95,6 @@ s! {
         pub f_files: ::fsfilcnt_t,
         pub f_ffree: ::fsfilcnt_t,
         pub f_favail: ::fsfilcnt_t,
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
-    }
-
-    pub struct statvfs64 {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: u64,
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,

@@ -1675,8 +1675,11 @@ extern "C" {
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
     pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_uchar) -> ::c_int;
 
+    #[cfg_attr(gnu_time64_abi, link_name = "__clock_getres64")]
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__clock_gettime64")]
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__clock_settime64")]
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
     pub fn clock_getcpuclockid(pid: ::pid_t, clk_id: *mut ::clockid_t) -> ::c_int;
 
@@ -1691,11 +1694,16 @@ extern "C" {
     pub fn memalign(align: ::size_t, size: ::size_t) -> *mut ::c_void;
     pub fn setgroups(ngroups: ::size_t, ptr: *const ::gid_t) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "statfs64")]
     pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "fstatfs64")]
     pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
     pub fn memrchr(cx: *const ::c_void, c: ::c_int, n: ::size_t) -> *mut ::c_void;
+    #[cfg_attr(gnu_time64_abi, link_name = "posix_fadvise64")]
     pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, advise: ::c_int) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__futimens64")]
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__utimensat64")]
     pub fn utimensat(
         dirfd: ::c_int,
         path: *const ::c_char,
@@ -1746,6 +1754,7 @@ extern "C" {
     pub fn vfork() -> ::pid_t;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__wait4_time64")]
     pub fn wait4(
         pid: ::pid_t,
         status: *mut ::c_int,
@@ -1766,7 +1775,9 @@ extern "C" {
     pub fn writev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
     pub fn readv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
 
+    #[cfg_attr(gnu_time64_abi, link_name = "__sendmsg64")]
     pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
+    #[cfg_attr(gnu_time64_abi, link_name = "__recvmsg64")]
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
 
@@ -1785,7 +1796,9 @@ cfg_if! {
             pub fn fstatvfs64(fd: ::c_int, buf: *mut statvfs64) -> ::c_int;
             pub fn statfs64(path: *const ::c_char, buf: *mut statfs64) -> ::c_int;
             pub fn creat64(path: *const c_char, mode: mode_t) -> ::c_int;
+            #[cfg_attr(gnu_time64_abi, link_name = "__fstat64_time64")]
             pub fn fstat64(fildes: ::c_int, buf: *mut stat64) -> ::c_int;
+            #[cfg_attr(gnu_time64_abi, link_name = "__fstatat64_time64")]
             pub fn fstatat64(
                 dirfd: ::c_int,
                 pathname: *const c_char,
@@ -1794,6 +1807,7 @@ cfg_if! {
             ) -> ::c_int;
             pub fn ftruncate64(fd: ::c_int, length: off64_t) -> ::c_int;
             pub fn lseek64(fd: ::c_int, offset: off64_t, whence: ::c_int) -> off64_t;
+            #[cfg_attr(gnu_time64_abi, link_name = "__lstat64_time64")]
             pub fn lstat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
             pub fn mmap64(
                 addr: *mut ::c_void,
@@ -1829,6 +1843,7 @@ cfg_if! {
                 entry: *mut ::dirent64,
                 result: *mut *mut ::dirent64,
             ) -> ::c_int;
+            #[cfg_attr(gnu_time64_abi, link_name = "__stat64_time64")]
             pub fn stat64(path: *const c_char, buf: *mut stat64) -> ::c_int;
             pub fn truncate64(path: *const c_char, length: off64_t) -> ::c_int;
         }

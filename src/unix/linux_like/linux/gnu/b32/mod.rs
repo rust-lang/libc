@@ -1,5 +1,6 @@
 //! 32-bit specific definitions for linux-like values
 
+use ntptimeval;
 use pthread_mutex_t;
 
 pub type c_long = i32;
@@ -16,6 +17,7 @@ pub type __fsword_t = i32;
 pub type fsblkcnt64_t = u64;
 pub type fsfilcnt64_t = u64;
 pub type __syscall_ulong_t = ::c_ulong;
+pub type __syscall_slong_t = ::c_long;
 
 cfg_if! {
     if #[cfg(target_arch = "riscv32")] {
@@ -28,6 +30,16 @@ cfg_if! {
         pub type fsfilcnt_t = u64;
         pub type rlim_t = u64;
         pub type blksize_t = i64;
+    } else if #[cfg(gnu_time64_abi)] {
+        pub type time_t = i64;
+        pub type suseconds_t = i32;
+        pub type ino_t = u64;
+        pub type off_t = i64;
+        pub type blkcnt_t = i64;
+        pub type fsblkcnt_t = u64;
+        pub type fsfilcnt_t = u64;
+        pub type rlim_t = u64;
+        pub type blksize_t = i32;
     } else {
         pub type time_t = i32;
         pub type suseconds_t = i32;
@@ -40,56 +52,15 @@ cfg_if! {
         pub type blksize_t = i32;
     }
 }
+cfg_if! {
+    if #[cfg(any(target_arch = "arm", target_arch="riscv32", target_arch="sparc"))] {
+        pub type stat64 = stat;
+        pub type statfs64 = statfs;
+        pub type statvfs64 = statvfs;
+    }
+}
 
 s! {
-    pub struct stat {
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        pub st_dev: ::dev_t,
-        #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
-        pub st_dev: ::c_ulong,
-
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        __pad1: ::c_short,
-        #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
-        st_pad1: [::c_long; 3],
-        pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        pub st_rdev: ::dev_t,
-        #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
-        pub st_rdev: ::c_ulong,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        __pad2: ::c_short,
-        #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
-        st_pad2: [::c_long; 2],
-        pub st_size: ::off_t,
-        #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
-        st_pad3: ::c_long,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        pub st_blksize: ::blksize_t,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        pub st_blocks: ::blkcnt_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        __unused4: ::c_long,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        __unused5: ::c_long,
-        #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
-        pub st_blksize: ::blksize_t,
-        #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
-        pub st_blocks: ::blkcnt_t,
-        #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
-        st_pad5: [::c_long; 14],
-    }
-
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -137,19 +108,124 @@ s! {
 
     pub struct semid_ds {
         pub sem_perm: ipc_perm,
-        #[cfg(target_arch = "powerpc")]
+        #[cfg(all(not(gnu_time64_abi), target_arch = "powerpc"))]
         __reserved: ::__syscall_ulong_t,
         pub sem_otime: ::time_t,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6", target_arch = "powerpc")))]
+        #[cfg(not(any(
+            gnu_time64_abi,
+            target_arch = "mips",
+            target_arch = "mips32r6",
+            target_arch = "powerpc"
+        )))]
         __reserved: ::__syscall_ulong_t,
-        #[cfg(target_arch = "powerpc")]
+        #[cfg(all(not(gnu_time64_abi), target_arch = "powerpc"))]
         __reserved2: ::__syscall_ulong_t,
         pub sem_ctime: ::time_t,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6", target_arch = "powerpc")))]
+        #[cfg(not(any(
+            gnu_time64_abi,
+            target_arch = "mips",
+            target_arch = "mips32r6",
+            target_arch = "powerpc"
+        )))]
         __reserved2: ::__syscall_ulong_t,
         pub sem_nsems: ::__syscall_ulong_t,
+        #[cfg(all(gnu_time64_abi,
+                  not(any(
+                      target_arch = "mips",
+                      target_arch = "mips32r6",
+                      target_arch = "powerpc",
+                      target_arch = "arm",
+                      target_arch = "x86"
+                  ))))]
+        __reserved2: ::__syscall_ulong_t,
         __glibc_reserved3: ::__syscall_ulong_t,
         __glibc_reserved4: ::__syscall_ulong_t,
+    }
+
+    pub struct timex {
+        pub modes: ::c_uint,
+
+        #[cfg(not(gnu_time64_abi))]
+        pub offset: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub __unused_pad1: i32,
+        #[cfg(gnu_time64_abi)]
+        pub offset: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub freq: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub freq: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub maxerror: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub maxerror: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub esterror: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub esterror: ::c_longlong,
+        pub status: ::c_int,
+        #[cfg(not(gnu_time64_abi))]
+        pub constant: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub __unused_pad2: i32,
+        #[cfg(gnu_time64_abi)]
+        pub constant: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub precision: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub precision: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub tolerance: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub tolerance: ::c_longlong,
+        pub time: ::timeval,
+        #[cfg(not(gnu_time64_abi))]
+        pub tick: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub tick: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub ppsfreq: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub ppsfreq: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub jitter: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub jitter: ::c_longlong,
+        pub shift: ::c_int,
+        #[cfg(not(gnu_time64_abi))]
+        pub stabil: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub __unused_pad3: i32,
+        #[cfg(gnu_time64_abi)]
+        pub stabil: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub jitcnt: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub jitcnt: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub calcnt: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub calcnt: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub errcnt: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub errcnt: ::c_longlong,
+        #[cfg(not(gnu_time64_abi))]
+        pub stbcnt: ::__syscall_slong_t,
+        #[cfg(gnu_time64_abi)]
+        pub stbcnt: ::c_longlong,
+        pub tai: ::c_int,
+        pub __unused1: i32,
+        pub __unused2: i32,
+        pub __unused3: i32,
+        pub __unused4: i32,
+        pub __unused5: i32,
+        pub __unused6: i32,
+        pub __unused7: i32,
+        pub __unused8: i32,
+        pub __unused9: i32,
+        pub __unused10: i32,
+        pub __unused11: i32,
     }
 }
 
@@ -177,9 +253,6 @@ cfg_if! {
         pub const SA_ONSTACK: ::c_int = 1;
 
         pub const PTRACE_DETACH: ::c_uint = 11;
-
-        pub const F_SETLK: ::c_int = 8;
-        pub const F_SETLKW: ::c_int = 9;
 
         pub const F_RDLCK: ::c_int = 1;
         pub const F_WRLCK: ::c_int = 2;
@@ -224,9 +297,6 @@ cfg_if! {
 
         pub const PTRACE_DETACH: ::c_uint = 17;
 
-        pub const F_SETLK: ::c_int = 6;
-        pub const F_SETLKW: ::c_int = 7;
-
         pub const F_RDLCK: ::c_int = 0;
         pub const F_WRLCK: ::c_int = 1;
         pub const F_UNLCK: ::c_int = 2;
@@ -260,6 +330,21 @@ cfg_if! {
         pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 
         pub const EFD_CLOEXEC: ::c_int = 0x80000;
+    }
+}
+cfg_if! {
+    if #[cfg(target_arch = "sparc")] {
+        pub const F_SETLK: ::c_int = 8;
+        pub const F_SETLKW: ::c_int = 9;
+    } else if #[cfg(all(gnu_time64_abi, target_arch = "mips"))] {
+        pub const F_SETLK: ::c_int = 34;
+        pub const F_SETLKW: ::c_int = 35;
+    } else if #[cfg(gnu_time64_abi)] {
+        pub const F_SETLK: ::c_int = 13;
+        pub const F_SETLKW: ::c_int = 14;
+    } else {
+        pub const F_SETLK: ::c_int = 6;
+        pub const F_SETLKW: ::c_int = 7;
     }
 }
 
@@ -314,6 +399,8 @@ extern "C" {
         newp: *mut ::c_void,
         newlen: ::size_t,
     ) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__ntp_gettime64")]
+    pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
 }
 
 cfg_if! {
@@ -343,5 +430,18 @@ cfg_if! {
         pub use self::csky::*;
     } else {
         // Unknown target_arch
+    }
+}
+
+cfg_if! {
+    if #[cfg(not(any(
+        target_arch = "mips",
+        target_arch = "mips32r6",
+        target_arch = "powerpc",
+        target_arch = "riscv32",
+        target_arch = "sparc",
+    )))] {
+        mod generic;
+        pub use self::generic::*;
     }
 }
