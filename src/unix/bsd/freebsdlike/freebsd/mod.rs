@@ -1043,41 +1043,49 @@ s! {
         pub tcpi_snd_rexmitpack: u32,
         pub tcpi_rcv_ooopack: u32,
         pub tcpi_snd_zerowin: u32,
+        #[cfg(freebsd13)]
+        pub __tcpi_delivered_ce: u32,
         #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_delivered_ce: u32,
+        #[cfg(freebsd13)]
+        pub __tcpi_received_ce: u32,
         #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_received_ce: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_e1_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_e0_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_ce_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_e1_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_e0_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_ce_bytes: u32,
+        #[cfg(freebsd13)]
+        pub __tcpi_total_tlp: u32,
         #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_total_tlp: u32,
+        #[cfg(freebsd13)]
+        pub __tcpi_total_tlp_bytes: u64,
         #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_total_tlp_bytes: u64,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_snd_una: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_snd_max: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_rcv_numsacks: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_rcv_adv: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_dupacks: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd14, freebsd13))]
         pub __tcpi_pad: [u32; 10],
         #[cfg(freebsd15)]
         pub __tcpi_pad: [u32; 14],
-        #[cfg(not(any(freebsd15, freebsd14)))]
+        #[cfg(not(any(freebsd15, freebsd14, freebsd13)))]
         pub __tcpi_pad: [u32; 26],
     }
 
