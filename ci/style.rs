@@ -177,7 +177,15 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         }
         if s_macros == 2 {
             s_macros += 1;
-            err.error(path, i, "multiple s! macros in one module");
+            // Can't enforce this rule until after raising the MSRV to 1.19.0 or
+            // later.  It seems that earlier Rust versions ignore #[cfg()]
+            // attributes within the macro.  As a result, it's sometimes
+            // necessary to have multiple s!{} macros in a single file.  It's
+            // hard to debug, because cargo-expand doesn't work with such
+            // old versions.
+            // See also https://github.com/rust-lang/libc/pull/2813
+
+            // err.error(path, i, "multiple s! macros in one module");
         }
 
         state = line_state;
