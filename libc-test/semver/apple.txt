@@ -1861,6 +1861,7 @@ getxattr
 glob
 glob_t
 globfree
+icmp6_ifstat
 iconv_t
 id_t
 idtype_t
@@ -1874,6 +1875,9 @@ ifkpi
 ifreq
 image_offset
 in6_pktinfo
+in6_addrlifetime
+in6_ifreq
+in6_ifstat
 in_pktinfo
 initgroups
 integer_t
@@ -2157,6 +2161,7 @@ timeval32
 timex
 truncate
 ttyname_r
+u_quad_t
 ucontext_t
 unmount
 useconds_t
