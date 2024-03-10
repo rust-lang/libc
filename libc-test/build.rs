@@ -232,6 +232,7 @@ fn test_apple(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet6/in6_var.h",
         "os/clock.h",
         "os/lock.h",
         "os/signpost.h",
@@ -401,6 +402,7 @@ fn test_apple(target: &str) {
             ("__darwin_arm_neon_state64", "__v") => true,
 
             ("ifreq", "ifr_ifru") => true,
+            ("in6_ifreq", "ifr_ifru") => true,
             ("ifkpi", "ifk_data") => true,
             ("ifconf", "ifc_ifcu") => true,
             // FIXME: this field has been incorporated into a resized `rmx_filler` array.

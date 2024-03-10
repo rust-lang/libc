@@ -37,6 +37,8 @@ pub type rusage_info_t = *mut ::c_void;
 pub type vm_offset_t = ::uintptr_t;
 pub type vm_size_t = ::uintptr_t;
 pub type vm_address_t = vm_offset_t;
+pub type quad_t = i64;
+pub type u_quad_t = u64;
 
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
@@ -1233,6 +1235,78 @@ s! {
         pub iffmid_id: u32,
         pub iffmid_str: [::c_char; 1],
     }
+
+    pub struct in6_addrlifetime {
+        pub ia6t_expire: time_t,
+        pub ia6t_preferred: time_t,
+        pub ia6t_vltime: u32,
+        pub ia6t_pltime: u32,
+    }
+
+    pub struct in6_ifstat {
+        pub ifs6_in_receive: ::u_quad_t,
+        pub ifs6_in_hdrerr: ::u_quad_t,
+        pub ifs6_in_toobig: ::u_quad_t,
+        pub ifs6_in_noroute: ::u_quad_t,
+        pub ifs6_in_addrerr: ::u_quad_t,
+        pub ifs6_in_protounknown: ::u_quad_t,
+        pub ifs6_in_truncated: ::u_quad_t,
+        pub ifs6_in_discard: ::u_quad_t,
+        pub ifs6_in_deliver: ::u_quad_t,
+        pub ifs6_out_forward: ::u_quad_t,
+        pub ifs6_out_request: ::u_quad_t,
+        pub ifs6_out_discard: ::u_quad_t,
+        pub ifs6_out_fragok: ::u_quad_t,
+        pub ifs6_out_fragfail: ::u_quad_t,
+        pub ifs6_out_fragcreat: ::u_quad_t,
+        pub ifs6_reass_reqd: ::u_quad_t,
+        pub ifs6_reass_ok: ::u_quad_t,
+        pub ifs6_atmfrag_rcvd: ::u_quad_t,
+        pub ifs6_reass_fail: ::u_quad_t,
+        pub ifs6_in_mcast: ::u_quad_t,
+        pub ifs6_out_mcast: ::u_quad_t,
+        pub ifs6_cantfoward_icmp6: ::u_quad_t,
+        pub ifs6_addr_expiry_cnt: ::u_quad_t,
+        pub ifs6_pfx_expiry_cnt: ::u_quad_t,
+        pub ifs6_defrtr_expiry_cnt: ::u_quad_t,
+    }
+
+    pub struct icmp6_ifstat {
+        pub ifs6_in_msg: ::u_quad_t,
+        pub ifs6_in_error: ::u_quad_t,
+        pub ifs6_in_dstunreach: ::u_quad_t,
+        pub ifs6_in_adminprohib: ::u_quad_t,
+        pub ifs6_in_timeexceed: ::u_quad_t,
+        pub ifs6_in_paramprob: ::u_quad_t,
+        pub ifs6_in_pkttoobig: ::u_quad_t,
+        pub ifs6_in_echo: ::u_quad_t,
+        pub ifs6_in_echoreply: ::u_quad_t,
+        pub ifs6_in_routersolicit: ::u_quad_t,
+        pub ifs6_in_routeradvert: ::u_quad_t,
+        pub ifs6_in_neighborsolicit: ::u_quad_t,
+        pub ifs6_in_neighboradvert: ::u_quad_t,
+        pub ifs6_in_redirect: ::u_quad_t,
+        pub ifs6_in_mldquery: ::u_quad_t,
+        pub ifs6_in_mldreport: ::u_quad_t,
+        pub ifs6_in_mlddone: ::u_quad_t,
+        pub ifs6_out_msg: ::u_quad_t,
+        pub ifs6_out_error: ::u_quad_t,
+        pub ifs6_out_dstunreach: ::u_quad_t,
+        pub ifs6_out_adminprohib: ::u_quad_t,
+        pub ifs6_out_timeexceed: ::u_quad_t,
+        pub ifs6_out_paramprob: ::u_quad_t,
+        pub ifs6_out_pkttoobig: ::u_quad_t,
+        pub ifs6_out_echo: ::u_quad_t,
+        pub ifs6_out_echoreply: ::u_quad_t,
+        pub ifs6_out_routersolicit: ::u_quad_t,
+        pub ifs6_out_routeradvert: ::u_quad_t,
+        pub ifs6_out_neighborsolicit: ::u_quad_t,
+        pub ifs6_out_neighboradvert: ::u_quad_t,
+        pub ifs6_out_redirect: ::u_quad_t,
+        pub ifs6_out_mldquery: ::u_quad_t,
+        pub ifs6_out_mldreport: ::u_quad_t,
+        pub ifs6_out_mlddone: ::u_quad_t,
+    }
 }
 
 s_no_extra_traits! {
@@ -1575,6 +1649,25 @@ s_no_extra_traits! {
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut ::c_char,
         pub ifcu_req: *mut ifreq,
+    }
+
+    pub union __c_anonymous_ifr_ifru6 {
+        pub ifru_addr: ::sockaddr_in6,
+        pub ifru_dstaddr: ::sockaddr_in6,
+        pub ifru_flags: ::c_int,
+        pub ifru_flags6: ::c_int,
+        pub ifru_metrics: ::c_int,
+        pub ifru_intval: ::c_int,
+        pub ifru_data: *mut ::c_char,
+        pub ifru_lifetime: in6_addrlifetime,
+        pub ifru_stat: in6_ifstat,
+        pub ifru_icmp6stat: icmp6_ifstat,
+        pub ifru_scope_id: [u32; SCOPE6_ID_MAX],
+    }
+
+    pub struct in6_ifreq {
+        pub ifr_name: [::c_char; ::IFNAMSIZ],
+        pub ifr_ifru: __c_anonymous_ifr_ifru6,
     }
 }
 
@@ -3151,6 +3244,74 @@ cfg_if! {
                 unsafe { self.ifcu_req.hash(state) };
             }
         }
+
+        impl PartialEq for __c_anonymous_ifr_ifru6 {
+            fn eq(&self, other: &__c_anonymous_ifr_ifru6) -> bool {
+                unsafe {
+                    self.ifru_addr == other.ifru_addr
+                        && self.ifru_dstaddr == other.ifru_dstaddr
+                        && self.ifru_flags == other.ifru_flags
+                        && self.ifru_flags6 == other.ifru_flags6
+                        && self.ifru_metrics == other.ifru_metrics
+                        && self.ifru_intval == other.ifru_intval
+                        && self.ifru_data == other.ifru_data
+                        && self.ifru_scope_id
+                            .iter()
+                            .zip(other.ifru_scope_id.iter())
+                            .all(|(a,b)| a == b)
+                }
+            }
+        }
+
+        impl Eq for __c_anonymous_ifr_ifru6 {}
+
+        impl ::fmt::Debug for __c_anonymous_ifr_ifru6 {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("__c_anonymous_ifr_ifru6")
+                    .field("ifru_addr", unsafe { &self.ifru_addr })
+                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
+                    .field("ifru_flags", unsafe { &self.ifru_flags })
+                    .field("ifru_flags6", unsafe { &self.ifru_flags6 })
+                    .field("ifru_metrics", unsafe { &self.ifru_metrics })
+                    .field("ifru_intval", unsafe { &self.ifru_intval })
+                    .field("ifru_data", unsafe { &self.ifru_data })
+                    .field("ifru_scope_id", unsafe { &self.ifru_scope_id })
+                    .finish()
+            }
+        }
+
+        impl ::hash::Hash for __c_anonymous_ifr_ifru6 {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self.ifru_addr.hash(state);
+                    self.ifru_dstaddr.hash(state);
+                    self.ifru_flags.hash(state);
+                    self.ifru_flags6.hash(state);
+                    self.ifru_metrics.hash(state);
+                    self.ifru_intval.hash(state);
+                    self.ifru_data.hash(state);
+                    self.ifru_scope_id.hash(state);
+                }
+            }
+        }
+
+        impl PartialEq for in6_ifreq {
+            fn eq(&self, other: &in6_ifreq) -> bool {
+                self.ifr_name == other.ifr_name
+                    && self.ifr_ifru == other.ifr_ifru
+            }
+        }
+
+        impl Eq for in6_ifreq {}
+
+        impl ::fmt::Debug for in6_ifreq {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("in6_ifreq")
+                    .field("ifr_name", &self.ifr_name)
+                    .field("ifr_ifru", &self.ifr_ifru)
+                    .finish()
+            }
+        }
     }
 }
 
@@ -4339,6 +4500,8 @@ pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
 pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
+
+pub const SCOPE6_ID_MAX: ::size_t = 16;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;

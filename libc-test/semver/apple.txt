@@ -2003,6 +2003,7 @@ globfree
 host_cpu_load_info
 host_cpu_load_info_data_t
 host_cpu_load_info_t
+icmp6_ifstat
 iconv
 iconv_close
 iconv_open
@@ -2018,6 +2019,9 @@ ifconf
 ifkpi
 ifreq
 image_offset
+in6_addrlifetime
+in6_ifreq
+in6_ifstat
 in6_pktinfo
 in_pktinfo
 initgroups
@@ -2338,6 +2342,7 @@ timeval32
 timex
 truncate
 ttyname_r
+u_quad_t
 ucontext_t
 unmount
 useconds_t
