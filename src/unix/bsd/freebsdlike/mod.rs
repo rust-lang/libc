@@ -1331,6 +1331,11 @@ pub const EUI64_LEN: usize = 8;
 // https://github.com/freebsd/freebsd/blob/HEAD/sys/net/bpf.h
 pub const BPF_ALIGNMENT: usize = SIZEOF_LONG;
 
+// For getrandom()
+pub const GRND_NONBLOCK: ::c_uint = 0x1;
+pub const GRND_RANDOM: ::c_uint = 0x2;
+pub const GRND_INSECURE: ::c_uint = 0x4;
+
 // Values for rtprio struct (prio field) and syscall (function argument)
 pub const RTP_PRIO_MIN: ::c_ushort = 0;
 pub const RTP_PRIO_MAX: ::c_ushort = 31;
@@ -1781,6 +1786,11 @@ extern "C" {
         search_path: *const ::c_char,
         argv: *const *mut ::c_char,
     ) -> ::c_int;
+
+    // Added in FreeBSD 12.0 and DragonFly BSD 5.7
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+    // Added in FreeBSD 12.0 and DragonFly BSD 5.6
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }
 
 #[link(name = "rt")]
