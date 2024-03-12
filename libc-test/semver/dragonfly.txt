@@ -326,6 +326,9 @@ GLOB_NOESCAPE
 GLOB_NOMATCH
 GLOB_NOSORT
 GLOB_NOSPACE
+GRND_INSECURE
+GRND_NONBLOCK
+GRND_RANDOM
 HW_BYTEORDER
 HW_DISKNAMES
 HW_DISKSTATS
@@ -1308,6 +1311,7 @@ fstatfs
 futimes
 getdomainname
 getdtablesize
+getentropy
 getgrent
 getgrent_r
 getgrgid
@@ -1331,6 +1335,7 @@ getprogname
 getpwent
 getpwent_r
 getpwnam_r
+getrandom
 getresgid
 getresuid
 getrlimit

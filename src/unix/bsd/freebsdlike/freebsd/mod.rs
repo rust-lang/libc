@@ -3875,11 +3875,6 @@ pub const F_SEAL_WRITE: ::c_int = 8;
 // for use with fspacectl
 pub const SPACECTL_DEALLOC: ::c_int = 1;
 
-// For getrandom()
-pub const GRND_NONBLOCK: ::c_uint = 0x1;
-pub const GRND_RANDOM: ::c_uint = 0x2;
-pub const GRND_INSECURE: ::c_uint = 0x4;
-
 // For realhostname* api
 pub const HOSTNAME_FOUND: ::c_int = 0;
 pub const HOSTNAME_INCORRECTNAME: ::c_int = 1;
@@ -5393,8 +5388,6 @@ extern "C" {
 
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
 
-    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
-    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn elf_aux_info(aux: ::c_int, buf: *mut ::c_void, buflen: ::c_int) -> ::c_int;
     pub fn setproctitle_fast(fmt: *const ::c_char, ...);
     pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
