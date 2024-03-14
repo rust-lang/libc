@@ -226,7 +226,6 @@ pub const LC_MONETARY: c_int = 3;
 pub const LC_NUMERIC: c_int = 4;
 pub const LC_TIME: c_int = 5;
 pub const LC_MESSAGES: c_int = 6;
-pub const _LC_LAST: c_int = 7;
 
 pub const EPERM: c_int = 1;
 pub const ENOENT: c_int = 2;

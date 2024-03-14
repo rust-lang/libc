@@ -1436,7 +1436,6 @@ pub const DOWNTIME: ::c_short = 11;
 // utmpx database types
 pub const UTX_DB_UTMPX: ::c_uint = 0;
 pub const UTX_DB_WTMPX: ::c_uint = 1;
-pub const UTX_DB_LASTLOG: ::c_uint = 2;
 pub const _UTX_LINESIZE: usize = 32;
 pub const _UTX_USERSIZE: usize = 32;
 pub const _UTX_IDSIZE: usize = 4;

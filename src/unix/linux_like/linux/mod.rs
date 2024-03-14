@@ -2463,13 +2463,7 @@ pub const RENAME_WHITEOUT: ::c_uint = 4;
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
 
-#[deprecated(
-    since = "0.2.80",
-    note = "This value was increased in the newer kernel \
-            and we'll change this following upstream in the future release. \
-            See #1896 for more info."
-)]
-pub const IPPROTO_MAX: ::c_int = 256;
+pub const IPPROTO_MAX: ::c_int = 263;
 
 // System V IPC
 pub const IPC_PRIVATE: ::key_t = 0;
@@ -3321,10 +3315,8 @@ pub const NF_IP_PRI_NAT_DST: ::c_int = -100;
 pub const NF_IP_PRI_FILTER: ::c_int = 0;
 pub const NF_IP_PRI_SECURITY: ::c_int = 50;
 pub const NF_IP_PRI_NAT_SRC: ::c_int = 100;
-pub const NF_IP_PRI_SELINUX_LAST: ::c_int = 225;
 pub const NF_IP_PRI_CONNTRACK_HELPER: ::c_int = 300;
 pub const NF_IP_PRI_CONNTRACK_CONFIRM: ::c_int = ::INT_MAX;
-pub const NF_IP_PRI_LAST: ::c_int = ::INT_MAX;
 
 // linux/netfilter_ipv6.h
 pub const NF_IP6_PRE_ROUTING: ::c_int = 0;
@@ -3344,9 +3336,7 @@ pub const NF_IP6_PRI_NAT_DST: ::c_int = -100;
 pub const NF_IP6_PRI_FILTER: ::c_int = 0;
 pub const NF_IP6_PRI_SECURITY: ::c_int = 50;
 pub const NF_IP6_PRI_NAT_SRC: ::c_int = 100;
-pub const NF_IP6_PRI_SELINUX_LAST: ::c_int = 225;
 pub const NF_IP6_PRI_CONNTRACK_HELPER: ::c_int = 300;
-pub const NF_IP6_PRI_LAST: ::c_int = ::INT_MAX;
 
 // linux/netfilter_ipv6/ip6_tables.h
 pub const IP6T_SO_ORIGINAL_DST: ::c_int = 80;

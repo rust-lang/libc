@@ -808,7 +808,6 @@ pub const B_RESOURCE_UNAVAILABLE: status_t = B_MEDIA_ERROR_BASE + 3;
 pub const B_BAD_SUBSCRIBER: status_t = B_MEDIA_ERROR_BASE + 4;
 pub const B_SUBSCRIBER_NOT_ENTERED: status_t = B_MEDIA_ERROR_BASE + 5;
 pub const B_BUFFER_NOT_AVAILABLE: status_t = B_MEDIA_ERROR_BASE + 6;
-pub const B_LAST_BUFFER_ERROR: status_t = B_MEDIA_ERROR_BASE + 7;
 
 pub const B_MEDIA_SYSTEM_FAILURE: status_t = B_MEDIA_ERROR_BASE + 100;
 pub const B_MEDIA_BAD_NODE: status_t = B_MEDIA_ERROR_BASE + 101;

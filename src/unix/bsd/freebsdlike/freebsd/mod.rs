@@ -3680,7 +3680,6 @@ pub const DEAD_PROCESS: ::c_short = 7;
 pub const SHUTDOWN_TIME: ::c_short = 8;
 // utmp database types
 pub const UTXDB_ACTIVE: ::c_int = 0;
-pub const UTXDB_LASTLOGIN: ::c_int = 1;
 pub const UTXDB_LOG: ::c_int = 2;
 
 pub const LC_COLLATE_MASK: ::c_int = 1 << 0;

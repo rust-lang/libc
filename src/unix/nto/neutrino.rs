@@ -467,7 +467,6 @@ pub const _NTO_INTR_SPARE: u32 = 2147483647;
 
 pub const _NTO_HOOK_IDLE: u32 = 2147418113;
 pub const _NTO_HOOK_OVERDRIVE: u32 = 2147418114;
-pub const _NTO_HOOK_LAST: u32 = 2147418114;
 pub const _NTO_HOOK_IDLE2_FLAG: u32 = 32768;
 
 pub const _NTO_IH_CMD_SLEEP_SETUP: u32 = 1;

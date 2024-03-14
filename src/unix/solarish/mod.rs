@@ -1946,7 +1946,6 @@ pub const _PC_ACCESS_FILTERING: ::c_int = 25;
 pub const _PC_TIMESTAMP_RESOLUTION: ::c_int = 26;
 pub const _PC_FILESIZEBITS: ::c_int = 67;
 pub const _PC_XATTR_ENABLED: ::c_int = 100;
-pub const _PC_LAST: ::c_int = 101;
 pub const _PC_XATTR_EXISTS: ::c_int = 101;
 
 pub const _SC_ARG_MAX: ::c_int = 1;

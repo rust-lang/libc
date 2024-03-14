@@ -3375,7 +3375,6 @@ pub const TCP_FIN_WAIT2: ::c_uint = 5;
 pub const TCP_TIME_WAIT: ::c_uint = 6;
 pub const TCP_CLOSE: ::c_uint = 7;
 pub const TCP_CLOSE_WAIT: ::c_uint = 8;
-pub const TCP_LAST_ACK: ::c_uint = 9;
 pub const TCP_LISTEN: ::c_uint = 10;
 pub const TCP_CLOSING: ::c_uint = 11;
 
