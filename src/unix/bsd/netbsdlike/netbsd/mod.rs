@@ -1757,7 +1757,6 @@ pub const DCCP_MAXSEG: ::c_int = 4;
 pub const DCCP_SERVICE: ::c_int = 8;
 
 pub const DCCP_NDP_LIMIT: ::c_int = 16;
-pub const DCCP_SEQ_NUM_LIMIT: ::c_int = 16777216;
 pub const DCCP_MAX_OPTIONS: ::c_int = 32;
 pub const DCCP_MAX_PKTS: ::c_int = 100;
 
