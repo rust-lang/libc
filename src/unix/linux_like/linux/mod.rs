@@ -2297,7 +2297,6 @@ pub const IFLA_LINKMODE: ::c_ushort = 17;
 pub const IFLA_LINKINFO: ::c_ushort = 18;
 pub const IFLA_NET_NS_PID: ::c_ushort = 19;
 pub const IFLA_IFALIAS: ::c_ushort = 20;
-pub const IFLA_NUM_VF: ::c_ushort = 21;
 pub const IFLA_VFINFO_LIST: ::c_ushort = 22;
 pub const IFLA_STATS64: ::c_ushort = 23;
 pub const IFLA_VF_PORTS: ::c_ushort = 24;
@@ -2307,8 +2306,6 @@ pub const IFLA_GROUP: ::c_ushort = 27;
 pub const IFLA_NET_NS_FD: ::c_ushort = 28;
 pub const IFLA_EXT_MASK: ::c_ushort = 29;
 pub const IFLA_PROMISCUITY: ::c_ushort = 30;
-pub const IFLA_NUM_TX_QUEUES: ::c_ushort = 31;
-pub const IFLA_NUM_RX_QUEUES: ::c_ushort = 32;
 pub const IFLA_CARRIER: ::c_ushort = 33;
 pub const IFLA_PHYS_PORT_ID: ::c_ushort = 34;
 pub const IFLA_CARRIER_CHANGES: ::c_ushort = 35;
@@ -2324,8 +2321,6 @@ pub const IFLA_EVENT: ::c_ushort = 44;
 pub const IFLA_NEW_NETNSID: ::c_ushort = 45;
 pub const IFLA_IF_NETNSID: ::c_ushort = 46;
 pub const IFLA_TARGET_NETNSID: ::c_ushort = IFLA_IF_NETNSID;
-pub const IFLA_CARRIER_UP_COUNT: ::c_ushort = 47;
-pub const IFLA_CARRIER_DOWN_COUNT: ::c_ushort = 48;
 pub const IFLA_NEW_IFINDEX: ::c_ushort = 49;
 pub const IFLA_MIN_MTU: ::c_ushort = 50;
 pub const IFLA_MAX_MTU: ::c_ushort = 51;
@@ -2463,13 +2458,7 @@ pub const RENAME_WHITEOUT: ::c_uint = 4;
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
 
-#[deprecated(
-    since = "0.2.80",
-    note = "This value was increased in the newer kernel \
-            and we'll change this following upstream in the future release. \
-            See #1896 for more info."
-)]
-pub const IPPROTO_MAX: ::c_int = 256;
+pub const IPPROTO_MAX: ::c_int = 263;
 
 // System V IPC
 pub const IPC_PRIVATE: ::key_t = 0;
@@ -3032,7 +3021,6 @@ pub const NFNL_SUBSYS_CTHELPER: ::c_int = 9;
 pub const NFNL_SUBSYS_NFTABLES: ::c_int = 10;
 pub const NFNL_SUBSYS_NFT_COMPAT: ::c_int = 11;
 pub const NFNL_SUBSYS_HOOK: ::c_int = 12;
-pub const NFNL_SUBSYS_COUNT: ::c_int = 13;
 
 pub const NFNL_MSG_BATCH_BEGIN: ::c_int = NLMSG_MIN_TYPE;
 pub const NFNL_MSG_BATCH_END: ::c_int = NLMSG_MIN_TYPE + 1;
@@ -3321,10 +3309,8 @@ pub const NF_IP_PRI_NAT_DST: ::c_int = -100;
 pub const NF_IP_PRI_FILTER: ::c_int = 0;
 pub const NF_IP_PRI_SECURITY: ::c_int = 50;
 pub const NF_IP_PRI_NAT_SRC: ::c_int = 100;
-pub const NF_IP_PRI_SELINUX_LAST: ::c_int = 225;
 pub const NF_IP_PRI_CONNTRACK_HELPER: ::c_int = 300;
 pub const NF_IP_PRI_CONNTRACK_CONFIRM: ::c_int = ::INT_MAX;
-pub const NF_IP_PRI_LAST: ::c_int = ::INT_MAX;
 
 // linux/netfilter_ipv6.h
 pub const NF_IP6_PRE_ROUTING: ::c_int = 0;
@@ -3344,9 +3330,7 @@ pub const NF_IP6_PRI_NAT_DST: ::c_int = -100;
 pub const NF_IP6_PRI_FILTER: ::c_int = 0;
 pub const NF_IP6_PRI_SECURITY: ::c_int = 50;
 pub const NF_IP6_PRI_NAT_SRC: ::c_int = 100;
-pub const NF_IP6_PRI_SELINUX_LAST: ::c_int = 225;
 pub const NF_IP6_PRI_CONNTRACK_HELPER: ::c_int = 300;
-pub const NF_IP6_PRI_LAST: ::c_int = ::INT_MAX;
 
 // linux/netfilter_ipv6/ip6_tables.h
 pub const IP6T_SO_ORIGINAL_DST: ::c_int = 80;
@@ -3676,7 +3660,6 @@ pub const IW_MICFAILURE_KEY_ID: ::c_ulong = 0x00000003;
 pub const IW_MICFAILURE_GROUP: ::c_ulong = 0x00000004;
 pub const IW_MICFAILURE_PAIRWISE: ::c_ulong = 0x00000008;
 pub const IW_MICFAILURE_STAKEY: ::c_ulong = 0x00000010;
-pub const IW_MICFAILURE_COUNT: ::c_ulong = 0x00000060;
 
 pub const IW_ENC_CAPA_WPA: ::c_ulong = 0x00000001;
 pub const IW_ENC_CAPA_WPA2: ::c_ulong = 0x00000002;
@@ -5007,7 +4990,6 @@ pub const VM_HUGETLB_PAGES: ::c_int = 18;
 pub const VM_SWAPPINESS: ::c_int = 19;
 pub const VM_LOWMEM_RESERVE_RATIO: ::c_int = 20;
 pub const VM_MIN_FREE_KBYTES: ::c_int = 21;
-pub const VM_MAX_MAP_COUNT: ::c_int = 22;
 pub const VM_LAPTOP_MODE: ::c_int = 23;
 pub const VM_BLOCK_DUMP: ::c_int = 24;
 pub const VM_HUGETLB_GROUP: ::c_int = 25;

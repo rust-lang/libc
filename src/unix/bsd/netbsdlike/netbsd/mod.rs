@@ -1730,7 +1730,6 @@ pub const DCCP_OPT_CONFIRM_L: ::c_int = 33;
 pub const DCCP_OPT_CHANGE_R: ::c_int = 34;
 pub const DCCP_OPT_CONFIRM_R: ::c_int = 35;
 pub const DCCP_OPT_INIT_COOKIE: ::c_int = 36;
-pub const DCCP_OPT_NDP_COUNT: ::c_int = 37;
 pub const DCCP_OPT_ACK_VECTOR0: ::c_int = 38;
 pub const DCCP_OPT_ACK_VECTOR1: ::c_int = 39;
 pub const DCCP_OPT_RECV_BUF_DROPS: ::c_int = 40;
@@ -1757,7 +1756,6 @@ pub const DCCP_MAXSEG: ::c_int = 4;
 pub const DCCP_SERVICE: ::c_int = 8;
 
 pub const DCCP_NDP_LIMIT: ::c_int = 16;
-pub const DCCP_SEQ_NUM_LIMIT: ::c_int = 16777216;
 pub const DCCP_MAX_OPTIONS: ::c_int = 32;
 pub const DCCP_MAX_PKTS: ::c_int = 100;
 

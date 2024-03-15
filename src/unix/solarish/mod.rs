@@ -1946,7 +1946,6 @@ pub const _PC_ACCESS_FILTERING: ::c_int = 25;
 pub const _PC_TIMESTAMP_RESOLUTION: ::c_int = 26;
 pub const _PC_FILESIZEBITS: ::c_int = 67;
 pub const _PC_XATTR_ENABLED: ::c_int = 100;
-pub const _PC_LAST: ::c_int = 101;
 pub const _PC_XATTR_EXISTS: ::c_int = 101;
 
 pub const _SC_ARG_MAX: ::c_int = 1;
@@ -2533,7 +2532,6 @@ pub const LGRP_COOKIE_NONE: ::lgrp_cookie_t = 0;
 pub const LGRP_AFF_NONE: ::lgrp_affinity_t = 0x0;
 pub const LGRP_AFF_WEAK: ::lgrp_affinity_t = 0x10;
 pub const LGRP_AFF_STRONG: ::lgrp_affinity_t = 0x100;
-pub const LGRP_RSRC_COUNT: ::lgrp_rsrc_t = 2;
 pub const LGRP_RSRC_CPU: ::lgrp_rsrc_t = 0;
 pub const LGRP_RSRC_MEM: ::lgrp_rsrc_t = 1;
 pub const LGRP_CONTENT_ALL: ::lgrp_content_t = 0;

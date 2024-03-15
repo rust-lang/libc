@@ -4990,7 +4990,6 @@ pub const MNT_NOWAIT: ::c_int = 2;
 
 // <mach/thread_policy.h>
 pub const THREAD_STANDARD_POLICY: ::c_int = 1;
-pub const THREAD_STANDARD_POLICY_COUNT: ::c_int = 0;
 pub const THREAD_EXTENDED_POLICY: ::c_int = 1;
 pub const THREAD_TIME_CONSTRAINT_POLICY: ::c_int = 2;
 pub const THREAD_PRECEDENCE_POLICY: ::c_int = 3;
@@ -5052,7 +5051,6 @@ pub const VM_PAGE_QUERY_PAGE_CS_NX: i32 = 0x400;
 
 // mach/task_info.h
 pub const TASK_THREAD_TIMES_INFO: u32 = 3;
-pub const HOST_CPU_LOAD_INFO_COUNT: u32 = 4;
 pub const MACH_TASK_BASIC_INFO: u32 = 20;
 
 pub const MACH_PORT_NULL: i32 = 0;
@@ -5114,7 +5112,6 @@ pub const COPYFILE_STATE_DST_BSIZE: ::c_int = 12;
 pub const COPYFILE_STATE_BSIZE: ::c_int = 13;
 
 // <sys/attr.h>
-pub const ATTR_BIT_MAP_COUNT: ::c_ushort = 5;
 pub const FSOPT_NOFOLLOW: u32 = 0x1;
 pub const FSOPT_NOFOLLOW_ANY: u32 = 0x800;
 pub const FSOPT_REPORT_FULLSIZE: u32 = 0x4;
@@ -5140,7 +5137,6 @@ pub const ATTR_CMN_OWNERID: attrgroup_t = 0x00008000;
 pub const ATTR_CMN_GRPID: attrgroup_t = 0x00010000;
 pub const ATTR_CMN_ACCESSMASK: attrgroup_t = 0x00020000;
 pub const ATTR_CMN_FLAGS: attrgroup_t = 0x00040000;
-pub const ATTR_CMN_GEN_COUNT: attrgroup_t = 0x00080000;
 pub const ATTR_CMN_DOCUMENT_ID: attrgroup_t = 0x00100000;
 pub const ATTR_CMN_USERACCESS: attrgroup_t = 0x00200000;
 pub const ATTR_CMN_EXTENDED_SECURITY: attrgroup_t = 0x00400000;
@@ -5225,7 +5221,6 @@ pub const VOL_CAP_FMT_DECMPFS_COMPRESSION: attrgroup_t = 0x00010000;
 pub const VOL_CAP_FMT_64BIT_OBJECT_IDS: attrgroup_t = 0x00020000;
 pub const VOL_CAP_FMT_DIR_HARDLINKS: attrgroup_t = 0x00040000;
 pub const VOL_CAP_FMT_DOCUMENT_ID: attrgroup_t = 0x00080000;
-pub const VOL_CAP_FMT_WRITE_GENERATION_COUNT: attrgroup_t = 0x00100000;
 pub const VOL_CAP_FMT_NO_IMMUTABLE_FILES: attrgroup_t = 0x00200000;
 pub const VOL_CAP_FMT_NO_PERMISSIONS: attrgroup_t = 0x00400000;
 pub const VOL_CAP_FMT_SHARED_SPACE: attrgroup_t = 0x00800000;
@@ -5275,45 +5270,6 @@ const fn __DARWIN_ALIGN32(p: usize) -> usize {
     const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
     p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
 }
-
-pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_time_constraint_policy_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_precedence_policy_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_affinity_policy_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_background_policy_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_latency_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_throughput_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_basic_info_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_identifier_info_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
-
-pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
-    (::mem::size_of::<task_thread_times_info_data_t>() / ::mem::size_of::<natural_t>()) as u32;
-pub const MACH_TASK_BASIC_INFO_COUNT: u32 =
-    (::mem::size_of::<mach_task_basic_info_data_t>() / ::mem::size_of::<natural_t>()) as u32;
-pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
-    (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
-        as mach_msg_type_number_t;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
