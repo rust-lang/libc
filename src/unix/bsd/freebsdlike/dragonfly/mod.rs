@@ -1064,7 +1064,6 @@ pub const CPUCTL_CPUID: ::c_int = 0xc0106303;
 pub const CPUCTL_UPDATE: ::c_int = 0xc0106304;
 pub const CPUCTL_MSRSBIT: ::c_int = 0xc0106305;
 pub const CPUCTL_MSRCBIT: ::c_int = 0xc0106306;
-pub const CPUCTL_CPUID_COUNT: ::c_int = 0xc0106307;
 
 pub const CPU_SETSIZE: ::size_t = ::mem::size_of::<::cpumask_t>() * 8;
 

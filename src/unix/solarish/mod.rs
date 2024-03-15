@@ -2532,7 +2532,6 @@ pub const LGRP_COOKIE_NONE: ::lgrp_cookie_t = 0;
 pub const LGRP_AFF_NONE: ::lgrp_affinity_t = 0x0;
 pub const LGRP_AFF_WEAK: ::lgrp_affinity_t = 0x10;
 pub const LGRP_AFF_STRONG: ::lgrp_affinity_t = 0x100;
-pub const LGRP_RSRC_COUNT: ::lgrp_rsrc_t = 2;
 pub const LGRP_RSRC_CPU: ::lgrp_rsrc_t = 0;
 pub const LGRP_RSRC_MEM: ::lgrp_rsrc_t = 1;
 pub const LGRP_CONTENT_ALL: ::lgrp_content_t = 0;
