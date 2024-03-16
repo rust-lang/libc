@@ -1268,6 +1268,7 @@ fn test_dragonflybsd(target: &str) {
         "sys/mount.h",
         "sys/procctl.h",
         "sys/ptrace.h",
+        "sys/random.h",
         "sys/reboot.h",
         "sys/resource.h",
         "sys/rtprio.h",

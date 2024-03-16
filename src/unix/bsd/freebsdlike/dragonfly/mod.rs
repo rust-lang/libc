@@ -1522,6 +1522,11 @@ pub const NGROUPS: usize = 16;
 pub const RB_PAUSE: ::c_int = 0x40000;
 pub const RB_VIDEO: ::c_int = 0x20000000;
 
+// For getrandom()
+pub const GRND_RANDOM: ::c_uint = 0x1;
+pub const GRND_NONBLOCK: ::c_uint = 0x2;
+pub const GRND_INSECURE: ::c_uint = 0x4;
+
 const_fn! {
     {const} fn _CMSG_ALIGN(n: usize) -> usize {
         (n + (::mem::size_of::<::c_long>() - 1)) & !(::mem::size_of::<::c_long>() - 1)
@@ -1684,6 +1689,7 @@ extern "C" {
         mntvbufp: *mut *mut ::statvfs,
         flags: ::c_int,
     ) -> ::c_int;
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 }
 
 #[link(name = "rt")]

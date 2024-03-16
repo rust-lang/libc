@@ -1587,3 +1587,7 @@ xucred
 eaccess
 dirname
 basename
+GRND_RANDOM
+GRND_NONBLOCK
+GRND_INSECURE
+getrandom
