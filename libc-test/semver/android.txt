@@ -3814,7 +3814,6 @@ utimes
 utmp
 utmpname
 utsname
-vfork
 vmsplice
 wait
 wait4
