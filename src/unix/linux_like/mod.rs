@@ -1739,11 +1739,6 @@ extern "C" {
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
-    #[deprecated(
-        since = "0.2.66",
-        note = "causes memory corruption, see rust-lang/libc#1596"
-    )]
-    pub fn vfork() -> ::pid_t;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
     pub fn wait4(
