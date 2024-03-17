@@ -4577,7 +4577,7 @@ pub const FAN_MARK_IGNORED_MASK: ::c_uint = 0x0000_0020;
 pub const FAN_MARK_IGNORED_SURV_MODIFY: ::c_uint = 0x0000_0040;
 pub const FAN_MARK_FLUSH: ::c_uint = 0x0000_0080;
 pub const FAN_MARK_EVICTABLE: ::c_uint = 0x0000_0200;
-pub const FAN_MARK_IGNORE: ::c_uint = 0x0000_0100;
+pub const FAN_MARK_IGNORE: ::c_uint = 0x0000_0400;
 
 pub const FAN_MARK_INODE: ::c_uint = 0x0000_0000;
 pub const FAN_MARK_MOUNT: ::c_uint = 0x0000_0010;
