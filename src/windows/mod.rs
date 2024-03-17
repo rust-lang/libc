@@ -59,7 +59,7 @@ s! {
     pub struct stat {
         pub st_dev: dev_t,
         pub st_ino: ino_t,
-        pub st_mode: u16,
+        pub st_mode: c_ushort,
         pub st_nlink: ::c_short,
         pub st_uid: ::c_short,
         pub st_gid: ::c_short,
@@ -142,13 +142,13 @@ pub const _O_OBTAIN_DIR: ::c_int = 0x2000;
 pub const O_SEQUENTIAL: ::c_int = 0x0020;
 pub const O_RANDOM: ::c_int = 0x0010;
 
-pub const S_IFCHR: ::c_int = 0o2_0000;
-pub const S_IFDIR: ::c_int = 0o4_0000;
-pub const S_IFREG: ::c_int = 0o10_0000;
-pub const S_IFMT: ::c_int = 0o17_0000;
-pub const S_IEXEC: ::c_int = 0o0100;
-pub const S_IWRITE: ::c_int = 0o0200;
-pub const S_IREAD: ::c_int = 0o0400;
+pub const S_IFCHR: ::c_ushort = 0o2_0000;
+pub const S_IFDIR: ::c_ushort = 0o4_0000;
+pub const S_IFREG: ::c_ushort = 0o10_0000;
+pub const S_IFMT: ::c_ushort = 0o17_0000;
+pub const S_IEXEC: ::c_ushort = 0o0100;
+pub const S_IWRITE: ::c_ushort = 0o0200;
+pub const S_IREAD: ::c_ushort = 0o0400;
 
 pub const LC_ALL: ::c_int = 0;
 pub const LC_COLLATE: ::c_int = 1;
