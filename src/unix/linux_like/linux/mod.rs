@@ -4104,6 +4104,7 @@ pub const FAN_NOFD: ::c_int = -1;
 pub const FAN_NOPIDFD: ::c_int = FAN_NOFD;
 pub const FAN_EPIDFD: ::c_int = -2;
 
+// linux/futex.h
 pub const FUTEX_WAIT: ::c_int = 0;
 pub const FUTEX_WAKE: ::c_int = 1;
 pub const FUTEX_FD: ::c_int = 2;
