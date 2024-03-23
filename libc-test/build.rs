@@ -2080,6 +2080,9 @@ fn test_android(target: &str) {
             ("Elf32_Phdr", "p_type") => true,
             ("Elf64_Phdr", "p_type") => true,
 
+            // _sigev_un is an anonymous union
+            ("sigevent", "_sigev_un") => true,
+
             // this is actually a union on linux, so we can't represent it well and
             // just insert some padding.
             ("siginfo_t", "_pad") => true,
@@ -2671,7 +2674,7 @@ fn test_freebsd(target: &str) {
     cfg.volatile_item(|i| {
         use ctest::VolatileItemKind::*;
         match i {
-            // aio_buf is a volatile void** but since we cannot express that in
+            // aio_buf is a volatile void* but since we cannot express that in
             // Rust types, we have to explicitly tell the checker about it here:
             StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
             _ => false,
@@ -2690,6 +2693,9 @@ fn test_freebsd(target: &str) {
 
             // not available until FreeBSD 12, and is an anonymous union there.
             ("xucred", "cr_pid__c_anonymous_union") => true,
+
+            // Anonymous union
+            ("sigevent", "_sigev_un") => true,
 
             // m_owner field is a volatile __lwpid_t
             ("umutex", "m_owner") => true,
@@ -2883,6 +2889,9 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // This is actually a union, not a struct
             "sigval" => true,
@@ -2968,6 +2977,8 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_field(move |struct_, field| {
+        // _sigev_un is an anonymous union
+        (struct_ == "sigevent" && field == "_sigev_un") ||
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
         (struct_ == "siginfo_t" && field == "_pad") ||
@@ -4359,8 +4370,8 @@ fn test_linux(target: &str) {
         (musl && struct_ == "glob_t" && field == "gl_flags") ||
         // musl seems to define this as an *anonymous* bitfield
         (musl && struct_ == "statvfs" && field == "__f_unused") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+        // _sigev_un is an anonymous union
+        (struct_ == "sigevent" && field == "_sigev_un") ||
         // signalfd had SIGSYS fields added in Linux 4.18, but no libc release
         // has them yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
