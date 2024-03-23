@@ -1474,11 +1474,11 @@ pub const LOG_PERROR: ::c_int = 32 << 12;
 pub const LOG_NOWAIT: ::c_int = 64 << 12;
 
 // spawn.h
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x10;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
-pub const POSIX_SPAWN_SETSID: ::c_int = 0x40;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x02;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x20;
+pub const POSIX_SPAWN_SETSID: ::c_short = 0x40;
 
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
