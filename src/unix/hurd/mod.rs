@@ -2761,8 +2761,8 @@ pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
 // spawn.h
-pub const POSIX_SPAWN_USEVFORK: ::c_int = 64;
-pub const POSIX_SPAWN_SETSID: ::c_int = 128;
+pub const POSIX_SPAWN_USEVFORK: ::c_short = 64;
+pub const POSIX_SPAWN_SETSID: ::c_short = 128;
 
 // sys/syslog.h
 pub const LOG_CRON: ::c_int = 9 << 3;
