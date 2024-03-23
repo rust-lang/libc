@@ -1609,12 +1609,12 @@ pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
 pub const ITIMER_PROF: ::c_int = 2;
 
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x00000010;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x00000001;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x00000004;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x00000002;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x00000400;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x00000040;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x0010;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x0001;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x0004;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x0002;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x0400;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x0040;
 
 pub const IPTOS_ECN_NOT_ECT: u8 = 0x00;
 
