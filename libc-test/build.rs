@@ -2545,6 +2545,9 @@ fn test_freebsd(target: &str) {
             // not available until FreeBSD 12, and is an anonymous union there.
             ("xucred", "cr_pid__c_anonymous_union") => true,
 
+            // Anonymous union
+            ("sigevent", "_sigev_un") => true,
+
             // m_owner field is a volatile __lwpid_t
             ("umutex", "m_owner") => true,
             // c_has_waiters field is a volatile int32_t
@@ -4282,8 +4285,8 @@ fn test_linux(target: &str) {
         (musl && struct_ == "glob_t" && field == "gl_flags") ||
         // musl seems to define this as an *anonymous* bitfield
         (musl && struct_ == "statvfs" && field == "__f_unused") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+        // _sigev_un is an anonymous union
+        (struct_ == "sigevent" && field == "_sigev_un") ||
         // signalfd had SIGSYS fields added in Linux 4.18, but no libc release
         // has them yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
