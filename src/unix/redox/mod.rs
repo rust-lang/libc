@@ -695,26 +695,26 @@ pub const EPOLLONESHOT: ::c_int = 1 << 30;
 pub const EPOLLET: ::c_int = 1 << 31;
 
 // sys/stat.h
-pub const S_IFMT: ::c_int = 0o0_170_000;
-pub const S_IFDIR: ::c_int = 0o040_000;
-pub const S_IFCHR: ::c_int = 0o020_000;
-pub const S_IFBLK: ::c_int = 0o060_000;
-pub const S_IFREG: ::c_int = 0o100_000;
-pub const S_IFIFO: ::c_int = 0o010_000;
-pub const S_IFLNK: ::c_int = 0o120_000;
-pub const S_IFSOCK: ::c_int = 0o140_000;
-pub const S_IRWXU: ::c_int = 0o0_700;
-pub const S_IRUSR: ::c_int = 0o0_400;
-pub const S_IWUSR: ::c_int = 0o0_200;
-pub const S_IXUSR: ::c_int = 0o0_100;
-pub const S_IRWXG: ::c_int = 0o0_070;
-pub const S_IRGRP: ::c_int = 0o0_040;
-pub const S_IWGRP: ::c_int = 0o0_020;
-pub const S_IXGRP: ::c_int = 0o0_010;
-pub const S_IRWXO: ::c_int = 0o0_007;
-pub const S_IROTH: ::c_int = 0o0_004;
-pub const S_IWOTH: ::c_int = 0o0_002;
-pub const S_IXOTH: ::c_int = 0o0_001;
+pub const S_IFMT: ::c_int = 0o17_0000;
+pub const S_IFDIR: ::c_int = 0o4_0000;
+pub const S_IFCHR: ::c_int = 0o2_0000;
+pub const S_IFBLK: ::c_int = 0o6_0000;
+pub const S_IFREG: ::c_int = 0o10_0000;
+pub const S_IFIFO: ::c_int = 0o1_0000;
+pub const S_IFLNK: ::c_int = 0o12_0000;
+pub const S_IFSOCK: ::c_int = 0o14_0000;
+pub const S_IRWXU: ::c_int = 0o0700;
+pub const S_IRUSR: ::c_int = 0o0400;
+pub const S_IWUSR: ::c_int = 0o0200;
+pub const S_IXUSR: ::c_int = 0o0100;
+pub const S_IRWXG: ::c_int = 0o0070;
+pub const S_IRGRP: ::c_int = 0o0040;
+pub const S_IWGRP: ::c_int = 0o0020;
+pub const S_IXGRP: ::c_int = 0o0010;
+pub const S_IRWXO: ::c_int = 0o0007;
+pub const S_IROTH: ::c_int = 0o0004;
+pub const S_IWOTH: ::c_int = 0o0002;
+pub const S_IXOTH: ::c_int = 0o0001;
 
 // stdlib.h
 pub const EXIT_SUCCESS: ::c_int = 0;
