@@ -107,12 +107,15 @@ jobs:
         target: [
           aarch64-linux-android,
           aarch64-unknown-linux-gnu,
-          aarch64-unknown-linux-musl,
+          # FIXME: uncomment once CI upgraded to musl 1.2+
+          # aarch64-unknown-linux-musl,
           arm-linux-androideabi,
           arm-unknown-linux-gnueabihf,
-          arm-unknown-linux-musleabihf,
+          # FIXME: uncomment once CI upgraded to musl 1.2+
+          # arm-unknown-linux-musleabihf,
           i686-linux-android,
-          i686-unknown-linux-musl,
+          # FIXME: uncomment once CI upgraded to musl 1.2+
+          # i686-unknown-linux-musl,
           powerpc-unknown-linux-gnu,
           powerpc64-unknown-linux-gnu,
           powerpc64le-unknown-linux-gnu,
@@ -128,7 +131,8 @@ jobs:
           x86_64-linux-android,
           # FIXME: Exec format error (os error 8)
           #x86_64-unknown-linux-gnux32,
-          x86_64-unknown-linux-musl,
+          # FIXME: uncomment once CI upgraded to musl 1.2+
+          # x86_64-unknown-linux-musl,
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
           # x86_64-unknown-redox,
