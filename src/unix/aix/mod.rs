@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 pub type c_char = i8;
 pub type caddr_t = *mut ::c_char;
 pub type clockid_t = ::c_longlong;
