@@ -60,6 +60,7 @@ pub type posix_spawn_file_actions_t = *mut ::c_char;
 pub type iconv_t = *mut ::c_void;
 
 e! {
+    #[repr(u32)]
     pub enum uio_rw {
         UIO_READ = 0,
         UIO_WRITE,
