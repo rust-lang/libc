@@ -269,6 +269,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    /// CRITICAL WARNING! "256" is a lie here. File name can be longer or shorter than 256 bytes. So extra care is needed when dealing with this structure. It is very hard to avoid undefined behavior. See <https://github.com/rust-lang/rust/blob/96eaf553e547e36003e235a9de26c11460712231/library/std/src/sys/pal/unix/fs.rs#L732> and <https://github.com/rust-lang/libc/issues/2669>
     #[allow(missing_debug_implementations)]
     pub struct dirent {
         pub d_ino: ::ino64_t,
