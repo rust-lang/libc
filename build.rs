@@ -18,7 +18,6 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `_TIME_BITS=64` in glibc
     "gnu_time_bits64",
     "libc_deny_warnings",
-    "libc_thread_local",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
@@ -47,7 +46,6 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
 
     let (rustc_minor_ver, _is_nightly) = rustc_minor_nightly();
-    let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
     let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
@@ -141,11 +139,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // #[thread_local] is currently unstable
-    if rustc_dep_of_std {
-        set_cfg("libc_thread_local");
     }
 
     // Since Rust 1.80, configuration that isn't recognized by default needs to be provided to
