@@ -67,12 +67,7 @@ fn do_ctest() {
 }
 
 fn ctest_cfg() -> ctest::TestGenerator {
-    let mut cfg = ctest::TestGenerator::new();
-    let libc_cfgs = ["libc_thread_local"];
-    for f in &libc_cfgs {
-        cfg.cfg(f, None);
-    }
-    cfg
+    ctest::TestGenerator::new()
 }
 
 fn do_semver() {

@@ -16,7 +16,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
-    "libc_thread_local",
 ];
 
 // Extra values to allow for check-cfg.
@@ -63,11 +62,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // #[thread_local] is currently unstable
-    if rustc_dep_of_std {
-        set_cfg("libc_thread_local");
     }
 
     // Rust >= 1.62.0 allows to use `const_extern_fn` for "Rust" and "C".
