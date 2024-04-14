@@ -511,6 +511,8 @@ pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 
 pub const INET_ADDRSTRLEN: ::c_int = 16;
 
+pub const SIGABRT: ::c_int = 1;
+
 // https://github.com/bminor/newlib/blob/HEAD/newlib/libc/sys/linux/include/net/if.h#L121
 pub const IFF_UP: ::c_int = 0x1; // interface is up
 pub const IFF_BROADCAST: ::c_int = 0x2; // broadcast address valid
