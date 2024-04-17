@@ -2275,7 +2275,7 @@ fn test_freebsd(target: &str) {
                 true
             }
 
-            // Added in in FreeBSD 13.0 (r367776 and r367287)
+            // Added in FreeBSD 13.0 (r367776 and r367287)
             "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
 
             // Added in FreeBSD 14
