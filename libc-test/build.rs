@@ -3507,7 +3507,8 @@ fn test_linux(target: &str) {
 
     cfg.skip_type(move |ty| {
         // FIXME: very recent additions to musl, not yet released.
-        if musl && (ty == "Elf32_Relr" || ty == "Elf64_Relr") {
+        // also apparently some glibc versions
+        if ty == "Elf32_Relr" || ty == "Elf64_Relr" {
             return true;
         }
         if sparc64 && (ty == "Elf32_Rela" || ty == "Elf64_Rela") {
