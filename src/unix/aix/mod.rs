@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 pub type c_char = i8;
 pub type caddr_t = *mut ::c_char;
 pub type clockid_t = ::c_longlong;
@@ -963,8 +962,6 @@ pub const BPF_X: ::c_int = 8;
 // net/if.h
 pub const IFNET_SLOWHZ: ::c_int = 1;
 pub const IFQ_MAXLEN: ::c_int = 50;
-pub const IF_NAMESIZE: ::c_int = 16;
-pub const IFNAMSIZ: ::c_int = 16;
 pub const IFF_UP: ::c_int = 0x1;
 pub const IFF_BROADCAST: ::c_int = 0x2;
 pub const IFF_DEBUG: ::c_int = 0x4;
@@ -987,8 +984,6 @@ pub const ARPHRD_ETHER: ::c_int = 1;
 pub const ARPHRD_802_5: ::c_int = 6;
 pub const ARPHRD_802_3: ::c_int = 6;
 pub const ARPHRD_FDDI: ::c_int = 1;
-pub const ARPOP_REQUEST: ::c_int = 1;
-pub const ARPOP_REPLY: ::c_int = 2;
 
 // net/route.h
 pub const RTM_ADD: ::c_int = 0x1;
