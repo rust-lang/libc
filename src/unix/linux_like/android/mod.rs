@@ -2204,8 +2204,6 @@ pub const NLA_TYPE_MASK: ::c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
 
 pub const NLA_ALIGNTO: ::c_int = 4;
 
-pub const SIGEV_THREAD_ID: ::c_int = 4;
-
 pub const CIBAUD: ::tcflag_t = 0o02003600000;
 pub const CBAUDEX: ::tcflag_t = 0o010000;
 
