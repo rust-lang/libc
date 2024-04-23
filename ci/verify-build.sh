@@ -40,7 +40,6 @@ test_target() {
     no_dist="$2"
 
     RUSTFLAGS="${RUSTFLAGS:-}"
-
     # The basic command that is run each time
     cmd="cargo +$rust build --target $target"
 
@@ -73,7 +72,7 @@ test_target() {
 
     if [ "$os" = "linux" ]; then
         # Test with the equivalent of __USE_TIME_BITS64
-        RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64=1 $cmd
+        RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64=1 $cmd --target-dir "target/$target-time64"
     fi
 
     # Test again without default features, i.e. without "std"
