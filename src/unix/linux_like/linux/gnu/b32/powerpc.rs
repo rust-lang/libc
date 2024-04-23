@@ -22,7 +22,8 @@ s! {
 
         pub f_namelen: ::__fsword_t,
         pub f_frsize: ::__fsword_t,
-        f_spare: [::__fsword_t; 5],
+        pub f_flags: ::__fsword_t,
+        f_spare: [::__fsword_t; 4],
     }
 
     pub struct flock {
