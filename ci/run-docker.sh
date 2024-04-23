@@ -43,6 +43,7 @@ run() {
       --env LIBC_CI_ZBUILD_STD \
       --env CARGO_HOME=/cargo \
       --env CARGO_TARGET_DIR=/checkout/target \
+      --env RUST_LIBC_TIME_BITS \
       --volume "$CARGO_HOME":/cargo \
       --volume "$(rustc --print sysroot)":/rust:ro \
       --volume "$(pwd)":/checkout:ro \
