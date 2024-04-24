@@ -1300,7 +1300,7 @@ extern "C" {
     pub fn find_path_for_path_etc(
         path: *const ::c_char,
         dependency: *const ::c_char,
-        architectur: *const ::c_char,
+        architecture: *const ::c_char,
         baseDirectory: path_base_directory,
         subPath: *const ::c_char,
         flags: u32,
