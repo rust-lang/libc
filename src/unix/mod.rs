@@ -369,6 +369,7 @@ cfg_if! {
                         target_os = "ios",
                         target_os = "tvos",
                         target_os = "watchos",
+                        target_os = "visionos",
                         target_os = "android",
                         target_os = "openbsd",
                         target_os = "nto",
@@ -1042,7 +1043,8 @@ extern "C" {
             target_os = "macos",
             target_os = "ios",
             target_os = "tvos",
-            target_os = "watchos"
+            target_os = "watchos",
+            target_os = "visionos"
         ),
         link_name = "realpath$DARWIN_EXTSN"
     )]
@@ -1218,7 +1220,8 @@ extern "C" {
             target_os = "macos",
             target_os = "ios",
             target_os = "tvos",
-            target_os = "watchos"
+            target_os = "watchos",
+            target_os = "visionos"
         ),
         link_name = "res_9_init"
     )]
@@ -1555,6 +1558,7 @@ cfg_if! {
                         target_os = "ios",
                         target_os = "tvos",
                         target_os = "watchos",
+                        target_os = "visionos",
                         target_os = "freebsd",
                         target_os = "dragonfly",
                         target_os = "openbsd",

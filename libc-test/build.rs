@@ -2538,6 +2538,9 @@ fn test_freebsd(target: &str) {
             | "sctp_send_failed_event"
             | "sctp_stream_reset_event" => true,
 
+            // FIXME: Changed in FreeBSD 15
+            "tcp_info" | "sockstat" if Some(15) >= freebsd_ver => true,
+
             _ => false,
         }
     });
