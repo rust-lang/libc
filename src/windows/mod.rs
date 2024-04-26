@@ -140,13 +140,13 @@ pub const _O_OBTAIN_DIR: ::c_int = 0x2000;
 pub const O_SEQUENTIAL: ::c_int = 0x0020;
 pub const O_RANDOM: ::c_int = 0x0010;
 
-pub const S_IFCHR: ::c_int = 8192;
-pub const S_IFDIR: ::c_int = 16384;
-pub const S_IFREG: ::c_int = 32768;
-pub const S_IFMT: ::c_int = 61440;
-pub const S_IEXEC: ::c_int = 64;
-pub const S_IWRITE: ::c_int = 128;
-pub const S_IREAD: ::c_int = 256;
+pub const S_IFCHR: ::c_int = 0o2_0000;
+pub const S_IFDIR: ::c_int = 0o4_0000;
+pub const S_IFREG: ::c_int = 0o10_0000;
+pub const S_IFMT: ::c_int = 0o17_0000;
+pub const S_IEXEC: ::c_int = 0o0100;
+pub const S_IWRITE: ::c_int = 0o0200;
+pub const S_IREAD: ::c_int = 0o0400;
 
 pub const LC_ALL: ::c_int = 0;
 pub const LC_COLLATE: ::c_int = 1;
