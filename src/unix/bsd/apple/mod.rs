@@ -1525,6 +1525,40 @@ s_no_extra_traits! {
         pub ifcu_buf: *mut ::c_char,
         pub ifcu_req: *mut ifreq,
     }
+
+    #[repr(C, align(4))]
+    pub struct dns_sortaddr_t {
+        pub address: in_addr,
+        pub mask: in_addr,
+    }
+
+    #[repr(C, align(4))]
+    pub struct dns_resolver_t {
+        pub domain: *mut ::c_char,
+        pub n_nameserver: i32,
+        pub nameserver: *mut *mut ::sockaddr,
+        pub port: u16,
+        pub n_search: i32,
+        pub search: *mut *mut ::c_char,
+        pub n_sortaddr: i32,
+        pub sortaddr: *mut *mut dns_sortaddr_t,
+        pub options: *mut ::c_char,
+        pub timeout: u32,
+        pub search_order: u32,
+        pub if_index: u32,
+        pub flags: u32,
+        pub reach_flags: u32,
+        pub reserved: [u32; 5],
+    }
+
+    pub struct dns_config_t {
+        pub n_resolver: i32,
+        pub resolver: *mut *mut dns_resolver_t,
+        pub n_scoped_resolver: i32,
+        pub scoped_resolver: *mut *mut dns_resolver_t,
+        pub reserved: [u32; 5],
+    }
+
 }
 
 impl siginfo_t {
@@ -6461,6 +6495,10 @@ extern "C" {
         search_path: *const ::c_char,
         argv: *const *mut ::c_char,
     ) -> ::c_int;
+    pub fn dns_configuration_notify_key() -> *const ::c_char;
+    pub fn dns_configuration_copy() -> *mut dns_config_t;
+    pub fn dns_configuration_free(config: *mut dns_config_t);
+    pub fn _dns_configuration_ack(config: *mut dns_config_t, bundle_id: *const ::c_char);
 }
 
 pub unsafe fn mach_task_self() -> ::mach_port_t {

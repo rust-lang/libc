@@ -2284,3 +2284,10 @@ wait4
 waitid
 xsw_usage
 xucred
+dns_config_t
+dns_resolver_t
+dns_sortaddr_t
+dns_configuration_notify_key
+dns_configuration_copy
+dns_configuration_free
+_dns_configuration_ack

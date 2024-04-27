@@ -436,6 +436,19 @@ fn test_apple(target: &str) {
         "uuid_t" | "vol_capabilities_set_t" => true,
         _ => false,
     });
+
+    // dnsinfo.h isn't available via the SDK https://opensource.apple.com/source/configd/configd-1109.140.1/dnsinfo/dnsinfo.h.auto.html
+    cfg.skip_struct(move |s| match s {
+        "dns_sortaddr_t" | "dns_resolver_t" | "dns_config_t" => true,
+        _ => false,
+    });
+    cfg.skip_fn(move |s| match s {
+        "dns_configuration_copy"
+        | "dns_configuration_free"
+        | "dns_configuration_notify_key"
+        | "_dns_configuration_ack" => true,
+        _ => false,
+    });
     cfg.generate("../src/lib.rs", "main.rs");
 }
 
