@@ -1829,6 +1829,7 @@ pub const SO_TYPE: ::c_int = 0x1008;
 pub const SO_PROTOTYPE: ::c_int = 0x1009;
 pub const SO_DOMAIN: ::c_int = 0x100c;
 pub const SO_TIMESTAMP: ::c_int = 0x1013;
+pub const SO_EXCLBIND: ::c_int = 0x1015;
 
 pub const SCM_RIGHTS: ::c_int = 0x1010;
 pub const SCM_UCRED: ::c_int = 0x1012;
