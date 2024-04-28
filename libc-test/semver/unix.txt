@@ -588,6 +588,8 @@ grantpt
 group
 hostent
 hstrerror
+htonl
+htons
 if_indextoname
 if_nametoindex
 in6_addr
@@ -658,6 +660,8 @@ munmap
 nanosleep
 nfds_t
 nlink_t
+ntohl
+ntohs
 off_t
 open
 opendir
