@@ -1795,6 +1795,9 @@ extern "C" {
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
 
     pub fn strchrnul(s: *const ::c_char, c: ::c_int) -> *mut ::c_char;
+
+    pub fn mkostemp(template: *mut ::c_char, flags: ::c_int) -> ::c_int;
+    pub fn mkostemps(template: *mut ::c_char, suffixlen: ::c_int, flags: ::c_int) -> ::c_int;
 }
 
 // LFS64 extensions
