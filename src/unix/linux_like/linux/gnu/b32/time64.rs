@@ -1,6 +1,37 @@
 //! 32-bit specific definitions for linux-like values when gnu_time64_abi is set
 
 s! {
+    pub struct stat {
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_atime: ::time_t,
+        #[cfg(target_arch = "powerpc")]
+        __pad1: i32,
+        pub st_atime_nsec: ::c_long,
+        #[cfg(not(target_arch = "powerpc"))]  //x86 and arm and ?
+        __pad1: i32,
+        pub st_mtime: ::time_t,
+        #[cfg(target_arch = "powerpc")]
+        __pad2: i32,
+        pub st_mtime_nsec: ::c_long,
+        #[cfg(not(target_arch = "powerpc"))]
+        __pad2: i32,
+        pub st_ctime: ::time_t,
+        #[cfg(target_arch = "powerpc")]
+        __pad3: i32,
+        pub st_ctime_nsec: ::c_long,
+        #[cfg(not(target_arch = "powerpc"))]
+        __pad3: i32,
+    }
+
     pub struct timex {
         pub modes: ::c_uint,
 
