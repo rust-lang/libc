@@ -4895,13 +4895,13 @@ pub const MNT_SNAPSHOT: ::c_int = 0x40000000;
 pub const MNT_NOBLOCK: ::c_int = 0x00020000;
 
 // sys/spawn.h:
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x0001;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x0002;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x0004;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x0008;
-pub const POSIX_SPAWN_SETEXEC: ::c_int = 0x0040;
-pub const POSIX_SPAWN_START_SUSPENDED: ::c_int = 0x0080;
-pub const POSIX_SPAWN_CLOEXEC_DEFAULT: ::c_int = 0x4000;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x0001;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x0002;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x0004;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x0008;
+pub const POSIX_SPAWN_SETEXEC: ::c_short = 0x0040;
+pub const POSIX_SPAWN_START_SUSPENDED: ::c_short = 0x0080;
+pub const POSIX_SPAWN_CLOEXEC_DEFAULT: ::c_short = 0x4000;
 
 // sys/ipc.h:
 pub const IPC_CREAT: ::c_int = 0x200;

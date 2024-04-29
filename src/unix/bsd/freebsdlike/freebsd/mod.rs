@@ -3891,12 +3891,12 @@ pub const RTP_PRIO_REALTIME: ::c_ushort = 2;
 pub const RTP_PRIO_NORMAL: ::c_ushort = 3;
 pub const RTP_PRIO_IDLE: ::c_ushort = 4;
 
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x04;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x08;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x10;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x02;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x04;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x08;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x20;
 
 // Flags for chflags(2)
 pub const UF_SYSTEM: ::c_ulong = 0x00000080;

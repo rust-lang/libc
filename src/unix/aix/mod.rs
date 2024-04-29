@@ -1249,13 +1249,13 @@ pub const ENTER: ::c_int = 1;
 pub const SEM_FAILED: *mut sem_t = -1isize as *mut ::sem_t;
 
 // spawn.h
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x1;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x2;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x4;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x8;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x10;
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x20;
-pub const POSIX_SPAWN_FORK_HANDLERS: ::c_int = 0x1000;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x1;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x2;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x4;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x8;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x10;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x20;
+pub const POSIX_SPAWN_FORK_HANDLERS: ::c_short = 0x1000;
 
 // stdio.h
 pub const EOF: ::c_int = -1;

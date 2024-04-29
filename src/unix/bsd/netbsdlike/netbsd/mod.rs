@@ -2330,7 +2330,7 @@ pub const PT_LWPNEXT: ::c_int = 25;
 pub const PT_SET_SIGPASS: ::c_int = 26;
 pub const PT_GET_SIGPASS: ::c_int = 27;
 pub const PT_FIRSTMACH: ::c_int = 32;
-pub const POSIX_SPAWN_RETURNERROR: ::c_int = 0x40;
+pub const POSIX_SPAWN_RETURNERROR: ::c_short = 0x40;
 
 // Flags for chflags(2)
 pub const SF_APPEND: ::c_ulong = 0x00040000;
