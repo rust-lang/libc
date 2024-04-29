@@ -1,3 +1,6 @@
+use stat;
+pub type stat64 = stat;
+
 s! {
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,

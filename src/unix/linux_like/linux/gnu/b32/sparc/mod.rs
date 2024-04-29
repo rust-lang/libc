@@ -100,21 +100,6 @@ s! {
         __reserved: [::c_long; 2],
     }
 
-    pub struct statfs64 {
-        pub f_type: ::__fsword_t,
-        pub f_bsize: ::__fsword_t,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::__fsword_t,
-        pub f_frsize: ::__fsword_t,
-        pub f_flags: ::__fsword_t,
-        pub f_spare: [::__fsword_t; 4],
-    }
-
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -124,21 +109,6 @@ s! {
         pub f_files: ::fsfilcnt_t,
         pub f_ffree: ::fsfilcnt_t,
         pub f_favail: ::fsfilcnt_t,
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
-    }
-
-    pub struct statvfs64 {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: u64,
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
@@ -885,3 +855,12 @@ pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
 mod align;
 pub use self::align::*;
+cfg_if! {
+    if #[cfg(gnu_time64_abi)] {
+        mod time64;
+        pub use self::time64::*;
+    } else {
+        mod time32;
+        pub use self::time32::*;
+    }
+}
