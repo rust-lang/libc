@@ -17,7 +17,7 @@ pub type rlim_t = ::c_ulong;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type time_t = ::c_long;
-pub type time64_t = ::int64_t;
+pub type time64_t = u64;
 pub type timer_t = ::c_long;
 pub type wchar_t = ::c_uint;
 pub type nfds_t = ::c_int;
@@ -25,7 +25,7 @@ pub type projid_t = ::c_int;
 pub type id_t = ::c_uint;
 pub type blksize64_t = ::c_ulonglong;
 pub type blkcnt64_t = ::c_ulonglong;
-pub type sctp_assoc_t = ::uint32_t;
+pub type sctp_assoc_t = u32;
 
 pub type suseconds_t = ::c_int;
 pub type useconds_t = ::c_uint;
