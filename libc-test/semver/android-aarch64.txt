@@ -10,6 +10,8 @@ HWCAP2_SVESM4
 PROT_BTI
 PROT_MTE
 SYS_arch_specific_syscall
+SYS_lseek
+SYS_mmap
 SYS_syscalls
 SYS_fcntl
 __system_property_wait
