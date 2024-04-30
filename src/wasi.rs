@@ -730,6 +730,8 @@ extern "C" {
     pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
     pub fn chdir(dir: *const c_char) -> ::c_int;
 
+    pub fn getpid() -> pid_t;
+
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
     pub fn nl_langinfo_l(item: ::nl_item, loc: ::locale_t) -> *mut ::c_char;
 
