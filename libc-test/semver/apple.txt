@@ -1863,7 +1863,6 @@ clock_getres
 clonefile
 clonefileat
 cmsghdr
-confstr
 connectx
 copyfile
 copyfile_callback_t

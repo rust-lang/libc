@@ -814,6 +814,9 @@ pub const XSK_UNALIGNED_BUF_ADDR_MASK: ::c_ulonglong = (1 << XSK_UNALIGNED_BUF_O
 
 pub const XDP_PKT_CONTD: ::__u32 = 1 << 0;
 
+pub const _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS: ::c_int = 1;
+pub const _CS_POSIX_V7_WIDTH_RESTRICTED_ENVS: ::c_int = 5;
+
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
         pub const POSIX_FADV_DONTNEED: ::c_int = 6;
