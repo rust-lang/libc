@@ -5138,7 +5138,7 @@ f! {
             as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize
             + (*mhdr).msg_controllen as usize;
-        if (next.offset(1)) as usize > max ||
+        if (next.wrapping_offset(1)) as usize > max ||
             next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
         {
             0 as *mut cmsghdr
