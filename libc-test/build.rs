@@ -1550,6 +1550,7 @@ fn test_android(target: &str) {
                "sched.h",
                "semaphore.h",
                "signal.h",
+               "spawn.h",
                "stddef.h",
                "stdint.h",
                "stdio.h",
@@ -1709,6 +1710,10 @@ fn test_android(target: &str) {
 
             // FIXME: Somehow fails to test after removing cfg hacks:
             "__uint128" => true,
+
+            // These are intended to be opaque
+            "posix_spawn_file_actions_t" => true,
+            "posix_spawnattr_t" => true,
             _ => false,
         }
     });
