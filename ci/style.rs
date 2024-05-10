@@ -97,7 +97,6 @@ enum State {
 
 fn check_style(file: &str, path: &Path, err: &mut Errors) {
     let mut state = State::Start;
-    let mut s_macros = 0;
     let mut f_macros = 0;
     let mut in_impl = false;
 
@@ -140,7 +139,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         } else if line.starts_with("type ") && !in_impl {
             State::Typedefs
         } else if line.starts_with("s! {") {
-            s_macros += 1;
+            // multiple macros of this type are allowed
             State::Structs
         } else if line.starts_with("s_paren! {") {
             // multiple macros of this type are allowed
@@ -171,10 +170,6 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         if f_macros == 2 {
             f_macros += 1;
             err.error(path, i, "multiple f! macros in one module");
-        }
-        if s_macros == 2 {
-            s_macros += 1;
-            err.error(path, i, "multiple s! macros in one module");
         }
 
         state = line_state;

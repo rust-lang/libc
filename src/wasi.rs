@@ -41,13 +41,6 @@ pub type wchar_t = i32;
 pub type nl_item = c_int;
 pub type __wasi_rights_t = u64;
 
-s! {
-    #[repr(align(16))]
-    pub struct max_align_t {
-        priv_: [f64; 4]
-    }
-}
-
 #[allow(missing_copy_implementations)]
 pub enum FILE {}
 #[allow(missing_copy_implementations)]
@@ -69,6 +62,11 @@ unsafe impl Send for clockid_t {}
 unsafe impl Sync for clockid_t {}
 
 s! {
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
+    }
+
     #[repr(align(8))]
     pub struct fpos_t {
         data: [u8; 16],

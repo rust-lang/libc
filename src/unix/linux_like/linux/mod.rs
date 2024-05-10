@@ -789,11 +789,11 @@ s! {
         pub port: ::c_uchar,
     }
 
-   pub struct in6_ifreq {
-       pub ifr6_addr: ::in6_addr,
-       pub ifr6_prefixlen: u32,
-       pub ifr6_ifindex: ::c_int,
-   }
+    pub struct in6_ifreq {
+        pub ifr6_addr: ::in6_addr,
+        pub ifr6_prefixlen: u32,
+        pub ifr6_ifindex: ::c_int,
+    }
 
     pub struct option {
         pub name: *const ::c_char,
@@ -903,23 +903,27 @@ s! {
         pub disabled: __u8,
         pub flags: __u16,
     }
+
     pub struct iw_point {
         pub pointer: *mut ::c_void,
         pub length: __u16,
         pub flags: __u16,
     }
+
     pub struct iw_freq {
         pub m: __s32,
         pub e: __s16,
         pub i: __u8,
         pub flags: __u8,
     }
+
     pub struct iw_quality {
         pub qual: __u8,
         pub level: __u8,
         pub noise: __u8,
         pub updated: __u8,
     }
+
     pub struct iw_discarded {
         pub nwid: __u32,
         pub code: __u32,
@@ -927,9 +931,11 @@ s! {
         pub retries: __u32,
         pubmisc: __u32,
     }
+
     pub struct iw_missed {
         pub beacon: __u32,
     }
+
     pub struct iw_scan_req {
         pub scan_type: __u8,
         pub essid_len: __u8,
@@ -941,6 +947,7 @@ s! {
         pub max_channel_time: __u32,
         pub channel_list: [iw_freq; IW_MAX_FREQUENCIES],
     }
+
     pub struct iw_encode_ext {
         pub ext_flags: __u32,
         pub tx_seq: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
@@ -950,22 +957,26 @@ s! {
         pub key_len: __u16,
         pub key: [__u8;0],
     }
+
     pub struct iw_pmksa {
         pub cmd: __u32,
         pub bssid: ::sockaddr,
         pub pmkid: [__u8; IW_PMKID_LEN],
     }
+
     pub struct iw_pmkid_cand {
         pub flags: __u32,
         pub index: __u32,
         pub bssid: ::sockaddr,
     }
+
     pub struct iw_statistics {
         pub status: __u16,
         pub qual: iw_quality,
         pub discard: iw_discarded,
         pub miss: iw_missed,
     }
+
     pub struct iw_range {
         pub throughput: __u32,
         pub min_nwid: __u32,
@@ -1011,6 +1022,7 @@ s! {
         pub freq: [iw_freq; IW_MAX_FREQUENCIES],
         pub enc_capa: __u32,
     }
+
     pub struct iw_priv_args {
         pub cmd: __u32,
         pub set_args: __u16,
@@ -1021,7 +1033,7 @@ s! {
 
 cfg_if! {
     if #[cfg(not(target_arch = "sparc64"))] {
-        s!{
+        s! {
             pub struct iw_thrspy {
                 pub addr: ::sockaddr,
                 pub qual: iw_quality,
@@ -1195,17 +1207,13 @@ s! {
         pub offset_to_priv: ::__u32,
         pub hdr: ::tpacket_bd_header_u,
     }
-}
 
-s! {
     // linux/net_tstamp.h
     pub struct sock_txtime {
         pub clockid: ::clockid_t,
         pub flags: ::__u32,
     }
-}
 
-s! {
     // linux/can.h
     pub union __c_anonymous_sockaddr_can_can_addr {
         pub tp: __c_anonymous_sockaddr_can_tp,
@@ -1217,29 +1225,27 @@ s! {
         pub can_ifindex: ::c_int,
         pub can_addr: __c_anonymous_sockaddr_can_can_addr,
     }
-}
 
-s! {
     // linux/wireless.h
     pub union iwreq_data {
-            pub name: [c_char; ::IFNAMSIZ],
-            pub essid: iw_point,
-            pub nwid: iw_param,
-            pub freq: iw_freq,
-            pub sens: iw_param,
-            pub bitrate: iw_param,
-            pub txpower: iw_param,
-            pub rts: iw_param,
-            pub frag: iw_param,
-            pub mode: __u32,
-            pub retry: iw_param,
-            pub encoding: iw_point,
-            pub power: iw_param,
-            pub qual: iw_quality,
-            pub ap_addr: ::sockaddr,
-            pub addr: ::sockaddr,
-            pub param: iw_param,
-            pub data: iw_point,
+        pub name: [c_char; ::IFNAMSIZ],
+        pub essid: iw_point,
+        pub nwid: iw_param,
+        pub freq: iw_freq,
+        pub sens: iw_param,
+        pub bitrate: iw_param,
+        pub txpower: iw_param,
+        pub rts: iw_param,
+        pub frag: iw_param,
+        pub mode: __u32,
+        pub retry: iw_param,
+        pub encoding: iw_point,
+        pub power: iw_param,
+        pub qual: iw_quality,
+        pub ap_addr: ::sockaddr,
+        pub addr: ::sockaddr,
+        pub param: iw_param,
+        pub data: iw_point,
     }
 
     pub struct iw_event {
