@@ -42,7 +42,6 @@ cfg_if! {
 }
 
 missing! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub enum DIR {}
 }
 pub type locale_t = *mut ::c_void;
@@ -411,9 +410,7 @@ cfg_if! {
 }
 
 missing! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub enum FILE {}
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub enum fpos_t {} // FIXME: fill this out with a struct
 }
 

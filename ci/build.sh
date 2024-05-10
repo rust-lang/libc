@@ -56,16 +56,6 @@ test_target() {
             -Z build-std=core,alloc -vv --target "${TARGET}"
     fi
 
-    # Test that libc builds with the `extra_traits` feature
-    if [ "${NO_STD}" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
-            --features extra_traits
-    else
-        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --no-default-features \
-            --target "${TARGET}" --features extra_traits
-    fi
-
     # Test the 'const-extern-fn' feature on nightly
     if [ "${RUST}" = "nightly" ]; then
         if [ "${NO_STD}" != "1" ]; then
@@ -76,16 +66,6 @@ test_target() {
                 -Z build-std=core,alloc -vv --no-default-features \
                 --target "${TARGET}" --features const-extern-fn
         fi
-    fi
-
-    # Also test that it builds with `extra_traits` and default features:
-    if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}" \
-            --features extra_traits
-    else
-        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --target "${TARGET}" \
-            --features extra_traits
     fi
 }
 

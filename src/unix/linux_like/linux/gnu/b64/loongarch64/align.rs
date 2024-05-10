@@ -1,12 +1,9 @@
-s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
+s! {
     #[repr(align(16))]
     pub struct max_align_t {
         priv_: [f64; 4]
     }
-}
 
-s! {
     pub struct ucontext_t {
         pub uc_flags: ::c_ulong,
         pub uc_link: *mut ucontext_t,

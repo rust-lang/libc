@@ -63,9 +63,7 @@ macro_rules! expand_align {
                 pub fd: ::c_int,
                 pub pid: ::c_int,
             }
-        }
 
-        s_no_extra_traits! {
             #[cfg_attr(all(any(target_env = "musl", target_env = "ohos"),
                            target_pointer_width = "32"),
                        repr(align(4)))]
@@ -169,7 +167,6 @@ macro_rules! expand_align {
 
             // linux/can.h
             #[repr(align(8))]
-            #[allow(missing_debug_implementations)]
             pub struct can_frame {
                 pub can_id: canid_t,
                 pub can_dlc: u8,
@@ -180,7 +177,6 @@ macro_rules! expand_align {
             }
 
             #[repr(align(8))]
-            #[allow(missing_debug_implementations)]
             pub struct canfd_frame {
                 pub can_id: canid_t,
                 pub len: u8,
@@ -191,7 +187,6 @@ macro_rules! expand_align {
             }
 
             #[repr(align(8))]
-            #[allow(missing_debug_implementations)]
             pub struct canxl_frame {
                 pub prio: canid_t,
                 pub flags: u8,

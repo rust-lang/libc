@@ -40,9 +40,6 @@ libc = "0.2"
   feature to remove this dependency and be able to use `libc` in `#![no_std]`
   crates.
 
-* `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
-  This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
-
 * `const-extern-fn`: Changes some `extern fn`s into `const extern fn`s.
   If you use Rust >= 1.62, this feature is implicitly enabled.
   Otherwise it requires a nightly rustc.

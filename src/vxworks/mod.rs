@@ -3,7 +3,6 @@
 use core::mem::size_of;
 use core::ptr::null_mut;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
 impl ::Copy for DIR {}
 impl ::Clone for DIR {
@@ -103,7 +102,6 @@ pub type sa_family_t = ::c_uchar;
 // mqueue.h
 pub type mqd_t = ::c_int;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum _Vx_semaphore {}
 impl ::Copy for _Vx_semaphore {}
 impl ::Clone for _Vx_semaphore {
@@ -411,9 +409,7 @@ s! {
         pub mq_flags:   ::c_long,
         pub mq_curmsgs: ::c_long,
     }
-}
 
-s_no_extra_traits! {
     // dirent.h
     pub struct dirent {
         pub d_ino  : ::ino_t,
@@ -457,117 +453,6 @@ s_no_extra_traits! {
     pub union sigval {
         pub sival_int : ::c_int,
         pub sival_ptr : *mut ::c_void,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl ::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_name", &&self.d_name[..])
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_len", &self.sun_len)
-                    .field("sun_family", &self.sun_family)
-                    .field("sun_path", &&self.sun_path[..])
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for RTP_DESC {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("RTP_DESC")
-                    .field("status", &self.status)
-                    .field("options", &self.options)
-                    .field("entrAddr", &self.entrAddr)
-                    .field("initTaskId", &self.initTaskId)
-                    .field("parentId", &self.parentId)
-                    .field("pathName", &&self.pathName[..])
-                    .field("taskCnt", &self.taskCnt)
-                    .field("textStart", &self.textStart)
-                    .field("textEnd", &self.textEnd)
-                    .finish()
-            }
-        }
-        impl ::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_len", &self.ss_len)
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_pad1", &&self.__ss_pad1[..])
-                    .field("__ss_align", &self.__ss_align)
-                    .field("__ss_pad2", &&self.__ss_pad2[..])
-                    .finish()
-            }
-        }
-
-        impl PartialEq for sa_u_t {
-            fn eq(&self, other: &sa_u_t) -> bool {
-                unsafe {
-                    let h1 = match self.sa_handler {
-                        Some(handler) => handler as usize,
-                        None => 0 as usize,
-                    };
-                    let h2 = match other.sa_handler {
-                        Some(handler) => handler as usize,
-                        None => 0 as usize,
-                    };
-                    h1 == h2
-                }
-            }
-        }
-        impl Eq for sa_u_t {}
-        impl ::fmt::Debug for sa_u_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                unsafe {
-                    let h = match self.sa_handler {
-                        Some(handler) => handler as usize,
-                        None => 0 as usize,
-                    };
-
-                    f.debug_struct("sa_u_t")
-                        .field("sa_handler", &h)
-                        .finish()
-                }
-            }
-        }
-        impl ::hash::Hash for sa_u_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe {
-                    let h = match self.sa_handler {
-                        Some(handler) => handler as usize,
-                        None => 0 as usize,
-                    };
-                    h.hash(state)
-                }
-            }
-        }
-
-        impl PartialEq for sigval {
-            fn eq(&self, other: &sigval) -> bool {
-                unsafe { self.sival_ptr as usize == other.sival_ptr as usize }
-            }
-        }
-        impl Eq for sigval {}
-        impl ::fmt::Debug for sigval {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sigval")
-                    .field("sival_ptr", unsafe { &(self.sival_ptr as usize) })
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for sigval {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe { (self.sival_ptr as usize).hash(state) };
-            }
-        }
     }
 }
 
@@ -1033,7 +918,6 @@ pub const MAP_CONTIG: ::c_int = 0x0020;
 
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
 impl ::Copy for FILE {}
 impl ::Clone for FILE {
@@ -1041,7 +925,6 @@ impl ::Clone for FILE {
         *self
     }
 }
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum fpos_t {} // FIXME: fill this out with a struct
 impl ::Copy for fpos_t {}
 impl ::Clone for fpos_t {

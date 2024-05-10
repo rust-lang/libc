@@ -17,7 +17,7 @@ Raw FFI bindings to platform libraries like libc.
 rust-version = "1.71.0"
 
 [package.metadata.docs.rs]
-features = ["const-extern-fn", "extra_traits"]
+features = ["const-extern-fn"]
 default-target = "x86_64-unknown-linux-gnu"
 targets = [
     "aarch64-apple-darwin",
@@ -138,7 +138,6 @@ default = ["std"]
 std = []
 align = []
 rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
-extra_traits = []
 const-extern-fn = []
 
 [workspace]

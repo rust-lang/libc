@@ -101,7 +101,7 @@ if [ "$TARGET" = "s390x-unknown-linux-gnu" ]; then
         continue
       fi
     elif [ "$passed" = "2" ]; then
-      if cargo test --features extra_traits --manifest-path libc-test/Cargo.toml --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}; then
+      if cargo test --manifest-path libc-test/Cargo.toml --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}; then
         break
       fi
     fi
@@ -114,6 +114,6 @@ else
 
   cargo test --manifest-path libc-test/Cargo.toml --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
 
-  RUST_BACKTRACE=1 cargo test --features extra_traits --manifest-path libc-test/Cargo.toml \
+  RUST_BACKTRACE=1 cargo test --manifest-path libc-test/Cargo.toml \
     --target "${TARGET}" ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
 fi

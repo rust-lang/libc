@@ -74,51 +74,11 @@ s! {
         pub xstate_undef: [u64; 7],
         pub xstate_info: [u8; 224],
     }
-}
 
-s_no_extra_traits! {
     pub union x86_64_fpu_registers {
         pub fsave_area: fsave_area_64,
         pub fxsave_area: fxsave_area_64,
         pub xsave_area: fpu_extention_savearea_64,
         pub data: [u8; 1024],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl Eq for x86_64_fpu_registers {}
-
-        impl PartialEq for x86_64_fpu_registers {
-            fn eq(&self, other: &x86_64_fpu_registers) -> bool {
-                unsafe {
-                    self.fsave_area == other.fsave_area
-                        || self.fxsave_area == other.fxsave_area
-                        || self.xsave_area == other.xsave_area
-                }
-            }
-        }
-
-        impl ::fmt::Debug for x86_64_fpu_registers {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                unsafe {
-                    f.debug_struct("x86_64_fpu_registers")
-                        .field("fsave_area", &self.fsave_area)
-                        .field("fxsave_area", &self.fxsave_area)
-                        .field("xsave_area", &self.xsave_area)
-                        .finish()
-                }
-            }
-        }
-
-        impl ::hash::Hash for x86_64_fpu_registers {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe {
-                    self.fsave_area.hash(state);
-                    self.fxsave_area.hash(state);
-                    self.xsave_area.hash(state);
-                }
-            }
-        }
     }
 }

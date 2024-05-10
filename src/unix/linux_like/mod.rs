@@ -7,7 +7,6 @@ pub type key_t = ::c_int;
 pub type id_t = ::c_uint;
 
 missing! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub enum timezone {}
 }
 
@@ -204,9 +203,7 @@ s! {
         pub msg_hdr: ::msghdr,
         pub msg_len: ::c_uint,
     }
-}
 
-s_no_extra_traits! {
     #[cfg_attr(
         any(
             all(
@@ -254,182 +251,6 @@ s_no_extra_traits! {
         __unused1: [::c_int; 11],
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12]
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for epoll_event {
-            fn eq(&self, other: &epoll_event) -> bool {
-                self.events == other.events
-                    && self.u64 == other.u64
-            }
-        }
-        impl Eq for epoll_event {}
-        impl ::fmt::Debug for epoll_event {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let events = self.events;
-                let u64 = self.u64;
-                f.debug_struct("epoll_event")
-                    .field("events", &events)
-                    .field("u64", &u64)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for epoll_event {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                let events = self.events;
-                let u64 = self.u64;
-                events.hash(state);
-                u64.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_un {
-            fn eq(&self, other: &sockaddr_un) -> bool {
-                self.sun_family == other.sun_family
-                    && self
-                    .sun_path
-                    .iter()
-                    .zip(other.sun_path.iter())
-                    .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for sockaddr_un {}
-        impl ::fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_family", &self.sun_family)
-                // FIXME: .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for sockaddr_un {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sun_family.hash(state);
-                self.sun_path.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_storage {
-            fn eq(&self, other: &sockaddr_storage) -> bool {
-                self.ss_family == other.ss_family
-                    && self
-                    .__ss_pad2
-                    .iter()
-                    .zip(other.__ss_pad2.iter())
-                    .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for sockaddr_storage {}
-
-        impl ::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_align", &self.__ss_align)
-                // FIXME: .field("__ss_pad2", &self.__ss_pad2)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for sockaddr_storage {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.ss_family.hash(state);
-                self.__ss_pad2.hash(state);
-            }
-        }
-
-        impl PartialEq for utsname {
-            fn eq(&self, other: &utsname) -> bool {
-                self.sysname
-                    .iter()
-                    .zip(other.sysname.iter())
-                    .all(|(a, b)| a == b)
-                    && self
-                    .nodename
-                    .iter()
-                    .zip(other.nodename.iter())
-                    .all(|(a, b)| a == b)
-                    && self
-                    .release
-                    .iter()
-                    .zip(other.release.iter())
-                    .all(|(a, b)| a == b)
-                    && self
-                    .version
-                    .iter()
-                    .zip(other.version.iter())
-                    .all(|(a, b)| a == b)
-                    && self
-                    .machine
-                    .iter()
-                    .zip(other.machine.iter())
-                    .all(|(a, b)| a == b)
-                    && self
-                    .domainname
-                    .iter()
-                    .zip(other.domainname.iter())
-                    .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for utsname {}
-
-        impl ::fmt::Debug for utsname {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("utsname")
-                // FIXME: .field("sysname", &self.sysname)
-                // FIXME: .field("nodename", &self.nodename)
-                // FIXME: .field("release", &self.release)
-                // FIXME: .field("version", &self.version)
-                // FIXME: .field("machine", &self.machine)
-                // FIXME: .field("domainname", &self.domainname)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for utsname {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sysname.hash(state);
-                self.nodename.hash(state);
-                self.release.hash(state);
-                self.version.hash(state);
-                self.machine.hash(state);
-                self.domainname.hash(state);
-            }
-        }
-
-        impl PartialEq for sigevent {
-            fn eq(&self, other: &sigevent) -> bool {
-                self.sigev_value == other.sigev_value
-                    && self.sigev_signo == other.sigev_signo
-                    && self.sigev_notify == other.sigev_notify
-                    && self.sigev_notify_thread_id
-                        == other.sigev_notify_thread_id
-            }
-        }
-        impl Eq for sigevent {}
-        impl ::fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_value", &self.sigev_value)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_notify_thread_id",
-                           &self.sigev_notify_thread_id)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for sigevent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sigev_value.hash(state);
-                self.sigev_signo.hash(state);
-                self.sigev_notify.hash(state);
-                self.sigev_notify_thread_id.hash(state);
-            }
-        }
     }
 }
 

@@ -1,13 +1,9 @@
-s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
+s! {
     #[repr(align(16))]
     pub struct max_align_t {
         priv_: [f64; 4]
     }
 
-}
-
-s! {
     #[repr(align(8))]
     pub struct clone_args {
         pub flags: ::c_ulonglong,

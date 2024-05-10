@@ -57,7 +57,6 @@ pub type posix_spawn_file_actions_t = *mut ::c_void;
 
 pub type StringList = _stringlist;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 impl ::Copy for timezone {}
 impl ::Clone for timezone {
@@ -452,14 +451,13 @@ s! {
         pub dlpi_phdr: *const ::Elf_Phdr,
         pub dlpi_phnum: ::Elf_Half,
     }
-}
 
-s_no_extra_traits! {
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
         pub sun_path: [::c_char; 126]
     }
+
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: sa_family_t,
@@ -467,6 +465,7 @@ s_no_extra_traits! {
         __ss_pad2: u64,
         __ss_pad3: [u8; 112],
     }
+
     pub struct dirent {
         pub d_dev: dev_t,
         pub d_pdev: dev_t,
@@ -493,188 +492,6 @@ s_no_extra_traits! {
         pub ut_line: [::c_char; 16],
         pub ut_host: [::c_char; 128],
         __ut_reserved: [::c_char; 64],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for utmpx {
-            fn eq(&self, other: &utmpx) -> bool {
-                self.ut_type == other.ut_type
-                    && self.ut_tv == other.ut_tv
-                    && self.ut_id == other.ut_id
-                    && self.ut_pid == other.ut_pid
-                    && self.ut_user == other.ut_user
-                    && self.ut_line == other.ut_line
-                    && self.ut_host.iter().zip(other.ut_host.iter()).all(|(a,b)| a == b)
-                    && self.__ut_reserved == other.__ut_reserved
-            }
-        }
-
-        impl Eq for utmpx {}
-
-        impl ::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("utmpx")
-                    .field("ut_type", &self.ut_type)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_user", &self.ut_user)
-                    .field("ut_line", &self.ut_line)
-                    .field("ut_host", &self.ut_host)
-                    .field("__ut_reserved", &self.__ut_reserved)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for utmpx {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.ut_type.hash(state);
-                self.ut_tv.hash(state);
-                self.ut_id.hash(state);
-                self.ut_pid.hash(state);
-                self.ut_user.hash(state);
-                self.ut_line.hash(state);
-                self.ut_host.hash(state);
-                self.__ut_reserved.hash(state);
-            }
-        }
-        impl PartialEq for sockaddr_un {
-            fn eq(&self, other: &sockaddr_un) -> bool {
-                self.sun_len == other.sun_len
-                    && self.sun_family == other.sun_family
-                    && self
-                    .sun_path
-                    .iter()
-                    .zip(other.sun_path.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-        impl Eq for sockaddr_un {}
-        impl ::fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_len", &self.sun_len)
-                    .field("sun_family", &self.sun_family)
-                    // FIXME: .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for sockaddr_un {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sun_len.hash(state);
-                self.sun_family.hash(state);
-                self.sun_path.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_storage {
-            fn eq(&self, other: &sockaddr_storage) -> bool {
-                self.ss_len == other.ss_len
-                    && self.ss_family == other.ss_family
-                    && self
-                    .__ss_pad1
-                    .iter()
-                    .zip(other.__ss_pad1.iter())
-                    .all(|(a, b)| a == b)
-                    && self.__ss_pad2 == other.__ss_pad2
-                    && self
-                    .__ss_pad3
-                    .iter()
-                    .zip(other.__ss_pad3.iter())
-                    .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for sockaddr_storage {}
-        impl ::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_len", &self.ss_len)
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_pad1", &self.__ss_pad1)
-                    .field("__ss_pad2", &self.__ss_pad2)
-                    // FIXME: .field("__ss_pad3", &self.__ss_pad3)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for sockaddr_storage {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.ss_len.hash(state);
-                self.ss_family.hash(state);
-                self.__ss_pad1.hash(state);
-                self.__ss_pad2.hash(state);
-                self.__ss_pad3.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_dev == other.d_dev
-                    && self.d_pdev == other.d_pdev
-                    && self.d_ino == other.d_ino
-                    && self.d_pino == other.d_pino
-                    && self.d_reclen == other.d_reclen
-                    && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-        impl Eq for dirent {}
-        impl ::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_dev", &self.d_dev)
-                    .field("d_pdev", &self.d_pdev)
-                    .field("d_ino", &self.d_ino)
-                    .field("d_pino", &self.d_pino)
-                    .field("d_reclen", &self.d_reclen)
-                    // FIXME: .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for dirent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.d_dev.hash(state);
-                self.d_pdev.hash(state);
-                self.d_ino.hash(state);
-                self.d_pino.hash(state);
-                self.d_reclen.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for sigevent {
-            fn eq(&self, other: &sigevent) -> bool {
-                self.sigev_notify == other.sigev_notify
-                    && self.sigev_signo == other.sigev_signo
-                    && self.sigev_value == other.sigev_value
-                    && self.sigev_notify_attributes
-                        == other.sigev_notify_attributes
-            }
-        }
-        impl Eq for sigevent {}
-        impl ::fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_value", &self.sigev_value)
-                    .field("sigev_notify_attributes",
-                           &self.sigev_notify_attributes)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for sigevent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sigev_notify.hash(state);
-                self.sigev_signo.hash(state);
-                self.sigev_value.hash(state);
-                self.sigev_notify_attributes.hash(state);
-            }
-        }
     }
 }
 

@@ -532,9 +532,7 @@ s! {
         pub it_interval: ::timespec,
         pub it_value: ::timespec,
     }
-}
 
-s_no_extra_traits! {
     pub union __sigaction_sa_union {
         pub __su_handler: extern fn(c: ::c_int),
         pub __su_sigaction: extern fn(c: ::c_int, info: *mut siginfo_t, ptr: *mut ::c_void),
@@ -559,126 +557,6 @@ s_no_extra_traits! {
         pub fd: ::c_int,
         pub u: __poll_ctl_ext_u,
         pub reversed64: [u64; 6],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for __sigaction_sa_union {
-            fn eq(&self, other: &__sigaction_sa_union) -> bool {
-                unsafe {
-                    self.__su_handler == other.__su_handler
-                        && self.__su_sigaction == other.__su_sigaction
-                }
-            }
-        }
-        impl Eq for __sigaction_sa_union {}
-        impl ::fmt::Debug for __sigaction_sa_union {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("__sigaction_sa_union")
-                    .field("__su_handler", unsafe { &self.__su_handler })
-                    .field("__su_sigaction", unsafe { &self.__su_sigaction })
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for __sigaction_sa_union {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe {
-                    self.__su_handler.hash(state);
-                    self.__su_sigaction.hash(state);
-                }
-            }
-        }
-
-        impl PartialEq for sigaction {
-            fn eq(&self, other: &sigaction) -> bool {
-                let union_eq = self.sa_union == other.sa_union;
-                self.sa_mask == other.sa_mask
-                    && self.sa_flags == other.sa_flags
-                    && union_eq
-            }
-        }
-        impl Eq for sigaction {}
-        impl ::fmt::Debug for sigaction {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("sigaction");
-                struct_formatter.field("sa_union", &self.sa_union);
-                struct_formatter.field("sa_mask", &self.sa_mask);
-                struct_formatter.field("sa_flags", &self.sa_flags);
-                struct_formatter.finish()
-            }
-        }
-        impl ::hash::Hash for sigaction {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sa_union.hash(state);
-                self.sa_mask.hash(state);
-                self.sa_flags.hash(state);
-            }
-        }
-
-        impl PartialEq for __poll_ctl_ext_u {
-            fn eq(&self, other: &__poll_ctl_ext_u) -> bool {
-                unsafe {
-                    self.addr == other.addr
-                        && self.data32 == other.data32
-                        && self.data == other.data
-                }
-            }
-        }
-        impl Eq for __poll_ctl_ext_u {}
-        impl ::fmt::Debug for __poll_ctl_ext_u {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("__poll_ctl_ext_u")
-                    .field("addr", unsafe { &self.addr })
-                    .field("data32", unsafe { &self.data32 })
-                    .field("data", unsafe { &self.data })
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for __poll_ctl_ext_u {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe {
-                    self.addr.hash(state);
-                    self.data32.hash(state);
-                    self.data.hash(state);
-                }
-            }
-        }
-
-        impl PartialEq for poll_ctl_ext {
-            fn eq(&self, other: &poll_ctl_ext) -> bool {
-                let union_eq = self.u == other.u;
-                self.version == other.version
-                    && self.command == other.command
-                    && self.events == other.events
-                    && self.fd == other.fd
-                    && self.reversed64 == other.reversed64
-                    && union_eq
-            }
-        }
-        impl Eq for poll_ctl_ext {}
-        impl ::fmt::Debug for poll_ctl_ext {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("poll_ctl_ext");
-                struct_formatter.field("version", &self.version);
-                struct_formatter.field("command", &self.command);
-                struct_formatter.field("events", &self.events);
-                struct_formatter.field("fd", &self.fd);
-                struct_formatter.field("u", &self.u);
-                struct_formatter.field("reversed64", &self.reversed64);
-                struct_formatter.finish()
-            }
-        }
-        impl ::hash::Hash for poll_ctl_ext {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.version.hash(state);
-                self.command.hash(state);
-                self.events.hash(state);
-                self.fd.hash(state);
-                self.u.hash(state);
-                self.reversed64.hash(state);
-            }
-        }
     }
 }
 

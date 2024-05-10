@@ -88,40 +88,11 @@ s! {
         pub f_flags: ::c_uint,
         pub f_spare: [::c_uint; 4],
     }
-}
 
-s_no_extra_traits! {
     // FIXME: This is actually a union.
     pub struct fpreg_t {
         pub d: ::c_double,
         // f: ::c_float,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for fpreg_t {
-            fn eq(&self, other: &fpreg_t) -> bool {
-                self.d == other.d
-            }
-        }
-
-        impl Eq for fpreg_t {}
-
-        impl ::fmt::Debug for fpreg_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("fpreg_t")
-                    .field("d", &self.d)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for fpreg_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                let d: u64 = unsafe { ::mem::transmute(self.d) };
-                d.hash(state);
-            }
-        }
     }
 }
 

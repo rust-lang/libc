@@ -41,22 +41,18 @@ pub type wchar_t = i32;
 pub type nl_item = c_int;
 pub type __wasi_rights_t = u64;
 
-s_no_extra_traits! {
+s! {
     #[repr(align(16))]
-    #[allow(missing_debug_implementations)]
     pub struct max_align_t {
         priv_: [f64; 4]
     }
 }
 
 #[allow(missing_copy_implementations)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
 #[allow(missing_copy_implementations)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
 #[allow(missing_copy_implementations)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum __locale_struct {}
 
 pub type locale_t = *mut __locale_struct;
@@ -181,7 +177,6 @@ s! {
 // etc., since it contains a flexible array member with a dynamic size.
 #[repr(C)]
 #[allow(missing_copy_implementations)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub struct dirent {
     pub d_ino: ino_t,
     pub d_type: c_uchar,

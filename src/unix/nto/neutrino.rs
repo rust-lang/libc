@@ -209,9 +209,6 @@ s! {
         pub nsec: u32,
         pub fract: i32,
     }
-}
-
-s_no_extra_traits! {
 
     #[repr(align(8))]
     pub struct syspage_entry {

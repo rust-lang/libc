@@ -457,9 +457,7 @@ s! {
         pub edx: u32,
         pub ecx: u32,
     }
-}
 
-s_no_extra_traits! {
     pub union cpuid_info {
         pub eax_0: __c_anonymous_eax_0,
         pub eax_1: __c_anonymous_eax_1,
@@ -480,79 +478,6 @@ s_no_extra_traits! {
         pub type_: topology_level_type,
         pub level: u32,
         pub data: __c_anonymous_cpu_topology_info_data,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for cpuid_info {
-            fn eq(&self, other: &cpuid_info) -> bool {
-                unsafe {
-                self.eax_0 == other.eax_0
-                    || self.eax_1 == other.eax_1
-                    || self.eax_2 == other.eax_2
-                    || self.eax_3 == other.eax_3
-                    || self.as_chars == other.as_chars
-                    || self.regs == other.regs
-                }
-            }
-        }
-        impl Eq for cpuid_info {}
-        impl ::fmt::Debug for cpuid_info {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                unsafe {
-                f.debug_struct("cpuid_info")
-                    .field("eax_0", &self.eax_0)
-                    .field("eax_1", &self.eax_1)
-                    .field("eax_2", &self.eax_2)
-                    .field("eax_3", &self.eax_3)
-                    .field("as_chars", &self.as_chars)
-                    .field("regs", &self.regs)
-                    .finish()
-                }
-            }
-        }
-
-        impl PartialEq for __c_anonymous_cpu_topology_info_data {
-            fn eq(&self, other: &__c_anonymous_cpu_topology_info_data) -> bool {
-                unsafe {
-                self.root == other.root
-                    || self.package == other.package
-                    || self.core == other.core
-                }
-            }
-        }
-        impl Eq for __c_anonymous_cpu_topology_info_data {}
-        impl ::fmt::Debug for __c_anonymous_cpu_topology_info_data {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                unsafe {
-                f.debug_struct("__c_anonymous_cpu_topology_info_data")
-                    .field("root", &self.root)
-                    .field("package", &self.package)
-                    .field("core", &self.core)
-                    .finish()
-                }
-            }
-        }
-
-        impl PartialEq for cpu_topology_node_info {
-            fn eq(&self, other: &cpu_topology_node_info) -> bool {
-                self.id == other.id
-                    && self.type_ == other.type_
-                    && self.level == other.level
-            }
-        }
-
-        impl Eq for cpu_topology_node_info {}
-        impl ::fmt::Debug for cpu_topology_node_info {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("cpu_topology_node_info")
-                    .field("id", &self.id)
-                    .field("type", &self.type_)
-                    .field("level", &self.level)
-                    .finish()
-            }
-        }
     }
 }
 

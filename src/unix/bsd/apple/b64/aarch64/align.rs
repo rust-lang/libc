@@ -1,13 +1,10 @@
 pub type mcontext_t = *mut __darwin_mcontext64;
 
-s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
+s! {
     pub struct max_align_t {
         priv_: f64
     }
-}
 
-s! {
     pub struct ucontext_t {
         pub uc_onstack: ::c_int,
         pub uc_sigmask: ::sigset_t,

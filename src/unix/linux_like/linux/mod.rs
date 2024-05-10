@@ -69,7 +69,6 @@ pub type sctp_assoc_t = ::__s32;
 
 pub type eventfd_t = u64;
 missing! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub enum fpos64_t {} // FIXME: fill this out with a struct
 }
 
@@ -1053,7 +1052,8 @@ cfg_if! {
         }
     }
 }
-s_no_extra_traits! {
+
+s! {
     pub struct sockaddr_nl {
         pub nl_family: ::sa_family_t,
         nl_pad: ::c_ushort,
@@ -1093,7 +1093,6 @@ s_no_extra_traits! {
         pub absflat: [::__s32; ABS_CNT],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct af_alg_iv {
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
@@ -1198,24 +1197,21 @@ s_no_extra_traits! {
     }
 }
 
-s_no_extra_traits! {
+s! {
     // linux/net_tstamp.h
-    #[allow(missing_debug_implementations)]
     pub struct sock_txtime {
         pub clockid: ::clockid_t,
         pub flags: ::__u32,
     }
 }
 
-s_no_extra_traits! {
+s! {
     // linux/can.h
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_sockaddr_can_can_addr {
         pub tp: __c_anonymous_sockaddr_can_tp,
         pub j1939: __c_anonymous_sockaddr_can_j1939,
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_can {
         pub can_family: ::sa_family_t,
         pub can_ifindex: ::c_int,
@@ -1223,7 +1219,7 @@ s_no_extra_traits! {
     }
 }
 
-s_no_extra_traits! {
+s! {
     // linux/wireless.h
     pub union iwreq_data {
             pub name: [c_char; ::IFNAMSIZ],
@@ -1259,520 +1255,6 @@ s_no_extra_traits! {
     pub struct iwreq {
         pub ifr_ifrn: __c_anonymous_iwreq,
         pub u: iwreq_data,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for sockaddr_nl {
-            fn eq(&self, other: &sockaddr_nl) -> bool {
-                self.nl_family == other.nl_family &&
-                    self.nl_pid == other.nl_pid &&
-                    self.nl_groups == other.nl_groups
-            }
-        }
-        impl Eq for sockaddr_nl {}
-        impl ::fmt::Debug for sockaddr_nl {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sockaddr_nl")
-                    .field("nl_family", &self.nl_family)
-                    .field("nl_pid", &self.nl_pid)
-                    .field("nl_groups", &self.nl_groups)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for sockaddr_nl {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.nl_family.hash(state);
-                self.nl_pid.hash(state);
-                self.nl_groups.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for dirent {}
-
-        impl ::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                // FIXME: .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for dirent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent64 {
-            fn eq(&self, other: &dirent64) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for dirent64 {}
-
-        impl ::fmt::Debug for dirent64 {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("dirent64")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                // FIXME: .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for dirent64 {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_cond_t {
-            fn eq(&self, other: &pthread_cond_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for pthread_cond_t {}
-
-        impl ::fmt::Debug for pthread_cond_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("pthread_cond_t")
-                // FIXME: .field("size", &self.size)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for pthread_cond_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_mutex_t {
-            fn eq(&self, other: &pthread_mutex_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for pthread_mutex_t {}
-
-        impl ::fmt::Debug for pthread_mutex_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("pthread_mutex_t")
-                // FIXME: .field("size", &self.size)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for pthread_mutex_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_rwlock_t {
-            fn eq(&self, other: &pthread_rwlock_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for pthread_rwlock_t {}
-
-        impl ::fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("pthread_rwlock_t")
-                // FIXME: .field("size", &self.size)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for pthread_rwlock_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_barrier_t {
-            fn eq(&self, other: &pthread_barrier_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for pthread_barrier_t {}
-
-        impl ::fmt::Debug for pthread_barrier_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("pthread_barrier_t")
-                    .field("size", &self.size)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for pthread_barrier_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_alg {
-            fn eq(&self, other: &sockaddr_alg) -> bool {
-                self.salg_family == other.salg_family
-                    && self
-                    .salg_type
-                    .iter()
-                    .zip(other.salg_type.iter())
-                    .all(|(a, b)| a == b)
-                    && self.salg_feat == other.salg_feat
-                    && self.salg_mask == other.salg_mask
-                    && self
-                    .salg_name
-                    .iter()
-                    .zip(other.salg_name.iter())
-                    .all(|(a, b)| a == b)
-           }
-        }
-
-        impl Eq for sockaddr_alg {}
-
-        impl ::fmt::Debug for sockaddr_alg {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sockaddr_alg")
-                    .field("salg_family", &self.salg_family)
-                    .field("salg_type", &self.salg_type)
-                    .field("salg_feat", &self.salg_feat)
-                    .field("salg_mask", &self.salg_mask)
-                    .field("salg_name", &&self.salg_name[..])
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for sockaddr_alg {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.salg_family.hash(state);
-                self.salg_type.hash(state);
-                self.salg_feat.hash(state);
-                self.salg_mask.hash(state);
-                self.salg_name.hash(state);
-            }
-        }
-
-        impl PartialEq for uinput_setup {
-            fn eq(&self, other: &uinput_setup) -> bool {
-                self.id == other.id
-                    && self.name[..] == other.name[..]
-                    && self.ff_effects_max == other.ff_effects_max
-           }
-        }
-        impl Eq for uinput_setup {}
-
-        impl ::fmt::Debug for uinput_setup {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("uinput_setup")
-                    .field("id", &self.id)
-                    .field("name", &&self.name[..])
-                    .field("ff_effects_max", &self.ff_effects_max)
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for uinput_setup {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.id.hash(state);
-                self.name.hash(state);
-                self.ff_effects_max.hash(state);
-            }
-        }
-
-        impl PartialEq for uinput_user_dev {
-            fn eq(&self, other: &uinput_user_dev) -> bool {
-                 self.name[..] == other.name[..]
-                    && self.id == other.id
-                    && self.ff_effects_max == other.ff_effects_max
-                    && self.absmax[..] == other.absmax[..]
-                    && self.absmin[..] == other.absmin[..]
-                    && self.absfuzz[..] == other.absfuzz[..]
-                    && self.absflat[..] == other.absflat[..]
-           }
-        }
-        impl Eq for uinput_user_dev {}
-
-        impl ::fmt::Debug for uinput_user_dev {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("uinput_setup")
-                    .field("name", &&self.name[..])
-                    .field("id", &self.id)
-                    .field("ff_effects_max", &self.ff_effects_max)
-                    .field("absmax", &&self.absmax[..])
-                    .field("absmin", &&self.absmin[..])
-                    .field("absfuzz", &&self.absfuzz[..])
-                    .field("absflat", &&self.absflat[..])
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for uinput_user_dev {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.name.hash(state);
-                self.id.hash(state);
-                self.ff_effects_max.hash(state);
-                self.absmax.hash(state);
-                self.absmin.hash(state);
-                self.absfuzz.hash(state);
-                self.absflat.hash(state);
-            }
-        }
-
-        impl PartialEq for mq_attr {
-            fn eq(&self, other: &mq_attr) -> bool {
-                self.mq_flags == other.mq_flags &&
-                self.mq_maxmsg == other.mq_maxmsg &&
-                self.mq_msgsize == other.mq_msgsize &&
-                self.mq_curmsgs == other.mq_curmsgs
-            }
-        }
-        impl Eq for mq_attr {}
-        impl ::fmt::Debug for mq_attr {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("mq_attr")
-                    .field("mq_flags", &self.mq_flags)
-                    .field("mq_maxmsg", &self.mq_maxmsg)
-                    .field("mq_msgsize", &self.mq_msgsize)
-                    .field("mq_curmsgs", &self.mq_curmsgs)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for mq_attr {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.mq_flags.hash(state);
-                self.mq_maxmsg.hash(state);
-                self.mq_msgsize.hash(state);
-                self.mq_curmsgs.hash(state);
-            }
-        }
-        impl ::fmt::Debug for __c_anonymous_ifr_ifru {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifru_addr", unsafe { &self.ifru_addr })
-                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
-                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
-                    .field("ifru_netmask", unsafe { &self.ifru_netmask })
-                    .field("ifru_hwaddr", unsafe { &self.ifru_hwaddr })
-                    .field("ifru_flags", unsafe { &self.ifru_flags })
-                    .field("ifru_ifindex", unsafe { &self.ifru_ifindex })
-                    .field("ifru_metric", unsafe { &self.ifru_metric })
-                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
-                    .field("ifru_map", unsafe { &self.ifru_map })
-                    .field("ifru_slave", unsafe { &self.ifru_slave })
-                    .field("ifru_newname", unsafe { &self.ifru_newname })
-                    .field("ifru_data", unsafe { &self.ifru_data })
-                    .finish()
-            }
-        }
-        impl ::fmt::Debug for ifreq {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("ifreq")
-                    .field("ifr_name", &self.ifr_name)
-                    .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for tpacket_req_u {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("tpacket_req_u")
-                    .field("req3", unsafe { &self.req3 })
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for tpacket_bd_header_u {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("tpacket_bd_header_u")
-                    .field("bh1", unsafe { &self.bh1 })
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for tpacket_block_desc {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("tpacket_bd_header_u")
-                    .field("version", &self.version)
-                    .field("offset_to_priv", &self.offset_to_priv)
-                    .field("hdr", &self.hdr)
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
-                    .field("ifcu_req", unsafe { &self.ifcu_req })
-                    .finish()
-            }
-        }
-        impl ::fmt::Debug for ifconf {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("ifconf")
-                    .field("ifc_len", &self.ifc_len)
-                    .field("ifc_ifcu", &self.ifc_ifcu)
-                    .finish()
-            }
-        }
-        impl ::fmt::Debug for hwtstamp_config {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("hwtstamp_config")
-                    .field("flags", &self.flags)
-                    .field("tx_type", &self.tx_type)
-                    .field("rx_filter", &self.rx_filter)
-                    .finish()
-            }
-        }
-        impl PartialEq for hwtstamp_config {
-            fn eq(&self, other: &hwtstamp_config) -> bool {
-                self.flags == other.flags &&
-                self.tx_type == other.tx_type &&
-                self.rx_filter == other.rx_filter
-            }
-        }
-        impl Eq for hwtstamp_config {}
-        impl ::hash::Hash for hwtstamp_config {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.flags.hash(state);
-                self.tx_type.hash(state);
-                self.rx_filter.hash(state);
-            }
-        }
-
-        impl ::fmt::Debug for sched_attr {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("sched_attr")
-                    .field("size", &self.size)
-                    .field("sched_policy", &self.sched_policy)
-                    .field("sched_flags", &self.sched_flags)
-                    .field("sched_nice", &self.sched_nice)
-                    .field("sched_priority", &self.sched_priority)
-                    .field("sched_runtime", &self.sched_runtime)
-                    .field("sched_deadline", &self.sched_deadline)
-                    .field("sched_period", &self.sched_period)
-                    .finish()
-            }
-        }
-        impl PartialEq for sched_attr {
-            fn eq(&self, other: &sched_attr) -> bool {
-                self.size == other.size &&
-                self.sched_policy == other.sched_policy &&
-                self.sched_flags == other.sched_flags &&
-                self.sched_nice == other.sched_nice &&
-                self.sched_priority == other.sched_priority &&
-                self.sched_runtime == other.sched_runtime &&
-                self.sched_deadline == other.sched_deadline &&
-                self.sched_period == other.sched_period
-            }
-        }
-        impl Eq for sched_attr {}
-        impl ::hash::Hash for sched_attr {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-                self.sched_policy.hash(state);
-                self.sched_flags.hash(state);
-                self.sched_nice.hash(state);
-                self.sched_priority.hash(state);
-                self.sched_runtime.hash(state);
-                self.sched_deadline.hash(state);
-                self.sched_period.hash(state);
-            }
-        }
-        impl ::fmt::Debug for iwreq_data {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("iwreq_data")
-                    .field("name", unsafe { &self.name })
-                    .field("essid", unsafe { &self.essid })
-                    .field("nwid", unsafe { &self.nwid })
-                    .field("freq", unsafe { &self.freq })
-                    .field("sens", unsafe { &self.sens })
-                    .field("bitrate", unsafe { &self.bitrate })
-                    .field("txpower", unsafe { &self.txpower })
-                    .field("rts", unsafe { &self.rts })
-                    .field("frag", unsafe { &self.frag })
-                    .field("mode", unsafe { &self.mode })
-                    .field("retry", unsafe { &self.retry })
-                    .field("encoding", unsafe { &self.encoding })
-                    .field("power", unsafe { &self.power })
-                    .field("qual", unsafe { &self.qual })
-                    .field("ap_addr", unsafe { &self.ap_addr })
-                    .field("addr", unsafe { &self.addr })
-                    .field("param", unsafe { &self.param })
-                    .field("data", unsafe { &self.data })
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for iw_event {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("iw_event")
-                    .field("len", &self.len )
-                    .field("cmd", &self.cmd )
-                    .field("u", &self.u )
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for __c_anonymous_iwreq {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("__c_anonymous_iwreq")
-                    .field("ifrn_name", unsafe { &self.ifrn_name })
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for iwreq {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("iwreq")
-                    .field("ifr_ifrn", &self.ifr_ifrn )
-                    .field("u", &self.u )
-                    .finish()
-            }
-        }
     }
 }
 

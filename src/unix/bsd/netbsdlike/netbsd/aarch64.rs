@@ -26,9 +26,7 @@ s! {
         pub uc_stack: ::stack_t,
         pub uc_mcontext: mcontext_t,
     }
-}
 
-s_no_extra_traits! {
     #[repr(align(16))]
     pub union __c_anonymous__freg {
         pub __b8: [u8; 16],
@@ -36,47 +34,6 @@ s_no_extra_traits! {
         pub __s32: [u32; 4],
         pub __d64: [u64; 2],
         pub __q128: [u128; 1],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for __c_anonymous__freg {
-            fn eq(&self, other: &__c_anonymous__freg) -> bool {
-                unsafe {
-                self.__b8 == other.__b8
-                    || self.__h16 == other.__h16
-                    || self.__s32 == other.__s32
-                    || self.__d64 == other.__d64
-                    || self.__q128 == other.__q128
-                }
-            }
-        }
-        impl Eq for __c_anonymous__freg {}
-        impl ::fmt::Debug for __c_anonymous__freg {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                unsafe {
-                f.debug_struct("__c_anonymous__freg")
-                    .field("__b8", &self.__b8)
-                    .field("__h16", &self.__h16)
-                    .field("__s32", &self.__s32)
-                    .field("__d64", &self.__d64)
-                    .field("__q128", &self.__q128)
-                    .finish()
-                }
-            }
-        }
-        impl ::hash::Hash for __c_anonymous__freg {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe {
-                self.__b8.hash(state);
-                self.__h16.hash(state);
-                self.__s32.hash(state);
-                self.__d64.hash(state);
-                self.__q128.hash(state);
-                }
-            }
-        }
     }
 }
 

@@ -24,7 +24,6 @@ ctest2 = "0.4.3"
 default = ["std"]
 std = ["libc/std"]
 align = ["libc/align"]
-extra_traits = ["libc/extra_traits"]
 
 [[test]]
 name = "main"

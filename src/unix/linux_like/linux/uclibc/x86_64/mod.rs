@@ -266,10 +266,7 @@ s! {
         pub cmsg_level: ::c_int,
         pub cmsg_type: ::c_int,
     }
-}
 
-s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
     pub struct dirent {
         pub d_ino: ::ino64_t,
         pub d_off: ::off64_t,

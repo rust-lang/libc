@@ -47,41 +47,10 @@ s! {
     pub struct malloc_zone_t {
         __private: [::uintptr_t; 18], // FIXME: keeping private for now
     }
-}
 
-s_no_extra_traits! {
     pub struct pthread_attr_t {
         __sig: c_long,
         __opaque: [::c_char; 36]
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for pthread_attr_t {
-            fn eq(&self, other: &pthread_attr_t) -> bool {
-                self.__sig == other.__sig
-                    && self.__opaque
-                    .iter()
-                    .zip(other.__opaque.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-        impl Eq for pthread_attr_t {}
-        impl ::fmt::Debug for pthread_attr_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("pthread_attr_t")
-                    .field("__sig", &self.__sig)
-                // FIXME: .field("__opaque", &self.__opaque)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for pthread_attr_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.__sig.hash(state);
-                self.__opaque.hash(state);
-            }
-        }
     }
 }
 

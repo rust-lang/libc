@@ -66,30 +66,6 @@ macro_rules! s {
         s!(it: $(#[$attr])* pub $t $i { $($field)* });
     )*);
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
-        compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
-    );
-    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
-        __item! {
-            #[repr(C)]
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            #[allow(deprecated)]
-            $(#[$attr])*
-            pub struct $i { $($field)* }
-        }
-        #[allow(deprecated)]
-        impl ::Copy for $i {}
-        #[allow(deprecated)]
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
-        }
-    );
-}
-
-macro_rules! s_no_extra_traits {
-    ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
-        s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
-    )*);
-    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
             $(#[$attr])*
@@ -125,7 +101,6 @@ macro_rules! missing {
 macro_rules! e {
     ($($(#[$attr:meta])* pub enum $i:ident { $($field:tt)* })*) => ($(
         __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
             $(#[$attr])*
             pub enum $i { $($field)* }
         }
@@ -139,7 +114,6 @@ macro_rules! e {
 macro_rules! s_paren {
     ($($(#[$attr:meta])* pub struct $i:ident ( $($field:tt)* ); )* ) => ($(
         __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
             $(#[$attr])*
             pub struct $i ( $($field)* );
         }

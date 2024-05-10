@@ -24,22 +24,17 @@ s! {
         pub d_descriptor: ::c_int,
         pub d_id: ::door_id_t
     }
-}
 
-s_no_extra_traits! {
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub union door_desc_t__d_data {
         pub d_desc: door_desc_t__d_data__d_desc,
         d_resv: [::c_int; 5], /* Check out /usr/include/sys/door.h */
     }
 
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub struct door_desc_t {
         pub d_attributes: door_attr_t,
         pub d_data: door_desc_t__d_data,
     }
 
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub struct door_arg_t {
         pub data_ptr: *const ::c_char,
         pub data_size: ::size_t,
