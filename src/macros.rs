@@ -67,6 +67,7 @@ macro_rules! s {
     )*);
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
         __item! {
+            #[allow(deprecated)]
             #[repr(C)]
             $(#[$attr])*
             pub union $i { $($field)* }
@@ -79,6 +80,7 @@ macro_rules! s {
     );
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
+            #[allow(deprecated)]
             #[repr(C)]
             $(#[$attr])*
             pub struct $i { $($field)* }
