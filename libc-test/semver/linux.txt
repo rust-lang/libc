@@ -3599,6 +3599,7 @@ in6_ifreq
 in6_pktinfo
 in6_rtmsg
 in_pktinfo
+inet_aton
 initgroups
 ino64_t
 inotify_add_watch

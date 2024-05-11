@@ -589,6 +589,8 @@ in6_addr
 in_addr
 in_addr_t
 in_port_t
+inet_ntop
+inet_pton
 ino_t
 int16_t
 int32_t
