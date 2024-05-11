@@ -1243,13 +1243,6 @@ extern "C" {
     pub fn setservent(stayopen: ::c_int);
     pub fn getprotobyname(name: *const ::c_char) -> *mut protoent;
     pub fn getprotobynumber(proto: ::c_int) -> *mut protoent;
-    pub fn inet_ntop(
-        af: ::c_int,
-        src: *const ::c_void,
-        dst: *mut ::c_char,
-        size: ::socklen_t,
-    ) -> *const ::c_char;
-    pub fn inet_pton(af: ::c_int, src: *const ::c_char, dst: *mut ::c_void) -> ::c_int;
     pub fn chroot(name: *const ::c_char) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),

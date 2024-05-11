@@ -177,7 +177,6 @@ fn test_apple(target: &str) {
 
     headers! { cfg:
         "aio.h",
-        "arpa/inet.h",
         "CommonCrypto/CommonCrypto.h",
         "CommonCrypto/CommonRandom.h",
         "copyfile.h",
@@ -2609,7 +2608,6 @@ fn test_emscripten(target: &str) {
 
     headers! { cfg:
                "aio.h",
-               "arpa/inet.h",
                "ctype.h",
                "dirent.h",
                "dlfcn.h",
@@ -3272,7 +3270,6 @@ fn test_linux(target: &str) {
     cfg.define("__GLIBC_USE_DEPRECATED_SCANF", None);
 
     headers! { cfg:
-               "arpa/inet.h",
                "ctype.h",
                "dirent.h",
                "dlfcn.h",

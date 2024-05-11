@@ -5595,7 +5595,6 @@ extern "C" {
         len: *mut ::socklen_t,
         flg: ::c_int,
     ) -> ::c_int;
-    pub fn inet_aton(cp: *const ::c_char, inp: *mut ::in_addr) -> ::c_int;
     pub fn pthread_getaffinity_np(
         thread: ::pthread_t,
         cpusetsize: ::size_t,
