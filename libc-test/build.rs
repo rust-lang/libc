@@ -4324,7 +4324,11 @@ fn test_linux(target: &str) {
         // the `ifr_ifrn` field is an anonymous union
         (struct_ == "iwreq" && field == "ifr_ifrn") ||
         // the `key` field is a zero-sized array
-        (struct_ == "iw_encode_ext" && field == "key")
+        (struct_ == "iw_encode_ext" && field == "key") ||
+        // either fsid_t or int[2] type
+        (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
+        // `handle` is a VLA
+        (struct_ == "fanotify_event_info_fid" && field == "handle")
     });
 
     cfg.skip_roundtrip(move |s| match s {
