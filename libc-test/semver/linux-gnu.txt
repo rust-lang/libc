@@ -609,6 +609,7 @@ aio_return
 aio_suspend
 aio_write
 aiocb
+aligned_alloc
 backtrace
 clock_adjtime
 copy_file_range

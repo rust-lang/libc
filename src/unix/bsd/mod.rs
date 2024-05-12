@@ -915,6 +915,7 @@ extern "C" {
         timeptr: *const ::tm,
         locale: ::locale_t,
     ) -> ::size_t;
+    pub fn aligned_alloc(alignment: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
 
 cfg_if! {

@@ -885,6 +885,7 @@ extern "C" {
 
     pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn aligned_alloc(alignment: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support

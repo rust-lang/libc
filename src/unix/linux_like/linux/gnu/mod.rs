@@ -1537,6 +1537,9 @@ extern "C" {
 
     // Added in `glibc` 2.34
     pub fn close_range(first: ::c_uint, last: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    // Added in `glibc` 2.16
+    pub fn aligned_alloc(alignment: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
 
 cfg_if! {
