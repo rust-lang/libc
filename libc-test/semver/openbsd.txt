@@ -1214,6 +1214,7 @@ readdir_r
 readlinkat
 reallocarray
 reboot
+recvmmsg
 recvmsg
 regcomp
 regerror
@@ -1236,6 +1237,7 @@ sem_init
 sem_open
 sem_timedwait
 sem_unlink
+sendmmsg
 sendmsg
 setdomainname
 setgrent

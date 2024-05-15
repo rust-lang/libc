@@ -837,6 +837,19 @@ extern "C" {
         fd: ::c_int,
         newfd: ::c_int,
     ) -> ::c_int;
+    pub fn sendmmsg(
+        sockfd: ::c_int,
+        msgvec: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn recvmmsg(
+        sockfd: ::c_int,
+        msgvec: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_int,
+        timeout: *mut ::timespec,
+    ) -> ::c_int;
 }
 
 extern "C" {
