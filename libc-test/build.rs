@@ -1546,6 +1546,7 @@ fn test_android(target: &str) {
                "sched.h",
                "semaphore.h",
                "signal.h",
+               "spawn.h",
                "stddef.h",
                "stdint.h",
                "stdio.h",
@@ -1700,6 +1701,10 @@ fn test_android(target: &str) {
 
             // These are tested in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
+
+            // These are intended to be opaque
+            "posix_spawn_file_actions_t" => true,
+            "posix_spawnattr_t" => true,
 
             // FIXME: Somehow fails to test after removing cfg hacks:
             "__uint128" => true,
