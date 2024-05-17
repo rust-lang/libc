@@ -3862,6 +3862,9 @@ fn test_linux(target: &str) {
             | "SW_CNT"
                 if ppc64 || riscv64 => true,
 
+            // FIXME: requires more recent kernel headers on CI
+            "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV" if sparc64 => true,
+
             // FIXME: Not currently available in headers on ARM and musl.
             "NETLINK_GET_STRICT_CHK" if arm || musl => true,
 
