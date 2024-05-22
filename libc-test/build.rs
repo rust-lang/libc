@@ -95,8 +95,7 @@ fn do_semver() {
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap();
 
     // `libc-test/semver` dir.
-    let mut semver_root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    semver_root.push("semver");
+    let mut semver_root = PathBuf::from("semver");
 
     // NOTE: Windows has the same `family` as `os`, no point in including it
     // twice.
