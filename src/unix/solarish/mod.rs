@@ -120,6 +120,17 @@ s! {
         pub __sin6_src_id: u32
     }
 
+    pub struct in_pktinfo {
+        pub ipi_ifindex: ::c_uint,
+        pub ipi_spec_dst: ::in_addr,
+        pub ipi_addr: ::in_addr,
+    }
+
+    pub struct in6_pktinfo {
+        pub ipi6_addr: ::in6_addr,
+        pub ipi6_ifindex: ::c_uint,
+    }
+
     pub struct passwd {
         pub pw_name: *mut ::c_char,
         pub pw_passwd: *mut ::c_char,
@@ -1224,14 +1235,20 @@ pub const CLD_STOPPED: ::c_int = 5;
 pub const CLD_CONTINUED: ::c_int = 6;
 
 pub const IP_RECVDSTADDR: ::c_int = 0x7;
+pub const IP_PKTINFO: ::c_int = 0x1a;
+pub const IP_DONTFRAG: ::c_int = 0x1b;
 pub const IP_SEC_OPT: ::c_int = 0x22;
 
 pub const IPV6_UNICAST_HOPS: ::c_int = 0x5;
 pub const IPV6_MULTICAST_IF: ::c_int = 0x6;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 0x7;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 0x8;
+pub const IPV6_PKTINFO: ::c_int = 0xb;
 pub const IPV6_RECVPKTINFO: ::c_int = 0x12;
+pub const IPV6_RECVTCLASS: ::c_int = 0x19;
+pub const IPV6_DONTFRAG: ::c_int = 0x21;
 pub const IPV6_SEC_OPT: ::c_int = 0x22;
+pub const IPV6_TCLASS: ::c_int = 0x26;
 pub const IPV6_V6ONLY: ::c_int = 0x27;
 
 cfg_if! {
@@ -1761,8 +1778,9 @@ pub const SOCK_SEQPACKET: ::c_int = 6;
 pub const IP_MULTICAST_IF: ::c_int = 16;
 pub const IP_MULTICAST_TTL: ::c_int = 17;
 pub const IP_MULTICAST_LOOP: ::c_int = 18;
-pub const IP_TTL: ::c_int = 4;
 pub const IP_HDRINCL: ::c_int = 2;
+pub const IP_TOS: ::c_int = 3;
+pub const IP_TTL: ::c_int = 4;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 19;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 20;
 pub const IPV6_JOIN_GROUP: ::c_int = 9;
