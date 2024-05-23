@@ -95,8 +95,7 @@ fn do_semver() {
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap();
 
     // `libc-test/semver` dir.
-    let mut semver_root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    semver_root.push("semver");
+    let mut semver_root = PathBuf::from("semver");
 
     // NOTE: Windows has the same `family` as `os`, no point in including it
     // twice.
@@ -106,7 +105,10 @@ fn do_semver() {
     if family != os && os != "android" {
         process_semver_file(&mut output, &mut semver_root, &family);
     }
-    process_semver_file(&mut output, &mut semver_root, &vendor);
+    // We don't do semver for unknown targets.
+    if vendor != "unknown" {
+        process_semver_file(&mut output, &mut semver_root, &vendor);
+    }
     process_semver_file(&mut output, &mut semver_root, &os);
     let os_arch = format!("{}-{}", os, arch);
     process_semver_file(&mut output, &mut semver_root, &os_arch);
@@ -154,6 +156,9 @@ fn process_semver_file<W: Write, P: AsRef<Path>>(output: &mut W, path: &mut Path
 }
 
 fn main() {
+    // Avoid unnecessary re-building.
+    println!("cargo:rerun-if-changed=build.rs");
+
     do_cc();
     do_ctest();
     do_semver();
