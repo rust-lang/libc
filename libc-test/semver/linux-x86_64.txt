@@ -139,6 +139,8 @@ TIOCGRS485
 TIOCSBRK
 TIOCSRS485
 greg_t
+ioperm
+iopl
 max_align_t
 mcontext_t
 ucontext_t
