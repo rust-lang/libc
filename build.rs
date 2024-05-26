@@ -65,14 +65,21 @@ fn main() {
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
-    match which_freebsd() {
-        Some(10) if libc_ci => set_cfg("freebsd10"),
-        Some(11) if libc_ci => set_cfg("freebsd11"),
-        Some(12) if libc_ci || rustc_dep_of_std => set_cfg("freebsd12"),
-        Some(13) if libc_ci => set_cfg("freebsd13"),
-        Some(14) if libc_ci => set_cfg("freebsd14"),
-        Some(15) if libc_ci => set_cfg("freebsd15"),
-        Some(_) | None => set_cfg("freebsd11"),
+    let which_freebsd = if libc_ci {
+        which_freebsd().unwrap_or(11)
+    } else if rustc_dep_of_std {
+        12
+    } else {
+        11
+    };
+    match which_freebsd {
+        x if x < 10 => panic!("FreeBSD older than 10 is not supported"),
+        10 => set_cfg("freebsd10"),
+        11 => set_cfg("freebsd11"),
+        12 => set_cfg("freebsd12"),
+        13 => set_cfg("freebsd13"),
+        14 => set_cfg("freebsd14"),
+        _ => set_cfg("freebsd15"),
     }
 
     match emcc_version_code() {
