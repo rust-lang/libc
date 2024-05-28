@@ -1387,6 +1387,14 @@ s_no_extra_traits! {
         pub sdl_data: [::c_char; 46],
     }
 
+    pub struct sockaddr_nl {
+        pub nl_len: ::c_uchar,
+        pub nl_family: ::sa_family_t,
+        nl_pad: ::c_ushort,
+        pub nl_pid: u32,
+        pub nl_groups: u32
+    }
+
     pub struct mq_attr {
         pub mq_flags: ::c_long,
         pub mq_maxmsg: ::c_long,
@@ -1797,6 +1805,34 @@ cfg_if! {
                 self.sdl_alen.hash(state);
                 self.sdl_slen.hash(state);
                 self.sdl_data.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_nl {
+            fn eq(&self, other: &sockaddr_nl) -> bool {
+                self.nl_len == other.nl_len &&
+                    self.nl_family == other.nl_family &&
+                    self.nl_pid == other.nl_pid &&
+                    self.nl_groups == other.nl_groups
+            }
+        }
+        impl Eq for sockaddr_nl {}
+        impl ::fmt::Debug for sockaddr_nl {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sockaddr_nl")
+                    .field("nl_len", &self.nl_len)
+                    .field("nl_family", &self.nl_family)
+                    .field("nl_pid", &self.nl_pid)
+                    .field("nl_groups", &self.nl_groups)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sockaddr_nl {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.nl_len.hash(state);
+                self.nl_family.hash(state);
+                self.nl_pid.hash(state);
+                self.nl_groups.hash(state);
             }
         }
 
@@ -3360,51 +3396,6 @@ pub const IFNET_PCP_NONE: ::c_int = 0xff;
 pub const IFDR_MSG_SIZE: ::c_int = 64;
 pub const IFDR_REASON_MSG: ::c_int = 1;
 pub const IFDR_REASON_VENDOR: ::c_int = 2;
-
-// sys/net/if_mib.h
-
-/// non-interface-specific
-pub const IFMIB_SYSTEM: ::c_int = 1;
-/// per-interface data table
-pub const IFMIB_IFDATA: ::c_int = 2;
-
-/// generic stats for all kinds of ifaces
-pub const IFDATA_GENERAL: ::c_int = 1;
-/// specific to the type of interface
-pub const IFDATA_LINKSPECIFIC: ::c_int = 2;
-/// driver name and unit
-pub const IFDATA_DRIVERNAME: ::c_int = 3;
-
-/// number of interfaces configured
-pub const IFMIB_IFCOUNT: ::c_int = 1;
-
-/// functions not specific to a type of iface
-pub const NETLINK_GENERIC: ::c_int = 0;
-
-pub const DOT3COMPLIANCE_STATS: ::c_int = 1;
-pub const DOT3COMPLIANCE_COLLS: ::c_int = 2;
-
-pub const dot3ChipSetAMD7990: ::c_int = 1;
-pub const dot3ChipSetAMD79900: ::c_int = 2;
-pub const dot3ChipSetAMD79C940: ::c_int = 3;
-
-pub const dot3ChipSetIntel82586: ::c_int = 1;
-pub const dot3ChipSetIntel82596: ::c_int = 2;
-pub const dot3ChipSetIntel82557: ::c_int = 3;
-
-pub const dot3ChipSetNational8390: ::c_int = 1;
-pub const dot3ChipSetNationalSonic: ::c_int = 2;
-
-pub const dot3ChipSetFujitsu86950: ::c_int = 1;
-
-pub const dot3ChipSetDigitalDC21040: ::c_int = 1;
-pub const dot3ChipSetDigitalDC21140: ::c_int = 2;
-pub const dot3ChipSetDigitalDC21041: ::c_int = 3;
-pub const dot3ChipSetDigitalDC21140A: ::c_int = 4;
-pub const dot3ChipSetDigitalDC21142: ::c_int = 5;
-
-pub const dot3ChipSetWesternDigital83C690: ::c_int = 1;
-pub const dot3ChipSetWesternDigital83C790: ::c_int = 2;
 
 // sys/netinet/in.h
 // Protocols (RFC 1700)
@@ -5747,5 +5738,17 @@ cfg_if! {
         pub use self::riscv64::*;
     } else {
         // Unknown target_arch
+    }
+}
+
+// sys/net/if_mib.h
+pub mod ifmib;
+
+cfg_if! {
+    if #[cfg(feature = "future-freebsd-netlink")] {
+        mod netlink;
+        pub use self::netlink::*;
+    } else {
+        pub use ifmib::*;
     }
 }
