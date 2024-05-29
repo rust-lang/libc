@@ -64,9 +64,7 @@ fn do_ctest() {
         t if t.contains("windows") => return test_windows(t),
         t if t.contains("vxworks") => return test_vxworks(t),
         t if t.contains("nto-qnx") => return test_neutrino(t),
-        t if t.contains("aix") => {
-            return test_aix(t);
-        }
+        t if t.contains("aix") => return test_aix(t),
         t => panic!("unknown target {}", t),
     }
 }
