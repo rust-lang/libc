@@ -1,5 +1,5 @@
 #include <sys/types.h>
-#if defined(__linux__) || defined(__EMSCRIPTEN__)
+#if defined(__linux__) || defined(__EMSCRIPTEN__) || defined(_AIX)
 #include <sys/sysmacros.h>
 #endif
 

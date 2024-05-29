@@ -28,6 +28,7 @@ fn do_cc() {
             || target.contains("emscripten")
             || target.contains("fuchsia")
             || target.contains("bsd")
+            || target.contains("aix")
         {
             cc::Build::new().file("src/makedev.c").compile("makedev");
         }
@@ -39,6 +40,7 @@ fn do_cc() {
         || target.contains("l4re")
         || target.contains("android")
         || target.contains("emscripten")
+        || target.contains("aix")
     {
         cc::Build::new().file("src/sigrt.c").compile("sigrt");
     }
@@ -62,6 +64,9 @@ fn do_ctest() {
         t if t.contains("windows") => return test_windows(t),
         t if t.contains("vxworks") => return test_vxworks(t),
         t if t.contains("nto-qnx") => return test_neutrino(t),
+        t if t.contains("aix") => {
+            return test_aix(t);
+        }
         t => panic!("unknown target {}", t),
     }
 }
@@ -87,10 +92,10 @@ fn do_semver() {
 
     // NOTE: Windows has the same `family` as `os`, no point in including it
     // twice.
-    // NOTE: Android doesn't include the unix file (or the Linux file) because
+    // NOTE: Android and AIX don't include the unix file (or the Linux file) because
     // there are some many definitions missing it's actually easier just to
-    // maintain a file for Android.
-    if family != os && os != "android" {
+    // maintain a file for Android and AIX.
+    if family != os && os != "android" && os != "aix" {
         process_semver_file(&mut output, &mut semver_root, &family);
     }
     process_semver_file(&mut output, &mut semver_root, &vendor);
@@ -4872,6 +4877,200 @@ fn test_haiku(target: &str) {
             "type_" if struct_ == "cpu_topology_node_info" => "type".to_string(),
             "image_type" if struct_ == "image_info" => "type".to_string(),
             s => s.to_string(),
+        }
+    });
+    cfg.generate("../src/lib.rs", "main.rs");
+}
+
+fn test_aix(target: &str) {
+    assert!(target.contains("aix"));
+
+    let mut cfg = ctest_cfg();
+    cfg.define("_THREAD_SAFE_ERRNO", None);
+
+    headers! { cfg:
+               "aio.h",
+               "arpa/inet.h",
+               "assert.h",
+               "complex.h",
+               "cpio.h",
+               "ctype.h",
+               "dirent.h",
+               "dlfcn.h",
+               "errno.h",
+               "fcntl.h",
+               "fenv.h",
+               "float.h",
+               "fmtmsg.h",
+               "fnmatch.h",
+               "ftw.h",
+               "glob.h",
+               "grp.h",
+               "iconv.h",
+               "inttypes.h",
+               "iso646.h",
+               "langinfo.h",
+               "libgen.h",
+               "limits.h",
+               "locale.h",
+               "malloc.h",
+               "math.h",
+               "mntent.h",
+               "monetary.h",
+               "mqueue.h",
+               "ndbm.h",
+               "net/bpf.h",
+               "net/if.h",
+               "net/proto_uipc.h",
+               "netdb.h",
+               "netinet/in.h",
+               "netinet/tcp.h",
+               "nl_types.h",
+               "poll.h",
+               "pthread.h",
+               "pwd.h",
+               "regex.h",
+               "resolv.h",
+               "rpcsvc/mount.h",
+               "rpcsvc/rstat.h",
+               "sched.h",
+               "search.h",
+               "semaphore.h",
+               "setjmp.h",
+               "signal.h",
+               "spawn.h",
+               "stdarg.h",
+               "stdbool.h",
+               "stddef.h",
+               "stdint.h",
+               "stdio.h",
+               "stdlib.h",
+               "string.h",
+               "strings.h",
+               "stropts.h",
+               "sys/aacct.h",
+               "sys/acct.h",
+               "sys/dr.h",
+               "sys/errno.h",
+               "sys/file.h",
+               "sys/inttypes.h",
+               "sys/ipc.h",
+               "sys/ldr.h",
+               "sys/mman.h",
+               "sys/msg.h",
+               "sys/pollset.h",
+               "sys/resource.h",
+               "sys/select.h",
+               "sys/sem.h",
+               "sys/shm.h",
+               "sys/signal.h",
+               "sys/socket.h",
+               "sys/socketvar.h",
+               "sys/stat.h",
+               "sys/statfs.h",
+               "sys/statvfs.h",
+               "sys/stdint.h",
+               "sys/termio.h",
+               "sys/time.h",
+               "sys/times.h",
+               "sys/types.h",
+               "sys/uio.h",
+               "sys/un.h",
+               "sys/user.h",
+               "sys/utsname.h",
+               "sys/vattr.h",
+               "sys/vminfo.h",
+               "sys/vmount.h",
+               "sys/wait.h",
+               "sys/xti.h",
+               "syslog.h",
+               "tar.h",
+               "termios.h",
+               "tgmath.h",
+               "thread.h",
+               "time.h",
+               "trace.h",
+               "ulimit.h",
+               "unistd.h",
+               "utime.h",
+               "utmp.h",
+               "utmpx.h",
+               "wchar.h",
+               "wctype.h",
+               "wordexp.h",
+    }
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix.
+            "FILE" | "DIR" => ty.to_string(),
+            "sigval" | "sigval64" => format!("union {}", ty),
+            t if t.ends_with("_t") => t.to_string(),
+            t if is_union => format!("union {}", t),
+            t if is_struct => format!("struct {}", t),
+            t => t.to_string(),
+        }
+    });
+    cfg.skip_type(move |ty| {
+        match ty {
+            // AIX doesn't define sighandler_t.
+            "sighandler_t" => true,
+            // It's in man but not in headers. It's actually u32.
+            "sctp_assoc_t" => true,
+            _ => false,
+        }
+    });
+    cfg.skip_fn(move |name| {
+        match name {
+            // AIX's lio_listio uses `restrict` keyword on pointers.
+            // See https://github.com/gnzlbg/ctest/issues/68
+            "lio_listio" => true,
+            // Its return type is 'sighandler_t'.
+            "signal" => true,
+            // Need _USE_IRS macro.
+            "hstrerror" => true,
+            // Not in headers, but in libc.a or libbsd.a.
+            "recvmmsg" | "sctp_opt_info" | "sctp_peeloff" | "sendmmsg" | "sethostid"
+            | "sethostname" | "splice" => true,
+            _ => false,
+        }
+    });
+    cfg.skip_const(move |name| {
+        // Their types are 'sighandler_t'.
+        if name.starts_with("SIG_") {
+            return true;
+        }
+        // These constants are not defined in 'dirent.h' as other unix OSes.
+        if name.starts_with("DT_") {
+            return true;
+        }
+        return false;
+    });
+    cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
+        match ty {
+            // FIXME: it's actually an union.
+            "sigval" | "sigval64" => true,
+            // Requires _KERNEL macro.
+            "file" | "fileops_t" | "sigevent64" => true,
+            _ => false,
+        }
+    });
+    cfg.skip_field_type(move |s, f| {
+        // aio_buf is "volatile void*" and Rust doesn't understand volatile
+        s == "aiocb" && f == "aio_buf"
+    });
+    cfg.skip_field(move |s, f| {
+        match (s, f) {
+            // Skip anonymous fields.
+            ("utmp", "ut_exit")
+            | ("sigaction", "sa_union")
+            | ("poll_ctl_ext", "u")
+            | ("vmount", "vmt_data") => true,
+            ("ld_info", "_file") => true,
+            ("pollfd_ext", "data") => true,
+            _ => false,
         }
     });
     cfg.generate("../src/lib.rs", "main.rs");

@@ -1,5 +1,6 @@
 pub type c_long = i64;
 pub type c_ulong = u64;
+pub const __EXTCTX_RSV: usize = 1860;
 
 s! {
     pub struct sigset_t {
@@ -29,7 +30,7 @@ s! {
         pub f_files: ::fsfilcnt_t,
         pub f_ffree: ::fsfilcnt_t,
         pub f_favail: ::fsfilcnt_t,
-        pub f_fsid: ::c_ulong,
+        pub f_fsid: ::fsid_t,
         pub f_basetype: [::c_char; 16],
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
@@ -59,9 +60,12 @@ s! {
         pub st_gid: ::gid_t,
         pub st_rdev: ::dev_t,
         pub st_ssize: ::c_int,
-        pub st_atime: ::st_timespec,
-        pub st_mtime: ::st_timespec,
-        pub st_ctime: ::st_timespec,
+        pub st_atime: ::time_t,
+        pub st_atime_n: ::c_int,
+        pub st_mtime: ::time_t,
+        pub st_mtime_n: ::c_int,
+        pub st_ctime: ::time_t,
+        pub st_ctime_n: ::c_int,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
         pub st_vfstype: ::c_int,
@@ -112,6 +116,57 @@ s! {
         pub aio_sigev_tid: c_long,
     }
 
+    pub struct __vmxreg_t {
+        pub __v: [::c_uint; 4],
+    }
+
+    pub struct __vmx_context_t {
+        pub __vr : [__vmxreg_t; 32],
+        pub __pad1: [::c_uint; 3],
+        pub __vscr: ::c_uint,
+        pub __vrsave: ::c_uint,
+        pub __pad2: [::c_uint; 3],
+    }
+
+    pub struct __vsx_context_t {
+        pub __vsr_dw1: [::c_ulonglong; 32],
+    }
+
+    pub struct __tm_context_t {
+        pub vmx : __vmx_context_t,
+        pub vsx : __vsx_context_t,
+        pub gpr : [::c_ulonglong; 32],
+        pub lr : ::c_ulonglong,
+        pub ctr : ::c_ulonglong,
+        pub cr : ::c_uint,
+        pub xer: ::c_uint,
+        pub amr: ::c_ulonglong,
+        pub texasr: ::c_ulonglong,
+        pub tfiar: ::c_ulonglong,
+        pub tfhar: ::c_ulonglong,
+        pub ppr: ::c_ulonglong,
+        pub dscr: ::c_ulonglong,
+        pub tar: ::c_ulonglong,
+        pub fpscr: ::c_uint,
+        pub fpscrx: ::c_uint,
+        pub fpr: [::c_double; 32],
+        pub tmcontext: ::c_char,
+        pub tmstate: ::c_char,
+        pub prevowner: ::c_char,
+        pub pad: [::c_char; 5],
+    }
+
+    pub struct __extctx_t {
+        pub __flags: ::c_uint,
+        pub __rsvd1: [::c_uint; 3],
+        pub __vmx: __vmx_context_t,
+        pub __ukeys: [::c_uint; 2],
+        pub __vsx: __vsx_context_t,
+        pub __tm: __tm_context_t,
+        pub __reserved: [::c_char; __EXTCTX_RSV],
+        pub __extctx_magic: ::c_int,
+    }
+
     pub struct ucontext_t {
         pub __sc_onstack: ::c_int,
         pub uc_sigmask: ::sigset_t,
@@ -119,13 +174,12 @@ s! {
         pub uc_mcontext: ::mcontext_t,
         pub uc_link: *mut ucontext_t,
         pub uc_stack: ::stack_t,
-        // Should be pointer to __extctx_t
-        pub __extctx: *mut ::c_void,
+        pub __extctx: *mut ::__extctx_t,
         pub __extctx_magic: ::c_int,
         pub __pad: [::c_int; 1],
     }
 
-    pub struct mcontext_t {
+    pub struct __context64 {
         pub gpr: [::c_ulonglong; 32],
         pub msr: ::c_ulonglong,
         pub iar: ::c_ulonglong,
@@ -136,13 +190,16 @@ s! {
         pub fpscr: ::c_uint,
         pub fpscrx: ::c_uint,
         pub except: [::c_ulonglong; 1],
-        // Should be array of double type
-        pub fpr: [::uint64_t; 32],
+        pub fpr: [::c_double; 32],
         pub fpeu: ::c_char,
         pub fpinfo: ::c_char,
         pub fpscr24_31: ::c_char,
         pub pad: [::c_char; 1],
         pub excp_type: ::c_int,
+    }
+
+    pub struct mcontext_t {
+        pub jmp_context: __context64,
     }
 
     pub struct utmpx {
@@ -199,12 +256,13 @@ s_no_extra_traits! {
         pub __pad: [::c_int; 3],
     }
 
-    pub union _kernel_simple_lock {
+    pub union __c_anonymous_simple_lock {
         pub _slock: ::c_long,
-        // Should be pointer to 'lock_data_instrumented'
+        // FIXME: Should be pointer to 'lock_data_instrumented'
         pub _slockp: *mut ::c_void,
     }
 
+    // Requires _KERNEL macro.
     pub struct fileops_t {
         pub fo_rw: extern fn(file: *mut file, rw: ::uio_rw, io: *mut ::c_void, ext: ::c_long,
                              secattr: *mut ::c_void) -> ::c_int,
@@ -221,14 +279,14 @@ s_no_extra_traits! {
         pub f_count: ::c_int,
         pub f_options: ::c_short,
         pub f_type: ::c_short,
-        // Should be pointer to 'vnode'
+        // FIXME: Should be pointer to 'vnode'
         pub f_data: *mut ::c_void,
         pub f_offset: ::c_longlong,
         pub f_dir_off: ::c_long,
-        // Should be pointer to 'cred'
+        // FIXME: Should be pointer to 'cred'
         pub f_cred: *mut ::c_void,
-        pub f_lock: _kernel_simple_lock,
-        pub f_offset_lock: _kernel_simple_lock,
+        pub f_lock: __c_anonymous_simple_lock,
+        pub f_offset_lock: __c_anonymous_simple_lock,
         pub f_vinfo: ::caddr_t,
         pub f_ops: *mut fileops_t,
         pub f_parentp: ::caddr_t,
@@ -236,7 +294,7 @@ s_no_extra_traits! {
         pub f_fdata: [::c_char; 160],
     }
 
-    pub union __ld_info_file {
+    pub union __c_anonymous_ld_info_file {
         pub _ldinfo_fd: ::c_int,
         pub _ldinfo_fp: *mut file,
         pub _core_offset: ::c_long,
@@ -245,7 +303,7 @@ s_no_extra_traits! {
     pub struct ld_info {
         pub ldinfo_next: ::c_uint,
         pub ldinfo_flags: ::c_uint,
-        pub _file: __ld_info_file,
+        pub _file: __c_anonymous_ld_info_file,
         pub ldinfo_textorg: *mut ::c_void,
         pub ldinfo_textsize: ::c_ulong,
         pub ldinfo_dataorg: *mut ::c_void,
@@ -253,7 +311,7 @@ s_no_extra_traits! {
         pub ldinfo_filename: [::c_char; 2],
     }
 
-    pub union __pollfd_ext_u {
+    pub union __c_anonymous_pollfd_ext_data {
         pub addr: *mut ::c_void,
         pub data32: u32,
         pub data: u64,
@@ -261,9 +319,9 @@ s_no_extra_traits! {
 
     pub struct pollfd_ext {
         pub fd: ::c_int,
-        pub events: ::c_ushort,
-        pub revents: ::c_ushort,
-        pub data: __pollfd_ext_u,
+        pub events: ::c_short,
+        pub revents: ::c_short,
+        pub data: __c_anonymous_pollfd_ext_data,
     }
 }
 
@@ -337,24 +395,24 @@ cfg_if! {
             }
         }
 
-        impl PartialEq for _kernel_simple_lock {
-            fn eq(&self, other: &_kernel_simple_lock) -> bool {
+        impl PartialEq for __c_anoymous_simple_lock {
+            fn eq(&self, other: &__c_anonymous_simple_lock) -> bool {
                 unsafe {
                     self._slock == other._slock
                         && self._slockp == other._slockp
                 }
             }
         }
-        impl Eq for _kernel_simple_lock {}
-        impl ::fmt::Debug for _kernel_simple_lock {
+        impl Eq for __c_anonymous_simple_lock {}
+        impl ::fmt::Debug for __c_anonymous_simple_lock {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("_kernel_simple_lock")
+                f.debug_struct("__c_anonymous_simple_lock")
                     .field("_slock", unsafe { &self._slock })
                     .field("_slockp", unsafe { &self._slockp })
                     .finish()
             }
         }
-        impl ::hash::Hash for _kernel_simple_lock {
+        impl ::hash::Hash for __c_anonymous_simple_lock {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self._slock.hash(state);
@@ -455,8 +513,8 @@ cfg_if! {
             }
         }
 
-        impl PartialEq for __ld_info_file {
-            fn eq(&self, other: &__ld_info_file) -> bool {
+        impl PartialEq for __c_anonymous_ld_info_file {
+            fn eq(&self, other: &__c_anonymous_ld_info_file) -> bool {
                 unsafe {
                     self._ldinfo_fd == other._ldinfo_fd
                         && self._ldinfo_fp == other._ldinfo_fp
@@ -464,17 +522,17 @@ cfg_if! {
                 }
             }
         }
-        impl Eq for __ld_info_file {}
-        impl ::fmt::Debug for __ld_info_file {
+        impl Eq for __c_anonymous_ld_info_file {}
+        impl ::fmt::Debug for __c_anonymous_ld_info_file {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("__ld_info_file")
+                f.debug_struct("__c_anonymous_ld_info_file")
                     .field("_ldinfo_fd", unsafe { &self._ldinfo_fd })
                     .field("_ldinfo_fp", unsafe { &self._ldinfo_fp })
                     .field("_core_offset", unsafe { &self._core_offset })
                     .finish()
             }
         }
-        impl ::hash::Hash for __ld_info_file {
+        impl ::hash::Hash for __c_anonymous_ld_info_file {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self._ldinfo_fd.hash(state);
@@ -524,8 +582,8 @@ cfg_if! {
             }
         }
 
-        impl PartialEq for __pollfd_ext_u {
-            fn eq(&self, other: &__pollfd_ext_u) -> bool {
+        impl PartialEq for __c_anonymous_pollfd_ext_data {
+            fn eq(&self, other: &__c_anonymous_pollfd_ext_data) -> bool {
                 unsafe {
                     self.addr == other.addr
                         && self.data32 == other.data32
@@ -533,17 +591,17 @@ cfg_if! {
                 }
             }
         }
-        impl Eq for __pollfd_ext_u {}
-        impl ::fmt::Debug for __pollfd_ext_u {
+        impl Eq for __c_anonymous_pollfd_ext_data {}
+        impl ::fmt::Debug for __c_anonymous_pollfd_ext_data {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("__pollfd_ext_u")
+                f.debug_struct("__c_anonymous_pollfd_ext_data")
                     .field("addr", unsafe { &self.addr })
                     .field("data32", unsafe { &self.data32 })
                     .field("data", unsafe { &self.data })
                     .finish()
             }
         }
-        impl ::hash::Hash for __pollfd_ext_u {
+        impl ::hash::Hash for __c_anonymous_pollfd_ext_data {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.addr.hash(state);

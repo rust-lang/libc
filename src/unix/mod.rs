@@ -413,9 +413,13 @@ cfg_if! {
 missing! {
     #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub enum FILE {}
+    #[cfg(not(target_os = "aix"))]
     #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub enum fpos_t {} // FIXME: fill this out with a struct
 }
+
+#[cfg(target_os = "aix")]
+pub type fpos_t = c_long;
 
 extern "C" {
     pub fn isalnum(c: c_int) -> c_int;
@@ -1168,7 +1172,10 @@ extern "C" {
     #[cfg_attr(target_os = "espidf", link_name = "lwip_freeaddrinfo")]
     pub fn freeaddrinfo(res: *mut addrinfo);
     pub fn hstrerror(errcode: ::c_int) -> *const ::c_char;
+    #[cfg(not(target_os = "aix"))]
     pub fn gai_strerror(errcode: ::c_int) -> *const ::c_char;
+    #[cfg(target_os = "aix")]
+    pub fn gai_strerror(errcode: ::c_int) -> *mut ::c_char;
     #[cfg_attr(
         any(
             all(
@@ -1224,6 +1231,7 @@ extern "C" {
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME: for `time_t`
     pub fn difftime(time1: time_t, time0: time_t) -> ::c_double;
+    #[cfg(not(target_os = "aix"))]
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME: for `time_t`
@@ -1267,11 +1275,14 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__putenv50")]
     pub fn putenv(string: *mut c_char) -> ::c_int;
+    #[cfg(not(target_os = "aix"))]
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "poll$UNIX2003"
     )]
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: ::c_int) -> ::c_int;
+    #[cfg(target_os = "aix")]
+    pub fn poll(fds: *mut ::c_void, nfds: ::c_ulong, timeout: ::c_long) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86_64"),
         link_name = "select$1050"
@@ -1360,6 +1371,7 @@ extern "C" {
     pub fn ptsname(fd: ::c_int) -> *mut ::c_char;
     pub fn unlockpt(fd: ::c_int) -> ::c_int;
 
+    #[cfg(not(target_os = "aix"))]
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn getline(lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
 
@@ -1371,6 +1383,7 @@ cfg_if! {
     if #[cfg(not(any(target_os = "emscripten",
                      target_os = "android",
                      target_os = "haiku",
+                     target_os = "aix",
                      target_os = "nto")))] {
         extern "C" {
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> ::c_int;
@@ -1461,10 +1474,16 @@ cfg_if! {
         }
     } else {
         extern {
+            #[cfg(not(target_os = "aix"))]
             pub fn readlinkat(dirfd: ::c_int,
                 pathname: *const ::c_char,
                 buf: *mut ::c_char,
                 bufsiz: ::size_t) -> ::ssize_t;
+            #[cfg(target_os = "aix")]
+            pub fn readlinkat(dirfd: ::c_int,
+                pathname: *const ::c_char,
+                buf: *mut ::c_char,
+                bufsiz: ::size_t) -> ::c_int;
             pub fn fmemopen(buf: *mut c_void, size: size_t, mode: *const c_char) -> *mut FILE;
             pub fn open_memstream(ptr: *mut *mut c_char, sizeloc: *mut size_t) -> *mut FILE;
             pub fn atexit(cb: extern "C" fn()) -> c_int;
@@ -1474,7 +1493,10 @@ cfg_if! {
                 act: *const sigaction,
                 oldact: *mut sigaction
             ) -> ::c_int;
+            #[cfg(not(target_os = "aix"))]
             pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: ::size_t) -> ::ssize_t;
+            #[cfg(target_os = "aix")]
+            pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: ::size_t) -> ::c_int;
             #[cfg_attr(
                 all(target_os = "macos", target_arch = "x86_64"),
                 link_name = "pselect$1050"
@@ -1483,6 +1505,7 @@ cfg_if! {
                 all(target_os = "macos", target_arch = "x86"),
                 link_name = "pselect$UNIX2003"
             )]
+            #[cfg(not(target_os = "aix"))]
             #[cfg_attr(target_os = "netbsd", link_name = "__pselect50")]
             pub fn pselect(
                 nfds: ::c_int,
@@ -1500,6 +1523,7 @@ cfg_if! {
    if #[cfg(not(any(target_os = "solaris",
                     target_os = "illumos",
                     target_os = "nto",
+                    target_os = "aix",
                 )))] {
         extern {
             pub fn cfmakeraw(termios: *mut ::termios);
