@@ -135,7 +135,7 @@ s! {
     pub struct ifaddrs {
         pub ifa_next: *mut ifaddrs,
         pub ifa_name: *mut ::c_char,
-        pub ifa_flags: ::c_ulong,
+        pub ifa_flags: u64,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
         pub ifa_dstaddr: *mut ::sockaddr,
