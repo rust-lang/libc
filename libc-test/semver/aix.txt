@@ -1780,7 +1780,6 @@ _W_SFWTED
 _W_SLWTED
 _W_STOPPED
 _W_STRC
-__EXTCTX_RSV
 __c_anonymous_ld_info_file
 __c_anonymous_poll_ctl_ext_u
 __c_anonymous_pollfd_ext_data

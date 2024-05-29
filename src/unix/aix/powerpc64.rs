@@ -1,6 +1,5 @@
 pub type c_long = i64;
 pub type c_ulong = u64;
-pub const __EXTCTX_RSV: usize = 1860;
 
 s! {
     pub struct sigset_t {
@@ -163,7 +162,8 @@ s! {
         pub __ukeys: [::c_uint; 2],
         pub __vsx: __vsx_context_t,
         pub __tm: __tm_context_t,
-        pub __reserved: [::c_char; __EXTCTX_RSV],
+        // __EXTCTX_RSV == 1860
+        pub __reserved: [::c_char; 1860],
         pub __extctx_magic: ::c_int,
     }
 
