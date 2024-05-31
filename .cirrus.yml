@@ -1,40 +1,19 @@
 task:
-  name: nightly x86_64-unknown-freebsd-13
-  freebsd_instance:
-    image_family: freebsd-13-3
+  only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_BASE_BRANCH == 'libc-0.2' ||  $CIRRUS_BASE_BRANCH == 'main'
+  matrix:
+    - name: nightly freebsd-13
+      freebsd_instance:
+        image_family: freebsd-13-3
+    - name: nightly freebsd-14
+      freebsd_instance:
+        image: freebsd-14-0-release-amd64-ufs
+    - name: nightly freebsd-15
+      freebsd_instance:
+        image_family: freebsd-15-0-snap
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh -y --default-toolchain nightly --profile=minimal
-    - . $HOME/.cargo/env
-  test_script:
-    - . $HOME/.cargo/env
-    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
-    - sh ci/run.sh x86_64-unknown-freebsd
-
-task:
-  name: nightly x86_64-unknown-freebsd-14
-  freebsd_instance:
-    image: freebsd-14-0-release-amd64-ufs
-  setup_script:
-    - pkg install -y libnghttp2 curl
-    - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh -y --default-toolchain nightly --profile=minimal
-    - . $HOME/.cargo/env
-  test_script:
-    - . $HOME/.cargo/env
-    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
-    - sh ci/run.sh x86_64-unknown-freebsd
-
-task:
-  name: nightly x86_64-unknown-freebsd-15
-  freebsd_instance:
-    image_family: freebsd-15-0-snap
-  setup_script:
-    - pkg install -y libnghttp2 curl
-    - curl https://sh.rustup.rs -sSf --output rustup.sh
-    - sh rustup.sh -y --default-toolchain nightly --profile=minimal
-    - . $HOME/.cargo/env
   test_script:
     - . $HOME/.cargo/env
     - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
