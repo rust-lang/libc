@@ -431,6 +431,7 @@ extern "C" {
     pub fn setrlimit(resource: ::__rlimit_resource_t, rlim: *const ::rlimit) -> ::c_int;
     pub fn getpriority(which: ::__priority_which_t, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::__priority_which_t, who: ::id_t, prio: ::c_int) -> ::c_int;
+    pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 }
 
 cfg_if! {
