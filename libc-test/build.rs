@@ -1631,6 +1631,8 @@ fn test_android(target: &str) {
                 "linux/netfilter/nfnetlink_log.h",
                 "linux/netfilter/nfnetlink_queue.h",
                 "linux/netfilter/nf_tables.h",
+                "linux/netfilter_arp.h",
+                "linux/netfilter_bridge.h",
                 "linux/netfilter_ipv4.h",
                 "linux/netfilter_ipv6.h",
                 "linux/netfilter_ipv6/ip6_tables.h",
@@ -3419,6 +3421,8 @@ fn test_linux(target: &str) {
         "linux/netfilter/nfnetlink_log.h",
         "linux/netfilter/nfnetlink_queue.h",
         "linux/netfilter/nf_tables.h",
+        "linux/netfilter_arp.h",
+        "linux/netfilter_bridge.h",
         "linux/netfilter_ipv4.h",
         "linux/netfilter_ipv6.h",
         "linux/netfilter_ipv6/ip6_tables.h",
@@ -3935,9 +3939,15 @@ fn test_linux(target: &str) {
             | "MINSIGSTKSZ"
                 if gnu => true,
 
-            // FIXME: Linux >= 5.16 changed its value:
+            // FIXME: Linux >= 5.10:
+            // https://github.com/torvalds/linux/commit/d25e2e9388eda61b6e298585024ee3355f50c493
+            "NF_INET_INGRESS" if musl => true,
+
+            // FIXME: Linux >= 5.16:
             // https://github.com/torvalds/linux/commit/42df6e1d221dddc0f2acf2be37e68d553ad65f96
-            "NF_NETDEV_NUMHOOKS" => true,
+            "NF_NETDEV_EGRESS" if musl || sparc64 => true,
+            // value changed
+            "NF_NETDEV_NUMHOOKS" if musl || sparc64 => true,
 
             // FIXME: requires Linux >= 5.6:
             | "RESOLVE_BENEATH"
