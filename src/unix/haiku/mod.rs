@@ -706,7 +706,7 @@ pub const F_RDLCK: ::c_int = 0x0040;
 pub const F_UNLCK: ::c_int = 0x0200;
 pub const F_WRLCK: ::c_int = 0x0400;
 
-pub const AT_FDCWD: ::c_int = -1;
+pub const AT_FDCWD: ::c_int = -100;
 pub const AT_SYMLINK_NOFOLLOW: ::c_int = 0x01;
 pub const AT_SYMLINK_FOLLOW: ::c_int = 0x02;
 pub const AT_REMOVEDIR: ::c_int = 0x04;
