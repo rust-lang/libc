@@ -2406,6 +2406,13 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // Added in FreeBSD 14.1
+            "KCMP_FILE" | "KCMP_FILEOBJ" | "KCMP_FILES" | "KCMP_SIGHAND" | "KCMP_VM"
+                if Some(14) > freebsd_ver =>
+            {
+                true
+            }
+
             // FIXME: Removed in FreeBSD 15:
             "LOCAL_CONNWAIT" => true,
 
@@ -2515,6 +2522,9 @@ fn test_freebsd(target: &str) {
             "timerfd_create" | "timerfd_gettime" | "timerfd_settime" if Some(14) > freebsd_ver => {
                 true
             }
+
+            // Those are introduced in FreeBSD 14.1.
+            "kcmp" => true,
 
             _ => false,
         }
