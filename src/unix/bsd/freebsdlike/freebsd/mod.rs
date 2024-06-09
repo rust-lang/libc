@@ -5462,6 +5462,12 @@ extern "C" {
     ) -> ::c_int;
     pub fn closefrom(lowfd: ::c_int);
     pub fn close_range(lowfd: ::c_uint, highfd: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn execvpe(
+        name: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+    ) -> ::c_int;
 }
 
 #[link(name = "memstat")]
