@@ -789,6 +789,7 @@ pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 0;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;

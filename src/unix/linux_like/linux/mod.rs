@@ -2419,6 +2419,7 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
 };
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
