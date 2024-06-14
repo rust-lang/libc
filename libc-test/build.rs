@@ -2409,6 +2409,9 @@ fn test_freebsd(target: &str) {
             // FIXME: Removed in FreeBSD 15:
             "LOCAL_CONNWAIT" => true,
 
+            // FIXME: The values has been changed in FreeBSD 15:
+            "CLOCK_BOOTTIME" if Some(15) <= freebsd_ver => true,
+
             _ => false,
         }
     });
