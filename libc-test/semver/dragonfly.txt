@@ -1587,3 +1587,5 @@ xucred
 eaccess
 dirname
 basename
+IP_RECVTTL
+IPV6_RECVHOPLIMIT
