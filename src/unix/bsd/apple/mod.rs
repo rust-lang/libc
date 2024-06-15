@@ -3440,6 +3440,7 @@ pub const F_GETPATH_NOFIRMLINK: ::c_int = 102;
 
 pub const F_ALLOCATECONTIG: ::c_uint = 0x02;
 pub const F_ALLOCATEALL: ::c_uint = 0x04;
+pub const F_ALLOCATEPERSIST: ::c_uint = 0x08;
 
 pub const F_PEOFPOSMODE: ::c_int = 3;
 pub const F_VOLPOSMODE: ::c_int = 4;
