@@ -4924,9 +4924,6 @@ cfg_if! {
                 spbufp: *mut *mut spwd,
             ) -> ::c_int;
 
-            pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
-            pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
-
             pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
             pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
             pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
@@ -5012,6 +5009,9 @@ extern "C" {
     pub fn getspent() -> *mut spwd;
 
     pub fn getspnam(name: *const ::c_char) -> *mut spwd;
+
+    pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
+    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 
     // System V IPC
     pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;
