@@ -3521,6 +3521,9 @@ pub const PF_MEMALLOC_PIN: ::c_int = 0x10000000;
 
 pub const PF_SUSPEND_TASK: ::c_int = 0x80000000;
 
+// defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
+// wherever it is defined.
+pub const AT_MINSIGSTKSZ: ::c_ulong = 51;
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
 // currently used in CI in some configurations, so we define them here.
