@@ -2064,6 +2064,7 @@ align_const! {
         size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
     };
 }
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
