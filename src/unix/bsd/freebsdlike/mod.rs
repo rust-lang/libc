@@ -981,7 +981,6 @@ pub const IPV6_PKTINFO: ::c_int = 46;
 pub const IPV6_HOPLIMIT: ::c_int = 47;
 pub const IPV6_RECVTCLASS: ::c_int = 57;
 pub const IPV6_TCLASS: ::c_int = 61;
-pub const IPV6_DONTFRAG: ::c_int = 62;
 pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 70;
 pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 71;
 pub const IP_BLOCK_SOURCE: ::c_int = 72;
