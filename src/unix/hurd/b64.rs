@@ -43,6 +43,7 @@ pub type Elf_Shdr = ::Elf64_Shdr;
 pub type Elf_Sym = ::Elf64_Sym;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf64_Ehdr {
         pub e_ident: [::c_uchar; 16],
         pub e_type: Elf64_Half,
@@ -60,6 +61,7 @@ s! {
         pub e_shstrndx: Elf64_Half,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf64_Shdr {
         pub sh_name: Elf64_Word,
         pub sh_type: Elf64_Word,
@@ -73,6 +75,7 @@ s! {
         pub sh_entsize: Elf64_Xword,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf64_Sym {
         pub st_name: Elf64_Word,
         pub st_info: ::c_uchar,
@@ -82,6 +85,7 @@ s! {
         pub st_size: Elf64_Xword,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct Elf64_Phdr {
         pub p_type: ::Elf64_Word,
         pub p_flags: ::Elf64_Word,

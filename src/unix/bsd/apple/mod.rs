@@ -237,17 +237,20 @@ impl ::Clone for sysdir_search_path_domain_mask_t {
 }
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ip_mreq {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ip_mreqn {
         pub imr_multiaddr: in_addr,
         pub imr_address: in_addr,
         pub imr_ifindex: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ip_mreq_source {
         pub imr_multiaddr: in_addr,
         pub imr_sourceaddr: in_addr,
@@ -291,6 +294,7 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct stat {
         pub st_dev: dev_t,
         pub st_mode: mode_t,
@@ -316,16 +320,19 @@ s! {
         pub st_qspare: [i64; 2],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_mutexattr_t {
         __sig: ::c_long,
         __opaque: [u8; 8],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_condattr_t {
         __sig: ::c_long,
         __opaque: [u8; __PTHREAD_CONDATTR_SIZE__],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_rwlockattr_t {
         __sig: ::c_long,
         __opaque: [u8; __PTHREAD_RWLOCKATTR_SIZE__],
@@ -344,6 +351,7 @@ s! {
         _pad: [usize; 9],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sigaction {
         // FIXME: this field is actually a union
         pub sa_sigaction: ::sighandler_t,
@@ -357,6 +365,7 @@ s! {
         pub ss_flags: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fstore_t {
         pub fst_flags: ::c_uint,
         pub fst_posmode: ::c_int,
@@ -365,6 +374,7 @@ s! {
         pub fst_bytesalloc: ::off_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fpunchhole_t {
         pub fp_flags: ::c_uint, /* unused */
         pub reserved: ::c_uint, /* (to maintain 8-byte alignment) */
@@ -372,11 +382,13 @@ s! {
         pub fp_length: ::off_t, /* IN: size of the region */
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ftrimactivefile_t {
         pub fta_offset: ::off_t,
         pub fta_length: ::off_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fspecread_t {
         pub fsr_flags: ::c_uint,
         pub reserved: ::c_uint,
@@ -384,11 +396,13 @@ s! {
         pub fsr_length: ::off_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct radvisory {
         pub ra_offset: ::off_t,
         pub ra_count: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -410,6 +424,7 @@ s! {
         pub dli_saddr: *mut ::c_void,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_in {
         pub sin_len: u8,
         pub sin_family: ::sa_family_t,
@@ -418,6 +433,7 @@ s! {
         pub sin_zero: [::c_char; 8],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct kevent64_s {
         pub ident: u64,
         pub filter: i16,
@@ -428,6 +444,7 @@ s! {
         pub ext: [u64; 2],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct dqblk {
         pub dqb_bhardlimit: u64,
         pub dqb_bsoftlimit: u64,
@@ -441,6 +458,7 @@ s! {
         pub dqb_spare: [u32; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct if_msghdr {
         pub ifm_msglen: ::c_ushort,
         pub ifm_version: ::c_uchar,
@@ -451,6 +469,7 @@ s! {
         pub ifm_data: if_data,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct ifa_msghdr {
         pub ifam_msglen: ::c_ushort,
         pub ifam_version: ::c_uchar,
@@ -461,6 +480,7 @@ s! {
         pub ifam_metric: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct ifma_msghdr {
         pub ifmam_msglen: ::c_ushort,
         pub ifmam_version: ::c_uchar,
@@ -470,6 +490,7 @@ s! {
         pub ifmam_index: ::c_ushort,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct ifma_msghdr2 {
         pub ifmam_msglen: ::c_ushort,
         pub ifmam_version: ::c_uchar,
@@ -480,6 +501,7 @@ s! {
         pub ifmam_refcount: i32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct rt_metrics {
         pub rmx_locks: u32,
         pub rmx_mtu: u32,
@@ -495,6 +517,7 @@ s! {
         pub rmx_filler: [u32; 3],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct rt_msghdr {
         pub rtm_msglen: ::c_ushort,
         pub rtm_version: ::c_uchar,
@@ -510,6 +533,7 @@ s! {
         pub rtm_rmx: rt_metrics,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct rt_msghdr2 {
         pub rtm_msglen: ::c_ushort,
         pub rtm_version: ::c_uchar,
@@ -525,6 +549,7 @@ s! {
         pub rtm_rmx: rt_metrics,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct termios {
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,
@@ -535,6 +560,7 @@ s! {
         pub c_ospeed: ::speed_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct flock {
         pub l_start: ::off_t,
         pub l_len: ::off_t,
@@ -577,6 +603,7 @@ s! {
         pub int_n_sign_posn: ::c_char,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct proc_taskinfo {
         pub pti_virtual_size: u64,
         pub pti_resident_size: u64,
@@ -598,6 +625,7 @@ s! {
         pub pti_priority: i32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct proc_bsdinfo {
         pub pbi_flags: u32,
         pub pbi_status: u32,
@@ -623,11 +651,13 @@ s! {
         pub pbi_start_tvusec: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct proc_taskallinfo {
         pub pbsd: proc_bsdinfo,
         pub ptinfo: proc_taskinfo,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct xsw_usage {
         pub xsu_total: u64,
         pub xsu_avail: u64,
@@ -636,6 +666,7 @@ s! {
         pub xsu_encrypted: ::boolean_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct xucred {
         pub cr_version: ::c_uint,
         pub cr_uid: ::uid_t,
@@ -643,6 +674,7 @@ s! {
         pub cr_groups: [::gid_t;16]
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct segment_command {
         pub cmd: u32,
         pub cmdsize: u32,
@@ -657,6 +689,7 @@ s! {
         pub flags: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct segment_command_64 {
         pub cmd: u32,
         pub cmdsize: u32,
@@ -671,11 +704,13 @@ s! {
         pub flags: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct load_command {
         pub cmd: u32,
         pub cmdsize: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_dl {
         pub sdl_len: ::c_uchar,
         pub sdl_family: ::c_uchar,
@@ -687,6 +722,7 @@ s! {
         pub sdl_data: [::c_char; 12],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_inarp {
         pub sin_len: ::c_uchar,
         pub sin_family: ::c_uchar,
@@ -697,6 +733,7 @@ s! {
         pub sin_other: ::c_ushort,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_ctl {
         pub sc_len: ::c_uchar,
         pub sc_family: ::c_uchar,
@@ -706,12 +743,14 @@ s! {
         pub sc_reserved: [u32; 5],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct in_pktinfo {
         pub ipi_ifindex: ::c_uint,
         pub ipi_spec_dst: ::in_addr,
         pub ipi_addr: ::in_addr,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct in6_pktinfo {
         pub ipi6_addr: ::in6_addr,
         pub ipi6_ifindex: ::c_uint,
@@ -719,6 +758,7 @@ s! {
 
     // sys/ipc.h:
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ipc_perm {
         pub uid: ::uid_t,
         pub gid: ::gid_t,
@@ -731,6 +771,7 @@ s! {
 
     // sys/sem.h
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sembuf {
         pub sem_num: ::c_ushort,
         pub sem_op: ::c_short,
@@ -739,6 +780,7 @@ s! {
 
     // sys/shm.h
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct arphdr {
         pub ar_hrd: u16,
         pub ar_pro: u16,
@@ -747,11 +789,13 @@ s! {
         pub ar_op: u16,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
     }
 
     // net/ndrv.h
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_ndrv {
         pub snd_len: ::c_uchar,
         pub snd_family: ::c_uchar,
@@ -768,6 +812,7 @@ s! {
         pub sae_dstaddrlen: ::socklen_t, // size of destination address
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct timex {
         pub modes: ::c_uint,
         pub offset: ::c_long,
@@ -788,6 +833,7 @@ s! {
         pub stbcnt: ::c_long,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct ntptimeval {
         pub time: ::timespec,
         pub maxerror: ::c_long,
@@ -796,14 +842,17 @@ s! {
         pub time_state: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_standard_policy {
         pub no_data: natural_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_extended_policy {
         pub timeshare: boolean_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_time_constraint_policy {
         pub period: u32,
         pub computation: u32,
@@ -811,27 +860,33 @@ s! {
         pub preemptible: boolean_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_precedence_policy {
         pub importance: integer_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_affinity_policy {
         pub affinity_tag: integer_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_background_policy {
         pub priority: integer_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_latency_qos_policy {
         pub thread_latency_qos_tier: thread_latency_qos_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_throughput_qos_policy {
         pub thread_throughput_qos_tier: thread_throughput_qos_t,
     }
 
     // malloc/malloc.h
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct malloc_statistics_t {
         pub blocks_in_use: ::c_uint,
         pub size_in_use: ::size_t,
@@ -839,6 +894,7 @@ s! {
         pub size_allocated: ::size_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mstats {
         pub bytes_total: ::size_t,
         pub chunks_used: ::size_t,
@@ -847,17 +903,20 @@ s! {
         pub bytes_free: ::size_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct vm_range_t {
         pub address: ::vm_address_t,
         pub size: ::vm_size_t,
     }
 
     // sched.h
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sched_param {
         pub sched_priority: ::c_int,
         __opaque: [::c_char; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct vinfo_stat {
         pub vst_dev: u32,
         pub vst_mode: u16,
@@ -882,6 +941,7 @@ s! {
         pub vst_qspare: [i64; 2],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct vnode_info {
         pub vi_stat: vinfo_stat,
         pub vi_type: ::c_int,
@@ -889,6 +949,7 @@ s! {
         pub vi_fsid: ::fsid_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct vnode_info_path {
         pub vip_vi: vnode_info,
         // Normally it's `vip_path: [::c_char; MAXPATHLEN]` but because libc supports an old rustc
@@ -896,11 +957,13 @@ s! {
         pub vip_path: [[::c_char; 32]; 32],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct proc_vnodepathinfo {
         pub pvi_cdir: vnode_info_path,
         pub pvi_rdir: vnode_info_path,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct vm_statistics {
         pub free_count: natural_t,
         pub active_count: natural_t,
@@ -919,11 +982,13 @@ s! {
         pub speculative_count: natural_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct task_thread_times_info {
         pub user_time: time_value_t,
         pub system_time: time_value_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct rusage_info_v0 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -938,6 +1003,7 @@ s! {
         pub ri_proc_exit_abstime: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct rusage_info_v1 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -958,6 +1024,7 @@ s! {
         pub ri_child_elapsed_abstime: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct rusage_info_v2 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -980,6 +1047,7 @@ s! {
         pub ri_diskio_byteswritten: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct rusage_info_v3 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -1011,6 +1079,7 @@ s! {
         pub ri_serviced_system_time: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct rusage_info_v4 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -1050,11 +1119,13 @@ s! {
         pub ri_runnable_time: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct image_offset {
         pub uuid: ::uuid_t,
         pub offset: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct attrlist {
         pub bitmapcount: ::c_ushort,
         pub reserved: u16,
@@ -1065,16 +1136,19 @@ s! {
         pub forkattr: attrgroup_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct attrreference_t {
         pub attr_dataoffset: i32,
         pub attr_length: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct vol_capabilities_attr_t {
         pub capabilities: vol_capabilities_set_t,
         pub valid: vol_capabilities_set_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct attribute_set_t {
         pub commonattr: attrgroup_t,
         pub volattr: attrgroup_t,
@@ -1083,6 +1157,7 @@ s! {
         pub forkattr: attrgroup_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct vol_attributes_attr_t {
         pub validattr: attribute_set_t,
         pub nativeattr: attribute_set_t,
@@ -1149,6 +1224,7 @@ s_no_extra_traits! {
         pub udata: *mut ::c_void,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     #[repr(packed(4))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
@@ -1176,6 +1252,7 @@ s_no_extra_traits! {
         pub shm_internal: *mut ::c_void,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct proc_threadinfo {
         pub pth_user_time: u64,
         pub pth_system_time: u64,
@@ -1190,6 +1267,7 @@ s_no_extra_traits! {
         pub pth_name: [::c_char; MAXTHREADNAMESIZE],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_bsize: u32,
         pub f_iosize: i32,
@@ -1210,6 +1288,7 @@ s_no_extra_traits! {
         pub f_reserved: [u32; 7],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct dirent {
         pub d_ino: u64,
         pub d_seekoff: u64,
@@ -1219,21 +1298,25 @@ s_no_extra_traits! {
         pub d_name: [::c_char; 1024],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_rwlock_t {
         __sig: ::c_long,
         __opaque: [u8; __PTHREAD_RWLOCK_SIZE__],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_mutex_t {
         __sig: ::c_long,
         __opaque: [u8; __PTHREAD_MUTEX_SIZE__],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct pthread_cond_t {
         __sig: ::c_long,
         __opaque: [u8; __PTHREAD_COND_SIZE__],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: ::sa_family_t,
@@ -1242,6 +1325,7 @@ s_no_extra_traits! {
         __ss_pad2: [u8; 112],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct utmpx {
         pub ut_user: [::c_char; _UTX_USERSIZE],
         pub ut_id: [::c_char; _UTX_IDSIZE],
@@ -1261,10 +1345,12 @@ s_no_extra_traits! {
         pub sigev_notify_attributes: *mut ::pthread_attr_t
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct processor_cpu_load_info {
         pub cpu_ticks: [::c_uint; CPU_STATE_MAX as usize],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct processor_basic_info {
         pub cpu_type: cpu_type_t,
         pub cpu_subtype: cpu_subtype_t,
@@ -1273,11 +1359,13 @@ s_no_extra_traits! {
         pub is_master: ::boolean_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct processor_set_basic_info {
         pub processor_count: ::c_int,
         pub default_policy: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct processor_set_load_info {
         pub task_count: ::c_int,
         pub thread_count: ::c_int,
@@ -1285,11 +1373,13 @@ s_no_extra_traits! {
         pub mach_factor: integer_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct time_value_t {
         pub seconds: integer_t,
         pub microseconds: integer_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_basic_info {
         pub user_time: time_value_t,
         pub system_time: time_value_t,
@@ -1301,12 +1391,14 @@ s_no_extra_traits! {
         pub sleep_time: ::integer_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_identifier_info {
         pub thread_id: u64,
         pub thread_handle: u64,
         pub dispatch_qaddr: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct thread_extended_info {
         pub pth_user_time: u64,
         pub pth_system_time: u64,
@@ -1321,6 +1413,7 @@ s_no_extra_traits! {
         pub pth_name: [::c_char; MAXTHREADNAMESIZE],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[repr(packed(4))]
     pub struct if_data64 {
         pub ifi_type: ::c_uchar,
@@ -1353,6 +1446,7 @@ s_no_extra_traits! {
         pub ifi_lastchange: timeval32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     #[repr(packed(4))]
     pub struct if_msghdr2 {
         pub ifm_msglen: ::c_ushort,
@@ -1368,6 +1462,7 @@ s_no_extra_traits! {
         pub ifm_data: if_data64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[repr(packed(8))]
     pub struct vm_statistics64 {
         pub free_count: natural_t,
@@ -1396,6 +1491,7 @@ s_no_extra_traits! {
         pub total_uncompressed_pages_in_compressor: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[repr(packed(4))]
     pub struct mach_task_basic_info {
         pub virtual_size: mach_vm_size_t,
@@ -1407,6 +1503,7 @@ s_no_extra_traits! {
         pub suspend_count: integer_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[repr(packed(4))]
     pub struct log2phys {
         pub l2p_flags: ::c_uint,
@@ -1414,10 +1511,12 @@ s_no_extra_traits! {
         pub l2p_devoffset: ::off_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct os_unfair_lock_s {
         _os_unfair_lock_opaque: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[repr(packed(1))]
     pub struct sockaddr_vm {
         pub svm_len: ::c_uchar,
@@ -1427,6 +1526,7 @@ s_no_extra_traits! {
         pub svm_cid: ::c_uint,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ifdevmtu {
         pub ifdm_current: ::c_int,
         pub ifdm_min: ::c_int,

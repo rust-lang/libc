@@ -1,4 +1,5 @@
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fpu_state {
         pub control: ::c_ushort,
         pub status: ::c_ushort,
@@ -13,18 +14,21 @@ s_no_extra_traits! {
         pub _reserved_416_511: [::c_uchar; 96],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct xstate_hdr {
         pub bv: ::c_ulong,
         pub xcomp_bv: ::c_ulong,
         pub _reserved: [::c_uchar; 48],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct savefpu {
         pub fp_fxsave: fpu_state,
         pub fp_xstate: xstate_hdr,
         pub _fp_ymm: [[::c_uchar; 16]; 16],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mcontext_t {
         pub rax: ::c_ulong,
         pub rbx: ::c_ulong,

@@ -7,6 +7,7 @@ pub type __u64 = u64;
 pub type __s64 = i64;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,
@@ -19,6 +20,7 @@ s! {
         __pad2: ::c_long,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -39,6 +41,7 @@ s! {
         __unused: [::c_long; 3],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat64 {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino64_t,
@@ -59,6 +62,7 @@ s! {
         __unused: [::c_long; 3],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_type: ::c_uint,
         pub f_bsize: ::c_uint,
@@ -74,6 +78,7 @@ s! {
         pub f_spare: [::c_uint; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs64 {
         pub f_type: ::c_uint,
         pub f_bsize: ::c_uint,
@@ -92,6 +97,7 @@ s! {
 
 s_no_extra_traits! {
     // FIXME: This is actually a union.
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fpreg_t {
         pub d: ::c_double,
         // f: ::c_float,
