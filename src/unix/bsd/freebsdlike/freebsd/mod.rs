@@ -290,6 +290,22 @@ s! {
         pub sem_flg: c_short,
     }
 
+    pub struct input_event {
+        pub time: crate::timeval,
+        pub type_: crate::u_short,
+        pub code: crate::u_short,
+        pub value: i32,
+    }
+
+    pub struct input_absinfo {
+        pub value: i32,
+        pub minimum: i32,
+        pub maximum: i32,
+        pub fuzz: i32,
+        pub flat: i32,
+        pub resolution: i32,
+    }
+
     pub struct msqid_ds {
         pub msg_perm: crate::ipc_perm,
         __unused1: *mut c_void,
