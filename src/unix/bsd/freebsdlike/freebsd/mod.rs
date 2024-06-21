@@ -288,6 +288,22 @@ s! {
         pub sem_flg: ::c_short,
     }
 
+    pub struct input_event {
+        pub time: ::timeval,
+        pub type_: ::u_short,
+        pub code: ::u_short,
+        pub value: ::c_int,
+    }
+
+    pub struct input_absinfo {
+        pub value: ::c_int,
+        pub minimum: ::c_int,
+        pub maximum: ::c_int,
+        pub fuzz: ::c_int,
+        pub flat: ::c_int,
+        pub resolution: ::c_int,
+    }
+
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         __unused1: *mut ::c_void,
