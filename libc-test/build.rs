@@ -2256,6 +2256,7 @@ fn test_freebsd(target: &str) {
                 "sys/thr.h",
                 "sys/time.h",
                 [freebsd14 || freebsd15]:"sys/timerfd.h",
+                [freebsd13 || freebsd14 || freebsd15]:"dev/evdev/input.h",
                 "sys/times.h",
                 "sys/timex.h",
                 "sys/types.h",
@@ -2329,6 +2330,7 @@ fn test_freebsd(target: &str) {
             "type_" if struct_ == "rtprio" => "type".to_string(),
             "type_" if struct_ == "sockstat" => "type".to_string(),
             "type_" if struct_ == "devstat_match_table" => "type".to_string(),
+            "type_" if struct_ == "input_event" => "type".to_string(),
             s => s.to_string(),
         }
     });
