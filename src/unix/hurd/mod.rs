@@ -476,7 +476,7 @@ s! {
 
     pub struct stat64 {
         pub st_fstype: ::c_int,
-        pub st_fsid: __fsid_t,
+        pub st_dev: __fsid_t, /* Actually st_fsid */
         pub st_ino: __ino64_t,
         pub st_gen: ::c_uint,
         pub st_rdev: __dev_t,
