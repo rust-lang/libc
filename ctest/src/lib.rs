@@ -1716,7 +1716,8 @@ impl<'a> Generator<'a> {
                     fn __test_static_{name}() -> {ty};
                 }}
                 unsafe {{
-                    same(*(&{name} as *const _ as *const {ty}) as usize,
+                    // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+                    same(*(std::ptr::addr_of!({name}) as *const {ty}) as usize,
                          __test_static_{name}() as usize,
                          "{name} static");
                 }}
@@ -1760,7 +1761,8 @@ impl<'a> Generator<'a> {
                     fn __test_static_{name}() -> *{mutbl} {ty};
                 }}
                 unsafe {{
-                    same(&{name} as *const _ as usize,
+                    // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+                    same(std::ptr::addr_of!({name}) as usize,
                          __test_static_{name}() as usize,
                          "{name} static");
                 }}
@@ -1804,7 +1806,8 @@ impl<'a> Generator<'a> {
                     fn __test_static_{name}() -> *{mutbl} {ty};
                 }}
                 unsafe {{
-                    same(&{name} as *const _ as usize,
+                    // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+                    same(std::ptr::addr_of!({name}) as usize,
                          __test_static_{name}() as usize,
                          "{name} static");
                 }}
