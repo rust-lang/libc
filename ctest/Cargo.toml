@@ -11,7 +11,7 @@ Automated tests of FFI bindings.
 """
 include = ["src/lib.rs", "LICENSE-*", "README.md"]
 edition = "2021"
-rust-version = "1.56.0"
+rust-version = "1.63.0"
 
 [dependencies]
 garando_syntax = "0.1"
