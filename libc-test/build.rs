@@ -4311,6 +4311,9 @@ fn test_linux(target: &str) {
             // FIXME: function pointers changed since Ubuntu 23.10
             "strtol" | "strtoll" | "strtoul" | "strtoull" | "fscanf" | "scanf" | "sscanf" => true,
 
+            // Added in musl 1.2.5
+            "preadv2" | "pwritev2" if musl => true,
+
             _ => false,
         }
     });
