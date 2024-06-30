@@ -3212,6 +3212,7 @@ extern "C" {
     pub fn __major(version: ::c_int, devnum: ::dev_t) -> ::major_t;
     pub fn __minor(version: ::c_int, devnum: ::dev_t) -> ::minor_t;
     pub fn __makedev(version: ::c_int, majdev: ::major_t, mindev: ::minor_t) -> ::dev_t;
+    pub fn aligned_alloc(alignment: ::size_t, size: ::size_t) -> *mut ::c_void;
 }
 
 #[link(name = "sendfile")]

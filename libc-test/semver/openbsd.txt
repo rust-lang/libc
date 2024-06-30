@@ -1008,6 +1008,7 @@ __errno
 abs
 accept4
 acct
+aligned_alloc
 arc4random
 arc4random_buf
 arc4random_uniform
