@@ -23,6 +23,11 @@ PF_XDP
 PIDFD_NONBLOCK
 PR_SET_VMA
 PR_SET_VMA_ANON_NAME
+RWF_APPEND
+RWF_DSYNC
+RWF_HIPRI
+RWF_NOWAIT
+RWF_SYNC
 SOL_XDP
 XDP_SHARED_UMEM
 XDP_COPY
@@ -66,11 +71,13 @@ getloadavg
 lio_listio
 ntptimeval
 open_wmemstream
+preadv2
 preadv64
 prlimit
 prlimit64
 process_vm_readv
 process_vm_writev
+pwritev2
 pwritev64
 reallocarray
 timex
