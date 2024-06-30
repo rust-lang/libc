@@ -117,26 +117,6 @@ impl siginfo_t {
 }
 
 s! {
-    pub struct aiocb {
-        pub aio_fildes: ::c_int,
-        pub aio_lio_opcode: ::c_int,
-        pub aio_reqprio: ::c_int,
-        pub aio_buf: *mut ::c_void,
-        pub aio_nbytes: ::size_t,
-        pub aio_sigevent: ::sigevent,
-        __td: *mut ::c_void,
-        __lock: [::c_int; 2],
-        __err: ::c_int,
-        __ret: ::ssize_t,
-        pub aio_offset: off_t,
-        __next: *mut ::c_void,
-        __prev: *mut ::c_void,
-        #[cfg(target_pointer_width = "32")]
-        __dummy4: [::c_char; 24],
-        #[cfg(target_pointer_width = "64")]
-        __dummy4: [::c_char; 16],
-    }
-
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
@@ -347,6 +327,27 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "extra_traits", derive(Debug))]
+    pub struct aiocb {
+        pub aio_fildes: ::c_int,
+        pub aio_lio_opcode: ::c_int,
+        pub aio_reqprio: ::c_int,
+        pub aio_buf: *mut ::c_void,
+        pub aio_nbytes: ::size_t,
+        pub aio_sigevent: ::sigevent,
+        __td: *mut ::c_void,
+        __lock: [::c_int; 2],
+        __err: ::c_int,
+        __ret: ::ssize_t,
+        pub aio_offset: off_t,
+        __next: *mut ::c_void,
+        __prev: *mut ::c_void,
+        #[cfg(target_pointer_width = "32")]
+        __dummy4: [::c_char; 24],
+        #[cfg(target_pointer_width = "64")]
+        __dummy4: [::c_char; 16],
+    }
+
     pub struct sysinfo {
         pub uptime: ::c_ulong,
         pub loads: [::c_ulong; 3],

@@ -49,24 +49,6 @@ s! {
         pub __statx_timestamp_pad1: [i32; 1],
     }
 
-    pub struct aiocb {
-        pub aio_fildes: ::c_int,
-        pub aio_lio_opcode: ::c_int,
-        pub aio_reqprio: ::c_int,
-        pub aio_buf: *mut ::c_void,
-        pub aio_nbytes: ::size_t,
-        pub aio_sigevent: ::sigevent,
-        __next_prio: *mut aiocb,
-        __abs_prio: ::c_int,
-        __policy: ::c_int,
-        __error_code: ::c_int,
-        __return_value: ::ssize_t,
-        pub aio_offset: off_t,
-        #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
-        __unused1: [::c_char; 4],
-        __glibc_reserved: [::c_char; 32]
-    }
-
     pub struct __exit_status {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
@@ -478,6 +460,27 @@ impl siginfo_t {
             si_sigval: ::sigval,
         }
         (*(self as *const siginfo_t as *const siginfo_timer)).si_sigval
+    }
+}
+
+s_no_extra_traits! {
+    #[cfg_attr(feature = "extra_traits", derive(Debug))]
+    pub struct aiocb {
+        pub aio_fildes: ::c_int,
+        pub aio_lio_opcode: ::c_int,
+        pub aio_reqprio: ::c_int,
+        pub aio_buf: *mut ::c_void,
+        pub aio_nbytes: ::size_t,
+        pub aio_sigevent: ::sigevent,
+        __next_prio: *mut aiocb,
+        __abs_prio: ::c_int,
+        __policy: ::c_int,
+        __error_code: ::c_int,
+        __return_value: ::ssize_t,
+        pub aio_offset: off_t,
+        #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
+        __unused1: [::c_char; 4],
+        __glibc_reserved: [::c_char; 32]
     }
 }
 

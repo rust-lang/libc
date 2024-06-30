@@ -1957,6 +1957,9 @@ fn test_android(target: &str) {
             ("Elf32_Phdr", "p_type") => true,
             ("Elf64_Phdr", "p_type") => true,
 
+            // _sigev_un is an anonymous union
+            ("sigevent", "_sigev_un") => true,
+
             // this is actually a union on linux, so we can't represent it well and
             // just insert some padding.
             ("siginfo_t", "_pad") => true,
@@ -2548,6 +2551,9 @@ fn test_freebsd(target: &str) {
             // not available until FreeBSD 12, and is an anonymous union there.
             ("xucred", "cr_pid__c_anonymous_union") => true,
 
+            // Anonymous union
+            ("sigevent", "_sigev_un") => true,
+
             // m_owner field is a volatile __lwpid_t
             ("umutex", "m_owner") => true,
             // c_has_waiters field is a volatile int32_t
@@ -2751,6 +2757,9 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
         match ty {
             // This is actually a union, not a struct
             // FIXME: is this necessary?
@@ -2843,6 +2852,8 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_field(move |struct_, field| {
+        // _sigev_un is an anonymous union
+        (struct_ == "sigevent" && field == "_sigev_un") ||
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
         // FIXME: is this necessary?
@@ -2853,8 +2864,6 @@ fn test_emscripten(target: &str) {
         // musl seems to define this as an *anonymous* bitfield
         // FIXME: is this necessary?
         (struct_ == "statvfs" && field == "__f_unused") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
         // signalfd had SIGSYS fields added in Linux 4.18, but no libc release has them yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
                                            field == "_pad2" ||
@@ -4289,8 +4298,8 @@ fn test_linux(target: &str) {
         (musl && struct_ == "glob_t" && field == "gl_flags") ||
         // musl seems to define this as an *anonymous* bitfield
         (musl && struct_ == "statvfs" && field == "__f_unused") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
+        // _sigev_un is an anonymous union
+        (struct_ == "sigevent" && field == "_sigev_un") ||
         // signalfd had SIGSYS fields added in Linux 4.18, but no libc release
         // has them yet.
         (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
