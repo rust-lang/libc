@@ -23,6 +23,29 @@ test_target() {
     TARGET="${2}"
     NO_STD="${3}"
 
+    if [ "$RUST_LIBC_TIME_BITS" = "" ]; then
+        while true; do
+            case "$TARGET" in
+                arm-unknown-linux-gnueabi);;
+                arm-unknown-linux-gnueabihf);;
+                armv7-unknown-linux-gnueabihf);;
+                i586-unknown-linux-gnu);;
+                i686-unknown-linux-gnu);;
+                powerpc-unknown-linux-gnu);;
+                armv5te-unknown-linux-gnueabi);;
+                mips-unknown-linux-gnu);;
+                mipsel-unknown-linux-gnu);;
+                powerpc-unknown-linux-gnuspe);;
+                riscv32gc-unknown-linux-gnu);;
+                sparc-unknown-linux-gnu);;
+                *) break;
+            esac
+            RUST_LIBC_TIME_BITS=32 test_target "$BUILD_CMD" "$TARGET" "$NO_STD"
+            RUST_LIBC_TIME_BITS=64 test_target "$BUILD_CMD" "$TARGET" "$NO_STD"
+            break # also build without RUST_LIBC_TIME_BITS set
+        done
+    fi
+
     # If there is a std component, fetch it:
     if [ "${NO_STD}" != "1" ]; then
         # FIXME: rustup often fails to download some artifacts due to network

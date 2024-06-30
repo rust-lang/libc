@@ -37,10 +37,6 @@ pub const SO_PASSCRED: ::c_int = 16;
 pub const SO_PEERCRED: ::c_int = 17;
 pub const SO_RCVLOWAT: ::c_int = 18;
 pub const SO_SNDLOWAT: ::c_int = 19;
-pub const SO_RCVTIMEO: ::c_int = 20;
-pub const SO_SNDTIMEO: ::c_int = 21;
-// pub const SO_RCVTIMEO_OLD: ::c_int = 20;
-// pub const SO_SNDTIMEO_OLD: ::c_int = 21;
 pub const SO_SECURITY_AUTHENTICATION: ::c_int = 22;
 pub const SO_SECURITY_ENCRYPTION_TRANSPORT: ::c_int = 23;
 pub const SO_SECURITY_ENCRYPTION_NETWORK: ::c_int = 24;
@@ -49,18 +45,35 @@ pub const SO_ATTACH_FILTER: ::c_int = 26;
 pub const SO_DETACH_FILTER: ::c_int = 27;
 pub const SO_GET_FILTER: ::c_int = SO_ATTACH_FILTER;
 pub const SO_PEERNAME: ::c_int = 28;
-pub const SO_TIMESTAMP: ::c_int = 29;
+
+cfg_if! {
+    if #[cfg(all(gnu_time64_abi,
+                 any(target_arch = "arm", target_arch = "x86")))] {
+        pub const SO_TIMESTAMP: ::c_int = 63;
+        pub const SO_TIMESTAMPNS: ::c_int = 64;
+        pub const SO_TIMESTAMPING: ::c_int = 65;
+        pub const SO_RCVTIMEO: ::c_int = 66;
+        pub const SO_SNDTIMEO: ::c_int = 67;
+    } else {
+        pub const SO_TIMESTAMP: ::c_int = 29;
+        pub const SO_TIMESTAMPNS: ::c_int = 35;
+        pub const SO_TIMESTAMPING: ::c_int = 37;
+        pub const SO_RCVTIMEO: ::c_int = 20;
+        pub const SO_SNDTIMEO: ::c_int = 21;
+    }
+}
 // pub const SO_TIMESTAMP_OLD: ::c_int = 29;
+// pub const SO_TIMESTAMPNS_OLD: ::c_int = 35;
+// pub const SO_TIMESTAMPING_OLD: ::c_int = 37;
+// pub const SO_RCVTIMEO_OLD: ::c_int = 20;
+// pub const SO_SNDTIMEO_OLD: ::c_int = 21;
+
 pub const SO_ACCEPTCONN: ::c_int = 30;
 pub const SO_PEERSEC: ::c_int = 31;
 pub const SO_SNDBUFFORCE: ::c_int = 32;
 pub const SO_RCVBUFFORCE: ::c_int = 33;
 pub const SO_PASSSEC: ::c_int = 34;
-pub const SO_TIMESTAMPNS: ::c_int = 35;
-// pub const SO_TIMESTAMPNS_OLD: ::c_int = 35;
 pub const SO_MARK: ::c_int = 36;
-pub const SO_TIMESTAMPING: ::c_int = 37;
-// pub const SO_TIMESTAMPING_OLD: ::c_int = 37;
 pub const SO_PROTOCOL: ::c_int = 38;
 pub const SO_DOMAIN: ::c_int = 39;
 pub const SO_RXQ_OVFL: ::c_int = 40;
