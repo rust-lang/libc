@@ -3788,6 +3788,10 @@ fn test_linux(target: &str) {
                 return true;
             }
         }
+        if name.starts_with("X86_FEATURE_")
+        {
+            return true
+        }
         match name {
             // These constants are not available if gnu headers have been included
             // and can therefore not be tested here
