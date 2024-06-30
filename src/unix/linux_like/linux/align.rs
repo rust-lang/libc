@@ -63,6 +63,13 @@ macro_rules! expand_align {
                 pub fd: ::c_int,
                 pub pid: ::c_int,
             }
+
+            #[repr(align(2))]
+            pub struct fanotify_event_info_header {
+                pub info_type: __u8,
+                pub pad: __u8,
+                pub len: __u16,
+            }
         }
 
         s_no_extra_traits! {
