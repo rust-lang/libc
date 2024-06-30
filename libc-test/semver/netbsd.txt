@@ -1190,6 +1190,9 @@ _cpuset_destroy
 _cpuset_isset
 _cpuset_set
 _cpuset_zero
+_lwp_park
+_lwp_unpark
+_lwp_unpark_all
 _lwp_self
 abs
 accept4
