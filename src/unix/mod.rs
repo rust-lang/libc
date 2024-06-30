@@ -305,6 +305,13 @@ pub const INADDR_ANY: in_addr_t = 0;
 pub const INADDR_BROADCAST: in_addr_t = 4294967295;
 pub const INADDR_NONE: in_addr_t = 4294967295;
 
+pub const IN6ADDR_LOOPBACK_INIT: in6_addr = in6_addr {
+    s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+};
+pub const IN6ADDR_ANY_INIT: in6_addr = in6_addr {
+    s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+};
+
 pub const ARPOP_REQUEST: u16 = 1;
 pub const ARPOP_REPLY: u16 = 2;
 
@@ -312,6 +319,11 @@ pub const ATF_COM: ::c_int = 0x02;
 pub const ATF_PERM: ::c_int = 0x04;
 pub const ATF_PUBL: ::c_int = 0x08;
 pub const ATF_USETRAILERS: ::c_int = 0x10;
+
+extern "C" {
+    pub static in6addr_loopback: in6_addr;
+    pub static in6addr_any: in6_addr;
+}
 
 cfg_if! {
     if #[cfg(any(target_os = "l4re", target_os = "espidf"))] {

@@ -152,6 +152,8 @@ IF_NAMESIZE
 IGNBRK
 IGNCR
 IGNPAR
+IN6ADDR_ANY_INIT
+IN6ADDR_LOOPBACK_INIT
 INADDR_ANY
 INADDR_BROADCAST
 INADDR_LOOPBACK
@@ -586,6 +588,8 @@ hstrerror
 if_indextoname
 if_nametoindex
 in6_addr
+in6addr_any
+in6addr_loopback
 in_addr
 in_addr_t
 in_port_t
