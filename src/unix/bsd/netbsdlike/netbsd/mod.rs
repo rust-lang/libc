@@ -2781,20 +2781,6 @@ extern "C" {
 
     pub fn kqueue1(flags: ::c_int) -> ::c_int;
 
-    pub fn sendmmsg(
-        sockfd: ::c_int,
-        msgvec: *mut ::mmsghdr,
-        vlen: ::c_uint,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn recvmmsg(
-        sockfd: ::c_int,
-        msgvec: *mut ::mmsghdr,
-        vlen: ::c_uint,
-        flags: ::c_int,
-        timeout: *mut ::timespec,
-    ) -> ::c_int;
-
     pub fn _lwp_self() -> lwpid_t;
     pub fn memmem(
         haystack: *const ::c_void,
