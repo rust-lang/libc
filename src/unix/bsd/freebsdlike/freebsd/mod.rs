@@ -4801,6 +4801,12 @@ pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const TFD_TIMER_ABSTIME: ::c_int = 0x01;
 pub const TFD_TIMER_CANCEL_ON_SET: ::c_int = 0x02;
 
+pub const KCMP_FILE: ::c_int = 100;
+pub const KCMP_FILEOBJ: ::c_int = 101;
+pub const KCMP_FILES: ::c_int = 102;
+pub const KCMP_SIGHAND: ::c_int = 103;
+pub const KCMP_VM: ::c_int = 104;
+
 pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
     a << 24
 }
@@ -5520,6 +5526,14 @@ extern "C" {
     ) -> ::c_int;
     pub fn closefrom(lowfd: ::c_int);
     pub fn close_range(lowfd: ::c_uint, highfd: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn kcmp(
+        pid1: ::pid_t,
+        pid2: ::pid_t,
+        type_: ::c_int,
+        idx1: ::c_ulong,
+        idx2: ::c_ulong,
+    ) -> ::c_int;
 }
 
 #[link(name = "memstat")]
