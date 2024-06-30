@@ -768,6 +768,7 @@ pub const S_IRWXO: ::c_int = 0o0007;
 
 // socket.h
 pub const SOL_SOCKET: ::c_int = 0xffff;
+pub const SOMAXCONN: ::c_int = 128;
 
 pub const SO_DEBUG: ::c_int = 0x0001;
 pub const SO_REUSEADDR: ::c_int = 0x0004;
