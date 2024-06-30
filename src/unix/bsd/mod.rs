@@ -128,7 +128,7 @@ s_no_extra_traits! {
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 104]
+        pub sun_path: [::c_char; 104]
     }
 
     pub struct utsname {
