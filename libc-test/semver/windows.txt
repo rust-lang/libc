@@ -242,6 +242,7 @@ ispunct
 isspace
 isupper
 isxdigit
+kill
 labs
 listen
 localtime_s
