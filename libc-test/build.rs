@@ -5010,6 +5010,9 @@ fn test_aix(target: &str) {
     });
     cfg.skip_type(move |ty| {
         match ty {
+            // ctest2 uses aggregate to detect alignment. However this doesn't work on AIX for power alignment rule.
+            // Read more details on https://www.ibm.com/docs/en/xl-c-and-cpp-aix/16.1?topic=modes-alignment-aggregates.
+            "c_double" => true,
             // AIX doesn't define sighandler_t.
             "sighandler_t" => true,
             // It's in man but not in headers. It's actually u32.
