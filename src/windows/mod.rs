@@ -1,6 +1,6 @@
 //! Windows CRT definitions
 #![allow(unused_imports)]
-#[rustfmt_skip]
+#![cfg_attr(rustfmt, rustfmt_skip)]
  extern crate winapi; // Leading space to bypass style-check issue
 use windows::winapi::um::handleapi::CloseHandle;
 use windows::winapi::um::winnt;
