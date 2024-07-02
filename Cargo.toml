@@ -133,6 +133,9 @@ cargo-args = ["-Zbuild-std=core"]
 [dependencies]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
 
+[target.'cfg(windows)'.dependencies]
+winapi = { version="0.3.9", features = ["processthreadsapi", "handleapi"] }
+
 [features]
 default = ["std"]
 std = []

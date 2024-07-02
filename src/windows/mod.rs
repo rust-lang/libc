@@ -1,4 +1,10 @@
 //! Windows CRT definitions
+#![allow(unused_imports)]
+
+ extern crate winapi; // Leading space to bypass style-check issue
+use windows::winapi::um::winnt;
+use windows::winapi::um::winnt::PROCESS_TERMINATE;
+use windows::winapi::um::handleapi::CloseHandle;
 
 pub type c_schar = i8;
 pub type c_uchar = u8;
@@ -577,4 +583,15 @@ cfg_if! {
     } else {
         // Unknown target_env
     }
+}
+
+pub fn kill(pid: *mut c_void, sig: c_int) -> ::c_int {
+    let dwDesiredAccess = PROCESS_TERMINATE;
+    let bInheritHandle: winapi::shared::minwindef::BOOL = false.into();
+    let dwProcessId = pid as _;
+    let hProcess = unsafe { winapi::um::processthreadsapi::OpenProcess(dwDesiredAccess,
+                                                                       bInheritHandle, dwProcessId)};
+    let result = unsafe { winapi::um::processthreadsapi::TerminateProcess(hProcess, sig as _) };
+    unsafe { CloseHandle(hProcess) };
+    result
 }
