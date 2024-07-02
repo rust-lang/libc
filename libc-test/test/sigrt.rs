@@ -6,7 +6,8 @@ extern crate libc;
     target_os = "linux",
     target_os = "l4re",
     target_os = "android",
-    target_os = "emscripten"
+    target_os = "emscripten",
+    target_os = "aix",
 ))]
 mod t {
     use libc;
