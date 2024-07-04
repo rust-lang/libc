@@ -261,6 +261,7 @@ open
 open_osfhandle
 pclose
 perror
+pid_t
 pipe
 popen
 printf

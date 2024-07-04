@@ -1,10 +1,13 @@
 //! Windows CRT definitions
-#![allow(unused_imports)]
+
 #![cfg_attr(rustfmt, rustfmt_skip)]
  extern crate winapi; // Leading space to bypass style-check issue
 use windows::winapi::um::handleapi::CloseHandle;
 use windows::winapi::um::winnt;
 use windows::winapi::um::winnt::PROCESS_TERMINATE;
+use windows::winapi::um::processthreadsapi::TerminateProcess;
+use windows::winapi::um::processthreadsapi::OpenProcess;
+use windows::winnt::HANDLE;
 
 pub type c_schar = i8;
 pub type c_uchar = u8;
@@ -57,6 +60,8 @@ impl ::Clone for timezone {
 pub type time64_t = i64;
 
 pub type SOCKET = ::uintptr_t;
+
+pub type pid_t = HANDLE;
 
 s! {
     // note this is the struct called stat64 in Windows. Not stat, nor stati64.
@@ -585,14 +590,15 @@ cfg_if! {
     }
 }
 
-pub fn kill(pid: *mut c_void, sig: c_int) -> ::c_int {
+pub fn kill(pid: pid_t, sig: c_int) -> ::c_int {
     let dwDesiredAccess = PROCESS_TERMINATE;
     let bInheritHandle: winapi::shared::minwindef::BOOL = false.into();
     let dwProcessId = pid as _;
-    let hProcess = unsafe {
-        winapi::um::processthreadsapi::OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId)
+    let result;
+    unsafe {
+        let hProcess = OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
+        result = TerminateProcess(hProcess, sig as _);
+        CloseHandle(hProcess);
     };
-    let result = unsafe { winapi::um::processthreadsapi::TerminateProcess(hProcess, sig as _) };
-    unsafe { CloseHandle(hProcess) };
     result
 }

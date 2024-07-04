@@ -609,6 +609,7 @@ fn test_windows(target: &str) {
             // FIXME: these don't exist:
             "time64_t" => "__time64_t".to_string(),
             "ssize_t" => "SSIZE_T".to_string(),
+            "pid_t" => "HANDLE".to_string(),
 
             "sighandler_t" if !gnu => "_crt_signal_t".to_string(),
             "sighandler_t" if gnu => "__p_sig_fn_t".to_string(),
