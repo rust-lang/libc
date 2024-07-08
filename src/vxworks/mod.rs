@@ -753,6 +753,7 @@ pub const S_IFSOCK: ::c_int = 0o14_0000;
 pub const S_ISUID: ::c_int = 0o4000;
 pub const S_ISGID: ::c_int = 0o2000;
 pub const S_ISTXT: ::c_int = 0o1000;
+pub const S_ISVTX: mode_t = 0o1000;
 pub const S_IRUSR: ::c_int = 0o0400;
 pub const S_IWUSR: ::c_int = 0o0200;
 pub const S_IXUSR: ::c_int = 0o0100;
