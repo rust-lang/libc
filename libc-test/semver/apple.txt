@@ -1023,6 +1023,7 @@ OFDEL
 OFILL
 OLD_TIME
 ONOEOT
+OS_CLOCK_MACH_ABSOLUTE_TIME
 OS_LOG_TYPE_DEBUG
 OS_LOG_TYPE_DEFAULT
 OS_LOG_TYPE_ERROR
@@ -1031,6 +1032,10 @@ OS_LOG_TYPE_INFO
 OS_SIGNPOST_EVENT
 OS_SIGNPOST_INTERVAL_BEGIN
 OS_SIGNPOST_INTERVAL_END
+OS_SYNC_WAKE_BY_ADDRESS_NONE
+OS_SYNC_WAKE_BY_ADDRESS_SHARED
+OS_SYNC_WAIT_ON_ADDRESS_NONE
+OS_SYNC_WAIT_ON_ADDRESS_SHARED
 OS_UNFAIR_LOCK_INIT
 OXTABS
 O_ASYNC
@@ -2049,6 +2054,7 @@ open_memstream
 open_wmemstream
 openat
 openpty
+os_clockid_t
 os_log_create
 os_log_t
 os_log_type_enabled
@@ -2058,6 +2064,13 @@ os_signpost_id_generate
 os_signpost_id_make_with_pointer
 os_signpost_id_t
 os_signpost_type_t
+os_sync_wake_by_address_any
+os_sync_wake_by_address_all
+os_sync_wake_by_address_flags_t
+os_sync_wait_on_address
+os_sync_wait_on_address_flags_t
+os_sync_wait_on_address_with_deadline
+os_sync_wait_on_address_with_timeout
 os_unfair_lock
 os_unfair_lock_assert_not_owner
 os_unfair_lock_assert_owner
