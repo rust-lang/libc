@@ -14,7 +14,7 @@ fn src_hotfix_dir() -> PathBuf {
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
     if cfg!(unix) {
-        let exclude = ["redox", "wasi"];
+        let exclude = ["redox", "wasi", "wali"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
 
@@ -26,7 +26,7 @@ fn do_cc() {
             cmsg.compile("cmsg");
         }
 
-        if target.contains("linux")
+        if (target.contains("linux") && !target.contains("wasm32"))
             || target.contains("android")
             || target.contains("emscripten")
             || target.contains("fuchsia")
@@ -35,10 +35,10 @@ fn do_cc() {
             cc::Build::new().file("src/makedev.c").compile("makedev");
         }
     }
-    if target.contains("android") || target.contains("linux") {
+    if target.contains("android") || (target.contains("linux") && !target.contains("wasm32")) {
         cc::Build::new().file("src/errqueue.c").compile("errqueue");
     }
-    if target.contains("linux")
+    if (target.contains("linux") && !target.contains("wasm32"))
         || target.contains("l4re")
         || target.contains("android")
         || target.contains("emscripten")
@@ -3509,6 +3509,7 @@ fn test_linux(target: &str) {
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
     let loongarch64 = target.contains("loongarch64");
+    let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
 
     let mut cfg = ctest_cfg();
@@ -3634,68 +3635,73 @@ fn test_linux(target: &str) {
         cfg:
         [loongarch64 || riscv64]: "asm/hwcap.h",
         "asm/mman.h",
-        [gnu]: "linux/aio_abi.h",
-        "linux/can.h",
-        "linux/can/raw.h",
-        "linux/can/j1939.h",
-        "linux/dccp.h",
-        "linux/errqueue.h",
-        "linux/falloc.h",
-        "linux/filter.h",
-        "linux/fs.h",
-        "linux/futex.h",
-        "linux/genetlink.h",
-        "linux/if.h",
-        "linux/if_addr.h",
-        "linux/if_alg.h",
-        "linux/if_ether.h",
-        "linux/if_packet.h",
-        "linux/if_tun.h",
-        "linux/if_xdp.h",
-        "linux/input.h",
-        "linux/ipv6.h",
-        "linux/kexec.h",
-        "linux/keyctl.h",
-        "linux/magic.h",
-        "linux/memfd.h",
-        "linux/membarrier.h",
-        "linux/mempolicy.h",
-        "linux/mman.h",
-        "linux/module.h",
-        "linux/mount.h",
-        "linux/net_tstamp.h",
-        "linux/netfilter/nfnetlink.h",
-        "linux/netfilter/nfnetlink_log.h",
-        "linux/netfilter/nfnetlink_queue.h",
-        "linux/netfilter/nf_tables.h",
-        "linux/netfilter_arp.h",
-        "linux/netfilter_bridge.h",
-        "linux/netfilter_ipv4.h",
-        "linux/netfilter_ipv6.h",
-        "linux/netfilter_ipv6/ip6_tables.h",
-        "linux/netlink.h",
-        "linux/openat2.h",
-        // FIXME(linux): some items require Linux >= 5.6:
-        "linux/ptp_clock.h",
-        "linux/ptrace.h",
-        "linux/quota.h",
-        "linux/random.h",
-        "linux/reboot.h",
-        "linux/rtnetlink.h",
-        "linux/sched.h",
-        "linux/sctp.h",
-        "linux/seccomp.h",
-        "linux/sock_diag.h",
-        "linux/sockios.h",
-        "linux/tls.h",
-        "linux/uinput.h",
-        "linux/vm_sockets.h",
-        "linux/wait.h",
-        "linux/wireless.h",
-        "sys/fanotify.h",
-        // <sys/auxv.h> is not present on uclibc
-        [!uclibc]: "sys/auxv.h",
-        [gnu || musl]: "linux/close_range.h",
+    }
+
+    if !wasm32 {
+        headers! { cfg:
+            [gnu]: "linux/aio_abi.h",
+            "linux/can.h",
+            "linux/can/raw.h",
+            "linux/can/j1939.h",
+            "linux/dccp.h",
+            "linux/errqueue.h",
+            "linux/falloc.h",
+            "linux/filter.h",
+            "linux/fs.h",
+            "linux/futex.h",
+            "linux/genetlink.h",
+            "linux/if.h",
+            "linux/if_addr.h",
+            "linux/if_alg.h",
+            "linux/if_ether.h",
+            "linux/if_packet.h",
+            "linux/if_tun.h",
+            "linux/if_xdp.h",
+            "linux/input.h",
+            "linux/ipv6.h",
+            "linux/kexec.h",
+            "linux/keyctl.h",
+            "linux/magic.h",
+            "linux/memfd.h",
+            "linux/membarrier.h",
+            "linux/mempolicy.h",
+            "linux/mman.h",
+            "linux/module.h",
+            "linux/mount.h",
+            "linux/net_tstamp.h",
+            "linux/netfilter/nfnetlink.h",
+            "linux/netfilter/nfnetlink_log.h",
+            "linux/netfilter/nfnetlink_queue.h",
+            "linux/netfilter/nf_tables.h",
+            "linux/netfilter_arp.h",
+            "linux/netfilter_bridge.h",
+            "linux/netfilter_ipv4.h",
+            "linux/netfilter_ipv6.h",
+            "linux/netfilter_ipv6/ip6_tables.h",
+            "linux/netlink.h",
+            "linux/openat2.h",
+            // FIXME(linux): some items require Linux >= 5.6:
+            "linux/ptp_clock.h",
+            "linux/ptrace.h",
+            "linux/quota.h",
+            "linux/random.h",
+            "linux/reboot.h",
+            "linux/rtnetlink.h",
+            "linux/sched.h",
+            "linux/sctp.h",
+            "linux/seccomp.h",
+            "linux/sock_diag.h",
+            "linux/sockios.h",
+            "linux/tls.h",
+            "linux/uinput.h",
+            "linux/vm_sockets.h",
+            "linux/wait.h",
+            "linux/wireless.h",
+            "sys/fanotify.h",
+            // <sys/auxv.h> is not present on uclibc
+            [!uclibc]: "sys/auxv.h",
+            [gnu || musl]: "linux/close_range.h",
+        }
     }
 
     // note: aio.h must be included before sys/mount.h
@@ -4632,6 +4638,7 @@ fn test_linux_like_apis(target: &str) {
     let gnu = target.contains("gnu");
     let musl = target.contains("musl") || target.contains("ohos");
     let linux = target.contains("linux");
+    let wali = target.contains("linux") && target.contains("wasm32");
     let emscripten = target.contains("emscripten");
     let android = target.contains("android");
     assert!(linux || android || emscripten);
@@ -4681,7 +4688,7 @@ fn test_linux_like_apis(target: &str) {
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_fcntl.rs");
     }
 
-    if linux || android {
+    if (linux && !wali) || android {
         // test termios
         let mut cfg = ctest_cfg();
         cfg.header("asm/termbits.h");
@@ -4733,7 +4740,7 @@ fn test_linux_like_apis(target: &str) {
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_ipv6.rs");
     }
 
-    if linux || android {
+    if (linux && !wali) || android {
         // Test Elf64_Phdr and Elf32_Phdr
         // These types have a field called `p_type`, but including
         // "resolve.h" defines a `p_type` macro that expands to `__p_type`
@@ -4755,7 +4762,7 @@ fn test_linux_like_apis(target: &str) {
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_elf.rs");
     }
 
-    if linux || android {
+    if (linux && !wali) || android {
         // Test `ARPHRD_CAN`.
         let mut cfg = ctest_cfg();
         cfg.header("linux/if_arp.h");
