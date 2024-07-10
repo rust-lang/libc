@@ -5201,7 +5201,7 @@ extern "C" {
     pub fn vhangup() -> ::c_int;
     pub fn sync();
     pub fn syncfs(fd: ::c_int) -> ::c_int;
-    pub fn syscall(num: ::c_long, ...) -> ::c_long;
+
     pub fn sched_getaffinity(pid: ::pid_t, cpusetsize: ::size_t, cpuset: *mut cpu_set_t)
         -> ::c_int;
     pub fn sched_setaffinity(
@@ -5621,6 +5621,24 @@ extern "C" {
         flags: ::c_uint,
     ) -> ::ssize_t;
 }
+
+
+// Syscall libc stub for non Wasm32-WALI targets
+// In wasm32-linux, all syscalls are name-bound and typed.
+// The 'syscall' implementation from C library is avoided since 
+// higher level libraries do not explicitly typecast arguments to
+// 64-bit register sizes, which is expected of C variadic arguments.
+// To overcome this, a wrapper 'syscall' method is implemented,
+// which binds the syscall types statically at compile time
+// and binds their numbers at runtime
+cfg_if!(
+    if #[cfg(not(target_arch = "wasm32"))] {
+        extern "C" {
+            pub fn syscall(num: ::c_long, ...) -> ::c_long;
+        }
+    }
+);
+
 
 // LFS64 extensions
 //

@@ -1,6 +1,8 @@
 //! libc - Raw FFI bindings to platforms' system libraries
 #![crate_name = "libc"]
 #![crate_type = "rlib"]
+#![feature(c_variadic)]
+#![feature(concat_idents)]
 #![allow(
     renamed_and_removed_lints, // Keep this order.
     unknown_lints, // Keep this order.
