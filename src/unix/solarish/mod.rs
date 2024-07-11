@@ -2874,15 +2874,19 @@ extern "C" {
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_bind")]
+    #[cfg_attr(target_os = "solaris", link_name = "__xnet_bind")]
     pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
 
     pub fn writev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
     pub fn readv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int) -> ::ssize_t;
 
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_sendmsg")]
+    #[cfg_attr(target_os = "solaris", link_name = "__xnet_sendmsg")]
     pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(target_os = "illumos", link_name = "__xnet_recvmsg")]
+    #[cfg_attr(target_os = "solaris", link_name = "__xnet_recvmsg")]
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
+
     pub fn accept4(
         fd: ::c_int,
         address: *mut sockaddr,
