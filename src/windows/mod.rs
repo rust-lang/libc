@@ -598,7 +598,7 @@ pub fn kill(pid: pid_t, sig: c_int) -> ::c_int {
     let mut result = -1;
     unsafe {
         let h_process = OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
-        if (h_process != NULL) {
+        if h_process != NULL {
             result = TerminateProcess(h_process, sig as _);
             match result {
                 0 => {
