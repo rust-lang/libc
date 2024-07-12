@@ -8,6 +8,7 @@ use windows::winapi::um::winnt::PROCESS_TERMINATE;
 use windows::winapi::um::processthreadsapi::TerminateProcess;
 use windows::winapi::um::processthreadsapi::OpenProcess;
 use windows::winnt::HANDLE;
+use windows::winapi::shared::ntdef::NULL;
 
 pub type c_schar = i8;
 pub type c_uchar = u8;
@@ -594,11 +595,23 @@ pub fn kill(pid: pid_t, sig: c_int) -> ::c_int {
     let dwDesiredAccess = PROCESS_TERMINATE;
     let bInheritHandle: winapi::shared::minwindef::BOOL = false.into();
     let dwProcessId = pid as _;
-    let result;
+    let mut result = -1;
     unsafe {
-        let hProcess = OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
-        result = TerminateProcess(hProcess, sig as _);
-        CloseHandle(hProcess);
+        let h_process = OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
+        if (h_process != NULL) {
+            result = TerminateProcess(h_process, sig as _);
+            match result {
+                0 => {
+                    // failure
+                    result = -1;
+                }
+                _ => {
+                    // success!
+                    result = 0;
+                }
+            }
+            CloseHandle(h_process);
+        }
     };
     result
 }

@@ -85,3 +85,8 @@ harness = true
 name = "semver"
 path = "test/semver.rs"
 harness = false
+
+[[test]]
+name = "windows"
+path = "test/windows.rs"
+harness = false
