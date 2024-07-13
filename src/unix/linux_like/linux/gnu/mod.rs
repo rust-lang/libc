@@ -453,6 +453,17 @@ s! {
         pub aio_flags: ::__u32,
         pub aio_resfd: ::__u32,
     }
+
+    pub struct fanotify_event_info_pidfd {
+        pub hdr: ::fanotify_event_info_header,
+        pub pidfd: ::__s32,
+    }
+
+    pub struct fanotify_event_info_error {
+        pub hdr: ::fanotify_event_info_header,
+        pub error: ::__s32,
+        pub error_count: ::__u32,
+    }
 }
 
 impl siginfo_t {
