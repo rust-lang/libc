@@ -239,8 +239,11 @@ fn test_apple(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "os/clock.h",
         "os/lock.h",
         "os/signpost.h",
+        // FIXME: Requires the macOS 14.4 SDK.
+        //"os/os_sync_wait_on_address.h",
         "poll.h",
         "pthread.h",
         "pthread_spis.h",
@@ -329,6 +332,9 @@ fn test_apple(target: &str) {
             return true;
         }
         match ty {
+            // FIXME: Requires the macOS 14.4 SDK.
+            "os_sync_wake_by_address_flags_t" | "os_sync_wait_on_address_flags_t" => true,
+
             _ => false,
         }
     });
@@ -347,6 +353,13 @@ fn test_apple(target: &str) {
 
             // FIXME: XCode 13.1 doesn't have it.
             "TIOCREMOTE" => true,
+
+            // FIXME: Requires the macOS 14.4 SDK.
+            "OS_SYNC_WAKE_BY_ADDRESS_NONE"
+            | "OS_SYNC_WAKE_BY_ADDRESS_SHARED"
+            | "OS_SYNC_WAIT_ON_ADDRESS_NONE"
+            | "OS_SYNC_WAIT_ON_ADDRESS_SHARED" => true,
+
             _ => false,
         }
     });
@@ -371,6 +384,15 @@ fn test_apple(target: &str) {
 
             // FIXME: Once the SDK get updated to Ventura's level
             "freadlink" | "mknodat" | "mkfifoat" => true,
+
+            // FIXME: Requires the macOS 14.4 SDK.
+            "os_sync_wake_by_address_any"
+            | "os_sync_wake_by_address_all"
+            | "os_sync_wake_by_address_flags_t"
+            | "os_sync_wait_on_address"
+            | "os_sync_wait_on_address_flags_t"
+            | "os_sync_wait_on_address_with_deadline"
+            | "os_sync_wait_on_address_with_timeout" => true,
 
             _ => false,
         }
