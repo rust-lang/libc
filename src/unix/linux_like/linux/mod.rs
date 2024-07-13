@@ -6088,6 +6088,8 @@ extern "C" {
         len: ::size_t,
         flags: ::c_uint,
     ) -> ::ssize_t;
+
+    pub fn ioctl(fd: ::c_int, request: ::Ioctl, ...) -> ::c_int;
 }
 
 // LFS64 extensions
