@@ -6,6 +6,7 @@ pub type nlink_t = u64;
 pub type blksize_t = i64;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::dev_t,
         __pad1: [::c_int; 3],
@@ -30,6 +31,7 @@ s! {
         __pad5: [::c_int; 14],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat64 {
         pub st_dev: ::dev_t,
         __pad1: [::c_int; 3],
@@ -54,6 +56,7 @@ s! {
         __pad5: [::c_int; 14],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs {
         pub f_type: ::c_ulong,
         pub f_bsize: ::c_ulong,
@@ -69,6 +72,7 @@ s! {
         pub f_spare: [::c_ulong; 5],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statfs64 {
         pub f_type: ::c_ulong,
         pub f_bsize: ::c_ulong,
@@ -84,6 +88,7 @@ s! {
         pub f_spare: [::c_ulong; 5],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ipc_perm {
         pub __ipc_perm_key: ::key_t,
         pub uid: ::uid_t,

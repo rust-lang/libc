@@ -7,6 +7,7 @@ pub type c___greg_t = u64;
 pub type __cpu_simple_lock_nv_t = ::c_uchar;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct mcontext_t {
         pub __gregs: [c___greg_t; 26],
         pub _mc_tlsbase: c___greg_t,

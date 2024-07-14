@@ -27,6 +27,7 @@ cfg_if! {
 }
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sigset_t {
         #[cfg(target_pointer_width = "32")]
         __val: [u32; 32],
@@ -34,6 +35,7 @@ s! {
         __val: [u64; 16],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct sysinfo {
         pub uptime: i64,
         pub loads: [u64; 3],
@@ -51,6 +53,7 @@ s! {
         pub _f: [::c_char; 0],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         pub msg_stime: ::time_t,
@@ -65,6 +68,7 @@ s! {
         __glibc_reserved5: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct semid_ds {
         pub sem_perm: ipc_perm,
         pub sem_otime: ::time_t,

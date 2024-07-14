@@ -12,32 +12,38 @@ missing! {
 }
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ip_mreq {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ip_mreqn {
         pub imr_multiaddr: in_addr,
         pub imr_address: in_addr,
         pub imr_ifindex: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ip_mreq_source {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
         pub imr_sourceaddr: in_addr,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [::c_char; 14],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_in {
         pub sin_family: sa_family_t,
         pub sin_port: ::in_port_t,
@@ -45,6 +51,7 @@ s! {
         pub sin_zero: [u8; 8],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_in6 {
         pub sin6_family: sa_family_t,
         pub sin6_port: ::in_port_t,
@@ -74,6 +81,7 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_ll {
         pub sll_family: ::c_ushort,
         pub sll_protocol: ::c_ushort,
@@ -84,6 +92,7 @@ s! {
         pub sll_addr: [::c_uchar; 8]
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fd_set {
         fds_bits: [::c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
     }
@@ -102,6 +111,7 @@ s! {
         pub tm_zone: *const ::c_char,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sched_param {
         pub sched_priority: ::c_int,
         #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
@@ -148,6 +158,7 @@ s! {
         pub int_n_sign_posn: ::c_char,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct in_pktinfo {
         pub ipi_ifindex: ::c_int,
         pub ipi_spec_dst: ::in_addr,
@@ -164,6 +175,7 @@ s! {
         pub ifa_data: *mut ::c_void
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct in6_rtmsg {
         rtmsg_dst: ::in6_addr,
         rtmsg_src: ::in6_addr,
@@ -177,6 +189,7 @@ s! {
         rtmsg_ifindex: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct arpreq {
         pub arp_pa: ::sockaddr,
         pub arp_ha: ::sockaddr,
@@ -185,6 +198,7 @@ s! {
         pub arp_dev: [::c_char; 16],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct arpreq_old {
         pub arp_pa: ::sockaddr,
         pub arp_ha: ::sockaddr,
@@ -192,6 +206,7 @@ s! {
         pub arp_netmask: ::sockaddr,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct arphdr {
         pub ar_hrd: u16,
         pub ar_pro: u16,
@@ -207,6 +222,7 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     #[cfg_attr(
         any(
             all(
@@ -220,11 +236,13 @@ s_no_extra_traits! {
         pub u64: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [::c_char; 108]
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
         #[cfg(target_pointer_width = "32")]
@@ -234,6 +252,7 @@ s_no_extra_traits! {
         __ss_align: ::size_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct utsname {
         pub sysname: [::c_char; 65],
         pub nodename: [::c_char; 65],

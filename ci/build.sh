@@ -18,6 +18,11 @@ if [ "${TOOLCHAIN}" = "nightly" ] ; then
     rustup component add rust-src
 fi
 
+version_gte() {
+    # Adapted from https://stackoverflow.com/a/4024263/836390
+    [  "$2" = "$(printf '%s\n%s' "$1" "$2" | sort -V | head -n1)" ]
+}
+
 test_target() {
     BUILD_CMD="${1}"
     TARGET="${2}"
@@ -66,15 +71,22 @@ test_target() {
             --target "${TARGET}" --features extra_traits
     fi
 
-    # Test the 'const-extern-fn' feature on nightly
-    if [ "${RUST}" = "nightly" ]; then
+    # Test the 'const-extern-fn' feature on nightly and the 'zerocopy' feature
+    # any version starting with zerocopy's MSRV (1.61.0).
+    if [ "${RUST}" = "nightly" ] || version_gte "${RUST}" "1.61.0"; then
+        if [ "${RUST}" = "nightly" ]; then
+            FEATURES="const-extern-fn,zerocopy"
+        else
+            FEATURES="zerocopy"
+        fi
+
         if [ "${NO_STD}" != "1" ]; then
             cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
-                --features const-extern-fn
+                --features "$FEATURES"
         else
             RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
                 -Z build-std=core,alloc -vv --no-default-features \
-                --target "${TARGET}" --features const-extern-fn
+                --target "${TARGET}" --features "$FEATURES"
         fi
     fi
 

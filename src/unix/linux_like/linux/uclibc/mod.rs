@@ -17,6 +17,7 @@ cfg_if! {
 }
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct statvfs {  // Different than GNU!
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -69,11 +70,13 @@ s! {
         pub rt_irtt: ::c_ushort,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __exit_status {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct ptrace_peeksiginfo_args {
         pub off: ::__u64,
         pub flags: ::__u32,

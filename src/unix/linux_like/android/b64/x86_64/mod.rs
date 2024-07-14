@@ -5,6 +5,7 @@ pub type __u64 = ::c_ulonglong;
 pub type __s64 = ::c_longlong;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -25,6 +26,7 @@ s! {
         __unused: [::c_long; 3],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct stat64 {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -45,10 +47,12 @@ s! {
         __unused: [::c_long; 3],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct _libc_xmmreg {
         pub element: [u32; 4],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct user_regs_struct {
         pub r15: ::c_ulong,
         pub r14: ::c_ulong,

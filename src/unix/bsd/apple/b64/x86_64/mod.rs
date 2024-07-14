@@ -11,12 +11,14 @@ s! {
         pub uc_mcontext: mcontext_t,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes))]
     pub struct __darwin_mcontext64 {
         pub __es: __darwin_x86_exception_state64,
         pub __ss: __darwin_x86_thread_state64,
         pub __fs: __darwin_x86_float_state64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __darwin_x86_exception_state64 {
         pub __trapno: u16,
         pub __cpu: u16,
@@ -24,6 +26,7 @@ s! {
         pub __faultvaddr: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __darwin_x86_thread_state64 {
         pub __rax: u64,
         pub __rbx: u64,
@@ -48,6 +51,7 @@ s! {
         pub __gs: u64,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __darwin_x86_float_state64 {
         pub __fpu_reserved: [::c_int; 2],
         __fpu_fcw: ::c_short,
@@ -94,15 +98,18 @@ s! {
         pub __fpu_reserved1: ::c_int,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __darwin_mmst_reg {
         pub __mmst_reg: [::c_char; 10],
         pub __mmst_rsrv: [::c_char; 6],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __darwin_xmm_reg {
         pub __xmm_reg: [::c_char; 16],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct malloc_introspection_t {
         _private: [::uintptr_t; 16], // FIXME: keeping private for now
     }

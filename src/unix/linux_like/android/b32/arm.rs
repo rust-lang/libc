@@ -4,6 +4,7 @@ pub type greg_t = i32;
 pub type mcontext_t = sigcontext;
 
 s! {
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sigcontext {
         pub trap_no: ::c_ulong,
         pub error_code: ::c_ulong,

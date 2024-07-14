@@ -259,6 +259,7 @@ s! {
         pub address: *mut ::c_void
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct port_info {
         pub port: port_id,
         pub team: team_id,
@@ -268,6 +269,7 @@ s! {
         pub total_count: i32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct port_message_info {
         pub size: ::size_t,
         pub sender: ::uid_t,
@@ -275,6 +277,7 @@ s! {
         pub sender_team: ::team_id
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct team_info {
         pub team: team_id,
         pub thread_count: i32,
@@ -288,6 +291,7 @@ s! {
         pub gid: ::gid_t
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct sem_info {
         pub sem: sem_id,
         pub team: team_id,
@@ -296,6 +300,7 @@ s! {
         pub latest_holder: thread_id
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct team_usage_info {
         pub user_time: bigtime_t,
         pub kernel_time: bigtime_t
@@ -314,12 +319,14 @@ s! {
         pub stack_end: *mut ::c_void
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct cpu_info {
         pub active_time: bigtime_t,
         pub enabled: bool,
         pub current_frequency: u64
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct system_info {
         pub boot_time: bigtime_t,
         pub cpu_count: u32,
@@ -348,6 +355,7 @@ s! {
         pub abi: u32
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct object_wait_info {
         pub object: i32,
         pub type_: u16,
@@ -368,12 +376,14 @@ s! {
         pub default_frequency: u64,
     }
     // kernel/fs_attr.h
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct attr_info {
         pub type_: u32,
         pub size: ::off_t
     }
 
     // kernel/fs_index.h
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct index_info {
         pub type_: u32,
         pub size: ::off_t,
@@ -384,6 +394,7 @@ s! {
     }
 
     //kernel/fs_info.h
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct fs_info {
         pub dev: ::dev_t,
         pub root: ::ino_t,
@@ -418,11 +429,13 @@ s! {
         pub abi: i32
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __c_anonymous_eax_0 {
         pub max_eax: u32,
         pub vendor_id: [::c_char; 12],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __c_anonymous_eax_1 {
         pub stepping: u32,
         pub model: u32,
@@ -440,17 +453,20 @@ s! {
         pub extended_features: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __c_anonymous_eax_2 {
         pub call_num: u8,
         pub cache_descriptors: [u8; 15],
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __c_anonymous_eax_3 {
         __reserved: [u32; 2],
         pub serial_number_high: u32,
         pub serial_number_low: u32,
     }
 
+    #[cfg_attr(feature = "zerocopy", derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes))]
     pub struct __c_anonymous_regs {
         pub eax: u32,
         pub ebx: u32,
