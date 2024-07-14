@@ -2,28 +2,6 @@ pub type c_char = i8;
 pub type wchar_t = i32;
 
 s! {
-    pub struct stat64 {
-        pub st_dev: ::c_ulong,
-        st_pad1: [::c_long; 3],
-        pub st_ino: ::ino64_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::c_ulong,
-        st_pad2: [::c_long; 2],
-        pub st_size: ::off64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        pub st_blksize: ::blksize_t,
-        st_pad3: ::c_long,
-        pub st_blocks: ::blkcnt64_t,
-        st_pad5: [::c_long; 14],
-    }
 
     pub struct statfs {
         pub f_type: ::c_long,
@@ -121,21 +99,9 @@ s! {
 
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
-        #[cfg(target_endian = "big")]
-        __glibc_reserved1: ::c_ulong,
         pub msg_stime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __glibc_reserved1: ::c_ulong,
-        #[cfg(target_endian = "big")]
-        __glibc_reserved2: ::c_ulong,
         pub msg_rtime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __glibc_reserved2: ::c_ulong,
-        #[cfg(target_endian = "big")]
-        __glibc_reserved3: ::c_ulong,
         pub msg_ctime: ::time_t,
-        #[cfg(target_endian = "little")]
-        __glibc_reserved3: ::c_ulong,
         __msg_cbytes: ::c_ulong,
         pub msg_qnum: ::msgqnum_t,
         pub msg_qbytes: ::msglen_t,
@@ -708,7 +674,13 @@ pub const MAP_HUGETLB: ::c_int = 0x080000;
 
 pub const EFD_NONBLOCK: ::c_int = 0x80;
 
-pub const F_GETLK: ::c_int = 14;
+cfg_if! {
+    if #[cfg(gnu_time64_abi)] {
+        pub const F_GETLK: ::c_int = 33;
+    } else {
+        pub const F_GETLK: ::c_int = 14;
+    }
+}
 pub const F_GETOWN: ::c_int = 23;
 pub const F_SETOWN: ::c_int = 24;
 
@@ -814,3 +786,13 @@ pub const EHWPOISON: ::c_int = 168;
 
 mod align;
 pub use self::align::*;
+
+cfg_if! {
+    if #[cfg(gnu_time64_abi)] {
+        mod time64;
+        pub use self::time64::*;
+    } else {
+        mod time32;
+        pub use self::time32::*;
+    }
+}

@@ -100,21 +100,6 @@ s! {
         __reserved: [::c_long; 2],
     }
 
-    pub struct statfs64 {
-        pub f_type: ::__fsword_t,
-        pub f_bsize: ::__fsword_t,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::__fsword_t,
-        pub f_frsize: ::__fsword_t,
-        pub f_flags: ::__fsword_t,
-        pub f_spare: [::__fsword_t; 4],
-    }
-
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -130,19 +115,38 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
-    pub struct statvfs64 {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: u64,
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
+    pub struct timex {
+        pub modes: ::c_uint,
+        pub offset: ::c_long,
+        pub freq: ::c_long,
+        pub maxerror: ::c_long,
+        pub esterror: ::c_long,
+        pub status: ::c_int,
+        pub constant: ::c_long,
+        pub precision: ::c_long,
+        pub tolerance: ::c_long,
+        pub time: ::timeval,
+        pub tick: ::c_long,
+        pub ppsfreq: ::c_long,
+        pub jitter: ::c_long,
+        pub shift: ::c_int,
+        pub stabil: ::c_long,
+        pub jitcnt: ::c_long,
+        pub calcnt: ::c_long,
+        pub errcnt: ::c_long,
+        pub stbcnt: ::c_long,
+        pub tai: ::c_int,
+        pub __unused1: i32,
+        pub __unused2: i32,
+        pub __unused3: i32,
+        pub __unused4: i32,
+        pub __unused5: i32,
+        pub __unused6: i32,
+        pub __unused7: i32,
+        pub __unused8: i32,
+        pub __unused9: i32,
+        pub __unused10: i32,
+        pub __unused11: i32,
     }
 
     pub struct ipc_perm {
@@ -851,3 +855,12 @@ pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
 mod align;
 pub use self::align::*;
+cfg_if! {
+    if #[cfg(gnu_time64_abi)] {
+        mod time64;
+        pub use self::time64::*;
+    } else {
+        mod time32;
+        pub use self::time32::*;
+    }
+}

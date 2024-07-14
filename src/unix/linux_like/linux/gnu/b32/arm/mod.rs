@@ -56,28 +56,6 @@ s! {
         __unused2: ::c_ulong
     }
 
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        __pad1: ::c_uint,
-        __st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __pad2: ::c_uint,
-        pub st_size: ::off64_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        pub st_ino: ::ino64_t,
-    }
-
     pub struct statfs64 {
         pub f_type: ::__fsword_t,
         pub f_bsize: ::__fsword_t,
@@ -113,10 +91,13 @@ s! {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
         pub shm_atime: ::time_t,
+        #[cfg(not(gnu_time64_abi))]
         __unused1: ::c_ulong,
         pub shm_dtime: ::time_t,
+        #[cfg(not(gnu_time64_abi))]
         __unused2: ::c_ulong,
         pub shm_ctime: ::time_t,
+        #[cfg(not(gnu_time64_abi))]
         __unused3: ::c_ulong,
         pub shm_cpid: ::pid_t,
         pub shm_lpid: ::pid_t,
@@ -128,10 +109,13 @@ s! {
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         pub msg_stime: ::time_t,
+        #[cfg(not(gnu_time64_abi))]
         __glibc_reserved1: ::c_ulong,
         pub msg_rtime: ::time_t,
+        #[cfg(not(gnu_time64_abi))]
         __glibc_reserved2: ::c_ulong,
         pub msg_ctime: ::time_t,
+        #[cfg(not(gnu_time64_abi))]
         __glibc_reserved3: ::c_ulong,
         __msg_cbytes: ::c_ulong,
         pub msg_qnum: ::msgqnum_t,
@@ -341,7 +325,13 @@ pub const MCL_ONFAULT: ::c_int = 0x0004;
 pub const POLLWRNORM: ::c_short = 0x100;
 pub const POLLWRBAND: ::c_short = 0x200;
 
-pub const F_GETLK: ::c_int = 5;
+cfg_if! {
+    if #[cfg(gnu_time64_abi)] {
+        pub const F_GETLK: ::c_int = 12;
+    } else {
+        pub const F_GETLK: ::c_int = 5;
+    }
+}
 pub const F_GETOWN: ::c_int = 9;
 pub const F_SETOWN: ::c_int = 8;
 
@@ -859,3 +849,13 @@ pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
 mod align;
 pub use self::align::*;
+
+cfg_if! {
+    if #[cfg(gnu_time64_abi)] {
+        mod time64;
+        pub use self::time64::*;
+    } else {
+        mod time32;
+        pub use self::time32::*;
+    }
+}

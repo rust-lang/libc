@@ -62,7 +62,7 @@ s! {
         __error_code: ::c_int,
         __return_value: ::ssize_t,
         pub aio_offset: off_t,
-        #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
+        #[cfg(all(not(gnu_time64_abi), not(target_arch = "x86_64"), target_pointer_width = "32"))]
         __unused1: [::c_char; 4],
         __glibc_reserved: [::c_char; 32]
     }
@@ -198,84 +198,6 @@ s! {
         pub rt_irtt: ::c_ushort,
     }
 
-    pub struct timex {
-        pub modes: ::c_uint,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub offset: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub offset: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub freq: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub freq: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub maxerror: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub maxerror: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub esterror: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub esterror: ::c_long,
-        pub status: ::c_int,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub constant: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub constant: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub precision: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub precision: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub tolerance: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub tolerance: ::c_long,
-        pub time: ::timeval,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub tick: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub tick: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub ppsfreq: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub ppsfreq: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub jitter: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub jitter: ::c_long,
-        pub shift: ::c_int,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub stabil: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub stabil: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub jitcnt: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub jitcnt: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub calcnt: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub calcnt: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub errcnt: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub errcnt: ::c_long,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pub stbcnt: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pub stbcnt: ::c_long,
-        pub tai: ::c_int,
-        pub __unused1: i32,
-        pub __unused2: i32,
-        pub __unused3: i32,
-        pub __unused4: i32,
-        pub __unused5: i32,
-        pub __unused6: i32,
-        pub __unused7: i32,
-        pub __unused8: i32,
-        pub __unused9: i32,
-        pub __unused10: i32,
-        pub __unused11: i32,
-    }
 
     pub struct ntptimeval {
         pub time: ::timeval,
@@ -1289,12 +1211,14 @@ extern "C" {
         >,
         arg: *mut ::c_void,
     );
+    #[cfg_attr(gnu_time64_abi, link_name = "__sendmmsg64")]
     pub fn sendmmsg(
         sockfd: ::c_int,
         msgvec: *mut ::mmsghdr,
         vlen: ::c_uint,
         flags: ::c_int,
     ) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__recvmmsg64")]
     pub fn recvmmsg(
         sockfd: ::c_int,
         msgvec: *mut ::mmsghdr,
@@ -1305,8 +1229,11 @@ extern "C" {
 
     pub fn getrlimit64(resource: ::__rlimit_resource_t, rlim: *mut ::rlimit64) -> ::c_int;
     pub fn setrlimit64(resource: ::__rlimit_resource_t, rlim: *const ::rlimit64) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "getrlimit64")]
     pub fn getrlimit(resource: ::__rlimit_resource_t, rlim: *mut ::rlimit) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "setrlimit64")]
     pub fn setrlimit(resource: ::__rlimit_resource_t, rlim: *const ::rlimit) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "prlimit64")]
     pub fn prlimit(
         pid: ::pid_t,
         resource: ::__rlimit_resource_t,
@@ -1329,6 +1256,7 @@ extern "C" {
     pub fn endutxent();
     pub fn getpt() -> ::c_int;
     pub fn mallopt(param: ::c_int, value: ::c_int) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__gettimeofday64")]
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
     pub fn statx(
         dirfd: ::c_int,
@@ -1341,10 +1269,14 @@ extern "C" {
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 
+    #[cfg_attr(gnu_time64_abi, link_name = "___adjtimex64")]
     pub fn adjtimex(buf: *mut timex) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "___adjtimex64")]
     pub fn ntp_adjtime(buf: *mut timex) -> ::c_int;
-    #[link_name = "ntp_gettimex"]
+    #[cfg_attr(not(gnu_time64_abi), link_name = "ntp_gettimex")]
+    #[cfg_attr(gnu_time64_abi, link_name = "__ntp_gettime64")]
     pub fn ntp_gettime(buf: *mut ntptimeval) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__clock_adjtime64")]
     pub fn clock_adjtime(clk_id: ::clockid_t, buf: *mut ::timex) -> ::c_int;
 
     pub fn fanotify_mark(
@@ -1354,6 +1286,7 @@ extern "C" {
         dirfd: ::c_int,
         path: *const ::c_char,
     ) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "preadv64v2")]
     pub fn preadv2(
         fd: ::c_int,
         iov: *const ::iovec,
@@ -1361,6 +1294,7 @@ extern "C" {
         offset: ::off_t,
         flags: ::c_int,
     ) -> ::ssize_t;
+    #[cfg_attr(gnu_time64_abi, link_name = "pwritev64v2")]
     pub fn pwritev2(
         fd: ::c_int,
         iov: *const ::iovec,
@@ -1396,14 +1330,17 @@ extern "C" {
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 
     pub fn ctermid(s: *mut ::c_char) -> *mut ::c_char;
+    #[cfg_attr(gnu_time64_abi, link_name = "__ioctl_time64")]
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__glob64_time64")]
     pub fn glob64(
         pattern: *const ::c_char,
         flags: ::c_int,
         errfunc: ::Option<extern "C" fn(epath: *const ::c_char, errno: ::c_int) -> ::c_int>,
         pglob: *mut glob64_t,
     ) -> ::c_int;
+    #[cfg_attr(gnu_time64_abi, link_name = "__globfree64_time64")]
     pub fn globfree64(pglob: *mut glob64_t);
     pub fn ptrace(request: ::c_uint, ...) -> ::c_long;
     pub fn pthread_attr_getaffinity_np(
@@ -1471,6 +1408,7 @@ extern "C" {
     pub fn eaccess(pathname: *const ::c_char, mode: ::c_int) -> ::c_int;
 
     pub fn asctime_r(tm: *const ::tm, buf: *mut ::c_char) -> *mut ::c_char;
+    #[cfg_attr(gnu_time64_abi, link_name = "__ctime64_r")]
     pub fn ctime_r(timep: *const time_t, buf: *mut ::c_char) -> *mut ::c_char;
 
     pub fn strftime(
