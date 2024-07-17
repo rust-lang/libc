@@ -4884,7 +4884,7 @@ fn test_aix(target: &str) {
     assert!(target.contains("aix"));
 
     let mut cfg = ctest_cfg();
-    cfg.define("_THREAD_SAFE_ERRNO", None);
+    cfg.define("_THREAD_SAFE", None);
 
     headers! { cfg:
                "aio.h",
