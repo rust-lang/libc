@@ -22,7 +22,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
 // Extra values to allow for check-cfg.
 const CHECK_CFG_EXTRA: &'static [(&'static str, &'static [&'static str])] = &[
     ("target_os", &["switch", "aix", "ohos", "hurd"]),
-    ("target_env", &["illumos", "wasi", "aix", "ohos"]),
+    ("target_env", &["illumos", "wasi", "ohos"]),
     (
         "target_arch",
         &["loongarch64", "mips32r6", "mips64r6", "csky"],
