@@ -2865,9 +2865,9 @@ safe_f! {
 
 // Network related functions are provided by libsocket and regex
 // functions are provided by libregex.
+// Note that in QNX <=7.0, libregex functions were included it in libc itself.
 #[link(name = "socket")]
-#[link(name = "regex")]
-
+#[cfg_attr(not(target_env = "nto70"), link(name = "regex"))]
 extern "C" {
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
