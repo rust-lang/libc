@@ -256,10 +256,10 @@ COPYFILE_STATE_SRC_FD
 COPYFILE_STATE_SRC_FILENAME
 COPYFILE_STATE_STATUS_CB
 COPYFILE_STATE_STATUS_CTX
-COPYFILE_STATE_XATTRNAME
 COPYFILE_STATE_WAS_CLONED
-COPYFILE_VERBOSE
+COPYFILE_STATE_XATTRNAME
 COPYFILE_UNLINK
+COPYFILE_VERBOSE
 COPYFILE_XATTR
 CR0
 CR1
@@ -441,6 +441,9 @@ F_LOG2PHYS
 F_LOG2PHYS_EXT
 F_NOCACHE
 F_NODIRECT
+F_OFD_GETLK
+F_OFD_SETLK
+F_OFD_SETLKW
 F_PEOFPOSMODE
 F_PREALLOCATE
 F_PUNCHHOLE
@@ -1976,6 +1979,7 @@ posix_spawn_file_actions_t
 posix_spawnattr_destroy
 posix_spawnattr_get_qos_class_np
 posix_spawnattr_getarchpref_np
+posix_spawnattr_getbinpref_np
 posix_spawnattr_getflags
 posix_spawnattr_getpgroup
 posix_spawnattr_getsigdefault
@@ -1983,12 +1987,11 @@ posix_spawnattr_getsigmask
 posix_spawnattr_init
 posix_spawnattr_set_qos_class_np
 posix_spawnattr_setarchpref_np
+posix_spawnattr_setbinpref_np
 posix_spawnattr_setflags
 posix_spawnattr_setpgroup
 posix_spawnattr_setsigdefault
 posix_spawnattr_setsigmask
-posix_spawnattr_getbinpref_np
-posix_spawnattr_setbinpref_np
 posix_spawnattr_t
 posix_spawnp
 preadv
