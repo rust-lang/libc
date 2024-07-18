@@ -493,8 +493,7 @@ s! {
         pub rmx_rtt: u32,
         pub rmx_rttvar: u32,
         pub rmx_pksent: u32,
-        pub rmx_state: u32,
-        pub rmx_filler: [u32; 3],
+        pub rmx_filler: [u32; 4],
     }
 
     pub struct rt_msghdr {
@@ -3593,6 +3592,10 @@ pub const F_GLOBAL_NOCACHE: ::c_int = 55;
 pub const F_NODIRECT: ::c_int = 62;
 pub const F_LOG2PHYS_EXT: ::c_int = 65;
 pub const F_BARRIERFSYNC: ::c_int = 85;
+// See https://github.com/apple/darwin-xnu/blob/main/bsd/sys/fcntl.h
+pub const F_OFD_SETLK: ::c_int = 90; /* Acquire or release open file description lock */
+pub const F_OFD_SETLKW: ::c_int = 91; /* (as F_OFD_SETLK but blocking if conflicting lock) */
+pub const F_OFD_GETLK: ::c_int = 92; /* Examine OFD lock */
 pub const F_PUNCHHOLE: ::c_int = 99;
 pub const F_TRIM_ACTIVE_FILE: ::c_int = 100;
 pub const F_SPECULATIVE_READ: ::c_int = 101;
@@ -6296,7 +6299,6 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
 
-    pub static mut mach_task_self_: ::mach_port_t;
     pub fn task_for_pid(
         host: ::mach_port_t,
         pid: ::pid_t,
@@ -6411,10 +6413,6 @@ extern "C" {
         search_path: *const ::c_char,
         argv: *const *mut ::c_char,
     ) -> ::c_int;
-}
-
-pub unsafe fn mach_task_self() -> ::mach_port_t {
-    mach_task_self_
 }
 
 cfg_if! {
