@@ -2864,7 +2864,7 @@ safe_f! {
 
 // Network related functions are provided by libsocket and regex
 // functions are provided by libregex.
-// Note that in QNX <=7.0, libregex functions were included it in libc itself.
+// In QNX <=7.0, libregex functions were included in libc itself.
 #[link(name = "socket")]
 #[cfg_attr(not(target_env = "nto70"), link(name = "regex"))]
 extern "C" {
