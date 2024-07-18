@@ -687,6 +687,7 @@ pthread_condattr_init
 pthread_condattr_t
 pthread_create
 pthread_detach
+pthread_equal
 pthread_exit
 pthread_getspecific
 pthread_join
