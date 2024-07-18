@@ -408,6 +408,9 @@ fn test_apple(target: &str) {
             ("ifreq", "ifr_ifru") => true,
             ("ifkpi", "ifk_data") => true,
             ("ifconf", "ifc_ifcu") => true,
+            // FIXME: this field has been incorporated into a resized `rmx_filler` array.
+            ("rt_metrics", "rmx_state") => true,
+            ("rt_metrics", "rmx_filler") => true,
             _ => false,
         }
     });
