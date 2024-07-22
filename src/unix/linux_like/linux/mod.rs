@@ -4519,6 +4519,7 @@ pub const RTNLGRP_STATS: ::c_uint = 0x24;
 // linux/module.h
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: ::c_uint = 0x0002;
+pub const MODULE_INIT_COMPRESSED_FILE: ::c_uint = 0x0004;
 
 // linux/net_tstamp.h
 pub const SOF_TIMESTAMPING_TX_HARDWARE: ::c_uint = 1 << 0;
