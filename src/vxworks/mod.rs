@@ -753,6 +753,7 @@ pub const S_IFSOCK: ::c_int = 0o14_0000;
 pub const S_ISUID: ::c_int = 0o4000;
 pub const S_ISGID: ::c_int = 0o2000;
 pub const S_ISTXT: ::c_int = 0o1000;
+pub const S_ISVTX: mode_t = 0o1000;
 pub const S_IRUSR: ::c_int = 0o0400;
 pub const S_IWUSR: ::c_int = 0o0200;
 pub const S_IXUSR: ::c_int = 0o0100;
@@ -768,6 +769,7 @@ pub const S_IRWXO: ::c_int = 0o0007;
 
 // socket.h
 pub const SOL_SOCKET: ::c_int = 0xffff;
+pub const SOMAXCONN: ::c_int = 128;
 
 pub const SO_DEBUG: ::c_int = 0x0001;
 pub const SO_REUSEADDR: ::c_int = 0x0004;
@@ -1867,11 +1869,16 @@ safe_f! {
     }
 }
 
-pub fn pread(_fd: ::c_int, _buf: *mut ::c_void, _count: ::size_t, _offset: off64_t) -> ::ssize_t {
+pub unsafe fn pread(
+    _fd: ::c_int,
+    _buf: *mut ::c_void,
+    _count: ::size_t,
+    _offset: off64_t,
+) -> ::ssize_t {
     -1
 }
 
-pub fn pwrite(
+pub unsafe fn pwrite(
     _fd: ::c_int,
     _buf: *const ::c_void,
     _count: ::size_t,
@@ -1879,7 +1886,12 @@ pub fn pwrite(
 ) -> ::ssize_t {
     -1
 }
-pub fn posix_memalign(memptr: *mut *mut ::c_void, align: ::size_t, size: ::size_t) -> ::c_int {
+
+pub unsafe fn posix_memalign(
+    memptr: *mut *mut ::c_void,
+    align: ::size_t,
+    size: ::size_t,
+) -> ::c_int {
     // check to see if align is a power of 2 and if align is a multiple
     //  of sizeof(void *)
     if (align & align - 1 != 0) || (align as usize % size_of::<::size_t>() != 0) {

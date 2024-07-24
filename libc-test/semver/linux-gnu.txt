@@ -511,6 +511,9 @@ XSK_UNALIGNED_BUF_ADDR_MASK
 XDP_PKT_CONTD
 XENFS_SUPER_MAGIC
 XFS_SUPER_MAGIC
+_CS_GNU_LIBC_VERSION
+_CS_GNU_LIBPTHREAD_VERSION
+_CS_PATH
 _SC_2_C_VERSION
 _SC_BASE
 _SC_CHARCLASS_NAME_MAX
@@ -611,6 +614,7 @@ aio_write
 aiocb
 backtrace
 clock_adjtime
+confstr
 copy_file_range
 ctermid
 dlinfo

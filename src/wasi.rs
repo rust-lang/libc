@@ -1,3 +1,6 @@
+// [wasi-libc](https://github.com/WebAssembly/wasi-libc) definitions.
+// `wasi-libc` project provides multiple libraries including emulated features, but we list only basic features with `libc.a` here.
+
 use super::{Send, Sync};
 
 pub use ffi::c_void;

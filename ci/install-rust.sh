@@ -13,12 +13,12 @@ fi
 if [ "$OS" = "windows" ]; then
   : "${TARGET?The TARGET environment variable must be set.}"
   rustup set profile minimal
-  rustup update --force $toolchain-"$TARGET"
-  rustup default $toolchain-"$TARGET"
+  rustup update --force "$toolchain-$TARGET"
+  rustup default "$toolchain-$TARGET"
 else
   rustup set profile minimal
-  rustup update --force $toolchain
-  rustup default $toolchain
+  rustup update --force "$toolchain"
+  rustup default "$toolchain"
 fi
 
 if [ -n "$TARGET" ]; then
