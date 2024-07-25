@@ -5622,10 +5622,9 @@ extern "C" {
     ) -> ::ssize_t;
 }
 
-
 // Syscall libc stub for non Wasm32-WALI targets
 // In wasm32-linux, all syscalls are name-bound and typed.
-// The 'syscall' implementation from C library is avoided since 
+// The 'syscall' implementation from C library is avoided since
 // higher level libraries do not explicitly typecast arguments to
 // 64-bit register sizes, which is expected of C variadic arguments.
 // To overcome this, a wrapper 'syscall' method is implemented,
@@ -5638,7 +5637,6 @@ cfg_if!(
         }
     }
 );
-
 
 // LFS64 extensions
 //

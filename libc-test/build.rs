@@ -4576,7 +4576,7 @@ fn test_wali(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "DIR"  => ty.to_string(),
+            "FILE" | "fd_set" | "DIR" => ty.to_string(),
 
             "Ioctl" if gnu => "unsigned long".to_string(),
             "Ioctl" => "int".to_string(),
@@ -4736,19 +4736,11 @@ fn test_wali(target: &str) {
 
             // FIXME: Requires >= 5.1 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "tls12_crypto_info_aes_gcm_256"
-                if musl =>
-            {
-                true
-            }
+            "tls12_crypto_info_aes_gcm_256" if musl => true,
 
             // FIXME: Requires >= 5.11 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "tls12_crypto_info_chacha20_poly1305"
-                if musl =>
-            {
-                true
-            }
+            "tls12_crypto_info_chacha20_poly1305" if musl => true,
 
             // FIXME: Requires >= 5.3 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
@@ -4773,7 +4765,6 @@ fn test_wali(target: &str) {
             // A new field was added in kernel 5.4, this is the old version for backwards compatibility.
             // https://github.com/torvalds/linux/commit/c05cd3645814724bdeb32a2b4d953b12bdea5f8c
             "xdp_umem_reg_v1" => true,
-
 
             // Is defined in `<linux/sched/types.h>` but if this file is included at the same time
             // as `<sched.h>`, the `struct sched_param` is defined twice, causing the compilation to

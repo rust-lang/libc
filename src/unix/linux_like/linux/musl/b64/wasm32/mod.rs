@@ -911,7 +911,6 @@ pub const IEXTEN: ::tcflag_t = 0x00008000;
 pub const TOSTOP: ::tcflag_t = 0x00000100;
 pub const FLUSHO: ::tcflag_t = 0x00001000;
 
-
 /* Aliases to syscall constants */
 pub const SYS_fadvise: ::c_long = SYS_fadvise64;
 
