@@ -509,6 +509,8 @@ s! {
         pub rmx_rtt: u32,
         pub rmx_rttvar: u32,
         pub rmx_pksent: u32,
+        /// This field does not exist anymore, the u32 is now part of a resized
+        /// `rmx_filler` array.
         pub rmx_state: u32,
         pub rmx_filler: [u32; 3],
     }

@@ -366,10 +366,14 @@ pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_IOV_MAX: c_int = 60;
 pub const _SC_SYMLOOP_MAX: c_int = 173;
 
+#[allow(unused_unsafe)] // `addr_of!(EXTERN_STATIC)` is now safe; remove `unsafe` when MSRV >= 1.82
 pub static CLOCK_MONOTONIC: clockid_t = unsafe { clockid_t(ptr_addr_of!(_CLOCK_MONOTONIC)) };
+#[allow(unused_unsafe)]
 pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
     unsafe { clockid_t(ptr_addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
+#[allow(unused_unsafe)]
 pub static CLOCK_REALTIME: clockid_t = unsafe { clockid_t(ptr_addr_of!(_CLOCK_REALTIME)) };
+#[allow(unused_unsafe)]
 pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
     unsafe { clockid_t(ptr_addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
 
