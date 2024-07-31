@@ -2569,6 +2569,7 @@ fn test_freebsd(target: &str) {
         // skip those that are manually verified
         match name {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
+            // execvpe is introduced in FreeBSD 14.1.
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" => true,
 
             // The `uname` function in the `utsname.h` FreeBSD header is a C
