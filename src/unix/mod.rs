@@ -1056,6 +1056,7 @@ extern "C" {
     pub fn times(buf: *mut ::tms) -> ::clock_t;
 
     pub fn pthread_self() -> ::pthread_t;
+    pub fn pthread_equal(t1: ::pthread_t, t2: ::pthread_t) -> ::c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pthread_join$UNIX2003"
