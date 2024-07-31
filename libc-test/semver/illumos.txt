@@ -1,0 +1,3 @@
+pthread_attr_get_np
+pthread_attr_getstackaddr
+pthread_attr_setstack
