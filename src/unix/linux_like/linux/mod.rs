@@ -469,13 +469,14 @@ s! {
         // to false. So I'm just removing these, and if uClibc changes
         // the #if block in the future to include the following fields, these
         // will probably need including here. tsidea, skrap
-        #[cfg(not(target_env = "uclibc"))]
+        // QNX (NTO) platform does not define these fields
+        #[cfg(not(any(target_env = "uclibc", target_os = "nto")))]
         pub dlpi_adds: ::c_ulonglong,
-        #[cfg(not(target_env = "uclibc"))]
+        #[cfg(not(any(target_env = "uclibc", target_os = "nto")))]
         pub dlpi_subs: ::c_ulonglong,
-        #[cfg(not(target_env = "uclibc"))]
+        #[cfg(not(any(target_env = "uclibc", target_os = "nto")))]
         pub dlpi_tls_modid: ::size_t,
-        #[cfg(not(target_env = "uclibc"))]
+        #[cfg(not(any(target_env = "uclibc", target_os = "nto")))]
         pub dlpi_tls_data: *mut ::c_void,
     }
 
