@@ -1,5 +1,6 @@
 pub type c_char = u8;
 pub type wchar_t = u32;
+pub type stat64 = ::stat;
 
 s! {
     pub struct stat {
@@ -15,35 +16,22 @@ s! {
         pub st_size: ::off_t,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
+        __st_atime32: ::c_long,
+        __st_atime32_nsec: ::c_long,
+        __st_mtime32: ::c_long,
+        __st_mtime32_nsec: ::c_long,
+        __st_ctime32: ::c_long,
+        __st_ctime32_nsec: ::c_long,
+        pub st_ino: ::ino_t,
         pub st_atime: ::time_t,
         pub st_atime_nsec: ::c_long,
+        __st_atime_nsec_padding: ::c_long,
         pub st_mtime: ::time_t,
         pub st_mtime_nsec: ::c_long,
+        __st_mtime_nsec_padding: ::c_long,
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
-        pub st_ino: ::ino_t,
-    }
-
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        __st_dev_padding: ::c_int,
-        __st_ino_truncated: ::c_long,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __st_rdev_padding: ::c_int,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        pub st_ino: ::ino_t,
+        __st_ctime_nsec_padding: ::c_long,
     }
 
     pub struct stack_t {
@@ -67,34 +55,40 @@ s! {
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
-        pub shm_atime: ::time_t,
-        __unused1: ::c_int,
-        pub shm_dtime: ::time_t,
-        __unused2: ::c_int,
-        pub shm_ctime: ::time_t,
-        __unused3: ::c_int,
+        __shm_atime_lo: ::c_ulong,
+        __shm_atime_hi: ::c_ulong,
+        __shm_dtime_lo: ::c_ulong,
+        __shm_dtime_hi: ::c_ulong,
+        __shm_ctime_lo: ::c_ulong,
+        __shm_ctime_hi: ::c_ulong,
         pub shm_cpid: ::pid_t,
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::c_ulong,
         __pad1: ::c_ulong,
         __pad2: ::c_ulong,
+        __pad3: ::c_ulong,
+        pub shm_atime: ::time_t,
+        pub shm_dtime: ::time_t,
+        pub shm_ctime: ::time_t,
     }
 
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
-        pub msg_stime: ::time_t,
-        __unused1: ::c_int,
-        pub msg_rtime: ::time_t,
-        __unused2: ::c_int,
-        pub msg_ctime: ::time_t,
-        __unused3: ::c_int,
-        __msg_cbytes: ::c_ulong,
+        __msg_stime_lo: ::c_ulong,
+        __msg_stime_hi: ::c_ulong,
+        __msg_rtime_lo: ::c_ulong,
+        __msg_rtime_hi: ::c_ulong,
+        __msg_ctime_lo: ::c_ulong,
+        __msg_ctime_hi: ::c_ulong,
+        pub msg_cbytes: ::c_ulong,
         pub msg_qnum: ::msgqnum_t,
         pub msg_qbytes: ::msglen_t,
         pub msg_lspid: ::pid_t,
         pub msg_lrpid: ::pid_t,
-        __pad1: ::c_ulong,
-        __pad2: ::c_ulong,
+        __unused: [::c_ulong; 2],
+        pub msg_stime: ::time_t,
+        pub msg_rtime: ::time_t,
+        pub msg_ctime: ::time_t,
     }
 
     pub struct statfs {

@@ -5,7 +5,7 @@
 
 set -ex
 
-MUSL_VERSION=1.1.24
+MUSL_VERSION=1.2.3
 MUSL="musl-${MUSL_VERSION}"
 
 # Download, configure, build, and install musl:

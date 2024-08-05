@@ -106,7 +106,12 @@ pub unsafe extern "C" fn mmap64(
 //
 // These aliases are mostly fine though, neither function takes a LFS64-namespaced type as an
 // argument, nor do their names clash with any declared types.
+//
+// Targets wasm32-unknown-emscripten in CI recognize them as unused imports.
+// Like the same one at src/unix/linux_like/linux/musl/lfs64.rs, here they are also allowed.
+#[allow(unused_imports)]
 pub use open as open64;
+#[allow(unused_imports)]
 pub use openat as openat64;
 
 #[inline]

@@ -114,7 +114,12 @@ pub unsafe extern "C" fn mmap64(
 //
 // These aliases are mostly fine though, neither function takes a LFS64-namespaced type as an
 // argument, nor do their names clash with any declared types.
+//
+// Targets i686-unknown-linux-musl and arm-unknown-linux-musleabihf in CI recognize them as unused imports.
+// Since `dead_code` is already allowed at the crate level, here they are also allowed.
+#[allow(unused_imports)]
 pub use open as open64;
+#[allow(unused_imports)]
 pub use openat as openat64;
 
 #[inline]

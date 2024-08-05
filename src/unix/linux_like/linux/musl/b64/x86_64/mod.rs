@@ -5,6 +5,7 @@ pub type blksize_t = ::c_long;
 pub type __u64 = ::c_ulonglong;
 pub type __s64 = ::c_longlong;
 pub type greg_t = i64;
+pub type stat64 = ::stat;
 
 s! {
     pub struct stat {
@@ -26,27 +27,6 @@ s! {
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
         __unused: [::c_long; 3],
-    }
-
-    pub struct stat64 {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino64_t,
-        pub st_nlink: ::nlink_t,
-        pub st_mode: ::mode_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        __pad0: ::c_int,
-        pub st_rdev: ::dev_t,
-        pub st_size: ::off_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __reserved: [::c_long; 3],
     }
 
     pub struct user_regs_struct {
@@ -672,7 +652,7 @@ pub const MAP_32BIT: ::c_int = 0x0040;
 pub const O_APPEND: ::c_int = 1024;
 pub const O_DIRECT: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
-pub const O_LARGEFILE: ::c_int = 0;
+pub const O_LARGEFILE: ::c_int = 0x8000;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
 pub const O_CREAT: ::c_int = 64;
 pub const O_EXCL: ::c_int = 128;
