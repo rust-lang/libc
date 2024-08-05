@@ -17,6 +17,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
+    "musl_time64_abi",
 ];
 
 // Extra values to allow for check-cfg.
@@ -70,7 +71,7 @@ fn main() {
     // Some ABIs need to redirect time related symbols to their time64
     // equivalents. See #2088 and #1848 for more information.
     if is_musl_time64_abi() {
-        println!("cargo:rustc-cfg=musl_time64_abi");
+        set_cfg("musl_time64_abi");
     }
 
     // On CI: deny all warnings
