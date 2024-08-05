@@ -3340,7 +3340,10 @@ extern "C" {
     pub fn dl_iterate_phdr(
         callback: ::Option<
             unsafe extern "C" fn(
-                info: *const dl_phdr_info,
+                // The original .h file declares this as *const, but for consistency with other platforms,
+                // changing this to *mut to make it easier to use.
+                // Maybe in v0.3 all platforms should use this as a *const.
+                info: *mut dl_phdr_info,
                 size: ::size_t,
                 data: *mut ::c_void,
             ) -> ::c_int,
