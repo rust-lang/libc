@@ -294,8 +294,6 @@ fn test_apple(target: &str) {
             "tcp_connection_info" => true,
             // FIXME: The size is changed in recent macOSes.
             "malloc_introspection_t" => true,
-            // sonoma changes the padding `rmx_filler` field.
-            "rt_metrics" => true,
 
             _ => false,
         }
@@ -2216,12 +2214,6 @@ fn test_freebsd(target: &str) {
             // This was removed in FreeBSD 14 (git 1b4701fe1e8) and never
             // should've been used anywhere anyway.
             "TDF_UNUSED23" => true,
-
-            // Removed in FreeBSD 15
-            "TDF_CANSWAP" | "TDF_SWAPINREQ" => true,
-
-            // Unaccessible in FreeBSD 15
-            "TDI_SWAPPED" | "P_SWAPPINGOUT" | "P_SWAPPINGIN" => true,
 
             // Removed in FreeBSD 14 (git a6b55ee6be1)
             "IFF_KNOWSEPOCH" => true,
