@@ -31,12 +31,12 @@ jobs:
       contents: read # to fetch code (actions/checkout)
 
     name: macOS
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       fail-fast: true
       matrix:
         target: [
-          x86_64-apple-darwin,
+          aarch64-apple-darwin,
         ]
     steps:
       - uses: actions/checkout@v4
@@ -218,10 +218,10 @@ jobs:
       max-parallel: 4
       matrix:
         target:
-          - { toolchain: stable, os: macos-13 }
-          - { toolchain: beta, os: macos-13 }
-          - { toolchain: nightly, os: macos-13 }
-          - { toolchain: 1.71.0, os: macos-13 }
+          - { toolchain: stable, os: macos-14 }
+          - { toolchain: beta, os: macos-14 }
+          - { toolchain: nightly, os: macos-14 }
+          - { toolchain: 1.71.0, os: macos-14 }
     runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@v4
