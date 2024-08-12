@@ -10,6 +10,6 @@ Here's a checklist for things that will be checked during review or continuous i
 - \[ ] If your PR increments version number, it must NOT contain any other changes (otherwise a release could be delayed)
 - \[ ] Make sure `ci/style.sh` passes
 - \[ ] `cd libc-test && cargo test`
-  - (this might fail on your env due to environment difference between your env and CI. Ignore failures if you are not sure)
+  - (this might fail on your env due to environment difference between your env and CI. Ignore local failures if you are not sure)
 
 Delete this line and everything above before opening your PR.

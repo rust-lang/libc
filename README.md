@@ -16,14 +16,17 @@ More detailed information about the design of this library can be found in its
 
 [rfc]: https://github.com/rust-lang/rfcs/blob/HEAD/text/1291-promote-libc.md
 
-## v0.3 Roadmap
+## v1.0 Roadmap
 
-The main branch is now for v0.3 which has some breaking changes.
+Currently, `libc` has two active branches: `main` for the upcoming v1.0 release,
+and `libc-0.2` for the currently published version. By default all pull requests
+should target `main`; once reviewed, they can be cherry picked to the `libc-0.2`
+branch if needed.
 
-For v0.2, please submit PRs to the `libc-0.2` branch instead.
-We will stop making new v0.2 releases once we release v0.3 on crates.io.
+We will stop making new v0.2 releases once v1.0 is released.
 
-See the [tracking issue](https://github.com/rust-lang/libc/issues/3248) for details.
+See the section in [CONTRIBUTING.md](CONTRIBUTING.md#v10-roadmap) for more
+details.
 
 ## Usage
 
