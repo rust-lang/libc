@@ -46,7 +46,8 @@ targets = [
     "armv7-wrs-vxworks-eabihf",
     "armv7r-none-eabi",
     "armv7r-none-eabihf",
-    "hexagon-unknown-linux-musl",
+    # FIXME(hexagon): excluded due to duplicate symbol errors
+    # "hexagon-unknown-linux-musl",
     "i586-pc-windows-msvc",
     "i586-unknown-linux-gnu",
     "i586-unknown-linux-musl",
