@@ -3289,20 +3289,47 @@ pub const NF_INET_FORWARD: ::c_int = 2;
 pub const NF_INET_LOCAL_OUT: ::c_int = 3;
 pub const NF_INET_POST_ROUTING: ::c_int = 4;
 pub const NF_INET_NUMHOOKS: ::c_int = 5;
+pub const NF_INET_INGRESS: ::c_int = NF_INET_NUMHOOKS;
+
+pub const NF_NETDEV_INGRESS: ::c_int = 0;
+pub const NF_NETDEV_EGRESS: ::c_int = 1;
+pub const NF_NETDEV_NUMHOOKS: ::c_int = 2;
 
 // Some NFPROTO are not compatible with musl and are defined in submodules.
 pub const NFPROTO_UNSPEC: ::c_int = 0;
+pub const NFPROTO_INET: ::c_int = 1;
 pub const NFPROTO_IPV4: ::c_int = 2;
 pub const NFPROTO_ARP: ::c_int = 3;
+pub const NFPROTO_NETDEV: ::c_int = 5;
 pub const NFPROTO_BRIDGE: ::c_int = 7;
 pub const NFPROTO_IPV6: ::c_int = 10;
 pub const NFPROTO_DECNET: ::c_int = 12;
 pub const NFPROTO_NUMPROTO: ::c_int = 13;
-pub const NFPROTO_INET: ::c_int = 1;
-pub const NFPROTO_NETDEV: ::c_int = 5;
 
-pub const NF_NETDEV_INGRESS: ::c_int = 0;
-pub const NF_NETDEV_NUMHOOKS: ::c_int = 1;
+// linux/netfilter_arp.h
+pub const NF_ARP: ::c_int = 0;
+pub const NF_ARP_IN: ::c_int = 0;
+pub const NF_ARP_OUT: ::c_int = 1;
+pub const NF_ARP_FORWARD: ::c_int = 2;
+pub const NF_ARP_NUMHOOKS: ::c_int = 3;
+
+// linux/netfilter_bridge.h
+pub const NF_BR_PRE_ROUTING: ::c_int = 0;
+pub const NF_BR_LOCAL_IN: ::c_int = 1;
+pub const NF_BR_FORWARD: ::c_int = 2;
+pub const NF_BR_LOCAL_OUT: ::c_int = 3;
+pub const NF_BR_POST_ROUTING: ::c_int = 4;
+pub const NF_BR_BROUTING: ::c_int = 5;
+pub const NF_BR_NUMHOOKS: ::c_int = 6;
+
+pub const NF_BR_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_BR_PRI_NAT_DST_BRIDGED: ::c_int = -300;
+pub const NF_BR_PRI_FILTER_BRIDGED: ::c_int = -200;
+pub const NF_BR_PRI_BRNF: ::c_int = 0;
+pub const NF_BR_PRI_NAT_DST_OTHER: ::c_int = 100;
+pub const NF_BR_PRI_FILTER_OTHER: ::c_int = 200;
+pub const NF_BR_PRI_NAT_SRC: ::c_int = 300;
+pub const NF_BR_PRI_LAST: ::c_int = ::INT_MAX;
 
 // linux/netfilter_ipv4.h
 pub const NF_IP_PRE_ROUTING: ::c_int = 0;
@@ -3313,6 +3340,7 @@ pub const NF_IP_POST_ROUTING: ::c_int = 4;
 pub const NF_IP_NUMHOOKS: ::c_int = 5;
 
 pub const NF_IP_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP_PRI_RAW_BEFORE_DEFRAG: ::c_int = -450;
 pub const NF_IP_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
 pub const NF_IP_PRI_RAW: ::c_int = -300;
 pub const NF_IP_PRI_SELINUX_FIRST: ::c_int = -225;
@@ -3336,6 +3364,7 @@ pub const NF_IP6_POST_ROUTING: ::c_int = 4;
 pub const NF_IP6_NUMHOOKS: ::c_int = 5;
 
 pub const NF_IP6_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP6_PRI_RAW_BEFORE_DEFRAG: ::c_int = -450;
 pub const NF_IP6_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
 pub const NF_IP6_PRI_RAW: ::c_int = -300;
 pub const NF_IP6_PRI_SELINUX_FIRST: ::c_int = -225;
