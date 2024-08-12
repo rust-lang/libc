@@ -1981,6 +1981,7 @@ kcmp
 kevent
 key_t
 killpg
+kinfo_file
 kinfo_getvmmap
 kinfo_proc
 kinfo_vmentry
