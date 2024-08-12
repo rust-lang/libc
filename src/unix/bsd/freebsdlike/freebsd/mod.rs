@@ -5534,6 +5534,12 @@ extern "C" {
         idx1: ::c_ulong,
         idx2: ::c_ulong,
     ) -> ::c_int;
+
+    pub fn execvpe(
+        file: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+    ) -> ::c_int;
 }
 
 #[link(name = "memstat")]
