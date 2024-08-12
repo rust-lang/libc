@@ -140,45 +140,6 @@ jobs:
       - name: Execute run-docker.sh
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
-  # These targets are tier 3 or otherwise need to have CI build std via -Zbuild-std.
-  # Because of this, only the nightly compiler can be used on these targets.
-  docker_linux_build_std:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
-    if: ${{ false }} # This is currently broken
-    name: Docker Linux Build-Std Targets
-    needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: true
-      max-parallel: 12
-      matrix:
-        target: [
-          armv7-unknown-linux-uclibceabihf
-        ]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Rust toolchain
-        run: TOOLCHAIN=nightly INSTALL_RUST_SRC=1 sh ./ci/install-rust.sh
-      - name: Execute run-docker.sh
-        run: LIBC_CI=1 TOOLCHAIN=nightly LIBC_CI_ZBUILD_STD=1 sh ./ci/run-docker.sh ${{ matrix.target }}
-
-  # devkitpro's pacman needs to be connected from Docker.
-  docker_switch:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
-    name: Docker Switch
-    needs: [docker_linux_tier1, style_check]
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Rust toolchain
-        run: sh ./ci/install-rust.sh
-      - name: Execute run-docker.sh
-        run: LIBC_CI=1 sh ./ci/run-docker.sh switch
-
   build_channels_linux:
     permissions:
       contents: read # to fetch code (actions/checkout)
@@ -283,11 +244,9 @@ jobs:
     needs: [
       docker_linux_tier1,
       docker_linux_tier2,
-      #docker_linux_build_std,
       macos,
       windows,
       style_check,
-      docker_switch,
       build_channels_linux,
       build_channels_macos,
       build_channels_windows,
