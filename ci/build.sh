@@ -147,8 +147,6 @@ x86_64-unknown-redox \
 
 RUST_APPLE_TARGETS="\
 aarch64-apple-ios \
-x86_64-apple-darwin \
-x86_64-apple-ios \
 "
 
 RUST_NIGHTLY_APPLE_TARGETS="\
@@ -211,6 +209,8 @@ for TARGET in $TARGETS; do
 done
 
 # Targets which are not available via rustup and must be built with -Zbuild-std
+# FIXME(hexagon): hexagon-unknown-linux-musl should be tested but currently has
+# duplicate symbol errors from `compiler_builtins`.
 RUST_LINUX_NO_CORE_TARGETS="\
 aarch64-pc-windows-msvc \
 aarch64-unknown-freebsd \
@@ -223,7 +223,6 @@ armebv7r-none-eabihf \
 armv7-wrs-vxworks-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
-hexagon-unknown-linux-musl \
 i586-pc-windows-msvc \
 i686-pc-windows-msvc \
 i686-unknown-haiku \
