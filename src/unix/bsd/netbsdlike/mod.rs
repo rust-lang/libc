@@ -705,6 +705,17 @@ extern "C" {
         dev: dev_t,
     ) -> ::c_int;
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char, mode: ::mode_t) -> ::c_int;
+
+    pub fn getnameinfo(
+        sa: *const ::sockaddr,
+        salen: ::socklen_t,
+        host: *mut ::c_char,
+        hostlen: ::socklen_t,
+        serv: *mut ::c_char,
+        servlen: ::socklen_t,
+        flags: ::c_int,
+    ) -> ::c_int;
+
     pub fn sem_timedwait(sem: *mut sem_t, abstime: *const ::timespec) -> ::c_int;
     pub fn sem_getvalue(sem: *mut sem_t, sval: *mut ::c_int) -> ::c_int;
     pub fn pthread_condattr_setclock(
