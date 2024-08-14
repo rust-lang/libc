@@ -469,13 +469,14 @@ s! {
         // to false. So I'm just removing these, and if uClibc changes
         // the #if block in the future to include the following fields, these
         // will probably need including here. tsidea, skrap
-        #[cfg(not(target_env = "uclibc"))]
+        // QNX (NTO) platform does not define these fields
+        #[cfg(not(any(target_env = "uclibc", target_os = "nto")))]
         pub dlpi_adds: ::c_ulonglong,
-        #[cfg(not(target_env = "uclibc"))]
+        #[cfg(not(any(target_env = "uclibc", target_os = "nto")))]
         pub dlpi_subs: ::c_ulonglong,
-        #[cfg(not(target_env = "uclibc"))]
+        #[cfg(not(any(target_env = "uclibc", target_os = "nto")))]
         pub dlpi_tls_modid: ::size_t,
-        #[cfg(not(target_env = "uclibc"))]
+        #[cfg(not(any(target_env = "uclibc", target_os = "nto")))]
         pub dlpi_tls_data: *mut ::c_void,
     }
 
@@ -2220,6 +2221,7 @@ pub const AT_EXECFN: ::c_ulong = 31;
 // defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
 // wherever it is defined.
 pub const AT_SYSINFO_EHDR: ::c_ulong = 33;
+pub const AT_MINSIGSTKSZ: ::c_ulong = 51;
 
 pub const GLOB_ERR: ::c_int = 1 << 0;
 pub const GLOB_MARK: ::c_int = 1 << 1;
@@ -2237,12 +2239,12 @@ pub const POSIX_MADV_NORMAL: ::c_int = 0;
 pub const POSIX_MADV_RANDOM: ::c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
-pub const POSIX_SPAWN_USEVFORK: ::c_int = 64;
-pub const POSIX_SPAWN_SETSID: ::c_int = 128;
+pub const POSIX_SPAWN_USEVFORK: ::c_short = 64;
+pub const POSIX_SPAWN_SETSID: ::c_short = 128;
 
-pub const S_IEXEC: mode_t = 64;
-pub const S_IWRITE: mode_t = 128;
-pub const S_IREAD: mode_t = 256;
+pub const S_IEXEC: mode_t = 0o0100;
+pub const S_IWRITE: mode_t = 0o0200;
+pub const S_IREAD: mode_t = 0o0400;
 
 pub const F_LOCK: ::c_int = 1;
 pub const F_TEST: ::c_int = 3;
@@ -2992,12 +2994,12 @@ pub const ETH_P_PHONET: ::c_int = 0x00F5;
 pub const ETH_P_IEEE802154: ::c_int = 0x00F6;
 pub const ETH_P_CAIF: ::c_int = 0x00F7;
 
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x04;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x08;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x10;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x20;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x02;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x04;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x08;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x10;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x20;
 
 pub const NLMSG_NOOP: ::c_int = 0x1;
 pub const NLMSG_ERROR: ::c_int = 0x2;
@@ -3288,20 +3290,47 @@ pub const NF_INET_FORWARD: ::c_int = 2;
 pub const NF_INET_LOCAL_OUT: ::c_int = 3;
 pub const NF_INET_POST_ROUTING: ::c_int = 4;
 pub const NF_INET_NUMHOOKS: ::c_int = 5;
+pub const NF_INET_INGRESS: ::c_int = NF_INET_NUMHOOKS;
+
+pub const NF_NETDEV_INGRESS: ::c_int = 0;
+pub const NF_NETDEV_EGRESS: ::c_int = 1;
+pub const NF_NETDEV_NUMHOOKS: ::c_int = 2;
 
 // Some NFPROTO are not compatible with musl and are defined in submodules.
 pub const NFPROTO_UNSPEC: ::c_int = 0;
+pub const NFPROTO_INET: ::c_int = 1;
 pub const NFPROTO_IPV4: ::c_int = 2;
 pub const NFPROTO_ARP: ::c_int = 3;
+pub const NFPROTO_NETDEV: ::c_int = 5;
 pub const NFPROTO_BRIDGE: ::c_int = 7;
 pub const NFPROTO_IPV6: ::c_int = 10;
 pub const NFPROTO_DECNET: ::c_int = 12;
 pub const NFPROTO_NUMPROTO: ::c_int = 13;
-pub const NFPROTO_INET: ::c_int = 1;
-pub const NFPROTO_NETDEV: ::c_int = 5;
 
-pub const NF_NETDEV_INGRESS: ::c_int = 0;
-pub const NF_NETDEV_NUMHOOKS: ::c_int = 1;
+// linux/netfilter_arp.h
+pub const NF_ARP: ::c_int = 0;
+pub const NF_ARP_IN: ::c_int = 0;
+pub const NF_ARP_OUT: ::c_int = 1;
+pub const NF_ARP_FORWARD: ::c_int = 2;
+pub const NF_ARP_NUMHOOKS: ::c_int = 3;
+
+// linux/netfilter_bridge.h
+pub const NF_BR_PRE_ROUTING: ::c_int = 0;
+pub const NF_BR_LOCAL_IN: ::c_int = 1;
+pub const NF_BR_FORWARD: ::c_int = 2;
+pub const NF_BR_LOCAL_OUT: ::c_int = 3;
+pub const NF_BR_POST_ROUTING: ::c_int = 4;
+pub const NF_BR_BROUTING: ::c_int = 5;
+pub const NF_BR_NUMHOOKS: ::c_int = 6;
+
+pub const NF_BR_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_BR_PRI_NAT_DST_BRIDGED: ::c_int = -300;
+pub const NF_BR_PRI_FILTER_BRIDGED: ::c_int = -200;
+pub const NF_BR_PRI_BRNF: ::c_int = 0;
+pub const NF_BR_PRI_NAT_DST_OTHER: ::c_int = 100;
+pub const NF_BR_PRI_FILTER_OTHER: ::c_int = 200;
+pub const NF_BR_PRI_NAT_SRC: ::c_int = 300;
+pub const NF_BR_PRI_LAST: ::c_int = ::INT_MAX;
 
 // linux/netfilter_ipv4.h
 pub const NF_IP_PRE_ROUTING: ::c_int = 0;
@@ -3312,6 +3341,7 @@ pub const NF_IP_POST_ROUTING: ::c_int = 4;
 pub const NF_IP_NUMHOOKS: ::c_int = 5;
 
 pub const NF_IP_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP_PRI_RAW_BEFORE_DEFRAG: ::c_int = -450;
 pub const NF_IP_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
 pub const NF_IP_PRI_RAW: ::c_int = -300;
 pub const NF_IP_PRI_SELINUX_FIRST: ::c_int = -225;
@@ -3335,6 +3365,7 @@ pub const NF_IP6_POST_ROUTING: ::c_int = 4;
 pub const NF_IP6_NUMHOOKS: ::c_int = 5;
 
 pub const NF_IP6_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP6_PRI_RAW_BEFORE_DEFRAG: ::c_int = -450;
 pub const NF_IP6_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
 pub const NF_IP6_PRI_RAW: ::c_int = -300;
 pub const NF_IP6_PRI_SELINUX_FIRST: ::c_int = -225;
@@ -4577,6 +4608,7 @@ pub const FAN_NOFD: ::c_int = -1;
 pub const FAN_NOPIDFD: ::c_int = FAN_NOFD;
 pub const FAN_EPIDFD: ::c_int = -2;
 
+// linux/futex.h
 pub const FUTEX_WAIT: ::c_int = 0;
 pub const FUTEX_WAKE: ::c_int = 1;
 pub const FUTEX_FD: ::c_int = 2;
@@ -4595,6 +4627,10 @@ pub const FUTEX_LOCK_PI2: ::c_int = 13;
 pub const FUTEX_PRIVATE_FLAG: ::c_int = 128;
 pub const FUTEX_CLOCK_REALTIME: ::c_int = 256;
 pub const FUTEX_CMD_MASK: ::c_int = !(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME);
+
+pub const FUTEX_WAITERS: u32 = 0x80000000;
+pub const FUTEX_OWNER_DIED: u32 = 0x40000000;
+pub const FUTEX_TID_MASK: u32 = 0x3fffffff;
 
 pub const FUTEX_BITSET_MATCH_ANY: ::c_int = 0xffffffff;
 
@@ -5392,9 +5428,6 @@ cfg_if! {
                 spbufp: *mut *mut spwd,
             ) -> ::c_int;
 
-            pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
-            pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
-
             pub fn mq_open(name: *const ::c_char, oflag: ::c_int, ...) -> ::mqd_t;
             pub fn mq_close(mqd: ::mqd_t) -> ::c_int;
             pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
@@ -5480,6 +5513,9 @@ extern "C" {
     pub fn getspent() -> *mut spwd;
 
     pub fn getspnam(name: *const ::c_char) -> *mut spwd;
+
+    pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
+    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 
     // System V IPC
     pub fn shmget(key: ::key_t, size: ::size_t, shmflg: ::c_int) -> ::c_int;

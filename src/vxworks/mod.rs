@@ -91,6 +91,7 @@ pub type SEM_ID_KERNEL = ::OBJ_HANDLE;
 pub type RTP_ID = ::OBJ_HANDLE;
 pub type SD_ID = ::OBJ_HANDLE;
 pub type CONDVAR_ID = ::OBJ_HANDLE;
+pub type STATUS = ::OBJ_HANDLE;
 
 // From vxTypes.h
 pub type _Vx_usr_arg_t = isize;
@@ -613,6 +614,7 @@ pub const PTHREAD_STACK_MIN: usize = 4096;
 pub const _PTHREAD_SHARED_SEM_NAME_MAX: usize = 30;
 
 // ERRNO STUFF
+pub const ERROR: ::c_int = -1;
 pub const OK: ::c_int = 0;
 pub const EPERM: ::c_int = 1; /* Not owner */
 pub const ENOENT: ::c_int = 2; /* No such file or directory */
@@ -720,6 +722,33 @@ pub const S_nfsLib_NFSERR_SERVERFAULT: ::c_int = EIO;
 pub const S_nfsLib_NFSERR_BADTYPE: ::c_int = M_nfsStat | nfsstat::NFSERR_BADTYPE as ::c_int;
 pub const S_nfsLib_NFSERR_JUKEBOX: ::c_int = M_nfsStat | nfsstat::NFSERR_JUKEBOX as ::c_int;
 
+// internal offset values for below constants
+const taskErrorBase: ::c_int = 0x00030000;
+const semErrorBase: ::c_int = 0x00160000;
+const objErrorBase: ::c_int = 0x003d0000;
+
+// taskLibCommon.h
+pub const S_taskLib_NAME_NOT_FOUND: ::c_int = taskErrorBase + 0x0065;
+pub const S_taskLib_TASK_HOOK_TABLE_FULL: ::c_int = taskErrorBase + 0x0066;
+pub const S_taskLib_TASK_HOOK_NOT_FOUND: ::c_int = taskErrorBase + 0x0067;
+pub const S_taskLib_ILLEGAL_PRIORITY: ::c_int = taskErrorBase + 0x0068;
+
+// FIXME: could also be useful for TASK_DESC type
+pub const VX_TASK_NAME_LENGTH: ::c_int = 31;
+
+// semLibCommon.h
+pub const S_semLib_INVALID_STATE: ::c_int = semErrorBase + 0x0065;
+pub const S_semLib_INVALID_OPTION: ::c_int = semErrorBase + 0x0066;
+pub const S_semLib_INVALID_QUEUE_TYPE: ::c_int = semErrorBase + 0x0067;
+pub const S_semLib_INVALID_OPERATION: ::c_int = semErrorBase + 0x0068;
+
+// objLibCommon.h
+pub const S_objLib_OBJ_ID_ERROR: ::c_int = objErrorBase + 0x0001;
+pub const S_objLib_OBJ_UNAVAILABLE: ::c_int = objErrorBase + 0x0002;
+pub const S_objLib_OBJ_DELETED: ::c_int = objErrorBase + 0x0003;
+pub const S_objLib_OBJ_TIMEOUT: ::c_int = objErrorBase + 0x0004;
+pub const S_objLib_OBJ_NO_METHOD: ::c_int = objErrorBase + 0x0005;
+
 // in.h
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -741,33 +770,35 @@ pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
 
 // STAT Stuff
-pub const S_IFMT: ::c_int = 0xf000;
-pub const S_IFIFO: ::c_int = 0x1000;
-pub const S_IFCHR: ::c_int = 0x2000;
-pub const S_IFDIR: ::c_int = 0x4000;
-pub const S_IFBLK: ::c_int = 0x6000;
-pub const S_IFREG: ::c_int = 0x8000;
-pub const S_IFLNK: ::c_int = 0xa000;
-pub const S_IFSHM: ::c_int = 0xb000;
-pub const S_IFSOCK: ::c_int = 0xc000;
-pub const S_ISUID: ::c_int = 0x0800;
-pub const S_ISGID: ::c_int = 0x0400;
-pub const S_ISTXT: ::c_int = 0x0200;
-pub const S_IRUSR: ::c_int = 0x0100;
-pub const S_IWUSR: ::c_int = 0x0080;
-pub const S_IXUSR: ::c_int = 0x0040;
-pub const S_IRWXU: ::c_int = 0x01c0;
-pub const S_IRGRP: ::c_int = 0x0020;
-pub const S_IWGRP: ::c_int = 0x0010;
-pub const S_IXGRP: ::c_int = 0x0008;
-pub const S_IRWXG: ::c_int = 0x0038;
-pub const S_IROTH: ::c_int = 0x0004;
-pub const S_IWOTH: ::c_int = 0x0002;
-pub const S_IXOTH: ::c_int = 0x0001;
-pub const S_IRWXO: ::c_int = 0x0007;
+pub const S_IFMT: ::c_int = 0o17_0000;
+pub const S_IFIFO: ::c_int = 0o1_0000;
+pub const S_IFCHR: ::c_int = 0o2_0000;
+pub const S_IFDIR: ::c_int = 0o4_0000;
+pub const S_IFBLK: ::c_int = 0o6_0000;
+pub const S_IFREG: ::c_int = 0o10_0000;
+pub const S_IFLNK: ::c_int = 0o12_0000;
+pub const S_IFSHM: ::c_int = 0o13_0000;
+pub const S_IFSOCK: ::c_int = 0o14_0000;
+pub const S_ISUID: ::c_int = 0o4000;
+pub const S_ISGID: ::c_int = 0o2000;
+pub const S_ISTXT: ::c_int = 0o1000;
+pub const S_ISVTX: mode_t = 0o1000;
+pub const S_IRUSR: ::c_int = 0o0400;
+pub const S_IWUSR: ::c_int = 0o0200;
+pub const S_IXUSR: ::c_int = 0o0100;
+pub const S_IRWXU: ::c_int = 0o0700;
+pub const S_IRGRP: ::c_int = 0o0040;
+pub const S_IWGRP: ::c_int = 0o0020;
+pub const S_IXGRP: ::c_int = 0o0010;
+pub const S_IRWXG: ::c_int = 0o0070;
+pub const S_IROTH: ::c_int = 0o0004;
+pub const S_IWOTH: ::c_int = 0o0002;
+pub const S_IXOTH: ::c_int = 0o0001;
+pub const S_IRWXO: ::c_int = 0o0007;
 
 // socket.h
 pub const SOL_SOCKET: ::c_int = 0xffff;
+pub const SOMAXCONN: ::c_int = 128;
 
 pub const SO_DEBUG: ::c_int = 0x0001;
 pub const SO_REUSEADDR: ::c_int = 0x0004;
@@ -1867,11 +1898,16 @@ safe_f! {
     }
 }
 
-pub fn pread(_fd: ::c_int, _buf: *mut ::c_void, _count: ::size_t, _offset: off64_t) -> ::ssize_t {
+pub unsafe fn pread(
+    _fd: ::c_int,
+    _buf: *mut ::c_void,
+    _count: ::size_t,
+    _offset: off64_t,
+) -> ::ssize_t {
     -1
 }
 
-pub fn pwrite(
+pub unsafe fn pwrite(
     _fd: ::c_int,
     _buf: *const ::c_void,
     _count: ::size_t,
@@ -1879,7 +1915,12 @@ pub fn pwrite(
 ) -> ::ssize_t {
     -1
 }
-pub fn posix_memalign(memptr: *mut *mut ::c_void, align: ::size_t, size: ::size_t) -> ::c_int {
+
+pub unsafe fn posix_memalign(
+    memptr: *mut *mut ::c_void,
+    align: ::size_t,
+    size: ::size_t,
+) -> ::c_int {
     // check to see if align is a power of 2 and if align is a multiple
     //  of sizeof(void *)
     if (align & align - 1 != 0) || (align as usize % size_of::<::size_t>() != 0) {

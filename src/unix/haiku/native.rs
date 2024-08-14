@@ -945,6 +945,7 @@ pub const B_XATTR_TYPE: u32 = haiku_constant!('X', 'A', 'T', 'R');
 pub const B_NETWORK_ADDRESS_TYPE: u32 = haiku_constant!('N', 'W', 'A', 'D');
 pub const B_MIME_STRING_TYPE: u32 = haiku_constant!('M', 'I', 'M', 'S');
 pub const B_ASCII_TYPE: u32 = haiku_constant!('T', 'E', 'X', 'T');
+pub const B_APP_IMAGE_SYMBOL: *const ::c_void = core::ptr::null();
 
 extern "C" {
     // kernel/OS.h
@@ -1299,7 +1300,7 @@ extern "C" {
     pub fn find_path_for_path_etc(
         path: *const ::c_char,
         dependency: *const ::c_char,
-        architectur: *const ::c_char,
+        architecture: *const ::c_char,
         baseDirectory: path_base_directory,
         subPath: *const ::c_char,
         flags: u32,

@@ -67,12 +67,7 @@ fn do_ctest() {
 }
 
 fn ctest_cfg() -> ctest::TestGenerator {
-    let mut cfg = ctest::TestGenerator::new();
-    let libc_cfgs = ["libc_thread_local"];
-    for f in &libc_cfgs {
-        cfg.cfg(f, None);
-    }
-    cfg
+    ctest::TestGenerator::new()
 }
 
 fn do_semver() {
@@ -218,6 +213,7 @@ fn test_apple(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet6/in6_var.h",
         "os/lock.h",
         "os/signpost.h",
         "poll.h",
@@ -298,6 +294,8 @@ fn test_apple(target: &str) {
             "tcp_connection_info" => true,
             // FIXME: The size is changed in recent macOSes.
             "malloc_introspection_t" => true,
+            // sonoma changes the padding `rmx_filler` field.
+            "rt_metrics" => true,
 
             _ => false,
         }
@@ -356,6 +354,7 @@ fn test_apple(target: &str) {
             // MAXPATHLEN is too big for auto-derive traits on arrays.
             ("vnode_info_path", "vip_path") => true,
             ("ifreq", "ifr_ifru") => true,
+            ("in6_ifreq", "ifr_ifru") => true,
             ("ifkpi", "ifk_data") => true,
             ("ifconf", "ifc_ifcu") => true,
             _ => false,
@@ -1551,6 +1550,7 @@ fn test_android(target: &str) {
                "sched.h",
                "semaphore.h",
                "signal.h",
+               "spawn.h",
                "stddef.h",
                "stdint.h",
                "stdio.h",
@@ -1636,6 +1636,8 @@ fn test_android(target: &str) {
                 "linux/netfilter/nfnetlink_log.h",
                 "linux/netfilter/nfnetlink_queue.h",
                 "linux/netfilter/nf_tables.h",
+                "linux/netfilter_arp.h",
+                "linux/netfilter_bridge.h",
                 "linux/netfilter_ipv4.h",
                 "linux/netfilter_ipv6.h",
                 "linux/netfilter_ipv6/ip6_tables.h",
@@ -1708,6 +1710,10 @@ fn test_android(target: &str) {
 
             // FIXME: Somehow fails to test after removing cfg hacks:
             "__uint128" => true,
+
+            // These are intended to be opaque
+            "posix_spawn_file_actions_t" => true,
+            "posix_spawnattr_t" => true,
             _ => false,
         }
     });
@@ -2218,6 +2224,12 @@ fn test_freebsd(target: &str) {
             // should've been used anywhere anyway.
             "TDF_UNUSED23" => true,
 
+            // Removed in FreeBSD 15
+            "TDF_CANSWAP" | "TDF_SWAPINREQ" => true,
+
+            // Unaccessible in FreeBSD 15
+            "TDI_SWAPPED" | "P_SWAPPINGOUT" | "P_SWAPPINGIN" => true,
+
             // Removed in FreeBSD 14 (git a6b55ee6be1)
             "IFF_KNOWSEPOCH" => true,
 
@@ -2280,7 +2292,7 @@ fn test_freebsd(target: &str) {
                 true
             }
 
-            // Added in in FreeBSD 13.0 (r367776 and r367287)
+            // Added in FreeBSD 13.0 (r367776 and r367287)
             "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
 
             // Added in FreeBSD 14
@@ -2411,8 +2423,18 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // Added in FreeBSD 14.1
+            "KCMP_FILE" | "KCMP_FILEOBJ" | "KCMP_FILES" | "KCMP_SIGHAND" | "KCMP_VM"
+                if Some(14) > freebsd_ver =>
+            {
+                true
+            }
+
             // FIXME: Removed in FreeBSD 15:
             "LOCAL_CONNWAIT" => true,
+
+            // FIXME: The values has been changed in FreeBSD 15:
+            "CLOCK_BOOTTIME" if Some(15) <= freebsd_ver => true,
 
             _ => false,
         }
@@ -2462,6 +2484,9 @@ fn test_freebsd(target: &str) {
             | "sctp_send_failed_event"
             | "sctp_stream_reset_event" => true,
 
+            // FIXME: Changed in FreeBSD 15
+            "tcp_info" | "sockstat" if Some(15) >= freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -2469,6 +2494,8 @@ fn test_freebsd(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
+            // This is introduced in FreeBSD 14.1
+            "execvpe" => true,
             // The `uname` function in the `utsname.h` FreeBSD header is a C
             // inline function (has no symbol) that calls the `__xuname` symbol.
             // Therefore the function pointer comparison does not make sense for it.
@@ -2517,6 +2544,9 @@ fn test_freebsd(target: &str) {
             "timerfd_create" | "timerfd_gettime" | "timerfd_settime" if Some(14) > freebsd_ver => {
                 true
             }
+
+            // Those are introduced in FreeBSD 14.1.
+            "kcmp" => true,
 
             _ => false,
         }
@@ -3421,6 +3451,8 @@ fn test_linux(target: &str) {
         "linux/netfilter/nfnetlink_log.h",
         "linux/netfilter/nfnetlink_queue.h",
         "linux/netfilter/nf_tables.h",
+        "linux/netfilter_arp.h",
+        "linux/netfilter_bridge.h",
         "linux/netfilter_ipv4.h",
         "linux/netfilter_ipv6.h",
         "linux/netfilter_ipv6/ip6_tables.h",
@@ -3509,7 +3541,8 @@ fn test_linux(target: &str) {
 
     cfg.skip_type(move |ty| {
         // FIXME: very recent additions to musl, not yet released.
-        if musl && (ty == "Elf32_Relr" || ty == "Elf64_Relr") {
+        // also apparently some glibc versions
+        if ty == "Elf32_Relr" || ty == "Elf64_Relr" {
             return true;
         }
         if sparc64 && (ty == "Elf32_Rela" || ty == "Elf64_Rela") {
@@ -3863,6 +3896,9 @@ fn test_linux(target: &str) {
             | "SW_CNT"
                 if ppc64 || riscv64 => true,
 
+            // FIXME: requires more recent kernel headers on CI
+            "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV" if sparc64 => true,
+
             // FIXME: Not currently available in headers on ARM and musl.
             "NETLINK_GET_STRICT_CHK" if arm || musl => true,
 
@@ -3933,9 +3969,15 @@ fn test_linux(target: &str) {
             | "MINSIGSTKSZ"
                 if gnu => true,
 
-            // FIXME: Linux >= 5.16 changed its value:
+            // FIXME: Linux >= 5.10:
+            // https://github.com/torvalds/linux/commit/d25e2e9388eda61b6e298585024ee3355f50c493
+            "NF_INET_INGRESS" if musl => true,
+
+            // FIXME: Linux >= 5.16:
             // https://github.com/torvalds/linux/commit/42df6e1d221dddc0f2acf2be37e68d553ad65f96
-            "NF_NETDEV_NUMHOOKS" => true,
+            "NF_NETDEV_EGRESS" if musl || sparc64 => true,
+            // value changed
+            "NF_NETDEV_NUMHOOKS" if musl || sparc64 => true,
 
             // FIXME: requires Linux >= 5.6:
             | "RESOLVE_BENEATH"

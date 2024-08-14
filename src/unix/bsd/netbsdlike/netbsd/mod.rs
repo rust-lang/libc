@@ -2330,7 +2330,7 @@ pub const PT_LWPNEXT: ::c_int = 25;
 pub const PT_SET_SIGPASS: ::c_int = 26;
 pub const PT_GET_SIGPASS: ::c_int = 27;
 pub const PT_FIRSTMACH: ::c_int = 32;
-pub const POSIX_SPAWN_RETURNERROR: ::c_int = 0x40;
+pub const POSIX_SPAWN_RETURNERROR: ::c_short = 0x40;
 
 // Flags for chflags(2)
 pub const SF_APPEND: ::c_ulong = 0x00040000;
@@ -2862,6 +2862,22 @@ extern "C" {
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 
     pub fn reboot(mode: ::c_int, bootstr: *mut ::c_char) -> ::c_int;
+
+    #[link_name = "___lwp_park60"]
+    pub fn _lwp_park(
+        clock: ::clockid_t,
+        flags: ::c_int,
+        ts: *const ::timespec,
+        unpark: ::lwpid_t,
+        hint: *const ::c_void,
+        unparkhint: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn _lwp_unpark(lwp: ::lwpid_t, hint: *const ::c_void) -> ::c_int;
+    pub fn _lwp_unpark_all(
+        targets: *const ::lwpid_t,
+        ntargets: ::size_t,
+        hint: *const ::c_void,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]

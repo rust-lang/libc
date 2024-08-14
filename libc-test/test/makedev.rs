@@ -79,7 +79,7 @@ mod t {
 
     // These OSes allow 32 bits for both minor and major
     #[cfg(any(
-        target_os = "empscripten",
+        target_os = "emscripten",
         target_os = "freebsd",
         target_os = "fuchsia",
         target_os = "linux",

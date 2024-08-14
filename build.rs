@@ -7,6 +7,7 @@ use std::str;
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &'static [&'static str] = &[
     "emscripten_new_stat_abi",
+    "espidf_time64",
     "freebsd10",
     "freebsd11",
     "freebsd12",
@@ -16,7 +17,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
-    "libc_thread_local",
 ];
 
 // Extra values to allow for check-cfg.
@@ -36,7 +36,7 @@ fn main() {
     let (rustc_minor_ver, is_nightly) = rustc_minor_nightly();
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
-    let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok();
+    let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok() || rustc_minor_ver >= 80;
     let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
@@ -44,14 +44,21 @@ fn main() {
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
-    match which_freebsd() {
-        Some(10) if libc_ci => set_cfg("freebsd10"),
-        Some(11) if libc_ci => set_cfg("freebsd11"),
-        Some(12) if libc_ci || rustc_dep_of_std => set_cfg("freebsd12"),
-        Some(13) if libc_ci => set_cfg("freebsd13"),
-        Some(14) if libc_ci => set_cfg("freebsd14"),
-        Some(15) if libc_ci => set_cfg("freebsd15"),
-        Some(_) | None => set_cfg("freebsd11"),
+    let which_freebsd = if libc_ci {
+        which_freebsd().unwrap_or(11)
+    } else if rustc_dep_of_std {
+        12
+    } else {
+        11
+    };
+    match which_freebsd {
+        x if x < 10 => panic!("FreeBSD older than 10 is not supported"),
+        10 => set_cfg("freebsd10"),
+        11 => set_cfg("freebsd11"),
+        12 => set_cfg("freebsd12"),
+        13 => set_cfg("freebsd13"),
+        14 => set_cfg("freebsd14"),
+        _ => set_cfg("freebsd15"),
     }
 
     match emcc_version_code() {
@@ -63,11 +70,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // #[thread_local] is currently unstable
-    if rustc_dep_of_std {
-        set_cfg("libc_thread_local");
     }
 
     // Rust >= 1.62.0 allows to use `const_extern_fn` for "Rust" and "C".

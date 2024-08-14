@@ -1043,41 +1043,49 @@ s! {
         pub tcpi_snd_rexmitpack: u32,
         pub tcpi_rcv_ooopack: u32,
         pub tcpi_snd_zerowin: u32,
+        #[cfg(freebsd13)]
+        pub __tcpi_delivered_ce: u32,
         #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_delivered_ce: u32,
+        #[cfg(freebsd13)]
+        pub __tcpi_received_ce: u32,
         #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_received_ce: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_e1_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_e0_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_ce_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_e1_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_e0_bytes: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_ce_bytes: u32,
+        #[cfg(freebsd13)]
+        pub __tcpi_total_tlp: u32,
         #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_total_tlp: u32,
+        #[cfg(freebsd13)]
+        pub __tcpi_total_tlp_bytes: u64,
         #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_total_tlp_bytes: u64,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_snd_una: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_snd_max: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_rcv_numsacks: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_rcv_adv: u32,
-        #[cfg(any(freebsd15, freebsd14))]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_dupacks: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd14, freebsd13))]
         pub __tcpi_pad: [u32; 10],
         #[cfg(freebsd15)]
         pub __tcpi_pad: [u32; 14],
-        #[cfg(not(any(freebsd15, freebsd14)))]
+        #[cfg(not(any(freebsd15, freebsd14, freebsd13)))]
         pub __tcpi_pad: [u32; 26],
     }
 
@@ -1612,6 +1620,23 @@ s_no_extra_traits! {
     pub struct sctp_error_auth_invalid_hmac {
         pub cause: sctp_error_cause,
         pub hmac_id: u16,
+    }
+
+    pub struct kinfo_file {
+        pub kf_structsize: ::c_int,
+        pub kf_type: ::c_int,
+        pub kf_fd: ::c_int,
+        pub kf_ref_count: ::c_int,
+        pub kf_flags: ::c_int,
+        _kf_pad0: ::c_int,
+        pub kf_offset: i64,
+        _priv: [::uintptr_t; 38], // FIXME if needed
+        pub kf_status: u16,
+        _kf_pad1: u16,
+        _kf_ispare0: ::c_int,
+        pub kf_cap_rights: ::cap_rights_t,
+        _kf_cap_spare: u64,
+        pub kf_path: [::c_char; ::PATH_MAX as usize],
     }
 }
 
@@ -2521,6 +2546,52 @@ cfg_if! {
                 {self.hmac_id}.hash(state);
             }
         }
+
+        impl PartialEq for kinfo_file {
+            fn eq(&self, other: &kinfo_file) -> bool {
+                self.kf_structsize == other.kf_structsize &&
+                    self.kf_type == other.kf_type &&
+                    self.kf_fd == other.kf_fd &&
+                    self.kf_ref_count == other.kf_ref_count &&
+                    self.kf_flags == other.kf_flags &&
+                    self.kf_offset == other.kf_offset &&
+                    self.kf_status == other.kf_status &&
+                    self.kf_cap_rights == other.kf_cap_rights &&
+                    self.kf_path
+                        .iter()
+                        .zip(other.kf_path.iter())
+                        .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for kinfo_file {}
+        impl ::fmt::Debug for kinfo_file {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("kinfo_file")
+                    .field("kf_structsize", &self.kf_structsize)
+                    .field("kf_type", &self.kf_type)
+                    .field("kf_fd", &self.kf_fd)
+                    .field("kf_ref_count", &self.kf_ref_count)
+                    .field("kf_flags", &self.kf_flags)
+                    .field("kf_offset", &self.kf_offset)
+                    .field("kf_status", &self.kf_status)
+                    .field("kf_cap_rights", &self.kf_cap_rights)
+                    .field("kf_path", &&self.kf_path[..])
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for kinfo_file {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.kf_structsize.hash(state);
+                self.kf_type.hash(state);
+                self.kf_fd.hash(state);
+                self.kf_ref_count.hash(state);
+                self.kf_flags.hash(state);
+                self.kf_offset.hash(state);
+                self.kf_status.hash(state);
+                self.kf_cap_rights.hash(state);
+                self.kf_path.hash(state);
+            }
+        }
     }
 }
 
@@ -2545,6 +2616,129 @@ impl ::Clone for dot3Vendors {
 pub const LIO_VECTORED: ::c_int = 4;
 pub const LIO_WRITEV: ::c_int = 5;
 pub const LIO_READV: ::c_int = 6;
+
+// sys/caprights.h
+pub const CAP_RIGHTS_VERSION_00: i32 = 0;
+pub const CAP_RIGHTS_VERSION: i32 = CAP_RIGHTS_VERSION_00;
+
+// sys/capsicum.h
+macro_rules! cap_right {
+    ($idx:expr, $bit:expr) => {
+        ((1u64 << (57 + ($idx))) | ($bit))
+    };
+}
+pub const CAP_READ: u64 = cap_right!(0, 0x0000000000000001u64);
+pub const CAP_WRITE: u64 = cap_right!(0, 0x0000000000000002u64);
+pub const CAP_SEEK_TELL: u64 = cap_right!(0, 0x0000000000000004u64);
+pub const CAP_SEEK: u64 = CAP_SEEK_TELL | 0x0000000000000008u64;
+pub const CAP_PREAD: u64 = CAP_SEEK | CAP_READ;
+pub const CAP_PWRITE: u64 = CAP_SEEK | CAP_WRITE;
+pub const CAP_MMAP: u64 = cap_right!(0, 0x0000000000000010u64);
+pub const CAP_MMAP_R: u64 = CAP_MMAP | CAP_SEEK | CAP_READ;
+pub const CAP_MMAP_W: u64 = CAP_MMAP | CAP_SEEK | CAP_WRITE;
+pub const CAP_MMAP_X: u64 = CAP_MMAP | CAP_SEEK | 0x0000000000000020u64;
+pub const CAP_MMAP_RW: u64 = CAP_MMAP_R | CAP_MMAP_W;
+pub const CAP_MMAP_RX: u64 = CAP_MMAP_R | CAP_MMAP_X;
+pub const CAP_MMAP_WX: u64 = CAP_MMAP_W | CAP_MMAP_X;
+pub const CAP_MMAP_RWX: u64 = CAP_MMAP_R | CAP_MMAP_W | CAP_MMAP_X;
+pub const CAP_CREATE: u64 = cap_right!(0, 0x0000000000000040u64);
+pub const CAP_FEXECVE: u64 = cap_right!(0, 0x0000000000000080u64);
+pub const CAP_FSYNC: u64 = cap_right!(0, 0x0000000000000100u64);
+pub const CAP_FTRUNCATE: u64 = cap_right!(0, 0x0000000000000200u64);
+pub const CAP_LOOKUP: u64 = cap_right!(0, 0x0000000000000400u64);
+pub const CAP_FCHDIR: u64 = cap_right!(0, 0x0000000000000800u64);
+pub const CAP_FCHFLAGS: u64 = cap_right!(0, 0x0000000000001000u64);
+pub const CAP_CHFLAGSAT: u64 = CAP_FCHFLAGS | CAP_LOOKUP;
+pub const CAP_FCHMOD: u64 = cap_right!(0, 0x0000000000002000u64);
+pub const CAP_FCHMODAT: u64 = CAP_FCHMOD | CAP_LOOKUP;
+pub const CAP_FCHOWN: u64 = cap_right!(0, 0x0000000000004000u64);
+pub const CAP_FCHOWNAT: u64 = CAP_FCHOWN | CAP_LOOKUP;
+pub const CAP_FCNTL: u64 = cap_right!(0, 0x0000000000008000u64);
+pub const CAP_FLOCK: u64 = cap_right!(0, 0x0000000000010000u64);
+pub const CAP_FPATHCONF: u64 = cap_right!(0, 0x0000000000020000u64);
+pub const CAP_FSCK: u64 = cap_right!(0, 0x0000000000040000u64);
+pub const CAP_FSTAT: u64 = cap_right!(0, 0x0000000000080000u64);
+pub const CAP_FSTATAT: u64 = CAP_FSTAT | CAP_LOOKUP;
+pub const CAP_FSTATFS: u64 = cap_right!(0, 0x0000000000100000u64);
+pub const CAP_FUTIMES: u64 = cap_right!(0, 0x0000000000200000u64);
+pub const CAP_FUTIMESAT: u64 = CAP_FUTIMES | CAP_LOOKUP;
+// Note: this was named CAP_LINKAT prior to FreeBSD 11.0.
+pub const CAP_LINKAT_TARGET: u64 = CAP_LOOKUP | 0x0000000000400000u64;
+pub const CAP_MKDIRAT: u64 = CAP_LOOKUP | 0x0000000000800000u64;
+pub const CAP_MKFIFOAT: u64 = CAP_LOOKUP | 0x0000000001000000u64;
+pub const CAP_MKNODAT: u64 = CAP_LOOKUP | 0x0000000002000000u64;
+// Note: this was named CAP_RENAMEAT prior to FreeBSD 11.0.
+pub const CAP_RENAMEAT_SOURCE: u64 = CAP_LOOKUP | 0x0000000004000000u64;
+pub const CAP_SYMLINKAT: u64 = CAP_LOOKUP | 0x0000000008000000u64;
+pub const CAP_UNLINKAT: u64 = CAP_LOOKUP | 0x0000000010000000u64;
+pub const CAP_ACCEPT: u64 = cap_right!(0, 0x0000000020000000u64);
+pub const CAP_BIND: u64 = cap_right!(0, 0x0000000040000000u64);
+pub const CAP_CONNECT: u64 = cap_right!(0, 0x0000000080000000u64);
+pub const CAP_GETPEERNAME: u64 = cap_right!(0, 0x0000000100000000u64);
+pub const CAP_GETSOCKNAME: u64 = cap_right!(0, 0x0000000200000000u64);
+pub const CAP_GETSOCKOPT: u64 = cap_right!(0, 0x0000000400000000u64);
+pub const CAP_LISTEN: u64 = cap_right!(0, 0x0000000800000000u64);
+pub const CAP_PEELOFF: u64 = cap_right!(0, 0x0000001000000000u64);
+pub const CAP_RECV: u64 = CAP_READ;
+pub const CAP_SEND: u64 = CAP_WRITE;
+pub const CAP_SETSOCKOPT: u64 = cap_right!(0, 0x0000002000000000u64);
+pub const CAP_SHUTDOWN: u64 = cap_right!(0, 0x0000004000000000u64);
+pub const CAP_BINDAT: u64 = CAP_LOOKUP | 0x0000008000000000u64;
+pub const CAP_CONNECTAT: u64 = CAP_LOOKUP | 0x0000010000000000u64;
+pub const CAP_LINKAT_SOURCE: u64 = CAP_LOOKUP | 0x0000020000000000u64;
+pub const CAP_RENAMEAT_TARGET: u64 = CAP_LOOKUP | 0x0000040000000000u64;
+pub const CAP_SOCK_CLIENT: u64 = CAP_CONNECT
+    | CAP_GETPEERNAME
+    | CAP_GETSOCKNAME
+    | CAP_GETSOCKOPT
+    | CAP_PEELOFF
+    | CAP_RECV
+    | CAP_SEND
+    | CAP_SETSOCKOPT
+    | CAP_SHUTDOWN;
+pub const CAP_SOCK_SERVER: u64 = CAP_ACCEPT
+    | CAP_BIND
+    | CAP_GETPEERNAME
+    | CAP_GETSOCKNAME
+    | CAP_GETSOCKOPT
+    | CAP_LISTEN
+    | CAP_PEELOFF
+    | CAP_RECV
+    | CAP_SEND
+    | CAP_SETSOCKOPT
+    | CAP_SHUTDOWN;
+pub const CAP_ALL0: u64 = cap_right!(0, 0x000007FFFFFFFFFFu64);
+pub const CAP_UNUSED0_44: u64 = cap_right!(0, 0x0000080000000000u64);
+pub const CAP_UNUSED0_57: u64 = cap_right!(0, 0x0100000000000000u64);
+pub const CAP_MAC_GET: u64 = cap_right!(1, 0x0000000000000001u64);
+pub const CAP_MAC_SET: u64 = cap_right!(1, 0x0000000000000002u64);
+pub const CAP_SEM_GETVALUE: u64 = cap_right!(1, 0x0000000000000004u64);
+pub const CAP_SEM_POST: u64 = cap_right!(1, 0x0000000000000008u64);
+pub const CAP_SEM_WAIT: u64 = cap_right!(1, 0x0000000000000010u64);
+pub const CAP_EVENT: u64 = cap_right!(1, 0x0000000000000020u64);
+pub const CAP_KQUEUE_EVENT: u64 = cap_right!(1, 0x0000000000000040u64);
+pub const CAP_IOCTL: u64 = cap_right!(1, 0x0000000000000080u64);
+pub const CAP_TTYHOOK: u64 = cap_right!(1, 0x0000000000000100u64);
+pub const CAP_PDGETPID: u64 = cap_right!(1, 0x0000000000000200u64);
+pub const CAP_PDWAIT: u64 = cap_right!(1, 0x0000000000000400u64);
+pub const CAP_PDKILL: u64 = cap_right!(1, 0x0000000000000800u64);
+pub const CAP_EXTATTR_DELETE: u64 = cap_right!(1, 0x0000000000001000u64);
+pub const CAP_EXTATTR_GET: u64 = cap_right!(1, 0x0000000000002000u64);
+pub const CAP_EXTATTR_LIST: u64 = cap_right!(1, 0x0000000000004000u64);
+pub const CAP_EXTATTR_SET: u64 = cap_right!(1, 0x0000000000008000u64);
+pub const CAP_ACL_CHECK: u64 = cap_right!(1, 0x0000000000010000u64);
+pub const CAP_ACL_DELETE: u64 = cap_right!(1, 0x0000000000020000u64);
+pub const CAP_ACL_GET: u64 = cap_right!(1, 0x0000000000040000u64);
+pub const CAP_ACL_SET: u64 = cap_right!(1, 0x0000000000080000u64);
+pub const CAP_KQUEUE_CHANGE: u64 = cap_right!(1, 0x0000000000100000u64);
+pub const CAP_KQUEUE: u64 = CAP_KQUEUE_EVENT | CAP_KQUEUE_CHANGE;
+pub const CAP_ALL1: u64 = cap_right!(1, 0x00000000001FFFFFu64);
+pub const CAP_UNUSED1_22: u64 = cap_right!(1, 0x0000000000200000u64);
+pub const CAP_UNUSED1_57: u64 = cap_right!(1, 0x0100000000000000u64);
+pub const CAP_FCNTL_GETFL: u32 = 1 << 3;
+pub const CAP_FCNTL_SETFL: u32 = 1 << 4;
+pub const CAP_FCNTL_GETOWN: u32 = 1 << 5;
+pub const CAP_FCNTL_SETOWN: u32 = 1 << 6;
 
 // sys/devicestat.h
 pub const DEVSTAT_N_TRANS_FLAGS: ::c_int = 4;
@@ -3609,8 +3803,6 @@ pub const IP_RSS_LISTEN_BUCKET: ::c_int = 26;
 pub const IP_ORIGDSTADDR: ::c_int = 27;
 pub const IP_RECVORIGDSTADDR: ::c_int = IP_ORIGDSTADDR;
 
-pub const IP_RECVTTL: ::c_int = 65;
-pub const IPV6_RECVHOPLIMIT: ::c_int = 37;
 pub const IP_DONTFRAG: ::c_int = 67;
 pub const IP_RECVTOS: ::c_int = 68;
 
@@ -3768,12 +3960,12 @@ pub const RTP_PRIO_REALTIME: ::c_ushort = 2;
 pub const RTP_PRIO_NORMAL: ::c_ushort = 3;
 pub const RTP_PRIO_IDLE: ::c_ushort = 4;
 
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x04;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x08;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x10;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x02;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x04;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x08;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x20;
 
 // Flags for chflags(2)
 pub const UF_SYSTEM: ::c_ulong = 0x00000080;
@@ -4672,6 +4864,12 @@ pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const TFD_TIMER_ABSTIME: ::c_int = 0x01;
 pub const TFD_TIMER_CANCEL_ON_SET: ::c_int = 0x02;
 
+pub const KCMP_FILE: ::c_int = 100;
+pub const KCMP_FILEOBJ: ::c_int = 101;
+pub const KCMP_FILES: ::c_int = 102;
+pub const KCMP_SIGHAND: ::c_int = 103;
+pub const KCMP_VM: ::c_int = 104;
+
 pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
     a << 24
 }
@@ -5391,6 +5589,20 @@ extern "C" {
     ) -> ::c_int;
     pub fn closefrom(lowfd: ::c_int);
     pub fn close_range(lowfd: ::c_uint, highfd: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn kcmp(
+        pid1: ::pid_t,
+        pid2: ::pid_t,
+        type_: ::c_int,
+        idx1: ::c_ulong,
+        idx2: ::c_ulong,
+    ) -> ::c_int;
+
+    pub fn execvpe(
+        file: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+    ) -> ::c_int;
 }
 
 #[link(name = "memstat")]
