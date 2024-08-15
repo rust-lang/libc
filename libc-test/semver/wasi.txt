@@ -1,0 +1,5 @@
+fd_set
+FD_SET
+FD_ZERO
+FD_ISSET
+select
