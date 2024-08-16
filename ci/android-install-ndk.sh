@@ -2,7 +2,7 @@
 
 set -ex
 
-NDK=android-ndk-r26b
+NDK=android-ndk-r27
 wget --tries=20 -q https://dl.google.com/android/repository/${NDK}-linux.zip
 unzip -q ${NDK}-linux.zip
 
