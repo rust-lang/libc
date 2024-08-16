@@ -452,6 +452,7 @@ accept
 access
 addrinfo
 alarm
+aligned_alloc
 atexit
 atof
 atoi
