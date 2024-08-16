@@ -4452,6 +4452,13 @@ pub const NFT_CT_PROTO_DST: ::c_int = 12;
 pub const NFT_CT_LABELS: ::c_int = 13;
 pub const NFT_CT_PKTS: ::c_int = 14;
 pub const NFT_CT_BYTES: ::c_int = 15;
+pub const NFT_CT_AVGPKT: ::c_int = 16;
+pub const NFT_CT_ZONE: ::c_int = 17;
+pub const NFT_CT_EVENTMASK: ::c_int = 18;
+pub const NFT_CT_SRC_IP: ::c_int = 19;
+pub const NFT_CT_DST_IP: ::c_int = 20;
+pub const NFT_CT_SRC_IP6: ::c_int = 21;
+pub const NFT_CT_DST_IP6: ::c_int = 22;
 
 pub const NFT_LIMIT_PKTS: ::c_int = 0;
 pub const NFT_LIMIT_PKT_BYTES: ::c_int = 1;
