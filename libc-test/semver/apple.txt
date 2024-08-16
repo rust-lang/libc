@@ -1695,8 +1695,11 @@ _CS_PATH
 _IOFBF
 _IOLBF
 _IONBF
+_NSGetArgc
+_NSGetArgv
 _NSGetEnviron
 _NSGetExecutablePath
+_NSGetProgname
 _POSIX_VDISABLE
 _PTHREAD_COND_SIG_init
 _PTHREAD_MUTEX_SIG_init

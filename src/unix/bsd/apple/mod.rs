@@ -6377,7 +6377,12 @@ extern "C" {
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 
     pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;
+
+    // crt_externs.h
+    pub fn _NSGetArgv() -> *mut *mut *mut ::c_char;
+    pub fn _NSGetArgc() -> *mut ::c_int;
     pub fn _NSGetEnviron() -> *mut *mut *mut ::c_char;
+    pub fn _NSGetProgname() -> *mut *mut ::c_char;
 
     pub fn mach_vm_map(
         target_task: ::vm_map_t,
