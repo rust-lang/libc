@@ -1183,15 +1183,18 @@ s_no_extra_traits! {
         pub sched_period: ::__u64,
     }
 
+    #[allow(missing_debug_implementations)]
     pub union tpacket_req_u {
         pub req: ::tpacket_req,
         pub req3: ::tpacket_req3,
     }
 
+    #[allow(missing_debug_implementations)]
     pub union tpacket_bd_header_u {
         pub bh1: ::tpacket_hdr_v1,
     }
 
+    #[allow(missing_debug_implementations)]
     pub struct tpacket_block_desc {
         pub version: ::__u32,
         pub offset_to_priv: ::__u32,
@@ -1613,32 +1616,6 @@ cfg_if! {
                 f.debug_struct("ifreq")
                     .field("ifr_name", &self.ifr_name)
                     .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for tpacket_req_u {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("tpacket_req_u")
-                    .field("req3", unsafe { &self.req3 })
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for tpacket_bd_header_u {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("tpacket_bd_header_u")
-                    .field("bh1", unsafe { &self.bh1 })
-                    .finish()
-            }
-        }
-
-        impl ::fmt::Debug for tpacket_block_desc {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("tpacket_bd_header_u")
-                    .field("version", &self.version)
-                    .field("offset_to_priv", &self.offset_to_priv)
-                    .field("hdr", &self.hdr)
                     .finish()
             }
         }
