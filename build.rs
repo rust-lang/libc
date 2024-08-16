@@ -120,8 +120,16 @@ fn rustc_minor_nightly() -> (u32, bool) {
         };
     }
 
-    let rustc = otry!(env::var_os("RUSTC"));
-    let output = Command::new(rustc)
+    let rustc = env::var_os("RUSTC").expect("Failed to get rustc version: missing RUSTC env");
+    let mut cmd = if let Some(wrapper) = env::var_os("RUSTC_WRAPPER").filter(|w| !w.is_empty()) {
+        let mut cmd = Command::new(wrapper);
+        cmd.arg(rustc);
+        cmd
+    } else {
+        Command::new(rustc)
+    };
+
+    let output = cmd
         .arg("--version")
         .output()
         .ok()
