@@ -3523,6 +3523,18 @@ pub const PF_MEMALLOC_PIN: ::c_int = 0x10000000;
 
 pub const PF_SUSPEND_TASK: ::c_int = 0x80000000;
 
+pub const KLOG_CLOSE: ::c_int = 0;
+pub const KLOG_OPEN: ::c_int = 1;
+pub const KLOG_READ: ::c_int = 2;
+pub const KLOG_READ_ALL: ::c_int = 3;
+pub const KLOG_READ_CLEAR: ::c_int = 4;
+pub const KLOG_CLEAR: ::c_int = 5;
+pub const KLOG_CONSOLE_OFF: ::c_int = 6;
+pub const KLOG_CONSOLE_ON: ::c_int = 7;
+pub const KLOG_CONSOLE_LEVEL: ::c_int = 8;
+pub const KLOG_SIZE_UNREAD: ::c_int = 9;
+pub const KLOG_SIZE_BUFFER: ::c_int = 10;
+
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
 // currently used in CI in some configurations, so we define them here.
@@ -4095,6 +4107,8 @@ extern "C" {
     ) -> ::size_t;
     pub fn fflush_unlocked(stream: *mut ::FILE) -> ::c_int;
     pub fn fgets_unlocked(buf: *mut ::c_char, size: ::c_int, stream: *mut ::FILE) -> *mut ::c_char;
+
+    pub fn klogctl(syslog_type: ::c_int, bufp: *mut ::c_char, len: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
