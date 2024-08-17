@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+## [0.2.157](https://github.com/rust-lang/libc/compare/0.2.156...0.2.157) - 2024-08-17
+
+### Other
+- Merge pull request [#3852](https://github.com/rust-lang/libc/pull/3852) from tgross35/backport-onion
+- always use freebsd12 when rustc_dep_of_std is set
+- freebsd adding execvpe support from 14.1 release
+- Merge pull request [#3845](https://github.com/rust-lang/libc/pull/3845) from nathaniel-bennett/rustc-wrapper-fix-0.2
+- Add RUSTC_WRAPPER support to build script
+- Update CHANGELOG.md for 0.2.156
+- Merge pull request [#3835](https://github.com/rust-lang/libc/pull/3835) from tgross35/revert-bsd-getnameinfo-0.2
+- Merge pull request [#3833](https://github.com/rust-lang/libc/pull/3833) from tgross35/backport-potato
+- add `pthread_equal`
+- netbsd adding _lwp_park api.
+- Merge pull request [#3829](https://github.com/rust-lang/libc/pull/3829) from rust-lang/tgross35-patch-2
+- Merge pull request [#3828](https://github.com/rust-lang/libc/pull/3828) from rust-lang/tgross35-patch-1
+- Update CHANGELOG.md
+
 ## [0.2.156](https://github.com/rust-lang/libc/compare/v0.2.155...v0.2.156) - 2024-08-15
 
 ### Added
