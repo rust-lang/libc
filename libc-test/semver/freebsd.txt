@@ -1870,6 +1870,7 @@ eui64_hostton
 eui64_ntoa
 eui64_ntohost
 exect
+execvpe
 execvP
 explicit_bzero
 extattr_delete_fd
