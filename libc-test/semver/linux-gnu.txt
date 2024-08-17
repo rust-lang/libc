@@ -657,6 +657,7 @@ malloc_info
 malloc_trim
 malloc_usable_size
 mallopt
+mq_notify
 nl_mmap_hdr
 nl_mmap_req
 nl_pktinfo
