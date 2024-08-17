@@ -896,6 +896,7 @@ extern "C" {
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
     pub fn pipe(fds: *mut ::c_int) -> ::c_int;
     pub fn posix_memalign(memptr: *mut *mut ::c_void, align: ::size_t, size: ::size_t) -> ::c_int;
+    pub fn aligned_alloc(alignment: ::size_t, size: ::size_t) -> *mut ::c_void;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "read$UNIX2003"

@@ -1936,6 +1936,9 @@ fn test_android(target: &str) {
             // Added in API level 28, but some tests use level 24.
             "fread_unlocked" | "fwrite_unlocked" | "fgets_unlocked" | "fflush_unlocked" => true,
 
+            // Added in API level 28, but some tests use level 24.
+            "aligned_alloc" => true,
+
             // FIXME: bad function pointers:
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
             | "ispunct" | "isspace" | "isupper" | "isxdigit" | "isblank" | "tolower"
