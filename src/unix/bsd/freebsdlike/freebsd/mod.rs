@@ -50,6 +50,13 @@ pub type sctp_assoc_t = u32;
 
 pub type eventfd_t = u64;
 
+// net/bpf.h
+
+pub type bpf_int32 = i32;
+pub type bpf_u_int32 = u32;
+pub type bpf_int64 = i64;
+pub type bpf_u_int64 = u64;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_support_flags {
@@ -1349,6 +1356,26 @@ s! {
         pub strchange_assoc_id: ::sctp_assoc_t,
         pub strchange_instrms: u16,
         pub strchange_outstrms: u16,
+    }
+
+    // net/bpf.h
+
+    pub struct bpf_zbuf {
+        pub bz_bufa: *mut ::c_void,
+        pub bz_bufb: *mut ::c_void,
+        pub bz_buflen: ::size_t,
+    }
+
+    pub struct bpf_ts {
+        pub bt_sec: ::bpf_int64,
+        pub bt_frac: ::bpf_u_int64,
+    }
+
+    pub struct bpf_xhdr {
+        pub bh_tstamp: ::bpf_ts,
+        pub bh_caplen: ::bpf_u_int32,
+        pub bh_datalen: ::bpf_u_int32,
+        pub bh_hdrlen: ::c_ushort,
     }
 }
 
@@ -3310,6 +3337,21 @@ pub const AF_BLUETOOTH: ::c_int = 36;
 pub const AF_IEEE80211: ::c_int = 37;
 pub const AF_INET_SDP: ::c_int = 40;
 pub const AF_INET6_SDP: ::c_int = 42;
+
+// <net/bpf.h>
+pub const BIOCROTZBUF: ::c_ulong = 0x40184280;
+pub const BIOCSETZBUF: ::c_ulong = 0x80184281;
+pub const BIOCLOCK: ::c_ulong = 0x2000427a;
+pub const BIOCFEEDBACK: ::c_ulong = 0x8004427c;
+
+// <sys/sockio.h>
+pub const OSIOCAIFADDR: ::c_ulong = 0x8040691a;
+pub const SIOCAIFADDR: ::c_ulong = 0x8044692b;
+
+// <netinet6/in6_var.h>
+pub const OSIOCAIFADDR_IN6: ::c_ulong = 0x8080691a;
+pub const SIOCAIFADDR_IN6: ::c_ulong = 0x8088691b;
+pub const SIOCDIFADDR_IN6: ::c_ulong = 0x81206919;
 
 // sys/net/if.h
 pub const IF_MAXUNIT: ::c_int = 0x7fff;

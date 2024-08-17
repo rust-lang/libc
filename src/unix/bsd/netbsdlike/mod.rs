@@ -664,6 +664,12 @@ pub const RB_AUTOBOOT: ::c_int = 0;
 
 pub const TCP_INFO: ::c_int = 9;
 
+// <sys/sockio.h>
+pub const SIOCAIFADDR: ::c_ulong = 0x8040691a;
+pub const SIOCGIFMTU: ::c_ulong = 0xc020697e;
+pub const SIOCIFCREATE: ::c_ulong = 0x8020697a;
+pub const SIOCSIFMTU: ::c_ulong = 0x8020697f;
+
 #[link(name = "util")]
 extern "C" {
     pub fn setgrent();

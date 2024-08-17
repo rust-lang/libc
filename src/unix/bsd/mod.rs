@@ -122,6 +122,11 @@ s! {
         pub flag: *mut ::c_int,
         pub val: ::c_int,
     }
+
+    pub struct bpf_version {
+        pub bv_major: ::c_ushort,
+        pub bv_minor: ::c_ushort,
+    }
 }
 
 s_no_extra_traits! {
@@ -493,7 +498,22 @@ pub const BIOCIMMEDIATE: ::c_ulong = 0x80044270;
 pub const BIOCVERSION: ::c_ulong = 0x40044271;
 pub const BIOCGHDRCMPLT: ::c_ulong = 0x40044274;
 pub const BIOCSHDRCMPLT: ::c_ulong = 0x80044275;
+
+// <sys/sockio.h>
+pub const SIOCADDMULTI: ::c_ulong = 0x80206931;
+pub const SIOCDELMULTI: ::c_ulong = 0x80206932;
+pub const SIOCDIFADDR: ::c_ulong = 0x80206919;
 pub const SIOCGIFADDR: ::c_ulong = 0xc0206921;
+pub const SIOCGIFBRDADDR: ::c_ulong = 0xc0206923;
+pub const SIOCGIFDSTADDR: ::c_ulong = 0xc0206922;
+pub const SIOCGIFFLAGS: ::c_ulong = 0xc0206911;
+pub const SIOCGIFNETMASK: ::c_ulong = 0xc0206925;
+pub const SIOCIFDESTROY: ::c_ulong = 0x80206979;
+pub const SIOCSIFADDR: ::c_ulong = 0x8020690c;
+pub const SIOCSIFBRDADDR: ::c_ulong = 0x80206913;
+pub const SIOCSIFDSTADDR: ::c_ulong = 0x8020690e;
+pub const SIOCSIFFLAGS: ::c_ulong = 0x80206910;
+pub const SIOCSIFNETMASK: ::c_ulong = 0x80206916;
 
 pub const REG_BASIC: ::c_int = 0o0000;
 pub const REG_EXTENDED: ::c_int = 0o0001;
@@ -540,6 +560,28 @@ pub const PRIO_USER: ::c_int = 2;
 pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
 pub const ITIMER_PROF: ::c_int = 2;
+
+// <net/route.h>
+
+// Bitmask values for rtm_addrs.
+pub const RTA_DST: ::c_int = 0x1;
+pub const RTA_GATEWAY: ::c_int = 0x2;
+pub const RTA_NETMASK: ::c_int = 0x4;
+pub const RTA_GENMASK: ::c_int = 0x8;
+pub const RTA_IFP: ::c_int = 0x10;
+pub const RTA_IFA: ::c_int = 0x20;
+pub const RTA_AUTHOR: ::c_int = 0x40;
+pub const RTA_BRD: ::c_int = 0x80;
+
+// Index offsets for sockaddr array for alternate internal encoding.
+pub const RTAX_DST: ::c_int = 0;
+pub const RTAX_GATEWAY: ::c_int = 1;
+pub const RTAX_NETMASK: ::c_int = 2;
+pub const RTAX_GENMASK: ::c_int = 3;
+pub const RTAX_IFP: ::c_int = 4;
+pub const RTAX_IFA: ::c_int = 5;
+pub const RTAX_AUTHOR: ::c_int = 6;
+pub const RTAX_BRD: ::c_int = 7;
 
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const ::msghdr) -> *mut ::cmsghdr {

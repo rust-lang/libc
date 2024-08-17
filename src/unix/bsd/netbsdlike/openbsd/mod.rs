@@ -45,6 +45,8 @@ pub type ACTION = ::c_uint;
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
 
+pub type u_int = ::c_uint;
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         type Elf_Addr = Elf64_Addr;
@@ -603,6 +605,13 @@ s! {
         pub tcpi_so_snd_sb_hiwat: u32,
         pub tcpi_so_snd_sb_lowat: u32,
         pub tcpi_so_snd_sb_wat: u32,
+    }
+
+    // net/bpf.h
+
+    pub struct bpf_stat {
+        pub bs_recv: ::u_int,
+        pub bs_drop: ::u_int,
     }
 }
 
@@ -1880,6 +1889,13 @@ pub const RB_USERREQ: ::c_int = 0x04000;
 pub const RB_RESET: ::c_int = 0x08000;
 pub const RB_GOODRANDOM: ::c_int = 0x10000;
 pub const RB_UNHIBERNATE: ::c_int = 0x20000;
+
+// <net/bpf.h>
+pub const BIOCLOCK: ::c_ulong = 0x20004276;
+
+// <netinet6/in6_var.h>
+pub const SIOCAIFADDR_IN6: ::c_ulong = 0x8080691a;
+pub const SIOCDIFADDR_IN6: ::c_ulong = 0x81206919;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {

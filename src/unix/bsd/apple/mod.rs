@@ -161,6 +161,8 @@ pub type copyfile_callback_t = ::Option<
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
 
+pub type u_int = ::c_uint;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
 impl ::Copy for timezone {}
@@ -1207,6 +1209,12 @@ s! {
         pub ifs6_out_mldquery: ::u_quad_t,
         pub ifs6_out_mldreport: ::u_quad_t,
         pub ifs6_out_mlddone: ::u_quad_t,
+    }
+
+    // net/bpf.h
+    pub struct bpf_stat {
+        pub bs_recv: ::u_int,
+        pub bs_drop: ::u_int,
     }
 }
 
@@ -3813,6 +3821,22 @@ pub const MINCORE_MODIFIED_OTHER: ::c_int = 0x10;
 
 pub const CTLIOCGINFO: c_ulong = 0xc0644e03;
 
+// <sys/sockio.h>
+pub const SIOCAIFADDR: ::c_ulong = 0x8040691a;
+pub const SIOCGIFCAP: ::c_ulong = 0xc020695b;
+pub const SIOCGIFDEVMTU: ::c_ulong = 0xc0206944;
+pub const SIOCGIFMTU: ::c_ulong = 0xc0206933;
+pub const SIOCIFCREATE: ::c_ulong = 0xc0206978;
+pub const SIOCIFCREATE2: ::c_ulong = 0xc020697a;
+pub const SIOCSDRVSPEC: ::c_ulong = 0x8028697b;
+pub const SIOCSIFCAP: ::c_ulong = 0x8020695a;
+pub const SIOCSIFLLADDR: ::c_ulong = 0x8020693c;
+pub const SIOCSIFMTU: ::c_ulong = 0x80206934;
+
+// <netinet6/in6_var.h>
+pub const SIOCAIFADDR_IN6: ::c_ulong = 0x8080691a;
+pub const SIOCDIFADDR_IN6: ::c_ulong = 0x81206919;
+
 //
 // sys/netinet/in.h
 // Protocols (RFC 1700)
@@ -4966,25 +4990,6 @@ pub const RTV_SSTHRESH: ::c_int = 0x20;
 pub const RTV_RTT: ::c_int = 0x40;
 pub const RTV_RTTVAR: ::c_int = 0x80;
 
-// Bitmask values for rtm_addrs.
-pub const RTA_DST: ::c_int = 0x1;
-pub const RTA_GATEWAY: ::c_int = 0x2;
-pub const RTA_NETMASK: ::c_int = 0x4;
-pub const RTA_GENMASK: ::c_int = 0x8;
-pub const RTA_IFP: ::c_int = 0x10;
-pub const RTA_IFA: ::c_int = 0x20;
-pub const RTA_AUTHOR: ::c_int = 0x40;
-pub const RTA_BRD: ::c_int = 0x80;
-
-// Index offsets for sockaddr array for alternate internal encoding.
-pub const RTAX_DST: ::c_int = 0;
-pub const RTAX_GATEWAY: ::c_int = 1;
-pub const RTAX_NETMASK: ::c_int = 2;
-pub const RTAX_GENMASK: ::c_int = 3;
-pub const RTAX_IFP: ::c_int = 4;
-pub const RTAX_IFA: ::c_int = 5;
-pub const RTAX_AUTHOR: ::c_int = 6;
-pub const RTAX_BRD: ::c_int = 7;
 pub const RTAX_MAX: ::c_int = 8;
 
 pub const KERN_PROCARGS2: ::c_int = 49;
