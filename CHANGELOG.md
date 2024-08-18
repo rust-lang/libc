@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+## [0.2.157](https://github.com/rust-lang/libc/compare/0.2.156...0.2.157) - 2024-08-17
+
+### Added
+
+- Apple: add `_NSGetArgv`, `_NSGetArgc` and `_NSGetProgname` in <https://github.com/rust-lang/libc/pull/3702>
+- Build: add `RUSTC_WRAPPER` support in <https://github.com/rust-lang/libc/pull/3845>
+- FreeBSD: add `execvpe` support from 14.1 release in <https://github.com/rust-lang/libc/pull/3745>
+- Fuchsia: add `SO_BINDTOIFINDEX`
+- Linux: add `klogctl` in <https://github.com/rust-lang/libc/pull/3777>
+- MacOS: add `fcntl` OFD commands in <https://github.com/rust-lang/libc/pull/3563>
+- NetBSD: add `_lwp_park` in <https://github.com/rust-lang/libc/pull/3721>
+- Solaris: add missing networking support in <https://github.com/rust-lang/libc/pull/3717>
+- Unix: add `pthread_equal` in <https://github.com/rust-lang/libc/pull/3773>
+- WASI: add `select`, `FD_SET`, `FD_ZERO`, `FD_ISSET ` in <https://github.com/rust-lang/libc/pull/3681>
+
+### Fixed
+- TEEOS: fix octal notation for `O_*` constants in <https://github.com/rust-lang/libc/pull/3841>
+
+### Changed
+- FreeBSD: always use freebsd12 when `rustc_dep_of_std` is set in <https://github.com/rust-lang/libc/pull/3723>
+
 ## [0.2.156](https://github.com/rust-lang/libc/compare/v0.2.155...v0.2.156) - 2024-08-15
 
 ### Added
