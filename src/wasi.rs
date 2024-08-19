@@ -2,6 +2,7 @@
 // `wasi-libc` project provides multiple libraries including emulated features, but we list only basic features with `libc.a` here.
 
 use super::{Send, Sync};
+use core::iter::Iterator;
 
 pub use ffi::c_void;
 
