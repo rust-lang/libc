@@ -132,7 +132,6 @@ fn rustc_minor_nightly() -> (u32, bool) {
     let output = cmd
         .arg("--version")
         .output()
-        .ok()
         .expect("Failed to get rustc version");
     if !output.status.success() {
         panic!(
@@ -198,7 +197,7 @@ fn emcc_version_code() -> Option<u64> {
 
     // Some Emscripten versions come with `-git` attached, so split the
     // version string also on the `-` char.
-    let mut pieces = version.trim().split(|c| c == '.' || c == '-');
+    let mut pieces = version.trim().split(['.', '-']);
 
     let major = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
     let minor = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
