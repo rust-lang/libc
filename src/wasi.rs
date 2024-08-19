@@ -1,4 +1,5 @@
 use super::{Send, Sync};
+use core::iter::Iterator;
 
 pub use ffi::c_void;
 
