@@ -5508,11 +5508,11 @@ f! {
             return ::CMSG_FIRSTHDR(mhdr);
         };
         let cmsg_len = (*cmsg).cmsg_len as usize;
-        let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize);
+        let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len);
         let max = (*mhdr).msg_control as usize
                     + (*mhdr).msg_controllen as usize;
         if next + __DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) > max {
-            0 as *mut ::cmsghdr
+            core::ptr::null_mut()
         } else {
             next as *mut ::cmsghdr
         }
@@ -5520,7 +5520,7 @@ f! {
 
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
         (cmsg as *mut ::c_uchar)
-            .offset(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) as isize)
+            .add(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()))
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
