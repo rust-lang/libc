@@ -1,3 +1,7 @@
+AT_SYSINFO
+AT_SYSINFO_EHDR
+AT_VECTOR_SIZE_ARCH
+SYS_memfd_secret
 __c_anonymous_uc_sigmask
 __c_anonymous_uc_sigmask_with_padding
 time64_t
