@@ -685,7 +685,7 @@ s! {
     pub struct ptp_sys_offset_extended {
         pub n_samples: ::c_uint,
         pub rsv: [::c_uint; 3],
-        pub ts: [[ptp_clock_time; 3]; 25],
+        pub ts: [[ptp_clock_time; 3]; PTP_MAX_SAMPLES as usize],
     }
 
     pub struct ptp_sys_offset_precise {
@@ -946,7 +946,7 @@ s_no_extra_traits! {
     pub struct ptp_sys_offset {
         pub n_samples: ::c_uint,
         pub rsv: [::c_uint; 3],
-        pub ts: [ptp_clock_time; 51],
+        pub ts: [ptp_clock_time; 2 * PTP_MAX_SAMPLES as usize + 1],
     }
 
     pub struct ptp_pin_desc {
@@ -3794,7 +3794,7 @@ pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 
 // linux/ptp_clock.h
-pub const PTP_MAX_SAMPLES: ::c_uint = 25;
+pub const PTP_MAX_SAMPLES: ::c_uint = 25; // Maximum allowed offset measurement samples.
 
 cfg_if! {
     if #[cfg(any(target_arch = "powerpc", target_arch = "powerpc64", target_arch = "sparc64"))] {
