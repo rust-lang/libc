@@ -1381,7 +1381,9 @@ s_no_extra_traits! {
         pub offset_to_priv: ::__u32,
         pub hdr: ::tpacket_bd_header_u,
     }
+}
 
+s! {
     // linux/ptp_clock.h
     pub struct ptp_sys_offset {
         pub n_samples: ::c_uint,
@@ -2154,62 +2156,6 @@ cfg_if! {
                     .field("ifr_ifrn", &self.ifr_ifrn)
                     .field("u", &self.u)
                     .finish()
-            }
-        }
-
-        impl PartialEq for ptp_sys_offset {
-            fn eq(&self, other: &ptp_sys_offset) -> bool {
-                self.n_samples == other.n_samples &&
-                    self.rsv == other.rsv &&
-                    self.ts[..] == other.ts[..]
-            }
-        }
-        impl Eq for ptp_sys_offset {}
-        impl ::fmt::Debug for ptp_sys_offset {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("ptp_sys_offset")
-                    .field("n_samples", &self.n_samples)
-                    .field("rsv", &self.rsv)
-                    .field("ts", &&self.ts[..])
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for ptp_sys_offset {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.n_samples.hash(state);
-                self.rsv.hash(state);
-                self.ts[..].hash(state);
-            }
-        }
-
-        impl PartialEq for ptp_pin_desc {
-            fn eq(&self, other: &ptp_pin_desc) -> bool {
-                self.name[..] == other.name[..] &&
-                    self.index == other.index &&
-                    self.func == other.func &&
-                    self.chan == other.chan &&
-                    self.rsv == other.rsv
-            }
-        }
-        impl Eq for ptp_pin_desc {}
-        impl ::fmt::Debug for ptp_pin_desc {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("ptp_pin_desc")
-                    .field("name", &&self.name[..])
-                    .field("index", &self.index)
-                    .field("func", &self.func)
-                    .field("chan", &self.chan)
-                    .field("rsv", &self.rsv)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for ptp_pin_desc {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.name[..].hash(state);
-                self.index.hash(state);
-                self.func.hash(state);
-                self.chan.hash(state);
-                self.rsv.hash(state);
             }
         }
     }
