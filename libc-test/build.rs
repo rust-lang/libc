@@ -3598,6 +3598,9 @@ fn test_linux(target: &str) {
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
 
+            // musl doesn't define these; instead, it uses a raw int for getitimer/setitimer
+            "__itimer_which_t" if musl => true,
+
             // These cannot be tested when "resolv.h" is included and are tested
             // in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,

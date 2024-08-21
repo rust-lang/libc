@@ -73,6 +73,14 @@ missing! {
     pub enum fpos64_t {} // FIXME: fill this out with a struct
 }
 
+cfg_if! {
+    if #[cfg(target_env = "musl")] {
+        pub type __itimer_which_t = ::c_int;
+    } else {
+        pub type __itimer_which_t = ::c_uint;
+    }
+}
+
 e! {
     pub enum tpacket_versions {
         TPACKET_V1,
@@ -6114,6 +6122,28 @@ extern "C" {
     pub fn klogctl(syslog_type: ::c_int, bufp: *mut ::c_char, len: ::c_int) -> ::c_int;
 
     pub fn ioctl(fd: ::c_int, request: ::Ioctl, ...) -> ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(target_env = "musl")] {
+        extern "C" {
+            pub fn getitimer(which: ::c_int, value: *mut ::itimerval) -> ::c_int;
+            pub fn setitimer(
+                which: ::c_int,
+                new: *const ::itimerval,
+                old: *mut ::itimerval,
+            ) -> ::c_int;
+        }
+    } else {
+        extern "C" {
+            pub fn getitimer(which: ::__itimer_which_t, value: *mut ::itimerval) -> ::c_int;
+            pub fn setitimer(
+                which: ::__itimer_which_t,
+                new: *const ::itimerval,
+                old: *mut ::itimerval,
+            ) -> ::c_int;
+        }
+    }
 }
 
 // LFS64 extensions
