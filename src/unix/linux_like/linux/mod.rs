@@ -4661,6 +4661,7 @@ cfg_if! {
     }
 }
 
+// enum ptp_pin_function
 pub const PTP_PF_NONE: ::c_uint = 0;
 pub const PTP_PF_EXTTS: ::c_uint = 1;
 pub const PTP_PF_PEROUT: ::c_uint = 2;

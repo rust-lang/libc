@@ -3891,10 +3891,10 @@ fn test_linux(target: &str) {
         }
         if musl {
             // FIXME: Requires >= 5.0 kernel headers
-            if name == "SECCOMP_GET_NOTIF_SIZES"
+            if name == "PTP_SYS_OFFSET_EXTENDED"
+               || name == "SECCOMP_GET_NOTIF_SIZES"
                || name == "SECCOMP_FILTER_FLAG_NEW_LISTENER"
                || name == "SECCOMP_FILTER_FLAG_TSYNC_ESRCH"
-               || name == "PTP_SYS_OFFSET_EXTENDED"
                || name == "SECCOMP_USER_NOTIF_FLAG_CONTINUE"  // requires >= 5.5
                || name == "SECCOMP_ADDFD_FLAG_SETFD"  // requires >= 5.9
                || name == "SECCOMP_ADDFD_FLAG_SEND"   // requires >= 5.9
@@ -3908,12 +3908,12 @@ fn test_linux(target: &str) {
                 || name.starts_with("SO_J1939")
                 || name.starts_with("SCM_J1939")
                 || name == "PTP_CLOCK_GETCAPS2"
+                || name == "PTP_ENABLE_PPS2"
                 || name == "PTP_EXTTS_REQUEST2"
                 || name == "PTP_PEROUT_REQUEST2"
-                || name == "PTP_ENABLE_PPS2"
-                || name == "PTP_SYS_OFFSET2"
                 || name == "PTP_PIN_GETFUNC2"
                 || name == "PTP_PIN_SETFUNC2"
+                || name == "PTP_SYS_OFFSET2"
                 || name == "PTP_SYS_OFFSET_PRECISE2"
                 || name == "PTP_SYS_OFFSET_EXTENDED2"
             {
