@@ -3736,49 +3736,33 @@ pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 // linux/ptp_clock.h
 pub const PTP_MAX_SAMPLES: ::c_uint = 25; // Maximum allowed offset measurement samples.
 
-cfg_if! {
-    if #[cfg(any(target_arch = "powerpc", target_arch = "powerpc64", target_arch = "sparc64"))] {
-        pub const PTP_CLOCK_GETCAPS: ::c_uint = 0x40503d01;
-        pub const PTP_EXTTS_REQUEST: ::c_uint = 0x80103d02;
-        pub const PTP_PEROUT_REQUEST: ::c_uint = 0x80383d03;
-        pub const PTP_ENABLE_PPS: ::c_uint = 0x80043d04;
-        pub const PTP_SYS_OFFSET: ::c_uint = 0x83403d05;
-        pub const PTP_PIN_GETFUNC: ::c_uint = 0xc0603d06;
-        pub const PTP_PIN_SETFUNC: ::c_uint = 0x80603d07;
-        pub const PTP_SYS_OFFSET_PRECISE: ::c_uint = 0xc0403d08;
-        pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint = 0xc4c03d09;
+const PTP_CLK_MAGIC: u32 = b'=' as u32;
 
-        pub const PTP_CLOCK_GETCAPS2: ::c_uint = 0x40503d0a;
-        pub const PTP_EXTTS_REQUEST2: ::c_uint = 0x80103d0b;
-        pub const PTP_PEROUT_REQUEST2: ::c_uint = 0x80383d0c;
-        pub const PTP_ENABLE_PPS2: ::c_uint = 0x80043d0d;
-        pub const PTP_SYS_OFFSET2: ::c_uint = 0x83403d0e;
-        pub const PTP_PIN_GETFUNC2: ::c_uint = 0xc0603d0f;
-        pub const PTP_PIN_SETFUNC2: ::c_uint = 0x80603d10;
-        pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint = 0xc0403d11;
-        pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint = 0xc4c03d12;
-    } else {
-        pub const PTP_CLOCK_GETCAPS: ::c_uint = 0x80503d01;
-        pub const PTP_EXTTS_REQUEST: ::c_uint = 0x40103d02;
-        pub const PTP_PEROUT_REQUEST: ::c_uint = 0x40383d03;
-        pub const PTP_ENABLE_PPS: ::c_uint = 0x40043d04;
-        pub const PTP_SYS_OFFSET: ::c_uint = 0x43403d05;
-        pub const PTP_PIN_GETFUNC: ::c_uint = 0xc0603d06;
-        pub const PTP_PIN_SETFUNC: ::c_uint = 0x40603d07;
-        pub const PTP_SYS_OFFSET_PRECISE: ::c_uint = 0xc0403d08;
-        pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint = 0xc4c03d09;
+pub const PTP_CLOCK_GETCAPS: ::c_uint = ioctl::_IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
+pub const PTP_EXTTS_REQUEST: ::c_uint = ioctl::_IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 2);
+pub const PTP_PEROUT_REQUEST: ::c_uint = ioctl::_IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 3);
+pub const PTP_ENABLE_PPS: ::c_uint = ioctl::_IOW::<::c_int>(PTP_CLK_MAGIC, 4);
+pub const PTP_SYS_OFFSET: ::c_uint = ioctl::_IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 5);
+pub const PTP_PIN_GETFUNC: ::c_uint = ioctl::_IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 6);
+pub const PTP_PIN_SETFUNC: ::c_uint = ioctl::_IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 7);
+pub const PTP_SYS_OFFSET_PRECISE: ::c_uint =
+    ioctl::_IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 8);
+pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint =
+    ioctl::_IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 9);
 
-        pub const PTP_CLOCK_GETCAPS2: ::c_uint = 0x80503d0a;
-        pub const PTP_EXTTS_REQUEST2: ::c_uint = 0x40103d0b;
-        pub const PTP_PEROUT_REQUEST2: ::c_uint = 0x40383d0c;
-        pub const PTP_ENABLE_PPS2: ::c_uint = 0x40043d0d;
-        pub const PTP_SYS_OFFSET2: ::c_uint = 0x43403d0e;
-        pub const PTP_PIN_GETFUNC2: ::c_uint = 0xc0603d0f;
-        pub const PTP_PIN_SETFUNC2: ::c_uint = 0x40603d10;
-        pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint = 0xc0403d11;
-        pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint = 0xc4c03d12;
-    }
-}
+pub const PTP_CLOCK_GETCAPS2: ::c_uint = ioctl::_IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
+pub const PTP_EXTTS_REQUEST2: ::c_uint = ioctl::_IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 11);
+pub const PTP_PEROUT_REQUEST2: ::c_uint = ioctl::_IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 12);
+pub const PTP_ENABLE_PPS2: ::c_uint = ioctl::_IOW::<::c_int>(PTP_CLK_MAGIC, 13);
+pub const PTP_SYS_OFFSET2: ::c_uint = ioctl::_IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 14);
+pub const PTP_PIN_GETFUNC2: ::c_uint = ioctl::_IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 15);
+pub const PTP_PIN_SETFUNC2: ::c_uint = ioctl::_IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 16);
+pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint =
+    ioctl::_IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 17);
+pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint =
+    ioctl::_IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 18);
+pub const PTP_MASK_CLEAR_ALL: ::c_uint = ioctl::_IO(PTP_CLK_MAGIC, 19);
+pub const PTP_MASK_EN_SINGLE: ::c_uint = ioctl::_IOW::<::c_uint>(PTP_CLK_MAGIC, 20);
 
 // enum ptp_pin_function
 pub const PTP_PF_NONE: ::c_uint = 0;
@@ -5838,5 +5822,90 @@ cfg_if! {
     if #[cfg(libc_non_exhaustive)] {
         mod non_exhaustive;
         pub use self::non_exhaustive::*;
+    }
+}
+
+mod ioctl {
+    const _IOC_NRBITS: u32 = 8;
+    const _IOC_TYPEBITS: u32 = 8;
+
+    // https://github.com/search?q=repo%3Atorvalds%2Flinux+%22%23define+_IOC_NONE%22&type=code
+    cfg_if! {
+        if #[cfg(any(
+                any(target_arch = "powerpc", target_arch = "powerpc64"),
+                any(target_arch = "sparc", target_arch = "sparc64"),
+                any(target_arch = "mips", target_arch = "mips64"),
+            ))]
+        {
+            // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/powerpc/include/uapi/asm/ioctl.h
+            // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/sparc/include/uapi/asm/ioctl.h
+            // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/mips/include/uapi/asm/ioctl.h
+
+            const _IOC_SIZEBITS: u32 = 13;
+            const _IOC_DIRBITS: u32 = 3;
+
+            const _IOC_NONE: u32 = 1;
+            const _IOC_READ: u32 = 2;
+            const _IOC_WRITE: u32 = 4;
+        } else {
+            // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/include/uapi/asm-generic/ioctl.h
+
+            const _IOC_SIZEBITS: u32 = 14;
+            const _IOC_DIRBITS: u32 = 2;
+
+            const _IOC_NONE: u32 = 0;
+            const _IOC_WRITE: u32 = 1;
+            const _IOC_READ: u32 = 2;
+        }
+    }
+
+    const _IOC_NRMASK: u32 = (1 << _IOC_NRBITS) - 1;
+    const _IOC_TYPEMASK: u32 = (1 << _IOC_TYPEBITS) - 1;
+    const _IOC_SIZEMASK: u32 = (1 << _IOC_SIZEBITS) - 1;
+    const _IOC_DIRMASK: u32 = (1 << _IOC_DIRBITS) - 1;
+
+    const _IOC_NRSHIFT: u32 = 0;
+    const _IOC_TYPESHIFT: u32 = _IOC_NRSHIFT + _IOC_NRBITS;
+    const _IOC_SIZESHIFT: u32 = _IOC_TYPESHIFT + _IOC_TYPEBITS;
+    const _IOC_DIRSHIFT: u32 = _IOC_SIZESHIFT + _IOC_SIZEBITS;
+
+    // adopted from https://github.com/torvalds/linux/blob/8a696a29c6905594e4abf78eaafcb62165ac61f1/rust/kernel/ioctl.rs
+
+    /// Build an ioctl number, analogous to the C macro of the same name.
+    #[inline(always)]
+    const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> u32 {
+        debug_assert!(dir <= _IOC_DIRMASK);
+        debug_assert!(ty <= _IOC_TYPEMASK);
+        debug_assert!(nr <= _IOC_NRMASK);
+        debug_assert!(size <= (_IOC_SIZEMASK as usize));
+
+        (dir << _IOC_DIRSHIFT)
+            | (ty << _IOC_TYPESHIFT)
+            | (nr << _IOC_NRSHIFT)
+            | ((size as u32) << _IOC_SIZESHIFT)
+    }
+
+    /// Build an ioctl number for an argumentless ioctl.
+    #[inline(always)]
+    pub const fn _IO(ty: u32, nr: u32) -> u32 {
+        _IOC(_IOC_NONE, ty, nr, 0)
+    }
+
+    /// Build an ioctl number for an read-only ioctl.
+    #[inline(always)]
+    pub const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
+        _IOC(_IOC_READ, ty, nr, core::mem::size_of::<T>())
+    }
+
+    /// Build an ioctl number for an write-only ioctl.
+    #[inline(always)]
+    pub const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
+        _IOC(_IOC_WRITE, ty, nr, core::mem::size_of::<T>())
+    }
+
+    /// Build an ioctl number for a read-write ioctl.
+    #[inline(always)]
+    pub const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
+        _IOC(_IOC_READ | _IOC_WRITE, ty, nr, core::mem::size_of::<T>())
     }
 }
