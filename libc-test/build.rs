@@ -3553,7 +3553,7 @@ fn test_linux(target: &str) {
         // FIXME: requires Linux >= 5.6:
         [!musl]: "linux/openat2.h",
         "linux/ptp_clock.h",
-        // FIXME: requires Linux >= 5.6:
+        // FIXME: some items require Linux >= 5.6:
         [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
