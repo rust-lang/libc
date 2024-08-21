@@ -844,14 +844,8 @@ s! {
         pub pps: ::c_int,
         pub n_pins: ::c_int,
         pub cross_timestamping: ::c_int,
-        #[cfg(target_env = "gnu")]
         pub adjust_phase: ::c_int,
-        #[cfg(target_env = "gnu")]
-        pub max_phase_adj: ::c_int,
-        #[cfg(target_env = "gnu")]
-        pub rsv: [::c_int; 11],
-        #[cfg(any(target_env = "musl", target_env = "ohos"))]
-        pub rsv: [::c_int; 13],
+        pub rsv: [::c_int; 12],
     }
 
     pub struct ptp_extts_request {
