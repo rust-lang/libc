@@ -1638,31 +1638,27 @@ s! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        s_no_extra_traits! {
-            // linux/ptp_clock.h
-            #[allow(missing_debug_implementations)]
-            pub union __c_anonymous_ptp_perout_request_1 {
-                pub start: ptp_clock_time,
-                pub phase: ptp_clock_time,
-            }
+s_no_extra_traits! {
+    // linux/ptp_clock.h
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_ptp_perout_request_1 {
+        pub start: ptp_clock_time,
+        pub phase: ptp_clock_time,
+    }
 
-            #[allow(missing_debug_implementations)]
-            pub union __c_anonymous_ptp_perout_request_2 {
-                pub on: ptp_clock_time,
-                pub rsv: [::c_uint; 4],
-            }
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_ptp_perout_request_2 {
+        pub on: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
 
-            #[allow(missing_debug_implementations)]
-            pub struct ptp_perout_request {
-                pub anonymous_1: __c_anonymous_ptp_perout_request_1,
-                pub period: ptp_clock_time,
-                pub index: ::c_uint,
-                pub flags: ::c_uint,
-                pub anonymous_2: __c_anonymous_ptp_perout_request_2,
-            }
-        }
+    #[allow(missing_debug_implementations)]
+    pub struct ptp_perout_request {
+        pub anonymous_1: __c_anonymous_ptp_perout_request_1,
+        pub period: ptp_clock_time,
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub anonymous_2: __c_anonymous_ptp_perout_request_2,
     }
 }
 
