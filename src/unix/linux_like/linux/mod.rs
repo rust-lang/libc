@@ -1081,6 +1081,21 @@ s! {
         pub get_args: __u16,
         pub name: [c_char; ::IFNAMSIZ],
     }
+
+    // linux/ptp_clock.h
+    pub struct ptp_sys_offset {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        pub ts: [ptp_clock_time; 2 * PTP_MAX_SAMPLES as usize + 1],
+    }
+
+    pub struct ptp_pin_desc {
+        pub name: [::c_char; 64],
+        pub index: ::c_uint,
+        pub func: ::c_uint,
+        pub chan: ::c_uint,
+        pub rsv: [::c_uint; 5],
+    }
 }
 
 cfg_if! {
@@ -1261,23 +1276,6 @@ s_no_extra_traits! {
         pub version: ::__u32,
         pub offset_to_priv: ::__u32,
         pub hdr: ::tpacket_bd_header_u,
-    }
-}
-
-s! {
-    // linux/ptp_clock.h
-    pub struct ptp_sys_offset {
-        pub n_samples: ::c_uint,
-        pub rsv: [::c_uint; 3],
-        pub ts: [ptp_clock_time; 2 * PTP_MAX_SAMPLES as usize + 1],
-    }
-
-    pub struct ptp_pin_desc {
-        pub name: [::c_char; 64],
-        pub index: ::c_uint,
-        pub func: ::c_uint,
-        pub chan: ::c_uint,
-        pub rsv: [::c_uint; 5],
     }
 }
 
