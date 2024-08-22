@@ -622,10 +622,8 @@ extern "C" {
         target_vendor = "nintendo"
     )))]
     #[cfg_attr(target_os = "netbsd", link_name = "__socket30")]
-    #[cfg_attr(
-        any(target_os = "illumos", target_os = "solaris"),
-        link_name = "__xnet_socket"
-    )]
+    #[cfg_attr(target_os = "illumos", link_name = "__xnet_socket")]
+    #[cfg_attr(target_os = "solaris", link_name = "__xnet7_socket")]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_socket")]
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
     #[cfg(not(all(
@@ -931,6 +929,7 @@ extern "C" {
     pub fn getppid() -> pid_t;
     pub fn getuid() -> uid_t;
     pub fn isatty(fd: ::c_int) -> ::c_int;
+    #[cfg_attr(target_os = "solaris", link_name = "__link_xpg4")]
     pub fn link(src: *const c_char, dst: *const c_char) -> ::c_int;
     pub fn lseek(fd: ::c_int, offset: off_t, whence: ::c_int) -> off_t;
     pub fn pathconf(path: *const c_char, name: ::c_int) -> c_long;
@@ -968,7 +967,10 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "ttyname_r$UNIX2003"
     )]
-    #[cfg_attr(target_os = "illumos", link_name = "__posix_ttyname_r")]
+    #[cfg_attr(
+        any(target_os = "illumos", target_os = "solaris"),
+        link_name = "__posix_ttyname_r"
+    )]
     pub fn ttyname_r(fd: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
     pub fn unlink(c: *const c_char) -> ::c_int;
     #[cfg_attr(
@@ -1088,8 +1090,6 @@ extern "C" {
         link_name = "realpath$DARWIN_EXTSN"
     )]
     pub fn realpath(pathname: *const ::c_char, resolved: *mut ::c_char) -> *mut ::c_char;
-
-    pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
     pub fn times(buf: *mut ::tms) -> ::clock_t;
@@ -1399,6 +1399,7 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__sigpending14")]
     pub fn sigpending(set: *mut sigset_t) -> ::c_int;
 
+    #[cfg_attr(target_os = "solaris", link_name = "__sysconf_xpg7")]
     pub fn sysconf(name: ::c_int) -> ::c_long;
 
     pub fn mkfifo(path: *const c_char, mode: mode_t) -> ::c_int;
@@ -1452,9 +1453,14 @@ cfg_if! {
     if #[cfg(not(any(target_os = "emscripten",
                      target_os = "android",
                      target_os = "haiku",
-                     target_os = "nto")))] {
+                     target_os = "nto",
+                     target_os = "solaris")))] {
         extern "C" {
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> ::c_int;
+        }
+    } else if #[cfg(target_os = "solaris")] {
+        extern "C" {
+            pub fn adjtime(delta: *mut timeval, olddelta: *mut timeval) -> ::c_int;
         }
     }
 }
@@ -1473,6 +1479,14 @@ cfg_if! {
     if #[cfg(not(target_os = "aix"))] {
         extern "C" {
             pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
+        }
+    }
+}
+
+cfg_if! {
+    if #[cfg(not(target_os = "solaris"))] {
+        extern "C" {
+            pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
         }
     }
 }
