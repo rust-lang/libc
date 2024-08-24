@@ -712,3 +712,4 @@ putpwent
 putgrent
 execveat
 close_range
+epoll_pwait2
