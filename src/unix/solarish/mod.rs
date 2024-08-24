@@ -2168,7 +2168,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 4;
-pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = ::PTHREAD_MUTEX_NORMAL;
 
 pub const RTLD_NEXT: *mut ::c_void = -1isize as *mut ::c_void;
 pub const RTLD_DEFAULT: *mut ::c_void = -2isize as *mut ::c_void;
