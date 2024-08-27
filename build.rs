@@ -30,6 +30,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_thread_local",
     "libc_underscore_const_names",
     "libc_union",
+    "libc_ctest",
 ];
 
 // Extra values to allow for check-cfg.
