@@ -248,14 +248,14 @@ pub const AT_SYMLINK_FOLLOW: c_int = 0x2;
 pub const AT_REMOVEDIR: c_int = 0x4;
 pub const UTIME_OMIT: c_long = 0xfffffffe;
 pub const UTIME_NOW: c_long = 0xffffffff;
-pub const S_IFIFO: mode_t = 0o14_0000;
+pub const S_IFIFO: mode_t = 0o1_0000;
 pub const S_IFCHR: mode_t = 0o2_0000;
 pub const S_IFBLK: mode_t = 0o6_0000;
 pub const S_IFDIR: mode_t = 0o4_0000;
 pub const S_IFREG: mode_t = 0o10_0000;
 pub const S_IFLNK: mode_t = 0o12_0000;
 pub const S_IFSOCK: mode_t = 0o14_0000;
-pub const S_IFMT: mode_t = 0o16_0000;
+pub const S_IFMT: mode_t = 0o17_0000;
 pub const S_IRWXO: mode_t = 0o0007;
 pub const S_IXOTH: mode_t = 0o0001;
 pub const S_IWOTH: mode_t = 0o0002;
@@ -375,17 +375,26 @@ pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_IOV_MAX: c_int = 60;
 pub const _SC_SYMLOOP_MAX: c_int = 173;
 
-// unsafe code here is required in the stable, but not in nightly
-#[allow(unused_unsafe)]
-pub static CLOCK_MONOTONIC: clockid_t = unsafe { clockid_t(ptr_addr_of!(_CLOCK_MONOTONIC)) };
-#[allow(unused_unsafe)]
-pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
-    unsafe { clockid_t(ptr_addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
-#[allow(unused_unsafe)]
-pub static CLOCK_REALTIME: clockid_t = unsafe { clockid_t(ptr_addr_of!(_CLOCK_REALTIME)) };
-#[allow(unused_unsafe)]
-pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
-    unsafe { clockid_t(ptr_addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
+cfg_if! {
+    if #[cfg(libc_ctest)] {
+        // skip these constants when this is active because `ctest` currently
+        // panics on parsing the constants below
+    } else {
+        // unsafe code here is required in the stable, but not in nightly
+        #[allow(unused_unsafe)]
+        pub static CLOCK_MONOTONIC: clockid_t =
+            unsafe { clockid_t(ptr_addr_of!(_CLOCK_MONOTONIC)) };
+        #[allow(unused_unsafe)]
+        pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
+            unsafe { clockid_t(ptr_addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
+        #[allow(unused_unsafe)]
+        pub static CLOCK_REALTIME: clockid_t =
+            unsafe { clockid_t(ptr_addr_of!(_CLOCK_REALTIME)) };
+        #[allow(unused_unsafe)]
+        pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
+            unsafe { clockid_t(ptr_addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
+    }
+}
 
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;

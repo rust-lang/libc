@@ -17,6 +17,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
+    "libc_ctest",
 ];
 
 // Extra values to allow for check-cfg.
