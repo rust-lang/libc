@@ -119,6 +119,7 @@ jobs:
           s390x-unknown-linux-gnu,
           riscv64gc-unknown-linux-gnu,
           wasm32-wasip1,
+          wasm32-wasip2,
           sparc64-unknown-linux-gnu,
           wasm32-unknown-emscripten,
           x86_64-linux-android,
