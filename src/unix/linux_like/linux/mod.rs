@@ -837,7 +837,8 @@ s! {
         pub n_pins: ::c_int,
         pub cross_timestamping: ::c_int,
         pub adjust_phase: ::c_int,
-        pub rsv: [::c_int; 12],
+        pub max_phase_adj: ::c_int,
+        pub rsv: [::c_int; 11],
     }
 
     pub struct ptp_extts_request {
@@ -1086,7 +1087,7 @@ s! {
     pub struct ptp_sys_offset {
         pub n_samples: ::c_uint,
         pub rsv: [::c_uint; 3],
-        pub ts: [ptp_clock_time; 2 * PTP_MAX_SAMPLES as usize + 1],
+        pub ts: [ptp_clock_time; 51],
     }
 
     pub struct ptp_pin_desc {

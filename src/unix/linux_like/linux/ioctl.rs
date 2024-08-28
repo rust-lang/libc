@@ -46,10 +46,13 @@ const _IOC_DIRSHIFT: u32 = _IOC_SIZESHIFT + _IOC_SIZEBITS;
 /// Build an ioctl number, analogous to the C macro of the same name.
 #[inline(always)]
 const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> u32 {
-    debug_assert!(dir <= _IOC_DIRMASK);
-    debug_assert!(ty <= _IOC_TYPEMASK);
-    debug_assert!(nr <= _IOC_NRMASK);
-    debug_assert!(size <= (_IOC_SIZEMASK as usize));
+    // TODO the `garando_syntax` crate (used by ctest2 in the CI test suite)
+    // cannot currently parse these `debug_assert!`s
+    //
+    // debug_assert!(dir <= _IOC_DIRMASK);
+    // debug_assert!(ty <= _IOC_TYPEMASK);
+    // debug_assert!(nr <= _IOC_NRMASK);
+    // debug_assert!(size <= (_IOC_SIZEMASK as usize));
 
     (dir << _IOC_DIRSHIFT)
         | (ty << _IOC_TYPESHIFT)
