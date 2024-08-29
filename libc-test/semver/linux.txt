@@ -3943,8 +3943,11 @@ statvfs64
 strcasecmp
 strcasestr
 strchrnul
+strftime
+strftime_l
 strncasecmp
 strndup
+strptime
 strsignal
 swapoff
 swapon
