@@ -11,6 +11,7 @@ set -ex
 : "${OS?The OS environment variable must be set.}"
 
 RUST=${TOOLCHAIN}
+VERBOSE=-v
 
 echo "Testing Rust ${RUST} on ${OS}"
 
@@ -41,50 +42,50 @@ test_target() {
 
     # Test that libc builds without any default features (no std)
     if [ "${NO_STD}" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}"
+        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}"
     else
         # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --no-default-features --target "${TARGET}"
+            -Z build-std=core,alloc "$VERBOSE" --no-default-features --target "${TARGET}"
     fi
     # Test that libc builds with default features (e.g. std)
     # if the target supports std
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}"
+        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --target "${TARGET}"
     else
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --target "${TARGET}"
+            -Z build-std=core,alloc "$VERBOSE" --target "${TARGET}"
     fi
 
     # Test that libc builds with the `extra_traits` feature
     if [ "${NO_STD}" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
+        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}" \
             --features extra_traits
     else
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --no-default-features \
+            -Z build-std=core,alloc "$VERBOSE" --no-default-features \
             --target "${TARGET}" --features extra_traits
     fi
 
     # Test the 'const-extern-fn' feature on nightly
     if [ "${RUST}" = "nightly" ]; then
         if [ "${NO_STD}" != "1" ]; then
-            cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
+            cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}" \
                 --features const-extern-fn
         else
             RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-                -Z build-std=core,alloc -vv --no-default-features \
+                -Z build-std=core,alloc "$VERBOSE" --no-default-features \
                 --target "${TARGET}" --features const-extern-fn
         fi
     fi
 
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}" \
+        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --target "${TARGET}" \
             --features extra_traits
     else
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --target "${TARGET}" \
+            -Z build-std=core,alloc "$VERBOSE" --target "${TARGET}" \
             --features extra_traits
     fi
 }
