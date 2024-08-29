@@ -2672,6 +2672,7 @@ pub const VRIGHT: usize = 29;
 pub const VUP: usize = 30;
 pub const XCASE: tcflag_t = 0x00000004;
 
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0x00;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 0x01;
 

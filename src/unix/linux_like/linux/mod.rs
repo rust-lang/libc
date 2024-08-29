@@ -2419,6 +2419,7 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
 };
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
@@ -5138,7 +5139,7 @@ f! {
             as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize
             + (*mhdr).msg_controllen as usize;
-        if (next.offset(1)) as usize > max ||
+        if (next.wrapping_offset(1)) as usize > max ||
             next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
         {
             0 as *mut cmsghdr
