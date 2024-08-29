@@ -118,11 +118,8 @@ jobs:
           powerpc64le-unknown-linux-gnu,
           s390x-unknown-linux-gnu,
           riscv64gc-unknown-linux-gnu,
-          # FIXME: A recent nightly causes a linker failure:
-          # https://github.com/rust-lang/rust/issues/76679
-          # See this comment for more details:
-          # https://github.com/rust-lang/libc/pull/2225#issuecomment-880696737
-          #wasm32-wasi,
+          wasm32-wasip1,
+          wasm32-wasip2,
           sparc64-unknown-linux-gnu,
           wasm32-unknown-emscripten,
           x86_64-linux-android,
