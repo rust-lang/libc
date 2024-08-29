@@ -5635,6 +5635,8 @@ extern "C" {
     ) -> ::ssize_t;
 
     pub fn klogctl(syslog_type: ::c_int, bufp: *mut ::c_char, len: ::c_int) -> ::c_int;
+
+    pub fn ioctl(fd: ::c_int, request: ::Ioctl, ...) -> ::c_int;
 }
 
 // LFS64 extensions

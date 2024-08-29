@@ -853,7 +853,6 @@ extern "C" {
         new_limit: *const ::rlimit,
         old_limit: *mut ::rlimit,
     ) -> ::c_int;
-    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;

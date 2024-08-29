@@ -1137,6 +1137,7 @@ mknodat
 mkostemp
 mkostemps
 mkstemps
+mmsghdr
 mount_info
 mrand48
 msdosfs_args
@@ -1216,6 +1217,7 @@ readlinkat
 reallocarray
 reboot
 recvmsg
+recvmmsg
 regcomp
 regerror
 regex_t
@@ -1237,6 +1239,7 @@ sem_init
 sem_open
 sem_timedwait
 sem_unlink
+sendmmsg
 sendmsg
 setdomainname
 setgrent
