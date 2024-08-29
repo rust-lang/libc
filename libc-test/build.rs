@@ -3910,8 +3910,6 @@ fn test_linux(target: &str) {
                 || name == "PTP_CLOCK_GETCAPS2"
                 || name == "PTP_ENABLE_PPS2"
                 || name == "PTP_EXTTS_REQUEST2"
-                || name == "PTP_MASK_CLEAR_ALL"
-                || name == "PTP_MASK_EN_SINGLE"
                 || name == "PTP_PEROUT_REQUEST2"
                 || name == "PTP_PIN_GETFUNC2"
                 || name == "PTP_PIN_SETFUNC2"

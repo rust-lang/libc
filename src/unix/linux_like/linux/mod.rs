@@ -4444,8 +4444,6 @@ pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint =
     ioctl::_IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 17);
 pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint =
     ioctl::_IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 18);
-pub const PTP_MASK_CLEAR_ALL: ::c_uint = ioctl::_IO(PTP_CLK_MAGIC, 19);
-pub const PTP_MASK_EN_SINGLE: ::c_uint = ioctl::_IOW::<::c_uint>(PTP_CLK_MAGIC, 20);
 
 // enum ptp_pin_function
 pub const PTP_PF_NONE: ::c_uint = 0;
