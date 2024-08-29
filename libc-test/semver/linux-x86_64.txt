@@ -107,6 +107,7 @@ SYS_lstat
 SYS_mkdir
 SYS_mknod
 SYS_modify_ldt
+SYS_mseal
 SYS_open
 SYS_pause
 SYS_pipe

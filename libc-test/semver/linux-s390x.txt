@@ -59,6 +59,7 @@ SYS_link
 SYS_lstat
 SYS_mkdir
 SYS_mknod
+SYS_mseal
 SYS_newfstatat
 SYS_nice
 SYS_open

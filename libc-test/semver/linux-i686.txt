@@ -132,6 +132,7 @@ SYS_mknod
 SYS_mmap2
 SYS_modify_ldt
 SYS_mpx
+SYS_mseal
 SYS_nice
 SYS_oldfstat
 SYS_oldlstat
