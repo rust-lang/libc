@@ -311,6 +311,7 @@ pub const IPV6_MULTICAST_IF: ::c_int = 9;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 10;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
+pub const IPV6_DONTFRAG: ::c_int = 62;
 
 pub const IPTOS_ECN_NOTECT: u8 = 0x00;
 pub const IPTOS_ECN_MASK: u8 = 0x03;

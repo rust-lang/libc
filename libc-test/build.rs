@@ -3839,6 +3839,10 @@ fn test_linux(target: &str) {
             if name.starts_with("NI_IDN") {
                 return true;
             }
+            // FIXME: Requires >= 6.3 kernel headers
+            if name == "MFD_NOEXEC_SEAL" || name == "MFD_EXEC" {
+                return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included
@@ -4048,6 +4052,9 @@ fn test_linux(target: &str) {
             | "MADV_POPULATE_WRITE"
             if musl => true,
             "CLONE_CLEAR_SIGHAND" | "CLONE_INTO_CGROUP" => true,
+
+            // FIXME: Requires >= 6.3 kernel headers
+            "MFD_EXEC" | "MFD_NOEXEC_SEAL" if sparc64 => true,
 
             // kernel 6.1 minimum
             "MADV_COLLAPSE" => true,
