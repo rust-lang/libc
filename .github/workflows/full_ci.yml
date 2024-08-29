@@ -16,10 +16,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        target: [
-          i686-unknown-linux-gnu,
-          x86_64-unknown-linux-gnu,
-        ]
+        target:
+          - i686-unknown-linux-gnu
+          - x86_64-unknown-linux-gnu
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
@@ -36,9 +35,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        target: [
-          x86_64-apple-darwin,
-        ]
+        target:
+          - x86_64-apple-darwin
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
@@ -104,32 +102,31 @@ jobs:
       fail-fast: true
       max-parallel: 12
       matrix:
-        target: [
-          aarch64-linux-android,
-          aarch64-unknown-linux-gnu,
-          aarch64-unknown-linux-musl,
-          arm-linux-androideabi,
-          arm-unknown-linux-gnueabihf,
-          arm-unknown-linux-musleabihf,
-          i686-linux-android,
-          i686-unknown-linux-musl,
-          powerpc-unknown-linux-gnu,
-          powerpc64-unknown-linux-gnu,
-          powerpc64le-unknown-linux-gnu,
-          s390x-unknown-linux-gnu,
-          riscv64gc-unknown-linux-gnu,
-          wasm32-wasip1,
-          wasm32-wasip2,
-          sparc64-unknown-linux-gnu,
-          wasm32-unknown-emscripten,
-          x86_64-linux-android,
+        target:
+          - aarch64-linux-android
+          - aarch64-unknown-linux-gnu
+          - aarch64-unknown-linux-musl
+          - arm-linux-androideabi
+          - arm-unknown-linux-gnueabihf
+          - arm-unknown-linux-musleabihf
+          - i686-linux-android
+          - i686-unknown-linux-musl
+          - powerpc-unknown-linux-gnu
+          - powerpc64-unknown-linux-gnu
+          - powerpc64le-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - riscv64gc-unknown-linux-gnu
+          - wasm32-wasip1
+          - wasm32-wasip2
+          - sparc64-unknown-linux-gnu
+          - wasm32-unknown-emscripten
+          - x86_64-linux-android
           # FIXME: Exec format error (os error 8)
-          #x86_64-unknown-linux-gnux32,
-          x86_64-unknown-linux-musl,
+          # - x86_64-unknown-linux-gnux32
+          - x86_64-unknown-linux-musl
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
-          # x86_64-unknown-redox,
-        ]
+          # - x86_64-unknown-redox
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
@@ -150,18 +147,17 @@ jobs:
       fail-fast: true
       max-parallel: 5
       matrix:
-        toolchain: [
-          stable,
-          beta,
-          nightly,
+        toolchain:
+          - stable
+          - beta
+          - nightly
           # FIXME: Disabled due to:
           # error: failed to parse registry's information for: serde
-          #1.13.0,
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
-        ]
+          # 1.13.0,
+          - 1.19.0
+          - 1.24.0
+          - 1.25.0
+          - 1.30.0
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
@@ -204,13 +200,12 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        toolchain: [
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
-          stable,
-        ]
+        toolchain:
+          - 1.19.0
+          - 1.24.0
+          - 1.25.0
+          - 1.30.0
+          - stable
     steps:
       - uses: actions/checkout@v4
       - name: Self-update rustup
@@ -223,7 +218,6 @@ jobs:
   check_cfg:
     permissions:
       contents: read # to fetch code (actions/checkout)
-
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
     steps:
@@ -238,16 +232,15 @@ jobs:
   success:
     name: success
     runs-on: ubuntu-22.04
-    needs: [
-      docker_linux_tier1,
-      docker_linux_tier2,
-      macos,
-      windows,
-      style_check,
-      build_channels_linux,
-      build_channels_macos,
-      build_channels_windows,
-    ]
+    needs:
+      - docker_linux_tier1
+      - docker_linux_tier2
+      - macos
+      - windows
+      - style_check
+      - build_channels_linux
+      - build_channels_macos
+      - build_channels_windows
     # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
