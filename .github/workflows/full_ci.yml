@@ -7,9 +7,6 @@ on:
 
 jobs:
   docker_linux_tier1:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Docker Linux Tier1
     runs-on: ubuntu-22.04
     strategy:
@@ -26,9 +23,6 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
   macos:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: macOS
     runs-on: macos-14
     strategy:
@@ -44,9 +38,6 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Windows
     runs-on: windows-2022
     env:
@@ -79,9 +70,6 @@ jobs:
         shell: bash
 
   style_check:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Style check
     runs-on: ubuntu-22.04
     steps:
@@ -92,9 +80,6 @@ jobs:
         run: sh ci/style.sh
 
   docker_linux_tier2:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Docker Linux Tier2
     needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-22.04
@@ -135,9 +120,6 @@ jobs:
         run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
 
   build_channels_linux:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Build Channels Linux
     needs: docker_linux_tier2
     runs-on: ubuntu-22.04
@@ -160,9 +142,6 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_macos:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Build Channels macOS
     needs: macos
     env:
@@ -185,9 +164,6 @@ jobs:
         run: LIBC_CI=1 TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/build.sh
 
   build_channels_windows:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Build Channels Windows
     runs-on: windows-2022
     env:
@@ -208,8 +184,6 @@ jobs:
         shell: bash
 
   check_cfg:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
     steps:
