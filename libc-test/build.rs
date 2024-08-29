@@ -1521,6 +1521,7 @@ fn test_dragonflybsd(target: &str) {
 
 fn test_wasi(target: &str) {
     assert!(target.contains("wasi"));
+    let p2 = target.contains("wasip2");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -1534,6 +1535,9 @@ fn test_wasi(target: &str) {
         "limits.h",
         "locale.h",
         "malloc.h",
+        [p2]: "netdb.h",
+        [p2]: "netinet/in.h",
+        [p2]: "netinet/tcp.h",
         "poll.h",
         "sched.h",
         "stdbool.h",
@@ -1565,6 +1569,12 @@ fn test_wasi(target: &str) {
     // to omit them.
     cfg.cfg("libc_ctest", None);
 
+    // `ctest2` has a hard-coded list of default cfgs which doesn't include
+    // wasip2, which is why it has to be set here manually.
+    if p2 {
+        cfg.cfg("target_env", Some("p2"));
+    }
+
     cfg.type_name(move |ty, is_struct, is_union| match ty {
         "FILE" | "fd_set" | "DIR" => ty.to_string(),
         t if is_union => format!("union {}", t),
@@ -1586,6 +1596,14 @@ fn test_wasi(target: &str) {
     // These have a different and internal type in header files and are only
     // used here to generate a pointer to them in bindings so skip these tests.
     cfg.skip_static(|c| c.starts_with("_CLOCK_"));
+
+    cfg.skip_const(|c| match c {
+        // These constants aren't yet defined in wasi-libc.
+        // Exposing them is being tracked by https://github.com/WebAssembly/wasi-libc/issues/531.
+        "SO_BROADCAST" | "SO_LINGER" => true,
+
+        _ => false,
+    });
 
     cfg.skip_fn(|f| match f {
         // This function doesn't actually exist in libc's header files

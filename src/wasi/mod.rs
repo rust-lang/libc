@@ -879,3 +879,10 @@ extern "C" {
 
     pub fn __errno_location() -> *mut ::c_int;
 }
+
+cfg_if! {
+    if #[cfg(target_env = "p2")] {
+        mod p2;
+        pub use self::p2::*;
+    }
+}
