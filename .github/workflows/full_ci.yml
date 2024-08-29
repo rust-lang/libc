@@ -5,6 +5,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+env:
+  LIBC_CI: 1
+
 jobs:
   style_check:
     name: Style check
@@ -35,7 +38,7 @@ jobs:
       - name: Setup Rust toolchain
         run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
       - name: Execute build.sh
-        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
 
   build_channels_macos:
     name: Build Channels macOS
@@ -57,7 +60,7 @@ jobs:
       - name: Setup Rust toolchain
         run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/install-rust.sh
       - name: Execute build.sh
-        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/build.sh
+        run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/build.sh
 
   build_channels_windows:
     name: Build Channels Windows
@@ -76,7 +79,7 @@ jobs:
         run: rustup self update
         shell: bash
       - name: Execute build.sh
-        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
         shell: bash
 
   macos:
@@ -92,7 +95,7 @@ jobs:
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run.sh
-        run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
+        run: sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
     name: Windows
@@ -123,7 +126,7 @@ jobs:
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
         shell: bash
       - name: Execute run.sh
-        run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
+        run: sh ./ci/run.sh ${{ matrix.target }}
         shell: bash
 
   
@@ -141,7 +144,7 @@ jobs:
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
-        run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
+        run: sh ./ci/run-docker.sh ${{ matrix.target }}
 
   docker_linux_tier2:
     name: Docker Linux Tier2
@@ -181,7 +184,7 @@ jobs:
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
-        run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
+        run: sh ./ci/run-docker.sh ${{ matrix.target }}
 
   check_cfg:
     name: "Check #[cfg]s"
@@ -191,7 +194,7 @@ jobs:
       - name: Setup Rust toolchain
         run: TOOLCHAIN=nightly sh ./ci/install-rust.sh
       - name: Build with check-cfg
-        run: LIBC_CI=1 LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg
+        run: LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg
 
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
