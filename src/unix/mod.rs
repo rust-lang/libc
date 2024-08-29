@@ -313,6 +313,11 @@ pub const ATF_PERM: ::c_int = 0x04;
 pub const ATF_PUBL: ::c_int = 0x08;
 pub const ATF_USETRAILERS: ::c_int = 0x10;
 
+extern "C" {
+    pub static in6addr_loopback: in6_addr;
+    pub static in6addr_any: in6_addr;
+}
+
 cfg_if! {
     if #[cfg(any(target_os = "l4re", target_os = "espidf"))] {
         // required libraries for L4Re and the ESP-IDF framework are linked externally, ATM
