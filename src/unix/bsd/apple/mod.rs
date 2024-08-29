@@ -1089,12 +1089,6 @@ s! {
         pub nativeattr: attribute_set_t,
     }
 
-    #[repr(packed(4))]
-    pub struct ifconf {
-        pub ifc_len: ::c_int,
-        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-    }
-
     #[repr(align(8))]
     pub struct tcp_connection_info {
         pub tcpi_state: u8,
@@ -1211,6 +1205,12 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[repr(packed(4))]
+    pub struct ifconf {
+        pub ifc_len: ::c_int,
+        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+    }
+
     #[repr(packed(4))]
     pub struct kevent {
         pub ident: ::uintptr_t,
@@ -3086,30 +3086,15 @@ cfg_if! {
             }
         }
 
-        impl Eq for __c_anonymous_ifc_ifcu {}
-
-        impl PartialEq for __c_anonymous_ifc_ifcu {
-            fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
-                unsafe {
-                    self.ifcu_buf == other.ifcu_buf &&
-                    self.ifcu_req == other.ifcu_req
-                }
+        impl ::fmt::Debug for ifconf{
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifconf").finish_non_exhaustive()
             }
         }
 
         impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("ifc_ifcu")
-                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
-                    .field("ifcu_req", unsafe { &self.ifcu_req })
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for __c_anonymous_ifc_ifcu {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe { self.ifcu_buf.hash(state) };
-                unsafe { self.ifcu_req.hash(state) };
+                f.debug_struct("ifc_ifcu").finish_non_exhaustive()
             }
         }
 
