@@ -1193,51 +1193,36 @@ s! {
         pub chan: ::c_uint,
         pub rsv: [::c_uint; 5],
     }
-}
 
-cfg_if! {
-    if #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))] {
-        s!{
-            pub struct ptp_clock_caps {
-                pub max_adj: ::c_int,
-                pub n_alarm: ::c_int,
-                pub n_ext_ts: ::c_int,
-                pub n_per_out: ::c_int,
-                pub pps: ::c_int,
-                pub n_pins: ::c_int,
-                pub cross_timestamping: ::c_int,
-                pub adjust_phase: ::c_int,
-                pub rsv: [::c_int; 12],
-            }
-        }
-    } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
-        s!{
-            pub struct ptp_clock_caps {
-                pub max_adj: ::c_int,
-                pub n_alarm: ::c_int,
-                pub n_ext_ts: ::c_int,
-                pub n_per_out: ::c_int,
-                pub pps: ::c_int,
-                pub n_pins: ::c_int,
-                pub cross_timestamping: ::c_int,
-                pub rsv: [::c_int; 13],
-            }
-        }
-    } else {
-        s! {
-            pub struct ptp_clock_caps {
-                pub max_adj: ::c_int,
-                pub n_alarm: ::c_int,
-                pub n_ext_ts: ::c_int,
-                pub n_per_out: ::c_int,
-                pub pps: ::c_int,
-                pub n_pins: ::c_int,
-                pub cross_timestamping: ::c_int,
-                pub adjust_phase: ::c_int,
-                pub max_phase_adj: ::c_int,
-                pub rsv: [::c_int; 11],
-            }
-        }
+    pub struct ptp_clock_caps {
+        pub max_adj: ::c_int,
+        pub n_alarm: ::c_int,
+        pub n_ext_ts: ::c_int,
+        pub n_per_out: ::c_int,
+        pub pps: ::c_int,
+        pub n_pins: ::c_int,
+        pub cross_timestamping: ::c_int,
+        #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
+        pub adjust_phase: ::c_int,
+        #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
+        pub rsv: [::c_int; 12],
+        #[cfg(any(target_env = "musl", target_env = "ohos"))]
+        pub rsv: [::c_int; 13],
+        #[cfg(not(any(
+            any(target_arch = "sparc", target_arch = "sparc64"),
+            any(target_env = "musl", target_env = "ohos"),
+        )))]
+        pub adjust_phase: ::c_int,
+        #[cfg(not(any(
+            any(target_arch = "sparc", target_arch = "sparc64"),
+            any(target_env = "musl", target_env = "ohos"),
+        )))]
+        pub max_phase_adj: ::c_int,
+        #[cfg(not(any(
+            any(target_arch = "sparc", target_arch = "sparc64"),
+            any(target_env = "musl", target_env = "ohos"),
+        )))]
+        pub rsv: [::c_int; 11],
     }
 }
 
