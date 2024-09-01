@@ -1,5 +1,6 @@
 use std::env;
-use std::process::Command;
+use std::ffi::{OsStr, OsString};
+use std::process::{Command, Output};
 use std::str;
 
 // List of cfgs this build script is allowed to set. The list is needed to support check-cfg, as we
@@ -111,6 +112,36 @@ fn main() {
     }
 }
 
+fn rustc_version_cmd(is_clippy_driver: bool) -> Output {
+    let rustc_wrapper = env::var_os("RUSTC_WRAPPER").filter(|w| !w.is_empty());
+    let rustc = env::var_os("RUSTC").expect("Failed to get rustc version: missing RUSTC env");
+
+    let mut cmd = if let Some(wrapper) = rustc_wrapper {
+        let mut cmd = Command::new(wrapper);
+        cmd.arg(rustc);
+        if is_clippy_driver {
+            cmd.arg("--rustc");
+        }
+
+        cmd
+    } else {
+        Command::new(rustc)
+    };
+
+    cmd.arg("--version");
+
+    let output = cmd.output().expect("Failed to get rustc version");
+
+    if !output.status.success() {
+        panic!(
+            "failed to run rustc: {}",
+            String::from_utf8_lossy(output.stderr.as_slice())
+        );
+    }
+
+    output
+}
+
 fn rustc_minor_nightly() -> (u32, bool) {
     macro_rules! otry {
         ($e:expr) => {
@@ -121,27 +152,14 @@ fn rustc_minor_nightly() -> (u32, bool) {
         };
     }
 
-    let rustc = env::var_os("RUSTC").expect("Failed to get rustc version: missing RUSTC env");
-    let mut cmd = if let Some(wrapper) = env::var_os("RUSTC_WRAPPER").filter(|w| !w.is_empty()) {
-        let mut cmd = Command::new(wrapper);
-        cmd.arg(rustc);
-        cmd
-    } else {
-        Command::new(rustc)
-    };
+    let mut output = rustc_version_cmd(false);
 
-    let output = cmd
-        .arg("--version")
-        .output()
-        .expect("Failed to get rustc version");
-    if !output.status.success() {
-        panic!(
-            "failed to run rustc: {}",
-            String::from_utf8_lossy(output.stderr.as_slice())
-        );
+    if otry!(str::from_utf8(&output.stdout).ok()).starts_with("clippy") {
+        output = rustc_version_cmd(true);
     }
 
     let version = otry!(str::from_utf8(&output.stdout).ok());
+
     let mut pieces = version.split('.');
 
     if pieces.next() != Some("rustc 1") {
