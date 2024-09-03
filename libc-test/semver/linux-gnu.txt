@@ -713,3 +713,4 @@ putgrent
 execveat
 close_range
 epoll_pwait2
+tcp_info
