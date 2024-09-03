@@ -3700,6 +3700,9 @@ fn test_linux(target: &str) {
         if musl && ty == "fanout_args" {
             return true;
         }
+        if sparc64 && ty == "fanotify_event_info_error" {
+            return true;
+        }
 
         match ty {
             // These cannot be tested when "resolv.h" is included and are tested
@@ -4449,7 +4452,11 @@ fn test_linux(target: &str) {
         // the `tcpi_delivery_rate_app_limited` field is a bitfield on musl
         (musl && struct_ == "tcp_info" && field == "tcpi_delivery_rate_app_limited") ||
         // the `tcpi_fast_open_client_fail` field is a bitfield on musl
-        (musl && struct_ == "tcp_info" && field == "tcpi_fast_open_client_fail")
+        (musl && struct_ == "tcp_info" && field == "tcpi_fast_open_client_fail") ||
+        // either fsid_t or int[2] type
+        (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
+        // `handle` is a VLA
+        (struct_ == "fanotify_event_info_fid" && field == "handle")
     });
 
     cfg.skip_roundtrip(move |s| match s {

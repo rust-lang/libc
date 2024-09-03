@@ -16,6 +16,7 @@ pub type loff_t = ::c_longlong;
 pub type pthread_key_t = ::c_uint;
 pub type pthread_once_t = ::c_int;
 pub type pthread_spinlock_t = ::c_int;
+pub type __kernel_fsid_t = __c_anonymous__kernel_fsid_t;
 
 pub type __u8 = ::c_uchar;
 pub type __u16 = ::c_ushort;
@@ -590,6 +591,10 @@ s! {
         pub r_info: Elf64_Xword,
     }
 
+    pub struct __c_anonymous__kernel_fsid_t {
+        pub val: [::c_int; 2],
+    }
+
     pub struct ucred {
         pub pid: ::pid_t,
         pub uid: ::uid_t,
@@ -655,6 +660,18 @@ s! {
     pub struct fanotify_response {
         pub fd: ::c_int,
         pub response: __u32,
+    }
+
+    pub struct fanotify_event_info_header {
+        pub info_type: __u8,
+        pub pad: __u8,
+        pub len: __u16,
+    }
+
+    pub struct fanotify_event_info_fid {
+        pub hdr: fanotify_event_info_header,
+        pub fsid: ::__kernel_fsid_t,
+        pub handle: [::c_uchar; 0],
     }
 
     pub struct sockaddr_vm {

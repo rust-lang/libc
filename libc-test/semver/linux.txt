@@ -3540,6 +3540,7 @@ execvpe
 faccessat
 fallocate
 fallocate64
+fanotify_event_info_fid
 fanotify_event_metadata
 fanotify_init
 fanotify_mark
