@@ -1,7 +1,5 @@
 //! Compare libc's SO_EE_OFFENDER function against the actual C macro
 
-extern crate libc;
-
 #[cfg(any(target_os = "linux", target_os = "android"))]
 mod t {
     use libc::{self, sock_extended_err, sockaddr};
