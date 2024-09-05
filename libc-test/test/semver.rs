@@ -1,8 +1,6 @@
 #![allow(unused_imports)]
 #![allow(deprecated)]
 
-extern crate libc;
-
 // Generated in `build.rs`.
 include!(concat!(env!("OUT_DIR"), "/semver.rs"));
 
