@@ -3787,6 +3787,19 @@ pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 2;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 1;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 2;
+pub const PTHREAD_INHERIT_SCHED: ::c_int = 1;
+pub const PTHREAD_EXPLICIT_SCHED: ::c_int = 2;
+pub const PTHREAD_CANCEL_ENABLE: ::c_int = 0x01;
+pub const PTHREAD_CANCEL_DISABLE: ::c_int = 0x00;
+pub const PTHREAD_CANCEL_DEFERRED: ::c_int = 0x02;
+pub const PTHREAD_CANCEL_ASYNCHRONOUS: ::c_int = 0x00;
+pub const PTHREAD_CANCELED: *mut ::c_void = 1 as *mut ::c_void;
+pub const PTHREAD_SCOPE_SYSTEM: ::c_int = 1;
+pub const PTHREAD_SCOPE_PROCESS: ::c_int = 2;
+pub const PTHREAD_PRIO_NONE: ::c_int = 0;
+pub const PTHREAD_PRIO_INHERIT: ::c_int = 1;
+pub const PTHREAD_PRIO_PROTECT: ::c_int = 2;
+
 #[cfg(target_arch = "aarch64")]
 pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 #[cfg(not(target_arch = "aarch64"))]
@@ -5757,6 +5770,40 @@ extern "C" {
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
     pub fn mach_host_self() -> mach_port_t;
     pub fn mach_thread_self() -> mach_port_t;
+    pub fn pthread_once(
+        once_control: *mut ::pthread_once_t,
+        init_routine: ::Option<unsafe extern "C" fn()>,
+    ) -> ::c_int;
+    pub fn pthread_attr_getinheritsched(
+        attr: *const ::pthread_attr_t,
+        inheritsched: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_getschedpolicy(
+        attr: *const ::pthread_attr_t,
+        policy: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_getscope(
+        attr: *const ::pthread_attr_t,
+        contentionscope: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_getstackaddr(
+        attr: *const ::pthread_attr_t,
+        stackaddr: *mut *mut ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_attr_getdetachstate(
+        attr: *const ::pthread_attr_t,
+        detachstate: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_setinheritsched(
+        attr: *mut ::pthread_attr_t,
+        inheritsched: ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_setschedpolicy(attr: *mut ::pthread_attr_t, policy: ::c_int) -> ::c_int;
+    pub fn pthread_attr_setscope(attr: *mut ::pthread_attr_t, contentionscope: ::c_int) -> ::c_int;
+    pub fn pthread_attr_setstackaddr(
+        attr: *mut ::pthread_attr_t,
+        stackaddr: *mut ::c_void,
+    ) -> ::c_int;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
     pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn pthread_mach_thread_np(thread: ::pthread_t) -> ::mach_port_t;
