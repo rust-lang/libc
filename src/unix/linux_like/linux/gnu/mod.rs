@@ -1542,6 +1542,14 @@ extern "C" {
     pub fn close_range(first: ::c_uint, last: ::c_uint, flags: ::c_int) -> ::c_int;
 
     pub fn mq_notify(mqdes: ::mqd_t, sevp: *const ::sigevent) -> ::c_int;
+
+    pub fn epoll_pwait2(
+        epfd: ::c_int,
+        events: *mut ::epoll_event,
+        maxevents: ::c_int,
+        timeout: *const ::timespec,
+        sigmask: *const ::sigset_t,
+    ) -> ::c_int;
 }
 
 cfg_if! {
