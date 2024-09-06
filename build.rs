@@ -111,20 +111,23 @@ fn main() {
     }
 }
 
+/// Run `rustc --version` and capture the output, adjusting arguments as needed if `clippy-driver`
+/// is used instead.
 fn rustc_version_cmd(is_clippy_driver: bool) -> Output {
     let rustc_wrapper = env::var_os("RUSTC_WRAPPER").filter(|w| !w.is_empty());
     let rustc = env::var_os("RUSTC").expect("Failed to get rustc version: missing RUSTC env");
 
-    let mut cmd = if let Some(wrapper) = rustc_wrapper {
-        let mut cmd = Command::new(wrapper);
-        cmd.arg(rustc);
-        if is_clippy_driver {
-            cmd.arg("--rustc");
-        }
+    let mut cmd = match rustc_wrapper {
+        Some(wrapper) => {
+            let mut cmd = Command::new(wrapper);
+            cmd.arg(rustc);
+            if is_clippy_driver {
+                cmd.arg("--rustc");
+            }
 
-        cmd
-    } else {
-        Command::new(rustc)
+            cmd
+        }
+        None => Command::new(rustc),
     };
 
     cmd.arg("--version");
@@ -141,6 +144,8 @@ fn rustc_version_cmd(is_clippy_driver: bool) -> Output {
     output
 }
 
+/// Return the minor version of `rustc`, as well as a bool indicating whether or not the version
+/// is a nightly.
 fn rustc_minor_nightly() -> (u32, bool) {
     macro_rules! otry {
         ($e:expr) => {
