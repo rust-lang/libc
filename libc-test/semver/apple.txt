@@ -1913,6 +1913,8 @@ lockf
 log2phys
 login_tty
 lutimes
+mach_error_string
+mach_error_t
 madvise
 malloc_default_zone
 malloc_good_size
