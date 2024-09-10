@@ -28,6 +28,9 @@
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
 #![cfg_attr(libc_const_extern_fn_unstable, feature(const_extern_fn))]
 
+#[cfg(feature = "zerocopy_0_8")]
+extern crate zerocopy_0_8 as zerocopy;
+
 #[macro_use]
 mod macros;
 
