@@ -106,8 +106,8 @@ cfg_if! {
         pub const SO_DETACH_REUSEPORT_BPF: ::c_int = 68;
     }
 }
-// pub const SO_PREFER_BUSY_POLL: ::c_int = 69;
-// pub const SO_BUSY_POLL_BUDGET: ::c_int = 70;
+pub const SO_PREFER_BUSY_POLL: ::c_int = 69;
+pub const SO_BUSY_POLL_BUDGET: ::c_int = 70;
 
 cfg_if! {
     if #[cfg(any(target_arch = "x86",
