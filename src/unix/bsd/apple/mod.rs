@@ -73,6 +73,11 @@ pub type ledger_array_t = *mut ::ledger_t;
 
 pub type iconv_t = *mut ::c_void;
 
+// mach/host_info.h
+pub type host_cpu_load_info_t = *mut host_cpu_load_info;
+pub type host_cpu_load_info_data_t = host_cpu_load_info;
+
+// mach/processor_info.h
 pub type processor_cpu_load_info_t = *mut processor_cpu_load_info;
 pub type processor_cpu_load_info_data_t = processor_cpu_load_info;
 pub type processor_basic_info_t = *mut processor_basic_info;
@@ -1338,6 +1343,10 @@ s_no_extra_traits! {
         pub sigev_notify_attributes: *mut ::pthread_attr_t
     }
 
+    pub struct host_cpu_load_info {
+        pub cpu_ticks: [::natural_t; CPU_STATE_MAX as usize],
+    }
+
     pub struct processor_cpu_load_info {
         pub cpu_ticks: [::c_uint; CPU_STATE_MAX as usize],
     }
@@ -2177,6 +2186,25 @@ cfg_if! {
                 self.sigev_signo.hash(state);
                 self.sigev_value.hash(state);
                 self.sigev_notify_attributes.hash(state);
+            }
+        }
+
+        impl PartialEq for host_cpu_load_info {
+            fn eq(&self, other: &host_cpu_load_info) -> bool {
+                self.cpu_ticks == other.cpu_ticks
+            }
+        }
+        impl Eq for host_cpu_load_info {}
+        impl ::fmt::Debug for host_cpu_load_info {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("host_cpu_load_info")
+                    .field("cpu_ticks", &self.cpu_ticks)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for host_cpu_load_info {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.cpu_ticks.hash(state);
             }
         }
 
