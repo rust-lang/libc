@@ -64,13 +64,50 @@ esac
 cd ..
 rm -rf $MUSL
 
-# Download, configure, build, and install musl-sanitized kernel headers:
-KERNEL_HEADER_VER="4.19.88"
-curl --retry 5 -L \
-     "https://github.com/sabotage-linux/kernel-headers/archive/v${KERNEL_HEADER_VER}.tar.gz" | \
-    tar xzf -
+# Download, configure, build, and install musl-sanitized kernel headers.
+# This routine piggybacks on: https://git.alpinelinux.org/aports/tree/main/linux-headers?h=3.20-stable
+# Alpine follows stable kernel releases, 3.20 uses Linux 6.6 headers.
+git clone -n --depth=1 --filter=tree:0 -b 3.20-stable https://gitlab.alpinelinux.org/alpine/aports
 (
-    cd kernel-headers-${KERNEL_HEADER_VER}
-    make ARCH="${kernel_arch}" prefix="/musl-${musl_arch}" install -j4
+   cd aports
+   git sparse-checkout set --no-cone main/linux-headers
+   git checkout
+   cd main/linux-headers
+   cp APKBUILD APKBUILD.source
+   cp APKBUILD APKBUILD.sha512
+   {
+   echo "printf \"\$source\""
+   # shellcheck disable=SC2028
+   echo "printf \"\$_kernver\n\""
+   # shellcheck disable=SC2028
+   echo "printf \"\$pkgver\n\""
+   } >> APKBUILD.source
+   echo "printf \"\$sha512sums\"" >> APKBUILD.sha512
+   KERNEL_VER=$(bash APKBUILD.source | tail -2 | head -1 | tr -d "[:space:]")
+   PKGVER=$(bash APKBUILD.source | tail -1 | tr -d "[:space:]")
+   urls=$(bash APKBUILD.source | grep -o 'https.*')
+   kernel=""
+   patch=""
+   for url in $urls; do
+      base=$(basename "$url")
+      curl --retry 5 -L "$url" > "$base"
+      case $base in
+         linux-*) kernel=$base;;
+         patch-*) patch=$base;;
+      esac
+   done
+   bash APKBUILD.sha512 | grep "$kernel" >> sha-check
+   bash APKBUILD.sha512 | grep "$patch" >> sha-check
+   sha512sum -c sha-check
+   tar -xf "$kernel"
+   cd "linux-$KERNEL_VER"
+   if [ "$PKGVER" != "$KERNEL_VER" ]; then
+      unxz -c < "../$patch" | patch -p1
+   fi
+   for p in ../*.patch; do
+      patch -p1 < "$p"
+   done
+   make headers_install ARCH="${kernel_arch}" INSTALL_HDR_PATH="/musl-${musl_arch}"
 )
-rm -rf kernel-headers-${KERNEL_HEADER_VER}
+
+rm -rf aports
