@@ -4,7 +4,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
         gcc \
         gcc-s390x-linux-gnu \
-        qemu-user
+        qemu-user \
+        xz-utils patch rsync
 
 COPY install-musl.sh /
 RUN /install-musl.sh s390x
