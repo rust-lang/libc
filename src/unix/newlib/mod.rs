@@ -203,6 +203,10 @@ s! {
         pub c_lflag: ::tcflag_t,
         pub c_line: ::cc_t,
         pub c_cc: [::cc_t; ::NCCS],
+        #[cfg(target_os = "espidf")]
+        pub c_ispeed: u32,
+        #[cfg(target_os = "espidf")]
+        pub c_ospeed: u32,
     }
 
     pub struct sem_t { // Unverified
@@ -230,7 +234,24 @@ s! {
     }
 
     pub struct pthread_attr_t { // Unverified
-        __size: [u8; __SIZEOF_PTHREAD_ATTR_T]
+        #[cfg(not(target_os = "espidf"))]
+        __size: [u8; __SIZEOF_PTHREAD_ATTR_T],
+        #[cfg(target_os = "espidf")]
+        pub is_initialized: i32,
+        #[cfg(target_os = "espidf")]
+        pub stackaddr: *mut crate::c_void,
+        #[cfg(target_os = "espidf")]
+        pub stacksize: i32,
+        #[cfg(target_os = "espidf")]
+        pub contentionscope: i32,
+        #[cfg(target_os = "espidf")]
+        pub inheritsched: i32,
+        #[cfg(target_os = "espidf")]
+        pub schedpolicy: i32,
+        #[cfg(target_os = "espidf")]
+        pub schedparam: i32,
+        #[cfg(target_os = "espidf")]
+        pub detachstate: i32,
     }
 
     pub struct pthread_rwlockattr_t { // Unverified
