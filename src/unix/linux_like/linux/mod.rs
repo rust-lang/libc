@@ -880,6 +880,15 @@ s! {
         pub salt: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE],
         pub rec_seq: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE],
     }
+
+    // #include <linux/eventpoll.h>
+
+    pub struct epoll_params {
+        pub busy_poll_usecs: u32,
+        pub busy_poll_budget: u16,
+        pub prefer_busy_poll: u8,
+        pub __pad: u8, // Must be zero
+    }
 }
 
 s_no_extra_traits! {
@@ -4935,6 +4944,10 @@ pub const SCHED_FLAG_ALL: ::c_int = SCHED_FLAG_RESET_ON_FORK
     | SCHED_FLAG_DL_OVERRUN
     | SCHED_FLAG_KEEP_ALL
     | SCHED_FLAG_UTIL_CLAMP;
+
+// ioctl_eventpoll: added in Linux 6.9
+pub const EPIOCSPARAMS: ::Ioctl = 0x40088a01;
+pub const EPIOCGPARAMS: ::Ioctl = 0x80088a02;
 
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {

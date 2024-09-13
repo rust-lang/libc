@@ -3864,6 +3864,9 @@ fn test_linux(target: &str) {
             // kernel so we can drop this and test the type once this new version is used in CI.
             "sched_attr" => true,
 
+            // FIXME: Requires >= 6.9 kernel headers.
+            "epoll_params" => true,
+
             _ => false,
         }
     });
@@ -4305,6 +4308,10 @@ fn test_linux(target: &str) {
             | "SCHED_FLAG_KEEP_ALL"
             | "SCHED_FLAG_UTIL_CLAMP"
             | "SCHED_FLAG_ALL" if musl => true, // Needs more recent linux headers.
+
+            // FIXME: Requires >= 6.9 kernel headers.
+            "EPIOCSPARAMS"
+            | "EPIOCGPARAMS" => true,
 
             _ => false,
         }
