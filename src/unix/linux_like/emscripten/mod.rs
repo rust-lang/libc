@@ -1782,13 +1782,7 @@ extern "C" {
 mod lfs64;
 pub use self::lfs64::*;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        #[macro_use]
-        mod align;
-    } else {
-        #[macro_use]
-        mod no_align;
-    }
-}
+#[macro_use]
+mod align;
+
 expand_align!();

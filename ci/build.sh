@@ -169,15 +169,9 @@ case "${OS}" in
     linux*)
         TARGETS="${RUST_LINUX_TARGETS}"
 
-        if [ "${RUST}" != "1.13.0" ]; then
-            TARGETS="${TARGETS} ${RUST_GT_1_13_LINUX_TARGETS}"
-            if [ "${RUST}" != "1.19.0" ]; then
-                TARGETS="${TARGETS} ${RUST_GT_1_19_LINUX_TARGETS}"
-                if [ "${RUST}" != "1.24.0" ]; then
-                    TARGETS="${TARGETS} ${RUST_GT_1_24_LINUX_TARGETS}"
-                fi
-            fi
-        fi
+        TARGETS="${TARGETS} ${RUST_GT_1_13_LINUX_TARGETS}"
+        TARGETS="${TARGETS} ${RUST_GT_1_19_LINUX_TARGETS}"
+        TARGETS="${TARGETS} ${RUST_GT_1_24_LINUX_TARGETS}"
 
         if [ "${RUST}" = "nightly" ]; then
             TARGETS="${TARGETS} ${RUST_NIGHTLY_LINUX_TARGETS}"

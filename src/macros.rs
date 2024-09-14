@@ -90,19 +90,15 @@ macro_rules! s_no_extra_traits {
         s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
     )*);
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
-        cfg_if! {
-            if #[cfg(libc_union)] {
-                __item! {
-                    #[repr(C)]
-                    $(#[$attr])*
-                    pub union $i { $($field)* }
-                }
+        __item! {
+            #[repr(C)]
+            $(#[$attr])*
+            pub union $i { $($field)* }
+        }
 
-                impl ::Copy for $i {}
-                impl ::Clone for $i {
-                    fn clone(&self) -> $i { *self }
-                }
-            }
+        impl ::Copy for $i {}
+        impl ::Clone for $i {
+            fn clone(&self) -> $i { *self }
         }
     );
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
@@ -286,16 +282,9 @@ macro_rules! align_const {
     ($($(#[$attr:meta])*
        pub const $name:ident : $t1:ty
        = $t2:ident { $($field:tt)* };)*) => ($(
-        #[cfg(libc_align)]
         $(#[$attr])*
         pub const $name : $t1 = $t2 {
             $($field)*
-        };
-        #[cfg(not(libc_align))]
-        $(#[$attr])*
-        pub const $name : $t1 = $t2 {
-            $($field)*
-            __align: [],
         };
     )*)
 }

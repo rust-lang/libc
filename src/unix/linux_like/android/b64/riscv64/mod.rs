@@ -357,9 +357,5 @@ pub const AT_L3_CACHESIZE: ::c_ulong = 46;
 pub const AT_L3_CACHEGEOMETRY: ::c_ulong = 47;
 pub const AT_VECTOR_SIZE_ARCH: ::c_ulong = 9;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

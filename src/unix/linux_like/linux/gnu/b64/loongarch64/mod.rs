@@ -892,9 +892,5 @@ pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;
