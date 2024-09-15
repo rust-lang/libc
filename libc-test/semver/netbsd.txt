@@ -136,8 +136,6 @@ CLD_EXITED
 CLD_KILLED
 CLD_STOPPED
 CLD_TRAPPED
-CLOCK_PROCESS_CPUTIME_ID
-CLOCK_THREAD_CPUTIME_ID
 CMSG_DATA
 CMSG_FIRSTHDR
 CMSG_LEN
@@ -1569,6 +1567,7 @@ sync
 syscall
 sysctl
 sysctlbyname
+sysctlnametomib
 sysctldesc
 tcp_info
 telldir
