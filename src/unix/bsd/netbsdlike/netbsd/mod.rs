@@ -2647,9 +2647,9 @@ extern "C" {
         newlen: ::size_t,
     ) -> ::c_int;
     pub fn sysctlnametomib(
-    name: *const ::c_char,
-    mibp: *mut ::c_int,
-    sizep: *mut ::size_t,
+       name: *const ::c_char,
+       mibp: *mut ::c_int,
+       sizep: *mut ::size_t,
     ) -> ::c_int;
     #[link_name = "__kevent50"]
     pub fn kevent(
