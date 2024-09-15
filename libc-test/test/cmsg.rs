@@ -1,8 +1,6 @@
 //! Compare libc's CMSG(3) family of functions against the actual C macros, for
 //! various inputs.
 
-extern crate libc;
-
 #[cfg(unix)]
 mod t {
 

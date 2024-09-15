@@ -1,8 +1,6 @@
 //! Compare libc's makdev function against the actual C macros, for various
 //! inputs.
 
-extern crate libc;
-
 #[cfg(any(
     target_os = "android",
     target_os = "dragonfly",

@@ -628,6 +628,9 @@ dlinfo
 dlmopen
 endutxent
 explicit_bzero
+fanotify_event_info_error
+fanotify_event_info_header
+fanotify_event_info_pidfd
 fgetgrent_r
 fgetspent_r
 futimes
@@ -712,3 +715,5 @@ putpwent
 putgrent
 execveat
 close_range
+epoll_pwait2
+tcp_info

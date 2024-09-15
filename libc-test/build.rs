@@ -1,6 +1,5 @@
 #![deny(warnings)]
 
-extern crate cc;
 extern crate ctest2 as ctest;
 
 use std::fs::File;
@@ -1455,6 +1454,7 @@ fn test_dragonflybsd(target: &str) {
 
 fn test_wasi(target: &str) {
     assert!(target.contains("wasi"));
+    let p2 = target.contains("wasip2");
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -1468,6 +1468,9 @@ fn test_wasi(target: &str) {
         "limits.h",
         "locale.h",
         "malloc.h",
+        [p2]: "netdb.h",
+        [p2]: "netinet/in.h",
+        [p2]: "netinet/tcp.h",
         "poll.h",
         "sched.h",
         "stdbool.h",
@@ -1499,6 +1502,12 @@ fn test_wasi(target: &str) {
     // to omit them.
     cfg.cfg("libc_ctest", None);
 
+    // `ctest2` has a hard-coded list of default cfgs which doesn't include
+    // wasip2, which is why it has to be set here manually.
+    if p2 {
+        cfg.cfg("target_env", Some("p2"));
+    }
+
     cfg.type_name(move |ty, is_struct, is_union| match ty {
         "FILE" | "fd_set" | "DIR" => ty.to_string(),
         t if is_union => format!("union {}", t),
@@ -1520,6 +1529,14 @@ fn test_wasi(target: &str) {
     // These have a different and internal type in header files and are only
     // used here to generate a pointer to them in bindings so skip these tests.
     cfg.skip_static(|c| c.starts_with("_CLOCK_"));
+
+    cfg.skip_const(|c| match c {
+        // These constants aren't yet defined in wasi-libc.
+        // Exposing them is being tracked by https://github.com/WebAssembly/wasi-libc/issues/531.
+        "SO_BROADCAST" | "SO_LINGER" => true,
+
+        _ => false,
+    });
 
     cfg.skip_fn(|f| match f {
         // This function doesn't actually exist in libc's header files
@@ -3682,6 +3699,9 @@ fn test_linux(target: &str) {
         if musl && ty == "fanout_args" {
             return true;
         }
+        if sparc64 && ty == "fanotify_event_info_error" {
+            return true;
+        }
 
         match ty {
             // These cannot be tested when "resolv.h" is included and are tested
@@ -4425,7 +4445,17 @@ fn test_linux(target: &str) {
         // the `ifr_ifrn` field is an anonymous union
         (struct_ == "iwreq" && field == "ifr_ifrn") ||
         // the `key` field is a zero-sized array
-        (struct_ == "iw_encode_ext" && field == "key")
+        (struct_ == "iw_encode_ext" && field == "key") ||
+        // the `tcpi_snd_rcv_wscale` map two bitfield fields stored in a u8
+        (struct_ == "tcp_info" && field == "tcpi_snd_rcv_wscale") ||
+        // the `tcpi_delivery_rate_app_limited` field is a bitfield on musl
+        (musl && struct_ == "tcp_info" && field == "tcpi_delivery_rate_app_limited") ||
+        // the `tcpi_fast_open_client_fail` field is a bitfield on musl
+        (musl && struct_ == "tcp_info" && field == "tcpi_fast_open_client_fail") ||
+        // either fsid_t or int[2] type
+        (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
+        // `handle` is a VLA
+        (struct_ == "fanotify_event_info_fid" && field == "handle")
     });
 
     cfg.skip_roundtrip(move |s| match s {

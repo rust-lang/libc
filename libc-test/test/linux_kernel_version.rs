@@ -1,7 +1,5 @@
 //! Compare libc's KERNEL_VERSION macro against a specific kernel version.
 
-extern crate libc;
-
 #[cfg(
     target_os = "linux",
 )]

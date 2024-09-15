@@ -1,6 +1,5 @@
 #![allow(bad_style, improper_ctypes, unused, deprecated)]
 
-extern crate libc;
 use libc::*;
 
 #[cfg(target_os = "linux")]

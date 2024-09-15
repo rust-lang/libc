@@ -1,7 +1,5 @@
 //! Compare libc's SIGRTMAX and SIGRTMIN functions against the actual C macros
 
-extern crate libc;
-
 #[cfg(any(
     target_os = "linux",
     target_os = "l4re",
