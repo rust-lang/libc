@@ -1873,6 +1873,8 @@ pub const MNT_NOWAIT: ::c_int = 2;
 pub const MNT_LAZY: ::c_int = 3;
 
 //<sys/timex.h>
+pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 2;
+pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 4;
 pub const NTP_API: ::c_int = 4;
 pub const MAXPHASE: ::c_long = 500000000;
 pub const MAXFREQ: ::c_long = 500000;
@@ -2645,6 +2647,11 @@ extern "C" {
         oldlenp: *mut ::size_t,
         newp: *const ::c_void,
         newlen: ::size_t,
+    ) -> ::c_int;
+    pub fn sysctlnametomib(
+        sname: *const ::c_char,
+        name: *mut ::c_int,
+        namelenp: *mut ::size_t,
     ) -> ::c_int;
     #[link_name = "__kevent50"]
     pub fn kevent(
