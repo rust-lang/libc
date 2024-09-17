@@ -4159,6 +4159,7 @@ pub const LOCAL_PEERPID: ::c_int = 0x002;
 pub const LOCAL_PEEREPID: ::c_int = 0x003;
 pub const LOCAL_PEERUUID: ::c_int = 0x004;
 pub const LOCAL_PEEREUUID: ::c_int = 0x005;
+pub const LOCAL_PEERTOKEN: ::c_int = 0x006;
 
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
