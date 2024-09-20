@@ -313,6 +313,24 @@ pub const ATF_PERM: ::c_int = 0x04;
 pub const ATF_PUBL: ::c_int = 0x08;
 pub const ATF_USETRAILERS: ::c_int = 0x10;
 
+pub const FNM_PERIOD: c_int = 1 << 2;
+pub const FNM_CASEFOLD: c_int = 1 << 4;
+pub const FNM_NOMATCH: c_int = 1;
+
+cfg_if! {
+    if #[cfg(any(
+        target_os = "macos",
+        target_os = "freebsd",
+        target_os = "android",
+    ))] {
+        pub const FNM_PATHNAME: c_int = 1 << 1;
+        pub const FNM_NOESCAPE: c_int = 1 << 0;
+    } else {
+        pub const FNM_PATHNAME: c_int = 1 << 0;
+        pub const FNM_NOESCAPE: c_int = 1 << 1;
+    }
+}
+
 extern "C" {
     pub static in6addr_loopback: in6_addr;
     pub static in6addr_any: in6_addr;
@@ -1578,6 +1596,10 @@ cfg_if! {
                               speed: ::speed_t) -> ::c_int;
         }
    }
+}
+
+extern "C" {
+    pub fn fnmatch(pattern: *const c_char, name: *const c_char, flags: c_int) -> c_int;
 }
 
 cfg_if! {
