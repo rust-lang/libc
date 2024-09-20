@@ -1307,6 +1307,7 @@ pub const O_RDWR: ::c_int = 2;
 pub const O_NDELAY: ::c_int = 0x04;
 pub const O_APPEND: ::c_int = 8;
 pub const O_DSYNC: ::c_int = 0x40;
+pub const O_RSYNC: ::c_int = 0x8000;
 pub const O_CREAT: ::c_int = 256;
 pub const O_EXCL: ::c_int = 1024;
 pub const O_NOCTTY: ::c_int = 2048;
@@ -2846,6 +2847,7 @@ extern "C" {
     #[cfg_attr(target_os = "illumos", link_name = "_globfree_ext")]
     pub fn globfree(pglob: *mut ::glob_t);
 
+    pub fn posix_fallocate(fd: ::c_int, offset: ::off_t, len: ::off_t) -> ::c_int;
     pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int) -> ::c_int;
 
     pub fn shmat(shmid: ::c_int, shmaddr: *const ::c_void, shmflg: ::c_int) -> *mut ::c_void;
