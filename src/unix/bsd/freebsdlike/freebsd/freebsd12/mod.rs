@@ -2,7 +2,7 @@
 
 pub type nlink_t = u64;
 pub type dev_t = u64;
-pub type ino_t = ::c_ulong;
+pub type ino_t = u64;
 pub type shmatt_t = ::c_uint;
 
 s! {
