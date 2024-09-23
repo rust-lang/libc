@@ -32,7 +32,7 @@ s_no_extra_traits! {
         pub mc_fpformat: ::c_int,
         pub mc_ownedfp: ::c_int,
         pub mc_flags: register_t,
-        pub mc_fpstate: [[::c_int; 32]; 4],
+        pub mc_fpstate: [::c_int; 128],
         pub mc_fsbase: register_t,
         pub mc_gsbase: register_t,
         pub mc_xfpustate: register_t,
