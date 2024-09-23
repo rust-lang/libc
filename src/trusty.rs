@@ -1,23 +1,17 @@
-#[cfg(feature = "trusty_sys")]
-extern crate trusty_sys;
-
 pub use core::ffi::c_void;
-
-#[cfg(feature = "trusty_sys")]
-pub const PROT_READ: i32 = self::trusty_sys::MMAP_FLAG_PROT_READ as i32;
-
-#[cfg(feature = "trusty_sys")]
-pub const PROT_WRITE: i32 = self::trusty_sys::MMAP_FLAG_PROT_WRITE as i32;
 
 pub type size_t = usize;
 pub type ssize_t = isize;
 
 pub type off_t = i64;
 
-#[cfg(any(target_arch = "aarch64", target_arch = "arm"))]
-pub type c_char = u8;
-#[cfg(target_arch = "x86_64")]
-pub type c_char = i8;
+cfg_if! {
+    if #[cfg(any(target_arch = "aarch64", target_arch = "arm"))] {
+        pub type c_char = u8;
+    } else if #[cfg(target_arch = "x86_64")] {
+        pub type c_char = i8;
+    }
+}
 
 pub type c_schar = i8;
 pub type c_uchar = u8;
@@ -26,15 +20,15 @@ pub type c_ushort = u16;
 pub type c_int = i32;
 pub type c_uint = u32;
 
-#[cfg(target_pointer_width = "32")]
-pub type c_long = i32;
-#[cfg(target_pointer_width = "64")]
-pub type c_long = i64;
-
-#[cfg(target_pointer_width = "32")]
-pub type c_ulong = u32;
-#[cfg(target_pointer_width = "64")]
-pub type c_ulong = u64;
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        pub type c_long = i32;
+        pub type c_ulong = u32;
+    } else if #[cfg(target_pointer_width = "64")] {
+        pub type c_long = i64;
+        pub type c_ulong = u64;
+    }
+}
 
 pub type c_longlong = i64;
 pub type c_ulonglong = u64;
@@ -52,14 +46,20 @@ pub type c_int64_t = i64;
 pub type time_t = c_long;
 
 pub type clockid_t = c_int;
-pub const CLOCK_REALTIME: clockid_t = 0;
 
 s! {
+    pub struct iovec {
+        pub iov_base: *mut ::c_void,
+        pub iov_len: ::size_t,
+    }
+
     pub struct timespec {
         pub tv_sec: time_t,
         pub tv_nsec: c_long,
     }
 }
+
+pub const CLOCK_REALTIME: clockid_t = 0;
 
 pub const STDOUT_FILENO: ::c_int = 1;
 pub const STDERR_FILENO: ::c_int = 2;
@@ -91,11 +91,4 @@ extern "C" {
     pub fn munmap(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn nanosleep(rqtp: *const ::timespec, rmtp: *mut ::timespec) -> ::c_int;
-}
-
-s! {
-    pub struct iovec {
-        pub iov_base: *mut ::c_void,
-        pub iov_len: ::size_t,
-    }
 }
