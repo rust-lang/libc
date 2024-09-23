@@ -4,7 +4,7 @@
 pub type nlink_t = u16;
 // Type of `dev_t` changed from `u32` to `u64` in FreeBSD 12:
 pub type dev_t = u32;
-// Type of `ino_t` changed from `unsigned int` to `unsigned long` in FreeBSD 12:
+// Type of `ino_t` changed from `__uint32_t` to `__uint64_t` in FreeBSD 12:
 pub type ino_t = u32;
 
 s! {
