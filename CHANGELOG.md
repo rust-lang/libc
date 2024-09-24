@@ -2,6 +2,37 @@
 
 ## [Unreleased]
 
+## [0.2.159](https://github.com/rust-lang/libc/compare/0.2.158...0.2.159) - 2024-09-24
+
+### Added
+
+- Android: add more `AT_*` constants in <https://github.com/rust-lang/libc/pull/3779>
+- Apple: add missing `NOTE_*` constants in <https://github.com/rust-lang/libc/pull/3883>
+- Hermit: add missing error numbers in <https://github.com/rust-lang/libc/pull/3858>
+- Hurd: add `__timeval` for 64-bit support in <https://github.com/rust-lang/libc/pull/3786>
+- Linux: add `epoll_pwait2` in <https://github.com/rust-lang/libc/pull/3868>
+- Linux: add `mq_notify` in <https://github.com/rust-lang/libc/pull/3849>
+- Linux: add missing `NFT_CT_*` constants in <https://github.com/rust-lang/libc/pull/3844>
+- Linux: add the `fchmodat2` syscall in <https://github.com/rust-lang/libc/pull/3588>
+- Linux: add the `mseal` syscall in <https://github.com/rust-lang/libc/pull/3798>
+- OpenBSD: add `sendmmsg` and `recvmmsg` in <https://github.com/rust-lang/libc/pull/3831>
+- Unix: add `IN6ADDR_ANY_INIT` and `IN6ADDR_LOOPBACK_INIT` in <https://github.com/rust-lang/libc/pull/3693>
+- VxWorks: add `S_ISVTX` in <https://github.com/rust-lang/libc/pull/3768>
+- VxWorks: add `vxCpuLib` and `taskLib` functions <https://github.com/rust-lang/libc/pull/3861>
+- WASIp2: add definitions for `std::net` support in <https://github.com/rust-lang/libc/pull/3892>
+
+### Fixed
+
+- Correctly handle version checks when `clippy-driver` is used <https://github.com/rust-lang/libc/pull/3893>
+
+### Changed
+
+- EspIdf: change signal constants to c_int in <https://github.com/rust-lang/libc/pull/3895>
+- HorizonOS: update network definitions in <https://github.com/rust-lang/libc/pull/3863>
+- Linux: combine `ioctl` APIs in <https://github.com/rust-lang/libc/pull/3722>
+- WASI: enable CI testing in <https://github.com/rust-lang/libc/pull/3869>
+- WASIp2: enable CI testing in <https://github.com/rust-lang/libc/pull/3870>
+
 ## [0.2.158](https://github.com/rust-lang/libc/compare/0.2.157...0.2.158) - 2024-08-19
 
 ### Other
