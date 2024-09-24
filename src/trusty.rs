@@ -59,6 +59,9 @@ s! {
     }
 }
 
+pub const PROT_READ: i32 = 1;
+pub const PROT_WRITE: i32 = 2;
+
 pub const CLOCK_REALTIME: clockid_t = 0;
 
 pub const STDOUT_FILENO: ::c_int = 1;
