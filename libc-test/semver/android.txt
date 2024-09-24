@@ -3454,6 +3454,7 @@ madvise
 major
 makedev
 mallinfo
+mallinfo2
 malloc
 malloc_usable_size
 mcontext_t

@@ -112,6 +112,20 @@ s! {
         pub keepcost: ::size_t,
     }
 
+    // This is identical to struct mallinfo on Android
+    pub struct mallinfo2 {
+        pub arena: ::size_t,
+        pub ordblks: ::size_t,
+        pub smblks: ::size_t,
+        pub hblks: ::size_t,
+        pub hblkhd: ::size_t,
+        pub usmblks: ::size_t,
+        pub fsmblks: ::size_t,
+        pub uordblks: ::size_t,
+        pub fordblks: ::size_t,
+        pub keepcost: ::size_t,
+    }
+
     pub struct flock {
         pub l_type: ::c_short,
         pub l_whence: ::c_short,
@@ -3744,6 +3758,8 @@ extern "C" {
     pub fn __sched_cpucount(setsize: ::size_t, set: *const cpu_set_t) -> ::c_int;
     pub fn sched_getcpu() -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
+    #[link_name = "mallinfo"]
+    pub fn mallinfo2() -> ::mallinfo2;
     // available from API 23
     pub fn malloc_info(options: ::c_int, stream: *mut ::FILE) -> ::c_int;
 
