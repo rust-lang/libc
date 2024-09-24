@@ -12,6 +12,7 @@ s! {
         pub uc_link: *mut ucontext_t,
         pub uc_stack: ::stack_t,
         pub uc_sigmask: ::sigset_t,
+        pub __pad: [u8; 1024 / 8 - core::mem::size_of::<::sigset_t>()],
         pub uc_mcontext: mcontext_t,
     }
 
