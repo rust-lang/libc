@@ -319,8 +319,11 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "l4re", target_os = "espidf"))] {
-        // required libraries for L4Re and the ESP-IDF framework are linked externally, ATM
+    if #[cfg(any(target_os = "l4re", target_os = "espidf", target_os = "nuttx"))] {
+        // required libraries are linked externally for these platforms:
+        // * L4Re
+        // * ESP-IDF
+        // * NuttX
     } else if #[cfg(feature = "std")] {
         // cargo build, don't pull in anything extra as the std dep
         // already pulls in all libs.
@@ -1617,6 +1620,9 @@ cfg_if! {
     } else if #[cfg(target_os = "hurd")] {
         mod hurd;
         pub use self::hurd::*;
+    } else if #[cfg(target_os = "nuttx")] {
+        mod nuttx;
+        pub use self::nuttx::*;
     } else {
         // Unknown target_os
     }
