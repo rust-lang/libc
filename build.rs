@@ -37,7 +37,9 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
 const CHECK_CFG_EXTRA: &'static [(&'static str, &'static [&'static str])] = &[
     (
         "target_os",
-        &["switch", "aix", "ohos", "hurd", "rtems", "visionos"],
+        &[
+            "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx",
+        ],
     ),
     ("target_env", &["illumos", "wasi", "aix", "ohos"]),
     (
