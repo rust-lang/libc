@@ -775,6 +775,8 @@ pub const POSIX_MADV_RANDOM: ::c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 
+pub const AT_EACCESS: ::c_int = 0x200;
+
 pub const S_IEXEC: mode_t = 0o0100;
 pub const S_IWRITE: mode_t = 0o0200;
 pub const S_IREAD: mode_t = 0o0400;
