@@ -7,6 +7,9 @@ IP_PKTINFO
 IP_TOS
 IP_TTL
 PIPE_BUF
+arc4random
+arc4random_buf
+arc4random_uniform
 bind
 in6_pktinfo
 in_pktinfo
