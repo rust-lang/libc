@@ -143,3 +143,4 @@ cfg_if! {
 
 pub const MAP_32BIT: ::c_int = 0x00080000;
 pub const MINSIGSTKSZ: ::size_t = 4096; // 1024 * 4
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;

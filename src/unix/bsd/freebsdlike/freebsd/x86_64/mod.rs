@@ -236,5 +236,7 @@ pub const _MC_FPOWNED_PCB: c_long = 0x20002;
 
 pub const KINFO_FILE_SIZE: ::c_int = 1392;
 
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
+
 mod align;
 pub use self::align::*;
