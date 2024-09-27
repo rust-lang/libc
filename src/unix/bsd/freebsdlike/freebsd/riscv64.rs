@@ -1,6 +1,7 @@
 pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
+pub type clock_t = i32;
 pub type wchar_t = ::c_int;
 pub type time_t = i64;
 pub type suseconds_t = ::c_long;
