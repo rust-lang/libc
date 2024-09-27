@@ -7,6 +7,7 @@ pub type suseconds_t = i32;
 pub type register_t = i32;
 
 s_no_extra_traits! {
+    #[repr(align(16))]
     pub struct mcontext_t {
         pub mc_onstack: register_t,
         pub mc_gs: register_t,
