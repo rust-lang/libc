@@ -249,6 +249,10 @@ cfg_if! {
         pub const _ALIGNBYTES: usize = 8 - 1;
     }
 }
+
+pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
+pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
+
 pub const MAP_32BIT: ::c_int = 0x00080000;
 pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
 

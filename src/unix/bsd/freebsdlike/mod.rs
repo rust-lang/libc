@@ -1305,10 +1305,15 @@ pub const BIOCSRSIG: ::c_ulong = 0x80044273;
 pub const BIOCSDLT: ::c_ulong = 0x80044278;
 pub const BIOCGSEESENT: ::c_ulong = 0x40044276;
 pub const BIOCSSEESENT: ::c_ulong = 0x80044277;
-pub const BIOCSETF: ::c_ulong = 0x80104267;
-pub const BIOCGDLTLIST: ::c_ulong = 0xc0104279;
-pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
-pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const BIOCGDLTLIST: ::c_ulong = 0xc0104279;
+        pub const BIOCSETF: ::c_ulong = 0x80104267;
+    } else if #[cfg(target_pointer_width = "32")] {
+        pub const BIOCGDLTLIST: ::c_ulong = 0xc0084279;
+        pub const BIOCSETF: ::c_ulong = 0x80084267;
+    }
+}
 
 pub const FIODTYPE: ::c_ulong = 0x4004667a;
 pub const FIOGETLBA: ::c_ulong = 0x40046679;
