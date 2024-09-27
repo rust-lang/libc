@@ -1224,7 +1224,6 @@ pub const TIOCGETD: ::c_ulong = 0x4004741a;
 pub const TIOCSETD: ::c_ulong = 0x8004741b;
 pub const TIOCGDRAINWAIT: ::c_ulong = 0x40047456;
 pub const TIOCSDRAINWAIT: ::c_ulong = 0x80047457;
-pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
 pub const TIOCMGDTRWAIT: ::c_ulong = 0x4004745a;
 pub const TIOCMSDTRWAIT: ::c_ulong = 0x8004745b;
 pub const TIOCDRAIN: ::c_ulong = 0x2000745e;

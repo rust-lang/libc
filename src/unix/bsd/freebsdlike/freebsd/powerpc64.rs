@@ -71,3 +71,4 @@ cfg_if! {
 pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
 pub const MAP_32BIT: ::c_int = 0x00080000;
 pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
