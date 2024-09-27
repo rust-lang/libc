@@ -1645,7 +1645,7 @@ s_no_extra_traits! {
         pub kf_flags: ::c_int,
         _kf_pad0: ::c_int,
         pub kf_offset: i64,
-        _priv: [::uintptr_t; 38], // FIXME if needed
+        _priv: [u8; 304],   // FIXME: this is really a giant union
         pub kf_status: u16,
         _kf_pad1: u16,
         _kf_ispare0: ::c_int,
