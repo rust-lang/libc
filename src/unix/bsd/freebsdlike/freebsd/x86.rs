@@ -156,5 +156,7 @@ cfg_if! {
 
 pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
 
+pub const BIOCSRTIMEOUT: ::c_ulong = 0x8008426d;
+pub const BIOCGRTIMEOUT: ::c_ulong = 0x4008426e;
 pub const KINFO_FILE_SIZE: ::c_int = 1392;
 pub const TIOCTIMESTAMP: ::c_ulong = 0x40087459;
