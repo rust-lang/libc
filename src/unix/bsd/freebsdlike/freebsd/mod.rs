@@ -1,5 +1,4 @@
 pub type fflags_t = u32;
-pub type clock_t = i32;
 
 pub type vm_prot_t = u_char;
 pub type kvaddr_t = u64;
