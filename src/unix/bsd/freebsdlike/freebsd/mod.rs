@@ -3843,6 +3843,7 @@ pub const TCP_INFO: ::c_int = 32;
 pub const TCP_CONGESTION: ::c_int = 64;
 pub const TCP_CCALGOOPT: ::c_int = 65;
 pub const TCP_MAXUNACKTIME: ::c_int = 68;
+#[deprecated(since = "0.2.160", note = "Removed in FreeBSD 15")]
 pub const TCP_MAXPEAKRATE: ::c_int = 69;
 pub const TCP_IDLE_REDUCE: ::c_int = 70;
 pub const TCP_REMOTE_UDP_ENCAPS_PORT: ::c_int = 71;
