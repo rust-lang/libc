@@ -80,6 +80,8 @@ getloadavg
 lio_listio
 ntptimeval
 open_wmemstream
+posix_spawn_file_actions_addchdir_np
+posix_spawn_file_actions_addfchdir_np
 preadv2
 preadv64
 prlimit
