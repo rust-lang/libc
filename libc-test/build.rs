@@ -2306,6 +2306,10 @@ fn test_freebsd(target: &str) {
             | "PWAIT" | "PLOCK" | "PPAUSE" | "PRI_MIN_TIMESHARE" | "PUSER" | "PI_AV" | "PI_NET"
             | "PI_DISK" | "PI_TTY" | "PI_DULL" | "PI_SOFT" => true,
 
+            // This constant changed in FreeBSD 15 (git 3458bbd397783).  It was never intended to
+            // be stable, and probably shouldn't be bound by libc at all.
+            "RLIM_NLIMITS" => true,
+
             // This symbol changed in FreeBSD 14 (git 051e7d78b03), but the new
             // version should be safe to use on older releases.
             "IFCAP_CANTCHANGE" => true,
@@ -2436,7 +2440,6 @@ fn test_freebsd(target: &str) {
 
             // Flags introduced in FreeBSD 14.
             "TCP_MAXUNACKTIME"
-            | "TCP_MAXPEAKRATE"
             | "TCP_IDLE_REDUCE"
             | "TCP_REMOTE_UDP_ENCAPS_PORT"
             | "TCP_DELACK"
