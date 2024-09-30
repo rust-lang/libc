@@ -2338,6 +2338,9 @@ fn test_freebsd(target: &str) {
             // base system anyway.
             "CTL_MAXID" | "KERN_MAXID" | "HW_MAXID" | "USER_MAXID" => true,
 
+            // Deprecated and removed in FreeBSD 15.  It was never actually implemented.
+            "TCP_MAXPEAKRATE" => true,
+
             // FIXME: This is deprecated - remove in a couple of releases.
             // This was removed in FreeBSD 14 (git 1b4701fe1e8) and never
             // should've been used anywhere anyway.
@@ -2363,6 +2366,10 @@ fn test_freebsd(target: &str) {
             | "PRI_MAX_KERN" | "PSWP" | "PVM" | "PINOD" | "PRIBIO" | "PVFS" | "PZERO" | "PSOCK"
             | "PWAIT" | "PLOCK" | "PPAUSE" | "PRI_MIN_TIMESHARE" | "PUSER" | "PI_AV" | "PI_NET"
             | "PI_DISK" | "PI_TTY" | "PI_DULL" | "PI_SOFT" => true,
+
+            // This constant changed in FreeBSD 15 (git 3458bbd397783).  It was never intended to
+            // be stable, and probably shouldn't be bound by libc at all.
+            "RLIM_NLIMITS" => true,
 
             // This symbol changed in FreeBSD 14 (git 051e7d78b03), but the new
             // version should be safe to use on older releases.
@@ -2494,7 +2501,6 @@ fn test_freebsd(target: &str) {
 
             // Flags introduced in FreeBSD 14.
             "TCP_MAXUNACKTIME"
-            | "TCP_MAXPEAKRATE"
             | "TCP_IDLE_REDUCE"
             | "TCP_REMOTE_UDP_ENCAPS_PORT"
             | "TCP_DELACK"
