@@ -3153,6 +3153,8 @@ pub const PR_GET_TIMING: ::c_int = 13;
 pub const PR_SET_TIMING: ::c_int = 14;
 pub const PR_TIMING_STATISTICAL: ::c_int = 0;
 pub const PR_TIMING_TIMESTAMP: ::c_int = 1;
+pub const PR_SET_NAME: ::c_int = 15;
+pub const PR_GET_NAME: ::c_int = 16;
 
 // linux/if_addr.h
 pub const IFA_UNSPEC: ::c_ushort = 0;
