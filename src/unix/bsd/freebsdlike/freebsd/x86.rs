@@ -41,17 +41,6 @@ s_no_extra_traits! {
     }
 }
 
-s! {
-    pub struct ucontext_t {
-        pub uc_sigmask: ::sigset_t,
-        pub uc_mcontext: ::mcontext_t,
-        pub uc_link: *mut ::ucontext_t,
-        pub uc_stack: ::stack_t,
-        pub uc_flags: ::c_int,
-        __spare__: [::c_int; 4],
-    }
-}
-
 // should be pub(crate), but that requires Rust 1.18.0
 cfg_if! {
     if #[cfg(libc_const_size_of)] {
@@ -127,7 +116,8 @@ cfg_if! {
                     .field("mc_fpformat", &self.mc_fpformat)
                     .field("mc_ownedfp", &self.mc_ownedfp)
                     .field("mc_flags", &self.mc_flags)
-                    .field("mc_fpstate", &self.mc_fpstate)
+                    // FIXME(msrv) debug not supported for arrays in old MSRV
+                    // .field("mc_fpstate", &self.mc_fpstate)
                     .field("mc_fsbase", &self.mc_fsbase)
                     .field("mc_gsbase", &self.mc_gsbase)
                     .field("mc_xfpustate", &self.mc_xfpustate)

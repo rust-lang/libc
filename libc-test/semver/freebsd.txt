@@ -2028,6 +2028,7 @@ mallctl
 mallctlbymib
 mallctlnametomib
 mallocx
+mcontext_t
 memmem
 memrchr
 memset_s
@@ -2358,6 +2359,7 @@ timer_t
 timex
 truncate
 ttyname_r
+ucontext_t
 unmount
 useconds_t
 uselocale
