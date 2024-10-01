@@ -5133,6 +5133,25 @@ pub const SCHED_FLAG_KEEP_PARAMS: ::c_int = 0x10;
 pub const SCHED_FLAG_UTIL_CLAMP_MIN: ::c_int = 0x20;
 pub const SCHED_FLAG_UTIL_CLAMP_MAX: ::c_int = 0x40;
 
+// elf.h
+pub const NT_PRSTATUS: ::c_int = 1;
+pub const NT_PRFPREG: ::c_int = 2;
+pub const NT_FPREGSET: ::c_int = 2;
+pub const NT_PRPSINFO: ::c_int = 3;
+pub const NT_PRXREG: ::c_int = 4;
+pub const NT_TASKSTRUCT: ::c_int = 4;
+pub const NT_PLATFORM: ::c_int = 5;
+pub const NT_AUXV: ::c_int = 6;
+pub const NT_GWINDOWS: ::c_int = 7;
+pub const NT_ASRS: ::c_int = 8;
+pub const NT_PSTATUS: ::c_int = 10;
+pub const NT_PSINFO: ::c_int = 13;
+pub const NT_PRCRED: ::c_int = 14;
+pub const NT_UTSNAME: ::c_int = 15;
+pub const NT_LWPSTATUS: ::c_int = 16;
+pub const NT_LWPSINFO: ::c_int = 17;
+pub const NT_PRFPXREG: ::c_int = 20;
+
 pub const SCHED_FLAG_KEEP_ALL: ::c_int = SCHED_FLAG_KEEP_POLICY | SCHED_FLAG_KEEP_PARAMS;
 
 pub const SCHED_FLAG_UTIL_CLAMP: ::c_int = SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX;
