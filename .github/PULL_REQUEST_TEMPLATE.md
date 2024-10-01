@@ -1,15 +1,27 @@
-Thanks for considering submitting a PR!
+<!-- Thank you for submitting a PR!
 
-We have the [contribution guide](https://github.com/rust-lang/libc/blob/main/CONTRIBUTING.md). Please read it if you're new here!
+We have the contribution guide, please read it if you are new here!
+<https://github.com/rust-lang/libc/blob/main/CONTRIBUTING.md>
 
-Here's a checklist for things that will be checked during review or continuous integration.
+Please fill out the below template.
+-->
 
-- \[ ] Edit corresponding file(s) under `libc-test/semver` when you add/remove item(s), e.g. edit `linux.txt` if you add an item to `src/unix/linux_like/linux/mod.rs`
-- \[ ] Your PR doesn't contain any private or *unstable* values like `*LAST` or `*MAX` (see [#3131](https://github.com/rust-lang/libc/issues/3131))
-- \[ ] If your PR has a breaking change, please clarify it
-- \[ ] If your PR increments version number, it must NOT contain any other changes (otherwise a release could be delayed)
-- \[ ] Make sure `ci/style.sh` passes
-- \[ ] `cd libc-test && cargo test`
-  - (this might fail on your env due to environment difference between your env and CI. Ignore failures if you are not sure)
+# Description
 
-Delete this line and everything above before opening your PR.
+<!-- Add a short description about what this change does -->
+
+# Sources
+
+<!-- All API changes must have links to headers and/or documentation,
+preferably both -->
+
+# Checklist
+
+<!-- Please make sure the following has been done before submitting a PR,
+or mark it as a draft if you are not sure. -->
+
+- [ ] Relevant tests in `libc-test/semver` have been updated
+- [ ] No placeholder or unstable values like `*LAST` or `*MAX` are
+  included (see [#3131](https://github.com/rust-lang/libc/issues/3131))
+- [ ] Tested locally (`cd libc-test && cargo test --target mytarget`);
+  especially relevant for platforms that may not be checked in CI
