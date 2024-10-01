@@ -2003,6 +2003,7 @@ mallctl
 mallctlbymib
 mallctlnametomib
 mallocx
+mcontext_t
 memmem
 memrchr
 memset_s
@@ -2333,13 +2334,14 @@ timer_t
 timex
 truncate
 ttyname_r
-uuidgen
+ucontext_t
 unmount
 useconds_t
 uselocale
 utimensat
 utmpx
 utrace
+uuidgen
 vm_size_t
 vmtotal
 wait4

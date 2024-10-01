@@ -66,15 +66,6 @@ s! {
         pub st_birthtime_nsec: ::c_long,
         __unused: [u8; 8],
     }
-
-    pub struct ucontext_t {
-        pub uc_sigmask: ::sigset_t,
-        pub uc_mcontext: ::mcontext_t,
-        pub uc_link: *mut ::ucontext_t,
-        pub uc_stack: ::stack_t,
-        pub uc_flags: ::c_int,
-        __spare__: [::c_int; 4],
-    }
 }
 
 pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;

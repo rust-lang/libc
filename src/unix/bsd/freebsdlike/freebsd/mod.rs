@@ -1638,6 +1638,15 @@ s_no_extra_traits! {
         _kf_cap_spare: u64,
         pub kf_path: [::c_char; ::PATH_MAX as usize],
     }
+
+    pub struct ucontext_t {
+        pub uc_sigmask: ::sigset_t,
+        pub uc_mcontext: ::mcontext_t,
+        pub uc_link: *mut ::ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_flags: ::c_int,
+        __spare__: [::c_int; 4],
+    }
 }
 
 cfg_if! {
@@ -2590,6 +2599,18 @@ cfg_if! {
                 self.kf_status.hash(state);
                 self.kf_cap_rights.hash(state);
                 self.kf_path.hash(state);
+            }
+        }
+
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_sigmask", &self.uc_sigmask)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_flags", &self.uc_flags)
+                    .finish()
             }
         }
     }
