@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.2.160](https://github.com/rust-lang/libc/compare/0.2.159...0.2.160) - 2024-10-01
+
+### Other
+
+- Add additional Linux AF_PACKET options ([#3540](https://github.com/rust-lang/libc/pull/3540))
+- Fix CI for FreeBSD 15, on libc-0.2 branch ([#3952](https://github.com/rust-lang/libc/pull/3952))
+- Fix "struct stat" on 32-bit FreeBSD 12+ ([#3939](https://github.com/rust-lang/libc/pull/3939))
+
 ## [0.2.159](https://github.com/rust-lang/libc/compare/0.2.158...0.2.159) - 2024-09-24
 
 ### Added
