@@ -2020,6 +2020,8 @@ log2phys
 login_tty
 lutimes
 mach_absolute_time
+mach_error_string
+mach_error_t
 mach_header
 mach_header_64
 mach_host_self
