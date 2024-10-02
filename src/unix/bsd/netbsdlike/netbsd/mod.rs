@@ -777,6 +777,14 @@ s! {
         pub tcpi_snd_zerowin: u32,
         pub __tcpi_pad: [u32; 26],
     }
+
+    // <net/bpf.h>
+    pub struct bpf_stat {
+        pub bs_recv: u64,
+        pub bs_drop: u64,
+        pub bs_capt: u64,
+        pub bs_padding: [u64; 13],
+    }
 }
 
 s_no_extra_traits! {
@@ -1851,6 +1859,22 @@ pub const BIOCSRSIG: ::c_ulong = 0x80044273;
 pub const BIOCSDLT: ::c_ulong = 0x80044278;
 pub const BIOCGSEESENT: ::c_ulong = 0x40044276;
 pub const BIOCSSEESENT: ::c_ulong = 0x80044277;
+
+// <net/bpf.h>
+pub const BIOCGFEEDBACK: ::c_ulong = 0x4004427c;
+pub const BIOCSFEEDBACK: ::c_ulong = 0x8004427d;
+pub const BIOCFEEDBACK: ::c_ulong = ::BIOCSFEEDBACK;
+pub const BIOCLOCK: ::c_ulong = 0x2004427e;
+
+// <sys/sockio.h>
+pub const SIOCGIFCAP: ::c_ulong = 0xc0206976;
+pub const SIOCIFCREATE2: ::c_ulong = 0xc020697c;
+pub const SIOCSDRVSPEC: ::c_ulong = 0x8020697b;
+pub const SIOCSIFCAP: ::c_ulong = 0x80206975;
+
+// <netinet6/in6_var.h>
+pub const SIOCAIFADDR_IN6: ::c_ulong = 0x8040696b;
+pub const SIOCDIFADDR_IN6: ::c_ulong = 0x80206919;
 
 // <sys/fstypes.h>
 pub const MNT_UNION: ::c_int = 0x00000020;

@@ -306,11 +306,6 @@ s! {
         pub bs_drop: ::c_uint,
     }
 
-    pub struct bpf_version {
-        pub bv_major: ::c_ushort,
-        pub bv_minor: ::c_ushort,
-    }
-
     pub struct bpf_hdr {
         pub bh_tstamp: ::timeval,
         pub bh_caplen: u32,
@@ -1354,7 +1349,16 @@ pub const SF_NOUNLINK: ::c_ulong = 0x00100000;
 
 pub const TIMER_ABSTIME: ::c_int = 1;
 
-//<sys/timex.h>
+// <sys/sockio.h>
+pub const SIOCGIFCAP: ::c_ulong = 0xc020691f;
+pub const SIOCGIFMTU: ::c_ulong = 0xc0206933;
+pub const SIOCIFCREATE: ::c_ulong = 0xc020697a;
+pub const SIOCIFCREATE2: ::c_ulong = 0xc020697c;
+pub const SIOCSDRVSPEC: ::c_ulong = 0x8028697b;
+pub const SIOCSIFCAP: ::c_ulong = 0x8020691e;
+pub const SIOCSIFMTU: ::c_ulong = 0x80206934;
+
+// <sys/timex.h>
 pub const NTP_API: ::c_int = 4;
 pub const MAXPHASE: ::c_long = 500000000;
 pub const MAXFREQ: ::c_long = 500000;

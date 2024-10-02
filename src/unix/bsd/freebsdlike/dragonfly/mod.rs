@@ -1159,6 +1159,19 @@ pub const IFF_STATICARP: ::c_int = 0x80000; // static ARP
 pub const IFF_NPOLLING: ::c_int = 0x100000; // interface is in polling mode
 pub const IFF_IDIRECT: ::c_int = 0x200000; // direct input
 
+// <net/bpf.h>
+pub const BIOCLOCK: ::c_ulong = 0x2004427a;
+pub const BIOCGFEEDBACK: ::c_ulong = 0x4004427c;
+pub const BIOCSFEEDBACK: ::c_ulong = 0x8004427d;
+pub const BIOCFEEDBACK: ::c_ulong = ::BIOCSFEEDBACK;
+
+// <sys/sockio.h>
+pub const SIOCAIFADDR: ::c_ulong = 0x8020691a;
+
+// <netinet6/in6_var.h>
+pub const SIOCAIFADDR_IN6: ::c_ulong = 0x80206919;
+pub const SIOCDIFADDR_IN6: ::c_ulong = 0x80206918;
+
 //
 // sys/netinet/in.h
 // Protocols (RFC 1700)
