@@ -2,7 +2,8 @@ FROM ubuntu:23.10
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc make libc6-dev git curl ca-certificates \
-  gcc-arm-linux-gnueabihf qemu-user
+  gcc-arm-linux-gnueabihf qemu-user \
+  xz-utils patch rsync
 
 COPY install-musl.sh /
 RUN sh /install-musl.sh arm
