@@ -767,6 +767,9 @@ cfg_if! {
     } else if #[cfg(target_os = "vita")] {
         mod vita;
         pub use self::vita::*;
+    } else if #[cfg(target_os = "rtems")] {
+        mod rtems;
+        pub use self::rtems::*;
     } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
@@ -780,13 +783,6 @@ cfg_if! {
         // Only tested on ARM so far. Other platforms might have different
         // definitions for types and constants.
         pub use target_arch_not_implemented;
-    }
-}
-
-cfg_if! {
-    if #[cfg(target_os = "rtems")] {
-        mod rtems;
-        pub use self::rtems::*;
     }
 }
 
