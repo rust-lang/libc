@@ -4795,6 +4795,7 @@ fn test_haiku(target: &str) {
                "libutil.h",
                "link.h",
                "pty.h",
+               "stdlib.h",
                "stringlist.h",
                "sys/link_elf.h",
     }
