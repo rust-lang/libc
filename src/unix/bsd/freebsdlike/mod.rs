@@ -1288,7 +1288,6 @@ cfg_if! {
     }
 }
 
-
 pub const FIODTYPE: ::c_ulong = 0x4004667a;
 pub const FIOGETLBA: ::c_ulong = 0x40046679;
 
