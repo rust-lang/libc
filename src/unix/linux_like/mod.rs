@@ -12,6 +12,11 @@ missing! {
 }
 
 s! {
+    pub struct __c_anonymous_sigev_thread {
+        pub _function: *mut ::c_void,   // Actually a function pointer
+        pub _attribute: *mut ::pthread_attr_t,
+    }
+
     pub struct in_addr {
         pub s_addr: ::in_addr_t,
     }
@@ -220,6 +225,17 @@ s_no_extra_traits! {
         pub u64: u64,
     }
 
+    // Can't correctly impl Debug for unions
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_sigev_un {
+        #[cfg(target_pointer_width = "64")]
+        _pad: [::c_int; (64 - 2 * 4 - 8) / 4],
+        #[cfg(target_pointer_width = "32")]
+        _pad: [::c_int; (64 - 2 * 4 - 4) / 4],
+        pub _tid: ::c_int,
+        pub _sigev_thread: __c_anonymous_sigev_thread,
+    }
+
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [::c_char; 108]
@@ -247,13 +263,7 @@ s_no_extra_traits! {
         pub sigev_value: ::sigval,
         pub sigev_signo: ::c_int,
         pub sigev_notify: ::c_int,
-        // Actually a union.  We only expose sigev_notify_thread_id because it's
-        // the most useful member
-        pub sigev_notify_thread_id: ::c_int,
-        #[cfg(target_pointer_width = "64")]
-        __unused1: [::c_int; 11],
-        #[cfg(target_pointer_width = "32")]
-        __unused1: [::c_int; 12]
+        pub _sigev_un: __c_anonymous_sigev_un,
     }
 }
 
@@ -401,33 +411,15 @@ cfg_if! {
             }
         }
 
-        impl PartialEq for sigevent {
-            fn eq(&self, other: &sigevent) -> bool {
-                self.sigev_value == other.sigev_value
-                    && self.sigev_signo == other.sigev_signo
-                    && self.sigev_notify == other.sigev_notify
-                    && self.sigev_notify_thread_id
-                        == other.sigev_notify_thread_id
-            }
-        }
-        impl Eq for sigevent {}
         impl ::fmt::Debug for sigevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sigevent")
                     .field("sigev_value", &self.sigev_value)
                     .field("sigev_signo", &self.sigev_signo)
                     .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_notify_thread_id",
-                           &self.sigev_notify_thread_id)
+                    // Skip _sigev_un, since we can't guarantee that it will be
+                    // properly initialized.
                     .finish()
-            }
-        }
-        impl ::hash::Hash for sigevent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sigev_value.hash(state);
-                self.sigev_signo.hash(state);
-                self.sigev_notify.hash(state);
-                self.sigev_notify_thread_id.hash(state);
             }
         }
     }
