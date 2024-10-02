@@ -821,6 +821,41 @@ s! {
         pub val: ::c_int,
     }
 
+    // linux/ptp_clock.h
+    pub struct ptp_clock_time {
+        pub sec: ::__s64,
+        pub nsec: ::__u32,
+        pub reserved: ::__u32,
+    }
+
+
+
+    pub struct ptp_extts_request {
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub rsv: [::c_uint; 2],
+    }
+
+    pub struct ptp_sys_offset_extended {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        pub ts: [[ptp_clock_time; 3]; PTP_MAX_SAMPLES as usize],
+    }
+
+    pub struct ptp_sys_offset_precise {
+        pub device: ptp_clock_time,
+        pub sys_realtime: ptp_clock_time,
+        pub sys_monoraw: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
+
+    pub struct ptp_extts_event {
+        pub t: ptp_clock_time,
+        index: ::c_uint,
+        flags: ::c_uint,
+        rsv: [::c_uint; 2],
+    }
+
     // linux/sctp.h
 
     pub struct sctp_initmsg {
@@ -1035,6 +1070,52 @@ s! {
         pub set_args: __u16,
         pub get_args: __u16,
         pub name: [c_char; ::IFNAMSIZ],
+    }
+
+    // linux/ptp_clock.h
+    pub struct ptp_sys_offset {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        pub ts: [ptp_clock_time; 51],
+    }
+
+    pub struct ptp_pin_desc {
+        pub name: [::c_char; 64],
+        pub index: ::c_uint,
+        pub func: ::c_uint,
+        pub chan: ::c_uint,
+        pub rsv: [::c_uint; 5],
+    }
+
+    pub struct ptp_clock_caps {
+        pub max_adj: ::c_int,
+        pub n_alarm: ::c_int,
+        pub n_ext_ts: ::c_int,
+        pub n_per_out: ::c_int,
+        pub pps: ::c_int,
+        pub n_pins: ::c_int,
+        pub cross_timestamping: ::c_int,
+        #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
+        pub adjust_phase: ::c_int,
+        #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
+        pub rsv: [::c_int; 12],
+        #[cfg(any(target_env = "musl", target_env = "ohos"))]
+        pub rsv: [::c_int; 13],
+        #[cfg(not(any(
+            any(target_arch = "sparc", target_arch = "sparc64"),
+            any(target_env = "musl", target_env = "ohos"),
+        )))]
+        pub adjust_phase: ::c_int,
+        #[cfg(not(any(
+            any(target_arch = "sparc", target_arch = "sparc64"),
+            any(target_env = "musl", target_env = "ohos"),
+        )))]
+        pub max_phase_adj: ::c_int,
+        #[cfg(not(any(
+            any(target_arch = "sparc", target_arch = "sparc64"),
+            any(target_env = "musl", target_env = "ohos"),
+        )))]
+        pub rsv: [::c_int; 11],
     }
 }
 
@@ -1280,6 +1361,30 @@ s_no_extra_traits! {
     pub struct iwreq {
         pub ifr_ifrn: __c_anonymous_iwreq,
         pub u: iwreq_data,
+    }
+}
+
+s_no_extra_traits! {
+    // linux/ptp_clock.h
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_ptp_perout_request_1 {
+        pub start: ptp_clock_time,
+        pub phase: ptp_clock_time,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_ptp_perout_request_2 {
+        pub on: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct ptp_perout_request {
+        pub anonymous_1: __c_anonymous_ptp_perout_request_1,
+        pub period: ptp_clock_time,
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub anonymous_2: __c_anonymous_ptp_perout_request_2,
     }
 }
 
@@ -4112,6 +4217,41 @@ pub const HWTSTAMP_FILTER_PTP_V2_SYNC: ::c_uint = 13;
 pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 
+// linux/ptp_clock.h
+pub const PTP_MAX_SAMPLES: ::c_uint = 25; // Maximum allowed offset measurement samples.
+
+const PTP_CLK_MAGIC: u32 = b'=' as u32;
+
+pub const PTP_CLOCK_GETCAPS: ::c_uint = ioctl::_IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
+pub const PTP_EXTTS_REQUEST: ::c_uint = ioctl::_IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 2);
+pub const PTP_PEROUT_REQUEST: ::c_uint = ioctl::_IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 3);
+pub const PTP_ENABLE_PPS: ::c_uint = ioctl::_IOW::<::c_int>(PTP_CLK_MAGIC, 4);
+pub const PTP_SYS_OFFSET: ::c_uint = ioctl::_IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 5);
+pub const PTP_PIN_GETFUNC: ::c_uint = ioctl::_IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 6);
+pub const PTP_PIN_SETFUNC: ::c_uint = ioctl::_IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 7);
+pub const PTP_SYS_OFFSET_PRECISE: ::c_uint =
+    ioctl::_IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 8);
+pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint =
+    ioctl::_IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 9);
+
+pub const PTP_CLOCK_GETCAPS2: ::c_uint = ioctl::_IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
+pub const PTP_EXTTS_REQUEST2: ::c_uint = ioctl::_IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 11);
+pub const PTP_PEROUT_REQUEST2: ::c_uint = ioctl::_IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 12);
+pub const PTP_ENABLE_PPS2: ::c_uint = ioctl::_IOW::<::c_int>(PTP_CLK_MAGIC, 13);
+pub const PTP_SYS_OFFSET2: ::c_uint = ioctl::_IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 14);
+pub const PTP_PIN_GETFUNC2: ::c_uint = ioctl::_IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 15);
+pub const PTP_PIN_SETFUNC2: ::c_uint = ioctl::_IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 16);
+pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint =
+    ioctl::_IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 17);
+pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint =
+    ioctl::_IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 18);
+
+// enum ptp_pin_function
+pub const PTP_PF_NONE: ::c_uint = 0;
+pub const PTP_PF_EXTTS: ::c_uint = 1;
+pub const PTP_PF_PEROUT: ::c_uint = 2;
+pub const PTP_PF_PHYSYNC: ::c_uint = 3;
+
 // linux/tls.h
 pub const TLS_TX: ::c_int = 1;
 pub const TLS_RX: ::c_int = 2;
@@ -6208,3 +6348,5 @@ expand_align!();
 
 mod non_exhaustive;
 pub use self::non_exhaustive::*;
+
+mod ioctl;
