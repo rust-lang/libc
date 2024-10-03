@@ -1598,6 +1598,25 @@ cfg_if! {
     }
 }
 
+// elf.h
+pub const NT_PRSTATUS: ::c_int = 1;
+pub const NT_PRFPREG: ::c_int = 2;
+pub const NT_FPREGSET: ::c_int = 2;
+pub const NT_PRPSINFO: ::c_int = 3;
+pub const NT_PRXREG: ::c_int = 4;
+pub const NT_TASKSTRUCT: ::c_int = 4;
+pub const NT_PLATFORM: ::c_int = 5;
+pub const NT_AUXV: ::c_int = 6;
+pub const NT_GWINDOWS: ::c_int = 7;
+pub const NT_ASRS: ::c_int = 8;
+pub const NT_PSTATUS: ::c_int = 10;
+pub const NT_PSINFO: ::c_int = 13;
+pub const NT_PRCRED: ::c_int = 14;
+pub const NT_UTSNAME: ::c_int = 15;
+pub const NT_LWPSTATUS: ::c_int = 16;
+pub const NT_LWPSINFO: ::c_int = 17;
+pub const NT_PRFPXREG: ::c_int = 20;
+
 pub const RUSAGE_CHILDREN: ::c_int = -1;
 pub const L_tmpnam: ::c_uint = 20;
 pub const _PC_LINK_MAX: ::c_int = 0;
