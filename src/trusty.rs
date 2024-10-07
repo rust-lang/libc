@@ -62,7 +62,8 @@ s! {
 pub const PROT_READ: i32 = 1;
 pub const PROT_WRITE: i32 = 2;
 
-pub const CLOCK_REALTIME: clockid_t = 0;
+// Trusty only supports `CLOCK_BOOTTIME`.
+pub const CLOCK_BOOTTIME: clockid_t = 7;
 
 pub const STDOUT_FILENO: ::c_int = 1;
 pub const STDERR_FILENO: ::c_int = 2;
