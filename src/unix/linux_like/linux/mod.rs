@@ -2344,6 +2344,41 @@ pub const IFLA_INFO_SLAVE_KIND: ::c_ushort = 4;
 pub const IFLA_INFO_SLAVE_DATA: ::c_ushort = 5;
 
 // linux/if_tun.h
+/* Ioctl defines */
+pub const TUNSETNOCSUM: ::Ioctl = 0x400454c8;
+pub const TUNSETDEBUG: ::Ioctl = 0x400454c9;
+pub const TUNSETIFF: ::Ioctl = 0x400454ca;
+pub const TUNSETPERSIST: ::Ioctl = 0x400454cb;
+pub const TUNSETOWNER: ::Ioctl = 0x400454cc;
+pub const TUNSETLINK: ::Ioctl = 0x400454cd;
+pub const TUNSETGROUP: ::Ioctl = 0x400454ce;
+pub const TUNGETFEATURES: ::Ioctl = 0x800454cf;
+pub const TUNSETOFFLOAD: ::Ioctl = 0x400454d0;
+pub const TUNSETTXFILTER: ::Ioctl = 0x400454d1;
+pub const TUNGETIFF: ::Ioctl = 0x800454d2;
+pub const TUNGETSNDBUF: ::Ioctl = 0x800454d3;
+pub const TUNSETSNDBUF: ::Ioctl = 0x400454d4;
+pub const TUNATTACHFILTER: ::Ioctl = 0x401054d5;
+pub const TUNDETACHFILTER: ::Ioctl = 0x401054d6;
+pub const TUNGETVNETHDRSZ: ::Ioctl = 0x800454d7;
+pub const TUNSETVNETHDRSZ: ::Ioctl = 0x400454d8;
+pub const TUNSETQUEUE: ::Ioctl = 0x400454d9;
+pub const TUNSETIFINDEX: ::Ioctl = 0x400454da;
+pub const TUNGETFILTER: ::Ioctl = 0x801054db;
+pub const TUNSETVNETLE: ::Ioctl = 0x400454dc;
+pub const TUNGETVNETLE: ::Ioctl = 0x800454dd;
+/* The TUNSETVNETBE and TUNGETVNETBE ioctls are for cross-endian support on
+ * little-endian hosts. Not all kernel configurations support them, but all
+ * configurations that support SET also support GET.
+ */
+pub const TUNSETVNETBE: ::Ioctl = 0x400454de;
+pub const TUNGETVNETBE: ::Ioctl = 0x800454df;
+pub const TUNSETSTEERINGEBPF: ::Ioctl = 0x800454e0;
+pub const TUNSETFILTEREBPF: ::Ioctl = 0x800454e1;
+pub const TUNSETCARRIER: ::Ioctl = 0x400454e2;
+pub const TUNGETDEVNETNS: ::Ioctl = 0x54e3;
+
+/* TUNSETIFF ifr flags */
 pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;
 pub const IFF_NAPI: ::c_int = 0x0010;
