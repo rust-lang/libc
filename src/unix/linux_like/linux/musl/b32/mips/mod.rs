@@ -120,14 +120,6 @@ s! {
         pub f_spare: [::c_ulong; 5],
     }
 
-    pub struct siginfo_t {
-        pub si_signo: ::c_int,
-        pub si_code: ::c_int,
-        pub si_errno: ::c_int,
-        pub _pad: [::c_int; 29],
-        _align: [usize; 0],
-    }
-
     pub struct statfs64 {
         pub f_type: ::c_ulong,
         pub f_bsize: ::c_ulong,
@@ -141,25 +133,6 @@ s! {
         pub f_namelen: ::c_ulong,
         pub f_flags: ::c_ulong,
         pub f_spare: [::c_ulong; 5],
-    }
-
-    pub struct statvfs64 {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: u64,
-        #[cfg(target_endian = "little")]
-        pub f_fsid: ::c_ulong,
-        __f_unused: ::c_int,
-        #[cfg(target_endian = "big")]
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
     }
 }
 
