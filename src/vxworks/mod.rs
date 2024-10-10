@@ -1878,8 +1878,8 @@ extern "C" {
     pub fn mq_setattr(mqd: ::mqd_t, newattr: *const ::mq_attr, oldattr: *mut ::mq_attr) -> ::c_int;
 
     // vxCpuLib.h
-    fn vxCpuEnabledGet() -> ::cpuset_t; // Get set of running CPU's in the system
-    fn vxCpuConfiguredGet() -> ::cpuset_t; // Get set of Configured CPU's in the system
+    pub fn vxCpuEnabledGet() -> ::cpuset_t; // Get set of running CPU's in the system
+    pub fn vxCpuConfiguredGet() -> ::cpuset_t; // Get set of Configured CPU's in the system
 }
 
 //Dummy functions, these don't really exist in VxWorks.
@@ -1980,6 +1980,12 @@ cfg_if! {
     } else if #[cfg(target_arch = "powerpc64")] {
         mod powerpc64;
         pub use self::powerpc64::*;
+    } else if #[cfg(target_arch = "riscv32")] {
+        mod riscv32;
+        pub use self::riscv32::*;
+    } else if #[cfg(target_arch = "riscv64")] {
+        mod riscv64;
+        pub use self::riscv64::*;
     } else {
         // Unknown target_arch
     }
