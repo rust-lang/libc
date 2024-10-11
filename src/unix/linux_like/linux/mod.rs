@@ -5730,7 +5730,7 @@ extern "C" {
     pub fn syncfs(fd: ::c_int) -> ::c_int;
     pub fn syscall(num: ::c_long, ...) -> ::c_long;
     pub fn sched_getaffinity(pid: ::pid_t, cpusetsize: ::size_t, cpuset: *mut cpu_set_t)
-                             -> ::c_int;
+        -> ::c_int;
     pub fn sched_setaffinity(
         pid: ::pid_t,
         cpusetsize: ::size_t,
@@ -5745,7 +5745,7 @@ extern "C" {
         timeout: ::c_int,
     ) -> ::c_int;
     pub fn epoll_ctl(epfd: ::c_int, op: ::c_int, fd: ::c_int, event: *mut ::epoll_event)
-                     -> ::c_int;
+        -> ::c_int;
     pub fn pthread_getschedparam(
         native: ::pthread_t,
         policy: *mut ::c_int,
