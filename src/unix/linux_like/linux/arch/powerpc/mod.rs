@@ -206,8 +206,6 @@ pub const TUNSETVNETBE: ::Ioctl = 0x800454de;
 pub const TUNGETVNETBE: ::Ioctl = 0x400454df;
 pub const TUNSETSTEERINGEBPF: ::Ioctl = 0x400454e0;
 pub const TUNSETFILTEREBPF: ::Ioctl = 0x400454e1;
-pub const TUNSETCARRIER: ::Ioctl = 0x800454e2;
-pub const TUNGETDEVNETNS: ::Ioctl = 0x200054e3;
 
 cfg_if! {
     // Those type are constructed using the _IOC macro
