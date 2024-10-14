@@ -1185,7 +1185,6 @@ _UTX_PADSIZE
 _UTX_USERSIZE
 __cpu_simple_lock_nv_t
 __errno
-__exit_status
 _cpuset_clr
 _cpuset_create
 _cpuset_destroy

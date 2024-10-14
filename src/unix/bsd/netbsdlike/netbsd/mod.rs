@@ -404,11 +404,6 @@ s! {
         pub sdl_data: [::c_char; 24],
     }
 
-    pub struct __exit_status {
-        pub e_termination: u16,
-        pub e_exit: u16,
-    }
-
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
@@ -788,10 +783,15 @@ s_no_extra_traits! {
         pub ut_session: u16,
         pub ut_type: u16,
         pub ut_pid: ::pid_t,
-        pub ut_exit: __exit_status, // FIXME: when anonymous struct are supported
+        pub ut_exit: ::__c_anonymous_ut_exit,
         pub ut_ss: sockaddr_storage,
         pub ut_tv: ::timeval,
         pub ut_pad: [u8; _UTX_PADSIZE],
+    }
+
+    pub struct __c_anonymous_ut_exit {
+        pub e_termination: u16,
+        pub e_exit: u16,
     }
 
     pub struct lastlogx {
