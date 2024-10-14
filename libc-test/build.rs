@@ -1152,6 +1152,8 @@ fn test_netbsd(target: &str) {
             return true;
         }
         match ty {
+            // pthread_spin_t is a volatile uchar
+            "pthread_spin_t" => true,
             // cpuset_t is an incomplete/opaque type that is only used in the context of pointers
             "cpuset_t" => true,
             // FIXME: sighandler_t is crazy across platforms
