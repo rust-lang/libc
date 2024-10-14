@@ -2865,6 +2865,19 @@ extern "C" {
         ntargets: ::size_t,
         hint: *const ::c_void,
     ) -> ::c_int;
+    pub fn sendmmsg(
+        sockfd: ::c_int,
+        mmsg: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_uint,
+    ) -> ::c_int;
+    pub fn recvmmsg(
+        sockfd: ::c_int,
+        mmsg: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_uint,
+        timeout: *mut ::timespec,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]

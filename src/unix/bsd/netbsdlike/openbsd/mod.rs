@@ -2110,6 +2110,20 @@ extern "C" {
     pub fn mimmutable(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn reboot(mode: ::c_int) -> ::c_int;
+
+    pub fn sendmmsg(
+        sockfd: ::c_int,
+        mmsg: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn recvmmsg(
+        sockfd: ::c_int,
+        mmsg: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_int,
+        timeout: *mut ::timespec,
+    ) -> ::c_int;
 }
 
 #[link(name = "execinfo")]
