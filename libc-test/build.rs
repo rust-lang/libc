@@ -1035,6 +1035,7 @@ fn test_netbsd(target: &str) {
         "limits.h",
         "link.h",
         "locale.h",
+        "spawn.h",
         "stddef.h",
         "stdint.h",
         "stdio.h",
