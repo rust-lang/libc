@@ -1104,6 +1104,7 @@ fn test_netbsd(target: &str) {
         "unistd.h",
         "util.h",
         "utime.h",
+        "utmp.h",
         "mqueue.h",
         "netinet/dccp.h",
         "sys/event.h",
