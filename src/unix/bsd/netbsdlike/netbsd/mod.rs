@@ -379,7 +379,7 @@ s! {
         pub cr_unused: ::c_ushort,
         pub cr_uid: ::uid_t,
         pub cr_gid: ::gid_t,
-        pub cr_ngroups: ::c_int,
+        pub cr_ngroups: ::c_short,
         pub cr_groups: [::gid_t; NGROUPS_MAX as usize],
     }
 
