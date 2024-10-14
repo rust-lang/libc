@@ -1152,6 +1152,8 @@ fn test_netbsd(target: &str) {
             return true;
         }
         match ty {
+            // cpuset_t is an incomplete/opaque type that is only used in the context of pointers
+            "cpuset_t" => true,
             // FIXME: sighandler_t is crazy across platforms
             "sighandler_t" => true,
             _ => false,
