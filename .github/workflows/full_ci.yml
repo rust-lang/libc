@@ -186,6 +186,34 @@ jobs:
       - name: Execute run-docker.sh
         run: sh ./ci/run-docker.sh ${{ matrix.target }}
 
+  build_channels_netbsd:
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+
+    name: Build Channels NetBSD
+    runs-on: ubuntu-latest
+    env:
+      OS: netbsd
+    strategy:
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run netbsd vm
+        id: netbsd-ci
+        uses: vmactions/netbsd-vm@v1
+        with:
+          envs: 'OS'
+          usesh: true
+          prepare: |
+            /usr/sbin/pkg_add curl
+            curl https://sh.rustup.rs -sSf --output rustup.sh
+            sh rustup.sh -y --default-toolchain nightly --profile=minimal
+            . $HOME/.cargo/env
+          run: |
+            . $HOME/.cargo/env
+            LIBC_CI=1 sh ci/run.sh x86_64-unknown-netbsd
+            sh ci/run.sh x86_64-unknown-netbsd
+
   check_cfg:
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
