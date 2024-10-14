@@ -10,7 +10,7 @@ type __pthread_spin_t = __cpu_simple_lock_nv_t;
 pub type lwpid_t = ::c_uint;
 pub type shmatt_t = ::c_uint;
 pub type cpuid_t = ::c_ulong;
-pub type cpuset_t = _cpuset;
+pub type cpuset_t = ::c_void;
 pub type pthread_spin_t = ::c_uchar;
 pub type timer_t = ::c_int;
 
@@ -503,10 +503,6 @@ s! {
         pub dlpi_subs: ::c_ulonglong,
         pub dlpi_tls_modid: usize,
         pub dlpi_tls_data: *mut ::c_void,
-    }
-
-    pub struct _cpuset {
-        bits: [u32; 0]
     }
 
     pub struct accept_filter_arg {
