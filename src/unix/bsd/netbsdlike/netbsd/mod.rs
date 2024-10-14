@@ -393,11 +393,15 @@ s! {
         pub sdl_len: ::c_uchar,
         pub sdl_family: ::c_uchar,
         pub sdl_index: ::c_ushort,
+        pub sdl_addr: ::dl_addr,
+    }
+
+    pub struct dl_addr {
         pub sdl_type: u8,
         pub sdl_nlen: u8,
         pub sdl_alen: u8,
         pub sdl_slen: u8,
-        pub sdl_data: [::c_char; 12],
+        pub sdl_data: [::c_char; 24],
     }
 
     pub struct __exit_status {

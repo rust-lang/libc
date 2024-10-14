@@ -1229,6 +1229,7 @@ consttime_memequal
 daemon
 difftime
 dirfd
+dl_addr
 dl_iterate_phdr
 dl_phdr_info
 dqblk
