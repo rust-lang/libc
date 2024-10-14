@@ -397,11 +397,11 @@ s! {
     }
 
     pub struct dl_addr {
-        pub sdl_type: u8,
-        pub sdl_nlen: u8,
-        pub sdl_alen: u8,
-        pub sdl_slen: u8,
-        pub sdl_data: [::c_char; 24],
+        pub dl_type: u8,
+        pub dl_nlen: u8,
+        pub dl_alen: u8,
+        pub dl_slen: u8,
+        pub dl_data: [::c_char; 24],
     }
 
     pub struct shmid_ds {
