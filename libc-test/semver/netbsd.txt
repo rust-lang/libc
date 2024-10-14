@@ -1241,7 +1241,6 @@ emalloc
 erand48
 erealloc
 ereallocarr
-esetfunc
 estrdup
 estrndup
 estrlcat

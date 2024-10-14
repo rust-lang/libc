@@ -2950,9 +2950,12 @@ extern "C" {
     ) -> ::uintmax_t;
     pub fn easprintf(string: *mut *mut ::c_char, fmt: *const ::c_char, ...) -> ::c_int;
     pub fn evasprintf(string: *mut *mut ::c_char, fmt: *const ::c_char, ...) -> ::c_int;
+    // FIXME: re-add with semver once https://github.com/JohnTitor/ctest2/issues/58 is resolved
+    /*
     pub fn esetfunc(
         cb: ::Option<unsafe extern "C" fn(::c_int, *const ::c_char, ...)>,
     ) -> ::Option<unsafe extern "C" fn(::c_int, *const ::c_char, ...)>;
+    */
     pub fn secure_path(path: *const ::c_char) -> ::c_int;
     pub fn snprintb(
         buf: *mut ::c_char,
