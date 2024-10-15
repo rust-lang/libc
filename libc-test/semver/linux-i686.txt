@@ -214,6 +214,8 @@ fsblkcnt64_t
 fsfilcnt64_t
 getcontext
 greg_t
+ioperm
+iopl
 makecontext
 max_align_t
 mcontext_t
