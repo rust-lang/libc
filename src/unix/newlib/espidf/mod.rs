@@ -89,15 +89,15 @@ pub const MSG_EOR: ::c_int = 0x08;
 
 pub const PTHREAD_STACK_MIN: ::size_t = 768;
 
-pub const SIGABRT: ::c_int = 1;
-pub const SIGFPE: ::c_int = 1;
-pub const SIGILL: ::c_int = 1;
-pub const SIGINT: ::c_int = 1;
-pub const SIGSEGV: ::c_int = 1;
-pub const SIGTERM: ::c_int = 1;
+pub const SIGABRT: ::c_int = 6;
+pub const SIGFPE: ::c_int = 8;
+pub const SIGILL: ::c_int = 4;
+pub const SIGINT: ::c_int = 2;
+pub const SIGSEGV: ::c_int = 11;
+pub const SIGTERM: ::c_int = 15;
 pub const SIGHUP: ::c_int = 1;
-pub const SIGQUIT: ::c_int = 1;
-pub const NSIG: ::size_t = 2;
+pub const SIGQUIT: ::c_int = 3;
+pub const NSIG: ::size_t = 32;
 
 extern "C" {
     pub fn pthread_create(

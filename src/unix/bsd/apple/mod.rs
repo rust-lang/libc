@@ -56,6 +56,7 @@ pub type thread_inspect_t = ::mach_port_t;
 pub type thread_act_t = ::mach_port_t;
 pub type thread_act_array_t = *mut ::thread_act_t;
 pub type policy_t = ::c_int;
+pub type mach_error_t = ::kern_return_t;
 pub type mach_vm_address_t = u64;
 pub type mach_vm_offset_t = u64;
 pub type mach_vm_size_t = u64;
@@ -4194,11 +4195,18 @@ pub const TCP_CONNECTION_INFO: ::c_int = 0x106;
 
 pub const SOL_LOCAL: ::c_int = 0;
 
+/// Retrieve peer credentials.
 pub const LOCAL_PEERCRED: ::c_int = 0x001;
+/// Retrieve peer PID.
 pub const LOCAL_PEERPID: ::c_int = 0x002;
+/// Retrieve effective peer PID.
 pub const LOCAL_PEEREPID: ::c_int = 0x003;
+/// Retrieve peer UUID.
 pub const LOCAL_PEERUUID: ::c_int = 0x004;
+/// Retrieve effective peer UUID.
 pub const LOCAL_PEEREUUID: ::c_int = 0x005;
+/// Retrieve peer audit token.
+pub const LOCAL_PEERTOKEN: ::c_int = 0x006;
 
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
@@ -6322,6 +6330,8 @@ extern "C" {
     pub fn copyfile_state_alloc() -> copyfile_state_t;
     pub fn copyfile_state_get(s: copyfile_state_t, flags: u32, dst: *mut ::c_void) -> ::c_int;
     pub fn copyfile_state_set(s: copyfile_state_t, flags: u32, src: *const ::c_void) -> ::c_int;
+
+    pub fn mach_error_string(error_value: ::mach_error_t) -> *mut ::c_char;
 
     // Added in macOS 10.13
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1

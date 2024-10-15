@@ -1793,6 +1793,24 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut passwd,
     ) -> ::c_int;
+
+    // grp.h
+    pub fn getgrgid(gid: ::gid_t) -> *mut ::group;
+    pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
+    pub fn getgrnam_r(
+        name: *const ::c_char,
+        grp: *mut ::group,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut ::group,
+    ) -> ::c_int;
+    pub fn getgrgid_r(
+        gid: ::gid_t,
+        grp: *mut ::group,
+        buf: *mut ::c_char,
+        buflen: ::size_t,
+        result: *mut *mut ::group,
+    ) -> ::c_int;
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support

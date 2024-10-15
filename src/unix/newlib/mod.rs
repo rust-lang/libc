@@ -42,7 +42,13 @@ cfg_if! {
 pub type socklen_t = u32;
 pub type speed_t = u32;
 pub type suseconds_t = i32;
-pub type tcflag_t = ::c_uint;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub type tcflag_t = u16;
+    } else {
+        pub type tcflag_t = ::c_uint;
+    }
+}
 pub type useconds_t = u32;
 
 cfg_if! {
@@ -197,6 +203,10 @@ s! {
         pub c_lflag: ::tcflag_t,
         pub c_line: ::cc_t,
         pub c_cc: [::cc_t; ::NCCS],
+        #[cfg(target_os = "espidf")]
+        pub c_ispeed: u32,
+        #[cfg(target_os = "espidf")]
+        pub c_ospeed: u32,
     }
 
     pub struct sem_t { // Unverified
@@ -224,7 +234,24 @@ s! {
     }
 
     pub struct pthread_attr_t { // Unverified
-        __size: [u8; __SIZEOF_PTHREAD_ATTR_T]
+        #[cfg(not(target_os = "espidf"))]
+        __size: [u8; __SIZEOF_PTHREAD_ATTR_T],
+        #[cfg(target_os = "espidf")]
+        pub is_initialized: i32,
+        #[cfg(target_os = "espidf")]
+        pub stackaddr: *mut crate::c_void,
+        #[cfg(target_os = "espidf")]
+        pub stacksize: i32,
+        #[cfg(target_os = "espidf")]
+        pub contentionscope: i32,
+        #[cfg(target_os = "espidf")]
+        pub inheritsched: i32,
+        #[cfg(target_os = "espidf")]
+        pub schedpolicy: i32,
+        #[cfg(target_os = "espidf")]
+        pub schedparam: i32,
+        #[cfg(target_os = "espidf")]
+        pub detachstate: i32,
     }
 
     pub struct pthread_rwlockattr_t { // Unverified
@@ -244,7 +271,14 @@ align_const! {
         size: [__PTHREAD_INITIALIZER_BYTE; __SIZEOF_PTHREAD_RWLOCK_T],
     };
 }
-pub const NCCS: usize = 32;
+
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const NCCS: usize = 11;
+    } else {
+        pub const NCCS: usize = 32;
+    }
+}
 
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
@@ -423,7 +457,13 @@ pub const O_SYNC: ::c_int = 8192;
 pub const O_NONBLOCK: ::c_int = 16384;
 
 pub const O_ACCMODE: ::c_int = 3;
-pub const O_CLOEXEC: ::c_int = 0x80000;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const O_CLOEXEC: ::c_int = 0x40000;
+    } else {
+        pub const O_CLOEXEC: ::c_int = 0x80000;
+    }
+}
 
 pub const RTLD_LAZY: ::c_int = 0x1;
 
@@ -465,7 +505,13 @@ pub const SOL_TCP: ::c_int = 6;
 
 pub const PF_UNSPEC: ::c_int = 0;
 pub const PF_INET: ::c_int = 2;
-pub const PF_INET6: ::c_int = 23;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const PF_INET6: ::c_int = 10;
+    } else {
+        pub const PF_INET6: ::c_int = 23;
+    }
+}
 
 pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_INET: ::c_int = 2;
@@ -550,6 +596,9 @@ cfg_if! {
     if #[cfg(target_os = "vita")] {
         pub const TCP_NODELAY: ::c_int = 1;
         pub const TCP_MAXSEG: ::c_int = 2;
+    } else if #[cfg(target_os = "espidf")] {
+        pub const TCP_NODELAY: ::c_int = 1;
+        pub const TCP_MAXSEG: ::c_int = 8194;
     } else {
         pub const TCP_NODELAY: ::c_int = 8193;
         pub const TCP_MAXSEG: ::c_int = 8194;
@@ -558,13 +607,23 @@ cfg_if! {
 
 pub const TCP_NOPUSH: ::c_int = 4;
 pub const TCP_NOOPT: ::c_int = 8;
-pub const TCP_KEEPIDLE: ::c_int = 256;
-pub const TCP_KEEPINTVL: ::c_int = 512;
-pub const TCP_KEEPCNT: ::c_int = 1024;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const TCP_KEEPIDLE: ::c_int = 3;
+        pub const TCP_KEEPINTVL: ::c_int = 4;
+        pub const TCP_KEEPCNT: ::c_int = 5;
+    } else {
+        pub const TCP_KEEPIDLE: ::c_int = 256;
+        pub const TCP_KEEPINTVL: ::c_int = 512;
+        pub const TCP_KEEPCNT: ::c_int = 1024;
+    }
+}
 
 cfg_if! {
     if #[cfg(target_os = "horizon")] {
         pub const IP_TOS: ::c_int = 7;
+    } else if #[cfg(target_os = "espidf")] {
+        pub const IP_TOS: ::c_int = 1;
     } else {
         pub const IP_TOS: ::c_int = 3;
     }
@@ -572,55 +631,107 @@ cfg_if! {
 cfg_if! {
     if #[cfg(target_os = "vita")] {
         pub const IP_TTL: ::c_int = 4;
+    } else if #[cfg(target_os = "espidf")] {
+        pub const IP_TTL: ::c_int = 2;
     } else {
         pub const IP_TTL: ::c_int = 8;
     }
 }
-pub const IP_MULTICAST_IF: ::c_int = 9;
-pub const IP_MULTICAST_TTL: ::c_int = 10;
-pub const IP_MULTICAST_LOOP: ::c_int = 11;
+
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const IP_MULTICAST_IF: ::c_int = 6;
+        pub const IP_MULTICAST_TTL: ::c_int = 5;
+        pub const IP_MULTICAST_LOOP: ::c_int = 7;
+    } else {
+        pub const IP_MULTICAST_IF: ::c_int = 9;
+        pub const IP_MULTICAST_TTL: ::c_int = 10;
+        pub const IP_MULTICAST_LOOP: ::c_int = 11;
+    }
+}
+
 cfg_if! {
     if #[cfg(target_os = "vita")] {
         pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
         pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
+    } else if #[cfg(target_os = "espidf")] {
+        pub const IP_ADD_MEMBERSHIP: ::c_int = 3;
+        pub const IP_DROP_MEMBERSHIP: ::c_int = 4;
     } else {
         pub const IP_ADD_MEMBERSHIP: ::c_int = 11;
         pub const IP_DROP_MEMBERSHIP: ::c_int = 12;
     }
 }
 pub const IPV6_UNICAST_HOPS: ::c_int = 4;
-pub const IPV6_MULTICAST_IF: ::c_int = 9;
-pub const IPV6_MULTICAST_HOPS: ::c_int = 10;
-pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const IPV6_MULTICAST_IF: ::c_int = 768;
+        pub const IPV6_MULTICAST_HOPS: ::c_int = 769;
+        pub const IPV6_MULTICAST_LOOP: ::c_int = 770;
+    } else {
+        pub const IPV6_MULTICAST_IF: ::c_int = 9;
+        pub const IPV6_MULTICAST_HOPS: ::c_int = 10;
+        pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
+    }
+}
 pub const IPV6_V6ONLY: ::c_int = 27;
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
 
-pub const HOST_NOT_FOUND: ::c_int = 1;
-pub const NO_DATA: ::c_int = 2;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const HOST_NOT_FOUND: ::c_int = 210;
+        pub const NO_DATA: ::c_int = 211;
+        pub const NO_RECOVERY: ::c_int = 212;
+        pub const TRY_AGAIN: ::c_int = 213;
+
+    } else {
+        pub const HOST_NOT_FOUND: ::c_int = 1;
+        pub const NO_DATA: ::c_int = 2;
+        pub const NO_RECOVERY: ::c_int = 3;
+        pub const TRY_AGAIN: ::c_int = 4;
+    }
+}
 pub const NO_ADDRESS: ::c_int = 2;
-pub const NO_RECOVERY: ::c_int = 3;
-pub const TRY_AGAIN: ::c_int = 4;
 
 pub const AI_PASSIVE: ::c_int = 1;
 pub const AI_CANONNAME: ::c_int = 2;
 pub const AI_NUMERICHOST: ::c_int = 4;
-pub const AI_NUMERICSERV: ::c_int = 0;
-pub const AI_ADDRCONFIG: ::c_int = 0;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const AI_NUMERICSERV: ::c_int = 8;
+        pub const AI_ADDRCONFIG: ::c_int = 64;
+    } else {
+        pub const AI_NUMERICSERV: ::c_int = 0;
+        pub const AI_ADDRCONFIG: ::c_int = 0;
+    }
+}
 
 pub const NI_MAXHOST: ::c_int = 1025;
 pub const NI_MAXSERV: ::c_int = 32;
 pub const NI_NOFQDN: ::c_int = 1;
 pub const NI_NUMERICHOST: ::c_int = 2;
 pub const NI_NAMEREQD: ::c_int = 4;
-pub const NI_NUMERICSERV: ::c_int = 0;
-pub const NI_DGRAM: ::c_int = 0;
+cfg_if! {
+    if #[cfg(target_os = "espidf")] {
+        pub const NI_NUMERICSERV: ::c_int = 8;
+        pub const NI_DGRAM: ::c_int = 16;
+    } else {
+        pub const NI_NUMERICSERV: ::c_int = 0;
+        pub const NI_DGRAM: ::c_int = 0;
+    }
+}
 
 cfg_if! {
     // Defined in vita/mod.rs for "vita"
-    if #[cfg(not(target_os = "vita"))] {
+    if #[cfg(target_os = "espidf")] {
+        pub const EAI_FAMILY: ::c_int = 204;
+        pub const EAI_MEMORY: ::c_int = 203;
+        pub const EAI_NONAME: ::c_int = 200;
+        pub const EAI_SOCKTYPE: ::c_int = 10;
+    } else if #[cfg(not(target_os = "vita"))] {
         pub const EAI_FAMILY: ::c_int = -303;
         pub const EAI_MEMORY: ::c_int = -304;
         pub const EAI_NONAME: ::c_int = -305;
