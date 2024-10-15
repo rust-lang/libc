@@ -4698,6 +4698,14 @@ pub const CPU_WHICH_CPUSET: ::c_int = 3;
 pub const CPU_WHICH_IRQ: ::c_int = 4;
 pub const CPU_WHICH_JAIL: ::c_int = 5;
 
+// net/route.h
+pub const RTF_LLDATA: ::c_int = 0x400;
+pub const RTF_FIXEDMTU: ::c_int = 0x80000;
+
+pub const RTM_VERSION: ::c_int = 5;
+
+pub const RTAX_MAX: ::c_int = 8;
+
 // sys/signal.h
 pub const SIGTHR: ::c_int = 32;
 pub const SIGLWP: ::c_int = SIGTHR;

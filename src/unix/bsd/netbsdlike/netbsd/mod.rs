@@ -2402,6 +2402,33 @@ pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
     alignment << MAP_ALIGNMENT_SHIFT
 }
 
+// net/route.h
+pub const RTF_MASK: ::c_int = 0x80;
+pub const RTF_CONNECTED: ::c_int = 0x100;
+pub const RTF_ANNOUNCE: ::c_int = 0x20000;
+pub const RTF_SRC: ::c_int = 0x10000;
+pub const RTF_LOCAL: ::c_int = 0x40000;
+pub const RTF_BROADCAST: ::c_int = 0x80000;
+pub const RTF_UPDATING: ::c_int = 0x100000;
+pub const RTF_DONTCHANGEIFA: ::c_int = 0x200000;
+
+pub const RTM_VERSION: ::c_int = 4;
+pub const RTM_LOCK: ::c_int = 0x8;
+pub const RTM_IFANNOUNCE: ::c_int = 0x10;
+pub const RTM_IEEE80211: ::c_int = 0x11;
+pub const RTM_SETGATE: ::c_int = 0x12;
+pub const RTM_LLINFO_UPD: ::c_int = 0x13;
+pub const RTM_IFINFO: ::c_int = 0x14;
+pub const RTM_OCHGADDR: ::c_int = 0x15;
+pub const RTM_NEWADDR: ::c_int = 0x16;
+pub const RTM_DELADDR: ::c_int = 0x17;
+pub const RTM_CHGADDR: ::c_int = 0x18;
+
+pub const RTA_TAG: ::c_int = 0x100;
+
+pub const RTAX_TAG: ::c_int = 8;
+pub const RTAX_MAX: ::c_int = 9;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
