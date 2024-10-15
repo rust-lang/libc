@@ -7,9 +7,13 @@ task:
     - name: nightly freebsd-14
       freebsd_instance:
         image: freebsd-14-0-release-amd64-ufs
-    - name: nightly freebsd-15
-      freebsd_instance:
-        image_family: freebsd-15-0-snap
+    # Temporarily disable CI on FreeBSD 15.0-CURRENT until the libmd solib
+    # fallout is cleaned up.
+    # FIXME https://github.com/rust-lang/libc/issues/3967
+    # https://github.com/rust-lang/libc/issues/3967
+    #- name: nightly freebsd-15
+    # freebsd_instance:
+    # image_family: freebsd-15-0-snap
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
