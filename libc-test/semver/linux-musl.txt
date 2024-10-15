@@ -80,6 +80,7 @@ process_vm_writev
 pwritev2
 pwritev64
 reallocarray
+tcp_info
 timex
 euidaccess
 eaccess
