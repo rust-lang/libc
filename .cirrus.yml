@@ -1,15 +1,30 @@
 task:
   only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_BASE_BRANCH == 'libc-0.2' ||  $CIRRUS_BASE_BRANCH == 'main'
   matrix:
-    - name: nightly freebsd-13
+    #- name: nightly freebsd-13
+    #freebsd_instance:
+    #image_family: freebsd-13-3
+    #- name: nightly freebsd-14
+    #freebsd_instance:
+    #image: freebsd-14-1-release-amd64-ufs
+    - name: nightly freebsd-15 20240905
       freebsd_instance:
-        image_family: freebsd-13-3
-    - name: nightly freebsd-14
+        image: freebsd-15-0-current-amd64-ufs-20240905
+    - name: nightly freebsd-15 20240912
       freebsd_instance:
-        image: freebsd-14-1-release-amd64-ufs
-    - name: nightly freebsd-15
+        image: freebsd-15-0-current-amd64-ufs-20240912
+    - name: nightly freebsd-15 20240919
       freebsd_instance:
-        image_family: freebsd-15-0-snap
+        image: freebsd-15-0-current-amd64-ufs-20240919
+    - name: nightly freebsd-15 20240926
+      freebsd_instance:
+        image: freebsd-15-0-current-amd64-ufs-20240926
+    - name: nightly freebsd-15 20241003
+      freebsd_instance:
+        image: freebsd-15-0-current-amd64-ufs-20241003
+    - name: nightly freebsd-15 20241010
+      freebsd_instance:
+        image: freebsd-15-0-current-amd64-ufs-20241010
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
