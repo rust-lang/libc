@@ -23,7 +23,12 @@ s! {
         pub stx_mnt_id: ::__u64,
         pub stx_dio_mem_align: ::__u32,
         pub stx_dio_offset_align: ::__u32,
-        __statx_pad3: [::__u64; 12],
+        pub stx_subvol: ::__u64,
+        pub stx_atomic_write_unit_min: ::__u32,
+        pub stx_atomic_write_unit_max: ::__u32,
+        pub stx_atomic_write_segments_max: ::__u32,
+        __statx_pad2: [::__u32; 1],
+        __statx_pad3: [::__u64; 9],
     }
 
     pub struct statx_timestamp {
@@ -53,6 +58,9 @@ pub const STATX_BTIME: ::c_uint = 0x0800;
 pub const STATX_ALL: ::c_uint = 0x0fff;
 pub const STATX_MNT_ID: ::c_uint = 0x1000;
 pub const STATX_DIOALIGN: ::c_uint = 0x2000;
+pub const STATX_MNT_ID_UNIQUE: ::c_uint = 0x4000;
+pub const STATX_SUBVOL: ::c_uint = 0x8000;
+pub const STATX_WRITE_ATOMIC: ::c_uint = 0x10000;
 pub const STATX__RESERVED: ::c_int = 0x80000000;
 pub const STATX_ATTR_COMPRESSED: ::c_int = 0x0004;
 pub const STATX_ATTR_IMMUTABLE: ::c_int = 0x0010;
@@ -63,6 +71,7 @@ pub const STATX_ATTR_AUTOMOUNT: ::c_int = 0x1000;
 pub const STATX_ATTR_MOUNT_ROOT: ::c_int = 0x2000;
 pub const STATX_ATTR_VERITY: ::c_int = 0x100000;
 pub const STATX_ATTR_DAX: ::c_int = 0x200000;
+pub const STATX_ATTR_WRITE_ATOMIC: ::c_int = 0x400000;
 
 extern "C" {
     pub fn statx(
