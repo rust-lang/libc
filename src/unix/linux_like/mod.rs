@@ -1888,7 +1888,7 @@ cfg_if! {
 
 // The statx syscall, available on some libcs.
 cfg_if! {
-    if #[cfg(any(target_env = "gnu", target_os = "android"))] {
+    if #[cfg(any(target_env = "gnu", target_os = "android", target_env = "musl"))] {
         mod linux_statx;
         pub use self::linux_statx::*;
     }
