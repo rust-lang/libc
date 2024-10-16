@@ -1,4 +1,3 @@
-# TODO: musl.
 AF_IB
 AF_MPLS
 AF_XDP
