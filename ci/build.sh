@@ -252,11 +252,13 @@ riscv32i-unknown-none-elf \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 riscv32gc-unknown-linux-gnu \
+riscv32-wrs-vxworks \
 riscv64gc-unknown-freebsd \
 riscv64gc-unknown-hermit \
 riscv64gc-unknown-linux-musl \
 riscv64gc-unknown-none-elf \
 riscv64imac-unknown-none-elf \
+riscv64-wrs-vxworks \
 s390x-unknown-linux-musl \
 sparc-unknown-linux-gnu \
 sparc64-unknown-netbsd \
