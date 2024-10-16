@@ -16,39 +16,6 @@ cfg_if! {
 }
 
 s! {
-    pub struct statx {
-        pub stx_mask: u32,
-        pub stx_blksize: u32,
-        pub stx_attributes: u64,
-        pub stx_nlink: u32,
-        pub stx_uid: u32,
-        pub stx_gid: u32,
-        pub stx_mode: u16,
-        __statx_pad1: [u16; 1],
-        pub stx_ino: u64,
-        pub stx_size: u64,
-        pub stx_blocks: u64,
-        pub stx_attributes_mask: u64,
-        pub stx_atime: ::statx_timestamp,
-        pub stx_btime: ::statx_timestamp,
-        pub stx_ctime: ::statx_timestamp,
-        pub stx_mtime: ::statx_timestamp,
-        pub stx_rdev_major: u32,
-        pub stx_rdev_minor: u32,
-        pub stx_dev_major: u32,
-        pub stx_dev_minor: u32,
-        pub stx_mnt_id: u64,
-        pub stx_dio_mem_align: u32,
-        pub stx_dio_offset_align: u32,
-        __statx_pad3: [u64; 12],
-    }
-
-    pub struct statx_timestamp {
-        pub tv_sec: i64,
-        pub tv_nsec: u32,
-        pub __statx_timestamp_pad1: [i32; 1],
-    }
-
     pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_lio_opcode: ::c_int,
@@ -1169,37 +1136,6 @@ pub const M_PERTURB: ::c_int = -6;
 pub const M_ARENA_TEST: ::c_int = -7;
 pub const M_ARENA_MAX: ::c_int = -8;
 
-pub const AT_STATX_SYNC_TYPE: ::c_int = 0x6000;
-pub const AT_STATX_SYNC_AS_STAT: ::c_int = 0x0000;
-pub const AT_STATX_FORCE_SYNC: ::c_int = 0x2000;
-pub const AT_STATX_DONT_SYNC: ::c_int = 0x4000;
-pub const STATX_TYPE: ::c_uint = 0x0001;
-pub const STATX_MODE: ::c_uint = 0x0002;
-pub const STATX_NLINK: ::c_uint = 0x0004;
-pub const STATX_UID: ::c_uint = 0x0008;
-pub const STATX_GID: ::c_uint = 0x0010;
-pub const STATX_ATIME: ::c_uint = 0x0020;
-pub const STATX_MTIME: ::c_uint = 0x0040;
-pub const STATX_CTIME: ::c_uint = 0x0080;
-pub const STATX_INO: ::c_uint = 0x0100;
-pub const STATX_SIZE: ::c_uint = 0x0200;
-pub const STATX_BLOCKS: ::c_uint = 0x0400;
-pub const STATX_BASIC_STATS: ::c_uint = 0x07ff;
-pub const STATX_BTIME: ::c_uint = 0x0800;
-pub const STATX_MNT_ID: ::c_uint = 0x1000;
-pub const STATX_DIOALIGN: ::c_uint = 0x2000;
-pub const STATX_ALL: ::c_uint = 0x0fff;
-pub const STATX__RESERVED: ::c_int = 0x80000000;
-pub const STATX_ATTR_COMPRESSED: ::c_int = 0x0004;
-pub const STATX_ATTR_IMMUTABLE: ::c_int = 0x0010;
-pub const STATX_ATTR_APPEND: ::c_int = 0x0020;
-pub const STATX_ATTR_NODUMP: ::c_int = 0x0040;
-pub const STATX_ATTR_ENCRYPTED: ::c_int = 0x0800;
-pub const STATX_ATTR_AUTOMOUNT: ::c_int = 0x1000;
-pub const STATX_ATTR_MOUNT_ROOT: ::c_int = 0x2000;
-pub const STATX_ATTR_VERITY: ::c_int = 0x00100000;
-pub const STATX_ATTR_DAX: ::c_int = 0x00200000;
-
 pub const SOMAXCONN: ::c_int = 4096;
 
 // linux/mount.h
@@ -1405,13 +1341,6 @@ extern "C" {
     pub fn getpt() -> ::c_int;
     pub fn mallopt(param: ::c_int, value: ::c_int) -> ::c_int;
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
-    pub fn statx(
-        dirfd: ::c_int,
-        pathname: *const c_char,
-        flags: ::c_int,
-        mask: ::c_uint,
-        statxbuf: *mut statx,
-    ) -> ::c_int;
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
