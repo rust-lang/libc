@@ -1896,7 +1896,15 @@ pub const RTF_LOCAL: ::c_int = 0x200000;
 pub const RTF_BROADCAST: ::c_int = 0x400000;
 pub const RTF_CONNECTED: ::c_int = 0x800000;
 pub const RTF_BFD: ::c_int = 0x1000000;
-pub const RTF_FMASK: ::c_int = b'\\' as _;
+pub const RTF_FMASK: ::c_int = ::RTF_LLINFO
+    | ::RTF_PROTO1
+    | ::RTF_PROTO2
+    | ::RTF_PROTO3
+    | ::RTF_BLACKHOLE
+    | ::RTF_REJECT
+    | ::RTF_STATIC
+    | ::RTF_MPLS
+    | ::RTF_BFD;
 
 pub const RTM_VERSION: ::c_int = 5;
 pub const RTM_RESOLVE: ::c_int = 0xb;
