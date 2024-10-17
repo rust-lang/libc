@@ -1207,7 +1207,6 @@ _UTX_PADSIZE
 _UTX_USERSIZE
 __cpu_simple_lock_nv_t
 __errno
-__exit_status
 _cpuset_clr
 _cpuset_create
 _cpuset_destroy
@@ -1251,6 +1250,7 @@ consttime_memequal
 daemon
 difftime
 dirfd
+dl_addr
 dl_iterate_phdr
 dl_phdr_info
 dqblk
@@ -1263,7 +1263,6 @@ emalloc
 erand48
 erealloc
 ereallocarr
-esetfunc
 estrdup
 estrndup
 estrlcat
@@ -1616,7 +1615,6 @@ utmpxname
 utpname
 utrace
 uucred
-vm_size_t
 wait4
 waitid
 dirname
