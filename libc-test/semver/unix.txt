@@ -132,6 +132,11 @@ FD_ZERO
 FILE
 FIOCLEX
 FIONBIO
+FNM_CASEFOLD
+FNM_NOESCAPE
+FNM_NOMATCH
+FNM_PATHNAME
+FNM_PERIOD
 F_DUPFD
 F_DUPFD_CLOEXEC
 F_GETFD
@@ -525,6 +530,7 @@ fgetpos
 fgets
 fileno
 flock
+fnmatch
 fopen
 fork
 fpathconf
