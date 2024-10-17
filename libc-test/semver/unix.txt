@@ -497,6 +497,7 @@ clockid_t
 close
 closedir
 closelog
+confstr
 connect
 creat
 dev_t
