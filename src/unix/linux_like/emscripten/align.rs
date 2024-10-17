@@ -37,10 +37,12 @@ macro_rules! expand_align {
                 size: [u8; ::__SIZEOF_PTHREAD_COND_T],
             }
 
+            // Lowered from 16 to 8 bytes in
+            // https://github.com/llvm/llvm-project/commit/d1a96e906cc03a95cfd41a1f22bdda92651250c7
             #[allow(missing_debug_implementations)]
-            #[repr(align(16))]
+            #[repr(align(8))]
             pub struct max_align_t {
-                priv_: [f64; 4]
+                priv_: [f64; 3]
             }
 
         }

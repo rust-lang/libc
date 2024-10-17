@@ -16,7 +16,11 @@ pub type loff_t = i64;
 pub type pthread_key_t = ::c_uint;
 
 pub type clock_t = c_long;
-pub type time_t = c_long;
+
+// 64-bit time_t since v3.1.16 (2022/07/15)
+// https://github.com/emscripten-core/emscripten/pull/17401
+pub type time_t = i64;
+
 pub type suseconds_t = c_long;
 pub type ino_t = u64;
 pub type off_t = i64;
@@ -103,7 +107,9 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
-    pub struct dqblk {
+    // No quota.h
+    // https://github.com/emscripten-core/emscripten/pull/17704
+    /*pub struct dqblk {
         pub dqb_bhardlimit: u64,
         pub dqb_bsoftlimit: u64,
         pub dqb_curspace: u64,
@@ -113,7 +119,7 @@ s! {
         pub dqb_btime: u64,
         pub dqb_itime: u64,
         pub dqb_valid: u32,
-    }
+    }*/
 
     pub struct signalfd_siginfo {
         pub ssi_signo: u32,
@@ -171,7 +177,9 @@ s! {
         pub sem_flg: ::c_short,
     }
 
-    pub struct aiocb {
+    // No aio.h
+    // https://github.com/emscripten-core/emscripten/pull/18058
+    /*pub struct aiocb {
         pub aio_fildes: ::c_int,
         pub aio_lio_opcode: ::c_int,
         pub aio_reqprio: ::c_int,
@@ -186,7 +194,7 @@ s! {
         __next: *mut ::c_void,
         __prev: *mut ::c_void,
         __dummy4: [::c_char; 24],
-    }
+    }*/
 
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
@@ -255,17 +263,11 @@ s! {
     }
     pub struct stat {
         pub st_dev: ::dev_t,
-        #[cfg(not(emscripten_new_stat_abi))]
-        __st_dev_padding: ::c_int,
-        #[cfg(not(emscripten_new_stat_abi))]
-        __st_ino_truncated: ::c_long,
         pub st_mode: ::mode_t,
         pub st_nlink: ::nlink_t,
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
         pub st_rdev: ::dev_t,
-        #[cfg(not(emscripten_new_stat_abi))]
-        __st_rdev_padding: ::c_int,
         pub st_size: ::off_t,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
@@ -288,11 +290,8 @@ s! {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
         pub shm_atime: ::time_t,
-        __unused1: ::c_int,
         pub shm_dtime: ::time_t,
-        __unused2: ::c_int,
         pub shm_ctime: ::time_t,
-        __unused3: ::c_int,
         pub shm_cpid: ::pid_t,
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::c_ulong,
@@ -303,11 +302,8 @@ s! {
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         pub msg_stime: ::time_t,
-        __unused1: ::c_int,
         pub msg_rtime: ::time_t,
-        __unused2: ::c_int,
         pub msg_ctime: ::time_t,
-        __unused3: ::c_int,
         __msg_cbytes: ::c_ulong,
         pub msg_qnum: ::msgqnum_t,
         pub msg_qbytes: ::msglen_t,
@@ -777,9 +773,9 @@ pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 
 pub const AT_EACCESS: ::c_int = 0x200;
 
-pub const S_IEXEC: mode_t = 0o0100;
-pub const S_IWRITE: mode_t = 0o0200;
-pub const S_IREAD: mode_t = 0o0400;
+pub const S_IEXEC: mode_t = 64;
+pub const S_IWRITE: mode_t = 128;
+pub const S_IREAD: mode_t = 256;
 
 pub const F_LOCK: ::c_int = 1;
 pub const F_TEST: ::c_int = 3;
@@ -867,22 +863,28 @@ pub const SHM_UNLOCK: ::c_int = 12;
 pub const SHM_HUGETLB: ::c_int = 0o4000;
 pub const SHM_NORESERVE: ::c_int = 0o10000;
 
-pub const QFMT_VFS_OLD: ::c_int = 1;
-pub const QFMT_VFS_V0: ::c_int = 2;
+// No quota.h
+// https://github.com/emscripten-core/emscripten/pull/17704
+/*pub const QFMT_VFS_OLD: ::c_int = 1;
+pub const QFMT_VFS_V0: ::c_int = 2;*/
 
-pub const EFD_SEMAPHORE: ::c_int = 0x1;
+// No epoll support
+// https://github.com/emscripten-core/emscripten/issues/5033
+// pub const EFD_SEMAPHORE: ::c_int = 0x1;
 
 pub const LOG_NFACILITIES: ::c_int = 24;
 
 pub const SEM_FAILED: *mut ::sem_t = 0 as *mut sem_t;
 
-pub const RB_AUTOBOOT: ::c_int = 0x01234567u32 as i32;
+// No reboot.h
+// https://github.com/emscripten-core/emscripten/pull/17704
+/*pub const RB_AUTOBOOT: ::c_int = 0x01234567u32 as i32;
 pub const RB_HALT_SYSTEM: ::c_int = 0xcdef0123u32 as i32;
 pub const RB_ENABLE_CAD: ::c_int = 0x89abcdefu32 as i32;
 pub const RB_DISABLE_CAD: ::c_int = 0x00000000u32 as i32;
 pub const RB_POWER_OFF: ::c_int = 0x4321fedcu32 as i32;
 pub const RB_SW_SUSPEND: ::c_int = 0xd000fce2u32 as i32;
-pub const RB_KEXEC: ::c_int = 0x45584543u32 as i32;
+pub const RB_KEXEC: ::c_int = 0x45584543u32 as i32;*/
 
 pub const AI_PASSIVE: ::c_int = 0x0001;
 pub const AI_CANONNAME: ::c_int = 0x0002;
@@ -915,19 +917,23 @@ pub const SYNC_FILE_RANGE_WAIT_AFTER: ::c_uint = 4;
 
 pub const EAI_SYSTEM: ::c_int = -11;
 
-pub const AIO_CANCELED: ::c_int = 0;
+// No aio.h
+// https://github.com/emscripten-core/emscripten/pull/18058
+/*pub const AIO_CANCELED: ::c_int = 0;
 pub const AIO_NOTCANCELED: ::c_int = 1;
 pub const AIO_ALLDONE: ::c_int = 2;
 pub const LIO_READ: ::c_int = 0;
 pub const LIO_WRITE: ::c_int = 1;
 pub const LIO_NOP: ::c_int = 2;
 pub const LIO_WAIT: ::c_int = 0;
-pub const LIO_NOWAIT: ::c_int = 1;
+pub const LIO_NOWAIT: ::c_int = 1;*/
 
 pub const MREMAP_MAYMOVE: ::c_int = 1;
 pub const MREMAP_FIXED: ::c_int = 2;
 
-pub const PR_SET_PDEATHSIG: ::c_int = 1;
+// No prctrl.h
+// https://github.com/emscripten-core/emscripten/pull/17704
+/*pub const PR_SET_PDEATHSIG: ::c_int = 1;
 pub const PR_GET_PDEATHSIG: ::c_int = 2;
 
 pub const PR_GET_DUMPABLE: ::c_int = 3;
@@ -1046,7 +1052,7 @@ pub const PR_CAP_AMBIENT: ::c_int = 47;
 pub const PR_CAP_AMBIENT_IS_SET: ::c_int = 1;
 pub const PR_CAP_AMBIENT_RAISE: ::c_int = 2;
 pub const PR_CAP_AMBIENT_LOWER: ::c_int = 3;
-pub const PR_CAP_AMBIENT_CLEAR_ALL: ::c_int = 4;
+pub const PR_CAP_AMBIENT_CLEAR_ALL: ::c_int = 4;*/
 
 pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
@@ -1057,10 +1063,9 @@ pub const _POSIX_VDISABLE: ::cc_t = 0;
 pub const FALLOC_FL_KEEP_SIZE: ::c_int = 0x01;
 pub const FALLOC_FL_PUNCH_HOLE: ::c_int = 0x02;
 
-// On Linux, libc doesn't define this constant, libattr does instead.
-// We still define it for Linux as it's defined by libc on other platforms,
-// and it's mentioned in the man pages for getxattr and setxattr.
-pub const SFD_CLOEXEC: ::c_int = 0x080000;
+// No epoll support
+// https://github.com/emscripten-core/emscripten/issues/5033
+//pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
 
@@ -1210,9 +1215,11 @@ pub const SA_RESETHAND: ::c_int = 0x80000000;
 pub const SA_RESTART: ::c_int = 0x10000000;
 pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
 
-pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
+// No epoll support
+// https://github.com/emscripten-core/emscripten/issues/5033
+/*pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 
-pub const EFD_CLOEXEC: ::c_int = 0x80000;
+pub const EFD_CLOEXEC: ::c_int = 0x80000;*/
 
 pub const BUFSIZ: ::c_uint = 1024;
 pub const TMP_MAX: ::c_uint = 10000;
@@ -1227,11 +1234,11 @@ pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
-pub const POSIX_MADV_DONTNEED: ::c_int = 0;
+pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const RLIM_INFINITY: ::rlim_t = !0;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
-pub const RLIMIT_NLIMITS: ::c_int = 15;
+pub const RLIMIT_NLIMITS: ::c_int = 16;
 #[allow(deprecated)]
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
@@ -1246,11 +1253,15 @@ pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
-pub const CPU_SETSIZE: ::c_int = 128;
+pub const CPU_SETSIZE: ::c_int = 1024;
 
-pub const QFMT_VFS_V1: ::c_int = 4;
+// No quota.h
+// https://github.com/emscripten-core/emscripten/pull/17704
+//pub const QFMT_VFS_V1: ::c_int = 4;
 
-pub const PTRACE_TRACEME: ::c_int = 0;
+// No ptrace.h
+// https://github.com/emscripten-core/emscripten/pull/17704
+/*pub const PTRACE_TRACEME: ::c_int = 0;
 pub const PTRACE_PEEKTEXT: ::c_int = 1;
 pub const PTRACE_PEEKDATA: ::c_int = 2;
 pub const PTRACE_PEEKUSER: ::c_int = 3;
@@ -1279,11 +1290,13 @@ pub const PTRACE_SETFPREGS: ::c_uint = 15;
 pub const PTRACE_GETFPXREGS: ::c_uint = 18;
 pub const PTRACE_SETFPXREGS: ::c_uint = 19;
 pub const PTRACE_GETREGS: ::c_uint = 12;
-pub const PTRACE_SETREGS: ::c_uint = 13;
+pub const PTRACE_SETREGS: ::c_uint = 13;*/
 
-pub const EFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
+// No epoll support
+// https://github.com/emscripten-core/emscripten/issues/5033
+/*pub const EFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
 
-pub const SFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
+pub const SFD_NONBLOCK: ::c_int = ::O_NONBLOCK;*/
 
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
@@ -1385,14 +1398,14 @@ pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
 
 pub const SO_BINDTODEVICE: ::c_int = 25;
-pub const SO_TIMESTAMP: ::c_int = 29;
+pub const SO_TIMESTAMP: ::c_int = 63;
 pub const SO_MARK: ::c_int = 36;
 pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 28;
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
 
 pub const O_DIRECT: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
@@ -1443,7 +1456,7 @@ pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
-pub const IPPROTO_MAX: ::c_int = 256;
+pub const IPPROTO_MAX: ::c_int = 263;
 
 pub const SOL_SOCKET: ::c_int = 1;
 
@@ -1460,8 +1473,8 @@ pub const SO_LINGER: ::c_int = 13;
 pub const SO_REUSEPORT: ::c_int = 15;
 pub const SO_RCVLOWAT: ::c_int = 18;
 pub const SO_SNDLOWAT: ::c_int = 19;
-pub const SO_RCVTIMEO: ::c_int = 20;
-pub const SO_SNDTIMEO: ::c_int = 21;
+pub const SO_RCVTIMEO: ::c_int = 66;
+pub const SO_SNDTIMEO: ::c_int = 67;
 pub const SO_ACCEPTCONN: ::c_int = 30;
 
 pub const IPV6_RTHDR_LOOSE: ::c_int = 0;
@@ -1563,7 +1576,7 @@ pub const TIOCM_RNG: ::c_int = 0x080;
 pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
-pub const O_TMPFILE: ::c_int = 0x400000;
+pub const O_TMPFILE: ::c_int = 0x410000;
 
 pub const MAX_ADDR_LEN: usize = 7;
 pub const ARPD_UPDATE: ::c_ushort = 0x01;
