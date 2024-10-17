@@ -825,8 +825,6 @@ fn test_solarish(target: &str) {
         "stdlib.h",
         "string.h",
         "sys/auxv.h",
-        "sys/epoll.h",
-        "sys/eventfd.h",
         "sys/file.h",
         "sys/filio.h",
         "sys/ioctl.h",
@@ -864,6 +862,19 @@ fn test_solarish(target: &str) {
         "utime.h",
         "utmpx.h",
         "wchar.h",
+    }
+
+    if is_illumos {
+        headers! { cfg:
+            "sys/epoll.h",
+            "sys/eventfd.h",
+        }
+    }
+
+    if is_solaris {
+        headers! { cfg:
+            "sys/lgrp_user_impl.h",
+        }
     }
 
     cfg.skip_type(move |ty| match ty {
@@ -915,7 +926,7 @@ fn test_solarish(target: &str) {
         // EPOLLEXCLUSIVE is a relatively recent addition to the epoll interface and may not be
         // defined on older systems.  It is, however, safe to use on systems which do not
         // explicitly support it. (A no-op is an acceptable implementation of EPOLLEXCLUSIVE.)
-        "EPOLLEXCLUSIVE" => true,
+        "EPOLLEXCLUSIVE" if is_illumos => true,
 
         _ => false,
     });
@@ -1007,7 +1018,7 @@ fn test_solarish(target: &str) {
             // These functions may return int or void depending on the exact
             // configuration of the compilation environment, but the return
             // value is not useful (always 0) so we can ignore it:
-            "setservent" | "endservent" if is_illumos => true,
+            "setservent" | "endservent" => true,
 
             // Following illumos#3729, getifaddrs was changed to a
             // redefine_extname symbol in order to preserve compatibility.
