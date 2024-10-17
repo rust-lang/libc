@@ -62,6 +62,11 @@ s! {
         pub ipv6mr_multiaddr: in6_addr,
         pub ipv6mr_interface: ::c_uint,
     }
+
+    pub struct linger {
+        pub l_onoff: ::c_int,
+        pub l_linger: ::c_int,
+    }
 }
 
 pub const SHUT_RD: ::c_int = 1 << 0;
@@ -72,22 +77,32 @@ pub const MSG_NOSIGNAL: ::c_int = 0x4000;
 pub const MSG_PEEK: ::c_int = 0x0002;
 
 pub const SO_REUSEADDR: ::c_int = 2;
+pub const SO_TYPE: ::c_int = 3;
 pub const SO_ERROR: ::c_int = 4;
 pub const SO_BROADCAST: ::c_int = 6;
+pub const SO_SNDBUF: ::c_int = 7;
+pub const SO_RCVBUF: ::c_int = 8;
+pub const SO_KEEPALIVE: ::c_int = 9;
 pub const SO_LINGER: ::c_int = 13;
+pub const SO_ACCEPTCONN: ::c_int = 30;
+pub const SO_PROTOCOL: ::c_int = 38;
+pub const SO_DOMAIN: ::c_int = 39;
 pub const SO_RCVTIMEO: ::c_int = 66;
 pub const SO_SNDTIMEO: ::c_int = 67;
 
 pub const SOCK_DGRAM: ::c_int = 5;
 pub const SOCK_STREAM: ::c_int = 6;
+pub const SOCK_NONBLOCK: ::c_int = 0x00004000;
 
 pub const SOL_SOCKET: ::c_int = 0x7fffffff;
 
+pub const AF_UNSPEC: ::c_int = 0;
 pub const AF_INET: ::c_int = 1;
 pub const AF_INET6: ::c_int = 2;
 
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_TCP: ::c_int = 6;
+pub const IPPROTO_UDP: ::c_int = 17;
 pub const IPPROTO_IPV6: ::c_int = 41;
 
 pub const IP_TTL: ::c_int = 2;
@@ -96,6 +111,7 @@ pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
 
+pub const IPV6_UNICAST_HOPS: ::c_int = 16;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 19;
 pub const IPV6_JOIN_GROUP: ::c_int = 20;
 pub const IPV6_LEAVE_GROUP: ::c_int = 21;
@@ -105,6 +121,9 @@ pub const IPV6_ADD_MEMBERSHIP: ::c_int = IPV6_JOIN_GROUP;
 pub const IPV6_DROP_MEMBERSHIP: ::c_int = IPV6_LEAVE_GROUP;
 
 pub const TCP_NODELAY: ::c_int = 1;
+pub const TCP_KEEPIDLE: ::c_int = 4;
+pub const TCP_KEEPINTVL: ::c_int = 5;
+pub const TCP_KEEPCNT: ::c_int = 6;
 
 pub const EAI_SYSTEM: ::c_int = -11;
 
@@ -114,6 +133,12 @@ extern "C" {
     pub fn bind(socket: ::c_int, addr: *const sockaddr, addrlen: socklen_t) -> ::c_int;
     pub fn listen(socket: ::c_int, backlog: ::c_int) -> ::c_int;
     pub fn accept(socket: ::c_int, addr: *mut sockaddr, addrlen: *mut socklen_t) -> ::c_int;
+    pub fn accept4(
+        socket: ::c_int,
+        addr: *mut sockaddr,
+        addrlen: *mut socklen_t,
+        flags: ::c_int,
+    ) -> ::c_int;
 
     pub fn getsockname(socket: ::c_int, addr: *mut sockaddr, addrlen: *mut socklen_t) -> ::c_int;
     pub fn getpeername(socket: ::c_int, addr: *mut sockaddr, addrlen: *mut socklen_t) -> ::c_int;
