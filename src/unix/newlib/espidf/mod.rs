@@ -99,6 +99,8 @@ pub const SIGHUP: ::c_int = 1;
 pub const SIGQUIT: ::c_int = 3;
 pub const NSIG: ::size_t = 32;
 
+pub const _SC_HOST_NAME_MAX: ::c_int = 65;
+
 extern "C" {
     pub fn pthread_create(
         native: *mut ::pthread_t,
@@ -108,6 +110,8 @@ extern "C" {
     ) -> ::c_int;
 
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+
+    pub fn gethostname(name: *mut ::c_char, namelen: ::ssize_t);
 
     #[link_name = "lwip_sendmsg"]
     pub fn sendmsg(s: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
