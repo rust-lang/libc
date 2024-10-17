@@ -1886,6 +1886,14 @@ cfg_if! {
     }
 }
 
+// The statx syscall, available on some libcs.
+cfg_if! {
+    if #[cfg(any(target_env = "gnu", target_os = "android"))] {
+        mod linux_statx;
+        pub use self::linux_statx::*;
+    }
+}
+
 cfg_if! {
     if #[cfg(target_os = "emscripten")] {
         mod emscripten;
