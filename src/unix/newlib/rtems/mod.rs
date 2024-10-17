@@ -139,5 +139,7 @@ extern "C" {
 
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 
+    pub fn arc4random_buf(buf: *mut core::ffi::c_void, nbytes: ::size_t);
+
     pub fn setgroups(ngroups: ::c_int, grouplist: *const ::gid_t) -> ::c_int;
 }
