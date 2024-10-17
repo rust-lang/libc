@@ -3,7 +3,8 @@ FROM ubuntu:23.10
 RUN dpkg --add-architecture i386
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
-  gcc-multilib make libc6-dev git curl ca-certificates libc6-i386
+  gcc-multilib make libc6-dev git curl ca-certificates libc6-i386 \
+  xz-utils patch rsync
 
 COPY install-musl.sh /
 RUN sh /install-musl.sh i686
