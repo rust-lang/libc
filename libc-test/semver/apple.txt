@@ -1890,6 +1890,9 @@ getxattr
 glob
 glob_t
 globfree
+host_cpu_load_info
+host_cpu_load_info_data_t
+host_cpu_load_info_t
 icmp6_ifstat
 iconv_t
 id_t
