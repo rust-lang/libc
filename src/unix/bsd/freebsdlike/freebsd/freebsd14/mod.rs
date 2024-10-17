@@ -41,7 +41,10 @@ s! {
     }
 
     pub struct __c_anonymous_domainset {
-        _priv: [::uintptr_t; 4],
+        #[cfg(target_pointer_width = "64")]
+        _priv: [::c_ulong; 4],
+        #[cfg(target_pointer_width = "32")]
+        _priv: [::c_ulong; 8],
     }
 
     pub struct kinfo_proc {

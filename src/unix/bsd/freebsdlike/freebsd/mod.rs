@@ -1,5 +1,4 @@
 pub type fflags_t = u32;
-pub type clock_t = i32;
 
 pub type vm_prot_t = u_char;
 pub type kvaddr_t = u64;
@@ -1630,7 +1629,7 @@ s_no_extra_traits! {
         pub kf_flags: ::c_int,
         _kf_pad0: ::c_int,
         pub kf_offset: i64,
-        _priv: [::uintptr_t; 38], // FIXME if needed
+        _priv: [u8; 304],   // FIXME: this is really a giant union
         pub kf_status: u16,
         _kf_pad1: u16,
         _kf_ispare0: ::c_int,
@@ -3146,9 +3145,22 @@ pub const H4DISC: ::c_int = 0x7;
 
 pub const VM_TOTAL: ::c_int = 1;
 
-pub const BIOCSETFNR: ::c_ulong = 0x80104282;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const BIOCSETFNR: ::c_ulong = 0x80104282;
+    } else {
+        pub const BIOCSETFNR: ::c_ulong = 0x80084282;
+    }
+}
 
-pub const FIODGNAME: ::c_ulong = 0x80106678;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const FIODGNAME: ::c_ulong = 0x80106678;
+    } else {
+        pub const FIODGNAME: ::c_ulong = 0x80086678;
+    }
+}
+
 pub const FIONWRITE: ::c_ulong = 0x40046677;
 pub const FIONSPACE: ::c_ulong = 0x40046676;
 pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;
