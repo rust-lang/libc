@@ -4503,11 +4503,11 @@ fn test_linux(target: &str) {
             true
         }
 
-        // The `inotify_event` and `cmsghdr` types contain Flexible Array Member fields (the
-        // `name` and `data` fields respectively) which have unspecified calling convention.
-        // The roundtripping tests deliberately pass the structs by value to check "by value"
-        // layout consistency, but this would be UB for the these types.
+        // The following types contain Flexible Array Member fields which have unspecified calling
+        // convention. The roundtripping tests deliberately pass the structs by value to check "by
+        // value" layout consistency, but this would be UB for the these types.
         "inotify_event" => true,
+        "fanotify_event_info_fid" => true,
         "cmsghdr" => true,
 
         // FIXME: the call ABI of max_align_t is incorrect on these platforms:
