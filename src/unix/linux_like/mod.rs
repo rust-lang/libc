@@ -160,8 +160,8 @@ s! {
         pub ifa_flags: ::c_uint,
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
-        pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
-        pub ifa_data: *mut ::c_void
+        pub ifa_ifu: __c_anonymous_ifa_ifu,
+        pub ifa_data: *mut ::c_void,
     }
 
     pub struct in6_rtmsg {
@@ -217,6 +217,13 @@ s_no_extra_traits! {
         repr(packed))]
     pub struct epoll_event {
         pub events: u32,
+        pub data: epoll_data,
+    }
+
+    pub union epoll_data {
+        pub ptr: *mut ::c_void,
+        pub fd: ::c_int,
+        pub u32: u32,
         pub u64: u64,
     }
 
@@ -255,6 +262,11 @@ s_no_extra_traits! {
         #[cfg(target_pointer_width = "32")]
         __unused1: [::c_int; 12]
     }
+
+    pub union __c_anonymous_ifa_ifu {
+        ifu_broadaddr: *mut sockaddr,
+        ifu_dstaddr: *mut sockaddr,
+    }
 }
 
 cfg_if! {
@@ -262,25 +274,46 @@ cfg_if! {
         impl PartialEq for epoll_event {
             fn eq(&self, other: &epoll_event) -> bool {
                 self.events == other.events
-                    && self.u64 == other.u64
+                    && unsafe { self.data.u64 == other.data.u64 }
             }
         }
         impl Eq for epoll_event {}
         impl ::fmt::Debug for epoll_event {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 let events = self.events;
-                let u64 = self.u64;
+                let data = self.data;
                 f.debug_struct("epoll_event")
                     .field("events", &events)
-                    .field("u64", &u64)
+                    .field("data", &data)
                     .finish()
             }
         }
         impl ::hash::Hash for epoll_event {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 let events = self.events;
-                let u64 = self.u64;
+                let data = self.data;
                 events.hash(state);
+                data.hash(state);
+            }
+        }
+
+        impl PartialEq for epoll_data {
+            fn eq(&self, other: &epoll_data) -> bool {
+                unsafe { self.u64 == other.u64 }
+            }
+        }
+        impl Eq for epoll_data {}
+        impl ::fmt::Debug for epoll_data {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                let u64 = unsafe { self.u64 };
+                f.debug_struct("epoll_data")
+                    .field("data", &u64)
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for epoll_data {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                let u64 = unsafe { self.u64 };
                 u64.hash(state);
             }
         }
@@ -428,6 +461,25 @@ cfg_if! {
                 self.sigev_signo.hash(state);
                 self.sigev_notify.hash(state);
                 self.sigev_notify_thread_id.hash(state);
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifa_ifu {
+            fn eq(&self, other: &__c_anonymous_ifa_ifu) -> bool {
+                unsafe { self.ifu_dstaddr == other.ifu_dstaddr }
+            }
+        }
+        impl Eq for __c_anonymous_ifa_ifu {}
+        impl ::fmt::Debug for __c_anonymous_ifa_ifu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifa_ifu")
+                    .field("ifu_dstaddr", unsafe { &self.ifu_dstaddr } )
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for __c_anonymous_ifa_ifu {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.ifu_dstaddr.hash(state) };
             }
         }
     }

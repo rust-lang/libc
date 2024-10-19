@@ -169,11 +169,6 @@ s! {
         pub l_linger: ::c_int,
     }
 
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut ::c_void
-    }
-
     // <sys/time.h>
     pub struct itimerval {
         pub it_interval: ::timeval,
@@ -199,6 +194,36 @@ s! {
         pub p_name: *mut ::c_char,
         pub p_aliases: *mut *mut ::c_char,
         pub p_proto: ::c_int,
+    }
+}
+
+s_no_extra_traits! {
+    pub union sigval {
+        pub sival_int: ::c_int,
+        pub sival_ptr: *mut ::c_void,
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for sigval {
+            fn eq(&self, other: &sigval) -> bool {
+                unsafe { self.sival_ptr as usize == other.sival_ptr as usize }
+            }
+        }
+        impl Eq for sigval {}
+        impl ::fmt::Debug for sigval {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("sigval")
+                    .field("sival_ptr", unsafe { &(self.sival_ptr as usize) })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for sigval {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { (self.sival_ptr as usize).hash(state) };
+            }
+        }
     }
 }
 
