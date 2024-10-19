@@ -2093,6 +2093,8 @@ extern "C" {
         length: ::size_t,
         locale: ::locale_t,
     ) -> ::c_int;
+
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }
 
 #[link(name = "bsd")]
