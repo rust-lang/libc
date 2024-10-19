@@ -2137,6 +2137,8 @@ extern "C" {
     pub fn arc4random() -> u32;
     pub fn arc4random_uniform(upper_bound: u32) -> u32;
     pub fn arc4random_buf(buf: *mut ::c_void, n: ::size_t);
+
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }
 
 #[link(name = "gnu")]
