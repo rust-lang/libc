@@ -137,5 +137,7 @@ extern "C" {
         clock_id: ::clockid_t,
     ) -> ::c_int;
 
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
+
     pub fn setgroups(ngroups: ::c_int, grouplist: *const ::gid_t) -> ::c_int;
 }

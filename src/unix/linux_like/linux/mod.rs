@@ -1772,6 +1772,16 @@ cfg_if! {
 }
 
 cfg_if! {
+    if #[cfg(all(any(target_env = "gnu", target_env = "musl", target_env = "ohos"),
+                 any(target_arch = "x86_64", target_arch = "x86")))] {
+        extern "C" {
+            pub fn iopl(level: ::c_int) -> ::c_int;
+            pub fn ioperm(from: ::c_ulong, num: ::c_ulong, turn_on: ::c_int) -> ::c_int;
+        }
+    }
+}
+
+cfg_if! {
     if #[cfg(any(target_env = "gnu", target_env = "musl", target_env = "ohos"))] {
         pub const ABDAY_1: ::nl_item = 0x20000;
         pub const ABDAY_2: ::nl_item = 0x20001;

@@ -9,7 +9,7 @@ task:
         image: freebsd-14-1-release-amd64-ufs
     - name: nightly freebsd-15
       freebsd_instance:
-        image_family: freebsd-15-0-snap
+       image_family: freebsd-15-0-snap
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
