@@ -7,7 +7,7 @@ use std::str;
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &'static [&'static str] = &[
     "emscripten_new_stat_abi",
-    "espidf_time64",
+    "espidf_time32",
     "freebsd10",
     "freebsd11",
     "freebsd12",
