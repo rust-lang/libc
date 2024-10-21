@@ -11,7 +11,7 @@ pub type __gregset_t = [::__greg_t; 17];
 s_no_extra_traits! {
     pub struct mcontext_t {
         pub __gregs: ::__gregset_t,
-        pub mc_vfp_size: ::__size_t,
+        pub mc_vfp_size: usize,
         pub mc_vfp_ptr: *mut ::c_void,
         pub mc_spare: [::c_uint; 33],
     }
