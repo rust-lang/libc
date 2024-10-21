@@ -43,6 +43,9 @@ pub type c_int16_t = i16;
 pub type c_int32_t = i32;
 pub type c_int64_t = i64;
 
+pub type c_float = f32;
+pub type c_double = f64;
+
 pub type time_t = c_long;
 
 pub type clockid_t = c_int;
