@@ -52,7 +52,7 @@ cfg_if! {
 pub type useconds_t = u32;
 
 cfg_if! {
-    if #[cfg(any(target_os = "horizon", all(target_os = "espidf", espidf_time64)))] {
+    if #[cfg(any(target_os = "horizon", all(target_os = "espidf", not(espidf_time32))))] {
         pub type time_t = ::c_longlong;
     } else {
         pub type time_t = i32;
