@@ -99,8 +99,6 @@ pub const SIGHUP: ::c_int = 1;
 pub const SIGQUIT: ::c_int = 3;
 pub const NSIG: ::size_t = 32;
 
-pub const _SC_HOST_NAME_MAX: ::c_int = 65;
-
 extern "C" {
     pub fn pthread_create(
         native: *mut ::pthread_t,
