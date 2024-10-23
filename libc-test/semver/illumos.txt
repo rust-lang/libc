@@ -1,3 +1,14 @@
+O_RSYNC
+POLLRDHUP
+POSIX_FADV_DONTNEED
+POSIX_FADV_NOREUSE
+POSIX_FADV_NORMAL
+POSIX_FADV_RANDOM
+POSIX_FADV_SEQUENTIAL
+POSIX_FADV_WILLNEED
+posix_fadvise
+posix_fallocate
 pthread_attr_get_np
 pthread_attr_getstackaddr
 pthread_attr_setstack
+ptsname_r

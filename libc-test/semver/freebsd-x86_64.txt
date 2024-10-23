@@ -13,8 +13,6 @@ _MC_HASSEGS
 fpreg
 fpreg32
 max_align_t
-mcontext_t
 reg
 reg32
-ucontext_t
 xmmreg

@@ -191,6 +191,7 @@ fn test_apple(target: &str) {
         "errno.h",
         "execinfo.h",
         "fcntl.h",
+        "fnmatch.h",
         "getopt.h",
         "glob.h",
         "grp.h",
@@ -454,6 +455,7 @@ fn test_openbsd(target: &str) {
         "errno.h",
         "execinfo.h",
         "fcntl.h",
+        "fnmatch.h",
         "getopt.h",
         "libgen.h",
         "limits.h",
@@ -731,6 +733,7 @@ fn test_redox(target: &str) {
         "dlfcn.h",
         "errno.h",
         "fcntl.h",
+        "fnmatch.h",
         "grp.h",
         "limits.h",
         "locale.h",
@@ -790,6 +793,7 @@ fn test_solarish(target: &str) {
         "errno.h",
         "execinfo.h",
         "fcntl.h",
+        "fnmatch.h",
         "getopt.h",
         "glob.h",
         "grp.h",
@@ -1030,6 +1034,7 @@ fn test_netbsd(target: &str) {
         "elf.h",
         "errno.h",
         "fcntl.h",
+        "fnmatch.h",
         "getopt.h",
         "libgen.h",
         "limits.h",
@@ -1244,6 +1249,7 @@ fn test_dragonflybsd(target: &str) {
         "errno.h",
         "execinfo.h",
         "fcntl.h",
+        "fnmatch.h",
         "getopt.h",
         "glob.h",
         "grp.h",
@@ -1464,6 +1470,7 @@ fn test_wasi(target: &str) {
         "dirent.h",
         "errno.h",
         "fcntl.h",
+        "fnmatch.h",
         "langinfo.h",
         "limits.h",
         "locale.h",
@@ -1579,6 +1586,7 @@ fn test_android(target: &str) {
                "elf.h",
                "errno.h",
                "fcntl.h",
+               "fnmatch.h",
                "getopt.h",
                "grp.h",
                "ifaddrs.h",
@@ -2087,6 +2095,7 @@ fn test_freebsd(target: &str) {
                 "errno.h",
                 "execinfo.h",
                 "fcntl.h",
+                "fnmatch.h",
                 "getopt.h",
                 "glob.h",
                 "grp.h",
@@ -2306,6 +2315,10 @@ fn test_freebsd(target: &str) {
             | "PWAIT" | "PLOCK" | "PPAUSE" | "PRI_MIN_TIMESHARE" | "PUSER" | "PI_AV" | "PI_NET"
             | "PI_DISK" | "PI_TTY" | "PI_DULL" | "PI_SOFT" => true,
 
+            // This constant changed in FreeBSD 15 (git 3458bbd397783).  It was never intended to
+            // be stable, and probably shouldn't be bound by libc at all.
+            "RLIM_NLIMITS" => true,
+
             // This symbol changed in FreeBSD 14 (git 051e7d78b03), but the new
             // version should be safe to use on older releases.
             "IFCAP_CANTCHANGE" => true,
@@ -2436,7 +2449,6 @@ fn test_freebsd(target: &str) {
 
             // Flags introduced in FreeBSD 14.
             "TCP_MAXUNACKTIME"
-            | "TCP_MAXPEAKRATE"
             | "TCP_IDLE_REDUCE"
             | "TCP_REMOTE_UDP_ENCAPS_PORT"
             | "TCP_DELACK"
@@ -2706,6 +2718,7 @@ fn test_emscripten(target: &str) {
                "dlfcn.h",
                "errno.h",
                "fcntl.h",
+               "fnmatch.h",
                "glob.h",
                "grp.h",
                "ifaddrs.h",
@@ -2974,6 +2987,7 @@ fn test_neutrino(target: &str) {
         "dlfcn.h",
         "sys/elf.h",
         "fcntl.h",
+        "fnmatch.h",
         "glob.h",
         "grp.h",
         "iconv.h",
@@ -3368,6 +3382,7 @@ fn test_linux(target: &str) {
                "dlfcn.h",
                "elf.h",
                "fcntl.h",
+               "fnmatch.h",
                "getopt.h",
                "glob.h",
                [gnu]: "gnu/libc-version.h",
@@ -4799,6 +4814,7 @@ fn test_haiku(target: &str) {
                "libutil.h",
                "link.h",
                "pty.h",
+               "stdlib.h",
                "stringlist.h",
                "sys/link_elf.h",
     }
