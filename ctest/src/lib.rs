@@ -1075,6 +1075,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("s390x", "64", "big")
     } else if target.starts_with("sparc64") {
         ("sparc64", "64", "big")
+    } else if target.starts_with("sparcv9") {
+        ("sparc64", "64", "big")
     } else if target.starts_with("asmjs") {
         ("asmjs", "32", "little")
     } else if target.starts_with("wasm32") {
