@@ -1,12 +1,14 @@
 pub type c_char = i8;
 pub type c_long = i32;
 pub type c_ulong = u32;
+pub type clock_t = ::c_ulong;
 pub type wchar_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
 pub type register_t = i32;
 
 s_no_extra_traits! {
+    #[repr(align(16))]
     pub struct mcontext_t {
         pub mc_onstack: register_t,
         pub mc_gs: register_t,
@@ -32,7 +34,7 @@ s_no_extra_traits! {
         pub mc_fpformat: ::c_int,
         pub mc_ownedfp: ::c_int,
         pub mc_flags: register_t,
-        pub mc_fpstate: [[::c_int; 32]; 4],
+        pub mc_fpstate: [::c_int; 128],
         pub mc_fsbase: register_t,
         pub mc_gsbase: register_t,
         pub mc_xfpustate: register_t,
@@ -155,4 +157,7 @@ cfg_if! {
 
 pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
 
+pub const BIOCSRTIMEOUT: ::c_ulong = 0x8008426d;
+pub const BIOCGRTIMEOUT: ::c_ulong = 0x4008426e;
 pub const KINFO_FILE_SIZE: ::c_int = 1392;
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40087459;
