@@ -109,6 +109,8 @@ extern "C" {
 
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 
+    pub fn gethostname(name: *mut ::c_char, namelen: ::ssize_t);
+
     #[link_name = "lwip_sendmsg"]
     pub fn sendmsg(s: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
     #[link_name = "lwip_recvmsg"]
