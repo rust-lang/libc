@@ -4906,6 +4906,10 @@ pub const KCMP_FILES: ::c_int = 102;
 pub const KCMP_SIGHAND: ::c_int = 103;
 pub const KCMP_VM: ::c_int = 104;
 
+// sys/unistd.h
+
+pub const CLOSE_RANGE_CLOEXEC: ::c_uint = 1 << 2;
+
 pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
     a << 24
 }
