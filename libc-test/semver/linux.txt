@@ -3478,6 +3478,7 @@ __c_anonymous_sockaddr_can_j1939
 __c_anonymous_sockaddr_can_tp
 __errno_location
 __exit_status
+__itimer_which_t
 __s16
 __s32
 __u16
@@ -3595,6 +3596,7 @@ getgrnam_r
 getgrouplist
 gethostid
 getifaddrs
+getitimer
 getline
 getmntent
 getnameinfo
@@ -3896,6 +3898,7 @@ setfsuid
 setgrent
 setgroups
 sethostname
+setitimer
 setmntent
 setns
 setpriority
