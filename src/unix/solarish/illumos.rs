@@ -112,4 +112,6 @@ extern "C" {
     pub fn getpagesizes2(pagesize: *mut ::size_t, nelem: ::c_int) -> ::c_int;
 
     pub fn ptsname_r(fildes: ::c_int, name: *mut ::c_char, namelen: ::size_t) -> ::c_int;
+
+    pub fn syncfs(fd: ::c_int) -> ::c_int;
 }
