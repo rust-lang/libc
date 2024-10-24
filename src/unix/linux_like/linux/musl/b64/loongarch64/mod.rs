@@ -11,10 +11,6 @@ pub type __u64 = ::c_ulonglong;
 pub type __s64 = ::c_longlong;
 
 s! {
-    pub struct pthread_attr_t {
-        __size: [::c_ulong; 7],
-    }
-
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -57,36 +53,6 @@ s! {
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
         __unused: [::c_int; 2],
-    }
-
-    pub struct statfs {
-        pub f_type: ::c_long,
-        pub f_bsize: ::c_long,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_long,
-        pub f_frsize: ::c_long,
-        pub f_flags: ::c_long,
-        pub f_spare: [::c_long; 4],
-    }
-
-    pub struct statfs64 {
-        pub f_type: ::c_long,
-        pub f_bsize: ::c_long,
-        pub f_blocks: ::fsblkcnt64_t,
-        pub f_bfree: ::fsblkcnt64_t,
-        pub f_bavail: ::fsblkcnt64_t,
-        pub f_files: ::fsfilcnt64_t,
-        pub f_ffree: ::fsfilcnt64_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_long,
-        pub f_frsize: ::c_long,
-        pub f_flags: ::c_long,
-        pub f_spare: [::c_long; 4],
     }
 
     pub struct ipc_perm {
