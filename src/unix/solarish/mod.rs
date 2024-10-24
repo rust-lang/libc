@@ -45,8 +45,6 @@ pub type id_t = ::c_int;
 pub type idtype_t = ::c_uint;
 pub type shmatt_t = ::c_ulong;
 
-pub type lgrp_rsrc_t = ::c_int;
-pub type lgrp_affinity_t = ::c_int;
 pub type lgrp_id_t = ::id_t;
 pub type lgrp_mem_size_t = ::c_longlong;
 pub type lgrp_cookie_t = ::uintptr_t;
@@ -241,13 +239,21 @@ s! {
         pub gl_offs: ::size_t,
         __unused1: *mut ::c_void,
         __unused2: ::c_int,
+        #[cfg(target_os = "illumos")]
         __unused3: ::c_int,
+        #[cfg(target_os = "illumos")]
         __unused4: ::c_int,
+        #[cfg(target_os = "illumos")]
         __unused5: *mut ::c_void,
+        #[cfg(target_os = "illumos")]
         __unused6: *mut ::c_void,
+        #[cfg(target_os = "illumos")]
         __unused7: *mut ::c_void,
+        #[cfg(target_os = "illumos")]
         __unused8: *mut ::c_void,
+        #[cfg(target_os = "illumos")]
         __unused9: *mut ::c_void,
+        #[cfg(target_os = "illumos")]
         __unused10: *mut ::c_void,
     }
 
@@ -464,7 +470,7 @@ s! {
         pub mr_flags: ::c_uint,
     }
 
-    pub struct lgrp_affinity_args {
+    pub struct lgrp_affinity_args_t {
         pub idtype: ::idtype_t,
         pub id: ::id_t,
         pub lgrp: ::lgrp_id_t,
@@ -487,29 +493,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(any(
-        target_arch = "x86", target_arch = "x86_64"),
-        repr(packed(4))
-    )]
-    pub struct epoll_event {
-        pub events: u32,
-        pub u64: u64,
-    }
-
-    pub struct utmpx {
-        pub ut_user: [::c_char; _UTX_USERSIZE],
-        pub ut_id: [::c_char; _UTX_IDSIZE],
-        pub ut_line: [::c_char; _UTX_LINESIZE],
-        pub ut_pid: ::pid_t,
-        pub ut_type: ::c_short,
-        pub ut_exit: exit_status,
-        pub ut_tv: ::timeval,
-        pub ut_session: ::c_int,
-        pub ut_pad: [::c_int; _UTX_PADSIZE],
-        pub ut_syslen: ::c_short,
-        pub ut_host: [::c_char; _UTX_HOSTSIZE],
-    }
-
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [c_char; 108]
@@ -582,88 +565,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for utmpx {
-            fn eq(&self, other: &utmpx) -> bool {
-                self.ut_type == other.ut_type
-                    && self.ut_pid == other.ut_pid
-                    && self.ut_user == other.ut_user
-                    && self.ut_line == other.ut_line
-                    && self.ut_id == other.ut_id
-                    && self.ut_exit == other.ut_exit
-                    && self.ut_session == other.ut_session
-                    && self.ut_tv == other.ut_tv
-                    && self.ut_syslen == other.ut_syslen
-                    && self.ut_pad == other.ut_pad
-                    && self
-                    .ut_host
-                    .iter()
-                    .zip(other.ut_host.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for utmpx {}
-
-        impl ::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("utmpx")
-                    .field("ut_user", &self.ut_user)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_line", &self.ut_line)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_type", &self.ut_type)
-                    .field("ut_exit", &self.ut_exit)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_session", &self.ut_session)
-                    .field("ut_pad", &self.ut_pad)
-                    .field("ut_syslen", &self.ut_syslen)
-                    .field("ut_host", &&self.ut_host[..])
-                    .finish()
-            }
-        }
-
-        impl ::hash::Hash for utmpx {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.ut_user.hash(state);
-                self.ut_type.hash(state);
-                self.ut_pid.hash(state);
-                self.ut_line.hash(state);
-                self.ut_id.hash(state);
-                self.ut_host.hash(state);
-                self.ut_exit.hash(state);
-                self.ut_session.hash(state);
-                self.ut_tv.hash(state);
-                self.ut_syslen.hash(state);
-                self.ut_pad.hash(state);
-            }
-        }
-
-        impl PartialEq for epoll_event {
-            fn eq(&self, other: &epoll_event) -> bool {
-                self.events == other.events
-                    && self.u64 == other.u64
-            }
-        }
-        impl Eq for epoll_event {}
-        impl ::fmt::Debug for epoll_event {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let events = self.events;
-                let u64 = self.u64;
-                f.debug_struct("epoll_event")
-                    .field("events", &events)
-                    .field("u64", &u64)
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for epoll_event {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                let events = self.events;
-                let u64 = self.u64;
-                events.hash(state);
-                u64.hash(state);
-            }
-        }
-
         impl PartialEq for sockaddr_un {
             fn eq(&self, other: &sockaddr_un) -> bool {
                 self.sun_family == other.sun_family
@@ -1218,7 +1119,6 @@ pub const FIOGETOWN: ::c_int = 0x4004667b;
 pub const SIGCHLD: ::c_int = 18;
 pub const SIGCLD: ::c_int = ::SIGCHLD;
 pub const SIGBUS: ::c_int = 10;
-pub const SIGINFO: ::c_int = 41;
 pub const SIG_BLOCK: ::c_int = 1;
 pub const SIG_UNBLOCK: ::c_int = 2;
 pub const SIG_SETMASK: ::c_int = 3;
@@ -1305,7 +1205,6 @@ pub const O_CLOEXEC: ::c_int = 0x800000;
 pub const O_ACCMODE: ::c_int = 0x600003;
 pub const O_XATTR: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x1000000;
-pub const O_DIRECT: ::c_int = 0x2000000;
 pub const S_IFIFO: mode_t = 0o1_0000;
 pub const S_IFCHR: mode_t = 0o2_0000;
 pub const S_IFBLK: mode_t = 0o6_0000;
@@ -1422,8 +1321,6 @@ pub const P_PSETID: idtype_t = 15;
 
 pub const PBIND_NONE: ::processorid_t = -1;
 pub const PBIND_QUERY: ::processorid_t = -2;
-pub const PBIND_HARD: ::processorid_t = -3;
-pub const PBIND_SOFT: ::processorid_t = -4;
 
 pub const PS_NONE: ::c_int = -1;
 pub const PS_QUERY: ::c_int = -2;
@@ -1431,7 +1328,6 @@ pub const PS_MYID: ::c_int = -3;
 pub const PS_SOFT: ::c_int = -4;
 pub const PS_HARD: ::c_int = -5;
 pub const PS_QUERY_TYPE: ::c_int = -6;
-pub const PS_SYSTEM: ::c_int = 1;
 pub const PS_PRIVATE: ::c_int = 2;
 
 pub const UTIME_OMIT: c_long = -2;
@@ -1442,7 +1338,6 @@ pub const PROT_READ: ::c_int = 1;
 pub const PROT_WRITE: ::c_int = 2;
 pub const PROT_EXEC: ::c_int = 4;
 
-pub const MAP_FILE: ::c_int = 0;
 pub const MAP_SHARED: ::c_int = 0x0001;
 pub const MAP_PRIVATE: ::c_int = 0x0002;
 pub const MAP_FIXED: ::c_int = 0x0010;
@@ -1453,7 +1348,6 @@ pub const MAP_RENAME: ::c_int = 0x20;
 pub const MAP_ALIGN: ::c_int = 0x200;
 pub const MAP_TEXT: ::c_int = 0x400;
 pub const MAP_INITDATA: ::c_int = 0x800;
-pub const MAP_32BIT: ::c_int = 0x80;
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
 pub const MCL_CURRENT: ::c_int = 0x0001;
@@ -1729,7 +1623,6 @@ pub const AF_ROUTE: ::c_int = 24;
 pub const AF_LINK: ::c_int = 25;
 pub const AF_INET6: ::c_int = 26;
 pub const AF_KEY: ::c_int = 27;
-pub const AF_NCA: ::c_int = 28;
 pub const AF_POLICY: ::c_int = 29;
 pub const AF_INET_OFFLOAD: ::c_int = 30;
 pub const AF_TRILL: ::c_int = 31;
@@ -1765,7 +1658,6 @@ pub const PF_ROUTE: ::c_int = AF_ROUTE;
 pub const PF_LINK: ::c_int = AF_LINK;
 pub const PF_INET6: ::c_int = AF_INET6;
 pub const PF_KEY: ::c_int = AF_KEY;
-pub const PF_NCA: ::c_int = AF_NCA;
 pub const PF_POLICY: ::c_int = AF_POLICY;
 pub const PF_INET_OFFLOAD: ::c_int = AF_INET_OFFLOAD;
 pub const PF_TRILL: ::c_int = AF_TRILL;
@@ -1925,11 +1817,6 @@ pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
 pub const SHUT_RDWR: ::c_int = 2;
 
-pub const LOCK_SH: ::c_int = 1;
-pub const LOCK_EX: ::c_int = 2;
-pub const LOCK_NB: ::c_int = 4;
-pub const LOCK_UN: ::c_int = 8;
-
 pub const F_RDLCK: ::c_short = 1;
 pub const F_WRLCK: ::c_short = 2;
 pub const F_UNLCK: ::c_short = 3;
@@ -1967,7 +1854,6 @@ pub const _PC_ACCESS_FILTERING: ::c_int = 25;
 pub const _PC_TIMESTAMP_RESOLUTION: ::c_int = 26;
 pub const _PC_FILESIZEBITS: ::c_int = 67;
 pub const _PC_XATTR_ENABLED: ::c_int = 100;
-pub const _PC_LAST: ::c_int = 101;
 pub const _PC_XATTR_EXISTS: ::c_int = 101;
 
 pub const _SC_ARG_MAX: ::c_int = 1;
@@ -2183,11 +2069,7 @@ pub const PORT_SOURCE_MQ: ::c_int = 6;
 pub const PORT_SOURCE_FILE: ::c_int = 7;
 
 pub const NONROOT_USR: ::c_short = 2;
-pub const _UTX_USERSIZE: usize = 32;
-pub const _UTX_LINESIZE: usize = 32;
-pub const _UTX_PADSIZE: usize = 5;
-pub const _UTX_IDSIZE: usize = 4;
-pub const _UTX_HOSTSIZE: usize = 257;
+
 pub const EMPTY: ::c_short = 0;
 pub const RUN_LVL: ::c_short = 1;
 pub const BOOT_TIME: ::c_short = 2;
@@ -2284,26 +2166,6 @@ pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RNG: ::c_int = 0o0200;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
 pub const TIOCM_DSR: ::c_int = 0o0400;
-
-pub const EPOLLIN: ::c_int = 0x1;
-pub const EPOLLPRI: ::c_int = 0x2;
-pub const EPOLLOUT: ::c_int = 0x4;
-pub const EPOLLRDNORM: ::c_int = 0x40;
-pub const EPOLLRDBAND: ::c_int = 0x80;
-pub const EPOLLWRNORM: ::c_int = 0x100;
-pub const EPOLLWRBAND: ::c_int = 0x200;
-pub const EPOLLMSG: ::c_int = 0x400;
-pub const EPOLLERR: ::c_int = 0x8;
-pub const EPOLLHUP: ::c_int = 0x10;
-pub const EPOLLET: ::c_int = 0x80000000;
-pub const EPOLLRDHUP: ::c_int = 0x2000;
-pub const EPOLLONESHOT: ::c_int = 0x40000000;
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
-pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
-pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
-pub const EPOLL_CTL_ADD: ::c_int = 1;
-pub const EPOLL_CTL_MOD: ::c_int = 3;
-pub const EPOLL_CTL_DEL: ::c_int = 2;
 
 /* termios */
 pub const B0: speed_t = 0;
@@ -2406,8 +2268,6 @@ pub const VREPRINT: usize = 12;
 pub const VDISCARD: usize = 13;
 pub const VWERASE: usize = 14;
 pub const VLNEXT: usize = 15;
-pub const VSTATUS: usize = 16;
-pub const VERASE2: usize = 17;
 
 // <sys/stropts.h>
 const STR: ::c_int = (b'S' as ::c_int) << 8;
@@ -2523,12 +2383,6 @@ pub const NET_MAC_AWARE_INHERIT: ::c_uint = 0x0020;
 pub const PRIV_AWARE_RESET: ::c_uint = 0x0040;
 pub const PRIV_XPOLICY: ::c_uint = 0x0080;
 pub const PRIV_PFEXEC: ::c_uint = 0x0100;
-pub const PRIV_USER: ::c_uint = PRIV_DEBUG
-    | NET_MAC_AWARE
-    | NET_MAC_AWARE_INHERIT
-    | PRIV_XPOLICY
-    | PRIV_AWARE_RESET
-    | PRIV_PFEXEC;
 
 // sys/systeminfo.h
 pub const SI_SYSNAME: ::c_int = 1;
@@ -2554,9 +2408,6 @@ pub const LGRP_COOKIE_NONE: ::lgrp_cookie_t = 0;
 pub const LGRP_AFF_NONE: ::lgrp_affinity_t = 0x0;
 pub const LGRP_AFF_WEAK: ::lgrp_affinity_t = 0x10;
 pub const LGRP_AFF_STRONG: ::lgrp_affinity_t = 0x100;
-pub const LGRP_RSRC_COUNT: ::lgrp_rsrc_t = 2;
-pub const LGRP_RSRC_CPU: ::lgrp_rsrc_t = 0;
-pub const LGRP_RSRC_MEM: ::lgrp_rsrc_t = 1;
 pub const LGRP_CONTENT_ALL: ::lgrp_content_t = 0;
 pub const LGRP_CONTENT_HIERARCHY: ::lgrp_content_t = LGRP_CONTENT_ALL;
 pub const LGRP_CONTENT_DIRECT: ::lgrp_content_t = 1;
@@ -2575,15 +2426,12 @@ pub const P_FAULTED: ::c_int = 0x004;
 pub const P_POWEROFF: ::c_int = 0x005;
 pub const P_NOINTR: ::c_int = 0x006;
 pub const P_SPARE: ::c_int = 0x007;
-pub const P_DISABLED: ::c_int = 0x008;
 pub const P_FORCED: ::c_int = 0x10000000;
 pub const PI_TYPELEN: ::c_int = 16;
 pub const PI_FPUTYPE: ::c_int = 32;
 
 // sys/auxv.h
 pub const AT_SUN_HWCAP: ::c_uint = 2009;
-pub const AT_SUN_HWCAP2: ::c_uint = 2023;
-pub const AT_SUN_FPTYPE: ::c_uint = 2027;
 
 // As per sys/socket.h, header alignment must be 8 bytes on SPARC
 // and 4 bytes everywhere else:
@@ -2747,7 +2595,7 @@ extern "C" {
     pub fn initgroups(name: *const ::c_char, basegid: ::gid_t) -> ::c_int;
     pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fildes: ::c_int, request: ::c_int, ...) -> ::c_int;
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
+    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
     pub fn ___errno() -> *mut ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
@@ -2964,29 +2812,6 @@ extern "C" {
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
 
-    // The epoll functions are actually only present on illumos.  However,
-    // there are things using epoll on illumos (built using the
-    // x86_64-pc-solaris target) which would break until the illumos target is
-    // present in rustc.
-    pub fn epoll_pwait(
-        epfd: ::c_int,
-        events: *mut ::epoll_event,
-        maxevents: ::c_int,
-        timeout: ::c_int,
-        sigmask: *const ::sigset_t,
-    ) -> ::c_int;
-
-    pub fn epoll_create(size: ::c_int) -> ::c_int;
-    pub fn epoll_create1(flags: ::c_int) -> ::c_int;
-    pub fn epoll_wait(
-        epfd: ::c_int,
-        events: *mut ::epoll_event,
-        maxevents: ::c_int,
-        timeout: ::c_int,
-    ) -> ::c_int;
-    pub fn epoll_ctl(epfd: ::c_int, op: ::c_int, fd: ::c_int, event: *mut ::epoll_event)
-        -> ::c_int;
-
     #[cfg_attr(
         any(target_os = "solaris", target_os = "illumos"),
         link_name = "__posix_getgrnam_r"
@@ -3002,6 +2827,7 @@ extern "C" {
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t, oldset: *mut sigset_t) -> ::c_int;
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
+    #[cfg_attr(target_os = "solaris", link_name = "__pthread_kill_xpg7")]
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
     pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
     pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
@@ -3069,7 +2895,7 @@ extern "C" {
 
     pub fn makeutx(ux: *const utmpx) -> *mut utmpx;
     pub fn modutx(ux: *const utmpx) -> *mut utmpx;
-    pub fn updwtmpx(file: *const ::c_char, ut: *const utmpx) -> ::c_int;
+    pub fn updwtmpx(file: *const ::c_char, ut: *mut utmpx);
     pub fn utmpxname(file: *const ::c_char) -> ::c_int;
     pub fn getutxent() -> *mut utmpx;
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
@@ -3191,13 +3017,6 @@ extern "C" {
         validity: *mut ::c_uint,
     ) -> ::c_int;
 
-    pub fn strcasecmp_l(s1: *const ::c_char, s2: *const ::c_char, loc: ::locale_t) -> ::c_int;
-    pub fn strncasecmp_l(
-        s1: *const ::c_char,
-        s2: *const ::c_char,
-        n: ::size_t,
-        loc: ::locale_t,
-    ) -> ::c_int;
     pub fn strsep(string: *mut *mut ::c_char, delim: *const ::c_char) -> *mut ::c_char;
 
     pub fn getisax(array: *mut u32, n: ::c_uint) -> ::c_uint;
@@ -3247,7 +3066,7 @@ extern "C" {
         id: ::id_t,
         lgrp: ::lgrp_id_t,
         aff: lgrp_affinity_t,
-    ) -> ::lgrp_affinity_t;
+    ) -> ::c_int;
     pub fn lgrp_cpus(
         cookie: ::lgrp_cookie_t,
         lgrp: ::lgrp_id_t,
