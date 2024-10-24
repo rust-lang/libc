@@ -6,7 +6,6 @@ use std::str;
 // need to know all the possible cfgs that this script will set. If you need to set another cfg
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &'static [&'static str] = &[
-    "emscripten_new_stat_abi",
     "espidf_time32",
     "freebsd10",
     "freebsd11",
@@ -65,12 +64,6 @@ fn main() {
         13 => set_cfg("freebsd13"),
         14 => set_cfg("freebsd14"),
         _ => set_cfg("freebsd15"),
-    }
-
-    match emcc_version_code() {
-        Some(v) if (v >= 30142) => set_cfg("emscripten_new_stat_abi"),
-        // Non-Emscripten or version < 3.1.42.
-        Some(_) | None => (),
     }
 
     // On CI: deny all warnings
@@ -210,28 +203,6 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("15") => Some(15),
         _ => None,
     }
-}
-
-fn emcc_version_code() -> Option<u64> {
-    let output = std::process::Command::new("emcc")
-        .arg("-dumpversion")
-        .output()
-        .ok()?;
-    if !output.status.success() {
-        return None;
-    }
-
-    let version = String::from_utf8(output.stdout).ok()?;
-
-    // Some Emscripten versions come with `-git` attached, so split the
-    // version string also on the `-` char.
-    let mut pieces = version.trim().split(['.', '-']);
-
-    let major = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
-    let minor = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
-    let patch = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
-
-    Some(major * 10000 + minor * 100 + patch)
 }
 
 fn set_cfg(cfg: &str) {
