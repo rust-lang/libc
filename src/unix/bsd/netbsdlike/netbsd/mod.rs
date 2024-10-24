@@ -7,11 +7,10 @@ pub type fsfilcnt_t = u64;
 pub type idtype_t = ::c_int;
 pub type mqd_t = ::c_int;
 type __pthread_spin_t = __cpu_simple_lock_nv_t;
-pub type vm_size_t = ::uintptr_t; // FIXME: deprecated since long time
 pub type lwpid_t = ::c_uint;
 pub type shmatt_t = ::c_uint;
 pub type cpuid_t = ::c_ulong;
-pub type cpuset_t = _cpuset;
+pub type cpuset_t = ::c_void;
 pub type pthread_spin_t = ::c_uchar;
 pub type timer_t = ::c_int;
 
@@ -286,7 +285,7 @@ s! {
         pub flags: u32,
         pub fflags: u32,
         pub data: i64,
-        pub udata: ::intptr_t, /* FIXME: NetBSD 10.0 will finally have same layout as other BSD */
+        pub udata: *mut ::c_void,
     }
 
     pub struct dqblk {
@@ -380,7 +379,7 @@ s! {
         pub cr_unused: ::c_ushort,
         pub cr_uid: ::uid_t,
         pub cr_gid: ::gid_t,
-        pub cr_ngroups: ::c_int,
+        pub cr_ngroups: ::c_short,
         pub cr_groups: [::gid_t; NGROUPS_MAX as usize],
     }
 
@@ -394,16 +393,15 @@ s! {
         pub sdl_len: ::c_uchar,
         pub sdl_family: ::c_uchar,
         pub sdl_index: ::c_ushort,
-        pub sdl_type: u8,
-        pub sdl_nlen: u8,
-        pub sdl_alen: u8,
-        pub sdl_slen: u8,
-        pub sdl_data: [::c_char; 12],
+        pub sdl_addr: ::dl_addr,
     }
 
-    pub struct __exit_status {
-        pub e_termination: u16,
-        pub e_exit: u16,
+    pub struct dl_addr {
+        pub dl_type: u8,
+        pub dl_nlen: u8,
+        pub dl_alen: u8,
+        pub dl_slen: u8,
+        pub dl_data: [::c_char; 24],
     }
 
     pub struct shmid_ds {
@@ -504,10 +502,6 @@ s! {
         pub dlpi_subs: ::c_ulonglong,
         pub dlpi_tls_modid: usize,
         pub dlpi_tls_data: *mut ::c_void,
-    }
-
-    pub struct _cpuset {
-        bits: [u32; 0]
     }
 
     pub struct accept_filter_arg {
@@ -789,10 +783,15 @@ s_no_extra_traits! {
         pub ut_session: u16,
         pub ut_type: u16,
         pub ut_pid: ::pid_t,
-        pub ut_exit: __exit_status, // FIXME: when anonymous struct are supported
+        pub ut_exit: ::__c_anonymous_ut_exit,
         pub ut_ss: sockaddr_storage,
         pub ut_tv: ::timeval,
         pub ut_pad: [u8; _UTX_PADSIZE],
+    }
+
+    pub struct __c_anonymous_ut_exit {
+        pub e_termination: u16,
+        pub e_exit: u16,
     }
 
     pub struct lastlogx {
@@ -2893,6 +2892,19 @@ extern "C" {
         ntargets: ::size_t,
         hint: *const ::c_void,
     ) -> ::c_int;
+    pub fn sendmmsg(
+        sockfd: ::c_int,
+        mmsg: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_uint,
+    ) -> ::c_int;
+    pub fn recvmmsg(
+        sockfd: ::c_int,
+        mmsg: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_uint,
+        timeout: *mut ::timespec,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]
@@ -2977,9 +2989,12 @@ extern "C" {
     ) -> ::uintmax_t;
     pub fn easprintf(string: *mut *mut ::c_char, fmt: *const ::c_char, ...) -> ::c_int;
     pub fn evasprintf(string: *mut *mut ::c_char, fmt: *const ::c_char, ...) -> ::c_int;
+    // FIXME: re-add with semver once https://github.com/JohnTitor/ctest2/issues/58 is resolved
+    /*
     pub fn esetfunc(
         cb: ::Option<unsafe extern "C" fn(::c_int, *const ::c_char, ...)>,
     ) -> ::Option<unsafe extern "C" fn(::c_int, *const ::c_char, ...)>;
+    */
     pub fn secure_path(path: *const ::c_char) -> ::c_int;
     pub fn snprintb(
         buf: *mut ::c_char,
