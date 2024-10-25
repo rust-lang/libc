@@ -1,20 +1,31 @@
 task:
   only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_BASE_BRANCH == 'libc-0.2' ||  $CIRRUS_BASE_BRANCH == 'main'
+  env:
+    HOME: /tmp  # cargo cache needs it
+    TARGET: x86_64-unknown-freebsd
   matrix:
-    - name: nightly freebsd-13
+    - name: nightly freebsd-13 i686
+      # Test i686 FreeBSD in 32-bit emulation on a 64-bit host.
+      env:
+        TARGET: i686-unknown-freebsd
       freebsd_instance:
         image_family: freebsd-13-3
-    - name: nightly freebsd-14
+    - name: nightly freebsd-13 x86_64
       freebsd_instance:
-        image: freebsd-14-0-release-amd64-ufs
-    - name: nightly freebsd-15
+        image_family: freebsd-13-3
+    - name: nightly freebsd-14 x86_64
+      freebsd_instance:
+        image: freebsd-14-1-release-amd64-ufs
+    - name: nightly freebsd-15 x86_64
       freebsd_instance:
        image_family: freebsd-15-0-snap
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh -y --default-toolchain nightly --profile=minimal
+    - . $HOME/.cargo/env
+    - if [ "$TARGET" = "i686-unknown-freebsd" ]; then rustup target add i686-unknown-freebsd; fi
   test_script:
     - . $HOME/.cargo/env
-    - LIBC_CI=1 sh ci/run.sh x86_64-unknown-freebsd
-    - sh ci/run.sh x86_64-unknown-freebsd
+    - LIBC_CI=1 sh ci/run.sh $TARGET
+    - sh ci/run.sh $TARGET
