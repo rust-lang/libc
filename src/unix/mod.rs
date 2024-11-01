@@ -382,8 +382,8 @@ cfg_if! {
                    link(name = "c", cfg(not(target_feature = "crt-static"))))]
         extern {}
     } else if #[cfg(target_os = "emscripten")] {
-        #[link(name = "c")]
-        extern {}
+        // Don't pass -lc to Emscripten, it breaks. See:
+        // https://github.com/emscripten-core/emscripten/issues/22758
     } else if #[cfg(all(target_os = "android", feature = "rustc-dep-of-std"))] {
         #[link(name = "c", kind = "static", modifiers = "-bundle",
             cfg(target_feature = "crt-static"))]
