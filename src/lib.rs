@@ -145,6 +145,12 @@ cfg_if! {
 
         mod teeos;
         pub use teeos::*;
+    } else if #[cfg(target_os = "trusty")] {
+        mod fixed_width_ints;
+        pub use fixed_width_ints::*;
+
+        mod trusty;
+        pub use trusty::*;
     } else if #[cfg(all(target_env = "sgx", target_vendor = "fortanix"))] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
