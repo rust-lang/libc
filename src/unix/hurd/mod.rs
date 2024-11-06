@@ -482,7 +482,7 @@ s! {
 
     pub struct stat64 {
         pub st_fstype: ::c_int,
-        pub st_fsid: __fsid_t,
+        pub st_dev: __fsid_t, /* Actually st_fsid */
         pub st_ino: __ino64_t,
         pub st_gen: ::c_uint,
         pub st_rdev: __dev_t,
@@ -873,12 +873,11 @@ s! {
     }
 
     pub struct utsname {
-        pub sysname: [::c_char; 65],
-        pub nodename: [::c_char; 65],
-        pub release: [::c_char; 65],
-        pub version: [::c_char; 65],
-        pub machine: [::c_char; 65],
-        pub domainname: [::c_char; 65]
+        pub sysname: [::c_char; _UTSNAME_LENGTH],
+        pub nodename: [::c_char; _UTSNAME_LENGTH],
+        pub release: [::c_char; _UTSNAME_LENGTH],
+        pub version: [::c_char; _UTSNAME_LENGTH],
+        pub machine: [::c_char; _UTSNAME_LENGTH],
     }
 
     pub struct rlimit64 {
@@ -3436,6 +3435,9 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __data: 0i64 as *mut ::c_void,
 };
 pub const PTHREAD_STACK_MIN: ::size_t = 0;
+
+// Non-public helper constants
+const _UTSNAME_LENGTH: usize = 1024;
 
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
