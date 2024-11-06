@@ -1657,6 +1657,7 @@ s_no_extra_traits! {
 
     pub struct ucontext_t {
         pub uc_sigmask: ::sigset_t,
+        #[cfg(libc_align)]
         pub uc_mcontext: ::mcontext_t,
         pub uc_link: *mut ::ucontext_t,
         pub uc_stack: ::stack_t,
@@ -2670,7 +2671,8 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_sigmask", &self.uc_sigmask)
-                    .field("uc_mcontext", &self.uc_mcontext)
+                    // FIXME: enable when libc_align is dropped
+                    // .field("uc_mcontext", &self.uc_mcontext)
                     .field("uc_link", &self.uc_link)
                     .field("uc_stack", &self.uc_stack)
                     .field("uc_flags", &self.uc_flags)
