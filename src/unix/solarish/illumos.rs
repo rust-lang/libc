@@ -156,6 +156,8 @@ pub const EFD_SEMAPHORE: ::c_int = 0x1;
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 
+pub const POLLRDHUP: ::c_short = 0x4000;
+
 pub const TCP_KEEPIDLE: ::c_int = 34;
 pub const TCP_KEEPCNT: ::c_int = 35;
 pub const TCP_KEEPINTVL: ::c_int = 36;
@@ -171,7 +173,12 @@ pub const F_FLOCK: ::c_int = 53;
 pub const F_FLOCKW: ::c_int = 54;
 
 pub const F_DUPFD_CLOEXEC: ::c_int = 37;
+pub const F_DUPFD_CLOFORK: ::c_int = 58;
 pub const F_DUP2FD_CLOEXEC: ::c_int = 36;
+pub const F_DUP2FD_CLOFORK: ::c_int = 57;
+pub const F_DUP3FD: ::c_int = 59;
+
+pub const FD_CLOFORK: ::c_int = 2;
 
 pub const FIL_ATTACH: ::c_int = 0x1;
 pub const FIL_DETACH: ::c_int = 0x2;
@@ -184,9 +191,20 @@ pub const SOL_FILTER: ::c_int = 0xfffc;
 
 pub const MADV_PURGE: ::c_int = 9;
 
+pub const POSIX_FADV_NORMAL: ::c_int = 0;
+pub const POSIX_FADV_RANDOM: ::c_int = 1;
+pub const POSIX_FADV_SEQUENTIAL: ::c_int = 2;
+pub const POSIX_FADV_WILLNEED: ::c_int = 3;
+pub const POSIX_FADV_DONTNEED: ::c_int = 4;
+pub const POSIX_FADV_NOREUSE: ::c_int = 5;
+
 pub const SIGINFO: ::c_int = 41;
 
 pub const O_DIRECT: ::c_int = 0x2000000;
+pub const O_CLOFORK: ::c_int = 0x4000000;
+
+pub const MSG_CMSG_CLOEXEC: ::c_int = 0x1000;
+pub const MSG_CMSG_CLOFORK: ::c_int = 0x2000;
 
 pub const PBIND_HARD: ::processorid_t = -3;
 pub const PBIND_SOFT: ::processorid_t = -4;
@@ -305,6 +323,7 @@ extern "C" {
         stackaddr: *mut ::c_void,
     ) -> ::c_int;
 
+    pub fn posix_fadvise(fd: ::c_int, offset: ::off_t, len: ::off_t, advice: ::c_int) -> ::c_int;
     pub fn preadv(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int, offset: ::off_t) -> ::ssize_t;
     pub fn pwritev(fd: ::c_int, iov: *const ::iovec, iovcnt: ::c_int, offset: ::off_t)
         -> ::ssize_t;
