@@ -550,6 +550,8 @@ ENOTSUP
 ENOTUNIQ
 EOF
 EOWNERDEAD
+EPIOCGPARAMS
+EPIOCSPARAMS
 EPOLLERR
 EPOLLET
 EPOLLEXCLUSIVE
@@ -3489,6 +3491,7 @@ epoll_create
 epoll_create1
 epoll_ctl
 epoll_event
+epoll_params
 epoll_pwait
 epoll_wait
 erand48

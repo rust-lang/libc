@@ -72,6 +72,11 @@ pub type ledger_array_t = *mut ::ledger_t;
 
 pub type iconv_t = *mut ::c_void;
 
+// mach/host_info.h
+pub type host_cpu_load_info_t = *mut host_cpu_load_info;
+pub type host_cpu_load_info_data_t = host_cpu_load_info;
+
+// mach/processor_info.h
 pub type processor_cpu_load_info_t = *mut processor_cpu_load_info;
 pub type processor_cpu_load_info_data_t = processor_cpu_load_info;
 pub type processor_basic_info_t = *mut processor_basic_info;
@@ -1188,6 +1193,11 @@ s! {
         pub tcpi_rxbytes: u64,
         pub tcpi_rxoutoforderbytes: u64,
         pub tcpi_rxretransmitpackets: u64,
+    }
+
+    // mach/host_info.h
+    pub struct host_cpu_load_info {
+        pub cpu_ticks: [::natural_t; CPU_STATE_MAX as usize],
     }
 }
 
