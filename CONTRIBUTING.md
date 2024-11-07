@@ -89,17 +89,8 @@ support anytime.
 
 ## Releasing your change to crates.io
 
-Now that you've done the amazing job of landing your new API or your new
-platform in this crate, the next step is to get that sweet, sweet usage from
-crates.io! The only next step is to bump the version of libc and then publish
-it. If you'd like to get a release out ASAP you can follow these steps:
+This repository uses [release-plz] to handle releases. Once your pull request
+has been merged, a maintainer just needs to verify the generated changelog, then
+merge the bot's release PR. This will automatically publish to crates.io!
 
-1. Increment the patch version number in `Cargo.toml` and
-   `libc-test/Cargo.toml`.
-1. Send a PR to this repository. It should [look like this][example-pr], but
-   it would  also be nice to fill out the description with a small rationale for
-   the release (any rationale is ok though!).
-1. Once merged, the release will be tagged and published by one of the libc
-   crate maintainers.
-
-[example-pr]: https://github.com/rust-lang/libc/pull/2120
+[release-plz]: https://github.com/MarcoIeni/release-plz
