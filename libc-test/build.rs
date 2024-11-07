@@ -2764,6 +2764,13 @@ fn test_freebsd(target: &str) {
             _ => false,
         }
     });
+    if target.contains("arm") {
+        cfg.skip_roundtrip(move |s| match s {
+            // Can't return an array from a C function.
+            "__gregset_t" => true,
+            _ => false,
+        });
+    }
 
     cfg.generate("../src/lib.rs", "main.rs");
 }

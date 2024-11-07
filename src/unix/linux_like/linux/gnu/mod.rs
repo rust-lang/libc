@@ -1298,6 +1298,29 @@ pub const REG_EEND: ::c_int = 14;
 pub const REG_ESIZE: ::c_int = 15;
 pub const REG_ERPAREN: ::c_int = 16;
 
+cfg_if! {
+    if #[cfg(any(target_arch = "x86",
+                 target_arch = "x86_64",
+                 target_arch = "arm",
+                 target_arch = "aarch64",
+                 target_arch = "loongarch64",
+                 target_arch = "riscv64",
+                 target_arch = "s390x"))] {
+        pub const TUNSETCARRIER: ::Ioctl = 0x400454e2;
+        pub const TUNGETDEVNETNS: ::Ioctl = 0x54e3;
+    } else if #[cfg(any(target_arch = "mips",
+                        target_arch = "mips64",
+                        target_arch = "powerpc",
+                        target_arch = "powerpc64",
+                        target_arch = "sparc",
+                        target_arch = "sparc64"))] {
+        pub const TUNSETCARRIER: ::Ioctl = 0x800454e2;
+        pub const TUNGETDEVNETNS: ::Ioctl = 0x200054e3;
+    } else {
+        // Unknown target_arch
+    }
+}
+
 extern "C" {
     pub fn fgetspent_r(
         fp: *mut ::FILE,

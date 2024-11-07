@@ -210,6 +210,34 @@ pub const BLKIOMIN: ::Ioctl = 0x1278;
 pub const BLKIOOPT: ::Ioctl = 0x1279;
 pub const BLKSSZGET: ::Ioctl = 0x1268;
 pub const BLKPBSZGET: ::Ioctl = 0x127B;
+// linux/if_tun.h
+pub const TUNSETNOCSUM: ::Ioctl = 0x400454c8;
+pub const TUNSETDEBUG: ::Ioctl = 0x400454c9;
+pub const TUNSETIFF: ::Ioctl = 0x400454ca;
+pub const TUNSETPERSIST: ::Ioctl = 0x400454cb;
+pub const TUNSETOWNER: ::Ioctl = 0x400454cc;
+pub const TUNSETLINK: ::Ioctl = 0x400454cd;
+pub const TUNSETGROUP: ::Ioctl = 0x400454ce;
+pub const TUNGETFEATURES: ::Ioctl = 0x800454cf;
+pub const TUNSETOFFLOAD: ::Ioctl = 0x400454d0;
+pub const TUNSETTXFILTER: ::Ioctl = 0x400454d1;
+pub const TUNGETIFF: ::Ioctl = 0x800454d2;
+pub const TUNGETSNDBUF: ::Ioctl = 0x800454d3;
+pub const TUNSETSNDBUF: ::Ioctl = 0x400454d4;
+pub const TUNGETVNETHDRSZ: ::Ioctl = 0x800454d7;
+pub const TUNSETVNETHDRSZ: ::Ioctl = 0x400454d8;
+pub const TUNSETQUEUE: ::Ioctl = 0x400454d9;
+pub const TUNSETIFINDEX: ::Ioctl = 0x400454da;
+pub const TUNSETVNETLE: ::Ioctl = 0x400454dc;
+pub const TUNGETVNETLE: ::Ioctl = 0x800454dd;
+/* The TUNSETVNETBE and TUNGETVNETBE ioctls are for cross-endian support on
+ * little-endian hosts. Not all kernel configurations support them, but all
+ * configurations that support SET also support GET.
+ */
+pub const TUNSETVNETBE: ::Ioctl = 0x400454de;
+pub const TUNGETVNETBE: ::Ioctl = 0x800454df;
+pub const TUNSETSTEERINGEBPF: ::Ioctl = 0x800454e0;
+pub const TUNSETFILTEREBPF: ::Ioctl = 0x800454e1;
 
 cfg_if! {
     // Those type are constructed using the _IOC macro
@@ -227,6 +255,9 @@ cfg_if! {
         pub const FS_IOC32_SETFLAGS: ::Ioctl = 0x40046602;
         pub const FS_IOC32_GETVERSION: ::Ioctl = 0x80047601;
         pub const FS_IOC32_SETVERSION: ::Ioctl = 0x40047602;
+        pub const TUNATTACHFILTER: ::Ioctl = 0x400854d5;
+        pub const TUNDETACHFILTER: ::Ioctl = 0x400854d6;
+        pub const TUNGETFILTER: ::Ioctl = 0x800854db;
     } else if #[cfg(any(target_arch = "x86_64",
                         target_arch = "riscv64",
                         target_arch = "aarch64",
@@ -240,6 +271,9 @@ cfg_if! {
         pub const FS_IOC32_SETFLAGS: ::Ioctl = 0x40046602;
         pub const FS_IOC32_GETVERSION: ::Ioctl = 0x80047601;
         pub const FS_IOC32_SETVERSION: ::Ioctl = 0x40047602;
+        pub const TUNATTACHFILTER: ::Ioctl = 0x401054d5;
+        pub const TUNDETACHFILTER: ::Ioctl = 0x401054d6;
+        pub const TUNGETFILTER: ::Ioctl = 0x801054db;
     }
 }
 
