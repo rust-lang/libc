@@ -11,8 +11,8 @@ This crate exports all underlying platform types, functions, and constants under
 the crate root, so all items are accessible as `libc::foo`. The types and values
 of all the exported APIs match the platform that libc is compiled for.
 
-Windows API bindings are not included in this crate. If you are looking for WinAPI
-bindings, consider using crates like [windows-sys].
+Windows API bindings are not included in this crate. If you are looking for
+WinAPI bindings, consider using crates like [windows-sys].
 
 More detailed information about the design of this library can be found in its
 [associated RFC][rfc].
@@ -24,10 +24,11 @@ More detailed information about the design of this library can be found in its
 
 The main branch is now for v0.3 which has some breaking changes.
 
-For v0.2, please submit PRs to the `libc-0.2` branch instead.
-We will stop making new v0.2 releases once we release v0.3 on crates.io.
+For v0.2, please submit PRs to the `libc-0.2` branch instead. We will stop
+making new v0.2 releases once we release v0.3 on crates.io.
 
-See the [tracking issue](https://github.com/rust-lang/libc/issues/3248) for details.
+See the [tracking issue](https://github.com/rust-lang/libc/issues/3248) for
+details.
 
 ## Usage
 
@@ -40,46 +41,45 @@ libc = "0.2"
 
 ## Features
 
-* `std`: by default `libc` links to the standard library. Disable this
-  feature to remove this dependency and be able to use `libc` in `#![no_std]`
-  crates.
+* `std`: by default `libc` links to the standard library. Disable this feature
+  to remove this dependency and be able to use `libc` in `#![no_std]` crates.
 
 * `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
   This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
 
-* `const-extern-fn`: Changes some `extern fn`s into `const extern fn`s.
-  If you use Rust >= 1.62, this feature is implicitly enabled.
-  Otherwise it requires a nightly rustc.
+* `const-extern-fn`: Changes some `extern fn`s into `const extern fn`s. If you
+  use Rust >= 1.62, this feature is implicitly enabled. Otherwise it requires a
+  nightly rustc.
 
 * **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
 
 ## Rust version support
 
-The minimum supported Rust toolchain version is currently **Rust 1.13.0**.
-(libc does not currently have any policy regarding changes to the minimum
-supported Rust version; such policy is a work in progress.) APIs requiring
-newer Rust features are only available on newer Rust toolchains:
+The minimum supported Rust toolchain version is currently **Rust 1.13.0**. (libc
+does not currently have any policy regarding changes to the minimum supported
+Rust version; such policy is a work in progress.) APIs requiring newer Rust
+features are only available on newer Rust toolchains:
 
 | Feature              | Version |
-|----------------------|---------|
-| `union`              |  1.19.0 |
-| `const mem::size_of` |  1.24.0 |
-| `repr(align)`        |  1.25.0 |
-| `extra_traits`       |  1.25.0 |
-| `core::ffi::c_void`  |  1.30.0 |
-| `repr(packed(N))`    |  1.33.0 |
-| `cfg(target_vendor)` |  1.33.0 |
-| `const-extern-fn`    |  1.62.0 |
+| -------------------- | ------- |
+| `union`              | 1.19.0  |
+| `const mem::size_of` | 1.24.0  |
+| `repr(align)`        | 1.25.0  |
+| `extra_traits`       | 1.25.0  |
+| `core::ffi::c_void`  | 1.30.0  |
+| `repr(packed(N))`    | 1.33.0  |
+| `cfg(target_vendor)` | 1.33.0  |
+| `const-extern-fn`    | 1.62.0  |
 
 ## Platform support
 
-You can see the platform(target)-specific docs on [docs.rs], select a platform you want to see.
+You can see the platform(target)-specific docs on [docs.rs], select a platform
+you want to see.
 
-See
-[`ci/build.sh`](https://github.com/rust-lang/libc/blob/HEAD/ci/build.sh)
-for the platforms on which `libc` is guaranteed to build for each Rust
-toolchain. The test-matrix at [GitHub Actions] and [Cirrus CI] show the
-platforms in which `libc` tests are run.
+See [`ci/build.sh`](https://github.com/rust-lang/libc/blob/HEAD/ci/build.sh) for
+the platforms on which `libc` is guaranteed to build for each Rust toolchain.
+The test-matrix at [GitHub Actions] and [Cirrus CI] show the platforms in which
+`libc` tests are run.
 
 <div class="platform_docs"></div>
 
@@ -97,13 +97,13 @@ at your option.
 
 ## Contributing
 
-We welcome all people who want to contribute. Please see the [contributing
-instructions] for more information.
+We welcome all people who want to contribute. Please see the
+[contributing instructions] for more information.
 
 [contributing instructions]: https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md
 
-Contributions in any form (issues, pull requests, etc.) to this project
-must adhere to Rust's [Code of Conduct].
+Contributions in any form (issues, pull requests, etc.) to this project must
+adhere to Rust's [Code of Conduct].
 
 [Code of Conduct]: https://www.rust-lang.org/policies/code-of-conduct
 
