@@ -5,10 +5,6 @@ PROT_READ
 PROT_WRITE
 STDERR_FILENO
 STDOUT_FILENO
-calloc
-clockid_t
-clock_gettime
-close
 c_char
 c_int
 c_int16_t
@@ -29,6 +25,10 @@ c_ulong
 c_ulonglong
 c_ushort
 c_void
+calloc
+clock_gettime
+clockid_t
+close
 free
 getauxval
 iovec
@@ -43,7 +43,7 @@ realloc
 size_t
 ssize_t
 strlen
-timespec
 time_t
+timespec
 write
 writev

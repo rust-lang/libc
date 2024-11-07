@@ -1,5 +1,5 @@
-fd_set
+FD_ISSET
 FD_SET
 FD_ZERO
-FD_ISSET
+fd_set
 select
