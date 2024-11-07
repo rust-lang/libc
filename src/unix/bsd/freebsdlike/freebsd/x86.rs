@@ -1,54 +1,49 @@
 pub type c_char = i8;
 pub type c_long = i32;
 pub type c_ulong = u32;
+pub type clock_t = ::c_ulong;
 pub type wchar_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
 pub type register_t = i32;
 
-s_no_extra_traits! {
-    pub struct mcontext_t {
-        pub mc_onstack: register_t,
-        pub mc_gs: register_t,
-        pub mc_fs: register_t,
-        pub mc_es: register_t,
-        pub mc_ds: register_t,
-        pub mc_edi: register_t,
-        pub mc_esi: register_t,
-        pub mc_ebp: register_t,
-        pub mc_isp: register_t,
-        pub mc_ebx: register_t,
-        pub mc_edx: register_t,
-        pub mc_ecx: register_t,
-        pub mc_eax: register_t,
-        pub mc_trapno: register_t,
-        pub mc_err: register_t,
-        pub mc_eip: register_t,
-        pub mc_cs: register_t,
-        pub mc_eflags: register_t,
-        pub mc_esp: register_t,
-        pub mc_ss: register_t,
-        pub mc_len: ::c_int,
-        pub mc_fpformat: ::c_int,
-        pub mc_ownedfp: ::c_int,
-        pub mc_flags: register_t,
-        pub mc_fpstate: [[::c_int; 32]; 4],
-        pub mc_fsbase: register_t,
-        pub mc_gsbase: register_t,
-        pub mc_xfpustate: register_t,
-        pub mc_xfpustate_len: register_t,
-        pub mc_spare2: [::c_int; 4],
-    }
-}
-
-s! {
-    pub struct ucontext_t {
-        pub uc_sigmask: ::sigset_t,
-        pub uc_mcontext: ::mcontext_t,
-        pub uc_link: *mut ::ucontext_t,
-        pub uc_stack: ::stack_t,
-        pub uc_flags: ::c_int,
-        __spare__: [::c_int; 4],
+cfg_if! {
+    if #[cfg(libc_align)] {
+        s_no_extra_traits! {
+            #[repr(align(16))]
+            pub struct mcontext_t {
+                pub mc_onstack: register_t,
+                pub mc_gs: register_t,
+                pub mc_fs: register_t,
+                pub mc_es: register_t,
+                pub mc_ds: register_t,
+                pub mc_edi: register_t,
+                pub mc_esi: register_t,
+                pub mc_ebp: register_t,
+                pub mc_isp: register_t,
+                pub mc_ebx: register_t,
+                pub mc_edx: register_t,
+                pub mc_ecx: register_t,
+                pub mc_eax: register_t,
+                pub mc_trapno: register_t,
+                pub mc_err: register_t,
+                pub mc_eip: register_t,
+                pub mc_cs: register_t,
+                pub mc_eflags: register_t,
+                pub mc_esp: register_t,
+                pub mc_ss: register_t,
+                pub mc_len: ::c_int,
+                pub mc_fpformat: ::c_int,
+                pub mc_ownedfp: ::c_int,
+                pub mc_flags: register_t,
+                pub mc_fpstate: [::c_int; 128],
+                pub mc_fsbase: register_t,
+                pub mc_gsbase: register_t,
+                pub mc_xfpustate: register_t,
+                pub mc_xfpustate_len: register_t,
+                pub mc_spare2: [::c_int; 4],
+            }
+        }
     }
 }
 
@@ -64,7 +59,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
+    if #[cfg(all(libc_align, feature = "extra_traits"))] {
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
                 self.mc_onstack == other.mc_onstack &&
@@ -127,7 +122,8 @@ cfg_if! {
                     .field("mc_fpformat", &self.mc_fpformat)
                     .field("mc_ownedfp", &self.mc_ownedfp)
                     .field("mc_flags", &self.mc_flags)
-                    .field("mc_fpstate", &self.mc_fpstate)
+                    // FIXME(msrv) debug not supported for arrays in old MSRV
+                    // .field("mc_fpstate", &self.mc_fpstate)
                     .field("mc_fsbase", &self.mc_fsbase)
                     .field("mc_gsbase", &self.mc_gsbase)
                     .field("mc_xfpustate", &self.mc_xfpustate)
@@ -175,4 +171,7 @@ cfg_if! {
 
 pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
 
+pub const BIOCSRTIMEOUT: ::c_ulong = 0x8008426d;
+pub const BIOCGRTIMEOUT: ::c_ulong = 0x4008426e;
 pub const KINFO_FILE_SIZE: ::c_int = 1392;
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40087459;

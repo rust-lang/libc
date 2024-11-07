@@ -1,5 +1,4 @@
 pub type fflags_t = u32;
-pub type clock_t = i32;
 
 pub type vm_prot_t = u_char;
 pub type kvaddr_t = u64;
@@ -1646,13 +1645,23 @@ s_no_extra_traits! {
         pub kf_flags: ::c_int,
         _kf_pad0: ::c_int,
         pub kf_offset: i64,
-        _priv: [::uintptr_t; 38], // FIXME if needed
+        _priv: [u8; 304],   // FIXME: this is really a giant union
         pub kf_status: u16,
         _kf_pad1: u16,
         _kf_ispare0: ::c_int,
         pub kf_cap_rights: ::cap_rights_t,
         _kf_cap_spare: u64,
         pub kf_path: [::c_char; ::PATH_MAX as usize],
+    }
+
+    pub struct ucontext_t {
+        pub uc_sigmask: ::sigset_t,
+        #[cfg(libc_align)]
+        pub uc_mcontext: ::mcontext_t,
+        pub uc_link: *mut ::ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_flags: ::c_int,
+        __spare__: [::c_int; 4],
     }
 }
 
@@ -2656,6 +2665,19 @@ cfg_if! {
                 self.kf_path.hash(state);
             }
         }
+
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_sigmask", &self.uc_sigmask)
+                    // FIXME: enable when libc_align is dropped
+                    // .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_flags", &self.uc_flags)
+                    .finish()
+            }
+        }
     }
 }
 
@@ -3189,9 +3211,22 @@ pub const H4DISC: ::c_int = 0x7;
 
 pub const VM_TOTAL: ::c_int = 1;
 
-pub const BIOCSETFNR: ::c_ulong = 0x80104282;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const BIOCSETFNR: ::c_ulong = 0x80104282;
+    } else {
+        pub const BIOCSETFNR: ::c_ulong = 0x80084282;
+    }
+}
 
-pub const FIODGNAME: ::c_ulong = 0x80106678;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const FIODGNAME: ::c_ulong = 0x80106678;
+    } else {
+        pub const FIODGNAME: ::c_ulong = 0x80086678;
+    }
+}
+
 pub const FIONWRITE: ::c_ulong = 0x40046677;
 pub const FIONSPACE: ::c_ulong = 0x40046676;
 pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;

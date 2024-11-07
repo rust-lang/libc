@@ -1462,6 +1462,7 @@ pub const TIOCISPTMASTER: ::c_ulong = 0x20007455;
 pub const TIOCMODG: ::c_ulong = 0x40047403;
 pub const TIOCMODS: ::c_ulong = 0x80047404;
 pub const TIOCREMOTE: ::c_ulong = 0x80047469;
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
 
 // Constants used by "at" family of system calls.
 pub const AT_FDCWD: ::c_int = 0xFFFAFDCD; // invalid file descriptor
