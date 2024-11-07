@@ -2,6 +2,44 @@
 
 ## [Unreleased]
 
+## [0.2.162](https://github.com/rust-lang/libc/compare/0.2.161...0.2.162) - 2024-11-07
+
+### Added
+
+- Android: fix the alignment of `uc_mcontext` on arm64 <https://github.com/rust-lang/libc/pull/3894>
+- Apple: add `host_cpu_load_info` <https://github.com/rust-lang/libc/pull/3916>
+- ESP-IDF: add a time flag <https://github.com/rust-lang/libc/pull/3993>
+- FreeBSD: add the `CLOSE_RANGE_CLOEXEC` flag<https://github.com/rust-lang/libc/pull/3996>
+- FreeBSD: fix test errors regarding `__gregset_t` <https://github.com/rust-lang/libc/pull/3995>
+- FreeBSD: fix tests on x86 FreeBSD 15 <https://github.com/rust-lang/libc/pull/3948>
+- FreeBSD: make `ucontext_t` and `mcontext_t` available on all architectures  <https://github.com/rust-lang/libc/pull/3848>
+- Haiku: add `getentropy` <https://github.com/rust-lang/libc/pull/3991>
+- Illumos: add `syncfs` <https://github.com/rust-lang/libc/pull/3990>
+- Illumos: add some recently-added constants <https://github.com/rust-lang/libc/pull/3999>
+- Linux: add `ioctl` flags <https://github.com/rust-lang/libc/pull/3960>
+- Linux: add epoll busy polling parameters <https://github.com/rust-lang/libc/pull/3922>
+- NuttX: add `pthread_[get/set]name_np` <https://github.com/rust-lang/libc/pull/4003>
+- RTEMS: add `arc4random_buf` <https://github.com/rust-lang/libc/pull/3989>
+- Trusty OS: add initial support <https://github.com/rust-lang/libc/pull/3942>
+- WASIp2: expand socket support <https://github.com/rust-lang/libc/pull/3981>
+
+### Fixed
+
+- Emscripten: don't pass `-lc` <https://github.com/rust-lang/libc/pull/4002>
+- Hurd: change `st_fsid` field to `st_dev` <https://github.com/rust-lang/libc/pull/3785>
+- Hurd: fix the definition of `utsname` <https://github.com/rust-lang/libc/pull/3992>
+- Illumos/Solaris: fix `FNM_CASEFOLD` definition <https://github.com/rust-lang/libc/pull/4004>
+- Solaris: fix all tests <https://github.com/rust-lang/libc/pull/3864>
+
+### Other
+
+- CI: Add loongarch64 <https://github.com/rust-lang/libc/pull/4000>
+- CI: Check that semver files are sorted <https://github.com/rust-lang/libc/pull/4018>
+- CI: Re-enable the FreeBSD 15 job <https://github.com/rust-lang/libc/pull/3988>
+- Clean up imports and `extern crate` usage <https://github.com/rust-lang/libc/pull/3897>
+- Convert `mode_t` constants to octal <https://github.com/rust-lang/libc/pull/3634>
+- Remove the `wasm32-wasi` target that has been deleted upstream <https://github.com/rust-lang/libc/pull/4013>
+
 ## [0.2.161](https://github.com/rust-lang/libc/compare/0.2.160...0.2.161) - 2024-10-17
 
 ### Fixed
