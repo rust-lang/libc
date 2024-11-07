@@ -2363,6 +2363,7 @@ pub const IFLA_INFO_SLAVE_KIND: ::c_ushort = 4;
 pub const IFLA_INFO_SLAVE_DATA: ::c_ushort = 5;
 
 // linux/if_tun.h
+/* TUNSETIFF ifr flags */
 pub const IFF_TUN: ::c_int = 0x0001;
 pub const IFF_TAP: ::c_int = 0x0002;
 pub const IFF_NAPI: ::c_int = 0x0010;
