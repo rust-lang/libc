@@ -2856,7 +2856,6 @@ fn test_emscripten(target: &str) {
                "sys/statvfs.h",
                "sys/swap.h",
                "sys/syscall.h",
-               "sys/sysctl.h",
                "sys/sysinfo.h",
                "sys/time.h",
                "sys/timerfd.h",
