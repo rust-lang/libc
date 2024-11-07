@@ -1,9 +1,9 @@
 AT_EACCESS
 getentropy
 getgrgid
+getgrgid_r
 getgrnam
 getgrnam_r
-getgrgid_r
-posix_fallocate64
 getpwnam_r
 getpwuid_r
+posix_fallocate64
