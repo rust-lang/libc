@@ -6,50 +6,107 @@ on:
     branches:
       - libc-0.2
 
-jobs:
-  docker_linux_tier1:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
+env:
+  LIBC_CI: 1
 
-    name: Docker Linux Tier1
+jobs:
+  style_check:
+    name: Style check
     runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: true
-      matrix:
-        target: [
-          i686-unknown-linux-gnu,
-          x86_64-unknown-linux-gnu,
-        ]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
-      - name: Execute run-docker.sh
-        run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
+        run: sh ./ci/install-rust.sh
+      - name: Check style
+        run: sh ci/style.sh
+
+  build_channels_linux:
+    name: Build Channels Linux
+    runs-on: ubuntu-22.04
+    env:
+      OS: linux
+    strategy:
+      fail-fast: true
+      max-parallel: 5
+      matrix:
+        toolchain:
+          - stable
+          - beta
+          - nightly
+          # FIXME: Disabled due to:
+          # error: failed to parse registry's information for: serde
+          # 1.13.0,
+          - 1.19.0
+          - 1.24.0
+          - 1.25.0
+          - 1.30.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
+      - name: Execute build.sh
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+
+  build_channels_macos:
+    name: Build Channels macOS
+    needs: macos
+    env:
+      OS: macos
+    strategy:
+      fail-fast: true
+      max-parallel: 4
+      matrix:
+        target:
+          - { toolchain: stable, os: macos-13 }
+          - { toolchain: beta, os: macos-13 }
+          - { toolchain: nightly, os: macos-13 }
+    runs-on: ${{ matrix.target.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/install-rust.sh
+      - name: Execute build.sh
+        run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/build.sh
+
+  build_channels_windows:
+    name: Build Channels Windows
+    runs-on: windows-2022
+    env:
+      OS: windows
+    strategy:
+      fail-fast: true
+      matrix:
+        toolchain:
+          - 1.19.0
+          - 1.24.0
+          - 1.25.0
+          - 1.30.0
+          - stable
+    steps:
+      - uses: actions/checkout@v4
+      - name: Self-update rustup
+        run: rustup self update
+        shell: bash
+      - name: Execute build.sh
+        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+        shell: bash
 
   macos:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: macOS
     runs-on: macos-13
     strategy:
       fail-fast: true
       matrix:
-        target: [
-          x86_64-apple-darwin,
-        ]
+        target:
+          - x86_64-apple-darwin
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run.sh
-        run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
+        run: sh ./ci/run.sh ${{ matrix.target }}
 
   windows:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Windows
     runs-on: windows-2022
     env:
@@ -77,26 +134,26 @@ jobs:
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
         shell: bash
       - name: Execute run.sh
-        run: LIBC_CI=1 sh ./ci/run.sh ${{ matrix.target }}
+        run: sh ./ci/run.sh ${{ matrix.target }}
         shell: bash
 
-  style_check:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
-    name: Style check
+  docker_linux_tier1:
+    name: Docker Linux Tier1
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: true
+      matrix:
+        target:
+          - i686-unknown-linux-gnu
+          - x86_64-unknown-linux-gnu
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: sh ./ci/install-rust.sh
-      - name: Check style
-        run: sh ci/style.sh
+        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+      - name: Execute run-docker.sh
+        run: sh ./ci/run-docker.sh ${{ matrix.target }}
 
   docker_linux_tier2:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: Docker Linux Tier2
     needs: [docker_linux_tier1, style_check]
     runs-on: ubuntu-22.04
@@ -104,126 +161,40 @@ jobs:
       fail-fast: true
       max-parallel: 12
       matrix:
-        target: [
-          aarch64-linux-android,
-          aarch64-unknown-linux-gnu,
-          aarch64-unknown-linux-musl,
-          arm-linux-androideabi,
-          arm-unknown-linux-gnueabihf,
-          arm-unknown-linux-musleabihf,
-          i686-linux-android,
-          i686-unknown-linux-musl,
-          powerpc-unknown-linux-gnu,
-          powerpc64-unknown-linux-gnu,
-          powerpc64le-unknown-linux-gnu,
-          s390x-unknown-linux-gnu,
-          riscv64gc-unknown-linux-gnu,
-          wasm32-wasip1,
-          wasm32-wasip2,
-          sparc64-unknown-linux-gnu,
-          wasm32-unknown-emscripten,
-          x86_64-linux-android,
+        target:
+          - aarch64-linux-android
+          - aarch64-unknown-linux-gnu
+          - aarch64-unknown-linux-musl
+          - arm-linux-androideabi
+          - arm-unknown-linux-gnueabihf
+          - arm-unknown-linux-musleabihf
+          - i686-linux-android
+          - i686-unknown-linux-musl
+          - loongarch64-unknown-linux-gnu
+          - powerpc-unknown-linux-gnu
+          - powerpc64-unknown-linux-gnu
+          - powerpc64le-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - riscv64gc-unknown-linux-gnu
+          - wasm32-wasip1
+          - wasm32-wasip2
+          - sparc64-unknown-linux-gnu
+          - wasm32-unknown-emscripten
+          - x86_64-linux-android
           # FIXME: Exec format error (os error 8)
-          #x86_64-unknown-linux-gnux32,
-          x86_64-unknown-linux-musl,
+          # - x86_64-unknown-linux-gnux32
+          - x86_64-unknown-linux-musl
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
-          # x86_64-unknown-redox,
-        ]
+          # - x86_64-unknown-redox
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
       - name: Execute run-docker.sh
-        run: LIBC_CI=1 sh ./ci/run-docker.sh ${{ matrix.target }}
-
-  build_channels_linux:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
-    name: Build Channels Linux
-    needs: docker_linux_tier2
-    runs-on: ubuntu-22.04
-    env:
-      OS: linux
-    strategy:
-      fail-fast: true
-      max-parallel: 5
-      matrix:
-        toolchain: [
-          stable,
-          beta,
-          nightly,
-          # FIXME: Disabled due to:
-          # error: failed to parse registry's information for: serde
-          #1.13.0,
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
-        ]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Rust toolchain
-        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
-      - name: Execute build.sh
-        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
-
-  build_channels_macos:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
-    name: Build Channels macOS
-    needs: macos
-    env:
-      OS: macos
-    strategy:
-      fail-fast: true
-      max-parallel: 4
-      matrix:
-        target:
-          - { toolchain: stable, os: macos-13 }
-          - { toolchain: beta, os: macos-13 }
-          - { toolchain: nightly, os: macos-13 }
-    runs-on: ${{ matrix.target.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Rust toolchain
-        run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/install-rust.sh
-      - name: Execute build.sh
-        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/build.sh
-
-  build_channels_windows:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
-    name: Build Channels Windows
-    runs-on: windows-2022
-    env:
-      OS: windows
-    strategy:
-      fail-fast: true
-      matrix:
-        toolchain: [
-          1.19.0,
-          1.24.0,
-          1.25.0,
-          1.30.0,
-          stable,
-        ]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Self-update rustup
-        run: rustup self update
-        shell: bash
-      - name: Execute build.sh
-        run: LIBC_CI=1 TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
-        shell: bash
+        run: sh ./ci/run-docker.sh ${{ matrix.target }}
 
   check_cfg:
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
     steps:
@@ -231,23 +202,22 @@ jobs:
       - name: Setup Rust toolchain
         run: TOOLCHAIN=nightly sh ./ci/install-rust.sh
       - name: Build with check-cfg
-        run: LIBC_CI=1 LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg
+        run: LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg
 
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
   success:
     name: success
     runs-on: ubuntu-22.04
-    needs: [
-      docker_linux_tier1,
-      docker_linux_tier2,
-      macos,
-      windows,
-      style_check,
-      build_channels_linux,
-      build_channels_macos,
-      build_channels_windows,
-    ]
+    needs:
+      - docker_linux_tier1
+      - docker_linux_tier2
+      - macos
+      - windows
+      - style_check
+      - build_channels_linux
+      - build_channels_macos
+      - build_channels_windows
     # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
