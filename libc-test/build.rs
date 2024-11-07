@@ -2739,7 +2739,6 @@ fn test_emscripten(target: &str) {
     cfg.define("_GNU_SOURCE", None); // FIXME: ??
 
     headers! { cfg:
-               "aio.h",
                "ctype.h",
                "dirent.h",
                "dlfcn.h",
@@ -2964,10 +2963,7 @@ fn test_emscripten(target: &str) {
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // sigval is actually a union, but we pretend it's a struct
         // FIXME: is this necessary?
-        (struct_ == "sigevent" && field == "sigev_value") ||
-        // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        // FIXME: is this necessary?
-        (struct_ == "aiocb" && field == "aio_buf")
+        (struct_ == "sigevent" && field == "sigev_value")
     });
 
     cfg.skip_field(move |struct_, field| {
