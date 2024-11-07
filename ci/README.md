@@ -4,8 +4,8 @@ result the CI is pretty complicated and also pretty large! Hopefully this can
 serve as a guide through the sea of scripts in this directory and elsewhere in
 this project.
 
-Note that this documentation is quite outdated. See CI config and scripts
-in the `ci` directory how we run CI now.
+Note that this documentation is quite outdated. See CI config and scripts in the
+`ci` directory how we run CI now.
 
 # Files
 
@@ -20,8 +20,9 @@ First up, let's talk about the files in this directory:
 
 # CI Systems
 
-Currently this repository leverages a combination of GitHub Actions and Cirrus CI
-for running tests. You can find tested triples in [Actions config] or [Cirrus config].
+Currently this repository leverages a combination of GitHub Actions and Cirrus
+CI for running tests. You can find tested triples in [Actions config] or
+[Cirrus config].
 
 The Windows triples are all pretty standard, they just set up their environment
 then run tests, no need for downloading any extra target libs (we just download
@@ -101,8 +102,10 @@ about above), and then shut down.
 
 1. [Download the latest stable amd64-bootonly release ISO](https://www.freebsd.org/where.html).
    E.g. FreeBSD-11.1-RELEASE-amd64-bootonly.iso
-2. Create the disk image: `qemu-img create -f qcow2 FreeBSD-11.1-RELEASE-amd64.qcow2 2G`
-3. Boot the machine: `qemu-system-x86_64 -cdrom FreeBSD-11.1-RELEASE-amd64-bootonly.iso -drive if=virtio,file=FreeBSD-11.1-RELEASE-amd64.qcow2 -net nic,model=virtio -net user`
+2. Create the disk image:
+   `qemu-img create -f qcow2 FreeBSD-11.1-RELEASE-amd64.qcow2 2G`
+3. Boot the machine:
+   `qemu-system-x86_64 -cdrom FreeBSD-11.1-RELEASE-amd64-bootonly.iso -drive if=virtio,file=FreeBSD-11.1-RELEASE-amd64.qcow2 -net nic,model=virtio -net user`
 4. Run the installer, and install FreeBSD:
    1. Install
    1. Continue with default keymap
@@ -159,9 +162,9 @@ about above), and then shut down.
 
    1. Exit the post install shell: `exit`
    1. Back in in the installer choose Reboot
-   1. If all went well the machine should reboot and show a login prompt.
-      If you switch to the serial console by choosing View > serial0 in
-      the qemu menu, you should be logged in as root.
+   1. If all went well the machine should reboot and show a login prompt. If you
+      switch to the serial console by choosing View > serial0 in the qemu menu,
+      you should be logged in as root.
    1. Shutdown the machine: `shutdown -p now`
 
 Helpful links
@@ -178,8 +181,8 @@ Helpful links
 4. run installer
 5. `echo 'set tty com0' >> /etc/boot.conf`
 6. `echo 'boot' >> /etc/boot.conf`
-7. Modify /etc/ttys, change the `tty00` at the end from 'unknown off' to
-   'vt220 on secure'
+7. Modify /etc/ttys, change the `tty00` at the end from 'unknown off' to 'vt220
+   on secure'
 8. Modify same line in /etc/ttys to have `"/root/foo.sh"` as the shell
 9. Add this script to `/root/foo.sh`
 
