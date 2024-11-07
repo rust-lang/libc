@@ -2834,31 +2834,21 @@ fn test_emscripten(target: &str) {
                "stdio.h",
                "stdlib.h",
                "string.h",
-               "sys/epoll.h",
-               "sys/eventfd.h",
                "sys/file.h",
                "sys/ioctl.h",
                "sys/ipc.h",
                "sys/mman.h",
                "sys/mount.h",
                "sys/msg.h",
-               "sys/personality.h",
-               "sys/prctl.h",
-               "sys/ptrace.h",
-               "sys/quota.h",
-               "sys/reboot.h",
                "sys/resource.h",
                "sys/sem.h",
                "sys/shm.h",
-               "sys/signalfd.h",
                "sys/socket.h",
                "sys/stat.h",
                "sys/statvfs.h",
-               "sys/swap.h",
                "sys/syscall.h",
                "sys/sysinfo.h",
                "sys/time.h",
-               "sys/timerfd.h",
                "sys/times.h",
                "sys/types.h",
                "sys/uio.h",
@@ -2883,8 +2873,6 @@ fn test_emscripten(target: &str) {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "fd_set" | "Dl_info" | "DIR" => ty.to_string(),
-
-            "os_unfair_lock" => "struct os_unfair_lock_s".to_string(),
 
             // LFS64 types have been removed in Emscripten 3.1.44+
             // https://github.com/emscripten-core/emscripten/pull/19812
@@ -2922,6 +2910,10 @@ fn test_emscripten(target: &str) {
             // FIXME: is this necessary?
             "sighandler_t" => true,
 
+            // No epoll support
+            // https://github.com/emscripten-core/emscripten/issues/5033
+            ty if ty.starts_with("epoll") => true,
+
             // FIXME: The size has been changed due to musl's time64
             "time_t" => true,
 
@@ -2947,6 +2939,11 @@ fn test_emscripten(target: &str) {
 
             // FIXME: The size has been changed when upgraded to musl 1.2.2
             "pthread_mutex_t" => true,
+
+            // No epoll support
+            // https://github.com/emscripten-core/emscripten/issues/5033
+            ty if ty.starts_with("epoll") => true,
+            ty if ty.starts_with("signalfd") => true,
 
             // FIXME: Lowered from 16 to 8 bytes in
             // llvm/llvm-project@d1a96e9
@@ -2984,9 +2981,29 @@ fn test_emscripten(target: &str) {
             // FIXME: emscripten uses different constants to constructs these
             n if n.contains("__SIZEOF_PTHREAD") => true,
 
+            // No epoll support
+            // https://github.com/emscripten-core/emscripten/issues/5033
+            n if n.starts_with("EPOLL") => true,
+
+            // No ptrace.h
+            // https://github.com/emscripten-core/emscripten/pull/17704
+            n if n.starts_with("PTRACE_") => true,
+
+            // No quota.h
+            // https://github.com/emscripten-core/emscripten/pull/17704
+            n if n.starts_with("QIF_") => true,
+            "USRQUOTA" | "GRPQUOTA" | "Q_GETFMT" | "Q_GETINFO" | "Q_SETINFO" | "Q_SYNC"
+            | "Q_QUOTAON" | "Q_QUOTAOFF" | "Q_GETQUOTA" | "Q_SETQUOTA" => true,
+
             // FIXME: `SYS_gettid` was removed in
             // emscripten-core/emscripten@6d6474e
             "SYS_gettid" => true,
+
+            // No personality.h
+            // https://github.com/emscripten-core/emscripten/pull/17704
+            "ADDR_NO_RANDOMIZE" | "MMAP_PAGE_ZERO" | "ADDR_COMPAT_LAYOUT" | "READ_IMPLIES_EXEC"
+            | "ADDR_LIMIT_32BIT" | "SHORT_INODE" | "WHOLE_SECONDS" | "STICKY_TIMEOUTS"
+            | "ADDR_LIMIT_3GB" => true,
 
             // FIXME: These values have been changed
             | "POSIX_MADV_DONTNEED" // to 4
@@ -3028,17 +3045,6 @@ fn test_emscripten(target: &str) {
         // musl names this __dummy1 but it's still there
         // FIXME: is this necessary?
         (struct_ == "glob_t" && field == "gl_flags") ||
-        // musl seems to define this as an *anonymous* bitfield
-        // FIXME: is this necessary?
-        (struct_ == "statvfs" && field == "__f_unused") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
-        // signalfd had SIGSYS fields added in Linux 4.18, but no libc release has them yet.
-        (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
-                                           field == "_pad2" ||
-                                           field == "ssi_syscall" ||
-                                           field == "ssi_call_addr" ||
-                                           field == "ssi_arch")) ||
         // FIXME: After musl 1.1.24, it have only one field `sched_priority`,
         // while other fields become reserved.
         (struct_ == "sched_param" && [
