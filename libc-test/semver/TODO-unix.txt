@@ -3,3 +3,8 @@
 getpwuid_r
 pthread_atfork
 pthread_sigmask
+# * Solaris is missing flock(2)
+LOCK_EX
+LOCK_NB
+LOCK_SH
+LOCK_UN
