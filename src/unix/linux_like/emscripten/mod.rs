@@ -16,7 +16,7 @@ pub type loff_t = i64;
 pub type pthread_key_t = ::c_uint;
 
 pub type clock_t = c_long;
-pub type time_t = c_long;
+pub type time_t = i64;
 pub type suseconds_t = c_long;
 pub type ino_t = u64;
 pub type off_t = i64;
@@ -259,11 +259,8 @@ s! {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
         pub shm_atime: ::time_t,
-        __unused1: ::c_int,
         pub shm_dtime: ::time_t,
-        __unused2: ::c_int,
         pub shm_ctime: ::time_t,
-        __unused3: ::c_int,
         pub shm_cpid: ::pid_t,
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::c_ulong,
@@ -274,11 +271,8 @@ s! {
     pub struct msqid_ds {
         pub msg_perm: ::ipc_perm,
         pub msg_stime: ::time_t,
-        __unused1: ::c_int,
         pub msg_rtime: ::time_t,
-        __unused2: ::c_int,
         pub msg_ctime: ::time_t,
-        __unused3: ::c_int,
         __msg_cbytes: ::c_ulong,
         pub msg_qnum: ::msgqnum_t,
         pub msg_qbytes: ::msglen_t,
@@ -1046,11 +1040,11 @@ pub const PTHREAD_STACK_MIN: ::size_t = 2048;
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
-pub const POSIX_MADV_DONTNEED: ::c_int = 0;
+pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
 pub const RLIM_INFINITY: ::rlim_t = !0;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
-pub const RLIMIT_NLIMITS: ::c_int = 15;
+pub const RLIMIT_NLIMITS: ::c_int = 16;
 #[allow(deprecated)]
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: ::c_int = RLIMIT_NLIMITS;
@@ -1065,7 +1059,7 @@ pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
-pub const CPU_SETSIZE: ::c_int = 128;
+pub const CPU_SETSIZE: ::c_int = 1024;
 
 pub const TCSANOW: ::c_int = 0;
 pub const TCSADRAIN: ::c_int = 1;
@@ -1167,14 +1161,14 @@ pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
 
 pub const SO_BINDTODEVICE: ::c_int = 25;
-pub const SO_TIMESTAMP: ::c_int = 29;
+pub const SO_TIMESTAMP: ::c_int = 63;
 pub const SO_MARK: ::c_int = 36;
 pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
-pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 28;
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
 
 pub const O_DIRECT: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
@@ -1225,7 +1219,7 @@ pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 
-pub const IPPROTO_MAX: ::c_int = 256;
+pub const IPPROTO_MAX: ::c_int = 263;
 
 pub const SOL_SOCKET: ::c_int = 1;
 
@@ -1242,8 +1236,8 @@ pub const SO_LINGER: ::c_int = 13;
 pub const SO_REUSEPORT: ::c_int = 15;
 pub const SO_RCVLOWAT: ::c_int = 18;
 pub const SO_SNDLOWAT: ::c_int = 19;
-pub const SO_RCVTIMEO: ::c_int = 20;
-pub const SO_SNDTIMEO: ::c_int = 21;
+pub const SO_RCVTIMEO: ::c_int = 66;
+pub const SO_SNDTIMEO: ::c_int = 67;
 pub const SO_ACCEPTCONN: ::c_int = 30;
 
 pub const IPV6_RTHDR_LOOSE: ::c_int = 0;
@@ -1345,7 +1339,7 @@ pub const TIOCM_RNG: ::c_int = 0x080;
 pub const TIOCM_DSR: ::c_int = 0x100;
 pub const TIOCM_CD: ::c_int = TIOCM_CAR;
 pub const TIOCM_RI: ::c_int = TIOCM_RNG;
-pub const O_TMPFILE: ::c_int = 0x400000;
+pub const O_TMPFILE: ::c_int = 0x410000;
 
 pub const MAX_ADDR_LEN: usize = 7;
 pub const ARPD_UPDATE: ::c_ushort = 0x01;

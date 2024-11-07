@@ -2819,7 +2819,7 @@ fn test_emscripten(target: &str) {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "fd_set" | "Dl_info" | "DIR" => ty.to_string(),
 
-            // LFS64 types have been removed in Emscripten 3.1.44+
+            // LFS64 types have been removed in Emscripten 3.1.44
             // https://github.com/emscripten-core/emscripten/pull/19812
             "off64_t" => "off_t".to_string(),
 
@@ -2843,7 +2843,7 @@ fn test_emscripten(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // FIXME: appears that `epoll_event.data` is an union
+            // Rust struct uses raw u64, rather than union
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             s => s.to_string(),
         }
@@ -2859,10 +2859,7 @@ fn test_emscripten(target: &str) {
             // https://github.com/emscripten-core/emscripten/issues/5033
             ty if ty.starts_with("epoll") => true,
 
-            // FIXME: The size has been changed due to musl's time64
-            "time_t" => true,
-
-            // LFS64 types have been removed in Emscripten 3.1.44+
+            // LFS64 types have been removed in Emscripten 3.1.44
             // https://github.com/emscripten-core/emscripten/pull/19812
             t => t.ends_with("64") || t.ends_with("64_t"),
         }
@@ -2871,30 +2868,19 @@ fn test_emscripten(target: &str) {
     cfg.skip_struct(move |ty| {
         match ty {
             // This is actually a union, not a struct
-            // FIXME: is this necessary?
             "sigval" => true,
-
-            // FIXME: It was removed in
-            // emscripten-core/emscripten@953e414
-            "pthread_mutexattr_t" => true,
 
             // FIXME: Investigate why the test fails.
             // Skip for now to unblock CI.
             "pthread_condattr_t" => true,
-
-            // FIXME: The size has been changed when upgraded to musl 1.2.2
-            "pthread_mutex_t" => true,
+            "pthread_mutexattr_t" => true,
 
             // No epoll support
             // https://github.com/emscripten-core/emscripten/issues/5033
             ty if ty.starts_with("epoll") => true,
             ty if ty.starts_with("signalfd") => true,
 
-            // FIXME: The size has been changed due to time64
-            "utimbuf" | "timeval" | "timespec" | "rusage" | "itimerval" | "sched_param"
-            | "stat" | "stat64" | "shmid_ds" | "msqid_ds" => true,
-
-            // LFS64 types have been removed in Emscripten 3.1.44+
+            // LFS64 types have been removed in Emscripten 3.1.44
             // https://github.com/emscripten-core/emscripten/pull/19812
             ty => ty.ends_with("64") || ty.ends_with("64_t"),
         }
@@ -2903,11 +2889,8 @@ fn test_emscripten(target: &str) {
     cfg.skip_fn(move |name| {
         match name {
             // Emscripten does not support fork/exec/wait or any kind of multi-process support
-            // https://github.com/emscripten-core/emscripten/blob/3.1.30/tools/system_libs.py#L973
+            // https://github.com/emscripten-core/emscripten/blob/3.1.68/tools/system_libs.py#L1100
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" | "wait4" => true,
-
-            // FIXME: Remove after emscripten-core/emscripten#18492 is released (> 3.1.30).
-            "clearenv" => true,
 
             _ => false,
         }
@@ -2936,8 +2919,8 @@ fn test_emscripten(target: &str) {
             "USRQUOTA" | "GRPQUOTA" | "Q_GETFMT" | "Q_GETINFO" | "Q_SETINFO" | "Q_SYNC"
             | "Q_QUOTAON" | "Q_QUOTAOFF" | "Q_GETQUOTA" | "Q_SETQUOTA" => true,
 
-            // FIXME: `SYS_gettid` was removed in
-            // emscripten-core/emscripten@6d6474e
+            // `SYS_gettid` was removed in Emscripten v1.39.9
+            // https://github.com/emscripten-core/emscripten/pull/10439
             "SYS_gettid" => true,
 
             // No personality.h
@@ -2946,19 +2929,11 @@ fn test_emscripten(target: &str) {
             | "ADDR_LIMIT_32BIT" | "SHORT_INODE" | "WHOLE_SECONDS" | "STICKY_TIMEOUTS"
             | "ADDR_LIMIT_3GB" => true,
 
-            // FIXME: These values have been changed
-            | "POSIX_MADV_DONTNEED" // to 4
-            | "RLIMIT_NLIMITS" // to 16
-            | "RLIM_NLIMITS" // to 16
-            | "IPPROTO_MAX" // to 263
-            | "F_GETLK" // to 5
-            | "F_SETLK" // to 6
-            | "F_SETLKW" // to 7
-            | "O_TMPFILE" // to 65
-            | "SIG_IGN" // -1
-                => true,
+            // `SIG_IGN` has been changed to -2 since 1 is a valid function address
+            // https://github.com/emscripten-core/emscripten/pull/14883
+            "SIG_IGN" => true,
 
-            // LFS64 types have been removed in Emscripten 3.1.44+
+            // LFS64 types have been removed in Emscripten 3.1.44
             // https://github.com/emscripten-core/emscripten/pull/19812
             n if n.starts_with("RLIM64") => true,
 
@@ -2968,23 +2943,18 @@ fn test_emscripten(target: &str) {
 
     cfg.skip_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
-        // FIXME: is this necessary?
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
-        // FIXME: is this necessary?
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // sigval is actually a union, but we pretend it's a struct
-        // FIXME: is this necessary?
         (struct_ == "sigevent" && field == "sigev_value")
     });
 
     cfg.skip_field(move |struct_, field| {
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
-        // FIXME: is this necessary?
         (struct_ == "siginfo_t" && field == "_pad") ||
         // musl names this __dummy1 but it's still there
-        // FIXME: is this necessary?
         (struct_ == "glob_t" && field == "gl_flags") ||
         // FIXME: After musl 1.1.24, it have only one field `sched_priority`,
         // while other fields become reserved.
@@ -2996,7 +2966,6 @@ fn test_emscripten(target: &str) {
         ].contains(&field))
     });
 
-    // FIXME: test linux like
     cfg.generate("../src/lib.rs", "main.rs");
 }
 

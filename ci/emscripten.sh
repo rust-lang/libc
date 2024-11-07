@@ -2,9 +2,9 @@
 
 set -ex
 
-# FIXME: 3.1.21 removed a lot of header files (https://github.com/emscripten-core/emscripten/pull/17704).
-#        We have to tweak libc-test (and deprecate unsupported items, maybe) when updating emsdk.
-EMSDK_VERSION=3.1.20
+# Note: keep in sync with:
+# https://github.com/rust-lang/rust/blob/master/src/ci/docker/scripts/emscripten.sh
+EMSDK_VERSION=3.1.68
 
 git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable
 cd /emsdk-portable
