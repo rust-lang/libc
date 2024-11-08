@@ -7,16 +7,55 @@ echo "Setup toolchain"
 
 toolchain="${TOOLCHAIN:-nightly}"
 os="${OS:-}"
+install_rustup="${INSTALL_RUSTUP:-0}"
 
 case "$(uname -s)" in
     Linux*)     os=linux ;;
     Darwin*)    os=macos ;;
     MINGW*)     os=windows ;;
+    # This captures both Solaris and illumos, which aren't possible to
+    # distinguish via uname -s. But at the moment we don't need to make this
+    # distinction -- the only distinction we care about is in TARGET, which is
+    # expected to be set in the environment.
+    SunOS*)     os=solarish ;;
     *)
         echo "Unknown system $(uname -s)"
         exit 1
         ;;
 esac
+
+if [ "$install_rustup" = "1" ]; then
+    echo "Install rustup"
+
+    # If the CI system already has Rust installed, we'll override that
+    # installation via sourcing ~/.cargo/env.
+    export RUSTUP_INIT_SKIP_PATH_CHECK=yes
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain none
+    # shellcheck source=/dev/null
+    . "$HOME/.cargo/env"
+
+    # It is possible that "$HOME/.cargo/bin" was already in the PATH, in which
+    # case the above source would not have any effect. If the directory wasn't
+    # present on disk, then some shells negatively cache the PATH lookup and not
+    # find the directory even after it is created. To work around this, force a
+    # change to the PATH.
+    #
+    # This is a more portable version of `hash -r`. `hash -r` is part of the POSIX
+    # spec [1] but may not be available in all shells. The manual suggests the
+    # following, more portable option:
+    #
+    #    PATH="$PATH"
+    #
+    # But empirically, that has been observed to not invalidate the cache in some
+    # shells. Actually making a change to the PATH should always work (hopefully!)
+    #
+    # [1] https://pubs.opengroup.org/onlinepubs/9799919799/utilities/hash.html
+
+    # First, add a trailing colon.
+    PATH="$PATH:"
+    # Then, remove it.
+    PATH="${PATH%:}"
+fi
 
 if [ "$os" = "windows" ] && [ -n "${TARGET:-}" ]; then
     toolchain="$toolchain-$TARGET"

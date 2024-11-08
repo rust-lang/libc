@@ -1,0 +1,7 @@
+# Configuration for buildomat. See
+# https://github.com/oxidecomputer/buildomat/blob/main/README.md#per-repository-configuration.
+
+enable = true
+# The buildomat jobs don't have access to any secrets, so it's okay for GitHub
+# users to create them.
+org_only = false

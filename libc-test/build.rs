@@ -966,6 +966,13 @@ fn test_solarish(target: &str) {
         // This evaluates to a sysconf() call rather than a constant
         "PTHREAD_STACK_MIN" => true,
 
+        // Note: on illumos, the value of PTHREAD_MUTEX_DEFAULT was changed to a
+        // new value, 0x8, in 2024-02:
+        // https://github.com/illumos/illumos-gate/commit/50718d3ece2504ebcfdc3f385132f664b567cdd0.
+        // libc still has the old value (= PTHREAD_MUTEX_NORMAL = 0x0) for a
+        // window of time in case illumos systems are out of date.
+        "PTHREAD_MUTEX_DEFAULT" if is_illumos => true,
+
         // EPOLLEXCLUSIVE is a relatively recent addition to the epoll interface and may not be
         // defined on older systems.  It is, however, safe to use on systems which do not
         // explicitly support it. (A no-op is an acceptable implementation of EPOLLEXCLUSIVE.)

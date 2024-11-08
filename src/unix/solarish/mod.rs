@@ -2063,6 +2063,15 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
 pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 4;
+
+// Note: on illumos, the value of PTHREAD_MUTEX_DEFAULT was changed to a new
+// value, 0x8, in 2024-02:
+// https://github.com/illumos/illumos-gate/commit/50718d3ece2504ebcfdc3f385132f664b567cdd0.
+// libc still has the old value (= PTHREAD_MUTEX_NORMAL = 0x0) for a window of
+// time in case illumos systems are out of date.
+//
+// Once this constant has been updated on illumos, the corresponding
+// `cfg.skip_const` configuration in `libc-test/build.rs` should be removed.
 pub const PTHREAD_MUTEX_DEFAULT: c_int = crate::PTHREAD_MUTEX_NORMAL;
 
 pub const RTLD_NEXT: *mut c_void = -1isize as *mut c_void;
