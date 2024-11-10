@@ -208,6 +208,7 @@ fn test_apple(target: &str) {
         "net/if.h",
         "net/if_arp.h",
         "net/if_dl.h",
+        "net/if_mib.h",
         "net/if_utun.h",
         "net/if_var.h",
         "net/ndrv.h",
