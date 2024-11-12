@@ -4676,16 +4676,6 @@ safe_f! {
 }
 
 cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    } else {
-        mod no_align;
-        pub use self::no_align::*;
-    }
-}
-
-cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         mod b64;
         pub use self::b64::*;
