@@ -1479,6 +1479,18 @@ cfg_if! {
 }
 
 cfg_if! {
+    if #[cfg(not(target_os = "android"))] {
+        extern "C" {
+            #[cfg_attr(
+                all(target_os = "macos", target_arch = "x86"),
+                link_name = "confstr$UNIX2003"
+            )]
+            pub fn confstr(name: ::c_int, buf: *mut ::c_char, len: ::size_t) -> ::size_t;
+        }
+    }
+}
+
+cfg_if! {
     if #[cfg(not(target_os = "aix"))] {
         extern "C" {
             pub fn dladdr(addr: *const ::c_void, info: *mut Dl_info) -> ::c_int;
