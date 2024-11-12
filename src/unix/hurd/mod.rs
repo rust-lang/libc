@@ -73,7 +73,6 @@ pub type __socklen_t = __u32_type;
 pub type __sig_atomic_t = ::c_int;
 pub type __time64_t = __int64_t;
 pub type ssize_t = __ssize_t;
-pub type size_t = ::c_ulong;
 pub type wchar_t = ::c_int;
 pub type wint_t = ::c_uint;
 pub type gid_t = __gid_t;
@@ -341,7 +340,7 @@ s! {
         pub ai_family: ::c_int,
         pub ai_socktype: ::c_int,
         pub ai_protocol: ::c_int,
-        pub ai_addrlen: socklen_t,
+        pub ai_addrlen: ::socklen_t,
         pub ai_addr: *mut sockaddr,
         pub ai_canonname: *mut ::c_char,
         pub ai_next: *mut addrinfo,
@@ -349,11 +348,11 @@ s! {
 
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
-        pub msg_namelen: socklen_t,
+        pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
         pub msg_iovlen: ::c_int,
         pub msg_control: *mut ::c_void,
-        pub msg_controllen: socklen_t,
+        pub msg_controllen: ::socklen_t,
         pub msg_flags: ::c_int,
     }
 
@@ -683,8 +682,8 @@ s! {
     pub struct __pthread_attr {
         pub __schedparam: sched_param,
         pub __stackaddr: *mut ::c_void,
-        pub __stacksize: size_t,
-        pub __guardsize: size_t,
+        pub __stacksize: ::size_t,
+        pub __guardsize: ::size_t,
         pub __detachstate: __pthread_detachstate,
         pub __inheritsched: __pthread_inheritsched,
         pub __contentionscope: __pthread_contentionscope,
@@ -733,7 +732,7 @@ s! {
 
     pub struct iovec {
         pub iov_base: *mut ::c_void,
-        pub iov_len: size_t,
+        pub iov_len: ::size_t,
     }
 
     pub struct passwd {
@@ -3651,13 +3650,13 @@ extern "C" {
         __iovec: *const ::iovec,
         __count: ::c_int,
         __offset: __off_t,
-    ) -> ssize_t;
+    ) -> ::ssize_t;
     pub fn pwritev(
         __fd: ::c_int,
         __iovec: *const ::iovec,
         __count: ::c_int,
         __offset: __off_t,
-    ) -> ssize_t;
+    ) -> ::ssize_t;
 
     pub fn preadv64(
         fd: ::c_int,
@@ -3738,7 +3737,7 @@ extern "C" {
     pub fn fsetpos64(stream: *mut ::FILE, ptr: *const fpos64_t) -> ::c_int;
     pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
 
-    pub fn bind(__fd: ::c_int, __addr: *const sockaddr, __len: socklen_t) -> ::c_int;
+    pub fn bind(__fd: ::c_int, __addr: *const sockaddr, __len: ::socklen_t) -> ::c_int;
 
     pub fn accept4(
         fd: ::c_int,
@@ -3756,7 +3755,7 @@ extern "C" {
 
     pub fn recvmsg(__fd: ::c_int, __message: *mut msghdr, __flags: ::c_int) -> ::ssize_t;
 
-    pub fn sendmsg(__fd: ::c_int, __message: *const msghdr, __flags: ::c_int) -> ssize_t;
+    pub fn sendmsg(__fd: ::c_int, __message: *const msghdr, __flags: ::c_int) -> ::ssize_t;
 
     pub fn recvfrom(
         socket: ::c_int,
@@ -4360,7 +4359,7 @@ extern "C" {
 
     pub fn mmap64(
         __addr: *mut ::c_void,
-        __len: size_t,
+        __len: ::size_t,
         __prot: ::c_int,
         __flags: ::c_int,
         __fd: ::c_int,
