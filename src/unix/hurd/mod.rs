@@ -72,7 +72,6 @@ pub type __ptrdiff_t = __sword_type;
 pub type __socklen_t = __u32_type;
 pub type __sig_atomic_t = ::c_int;
 pub type __time64_t = __int64_t;
-pub type ssize_t = __ssize_t;
 pub type wchar_t = ::c_int;
 pub type wint_t = ::c_uint;
 pub type gid_t = __gid_t;
