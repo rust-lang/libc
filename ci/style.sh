@@ -18,6 +18,9 @@ else
     exit 1
 fi
 
+# Ensure that `sort` output is not locale-dependent
+export LC_ALL=C
+
 for file in libc-test/semver/*.txt; do
     case "$file" in 
       *TODO*) continue ;;
