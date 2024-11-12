@@ -4671,9 +4671,6 @@ safe_f! {
     }
 }
 
-mod align;
-pub use self::align::*;
-
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         mod b64;
