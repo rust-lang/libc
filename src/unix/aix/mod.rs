@@ -1,4 +1,4 @@
-pub type c_char = i8;
+pub type c_char = u8;
 pub type caddr_t = *mut ::c_char;
 pub type clockid_t = ::c_longlong;
 pub type blkcnt_t = ::c_long;
@@ -17,7 +17,7 @@ pub type rlim_t = ::c_ulong;
 pub type speed_t = ::c_uint;
 pub type tcflag_t = ::c_uint;
 pub type time_t = ::c_long;
-pub type time64_t = ::int64_t;
+pub type time64_t = u64;
 pub type timer_t = ::c_long;
 pub type wchar_t = ::c_uint;
 pub type nfds_t = ::c_int;
@@ -25,7 +25,7 @@ pub type projid_t = ::c_int;
 pub type id_t = ::c_uint;
 pub type blksize64_t = ::c_ulonglong;
 pub type blkcnt64_t = ::c_ulonglong;
-pub type sctp_assoc_t = ::uint32_t;
+pub type sctp_assoc_t = u32;
 
 pub type suseconds_t = ::c_int;
 pub type useconds_t = ::c_uint;
@@ -60,6 +60,7 @@ pub type posix_spawn_file_actions_t = *mut ::c_char;
 pub type iconv_t = *mut ::c_void;
 
 e! {
+    #[repr(u32)]
     pub enum uio_rw {
         UIO_READ = 0,
         UIO_WRITE,
@@ -534,20 +535,17 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg(libc_union)]
     pub union __sigaction_sa_union {
         pub __su_handler: extern fn(c: ::c_int),
         pub __su_sigaction: extern fn(c: ::c_int, info: *mut siginfo_t, ptr: *mut ::c_void),
     }
 
     pub struct sigaction {
-        #[cfg(libc_union)]
         pub sa_union: __sigaction_sa_union,
         pub sa_mask: sigset_t,
         pub sa_flags: ::c_int,
     }
 
-    #[cfg(libc_union)]
     pub union __poll_ctl_ext_u {
         pub addr: *mut ::c_void,
         pub data32: u32,
@@ -559,7 +557,6 @@ s_no_extra_traits! {
         pub command: u8,
         pub events: ::c_short,
         pub fd: ::c_int,
-        #[cfg(libc_union)]
         pub u: __poll_ctl_ext_u,
         pub reversed64: [u64; 6],
     }
@@ -567,7 +564,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[cfg(libc_union)]
         impl PartialEq for __sigaction_sa_union {
             fn eq(&self, other: &__sigaction_sa_union) -> bool {
                 unsafe {
@@ -576,18 +572,15 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __sigaction_sa_union {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __sigaction_sa_union {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("__sigaction_sa_union")
                     .field("__su_handler", unsafe { &self.__su_handler })
                     .field("__su_sigaction", unsafe { &self.__su_sigaction })
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __sigaction_sa_union {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -599,10 +592,7 @@ cfg_if! {
 
         impl PartialEq for sigaction {
             fn eq(&self, other: &sigaction) -> bool {
-                #[cfg(libc_union)]
                 let union_eq = self.sa_union == other.sa_union;
-                #[cfg(not(libc_union))]
-                let union_eq = true;
                 self.sa_mask == other.sa_mask
                     && self.sa_flags == other.sa_flags
                     && union_eq
@@ -610,9 +600,8 @@ cfg_if! {
         }
         impl Eq for sigaction {}
         impl ::fmt::Debug for sigaction {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 let mut struct_formatter = f.debug_struct("sigaction");
-                #[cfg(libc_union)]
                 struct_formatter.field("sa_union", &self.sa_union);
                 struct_formatter.field("sa_mask", &self.sa_mask);
                 struct_formatter.field("sa_flags", &self.sa_flags);
@@ -621,14 +610,12 @@ cfg_if! {
         }
         impl ::hash::Hash for sigaction {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                #[cfg(libc_union)]
                 self.sa_union.hash(state);
                 self.sa_mask.hash(state);
                 self.sa_flags.hash(state);
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __poll_ctl_ext_u {
             fn eq(&self, other: &__poll_ctl_ext_u) -> bool {
                 unsafe {
@@ -638,11 +625,9 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __poll_ctl_ext_u {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __poll_ctl_ext_u {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("__poll_ctl_ext_u")
                     .field("addr", unsafe { &self.addr })
                     .field("data32", unsafe { &self.data32 })
@@ -650,7 +635,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __poll_ctl_ext_u {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -663,10 +647,7 @@ cfg_if! {
 
         impl PartialEq for poll_ctl_ext {
             fn eq(&self, other: &poll_ctl_ext) -> bool {
-                #[cfg(libc_union)]
                 let union_eq = self.u == other.u;
-                #[cfg(not(libc_union))]
-                let union_eq = true;
                 self.version == other.version
                     && self.command == other.command
                     && self.events == other.events
@@ -677,13 +658,12 @@ cfg_if! {
         }
         impl Eq for poll_ctl_ext {}
         impl ::fmt::Debug for poll_ctl_ext {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 let mut struct_formatter = f.debug_struct("poll_ctl_ext");
                 struct_formatter.field("version", &self.version);
                 struct_formatter.field("command", &self.command);
                 struct_formatter.field("events", &self.events);
                 struct_formatter.field("fd", &self.fd);
-                #[cfg(libc_union)]
                 struct_formatter.field("u", &self.u);
                 struct_formatter.field("reversed64", &self.reversed64);
                 struct_formatter.finish()
@@ -695,7 +675,6 @@ cfg_if! {
                 self.command.hash(state);
                 self.events.hash(state);
                 self.fd.hash(state);
-                #[cfg(libc_union)]
                 self.u.hash(state);
                 self.reversed64.hash(state);
             }
@@ -983,8 +962,6 @@ pub const BPF_X: ::c_int = 8;
 // net/if.h
 pub const IFNET_SLOWHZ: ::c_int = 1;
 pub const IFQ_MAXLEN: ::c_int = 50;
-pub const IF_NAMESIZE: ::c_int = 16;
-pub const IFNAMSIZ: ::c_int = 16;
 pub const IFF_UP: ::c_int = 0x1;
 pub const IFF_BROADCAST: ::c_int = 0x2;
 pub const IFF_DEBUG: ::c_int = 0x4;
@@ -1007,8 +984,6 @@ pub const ARPHRD_ETHER: ::c_int = 1;
 pub const ARPHRD_802_5: ::c_int = 6;
 pub const ARPHRD_802_3: ::c_int = 6;
 pub const ARPHRD_FDDI: ::c_int = 1;
-pub const ARPOP_REQUEST: ::c_int = 1;
-pub const ARPOP_REPLY: ::c_int = 2;
 
 // net/route.h
 pub const RTM_ADD: ::c_int = 0x1;
@@ -1210,6 +1185,7 @@ pub const TCP_KEEPCNT: ::c_int = 0x13;
 pub const TCP_NODELAYACK: ::c_int = 0x14;
 
 // pthread.h
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 1;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 0;
@@ -1274,13 +1250,13 @@ pub const ENTER: ::c_int = 1;
 pub const SEM_FAILED: *mut sem_t = -1isize as *mut ::sem_t;
 
 // spawn.h
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x1;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x2;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x4;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x8;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x10;
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x20;
-pub const POSIX_SPAWN_FORK_HANDLERS: ::c_int = 0x1000;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x1;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x2;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x4;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x8;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x10;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x20;
+pub const POSIX_SPAWN_FORK_HANDLERS: ::c_short = 0x1000;
 
 // stdio.h
 pub const EOF: ::c_int = -1;
@@ -1616,29 +1592,29 @@ pub const MADV_WILLNEED: ::c_int = 3;
 pub const MADV_DONTNEED: ::c_int = 4;
 
 // sys/mode.h
-pub const S_IFMT: mode_t = 0o170000;
-pub const S_IFREG: mode_t = 0o100000;
-pub const S_IFDIR: mode_t = 0o40000;
-pub const S_IFBLK: mode_t = 0o60000;
-pub const S_IFCHR: mode_t = 0o20000;
-pub const S_IFIFO: mode_t = 0o10000;
-pub const S_IRWXU: mode_t = 0o700;
-pub const S_IRUSR: mode_t = 0o400;
-pub const S_IWUSR: mode_t = 0o200;
-pub const S_IXUSR: mode_t = 0o100;
-pub const S_IRWXG: mode_t = 0o70;
-pub const S_IRGRP: mode_t = 0o40;
-pub const S_IWGRP: mode_t = 0o20;
-pub const S_IXGRP: mode_t = 0o10;
-pub const S_IRWXO: mode_t = 7;
-pub const S_IROTH: mode_t = 4;
-pub const S_IWOTH: mode_t = 2;
-pub const S_IXOTH: mode_t = 1;
-pub const S_IFLNK: mode_t = 0o120000;
-pub const S_IFSOCK: mode_t = 0o140000;
-pub const S_IEXEC: mode_t = 0o100;
-pub const S_IWRITE: mode_t = 0o200;
-pub const S_IREAD: mode_t = 0o400;
+pub const S_IFMT: mode_t = 0o17_0000;
+pub const S_IFREG: mode_t = 0o10_0000;
+pub const S_IFDIR: mode_t = 0o4_0000;
+pub const S_IFBLK: mode_t = 0o6_0000;
+pub const S_IFCHR: mode_t = 0o2_0000;
+pub const S_IFIFO: mode_t = 0o1_0000;
+pub const S_IRWXU: mode_t = 0o0700;
+pub const S_IRUSR: mode_t = 0o0400;
+pub const S_IWUSR: mode_t = 0o0200;
+pub const S_IXUSR: mode_t = 0o0100;
+pub const S_IRWXG: mode_t = 0o0070;
+pub const S_IRGRP: mode_t = 0o0040;
+pub const S_IWGRP: mode_t = 0o0020;
+pub const S_IXGRP: mode_t = 0o0010;
+pub const S_IRWXO: mode_t = 0o0007;
+pub const S_IROTH: mode_t = 0o0004;
+pub const S_IWOTH: mode_t = 0o0002;
+pub const S_IXOTH: mode_t = 0o0001;
+pub const S_IFLNK: mode_t = 0o12_0000;
+pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_IEXEC: mode_t = 0o0100;
+pub const S_IWRITE: mode_t = 0o0200;
+pub const S_IREAD: mode_t = 0o0400;
 
 // sys/msg.h
 pub const MSG_NOERROR: ::c_int = 0o10000;
@@ -2140,7 +2116,7 @@ pub const POWER_8: ::c_int = 0x10000;
 pub const POWER_9: ::c_int = 0x20000;
 
 // sys/time.h
-pub const FD_SETSIZE: usize = 65534;
+pub const FD_SETSIZE: ::c_int = 65534;
 pub const TIMEOFDAY: ::c_int = 9;
 pub const CLOCK_REALTIME: ::clockid_t = TIMEOFDAY as clockid_t;
 pub const CLOCK_MONOTONIC: ::clockid_t = 10;
@@ -2832,11 +2808,7 @@ extern "C" {
     ) -> ::c_int;
     pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *mut ::c_char, envp: *const *mut ::c_char) -> ::c_int;
     pub fn ffs(value: ::c_int) -> ::c_int;
     pub fn ffsl(value: ::c_long) -> ::c_int;
     pub fn ffsll(value: ::c_longlong) -> ::c_int;

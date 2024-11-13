@@ -11,10 +11,26 @@ This crate exports all underlying platform types, functions, and constants under
 the crate root, so all items are accessible as `libc::foo`. The types and values
 of all the exported APIs match the platform that libc is compiled for.
 
+Windows API bindings are not included in this crate. If you are looking for WinAPI
+bindings, consider using crates like [windows-sys].
+
 More detailed information about the design of this library can be found in its
 [associated RFC][rfc].
 
 [rfc]: https://github.com/rust-lang/rfcs/blob/HEAD/text/1291-promote-libc.md
+[windows-sys]: https://docs.rs/windows-sys
+
+## v1.0 Roadmap
+
+Currently, `libc` has two active branches: `main` for the upcoming v1.0 release,
+and `libc-0.2` for the currently published version. By default all pull requests
+should target `main`; once reviewed, they can be cherry picked to the `libc-0.2`
+branch if needed.
+
+We will stop making new v0.2 releases once v1.0 is released.
+
+See the section in [CONTRIBUTING.md](CONTRIBUTING.md#v10-roadmap) for more
+details.
 
 ## Usage
 
@@ -38,25 +54,11 @@ libc = "0.2"
   If you use Rust >= 1.62, this feature is implicitly enabled.
   Otherwise it requires a nightly rustc.
 
-* **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
-
 ## Rust version support
 
-The minimum supported Rust toolchain version is currently **Rust 1.13.0**.
+The minimum supported Rust toolchain version is currently **Rust 1.63.0**
 (libc does not currently have any policy regarding changes to the minimum
-supported Rust version; such policy is a work in progress.) APIs requiring
-newer Rust features are only available on newer Rust toolchains:
-
-| Feature              | Version |
-|----------------------|---------|
-| `union`              |  1.19.0 |
-| `const mem::size_of` |  1.24.0 |
-| `repr(align)`        |  1.25.0 |
-| `extra_traits`       |  1.25.0 |
-| `core::ffi::c_void`  |  1.30.0 |
-| `repr(packed(N))`    |  1.33.0 |
-| `cfg(target_vendor)` |  1.33.0 |
-| `const-extern-fn`    |  1.62.0 |
+supported Rust version; such policy is a work in progress).
 
 ## Platform support
 

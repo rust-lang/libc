@@ -15,6 +15,8 @@ EFL
 EIP
 ES
 ESI
+Elf32_Rela
+Elf64_Rela
 FS
 GS
 KEYCTL_CAPABILITIES
@@ -96,6 +98,7 @@ SYS_fadvise64_64
 SYS_fchown32
 SYS_fcntl64
 SYS_fork
+SYS_fstat
 SYS_fstat64
 SYS_fstatat64
 SYS_fstatfs64
@@ -131,6 +134,7 @@ SYS_mknod
 SYS_mmap2
 SYS_modify_ldt
 SYS_mpx
+SYS_mseal
 SYS_nice
 SYS_oldfstat
 SYS_oldlstat
@@ -165,6 +169,7 @@ SYS_setregid32
 SYS_setresgid32
 SYS_setresuid32
 SYS_setreuid32
+SYS_setrlimit
 SYS_setuid32
 SYS_sgetmask
 SYS_sigaction
@@ -211,6 +216,8 @@ fsblkcnt64_t
 fsfilcnt64_t
 getcontext
 greg_t
+ioperm
+iopl
 makecontext
 max_align_t
 mcontext_t

@@ -58,65 +58,61 @@ impl siginfo_t {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        // Internal, for casts to access union fields
-        #[repr(C)]
-        struct sifields_sigchld {
-            si_pid: ::pid_t,
-            si_uid: ::uid_t,
-            si_status: ::c_int,
-            si_utime: ::c_long,
-            si_stime: ::c_long,
-        }
-        impl ::Copy for sifields_sigchld {}
-        impl ::Clone for sifields_sigchld {
-            fn clone(&self) -> sifields_sigchld {
-                *self
-            }
-        }
+// Internal, for casts to access union fields
+#[repr(C)]
+struct sifields_sigchld {
+    si_pid: ::pid_t,
+    si_uid: ::uid_t,
+    si_status: ::c_int,
+    si_utime: ::c_long,
+    si_stime: ::c_long,
+}
+impl ::Copy for sifields_sigchld {}
+impl ::Clone for sifields_sigchld {
+    fn clone(&self) -> sifields_sigchld {
+        *self
+    }
+}
 
-        // Internal, for casts to access union fields
-        #[repr(C)]
-        union sifields {
-            _align_pointer: *mut ::c_void,
-            sigchld: sifields_sigchld,
-        }
+// Internal, for casts to access union fields
+#[repr(C)]
+union sifields {
+    _align_pointer: *mut ::c_void,
+    sigchld: sifields_sigchld,
+}
 
-        // Internal, for casts to access union fields. Note that some variants
-        // of sifields start with a pointer, which makes the alignment of
-        // sifields vary on 32-bit and 64-bit architectures.
-        #[repr(C)]
-        struct siginfo_f {
-            _siginfo_base: [::c_int; 3],
-            sifields: sifields,
-        }
+// Internal, for casts to access union fields. Note that some variants
+// of sifields start with a pointer, which makes the alignment of
+// sifields vary on 32-bit and 64-bit architectures.
+#[repr(C)]
+struct siginfo_f {
+    _siginfo_base: [::c_int; 3],
+    sifields: sifields,
+}
 
-        impl siginfo_t {
-            unsafe fn sifields(&self) -> &sifields {
-                &(*(self as *const siginfo_t as *const siginfo_f)).sifields
-            }
+impl siginfo_t {
+    unsafe fn sifields(&self) -> &sifields {
+        &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+    }
 
-            pub unsafe fn si_pid(&self) -> ::pid_t {
-                self.sifields().sigchld.si_pid
-            }
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.sifields().sigchld.si_pid
+    }
 
-            pub unsafe fn si_uid(&self) -> ::uid_t {
-                self.sifields().sigchld.si_uid
-            }
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.sifields().sigchld.si_uid
+    }
 
-            pub unsafe fn si_status(&self) -> ::c_int {
-                self.sifields().sigchld.si_status
-            }
+    pub unsafe fn si_status(&self) -> ::c_int {
+        self.sifields().sigchld.si_status
+    }
 
-            pub unsafe fn si_utime(&self) -> ::c_long {
-                self.sifields().sigchld.si_utime
-            }
+    pub unsafe fn si_utime(&self) -> ::c_long {
+        self.sifields().sigchld.si_utime
+    }
 
-            pub unsafe fn si_stime(&self) -> ::c_long {
-                self.sifields().sigchld.si_stime
-            }
-        }
+    pub unsafe fn si_stime(&self) -> ::c_long {
+        self.sifields().sigchld.si_stime
     }
 }
 
@@ -270,6 +266,150 @@ s! {
         pub time: ::timeval,
         pub maxerror: ::c_long,
         pub esterror: ::c_long,
+    }
+
+    // linux/if_xdp.h
+
+    pub struct sockaddr_xdp {
+        pub sxdp_family: ::__u16,
+        pub sxdp_flags: ::__u16,
+        pub sxdp_ifindex: ::__u32,
+        pub sxdp_queue_id: ::__u32,
+        pub sxdp_shared_umem_fd: ::__u32,
+    }
+
+    pub struct xdp_ring_offset {
+        pub producer: ::__u64,
+        pub consumer: ::__u64,
+        pub desc: ::__u64,
+        pub flags: ::__u64,
+    }
+
+    pub struct xdp_mmap_offsets {
+        pub rx: xdp_ring_offset,
+        pub tx: xdp_ring_offset,
+        pub fr: xdp_ring_offset,
+        pub cr: xdp_ring_offset,
+    }
+
+    pub struct xdp_ring_offset_v1 {
+        pub producer: ::__u64,
+        pub consumer: ::__u64,
+        pub desc: ::__u64,
+    }
+
+    pub struct xdp_mmap_offsets_v1 {
+        pub rx: xdp_ring_offset_v1,
+        pub tx: xdp_ring_offset_v1,
+        pub fr: xdp_ring_offset_v1,
+        pub cr: xdp_ring_offset_v1,
+    }
+
+    pub struct xdp_umem_reg {
+        pub addr: ::__u64,
+        pub len: ::__u64,
+        pub chunk_size: ::__u32,
+        pub headroom: ::__u32,
+        pub flags: ::__u32,
+    }
+
+    pub struct xdp_umem_reg_v1 {
+        pub addr: ::__u64,
+        pub len: ::__u64,
+        pub chunk_size: ::__u32,
+        pub headroom: ::__u32,
+    }
+
+    pub struct xdp_statistics {
+        pub rx_dropped: ::__u64,
+        pub rx_invalid_descs: ::__u64,
+        pub tx_invalid_descs: ::__u64,
+        pub rx_ring_full: ::__u64,
+        pub rx_fill_ring_empty_descs: ::__u64,
+        pub tx_ring_empty_descs: ::__u64,
+    }
+
+    pub struct xdp_statistics_v1 {
+        pub rx_dropped: ::__u64,
+        pub rx_invalid_descs: ::__u64,
+        pub tx_invalid_descs: ::__u64,
+    }
+
+    pub struct xdp_options {
+        pub flags: ::__u32,
+    }
+
+    pub struct xdp_desc {
+        pub addr: ::__u64,
+        pub len: ::__u32,
+        pub options: ::__u32,
+    }
+
+    // netinet/tcp.h
+
+    pub struct tcp_info {
+        pub tcpi_state: u8,
+        pub tcpi_ca_state: u8,
+        pub tcpi_retransmits: u8,
+        pub tcpi_probes: u8,
+        pub tcpi_backoff: u8,
+        pub tcpi_options: u8,
+        /*
+         * FIXME(musl): when musl headers are more up to date
+        /// This contains the bitfields `tcpi_snd_wscale` and `tcpi_rcv_wscale`.
+        /// Each is 4 bits.
+        pub tcpi_snd_rcv_wscale: u8,
+        /// This contains the bitfields `tcpi_delivery_rate_app_limited` (1 bit) and
+        /// `tcpi_fastopen_client_fail` (2 bits).
+        pub tcpi_delivery_fastopen_bitfields: u8,
+        */
+        pub tcpi_rto: u32,
+        pub tcpi_ato: u32,
+        pub tcpi_snd_mss: u32,
+        pub tcpi_rcv_mss: u32,
+        pub tcpi_unacked: u32,
+        pub tcpi_sacked: u32,
+        pub tcpi_lost: u32,
+        pub tcpi_retrans: u32,
+        pub tcpi_fackets: u32,
+        pub tcpi_last_data_sent: u32,
+        pub tcpi_last_ack_sent: u32,
+        pub tcpi_last_data_recv: u32,
+        pub tcpi_last_ack_recv: u32,
+        pub tcpi_pmtu: u32,
+        pub tcpi_rcv_ssthresh: u32,
+        pub tcpi_rtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub tcpi_advmss: u32,
+        pub tcpi_reordering: u32,
+        pub tcpi_rcv_rtt: u32,
+        pub tcpi_rcv_space: u32,
+        pub tcpi_total_retrans: u32,
+        pub tcpi_pacing_rate: u64,
+        pub tcpi_max_pacing_rate: u64,
+        pub tcpi_bytes_acked: u64,
+        pub tcpi_bytes_received: u64,
+        pub tcpi_segs_out: u32,
+        pub tcpi_segs_in: u32,
+        pub tcpi_notsent_bytes: u32,
+        pub tcpi_min_rtt: u32,
+        pub tcpi_data_segs_in: u32,
+        pub tcpi_data_segs_out: u32,
+        pub tcpi_delivery_rate: u64,
+        pub tcpi_busy_time: u64,
+        pub tcpi_rwnd_limited: u64,
+        pub tcpi_sndbuf_limited: u64,
+        pub tcpi_delivered: u32,
+        pub tcpi_delivered_ce: u32,
+        pub tcpi_bytes_sent: u64,
+        pub tcpi_bytes_retrans: u64,
+        pub tcpi_dsack_dups: u32,
+        pub tcpi_reord_seen: u32,
+        // FIXME(musl): to uncomment once CI musl is updated
+        //pub tcpi_rcv_ooopack: u32,
+        //pub tcpi_snd_wnd: u32,
     }
 }
 
@@ -488,6 +628,18 @@ pub const MAP_HUGE_16GB: ::c_int = 34 << MAP_HUGE_SHIFT;
 
 pub const MS_RMT_MASK: ::c_ulong = 0x02800051;
 
+// include/utmpx.h
+pub const EMPTY: ::c_short = 0;
+pub const RUN_LVL: ::c_short = 1;
+pub const BOOT_TIME: ::c_short = 2;
+pub const NEW_TIME: ::c_short = 3;
+pub const OLD_TIME: ::c_short = 4;
+pub const INIT_PROCESS: ::c_short = 5;
+pub const LOGIN_PROCESS: ::c_short = 6;
+pub const USER_PROCESS: ::c_short = 7;
+pub const DEAD_PROCESS: ::c_short = 8;
+// musl does not define ACCOUNTING
+
 pub const SFD_CLOEXEC: ::c_int = 0x080000;
 
 pub const NCCS: usize = 32;
@@ -561,6 +713,12 @@ pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 
 pub const CPU_SETSIZE: ::c_int = 128;
+
+pub const RWF_HIPRI: ::c_int = 0x00000001;
+pub const RWF_DSYNC: ::c_int = 0x00000002;
+pub const RWF_SYNC: ::c_int = 0x00000004;
+pub const RWF_NOWAIT: ::c_int = 0x00000008;
+pub const RWF_APPEND: ::c_int = 0x00000010;
 
 pub const AF_IB: ::c_int = 27;
 pub const AF_MPLS: ::c_int = 28;
@@ -671,6 +829,43 @@ pub const TIME_ERROR: ::c_int = 5;
 pub const TIME_BAD: ::c_int = TIME_ERROR;
 pub const MAXTC: ::c_long = 6;
 
+pub const SOL_XDP: ::c_int = 283;
+
+// linux/if_xdp.h
+pub const XDP_SHARED_UMEM: ::__u16 = 1 << 0;
+pub const XDP_COPY: ::__u16 = 1 << 1;
+pub const XDP_ZEROCOPY: ::__u16 = 1 << 2;
+pub const XDP_USE_NEED_WAKEUP: ::__u16 = 1 << 3;
+pub const XDP_USE_SG: ::__u16 = 1 << 4;
+
+pub const XDP_UMEM_UNALIGNED_CHUNK_FLAG: ::__u32 = 1 << 0;
+
+pub const XDP_RING_NEED_WAKEUP: ::__u32 = 1 << 0;
+
+pub const XDP_MMAP_OFFSETS: ::c_int = 1;
+pub const XDP_RX_RING: ::c_int = 2;
+pub const XDP_TX_RING: ::c_int = 3;
+pub const XDP_UMEM_REG: ::c_int = 4;
+pub const XDP_UMEM_FILL_RING: ::c_int = 5;
+pub const XDP_UMEM_COMPLETION_RING: ::c_int = 6;
+pub const XDP_STATISTICS: ::c_int = 7;
+pub const XDP_OPTIONS: ::c_int = 8;
+
+pub const XDP_OPTIONS_ZEROCOPY: ::__u32 = 1 << 0;
+
+pub const XDP_PGOFF_RX_RING: ::off_t = 0;
+pub const XDP_PGOFF_TX_RING: ::off_t = 0x80000000;
+pub const XDP_UMEM_PGOFF_FILL_RING: ::c_ulonglong = 0x100000000;
+pub const XDP_UMEM_PGOFF_COMPLETION_RING: ::c_ulonglong = 0x180000000;
+
+pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: ::c_int = 48;
+pub const XSK_UNALIGNED_BUF_ADDR_MASK: ::c_ulonglong = (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
+
+pub const XDP_PKT_CONTD: ::__u32 = 1 << 0;
+
+pub const _CS_V6_ENV: ::c_int = 1148;
+pub const _CS_V7_ENV: ::c_int = 1149;
+
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
         pub const POSIX_FADV_DONTNEED: ::c_int = 6;
@@ -704,7 +899,6 @@ extern "C" {
         new_limit: *const ::rlimit,
         old_limit: *mut ::rlimit,
     ) -> ::c_int;
-    pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::c_void) -> ::c_int;
     pub fn ptrace(request: ::c_int, ...) -> ::c_long;
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
@@ -719,6 +913,20 @@ extern "C" {
         dirfd: ::c_int,
         path: *const ::c_char,
     ) -> ::c_int;
+    pub fn preadv2(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        offset: ::off_t,
+        flags: ::c_int,
+    ) -> ::ssize_t;
+    pub fn pwritev2(
+        fd: ::c_int,
+        iov: *const ::iovec,
+        iovcnt: ::c_int,
+        offset: ::off_t,
+        flags: ::c_int,
+    ) -> ::ssize_t;
     pub fn getauxval(type_: ::c_ulong) -> ::c_ulong;
 
     // Added in `musl` 1.1.20
@@ -740,16 +948,26 @@ extern "C" {
 
     pub fn asctime_r(tm: *const ::tm, buf: *mut ::c_char) -> *mut ::c_char;
 
-    pub fn strftime(
-        s: *mut ::c_char,
-        max: ::size_t,
-        format: *const ::c_char,
-        tm: *const ::tm,
-    ) -> ::size_t;
-    pub fn strptime(s: *const ::c_char, format: *const ::c_char, tm: *mut ::tm) -> *mut ::c_char;
-
     pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
+
+    // Added in `musl` 1.1.24
+    pub fn posix_spawn_file_actions_addchdir_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        path: *const ::c_char,
+    ) -> ::c_int;
+    // Added in `musl` 1.1.24
+    pub fn posix_spawn_file_actions_addfchdir_np(
+        actions: *mut ::posix_spawn_file_actions_t,
+        fd: ::c_int,
+    ) -> ::c_int;
+
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn endutxent();
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
@@ -762,7 +980,8 @@ cfg_if! {
                  target_arch = "mips64",
                  target_arch = "powerpc64",
                  target_arch = "s390x",
-                 target_arch = "riscv64"))] {
+                 target_arch = "riscv64",
+                 target_arch = "loongarch64"))] {
         mod b64;
         pub use self::b64::*;
     } else if #[cfg(any(target_arch = "x86",

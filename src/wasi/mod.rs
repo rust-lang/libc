@@ -1,4 +1,8 @@
+// [wasi-libc](https://github.com/WebAssembly/wasi-libc) definitions.
+// `wasi-libc` project provides multiple libraries including emulated features, but we list only basic features with `libc.a` here.
+
 use super::{Send, Sync};
+use core::iter::Iterator;
 
 pub use ffi::c_void;
 
@@ -65,6 +69,7 @@ s_paren! {
     // in wasi-libc clockid_t is const struct __clockid* (where __clockid is an opaque struct),
     // but that's an implementation detail that we don't want to have to deal with
     #[repr(transparent)]
+    #[allow(dead_code)]
     pub struct clockid_t(*const u8);
 }
 
@@ -174,6 +179,11 @@ s! {
         pub st_ctim: timespec,
         __reserved: [c_longlong; 3],
     }
+
+    pub struct fd_set {
+        __nfds: usize,
+        __fds: [c_int; FD_SETSIZE as usize],
+    }
 }
 
 // Declare dirent outside of s! so that it doesn't implement Copy, Eq, Hash,
@@ -206,7 +216,7 @@ pub const F_SETFD: c_int = 2;
 pub const F_GETFL: c_int = 3;
 pub const F_SETFL: c_int = 4;
 pub const FD_CLOEXEC: c_int = 1;
-pub const FD_SETSIZE: size_t = 1024;
+pub const FD_SETSIZE: c_int = 1024;
 pub const O_APPEND: c_int = 0x0001;
 pub const O_DSYNC: c_int = 0x0002;
 pub const O_NONBLOCK: c_int = 0x0004;
@@ -238,29 +248,29 @@ pub const AT_SYMLINK_FOLLOW: c_int = 0x2;
 pub const AT_REMOVEDIR: c_int = 0x4;
 pub const UTIME_OMIT: c_long = 0xfffffffe;
 pub const UTIME_NOW: c_long = 0xffffffff;
-pub const S_IFIFO: mode_t = 49152;
-pub const S_IFCHR: mode_t = 8192;
-pub const S_IFBLK: mode_t = 24576;
-pub const S_IFDIR: mode_t = 16384;
-pub const S_IFREG: mode_t = 32768;
-pub const S_IFLNK: mode_t = 40960;
-pub const S_IFSOCK: mode_t = 49152;
-pub const S_IFMT: mode_t = 57344;
-pub const S_IRWXO: mode_t = 0x7;
-pub const S_IXOTH: mode_t = 0x1;
-pub const S_IWOTH: mode_t = 0x2;
-pub const S_IROTH: mode_t = 0x4;
-pub const S_IRWXG: mode_t = 0x38;
-pub const S_IXGRP: mode_t = 0x8;
-pub const S_IWGRP: mode_t = 0x10;
-pub const S_IRGRP: mode_t = 0x20;
-pub const S_IRWXU: mode_t = 0x1c0;
-pub const S_IXUSR: mode_t = 0x40;
-pub const S_IWUSR: mode_t = 0x80;
-pub const S_IRUSR: mode_t = 0x100;
-pub const S_ISVTX: mode_t = 0x200;
-pub const S_ISGID: mode_t = 0x400;
-pub const S_ISUID: mode_t = 0x800;
+pub const S_IFIFO: mode_t = 0o1_0000;
+pub const S_IFCHR: mode_t = 0o2_0000;
+pub const S_IFBLK: mode_t = 0o6_0000;
+pub const S_IFDIR: mode_t = 0o4_0000;
+pub const S_IFREG: mode_t = 0o10_0000;
+pub const S_IFLNK: mode_t = 0o12_0000;
+pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_IFMT: mode_t = 0o17_0000;
+pub const S_IRWXO: mode_t = 0o0007;
+pub const S_IXOTH: mode_t = 0o0001;
+pub const S_IWOTH: mode_t = 0o0002;
+pub const S_IROTH: mode_t = 0o0004;
+pub const S_IRWXG: mode_t = 0o0070;
+pub const S_IXGRP: mode_t = 0o0010;
+pub const S_IWGRP: mode_t = 0o0020;
+pub const S_IRGRP: mode_t = 0o0040;
+pub const S_IRWXU: mode_t = 0o0700;
+pub const S_IXUSR: mode_t = 0o0100;
+pub const S_IWUSR: mode_t = 0o0200;
+pub const S_IRUSR: mode_t = 0o0400;
+pub const S_ISVTX: mode_t = 0o1000;
+pub const S_ISGID: mode_t = 0o2000;
+pub const S_ISUID: mode_t = 0o4000;
 pub const DT_UNKNOWN: u8 = 0;
 pub const DT_BLK: u8 = 1;
 pub const DT_CHR: u8 = 2;
@@ -365,12 +375,26 @@ pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_IOV_MAX: c_int = 60;
 pub const _SC_SYMLOOP_MAX: c_int = 173;
 
-pub static CLOCK_MONOTONIC: clockid_t = unsafe { clockid_t(ptr_addr_of!(_CLOCK_MONOTONIC)) };
-pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
-    unsafe { clockid_t(ptr_addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
-pub static CLOCK_REALTIME: clockid_t = unsafe { clockid_t(ptr_addr_of!(_CLOCK_REALTIME)) };
-pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
-    unsafe { clockid_t(ptr_addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
+cfg_if! {
+    if #[cfg(libc_ctest)] {
+        // skip these constants when this is active because `ctest` currently
+        // panics on parsing the constants below
+    } else {
+        // unsafe code here is required in the stable, but not in nightly
+        #[allow(unused_unsafe)]
+        pub static CLOCK_MONOTONIC: clockid_t =
+            unsafe { clockid_t(ptr_addr_of!(_CLOCK_MONOTONIC)) };
+        #[allow(unused_unsafe)]
+        pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
+            unsafe { clockid_t(ptr_addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
+        #[allow(unused_unsafe)]
+        pub static CLOCK_REALTIME: clockid_t =
+            unsafe { clockid_t(ptr_addr_of!(_CLOCK_REALTIME)) };
+        #[allow(unused_unsafe)]
+        pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
+            unsafe { clockid_t(ptr_addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
+    }
+}
 
 pub const ABDAY_1: ::nl_item = 0x20000;
 pub const ABDAY_2: ::nl_item = 0x20001;
@@ -436,6 +460,28 @@ pub const YESEXPR: ::nl_item = 0x50000;
 pub const NOEXPR: ::nl_item = 0x50001;
 pub const YESSTR: ::nl_item = 0x50002;
 pub const NOSTR: ::nl_item = 0x50003;
+
+f! {
+    pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
+        let set = &*set;
+        let n = set.__nfds;
+        return set.__fds[..n].iter().any(|p| *p == fd)
+    }
+
+    pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
+        let set = &mut *set;
+        let n = set.__nfds;
+        if !set.__fds[..n].iter().any(|p| *p == fd) {
+            set.__nfds = n + 1;
+            set.__fds[n] = fd;
+        }
+    }
+
+    pub fn FD_ZERO(set: *mut fd_set) -> () {
+        (*set).__nfds = 0;
+        return
+    }
+}
 
 #[cfg_attr(
     feature = "rustc-dep-of-std",
@@ -732,6 +778,14 @@ extern "C" {
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
     pub fn nl_langinfo_l(item: ::nl_item, loc: ::locale_t) -> *mut ::c_char;
 
+    pub fn select(
+        nfds: c_int,
+        readfds: *mut fd_set,
+        writefds: *mut fd_set,
+        errorfds: *mut fd_set,
+        timeout: *const timeval,
+    ) -> c_int;
+
     pub fn __wasilibc_register_preopened_fd(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_fd_renumber(fd: c_int, newfd: c_int) -> c_int;
     pub fn __wasilibc_unlinkat(fd: c_int, path: *const c_char) -> c_int;
@@ -827,4 +881,11 @@ extern "C" {
     pub fn arc4random_uniform(a: u32) -> u32;
 
     pub fn __errno_location() -> *mut ::c_int;
+}
+
+cfg_if! {
+    if #[cfg(target_env = "p2")] {
+        mod p2;
+        pub use self::p2::*;
+    }
 }

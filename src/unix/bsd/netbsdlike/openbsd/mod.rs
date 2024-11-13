@@ -41,6 +41,10 @@ pub type Elf64_Xword = u64;
 pub type ENTRY = entry;
 pub type ACTION = ::c_uint;
 
+// spawn.h
+pub type posix_spawnattr_t = *mut ::c_void;
+pub type posix_spawn_file_actions_t = *mut ::c_void;
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         type Elf_Addr = Elf64_Addr;
@@ -536,10 +540,69 @@ s! {
 
     pub struct ifreq {
         pub ifr_name: [::c_char; ::IFNAMSIZ],
-        #[cfg(libc_union)]
         pub ifr_ifru: __c_anonymous_ifr_ifru,
-        #[cfg(not(libc_union))]
-        pub ifr_ifru: ::sockaddr,
+    }
+
+    pub struct tcp_info {
+        pub tcpi_state: u8,
+        pub __tcpi_ca_state: u8,
+        pub __tcpi_retransmits: u8,
+        pub __tcpi_probes: u8,
+        pub __tcpi_backoff: u8,
+        pub tcpi_options: u8,
+        pub tcpi_snd_wscale: u8,
+        pub tcpi_rcv_wscale: u8,
+        pub tcpi_rto: u32,
+        pub __tcpi_ato: u32,
+        pub tcpi_snd_mss: u32,
+        pub tcpi_rcv_mss: u32,
+        pub __tcpi_unacked: u32,
+        pub __tcpi_sacked: u32,
+        pub __tcpi_lost: u32,
+        pub __tcpi_retrans: u32,
+        pub __tcpi_fackets: u32,
+        pub tcpi_last_data_sent: u32,
+        pub tcpi_last_ack_sent: u32,
+        pub tcpi_last_data_recv: u32,
+        pub tcpi_last_ack_recv: u32,
+        pub __tcpi_pmtu: u32,
+        pub __tcpi_rcv_ssthresh: u32,
+        pub tcpi_rtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub __tcpi_advmss: u32,
+        pub __tcpi_reordering: u32,
+        pub __tcpi_rcv_rtt: u32,
+        pub tcpi_rcv_space: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_snd_nxt: u32,
+        pub tcpi_rcv_nxt: u32,
+        pub tcpi_toe_tid: u32,
+        pub tcpi_snd_rexmitpack: u32,
+        pub tcpi_rcv_ooopack: u32,
+        pub tcpi_snd_zerowin: u32,
+        pub tcpi_rttmin: u32,
+        pub tcpi_max_sndwnd: u32,
+        pub tcpi_rcv_adv: u32,
+        pub tcpi_rcv_up: u32,
+        pub tcpi_snd_una: u32,
+        pub tcpi_snd_up: u32,
+        pub tcpi_snd_wl1: u32,
+        pub tcpi_snd_wl2: u32,
+        pub tcpi_snd_max: u32,
+        pub tcpi_ts_recent: u32,
+        pub tcpi_ts_recent_age: u32,
+        pub tcpi_rfbuf_cnt: u32,
+        pub tcpi_rfbuf_ts: u32,
+        pub tcpi_so_rcv_sb_cc: u32,
+        pub tcpi_so_rcv_sb_hiwat: u32,
+        pub tcpi_so_rcv_sb_lowat: u32,
+        pub tcpi_so_rcv_sb_wat: u32,
+        pub tcpi_so_snd_sb_cc: u32,
+        pub tcpi_so_snd_sb_hiwat: u32,
+        pub tcpi_so_snd_sb_lowat: u32,
+        pub tcpi_so_snd_sb_wat: u32,
     }
 }
 
@@ -650,7 +713,6 @@ s_no_extra_traits! {
         align: [::c_char; 160],
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifr_ifru {
         pub ifru_addr: ::sockaddr,
         pub ifru_dstaddr: ::sockaddr,
@@ -661,6 +723,31 @@ s_no_extra_traits! {
         pub ifru_media: u64,
         pub ifru_data: ::caddr_t,
         pub ifru_index: ::c_uint,
+    }
+
+    pub struct statfs {
+        pub f_flags: u32,
+        pub f_bsize: u32,
+        pub f_iosize: u32,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: i64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_favail: i64,
+        pub f_syncwrites: u64,
+        pub f_syncreads: u64,
+        pub f_asyncwrites: u64,
+        pub f_asyncreads: u64,
+        pub f_fsid: ::fsid_t,
+        pub f_namemax: u32,
+        pub f_owner: ::uid_t,
+        pub f_ctime: u64,
+        pub f_fstypename: [::c_char; 16],
+        pub f_mntonname: [::c_char; 90],
+        pub f_mntfromname: [::c_char; 90],
+        pub f_mntfromspec: [::c_char; 90],
+        pub mount_info: mount_info,
     }
 }
 
@@ -869,7 +956,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifr_ifru {
             fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
                 unsafe {
@@ -886,10 +972,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifr_ifru {}
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifr_ifru {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifr_ifru")
@@ -906,7 +990,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifr_ifru {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -922,138 +1005,102 @@ cfg_if! {
                 }
             }
         }
-    }
-}
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        s_no_extra_traits! {
-            // This type uses the union mount_info:
-            pub struct statfs {
-                pub f_flags: u32,
-                pub f_bsize: u32,
-                pub f_iosize: u32,
-                pub f_blocks: u64,
-                pub f_bfree: u64,
-                pub f_bavail: i64,
-                pub f_files: u64,
-                pub f_ffree: u64,
-                pub f_favail: i64,
-                pub f_syncwrites: u64,
-                pub f_syncreads: u64,
-                pub f_asyncwrites: u64,
-                pub f_asyncreads: u64,
-                pub f_fsid: ::fsid_t,
-                pub f_namemax: u32,
-                pub f_owner: ::uid_t,
-                pub f_ctime: u64,
-                pub f_fstypename: [::c_char; 16],
-                pub f_mntonname: [::c_char; 90],
-                pub f_mntfromname: [::c_char; 90],
-                pub f_mntfromspec: [::c_char; 90],
-                pub mount_info: mount_info,
+        impl PartialEq for statfs {
+            fn eq(&self, other: &statfs) -> bool {
+                self.f_flags == other.f_flags
+                    && self.f_bsize == other.f_bsize
+                    && self.f_iosize == other.f_iosize
+                    && self.f_blocks == other.f_blocks
+                    && self.f_bfree == other.f_bfree
+                    && self.f_bavail == other.f_bavail
+                    && self.f_files == other.f_files
+                    && self.f_ffree == other.f_ffree
+                    && self.f_favail == other.f_favail
+                    && self.f_syncwrites == other.f_syncwrites
+                    && self.f_syncreads == other.f_syncreads
+                    && self.f_asyncwrites == other.f_asyncwrites
+                    && self.f_asyncreads == other.f_asyncreads
+                    && self.f_fsid == other.f_fsid
+                    && self.f_namemax == other.f_namemax
+                    && self.f_owner == other.f_owner
+                    && self.f_ctime == other.f_ctime
+                    && self.f_fstypename
+                    .iter()
+                    .zip(other.f_fstypename.iter())
+                    .all(|(a,b)| a == b)
+                    && self.f_mntonname
+                    .iter()
+                    .zip(other.f_mntonname.iter())
+                    .all(|(a,b)| a == b)
+                    && self.f_mntfromname
+                    .iter()
+                    .zip(other.f_mntfromname.iter())
+                    .all(|(a,b)| a == b)
+                    && self.f_mntfromspec
+                    .iter()
+                    .zip(other.f_mntfromspec.iter())
+                    .all(|(a,b)| a == b)
+                    && self.mount_info == other.mount_info
             }
         }
 
-        cfg_if! {
-            if #[cfg(feature = "extra_traits")] {
-                impl PartialEq for statfs {
-                    fn eq(&self, other: &statfs) -> bool {
-                        self.f_flags == other.f_flags
-                            && self.f_bsize == other.f_bsize
-                            && self.f_iosize == other.f_iosize
-                            && self.f_blocks == other.f_blocks
-                            && self.f_bfree == other.f_bfree
-                            && self.f_bavail == other.f_bavail
-                            && self.f_files == other.f_files
-                            && self.f_ffree == other.f_ffree
-                            && self.f_favail == other.f_favail
-                            && self.f_syncwrites == other.f_syncwrites
-                            && self.f_syncreads == other.f_syncreads
-                            && self.f_asyncwrites == other.f_asyncwrites
-                            && self.f_asyncreads == other.f_asyncreads
-                            && self.f_fsid == other.f_fsid
-                            && self.f_namemax == other.f_namemax
-                            && self.f_owner == other.f_owner
-                            && self.f_ctime == other.f_ctime
-                            && self.f_fstypename
-                            .iter()
-                            .zip(other.f_fstypename.iter())
-                            .all(|(a,b)| a == b)
-                            && self.f_mntonname
-                            .iter()
-                            .zip(other.f_mntonname.iter())
-                            .all(|(a,b)| a == b)
-                            && self.f_mntfromname
-                            .iter()
-                            .zip(other.f_mntfromname.iter())
-                            .all(|(a,b)| a == b)
-                            && self.f_mntfromspec
-                            .iter()
-                            .zip(other.f_mntfromspec.iter())
-                            .all(|(a,b)| a == b)
-                            && self.mount_info == other.mount_info
-                    }
-                }
+        impl Eq for statfs { }
 
-                impl Eq for statfs { }
+        impl ::fmt::Debug for statfs {
+            fn fmt(&self, f: &mut ::fmt::Formatter)
+                    -> ::fmt::Result {
+                f.debug_struct("statfs")
+                    .field("f_flags", &self.f_flags)
+                    .field("f_bsize", &self.f_bsize)
+                    .field("f_iosize", &self.f_iosize)
+                    .field("f_blocks", &self.f_blocks)
+                    .field("f_bfree", &self.f_bfree)
+                    .field("f_bavail", &self.f_bavail)
+                    .field("f_files", &self.f_files)
+                    .field("f_ffree", &self.f_ffree)
+                    .field("f_favail", &self.f_favail)
+                    .field("f_syncwrites", &self.f_syncwrites)
+                    .field("f_syncreads", &self.f_syncreads)
+                    .field("f_asyncwrites", &self.f_asyncwrites)
+                    .field("f_asyncreads", &self.f_asyncreads)
+                    .field("f_fsid", &self.f_fsid)
+                    .field("f_namemax", &self.f_namemax)
+                    .field("f_owner", &self.f_owner)
+                    .field("f_ctime", &self.f_ctime)
+                // FIXME: .field("f_fstypename", &self.f_fstypename)
+                // FIXME: .field("f_mntonname", &self.f_mntonname)
+                // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                // FIXME: .field("f_mntfromspec", &self.f_mntfromspec)
+                    .field("mount_info", &self.mount_info)
+                    .finish()
+            }
+        }
 
-                impl ::fmt::Debug for statfs {
-                    fn fmt(&self, f: &mut ::fmt::Formatter)
-                           -> ::fmt::Result {
-                        f.debug_struct("statfs")
-                            .field("f_flags", &self.f_flags)
-                            .field("f_bsize", &self.f_bsize)
-                            .field("f_iosize", &self.f_iosize)
-                            .field("f_blocks", &self.f_blocks)
-                            .field("f_bfree", &self.f_bfree)
-                            .field("f_bavail", &self.f_bavail)
-                            .field("f_files", &self.f_files)
-                            .field("f_ffree", &self.f_ffree)
-                            .field("f_favail", &self.f_favail)
-                            .field("f_syncwrites", &self.f_syncwrites)
-                            .field("f_syncreads", &self.f_syncreads)
-                            .field("f_asyncwrites", &self.f_asyncwrites)
-                            .field("f_asyncreads", &self.f_asyncreads)
-                            .field("f_fsid", &self.f_fsid)
-                            .field("f_namemax", &self.f_namemax)
-                            .field("f_owner", &self.f_owner)
-                            .field("f_ctime", &self.f_ctime)
-                        // FIXME: .field("f_fstypename", &self.f_fstypename)
-                        // FIXME: .field("f_mntonname", &self.f_mntonname)
-                        // FIXME: .field("f_mntfromname", &self.f_mntfromname)
-                        // FIXME: .field("f_mntfromspec", &self.f_mntfromspec)
-                            .field("mount_info", &self.mount_info)
-                            .finish()
-                    }
-                }
-
-                impl ::hash::Hash for statfs {
-                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                        self.f_flags.hash(state);
-                        self.f_bsize.hash(state);
-                        self.f_iosize.hash(state);
-                        self.f_blocks.hash(state);
-                        self.f_bfree.hash(state);
-                        self.f_bavail.hash(state);
-                        self.f_files.hash(state);
-                        self.f_ffree.hash(state);
-                        self.f_favail.hash(state);
-                        self.f_syncwrites.hash(state);
-                        self.f_syncreads.hash(state);
-                        self.f_asyncwrites.hash(state);
-                        self.f_asyncreads.hash(state);
-                        self.f_fsid.hash(state);
-                        self.f_namemax.hash(state);
-                        self.f_owner.hash(state);
-                        self.f_ctime.hash(state);
-                        self.f_fstypename.hash(state);
-                        self.f_mntonname.hash(state);
-                        self.f_mntfromname.hash(state);
-                        self.f_mntfromspec.hash(state);
-                        self.mount_info.hash(state);
-                    }
-                }
+        impl ::hash::Hash for statfs {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.f_flags.hash(state);
+                self.f_bsize.hash(state);
+                self.f_iosize.hash(state);
+                self.f_blocks.hash(state);
+                self.f_bfree.hash(state);
+                self.f_bavail.hash(state);
+                self.f_files.hash(state);
+                self.f_ffree.hash(state);
+                self.f_favail.hash(state);
+                self.f_syncwrites.hash(state);
+                self.f_syncreads.hash(state);
+                self.f_asyncwrites.hash(state);
+                self.f_asyncreads.hash(state);
+                self.f_fsid.hash(state);
+                self.f_namemax.hash(state);
+                self.f_owner.hash(state);
+                self.f_ctime.hash(state);
+                self.f_fstypename.hash(state);
+                self.f_mntonname.hash(state);
+                self.f_mntfromname.hash(state);
+                self.f_mntfromspec.hash(state);
+                self.mount_info.hash(state);
             }
         }
     }
@@ -1201,12 +1248,6 @@ pub const NET_RT_IFLIST: ::c_int = 3;
 pub const NET_RT_STATS: ::c_int = 4;
 pub const NET_RT_TABLE: ::c_int = 5;
 pub const NET_RT_IFNAMES: ::c_int = 6;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.95",
-    note = "Possibly increasing over the releases and might not be so used in the field"
-)]
-pub const NET_RT_MAXID: ::c_int = 7;
 
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
@@ -1229,6 +1270,7 @@ pub const O_DSYNC: ::c_int = 128;
 pub const MAP_RENAME: ::c_int = 0x0000;
 pub const MAP_NORESERVE: ::c_int = 0x0000;
 pub const MAP_HASSEMAPHORE: ::c_int = 0x0000;
+pub const MAP_TRYFIXED: ::c_int = 0;
 
 pub const EIPSEC: ::c_int = 82;
 pub const ENOMEDIUM: ::c_int = 85;
@@ -1374,7 +1416,7 @@ pub const _SC_AVPHYS_PAGES: ::c_int = 501;
 pub const _SC_NPROCESSORS_CONF: ::c_int = 502;
 pub const _SC_NPROCESSORS_ONLN: ::c_int = 503;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_OTHER: ::c_int = 2;
@@ -1506,21 +1548,16 @@ pub const KERN_NTHREADS: ::c_int = 26;
 pub const KERN_OSVERSION: ::c_int = 27;
 pub const KERN_SOMAXCONN: ::c_int = 28;
 pub const KERN_SOMINCONN: ::c_int = 29;
-#[deprecated(since = "0.2.71", note = "Removed in OpenBSD 6.0")]
-pub const KERN_USERMOUNT: ::c_int = 30;
 pub const KERN_NOSUIDCOREDUMP: ::c_int = 32;
 pub const KERN_FSYNC: ::c_int = 33;
 pub const KERN_SYSVMSG: ::c_int = 34;
 pub const KERN_SYSVSEM: ::c_int = 35;
 pub const KERN_SYSVSHM: ::c_int = 36;
-#[deprecated(since = "0.2.71", note = "Removed in OpenBSD 6.0")]
-pub const KERN_ARND: ::c_int = 37;
 pub const KERN_MSGBUFSIZE: ::c_int = 38;
 pub const KERN_MALLOCSTATS: ::c_int = 39;
 pub const KERN_CPTIME: ::c_int = 40;
 pub const KERN_NCHSTATS: ::c_int = 41;
 pub const KERN_FORKSTAT: ::c_int = 42;
-pub const KERN_NSELCOLL: ::c_int = 43;
 pub const KERN_TTY: ::c_int = 44;
 pub const KERN_CCPU: ::c_int = 45;
 pub const KERN_FSCALE: ::c_int = 46;
@@ -1560,11 +1597,6 @@ pub const KERN_AUDIO: ::c_int = 84;
 pub const KERN_CPUSTATS: ::c_int = 85;
 pub const KERN_PFSTATUS: ::c_int = 86;
 pub const KERN_TIMEOUT_STATS: ::c_int = 87;
-#[deprecated(
-    since = "0.2.95",
-    note = "Possibly increasing over the releases and might not be so used in the field"
-)]
-pub const KERN_MAXID: ::c_int = 88;
 
 pub const KERN_PROC_ALL: ::c_int = 0;
 pub const KERN_PROC_PID: ::c_int = 1;
@@ -1849,6 +1881,62 @@ pub const RB_RESET: ::c_int = 0x08000;
 pub const RB_GOODRANDOM: ::c_int = 0x10000;
 pub const RB_UNHIBERNATE: ::c_int = 0x20000;
 
+// net/route.h
+pub const RTF_CLONING: ::c_int = 0x100;
+pub const RTF_MULTICAST: ::c_int = 0x200;
+pub const RTF_LLINFO: ::c_int = 0x400;
+pub const RTF_PROTO3: ::c_int = 0x2000;
+pub const RTF_ANNOUNCE: ::c_int = ::RTF_PROTO2;
+
+pub const RTF_CLONED: ::c_int = 0x10000;
+pub const RTF_CACHED: ::c_int = 0x20000;
+pub const RTF_MPATH: ::c_int = 0x40000;
+pub const RTF_MPLS: ::c_int = 0x100000;
+pub const RTF_LOCAL: ::c_int = 0x200000;
+pub const RTF_BROADCAST: ::c_int = 0x400000;
+pub const RTF_CONNECTED: ::c_int = 0x800000;
+pub const RTF_BFD: ::c_int = 0x1000000;
+pub const RTF_FMASK: ::c_int = ::RTF_LLINFO
+    | ::RTF_PROTO1
+    | ::RTF_PROTO2
+    | ::RTF_PROTO3
+    | ::RTF_BLACKHOLE
+    | ::RTF_REJECT
+    | ::RTF_STATIC
+    | ::RTF_MPLS
+    | ::RTF_BFD;
+
+pub const RTM_VERSION: ::c_int = 5;
+pub const RTM_RESOLVE: ::c_int = 0xb;
+pub const RTM_NEWADDR: ::c_int = 0xc;
+pub const RTM_DELADDR: ::c_int = 0xd;
+pub const RTM_IFINFO: ::c_int = 0xe;
+pub const RTM_IFANNOUNCE: ::c_int = 0xf;
+pub const RTM_DESYNC: ::c_int = 0x10;
+pub const RTM_INVALIDATE: ::c_int = 0x11;
+pub const RTM_BFD: ::c_int = 0x12;
+pub const RTM_PROPOSAL: ::c_int = 0x13;
+pub const RTM_CHGADDRATTR: ::c_int = 0x14;
+pub const RTM_80211INFO: ::c_int = 0x15;
+pub const RTM_SOURCE: ::c_int = 0x16;
+
+pub const RTA_SRC: ::c_int = 0x100;
+pub const RTA_SRCMASK: ::c_int = 0x200;
+pub const RTA_LABEL: ::c_int = 0x400;
+pub const RTA_BFD: ::c_int = 0x800;
+pub const RTA_DNS: ::c_int = 0x1000;
+pub const RTA_STATIC: ::c_int = 0x2000;
+pub const RTA_SEARCH: ::c_int = 0x4000;
+
+pub const RTAX_SRC: ::c_int = 8;
+pub const RTAX_SRCMASK: ::c_int = 9;
+pub const RTAX_LABEL: ::c_int = 10;
+pub const RTAX_BFD: ::c_int = 11;
+pub const RTAX_DNS: ::c_int = 12;
+pub const RTAX_STATIC: ::c_int = 13;
+pub const RTAX_SEARCH: ::c_int = 14;
+pub const RTAX_MAX: ::c_int = 15;
+
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
@@ -2096,16 +2184,11 @@ extern "C" {
     ) -> *mut *mut ::c_char;
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        extern {
-            // these functions use statfs which uses the union mount_info:
-            pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
-            pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
-            pub fn getmntinfo(mntbufp: *mut *mut ::statfs, flags: ::c_int) -> ::c_int;
-            pub fn getfsstat(buf: *mut statfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
-        }
-    }
+extern "C" {
+    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
+    pub fn getmntinfo(mntbufp: *mut *mut ::statfs, flags: ::c_int) -> ::c_int;
+    pub fn getfsstat(buf: *mut statfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

@@ -1,6 +1,7 @@
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
+pub type clock_t = i32;
 pub type wchar_t = i32;
 pub type time_t = i64;
 pub type suseconds_t = i64;
@@ -81,7 +82,6 @@ s_no_extra_traits! {
         pub xmm_pad: [u8; 224],
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_elf64_auxv_union {
         pub a_val: ::c_long,
         pub a_ptr: *mut ::c_void,
@@ -90,25 +90,7 @@ s_no_extra_traits! {
 
     pub struct Elf64_Auxinfo {
         pub a_type: ::c_long,
-        #[cfg(libc_union)]
         pub a_un: __c_anonymous_elf64_auxv_union,
-    }
-
-    pub struct kinfo_file {
-        pub kf_structsize: ::c_int,
-        pub kf_type: ::c_int,
-        pub kf_fd: ::c_int,
-        pub kf_ref_count: ::c_int,
-        pub kf_flags: ::c_int,
-        _kf_pad0: ::c_int,
-        pub kf_offset: i64,
-        _priv: [::uintptr_t; 38], // FIXME if needed
-        pub kf_status: u16,
-        _kf_pad1: u16,
-        _kf_ispare0: ::c_int,
-        pub kf_cap_rights: ::cap_rights_t,
-        _kf_cap_spare: u64,
-        pub kf_path: [::c_char; ::PATH_MAX as usize],
     }
 }
 
@@ -204,7 +186,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_elf64_auxv_union {
             fn eq(&self, other: &__c_anonymous_elf64_auxv_union) -> bool {
                 unsafe { self.a_val == other.a_val
@@ -212,9 +193,7 @@ cfg_if! {
                         || self.a_fcn == other.a_fcn }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_elf64_auxv_union {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_elf64_auxv_union {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("a_val")
@@ -222,13 +201,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(not(libc_union))]
-        impl PartialEq for Elf64_Auxinfo {
-            fn eq(&self, other: &Elf64_Auxinfo) -> bool {
-                self.a_type == other.a_type
-            }
-        }
-        #[cfg(libc_union)]
         impl PartialEq for Elf64_Auxinfo {
             fn eq(&self, other: &Elf64_Auxinfo) -> bool {
                 self.a_type == other.a_type
@@ -236,15 +208,6 @@ cfg_if! {
             }
         }
         impl Eq for Elf64_Auxinfo {}
-        #[cfg(not(libc_union))]
-        impl ::fmt::Debug for Elf64_Auxinfo {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("Elf64_Auxinfo")
-                    .field("a_type", &self.a_type)
-                    .finish()
-            }
-        }
-        #[cfg(libc_union)]
         impl ::fmt::Debug for Elf64_Auxinfo {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("Elf64_Auxinfo")
@@ -253,65 +216,14 @@ cfg_if! {
                     .finish()
             }
         }
-
-        impl PartialEq for kinfo_file {
-            fn eq(&self, other: &kinfo_file) -> bool {
-                self.kf_structsize == other.kf_structsize &&
-                    self.kf_type == other.kf_type &&
-                    self.kf_fd == other.kf_fd &&
-                    self.kf_ref_count == other.kf_ref_count &&
-                    self.kf_flags == other.kf_flags &&
-                    self.kf_offset == other.kf_offset &&
-                    self.kf_status == other.kf_status &&
-                    self.kf_cap_rights == other.kf_cap_rights &&
-                    self.kf_path
-                        .iter()
-                        .zip(other.kf_path.iter())
-                        .all(|(a,b)| a == b)
-            }
-        }
-        impl Eq for kinfo_file {}
-        impl ::fmt::Debug for kinfo_file {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("kinfo_file")
-                    .field("kf_structsize", &self.kf_structsize)
-                    .field("kf_type", &self.kf_type)
-                    .field("kf_fd", &self.kf_fd)
-                    .field("kf_ref_count", &self.kf_ref_count)
-                    .field("kf_flags", &self.kf_flags)
-                    .field("kf_offset", &self.kf_offset)
-                    .field("kf_status", &self.kf_status)
-                    .field("kf_cap_rights", &self.kf_cap_rights)
-                    .field("kf_path", &&self.kf_path[..])
-                    .finish()
-            }
-        }
-        impl ::hash::Hash for kinfo_file {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.kf_structsize.hash(state);
-                self.kf_type.hash(state);
-                self.kf_fd.hash(state);
-                self.kf_ref_count.hash(state);
-                self.kf_flags.hash(state);
-                self.kf_offset.hash(state);
-                self.kf_status.hash(state);
-                self.kf_cap_rights.hash(state);
-                self.kf_path.hash(state);
-            }
-        }
     }
 }
 
-// should be pub(crate), but that requires Rust 1.18.0
-cfg_if! {
-    if #[cfg(libc_const_size_of)] {
-        #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
-    } else {
-        #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = 8 - 1;
-    }
-}
+pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
+
+pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
+pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
+
 pub const MAP_32BIT: ::c_int = 0x00080000;
 pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
 
@@ -326,9 +238,9 @@ pub const _MC_FPOWNED_NONE: c_long = 0x20000;
 pub const _MC_FPOWNED_FPU: c_long = 0x20001;
 pub const _MC_FPOWNED_PCB: c_long = 0x20002;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+pub const KINFO_FILE_SIZE: ::c_int = 1392;
+
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
+
+mod align;
+pub use self::align::*;

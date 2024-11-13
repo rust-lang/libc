@@ -22,7 +22,7 @@ pub type clockid_t = ::c_int;
 pub type dev_t = ::c_long;
 pub type fsblkcnt_t = ::c_ulong;
 pub type fsfilcnt_t = ::c_ulong;
-pub type ino_t = ::c_ulong;
+pub type ino_t = ::c_ulonglong;
 pub type mode_t = ::c_int;
 pub type nfds_t = ::c_ulong;
 pub type nlink_t = ::c_ulong;
@@ -116,7 +116,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; ::FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; ::FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct in_addr {
@@ -585,7 +585,13 @@ pub const IP_MULTICAST_TTL: ::c_int = 33;
 pub const IP_MULTICAST_LOOP: ::c_int = 34;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 35;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 36;
+pub const IP_TOS: ::c_int = 1;
+pub const IP_RECVTOS: ::c_int = 2;
+pub const IPPROTO_IGMP: ::c_int = 2;
+pub const IPPROTO_PUP: ::c_int = 12;
+pub const IPPROTO_IDP: ::c_int = 22;
 pub const IPPROTO_RAW: ::c_int = 255;
+pub const IPPROTO_MAX: ::c_int = 255;
 // }
 
 // netinet/tcp.h
@@ -677,44 +683,44 @@ pub const EPOLL_CLOEXEC: ::c_int = 0x0100_0000;
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_DEL: ::c_int = 2;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
-pub const EPOLLIN: ::c_int = 1;
-pub const EPOLLPRI: ::c_int = 0;
-pub const EPOLLOUT: ::c_int = 2;
-pub const EPOLLRDNORM: ::c_int = 0;
-pub const EPOLLNVAL: ::c_int = 0;
-pub const EPOLLRDBAND: ::c_int = 0;
-pub const EPOLLWRNORM: ::c_int = 0;
-pub const EPOLLWRBAND: ::c_int = 0;
-pub const EPOLLMSG: ::c_int = 0;
-pub const EPOLLERR: ::c_int = 0;
-pub const EPOLLHUP: ::c_int = 0;
-pub const EPOLLRDHUP: ::c_int = 0;
-pub const EPOLLEXCLUSIVE: ::c_int = 0;
-pub const EPOLLWAKEUP: ::c_int = 0;
-pub const EPOLLONESHOT: ::c_int = 0;
-pub const EPOLLET: ::c_int = 0;
+pub const EPOLLIN: ::c_int = 0x001;
+pub const EPOLLPRI: ::c_int = 0x002;
+pub const EPOLLOUT: ::c_int = 0x004;
+pub const EPOLLERR: ::c_int = 0x008;
+pub const EPOLLHUP: ::c_int = 0x010;
+pub const EPOLLNVAL: ::c_int = 0x020;
+pub const EPOLLRDNORM: ::c_int = 0x040;
+pub const EPOLLRDBAND: ::c_int = 0x080;
+pub const EPOLLWRNORM: ::c_int = 0x100;
+pub const EPOLLWRBAND: ::c_int = 0x200;
+pub const EPOLLMSG: ::c_int = 0x400;
+pub const EPOLLRDHUP: ::c_int = 0x2000;
+pub const EPOLLEXCLUSIVE: ::c_int = 1 << 28;
+pub const EPOLLWAKEUP: ::c_int = 1 << 29;
+pub const EPOLLONESHOT: ::c_int = 1 << 30;
+pub const EPOLLET: ::c_int = 1 << 31;
 
 // sys/stat.h
-pub const S_IFMT: ::c_int = 0o0_170_000;
-pub const S_IFDIR: ::c_int = 0o040_000;
-pub const S_IFCHR: ::c_int = 0o020_000;
-pub const S_IFBLK: ::c_int = 0o060_000;
-pub const S_IFREG: ::c_int = 0o100_000;
-pub const S_IFIFO: ::c_int = 0o010_000;
-pub const S_IFLNK: ::c_int = 0o120_000;
-pub const S_IFSOCK: ::c_int = 0o140_000;
-pub const S_IRWXU: ::c_int = 0o0_700;
-pub const S_IRUSR: ::c_int = 0o0_400;
-pub const S_IWUSR: ::c_int = 0o0_200;
-pub const S_IXUSR: ::c_int = 0o0_100;
-pub const S_IRWXG: ::c_int = 0o0_070;
-pub const S_IRGRP: ::c_int = 0o0_040;
-pub const S_IWGRP: ::c_int = 0o0_020;
-pub const S_IXGRP: ::c_int = 0o0_010;
-pub const S_IRWXO: ::c_int = 0o0_007;
-pub const S_IROTH: ::c_int = 0o0_004;
-pub const S_IWOTH: ::c_int = 0o0_002;
-pub const S_IXOTH: ::c_int = 0o0_001;
+pub const S_IFMT: ::c_int = 0o17_0000;
+pub const S_IFDIR: ::c_int = 0o4_0000;
+pub const S_IFCHR: ::c_int = 0o2_0000;
+pub const S_IFBLK: ::c_int = 0o6_0000;
+pub const S_IFREG: ::c_int = 0o10_0000;
+pub const S_IFIFO: ::c_int = 0o1_0000;
+pub const S_IFLNK: ::c_int = 0o12_0000;
+pub const S_IFSOCK: ::c_int = 0o14_0000;
+pub const S_IRWXU: ::c_int = 0o0700;
+pub const S_IRUSR: ::c_int = 0o0400;
+pub const S_IWUSR: ::c_int = 0o0200;
+pub const S_IXUSR: ::c_int = 0o0100;
+pub const S_IRWXG: ::c_int = 0o0070;
+pub const S_IRGRP: ::c_int = 0o0040;
+pub const S_IWGRP: ::c_int = 0o0020;
+pub const S_IXGRP: ::c_int = 0o0010;
+pub const S_IRWXO: ::c_int = 0o0007;
+pub const S_IROTH: ::c_int = 0o0004;
+pub const S_IWOTH: ::c_int = 0o0002;
+pub const S_IXOTH: ::c_int = 0o0001;
 
 // stdlib.h
 pub const EXIT_SUCCESS: ::c_int = 0;
@@ -729,6 +735,7 @@ pub const FIOCLEX: ::c_ulong = 0x5451;
 pub const TCGETS: ::c_ulong = 0x5401;
 pub const TCSETS: ::c_ulong = 0x5402;
 pub const TCFLSH: ::c_ulong = 0x540B;
+pub const TIOCSCTTY: ::c_ulong = 0x540E;
 pub const TIOCGPGRP: ::c_ulong = 0x540F;
 pub const TIOCSPGRP: ::c_ulong = 0x5410;
 pub const TIOCGWINSZ: ::c_ulong = 0x5413;
@@ -758,7 +765,7 @@ pub const MS_INVALIDATE: ::c_int = 0x0002;
 pub const MS_SYNC: ::c_int = 0x0004;
 
 // sys/select.h
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 // sys/socket.h
 pub const AF_INET: ::c_int = 2;
@@ -809,10 +816,12 @@ pub const SO_PROTOCOL: ::c_int = 38;
 pub const SO_DOMAIN: ::c_int = 39;
 pub const SOCK_STREAM: ::c_int = 1;
 pub const SOCK_DGRAM: ::c_int = 2;
+pub const SOCK_RAW: ::c_int = 3;
 pub const SOCK_NONBLOCK: ::c_int = 0o4_000;
 pub const SOCK_CLOEXEC: ::c_int = 0o2_000_000;
 pub const SOCK_SEQPACKET: ::c_int = 5;
 pub const SOL_SOCKET: ::c_int = 1;
+pub const SOMAXCONN: ::c_int = 128;
 
 // sys/termios.h
 pub const VEOF: usize = 0;
@@ -1137,6 +1146,15 @@ extern "C" {
         clock_id: ::clockid_t,
     ) -> ::c_int;
 
+    //pty.h
+    pub fn openpty(
+        amaster: *mut ::c_int,
+        aslave: *mut ::c_int,
+        name: *mut ::c_char,
+        termp: *const termios,
+        winp: *const ::winsize,
+    ) -> ::c_int;
+
     // pwd.h
     pub fn getpwent() -> *mut passwd;
     pub fn setpwent();
@@ -1172,9 +1190,15 @@ extern "C" {
     pub fn sigwait(set: *const sigset_t, sig: *mut ::c_int) -> ::c_int;
 
     // stdlib.h
+    pub fn getsubopt(
+        optionp: *mut *mut c_char,
+        tokens: *const *mut c_char,
+        valuep: *mut *mut c_char,
+    ) -> ::c_int;
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 
     // string.h
+    pub fn explicit_bzero(p: *mut ::c_void, len: ::size_t);
     pub fn strlcat(dst: *mut ::c_char, src: *const ::c_char, siz: ::size_t) -> ::size_t;
     pub fn strlcpy(dst: *mut ::c_char, src: *const ::c_char, siz: ::size_t) -> ::size_t;
 
@@ -1201,6 +1225,8 @@ extern "C" {
     pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 
     // sys/resource.h
+    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
+    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
     pub fn setrlimit(resource: ::c_int, rlim: *const ::rlimit) -> ::c_int;
 
@@ -1229,17 +1255,8 @@ extern "C" {
     pub fn gettimeofday(tp: *mut ::timeval, tz: *mut ::timezone) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
 
-    // strings.h
-    pub fn explicit_bzero(p: *mut ::c_void, len: ::size_t);
-
-    pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
-    pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
-
-    pub fn getsubopt(
-        optionp: *mut *mut c_char,
-        tokens: *const *mut c_char,
-        valuep: *mut *mut c_char,
-    ) -> ::c_int;
+    // utmp.h
+    pub fn login_tty(fd: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

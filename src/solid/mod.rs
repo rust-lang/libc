@@ -209,15 +209,15 @@ pub const O_EXCL: c_int = 0x400;
 pub const O_TEXT: c_int = 0x100;
 pub const O_BINARY: c_int = 0x200;
 pub const O_TRUNC: c_int = 0x20;
-pub const S_IEXEC: c_short = 0x0040;
-pub const S_IWRITE: c_short = 0x0080;
-pub const S_IREAD: c_short = 0x0100;
-pub const S_IFCHR: c_short = 0x2000;
-pub const S_IFDIR: c_short = 0x4000;
-pub const S_IFMT: c_short = 0o160000;
-pub const S_IFIFO: c_short = 0o0010000;
-pub const S_IFBLK: c_short = 0o0060000;
-pub const S_IFREG: c_short = 0o0100000;
+pub const S_IEXEC: c_short = 0o0100;
+pub const S_IWRITE: c_short = 0o0200;
+pub const S_IREAD: c_short = 0o0400;
+pub const S_IFCHR: c_short = 0o2_0000;
+pub const S_IFDIR: c_short = 0o4_0000;
+pub const S_IFMT: c_short = 0o16_0000;
+pub const S_IFIFO: c_short = 0o1_0000;
+pub const S_IFBLK: c_short = 0o6_0000;
+pub const S_IFREG: c_short = 0o10_0000;
 
 pub const LC_ALL: c_int = 0;
 pub const LC_COLLATE: c_int = 1;
@@ -871,25 +871,7 @@ extern "C" {
     pub fn lseek(arg1: c_int, arg2: __off_t, arg3: c_int) -> __off_t;
 }
 
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
-    }
-}
+pub use ffi::c_void;
 
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {

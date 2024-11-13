@@ -1462,6 +1462,7 @@ pub const TIOCISPTMASTER: ::c_ulong = 0x20007455;
 pub const TIOCMODG: ::c_ulong = 0x40047403;
 pub const TIOCMODS: ::c_ulong = 0x80047404;
 pub const TIOCREMOTE: ::c_ulong = 0x80047469;
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
 
 // Constants used by "at" family of system calls.
 pub const AT_FDCWD: ::c_int = 0xFFFAFDCD; // invalid file descriptor
@@ -1521,6 +1522,19 @@ pub const NGROUPS: usize = 16;
 
 pub const RB_PAUSE: ::c_int = 0x40000;
 pub const RB_VIDEO: ::c_int = 0x20000000;
+
+// net/route.h
+pub const RTF_CLONING: ::c_int = 0x100;
+pub const RTF_PRCLONING: ::c_int = 0x10000;
+pub const RTF_WASCLONED: ::c_int = 0x20000;
+pub const RTF_MPLSOPS: ::c_int = 0x1000000;
+
+pub const RTM_VERSION: ::c_int = 7;
+
+pub const RTAX_MPLS1: ::c_int = 8;
+pub const RTAX_MPLS2: ::c_int = 9;
+pub const RTAX_MPLS3: ::c_int = 10;
+pub const RTAX_MAX: ::c_int = 11;
 
 const_fn! {
     {const} fn _CMSG_ALIGN(n: usize) -> usize {
@@ -1722,11 +1736,4 @@ extern "C" {
         map: vm_map_entry_t,
         entry: vm_map_entry_t,
     ) -> vm_map_entry_t;
-}
-
-cfg_if! {
-    if #[cfg(libc_thread_local)] {
-        mod errno;
-        pub use self::errno::*;
-    }
 }

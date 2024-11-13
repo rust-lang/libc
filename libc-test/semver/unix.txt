@@ -132,6 +132,11 @@ FD_ZERO
 FILE
 FIOCLEX
 FIONBIO
+FNM_CASEFOLD
+FNM_NOESCAPE
+FNM_NOMATCH
+FNM_PATHNAME
+FNM_PERIOD
 F_DUPFD
 F_DUPFD_CLOEXEC
 F_GETFD
@@ -152,6 +157,8 @@ IF_NAMESIZE
 IGNBRK
 IGNCR
 IGNPAR
+IN6ADDR_ANY_INIT
+IN6ADDR_LOOPBACK_INIT
 INADDR_ANY
 INADDR_BROADCAST
 INADDR_LOOPBACK
@@ -182,10 +189,6 @@ ISTRIP
 IXANY
 IXOFF
 IXON
-LOCK_EX
-LOCK_NB
-LOCK_SH
-LOCK_UN
 LOG_ALERT
 LOG_AUTH
 LOG_CONS
@@ -450,6 +453,7 @@ accept
 access
 addrinfo
 alarm
+aligned_alloc
 atexit
 atof
 atoi
@@ -489,6 +493,7 @@ clockid_t
 close
 closedir
 closelog
+confstr
 connect
 creat
 dev_t
@@ -523,6 +528,7 @@ fgetpos
 fgets
 fileno
 flock
+fnmatch
 fopen
 fork
 fpathconf
@@ -583,9 +589,13 @@ grantpt
 group
 hostent
 hstrerror
+htonl
+htons
 if_indextoname
 if_nametoindex
 in6_addr
+in6addr_any
+in6addr_loopback
 in_addr
 in_addr_t
 in_port_t
@@ -651,6 +661,8 @@ munmap
 nanosleep
 nfds_t
 nlink_t
+ntohl
+ntohs
 off_t
 open
 opendir
@@ -670,8 +682,8 @@ printf
 protoent
 pselect
 pthread_attr_destroy
-pthread_attr_init
 pthread_attr_getstacksize
+pthread_attr_init
 pthread_attr_setdetachstate
 pthread_attr_setstacksize
 pthread_attr_t
@@ -687,6 +699,7 @@ pthread_condattr_init
 pthread_condattr_t
 pthread_create
 pthread_detach
+pthread_equal
 pthread_exit
 pthread_getspecific
 pthread_join

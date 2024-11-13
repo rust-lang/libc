@@ -48,6 +48,10 @@ pub type Elf64_Xword = u64;
 
 pub type eventfd_t = u64;
 
+// these structs sit behind a heap allocation on Android
+pub type posix_spawn_file_actions_t = *mut ::c_void;
+pub type posix_spawnattr_t = *mut ::c_void;
+
 s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
@@ -485,6 +489,54 @@ s! {
         pub flag: *mut ::c_int,
         pub val: ::c_int,
     }
+
+    pub struct __c_anonymous_ifru_map {
+        pub mem_start: ::c_ulong,
+        pub mem_end: ::c_ulong,
+        pub base_addr: ::c_ushort,
+        pub irq: ::c_uchar,
+        pub dma: ::c_uchar,
+        pub port: ::c_uchar,
+    }
+
+    pub struct in6_ifreq {
+       pub ifr6_addr: ::in6_addr,
+       pub ifr6_prefixlen: u32,
+       pub ifr6_ifindex: ::c_int,
+    }
+
+    pub struct statx {
+        pub stx_mask: ::__u32,
+        pub stx_blksize: ::__u32,
+        pub stx_attributes: ::__u64,
+        pub stx_nlink: ::__u32,
+        pub stx_uid: ::__u32,
+        pub stx_gid: ::__u32,
+        pub stx_mode: ::__u16,
+        __statx_pad1: [::__u16; 1],
+        pub stx_ino: ::__u64,
+        pub stx_size: ::__u64,
+        pub stx_blocks: ::__u64,
+        pub stx_attributes_mask: ::__u64,
+        pub stx_atime: ::statx_timestamp,
+        pub stx_btime: ::statx_timestamp,
+        pub stx_ctime: ::statx_timestamp,
+        pub stx_mtime: ::statx_timestamp,
+        pub stx_rdev_major: ::__u32,
+        pub stx_rdev_minor: ::__u32,
+        pub stx_dev_major: ::__u32,
+        pub stx_dev_minor: ::__u32,
+        pub stx_mnt_id: ::__u64,
+        pub stx_dio_mem_align: ::__u32,
+        pub stx_dio_offset_align: ::__u32,
+        __statx_pad3: [::__u64; 12],
+    }
+
+    pub struct statx_timestamp {
+        pub tv_sec: ::__s64,
+        pub tv_nsec: ::__u32,
+        pub __reserved: ::__s32,
+    }
 }
 
 s_no_extra_traits! {
@@ -563,13 +615,7 @@ s_no_extra_traits! {
         pub absflat: [::__s32; ABS_CNT],
     }
 
-    /// WARNING: The `PartialEq`, `Eq` and `Hash` implementations of this
-    /// type are unsound and will be removed in the future.
-    #[deprecated(
-        note = "this struct has unsafe trait implementations that will be \
-                removed in the future",
-        since = "0.2.80"
-    )]
+    #[allow(missing_debug_implementations)]
     pub struct af_alg_iv {
         pub ivlen: u32,
         pub iv: [::c_uchar; 0],
@@ -580,6 +626,39 @@ s_no_extra_traits! {
         __serial: ::c_uint,
         __value: [[::c_char; 4]; 23],
     }
+
+    pub union __c_anonymous_ifr_ifru {
+        pub ifru_addr: ::sockaddr,
+        pub ifru_dstaddr: ::sockaddr,
+        pub ifru_broadaddr: ::sockaddr,
+        pub ifru_netmask: ::sockaddr,
+        pub ifru_hwaddr: ::sockaddr,
+        pub ifru_flags: ::c_short,
+        pub ifru_ifindex: ::c_int,
+        pub ifru_metric: ::c_int,
+        pub ifru_mtu: ::c_int,
+        pub ifru_map: __c_anonymous_ifru_map,
+        pub ifru_slave: [::c_char; ::IFNAMSIZ],
+        pub ifru_newname: [::c_char; ::IFNAMSIZ],
+        pub ifru_data: *mut ::c_char,
+    }
+
+    pub struct ifreq {
+        /// interface name, e.g. "en0"
+        pub ifr_name: [::c_char; ::IFNAMSIZ],
+        pub ifr_ifru: __c_anonymous_ifr_ifru,
+    }
+
+    pub union __c_anonymous_ifc_ifcu {
+        pub ifcu_buf: *mut ::c_char,
+        pub ifcu_req: *mut ::ifreq,
+    }
+
+    pub struct ifconf {
+        pub ifc_len: ::c_int,
+        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+    }
+
 }
 
 cfg_if! {
@@ -927,41 +1006,48 @@ cfg_if! {
             }
         }
 
-        #[allow(deprecated)]
-        impl af_alg_iv {
-            fn as_slice(&self) -> &[u8] {
-                unsafe {
-                    ::core::slice::from_raw_parts(
-                        self.iv.as_ptr(),
-                        self.ivlen as usize
-                    )
-                }
+        impl ::fmt::Debug for __c_anonymous_ifr_ifru {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifr_ifru")
+                    .field("ifru_addr", unsafe { &self.ifru_addr })
+                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
+                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
+                    .field("ifru_netmask", unsafe { &self.ifru_netmask })
+                    .field("ifru_hwaddr", unsafe { &self.ifru_hwaddr })
+                    .field("ifru_flags", unsafe { &self.ifru_flags })
+                    .field("ifru_ifindex", unsafe { &self.ifru_ifindex })
+                    .field("ifru_metric", unsafe { &self.ifru_metric })
+                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
+                    .field("ifru_map", unsafe { &self.ifru_map })
+                    .field("ifru_slave", unsafe { &self.ifru_slave })
+                    .field("ifru_newname", unsafe { &self.ifru_newname })
+                    .field("ifru_data", unsafe { &self.ifru_data })
+                    .finish()
             }
         }
-
-        #[allow(deprecated)]
-        impl PartialEq for af_alg_iv {
-            fn eq(&self, other: &af_alg_iv) -> bool {
-                *self.as_slice() == *other.as_slice()
-           }
-        }
-
-        #[allow(deprecated)]
-        impl Eq for af_alg_iv {}
-
-        #[allow(deprecated)]
-        impl ::fmt::Debug for af_alg_iv {
+        impl ::fmt::Debug for ifreq {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("af_alg_iv")
-                    .field("ivlen", &self.ivlen)
+                f.debug_struct("ifreq")
+                    .field("ifr_name", &self.ifr_name)
+                    .field("ifr_ifru", &self.ifr_ifru)
                     .finish()
             }
         }
 
-        #[allow(deprecated)]
-        impl ::hash::Hash for af_alg_iv {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.as_slice().hash(state);
+        impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifr_ifru")
+                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
+                    .field("ifcu_req", unsafe { &self.ifcu_req })
+                    .finish()
+            }
+        }
+        impl ::fmt::Debug for ifconf {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifconf")
+                    .field("ifc_len", &self.ifc_len)
+                    .field("ifc_ifcu", &self.ifc_ifcu)
+                    .finish()
             }
         }
 
@@ -1064,140 +1150,155 @@ pub const _PC_SYNC_IO: ::c_int = 19;
 
 pub const FIONBIO: ::c_int = 0x5421;
 
-pub const _SC_ARG_MAX: ::c_int = 0;
-pub const _SC_BC_BASE_MAX: ::c_int = 1;
-pub const _SC_BC_DIM_MAX: ::c_int = 2;
-pub const _SC_BC_SCALE_MAX: ::c_int = 3;
-pub const _SC_BC_STRING_MAX: ::c_int = 4;
-pub const _SC_CHILD_MAX: ::c_int = 5;
-pub const _SC_CLK_TCK: ::c_int = 6;
-pub const _SC_COLL_WEIGHTS_MAX: ::c_int = 7;
-pub const _SC_EXPR_NEST_MAX: ::c_int = 8;
-pub const _SC_LINE_MAX: ::c_int = 9;
-pub const _SC_NGROUPS_MAX: ::c_int = 10;
-pub const _SC_OPEN_MAX: ::c_int = 11;
-pub const _SC_PASS_MAX: ::c_int = 12;
-pub const _SC_2_C_BIND: ::c_int = 13;
-pub const _SC_2_C_DEV: ::c_int = 14;
-pub const _SC_2_C_VERSION: ::c_int = 15;
-pub const _SC_2_CHAR_TERM: ::c_int = 16;
-pub const _SC_2_FORT_DEV: ::c_int = 17;
-pub const _SC_2_FORT_RUN: ::c_int = 18;
-pub const _SC_2_LOCALEDEF: ::c_int = 19;
-pub const _SC_2_SW_DEV: ::c_int = 20;
-pub const _SC_2_UPE: ::c_int = 21;
-pub const _SC_2_VERSION: ::c_int = 22;
-pub const _SC_JOB_CONTROL: ::c_int = 23;
-pub const _SC_SAVED_IDS: ::c_int = 24;
-pub const _SC_VERSION: ::c_int = 25;
-pub const _SC_RE_DUP_MAX: ::c_int = 26;
-pub const _SC_STREAM_MAX: ::c_int = 27;
-pub const _SC_TZNAME_MAX: ::c_int = 28;
-pub const _SC_XOPEN_CRYPT: ::c_int = 29;
-pub const _SC_XOPEN_ENH_I18N: ::c_int = 30;
-pub const _SC_XOPEN_SHM: ::c_int = 31;
-pub const _SC_XOPEN_VERSION: ::c_int = 32;
-pub const _SC_XOPEN_XCU_VERSION: ::c_int = 33;
-pub const _SC_XOPEN_REALTIME: ::c_int = 34;
-pub const _SC_XOPEN_REALTIME_THREADS: ::c_int = 35;
-pub const _SC_XOPEN_LEGACY: ::c_int = 36;
-pub const _SC_ATEXIT_MAX: ::c_int = 37;
-pub const _SC_IOV_MAX: ::c_int = 38;
-pub const _SC_PAGESIZE: ::c_int = 39;
-pub const _SC_PAGE_SIZE: ::c_int = 40;
-pub const _SC_XOPEN_UNIX: ::c_int = 41;
-pub const _SC_XBS5_ILP32_OFF32: ::c_int = 42;
-pub const _SC_XBS5_ILP32_OFFBIG: ::c_int = 43;
-pub const _SC_XBS5_LP64_OFF64: ::c_int = 44;
-pub const _SC_XBS5_LPBIG_OFFBIG: ::c_int = 45;
-pub const _SC_AIO_LISTIO_MAX: ::c_int = 46;
-pub const _SC_AIO_MAX: ::c_int = 47;
-pub const _SC_AIO_PRIO_DELTA_MAX: ::c_int = 48;
-pub const _SC_DELAYTIMER_MAX: ::c_int = 49;
-pub const _SC_MQ_OPEN_MAX: ::c_int = 50;
-pub const _SC_MQ_PRIO_MAX: ::c_int = 51;
-pub const _SC_RTSIG_MAX: ::c_int = 52;
-pub const _SC_SEM_NSEMS_MAX: ::c_int = 53;
-pub const _SC_SEM_VALUE_MAX: ::c_int = 54;
-pub const _SC_SIGQUEUE_MAX: ::c_int = 55;
-pub const _SC_TIMER_MAX: ::c_int = 56;
-pub const _SC_ASYNCHRONOUS_IO: ::c_int = 57;
-pub const _SC_FSYNC: ::c_int = 58;
-pub const _SC_MAPPED_FILES: ::c_int = 59;
-pub const _SC_MEMLOCK: ::c_int = 60;
-pub const _SC_MEMLOCK_RANGE: ::c_int = 61;
-pub const _SC_MEMORY_PROTECTION: ::c_int = 62;
-pub const _SC_MESSAGE_PASSING: ::c_int = 63;
-pub const _SC_PRIORITIZED_IO: ::c_int = 64;
-pub const _SC_PRIORITY_SCHEDULING: ::c_int = 65;
-pub const _SC_REALTIME_SIGNALS: ::c_int = 66;
-pub const _SC_SEMAPHORES: ::c_int = 67;
-pub const _SC_SHARED_MEMORY_OBJECTS: ::c_int = 68;
-pub const _SC_SYNCHRONIZED_IO: ::c_int = 69;
-pub const _SC_TIMERS: ::c_int = 70;
-pub const _SC_GETGR_R_SIZE_MAX: ::c_int = 71;
-pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 72;
-pub const _SC_LOGIN_NAME_MAX: ::c_int = 73;
-pub const _SC_THREAD_DESTRUCTOR_ITERATIONS: ::c_int = 74;
-pub const _SC_THREAD_KEYS_MAX: ::c_int = 75;
-pub const _SC_THREAD_STACK_MIN: ::c_int = 76;
-pub const _SC_THREAD_THREADS_MAX: ::c_int = 77;
-pub const _SC_TTY_NAME_MAX: ::c_int = 78;
-pub const _SC_THREADS: ::c_int = 79;
-pub const _SC_THREAD_ATTR_STACKADDR: ::c_int = 80;
-pub const _SC_THREAD_ATTR_STACKSIZE: ::c_int = 81;
-pub const _SC_THREAD_PRIORITY_SCHEDULING: ::c_int = 82;
-pub const _SC_THREAD_PRIO_INHERIT: ::c_int = 83;
-pub const _SC_THREAD_PRIO_PROTECT: ::c_int = 84;
-pub const _SC_THREAD_SAFE_FUNCTIONS: ::c_int = 85;
-pub const _SC_NPROCESSORS_CONF: ::c_int = 96;
-pub const _SC_NPROCESSORS_ONLN: ::c_int = 97;
-pub const _SC_PHYS_PAGES: ::c_int = 98;
-pub const _SC_AVPHYS_PAGES: ::c_int = 99;
-pub const _SC_MONOTONIC_CLOCK: ::c_int = 100;
-
-pub const _SC_2_PBS: ::c_int = 101;
-pub const _SC_2_PBS_ACCOUNTING: ::c_int = 102;
-pub const _SC_2_PBS_CHECKPOINT: ::c_int = 103;
-pub const _SC_2_PBS_LOCATE: ::c_int = 104;
-pub const _SC_2_PBS_MESSAGE: ::c_int = 105;
-pub const _SC_2_PBS_TRACK: ::c_int = 106;
-pub const _SC_ADVISORY_INFO: ::c_int = 107;
-pub const _SC_BARRIERS: ::c_int = 108;
-pub const _SC_CLOCK_SELECTION: ::c_int = 109;
-pub const _SC_CPUTIME: ::c_int = 110;
-pub const _SC_HOST_NAME_MAX: ::c_int = 111;
-pub const _SC_IPV6: ::c_int = 112;
-pub const _SC_RAW_SOCKETS: ::c_int = 113;
-pub const _SC_READER_WRITER_LOCKS: ::c_int = 114;
-pub const _SC_REGEXP: ::c_int = 115;
-pub const _SC_SHELL: ::c_int = 116;
-pub const _SC_SPAWN: ::c_int = 117;
-pub const _SC_SPIN_LOCKS: ::c_int = 118;
-pub const _SC_SPORADIC_SERVER: ::c_int = 119;
-pub const _SC_SS_REPL_MAX: ::c_int = 120;
-pub const _SC_SYMLOOP_MAX: ::c_int = 121;
-pub const _SC_THREAD_CPUTIME: ::c_int = 122;
-pub const _SC_THREAD_PROCESS_SHARED: ::c_int = 123;
-pub const _SC_THREAD_ROBUST_PRIO_INHERIT: ::c_int = 124;
-pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 125;
-pub const _SC_THREAD_SPORADIC_SERVER: ::c_int = 126;
-pub const _SC_TIMEOUTS: ::c_int = 127;
-pub const _SC_TRACE: ::c_int = 128;
-pub const _SC_TRACE_EVENT_FILTER: ::c_int = 129;
-pub const _SC_TRACE_EVENT_NAME_MAX: ::c_int = 130;
-pub const _SC_TRACE_INHERIT: ::c_int = 131;
-pub const _SC_TRACE_LOG: ::c_int = 132;
-pub const _SC_TRACE_NAME_MAX: ::c_int = 133;
-pub const _SC_TRACE_SYS_MAX: ::c_int = 134;
-pub const _SC_TRACE_USER_EVENT_MAX: ::c_int = 135;
-pub const _SC_TYPED_MEMORY_OBJECTS: ::c_int = 136;
-pub const _SC_V7_ILP32_OFF32: ::c_int = 137;
-pub const _SC_V7_ILP32_OFFBIG: ::c_int = 138;
-pub const _SC_V7_LP64_OFF64: ::c_int = 139;
-pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 140;
-pub const _SC_XOPEN_STREAMS: ::c_int = 141;
-pub const _SC_XOPEN_UUCP: ::c_int = 142;
+pub const _SC_ARG_MAX: ::c_int = 0x0000;
+pub const _SC_BC_BASE_MAX: ::c_int = 0x0001;
+pub const _SC_BC_DIM_MAX: ::c_int = 0x0002;
+pub const _SC_BC_SCALE_MAX: ::c_int = 0x0003;
+pub const _SC_BC_STRING_MAX: ::c_int = 0x0004;
+pub const _SC_CHILD_MAX: ::c_int = 0x0005;
+pub const _SC_CLK_TCK: ::c_int = 0x0006;
+pub const _SC_COLL_WEIGHTS_MAX: ::c_int = 0x0007;
+pub const _SC_EXPR_NEST_MAX: ::c_int = 0x0008;
+pub const _SC_LINE_MAX: ::c_int = 0x0009;
+pub const _SC_NGROUPS_MAX: ::c_int = 0x000a;
+pub const _SC_OPEN_MAX: ::c_int = 0x000b;
+pub const _SC_PASS_MAX: ::c_int = 0x000c;
+pub const _SC_2_C_BIND: ::c_int = 0x000d;
+pub const _SC_2_C_DEV: ::c_int = 0x000e;
+pub const _SC_2_C_VERSION: ::c_int = 0x000f;
+pub const _SC_2_CHAR_TERM: ::c_int = 0x0010;
+pub const _SC_2_FORT_DEV: ::c_int = 0x0011;
+pub const _SC_2_FORT_RUN: ::c_int = 0x0012;
+pub const _SC_2_LOCALEDEF: ::c_int = 0x0013;
+pub const _SC_2_SW_DEV: ::c_int = 0x0014;
+pub const _SC_2_UPE: ::c_int = 0x0015;
+pub const _SC_2_VERSION: ::c_int = 0x0016;
+pub const _SC_JOB_CONTROL: ::c_int = 0x0017;
+pub const _SC_SAVED_IDS: ::c_int = 0x0018;
+pub const _SC_VERSION: ::c_int = 0x0019;
+pub const _SC_RE_DUP_MAX: ::c_int = 0x001a;
+pub const _SC_STREAM_MAX: ::c_int = 0x001b;
+pub const _SC_TZNAME_MAX: ::c_int = 0x001c;
+pub const _SC_XOPEN_CRYPT: ::c_int = 0x001d;
+pub const _SC_XOPEN_ENH_I18N: ::c_int = 0x001e;
+pub const _SC_XOPEN_SHM: ::c_int = 0x001f;
+pub const _SC_XOPEN_VERSION: ::c_int = 0x0020;
+pub const _SC_XOPEN_XCU_VERSION: ::c_int = 0x0021;
+pub const _SC_XOPEN_REALTIME: ::c_int = 0x0022;
+pub const _SC_XOPEN_REALTIME_THREADS: ::c_int = 0x0023;
+pub const _SC_XOPEN_LEGACY: ::c_int = 0x0024;
+pub const _SC_ATEXIT_MAX: ::c_int = 0x0025;
+pub const _SC_IOV_MAX: ::c_int = 0x0026;
+pub const _SC_UIO_MAXIOV: ::c_int = _SC_IOV_MAX;
+pub const _SC_PAGESIZE: ::c_int = 0x0027;
+pub const _SC_PAGE_SIZE: ::c_int = 0x0028;
+pub const _SC_XOPEN_UNIX: ::c_int = 0x0029;
+pub const _SC_XBS5_ILP32_OFF32: ::c_int = 0x002a;
+pub const _SC_XBS5_ILP32_OFFBIG: ::c_int = 0x002b;
+pub const _SC_XBS5_LP64_OFF64: ::c_int = 0x002c;
+pub const _SC_XBS5_LPBIG_OFFBIG: ::c_int = 0x002d;
+pub const _SC_AIO_LISTIO_MAX: ::c_int = 0x002e;
+pub const _SC_AIO_MAX: ::c_int = 0x002f;
+pub const _SC_AIO_PRIO_DELTA_MAX: ::c_int = 0x0030;
+pub const _SC_DELAYTIMER_MAX: ::c_int = 0x0031;
+pub const _SC_MQ_OPEN_MAX: ::c_int = 0x0032;
+pub const _SC_MQ_PRIO_MAX: ::c_int = 0x0033;
+pub const _SC_RTSIG_MAX: ::c_int = 0x0034;
+pub const _SC_SEM_NSEMS_MAX: ::c_int = 0x0035;
+pub const _SC_SEM_VALUE_MAX: ::c_int = 0x0036;
+pub const _SC_SIGQUEUE_MAX: ::c_int = 0x0037;
+pub const _SC_TIMER_MAX: ::c_int = 0x0038;
+pub const _SC_ASYNCHRONOUS_IO: ::c_int = 0x0039;
+pub const _SC_FSYNC: ::c_int = 0x003a;
+pub const _SC_MAPPED_FILES: ::c_int = 0x003b;
+pub const _SC_MEMLOCK: ::c_int = 0x003c;
+pub const _SC_MEMLOCK_RANGE: ::c_int = 0x003d;
+pub const _SC_MEMORY_PROTECTION: ::c_int = 0x003e;
+pub const _SC_MESSAGE_PASSING: ::c_int = 0x003f;
+pub const _SC_PRIORITIZED_IO: ::c_int = 0x0040;
+pub const _SC_PRIORITY_SCHEDULING: ::c_int = 0x0041;
+pub const _SC_REALTIME_SIGNALS: ::c_int = 0x0042;
+pub const _SC_SEMAPHORES: ::c_int = 0x0043;
+pub const _SC_SHARED_MEMORY_OBJECTS: ::c_int = 0x0044;
+pub const _SC_SYNCHRONIZED_IO: ::c_int = 0x0045;
+pub const _SC_TIMERS: ::c_int = 0x0046;
+pub const _SC_GETGR_R_SIZE_MAX: ::c_int = 0x0047;
+pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 0x0048;
+pub const _SC_LOGIN_NAME_MAX: ::c_int = 0x0049;
+pub const _SC_THREAD_DESTRUCTOR_ITERATIONS: ::c_int = 0x004a;
+pub const _SC_THREAD_KEYS_MAX: ::c_int = 0x004b;
+pub const _SC_THREAD_STACK_MIN: ::c_int = 0x004c;
+pub const _SC_THREAD_THREADS_MAX: ::c_int = 0x004d;
+pub const _SC_TTY_NAME_MAX: ::c_int = 0x004e;
+pub const _SC_THREADS: ::c_int = 0x004f;
+pub const _SC_THREAD_ATTR_STACKADDR: ::c_int = 0x0050;
+pub const _SC_THREAD_ATTR_STACKSIZE: ::c_int = 0x0051;
+pub const _SC_THREAD_PRIORITY_SCHEDULING: ::c_int = 0x0052;
+pub const _SC_THREAD_PRIO_INHERIT: ::c_int = 0x0053;
+pub const _SC_THREAD_PRIO_PROTECT: ::c_int = 0x0054;
+pub const _SC_THREAD_SAFE_FUNCTIONS: ::c_int = 0x0055;
+pub const _SC_NPROCESSORS_CONF: ::c_int = 0x0060;
+pub const _SC_NPROCESSORS_ONLN: ::c_int = 0x0061;
+pub const _SC_PHYS_PAGES: ::c_int = 0x0062;
+pub const _SC_AVPHYS_PAGES: ::c_int = 0x0063;
+pub const _SC_MONOTONIC_CLOCK: ::c_int = 0x0064;
+pub const _SC_2_PBS: ::c_int = 0x0065;
+pub const _SC_2_PBS_ACCOUNTING: ::c_int = 0x0066;
+pub const _SC_2_PBS_CHECKPOINT: ::c_int = 0x0067;
+pub const _SC_2_PBS_LOCATE: ::c_int = 0x0068;
+pub const _SC_2_PBS_MESSAGE: ::c_int = 0x0069;
+pub const _SC_2_PBS_TRACK: ::c_int = 0x006a;
+pub const _SC_ADVISORY_INFO: ::c_int = 0x006b;
+pub const _SC_BARRIERS: ::c_int = 0x006c;
+pub const _SC_CLOCK_SELECTION: ::c_int = 0x006d;
+pub const _SC_CPUTIME: ::c_int = 0x006e;
+pub const _SC_HOST_NAME_MAX: ::c_int = 0x006f;
+pub const _SC_IPV6: ::c_int = 0x0070;
+pub const _SC_RAW_SOCKETS: ::c_int = 0x0071;
+pub const _SC_READER_WRITER_LOCKS: ::c_int = 0x0072;
+pub const _SC_REGEXP: ::c_int = 0x0073;
+pub const _SC_SHELL: ::c_int = 0x0074;
+pub const _SC_SPAWN: ::c_int = 0x0075;
+pub const _SC_SPIN_LOCKS: ::c_int = 0x0076;
+pub const _SC_SPORADIC_SERVER: ::c_int = 0x0077;
+pub const _SC_SS_REPL_MAX: ::c_int = 0x0078;
+pub const _SC_SYMLOOP_MAX: ::c_int = 0x0079;
+pub const _SC_THREAD_CPUTIME: ::c_int = 0x007a;
+pub const _SC_THREAD_PROCESS_SHARED: ::c_int = 0x007b;
+pub const _SC_THREAD_ROBUST_PRIO_INHERIT: ::c_int = 0x007c;
+pub const _SC_THREAD_ROBUST_PRIO_PROTECT: ::c_int = 0x007d;
+pub const _SC_THREAD_SPORADIC_SERVER: ::c_int = 0x007e;
+pub const _SC_TIMEOUTS: ::c_int = 0x007f;
+pub const _SC_TRACE: ::c_int = 0x0080;
+pub const _SC_TRACE_EVENT_FILTER: ::c_int = 0x0081;
+pub const _SC_TRACE_EVENT_NAME_MAX: ::c_int = 0x0082;
+pub const _SC_TRACE_INHERIT: ::c_int = 0x0083;
+pub const _SC_TRACE_LOG: ::c_int = 0x0084;
+pub const _SC_TRACE_NAME_MAX: ::c_int = 0x0085;
+pub const _SC_TRACE_SYS_MAX: ::c_int = 0x0086;
+pub const _SC_TRACE_USER_EVENT_MAX: ::c_int = 0x0087;
+pub const _SC_TYPED_MEMORY_OBJECTS: ::c_int = 0x0088;
+pub const _SC_V7_ILP32_OFF32: ::c_int = 0x0089;
+pub const _SC_V7_ILP32_OFFBIG: ::c_int = 0x008a;
+pub const _SC_V7_LP64_OFF64: ::c_int = 0x008b;
+pub const _SC_V7_LPBIG_OFFBIG: ::c_int = 0x008c;
+pub const _SC_XOPEN_STREAMS: ::c_int = 0x008d;
+pub const _SC_XOPEN_UUCP: ::c_int = 0x008e;
+pub const _SC_LEVEL1_ICACHE_SIZE: ::c_int = 0x008f;
+pub const _SC_LEVEL1_ICACHE_ASSOC: ::c_int = 0x0090;
+pub const _SC_LEVEL1_ICACHE_LINESIZE: ::c_int = 0x0091;
+pub const _SC_LEVEL1_DCACHE_SIZE: ::c_int = 0x0092;
+pub const _SC_LEVEL1_DCACHE_ASSOC: ::c_int = 0x0093;
+pub const _SC_LEVEL1_DCACHE_LINESIZE: ::c_int = 0x0094;
+pub const _SC_LEVEL2_CACHE_SIZE: ::c_int = 0x0095;
+pub const _SC_LEVEL2_CACHE_ASSOC: ::c_int = 0x0096;
+pub const _SC_LEVEL2_CACHE_LINESIZE: ::c_int = 0x0097;
+pub const _SC_LEVEL3_CACHE_SIZE: ::c_int = 0x0098;
+pub const _SC_LEVEL3_CACHE_ASSOC: ::c_int = 0x0099;
+pub const _SC_LEVEL3_CACHE_LINESIZE: ::c_int = 0x009a;
+pub const _SC_LEVEL4_CACHE_SIZE: ::c_int = 0x009b;
+pub const _SC_LEVEL4_CACHE_ASSOC: ::c_int = 0x009c;
+pub const _SC_LEVEL4_CACHE_LINESIZE: ::c_int = 0x009d;
 
 pub const F_LOCK: ::c_int = 1;
 pub const F_TEST: ::c_int = 3;
@@ -1210,6 +1311,7 @@ pub const IFF_LOWER_UP: ::c_int = 0x10000;
 pub const IFF_DORMANT: ::c_int = 0x20000;
 pub const IFF_ECHO: ::c_int = 0x40000;
 
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
@@ -1598,6 +1700,7 @@ pub const ST_NODIRATIME: ::c_ulong = 2048;
 pub const ST_RELATIME: ::c_ulong = 4096;
 
 pub const RTLD_NOLOAD: ::c_int = 0x4;
+pub const RTLD_NODELETE: ::c_int = 0x1000;
 
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
@@ -2132,6 +2235,8 @@ pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 pub const MFD_CLOEXEC: ::c_uint = 0x0001;
 pub const MFD_ALLOW_SEALING: ::c_uint = 0x0002;
 pub const MFD_HUGETLB: ::c_uint = 0x0004;
+pub const MFD_NOEXEC_SEAL: ::c_uint = 0x0008;
+pub const MFD_EXEC: ::c_uint = 0x0010;
 pub const MFD_HUGE_64KB: ::c_uint = 0x40000000;
 pub const MFD_HUGE_512KB: ::c_uint = 0x4c000000;
 pub const MFD_HUGE_1MB: ::c_uint = 0x50000000;
@@ -2193,9 +2298,11 @@ pub const NF_INET_FORWARD: ::c_int = 2;
 pub const NF_INET_LOCAL_OUT: ::c_int = 3;
 pub const NF_INET_POST_ROUTING: ::c_int = 4;
 pub const NF_INET_NUMHOOKS: ::c_int = 5;
+pub const NF_INET_INGRESS: ::c_int = NF_INET_NUMHOOKS;
 
 pub const NF_NETDEV_INGRESS: ::c_int = 0;
-pub const NF_NETDEV_NUMHOOKS: ::c_int = 1;
+pub const NF_NETDEV_EGRESS: ::c_int = 1;
+pub const NF_NETDEV_NUMHOOKS: ::c_int = 2;
 
 pub const NFPROTO_UNSPEC: ::c_int = 0;
 pub const NFPROTO_INET: ::c_int = 1;
@@ -2207,6 +2314,31 @@ pub const NFPROTO_IPV6: ::c_int = 10;
 pub const NFPROTO_DECNET: ::c_int = 12;
 pub const NFPROTO_NUMPROTO: ::c_int = 13;
 
+// linux/netfilter_arp.h
+pub const NF_ARP: ::c_int = 0;
+pub const NF_ARP_IN: ::c_int = 0;
+pub const NF_ARP_OUT: ::c_int = 1;
+pub const NF_ARP_FORWARD: ::c_int = 2;
+pub const NF_ARP_NUMHOOKS: ::c_int = 3;
+
+// linux/netfilter_bridge.h
+pub const NF_BR_PRE_ROUTING: ::c_int = 0;
+pub const NF_BR_LOCAL_IN: ::c_int = 1;
+pub const NF_BR_FORWARD: ::c_int = 2;
+pub const NF_BR_LOCAL_OUT: ::c_int = 3;
+pub const NF_BR_POST_ROUTING: ::c_int = 4;
+pub const NF_BR_BROUTING: ::c_int = 5;
+pub const NF_BR_NUMHOOKS: ::c_int = 6;
+
+pub const NF_BR_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_BR_PRI_NAT_DST_BRIDGED: ::c_int = -300;
+pub const NF_BR_PRI_FILTER_BRIDGED: ::c_int = -200;
+pub const NF_BR_PRI_BRNF: ::c_int = 0;
+pub const NF_BR_PRI_NAT_DST_OTHER: ::c_int = 100;
+pub const NF_BR_PRI_FILTER_OTHER: ::c_int = 200;
+pub const NF_BR_PRI_NAT_SRC: ::c_int = 300;
+pub const NF_BR_PRI_LAST: ::c_int = ::INT_MAX;
+
 // linux/netfilter_ipv4.h
 pub const NF_IP_PRE_ROUTING: ::c_int = 0;
 pub const NF_IP_LOCAL_IN: ::c_int = 1;
@@ -2216,6 +2348,7 @@ pub const NF_IP_POST_ROUTING: ::c_int = 4;
 pub const NF_IP_NUMHOOKS: ::c_int = 5;
 
 pub const NF_IP_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP_PRI_RAW_BEFORE_DEFRAG: ::c_int = -450;
 pub const NF_IP_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
 pub const NF_IP_PRI_RAW: ::c_int = -300;
 pub const NF_IP_PRI_SELINUX_FIRST: ::c_int = -225;
@@ -2239,6 +2372,7 @@ pub const NF_IP6_POST_ROUTING: ::c_int = 4;
 pub const NF_IP6_NUMHOOKS: ::c_int = 5;
 
 pub const NF_IP6_PRI_FIRST: ::c_int = ::INT_MIN;
+pub const NF_IP6_PRI_RAW_BEFORE_DEFRAG: ::c_int = -450;
 pub const NF_IP6_PRI_CONNTRACK_DEFRAG: ::c_int = -400;
 pub const NF_IP6_PRI_RAW: ::c_int = -300;
 pub const NF_IP6_PRI_SELINUX_FIRST: ::c_int = -225;
@@ -2406,6 +2540,14 @@ pub const NFT_CT_PROTO_DST: ::c_int = 12;
 pub const NFT_CT_LABELS: ::c_int = 13;
 pub const NFT_CT_PKTS: ::c_int = 14;
 pub const NFT_CT_BYTES: ::c_int = 15;
+pub const NFT_CT_AVGPKT: ::c_int = 16;
+pub const NFT_CT_ZONE: ::c_int = 17;
+pub const NFT_CT_EVENTMASK: ::c_int = 18;
+pub const NFT_CT_SRC_IP: ::c_int = 19;
+pub const NFT_CT_DST_IP: ::c_int = 20;
+pub const NFT_CT_SRC_IP6: ::c_int = 21;
+pub const NFT_CT_DST_IP6: ::c_int = 22;
+pub const NFT_CT_ID: ::c_int = 23;
 
 pub const NFT_LIMIT_PKTS: ::c_int = 0;
 pub const NFT_LIMIT_PKT_BYTES: ::c_int = 1;
@@ -2679,6 +2821,7 @@ pub const NFEA_DONT_REFRESH: ::c_ushort = 2;
 
 pub const SIOCADDRT: ::c_ulong = 0x0000890B;
 pub const SIOCDELRT: ::c_ulong = 0x0000890C;
+pub const SIOCRTMSG: ::c_ulong = 0x0000890D;
 pub const SIOCGIFNAME: ::c_ulong = 0x00008910;
 pub const SIOCSIFLINK: ::c_ulong = 0x00008911;
 pub const SIOCGIFCONF: ::c_ulong = 0x00008912;
@@ -2698,6 +2841,7 @@ pub const SIOCGIFMEM: ::c_ulong = 0x0000891F;
 pub const SIOCSIFMEM: ::c_ulong = 0x00008920;
 pub const SIOCGIFMTU: ::c_ulong = 0x00008921;
 pub const SIOCSIFMTU: ::c_ulong = 0x00008922;
+pub const SIOCSIFNAME: ::c_ulong = 0x00008923;
 pub const SIOCSIFHWADDR: ::c_ulong = 0x00008924;
 pub const SIOCGIFENCAP: ::c_ulong = 0x00008925;
 pub const SIOCSIFENCAP: ::c_ulong = 0x00008926;
@@ -2706,6 +2850,24 @@ pub const SIOCGIFSLAVE: ::c_ulong = 0x00008929;
 pub const SIOCSIFSLAVE: ::c_ulong = 0x00008930;
 pub const SIOCADDMULTI: ::c_ulong = 0x00008931;
 pub const SIOCDELMULTI: ::c_ulong = 0x00008932;
+pub const SIOCGIFINDEX: ::c_ulong = 0x00008933;
+pub const SIOGIFINDEX: ::c_ulong = SIOCGIFINDEX;
+pub const SIOCSIFPFLAGS: ::c_ulong = 0x00008934;
+pub const SIOCGIFPFLAGS: ::c_ulong = 0x00008935;
+pub const SIOCDIFADDR: ::c_ulong = 0x00008936;
+pub const SIOCSIFHWBROADCAST: ::c_ulong = 0x00008937;
+pub const SIOCGIFCOUNT: ::c_ulong = 0x00008938;
+pub const SIOCGIFBR: ::c_ulong = 0x00008940;
+pub const SIOCSIFBR: ::c_ulong = 0x00008941;
+pub const SIOCGIFTXQLEN: ::c_ulong = 0x00008942;
+pub const SIOCSIFTXQLEN: ::c_ulong = 0x00008943;
+pub const SIOCETHTOOL: ::c_ulong = 0x00008946;
+pub const SIOCGMIIPHY: ::c_ulong = 0x00008947;
+pub const SIOCGMIIREG: ::c_ulong = 0x00008948;
+pub const SIOCSMIIREG: ::c_ulong = 0x00008949;
+pub const SIOCWANDEV: ::c_ulong = 0x0000894A;
+pub const SIOCOUTQNSD: ::c_ulong = 0x0000894B;
+pub const SIOCGSKNS: ::c_ulong = 0x0000894C;
 pub const SIOCDARP: ::c_ulong = 0x00008953;
 pub const SIOCGARP: ::c_ulong = 0x00008954;
 pub const SIOCSARP: ::c_ulong = 0x00008955;
@@ -2714,6 +2876,24 @@ pub const SIOCGRARP: ::c_ulong = 0x00008961;
 pub const SIOCSRARP: ::c_ulong = 0x00008962;
 pub const SIOCGIFMAP: ::c_ulong = 0x00008970;
 pub const SIOCSIFMAP: ::c_ulong = 0x00008971;
+pub const SIOCADDDLCI: ::c_ulong = 0x00008980;
+pub const SIOCDELDLCI: ::c_ulong = 0x00008981;
+pub const SIOCGIFVLAN: ::c_ulong = 0x00008982;
+pub const SIOCSIFVLAN: ::c_ulong = 0x00008983;
+pub const SIOCBONDENSLAVE: ::c_ulong = 0x00008990;
+pub const SIOCBONDRELEASE: ::c_ulong = 0x00008991;
+pub const SIOCBONDSETHWADDR: ::c_ulong = 0x00008992;
+pub const SIOCBONDSLAVEINFOQUERY: ::c_ulong = 0x00008993;
+pub const SIOCBONDINFOQUERY: ::c_ulong = 0x00008994;
+pub const SIOCBONDCHANGEACTIVE: ::c_ulong = 0x00008995;
+pub const SIOCBRADDBR: ::c_ulong = 0x000089a0;
+pub const SIOCBRDELBR: ::c_ulong = 0x000089a1;
+pub const SIOCBRADDIF: ::c_ulong = 0x000089a2;
+pub const SIOCBRDELIF: ::c_ulong = 0x000089a3;
+pub const SIOCSHWTSTAMP: ::c_ulong = 0x000089b0;
+pub const SIOCGHWTSTAMP: ::c_ulong = 0x000089b1;
+pub const SIOCDEVPRIVATE: ::c_ulong = 0x000089F0;
+pub const SIOCPROTOPRIVATE: ::c_ulong = 0x000089E0;
 
 // linux/module.h
 pub const MODULE_INIT_IGNORE_MODVERSIONS: ::c_uint = 0x0001;
@@ -2819,6 +2999,7 @@ pub const FUTEX_WAIT_BITSET: ::c_int = 9;
 pub const FUTEX_WAKE_BITSET: ::c_int = 10;
 pub const FUTEX_WAIT_REQUEUE_PI: ::c_int = 11;
 pub const FUTEX_CMP_REQUEUE_PI: ::c_int = 12;
+pub const FUTEX_LOCK_PI2: ::c_int = 13;
 
 pub const FUTEX_PRIVATE_FLAG: ::c_int = 128;
 pub const FUTEX_CLOCK_REALTIME: ::c_int = 256;
@@ -2940,6 +3121,8 @@ pub const PR_GET_TIMING: ::c_int = 13;
 pub const PR_SET_TIMING: ::c_int = 14;
 pub const PR_TIMING_STATISTICAL: ::c_int = 0;
 pub const PR_TIMING_TIMESTAMP: ::c_int = 1;
+pub const PR_SET_NAME: ::c_int = 15;
+pub const PR_GET_NAME: ::c_int = 16;
 
 // linux/if_addr.h
 pub const IFA_UNSPEC: ::c_ushort = 0;
@@ -3286,6 +3469,77 @@ pub const NET_NETFILTER: ::c_int = 19;
 pub const NET_DCCP: ::c_int = 20;
 pub const HUGETLB_FLAG_ENCODE_SHIFT: ::c_int = 26;
 pub const MAP_HUGE_SHIFT: ::c_int = HUGETLB_FLAG_ENCODE_SHIFT;
+
+// include/linux/sched.h
+pub const PF_VCPU: ::c_int = 0x00000001;
+pub const PF_IDLE: ::c_int = 0x00000002;
+pub const PF_EXITING: ::c_int = 0x00000004;
+pub const PF_POSTCOREDUMP: ::c_int = 0x00000008;
+pub const PF_IO_WORKER: ::c_int = 0x00000010;
+pub const PF_WQ_WORKER: ::c_int = 0x00000020;
+pub const PF_FORKNOEXEC: ::c_int = 0x00000040;
+pub const PF_MCE_PROCESS: ::c_int = 0x00000080;
+pub const PF_SUPERPRIV: ::c_int = 0x00000100;
+pub const PF_DUMPCORE: ::c_int = 0x00000200;
+pub const PF_SIGNALED: ::c_int = 0x00000400;
+pub const PF_MEMALLOC: ::c_int = 0x00000800;
+pub const PF_NPROC_EXCEEDED: ::c_int = 0x00001000;
+pub const PF_USED_MATH: ::c_int = 0x00002000;
+pub const PF_USER_WORKER: ::c_int = 0x00004000;
+pub const PF_NOFREEZE: ::c_int = 0x00008000;
+
+pub const PF_KSWAPD: ::c_int = 0x00020000;
+pub const PF_MEMALLOC_NOFS: ::c_int = 0x00040000;
+pub const PF_MEMALLOC_NOIO: ::c_int = 0x00080000;
+pub const PF_LOCAL_THROTTLE: ::c_int = 0x00100000;
+pub const PF_KTHREAD: ::c_int = 0x00200000;
+pub const PF_RANDOMIZE: ::c_int = 0x00400000;
+
+pub const PF_NO_SETAFFINITY: ::c_int = 0x04000000;
+pub const PF_MCE_EARLY: ::c_int = 0x08000000;
+pub const PF_MEMALLOC_PIN: ::c_int = 0x10000000;
+
+pub const PF_SUSPEND_TASK: ::c_int = 0x80000000;
+
+pub const KLOG_CLOSE: ::c_int = 0;
+pub const KLOG_OPEN: ::c_int = 1;
+pub const KLOG_READ: ::c_int = 2;
+pub const KLOG_READ_ALL: ::c_int = 3;
+pub const KLOG_READ_CLEAR: ::c_int = 4;
+pub const KLOG_CLEAR: ::c_int = 5;
+pub const KLOG_CONSOLE_OFF: ::c_int = 6;
+pub const KLOG_CONSOLE_ON: ::c_int = 7;
+pub const KLOG_CONSOLE_LEVEL: ::c_int = 8;
+pub const KLOG_SIZE_UNREAD: ::c_int = 9;
+pub const KLOG_SIZE_BUFFER: ::c_int = 10;
+
+// From NDK's linux/auxvec.h
+pub const AT_NULL: ::c_ulong = 0;
+pub const AT_IGNORE: ::c_ulong = 1;
+pub const AT_EXECFD: ::c_ulong = 2;
+pub const AT_PHDR: ::c_ulong = 3;
+pub const AT_PHENT: ::c_ulong = 4;
+pub const AT_PHNUM: ::c_ulong = 5;
+pub const AT_PAGESZ: ::c_ulong = 6;
+pub const AT_BASE: ::c_ulong = 7;
+pub const AT_FLAGS: ::c_ulong = 8;
+pub const AT_ENTRY: ::c_ulong = 9;
+pub const AT_NOTELF: ::c_ulong = 10;
+pub const AT_UID: ::c_ulong = 11;
+pub const AT_EUID: ::c_ulong = 12;
+pub const AT_GID: ::c_ulong = 13;
+pub const AT_EGID: ::c_ulong = 14;
+pub const AT_PLATFORM: ::c_ulong = 15;
+pub const AT_HWCAP: ::c_ulong = 16;
+pub const AT_CLKTCK: ::c_ulong = 17;
+pub const AT_SECURE: ::c_ulong = 23;
+pub const AT_BASE_PLATFORM: ::c_ulong = 24;
+pub const AT_RANDOM: ::c_ulong = 25;
+pub const AT_HWCAP2: ::c_ulong = 26;
+pub const AT_RSEQ_FEATURE_SIZE: ::c_ulong = 27;
+pub const AT_RSEQ_ALIGN: ::c_ulong = 28;
+pub const AT_EXECFN: ::c_ulong = 31;
+pub const AT_MINSIGSTKSZ: ::c_ulong = 51;
 
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
@@ -3859,6 +4113,24 @@ extern "C" {
     ) -> ::size_t;
     pub fn fflush_unlocked(stream: *mut ::FILE) -> ::c_int;
     pub fn fgets_unlocked(buf: *mut ::c_char, size: ::c_int, stream: *mut ::FILE) -> *mut ::c_char;
+
+    pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
+    pub fn renameat2(
+        olddirfd: ::c_int,
+        oldpath: *const ::c_char,
+        newdirfd: ::c_int,
+        newpath: *const ::c_char,
+        flags: ::c_uint,
+    ) -> ::c_int;
+    pub fn statx(
+        dirfd: ::c_int,
+        pathname: *const c_char,
+        flags: ::c_int,
+        mask: ::c_uint,
+        statxbuf: *mut statx,
+    ) -> ::c_int;
+
+    pub fn klogctl(syslog_type: ::c_int, bufp: *mut ::c_char, len: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
@@ -3899,64 +4171,60 @@ impl siginfo_t {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        // Internal, for casts to access union fields
-        #[repr(C)]
-        struct sifields_sigchld {
-            si_pid: ::pid_t,
-            si_uid: ::uid_t,
-            si_status: ::c_int,
-            si_utime: ::c_long,
-            si_stime: ::c_long,
-        }
-        impl ::Copy for sifields_sigchld {}
-        impl ::Clone for sifields_sigchld {
-            fn clone(&self) -> sifields_sigchld {
-                *self
-            }
-        }
+// Internal, for casts to access union fields
+#[repr(C)]
+struct sifields_sigchld {
+    si_pid: ::pid_t,
+    si_uid: ::uid_t,
+    si_status: ::c_int,
+    si_utime: ::c_long,
+    si_stime: ::c_long,
+}
+impl ::Copy for sifields_sigchld {}
+impl ::Clone for sifields_sigchld {
+    fn clone(&self) -> sifields_sigchld {
+        *self
+    }
+}
 
-        // Internal, for casts to access union fields
-        #[repr(C)]
-        union sifields {
-            _align_pointer: *mut ::c_void,
-            sigchld: sifields_sigchld,
-        }
+// Internal, for casts to access union fields
+#[repr(C)]
+union sifields {
+    _align_pointer: *mut ::c_void,
+    sigchld: sifields_sigchld,
+}
 
-        // Internal, for casts to access union fields. Note that some variants
-        // of sifields start with a pointer, which makes the alignment of
-        // sifields vary on 32-bit and 64-bit architectures.
-        #[repr(C)]
-        struct siginfo_f {
-            _siginfo_base: [::c_int; 3],
-            sifields: sifields,
-        }
+// Internal, for casts to access union fields. Note that some variants
+// of sifields start with a pointer, which makes the alignment of
+// sifields vary on 32-bit and 64-bit architectures.
+#[repr(C)]
+struct siginfo_f {
+    _siginfo_base: [::c_int; 3],
+    sifields: sifields,
+}
 
-        impl siginfo_t {
-            unsafe fn sifields(&self) -> &sifields {
-                &(*(self as *const siginfo_t as *const siginfo_f)).sifields
-            }
+impl siginfo_t {
+    unsafe fn sifields(&self) -> &sifields {
+        &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+    }
 
-            pub unsafe fn si_pid(&self) -> ::pid_t {
-                self.sifields().sigchld.si_pid
-            }
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.sifields().sigchld.si_pid
+    }
 
-            pub unsafe fn si_uid(&self) -> ::uid_t {
-                self.sifields().sigchld.si_uid
-            }
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.sifields().sigchld.si_uid
+    }
 
-            pub unsafe fn si_status(&self) -> ::c_int {
-                self.sifields().sigchld.si_status
-            }
+    pub unsafe fn si_status(&self) -> ::c_int {
+        self.sifields().sigchld.si_status
+    }
 
-            pub unsafe fn si_utime(&self) -> ::c_long {
-                self.sifields().sigchld.si_utime
-            }
+    pub unsafe fn si_utime(&self) -> ::c_long {
+        self.sifields().sigchld.si_utime
+    }
 
-            pub unsafe fn si_stime(&self) -> ::c_long {
-                self.sifields().sigchld.si_stime
-            }
-        }
+    pub unsafe fn si_stime(&self) -> ::c_long {
+        self.sifields().sigchld.si_stime
     }
 }

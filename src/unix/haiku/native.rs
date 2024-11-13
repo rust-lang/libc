@@ -460,7 +460,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg(libc_union)]
     pub union cpuid_info {
         pub eax_0: __c_anonymous_eax_0,
         pub eax_1: __c_anonymous_eax_1,
@@ -470,7 +469,6 @@ s_no_extra_traits! {
         pub regs: __c_anonymous_regs,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_cpu_topology_info_data {
         pub root: cpu_topology_root_info,
         pub package: cpu_topology_package_info,
@@ -481,16 +479,12 @@ s_no_extra_traits! {
         pub id: u32,
         pub type_: topology_level_type,
         pub level: u32,
-        #[cfg(libc_union)]
         pub data: __c_anonymous_cpu_topology_info_data,
-        #[cfg(not(libc_union))]
-        pub data: cpu_topology_core_info,
     }
 }
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[cfg(libc_union)]
         impl PartialEq for cpuid_info {
             fn eq(&self, other: &cpuid_info) -> bool {
                 unsafe {
@@ -503,9 +497,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for cpuid_info {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for cpuid_info {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -521,7 +513,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_cpu_topology_info_data {
             fn eq(&self, other: &__c_anonymous_cpu_topology_info_data) -> bool {
                 unsafe {
@@ -531,9 +522,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_cpu_topology_info_data {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_cpu_topology_info_data {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -956,6 +945,7 @@ pub const B_XATTR_TYPE: u32 = haiku_constant!('X', 'A', 'T', 'R');
 pub const B_NETWORK_ADDRESS_TYPE: u32 = haiku_constant!('N', 'W', 'A', 'D');
 pub const B_MIME_STRING_TYPE: u32 = haiku_constant!('M', 'I', 'M', 'S');
 pub const B_ASCII_TYPE: u32 = haiku_constant!('T', 'E', 'X', 'T');
+pub const B_APP_IMAGE_SYMBOL: *const ::c_void = core::ptr::null();
 
 extern "C" {
     // kernel/OS.h
@@ -1310,7 +1300,7 @@ extern "C" {
     pub fn find_path_for_path_etc(
         path: *const ::c_char,
         dependency: *const ::c_char,
-        architectur: *const ::c_char,
+        architecture: *const ::c_char,
         baseDirectory: path_base_directory,
         subPath: *const ::c_char,
         flags: u32,
@@ -1338,14 +1328,7 @@ extern "C" {
         pathString: *mut ::c_char,
         length: i32,
     ) -> status_t;
-}
-
-cfg_if! {
-    if #[cfg(libc_union)] {
-        extern "C" {
-            pub fn get_cpuid(info: *mut cpuid_info, eaxRegister: u32, cpuNum: u32) -> status_t;
-        }
-    }
+    pub fn get_cpuid(info: *mut cpuid_info, eaxRegister: u32, cpuNum: u32) -> status_t;
 }
 
 // The following functions are defined as macros in C/C++

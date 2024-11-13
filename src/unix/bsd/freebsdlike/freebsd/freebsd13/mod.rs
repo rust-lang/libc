@@ -1,8 +1,8 @@
-// APIs in FreeBSD 14 that have changed since 11.
+// APIs in FreeBSD 13 that have changed since 11.
 
 pub type nlink_t = u64;
 pub type dev_t = u64;
-pub type ino_t = ::c_ulong;
+pub type ino_t = u64;
 pub type shmatt_t = ::c_uint;
 pub type kpaddr_t = u64;
 pub type kssize_t = i64;
@@ -41,7 +41,10 @@ s! {
     }
 
     pub struct __c_anonymous_domainset {
-        _priv: [::uintptr_t; 4],
+        #[cfg(target_pointer_width = "64")]
+        _priv: [::c_ulong; 4],
+        #[cfg(target_pointer_width = "32")]
+        _priv: [::c_ulong; 8],
     }
 
     pub struct kinfo_proc {
@@ -227,6 +230,40 @@ s! {
         pub ki_sflag: ::c_long,
         /// kthread flag.
         pub ki_tdflags: ::c_long,
+    }
+
+    pub struct stat {
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_nlink: ::nlink_t,
+        pub st_mode: ::mode_t,
+        st_padding0: i16,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        st_padding1: i32,
+        pub st_rdev: ::dev_t,
+        #[cfg(target_arch = "x86")]
+        st_atim_ext: i32,
+        pub st_atime: ::time_t,
+        pub st_atime_nsec: ::c_long,
+        #[cfg(target_arch = "x86")]
+        st_mtim_ext: i32,
+        pub st_mtime: ::time_t,
+        pub st_mtime_nsec: ::c_long,
+        #[cfg(target_arch = "x86")]
+        st_ctim_ext: i32,
+        pub st_ctime: ::time_t,
+        pub st_ctime_nsec: ::c_long,
+        #[cfg(target_arch = "x86")]
+        st_btim_ext: i32,
+        pub st_birthtime: ::time_t,
+        pub st_birthtime_nsec: ::c_long,
+        pub st_size: ::off_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_blksize: ::blksize_t,
+        pub st_flags: ::fflags_t,
+        pub st_gen: u64,
+        pub st_spare: [u64; 10],
     }
 }
 
@@ -527,15 +564,6 @@ extern "C" {
 #[link(name = "kvm")]
 extern "C" {
     pub fn kvm_kerndisp(kd: *mut ::kvm_t) -> ::kssize_t;
-}
-
-cfg_if! {
-    if #[cfg(any(target_arch = "x86_64",
-                 target_arch = "aarch64",
-                 target_arch = "riscv64"))] {
-        mod b64;
-        pub use self::b64::*;
-    }
 }
 
 cfg_if! {

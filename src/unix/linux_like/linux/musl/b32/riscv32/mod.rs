@@ -790,9 +790,5 @@ pub const SYS_process_madvise: ::c_long = 440;
 pub const SYS_epoll_pwait2: ::c_long = 441;
 pub const SYS_mount_setattr: ::c_long = 442;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

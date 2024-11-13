@@ -24,29 +24,24 @@ pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 32;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 44;
 pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 20;
 
-align_const! {
-    pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-}
+pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0,
+    ],
+};
+pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0,
+    ],
+};
+pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0,
+    ],
+};
 
 // Syscall table
 
@@ -366,6 +361,7 @@ pub const SYS_memfd_secret: ::c_long = __X32_SYSCALL_BIT + 447;
 pub const SYS_process_mrelease: ::c_long = __X32_SYSCALL_BIT + 448;
 pub const SYS_futex_waitv: ::c_long = __X32_SYSCALL_BIT + 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = __X32_SYSCALL_BIT + 450;
+pub const SYS_fchmodat2: ::c_long = __X32_SYSCALL_BIT + 452;
 pub const SYS_rt_sigaction: ::c_long = __X32_SYSCALL_BIT + 512;
 pub const SYS_rt_sigreturn: ::c_long = __X32_SYSCALL_BIT + 513;
 pub const SYS_ioctl: ::c_long = __X32_SYSCALL_BIT + 514;

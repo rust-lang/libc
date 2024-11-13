@@ -41,6 +41,8 @@ CIBAUD
 CS
 DS
 ES
+Elf32_Rela
+Elf64_Rela
 FS
 GS
 MADV_SOFT_OFFLINE
@@ -93,6 +95,7 @@ SYS_epoll_wait
 SYS_eventfd
 SYS_fadvise64
 SYS_fork
+SYS_fstat
 SYS_futimesat
 SYS_getdents
 SYS_getpgrp
@@ -106,6 +109,7 @@ SYS_lstat
 SYS_mkdir
 SYS_mknod
 SYS_modify_ldt
+SYS_mseal
 SYS_open
 SYS_pause
 SYS_pipe
@@ -120,6 +124,7 @@ SYS_renameat
 SYS_rmdir
 SYS_select
 SYS_sendfile
+SYS_setrlimit
 SYS_signalfd
 SYS_stat
 SYS_symlink
@@ -136,6 +141,8 @@ TIOCGRS485
 TIOCSBRK
 TIOCSRS485
 greg_t
+ioperm
+iopl
 max_align_t
 mcontext_t
 ucontext_t

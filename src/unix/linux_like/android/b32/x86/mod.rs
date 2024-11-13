@@ -28,113 +28,109 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    pub struct __c_anonymous_uc_sigmask_with_padding {
+        pub uc_sigmask: ::sigset_t,
+        /* Android has a wrong (smaller) sigset_t on x86. */
+        __padding_rt_sigset: u32,
+    }
+
+    pub union __c_anonymous_uc_sigmask {
+        uc_sigmask: __c_anonymous_uc_sigmask_with_padding,
+        uc_sigmask64: ::sigset64_t,
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_mcontext: mcontext_t,
+        pub uc_sigmask__c_anonymous_union: __c_anonymous_uc_sigmask,
+        __padding_rt_sigset: u32,
+        __fpregs_mem: _libc_fpstate,
+    }
+}
+
 cfg_if! {
-    if #[cfg(libc_union)] {
-        s_no_extra_traits! {
-            pub struct __c_anonymous_uc_sigmask_with_padding {
-                pub uc_sigmask: ::sigset_t,
-                /* Android has a wrong (smaller) sigset_t on x86. */
-                __padding_rt_sigset: u32,
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for __c_anonymous_uc_sigmask_with_padding {
+            fn eq(
+                &self, other: &__c_anonymous_uc_sigmask_with_padding
+            ) -> bool {
+                self.uc_sigmask == other.uc_sigmask
+                    // Ignore padding
             }
-
-            pub union __c_anonymous_uc_sigmask {
-                uc_sigmask: __c_anonymous_uc_sigmask_with_padding,
-                uc_sigmask64: ::sigset64_t,
+        }
+        impl Eq for __c_anonymous_uc_sigmask_with_padding {}
+        impl ::fmt::Debug for __c_anonymous_uc_sigmask_with_padding {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("uc_sigmask_with_padding")
+                    .field("uc_sigmask_with_padding", &self.uc_sigmask)
+                    // Ignore padding
+                    .finish()
             }
-
-            pub struct ucontext_t {
-                pub uc_flags: ::c_ulong,
-                pub uc_link: *mut ucontext_t,
-                pub uc_stack: ::stack_t,
-                pub uc_mcontext: mcontext_t,
-                pub uc_sigmask__c_anonymous_union: __c_anonymous_uc_sigmask,
-                __padding_rt_sigset: u32,
-                __fpregs_mem: _libc_fpstate,
+        }
+        impl ::hash::Hash for __c_anonymous_uc_sigmask_with_padding {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.uc_sigmask.hash(state)
+                    // Ignore padding
             }
         }
 
-        cfg_if! {
-            if #[cfg(feature = "extra_traits")] {
-                impl PartialEq for __c_anonymous_uc_sigmask_with_padding {
-                    fn eq(
-                        &self, other: &__c_anonymous_uc_sigmask_with_padding
-                    ) -> bool {
-                        self.uc_sigmask == other.uc_sigmask
-                            // Ignore padding
-                    }
-                }
-                impl Eq for __c_anonymous_uc_sigmask_with_padding {}
-                impl ::fmt::Debug for __c_anonymous_uc_sigmask_with_padding {
-                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                        f.debug_struct("uc_sigmask_with_padding")
-                            .field("uc_sigmask_with_padding", &self.uc_sigmask)
-                            // Ignore padding
-                            .finish()
-                    }
-                }
-                impl ::hash::Hash for __c_anonymous_uc_sigmask_with_padding {
-                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                        self.uc_sigmask.hash(state)
-                            // Ignore padding
-                    }
-                }
+        impl PartialEq for __c_anonymous_uc_sigmask {
+            fn eq(&self, other: &__c_anonymous_uc_sigmask) -> bool {
+                unsafe { self.uc_sigmask == other.uc_sigmask }
+            }
+        }
+        impl Eq for __c_anonymous_uc_sigmask {}
+        impl ::fmt::Debug for __c_anonymous_uc_sigmask {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("uc_sigmask")
+                    .field("uc_sigmask", unsafe { &self.uc_sigmask })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for __c_anonymous_uc_sigmask {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.uc_sigmask.hash(state) }
+            }
+        }
 
-                impl PartialEq for __c_anonymous_uc_sigmask {
-                    fn eq(&self, other: &__c_anonymous_uc_sigmask) -> bool {
-                        unsafe { self.uc_sigmask == other.uc_sigmask }
-                    }
-                }
-                impl Eq for __c_anonymous_uc_sigmask {}
-                impl ::fmt::Debug for __c_anonymous_uc_sigmask {
-                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                        f.debug_struct("uc_sigmask")
-                            .field("uc_sigmask", unsafe { &self.uc_sigmask })
-                            .finish()
-                    }
-                }
-                impl ::hash::Hash for __c_anonymous_uc_sigmask {
-                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                        unsafe { self.uc_sigmask.hash(state) }
-                    }
-                }
-
-                impl PartialEq for ucontext_t {
-                    fn eq(&self, other: &Self) -> bool {
-                        self.uc_flags == other.uc_flags
-                            && self.uc_link == other.uc_link
-                            && self.uc_stack == other.uc_stack
-                            && self.uc_mcontext == other.uc_mcontext
-                            && self.uc_sigmask__c_anonymous_union
-                                == other.uc_sigmask__c_anonymous_union
-                            // Ignore padding field
-                    }
-                }
-                impl Eq for ucontext_t {}
-                impl ::fmt::Debug for ucontext_t {
-                    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                        f.debug_struct("ucontext_t")
-                            .field("uc_flags", &self.uc_flags)
-                            .field("uc_link", &self.uc_link)
-                            .field("uc_stack", &self.uc_stack)
-                            .field("uc_mcontext", &self.uc_mcontext)
-                            .field(
-                                "uc_sigmask__c_anonymous_union",
-                                &self.uc_sigmask__c_anonymous_union
-                            )
-                            // Ignore padding field
-                            .finish()
-                    }
-                }
-                impl ::hash::Hash for ucontext_t {
-                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                        self.uc_flags.hash(state);
-                        self.uc_link.hash(state);
-                        self.uc_stack.hash(state);
-                        self.uc_mcontext.hash(state);
-                        self.uc_sigmask__c_anonymous_union.hash(state);
-                        // Ignore padding field
-                    }
-                }
+        impl PartialEq for ucontext_t {
+            fn eq(&self, other: &Self) -> bool {
+                self.uc_flags == other.uc_flags
+                    && self.uc_link == other.uc_link
+                    && self.uc_stack == other.uc_stack
+                    && self.uc_mcontext == other.uc_mcontext
+                    && self.uc_sigmask__c_anonymous_union
+                        == other.uc_sigmask__c_anonymous_union
+                    // Ignore padding field
+            }
+        }
+        impl Eq for ucontext_t {}
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_flags", &self.uc_flags)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field(
+                        "uc_sigmask__c_anonymous_union",
+                        &self.uc_sigmask__c_anonymous_union
+                    )
+                    // Ignore padding field
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for ucontext_t {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.uc_flags.hash(state);
+                self.uc_link.hash(state);
+                self.uc_stack.hash(state);
+                self.uc_mcontext.hash(state);
+                self.uc_sigmask__c_anonymous_union.hash(state);
+                // Ignore padding field
             }
         }
     }
@@ -544,6 +540,23 @@ pub const SYS_fsopen: ::c_long = 430;
 pub const SYS_fsconfig: ::c_long = 431;
 pub const SYS_fsmount: ::c_long = 432;
 pub const SYS_fspick: ::c_long = 433;
+pub const SYS_pidfd_open: ::c_long = 434;
+pub const SYS_clone3: ::c_long = 435;
+pub const SYS_close_range: ::c_long = 436;
+pub const SYS_openat2: ::c_long = 437;
+pub const SYS_pidfd_getfd: ::c_long = 438;
+pub const SYS_faccessat2: ::c_long = 439;
+pub const SYS_process_madvise: ::c_long = 440;
+pub const SYS_epoll_pwait2: ::c_long = 441;
+pub const SYS_mount_setattr: ::c_long = 442;
+pub const SYS_quotactl_fd: ::c_long = 443;
+pub const SYS_landlock_create_ruleset: ::c_long = 444;
+pub const SYS_landlock_add_rule: ::c_long = 445;
+pub const SYS_landlock_restrict_self: ::c_long = 446;
+pub const SYS_memfd_secret: ::c_long = 447;
+pub const SYS_process_mrelease: ::c_long = 448;
+pub const SYS_futex_waitv: ::c_long = 449;
+pub const SYS_set_mempolicy_home_node: ::c_long = 450;
 
 // offsets in user_regs_structs, from sys/reg.h
 pub const EBX: ::c_int = 0;
@@ -585,6 +598,11 @@ pub const REG_EFL: ::c_int = 16;
 pub const REG_UESP: ::c_int = 17;
 pub const REG_SS: ::c_int = 18;
 
+// From NDK's asm/auxvec.h
+pub const AT_SYSINFO: ::c_ulong = 32;
+pub const AT_SYSINFO_EHDR: ::c_ulong = 33;
+pub const AT_VECTOR_SIZE_ARCH: ::c_ulong = 3;
+
 // socketcall values from linux/net.h (only the needed ones, and not public)
 const SYS_ACCEPT4: ::c_int = 18;
 
@@ -614,9 +632,5 @@ f! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

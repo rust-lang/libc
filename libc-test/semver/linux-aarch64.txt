@@ -38,6 +38,8 @@ BPF_W
 BPF_X
 BPF_XOR
 CIBAUD
+Elf32_Rela
+Elf64_Rela
 FICLONE
 FICLONERANGE
 MADV_SOFT_OFFLINE
@@ -66,6 +68,7 @@ SKF_NET_OFF
 SO_PRIORITY
 SO_PROTOCOL
 SYS_accept
+SYS_fstat
 SYS_msgctl
 SYS_msgget
 SYS_msgrcv
@@ -79,6 +82,7 @@ SYS_semctl
 SYS_semget
 SYS_semop
 SYS_semtimedop
+SYS_setrlimit
 SYS_shmat
 SYS_shmctl
 SYS_shmdt
@@ -92,5 +96,5 @@ flock64
 max_align_t
 mcontext_t
 ucontext_t
-user_regs_struct
 user_fpsimd_struct
+user_regs_struct

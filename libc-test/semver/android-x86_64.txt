@@ -1,3 +1,5 @@
+AT_SYSINFO_EHDR
+AT_VECTOR_SIZE_ARCH
 EFLAGS
 FS_BASE
 GS_BASE
@@ -44,6 +46,7 @@ SYS_arch_prctl
 SYS_epoll_ctl_old
 SYS_epoll_wait_old
 SYS_kexec_file_load
+SYS_memfd_secret
 SYS_msgctl
 SYS_msgget
 SYS_msgrcv

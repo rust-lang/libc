@@ -72,8 +72,6 @@ pub type __ptrdiff_t = __sword_type;
 pub type __socklen_t = __u32_type;
 pub type __sig_atomic_t = ::c_int;
 pub type __time64_t = __int64_t;
-pub type ssize_t = __ssize_t;
-pub type size_t = ::c_ulong;
 pub type wchar_t = ::c_int;
 pub type wint_t = ::c_uint;
 pub type gid_t = __gid_t;
@@ -341,7 +339,7 @@ s! {
         pub ai_family: ::c_int,
         pub ai_socktype: ::c_int,
         pub ai_protocol: ::c_int,
-        pub ai_addrlen: socklen_t,
+        pub ai_addrlen: ::socklen_t,
         pub ai_addr: *mut sockaddr,
         pub ai_canonname: *mut ::c_char,
         pub ai_next: *mut addrinfo,
@@ -349,11 +347,11 @@ s! {
 
     pub struct msghdr {
         pub msg_name: *mut ::c_void,
-        pub msg_namelen: socklen_t,
+        pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
         pub msg_iovlen: ::c_int,
         pub msg_control: *mut ::c_void,
-        pub msg_controllen: socklen_t,
+        pub msg_controllen: ::socklen_t,
         pub msg_flags: ::c_int,
     }
 
@@ -450,6 +448,11 @@ s! {
         pub tv_nsec: __syscall_slong_t,
     }
 
+    pub struct __timeval {
+        pub tv_sec: i32,
+        pub tv_usec: i32,
+    }
+
     pub struct __locale_data {
         pub _address: u8,
     }
@@ -477,7 +480,7 @@ s! {
 
     pub struct stat64 {
         pub st_fstype: ::c_int,
-        pub st_fsid: __fsid_t,
+        pub st_dev: __fsid_t, /* Actually st_fsid */
         pub st_ino: __ino64_t,
         pub st_gen: ::c_uint,
         pub st_rdev: __dev_t,
@@ -678,8 +681,8 @@ s! {
     pub struct __pthread_attr {
         pub __schedparam: sched_param,
         pub __stackaddr: *mut ::c_void,
-        pub __stacksize: size_t,
-        pub __guardsize: size_t,
+        pub __stacksize: ::size_t,
+        pub __guardsize: ::size_t,
         pub __detachstate: __pthread_detachstate,
         pub __inheritsched: __pthread_inheritsched,
         pub __contentionscope: __pthread_contentionscope,
@@ -728,7 +731,7 @@ s! {
 
     pub struct iovec {
         pub iov_base: *mut ::c_void,
-        pub iov_len: size_t,
+        pub iov_len: ::size_t,
     }
 
     pub struct passwd {
@@ -868,12 +871,11 @@ s! {
     }
 
     pub struct utsname {
-        pub sysname: [::c_char; 65],
-        pub nodename: [::c_char; 65],
-        pub release: [::c_char; 65],
-        pub version: [::c_char; 65],
-        pub machine: [::c_char; 65],
-        pub domainname: [::c_char; 65]
+        pub sysname: [::c_char; _UTSNAME_LENGTH],
+        pub nodename: [::c_char; _UTSNAME_LENGTH],
+        pub release: [::c_char; _UTSNAME_LENGTH],
+        pub version: [::c_char; _UTSNAME_LENGTH],
+        pub machine: [::c_char; _UTSNAME_LENGTH],
     }
 
     pub struct rlimit64 {
@@ -1211,7 +1213,7 @@ pub const SHM_UNLOCK: ::c_int = 12;
 pub const STDIN_FILENO: ::c_int = 0;
 pub const STDOUT_FILENO: ::c_int = 1;
 pub const STDERR_FILENO: ::c_int = 2;
-pub const __FD_SETSIZE: usize = 256;
+pub const __FD_SETSIZE: ::c_int = 256;
 pub const R_OK: ::c_int = 4;
 pub const W_OK: ::c_int = 2;
 pub const X_OK: ::c_int = 1;
@@ -1256,7 +1258,7 @@ pub const PDP_ENDIAN: usize = 3412;
 pub const BYTE_ORDER: usize = 1234;
 
 // sys/select.h
-pub const FD_SETSIZE: usize = 256;
+pub const FD_SETSIZE: ::c_int = 256;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 32;
 pub const __SIZEOF_PTHREAD_ATTR_T: usize = 32;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 28;
@@ -1588,8 +1590,8 @@ pub const _POSIX_MQ_OPEN_MAX: usize = 8;
 pub const _POSIX_MQ_PRIO_MAX: usize = 32;
 pub const _POSIX_NAME_MAX: usize = 14;
 pub const _POSIX_NGROUPS_MAX: usize = 8;
-pub const _POSIX_OPEN_MAX: usize = 20;
-pub const _POSIX_FD_SETSIZE: usize = 20;
+pub const _POSIX_OPEN_MAX: ::c_int = 20;
+pub const _POSIX_FD_SETSIZE: ::c_int = 20;
 pub const _POSIX_PATH_MAX: usize = 256;
 pub const _POSIX_PIPE_BUF: usize = 512;
 pub const _POSIX_RE_DUP_MAX: usize = 255;
@@ -2117,29 +2119,29 @@ pub const MINSIGSTKSZ: usize = 8192;
 pub const SIGSTKSZ: usize = 40960;
 
 // sys/stat.h
-pub const __S_IFMT: mode_t = 61440;
-pub const __S_IFDIR: mode_t = 16384;
-pub const __S_IFCHR: mode_t = 8192;
-pub const __S_IFBLK: mode_t = 24576;
-pub const __S_IFREG: mode_t = 32768;
-pub const __S_IFLNK: mode_t = 40960;
-pub const __S_IFSOCK: mode_t = 49152;
-pub const __S_IFIFO: mode_t = 4096;
-pub const __S_ISUID: mode_t = 2048;
-pub const __S_ISGID: mode_t = 1024;
-pub const __S_ISVTX: mode_t = 512;
-pub const __S_IREAD: mode_t = 256;
-pub const __S_IWRITE: mode_t = 128;
-pub const __S_IEXEC: mode_t = 64;
-pub const S_INOCACHE: mode_t = 65536;
-pub const S_IUSEUNK: mode_t = 131072;
-pub const S_IUNKNOWN: mode_t = 1835008;
-pub const S_IUNKSHIFT: mode_t = 12;
-pub const S_IPTRANS: mode_t = 2097152;
-pub const S_IATRANS: mode_t = 4194304;
-pub const S_IROOT: mode_t = 8388608;
-pub const S_ITRANS: mode_t = 14680064;
-pub const S_IMMAP0: mode_t = 16777216;
+pub const __S_IFMT: mode_t = 0o17_0000;
+pub const __S_IFDIR: mode_t = 0o4_0000;
+pub const __S_IFCHR: mode_t = 0o2_0000;
+pub const __S_IFBLK: mode_t = 0o6_0000;
+pub const __S_IFREG: mode_t = 0o10_0000;
+pub const __S_IFLNK: mode_t = 0o12_0000;
+pub const __S_IFSOCK: mode_t = 0o14_0000;
+pub const __S_IFIFO: mode_t = 0o1_0000;
+pub const __S_ISUID: mode_t = 0o4000;
+pub const __S_ISGID: mode_t = 0o2000;
+pub const __S_ISVTX: mode_t = 0o1000;
+pub const __S_IREAD: mode_t = 0o0400;
+pub const __S_IWRITE: mode_t = 0o0200;
+pub const __S_IEXEC: mode_t = 0o0100;
+pub const S_INOCACHE: mode_t = 0o20_0000;
+pub const S_IUSEUNK: mode_t = 0o40_0000;
+pub const S_IUNKNOWN: mode_t = 0o700_0000;
+pub const S_IUNKSHIFT: mode_t = 0o0014;
+pub const S_IPTRANS: mode_t = 0o1000_0000;
+pub const S_IATRANS: mode_t = 0o2000_0000;
+pub const S_IROOT: mode_t = 0o4000_0000;
+pub const S_ITRANS: mode_t = 0o7000_0000;
+pub const S_IMMAP0: mode_t = 0o10000_0000;
 pub const CMASK: mode_t = 18;
 pub const UF_SETTABLE: ::c_uint = 65535;
 pub const UF_NODUMP: ::c_uint = 1;
@@ -2155,32 +2157,32 @@ pub const SF_NOUNLINK: ::c_uint = 1048576;
 pub const SF_SNAPSHOT: ::c_uint = 2097152;
 pub const UTIME_NOW: ::c_long = -1;
 pub const UTIME_OMIT: ::c_long = -2;
-pub const S_IFMT: ::mode_t = 61440;
-pub const S_IFDIR: ::mode_t = 16384;
-pub const S_IFCHR: ::mode_t = 8192;
-pub const S_IFBLK: ::mode_t = 24576;
-pub const S_IFREG: ::mode_t = 32768;
-pub const S_IFIFO: ::mode_t = 4096;
-pub const S_IFLNK: ::mode_t = 40960;
-pub const S_IFSOCK: ::mode_t = 49152;
-pub const S_ISUID: ::mode_t = 2048;
-pub const S_ISGID: ::mode_t = 1024;
-pub const S_ISVTX: ::mode_t = 512;
-pub const S_IRUSR: ::mode_t = 256;
-pub const S_IWUSR: ::mode_t = 128;
-pub const S_IXUSR: ::mode_t = 64;
-pub const S_IRWXU: ::mode_t = 448;
-pub const S_IREAD: ::mode_t = 256;
-pub const S_IWRITE: ::mode_t = 128;
-pub const S_IEXEC: ::mode_t = 64;
-pub const S_IRGRP: ::mode_t = 32;
-pub const S_IWGRP: ::mode_t = 16;
-pub const S_IXGRP: ::mode_t = 8;
-pub const S_IRWXG: ::mode_t = 56;
-pub const S_IROTH: ::mode_t = 4;
-pub const S_IWOTH: ::mode_t = 2;
-pub const S_IXOTH: ::mode_t = 1;
-pub const S_IRWXO: ::mode_t = 7;
+pub const S_IFMT: ::mode_t = 0o17_0000;
+pub const S_IFDIR: ::mode_t = 0o4_0000;
+pub const S_IFCHR: ::mode_t = 0o2_0000;
+pub const S_IFBLK: ::mode_t = 0o6_0000;
+pub const S_IFREG: ::mode_t = 0o10_0000;
+pub const S_IFIFO: ::mode_t = 0o1_0000;
+pub const S_IFLNK: ::mode_t = 0o12_0000;
+pub const S_IFSOCK: ::mode_t = 0o14_0000;
+pub const S_ISUID: ::mode_t = 0o4000;
+pub const S_ISGID: ::mode_t = 0o2000;
+pub const S_ISVTX: ::mode_t = 0o1000;
+pub const S_IRUSR: ::mode_t = 0o0400;
+pub const S_IWUSR: ::mode_t = 0o0200;
+pub const S_IXUSR: ::mode_t = 0o0100;
+pub const S_IRWXU: ::mode_t = 0o0700;
+pub const S_IREAD: ::mode_t = 0o0400;
+pub const S_IWRITE: ::mode_t = 0o0200;
+pub const S_IEXEC: ::mode_t = 0o0100;
+pub const S_IRGRP: ::mode_t = 0o0040;
+pub const S_IWGRP: ::mode_t = 0o0020;
+pub const S_IXGRP: ::mode_t = 0o0010;
+pub const S_IRWXG: ::mode_t = 0o0070;
+pub const S_IROTH: ::mode_t = 0o0004;
+pub const S_IWOTH: ::mode_t = 0o0002;
+pub const S_IXOTH: ::mode_t = 0o0001;
+pub const S_IRWXO: ::mode_t = 0o0007;
 pub const ACCESSPERMS: ::mode_t = 511;
 pub const ALLPERMS: ::mode_t = 4095;
 pub const DEFFILEMODE: ::mode_t = 438;
@@ -2760,9 +2762,13 @@ pub const MREMAP_FIXED: ::c_int = 2;
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 
+// sys/xattr.h
+pub const XATTR_CREATE: ::c_int = 0x1;
+pub const XATTR_REPLACE: ::c_int = 0x2;
+
 // spawn.h
-pub const POSIX_SPAWN_USEVFORK: ::c_int = 64;
-pub const POSIX_SPAWN_SETSID: ::c_int = 128;
+pub const POSIX_SPAWN_USEVFORK: ::c_short = 64;
+pub const POSIX_SPAWN_SETSID: ::c_short = 128;
 
 // sys/syslog.h
 pub const LOG_CRON: ::c_int = 9 << 3;
@@ -3428,6 +3434,9 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 };
 pub const PTHREAD_STACK_MIN: ::size_t = 0;
 
+// Non-public helper constants
+const _UTSNAME_LENGTH: usize = 1024;
+
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
         len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
@@ -3640,13 +3649,13 @@ extern "C" {
         __iovec: *const ::iovec,
         __count: ::c_int,
         __offset: __off_t,
-    ) -> ssize_t;
+    ) -> ::ssize_t;
     pub fn pwritev(
         __fd: ::c_int,
         __iovec: *const ::iovec,
         __count: ::c_int,
         __offset: __off_t,
-    ) -> ssize_t;
+    ) -> ::ssize_t;
 
     pub fn preadv64(
         fd: ::c_int,
@@ -3727,7 +3736,7 @@ extern "C" {
     pub fn fsetpos64(stream: *mut ::FILE, ptr: *const fpos64_t) -> ::c_int;
     pub fn ftello64(stream: *mut ::FILE) -> ::off64_t;
 
-    pub fn bind(__fd: ::c_int, __addr: *const sockaddr, __len: socklen_t) -> ::c_int;
+    pub fn bind(__fd: ::c_int, __addr: *const sockaddr, __len: ::socklen_t) -> ::c_int;
 
     pub fn accept4(
         fd: ::c_int,
@@ -3745,7 +3754,7 @@ extern "C" {
 
     pub fn recvmsg(__fd: ::c_int, __message: *mut msghdr, __flags: ::c_int) -> ::ssize_t;
 
-    pub fn sendmsg(__fd: ::c_int, __message: *const msghdr, __flags: ::c_int) -> ssize_t;
+    pub fn sendmsg(__fd: ::c_int, __message: *const msghdr, __flags: ::c_int) -> ::ssize_t;
 
     pub fn recvfrom(
         socket: ::c_int,
@@ -4202,14 +4211,10 @@ extern "C" {
     ) -> ::c_int;
     pub fn execvpe(
         file: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
     ) -> ::c_int;
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *mut ::c_char, envp: *const *mut ::c_char) -> ::c_int;
 
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
 
@@ -4349,7 +4354,7 @@ extern "C" {
 
     pub fn mmap64(
         __addr: *mut ::c_void,
-        __len: size_t,
+        __len: ::size_t,
         __prot: ::c_int,
         __flags: ::c_int,
         __fd: ::c_int,
@@ -4663,16 +4668,6 @@ safe_f! {
 
     pub {const} fn IPTOS_ECN(x: u8) -> u8 {
         x & ::IPTOS_ECN_MASK
-    }
-}
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    } else {
-        mod no_align;
-        pub use self::no_align::*;
     }
 }
 

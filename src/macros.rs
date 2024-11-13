@@ -61,13 +61,23 @@ macro_rules! cfg_if {
     };
 }
 
+/// Implement `Clone` and `Copy` for a struct, as well as `Debug`, `Eq`, `Hash`, and
+/// `PartialEq` if the `extra_traits` feature is enabled.
+///
+/// Use [`s_no_extra_traits`] for structs where the `extra_traits` feature does not
+/// make sense, and for unions.
 macro_rules! s {
-    ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
+    ($(
+        $(#[$attr:meta])*
+        pub $t:ident $i:ident { $($field:tt)* }
+    )*) => ($(
         s!(it: $(#[$attr])* pub $t $i { $($field)* });
     )*);
+
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
         compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
     );
+
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
@@ -85,26 +95,51 @@ macro_rules! s {
     );
 }
 
+/// Implement `Clone` and `Copy` for a tuple struct, as well as `Debug`, `Eq`, `Hash`,
+/// and `PartialEq` if the `extra_traits` feature is enabled.
+///
+/// This is the same as [`s`] but works for tuple structs.
+macro_rules! s_paren {
+    ($(
+        $(#[$attr:meta])*
+        pub struct $i:ident ( $($field:tt)* );
+    )*) => ($(
+        __item! {
+            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            $(#[$attr])*
+            pub struct $i ( $($field)* );
+        }
+        impl ::Copy for $i {}
+        impl ::Clone for $i {
+            fn clone(&self) -> $i { *self }
+        }
+    )*);
+}
+
+/// Implement `Clone` and `Copy` for a struct with no `extra_traits` feature.
+///
+/// Most items will prefer to use [`s`].
 macro_rules! s_no_extra_traits {
-    ($($(#[$attr:meta])* pub $t:ident $i:ident { $($field:tt)* })*) => ($(
+    ($(
+        $(#[$attr:meta])*
+        pub $t:ident $i:ident { $($field:tt)* }
+    )*) => ($(
         s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
     )*);
-    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
-        cfg_if! {
-            if #[cfg(libc_union)] {
-                __item! {
-                    #[repr(C)]
-                    $(#[$attr])*
-                    pub union $i { $($field)* }
-                }
 
-                impl ::Copy for $i {}
-                impl ::Clone for $i {
-                    fn clone(&self) -> $i { *self }
-                }
-            }
+    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
+        __item! {
+            #[repr(C)]
+            $(#[$attr])*
+            pub union $i { $($field)* }
+        }
+
+        impl ::Copy for $i {}
+        impl ::Clone for $i {
+            fn clone(&self) -> $i { *self }
         }
     );
+
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
@@ -120,14 +155,26 @@ macro_rules! s_no_extra_traits {
     );
 }
 
+/// Specify that an enum should have no traits that aren't specified in the macro
+/// invocation, i.e. no `Clone` or `Copy`.
 macro_rules! missing {
-    ($($(#[$attr:meta])* pub enum $i:ident {})*) => ($(
-        $(#[$attr])* #[allow(missing_copy_implementations)] pub enum $i { }
+    ($(
+        $(#[$attr:meta])*
+        pub enum $i:ident {}
+    )*) => ($(
+        $(#[$attr])*
+        #[allow(missing_copy_implementations)]
+        pub enum $i { }
     )*);
 }
 
+/// Implement `Clone` and `Copy` for an enum, as well as `Debug`, `Eq`, `Hash`, and
+/// `PartialEq` if the `extra_traits` feature is enabled.
 macro_rules! e {
-    ($($(#[$attr:meta])* pub enum $i:ident { $($field:tt)* })*) => ($(
+    ($(
+        $(#[$attr:meta])*
+        pub enum $i:ident { $($field:tt)* }
+    )*) => ($(
         __item! {
             #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
             $(#[$attr])*
@@ -140,116 +187,80 @@ macro_rules! e {
     )*);
 }
 
-macro_rules! s_paren {
-    ($($(#[$attr:meta])* pub struct $i:ident ( $($field:tt)* ); )* ) => ($(
-        __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            $(#[$attr])*
-            pub struct $i ( $($field)* );
-        }
-        impl ::Copy for $i {}
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
-        }
-    )*);
-}
-
-// This is a pretty horrible hack to allow us to conditionally mark
-// some functions as 'const', without requiring users of this macro
-// to care about the "const-extern-fn" feature.
-//
-// When 'const-extern-fn' is enabled, we emit the captured 'const' keyword
-// in the expanded function.
-//
-// When 'const-extern-fn' is disabled, we always emit a plain 'pub unsafe extern fn'.
-// Note that the expression matched by the macro is exactly the same - this allows
-// users of this macro to work whether or not 'const-extern-fn' is enabled
-//
-// Unfortunately, we need to duplicate most of this macro between the 'cfg_if' blocks.
-// This is because 'const unsafe extern fn' won't even parse on older compilers,
-// so we need to avoid emitting it at all of 'const-extern-fn'.
-//
-// Specifically, moving the 'cfg_if' into the macro body will *not* work.
-// Doing so would cause the '#[cfg(feature = "const-extern-fn")]' to be emitted
-// into user code. The 'cfg' gate will not stop Rust from trying to parse the
-// 'pub const unsafe extern fn', so users would get a compiler error even when
-// the 'const-extern-fn' feature is disabled
-//
-// Note that users of this macro need to place 'const' in a weird position
-// (after the closing ')' for the arguments, but before the return type).
-// This was the only way I could satisfy the following two requirements:
-// 1. Avoid ambiguity errors from 'macro_rules!' (which happen when writing '$foo:ident fn'
-// 2. Allow users of this macro to mix 'pub fn foo' and 'pub const fn bar' within the same
-// 'f!' block
 cfg_if! {
-    if #[cfg(libc_const_extern_fn)] {
+    if #[cfg(feature = "const-extern-fn")] {
+        /// Define an `unsafe` function that is const as long as `const-extern-fn` is enabled.
         macro_rules! f {
-            ($($(#[$attr:meta])* pub $({$constness:ident})* fn $i:ident(
-                        $($arg:ident: $argty:ty),*
-            ) -> $ret:ty {
-                $($body:stmt);*
-            })*) => ($(
+            ($(
+                $(#[$attr:meta])*
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
+                    $($body:stmt);*
+                }
+            )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                pub $($constness)* unsafe extern fn $i($($arg: $argty),*
-                ) -> $ret {
+                pub $($constness)* unsafe extern fn $i($($arg: $argty),*) -> $ret {
                     $($body);*
                 }
             )*)
         }
 
+        /// Define a safe function that is const as long as `const-extern-fn` is enabled.
         macro_rules! safe_f {
-            ($($(#[$attr:meta])* pub $({$constness:ident})* fn $i:ident(
-                        $($arg:ident: $argty:ty),*
-            ) -> $ret:ty {
-                $($body:stmt);*
-            })*) => ($(
+            ($(
+                $(#[$attr:meta])*
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
+                    $($body:stmt);*
+                }
+            )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                pub $($constness)* extern fn $i($($arg: $argty),*
-                ) -> $ret {
+                pub $($constness)* extern fn $i($($arg: $argty),*) -> $ret {
                     $($body);*
                 }
             )*)
         }
 
+        /// A nonpublic function that is const as long as `const-extern-fn` is enabled.
         macro_rules! const_fn {
-            ($($(#[$attr:meta])* $({$constness:ident})* fn $i:ident(
-                        $($arg:ident: $argty:ty),*
-            ) -> $ret:ty {
-                $($body:stmt);*
-            })*) => ($(
+            ($(
+                $(#[$attr:meta])*
+                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
+                    $($body:stmt);*
+                }
+            )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                $($constness)* fn $i($($arg: $argty),*
-                ) -> $ret {
+                $($constness)* fn $i($($arg: $argty),*) -> $ret {
                     $($body);*
                 }
             )*)
         }
-
     } else {
+        /// Define an `unsafe` function that is const as long as `const-extern-fn` is enabled.
         macro_rules! f {
-            ($($(#[$attr:meta])* pub $({$constness:ident})* fn $i:ident(
-                        $($arg:ident: $argty:ty),*
-            ) -> $ret:ty {
-                $($body:stmt);*
-            })*) => ($(
+            ($(
+                $(#[$attr:meta])*
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
+                    $($body:stmt);*
+                }
+            )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                pub unsafe extern fn $i($($arg: $argty),*
-                ) -> $ret {
+                pub unsafe extern fn $i($($arg: $argty),*) -> $ret {
                     $($body);*
                 }
             )*)
         }
 
+        /// Define a safe function that is const as long as `const-extern-fn` is enabled.
         macro_rules! safe_f {
-            ($($(#[$attr:meta])* pub $({$constness:ident})* fn $i:ident(
-                        $($arg:ident: $argty:ty),*
-            ) -> $ret:ty {
-                $($body:stmt);*
-            })*) => ($(
+            ($(
+                $(#[$attr:meta])*
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
+                    $($body:stmt);*
+                }
+            )*) => ($(
                 #[inline]
                 $(#[$attr])*
                 pub extern fn $i($($arg: $argty),*
@@ -259,16 +270,17 @@ cfg_if! {
             )*)
         }
 
+        /// A nonpublic function that is const as long as `const-extern-fn` is enabled.
         macro_rules! const_fn {
-            ($($(#[$attr:meta])* $({$constness:ident})* fn $i:ident(
-                        $($arg:ident: $argty:ty),*
-            ) -> $ret:ty {
-                $($body:stmt);*
-            })*) => ($(
+            ($(
+                $(#[$attr:meta])*
+                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
+                    $($body:stmt);*
+                }
+            )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                fn $i($($arg: $argty),*
-                ) -> $ret {
+                fn $i($($arg: $argty),*) -> $ret {
                     $($body);*
                 }
             )*)
@@ -282,66 +294,6 @@ macro_rules! __item {
     };
 }
 
-macro_rules! align_const {
-    ($($(#[$attr:meta])*
-       pub const $name:ident : $t1:ty
-       = $t2:ident { $($field:tt)* };)*) => ($(
-        #[cfg(libc_align)]
-        $(#[$attr])*
-        pub const $name : $t1 = $t2 {
-            $($field)*
-        };
-        #[cfg(not(libc_align))]
-        $(#[$attr])*
-        pub const $name : $t1 = $t2 {
-            $($field)*
-            __align: [],
-        };
-    )*)
-}
-
-// This macro is used to deprecate items that should be accessed via the mach2 crate
-macro_rules! deprecated_mach {
-    (pub const $id:ident: $ty:ty = $expr:expr;) => {
-        #[deprecated(
-            since = "0.2.55",
-            note = "Use the `mach2` crate instead",
-        )]
-        #[allow(deprecated)]
-        pub const $id: $ty = $expr;
-    };
-    ($(pub const $id:ident: $ty:ty = $expr:expr;)*) => {
-        $(
-            deprecated_mach!(
-                pub const $id: $ty = $expr;
-            );
-        )*
-    };
-    (pub type $id:ident = $ty:ty;) => {
-        #[deprecated(
-            since = "0.2.55",
-            note = "Use the `mach2` crate instead",
-        )]
-        #[allow(deprecated)]
-        pub type $id = $ty;
-    };
-    ($(pub type $id:ident = $ty:ty;)*) => {
-        $(
-            deprecated_mach!(
-                pub type $id = $ty;
-            );
-        )*
-    }
-}
-
-#[cfg(not(libc_ptr_addr_of))]
-macro_rules! ptr_addr_of {
-    ($place:expr) => {
-        &$place
-    };
-}
-
-#[cfg(libc_ptr_addr_of)]
 macro_rules! ptr_addr_of {
     ($place:expr) => {
         ::core::ptr::addr_of!($place)

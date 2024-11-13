@@ -1,5 +1,4 @@
 pub type fflags_t = u32;
-pub type clock_t = i32;
 
 pub type vm_prot_t = u_char;
 pub type kvaddr_t = u64;
@@ -367,13 +366,13 @@ s! {
     }
 
     pub struct cpuset_t {
-        #[cfg(all(freebsd14, target_pointer_width = "64"))]
+        #[cfg(all(any(freebsd15, freebsd14), target_pointer_width = "64"))]
         __bits: [::c_long; 16],
-        #[cfg(all(freebsd14, target_pointer_width = "32"))]
+        #[cfg(all(any(freebsd15, freebsd14), target_pointer_width = "32"))]
         __bits: [::c_long; 32],
-        #[cfg(all(not(freebsd14), target_pointer_width = "64"))]
+        #[cfg(all(not(any(freebsd15, freebsd14)), target_pointer_width = "64"))]
         __bits: [::c_long; 4],
-        #[cfg(all(not(freebsd14), target_pointer_width = "32"))]
+        #[cfg(all(not(any(freebsd15, freebsd14)), target_pointer_width = "32"))]
         __bits: [::c_long; 8],
     }
 
@@ -597,9 +596,9 @@ s! {
         pub sa_peer: ::sockaddr_storage,
         pub type_: ::c_int,
         pub dname: [::c_char; 32],
-        #[cfg(any(freebsd12, freebsd13, freebsd14))]
+        #[cfg(any(freebsd12, freebsd13, freebsd14, freebsd15))]
         pub sendq: ::c_uint,
-        #[cfg(any(freebsd12, freebsd13, freebsd14))]
+        #[cfg(any(freebsd12, freebsd13, freebsd14, freebsd15))]
         pub recvq: ::c_uint,
     }
 
@@ -971,10 +970,7 @@ s! {
 
     pub struct ifconf {
         pub ifc_len: ::c_int,
-        #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-        #[cfg(not(libc_union))]
-        pub ifc_ifcu: *mut ifreq,
     }
 
     pub struct au_mask_t {
@@ -1046,39 +1042,49 @@ s! {
         pub tcpi_snd_rexmitpack: u32,
         pub tcpi_rcv_ooopack: u32,
         pub tcpi_snd_zerowin: u32,
-        #[cfg(freebsd14)]
+        #[cfg(freebsd13)]
+        pub __tcpi_delivered_ce: u32,
+        #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_delivered_ce: u32,
-        #[cfg(freebsd14)]
+        #[cfg(freebsd13)]
+        pub __tcpi_received_ce: u32,
+        #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_received_ce: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_e1_bytes: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_e0_bytes: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_delivered_ce_bytes: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_e1_bytes: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_e0_bytes: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub __tcpi_received_ce_bytes: u32,
-        #[cfg(freebsd14)]
+        #[cfg(freebsd13)]
+        pub __tcpi_total_tlp: u32,
+        #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_total_tlp: u32,
-        #[cfg(freebsd14)]
+        #[cfg(freebsd13)]
+        pub __tcpi_total_tlp_bytes: u64,
+        #[cfg(any(freebsd15, freebsd14))]
         pub tcpi_total_tlp_bytes: u64,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_snd_una: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_snd_max: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_rcv_numsacks: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_rcv_adv: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_dupacks: u32,
-        #[cfg(freebsd14)]
+        #[cfg(any(freebsd14, freebsd13))]
         pub __tcpi_pad: [u32; 10],
-        #[cfg(not(freebsd14))]
+        #[cfg(freebsd15)]
+        pub __tcpi_pad: [u32; 14],
+        #[cfg(not(any(freebsd15, freebsd14, freebsd13)))]
         pub __tcpi_pad: [u32; 26],
     }
 
@@ -1357,7 +1363,6 @@ s_no_extra_traits! {
         pub __ut_spare: [::c_char; 64],
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_cr_pid {
         __cr_unused: *mut ::c_void,
         pub cr_pid: ::pid_t,
@@ -1368,10 +1373,7 @@ s_no_extra_traits! {
         pub cr_uid: ::uid_t,
         pub cr_ngroups: ::c_short,
         pub cr_groups: [::gid_t; 16],
-        #[cfg(libc_union)]
         pub cr_pid__c_anonymous_union: __c_anonymous_cr_pid,
-        #[cfg(not(libc_union))]
-        __cr_unused1: *mut ::c_void,
     }
 
     pub struct sockaddr_dl {
@@ -1406,31 +1408,27 @@ s_no_extra_traits! {
     }
 
     pub struct ptsstat {
-        #[cfg(any(freebsd12, freebsd13, freebsd14))]
+        #[cfg(any(freebsd12, freebsd13, freebsd14, freebsd15))]
         pub dev: u64,
-        #[cfg(not(any(freebsd12, freebsd13, freebsd14)))]
+        #[cfg(not(any(freebsd12, freebsd13, freebsd14, freebsd15)))]
         pub dev: u32,
         pub devname: [::c_char; SPECNAMELEN as usize + 1],
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_elf32_auxv_union {
         pub a_val: ::c_int,
     }
 
     pub struct Elf32_Auxinfo {
         pub a_type: ::c_int,
-        #[cfg(libc_union)]
         pub a_un: __c_anonymous_elf32_auxv_union,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifi_epoch {
         pub tt: ::time_t,
         pub ph: u64,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifi_lastchange {
         pub tv: ::timeval,
         pub ph: __c_anonymous_ph,
@@ -1484,20 +1482,11 @@ s_no_extra_traits! {
         /// HW offload capabilities, see IFCAP
         pub ifi_hwassist: u64,
         /// uptime at attach or stat reset
-        #[cfg(libc_union)]
         pub __ifi_epoch: __c_anonymous_ifi_epoch,
-        /// uptime at attach or stat reset
-        #[cfg(not(libc_union))]
-        pub __ifi_epoch: u64,
         /// time of last administrative change
-        #[cfg(libc_union)]
         pub __ifi_lastchange: __c_anonymous_ifi_lastchange,
-        /// time of last administrative change
-        #[cfg(not(libc_union))]
-        pub __ifi_lastchange: ::timeval,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifr_ifru {
         pub ifru_addr: ::sockaddr,
         pub ifru_dstaddr: ::sockaddr,
@@ -1519,13 +1508,9 @@ s_no_extra_traits! {
     pub struct ifreq {
         /// if name, e.g. "en0"
         pub ifr_name: [::c_char; ::IFNAMSIZ],
-        #[cfg(libc_union)]
         pub ifr_ifru: __c_anonymous_ifr_ifru,
-        #[cfg(not(libc_union))]
-        pub ifr_ifru: ::sockaddr,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: ::caddr_t,
         pub ifcu_req: *mut ifreq,
@@ -1635,6 +1620,32 @@ s_no_extra_traits! {
         pub cause: sctp_error_cause,
         pub hmac_id: u16,
     }
+
+    pub struct kinfo_file {
+        pub kf_structsize: ::c_int,
+        pub kf_type: ::c_int,
+        pub kf_fd: ::c_int,
+        pub kf_ref_count: ::c_int,
+        pub kf_flags: ::c_int,
+        _kf_pad0: ::c_int,
+        pub kf_offset: i64,
+        _priv: [u8; 304],   // FIXME: this is really a giant union
+        pub kf_status: u16,
+        _kf_pad1: u16,
+        _kf_ispare0: ::c_int,
+        pub kf_cap_rights: ::cap_rights_t,
+        _kf_cap_spare: u64,
+        pub kf_path: [::c_char; ::PATH_MAX as usize],
+    }
+
+    pub struct ucontext_t {
+        pub uc_sigmask: ::sigset_t,
+        pub uc_mcontext: ::mcontext_t,
+        pub uc_link: *mut ::ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_flags: ::c_int,
+        __spare__: [::c_int; 4],
+    }
 }
 
 cfg_if! {
@@ -1687,15 +1698,12 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_cr_pid {
             fn eq(&self, other: &__c_anonymous_cr_pid) -> bool {
                 unsafe { self.cr_pid == other.cr_pid}
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_cr_pid {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_cr_pid {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("cr_pid")
@@ -1703,7 +1711,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_cr_pid {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.cr_pid.hash(state) };
@@ -1712,17 +1719,12 @@ cfg_if! {
 
         impl PartialEq for xucred {
             fn eq(&self, other: &xucred) -> bool {
-                #[cfg(libc_union)]
-                let equal_cr_pid = self.cr_pid__c_anonymous_union
-                    == other.cr_pid__c_anonymous_union;
-                #[cfg(not(libc_union))]
-                let equal_cr_pid = self.__cr_unused1 == other.__cr_unused1;
-
                 self.cr_version == other.cr_version
                     && self.cr_uid == other.cr_uid
                     && self.cr_ngroups == other.cr_ngroups
                     && self.cr_groups == other.cr_groups
-                    && equal_cr_pid
+                    && self.cr_pid__c_anonymous_union
+                        == other.cr_pid__c_anonymous_union
             }
         }
         impl Eq for xucred {}
@@ -1733,7 +1735,6 @@ cfg_if! {
                 struct_formatter.field("cr_uid", &self.cr_uid);
                 struct_formatter.field("cr_ngroups", &self.cr_ngroups);
                 struct_formatter.field("cr_groups", &self.cr_groups);
-                #[cfg(libc_union)]
                 struct_formatter.field(
                     "cr_pid__c_anonymous_union",
                     &self.cr_pid__c_anonymous_union
@@ -1747,10 +1748,7 @@ cfg_if! {
                 self.cr_uid.hash(state);
                 self.cr_ngroups.hash(state);
                 self.cr_groups.hash(state);
-                #[cfg(libc_union)]
                 self.cr_pid__c_anonymous_union.hash(state);
-                #[cfg(not(libc_union))]
-                self.__cr_unused1.hash(state);
             }
         }
 
@@ -1884,15 +1882,12 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_elf32_auxv_union {
             fn eq(&self, other: &__c_anonymous_elf32_auxv_union) -> bool {
                 unsafe { self.a_val == other.a_val}
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_elf32_auxv_union {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_elf32_auxv_union {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("a_val")
@@ -1900,13 +1895,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(not(libc_union))]
-        impl PartialEq for Elf32_Auxinfo {
-            fn eq(&self, other: &Elf32_Auxinfo) -> bool {
-                self.a_type == other.a_type
-            }
-        }
-        #[cfg(libc_union)]
         impl PartialEq for Elf32_Auxinfo {
             fn eq(&self, other: &Elf32_Auxinfo) -> bool {
                 self.a_type == other.a_type
@@ -1914,15 +1902,6 @@ cfg_if! {
             }
         }
         impl Eq for Elf32_Auxinfo {}
-        #[cfg(not(libc_union))]
-        impl ::fmt::Debug for Elf32_Auxinfo {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("Elf32_Auxinfo")
-                    .field("a_type", &self.a_type)
-                    .finish()
-            }
-        }
-        #[cfg(libc_union)]
         impl ::fmt::Debug for Elf32_Auxinfo {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("Elf32_Auxinfo")
@@ -1932,7 +1911,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifr_ifru {
             fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
                 unsafe {
@@ -1954,9 +1932,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifr_ifru {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifr_ifru {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifr_ifru")
@@ -1978,7 +1954,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifr_ifru {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifru_addr.hash(state) };
@@ -2020,10 +1995,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifc_ifcu {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
                 unsafe {
@@ -2033,7 +2006,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifc_ifcu")
@@ -2043,7 +2015,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifc_ifcu {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifcu_buf.hash(state) };
@@ -2146,7 +2117,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifi_epoch {
             fn eq(&self, other: &__c_anonymous_ifi_epoch) -> bool {
                 unsafe {
@@ -2155,9 +2125,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifi_epoch {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifi_epoch {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifi_epoch")
@@ -2166,7 +2134,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifi_epoch {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -2176,7 +2143,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifi_lastchange {
             fn eq(&self, other: &__c_anonymous_ifi_lastchange) -> bool {
                 unsafe {
@@ -2185,9 +2151,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifi_lastchange {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifi_lastchange {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifi_lastchange")
@@ -2196,7 +2160,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifi_lastchange {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -2591,6 +2554,64 @@ cfg_if! {
                 {self.hmac_id}.hash(state);
             }
         }
+
+        impl PartialEq for kinfo_file {
+            fn eq(&self, other: &kinfo_file) -> bool {
+                self.kf_structsize == other.kf_structsize &&
+                    self.kf_type == other.kf_type &&
+                    self.kf_fd == other.kf_fd &&
+                    self.kf_ref_count == other.kf_ref_count &&
+                    self.kf_flags == other.kf_flags &&
+                    self.kf_offset == other.kf_offset &&
+                    self.kf_status == other.kf_status &&
+                    self.kf_cap_rights == other.kf_cap_rights &&
+                    self.kf_path
+                        .iter()
+                        .zip(other.kf_path.iter())
+                        .all(|(a,b)| a == b)
+            }
+        }
+        impl Eq for kinfo_file {}
+        impl ::fmt::Debug for kinfo_file {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("kinfo_file")
+                    .field("kf_structsize", &self.kf_structsize)
+                    .field("kf_type", &self.kf_type)
+                    .field("kf_fd", &self.kf_fd)
+                    .field("kf_ref_count", &self.kf_ref_count)
+                    .field("kf_flags", &self.kf_flags)
+                    .field("kf_offset", &self.kf_offset)
+                    .field("kf_status", &self.kf_status)
+                    .field("kf_cap_rights", &self.kf_cap_rights)
+                    .field("kf_path", &&self.kf_path[..])
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for kinfo_file {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                self.kf_structsize.hash(state);
+                self.kf_type.hash(state);
+                self.kf_fd.hash(state);
+                self.kf_ref_count.hash(state);
+                self.kf_flags.hash(state);
+                self.kf_offset.hash(state);
+                self.kf_status.hash(state);
+                self.kf_cap_rights.hash(state);
+                self.kf_path.hash(state);
+            }
+        }
+
+        impl ::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_sigmask", &self.uc_sigmask)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_flags", &self.uc_flags)
+                    .finish()
+            }
+        }
     }
 }
 
@@ -2616,13 +2637,136 @@ pub const LIO_VECTORED: ::c_int = 4;
 pub const LIO_WRITEV: ::c_int = 5;
 pub const LIO_READV: ::c_int = 6;
 
+// sys/caprights.h
+pub const CAP_RIGHTS_VERSION_00: i32 = 0;
+pub const CAP_RIGHTS_VERSION: i32 = CAP_RIGHTS_VERSION_00;
+
+// sys/capsicum.h
+macro_rules! cap_right {
+    ($idx:expr, $bit:expr) => {
+        ((1u64 << (57 + ($idx))) | ($bit))
+    };
+}
+pub const CAP_READ: u64 = cap_right!(0, 0x0000000000000001u64);
+pub const CAP_WRITE: u64 = cap_right!(0, 0x0000000000000002u64);
+pub const CAP_SEEK_TELL: u64 = cap_right!(0, 0x0000000000000004u64);
+pub const CAP_SEEK: u64 = CAP_SEEK_TELL | 0x0000000000000008u64;
+pub const CAP_PREAD: u64 = CAP_SEEK | CAP_READ;
+pub const CAP_PWRITE: u64 = CAP_SEEK | CAP_WRITE;
+pub const CAP_MMAP: u64 = cap_right!(0, 0x0000000000000010u64);
+pub const CAP_MMAP_R: u64 = CAP_MMAP | CAP_SEEK | CAP_READ;
+pub const CAP_MMAP_W: u64 = CAP_MMAP | CAP_SEEK | CAP_WRITE;
+pub const CAP_MMAP_X: u64 = CAP_MMAP | CAP_SEEK | 0x0000000000000020u64;
+pub const CAP_MMAP_RW: u64 = CAP_MMAP_R | CAP_MMAP_W;
+pub const CAP_MMAP_RX: u64 = CAP_MMAP_R | CAP_MMAP_X;
+pub const CAP_MMAP_WX: u64 = CAP_MMAP_W | CAP_MMAP_X;
+pub const CAP_MMAP_RWX: u64 = CAP_MMAP_R | CAP_MMAP_W | CAP_MMAP_X;
+pub const CAP_CREATE: u64 = cap_right!(0, 0x0000000000000040u64);
+pub const CAP_FEXECVE: u64 = cap_right!(0, 0x0000000000000080u64);
+pub const CAP_FSYNC: u64 = cap_right!(0, 0x0000000000000100u64);
+pub const CAP_FTRUNCATE: u64 = cap_right!(0, 0x0000000000000200u64);
+pub const CAP_LOOKUP: u64 = cap_right!(0, 0x0000000000000400u64);
+pub const CAP_FCHDIR: u64 = cap_right!(0, 0x0000000000000800u64);
+pub const CAP_FCHFLAGS: u64 = cap_right!(0, 0x0000000000001000u64);
+pub const CAP_CHFLAGSAT: u64 = CAP_FCHFLAGS | CAP_LOOKUP;
+pub const CAP_FCHMOD: u64 = cap_right!(0, 0x0000000000002000u64);
+pub const CAP_FCHMODAT: u64 = CAP_FCHMOD | CAP_LOOKUP;
+pub const CAP_FCHOWN: u64 = cap_right!(0, 0x0000000000004000u64);
+pub const CAP_FCHOWNAT: u64 = CAP_FCHOWN | CAP_LOOKUP;
+pub const CAP_FCNTL: u64 = cap_right!(0, 0x0000000000008000u64);
+pub const CAP_FLOCK: u64 = cap_right!(0, 0x0000000000010000u64);
+pub const CAP_FPATHCONF: u64 = cap_right!(0, 0x0000000000020000u64);
+pub const CAP_FSCK: u64 = cap_right!(0, 0x0000000000040000u64);
+pub const CAP_FSTAT: u64 = cap_right!(0, 0x0000000000080000u64);
+pub const CAP_FSTATAT: u64 = CAP_FSTAT | CAP_LOOKUP;
+pub const CAP_FSTATFS: u64 = cap_right!(0, 0x0000000000100000u64);
+pub const CAP_FUTIMES: u64 = cap_right!(0, 0x0000000000200000u64);
+pub const CAP_FUTIMESAT: u64 = CAP_FUTIMES | CAP_LOOKUP;
+// Note: this was named CAP_LINKAT prior to FreeBSD 11.0.
+pub const CAP_LINKAT_TARGET: u64 = CAP_LOOKUP | 0x0000000000400000u64;
+pub const CAP_MKDIRAT: u64 = CAP_LOOKUP | 0x0000000000800000u64;
+pub const CAP_MKFIFOAT: u64 = CAP_LOOKUP | 0x0000000001000000u64;
+pub const CAP_MKNODAT: u64 = CAP_LOOKUP | 0x0000000002000000u64;
+// Note: this was named CAP_RENAMEAT prior to FreeBSD 11.0.
+pub const CAP_RENAMEAT_SOURCE: u64 = CAP_LOOKUP | 0x0000000004000000u64;
+pub const CAP_SYMLINKAT: u64 = CAP_LOOKUP | 0x0000000008000000u64;
+pub const CAP_UNLINKAT: u64 = CAP_LOOKUP | 0x0000000010000000u64;
+pub const CAP_ACCEPT: u64 = cap_right!(0, 0x0000000020000000u64);
+pub const CAP_BIND: u64 = cap_right!(0, 0x0000000040000000u64);
+pub const CAP_CONNECT: u64 = cap_right!(0, 0x0000000080000000u64);
+pub const CAP_GETPEERNAME: u64 = cap_right!(0, 0x0000000100000000u64);
+pub const CAP_GETSOCKNAME: u64 = cap_right!(0, 0x0000000200000000u64);
+pub const CAP_GETSOCKOPT: u64 = cap_right!(0, 0x0000000400000000u64);
+pub const CAP_LISTEN: u64 = cap_right!(0, 0x0000000800000000u64);
+pub const CAP_PEELOFF: u64 = cap_right!(0, 0x0000001000000000u64);
+pub const CAP_RECV: u64 = CAP_READ;
+pub const CAP_SEND: u64 = CAP_WRITE;
+pub const CAP_SETSOCKOPT: u64 = cap_right!(0, 0x0000002000000000u64);
+pub const CAP_SHUTDOWN: u64 = cap_right!(0, 0x0000004000000000u64);
+pub const CAP_BINDAT: u64 = CAP_LOOKUP | 0x0000008000000000u64;
+pub const CAP_CONNECTAT: u64 = CAP_LOOKUP | 0x0000010000000000u64;
+pub const CAP_LINKAT_SOURCE: u64 = CAP_LOOKUP | 0x0000020000000000u64;
+pub const CAP_RENAMEAT_TARGET: u64 = CAP_LOOKUP | 0x0000040000000000u64;
+pub const CAP_SOCK_CLIENT: u64 = CAP_CONNECT
+    | CAP_GETPEERNAME
+    | CAP_GETSOCKNAME
+    | CAP_GETSOCKOPT
+    | CAP_PEELOFF
+    | CAP_RECV
+    | CAP_SEND
+    | CAP_SETSOCKOPT
+    | CAP_SHUTDOWN;
+pub const CAP_SOCK_SERVER: u64 = CAP_ACCEPT
+    | CAP_BIND
+    | CAP_GETPEERNAME
+    | CAP_GETSOCKNAME
+    | CAP_GETSOCKOPT
+    | CAP_LISTEN
+    | CAP_PEELOFF
+    | CAP_RECV
+    | CAP_SEND
+    | CAP_SETSOCKOPT
+    | CAP_SHUTDOWN;
+pub const CAP_ALL0: u64 = cap_right!(0, 0x000007FFFFFFFFFFu64);
+pub const CAP_UNUSED0_44: u64 = cap_right!(0, 0x0000080000000000u64);
+pub const CAP_UNUSED0_57: u64 = cap_right!(0, 0x0100000000000000u64);
+pub const CAP_MAC_GET: u64 = cap_right!(1, 0x0000000000000001u64);
+pub const CAP_MAC_SET: u64 = cap_right!(1, 0x0000000000000002u64);
+pub const CAP_SEM_GETVALUE: u64 = cap_right!(1, 0x0000000000000004u64);
+pub const CAP_SEM_POST: u64 = cap_right!(1, 0x0000000000000008u64);
+pub const CAP_SEM_WAIT: u64 = cap_right!(1, 0x0000000000000010u64);
+pub const CAP_EVENT: u64 = cap_right!(1, 0x0000000000000020u64);
+pub const CAP_KQUEUE_EVENT: u64 = cap_right!(1, 0x0000000000000040u64);
+pub const CAP_IOCTL: u64 = cap_right!(1, 0x0000000000000080u64);
+pub const CAP_TTYHOOK: u64 = cap_right!(1, 0x0000000000000100u64);
+pub const CAP_PDGETPID: u64 = cap_right!(1, 0x0000000000000200u64);
+pub const CAP_PDWAIT: u64 = cap_right!(1, 0x0000000000000400u64);
+pub const CAP_PDKILL: u64 = cap_right!(1, 0x0000000000000800u64);
+pub const CAP_EXTATTR_DELETE: u64 = cap_right!(1, 0x0000000000001000u64);
+pub const CAP_EXTATTR_GET: u64 = cap_right!(1, 0x0000000000002000u64);
+pub const CAP_EXTATTR_LIST: u64 = cap_right!(1, 0x0000000000004000u64);
+pub const CAP_EXTATTR_SET: u64 = cap_right!(1, 0x0000000000008000u64);
+pub const CAP_ACL_CHECK: u64 = cap_right!(1, 0x0000000000010000u64);
+pub const CAP_ACL_DELETE: u64 = cap_right!(1, 0x0000000000020000u64);
+pub const CAP_ACL_GET: u64 = cap_right!(1, 0x0000000000040000u64);
+pub const CAP_ACL_SET: u64 = cap_right!(1, 0x0000000000080000u64);
+pub const CAP_KQUEUE_CHANGE: u64 = cap_right!(1, 0x0000000000100000u64);
+pub const CAP_KQUEUE: u64 = CAP_KQUEUE_EVENT | CAP_KQUEUE_CHANGE;
+pub const CAP_ALL1: u64 = cap_right!(1, 0x00000000001FFFFFu64);
+pub const CAP_UNUSED1_22: u64 = cap_right!(1, 0x0000000000200000u64);
+pub const CAP_UNUSED1_57: u64 = cap_right!(1, 0x0100000000000000u64);
+pub const CAP_FCNTL_GETFL: u32 = 1 << 3;
+pub const CAP_FCNTL_SETFL: u32 = 1 << 4;
+pub const CAP_FCNTL_GETOWN: u32 = 1 << 5;
+pub const CAP_FCNTL_SETOWN: u32 = 1 << 6;
+
 // sys/devicestat.h
 pub const DEVSTAT_N_TRANS_FLAGS: ::c_int = 4;
 pub const DEVSTAT_NAME_LEN: ::c_int = 16;
 
 // sys/cpuset.h
 cfg_if! {
-    if #[cfg(freebsd14)] {
+    if #[cfg(any(freebsd15, freebsd14))] {
         pub const CPU_SETSIZE: ::c_int = 1024;
     } else {
         pub const CPU_SETSIZE: ::c_int = 256;
@@ -2706,6 +2850,7 @@ pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
 
 pub const POLLINIGNEOF: ::c_short = 0x2000;
+pub const POLLRDHUP: ::c_short = 0x4000;
 
 pub const EVFILT_READ: i16 = -1;
 pub const EVFILT_WRITE: i16 = -2;
@@ -3000,9 +3145,22 @@ pub const H4DISC: ::c_int = 0x7;
 
 pub const VM_TOTAL: ::c_int = 1;
 
-pub const BIOCSETFNR: ::c_ulong = 0x80104282;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const BIOCSETFNR: ::c_ulong = 0x80104282;
+    } else {
+        pub const BIOCSETFNR: ::c_ulong = 0x80084282;
+    }
+}
 
-pub const FIODGNAME: ::c_ulong = 0x80106678;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const FIODGNAME: ::c_ulong = 0x80106678;
+    } else {
+        pub const FIODGNAME: ::c_ulong = 0x80086678;
+    }
+}
+
 pub const FIONWRITE: ::c_ulong = 0x40046677;
 pub const FIONSPACE: ::c_ulong = 0x40046676;
 pub const FIOSEEKDATA: ::c_ulong = 0xc0086661;
@@ -3655,7 +3813,6 @@ pub const TCP_INFO: ::c_int = 32;
 pub const TCP_CONGESTION: ::c_int = 64;
 pub const TCP_CCALGOOPT: ::c_int = 65;
 pub const TCP_MAXUNACKTIME: ::c_int = 68;
-pub const TCP_MAXPEAKRATE: ::c_int = 69;
 pub const TCP_IDLE_REDUCE: ::c_int = 70;
 pub const TCP_REMOTE_UDP_ENCAPS_PORT: ::c_int = 71;
 pub const TCP_DELACK: ::c_int = 72;
@@ -3836,12 +3993,12 @@ pub const RTP_PRIO_REALTIME: ::c_ushort = 2;
 pub const RTP_PRIO_NORMAL: ::c_ushort = 3;
 pub const RTP_PRIO_IDLE: ::c_ushort = 4;
 
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x04;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x08;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x10;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x02;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x04;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x08;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x20;
 
 // Flags for chflags(2)
 pub const UF_SYSTEM: ::c_ulong = 0x00000080;
@@ -3872,11 +4029,6 @@ pub const F_SEAL_WRITE: ::c_int = 8;
 
 // for use with fspacectl
 pub const SPACECTL_DEALLOC: ::c_int = 1;
-
-// For getrandom()
-pub const GRND_NONBLOCK: ::c_uint = 0x1;
-pub const GRND_RANDOM: ::c_uint = 0x2;
-pub const GRND_INSECURE: ::c_uint = 0x4;
 
 // For realhostname* api
 pub const HOSTNAME_FOUND: ::c_int = 0;
@@ -4558,6 +4710,14 @@ pub const CPU_WHICH_CPUSET: ::c_int = 3;
 pub const CPU_WHICH_IRQ: ::c_int = 4;
 pub const CPU_WHICH_JAIL: ::c_int = 5;
 
+// net/route.h
+pub const RTF_LLDATA: ::c_int = 0x400;
+pub const RTF_FIXEDMTU: ::c_int = 0x80000;
+
+pub const RTM_VERSION: ::c_int = 5;
+
+pub const RTAX_MAX: ::c_int = 8;
+
 // sys/signal.h
 pub const SIGTHR: ::c_int = 32;
 pub const SIGLWP: ::c_int = SIGTHR;
@@ -4728,21 +4888,30 @@ pub const RB_POWERCYCLE: ::c_int = 0x400000;
 pub const RB_PROBE: ::c_int = 0x10000000;
 pub const RB_MULTIPLE: ::c_int = 0x20000000;
 
+// sys/time.h
+pub const CLOCK_BOOTTIME: ::clockid_t = ::CLOCK_UPTIME;
+pub const CLOCK_REALTIME_COARSE: ::clockid_t = ::CLOCK_REALTIME_FAST;
+pub const CLOCK_MONOTONIC_COARSE: ::clockid_t = ::CLOCK_MONOTONIC_FAST;
+
 // sys/timerfd.h
 
 pub const TFD_NONBLOCK: ::c_int = ::O_NONBLOCK;
 pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
+pub const TFD_TIMER_ABSTIME: ::c_int = 0x01;
+pub const TFD_TIMER_CANCEL_ON_SET: ::c_int = 0x02;
 
-cfg_if! {
-    if #[cfg(libc_const_extern_fn)] {
-        pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
-            a << 24
-        }
-    } else {
-        pub fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
-            a << 24
-        }
-    }
+pub const KCMP_FILE: ::c_int = 100;
+pub const KCMP_FILEOBJ: ::c_int = 101;
+pub const KCMP_FILES: ::c_int = 102;
+pub const KCMP_SIGHAND: ::c_int = 103;
+pub const KCMP_VM: ::c_int = 104;
+
+// sys/unistd.h
+
+pub const CLOSE_RANGE_CLOEXEC: ::c_uint = 1 << 2;
+
+pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
+    a << 24
 }
 
 const_fn! {
@@ -5361,13 +5530,6 @@ extern "C" {
     pub fn getpagesizes(pagesize: *mut ::size_t, nelem: ::c_int) -> ::c_int;
 
     pub fn clock_getcpuclockid2(arg1: ::id_t, arg2: ::c_int, arg3: *mut clockid_t) -> ::c_int;
-    pub fn clock_nanosleep(
-        clk_id: ::clockid_t,
-        flags: ::c_int,
-        rqtp: *const ::timespec,
-        rmtp: *mut ::timespec,
-    ) -> ::c_int;
-
     pub fn strchrnul(s: *const ::c_char, c: ::c_int) -> *mut ::c_char;
 
     pub fn shm_create_largepage(
@@ -5391,8 +5553,6 @@ extern "C" {
 
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
 
-    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
-    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
     pub fn elf_aux_info(aux: ::c_int, buf: *mut ::c_void, buflen: ::c_int) -> ::c_int;
     pub fn setproctitle_fast(fmt: *const ::c_char, ...);
     pub fn timingsafe_bcmp(a: *const ::c_void, b: *const ::c_void, len: ::size_t) -> ::c_int;
@@ -5467,6 +5627,20 @@ extern "C" {
     ) -> ::c_int;
     pub fn closefrom(lowfd: ::c_int);
     pub fn close_range(lowfd: ::c_uint, highfd: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn kcmp(
+        pid1: ::pid_t,
+        pid2: ::pid_t,
+        type_: ::c_int,
+        idx1: ::c_ulong,
+        idx2: ::c_ulong,
+    ) -> ::c_int;
+
+    pub fn execvpe(
+        file: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+    ) -> ::c_int;
 }
 
 #[link(name = "memstat")]
@@ -5708,7 +5882,10 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(freebsd14)] {
+    if #[cfg(freebsd15)] {
+        mod freebsd15;
+        pub use self::freebsd15::*;
+    } else if #[cfg(freebsd14)] {
         mod freebsd14;
         pub use self::freebsd14::*;
     } else if #[cfg(freebsd13)] {

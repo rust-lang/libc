@@ -37,6 +37,8 @@ pub type rusage_info_t = *mut ::c_void;
 pub type vm_offset_t = ::uintptr_t;
 pub type vm_size_t = ::uintptr_t;
 pub type vm_address_t = vm_offset_t;
+pub type quad_t = i64;
+pub type u_quad_t = u64;
 
 pub type posix_spawnattr_t = *mut ::c_void;
 pub type posix_spawn_file_actions_t = *mut ::c_void;
@@ -56,6 +58,7 @@ pub type thread_inspect_t = ::mach_port_t;
 pub type thread_act_t = ::mach_port_t;
 pub type thread_act_array_t = *mut ::thread_act_t;
 pub type policy_t = ::c_int;
+pub type mach_error_t = ::kern_return_t;
 pub type mach_vm_address_t = u64;
 pub type mach_vm_offset_t = u64;
 pub type mach_vm_size_t = u64;
@@ -71,6 +74,11 @@ pub type ledger_array_t = *mut ::ledger_t;
 
 pub type iconv_t = *mut ::c_void;
 
+// mach/host_info.h
+pub type host_cpu_load_info_t = *mut host_cpu_load_info;
+pub type host_cpu_load_info_data_t = host_cpu_load_info;
+
+// mach/processor_info.h
 pub type processor_cpu_load_info_t = *mut processor_cpu_load_info;
 pub type processor_cpu_load_info_data_t = processor_cpu_load_info;
 pub type processor_basic_info_t = *mut processor_basic_info;
@@ -121,6 +129,11 @@ pub type pthread_introspection_hook_t =
     extern "C" fn(event: ::c_uint, thread: ::pthread_t, addr: *mut ::c_void, size: ::size_t);
 pub type pthread_jit_write_callback_t = ::Option<extern "C" fn(ctx: *mut ::c_void) -> ::c_int>;
 
+pub type os_clockid_t = u32;
+
+pub type os_sync_wait_on_address_flags_t = u32;
+pub type os_sync_wake_by_address_flags_t = u32;
+
 pub type os_unfair_lock = os_unfair_lock_s;
 pub type os_unfair_lock_t = *mut os_unfair_lock;
 
@@ -158,10 +171,6 @@ pub type copyfile_callback_t = ::Option<
 
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
-
-deprecated_mach! {
-    pub type mach_timebase_info_data_t = mach_timebase_info;
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -293,15 +302,6 @@ s! {
         pub ai_canonname: *mut ::c_char,
         pub ai_addr: *mut ::sockaddr,
         pub ai_next: *mut addrinfo,
-    }
-
-    #[deprecated(
-        since = "0.2.55",
-        note = "Use the `mach2` crate instead",
-    )]
-    pub struct mach_timebase_info {
-        pub numer: u32,
-        pub denom: u32,
     }
 
     pub struct stat {
@@ -504,8 +504,7 @@ s! {
         pub rmx_rtt: u32,
         pub rmx_rttvar: u32,
         pub rmx_pksent: u32,
-        pub rmx_state: u32,
-        pub rmx_filler: [u32; 3],
+        pub rmx_filler: [u32; 4],
     }
 
     pub struct rt_msghdr {
@@ -654,35 +653,6 @@ s! {
         pub cr_uid: ::uid_t,
         pub cr_ngroups: ::c_short,
         pub cr_groups: [::gid_t;16]
-    }
-
-    #[deprecated(
-        since = "0.2.55",
-        note = "Use the `mach2` crate instead",
-    )]
-    pub struct mach_header {
-        pub magic: u32,
-        pub cputype: cpu_type_t,
-        pub cpusubtype: cpu_subtype_t,
-        pub filetype: u32,
-        pub ncmds: u32,
-        pub sizeofcmds: u32,
-        pub flags: u32,
-    }
-
-    #[deprecated(
-        since = "0.2.55",
-        note = "Use the `mach2` crate instead",
-    )]
-    pub struct mach_header_64 {
-        pub magic: u32,
-        pub cputype: cpu_type_t,
-        pub cpusubtype: cpu_subtype_t,
-        pub filetype: u32,
-        pub ncmds: u32,
-        pub sizeofcmds: u32,
-        pub flags: u32,
-        pub reserved: u32,
     }
 
     pub struct segment_command {
@@ -1130,18 +1100,134 @@ s! {
         pub nativeattr: attribute_set_t,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
-    pub struct ifconf {
-        pub ifc_len: ::c_int,
-        #[cfg(libc_union)]
-        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-        #[cfg(not(libc_union))]
-        pub ifc_ifcu: *mut ifreq,
+    #[repr(align(8))]
+    pub struct tcp_connection_info {
+        pub tcpi_state: u8,
+        pub tcpi_snd_wscale: u8,
+        pub tcpi_rcv_wscale: u8,
+        __pad1: u8,
+        pub tcpi_options: u32,
+        pub tcpi_flags: u32,
+        pub tcpi_rto: u32,
+        pub tcpi_maxseg: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_snd_sbbytes: u32,
+        pub tcpi_rcv_wnd: u32,
+        pub tcpi_rttcur: u32,
+        pub tcpi_srtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_tfo_cookie_req: u32,
+        pub tcpi_tfo_cookie_rcv: u32,
+        pub tcpi_tfo_syn_loss: u32,
+        pub tcpi_tfo_syn_data_sent: u32,
+        pub tcpi_tfo_syn_data_acked: u32,
+        pub tcpi_tfo_syn_data_rcv: u32,
+        pub tcpi_tfo_cookie_req_rcv: u32,
+        pub tcpi_tfo_cookie_sent: u32,
+        pub tcpi_tfo_cookie_invalid: u32,
+        pub tcpi_tfo_cookie_wrong: u32,
+        pub tcpi_tfo_no_cookie_rcv: u32,
+        pub tcpi_tfo_heuristics_disable: u32,
+        pub tcpi_tfo_send_blackhole: u32,
+        pub tcpi_tfo_recv_blackhole: u32,
+        pub tcpi_tfo_onebyte_proxy: u32,
+        __pad2: u32,
+        pub tcpi_txpackets: u64,
+        pub tcpi_txbytes: u64,
+        pub tcpi_txretransmitbytes: u64,
+        pub tcpi_rxpackets: u64,
+        pub tcpi_rxbytes: u64,
+        pub tcpi_rxoutoforderbytes: u64,
+        pub tcpi_rxretransmitpackets: u64,
+    }
+
+    pub struct in6_addrlifetime {
+        pub ia6t_expire: time_t,
+        pub ia6t_preferred: time_t,
+        pub ia6t_vltime: u32,
+        pub ia6t_pltime: u32,
+    }
+
+    pub struct in6_ifstat {
+        pub ifs6_in_receive: ::u_quad_t,
+        pub ifs6_in_hdrerr: ::u_quad_t,
+        pub ifs6_in_toobig: ::u_quad_t,
+        pub ifs6_in_noroute: ::u_quad_t,
+        pub ifs6_in_addrerr: ::u_quad_t,
+        pub ifs6_in_protounknown: ::u_quad_t,
+        pub ifs6_in_truncated: ::u_quad_t,
+        pub ifs6_in_discard: ::u_quad_t,
+        pub ifs6_in_deliver: ::u_quad_t,
+        pub ifs6_out_forward: ::u_quad_t,
+        pub ifs6_out_request: ::u_quad_t,
+        pub ifs6_out_discard: ::u_quad_t,
+        pub ifs6_out_fragok: ::u_quad_t,
+        pub ifs6_out_fragfail: ::u_quad_t,
+        pub ifs6_out_fragcreat: ::u_quad_t,
+        pub ifs6_reass_reqd: ::u_quad_t,
+        pub ifs6_reass_ok: ::u_quad_t,
+        pub ifs6_atmfrag_rcvd: ::u_quad_t,
+        pub ifs6_reass_fail: ::u_quad_t,
+        pub ifs6_in_mcast: ::u_quad_t,
+        pub ifs6_out_mcast: ::u_quad_t,
+        pub ifs6_cantfoward_icmp6: ::u_quad_t,
+        pub ifs6_addr_expiry_cnt: ::u_quad_t,
+        pub ifs6_pfx_expiry_cnt: ::u_quad_t,
+        pub ifs6_defrtr_expiry_cnt: ::u_quad_t,
+    }
+    pub struct icmp6_ifstat {
+        pub ifs6_in_msg: ::u_quad_t,
+        pub ifs6_in_error: ::u_quad_t,
+        pub ifs6_in_dstunreach: ::u_quad_t,
+        pub ifs6_in_adminprohib: ::u_quad_t,
+        pub ifs6_in_timeexceed: ::u_quad_t,
+        pub ifs6_in_paramprob: ::u_quad_t,
+        pub ifs6_in_pkttoobig: ::u_quad_t,
+        pub ifs6_in_echo: ::u_quad_t,
+        pub ifs6_in_echoreply: ::u_quad_t,
+        pub ifs6_in_routersolicit: ::u_quad_t,
+        pub ifs6_in_routeradvert: ::u_quad_t,
+        pub ifs6_in_neighborsolicit: ::u_quad_t,
+        pub ifs6_in_neighboradvert: ::u_quad_t,
+        pub ifs6_in_redirect: ::u_quad_t,
+        pub ifs6_in_mldquery: ::u_quad_t,
+        pub ifs6_in_mldreport: ::u_quad_t,
+        pub ifs6_in_mlddone: ::u_quad_t,
+        pub ifs6_out_msg: ::u_quad_t,
+        pub ifs6_out_error: ::u_quad_t,
+        pub ifs6_out_dstunreach: ::u_quad_t,
+        pub ifs6_out_adminprohib: ::u_quad_t,
+        pub ifs6_out_timeexceed: ::u_quad_t,
+        pub ifs6_out_paramprob: ::u_quad_t,
+        pub ifs6_out_pkttoobig: ::u_quad_t,
+        pub ifs6_out_echo: ::u_quad_t,
+        pub ifs6_out_echoreply: ::u_quad_t,
+        pub ifs6_out_routersolicit: ::u_quad_t,
+        pub ifs6_out_routeradvert: ::u_quad_t,
+        pub ifs6_out_neighborsolicit: ::u_quad_t,
+        pub ifs6_out_neighboradvert: ::u_quad_t,
+        pub ifs6_out_redirect: ::u_quad_t,
+        pub ifs6_out_mldquery: ::u_quad_t,
+        pub ifs6_out_mldreport: ::u_quad_t,
+        pub ifs6_out_mlddone: ::u_quad_t,
+    }
+
+    // mach/host_info.h
+    pub struct host_cpu_load_info {
+        pub cpu_ticks: [::natural_t; CPU_STATE_MAX as usize],
     }
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
+    pub struct ifconf {
+        pub ifc_len: ::c_int,
+        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+    }
+
+    #[repr(packed(4))]
     pub struct kevent {
         pub ident: ::uintptr_t,
         pub filter: i16,
@@ -1151,7 +1237,7 @@ s_no_extra_traits! {
         pub udata: *mut ::c_void,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
         pub sem_perm: ipc_perm,
@@ -1164,7 +1250,7 @@ s_no_extra_traits! {
         pub sem_pad3: [i32; 4],
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
         pub shm_segsz: ::size_t,
@@ -1323,7 +1409,7 @@ s_no_extra_traits! {
         pub pth_name: [::c_char; MAXTHREADNAMESIZE],
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct if_data64 {
         pub ifi_type: ::c_uchar,
         pub ifi_typelen: ::c_uchar,
@@ -1355,7 +1441,7 @@ s_no_extra_traits! {
         pub ifi_lastchange: timeval32,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct if_msghdr2 {
         pub ifm_msglen: ::c_ushort,
         pub ifm_version: ::c_uchar,
@@ -1370,7 +1456,7 @@ s_no_extra_traits! {
         pub ifm_data: if_data64,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(8)))]
+    #[repr(packed(8))]
     pub struct vm_statistics64 {
         pub free_count: natural_t,
         pub active_count: natural_t,
@@ -1398,7 +1484,7 @@ s_no_extra_traits! {
         pub total_uncompressed_pages_in_compressor: u64,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct mach_task_basic_info {
         pub virtual_size: mach_vm_size_t,
         pub resident_size: mach_vm_size_t,
@@ -1409,7 +1495,7 @@ s_no_extra_traits! {
         pub suspend_count: integer_t,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct log2phys {
         pub l2p_flags: ::c_uint,
         pub l2p_contigbytes: ::off_t,
@@ -1420,7 +1506,7 @@ s_no_extra_traits! {
         _os_unfair_lock_opaque: u32,
     }
 
-   #[cfg_attr(libc_packedN, repr(packed(1)))]
+    #[repr(packed(1))]
     pub struct sockaddr_vm {
         pub svm_len: ::c_uchar,
         pub svm_family: ::sa_family_t,
@@ -1435,21 +1521,18 @@ s_no_extra_traits! {
         pub ifdm_max: ::c_int,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifk_data {
         pub ifk_ptr: *mut ::c_void,
         pub ifk_value: ::c_int,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct ifkpi {
         pub ifk_module_id: ::c_uint,
         pub ifk_type: ::c_uint,
-        #[cfg(libc_union)]
         pub ifk_data: __c_anonymous_ifk_data,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifr_ifru {
         pub ifru_addr: ::sockaddr,
         pub ifru_dstaddr: ::sockaddr,
@@ -1471,16 +1554,31 @@ s_no_extra_traits! {
 
     pub struct ifreq {
         pub ifr_name: [::c_char; ::IFNAMSIZ],
-        #[cfg(libc_union)]
         pub ifr_ifru: __c_anonymous_ifr_ifru,
-        #[cfg(not(libc_union))]
-        pub ifr_ifru: ::sockaddr,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut ::c_char,
         pub ifcu_req: *mut ifreq,
+    }
+
+    pub union __c_anonymous_ifr_ifru6 {
+        pub ifru_addr: ::sockaddr_in6,
+        pub ifru_dstaddr: ::sockaddr_in6,
+        pub ifru_flags: ::c_int,
+        pub ifru_flags6: ::c_int,
+        pub ifru_metrics: ::c_int,
+        pub ifru_intval: ::c_int,
+        pub ifru_data: *mut ::c_char,
+        pub ifru_lifetime: in6_addrlifetime,
+        pub ifru_stat: in6_ifstat,
+        pub ifru_icmp6stat: icmp6_ifstat,
+        pub ifru_scope_id: [u32; SCOPE6_ID_MAX],
+    }
+
+    pub struct in6_ifreq {
+        pub ifr_name: [::c_char; ::IFNAMSIZ],
+        pub ifr_ifru: __c_anonymous_ifr_ifru6,
     }
 }
 
@@ -1518,37 +1616,33 @@ impl siginfo_t {
     }
 }
 
+s_no_extra_traits! {
+    pub union semun {
+        pub val: ::c_int,
+        pub buf: *mut semid_ds,
+        pub array: *mut ::c_ushort,
+    }
+}
+
 cfg_if! {
-    if #[cfg(libc_union)] {
-        s_no_extra_traits! {
-            pub union semun {
-                pub val: ::c_int,
-                pub buf: *mut semid_ds,
-                pub array: *mut ::c_ushort,
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for semun {
+            fn eq(&self, other: &semun) -> bool {
+                unsafe { self.val == other.val }
             }
         }
-
-        cfg_if! {
-            if #[cfg(feature = "extra_traits")] {
-                impl PartialEq for semun {
-                    fn eq(&self, other: &semun) -> bool {
-                        unsafe { self.val == other.val }
-                    }
-                }
-                impl Eq for semun {}
-                impl ::fmt::Debug for semun {
-                    fn fmt(&self, f: &mut ::fmt::Formatter)
-                           -> ::fmt::Result {
-                        f.debug_struct("semun")
-                            .field("val", unsafe { &self.val })
-                            .finish()
-                    }
-                }
-                impl ::hash::Hash for semun {
-                    fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                        unsafe { self.val.hash(state) };
-                    }
-                }
+        impl Eq for semun {}
+        impl ::fmt::Debug for semun {
+            fn fmt(&self, f: &mut ::fmt::Formatter)
+                    -> ::fmt::Result {
+                f.debug_struct("semun")
+                    .field("val", unsafe { &self.val })
+                    .finish()
+            }
+        }
+        impl ::hash::Hash for semun {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.val.hash(state) };
             }
         }
     }
@@ -2859,7 +2953,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifk_data {
             fn eq(&self, other: &__c_anonymous_ifk_data) -> bool {
                 unsafe {
@@ -2869,10 +2962,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifk_data {}
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifk_data {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifk_data")
@@ -2881,7 +2972,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifk_data {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -2916,7 +3006,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifr_ifru {
             fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
                 unsafe {
@@ -2940,10 +3029,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifr_ifru {}
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifr_ifru {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__c_anonymous_ifr_ifru")
@@ -2967,7 +3054,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifr_ifru {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -3016,34 +3102,83 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
-        impl Eq for __c_anonymous_ifc_ifcu {}
+        impl ::fmt::Debug for ifconf{
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifconf").finish_non_exhaustive()
+            }
+        }
 
-        #[cfg(libc_union)]
-        impl PartialEq for __c_anonymous_ifc_ifcu {
-            fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
+        impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifc_ifcu").finish_non_exhaustive()
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifr_ifru6 {
+            fn eq(&self, other: &__c_anonymous_ifr_ifru6) -> bool {
                 unsafe {
-                    self.ifcu_buf == other.ifcu_buf &&
-                    self.ifcu_req == other.ifcu_req
+                    self.ifru_addr == other.ifru_addr
+                        && self.ifru_dstaddr == other.ifru_dstaddr
+                        && self.ifru_flags == other.ifru_flags
+                        && self.ifru_flags6 == other.ifru_flags6
+                        && self.ifru_metrics == other.ifru_metrics
+                        && self.ifru_intval == other.ifru_intval
+                        && self.ifru_data == other.ifru_data
+                        && self.ifru_scope_id
+                            .iter()
+                            .zip(other.ifru_scope_id.iter())
+                            .all(|(a,b)| a == b)
                 }
             }
         }
 
-        #[cfg(libc_union)]
-        impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
+        impl Eq for __c_anonymous_ifr_ifru6 {}
+
+        impl ::fmt::Debug for __c_anonymous_ifr_ifru6 {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("ifc_ifcu")
-                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
-                    .field("ifcu_req", unsafe { &self.ifcu_req })
+                f.debug_struct("__c_anonymous_ifr_ifru6")
+                    .field("ifru_addr", unsafe { &self.ifru_addr })
+                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
+                    .field("ifru_flags", unsafe { &self.ifru_flags })
+                    .field("ifru_flags6", unsafe { &self.ifru_flags6 })
+                    .field("ifru_metrics", unsafe { &self.ifru_metrics })
+                    .field("ifru_intval", unsafe { &self.ifru_intval })
+                    .field("ifru_data", unsafe { &self.ifru_data })
+                    .field("ifru_scope_id", unsafe { &self.ifru_scope_id })
                     .finish()
             }
         }
 
-        #[cfg(libc_union)]
-        impl ::hash::Hash for __c_anonymous_ifc_ifcu {
+        impl ::hash::Hash for __c_anonymous_ifr_ifru6 {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                unsafe { self.ifcu_buf.hash(state) };
-                unsafe { self.ifcu_req.hash(state) };
+                unsafe {
+                    self.ifru_addr.hash(state);
+                    self.ifru_dstaddr.hash(state);
+                    self.ifru_flags.hash(state);
+                    self.ifru_flags6.hash(state);
+                    self.ifru_metrics.hash(state);
+                    self.ifru_intval.hash(state);
+                    self.ifru_data.hash(state);
+                    self.ifru_scope_id.hash(state);
+                }
+            }
+        }
+
+        impl PartialEq for in6_ifreq {
+            fn eq(&self, other: &in6_ifreq) -> bool {
+                self.ifr_name == other.ifr_name
+                    && self.ifr_ifru == other.ifr_ifru
+            }
+        }
+
+        impl Eq for in6_ifreq {}
+
+        impl ::fmt::Debug for in6_ifreq {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("in6_ifreq")
+                    .field("ifr_name", &self.ifr_name)
+                    .field("ifr_ifru", &self.ifr_ifru)
+                    .finish()
             }
         }
     }
@@ -3184,6 +3319,24 @@ pub const _PC_PIPE_BUF: ::c_int = 6;
 pub const _PC_CHOWN_RESTRICTED: ::c_int = 7;
 pub const _PC_NO_TRUNC: ::c_int = 8;
 pub const _PC_VDISABLE: ::c_int = 9;
+pub const _PC_NAME_CHARS_MAX: ::c_int = 10;
+pub const _PC_CASE_SENSITIVE: ::c_int = 11;
+pub const _PC_CASE_PRESERVING: ::c_int = 12;
+pub const _PC_EXTENDED_SECURITY_NP: ::c_int = 13;
+pub const _PC_AUTH_OPAQUE_NP: ::c_int = 14;
+pub const _PC_2_SYMLINKS: ::c_int = 15;
+pub const _PC_ALLOC_SIZE_MIN: ::c_int = 16;
+pub const _PC_ASYNC_IO: ::c_int = 17;
+pub const _PC_FILESIZEBITS: ::c_int = 18;
+pub const _PC_PRIO_IO: ::c_int = 19;
+pub const _PC_REC_INCR_XFER_SIZE: ::c_int = 20;
+pub const _PC_REC_MAX_XFER_SIZE: ::c_int = 21;
+pub const _PC_REC_MIN_XFER_SIZE: ::c_int = 22;
+pub const _PC_REC_XFER_ALIGN: ::c_int = 23;
+pub const _PC_SYMLINK_MAX: ::c_int = 24;
+pub const _PC_SYNC_IO: ::c_int = 25;
+pub const _PC_XATTR_SIZE_BITS: ::c_int = 26;
+pub const _PC_MIN_HOLE_SIZE: ::c_int = 27;
 pub const O_EVTONLY: ::c_int = 0x00008000;
 pub const O_NOCTTY: ::c_int = 0x00020000;
 pub const O_DIRECTORY: ::c_int = 0x00100000;
@@ -3191,29 +3344,31 @@ pub const O_SYMLINK: ::c_int = 0x00200000;
 pub const O_DSYNC: ::c_int = 0x00400000;
 pub const O_CLOEXEC: ::c_int = 0x01000000;
 pub const O_NOFOLLOW_ANY: ::c_int = 0x20000000;
-pub const S_IFIFO: mode_t = 4096;
-pub const S_IFCHR: mode_t = 8192;
-pub const S_IFBLK: mode_t = 24576;
-pub const S_IFDIR: mode_t = 16384;
-pub const S_IFREG: mode_t = 32768;
-pub const S_IFLNK: mode_t = 40960;
-pub const S_IFSOCK: mode_t = 49152;
-pub const S_IFMT: mode_t = 61440;
-pub const S_IEXEC: mode_t = 64;
-pub const S_IWRITE: mode_t = 128;
-pub const S_IREAD: mode_t = 256;
-pub const S_IRWXU: mode_t = 448;
-pub const S_IXUSR: mode_t = 64;
-pub const S_IWUSR: mode_t = 128;
-pub const S_IRUSR: mode_t = 256;
-pub const S_IRWXG: mode_t = 56;
-pub const S_IXGRP: mode_t = 8;
-pub const S_IWGRP: mode_t = 16;
-pub const S_IRGRP: mode_t = 32;
-pub const S_IRWXO: mode_t = 7;
-pub const S_IXOTH: mode_t = 1;
-pub const S_IWOTH: mode_t = 2;
-pub const S_IROTH: mode_t = 4;
+pub const O_EXEC: ::c_int = 0x40000000;
+pub const O_SEARCH: ::c_int = O_EXEC | O_DIRECTORY;
+pub const S_IFIFO: mode_t = 0o1_0000;
+pub const S_IFCHR: mode_t = 0o2_0000;
+pub const S_IFBLK: mode_t = 0o6_0000;
+pub const S_IFDIR: mode_t = 0o4_0000;
+pub const S_IFREG: mode_t = 0o10_0000;
+pub const S_IFLNK: mode_t = 0o12_0000;
+pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_IFMT: mode_t = 0o17_0000;
+pub const S_IEXEC: mode_t = 0o0100;
+pub const S_IWRITE: mode_t = 0o0200;
+pub const S_IREAD: mode_t = 0o0400;
+pub const S_IRWXU: mode_t = 0o0700;
+pub const S_IXUSR: mode_t = 0o0100;
+pub const S_IWUSR: mode_t = 0o0200;
+pub const S_IRUSR: mode_t = 0o0400;
+pub const S_IRWXG: mode_t = 0o0070;
+pub const S_IXGRP: mode_t = 0o0010;
+pub const S_IWGRP: mode_t = 0o0020;
+pub const S_IRGRP: mode_t = 0o0040;
+pub const S_IRWXO: mode_t = 0o0007;
+pub const S_IXOTH: mode_t = 0o0001;
+pub const S_IWOTH: mode_t = 0o0002;
+pub const S_IROTH: mode_t = 0o0004;
 pub const F_OK: ::c_int = 0;
 pub const R_OK: ::c_int = 4;
 pub const W_OK: ::c_int = 2;
@@ -3285,107 +3440,6 @@ pub const PROCESSOR_PM_REGS_INFO: ::c_int = 0x10000001;
 pub const PROCESSOR_TEMPERATURE: ::c_int = 0x10000002;
 pub const PROCESSOR_SET_LOAD_INFO: ::c_int = 4;
 pub const PROCESSOR_SET_BASIC_INFO: ::c_int = 5;
-
-deprecated_mach! {
-    pub const VM_FLAGS_FIXED: ::c_int = 0x0000;
-    pub const VM_FLAGS_ANYWHERE: ::c_int = 0x0001;
-    pub const VM_FLAGS_PURGABLE: ::c_int = 0x0002;
-    pub const VM_FLAGS_RANDOM_ADDR: ::c_int = 0x0008;
-    pub const VM_FLAGS_NO_CACHE: ::c_int = 0x0010;
-    pub const VM_FLAGS_RESILIENT_CODESIGN: ::c_int = 0x0020;
-    pub const VM_FLAGS_RESILIENT_MEDIA: ::c_int = 0x0040;
-    pub const VM_FLAGS_OVERWRITE: ::c_int = 0x4000;
-    pub const VM_FLAGS_SUPERPAGE_MASK: ::c_int = 0x70000;
-    pub const VM_FLAGS_RETURN_DATA_ADDR: ::c_int = 0x100000;
-    pub const VM_FLAGS_RETURN_4K_DATA_ADDR: ::c_int = 0x800000;
-    pub const VM_FLAGS_ALIAS_MASK: ::c_int = 0xFF000000;
-    pub const VM_FLAGS_USER_ALLOCATE: ::c_int = 0xff07401f;
-    pub const VM_FLAGS_USER_MAP: ::c_int = 0xff97401f;
-    pub const VM_FLAGS_USER_REMAP: ::c_int = VM_FLAGS_FIXED |
-                                             VM_FLAGS_ANYWHERE |
-                                             VM_FLAGS_RANDOM_ADDR |
-                                             VM_FLAGS_OVERWRITE |
-                                             VM_FLAGS_RETURN_DATA_ADDR |
-                                             VM_FLAGS_RESILIENT_CODESIGN;
-
-    pub const VM_FLAGS_SUPERPAGE_SHIFT: ::c_int = 16;
-    pub const SUPERPAGE_NONE: ::c_int = 0;
-    pub const SUPERPAGE_SIZE_ANY: ::c_int = 1;
-    pub const VM_FLAGS_SUPERPAGE_NONE: ::c_int = SUPERPAGE_NONE <<
-                                                 VM_FLAGS_SUPERPAGE_SHIFT;
-    pub const VM_FLAGS_SUPERPAGE_SIZE_ANY: ::c_int = SUPERPAGE_SIZE_ANY <<
-                                                     VM_FLAGS_SUPERPAGE_SHIFT;
-    pub const SUPERPAGE_SIZE_2MB: ::c_int = 2;
-    pub const VM_FLAGS_SUPERPAGE_SIZE_2MB: ::c_int = SUPERPAGE_SIZE_2MB <<
-                                                     VM_FLAGS_SUPERPAGE_SHIFT;
-
-    pub const VM_MEMORY_MALLOC: ::c_int = 1;
-    pub const VM_MEMORY_MALLOC_SMALL: ::c_int = 2;
-    pub const VM_MEMORY_MALLOC_LARGE: ::c_int = 3;
-    pub const VM_MEMORY_MALLOC_HUGE: ::c_int = 4;
-    pub const VM_MEMORY_SBRK: ::c_int = 5;
-    pub const VM_MEMORY_REALLOC: ::c_int = 6;
-    pub const VM_MEMORY_MALLOC_TINY: ::c_int = 7;
-    pub const VM_MEMORY_MALLOC_LARGE_REUSABLE: ::c_int = 8;
-    pub const VM_MEMORY_MALLOC_LARGE_REUSED: ::c_int = 9;
-    pub const VM_MEMORY_ANALYSIS_TOOL: ::c_int = 10;
-    pub const VM_MEMORY_MALLOC_NANO: ::c_int = 11;
-    pub const VM_MEMORY_MACH_MSG: ::c_int = 20;
-    pub const VM_MEMORY_IOKIT: ::c_int = 21;
-    pub const VM_MEMORY_STACK: ::c_int = 30;
-    pub const VM_MEMORY_GUARD: ::c_int = 31;
-    pub const VM_MEMORY_SHARED_PMAP: ::c_int = 32;
-    pub const VM_MEMORY_DYLIB: ::c_int = 33;
-    pub const VM_MEMORY_OBJC_DISPATCHERS: ::c_int = 34;
-    pub const VM_MEMORY_UNSHARED_PMAP: ::c_int = 35;
-    pub const VM_MEMORY_APPKIT: ::c_int = 40;
-    pub const VM_MEMORY_FOUNDATION: ::c_int = 41;
-    pub const VM_MEMORY_COREGRAPHICS: ::c_int = 42;
-    pub const VM_MEMORY_CORESERVICES: ::c_int = 43;
-    pub const VM_MEMORY_CARBON: ::c_int = VM_MEMORY_CORESERVICES;
-    pub const VM_MEMORY_JAVA: ::c_int = 44;
-    pub const VM_MEMORY_COREDATA: ::c_int = 45;
-    pub const VM_MEMORY_COREDATA_OBJECTIDS: ::c_int = 46;
-    pub const VM_MEMORY_ATS: ::c_int = 50;
-    pub const VM_MEMORY_LAYERKIT: ::c_int = 51;
-    pub const VM_MEMORY_CGIMAGE: ::c_int = 52;
-    pub const VM_MEMORY_TCMALLOC: ::c_int = 53;
-    pub const VM_MEMORY_COREGRAPHICS_DATA: ::c_int = 54;
-    pub const VM_MEMORY_COREGRAPHICS_SHARED: ::c_int = 55;
-    pub const VM_MEMORY_COREGRAPHICS_FRAMEBUFFERS: ::c_int = 56;
-    pub const VM_MEMORY_COREGRAPHICS_BACKINGSTORES: ::c_int = 57;
-    pub const VM_MEMORY_COREGRAPHICS_XALLOC: ::c_int = 58;
-    pub const VM_MEMORY_COREGRAPHICS_MISC: ::c_int = VM_MEMORY_COREGRAPHICS;
-    pub const VM_MEMORY_DYLD: ::c_int = 60;
-    pub const VM_MEMORY_DYLD_MALLOC: ::c_int = 61;
-    pub const VM_MEMORY_SQLITE: ::c_int = 62;
-    pub const VM_MEMORY_JAVASCRIPT_CORE: ::c_int = 63;
-    pub const VM_MEMORY_JAVASCRIPT_JIT_EXECUTABLE_ALLOCATOR: ::c_int = 64;
-    pub const VM_MEMORY_JAVASCRIPT_JIT_REGISTER_FILE: ::c_int = 65;
-    pub const VM_MEMORY_GLSL: ::c_int = 66;
-    pub const VM_MEMORY_OPENCL: ::c_int = 67;
-    pub const VM_MEMORY_COREIMAGE: ::c_int = 68;
-    pub const VM_MEMORY_WEBCORE_PURGEABLE_BUFFERS: ::c_int = 69;
-    pub const VM_MEMORY_IMAGEIO: ::c_int = 70;
-    pub const VM_MEMORY_COREPROFILE: ::c_int = 71;
-    pub const VM_MEMORY_ASSETSD: ::c_int = 72;
-    pub const VM_MEMORY_OS_ALLOC_ONCE: ::c_int = 73;
-    pub const VM_MEMORY_LIBDISPATCH: ::c_int = 74;
-    pub const VM_MEMORY_ACCELERATE: ::c_int = 75;
-    pub const VM_MEMORY_COREUI: ::c_int = 76;
-    pub const VM_MEMORY_COREUIFILE: ::c_int = 77;
-    pub const VM_MEMORY_GENEALOGY: ::c_int = 78;
-    pub const VM_MEMORY_RAWCAMERA: ::c_int = 79;
-    pub const VM_MEMORY_CORPSEINFO: ::c_int = 80;
-    pub const VM_MEMORY_ASL: ::c_int = 81;
-    pub const VM_MEMORY_SWIFT_RUNTIME: ::c_int = 82;
-    pub const VM_MEMORY_SWIFT_METADATA: ::c_int = 83;
-    pub const VM_MEMORY_DHMM: ::c_int = 84;
-    pub const VM_MEMORY_SCENEKIT: ::c_int = 86;
-    pub const VM_MEMORY_SKYWALK: ::c_int = 87;
-    pub const VM_MEMORY_APPLICATION_SPECIFIC_1: ::c_int = 240;
-    pub const VM_MEMORY_APPLICATION_SPECIFIC_16: ::c_int = 255;
-}
 
 pub const MAP_FAILED: *mut ::c_void = !0 as *mut ::c_void;
 
@@ -3539,13 +3593,19 @@ pub const F_GLOBAL_NOCACHE: ::c_int = 55;
 pub const F_NODIRECT: ::c_int = 62;
 pub const F_LOG2PHYS_EXT: ::c_int = 65;
 pub const F_BARRIERFSYNC: ::c_int = 85;
+// See https://github.com/apple/darwin-xnu/blob/main/bsd/sys/fcntl.h
+pub const F_OFD_SETLK: ::c_int = 90; /* Acquire or release open file description lock */
+pub const F_OFD_SETLKW: ::c_int = 91; /* (as F_OFD_SETLK but blocking if conflicting lock) */
+pub const F_OFD_GETLK: ::c_int = 92; /* Examine OFD lock */
 pub const F_PUNCHHOLE: ::c_int = 99;
 pub const F_TRIM_ACTIVE_FILE: ::c_int = 100;
 pub const F_SPECULATIVE_READ: ::c_int = 101;
 pub const F_GETPATH_NOFIRMLINK: ::c_int = 102;
+pub const F_TRANSFEREXTENTS: ::c_int = 110;
 
 pub const F_ALLOCATECONTIG: ::c_uint = 0x02;
 pub const F_ALLOCATEALL: ::c_uint = 0x04;
+pub const F_ALLOCATEPERSIST: ::c_uint = 0x08;
 
 pub const F_PEOFPOSMODE: ::c_int = 3;
 pub const F_VOLPOSMODE: ::c_int = 4;
@@ -3712,6 +3772,19 @@ pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 2;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 1;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 2;
+pub const PTHREAD_INHERIT_SCHED: ::c_int = 1;
+pub const PTHREAD_EXPLICIT_SCHED: ::c_int = 2;
+pub const PTHREAD_CANCEL_ENABLE: ::c_int = 0x01;
+pub const PTHREAD_CANCEL_DISABLE: ::c_int = 0x00;
+pub const PTHREAD_CANCEL_DEFERRED: ::c_int = 0x02;
+pub const PTHREAD_CANCEL_ASYNCHRONOUS: ::c_int = 0x00;
+pub const PTHREAD_CANCELED: *mut ::c_void = 1 as *mut ::c_void;
+pub const PTHREAD_SCOPE_SYSTEM: ::c_int = 1;
+pub const PTHREAD_SCOPE_PROCESS: ::c_int = 2;
+pub const PTHREAD_PRIO_NONE: ::c_int = 0;
+pub const PTHREAD_PRIO_INHERIT: ::c_int = 1;
+pub const PTHREAD_PRIO_PROTECT: ::c_int = 2;
+
 #[cfg(target_arch = "aarch64")]
 pub const PTHREAD_STACK_MIN: ::size_t = 16384;
 #[cfg(not(target_arch = "aarch64"))]
@@ -4089,7 +4162,6 @@ pub const IPV6_RECVHOPLIMIT: ::c_int = 37;
 pub const IPV6_PKTINFO: ::c_int = 46;
 pub const IPV6_HOPLIMIT: ::c_int = 47;
 pub const IPV6_RECVPKTINFO: ::c_int = 61;
-pub const IPV6_DONTFRAG: ::c_int = 62;
 pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 70;
 pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 71;
 pub const IP_BLOCK_SOURCE: ::c_int = 72;
@@ -4103,14 +4175,22 @@ pub const TCP_KEEPINTVL: ::c_int = 0x101;
 pub const TCP_KEEPCNT: ::c_int = 0x102;
 /// Enable/Disable TCP Fastopen on this socket
 pub const TCP_FASTOPEN: ::c_int = 0x105;
+pub const TCP_CONNECTION_INFO: ::c_int = 0x106;
 
 pub const SOL_LOCAL: ::c_int = 0;
 
+/// Retrieve peer credentials.
 pub const LOCAL_PEERCRED: ::c_int = 0x001;
+/// Retrieve peer PID.
 pub const LOCAL_PEERPID: ::c_int = 0x002;
+/// Retrieve effective peer PID.
 pub const LOCAL_PEEREPID: ::c_int = 0x003;
+/// Retrieve peer UUID.
 pub const LOCAL_PEERUUID: ::c_int = 0x004;
+/// Retrieve effective peer UUID.
 pub const LOCAL_PEEREUUID: ::c_int = 0x005;
+/// Retrieve peer audit token.
+pub const LOCAL_PEERTOKEN: ::c_int = 0x006;
 
 pub const SOL_SOCKET: ::c_int = 0xffff;
 
@@ -4188,6 +4268,8 @@ pub const IFF_LINK1: ::c_int = 0x2000; // per link layer defined bit
 pub const IFF_LINK2: ::c_int = 0x4000; // per link layer defined bit
 pub const IFF_ALTPHYS: ::c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: ::c_int = 0x8000; // supports multicast
+
+pub const SCOPE6_ID_MAX: ::size_t = 16;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -4366,7 +4448,7 @@ pub const OS_SIGNPOST_INTERVAL_END: ::os_signpost_type_t = 0x02;
 pub const MINSIGSTKSZ: ::size_t = 32768;
 pub const SIGSTKSZ: ::size_t = 131072;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
@@ -4447,6 +4529,8 @@ pub const NOTE_ABSOLUTE: u32 = 0x00000008;
 pub const NOTE_LEEWAY: u32 = 0x00000010;
 pub const NOTE_CRITICAL: u32 = 0x00000020;
 pub const NOTE_BACKGROUND: u32 = 0x00000040;
+pub const NOTE_MACH_CONTINUOUS_TIME: u32 = 0x00000080;
+pub const NOTE_MACHTIME: u32 = 0x00000100;
 pub const NOTE_TRACK: u32 = 0x00000001;
 pub const NOTE_TRACKERR: u32 = 0x00000002;
 pub const NOTE_CHILD: u32 = 0x00000004;
@@ -4841,22 +4925,11 @@ pub const XATTR_SHOWCOMPRESSION: ::c_int = 0x0020;
 pub const NET_RT_IFLIST2: ::c_int = 0x0006;
 
 // net/route.h
-pub const RTF_UP: ::c_int = 0x1;
-pub const RTF_GATEWAY: ::c_int = 0x2;
-pub const RTF_HOST: ::c_int = 0x4;
-pub const RTF_REJECT: ::c_int = 0x8;
-pub const RTF_DYNAMIC: ::c_int = 0x10;
-pub const RTF_MODIFIED: ::c_int = 0x20;
-pub const RTF_DONE: ::c_int = 0x40;
 pub const RTF_DELCLONE: ::c_int = 0x80;
 pub const RTF_CLONING: ::c_int = 0x100;
 pub const RTF_XRESOLVE: ::c_int = 0x200;
 pub const RTF_LLINFO: ::c_int = 0x400;
-pub const RTF_STATIC: ::c_int = 0x800;
-pub const RTF_BLACKHOLE: ::c_int = 0x1000;
 pub const RTF_NOIFREF: ::c_int = 0x2000;
-pub const RTF_PROTO2: ::c_int = 0x4000;
-pub const RTF_PROTO1: ::c_int = 0x8000;
 pub const RTF_PRCLONING: ::c_int = 0x10000;
 pub const RTF_WASCLONED: ::c_int = 0x20000;
 pub const RTF_PROTO3: ::c_int = 0x40000;
@@ -4875,13 +4948,6 @@ pub const RTF_GLOBAL: ::c_int = 0x40000000;
 pub const RTM_VERSION: ::c_int = 5;
 
 // Message types
-pub const RTM_ADD: ::c_int = 0x1;
-pub const RTM_DELETE: ::c_int = 0x2;
-pub const RTM_CHANGE: ::c_int = 0x3;
-pub const RTM_GET: ::c_int = 0x4;
-pub const RTM_LOSING: ::c_int = 0x5;
-pub const RTM_REDIRECT: ::c_int = 0x6;
-pub const RTM_MISS: ::c_int = 0x7;
 pub const RTM_LOCK: ::c_int = 0x8;
 pub const RTM_OLDADD: ::c_int = 0x9;
 pub const RTM_OLDDEL: ::c_int = 0xa;
@@ -4905,25 +4971,6 @@ pub const RTV_SSTHRESH: ::c_int = 0x20;
 pub const RTV_RTT: ::c_int = 0x40;
 pub const RTV_RTTVAR: ::c_int = 0x80;
 
-// Bitmask values for rtm_addrs.
-pub const RTA_DST: ::c_int = 0x1;
-pub const RTA_GATEWAY: ::c_int = 0x2;
-pub const RTA_NETMASK: ::c_int = 0x4;
-pub const RTA_GENMASK: ::c_int = 0x8;
-pub const RTA_IFP: ::c_int = 0x10;
-pub const RTA_IFA: ::c_int = 0x20;
-pub const RTA_AUTHOR: ::c_int = 0x40;
-pub const RTA_BRD: ::c_int = 0x80;
-
-// Index offsets for sockaddr array for alternate internal encoding.
-pub const RTAX_DST: ::c_int = 0;
-pub const RTAX_GATEWAY: ::c_int = 1;
-pub const RTAX_NETMASK: ::c_int = 2;
-pub const RTAX_GENMASK: ::c_int = 3;
-pub const RTAX_IFP: ::c_int = 4;
-pub const RTAX_IFA: ::c_int = 5;
-pub const RTAX_AUTHOR: ::c_int = 6;
-pub const RTAX_BRD: ::c_int = 7;
 pub const RTAX_MAX: ::c_int = 8;
 
 pub const KERN_PROCARGS2: ::c_int = 49;
@@ -5000,13 +5047,13 @@ pub const MNT_SNAPSHOT: ::c_int = 0x40000000;
 pub const MNT_NOBLOCK: ::c_int = 0x00020000;
 
 // sys/spawn.h:
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x0001;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x0002;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x0004;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x0008;
-pub const POSIX_SPAWN_SETEXEC: ::c_int = 0x0040;
-pub const POSIX_SPAWN_START_SUSPENDED: ::c_int = 0x0080;
-pub const POSIX_SPAWN_CLOEXEC_DEFAULT: ::c_int = 0x4000;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x0001;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x0002;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x0004;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x0008;
+pub const POSIX_SPAWN_SETEXEC: ::c_short = 0x0040;
+pub const POSIX_SPAWN_START_SUSPENDED: ::c_short = 0x0080;
+pub const POSIX_SPAWN_CLOEXEC_DEFAULT: ::c_short = 0x4000;
 
 // sys/ipc.h:
 pub const IPC_CREAT: ::c_int = 0x200;
@@ -5377,6 +5424,15 @@ pub const VOL_CAP_INT_RENAME_SWAP: attrgroup_t = 0x00040000;
 pub const VOL_CAP_INT_RENAME_EXCL: attrgroup_t = 0x00080000;
 pub const VOL_CAP_INT_RENAME_OPENFAIL: attrgroup_t = 0x00100000;
 
+// os/clock.h
+pub const OS_CLOCK_MACH_ABSOLUTE_TIME: os_clockid_t = 32;
+
+// os/os_sync_wait_on_address.h
+pub const OS_SYNC_WAIT_ON_ADDRESS_NONE: os_sync_wait_on_address_flags_t = 0x00000000;
+pub const OS_SYNC_WAIT_ON_ADDRESS_SHARED: os_sync_wait_on_address_flags_t = 0x00000001;
+pub const OS_SYNC_WAKE_BY_ADDRESS_NONE: os_sync_wake_by_address_flags_t = 0x00000000;
+pub const OS_SYNC_WAKE_BY_ADDRESS_SHARED: os_sync_wake_by_address_flags_t = 0x00000001;
+
 // <proc.h>
 /// Process being created by fork.
 pub const SIDL: u32 = 1;
@@ -5396,82 +5452,49 @@ pub const VMADDR_CID_RESERVED: ::c_uint = 1;
 pub const VMADDR_CID_HOST: ::c_uint = 2;
 pub const VMADDR_PORT_ANY: ::c_uint = 0xFFFFFFFF;
 
-cfg_if! {
-    if #[cfg(libc_const_extern_fn)] {
-        const fn __DARWIN_ALIGN32(p: usize) -> usize {
-            const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
-    } else if #[cfg(libc_const_size_of)] {
-        fn __DARWIN_ALIGN32(p: usize) -> usize {
-            const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
-    } else {
-        fn __DARWIN_ALIGN32(p: usize) -> usize {
-            let __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
-            p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
-        }
-    }
+const fn __DARWIN_ALIGN32(p: usize) -> usize {
+    const __DARWIN_ALIGNBYTES32: usize = ::mem::size_of::<u32>() - 1;
+    p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
 }
 
-cfg_if! {
-    if #[cfg(libc_const_size_of)] {
-        pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_time_constraint_policy_data_t>() /
-             ::mem::size_of::<integer_t>()) as mach_msg_type_number_t;
-        pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_precedence_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_affinity_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_background_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_latency_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_throughput_qos_policy_data_t>() /
-             ::mem::size_of::<integer_t>()) as mach_msg_type_number_t;
-        pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_basic_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_identifier_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-        pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
+pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_extended_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_time_constraint_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_precedence_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_affinity_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_background_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_latency_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_throughput_qos_policy_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_basic_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_identifier_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
+pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<thread_extended_info_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
 
-        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
-            (::mem::size_of::<task_thread_times_info_data_t>()
-            / ::mem::size_of::<natural_t>()) as u32;
-        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = (::mem::size_of::<mach_task_basic_info_data_t>()
-            / ::mem::size_of::<natural_t>()) as u32;
-        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
-            (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
-            as mach_msg_type_number_t;
-    } else {
-        pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t = 4;
-        pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t = 1;
-        pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t = 10;
-        pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t = 6;
-        pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t = 28;
-        pub const TASK_THREAD_TIMES_INFO_COUNT: u32 = 4;
-        pub const MACH_TASK_BASIC_INFO_COUNT: u32 = 12;
-        pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t = 38;
-    }
-}
+pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
+    (::mem::size_of::<task_thread_times_info_data_t>() / ::mem::size_of::<natural_t>()) as u32;
+pub const MACH_TASK_BASIC_INFO_COUNT: u32 =
+    (::mem::size_of::<mach_task_basic_info_data_t>() / ::mem::size_of::<natural_t>()) as u32;
+pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
+    (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
+        as mach_msg_type_number_t;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
@@ -5480,11 +5503,11 @@ f! {
             return ::CMSG_FIRSTHDR(mhdr);
         };
         let cmsg_len = (*cmsg).cmsg_len as usize;
-        let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len as usize);
+        let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len);
         let max = (*mhdr).msg_control as usize
                     + (*mhdr).msg_controllen as usize;
         if next + __DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) > max {
-            0 as *mut ::cmsghdr
+            core::ptr::null_mut()
         } else {
             next as *mut ::cmsghdr
         }
@@ -5492,7 +5515,7 @@ f! {
 
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
         (cmsg as *mut ::c_uchar)
-            .offset(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) as isize)
+            .add(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()))
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
@@ -5576,11 +5599,6 @@ extern "C" {
     pub fn fchflags(fd: ::c_int, flags: ::c_uint) -> ::c_int;
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "confstr$UNIX2003"
-    )]
-    pub fn confstr(name: ::c_int, buf: *mut ::c_char, len: ::size_t) -> ::size_t;
     pub fn lio_listio(
         mode: ::c_int,
         aiocb_list: *const *mut aiocb,
@@ -5604,12 +5622,6 @@ extern "C" {
     pub fn asctime(tm: *const ::tm) -> *mut ::c_char;
     pub fn ctime(clock: *const time_t) -> *mut ::c_char;
     pub fn getdate(datestr: *const ::c_char) -> *mut ::tm;
-    pub fn strftime(
-        buf: *mut ::c_char,
-        maxsize: ::size_t,
-        format: *const ::c_char,
-        timeptr: *const ::tm,
-    ) -> ::size_t;
     pub fn strptime(
         buf: *const ::c_char,
         format: *const ::c_char,
@@ -5670,13 +5682,40 @@ extern "C" {
         newp: *mut ::c_void,
         newlen: ::size_t,
     ) -> ::c_int;
-    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
-    pub fn mach_absolute_time() -> u64;
-    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
-    #[allow(deprecated)]
-    pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
-    pub fn mach_host_self() -> mach_port_t;
-    pub fn mach_thread_self() -> mach_port_t;
+    pub fn pthread_once(
+        once_control: *mut ::pthread_once_t,
+        init_routine: ::Option<unsafe extern "C" fn()>,
+    ) -> ::c_int;
+    pub fn pthread_attr_getinheritsched(
+        attr: *const ::pthread_attr_t,
+        inheritsched: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_getschedpolicy(
+        attr: *const ::pthread_attr_t,
+        policy: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_getscope(
+        attr: *const ::pthread_attr_t,
+        contentionscope: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_getstackaddr(
+        attr: *const ::pthread_attr_t,
+        stackaddr: *mut *mut ::c_void,
+    ) -> ::c_int;
+    pub fn pthread_attr_getdetachstate(
+        attr: *const ::pthread_attr_t,
+        detachstate: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_setinheritsched(
+        attr: *mut ::pthread_attr_t,
+        inheritsched: ::c_int,
+    ) -> ::c_int;
+    pub fn pthread_attr_setschedpolicy(attr: *mut ::pthread_attr_t, policy: ::c_int) -> ::c_int;
+    pub fn pthread_attr_setscope(attr: *mut ::pthread_attr_t, contentionscope: ::c_int) -> ::c_int;
+    pub fn pthread_attr_setstackaddr(
+        attr: *mut ::pthread_attr_t,
+        stackaddr: *mut ::c_void,
+    ) -> ::c_int;
     pub fn pthread_setname_np(name: *const ::c_char) -> ::c_int;
     pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
     pub fn pthread_mach_thread_np(thread: ::pthread_t) -> ::mach_port_t;
@@ -5775,6 +5814,40 @@ extern "C" {
     ) -> ::c_int;
     pub fn pthread_jit_write_freeze_callbacks_np();
     pub fn pthread_cpu_number_np(cpu_number_out: *mut ::size_t) -> ::c_int;
+
+    // Available starting with macOS 14.4.
+    pub fn os_sync_wait_on_address(
+        addr: *mut ::c_void,
+        value: u64,
+        size: ::size_t,
+        flags: os_sync_wait_on_address_flags_t,
+    ) -> ::c_int;
+    pub fn os_sync_wait_on_address_with_deadline(
+        addr: *mut ::c_void,
+        value: u64,
+        size: ::size_t,
+        flags: os_sync_wait_on_address_flags_t,
+        clockid: os_clockid_t,
+        deadline: u64,
+    ) -> ::c_int;
+    pub fn os_sync_wait_on_address_with_timeout(
+        addr: *mut ::c_void,
+        value: u64,
+        size: ::size_t,
+        flags: os_sync_wait_on_address_flags_t,
+        clockid: os_clockid_t,
+        timeout_ns: u64,
+    ) -> ::c_int;
+    pub fn os_sync_wake_by_address_any(
+        addr: *mut ::c_void,
+        size: ::size_t,
+        flags: os_sync_wake_by_address_flags_t,
+    ) -> ::c_int;
+    pub fn os_sync_wake_by_address_all(
+        addr: *mut ::c_void,
+        size: ::size_t,
+        flags: os_sync_wake_by_address_flags_t,
+    ) -> ::c_int;
 
     pub fn os_unfair_lock_lock(lock: os_unfair_lock_t);
     pub fn os_unfair_lock_trylock(lock: os_unfair_lock_t) -> bool;
@@ -5992,15 +6065,6 @@ extern "C" {
     pub fn brk(addr: *const ::c_void) -> *mut ::c_void;
     pub fn sbrk(increment: ::c_int) -> *mut ::c_void;
     pub fn settimeofday(tv: *const ::timeval, tz: *const ::timezone) -> ::c_int;
-    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
-    pub fn _dyld_image_count() -> u32;
-    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
-    #[allow(deprecated)]
-    pub fn _dyld_get_image_header(image_index: u32) -> *const mach_header;
-    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
-    pub fn _dyld_get_image_vmaddr_slide(image_index: u32) -> ::intptr_t;
-    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
-    pub fn _dyld_get_image_name(image_index: u32) -> *const ::c_char;
 
     pub fn posix_spawn(
         pid: *mut ::pid_t,
@@ -6162,6 +6226,8 @@ extern "C" {
     pub fn copyfile_state_get(s: copyfile_state_t, flags: u32, dst: *mut ::c_void) -> ::c_int;
     pub fn copyfile_state_set(s: copyfile_state_t, flags: u32, src: *const ::c_void) -> ::c_int;
 
+    pub fn mach_error_string(error_value: ::mach_error_t) -> *mut ::c_char;
+
     // Added in macOS 10.13
     // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
     pub fn memset_s(s: *mut ::c_void, smax: ::size_t, c: ::c_int, n: ::size_t) -> ::c_int;
@@ -6245,7 +6311,7 @@ extern "C" {
         buffersize: u32,
     ) -> ::c_int;
     pub fn proc_kmsgbuf(buffer: *mut ::c_void, buffersize: u32) -> ::c_int;
-    pub fn proc_libversion(major: *mut ::c_int, mintor: *mut ::c_int) -> ::c_int;
+    pub fn proc_libversion(major: *mut ::c_int, minor: *mut ::c_int) -> ::c_int;
     pub fn proc_pid_rusage(pid: ::c_int, flavor: ::c_int, buffer: *mut rusage_info_t) -> ::c_int;
 
     // Available from Big Sur
@@ -6264,22 +6330,11 @@ extern "C" {
     pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 
-    pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;
+    // crt_externs.h
+    pub fn _NSGetArgv() -> *mut *mut *mut ::c_char;
+    pub fn _NSGetArgc() -> *mut ::c_int;
     pub fn _NSGetEnviron() -> *mut *mut *mut ::c_char;
-
-    pub fn mach_vm_map(
-        target_task: ::vm_map_t,
-        address: *mut ::mach_vm_address_t,
-        size: ::mach_vm_size_t,
-        mask: ::mach_vm_offset_t,
-        flags: ::c_int,
-        object: ::mem_entry_name_port_t,
-        offset: ::memory_object_offset_t,
-        copy: ::boolean_t,
-        cur_protection: ::vm_prot_t,
-        max_protection: ::vm_prot_t,
-        inheritance: ::vm_inherit_t,
-    ) -> ::kern_return_t;
+    pub fn _NSGetProgname() -> *mut *mut ::c_char;
 
     pub fn vm_allocate(
         target_task: vm_map_t,
@@ -6308,7 +6363,6 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
 
-    pub static mut mach_task_self_: ::mach_port_t;
     pub fn task_for_pid(
         host: ::mach_port_t,
         pid: ::pid_t,
@@ -6425,10 +6479,6 @@ extern "C" {
     ) -> ::c_int;
 }
 
-pub unsafe fn mach_task_self() -> ::mach_port_t {
-    mach_task_self_
-}
-
 cfg_if! {
     if #[cfg(target_os = "macos")] {
         extern "C" {
@@ -6437,7 +6487,7 @@ cfg_if! {
     }
 }
 cfg_if! {
-    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos"))] {
+    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos", target_os = "visionos"))] {
         extern "C" {
             pub fn memmem(
                 haystack: *const ::c_void,
@@ -6454,22 +6504,6 @@ cfg_if! {
     }
 }
 
-// These require a dependency on `libiconv`, and including this when built as
-// part of `std` means every Rust program gets it. Ideally we would have a link
-// modifier to only include these if they are used, but we do not.
-#[cfg_attr(not(feature = "rustc-dep-of-std"), link(name = "iconv"))]
-extern "C" {
-    pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
-    pub fn iconv(
-        cd: iconv_t,
-        inbuf: *mut *mut ::c_char,
-        inbytesleft: *mut ::size_t,
-        outbuf: *mut *mut ::c_char,
-        outbytesleft: *mut ::size_t,
-    ) -> ::size_t;
-    pub fn iconv_close(cd: iconv_t) -> ::c_int;
-}
-
 cfg_if! {
     if #[cfg(target_pointer_width = "32")] {
         mod b32;
@@ -6482,9 +6516,5 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_long_array)] {
-        mod long_array;
-        pub use self::long_array::*;
-    }
-}
+mod long_array;
+pub use self::long_array::*;

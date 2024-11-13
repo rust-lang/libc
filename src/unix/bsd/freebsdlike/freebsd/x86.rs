@@ -1,12 +1,14 @@
 pub type c_char = i8;
 pub type c_long = i32;
 pub type c_ulong = u32;
+pub type clock_t = ::c_ulong;
 pub type wchar_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
 pub type register_t = i32;
 
 s_no_extra_traits! {
+    #[repr(align(16))]
     pub struct mcontext_t {
         pub mc_onstack: register_t,
         pub mc_gs: register_t,
@@ -32,7 +34,7 @@ s_no_extra_traits! {
         pub mc_fpformat: ::c_int,
         pub mc_ownedfp: ::c_int,
         pub mc_flags: register_t,
-        pub mc_fpstate: [[::c_int; 32]; 4],
+        pub mc_fpstate: [::c_int; 128],
         pub mc_fsbase: register_t,
         pub mc_gsbase: register_t,
         pub mc_xfpustate: register_t,
@@ -41,52 +43,7 @@ s_no_extra_traits! {
     }
 }
 
-s! {
-    pub struct stat {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        pub st_size: ::off_t,
-        pub st_blocks: ::blkcnt_t,
-        pub st_blksize: ::blksize_t,
-        pub st_flags: ::fflags_t,
-        pub st_gen: u32,
-        pub st_lspare: i32,
-        pub st_birthtime: ::time_t,
-        pub st_birthtime_nsec: ::c_long,
-        __unused: [u8; 8],
-    }
-
-    pub struct ucontext_t {
-        pub uc_sigmask: ::sigset_t,
-        pub uc_mcontext: ::mcontext_t,
-        pub uc_link: *mut ::ucontext_t,
-        pub uc_stack: ::stack_t,
-        pub uc_flags: ::c_int,
-        __spare__: [::c_int; 4],
-    }
-}
-
-// should be pub(crate), but that requires Rust 1.18.0
-cfg_if! {
-    if #[cfg(libc_const_size_of)] {
-        #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
-    } else {
-        #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = 4 - 1;
-    }
-}
+pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
@@ -199,3 +156,8 @@ cfg_if! {
 }
 
 pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
+
+pub const BIOCSRTIMEOUT: ::c_ulong = 0x8008426d;
+pub const BIOCGRTIMEOUT: ::c_ulong = 0x4008426e;
+pub const KINFO_FILE_SIZE: ::c_int = 1392;
+pub const TIOCTIMESTAMP: ::c_ulong = 0x40087459;

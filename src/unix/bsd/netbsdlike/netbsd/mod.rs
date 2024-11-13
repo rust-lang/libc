@@ -401,11 +401,6 @@ s! {
         pub sdl_data: [::c_char; 12],
     }
 
-    pub struct mmsghdr {
-        pub msg_hdr: ::msghdr,
-        pub msg_len: ::c_uint,
-    }
-
     pub struct __exit_status {
         pub e_termination: u16,
         pub e_exit: u16,
@@ -693,14 +688,12 @@ s! {
     pub struct posix_spawn_file_actions_entry_t {
         pub fae_action: fae_action,
         pub fae_fildes: ::c_int,
-        #[cfg(libc_union)]
         pub fae_data: __c_anonymous_posix_spawn_fae,
     }
 
     pub struct posix_spawn_file_actions_t {
         pub size: ::c_uint,
         pub len: ::c_uint,
-        #[cfg(libc_union)]
         pub fae: *mut posix_spawn_file_actions_entry_t,
     }
 
@@ -739,7 +732,6 @@ s! {
 
     pub struct ifconf {
         pub ifc_len: ::c_int,
-        #[cfg(libc_union)]
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
 
@@ -898,13 +890,11 @@ s_no_extra_traits! {
         pub sigev_notify_attributes: *mut ::c_void
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_posix_spawn_fae {
         pub open: __c_anonymous_posix_spawn_fae_open,
         pub dup2: __c_anonymous_posix_spawn_fae_dup2,
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut ::c_void,
         pub ifcu_req: *mut ifreq,
@@ -1337,10 +1327,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_posix_spawn_fae {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_posix_spawn_fae {
             fn eq(&self, other: &__c_anonymous_posix_spawn_fae) -> bool {
                 unsafe {
@@ -1350,7 +1338,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_posix_spawn_fae {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -1362,7 +1349,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_posix_spawn_fae {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -1372,10 +1358,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_ifc_ifcu {}
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
                 unsafe {
@@ -1385,7 +1369,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_ifc_ifcu {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
@@ -1397,7 +1380,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl ::hash::Hash for __c_anonymous_ifc_ifcu {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -1549,7 +1531,6 @@ pub const TCP_KEEPIDLE: ::c_int = 3;
 pub const TCP_KEEPINTVL: ::c_int = 5;
 pub const TCP_KEEPCNT: ::c_int = 6;
 pub const TCP_KEEPINIT: ::c_int = 7;
-pub const TCP_INFO: ::c_int = 9;
 pub const TCP_MD5SIG: ::c_int = 0x10;
 pub const TCP_CONGCTL: ::c_int = 0x20;
 
@@ -1701,6 +1682,7 @@ pub const O_DSYNC: ::c_int = 0x10000;
 pub const MAP_RENAME: ::c_int = 0x20;
 pub const MAP_NORESERVE: ::c_int = 0x40;
 pub const MAP_HASSEMAPHORE: ::c_int = 0x200;
+pub const MAP_TRYFIXED: ::c_int = 0x400;
 pub const MAP_WIRED: ::c_int = 0x800;
 pub const MAP_STACK: ::c_int = 0x2000;
 // map alignment aliases for MAP_ALIGNED
@@ -1860,7 +1842,7 @@ pub const _SC_SCHED_RT_TS: ::c_int = 2001;
 pub const _SC_SCHED_PRI_MIN: ::c_int = 2002;
 pub const _SC_SCHED_PRI_MAX: ::c_int = 2003;
 
-pub const FD_SETSIZE: usize = 0x100;
+pub const FD_SETSIZE: ::c_int = 0x100;
 
 pub const ST_NOSUID: ::c_ulong = 8;
 
@@ -1891,6 +1873,8 @@ pub const MNT_NOWAIT: ::c_int = 2;
 pub const MNT_LAZY: ::c_int = 3;
 
 //<sys/timex.h>
+pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 2;
+pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 4;
 pub const NTP_API: ::c_int = 4;
 pub const MAXPHASE: ::c_long = 500000000;
 pub const MAXFREQ: ::c_long = 500000;
@@ -2343,14 +2327,7 @@ pub const PT_LWPNEXT: ::c_int = 25;
 pub const PT_SET_SIGPASS: ::c_int = 26;
 pub const PT_GET_SIGPASS: ::c_int = 27;
 pub const PT_FIRSTMACH: ::c_int = 32;
-
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x04;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x08;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x10;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x20;
-pub const POSIX_SPAWN_RETURNERROR: ::c_int = 0x40;
+pub const POSIX_SPAWN_RETURNERROR: ::c_short = 0x40;
 
 // Flags for chflags(2)
 pub const SF_APPEND: ::c_ulong = 0x00040000;
@@ -2396,33 +2373,6 @@ pub const LSZOMB: ::c_int = 5;
 pub const LSONPROC: ::c_int = 7;
 pub const LSSUSPENDED: ::c_int = 8;
 
-pub const _REG_RDI: ::c_int = 0;
-pub const _REG_RSI: ::c_int = 1;
-pub const _REG_RDX: ::c_int = 2;
-pub const _REG_RCX: ::c_int = 3;
-pub const _REG_R8: ::c_int = 4;
-pub const _REG_R9: ::c_int = 5;
-pub const _REG_R10: ::c_int = 6;
-pub const _REG_R11: ::c_int = 7;
-pub const _REG_R12: ::c_int = 8;
-pub const _REG_R13: ::c_int = 9;
-pub const _REG_R14: ::c_int = 10;
-pub const _REG_R15: ::c_int = 11;
-pub const _REG_RBP: ::c_int = 12;
-pub const _REG_RBX: ::c_int = 13;
-pub const _REG_RAX: ::c_int = 14;
-pub const _REG_GS: ::c_int = 15;
-pub const _REG_FS: ::c_int = 16;
-pub const _REG_ES: ::c_int = 17;
-pub const _REG_DS: ::c_int = 18;
-pub const _REG_TRAPNO: ::c_int = 19;
-pub const _REG_ERR: ::c_int = 20;
-pub const _REG_RIP: ::c_int = 21;
-pub const _REG_CS: ::c_int = 22;
-pub const _REG_RFLAGS: ::c_int = 23;
-pub const _REG_RSP: ::c_int = 24;
-pub const _REG_SS: ::c_int = 25;
-
 // sys/xattr.h
 pub const XATTR_CREATE: ::c_int = 0x01;
 pub const XATTR_REPLACE: ::c_int = 0x02;
@@ -2448,18 +2398,36 @@ pub const RB_STRING: ::c_int = 0x000000400;
 pub const RB_POWERDOWN: ::c_int = RB_HALT | 0x000000800;
 pub const RB_USERCONF: ::c_int = 0x000001000;
 
-cfg_if! {
-
-    if #[cfg(libc_const_extern_fn)] {
-        pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
-            alignment << MAP_ALIGNMENT_SHIFT
-        }
-    } else {
-        pub fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
-            alignment << MAP_ALIGNMENT_SHIFT
-        }
-    }
+pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
+    alignment << MAP_ALIGNMENT_SHIFT
 }
+
+// net/route.h
+pub const RTF_MASK: ::c_int = 0x80;
+pub const RTF_CONNECTED: ::c_int = 0x100;
+pub const RTF_ANNOUNCE: ::c_int = 0x20000;
+pub const RTF_SRC: ::c_int = 0x10000;
+pub const RTF_LOCAL: ::c_int = 0x40000;
+pub const RTF_BROADCAST: ::c_int = 0x80000;
+pub const RTF_UPDATING: ::c_int = 0x100000;
+pub const RTF_DONTCHANGEIFA: ::c_int = 0x200000;
+
+pub const RTM_VERSION: ::c_int = 4;
+pub const RTM_LOCK: ::c_int = 0x8;
+pub const RTM_IFANNOUNCE: ::c_int = 0x10;
+pub const RTM_IEEE80211: ::c_int = 0x11;
+pub const RTM_SETGATE: ::c_int = 0x12;
+pub const RTM_LLINFO_UPD: ::c_int = 0x13;
+pub const RTM_IFINFO: ::c_int = 0x14;
+pub const RTM_OCHGADDR: ::c_int = 0x15;
+pub const RTM_NEWADDR: ::c_int = 0x16;
+pub const RTM_DELADDR: ::c_int = 0x17;
+pub const RTM_CHGADDR: ::c_int = 0x18;
+
+pub const RTA_TAG: ::c_int = 0x100;
+
+pub const RTAX_TAG: ::c_int = 8;
+pub const RTAX_MAX: ::c_int = 9;
 
 const_fn! {
     {const} fn _ALIGN(p: usize) -> usize {
@@ -2707,6 +2675,11 @@ extern "C" {
         newp: *const ::c_void,
         newlen: ::size_t,
     ) -> ::c_int;
+    pub fn sysctlnametomib(
+        sname: *const ::c_char,
+        name: *mut ::c_int,
+        namelenp: *mut ::size_t,
+    ) -> ::c_int;
     #[link_name = "__kevent50"]
     pub fn kevent(
         kq: ::c_int,
@@ -2803,12 +2776,6 @@ extern "C" {
         timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> ::c_int;
-    pub fn waitid(
-        idtype: idtype_t,
-        id: ::id_t,
-        infop: *mut ::siginfo_t,
-        options: ::c_int,
-    ) -> ::c_int;
 
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn freelocale(loc: ::locale_t);
@@ -2820,20 +2787,6 @@ extern "C" {
     pub fn dup3(src: ::c_int, dst: ::c_int, flags: ::c_int) -> ::c_int;
 
     pub fn kqueue1(flags: ::c_int) -> ::c_int;
-
-    pub fn sendmmsg(
-        sockfd: ::c_int,
-        msgvec: *mut ::mmsghdr,
-        vlen: ::c_uint,
-        flags: ::c_int,
-    ) -> ::c_int;
-    pub fn recvmmsg(
-        sockfd: ::c_int,
-        msgvec: *mut ::mmsghdr,
-        vlen: ::c_uint,
-        flags: ::c_int,
-        timeout: *mut ::timespec,
-    ) -> ::c_int;
 
     pub fn _lwp_self() -> lwpid_t;
     pub fn memmem(
@@ -2921,85 +2874,25 @@ extern "C" {
         ts: *const ::timespec,
         sigmask: *const ::sigset_t,
     ) -> ::c_int;
-    pub fn posix_spawn(
-        pid: *mut ::pid_t,
-        path: *const ::c_char,
-        file_actions: *const ::posix_spawn_file_actions_t,
-        attrp: *const ::posix_spawnattr_t,
-        argv: *const *mut ::c_char,
-        envp: *const *mut ::c_char,
-    ) -> ::c_int;
-    pub fn posix_spawnp(
-        pid: *mut ::pid_t,
-        file: *const ::c_char,
-        file_actions: *const ::posix_spawn_file_actions_t,
-        attrp: *const ::posix_spawnattr_t,
-        argv: *const *mut ::c_char,
-        envp: *const *mut ::c_char,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_init(attr: *mut posix_spawnattr_t) -> ::c_int;
-    pub fn posix_spawnattr_destroy(attr: *mut posix_spawnattr_t) -> ::c_int;
-    pub fn posix_spawnattr_getsigdefault(
-        attr: *const posix_spawnattr_t,
-        default: *mut ::sigset_t,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_setsigdefault(
-        attr: *mut posix_spawnattr_t,
-        default: *const ::sigset_t,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_getsigmask(
-        attr: *const posix_spawnattr_t,
-        default: *mut ::sigset_t,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_setsigmask(
-        attr: *mut posix_spawnattr_t,
-        default: *const ::sigset_t,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_getflags(
-        attr: *const posix_spawnattr_t,
-        flags: *mut ::c_short,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: ::c_short) -> ::c_int;
-    pub fn posix_spawnattr_getpgroup(
-        attr: *const posix_spawnattr_t,
-        flags: *mut ::pid_t,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: ::pid_t) -> ::c_int;
-    pub fn posix_spawnattr_getschedpolicy(
-        attr: *const posix_spawnattr_t,
-        flags: *mut ::c_int,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_setschedpolicy(attr: *mut posix_spawnattr_t, flags: ::c_int) -> ::c_int;
-    pub fn posix_spawnattr_getschedparam(
-        attr: *const posix_spawnattr_t,
-        param: *mut ::sched_param,
-    ) -> ::c_int;
-    pub fn posix_spawnattr_setschedparam(
-        attr: *mut posix_spawnattr_t,
-        param: *const ::sched_param,
-    ) -> ::c_int;
-
-    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
-    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
-    pub fn posix_spawn_file_actions_addopen(
-        actions: *mut posix_spawn_file_actions_t,
-        fd: ::c_int,
-        path: *const ::c_char,
-        oflag: ::c_int,
-        mode: ::mode_t,
-    ) -> ::c_int;
-    pub fn posix_spawn_file_actions_addclose(
-        actions: *mut posix_spawn_file_actions_t,
-        fd: ::c_int,
-    ) -> ::c_int;
-    pub fn posix_spawn_file_actions_adddup2(
-        actions: *mut posix_spawn_file_actions_t,
-        fd: ::c_int,
-        newfd: ::c_int,
-    ) -> ::c_int;
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
 
     pub fn reboot(mode: ::c_int, bootstr: *mut ::c_char) -> ::c_int;
+
+    #[link_name = "___lwp_park60"]
+    pub fn _lwp_park(
+        clock: ::clockid_t,
+        flags: ::c_int,
+        ts: *const ::timespec,
+        unpark: ::lwpid_t,
+        hint: *const ::c_void,
+        unparkhint: *mut ::c_void,
+    ) -> ::c_int;
+    pub fn _lwp_unpark(lwp: ::lwpid_t, hint: *const ::c_void) -> ::c_int;
+    pub fn _lwp_unpark_all(
+        targets: *const ::lwpid_t,
+        ntargets: ::size_t,
+        hint: *const ::c_void,
+    ) -> ::c_int;
 }
 
 #[link(name = "rt")]
@@ -3039,6 +2932,8 @@ extern "C" {
         buflen: ::size_t,
         result: *mut *mut ::group,
     ) -> ::c_int;
+
+    pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
 
     pub fn updwtmpx(file: *const ::c_char, ut: *const utmpx) -> ::c_int;
     pub fn getlastlogx(fname: *const ::c_char, uid: ::uid_t, ll: *mut lastlogx) -> *mut lastlogx;
@@ -3223,14 +3118,9 @@ extern "C" {
     ) -> ::c_int;
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        extern {
-            // these functions use statvfs:
-            pub fn getmntinfo(mntbufp: *mut *mut ::statvfs, flags: ::c_int) -> ::c_int;
-            pub fn getvfsstat(buf: *mut statvfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
-        }
-    }
+extern "C" {
+    pub fn getmntinfo(mntbufp: *mut *mut ::statvfs, flags: ::c_int) -> ::c_int;
+    pub fn getvfsstat(buf: *mut statvfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

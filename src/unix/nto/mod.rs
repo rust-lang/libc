@@ -154,7 +154,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_uint; 2 * FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_uint; 2 * FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct tm {
@@ -1383,7 +1383,7 @@ pub const PATH_MAX: ::c_int = 1024;
 
 pub const UIO_MAXIOV: ::c_int = 1024;
 
-pub const FD_SETSIZE: usize = 256;
+pub const FD_SETSIZE: ::c_int = 256;
 
 pub const TCIOFF: ::c_int = 0x0002;
 pub const TCION: ::c_int = 0x0003;
@@ -1609,12 +1609,12 @@ pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
 pub const ITIMER_PROF: ::c_int = 2;
 
-pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x00000010;
-pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x00000001;
-pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x00000004;
-pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x00000002;
-pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x00000400;
-pub const POSIX_SPAWN_SETSCHEDULER: ::c_int = 0x00000040;
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x0010;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x0001;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x0004;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x0002;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x0400;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x0040;
 
 pub const IPTOS_ECN_NOT_ECT: u8 = 0x00;
 
@@ -2037,27 +2037,27 @@ pub const S_IEXEC: mode_t = ::S_IXUSR;
 pub const S_IWRITE: mode_t = ::S_IWUSR;
 pub const S_IREAD: mode_t = ::S_IRUSR;
 
-pub const S_IFIFO: ::mode_t = 0x1000;
-pub const S_IFCHR: ::mode_t = 0x2000;
-pub const S_IFDIR: ::mode_t = 0x4000;
-pub const S_IFBLK: ::mode_t = 0x6000;
-pub const S_IFREG: ::mode_t = 0x8000;
-pub const S_IFLNK: ::mode_t = 0xA000;
-pub const S_IFSOCK: ::mode_t = 0xC000;
-pub const S_IFMT: ::mode_t = 0xF000;
+pub const S_IFIFO: ::mode_t = 0o1_0000;
+pub const S_IFCHR: ::mode_t = 0o2_0000;
+pub const S_IFDIR: ::mode_t = 0o4_0000;
+pub const S_IFBLK: ::mode_t = 0o6_0000;
+pub const S_IFREG: ::mode_t = 0o10_0000;
+pub const S_IFLNK: ::mode_t = 0o12_0000;
+pub const S_IFSOCK: ::mode_t = 0o14_0000;
+pub const S_IFMT: ::mode_t = 0o17_0000;
 
-pub const S_IXOTH: ::mode_t = 0o000001;
-pub const S_IWOTH: ::mode_t = 0o000002;
-pub const S_IROTH: ::mode_t = 0o000004;
-pub const S_IRWXO: ::mode_t = 0o000007;
-pub const S_IXGRP: ::mode_t = 0o000010;
-pub const S_IWGRP: ::mode_t = 0o000020;
-pub const S_IRGRP: ::mode_t = 0o000040;
-pub const S_IRWXG: ::mode_t = 0o000070;
-pub const S_IXUSR: ::mode_t = 0o000100;
-pub const S_IWUSR: ::mode_t = 0o000200;
-pub const S_IRUSR: ::mode_t = 0o000400;
-pub const S_IRWXU: ::mode_t = 0o000700;
+pub const S_IXOTH: ::mode_t = 0o0001;
+pub const S_IWOTH: ::mode_t = 0o0002;
+pub const S_IROTH: ::mode_t = 0o0004;
+pub const S_IRWXO: ::mode_t = 0o0007;
+pub const S_IXGRP: ::mode_t = 0o0010;
+pub const S_IWGRP: ::mode_t = 0o0020;
+pub const S_IRGRP: ::mode_t = 0o0040;
+pub const S_IRWXG: ::mode_t = 0o0070;
+pub const S_IXUSR: ::mode_t = 0o0100;
+pub const S_IWUSR: ::mode_t = 0o0200;
+pub const S_IRUSR: ::mode_t = 0o0400;
+pub const S_IRWXU: ::mode_t = 0o0700;
 
 pub const F_LOCK: ::c_int = 1;
 pub const F_TEST: ::c_int = 3;
@@ -2672,6 +2672,7 @@ pub const VRIGHT: usize = 29;
 pub const VUP: usize = 30;
 pub const XCASE: tcflag_t = 0x00000004;
 
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0x00;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 0x01;
 
@@ -2864,9 +2865,9 @@ safe_f! {
 
 // Network related functions are provided by libsocket and regex
 // functions are provided by libregex.
+// In QNX <=7.0, libregex functions were included in libc itself.
 #[link(name = "socket")]
-#[link(name = "regex")]
-
+#[cfg_attr(not(target_env = "nto70"), link(name = "regex"))]
 extern "C" {
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     pub fn sem_init(sem: *mut sem_t, pshared: ::c_int, value: ::c_uint) -> ::c_int;
@@ -2935,8 +2936,8 @@ extern "C" {
     ) -> ::pid_t;
     pub fn execvpe(
         file: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
     ) -> ::c_int;
 
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
@@ -3339,7 +3340,10 @@ extern "C" {
     pub fn dl_iterate_phdr(
         callback: ::Option<
             unsafe extern "C" fn(
-                info: *const dl_phdr_info,
+                // The original .h file declares this as *const, but for consistency with other platforms,
+                // changing this to *mut to make it easier to use.
+                // Maybe in v0.3 all platforms should use this as a *const.
+                info: *mut dl_phdr_info,
                 size: ::size_t,
                 data: *mut ::c_void,
             ) -> ::c_int,

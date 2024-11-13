@@ -1,8 +1,6 @@
 //! Compare libc's makdev function against the actual C macros, for various
 //! inputs.
 
-extern crate libc;
-
 #[cfg(any(
     target_os = "android",
     target_os = "dragonfly",
@@ -79,7 +77,7 @@ mod t {
 
     // These OSes allow 32 bits for both minor and major
     #[cfg(any(
-        target_os = "empscripten",
+        target_os = "emscripten",
         target_os = "freebsd",
         target_os = "fuchsia",
         target_os = "linux",

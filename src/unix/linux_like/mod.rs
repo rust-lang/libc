@@ -85,7 +85,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct tm {
@@ -604,26 +604,26 @@ pub const O_RDWR: ::c_int = 2;
 
 pub const SOCK_CLOEXEC: ::c_int = O_CLOEXEC;
 
-pub const S_IFIFO: ::mode_t = 4096;
-pub const S_IFCHR: ::mode_t = 8192;
-pub const S_IFBLK: ::mode_t = 24576;
-pub const S_IFDIR: ::mode_t = 16384;
-pub const S_IFREG: ::mode_t = 32768;
-pub const S_IFLNK: ::mode_t = 40960;
-pub const S_IFSOCK: ::mode_t = 49152;
-pub const S_IFMT: ::mode_t = 61440;
-pub const S_IRWXU: ::mode_t = 448;
-pub const S_IXUSR: ::mode_t = 64;
-pub const S_IWUSR: ::mode_t = 128;
-pub const S_IRUSR: ::mode_t = 256;
-pub const S_IRWXG: ::mode_t = 56;
-pub const S_IXGRP: ::mode_t = 8;
-pub const S_IWGRP: ::mode_t = 16;
-pub const S_IRGRP: ::mode_t = 32;
-pub const S_IRWXO: ::mode_t = 7;
-pub const S_IXOTH: ::mode_t = 1;
-pub const S_IWOTH: ::mode_t = 2;
-pub const S_IROTH: ::mode_t = 4;
+pub const S_IFIFO: ::mode_t = 0o1_0000;
+pub const S_IFCHR: ::mode_t = 0o2_0000;
+pub const S_IFBLK: ::mode_t = 0o6_0000;
+pub const S_IFDIR: ::mode_t = 0o4_0000;
+pub const S_IFREG: ::mode_t = 0o10_0000;
+pub const S_IFLNK: ::mode_t = 0o12_0000;
+pub const S_IFSOCK: ::mode_t = 0o14_0000;
+pub const S_IFMT: ::mode_t = 0o17_0000;
+pub const S_IRWXU: ::mode_t = 0o0700;
+pub const S_IXUSR: ::mode_t = 0o0100;
+pub const S_IWUSR: ::mode_t = 0o0200;
+pub const S_IRUSR: ::mode_t = 0o0400;
+pub const S_IRWXG: ::mode_t = 0o0070;
+pub const S_IXGRP: ::mode_t = 0o0010;
+pub const S_IWGRP: ::mode_t = 0o0020;
+pub const S_IRGRP: ::mode_t = 0o0040;
+pub const S_IRWXO: ::mode_t = 0o0007;
+pub const S_IXOTH: ::mode_t = 0o0001;
+pub const S_IWOTH: ::mode_t = 0o0002;
+pub const S_IROTH: ::mode_t = 0o0004;
 pub const F_OK: ::c_int = 0;
 pub const R_OK: ::c_int = 4;
 pub const W_OK: ::c_int = 2;
@@ -1164,23 +1164,23 @@ pub const PATH_MAX: ::c_int = 4096;
 
 pub const UIO_MAXIOV: ::c_int = 1024;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
-pub const EPOLLIN: ::c_int = 0x1;
-pub const EPOLLPRI: ::c_int = 0x2;
-pub const EPOLLOUT: ::c_int = 0x4;
-pub const EPOLLERR: ::c_int = 0x8;
-pub const EPOLLHUP: ::c_int = 0x10;
-pub const EPOLLRDNORM: ::c_int = 0x40;
-pub const EPOLLRDBAND: ::c_int = 0x80;
-pub const EPOLLWRNORM: ::c_int = 0x100;
-pub const EPOLLWRBAND: ::c_int = 0x200;
-pub const EPOLLMSG: ::c_int = 0x400;
-pub const EPOLLRDHUP: ::c_int = 0x2000;
-pub const EPOLLEXCLUSIVE: ::c_int = 0x10000000;
-pub const EPOLLWAKEUP: ::c_int = 0x20000000;
-pub const EPOLLONESHOT: ::c_int = 0x40000000;
-pub const EPOLLET: ::c_int = 0x80000000;
+pub const EPOLLIN: u32 = 0x1;
+pub const EPOLLPRI: u32 = 0x2;
+pub const EPOLLOUT: u32 = 0x4;
+pub const EPOLLERR: u32 = 0x8;
+pub const EPOLLHUP: u32 = 0x10;
+pub const EPOLLRDNORM: u32 = 0x40;
+pub const EPOLLRDBAND: u32 = 0x80;
+pub const EPOLLWRNORM: u32 = 0x100;
+pub const EPOLLWRBAND: u32 = 0x200;
+pub const EPOLLMSG: u32 = 0x400;
+pub const EPOLLRDHUP: u32 = 0x2000;
+pub const EPOLLEXCLUSIVE: u32 = 0x10000000;
+pub const EPOLLWAKEUP: u32 = 0x20000000;
+pub const EPOLLONESHOT: u32 = 0x40000000;
+pub const EPOLLET: u32 = 0x80000000;
 
 pub const EPOLL_CTL_ADD: ::c_int = 1;
 pub const EPOLL_CTL_MOD: ::c_int = 3;
@@ -1873,11 +1873,6 @@ extern "C" {
     pub fn acct(filename: *const ::c_char) -> ::c_int;
     pub fn brk(addr: *mut ::c_void) -> ::c_int;
     pub fn sbrk(increment: ::intptr_t) -> *mut ::c_void;
-    #[deprecated(
-        since = "0.2.66",
-        note = "causes memory corruption, see rust-lang/libc#1596"
-    )]
-    pub fn vfork() -> ::pid_t;
     pub fn setresgid(rgid: ::gid_t, egid: ::gid_t, sgid: ::gid_t) -> ::c_int;
     pub fn setresuid(ruid: ::uid_t, euid: ::uid_t, suid: ::uid_t) -> ::c_int;
     pub fn wait4(
@@ -1889,14 +1884,10 @@ extern "C" {
     pub fn login_tty(fd: ::c_int) -> ::c_int;
     pub fn execvpe(
         file: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
     ) -> ::c_int;
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *mut ::c_char, envp: *const *mut ::c_char) -> ::c_int;
     pub fn getifaddrs(ifap: *mut *mut ::ifaddrs) -> ::c_int;
     pub fn freeifaddrs(ifa: *mut ::ifaddrs);
     pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
@@ -1909,6 +1900,21 @@ extern "C" {
     pub fn uname(buf: *mut ::utsname) -> ::c_int;
 
     pub fn strchrnul(s: *const ::c_char, c: ::c_int) -> *mut ::c_char;
+
+    pub fn strftime(
+        s: *mut ::c_char,
+        max: ::size_t,
+        format: *const ::c_char,
+        tm: *const ::tm,
+    ) -> ::size_t;
+    pub fn strftime_l(
+        s: *mut ::c_char,
+        max: ::size_t,
+        format: *const ::c_char,
+        tm: *const ::tm,
+        locale: ::locale_t,
+    ) -> ::size_t;
+    pub fn strptime(s: *const ::c_char, format: *const ::c_char, tm: *mut ::tm) -> *mut ::c_char;
 }
 
 // LFS64 extensions

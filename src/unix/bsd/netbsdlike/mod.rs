@@ -92,6 +92,11 @@ s! {
         pub piod_addr: *mut ::c_void,
         pub piod_len: ::size_t,
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: ::msghdr,
+        pub msg_len: ::c_uint,
+    }
 }
 
 pub const D_T_FMT: ::nl_item = 0;
@@ -168,29 +173,29 @@ pub const FOPEN_MAX: ::c_uint = 20;
 pub const FILENAME_MAX: ::c_uint = 1024;
 pub const L_tmpnam: ::c_uint = 1024;
 pub const O_NOCTTY: ::c_int = 32768;
-pub const S_IFIFO: mode_t = 4096;
-pub const S_IFCHR: mode_t = 8192;
-pub const S_IFBLK: mode_t = 24576;
-pub const S_IFDIR: mode_t = 16384;
-pub const S_IFREG: mode_t = 32768;
-pub const S_IFLNK: mode_t = 40960;
-pub const S_IFSOCK: mode_t = 49152;
-pub const S_IFMT: mode_t = 61440;
-pub const S_IEXEC: mode_t = 64;
-pub const S_IWRITE: mode_t = 128;
-pub const S_IREAD: mode_t = 256;
-pub const S_IRWXU: mode_t = 448;
-pub const S_IXUSR: mode_t = 64;
-pub const S_IWUSR: mode_t = 128;
-pub const S_IRUSR: mode_t = 256;
-pub const S_IRWXG: mode_t = 56;
-pub const S_IXGRP: mode_t = 8;
-pub const S_IWGRP: mode_t = 16;
-pub const S_IRGRP: mode_t = 32;
-pub const S_IRWXO: mode_t = 7;
-pub const S_IXOTH: mode_t = 1;
-pub const S_IWOTH: mode_t = 2;
-pub const S_IROTH: mode_t = 4;
+pub const S_IFIFO: mode_t = 0o1_0000;
+pub const S_IFCHR: mode_t = 0o2_0000;
+pub const S_IFBLK: mode_t = 0o6_0000;
+pub const S_IFDIR: mode_t = 0o4_0000;
+pub const S_IFREG: mode_t = 0o10_0000;
+pub const S_IFLNK: mode_t = 0o12_0000;
+pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_IFMT: mode_t = 0o17_0000;
+pub const S_IEXEC: mode_t = 0o0100;
+pub const S_IWRITE: mode_t = 0o0200;
+pub const S_IREAD: mode_t = 0o0400;
+pub const S_IRWXU: mode_t = 0o0700;
+pub const S_IXUSR: mode_t = 0o0100;
+pub const S_IWUSR: mode_t = 0o0200;
+pub const S_IRUSR: mode_t = 0o0400;
+pub const S_IRWXG: mode_t = 0o0070;
+pub const S_IXGRP: mode_t = 0o0010;
+pub const S_IWGRP: mode_t = 0o0020;
+pub const S_IRGRP: mode_t = 0o0040;
+pub const S_IRWXO: mode_t = 0o0007;
+pub const S_IXOTH: mode_t = 0o0001;
+pub const S_IWOTH: mode_t = 0o0002;
+pub const S_IROTH: mode_t = 0o0004;
 pub const F_OK: ::c_int = 0;
 pub const R_OK: ::c_int = 4;
 pub const W_OK: ::c_int = 2;
@@ -363,6 +368,13 @@ pub const POSIX_MADV_RANDOM: ::c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
+
+pub const POSIX_SPAWN_RESETIDS: ::c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: ::c_short = 0x02;
+pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_short = 0x04;
+pub const POSIX_SPAWN_SETSCHEDULER: ::c_short = 0x08;
+pub const POSIX_SPAWN_SETSIGDEF: ::c_short = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: ::c_short = 0x20;
 
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: ::c_int = 1;
@@ -650,6 +662,8 @@ pub const TIMER_ABSTIME: ::c_int = 1;
 
 pub const RB_AUTOBOOT: ::c_int = 0;
 
+pub const TCP_INFO: ::c_int = 9;
+
 #[link(name = "util")]
 extern "C" {
     pub fn setgrent();
@@ -663,7 +677,6 @@ extern "C" {
         addrlen: *mut ::socklen_t,
         flags: ::c_int,
     ) -> ::c_int;
-    pub fn mincore(addr: *mut ::c_void, len: ::size_t, vec: *mut ::c_char) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_getres50")]
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_gettime50")]
@@ -742,8 +755,91 @@ extern "C" {
     pub fn shmctl(shmid: ::c_int, cmd: ::c_int, buf: *mut ::shmid_ds) -> ::c_int;
     pub fn execvpe(
         file: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+    pub fn waitid(
+        idtype: idtype_t,
+        id: ::id_t,
+        infop: *mut ::siginfo_t,
+        options: ::c_int,
+    ) -> ::c_int;
+
+    pub fn posix_spawn(
+        pid: *mut ::pid_t,
+        path: *const ::c_char,
+        file_actions: *const ::posix_spawn_file_actions_t,
+        attrp: *const ::posix_spawnattr_t,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+    pub fn posix_spawnp(
+        pid: *mut ::pid_t,
+        file: *const ::c_char,
+        file_actions: *const ::posix_spawn_file_actions_t,
+        attrp: *const ::posix_spawnattr_t,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_init(attr: *mut posix_spawnattr_t) -> ::c_int;
+    pub fn posix_spawnattr_destroy(attr: *mut posix_spawnattr_t) -> ::c_int;
+    pub fn posix_spawnattr_getsigdefault(
+        attr: *const posix_spawnattr_t,
+        default: *mut ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setsigdefault(
+        attr: *mut posix_spawnattr_t,
+        default: *const ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_getsigmask(
+        attr: *const posix_spawnattr_t,
+        default: *mut ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setsigmask(
+        attr: *mut posix_spawnattr_t,
+        default: *const ::sigset_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_getflags(
+        attr: *const posix_spawnattr_t,
+        flags: *mut ::c_short,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: ::c_short) -> ::c_int;
+    pub fn posix_spawnattr_getpgroup(
+        attr: *const posix_spawnattr_t,
+        flags: *mut ::pid_t,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: ::pid_t) -> ::c_int;
+    pub fn posix_spawnattr_getschedpolicy(
+        attr: *const posix_spawnattr_t,
+        flags: *mut ::c_int,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setschedpolicy(attr: *mut posix_spawnattr_t, flags: ::c_int) -> ::c_int;
+    pub fn posix_spawnattr_getschedparam(
+        attr: *const posix_spawnattr_t,
+        param: *mut ::sched_param,
+    ) -> ::c_int;
+    pub fn posix_spawnattr_setschedparam(
+        attr: *mut posix_spawnattr_t,
+        param: *const ::sched_param,
+    ) -> ::c_int;
+
+    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
+    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> ::c_int;
+    pub fn posix_spawn_file_actions_addopen(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: ::c_int,
+        path: *const ::c_char,
+        oflag: ::c_int,
+        mode: ::mode_t,
+    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_addclose(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: ::c_int,
+    ) -> ::c_int;
+    pub fn posix_spawn_file_actions_adddup2(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: ::c_int,
+        newfd: ::c_int,
     ) -> ::c_int;
 }
 
@@ -756,6 +852,20 @@ extern "C" {
     pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
     pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
+
+    pub fn sendmmsg(
+        sockfd: ::c_int,
+        mmsg: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_int,
+    ) -> ::c_int;
+    pub fn recvmmsg(
+        sockfd: ::c_int,
+        mmsg: *mut ::mmsghdr,
+        vlen: ::c_uint,
+        flags: ::c_int,
+        timeout: *mut ::timespec,
+    ) -> ::c_int;
 }
 
 cfg_if! {

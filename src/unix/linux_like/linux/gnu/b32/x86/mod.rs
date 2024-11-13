@@ -23,7 +23,8 @@ s! {
 
         pub f_namelen: ::__fsword_t,
         pub f_frsize: ::__fsword_t,
-        f_spare: [::__fsword_t; 5],
+        pub f_flags: ::__fsword_t,
+        f_spare: [::__fsword_t; 4],
     }
 
     pub struct flock {
@@ -236,11 +237,6 @@ s! {
         pub ss_size: ::size_t
     }
 
-    pub struct seccomp_notif_sizes {
-        pub seccomp_notif: ::__u16,
-        pub seccomp_notif_resp: ::__u16,
-        pub seccomp_data: ::__u16,
-    }
 }
 
 s_no_extra_traits! {
@@ -1049,6 +1045,8 @@ pub const SYS_memfd_secret: ::c_long = 447;
 pub const SYS_process_mrelease: ::c_long = 448;
 pub const SYS_futex_waitv: ::c_long = 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = 450;
+pub const SYS_fchmodat2: ::c_long = 452;
+pub const SYS_mseal: ::c_long = 462;
 
 // offsets in user_regs_structs, from sys/reg.h
 pub const EBX: ::c_int = 0;
@@ -1090,11 +1088,6 @@ pub const REG_EFL: ::c_int = 16;
 pub const REG_UESP: ::c_int = 17;
 pub const REG_SS: ::c_int = 18;
 
-pub const SECCOMP_SET_MODE_STRICT: ::c_uint = 0;
-pub const SECCOMP_SET_MODE_FILTER: ::c_uint = 1;
-pub const SECCOMP_GET_ACTION_AVAIL: ::c_uint = 2;
-pub const SECCOMP_GET_NOTIF_SIZES: ::c_uint = 3;
-
 extern "C" {
     pub fn getcontext(ucp: *mut ucontext_t) -> ::c_int;
     pub fn setcontext(ucp: *const ucontext_t) -> ::c_int;
@@ -1102,9 +1095,5 @@ extern "C" {
     pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> ::c_int;
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

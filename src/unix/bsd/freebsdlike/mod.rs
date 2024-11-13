@@ -432,15 +432,7 @@ cfg_if! {
 }
 
 // Non-public helper constant
-cfg_if! {
-    if #[cfg(all(not(libc_const_size_of), target_pointer_width = "32"))] {
-        const SIZEOF_LONG: usize = 4;
-    } else if #[cfg(all(not(libc_const_size_of), target_pointer_width = "64"))] {
-        const SIZEOF_LONG: usize = 8;
-    } else if #[cfg(libc_const_size_of)] {
-        const SIZEOF_LONG: usize = ::mem::size_of::<::c_long>();
-    }
-}
+const SIZEOF_LONG: usize = ::mem::size_of::<::c_long>();
 
 #[deprecated(
     since = "0.2.64",
@@ -563,29 +555,29 @@ pub const TMP_MAX: ::c_uint = 308915776;
 pub const O_NOCTTY: ::c_int = 32768;
 pub const O_DIRECT: ::c_int = 0x00010000;
 
-pub const S_IFIFO: mode_t = 4096;
-pub const S_IFCHR: mode_t = 8192;
-pub const S_IFBLK: mode_t = 24576;
-pub const S_IFDIR: mode_t = 16384;
-pub const S_IFREG: mode_t = 32768;
-pub const S_IFLNK: mode_t = 40960;
-pub const S_IFSOCK: mode_t = 49152;
-pub const S_IFMT: mode_t = 61440;
-pub const S_IEXEC: mode_t = 64;
-pub const S_IWRITE: mode_t = 128;
-pub const S_IREAD: mode_t = 256;
-pub const S_IRWXU: mode_t = 448;
-pub const S_IXUSR: mode_t = 64;
-pub const S_IWUSR: mode_t = 128;
-pub const S_IRUSR: mode_t = 256;
-pub const S_IRWXG: mode_t = 56;
-pub const S_IXGRP: mode_t = 8;
-pub const S_IWGRP: mode_t = 16;
-pub const S_IRGRP: mode_t = 32;
-pub const S_IRWXO: mode_t = 7;
-pub const S_IXOTH: mode_t = 1;
-pub const S_IWOTH: mode_t = 2;
-pub const S_IROTH: mode_t = 4;
+pub const S_IFIFO: mode_t = 0o1_0000;
+pub const S_IFCHR: mode_t = 0o2_0000;
+pub const S_IFBLK: mode_t = 0o6_0000;
+pub const S_IFDIR: mode_t = 0o4_0000;
+pub const S_IFREG: mode_t = 0o10_0000;
+pub const S_IFLNK: mode_t = 0o12_0000;
+pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_IFMT: mode_t = 0o17_0000;
+pub const S_IEXEC: mode_t = 0o0100;
+pub const S_IWRITE: mode_t = 0o0200;
+pub const S_IREAD: mode_t = 0o0400;
+pub const S_IRWXU: mode_t = 0o0700;
+pub const S_IXUSR: mode_t = 0o0100;
+pub const S_IWUSR: mode_t = 0o0200;
+pub const S_IRUSR: mode_t = 0o0400;
+pub const S_IRWXG: mode_t = 0o0070;
+pub const S_IXGRP: mode_t = 0o0010;
+pub const S_IWGRP: mode_t = 0o0020;
+pub const S_IRGRP: mode_t = 0o0040;
+pub const S_IRWXO: mode_t = 0o0007;
+pub const S_IXOTH: mode_t = 0o0001;
+pub const S_IWOTH: mode_t = 0o0002;
+pub const S_IROTH: mode_t = 0o0004;
 pub const F_OK: ::c_int = 0;
 pub const R_OK: ::c_int = 4;
 pub const W_OK: ::c_int = 2;
@@ -797,6 +789,7 @@ pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
+pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_PROCESS_PRIVATE: ::c_int = 0;
 pub const PTHREAD_PROCESS_SHARED: ::c_int = 1;
 pub const PTHREAD_CREATE_JOINABLE: ::c_int = 0;
@@ -824,15 +817,12 @@ pub const CLOCK_VIRTUAL: ::clockid_t = 1;
 pub const CLOCK_PROF: ::clockid_t = 2;
 pub const CLOCK_MONOTONIC: ::clockid_t = 4;
 pub const CLOCK_UPTIME: ::clockid_t = 5;
-pub const CLOCK_BOOTTIME: ::clockid_t = CLOCK_UPTIME;
 pub const CLOCK_UPTIME_PRECISE: ::clockid_t = 7;
 pub const CLOCK_UPTIME_FAST: ::clockid_t = 8;
 pub const CLOCK_REALTIME_PRECISE: ::clockid_t = 9;
 pub const CLOCK_REALTIME_FAST: ::clockid_t = 10;
-pub const CLOCK_REALTIME_COARSE: ::clockid_t = CLOCK_REALTIME_FAST;
 pub const CLOCK_MONOTONIC_PRECISE: ::clockid_t = 11;
 pub const CLOCK_MONOTONIC_FAST: ::clockid_t = 12;
-pub const CLOCK_MONOTONIC_COARSE: ::clockid_t = CLOCK_MONOTONIC_FAST;
 pub const CLOCK_SECOND: ::clockid_t = 13;
 pub const CLOCK_THREAD_CPUTIME_ID: ::clockid_t = 14;
 pub const CLOCK_PROCESS_CPUTIME_ID: ::clockid_t = 15;
@@ -973,6 +963,8 @@ pub const IP_SENDSRCADDR: ::c_int = IP_RECVDSTADDR;
 pub const IP_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IP_DROP_MEMBERSHIP: ::c_int = 13;
 pub const IP_RECVIF: ::c_int = 20;
+pub const IP_RECVTTL: ::c_int = 65;
+pub const IPV6_RECVHOPLIMIT: ::c_int = 37;
 pub const IPV6_JOIN_GROUP: ::c_int = 12;
 pub const IPV6_LEAVE_GROUP: ::c_int = 13;
 pub const IPV6_CHECKSUM: ::c_int = 26;
@@ -981,7 +973,6 @@ pub const IPV6_PKTINFO: ::c_int = 46;
 pub const IPV6_HOPLIMIT: ::c_int = 47;
 pub const IPV6_RECVTCLASS: ::c_int = 57;
 pub const IPV6_TCLASS: ::c_int = 61;
-pub const IPV6_DONTFRAG: ::c_int = 62;
 pub const IP_ADD_SOURCE_MEMBERSHIP: ::c_int = 70;
 pub const IP_DROP_SOURCE_MEMBERSHIP: ::c_int = 71;
 pub const IP_BLOCK_SOURCE: ::c_int = 72;
@@ -1017,6 +1008,25 @@ pub const SO_ERROR: ::c_int = 0x1007;
 pub const SO_TYPE: ::c_int = 0x1008;
 
 pub const LOCAL_PEERCRED: ::c_int = 1;
+
+// net/route.h
+pub const RTF_XRESOLVE: ::c_int = 0x200;
+pub const RTF_LLINFO: ::c_int = 0x400;
+pub const RTF_PROTO3: ::c_int = 0x40000;
+pub const RTF_PINNED: ::c_int = 0x100000;
+pub const RTF_LOCAL: ::c_int = 0x200000;
+pub const RTF_BROADCAST: ::c_int = 0x400000;
+pub const RTF_MULTICAST: ::c_int = 0x800000;
+
+pub const RTM_LOCK: ::c_int = 0x8;
+pub const RTM_RESOLVE: ::c_int = 0xb;
+pub const RTM_NEWADDR: ::c_int = 0xc;
+pub const RTM_DELADDR: ::c_int = 0xd;
+pub const RTM_IFINFO: ::c_int = 0xe;
+pub const RTM_NEWMADDR: ::c_int = 0xf;
+pub const RTM_DELMADDR: ::c_int = 0x10;
+pub const RTM_IFANNOUNCE: ::c_int = 0x11;
+pub const RTM_IEEE80211: ::c_int = 0x12;
 
 pub const SHUT_RD: ::c_int = 0;
 pub const SHUT_WR: ::c_int = 1;
@@ -1204,7 +1214,7 @@ pub const SCHED_FIFO: ::c_int = 1;
 pub const SCHED_OTHER: ::c_int = 2;
 pub const SCHED_RR: ::c_int = 3;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const ST_NOSUID: ::c_ulong = 2;
 
@@ -1233,7 +1243,6 @@ pub const TIOCGETD: ::c_ulong = 0x4004741a;
 pub const TIOCSETD: ::c_ulong = 0x8004741b;
 pub const TIOCGDRAINWAIT: ::c_ulong = 0x40047456;
 pub const TIOCSDRAINWAIT: ::c_ulong = 0x80047457;
-pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
 pub const TIOCMGDTRWAIT: ::c_ulong = 0x4004745a;
 pub const TIOCMSDTRWAIT: ::c_ulong = 0x8004745b;
 pub const TIOCDRAIN: ::c_ulong = 0x2000745e;
@@ -1288,10 +1297,15 @@ pub const BIOCSRSIG: ::c_ulong = 0x80044273;
 pub const BIOCSDLT: ::c_ulong = 0x80044278;
 pub const BIOCGSEESENT: ::c_ulong = 0x40044276;
 pub const BIOCSSEESENT: ::c_ulong = 0x80044277;
-pub const BIOCSETF: ::c_ulong = 0x80104267;
-pub const BIOCGDLTLIST: ::c_ulong = 0xc0104279;
-pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
-pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
+cfg_if! {
+    if #[cfg(target_pointer_width = "64")] {
+        pub const BIOCGDLTLIST: ::c_ulong = 0xc0104279;
+        pub const BIOCSETF: ::c_ulong = 0x80104267;
+    } else if #[cfg(target_pointer_width = "32")] {
+        pub const BIOCGDLTLIST: ::c_ulong = 0xc0084279;
+        pub const BIOCSETF: ::c_ulong = 0x80084267;
+    }
+}
 
 pub const FIODTYPE: ::c_ulong = 0x4004667a;
 pub const FIOGETLBA: ::c_ulong = 0x40046679;
@@ -1459,6 +1473,11 @@ pub const RB_GDB: ::c_int = 0x8000;
 pub const RB_MUTE: ::c_int = 0x10000;
 pub const RB_SELFTEST: ::c_int = 0x20000;
 
+// For getrandom()
+pub const GRND_NONBLOCK: ::c_uint = 0x1;
+pub const GRND_RANDOM: ::c_uint = 0x2;
+pub const GRND_INSECURE: ::c_uint = 0x4;
+
 safe_f! {
     pub {const} fn WIFCONTINUED(status: ::c_int) -> bool {
         status == 0x13
@@ -1493,6 +1512,13 @@ extern "C" {
         atflag: ::c_int,
     ) -> ::c_int;
 
+    pub fn clock_nanosleep(
+        clk_id: ::clockid_t,
+        flags: ::c_int,
+        rqtp: *const ::timespec,
+        rmtp: *mut ::timespec,
+    ) -> ::c_int;
+
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
@@ -1504,11 +1530,7 @@ extern "C" {
     pub fn duplocale(base: ::locale_t) -> ::locale_t;
     pub fn endutxent();
     pub fn fchflags(fd: ::c_int, flags: ::c_ulong) -> ::c_int;
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *mut ::c_char, envp: *const *mut ::c_char) -> ::c_int;
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn getdomainname(name: *mut ::c_char, len: ::c_int) -> ::c_int;
     pub fn getgrent_r(
@@ -1825,6 +1847,9 @@ extern "C" {
         abs_timeout: *const ::timespec,
     ) -> ::c_int;
     pub fn mq_unlink(name: *const ::c_char) -> ::c_int;
+
+    pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
+    pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 }
 
 #[link(name = "util")]

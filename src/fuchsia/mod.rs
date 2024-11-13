@@ -380,7 +380,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct tm {
@@ -1334,9 +1334,9 @@ pub const GRPQUOTA: ::c_int = 1;
 
 pub const SIGIOT: ::c_int = 6;
 
-pub const S_ISUID: ::c_int = 0x800;
-pub const S_ISGID: ::c_int = 0x400;
-pub const S_ISVTX: ::c_int = 0x200;
+pub const S_ISUID: ::mode_t = 0o4000;
+pub const S_ISGID: ::mode_t = 0o2000;
+pub const S_ISVTX: ::mode_t = 0o1000;
 
 pub const IF_NAMESIZE: ::size_t = 16;
 pub const IFNAMSIZ: ::size_t = IF_NAMESIZE;
@@ -1467,26 +1467,26 @@ pub const O_RDONLY: ::c_int = 0;
 pub const O_WRONLY: ::c_int = 1;
 pub const O_RDWR: ::c_int = 2;
 
-pub const S_IFIFO: ::mode_t = 4096;
-pub const S_IFCHR: ::mode_t = 8192;
-pub const S_IFBLK: ::mode_t = 24576;
-pub const S_IFDIR: ::mode_t = 16384;
-pub const S_IFREG: ::mode_t = 32768;
-pub const S_IFLNK: ::mode_t = 40960;
-pub const S_IFSOCK: ::mode_t = 49152;
-pub const S_IFMT: ::mode_t = 61440;
-pub const S_IRWXU: ::mode_t = 448;
-pub const S_IXUSR: ::mode_t = 64;
-pub const S_IWUSR: ::mode_t = 128;
-pub const S_IRUSR: ::mode_t = 256;
-pub const S_IRWXG: ::mode_t = 56;
-pub const S_IXGRP: ::mode_t = 8;
-pub const S_IWGRP: ::mode_t = 16;
-pub const S_IRGRP: ::mode_t = 32;
-pub const S_IRWXO: ::mode_t = 7;
-pub const S_IXOTH: ::mode_t = 1;
-pub const S_IWOTH: ::mode_t = 2;
-pub const S_IROTH: ::mode_t = 4;
+pub const S_IFIFO: ::mode_t = 0o1_0000;
+pub const S_IFCHR: ::mode_t = 0o2_0000;
+pub const S_IFBLK: ::mode_t = 0o6_0000;
+pub const S_IFDIR: ::mode_t = 0o4_0000;
+pub const S_IFREG: ::mode_t = 0o10_0000;
+pub const S_IFLNK: ::mode_t = 0o12_0000;
+pub const S_IFSOCK: ::mode_t = 0o14_0000;
+pub const S_IFMT: ::mode_t = 0o17_0000;
+pub const S_IRWXU: ::mode_t = 0o0700;
+pub const S_IXUSR: ::mode_t = 0o0100;
+pub const S_IWUSR: ::mode_t = 0o0200;
+pub const S_IRUSR: ::mode_t = 0o0400;
+pub const S_IRWXG: ::mode_t = 0o0070;
+pub const S_IXGRP: ::mode_t = 0o0010;
+pub const S_IWGRP: ::mode_t = 0o0020;
+pub const S_IRGRP: ::mode_t = 0o0040;
+pub const S_IRWXO: ::mode_t = 0o0007;
+pub const S_IXOTH: ::mode_t = 0o0001;
+pub const S_IWOTH: ::mode_t = 0o0002;
+pub const S_IROTH: ::mode_t = 0o0004;
 pub const F_OK: ::c_int = 0;
 pub const R_OK: ::c_int = 4;
 pub const W_OK: ::c_int = 2;
@@ -1827,7 +1827,7 @@ pub const SS_DISABLE: ::c_int = 2;
 
 pub const PATH_MAX: ::c_int = 4096;
 
-pub const FD_SETSIZE: usize = 1024;
+pub const FD_SETSIZE: ::c_int = 1024;
 
 pub const EPOLLIN: ::c_int = 0x1;
 pub const EPOLLPRI: ::c_int = 0x2;
@@ -2283,9 +2283,9 @@ pub const POSIX_MADV_RANDOM: ::c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 
-pub const S_IEXEC: mode_t = 64;
-pub const S_IWRITE: mode_t = 128;
-pub const S_IREAD: mode_t = 256;
+pub const S_IEXEC: mode_t = 0o0100;
+pub const S_IWRITE: mode_t = 0o0200;
+pub const S_IREAD: mode_t = 0o0400;
 
 pub const F_LOCK: ::c_int = 1;
 pub const F_TEST: ::c_int = 3;
@@ -2315,17 +2315,15 @@ pub const RTLD_NOW: ::c_int = 0x2;
 
 pub const TCP_MD5SIG: ::c_int = 14;
 
-align_const! {
-    pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-        size: [0; __SIZEOF_PTHREAD_MUTEX_T],
-    };
-    pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-        size: [0; __SIZEOF_PTHREAD_COND_T],
-    };
-    pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-        size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
-    };
-}
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    size: [0; __SIZEOF_PTHREAD_MUTEX_T],
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    size: [0; __SIZEOF_PTHREAD_COND_T],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
+};
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 2;
@@ -2981,6 +2979,7 @@ pub const SO_MARK: ::c_int = 36;
 pub const SO_RXQ_OVFL: ::c_int = 40;
 pub const SO_PEEK_OFF: ::c_int = 42;
 pub const SO_BUSY_POLL: ::c_int = 46;
+pub const SO_BINDTOIFINDEX: ::c_int = 62;
 
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
@@ -3677,13 +3676,13 @@ extern "C" {
     pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> ::c_int;
     pub fn execle(path: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execlp(file: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
-    pub fn execv(prog: *const c_char, argv: *const *const c_char) -> ::c_int;
+    pub fn execv(prog: *const c_char, argv: *const *mut c_char) -> ::c_int;
     pub fn execve(
         prog: *const c_char,
-        argv: *const *const c_char,
-        envp: *const *const c_char,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
     ) -> ::c_int;
-    pub fn execvp(c: *const c_char, argv: *const *const c_char) -> ::c_int;
+    pub fn execvp(c: *const c_char, argv: *const *mut c_char) -> ::c_int;
     pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
     pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
@@ -3826,6 +3825,8 @@ extern "C" {
     pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> ::c_int;
     pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
     pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t) -> ::c_int;
+    pub fn pthread_getname_np(thread: ::pthread_t, name: *mut ::c_char, len: ::size_t) -> ::c_int;
+    pub fn pthread_setname_np(thread: ::pthread_t, name: *const ::c_char) -> ::c_int;
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char, buflen: ::size_t) -> ::c_int;
 
     pub fn getsockopt(
@@ -4023,14 +4024,10 @@ extern "C" {
     ) -> ::c_int;
     pub fn execvpe(
         file: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
+        argv: *const *mut ::c_char,
+        envp: *const *mut ::c_char,
     ) -> ::c_int;
-    pub fn fexecve(
-        fd: ::c_int,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
-    ) -> ::c_int;
+    pub fn fexecve(fd: ::c_int, argv: *const *mut ::c_char, envp: *const *mut ::c_char) -> ::c_int;
 
     pub fn ioctl(fd: ::c_int, request: ::c_int, ...) -> ::c_int;
 
@@ -4359,33 +4356,9 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        #[macro_use]
-        mod align;
-    } else {
-        #[macro_use]
-        mod no_align;
-    }
-}
+#[macro_use]
+mod align;
+
 expand_align!();
 
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
-    }
-}
+pub use ffi::c_void;

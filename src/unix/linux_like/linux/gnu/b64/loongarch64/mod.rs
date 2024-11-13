@@ -213,71 +213,63 @@ pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
 
-align_const! {
-    #[cfg(target_endian = "little")]
-    pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "little")]
-    pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "little")]
-    pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "big")]
-    pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "big")]
-    pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "big")]
-    pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-}
+#[cfg(target_endian = "little")]
+pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "little")]
+pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "little")]
+pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
 
-pub const HWCAP_CPUCFG: ::c_ulong = 1 << 0;
-pub const HWCAP_LAM: ::c_ulong = 1 << 1;
-pub const HWCAP_UAL: ::c_ulong = 1 << 2;
-pub const HWCAP_FPU: ::c_ulong = 1 << 3;
-pub const HWCAP_LSX: ::c_ulong = 1 << 4;
-pub const HWCAP_LASX: ::c_ulong = 1 << 5;
-pub const HWCAP_CRC32: ::c_ulong = 1 << 6;
-pub const HWCAP_COMPLEX: ::c_ulong = 1 << 7;
-pub const HWCAP_CRYPTO: ::c_ulong = 1 << 8;
-pub const HWCAP_LVZ: ::c_ulong = 1 << 9;
-pub const HWCAP_LBT_X86: ::c_ulong = 1 << 10;
-pub const HWCAP_LBT_ARM: ::c_ulong = 1 << 11;
-pub const HWCAP_LBT_MIPS: ::c_ulong = 1 << 12;
-pub const HWCAP_PTW: ::c_ulong = 1 << 13;
+pub const HWCAP_LOONGARCH_CPUCFG: ::c_ulong = 1 << 0;
+pub const HWCAP_LOONGARCH_LAM: ::c_ulong = 1 << 1;
+pub const HWCAP_LOONGARCH_UAL: ::c_ulong = 1 << 2;
+pub const HWCAP_LOONGARCH_FPU: ::c_ulong = 1 << 3;
+pub const HWCAP_LOONGARCH_LSX: ::c_ulong = 1 << 4;
+pub const HWCAP_LOONGARCH_LASX: ::c_ulong = 1 << 5;
+pub const HWCAP_LOONGARCH_CRC32: ::c_ulong = 1 << 6;
+pub const HWCAP_LOONGARCH_COMPLEX: ::c_ulong = 1 << 7;
+pub const HWCAP_LOONGARCH_CRYPTO: ::c_ulong = 1 << 8;
+pub const HWCAP_LOONGARCH_LVZ: ::c_ulong = 1 << 9;
+pub const HWCAP_LOONGARCH_LBT_X86: ::c_ulong = 1 << 10;
+pub const HWCAP_LOONGARCH_LBT_ARM: ::c_ulong = 1 << 11;
+pub const HWCAP_LOONGARCH_LBT_MIPS: ::c_ulong = 1 << 12;
+pub const HWCAP_LOONGARCH_PTW: ::c_ulong = 1 << 13;
 
 pub const SYS_io_setup: ::c_long = 0;
 pub const SYS_io_destroy: ::c_long = 1;
@@ -891,9 +883,5 @@ pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 pub const EFD_NONBLOCK: ::c_int = 0x800;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

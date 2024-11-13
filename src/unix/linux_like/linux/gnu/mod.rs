@@ -3,6 +3,7 @@ pub type __priority_which_t = ::c_uint;
 pub type __rlimit_resource_t = ::c_uint;
 pub type Lmid_t = ::c_long;
 pub type regoff_t = ::c_int;
+pub type __kernel_rwf_t = ::c_int;
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -323,6 +324,153 @@ s! {
         pub semvmx: ::c_int,
         pub semaem: ::c_int,
     }
+
+    // linux/if_xdp.h
+
+    pub struct sockaddr_xdp {
+        pub sxdp_family: ::__u16,
+        pub sxdp_flags: ::__u16,
+        pub sxdp_ifindex: ::__u32,
+        pub sxdp_queue_id: ::__u32,
+        pub sxdp_shared_umem_fd: ::__u32,
+    }
+
+    pub struct xdp_ring_offset {
+        pub producer: ::__u64,
+        pub consumer: ::__u64,
+        pub desc: ::__u64,
+        pub flags: ::__u64,
+    }
+
+    pub struct xdp_mmap_offsets {
+        pub rx: xdp_ring_offset,
+        pub tx: xdp_ring_offset,
+        pub fr: xdp_ring_offset,
+        pub cr: xdp_ring_offset,
+    }
+
+    pub struct xdp_ring_offset_v1 {
+        pub producer: ::__u64,
+        pub consumer: ::__u64,
+        pub desc: ::__u64,
+    }
+
+    pub struct xdp_mmap_offsets_v1 {
+        pub rx: xdp_ring_offset_v1,
+        pub tx: xdp_ring_offset_v1,
+        pub fr: xdp_ring_offset_v1,
+        pub cr: xdp_ring_offset_v1,
+    }
+
+    pub struct xdp_umem_reg {
+        pub addr: ::__u64,
+        pub len: ::__u64,
+        pub chunk_size: ::__u32,
+        pub headroom: ::__u32,
+        pub flags: ::__u32,
+    }
+
+    pub struct xdp_umem_reg_v1 {
+        pub addr: ::__u64,
+        pub len: ::__u64,
+        pub chunk_size: ::__u32,
+        pub headroom: ::__u32,
+    }
+
+    pub struct xdp_statistics {
+        pub rx_dropped: ::__u64,
+        pub rx_invalid_descs: ::__u64,
+        pub tx_invalid_descs: ::__u64,
+        pub rx_ring_full: ::__u64,
+        pub rx_fill_ring_empty_descs: ::__u64,
+        pub tx_ring_empty_descs: ::__u64,
+    }
+
+    pub struct xdp_statistics_v1 {
+        pub rx_dropped: ::__u64,
+        pub rx_invalid_descs: ::__u64,
+        pub tx_invalid_descs: ::__u64,
+    }
+
+    pub struct xdp_options {
+        pub flags: ::__u32,
+    }
+
+    pub struct xdp_desc {
+        pub addr: ::__u64,
+        pub len: ::__u32,
+        pub options: ::__u32,
+    }
+
+    pub struct iocb {
+        pub aio_data: ::__u64,
+        #[cfg(target_endian = "little")]
+        pub aio_key: ::__u32,
+        #[cfg(target_endian = "little")]
+        pub aio_rw_flags: ::__kernel_rwf_t,
+        #[cfg(target_endian = "big")]
+        pub aio_rw_flags: ::__kernel_rwf_t,
+        #[cfg(target_endian = "big")]
+        pub aio_key: ::__u32,
+        pub aio_lio_opcode: ::__u16,
+        pub aio_reqprio: ::__s16,
+        pub aio_fildes: ::__u32,
+        pub aio_buf: ::__u64,
+        pub aio_nbytes: ::__u64,
+        pub aio_offset: ::__s64,
+        aio_reserved2: ::__u64,
+        pub aio_flags: ::__u32,
+        pub aio_resfd: ::__u32,
+    }
+
+    // netinet/tcp.h
+
+    pub struct tcp_info {
+        pub tcpi_state: u8,
+        pub tcpi_ca_state: u8,
+        pub tcpi_retransmits: u8,
+        pub tcpi_probes: u8,
+        pub tcpi_backoff: u8,
+        pub tcpi_options: u8,
+        /// This contains the bitfields `tcpi_snd_wscale` and `tcpi_rcv_wscale`.
+        /// Each is 4 bits.
+        pub tcpi_snd_rcv_wscale: u8,
+        pub tcpi_rto: u32,
+        pub tcpi_ato: u32,
+        pub tcpi_snd_mss: u32,
+        pub tcpi_rcv_mss: u32,
+        pub tcpi_unacked: u32,
+        pub tcpi_sacked: u32,
+        pub tcpi_lost: u32,
+        pub tcpi_retrans: u32,
+        pub tcpi_fackets: u32,
+        pub tcpi_last_data_sent: u32,
+        pub tcpi_last_ack_sent: u32,
+        pub tcpi_last_data_recv: u32,
+        pub tcpi_last_ack_recv: u32,
+        pub tcpi_pmtu: u32,
+        pub tcpi_rcv_ssthresh: u32,
+        pub tcpi_rtt: u32,
+        pub tcpi_rttvar: u32,
+        pub tcpi_snd_ssthresh: u32,
+        pub tcpi_snd_cwnd: u32,
+        pub tcpi_advmss: u32,
+        pub tcpi_reordering: u32,
+        pub tcpi_rcv_rtt: u32,
+        pub tcpi_rcv_space: u32,
+        pub tcpi_total_retrans: u32,
+    }
+
+    pub struct fanotify_event_info_pidfd {
+        pub hdr: ::fanotify_event_info_header,
+        pub pidfd: ::__s32,
+    }
+
+    pub struct fanotify_event_info_error {
+        pub hdr: ::fanotify_event_info_header,
+        pub error: ::__s32,
+        pub error_count: ::__u32,
+    }
 }
 
 impl siginfo_t {
@@ -351,65 +499,61 @@ impl siginfo_t {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_union)] {
-        // Internal, for casts to access union fields
-        #[repr(C)]
-        struct sifields_sigchld {
-            si_pid: ::pid_t,
-            si_uid: ::uid_t,
-            si_status: ::c_int,
-            si_utime: ::c_long,
-            si_stime: ::c_long,
-        }
-        impl ::Copy for sifields_sigchld {}
-        impl ::Clone for sifields_sigchld {
-            fn clone(&self) -> sifields_sigchld {
-                *self
-            }
-        }
+// Internal, for casts to access union fields
+#[repr(C)]
+struct sifields_sigchld {
+    si_pid: ::pid_t,
+    si_uid: ::uid_t,
+    si_status: ::c_int,
+    si_utime: ::c_long,
+    si_stime: ::c_long,
+}
+impl ::Copy for sifields_sigchld {}
+impl ::Clone for sifields_sigchld {
+    fn clone(&self) -> sifields_sigchld {
+        *self
+    }
+}
 
-        // Internal, for casts to access union fields
-        #[repr(C)]
-        union sifields {
-            _align_pointer: *mut ::c_void,
-            sigchld: sifields_sigchld,
-        }
+// Internal, for casts to access union fields
+#[repr(C)]
+union sifields {
+    _align_pointer: *mut ::c_void,
+    sigchld: sifields_sigchld,
+}
 
-        // Internal, for casts to access union fields. Note that some variants
-        // of sifields start with a pointer, which makes the alignment of
-        // sifields vary on 32-bit and 64-bit architectures.
-        #[repr(C)]
-        struct siginfo_f {
-            _siginfo_base: [::c_int; 3],
-            sifields: sifields,
-        }
+// Internal, for casts to access union fields. Note that some variants
+// of sifields start with a pointer, which makes the alignment of
+// sifields vary on 32-bit and 64-bit architectures.
+#[repr(C)]
+struct siginfo_f {
+    _siginfo_base: [::c_int; 3],
+    sifields: sifields,
+}
 
-        impl siginfo_t {
-            unsafe fn sifields(&self) -> &sifields {
-                &(*(self as *const siginfo_t as *const siginfo_f)).sifields
-            }
+impl siginfo_t {
+    unsafe fn sifields(&self) -> &sifields {
+        &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+    }
 
-            pub unsafe fn si_pid(&self) -> ::pid_t {
-                self.sifields().sigchld.si_pid
-            }
+    pub unsafe fn si_pid(&self) -> ::pid_t {
+        self.sifields().sigchld.si_pid
+    }
 
-            pub unsafe fn si_uid(&self) -> ::uid_t {
-                self.sifields().sigchld.si_uid
-            }
+    pub unsafe fn si_uid(&self) -> ::uid_t {
+        self.sifields().sigchld.si_uid
+    }
 
-            pub unsafe fn si_status(&self) -> ::c_int {
-                self.sifields().sigchld.si_status
-            }
+    pub unsafe fn si_status(&self) -> ::c_int {
+        self.sifields().sigchld.si_status
+    }
 
-            pub unsafe fn si_utime(&self) -> ::c_long {
-                self.sifields().sigchld.si_utime
-            }
+    pub unsafe fn si_utime(&self) -> ::c_long {
+        self.sifields().sigchld.si_utime
+    }
 
-            pub unsafe fn si_stime(&self) -> ::c_long {
-                self.sifields().sigchld.si_stime
-            }
-        }
+    pub unsafe fn si_stime(&self) -> ::c_long {
+        self.sifields().sigchld.si_stime
     }
 }
 
@@ -654,6 +798,10 @@ pub const TMP_MAX: ::c_uint = 238328;
 pub const FOPEN_MAX: ::c_uint = 16;
 pub const FILENAME_MAX: ::c_uint = 4096;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
+pub const _CS_GNU_LIBC_VERSION: ::c_int = 2;
+pub const _CS_GNU_LIBPTHREAD_VERSION: ::c_int = 3;
+pub const _CS_V6_ENV: ::c_int = 1148;
+pub const _CS_V7_ENV: ::c_int = 1149;
 pub const _SC_EQUIV_CLASS_MAX: ::c_int = 41;
 pub const _SC_CHARCLASS_NAME_MAX: ::c_int = 45;
 pub const _SC_PII: ::c_int = 53;
@@ -808,31 +956,44 @@ pub const GENL_UNS_ADMIN_PERM: ::c_int = 0x10;
 pub const GENL_ID_VFS_DQUOT: ::c_int = ::NLMSG_MIN_TYPE + 1;
 pub const GENL_ID_PMCRAID: ::c_int = ::NLMSG_MIN_TYPE + 2;
 
-// elf.h
-pub const NT_PRSTATUS: ::c_int = 1;
-pub const NT_PRFPREG: ::c_int = 2;
-pub const NT_FPREGSET: ::c_int = 2;
-pub const NT_PRPSINFO: ::c_int = 3;
-pub const NT_PRXREG: ::c_int = 4;
-pub const NT_TASKSTRUCT: ::c_int = 4;
-pub const NT_PLATFORM: ::c_int = 5;
-pub const NT_AUXV: ::c_int = 6;
-pub const NT_GWINDOWS: ::c_int = 7;
-pub const NT_ASRS: ::c_int = 8;
-pub const NT_PSTATUS: ::c_int = 10;
-pub const NT_PSINFO: ::c_int = 13;
-pub const NT_PRCRED: ::c_int = 14;
-pub const NT_UTSNAME: ::c_int = 15;
-pub const NT_LWPSTATUS: ::c_int = 16;
-pub const NT_LWPSINFO: ::c_int = 17;
-pub const NT_PRFPXREG: ::c_int = 20;
+// linux/if_xdp.h
+pub const XDP_SHARED_UMEM: ::__u16 = 1 << 0;
+pub const XDP_COPY: ::__u16 = 1 << 1;
+pub const XDP_ZEROCOPY: ::__u16 = 1 << 2;
+pub const XDP_USE_NEED_WAKEUP: ::__u16 = 1 << 3;
+pub const XDP_USE_SG: ::__u16 = 1 << 4;
+
+pub const XDP_UMEM_UNALIGNED_CHUNK_FLAG: ::__u32 = 1 << 0;
+
+pub const XDP_RING_NEED_WAKEUP: ::__u32 = 1 << 0;
+
+pub const XDP_MMAP_OFFSETS: ::c_int = 1;
+pub const XDP_RX_RING: ::c_int = 2;
+pub const XDP_TX_RING: ::c_int = 3;
+pub const XDP_UMEM_REG: ::c_int = 4;
+pub const XDP_UMEM_FILL_RING: ::c_int = 5;
+pub const XDP_UMEM_COMPLETION_RING: ::c_int = 6;
+pub const XDP_STATISTICS: ::c_int = 7;
+pub const XDP_OPTIONS: ::c_int = 8;
+
+pub const XDP_OPTIONS_ZEROCOPY: ::__u32 = 1 << 0;
+
+pub const XDP_PGOFF_RX_RING: ::off_t = 0;
+pub const XDP_PGOFF_TX_RING: ::off_t = 0x80000000;
+pub const XDP_UMEM_PGOFF_FILL_RING: ::c_ulonglong = 0x100000000;
+pub const XDP_UMEM_PGOFF_COMPLETION_RING: ::c_ulonglong = 0x180000000;
+
+pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: ::c_int = 48;
+pub const XSK_UNALIGNED_BUF_ADDR_MASK: ::c_ulonglong = (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
+
+pub const XDP_PKT_CONTD: ::__u32 = 1 << 0;
 
 pub const ELFOSABI_ARM_AEABI: u8 = 64;
 
 // linux/sched.h
 pub const CLONE_NEWTIME: ::c_int = 0x80;
-pub const CLONE_CLEAR_SIGHAND: ::c_int = 0x100000000;
-pub const CLONE_INTO_CGROUP: ::c_int = 0x200000000;
+pub const CLONE_CLEAR_SIGHAND: ::c_ulonglong = 0x100000000;
+pub const CLONE_INTO_CGROUP: ::c_ulonglong = 0x200000000;
 
 // linux/keyctl.h
 pub const KEYCTL_DH_COMPUTE: u32 = 23;
@@ -1022,6 +1183,29 @@ pub const REG_EEND: ::c_int = 14;
 pub const REG_ESIZE: ::c_int = 15;
 pub const REG_ERPAREN: ::c_int = 16;
 
+cfg_if! {
+    if #[cfg(any(target_arch = "x86",
+                 target_arch = "x86_64",
+                 target_arch = "arm",
+                 target_arch = "aarch64",
+                 target_arch = "loongarch64",
+                 target_arch = "riscv64",
+                 target_arch = "s390x"))] {
+        pub const TUNSETCARRIER: ::Ioctl = 0x400454e2;
+        pub const TUNGETDEVNETNS: ::Ioctl = 0x54e3;
+    } else if #[cfg(any(target_arch = "mips",
+                        target_arch = "mips64",
+                        target_arch = "powerpc",
+                        target_arch = "powerpc64",
+                        target_arch = "sparc",
+                        target_arch = "sparc64"))] {
+        pub const TUNSETCARRIER: ::Ioctl = 0x800454e2;
+        pub const TUNGETDEVNETNS: ::Ioctl = 0x200054e3;
+    } else {
+        // Unknown target_arch
+    }
+}
+
 extern "C" {
     pub fn fgetspent_r(
         fp: *mut ::FILE,
@@ -1159,7 +1343,6 @@ extern "C" {
     pub fn reallocarray(ptr: *mut ::c_void, nmemb: ::size_t, size: ::size_t) -> *mut ::c_void;
 
     pub fn ctermid(s: *mut ::c_char) -> *mut ::c_char;
-    pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn backtrace(buf: *mut *mut ::c_void, sz: ::c_int) -> ::c_int;
     pub fn glob64(
         pattern: *const ::c_char,
@@ -1192,6 +1375,7 @@ extern "C" {
     pub fn pthread_sigqueue(thread: ::pthread_t, sig: ::c_int, value: ::sigval) -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn mallinfo2() -> ::mallinfo2;
+    pub fn malloc_stats();
     pub fn malloc_info(options: ::c_int, stream: *mut ::FILE) -> ::c_int;
     pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
     pub fn getpwent_r(
@@ -1234,14 +1418,6 @@ extern "C" {
 
     pub fn asctime_r(tm: *const ::tm, buf: *mut ::c_char) -> *mut ::c_char;
     pub fn ctime_r(timep: *const time_t, buf: *mut ::c_char) -> *mut ::c_char;
-
-    pub fn strftime(
-        s: *mut ::c_char,
-        max: ::size_t,
-        format: *const ::c_char,
-        tm: *const ::tm,
-    ) -> ::size_t;
-    pub fn strptime(s: *const ::c_char, format: *const ::c_char, tm: *mut ::tm) -> *mut ::c_char;
 
     pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
     /// POSIX version of `basename(3)`, defined in `libgen.h`.
@@ -1302,6 +1478,16 @@ extern "C" {
 
     // Added in `glibc` 2.34
     pub fn close_range(first: ::c_uint, last: ::c_uint, flags: ::c_int) -> ::c_int;
+
+    pub fn mq_notify(mqdes: ::mqd_t, sevp: *const ::sigevent) -> ::c_int;
+
+    pub fn epoll_pwait2(
+        epfd: ::c_int,
+        events: *mut ::epoll_event,
+        maxevents: ::c_int,
+        timeout: *const ::timespec,
+        sigmask: *const ::sigset_t,
+    ) -> ::c_int;
 }
 
 cfg_if! {
@@ -1332,12 +1518,5 @@ cfg_if! {
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    } else {
-        mod no_align;
-        pub use self::no_align::*;
-    }
-}
+mod align;
+pub use self::align::*;

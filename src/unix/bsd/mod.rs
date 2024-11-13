@@ -39,6 +39,7 @@ s! {
                       target_os = "ios",
                       target_os = "tvos",
                       target_os = "watchos",
+                      target_os = "visionos",
                       target_os = "netbsd",
                       target_os = "openbsd")))]
         pub pw_fields: ::c_int,
@@ -59,10 +60,10 @@ s! {
     pub struct fd_set {
         #[cfg(all(target_pointer_width = "64",
                   any(target_os = "freebsd", target_os = "dragonfly")))]
-        fds_bits: [i64; FD_SETSIZE / 64],
+        fds_bits: [i64; FD_SETSIZE as usize / 64],
         #[cfg(not(all(target_pointer_width = "64",
                       any(target_os = "freebsd", target_os = "dragonfly"))))]
-        fds_bits: [i32; FD_SETSIZE / 32],
+        fds_bits: [i32; FD_SETSIZE as usize / 32],
     }
 
     pub struct tm {
@@ -128,7 +129,7 @@ s_no_extra_traits! {
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 104]
+        pub sun_path: [::c_char; 104]
     }
 
     pub struct utsname {
@@ -310,6 +311,7 @@ pub const IPV6_MULTICAST_IF: ::c_int = 9;
 pub const IPV6_MULTICAST_HOPS: ::c_int = 10;
 pub const IPV6_MULTICAST_LOOP: ::c_int = 11;
 pub const IPV6_V6ONLY: ::c_int = 27;
+pub const IPV6_DONTFRAG: ::c_int = 62;
 
 pub const IPTOS_ECN_NOTECT: u8 = 0x00;
 pub const IPTOS_ECN_MASK: u8 = 0x03;
@@ -541,12 +543,55 @@ pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
 pub const ITIMER_PROF: ::c_int = 2;
 
+// net/route.h
+
+pub const RTF_UP: ::c_int = 0x1;
+pub const RTF_GATEWAY: ::c_int = 0x2;
+pub const RTF_HOST: ::c_int = 0x4;
+pub const RTF_REJECT: ::c_int = 0x8;
+pub const RTF_DYNAMIC: ::c_int = 0x10;
+pub const RTF_MODIFIED: ::c_int = 0x20;
+pub const RTF_DONE: ::c_int = 0x40;
+pub const RTF_STATIC: ::c_int = 0x800;
+pub const RTF_BLACKHOLE: ::c_int = 0x1000;
+pub const RTF_PROTO2: ::c_int = 0x4000;
+pub const RTF_PROTO1: ::c_int = 0x8000;
+
+// Message types
+pub const RTM_ADD: ::c_int = 0x1;
+pub const RTM_DELETE: ::c_int = 0x2;
+pub const RTM_CHANGE: ::c_int = 0x3;
+pub const RTM_GET: ::c_int = 0x4;
+pub const RTM_LOSING: ::c_int = 0x5;
+pub const RTM_REDIRECT: ::c_int = 0x6;
+pub const RTM_MISS: ::c_int = 0x7;
+
+// Bitmask values for rtm_addrs.
+pub const RTA_DST: ::c_int = 0x1;
+pub const RTA_GATEWAY: ::c_int = 0x2;
+pub const RTA_NETMASK: ::c_int = 0x4;
+pub const RTA_GENMASK: ::c_int = 0x8;
+pub const RTA_IFP: ::c_int = 0x10;
+pub const RTA_IFA: ::c_int = 0x20;
+pub const RTA_AUTHOR: ::c_int = 0x40;
+pub const RTA_BRD: ::c_int = 0x80;
+
+// Index offsets for sockaddr array for alternate internal encoding.
+pub const RTAX_DST: ::c_int = 0;
+pub const RTAX_GATEWAY: ::c_int = 1;
+pub const RTAX_NETMASK: ::c_int = 2;
+pub const RTAX_GENMASK: ::c_int = 3;
+pub const RTAX_IFP: ::c_int = 4;
+pub const RTAX_IFA: ::c_int = 5;
+pub const RTAX_AUTHOR: ::c_int = 6;
+pub const RTAX_BRD: ::c_int = 7;
+
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const ::msghdr) -> *mut ::cmsghdr {
         if (*mhdr).msg_controllen as usize >= ::mem::size_of::<::cmsghdr>() {
             (*mhdr).msg_control as *mut ::cmsghdr
         } else {
-            0 as *mut ::cmsghdr
+            core::ptr::null_mut()
         }
     }
 
@@ -632,7 +677,6 @@ extern "C" {
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
     pub fn kqueue() -> ::c_int;
     pub fn unmount(target: *const ::c_char, arg: ::c_int) -> ::c_int;
-    pub fn syscall(num: ::c_int, ...) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent50")]
     pub fn getpwent() -> *mut passwd;
     pub fn setpwent();
@@ -761,6 +805,7 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> ::c_int;
+    pub fn sigsuspend(mask: *const ::sigset_t) -> ::c_int;
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
     pub fn getgrnam_r(
@@ -899,10 +944,32 @@ extern "C" {
         longopts: *const option,
         longindex: *mut ::c_int,
     ) -> ::c_int;
+
+    pub fn strftime(
+        buf: *mut ::c_char,
+        maxsize: ::size_t,
+        format: *const ::c_char,
+        timeptr: *const ::tm,
+    ) -> ::size_t;
+    pub fn strftime_l(
+        buf: *mut ::c_char,
+        maxsize: ::size_t,
+        format: *const ::c_char,
+        timeptr: *const ::tm,
+        locale: ::locale_t,
+    ) -> ::size_t;
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos", target_os = "watchos"))] {
+    if #[cfg(not(target_os = "openbsd"))] {
+        extern "C" {
+            pub fn syscall(num: ::c_int, ...) -> ::c_int;
+        }
+    }
+}
+
+cfg_if! {
+    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos", target_os = "watchos", target_os = "visionos"))] {
         mod apple;
         pub use self::apple::*;
     } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd"))] {

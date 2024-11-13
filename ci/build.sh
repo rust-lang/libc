@@ -11,6 +11,7 @@ set -ex
 : "${OS?The OS environment variable must be set.}"
 
 RUST=${TOOLCHAIN}
+VERBOSE=-v
 
 echo "Testing Rust ${RUST} on ${OS}"
 
@@ -41,50 +42,50 @@ test_target() {
 
     # Test that libc builds without any default features (no std)
     if [ "${NO_STD}" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}"
+        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}"
     else
         # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --no-default-features --target "${TARGET}"
+            -Z build-std=core,alloc "$VERBOSE" --no-default-features --target "${TARGET}"
     fi
     # Test that libc builds with default features (e.g. std)
     # if the target supports std
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}"
+        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --target "${TARGET}"
     else
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --target "${TARGET}"
+            -Z build-std=core,alloc "$VERBOSE" --target "${TARGET}"
     fi
 
     # Test that libc builds with the `extra_traits` feature
     if [ "${NO_STD}" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
+        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}" \
             --features extra_traits
     else
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --no-default-features \
+            -Z build-std=core,alloc "$VERBOSE" --no-default-features \
             --target "${TARGET}" --features extra_traits
     fi
 
     # Test the 'const-extern-fn' feature on nightly
     if [ "${RUST}" = "nightly" ]; then
         if [ "${NO_STD}" != "1" ]; then
-            cargo "+${RUST}" "${BUILD_CMD}" -vv --no-default-features --target "${TARGET}" \
+            cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}" \
                 --features const-extern-fn
         else
             RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-                -Z build-std=core,alloc -vv --no-default-features \
+                -Z build-std=core,alloc "$VERBOSE" --no-default-features \
                 --target "${TARGET}" --features const-extern-fn
         fi
     fi
 
     # Also test that it builds with `extra_traits` and default features:
     if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" -vv --target "${TARGET}" \
+        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --target "${TARGET}" \
             --features extra_traits
     else
         RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc -vv --target "${TARGET}" \
+            -Z build-std=core,alloc "$VERBOSE" --target "${TARGET}" \
             --features extra_traits
     fi
 }
@@ -135,7 +136,6 @@ armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
 riscv64gc-unknown-linux-gnu \
-wasm32-wasi \
 x86_64-fortanix-unknown-sgx \
 x86_64-unknown-fuchsia \
 x86_64-pc-solaris \
@@ -147,8 +147,6 @@ x86_64-unknown-redox \
 
 RUST_APPLE_TARGETS="\
 aarch64-apple-ios \
-x86_64-apple-darwin \
-x86_64-apple-ios \
 "
 
 RUST_NIGHTLY_APPLE_TARGETS="\
@@ -211,6 +209,8 @@ for TARGET in $TARGETS; do
 done
 
 # Targets which are not available via rustup and must be built with -Zbuild-std
+# FIXME(hexagon): hexagon-unknown-linux-musl should be tested but currently has
+# duplicate symbol errors from `compiler_builtins`.
 RUST_LINUX_NO_CORE_TARGETS="\
 aarch64-pc-windows-msvc \
 aarch64-unknown-freebsd \
@@ -223,7 +223,6 @@ armebv7r-none-eabihf \
 armv7-wrs-vxworks-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
-hexagon-unknown-linux-musl \
 i586-pc-windows-msvc \
 i686-pc-windows-msvc \
 i686-unknown-haiku \
@@ -238,7 +237,6 @@ mips64el-unknown-linux-gnuabi64 \
 mips64el-unknown-linux-muslabi64 \
 mipsel-unknown-linux-gnu \
 mipsel-unknown-linux-musl \
-mipsel-sony-psp \
 nvptx64-nvidia-cuda \
 powerpc-unknown-linux-gnuspe \
 powerpc-unknown-netbsd \
@@ -250,11 +248,13 @@ riscv32i-unknown-none-elf \
 riscv32imac-unknown-none-elf \
 riscv32imc-unknown-none-elf \
 riscv32gc-unknown-linux-gnu \
+riscv32-wrs-vxworks \
 riscv64gc-unknown-freebsd \
 riscv64gc-unknown-hermit \
 riscv64gc-unknown-linux-musl \
 riscv64gc-unknown-none-elf \
 riscv64imac-unknown-none-elf \
+riscv64-wrs-vxworks \
 s390x-unknown-linux-musl \
 sparc-unknown-linux-gnu \
 sparc64-unknown-netbsd \

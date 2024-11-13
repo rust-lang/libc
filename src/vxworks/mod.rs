@@ -91,6 +91,7 @@ pub type SEM_ID_KERNEL = ::OBJ_HANDLE;
 pub type RTP_ID = ::OBJ_HANDLE;
 pub type SD_ID = ::OBJ_HANDLE;
 pub type CONDVAR_ID = ::OBJ_HANDLE;
+pub type STATUS = ::OBJ_HANDLE;
 
 // From vxTypes.h
 pub type _Vx_usr_arg_t = isize;
@@ -252,7 +253,7 @@ s! {
     }
 
     // b_struct__Sched_param.h
-    pub struct _Sched_param {
+    pub struct sched_param {
         pub sched_priority: ::c_int, /* scheduling priority */
         pub sched_ss_low_priority: ::c_int,    /* low scheduling priority */
         pub sched_ss_repl_period: ::_Timespec, /* replenishment period */
@@ -273,7 +274,7 @@ s! {
         pub threadAttrSchedpolicy     : ::c_int,
         pub threadAttrName            : *mut ::c_char,
         pub threadAttrOptions         : ::c_int,
-        pub threadAttrSchedparam      : ::_Sched_param,
+        pub threadAttrSchedparam      : ::sched_param,
     }
 
     // signal.h
@@ -612,7 +613,21 @@ pub const PTHREAD_MUTEX_DEFAULT: ::c_int = PTHREAD_MUTEX_NORMAL;
 pub const PTHREAD_STACK_MIN: usize = 4096;
 pub const _PTHREAD_SHARED_SEM_NAME_MAX: usize = 30;
 
+//sched.h
+pub const SCHED_FIFO: ::c_int = 0x01;
+pub const SCHED_RR: ::c_int = 0x02;
+pub const SCHED_OTHER: ::c_int = 0x04;
+pub const SCHED_SPORADIC: ::c_int = 0x08;
+pub const PRIO_PROCESS: ::c_uint = 0;
+pub const SCHED_FIFO_HIGH_PRI: ::c_int = 255;
+pub const SCHED_FIFO_LOW_PRI: ::c_int = 0;
+pub const SCHED_RR_HIGH_PRI: ::c_int = 255;
+pub const SCHED_RR_LOW_PRI: ::c_int = 0;
+pub const SCHED_SPORADIC_HIGH_PRI: ::c_int = 255;
+pub const SCHED_SPORADIC_LOW_PRI: ::c_int = 0;
+
 // ERRNO STUFF
+pub const ERROR: ::c_int = -1;
 pub const OK: ::c_int = 0;
 pub const EPERM: ::c_int = 1; /* Not owner */
 pub const ENOENT: ::c_int = 2; /* No such file or directory */
@@ -720,6 +735,33 @@ pub const S_nfsLib_NFSERR_SERVERFAULT: ::c_int = EIO;
 pub const S_nfsLib_NFSERR_BADTYPE: ::c_int = M_nfsStat | nfsstat::NFSERR_BADTYPE as ::c_int;
 pub const S_nfsLib_NFSERR_JUKEBOX: ::c_int = M_nfsStat | nfsstat::NFSERR_JUKEBOX as ::c_int;
 
+// internal offset values for below constants
+const taskErrorBase: ::c_int = 0x00030000;
+const semErrorBase: ::c_int = 0x00160000;
+const objErrorBase: ::c_int = 0x003d0000;
+
+// taskLibCommon.h
+pub const S_taskLib_NAME_NOT_FOUND: ::c_int = taskErrorBase + 0x0065;
+pub const S_taskLib_TASK_HOOK_TABLE_FULL: ::c_int = taskErrorBase + 0x0066;
+pub const S_taskLib_TASK_HOOK_NOT_FOUND: ::c_int = taskErrorBase + 0x0067;
+pub const S_taskLib_ILLEGAL_PRIORITY: ::c_int = taskErrorBase + 0x0068;
+
+// FIXME: could also be useful for TASK_DESC type
+pub const VX_TASK_NAME_LENGTH: ::c_int = 31;
+
+// semLibCommon.h
+pub const S_semLib_INVALID_STATE: ::c_int = semErrorBase + 0x0065;
+pub const S_semLib_INVALID_OPTION: ::c_int = semErrorBase + 0x0066;
+pub const S_semLib_INVALID_QUEUE_TYPE: ::c_int = semErrorBase + 0x0067;
+pub const S_semLib_INVALID_OPERATION: ::c_int = semErrorBase + 0x0068;
+
+// objLibCommon.h
+pub const S_objLib_OBJ_ID_ERROR: ::c_int = objErrorBase + 0x0001;
+pub const S_objLib_OBJ_UNAVAILABLE: ::c_int = objErrorBase + 0x0002;
+pub const S_objLib_OBJ_DELETED: ::c_int = objErrorBase + 0x0003;
+pub const S_objLib_OBJ_TIMEOUT: ::c_int = objErrorBase + 0x0004;
+pub const S_objLib_OBJ_NO_METHOD: ::c_int = objErrorBase + 0x0005;
+
 // in.h
 pub const IPPROTO_IP: ::c_int = 0;
 pub const IPPROTO_IPV6: ::c_int = 41;
@@ -741,33 +783,35 @@ pub const IPV6_ADD_MEMBERSHIP: ::c_int = 12;
 pub const IPV6_DROP_MEMBERSHIP: ::c_int = 13;
 
 // STAT Stuff
-pub const S_IFMT: ::c_int = 0xf000;
-pub const S_IFIFO: ::c_int = 0x1000;
-pub const S_IFCHR: ::c_int = 0x2000;
-pub const S_IFDIR: ::c_int = 0x4000;
-pub const S_IFBLK: ::c_int = 0x6000;
-pub const S_IFREG: ::c_int = 0x8000;
-pub const S_IFLNK: ::c_int = 0xa000;
-pub const S_IFSHM: ::c_int = 0xb000;
-pub const S_IFSOCK: ::c_int = 0xc000;
-pub const S_ISUID: ::c_int = 0x0800;
-pub const S_ISGID: ::c_int = 0x0400;
-pub const S_ISTXT: ::c_int = 0x0200;
-pub const S_IRUSR: ::c_int = 0x0100;
-pub const S_IWUSR: ::c_int = 0x0080;
-pub const S_IXUSR: ::c_int = 0x0040;
-pub const S_IRWXU: ::c_int = 0x01c0;
-pub const S_IRGRP: ::c_int = 0x0020;
-pub const S_IWGRP: ::c_int = 0x0010;
-pub const S_IXGRP: ::c_int = 0x0008;
-pub const S_IRWXG: ::c_int = 0x0038;
-pub const S_IROTH: ::c_int = 0x0004;
-pub const S_IWOTH: ::c_int = 0x0002;
-pub const S_IXOTH: ::c_int = 0x0001;
-pub const S_IRWXO: ::c_int = 0x0007;
+pub const S_IFMT: ::c_int = 0o17_0000;
+pub const S_IFIFO: ::c_int = 0o1_0000;
+pub const S_IFCHR: ::c_int = 0o2_0000;
+pub const S_IFDIR: ::c_int = 0o4_0000;
+pub const S_IFBLK: ::c_int = 0o6_0000;
+pub const S_IFREG: ::c_int = 0o10_0000;
+pub const S_IFLNK: ::c_int = 0o12_0000;
+pub const S_IFSHM: ::c_int = 0o13_0000;
+pub const S_IFSOCK: ::c_int = 0o14_0000;
+pub const S_ISUID: ::c_int = 0o4000;
+pub const S_ISGID: ::c_int = 0o2000;
+pub const S_ISTXT: ::c_int = 0o1000;
+pub const S_ISVTX: mode_t = 0o1000;
+pub const S_IRUSR: ::c_int = 0o0400;
+pub const S_IWUSR: ::c_int = 0o0200;
+pub const S_IXUSR: ::c_int = 0o0100;
+pub const S_IRWXU: ::c_int = 0o0700;
+pub const S_IRGRP: ::c_int = 0o0040;
+pub const S_IWGRP: ::c_int = 0o0020;
+pub const S_IXGRP: ::c_int = 0o0010;
+pub const S_IRWXG: ::c_int = 0o0070;
+pub const S_IROTH: ::c_int = 0o0004;
+pub const S_IWOTH: ::c_int = 0o0002;
+pub const S_IXOTH: ::c_int = 0o0001;
+pub const S_IRWXO: ::c_int = 0o0007;
 
 // socket.h
 pub const SOL_SOCKET: ::c_int = 0xffff;
+pub const SOMAXCONN: ::c_int = 128;
 
 pub const SO_DEBUG: ::c_int = 0x0001;
 pub const SO_REUSEADDR: ::c_int = 0x0004;
@@ -1357,6 +1401,29 @@ extern "C" {
         value: *mut ::c_void,
     ) -> ::c_int;
 
+    //pthread.h
+    pub fn pthread_setschedparam(
+        native: ::pthread_t,
+        policy: ::c_int,
+        param: *const ::sched_param,
+    ) -> ::c_int;
+
+    //pthread.h
+    pub fn pthread_getschedparam(
+        native: ::pthread_t,
+        policy: *mut ::c_int,
+        param: *mut ::sched_param,
+    ) -> ::c_int;
+
+    //pthread.h
+    pub fn pthread_attr_setinheritsched(
+        attr: *mut ::pthread_attr_t,
+        inheritsched: ::c_int,
+    ) -> ::c_int;
+
+    //pthread.h
+    pub fn pthread_attr_setschedpolicy(attr: *mut ::pthread_attr_t, policy: ::c_int) -> ::c_int;
+
     // pthread.h
     pub fn pthread_attr_destroy(thread: *mut ::pthread_attr_t) -> ::c_int;
 
@@ -1369,6 +1436,7 @@ extern "C" {
         parent: ::Option<unsafe extern "C" fn()>,
         child: ::Option<unsafe extern "C" fn()>,
     ) -> ::c_int;
+
     // stat.h
     pub fn fstat(fildes: ::c_int, buf: *mut stat) -> ::c_int;
 
@@ -1723,6 +1791,31 @@ extern "C" {
     // dirent.h
     pub fn closedir(ptr: *mut ::DIR) -> ::c_int;
 
+    //sched.h
+    pub fn sched_get_priority_max(policy: ::c_int) -> ::c_int;
+
+    //sched.h
+    pub fn sched_get_priority_min(policy: ::c_int) -> ::c_int;
+
+    //sched.h
+    pub fn sched_setparam(pid: ::pid_t, param: *const ::sched_param) -> ::c_int;
+
+    //sched.h
+    pub fn sched_getparam(pid: ::pid_t, param: *mut ::sched_param) -> ::c_int;
+
+    //sched.h
+    pub fn sched_setscheduler(
+        pid: ::pid_t,
+        policy: ::c_int,
+        param: *const ::sched_param,
+    ) -> ::c_int;
+
+    //sched.h
+    pub fn sched_getscheduler(pid: ::pid_t) -> ::c_int;
+
+    //sched.h
+    pub fn sched_rr_get_interval(pid: ::pid_t, tp: *mut ::timespec) -> ::c_int;
+
     // sched.h
     pub fn sched_yield() -> ::c_int;
 
@@ -1781,6 +1874,10 @@ extern "C" {
     // taskLibCommon.h
     pub fn taskIdSelf() -> ::TASK_ID;
     pub fn taskDelay(ticks: ::_Vx_ticks_t) -> ::c_int;
+
+    // taskLib.h
+    pub fn taskNameSet(task_id: ::TASK_ID, task_name: *mut ::c_char) -> ::c_int;
+    pub fn taskNameGet(task_id: ::TASK_ID, buf_name: *mut ::c_char, bufsize: ::size_t) -> ::c_int;
 
     // rtpLibCommon.h
     pub fn rtpInfoGet(rtpId: ::RTP_ID, rtpStruct: *mut ::RTP_DESC) -> ::c_int;
@@ -1841,6 +1938,10 @@ extern "C" {
     ) -> ::c_int;
     pub fn mq_getattr(mqd: ::mqd_t, attr: *mut ::mq_attr) -> ::c_int;
     pub fn mq_setattr(mqd: ::mqd_t, newattr: *const ::mq_attr, oldattr: *mut ::mq_attr) -> ::c_int;
+
+    // vxCpuLib.h
+    pub fn vxCpuEnabledGet() -> ::cpuset_t; // Get set of running CPU's in the system
+    pub fn vxCpuConfiguredGet() -> ::cpuset_t; // Get set of Configured CPU's in the system
 }
 
 //Dummy functions, these don't really exist in VxWorks.
@@ -1867,11 +1968,16 @@ safe_f! {
     }
 }
 
-pub fn pread(_fd: ::c_int, _buf: *mut ::c_void, _count: ::size_t, _offset: off64_t) -> ::ssize_t {
+pub unsafe fn pread(
+    _fd: ::c_int,
+    _buf: *mut ::c_void,
+    _count: ::size_t,
+    _offset: off64_t,
+) -> ::ssize_t {
     -1
 }
 
-pub fn pwrite(
+pub unsafe fn pwrite(
     _fd: ::c_int,
     _buf: *const ::c_void,
     _count: ::size_t,
@@ -1879,7 +1985,12 @@ pub fn pwrite(
 ) -> ::ssize_t {
     -1
 }
-pub fn posix_memalign(memptr: *mut *mut ::c_void, align: ::size_t, size: ::size_t) -> ::c_int {
+
+pub unsafe fn posix_memalign(
+    memptr: *mut *mut ::c_void,
+    align: ::size_t,
+    size: ::size_t,
+) -> ::c_int {
     // check to see if align is a power of 2 and if align is a multiple
     //  of sizeof(void *)
     if (align & align - 1 != 0) || (align as usize % size_of::<::size_t>() != 0) {
@@ -1902,25 +2013,7 @@ pub fn posix_memalign(memptr: *mut *mut ::c_void, align: ::size_t, size: ::size_
     }
 }
 
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
-    }
-}
+pub use ffi::c_void;
 
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {
@@ -1941,6 +2034,12 @@ cfg_if! {
     } else if #[cfg(target_arch = "powerpc64")] {
         mod powerpc64;
         pub use self::powerpc64::*;
+    } else if #[cfg(target_arch = "riscv32")] {
+        mod riscv32;
+        pub use self::riscv32::*;
+    } else if #[cfg(target_arch = "riscv64")] {
+        mod riscv64;
+        pub use self::riscv64::*;
     } else {
         // Unknown target_arch
     }

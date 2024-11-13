@@ -140,13 +140,13 @@ pub const _O_OBTAIN_DIR: ::c_int = 0x2000;
 pub const O_SEQUENTIAL: ::c_int = 0x0020;
 pub const O_RANDOM: ::c_int = 0x0010;
 
-pub const S_IFCHR: ::c_int = 8192;
-pub const S_IFDIR: ::c_int = 16384;
-pub const S_IFREG: ::c_int = 32768;
-pub const S_IFMT: ::c_int = 61440;
-pub const S_IEXEC: ::c_int = 64;
-pub const S_IWRITE: ::c_int = 128;
-pub const S_IREAD: ::c_int = 256;
+pub const S_IFCHR: ::c_int = 0o2_0000;
+pub const S_IFDIR: ::c_int = 0o4_0000;
+pub const S_IFREG: ::c_int = 0o10_0000;
+pub const S_IFMT: ::c_int = 0o17_0000;
+pub const S_IEXEC: ::c_int = 0o0100;
+pub const S_IWRITE: ::c_int = 0o0200;
+pub const S_IREAD: ::c_int = 0o0400;
 
 pub const LC_ALL: ::c_int = 0;
 pub const LC_COLLATE: ::c_int = 1;
@@ -253,12 +253,6 @@ pub const SIG_IGN: ::sighandler_t = 1;
 pub const SIG_GET: ::sighandler_t = 2;
 pub const SIG_SGE: ::sighandler_t = 3;
 pub const SIG_ACK: ::sighandler_t = 4;
-
-// inline comment below appeases style checker
-#[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))] // " if "
-#[link(name = "msvcrt", cfg(not(target_feature = "crt-static")))]
-#[link(name = "libcmt", cfg(target_feature = "crt-static"))]
-extern "C" {}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
@@ -460,15 +454,15 @@ extern "C" {
         prog: *const c_char,
         argv: *const *const c_char,
         envp: *const *const c_char,
-    ) -> ::c_int;
+    ) -> ::intptr_t;
     #[link_name = "_execvp"]
-    pub fn execvp(c: *const c_char, argv: *const *const c_char) -> ::c_int;
+    pub fn execvp(c: *const c_char, argv: *const *const c_char) -> ::intptr_t;
     #[link_name = "_execvpe"]
     pub fn execvpe(
         c: *const c_char,
         argv: *const *const c_char,
         envp: *const *const c_char,
-    ) -> ::c_int;
+    ) -> ::intptr_t;
     #[link_name = "_wexecv"]
     pub fn wexecv(prog: *const wchar_t, argv: *const *const wchar_t) -> ::intptr_t;
     #[link_name = "_wexecve"]
@@ -518,6 +512,9 @@ extern "C" {
     pub fn aligned_malloc(size: size_t, alignment: size_t) -> *mut c_void;
     #[link_name = "_aligned_free"]
     pub fn aligned_free(ptr: *mut ::c_void);
+    #[link_name = "_aligned_realloc"]
+    pub fn aligned_realloc(memblock: *mut ::c_void, size: size_t, alignment: size_t)
+        -> *mut c_void;
     #[link_name = "_putenv"]
     pub fn putenv(envstring: *const ::c_char) -> ::c_int;
     #[link_name = "_wputenv"]
@@ -568,25 +565,7 @@ extern "system" {
     pub fn socket(af: ::c_int, socket_type: ::c_int, protocol: ::c_int) -> SOCKET;
 }
 
-cfg_if! {
-    if #[cfg(libc_core_cvoid)] {
-        pub use ::ffi::c_void;
-    } else {
-        // Use repr(u8) as LLVM expects `void*` to be the same as `i8*` to help
-        // enable more optimization opportunities around it recognizing things
-        // like malloc/free.
-        #[repr(u8)]
-        #[allow(missing_copy_implementations)]
-        #[allow(missing_debug_implementations)]
-        pub enum c_void {
-            // Two dummy variants so the #[repr] attribute can be used.
-            #[doc(hidden)]
-            __variant1,
-            #[doc(hidden)]
-            __variant2,
-        }
-    }
-}
+pub use ffi::c_void;
 
 cfg_if! {
     if #[cfg(all(target_env = "gnu"))] {

@@ -37,7 +37,8 @@ s! {
         pub f_fsid: ::fsid_t,
 
         pub f_namelen: ::c_long,
-        f_spare: [::c_long; 6],
+        pub f_flags: ::c_long,
+        f_spare: [::c_long; 5],
     }
 
     pub struct statfs64 {
@@ -811,9 +812,5 @@ pub const B4000000: ::speed_t = 0o010017;
 
 pub const EHWPOISON: ::c_int = 168;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}
+mod align;
+pub use self::align::*;

@@ -22,7 +22,8 @@ s! {
 
         pub f_namelen: ::__fsword_t,
         pub f_frsize: ::__fsword_t,
-        f_spare: [::__fsword_t; 5],
+        pub f_flags: ::__fsword_t,
+        f_spare: [::__fsword_t; 4],
     }
 
     pub struct flock {
@@ -823,3 +824,4 @@ pub const SYS_memfd_secret: ::c_long = 447;
 pub const SYS_process_mrelease: ::c_long = 448;
 pub const SYS_futex_waitv: ::c_long = 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = 450;
+pub const SYS_mseal: ::c_long = 462;
