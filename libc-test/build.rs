@@ -2890,10 +2890,6 @@ fn test_emscripten(target: &str) {
             ty if ty.starts_with("epoll") => true,
             ty if ty.starts_with("signalfd") => true,
 
-            // FIXME: Lowered from 16 to 8 bytes in
-            // llvm/llvm-project@d1a96e9
-            "max_align_t" => true,
-
             // FIXME: The size has been changed due to time64
             "utimbuf" | "timeval" | "timespec" | "rusage" | "itimerval" | "sched_param"
             | "stat" | "stat64" | "shmid_ds" | "msqid_ds" => true,
