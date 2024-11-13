@@ -1205,10 +1205,6 @@ s! {
         pub cross_timestamping: ::c_int,
         #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
         pub adjust_phase: ::c_int,
-        #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))]
-        pub rsv: [::c_int; 12],
-        #[cfg(any(target_env = "musl", target_env = "ohos"))]
-        pub rsv: [::c_int; 13],
         #[cfg(not(any(
             any(target_arch = "sparc", target_arch = "sparc64"),
             any(target_env = "musl", target_env = "ohos"),
@@ -1223,7 +1219,7 @@ s! {
             any(target_arch = "sparc", target_arch = "sparc64"),
             any(target_env = "musl", target_env = "ohos"),
         )))]
-        pub rsv: [::c_int; 11],
+        pub rsv: [::c_int; PTP_CLOCK_CAPS_RSV_LEN],
     }
 }
 
@@ -5525,6 +5521,17 @@ pub const SCHED_FLAG_ALL: ::c_int = SCHED_FLAG_RESET_ON_FORK
 // ioctl_eventpoll: added in Linux 6.9
 pub const EPIOCSPARAMS: ::Ioctl = 0x40088a01;
 pub const EPIOCGPARAMS: ::Ioctl = 0x80088a02;
+
+// ptp_clock.h
+cfg_if! {
+    if #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))] {
+        pub const PTP_CLOCK_CAPS_RSV_LEN: usize = 12;
+    } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+        pub const PTP_CLOCK_CAPS_RSV_LEN: usize = 13;
+    } else {
+        pub const PTP_CLOCK_CAPS_RSV_LEN: usize = 11;
+    }
+}
 
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
