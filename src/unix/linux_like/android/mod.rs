@@ -3675,6 +3675,9 @@ safe_f! {
 }
 
 extern "C" {
+    pub fn setgrent();
+    pub fn endgrent();
+    pub fn getgrent() -> *mut ::group;
     pub fn getrlimit64(resource: ::c_int, rlim: *mut rlimit64) -> ::c_int;
     pub fn setrlimit64(resource: ::c_int, rlim: *const rlimit64) -> ::c_int;
     pub fn getrlimit(resource: ::c_int, rlim: *mut ::rlimit) -> ::c_int;
