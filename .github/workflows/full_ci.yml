@@ -2,7 +2,7 @@ name: full CI
 
 on:
   push:
-    branches: ['solaris-ci']
+    branches: ['main', 'solaris-ci']
   merge_group:
   pull_request:
     types: [opened, synchronize, reopened]
