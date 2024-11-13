@@ -786,6 +786,7 @@ fn test_solarish(target: &str) {
 
     headers! {
         cfg:
+        "aio.h",
         "ctype.h",
         "dirent.h",
         "dlfcn.h",
@@ -948,6 +949,11 @@ fn test_solarish(target: &str) {
         }
     });
 
+    cfg.skip_field_type(move |struct_, field| {
+        // aio_buf is "volatile void*"
+        struct_ == "aiocb" && field == "aio_buf"
+    });
+
     cfg.skip_field(move |s, field| {
         match s {
             // C99 sizing on this is tough
@@ -1025,6 +1031,12 @@ fn test_solarish(target: &str) {
             // Until better symbol binding story is figured out, it must be
             // excluded from the tests.
             "getifaddrs" if is_illumos => true,
+
+            // FIXME: Our API is unsound. The Rust API allows aliasing
+            // pointers, but the C API requires pointers not to alias.
+            // We should probably be at least using `&`/`&mut` here, see:
+            // https://github.com/gnzlbg/ctest/issues/68
+            "lio_listio" => true,
 
             _ => false,
         }

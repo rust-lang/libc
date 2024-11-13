@@ -10,6 +10,19 @@ pub type lgrp_rsrc_t = ::c_int;
 pub type lgrp_affinity_t = ::c_int;
 
 s! {
+    pub struct aiocb {
+        pub aio_fildes: ::c_int,
+        pub aio_buf: *mut ::c_void,
+        pub aio_nbytes: ::size_t,
+        pub aio_offset: ::off_t,
+        pub aio_reqprio: ::c_int,
+        pub aio_sigevent: ::sigevent,
+        pub aio_lio_opcode: ::c_int,
+        pub aio_resultp: ::aio_result_t,
+        pub aio_state: ::c_int,
+        pub aio__pad: [::c_int; 1],
+    }
+
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,

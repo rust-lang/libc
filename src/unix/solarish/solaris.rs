@@ -20,6 +20,21 @@ e! {
 }
 
 s! {
+    pub struct aiocb {
+        pub aio_fildes: ::c_int,
+        pub aio_buf: *mut ::c_void,
+        pub aio_nbytes: ::size_t,
+        pub aio_offset: ::off_t,
+        pub aio_reqprio: ::c_int,
+        pub aio_sigevent: ::sigevent,
+        pub aio_lio_opcode: ::c_int,
+        pub aio_resultp: ::aio_result_t,
+        pub aio_state: ::c_char,
+        pub aio_returned: ::c_char,
+        pub aio__pad1: [::c_char; 2],
+        pub aio_flags: ::c_int,
+    }
+
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
         pub shm_segsz: ::size_t,
