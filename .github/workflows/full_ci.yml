@@ -194,6 +194,33 @@ jobs:
       - name: Execute run-docker.sh
         run: sh ./ci/run-docker.sh ${{ matrix.target }}
 
+  solaris:
+    name: Solaris
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        target:
+          - x86_64-pc-solaris
+    steps:
+      - uses: actions/checkout@v4
+      - name: test on Solaris
+        uses: vmactions/solaris-vm@v1
+        with:
+          release: "11.4-gcc"
+          usesh: true
+          mem: 4096
+          copyback: false
+          prepare: |
+            source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
+            echo "~~~~ rustc --version ~~~~"
+            rustc --version
+            echo "~~~~ Solaris-version ~~~~"
+            uname -a
+          run: |
+            export PATH=$HOME/.rust_solaris/bin:$PATH
+            bash ./ci/run.sh ${{ matrix.target }}
+            
   check_cfg:
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
@@ -214,6 +241,7 @@ jobs:
       - docker_linux_tier2
       - macos
       - windows
+      - solaris
       - style_check
       - build_channels_linux
       - build_channels_macos
