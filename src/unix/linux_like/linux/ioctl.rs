@@ -44,7 +44,6 @@ const _IOC_DIRSHIFT: u32 = _IOC_SIZESHIFT + _IOC_SIZEBITS;
 // adopted from https://github.com/torvalds/linux/blob/8a696a29c6905594e4abf78eaafcb62165ac61f1/rust/kernel/ioctl.rs
 
 /// Build an ioctl number, analogous to the C macro of the same name.
-#[inline(always)]
 const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> u32 {
     // TODO the `garando_syntax` crate (used by ctest2 in the CI test suite)
     // cannot currently parse these `debug_assert!`s
@@ -61,25 +60,21 @@ const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> u32 {
 }
 
 /// Build an ioctl number for an argumentless ioctl.
-#[inline(always)]
 pub const fn _IO(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_NONE, ty, nr, 0)
 }
 
 /// Build an ioctl number for an read-only ioctl.
-#[inline(always)]
 pub const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_READ, ty, nr, core::mem::size_of::<T>())
 }
 
 /// Build an ioctl number for an write-only ioctl.
-#[inline(always)]
 pub const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_WRITE, ty, nr, core::mem::size_of::<T>())
 }
 
 /// Build an ioctl number for a read-write ioctl.
-#[inline(always)]
 pub const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_READ | _IOC_WRITE, ty, nr, core::mem::size_of::<T>())
 }

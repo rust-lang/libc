@@ -3552,8 +3552,8 @@ fn test_linux(target: &str) {
         "linux/netlink.h",
         // FIXME: requires Linux >= 5.6:
         [!musl]: "linux/openat2.h",
-        "linux/ptp_clock.h",
         // FIXME: some items require Linux >= 5.6:
+        "linux/ptp_clock.h",
         [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",

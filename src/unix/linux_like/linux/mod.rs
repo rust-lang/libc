@@ -836,8 +836,6 @@ s! {
         pub reserved: ::__u32,
     }
 
-
-
     pub struct ptp_extts_request {
         pub index: ::c_uint,
         pub flags: ::c_uint,
