@@ -360,7 +360,6 @@ pub const POLLWRNORM: ::c_short = 256;
 pub const POLLWRBAND: ::c_short = 512;
 pub const O_ASYNC: ::c_int = 8192;
 pub const O_NDELAY: ::c_int = 2048;
-pub const PTRACE_DETACH: ::c_uint = 17;
 pub const EFD_NONBLOCK: ::c_int = 2048;
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;

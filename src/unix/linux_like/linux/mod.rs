@@ -2624,7 +2624,6 @@ cfg_if! {
         pub const IPV6_MULTICAST_ALL: ::c_int = 29;
         pub const IPV6_ROUTER_ALERT_ISOLATE: ::c_int = 30;
         pub const PACKET_MR_UNICAST: ::c_int = 3;
-        pub const PTRACE_EVENT_STOP: ::c_int = 128;
         pub const UDP_SEGMENT: ::c_int = 103;
         pub const UDP_GRO: ::c_int = 104;
     }

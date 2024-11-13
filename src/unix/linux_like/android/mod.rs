@@ -361,12 +361,6 @@ s! {
         pub flags: ::__u64,
     }
 
-    pub struct ptrace_peeksiginfo_args {
-        pub off: ::__u64,
-        pub flags: ::__u32,
-        pub nr: ::__s32,
-    }
-
     // linux/input.h
     pub struct input_event {
         pub time: ::timeval,
@@ -1612,31 +1606,6 @@ pub const FLUSHO: ::tcflag_t = 0x00001000;
 pub const EXTPROC: ::tcflag_t = 0o200000;
 
 pub const MAP_HUGETLB: ::c_int = 0x040000;
-
-pub const PTRACE_TRACEME: ::c_int = 0;
-pub const PTRACE_PEEKTEXT: ::c_int = 1;
-pub const PTRACE_PEEKDATA: ::c_int = 2;
-pub const PTRACE_PEEKUSER: ::c_int = 3;
-pub const PTRACE_POKETEXT: ::c_int = 4;
-pub const PTRACE_POKEDATA: ::c_int = 5;
-pub const PTRACE_POKEUSER: ::c_int = 6;
-pub const PTRACE_CONT: ::c_int = 7;
-pub const PTRACE_KILL: ::c_int = 8;
-pub const PTRACE_SINGLESTEP: ::c_int = 9;
-pub const PTRACE_GETREGS: ::c_int = 12;
-pub const PTRACE_SETREGS: ::c_int = 13;
-pub const PTRACE_ATTACH: ::c_int = 16;
-pub const PTRACE_DETACH: ::c_int = 17;
-pub const PTRACE_SYSCALL: ::c_int = 24;
-pub const PTRACE_SETOPTIONS: ::c_int = 0x4200;
-pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
-pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
-pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
-pub const PTRACE_GETREGSET: ::c_int = 0x4204;
-pub const PTRACE_SETREGSET: ::c_int = 0x4205;
-pub const PTRACE_SECCOMP_GET_METADATA: ::c_int = 0x420d;
-
-pub const PTRACE_EVENT_STOP: ::c_int = 128;
 
 pub const F_GETLK: ::c_int = 5;
 pub const F_GETOWN: ::c_int = 9;

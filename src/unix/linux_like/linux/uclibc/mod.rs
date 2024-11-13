@@ -73,12 +73,6 @@ s! {
         pub e_termination: ::c_short,
         pub e_exit: ::c_short,
     }
-
-    pub struct ptrace_peeksiginfo_args {
-        pub off: ::__u64,
-        pub flags: ::__u32,
-        pub nr: ::__s32,
-    }
 }
 
 impl siginfo_t {
@@ -178,35 +172,6 @@ pub const AF_VSOCK: ::c_int = 40;
 // currently used in CI in some configurations, so we define them here.
 pub const BINDERFS_SUPER_MAGIC: ::c_long = 0x6c6f6f70;
 pub const XFS_SUPER_MAGIC: ::c_long = 0x58465342;
-
-pub const PTRACE_TRACEME: ::c_int = 0;
-pub const PTRACE_PEEKTEXT: ::c_int = 1;
-pub const PTRACE_PEEKDATA: ::c_int = 2;
-pub const PTRACE_PEEKUSER: ::c_int = 3;
-pub const PTRACE_POKETEXT: ::c_int = 4;
-pub const PTRACE_POKEDATA: ::c_int = 5;
-pub const PTRACE_POKEUSER: ::c_int = 6;
-pub const PTRACE_CONT: ::c_int = 7;
-pub const PTRACE_KILL: ::c_int = 8;
-pub const PTRACE_SINGLESTEP: ::c_int = 9;
-pub const PTRACE_GETREGS: ::c_int = 12;
-pub const PTRACE_SETREGS: ::c_int = 13;
-pub const PTRACE_GETFPREGS: ::c_int = 14;
-pub const PTRACE_SETFPREGS: ::c_int = 15;
-pub const PTRACE_ATTACH: ::c_int = 16;
-pub const PTRACE_DETACH: ::c_int = 17;
-pub const PTRACE_GETFPXREGS: ::c_int = 18;
-pub const PTRACE_SETFPXREGS: ::c_int = 19;
-pub const PTRACE_SYSCALL: ::c_int = 24;
-pub const PTRACE_SETOPTIONS: ::c_int = 0x4200;
-pub const PTRACE_GETEVENTMSG: ::c_int = 0x4201;
-pub const PTRACE_GETSIGINFO: ::c_int = 0x4202;
-pub const PTRACE_SETSIGINFO: ::c_int = 0x4203;
-pub const PTRACE_GETREGSET: ::c_int = 0x4204;
-pub const PTRACE_SETREGSET: ::c_int = 0x4205;
-pub const PTRACE_SEIZE: ::c_int = 0x4206;
-pub const PTRACE_INTERRUPT: ::c_int = 0x4207;
-pub const PTRACE_LISTEN: ::c_int = 0x4208;
 
 pub const POSIX_FADV_DONTNEED: ::c_int = 4;
 pub const POSIX_FADV_NOREUSE: ::c_int = 5;
@@ -337,10 +302,6 @@ pub const PACKET_MR_UNICAST: ::c_int = 3;
 pub const PF_NFC: ::c_int = 39;
 pub const PF_VSOCK: ::c_int = 40;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
-pub const PTRACE_EVENT_STOP: ::c_int = 128;
-pub const PTRACE_GETSIGMASK: ::c_uint = 0x420a;
-pub const PTRACE_PEEKSIGINFO: ::c_int = 0x4209;
-pub const PTRACE_SETSIGMASK: ::c_uint = 0x420b;
 pub const RTLD_NOLOAD: ::c_int = 0x00004;
 pub const RUSAGE_THREAD: ::c_int = 1;
 pub const SHM_EXEC: ::c_int = 0o100000;

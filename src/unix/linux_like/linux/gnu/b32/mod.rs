@@ -176,8 +176,6 @@ cfg_if! {
 
         pub const SA_ONSTACK: ::c_int = 1;
 
-        pub const PTRACE_DETACH: ::c_uint = 11;
-
         pub const F_SETLK: ::c_int = 8;
         pub const F_SETLKW: ::c_int = 9;
 
@@ -221,8 +219,6 @@ cfg_if! {
         pub const O_TMPFILE: ::c_int = 0o20000000 | O_DIRECTORY;
 
         pub const SA_ONSTACK: ::c_int = 0x08000000;
-
-        pub const PTRACE_DETACH: ::c_uint = 17;
 
         pub const F_SETLK: ::c_int = 6;
         pub const F_SETLKW: ::c_int = 7;

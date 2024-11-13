@@ -472,8 +472,6 @@ pub const FLUSHO: ::tcflag_t = 0x00001000;
 
 pub const EXTPROC: ::tcflag_t = 0x00010000;
 
-pub const PTRACE_DETACH: ::c_uint = 17;
-
 pub const MCL_CURRENT: ::c_int = 0x0001;
 pub const MCL_FUTURE: ::c_int = 0x0002;
 pub const MCL_ONFAULT: ::c_int = 0x0004;
