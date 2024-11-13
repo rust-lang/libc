@@ -187,6 +187,27 @@ jobs:
       - name: Execute run-docker.sh
         run: sh ./ci/run-docker.sh ${{ matrix.target }}
 
+  solaris:
+    name: test on solaris
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: test on Solaris
+        uses: vmactions/solaris-vm@v1
+        with:
+          usesh: true
+          mem: 4096
+          copyback: false
+          prepare: |
+            source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
+            echo "~~~~ rustc --version ~~~~"
+            rustc --version
+            echo "~~~~ Solaris-version ~~~~"
+            uname -a
+          run: |
+            export PATH=$HOME/.rust_solaris/bin:$PATH
+            bash ./ci/run-docker.sh ${{ matrix.target }}
+
   check_cfg:
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
