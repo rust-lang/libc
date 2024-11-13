@@ -5,6 +5,7 @@ on:
     branches: ['main', 'solaris-ci']
   merge_group:
   pull_request:
+    types: [opened, synchronize, reopened]  
 
 env:
   LIBC_CI: 1
