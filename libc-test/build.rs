@@ -2015,6 +2015,15 @@ fn test_android(target: &str) {
             // Added in API level 28, but some tests use level 24.
             "aligned_alloc" => true,
 
+            // Added in API level 26, but some tests use level 24.
+            "getgrent" => true,
+
+            // Added in API level 26, but some tests use level 24.
+            "setgrent" => true,
+
+            // Added in API level 26, but some tests use level 24.
+            "endgrent" => true,
+
             // FIXME: bad function pointers:
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
             | "ispunct" | "isspace" | "isupper" | "isxdigit" | "isblank" | "tolower"
