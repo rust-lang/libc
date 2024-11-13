@@ -56,6 +56,9 @@ cfg_if! {
     }
 }
 
+// linux/ptp_clock.h
+pub type ptp_pin_function = ::c_uint;
+
 // linux/can.h
 pub type canid_t = u32;
 
@@ -4464,10 +4467,10 @@ pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint =
     ioctl::_IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 18);
 
 // enum ptp_pin_function
-pub const PTP_PF_NONE: ::c_uint = 0;
-pub const PTP_PF_EXTTS: ::c_uint = 1;
-pub const PTP_PF_PEROUT: ::c_uint = 2;
-pub const PTP_PF_PHYSYNC: ::c_uint = 3;
+pub const PTP_PF_NONE: ptp_pin_function = 0;
+pub const PTP_PF_EXTTS: ptp_pin_function = 1;
+pub const PTP_PF_PEROUT: ptp_pin_function = 2;
+pub const PTP_PF_PHYSYNC: ptp_pin_function = 3;
 
 // linux/tls.h
 pub const TLS_TX: ::c_int = 1;
