@@ -256,6 +256,8 @@ pub const PRIV_USER: ::c_uint = PRIV_DEBUG
     | PRIV_AWARE_RESET
     | PRIV_PFEXEC;
 
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = 8;
+
 pub const LGRP_RSRC_COUNT: ::lgrp_rsrc_t = 2;
 pub const LGRP_RSRC_CPU: ::lgrp_rsrc_t = 0;
 pub const LGRP_RSRC_MEM: ::lgrp_rsrc_t = 1;

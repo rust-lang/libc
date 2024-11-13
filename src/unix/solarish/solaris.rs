@@ -191,6 +191,8 @@ pub const PRIV_USER: ::c_uint = PRIV_DEBUG
     | PRIV_TPD_KILLABLE
     | PRIV_PROC_TPD_RESET;
 
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = ::PTHREAD_MUTEX_NORMAL;
+
 extern "C" {
     pub fn fexecve(fd: ::c_int, argv: *const *mut ::c_char, envp: *const *mut ::c_char) -> ::c_int;
 
