@@ -3702,7 +3702,9 @@ fn test_linux(target: &str) {
         if musl && ty == "seccomp_notif_sizes" {
             return true;
         }
-        if musl && ty == "ptp_sys_offset_extended" {
+
+        // FIXME: CI has old headers
+        if ty == "ptp_sys_offset_extended" {
             return true;
         }
 

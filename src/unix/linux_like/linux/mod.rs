@@ -19,6 +19,7 @@ pub type pthread_key_t = ::c_uint;
 pub type pthread_once_t = ::c_int;
 pub type pthread_spinlock_t = ::c_int;
 pub type __kernel_fsid_t = __c_anonymous__kernel_fsid_t;
+pub type __kernel_clockid_t = ::c_int;
 
 pub type __u8 = ::c_uchar;
 pub type __u16 = ::c_ushort;
@@ -847,7 +848,8 @@ s! {
 
     pub struct ptp_sys_offset_extended {
         pub n_samples: ::c_uint,
-        pub rsv: [::c_uint; 3],
+        pub clockid: __kernel_clockid_t,
+        pub rsv: [::c_uint; 2],
         pub ts: [[ptp_clock_time; 3]; PTP_MAX_SAMPLES as usize],
     }
 
