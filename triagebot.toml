@@ -113,9 +113,6 @@ trigger_files = ["src/unix"]
 [autolabel."O-wasi"]
 trigger_files = ["src/wasi"]
 
-[autolabel."O-wasm"]
-trigger_files = ["src/"]
-
 [autolabel."O-windows"]
 trigger_files = ["src/windows"]
 
