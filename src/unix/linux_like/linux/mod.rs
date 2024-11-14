@@ -1184,6 +1184,7 @@ s! {
     pub struct ptp_sys_offset {
         pub n_samples: ::c_uint,
         pub rsv: [::c_uint; 3],
+        // FIXME(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported
         pub ts: [ptp_clock_time; 51],
     }
 
