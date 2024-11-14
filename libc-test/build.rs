@@ -2529,6 +2529,33 @@ fn test_freebsd(target: &str) {
             // FIXME: The values has been changed in FreeBSD 15:
             "CLOCK_BOOTTIME" if Some(15) <= freebsd_ver => true,
 
+            // submodule ifmib, cannot be checked today
+            "DOT3COMPLIANCE_STATS"
+            | "DOT3COMPLIANCE_COLLS"
+            | "IFDATA_GENERAL"
+            | "IFDATA_LINKSPECIFIC"
+            | "IFDATA_DRIVERNAME"
+            | "IFMIB_IFCOUNT"
+            | "IFMIB_IFDATA"
+            | "IFMIB_SYSTEM"
+            | "NETLINK_GENERIC"
+            | "dot3ChipSetAMD7990"
+            | "dot3ChipSetAMD79900"
+            | "dot3ChipSetAMD79C940"
+            | "dot3ChipSetIntel82586"
+            | "dot3ChipSetIntel82596"
+            | "dot3ChipSetIntel82557"
+            | "dot3ChipSetNational8390"
+            | "dot3ChipSetNationalSonic"
+            | "dot3ChipSetFujitsu86950"
+            | "dot3ChipSetDigitalDC21040"
+            | "dot3ChipSetDigitalDC21140"
+            | "dot3ChipSetDigitalDC21041"
+            | "dot3ChipSetDigitalDC21140A"
+            | "dot3ChipSetDigitalDC21142"
+            | "dot3ChipSetWesternDigital83C690"
+            | "dot3ChipSetWesternDigital83C790" => true,
+
             _ => false,
         }
     });

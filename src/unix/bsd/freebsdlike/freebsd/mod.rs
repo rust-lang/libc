@@ -3517,51 +3517,6 @@ pub const IFDR_MSG_SIZE: ::c_int = 64;
 pub const IFDR_REASON_MSG: ::c_int = 1;
 pub const IFDR_REASON_VENDOR: ::c_int = 2;
 
-// sys/net/if_mib.h
-
-/// non-interface-specific
-pub const IFMIB_SYSTEM: ::c_int = 1;
-/// per-interface data table
-pub const IFMIB_IFDATA: ::c_int = 2;
-
-/// generic stats for all kinds of ifaces
-pub const IFDATA_GENERAL: ::c_int = 1;
-/// specific to the type of interface
-pub const IFDATA_LINKSPECIFIC: ::c_int = 2;
-/// driver name and unit
-pub const IFDATA_DRIVERNAME: ::c_int = 3;
-
-/// number of interfaces configured
-pub const IFMIB_IFCOUNT: ::c_int = 1;
-
-/// functions not specific to a type of iface
-pub const NETLINK_GENERIC: ::c_int = 0;
-
-pub const DOT3COMPLIANCE_STATS: ::c_int = 1;
-pub const DOT3COMPLIANCE_COLLS: ::c_int = 2;
-
-pub const dot3ChipSetAMD7990: ::c_int = 1;
-pub const dot3ChipSetAMD79900: ::c_int = 2;
-pub const dot3ChipSetAMD79C940: ::c_int = 3;
-
-pub const dot3ChipSetIntel82586: ::c_int = 1;
-pub const dot3ChipSetIntel82596: ::c_int = 2;
-pub const dot3ChipSetIntel82557: ::c_int = 3;
-
-pub const dot3ChipSetNational8390: ::c_int = 1;
-pub const dot3ChipSetNationalSonic: ::c_int = 2;
-
-pub const dot3ChipSetFujitsu86950: ::c_int = 1;
-
-pub const dot3ChipSetDigitalDC21040: ::c_int = 1;
-pub const dot3ChipSetDigitalDC21140: ::c_int = 2;
-pub const dot3ChipSetDigitalDC21041: ::c_int = 3;
-pub const dot3ChipSetDigitalDC21140A: ::c_int = 4;
-pub const dot3ChipSetDigitalDC21142: ::c_int = 5;
-
-pub const dot3ChipSetWesternDigital83C690: ::c_int = 1;
-pub const dot3ChipSetWesternDigital83C790: ::c_int = 2;
-
 // sys/netinet/in.h
 // Protocols (RFC 1700)
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
@@ -5928,3 +5883,6 @@ cfg_if! {
         // Unknown target_arch
     }
 }
+
+// sys/net/if_mib.h
+pub mod ifmib;
