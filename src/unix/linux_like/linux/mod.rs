@@ -1217,6 +1217,15 @@ s! {
         pub csum_start: ::__u16,
         pub csum_offset: ::__u16,
     }
+
+    // linux/mount.h
+
+    pub struct mount_attr {
+        pub attr_set: ::__u64,
+        pub attr_clr: ::__u64,
+        pub propagation: ::__u64,
+        pub userns_fd: ::__u64,
+    }
 }
 
 cfg_if! {
@@ -5674,6 +5683,21 @@ pub const XDP_TXMD_FLAGS_TIMESTAMP: ::__u32 = 1 << 0;
 pub const XDP_TXMD_FLAGS_CHECKSUM: ::__u32 = 1 << 1;
 
 pub const XDP_TX_METADATA: ::__u32 = 1 << 1;
+
+// linux/mount.h
+pub const MOUNT_ATTR_RDONLY: ::__u64 = 0x00000001;
+pub const MOUNT_ATTR_NOSUID: ::__u64 = 0x00000002;
+pub const MOUNT_ATTR_NODEV: ::__u64 = 0x00000004;
+pub const MOUNT_ATTR_NOEXEC: ::__u64 = 0x00000008;
+pub const MOUNT_ATTR__ATIME: ::__u64 = 0x00000070;
+pub const MOUNT_ATTR_RELATIME: ::__u64 = 0x00000000;
+pub const MOUNT_ATTR_NOATIME: ::__u64 = 0x00000010;
+pub const MOUNT_ATTR_STRICTATIME: ::__u64 = 0x00000020;
+pub const MOUNT_ATTR_NODIRATIME: ::__u64 = 0x00000080;
+pub const MOUNT_ATTR_IDMAP: ::__u64 = 0x00100000;
+pub const MOUNT_ATTR_NOSYMFOLLOW: ::__u64 = 0x00200000;
+
+pub const MOUNT_ATTR_SIZE_VER0: ::c_int = 32;
 
 // elf.h
 pub const NT_PRSTATUS: ::c_int = 1;
