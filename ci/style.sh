@@ -11,7 +11,7 @@ rustfmt -V
 cargo fmt --all -- --check
 
 if shellcheck --version ; then
-    shellcheck ci/*.sh
+    find . -name '*.sh' -exec shellcheck {} ';'
 else
     echo "shellcheck not found"
     exit 1
