@@ -11,6 +11,7 @@ keywords = ["libc", "ffi", "bindings", "operating", "system"]
 categories = ["external-ffi-bindings", "no-std", "os"]
 build = "build.rs"
 exclude = ["/ci/*", "/.github/*", "/.cirrus.yml", "/triagebot.toml"]
+rust-version = "1.19"
 description = """
 Raw FFI bindings to platform libraries like libc.
 """
