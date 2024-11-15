@@ -2,10 +2,10 @@
 
 set -ex
 
-NDK=android-ndk-r26b
-wget --tries=20 -q https://dl.google.com/android/repository/${NDK}-linux.zip
-unzip -q ${NDK}-linux.zip
+ndk=android-ndk-r27
+wget --tries=20 -q "https://dl.google.com/android/repository/${ndk}-linux.zip"
+unzip -q "${ndk}-linux.zip"
 
-mv ./${NDK}/toolchains/llvm/prebuilt/linux-x86_64 /android
+mv "./${ndk}/toolchains/llvm/prebuilt/linux-x86_64" /android
 
-rm -rf ./${NDK}-linux.zip ./${NDK}
+rm -rf "./${ndk}-linux.zip" "./${ndk}"
