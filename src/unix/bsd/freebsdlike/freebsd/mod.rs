@@ -3895,6 +3895,8 @@ pub const TCP_KEEPINIT: ::c_int = 128;
 pub const TCP_FASTOPEN: ::c_int = 1025;
 pub const TCP_PCAP_OUT: ::c_int = 2048;
 pub const TCP_PCAP_IN: ::c_int = 4096;
+pub const TCP_FUNCTION_BLK: ::c_int = 8192;
+pub const TCP_FUNCTION_ALIAS: ::c_int = 8193;
 pub const TCP_FASTOPEN_PSK_LEN: ::c_int = 16;
 pub const TCP_FUNCTION_NAME_LEN_MAX: ::c_int = 32;
 
