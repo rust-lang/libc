@@ -82,15 +82,10 @@ macro_rules! s {
         __item! {
             #[repr(C)]
             #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            #[derive(Copy, Clone)]
             #[allow(deprecated)]
             $(#[$attr])*
             pub struct $i { $($field)* }
-        }
-        #[allow(deprecated)]
-        impl ::Copy for $i {}
-        #[allow(deprecated)]
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
         }
     );
 }
@@ -106,12 +101,9 @@ macro_rules! s_paren {
     )* ) => ($(
         __item! {
             #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            #[derive(Copy, Clone)]
             $(#[$attr])*
             pub struct $i ( $($field)* );
-        }
-        impl ::Copy for $i {}
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
         }
     )*);
 }
@@ -130,27 +122,18 @@ macro_rules! s_no_extra_traits {
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
+            #[derive(Copy, Clone)]
             $(#[$attr])*
             pub union $i { $($field)* }
-        }
-
-        impl ::Copy for $i {}
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
         }
     );
 
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
+            #[derive(Copy, Clone)]
             $(#[$attr])*
             pub struct $i { $($field)* }
-        }
-        #[allow(deprecated)]
-        impl ::Copy for $i {}
-        #[allow(deprecated)]
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
         }
     );
 }
@@ -177,12 +160,9 @@ macro_rules! e {
     )*) => ($(
         __item! {
             #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+            #[derive(Copy, Clone)]
             $(#[$attr])*
             pub enum $i { $($field)* }
-        }
-        impl ::Copy for $i {}
-        impl ::Clone for $i {
-            fn clone(&self) -> $i { *self }
         }
     )*);
 }
