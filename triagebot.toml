@@ -15,6 +15,13 @@ contributing_url = "https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md"
     "@tgross35",
 ]
 
+[autolabel."A-CI"]
+trigger_files = [
+    ".cirrus.yml",
+    ".github",
+    "src/ci",
+]
+
 [autolabel."S-waiting-on-review"]
 new_pr = true
 
