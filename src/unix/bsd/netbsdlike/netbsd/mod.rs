@@ -2398,17 +2398,8 @@ pub const RB_STRING: ::c_int = 0x000000400;
 pub const RB_POWERDOWN: ::c_int = RB_HALT | 0x000000800;
 pub const RB_USERCONF: ::c_int = 0x000001000;
 
-cfg_if! {
-
-    if #[cfg(libc_const_extern_fn)] {
-        pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
-            alignment << MAP_ALIGNMENT_SHIFT
-        }
-    } else {
-        pub fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
-            alignment << MAP_ALIGNMENT_SHIFT
-        }
-    }
+pub const fn MAP_ALIGNED(alignment: ::c_int) -> ::c_int {
+    alignment << MAP_ALIGNMENT_SHIFT
 }
 
 // net/route.h

@@ -214,8 +214,11 @@ macro_rules! e {
 // 1. Avoid ambiguity errors from 'macro_rules!' (which happen when writing '$foo:ident fn'
 // 2. Allow users of this macro to mix 'pub fn foo' and 'pub const fn bar' within the same
 // 'f!' block
+
+// FIXME(ctest): ctest can't handle `const extern` functions, we should be able to remove this
+// cfg completely.
 cfg_if! {
-    if #[cfg(libc_const_extern_fn)] {
+    if #[cfg(feature = "const-extern-fn")] {
         /// Define an `unsafe` function that is const as long as `const-extern-fn` is enabled.
         macro_rules! f {
             ($(

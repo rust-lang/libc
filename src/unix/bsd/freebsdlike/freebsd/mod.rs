@@ -4902,16 +4902,8 @@ pub const TFD_TIMER_CANCEL_ON_SET: ::c_int = 0x02;
 
 pub const CLOSE_RANGE_CLOEXEC: ::c_uint = 1 << 2;
 
-cfg_if! {
-    if #[cfg(libc_const_extern_fn)] {
-        pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
-            a << 24
-        }
-    } else {
-        pub fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
-            a << 24
-        }
-    }
+pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
+    a << 24
 }
 
 const_fn! {
