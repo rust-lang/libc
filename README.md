@@ -55,21 +55,13 @@ libc = "0.2"
 
 ## Rust version support
 
-The minimum supported Rust toolchain version is currently **Rust 1.13.0**. (libc
-does not currently have any policy regarding changes to the minimum supported
-Rust version; such policy is a work in progress.) APIs requiring newer Rust
-features are only available on newer Rust toolchains:
+The minimum supported Rust toolchain version is currently **Rust 1.63**.
 
-| Feature              | Version |
-| -------------------- | ------- |
-| `union`              | 1.19.0  |
-| `const mem::size_of` | 1.24.0  |
-| `repr(align)`        | 1.25.0  |
-| `extra_traits`       | 1.25.0  |
-| `core::ffi::c_void`  | 1.30.0  |
-| `repr(packed(N))`    | 1.33.0  |
-| `cfg(target_vendor)` | 1.33.0  |
-| `const-extern-fn`    | 1.62.0  |
+Increases to the MSRV are allowed to change without a major (i.e. semver-
+breaking) release in order to avoid a ripple effect in the ecosystem.
+
+`libc` may continue to compile with Rust versions older than the current MSRV
+but this is not guaranteed.
 
 ## Platform support
 
