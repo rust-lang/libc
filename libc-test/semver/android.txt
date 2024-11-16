@@ -3186,6 +3186,7 @@ dlsym
 dup
 dup2
 duplocale
+endgrent
 endservent
 epoll_create
 epoll_create1
@@ -3290,6 +3291,7 @@ getegid
 getenv
 geteuid
 getgid
+getgrent
 getgrgid
 getgrgid_r
 getgrnam
@@ -3684,6 +3686,7 @@ seteuid
 setfsgid
 setfsuid
 setgid
+setgrent
 setgroups
 sethostname
 setlocale
