@@ -156,13 +156,13 @@ x86_64-unknown-redox \
 "
 
 rust_apple_targets="\
+aarch64-apple-darwin \
 aarch64-apple-ios \
 x86_64-apple-darwin \
 x86_64-apple-ios \
 "
 
 rust_nightly_apple_targets="\
-aarch64-apple-darwin \
 "
 
 # Must start with `x86_64-pc-windows-msvc` first.
