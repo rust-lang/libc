@@ -110,12 +110,17 @@ test_target() {
 rust_linux_targets="\
 aarch64-linux-android \
 aarch64-unknown-linux-gnu \
+aarch64-unknown-linux-musl \
 arm-linux-androideabi \
 arm-unknown-linux-gnueabi \
 arm-unknown-linux-gnueabihf \
+arm-unknown-linux-musleabi \
+arm-unknown-linux-musleabihf \
 armv7-linux-androideabi \
 armv7-unknown-linux-gnueabihf \
+armv7-unknown-linux-musleabihf \
 i586-unknown-linux-gnu \
+i586-unknown-linux-musl \
 i686-linux-android \
 i686-unknown-freebsd \
 i686-unknown-linux-gnu \
@@ -124,27 +129,15 @@ powerpc-unknown-linux-gnu \
 powerpc64-unknown-linux-gnu \
 powerpc64le-unknown-linux-gnu \
 s390x-unknown-linux-gnu \
+sparc64-unknown-linux-gnu \
+sparcv9-sun-solaris \
+wasm32-unknown-emscripten \
+wasm32-unknown-unknown \
+x86_64-linux-android \
 x86_64-unknown-freebsd \
 x86_64-unknown-linux-gnu \
 x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
-"
-
-rust_gt_1_13_linux_targets="\
-arm-unknown-linux-musleabi \
-arm-unknown-linux-musleabihf \
-armv7-unknown-linux-musleabihf \
-sparc64-unknown-linux-gnu \
-wasm32-unknown-emscripten \
-x86_64-linux-android \
-"
-rust_gt_1_19_linux_targets="\
-aarch64-unknown-linux-musl \
-sparcv9-sun-solaris \
-wasm32-unknown-unknown \
-"
-rust_gt_1_24_linux_targets="\
-i586-unknown-linux-musl \
 "
 
 rust_nightly_linux_targets="\
@@ -154,20 +147,20 @@ armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
 riscv64gc-unknown-linux-gnu \
 x86_64-fortanix-unknown-sgx \
-x86_64-unknown-fuchsia \
 x86_64-pc-solaris \
 x86_64-pc-windows-gnu \
+x86_64-unknown-fuchsia \
 x86_64-unknown-illumos \
 x86_64-unknown-linux-gnux32 \
 x86_64-unknown-redox \
 "
 
 rust_apple_targets="\
+aarch64-apple-darwin \
 aarch64-apple-ios \
 "
 
 rust_nightly_apple_targets="\
-aarch64-apple-darwin \
 "
 
 # Must start with `x86_64-pc-windows-msvc` first.
@@ -182,16 +175,6 @@ targets=""
 case "${OS}" in
     linux*)
         targets="$rust_linux_targets"
-
-        if [ "$rust" != "1.13.0" ]; then
-            targets="$targets $rust_gt_1_13_linux_targets"
-            if [ "$rust" != "1.19.0" ]; then
-                targets="$targets $rust_gt_1_19_linux_targets"
-                if [ "${rust}" != "1.24.0" ]; then
-                    targets="$targets $rust_gt_1_24_linux_targets"
-                fi
-            fi
-        fi
 
         if [ "$rust" = "nightly" ]; then
             targets="$targets $rust_nightly_linux_targets"
