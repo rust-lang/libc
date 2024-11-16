@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.2.164](https://github.com/rust-lang/libc/compare/0.2.163...0.2.164) - 2024-11-16
+
+### MSRV
+
+This release increases the MSRV of `libc` to 1.63.
+
+### Other
+
+- CI: remove tests with rust < 1.63 <https://github.com/rust-lang/libc/pull/4051>
+- MSRV: document the MSRV of the stable channel to be 1.63 <https://github.com/rust-lang/libc/pull/4040>
+- MacOS: move ifconf to s_no_extra_traits <https://github.com/rust-lang/libc/pull/4051>
+
 ## [0.2.163](https://github.com/rust-lang/libc/compare/0.2.162...0.2.163) - 2024-11-16
 
 ### Added
