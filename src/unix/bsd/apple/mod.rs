@@ -1143,15 +1143,6 @@ s! {
         pub nativeattr: attribute_set_t,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
-    pub struct ifconf {
-        pub ifc_len: ::c_int,
-        #[cfg(libc_union)]
-        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-        #[cfg(not(libc_union))]
-        pub ifc_ifcu: *mut ifreq,
-    }
-
     #[cfg_attr(libc_align, repr(align(8)))]
     pub struct tcp_connection_info {
         pub tcpi_state: u8,
@@ -1202,6 +1193,15 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    pub struct ifconf {
+        pub ifc_len: ::c_int,
+        #[cfg(libc_union)]
+        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+        #[cfg(not(libc_union))]
+        pub ifc_ifcu: *mut ifreq,
+    }
+
     #[cfg_attr(libc_packedN, repr(packed(4)))]
     pub struct kevent {
         pub ident: ::uintptr_t,
@@ -1617,6 +1617,32 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for ifconf
+        where
+            Self: Copy
+        {
+            fn eq(&self, other: &Self) -> bool {
+                let len_ptr1 = core::ptr::addr_of!(self.ifc_len);
+                let len_ptr2 = core::ptr::addr_of!(other.ifc_len);
+                let ifcu_ptr1 = core::ptr::addr_of!(self.ifc_ifcu);
+                let ifcu_ptr2 = core::ptr::addr_of!(other.ifc_ifcu);
+
+                // SAFETY: `ifconf` implements `Copy` so the reads are valid
+                let len1 = unsafe { len_ptr1.read_unaligned() };
+                let len2 = unsafe { len_ptr2.read_unaligned() };
+                let ifcu1 = unsafe { ifcu_ptr1.read_unaligned() };
+                let ifcu2 = unsafe { ifcu_ptr2.read_unaligned() };
+
+                len1 == len2 && ifcu1 == ifcu2
+            }
+        }
+        impl Eq for ifconf {}
+        impl ::fmt::Debug for ifconf {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+                f.debug_struct("ifconf").finish_non_exhaustive()
+            }
+        }
+
         impl PartialEq for kevent {
             fn eq(&self, other: &kevent) -> bool {
                 self.ident == other.ident
@@ -1627,6 +1653,7 @@ cfg_if! {
                     && self.udata == other.udata
             }
         }
+
         impl Eq for kevent {}
         impl ::fmt::Debug for kevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
