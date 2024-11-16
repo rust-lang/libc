@@ -534,20 +534,17 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg(libc_union)]
     pub union __sigaction_sa_union {
         pub __su_handler: extern fn(c: ::c_int),
         pub __su_sigaction: extern fn(c: ::c_int, info: *mut siginfo_t, ptr: *mut ::c_void),
     }
 
     pub struct sigaction {
-        #[cfg(libc_union)]
         pub sa_union: __sigaction_sa_union,
         pub sa_mask: sigset_t,
         pub sa_flags: ::c_int,
     }
 
-    #[cfg(libc_union)]
     pub union __poll_ctl_ext_u {
         pub addr: *mut ::c_void,
         pub data32: u32,
@@ -559,7 +556,6 @@ s_no_extra_traits! {
         pub command: u8,
         pub events: ::c_short,
         pub fd: ::c_int,
-        #[cfg(libc_union)]
         pub u: __poll_ctl_ext_u,
         pub reversed64: [u64; 6],
     }
@@ -567,7 +563,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[cfg(libc_union)]
         impl PartialEq for __sigaction_sa_union {
             fn eq(&self, other: &__sigaction_sa_union) -> bool {
                 unsafe {
@@ -576,9 +571,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __sigaction_sa_union {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __sigaction_sa_union {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__sigaction_sa_union")
@@ -587,7 +580,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __sigaction_sa_union {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -599,36 +591,29 @@ cfg_if! {
 
         impl PartialEq for sigaction {
             fn eq(&self, other: &sigaction) -> bool {
-                #[cfg(libc_union)]
-                let union_eq = self.sa_union == other.sa_union;
-                #[cfg(not(libc_union))]
-                let union_eq = true;
                 self.sa_mask == other.sa_mask
                     && self.sa_flags == other.sa_flags
-                    && union_eq
+                    && self.sa_union == other.sa_union
             }
         }
         impl Eq for sigaction {}
         impl ::fmt::Debug for sigaction {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("sigaction");
-                #[cfg(libc_union)]
-                struct_formatter.field("sa_union", &self.sa_union);
-                struct_formatter.field("sa_mask", &self.sa_mask);
-                struct_formatter.field("sa_flags", &self.sa_flags);
-                struct_formatter.finish()
+                f.debug_struct("sigaction")
+                    .field("sa_union", &self.sa_union)
+                    .field("sa_mask", &self.sa_mask)
+                    .field("sa_flags", &self.sa_flags)
+                    .finish()
             }
         }
         impl ::hash::Hash for sigaction {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                #[cfg(libc_union)]
                 self.sa_union.hash(state);
                 self.sa_mask.hash(state);
                 self.sa_flags.hash(state);
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __poll_ctl_ext_u {
             fn eq(&self, other: &__poll_ctl_ext_u) -> bool {
                 unsafe {
@@ -638,9 +623,7 @@ cfg_if! {
                 }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __poll_ctl_ext_u {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __poll_ctl_ext_u {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("__poll_ctl_ext_u")
@@ -650,7 +633,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(libc_union)]
         impl ::hash::Hash for __poll_ctl_ext_u {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -663,30 +645,25 @@ cfg_if! {
 
         impl PartialEq for poll_ctl_ext {
             fn eq(&self, other: &poll_ctl_ext) -> bool {
-                #[cfg(libc_union)]
-                let union_eq = self.u == other.u;
-                #[cfg(not(libc_union))]
-                let union_eq = true;
                 self.version == other.version
                     && self.command == other.command
                     && self.events == other.events
                     && self.fd == other.fd
                     && self.reversed64 == other.reversed64
-                    && union_eq
+                    && self.u == other.u
             }
         }
         impl Eq for poll_ctl_ext {}
         impl ::fmt::Debug for poll_ctl_ext {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("poll_ctl_ext");
-                struct_formatter.field("version", &self.version);
-                struct_formatter.field("command", &self.command);
-                struct_formatter.field("events", &self.events);
-                struct_formatter.field("fd", &self.fd);
-                #[cfg(libc_union)]
-                struct_formatter.field("u", &self.u);
-                struct_formatter.field("reversed64", &self.reversed64);
-                struct_formatter.finish()
+                f.debug_struct("poll_ctl_ext")
+                    .field("version", &self.version)
+                    .field("command", &self.command)
+                    .field("events", &self.events)
+                    .field("fd", &self.fd)
+                    .field("u", &self.u)
+                    .field("reversed64", &self.reversed64)
+                    .finish()
             }
         }
         impl ::hash::Hash for poll_ctl_ext {
@@ -695,7 +672,6 @@ cfg_if! {
                 self.command.hash(state);
                 self.events.hash(state);
                 self.fd.hash(state);
-                #[cfg(libc_union)]
                 self.u.hash(state);
                 self.reversed64.hash(state);
             }

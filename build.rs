@@ -18,7 +18,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_cfg_target_vendor",
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
-    "libc_const_size_of",
     "libc_core_cvoid",
     "libc_deny_warnings",
     "libc_int128",
@@ -28,7 +27,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_ptr_addr_of",
     "libc_thread_local",
     "libc_underscore_const_names",
-    "libc_union",
     "libc_ctest",
 ];
 
@@ -96,16 +94,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.19 supports unions:
-    if rustc_minor_ver >= 19 || rustc_dep_of_std {
-        set_cfg("libc_union");
-    }
-
-    // Rust >= 1.24 supports const mem::size_of:
-    if rustc_minor_ver >= 24 || rustc_dep_of_std {
-        set_cfg("libc_const_size_of");
     }
 
     // Rust >= 1.25 supports repr(align):

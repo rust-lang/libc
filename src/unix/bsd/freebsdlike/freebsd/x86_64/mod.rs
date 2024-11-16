@@ -82,7 +82,6 @@ s_no_extra_traits! {
         pub xmm_pad: [u8; 224],
     }
 
-    #[cfg(libc_union)]
     pub union __c_anonymous_elf64_auxv_union {
         pub a_val: ::c_long,
         pub a_ptr: *mut ::c_void,
@@ -91,7 +90,6 @@ s_no_extra_traits! {
 
     pub struct Elf64_Auxinfo {
         pub a_type: ::c_long,
-        #[cfg(libc_union)]
         pub a_un: __c_anonymous_elf64_auxv_union,
     }
 }
@@ -188,7 +186,6 @@ cfg_if! {
             }
         }
 
-        #[cfg(libc_union)]
         impl PartialEq for __c_anonymous_elf64_auxv_union {
             fn eq(&self, other: &__c_anonymous_elf64_auxv_union) -> bool {
                 unsafe { self.a_val == other.a_val
@@ -196,9 +193,7 @@ cfg_if! {
                         || self.a_fcn == other.a_fcn }
             }
         }
-        #[cfg(libc_union)]
         impl Eq for __c_anonymous_elf64_auxv_union {}
-        #[cfg(libc_union)]
         impl ::fmt::Debug for __c_anonymous_elf64_auxv_union {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("a_val")
@@ -206,13 +201,6 @@ cfg_if! {
                     .finish()
             }
         }
-        #[cfg(not(libc_union))]
-        impl PartialEq for Elf64_Auxinfo {
-            fn eq(&self, other: &Elf64_Auxinfo) -> bool {
-                self.a_type == other.a_type
-            }
-        }
-        #[cfg(libc_union)]
         impl PartialEq for Elf64_Auxinfo {
             fn eq(&self, other: &Elf64_Auxinfo) -> bool {
                 self.a_type == other.a_type
@@ -220,15 +208,6 @@ cfg_if! {
             }
         }
         impl Eq for Elf64_Auxinfo {}
-        #[cfg(not(libc_union))]
-        impl ::fmt::Debug for Elf64_Auxinfo {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("Elf64_Auxinfo")
-                    .field("a_type", &self.a_type)
-                    .finish()
-            }
-        }
-        #[cfg(libc_union)]
         impl ::fmt::Debug for Elf64_Auxinfo {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("Elf64_Auxinfo")
@@ -240,16 +219,7 @@ cfg_if! {
     }
 }
 
-// should be pub(crate), but that requires Rust 1.18.0
-cfg_if! {
-    if #[cfg(libc_const_size_of)] {
-        #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
-    } else {
-        #[doc(hidden)]
-        pub const _ALIGNBYTES: usize = 8 - 1;
-    }
-}
+pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
 
 pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
 pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
