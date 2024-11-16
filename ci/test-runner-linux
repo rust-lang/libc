@@ -2,8 +2,8 @@
 
 set -e
 
-arch=$1
-prog=$2
+arch="$1"
+prog="$2"
 
 cd /qemu/init
 echo "#!/bin/sh\n/prog --color=never" > run_prog.sh
@@ -13,11 +13,11 @@ find . | cpio --create --format='newc' --quiet | gzip > ../initrd.gz
 cd ..
 
 timeout 30s qemu-system-$arch \
-  -m 1024 \
-  -nographic \
-  -kernel kernel \
-  -initrd initrd.gz \
-  -append init=/run_prog.sh > output || true
+    -m 1024 \
+    -nographic \
+    -kernel kernel \
+    -initrd initrd.gz \
+    -append init=/run_prog.sh > output || true
 
 # remove kernel messages
 tr -d '\r' < output | grep -Ev '^\['

@@ -18,8 +18,8 @@ apt-get install -y --no-install-recommends \
 wasmtime=24.0.0
 wasi_sdk=24
 
-curl -L https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtime/wasmtime-v$wasmtime-x86_64-linux.tar.xz | \
-  tar xJf -
+curl -L https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtime/wasmtime-v$wasmtime-x86_64-linux.tar.xz |
+    tar xJf -
 mv wasmtime-v$wasmtime-x86_64-linux wasmtime
 
 # The pre-built `*.deb` files for wasi-sdk install to `/opt/wasi-sdk`

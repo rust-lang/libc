@@ -10,29 +10,27 @@ set -ex
 : "${TOOLCHAIN?The TOOLCHAIN environment variable must be set.}"
 : "${OS?The OS environment variable must be set.}"
 
-RUST=${TOOLCHAIN}
-VERBOSE=-v
+rust="$TOOLCHAIN"
 
-echo "Testing Rust ${RUST} on ${OS}"
+echo "Testing Rust $rust on $OS"
 
-if [ "${TOOLCHAIN}" = "nightly" ] ; then
+if [ "$TOOLCHAIN" = "nightly" ] ; then
     rustup component add rust-src
 fi
 
 test_target() {
-    BUILD_CMD="${1}"
-    TARGET="${2}"
-    NO_STD="${3}"
+    build_cmd="${1}"
+    target="${2}"
+    no_std="${3}"
 
     # If there is a std component, fetch it:
-    if [ "${NO_STD}" != "1" ]; then
+    if [ "${no_std}" != "1" ]; then
         # FIXME: rustup often fails to download some artifacts due to network
         # issues, so we retry this N times.
         N=5
         n=0
-        until [ $n -ge $N ]
-        do
-            if rustup target add "${TARGET}" --toolchain "${RUST}" ; then
+        until [ $n -ge $N ]; do
+            if rustup target add "$target" --toolchain "$rust" ; then
                 break
             fi
             n=$((n+1))
@@ -41,64 +39,88 @@ test_target() {
     fi
 
     # Test that libc builds without any default features (no std)
-    if [ "${NO_STD}" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}"
+    if [ "$no_std" != "1" ]; then
+        cargo "+$rust" "$build_cmd" --no-default-features --target "$target"
     else
         # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
-        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc "$VERBOSE" --no-default-features --target "${TARGET}"
+        RUSTFLAGS="-A improper_ctypes_definitions" \
+            cargo "+$rust" "$build_cmd" \
+            -Z build-std=core,alloc \
+            --no-default-features \
+            --target "$target"
     fi
+
     # Test that libc builds with default features (e.g. std)
     # if the target supports std
-    if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --target "${TARGET}"
+    if [ "$no_std" != "1" ]; then
+        cargo "+$rust" "$build_cmd" --target "$target"
     else
-        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc "$VERBOSE" --target "${TARGET}"
+        RUSTFLAGS="-A improper_ctypes_definitions" \
+            cargo "+$rust" "${build_cmd}" \
+            -Z build-std=core,alloc \
+            --target "$target"
     fi
 
     # Test that libc builds with the `extra_traits` feature
-    if [ "${NO_STD}" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}" \
-            --features extra_traits
+    if [ "$no_std" != "1" ]; then
+        cargo "+$rust" "$build_cmd" \
+            --no-default-features \
+            --features extra_traits \
+            --target "$target"
     else
-        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc "$VERBOSE" --no-default-features \
-            --target "${TARGET}" --features extra_traits
+        RUSTFLAGS="-A improper_ctypes_definitions" \
+            cargo "+$rust" "$build_cmd" \
+            -Z build-std=core,alloc \
+            --no-default-features \
+            --features extra_traits \
+            --target "$target"
     fi
 
     # Test the 'const-extern-fn' feature on nightly
-    if [ "${RUST}" = "nightly" ]; then
-        if [ "${NO_STD}" != "1" ]; then
-            cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --no-default-features --target "${TARGET}" \
-                --features const-extern-fn
+    if [ "${rust}" = "nightly" ]; then
+        if [ "${no_std}" != "1" ]; then
+            cargo "+$rust" "$build_cmd" \
+                --no-default-features \
+                --features const-extern-fn \
+                --target "$target"
         else
-            RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-                -Z build-std=core,alloc "$VERBOSE" --no-default-features \
-                --target "${TARGET}" --features const-extern-fn
+            RUSTFLAGS="-A improper_ctypes_definitions" \
+                cargo "+$rust" "$build_cmd" \
+                -Z build-std=core,alloc \
+                --no-default-features \
+                --features const-extern-fn \
+                --target "$target"
         fi
     fi
 
     # Also test that it builds with `extra_traits` and default features:
-    if [ "$NO_STD" != "1" ]; then
-        cargo "+${RUST}" "${BUILD_CMD}" "$VERBOSE" --target "${TARGET}" \
+    if [ "$no_std" != "1" ]; then
+        cargo "+$rust" "$build_cmd" \
+            --target "$target" \
             --features extra_traits
     else
-        RUSTFLAGS="-A improper_ctypes_definitions" cargo "+${RUST}" "${BUILD_CMD}" \
-            -Z build-std=core,alloc "$VERBOSE" --target "${TARGET}" \
+        RUSTFLAGS="-A improper_ctypes_definitions" \
+            cargo "+$rust" "$build_cmd" \
+            -Z build-std=core,alloc \
+            --target "$target" \
             --features extra_traits
     fi
 }
 
-RUST_LINUX_TARGETS="\
+rust_linux_targets="\
 aarch64-linux-android \
 aarch64-unknown-linux-gnu \
+aarch64-unknown-linux-musl \
 arm-linux-androideabi \
 arm-unknown-linux-gnueabi \
 arm-unknown-linux-gnueabihf \
+arm-unknown-linux-musleabi \
+arm-unknown-linux-musleabihf \
 armv7-linux-androideabi \
 armv7-unknown-linux-gnueabihf \
+armv7-unknown-linux-musleabihf \
 i586-unknown-linux-gnu \
+i586-unknown-linux-musl \
 i686-linux-android \
 i686-unknown-freebsd \
 i686-unknown-linux-gnu \
@@ -107,105 +129,81 @@ powerpc-unknown-linux-gnu \
 powerpc64-unknown-linux-gnu \
 powerpc64le-unknown-linux-gnu \
 s390x-unknown-linux-gnu \
+sparc64-unknown-linux-gnu \
+sparcv9-sun-solaris \
+wasm32-unknown-emscripten \
+wasm32-unknown-unknown \
+x86_64-linux-android \
 x86_64-unknown-freebsd \
 x86_64-unknown-linux-gnu \
 x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
 "
 
-RUST_GT_1_13_LINUX_TARGETS="\
-arm-unknown-linux-musleabi \
-arm-unknown-linux-musleabihf \
-armv7-unknown-linux-musleabihf \
-sparc64-unknown-linux-gnu \
-wasm32-unknown-emscripten \
-x86_64-linux-android \
-"
-RUST_GT_1_19_LINUX_TARGETS="\
-aarch64-unknown-linux-musl \
-sparcv9-sun-solaris \
-wasm32-unknown-unknown \
-"
-RUST_GT_1_24_LINUX_TARGETS="\
-i586-unknown-linux-musl \
-"
-
-RUST_NIGHTLY_LINUX_TARGETS="\
+rust_nightly_linux_targets="\
 aarch64-unknown-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
 riscv64gc-unknown-linux-gnu \
 x86_64-fortanix-unknown-sgx \
-x86_64-unknown-fuchsia \
 x86_64-pc-solaris \
 x86_64-pc-windows-gnu \
+x86_64-unknown-fuchsia \
 x86_64-unknown-illumos \
 x86_64-unknown-linux-gnux32 \
 x86_64-unknown-redox \
 "
 
-RUST_APPLE_TARGETS="\
+rust_apple_targets="\
+aarch64-apple-darwin \
 aarch64-apple-ios \
 x86_64-apple-darwin \
 x86_64-apple-ios \
 "
 
-RUST_NIGHTLY_APPLE_TARGETS="\
-aarch64-apple-darwin \
+rust_nightly_apple_targets="\
 "
 
 # Must start with `x86_64-pc-windows-msvc` first.
-RUST_NIGHTLY_WINDOWS_TARGETS="\
+rust_nightly_windows_targets="\
 x86_64-pc-windows-msvc \
 x86_64-pc-windows-gnu \
 i686-pc-windows-msvc \
 "
 
 # The targets are listed here alphabetically
-TARGETS=""
+targets=""
 case "${OS}" in
     linux*)
-        TARGETS="${RUST_LINUX_TARGETS}"
+        targets="$rust_linux_targets"
 
-        if [ "${RUST}" != "1.13.0" ]; then
-            TARGETS="${TARGETS} ${RUST_GT_1_13_LINUX_TARGETS}"
-            if [ "${RUST}" != "1.19.0" ]; then
-                TARGETS="${TARGETS} ${RUST_GT_1_19_LINUX_TARGETS}"
-                if [ "${RUST}" != "1.24.0" ]; then
-                    TARGETS="${TARGETS} ${RUST_GT_1_24_LINUX_TARGETS}"
-                fi
-            fi
-        fi
-
-        if [ "${RUST}" = "nightly" ]; then
-            TARGETS="${TARGETS} ${RUST_NIGHTLY_LINUX_TARGETS}"
+        if [ "$rust" = "nightly" ]; then
+            targets="$targets $rust_nightly_linux_targets"
         fi
 
         ;;
     macos*)
-        TARGETS="${RUST_APPLE_TARGETS}"
+        targets="$rust_apple_targets"
 
-        if [ "${RUST}" = "nightly" ]; then
-            TARGETS="${TARGETS} ${RUST_NIGHTLY_APPLE_TARGETS}"
+        if [ "$rust" = "nightly" ]; then
+            targets="$targets $rust_nightly_apple_targets"
         fi
 
         ;;
     windows*)
-        TARGETS=${RUST_NIGHTLY_WINDOWS_TARGETS}
-
+        targets=${rust_nightly_windows_targets}
         ;;
-    *)
-        ;;
+    *) ;;
 esac
 
-for TARGET in $TARGETS; do
-    if echo "$TARGET"|grep -q "$FILTER"; then
+for target in $targets; do
+    if echo "$target" | grep -q "$FILTER"; then
         if [ "${OS}" = "windows" ]; then
-            TARGET="$TARGET" sh ./ci/install-rust.sh
-            test_target build "$TARGET"
+            TARGET="$target" sh ./ci/install-rust.sh
+            test_target build "$target"
         else
-            test_target build "$TARGET"
+            test_target build "$target"
         fi
     fi
 done
@@ -213,7 +211,7 @@ done
 # Targets which are not available via rustup and must be built with -Zbuild-std
 # FIXME(hexagon): hexagon-unknown-linux-musl should be tested but currently has
 # duplicate symbol errors from `compiler_builtins`.
-RUST_LINUX_NO_CORE_TARGETS="\
+rust_linux_no_core_targets="\
 aarch64-pc-windows-msvc \
 aarch64-unknown-freebsd \
 aarch64-unknown-hermit \
@@ -278,24 +276,24 @@ x86_64-unknown-openbsd \
 x86_64-wrs-vxworks \
 "
 
-if [ "${RUST}" = "nightly" ] && [ "${OS}" = "linux" ]; then
-    for TARGET in $RUST_LINUX_NO_CORE_TARGETS; do
-        if echo "$TARGET"|grep -q "$FILTER"; then
-            test_target build "$TARGET" 1
+if [ "${rust}" = "nightly" ] && [ "${OS}" = "linux" ]; then
+    for target in $rust_linux_no_core_targets; do
+        if echo "$target" | grep -q "$FILTER"; then
+            test_target build "$target" 1
         fi
     done
 fi
 
-RUST_APPLE_NO_CORE_TARGETS="\
+rust_apple_no_core_targets="\
 armv7s-apple-ios \
 i686-apple-darwin \
 i386-apple-ios \
 "
 
-if [ "${RUST}" = "nightly" ] && [ "${OS}" = "macos" ]; then
-    for TARGET in $RUST_APPLE_NO_CORE_TARGETS; do
-        if echo "$TARGET" | grep -q "$FILTER"; then
-            test_target build "$TARGET" 1
+if [ "${rust}" = "nightly" ] && [ "${OS}" = "macos" ]; then
+    for target in $rust_apple_no_core_targets; do
+        if echo "$target" | grep -q "$FILTER"; then
+            test_target build "$target" 1
         fi
     done
 fi

@@ -1,17 +1,17 @@
-#!/usr/bin/env sh
+#!/bin/sh
 #
 # Install musl and musl-sanitized linux kernel headers
 # to musl-{$1} directory
 
 set -ex
 
-MUSL_VERSION=1.1.24
-MUSL="musl-${MUSL_VERSION}"
+musl_version=1.1.24
+musl="musl-${musl_version}"
 
 # Download, configure, build, and install musl:
-curl --retry 5 https://www.musl-libc.org/releases/${MUSL}.tar.gz | tar xzf -
+curl --retry 5 https://www.musl-libc.org/releases/${musl}.tar.gz | tar xzf -
 
-cd $MUSL
+cd "$musl"
 case ${1} in
     aarch64)
         musl_arch=aarch64
@@ -62,15 +62,15 @@ esac
 
 # shellcheck disable=SC2103
 cd ..
-rm -rf $MUSL
+rm -rf "$musl"
 
 # Download, configure, build, and install musl-sanitized kernel headers:
-KERNEL_HEADER_VER="4.19.88"
+kernel_header_ver="4.19.88"
 curl --retry 5 -L \
-     "https://github.com/sabotage-linux/kernel-headers/archive/v${KERNEL_HEADER_VER}.tar.gz" | \
+    "https://github.com/sabotage-linux/kernel-headers/archive/v${kernel_header_ver}.tar.gz" |
     tar xzf -
 (
-    cd kernel-headers-${KERNEL_HEADER_VER}
+    cd "kernel-headers-${kernel_header_ver}"
     make ARCH="${kernel_arch}" prefix="/musl-${musl_arch}" install -j4
 )
-rm -rf kernel-headers-${KERNEL_HEADER_VER}
+rm -rf kernel-headers-${kernel_header_ver}
