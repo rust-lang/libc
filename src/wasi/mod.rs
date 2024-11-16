@@ -380,16 +380,16 @@ cfg_if! {
         // `addr_of!(EXTERN_STATIC)` is now safe; remove `unsafe` when MSRV >= 1.82
         #[allow(unused_unsafe)]
         pub static CLOCK_MONOTONIC: clockid_t =
-            unsafe { clockid_t(ptr_addr_of!(_CLOCK_MONOTONIC)) };
+            clockid_t(core::ptr::addr_of!(_CLOCK_MONOTONIC));
         #[allow(unused_unsafe)]
         pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
-            unsafe { clockid_t(ptr_addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
+            clockid_t(core::ptr::addr_of!(_CLOCK_PROCESS_CPUTIME_ID));
         #[allow(unused_unsafe)]
         pub static CLOCK_REALTIME: clockid_t =
-            unsafe { clockid_t(ptr_addr_of!(_CLOCK_REALTIME)) };
+            clockid_t(core::ptr::addr_of!(_CLOCK_REALTIME));
         #[allow(unused_unsafe)]
         pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
-            unsafe { clockid_t(ptr_addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
+            clockid_t(core::ptr::addr_of!(_CLOCK_THREAD_CPUTIME_ID));
     }
 }
 
