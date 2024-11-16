@@ -33,13 +33,7 @@ jobs:
           - stable
           - beta
           - nightly
-          # FIXME: Disabled due to:
-          # error: failed to parse registry's information for: serde
-          # 1.13.0,
-          - 1.19.0
-          - 1.24.0
-          - 1.25.0
-          - 1.30.0
+          - 1.63.0
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
@@ -57,9 +51,10 @@ jobs:
       max-parallel: 4
       matrix:
         target:
-          - { toolchain: stable, os: macos-13 }
-          - { toolchain: beta, os: macos-13 }
-          - { toolchain: nightly, os: macos-13 }
+          - { toolchain: stable, os: macos-14 }
+          - { toolchain: beta, os: macos-14 }
+          - { toolchain: nightly, os: macos-14 }
+          - { toolchain: 1.63.0, os: macos-14 }
     runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@v4
@@ -77,10 +72,7 @@ jobs:
       fail-fast: true
       matrix:
         toolchain:
-          - 1.19.0
-          - 1.24.0
-          - 1.25.0
-          - 1.30.0
+          - 1.63.0
           - stable
     steps:
       - uses: actions/checkout@v4
@@ -93,12 +85,12 @@ jobs:
 
   macos:
     name: macOS
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       fail-fast: true
       matrix:
         target:
-          - x86_64-apple-darwin
+          - aarch64-apple-darwin
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
@@ -120,6 +112,7 @@ jobs:
               ARCH_BITS: 64
               ARCH: x86_64
           - target: x86_64-pc-windows-msvc
+          # FIXME: It currently causes segfaults.
           #- target: i686-pc-windows-gnu
           #  env:
           #    ARCH_BITS: 32
@@ -220,7 +213,7 @@ jobs:
           run: |
             export PATH=$HOME/.rust_solaris/bin:$PATH
             bash ./ci/run.sh ${{ matrix.target }}
-            
+
   check_cfg:
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
