@@ -420,6 +420,11 @@ s! {
         pub portnfy_user: *mut ::c_void,
     }
 
+    pub struct aio_result_t {
+        pub aio_return: ::ssize_t,
+        pub aio_errno: ::c_int,
+    }
+
     pub struct exit_status {
         e_termination: ::c_short,
         e_exit: ::c_short,
@@ -1133,9 +1138,19 @@ pub const SIG_BLOCK: ::c_int = 1;
 pub const SIG_UNBLOCK: ::c_int = 2;
 pub const SIG_SETMASK: ::c_int = 3;
 
+pub const AIO_CANCELED: ::c_int = 0;
+pub const AIO_ALLDONE: ::c_int = 1;
+pub const AIO_NOTCANCELED: ::c_int = 2;
+pub const LIO_NOP: ::c_int = 0;
+pub const LIO_READ: ::c_int = 1;
+pub const LIO_WRITE: ::c_int = 2;
+pub const LIO_NOWAIT: ::c_int = 0;
+pub const LIO_WAIT: ::c_int = 1;
+
 pub const SIGEV_NONE: ::c_int = 1;
 pub const SIGEV_SIGNAL: ::c_int = 2;
 pub const SIGEV_THREAD: ::c_int = 3;
+pub const SIGEV_PORT: ::c_int = 4;
 
 pub const CLD_EXITED: ::c_int = 1;
 pub const CLD_KILLED: ::c_int = 2;
@@ -3045,9 +3060,37 @@ extern "C" {
 
     pub fn sync();
 
+    pub fn aio_cancel(fd: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_error(aiocbp: *const aiocb) -> ::c_int;
+    pub fn aio_fsync(op: ::c_int, aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_read(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn aio_return(aiocbp: *mut aiocb) -> ::ssize_t;
+    pub fn aio_suspend(
+        aiocb_list: *const *const aiocb,
+        nitems: ::c_int,
+        timeout: *const ::timespec,
+    ) -> ::c_int;
+    pub fn aio_waitn(
+        aiocb_list: *mut *mut aiocb,
+        nent: ::c_uint,
+        nwait: *mut ::c_uint,
+        timeout: *const ::timespec,
+    ) -> ::c_int;
+    pub fn aio_write(aiocbp: *mut aiocb) -> ::c_int;
+    pub fn lio_listio(
+        mode: ::c_int,
+        aiocb_list: *const *mut aiocb,
+        nitems: ::c_int,
+        sevp: *mut sigevent,
+    ) -> ::c_int;
+
     pub fn __major(version: ::c_int, devnum: ::dev_t) -> ::major_t;
     pub fn __minor(version: ::c_int, devnum: ::dev_t) -> ::minor_t;
     pub fn __makedev(version: ::c_int, majdev: ::major_t, mindev: ::minor_t) -> ::dev_t;
+
+    pub fn arc4random() -> u32;
+    pub fn arc4random_buf(buf: *mut ::c_void, nbytes: ::size_t);
+    pub fn arc4random_uniform(upper_bound: u32) -> u32;
 }
 
 #[link(name = "sendfile")]
