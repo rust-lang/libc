@@ -2,6 +2,31 @@
 
 ## [Unreleased]
 
+## [0.2.163](https://github.com/rust-lang/libc/compare/0.2.162...0.2.163) - 2024-11-16
+
+### Added
+
+- Aix: add more `dlopen` flags <https://github.com/rust-lang/libc/pull/4044>
+- Android: add group calls <https://github.com/rust-lang/libc/pull/3499>
+- FreeBSD: add `TCP_FUNCTION_BLK` and `TCP_FUNCTION_ALIAS` <https://github.com/rust-lang/libc/pull/4047>
+- Linux: add `confstr` <https://github.com/rust-lang/libc/pull/3612>
+- Solarish: add `aio` <https://github.com/rust-lang/libc/pull/4033>
+- Solarish: add `arc4random*` <https://github.com/rust-lang/libc/pull/3944>
+
+### Changed
+
+- Emscripten: upgrade emsdk to 3.1.68 <https://github.com/rust-lang/libc/pull/3962>
+- Hurd: use more standard types <https://github.com/rust-lang/libc/pull/3733>
+- Hurd: use the standard `ssize_t = isize` <https://github.com/rust-lang/libc/pull/4029>
+- Solaris: fix `confstr` and `ucontext_t` <https://github.com/rust-lang/libc/pull/4035>
+
+### Other
+
+- CI: add Solaris <https://github.com/rust-lang/libc/pull/4035>
+- CI: add `i686-unknown-freebsd` <https://github.com/rust-lang/libc/pull/3997>
+- CI: ensure that calls to `sort` do not depend on locale <https://github.com/rust-lang/libc/pull/4026>
+- Specify `rust-version` in `Cargo.toml` <https://github.com/rust-lang/libc/pull/4041>
+
 ## [0.2.162](https://github.com/rust-lang/libc/compare/0.2.161...0.2.162) - 2024-11-07
 
 ### Added
