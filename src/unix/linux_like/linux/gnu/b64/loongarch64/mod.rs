@@ -204,6 +204,45 @@ s! {
         pub fcc: u64,
         pub fcsr: u32,
     }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_sigmask: ::sigset_t,
+        pub uc_mcontext: mcontext_t,
+    }
+
+    #[repr(align(16))]
+    pub struct mcontext_t {
+        pub __pc: ::c_ulonglong,
+        pub __gregs: [::c_ulonglong; 32],
+        pub __flags: ::c_uint,
+        pub __extcontext: [::c_ulonglong; 0],
+    }
+
+    #[repr(align(8))]
+    pub struct clone_args {
+        pub flags: ::c_ulonglong,
+        pub pidfd: ::c_ulonglong,
+        pub child_tid: ::c_ulonglong,
+        pub parent_tid: ::c_ulonglong,
+        pub exit_signal: ::c_ulonglong,
+        pub stack: ::c_ulonglong,
+        pub stack_size: ::c_ulonglong,
+        pub tls: ::c_ulonglong,
+        pub set_tid: ::c_ulonglong,
+        pub set_tid_size: ::c_ulonglong,
+        pub cgroup: ::c_ulonglong,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
+    }
 }
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -213,56 +252,48 @@ pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
 pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
 
-align_const! {
-    #[cfg(target_endian = "little")]
-    pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "little")]
-    pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "little")]
-    pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "big")]
-    pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "big")]
-    pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-    #[cfg(target_endian = "big")]
-    pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t =
-        pthread_mutex_t {
-            size: [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        };
-}
+#[cfg(target_endian = "little")]
+pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "little")]
+pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "little")]
+pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: ::pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
 
 pub const HWCAP_LOONGARCH_CPUCFG: ::c_ulong = 1 << 0;
 pub const HWCAP_LOONGARCH_LAM: ::c_ulong = 1 << 1;
@@ -891,10 +922,3 @@ pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 
 pub const EFD_CLOEXEC: ::c_int = 0x80000;
 pub const EFD_NONBLOCK: ::c_int = 0x800;
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}

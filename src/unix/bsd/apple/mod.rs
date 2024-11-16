@@ -1143,7 +1143,7 @@ s! {
         pub nativeattr: attribute_set_t,
     }
 
-    #[cfg_attr(libc_align, repr(align(8)))]
+    #[repr(align(8))]
     pub struct tcp_connection_info {
         pub tcpi_state: u8,
         pub tcpi_snd_wscale: u8,

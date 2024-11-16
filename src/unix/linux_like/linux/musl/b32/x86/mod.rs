@@ -181,6 +181,12 @@ s_no_extra_traits! {
         pub uc_sigmask: ::sigset_t,
         __private: [u8; 112],
     }
+
+    #[allow(missing_debug_implementations)]
+    #[repr(align(8))]
+    pub struct max_align_t {
+        priv_: [f64; 3]
+    }
 }
 
 cfg_if! {
@@ -959,11 +965,4 @@ pub const SS: ::c_int = 16;
 
 extern "C" {
     pub fn getrandom(buf: *mut ::c_void, buflen: ::size_t, flags: ::c_uint) -> ::ssize_t;
-}
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
 }

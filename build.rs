@@ -14,7 +14,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
-    "libc_align",
     "libc_cfg_target_vendor",
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
@@ -51,7 +50,6 @@ fn main() {
 
     let (rustc_minor_ver, is_nightly) = rustc_minor_nightly();
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
-    let align_cargo_feature = env::var("CARGO_FEATURE_ALIGN").is_ok();
     let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
     let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok() || rustc_minor_ver >= 80;
@@ -94,11 +92,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.25 supports repr(align):
-    if rustc_minor_ver >= 25 || rustc_dep_of_std || align_cargo_feature {
-        set_cfg("libc_align");
     }
 
     // Rust >= 1.26 supports i128 and u128:

@@ -7,27 +7,23 @@ pub type time_t = i64;
 pub type suseconds_t = i64;
 pub type register_t = i64;
 
-cfg_if! {
-    if #[cfg(libc_align)] {
-        s_no_extra_traits! {
-            #[repr(align(16))]
-            pub struct mcontext_t {
-                pub mc_vers: ::c_int,
-                pub mc_flags: ::c_int,
-                pub mc_onstack: ::c_int,
-                pub mc_len: ::c_int,
-                pub mc_avec: [u64; 64],
-                pub mc_av: [u32; 2],
-                pub mc_frame: [::register_t; 42],
-                pub mc_fpreg: [u64; 33],
-                pub mc_vsxfpreg: [u64; 32],
-            }
-        }
+s_no_extra_traits! {
+    #[repr(align(16))]
+    pub struct mcontext_t {
+        pub mc_vers: ::c_int,
+        pub mc_flags: ::c_int,
+        pub mc_onstack: ::c_int,
+        pub mc_len: ::c_int,
+        pub mc_avec: [u64; 64],
+        pub mc_av: [u32; 2],
+        pub mc_frame: [::register_t; 42],
+        pub mc_fpreg: [u64; 33],
+        pub mc_vsxfpreg: [u64; 32],
     }
 }
 
 cfg_if! {
-    if #[cfg(all(libc_align, feature = "extra_traits"))] {
+    if #[cfg(feature = "extra_traits")] {
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
                 self.mc_vers == other.mc_vers &&

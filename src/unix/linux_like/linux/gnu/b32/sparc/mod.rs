@@ -193,6 +193,14 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(8))]
+    pub struct max_align_t {
+        priv_: [i64; 3]
+    }
+}
+
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: ::c_int = 0x8;
 pub const RTLD_GLOBAL: ::c_int = 0x100;
@@ -848,10 +856,3 @@ pub const SYS_memfd_secret: ::c_long = 447;
 pub const SYS_process_mrelease: ::c_long = 448;
 pub const SYS_futex_waitv: ::c_long = 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = 450;
-
-cfg_if! {
-    if #[cfg(libc_align)] {
-        mod align;
-        pub use self::align::*;
-    }
-}

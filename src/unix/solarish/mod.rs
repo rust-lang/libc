@@ -525,7 +525,7 @@ s_no_extra_traits! {
         __ss_pad2: [u8; 240],
     }
 
-    #[cfg_attr(all(target_pointer_width = "64", libc_align), repr(align(8)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
@@ -555,13 +555,13 @@ s_no_extra_traits! {
         __sigev_pad2: ::c_int,
     }
 
-    #[cfg_attr(libc_align, repr(align(16)))]
+    #[repr(align(16))]
     pub union pad128_t {
         // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [i32; 4],
     }
 
-    #[cfg_attr(libc_align, repr(align(16)))]
+    #[repr(align(16))]
     pub union upad128_t {
         // pub _q in this structure would be a "long double", of 16 bytes
         pub _l: [u32; 4],
