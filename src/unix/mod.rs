@@ -1485,6 +1485,9 @@ cfg_if! {
                 all(target_os = "macos", target_arch = "x86"),
                 link_name = "confstr$UNIX2003"
             )]
+            #[cfg_attr(target_os = "solaris",
+                link_name = "__confstr_xpg7"
+            )]
             pub fn confstr(name: ::c_int, buf: *mut ::c_char, len: ::size_t) -> ::size_t;
         }
     }
