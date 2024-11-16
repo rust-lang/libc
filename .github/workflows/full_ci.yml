@@ -214,7 +214,7 @@ jobs:
           run: |
             export PATH=$HOME/.rust_solaris/bin:$PATH
             bash ./ci/run.sh ${{ matrix.target }}
-            
+
   check_cfg:
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
