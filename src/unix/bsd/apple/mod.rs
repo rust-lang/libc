@@ -1218,6 +1218,51 @@ s! {
     pub struct host_cpu_load_info {
         pub cpu_ticks: [::natural_t; CPU_STATE_MAX as usize],
     }
+
+    // net/if_mib.h
+    pub struct ifmibdata {
+        /// Name of interface
+        pub ifmd_name: [::c_char; ::IFNAMSIZ],
+        /// Number of promiscuous listeners
+        pub ifmd_pcount: ::c_uint,
+        /// Interface flags
+        pub ifmd_flags: ::c_uint,
+        /// Instantaneous length of send queue
+        pub ifmd_snd_len: ::c_uint,
+        /// Maximum length of send queue
+        pub ifmd_snd_maxlen: ::c_uint,
+        /// Number of drops in send queue
+        pub ifmd_snd_drops: ::c_uint,
+        /// For future expansion
+        pub ifmd_filler: [::c_uint; 4],
+        /// Generic information and statistics
+        pub ifmd_data: if_data64,
+    }
+
+    pub struct ifs_iso_8802_3 {
+        pub dot3StatsAlignmentErrors: u32,
+        pub dot3StatsFCSErrors: u32,
+        pub dot3StatsSingleCollisionFrames: u32,
+        pub dot3StatsMultipleCollisionFrames: u32,
+        pub dot3StatsSQETestErrors: u32,
+        pub dot3StatsDeferredTransmissions: u32,
+        pub dot3StatsLateCollisions: u32,
+        pub dot3StatsExcessiveCollisions: u32,
+        pub dot3StatsInternalMacTransmitErrors: u32,
+        pub dot3StatsCarrierSenseErrors: u32,
+        pub dot3StatsFrameTooLongs: u32,
+        pub dot3StatsInternalMacReceiveErrors: u32,
+        pub dot3StatsEtherChipSet: u32,
+        pub dot3StatsMissedFrames: u32,
+        pub dot3StatsCollFrequencies: [u32; 16],
+        pub dot3Compliance: u32,
+    }
+
+    pub struct if_family_id {
+        pub iffmid_len: u32,
+        pub iffmid_id: u32,
+        pub iffmid_str: [::c_char; 1],
+    }
 }
 
 s_no_extra_traits! {
@@ -3102,7 +3147,7 @@ cfg_if! {
             }
         }
 
-        impl ::fmt::Debug for ifconf{
+        impl ::fmt::Debug for ifconf {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("ifconf").finish_non_exhaustive()
             }
@@ -5495,6 +5540,32 @@ pub const MACH_TASK_BASIC_INFO_COUNT: u32 =
 pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
     (::mem::size_of::<vm_statistics64_data_t>() / ::mem::size_of::<integer_t>())
         as mach_msg_type_number_t;
+
+// bsd/net/if_mib.h
+/// Non-interface-specific
+pub const IFMIB_SYSTEM: ::c_int = 1;
+/// Per-interface data table
+pub const IFMIB_IFDATA: ::c_int = 2;
+/// All interfaces data at once
+pub const IFMIB_IFALLDATA: ::c_int = 3;
+
+/// Generic stats for all kinds of ifaces
+pub const IFDATA_GENERAL: ::c_int = 1;
+/// Specific to the type of interface
+pub const IFDATA_LINKSPECIFIC: ::c_int = 2;
+/// Addresses assigned to interface
+pub const IFDATA_ADDRS: ::c_int = 3;
+/// Multicast addresses assigned to interface
+pub const IFDATA_MULTIADDRS: ::c_int = 4;
+
+/// Number of interfaces configured
+pub const IFMIB_IFCOUNT: ::c_int = 1;
+
+/// Functions not specific to a type of iface
+pub const NETLINK_GENERIC: ::c_int = 0;
+
+pub const DOT3COMPLIANCE_STATS: ::c_int = 1;
+pub const DOT3COMPLIANCE_COLLS: ::c_int = 2;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
