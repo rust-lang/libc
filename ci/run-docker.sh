@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 # Disable SC2086 as it confuses the docker command.
 # shellcheck disable=SC2086
@@ -10,18 +10,18 @@ set -ex
 
 # Default to assuming the CARGO_HOME is one directory up (to account for a `bin`
 # subdir) from where the `cargo` binary in `$PATH` lives.
-DEFAULT_CARGO_HOME="$(dirname "$(dirname "$(command -v cargo)")")"
+default_cargo_home="$(dirname "$(dirname "$(command -v cargo)")")"
 # If the CARGO_HOME env var is already set, use that. If it isn't set use the
 # default.
-CARGO_HOME="${CARGO_HOME:-$DEFAULT_CARGO_HOME}"
+export CARGO_HOME="${CARGO_HOME:-$default_cargo_home}"
 
 echo "${HOME}"
 pwd
 
 # Avoid "no space left on device" failure.
 if [ "${1}" = "aarch64-linux-android" ] ; then
-  docker system prune -af
-  docker system df
+    docker system prune -af
+    docker system df
 fi
 
 run() {
@@ -37,21 +37,21 @@ run() {
     fi
 
     docker run \
-      --rm \
-      --user "$(id -u)":"$(id -g)" \
-      --env LIBC_CI \
-      --env LIBC_CI_ZBUILD_STD \
-      --env CARGO_HOME=/cargo \
-      --env CARGO_TARGET_DIR=/checkout/target \
-      --volume "$CARGO_HOME":/cargo \
-      --volume "$(rustc --print sysroot)":/rust:ro \
-      --volume "$(pwd)":/checkout:ro \
-      --volume "$(pwd)"/target:/checkout/target \
-      $kvm \
-      --init \
-      --workdir /checkout \
-      "libc-${1}" \
-      sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh ${1}"
+        --rm \
+        --user "$(id -u)":"$(id -g)" \
+        --env LIBC_CI \
+        --env LIBC_CI_ZBUILD_STD \
+        --env CARGO_HOME=/cargo \
+        --env CARGO_TARGET_DIR=/checkout/target \
+        --volume "$CARGO_HOME":/cargo \
+        --volume "$(rustc --print sysroot)":/rust:ro \
+        --volume "$(pwd)":/checkout:ro \
+        --volume "$(pwd)"/target:/checkout/target \
+        $kvm \
+        --init \
+        --workdir /checkout \
+        "libc-${1}" \
+        sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh ${1}"
 }
 
 build_switch() {
@@ -69,23 +69,23 @@ build_switch() {
     cp "$(command -v rustup)" "$(rustc --print sysroot)/bin"
 
     docker run \
-      --rm \
-      --user "$(id -u)":"$(id -g)" \
-      --env LIBC_CI \
-      --env CARGO_HOME=/cargo \
-      --env CARGO_TARGET_DIR=/checkout/target \
-      --volume "$CARGO_HOME":/cargo \
-      --volume "$(rustc --print sysroot)":/rust:ro \
-      --volume "$(pwd)":/checkout:ro \
-      --volume "$(pwd)"/target:/checkout/target \
-      --volume ~/.rustup:/.rustup:Z \
-      $kvm \
-      --init \
-      --workdir /checkout \
-      libc-switch \
-      sh -c "HOME=/tmp RUSTUP_HOME=/tmp PATH=\$PATH:/rust/bin rustup default nightly \
-        && rustup component add rust-src --target ci/switch.json \
-        && cargo build -Z build-std=core,alloc --target ci/switch.json"
+        --rm \
+        --user "$(id -u)":"$(id -g)" \
+        --env LIBC_CI \
+        --env CARGO_HOME=/cargo \
+        --env CARGO_TARGET_DIR=/checkout/target \
+        --volume "$CARGO_HOME":/cargo \
+        --volume "$(rustc --print sysroot)":/rust:ro \
+        --volume "$(pwd)":/checkout:ro \
+        --volume "$(pwd)"/target:/checkout/target \
+        --volume ~/.rustup:/.rustup:Z \
+        $kvm \
+        --init \
+        --workdir /checkout \
+        libc-switch \
+        sh -c "HOME=/tmp RUSTUP_HOME=/tmp PATH=\$PATH:/rust/bin rustup default nightly \
+            && rustup component add rust-src --target ci/switch.json \
+            && cargo build -Z build-std=core,alloc --target ci/switch.json"
 }
 
 if [ -z "${1}" ]; then
