@@ -517,7 +517,7 @@ s_no_extra_traits! {
         pub mc_ownedfp: ::c_uint,
         __reserved: ::c_uint,
         __unused: [::c_uint; 8],
-        pub mc_fpregs: [[::c_uint; 8]; 32],
+        pub mc_fpregs: [::c_uint; 256],
     }
 
     pub struct ucontext_t {
@@ -786,8 +786,7 @@ cfg_if! {
                 self.mc_len == other.mc_len &&
                 self.mc_fpformat == other.mc_fpformat &&
                 self.mc_ownedfp == other.mc_ownedfp &&
-                self.mc_fpregs.iter().zip(other.mc_fpregs.iter()).
-                all(|(a, b)| a == b)
+                self.mc_fpregs == other.mc_fpregs
             }
         }
         impl Eq for mcontext_t {}
