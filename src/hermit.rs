@@ -1,5 +1,7 @@
 //! Hermit C type definitions
 
+use c_void;
+
 cfg_if! {
     if #[cfg(any(target_arch = "aarch64", target_arch = "riscv64"))] {
         pub type c_char = u8;
@@ -576,5 +578,3 @@ extern "C" {
     #[link_name = "sys_poll"]
     pub fn poll(fds: *mut pollfd, nfds: nfds_t, timeout: i32) -> i32;
 }
-
-pub use ffi::c_void;

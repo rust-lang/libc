@@ -1,7 +1,7 @@
-use super::{Send, Sync};
 use core::iter::Iterator;
 
-pub use ffi::c_void;
+use super::{Send, Sync};
+use c_void;
 
 pub type c_char = i8;
 pub type c_uchar = u8;

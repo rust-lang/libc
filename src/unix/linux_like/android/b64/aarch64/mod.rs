@@ -75,6 +75,12 @@ s! {
         // auto-derive traits like Debug
         __reserved: [[u64; 32]; 16],
     }
+
+    pub struct user_fpsimd_struct {
+        pub vregs: [::__uint128_t; 32],
+        pub fpsr: u32,
+        pub fpcr: u32,
+    }
 }
 
 s_no_extra_traits! {
@@ -448,10 +454,3 @@ pub const PROT_MTE: ::c_int = 0x20;
 // From NDK's asm/auxvec.h
 pub const AT_SYSINFO_EHDR: ::c_ulong = 33;
 pub const AT_VECTOR_SIZE_ARCH: ::c_ulong = 2;
-
-cfg_if! {
-    if #[cfg(libc_int128)] {
-        mod int128;
-        pub use self::int128::*;
-    }
-}

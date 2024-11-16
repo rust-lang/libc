@@ -1193,13 +1193,13 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct ifconf {
         pub ifc_len: ::c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct kevent {
         pub ident: ::uintptr_t,
         pub filter: i16,
@@ -1209,7 +1209,7 @@ s_no_extra_traits! {
         pub udata: *mut ::c_void,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
         pub sem_perm: ipc_perm,
@@ -1222,7 +1222,7 @@ s_no_extra_traits! {
         pub sem_pad3: [i32; 4],
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
         pub shm_segsz: ::size_t,
@@ -1381,7 +1381,7 @@ s_no_extra_traits! {
         pub pth_name: [::c_char; MAXTHREADNAMESIZE],
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct if_data64 {
         pub ifi_type: ::c_uchar,
         pub ifi_typelen: ::c_uchar,
@@ -1413,7 +1413,7 @@ s_no_extra_traits! {
         pub ifi_lastchange: timeval32,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct if_msghdr2 {
         pub ifm_msglen: ::c_ushort,
         pub ifm_version: ::c_uchar,
@@ -1428,7 +1428,7 @@ s_no_extra_traits! {
         pub ifm_data: if_data64,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(8)))]
+    #[repr(packed(8))]
     pub struct vm_statistics64 {
         pub free_count: natural_t,
         pub active_count: natural_t,
@@ -1456,7 +1456,7 @@ s_no_extra_traits! {
         pub total_uncompressed_pages_in_compressor: u64,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct mach_task_basic_info {
         pub virtual_size: mach_vm_size_t,
         pub resident_size: mach_vm_size_t,
@@ -1467,7 +1467,7 @@ s_no_extra_traits! {
         pub suspend_count: integer_t,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct log2phys {
         pub l2p_flags: ::c_uint,
         pub l2p_contigbytes: ::off_t,
@@ -1478,7 +1478,7 @@ s_no_extra_traits! {
         _os_unfair_lock_opaque: u32,
     }
 
-   #[cfg_attr(libc_packedN, repr(packed(1)))]
+   #[repr(packed(1))]
     pub struct sockaddr_vm {
         pub svm_len: ::c_uchar,
         pub svm_family: ::sa_family_t,
@@ -1498,7 +1498,7 @@ s_no_extra_traits! {
         pub ifk_value: ::c_int,
     }
 
-    #[cfg_attr(libc_packedN, repr(packed(4)))]
+    #[repr(packed(4))]
     pub struct ifkpi {
         pub ifk_module_id: ::c_uint,
         pub ifk_type: ::c_uint,

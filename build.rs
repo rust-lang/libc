@@ -14,15 +14,10 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
-    "libc_cfg_target_vendor",
     "libc_const_extern_fn",
     "libc_const_extern_fn_unstable",
-    "libc_core_cvoid",
     "libc_deny_warnings",
-    "libc_int128",
     "libc_long_array",
-    "libc_non_exhaustive",
-    "libc_packedN",
     "libc_ptr_addr_of",
     "libc_thread_local",
     "libc_underscore_const_names",
@@ -53,13 +48,6 @@ fn main() {
     let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
     let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok() || rustc_minor_ver >= 80;
-
-    if env::var("CARGO_FEATURE_USE_STD").is_ok() {
-        println!(
-            "cargo:warning=\"libc's use_std cargo feature is deprecated since libc 0.2.55; \
-             please consider using the `std` cargo feature instead\""
-        );
-    }
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
@@ -92,29 +80,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.26 supports i128 and u128:
-    if rustc_minor_ver >= 26 || rustc_dep_of_std {
-        set_cfg("libc_int128");
-    }
-
-    // Rust >= 1.30 supports `core::ffi::c_void`, so libc can just re-export it.
-    // Otherwise, it defines an incompatible type to retaining
-    // backwards-compatibility.
-    if rustc_minor_ver >= 30 || rustc_dep_of_std {
-        set_cfg("libc_core_cvoid");
-    }
-
-    // Rust >= 1.33 supports repr(packed(N)) and cfg(target_vendor).
-    if rustc_minor_ver >= 33 || rustc_dep_of_std {
-        set_cfg("libc_packedN");
-        set_cfg("libc_cfg_target_vendor");
-    }
-
-    // Rust >= 1.40 supports #[non_exhaustive].
-    if rustc_minor_ver >= 40 || rustc_dep_of_std {
-        set_cfg("libc_non_exhaustive");
     }
 
     // Rust >= 1.47 supports long array:

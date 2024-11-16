@@ -20,7 +20,7 @@ pub type uint32_t = u32;
 pub type uint64_t = u64;
 
 cfg_if! {
-    if #[cfg(all(libc_int128, target_arch = "aarch64", not(target_os = "windows")))] {
+    if #[cfg(all(target_arch = "aarch64", not(target_os = "windows")))] {
         // This introduces partial support for FFI with __int128 and
         // equivalent types on platforms where Rust's definition is validated
         // to match the standard C ABI of that platform.
