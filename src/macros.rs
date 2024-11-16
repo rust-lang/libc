@@ -273,9 +273,3 @@ macro_rules! __item {
         $i
     };
 }
-
-macro_rules! ptr_addr_of {
-    ($place:expr) => {
-        ::core::ptr::addr_of!($place)
-    };
-}
