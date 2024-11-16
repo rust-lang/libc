@@ -14,8 +14,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
-    "libc_const_extern_fn",
-    "libc_const_extern_fn_unstable",
     "libc_deny_warnings",
     "libc_ctest",
 ];
@@ -39,11 +37,10 @@ fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
 
-    let (rustc_minor_ver, is_nightly) = rustc_minor_nightly();
+    let (rustc_minor_ver, _is_nightly) = rustc_minor_nightly();
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
     let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok() || rustc_minor_ver >= 80;
-    let const_extern_fn_cargo_feature = env::var("CARGO_FEATURE_CONST_EXTERN_FN").is_ok();
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
@@ -76,20 +73,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.62.0 allows to use `const_extern_fn` for "Rust" and "C".
-    if rustc_minor_ver >= 62 {
-        set_cfg("libc_const_extern_fn");
-    } else {
-        // Rust < 1.62.0 requires a crate feature and feature gate.
-        if const_extern_fn_cargo_feature {
-            if !is_nightly || rustc_minor_ver < 40 {
-                panic!("const-extern-fn requires a nightly compiler >= 1.40");
-            }
-            set_cfg("libc_const_extern_fn_unstable");
-            set_cfg("libc_const_extern_fn");
-        }
     }
 
     // check-cfg is a nightly cargo/rustc feature to warn when unknown cfgs are used across the
