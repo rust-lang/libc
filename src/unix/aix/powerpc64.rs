@@ -374,14 +374,14 @@ cfg_if! {
         }
         impl Eq for fileops_t {}
         impl ::fmt::Debug for fileops_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("fileops_t");
-                struct_formatter.field("fo_rw", &self.fo_rw);
-                struct_formatter.field("fo_ioctl", &self.fo_ioctl);
-                struct_formatter.field("fo_select", &self.fo_select);
-                struct_formatter.field("fo_close", &self.fo_close);
-                struct_formatter.field("fo_fstat", &self.fo_fstat);
-                struct_formatter.finish()
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
+                f.debug_struct("fileops_t")
+                    .field("fo_rw", &self.fo_rw)
+                    .field("fo_ioctl", &self.fo_ioctl)
+                    .field("fo_select", &self.fo_select)
+                    .field("fo_close", &self.fo_close)
+                    .field("fo_fstat", &self.fo_fstat)
+                    .finish()
             }
         }
         impl ::hash::Hash for fileops_t {
