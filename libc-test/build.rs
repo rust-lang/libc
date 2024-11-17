@@ -1858,6 +1858,7 @@ fn test_android(target: &str) {
 
             // These are tested in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
+
             // These are intended to be opaque
             "posix_spawn_file_actions_t" => true,
             "posix_spawnattr_t" => true,
@@ -2463,7 +2464,7 @@ fn test_freebsd(target: &str) {
                 true
             }
 
-            // Added in in FreeBSD 13.0 (r367776 and r367287)
+            // Added in FreeBSD 13.0 (r367776 and r367287)
             "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
 
             // Added in FreeBSD 14

@@ -161,7 +161,7 @@ about above), and then shut down.
           poweroff
 
    1. Exit the post install shell: `exit`
-   1. Back in in the installer choose Reboot
+   1. Back in the installer choose Reboot
    1. If all went well the machine should reboot and show a login prompt. If you
       switch to the serial console by choosing View > serial0 in the qemu menu,
       you should be logged in as root.

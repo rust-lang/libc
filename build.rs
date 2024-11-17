@@ -132,7 +132,7 @@ fn rustc_version_cmd(is_clippy_driver: bool) -> Output {
 
     cmd.arg("--version");
 
-    let output = cmd.output().ok().expect("Failed to get rustc version");
+    let output = cmd.output().expect("Failed to get rustc version");
 
     if !output.status.success() {
         panic!(
@@ -187,20 +187,14 @@ fn rustc_minor_nightly() -> (u32, bool) {
 }
 
 fn which_freebsd() -> Option<i32> {
-    let output = std::process::Command::new("freebsd-version").output().ok();
-    if output.is_none() {
-        return None;
-    }
-    let output = output.unwrap();
+    let output = std::process::Command::new("freebsd-version")
+        .output()
+        .ok()?;
     if !output.status.success() {
         return None;
     }
 
-    let stdout = String::from_utf8(output.stdout).ok();
-    if stdout.is_none() {
-        return None;
-    }
-    let stdout = stdout.unwrap();
+    let stdout = String::from_utf8(output.stdout).ok()?;
 
     match &stdout {
         s if s.starts_with("10") => Some(10),
@@ -217,24 +211,16 @@ fn emcc_version_code() -> Option<u64> {
     let output = std::process::Command::new("emcc")
         .arg("-dumpversion")
         .output()
-        .ok();
-    if output.is_none() {
-        return None;
-    }
-    let output = output.unwrap();
+        .ok()?;
     if !output.status.success() {
         return None;
     }
 
-    let stdout = String::from_utf8(output.stdout).ok();
-    if stdout.is_none() {
-        return None;
-    }
-    let version = stdout.unwrap();
+    let version = String::from_utf8(output.stdout).ok()?;
 
     // Some Emscripten versions come with `-git` attached, so split the
     // version string also on the `-` char.
-    let mut pieces = version.trim().split(|c| c == '.' || c == '-');
+    let mut pieces = version.trim().split(['.', '-']);
 
     let major = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
     let minor = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
