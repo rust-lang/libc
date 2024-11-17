@@ -5116,6 +5116,7 @@ pub const MNT_SNAPSHOT: ::c_int = 0x40000000;
 pub const MNT_NOBLOCK: ::c_int = 0x00020000;
 
 // sys/spawn.h:
+// DIFF(main): changed to `c_short` in f62eb023ab
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x0001;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x0002;
 pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x0004;

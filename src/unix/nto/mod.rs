@@ -1609,6 +1609,7 @@ pub const ITIMER_REAL: ::c_int = 0;
 pub const ITIMER_VIRTUAL: ::c_int = 1;
 pub const ITIMER_PROF: ::c_int = 2;
 
+// DIFF(main): changed to `c_short` in f62eb023ab
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x00000010;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x00000001;
 pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x00000004;
