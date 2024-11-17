@@ -4209,6 +4209,8 @@ extern "C" {
         envp: *const *mut c_char,
         flags: ::c_int,
     ) -> ::c_int;
+
+    // DIFF(main): changed to `*const *mut` in e77f551de9
     pub fn execvpe(
         file: *const ::c_char,
         argv: *const *const ::c_char,

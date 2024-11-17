@@ -1842,11 +1842,14 @@ extern "C" {
 
     pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
     pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
+
+    // DIFF(main): changed to `*const *mut` in e77f551de9
     pub fn execvpe(
         file: *const ::c_char,
         argv: *const *const ::c_char,
         environment: *const *const ::c_char,
     ) -> ::c_int;
+
     pub fn getgrgid_r(
         gid: ::gid_t,
         grp: *mut ::group,

@@ -2812,11 +2812,14 @@ extern "C" {
     ) -> ::c_int;
     pub fn fattach(fildes: ::c_int, path: *const ::c_char) -> ::c_int;
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
+
+    // DIFF(main): changed to `*const *mut` in e77f551de9
     pub fn fexecve(
         fd: ::c_int,
         argv: *const *const ::c_char,
         envp: *const *const ::c_char,
     ) -> ::c_int;
+
     pub fn ffs(value: ::c_int) -> ::c_int;
     pub fn ffsl(value: ::c_long) -> ::c_int;
     pub fn ffsll(value: ::c_longlong) -> ::c_int;

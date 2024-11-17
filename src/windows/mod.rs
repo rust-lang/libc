@@ -456,6 +456,7 @@ extern "C" {
     #[link_name = "_wexeclpe"]
     pub fn wexeclpe(path: *const wchar_t, arg0: *const wchar_t, ...) -> intptr_t;
     #[link_name = "_execv"]
+    // DIFF(main): changed to `intptr_t` in e77f551de9
     pub fn execv(prog: *const c_char, argv: *const *const c_char) -> ::intptr_t;
     #[link_name = "_execve"]
     pub fn execve(
@@ -471,6 +472,7 @@ extern "C" {
         argv: *const *const c_char,
         envp: *const *const c_char,
     ) -> ::c_int;
+
     #[link_name = "_wexecv"]
     pub fn wexecv(prog: *const wchar_t, argv: *const *const wchar_t) -> ::intptr_t;
     #[link_name = "_wexecve"]

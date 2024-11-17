@@ -904,6 +904,8 @@ extern "C" {
     pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> ::c_int;
     pub fn execle(path: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execlp(file: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
+
+    // DIFF(main): changed to `*const *mut` in e77f551de9
     pub fn execv(prog: *const c_char, argv: *const *const c_char) -> ::c_int;
     pub fn execve(
         prog: *const c_char,
@@ -911,6 +913,7 @@ extern "C" {
         envp: *const *const c_char,
     ) -> ::c_int;
     pub fn execvp(c: *const c_char, argv: *const *const c_char) -> ::c_int;
+
     pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
     pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;
