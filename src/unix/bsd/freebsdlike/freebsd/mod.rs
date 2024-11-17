@@ -3985,6 +3985,7 @@ pub const RTP_PRIO_REALTIME: ::c_ushort = 2;
 pub const RTP_PRIO_NORMAL: ::c_ushort = 3;
 pub const RTP_PRIO_IDLE: ::c_ushort = 4;
 
+// DIFF(main): changed to `c_short` in f62eb023ab
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
 pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x04;

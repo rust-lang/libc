@@ -3036,6 +3036,7 @@ pub const ETH_P_PHONET: ::c_int = 0x00F5;
 pub const ETH_P_IEEE802154: ::c_int = 0x00F6;
 pub const ETH_P_CAIF: ::c_int = 0x00F7;
 
+// DIFF(main): changed to `c_short` in f62eb023ab
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
 pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x04;

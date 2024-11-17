@@ -369,6 +369,7 @@ pub const POSIX_MADV_SEQUENTIAL: ::c_int = 2;
 pub const POSIX_MADV_WILLNEED: ::c_int = 3;
 pub const POSIX_MADV_DONTNEED: ::c_int = 4;
 
+// DIFF(main): changed to `c_short` in f62eb023ab
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
 pub const POSIX_SPAWN_SETSCHEDPARAM: ::c_int = 0x04;

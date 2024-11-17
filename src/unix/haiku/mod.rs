@@ -1100,6 +1100,7 @@ pub const SA_ONESHOT: ::c_int = SA_RESETHAND;
 pub const SS_ONSTACK: ::c_int = 0x1;
 pub const SS_DISABLE: ::c_int = 0x2;
 
+// DIFF(main): changed to `c_int` in 500365e1
 pub const FD_SETSIZE: usize = 1024;
 
 pub const RTLD_LOCAL: ::c_int = 0x0;
@@ -1550,6 +1551,7 @@ pub const LOG_PERROR: ::c_int = 32 << 12;
 pub const LOG_NOWAIT: ::c_int = 64 << 12;
 
 // spawn.h
+// DIFF(main): changed to `c_short` in f62eb023ab
 pub const POSIX_SPAWN_RESETIDS: ::c_int = 0x01;
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x02;
 pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x10;

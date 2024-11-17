@@ -1253,6 +1253,7 @@ pub const ENTER: ::c_int = 1;
 pub const SEM_FAILED: *mut sem_t = -1isize as *mut ::sem_t;
 
 // spawn.h
+// DIFF(main): changed to `c_short` in f62eb023ab
 pub const POSIX_SPAWN_SETPGROUP: ::c_int = 0x1;
 pub const POSIX_SPAWN_SETSIGMASK: ::c_int = 0x2;
 pub const POSIX_SPAWN_SETSIGDEF: ::c_int = 0x4;
