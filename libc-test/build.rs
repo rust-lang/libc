@@ -550,6 +550,15 @@ fn test_openbsd(target: &str) {
         }
     });
 
+    cfg.skip_const(move |name| {
+        match name {
+            // Removed in OpenBSD 7.7 (unused since 1991)
+            "ATF_COM" | "ATF_PERM" | "ATF_PUBL" | "ATF_USETRAILERS" => true,
+
+            _ => false,
+        }
+    });
+
     cfg.skip_fn(move |name| {
         match name {
             // futex() has volatile arguments, but that doesn't exist in Rust.
