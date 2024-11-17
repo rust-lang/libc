@@ -1737,6 +1737,7 @@ extern "C" {
     ) -> vm_map_entry_t;
 }
 
+// DIFF(main): module removed in de76fee6
 cfg_if! {
     if #[cfg(libc_thread_local)] {
         mod errno;
