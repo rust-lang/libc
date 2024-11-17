@@ -1111,6 +1111,7 @@ pub const ELFOSABI_ARM_AEABI: u8 = 64;
 
 // linux/sched.h
 pub const CLONE_NEWTIME: ::c_int = 0x80;
+// DIFF(main): changed to `c_ulonglong` in e9abac9ac2
 pub const CLONE_CLEAR_SIGHAND: ::c_int = 0x100000000;
 pub const CLONE_INTO_CGROUP: ::c_int = 0x200000000;
 
