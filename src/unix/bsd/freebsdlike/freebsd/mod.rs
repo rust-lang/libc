@@ -1730,16 +1730,13 @@ cfg_if! {
         impl Eq for xucred {}
         impl ::fmt::Debug for xucred {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("xucred");
-                struct_formatter.field("cr_version", &self.cr_version);
-                struct_formatter.field("cr_uid", &self.cr_uid);
-                struct_formatter.field("cr_ngroups", &self.cr_ngroups);
-                struct_formatter.field("cr_groups", &self.cr_groups);
-                struct_formatter.field(
-                    "cr_pid__c_anonymous_union",
-                    &self.cr_pid__c_anonymous_union
-                );
-                struct_formatter.finish()
+                f.debug_struct("xucred")
+                    .field("cr_version", &self.cr_version)
+                    .field("cr_uid", &self.cr_uid)
+                    .field("cr_ngroups", &self.cr_ngroups)
+                    .field("cr_groups", &self.cr_groups)
+                    .field("cr_pid__c_anonymous_union", &self.cr_pid__c_anonymous_union)
+                    .finish()
             }
         }
         impl ::hash::Hash for xucred {

@@ -592,20 +592,19 @@ cfg_if! {
 
         impl PartialEq for sigaction {
             fn eq(&self, other: &sigaction) -> bool {
-                let union_eq = self.sa_union == other.sa_union;
                 self.sa_mask == other.sa_mask
                     && self.sa_flags == other.sa_flags
-                    && union_eq
+                    && self.sa_union == other.sa_union
             }
         }
         impl Eq for sigaction {}
         impl ::fmt::Debug for sigaction {
             fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("sigaction");
-                struct_formatter.field("sa_union", &self.sa_union);
-                struct_formatter.field("sa_mask", &self.sa_mask);
-                struct_formatter.field("sa_flags", &self.sa_flags);
-                struct_formatter.finish()
+                f.debug_struct("sigaction")
+                    .field("sa_union", &self.sa_union)
+                    .field("sa_mask", &self.sa_mask)
+                    .field("sa_flags", &self.sa_flags)
+                    .finish()
             }
         }
         impl ::hash::Hash for sigaction {
@@ -647,26 +646,25 @@ cfg_if! {
 
         impl PartialEq for poll_ctl_ext {
             fn eq(&self, other: &poll_ctl_ext) -> bool {
-                let union_eq = self.u == other.u;
                 self.version == other.version
                     && self.command == other.command
                     && self.events == other.events
                     && self.fd == other.fd
                     && self.reversed64 == other.reversed64
-                    && union_eq
+                    && self.u == other.u
             }
         }
         impl Eq for poll_ctl_ext {}
         impl ::fmt::Debug for poll_ctl_ext {
             fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("poll_ctl_ext");
-                struct_formatter.field("version", &self.version);
-                struct_formatter.field("command", &self.command);
-                struct_formatter.field("events", &self.events);
-                struct_formatter.field("fd", &self.fd);
-                struct_formatter.field("u", &self.u);
-                struct_formatter.field("reversed64", &self.reversed64);
-                struct_formatter.finish()
+                f.debug_struct("poll_ctl_ext")
+                    .field("version", &self.version)
+                    .field("command", &self.command)
+                    .field("events", &self.events)
+                    .field("fd", &self.fd)
+                    .field("u", &self.u)
+                    .field("reversed64", &self.reversed64)
+                    .finish()
             }
         }
         impl ::hash::Hash for poll_ctl_ext {
