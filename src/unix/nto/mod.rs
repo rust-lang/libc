@@ -2935,6 +2935,8 @@ extern "C" {
         options: ::c_int,
         rusage: *mut ::rusage,
     ) -> ::pid_t;
+
+    // DIFF(main): changed to `*const *mut` in e77f551de9
     pub fn execvpe(
         file: *const ::c_char,
         argv: *const *const ::c_char,
