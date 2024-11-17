@@ -1,13 +1,19 @@
 [relabel]
 allow-unauthenticated = [
-    "C-*", "O-*", "S-*"
+    "C-*",
+    "O-*",
+    "S-*",
+    "stable-nominated",
 ]
 
 [assign]
 contributing_url = "https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md"
 
 [assign.owners]
-"*" = ["@JohnTitor"]
+"*" = [
+    "@JohnTitor",
+    "@tgross35",
+]
 
 [autolabel."A-CI"]
 trigger_files = [
