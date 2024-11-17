@@ -2166,6 +2166,11 @@ extern "C" {
     pub fn mimmutable(addr: *mut ::c_void, len: ::size_t) -> ::c_int;
 
     pub fn reboot(mode: ::c_int) -> ::c_int;
+
+    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
+    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
+    pub fn getmntinfo(mntbufp: *mut *mut ::statfs, flags: ::c_int) -> ::c_int;
+    pub fn getfsstat(buf: *mut statfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
 }
 
 #[link(name = "execinfo")]
@@ -2182,13 +2187,6 @@ extern "C" {
         len: ::size_t,
         fmt: *const ::c_char,
     ) -> *mut *mut ::c_char;
-}
-
-extern "C" {
-    pub fn statfs(path: *const ::c_char, buf: *mut statfs) -> ::c_int;
-    pub fn fstatfs(fd: ::c_int, buf: *mut statfs) -> ::c_int;
-    pub fn getmntinfo(mntbufp: *mut *mut ::statfs, flags: ::c_int) -> ::c_int;
-    pub fn getfsstat(buf: *mut statfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

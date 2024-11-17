@@ -2893,6 +2893,9 @@ extern "C" {
         ntargets: ::size_t,
         hint: *const ::c_void,
     ) -> ::c_int;
+
+    pub fn getmntinfo(mntbufp: *mut *mut ::statvfs, flags: ::c_int) -> ::c_int;
+    pub fn getvfsstat(buf: *mut statvfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
 }
 
 #[link(name = "rt")]
@@ -3116,11 +3119,6 @@ extern "C" {
         fd: ::c_int,
         fmt: *const ::c_char,
     ) -> ::c_int;
-}
-
-extern "C" {
-    pub fn getmntinfo(mntbufp: *mut *mut ::statvfs, flags: ::c_int) -> ::c_int;
-    pub fn getvfsstat(buf: *mut statvfs, bufsize: ::size_t, flags: ::c_int) -> ::c_int;
 }
 
 cfg_if! {
