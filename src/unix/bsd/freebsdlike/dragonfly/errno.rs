@@ -1,3 +1,5 @@
+/* DIFF(main): module removed in de76fee6 */
+
 // DragonFlyBSD's __error function is declared with "static inline", so it must
 // be implemented in the libc crate, as a pointer to a static thread_local.
 f! {
